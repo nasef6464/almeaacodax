@@ -133,3 +133,33 @@ Still open:
 
 See `docs/architecture/DISASTER_RECOVERY_RUNBOOK.md` and
 `docs/architecture/ALM_PRD_001_PRODUCTION_CLOSURE_2026-09-22_AR.md`.
+
+
+## Scheduled production backup path — 2026-09-25
+
+The repository now includes `.github/workflows/production-dr-backup.yml`.
+
+It schedules a daily production backup attempt at 01:17 UTC (04:17 Asia/Riyadh) and can also be started manually. The workflow is deliberately **fail-closed**:
+
+- it fails when production MongoDB, production R2, or independent off-site credentials are missing;
+- it rejects an off-site destination that is the same endpoint + bucket as the production R2 source;
+- it runs the verified MongoDB and R2 backup scripts;
+- it copies verified artifacts to an independent S3-compatible destination;
+- it verifies that remote MongoDB and R2 artifacts exist;
+- it comments on Issue #235 with the failed run link when the scheduled backup fails;
+- it does not publish production backup bytes as GitHub Actions artifacts.
+
+Required GitHub secret names are documented by the workflow itself. Their presence must never be inferred from repository code.
+
+A real DR certification still requires a successful live scheduled run, independent retention evidence, failure alerting, and full isolated restore drills.
+
+### Recovery environment
+
+A separate FREE Atlas recovery/staging cluster was created on 2026-09-25:
+
+- project: `almeaacodax-eu-recovery`
+- cluster: `almeaa-eu-recovery`
+- AWS region: `EU_CENTRAL_1` (Frankfurt)
+- MongoDB: 8.0.32
+
+It is not a production target. A bounded logical-copy exercise proved recovery of multiple collections while preserving identifiers, but large-document connector payload limits prevented treating that exercise as the required full database restore. Final evidence must use the verified `mongodump → mongorestore` path against this or another explicitly isolated recovery target.

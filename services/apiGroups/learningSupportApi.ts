@@ -1,7 +1,7 @@
 import { withQuery } from '../apiQueryUtilities';
 
 type ApiRequest = <T>(path: string, options?: {
-  method?: "GET" | "POST" | "PATCH" | "DELETE";
+  method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
   body?: unknown;
   token?: string | null;
   cache?: RequestCache;
@@ -31,6 +31,27 @@ export const createLearningSupportApi = (request: ApiRequest) => ({
     request<{ dueCount: number; items: any[] }>(
       withQuery("/review/due", { limit: scope.limit ?? 20, pathId: scope.pathId, subjectId: scope.subjectId }),
       { token },
+    ),
+
+  getStudentReviewLibrary: (
+    scope: { tab?: "saved" | "mistakes" | "all"; limit?: number; page?: number; pathId?: string; subjectId?: string } = {},
+    token?: string | null,
+  ) =>
+    request<{ tab: "saved" | "mistakes" | "all"; counts: { saved: number; mistakes: number }; items: any[]; page: number; limit: number; total: number; hasMore: boolean }>(
+      withQuery("/review/library", { tab: scope.tab || "all", limit: scope.limit ?? 20, page: scope.page ?? 1, pathId: scope.pathId, subjectId: scope.subjectId }),
+      { token, cache: "no-store" },
+    ),
+
+  saveQuestionForReview: (questionId: string, token?: string | null) =>
+    request<{ success: boolean; cardId?: string; questionId?: string }>(
+      `/review/questions/${encodeURIComponent(questionId)}/saved`,
+      { method: "PUT", body: {}, token },
+    ),
+
+  removeQuestionFromReview: (questionId: string, token?: string | null) =>
+    request<{ success: boolean }>(
+      `/review/questions/${encodeURIComponent(questionId)}/saved`,
+      { method: "DELETE", token },
     ),
 
   answerReviewCard: (

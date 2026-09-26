@@ -2473,6 +2473,13 @@ const Reports: React.FC = () => {
                             <p className="mt-1 max-w-2xl text-xs sm:text-sm font-bold leading-6 text-gray-500">
                                 {studentReadinessDecision?.body || 'اتبع خطوة واحدة الآن، ثم نحدّث تقدمك تلقائيًا.'}
                             </p>
+                            {studentServerReadiness?.examEstimate ? (
+                                <div className="mt-2 text-[11px] sm:text-xs font-bold text-slate-500" data-testid="student-exam-estimate">
+                                    {studentServerReadiness.examEstimate.expectedPerformancePercent !== null
+                                        ? `تقدير الأداء الداخلي: ${studentServerReadiness.examEstimate.expectedPerformancePercent}%${studentServerReadiness.examEstimate.range ? ` (${studentServerReadiness.examEstimate.range.min}–${studentServerReadiness.examEstimate.range.max})` : ''}. ليس درجة قياس رسمية.`
+                                        : `الدرجة المتوقعة ستظهر بعد توفر قياسات كافية. ${studentServerReadiness.examEstimate.recentAssessments}/3 قياسات موثوقة حاليًا.`}
+                                </div>
+                            ) : null}
                         </div>
                         <div className="print-hide flex flex-wrap gap-2">
                             {studentReadinessDecision ? (

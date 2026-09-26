@@ -2,7 +2,7 @@
 import React, { useEffect, useMemo, useState, Suspense } from 'react';
 import { 
     Clock, TrendingUp, AlertTriangle, Zap, Sparkles, FileText, 
-    PieChart, Heart, Map as MapIcon, HelpCircle, LayoutDashboard, 
+    PieChart, Bookmark, Map as MapIcon, HelpCircle, LayoutDashboard, 
     ShoppingCart, ChevronLeft, Menu, X, Target, Loader2, CheckCircle, BookOpen, Star, LogOut,
     Route as RouteIcon, Brain, Calendar, User, Video, Copy, MessageCircle, ClipboardList, Activity as ActivityIcon, Calculator,
     GraduationCap, Wrench, Headphones
@@ -927,7 +927,7 @@ const Dashboard: React.FC = () => {
         { id: 'exams',        label: 'الاختبارات',          icon: <Zap size={20} /> },
         { id: 'reports',      label: 'تقاريري',              icon: <MapIcon size={20} /> },
         { id: 'plan',         label: 'خططي',                 icon: <PieChart size={20} /> },
-        { id: 'favorites',    label: 'مراجعة الأسئلة',      icon: <Heart size={20} /> },
+        { id: 'favorites',    label: 'أسئلتي للمراجعة',      icon: <Bookmark size={20} /> },
         { id: 'flashcards',   label: 'بطاقات التذكر',       icon: <Copy size={20} /> },
         { id: 'qa',           label: 'سؤال وجواب',           icon: <MessageCircle size={20} /> },
         { id: 'requests',     label: 'طلباتي',               icon: <FileText size={20} /> },
@@ -945,7 +945,7 @@ const Dashboard: React.FC = () => {
         exams:         { iconBg: 'bg-rose-100',     iconColor: 'text-rose-700',    activeBg: 'bg-rose-50/90',    activeBorder: 'border-rose-200',    activeText: 'text-rose-800' },
         reports:       { iconBg: 'bg-emerald-100',  iconColor: 'text-emerald-700', activeBg: 'bg-emerald-50/90', activeBorder: 'border-emerald-200', activeText: 'text-emerald-800' },
         plan:          { iconBg: 'bg-rose-100',     iconColor: 'text-rose-700',    activeBg: 'bg-rose-50/90',    activeBorder: 'border-rose-200',    activeText: 'text-rose-800' },
-        favorites:     { iconBg: 'bg-rose-100',     iconColor: 'text-rose-700',    activeBg: 'bg-rose-50/90',    activeBorder: 'border-rose-200',    activeText: 'text-rose-800' },
+        favorites:     { iconBg: 'bg-violet-100',   iconColor: 'text-violet-700',  activeBg: 'bg-violet-50/90',  activeBorder: 'border-violet-200',  activeText: 'text-violet-800' },
         flashcards:    { iconBg: 'bg-violet-100',   iconColor: 'text-violet-700',  activeBg: 'bg-violet-50/90',  activeBorder: 'border-violet-200',  activeText: 'text-violet-800' },
         qa:            { iconBg: 'bg-sky-100',      iconColor: 'text-sky-700',     activeBg: 'bg-sky-50/90',     activeBorder: 'border-sky-200',     activeText: 'text-sky-800' },
         requests:      { iconBg: 'bg-rose-100',     iconColor: 'text-rose-700',    activeBg: 'bg-rose-50/90',    activeBorder: 'border-rose-200',    activeText: 'text-rose-800' },

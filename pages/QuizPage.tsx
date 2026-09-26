@@ -6,7 +6,7 @@ import { Clock, AlertCircle, CheckCircle2, XCircle, ArrowRight, ArrowLeft, FileQ
 import { api } from '../services/api';
 import { flattenMockExamQuestionIds, getMockExamSections, getMockExamTimeLimit } from '../utils/mockExam';
 import { normalizeQuestionHtml } from '../utils/questionHtml';
-import { getQuizDifficultyBadgeClass, getQuizDifficultyLabel, getQuizOptionButtonHeightClass, getQuizOptionGridClass, getQuizQuestionMapButtonClass, resolveQuestionFromBank } from '../utils/quizPresentation';
+import { getLearnerOptionLabel, getQuizDifficultyBadgeClass, getQuizDifficultyLabel, getQuizOptionButtonHeightClass, getQuizOptionGridClass, getQuizQuestionMapButtonClass, resolveQuestionFromBank, usesImageEmbeddedOptions } from '../utils/quizPresentation';
 import { isDevSessionUser } from '../utils/devSession';
 import { resolveQuizLearningAccessType } from '../utils/quizLearningPlacement';
 import { resolveAssessmentSettings } from '../utils/assessmentSettings';
@@ -167,10 +167,6 @@ export const QuizPage: React.FC = () => {
     lessons,
     topics,
     libraryItems,
-    toggleFavorite,
-    toggleReviewLater,
-    favorites,
-    reviewLater,
   } = useStore();
 
   const [quiz, setQuiz] = useState<Quiz | null>(null);
@@ -735,8 +731,9 @@ export const QuizPage: React.FC = () => {
   const quizTimeLimit = quiz ? (quiz.mockExam?.enabled ? getMockExamTimeLimit(quiz) : (quizSettings.timeLimit || 0)) : 0;
   const isPassed = isFinished && quiz ? finalScore >= passingScore : false;
   const activeOptionLayout = quizSettings.optionLayout ?? 'horizontal';
-  const optionGridClass = getQuizOptionGridClass(currentQuestion?.options || [], activeOptionLayout);
-  const optionButtonHeightClass = getQuizOptionButtonHeightClass(currentQuestion?.options || [], activeOptionLayout);
+  const imageQuestion = usesImageEmbeddedOptions(currentQuestion);
+  const optionGridClass = imageQuestion ? 'grid-cols-4' : getQuizOptionGridClass(currentQuestion?.options || [], activeOptionLayout);
+  const optionButtonHeightClass = imageQuestion ? 'min-h-[46px]' : getQuizOptionButtonHeightClass(currentQuestion?.options || [], activeOptionLayout);
 
   // ── G2: خلط خيارات الإجابة (randomizeOptions) ────────────────────────────
   // يُبنى مرة واحدة عند تحميل الأسئلة فقط (يعتمد على quizQuestions كـkey).
@@ -751,6 +748,11 @@ export const QuizPage: React.FC = () => {
     const map = new Map<string, number[]>();
     for (const question of quizQuestions) {
       const count = question.options?.length ?? 0;
+      if (usesImageEmbeddedOptions(question)) {
+        // Keep image-embedded A/B/C/D aligned with the source image.
+        map.set(question.id, Array.from({ length: count }, (_, i) => i));
+        continue;
+      }
       if (count <= 1) {
         // سؤال بخيار واحد أو بدون خيارات: لا خلط
         map.set(question.id, Array.from({ length: count }, (_, i) => i));
@@ -788,7 +790,7 @@ export const QuizPage: React.FC = () => {
   const shouldShowProgressBar = quizSettings.showProgressBar !== false;
   const answeredQuestionCount = quizQuestions.filter((question) => selectedOptions[question.id] !== undefined).length;
   const activeProgressPercentage = Math.round(((currentQuestionIndex + 1) / Math.max(quizQuestions.length, 1)) * 100);
-  const reviewQuestionCount = quizQuestions.filter((question) => reviewLater.includes(question.id)).length;
+  const reviewQuestionCount = quizQuestions.filter((question) => flaggedQuestionIds.includes(question.id)).length;
   const isNextBlocked =
     quizSettings.requireAnswerBeforeNext === true &&
     currentQuestion &&
@@ -867,15 +869,35 @@ export const QuizPage: React.FC = () => {
     });
   };
 
+  const toggleQuestionSavedForReview = async (questionId: string) => {
+    const wasSaved = flaggedQuestionIds.includes(questionId);
+    if (!user?.id || user.id === 'guest') {
+      setQuizStatusMessage('سجّل الدخول لحفظ السؤال للمراجعة على حسابك.');
+      setQuizStatusTone('info');
+      return;
+    }
+    setFlaggedQuestionIds((prev) => wasSaved ? prev.filter((id) => id !== questionId) : [...new Set([...prev, questionId])]);
+    try {
+      if (wasSaved) await api.removeQuestionFromReview(questionId);
+      else await api.saveQuestionForReview(questionId);
+      setQuizStatusMessage(wasSaved ? 'تمت إزالة السؤال من المراجعة.' : 'تم حفظ السؤال للمراجعة لاحقًا.');
+      setQuizStatusTone('success');
+    } catch {
+      setFlaggedQuestionIds((prev) => wasSaved ? [...new Set([...prev, questionId])] : prev.filter((id) => id !== questionId));
+      setQuizStatusMessage('تعذر تحديث قائمة المراجعة الآن.');
+      setQuizStatusTone('info');
+    }
+  };
+
   const handleToggleCurrentReviewLater = () => {
     if (!currentQuestion) return;
-    toggleReviewLater(currentQuestion.id);
+    void toggleQuestionSavedForReview(currentQuestion.id);
   };
 
   const getQuestionNumberClass = (question: Question, index: number) => {
     const isCurrent = index === currentQuestionIndex;
     const isAnswered = selectedOptions[question.id] !== undefined;
-    const isMarkedForReview = reviewLater.includes(question.id);
+    const isMarkedForReview = flaggedQuestionIds.includes(question.id);
 
     if (isCurrent) {
       return getQuizQuestionMapButtonClass('current', isNightMode);
@@ -1118,6 +1140,9 @@ export const QuizPage: React.FC = () => {
         explanation: question.explanation,
         videoUrl: question.videoUrl,
         imageUrl: question.imageUrl,
+        imageAlt: question.imageAlt,
+        optionsEmbeddedInImage: question.optionsEmbeddedInImage,
+        voiceExplanation: question.voiceExplanation,
         isCorrect: selectedOptionIndex === question.correctOptionIndex,
         timeSpentSeconds: questionTimeSpent[question.id] || 0,
       };
@@ -1509,14 +1534,14 @@ export const QuizPage: React.FC = () => {
                           type="button"
                           onClick={handleToggleCurrentReviewLater}
                           className={`${
-                            reviewLater.includes(currentQuestion.id)
+                            flaggedQuestionIds.includes(currentQuestion.id)
                               ? (isNightMode ? 'bg-purple-950 text-purple-200 ring-1 ring-purple-800' : 'bg-purple-50 text-purple-700 ring-1 ring-purple-200')
                               : (isNightMode ? 'bg-slate-800 text-slate-300 hover:bg-slate-700' : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50')
                           } inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-black transition shadow-xs`}
                           title="تمييز السؤال للمراجعة لاحقاً"
                         >
-                          <Star size={14} className={reviewLater.includes(currentQuestion.id) ? 'fill-current text-purple-500' : 'text-gray-400'} />
-                          <span>{reviewLater.includes(currentQuestion.id) ? 'تمت إضافته للمراجعة' : 'مراجعة لاحقاً'}</span>
+                          <Star size={14} className={flaggedQuestionIds.includes(currentQuestion.id) ? 'fill-current text-purple-500' : 'text-gray-400'} />
+                          <span>{flaggedQuestionIds.includes(currentQuestion.id) ? 'تمت إضافته للمراجعة' : 'مراجعة لاحقاً'}</span>
                         </button>
                       ) : null}
                     </div>
@@ -1586,23 +1611,24 @@ export const QuizPage: React.FC = () => {
                       </div>
                     )}
 
-                    <div
-                      data-testid="quiz-current-question"
-                      data-question-id={currentQuestion?.id || ''}
-                      onClick={handleInlineQuestionImageClick}
-                      className={`question-html text-base sm:text-lg lg:text-xl font-medium leading-relaxed break-words [&_img]:cursor-zoom-in [&_img]:rounded-xl [&_img]:max-h-[300px] [&_img]:mx-auto [&_img]:my-2 ${
-                        isNightMode ? 'text-slate-100' : 'text-gray-900'
-                      }`}
-                      dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(questionText) }}
-                    />
-
+                    {!imageQuestion ? (
+                      <div
+                        data-testid="quiz-current-question"
+                        data-question-id={currentQuestion?.id || ''}
+                        onClick={handleInlineQuestionImageClick}
+                        className={`question-html text-base sm:text-lg lg:text-xl font-medium leading-relaxed break-words [&_img]:cursor-zoom-in [&_img]:rounded-xl [&_img]:max-h-[300px] [&_img]:mx-auto [&_img]:my-2 ${
+                          isNightMode ? 'text-slate-100' : 'text-gray-900'
+                        }`}
+                        dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(questionText) }}
+                      />
+                    ) : null}
                     {/* Question Diagram / Image with Zoom */}
                     {currentQuestion?.imageUrl && (
                       <div className="space-y-2">
                         <button
                           type="button"
                           onClick={() => setZoomedImageUrl(currentQuestion.imageUrl || null)}
-                          className={`group relative block w-full cursor-zoom-in overflow-hidden rounded-2xl border p-3 transition-all hover:border-indigo-300 hover:shadow-md ${
+                          className={`group relative block w-full cursor-zoom-in overflow-hidden rounded-xl border p-1.5 sm:p-2 transition-all hover:border-indigo-300 hover:shadow-md ${
                             isNightMode ? 'border-slate-700 bg-slate-950' : 'border-gray-200 bg-slate-50/50'
                           }`}
                           title="اضغط لتكبير الصورة وفحص الرسم البياني أو الهندسي"
@@ -1610,11 +1636,11 @@ export const QuizPage: React.FC = () => {
                           <img
                             src={currentQuestion.imageUrl}
                             alt="صورة السؤال"
-                            className="mx-auto max-h-[280px] sm:max-h-[360px] w-full object-contain transition-transform duration-200 group-hover:scale-[1.01]"
+                            className="mx-auto max-h-[320px] sm:max-h-[380px] w-full object-contain transition-transform duration-200 group-hover:scale-[1.01]"
                             referrerPolicy="no-referrer"
                           />
                         </button>
-                        <div className="flex items-center justify-center">
+                        <div className="hidden items-center justify-center sm:flex">
                           <button
                             type="button"
                             onClick={() => setZoomedImageUrl(currentQuestion.imageUrl || null)}
@@ -1631,56 +1657,60 @@ export const QuizPage: React.FC = () => {
                       </div>
                     )}
 
-                    {/* Answer Options Grid (without duplicate letter badge) */}
-                    <div className={`grid ${optionGridClass} gap-3 pt-2`}>
+                    {/* Answer Options Grid */}
+                    <div className={`grid ${optionGridClass} gap-2 pt-2 sm:gap-3`}>
                       {currentDisplayOptions.map((displayOption, displayIndex) => {
                         const isSelected = selectedOptions[currentQuestion.id] === displayOption.originalIndex;
                         const optionLetters = ['أ', 'ب', 'ج', 'د', 'هـ', 'و'];
                         const fallbackLetter = optionLetters[displayIndex] || String(displayIndex + 1);
                         const hasText = Boolean(displayOption.text && displayOption.text.trim().length > 0);
+                        const learnerLabel = getLearnerOptionLabel(currentQuestion, displayOption.text, displayOption.originalIndex);
 
                         return (
                           <button
                             key={displayOption.originalIndex}
                             data-testid={`quiz-answer-option-${displayIndex}`}
                             onClick={() => handleOptionSelect(displayIndex)}
-                            className={`${optionButtonHeightClass} group w-full px-4 py-3 rounded-2xl border-2 transition-all flex items-center justify-between text-right gap-3 shadow-xs hover:shadow-sm ${
+                            className={`${optionButtonHeightClass} group w-full rounded-xl border-2 transition-all flex items-center gap-2 shadow-xs hover:shadow-sm ${
+                              imageQuestion ? 'justify-center px-1.5 py-1.5 text-center' : 'justify-between px-4 py-3 text-right'
+                            } ${
                               isSelected
                                 ? (isNightMode ? 'border-indigo-500 bg-indigo-950/90 shadow-indigo-950/40 ring-1 ring-indigo-500/50' : 'border-indigo-600 bg-indigo-50/85 shadow-indigo-100 ring-2 ring-indigo-100')
                                 : (isNightMode ? 'border-slate-800 bg-slate-950/80 hover:border-slate-700 hover:bg-slate-800/60' : 'border-gray-200 hover:border-indigo-200 hover:bg-gray-50/90 bg-white')
                             }`}
                           >
-                            <span className={`flex-1 text-xs sm:text-sm md:text-base font-bold leading-relaxed break-words text-center ${
+                            <span className={`${imageQuestion ? 'text-lg sm:text-xl font-black' : 'flex-1 text-xs sm:text-sm md:text-base font-bold'} leading-relaxed break-words text-center ${
                               isSelected
                                 ? (isNightMode ? 'text-white' : 'text-indigo-950')
                                 : (isNightMode ? 'text-slate-200 group-hover:text-slate-100' : 'text-gray-800 group-hover:text-indigo-950')
                             }`}>
-                              {hasText ? (
+                              {imageQuestion ? (
+                                learnerLabel
+                              ) : hasText ? (
                                 <span className="question-html" dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(displayOption.text) }} />
                               ) : (
                                 <span className="question-html font-black">{fallbackLetter}</span>
                               )}
                             </span>
 
-                            <div className="flex items-center shrink-0">
-                              <div className={`flex h-6 w-6 items-center justify-center rounded-full border-2 transition-all ${
-                                isSelected
-                                  ? 'border-indigo-600 bg-indigo-600 text-white shadow-xs'
-                                  : isNightMode
-                                    ? 'border-slate-600 bg-slate-900 group-hover:border-slate-500'
-                                    : 'border-slate-300 bg-white group-hover:border-indigo-300'
-                              }`}>
-                                {isSelected ? (
-                                  <div className="h-2 w-2 rounded-full bg-white" />
-                                ) : null}
+                            {!imageQuestion ? (
+                              <div className="flex items-center shrink-0">
+                                <div className={`flex h-6 w-6 items-center justify-center rounded-full border-2 transition-all ${
+                                  isSelected
+                                    ? 'border-indigo-600 bg-indigo-600 text-white shadow-xs'
+                                    : isNightMode
+                                      ? 'border-slate-600 bg-slate-900 group-hover:border-slate-500'
+                                      : 'border-slate-300 bg-white group-hover:border-indigo-300'
+                                }`}>
+                                  {isSelected ? <div className="h-2 w-2 rounded-full bg-white" /> : null}
+                                </div>
                               </div>
-                            </div>
+                            ) : null}
                           </button>
                         );
                       })}
                     </div>
                   </div>
-
                   {/* Navigation Bar at Bottom of Question Card */}
                   <div className={`${isNightMode ? 'border-slate-800 bg-slate-950' : 'border-gray-100 bg-gray-50/70'} flex flex-wrap items-center justify-between gap-3 border-t p-4 sm:p-5`}>
                     <button
@@ -1705,7 +1735,7 @@ export const QuizPage: React.FC = () => {
                         disabled={isSubmittingResult}
                         className={`${
                           isNightMode ? 'border-emerald-800 bg-emerald-950/60 text-emerald-200 hover:bg-emerald-900' : 'border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100'
-                        } inline-flex items-center justify-center gap-1.5 rounded-xl border px-3 py-2 text-xs sm:text-sm font-black transition disabled:cursor-not-allowed disabled:opacity-60`}
+                        } hidden sm:inline-flex items-center justify-center gap-1.5 rounded-xl border px-3 py-2 text-xs sm:text-sm font-black transition disabled:cursor-not-allowed disabled:opacity-60`}
                         title="حفظ تقدم الإجابات يدوياً"
                       >
                         <Save size={15} />
@@ -1878,9 +1908,9 @@ export const QuizPage: React.FC = () => {
                         {isStrictQiyasMode && currentMockExamSection
                           ? currentMockExamSection.questionIndexes.filter((idx) => {
                               const q = quizQuestions[idx];
-                              return q ? (reviewLater.includes(q.id) || flaggedQuestionIds.includes(q.id)) : false;
+                              return q ? (flaggedQuestionIds.includes(q.id)) : false;
                             }).length
-                          : reviewQuestionCount + flaggedQuestionIds.length}
+                          : reviewQuestionCount}
                       </div>
                       <div className="text-[10px] mt-0.5 opacity-90">للمراجعة</div>
                     </div>
@@ -1893,7 +1923,7 @@ export const QuizPage: React.FC = () => {
                         const question = quizQuestions[index];
                         if (!question) return null;
                         const isAnswered = selectedOptions[question.id] !== undefined;
-                        const isMarkedForReview = reviewLater.includes(question.id) || flaggedQuestionIds.includes(question.id);
+                        const isMarkedForReview = flaggedQuestionIds.includes(question.id);
                         const isCurrent = index === currentQuestionIndex;
                         const displayNum = isStrictQiyasMode ? pos + 1 : index + 1;
                         const title = isCurrent
@@ -2079,6 +2109,7 @@ export const QuizPage: React.FC = () => {
                   {quizQuestions.map((question, index) => {
                     const userAnswer = selectedOptions[question.id];
                     const isCorrect = userAnswer === question.correctOptionIndex;
+                    const reviewImageQuestion = usesImageEmbeddedOptions(question);
 
                     return (
                       <div key={question.id} className="border-b border-gray-100 pb-8 last:border-0 last:pb-0">
@@ -2090,17 +2121,19 @@ export const QuizPage: React.FC = () => {
                           </div>
                           <div className="flex-1">
                             <div className="flex justify-between items-start mb-4">
-                              <div
-                                onClick={handleInlineQuestionImageClick}
-                                className="question-html text-gray-800 font-medium [&_img]:cursor-zoom-in"
-                                dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(question.text) }}
-                              />
+                              {!reviewImageQuestion ? (
+                                <div
+                                  onClick={handleInlineQuestionImageClick}
+                                  className="question-html text-gray-800 font-medium [&_img]:cursor-zoom-in"
+                                  dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(question.text) }}
+                                />
+                              ) : <span />}
                               <button
-                                onClick={() => toggleFavorite(question.id)}
+                                onClick={() => void toggleQuestionSavedForReview(question.id)}
                                 className="text-gray-400 hover:text-amber-500 transition-colors p-2"
-                                title="إضافة للمفضلة"
+                                title="مراجعة لاحقًا"
                               >
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill={favorites.includes(question.id) ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill={flaggedQuestionIds.includes(question.id) ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
                               </button>
                             </div>
                             {question.imageUrl && (
@@ -2117,7 +2150,7 @@ export const QuizPage: React.FC = () => {
                                 />
                               </button>
                             )}
-                            <div className={`grid ${getQuizOptionGridClass(question.options, activeOptionLayout)} gap-2`}>
+                            <div className={`grid ${reviewImageQuestion ? 'grid-cols-4' : getQuizOptionGridClass(question.options, activeOptionLayout)} gap-2`}>
                               {question.options.map((option, optionIndex) => {
                                 let bgClass = 'bg-gray-50 border-gray-200';
                                 let helperLabel = '';
@@ -2135,15 +2168,21 @@ export const QuizPage: React.FC = () => {
                                 }
 
                                 return (
-                                  <div key={optionIndex} className={`${getQuizOptionButtonHeightClass(question.options, activeOptionLayout)} p-2 rounded-xl border flex items-center justify-between gap-2 ${bgClass}`}>
-                                    <div className={`w-4 h-4 rounded-full border flex items-center justify-center shrink-0 ${
-                                      optionIndex === question.correctOptionIndex ? 'border-emerald-500 bg-emerald-500' :
-                                      optionIndex === userAnswer ? 'border-red-500 bg-red-500' : 'border-gray-300'
-                                    }`}>
-                                      {(optionIndex === question.correctOptionIndex || optionIndex === userAnswer) && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
-                                    </div>
+                                  <div key={optionIndex} className={`${reviewImageQuestion ? 'min-h-[44px]' : getQuizOptionButtonHeightClass(question.options, activeOptionLayout)} p-2 rounded-xl border flex items-center ${reviewImageQuestion ? 'justify-center' : 'justify-between'} gap-2 ${bgClass}`}>
+                                    {!reviewImageQuestion ? (
+                                      <div className={`w-4 h-4 rounded-full border flex items-center justify-center shrink-0 ${
+                                        optionIndex === question.correctOptionIndex ? 'border-emerald-500 bg-emerald-500' :
+                                        optionIndex === userAnswer ? 'border-red-500 bg-red-500' : 'border-gray-300'
+                                      }`}>
+                                        {(optionIndex === question.correctOptionIndex || optionIndex === userAnswer) && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
+                                      </div>
+                                    ) : null}
                                     <div className="min-w-0 flex-1 text-center">
-                                      <span className="question-html block break-words text-sm font-bold leading-6" dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(option) }} />
+                                                                            {reviewImageQuestion ? (
+                                        <span className="block text-lg font-black leading-6">{getLearnerOptionLabel(question, option, optionIndex)}</span>
+                                      ) : (
+                                        <span className="question-html block break-words text-sm font-bold leading-6" dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(option) }} />
+                                      )}
                                       {helperLabel ? <span className="mt-1 inline-flex rounded-full bg-white px-2 py-0.5 text-[11px] font-black">{helperLabel}</span> : null}
                                     </div>
                                   </div>

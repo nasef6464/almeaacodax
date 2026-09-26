@@ -10,6 +10,7 @@ import { ReviewCardModel } from "../models/ReviewCard.js";
 import { SkillProgressModel } from "../models/SkillProgress.js";
 import { SubjectModel } from "../models/Subject.js";
 import { updateSkillProgressFromQuestionAttempt } from "../modules/quizzes/application/quizSubmissionSideEffects.js";
+import { normalizeQuestionOptions } from "../modules/quizzes/presentation/reviewQuestionPresentation.js";
 import { sm2 } from "../services/spacedRepetition.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
@@ -74,6 +75,7 @@ reviewRouter.get(
     const cards = await ReviewCardModel.find({
       userId,
       nextReviewDate: { $lte: now },
+      reviewType: { $ne: "saved_review" },
       ...(query.pathId ? { pathId: query.pathId } : {}),
       ...(query.subjectId ? { subjectId: query.subjectId } : {}),
     })
@@ -84,7 +86,7 @@ reviewRouter.get(
     const questionIds = cards.map((card: any) => String(card.questionId || "")).filter(Boolean);
     const questions = questionIds.length
       ? await QuestionModel.find(buildQuestionBatchQuery(questionIds))
-          .select("id text options imageUrl type skillIds")
+          .select("id questionCode text options correctOptionIndex explanation hint solvingStrategy videoUrl imageUrl imageAlt optionsEmbeddedInImage aiContext voiceExplanation type skillIds")
           .lean()
       : [];
     const questionById = new Map<string, any>();
@@ -115,8 +117,18 @@ reviewRouter.get(
           question: {
             id: String(question.id || question._id),
             text: String(question.text || ""),
-            options: Array.isArray(question.options) ? question.options.map(String) : [],
+            options: normalizeQuestionOptions(question),
             imageUrl: String(question.imageUrl || ""),
+            imageAlt: String(question.imageAlt || ""),
+            questionCode: String(question.questionCode || ""),
+            correctOptionIndex: Number(question.correctOptionIndex ?? 0),
+            explanation: String(question.explanation || ""),
+            hint: String(question.hint || ""),
+            solvingStrategy: String(question.solvingStrategy || ""),
+            videoUrl: String(question.videoUrl || ""),
+            optionsEmbeddedInImage: Boolean(question.optionsEmbeddedInImage),
+            aiContext: question.aiContext || undefined,
+            voiceExplanation: question.voiceExplanation || undefined,
             type: String(question.type || "mcq"),
             skillIds: Array.isArray(question.skillIds) ? question.skillIds.map(String) : [],
           },
@@ -205,6 +217,7 @@ reviewRouter.post(
           lastQuality: Number(quality ?? 0),
           ...(eventId ? { lastReviewEventId: eventId } : {}),
           lastReviewedAt: new Date(),
+          ...(isCorrect === false ? { hasMistake: true } : {}),
         },
       },
       { new: true },
@@ -239,7 +252,7 @@ reviewRouter.post(
           subjectId: String(card.subjectId || question.subjectId || question.subject || ""),
           sectionId: String(card.sectionId || question.sectionId || ""),
           skillIds: Array.isArray(question.skillIds) ? question.skillIds.map(String) : [],
-          evidenceType: "mastery_review",
+          evidenceType: String(card.reviewType || "") === "mastery_review" ? "mastery_review" : "remediation",
         });
         await updateSkillProgressFromQuestionAttempt(attempt, userId);
       } catch (error) {
@@ -282,10 +295,11 @@ reviewRouter.get(
       ...(query.subjectId ? { subjectId: query.subjectId } : {}),
     };
 
+    const spacedScope = { ...scope, reviewType: { $ne: "saved_review" } };
     const [dueToday, dueThisWeek, totalCards, masteryReviewDue] = await Promise.all([
-      ReviewCardModel.countDocuments({ ...scope, nextReviewDate: { $lte: now } }),
-      ReviewCardModel.countDocuments({ ...scope, nextReviewDate: { $lte: weekEnd } }),
-      ReviewCardModel.countDocuments(scope),
+      ReviewCardModel.countDocuments({ ...spacedScope, nextReviewDate: { $lte: now } }),
+      ReviewCardModel.countDocuments({ ...spacedScope, nextReviewDate: { $lte: weekEnd } }),
+      ReviewCardModel.countDocuments(spacedScope),
       ReviewCardModel.countDocuments({ ...scope, reviewType: "mastery_review", nextReviewDate: { $lte: now } }),
     ]);
 

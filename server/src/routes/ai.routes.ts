@@ -12,6 +12,7 @@ import { SkillModel } from "../models/Skill.js";
 import { UserModel } from "../models/User.js";
 import { QuizModel } from "../models/Quiz.js";
 import { QuestionModel } from "../models/Question.js";
+import { ReviewCardModel } from "../models/ReviewCard.js";
 import { createOperationsAudit } from "../services/operationsAudit.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { decryptIntegrationSecretsForRuntime } from "../utils/integrationSecretsCrypto.js";
@@ -28,16 +29,62 @@ import {
   recordAiProviderFailure,
   recordAiProviderSuccess,
 } from "../modules/ai/application/providerCircuitBreaker.js";
+import {
+  AI_CHAT_IMAGE_MAX_BYTES,
+  AI_DEFAULT_MAX_OUTPUT_TOKENS,
+  AI_GUEST_EXTERNAL_ENABLED,
+  AI_VISION_DAILY_LIMIT,
+  estimateBase64DecodedBytes,
+  isExplicitLocalProviderConfigured,
+} from "../modules/ai/application/aiCapabilityPolicy.js";
+import { createRuntimeConfigCache } from "../modules/ai/application/aiRuntimeConfigCache.js";
+import { buildStudentTutorContext, buildStudentTutorLinks, type StudentTutorContext } from "../modules/ai/application/studentTutorContext.js";
+import { estimateAiCostMicrosUsd, readAiPricingHint, type AiPricingHint } from "../modules/ai/application/aiCostEstimator.js";
+import { incrementAiUsageDaily, readAiUsageDaily, utcDayKey } from "../modules/ai/application/aiUsageDaily.js";
+import { buildProviderPriority, type AiProviderId } from "../modules/ai/application/aiProviderRouter.js";
+import {
+  applyCapabilityProviderOrder,
+  capabilityPaidAllowed,
+  isPaidByDefaultProvider,
+  parseAiRouteProfiles,
+  type AiCapabilityId,
+  type AiRouteProfile,
+} from "../modules/ai/application/aiCapabilityRouting.js";
+import {
+  normalizeAiQuotaPlan,
+  normalizeAiQuotaScope,
+  quotaPoolIsFreeFirst,
+  sortAiQuotaPools,
+  type AiQuotaPoolRuntime,
+} from "../modules/ai/application/aiQuotaPools.js";
+import {
+  createAiProviderAdapters,
+  type AiProviderCallOptions,
+  type AiProviderUsage,
+  type AiResponseMimeType,
+} from "../modules/ai/infrastructure/providers/aiProviderAdapters.js";
 import { buildDocumentsByIdsQuery } from "../modules/quizzes/infrastructure/quizDocumentQuery.js";
 
 const imageInputSchema = z.object({
   data: z.string().min(1),
   mimeType: z.string().regex(/^image\/(png|jpeg|webp|gif|svg\+xml)$/),
+}).superRefine((value, ctx) => {
+  const decodedBytes = estimateBase64DecodedBytes(value.data);
+  if (decodedBytes > AI_CHAT_IMAGE_MAX_BYTES) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["data"],
+      message: `AI chat image exceeds the allowed size of ${AI_CHAT_IMAGE_MAX_BYTES} bytes`,
+    });
+  }
 }).optional();
+
+const tutorSessionIdSchema = z.string().trim().min(8).max(120).regex(/^[A-Za-z0-9:_-]+$/).optional();
 
 const chatSchema = z.object({
   message: z.string().min(1).max(2000),
   image: imageInputSchema,
+  tutorSessionId: tutorSessionIdSchema,
 });
 
 const adminAssistantSchema = z.object({
@@ -46,6 +93,7 @@ const adminAssistantSchema = z.object({
 
 const providerTestSchema = z.object({
   provider: z.enum(["gemini", "openrouter", "deepseek", "qwen", "openai", "ollama", "lmstudio"]),
+  quotaPoolId: z.string().trim().min(1).max(180).optional(),
 });
 
 const studyPlanSchema = z.object({
@@ -66,10 +114,12 @@ const questionSchema = z.object({
 });
 
 const questionAssistantSchema = z.object({
-  resultId: z.string().trim().min(1).max(160),
+  resultId: z.string().trim().min(1).max(160).optional(),
+  context: z.enum(["result_review", "saved_review", "mistake_review", "mastery_review"]).default("result_review"),
   questionId: z.string().trim().min(1).max(160),
   helpLevel: z.enum(["hint", "stronger_hint", "concept", "steps", "follow_up"]).default("hint"),
   message: z.string().trim().max(800).optional().default(""),
+  tutorSessionId: tutorSessionIdSchema,
 });
 
 const courseSummarySchema = z.object({
@@ -82,14 +132,7 @@ const generateMockExamSchema = z.object({
   weakSkills: z.array(z.string().min(1).max(120)).default([]),
 });
 
-type AiResponseMimeType = "application/json";
-type AiProvider = "gemini" | "openrouter" | "deepseek" | "qwen" | "openai" | "ollama" | "lmstudio" | "none";
-
-type StudentAiContext = {
-  summary: string;
-  weaknesses: Array<{ skill: string; mastery: number; status: string; action: string }>;
-  recentResults: Array<{ title: string; score: number; totalQuestions: number; wrongAnswers: number }>;
-};
+type AiProvider = AiProviderId;
 
 type ProviderDescriptor = {
   id: AiProvider;
@@ -100,6 +143,8 @@ type ProviderDescriptor = {
   category: "free-friendly" | "paid" | "local" | "fallback";
   envKeys: string[];
   note: string;
+  quotaPoolCount?: number;
+  freeQuotaPoolCount?: number;
 };
 
 type AiCallResult = {
@@ -108,7 +153,19 @@ type AiCallResult = {
   model: string;
   usedFallback: boolean;
   errors: string[];
+  usage: AiProviderUsage;
+  estimatedCostMicrosUsd: number;
+  pricingKnown: boolean;
+  quotaPoolId?: string;
 };
+
+const zeroAiUsage = (): AiProviderUsage => ({
+  inputTokens: 0,
+  outputTokens: 0,
+  totalTokens: 0,
+  cachedTokens: 0,
+  estimated: false,
+});
 
 const redactAiDiagnostic = (value: unknown) =>
   String(value || "")
@@ -131,6 +188,8 @@ type ProviderRuntime = {
   baseUrl?: string;
   enabled?: boolean;
   source: "env" | "admin";
+  pricing?: AiPricingHint;
+  quotaPools?: AiQuotaPoolRuntime[];
 };
 
 type AiRuntimeConfig = {
@@ -138,6 +197,9 @@ type AiRuntimeConfig = {
   providerOrder: string;
   providerOrderSource: "env" | "admin";
   routingMode: "manual" | "auto";
+  dailySpendCapUsd: number;
+  paidAllowed: boolean;
+  routeProfiles: Partial<Record<AiCapabilityId, AiRouteProfile>>;
   providers: Record<Exclude<AiProvider, "none">, ProviderRuntime>;
 };
 
@@ -188,11 +250,60 @@ const readProviderKeyHints = (item: Record<string, unknown>) => {
   return uniqueNonEmpty([item.apiKey, item.apiSecret, ...directKeys, ...noteKeys, ...commaKeys]);
 };
 
+const providerExternalId = (provider: Exclude<AiProvider, "none">) => `ai-${provider}`;
+
+const readExternalQuotaPools = (
+  provider: Exclude<AiProvider, "none">,
+  externalPlatforms: Array<Record<string, unknown>>,
+  fallbackModel: string,
+) => {
+  const baseId = providerExternalId(provider);
+  const matches = externalPlatforms.filter((item) => {
+    const id = String(item?.id || "").trim().toLowerCase();
+    return item?.enabled === true && (id === baseId || id.startsWith(`${baseId}-`));
+  });
+
+  const pools = matches
+    .map((item, index): AiQuotaPoolRuntime | null => {
+      const id = String(item.id || "").trim().toLowerCase();
+      const note = readJsonObject(item.note);
+      const apiKeys = readProviderKeyHints(item);
+      if (apiKeys.length === 0) return null;
+
+      const model = normalizeProviderModel(provider, readModelHint(item.note, fallbackModel));
+      const pricing = readAiPricingHint(note);
+      const poolId = String(note.quotaPoolId || note.projectId || id || `${baseId}-pool-${index + 1}`).trim();
+      const priorityRaw = Number(note.priority ?? index + 1);
+      const priority = Number.isFinite(priorityRaw) ? priorityRaw : index + 1;
+
+      return {
+        id: poolId,
+        label: String(note.poolLabel || item.name || poolId).trim(),
+        accountLabel: String(note.accountLabel || "").trim(),
+        projectLabel: String(note.projectLabel || note.projectId || "").trim(),
+        plan: normalizeAiQuotaPlan(note.plan),
+        quotaScope: normalizeAiQuotaScope(note.quotaScope),
+        apiKeys,
+        model,
+        baseUrl: String(item.baseUrl || "").trim() || undefined,
+        priority,
+        freeOnly: note.freeOnly === true,
+        ...(pricing ? { pricing } : {}),
+      };
+    })
+    .filter((pool): pool is AiQuotaPoolRuntime => Boolean(pool));
+
+  return sortAiQuotaPools(pools);
+};
+
 const defaultAiRuntimeConfig = (): AiRuntimeConfig => ({
   provider: env.AI_PROVIDER,
   providerOrder: env.AI_PROVIDER_ORDER,
   providerOrderSource: "env",
   routingMode: "manual",
+  dailySpendCapUsd: 0,
+  paidAllowed: false,
+  routeProfiles: {},
   providers: {
     gemini: { apiKey: env.GEMINI_API_KEY, model: env.GEMINI_MODEL, source: "env" },
     openrouter: { apiKey: env.OPENROUTER_API_KEY, model: env.OPENROUTER_MODEL, baseUrl: "https://openrouter.ai/api/v1", source: "env" },
@@ -206,7 +317,7 @@ const defaultAiRuntimeConfig = (): AiRuntimeConfig => ({
 
 let runtimeAiConfig: AiRuntimeConfig = defaultAiRuntimeConfig();
 
-const loadRuntimeAiConfig = async () => {
+const loadRuntimeAiConfigUncached = async () => {
   const next = defaultAiRuntimeConfig();
   const settings = await PlatformIntegrationSettingsModel.findOne({ key: "default" }).lean();
   const runtimeSettings = settings
@@ -222,17 +333,32 @@ const loadRuntimeAiConfig = async () => {
     if (id) byId.set(id, item);
   });
 
-  const applyExternal = (provider: Exclude<AiProvider, "none">, externalId: string, fallbackModel: string) => {
+  const applyExternalPools = (provider: Exclude<AiProvider, "none">, fallbackModel: string) => {
+    const quotaPools = readExternalQuotaPools(provider, externalPlatforms, fallbackModel);
+    if (!quotaPools.length) return;
+
+    const primaryPool = quotaPools[0];
+    const apiKeys = uniqueNonEmpty(quotaPools.flatMap((pool) => pool.apiKeys));
+    next.providers[provider] = {
+      ...next.providers[provider],
+      apiKey: apiKeys[0] || "",
+      apiKeys,
+      quotaPools,
+      model: primaryPool.model,
+      ...(primaryPool.baseUrl ? { baseUrl: primaryPool.baseUrl } : {}),
+      ...(primaryPool.pricing ? { pricing: primaryPool.pricing } : {}),
+      enabled: true,
+      source: "admin",
+    };
+  };
+
+  const applyLocalExternal = (provider: "ollama" | "lmstudio", externalId: string, fallbackModel: string) => {
     const item = byId.get(externalId);
     if (!item || item.enabled !== true) return;
-    const apiKeys = readProviderKeyHints(item);
-    const apiKey = apiKeys[0] || "";
     const baseUrl = String(item.baseUrl || "").trim();
     const model = normalizeProviderModel(provider, readModelHint(item.note, fallbackModel));
     next.providers[provider] = {
       ...next.providers[provider],
-      ...(apiKey ? { apiKey } : {}),
-      ...(apiKeys.length ? { apiKeys } : {}),
       ...(baseUrl ? { baseUrl } : {}),
       model,
       enabled: true,
@@ -244,6 +370,10 @@ const loadRuntimeAiConfig = async () => {
   if (global) {
     const globalNote = readJsonObject(global.note);
     const rawPreferredProvider = String(globalNote.provider || global.note || "").trim().toLowerCase();
+    const dailySpendCapUsd = Math.max(0, Number(globalNote.dailySpendCapUsd || 0));
+    if (Number.isFinite(dailySpendCapUsd)) next.dailySpendCapUsd = dailySpendCapUsd;
+    next.paidAllowed = globalNote.paidAllowed === true;
+    next.routeProfiles = parseAiRouteProfiles(globalNote.routeProfiles);
     const routingMode = String(globalNote.mode || (rawPreferredProvider === "auto" ? "auto" : "manual")).trim().toLowerCase();
     if (routingMode === "auto") {
       next.provider = undefined;
@@ -260,22 +390,37 @@ const loadRuntimeAiConfig = async () => {
     }
   }
 
-  applyExternal("gemini", "ai-gemini", next.providers.gemini.model);
-  applyExternal("openrouter", "ai-openrouter", next.providers.openrouter.model);
-  applyExternal("deepseek", "ai-deepseek", next.providers.deepseek.model);
-  applyExternal("qwen", "ai-qwen", next.providers.qwen.model);
-  applyExternal("openai", "ai-openai", next.providers.openai.model);
-  applyExternal("ollama", "ai-ollama", next.providers.ollama.model);
-  applyExternal("lmstudio", "ai-lmstudio", next.providers.lmstudio.model);
+  applyExternalPools("gemini", next.providers.gemini.model);
+  applyExternalPools("openrouter", next.providers.openrouter.model);
+  applyExternalPools("deepseek", next.providers.deepseek.model);
+  applyExternalPools("qwen", next.providers.qwen.model);
+  applyExternalPools("openai", next.providers.openai.model);
+  applyLocalExternal("ollama", "ai-ollama", next.providers.ollama.model);
+  applyLocalExternal("lmstudio", "ai-lmstudio", next.providers.lmstudio.model);
 
   runtimeAiConfig = next;
   return runtimeAiConfig;
 };
 
+const runtimeAiConfigCache = createRuntimeConfigCache(loadRuntimeAiConfigUncached);
+const loadRuntimeAiConfig = async (force = false) => runtimeAiConfigCache.get(force);
+
 const isOllamaExplicitlyConfigured = () =>
-  Boolean(runtimeAiConfig.provider === "ollama" || runtimeAiConfig.providers.ollama.baseUrl || runtimeAiConfig.providers.ollama.model);
+  isExplicitLocalProviderConfigured({
+    provider: "ollama",
+    source: runtimeAiConfig.providers.ollama.source,
+    enabled: runtimeAiConfig.providers.ollama.enabled,
+    baseUrl: runtimeAiConfig.providers.ollama.baseUrl,
+    model: runtimeAiConfig.providers.ollama.model,
+  });
 const isLmStudioExplicitlyConfigured = () =>
-  Boolean(runtimeAiConfig.provider === "lmstudio" || runtimeAiConfig.providers.lmstudio.baseUrl || runtimeAiConfig.providers.lmstudio.model);
+  isExplicitLocalProviderConfigured({
+    provider: "lmstudio",
+    source: runtimeAiConfig.providers.lmstudio.source,
+    enabled: runtimeAiConfig.providers.lmstudio.enabled,
+    baseUrl: runtimeAiConfig.providers.lmstudio.baseUrl,
+    model: runtimeAiConfig.providers.lmstudio.model,
+  });
 
 const configuredProviders = (): ProviderDescriptor[] => [
   {
@@ -284,6 +429,8 @@ const configuredProviders = (): ProviderDescriptor[] => [
     model: runtimeAiConfig.providers.gemini.model,
     configured: Boolean(runtimeAiConfig.providers.gemini.apiKey || runtimeAiConfig.providers.gemini.apiKeys?.length),
     source: runtimeAiConfig.providers.gemini.source,
+    quotaPoolCount: runtimeAiConfig.providers.gemini.quotaPools?.length || 0,
+    freeQuotaPoolCount: (runtimeAiConfig.providers.gemini.quotaPools || []).filter(quotaPoolIsFreeFirst).length,
     category: "free-friendly",
     envKeys: ["AI_PROVIDER_ORDER", "GEMINI_API_KEY", "GEMINI_MODEL"],
     note: "مناسب كبداية مجانية أو منخفضة التكلفة حسب حدود حساب Google AI Studio.",
@@ -294,6 +441,8 @@ const configuredProviders = (): ProviderDescriptor[] => [
     model: runtimeAiConfig.providers.openrouter.model,
     configured: Boolean(runtimeAiConfig.providers.openrouter.apiKey || runtimeAiConfig.providers.openrouter.apiKeys?.length),
     source: runtimeAiConfig.providers.openrouter.source,
+    quotaPoolCount: runtimeAiConfig.providers.openrouter.quotaPools?.length || 0,
+    freeQuotaPoolCount: (runtimeAiConfig.providers.openrouter.quotaPools || []).filter(quotaPoolIsFreeFirst).length,
     category: "free-friendly",
     envKeys: ["AI_PROVIDER_ORDER", "OPENROUTER_API_KEY", "OPENROUTER_MODEL"],
     note: "يدعم موديلات كثيرة ومنها Qwen وDeepSeek وبعض النماذج المجانية عند توفرها.",
@@ -304,6 +453,8 @@ const configuredProviders = (): ProviderDescriptor[] => [
     model: runtimeAiConfig.providers.deepseek.model,
     configured: Boolean(runtimeAiConfig.providers.deepseek.apiKey || runtimeAiConfig.providers.deepseek.apiKeys?.length),
     source: runtimeAiConfig.providers.deepseek.source,
+    quotaPoolCount: runtimeAiConfig.providers.deepseek.quotaPools?.length || 0,
+    freeQuotaPoolCount: (runtimeAiConfig.providers.deepseek.quotaPools || []).filter(quotaPoolIsFreeFirst).length,
     category: "paid",
     envKeys: ["AI_PROVIDER_ORDER", "DEEPSEEK_API_KEY", "DEEPSEEK_MODEL"],
     note: "قوي ورخيص عادة، مناسب لمساعد المدير والتحليلات الطويلة.",
@@ -314,6 +465,8 @@ const configuredProviders = (): ProviderDescriptor[] => [
     model: runtimeAiConfig.providers.qwen.model,
     configured: Boolean(runtimeAiConfig.providers.qwen.apiKey || runtimeAiConfig.providers.qwen.apiKeys?.length),
     source: runtimeAiConfig.providers.qwen.source,
+    quotaPoolCount: runtimeAiConfig.providers.qwen.quotaPools?.length || 0,
+    freeQuotaPoolCount: (runtimeAiConfig.providers.qwen.quotaPools || []).filter(quotaPoolIsFreeFirst).length,
     category: "free-friendly",
     envKeys: ["AI_PROVIDER_ORDER", "QWEN_API_KEY", "QWEN_MODEL", "QWEN_BASE_URL"],
     note: "خيار صيني ممتاز، وغالبا مناسب للتجارب والحصص المجانية حسب الحساب.",
@@ -324,6 +477,8 @@ const configuredProviders = (): ProviderDescriptor[] => [
     model: runtimeAiConfig.providers.openai.model,
     configured: Boolean(runtimeAiConfig.providers.openai.apiKey || runtimeAiConfig.providers.openai.apiKeys?.length),
     source: runtimeAiConfig.providers.openai.source,
+    quotaPoolCount: runtimeAiConfig.providers.openai.quotaPools?.length || 0,
+    freeQuotaPoolCount: (runtimeAiConfig.providers.openai.quotaPools || []).filter(quotaPoolIsFreeFirst).length,
     category: "paid",
     envKeys: ["AI_PROVIDER_ORDER", "OPENAI_API_KEY", "OPENAI_MODEL"],
     note: "مناسب عند الحاجة لجودة واستقرار أعلى، وغالبا يكون مدفوعا حسب الاستهلاك.",
@@ -360,15 +515,32 @@ const configuredProviders = (): ProviderDescriptor[] => [
   },
 ];
 
-const providerPriority = () => {
-  const fromEnv = runtimeAiConfig.providerOrder.split(",")
-    .map((value) => value.trim().toLowerCase() as AiProvider)
-    .filter(Boolean);
-  const preferred = runtimeAiConfig.provider ? [runtimeAiConfig.provider] : [];
-  const defaults: AiProvider[] = ["gemini", "openrouter", "qwen", "deepseek", "openai", "ollama", "lmstudio", "none"];
-  return [...new Set([...preferred, ...fromEnv, ...defaults])].filter((provider) =>
-    configuredProviders().some((candidate) => candidate.id === provider),
-  );
+const providerPriority = () =>
+  buildProviderPriority({
+    preferred: runtimeAiConfig.provider,
+    configuredOrder: runtimeAiConfig.providerOrder,
+    availableProviders: configuredProviders().map((candidate) => candidate.id),
+  });
+
+const providerAllowedForCapability = (provider: AiProvider, capability?: AiCapabilityId) => {
+  if (capability === "vision_chat") return provider === "gemini" || provider === "none";
+  if (provider === "none" || provider === "ollama" || provider === "lmstudio") return true;
+  const profile = capability ? runtimeAiConfig.routeProfiles[capability] : undefined;
+  const allowPaid = capabilityPaidAllowed(runtimeAiConfig.paidAllowed, profile);
+  if (allowPaid) return true;
+
+  const pools = runtimeAiConfig.providers[provider].quotaPools || [];
+  if (pools.length > 0) {
+    return pools.some((pool) => pool.plan !== "paid");
+  }
+
+  return !isPaidByDefaultProvider(provider);
+};
+
+const providerPriorityForCapability = (capability?: AiCapabilityId) => {
+  const profile = capability ? runtimeAiConfig.routeProfiles[capability] : undefined;
+  return applyCapabilityProviderOrder(providerPriority(), profile)
+    .filter((provider) => providerAllowedForCapability(provider, capability));
 };
 
 const ARABIC_TUTOR_RULES = `
@@ -451,69 +623,7 @@ const buildTutorFallback = (message: string) => {
   ].join("\n");
 };
 
-const buildStudentAiContext = async (userId?: string | null): Promise<StudentAiContext | null> => {
-  if (!userId) return null;
-  const normalizedUserId = String(userId);
-
-  const [user, weaknesses, recentResults] = await Promise.all([
-    (mongoose.isValidObjectId(normalizedUserId)
-      ? UserModel.findById(normalizedUserId)
-      : UserModel.findOne({ id: normalizedUserId }))
-      .select("id name role subscription completedLessons enrolledPaths")
-      .lean(),
-    SkillProgressModel.find({ userId: normalizedUserId, status: { $in: ["weak", "average"] } })
-      .sort({ mastery: 1, lastAttemptAt: -1 })
-      .limit(6)
-      .lean(),
-    QuizResultModel.find({ userId: normalizedUserId }).sort({ createdAt: -1 }).limit(3).lean(),
-  ]);
-
-  if (!user || user.role !== "student") return null;
-
-  const progressWeakSkillRows = weaknesses.map((item) => ({
-    skill: String(item.skill || "مهارة تحتاج مراجعة"),
-    mastery: Number(item.mastery || 0),
-    status: String(item.status || "weak"),
-    action: String(item.recommendedAction || "راجع شرحا قصيرا ثم حل تدريبا متدرجا."),
-  }));
-  const resultRows = recentResults.map((item) => ({
-    title: String(item.quizTitle || "اختبار سابق"),
-    score: Number(item.score || 0),
-    totalQuestions: Number(item.totalQuestions || 0),
-    wrongAnswers: Number(item.wrongAnswers || 0),
-  }));
-  const resultWeakSkillRows = recentResults
-    .flatMap((item) => (Array.isArray(item.skillsAnalysis) ? item.skillsAnalysis : []))
-    .filter((item) => String(item?.status || "") === "weak" || String(item?.status || "") === "average" || Number(item?.mastery || 0) < 75)
-    .map((item) => ({
-      skill: String(item.skill || item.name || "مهارة تحتاج مراجعة"),
-      mastery: Number(item.mastery || 0),
-      status: String(item.status || "weak"),
-      action: String(item.recommendation || "راجع شرحا قصيرا ثم حل تدريبا متدرجا."),
-    }));
-  const weakSkillRows = progressWeakSkillRows.length ? progressWeakSkillRows : resultWeakSkillRows;
-
-  const summaryLines = [
-    `اسم الطالب: ${String(user.name || "طالب")}`,
-    weakSkillRows.length
-      ? `أضعف المهارات الحالية: ${weakSkillRows
-          .map((item) => `${item.skill} (${item.mastery}%)`)
-          .join("، ")}`
-      : "لا توجد مهارات ضعيفة مسجلة حتى الآن.",
-    resultRows.length
-      ? `آخر النتائج: ${resultRows.map((item) => `${item.title}: ${item.score}%`).join("، ")}`
-      : "لا توجد نتائج اختبارات حديثة.",
-    `الدروس المكتملة: ${Array.isArray(user.completedLessons) ? user.completedLessons.length : 0}`,
-  ];
-
-  return {
-    summary: summaryLines.join("\n"),
-    weaknesses: weakSkillRows,
-    recentResults: resultRows,
-  };
-};
-
-const buildPersonalizedTutorFallback = (message: string, context: StudentAiContext | null) => {
+const buildPersonalizedTutorFallback = (message: string, context: StudentTutorContext | null) => {
   const base = buildTutorFallback(message);
   if (!context) return base;
 
@@ -566,6 +676,9 @@ const recordAiInteraction = async (payload: {
   error?: string;
   schoolId?: string;
   metadata?: Record<string, unknown>;
+  usage?: AiProviderUsage;
+  estimatedCostMicrosUsd?: number;
+  pricingKnown?: boolean;
 }) => {
   try {
     const role = String(payload.req.authUser?.role || payload.audience || "guest");
@@ -586,8 +699,31 @@ const recordAiInteraction = async (payload: {
       schoolId: payload.schoolId || "",
       userEmail: payload.req.authUser?.email || "",
       role,
+      inputTokens: Number(payload.usage?.inputTokens || 0),
+      outputTokens: Number(payload.usage?.outputTokens || 0),
+      totalTokens: Number(payload.usage?.totalTokens || 0),
+      cachedTokens: Number(payload.usage?.cachedTokens || 0),
+      usageEstimated: Boolean(payload.usage?.estimated),
+      estimatedCostMicrosUsd: Math.max(0, Number(payload.estimatedCostMicrosUsd || 0)),
+      pricingKnown: Boolean(payload.pricingKnown),
+      retentionUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
       metadata: payload.metadata || {},
     });
+
+    if (payload.metadata?.billable !== false) {
+      await incrementAiUsageDaily({
+        endpoint: payload.endpoint,
+        capability: String(payload.metadata?.capability || payload.endpoint || "").trim() || undefined,
+        userId: String(payload.req.authUser?.id || "").trim() || undefined,
+        schoolId: String(payload.schoolId || payload.req.authUser?.schoolId || "").trim() || undefined,
+        inputTokens: Number(payload.usage?.inputTokens || 0),
+        outputTokens: Number(payload.usage?.outputTokens || 0),
+        totalTokens: Number(payload.usage?.totalTokens || 0),
+        cachedTokens: Number(payload.usage?.cachedTokens || 0),
+        usageEstimated: Boolean(payload.usage?.estimated),
+        estimatedCostMicrosUsd: Math.max(0, Number(payload.estimatedCostMicrosUsd || 0)),
+      });
+    }
   } catch (error) {
     if (process.env.NODE_ENV !== "test") {
       console.warn("Failed to record AI interaction", error);
@@ -596,266 +732,40 @@ const recordAiInteraction = async (payload: {
 };
 
 const resolveProvider = (): AiProvider =>
-  providerPriority().find((provider) => provider !== "none" && configuredProviders().find((candidate) => candidate.id === provider)?.configured) ||
-  "none";
+  providerPriorityForCapability("student_chat").find(
+    (provider) => provider !== "none" && configuredProviders().find((candidate) => candidate.id === provider)?.configured,
+  ) || "none";
 
-type AiCallOptions = {
-  timeoutMs?: number;
-  maxOutputTokens?: number;
-};
+const aiProviderAdapters = createAiProviderAdapters({
+  getProviderRuntime: (provider) => runtimeAiConfig.providers[provider],
+  defaultTimeoutMs: env.AI_REQUEST_TIMEOUT_MS,
+  clientUrl: env.CLIENT_URL,
+  qwenBaseUrl: env.QWEN_BASE_URL,
+  redactDiagnostic: redactAiDiagnostic,
+});
 
-const isPrivateIpv4 = (hostname: string) => {
-  const parts = hostname.split(".").map((part) => Number(part));
-  if (parts.length !== 4 || parts.some((part) => !Number.isInteger(part) || part < 0 || part > 255)) return false;
-  const [a, b] = parts;
-  return a === 10
-    || a === 127
-    || (a === 169 && b === 254)
-    || (a === 172 && b >= 16 && b <= 31)
-    || (a === 192 && b === 168)
-    || a === 0;
-};
-
-const assertSafeAiProviderUrl = (rawUrl: string) => {
-  let parsed: URL;
-  try {
-    parsed = new URL(rawUrl);
-  } catch {
-    throw new Error("AI provider URL is invalid");
-  }
-
-  const hostname = parsed.hostname.toLowerCase().replace(/\.$/, "");
-  const isLocalHost = hostname === "localhost" || hostname.endsWith(".localhost");
-  const isPrivateIpv6 = hostname === "::1"
-    || hostname === "[::1]"
-    || hostname.startsWith("fc")
-    || hostname.startsWith("fd")
-    || hostname.startsWith("fe8")
-    || hostname.startsWith("fe9")
-    || hostname.startsWith("fea")
-    || hostname.startsWith("feb");
-
-  if (parsed.protocol !== "https:" || isLocalHost || isPrivateIpv4(hostname) || isPrivateIpv6) {
-    throw new Error("AI provider URL must use HTTPS and a public host");
-  }
-};
-
-const fetchWithTimeout = async (url: string, init: RequestInit, timeoutMs = env.AI_REQUEST_TIMEOUT_MS) => {
-  assertSafeAiProviderUrl(url);
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
-
-  try {
-    return await fetch(url, { ...init, signal: controller.signal });
-  } finally {
-    clearTimeout(timeoutId);
-  }
-};
-
-const responseFailureMessage = async (provider: string, response: Response) => {
-  const body = await response.text().catch(() => "");
-  return `${provider} request failed with status ${response.status}${body ? `: ${redactAiDiagnostic(body)}` : ""}`;
-};
-
-const providerKeys = (provider: Exclude<AiProvider, "none">) =>
-  uniqueNonEmpty([runtimeAiConfig.providers[provider].apiKey, ...(runtimeAiConfig.providers[provider].apiKeys || [])]);
-
-const callGemini = async (prompt: string, responseMimeType?: AiResponseMimeType, image?: { data: string; mimeType: string }, options: AiCallOptions = {}) => {
-  const apiKeys = providerKeys("gemini");
-  const model = runtimeAiConfig.providers.gemini.model;
-  if (apiKeys.length === 0) return "";
-
-  const parts: Array<Record<string, unknown>> = image
-    ? [
-        { inlineData: { mimeType: image.mimeType, data: image.data } },
-        { text: prompt },
-      ]
-    : [{ text: prompt }];
-
-  const errors: string[] = [];
-  for (const apiKey of apiKeys) {
-    try {
-      const response = await fetchWithTimeout(
-        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            contents: [{ parts }],
-            generationConfig: {
-              ...(responseMimeType ? { responseMimeType } : {}),
-              ...(options.maxOutputTokens ? { maxOutputTokens: options.maxOutputTokens } : {}),
-            },
-          }),
-        },
-        options.timeoutMs,
-      );
-
-      if (!response.ok) {
-        throw new Error(await responseFailureMessage("Gemini", response));
-      }
-
-      const payload = (await response.json()) as {
-        candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
-      };
-
-      const text = payload.candidates?.[0]?.content?.parts?.map((part) => part.text || "").join("\n").trim() || "";
-      if (text) return text;
-    } catch (error) {
-      errors.push(error instanceof Error ? error.message : "Gemini request failed");
-    }
-  }
-
-  if (errors.length) throw new Error(errors.join(" | "));
-  return "";
-};
-
-const callOllama = async (prompt: string, responseMimeType?: AiResponseMimeType, options: AiCallOptions = {}) => {
-  const baseUrl = String(runtimeAiConfig.providers.ollama.baseUrl || "").trim();
-  const model = runtimeAiConfig.providers.ollama.model;
-  if (!baseUrl || !model) return "";
-  const response = await fetchWithTimeout(
-    `${baseUrl.replace(/\/$/, "")}/api/generate`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model,
-        prompt,
-        stream: false,
-        format: responseMimeType === "application/json" ? "json" : undefined,
-        ...(options.maxOutputTokens ? { options: { num_predict: options.maxOutputTokens } } : {}),
-      }),
-    },
-    options.timeoutMs,
-  );
-
-  if (!response.ok) {
-    throw new Error(await responseFailureMessage("Ollama", response));
-  }
-
-  const payload = (await response.json()) as { response?: string };
-  return payload.response?.trim() || "";
-};
-
-const callLmStudio = async (prompt: string, responseMimeType?: AiResponseMimeType, options: AiCallOptions = {}) => {
-  const baseUrl = String(runtimeAiConfig.providers.lmstudio.baseUrl || "").trim();
-  const model = runtimeAiConfig.providers.lmstudio.model;
-  if (!baseUrl || !model) return "";
-  const response = await fetchWithTimeout(
-    `${baseUrl.replace(/\/$/, "")}/chat/completions`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model,
-        messages: [{ role: "user", content: prompt }],
-        temperature: 0.3,
-        response_format: responseMimeType === "application/json" ? { type: "json_object" } : undefined,
-        ...(options.maxOutputTokens ? { max_tokens: options.maxOutputTokens } : {}),
-      }),
-    },
-    options.timeoutMs,
-  );
-
-  if (!response.ok) {
-    throw new Error(await responseFailureMessage("LM Studio", response));
-  }
-
-  const payload = (await response.json()) as {
-    choices?: Array<{ message?: { content?: string } }>;
-  };
-
-  return payload.choices?.[0]?.message?.content?.trim() || "";
-};
-
-const callOpenAiCompatible = async (
-  provider: Exclude<AiProvider, "gemini" | "ollama" | "lmstudio" | "none">,
-  prompt: string,
-  responseMimeType?: AiResponseMimeType,
-  options: AiCallOptions = {},
-) => {
-  const settings: Record<typeof provider, { baseUrl: string; apiKeys: string[]; model: string; headers?: Record<string, string> }> = {
-    openrouter: {
-      baseUrl: runtimeAiConfig.providers.openrouter.baseUrl || "https://openrouter.ai/api/v1",
-      apiKeys: providerKeys("openrouter"),
-      model: runtimeAiConfig.providers.openrouter.model,
-      headers: {
-        "HTTP-Referer": env.CLIENT_URL,
-        "X-Title": "Almeaa Educational Platform",
-      },
-    },
-    deepseek: {
-      baseUrl: runtimeAiConfig.providers.deepseek.baseUrl || "https://api.deepseek.com",
-      apiKeys: providerKeys("deepseek"),
-      model: runtimeAiConfig.providers.deepseek.model,
-    },
-    qwen: {
-      baseUrl: runtimeAiConfig.providers.qwen.baseUrl || env.QWEN_BASE_URL,
-      apiKeys: providerKeys("qwen"),
-      model: runtimeAiConfig.providers.qwen.model,
-    },
-    openai: {
-      baseUrl: runtimeAiConfig.providers.openai.baseUrl || "https://api.openai.com/v1",
-      apiKeys: providerKeys("openai"),
-      model: runtimeAiConfig.providers.openai.model,
-    },
-  };
-  const selected = settings[provider];
-  if (selected.apiKeys.length === 0) return "";
-
-  const errors: string[] = [];
-  for (const apiKey of selected.apiKeys) {
-    try {
-      const response = await fetchWithTimeout(
-        `${selected.baseUrl.replace(/\/$/, "")}/chat/completions`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${apiKey}`,
-            ...(selected.headers || {}),
-          },
-          body: JSON.stringify({
-            model: selected.model,
-            messages: [{ role: "user", content: prompt }],
-            temperature: 0.25,
-            response_format: responseMimeType === "application/json" ? { type: "json_object" } : undefined,
-            ...(options.maxOutputTokens ? { max_tokens: options.maxOutputTokens } : {}),
-          }),
-        },
-        options.timeoutMs,
-      );
-
-      if (!response.ok) {
-        throw new Error(await responseFailureMessage(provider, response));
-      }
-
-      const payload = (await response.json()) as {
-        choices?: Array<{ message?: { content?: string } }>;
-      };
-
-      const text = payload.choices?.[0]?.message?.content?.trim() || "";
-      if (text) return text;
-    } catch (error) {
-      errors.push(error instanceof Error ? error.message : `${provider} request failed`);
-    }
-  }
-
-  if (errors.length) throw new Error(errors.join(" | "));
-  return "";
-};
+type AiGatewayCallOptions = AiProviderCallOptions & { capability?: AiCapabilityId };
 
 const callAiWithMeta = async (
   prompt: string,
   responseMimeType?: AiResponseMimeType,
   image?: { data: string; mimeType: string },
-  options: AiCallOptions = {},
+  options: AiGatewayCallOptions = {},
 ): Promise<AiCallResult> => {
   await loadRuntimeAiConfig();
   const errors: string[] = [];
+  const capability = options.capability;
+  const profile = capability ? runtimeAiConfig.routeProfiles[capability] : undefined;
+  const allowPaid = capabilityPaidAllowed(runtimeAiConfig.paidAllowed, profile);
+  const providerCallOptions: AiProviderCallOptions = {
+    ...(options.timeoutMs ? { timeoutMs: options.timeoutMs } : {}),
+    ...(options.maxOutputTokens || profile?.maxOutputTokens
+      ? { maxOutputTokens: options.maxOutputTokens || profile?.maxOutputTokens }
+      : {}),
+    allowPaid,
+  };
 
-  for (const provider of providerPriority()) {
+  for (const provider of providerPriorityForCapability(capability)) {
     const descriptor = configuredProviders().find((candidate) => candidate.id === provider);
     if (!descriptor?.configured || provider === "none") continue;
     if (isAiProviderCircuitOpen(provider)) {
@@ -864,24 +774,22 @@ const callAiWithMeta = async (
     }
 
     try {
-      let text = "";
-      if (provider === "gemini") {
-        text = await callGemini(prompt, responseMimeType, image, options);
-      } else if (provider === "ollama") {
-        text = await callOllama(prompt, responseMimeType, options);
-      } else if (provider === "lmstudio") {
-        text = await callLmStudio(prompt, responseMimeType, options);
-      } else if (provider === "openrouter" || provider === "deepseek" || provider === "qwen" || provider === "openai") {
-        text = await callOpenAiCompatible(provider, prompt, responseMimeType, options);
-      }
-      if (text) {
+      const providerResponse = await aiProviderAdapters.callProvider(provider, prompt, responseMimeType, image, providerCallOptions);
+      if (providerResponse.text) {
         recordAiProviderSuccess(provider);
         return {
-          text,
+          text: providerResponse.text,
           provider,
           model: descriptor.model,
           usedFallback: false,
           errors,
+          usage: providerResponse.usage,
+          quotaPoolId: providerResponse.quotaPoolId,
+          ...estimateAiCostMicrosUsd(
+            providerResponse.usage,
+            runtimeAiConfig.providers[provider].quotaPools?.find((pool) => pool.id === providerResponse.quotaPoolId)?.pricing
+              || runtimeAiConfig.providers[provider].pricing,
+          ),
         };
       }
       recordAiProviderFailure(provider);
@@ -902,49 +810,147 @@ const callAiWithMeta = async (
     model: "local-fallback",
     usedFallback: true,
     errors,
+    usage: zeroAiUsage(),
+    estimatedCostMicrosUsd: 0,
+    pricingKnown: true,
   };
 };
 
-const callAi = async (prompt: string, responseMimeType?: AiResponseMimeType, image?: { data: string; mimeType: string }) => (await callAiWithMeta(prompt, responseMimeType, image)).text;
 
 const callSingleProvider = async (
   provider: Exclude<AiProvider, "none">,
   prompt: string,
   image?: { data: string; mimeType: string },
-  options: AiCallOptions = { timeoutMs: Math.max(env.AI_REQUEST_TIMEOUT_MS, 30000) },
-) => {
-  if (provider === "gemini") return callGemini(prompt, undefined, image, options);
-  if (provider === "ollama") return callOllama(prompt, undefined, options);
-  if (provider === "lmstudio") return callLmStudio(prompt, undefined, options);
-  return callOpenAiCompatible(provider, prompt, undefined, options);
-};
+  options: AiProviderCallOptions = {},
+) => aiProviderAdapters.callProviderText(provider, prompt, undefined, image, {
+  timeoutMs: Math.max(env.AI_REQUEST_TIMEOUT_MS, 30000),
+  allowPaid: runtimeAiConfig.paidAllowed,
+  ...options,
+});
 
 const withinAiBudget = async (userId?: string, schoolId?: string) => {
-  const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
-  const billableFilter = {
-    createdAt: { $gte: since },
-    "metadata.billable": { $ne: false },
-  };
   const dailyLimit = Math.max(1, Number(env.AI_DAILY_LIMIT || 800));
   const perUserLimit = Math.max(1, Number(env.AI_PER_USER_DAILY_LIMIT || 80));
   const perSchoolLimit = Math.max(1, Number(env.AI_PER_SCHOOL_DAILY_LIMIT || 400));
-  const [globalCount, userCount, schoolCount] = await Promise.all([
-    AiInteractionModel.countDocuments(billableFilter),
-    userId ? AiInteractionModel.countDocuments({ ...billableFilter, userId }) : Promise.resolve(0),
-    schoolId ? AiInteractionModel.countDocuments({ ...billableFilter, schoolId }) : Promise.resolve(0),
+  const dayKey = utcDayKey();
+
+  const [globalUsage, userUsage, schoolUsage] = await Promise.all([
+    readAiUsageDaily("global", "*", dayKey),
+    userId ? readAiUsageDaily("user", userId, dayKey) : Promise.resolve({ requestCount: 0, inputTokens: 0, outputTokens: 0, totalTokens: 0, cachedTokens: 0 }),
+    schoolId ? readAiUsageDaily("school", schoolId, dayKey) : Promise.resolve({ requestCount: 0, inputTokens: 0, outputTokens: 0, totalTokens: 0, cachedTokens: 0 }),
   ]);
 
   return {
     allowed:
-      globalCount < dailyLimit &&
-      (!userId || userCount < perUserLimit) &&
-      (!schoolId || schoolCount < perSchoolLimit),
-    globalCount,
-    userCount,
-    schoolCount,
+      globalUsage.requestCount < dailyLimit &&
+      (!userId || userUsage.requestCount < perUserLimit) &&
+      (!schoolId || schoolUsage.requestCount < perSchoolLimit) &&
+      (runtimeAiConfig.dailySpendCapUsd <= 0 || globalUsage.estimatedCostMicrosUsd < Math.round(runtimeAiConfig.dailySpendCapUsd * 1_000_000)),
+    globalCount: globalUsage.requestCount,
+    userCount: userUsage.requestCount,
+    schoolCount: schoolUsage.requestCount,
+    globalTokens: globalUsage.totalTokens,
+    userTokens: userUsage.totalTokens,
+    schoolTokens: schoolUsage.totalTokens,
+    globalEstimatedCostMicrosUsd: globalUsage.estimatedCostMicrosUsd,
+    dailySpendCapUsd: runtimeAiConfig.dailySpendCapUsd,
     dailyLimit,
     perUserLimit,
     perSchoolLimit,
+    dayKey,
+  };
+};
+
+type BudgetedAiRequestInput = {
+  req: any;
+  endpoint: string;
+  message: string;
+  prompt: string;
+  fallbackText: string;
+  responseMimeType?: AiResponseMimeType;
+  maxOutputTokens?: number;
+  capability: AiCapabilityId;
+  metadata?: Record<string, unknown>;
+};
+
+const runBudgetedAiRequest = async (input: BudgetedAiRequestInput) => {
+  const startedAt = Date.now();
+  const userId = String(input.req.authUser?.id || "").trim() || undefined;
+  const schoolId = String(input.req.authUser?.schoolId || "").trim() || undefined;
+  const audience = String(input.req.authUser?.role || "guest");
+  const budget = await withinAiBudget(userId, schoolId);
+
+  if (!budget.allowed) {
+    await recordAiInteraction({
+      req: input.req,
+      endpoint: input.endpoint,
+      audience,
+      message: input.message,
+      responseText: input.fallbackText,
+      provider: "none",
+      model: "local-fallback",
+      usedFallback: true,
+      latencyMs: Date.now() - startedAt,
+      schoolId,
+      metadata: {
+        ...(input.metadata || {}),
+        billable: false,
+        budgetExceeded: true,
+        globalCount: budget.globalCount,
+        userCount: budget.userCount,
+        schoolCount: budget.schoolCount,
+      },
+    });
+    return {
+      text: input.fallbackText,
+      provider: "none" as AiProvider,
+      model: "local-fallback",
+      usedFallback: true,
+      budgetLimited: true,
+      errors: [] as string[],
+    };
+  }
+
+  const result = await callAiWithMeta(input.prompt, input.responseMimeType, undefined, {
+    capability: input.capability,
+    maxOutputTokens: input.maxOutputTokens || AI_DEFAULT_MAX_OUTPUT_TOKENS,
+  });
+  const responseText = String(result.text || input.fallbackText).trim();
+
+  await recordAiInteraction({
+    req: input.req,
+    endpoint: input.endpoint,
+    audience,
+    message: input.message,
+    responseText,
+    provider: result.text ? result.provider : "none",
+    model: result.text ? result.model : "local-fallback",
+    usedFallback: !result.text,
+    latencyMs: Date.now() - startedAt,
+    schoolId,
+    usage: result.usage,
+    estimatedCostMicrosUsd: result.estimatedCostMicrosUsd,
+    pricingKnown: result.pricingKnown,
+    error: !result.text && result.errors.length ? fallbackReasonFromErrors(result.errors) : undefined,
+    metadata: {
+      ...(input.metadata || {}),
+      billable: true,
+      budgetExceeded: false,
+      providerErrors: compactProviderErrors(result.errors),
+      capability: input.capability,
+      quotaPoolId: result.quotaPoolId || "",
+      promptChars: input.prompt.length,
+      responseChars: responseText.length,
+    },
+  });
+
+  return {
+    text: responseText,
+    provider: result.text ? result.provider : "none" as AiProvider,
+    model: result.text ? result.model : "local-fallback",
+    usedFallback: !result.text,
+    budgetLimited: false,
+    errors: result.errors,
   };
 };
 
@@ -965,7 +971,7 @@ export const aiRouter = Router();
 aiRouter.get(
   "/status",
   asyncHandler(async (_req, res) => {
-    await loadRuntimeAiConfig();
+    await loadRuntimeAiConfig(true);
     const providers = configuredProviders();
     const activeProvider = resolveProvider();
     res.json({
@@ -974,11 +980,31 @@ aiRouter.get(
       lmStudioConfigured: isLmStudioExplicitlyConfigured() && Boolean(runtimeAiConfig.providers.lmstudio.baseUrl && runtimeAiConfig.providers.lmstudio.model),
       geminiConfigured: Boolean(runtimeAiConfig.providers.gemini.apiKey || runtimeAiConfig.providers.gemini.apiKeys?.length),
       providers,
-      providerOrder: providerPriority(),
+      quotaPools: Object.fromEntries(
+        Object.entries(runtimeAiConfig.providers).map(([providerId, runtime]) => [
+          providerId,
+          (runtime.quotaPools || []).map((pool) => ({
+            id: pool.id,
+            label: pool.label,
+            accountLabel: pool.accountLabel,
+            projectLabel: pool.projectLabel,
+            plan: pool.plan,
+            quotaScope: pool.quotaScope,
+            priority: pool.priority,
+            freeOnly: pool.freeOnly,
+            model: pool.model,
+            keyCount: pool.apiKeys.length,
+          })),
+        ]),
+      ),
+      providerOrder: providerPriorityForCapability("student_chat"),
       providerOrderSource: runtimeAiConfig.providerOrderSource,
       routingMode: runtimeAiConfig.routingMode,
+      paidAllowed: runtimeAiConfig.paidAllowed,
+      routeProfiles: runtimeAiConfig.routeProfiles,
       model: providers.find((provider) => provider.id === activeProvider)?.model || "local-fallback",
       timeoutMs: env.AI_REQUEST_TIMEOUT_MS,
+      dailySpendCapUsd: runtimeAiConfig.dailySpendCapUsd,
       providerHealth: getAiProviderCircuitSnapshot(),
     });
   }),
@@ -989,7 +1015,7 @@ aiRouter.get(
   requireAuth,
   requireRole(["admin"]),
   asyncHandler(async (_req, res) => {
-    await loadRuntimeAiConfig();
+    await loadRuntimeAiConfig(true);
     const providers = configuredProviders();
     const activeProvider = resolveProvider();
     const configuredRealProviders = providers.filter((provider) => provider.id !== "none" && provider.configured);
@@ -1064,7 +1090,7 @@ aiRouter.get(
         label: provider.label,
         model: provider.model,
       })),
-      recommendedProviderOrder: providerPriority().join(","),
+      recommendedProviderOrder: providerPriorityForCapability("student_chat").join(","),
       studentAdvisor: {
         ready: studentCount > 0 && (studentsWithResults > 0 || weakSkillSignals > 0),
         studentCount,
@@ -1094,7 +1120,7 @@ aiRouter.get(
   asyncHandler(async (req, res) => {
     const limit = Math.min(Math.max(Number(req.query.limit || 20), 1), 100);
     const since = new Date(Date.now() - 24 * 60 * 60 * 1000);
-    const [items, total, last24h, fallbackCount, errorCount, byAudience, byProvider] = await Promise.all([
+    const [items, total, last24h, fallbackCount, errorCount, byAudience, byProvider, usage24h, usageToday] = await Promise.all([
       AiInteractionModel.find().sort({ createdAt: -1 }).limit(limit).lean(),
       AiInteractionModel.countDocuments(),
       AiInteractionModel.countDocuments({ createdAt: { $gte: since } }),
@@ -1108,6 +1134,19 @@ aiRouter.get(
         { $group: { _id: "$provider", count: { $sum: 1 }, avgLatencyMs: { $avg: "$latencyMs" } } },
         { $sort: { count: -1 } },
       ]),
+      AiInteractionModel.aggregate([
+        { $match: { createdAt: { $gte: since } } },
+        {
+          $group: {
+            _id: null,
+            inputTokens: { $sum: "$inputTokens" },
+            outputTokens: { $sum: "$outputTokens" },
+            totalTokens: { $sum: "$totalTokens" },
+            cachedTokens: { $sum: "$cachedTokens" },
+          },
+        },
+      ]),
+      readAiUsageDaily("global", "*"),
     ]);
 
     res.json({
@@ -1122,6 +1161,13 @@ aiRouter.get(
           count: item.count,
           avgLatencyMs: Math.round(Number(item.avgLatencyMs || 0)),
         })),
+        inputTokens24h: Number(usage24h[0]?.inputTokens || 0),
+        outputTokens24h: Number(usage24h[0]?.outputTokens || 0),
+        totalTokens24h: Number(usage24h[0]?.totalTokens || 0),
+        cachedTokens24h: Number(usage24h[0]?.cachedTokens || 0),
+        requestsToday: Number(usageToday.requestCount || 0),
+        totalTokensToday: Number(usageToday.totalTokens || 0),
+        estimatedCostMicrosUsdToday: Number(usageToday.estimatedCostMicrosUsd || 0),
       },
       items,
     });
@@ -1133,9 +1179,16 @@ aiRouter.post(
   requireAuth,
   requireRole(["admin"]),
   asyncHandler(async (req, res) => {
-    await loadRuntimeAiConfig();
-    const { provider } = providerTestSchema.parse(req.body);
+    await loadRuntimeAiConfig(true);
+    const { provider, quotaPoolId } = providerTestSchema.parse(req.body);
     const descriptor = configuredProviders().find((candidate) => candidate.id === provider);
+    if (!providerAllowedForCapability(provider, "admin_copilot")) {
+      return res.json({
+        ok: false,
+        provider,
+        message: "المزود محظور بسياسة التكلفة الحالية. فعّل paidAllowed أو عرّف له Free/Trial quota pool.",
+      });
+    }
     if (!descriptor?.configured) {
       return res.json({
         ok: false,
@@ -1146,10 +1199,16 @@ aiRouter.post(
 
     try {
       const startedAt = Date.now();
-      const text = await callSingleProvider(provider, "اكتب جملة عربية قصيرة تؤكد أن مزود الذكاء الاصطناعي يعمل.");
+      const text = await callSingleProvider(
+        provider,
+        "اكتب جملة عربية قصيرة تؤكد أن مزود الذكاء الاصطناعي يعمل.",
+        undefined,
+        quotaPoolId ? { quotaPoolId } : {},
+      );
       return res.json({
         ok: Boolean(text),
         provider,
+        quotaPoolId: quotaPoolId || undefined,
         model: descriptor.model,
         latencyMs: Date.now() - startedAt,
         sample: text.slice(0, 240),
@@ -1158,6 +1217,7 @@ aiRouter.post(
       return res.json({
         ok: false,
         provider,
+        quotaPoolId: quotaPoolId || undefined,
         model: descriptor.model,
         message: error instanceof Error ? error.message : "تعذر اختبار المزود.",
       });
@@ -1170,13 +1230,20 @@ aiRouter.post(
   optionalAuth,
   asyncHandler(async (req, res) => {
     const parsed = chatSchema.parse(req.body);
-    const { message } = parsed;
+    const { message, tutorSessionId } = parsed;
     const image = parsed.image?.data && parsed.image?.mimeType
       ? { data: parsed.image.data, mimeType: parsed.image.mimeType }
       : undefined;
     const startedAt = Date.now();
-    const studentContext = await buildStudentAiContext(req.authUser?.id);
+    const studentContext = await buildStudentTutorContext(req.authUser?.id, {
+      includeRecentTutorTurns: true,
+      maxWeaknesses: 5,
+      maxRecentResults: 3,
+      maxRecentTutorTurns: 2,
+      sessionId: tutorSessionId,
+    });
     const fallback = buildPersonalizedTutorFallback(message, studentContext);
+    const recommendedLinks = buildStudentTutorLinks(studentContext);
 
     const hasImage = Boolean(image);
     const prompt = `
@@ -1194,7 +1261,58 @@ ${hasImage ? "- الصورة المرفقة: حلل محتواها إن كانت
 ${message}
 `;
 
-    const budget = await withinAiBudget(req.authUser?.id);
+    if (!req.authUser && !AI_GUEST_EXTERNAL_ENABLED) {
+      const fallbackReason = "الزوار يستخدمون الرد المحلي لتقليل تكلفة المنصة. سجّل الدخول للحصول على المساعد الشخصي.";
+      return res.json({
+        text: fallback,
+        personalized: false,
+        weaknessesCount: 0,
+        provider: "none",
+        model: "local-fallback",
+        usedFallback: true,
+        fallbackReason,
+        recommendedLinks,
+      });
+    }
+
+    const visionUsage = hasImage ? await readAiUsageDaily("capability", "vision_chat") : null;
+    if (hasImage && Number(visionUsage?.requestCount || 0) >= AI_VISION_DAILY_LIMIT) {
+      const fallbackReason = "تم الوصول إلى حد تحليل الصور اليومي. يمكنك متابعة السؤال نصيًا بدون الصورة.";
+      await recordAiInteraction({
+        req,
+        endpoint: "/ai/chat",
+        audience: req.authUser?.role || "guest",
+        message,
+        responseText: fallback,
+        provider: "none",
+        model: "local-fallback",
+        usedFallback: true,
+        personalized: Boolean(studentContext?.weaknesses.length),
+        latencyMs: Date.now() - startedAt,
+        metadata: {
+          billable: false,
+          capability: "vision_chat",
+          visionBudgetExceeded: true,
+          visionDailyLimit: AI_VISION_DAILY_LIMIT,
+          tutorSessionId: tutorSessionId || "",
+          hasImage: true,
+          fallbackReason,
+        },
+      });
+      return res.json({
+        text: fallback,
+        personalized: Boolean(studentContext?.weaknesses.length),
+        weaknessesCount: studentContext?.weaknesses.length || 0,
+        provider: "none",
+        model: "local-fallback",
+        usedFallback: true,
+        fallbackReason,
+        recommendedLinks,
+        visionLimited: true,
+      });
+    }
+
+    const budget = await withinAiBudget(req.authUser?.id, req.authUser?.schoolId || "");
     if (!budget.allowed) {
       const fallbackReason = "تم استخدام الرد الاحتياطي لأن حد استخدام المساعد اليومي وصل إلى الحد المسموح.";
       await recordAiInteraction({
@@ -1209,6 +1327,8 @@ ${message}
         personalized: Boolean(studentContext?.weaknesses.length),
         latencyMs: Date.now() - startedAt,
         metadata: {
+          billable: false,
+          capability: hasImage ? "vision_chat" : "student_chat",
           budgetExceeded: true,
           globalCount: budget.globalCount,
           userCount: budget.userCount,
@@ -1216,6 +1336,7 @@ ${message}
           perUserLimit: budget.perUserLimit,
           hasImage,
           fallbackReason,
+          tutorSessionId: tutorSessionId || "",
         },
       });
       return res.json({
@@ -1226,11 +1347,12 @@ ${message}
         model: "local-fallback",
         usedFallback: true,
         fallbackReason,
+        recommendedLinks,
       });
     }
 
     try {
-      const result = await callAiWithMeta(prompt, undefined, image);
+      const result = await callAiWithMeta(prompt, undefined, image, { capability: hasImage ? "vision_chat" : "student_chat" });
       const responseText = result.text || fallback;
       const providerErrors = compactProviderErrors(result.errors);
       const fallbackReason = result.text ? undefined : fallbackReasonFromErrors(result.errors);
@@ -1245,12 +1367,19 @@ ${message}
         usedFallback: !result.text,
         personalized: Boolean(studentContext?.weaknesses.length),
         latencyMs: Date.now() - startedAt,
+        usage: result.usage,
+        estimatedCostMicrosUsd: result.estimatedCostMicrosUsd,
+        pricingKnown: result.pricingKnown,
         metadata: {
           weaknessesCount: studentContext?.weaknesses.length || 0,
           recentResultsCount: studentContext?.recentResults.length || 0,
           providerErrors,
           fallbackReason,
+          capability: hasImage ? "vision_chat" : "student_chat",
+          quotaPoolId: result.quotaPoolId || "",
           hasImage,
+          visionProviderUsed: hasImage && result.provider === "gemini",
+          tutorSessionId: tutorSessionId || "",
         },
       });
       return res.json({
@@ -1262,6 +1391,7 @@ ${message}
         usedFallback: !result.text,
         providerErrors,
         fallbackReason,
+        recommendedLinks,
       });
     } catch (error) {
       const fallbackReason = fallbackReasonFromErrors([error instanceof Error ? error.message : "AI chat failed"]);
@@ -1277,7 +1407,13 @@ ${message}
         personalized: Boolean(studentContext?.weaknesses.length),
         latencyMs: Date.now() - startedAt,
         error: fallbackReason,
-        metadata: { hasImage, fallbackReason },
+        metadata: {
+          billable: false,
+          capability: hasImage ? "vision_chat" : "student_chat",
+          hasImage,
+          fallbackReason,
+          tutorSessionId: tutorSessionId || "",
+        },
       });
       return res.json({
         text: fallback,
@@ -1287,6 +1423,7 @@ ${message}
         model: "local-fallback",
         usedFallback: true,
         fallbackReason,
+        recommendedLinks,
       });
     }
   }),
@@ -1298,23 +1435,29 @@ aiRouter.post(
   asyncHandler(async (req, res) => {
     const payload = questionAssistantSchema.parse(req.body || {});
     const userId = String(req.authUser!.id || "");
-    const resultFilter = mongoose.Types.ObjectId.isValid(payload.resultId)
-      ? { _id: payload.resultId }
-      : { id: payload.resultId };
-
-    const result = await QuizResultModel.findOne({ ...resultFilter, userId }).lean();
-    if (!result) {
-      return res.status(404).json({ message: "Quiz result not found in your account" });
-    }
-
-    const review = (Array.isArray((result as any).questionReview) ? (result as any).questionReview : [])
-      .find((item: any) => String(item?.questionId || "") === payload.questionId);
-    if (!review) {
-      return res.status(404).json({ message: "Question is not part of this result review" });
+    let result: any = null;
+    let review: any = null;
+    let reviewCard: any = null;
+    if (payload.context === "result_review") {
+      if (!payload.resultId) return res.status(400).json({ message: "resultId is required for result review" });
+      const resultFilter = mongoose.Types.ObjectId.isValid(payload.resultId) ? { _id: payload.resultId } : { id: payload.resultId };
+      result = await QuizResultModel.findOne({ ...resultFilter, userId }).lean();
+      if (!result) return res.status(404).json({ message: "Quiz result not found in your account" });
+      review = (Array.isArray((result as any).questionReview) ? (result as any).questionReview : [])
+        .find((item: any) => String(item?.questionId || "") === payload.questionId);
+      if (!review) return res.status(404).json({ message: "Question is not part of this result review" });
+    } else {
+      reviewCard = await ReviewCardModel.findOne({ userId, questionId: payload.questionId }).lean();
+      if (!reviewCard) return res.status(404).json({ message: "Question is not available in your review list" });
+      const allowed =
+        (payload.context === "saved_review" && Boolean(reviewCard.savedForReview)) ||
+        (payload.context === "mistake_review" && Boolean(reviewCard.hasMistake || reviewCard.reviewType === "error_recovery")) ||
+        (payload.context === "mastery_review" && String(reviewCard.reviewType || "") === "mastery_review");
+      if (!allowed) return res.status(403).json({ message: "Question review context is not allowed" });
     }
 
     const question = await QuestionModel.findOne(buildDocumentsByIdsQuery([payload.questionId]))
-      .select("id questionCode text options correctOptionIndex explanation imageUrl skillIds aiContext voiceExplanation updatedAt")
+      .select("id questionCode text options correctOptionIndex explanation hint solvingStrategy imageUrl skillIds aiContext voiceExplanation updatedAt")
       .lean();
 
     const normalizeStoredOption = (value: any) => {
@@ -1322,7 +1465,18 @@ aiRouter.post(
       if (value && typeof value === "object" && typeof value.text === "string") return value.text.trim();
       return String(value ?? "").trim();
     };
+    if (!question && payload.context !== "result_review") return res.status(404).json({ message: "Review question not found" });
     const rawQuestionText = String(review?.text || (question as any)?.text || "").trim();
+    if (!review) {
+      review = {
+        questionId: payload.questionId,
+        text: (question as any)?.text || "",
+        options: (question as any)?.options || [],
+        explanation: (question as any)?.explanation || "",
+        imageUrl: (question as any)?.imageUrl || "",
+        voiceExplanation: (question as any)?.voiceExplanation || undefined,
+      };
+    }
     const aiReadableText = String((question as any)?.aiContext?.readableText || "").trim();
     const visualDescription = String((question as any)?.aiContext?.visualDescription || "").trim();
     const questionCode = String((question as any)?.questionCode || "").trim();
@@ -1346,16 +1500,24 @@ aiRouter.post(
     const selectedOptionIndex = Number.isInteger(review?.selectedOptionIndex)
       ? Number(review.selectedOptionIndex)
       : undefined;
-    const correctOptionIndex = Number.isInteger(review?.correctOptionIndex)
-      ? Number(review.correctOptionIndex)
-      : Number.isInteger((question as any)?.correctOptionIndex)
-        ? Number((question as any).correctOptionIndex)
-        : undefined;
+    const correctOptionIndex = payload.context === "result_review"
+      ? Number.isInteger(review?.correctOptionIndex)
+        ? Number(review.correctOptionIndex)
+        : Number.isInteger((question as any)?.correctOptionIndex)
+          ? Number((question as any).correctOptionIndex)
+          : undefined
+      : undefined;
     const reviewTeacherVoiceExplanation = String(review?.voiceExplanation?.text || "").trim();
     const liveTeacherVoiceExplanation = String((question as any)?.voiceExplanation?.text || "").trim();
     const teacherVoiceExplanation = reviewTeacherVoiceExplanation || liveTeacherVoiceExplanation;
+    const guidedReviewContext = [
+      String((question as any)?.hint || "").trim(),
+      String((question as any)?.solvingStrategy || "").trim(),
+    ].filter(Boolean).join("\n");
     const trustedExplanation = String(
-      teacherVoiceExplanation || review?.explanation || (question as any)?.explanation || "",
+      payload.context === "result_review"
+        ? teacherVoiceExplanation || review?.explanation || (question as any)?.explanation || ""
+        : guidedReviewContext || teacherVoiceExplanation || review?.explanation || (question as any)?.explanation || "",
     ).trim();
     const hasImage = Boolean(
       review?.imageUrl ||
@@ -1382,17 +1544,19 @@ aiRouter.post(
       ]),
     );
 
-    const owner = (result as any).schoolId
+    const owner = (result as any)?.schoolId
       ? null
       : await (mongoose.Types.ObjectId.isValid(userId)
         ? UserModel.findById(userId)
         : UserModel.findOne({ id: userId }))
           .select("schoolId")
           .lean();
-    const schoolId = String((result as any).schoolId || (owner as any)?.schoolId || "").trim();
-    const resultIdentity = String((result as any)._id || payload.resultId);
+    const schoolId = String((result as any)?.schoolId || (owner as any)?.schoolId || "").trim();
+    const resultIdentity = payload.context === "result_review"
+      ? String((result as any)?._id || payload.resultId || "")
+      : `review:${payload.context}:${String(reviewCard?._id || payload.questionId)}`;
     const contextVersion = [
-      String((result as any).updatedAt || (result as any).createdAt || ""),
+      String((result as any)?.updatedAt || (result as any)?.createdAt || (reviewCard as any)?.updatedAt || ""),
       String((question as any)?.updatedAt || ""),
       String(selectedOptionIndex ?? ""),
       String(correctOptionIndex ?? ""),
@@ -1402,6 +1566,7 @@ aiRouter.post(
       String(teacherVoiceExplanation.length),
       String(aiReadableText.length),
       String(visualDescription.length),
+      String(payload.tutorSessionId || ""),
     ].join("::");
     const cacheKey = buildQuestionAssistantCacheKey({
       userId,
@@ -1437,6 +1602,7 @@ aiRouter.post(
           helpLevel: payload.helpLevel,
           hasImage,
           imageSentToProvider: false,
+          tutorSessionId: payload.tutorSessionId || "",
         },
       });
       return res.json({
@@ -1540,6 +1706,15 @@ aiRouter.post(
       });
     }
 
+    const tutorContext = await buildStudentTutorContext(userId, {
+      focusSkillIds: skillIds,
+      includeRecentTutorTurns: true,
+      maxWeaknesses: 4,
+      maxRecentResults: 2,
+      maxRecentTutorTurns: 2,
+      sessionId: payload.tutorSessionId,
+    });
+
     const prompt = buildQuestionAssistantPrompt({
       level: payload.helpLevel as QuestionHelpLevel,
       questionText,
@@ -1551,6 +1726,7 @@ aiRouter.post(
       explanation: trustedExplanation,
       skillLabels,
       studentMessage: payload.message,
+      studentContextSummary: tutorContext?.summary || "",
       hasImage,
     });
 
@@ -1572,6 +1748,7 @@ aiRouter.post(
 
       const startedAt = Date.now();
       const resultCall = await callAiWithMeta(prompt, undefined, undefined, {
+        capability: "question_tutor",
         timeoutMs: env.AI_REQUEST_TIMEOUT_MS,
         maxOutputTokens: env.AI_QUESTION_ASSISTANT_MAX_OUTPUT_TOKENS,
       });
@@ -1613,9 +1790,14 @@ aiRouter.post(
         usedFallback: provider === "none",
         latencyMs: Date.now() - startedAt,
         schoolId,
+        usage: resultCall.usage,
+        estimatedCostMicrosUsd: resultCall.estimatedCostMicrosUsd,
+        pricingKnown: resultCall.pricingKnown,
         error: provider === "none" && resultCall.errors.length ? fallbackReasonFromErrors(resultCall.errors) : undefined,
         metadata: {
           billable: true,
+          capability: "question_tutor",
+          quotaPoolId: resultCall.quotaPoolId || "",
           cacheHit: false,
           resultId: resultIdentity,
           questionId: payload.questionId,
@@ -1624,6 +1806,10 @@ aiRouter.post(
           imageSentToProvider: false,
           promptChars: prompt.length,
           responseChars: responseText.length,
+          tutorContextVersion: tutorContext?.contextVersion || "",
+          tutorWeaknessCount: tutorContext?.weaknesses.length || 0,
+          tutorRecentTurnCount: tutorContext?.recentTutorTurns.length || 0,
+          tutorSessionId: payload.tutorSessionId || "",
           providerErrors: compactProviderErrors(resultCall.errors),
         },
       });
@@ -1707,6 +1893,7 @@ ${message}
         usedFallback: true,
         latencyMs: Date.now() - startedAt,
         metadata: {
+          billable: false,
           budgetExceeded: true,
           globalCount: budget.globalCount,
           userCount: budget.userCount,
@@ -1727,7 +1914,7 @@ ${message}
     }
 
     try {
-      const result = await callAiWithMeta(prompt);
+      const result = await callAiWithMeta(prompt, undefined, undefined, { capability: "admin_copilot" });
       const responseText = result.text || fallback;
       await recordAiInteraction({
         req,
@@ -1739,11 +1926,16 @@ ${message}
         model: result.text ? result.model : "local-fallback",
         usedFallback: !result.text,
         latencyMs: Date.now() - startedAt,
+        usage: result.usage,
+        estimatedCostMicrosUsd: result.estimatedCostMicrosUsd,
+        pricingKnown: result.pricingKnown,
         metadata: {
           auditScore: audit.score,
           critical: audit.totals.critical,
           warnings: audit.totals.warnings,
           providerErrors: result.errors.slice(0, 3),
+          capability: "admin_copilot",
+          quotaPoolId: result.quotaPoolId || "",
         },
       });
       return res.json({
@@ -1955,12 +2147,16 @@ ${weaknesses.join(", ") || "مهارات عامة"}
 {"steps":["...","...","..."]}
 `;
 
-    try {
-      const text = await callAi(prompt, "application/json");
-      return res.json(safeJsonParse(text, fallback));
-    } catch {
-      return res.json(fallback);
-    }
+    const result = await runBudgetedAiRequest({
+      req,
+      endpoint: "/ai/study-plan",
+      capability: "study_plan",
+      message: weaknesses.join(", "),
+      prompt,
+      fallbackText: JSON.stringify(fallback),
+      responseMimeType: "application/json",
+    });
+    return res.json(safeJsonParse(result.text, fallback));
   }),
 );
 
@@ -1995,13 +2191,17 @@ id,type,title,duration,reason,skillTargeted,priority,actionLabel,link
 type واحد من lesson أو quiz أو flashcard. priority واحد من high أو medium أو low.
 `;
 
-    try {
-      const text = await callAi(prompt, "application/json");
-      const parsed = safeJsonParse(text, fallback);
-      return res.json(Array.isArray(parsed) ? parsed : fallback);
-    } catch {
-      return res.json(fallback);
-    }
+    const result = await runBudgetedAiRequest({
+      req,
+      endpoint: "/ai/learning-path",
+      capability: "learning_path",
+      message: targetSkills.map((skill) => formatSkillContext(skill)).join(", "),
+      prompt,
+      fallbackText: JSON.stringify(fallback),
+      responseMimeType: "application/json",
+    });
+    const parsed = safeJsonParse(result.text, fallback);
+    return res.json(Array.isArray(parsed) ? parsed : fallback);
   }),
 );
 
@@ -2043,13 +2243,17 @@ ${JSON.stringify(targetSkills)}
 {"title":"...","summary":"...","steps":[{"day":"...","skill":"...","action":"...","check":"..."}],"parentNote":"..."}
 `;
 
-    try {
-      const text = await callAi(prompt, "application/json");
-      const parsed = safeJsonParse(text, fallback);
-      return res.json(parsed);
-    } catch {
-      return res.json(fallback);
-    }
+    const result = await runBudgetedAiRequest({
+      req,
+      endpoint: "/ai/remediation-plan",
+      capability: "remediation",
+      message: targetSkills.map((skill) => formatSkillContext(skill)).join(", "),
+      prompt,
+      fallbackText: JSON.stringify(fallback),
+      responseMimeType: "application/json",
+      metadata: { ageBand },
+    });
+    return res.json(safeJsonParse(result.text, fallback));
   }),
 );
 
@@ -2075,17 +2279,22 @@ ${topic}
 {"question":"...","options":["...","...","...","..."],"correctIndex":0,"explanation":"..."}
 `;
 
-    try {
-      const text = await callAi(prompt, "application/json");
-      return res.json(safeJsonParse(text, fallback));
-    } catch {
-      return res.json(fallback);
-    }
+    const result = await runBudgetedAiRequest({
+      req,
+      endpoint: "/ai/question",
+      capability: "authoring",
+      message: topic,
+      prompt,
+      fallbackText: JSON.stringify(fallback),
+      responseMimeType: "application/json",
+    });
+    return res.json(safeJsonParse(result.text, fallback));
   }),
 );
 
 aiRouter.post(
   "/course-summary",
+  optionalAuth,
   asyncHandler(async (req, res) => {
     const { courseTitle } = courseSummarySchema.parse(req.body);
     const fallback = `هذه الدورة تساعدك على فهم ${courseTitle} بخطوات منظمة وتدريبات تدريجية حتى تصل للإتقان.`;
@@ -2097,11 +2306,24 @@ ${courseTitle}
 اجعله بسيطًا ومشجعًا للطالب.
 `;
 
-    try {
-      const text = await callAi(prompt);
-      return res.json({ text: text || fallback });
-    } catch {
-      return res.json({ text: fallback });
+    if (!req.authUser && !AI_GUEST_EXTERNAL_ENABLED) {
+      return res.json({ text: fallback, provider: "none", usedFallback: true });
     }
+
+    const result = await runBudgetedAiRequest({
+      req,
+      endpoint: "/ai/course-summary",
+      capability: "course_summary",
+      message: courseTitle,
+      prompt,
+      fallbackText: fallback,
+      maxOutputTokens: 220,
+    });
+    return res.json({
+      text: result.text || fallback,
+      provider: result.provider,
+      usedFallback: result.usedFallback,
+      budgetLimited: result.budgetLimited,
+    });
   }),
 );

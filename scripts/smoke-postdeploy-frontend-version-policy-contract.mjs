@@ -32,7 +32,8 @@ const requiredSmoke = [
   "const requireExpectedVersion = !nonRuntimeOnlyCommit",
   "if (requireExpectedVersion)",
   "Frontend version equality skipped for a non-runtime-only main commit",
-  "process.env.SMOKE_STRICT_VERSION = requireExpectedVersion ? '1' : '0'",
+  "process.env.SMOKE_STRICT_VERSION = '0'",
+  "The strict wrapper has already proven exact frontend identity with retries.",
 ];
 
 for (const fragment of requiredSmoke) {

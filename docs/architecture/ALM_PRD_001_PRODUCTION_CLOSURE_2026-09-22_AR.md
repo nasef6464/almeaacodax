@@ -152,3 +152,13 @@ The exact deployed SHA and core PR gates are strong, but Batch 15 remains open u
 - Sentry live proof remains **BLOCKED** with HTTP 412 because production has no `SENTRY_DSN` configured.
 - Verified MongoDB/R2 backup and isolated-restore tooling exists, but repository tooling is not equivalent to a live scheduled backup, off-site copy, restore drill or measured RPO/RTO.
 - The top-level production backup guide has been hardened to point only to the verified backup/restore path.
+
+## 2026-09-23 canonical checkpoint
+
+The current authoritative handoff has moved to:
+
+`docs/architecture/ALMEAA_MASTER_PRODUCTION_CHECKPOINT_2026-09-23_AR.md`
+
+That checkpoint records the current main baseline `919acb01771abc88c7b89fe816153e10b178c7bd`, PR #254 closure, Render migration integration gaps, live DR baseline and snapshot recency gap, performance topology evidence, governance blockers, tracked issues #234–#237, and the exact next-action order.
+
+This older document remains as the detailed chronology/evidence history and must not be read alone as the latest status.

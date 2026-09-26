@@ -72,6 +72,15 @@ check('runner prevents infinite auto-submit loop and zero timer restoration', ()
   assert.ok(quizPageSource.includes('timeLeft > 0 ? timeLeft : null'));
 });
 
+check('prepared runner keeps image-embedded choices aligned and compact', () => {
+  assert.ok(quizPageSource.includes('usesImageEmbeddedOptions(currentQuestion)'));
+  assert.ok(quizPageSource.includes('if (usesImageEmbeddedOptions(question))'));
+  assert.ok(quizPageSource.includes("imageQuestion ? 'grid-cols-4'"));
+  assert.ok(quizPageSource.includes('getLearnerOptionLabel(currentQuestion, displayOption.text, displayOption.originalIndex)'));
+  assert.ok(quizPageSource.includes('optionsEmbeddedInImage: question.optionsEmbeddedInImage'));
+  assert.ok(quizPageSource.includes('!imageQuestion ? ('));
+});
+
 const failed = checks.filter((item) => item.status === 'FAIL');
 console.log(JSON.stringify({ phase: 'quiz-progress-draft', status: failed.length ? 'FAIL' : 'PASS', checks }, null, 2));
 if (failed.length) process.exit(1);

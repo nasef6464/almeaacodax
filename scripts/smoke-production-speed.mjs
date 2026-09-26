@@ -1,7 +1,7 @@
 import { execSync } from "node:child_process";
 
 const FRONTEND_URL = (process.env.SMOKE_FRONTEND_URL || "https://almeaacodax.vercel.app").replace(/\/$/, "");
-const API_URL = (process.env.SMOKE_API_URL || "https://almeaacodax-k2ux.onrender.com/api").replace(/\/$/, "");
+const API_URL = (process.env.SMOKE_API_URL || `${FRONTEND_URL}/api`).replace(/\/$/, "");
 const EXPECTED_VERSION =
   process.env.SMOKE_EXPECT_VERSION ||
   (() => {

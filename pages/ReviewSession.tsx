@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { api } from "../services/api";
+import { QuestionAssistantPanel } from "../components/results/QuestionAssistantPanel";
+import { getLearnerOptionLabel, usesImageEmbeddedOptions } from "../utils/quizPresentation";
 
 type ReviewItem = {
   cardId: string;
@@ -9,12 +11,14 @@ type ReviewItem = {
   pathId?: string;
   subjectId?: string;
   sectionId?: string;
-  reviewType?: "error_recovery" | "mastery_review";
+  reviewType?: "error_recovery" | "mastery_review" | "saved_review";
   question: {
     id: string;
     text: string;
     options: string[];
     imageUrl?: string;
+    imageAlt?: string;
+    optionsEmbeddedInImage?: boolean;
   };
 };
 
@@ -36,6 +40,7 @@ const ReviewSession: React.FC = () => {
   const [searchParams] = useSearchParams();
   const pathId = String(searchParams.get("pathId") || "").trim();
   const subjectId = String(searchParams.get("subjectId") || "").trim();
+  const mode = String(searchParams.get("mode") || "").trim();
   const [items, setItems] = useState<ReviewItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -48,14 +53,25 @@ const ReviewSession: React.FC = () => {
   useEffect(() => {
     let mounted = true;
     setLoading(true);
-    api.getReviewDue({
-      limit: 20,
-      ...(pathId ? { pathId } : {}),
-      ...(subjectId ? { subjectId } : {}),
-    })
+    const sourcePromise = mode === "saved" || mode === "mistakes"
+      ? api.getStudentReviewLibrary({
+          tab: mode,
+          limit: 20,
+          ...(pathId ? { pathId } : {}),
+          ...(subjectId ? { subjectId } : {}),
+        })
+      : api.getReviewDue({
+          limit: 20,
+          ...(pathId ? { pathId } : {}),
+          ...(subjectId ? { subjectId } : {}),
+        });
+    sourcePromise
       .then((payload) => {
         if (!mounted) return;
-        setItems(Array.isArray(payload.items) ? payload.items : []);
+        setItems(Array.isArray(payload.items) ? payload.items.map((item: any) => ({
+          ...item,
+          reviewType: item.reviewType || (item.reasons?.mistake ? "error_recovery" : "saved_review"),
+        })) : []);
         setIndex(0);
         setDoneCount(0);
         setSelectedOptionIndex(null);
@@ -72,9 +88,10 @@ const ReviewSession: React.FC = () => {
     return () => {
       mounted = false;
     };
-  }, [pathId, subjectId]);
+  }, [mode, pathId, subjectId]);
 
   const current = useMemo(() => items[index] || null, [items, index]);
+  const imageQuestion = usesImageEmbeddedOptions(current?.question);
   const isFinished = !loading && (items.length === 0 || index >= items.length);
 
   const answer = async (quality?: number) => {
@@ -128,46 +145,63 @@ const ReviewSession: React.FC = () => {
   }
 
   return (
-    <div className="mx-auto max-w-3xl p-6 space-y-5">
-      <div className="rounded-2xl border border-gray-100 bg-white p-5">
+    <div className="mx-auto max-w-3xl space-y-3 p-3 sm:p-5">
+      <div className="rounded-2xl border border-gray-100 bg-white p-3 sm:p-5">
         <div className="mb-3 flex flex-wrap items-center justify-between gap-2 text-sm text-gray-500">
           <span>السؤال {index + 1} من {items.length}</span>
           {current?.reviewType === "mastery_review" ? (
             <span className="rounded-full bg-emerald-50 px-2 py-1 text-xs font-black text-emerald-700">تثبيت إتقان</span>
+          ) : current?.reviewType === "saved_review" ? (
+            <span className="rounded-full bg-indigo-50 px-2 py-1 text-xs font-black text-indigo-700">محفوظ للمراجعة</span>
           ) : (
             <span className="rounded-full bg-amber-50 px-2 py-1 text-xs font-black text-amber-700">استعادة خطأ</span>
           )}
         </div>
-        <h1 className="text-xl font-black text-gray-900">{current?.question?.text || "سؤال مراجعة"}</h1>
+        {!imageQuestion ? <h1 className="text-base sm:text-xl font-black text-gray-900">{current?.question?.text || "سؤال مراجعة"}</h1> : null}
         {current?.question?.imageUrl ? (
           <img
             src={current.question.imageUrl}
-            alt="صورة السؤال"
+            alt={current.question.imageAlt || "صورة السؤال"}
             loading="lazy"
-            className="my-3 mx-auto max-h-64 rounded-lg object-contain"
+            className="my-2 mx-auto max-h-[340px] w-full rounded-xl object-contain"
           />
         ) : null}
         {Array.isArray(current?.question?.options) && current?.question?.options.length > 0 ? (
-          <div className="mt-4 space-y-2">
+          <div className={`mt-3 grid ${imageQuestion ? "grid-cols-4" : "grid-cols-1"} gap-2`}>
             {current?.question?.options.map((option, i) => (
               <button
                 type="button"
                 key={`${current.question.id}-opt-${i}`}
                 onClick={() => setSelectedOptionIndex(i)}
-                className={`w-full rounded-xl border px-3 py-2 text-right text-sm transition ${
+                className={`w-full rounded-xl border px-2 py-2 ${imageQuestion ? "text-center text-lg font-black" : "text-right text-sm"} transition ${
                   selectedOptionIndex === i
                     ? "border-indigo-400 bg-indigo-50 font-black text-indigo-800"
                     : "border-gray-100 bg-gray-50 text-gray-700 hover:border-indigo-200"
                 }`}
               >
-                {option}
+                {getLearnerOptionLabel(current.question, option, i)}
               </button>
             ))}
           </div>
         ) : null}
       </div>
 
-      <div className="rounded-2xl border border-indigo-100 bg-indigo-50 p-4">
+      {current?.questionId ? (
+        <QuestionAssistantPanel
+          key={`review-tutor-${current.reviewType || "review"}-${current.questionId}`}
+          questionId={current.questionId}
+          hasImage={Boolean(current.question?.imageUrl)}
+          context={
+            current.reviewType === "mastery_review"
+              ? "mastery_review"
+              : current.reviewType === "saved_review"
+                ? "saved_review"
+                : "mistake_review"
+          }
+        />
+      ) : null}
+
+      <div className="rounded-xl border border-indigo-100 bg-indigo-50 p-3">
         {current?.question?.options?.length ? (
           <>
             <div className="mb-3 text-sm font-bold text-indigo-800">اختر الإجابة ثم سجّل نتيجة المراجعة.</div>

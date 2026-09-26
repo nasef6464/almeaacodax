@@ -21,6 +21,19 @@ export interface ServerReadinessSnapshot {
     reliableSkills: number;
     totalEvidence: number;
     explanation: string;
+    examEstimate?: {
+        status: 'insufficient_evidence' | 'available';
+        expectedPerformancePercent: number | null;
+        range: { min: number; max: number } | null;
+        confidence: 'insufficient' | 'low' | 'medium' | 'high';
+        recentAssessments: number;
+        totalQuestions: number;
+        weightedRecentScore: number | null;
+        readinessScore: number;
+        calibratedToQiyas: false;
+        qiyasScoreEstimate: null;
+        note: string;
+    };
 }
 
 export interface StudentReadinessDecision {
@@ -86,8 +99,12 @@ export const buildStudentReadinessDecision = (
     const masteryReviewHref = buildSkillMasteryReviewActionLink(actionContext)
         || recheckHref;
     const foundationHref = studentTodayFocus.lessonLink || studentTodayFocus.foundationTopicLink || '/courses';
+    const estimate = serverReadiness?.examEstimate;
+    const estimateText = estimate?.expectedPerformancePercent !== null && estimate?.expectedPerformancePercent !== undefined
+        ? ` • تقدير أداء ${estimate.expectedPerformancePercent}%${estimate.range ? ` (${estimate.range.min}–${estimate.range.max})` : ''}`
+        : '';
     const evidenceText = serverReadiness
-        ? `${serverReadiness.mastery}% • تغطية ${Math.round(serverReadiness.coverage * 100)}% • ${serverReadiness.totalEvidence} دليل`
+        ? `${serverReadiness.mastery}% • تغطية ${Math.round(serverReadiness.coverage * 100)}% • ${serverReadiness.totalEvidence} دليل${estimateText}`
         : studentTodayFocus.isReliable
             ? `${mastery}% من ${studentTodayFocus.attempts} محاولات`
             : `قراءة أولية ${mastery}%`;

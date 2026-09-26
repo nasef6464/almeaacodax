@@ -2,12 +2,14 @@ import { randomUUID } from "node:crypto";
 import { Router } from "express";
 import { StatusCodes } from "http-status-codes";
 import { MasteryGoalModel } from "../../../models/MasteryGoal.js";
+import { QuizResultModel } from "../../../models/QuizResult.js";
 import { PathModel } from "../../../models/Path.js";
 import { SkillProgressModel } from "../../../models/SkillProgress.js";
 import { SubjectModel } from "../../../models/Subject.js";
 import { requireAuth } from "../../../middleware/auth.js";
 import { asyncHandler } from "../../../utils/asyncHandler.js";
 import { buildScopedMasteryReadiness } from "../analytics/masteryReadiness.js";
+import { buildExamReadinessEstimate } from "../analytics/examReadinessEstimate.js";
 import { buildServerNextBestAction } from "../analytics/nextBestAction.js";
 import { resolveScopedStudents } from "../application/quizReportScope.js";
 import { createMasteryGoalSchema, updateMasteryGoalSchema } from "./masteryGoalSchemas.js";
@@ -113,14 +115,29 @@ adaptiveMasteryRouter.get(
     if (!taxonomyScope.ok) {
       return res.status(StatusCodes.BAD_REQUEST).json({ message: taxonomyScope.message });
     }
-    const rows = await SkillProgressModel.find({
-      userId: req.authUser!.id,
-      pathId,
-      ...(subjectId ? { subjectId } : {}),
-    }).select("mastery evidenceCount attempts lastAttemptAt").limit(500).lean();
+    const [rows, recentResults] = await Promise.all([
+      SkillProgressModel.find({
+        userId: req.authUser!.id,
+        pathId,
+        ...(subjectId ? { subjectId } : {}),
+      }).select("mastery evidenceCount attempts lastAttemptAt").limit(500).lean(),
+      QuizResultModel.find({
+        userId: req.authUser!.id,
+        "quizSnapshot.pathId": pathId,
+        ...(subjectId ? { "quizSnapshot.subjectId": subjectId } : {}),
+      })
+        .sort({ createdAt: -1 })
+        .limit(8)
+        .select("score totalQuestions createdAt quizSnapshot")
+        .lean(),
+    ]);
+    const readiness = buildScopedMasteryReadiness(rows as any[]);
     return res.json({
       scope: { pathId, ...(subjectId ? { subjectId } : {}) },
-      readiness: buildScopedMasteryReadiness(rows as any[]),
+      readiness: {
+        ...readiness,
+        examEstimate: buildExamReadinessEstimate(readiness, recentResults as any[]),
+      },
     });
   }),
 );

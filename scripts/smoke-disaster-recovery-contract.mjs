@@ -7,6 +7,8 @@ const mediaBackup = fs.readFileSync(new URL('./verify-r2-media-backup.sh', impor
 const mediaRestore = fs.readFileSync(new URL('./restore-r2-media-verified.sh', import.meta.url), 'utf8');
 const runbook = fs.readFileSync(new URL('../docs/architecture/DISASTER_RECOVERY_RUNBOOK.md', import.meta.url), 'utf8');
 const productionGuide = fs.readFileSync(new URL('../docs/BACKUP_RESTORE_PRODUCTION.md', import.meta.url), 'utf8');
+const backupManager = fs.readFileSync(new URL('../dashboards/admin/BackupManager.tsx', import.meta.url), 'utf8');
+const scheduledWorkflow = fs.readFileSync(new URL('../.github/workflows/production-dr-backup.yml', import.meta.url), 'utf8');
 
 assert.match(backup, /mongodump/);
 assert.match(backup, /--archive=/);
@@ -52,5 +54,22 @@ assert.match(productionGuide, /restore:media:r2/);
 assert.match(productionGuide, /Sentry live proof is blocked/i);
 assert.doesNotMatch(productionGuide, /MONGODB_URI="mongodb\+srv:\/\/\.\.\." bash scripts\/backup-db\.sh/);
 assert.doesNotMatch(productionGuide, /bash scripts\/restore-db\.sh/);
+assert.match(backupManager, /data-testid="backup-schedule-readiness"/);
+assert.match(backupManager, /الجدولة التلقائية غير مفعّلة على بيئة الإنتاج الحالية/);
+assert.match(backupManager, /يتطلب Cron\/Backup service/);
+assert.doesNotMatch(backupManager, /تم تفعيل الجدولة بنجاح!/);
+assert.match(scheduledWorkflow, /schedule:/);
+assert.match(scheduledWorkflow, /cron: "17 1 \* \* \*"/);
+assert.match(scheduledWorkflow, /PRODUCTION_BACKUP_MONGODB_URI/);
+assert.match(scheduledWorkflow, /PRODUCTION_R2_BACKUP_ACCESS_KEY_ID/);
+assert.match(scheduledWorkflow, /DR_OFFSITE_ENDPOINT/);
+assert.match(scheduledWorkflow, /DR_OFFSITE_BUCKET/);
+assert.match(scheduledWorkflow, /Fail closed when DR secrets are incomplete/);
+assert.match(scheduledWorkflow, /Off-site MongoDB backup evidence is incomplete/);
+assert.match(scheduledWorkflow, /Off-site R2 backup evidence is incomplete/);
+assert.doesNotMatch(scheduledWorkflow, /upload-artifact/);
+assert.match(scheduledWorkflow, /Alert DR backup failure/);
+assert.match(scheduledWorkflow, /issue_number: 235/);
+assert.match(scheduledWorkflow, /fail-closed alert/);
 
 console.log('Disaster recovery contract smoke: PASS');

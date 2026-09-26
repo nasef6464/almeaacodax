@@ -16,7 +16,7 @@ const levelInstruction: Record<QuestionHelpLevel, string> = {
   hint: "أعط تلميحًا واحدًا قصيرًا دون كشف الحل مباشرة.",
   stronger_hint: "أعط تلميحًا أقوى يقرب الطالب من الخطوة التالية دون سرد الحل كاملًا.",
   concept: "اشرح المفهوم أو القانون المرتبط بالسؤال باختصار ثم اربطه بالسؤال.",
-  steps: "اشرح خطوات الحل بوضوح وبترتيب، ويمكن كشف الإجابة لأن هذا سياق مراجعة بعد الاختبار.",
+  steps: "اشرح خطوات التفكير والحل بوضوح وبترتيب، لكن لا تقفز مباشرة إلى الإجابة النهائية؛ ناقش الطالب كمعلم.",
   follow_up: "أجب عن سؤال الطالب المحدد مع البقاء داخل سياق هذا السؤال فقط.",
 };
 
@@ -50,6 +50,7 @@ export const buildQuestionAssistantPrompt = (input: {
   explanation: string;
   skillLabels: string[];
   studentMessage?: string;
+  studentContextSummary?: string;
   hasImage: boolean;
 }) => {
   const safeQuestionText = sanitizeQuestionAssistantText(input.questionText);
@@ -58,6 +59,7 @@ export const buildQuestionAssistantPrompt = (input: {
   const safeOptions = input.options.map(sanitizeQuestionAssistantText);
   const safeExplanation = sanitizeQuestionAssistantText(input.explanation);
   const safeStudentMessage = sanitizeQuestionAssistantText(input.studentMessage || "");
+  const safeStudentContext = sanitizeQuestionAssistantText(input.studentContextSummary || "").slice(0, 2200);
   const selected = Number.isInteger(input.selectedOptionIndex)
     ? safeOptions[input.selectedOptionIndex as number] || "غير محدد"
     : "لم يختر إجابة";
@@ -66,10 +68,11 @@ export const buildQuestionAssistantPrompt = (input: {
     : "غير متاح";
 
   const prompt = [
-    "أنت مساعد سؤال تعليمي عربي داخل منصة ALMEAA. هذا سياق مراجعة بعد الاختبار فقط.",
+    "أنت مساعد سؤال تعليمي عربي داخل منصة ALMEAA. هذا سياق مراجعة تعليمي مصرح به من الخادم، وليس اختبارًا نشطًا.",
     "ممنوع تعديل الدرجة أو الإتقان أو الادعاء بأنك صححت النتيجة؛ النتيجة محسوبة مسبقًا من الخادم.",
     levelInstruction[input.level],
-    "استخدم الشرح الموثوق كسياق أساسي. لا تطلب تاريخ الطالب أو أي بيانات إضافية.",
+    "ابدأ بالنقاش والسؤال عن طريقة تفكير الطالب، ثم ساعد تدريجيًا. استخدم السياق الموثوق ولا تطلب تاريخ الطالب أو بيانات إضافية.",
+    safeStudentContext ? `سياق تعلم الطالب المحدود من المنصة:\n${safeStudentContext}` : "",
     input.hasImage
       ? "السؤال يحتوي صورة، لكن الصورة نفسها غير مرسلة لك. اعتمد على النص والشرح الموثوق، واذكر بوضوح إذا كان جزء بصري ضروري غير موصوف نصيًا."
       : "",

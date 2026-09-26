@@ -9,7 +9,7 @@ type ApiRequest = <T>(path: string, options?: {
 type AiProvider = "gemini" | "openrouter" | "deepseek" | "qwen" | "openai" | "ollama" | "lmstudio" | "none";
 
 export const createAiApi = (request: ApiRequest) => ({
-  aiChat: (payload: { message: string; image?: { data: string; mimeType: string } }, token?: string | null) =>
+  aiChat: (payload: { message: string; image?: { data: string; mimeType: string }; tutorSessionId?: string }, token?: string | null) =>
     request<{
       text: string;
       personalized?: boolean;
@@ -19,6 +19,7 @@ export const createAiApi = (request: ApiRequest) => ({
       usedFallback?: boolean;
       providerErrors?: string[];
       fallbackReason?: string;
+      recommendedLinks?: Array<{ label: string; href: string; skillId: string }>;
     }>("/ai/chat", {
       method: "POST",
       body: payload,
@@ -27,10 +28,12 @@ export const createAiApi = (request: ApiRequest) => ({
 
   aiQuestionAssistant: (
     payload: {
-      resultId: string;
+      resultId?: string;
+      context?: "result_review" | "saved_review" | "mistake_review" | "mastery_review";
       questionId: string;
       helpLevel: "hint" | "stronger_hint" | "concept" | "steps" | "follow_up";
       message?: string;
+      tutorSessionId?: string;
     },
     token?: string | null,
   ) =>
@@ -67,12 +70,29 @@ export const createAiApi = (request: ApiRequest) => ({
         category: "free-friendly" | "paid" | "local" | "fallback";
         envKeys: string[];
         note: string;
+        quotaPoolCount?: number;
+        freeQuotaPoolCount?: number;
       }>;
+      quotaPools?: Record<string, Array<{
+        id: string;
+        label: string;
+        accountLabel: string;
+        projectLabel: string;
+        plan: "free" | "trial" | "paid" | "unknown";
+        quotaScope: "project" | "account" | "organization" | "workspace" | "model" | "unknown";
+        priority: number;
+        freeOnly: boolean;
+        model: string;
+        keyCount: number;
+      }>>;
       providerOrder?: string[];
       providerOrderSource?: "env" | "admin";
       routingMode?: "manual" | "auto";
       model: string;
       timeoutMs: number;
+      dailySpendCapUsd?: number;
+      paidAllowed?: boolean;
+      routeProfiles?: Record<string, { providerOrder?: AiProvider[]; paidAllowed?: boolean; maxOutputTokens?: number }>;
       providerHealth?: Array<{
         provider: string;
         failures: number;
@@ -109,8 +129,8 @@ export const createAiApi = (request: ApiRequest) => ({
       nextActions: string[];
     }>("/ai/readiness", { token }),
 
-  aiTestProvider: (payload: { provider: Exclude<AiProvider, "none"> }, token?: string | null) =>
-    request<{ ok: boolean; provider: string; model?: string; latencyMs?: number; sample?: string; message?: string }>("/ai/providers/test", {
+  aiTestProvider: (payload: { provider: Exclude<AiProvider, "none">; quotaPoolId?: string }, token?: string | null) =>
+    request<{ ok: boolean; provider: string; quotaPoolId?: string; model?: string; latencyMs?: number; sample?: string; message?: string }>("/ai/providers/test", {
       method: "POST",
       body: payload,
       token,
@@ -140,6 +160,13 @@ export const createAiApi = (request: ApiRequest) => ({
         errorCount: number;
         byAudience: Array<{ audience: string; count: number }>;
         byProvider: Array<{ provider: string; count: number; avgLatencyMs: number }>;
+        inputTokens24h: number;
+        outputTokens24h: number;
+        totalTokens24h: number;
+        cachedTokens24h: number;
+        requestsToday?: number;
+        totalTokensToday?: number;
+        estimatedCostMicrosUsdToday?: number;
       };
       items: Array<{
         _id: string;
@@ -151,6 +178,11 @@ export const createAiApi = (request: ApiRequest) => ({
         usedFallback: boolean;
         personalized: boolean;
         latencyMs: number;
+        inputTokens?: number;
+        outputTokens?: number;
+        totalTokens?: number;
+        cachedTokens?: number;
+        usageEstimated?: boolean;
         messagePreview: string;
         responsePreview: string;
         responseLength: number;

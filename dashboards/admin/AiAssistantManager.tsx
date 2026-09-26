@@ -2,6 +2,8 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Activity, AlertTriangle, Bot, CheckCircle2, Clock, Copy, Loader2, MessageCircle, Send, Settings, ShieldCheck, Sparkles, Target, Users, Zap, Search, Filter, RefreshCw, Trash2, Check, ExternalLink, ChevronDown, BarChart2, Info, X, Play, ArrowLeftRight, CheckSquare } from 'lucide-react';
 import { api } from '../../services/api';
 import { sanitizeArabicText } from '../../utils/sanitizeMojibakeArabic';
+import { AiControlCenterSettings } from './ai/AiControlCenterSettings';
+import { AiUsageAndAlertsPanel } from './ai/AiUsageAndAlertsPanel';
 
 type AiStatus = {
     provider: 'gemini' | 'openrouter' | 'deepseek' | 'qwen' | 'openai' | 'ollama' | 'lmstudio' | 'none';
@@ -14,6 +16,28 @@ type AiStatus = {
     routingMode?: 'manual' | 'auto';
     model: string;
     timeoutMs: number;
+    dailySpendCapUsd?: number;
+    paidAllowed?: boolean;
+    routeProfiles?: Record<string, { providerOrder?: AiStatus['provider'][]; paidAllowed?: boolean; maxOutputTokens?: number }>;
+    quotaPools?: Record<string, Array<{
+        id: string;
+        label: string;
+        accountLabel: string;
+        projectLabel: string;
+        plan: 'free' | 'trial' | 'paid' | 'unknown';
+        quotaScope: 'project' | 'account' | 'organization' | 'workspace' | 'model' | 'unknown';
+        priority: number;
+        freeOnly: boolean;
+        model: string;
+        keyCount: number;
+    }>>;
+    providerHealth?: Array<{
+        provider: string;
+        failures: number;
+        open: boolean;
+        openUntil?: number;
+        lastFailureAt?: number;
+    }>;
 };
 
 type AiProviderStatus = {
@@ -25,6 +49,8 @@ type AiProviderStatus = {
     category: 'free-friendly' | 'paid' | 'local' | 'fallback';
     envKeys: string[];
     note: string;
+    quotaPoolCount?: number;
+    freeQuotaPoolCount?: number;
 };
 
 type Message = {
@@ -41,6 +67,13 @@ type AiInteractionsResponse = {
         errorCount: number;
         byAudience: Array<{ audience: string; count: number }>;
         byProvider: Array<{ provider: string; count: number; avgLatencyMs: number }>;
+        inputTokens24h: number;
+        outputTokens24h: number;
+        totalTokens24h: number;
+        cachedTokens24h: number;
+        requestsToday?: number;
+        totalTokensToday?: number;
+        estimatedCostMicrosUsdToday?: number;
     };
     items: Array<{
         _id: string;
@@ -52,6 +85,11 @@ type AiInteractionsResponse = {
         usedFallback: boolean;
         personalized: boolean;
         latencyMs: number;
+        inputTokens?: number;
+        outputTokens?: number;
+        totalTokens?: number;
+        cachedTokens?: number;
+        usageEstimated?: boolean;
         messagePreview: string;
         responsePreview: string;
         responseLength: number;
@@ -144,7 +182,7 @@ export const AiAssistantManager: React.FC = () => {
     const [status, setStatus] = useState<AiStatus | null>(null);
     const [loadingStatus, setLoadingStatus] = useState(true);
     const [statusError, setStatusError] = useState<string | null>(null);
-    const [activeTab, setActiveTab] = useState<'chat' | 'providers' | 'logs' | 'readiness'>('chat');
+    const [activeTab, setActiveTab] = useState<'chat' | 'control' | 'usage' | 'providers' | 'logs' | 'readiness'>('chat');
     const [messages, setMessages] = useState<Message[]>([
         {
             id: 'welcome',
@@ -357,9 +395,9 @@ export const AiAssistantManager: React.FC = () => {
                             مساعد الطالب والمدير
                         </span>
                     </div>
-                    <h1 className="text-2xl font-black text-gray-900">إدارة ومراقبة المساعد الذكي</h1>
+                    <h1 className="text-2xl font-black text-gray-900">إدارة الذكاء الاصطناعي والمساعدين</h1>
                     <p className="text-xs font-bold text-gray-500 mt-1 max-w-2xl">
-                        متابعة حية لتفاعلات الطلاب، قياس سرعة المزودات، تشخيص أخطاء المنصة، وتوجيه سلسلة الاستجابة الذكية.
+                        مركز موحد لمتابعة المساعدين، المزودات، سلسلة الاستجابة، الاستخدام، والجاهزية مع الحفاظ على أقل تكلفة ممكنة.
                     </p>
                 </div>
 
@@ -384,7 +422,7 @@ export const AiAssistantManager: React.FC = () => {
                         className="inline-flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl border border-gray-200 bg-white text-gray-700 font-black text-xs hover:bg-gray-50 transition-all shadow-xs"
                     >
                         <Settings size={15} />
-                        <span>فتح إدارة التكاملات</span>
+                        <span>التكاملات العامة</span>
                     </button>
 
                     <button
@@ -490,7 +528,7 @@ export const AiAssistantManager: React.FC = () => {
                         </div>
                     </div>
                     <p className="mt-2.5 text-[11px] font-bold text-gray-500 line-clamp-1">
-                        أخطاء: {formatNumber(readiness?.monitoring.aiErrors24h)} • احتياطي للطلاب: {formatNumber(readiness?.monitoring.fallbackStudentChats24h)}
+                        Tokens: {formatNumber(interactions?.summary.totalTokens24h || 0)} • تكلفة اليوم: ${((interactions?.summary.estimatedCostMicrosUsdToday || 0) / 1_000_000).toFixed(4)} • أخطاء: {formatNumber(readiness?.monitoring.aiErrors24h)} • احتياطي: {formatNumber(readiness?.monitoring.fallbackStudentChats24h)}
                     </p>
                 </div>
             </div>
@@ -501,6 +539,8 @@ export const AiAssistantManager: React.FC = () => {
             <div className="flex flex-wrap gap-2 border-b border-gray-200 pb-2">
                 {[
                     { id: 'chat' as const, label: 'مساعد المدير التفاعلي', icon: <MessageCircle size={16} /> },
+                    { id: 'control' as const, label: 'المفاتيح والحصص والتكلفة', icon: <Settings size={16} /> },
+                    { id: 'usage' as const, label: 'الاستخدام والتنبيهات', icon: <BarChart2 size={16} /> },
                     {
                         id: 'providers' as const,
                         label: 'مزودو الذكاء وسلسلة الانتقال',
@@ -537,6 +577,19 @@ export const AiAssistantManager: React.FC = () => {
                     </button>
                 ))}
             </div>
+
+            {activeTab === 'control' && (
+                <AiControlCenterSettings onSaved={loadStatus} />
+            )}
+
+            {activeTab === 'usage' && (
+                <AiUsageAndAlertsPanel
+                    summary={interactions?.summary}
+                    providerHealth={status?.providerHealth}
+                    paidAllowed={status?.paidAllowed}
+                    dailySpendCapUsd={status?.dailySpendCapUsd}
+                />
+            )}
 
             {/* ══════════════════════════════════════════════════════════════════════
                 التبويب 1: مساعد المدير التفاعلي (Interactive Copilot)
@@ -676,6 +729,12 @@ export const AiAssistantManager: React.FC = () => {
                                     <span className="text-gray-500 font-bold">نمط التوجيه:</span>
                                     <span className="font-bold text-emerald-700">
                                         {status?.routingMode === 'auto' ? 'تلقائي مع انتقال عند التعطل' : 'يدوي'}
+                                    </span>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                    <span className="text-gray-500 font-bold">الإنفاق المدفوع:</span>
+                                    <span className={`font-bold ${status?.paidAllowed ? 'text-amber-700' : 'text-emerald-700'}`}>
+                                        {status?.paidAllowed ? 'مسموح ضمن سقف التكلفة' : 'مغلق — Free First'}
                                     </span>
                                 </div>
                             </div>
@@ -831,6 +890,11 @@ export const AiAssistantManager: React.FC = () => {
                                             <span className="px-2 py-0.5 rounded-lg bg-slate-100 font-bold text-slate-600">
                                                 المصدر: {sourceLabel[provider.source] || provider.source}
                                             </span>
+                                            {(provider.quotaPoolCount || 0) > 0 && (
+                                                <span className="px-2 py-0.5 rounded-lg bg-indigo-50 font-bold text-indigo-700">
+                                                    حصص: {provider.quotaPoolCount} • مجانية: {provider.freeQuotaPoolCount || 0}
+                                                </span>
+                                            )}
                                         </div>
 
                                         <p className="text-xs font-medium text-gray-600 mt-2.5 leading-relaxed">

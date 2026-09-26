@@ -68,5 +68,8 @@ if (requireExpectedVersion) {
   console.log('Frontend version equality skipped for a non-runtime-only main commit; route smoke remains required.');
 }
 
-process.env.SMOKE_STRICT_VERSION = requireExpectedVersion ? '1' : '0';
+// The strict wrapper has already proven exact frontend identity with retries.
+ // Keep the route-suite version check non-blocking to avoid a second CDN-edge
+ // propagation race immediately after the exact proof succeeds.
+process.env.SMOKE_STRICT_VERSION = '0';
 await import('./smoke-frontend-routes.mjs');
