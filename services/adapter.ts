@@ -95,6 +95,17 @@ const normalizeSkill = (skill: any): Skill => ({
   subjectId: String(skill?.subjectId || ""),
   sectionId: String(skill?.sectionId || ""),
   description: skill?.description || "",
+  subSkills: Array.isArray(skill?.subSkills)
+    ? skill.subSkills
+        .map((sub: any) => ({
+          id: String(sub?.id || ""),
+          name: cleanText(sub?.name),
+          code: sub?.code ? String(sub.code) : undefined,
+          description: sub?.description ? String(sub.description) : undefined,
+          order: typeof sub?.order === "number" ? sub.order : undefined,
+        }))
+        .filter((sub: any) => sub.id && sub.name)
+    : [],
   lessonIds: Array.isArray(skill?.lessonIds) ? skill.lessonIds.map(String) : [],
   questionIds: Array.isArray(skill?.questionIds) ? skill.questionIds.map(String) : [],
   createdAt: toTimestamp(skill?.createdAt),
