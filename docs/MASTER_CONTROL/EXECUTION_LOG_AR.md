@@ -93,3 +93,34 @@ Baseline:
 - Preview disabled → job ينجح بدون polling أو deployment.
 - Preview enabled مستقبلًا → يمكن إعادة تفعيل polling بتغيير flag واحدة.
 الهدف: CI يطابق سياسة النشر الفعلية ولا يهدر 12 دقيقة في انتظار مورد ممنوع.
+
+## 2026-09-26 — PLAN 2 live production closure
+
+Baseline:
+`main@2d5572a9b0c5866ce0065fa3afd43c9b6cfd7b10`
+
+### Runtime
+- فعّلنا `RATE_LIMIT_REDIS_ENABLED=true` و`NOTIFICATION_QUEUE_ENABLED=true` وconcurrency=5 على Render بدون تغيير أي Secret.
+- Render deploy `dep-daru6pjncjis73f4f0m0` أصبح live.
+- `/api/health/ready` و`/api/health/scale-ready` = 200؛ Redis rate-limit/queue + Mongo pass؛ blockers=[].
+- startup logs أثبتت rate-limit Redis، queue Redis، socket/realtime pub-sub، weekly distributed scheduler.
+- Google OAuth start = 302 إلى Google مع callback Render الحالي.
+- operations health أثبت `sentryConfigured=true` و`r2Configured=true`.
+
+### CI / Smoke issue
+- Post Deploy run `36247908080` فشل مرتين بسبب 429 من edge على health/taxonomy.
+- helper `fetchWithRetry` لم يكن يعيد 429 أصلًا.
+- PLAN 2 يصلح retry لـ408/429/5xx مع Retry-After، بدون تخفيف production limiter.
+
+### DR / topology / network
+- DR scheduled run `36222909358` فشل fail-closed قبل mongodump لأن 9 GitHub Secrets مفقودة.
+- Frankfurt recovery ليس full restore: 10 collections مقابل 66 production، وusers/questions/quizresults = 0 في recovery.
+- Render/Redis Frankfurt مقابل Atlas production Singapore ما زال cross-region.
+- Atlas open alerts=0 وPerformance Advisor لم يعرض slow queries/index/schema recommendations.
+- Atlas allowlist ما زالت تحتوي `0.0.0.0/0`.
+
+Evidence:
+`docs/MASTER_CONTROL/PLAN_2_PRODUCTION_CLOSURE_EVIDENCE_AR.md`
+
+القرار:
+لا cutover للـrecovery غير المكتمل، ولا Atlas paid upgrade بدون موافقة صريحة، ولا ادعاء بإغلاق PLAN 2 قبل DR/network/topology evidence.
