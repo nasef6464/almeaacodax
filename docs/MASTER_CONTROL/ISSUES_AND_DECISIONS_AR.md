@@ -43,3 +43,8 @@
 
 ## D-010 — ALMEAA quantitative taxonomy
 **قرار:** 25 main / 95 subskills هي taxonomy الوحيدة لمسار القدرات الكمي V1؛ ممنوع إنشاء Skill IDs جديدة أثناء ingest.
+
+## D-011 — Google OAuth runtime env contract
+**المشكلة:** #267 أضاف `VITE_GOOGLE_OAUTH_API_BASE` إلى runtime لكن architecture allowlist لم تُحدَّث.  
+**الأثر:** `Core build + architecture` يفشل على main/PRs اللاحقة رغم أن التغيير مقصود.  
+**القرار:** إضافة المفتاح إلى `APPROVED_CONTRACT_EXTENSIONS.json` كامتداد runtime معتمد؛ لا تغيير لسلوك OAuth نفسه.

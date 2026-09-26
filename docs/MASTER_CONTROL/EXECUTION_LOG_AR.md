@@ -50,3 +50,11 @@ Required checks:
 
 **PLAN 0: CLOSED ✅**  
 **NEXT: PLAN 1 — Repository Reconciliation & Missing-Work Closure.**
+
+## 2026-09-26 — CI architecture gate reconciliation
+
+أثناء PR #270 ظهر فشل في `Core build + architecture`:
+- المفتاح `VITE_GOOGLE_OAUTH_API_BASE` أُضيف فعليًا في إصلاح Google OAuth المدمج #267.
+- المفتاح لم يكن مسجلًا في `APPROVED_CONTRACT_EXTENSIONS.json`.
+- تم تسجيله كـruntime env contract معتمد؛ لم يتغير سلوك التطبيق في هذا الإصلاح.
+- الهدف: إعادة Architecture Gate إلى التطابق مع main الفعلي بدل ترك regression صامت في CI.
