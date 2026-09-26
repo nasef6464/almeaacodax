@@ -11,7 +11,8 @@
 3. `ISSUES_AND_DECISIONS_AR.md` — المشاكل والقرارات المعمارية/التشغيلية.
 4. `EXECUTION_LOG_AR.md` — سجل التنفيذ والأدلة.
 5. `PLAN_1_RECONCILIATION_EVIDENCE_AR.md` — أدلة إغلاق مراجعة الفروع والفجوات.
-6. `../REFERENCE_CENTER/README_AR.md` — خريطة مراجع الـDomain.
+6. `PLAN_2_PRODUCTION_CLOSURE_EVIDENCE_AR.md` — أدلة Runtime/DR/Topology/Governance الحالية.
+7. `../REFERENCE_CENTER/README_AR.md` — خريطة مراجع الـDomain.
 
 ## ترتيب الحقيقة
 
