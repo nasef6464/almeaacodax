@@ -24,8 +24,7 @@ for (const name of required) {
   }
 }
 
-const prefix = (process.env.DR_STAGE_PREFIX || "dr-staging/mongodb/current")
-  .replace(/^\/+|\/+$/g, "");
+const prefix = "dr-staging/mongodb/current";
 const createdAt = new Date();
 const createdAtUtc = createdAt.toISOString();
 const workDir = mkdtempSync(join(tmpdir(), "almeaa-dr-stage-"));
