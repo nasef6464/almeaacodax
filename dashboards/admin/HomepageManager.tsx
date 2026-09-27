@@ -7,25 +7,25 @@ import { HomepageSettings, HomepageStat, HomepageTestimonial } from '../../types
 import { sanitizeHomepageSettings } from '../../utils/sanitizeMojibakeArabic';
 
 const DEFAULT_HERO_BOY_IMAGE =
-    '/images/homepage-hero-boy-platform.jpg?v=20260512';
+    '/images/homepage-hero-boy-platform.webp?v=20260512';
 
 const PLATFORM_PRESET_IMAGES = [
     // باقة استوديو المئة النهاري 3D
-    { title: 'استوديو التابلت الذكي', pack: 'daylight', url: '/images/smart-learning-tablet.jpg' },
-    { title: 'بطل القدرات والكمي', pack: 'daylight', url: '/images/daylight-qudrat-math.jpg' },
-    { title: 'مختبر التحصيلي العلمي', pack: 'daylight', url: '/images/daylight-tahsili-science.jpg' },
-    { title: 'محاكاة قياس بالوقت', pack: 'daylight', url: '/images/daylight-mock-simulation.jpg' },
-    { title: 'المعلم الآلي الذكي AI', pack: 'daylight', url: '/images/daylight-ai-tutor.jpg' },
-    { title: 'فرحة الـ 100% والتفوق', pack: 'daylight', url: '/images/daylight-celebration-100.jpg' },
-    { title: 'حلبة التنافس المدرسي', pack: 'daylight', url: '/images/daylight-school-arena.jpg' },
+    { title: 'استوديو التابلت الذكي', pack: 'daylight', url: '/images/smart-learning-tablet.webp' },
+    { title: 'بطل القدرات والكمي', pack: 'daylight', url: '/images/daylight-qudrat-math.webp' },
+    { title: 'مختبر التحصيلي العلمي', pack: 'daylight', url: '/images/daylight-tahsili-science.webp' },
+    { title: 'محاكاة قياس بالوقت', pack: 'daylight', url: '/images/daylight-mock-simulation.webp' },
+    { title: 'المعلم الآلي الذكي AI', pack: 'daylight', url: '/images/daylight-ai-tutor.webp' },
+    { title: 'فرحة الـ 100% والتفوق', pack: 'daylight', url: '/images/daylight-celebration-100.webp' },
+    { title: 'حلبة التنافس المدرسي', pack: 'daylight', url: '/images/daylight-school-arena.webp' },
 
     // النمط السيبراني الليلي
-    { title: 'بطل القدرات السيبراني', pack: 'neon', url: '/images/qudrat-champion.jpg' },
-    { title: 'شعلة التحصيلي العلمي', pack: 'neon', url: '/images/tahsili-excellence.jpg' },
-    { title: 'محاكاة قياس المحوسبة', pack: 'neon', url: '/images/mock-exam-simulation.jpg' },
-    { title: 'المساعد الذكي الفوري', pack: 'neon', url: '/images/ai-smart-tutor.jpg' },
-    { title: 'تتويج الـ 100% والقمة', pack: 'neon', url: '/images/score-celebration.jpg' },
-    { title: 'حلبة الفصول التفاعلية', pack: 'neon', url: '/images/classroom-arena.jpg' },
+    { title: 'بطل القدرات السيبراني', pack: 'neon', url: '/images/qudrat-champion.webp' },
+    { title: 'شعلة التحصيلي العلمي', pack: 'neon', url: '/images/tahsili-excellence.webp' },
+    { title: 'محاكاة قياس المحوسبة', pack: 'neon', url: '/images/mock-exam-simulation.webp' },
+    { title: 'المساعد الذكي الفوري', pack: 'neon', url: '/images/ai-smart-tutor.webp' },
+    { title: 'تتويج الـ 100% والقمة', pack: 'neon', url: '/images/score-celebration.webp' },
+    { title: 'حلبة الفصول التفاعلية', pack: 'neon', url: '/images/classroom-arena.webp' },
 ];
 
 const COLOR_SWATCHES = [
