@@ -40,10 +40,13 @@ assert.ok(postDeploy.includes("actions/upload-artifact@v4"));
 
 assert.ok(drWorkflow.includes("schedule:"));
 assert.ok(drWorkflow.includes('cron: "17 1 * * *"'));
-assert.ok(drWorkflow.includes("PRODUCTION_BACKUP_MONGODB_URI"));
+assert.ok(!drWorkflow.includes("PRODUCTION_BACKUP_MONGODB_URI"));
 assert.ok(drWorkflow.includes("PRODUCTION_R2_BACKUP_ACCESS_KEY_ID"));
 assert.ok(drWorkflow.includes("PRODUCTION_R2_BACKUP_SECRET_ACCESS_KEY"));
-assert.ok(drWorkflow.includes("Fail closed when source backup secrets are incomplete"));
+assert.ok(drWorkflow.includes("Fail closed when R2 source secrets are incomplete"));
+assert.ok(drWorkflow.includes("Resolve fresh MongoDB backup staged by Render"));
+assert.ok(drWorkflow.includes("staged Mongo backup is stale"));
+assert.ok(drWorkflow.includes("limit 7200s"));
 assert.ok(drWorkflow.includes("actions/upload-artifact@v4"));
 assert.ok(drWorkflow.includes("retention-days: 30"));
 assert.ok(drWorkflow.includes("mongo:8.0"));
