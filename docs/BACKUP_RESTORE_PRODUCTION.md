@@ -163,3 +163,24 @@ A separate FREE Atlas recovery/staging cluster was created on 2026-09-25:
 - MongoDB: 8.0.32
 
 It is not a production target. A bounded logical-copy exercise proved recovery of multiple collections while preserving identifiers, but large-document connector payload limits prevented treating that exercise as the required full database restore. Final evidence must use the verified `mongodump → mongorestore` path against this or another explicitly isolated recovery target.
+
+
+## PLAN 2 scheduled production DR closure
+
+The canonical scheduled workflow is:
+`.github/workflows/production-dr-backup.yml`.
+
+It now requires only five source credentials:
+- production MongoDB backup URI;
+- production R2 endpoint and bucket;
+- production R2 backup access key ID and secret access key.
+
+Independent off-site evidence is stored as a private GitHub Actions artifact with a 30-day retention period and recorded SHA-256 artifact digest.
+
+Every successful run also performs restore drills into disposable local recovery targets:
+- MongoDB 8 for the database archive;
+- MinIO for the R2/S3 media archive.
+
+The media drill verifies exact object-key preservation, source/restored object-count parity and at least one real restored object. The database drill verifies collection count plus representative `users` and `questions` documents.
+
+This pattern avoids treating the production R2 bucket as its own backup and avoids requiring a second third-party object-store account merely to certify DR.

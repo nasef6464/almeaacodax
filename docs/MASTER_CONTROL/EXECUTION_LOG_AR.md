@@ -148,3 +148,28 @@ Status:
 - #235 remains external-secret/DR blocked.
 - #236 CLOSED ✅ — material latency reduction + authenticated staged load satisfy the alternate exit path; physical topology remains optimization debt.
 - #237 Atlas broad allowlist removal remains owner/admin blocked.
+
+
+## 2026-09-27 — PLAN 2 network closure + DR simplification
+
+### #237 network closure
+- first `0.0.0.0/0` removal exposed stale/incomplete Render CIDRs and caused Mongo startup failures.
+- rollback restored broad access immediately and production recovered.
+- current Render Frankfurt outbound ranges were obtained from Render Connect → Outbound:
+  - `74.220.51.0/24`
+  - `74.220.59.0/24`
+- ranges were added before retrying the narrowing.
+- `0.0.0.0/0` removed again.
+- exact production SHA `f737f81af480951dcb54c78f72b4b028909e9a43` redeployed as `dep-dasd18t9fdbs73cu3d30`.
+- fresh startup: `MongoDB connected`, Redis connected, API listening, service live.
+- #237 CLOSED ✅.
+
+### #235 final architecture
+Daily DR no longer requires four `DR_OFFSITE_*` secrets.
+GitHub Actions Artifact provides the independent 30-day backup copy and digest.
+The same run automatically restores:
+- Mongo archive into disposable Mongo 8;
+- media archive into disposable MinIO;
+then records representative Mongo counts, exact media key/object-count parity and measured restore RTO.
+
+Remaining external input: five production source secrets only.

@@ -98,3 +98,15 @@
 ## D-022 — #236 closes on the alternate material-latency path
 **الدليل:** authenticated c10/c25/c50 = PASS، 340 reads، 0% errors، p50/p95/p99 مسجلة؛ learning-core c50 p95 انخفض من 4889.23ms إلى 674.51ms، وcourses c50 p95 أصبح 832.96ms.  
 **القرار:** نص #236 يسمح بـ co-location **أو** material latency reduction؛ لذلك #236 مغلق على المسار الثاني. Frankfurt↔Singapore يبقى optimization debt ولا يبرر paid migration أو cutover غير موثق.
+
+
+## D-023 — Atlas allowlist must follow current Render outbound ranges
+**الحادثة:** حذف `0.0.0.0/0` مع النطاقين التاريخيين فقط قطع Mongo عن Render.  
+**الإجراء:** rollback فوري، ثم قراءة النطاقات الحالية من Render Connect → Outbound، إضافة `74.220.51.0/24` و`74.220.59.0/24`، ثم إعادة الحذف.  
+**الدليل:** redeploy جديد من نفس SHA اتصل بـMongo من الصفر وأصبح Live.  
+**القرار:** النطاقات القديمة لا تُعامل كمصدر حقيقة؛ Render UI الحالي هو مرجع outbound allowlist.
+
+## D-024 — DR independent storage uses GitHub Actions Artifact
+**المشكلة:** التصميم السابق احتاج مزود S3 خارجي ثانٍ وأربع Secrets إضافية فقط لإثبات independence.  
+**القرار:** النسخة اليومية المستقلة تُرفع إلى private GitHub Actions Artifact لمدة 30 يومًا مع digest، ثم يعمل restore drill تلقائي في Mongo 8 وMinIO معزولين.  
+**الأثر:** خفض متطلبات الإعداد من 9 Secrets إلى 5 Source Secrets فقط، مع بقاء fail-closed alerting وRPO/RTO evidence.

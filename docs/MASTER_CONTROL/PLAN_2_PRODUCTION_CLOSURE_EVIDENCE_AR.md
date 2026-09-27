@@ -100,18 +100,22 @@ First real scheduled run:
 - result: **FAIL-CLOSED before mongodump**.
 - all required secret-backed values were empty.
 
-Missing GitHub Actions secrets:
+PLAN 2 simplifies the final DR workflow to **five source secrets only**:
 1. `PRODUCTION_BACKUP_MONGODB_URI`
 2. `PRODUCTION_R2_ENDPOINT`
 3. `PRODUCTION_R2_BUCKET`
 4. `PRODUCTION_R2_BACKUP_ACCESS_KEY_ID`
 5. `PRODUCTION_R2_BACKUP_SECRET_ACCESS_KEY`
-6. `DR_OFFSITE_ENDPOINT`
-7. `DR_OFFSITE_BUCKET`
-8. `DR_OFFSITE_ACCESS_KEY_ID`
-9. `DR_OFFSITE_SECRET_ACCESS_KEY`
 
-Do not invent these values.
+The independent copy no longer requires a second object-store account:
+- verified Mongo + R2 backup artifacts are uploaded to private GitHub Actions Artifact storage for 30 days;
+- artifact digest and URL are recorded;
+- an isolated Mongo 8 restore drill runs automatically;
+- an isolated MinIO/S3 media restore drill runs automatically;
+- source/restored media object-count parity and a real preserved object key are verified;
+- measured Mongo/R2 restore RTO and <=24h scheduled RPO objective are recorded.
+
+No `DR_OFFSITE_*` secrets are required. Do not invent the five remaining source values.
 
 ### Frankfurt recovery cluster is not a full restore
 Production Atlas:
@@ -202,18 +206,21 @@ GitHub side was closed in PLAN 0:
 - deletion blocked.
 - required exact-head checks enforced.
 
-Atlas production access list currently contains:
-- `74.220.48.0/24` — Render outbound range.
-- `74.220.56.0/24` — Render outbound range.
-- `37.42.169.169/32` — historical setup entry.
-- **`0.0.0.0/0` — still open.**
+Atlas network closure:
+- initial deletion of `0.0.0.0/0` exposed that the previously documented Render CIDRs `74.220.48.0/24` and `74.220.56.0/24` were stale/incomplete;
+- the broad entry was rolled back immediately and production recovered;
+- current Render Frankfurt outbound ranges were read from **Connect → Outbound**:
+  - `74.220.51.0/24`
+  - `74.220.59.0/24`
+- both were added before the second narrowing;
+- `0.0.0.0/0` was then removed;
+- a full redeploy of exact production SHA `f737f81af480951dcb54c78f72b4b028909e9a43` forced a fresh Mongo connection;
+- Render deploy `dep-dasd18t9fdbs73cu3d30` reached `live`;
+- fresh startup logs show `[database] MongoDB connected`, Redis connected, API listening and service live.
 
-Current Atlas connector can inspect/add entries but cannot delete an access-list entry.
+Final Atlas list contains no broad public CIDR.
 
-#237 network exit remains:
-- remove `0.0.0.0/0` using Atlas owner/admin control.
-- immediately run production readiness/operational smoke after removal.
-- preserve rollback path before narrowing.
+**#237: CLOSED ✅**
 
 ## Exit state
 
@@ -226,11 +233,11 @@ Already PASS:
 - Atlas current health/advisor inventory.
 
 Still blocking PLAN 2 final closure:
-1. #235 — 9 DR secrets + successful scheduled backup + independent offsite copy + isolated restore drill + RPO/RTO.
-2. #237 — remove Atlas `0.0.0.0/0` and smoke.
+1. #235 — configure five source backup secrets, then obtain one successful real scheduled/manual run with independent artifact + isolated Mongo/R2 restore drill + measured RPO/RTO.
 
 Closed in PLAN 2:
 - #234 Runtime integrations ✅
 - #236 Performance / topology / capacity ✅
+- #237 Governance / network ✅
 
 PLAN 3 must not start until these exit gates are resolved or Master Control explicitly changes the sequence.

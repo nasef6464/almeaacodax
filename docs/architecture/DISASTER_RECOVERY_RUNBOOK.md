@@ -132,3 +132,30 @@ Batch 15 remains blocked until:
 - isolated MongoDB and R2 restore drills succeed;
 - backup age and restore duration are recorded;
 - achieved RPO/RTO and failure alerting are evidenced.
+
+
+## PLAN 2 final scheduled DR pattern — GitHub independent artifact + isolated restore
+
+The production DR scheduler uses GitHub Actions as an independent failure domain for the verified backup artifact.
+
+Required source secrets are limited to:
+- `PRODUCTION_BACKUP_MONGODB_URI`
+- `PRODUCTION_R2_ENDPOINT`
+- `PRODUCTION_R2_BUCKET`
+- `PRODUCTION_R2_BACKUP_ACCESS_KEY_ID`
+- `PRODUCTION_R2_BACKUP_SECRET_ACCESS_KEY`
+
+The scheduled workflow:
+1. runs `mongodump --archive --gzip`, checksum and manifest verification;
+2. inventories and downloads the full production R2 bucket, then archives and checksums it;
+3. uploads both verified backup sets to GitHub Actions Artifact storage for 30 days;
+4. starts a disposable isolated Mongo 8 container;
+5. restores the Mongo archive and verifies representative production collections/documents;
+6. starts a disposable isolated MinIO S3-compatible target;
+7. restores the media archive preserving exact object keys and verifies source/restored object-count parity plus a real sample key;
+8. records the artifact digest, RPO objective and measured Mongo/R2 restore RTO;
+9. comments on issue #235 automatically if any step fails.
+
+GitHub Artifact is intentionally independent from both Atlas and Cloudflare R2. It replaces the earlier requirement for a second S3 provider in the daily workflow; no `DR_OFFSITE_*` credentials are required.
+
+Do not treat repository-level contract tests as recovery evidence. #235 closes only after a real secret-backed workflow run succeeds end-to-end.
