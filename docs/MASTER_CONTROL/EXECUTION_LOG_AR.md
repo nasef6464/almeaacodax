@@ -146,5 +146,5 @@ Latest production:
 Status:
 - #234 CLOSED ✅.
 - #235 remains external-secret/DR blocked.
-- #236 performance evidence PASS; physical topology decision remains.
+- #236 CLOSED ✅ — material latency reduction + authenticated staged load satisfy the alternate exit path; physical topology remains optimization debt.
 - #237 Atlas broad allowlist removal remains owner/admin blocked.
