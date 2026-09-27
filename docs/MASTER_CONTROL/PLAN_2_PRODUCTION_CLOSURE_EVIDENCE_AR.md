@@ -59,7 +59,15 @@ PLAN 2 adds:
 - one-time R2 presign -> PUT -> public GET -> SHA-256 proof on PLAN 2 merge.
 - existing Sentry live test-event remains in Post Deploy Smoke.
 
-Final #234 closure waits for the post-merge R2 and Sentry live evidence IDs/results.
+### Final closure proof
+- PR #273 merged as `d588f7db9e28187fb505e01134054b2d0bfce905`.
+- Post Deploy run `36291061913`: SUCCESS.
+- one-time R2 proof: presign -> PUT -> public GET -> SHA-256 verified.
+- Sentry live event on that run: `b191aa4d95a14dccbe3e26d1110ff658`.
+- latest main `3692581ba46362bc5c71714a83be7f3e9fa1a3e9` Post Deploy run `36295206954`: SUCCESS.
+- latest Sentry event: `a32f9e20f795473ea79116cbbc5b8176`.
+
+**#234: CLOSED ✅**
 
 ## Post-deploy 429 diagnosis
 
@@ -134,32 +142,55 @@ Conclusion:
 
 ## #236 — Performance / topology / capacity
 
-Current topology:
-- Render API: Frankfurt.
-- Render Redis: Frankfurt.
+Current topology remains:
+- Render API + Redis: Frankfurt.
 - Production MongoDB Atlas: Singapore.
-- therefore API <-> DB remains cross-region.
 
-Previously measured bounded production evidence:
-- health ready p50 ~213.67 ms / p95 ~306.79 ms
-- courses limit100 p50 ~509.07 ms / p95 ~1859.50 ms
-- quizzes p50 ~202.49 ms / p95 ~534.75 ms
-- content bootstrap learning-core p50 ~224.48 ms / p95 ~894.92 ms
-- 0% request errors in that bounded sample.
+PLAN 2 nevertheless removed the application hot-path bottlenecks and produced current-release staged evidence on:
+`main@3692581ba46362bc5c71714a83be7f3e9fa1a3e9`
 
-Fresh Atlas health:
-- open alerts: 0
-- Performance Advisor suggested indexes: 0
-- slow query logs returned: 0
-- schema suggestions: 0.
+Post Deploy run:
+- `36295206954` — **SUCCESS**
+- release identity exact
+- readiness + scale readiness PASS
+- operational journeys 71/71 PASS
+- authenticated load PASS
 
-Redis scale dependency is now green, but cross-region Mongo topology remains.
+Bounded read latency:
+- health p50 206.64ms / p95 516.95ms
+- courses p50 217ms / p95 1169.90ms
+- quizzes p50 209.02ms / p95 538.81ms
+- learning-core p50 208.91ms / p95 699.32ms
+- error rate 0%.
 
-Safe options:
-1. **Paid:** upgrade/move production Atlas from FREE to Flex/M10 in Frankfurt. This has billing impact and requires explicit owner approval.
-2. **Migration:** full verified backup/restore to Frankfurt then controlled cutover with rollback. Current Frankfurt recovery is incomplete, so this must wait for #235 evidence.
+Authenticated student read-load:
+- concurrency 10 / 25 / 50
+- 340 GET-only requests
+- max allowed p95 2500ms / max error-rate 2%
+- overall status: PASS
+- actual error-rate: 0% everywhere.
 
-No paid upgrade and no destructive cutover is executed implicitly.
+At c=50:
+- auth/me p50 719.19 / p95 1728.20 / p99 2418.08ms
+- results p50 805.96 / p95 1226.04 / p99 1876.77ms
+- courses p50 526.80 / p95 832.96 / p99 860.40ms
+- learning-core p50 276.39 / p95 674.51 / p99 686.93ms
+
+Learning-core improvement:
+- c25 p95: 2695.25ms -> 303.39ms
+- c50 p95: 4889.23ms -> 674.51ms
+
+Redis multi-instance coordination is proven green.
+
+Closure decision:
+- Issue #236 criterion 1 explicitly allows co-location **or** material end-to-end latency reduction.
+- PLAN 2 satisfied the alternate path with current-release authenticated staged evidence.
+- Redis scale coordination is green.
+- p50/p95/p99 and error-rate are recorded.
+- no 500/1000-user capacity claim is made.
+- Frankfurt↔Singapore remains infrastructure optimization debt only.
+
+**#236: CLOSED ✅**
 
 ## #237 — Governance / network
 
@@ -195,9 +226,11 @@ Already PASS:
 - Atlas current health/advisor inventory.
 
 Still blocking PLAN 2 final closure:
-1. #234 — R2 write/read proof and Sentry live event after PLAN 2 merge.
-2. #235 — 9 DR secrets + successful scheduled backup + independent offsite copy + isolated restore drill + RPO/RTO.
-3. #236 — co-located API/Mongo topology or evidence-backed controlled migration/approved paid upgrade.
-4. #237 — remove Atlas `0.0.0.0/0` and smoke.
+1. #235 — 9 DR secrets + successful scheduled backup + independent offsite copy + isolated restore drill + RPO/RTO.
+2. #237 — remove Atlas `0.0.0.0/0` and smoke.
+
+Closed in PLAN 2:
+- #234 Runtime integrations ✅
+- #236 Performance / topology / capacity ✅
 
 PLAN 3 must not start until these exit gates are resolved or Master Control explicitly changes the sequence.

@@ -88,3 +88,13 @@
 ## D-020 — Atlas broad allowlist
 **المشكلة:** `0.0.0.0/0` ما زالت موجودة رغم وجود Render CIDRs.  
 **القرار:** حذفها فقط من owner/admin control ثم smoke فوري؛ connector الحالي لا يملك delete access-list action.
+
+
+## D-021 — Shared learning bootstrap precompression
+**المشكلة:** cached learning-core ظل يعيد JSON serialization/compression لكل request؛ c25/c50 تجاوزا p95 gate رغم 0% errors.  
+**القرار:** serialize + gzip مرة واحدة لكل shared cached payload وإعادة استخدام نفس buffer بدون تغيير response shape أو RBAC.  
+**الدليل:** c25 p95 2695.25→303.39ms، c50 p95 4889.23→674.51ms، latest Post Deploy PASS.
+
+## D-022 — #236 closes on the alternate material-latency path
+**الدليل:** authenticated c10/c25/c50 = PASS، 340 reads، 0% errors، p50/p95/p99 مسجلة؛ learning-core c50 p95 انخفض من 4889.23ms إلى 674.51ms، وcourses c50 p95 أصبح 832.96ms.  
+**القرار:** نص #236 يسمح بـ co-location **أو** material latency reduction؛ لذلك #236 مغلق على المسار الثاني. Frankfurt↔Singapore يبقى optimization debt ولا يبرر paid migration أو cutover غير موثق.
