@@ -134,28 +134,29 @@ Batch 15 remains blocked until:
 - achieved RPO/RTO and failure alerting are evidenced.
 
 
-## PLAN 2 final scheduled DR pattern — GitHub independent artifact + isolated restore
+## PLAN 2 final scheduled DR pattern — Render source stage + GitHub independent certification
 
-The production DR scheduler uses GitHub Actions as an independent failure domain for the verified backup artifact.
+Runtime run `36320284837` established an important network boundary: after Atlas `0.0.0.0/0` was removed, the GitHub-hosted runner had all five source secrets and valid tooling but could not select an Atlas primary. The runner was in Azure `centralus`, while production Atlas is intentionally restricted to current Render Frankfurt outbound CIDRs. The DR design therefore must not depend on direct GitHub-hosted-runner → Atlas access.
 
-Required source secrets are limited to:
-- `PRODUCTION_BACKUP_MONGODB_URI`
-- `PRODUCTION_R2_ENDPOINT`
-- `PRODUCTION_R2_BUCKET`
-- `PRODUCTION_R2_BACKUP_ACCESS_KEY_ID`
-- `PRODUCTION_R2_BACKUP_SECRET_ACCESS_KEY`
+The production pattern is split by responsibility:
 
-The scheduled workflow:
-1. runs `mongodump --archive --gzip`, checksum and manifest verification;
-2. inventories and downloads the full production R2 bucket, then archives and checksums it;
-3. uploads both verified backup sets to GitHub Actions Artifact storage for 30 days;
-4. starts a disposable isolated Mongo 8 container;
-5. restores the Mongo archive and verifies representative production collections/documents;
-6. starts a disposable isolated MinIO S3-compatible target;
-7. restores the media archive preserving exact object keys and verifies source/restored object-count parity plus a real sample key;
-8. records the artifact digest, RPO objective and measured Mongo/R2 restore RTO;
-9. comments on issue #235 automatically if any step fails.
+1. **Render source stage**
+   - a Frankfurt Render scheduled job runs before the GitHub certification schedule;
+   - it uses the existing production `MONGODB_URI` and R2 credentials from Render;
+   - it creates a gzip `mongodump`, SHA-256 checksum and manifest;
+   - it uploads them under `dr-staging/mongodb/current/`;
+   - it uploads `ready.json` last, so GitHub never consumes a partially staged backup.
 
-GitHub Artifact is intentionally independent from both Atlas and Cloudflare R2. It replaces the earlier requirement for a second S3 provider in the daily workflow; no `DR_OFFSITE_*` credentials are required.
+2. **GitHub independent certification**
+   - the scheduled workflow requires the staged Mongo marker to be fresh (maximum age 2 hours);
+   - it downloads and verifies the staged archive/checksum/manifest;
+   - it inventories and downloads production R2 media while excluding the `dr-staging/` prefix;
+   - it uploads both verified backup sets to private GitHub Actions Artifact storage for 30 days;
+   - it starts disposable Mongo 8 and MinIO recovery targets;
+   - it restores both backup sets and validates representative Mongo records, exact media object-count parity and a preserved object key;
+   - it records artifact digest, backup age, RPO objective and measured Mongo/R2 restore RTO;
+   - it comments on issue #235 automatically if any GitHub certification step fails.
 
-Do not treat repository-level contract tests as recovery evidence. #235 closes only after a real secret-backed workflow run succeeds end-to-end.
+GitHub Artifact is the independent copy/failure domain. Cloudflare R2 staging is only the secure handoff between the allowlisted Render source stage and GitHub certification; the staging prefix is explicitly excluded from the media backup to prevent recursive capture.
+
+Do not widen Atlas to `0.0.0.0/0` for DR. Do not treat repository contract tests or a staged object alone as recovery evidence. #235 closes only after the real Render source stage and the complete GitHub certification run both succeed.

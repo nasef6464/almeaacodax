@@ -40,10 +40,13 @@ assert.ok(postDeploy.includes("actions/upload-artifact@v4"));
 
 assert.ok(drWorkflow.includes("schedule:"));
 assert.ok(drWorkflow.includes('cron: "17 1 * * *"'));
-assert.ok(drWorkflow.includes("PRODUCTION_BACKUP_MONGODB_URI"));
+assert.ok(!drWorkflow.includes("PRODUCTION_BACKUP_MONGODB_URI"));
 assert.ok(drWorkflow.includes("PRODUCTION_R2_BACKUP_ACCESS_KEY_ID"));
 assert.ok(drWorkflow.includes("PRODUCTION_R2_BACKUP_SECRET_ACCESS_KEY"));
-assert.ok(drWorkflow.includes("Fail closed when source backup secrets are incomplete"));
+assert.ok(drWorkflow.includes("Fail closed when R2 source secrets are incomplete"));
+assert.ok(drWorkflow.includes("Resolve fresh MongoDB backup staged by Render"));
+assert.ok(drWorkflow.includes("staged Mongo backup is stale"));
+assert.ok(drWorkflow.includes("limit 7200s"));
 assert.ok(drWorkflow.includes("actions/upload-artifact@v4"));
 assert.ok(drWorkflow.includes("retention-days: 30"));
 assert.ok(drWorkflow.includes("mongo:8.0"));
@@ -67,9 +70,10 @@ for (const evidence of [
   "scaleReady=true",
   "dep-daru6pjncjis73f4f0m0",
   "36222909358",
-  "PRODUCTION_BACKUP_MONGODB_URI",
-  "PRODUCTION_R2_BACKUP_ACCESS_KEY_ID",
-  "five source secrets",
+  "MONGODB_URI",
+  "GitHub itself needs only the four R2 secrets",
+  "five production source values",
+  "36320284837",
   "66 collections",
   "10 collections",
   "74.220.51.0/24",
