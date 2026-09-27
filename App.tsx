@@ -261,7 +261,7 @@ const getSeoBaseUrl = () => {
 };
 
 const SEO_BASE_URL = getSeoBaseUrl();
-const SEO_DEFAULT_IMAGE_PATH = '/images/homepage-hero-boy-platform.jpg';
+const SEO_DEFAULT_IMAGE_PATH = '/images/homepage-hero-boy-platform.webp';
 
 const SEO_PRIVATE_PREFIXES = [
   '/dashboard',
