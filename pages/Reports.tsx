@@ -98,7 +98,7 @@ const studentLearningActionIcons: Record<StudentLearningActionIconKey, LucideIco
 const studentReadinessIcons: Record<StudentReadinessIconKey, LucideIcon> = { target: Target, checkCircle: CheckCircle, fileText: FileText, bookOpen: BookOpen };
 
 const Reports: React.FC = () => {
-    const { examResults, questionAttempts, skills, lessons, quizzes, libraryItems, questions, topics, subjects, sections, paths, groups, users, enrolledPaths, user, hydrateContentBootstrap } = useStore();
+    const { examResults, questionAttempts, skills, lessons, quizzes, libraryItems, questions, topics, subjects, sections, paths, groups, users, enrolledPaths, user, hydrateContentBootstrap, hydrateQuestions } = useStore();
     const [scopedAnalytics, setScopedAnalytics] = useState<ScopedAnalyticsOverview | null>(null);
     const [scopedResults, setScopedResults] = useState<ScopedQuizResult[]>([]);
     const [scopedAnalyticsLoading, setScopedAnalyticsLoading] = useState(false);
@@ -252,6 +252,24 @@ const Reports: React.FC = () => {
 
     const selectedSkillRecommendation = getSkillRecommendation(selectedReportSkill || undefined, skills, lessons, quizzes, libraryItems, questions, topics);
     const isStudentView = user?.role === Role.STUDENT;
+
+    useEffect(() => {
+        let cancelled = false;
+        void adapter.getQuestions({ page: 1, limit: 20, summary: true, noTotal: true })
+            .then((items) => {
+                if (cancelled) return;
+                const merged = new Map(useStore.getState().questions.map((question) => [question.id, question] as const));
+                items.forEach((question) => merged.set(question.id, question));
+                hydrateQuestions(Array.from(merged.values()));
+            })
+            .catch((error) => {
+                console.warn('Report question summary unavailable:', error);
+            });
+
+        return () => {
+            cancelled = true;
+        };
+    }, [hydrateQuestions]);
     const hasStudentAnalytics = examResults.length > 0 || questionAttempts.length > 0 || aggregatedSkills.length > 0;
     const isStudentReportFull = studentReportDepth === 'full';
     const skillReadinessSummary = useMemo(
@@ -287,6 +305,7 @@ const Reports: React.FC = () => {
             .then((content) => {
                 if (cancelled) return;
                 hydrateContentBootstrap({
+                    topics: content.topics,
                     lessons: content.lessons,
                     libraryItems: content.libraryItems,
                 });
