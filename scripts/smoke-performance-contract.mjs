@@ -255,7 +255,7 @@ assertIncludes('services/api.ts', 'canUsePublicLearningCache');
 assertIncludes('services/apiGroups/taxonomyContentApi.ts', 'taxonomy-bootstrap');
 assertIncludes('services/apiGroups/taxonomyContentApi.ts', 'content-bootstrap');
 assertIncludes('services/apiGroups/taxonomyContentApi.ts', 'withQuery("/content/bootstrap", { scope: "full" })');
-assertIncludes('services/apiGroups/taxonomyContentApi.ts', 'withQuery("/content/bootstrap", { scope, phase })');
+assertIncludes('services/apiGroups/taxonomyContentApi.ts', 'withQuery("/content/bootstrap", { scope, phase, ...filters })');
 assertIncludes('services/apiGroups/taxonomyContentApi.ts', 'withQuery("/content/bootstrap/minimal", {})');
 assertIncludes('services/apiGroups/taxonomyContentApi.ts', 'homepage-settings');
 assertIncludes('services/apiGroups/taxonomyContentApi.ts', 'announcement-ads');
