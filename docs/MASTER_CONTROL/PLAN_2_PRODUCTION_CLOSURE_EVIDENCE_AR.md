@@ -100,22 +100,26 @@ First real scheduled run:
 - result: **FAIL-CLOSED before mongodump**.
 - all required secret-backed values were empty.
 
-PLAN 2 simplifies the final DR workflow to **five source secrets only**:
-1. `PRODUCTION_BACKUP_MONGODB_URI`
-2. `PRODUCTION_R2_ENDPOINT`
-3. `PRODUCTION_R2_BUCKET`
-4. `PRODUCTION_R2_BACKUP_ACCESS_KEY_ID`
-5. `PRODUCTION_R2_BACKUP_SECRET_ACCESS_KEY`
+PLAN 2 source material is now configured. The first real post-configuration run was:
 
-The independent copy no longer requires a second object-store account:
-- verified Mongo + R2 backup artifacts are uploaded to private GitHub Actions Artifact storage for 30 days;
-- artifact digest and URL are recorded;
-- an isolated Mongo 8 restore drill runs automatically;
-- an isolated MinIO/S3 media restore drill runs automatically;
-- source/restored media object-count parity and a real preserved object key are verified;
-- measured Mongo/R2 restore RTO and <=24h scheduled RPO objective are recorded.
+- run id: `36320284837`;
+- commit: `ca8d710b6a7b84d641e00e8387ba3b163fda6432`;
+- secrets/tooling validation: **PASS**;
+- failure point: `Create verified MongoDB backup`;
+- Atlas topology: `ReplicaSetNoPrimary`;
+- all three Atlas nodes returned TLS `internal error`;
+- GitHub-hosted runner region: Azure `centralus`.
 
-No `DR_OFFSITE_*` secrets are required. Do not invent the five remaining source values.
+This proves the remaining blocker is **not missing secret material**. Direct GitHub-hosted-runner → Atlas backup execution is incompatible with the hardened production Atlas allowlist, which intentionally permits current Render Frankfurt outbound ranges rather than arbitrary GitHub-hosted runner IPs.
+
+The corrective architecture in PR #281 is:
+
+1. A Frankfurt Render scheduled job runs `mongodump --archive --gzip` using the existing production runtime secret material and uploads archive/checksum/manifest plus an atomic `ready.json` marker under `dr-staging/mongodb/current/` in R2.
+2. GitHub Actions requires that staged Mongo dump to be fresh (maximum age 2 hours), downloads and verifies it, then creates the full R2 media backup while excluding the staging prefix.
+3. GitHub remains the independent failure domain: verified Mongo + R2 artifacts are uploaded to private GitHub Actions Artifact storage for 30 days with artifact digest.
+4. The same GitHub run restores into disposable Mongo 8 and MinIO targets, checks representative Mongo data, exact media object-count parity and a stable key, then records RPO/RTO.
+
+The five production source values remain controlled at runtime, but after this fix GitHub itself needs only the four R2 secrets; `MONGODB_URI` stays on Render. No `DR_OFFSITE_*` secrets are required. Do not reopen Atlas `0.0.0.0/0`.
 
 ### Frankfurt recovery cluster is not a full restore
 Production Atlas:
@@ -142,7 +146,7 @@ Sample parity:
 Conclusion:
 **No production cutover to the Frankfurt recovery cluster is allowed.**
 
-#235 cannot close until secret-backed scheduled backup + independent copy + isolated full restore drill + measured RPO/RTO pass.
+#235 cannot close until the Render-staged Mongo backup plus GitHub independent copy + isolated full restore drill + measured RPO/RTO pass in a real runtime execution.
 
 ## #236 — Performance / topology / capacity
 
@@ -233,7 +237,7 @@ Already PASS:
 - Atlas current health/advisor inventory.
 
 Still blocking PLAN 2 final closure:
-1. #235 — configure five source backup secrets, then obtain one successful real scheduled/manual run with independent artifact + isolated Mongo/R2 restore drill + measured RPO/RTO.
+1. #235 — merge/provision the Render-staged Mongo source path from PR #281, then obtain one successful real end-to-end run with independent GitHub Artifact + isolated Mongo/R2 restore drill + measured RPO/RTO.
 
 Closed in PLAN 2:
 - #234 Runtime integrations ✅
