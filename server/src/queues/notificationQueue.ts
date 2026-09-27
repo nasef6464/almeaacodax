@@ -113,7 +113,10 @@ export async function getNotificationQueueMetrics() {
 
 export function startNotificationWorkers() {
   if (!isNotificationQueueEnabled()) {
-    console.info("[notifications] BullMQ worker disabled; set REDIS_URL and NOTIFICATION_QUEUE_ENABLED=true to enable it.");
+    const reason = !env.NOTIFICATION_QUEUE_ENABLED
+      ? "NOTIFICATION_QUEUE_ENABLED=false"
+      : "REDIS_URL is not configured";
+    console.info(`[notifications] BullMQ worker disabled because ${reason}.`);
     return null;
   }
 

@@ -46,7 +46,10 @@ function getQueue() {
 export function startWeeklyParentReportQueue() {
   const activeQueue = getQueue();
   if (!activeQueue) {
-    console.warn("[weekly-report] distributed scheduler disabled; REDIS_URL and NOTIFICATION_QUEUE_ENABLED are required");
+    const reason = !env.NOTIFICATION_QUEUE_ENABLED
+      ? "NOTIFICATION_QUEUE_ENABLED=false"
+      : "REDIS_URL is not configured";
+    console.warn(`[weekly-report] distributed scheduler disabled because ${reason}.`);
     return null;
   }
 

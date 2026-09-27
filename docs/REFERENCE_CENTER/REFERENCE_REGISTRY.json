@@ -89,6 +89,11 @@
   ],
   "supporting": [
     {
+      "path": "docs/MASTER_CONTROL/PLAN_2_PRODUCTION_CLOSURE_EVIDENCE_AR.md",
+      "role": "plan2_production_closure_evidence",
+      "status": "active_evidence"
+    },
+    {
       "path": "docs/MASTER_CONTROL/PLAN_1_RECONCILIATION_EVIDENCE_AR.md",
       "role": "plan1_reconciliation_evidence",
       "status": "active_evidence"

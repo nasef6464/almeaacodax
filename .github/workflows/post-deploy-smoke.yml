@@ -70,6 +70,13 @@ jobs:
         # Render service when the backend is migrated.
         run: npm run smoke:operational
 
+      - name: Google OAuth live start/callback proof
+        run: npm run smoke:google-oauth-live-proof
+
+      - name: R2 live presign/write/read proof — PLAN 2 closure only
+        if: github.event_name == 'push' && (contains(github.event.head_commit.message, 'plan2:') || contains(github.event.head_commit.message, 'PLAN 2'))
+        run: npm run smoke:r2-live-proof
+
       - name: Production bounded latency evidence
         env:
           PRODUCTION_API_BASE: https://almeaacodax.vercel.app/api

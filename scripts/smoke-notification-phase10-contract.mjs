@@ -57,7 +57,8 @@ check("notification queue uses Redis, BullMQ, idempotent job ids, and retry poli
 
 check("workers are optional and started by server bootstrap", () => {
   assertIncludes(files.queue, "isNotificationQueueEnabled");
-  assertIncludes(files.queue, "set REDIS_URL and NOTIFICATION_QUEUE_ENABLED=true");
+  assertIncludes(files.queue, "NOTIFICATION_QUEUE_ENABLED=false");
+  assertIncludes(files.queue, "REDIS_URL is not configured");
   assertIncludes(files.server, "bootstrapServer()");
   assertIncludes(files.bootstrap, "startNotificationWorkers()");
 });

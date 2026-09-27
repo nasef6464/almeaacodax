@@ -95,6 +95,8 @@
         "smoke:ai-admin-closure": "npm run smoke:ai-config-bridge && npm run smoke:integrations-runtime && npm run smoke:monitoring && npm run smoke:admin-tabs && npm run smoke:ai-platform-phase1 && npm run smoke:ai-platform-phase2 && npm run smoke:ai-platform-phase3 && npm run smoke:ai-platform-phase4 && npm run smoke:ai-platform-phase5 && npm run smoke:ai-platform-phase6 && npm run smoke:ai-platform-phase7 && npm run smoke:ai-platform-phase8",
         "smoke:sentry-runtime": "node scripts/smoke-sentry-runtime-contract.mjs",
         "smoke:sentry-live-proof": "node scripts/smoke-sentry-live-proof-auto.mjs",
+        "smoke:r2-live-proof": "node scripts/smoke-r2-live-proof.mjs",
+        "smoke:google-oauth-live-proof": "node scripts/smoke-google-oauth-live-proof.mjs",
         "smoke:resolve-admin-token": "node scripts/resolve-smoke-admin-token.mjs",
         "smoke:database": "node scripts/smoke-database-index-contract.mjs",
         "smoke:disaster-recovery": "node scripts/smoke-disaster-recovery-contract.mjs",
