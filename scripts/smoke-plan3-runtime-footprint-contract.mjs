@@ -109,6 +109,14 @@ for (const name of marketingAssetNames) {
   optimizedMarketingBytes += size;
 }
 assert.ok(optimizedMarketingBytes <= 1_500_000, `marketing WebP set exceeds 1.5MB budget: ${optimizedMarketingBytes}`);
+
+const legacyRawFallbacks = new Set(marketingAssetNames.map((name) => `${name}.jpg`));
+for (const entry of fs.readdirSync(path.join(process.cwd(), "public", "images"), { withFileTypes: true })) {
+  if (!entry.isFile() || !/\.(?:jpe?g|png)$/i.test(entry.name)) continue;
+  const size = fs.statSync(path.join(process.cwd(), "public", "images", entry.name)).size;
+  if (legacyRawFallbacks.has(entry.name)) continue;
+  assert.ok(size <= 250_000, `new raw image exceeds 250KB budget; optimize to WebP/AVIF first: ${entry.name}=${size}`);
+}
 for (const source of [landing, homepageManager, announcementAdsManager, vite, appSource, indexHtml, webmanifest, presentationDefaults]) {
   for (const name of marketingAssetNames) {
     assert.ok(!source.includes(`/images/${name}.jpg`), `default source still references heavy JPG ${name}`);
