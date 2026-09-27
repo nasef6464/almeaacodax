@@ -95,6 +95,6 @@
 **القرار:** serialize + gzip مرة واحدة لكل shared cached payload وإعادة استخدام نفس buffer بدون تغيير response shape أو RBAC.  
 **الدليل:** c25 p95 2695.25→303.39ms، c50 p95 4889.23→674.51ms، latest Post Deploy PASS.
 
-## D-022 — #236 is now performance-green but topology-explicit
-**الدليل:** authenticated c10/c25/c50 = PASS، 340 reads، 0% errors، p50/p95/p99 مسجلة.  
-**القرار:** لا نغلق #236 آليًا لأن نص الـIssue ما زال يطلب قرارًا صريحًا بخصوص co-location/network topology. لا paid Atlas upgrade بدون موافقة المالك.
+## D-022 — #236 closes on the alternate material-latency path
+**الدليل:** authenticated c10/c25/c50 = PASS، 340 reads، 0% errors، p50/p95/p99 مسجلة؛ learning-core c50 p95 انخفض من 4889.23ms إلى 674.51ms، وcourses c50 p95 أصبح 832.96ms.  
+**القرار:** نص #236 يسمح بـ co-location **أو** material latency reduction؛ لذلك #236 مغلق على المسار الثاني. Frankfurt↔Singapore يبقى optimization debt ولا يبرر paid migration أو cutover غير موثق.
