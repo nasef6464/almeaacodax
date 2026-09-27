@@ -1,0 +1,81 @@
+name: PLAN 3 Generate WebP Assets
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - codex/plan3-implementation-staging
+    paths:
+      - ".github/workflows/plan3-generate-webp.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: plan3-generate-webp-assets
+  cancel-in-progress: false
+
+jobs:
+  convert:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout PLAN 3 staging branch
+        uses: actions/checkout@v4
+        with:
+          ref: codex/plan3-implementation-staging
+          fetch-depth: 1
+
+      - name: Install WebP encoder
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq webp
+
+      - name: Convert marketing JPG assets to WebP
+        shell: bash
+        run: |
+          set -euo pipefail
+          assets=(
+            homepage-hero-boy-platform.jpg
+            smart-learning-tablet.jpg
+            daylight-qudrat-math.jpg
+            daylight-tahsili-science.jpg
+            daylight-mock-simulation.jpg
+            daylight-ai-tutor.jpg
+            daylight-celebration-100.jpg
+            daylight-school-arena.jpg
+            qudrat-champion.jpg
+            tahsili-excellence.jpg
+            mock-exam-simulation.jpg
+            ai-smart-tutor.jpg
+            score-celebration.jpg
+            classroom-arena.jpg
+          )
+          for file in "${assets[@]}"; do
+            source="public/images/$file"
+            target="${source%.jpg}.webp"
+            test -f "$source"
+            cwebp -quiet -mt -m 6 -q 82 "$source" -o "$target"
+            test -s "$target"
+            before=$(stat -c%s "$source")
+            after=$(stat -c%s "$target")
+            if [ "$after" -ge "$before" ]; then
+              echo "WebP did not improve $file: jpg=$before webp=$after" >&2
+              exit 1
+            fi
+            echo "$file: $before -> $after bytes"
+          done
+
+      - name: Commit optimized assets to PLAN 3 staging
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/images/*.webp
+          if git diff --cached --quiet; then
+            echo "WebP assets already current."
+            exit 0
+          fi
+          git commit -m "plan3(assets): add optimized WebP marketing images"
+          git push origin HEAD:codex/plan3-implementation-staging
