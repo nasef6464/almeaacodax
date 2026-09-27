@@ -12,6 +12,8 @@ const bootstrap = read("server/src/modules/content/http/contentBootstrapRoutes.t
 const genericPath = read("pages/GenericPathPage.tsx");
 const reports = read("pages/Reports.tsx");
 const landing = read("pages/Landing.tsx");
+const homepageManager = read("dashboards/admin/HomepageManager.tsx");
+const announcementAdsManager = read("dashboards/admin/AnnouncementAdsManager.tsx");
 const vite = read("vite.config.ts");
 const vercel = JSON.parse(read("vercel.json"));
 
@@ -67,6 +69,38 @@ assert.ok(!store.includes("Object.entries(state).filter"));
 assert.ok(vite.includes("globPatterns: ['**/*.{js,css,html,svg,woff2}']"));
 assert.ok(landing.includes("loading={isActive ? 'eager' : 'lazy'}"));
 assert.ok(landing.includes('loading="lazy"'));
+
+const marketingAssetNames = [
+  "homepage-hero-boy-platform",
+  "smart-learning-tablet",
+  "daylight-qudrat-math",
+  "daylight-tahsili-science",
+  "daylight-mock-simulation",
+  "daylight-ai-tutor",
+  "daylight-celebration-100",
+  "daylight-school-arena",
+  "qudrat-champion",
+  "tahsili-excellence",
+  "mock-exam-simulation",
+  "ai-smart-tutor",
+  "score-celebration",
+  "classroom-arena",
+];
+let optimizedMarketingBytes = 0;
+for (const name of marketingAssetNames) {
+  const assetPath = path.join(process.cwd(), "public", "images", `${name}.webp`);
+  assert.ok(fs.existsSync(assetPath), `missing optimized asset ${name}.webp`);
+  const size = fs.statSync(assetPath).size;
+  assert.ok(size <= 180_000, `${name}.webp exceeds 180KB budget: ${size}`);
+  optimizedMarketingBytes += size;
+}
+assert.ok(optimizedMarketingBytes <= 1_500_000, `marketing WebP set exceeds 1.5MB budget: ${optimizedMarketingBytes}`);
+for (const source of [landing, homepageManager, announcementAdsManager, vite]) {
+  for (const name of marketingAssetNames) {
+    assert.ok(!source.includes(`/images/${name}.jpg`), `default source still references heavy JPG ${name}`);
+  }
+}
+assert.ok(landing.includes("/images/homepage-hero-boy-platform.webp"));
 assert.equal(vercel.ignoreCommand, '[ "$VERCEL_GIT_COMMIT_REF" != "main" ] && exit 0 || exit 1');
 const staticCache = vercel.headers.find((entry) => String(entry.source).includes("webp"));
 assert.ok(staticCache?.headers?.some((header) => header.key === "Cache-Control"));
