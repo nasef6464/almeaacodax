@@ -93,7 +93,7 @@ export const GenericPathPage: React.FC = () => {
     const { pathId } = useParams<{ pathId: string }>();
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
-    const { paths, levels, subjects, user, courses, topics, quizzes, libraryItems, hydrateQuizzes, hasScopedPackageAccess, checkAccess } = useStore();
+    const { paths, levels, subjects, user, courses, topics, quizzes, libraryItems, hydrateQuizzes, hydrateContentBootstrap, hasScopedPackageAccess, checkAccess } = useStore();
 
     const initialLevelId = searchParams.get('level') || null;
     const initialSubjectId = searchParams.get('subject') || null;
@@ -205,6 +205,38 @@ export const GenericPathPage: React.FC = () => {
             cancelled = true;
         };
     }, [path?.id, selectedSubjectId, pathSubjects.length, hydrateQuizzes]);
+
+    useEffect(() => {
+        if (!path?.id || !selectedSubjectId) {
+            return;
+        }
+
+        const scopedSubjectId = resolveSubjectId(selectedSubjectId);
+        if (!scopedSubjectId) {
+            return;
+        }
+
+        let cancelled = false;
+        void adapter.getContentBootstrap('learning', 'full', {
+            pathId: path.id,
+            subjectId: scopedSubjectId,
+        })
+            .then((content) => {
+                if (cancelled) return;
+                hydrateContentBootstrap({
+                    topics: content.topics,
+                    lessons: content.lessons,
+                    libraryItems: content.libraryItems,
+                });
+            })
+            .catch((error) => {
+                console.warn('Scoped learning resources unavailable:', error);
+            });
+
+        return () => {
+            cancelled = true;
+        };
+    }, [path?.id, selectedSubjectId, pathSubjects.length, hydrateContentBootstrap]);
 
     useEffect(() => {
         if (!path?.id) {

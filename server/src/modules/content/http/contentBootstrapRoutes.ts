@@ -45,6 +45,7 @@ type ContentBootstrapCacheEntry = {
 
 const contentBootstrapScopeSchema = z.enum(["full", "learning", "operations"]).default("full");
 const contentBootstrapPhaseSchema = z.enum(["full", "core"]).default("full");
+const contentBootstrapIdSchema = z.string().trim().min(1).max(160).optional();
 
 let contentBootstrapCache = new Map<string, ContentBootstrapCacheEntry>();
 let contentBootstrapPromises = new Map<string, Promise<ContentBootstrapCachePayload>>();
@@ -163,6 +164,8 @@ contentBootstrapRouter.get(
   asyncHandler(async (req, res) => {
     const requestedScope = contentBootstrapScopeSchema.parse(req.query.scope);
     const requestedPhase = contentBootstrapPhaseSchema.parse(req.query.phase);
+    const requestedPathId = contentBootstrapIdSchema.parse(req.query.pathId);
+    const requestedSubjectId = contentBootstrapIdSchema.parse(req.query.subjectId);
     const canUseFullScope = isStaffRole(req.authUser?.role);
     const {
       scope,
@@ -172,13 +175,23 @@ contentBootstrapRouter.get(
       includeOperationalData,
       includeStudyPlans,
       canUseSharedCache,
-      cacheKey,
+      cacheKey: baseCacheKey,
     } = resolveContentBootstrapRequest({
       requestedScope,
       requestedPhase,
       canUseFullScope,
       isAuthenticated: Boolean(req.authUser),
     });
+
+    const requestedContentFilter: Record<string, unknown> = {
+      ...(requestedPathId ? { pathId: requestedPathId } : {}),
+      ...(requestedSubjectId
+        ? { $or: [{ subjectId: requestedSubjectId }, { subject: requestedSubjectId }] }
+        : {}),
+    };
+    const cacheKey = canUseSharedCache
+      ? `${baseCacheKey}:path:${requestedPathId || "all"}:subject:${requestedSubjectId || "all"}`
+      : "";
 
     const loadBootstrapPayload = async (): Promise<PublicContentBootstrapPayload> => {
       const canSeeAllContent = isStaffRole(req.authUser?.role);
@@ -192,21 +205,21 @@ contentBootstrapRouter.get(
         isOperationsOnly
           ? Promise.resolve([])
           : isLearningCore
-            ? TopicModel.find(combineMongoFilters(finalTopicFilter, managedFilter))
+            ? TopicModel.find(combineMongoFilters(finalTopicFilter, managedFilter, requestedContentFilter))
                 .select("id pathId subjectId sectionId skillId title parentId order showOnPlatform isLocked lessonIds quizIds libraryItemIds")
                 .sort({ subjectId: 1, order: 1 })
                 .lean()
-            : TopicModel.find(combineMongoFilters(finalTopicFilter, managedFilter))
+            : TopicModel.find(combineMongoFilters(finalTopicFilter, managedFilter, requestedContentFilter))
                 .sort({ subjectId: 1, order: 1 })
                 .lean(),
         isOperationsOnly || isLearningCore
           ? Promise.resolve([])
-          : LessonModel.find(combineMongoFilters(finalLessonFilter, managedFilter))
+          : LessonModel.find(combineMongoFilters(finalLessonFilter, managedFilter, requestedContentFilter))
               .sort({ createdAt: -1 })
               .lean(),
         isOperationsOnly || isLearningCore
           ? Promise.resolve([])
-          : LibraryItemModel.find(combineMongoFilters(finalLibraryFilter, managedFilter))
+          : LibraryItemModel.find(combineMongoFilters(finalLibraryFilter, managedFilter, requestedContentFilter))
               .sort({ createdAt: -1 })
               .lean(),
         includeOperationalData
@@ -247,6 +260,8 @@ contentBootstrapRouter.get(
 
     res.setHeader("X-Content-Scope", scope);
     res.setHeader("X-Content-Phase", phase);
+    res.setHeader("X-Content-Path", requestedPathId || "all");
+    res.setHeader("X-Content-Subject", requestedSubjectId || "all");
     if (canUseSharedCache && cacheKey && cacheStatus) {
       return sendSharedBootstrapPayload(req, res, cacheKey, payload);
     }

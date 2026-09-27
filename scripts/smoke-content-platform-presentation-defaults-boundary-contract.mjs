@@ -35,8 +35,8 @@ const integrationDefaultsDelegated =
   routeSource.includes('contentRouter.use(contentPlatformIntegrationRouter);') &&
   integrationRouteSource.includes(integrationDefaultsImport);
 const ownerSource = delegated ? defaultsSource : routeSource;
-const oldHomepageOwnerAssertion = `assertIncludes('server/src/routes/content.routes.ts', 'imageUrl: "/images/homepage-hero-boy-platform.jpg');`;
-const newHomepageOwnerAssertion = `assertIncludes('server/src/modules/content/presentation/platformPresentationDefaults.ts', 'imageUrl: "/images/homepage-hero-boy-platform.jpg');`;
+const oldHomepageOwnerAssertion = `assertIncludes('server/src/routes/content.routes.ts', 'imageUrl: "/images/homepage-hero-boy-platform.webp');`;
+const newHomepageOwnerAssertion = `assertIncludes('server/src/modules/content/presentation/platformPresentationDefaults.ts', 'imageUrl: "/images/homepage-hero-boy-platform.webp');`;
 
 const checks = [];
 const check = (name, assertion) => {
@@ -48,7 +48,7 @@ check('homepage presentation defaults preserve their public fallback semantics',
   for (const fragment of [
     'key: "default"',
     'badgeText: "المنصة الأولى للقدرات والتحصيلي"',
-    'imageUrl: "/images/homepage-hero-boy-platform.jpg?v=20260512"',
+    'imageUrl: "/images/homepage-hero-boy-platform.webp?v=20260512"',
     'imageAlt: "طالب يستخدم منصة المئة"',
     'showAutoPaths: true',
     'featuredPathIds: []',

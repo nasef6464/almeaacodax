@@ -16,6 +16,7 @@ import { useStore } from '../store/useStore';
 import { Activity, QuizResult, Role, SkillGap } from '../types';
 import { QiyasCalculatorModal } from '../components/QiyasCalculatorModal';
 import { api } from '../services/api';
+import { adapter } from '../services/adapter';
 import { useAuth } from '../contexts/AuthContext';
 import { useNotificationStream } from '../contexts/useNotificationStream';
 import { isTrueMockExam } from "../utils/quizPlacement";
@@ -851,7 +852,7 @@ const ExamsHubTab: React.FC<{ initialView?: 'attempts' | 'mock' | 'school' }> = 
 };
 
 const Dashboard: React.FC = () => {
-    const { user } = useStore();
+    const { user, hydrateContentBootstrap } = useStore();
     const location = useLocation();
     const navigate = useNavigate();
     const isParentDashboard = user.role === Role.PARENT;
@@ -883,6 +884,29 @@ const Dashboard: React.FC = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [notifToast, setNotifToast] = useState<{ title: string; body: string } | null>(null);
     const [weeklyReportState, setWeeklyReportState] = useState<'idle' | 'sending' | 'done' | 'error'>('idle');
+
+    useEffect(() => {
+        const contentTabs: DashboardTab[] = ['sessions', 'exams', 'saher', 'quizzes', 'mock-exams', 'school-tests'];
+        if (user.role !== Role.STUDENT || !contentTabs.includes(activeTab)) return;
+
+        let cancelled = false;
+        void adapter.getContentBootstrap('learning', 'full')
+            .then((content) => {
+                if (cancelled) return;
+                hydrateContentBootstrap({
+                    topics: content.topics,
+                    lessons: content.lessons,
+                    libraryItems: content.libraryItems,
+                });
+            })
+            .catch((error) => {
+                console.warn('Dashboard on-demand learning resources unavailable:', error);
+            });
+
+        return () => {
+            cancelled = true;
+        };
+    }, [activeTab, hydrateContentBootstrap, user.role]);
 
     // ── Real-time notifications ───────────────────────────────────────────
     const { latestNotification } = useNotificationStream({

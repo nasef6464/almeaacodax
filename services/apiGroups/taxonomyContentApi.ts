@@ -161,7 +161,11 @@ export const createTaxonomyContentApi = (
       studyPlans: unknown[];
     }>(withQuery("/content/bootstrap", { scope: "operations" }), { cache: "no-store" });
   },
-  getContentBootstrapByScope: (scope: "full" | "learning" = "full", phase: "full" | "core" = "full") =>
+  getContentBootstrapByScope: (
+    scope: "full" | "learning" = "full",
+    phase: "full" | "core" = "full",
+    filters: { pathId?: string; subjectId?: string } = {},
+  ) =>
     requestCached<{
       topics: unknown[];
       lessons: unknown[];
@@ -171,7 +175,11 @@ export const createTaxonomyContentApi = (
       accessCodes: unknown[];
       announcementAds: unknown[];
       studyPlans: unknown[];
-    }>(withQuery("/content/bootstrap", { scope, phase }), `content-bootstrap:${scope}:${phase}`, bootstrapCacheTtlMs),
+    }>(
+      withQuery("/content/bootstrap", { scope, phase, ...filters }),
+      `content-bootstrap:${scope}:${phase}:path:${filters.pathId || "all"}:subject:${filters.subjectId || "all"}`,
+      bootstrapCacheTtlMs,
+    ),
   getContentBootstrapMinimal: () =>
     requestCached<{
       topics: unknown[];

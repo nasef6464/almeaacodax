@@ -27,7 +27,7 @@ export const defaultHomepageSettings = {
     primaryCtaColor: "",
     secondaryCtaColor: "",
     tertiaryCtaColor: "",
-    imageUrl: "/images/homepage-hero-boy-platform.jpg?v=20260512",
+    imageUrl: "/images/homepage-hero-boy-platform.webp?v=20260512",
     imageAlt: "طالب يستخدم منصة المئة",
     floatingCardTitle: "منصة المئة",
     floatingCardSubtitle: "مستواك: متقدم",

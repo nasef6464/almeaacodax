@@ -68,13 +68,7 @@ const AdminDashboard = React.lazy(() => loadAdminDashboardModule().then(module =
 const loadSupervisorDashboardModule = () => import('./dashboards/admin/SupervisorDashboard');
 const SupervisorDashboard = React.lazy(() => loadSupervisorDashboardModule().then(module => ({ default: module.SupervisorDashboard })));
 
-const prefetchCommonRouteModules = (role?: string | null) => {
-  void import('./pages/Dashboard');
-  void import('./pages/GenericPathPage');
-  void import('./pages/Quizzes');
-  void import('./pages/MockExams');
-  void import('./pages/Courses');
-
+const prefetchRoleWorkspaceModule = (role?: string | null) => {
   if (role === 'admin' || role === 'teacher') {
     void loadAdminDashboardModule();
   }
@@ -198,18 +192,61 @@ const FULL_BOOTSTRAP_PROFILE: BootstrapProfile = {
   loadSkillProgress: true,
 };
 
+const DASHBOARD_BOOTSTRAP_PROFILE: BootstrapProfile = {
+  loadCourses: true,
+  loadQuizzes: true,
+  loadTaxonomy: true,
+  loadContent: false,
+  contentScope: 'learning',
+  loadQuestions: false,
+  loadSkillProgress: false,
+};
+
+const REPORTS_BOOTSTRAP_PROFILE: BootstrapProfile = {
+  loadCourses: false,
+  loadQuizzes: true,
+  loadTaxonomy: true,
+  loadContent: false,
+  contentScope: 'learning',
+  loadQuestions: false,
+  loadSkillProgress: false,
+};
+
+const COURSE_CATALOG_BOOTSTRAP_PROFILE: BootstrapProfile = {
+  loadCourses: false,
+  loadQuizzes: false,
+  loadTaxonomy: true,
+  loadContent: false,
+  contentScope: 'learning',
+  loadQuestions: false,
+  loadSkillProgress: false,
+};
+
+const CATEGORY_BOOTSTRAP_PROFILE: BootstrapProfile = {
+  loadCourses: true,
+  loadQuizzes: false,
+  loadTaxonomy: true,
+  loadContent: false,
+  contentScope: 'learning',
+  loadQuestions: false,
+  loadSkillProgress: false,
+};
+
 const resolveBootstrapProfile = (path: string): BootstrapProfile => {
   if (path === '/' || path === '/blog') {
     return MINIMAL_BOOTSTRAP_PROFILE;
   }
 
-  if (path.startsWith('/category/') || path === '/courses' || path.startsWith('/course/')) {
-    return {
-      ...FULL_BOOTSTRAP_PROFILE,
-      contentScope: 'learning',
-      loadQuestions: false,
-      loadSkillProgress: false,
-    };
+  if (path.startsWith('/category/')) {
+    return CATEGORY_BOOTSTRAP_PROFILE;
+  }
+
+  if (path === '/courses') {
+    return COURSE_CATALOG_BOOTSTRAP_PROFILE;
+  }
+
+  if (path.startsWith('/course/')) {
+    return MINIMAL_BOOTSTRAP_PROFILE;
   }
 
   if (
@@ -225,12 +262,15 @@ const resolveBootstrapProfile = (path: string): BootstrapProfile => {
     };
   }
 
-  if (
-    path.startsWith('/quiz') ||
-    path.startsWith('/results') ||
-    path.startsWith('/reports') ||
-    path.startsWith('/dashboard')
-  ) {
+  if (path.startsWith('/dashboard')) {
+    return DASHBOARD_BOOTSTRAP_PROFILE;
+  }
+
+  if (path.startsWith('/reports')) {
+    return REPORTS_BOOTSTRAP_PROFILE;
+  }
+
+  if (path.startsWith('/quiz') || path.startsWith('/results')) {
     return FULL_BOOTSTRAP_PROFILE;
   }
 
@@ -258,7 +298,7 @@ const getSeoBaseUrl = () => {
 };
 
 const SEO_BASE_URL = getSeoBaseUrl();
-const SEO_DEFAULT_IMAGE_PATH = '/images/homepage-hero-boy-platform.jpg';
+const SEO_DEFAULT_IMAGE_PATH = '/images/homepage-hero-boy-platform.webp';
 
 const SEO_PRIVATE_PREFIXES = [
   '/dashboard',
@@ -1230,6 +1270,7 @@ const App: React.FC = () => {
         profile?: BootstrapProfile;
         deferQuestions?: boolean;
         deferSkillProgress?: boolean;
+        contentFilters?: { pathId?: string; subjectId?: string };
       } = {},
     ) => {
       try {
@@ -1256,7 +1297,9 @@ const App: React.FC = () => {
             ? adapter.getTaxonomyBootstrap('core')
             : taxonomyPromise;
         const contentPhase = profile.contentScope === 'learning' ? 'core' : 'full';
-        const contentPromise = profile.loadContent ? adapter.getContentBootstrap(profile.contentScope, contentPhase) : null;
+        const contentPromise = profile.loadContent
+          ? adapter.getContentBootstrap(profile.contentScope, contentPhase, options.contentFilters)
+          : null;
         const questionsPromise = shouldLoadQuestions ? adapter.getQuestions({ page: 1, limit: 100 }) : null;
         const skillProgressPromise = shouldLoadSkillProgress ? api.getSkillProgress({ noTotal: true }) : null;
 
@@ -1348,22 +1391,6 @@ const App: React.FC = () => {
           }
         }).catch((error) => console.warn('Content bootstrap unavailable:', error));
 
-        if (profile.loadContent && profile.contentScope === 'learning') {
-          void adapter.getContentBootstrap('learning', 'full')
-            .then((extendedContent) => {
-              if (!mounted) return;
-              const hasItems = (value: unknown) => Array.isArray(value) && value.length > 0;
-              if ([extendedContent.lessons, extendedContent.libraryItems, extendedContent.studyPlans].some(hasItems)) {
-                hydrateContentBootstrap({
-                  lessons: extendedContent.lessons as any[],
-                  libraryItems: extendedContent.libraryItems as any[],
-                  studyPlans: extendedContent.studyPlans as any[],
-                });
-              }
-            })
-            .catch((error) => console.warn('Deferred learning content bootstrap unavailable:', error));
-        }
-
         const [questionsResult, skillProgressResult] = await Promise.allSettled([
           questionsPromise ?? Promise.resolve(null),
           skillProgressPromise ?? Promise.resolve(null),
@@ -1452,7 +1479,7 @@ const App: React.FC = () => {
       }
     };
 
-    let bootstrapStarted = false;
+    const startedBootstrapProfiles = new Set<string>();
     let publicAdsTimer: ReturnType<typeof setTimeout> | undefined;
     let publicAdsIdleHandle: number | undefined;
 
@@ -1466,18 +1493,39 @@ const App: React.FC = () => {
       }
     };
 
+    const resolveContentFiltersForPath = (path: string) => {
+      const categoryMatch = path.match(/^\/category\/([^/?#]+)/);
+      if (!categoryMatch?.[1]) return undefined;
+      return { pathId: normalizePathId(decodeURIComponent(categoryMatch[1])) };
+    };
+
     const startBootstrap = () => {
-      if (bootstrapStarted) {
+      const path = getInitialRouterPath();
+      const profile = resolveBootstrapProfile(path);
+      const deferQuestions = shouldDeferQuestionBootstrap(path);
+      const deferSkillProgress = shouldDeferSkillProgressBootstrap(path);
+      const contentFilters = profile.loadContent ? resolveContentFiltersForPath(path) : undefined;
+      const profileKey = JSON.stringify({
+        profile,
+        deferQuestions,
+        deferSkillProgress,
+        contentFilters,
+      });
+
+      if (startedBootstrapProfiles.has(profileKey)) {
         return;
       }
 
-      bootstrapStarted = true;
-      const path = getInitialRouterPath();
-      const profile = resolveBootstrapProfile(path);
+      startedBootstrapProfiles.add(profileKey);
+      if (isDataBootstrapBlockingPath(path)) {
+        setBootstrapReady(false);
+      }
+
       void bootstrapAppData({
         profile,
-        deferQuestions: shouldDeferQuestionBootstrap(path),
-        deferSkillProgress: shouldDeferSkillProgressBootstrap(path),
+        deferQuestions,
+        deferSkillProgress,
+        contentFilters,
       });
     };
 
@@ -1504,12 +1552,10 @@ const App: React.FC = () => {
         void loadPublicNavigationBootstrap();
       }, 50);
       publicAdsIdleHandle = requestIdle(() => {
-        prefetchCommonRouteModules();
         void loadPublicAnnouncementAds();
       }, { timeout: 1000 });
     } else {
       void loadPublicNavigationBootstrap();
-      prefetchCommonRouteModules();
       publicAdsTimer = globalThis.setTimeout(() => {
         void loadPublicAnnouncementAds();
       }, 350);
@@ -1544,21 +1590,22 @@ const App: React.FC = () => {
   }, [hydrateContentBootstrap, hydrateCourses, hydrateQuestions, hydrateQuizzes, hydrateSkillProgress, hydrateTaxonomy]);
 
   useEffect(() => {
-    if (user) {
-      const requestIdle = window.requestIdleCallback?.bind(window);
-
-      if (requestIdle) {
-        const handle = requestIdle(() => {
-          prefetchCommonRouteModules(user.role);
-        }, { timeout: 1200 });
-        return () => window.cancelIdleCallback?.(handle);
-      }
-
-      const timer = window.setTimeout(() => {
-        prefetchCommonRouteModules(user.role);
-      }, 300);
-      return () => window.clearTimeout(timer);
+    if (!['admin', 'teacher', 'supervisor'].includes(user?.role || '')) {
+      return;
     }
+
+    const requestIdle = window.requestIdleCallback?.bind(window);
+    if (requestIdle) {
+      const handle = requestIdle(() => {
+        prefetchRoleWorkspaceModule(user.role);
+      }, { timeout: 1200 });
+      return () => window.cancelIdleCallback?.(handle);
+    }
+
+    const timer = window.setTimeout(() => {
+      prefetchRoleWorkspaceModule(user.role);
+    }, 300);
+    return () => window.clearTimeout(timer);
   }, [user?.role]);
 
   const adminDashboard = (

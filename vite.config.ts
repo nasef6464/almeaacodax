@@ -42,9 +42,9 @@ export default defineConfig(() => {
             dir: 'rtl',
             icons: [
               {
-                src: '/images/homepage-hero-boy-platform.jpg',
+                src: '/images/homepage-hero-boy-platform.webp',
                 sizes: '512x512',
-                type: 'image/jpeg',
+                type: 'image/webp',
                 purpose: 'any',
               },
             ],

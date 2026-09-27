@@ -29,28 +29,39 @@ check("route loading fallback is a full branded shell, not a blank spinner", () 
   assertIncludes(appSource, "loading-card");
 });
 
-check("common student and public route chunks are prefetched for all users", () => {
-  assertIncludes(appSource, "const prefetchCommonRouteModules = (role?: string | null) =>");
-  assertIncludes(appSource, "void import('./pages/Dashboard')");
-  assertIncludes(appSource, "void import('./pages/GenericPathPage')");
-  assertIncludes(appSource, "void import('./pages/Quizzes')");
-  assertIncludes(appSource, "void import('./pages/MockExams')");
-  assertIncludes(appSource, "void import('./pages/Courses')");
-  assertIncludes(appSource, "prefetchCommonRouteModules()");
+check("student and public route chunks stay lazy instead of being globally prefetched", () => {
+  if (appSource.includes("prefetchCommonRouteModules")) {
+    throw new Error("global route prefetch must stay removed");
+  }
+  for (const forbidden of [
+    "void import('./pages/Dashboard')",
+    "void import('./pages/GenericPathPage')",
+    "void import('./pages/Quizzes')",
+    "void import('./pages/MockExams')",
+    "void import('./pages/Courses')",
+  ]) {
+    if (appSource.includes(forbidden)) {
+      throw new Error(`unexpected global route prefetch: ${forbidden}`);
+    }
+  }
+  assertIncludes(appSource, "const Dashboard = React.lazy(() => import('./pages/Dashboard'))");
+  assertIncludes(appSource, "const GenericPathPage = React.lazy(() => import('./pages/GenericPathPage')");
+  assertIncludes(appSource, "const Courses = React.lazy(() => import('./pages/Courses'))");
 });
 
-check("admin dashboard chunk is reusable and prefetched only as an extra for privileged users", () => {
+check("staff workspace chunks are the only idle-prefetched route modules", () => {
   assertIncludes(appSource, "const loadAdminDashboardModule = () => import('./dashboards/admin/AdminDashboard')");
+  assertIncludes(appSource, "const loadSupervisorDashboardModule = () => import('./dashboards/admin/SupervisorDashboard')");
+  assertIncludes(appSource, "const prefetchRoleWorkspaceModule = (role?: string | null) =>");
   assertIncludes(appSource, "void loadAdminDashboardModule()");
-  assertIncludes(appSource, "role === 'admin'");
-  assertIncludes(appSource, "role === 'teacher'");
-  assertIncludes(appSource, "role === 'supervisor'");
-  assertIncludes(appSource, "prefetchCommonRouteModules(user.role)");
+  assertIncludes(appSource, "void loadSupervisorDashboardModule()");
+  assertIncludes(appSource, "if (!['admin', 'teacher', 'supervisor'].includes(user?.role || ''))");
+  assertIncludes(appSource, "prefetchRoleWorkspaceModule(user.role)");
 });
 
 check("public routes load navigation bootstrap early", () => {
   assertIncludes(appSource, "const loadPublicNavigationBootstrap = async () =>");
-  assertIncludes(appSource, "adapter.getTaxonomyBootstrap()");
+  assertIncludes(appSource, "adapter.getTaxonomyBootstrap('core')");
   assertIncludes(appSource, "hydrateTaxonomy({");
   assertIncludes(appSource, "void loadPublicNavigationBootstrap()");
 });
