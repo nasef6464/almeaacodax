@@ -14,8 +14,8 @@ const defaultsImport = 'import { defaultHomepageSettings, defaultPlatformFontSet
 const rangeStart = 'const defaultHomepageSettings = {';
 const secondDeclaration = 'const defaultPlatformFontSettings = {';
 const rangeEnd = 'const sanitizeAndValidateExternalPlatforms =';
-const oldHomepageOwnerAssertion = `assertIncludes('server/src/routes/content.routes.ts', 'imageUrl: "/images/homepage-hero-boy-platform.jpg');`;
-const newHomepageOwnerAssertion = `assertIncludes('server/src/modules/content/presentation/platformPresentationDefaults.ts', 'imageUrl: "/images/homepage-hero-boy-platform.jpg');`;
+const oldHomepageOwnerAssertion = `assertIncludes('server/src/routes/content.routes.ts', 'imageUrl: "/images/homepage-hero-boy-platform.webp');`;
+const newHomepageOwnerAssertion = `assertIncludes('server/src/modules/content/presentation/platformPresentationDefaults.ts', 'imageUrl: "/images/homepage-hero-boy-platform.webp');`;
 
 const alreadyApplied =
   routeSource.includes(defaultsImport) &&
