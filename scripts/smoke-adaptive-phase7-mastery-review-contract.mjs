@@ -23,7 +23,10 @@ assert.ok(routes.includes('validateRequiredReviewScope'));
 assert.ok(routes.includes('selectedOptionIndex'));
 assert.ok(routes.includes('eventId'));
 assert.ok(routes.includes('lastReviewEventId: { $ne: eventId }'));
-assert.ok(routes.includes('evidenceType: "mastery_review"'));
+assert.ok(
+  routes.includes('evidenceType: String(card.reviewType || "") === "mastery_review" ? "mastery_review" : "remediation"'),
+  'mastery review submissions must persist mastery_review evidence while other review cards stay remediation',
+);
 assert.ok(routes.includes('idempotent: true'));
 assert.ok(!routes.includes('correctOptionIndex: Number('), 'review payload must not expose answer key');
 assert.ok(routes.includes('.select("id text options imageUrl type skillIds")'));
