@@ -15,6 +15,10 @@ const landing = read("pages/Landing.tsx");
 const homepageManager = read("dashboards/admin/HomepageManager.tsx");
 const announcementAdsManager = read("dashboards/admin/AnnouncementAdsManager.tsx");
 const vite = read("vite.config.ts");
+const appSource = read("App.tsx");
+const indexHtml = read("index.html");
+const webmanifest = read("public/site.webmanifest");
+const presentationDefaults = read("server/src/modules/content/presentation/platformPresentationDefaults.ts");
 const vercel = JSON.parse(read("vercel.json"));
 
 assert.ok(app.includes("const STUDENT_OVERVIEW_BOOTSTRAP_PROFILE"));
@@ -95,12 +99,14 @@ for (const name of marketingAssetNames) {
   optimizedMarketingBytes += size;
 }
 assert.ok(optimizedMarketingBytes <= 1_500_000, `marketing WebP set exceeds 1.5MB budget: ${optimizedMarketingBytes}`);
-for (const source of [landing, homepageManager, announcementAdsManager, vite]) {
+for (const source of [landing, homepageManager, announcementAdsManager, vite, appSource, indexHtml, webmanifest, presentationDefaults]) {
   for (const name of marketingAssetNames) {
     assert.ok(!source.includes(`/images/${name}.jpg`), `default source still references heavy JPG ${name}`);
   }
 }
 assert.ok(landing.includes("/images/homepage-hero-boy-platform.webp"));
+assert.ok(webmanifest.includes('"type": "image/webp"'));
+assert.ok(presentationDefaults.includes("/images/homepage-hero-boy-platform.webp"));
 assert.equal(vercel.ignoreCommand, '[ "$VERCEL_GIT_COMMIT_REF" != "main" ] && exit 0 || exit 1');
 const staticCache = vercel.headers.find((entry) => String(entry.source).includes("webp"));
 assert.ok(staticCache?.headers?.some((header) => header.key === "Cache-Control"));
