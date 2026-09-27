@@ -224,6 +224,7 @@ export const GenericPathPage: React.FC = () => {
             .then((content) => {
                 if (cancelled) return;
                 hydrateContentBootstrap({
+                    topics: content.topics,
                     lessons: content.lessons,
                     libraryItems: content.libraryItems,
                 });
