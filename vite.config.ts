@@ -44,7 +44,7 @@ export default defineConfig(() => {
               {
                 src: '/images/homepage-hero-boy-platform.webp',
                 sizes: '512x512',
-                type: 'image/jpeg',
+                type: 'image/webp',
                 purpose: 'any',
               },
             ],
