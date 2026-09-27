@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Router, type Request, type Response } from "express";
 import { gzipSync } from "node:zlib";
 import { z } from "zod";
 import { optionalAuth } from "../../../middleware/auth.js";
@@ -73,8 +73,8 @@ export const clearContentBootstrapCache = () => {
 };
 
 const sendSharedBootstrapPayload = (
-  req: Parameters<Parameters<typeof contentBootstrapRouter.get>[1]>[0],
-  res: Parameters<Parameters<typeof contentBootstrapRouter.get>[1]>[1],
+  req: Request,
+  res: Response,
   cacheKey: string,
   payload: ContentBootstrapCachePayload,
 ) => {
