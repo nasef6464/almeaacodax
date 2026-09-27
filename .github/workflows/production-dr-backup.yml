@@ -3,7 +3,7 @@ name: Production DR Scheduled Backup
 on:
   workflow_dispatch:
   schedule:
-    # 04:17 Asia/Riyadh. Keep outside the main school-day traffic window.
+    # 04:17 Asia/Riyadh. Render stages the Mongo dump first at 04:05 Asia/Riyadh.
     - cron: "17 1 * * *"
 
 permissions:
@@ -19,24 +19,24 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 90
     env:
-      MONGODB_URI: ${{ secrets.PRODUCTION_BACKUP_MONGODB_URI }}
       R2_ENDPOINT: ${{ secrets.PRODUCTION_R2_ENDPOINT }}
       R2_BUCKET: ${{ secrets.PRODUCTION_R2_BUCKET }}
       AWS_ACCESS_KEY_ID: ${{ secrets.PRODUCTION_R2_BACKUP_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.PRODUCTION_R2_BACKUP_SECRET_ACCESS_KEY }}
       AWS_DEFAULT_REGION: auto
+      DR_STAGE_PREFIX: dr-staging/mongodb/current
       RETENTION_DAYS: "0"
 
     steps:
       - name: Checkout exact main
         uses: actions/checkout@v4
 
-      - name: Fail closed when source backup secrets are incomplete
+      - name: Fail closed when R2 source secrets are incomplete
         shell: bash
         run: |
           set -euo pipefail
           missing=()
-          for name in MONGODB_URI R2_ENDPOINT R2_BUCKET AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY
+          for name in R2_ENDPOINT R2_BUCKET AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY
           do
             if [ -z "${!name:-}" ]; then
               missing+=("$name")
@@ -58,21 +58,77 @@ jobs:
           tar -xzf "/tmp/${archive}" -C /tmp
           echo "/tmp/mongodb-database-tools-ubuntu2404-x86_64-${version}/bin" >> "$GITHUB_PATH"
 
-      - name: Verify backup tooling
+      - name: Verify recovery tooling
         shell: bash
         run: |
           set -euo pipefail
-          mongodump --version
           mongorestore --version
           aws --version
           sha256sum --version | head -1
           docker --version
+          python3 --version
 
-      - name: Create verified MongoDB backup
+      - name: Resolve fresh MongoDB backup staged by Render
+        id: mongo_stage
         shell: bash
-        env:
-          BACKUP_DIR: backups/mongodb
-        run: npm run backup:database:verified
+        run: |
+          set -euo pipefail
+          marker="/tmp/almeaa-dr-ready.json"
+          aws --endpoint-url "$R2_ENDPOINT" s3 cp             "s3://$R2_BUCKET/$DR_STAGE_PREFIX/ready.json"             "$marker"             --only-show-errors
+
+          python3 - "$GITHUB_OUTPUT" <<'PY'
+          import json
+          import sys
+          from datetime import datetime, timezone
+
+          marker_path = "/tmp/almeaa-dr-ready.json"
+          with open(marker_path, "r", encoding="utf-8") as handle:
+              data = json.load(handle)
+
+          required = ["createdAtUtc", "archiveKey", "checksumKey", "manifestKey", "sha256", "bytes"]
+          missing = [name for name in required if not data.get(name)]
+          if missing:
+              raise SystemExit(f"staged Mongo marker missing fields: {', '.join(missing)}")
+
+          created = datetime.fromisoformat(str(data["createdAtUtc"]).replace("Z", "+00:00"))
+          now = datetime.now(timezone.utc)
+          age = int((now - created).total_seconds())
+          if age < -300:
+              raise SystemExit(f"staged Mongo backup timestamp is unexpectedly in the future: {age}s")
+          if age > 7200:
+              raise SystemExit(f"staged Mongo backup is stale: {age}s old (limit 7200s)")
+
+          prefix = "dr-staging/mongodb/current/"
+          for field in ("archiveKey", "checksumKey", "manifestKey"):
+              value = str(data[field])
+              if not value.startswith(prefix) or ".." in value:
+                  raise SystemExit(f"invalid staged Mongo object key in {field}")
+
+          with open(sys.argv[1], "a", encoding="utf-8") as out:
+              out.write(f"archive_key={data['archiveKey']}\n")
+              out.write(f"checksum_key={data['checksumKey']}\n")
+              out.write(f"manifest_key={data['manifestKey']}\n")
+              out.write(f"created_at_utc={data['createdAtUtc']}\n")
+              out.write(f"age_seconds={age}\n")
+              out.write(f"source_commit={data.get('sourceCommit', 'unknown')}\n")
+          PY
+
+      - name: Download and verify staged MongoDB backup
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p backups/mongodb
+
+          aws --endpoint-url "$R2_ENDPOINT" s3 cp             "s3://$R2_BUCKET/${{ steps.mongo_stage.outputs.archive_key }}"             backups/mongodb/mongodb-staged.archive.gz             --only-show-errors
+          aws --endpoint-url "$R2_ENDPOINT" s3 cp             "s3://$R2_BUCKET/${{ steps.mongo_stage.outputs.checksum_key }}"             backups/mongodb/mongodb-staged.archive.gz.sha256             --only-show-errors
+          aws --endpoint-url "$R2_ENDPOINT" s3 cp             "s3://$R2_BUCKET/${{ steps.mongo_stage.outputs.manifest_key }}"             backups/mongodb/mongodb-staged.archive.gz.manifest             --only-show-errors
+
+          (
+            cd backups/mongodb
+            sha256sum --check mongodb-staged.archive.gz.sha256
+          )
+          grep -q '^format=mongodump-archive-gzip$' backups/mongodb/mongodb-staged.archive.gz.manifest
+          grep -q '^created_at_utc=' backups/mongodb/mongodb-staged.archive.gz.manifest
 
       - name: Create verified R2 media backup
         shell: bash
@@ -231,6 +287,9 @@ jobs:
             echo "### Production DR certification"
             echo "- commit: `$GITHUB_SHA`"
             echo "- UTC: `$(date -u +%FT%TZ)`"
+            echo "- staged Mongo created: `${{ steps.mongo_stage.outputs.created_at_utc }}`"
+            echo "- staged Mongo age at certification: `${{ steps.mongo_stage.outputs.age_seconds }}s`"
+            echo "- staged Mongo source commit: `${{ steps.mongo_stage.outputs.source_commit }}`"
             echo "- scheduled cadence / achieved RPO objective: `<=24h`"
             echo "- Mongo restore RTO: `${mongo_rto}s`"
             echo "- R2 restore RTO: `${media_rto}s`"
