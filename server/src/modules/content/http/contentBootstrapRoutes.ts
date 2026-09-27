@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { gzipSync } from "node:zlib";
 import { z } from "zod";
 import { optionalAuth } from "../../../middleware/auth.js";
 import { AnnouncementAdModel } from "../../../models/AnnouncementAd.js";
@@ -47,6 +48,11 @@ const contentBootstrapPhaseSchema = z.enum(["full", "core"]).default("full");
 
 let contentBootstrapCache = new Map<string, ContentBootstrapCacheEntry>();
 let contentBootstrapPromises = new Map<string, Promise<ContentBootstrapCachePayload>>();
+let contentBootstrapSerializedCache = new Map<string, {
+  payload: ContentBootstrapCachePayload;
+  json: string;
+  gzip: Buffer;
+}>();
 export const publicContentBootstrapPromise = contentBootstrapPromises;
 
 let contentBootstrapMinimalCache:
@@ -61,10 +67,41 @@ let contentBootstrapMinimalPromise: Promise<PublicContentBootstrapPayload> | nul
 export const clearContentBootstrapCache = () => {
   contentBootstrapCache.clear();
   contentBootstrapPromises.clear();
+  contentBootstrapSerializedCache.clear();
   contentBootstrapMinimalCache = null;
   contentBootstrapMinimalPromise = null;
 };
 
+const sendSharedBootstrapPayload = (
+  req: Parameters<Parameters<typeof contentBootstrapRouter.get>[1]>[0],
+  res: Parameters<Parameters<typeof contentBootstrapRouter.get>[1]>[1],
+  cacheKey: string,
+  payload: ContentBootstrapCachePayload,
+) => {
+  let serialized = contentBootstrapSerializedCache.get(cacheKey);
+  if (!serialized || serialized.payload !== payload) {
+    const json = JSON.stringify(payload);
+    serialized = {
+      payload,
+      json,
+      gzip: gzipSync(json, { level: 1 }),
+    };
+    contentBootstrapSerializedCache.set(cacheKey, serialized);
+  }
+
+  res.setHeader("Content-Type", "application/json; charset=utf-8");
+  res.setHeader("Vary", "Accept-Encoding");
+
+  const acceptsGzip = /(?:^|,)\s*gzip(?:\s*;|\s*,|\s*$)/i.test(String(req.headers["accept-encoding"] || ""));
+  if (acceptsGzip) {
+    res.setHeader("Content-Encoding", "gzip");
+    res.setHeader("Content-Length", serialized.gzip.byteLength);
+    return res.end(serialized.gzip);
+  }
+
+  res.setHeader("Content-Length", Buffer.byteLength(serialized.json));
+  return res.end(serialized.json);
+};
 export const contentBootstrapRouter = Router();
 
 contentBootstrapRouter.get(
@@ -210,6 +247,9 @@ contentBootstrapRouter.get(
 
     res.setHeader("X-Content-Scope", scope);
     res.setHeader("X-Content-Phase", phase);
+    if (canUseSharedCache && cacheKey && cacheStatus) {
+      return sendSharedBootstrapPayload(req, res, cacheKey, payload);
+    }
     return res.json(payload);
   }),
 );
