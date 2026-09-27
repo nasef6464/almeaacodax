@@ -1,6 +1,6 @@
 # ALMEAA — Current Execution Status
 
-آخر تحديث: 2026-09-26
+آخر تحديث: 2026-09-27
 
 ## الحالة المختصرة
 
@@ -50,9 +50,9 @@ Ruleset: `Protect main`
 ## PLAN 2 current state
 
 - Managed Redis: **LIVE PASS** — rate-limit + queue + realtime + scheduler; `scale-ready=200`.
-- Google OAuth start: **LIVE PASS** — Google redirect + canonical Render callback.
-- Sentry: runtime configured; final live event proof will run after PLAN 2 merge.
-- R2: runtime configured; final one-time presign/PUT/public-GET proof will run after PLAN 2 merge.
+- Google OAuth: **LIVE PASS** — start 302 to Google + canonical Render callback route 302 safe fallback.
+- Sentry: **LIVE PASS** — HTTP 202, eventId `b191aa4d95a14dccbe3e26d1110ff658`.
+- R2: **LIVE PASS** — presign → PUT → public GET → SHA-256 verified.
 - DR: **BLOCKED** — nine GitHub Actions secrets are absent; the real scheduled workflow fails closed before backup.
 - Frankfurt Atlas recovery: **NOT A FULL RESTORE** — do not cut over.
 - Mongo topology: Render Frankfurt ↔ Atlas Singapore remains cross-region.
@@ -64,7 +64,7 @@ Ruleset: `Protect main`
 
 ## Open operational/domain issues
 
-- #234 runtime integrations.
+- #234 runtime integrations — CLOSED ✅.
 - #235 disaster recovery.
 - #236 topology/capacity.
 - #237 remaining governance/network.
