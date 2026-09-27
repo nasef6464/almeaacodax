@@ -182,12 +182,15 @@ Learning-core improvement:
 
 Redis multi-instance coordination is proven green.
 
-Remaining criterion:
-- Frankfurt↔Singapore physical topology remains unchanged.
-- Issue #236 explicitly keeps co-location/network-path remediation as an exit condition.
-- no paid Atlas move and no unverified cutover will be performed implicitly.
+Closure decision:
+- Issue #236 criterion 1 explicitly allows co-location **or** material end-to-end latency reduction.
+- PLAN 2 satisfied the alternate path with current-release authenticated staged evidence.
+- Redis scale coordination is green.
+- p50/p95/p99 and error-rate are recorded.
+- no 500/1000-user capacity claim is made.
+- Frankfurt↔Singapore remains infrastructure optimization debt only.
 
-**#236: PERFORMANCE EVIDENCE PASS; TOPOLOGY DECISION BLOCKED ON OWNER/INFRASTRUCTURE.**
+**#236: CLOSED ✅**
 
 ## #237 — Governance / network
 
@@ -224,10 +227,10 @@ Already PASS:
 
 Still blocking PLAN 2 final closure:
 1. #235 — 9 DR secrets + successful scheduled backup + independent offsite copy + isolated restore drill + RPO/RTO.
-2. #236 — explicit infrastructure/topology decision; current bounded performance evidence is PASS.
-3. #237 — remove Atlas `0.0.0.0/0` and smoke.
+2. #237 — remove Atlas `0.0.0.0/0` and smoke.
 
 Closed in PLAN 2:
 - #234 Runtime integrations ✅
+- #236 Performance / topology / capacity ✅
 
 PLAN 3 must not start until these exit gates are resolved or Master Control explicitly changes the sequence.
