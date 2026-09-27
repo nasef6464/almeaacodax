@@ -124,3 +124,27 @@ Evidence:
 
 القرار:
 لا cutover للـrecovery غير المكتمل، ولا Atlas paid upgrade بدون موافقة صريحة، ولا ادعاء بإغلاق PLAN 2 قبل DR/network/topology evidence.
+
+
+## 2026-09-27 — PLAN 2 runtime/performance certification
+
+Latest production:
+`main@3692581ba46362bc5c71714a83be7f3e9fa1a3e9`
+
+- PR #273 live integration hardening merged and Post Deploy `36291061913` PASS.
+- Google OAuth start/callback proof PASS.
+- R2 one-time presign -> PUT -> public GET -> SHA-256 PASS.
+- Sentry live event PASS.
+- PR #277 fixed repeated JSON/gzip work for shared learning-core bootstrap.
+- exact-head CI including Deep E2E PASS.
+- Post Deploy `36295206954` PASS.
+- operational smoke 71/71 PASS.
+- authenticated student read-load: 340 GET requests, c=10/25/50, 0% errors, overall PASS.
+- learning-core c50 p95 improved from 4889.23ms to 674.51ms.
+- latest Sentry event: `a32f9e20f795473ea79116cbbc5b8176`.
+
+Status:
+- #234 CLOSED ✅.
+- #235 remains external-secret/DR blocked.
+- #236 performance evidence PASS; physical topology decision remains.
+- #237 Atlas broad allowlist removal remains owner/admin blocked.
