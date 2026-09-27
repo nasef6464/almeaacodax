@@ -178,6 +178,10 @@ assertIncludes('server/src/modules/quizzes/http/questionBankRoutes.ts', 'QUESTIO
 assertIncludes('server/src/modules/quizzes/http/questionBankRoutes.ts', 'X-Question-Summary-Cache');
 assertIncludes('server/src/routes/course.routes.ts', 'PUBLIC_COURSE_LIST_CACHE_TTL_MS');
 assertIncludes('server/src/routes/course.routes.ts', 'X-Course-List-Cache');
+assertIncludes('server/src/routes/course.routes.ts', 'publicCourseListPromises');
+assertIncludes('server/src/routes/course.routes.ts', 'PUBLIC_COURSE_LIST_CACHE_MAX_ENTRIES');
+assertIncludes('server/src/routes/course.routes.ts', 'course.thumbnail.startsWith("data:image/")');
+assertIncludes('server/src/routes/course.routes.ts', '"shared"');
 assertIncludes('server/src/routes/course.routes.ts', '.limit(query.noTotal ? pagination.limit + 1 : pagination.limit)');
 assertIncludes('server/src/routes/course.routes.ts', ': await CourseModel.countDocuments(filter)');
 assertIncludes('server/src/routes/course.routes.ts', 'res.setHeader("X-Has-More", String(hasMore))');
@@ -196,6 +200,7 @@ assertIncludes('server/src/routes/taxonomy.routes.ts', 'SubjectModel.find({ path
 assertIncludes('server/src/routes/taxonomy.routes.ts', 'SkillModel.find({');
 assertIncludes('server/src/modules/content/http/contentBootstrapRoutes.ts', 'CONTENT_BOOTSTRAP_CACHE_TTL_MS');
 assertIncludes('server/src/modules/content/http/contentBootstrapRoutes.ts', 'X-Content-Cache');
+assertIncludes('server/src/modules/content/http/contentBootstrapRoutes.ts', '.select("id pathId subjectId sectionId skillId title parentId order showOnPlatform isLocked lessonIds quizIds libraryItemIds")');
 assertIncludes('server/src/modules/content/http/contentBootstrapRoutes.ts', 'buildContentBootstrapVisibilityFilters');
 assertIncludes('server/src/modules/content/application/contentBootstrapVisibility.ts', 'scopeFilterToActivePaths');
 assertIncludes('server/src/modules/content/http/contentBootstrapRoutes.ts', 'PUBLIC_ANNOUNCEMENT_ADS_BOOTSTRAP_LIMIT');

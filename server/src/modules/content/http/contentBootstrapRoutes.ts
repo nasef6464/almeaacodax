@@ -154,9 +154,14 @@ contentBootstrapRouter.get(
       const [topics, lessons, libraryItems, operationalData, studyPlans] = await Promise.all([
         isOperationsOnly
           ? Promise.resolve([])
-          : TopicModel.find(combineMongoFilters(finalTopicFilter, managedFilter))
-              .sort({ subjectId: 1, order: 1 })
-              .lean(),
+          : isLearningCore
+            ? TopicModel.find(combineMongoFilters(finalTopicFilter, managedFilter))
+                .select("id pathId subjectId sectionId skillId title parentId order showOnPlatform isLocked lessonIds quizIds libraryItemIds")
+                .sort({ subjectId: 1, order: 1 })
+                .lean()
+            : TopicModel.find(combineMongoFilters(finalTopicFilter, managedFilter))
+                .sort({ subjectId: 1, order: 1 })
+                .lean(),
         isOperationsOnly || isLearningCore
           ? Promise.resolve([])
           : LessonModel.find(combineMongoFilters(finalLessonFilter, managedFilter))
