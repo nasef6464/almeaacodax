@@ -359,6 +359,13 @@ const redactRestrictedLessonPayload = (lesson: any) => {
 
 const projectRestrictedCoursePayload = (course: any) => ({
   ...course,
+  // Historical inline data-URI thumbnails can be hundreds of KB. The catalog
+  // never needs to transport those blobs; detail remains authoritative and the
+  // frontend already has a fallback thumbnail.
+  thumbnail:
+    typeof course?.thumbnail === "string" && course.thumbnail.startsWith("data:image/")
+      ? ""
+      : course?.thumbnail,
   modules: Array.isArray(course?.modules)
     ? course.modules.map((moduleItem: any) => ({
         ...moduleItem,
@@ -562,19 +569,30 @@ const assertCurriculumImportScope = async (params: {
 export const courseRouter = Router();
 
 const PUBLIC_COURSE_LIST_CACHE_TTL_MS = 60 * 1000;
-let publicCourseListCache:
-  | {
-      key: string;
-      expiresAt: number;
-      payload: {
-        courses: unknown[];
-        pagination: ReturnType<typeof buildPaginatedResponse>;
-      };
-    }
-  | null = null;
+const PUBLIC_COURSE_LIST_CACHE_MAX_ENTRIES = 24;
+
+type PublicCourseListPayload = {
+  courses: unknown[];
+  pagination: ReturnType<typeof buildPaginatedResponse>;
+};
+
+const publicCourseListCache = new Map<string, { expiresAt: number; payload: PublicCourseListPayload }>();
+const publicCourseListPromises = new Map<string, Promise<PublicCourseListPayload>>();
 
 const clearPublicCourseListCache = () => {
-  publicCourseListCache = null;
+  publicCourseListCache.clear();
+  publicCourseListPromises.clear();
+};
+
+const writePublicCourseListCache = (key: string, payload: PublicCourseListPayload) => {
+  if (publicCourseListCache.size >= PUBLIC_COURSE_LIST_CACHE_MAX_ENTRIES && !publicCourseListCache.has(key)) {
+    const oldestKey = publicCourseListCache.keys().next().value;
+    if (oldestKey) publicCourseListCache.delete(oldestKey);
+  }
+  publicCourseListCache.set(key, {
+    expiresAt: Date.now() + PUBLIC_COURSE_LIST_CACHE_TTL_MS,
+    payload,
+  });
 };
 
 courseRouter.use((req, _res, next) => {
@@ -601,10 +619,21 @@ courseRouter.get(
       query.noTotal ? "no-total" : "with-total",
     ].join(":");
 
-    if (!isStaffViewer && publicCourseListCache?.key === cacheKey && publicCourseListCache.expiresAt > Date.now()) {
-      res.setHeader("Cache-Control", "private, max-age=60");
-      res.setHeader("X-Course-List-Cache", "hit");
-      return res.json(publicCourseListCache.payload);
+    if (!isStaffViewer) {
+      const cached = publicCourseListCache.get(cacheKey);
+      if (cached && cached.expiresAt > Date.now()) {
+        res.setHeader("Cache-Control", "private, max-age=60");
+        res.setHeader("X-Course-List-Cache", "hit");
+        return res.json(cached.payload);
+      }
+
+      const pending = publicCourseListPromises.get(cacheKey);
+      if (pending) {
+        const payload = await pending;
+        res.setHeader("Cache-Control", "private, max-age=60");
+        res.setHeader("X-Course-List-Cache", "shared");
+        return res.json(payload);
+      }
     }
 
     const scopedFilter: Record<string, unknown> = {};
@@ -635,31 +664,35 @@ courseRouter.get(
       buildTrainerCourseListFilter(req.authUser),
       buildManagedContentScopeFilter(managedScope),
     );
-    const rawItems = await CourseModel.find(filter)
-      .sort({ createdAt: -1 })
-      .skip(pagination.skip)
-      .limit(query.noTotal ? pagination.limit + 1 : pagination.limit)
-      .lean();
-    const hasMore = query.noTotal && rawItems.length > pagination.limit;
-    const items = query.noTotal ? rawItems.slice(0, pagination.limit) : rawItems;
-    const total = query.noTotal
-      ? pagination.skip + items.length + (hasMore ? 1 : 0)
-      : await CourseModel.countDocuments(filter);
-    const projectedItems = isStaffViewer ? items : items.map(projectRestrictedCoursePayload);
-    const payload = {
-      courses: projectedItems,
-      pagination: buildPaginatedResponse([], pagination, total),
-    };
-    res.setHeader("X-Has-More", String(hasMore));
-
-    if (!isStaffViewer) {
-      publicCourseListCache = {
-        key: cacheKey,
-        expiresAt: Date.now() + PUBLIC_COURSE_LIST_CACHE_TTL_MS,
-        payload,
+    const loadCourseList = async (): Promise<PublicCourseListPayload> => {
+      const rawItems = await CourseModel.find(filter)
+        .sort({ createdAt: -1 })
+        .skip(pagination.skip)
+        .limit(query.noTotal ? pagination.limit + 1 : pagination.limit)
+        .lean();
+      const hasMore = query.noTotal && rawItems.length > pagination.limit;
+      const items = query.noTotal ? rawItems.slice(0, pagination.limit) : rawItems;
+      const total = query.noTotal
+        ? pagination.skip + items.length + (hasMore ? 1 : 0)
+        : await CourseModel.countDocuments(filter);
+      const projectedItems = isStaffViewer ? items : items.map(projectRestrictedCoursePayload);
+      res.setHeader("X-Has-More", String(hasMore));
+      return {
+        courses: projectedItems,
+        pagination: buildPaginatedResponse([], pagination, total),
       };
+    };
+
+    let payload: PublicCourseListPayload;
+    if (!isStaffViewer) {
+      const inflight = loadCourseList().finally(() => publicCourseListPromises.delete(cacheKey));
+      publicCourseListPromises.set(cacheKey, inflight);
+      payload = await inflight;
+      writePublicCourseListCache(cacheKey, payload);
       res.setHeader("Cache-Control", "private, max-age=60");
       res.setHeader("X-Course-List-Cache", "miss");
+    } else {
+      payload = await loadCourseList();
     }
 
     res.json(payload);
