@@ -243,8 +243,10 @@ assertNotIncludes('contexts/AuthContext.tsx', 'const [loading, setLoading] = use
 assertNotIncludes('contexts/AuthContext.tsx', '<Loader2 className="w-10 h-10 animate-spin" />');
 assertIncludes('App.tsx', "console.warn('Deferred question bootstrap unavailable:', error);");
 assertIncludes('App.tsx', "console.warn('Deferred skill-progress bootstrap unavailable:', error);");
-assertIncludes('App.tsx', 'deferQuestions: shouldDeferQuestionBootstrap(path)');
-assertIncludes('App.tsx', 'deferSkillProgress: shouldDeferSkillProgressBootstrap(path)');
+assertIncludes('App.tsx', 'const deferQuestions = shouldDeferQuestionBootstrap(path);');
+assertIncludes('App.tsx', 'deferQuestions,');
+assertIncludes('App.tsx', 'const deferSkillProgress = shouldDeferSkillProgressBootstrap(path);');
+assertIncludes('App.tsx', 'deferSkillProgress,');
 assertIncludes('App.tsx', 'const requestIdle = window.requestIdleCallback?.bind(window);');
 assertIncludes('App.tsx', 'window.__ALMEAA_PERF_DEBUG__');
 assertIncludes('services/api.ts', '[almeaa:api]');
