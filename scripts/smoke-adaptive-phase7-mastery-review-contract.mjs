@@ -29,7 +29,10 @@ assert.ok(
 );
 assert.ok(routes.includes('idempotent: true'));
 assert.ok(!routes.includes('correctOptionIndex: Number('), 'review payload must not expose answer key');
-assert.ok(routes.includes('.select("id text options imageUrl type skillIds")'));
+assert.ok(
+  routes.includes('.select("id questionCode text options explanation hint solvingStrategy videoUrl imageUrl imageAlt optionsEmbeddedInImage aiContext voiceExplanation type skillIds")'),
+  'due review projection must keep the bounded learner review fields without the answer key',
+);
 
 assert.ok(sideEffects.includes('upsertReviewCardFromQuestionAttempt'));
 assert.ok(sideEffects.includes('reviewType'));
