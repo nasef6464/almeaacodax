@@ -1067,36 +1067,23 @@ export const useStore = create<AppState>()(
             }))
         }),
         {
-            name: 'learning-platform-storage', // unique name
-            version: 3,
-            partialize: (state) => Object.fromEntries(
-                Object.entries(state).filter(([key]) => !['paths', 'levels', 'subjects', 'sections', 'skills', 'nestedSkills', 'libraryItems', 'questions', 'users', 'courses', 'topics', 'lessons', 'quizzes', 'groups', 'b2bPackages', 'accessCodes', 'announcementAds', 'skillProgress'].includes(key))
-            ),
+            name: 'learning-platform-storage',
+            version: 4,
+            // Session identity lives in AuthContext/sessionStorage and all learner
+            // progress/review/catalog data is server-authoritative. Keep only the
+            // small cart draft across browser restarts.
+            partialize: (state) => ({
+                cartItems: state.cartItems,
+            }),
             migrate: (persistedState: any) => {
                 if (!persistedState || typeof persistedState !== 'object') {
-                    return persistedState;
+                    return { cartItems: [] };
                 }
 
                 return {
-                    ...persistedState,
-                    courses: [],
-                    questions: [],
-                    quizzes: [],
-                    lessons: [],
-                    topics: [],
-                    groups: [],
-                    b2bPackages: [],
-                    accessCodes: [],
-                    announcementAds: [],
-                    paths: [],
-                    levels: [],
-                    subjects: [],
-                    sections: [],
-                    skills: [],
-                    nestedSkills: [],
-                    libraryItems: [],
-                    studyPlans: Array.isArray(persistedState.studyPlans) ? persistedState.studyPlans : [],
-                    skillProgress: [],
+                    cartItems: Array.isArray(persistedState.cartItems)
+                        ? persistedState.cartItems.slice(0, 50)
+                        : [],
                 };
             }
         }
