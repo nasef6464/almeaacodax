@@ -70,7 +70,7 @@ for (const evidence of [
   "scaleReady=true",
   "dep-daru6pjncjis73f4f0m0",
   "36222909358",
-  "PRODUCTION_BACKUP_MONGODB_URI",
+  "MONGODB_URI",
   "PRODUCTION_R2_BACKUP_ACCESS_KEY_ID",
   "five production source values",
   "36320284837",
