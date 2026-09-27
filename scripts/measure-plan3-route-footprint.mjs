@@ -8,8 +8,12 @@ const FRONTEND_ORIGIN = new URL(BASE_URL).origin;
 const API_ORIGIN = new URL(API_BASE_URL).origin;
 const API_COOKIE_DOMAIN = new URL(API_ORIGIN).hostname;
 const API_COOKIE_SECURE = new URL(API_ORIGIN).protocol === "https:";
-const OUT_FILE = process.env.PLAN3_FOOTPRINT_OUTPUT || "audit-artifacts/deep-premerge/plan3-route-footprint.json";
-const SETTLE_MS = Math.min(Math.max(Number(process.env.PLAN3_FOOTPRINT_SETTLE_MS || 2500), 500), 8000);
+const readArg = (name) => {
+  const index = process.argv.indexOf(name);
+  return index >= 0 && process.argv[index + 1] ? process.argv[index + 1] : "";
+};
+const OUT_FILE = readArg("--output") || "audit-artifacts/deep-premerge/plan3-route-footprint.json";
+const SETTLE_MS = Math.min(Math.max(Number(readArg("--settle-ms") || 2500), 500), 8000);
 
 const routePlan = [
   { id: "dashboard", path: "/dashboard" },
@@ -212,7 +216,7 @@ const totals = results.reduce(
 const report = {
   kind: "plan3-route-footprint",
   measuredAt: new Date().toISOString(),
-  commit: process.env.GIT_COMMIT_SHA || process.env.GITHUB_SHA || "unknown",
+  commit: process.env.GIT_COMMIT_SHA || readArg("--commit") || "unknown",
   baseUrl: BASE_URL,
   apiBaseUrl: API_BASE_URL,
   measurementWindow: `domcontentloaded + ${SETTLE_MS}ms`,
