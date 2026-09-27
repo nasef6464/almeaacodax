@@ -192,14 +192,44 @@ const FULL_BOOTSTRAP_PROFILE: BootstrapProfile = {
   loadSkillProgress: true,
 };
 
-const STUDENT_OVERVIEW_BOOTSTRAP_PROFILE: BootstrapProfile = {
+const DASHBOARD_BOOTSTRAP_PROFILE: BootstrapProfile = {
   loadCourses: true,
   loadQuizzes: true,
   loadTaxonomy: true,
-  loadContent: true,
+  loadContent: false,
   contentScope: 'learning',
-  loadQuestions: true,
-  loadSkillProgress: true,
+  loadQuestions: false,
+  loadSkillProgress: false,
+};
+
+const REPORTS_BOOTSTRAP_PROFILE: BootstrapProfile = {
+  loadCourses: false,
+  loadQuizzes: true,
+  loadTaxonomy: true,
+  loadContent: false,
+  contentScope: 'learning',
+  loadQuestions: false,
+  loadSkillProgress: false,
+};
+
+const COURSE_CATALOG_BOOTSTRAP_PROFILE: BootstrapProfile = {
+  loadCourses: false,
+  loadQuizzes: false,
+  loadTaxonomy: true,
+  loadContent: false,
+  contentScope: 'learning',
+  loadQuestions: false,
+  loadSkillProgress: false,
+};
+
+const CATEGORY_BOOTSTRAP_PROFILE: BootstrapProfile = {
+  loadCourses: true,
+  loadQuizzes: false,
+  loadTaxonomy: true,
+  loadContent: false,
+  contentScope: 'learning',
+  loadQuestions: false,
+  loadSkillProgress: false,
 };
 
 const resolveBootstrapProfile = (path: string): BootstrapProfile => {
@@ -207,13 +237,16 @@ const resolveBootstrapProfile = (path: string): BootstrapProfile => {
     return MINIMAL_BOOTSTRAP_PROFILE;
   }
 
-  if (path.startsWith('/category/') || path === '/courses' || path.startsWith('/course/')) {
-    return {
-      ...FULL_BOOTSTRAP_PROFILE,
-      contentScope: 'learning',
-      loadQuestions: false,
-      loadSkillProgress: false,
-    };
+  if (path.startsWith('/category/')) {
+    return CATEGORY_BOOTSTRAP_PROFILE;
+  }
+
+  if (path === '/courses') {
+    return COURSE_CATALOG_BOOTSTRAP_PROFILE;
+  }
+
+  if (path.startsWith('/course/')) {
+    return MINIMAL_BOOTSTRAP_PROFILE;
   }
 
   if (
@@ -229,8 +262,12 @@ const resolveBootstrapProfile = (path: string): BootstrapProfile => {
     };
   }
 
-  if (path.startsWith('/dashboard') || path.startsWith('/reports')) {
-    return STUDENT_OVERVIEW_BOOTSTRAP_PROFILE;
+  if (path.startsWith('/dashboard')) {
+    return DASHBOARD_BOOTSTRAP_PROFILE;
+  }
+
+  if (path.startsWith('/reports')) {
+    return REPORTS_BOOTSTRAP_PROFILE;
   }
 
   if (path.startsWith('/quiz') || path.startsWith('/results')) {
