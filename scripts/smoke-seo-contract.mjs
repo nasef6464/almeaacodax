@@ -28,9 +28,9 @@ assertIncludes('App.tsx', 'meta[property="og:image"]');
 assertIncludes('App.tsx', 'meta[name="twitter:image"]');
 assertIncludes('App.tsx', "<SeoRouteMeta />");
 
-assertIncludes('index.html', '<meta property="og:image" content="https://almeaacodax.vercel.app/images/homepage-hero-boy-platform.jpg" />');
+assertIncludes('index.html', '<meta property="og:image" content="https://almeaacodax.vercel.app/images/homepage-hero-boy-platform.webp" />');
 assertIncludes('index.html', '<meta name="twitter:card" content="summary_large_image" />');
-assertIncludes('index.html', '<meta name="twitter:image" content="https://almeaacodax.vercel.app/images/homepage-hero-boy-platform.jpg" />');
+assertIncludes('index.html', '<meta name="twitter:image" content="https://almeaacodax.vercel.app/images/homepage-hero-boy-platform.webp" />');
 assertIncludes('public/robots.txt', 'Sitemap: https://almeaacodax.vercel.app/sitemap.xml');
 assertIncludes('public/robots.txt', 'Disallow: /admin-dashboard');
 assertIncludes('public/robots.txt', 'Disallow: /quiz');
