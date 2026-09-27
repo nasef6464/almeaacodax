@@ -81,6 +81,7 @@
         "smoke:load-tests": "node scripts/smoke-load-test-contract.mjs",
         "validate:isolated-read-scale": "node scripts/run-isolated-scale-validation.mjs",
         "measure:production-latency": "node scripts/measure-production-latency.mjs",
+        "measure:production-auth-read-load": "node scripts/measure-production-auth-read-load.mjs",
         "smoke:monitoring": "node scripts/smoke-monitoring-contract.mjs",
         "smoke:ai-config-bridge": "node scripts/smoke-ai-config-bridge-contract.mjs",
         "smoke:admin-memberships-ai-closure": "node scripts/smoke-admin-memberships-ai-closure-contract.mjs",
