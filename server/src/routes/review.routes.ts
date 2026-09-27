@@ -86,7 +86,7 @@ reviewRouter.get(
     const questionIds = cards.map((card: any) => String(card.questionId || "")).filter(Boolean);
     const questions = questionIds.length
       ? await QuestionModel.find(buildQuestionBatchQuery(questionIds))
-          .select("id questionCode text options correctOptionIndex explanation hint solvingStrategy videoUrl imageUrl imageAlt optionsEmbeddedInImage aiContext voiceExplanation type skillIds")
+          .select("id questionCode text options explanation hint solvingStrategy videoUrl imageUrl imageAlt optionsEmbeddedInImage aiContext voiceExplanation type skillIds")
           .lean()
       : [];
     const questionById = new Map<string, any>();
@@ -121,7 +121,6 @@ reviewRouter.get(
             imageUrl: String(question.imageUrl || ""),
             imageAlt: String(question.imageAlt || ""),
             questionCode: String(question.questionCode || ""),
-            correctOptionIndex: Number(question.correctOptionIndex ?? 0),
             explanation: String(question.explanation || ""),
             hint: String(question.hint || ""),
             solvingStrategy: String(question.solvingStrategy || ""),
