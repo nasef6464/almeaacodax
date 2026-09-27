@@ -6,7 +6,7 @@ R2_BUCKET="${R2_BUCKET:-}"
 MEDIA_BACKUP_DIR="${MEDIA_BACKUP_DIR:-backups/r2}"
 MEDIA_OFFSITE_DIR="${MEDIA_OFFSITE_DIR:-}"
 RETENTION_DAYS="${RETENTION_DAYS:-14}"
-DR_STAGE_PREFIX="${DR_STAGE_PREFIX:-dr-staging/}"
+dr_stage_prefix="dr-staging/"
 
 if [[ -z "$R2_ENDPOINT" || -z "$R2_BUCKET" ]]; then
   echo "R2_ENDPOINT and R2_BUCKET are required." >&2
@@ -34,9 +34,9 @@ rm -rf "$stage_dir"
 mkdir -p "$stage_dir"
 
 AWS_DEFAULT_REGION=auto aws --endpoint-url "$R2_ENDPOINT" s3api list-objects-v2   --bucket "$R2_BUCKET"   --query 'Contents[].[Key,Size,ETag]'   --output text |
-  awk -v prefix="$DR_STAGE_PREFIX" 'index($1, prefix) != 1' > "$inventory"
+  awk -v prefix="$dr_stage_prefix" 'index($1, prefix) != 1' > "$inventory"
 
-AWS_DEFAULT_REGION=auto aws --endpoint-url "$R2_ENDPOINT" s3 sync   "s3://$R2_BUCKET/" "$stage_dir/"   --exclude "${DR_STAGE_PREFIX}*"   --no-progress
+AWS_DEFAULT_REGION=auto aws --endpoint-url "$R2_ENDPOINT" s3 sync   "s3://$R2_BUCKET/" "$stage_dir/"   --exclude "${dr_stage_prefix}*"   --no-progress
 
 file_count="$(find "$stage_dir" -type f | wc -l | tr -d ' ')"
 bytes="$(du -sb "$stage_dir" | awk '{print $1}')"
