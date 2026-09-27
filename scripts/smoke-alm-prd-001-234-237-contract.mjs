@@ -41,10 +41,15 @@ assert.ok(postDeploy.includes("actions/upload-artifact@v4"));
 assert.ok(drWorkflow.includes("schedule:"));
 assert.ok(drWorkflow.includes('cron: "17 1 * * *"'));
 assert.ok(drWorkflow.includes("PRODUCTION_BACKUP_MONGODB_URI"));
-assert.ok(drWorkflow.includes("DR_OFFSITE_ENDPOINT"));
-assert.ok(drWorkflow.includes("DR_OFFSITE_BUCKET"));
-assert.ok(drWorkflow.includes("Fail closed when DR secrets are incomplete"));
-assert.ok(!drWorkflow.includes("upload-artifact"));
+assert.ok(drWorkflow.includes("PRODUCTION_R2_BACKUP_ACCESS_KEY_ID"));
+assert.ok(drWorkflow.includes("PRODUCTION_R2_BACKUP_SECRET_ACCESS_KEY"));
+assert.ok(drWorkflow.includes("Fail closed when source backup secrets are incomplete"));
+assert.ok(drWorkflow.includes("actions/upload-artifact@v4"));
+assert.ok(drWorkflow.includes("retention-days: 30"));
+assert.ok(drWorkflow.includes("mongo:8.0"));
+assert.ok(drWorkflow.includes("minio/minio"));
+assert.ok(!drWorkflow.includes("DR_OFFSITE_ENDPOINT"));
+assert.ok(!drWorkflow.includes("DR_OFFSITE_BUCKET"));
 
 assert.ok(drContract.includes("production-dr-backup.yml"));
 
@@ -64,11 +69,12 @@ for (const evidence of [
   "36222909358",
   "PRODUCTION_BACKUP_MONGODB_URI",
   "PRODUCTION_R2_BACKUP_ACCESS_KEY_ID",
-  "DR_OFFSITE_ENDPOINT",
-  "DR_OFFSITE_SECRET_ACCESS_KEY",
+  "five source secrets",
   "66 collections",
   "10 collections",
-  "0.0.0.0/0",
+  "74.220.51.0/24",
+  "dep-dasd18t9fdbs73cu3d30",
+  "#237: CLOSED ✅",
   "No production cutover",
 ]) {
   assert.ok(plan2Evidence.includes(evidence), `Plan 2 evidence must include ${evidence}`);
