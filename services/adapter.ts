@@ -507,7 +507,11 @@ export const adapter = {
     }
   },
 
-  async getContentBootstrap(scope: "full" | "learning" = "full", phase: "full" | "core" = "full") {
+  async getContentBootstrap(
+    scope: "full" | "learning" = "full",
+    phase: "full" | "core" = "full",
+    filters: { pathId?: string; subjectId?: string } = {},
+  ) {
     if (!USE_REAL_API) {
       return {
         topics: [],
@@ -522,7 +526,7 @@ export const adapter = {
     }
 
     try {
-      const data = await api.getContentBootstrapByScope(scope, phase);
+      const data = await api.getContentBootstrapByScope(scope, phase, filters);
       return {
         topics: Array.isArray(data?.topics) ? data.topics.map(normalizeTopic).filter((topic) => topic.id && topic.subjectId && topic.title) : [],
         lessons: Array.isArray(data?.lessons) ? data.lessons.map((lesson: any, index: number) => normalizeLesson(lesson, 0, index)).filter((lesson) => lesson.id && lesson.title) : [],
