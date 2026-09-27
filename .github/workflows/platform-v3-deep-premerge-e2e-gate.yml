@@ -153,6 +153,14 @@ jobs:
       - name: API production build
         run: npm run server:build
 
+      - name: PLAN 3 focused regression contracts
+        run: |
+          npm run smoke:performance
+          npm run smoke:route-loading
+          npm run smoke:adaptive-phase11-final-certification
+          npm run smoke:question-voice-explanation
+          node scripts/smoke-adaptive-phase7-mastery-review-contract.mjs
+
       - name: Deep-user preparation script typecheck
         run: cd server && npx tsc --noEmit --target ES2022 --module NodeNext --moduleResolution NodeNext --strict --esModuleInterop --skipLibCheck --types node src/scripts/prepareDeepPreMergeUsers.ts
 
