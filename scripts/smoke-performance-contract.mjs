@@ -206,6 +206,10 @@ assertIncludes('server/src/modules/content/application/contentBootstrapVisibilit
 assertIncludes('server/src/modules/content/http/contentBootstrapRoutes.ts', 'PUBLIC_ANNOUNCEMENT_ADS_BOOTSTRAP_LIMIT');
 assertIncludes('server/src/modules/content/http/contentBootstrapRoutes.ts', 'publicContentBootstrapPromise');
 assertIncludes('server/src/modules/content/http/contentBootstrapRoutes.ts', 'res.setHeader("X-Content-Cache", cacheStatus)');
+assertIncludes('server/src/modules/content/http/contentBootstrapRoutes.ts', 'gzipSync');
+assertIncludes('server/src/modules/content/http/contentBootstrapRoutes.ts', 'contentBootstrapSerializedCache');
+assertIncludes('server/src/modules/content/http/contentBootstrapRoutes.ts', 'Content-Encoding", "gzip"');
+assertIncludes('server/src/modules/content/http/contentBootstrapRoutes.ts', 'serialized.payload !== payload');
 assertIncludes('server/src/modules/content/application/contentBootstrapCache.ts', 'cacheStatus: "shared"');
 assertIncludes('server/src/services/operationsAudit.ts', 'OPERATIONS_AUDIT_CACHE_TTL_MS');
 assertIncludes('server/src/services/operationsAudit.ts', 'cachedOperationsAudit');
