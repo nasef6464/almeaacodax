@@ -218,9 +218,7 @@ jobs:
       - name: PLAN 3 authenticated route footprint
         id: plan3_footprint
         timeout-minutes: 6
-        env:
-          PLAN3_FOOTPRINT_OUTPUT: audit-artifacts/deep-premerge/plan3-route-footprint.json
-        run: node scripts/measure-plan3-route-footprint.mjs
+        run: node scripts/measure-plan3-route-footprint.mjs --output audit-artifacts/deep-premerge/plan3-route-footprint.json
 
       - name: Bounded isolated read-scale validation
         id: isolated_scale
