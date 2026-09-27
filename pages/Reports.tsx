@@ -7,6 +7,7 @@ import { EmptyState } from '../components/ui/EmptyState';
 import { StudentNextActionStrip } from '../components/StudentNextActionStrip';
 import { useStore } from '../store/useStore';
 import { api } from '../services/api';
+import { adapter } from '../services/adapter';
 import { Role, type QuestionAttempt, type QuizResult } from '../types';
 import { printElementAsPdf } from '../utils/printPdf';
 import { shareTextSummary } from '../utils/shareText';
@@ -97,7 +98,7 @@ const studentLearningActionIcons: Record<StudentLearningActionIconKey, LucideIco
 const studentReadinessIcons: Record<StudentReadinessIconKey, LucideIcon> = { target: Target, checkCircle: CheckCircle, fileText: FileText, bookOpen: BookOpen };
 
 const Reports: React.FC = () => {
-    const { examResults, questionAttempts, skills, lessons, quizzes, libraryItems, questions, topics, subjects, sections, paths, groups, users, enrolledPaths, user } = useStore();
+    const { examResults, questionAttempts, skills, lessons, quizzes, libraryItems, questions, topics, subjects, sections, paths, groups, users, enrolledPaths, user, hydrateContentBootstrap } = useStore();
     const [scopedAnalytics, setScopedAnalytics] = useState<ScopedAnalyticsOverview | null>(null);
     const [scopedResults, setScopedResults] = useState<ScopedQuizResult[]>([]);
     const [scopedAnalyticsLoading, setScopedAnalyticsLoading] = useState(false);
@@ -275,6 +276,35 @@ const Reports: React.FC = () => {
         [focusedReportSkills, lessons, libraryItems, questions, quizzes, sections, skills, subjects, topics],
     );
     const studentTodayFocus = studentWeeklyPlan[0] || null;
+    useEffect(() => {
+        if (!isStudentView || !studentTodayFocus?.pathId) return;
+
+        let cancelled = false;
+        void adapter.getContentBootstrap('learning', 'full', {
+            pathId: studentTodayFocus.pathId,
+            ...(studentTodayFocus.subjectId ? { subjectId: studentTodayFocus.subjectId } : {}),
+        })
+            .then((content) => {
+                if (cancelled) return;
+                hydrateContentBootstrap({
+                    lessons: content.lessons,
+                    libraryItems: content.libraryItems,
+                });
+            })
+            .catch((error) => {
+                console.warn('Report scoped learning resources unavailable:', error);
+            });
+
+        return () => {
+            cancelled = true;
+        };
+    }, [
+        hydrateContentBootstrap,
+        isStudentView,
+        studentTodayFocus?.pathId,
+        studentTodayFocus?.subjectId,
+    ]);
+
     useEffect(() => {
         let cancelled = false;
         if (!isStudentView || !studentTodayFocus?.pathId) {
