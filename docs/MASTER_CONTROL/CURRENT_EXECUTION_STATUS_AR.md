@@ -8,7 +8,7 @@
 |---|---|---|
 | 0 — Master Control & Safe Delivery | CLOSED ✅ | ابدأ Plan 1 |
 | 1 — Repository Reconciliation | CLOSED ✅ | voice gap + R2 tooling reconciled |
-| 2 — Production Closure | IN PROGRESS ⚠️ | runtime/performance green; DR + Atlas network owner blockers remain |
+| 2 — Production Closure | IN PROGRESS ⚠️ | runtime/performance/network green; DR secret-backed run remains |
 | 3 — Speed/Bandwidth | WAITING | #268 |
 | 4 — Data Model/Storage | WAITING FOR DR | بعد Plan 2 baseline |
 | 5 — Residual Architecture | WAITING | auth/App/quiz/store residuals |
@@ -53,11 +53,11 @@ Ruleset: `Protect main`
 - Google OAuth start: **LIVE PASS** — Google redirect + canonical Render callback.
 - Sentry: **LIVE PASS** — latest event `a32f9e20f795473ea79116cbbc5b8176`.
 - R2: **LIVE PASS** — presign/PUT/public-GET/SHA-256 proof completed.
-- DR: **BLOCKED** — nine GitHub Actions secrets are absent; the real scheduled workflow fails closed before backup.
+- DR: **BLOCKED ON SOURCE SECRETS** — workflow simplified to five source secrets; independent artifact + isolated Mongo/MinIO restore drill are automated.
 - Frankfurt Atlas recovery: **NOT A FULL RESTORE** — do not cut over.
 - Performance: **CLOSED ✅** — authenticated c=10/25/50, 340 GETs, 0% errors; material latency reduction satisfies #236 alternate exit path. Frankfurt↔Singapore remains optimization debt, not a PLAN 2 blocker.
 - GitHub governance: closed.
-- Atlas network: `0.0.0.0/0` still present; owner/admin removal + smoke required.
+- Atlas network: **CLOSED ✅** — `0.0.0.0/0` removed; current Render Frankfurt outbound `74.220.51.0/24` + `74.220.59.0/24` passed a fresh-process Mongo reconnect.
 - Evidence: `docs/MASTER_CONTROL/PLAN_2_PRODUCTION_CLOSURE_EVIDENCE_AR.md`.
 
 **PLAN 2 is not CLOSED yet. PLAN 3 must wait.**
@@ -67,7 +67,7 @@ Ruleset: `Protect main`
 - #234 runtime integrations — CLOSED ✅.
 - #235 disaster recovery.
 - #236 topology/capacity — CLOSED ✅.
-- #237 remaining governance/network.
+- #237 governance/network — CLOSED ✅.
 - #264 question visual integrity.
 - #268 residual performance/runtime footprint.
 
