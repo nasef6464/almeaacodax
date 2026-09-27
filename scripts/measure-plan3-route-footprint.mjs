@@ -116,22 +116,20 @@ async function measureRoute(browser, routeSpec) {
       const isFrontend = parsed.origin === FRONTEND_ORIGIN;
       if (!isApi && !isFrontend) return;
 
-      let bytes = Number(response.headers()["content-length"] || 0);
-      if (!Number.isFinite(bytes) || bytes <= 0) {
-        try {
-          bytes = (await response.body()).byteLength;
-        } catch {
-          bytes = 0;
-        }
-      }
-
       const request = response.request();
+      const resourceType = request.resourceType();
+      if (resourceType === "eventsource" || resourceType === "websocket") return;
+
+      const rawLength = Number(response.headers()["content-length"] || 0);
+      const bytes = Number.isFinite(rawLength) && rawLength > 0 ? rawLength : 0;
+
       records.push({
         kind: isApi ? "api" : "frontend",
         url: isApi ? normalizeApiPath(url) : parsed.pathname,
         status: response.status(),
-        resourceType: request.resourceType(),
+        resourceType,
         bytes,
+        byteSource: bytes > 0 ? "content-length" : "unobserved",
       });
     })();
     responseTasks.push(task);
