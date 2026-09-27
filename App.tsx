@@ -1479,7 +1479,7 @@ const App: React.FC = () => {
       }
     };
 
-    let bootstrapStarted = false;
+    const startedBootstrapProfiles = new Set<string>();
     let publicAdsTimer: ReturnType<typeof setTimeout> | undefined;
     let publicAdsIdleHandle: number | undefined;
 
@@ -1500,18 +1500,32 @@ const App: React.FC = () => {
     };
 
     const startBootstrap = () => {
-      if (bootstrapStarted) {
+      const path = getInitialRouterPath();
+      const profile = resolveBootstrapProfile(path);
+      const deferQuestions = shouldDeferQuestionBootstrap(path);
+      const deferSkillProgress = shouldDeferSkillProgressBootstrap(path);
+      const contentFilters = profile.loadContent ? resolveContentFiltersForPath(path) : undefined;
+      const profileKey = JSON.stringify({
+        profile,
+        deferQuestions,
+        deferSkillProgress,
+        contentFilters,
+      });
+
+      if (startedBootstrapProfiles.has(profileKey)) {
         return;
       }
 
-      bootstrapStarted = true;
-      const path = getInitialRouterPath();
-      const profile = resolveBootstrapProfile(path);
+      startedBootstrapProfiles.add(profileKey);
+      if (isDataBootstrapBlockingPath(path)) {
+        setBootstrapReady(false);
+      }
+
       void bootstrapAppData({
         profile,
-        deferQuestions: shouldDeferQuestionBootstrap(path),
-        deferSkillProgress: shouldDeferSkillProgressBootstrap(path),
-        contentFilters: resolveContentFiltersForPath(path),
+        deferQuestions,
+        deferSkillProgress,
+        contentFilters,
       });
     };
 
