@@ -71,7 +71,7 @@ for (const evidence of [
   "dep-daru6pjncjis73f4f0m0",
   "36222909358",
   "MONGODB_URI",
-  "PRODUCTION_R2_BACKUP_ACCESS_KEY_ID",
+  "GitHub itself needs only the four R2 secrets",
   "five production source values",
   "36320284837",
   "66 collections",
