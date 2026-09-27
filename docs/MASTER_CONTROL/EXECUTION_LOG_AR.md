@@ -124,3 +124,34 @@ Evidence:
 
 القرار:
 لا cutover للـrecovery غير المكتمل، ولا Atlas paid upgrade بدون موافقة صريحة، ولا ادعاء بإغلاق PLAN 2 قبل DR/network/topology evidence.
+
+
+## 2026-09-27 — PLAN 2 post-merge live certification
+
+Current main:
+`d588f7db9e28187fb505e01134054b2d0bfce905`
+
+Post Deploy Smoke:
+- run `36291061913` => SUCCESS.
+- release identity => PASS.
+- frontend strict => 31/31 PASS.
+- operational => 71/71 PASS.
+- Google OAuth live start/callback => PASS.
+- R2 presign/write/public-read/hash => PASS.
+- Sentry live event => PASS, eventId `b191aa4d95a14dccbe3e26d1110ff658`.
+- latency artifact => uploaded.
+
+Fresh bounded p95:
+- health ready 322.56 ms.
+- courses limit100 1175.28 ms.
+- quizzes 564.04 ms.
+- learning core bootstrap 838.79 ms.
+- error rate 0.
+
+نتيجة #234:
+**CLOSED / LIVE CERTIFIED.**
+
+PLAN 2 remains open only on:
+- #235 DR secret-backed backup/restore proof.
+- #236 cross-region Mongo topology/capacity closure.
+- #237 Atlas broad allowlist removal + post-change smoke.
