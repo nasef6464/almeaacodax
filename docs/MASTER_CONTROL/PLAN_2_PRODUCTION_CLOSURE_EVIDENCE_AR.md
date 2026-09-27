@@ -59,7 +59,21 @@ PLAN 2 adds:
 - one-time R2 presign -> PUT -> public GET -> SHA-256 proof on PLAN 2 merge.
 - existing Sentry live test-event remains in Post Deploy Smoke.
 
-Final #234 closure waits for the post-merge R2 and Sentry live evidence IDs/results.
+Post-merge certification is now complete on `main@d588f7db9e28187fb505e01134054b2d0bfce905`.
+
+Post Deploy Smoke run `36291061913` => **SUCCESS**:
+- release identity: PASS.
+- frontend strict smoke: 31/31 PASS.
+- operational smoke: 71/71 PASS.
+- Google OAuth live proof: PASS.
+- R2 live proof: PASS — presign -> PUT -> public GET -> SHA-256.
+  - key: `questions/editor/2026/09/a265118f-2ad5-4a8b-b23f-2f709c8c72d3.png`
+  - size: 68 bytes.
+  - SHA-256: `18537dc5086d6545f6df54ef124fef79350bf70545a00fd08c48e5490655131a`
+- Sentry live proof: PASS — HTTP 202, eventId `b191aa4d95a14dccbe3e26d1110ff658`.
+- bounded production latency evidence artifact uploaded.
+
+Therefore **#234 runtime integration exit is PASS on current production**.
 
 ## Post-deploy 429 diagnosis
 
@@ -140,12 +154,13 @@ Current topology:
 - Production MongoDB Atlas: Singapore.
 - therefore API <-> DB remains cross-region.
 
-Previously measured bounded production evidence:
-- health ready p50 ~213.67 ms / p95 ~306.79 ms
-- courses limit100 p50 ~509.07 ms / p95 ~1859.50 ms
-- quizzes p50 ~202.49 ms / p95 ~534.75 ms
-- content bootstrap learning-core p50 ~224.48 ms / p95 ~894.92 ms
-- 0% request errors in that bounded sample.
+Fresh post-merge bounded production evidence from run `36291061913`:
+- health ready p50 234.15 ms / p95 322.56 ms
+- courses limit100 p50 533.57 ms / p95 1175.28 ms
+- quizzes p50 205.28 ms / p95 564.04 ms
+- content bootstrap learning-core p50 215.15 ms / p95 838.79 ms
+- 0% request errors across all measured reads.
+- evidence limitation remains explicit: this bounded read sample alone does not certify 500/1000 concurrent-user capacity.
 
 Fresh Atlas health:
 - open alerts: 0
@@ -195,9 +210,11 @@ Already PASS:
 - Atlas current health/advisor inventory.
 
 Still blocking PLAN 2 final closure:
-1. #234 — R2 write/read proof and Sentry live event after PLAN 2 merge.
-2. #235 — 9 DR secrets + successful scheduled backup + independent offsite copy + isolated restore drill + RPO/RTO.
-3. #236 — co-located API/Mongo topology or evidence-backed controlled migration/approved paid upgrade.
-4. #237 — remove Atlas `0.0.0.0/0` and smoke.
+1. #235 — 9 DR secrets + successful scheduled backup + independent offsite copy + isolated restore drill + RPO/RTO.
+2. #236 — co-located API/Mongo topology or evidence-backed controlled migration/approved paid upgrade.
+3. #237 — remove Atlas `0.0.0.0/0` and smoke.
+
+Closed inside PLAN 2:
+- #234 — runtime integrations fully certified on live production.
 
 PLAN 3 must not start until these exit gates are resolved or Master Control explicitly changes the sequence.
