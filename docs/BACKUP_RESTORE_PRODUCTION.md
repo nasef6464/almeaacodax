@@ -167,20 +167,41 @@ It is not a production target. A bounded logical-copy exercise proved recovery o
 
 ## PLAN 2 scheduled production DR closure
 
-The canonical scheduled workflow is:
-`.github/workflows/production-dr-backup.yml`.
+Runtime run `36320284837` proved that the five source values are configured, but a GitHub-hosted runner cannot directly reach the hardened production Atlas network. The failed run had valid secrets/tooling and stopped only at `mongodump` with `ReplicaSetNoPrimary` / TLS errors.
 
-It now requires only five source credentials:
-- production MongoDB backup URI;
-- production R2 endpoint and bucket;
-- production R2 backup access key ID and secret access key.
+The production path therefore separates source acquisition from independent certification:
 
-Independent off-site evidence is stored as a private GitHub Actions artifact with a 30-day retention period and recorded SHA-256 artifact digest.
+### Render source stage
 
-Every successful run also performs restore drills into disposable local recovery targets:
-- MongoDB 8 for the database archive;
-- MinIO for the R2/S3 media archive.
+A Frankfurt Render scheduled job runs shortly before the GitHub schedule and executes:
 
-The media drill verifies exact object-key preservation, source/restored object-count parity and at least one real restored object. The database drill verifies collection count plus representative `users` and `questions` documents.
+`node scripts/render-stage-mongo-backup.mjs`
 
-This pattern avoids treating the production R2 bucket as its own backup and avoids requiring a second third-party object-store account merely to certify DR.
+Required Render runtime values:
+- `MONGODB_URI`
+- `R2_ACCOUNT_ID`
+- `R2_BUCKET`
+- `R2_ACCESS_KEY_ID`
+- `R2_SECRET_ACCESS_KEY`
+
+The stage writes a verified gzip mongodump plus checksum/manifest under `dr-staging/mongodb/current/` in R2 and uploads `ready.json` last. The staging area is a handoff, not the independent backup copy.
+
+### GitHub independent certification
+
+The canonical workflow remains:
+`.github/workflows/production-dr-backup.yml`
+
+It:
+- requires the staged Mongo marker to be no older than 2 hours;
+- downloads and verifies the Mongo archive/checksum/manifest;
+- builds the full R2 media backup while excluding `dr-staging/`;
+- uploads both verified backup sets to a private GitHub Actions Artifact with 30-day retention and a digest;
+- restores Mongo into disposable MongoDB 8;
+- restores media into disposable MinIO;
+- verifies restored collection/users/questions counts, exact media object-count parity and a stable object key;
+- records backup age and measured Mongo/R2/combined restore RTO;
+- preserves fail-closed issue alerting.
+
+GitHub needs only the four R2 repository secrets for this certification phase. `MONGODB_URI` remains on Render and Atlas `0.0.0.0/0` must not be reopened.
+
+A real DR certification still requires one successful Render staging run followed by one successful end-to-end GitHub certification run. Repository tests alone do not close #235.
