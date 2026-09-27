@@ -11,6 +11,7 @@ const adapter = read("services/adapter.ts");
 const bootstrap = read("server/src/modules/content/http/contentBootstrapRoutes.ts");
 const genericPath = read("pages/GenericPathPage.tsx");
 const reports = read("pages/Reports.tsx");
+const dashboard = read("pages/Dashboard.tsx");
 const landing = read("pages/Landing.tsx");
 const homepageManager = read("dashboards/admin/HomepageManager.tsx");
 const announcementAdsManager = read("dashboards/admin/AnnouncementAdsManager.tsx");
@@ -21,8 +22,14 @@ const webmanifest = read("public/site.webmanifest");
 const presentationDefaults = read("server/src/modules/content/presentation/platformPresentationDefaults.ts");
 const vercel = JSON.parse(read("vercel.json"));
 
-assert.ok(app.includes("const STUDENT_OVERVIEW_BOOTSTRAP_PROFILE"));
-assert.ok(app.includes("path.startsWith('/dashboard') || path.startsWith('/reports')"));
+assert.ok(app.includes("const DASHBOARD_BOOTSTRAP_PROFILE"));
+assert.ok(app.includes("const REPORTS_BOOTSTRAP_PROFILE"));
+assert.ok(app.includes("const COURSE_CATALOG_BOOTSTRAP_PROFILE"));
+assert.ok(app.includes("const CATEGORY_BOOTSTRAP_PROFILE"));
+assert.ok(app.includes("path.startsWith('/dashboard')"));
+assert.ok(app.includes("path.startsWith('/reports')"));
+assert.ok(app.includes("path.startsWith('/category/')"));
+assert.ok(app.includes("path === '/courses'"));
 assert.ok(app.includes("contentFilters?: { pathId?: string; subjectId?: string }"));
 assert.ok(app.includes("contentFilters: resolveContentFiltersForPath(path)"));
 assert.ok(!app.includes("prefetchCommonRouteModules"));
@@ -50,6 +57,9 @@ assert.ok(genericPath.includes("adapter.getContentBootstrap('learning', 'full', 
 assert.ok(genericPath.includes("subjectId: scopedSubjectId"));
 assert.ok(reports.includes("adapter.getContentBootstrap('learning', 'full', {"));
 assert.ok(reports.includes("pathId: studentTodayFocus.pathId"));
+assert.ok(reports.includes("adapter.getQuestions({ page: 1, limit: 20, summary: true, noTotal: true })"));
+assert.ok(dashboard.includes("const contentTabs: DashboardTab[]"));
+assert.ok(dashboard.includes("adapter.getContentBootstrap('learning', 'full')"));
 
 assert.ok(store.includes("version: 4"));
 const persisted = store.match(/partialize:\s*\(state\)\s*=>\s*\(\{([\s\S]*?)\}\),\s*migrate:/)?.[1] || "";
