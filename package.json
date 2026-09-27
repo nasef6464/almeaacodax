@@ -233,7 +233,8 @@
         "smoke:handover-blockers": "node scripts/smoke-handover-blockers-contract.mjs",
         "smoke:handover:all": "npm run smoke:handover-utf8 && npm run smoke:handover-structure && npm run smoke:handover-consistency && npm run smoke:handover-gates && npm run smoke:handover-blockers",
         "smoke:adaptive-phase11-final-certification": "node scripts/smoke-adaptive-phase11-final-certification-contract.mjs",
-        "smoke:question-voice-explanation": "node scripts/smoke-question-voice-explanation-contract.mjs"
+        "smoke:question-voice-explanation": "node scripts/smoke-question-voice-explanation-contract.mjs",
+        "measure:plan3-route-footprint": "node scripts/measure-plan3-route-footprint.mjs"
     },
     "dependencies": {
         "@e965/xlsx": "^0.20.3",
