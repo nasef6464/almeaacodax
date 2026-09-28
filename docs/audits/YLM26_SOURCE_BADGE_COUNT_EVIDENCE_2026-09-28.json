@@ -1,0 +1,618 @@
+{
+  "generatedAt": "2026-09-28",
+  "sourceFile": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+  "scopeDefinition": "Only question blocks carrying the dark-blue تجميعات badge.",
+  "sourceBadgeCount": 326,
+  "sourcePagesWithBadges": 85,
+  "liveRecords": 156,
+  "netGap": 170,
+  "pageLevelMissingSlots": 172,
+  "pageLevelExtraSlots": 2,
+  "exactPages": 16,
+  "pagesMissing": 67,
+  "pagesExtra": 2,
+  "sourceCounts": {
+    "5": 3,
+    "6": 4,
+    "7": 4,
+    "8": 4,
+    "9": 4,
+    "10": 5,
+    "11": 4,
+    "12": 3,
+    "13": 5,
+    "14": 4,
+    "15": 4,
+    "16": 3,
+    "17": 3,
+    "18": 3,
+    "19": 3,
+    "20": 5,
+    "21": 4,
+    "22": 5,
+    "23": 5,
+    "25": 3,
+    "26": 5,
+    "27": 1,
+    "28": 8,
+    "29": 2,
+    "30": 2,
+    "31": 6,
+    "32": 5,
+    "33": 3,
+    "34": 5,
+    "35": 3,
+    "36": 7,
+    "37": 5,
+    "38": 3,
+    "39": 2,
+    "40": 5,
+    "41": 3,
+    "42": 6,
+    "43": 4,
+    "44": 5,
+    "45": 2,
+    "46": 5,
+    "47": 4,
+    "48": 6,
+    "49": 4,
+    "50": 4,
+    "51": 4,
+    "52": 3,
+    "53": 3,
+    "55": 2,
+    "56": 4,
+    "57": 3,
+    "58": 1,
+    "59": 3,
+    "62": 4,
+    "63": 4,
+    "64": 5,
+    "65": 2,
+    "66": 8,
+    "67": 2,
+    "68": 4,
+    "69": 3,
+    "70": 4,
+    "71": 4,
+    "73": 5,
+    "74": 4,
+    "75": 2,
+    "76": 3,
+    "77": 3,
+    "78": 6,
+    "79": 3,
+    "80": 3,
+    "81": 1,
+    "82": 3,
+    "83": 4,
+    "84": 4,
+    "85": 4,
+    "86": 2,
+    "87": 5,
+    "88": 2,
+    "89": 1,
+    "90": 9,
+    "91": 4,
+    "92": 4,
+    "93": 4,
+    "94": 4
+  },
+  "pageComparison": [
+    {
+      "page": 5,
+      "sourceBadgeCount": 3,
+      "liveRecordCount": 4,
+      "delta": 1
+    },
+    {
+      "page": 6,
+      "sourceBadgeCount": 4,
+      "liveRecordCount": 5,
+      "delta": 1
+    },
+    {
+      "page": 7,
+      "sourceBadgeCount": 4,
+      "liveRecordCount": 1,
+      "delta": -3
+    },
+    {
+      "page": 8,
+      "sourceBadgeCount": 4,
+      "liveRecordCount": 2,
+      "delta": -2
+    },
+    {
+      "page": 9,
+      "sourceBadgeCount": 4,
+      "liveRecordCount": 2,
+      "delta": -2
+    },
+    {
+      "page": 10,
+      "sourceBadgeCount": 5,
+      "liveRecordCount": 2,
+      "delta": -3
+    },
+    {
+      "page": 11,
+      "sourceBadgeCount": 4,
+      "liveRecordCount": 0,
+      "delta": -4
+    },
+    {
+      "page": 12,
+      "sourceBadgeCount": 3,
+      "liveRecordCount": 0,
+      "delta": -3
+    },
+    {
+      "page": 13,
+      "sourceBadgeCount": 5,
+      "liveRecordCount": 3,
+      "delta": -2
+    },
+    {
+      "page": 14,
+      "sourceBadgeCount": 4,
+      "liveRecordCount": 2,
+      "delta": -2
+    },
+    {
+      "page": 15,
+      "sourceBadgeCount": 4,
+      "liveRecordCount": 0,
+      "delta": -4
+    },
+    {
+      "page": 16,
+      "sourceBadgeCount": 3,
+      "liveRecordCount": 0,
+      "delta": -3
+    },
+    {
+      "page": 17,
+      "sourceBadgeCount": 3,
+      "liveRecordCount": 2,
+      "delta": -1
+    },
+    {
+      "page": 18,
+      "sourceBadgeCount": 3,
+      "liveRecordCount": 0,
+      "delta": -3
+    },
+    {
+      "page": 19,
+      "sourceBadgeCount": 3,
+      "liveRecordCount": 3,
+      "delta": 0
+    },
+    {
+      "page": 20,
+      "sourceBadgeCount": 5,
+      "liveRecordCount": 5,
+      "delta": 0
+    },
+    {
+      "page": 21,
+      "sourceBadgeCount": 4,
+      "liveRecordCount": 3,
+      "delta": -1
+    },
+    {
+      "page": 22,
+      "sourceBadgeCount": 5,
+      "liveRecordCount": 0,
+      "delta": -5
+    },
+    {
+      "page": 23,
+      "sourceBadgeCount": 5,
+      "liveRecordCount": 3,
+      "delta": -2
+    },
+    {
+      "page": 25,
+      "sourceBadgeCount": 3,
+      "liveRecordCount": 3,
+      "delta": 0
+    },
+    {
+      "page": 26,
+      "sourceBadgeCount": 5,
+      "liveRecordCount": 3,
+      "delta": -2
+    },
+    {
+      "page": 27,
+      "sourceBadgeCount": 1,
+      "liveRecordCount": 0,
+      "delta": -1
+    },
+    {
+      "page": 28,
+      "sourceBadgeCount": 8,
+      "liveRecordCount": 5,
+      "delta": -3
+    },
+    {
+      "page": 29,
+      "sourceBadgeCount": 2,
+      "liveRecordCount": 2,
+      "delta": 0
+    },
+    {
+      "page": 30,
+      "sourceBadgeCount": 2,
+      "liveRecordCount": 0,
+      "delta": -2
+    },
+    {
+      "page": 31,
+      "sourceBadgeCount": 6,
+      "liveRecordCount": 3,
+      "delta": -3
+    },
+    {
+      "page": 32,
+      "sourceBadgeCount": 5,
+      "liveRecordCount": 0,
+      "delta": -5
+    },
+    {
+      "page": 33,
+      "sourceBadgeCount": 3,
+      "liveRecordCount": 0,
+      "delta": -3
+    },
+    {
+      "page": 34,
+      "sourceBadgeCount": 5,
+      "liveRecordCount": 1,
+      "delta": -4
+    },
+    {
+      "page": 35,
+      "sourceBadgeCount": 3,
+      "liveRecordCount": 0,
+      "delta": -3
+    },
+    {
+      "page": 36,
+      "sourceBadgeCount": 7,
+      "liveRecordCount": 1,
+      "delta": -6
+    },
+    {
+      "page": 37,
+      "sourceBadgeCount": 5,
+      "liveRecordCount": 0,
+      "delta": -5
+    },
+    {
+      "page": 38,
+      "sourceBadgeCount": 3,
+      "liveRecordCount": 2,
+      "delta": -1
+    },
+    {
+      "page": 39,
+      "sourceBadgeCount": 2,
+      "liveRecordCount": 1,
+      "delta": -1
+    },
+    {
+      "page": 40,
+      "sourceBadgeCount": 5,
+      "liveRecordCount": 2,
+      "delta": -3
+    },
+    {
+      "page": 41,
+      "sourceBadgeCount": 3,
+      "liveRecordCount": 2,
+      "delta": -1
+    },
+    {
+      "page": 42,
+      "sourceBadgeCount": 6,
+      "liveRecordCount": 1,
+      "delta": -5
+    },
+    {
+      "page": 43,
+      "sourceBadgeCount": 4,
+      "liveRecordCount": 0,
+      "delta": -4
+    },
+    {
+      "page": 44,
+      "sourceBadgeCount": 5,
+      "liveRecordCount": 2,
+      "delta": -3
+    },
+    {
+      "page": 45,
+      "sourceBadgeCount": 2,
+      "liveRecordCount": 0,
+      "delta": -2
+    },
+    {
+      "page": 46,
+      "sourceBadgeCount": 5,
+      "liveRecordCount": 0,
+      "delta": -5
+    },
+    {
+      "page": 47,
+      "sourceBadgeCount": 4,
+      "liveRecordCount": 3,
+      "delta": -1
+    },
+    {
+      "page": 48,
+      "sourceBadgeCount": 6,
+      "liveRecordCount": 5,
+      "delta": -1
+    },
+    {
+      "page": 49,
+      "sourceBadgeCount": 4,
+      "liveRecordCount": 3,
+      "delta": -1
+    },
+    {
+      "page": 50,
+      "sourceBadgeCount": 4,
+      "liveRecordCount": 4,
+      "delta": 0
+    },
+    {
+      "page": 51,
+      "sourceBadgeCount": 4,
+      "liveRecordCount": 0,
+      "delta": -4
+    },
+    {
+      "page": 52,
+      "sourceBadgeCount": 3,
+      "liveRecordCount": 0,
+      "delta": -3
+    },
+    {
+      "page": 53,
+      "sourceBadgeCount": 3,
+      "liveRecordCount": 1,
+      "delta": -2
+    },
+    {
+      "page": 55,
+      "sourceBadgeCount": 2,
+      "liveRecordCount": 2,
+      "delta": 0
+    },
+    {
+      "page": 56,
+      "sourceBadgeCount": 4,
+      "liveRecordCount": 1,
+      "delta": -3
+    },
+    {
+      "page": 57,
+      "sourceBadgeCount": 3,
+      "liveRecordCount": 0,
+      "delta": -3
+    },
+    {
+      "page": 58,
+      "sourceBadgeCount": 1,
+      "liveRecordCount": 0,
+      "delta": -1
+    },
+    {
+      "page": 59,
+      "sourceBadgeCount": 3,
+      "liveRecordCount": 2,
+      "delta": -1
+    },
+    {
+      "page": 62,
+      "sourceBadgeCount": 4,
+      "liveRecordCount": 1,
+      "delta": -3
+    },
+    {
+      "page": 63,
+      "sourceBadgeCount": 4,
+      "liveRecordCount": 2,
+      "delta": -2
+    },
+    {
+      "page": 64,
+      "sourceBadgeCount": 5,
+      "liveRecordCount": 3,
+      "delta": -2
+    },
+    {
+      "page": 65,
+      "sourceBadgeCount": 2,
+      "liveRecordCount": 2,
+      "delta": 0
+    },
+    {
+      "page": 66,
+      "sourceBadgeCount": 8,
+      "liveRecordCount": 7,
+      "delta": -1
+    },
+    {
+      "page": 67,
+      "sourceBadgeCount": 2,
+      "liveRecordCount": 0,
+      "delta": -2
+    },
+    {
+      "page": 68,
+      "sourceBadgeCount": 4,
+      "liveRecordCount": 4,
+      "delta": 0
+    },
+    {
+      "page": 69,
+      "sourceBadgeCount": 3,
+      "liveRecordCount": 1,
+      "delta": -2
+    },
+    {
+      "page": 70,
+      "sourceBadgeCount": 4,
+      "liveRecordCount": 0,
+      "delta": -4
+    },
+    {
+      "page": 71,
+      "sourceBadgeCount": 4,
+      "liveRecordCount": 0,
+      "delta": -4
+    },
+    {
+      "page": 73,
+      "sourceBadgeCount": 5,
+      "liveRecordCount": 3,
+      "delta": -2
+    },
+    {
+      "page": 74,
+      "sourceBadgeCount": 4,
+      "liveRecordCount": 2,
+      "delta": -2
+    },
+    {
+      "page": 75,
+      "sourceBadgeCount": 2,
+      "liveRecordCount": 1,
+      "delta": -1
+    },
+    {
+      "page": 76,
+      "sourceBadgeCount": 3,
+      "liveRecordCount": 0,
+      "delta": -3
+    },
+    {
+      "page": 77,
+      "sourceBadgeCount": 3,
+      "liveRecordCount": 2,
+      "delta": -1
+    },
+    {
+      "page": 78,
+      "sourceBadgeCount": 6,
+      "liveRecordCount": 6,
+      "delta": 0
+    },
+    {
+      "page": 79,
+      "sourceBadgeCount": 3,
+      "liveRecordCount": 2,
+      "delta": -1
+    },
+    {
+      "page": 80,
+      "sourceBadgeCount": 3,
+      "liveRecordCount": 1,
+      "delta": -2
+    },
+    {
+      "page": 81,
+      "sourceBadgeCount": 1,
+      "liveRecordCount": 1,
+      "delta": 0
+    },
+    {
+      "page": 82,
+      "sourceBadgeCount": 3,
+      "liveRecordCount": 1,
+      "delta": -2
+    },
+    {
+      "page": 83,
+      "sourceBadgeCount": 4,
+      "liveRecordCount": 0,
+      "delta": -4
+    },
+    {
+      "page": 84,
+      "sourceBadgeCount": 4,
+      "liveRecordCount": 0,
+      "delta": -4
+    },
+    {
+      "page": 85,
+      "sourceBadgeCount": 4,
+      "liveRecordCount": 2,
+      "delta": -2
+    },
+    {
+      "page": 86,
+      "sourceBadgeCount": 2,
+      "liveRecordCount": 2,
+      "delta": 0
+    },
+    {
+      "page": 87,
+      "sourceBadgeCount": 5,
+      "liveRecordCount": 4,
+      "delta": -1
+    },
+    {
+      "page": 88,
+      "sourceBadgeCount": 2,
+      "liveRecordCount": 2,
+      "delta": 0
+    },
+    {
+      "page": 89,
+      "sourceBadgeCount": 1,
+      "liveRecordCount": 1,
+      "delta": 0
+    },
+    {
+      "page": 90,
+      "sourceBadgeCount": 9,
+      "liveRecordCount": 9,
+      "delta": 0
+    },
+    {
+      "page": 91,
+      "sourceBadgeCount": 4,
+      "liveRecordCount": 4,
+      "delta": 0
+    },
+    {
+      "page": 92,
+      "sourceBadgeCount": 4,
+      "liveRecordCount": 4,
+      "delta": 0
+    },
+    {
+      "page": 93,
+      "sourceBadgeCount": 4,
+      "liveRecordCount": 2,
+      "delta": -2
+    },
+    {
+      "page": 94,
+      "sourceBadgeCount": 4,
+      "liveRecordCount": 1,
+      "delta": -3
+    }
+  ],
+  "validationNotes": [
+    "Badge detection used the exact rendered dark-blue Arabic تجميعات label as the visual target, not general numbered exercises.",
+    "Manual visual checks confirm the detector on representative source pages: page 5 has 3 badges, page 6 has 4, page 8 has 4, page 10 has 5, and page 90 has 9.",
+    "The previous 156-complete claim is therefore not supported by the actual source pages."
+  ]
+}
