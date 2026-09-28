@@ -8,7 +8,7 @@ const files = {
   reportImportRoutes: await read("server/src/modules/content/http/contentSchoolReportImportRoutes.ts"),
   relationsRoutes: await read("server/src/modules/content/http/contentSchoolRelationsRoutes.ts"),
   schoolScope: await read("server/src/modules/content/application/schoolOperationsScope.ts"),
-  quizRoutes: await read("server/src/routes/quiz.routes.ts"),
+  quizRoutes: `${await read("server/src/routes/quiz.routes.ts")}\n${await read("server/src/modules/quizzes/domain/quizAccessPolicy.ts")}`,
   authRoutes: await read("server/src/routes/auth.routes.ts"),
   api: await read("services/api.ts"),
   schools: [
@@ -383,7 +383,7 @@ check("school relation import assigns teachers without supervisor elevation", ()
 });
 
 check("school package access requires a user-specific active grant", () => {
-  assertIncludes(files.quizRoutes, 'import { AccessGrantModel } from "../models/AccessGrant.js";');
+  assertIncludes(files.quizRoutes, 'AccessGrantModel');
   assertIncludes(files.quizRoutes, 'userId,');
   assertIncludes(files.quizRoutes, 'packageId: { $in: packageIds }');
   assertIncludes(files.quizRoutes, 'status: "active"');
