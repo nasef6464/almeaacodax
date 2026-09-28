@@ -57,7 +57,7 @@ check('public AppState student membership contract remains unchanged', () => {
     'assignStudentToGroupAsync: (userId: string, groupId: string) => Promise<void>;',
     'removeStudentFromGroup: (userId: string, groupId: string) => void;',
     'removeStudentFromGroupAsync: (userId: string, groupId: string) => Promise<void>;',
-  ]) assert.ok(store.includes(fragment), `AppState contract changed: ${fragment}`);
+  ]) assert.ok(appState.includes(fragment), `AppState contract changed: ${fragment}`);
 });
 
 check('transition boundary remains bounded and side-effect free', () => {
