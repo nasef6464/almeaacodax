@@ -1,81 +1,19 @@
 
 import React, { Suspense, useEffect, useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation, useNavigate, useParams } from 'react-router-dom';
-import Layout from './components/Layout';
+import { BrowserRouter as Router, useLocation, useNavigate } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 import { adapter } from './services/adapter';
 import { api } from './services/api';
 import { useStore } from './store/useStore';
-import { RequireRole } from './components/auth/RequireRole';
-import { RequireAuth } from './components/auth/RequireAuth';
-import { normalizePathId } from './utils/normalizePathId';
 import { AppErrorBoundary } from './components/AppErrorBoundary';
 import { AnnouncementAdsOverlay } from './components/AnnouncementAdsOverlay';
 import { PlatformFontBootstrap } from './components/PlatformFontBootstrap';
 import { APP_VERSION } from './utils/appVersion';
 import { installGlobalClientTelemetry } from './services/clientTelemetry';
 import { PwaInstallBanner } from './components/PwaInstallBanner';
-import { TeacherWorkspaceGate } from './components/teacher/TeacherWorkspaceContext';
 
 import { RoleSwitcher } from './components/RoleSwitcher';
-
-// Lazy Load Pages
-const Landing = React.lazy(() => import('./pages/Landing').then(module => ({ default: module.Landing })));
-const Dashboard = React.lazy(() => import('./pages/Dashboard'));
-const Quiz = React.lazy(() => import('./pages/Quiz'));
-const Results = React.lazy(() => import('./pages/Results'));
-const MockExams = React.lazy(() => import('./pages/MockExams'));
-const Quizzes = React.lazy(() => import('./pages/Quizzes'));
-const Reports = React.lazy(() => import('./pages/Reports'));
-const Favorites = React.lazy(() => import('./pages/Favorites'));
-const Plan = React.lazy(() => import('./pages/Plan'));
-const QA = React.lazy(() => import('./pages/QA'));
-const Profile = React.lazy(() => import('./pages/Profile'));
-const Courses = React.lazy(() => import('./pages/Courses'));
-const QuizGenerator = React.lazy(() => import('./components/QuizGenerator').then(module => ({ default: module.QuizGenerator })));
-const Achievements = React.lazy(() => import('./pages/Achievements').then(module => ({ default: module.Achievements })));
-const Qudrat = React.lazy(() => import('./pages/Qudrat').then(module => ({ default: module.Qudrat })));
-const QudratSection = React.lazy(() => import('./pages/QudratSection').then(module => ({ default: module.QudratSection })));
-const Tahsili = React.lazy(() => import('./pages/Tahsili').then(module => ({ default: module.Tahsili })));
-const TahsiliSubject = React.lazy(() => import('./pages/TahsiliSubject').then(module => ({ default: module.TahsiliSubject })));
-const Blog = React.lazy(() => import('./pages/Blog'));
-const CourseView = React.lazy(() => import('./pages/CourseView'));
-const ForgotPassword = React.lazy(() => import('./pages/ForgotPassword'));
-const ResetPassword = React.lazy(() => import('./pages/ResetPassword'));
-const VerifyEmail = React.lazy(() => import('./pages/VerifyEmail'));
-const BookSession = React.lazy(() => import('./pages/BookSession').then(module => ({ default: module.BookSession })));
-const LiveSessions = React.lazy(() => import('./pages/LiveSessions'));
-const LiveSessionLobby = React.lazy(() => import('./pages/LiveSessionLobby'));
-const QuizPage = React.lazy(() => import('./pages/QuizPage').then(module => ({ default: module.QuizPage })));
-const ClassroomStudentLive = React.lazy(() => import('./pages/ClassroomStudentLive').then(module => ({ default: module.ClassroomStudentLive })));
-const ClassroomTeacherConsole = React.lazy(() => import('./pages/ClassroomTeacherConsole').then(module => ({ default: module.ClassroomTeacherConsole })));
-const ClassroomProjectorView = React.lazy(() => import('./pages/ClassroomProjectorView').then(module => ({ default: module.ClassroomProjectorView })));
-const SchoolTeacherDashboard = React.lazy(() => import('./dashboards/SchoolTeacherDashboard').then(module => ({ default: module.SchoolTeacherDashboard })));
-const SchoolDirectorDashboard = React.lazy(() => import('./dashboards/SchoolDirectorDashboard').then(module => ({ default: module.SchoolDirectorDashboard })));
-const GenericPathPage = React.lazy(() => import('./pages/GenericPathPage').then(module => ({ default: module.GenericPathPage })));
-const CertificatePage = React.lazy(() => import('./pages/CertificatePage'));
-const ReviewSession = React.lazy(() => import('./pages/ReviewSession'));
-const Pricing = React.lazy(() => import('./pages/Pricing'));
-const Cart = React.lazy(() => import('./pages/Cart'));
-const MyRequests = React.lazy(() => import('./pages/MyRequests').then(module => ({ default: module.MyRequests })));
-const StaticInfoPage = React.lazy(() => import('./pages/StaticInfoPage'));
-const BarcodeTest = React.lazy(() => import('./pages/BarcodeTest'));
-const NotFound = React.lazy(() => import('./pages/NotFound'));
-
-// Dashboards
-const loadAdminDashboardModule = () => import('./dashboards/admin/AdminDashboard');
-const AdminDashboard = React.lazy(() => loadAdminDashboardModule().then(module => ({ default: module.AdminDashboard })));
-const loadSupervisorDashboardModule = () => import('./dashboards/admin/SupervisorDashboard');
-const SupervisorDashboard = React.lazy(() => loadSupervisorDashboardModule().then(module => ({ default: module.SupervisorDashboard })));
-
-const prefetchRoleWorkspaceModule = (role?: string | null) => {
-  if (role === 'admin' || role === 'teacher') {
-    void loadAdminDashboardModule();
-  }
-  if (role === 'supervisor') {
-    void loadSupervisorDashboardModule();
-  }
-};
+import { AppRouteTree, prefetchRoleWorkspaceModule } from './app/AppRouteTree';
 
 const DATA_BOOTSTRAP_BLOCKING_PREFIXES = [
   '/quiz',
@@ -1125,16 +1063,6 @@ const LoadingFallback = () => {
   );
 };
 
-const LegacySubjectRouteRedirect: React.FC = () => {
-  const { pathId = '', subjectId = '' } = useParams<{ pathId: string; subjectId: string }>();
-  return <Navigate replace to={`/category/${normalizePathId(pathId)}?subject=${subjectId}&tab=skills`} />;
-};
-
-const LegacyPackagesRouteRedirect: React.FC = () => {
-  const { pathId = '' } = useParams<{ pathId: string }>();
-  return <Navigate replace to={`/category/${normalizePathId(pathId)}?tab=packages`} />;
-};
-
 const LegacyHashRouteCompat: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -1608,24 +1536,6 @@ const App: React.FC = () => {
     return () => window.clearTimeout(timer);
   }, [user?.role]);
 
-  const adminDashboard = (
-    <RequireRole allowedRoles={['admin']}>
-      <Suspense fallback={<LoadingFallback />}>
-        <AdminDashboard />
-      </Suspense>
-    </RequireRole>
-  );
-
-  const instructorDashboard = (
-    <RequireRole allowedRoles={['teacher']}>
-      <TeacherWorkspaceGate workspace="platform">
-        <Suspense fallback={<LoadingFallback />}>
-          <AdminDashboard />
-        </Suspense>
-      </TeacherWorkspaceGate>
-    </RequireRole>
-  );
-
   return (
     <Router>
       <PlatformFontBootstrap />
@@ -1636,107 +1546,7 @@ const App: React.FC = () => {
         <SeoRouteMeta />
         <BootstrapRouteGate bootstrapReady={bootstrapReady}>
         <CategoryRouteShellGate>
-        <Routes>
-          {/* Routes without Main Layout (Full Screen) */}
-          <Route path="/quiz" element={<Quiz />} />
-          <Route path="/quiz/:quizId" element={<QuizPage />} />
-          <Route path="/classroom/:sessionId" element={<ClassroomStudentLive />} />
-          <Route path="/classroom/teacher" element={<RequireRole allowedRoles={['teacher', 'admin']}><ClassroomTeacherConsole /></RequireRole>} />
-          <Route path="/classroom/:sessionId/teacher" element={<RequireRole allowedRoles={['teacher', 'admin']}><ClassroomTeacherConsole /></RequireRole>} />
-          <Route path="/classroom/:sessionId/projector" element={<ClassroomProjectorView />} />
-          <Route path="/results" element={<Results />} />
-          
-          {/* Admin Routes */}
-          <Route path="/admin-dashboard" element={adminDashboard} />
-          <Route path="/instructor-dashboard" element={instructorDashboard} />
-          <Route path="/school-teacher-dashboard" element={
-            <RequireRole allowedRoles={['teacher']}>
-              <TeacherWorkspaceGate workspace="school">
-                <Suspense fallback={<LoadingFallback />}>
-                  <SchoolTeacherDashboard />
-                </Suspense>
-              </TeacherWorkspaceGate>
-            </RequireRole>
-          } />
-          <Route path="/school-director-dashboard" element={
-            <RequireRole allowedRoles={['school_admin']}>
-              <Suspense fallback={<LoadingFallback />}>
-                <SchoolDirectorDashboard />
-              </Suspense>
-            </RequireRole>
-          } />
-          <Route path="/supervisor-dashboard" element={
-            <RequireRole allowedRoles={['admin', 'teacher', 'supervisor']}>
-              <Suspense fallback={<LoadingFallback />}>
-                <SupervisorDashboard />
-              </Suspense>
-            </RequireRole>
-          } />
-          <Route
-            path="/parent-dashboard"
-            element={
-              <RequireRole allowedRoles={['parent']}>
-                <Dashboard />
-              </RequireRole>
-            }
-          />
-
-          {/* Routes with Main Layout */}
-          <Route path="*" element={
-            <Layout>
-              <Suspense fallback={<LoadingFallback />}>
-                <Routes>
-                  <Route path="/" element={<Landing />} />
-                  <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />
-                  <Route path="/courses" element={<Courses />} />
-                  <Route path="/course/:courseId" element={<CourseView />} />
-                  <Route path="/quizzes" element={<Quizzes />} />
-                  <Route path="/mock-exams" element={<MockExams />} />
-                  <Route path="/my-quizzes" element={<RequireAuth><Quizzes view="attempts" /></RequireAuth>} />
-                  <Route path="/my-requests" element={<RequireAuth><MyRequests /></RequireAuth>} />
-                  <Route path="/reports" element={<RequireAuth><Reports /></RequireAuth>} />
-                  <Route path="/favorites" element={<RequireAuth><Favorites /></RequireAuth>} />
-                  <Route path="/plan" element={<RequireAuth><Plan /></RequireAuth>} />
-                  <Route path="/qa" element={<RequireAuth><QA /></RequireAuth>} />
-                  <Route path="/book-session" element={<RequireAuth><BookSession /></RequireAuth>} />
-                  <Route path="/live-sessions" element={<RequireAuth><LiveSessions /></RequireAuth>} />
-                  <Route path="/live-sessions/:lessonId" element={<RequireAuth><LiveSessionLobby /></RequireAuth>} />
-                  <Route path="/profile" element={<RequireAuth><Profile /></RequireAuth>} />
-                  <Route path="/admin/quiz-gen" element={<RequireRole allowedRoles={['admin', 'teacher', 'supervisor']}><QuizGenerator /></RequireRole>} />
-                  <Route path="/achievements" element={<Achievements />} />
-                  <Route path="/blog" element={<Blog />} />
-                  <Route path="/forgot-password" element={<ForgotPassword />} />
-                  <Route path="/reset-password" element={<ResetPassword />} />
-                  <Route path="/verify-email" element={<VerifyEmail />} />
-                  <Route path="/login" element={<Navigate replace to="/?auth=login" />} />
-                  <Route path="/signup" element={<Navigate replace to="/?auth=signup" />} />
-                  <Route path="/pricing" element={<Pricing />} />
-                  <Route path="/cart" element={<Cart />} />
-                  <Route path="/checkout" element={<Cart />} />
-                  <Route path="/barcode-test" element={<BarcodeTest />} />
-                  <Route path="/barcode-test/:slug" element={<BarcodeTest />} />
-                  <Route path="/b/:slug" element={<BarcodeTest />} />
-                  <Route path="/about" element={<StaticInfoPage kind="about" />} />
-                  <Route path="/contact" element={<StaticInfoPage kind="contact" />} />
-                  <Route path="/faq" element={<StaticInfoPage kind="faq" />} />
-                  <Route path="/privacy" element={<StaticInfoPage kind="privacy" />} />
-                  <Route path="/terms" element={<StaticInfoPage kind="terms" />} />
-                  <Route path="/certificate/:code" element={<CertificatePage />} />
-                  <Route path="/review" element={<RequireAuth><ReviewSession /></RequireAuth>} />
-                  
-                  {/* Old Hardcoded Routes mapped to generic or kept if needed. The new pattern replaces old Nafes */}
-                  <Route path="/category/:pathId" element={<GenericPathPage />} />
-                  <Route path="/category/:pathId/packages" element={<LegacyPackagesRouteRedirect />} />
-                  <Route path="/category/:pathId/:subjectId" element={<LegacySubjectRouteRedirect />} />
-                  
-                  {/* Placeholder for other routes */}
-                  <Route path="/section/:catId" element={<Navigate replace to="/dashboard" />} />
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </Suspense>
-            </Layout>
-          } />
-        </Routes>
+        <AppRouteTree loadingFallback={<LoadingFallback />} />
         </CategoryRouteShellGate>
         </BootstrapRouteGate>
         </AppErrorBoundary>
