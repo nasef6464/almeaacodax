@@ -1,61 +1,60 @@
-# YLM26 Tahsili Mathematics — Source-Verified Baseline Audit — 2026-09-28
+# YLM26 Tahsili Mathematics — Source-vs-Live Audit — 2026-09-28
 
-## Canonical inclusion rule
-Only question blocks that visibly carry the dark-blue **تجميعات** badge are in scope.
+## Canonical scope
+Only questions carrying the **تجميعات** badge in `كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf` belong in the bank. Examples, rules and worked explanations are reference material only.
 
-## Source-verified count
-A full visual scan of all 96 source pages found **326** such question blocks across the 30 lessons.
+## Important source-count correction
+The live/import report saying **156 = complete book** is not supported by the source.
 
-This is not a count of generic numbered examples. The detector targets the rendered Arabic word **تجميعات** itself. Representative pages were manually checked, including:
-- page 5 = 3 badges
-- page 6 = 4 badges
-- page 8 = 4 badges
-- page 10 = 5 badges
-- page 90 = 9 badges
+Visual review of the book and the printed answer-key sequence at the end of each of the 30 lessons gives these تجميعات counts:
 
-The 30 lesson totals also sum independently to **326**.
+`7, 8, 9, 12, 11, 6, 8, 14, 8, 9, 2, 8, 8, 20, 3, 2, 8, 15, 2, 19, 14, 21, 17, 15, 14, 15, 12, 13, 14, 12`
 
-## Live state
-MongoDB currently contains:
-- 156 YLM26 records
-- 156 draft
-- 0 approved
-- 0 pending
-- 0 rejected
-- 156 unique codes
+**Total = 326 source تجميعات questions.**
+
+MongoDB currently has **156 YLM26 records**. Therefore 156 is an import-record count, not the verified source-question count.
+
+## Decisive early-book evidence
+- Lesson 1 (pp. 5–6): source has questions 1–7 = **7**, but live has **9 records** in those pages, including invalid page/question identities.
+- Lesson 2 (pp. 7–8): source key runs 1–8 = **8**, live has **3 records**.
+- Lesson 3 (pp. 9–10): source key runs 1–9 = **9**, live has **4 records**.
+- Lesson 4 (pp. 11–13): source key runs 1–12 = **12**, live has **3 records**.
+
+This proves the current import is neither a complete 156-question source nor a clean 1:1 representation of the source.
+
+## Current live import
+- 156 total Mongo records
+- batches: Pilot30=30, Batch01=30, Batch02=41, Batch03=55
+- 156 unique questionCode values
 - 156 unique image hashes
 - 156 unique image URLs
-- 0 quiz/mock-exam references
+- no active quiz/mock-exam references were found during the baseline audit
 
-Therefore the current live set is **not a complete source import**.
+## Content-lock work already executed
+The first three lessons have been source-reviewed visually.
 
-## Source/live reconciliation
-- source questions: 326
-- live records: 156
-- net gap: **170**
-- page-level missing slots: 172
-- page-level excess slots: 2
-- excess pages: 5 and 6
+Approved and source-backed so far:
+- `P005-Q01..Q03`
+- `P006-Q04..Q07`
+- `P007-Q01`
+- `P008-Q01..Q02`
+- `P009-Q01..Q02`
+- `P010-Q01..Q02`
 
-The two excess identities are now explicitly flagged in reviewer notes:
+Two stored identities were rejected because no matching تجميعات question exists at the cited source page/question identity:
 - `TAH-MATH-YLM26-P005-Q04`
 - `TAH-MATH-YLM26-P006-Q01`
 
-## Content quality of current 156
-- 30 have specific typed question content and concrete option values
-- 126 still contain generic helper text / generic A-B-C-D AI option labels
-- 16 source-backed skill mappings among the rich records have already been corrected in live MongoDB
+For verified records, typed content / option text / explanation and source printed-number metadata are being corrected from the book rather than guessed.
 
-## Safe state
-All 156 records remain draft and are not referenced by student assessments.
+## Required closure rule
+YLM26 may only be marked GREEN when:
+1. every source تجميعات question is represented canonically;
+2. every crop matches the right source page/question;
+3. A/B/C/D values and the correct answer are source-verified;
+4. solution / AI / voice context is verified;
+5. main skill and subskill are content-correct;
+6. duplicate or malformed legacy identities are excluded/replaced;
+7. final live count matches the canonical source manifest.
 
-## Required closure path
-1. Preserve the pre-change snapshot.
-2. Build the canonical 326-question source manifest from the visible تجميعات blocks.
-3. Reconcile existing 156 images/identities to the manifest.
-4. Replace or reject excess/incorrect identities.
-5. Add the genuinely missing source questions.
-6. Verify each item: image ↔ question ↔ choices ↔ answer ↔ solution ↔ main skill ↔ subskill.
-7. Only then change verified records from draft to approved.
-
-**Current verdict: YLM26 SOURCE AUDIT = RED / ACTIVE REPAIR.**
+**Current verdict: AUDIT IN PROGRESS — do not approve the legacy 156 as a complete book.**
