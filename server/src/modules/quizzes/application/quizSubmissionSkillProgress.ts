@@ -27,6 +27,7 @@ const buildDocumentsByIdsQuery = (values: string[]) => {
   return {
     $or: [
       { id: { $in: ids } },
+      { _id: { $in: ids } },
       { "subSkills.id": { $in: ids } },
       ...(objectIds.length ? [{ _id: { $in: objectIds } }] : []),
     ],
