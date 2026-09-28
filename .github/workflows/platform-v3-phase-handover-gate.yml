@@ -175,5 +175,7 @@ jobs:
         run: node scripts/smoke-db4-growth-budget-contract.mjs
       - name: DB-5 consistency and idempotency contract
         run: node scripts/smoke-db5-consistency-contract.mjs
+      - name: DB-6 final database certification contract
+        run: node scripts/smoke-db6-final-certification-contract.mjs
       - name: Full handover gate suite
         run: npm run smoke:handover:all
