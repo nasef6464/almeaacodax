@@ -1,0 +1,123 @@
+{
+  "generatedAt": "2026-09-28",
+  "scope": "FND26 source-defect exclusions before final content lock",
+  "policy": "Do not invent corrections when the source question/solution/options are internally inconsistent. Exclude from active assessment and preserve evidence.",
+  "questions": [
+    {
+      "questionCode": "QDR-QNT-FND26-P097-Q26",
+      "aiContext": {
+        "readableText": "5 أعداد وسطهم 6 إذا حذفنا منهم عدد يصبح متوسط الأربع أعداد الباقين 7 ، ما هو العدد المحذوف ؟",
+        "speechText": "5 أعداد وسطهم 6، حذفنا منهم عدداً فأصبح متوسط الأربعة الباقية 7، ما هو العدد المحذوف؟",
+        "visualDescription": "حساب العدد المحذوف من مجموعة أعداد بمعلومية تغير المتوسط الحسابي.",
+        "optionTexts": [
+          "40",
+          "45",
+          "50",
+          "48"
+        ],
+        "mathExpressions": [
+          {
+            "latex": "\\text{مجموع الـ } 5 \\text{ أعداد} = 5 \\times 6 = 30",
+            "spokenArabic": "مجموع الأعداد الخمسة خمسة في ستة ويساوي ثلاثين"
+          },
+          {
+            "latex": "\\text{مجموع الـ } 4 \\text{ أعداد} = 4 \\times 7 = 28",
+            "spokenArabic": "مجموع الأعداد الأربعة أربعة في سبعة ويساوي ثمانية وعشرين"
+          },
+          {
+            "latex": "\\text{العدد المحذوف} = 30 - 28 = 2",
+            "spokenArabic": "العدد المحذوف ثلاثون ناقص ثمانية وعشرين ويساوي اثنين"
+          }
+        ],
+        "concepts": [],
+        "requiredData": [],
+        "version": 1
+      },
+      "approvalStatus": "pending_review",
+      "correctOptionIndex": 1,
+      "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p097/QDR-QNT-FND26-P097-Q26.webp",
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "reviewerNotes": "FND26 CONTENT LOCK: source defect. PDF solution computes deleted number = 2 (30 - 28), but printed choices are 40/45/50/48 and printed key points to ب. No valid choice exists. Quarantined pending source correction; do not serve in tests.",
+      "sourceMeta": {
+        "book": "FND26",
+        "page": 97,
+        "printedPage": 97,
+        "printedQuestionNumber": 26,
+        "column": "left",
+        "cropBox": [
+          35,
+          345,
+          298,
+          412
+        ],
+        "badgeCoord": [
+          278.44,
+          358.54,
+          9.42
+        ],
+        "documentCode": "FND26",
+        "documentTitle": "تاسيس انشتين معدل .pdf"
+      },
+      "text": "5 أعداد وسطهم 6 إذا حذفنا منهم عدد يصبح متوسط الأربع أعداد الباقين 7 ، ما هو العدد المحذوف ؟",
+      "voiceExplanation": {
+        "text": "مرحباً يا بطل. نحسب مجموع الأعداد الخمسة أولاً: خمسة ضرب ستة ويساوي ثلاثين. بعد حذف عدد، يتبقى أربعة أعداد بمتوسط سبعة، فيكون مجموع الأربعة المتبقية أربعة ضرب سبعة ويساوي ثمانية وعشرين. العدد المحذوف هو الفرق بين المجموعين: ثلاثون ناقص ثمانية وعشرين ويساوي اثنين. ونشير إلى أنه في خيارات هذا السؤال المطبوعة تم اختيار الخيار باء بحسب نموذج الإجابة. إذن الخيار المعتمد هو باء.",
+        "audioUrl": "",
+        "audioMimeType": "",
+        "version": 1
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P101-Q20",
+      "aiContext": {
+        "readableText": "4 صناديق كل صندوق له مفتاح واحد لفتحه ، كم مرة يمكن استخدام المفاتيح لفتح صندوق واحد ؟",
+        "speechText": "أربعة صناديق كل صندوق له مفتاح واحد لفتحه، كم مرة يمكن استخدام المفاتيح لفتح صندوق واحد؟",
+        "visualDescription": "حساب عدد محاولات المفاتيح لفتح صندوق واحد وفق معطيات المسألة.",
+        "optionTexts": [
+          "24",
+          "120",
+          "5",
+          "60"
+        ],
+        "mathExpressions": [
+          {
+            "latex": "\\text{الخيار الصحيح} = 5",
+            "spokenArabic": "الخيار الصحيح يقابل جيم"
+          }
+        ],
+        "concepts": [],
+        "requiredData": [],
+        "version": 1
+      },
+      "approvalStatus": "pending_review",
+      "correctOptionIndex": 2,
+      "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p101/QDR-QNT-FND26-P101-Q20.webp",
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "reviewerNotes": "FND26 CONTENT LOCK: source defect. PDF/readable source states 4 boxes with one key each, while printed solution says to try 5 keys and selects ج=5. Premise/solution are internally inconsistent. Quarantined pending source correction; do not serve in tests.",
+      "sourceMeta": {
+        "book": "FND26",
+        "page": 101,
+        "printedPage": 101,
+        "printedQuestionNumber": 20,
+        "documentCode": "FND26",
+        "documentTitle": "تاسيس انشتين معدل .pdf"
+      },
+      "text": "4 صناديق كل صندوق له مفتاح واحد لفتحه ، كم مرة يمكن استخدام المفاتيح لفتح صندوق واحد ؟",
+      "voiceExplanation": {
+        "text": "أهلاً بك يا بطل. المطلوب هنا هو فتح صندوق واحد محدد، وبتجربة المفاتيح على هذا الصندوق نجد أن الخيار الصحيح في الكتاب والخيارات هو الخيار جيم. إذن الخيار الصحيح هو جيم.",
+        "audioUrl": "",
+        "audioMimeType": "",
+        "version": 1
+      }
+    }
+  ]
+}
