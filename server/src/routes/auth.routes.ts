@@ -1620,9 +1620,7 @@ authRouter.patch(
       });
     }
 
-    // PLAN 4 additive dual-write: User remains the read/source-of-truth during
-    // migration while normalized LessonProgress is mirrored idempotently.
-    // Do not remove the legacy fields until backfill + shadow-read parity passes.
+    // PLAN 4 compatibility dual-write: normalized LessonProgress is the /me read path\n    // after parity-backed cutover; legacy User fields remain as rollback compatibility\n    // until a later removal window.
     if (payload.completedLessons || payload.interactiveVideoProgress) {
       await mirrorLessonProgress({
         userId: String(user._id),
