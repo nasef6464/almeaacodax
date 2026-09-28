@@ -8,7 +8,7 @@ const apply = process.argv.includes("--apply");
 const limitArg = process.argv.find((arg) => arg.startsWith("--limit="));
 const limit = Math.max(1, Math.min(Number(limitArg?.split("=")[1] || 500), 5000));
 
-await mongoose.connect(env.mongoUri);
+await mongoose.connect(env.MONGODB_URI);
 
 try {
   const users = await UserModel.find({
@@ -36,7 +36,7 @@ try {
     }
 
     const rows = await LessonProgressModel.find({ userId }).lean();
-    const byLesson = new Map(rows.map((row: any) => [String(row.lessonId), row]));
+    const byLesson = new Map<string, any>(rows.map((row: any) => [String(row.lessonId), row]));
     let mismatch = false;
 
     for (const lessonId of new Set((user.completedLessons || []).map(String))) {
