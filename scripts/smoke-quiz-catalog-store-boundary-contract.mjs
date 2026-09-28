@@ -4,6 +4,7 @@ import path from 'node:path';
 
 const root = process.cwd();
 const store = fs.readFileSync(path.join(root, 'store/useStore.ts'), 'utf8').replace(/\r\n/g, '\n');
+const appState = fs.readFileSync(path.join(root, 'store/AppState.ts'), 'utf8').replace(/\r\n/g, '\n');
 const slice = fs.readFileSync(path.join(root, 'store/slices/quizCatalogSlice.ts'), 'utf8').replace(/\r\n/g, '\n');
 
 const checks = [];
