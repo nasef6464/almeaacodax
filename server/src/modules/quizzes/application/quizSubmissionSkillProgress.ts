@@ -27,6 +27,7 @@ const buildDocumentsByIdsQuery = (values: string[]) => {
   return {
     $or: [
       { id: { $in: ids } },
+      { "subSkills.id": { $in: ids } },
       ...(objectIds.length ? [{ _id: { $in: objectIds } }] : []),
     ],
   };
@@ -212,12 +213,41 @@ export async function updateSkillProgressFromQuestionAttempt(attempt: any, userI
   const skills = await SkillModel.find(buildDocumentsByIdsQuery(skillIds)).lean();
   if (skills.length === 0) return;
 
-  const normalized = (skills as any[]).map((skill) => ({
-    skill,
-    skillId: String(skill.id || skill._id || "").trim(),
-    pathId: String(skill.pathId || attempt?.pathId || "").trim(),
-    subjectId: String(skill.subjectId || attempt?.subjectId || "").trim(),
-  })).filter((item) => item.skillId);
+  const normalized: Array<{
+    skill: any;
+    skillId: string;
+    skillName: string;
+    pathId: string;
+    subjectId: string;
+    sectionId: string;
+  }> = [];
+  const requested = new Set(skillIds);
+  for (const skill of skills as any[]) {
+    const parentSkillId = String(skill.id || skill._id || "").trim();
+    if (parentSkillId && requested.has(parentSkillId)) {
+      normalized.push({
+        skill,
+        skillId: parentSkillId,
+        skillName: String(skill.name || "مهارة غير مسماة"),
+        pathId: String(skill.pathId || attempt?.pathId || "").trim(),
+        subjectId: String(skill.subjectId || attempt?.subjectId || "").trim(),
+        sectionId: String(skill.sectionId || attempt?.sectionId || "").trim(),
+      });
+    }
+    for (const subSkill of Array.isArray(skill.subSkills) ? skill.subSkills : []) {
+      const subSkillId = String(subSkill?.id || "").trim();
+      if (!subSkillId || !requested.has(subSkillId)) continue;
+      normalized.push({
+        skill,
+        skillId: subSkillId,
+        skillName: String(subSkill?.name || skill.name || "مهارة غير مسماة"),
+        pathId: String(skill.pathId || attempt?.pathId || "").trim(),
+        subjectId: String(skill.subjectId || attempt?.subjectId || "").trim(),
+        sectionId: String(skill.sectionId || attempt?.sectionId || "").trim(),
+      });
+    }
+  }
+  if (normalized.length === 0) return;
 
   const existing = await loadExistingSkillProgress(
     userId,
@@ -273,10 +303,10 @@ export async function updateSkillProgressFromQuestionAttempt(attempt: any, userI
           $set: {
             userId,
             skillId: item.skillId,
-            skill: String(item.skill.name || existingRow?.skill || "مهارة غير مسماة"),
+            skill: String(item.skillName || existingRow?.skill || "مهارة غير مسماة"),
             pathId: item.pathId,
             subjectId: item.subjectId,
-            sectionId: String(item.skill.sectionId || existingRow?.sectionId || attempt?.sectionId || ""),
+            sectionId: String(item.sectionId || existingRow?.sectionId || attempt?.sectionId || ""),
             mastery: nextMastery,
             status: buildSkillStatus(nextMastery),
             attempts: nextAttempts,
