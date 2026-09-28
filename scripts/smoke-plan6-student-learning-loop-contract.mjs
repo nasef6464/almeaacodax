@@ -40,7 +40,7 @@ assert(studentReviewRoutes.includes('tab: z.enum(["saved", "mistakes", "all"])')
 assert(reviewRoutes.includes('evidenceType: String(card.reviewType || "") === "mastery_review" ? "mastery_review" : "remediation"'), "review remediation evidence typing missing");
 assert(reviewRoutes.includes("updateSkillProgressFromQuestionAttempt(attempt, userId)"), "review must directly update SkillProgress");
 assert(skillProgress.includes("SkillProgressModel.bulkWrite") && skillProgress.includes("recentEvidenceKeys"), "SkillProgress direct evidence/idempotency missing");
-assert(skillProgress.includes('"subSkills.id": { $in: ids }') && skillProgress.includes("skillName: String(subSkill?.name"), "remediation must resolve canonical embedded subskill IDs");
+assert(skillProgress.includes('{ _id: { $in: ids } }') && skillProgress.includes('"subSkills.id": { $in: ids }') && skillProgress.includes("skillName: String(subSkill?.name"), "remediation must resolve string skill _id and canonical embedded subskill IDs");
 assert(nextBestAction.includes("buildServerNextBestAction"), "server Next Best Action missing");
 assert(assistantPanel.includes("SpeechRecognition") && assistantPanel.includes("speechSynthesis"), "voice tutor STT/TTS missing");
 assert(!assistantPanel.includes("<input"), "student tutor must remain voice-only");
