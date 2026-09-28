@@ -8,7 +8,7 @@ const files = {
   reportImportRoutes: await read("server/src/modules/content/http/contentSchoolReportImportRoutes.ts"),
   relationsRoutes: await read("server/src/modules/content/http/contentSchoolRelationsRoutes.ts"),
   schoolScope: await read("server/src/modules/content/application/schoolOperationsScope.ts"),
-  quizRoutes: `${await read("server/src/routes/quiz.routes.ts")}\n${await read("server/src/modules/quizzes/domain/quizAccessPolicy.ts")}`,
+  quizRoutes: `${await read("server/src/routes/quiz.routes.ts")}\n${await read("server/src/modules/quizzes/application/quizAccessPolicy.ts")}`,
   authRoutes: await read("server/src/routes/auth.routes.ts"),
   api: await read("services/api.ts"),
   schools: [
