@@ -71,7 +71,7 @@ assert(privacySmoke.includes("deleteUserLifecycle"), "privacy lifecycle regressi
 
 assert(indexHtml.includes('lang="ar"') && indexHtml.includes('dir="rtl"'), "Arabic RTL document contract missing");
 assert(roleAudit.includes('name: "mobile"') && roleAudit.includes("horizontalOverflow"), "role audit mobile overflow evidence missing");
-assert(publicAudit.includes('name: "mobile"') && publicAudit.includes("network5xx"), "public mobile/server-error audit missing");
+assert(publicAudit.includes("name: 'mobile'") && publicAudit.includes("network5xx") && publicAudit.includes("horizontalOverflow"), "public mobile/server-error audit missing");
 assert(plan9Lab.includes("largest-contentful-paint") && plan9Lab.includes("layout-shift") && plan9Lab.includes("first-contentful-paint"), "PLAN 9 CWV lab instrumentation missing");
 assert(plan9Lab.includes("unlabeledButtons") && plan9Lab.includes("imagesMissingAlt") && plan9Lab.includes("direction"), "PLAN 9 accessibility/RTL probes missing");
 
