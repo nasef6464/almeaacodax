@@ -14,7 +14,7 @@ const assert=(ok,msg)=>{if(!ok)throw new Error(msg);};
 assert(workspace.includes("Student transfer conflicted with another concurrent update") && workspace.includes("{ _id: rawStudent._id, schoolId: source.schoolId }"),"school transfer compare-and-swap missing");
 assert(workspace.includes("Promise.allSettled") && workspace.includes("originalGroupIds") && workspace.includes("idempotent: true"),"school transfer compensation/idempotent retry missing");
 assert(paymentModel.includes("unique_pending_purchase_per_item") && paymentModel.includes('partialFilterExpression: { status: "pending" }'),"pending payment race index missing");
-assert(paymentRoutes.includes("error?.code !== 11000") && paymentRoutes.includes("concurrentPending"),"payment duplicate-key recovery missing");
+assert(paymentRoutes.includes("createPendingPaymentRequest") && paymentRoutes.includes("error?.code !== 11000") && paymentRoutes.includes('status: "pending"'),"payment duplicate-key recovery missing");
 assert(grant.includes("idempotencyKey") && grant.includes("error?.code !== 11000"),"access grant idempotency recovery missing");
 assert(privacy.indexOf("updateMany") < privacy.indexOf("UserModel.deleteOne"),"privacy lifecycle must revoke/anonymize before identity delete");
 assert(quizResult.includes("submissionKey") && quizResult.includes("unique: true") && attempt.includes("submissionKey") && attempt.includes("unique: true"),"assessment submit idempotency guards missing");
