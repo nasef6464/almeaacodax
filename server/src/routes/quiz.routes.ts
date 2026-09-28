@@ -901,7 +901,14 @@ quizRouter.post(
 
     const { correctAnswers, wrongAnswers, unanswered, skillStats, questionReview: rawQuestionReview } =
       buildQuizSubmissionAnswerReview({ orderedQuestions, answers: payload.answers });
-    const questionRevisions = await ensureQuestionRevisions(orderedQuestions);
+    const questionRevisions = await ensureQuestionRevisions(orderedQuestions).catch((error) => {
+      console.warn("[quiz-submit] question revision mirror failed; preserving legacy result path", {
+        requestId: req.requestId || "",
+        quizId,
+        reason: error instanceof Error ? error.message : String(error || "unknown"),
+      });
+      return new Map<string, { revisionId: string; revisionHash: string }>();
+    });
     const questionReview = rawQuestionReview.map((item) => ({
       ...item,
       ...(questionRevisions.get(String(item.questionId || "")) || {}),
