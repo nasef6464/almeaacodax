@@ -137,6 +137,10 @@ jobs:
         run: npm run smoke:deployment-handover-phase19
       - name: Current handover contract
         run: npm run smoke:handover-current
+      - name: PLAN 7 AI certification prerequisites
+        run: |
+          node scripts/smoke-plan7-ai-certification-contract.mjs
+          cd server && npx tsx src/scripts/plan7AiFailoverContract.ts
       - name: PLAN 6 student learning-loop guard
         run: node scripts/smoke-plan6-student-learning-loop-contract.mjs
       - name: PLAN 5 residual module-boundary guard
