@@ -1636,6 +1636,11 @@ authRouter.patch(
           answeredQuestionIds: (item.answeredQuestionIds || []).map(String),
           updatedAt: Number(item.updatedAt || 0),
         })),
+      }).catch((error) => {
+        console.warn("[auth/preferences] lesson progress mirror failed; legacy User write remains authoritative", {
+          userId: String(user._id),
+          reason: error instanceof Error ? error.message : String(error || "unknown"),
+        });
       });
     }
 
