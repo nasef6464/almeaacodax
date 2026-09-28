@@ -1,0 +1,159 @@
+{
+  "audit": "COL2627 full content audit",
+  "source": "تجميع انشيتن معدل(1).pdf",
+  "status": "IN_PROGRESS",
+  "methodology": [
+    "source page image/text is authoritative for question/options/printed answer key",
+    "mathematical correctness independently checked",
+    "taxonomy compared to canonical 25 main / 95 subskills",
+    "questions remain draft until full-book audit closes"
+  ],
+  "verifiedPages": [
+    5,
+    6,
+    7,
+    8
+  ],
+  "verifiedQuestionCount": 59,
+  "sourceAnswerKeyMismatches": 0,
+  "corrections": [
+    {
+      "questionCode": "QDR-QNT-COL2627-P006-Q15",
+      "field": "subSkillId",
+      "from": "sub_quant_01_1",
+      "to": "sub_quant_01_3",
+      "reason": "alternating arithmetic sequence; matches canonical FND26 mapping"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P006-Q25",
+      "field": "voiceExplanation.text",
+      "reason": "wording incorrectly said multiplication/division are evaluated right-to-left; corrected to left-to-right"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P008-Q23",
+      "fields": [
+        "skillId",
+        "subSkillId",
+        "skillIds",
+        "sectionId"
+      ],
+      "from": [
+        "skill_quant_02",
+        "sub_quant_02_4"
+      ],
+      "to": [
+        "skill_quant_01",
+        "sub_quant_01_1"
+      ],
+      "reason": "absolute-value/sign question; sub_quant_02_4 is not a canonical subskill"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P008-Q24",
+      "fields": [
+        "skillId",
+        "subSkillId",
+        "skillIds",
+        "sectionId"
+      ],
+      "from": [
+        "skill_quant_02",
+        "sub_quant_02_4"
+      ],
+      "to": [
+        "skill_quant_01",
+        "sub_quant_01_1"
+      ],
+      "reason": "absolute-value/sign question; sub_quant_02_4 is not a canonical subskill"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P008-Q25",
+      "fields": [
+        "skillId",
+        "subSkillId",
+        "skillIds",
+        "sectionId"
+      ],
+      "from": [
+        "skill_quant_02",
+        "sub_quant_02_4"
+      ],
+      "to": [
+        "skill_quant_01",
+        "sub_quant_01_1"
+      ],
+      "reason": "absolute-value/sign question; sub_quant_02_4 is not a canonical subskill"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P008-Q26",
+      "fields": [
+        "skillId",
+        "subSkillId",
+        "skillIds",
+        "sectionId"
+      ],
+      "from": [
+        "skill_quant_02",
+        "sub_quant_02_4"
+      ],
+      "to": [
+        "skill_quant_01",
+        "sub_quant_01_1"
+      ],
+      "reason": "absolute-value/sign question; sub_quant_02_4 is not a canonical subskill"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P008-Q27",
+      "fields": [
+        "skillId",
+        "subSkillId",
+        "skillIds",
+        "sectionId"
+      ],
+      "from": [
+        "skill_quant_02",
+        "sub_quant_02_4"
+      ],
+      "to": [
+        "skill_quant_01",
+        "sub_quant_01_1"
+      ],
+      "reason": "absolute-value/sign question; sub_quant_02_4 is not a canonical subskill"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P008-Q28",
+      "fields": [
+        "skillId",
+        "subSkillId",
+        "skillIds",
+        "sectionId"
+      ],
+      "from": [
+        "skill_quant_02",
+        "sub_quant_02_2"
+      ],
+      "to": [
+        "skill_quant_01",
+        "sub_quant_01_5"
+      ],
+      "reason": "units-digit question; canonical subskill is determining units digit"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P008-Q29",
+      "fields": [
+        "skillId",
+        "subSkillId",
+        "skillIds",
+        "sectionId"
+      ],
+      "from": [
+        "skill_quant_02",
+        "sub_quant_02_2"
+      ],
+      "to": [
+        "skill_quant_01",
+        "sub_quant_01_5"
+      ],
+      "reason": "units-digit question; canonical subskill is determining units digit"
+    }
+  ]
+}
