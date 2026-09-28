@@ -1,10 +1,11 @@
 import { z } from "zod";
+import { DB_GROWTH_BUDGETS } from "../../database/dbGrowthBudgets.js";
 
 export const announcementAdSchema = z.object({
   id: z.string().optional(),
   title: z.string().min(1),
   body: z.string().optional().default(""),
-  imageUrl: z.string().optional().default(""),
+  imageUrl: z.string().max(DB_GROWTH_BUDGETS.inlineAdminMediaChars).optional().default(""),
   ctaLabel: z.string().optional().default(""),
   ctaUrl: z.string().optional().default(""),
   audience: z.enum(["all", "guest", "student", "parent", "staff"]).default("all"),
@@ -24,7 +25,7 @@ export const announcementAdUpdateSchema = z.object({
   id: z.string().optional(),
   title: z.string().min(1).optional(),
   body: z.string().optional(),
-  imageUrl: z.string().optional(),
+  imageUrl: z.string().max(DB_GROWTH_BUDGETS.inlineAdminMediaChars).optional(),
   ctaLabel: z.string().optional(),
   ctaUrl: z.string().optional(),
   audience: z.enum(["all", "guest", "student", "parent", "staff"]).optional(),

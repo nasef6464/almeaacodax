@@ -11,6 +11,7 @@ import { optionalAuth, requireAuth, requireRole } from "../middleware/auth.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { buildPaginatedResponse, resolvePagination } from "../utils/pagination.js";
 import { isStaffRole, withLearnerVisiblePaths } from "../services/visibility.js";
+import { DB_GROWTH_BUDGETS } from "../modules/database/dbGrowthBudgets.js";
 import {
   assertManagedContentScope,
   buildManagedContentScopeFilter,
@@ -65,7 +66,7 @@ const courseSchema = z.object({
     const text = typeof value === "string" ? value.trim() : "";
     return text || "Untitled Course";
   }, z.string().min(1)),
-  thumbnail: z.string().optional(),
+  thumbnail: z.string().max(DB_GROWTH_BUDGETS.inlineAdminMediaChars).optional(),
   instructor: z.preprocess((value) => {
     const text = typeof value === "string" ? value.trim() : "";
     return text || "Platform Team";

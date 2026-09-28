@@ -9,6 +9,7 @@ import { GroupModel } from "../../models/Group.js";
 import { QuestionModel } from "../../models/Question.js";
 import { TeachingAssignmentModel } from "../../models/TeachingAssignment.js";
 import { resolveSchoolEntitlement } from "../../modules/schools/application/schoolEntitlementResolver.js";
+import { DB_GROWTH_BUDGETS } from "../../modules/database/dbGrowthBudgets.js";
 import { classroomQuestionVisibilityFilter, normalizeQuestionIds } from "../../modules/schools/application/classroomQuestionAccess.js";
 import { canMutateClassroomQuestions, canPublishClassroom, isDuplicateLiveSessionError, type ClassroomSessionStatus } from "../../modules/schools/application/classroomLifecycle.js";
 import { emitClassroomEvent, emitClassroomEventToClass } from "../../sockets/classroomEvents.js";
@@ -304,6 +305,9 @@ export function registerClassroomTeacherRoutes(classroomRouter: Router) {
     const existingIds = new Set(session.questionSnapshots.map((question: any) => String(question.questionId)));
     const trulyNewSnapshots = snapshots.filter((question: any) => !existingIds.has(String(question.questionId)));
     if (trulyNewSnapshots.length === 0) return res.status(StatusCodes.CONFLICT).json({ message: "كل الأسئلة المحددة موجودة بالفعل داخل الحصة" });
+    if ((session.questionSnapshots?.length || 0) + trulyNewSnapshots.length > DB_GROWTH_BUDGETS.classroomSessionQuestions) {
+      return res.status(StatusCodes.BAD_REQUEST).json({ message: `الحد الأقصى للحصة هو ${DB_GROWTH_BUDGETS.classroomSessionQuestions} سؤال` });
+    }
 
     session.questionSnapshots.push(...(trulyNewSnapshots as any));
     const newQuestionIds = trulyNewSnapshots.map((question: any) => String(question.questionId));

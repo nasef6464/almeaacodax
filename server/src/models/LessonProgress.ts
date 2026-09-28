@@ -1,4 +1,5 @@
 import mongoose, { Schema } from "mongoose";
+import { DB_GROWTH_BUDGETS } from "../modules/database/dbGrowthBudgets.js";
 
 const lessonProgressSchema = new Schema(
   {
@@ -8,7 +9,11 @@ const lessonProgressSchema = new Schema(
     completed: { type: Boolean, default: false, index: true },
     completedAt: { type: Date, default: undefined },
     positionSeconds: { type: Number, min: 0, default: 0 },
-    answeredQuestionIds: { type: [String], default: [] },
+    answeredQuestionIds: {
+      type: [String],
+      default: [],
+      validate: { validator: (value: string[]) => value.length <= DB_GROWTH_BUDGETS.answeredQuestionIdsPerLesson, message: "LessonProgress answeredQuestionIds exceeds growth budget" },
+    },
     sourceUpdatedAt: { type: Number, default: 0 },
   },
   { timestamps: true },

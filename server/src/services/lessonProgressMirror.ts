@@ -1,4 +1,5 @@
 import { LessonProgressModel } from "../models/LessonProgress.js";
+import { DB_GROWTH_BUDGETS } from "../modules/database/dbGrowthBudgets.js";
 
 type InteractiveVideoProgress = {
   courseId: string;
@@ -36,7 +37,7 @@ export const mirrorLessonProgress = async ({
       byLesson.set(lessonId, {
         ...item,
         lessonId,
-        answeredQuestionIds: Array.from(new Set((item.answeredQuestionIds || []).map(String))),
+        answeredQuestionIds: Array.from(new Set((item.answeredQuestionIds || []).map(String).filter(Boolean))).slice(-DB_GROWTH_BUDGETS.answeredQuestionIdsPerLesson),
       });
     }
   }

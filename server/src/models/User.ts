@@ -1,5 +1,6 @@
 import mongoose, { Schema } from "mongoose";
 import { roles } from "../constants/roles.js";
+import { DB_GROWTH_BUDGETS } from "../modules/database/dbGrowthBudgets.js";
 
 const userSchema = new Schema(
   {
@@ -35,16 +36,25 @@ const userSchema = new Schema(
     managedSubjectIds: { type: [String], default: [] },
     enrolledCourses: { type: [String], default: [] },
     enrolledPaths: { type: [String], default: [] },
-    completedLessons: { type: [String], default: [] },
+    completedLessons: {
+      type: [String],
+      default: [],
+      validate: { validator: (value: string[]) => value.length <= DB_GROWTH_BUDGETS.legacyCompletedLessons, message: "Legacy completedLessons exceeds growth budget" },
+    },
     interactiveVideoProgress: {
       type: [{
         courseId: { type: String, required: true },
         lessonId: { type: String, required: true },
         positionSeconds: { type: Number, min: 0, default: 0 },
-        answeredQuestionIds: { type: [String], default: [] },
+        answeredQuestionIds: {
+          type: [String],
+          default: [],
+          validate: { validator: (value: string[]) => value.length <= DB_GROWTH_BUDGETS.answeredQuestionIdsPerLesson, message: "Interactive video answeredQuestionIds exceeds growth budget" },
+        },
         updatedAt: { type: Number, required: true },
       }],
       default: [],
+      validate: { validator: (value: unknown[]) => value.length <= DB_GROWTH_BUDGETS.interactiveVideoProgressRows, message: "interactiveVideoProgress exceeds growth budget" },
     },
     favorites: { type: [String], default: [] },
     reviewLater: { type: [String], default: [] },

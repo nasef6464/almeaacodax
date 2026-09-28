@@ -171,5 +171,7 @@ jobs:
         run: node scripts/smoke-db2-reference-integrity-contract.mjs
       - name: DB-3 query and index engineering contract
         run: node scripts/smoke-db3-query-index-contract.mjs
+      - name: DB-4 high-volume data growth contract
+        run: node scripts/smoke-db4-growth-budget-contract.mjs
       - name: Full handover gate suite
         run: npm run smoke:handover:all
