@@ -1,60 +1,61 @@
-# YLM26 Tahsili Mathematics — Source-vs-Live Audit — 2026-09-28
+# YLM26 Tahsili Mathematics — Source-Locked Audit — 2026-09-28
 
-## Canonical scope
-Only questions carrying the **تجميعات** badge in `كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf` belong in the bank. Examples, rules and worked explanations are reference material only.
+## Canonical rule
+Only questions visibly marked **«تجميعات»** in `كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf` belong in the bank.
 
-## Important source-count correction
-The live/import report saying **156 = complete book** is not supported by the source.
+## Source count — verified directly
+The source was re-counted from the visible `تجميعات` badges and independently cross-checked against the 30 lesson-end answer-key tables.
 
-Visual review of the book and the printed answer-key sequence at the end of each of the 30 lessons gives these تجميعات counts:
+**Canonical source total: 326 تجميعات questions.**
 
-`7, 8, 9, 12, 11, 6, 8, 14, 8, 9, 2, 8, 8, 20, 3, 2, 8, 15, 2, 19, 14, 21, 17, 15, 14, 15, 12, 13, 14, 12`
+The 30 lesson answer-key counts are:
 
-**Total = 326 source تجميعات questions.**
+`7 + 8 + 9 + 12 + 11 + 6 + 8 + 14 + 8 + 9 + 2 + 8 + 8 + 20 + 3 + 2 + 8 + 15 + 2 + 19 + 14 + 21 + 17 + 15 + 14 + 15 + 12 + 13 + 14 + 12 = 326`.
 
-MongoDB currently has **156 YLM26 records**. Therefore 156 is an import-record count, not the verified source-question count.
+The exact page/question-number manifest is stored in:
 
-## Decisive early-book evidence
-- Lesson 1 (pp. 5–6): source has questions 1–7 = **7**, but live has **9 records** in those pages, including invalid page/question identities.
-- Lesson 2 (pp. 7–8): source key runs 1–8 = **8**, live has **3 records**.
-- Lesson 3 (pp. 9–10): source key runs 1–9 = **9**, live has **4 records**.
-- Lesson 4 (pp. 11–13): source key runs 1–12 = **12**, live has **3 records**.
+`docs/audits/YLM26_CANONICAL_TAJMEEAT_MANIFEST_2026-09-28.json`
 
-This proves the current import is neither a complete 156-question source nor a clean 1:1 representation of the source.
+## Live database state
+MongoDB currently contains:
 
-## Current live import
-- 156 total Mongo records
-- batches: Pilot30=30, Batch01=30, Batch02=41, Batch03=55
-- 156 unique questionCode values
+- 156 YLM26 records
+- 156 draft
+- 0 approved
+- 0 pending
+- 0 rejected
+- 156 unique question codes
 - 156 unique image hashes
 - 156 unique image URLs
-- no active quiz/mock-exam references were found during the baseline audit
+- 0 quiz/mock-exam references
 
-## Content-lock work already executed
-The first three lessons have been source-reviewed visually.
+## Identity audit
+Comparing live `page + question number` identities to the source manifest:
 
-Approved and source-backed so far:
-- `P005-Q01..Q03`
-- `P006-Q04..Q07`
-- `P007-Q01`
-- `P008-Q01..Q02`
-- `P009-Q01..Q02`
-- `P010-Q01..Q02`
+- **76** live records already use a canonical source identity.
+- **80** live records use a page/question identity that does not exist in the source at that location.
+- **250** canonical source identities are currently absent from the live identity set.
 
-Two stored identities were rejected because no matching تجميعات question exists at the cited source page/question identity:
-- `TAH-MATH-YLM26-P005-Q04`
-- `TAH-MATH-YLM26-P006-Q01`
+Important: the 80 noncanonical records may include genuine source crops stored under wrong numbering. They must be remapped from source evidence before deciding whether a source question is truly missing.
 
-For verified records, typed content / option text / explanation and source printed-number metadata are being corrected from the book rather than guessed.
+Confirmed examples:
+- Source page 5 has only تجميعات **1,2,3**; live also has `P005-Q04`.
+- Source page 6 has تجميعات **4,5,6,7**; live also has `P006-Q01`.
+- Source page 8 has تجميعات **5,6,7,8**; live records are `P008-Q01/Q02`.
+- Source page 10 has تجميعات **5,6,7,8,9**; the rich live records `P010-Q01/Q02` actually correspond to later source questions on that page.
 
-## Required closure rule
-YLM26 may only be marked GREEN when:
-1. every source تجميعات question is represented canonically;
-2. every crop matches the right source page/question;
-3. A/B/C/D values and the correct answer are source-verified;
-4. solution / AI / voice context is verified;
-5. main skill and subskill are content-correct;
-6. duplicate or malformed legacy identities are excluded/replaced;
-7. final live count matches the canonical source manifest.
+## Content-quality state
+- 30 records contain specific question text and real option values.
+- 126 records contain generic helper text and generic `A/B/C/D` AI option labels.
+- All 156 remain draft and isolated from students.
 
-**Current verdict: AUDIT IN PROGRESS — do not approve the legacy 156 as a complete book.**
+## Correct repair strategy
+1. Preserve the 156-record snapshot.
+2. Use the canonical 326-question manifest as the only source identity truth.
+3. Remap existing valid crops to their real source page/question number.
+4. Reject/quarantine false-positive crops that are not a visible تجميعات question.
+5. Re-extract the truly absent تجميعات questions from the source.
+6. Rebuild each record with exact image, question, A/B/C/D values, source answer, explanation/voice context and canonical subskill.
+7. Keep all records draft until the complete image ↔ text ↔ options ↔ answer ↔ solution ↔ subskill audit passes.
+
+**Current verdict: YLM26 COUNT/IDENTITY AUDIT = RED. Source truth is 326 تجميعات questions; the live 156 set is not yet complete or canonically numbered.**
