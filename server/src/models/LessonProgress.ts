@@ -14,8 +14,8 @@ const lessonProgressSchema = new Schema(
   { timestamps: true },
 );
 
-lessonProgressSchema.index({ userId: 1, lessonId: 1 }, { unique: true });
-lessonProgressSchema.index({ userId: 1, courseId: 1, completed: 1 });
-lessonProgressSchema.index({ userId: 1, updatedAt: -1 });
+lessonProgressSchema.index({ userId: 1, lessonId: 1 }, { unique: true, name: "user_lesson_unique" });
+lessonProgressSchema.index({ userId: 1, courseId: 1, completed: 1 }, { name: "user_course_completed" });
+lessonProgressSchema.index({ userId: 1, updatedAt: -1 }, { name: "user_updated" });
 
 export const LessonProgressModel = mongoose.model("LessonProgress", lessonProgressSchema);
