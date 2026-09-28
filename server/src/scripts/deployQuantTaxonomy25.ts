@@ -455,21 +455,20 @@ export async function deploy() {
   console.log(`Created 25 parent topics and 95 child topics matching the approved taxonomy`);
 
   // 5. QUESTIONS MAPPING PHASE
-  console.log("\n--- Phase 5: Canonicalizing Existing Question Taxonomy Without Reclassification ---");
+  // IMPORTANT: Never distribute questions round-robin across subskills.
+  // Existing question content/subskill classification is the source of truth here.
+  // This phase only validates the current subskill against the canonical taxonomy
+  // and normalizes the redundant main/section/skillIds fields.
+  console.log("\n--- Phase 5: Validating Existing Question-to-Subskill Mapping ---");
   const questionsCol = db.collection("questions");
   const allQuestions = await questionsCol.find({ subject: subjectId }).toArray();
   console.log(`Found ${allQuestions.length} questions to validate for subject ${subjectId}`);
 
-  // IMPORTANT:
-  // Never distribute questions across subskills by round-robin and never infer a
-  // subskill merely to make coverage look complete. The source-approved
-  // subSkillId is the semantic classification. This phase only canonicalizes
-  // parent/main-skill identity and the skillIds array around that approved
-  // subskill.
-  const subSkillParentMap = new Map<
+  const subSkillOwner = new Map<
     string,
     { mainSkillId: string; sectionId: string }
   >();
+
   const subSkillQuestionsMap: Record<string, string[]> = {};
   const mainSkillQuestionsMap: Record<string, string[]> = {};
 
@@ -477,45 +476,48 @@ export async function deploy() {
     const item = QUANT_TAXONOMY[i];
     const sectionId = `sec_sub_1777779748206_${i + 1}`;
     mainSkillQuestionsMap[item.id] = [];
+
     for (const sub of item.subSkills) {
-      subSkillParentMap.set(sub.id, { mainSkillId: item.id, sectionId });
+      subSkillOwner.set(sub.id, { mainSkillId: item.id, sectionId });
       subSkillQuestionsMap[sub.id] = [];
     }
   }
 
-  const invalidMappings: Array<{ questionId: string; questionCode: string; subSkillId: string }> = [];
-  const canonicalOps: any[] = [];
+  const invalidQuestions: Array<{ id: string; questionCode?: string; subSkillId?: string }> = [];
+  const bulkOps = [];
 
   for (const q of allQuestions) {
-    const qIdStr = String(q._id);
-    const explicitSubSkillId = String(q.subSkillId || "").trim();
-    const fallbackSubSkillId = (Array.isArray(q.skillIds) ? q.skillIds : [])
-      .map((id: unknown) => String(id || "").trim())
-      .find((id: string) => subSkillParentMap.has(id)) || "";
-    const subSkillId = explicitSubSkillId || fallbackSubSkillId;
-    const canonical = subSkillParentMap.get(subSkillId);
+    const currentSubSkillId = String(
+      q.subSkillId ||
+      (Array.isArray(q.skillIds)
+        ? q.skillIds.find((id: unknown) => String(id || "").startsWith("sub_quant_"))
+        : "") ||
+      "",
+    ).trim();
 
-    if (!canonical) {
-      invalidMappings.push({
-        questionId: qIdStr,
-        questionCode: String(q.questionCode || q.id || qIdStr),
-        subSkillId,
+    const owner = subSkillOwner.get(currentSubSkillId);
+    if (!owner) {
+      invalidQuestions.push({
+        id: String(q._id),
+        questionCode: q.questionCode,
+        subSkillId: currentSubSkillId || undefined,
       });
       continue;
     }
 
-    subSkillQuestionsMap[subSkillId].push(qIdStr);
-    mainSkillQuestionsMap[canonical.mainSkillId].push(qIdStr);
+    const qIdStr = q._id.toString();
+    subSkillQuestionsMap[currentSubSkillId].push(qIdStr);
+    mainSkillQuestionsMap[owner.mainSkillId].push(qIdStr);
 
-    canonicalOps.push({
+    bulkOps.push({
       updateOne: {
         filter: { _id: q._id },
         update: {
           $set: {
-            skillId: canonical.mainSkillId,
-            subSkillId,
-            skillIds: [canonical.mainSkillId, subSkillId],
-            sectionId: canonical.sectionId,
+            skillId: owner.mainSkillId,
+            subSkillId: currentSubSkillId,
+            skillIds: [owner.mainSkillId, currentSubSkillId],
+            sectionId: owner.sectionId,
             updatedAt: new Date(),
           },
         },
@@ -523,20 +525,20 @@ export async function deploy() {
     });
   }
 
-  if (invalidMappings.length > 0) {
-    const sample = invalidMappings.slice(0, 20);
+  if (invalidQuestions.length > 0) {
+    console.error("Refusing to mutate taxonomy: questions with invalid/missing canonical subskills were found.");
+    console.error(JSON.stringify(invalidQuestions.slice(0, 50), null, 2));
     throw new Error(
-      `Refusing taxonomy deployment: ${invalidMappings.length} questions have no valid canonical subskill. ` +
-      `Fix them explicitly from source evidence before continuing. Sample: ${JSON.stringify(sample)}`
+      `Question taxonomy validation failed for ${invalidQuestions.length} question(s). Fix their content-based mapping first.`,
     );
   }
 
-  for (let i = 0; i < canonicalOps.length; i += 500) {
-    await questionsCol.bulkWrite(canonicalOps.slice(i, i + 500));
+  for (let i = 0; i < bulkOps.length; i += 500) {
+    await questionsCol.bulkWrite(bulkOps.slice(i, i + 500));
   }
 
   console.log(
-    `Canonicalized ${canonicalOps.length} question mappings without changing semantic subskill assignments.`
+    `Validated and normalized ${allQuestions.length} questions without changing their content-derived subskill classification.`,
   );
 
   // 6. QUIZZES PHASE
