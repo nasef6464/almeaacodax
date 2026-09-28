@@ -23,16 +23,9 @@ export const mirrorLessonProgress = async ({
     ? new Set(completedLessons.map(String).filter(Boolean))
     : null;
 
-  if (completedSet) {
-    await LessonProgressModel.updateMany(
-      {
-        userId,
-        completed: true,
-        ...(completedSet.size ? { lessonId: { $nin: Array.from(completedSet) } } : {}),
-      },
-      { $set: { completed: false }, $unset: { completedAt: 1 } },
-    );
-  }
+  // During the additive/dual-write phase, never infer deletions from an incoming
+  // legacy snapshot. Backfill/shadow parity must prove exact semantics before any
+  // destructive reconciliation or read cutover is allowed.
 
   const byLesson = new Map<string, InteractiveVideoProgress>();
   for (const item of interactiveVideoProgress || []) {
