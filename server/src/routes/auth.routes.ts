@@ -3,7 +3,6 @@ import bcrypt from "bcryptjs";
 import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
 import { StatusCodes } from "http-status-codes";
 import mongoose from "mongoose";
-import { z } from "zod";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { UserModel } from "../models/User.js";
 import { ParentStudentRelationshipModel } from "../models/ParentStudentRelationship.js";
@@ -37,146 +36,27 @@ import { PlatformIntegrationSettingsModel } from "../models/PlatformIntegrationS
 import { decryptIntegrationSecretsForRuntime } from "../utils/integrationSecretsCrypto.js";
 import { deleteUserLifecycle } from "../modules/privacy/application/deleteUserLifecycle.js";
 import { mirrorLessonProgress } from "../services/lessonProgressMirror.js";
-
-const passwordStrengthSchema = z
-  .string()
-  .min(8, "Password must be at least 8 characters")
-  .max(160, "Password is too long")
-  .refine((value) => /[A-Za-z]/.test(value) && /\d/.test(value), {
-    message: "Password must include at least one letter and one number",
-  });
-
-const loginSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(1).max(160),
-});
-const whatsappStartSchema = z.object({
-  phone: z.string().min(8).max(24),
-});
-const whatsappVerifySchema = z.object({
-  phone: z.string().min(8).max(24),
-  code: z.string().length(6),
-});
-
-const registerSchema = z.object({
-  name: z.string().min(2),
-  email: z.string().email(),
-  password: passwordStrengthSchema,
-});
-
-const adminCreateUserSchema = z.object({
-  name: z.string().min(2),
-  email: z.string().email(),
-  password: passwordStrengthSchema,
-  role: z.enum(["student", "teacher", "admin", "supervisor", "school_admin", "parent"]),
-  schoolId: z.string().nullable().optional(),
-  groupIds: z.array(z.string()).optional(),
-  linkedStudentIds: z.array(z.string()).optional(),
-  managedPathIds: z.array(z.string()).optional(),
-  managedSubjectIds: z.array(z.string()).optional(),
-});
-
-const adminUpdateUserSchema = z.object({
-  name: z.string().min(2).optional(),
-  avatar: z.string().optional(),
-  role: z.enum(["student", "teacher", "admin", "supervisor", "school_admin", "parent"]).optional(),
-  isActive: z.boolean().optional(),
-  schoolId: z.string().nullable().optional(),
-  groupIds: z.array(z.string()).optional(),
-  linkedStudentIds: z.array(z.string()).optional(),
-  managedPathIds: z.array(z.string()).optional(),
-  managedSubjectIds: z.array(z.string()).optional(),
-});
-
-const adminUsersQuerySchema = z.object({
-  page: z.coerce.number().int().min(1).optional(),
-  limit: z.coerce.number().int().min(1).max(100).optional(),
-  search: z.string().trim().max(120).optional(),
-  role: z.enum(["student", "teacher", "admin", "supervisor", "school_admin", "parent"]).optional(),
-  isActive: z.preprocess((value) => {
-    if (value === undefined || value === null || value === "") {
-      return undefined;
-    }
-
-    if (typeof value === "boolean") {
-      return value;
-    }
-
-    if (typeof value === "string") {
-      const lowered = value.toLowerCase();
-      if (lowered === "true") return true;
-      if (lowered === "false") return false;
-    }
-
-    return value;
-  }, z.boolean().optional()),
-  platformTrainer: z.preprocess((value) => {
-    if (value === undefined || value === null || value === "") {
-      return undefined;
-    }
-
-    if (typeof value === "boolean") {
-      return value;
-    }
-
-    if (typeof value === "string") {
-      const lowered = value.toLowerCase();
-      if (lowered === "true") return true;
-      if (lowered === "false") return false;
-    }
-
-    return value;
-  }, z.boolean().optional()),
-});
-const adminBulkUserStatusSchema = z.object({
-  userIds: z.array(z.string().trim().min(1)).min(1).max(100),
-  isActive: z.boolean(),
-});
-
-const adminTrainersQuerySchema = z.object({
-  page: z.coerce.number().int().min(1).optional(),
-  limit: z.coerce.number().int().min(1).max(100).optional(),
-  search: z.string().trim().max(120).optional(),
-  status: z.enum(["active", "inactive", "unconfigured"]).optional(),
-  pathId: z.string().trim().optional(),
-  subjectId: z.string().trim().optional(),
-  persona: z.enum(["platform", "hybrid"]).optional(),
-});
-
-const preferencesSchema = z.object({
-  favorites: z.array(z.string()).optional(),
-  reviewLater: z.array(z.string()).optional(),
-  enrolledPaths: z.array(z.string()).optional(),
-  completedLessons: z.array(z.string()).optional(),
-  interactiveVideoProgress: z.array(z.object({
-    courseId: z.string().min(1).max(160),
-    lessonId: z.string().min(1).max(160),
-    positionSeconds: z.number().finite().min(0).max(86_400),
-    answeredQuestionIds: z.array(z.string().min(1).max(160)).max(100),
-    updatedAt: z.number().int().positive(),
-  })).max(100).optional(),
-});
-const updateMyProfileSchema = z.object({
-  name: z.string().min(2).max(120).optional(),
-  avatar: z.string().max(2_000_000).optional(),
-});
-
-const redeemAccessCodeSchema = z.object({
-  code: z.string().min(4),
-});
-
-const forgotPasswordSchema = z.object({
-  email: z.string().email(),
-});
-
-const resetPasswordSchema = z.object({
-  token: z.string().min(32).max(160),
-  password: passwordStrengthSchema,
-});
-
-const verifyEmailSchema = z.object({
-  token: z.string().min(32).max(160),
-});
+import {
+  adminBulkUserStatusSchema,
+  adminCreateUserSchema,
+  adminTrainersQuerySchema,
+  adminUpdateUserSchema,
+  adminUsersQuerySchema,
+  forgotPasswordSchema,
+  identityUpdateSchema,
+  linkStudentSchema,
+  loginSchema,
+  nationalIdLoginSchema,
+  phonePasswordLoginSchema,
+  preferencesSchema,
+  redeemAccessCodeSchema,
+  registerSchema,
+  resetPasswordSchema,
+  updateMyProfileSchema,
+  verifyEmailSchema,
+  whatsappStartSchema,
+  whatsappVerifySchema,
+} from "../modules/auth/http/authSchemas.js";
 
 const serializeUser = (user: any) => {
   const plain = typeof user?.toJSON === "function" ? user.toJSON() : user?.toObject?.() || user;
@@ -1805,11 +1685,6 @@ authRouter.post(
 // National ID Login — POST /api/auth/login/national-id
 // Allows login using Saudi National ID (رقم الهوية) + password
 // ─────────────────────────────────────────────────────────────────────────────
-const nationalIdLoginSchema = z.object({
-  nationalId: z.string().regex(/^[12]\d{9}$/, "National ID must be 10 digits starting with 1 or 2"),
-  password: z.string().min(1).max(160),
-});
-
 authRouter.post(
   "/login/national-id",
   asyncHandler(async (req, res) => {
@@ -1848,11 +1723,6 @@ authRouter.post(
 // Update National ID / Phone — PATCH /api/auth/me/identity
 // Allows a logged-in user to set their nationalId and/or phone
 // ─────────────────────────────────────────────────────────────────────────────
-const identityUpdateSchema = z.object({
-  nationalId: z.string().regex(/^[12]\d{9}$/).optional().nullable(),
-  phone: z.string().min(8).max(24).optional().nullable(),
-});
-
 authRouter.patch(
   "/me/identity",
   requireAuth,
@@ -1884,11 +1754,6 @@ authRouter.patch(
 // Parent ↔ Student Linking — POST /api/auth/parent/link-student
 // Parent links a student via their nationalId OR phone number
 // ─────────────────────────────────────────────────────────────────────────────
-const linkStudentSchema = z.object({
-  nationalId: z.string().regex(/^[12]\d{9}$/).optional(),
-  phone: z.string().min(8).max(24).optional(),
-}).refine((d) => d.nationalId || d.phone, { message: "يجب تقديم رقم الهوية أو رقم الجوال" });
-
 authRouter.post(
   "/parent/link-student",
   requireAuth,
@@ -1964,11 +1829,6 @@ authRouter.get(
 // Phone + Password Login — POST /api/auth/login/phone-password
 // Allows login using registered phone number + password (alternative to OTP)
 // ──────────────────────────────────────────────────────────────────────────────
-const phonePasswordLoginSchema = z.object({
-  phone: z.string().min(8).max(24),
-  password: z.string().min(1).max(160),
-});
-
 authRouter.post(
   "/login/phone-password",
   asyncHandler(async (req, res) => {
