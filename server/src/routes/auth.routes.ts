@@ -1613,7 +1613,13 @@ authRouter.patch(
         completedLessons: payload.completedLessons
           ? Array.from(new Set(payload.completedLessons))
           : undefined,
-        interactiveVideoProgress: payload.interactiveVideoProgress,
+        interactiveVideoProgress: payload.interactiveVideoProgress?.map((item) => ({
+          courseId: String(item.courseId || ""),
+          lessonId: String(item.lessonId || ""),
+          positionSeconds: Number(item.positionSeconds || 0),
+          answeredQuestionIds: (item.answeredQuestionIds || []).map(String),
+          updatedAt: Number(item.updatedAt || 0),
+        })),
       });
     }
 
