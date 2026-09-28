@@ -6,6 +6,7 @@ import { adapter } from './services/adapter';
 import { api } from './services/api';
 import { useStore } from './store/useStore';
 import { AppErrorBoundary } from './components/AppErrorBoundary';
+import { normalizePathId } from './utils/normalizePathId';
 import { AnnouncementAdsOverlay } from './components/AnnouncementAdsOverlay';
 import { PlatformFontBootstrap } from './components/PlatformFontBootstrap';
 import { APP_VERSION } from './utils/appVersion';
@@ -676,7 +677,7 @@ const App: React.FC = () => {
     const startIfRouteNeedsData = () => {
       const path = getInitialRouterPath();
       if (path === '/admin-dashboard' || path === '/instructor-dashboard' || path === '/supervisor-dashboard') {
-        void loadAdminDashboardModule();
+        prefetchRoleWorkspaceModule(path === '/supervisor-dashboard' ? 'supervisor' : 'admin');
       }
 
       if (shouldStartBootstrapForPath(path)) {
