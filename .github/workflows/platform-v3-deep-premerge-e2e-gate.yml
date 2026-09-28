@@ -235,8 +235,6 @@ jobs:
         id: plan9_quality
         continue-on-error: true
         timeout-minutes: 8
-        env:
-          PLAN9_BASE_URL: http://127.0.0.1:4173
         run: node scripts/live-plan9-public-quality-audit.mjs
 
       - name: All role pages desktop + mobile on isolated stack
