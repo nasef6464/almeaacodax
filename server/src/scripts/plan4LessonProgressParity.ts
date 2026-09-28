@@ -39,7 +39,7 @@ try {
     const byLesson = new Map<string, any>(rows.map((row: any) => [String(row.lessonId), row]));
     let mismatch = false;
 
-    for (const lessonId of new Set((user.completedLessons || []).map(String))) {
+    for (const lessonId of new Set<string>((user.completedLessons || []).map((value: unknown) => String(value)))) {
       if (!byLesson.get(lessonId)?.completed) {
         missingCompleted += 1;
         mismatch = true;
