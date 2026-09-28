@@ -18,7 +18,7 @@ const teacher = read("pages/ClassroomTeacherConsole.tsx");
 const student = read("pages/ClassroomStudentLive.tsx");
 const projector = read("pages/ClassroomProjectorView.tsx");
 const realtime = read("hooks/useClassroomRealtime.ts");
-const app = read("App.tsx");
+const app = read("app/AppRouteTree.tsx");
 
 check("session creation requires SMART_CLASSROOM entitlement", routes.includes('smartClassroomEnabled(payload.schoolId)') && routes.includes('resolveSchoolEntitlement(schoolId, "SMART_CLASSROOM")'));
 check("session creation requires an active teaching assignment", routes.includes('TeachingAssignmentModel.exists'));
