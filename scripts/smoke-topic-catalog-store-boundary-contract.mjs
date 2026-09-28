@@ -41,7 +41,7 @@ check('public AppState topic action contract remains unchanged', () => {
     "addTopic: (topic: import('../types').Topic) => void;",
     "updateTopic: (topicId: string, data: Partial<import('../types').Topic>) => void;",
     'deleteTopic: (topicId: string) => void;',
-  ]) assert.ok(store.includes(fragment), `AppState contract changed: ${fragment}`);
+  ]) assert.ok(appState.includes(fragment), `AppState contract changed: ${fragment}`);
 });
 
 check('slice remains bounded and UI-free', () => {
