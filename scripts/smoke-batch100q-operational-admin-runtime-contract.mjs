@@ -41,9 +41,11 @@ assertAllIncludes("components/PwaInstallBanner.tsx", [
   "setHidden(true)",
 ]);
 
-assertAllIncludes("store/useStore.ts", [
+assertAllIncludes("store/AppState.ts", [
   "addQuestion: (question: Question) => Promise<Question>;",
   "updateQuestion: (questionId: string, data: Partial<Question>) => Promise<Question>;",
+]);
+assertAllIncludes("store/useStore.ts", [
   "...createQuestionCatalogSlice<AppState>(set, api)",
 ]);
 
