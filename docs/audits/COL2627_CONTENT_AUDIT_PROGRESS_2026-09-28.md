@@ -85,6 +85,33 @@ Three source defects are now `rejected` and have no references in quizzes / asse
 - Invalid answer indexes / malformed 4-choice presentation: **0**
 - Generic voice explanations detected: **0**
 
+## Additional semantic corrections — continued pass
+- Page 44 Q01–Q06 remapped from generic trial/substitution 11.1 to **الحل العكسي 11.2** because the verified solutions explicitly reverse operations from the final result.
+- Page 46 Q40 and Q42 remapped to **11.3 الرسم/تمثيل العلاقات** to match analogous approved FND26 chained-relation problems.
+- Page 38 Q41 remapped to **8.3 التناسب العكسي**; the prompt explicitly states inverse proportionality.
+- Page 55 Q31 (`آحاد 3^22`) remapped to **14.3 دوري الأسس**; this matches approved FND26 power-cycle precedent.
+- Page 34 Q53 remapped to **7.3 تبسيط المقادير الجبرية**.
+- Page 34 Q65–Q66 remapped to **7.4 المتباينات**.
+- Page 52 Q18–Q20 and page 65 Q45/Q49 remapped to canonical **shape-counting / special counting** taxonomy.
+- Page 65 Q46–Q48 remapped to **18.2 العد والتباديل/التوافيق المبسطة**.
+- Page 65 Q50–Q51 remapped to **19.3 مجموع زوايا المضلعات**.
+- Page 76 Q07 and page 77 Q13 remapped to **19.1 علاقات الزوايا** despite being drawn inside square diagrams.
+- Page 77 Q17–Q18 remapped to **20.4 مساحة المثلث**; Q19 to **21.2 تقسيمات المستطيل**.
+- Page 79 Q16/Q18/Q19 remapped to **24.3 استراتيجية المساحات المظللة**, aligned with FND26.
+- Page 37 Q18–Q20 remapped to **10.4 الزكاة الشرعية**.
+- Page 58 Q22–Q25 normalized to **17.4 الوسيط والمنوال والمدى**.
+- AI/voice completeness spot-gate fixed three weak fields: P010-Q18, P010-Q25, P015-Q81.
+
+## Coverage checkpoint after semantic corrections
+- Main skills represented: **25/25**
+- Subskills represented by usable COL2627 questions: **91/95**
+- Currently absent from COL2627 source content after audit:
+  - `sub_quant_11_4` التدرج المنتظم والتقريب البديهي
+  - `sub_quant_15_3` زاوية الدقيقة الواحدة ومسائل الساعات المتقدمة
+  - `sub_quant_16_3` مجموع وفروق الأعمار وثبات الفرق الزمني
+  - `sub_quant_18_3` قراءة وتفسير الجداول والرسوم والقطاعات الدائرية
+- Absence alone is not treated as a defect; no synthetic questions or artificial remapping will be introduced merely to force 95/95 coverage.
+
 ## Current gate
 **NOT YET CONTENT-LOCKED.**
 
