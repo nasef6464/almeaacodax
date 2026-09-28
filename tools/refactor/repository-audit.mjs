@@ -59,7 +59,7 @@ function classify(file) {
   if (file.startsWith('docs/')) return 'documentation';
   if (file.startsWith('.github/')) return 'ci';
   if (file.startsWith('public/')) return 'public-asset';
-  if (/^(pages|components|dashboards|contexts|services|store|utils|hooks)\//.test(file)) return 'web-source';
+  if (/^(app|pages|components|dashboards|contexts|services|store|utils|hooks)\//.test(file)) return 'web-source';
   if (['App.tsx', 'index.tsx', 'types.ts'].includes(file)) return 'web-source';
   if (SOURCE_EXTENSIONS.has(path.extname(file).toLowerCase())) return 'source-other';
   return 'support';
@@ -106,7 +106,7 @@ function migrationCandidate(file) {
   if (file.startsWith('server/src/middleware/')) return { target: `apps/api/src/shared/http/middleware/${base}`, domain: 'shared', confidence: 'high' };
   if (file.startsWith('server/src/config/')) return { target: `apps/api/src/infrastructure/config/${base}`, domain: 'infrastructure', confidence: 'high' };
   if (file.startsWith('server/src/')) return { target: `apps/api/src/${file.slice('server/src/'.length)}`, domain, confidence: 'review-required' };
-  if (/^(pages|components|dashboards|contexts|hooks)\//.test(file)) {
+  if (/^(app|pages|components|dashboards|contexts|hooks)\//.test(file)) {
     const remainder = file.replace(/^[^/]+\//, '');
     return { target: `apps/web/src/features/${domain}/${remainder}`, domain, confidence: domain === 'shared' ? 'review-required' : 'candidate' };
   }
