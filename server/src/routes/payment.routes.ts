@@ -813,7 +813,9 @@ paymentRouter.post(
     }
 
     const planDef = SUBSCRIPTION_PLANS[payload.plan];
-    const created = await PaymentRequestModel.create({
+    let created;
+    try {
+      created = await PaymentRequestModel.create({
       id: `subreq_${Date.now()}`,
       userId: String(req.authUser?.id),
       userName: user.name || "",
@@ -1561,6 +1563,21 @@ paymentRouter.post(
       status: "pending",
     });
 
+    return res.status(StatusCodes.CREATED).json({ request: created });
+    } catch (error: any) {
+      if (error?.code !== 11000) throw error;
+      const concurrentPending = await PaymentRequestModel.findOne({
+        userId: String(user._id),
+        itemType: payload.itemType,
+        itemId: payload.itemId,
+        status: "pending",
+      }).lean();
+      if (!concurrentPending) throw error;
+      return res.status(StatusCodes.CONFLICT).json({
+        message: "يوجد طلب شراء معلق بالفعل لنفس العنصر",
+        request: concurrentPending,
+      });
+    }
     return res.status(StatusCodes.CREATED).json({ request: created });
   }),
 );
