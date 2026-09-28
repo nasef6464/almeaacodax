@@ -1,10 +1,12 @@
 import { readFile } from "node:fs/promises";
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
-const [app, routeTree, seo, store, storeState, auth, authSchemas, trainerPortfolio, quiz, quizPolicy] = await Promise.all([
+const [app, routeTree, seo, seoResolver, seoData, store, storeState, auth, authSchemas, trainerPortfolio, quiz, quizPolicy] = await Promise.all([
   read("App.tsx"),
   read("app/AppRouteTree.tsx"),
   read("app/SeoRouteMeta.tsx"),
+  read("app/resolveSeoRouteMeta.ts"),
+  read("app/seoRouteMetaData.ts"),
   read("store/useStore.ts"),
   read("store/AppState.ts"),
   read("server/src/routes/auth.routes.ts"),
@@ -27,7 +29,7 @@ for (const [name, [size, limit]] of Object.entries(budgets)) {
 assert(app.includes("AppRouteTree") && !app.includes('path="/dashboard"'), "App shell must not own product route declarations");
 assert(routeTree.includes('path="/dashboard"') && routeTree.includes('path="/review"'), "route tree must own learner routes");
 assert(app.includes("SeoRouteMeta") && !app.includes("ADMIN_TAB_METAS"), "SEO ownership must remain outside App shell");
-assert(seo.includes("ADMIN_TAB_METAS") && seo.includes("STUDENT_TAB_METAS"), "SEO route metadata module incomplete");
+assert(seo.includes("resolvePageMeta") && seoResolver.includes("SEO_PRIVATE_PREFIXES") && seoData.includes("ADMIN_TAB_METAS") && seoData.includes("STUDENT_TAB_METAS"), "SEO route metadata ownership incomplete");
 assert(store.includes("import type { AppState }") && !store.includes("interface AppState"), "store runtime must consume extracted state contract");
 assert(storeState.includes("export interface AppState"), "store state contract missing");
 assert(auth.includes("authSchemas.js") && !auth.includes('from "zod"'), "auth transport must not own validation schemas");
