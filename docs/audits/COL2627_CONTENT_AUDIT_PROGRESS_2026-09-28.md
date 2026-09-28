@@ -71,6 +71,20 @@ Three source defects are now `rejected` and have no references in quizzes / asse
 - `QDR-QNT-COL2627-P062-Q24` was remapped from angles/lines to triangles (`skill_quant_20 / sub_quant_20_1`) after source-image verification.
 - Legacy zero-padded section IDs in the early pages were normalized to the canonical section IDs.
 
+## Whole-bank key reconciliation checkpoint
+- Printed answer-key comparison completed across the full imported set.
+- **945/946** live answer indexes match the printed source key.
+- The single live mismatch was `QDR-QNT-COL2627-P074-Q08`, now corrected to **د / 360**.
+- The three rejected records intentionally retain their printed source-key index for provenance while reviewer notes and voice explanation document the mathematical/source defect.
+
+## Structural checkpoint
+- Total: **946**
+- Draft: **943**
+- Rejected: **3**
+- Missing images/hashes/voice/AI readable text: **0**
+- Invalid answer indexes / malformed 4-choice presentation: **0**
+- Generic voice explanations detected: **0**
+
 ## Current gate
 **NOT YET CONTENT-LOCKED.**
 
