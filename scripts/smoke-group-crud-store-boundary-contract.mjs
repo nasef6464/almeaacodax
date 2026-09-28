@@ -60,7 +60,7 @@ check('public AppState group CRUD contract remains unchanged', () => {
     'updateGroupAsync: (groupId: string, data: Partial<Group>) => Promise<Group>;',
     'deleteGroup: (groupId: string) => void;',
     'deleteGroupAsync: (groupId: string) => Promise<void>;',
-  ]) assert.ok(store.includes(fragment), `AppState contract changed: ${fragment}`);
+  ]) assert.ok(appState.includes(fragment), `AppState contract changed: ${fragment}`);
 });
 
 check('slice remains bounded and UI-free', () => {
