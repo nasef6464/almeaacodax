@@ -29,8 +29,9 @@ const imageDir = required("QUESTION_PILOT_IMAGE_DIR");
 const outputFile = required("QUESTION_PILOT_OUTPUT_FILE");
 const raw = JSON.parse(await readFile(payloadFile, "utf8"));
 const allItems = Array.isArray(raw) ? raw : Array.isArray(raw?.items) ? raw.items : null;
-if (!allItems || allItems.length !== 40) {
-  throw new Error("Pilot payload must contain exactly 40 items");
+const expectedCount = Number.parseInt(process.env.QUESTION_PILOT_EXPECTED_COUNT || "40", 10);
+if (!allItems || allItems.length !== expectedCount) {
+  throw new Error(`Pilot payload must contain exactly ${expectedCount} items`);
 }
 
 const batchId = String(raw?.batchId || process.env.QUESTION_PILOT_BATCH_ID || "QBANK-COL2627-PILOT40-20260922-V1")

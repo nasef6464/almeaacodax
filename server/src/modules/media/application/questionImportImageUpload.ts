@@ -1,5 +1,6 @@
 import { env } from "../../../config/env.js";
 import { createR2PresignedPutUrl } from "../infrastructure/r2PresignedPut.js";
+import { validateQuestionCode, buildExpectedImagePath } from "../../quizzes/domain/questionImportIdentity.js";
 
 type CreateQuestionImportImageUploadIntentInput = {
   questionCode: string;
@@ -47,8 +48,8 @@ export function createQuestionImportImageUploadIntent({
   const normalizedCode = String(questionCode || "").trim().toUpperCase();
   const normalizedHash = String(imageHash || "").trim().toLowerCase();
 
-  if (!/^QDR-QNT-[A-Z0-9_-]+-P\d{3}-Q\d{2,}$/.test(normalizedCode)) {
-    const error = new Error("Question code does not match the approved quantitative import format") as Error & { statusCode?: number };
+  if (!validateQuestionCode(normalizedCode)) {
+    const error = new Error("Question code does not match the approved import format (QDR-QNT or TAH-MATH)") as Error & { statusCode?: number };
     error.statusCode = 400;
     throw error;
   }
@@ -65,7 +66,8 @@ export function createQuestionImportImageUploadIntent({
     throw error;
   }
 
-  const key = `questions/v2/${encodeURIComponent(normalizedCode)}/${normalizedHash}.webp`;
+  // Canonical object key: questions/v2/${normalizedCode}/${normalizedHash}.webp
+  const key = buildExpectedImagePath(normalizedCode, normalizedHash);
   const expiresIn = env.R2_PRESIGN_EXPIRES_SECONDS;
   const uploadUrl = createR2PresignedPutUrl({
     accountId: env.R2_ACCOUNT_ID,

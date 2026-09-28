@@ -24,6 +24,7 @@
     "smoke:operational": "npm run smoke:operational:api",
     "smoke:operational:api": "tsx src/scripts/smokeOperationalJourneysApi.ts",
     "smoke:video-question-picker-runtime": "tsx ../scripts/video-question-picker-runtime.ts",
+    "test:tahsili-import-identity": "tsx ../scripts/test-tahsili-import-identity.mjs",
     "smoke:interactive-video-progress-runtime": "tsx ../scripts/interactive-video-progress-runtime.ts",
     "verify:smart-classroom-g0": "tsx src/scripts/verifySmartClassroomG0.ts",
     "verify:school-g1-foundation": "tsx src/scripts/verifySchoolG1Foundation.ts",
