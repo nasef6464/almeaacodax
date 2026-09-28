@@ -129,7 +129,7 @@ async function runImport() {
   console.log("Step 4: Testing sample R2 image accessibility (Beginning, Middle, End)...");
   const sampleCodes = [
     "QDR-QNT-COL2627-P005-Q01", // Beginning
-    "QDR-QNT-COL2627-P045-Q01", // Middle
+    "QDR-QNT-COL2627-P045-Q18", // Middle
     "QDR-QNT-COL2627-P084-Q11"  // End
   ];
 
@@ -139,7 +139,12 @@ async function runImport() {
       console.error(`  [FAIL] Sample ${sc} not found in DB!`);
       continue;
     }
-    const resp = await fetch(qDoc.imageUrl, { method: "HEAD" });
+    const resp = await fetch(qDoc.imageUrl, {
+      method: "HEAD",
+      headers: {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+      }
+    });
     console.log(`  [${resp.status === 200 ? "PASS" : "FAIL"}] ${sc} -> ${qDoc.imageUrl} (HTTP ${resp.status})`);
   }
 

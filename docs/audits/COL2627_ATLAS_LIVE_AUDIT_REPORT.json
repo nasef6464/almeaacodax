@@ -1,0 +1,42 @@
+{
+  "timestamp": "2026-09-28T13:03:39.692Z",
+  "atlasCluster": "Atlas MongoDB Production Cluster",
+  "dbTarget": "almeaa",
+  "collection": "questions",
+  "col2627": {
+    "total": 946,
+    "uniqueQuestionCodes": 946,
+    "duplicates": 0,
+    "draftCount": 946,
+    "approvedCount": 0,
+    "missingImageUrl": 0,
+    "missingImageHash": 0,
+    "missingSkillId": 0,
+    "missingSubSkillId": 0,
+    "badSkillIdsPair": 0,
+    "invalidCorrectOptionIndex": 0,
+    "missingAiContext": 0,
+    "missingVoiceExplanation": 0,
+    "sampleChecks": {
+      "QDR-QNT-COL2627-P005-Q01": {
+        "status": 200,
+        "url": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p005/QDR-QNT-COL2627-P005-Q01.webp"
+      },
+      "QDR-QNT-COL2627-P045-Q18": {
+        "status": 200,
+        "url": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p045/QDR-QNT-COL2627-P045-Q18.webp"
+      },
+      "QDR-QNT-COL2627-P084-Q11": {
+        "status": 200,
+        "url": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p084/QDR-QNT-COL2627-P084-Q11.webp"
+      }
+    }
+  },
+  "fnd26Preservation": {
+    "total": 858,
+    "approved": 856,
+    "rejected": 2,
+    "untouched": true
+  },
+  "totalPlatformQuestions": 1804
+}
