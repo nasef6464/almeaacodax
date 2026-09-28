@@ -137,6 +137,10 @@ jobs:
         run: npm run smoke:deployment-handover-phase19
       - name: Current handover contract
         run: npm run smoke:handover-current
+      - name: PLAN 8 question bank integrity guard
+        run: |
+          node scripts/smoke-plan8-question-integrity-contract.mjs
+          cd server && npx tsx src/scripts/plan8QuestionApprovalIntegrityContract.ts
       - name: PLAN 7 AI certification prerequisites
         run: |
           node scripts/smoke-plan7-ai-certification-contract.mjs

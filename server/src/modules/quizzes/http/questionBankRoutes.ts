@@ -16,8 +16,8 @@ import { questionBaseSchema, questionListQuerySchema, questionSchema, questionVi
 import { buildQuestionResponseItems } from "../presentation/questionPresentation.js";
 import { escapeRegex } from "./queryUtilities.js";
 import { getWorkflowDefaults, sanitizeWorkflowUpdate } from "../application/quizWorkflow.js";
-import { getQuizQuestionIds } from "../application/quizQuestionSelection.js";
 import { getQuestionBankCoverage } from "../application/questionBankCoverage.js";
+import { touchesQuestionVisualIdentity, validateQuestionApprovalIntegrity } from "../application/questionApprovalIntegrity.js";
 import { resolveCanonicalQuestionSkillIds } from "../application/questionSkillTaxonomy.js";
 import { buildOwnedDocumentQuery, uniqueStrings } from "../infrastructure/quizDocumentQuery.js";
 import { questionImportRouter } from "./questionImportRoutes.js";
@@ -80,40 +80,14 @@ questionBankRouter.get(
     let baseFilter: Record<string, any> = {};
 
     if (!isStaffRole(req.authUser?.role)) {
-      const visibleQuizFilter = await withLearnerVisiblePaths(
-        {
-          isPublished: true,
-          showOnPlatform: { $ne: false },
-          $or: [{ approvalStatus: "approved" }, { approvalStatus: { $exists: false } }, { approvalStatus: null }],
-        },
-        req.authUser,
-      );
-      const shouldExpandLinkedQuizQuestions = !query.summary || Boolean(query.ids) || Boolean(query.search);
-      const linkedQuestionConditions: Record<string, any>[] = [];
-
-      if (shouldExpandLinkedQuizQuestions) {
-        const visibleQuizzes = await QuizModel.find(visibleQuizFilter).select("questionIds mockExam").lean();
-        const linkedQuestionIds = uniqueStrings(
-          visibleQuizzes.flatMap((quiz: any) => getQuizQuestionIds(quiz)),
-        );
-        const linkedObjectIds = linkedQuestionIds
-          .filter((id) => mongoose.Types.ObjectId.isValid(id))
-          .map((id) => new mongoose.Types.ObjectId(id));
-
-        if (linkedQuestionIds.length > 0) {
-          linkedQuestionConditions.push({ id: { $in: linkedQuestionIds } });
-        }
-        if (linkedObjectIds.length > 0) {
-          linkedQuestionConditions.push({ _id: { $in: linkedObjectIds } });
-        }
-      }
-
+      // A visible quiz must never bypass the question workflow. Legacy questions
+      // without an approvalStatus remain readable, but explicit draft,
+      // pending_review and rejected records are never learner-visible.
       baseFilter = {
         $or: [
           { approvalStatus: "approved" },
           { approvalStatus: { $exists: false } },
           { approvalStatus: null },
-          ...linkedQuestionConditions,
         ],
       };
     }
@@ -259,6 +233,10 @@ questionBankRouter.post(
           : workflowDefaults.approvalStatus,
     });
     await assertManagedContentScope(req.authUser!, payload);
+    const approvalIntegrity = validateQuestionApprovalIntegrity(payload);
+    if (!approvalIntegrity.ok) {
+      return res.status(StatusCodes.BAD_REQUEST).json({ message: approvalIntegrity.message });
+    }
     const created = await QuestionModel.create(payload);
     res.status(StatusCodes.CREATED).json(created);
   }),
@@ -353,6 +331,15 @@ questionBankRouter.patch(
     });
 
     await assertManagedContentScope(req.authUser!, mergedPayload);
+    const requiresApprovalIntegrity =
+      String((existing as any).approvalStatus || "") !== "approved" ||
+      touchesQuestionVisualIdentity(payload as Record<string, unknown>);
+    if (requiresApprovalIntegrity) {
+      const approvalIntegrity = validateQuestionApprovalIntegrity(mergedPayload);
+      if (!approvalIntegrity.ok) {
+        return res.status(StatusCodes.BAD_REQUEST).json({ message: approvalIntegrity.message });
+      }
+    }
     const sanitizedPayload = sanitizeWorkflowUpdate(
       { ...payload, skillIds: canonicalSkills.skillIds } as Record<string, unknown>,
       req.authUser!,
