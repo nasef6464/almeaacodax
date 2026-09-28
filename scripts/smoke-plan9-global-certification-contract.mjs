@@ -19,7 +19,7 @@ const [
   read(".github/workflows/platform-v3-deep-premerge-e2e-gate.yml"),
   read(".github/workflows/refactor-v2-guard.yml"),
   read(".github/workflows/platform-v3-recovery-gate.yml"),
-  read(".github/workflows/refactor-v2-production-readiness-gate.yml"),
+  read(".github/workflows/refactor-v2-production-readiness.yml"),
   read(".github/workflows/platform-v3-phase-handover-gate.yml"),
   read("server/src/routes/health.routes.ts"),
   read("server/src/modules/privacy/application/deleteUserLifecycle.ts"),
