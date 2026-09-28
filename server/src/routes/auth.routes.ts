@@ -1341,19 +1341,6 @@ authRouter.get(
       });
     }
 
-    // PLAN 4 additive dual-write: User remains the read/source-of-truth during
-    // migration while normalized LessonProgress is mirrored idempotently.
-    // Do not remove the legacy fields until backfill + shadow-read parity passes.
-    if (payload.completedLessons || payload.interactiveVideoProgress) {
-      await mirrorLessonProgress({
-        userId: String(user._id),
-        completedLessons: payload.completedLessons
-          ? Array.from(new Set(payload.completedLessons))
-          : undefined,
-        interactiveVideoProgress: payload.interactiveVideoProgress,
-      });
-    }
-
     return res.json({
       user: serializeUser(user),
     });
@@ -1614,6 +1601,19 @@ authRouter.patch(
     if (!user) {
       return res.status(StatusCodes.NOT_FOUND).json({
         message: "User not found",
+      });
+    }
+
+    // PLAN 4 additive dual-write: User remains the read/source-of-truth during
+    // migration while normalized LessonProgress is mirrored idempotently.
+    // Do not remove the legacy fields until backfill + shadow-read parity passes.
+    if (payload.completedLessons || payload.interactiveVideoProgress) {
+      await mirrorLessonProgress({
+        userId: String(user._id),
+        completedLessons: payload.completedLessons
+          ? Array.from(new Set(payload.completedLessons))
+          : undefined,
+        interactiveVideoProgress: payload.interactiveVideoProgress,
       });
     }
 
