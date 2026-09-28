@@ -5,17 +5,17 @@ import { UserModel } from "../../../models/User.js";
 
 export type SchoolMembershipRole = "student" | "teacher" | "supervisor" | "school_admin" | "parent";
 type MembershipWrite = {
-  userId: string;
-  schoolId: string;
-  role: SchoolMembershipRole;
-  status: "active" | "inactive";
+  userId?: string;
+  schoolId?: string;
+  role?: SchoolMembershipRole;
+  status?: "active" | "inactive";
 };
 type AssignmentWrite = {
-  schoolId: string;
-  teacherId: string;
-  classId: string;
+  schoolId?: string;
+  teacherId?: string;
+  classId?: string;
   subjectId?: string;
-  status: "active" | "inactive";
+  status?: "active" | "inactive";
 };
 
 class SchoolReferenceIntegrityError extends Error {
@@ -54,19 +54,31 @@ const loadUser = async (userId: string) => {
 export const assertSchoolContractReference = async (schoolId: string) => loadSchool(schoolId);
 
 export const assertSchoolMembershipReference = async (payload: MembershipWrite) => {
-  const [schoolId, user] = await Promise.all([loadSchool(payload.schoolId), loadUser(payload.userId)]);
+  const role = payload.role;
+  const status = payload.status;
+  if (!role || !["student", "teacher", "supervisor", "school_admin", "parent"].includes(role)) {
+    throw new SchoolReferenceIntegrityError(400, "invalid_membership_role", "A valid membership role is required");
+  }
+  if (!status || !["active", "inactive"].includes(status)) {
+    throw new SchoolReferenceIntegrityError(400, "invalid_membership_status", "A valid membership status is required");
+  }
+  const [schoolId, user] = await Promise.all([loadSchool(String(payload.schoolId || "")), loadUser(String(payload.userId || ""))]);
   const userId = String(user._id);
-  if (String(user.role) !== payload.role) {
+  if (String(user.role) !== role) {
     throw new SchoolReferenceIntegrityError(409, "membership_role_mismatch", "Membership role must match the user's platform role");
   }
-  if (payload.status === "active" && user.isActive === false) {
+  if (status === "active" && user.isActive === false) {
     throw new SchoolReferenceIntegrityError(409, "inactive_user_membership", "Inactive users cannot receive an active school membership");
   }
-  return { userId, schoolId, role: payload.role, status: payload.status };
+  return { userId, schoolId, role, status };
 };
 
 export const assertTeachingAssignmentReference = async (payload: AssignmentWrite) => {
-  const schoolId = await loadSchool(payload.schoolId);
+  const status = payload.status;
+  if (!status || !["active", "inactive"].includes(status)) {
+    throw new SchoolReferenceIntegrityError(400, "invalid_assignment_status", "A valid assignment status is required");
+  }
+  const schoolId = await loadSchool(String(payload.schoolId || ""));
   const teacherId = requiredObjectId(payload.teacherId, "teacherId");
   const classId = requiredObjectId(payload.classId, "classId");
   const [teacher, classroom] = await Promise.all([
@@ -81,10 +93,10 @@ export const assertTeachingAssignmentReference = async (payload: AssignmentWrite
   if (String(teacher.role) !== "teacher") {
     throw new SchoolReferenceIntegrityError(400, "assignment_requires_teacher", "Assignment target must have the teacher role");
   }
-  if (payload.status === "active" && teacher.isActive === false) {
+  if (status === "active" && teacher.isActive === false) {
     throw new SchoolReferenceIntegrityError(409, "inactive_teacher_assignment", "Inactive teachers cannot receive an active assignment");
   }
-  if (payload.status === "active") {
+  if (status === "active") {
     const membership = await SchoolMembershipModel.exists({ userId: teacherId, schoolId, role: "teacher", status: "active" });
     if (!membership) {
       throw new SchoolReferenceIntegrityError(409, "teacher_membership_required", "Teacher must have an active membership in this school");
@@ -95,6 +107,6 @@ export const assertTeachingAssignmentReference = async (payload: AssignmentWrite
     teacherId,
     classId: String(classroom._id),
     subjectId: String(payload.subjectId || "").trim(),
-    status: payload.status,
+    status,
   };
 };
