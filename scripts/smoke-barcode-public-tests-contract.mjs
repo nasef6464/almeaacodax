@@ -11,7 +11,7 @@ const publicRoutes = fs.readFileSync(path.join(root, "server", "src", "routes", 
 const publicTestModel = fs.readFileSync(path.join(root, "server", "src", "models", "PublicBarcodeTest.ts"), "utf8");
 const publicSubmissionModel = fs.readFileSync(path.join(root, "server", "src", "models", "PublicBarcodeSubmission.ts"), "utf8");
 const apiSource = fs.readFileSync(path.join(root, "services", "api.ts"), "utf8");
-const appSource = fs.readFileSync(path.join(root, "App.tsx"), "utf8");
+const appSource = fs.readFileSync(path.join(root, "app", "AppRouteTree.tsx"), "utf8");
 const adminDashboardSource = fs.readFileSync(path.join(root, "dashboards", "admin", "AdminDashboard.tsx"), "utf8");
 const barcodePageSource = fs.readFileSync(path.join(root, "pages", "BarcodeTest.tsx"), "utf8");
 const studentSource = fs.readFileSync(path.join(root, "pages", "Quizzes.tsx"), "utf8");
@@ -160,7 +160,7 @@ addCheck(
 );
 addCheck(
   "barcode public student route is registered",
-  appSource.includes('path="/barcode-test/:slug"') && appSource.includes("pages/BarcodeTest"),
+  appSource.includes('path="/barcode-test/:slug"') && appSource.includes("../pages/BarcodeTest"),
   "students need a real public route for QR links",
 );
 addCheck(
