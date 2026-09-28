@@ -231,6 +231,14 @@ jobs:
         timeout-minutes: 10
         run: node scripts/live-public-ui-audit.mjs --base-url http://127.0.0.1:4173 --api-target http://127.0.0.1:4010/api --run-id deep-premerge-public-${{ github.run_id }} && touch /tmp/deep-public_ui.ok
 
+      - name: PLAN 9 public CWV + accessibility + RTL lab
+        id: plan9_quality
+        continue-on-error: true
+        timeout-minutes: 8
+        env:
+          PLAN9_BASE_URL: http://127.0.0.1:4173
+        run: node scripts/live-plan9-public-quality-audit.mjs
+
       - name: All role pages desktop + mobile on isolated stack
         id: roles
         continue-on-error: true
@@ -330,6 +338,7 @@ jobs:
             echo "- PLAN 3 route footprint: ${{ steps.plan3_footprint.outcome }}"
             echo "- Bounded isolated read scale: ${{ steps.isolated_scale.outcome }}"
             echo "- Public UI: ${{ steps.public_ui.outcome }}"
+            echo "- PLAN 9 public quality lab: ${{ steps.plan9_quality.outcome }}"
             echo "- Role pages: ${{ steps.roles.outcome }}"
             echo "- Question editor: ${{ steps.question_editor.outcome }}"
             echo "- Student Learning Space: ${{ steps.student_learning.outcome }}"
@@ -363,6 +372,7 @@ jobs:
           # avoided because continue-on-error steps execute in isolated shells.
           check_outcome "Operational multi-role API" "${{ steps.operational.outcome }}"
           check_outcome "Public full-stack UI" "${{ steps.public_ui.outcome }}"
+          check_outcome "PLAN 9 public quality lab" "${{ steps.plan9_quality.outcome }}"
           check_outcome "All role pages" "${{ steps.roles.outcome }}"
           check_outcome "Question editor" "${{ steps.question_editor.outcome }}"
           check_outcome "Student Learning Space" "${{ steps.student_learning.outcome }}"
