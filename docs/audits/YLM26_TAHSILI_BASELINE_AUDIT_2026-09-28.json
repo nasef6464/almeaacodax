@@ -1,15 +1,15 @@
 {
   "generatedAt": "2026-09-28",
-  "scope": "YLM26 Tahsili Mathematics source-vs-live baseline audit (corrected)",
-  "correctionNote": "The earlier 326 figure was invalid because it counted general numbered examples/exercises instead of restricting scope to questions explicitly marked تجميعات. The canonical import scope is the 156 تجميعات questions only.",
+  "scope": "YLM26 Tahsili Mathematics source-vs-live baseline audit — source-verified",
   "source": {
     "file": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
     "pages": 96,
     "documentCode": "YLM26",
     "pathId": "p_1777779653351",
     "subjectId": "sub_1777784609152",
-    "intendedScope": "Only questions explicitly marked تجميعات; examples/explanations/rules are reference material, not question-bank items.",
-    "expectedCompilationQuestions": 156,
+    "inclusionRule": "Only question blocks visibly carrying the dark-blue تجميعات badge.",
+    "sourceCompilationQuestions": 326,
+    "lessons": 30,
     "taxonomy": {
       "mainSkills": 22,
       "subSkills": 70
@@ -25,31 +25,27 @@
     "uniqueImageHashes": 156,
     "uniqueImageUrls": 156,
     "quizReferences": 0,
-    "batches": [
-      {
-        "id": "TAH-MATH-YLM26-PILOT30-V1",
-        "count": 30
-      },
-      {
-        "id": "TAH-MATH-YLM26-BATCH01-V1",
-        "count": 30
-      },
-      {
-        "id": "TAH-MATH-YLM26-BATCH02-V1",
-        "count": 41
-      },
-      {
-        "id": "TAH-MATH-YLM26-BATCH03-V1",
-        "count": 55
-      }
-    ]
-  },
-  "auditTarget": "Validate the existing 156 records one-by-one against the source: crop/image ↔ question content ↔ A/B/C/D values ↔ correct answer ↔ solution/voice context ↔ canonical main/subskill.",
-  "currentKnownDataQuality": {
     "genericPlaceholderTextRecords": 126,
     "genericPlaceholderOptionTextRecords": 126,
-    "contentRichRecords": 30,
-    "note": "These fields require review against the image/source. Their generic state is not evidence that a source question is missing."
+    "contentRichRecords": 30
   },
-  "policy": "Do not invent or add non-تجميعات questions. Do not treat lesson examples, rules, or answer-key numbering as imported questions. Correct only the 156 canonical تجميعات records when source evidence supports the change."
+  "reconciliation": {
+    "netGap": 170,
+    "pageLevelMissingSlots": 172,
+    "pageLevelExtraSlots": 2,
+    "extraPages": [
+      5,
+      6
+    ],
+    "note": "The source count was verified by exact visual detection of the rendered تجميعات badge on every source page, and independently matches the 30 lesson question totals."
+  },
+  "currentActions": {
+    "richContentMappingsCorrected": 16,
+    "excessIdentityRecordsFlagged": [
+      "TAH-MATH-YLM26-P005-Q04",
+      "TAH-MATH-YLM26-P006-Q01"
+    ],
+    "allRecordsRemainNonPublicDraft": true
+  },
+  "policy": "Do not approve the 156 records as a complete YLM26 import. Continue auditing existing records, rebuild the complete 326-question source manifest, and only content-lock after source/live reconciliation."
 }
