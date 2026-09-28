@@ -59,6 +59,7 @@ import { matchesManagedContentScope } from "../modules/quizzes/application/quizM
 import { resolveAssessmentDefinitionRead } from "../modules/quizzes/application/assessmentDefinitionReadAdapter.js";
 import { findLatestPublishedAssessmentVersion, publishAssessmentVersion } from "../modules/quizzes/infrastructure/assessmentVersionRepository.js";
 import { mirrorAssessmentSubmissionAfterLegacyResult } from "../modules/quizzes/application/assessmentSubmissionMirror.js";
+import { ensureQuestionRevisions } from "../services/questionRevision.js";
 import {
   assertManagedContentScope,
   buildManagedContentScopeFilter,
@@ -898,8 +899,13 @@ quizRouter.post(
       sections,
     });
 
-    const { correctAnswers, wrongAnswers, unanswered, skillStats, questionReview } =
+    const { correctAnswers, wrongAnswers, unanswered, skillStats, questionReview: rawQuestionReview } =
       buildQuizSubmissionAnswerReview({ orderedQuestions, answers: payload.answers });
+    const questionRevisions = await ensureQuestionRevisions(orderedQuestions);
+    const questionReview = rawQuestionReview.map((item) => ({
+      ...item,
+      ...(questionRevisions.get(String(item.questionId || "")) || {}),
+    }));
 
     const skillsAnalysis = buildQuizSubmissionSkillsAnalysis({
       skillStats,
