@@ -1,0 +1,1602 @@
+{
+  "generatedAt": "2026-09-28T05:52:00+03:00",
+  "scope": "FND26 integrity repair pre-change snapshot",
+  "notes": [
+    "Read-only snapshot before taxonomy remapping.",
+    "Question codes, answers, source metadata and current skill mapping preserved for rollback evidence.",
+    "No image or answer field is changed by the taxonomy repair stage."
+  ],
+  "baseline": {
+    "total": 858,
+    "approved": 858,
+    "coveredSubskills": 84
+  },
+  "selectedQuestionCount": 58,
+  "selectedQuestions": [
+    {
+      "questionCode": "QDR-QNT-FND26-P057-Q25",
+      "correctOptionIndex": 0,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "optionsEmbeddedInImage": false,
+      "sectionId": "sec_sub_1777779748206_8",
+      "skillId": "skill_quant_08",
+      "skillIds": [
+        "sub_quant_08_1"
+      ],
+      "sourceMeta": {
+        "sourceItemId": "QDR-QNT-FND26-P057-Q25",
+        "book": "تاسيس انشتين معدل",
+        "page": 57,
+        "printedNumber": 25,
+        "batch": "FND26_BATCH_30"
+      },
+      "subSkillId": "sub_quant_08_1",
+      "text": "رجل عنده 7200 ريال أوجد قيمة مبلغ زكاته إذا علمت أن نسبة الزكاة الشرعية 2.5% ؟",
+      "updatedAt": {
+        "$date": "2026-09-26T13:34:12.841Z"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P057-Q26",
+      "correctOptionIndex": 1,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "optionsEmbeddedInImage": false,
+      "sectionId": "sec_sub_1777779748206_8",
+      "skillId": "skill_quant_08",
+      "skillIds": [
+        "sub_quant_08_1"
+      ],
+      "sourceMeta": {
+        "sourceItemId": "QDR-QNT-FND26-P057-Q26",
+        "book": "تاسيس انشتين معدل",
+        "page": 57,
+        "printedNumber": 26,
+        "batch": "FND26_BATCH_30"
+      },
+      "subSkillId": "sub_quant_08_1",
+      "text": "إذا كانت قيمة زكاة المال لأحد الأشخاص 4000 ريال فكم المبلغ الذي كان معه ؟",
+      "updatedAt": {
+        "$date": "2026-09-26T13:34:13.022Z"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P068-Q16",
+      "correctOptionIndex": 2,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "optionsEmbeddedInImage": true,
+      "sectionId": "sec_sub_1777779748206_10",
+      "skillId": "skill_quant_10",
+      "skillIds": [
+        "sub_quant_10_1"
+      ],
+      "sourceMeta": {
+        "sourceItemId": "QDR-QNT-FND26-P068-Q16",
+        "sourceBook": "تاسيس انشتين معدل .pdf",
+        "sourceBatch": "QBANK-FND26-BATCH41-20260923-V1",
+        "page": 68,
+        "section": "الربح والخسارة والحسابات المالية",
+        "verifiedAt": "2026-09-26T18:35:00Z"
+      },
+      "subSkillId": "sub_quant_10_1",
+      "text": "مستطيل زاد طوله بنسبة 50% وزاد عرضه بنسبة 20% فما هي نسبة الزيادة في مساحته؟",
+      "updatedAt": {
+        "$date": "2026-09-26T15:40:10.051Z"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P068-Q17",
+      "correctOptionIndex": 1,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "optionsEmbeddedInImage": true,
+      "sectionId": "sec_sub_1777779748206_10",
+      "skillId": "skill_quant_10",
+      "skillIds": [
+        "sub_quant_10_1"
+      ],
+      "sourceMeta": {
+        "sourceItemId": "QDR-QNT-FND26-P068-Q17",
+        "sourceBook": "تاسيس انشتين معدل .pdf",
+        "sourceBatch": "QBANK-FND26-BATCH41-20260923-V1",
+        "page": 68,
+        "section": "الربح والخسارة والحسابات المالية",
+        "verifiedAt": "2026-09-26T18:35:00Z"
+      },
+      "subSkillId": "sub_quant_10_1",
+      "text": "سلعة قيمتها 200 ريال ، ارتفع سعرها 20% وبعد ستة شهور ارتفع مرة أخرى بمقدار 10% فكم أصبحت قيمتها الآن ؟",
+      "updatedAt": {
+        "$date": "2026-09-26T15:40:10.251Z"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P068-Q18",
+      "correctOptionIndex": 3,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "optionsEmbeddedInImage": true,
+      "sectionId": "sec_sub_1777779748206_10",
+      "skillId": "skill_quant_10",
+      "skillIds": [
+        "sub_quant_10_1"
+      ],
+      "sourceMeta": {
+        "sourceItemId": "QDR-QNT-FND26-P068-Q18",
+        "sourceBook": "تاسيس انشتين معدل .pdf",
+        "sourceBatch": "QBANK-FND26-BATCH41-20260923-V1",
+        "page": 68,
+        "section": "الربح والخسارة والحسابات المالية",
+        "verifiedAt": "2026-09-26T18:35:00Z"
+      },
+      "subSkillId": "sub_quant_10_1",
+      "text": "انخفضت أرباح شركة 10% في السنة الأولى ثم انخفضت 10% في السنة الثانية ، احسب مقدار الانخفاض خلال سنتين",
+      "updatedAt": {
+        "$date": "2026-09-26T15:40:10.407Z"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P068-Q19",
+      "correctOptionIndex": 0,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "optionsEmbeddedInImage": true,
+      "sectionId": "sec_sub_1777779748206_10",
+      "skillId": "skill_quant_10",
+      "skillIds": [
+        "sub_quant_10_1"
+      ],
+      "sourceMeta": {
+        "sourceItemId": "QDR-QNT-FND26-P068-Q19",
+        "sourceBook": "تاسيس انشتين معدل .pdf",
+        "sourceBatch": "QBANK-FND26-BATCH41-20260923-V1",
+        "page": 68,
+        "section": "الربح والخسارة والحسابات المالية",
+        "verifiedAt": "2026-09-26T18:35:00Z"
+      },
+      "subSkillId": "sub_quant_10_1",
+      "text": "قارن بين: القيمة الأولى: مقدار تخفيض 20% مرة واحدة ، القيمة الثانية: تخفيضين متتاليين مقدار كل منهما 10%",
+      "updatedAt": {
+        "$date": "2026-09-26T15:40:10.568Z"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P070-Q01",
+      "correctOptionIndex": 1,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "optionsEmbeddedInImage": true,
+      "sectionId": "sec_sub_1777779748206_11",
+      "skillId": "skill_quant_11",
+      "skillIds": [
+        "sub_quant_11_1"
+      ],
+      "sourceMeta": {
+        "sourceItemId": "QDR-QNT-FND26-P070-Q01",
+        "book": "تاسيس انشتين معدل",
+        "page": 70,
+        "printedNumber": 1,
+        "batch": "FND26_BATCH_43"
+      },
+      "subSkillId": "sub_quant_11_1",
+      "text": "خمس أضعاف عدد مطروح منه 2 يساوي 18 فما هو العدد ؟",
+      "updatedAt": {
+        "$date": "2026-09-26T16:12:55.317Z"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P070-Q02",
+      "correctOptionIndex": 0,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "optionsEmbeddedInImage": true,
+      "sectionId": "sec_sub_1777779748206_11",
+      "skillId": "skill_quant_11",
+      "skillIds": [
+        "sub_quant_11_1"
+      ],
+      "sourceMeta": {
+        "sourceItemId": "QDR-QNT-FND26-P070-Q02",
+        "book": "تاسيس انشتين معدل",
+        "page": 70,
+        "printedNumber": 2,
+        "batch": "FND26_BATCH_43"
+      },
+      "subSkillId": "sub_quant_11_1",
+      "text": "باع صياد نصف السمك ورمى 7 في البحر وتبقى معه 29 في السلة كم كان عدد السمك الذي معه ؟",
+      "updatedAt": {
+        "$date": "2026-09-26T16:12:55.596Z"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P070-Q03",
+      "correctOptionIndex": 1,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "optionsEmbeddedInImage": true,
+      "sectionId": "sec_sub_1777779748206_11",
+      "skillId": "skill_quant_11",
+      "skillIds": [
+        "sub_quant_11_1"
+      ],
+      "sourceMeta": {
+        "sourceItemId": "QDR-QNT-FND26-P070-Q03",
+        "book": "تاسيس انشتين معدل",
+        "page": 70,
+        "printedNumber": 3,
+        "batch": "FND26_BATCH_43"
+      },
+      "subSkillId": "sub_quant_11_1",
+      "text": "محمد أصغر من أخيه أحمد بـ 3 سنوات وأحمد أكبر من عبد الله بـ 5 سنوات ، فإذا كان عمر عبد الله 20 فكم عمر محمد ؟",
+      "updatedAt": {
+        "$date": "2026-09-26T16:12:55.970Z"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P074-Q31",
+      "correctOptionIndex": 1,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "optionsEmbeddedInImage": true,
+      "sectionId": "sec_sub_1777779748206_11",
+      "skillId": "skill_quant_11",
+      "skillIds": [
+        "sub_quant_11_1"
+      ],
+      "sourceMeta": {
+        "sourceItemId": "QDR-QNT-FND26-P074-Q31",
+        "book": "تاسيس انشتين معدل",
+        "page": 74,
+        "printedNumber": 31,
+        "batch": "FND26_BATCH_47"
+      },
+      "subSkillId": "sub_quant_11_1",
+      "text": "إناء مملوء إلى سدسه إذا أضفنا إليه 8 لترات امتلأ إلى النصف ، فكم يتبقى ليمتلئ الإناء ؟",
+      "updatedAt": {
+        "$date": "2026-09-26T17:04:08.372Z"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P074-Q32",
+      "correctOptionIndex": 3,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "optionsEmbeddedInImage": true,
+      "sectionId": "sec_sub_1777779748206_11",
+      "skillId": "skill_quant_11",
+      "skillIds": [
+        "sub_quant_11_1"
+      ],
+      "sourceMeta": {
+        "sourceItemId": "QDR-QNT-FND26-P074-Q32",
+        "book": "تاسيس انشتين معدل",
+        "page": 74,
+        "printedNumber": 32,
+        "batch": "FND26_BATCH_47"
+      },
+      "subSkillId": "sub_quant_11_1",
+      "text": "صندوق يحتوي على 4 صناديق وفي كل صندوق 4 صناديق ما هو مجموع الصناديق ؟",
+      "updatedAt": {
+        "$date": "2026-09-26T17:04:08.577Z"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P074-Q33",
+      "correctOptionIndex": 0,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "optionsEmbeddedInImage": true,
+      "sectionId": "sec_sub_1777779748206_11",
+      "skillId": "skill_quant_11",
+      "skillIds": [
+        "sub_quant_11_1"
+      ],
+      "sourceMeta": {
+        "sourceItemId": "QDR-QNT-FND26-P074-Q33",
+        "book": "تاسيس انشتين معدل",
+        "page": 74,
+        "printedNumber": 33,
+        "batch": "FND26_BATCH_47"
+      },
+      "subSkillId": "sub_quant_11_1",
+      "text": "أب وأم لديهم 3 أولاد متزوجون وكل ابن لديه ولد كم عدد أفراد الأسرة ؟",
+      "updatedAt": {
+        "$date": "2026-09-26T17:04:08.751Z"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P074-Q34",
+      "correctOptionIndex": 2,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "optionsEmbeddedInImage": true,
+      "sectionId": "sec_sub_1777779748206_11",
+      "skillId": "skill_quant_11",
+      "skillIds": [
+        "sub_quant_11_1"
+      ],
+      "sourceMeta": {
+        "sourceItemId": "QDR-QNT-FND26-P074-Q34",
+        "book": "تاسيس انشتين معدل",
+        "page": 74,
+        "printedNumber": 34,
+        "batch": "FND26_BATCH_47"
+      },
+      "subSkillId": "sub_quant_11_1",
+      "text": "إذا كان عُمر عبد الله يزيد عن عُمر أحمد بـ 7 سنوات وكان عُمر أحمد ينقص عن عُمر إبراهيم بـ 13 سنة وكان عُمر إبراهيم 37 سنة أوجد عُمر عبد الله ؟",
+      "updatedAt": {
+        "$date": "2026-09-26T17:04:08.922Z"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P074-Q35",
+      "correctOptionIndex": 2,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "optionsEmbeddedInImage": true,
+      "sectionId": "sec_sub_1777779748206_11",
+      "skillId": "skill_quant_11",
+      "skillIds": [
+        "sub_quant_11_1"
+      ],
+      "sourceMeta": {
+        "sourceItemId": "QDR-QNT-FND26-P074-Q35",
+        "book": "تاسيس انشتين معدل",
+        "page": 74,
+        "printedNumber": 35,
+        "batch": "FND26_BATCH_47"
+      },
+      "subSkillId": "sub_quant_11_1",
+      "text": "إذا كان عبد الله أطول من أحمد بـ 8 سم وكان إبراهيم أقصر من عبد الله بـ 9 سم فما هو طول أحمد إذا كان طول إبراهيم 142 سم ؟",
+      "updatedAt": {
+        "$date": "2026-09-26T17:04:09.102Z"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P074-Q36",
+      "correctOptionIndex": 1,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "optionsEmbeddedInImage": true,
+      "sectionId": "sec_sub_1777779748206_11",
+      "skillId": "skill_quant_11",
+      "skillIds": [
+        "sub_quant_11_1"
+      ],
+      "sourceMeta": {
+        "sourceItemId": "QDR-QNT-FND26-P074-Q36",
+        "book": "تاسيس انشتين معدل",
+        "page": 74,
+        "printedNumber": 36,
+        "batch": "FND26_BATCH_47"
+      },
+      "subSkillId": "sub_quant_11_1",
+      "text": "إذا كان المبلغ الذي مع عبد الله يزيد عن المبلغ الذي مع أحمد بـ 900 ريال والمبلغ الذي مع أحمد أقل من مبلغ محمد بـ 1500 ريال فكم المبلغ الذي مع عبد الله إذا كان ما مع محمد 3500 ريال ؟",
+      "updatedAt": {
+        "$date": "2026-09-26T17:04:09.288Z"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P123-Q01",
+      "correctOptionIndex": 2,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "optionsEmbeddedInImage": true,
+      "sectionId": "sec_sub_1777779748206_21",
+      "skillId": "skill_quant_21",
+      "skillIds": [
+        "sub_quant_21_3"
+      ],
+      "sourceMeta": {
+        "book": "FND26",
+        "page": 123,
+        "printedPage": 123,
+        "printedQuestionNumber": 1
+      },
+      "subSkillId": "sub_quant_21_3",
+      "text": "مربع طول ضلعه 4 ، قارن بين",
+      "updatedAt": {
+        "$date": "2026-09-27T16:14:44.015Z"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P123-Q02",
+      "correctOptionIndex": 3,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "optionsEmbeddedInImage": true,
+      "sectionId": "sec_sub_1777779748206_21",
+      "skillId": "skill_quant_21",
+      "skillIds": [
+        "sub_quant_21_3"
+      ],
+      "sourceMeta": {
+        "book": "FND26",
+        "page": 123,
+        "printedPage": 123,
+        "printedQuestionNumber": 2
+      },
+      "subSkillId": "sub_quant_21_3",
+      "text": "خمس مربعات متطابقة متلاصقة على شكل مستطيل محيطه يساوي 72 ، أوجد طول ضلع المربع",
+      "updatedAt": {
+        "$date": "2026-09-27T16:14:45.003Z"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P123-Q03",
+      "correctOptionIndex": 0,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "optionsEmbeddedInImage": true,
+      "sectionId": "sec_sub_1777779748206_21",
+      "skillId": "skill_quant_21",
+      "skillIds": [
+        "sub_quant_21_3"
+      ],
+      "sourceMeta": {
+        "book": "FND26",
+        "page": 123,
+        "printedPage": 123,
+        "printedQuestionNumber": 3
+      },
+      "subSkillId": "sub_quant_21_3",
+      "text": "في الشكل المجاور مربع أوجد قيمة س",
+      "updatedAt": {
+        "$date": "2026-09-27T16:14:45.424Z"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P123-Q04",
+      "correctOptionIndex": 0,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "optionsEmbeddedInImage": true,
+      "sectionId": "sec_sub_1777779748206_21",
+      "skillId": "skill_quant_21",
+      "skillIds": [
+        "sub_quant_21_3"
+      ],
+      "sourceMeta": {
+        "book": "FND26",
+        "page": 123,
+        "printedPage": 123,
+        "printedQuestionNumber": 4
+      },
+      "subSkillId": "sub_quant_21_3",
+      "text": "مربع محيطه 20 متر ، قارن بين",
+      "updatedAt": {
+        "$date": "2026-09-27T16:14:45.832Z"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P123-Q05",
+      "correctOptionIndex": 1,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "optionsEmbeddedInImage": true,
+      "sectionId": "sec_sub_1777779748206_21",
+      "skillId": "skill_quant_21",
+      "skillIds": [
+        "sub_quant_21_3"
+      ],
+      "sourceMeta": {
+        "book": "FND26",
+        "page": 123,
+        "printedPage": 123,
+        "printedQuestionNumber": 5
+      },
+      "subSkillId": "sub_quant_21_3",
+      "text": "مربع مساحته ضعف محيطه عدديًا ، فما طول محيطه ؟",
+      "updatedAt": {
+        "$date": "2026-09-27T16:14:46.199Z"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P123-Q06",
+      "correctOptionIndex": 3,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "optionsEmbeddedInImage": true,
+      "sectionId": "sec_sub_1777779748206_21",
+      "skillId": "skill_quant_21",
+      "skillIds": [
+        "sub_quant_21_3"
+      ],
+      "sourceMeta": {
+        "book": "FND26",
+        "page": 123,
+        "printedPage": 123,
+        "printedQuestionNumber": 6
+      },
+      "subSkillId": "sub_quant_21_3",
+      "text": "مربع مساحته 49 سم² ، نقص طوله 2 سم فأصبح مستطيل ، أوجد طول المستطيل",
+      "updatedAt": {
+        "$date": "2026-09-27T16:14:46.551Z"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P124-Q07",
+      "correctOptionIndex": 1,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "optionsEmbeddedInImage": true,
+      "sectionId": "sec_sub_1777779748206_21",
+      "skillId": "skill_quant_21",
+      "skillIds": [
+        "sub_quant_21_3"
+      ],
+      "sourceMeta": {
+        "book": "FND26",
+        "page": 124,
+        "printedPage": 124,
+        "printedQuestionNumber": 7
+      },
+      "subSkillId": "sub_quant_21_3",
+      "text": "قارن بين",
+      "updatedAt": {
+        "$date": "2026-09-27T16:14:46.966Z"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P124-Q08",
+      "correctOptionIndex": 1,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "optionsEmbeddedInImage": true,
+      "sectionId": "sec_sub_1777779748206_21",
+      "skillId": "skill_quant_21",
+      "skillIds": [
+        "sub_quant_21_3"
+      ],
+      "sourceMeta": {
+        "book": "FND26",
+        "page": 124,
+        "printedPage": 124,
+        "printedQuestionNumber": 8
+      },
+      "subSkillId": "sub_quant_21_3",
+      "text": "إذا كان لدينا مربعين الأول مساحته 16 سم² والثاني مساحته 9 سم² ، قارن بين",
+      "updatedAt": {
+        "$date": "2026-09-27T16:14:47.336Z"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P124-Q09",
+      "correctOptionIndex": 0,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "optionsEmbeddedInImage": true,
+      "sectionId": "sec_sub_1777779748206_21",
+      "skillId": "skill_quant_21",
+      "skillIds": [
+        "sub_quant_21_3"
+      ],
+      "sourceMeta": {
+        "book": "FND26",
+        "page": 124,
+        "printedPage": 124,
+        "printedQuestionNumber": 9
+      },
+      "subSkillId": "sub_quant_21_3",
+      "text": "مربعان الأول طول ضلعه 2 سم والثاني طول ضلعه 7 سم ، قارن بين",
+      "updatedAt": {
+        "$date": "2026-09-27T16:14:47.711Z"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P124-Q10",
+      "correctOptionIndex": 1,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "optionsEmbeddedInImage": true,
+      "sectionId": "sec_sub_1777779748206_21",
+      "skillId": "skill_quant_21",
+      "skillIds": [
+        "sub_quant_21_3"
+      ],
+      "sourceMeta": {
+        "book": "FND26",
+        "page": 124,
+        "printedPage": 124,
+        "printedQuestionNumber": 10
+      },
+      "subSkillId": "sub_quant_21_3",
+      "text": "مربع مقسم إلى 5 مستطيلات متطابقة ومحيط المربع = 40 ، فما هي مساحة المستطيل الواحد ؟",
+      "updatedAt": {
+        "$date": "2026-09-27T16:14:48.072Z"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P124-Q11",
+      "correctOptionIndex": 2,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "optionsEmbeddedInImage": true,
+      "sectionId": "sec_sub_1777779748206_21",
+      "skillId": "skill_quant_21",
+      "skillIds": [
+        "sub_quant_21_3"
+      ],
+      "sourceMeta": {
+        "book": "FND26",
+        "page": 124,
+        "printedPage": 124,
+        "printedQuestionNumber": 11
+      },
+      "subSkillId": "sub_quant_21_3",
+      "text": "إذا كان قطر مربع يساوي جذر 50 ، أوجد مساحته ؟",
+      "updatedAt": {
+        "$date": "2026-09-27T16:14:48.431Z"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P124-Q12",
+      "correctOptionIndex": 0,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "optionsEmbeddedInImage": true,
+      "sectionId": "sec_sub_1777779748206_21",
+      "skillId": "skill_quant_21",
+      "skillIds": [
+        "sub_quant_21_3"
+      ],
+      "sourceMeta": {
+        "book": "FND26",
+        "page": 124,
+        "printedPage": 124,
+        "printedQuestionNumber": 12
+      },
+      "subSkillId": "sub_quant_21_3",
+      "text": "مربع طول محيطه يساوي طول محيط مستطيل أبعاده 7 و 3 . أوجد طول ضلع المربع",
+      "updatedAt": {
+        "$date": "2026-09-27T16:14:48.800Z"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P125-Q13",
+      "correctOptionIndex": 1,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "optionsEmbeddedInImage": true,
+      "sectionId": "sec_sub_1777779748206_21",
+      "skillId": "skill_quant_21",
+      "skillIds": [
+        "sub_quant_21_3"
+      ],
+      "sourceMeta": {
+        "book": "FND26",
+        "page": 125,
+        "printedPage": 125,
+        "printedQuestionNumber": 13
+      },
+      "subSkillId": "sub_quant_21_3",
+      "text": "مربع طول محيطه يساوي طول محيط مثلث أبعاده 7 ، 8 ، 9 ، قارن بين",
+      "updatedAt": {
+        "$date": "2026-09-27T16:14:49.161Z"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P125-Q14",
+      "correctOptionIndex": 2,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "optionsEmbeddedInImage": true,
+      "sectionId": "sec_sub_1777779748206_21",
+      "skillId": "skill_quant_21",
+      "skillIds": [
+        "sub_quant_21_3"
+      ],
+      "sourceMeta": {
+        "book": "FND26",
+        "page": 125,
+        "printedPage": 125,
+        "printedQuestionNumber": 14
+      },
+      "subSkillId": "sub_quant_21_3",
+      "text": "لدى ماجد سلك طوله 125 متر ، يريد أن يبني سور به حول أرض مربعة طولها 26 متر ، كم الباقي من السلك بالمتر ؟",
+      "updatedAt": {
+        "$date": "2026-09-27T16:14:49.560Z"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P125-Q15",
+      "correctOptionIndex": 0,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "optionsEmbeddedInImage": true,
+      "sectionId": "sec_sub_1777779748206_21",
+      "skillId": "skill_quant_21",
+      "skillIds": [
+        "sub_quant_21_3"
+      ],
+      "sourceMeta": {
+        "book": "FND26",
+        "page": 125,
+        "printedPage": 125,
+        "printedQuestionNumber": 15
+      },
+      "subSkillId": "sub_quant_21_3",
+      "text": "إذا كان الشكل مربع أوجد مساحته",
+      "updatedAt": {
+        "$date": "2026-09-27T16:14:49.952Z"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P125-Q16",
+      "correctOptionIndex": 0,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "optionsEmbeddedInImage": true,
+      "sectionId": "sec_sub_1777779748206_21",
+      "skillId": "skill_quant_21",
+      "skillIds": [
+        "sub_quant_21_3"
+      ],
+      "sourceMeta": {
+        "book": "FND26",
+        "page": 125,
+        "printedPage": 125,
+        "printedQuestionNumber": 16
+      },
+      "subSkillId": "sub_quant_21_3",
+      "text": "مربع قطره 4 جذر 2 ، احسب محيطه",
+      "updatedAt": {
+        "$date": "2026-09-27T16:14:50.319Z"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P125-Q17",
+      "correctOptionIndex": 1,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "optionsEmbeddedInImage": true,
+      "sectionId": "sec_sub_1777779748206_21",
+      "skillId": "skill_quant_21",
+      "skillIds": [
+        "sub_quant_21_3"
+      ],
+      "sourceMeta": {
+        "book": "FND26",
+        "page": 125,
+        "printedPage": 125,
+        "printedQuestionNumber": 17
+      },
+      "subSkillId": "sub_quant_21_3",
+      "text": "إذا زاد طول مربع إلى 4 أضعاف ، أوجد نسبة الزيادة في مساحته ؟",
+      "updatedAt": {
+        "$date": "2026-09-27T16:14:50.714Z"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P125-Q19",
+      "correctOptionIndex": 2,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "optionsEmbeddedInImage": true,
+      "sectionId": "sec_sub_1777779748206_21",
+      "skillId": "skill_quant_21",
+      "skillIds": [
+        "sub_quant_21_3"
+      ],
+      "sourceMeta": {
+        "book": "FND26",
+        "page": 125,
+        "printedPage": 125,
+        "printedQuestionNumber": 19
+      },
+      "subSkillId": "sub_quant_21_3",
+      "text": "إذا كان الشكل مربع أوجد قيمة س",
+      "updatedAt": {
+        "$date": "2026-09-27T16:14:51.528Z"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P125-Q20",
+      "correctOptionIndex": 2,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "optionsEmbeddedInImage": true,
+      "sectionId": "sec_sub_1777779748206_21",
+      "skillId": "skill_quant_21",
+      "skillIds": [
+        "sub_quant_21_3"
+      ],
+      "sourceMeta": {
+        "book": "FND26",
+        "page": 125,
+        "printedPage": 125,
+        "printedQuestionNumber": 20
+      },
+      "subSkillId": "sub_quant_21_3",
+      "text": "الشكل المقابل مكون من 8 مربعات متطابقة إذا علمت أن مساحة الشكل كاملاً هو 200 وحدة مربعة ، فكم محيطه ؟",
+      "updatedAt": {
+        "$date": "2026-09-27T16:14:51.913Z"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P125-Q21",
+      "correctOptionIndex": 0,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "optionsEmbeddedInImage": true,
+      "sectionId": "sec_sub_1777779748206_21",
+      "skillId": "skill_quant_21",
+      "skillIds": [
+        "sub_quant_21_3"
+      ],
+      "sourceMeta": {
+        "book": "FND26",
+        "page": 125,
+        "printedPage": 125,
+        "printedQuestionNumber": 21
+      },
+      "subSkillId": "sub_quant_21_3",
+      "text": "إذا زاد طول مربع إلى 5 أضعاف ، أوجد نسبة الزيادة في مساحته ؟",
+      "updatedAt": {
+        "$date": "2026-09-27T16:14:52.278Z"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P125-Q22",
+      "correctOptionIndex": 0,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "optionsEmbeddedInImage": true,
+      "sectionId": "sec_sub_1777779748206_21",
+      "skillId": "skill_quant_21",
+      "skillIds": [
+        "sub_quant_21_3"
+      ],
+      "sourceMeta": {
+        "book": "FND26",
+        "page": 125,
+        "printedPage": 125,
+        "printedQuestionNumber": 22
+      },
+      "subSkillId": "sub_quant_21_3",
+      "text": "خمس مربعات متجاورة على شكل مستطيل محيطه 72 كم طول ضلع المربع ؟",
+      "updatedAt": {
+        "$date": "2026-09-27T16:14:52.650Z"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P127-Q01",
+      "correctOptionIndex": 0,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "optionsEmbeddedInImage": true,
+      "sectionId": "sec_sub_1777779748206_21",
+      "skillId": "skill_quant_21",
+      "skillIds": [
+        "sub_quant_21_3"
+      ],
+      "sourceMeta": {
+        "book": "FND26",
+        "page": 127,
+        "printedPage": 127,
+        "printedQuestionNumber": 1
+      },
+      "subSkillId": "sub_quant_21_3",
+      "text": "معين أقطاره 4 ، 6 أوجد مساحته",
+      "updatedAt": {
+        "$date": "2026-09-27T16:14:54.597Z"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P127-Q02",
+      "correctOptionIndex": 0,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "optionsEmbeddedInImage": true,
+      "sectionId": "sec_sub_1777779748206_21",
+      "skillId": "skill_quant_21",
+      "skillIds": [
+        "sub_quant_21_3"
+      ],
+      "sourceMeta": {
+        "book": "FND26",
+        "page": 127,
+        "printedPage": 127,
+        "printedQuestionNumber": 2
+      },
+      "subSkillId": "sub_quant_21_3",
+      "text": "إذا كان محيط المعين 40 سم وطول أحد أقطاره 12 سم احسب مساحة المعين",
+      "updatedAt": {
+        "$date": "2026-09-27T16:14:54.953Z"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P127-Q03",
+      "correctOptionIndex": 1,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "optionsEmbeddedInImage": true,
+      "sectionId": "sec_sub_1777779748206_21",
+      "skillId": "skill_quant_21",
+      "skillIds": [
+        "sub_quant_21_3"
+      ],
+      "sourceMeta": {
+        "book": "FND26",
+        "page": 127,
+        "printedPage": 127,
+        "printedQuestionNumber": 3
+      },
+      "subSkillId": "sub_quant_21_3",
+      "text": "أوجد قياس الزاوية ص إذا كان الشكل معين",
+      "updatedAt": {
+        "$date": "2026-09-27T16:14:55.318Z"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P127-Q04",
+      "correctOptionIndex": 2,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "optionsEmbeddedInImage": true,
+      "sectionId": "sec_sub_1777779748206_21",
+      "skillId": "skill_quant_21",
+      "skillIds": [
+        "sub_quant_21_3"
+      ],
+      "sourceMeta": {
+        "book": "FND26",
+        "page": 127,
+        "printedPage": 127,
+        "printedQuestionNumber": 4
+      },
+      "subSkillId": "sub_quant_21_3",
+      "text": "قارن بين",
+      "updatedAt": {
+        "$date": "2026-09-27T16:14:56.275Z"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P127-Q05",
+      "correctOptionIndex": 2,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "optionsEmbeddedInImage": true,
+      "sectionId": "sec_sub_1777779748206_21",
+      "skillId": "skill_quant_21",
+      "skillIds": [
+        "sub_quant_21_3"
+      ],
+      "sourceMeta": {
+        "book": "FND26",
+        "page": 127,
+        "printedPage": 127,
+        "printedQuestionNumber": 5
+      },
+      "subSkillId": "sub_quant_21_3",
+      "text": "قارن بين",
+      "updatedAt": {
+        "$date": "2026-09-27T16:14:56.860Z"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P128-Q06",
+      "correctOptionIndex": 0,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "optionsEmbeddedInImage": true,
+      "sectionId": "sec_sub_1777779748206_21",
+      "skillId": "skill_quant_21",
+      "skillIds": [
+        "sub_quant_21_3"
+      ],
+      "sourceMeta": {
+        "book": "FND26",
+        "page": 128,
+        "printedPage": 128,
+        "printedQuestionNumber": 6
+      },
+      "subSkillId": "sub_quant_21_3",
+      "text": "إذا كان الشكل متوازي أضلاع فأوجد قيمة الزاوية س",
+      "updatedAt": {
+        "$date": "2026-09-27T16:14:57.332Z"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P128-Q07",
+      "correctOptionIndex": 1,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "optionsEmbeddedInImage": true,
+      "sectionId": "sec_sub_1777779748206_21",
+      "skillId": "skill_quant_21",
+      "skillIds": [
+        "sub_quant_21_3"
+      ],
+      "sourceMeta": {
+        "book": "FND26",
+        "page": 128,
+        "printedPage": 128,
+        "printedQuestionNumber": 7
+      },
+      "subSkillId": "sub_quant_21_3",
+      "text": "أوجد قيمة س في الشكل المقابل",
+      "updatedAt": {
+        "$date": "2026-09-27T16:14:57.673Z"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P128-Q08",
+      "correctOptionIndex": 1,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "optionsEmbeddedInImage": true,
+      "sectionId": "sec_sub_1777779748206_21",
+      "skillId": "skill_quant_21",
+      "skillIds": [
+        "sub_quant_21_3"
+      ],
+      "sourceMeta": {
+        "book": "FND26",
+        "page": 128,
+        "printedPage": 128,
+        "printedQuestionNumber": 8
+      },
+      "subSkillId": "sub_quant_21_3",
+      "text": "إذا كان طول أ س هو 7 سم احسب محيط متوازي الأضلاع أ ب ج د ؟",
+      "updatedAt": {
+        "$date": "2026-09-27T16:14:58.031Z"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P128-Q09",
+      "correctOptionIndex": 0,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "optionsEmbeddedInImage": true,
+      "sectionId": "sec_sub_1777779748206_21",
+      "skillId": "skill_quant_21",
+      "skillIds": [
+        "sub_quant_21_3"
+      ],
+      "sourceMeta": {
+        "book": "FND26",
+        "page": 128,
+        "printedPage": 128,
+        "printedQuestionNumber": 9
+      },
+      "subSkillId": "sub_quant_21_3",
+      "text": "أوجد قيمة س ؟",
+      "updatedAt": {
+        "$date": "2026-09-27T16:14:58.404Z"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P128-Q10",
+      "correctOptionIndex": 1,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "optionsEmbeddedInImage": true,
+      "sectionId": "sec_sub_1777779748206_21",
+      "skillId": "skill_quant_21",
+      "skillIds": [
+        "sub_quant_21_3"
+      ],
+      "sourceMeta": {
+        "book": "FND26",
+        "page": 128,
+        "printedPage": 128,
+        "printedQuestionNumber": 10
+      },
+      "subSkillId": "sub_quant_21_3",
+      "text": "أوجد مساحة شبه المنحرف",
+      "updatedAt": {
+        "$date": "2026-09-27T16:14:58.761Z"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P128-Q11",
+      "correctOptionIndex": 1,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "optionsEmbeddedInImage": true,
+      "sectionId": "sec_sub_1777779748206_21",
+      "skillId": "skill_quant_21",
+      "skillIds": [
+        "sub_quant_21_3"
+      ],
+      "sourceMeta": {
+        "book": "FND26",
+        "page": 128,
+        "printedPage": 128,
+        "printedQuestionNumber": 11
+      },
+      "subSkillId": "sub_quant_21_3",
+      "text": "في الشكل مربع طول ضلعه 4 أوجد مساحة شبه المنحرف",
+      "updatedAt": {
+        "$date": "2026-09-27T16:14:59.162Z"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P128-Q12",
+      "correctOptionIndex": 1,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "optionsEmbeddedInImage": true,
+      "sectionId": "sec_sub_1777779748206_21",
+      "skillId": "skill_quant_21",
+      "skillIds": [
+        "sub_quant_21_3"
+      ],
+      "sourceMeta": {
+        "book": "FND26",
+        "page": 128,
+        "printedPage": 128,
+        "printedQuestionNumber": 12
+      },
+      "subSkillId": "sub_quant_21_3",
+      "text": "أوجد مساحة شبه المنحرف",
+      "updatedAt": {
+        "$date": "2026-09-27T16:14:59.524Z"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P129-Q14",
+      "correctOptionIndex": 0,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "optionsEmbeddedInImage": true,
+      "sectionId": "sec_sub_1777779748206_21",
+      "skillId": "skill_quant_21",
+      "skillIds": [
+        "sub_quant_21_3"
+      ],
+      "sourceMeta": {
+        "book": "FND26",
+        "page": 129,
+        "printedPage": 129,
+        "printedQuestionNumber": 14
+      },
+      "subSkillId": "sub_quant_21_3",
+      "text": "احسب مساحة المربع الصغير",
+      "updatedAt": {
+        "$date": "2026-09-27T16:15:00.320Z"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P129-Q15",
+      "correctOptionIndex": 2,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "optionsEmbeddedInImage": true,
+      "sectionId": "sec_sub_1777779748206_21",
+      "skillId": "skill_quant_21",
+      "skillIds": [
+        "sub_quant_21_3"
+      ],
+      "sourceMeta": {
+        "book": "FND26",
+        "page": 129,
+        "printedPage": 129,
+        "printedQuestionNumber": 15
+      },
+      "subSkillId": "sub_quant_21_3",
+      "text": "في الشكل ثلاثة مربعات ، كل مربع صغير مرسوم من منتصف أضلاع الأكبر منه ، إذا كان طول ضلع الصغير 2 ، أوجد مساحة الكبير",
+      "updatedAt": {
+        "$date": "2026-09-27T16:15:00.687Z"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P129-Q16",
+      "correctOptionIndex": 0,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "optionsEmbeddedInImage": true,
+      "sectionId": "sec_sub_1777779748206_21",
+      "skillId": "skill_quant_21",
+      "skillIds": [
+        "sub_quant_21_3"
+      ],
+      "sourceMeta": {
+        "book": "FND26",
+        "page": 129,
+        "printedPage": 129,
+        "printedQuestionNumber": 16
+      },
+      "subSkillId": "sub_quant_21_3",
+      "text": "أوجد نسبة المظلل إلى الشكل كله",
+      "updatedAt": {
+        "$date": "2026-09-27T16:15:01.075Z"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P129-Q17",
+      "correctOptionIndex": 2,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "optionsEmbeddedInImage": true,
+      "sectionId": "sec_sub_1777779748206_21",
+      "skillId": "skill_quant_21",
+      "skillIds": [
+        "sub_quant_21_3"
+      ],
+      "sourceMeta": {
+        "book": "FND26",
+        "page": 129,
+        "printedPage": 129,
+        "printedQuestionNumber": 17
+      },
+      "subSkillId": "sub_quant_21_3",
+      "text": "إذا كانت المثلثات كلها متطابقة الأضلاع وكل مثلث مرسوم من منتصف أضلاع الأكبر وإذا كانت مساحة الكبير 64 أوجد مساحة الجزء المظلل ؟",
+      "updatedAt": {
+        "$date": "2026-09-27T16:15:01.476Z"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P130-Q18",
+      "correctOptionIndex": 3,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "optionsEmbeddedInImage": true,
+      "sectionId": "sec_sub_1777779748206_21",
+      "skillId": "skill_quant_21",
+      "skillIds": [
+        "sub_quant_21_2"
+      ],
+      "sourceMeta": {
+        "book": "FND26",
+        "page": 130,
+        "printedPage": 130,
+        "printedQuestionNumber": 18
+      },
+      "subSkillId": "sub_quant_21_2",
+      "text": "أوجد مساحة المثلث حسب الأطوال على الرسم",
+      "updatedAt": {
+        "$date": "2026-09-27T16:15:01.890Z"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P130-Q19",
+      "correctOptionIndex": 2,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "optionsEmbeddedInImage": true,
+      "sectionId": "sec_sub_1777779748206_21",
+      "skillId": "skill_quant_21",
+      "skillIds": [
+        "sub_quant_21_2"
+      ],
+      "sourceMeta": {
+        "book": "FND26",
+        "page": 130,
+        "printedPage": 130,
+        "printedQuestionNumber": 19
+      },
+      "subSkillId": "sub_quant_21_2",
+      "text": "مساحة الجزء المظلل هي",
+      "updatedAt": {
+        "$date": "2026-09-27T16:15:02.275Z"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P130-Q20",
+      "correctOptionIndex": 2,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "optionsEmbeddedInImage": true,
+      "sectionId": "sec_sub_1777779748206_21",
+      "skillId": "skill_quant_21",
+      "skillIds": [
+        "sub_quant_21_2"
+      ],
+      "sourceMeta": {
+        "book": "FND26",
+        "page": 130,
+        "printedPage": 130,
+        "printedQuestionNumber": 20
+      },
+      "subSkillId": "sub_quant_21_2",
+      "text": "إذا كان مساحة الجزء المظلل هي 42 ، أوجد مساحة نصف الشكل",
+      "updatedAt": {
+        "$date": "2026-09-27T16:15:02.631Z"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P130-Q21",
+      "correctOptionIndex": 1,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "optionsEmbeddedInImage": true,
+      "sectionId": "sec_sub_1777779748206_21",
+      "skillId": "skill_quant_21",
+      "skillIds": [
+        "sub_quant_21_3"
+      ],
+      "sourceMeta": {
+        "book": "FND26",
+        "page": 130,
+        "printedPage": 130,
+        "printedQuestionNumber": 21
+      },
+      "subSkillId": "sub_quant_21_3",
+      "text": "إذا كانت مساحة المربع الكبير 18 سم² وقسم إلى مربعات صغيرة متساوية أوجد مساحة المظلل ؟",
+      "updatedAt": {
+        "$date": "2026-09-27T16:15:02.998Z"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P130-Q22",
+      "correctOptionIndex": 1,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "optionsEmbeddedInImage": true,
+      "sectionId": "sec_sub_1777779748206_21",
+      "skillId": "skill_quant_21",
+      "skillIds": [
+        "sub_quant_21_3"
+      ],
+      "sourceMeta": {
+        "book": "FND26",
+        "page": 130,
+        "printedPage": 130,
+        "printedQuestionNumber": 22
+      },
+      "subSkillId": "sub_quant_21_3",
+      "text": "حسب الأطوال على الشكل احسب مساحة الجزء المظلل",
+      "updatedAt": {
+        "$date": "2026-09-27T16:15:03.369Z"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P130-Q23",
+      "correctOptionIndex": 0,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "optionsEmbeddedInImage": true,
+      "sectionId": "sec_sub_1777779748206_21",
+      "skillId": "skill_quant_21",
+      "skillIds": [
+        "sub_quant_21_3"
+      ],
+      "sourceMeta": {
+        "book": "FND26",
+        "page": 130,
+        "printedPage": 130,
+        "printedQuestionNumber": 23
+      },
+      "subSkillId": "sub_quant_21_3",
+      "text": "أوجد مساحة الجزء المظلل إذا كان الشكل مربع",
+      "updatedAt": {
+        "$date": "2026-09-27T16:15:03.734Z"
+      }
+    }
+  ]
+}
