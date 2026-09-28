@@ -9,7 +9,7 @@ const quizzesManagerSource = await readFile(new URL('../dashboards/admin/Quizzes
 const subjectLearningSource = await readFile(new URL('../pages/SubjectLearningPage.tsx', import.meta.url), 'utf8');
 const foundationManagerSource = await readFile(new URL('../dashboards/admin/FoundationManager.tsx', import.meta.url), 'utf8');
 const liveSessionsSource = await readFile(new URL('../pages/LiveSessions.tsx', import.meta.url), 'utf8');
-const quizRoutesSource = await readFile(new URL('../server/src/routes/quiz.routes.ts', import.meta.url), 'utf8');
+const quizRoutesSource = `${await readFile(new URL('../server/src/routes/quiz.routes.ts', import.meta.url), 'utf8')}\n${await readFile(new URL('../server/src/modules/quizzes/application/quizAccessPolicy.ts', import.meta.url), 'utf8')}`;
 const quizPlacementSource = await readFile(new URL('../utils/quizLearningPlacement.ts', import.meta.url), 'utf8');
 const quizPageSource = await readFile(new URL('../pages/QuizPage.tsx', import.meta.url), 'utf8');
 const simulatedTestExperienceSource = await readFile(new URL('../components/SimulatedTestExperience.tsx', import.meta.url), 'utf8');
@@ -204,16 +204,16 @@ check('foundation admin treats topic lock as package access instead of readiness
 });
 
 check('server paid quiz submission respects training and test package scopes separately', () => {
-  assertIncludes(quizRoutesSource, 'const getPaidQuizPackageContentTypes = (quiz: any, source?: string) =>');
-  assertIncludes(quizRoutesSource, 'const getPackageContentTypeForQuizSource = (source?: string) =>');
-  assertIncludes(quizRoutesSource, 'const getQuizPlacementAccessType = (quiz: any, source?: string) =>');
+  assertIncludes(quizRoutesSource, 'const paidContentTypes = (quiz: any, source?: string) =>');
+  assertIncludes(quizRoutesSource, 'const sourceContentType = (source?: string) =>');
+  assertIncludes(quizRoutesSource, 'const placementAccessType = (quiz: any, source?: string) =>');
   assertIncludes(quizRoutesSource, 'visibleSlots.has("training")');
   assertIncludes(quizRoutesSource, 'visibleSlots.has("tests")');
-  assertIncludes(quizRoutesSource, 'if (hasTrainingSlot) contentTypes.push("banks")');
-  assertIncludes(quizRoutesSource, 'if (hasTestSlot) contentTypes.push("tests")');
-  assertIncludes(quizRoutesSource, 'const packageContentTypes = getPaidQuizPackageContentTypes(quiz, source)');
-  assertIncludes(quizRoutesSource, 'for (const contentType of packageContentTypes)');
-  assertIncludes(quizRoutesSource, 'hasPurchasedPackageAccess(purchasedPackageIds, contentType, pathId, subjectId)');
+  assertIncludes(quizRoutesSource, '...(training ? ["banks"] : [])');
+  assertIncludes(quizRoutesSource, '...(tests ? ["tests"] : [])');
+  assertIncludes(quizRoutesSource, 'const types = accessType === "course_only" ? ["courses"] : paidContentTypes(quiz, source)');
+  assertIncludes(quizRoutesSource, 'for (const type of types)');
+  assertIncludes(quizRoutesSource, 'hasPurchasedPackageAccess(purchased, type, pathId, subjectId)');
   assertIncludes(quizRoutesSource, 'if (!(await canSubmitQuiz(quiz, authUser, payload.source)))');
   assertIncludes(quizPageSource, 'source: result.source');
 });

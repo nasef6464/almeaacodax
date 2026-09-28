@@ -4,6 +4,7 @@ import path from 'node:path';
 
 const root = process.cwd();
 const store = fs.readFileSync(path.join(root, 'store/useStore.ts'), 'utf8').replace(/\r\n/g, '\n');
+const appState = fs.readFileSync(path.join(root, 'store/AppState.ts'), 'utf8').replace(/\r\n/g, '\n');
 const slice = fs.readFileSync(path.join(root, 'store/slices/topicCatalogSlice.ts'), 'utf8').replace(/\r\n/g, '\n');
 
 const checks = [];
@@ -41,7 +42,7 @@ check('public AppState topic action contract remains unchanged', () => {
     "addTopic: (topic: import('../types').Topic) => void;",
     "updateTopic: (topicId: string, data: Partial<import('../types').Topic>) => void;",
     'deleteTopic: (topicId: string) => void;',
-  ]) assert.ok(store.includes(fragment), `AppState contract changed: ${fragment}`);
+  ]) assert.ok(appState.includes(fragment), `AppState contract changed: ${fragment}`);
 });
 
 check('slice remains bounded and UI-free', () => {

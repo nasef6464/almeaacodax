@@ -4,7 +4,9 @@ import path from 'node:path';
 
 const root = process.cwd();
 const store = fs.readFileSync(path.join(root, 'store/useStore.ts'), 'utf8').replace(/\r\n/g, '\n');
+const appState = fs.readFileSync(path.join(root, 'store/AppState.ts'), 'utf8').replace(/\r\n/g, '\n');
 const slice = fs.readFileSync(path.join(root, 'store/slices/groupCrudSlice.ts'), 'utf8').replace(/\r\n/g, '\n');
+const membershipSlice = fs.readFileSync(path.join(root, 'store/slices/studentGroupMembershipSlice.ts'), 'utf8').replace(/\r\n/g, '\n');
 
 const checks = [];
 const check = (name, assertion) => {
@@ -41,7 +43,9 @@ check('school deletion still cleans child classes packages access codes and user
 check('root store composes group CRUD slice and keeps membership actions separate', () => {
   assert.ok(store.includes("import { createGroupCrudSlice } from './slices/groupCrudSlice';"));
   assert.ok(store.includes('...createGroupCrudSlice<AppState>(set, api)'));
-  assert.ok(store.includes('assignStudentToGroup:'));
+  assert.ok(store.includes("import { createStudentGroupMembershipSlice } from './slices/studentGroupMembershipSlice';"));
+  assert.ok(store.includes('...createStudentGroupMembershipSlice<AppState>(set, get, api)'));
+  assert.ok(membershipSlice.includes('assignStudentToGroup:'));
   assert.ok(store.includes('assignSupervisorToGroup:'));
   assert.ok(store.includes('assignTeacherToGroupAsync:'));
   for (const forbidden of [
@@ -60,7 +64,7 @@ check('public AppState group CRUD contract remains unchanged', () => {
     'updateGroupAsync: (groupId: string, data: Partial<Group>) => Promise<Group>;',
     'deleteGroup: (groupId: string) => void;',
     'deleteGroupAsync: (groupId: string) => Promise<void>;',
-  ]) assert.ok(store.includes(fragment), `AppState contract changed: ${fragment}`);
+  ]) assert.ok(appState.includes(fragment), `AppState contract changed: ${fragment}`);
 });
 
 check('slice remains bounded and UI-free', () => {

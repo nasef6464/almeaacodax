@@ -1,6 +1,6 @@
 import { readFile } from 'node:fs/promises';
 
-const appSource = await readFile(new URL('../App.tsx', import.meta.url), 'utf8');
+const appSource = `${await readFile(new URL('../App.tsx', import.meta.url), 'utf8')}\n${await readFile(new URL('../app/AppRouteTree.tsx', import.meta.url), 'utf8')}`;
 const headerSource = await readFile(new URL('../components/Header.tsx', import.meta.url), 'utf8');
 const dashboardSource = await readFile(new URL('../pages/Dashboard.tsx', import.meta.url), 'utf8');
 const quizzesSource = await readFile(new URL('../pages/Quizzes.tsx', import.meta.url), 'utf8');
@@ -26,7 +26,7 @@ function assertPattern(source, pattern, message) {
 }
 
 check('standalone routes separate quiz center from my attempts without dashboard sidebar', () => {
-  assertIncludes(appSource, "const Quizzes = React.lazy(() => import('./pages/Quizzes'))");
+  assertIncludes(appSource, "const Quizzes = React.lazy(() => import('../pages/Quizzes'))");
   assertIncludes(appSource, '<Route path="/quizzes" element={<Quizzes />} />');
   assertIncludes(appSource, '<Route path="/my-quizzes" element={<RequireAuth><Quizzes view="attempts" /></RequireAuth>} />');
 });

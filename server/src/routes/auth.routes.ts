@@ -3,7 +3,6 @@ import bcrypt from "bcryptjs";
 import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
 import { StatusCodes } from "http-status-codes";
 import mongoose from "mongoose";
-import { z } from "zod";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { UserModel } from "../models/User.js";
 import { ParentStudentRelationshipModel } from "../models/ParentStudentRelationship.js";
@@ -37,146 +36,28 @@ import { PlatformIntegrationSettingsModel } from "../models/PlatformIntegrationS
 import { decryptIntegrationSecretsForRuntime } from "../utils/integrationSecretsCrypto.js";
 import { deleteUserLifecycle } from "../modules/privacy/application/deleteUserLifecycle.js";
 import { mirrorLessonProgress } from "../services/lessonProgressMirror.js";
-
-const passwordStrengthSchema = z
-  .string()
-  .min(8, "Password must be at least 8 characters")
-  .max(160, "Password is too long")
-  .refine((value) => /[A-Za-z]/.test(value) && /\d/.test(value), {
-    message: "Password must include at least one letter and one number",
-  });
-
-const loginSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(1).max(160),
-});
-const whatsappStartSchema = z.object({
-  phone: z.string().min(8).max(24),
-});
-const whatsappVerifySchema = z.object({
-  phone: z.string().min(8).max(24),
-  code: z.string().length(6),
-});
-
-const registerSchema = z.object({
-  name: z.string().min(2),
-  email: z.string().email(),
-  password: passwordStrengthSchema,
-});
-
-const adminCreateUserSchema = z.object({
-  name: z.string().min(2),
-  email: z.string().email(),
-  password: passwordStrengthSchema,
-  role: z.enum(["student", "teacher", "admin", "supervisor", "school_admin", "parent"]),
-  schoolId: z.string().nullable().optional(),
-  groupIds: z.array(z.string()).optional(),
-  linkedStudentIds: z.array(z.string()).optional(),
-  managedPathIds: z.array(z.string()).optional(),
-  managedSubjectIds: z.array(z.string()).optional(),
-});
-
-const adminUpdateUserSchema = z.object({
-  name: z.string().min(2).optional(),
-  avatar: z.string().optional(),
-  role: z.enum(["student", "teacher", "admin", "supervisor", "school_admin", "parent"]).optional(),
-  isActive: z.boolean().optional(),
-  schoolId: z.string().nullable().optional(),
-  groupIds: z.array(z.string()).optional(),
-  linkedStudentIds: z.array(z.string()).optional(),
-  managedPathIds: z.array(z.string()).optional(),
-  managedSubjectIds: z.array(z.string()).optional(),
-});
-
-const adminUsersQuerySchema = z.object({
-  page: z.coerce.number().int().min(1).optional(),
-  limit: z.coerce.number().int().min(1).max(100).optional(),
-  search: z.string().trim().max(120).optional(),
-  role: z.enum(["student", "teacher", "admin", "supervisor", "school_admin", "parent"]).optional(),
-  isActive: z.preprocess((value) => {
-    if (value === undefined || value === null || value === "") {
-      return undefined;
-    }
-
-    if (typeof value === "boolean") {
-      return value;
-    }
-
-    if (typeof value === "string") {
-      const lowered = value.toLowerCase();
-      if (lowered === "true") return true;
-      if (lowered === "false") return false;
-    }
-
-    return value;
-  }, z.boolean().optional()),
-  platformTrainer: z.preprocess((value) => {
-    if (value === undefined || value === null || value === "") {
-      return undefined;
-    }
-
-    if (typeof value === "boolean") {
-      return value;
-    }
-
-    if (typeof value === "string") {
-      const lowered = value.toLowerCase();
-      if (lowered === "true") return true;
-      if (lowered === "false") return false;
-    }
-
-    return value;
-  }, z.boolean().optional()),
-});
-const adminBulkUserStatusSchema = z.object({
-  userIds: z.array(z.string().trim().min(1)).min(1).max(100),
-  isActive: z.boolean(),
-});
-
-const adminTrainersQuerySchema = z.object({
-  page: z.coerce.number().int().min(1).optional(),
-  limit: z.coerce.number().int().min(1).max(100).optional(),
-  search: z.string().trim().max(120).optional(),
-  status: z.enum(["active", "inactive", "unconfigured"]).optional(),
-  pathId: z.string().trim().optional(),
-  subjectId: z.string().trim().optional(),
-  persona: z.enum(["platform", "hybrid"]).optional(),
-});
-
-const preferencesSchema = z.object({
-  favorites: z.array(z.string()).optional(),
-  reviewLater: z.array(z.string()).optional(),
-  enrolledPaths: z.array(z.string()).optional(),
-  completedLessons: z.array(z.string()).optional(),
-  interactiveVideoProgress: z.array(z.object({
-    courseId: z.string().min(1).max(160),
-    lessonId: z.string().min(1).max(160),
-    positionSeconds: z.number().finite().min(0).max(86_400),
-    answeredQuestionIds: z.array(z.string().min(1).max(160)).max(100),
-    updatedAt: z.number().int().positive(),
-  })).max(100).optional(),
-});
-const updateMyProfileSchema = z.object({
-  name: z.string().min(2).max(120).optional(),
-  avatar: z.string().max(2_000_000).optional(),
-});
-
-const redeemAccessCodeSchema = z.object({
-  code: z.string().min(4),
-});
-
-const forgotPasswordSchema = z.object({
-  email: z.string().email(),
-});
-
-const resetPasswordSchema = z.object({
-  token: z.string().min(32).max(160),
-  password: passwordStrengthSchema,
-});
-
-const verifyEmailSchema = z.object({
-  token: z.string().min(32).max(160),
-});
+import { getTrainerPerformance, getTrainerPortfolio } from "../modules/auth/application/trainerPortfolio.js";
+import {
+  adminBulkUserStatusSchema,
+  adminCreateUserSchema,
+  adminTrainersQuerySchema,
+  adminUpdateUserSchema,
+  adminUsersQuerySchema,
+  forgotPasswordSchema,
+  identityUpdateSchema,
+  linkStudentSchema,
+  loginSchema,
+  nationalIdLoginSchema,
+  phonePasswordLoginSchema,
+  preferencesSchema,
+  redeemAccessCodeSchema,
+  registerSchema,
+  resetPasswordSchema,
+  updateMyProfileSchema,
+  verifyEmailSchema,
+  whatsappStartSchema,
+  whatsappVerifySchema,
+} from "../modules/auth/http/authSchemas.js";
 
 const serializeUser = (user: any) => {
   const plain = typeof user?.toJSON === "function" ? user.toJSON() : user?.toObject?.() || user;
@@ -222,124 +103,6 @@ const buildDocumentsQuery = (values: string[]) => {
   };
 };
 
-const trainerOwnershipQuery = (trainerId: string) => ({
-  $or: [
-    { ownerId: trainerId },
-    { createdBy: trainerId },
-    { assignedTeacherId: trainerId },
-  ],
-});
-
-const getTrainerPortfolioStats = async (ownership: ReturnType<typeof trainerOwnershipQuery>) => {
-  const statusSummary = (model: any) => model.aggregate([
-    { $match: ownership },
-    { $group: { _id: { $ifNull: ["$approvalStatus", "draft"] }, count: { $sum: 1 } } },
-  ]);
-  const [courseCount, lessonCount, questionCount, quizCount, libraryCount, ...statusGroups] = await Promise.all([
-    CourseModel.countDocuments(ownership),
-    LessonModel.countDocuments(ownership),
-    QuestionModel.countDocuments(ownership),
-    QuizModel.countDocuments(ownership),
-    LibraryItemModel.countDocuments(ownership),
-    statusSummary(CourseModel),
-    statusSummary(LessonModel),
-    statusSummary(QuestionModel),
-    statusSummary(QuizModel),
-    statusSummary(LibraryItemModel),
-    CourseModel.countDocuments({ ...ownership, approvalStatus: "approved", showOnPlatform: { $ne: false } }),
-    LessonModel.countDocuments({ ...ownership, approvalStatus: "approved", showOnPlatform: { $ne: false } }),
-    QuestionModel.countDocuments({ ...ownership, approvalStatus: "approved" }),
-    QuizModel.countDocuments({ ...ownership, approvalStatus: "approved", showOnPlatform: { $ne: false } }),
-    LibraryItemModel.countDocuments({ ...ownership, approvalStatus: "approved", showOnPlatform: { $ne: false } }),
-    LessonModel.countDocuments({ ...ownership, type: "video" }),
-  ]);
-  const videos = Number(statusGroups.pop() || 0);
-  const publishedCounts = statusGroups.splice(-5) as number[];
-  const statuses = { draft: 0, pending_review: 0, approved: 0, rejected: 0, published: 0 };
-  statusGroups.flat().forEach((group: any) => {
-    const status = String(group._id || "draft") as keyof typeof statuses;
-    if (status in statuses) statuses[status] += Number(group.count || 0);
-  });
-  statuses.published = publishedCounts.reduce((total, count) => total + Number(count || 0), 0);
-  return {
-    total: courseCount + lessonCount + questionCount + quizCount + libraryCount,
-    courses: courseCount,
-    lessons: lessonCount,
-    videos,
-    questions: questionCount,
-    quizzes: quizCount,
-    libraryItems: libraryCount,
-    ...statuses,
-  };
-};
-
-const getTrainerPortfolio = async (trainerId: string, includeItems = false) => {
-  const ownership = trainerOwnershipQuery(trainerId);
-  const statsPromise = getTrainerPortfolioStats(ownership);
-  if (!includeItems) {
-    return { stats: await statsPromise, items: undefined };
-  }
-
-  // The profile previews recent items only. Its summary must nevertheless stay
-  // exact when a trainer owns more items than the preview limit.
-  const limit = 100;
-  const [courses, lessons, questions, quizzes, libraryItems, stats] = await Promise.all([
-    CourseModel.find(ownership).sort({ updatedAt: -1 }).limit(limit).select("id _id title approvalStatus showOnPlatform pathId subjectId updatedAt").lean(),
-    LessonModel.find(ownership).sort({ updatedAt: -1 }).limit(limit).select("id _id title type approvalStatus showOnPlatform pathId subjectId updatedAt").lean(),
-    QuestionModel.find(ownership).sort({ updatedAt: -1 }).limit(limit).select("id _id text approvalStatus pathId subject updatedAt").lean(),
-    QuizModel.find(ownership).sort({ updatedAt: -1 }).limit(limit).select("id _id title type approvalStatus showOnPlatform pathId subjectId updatedAt").lean(),
-    LibraryItemModel.find(ownership).sort({ updatedAt: -1 }).limit(limit).select("id _id title type approvalStatus showOnPlatform pathId subjectId updatedAt").lean(),
-    statsPromise,
-  ]);
-  return {
-    stats,
-    items: { courses, lessons, questions, quizzes, libraryItems },
-  };
-};
-
-const getTrainerPerformance = async (trainerId: string) => {
-  const courses = await CourseModel.find(trainerOwnershipQuery(trainerId)).select("_id modules").lean();
-  const courseIds = courses.map((course: any) => String(course._id));
-  const quizIds = (await QuizModel.find(trainerOwnershipQuery(trainerId)).select("id _id").lean())
-    .map((quiz: any) => String(quiz.id || quiz._id));
-  const [enrolledStudents, quizSummary] = await Promise.all([
-    courseIds.length
-      ? UserModel.find({ role: "student", enrolledCourses: { $in: courseIds } }).select("enrolledCourses completedLessons").lean()
-      : [],
-    quizIds.length
-      ? QuizResultModel.aggregate([
-          { $match: { quizId: { $in: quizIds } } },
-          { $group: { _id: null, attempts: { $sum: 1 }, passed: { $sum: { $cond: ["$passed", 1, 0] } }, averageScore: { $avg: "$score" } } },
-        ])
-      : [],
-  ]);
-  const lessonIdsByCourse = new Map(courses.map((course: any) => [
-    String(course._id),
-    (course.modules || []).flatMap((module: any) => (module.lessons || []).map((lesson: any) => String(lesson.id))).filter(Boolean),
-  ]));
-  let measurableEnrollments = 0;
-  let completedEnrollments = 0;
-  for (const student of enrolledStudents as any[]) {
-    const completedLessons = new Set((student.completedLessons || []).map(String));
-    for (const courseId of (student.enrolledCourses || []).map(String).filter((id: string) => courseIds.includes(id))) {
-      const lessonIds = lessonIdsByCourse.get(courseId) || [];
-      if (!lessonIds.length) continue;
-      measurableEnrollments += 1;
-      if (lessonIds.every((lessonId: string) => completedLessons.has(lessonId))) completedEnrollments += 1;
-    }
-  }
-  const results = quizSummary[0] || { attempts: 0, passed: 0, averageScore: null };
-  return {
-    enrolledStudents: enrolledStudents.length,
-    measurableEnrollments,
-    completedEnrollments,
-    completionRate: measurableEnrollments ? Math.round((completedEnrollments / measurableEnrollments) * 100) : null,
-    quizAttempts: Number(results.attempts || 0),
-    passedQuizAttempts: Number(results.passed || 0),
-    averageQuizScore: results.averageScore == null ? null : Math.round(Number(results.averageScore)),
-    revenue: { available: false, reason: "لا يوجد مصدر إيراد أو دفع موثوق لحساب مستحقات المدرب." },
-  };
-};
 const hashToken = (token: string) => createHash("sha256").update(token).digest("hex");
 const createSecureToken = () => randomBytes(32).toString("hex");
 const normalizePhone = (value: string) => value.replace(/[^\d]/g, "");
@@ -1805,11 +1568,6 @@ authRouter.post(
 // National ID Login — POST /api/auth/login/national-id
 // Allows login using Saudi National ID (رقم الهوية) + password
 // ─────────────────────────────────────────────────────────────────────────────
-const nationalIdLoginSchema = z.object({
-  nationalId: z.string().regex(/^[12]\d{9}$/, "National ID must be 10 digits starting with 1 or 2"),
-  password: z.string().min(1).max(160),
-});
-
 authRouter.post(
   "/login/national-id",
   asyncHandler(async (req, res) => {
@@ -1848,11 +1606,6 @@ authRouter.post(
 // Update National ID / Phone — PATCH /api/auth/me/identity
 // Allows a logged-in user to set their nationalId and/or phone
 // ─────────────────────────────────────────────────────────────────────────────
-const identityUpdateSchema = z.object({
-  nationalId: z.string().regex(/^[12]\d{9}$/).optional().nullable(),
-  phone: z.string().min(8).max(24).optional().nullable(),
-});
-
 authRouter.patch(
   "/me/identity",
   requireAuth,
@@ -1884,11 +1637,6 @@ authRouter.patch(
 // Parent ↔ Student Linking — POST /api/auth/parent/link-student
 // Parent links a student via their nationalId OR phone number
 // ─────────────────────────────────────────────────────────────────────────────
-const linkStudentSchema = z.object({
-  nationalId: z.string().regex(/^[12]\d{9}$/).optional(),
-  phone: z.string().min(8).max(24).optional(),
-}).refine((d) => d.nationalId || d.phone, { message: "يجب تقديم رقم الهوية أو رقم الجوال" });
-
 authRouter.post(
   "/parent/link-student",
   requireAuth,
@@ -1964,11 +1712,6 @@ authRouter.get(
 // Phone + Password Login — POST /api/auth/login/phone-password
 // Allows login using registered phone number + password (alternative to OTP)
 // ──────────────────────────────────────────────────────────────────────────────
-const phonePasswordLoginSchema = z.object({
-  phone: z.string().min(8).max(24),
-  password: z.string().min(1).max(160),
-});
-
 authRouter.post(
   "/login/phone-password",
   asyncHandler(async (req, res) => {

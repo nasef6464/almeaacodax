@@ -18,14 +18,14 @@ function assertIncludes(path, needle) {
   assert(content.includes(needle), `${path} must include: ${needle}`);
 }
 
-assertIncludes('App.tsx', 'const SeoRouteMeta: React.FC = () => {');
-assertIncludes('App.tsx', "SEO_DEFAULT_IMAGE_PATH");
-assertIncludes('App.tsx', "'noindex, nofollow'");
-assertIncludes('App.tsx', "'index, follow'");
-assertIncludes('App.tsx', "SEO_PRIVATE_PREFIXES");
-assertIncludes('App.tsx', "link[rel=\"canonical\"]");
-assertIncludes('App.tsx', 'meta[property="og:image"]');
-assertIncludes('App.tsx', 'meta[name="twitter:image"]');
+assertIncludes('app/SeoRouteMeta.tsx', 'export const SeoRouteMeta: React.FC = () => {');
+assertIncludes('app/SeoRouteMeta.tsx', "SEO_DEFAULT_IMAGE_PATH");
+assertIncludes('app/SeoRouteMeta.tsx', "'noindex, nofollow'");
+assertIncludes('app/SeoRouteMeta.tsx', "'index, follow'");
+assertIncludes('app/resolveSeoRouteMeta.ts', "SEO_PRIVATE_PREFIXES");
+assertIncludes('app/SeoRouteMeta.tsx', "link[rel=\"canonical\"]");
+assertIncludes('app/SeoRouteMeta.tsx', 'meta[property="og:image"]');
+assertIncludes('app/SeoRouteMeta.tsx', 'meta[name="twitter:image"]');
 assertIncludes('App.tsx', "<SeoRouteMeta />");
 
 assertIncludes('index.html', '<meta property="og:image" content="https://almeaacodax.vercel.app/images/homepage-hero-boy-platform.webp" />');

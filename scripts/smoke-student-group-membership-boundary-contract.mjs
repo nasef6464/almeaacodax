@@ -5,6 +5,7 @@ import path from 'node:path';
 const root = process.cwd();
 const read = (file) => fs.readFileSync(path.join(root, file), 'utf8').replace(/\r\n/g, '\n');
 const store = read('store/useStore.ts');
+const appState = read('store/AppState.ts');
 const slice = read('store/slices/studentGroupMembershipSlice.ts');
 const transitions = read('store/slices/studentGroupMembershipTransitions.ts');
 
@@ -57,7 +58,7 @@ check('public AppState student membership contract remains unchanged', () => {
     'assignStudentToGroupAsync: (userId: string, groupId: string) => Promise<void>;',
     'removeStudentFromGroup: (userId: string, groupId: string) => void;',
     'removeStudentFromGroupAsync: (userId: string, groupId: string) => Promise<void>;',
-  ]) assert.ok(store.includes(fragment), `AppState contract changed: ${fragment}`);
+  ]) assert.ok(appState.includes(fragment), `AppState contract changed: ${fragment}`);
 });
 
 check('transition boundary remains bounded and side-effect free', () => {

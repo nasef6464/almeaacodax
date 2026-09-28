@@ -8,6 +8,7 @@ const files = {
   rateLimiters: await readFile(new URL("../server/src/middleware/rateLimiters.ts", import.meta.url), "utf8"),
   app: await readFile(new URL("../server/src/app.ts", import.meta.url), "utf8"),
   clientApp: await readFile(new URL("../App.tsx", import.meta.url), "utf8"),
+  clientRoutes: await readFile(new URL("../app/AppRouteTree.tsx", import.meta.url), "utf8"),
   aiRoutes: await readFile(new URL("../server/src/routes/ai.routes.ts", import.meta.url), "utf8"),
   aiService: await readFile(new URL("../services/geminiService.ts", import.meta.url), "utf8"),
   questionBank: await readFile(new URL("../dashboards/admin/QuestionBankManager.tsx", import.meta.url), "utf8"),
@@ -78,7 +79,7 @@ check("student AI planning endpoints require authentication", () => {
   }
 });
 check("AI question generation is staff-only and review-first", () => {
-  assertIncludes(files.clientApp, `<Route path="/admin/quiz-gen" element={<RequireRole allowedRoles={['admin', 'teacher', 'supervisor']}><QuizGenerator /></RequireRole>} />`);
+  assertIncludes(files.clientRoutes, `<Route path="/admin/quiz-gen" element={<RequireRole allowedRoles={['admin', 'teacher', 'supervisor']}><QuizGenerator /></RequireRole>} />`);
   assertIncludes(files.aiRoutes, 'aiRouter.post(\n  "/question",\n  requireAuth,\n  requireRole(["admin", "teacher", "supervisor"]),');
   assertIncludes(files.aiService, "api.aiQuestion({ topic })");
   assertIncludes(files.questionBank, "onClick={handleCreateAiDraft}");

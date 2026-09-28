@@ -4,9 +4,11 @@ import path from 'node:path';
 
 const root = process.cwd();
 const storePath = path.join(root, 'store/useStore.ts');
+const statePath = path.join(root, 'store/AppState.ts');
 const slicePath = path.join(root, 'store/slices/questionCatalogSlice.ts');
 
 const store = fs.readFileSync(storePath, 'utf8').replace(/\r\n/g, '\n');
+const appState = fs.readFileSync(statePath, 'utf8').replace(/\r\n/g, '\n');
 const slice = fs.readFileSync(slicePath, 'utf8').replace(/\r\n/g, '\n');
 
 const checks = [];
@@ -75,7 +77,7 @@ check('public AppState question action contract remains unchanged', () => {
     'updateQuestion: (questionId: string, data: Partial<Question>) => Promise<Question>;',
     'deleteQuestion: (questionId: string) => Promise<void>;',
   ]) {
-    assert.ok(store.includes(fragment), `AppState contract changed: ${fragment}`);
+    assert.ok(appState.includes(fragment), `AppState contract changed: ${fragment}`);
   }
 });
 

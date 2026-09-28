@@ -25,7 +25,7 @@ const checks = [
   ['services/api.ts', ['createAnnouncementAdsApi', 'announcementAds']],
   ['services/apiGroups/announcementAdsApi.ts', ['createAnnouncementAd', 'updateAnnouncementAd', 'deleteAnnouncementAd', 'announcement-ads']],
   ['services/adapter.ts', ['normalizeAnnouncementAd', 'announcementAds', 'displayMode', 'frequency', 'imageFit']],
-  ['store/useStore.ts', ['announcementAds', 'createAnnouncementAdsSlice', 'createAnnouncementAd', 'updateAnnouncementAd', 'deleteAnnouncementAd']],
+  ['store/useStore.ts', ['announcementAds', 'createAnnouncementAdsSlice', '...createAnnouncementAdsSlice<AppState>(set, api)']],
   ['store/slices/announcementAdsSlice.ts', ['createAnnouncementAd', 'updateAnnouncementAd', 'deleteAnnouncementAd', 'delaySeconds', 'displayMode', 'frequency', 'imageFit']],
   ['components/AnnouncementAdsOverlay.tsx', ['SESSION_DISMISSED_KEY', 'PERMANENT_DISMISSED_KEY', 'ANNOUNCEMENT_AD_PREVIEW_EVENT', 'previewAdId', 'goToTarget', 'visibleAds', 'matchesAudience', 'skipActiveAd', 'top-banner']],
   ['dashboards/admin/AnnouncementAdsManager.tsx', ['handleImageUpload', 'previewSelected', 'CustomEvent', 'audienceLabels', 'displayModeLabels', 'frequencyLabels', 'imageFitLabels', 'createAnnouncementAd', "boundary: 'start' | 'end' = 'start'", 'T23:59:59.999', 'MAX_AD_IMAGE_BYTES', '1200x675']],

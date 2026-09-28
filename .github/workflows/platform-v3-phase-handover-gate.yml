@@ -137,5 +137,7 @@ jobs:
         run: npm run smoke:deployment-handover-phase19
       - name: Current handover contract
         run: npm run smoke:handover-current
+      - name: PLAN 5 residual module-boundary guard
+        run: node scripts/smoke-plan5-module-boundaries.mjs
       - name: Full handover gate suite
         run: npm run smoke:handover:all

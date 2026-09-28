@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises";
 
 const files = {
-  auth: await readFile(new URL("../server/src/routes/auth.routes.ts", import.meta.url), "utf8"),
+  auth: `${await readFile(new URL("../server/src/routes/auth.routes.ts", import.meta.url), "utf8")}\n${await readFile(new URL("../server/src/modules/auth/http/authSchemas.ts", import.meta.url), "utf8")}`,
   user: await readFile(new URL("../server/src/models/User.ts", import.meta.url), "utf8"),
   header: await readFile(new URL("../components/Header.tsx", import.meta.url), "utf8"),
   reset: await readFile(new URL("../pages/ResetPassword.tsx", import.meta.url), "utf8"),

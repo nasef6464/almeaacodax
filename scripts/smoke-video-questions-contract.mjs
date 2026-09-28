@@ -18,6 +18,7 @@ const files = {
   coursePlayer: "components/CoursePlayer.tsx",
   learningProgressSlice: "store/slices/learningProgressSlice.ts",
   authRoutes: "server/src/routes/auth.routes.ts",
+  authSchemas: "server/src/modules/auth/http/authSchemas.ts",
   userModel: "server/src/models/User.ts",
   videoProgress: "utils/interactiveVideoProgress.ts",
 };
@@ -118,7 +119,7 @@ const checks = [
       source.videoPlayer.includes("initialProgressRef.current?.positionSeconds") &&
       source.videoPlayer.includes("onInteractiveProgress") &&
       source.authRoutes.includes("interactiveVideoProgress") &&
-      source.authRoutes.includes("max(100)") &&
+      source.authSchemas.includes("max(100)") &&
       source.userModel.includes("interactiveVideoProgress"),
   ],
   [

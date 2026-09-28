@@ -4,6 +4,7 @@ import path from 'node:path';
 
 const root = process.cwd();
 const store = fs.readFileSync(path.join(root, 'store/useStore.ts'), 'utf8').replace(/\r\n/g, '\n');
+const appState = fs.readFileSync(path.join(root, 'store/AppState.ts'), 'utf8').replace(/\r\n/g, '\n');
 const slice = fs.readFileSync(path.join(root, 'store/slices/courseCatalogSlice.ts'), 'utf8').replace(/\r\n/g, '\n');
 
 const checks = [];
@@ -47,7 +48,7 @@ check('public AppState course action contract remains unchanged', () => {
     'addCourse: (course: Course) => Promise<Course | null>;',
     'updateCourse: (courseId: string, data: Partial<Course>) => Promise<Course | null>;',
     'deleteCourse: (courseId: string) => Promise<void>;',
-  ]) assert.ok(store.includes(fragment), `AppState contract changed: ${fragment}`);
+  ]) assert.ok(appState.includes(fragment), `AppState contract changed: ${fragment}`);
 });
 
 check('slice remains bounded and UI-free', () => {

@@ -56,10 +56,10 @@ check('payment request amount must be positive', () => {
 check('runtime URLs are migration-friendly', () => {
   includes('services/api.ts', 'runtimeEnv?.VITE_API_URL');
   includes('services/api.ts', '? "/api"');
-  includes('App.tsx', 'VITE_PUBLIC_SITE_URL');
+  includes('app/SeoRouteMeta.tsx', 'VITE_PUBLIC_SITE_URL');
   notIncludes('services/api.ts', 'https://almeaacodax-k2ux.onrender.com/api');
   notIncludes('services/api.ts', 'runtimeHostname === "almeaacodax.vercel.app"');
-  notIncludes('App.tsx', "const SEO_BASE_URL = 'https://almeaacodax.vercel.app'");
+  notIncludes('app/SeoRouteMeta.tsx', "const SEO_BASE_URL = 'https://almeaacodax.vercel.app'");
   notIncludes('index.html', 'https://almeaacodax-k2ux.onrender.com');
 });
 

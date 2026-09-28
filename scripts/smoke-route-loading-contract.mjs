@@ -2,11 +2,14 @@ import { readFile } from "node:fs/promises";
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
-const [appSource, headerSource, genericPathSource] = await Promise.all([
+const [appSource, routeSource, headerSource, genericPathSource] = await Promise.all([
   read("App.tsx"),
+  read("app/AppRouteTree.tsx"),
   read("components/Header.tsx"),
   read("pages/GenericPathPage.tsx"),
 ]);
+
+const routeOwnershipSource = `${appSource}\n${routeSource}`;
 
 const checks = [];
 
@@ -30,7 +33,7 @@ check("route loading fallback is a full branded shell, not a blank spinner", () 
 });
 
 check("student and public route chunks stay lazy instead of being globally prefetched", () => {
-  if (appSource.includes("prefetchCommonRouteModules")) {
+  if (routeOwnershipSource.includes("prefetchCommonRouteModules")) {
     throw new Error("global route prefetch must stay removed");
   }
   for (const forbidden of [
@@ -40,21 +43,21 @@ check("student and public route chunks stay lazy instead of being globally prefe
     "void import('./pages/MockExams')",
     "void import('./pages/Courses')",
   ]) {
-    if (appSource.includes(forbidden)) {
+    if (routeOwnershipSource.includes(forbidden)) {
       throw new Error(`unexpected global route prefetch: ${forbidden}`);
     }
   }
-  assertIncludes(appSource, "const Dashboard = React.lazy(() => import('./pages/Dashboard'))");
-  assertIncludes(appSource, "const GenericPathPage = React.lazy(() => import('./pages/GenericPathPage')");
-  assertIncludes(appSource, "const Courses = React.lazy(() => import('./pages/Courses'))");
+  assertIncludes(routeSource, "const Dashboard = React.lazy(() => import('../pages/Dashboard'))");
+  assertIncludes(routeSource, "const GenericPathPage = React.lazy(() => import('../pages/GenericPathPage')");
+  assertIncludes(routeSource, "const Courses = React.lazy(() => import('../pages/Courses'))");
 });
 
 check("staff workspace chunks are the only idle-prefetched route modules", () => {
-  assertIncludes(appSource, "const loadAdminDashboardModule = () => import('./dashboards/admin/AdminDashboard')");
-  assertIncludes(appSource, "const loadSupervisorDashboardModule = () => import('./dashboards/admin/SupervisorDashboard')");
-  assertIncludes(appSource, "const prefetchRoleWorkspaceModule = (role?: string | null) =>");
-  assertIncludes(appSource, "void loadAdminDashboardModule()");
-  assertIncludes(appSource, "void loadSupervisorDashboardModule()");
+  assertIncludes(routeSource, "const loadAdminDashboardModule = () => import('../dashboards/admin/AdminDashboard')");
+  assertIncludes(routeSource, "const loadSupervisorDashboardModule = () => import('../dashboards/admin/SupervisorDashboard')");
+  assertIncludes(routeSource, "export const prefetchRoleWorkspaceModule = (role?: string | null) =>");
+  assertIncludes(routeSource, "void loadAdminDashboardModule()");
+  assertIncludes(routeSource, "void loadSupervisorDashboardModule()");
   assertIncludes(appSource, "if (!['admin', 'teacher', 'supervisor'].includes(user?.role || ''))");
   assertIncludes(appSource, "prefetchRoleWorkspaceModule(user.role)");
 });

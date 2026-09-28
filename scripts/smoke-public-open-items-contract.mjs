@@ -22,11 +22,11 @@ includes('components/MainLayout.tsx', 'to="/faq"');
 includes('components/MainLayout.tsx', 'to="/privacy"');
 includes('components/MainLayout.tsx', 'to="/terms"');
 
-includes('App.tsx', 'path="/about"');
-includes('App.tsx', 'path="/contact"');
-includes('App.tsx', 'path="/faq"');
-includes('App.tsx', 'path="/privacy"');
-includes('App.tsx', 'path="/terms"');
+includes('app/AppRouteTree.tsx', 'path="/about"');
+includes('app/AppRouteTree.tsx', 'path="/contact"');
+includes('app/AppRouteTree.tsx', 'path="/faq"');
+includes('app/AppRouteTree.tsx', 'path="/privacy"');
+includes('app/AppRouteTree.tsx', 'path="/terms"');
 includes('App.tsx', 'DATA_BOOTSTRAP_GATE_TIMEOUT_MS');
 includes('App.tsx', 'timedOutPath !== currentPath');
 
