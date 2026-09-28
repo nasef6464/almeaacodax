@@ -1,105 +1,38 @@
 {
   "generatedAt": "2026-09-28",
-  "scope": "YLM26 Tahsili Mathematics source-vs-live audit — source-count correction after visual verification",
+  "scope": "YLM26 Tahsili Mathematics source-vs-live baseline audit",
   "source": {
     "file": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
     "pages": 96,
     "documentCode": "YLM26",
     "pathId": "p_1777779653351",
     "subjectId": "sub_1777784609152",
-    "importScope": "Only questions explicitly carrying the تجميعات badge.",
-    "verifiedCompilationQuestionCount": 326,
-    "verificationMethod": "Visual inspection of the source pages and each lesson's printed answer-key sequence. The 30 lesson totals sum to 326.",
-    "lessonQuestionCounts": [
-      7,
-      8,
-      9,
-      12,
-      11,
-      6,
-      8,
-      14,
-      8,
-      9,
-      2,
-      8,
-      8,
-      20,
-      3,
-      2,
-      8,
-      15,
-      2,
-      19,
-      14,
-      21,
-      17,
-      15,
-      14,
-      15,
-      12,
-      13,
-      14,
-      12
-    ],
-    "taxonomy": {
-      "mainSkills": 22,
-      "subSkills": 70
-    }
+    "intendedScope": "Only questions explicitly marked تجميعات.",
+    "canonicalCompilationQuestions": 326,
+    "evidence": "30 lesson-end answer-key tables sum to 326; page-level تجميعات badges were enumerated directly from the source PDF."
   },
   "live": {
     "records": 156,
-    "uniqueQuestionCodes": 156,
+    "draft": 156,
+    "approved": 0,
+    "pending": 0,
+    "rejected": 0,
+    "uniqueCodes": 156,
     "uniqueImageHashes": 156,
     "uniqueImageUrls": 156,
-    "batches": [
-      {
-        "id": "TAH-MATH-YLM26-PILOT30-V1",
-        "count": 30
-      },
-      {
-        "id": "TAH-MATH-YLM26-BATCH01-V1",
-        "count": 30
-      },
-      {
-        "id": "TAH-MATH-YLM26-BATCH02-V1",
-        "count": 41
-      },
-      {
-        "id": "TAH-MATH-YLM26-BATCH03-V1",
-        "count": 55
-      }
-    ],
-    "note": "156 is the sum of import records, not the verified source count of تجميعات questions."
+    "quizReferences": 0
   },
-  "decisiveEvidence": [
-    "Lesson 1 source contains 7 numbered تجميعات questions across pages 5-6; live has 9 records in those pages, including non-canonical page/question identities.",
-    "Lesson 2 source answer key runs 1-8 across pages 7-8; live has only 3 records in those pages.",
-    "Lesson 3 source answer key runs 1-9 across pages 9-10; live has only 4 records in those pages.",
-    "Lesson 4 source answer key runs 1-12 across pages 11-13; live has only 3 records in those pages.",
-    "Across all 30 lessons, printed تجميعات answer-key totals sum to 326 while MongoDB contains 156 YLM26 records."
-  ],
-  "currentAuditActions": {
-    "verifiedApproved": [
-      "TAH-MATH-YLM26-P005-Q01",
-      "TAH-MATH-YLM26-P005-Q02",
-      "TAH-MATH-YLM26-P005-Q03",
-      "TAH-MATH-YLM26-P006-Q04",
-      "TAH-MATH-YLM26-P006-Q05",
-      "TAH-MATH-YLM26-P006-Q06",
-      "TAH-MATH-YLM26-P006-Q07",
-      "TAH-MATH-YLM26-P007-Q01",
-      "TAH-MATH-YLM26-P008-Q01",
-      "TAH-MATH-YLM26-P008-Q02",
-      "TAH-MATH-YLM26-P009-Q01",
-      "TAH-MATH-YLM26-P009-Q02",
-      "TAH-MATH-YLM26-P010-Q01",
-      "TAH-MATH-YLM26-P010-Q02"
-    ],
-    "rejectedIdentityDefects": [
-      "TAH-MATH-YLM26-P005-Q04",
-      "TAH-MATH-YLM26-P006-Q01"
-    ]
+  "identityAudit": {
+    "canonicalIdentities": 326,
+    "liveRecordsWithCanonicalPageQuestionIdentity": 76,
+    "liveRecordsWithNoncanonicalPageQuestionIdentity": 80,
+    "canonicalIdentitiesAbsentFromLiveSet": 250,
+    "note": "Some of the 80 noncanonical live records may represent real source questions under wrong numbering; they must be remapped from source evidence rather than counted as missing content blindly."
   },
-  "policy": "Do not approve the whole YLM26 set based on the 156-record report. Preserve source truth: audit the existing records, reject/replace identity defects, and complete canonical ingestion for every missing تجميعات question before final GREEN closure."
+  "dataQuality": {
+    "genericPlaceholderTextRecords": 126,
+    "genericPlaceholderOptionTextRecords": 126,
+    "contentRichRecords": 30
+  },
+  "conclusion": "The previous 156=complete report is contradicted by the source PDF itself. The current import is a safe draft subset/misaligned set and is not ready for approval."
 }
