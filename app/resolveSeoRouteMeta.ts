@@ -6,7 +6,6 @@ import {
   STUDENT_TAB_METAS,
   SUPERVISOR_TAB_METAS,
 } from './seoRouteMetaData';
-
 export const resolvePageMeta = (
   pathname = '/',
   search = '',
@@ -15,7 +14,6 @@ export const resolvePageMeta = (
 ): { title: string; description: string; isPrivate: boolean; canonicalPath: string } => {
   let effectivePath = pathname || '/';
   let effectiveSearch = search || '';
-
   if ((effectivePath === '/' || !effectivePath) && hash.startsWith('#/')) {
     const hashContent = hash.slice(1);
     const [hPath, hQuery] = hashContent.split('?');
@@ -24,12 +22,9 @@ export const resolvePageMeta = (
       effectiveSearch = `?${hQuery}`;
     }
   }
-
   const isPrivate = SEO_PRIVATE_PREFIXES.some((prefix) => effectivePath === prefix || effectivePath.startsWith(`${prefix}/`));
   const searchParams = new URLSearchParams(effectiveSearch);
   const tab = searchParams.get('tab') || '';
-
-  // 1. Admin Dashboard
   if (effectivePath === '/admin-dashboard' || effectivePath.startsWith('/admin-dashboard/')) {
     const builder = searchParams.get('builder');
     if (builder === 'create') {
@@ -56,8 +51,6 @@ export const resolvePageMeta = (
       canonicalPath: '/admin-dashboard',
     };
   }
-
-  // 2. Supervisor Dashboard
   if (effectivePath === '/supervisor-dashboard' || effectivePath.startsWith('/supervisor-dashboard/')) {
     const tabMeta = SUPERVISOR_TAB_METAS[tab] || (tab ? null : SUPERVISOR_TAB_METAS.overview);
     return {
@@ -67,8 +60,6 @@ export const resolvePageMeta = (
       canonicalPath: '/supervisor-dashboard',
     };
   }
-
-  // 3. Instructor Dashboard
   if (effectivePath === '/instructor-dashboard' || effectivePath.startsWith('/instructor-dashboard/')) {
     const tabMeta = INSTRUCTOR_TAB_METAS[tab] || (tab ? null : INSTRUCTOR_TAB_METAS.overview);
     return {
@@ -78,7 +69,6 @@ export const resolvePageMeta = (
       canonicalPath: '/instructor-dashboard',
     };
   }
-
   if (effectivePath === '/school-teacher-dashboard' || effectivePath.startsWith('/school-teacher-dashboard/')) {
     return {
       title: 'لوحة معلم المدرسة | منصة المئة',
@@ -87,7 +77,6 @@ export const resolvePageMeta = (
       canonicalPath: '/school-teacher-dashboard',
     };
   }
-
   if (effectivePath === '/school-director-dashboard' || effectivePath.startsWith('/school-director-dashboard/')) {
     return {
       title: 'لوحة مدير المدرسة | منصة المئة',
@@ -96,8 +85,6 @@ export const resolvePageMeta = (
       canonicalPath: '/school-director-dashboard',
     };
   }
-
-  // 4. Parent Dashboard
   if (effectivePath === '/parent-dashboard' || (effectivePath === '/dashboard' && userRole === 'parent')) {
     const tabMeta = PARENT_TAB_METAS[tab] || (tab ? null : PARENT_TAB_METAS.overview);
     return {
@@ -107,8 +94,6 @@ export const resolvePageMeta = (
       canonicalPath: '/parent-dashboard',
     };
   }
-
-  // 5. Student Dashboard
   if (effectivePath === '/dashboard' || effectivePath.startsWith('/dashboard/')) {
     const tabMeta = STUDENT_TAB_METAS[tab] || (tab ? null : STUDENT_TAB_METAS.overview);
     return {
@@ -118,8 +103,6 @@ export const resolvePageMeta = (
       canonicalPath: '/dashboard',
     };
   }
-
-  // 6. Independent & Static Routes
   if (effectivePath === '/classroom' || effectivePath.startsWith('/classroom/')) {
     return {
       title: 'الحصة الذكية المباشرة | منصة المئة',
@@ -128,7 +111,6 @@ export const resolvePageMeta = (
       canonicalPath: '/classroom',
     };
   }
-
   if (effectivePath === '/quiz' || effectivePath.startsWith('/quiz/')) {
     return {
       title: 'جلسة الاختبار | منصة المئة',
@@ -137,7 +119,6 @@ export const resolvePageMeta = (
       canonicalPath: '/quiz',
     };
   }
-
   if (effectivePath === '/results') {
     return {
       title: 'نتيجة الاختبار وتحليل الأداء | منصة المئة',
@@ -146,7 +127,6 @@ export const resolvePageMeta = (
       canonicalPath: '/results',
     };
   }
-
   if (effectivePath === '/review') {
     return {
       title: 'مراجعة الإجابات والتحليل | منصة المئة',
@@ -155,7 +135,6 @@ export const resolvePageMeta = (
       canonicalPath: '/review',
     };
   }
-
   if (effectivePath === '/my-quizzes') {
     return {
       title: 'سجل اختباراتي | مساحة الطالب - منصة المئة',
@@ -164,7 +143,6 @@ export const resolvePageMeta = (
       canonicalPath: '/my-quizzes',
     };
   }
-
   if (effectivePath === '/my-requests') {
     return {
       title: 'طلباتي ومتابعة الحجوزات | منصة المئة',
@@ -173,7 +151,6 @@ export const resolvePageMeta = (
       canonicalPath: '/my-requests',
     };
   }
-
   if (effectivePath === '/reports') {
     return {
       title: 'التقارير والتحليلات التعليمية | منصة المئة',
@@ -182,7 +159,6 @@ export const resolvePageMeta = (
       canonicalPath: '/reports',
     };
   }
-
   if (effectivePath === '/favorites') {
     return {
       title: 'أسئلتي للمراجعة | منصة المئة',
@@ -191,7 +167,6 @@ export const resolvePageMeta = (
       canonicalPath: '/favorites',
     };
   }
-
   if (effectivePath === '/plan') {
     return {
       title: 'الخطة الدراسية المخصصة | منصة المئة',
@@ -200,7 +175,6 @@ export const resolvePageMeta = (
       canonicalPath: '/plan',
     };
   }
-
   if (effectivePath === '/qa') {
     return {
       title: 'مجتمع الأسئلة والأجوبة | منصة المئة',
@@ -209,7 +183,6 @@ export const resolvePageMeta = (
       canonicalPath: '/qa',
     };
   }
-
   if (effectivePath === '/book-session') {
     return {
       title: 'حجز جلسة خاصة مع معلّم | منصة المئة',
@@ -218,7 +191,6 @@ export const resolvePageMeta = (
       canonicalPath: '/book-session',
     };
   }
-
   if (effectivePath === '/live-sessions' || effectivePath.startsWith('/live-sessions/')) {
     return {
       title: 'جدول الحصص واللقاءات المباشرة | منصة المئة',
@@ -227,7 +199,6 @@ export const resolvePageMeta = (
       canonicalPath: '/live-sessions',
     };
   }
-
   if (effectivePath === '/profile') {
     return {
       title: 'الملف الشخصي وإعدادات الحساب | منصة المئة',
@@ -236,7 +207,6 @@ export const resolvePageMeta = (
       canonicalPath: '/profile',
     };
   }
-
   if (effectivePath === '/admin/quiz-gen') {
     return {
       title: 'لوحة الإدارة | منشئ الاختبارات بالذكاء الاصطناعي - منصة المئة',
@@ -245,7 +215,6 @@ export const resolvePageMeta = (
       canonicalPath: '/admin/quiz-gen',
     };
   }
-
   if (effectivePath === '/quizzes') {
     return {
       title: 'بنك الاختبارات والتدريبات | منصة المئة',
@@ -254,7 +223,6 @@ export const resolvePageMeta = (
       canonicalPath: '/quizzes',
     };
   }
-
   if (effectivePath === '/mock-exams') {
     return {
       title: 'الاختبارات المحاكية لقياس | منصة المئة',
@@ -263,7 +231,6 @@ export const resolvePageMeta = (
       canonicalPath: '/mock-exams',
     };
   }
-
   if (effectivePath === '/courses' || effectivePath.startsWith('/course/')) {
     return {
       title: 'دورات القدرات والتحصيلي | منصة المئة',
@@ -272,7 +239,6 @@ export const resolvePageMeta = (
       canonicalPath: effectivePath,
     };
   }
-
   if (effectivePath.startsWith('/category/')) {
     return {
       title: 'مسارات القدرات والتحصيلي | منصة المئة',
@@ -281,7 +247,6 @@ export const resolvePageMeta = (
       canonicalPath: effectivePath,
     };
   }
-
   if (effectivePath === '/achievements') {
     return {
       title: 'لوحة الإنجازات والأوسمة | منصة المئة',
@@ -290,7 +255,6 @@ export const resolvePageMeta = (
       canonicalPath: '/achievements',
     };
   }
-
   if (effectivePath === '/blog') {
     return {
       title: 'مدونة منصة المئة',
@@ -299,7 +263,6 @@ export const resolvePageMeta = (
       canonicalPath: '/blog',
     };
   }
-
   if (effectivePath === '/pricing') {
     return {
       title: 'عضويات المنصة | منصة المئة',
@@ -308,7 +271,6 @@ export const resolvePageMeta = (
       canonicalPath: '/pricing',
     };
   }
-
   if (effectivePath === '/cart' || effectivePath === '/checkout') {
     return {
       title: 'سلة المشتريات وإتمام الطلب | منصة المئة',
@@ -317,7 +279,6 @@ export const resolvePageMeta = (
       canonicalPath: '/cart',
     };
   }
-
   if (effectivePath.startsWith('/barcode-test') || effectivePath.startsWith('/b/')) {
     return {
       title: 'اختبار الباركود السريع | منصة المئة',
@@ -326,7 +287,6 @@ export const resolvePageMeta = (
       canonicalPath: effectivePath,
     };
   }
-
   if (effectivePath.startsWith('/certificate/')) {
     return {
       title: 'شهادة إتمام معتمدة | منصة المئة',
@@ -335,7 +295,6 @@ export const resolvePageMeta = (
       canonicalPath: effectivePath,
     };
   }
-
   if (effectivePath === '/about') {
     return {
       title: 'من نحن | منصة المئة للقدرات والتحصيلي',
@@ -344,7 +303,6 @@ export const resolvePageMeta = (
       canonicalPath: '/about',
     };
   }
-
   if (effectivePath === '/contact') {
     return {
       title: 'اتصل بنا | الدعم الفني لمنصة المئة',
@@ -353,7 +311,6 @@ export const resolvePageMeta = (
       canonicalPath: '/contact',
     };
   }
-
   if (effectivePath === '/faq') {
     return {
       title: 'الأسئلة الشائعة | منصة المئة',
@@ -362,7 +319,6 @@ export const resolvePageMeta = (
       canonicalPath: '/faq',
     };
   }
-
   if (effectivePath === '/privacy') {
     return {
       title: 'سياسة الخصوصية | منصة المئة',
@@ -371,7 +327,6 @@ export const resolvePageMeta = (
       canonicalPath: '/privacy',
     };
   }
-
   if (effectivePath === '/terms') {
     return {
       title: 'الشروط والأحكام | منصة المئة',
@@ -380,7 +335,6 @@ export const resolvePageMeta = (
       canonicalPath: '/terms',
     };
   }
-
   if (effectivePath === '/forgot-password') {
     return {
       title: 'استعادة كلمة المرور | منصة المئة',
@@ -389,7 +343,6 @@ export const resolvePageMeta = (
       canonicalPath: '/forgot-password',
     };
   }
-
   if (effectivePath === '/reset-password') {
     return {
       title: 'تعيين كلمة المرور الجديدة | منصة المئة',
@@ -398,7 +351,6 @@ export const resolvePageMeta = (
       canonicalPath: '/reset-password',
     };
   }
-
   if (effectivePath === '/verify-email') {
     return {
       title: 'تأكيد البريد الإلكتروني | منصة المئة',
@@ -407,7 +359,6 @@ export const resolvePageMeta = (
       canonicalPath: '/verify-email',
     };
   }
-
   return {
     title: isPrivate ? 'منصة المئة | مساحة خاصة' : 'منصة المئة | قدرات وتحصيلي',
     description: isPrivate
@@ -417,4 +368,3 @@ export const resolvePageMeta = (
     canonicalPath: isPrivate ? '/' : effectivePath,
   };
 };
-
