@@ -402,6 +402,19 @@ async function main() {
     if (String(mistakeItem?.question?.id || "") !== expectedMistakeQuestionId || !String(mistakeItem?.question?.questionCode || "")) {
       throw new Error(`Mistake review lost canonical question identity: ${JSON.stringify(mistakeItem)}`);
     }
+    const remediationSkillId = String(mistakeItem?.question?.skillIds?.[0] || mistakeItem?.question?.skillId || "");
+    const remediationPathId = String(mistakeItem?.question?.pathId || question.pathId || "");
+    const remediationSubjectId = String(mistakeItem?.question?.subjectId || mistakeItem?.question?.subject || question.subject || question.subjectId || "");
+    if (!remediationSkillId || !remediationPathId) {
+      throw new Error(`Mistake review lacks skill scope required for SkillProgress proof: ${JSON.stringify(mistakeItem)}`);
+    }
+    const skillProgressBefore = await api(
+      freshStudent.page,
+      `/quizzes/skill-progress?pathId=${encodeURIComponent(remediationPathId)}&subjectId=${encodeURIComponent(remediationSubjectId)}&limit=200`,
+    );
+    const progressBeforeRow = listOf(skillProgressBefore.payload, "skillProgress")
+      .find((row) => String(row.skillId || "") === remediationSkillId);
+    const evidenceBefore = Number(progressBeforeRow?.evidenceCount || 0);
 
     await freshStudent.page.goto(`${BASE_URL}/favorites`, { waitUntil: "domcontentloaded", timeout: 60000 });
     await freshStudent.page.getByRole("heading", { name: "أسئلتي للمراجعة" }).waitFor({ timeout: 30000 });
@@ -429,6 +442,7 @@ async function main() {
 
     await freshStudent.page.goto(`${BASE_URL}/review?mode=mistakes`, { waitUntil: "domcontentloaded", timeout: 60000 });
     await freshStudent.page.getByText("استعادة خطأ", { exact: true }).waitFor({ timeout: 30000 });
+    await freshStudent.page.getByText("شرح المعلم الصوتي", { exact: true }).first().waitFor({ timeout: 30000 });
     await freshStudent.page.getByTestId("question-assistant-panel").waitFor({ timeout: 30000 });
     await freshStudent.page.getByRole("button", { name: "ب", exact: true }).click();
     const reviewAnswerResponsePromise = freshStudent.page.waitForResponse(
@@ -445,6 +459,33 @@ async function main() {
     const dueAfterPracticeIds = listOf(dueAfterPractice.payload, "items").map((item) => String(item.questionId || ""));
     if (!dueAfterPractice.ok || dueAfterPracticeIds.includes(expectedMistakeQuestionId)) {
       throw new Error(`Remediated question remained immediately due after spaced-review update: ${JSON.stringify(dueAfterPractice)}`);
+    }
+    const [skillProgressAfter, attemptsAfter, nextBestAction] = await Promise.all([
+      api(
+        freshStudent.page,
+        `/quizzes/skill-progress?pathId=${encodeURIComponent(remediationPathId)}&subjectId=${encodeURIComponent(remediationSubjectId)}&limit=200`,
+      ),
+      api(freshStudent.page, "/quizzes/question-attempts?limit=100"),
+      api(
+        freshStudent.page,
+        `/quizzes/next-best-action?pathId=${encodeURIComponent(remediationPathId)}&subjectId=${encodeURIComponent(remediationSubjectId)}`,
+      ),
+    ]);
+    const progressAfterRow = listOf(skillProgressAfter.payload, "skillProgress")
+      .find((row) => String(row.skillId || "") === remediationSkillId);
+    const evidenceAfter = Number(progressAfterRow?.evidenceCount || 0);
+    if (!skillProgressAfter.ok || evidenceAfter <= evidenceBefore) {
+      throw new Error(`Remediation did not advance SkillProgress evidence: ${JSON.stringify({ evidenceBefore, evidenceAfter, remediationSkillId, skillProgressAfter })}`);
+    }
+    const remediationAttempt = listOf(attemptsAfter.payload, "questionAttempts").find(
+      (attempt) => String(attempt.questionId || "") === expectedMistakeQuestionId && String(attempt.evidenceType || "") === "remediation",
+    );
+    if (!attemptsAfter.ok || !remediationAttempt) {
+      throw new Error(`Direct remediation QuestionAttempt evidence missing: ${JSON.stringify(attemptsAfter)}`);
+    }
+    const nextCandidates = Array.isArray(nextBestAction.payload?.candidates) ? nextBestAction.payload.candidates : [];
+    if (!nextBestAction.ok || !nextCandidates.some((item) => String(item.skillId || "") === remediationSkillId)) {
+      throw new Error(`Next Best Action did not consume the remediated skill scope: ${JSON.stringify(nextBestAction)}`);
     }
     let completedSession = await api(freshStudent.page, `/live-exams/session/${encodeURIComponent(createdQuizId)}`);
     for (let retry = 0; completedSession.payload?.session && retry < 10; retry += 1) {
@@ -466,6 +507,9 @@ async function main() {
       ["smart tutor is authorized from mistake review", mistakeTutorResponse.ok],
       ["short mistake practice records a correct remediation attempt", reviewAnswerPayload?.isCorrect === true],
       ["spaced review reschedules the remediated question", !dueAfterPracticeIds.includes(expectedMistakeQuestionId)],
+      ["remediation writes a direct QuestionAttempt evidence row", Boolean(remediationAttempt)],
+      ["remediation advances direct SkillProgress evidence", evidenceAfter > evidenceBefore],
+      ["next best action consumes the remediated skill scope", nextCandidates.some((item) => String(item.skillId || "") === remediationSkillId)],
       ["review library UI exposes saved/mistake context and voice", true],
       ["autosave survives refresh/retry on one stable attempt", !resumedSession.payload?.session?.startTime || String(resumedSession.payload?.session?.assessmentAttemptId || "") === String(savedSession.payload.session.assessmentAttemptId)],
       ["accepted submission closes the resumable session", !completedSession.payload?.session],
