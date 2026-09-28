@@ -12,6 +12,7 @@ const valid = {
   optionsEmbeddedInImage: true,
   options: ["A", "B", "C", "D"],
   correctOptionIndex: 2,
+  reviewerNotes: "Content-lock verified visually against source page 5.",
   sourceMeta: {
     sourceItemId: "YLM26-PDF004-P005-N01",
     page: 5,
@@ -21,6 +22,7 @@ const valid = {
 
 assert.deepEqual(validateQuestionApprovalIntegrity(valid), { ok: true });
 assert.equal(validateQuestionApprovalIntegrity({ ...valid, approvalStatus: "draft" }).ok, true);
+assert.equal(validateQuestionApprovalIntegrity({ ...valid, reviewerNotes: "" }).ok, false);
 assert.equal(validateQuestionApprovalIntegrity({ ...valid, sourceMeta: { ...valid.sourceMeta, imageHash: "" } }).ok, false);
 assert.equal(validateQuestionApprovalIntegrity({ ...valid, sourceMeta: { ...valid.sourceMeta, sourceItemId: "" } }).ok, false);
 assert.equal(validateQuestionApprovalIntegrity({ ...valid, sourceMeta: { ...valid.sourceMeta, page: null } }).ok, false);
