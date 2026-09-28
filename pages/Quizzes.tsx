@@ -726,7 +726,7 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
 
       <div className="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
         <label className="mb-2 block text-sm font-black text-gray-800">فلترة اختبارات المنصة حسب المسار</label>
-        <select value={activePathFilter} onChange={(event) => setActivePathFilter(event.target.value)} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-bold text-gray-700 focus:border-amber-400 focus:outline-none">
+        <select aria-label="فلترة اختبارات المنصة حسب المسار" value={activePathFilter} onChange={(event) => setActivePathFilter(event.target.value)} className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-bold text-gray-700 focus:border-amber-400 focus:outline-none">
           <option value="all">كل المسارات</option>{visiblePathOptions.map((path) => <option key={path.id} value={path.id}>{path.name}</option>)}
         </select>
       </div>
