@@ -1,0 +1,1802 @@
+{
+  "generatedAt": "2026-09-28",
+  "count": 33,
+  "questions": [
+    {
+      "questionCode": "TAH-MATH-YLM26-P023-Q01",
+      "text": "في الشكل m<A يساوي ..",
+      "correctOptionIndex": 0,
+      "aiContext": {
+        "readableText": "في الشكل m<A يساوي ..",
+        "speechText": "في الشكل m<A يساوي .. . والخيارات هي: A: 30° ، B: 60° ، C: 90° ، D: 120°",
+        "visualDescription": "رسم لدائرة وقاطعان يتقاطعان في النقطة A خارج الدائرة. القوس الأكبر بينهما EF قياسه 90 درجة باللون الأخضر، والقوس الأصغر بينهما قياسه 30 درجة باللون الأحمر.",
+        "optionTexts": [
+          "30°",
+          "60°",
+          "90°",
+          "120°"
+        ],
+        "mathExpressions": [
+          {
+            "latex": "m\\angle A = \\frac{90^\\circ - 30^\\circ}{2} = 30^\\circ",
+            "spokenArabic": "قياس الزاوية إيه يساوي ثلاثين درجة"
+          }
+        ],
+        "concepts": [
+          "تقاطع القواطع خارج الدائرة",
+          "الأقواس والزوايا المحصورة"
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو 2026 - تجميعات التحصيلي رياضيات"
+        ],
+        "version": 1
+      },
+      "voiceExplanation": {
+        "text": "قياس الزاوية الناتجة عن تقاطع قاطعين خارج الدائرة يساوي نصف الفرق الموجب بين قياسي القوسين المقابلين لها: m<A = (القوس الأكبر - القوس الأصغر) / 2 = (90° - 30°) / 2 = 60° / 2 = 30°.",
+        "audioUrl": "",
+        "audioMimeType": "",
+        "version": 1
+      },
+      "sourceMeta": {
+        "documentCode": "YLM26",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "sourceItemId": "YLM26-PDF022-P023-N01",
+        "pdfPageIndex": 22,
+        "printedPageNumber": 23,
+        "printedQuestionNumber": 1,
+        "page": 23,
+        "questionNumber": "1",
+        "cropIndex": 0,
+        "importBatchId": "TAH-MATH-YLM26-PILOT30-V1",
+        "imageVersion": 1,
+        "imageHash": "e8836c3e439bf2559327be2c9fa83c26b74afad070c42bdb9b3256a3f5236bf2"
+      },
+      "skillIds": [
+        "skill_tah_math_07",
+        "sub_tah_math_07_02"
+      ],
+      "skillId": "skill_tah_math_07",
+      "subSkillId": "sub_tah_math_07_02",
+      "sectionId": "sec_tah_math_07",
+      "approvalStatus": "draft",
+      "reviewerNotes": ""
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P023-Q02",
+      "text": "سؤال تحصيلي في الدائرة والزوايا المحيطية والمركزية والمماسات والأوتار (كتاب تأسيس يلو ص 23)",
+      "correctOptionIndex": 0,
+      "aiContext": {
+        "readableText": "سؤال تحصيلي في الدائرة والزوايا المحيطية والمركزية والمماسات والأوتار (كتاب تأسيس يلو ص 23)",
+        "speechText": "سؤال تحصيلي في الدائرة والزوايا المحيطية والمركزية والمماسات والأوتار من كتاب تأسيس يلو صفحة 23 . والخيارات هي: A أو B أو C أو D",
+        "visualDescription": "سؤال مصور من كتاب تأسيس يلو للرياضيات 2026",
+        "optionTexts": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "mathExpressions": [],
+        "concepts": [
+          "الدائرة والزوايا المحيطية والمركزية والمماسات والأوتار"
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو 2026 - تجميعات التحصيلي رياضيات"
+        ],
+        "version": 1
+      },
+      "voiceExplanation": {
+        "text": "الحل الصحيح هو الخيار (A) وفقاً لمفتاح إجابات كتاب تأسيس يلو للرياضيات 2026 في موضوع الدائرة والزوايا المحيطية والمركزية والمماسات والأوتار.",
+        "audioUrl": "",
+        "audioMimeType": "",
+        "version": 1
+      },
+      "sourceMeta": {
+        "documentCode": "YLM26",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "sourceItemId": "YLM26-PDF022-P023-N02",
+        "pdfPageIndex": 22,
+        "printedPageNumber": 23,
+        "printedQuestionNumber": 2,
+        "page": 23,
+        "questionNumber": "2",
+        "cropIndex": 0,
+        "importBatchId": "TAH-MATH-YLM26-BATCH01-V1",
+        "imageVersion": 1,
+        "imageHash": "30dfc76a8ab86d33b46e432d493bf5b29b739843556020645515cd4835a2fe65"
+      },
+      "skillIds": [
+        "skill_tah_math_07",
+        "sub_tah_math_07_01"
+      ],
+      "skillId": "skill_tah_math_07",
+      "subSkillId": "sub_tah_math_07_01",
+      "sectionId": "sec_tah_math_07",
+      "approvalStatus": "draft",
+      "reviewerNotes": ""
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P025-Q02",
+      "text": "سؤال تحصيلي في الأعداد الحقيقية والمجال والمدى والمتباينات (كتاب تأسيس يلو ص 25)",
+      "correctOptionIndex": 3,
+      "aiContext": {
+        "readableText": "سؤال تحصيلي في الأعداد الحقيقية والمجال والمدى والمتباينات (كتاب تأسيس يلو ص 25)",
+        "speechText": "سؤال تحصيلي في الأعداد الحقيقية والمجال والمدى والمتباينات من كتاب تأسيس يلو صفحة 25 . والخيارات هي: A أو B أو C أو D",
+        "visualDescription": "سؤال مصور من كتاب تأسيس يلو للرياضيات 2026",
+        "optionTexts": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "mathExpressions": [],
+        "concepts": [
+          "الأعداد الحقيقية والمجال والمدى والمتباينات"
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو 2026 - تجميعات التحصيلي رياضيات"
+        ],
+        "version": 1
+      },
+      "voiceExplanation": {
+        "text": "الحل الصحيح هو الخيار (D) وفقاً لمفتاح إجابات كتاب تأسيس يلو للرياضيات 2026 في موضوع الأعداد الحقيقية والمجال والمدى والمتباينات.",
+        "audioUrl": "",
+        "audioMimeType": "",
+        "version": 1
+      },
+      "sourceMeta": {
+        "documentCode": "YLM26",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "sourceItemId": "YLM26-PDF024-P025-N02",
+        "pdfPageIndex": 24,
+        "printedPageNumber": 25,
+        "printedQuestionNumber": 2,
+        "page": 25,
+        "questionNumber": "2",
+        "cropIndex": 0,
+        "importBatchId": "TAH-MATH-YLM26-BATCH01-V1",
+        "imageVersion": 1,
+        "imageHash": "c2d63df818fb5141e7bb4401c5c6653b89646d2db1e4487bcf5bbf6e5f4df5fe"
+      },
+      "skillIds": [
+        "skill_tah_math_08",
+        "sub_tah_math_08_01"
+      ],
+      "skillId": "skill_tah_math_08",
+      "subSkillId": "sub_tah_math_08_01",
+      "sectionId": "sec_tah_math_08",
+      "approvalStatus": "draft",
+      "reviewerNotes": ""
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P025-Q03",
+      "text": "سؤال تحصيلي في الأعداد الحقيقية والمجال والمدى والمتباينات (كتاب تأسيس يلو ص 25)",
+      "correctOptionIndex": 2,
+      "aiContext": {
+        "readableText": "سؤال تحصيلي في الأعداد الحقيقية والمجال والمدى والمتباينات (كتاب تأسيس يلو ص 25)",
+        "speechText": "سؤال تحصيلي في الأعداد الحقيقية والمجال والمدى والمتباينات من كتاب تأسيس يلو صفحة 25 . والخيارات هي: A أو B أو C أو D",
+        "visualDescription": "سؤال مصور من كتاب تأسيس يلو للرياضيات 2026",
+        "optionTexts": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "mathExpressions": [],
+        "concepts": [
+          "الأعداد الحقيقية والمجال والمدى والمتباينات"
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو 2026 - تجميعات التحصيلي رياضيات"
+        ],
+        "version": 1
+      },
+      "voiceExplanation": {
+        "text": "الحل الصحيح هو الخيار (C) وفقاً لمفتاح إجابات كتاب تأسيس يلو للرياضيات 2026 في موضوع الأعداد الحقيقية والمجال والمدى والمتباينات.",
+        "audioUrl": "",
+        "audioMimeType": "",
+        "version": 1
+      },
+      "sourceMeta": {
+        "documentCode": "YLM26",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "sourceItemId": "YLM26-PDF024-P025-N03",
+        "pdfPageIndex": 24,
+        "printedPageNumber": 25,
+        "printedQuestionNumber": 3,
+        "page": 25,
+        "questionNumber": "3",
+        "cropIndex": 0,
+        "importBatchId": "TAH-MATH-YLM26-BATCH01-V1",
+        "imageVersion": 1,
+        "imageHash": "ece305a3ee8091162adda20b0f2ca0663c508e9de9da92ba376561c126d34e56"
+      },
+      "skillIds": [
+        "skill_tah_math_08",
+        "sub_tah_math_08_01"
+      ],
+      "skillId": "skill_tah_math_08",
+      "subSkillId": "sub_tah_math_08_01",
+      "sectionId": "sec_tah_math_08",
+      "approvalStatus": "draft",
+      "reviewerNotes": ""
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P026-Q01",
+      "text": "سؤال تحصيلي في الأعداد الحقيقية والمجال والمدى والمتباينات (كتاب تأسيس يلو ص 26)",
+      "correctOptionIndex": 0,
+      "aiContext": {
+        "readableText": "سؤال تحصيلي في الأعداد الحقيقية والمجال والمدى والمتباينات (كتاب تأسيس يلو ص 26)",
+        "speechText": "سؤال تحصيلي في الأعداد الحقيقية والمجال والمدى والمتباينات من كتاب تأسيس يلو صفحة 26 . والخيارات هي: A أو B أو C أو D",
+        "visualDescription": "سؤال مصور من كتاب تأسيس يلو للرياضيات 2026",
+        "optionTexts": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "mathExpressions": [],
+        "concepts": [
+          "الأعداد الحقيقية والمجال والمدى والمتباينات"
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو 2026 - تجميعات التحصيلي رياضيات"
+        ],
+        "version": 1
+      },
+      "voiceExplanation": {
+        "text": "الحل الصحيح هو الخيار (A) وفقاً لمفتاح إجابات كتاب تأسيس يلو للرياضيات 2026 في موضوع الأعداد الحقيقية والمجال والمدى والمتباينات.",
+        "audioUrl": "",
+        "audioMimeType": "",
+        "version": 1
+      },
+      "sourceMeta": {
+        "documentCode": "YLM26",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "sourceItemId": "YLM26-PDF025-P026-N01",
+        "pdfPageIndex": 25,
+        "printedPageNumber": 26,
+        "printedQuestionNumber": 1,
+        "page": 26,
+        "questionNumber": "1",
+        "cropIndex": 0,
+        "importBatchId": "TAH-MATH-YLM26-BATCH01-V1",
+        "imageVersion": 1,
+        "imageHash": "b5cf1c456c3e0ab7174b55831028c7eb847068dcd4282a326e39446c6345a544"
+      },
+      "skillIds": [
+        "skill_tah_math_08",
+        "sub_tah_math_08_01"
+      ],
+      "skillId": "skill_tah_math_08",
+      "subSkillId": "sub_tah_math_08_01",
+      "sectionId": "sec_tah_math_08",
+      "approvalStatus": "draft",
+      "reviewerNotes": ""
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P026-Q02",
+      "text": "سؤال تحصيلي في الأعداد الحقيقية والمجال والمدى والمتباينات (كتاب تأسيس يلو ص 26)",
+      "correctOptionIndex": 3,
+      "aiContext": {
+        "readableText": "سؤال تحصيلي في الأعداد الحقيقية والمجال والمدى والمتباينات (كتاب تأسيس يلو ص 26)",
+        "speechText": "سؤال تحصيلي في الأعداد الحقيقية والمجال والمدى والمتباينات من كتاب تأسيس يلو صفحة 26 . والخيارات هي: A أو B أو C أو D",
+        "visualDescription": "سؤال مصور من كتاب تأسيس يلو للرياضيات 2026",
+        "optionTexts": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "mathExpressions": [],
+        "concepts": [
+          "الأعداد الحقيقية والمجال والمدى والمتباينات"
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو 2026 - تجميعات التحصيلي رياضيات"
+        ],
+        "version": 1
+      },
+      "voiceExplanation": {
+        "text": "الحل الصحيح هو الخيار (D) وفقاً لمفتاح إجابات كتاب تأسيس يلو للرياضيات 2026 في موضوع الأعداد الحقيقية والمجال والمدى والمتباينات.",
+        "audioUrl": "",
+        "audioMimeType": "",
+        "version": 1
+      },
+      "sourceMeta": {
+        "documentCode": "YLM26",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "sourceItemId": "YLM26-PDF025-P026-N02",
+        "pdfPageIndex": 25,
+        "printedPageNumber": 26,
+        "printedQuestionNumber": 2,
+        "page": 26,
+        "questionNumber": "2",
+        "cropIndex": 0,
+        "importBatchId": "TAH-MATH-YLM26-BATCH01-V1",
+        "imageVersion": 1,
+        "imageHash": "5c858c915cc2f470e635e0057323943a78f0d2c46119e3caa87d0827d62e97bc"
+      },
+      "skillIds": [
+        "skill_tah_math_08",
+        "sub_tah_math_08_01"
+      ],
+      "skillId": "skill_tah_math_08",
+      "subSkillId": "sub_tah_math_08_01",
+      "sectionId": "sec_tah_math_08",
+      "approvalStatus": "draft",
+      "reviewerNotes": ""
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P026-Q03",
+      "text": "سؤال تحصيلي في الأعداد الحقيقية والمجال والمدى والمتباينات (كتاب تأسيس يلو ص 26)",
+      "correctOptionIndex": 2,
+      "aiContext": {
+        "readableText": "سؤال تحصيلي في الأعداد الحقيقية والمجال والمدى والمتباينات (كتاب تأسيس يلو ص 26)",
+        "speechText": "سؤال تحصيلي في الأعداد الحقيقية والمجال والمدى والمتباينات من كتاب تأسيس يلو صفحة 26 . والخيارات هي: A أو B أو C أو D",
+        "visualDescription": "سؤال مصور من كتاب تأسيس يلو للرياضيات 2026",
+        "optionTexts": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "mathExpressions": [],
+        "concepts": [
+          "الأعداد الحقيقية والمجال والمدى والمتباينات"
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو 2026 - تجميعات التحصيلي رياضيات"
+        ],
+        "version": 1
+      },
+      "voiceExplanation": {
+        "text": "الحل الصحيح هو الخيار (C) وفقاً لمفتاح إجابات كتاب تأسيس يلو للرياضيات 2026 في موضوع الأعداد الحقيقية والمجال والمدى والمتباينات.",
+        "audioUrl": "",
+        "audioMimeType": "",
+        "version": 1
+      },
+      "sourceMeta": {
+        "documentCode": "YLM26",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "sourceItemId": "YLM26-PDF025-P026-N03",
+        "pdfPageIndex": 25,
+        "printedPageNumber": 26,
+        "printedQuestionNumber": 3,
+        "page": 26,
+        "questionNumber": "3",
+        "cropIndex": 0,
+        "importBatchId": "TAH-MATH-YLM26-BATCH01-V1",
+        "imageVersion": 1,
+        "imageHash": "36f39c9f4fb9b8ea3d82080928edb1274c6a98ae041c34f51835615454487d01"
+      },
+      "skillIds": [
+        "skill_tah_math_08",
+        "sub_tah_math_08_01"
+      ],
+      "skillId": "skill_tah_math_08",
+      "subSkillId": "sub_tah_math_08_01",
+      "sectionId": "sec_tah_math_08",
+      "approvalStatus": "draft",
+      "reviewerNotes": ""
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P034-Q01",
+      "text": "أي وحيدات الحد التالية درجته تساوي درجة وحيدة الحد 7*n^3*m^2 ؟",
+      "correctOptionIndex": 1,
+      "aiContext": {
+        "readableText": "أي وحيدات الحد التالية درجته تساوي درجة وحيدة الحد 7*n^3*m^2 ؟",
+        "speechText": "أي وحيدات الحد التالية درجته تساوي درجة وحيدة الحد 7*n^3*m^2 ؟ . والخيارات هي: A: 7nm ، B: 3nm^4 ، C: 2n^5m ، D: 5n^3m",
+        "visualDescription": "لا يوجد رسم توضيحي.",
+        "optionTexts": [
+          "7nm",
+          "3nm^4",
+          "2n^5m",
+          "5n^3m"
+        ],
+        "mathExpressions": [
+          {
+            "latex": "3 + 2 = 5 \\text{ and } 1 + 4 = 5",
+            "spokenArabic": "الدرجة تساوي خمسة"
+          }
+        ],
+        "concepts": [
+          "وحيدات الحد",
+          "درجة وحيدة الحد",
+          "كثيرات الحدود"
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو 2026 - تجميعات التحصيلي رياضيات"
+        ],
+        "version": 1
+      },
+      "voiceExplanation": {
+        "text": "درجة وحيدة الحد تساوي مجموع أسس متغيراتها. درجة 7*n^3*m^2 هي 3 + 2 = 5. بفحص الخيارات: 3*n*m^4 درجتها 1 + 4 = 5 وهي مساوية للدرجة المطلوبة.",
+        "audioUrl": "",
+        "audioMimeType": "",
+        "version": 1
+      },
+      "sourceMeta": {
+        "documentCode": "YLM26",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "sourceItemId": "YLM26-PDF033-P034-N01",
+        "pdfPageIndex": 33,
+        "printedPageNumber": 34,
+        "printedQuestionNumber": 1,
+        "page": 34,
+        "questionNumber": "1",
+        "cropIndex": 0,
+        "importBatchId": "TAH-MATH-YLM26-PILOT30-V1",
+        "imageVersion": 1,
+        "imageHash": "d6c024de48db13faacfcfc7e02c1d59ca5499627c9020a3c33c3139a8d170c91"
+      },
+      "skillIds": [
+        "skill_tah_math_10",
+        "sub_tah_math_10_03"
+      ],
+      "skillId": "skill_tah_math_10",
+      "subSkillId": "sub_tah_math_10_03",
+      "sectionId": "sec_tah_math_10",
+      "approvalStatus": "draft",
+      "reviewerNotes": ""
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P039-Q01",
+      "text": "سؤال تحصيلي في العلاقات والدوال النسبية والتغير (كتاب تأسيس يلو ص 39)",
+      "correctOptionIndex": 0,
+      "aiContext": {
+        "readableText": "سؤال تحصيلي في العلاقات والدوال النسبية والتغير (كتاب تأسيس يلو ص 39)",
+        "speechText": "سؤال تحصيلي في العلاقات والدوال النسبية والتغير من كتاب تأسيس يلو صفحة 39 . والخيارات هي: A أو B أو C أو D",
+        "visualDescription": "سؤال مصور من كتاب تأسيس يلو للرياضيات 2026",
+        "optionTexts": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "mathExpressions": [],
+        "concepts": [
+          "العلاقات والدوال النسبية والتغير"
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو 2026 - تجميعات التحصيلي رياضيات"
+        ],
+        "version": 1
+      },
+      "voiceExplanation": {
+        "text": "الحل الصحيح هو الخيار (A) وفقاً لمفتاح إجابات كتاب تأسيس يلو للرياضيات 2026 في موضوع العلاقات والدوال النسبية والتغير.",
+        "audioUrl": "",
+        "audioMimeType": "",
+        "version": 1
+      },
+      "sourceMeta": {
+        "documentCode": "YLM26",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "sourceItemId": "YLM26-PDF038-P039-N01",
+        "pdfPageIndex": 38,
+        "printedPageNumber": 39,
+        "printedQuestionNumber": 1,
+        "page": 39,
+        "questionNumber": "1",
+        "cropIndex": 0,
+        "importBatchId": "TAH-MATH-YLM26-BATCH02-V1",
+        "imageVersion": 1,
+        "imageHash": "87984d0e51b7c61e713f2d68b917fff07bac3416e69f4f49f2596be6917967fe"
+      },
+      "skillIds": [
+        "skill_tah_math_11",
+        "sub_tah_math_11_03"
+      ],
+      "skillId": "skill_tah_math_11",
+      "subSkillId": "sub_tah_math_11_03",
+      "sectionId": "sec_tah_math_11",
+      "approvalStatus": "draft",
+      "reviewerNotes": "YLM26 audit: main/subskill mapping corrected from source lesson boundary; exact subskill retained/assigned only where content-safe."
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P040-Q01",
+      "text": "سؤال تحصيلي في المتتابعات والمتسلسلات الحسابية والهندسية (كتاب تأسيس يلو ص 40)",
+      "correctOptionIndex": 0,
+      "aiContext": {
+        "readableText": "سؤال تحصيلي في المتتابعات والمتسلسلات الحسابية والهندسية (كتاب تأسيس يلو ص 40)",
+        "speechText": "سؤال تحصيلي في المتتابعات والمتسلسلات الحسابية والهندسية من كتاب تأسيس يلو صفحة 40 . والخيارات هي: A أو B أو C أو D",
+        "visualDescription": "سؤال مصور من كتاب تأسيس يلو للرياضيات 2026",
+        "optionTexts": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "mathExpressions": [],
+        "concepts": [
+          "المتتابعات والمتسلسلات الحسابية والهندسية"
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو 2026 - تجميعات التحصيلي رياضيات"
+        ],
+        "version": 1
+      },
+      "voiceExplanation": {
+        "text": "الحل الصحيح هو الخيار (A) وفقاً لمفتاح إجابات كتاب تأسيس يلو للرياضيات 2026 في موضوع المتتابعات والمتسلسلات الحسابية والهندسية.",
+        "audioUrl": "",
+        "audioMimeType": "",
+        "version": 1
+      },
+      "sourceMeta": {
+        "documentCode": "YLM26",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "sourceItemId": "YLM26-PDF039-P040-N01",
+        "pdfPageIndex": 39,
+        "printedPageNumber": 40,
+        "printedQuestionNumber": 1,
+        "page": 40,
+        "questionNumber": "1",
+        "cropIndex": 0,
+        "importBatchId": "TAH-MATH-YLM26-BATCH02-V1",
+        "imageVersion": 1,
+        "imageHash": "308597101509f2c8b996a26fa0c529eaee1b0672a7f004b084dbf9d7c6594301"
+      },
+      "skillIds": [
+        "skill_tah_math_13",
+        "sub_tah_math_13_01"
+      ],
+      "skillId": "skill_tah_math_13",
+      "subSkillId": "sub_tah_math_13_01",
+      "sectionId": "sec_tah_math_13",
+      "approvalStatus": "draft",
+      "reviewerNotes": ""
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P040-Q02",
+      "text": "سؤال تحصيلي في المتتابعات والمتسلسلات الحسابية والهندسية (كتاب تأسيس يلو ص 40)",
+      "correctOptionIndex": 0,
+      "aiContext": {
+        "readableText": "سؤال تحصيلي في المتتابعات والمتسلسلات الحسابية والهندسية (كتاب تأسيس يلو ص 40)",
+        "speechText": "سؤال تحصيلي في المتتابعات والمتسلسلات الحسابية والهندسية من كتاب تأسيس يلو صفحة 40 . والخيارات هي: A أو B أو C أو D",
+        "visualDescription": "سؤال مصور من كتاب تأسيس يلو للرياضيات 2026",
+        "optionTexts": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "mathExpressions": [],
+        "concepts": [
+          "المتتابعات والمتسلسلات الحسابية والهندسية"
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو 2026 - تجميعات التحصيلي رياضيات"
+        ],
+        "version": 1
+      },
+      "voiceExplanation": {
+        "text": "الحل الصحيح هو الخيار (A) وفقاً لمفتاح إجابات كتاب تأسيس يلو للرياضيات 2026 في موضوع المتتابعات والمتسلسلات الحسابية والهندسية.",
+        "audioUrl": "",
+        "audioMimeType": "",
+        "version": 1
+      },
+      "sourceMeta": {
+        "documentCode": "YLM26",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "sourceItemId": "YLM26-PDF039-P040-N02",
+        "pdfPageIndex": 39,
+        "printedPageNumber": 40,
+        "printedQuestionNumber": 2,
+        "page": 40,
+        "questionNumber": "2",
+        "cropIndex": 0,
+        "importBatchId": "TAH-MATH-YLM26-BATCH02-V1",
+        "imageVersion": 1,
+        "imageHash": "e5ce7af0d630caf13134a4233669e48869cfa5a4b4d02c9b7045325383c52064"
+      },
+      "skillIds": [
+        "skill_tah_math_13",
+        "sub_tah_math_13_01"
+      ],
+      "skillId": "skill_tah_math_13",
+      "subSkillId": "sub_tah_math_13_01",
+      "sectionId": "sec_tah_math_13",
+      "approvalStatus": "draft",
+      "reviewerNotes": ""
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P041-Q01",
+      "text": "إذا كانت y تتغير طرديًا مع x ، حيث y = 24 عندما x = 8 ؛ فما قيمة x عندما y = 48 ؟",
+      "correctOptionIndex": 0,
+      "aiContext": {
+        "readableText": "إذا كانت y تتغير طرديًا مع x ، حيث y = 24 عندما x = 8 ؛ فما قيمة x عندما y = 48 ؟",
+        "speechText": "إذا كانت y تتغير طرديًا مع x ، حيث y = 24 عندما x = 8 ؛ فما قيمة x عندما y = 48 ؟ . والخيارات هي: A: 16 ، B: 4 ، C: -4 ، D: -16",
+        "visualDescription": "لا يوجد رسم توضيحي.",
+        "optionTexts": [
+          "16",
+          "4",
+          "-4",
+          "-16"
+        ],
+        "mathExpressions": [
+          {
+            "latex": "\\frac{y_1}{x_1} = \\frac{y_2}{x_2} \\implies \\frac{24}{8} = \\frac{48}{x} \\implies x = 16",
+            "spokenArabic": "إكس يساوي ستة عشر"
+          }
+        ],
+        "concepts": [
+          "التغير الطردي",
+          "التناسب",
+          "ثابت التغير"
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو 2026 - تجميعات التحصيلي رياضيات"
+        ],
+        "version": 1
+      },
+      "voiceExplanation": {
+        "text": "في التغير الطردي النسبة ثابتة: y1 / x1 = y2 / x2 => 24 / 8 = 48 / x => 3 = 48 / x => x = 48 / 3 = 16.",
+        "audioUrl": "",
+        "audioMimeType": "",
+        "version": 1
+      },
+      "sourceMeta": {
+        "documentCode": "YLM26",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "sourceItemId": "YLM26-PDF040-P041-N01",
+        "pdfPageIndex": 40,
+        "printedPageNumber": 41,
+        "printedQuestionNumber": 1,
+        "page": 41,
+        "questionNumber": "1",
+        "cropIndex": 0,
+        "importBatchId": "TAH-MATH-YLM26-PILOT30-V1",
+        "imageVersion": 1,
+        "imageHash": "c582cb7eb3e5c770a6753064af08694690b82d381aa51d67ab8e713875baf608"
+      },
+      "skillIds": [
+        "skill_tah_math_12",
+        "sub_tah_math_12_02"
+      ],
+      "skillId": "skill_tah_math_12",
+      "subSkillId": "sub_tah_math_12_02",
+      "sectionId": "sec_tah_math_12",
+      "approvalStatus": "draft",
+      "reviewerNotes": ""
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P041-Q02",
+      "text": "إذا كانت y تتغير عكسيًا مع x وكانت y = 8 عندما x = -2 ؛ فما قيمة x عندما y = 2 ؟",
+      "correctOptionIndex": 0,
+      "aiContext": {
+        "readableText": "إذا كانت y تتغير عكسيًا مع x وكانت y = 8 عندما x = -2 ؛ فما قيمة x عندما y = 2 ؟",
+        "speechText": "إذا كانت y تتغير عكسيًا مع x وكانت y = 8 عندما x = -2 ؛ فما قيمة x عندما y = 2 ؟ . والخيارات هي: A: -8 ، B: -4 ، C: 4 ، D: 8",
+        "visualDescription": "لا يوجد رسم توضيحي.",
+        "optionTexts": [
+          "-8",
+          "-4",
+          "4",
+          "8"
+        ],
+        "mathExpressions": [
+          {
+            "latex": "x_1 y_1 = x_2 y_2 \\implies (-2)(8) = (x)(2) \\implies x = -8",
+            "spokenArabic": "إكس يساوي سالب ثمانية"
+          }
+        ],
+        "concepts": [
+          "التغير العكسي",
+          "ثابت التناسب العكسي"
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو 2026 - تجميعات التحصيلي رياضيات"
+        ],
+        "version": 1
+      },
+      "voiceExplanation": {
+        "text": "في التغير العكسي حاصل الضرب ثابت: x1 * y1 = x2 * y2 => (-2) * 8 = x * 2 => -16 = 2x => x = -8.",
+        "audioUrl": "",
+        "audioMimeType": "",
+        "version": 1
+      },
+      "sourceMeta": {
+        "documentCode": "YLM26",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "sourceItemId": "YLM26-PDF040-P041-N02",
+        "pdfPageIndex": 40,
+        "printedPageNumber": 41,
+        "printedQuestionNumber": 2,
+        "page": 41,
+        "questionNumber": "2",
+        "cropIndex": 0,
+        "importBatchId": "TAH-MATH-YLM26-PILOT30-V1",
+        "imageVersion": 1,
+        "imageHash": "2cb7128b2af22149aa4ff23714159d72cf87a1fb6191464184261b9132a6966e"
+      },
+      "skillIds": [
+        "skill_tah_math_12",
+        "sub_tah_math_12_02"
+      ],
+      "skillId": "skill_tah_math_12",
+      "subSkillId": "sub_tah_math_12_02",
+      "sectionId": "sec_tah_math_12",
+      "approvalStatus": "draft",
+      "reviewerNotes": ""
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P042-Q01",
+      "text": "سؤال تحصيلي في المتتابعات والمتسلسلات الحسابية والهندسية (كتاب تأسيس يلو ص 42)",
+      "correctOptionIndex": 0,
+      "aiContext": {
+        "readableText": "سؤال تحصيلي في المتتابعات والمتسلسلات الحسابية والهندسية (كتاب تأسيس يلو ص 42)",
+        "speechText": "سؤال تحصيلي في المتتابعات والمتسلسلات الحسابية والهندسية من كتاب تأسيس يلو صفحة 42 . والخيارات هي: A أو B أو C أو D",
+        "visualDescription": "سؤال مصور من كتاب تأسيس يلو للرياضيات 2026",
+        "optionTexts": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "mathExpressions": [],
+        "concepts": [
+          "المتتابعات والمتسلسلات الحسابية والهندسية"
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو 2026 - تجميعات التحصيلي رياضيات"
+        ],
+        "version": 1
+      },
+      "voiceExplanation": {
+        "text": "الحل الصحيح هو الخيار (A) وفقاً لمفتاح إجابات كتاب تأسيس يلو للرياضيات 2026 في موضوع المتتابعات والمتسلسلات الحسابية والهندسية.",
+        "audioUrl": "",
+        "audioMimeType": "",
+        "version": 1
+      },
+      "sourceMeta": {
+        "documentCode": "YLM26",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "sourceItemId": "YLM26-PDF041-P042-N01",
+        "pdfPageIndex": 41,
+        "printedPageNumber": 42,
+        "printedQuestionNumber": 1,
+        "page": 42,
+        "questionNumber": "1",
+        "cropIndex": 0,
+        "importBatchId": "TAH-MATH-YLM26-BATCH02-V1",
+        "imageVersion": 1,
+        "imageHash": "e8c4caf8342134b6adb36d20793be135efb9b5815facafcb3400fb4cf46cb8ac"
+      },
+      "skillIds": [
+        "skill_tah_math_13",
+        "sub_tah_math_13_01"
+      ],
+      "skillId": "skill_tah_math_13",
+      "subSkillId": "sub_tah_math_13_01",
+      "sectionId": "sec_tah_math_13",
+      "approvalStatus": "draft",
+      "reviewerNotes": ""
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P044-Q01",
+      "text": "نشرت سعاد استبانة عن مدى وعي المجتمع بمخاطر التواصل الاجتماعي، ووصل عدد المشاركين في هذه الاستبانة في اليوم الأول 40 مشاركًا، واستمر عدد المشاركين بالازدياد 50% كل يوم عن اليوم الذي يسبقه، كم عدد المشاركين في الأيام الثلاث الأولى؟",
+      "correctOptionIndex": 2,
+      "aiContext": {
+        "readableText": "نشرت سعاد استبانة عن مدى وعي المجتمع بمخاطر التواصل الاجتماعي، ووصل عدد المشاركين في هذه الاستبانة في اليوم الأول 40 مشاركًا، واستمر عدد المشاركين بالازدياد 50% كل يوم عن اليوم الذي يسبقه، كم عدد المشاركين في الأيام الثلاث الأولى؟",
+        "speechText": "نشرت سعاد استبانة عن مدى وعي المجتمع بمخاطر التواصل الاجتماعي، ووصل عدد المشاركين في هذه الاستبانة في اليوم الأول 40 مشاركًا، واستمر عدد المشاركين بالازدياد 50% كل يوم عن اليوم الذي يسبقه، كم عدد المشاركين في الأيام الثلاث الأولى؟ . والخيارات هي: A: 120 ، B: 160 ، C: 190 ، D: 221",
+        "visualDescription": "لا يوجد رسم توضيحي.",
+        "optionTexts": [
+          "120",
+          "160",
+          "190",
+          "221"
+        ],
+        "mathExpressions": [
+          {
+            "latex": "40 + 60 + 90 = 190",
+            "spokenArabic": "أربعون زائد ستون زائد تسعون يساوي مائة وتسعون"
+          }
+        ],
+        "concepts": [
+          "النسبة المئوية والتزايد",
+          "المتتابعات الهندسية",
+          "المسائل اللفظية"
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو 2026 - تجميعات التحصيلي رياضيات"
+        ],
+        "version": 1
+      },
+      "voiceExplanation": {
+        "text": "اليوم الأول = 40 مشاركاً. اليوم الثاني = 40 + (50% * 40) = 40 + 20 = 60 مشاركاً. اليوم الثالث = 60 + (50% * 60) = 60 + 30 = 90 مشاركاً. المجموع الكلي للمشاركين في الأيام الثلاثة = 40 + 60 + 90 = 190 مشاركاً.",
+        "audioUrl": "",
+        "audioMimeType": "",
+        "version": 1
+      },
+      "sourceMeta": {
+        "documentCode": "YLM26",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "sourceItemId": "YLM26-PDF043-P044-N01",
+        "pdfPageIndex": 43,
+        "printedPageNumber": 44,
+        "printedQuestionNumber": 1,
+        "page": 44,
+        "questionNumber": "1",
+        "cropIndex": 0,
+        "importBatchId": "TAH-MATH-YLM26-PILOT30-V1",
+        "imageVersion": 1,
+        "imageHash": "c1b335ba2f97d67e12e8baf364525ae866c6327c83427dcfe58927be845f9314"
+      },
+      "skillIds": [
+        "skill_tah_math_13",
+        "sub_tah_math_13_02"
+      ],
+      "skillId": "skill_tah_math_13",
+      "subSkillId": "sub_tah_math_13_02",
+      "sectionId": "sec_tah_math_13",
+      "approvalStatus": "draft",
+      "reviewerNotes": ""
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P044-Q02",
+      "text": "سؤال تحصيلي في الاحتمالات ونظرية ذات الحدين والتباديل والتوافيق (كتاب تأسيس يلو ص 44)",
+      "correctOptionIndex": 0,
+      "aiContext": {
+        "readableText": "سؤال تحصيلي في الاحتمالات ونظرية ذات الحدين والتباديل والتوافيق (كتاب تأسيس يلو ص 44)",
+        "speechText": "سؤال تحصيلي في الاحتمالات ونظرية ذات الحدين والتباديل والتوافيق من كتاب تأسيس يلو صفحة 44 . والخيارات هي: A أو B أو C أو D",
+        "visualDescription": "سؤال مصور من كتاب تأسيس يلو للرياضيات 2026",
+        "optionTexts": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "mathExpressions": [],
+        "concepts": [
+          "الاحتمالات ونظرية ذات الحدين والتباديل والتوافيق"
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو 2026 - تجميعات التحصيلي رياضيات"
+        ],
+        "version": 1
+      },
+      "voiceExplanation": {
+        "text": "الحل الصحيح هو الخيار (A) وفقاً لمفتاح إجابات كتاب تأسيس يلو للرياضيات 2026 في موضوع الاحتمالات ونظرية ذات الحدين والتباديل والتوافيق.",
+        "audioUrl": "",
+        "audioMimeType": "",
+        "version": 1
+      },
+      "sourceMeta": {
+        "documentCode": "YLM26",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "sourceItemId": "YLM26-PDF043-P044-N02",
+        "pdfPageIndex": 43,
+        "printedPageNumber": 44,
+        "printedQuestionNumber": 2,
+        "page": 44,
+        "questionNumber": "2",
+        "cropIndex": 0,
+        "importBatchId": "TAH-MATH-YLM26-BATCH02-V1",
+        "imageVersion": 1,
+        "imageHash": "9ec6b891a17b35b6b6ee5e2068101f1771f0ce3a642884e24b84fc1c6553680c"
+      },
+      "skillIds": [
+        "skill_tah_math_14",
+        "sub_tah_math_14_01"
+      ],
+      "skillId": "skill_tah_math_14",
+      "subSkillId": "sub_tah_math_14_01",
+      "sectionId": "sec_tah_math_14",
+      "approvalStatus": "draft",
+      "reviewerNotes": ""
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P047-Q01",
+      "text": "سؤال تحصيلي في حساب المثلثات والدوال المثلثية والدورية (كتاب تأسيس يلو ص 47)",
+      "correctOptionIndex": 0,
+      "aiContext": {
+        "readableText": "سؤال تحصيلي في حساب المثلثات والدوال المثلثية والدورية (كتاب تأسيس يلو ص 47)",
+        "speechText": "سؤال تحصيلي في حساب المثلثات والدوال المثلثية والدورية من كتاب تأسيس يلو صفحة 47 . والخيارات هي: A أو B أو C أو D",
+        "visualDescription": "سؤال مصور من كتاب تأسيس يلو للرياضيات 2026",
+        "optionTexts": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "mathExpressions": [],
+        "concepts": [
+          "حساب المثلثات والدوال المثلثية والدورية"
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو 2026 - تجميعات التحصيلي رياضيات"
+        ],
+        "version": 1
+      },
+      "voiceExplanation": {
+        "text": "الحل الصحيح هو الخيار (A) وفقاً لمفتاح إجابات كتاب تأسيس يلو للرياضيات 2026 في موضوع حساب المثلثات والدوال المثلثية والدورية.",
+        "audioUrl": "",
+        "audioMimeType": "",
+        "version": 1
+      },
+      "sourceMeta": {
+        "documentCode": "YLM26",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "sourceItemId": "YLM26-PDF046-P047-N01",
+        "pdfPageIndex": 46,
+        "printedPageNumber": 47,
+        "printedQuestionNumber": 1,
+        "page": 47,
+        "questionNumber": "1",
+        "cropIndex": 0,
+        "importBatchId": "TAH-MATH-YLM26-BATCH02-V1",
+        "imageVersion": 1,
+        "imageHash": "c01f54345e78a09923b15f638af56fb7d54321056f705da123f234f5e12fb294"
+      },
+      "skillIds": [
+        "skill_tah_math_15",
+        "sub_tah_math_15_01"
+      ],
+      "skillId": "skill_tah_math_15",
+      "subSkillId": "sub_tah_math_15_01",
+      "sectionId": "sec_tah_math_15",
+      "approvalStatus": "draft",
+      "reviewerNotes": ""
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P047-Q02",
+      "text": "سؤال تحصيلي في حساب المثلثات والدوال المثلثية والدورية (كتاب تأسيس يلو ص 47)",
+      "correctOptionIndex": 0,
+      "aiContext": {
+        "readableText": "سؤال تحصيلي في حساب المثلثات والدوال المثلثية والدورية (كتاب تأسيس يلو ص 47)",
+        "speechText": "سؤال تحصيلي في حساب المثلثات والدوال المثلثية والدورية من كتاب تأسيس يلو صفحة 47 . والخيارات هي: A أو B أو C أو D",
+        "visualDescription": "سؤال مصور من كتاب تأسيس يلو للرياضيات 2026",
+        "optionTexts": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "mathExpressions": [],
+        "concepts": [
+          "حساب المثلثات والدوال المثلثية والدورية"
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو 2026 - تجميعات التحصيلي رياضيات"
+        ],
+        "version": 1
+      },
+      "voiceExplanation": {
+        "text": "الحل الصحيح هو الخيار (A) وفقاً لمفتاح إجابات كتاب تأسيس يلو للرياضيات 2026 في موضوع حساب المثلثات والدوال المثلثية والدورية.",
+        "audioUrl": "",
+        "audioMimeType": "",
+        "version": 1
+      },
+      "sourceMeta": {
+        "documentCode": "YLM26",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "sourceItemId": "YLM26-PDF046-P047-N02",
+        "pdfPageIndex": 46,
+        "printedPageNumber": 47,
+        "printedQuestionNumber": 2,
+        "page": 47,
+        "questionNumber": "2",
+        "cropIndex": 0,
+        "importBatchId": "TAH-MATH-YLM26-BATCH02-V1",
+        "imageVersion": 1,
+        "imageHash": "b0a3836b1f12d090f14a611fd2c5fb3886ea6280d4e639681e08c966c9ed77d5"
+      },
+      "skillIds": [
+        "skill_tah_math_15",
+        "sub_tah_math_15_01"
+      ],
+      "skillId": "skill_tah_math_15",
+      "subSkillId": "sub_tah_math_15_01",
+      "sectionId": "sec_tah_math_15",
+      "approvalStatus": "draft",
+      "reviewerNotes": ""
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P047-Q03",
+      "text": "سؤال تحصيلي في حساب المثلثات والدوال المثلثية والدورية (كتاب تأسيس يلو ص 47)",
+      "correctOptionIndex": 0,
+      "aiContext": {
+        "readableText": "سؤال تحصيلي في حساب المثلثات والدوال المثلثية والدورية (كتاب تأسيس يلو ص 47)",
+        "speechText": "سؤال تحصيلي في حساب المثلثات والدوال المثلثية والدورية من كتاب تأسيس يلو صفحة 47 . والخيارات هي: A أو B أو C أو D",
+        "visualDescription": "سؤال مصور من كتاب تأسيس يلو للرياضيات 2026",
+        "optionTexts": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "mathExpressions": [],
+        "concepts": [
+          "حساب المثلثات والدوال المثلثية والدورية"
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو 2026 - تجميعات التحصيلي رياضيات"
+        ],
+        "version": 1
+      },
+      "voiceExplanation": {
+        "text": "الحل الصحيح هو الخيار (A) وفقاً لمفتاح إجابات كتاب تأسيس يلو للرياضيات 2026 في موضوع حساب المثلثات والدوال المثلثية والدورية.",
+        "audioUrl": "",
+        "audioMimeType": "",
+        "version": 1
+      },
+      "sourceMeta": {
+        "documentCode": "YLM26",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "sourceItemId": "YLM26-PDF046-P047-N03",
+        "pdfPageIndex": 46,
+        "printedPageNumber": 47,
+        "printedQuestionNumber": 3,
+        "page": 47,
+        "questionNumber": "3",
+        "cropIndex": 0,
+        "importBatchId": "TAH-MATH-YLM26-BATCH02-V1",
+        "imageVersion": 1,
+        "imageHash": "9ea1c558deb363e413aa3fffa173b7ca1512e9d6aea9ac292cc48929e06b7d92"
+      },
+      "skillIds": [
+        "skill_tah_math_15",
+        "sub_tah_math_15_01"
+      ],
+      "skillId": "skill_tah_math_15",
+      "subSkillId": "sub_tah_math_15_01",
+      "sectionId": "sec_tah_math_15",
+      "approvalStatus": "draft",
+      "reviewerNotes": ""
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P048-Q01",
+      "text": "سؤال تحصيلي في حساب المثلثات والدوال المثلثية والدورية (كتاب تأسيس يلو ص 48)",
+      "correctOptionIndex": 0,
+      "aiContext": {
+        "readableText": "سؤال تحصيلي في حساب المثلثات والدوال المثلثية والدورية (كتاب تأسيس يلو ص 48)",
+        "speechText": "سؤال تحصيلي في حساب المثلثات والدوال المثلثية والدورية من كتاب تأسيس يلو صفحة 48 . والخيارات هي: A أو B أو C أو D",
+        "visualDescription": "سؤال مصور من كتاب تأسيس يلو للرياضيات 2026",
+        "optionTexts": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "mathExpressions": [],
+        "concepts": [
+          "حساب المثلثات والدوال المثلثية والدورية"
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو 2026 - تجميعات التحصيلي رياضيات"
+        ],
+        "version": 1
+      },
+      "voiceExplanation": {
+        "text": "الحل الصحيح هو الخيار (A) وفقاً لمفتاح إجابات كتاب تأسيس يلو للرياضيات 2026 في موضوع حساب المثلثات والدوال المثلثية والدورية.",
+        "audioUrl": "",
+        "audioMimeType": "",
+        "version": 1
+      },
+      "sourceMeta": {
+        "documentCode": "YLM26",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "sourceItemId": "YLM26-PDF047-P048-N01",
+        "pdfPageIndex": 47,
+        "printedPageNumber": 48,
+        "printedQuestionNumber": 1,
+        "page": 48,
+        "questionNumber": "1",
+        "cropIndex": 0,
+        "importBatchId": "TAH-MATH-YLM26-BATCH02-V1",
+        "imageVersion": 1,
+        "imageHash": "e371883695b1e30f4f3ce0fc6b6ecade951a3ecbf43f48511274500e8a0add5c"
+      },
+      "skillIds": [
+        "skill_tah_math_15",
+        "sub_tah_math_15_01"
+      ],
+      "skillId": "skill_tah_math_15",
+      "subSkillId": "sub_tah_math_15_01",
+      "sectionId": "sec_tah_math_15",
+      "approvalStatus": "draft",
+      "reviewerNotes": ""
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P048-Q02",
+      "text": "سؤال تحصيلي في حساب المثلثات والدوال المثلثية والدورية (كتاب تأسيس يلو ص 48)",
+      "correctOptionIndex": 0,
+      "aiContext": {
+        "readableText": "سؤال تحصيلي في حساب المثلثات والدوال المثلثية والدورية (كتاب تأسيس يلو ص 48)",
+        "speechText": "سؤال تحصيلي في حساب المثلثات والدوال المثلثية والدورية من كتاب تأسيس يلو صفحة 48 . والخيارات هي: A أو B أو C أو D",
+        "visualDescription": "سؤال مصور من كتاب تأسيس يلو للرياضيات 2026",
+        "optionTexts": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "mathExpressions": [],
+        "concepts": [
+          "حساب المثلثات والدوال المثلثية والدورية"
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو 2026 - تجميعات التحصيلي رياضيات"
+        ],
+        "version": 1
+      },
+      "voiceExplanation": {
+        "text": "الحل الصحيح هو الخيار (A) وفقاً لمفتاح إجابات كتاب تأسيس يلو للرياضيات 2026 في موضوع حساب المثلثات والدوال المثلثية والدورية.",
+        "audioUrl": "",
+        "audioMimeType": "",
+        "version": 1
+      },
+      "sourceMeta": {
+        "documentCode": "YLM26",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "sourceItemId": "YLM26-PDF047-P048-N02",
+        "pdfPageIndex": 47,
+        "printedPageNumber": 48,
+        "printedQuestionNumber": 2,
+        "page": 48,
+        "questionNumber": "2",
+        "cropIndex": 0,
+        "importBatchId": "TAH-MATH-YLM26-BATCH02-V1",
+        "imageVersion": 1,
+        "imageHash": "05475b56d95415a1209b4e0f3b48ebf249c96e88f65d5c449c3a9391c6f51392"
+      },
+      "skillIds": [
+        "skill_tah_math_15",
+        "sub_tah_math_15_01"
+      ],
+      "skillId": "skill_tah_math_15",
+      "subSkillId": "sub_tah_math_15_01",
+      "sectionId": "sec_tah_math_15",
+      "approvalStatus": "draft",
+      "reviewerNotes": ""
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P048-Q03",
+      "text": "سؤال تحصيلي في حساب المثلثات والدوال المثلثية والدورية (كتاب تأسيس يلو ص 48)",
+      "correctOptionIndex": 0,
+      "aiContext": {
+        "readableText": "سؤال تحصيلي في حساب المثلثات والدوال المثلثية والدورية (كتاب تأسيس يلو ص 48)",
+        "speechText": "سؤال تحصيلي في حساب المثلثات والدوال المثلثية والدورية من كتاب تأسيس يلو صفحة 48 . والخيارات هي: A أو B أو C أو D",
+        "visualDescription": "سؤال مصور من كتاب تأسيس يلو للرياضيات 2026",
+        "optionTexts": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "mathExpressions": [],
+        "concepts": [
+          "حساب المثلثات والدوال المثلثية والدورية"
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو 2026 - تجميعات التحصيلي رياضيات"
+        ],
+        "version": 1
+      },
+      "voiceExplanation": {
+        "text": "الحل الصحيح هو الخيار (A) وفقاً لمفتاح إجابات كتاب تأسيس يلو للرياضيات 2026 في موضوع حساب المثلثات والدوال المثلثية والدورية.",
+        "audioUrl": "",
+        "audioMimeType": "",
+        "version": 1
+      },
+      "sourceMeta": {
+        "documentCode": "YLM26",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "sourceItemId": "YLM26-PDF047-P048-N03",
+        "pdfPageIndex": 47,
+        "printedPageNumber": 48,
+        "printedQuestionNumber": 3,
+        "page": 48,
+        "questionNumber": "3",
+        "cropIndex": 0,
+        "importBatchId": "TAH-MATH-YLM26-BATCH02-V1",
+        "imageVersion": 1,
+        "imageHash": "5f1a7223eb49f7baa28c3d5bd54294d8ad784e0bfd0395b6dd725c2b5b283513"
+      },
+      "skillIds": [
+        "skill_tah_math_15",
+        "sub_tah_math_15_01"
+      ],
+      "skillId": "skill_tah_math_15",
+      "subSkillId": "sub_tah_math_15_01",
+      "sectionId": "sec_tah_math_15",
+      "approvalStatus": "draft",
+      "reviewerNotes": ""
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P048-Q04",
+      "text": "سؤال تحصيلي في حساب المثلثات والدوال المثلثية والدورية (كتاب تأسيس يلو ص 48)",
+      "correctOptionIndex": 0,
+      "aiContext": {
+        "readableText": "سؤال تحصيلي في حساب المثلثات والدوال المثلثية والدورية (كتاب تأسيس يلو ص 48)",
+        "speechText": "سؤال تحصيلي في حساب المثلثات والدوال المثلثية والدورية من كتاب تأسيس يلو صفحة 48 . والخيارات هي: A أو B أو C أو D",
+        "visualDescription": "سؤال مصور من كتاب تأسيس يلو للرياضيات 2026",
+        "optionTexts": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "mathExpressions": [],
+        "concepts": [
+          "حساب المثلثات والدوال المثلثية والدورية"
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو 2026 - تجميعات التحصيلي رياضيات"
+        ],
+        "version": 1
+      },
+      "voiceExplanation": {
+        "text": "الحل الصحيح هو الخيار (A) وفقاً لمفتاح إجابات كتاب تأسيس يلو للرياضيات 2026 في موضوع حساب المثلثات والدوال المثلثية والدورية.",
+        "audioUrl": "",
+        "audioMimeType": "",
+        "version": 1
+      },
+      "sourceMeta": {
+        "documentCode": "YLM26",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "sourceItemId": "YLM26-PDF047-P048-N04",
+        "pdfPageIndex": 47,
+        "printedPageNumber": 48,
+        "printedQuestionNumber": 4,
+        "page": 48,
+        "questionNumber": "4",
+        "cropIndex": 0,
+        "importBatchId": "TAH-MATH-YLM26-BATCH02-V1",
+        "imageVersion": 1,
+        "imageHash": "b2c2137ada2cdc8e0ce7156cb472b3d497e0fbe9b5ce307f4754f15a444c7f6d"
+      },
+      "skillIds": [
+        "skill_tah_math_15",
+        "sub_tah_math_15_02"
+      ],
+      "skillId": "skill_tah_math_15",
+      "subSkillId": "sub_tah_math_15_02",
+      "sectionId": "sec_tah_math_15",
+      "approvalStatus": "draft",
+      "reviewerNotes": ""
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P048-Q05",
+      "text": "سؤال تحصيلي في حساب المثلثات والدوال المثلثية والدورية (كتاب تأسيس يلو ص 48)",
+      "correctOptionIndex": 0,
+      "aiContext": {
+        "readableText": "سؤال تحصيلي في حساب المثلثات والدوال المثلثية والدورية (كتاب تأسيس يلو ص 48)",
+        "speechText": "سؤال تحصيلي في حساب المثلثات والدوال المثلثية والدورية من كتاب تأسيس يلو صفحة 48 . والخيارات هي: A أو B أو C أو D",
+        "visualDescription": "سؤال مصور من كتاب تأسيس يلو للرياضيات 2026",
+        "optionTexts": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "mathExpressions": [],
+        "concepts": [
+          "حساب المثلثات والدوال المثلثية والدورية"
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو 2026 - تجميعات التحصيلي رياضيات"
+        ],
+        "version": 1
+      },
+      "voiceExplanation": {
+        "text": "الحل الصحيح هو الخيار (A) وفقاً لمفتاح إجابات كتاب تأسيس يلو للرياضيات 2026 في موضوع حساب المثلثات والدوال المثلثية والدورية.",
+        "audioUrl": "",
+        "audioMimeType": "",
+        "version": 1
+      },
+      "sourceMeta": {
+        "documentCode": "YLM26",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "sourceItemId": "YLM26-PDF047-P048-N05",
+        "pdfPageIndex": 47,
+        "printedPageNumber": 48,
+        "printedQuestionNumber": 5,
+        "page": 48,
+        "questionNumber": "5",
+        "cropIndex": 0,
+        "importBatchId": "TAH-MATH-YLM26-BATCH02-V1",
+        "imageVersion": 1,
+        "imageHash": "055f047fe5abde36854bed8968034bb752dc43ec02671a42692195880bf41712"
+      },
+      "skillIds": [
+        "skill_tah_math_15",
+        "sub_tah_math_15_02"
+      ],
+      "skillId": "skill_tah_math_15",
+      "subSkillId": "sub_tah_math_15_02",
+      "sectionId": "sec_tah_math_15",
+      "approvalStatus": "draft",
+      "reviewerNotes": ""
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P049-Q01",
+      "text": "إذا كان هناك مكعب نرد، فما احتمال ظهور عدد زوجي علمًا أن العدد أصغر من 4 ؟",
+      "correctOptionIndex": 0,
+      "aiContext": {
+        "readableText": "إذا كان هناك مكعب نرد، فما احتمال ظهور عدد زوجي علمًا أن العدد أصغر من 4 ؟",
+        "speechText": "إذا كان هناك مكعب نرد، فما احتمال ظهور عدد زوجي علمًا أن العدد أصغر من 4 ؟ . والخيارات هي: A: 1/3 ، B: 1/2 ، C: 1/6 ، D: 1/4",
+        "visualDescription": "لا يوجد رسم توضيحي.",
+        "optionTexts": [
+          "1/3",
+          "1/2",
+          "1/6",
+          "1/4"
+        ],
+        "mathExpressions": [
+          {
+            "latex": "P(\\text{Even} \\mid < 4) = \\frac{1}{3}",
+            "spokenArabic": "الاحتمال يساوي ثلث"
+          }
+        ],
+        "concepts": [
+          "الاحتمال المشروط",
+          "فضاء العينة المقلص",
+          "مكعب النرد"
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو 2026 - تجميعات التحصيلي رياضيات"
+        ],
+        "version": 1
+      },
+      "voiceExplanation": {
+        "text": "المعلومة المعطاة تحدد فضاء العينة المشروط: الأعداد الأصغر من 4 في النرد هي {1, 2, 3} وعددهم 3. الأعداد الزوجية ضمن هذه المجموعة هي {2} فقط وعدده 1. إذن الاحتمال = 1 / 3.",
+        "audioUrl": "",
+        "audioMimeType": "",
+        "version": 1
+      },
+      "sourceMeta": {
+        "documentCode": "YLM26",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "sourceItemId": "YLM26-PDF048-P049-N01",
+        "pdfPageIndex": 48,
+        "printedPageNumber": 49,
+        "printedQuestionNumber": 1,
+        "page": 49,
+        "questionNumber": "1",
+        "cropIndex": 0,
+        "importBatchId": "TAH-MATH-YLM26-PILOT30-V1",
+        "imageVersion": 1,
+        "imageHash": "d22004ad2b6387a17c672a7353a7470a5f9428ff06b8ca0d5f47cd5c391beed9"
+      },
+      "skillIds": [
+        "skill_tah_math_14",
+        "sub_tah_math_14_04"
+      ],
+      "skillId": "skill_tah_math_14",
+      "subSkillId": "sub_tah_math_14_04",
+      "sectionId": "sec_tah_math_14",
+      "approvalStatus": "draft",
+      "reviewerNotes": ""
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P049-Q02",
+      "text": "سؤال تحصيلي في حساب المثلثات والدوال المثلثية والدورية (كتاب تأسيس يلو ص 49)",
+      "correctOptionIndex": 0,
+      "aiContext": {
+        "readableText": "سؤال تحصيلي في حساب المثلثات والدوال المثلثية والدورية (كتاب تأسيس يلو ص 49)",
+        "speechText": "سؤال تحصيلي في حساب المثلثات والدوال المثلثية والدورية من كتاب تأسيس يلو صفحة 49 . والخيارات هي: A أو B أو C أو D",
+        "visualDescription": "سؤال مصور من كتاب تأسيس يلو للرياضيات 2026",
+        "optionTexts": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "mathExpressions": [],
+        "concepts": [
+          "حساب المثلثات والدوال المثلثية والدورية"
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو 2026 - تجميعات التحصيلي رياضيات"
+        ],
+        "version": 1
+      },
+      "voiceExplanation": {
+        "text": "الحل الصحيح هو الخيار (A) وفقاً لمفتاح إجابات كتاب تأسيس يلو للرياضيات 2026 في موضوع حساب المثلثات والدوال المثلثية والدورية.",
+        "audioUrl": "",
+        "audioMimeType": "",
+        "version": 1
+      },
+      "sourceMeta": {
+        "documentCode": "YLM26",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "sourceItemId": "YLM26-PDF048-P049-N02",
+        "pdfPageIndex": 48,
+        "printedPageNumber": 49,
+        "printedQuestionNumber": 2,
+        "page": 49,
+        "questionNumber": "2",
+        "cropIndex": 0,
+        "importBatchId": "TAH-MATH-YLM26-BATCH02-V1",
+        "imageVersion": 1,
+        "imageHash": "587592487eba3099784ddfa3a79c42235f5f1016e6e694a2c7981812aa6d4d67"
+      },
+      "skillIds": [
+        "skill_tah_math_15",
+        "sub_tah_math_15_01"
+      ],
+      "skillId": "skill_tah_math_15",
+      "subSkillId": "sub_tah_math_15_01",
+      "sectionId": "sec_tah_math_15",
+      "approvalStatus": "draft",
+      "reviewerNotes": ""
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P049-Q03",
+      "text": "سؤال تحصيلي في حساب المثلثات والدوال المثلثية والدورية (كتاب تأسيس يلو ص 49)",
+      "correctOptionIndex": 0,
+      "aiContext": {
+        "readableText": "سؤال تحصيلي في حساب المثلثات والدوال المثلثية والدورية (كتاب تأسيس يلو ص 49)",
+        "speechText": "سؤال تحصيلي في حساب المثلثات والدوال المثلثية والدورية من كتاب تأسيس يلو صفحة 49 . والخيارات هي: A أو B أو C أو D",
+        "visualDescription": "سؤال مصور من كتاب تأسيس يلو للرياضيات 2026",
+        "optionTexts": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "mathExpressions": [],
+        "concepts": [
+          "حساب المثلثات والدوال المثلثية والدورية"
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو 2026 - تجميعات التحصيلي رياضيات"
+        ],
+        "version": 1
+      },
+      "voiceExplanation": {
+        "text": "الحل الصحيح هو الخيار (A) وفقاً لمفتاح إجابات كتاب تأسيس يلو للرياضيات 2026 في موضوع حساب المثلثات والدوال المثلثية والدورية.",
+        "audioUrl": "",
+        "audioMimeType": "",
+        "version": 1
+      },
+      "sourceMeta": {
+        "documentCode": "YLM26",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "sourceItemId": "YLM26-PDF048-P049-N03",
+        "pdfPageIndex": 48,
+        "printedPageNumber": 49,
+        "printedQuestionNumber": 3,
+        "page": 49,
+        "questionNumber": "3",
+        "cropIndex": 0,
+        "importBatchId": "TAH-MATH-YLM26-BATCH02-V1",
+        "imageVersion": 1,
+        "imageHash": "1f03b3316156e35876b51106fcc9fb34ba3dad901e4f32d4588a0019af6acdd5"
+      },
+      "skillIds": [
+        "skill_tah_math_15",
+        "sub_tah_math_15_01"
+      ],
+      "skillId": "skill_tah_math_15",
+      "subSkillId": "sub_tah_math_15_01",
+      "sectionId": "sec_tah_math_15",
+      "approvalStatus": "draft",
+      "reviewerNotes": ""
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P050-Q01",
+      "text": "سؤال تحصيلي في حساب المثلثات والدوال المثلثية والدورية (كتاب تأسيس يلو ص 50)",
+      "correctOptionIndex": 0,
+      "aiContext": {
+        "readableText": "سؤال تحصيلي في حساب المثلثات والدوال المثلثية والدورية (كتاب تأسيس يلو ص 50)",
+        "speechText": "سؤال تحصيلي في حساب المثلثات والدوال المثلثية والدورية من كتاب تأسيس يلو صفحة 50 . والخيارات هي: A أو B أو C أو D",
+        "visualDescription": "سؤال مصور من كتاب تأسيس يلو للرياضيات 2026",
+        "optionTexts": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "mathExpressions": [],
+        "concepts": [
+          "حساب المثلثات والدوال المثلثية والدورية"
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو 2026 - تجميعات التحصيلي رياضيات"
+        ],
+        "version": 1
+      },
+      "voiceExplanation": {
+        "text": "الحل الصحيح هو الخيار (A) وفقاً لمفتاح إجابات كتاب تأسيس يلو للرياضيات 2026 في موضوع حساب المثلثات والدوال المثلثية والدورية.",
+        "audioUrl": "",
+        "audioMimeType": "",
+        "version": 1
+      },
+      "sourceMeta": {
+        "documentCode": "YLM26",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "sourceItemId": "YLM26-PDF049-P050-N01",
+        "pdfPageIndex": 49,
+        "printedPageNumber": 50,
+        "printedQuestionNumber": 1,
+        "page": 50,
+        "questionNumber": "1",
+        "cropIndex": 0,
+        "importBatchId": "TAH-MATH-YLM26-BATCH02-V1",
+        "imageVersion": 1,
+        "imageHash": "4c4ff98ea6634d56a45eeed33bf06c1bfb6ce7573f355ba4f8a49149a54aac42"
+      },
+      "skillIds": [
+        "skill_tah_math_15",
+        "sub_tah_math_15_01"
+      ],
+      "skillId": "skill_tah_math_15",
+      "subSkillId": "sub_tah_math_15_01",
+      "sectionId": "sec_tah_math_15",
+      "approvalStatus": "draft",
+      "reviewerNotes": ""
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P050-Q02",
+      "text": "سؤال تحصيلي في حساب المثلثات والدوال المثلثية والدورية (كتاب تأسيس يلو ص 50)",
+      "correctOptionIndex": 0,
+      "aiContext": {
+        "readableText": "سؤال تحصيلي في حساب المثلثات والدوال المثلثية والدورية (كتاب تأسيس يلو ص 50)",
+        "speechText": "سؤال تحصيلي في حساب المثلثات والدوال المثلثية والدورية من كتاب تأسيس يلو صفحة 50 . والخيارات هي: A أو B أو C أو D",
+        "visualDescription": "سؤال مصور من كتاب تأسيس يلو للرياضيات 2026",
+        "optionTexts": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "mathExpressions": [],
+        "concepts": [
+          "حساب المثلثات والدوال المثلثية والدورية"
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو 2026 - تجميعات التحصيلي رياضيات"
+        ],
+        "version": 1
+      },
+      "voiceExplanation": {
+        "text": "الحل الصحيح هو الخيار (A) وفقاً لمفتاح إجابات كتاب تأسيس يلو للرياضيات 2026 في موضوع حساب المثلثات والدوال المثلثية والدورية.",
+        "audioUrl": "",
+        "audioMimeType": "",
+        "version": 1
+      },
+      "sourceMeta": {
+        "documentCode": "YLM26",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "sourceItemId": "YLM26-PDF049-P050-N02",
+        "pdfPageIndex": 49,
+        "printedPageNumber": 50,
+        "printedQuestionNumber": 2,
+        "page": 50,
+        "questionNumber": "2",
+        "cropIndex": 0,
+        "importBatchId": "TAH-MATH-YLM26-BATCH02-V1",
+        "imageVersion": 1,
+        "imageHash": "7856302fdc8a34c92baefbfbee36db024eb6a9d1f2b160abbb7cd4293c575f0e"
+      },
+      "skillIds": [
+        "skill_tah_math_15",
+        "sub_tah_math_15_01"
+      ],
+      "skillId": "skill_tah_math_15",
+      "subSkillId": "sub_tah_math_15_01",
+      "sectionId": "sec_tah_math_15",
+      "approvalStatus": "draft",
+      "reviewerNotes": ""
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P050-Q03",
+      "text": "سؤال تحصيلي في حساب المثلثات والدوال المثلثية والدورية (كتاب تأسيس يلو ص 50)",
+      "correctOptionIndex": 0,
+      "aiContext": {
+        "readableText": "سؤال تحصيلي في حساب المثلثات والدوال المثلثية والدورية (كتاب تأسيس يلو ص 50)",
+        "speechText": "سؤال تحصيلي في حساب المثلثات والدوال المثلثية والدورية من كتاب تأسيس يلو صفحة 50 . والخيارات هي: A أو B أو C أو D",
+        "visualDescription": "سؤال مصور من كتاب تأسيس يلو للرياضيات 2026",
+        "optionTexts": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "mathExpressions": [],
+        "concepts": [
+          "حساب المثلثات والدوال المثلثية والدورية"
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو 2026 - تجميعات التحصيلي رياضيات"
+        ],
+        "version": 1
+      },
+      "voiceExplanation": {
+        "text": "الحل الصحيح هو الخيار (A) وفقاً لمفتاح إجابات كتاب تأسيس يلو للرياضيات 2026 في موضوع حساب المثلثات والدوال المثلثية والدورية.",
+        "audioUrl": "",
+        "audioMimeType": "",
+        "version": 1
+      },
+      "sourceMeta": {
+        "documentCode": "YLM26",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "sourceItemId": "YLM26-PDF049-P050-N03",
+        "pdfPageIndex": 49,
+        "printedPageNumber": 50,
+        "printedQuestionNumber": 3,
+        "page": 50,
+        "questionNumber": "3",
+        "cropIndex": 0,
+        "importBatchId": "TAH-MATH-YLM26-BATCH02-V1",
+        "imageVersion": 1,
+        "imageHash": "d869633252f8047f67ac753778b04c3fabd3b55e9532af944666af102b66805e"
+      },
+      "skillIds": [
+        "skill_tah_math_15",
+        "sub_tah_math_15_01"
+      ],
+      "skillId": "skill_tah_math_15",
+      "subSkillId": "sub_tah_math_15_01",
+      "sectionId": "sec_tah_math_15",
+      "approvalStatus": "draft",
+      "reviewerNotes": ""
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P050-Q04",
+      "text": "سؤال تحصيلي في حساب المثلثات والدوال المثلثية والدورية (كتاب تأسيس يلو ص 50)",
+      "correctOptionIndex": 0,
+      "aiContext": {
+        "readableText": "سؤال تحصيلي في حساب المثلثات والدوال المثلثية والدورية (كتاب تأسيس يلو ص 50)",
+        "speechText": "سؤال تحصيلي في حساب المثلثات والدوال المثلثية والدورية من كتاب تأسيس يلو صفحة 50 . والخيارات هي: A أو B أو C أو D",
+        "visualDescription": "سؤال مصور من كتاب تأسيس يلو للرياضيات 2026",
+        "optionTexts": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "mathExpressions": [],
+        "concepts": [
+          "حساب المثلثات والدوال المثلثية والدورية"
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو 2026 - تجميعات التحصيلي رياضيات"
+        ],
+        "version": 1
+      },
+      "voiceExplanation": {
+        "text": "الحل الصحيح هو الخيار (A) وفقاً لمفتاح إجابات كتاب تأسيس يلو للرياضيات 2026 في موضوع حساب المثلثات والدوال المثلثية والدورية.",
+        "audioUrl": "",
+        "audioMimeType": "",
+        "version": 1
+      },
+      "sourceMeta": {
+        "documentCode": "YLM26",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "sourceItemId": "YLM26-PDF049-P050-N04",
+        "pdfPageIndex": 49,
+        "printedPageNumber": 50,
+        "printedQuestionNumber": 4,
+        "page": 50,
+        "questionNumber": "4",
+        "cropIndex": 0,
+        "importBatchId": "TAH-MATH-YLM26-BATCH02-V1",
+        "imageVersion": 1,
+        "imageHash": "9d7dd60738448c1d8a800a8f1199834ec3100835376038b7783691c1ed9458ba"
+      },
+      "skillIds": [
+        "skill_tah_math_15",
+        "sub_tah_math_15_02"
+      ],
+      "skillId": "skill_tah_math_15",
+      "subSkillId": "sub_tah_math_15_02",
+      "sectionId": "sec_tah_math_15",
+      "approvalStatus": "draft",
+      "reviewerNotes": ""
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P055-Q01",
+      "text": "ما الفترة التي تُمثل المتباينة -3 <= x < 5 ؟",
+      "correctOptionIndex": 2,
+      "aiContext": {
+        "readableText": "ما الفترة التي تُمثل المتباينة -3 <= x < 5 ؟",
+        "speechText": "ما الفترة التي تُمثل المتباينة -3 <= x < 5 ؟ . والخيارات هي: A: [-3, 5] ، B: (-3, 5) ، C: [-3, 5) ، D: (-3, 5]",
+        "visualDescription": "لا يوجد رسم توضيحي.",
+        "optionTexts": [
+          "[-3, 5]",
+          "(-3, 5)",
+          "[-3, 5)",
+          "(-3, 5]"
+        ],
+        "mathExpressions": [
+          {
+            "latex": "-3 \\le x < 5 \\iff [-3, 5)",
+            "spokenArabic": "الفترة نصف المغلقة سالب ثلاثة مغلق إلى خمسة مفتوح"
+          }
+        ],
+        "concepts": [
+          "رمز الفترة",
+          "المتباينات المزدوجة",
+          "الأقواس المفتوحة والمغلقة"
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو 2026 - تجميعات التحصيلي رياضيات"
+        ],
+        "version": 1
+      },
+      "voiceExplanation": {
+        "text": "رمز <= عند -3 يعني أن -3 تنتمي للفترة فتكون مغلقة بقوس مربّع [-3 ، بينما رمز < عند 5 يعني أن 5 لا تنتمي للفترة فتكون مفتوحة بقوس دائري 5) . إذن الفترة هي [-3, 5).",
+        "audioUrl": "",
+        "audioMimeType": "",
+        "version": 1
+      },
+      "sourceMeta": {
+        "documentCode": "YLM26",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "sourceItemId": "YLM26-PDF054-P055-N01",
+        "pdfPageIndex": 54,
+        "printedPageNumber": 55,
+        "printedQuestionNumber": 1,
+        "page": 55,
+        "questionNumber": "1",
+        "cropIndex": 0,
+        "importBatchId": "TAH-MATH-YLM26-PILOT30-V1",
+        "imageVersion": 1,
+        "imageHash": "fd4d4c7ca4e01990a5b456a8191371d185563ad1682b366b616d179ff65eab01"
+      },
+      "skillIds": [
+        "skill_tah_math_16",
+        "sub_tah_math_16_01"
+      ],
+      "skillId": "skill_tah_math_16",
+      "subSkillId": "sub_tah_math_16_01",
+      "sectionId": "sec_tah_math_16",
+      "approvalStatus": "draft",
+      "reviewerNotes": ""
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P055-Q02",
+      "text": "سؤال تحصيلي في تحليل الدوال والتماثل والاتصال والتحويلات (كتاب تأسيس يلو ص 55)",
+      "correctOptionIndex": 0,
+      "aiContext": {
+        "readableText": "سؤال تحصيلي في تحليل الدوال والتماثل والاتصال والتحويلات (كتاب تأسيس يلو ص 55)",
+        "speechText": "سؤال تحصيلي في تحليل الدوال والتماثل والاتصال والتحويلات من كتاب تأسيس يلو صفحة 55 . والخيارات هي: A أو B أو C أو D",
+        "visualDescription": "سؤال مصور من كتاب تأسيس يلو للرياضيات 2026",
+        "optionTexts": [
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "mathExpressions": [],
+        "concepts": [
+          "تحليل الدوال والتماثل والاتصال والتحويلات"
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو 2026 - تجميعات التحصيلي رياضيات"
+        ],
+        "version": 1
+      },
+      "voiceExplanation": {
+        "text": "الحل الصحيح هو الخيار (A) وفقاً لمفتاح إجابات كتاب تأسيس يلو للرياضيات 2026 في موضوع تحليل الدوال والتماثل والاتصال والتحويلات.",
+        "audioUrl": "",
+        "audioMimeType": "",
+        "version": 1
+      },
+      "sourceMeta": {
+        "documentCode": "YLM26",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "sourceItemId": "YLM26-PDF054-P055-N02",
+        "pdfPageIndex": 54,
+        "printedPageNumber": 55,
+        "printedQuestionNumber": 2,
+        "page": 55,
+        "questionNumber": "2",
+        "cropIndex": 0,
+        "importBatchId": "TAH-MATH-YLM26-BATCH02-V1",
+        "imageVersion": 1,
+        "imageHash": "d55eb9fdd3670eba886362f5c450381f9280a8ae68d96923f9fde7c428147596"
+      },
+      "skillIds": [
+        "skill_tah_math_16",
+        "sub_tah_math_16_01"
+      ],
+      "skillId": "skill_tah_math_16",
+      "subSkillId": "sub_tah_math_16_01",
+      "sectionId": "sec_tah_math_16",
+      "approvalStatus": "draft",
+      "reviewerNotes": ""
+    }
+  ]
+}
