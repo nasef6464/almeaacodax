@@ -14,6 +14,7 @@ import { GroupModel } from "../models/Group.js";
 import { recordAdminAuditLog } from "../services/adminAuditLog.js";
 import { buildSchoolDirectorWorkspace, requireSchoolDirectorCapability, requireSchoolDirectorPermission } from "../modules/schools/application/schoolDirectorAccess.js";
 import { defaultSchoolDirectorPermissions, schoolDirectorPermissions } from "../modules/schools/domain/schoolDirectorPermissions.js";
+import { assertSchoolContractReference, assertSchoolMembershipReference, assertTeachingAssignmentReference } from "../modules/schools/application/schoolReferenceIntegrity.js";
 import {
   addSchoolDirectorStudent,
   buildSchoolDirectorOverview,
@@ -237,12 +238,22 @@ schoolAccessRouter.get("/entitlements/:schoolId/:module", requireAuth, asyncHand
 schoolAccessRouter.get("/contracts/:schoolId", requireAuth, requireRole(["admin"]), asyncHandler(async (req, res) => res.json({ contract: await SchoolContractModel.findOne({ schoolId: req.params.schoolId }).lean() })));
 schoolAccessRouter.put("/contracts/:schoolId", requireAuth, requireRole(["admin"]), asyncHandler(async (req, res) => {
   const payload = contractSchema.parse({ ...req.body, schoolId: req.params.schoolId });
-  const contract = await SchoolContractModel.findOneAndUpdate({ schoolId: payload.schoolId }, { $set: payload }, { new: true, upsert: true, runValidators: true });
+  const schoolId = await assertSchoolContractReference(payload.schoolId);
+  const contract = await SchoolContractModel.findOneAndUpdate(
+    { schoolId },
+    { $set: { ...payload, schoolId } },
+    { new: true, upsert: true, runValidators: true },
+  );
   res.json({ contract });
 }));
 schoolAccessRouter.put("/memberships", requireAuth, requireRole(["admin"]), asyncHandler(async (req, res) => {
   const payload = membershipSchema.parse(req.body);
-  const membership = await SchoolMembershipModel.findOneAndUpdate({ userId: payload.userId, schoolId: payload.schoolId, role: payload.role }, { $set: payload }, { new: true, upsert: true, runValidators: true });
+  const canonical = await assertSchoolMembershipReference(payload);
+  const membership = await SchoolMembershipModel.findOneAndUpdate(
+    { userId: canonical.userId, schoolId: canonical.schoolId, role: canonical.role },
+    { $set: canonical },
+    { new: true, upsert: true, runValidators: true },
+  );
   res.status(StatusCodes.OK).json({ membership });
 }));
 schoolAccessRouter.get("/directors/:schoolId", requireAuth, requireRole(["admin"]), asyncHandler(async (req, res) => {
@@ -288,6 +299,11 @@ schoolAccessRouter.put("/directors/:schoolId/:userId", requireAuth, requireRole(
 }));
 schoolAccessRouter.put("/assignments", requireAuth, requireRole(["admin"]), asyncHandler(async (req, res) => {
   const payload = assignmentSchema.parse(req.body);
-  const assignment = await TeachingAssignmentModel.findOneAndUpdate({ schoolId: payload.schoolId, teacherId: payload.teacherId, classId: payload.classId, subjectId: payload.subjectId }, { $set: payload }, { new: true, upsert: true, runValidators: true });
+  const canonical = await assertTeachingAssignmentReference(payload);
+  const assignment = await TeachingAssignmentModel.findOneAndUpdate(
+    { schoolId: canonical.schoolId, teacherId: canonical.teacherId, classId: canonical.classId, subjectId: canonical.subjectId },
+    { $set: canonical },
+    { new: true, upsert: true, runValidators: true },
+  );
   res.status(StatusCodes.OK).json({ assignment });
 }));

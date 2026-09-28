@@ -165,5 +165,17 @@ jobs:
         run: node scripts/smoke-plan6-student-learning-loop-contract.mjs
       - name: PLAN 5 residual module-boundary guard
         run: node scripts/smoke-plan5-module-boundaries.mjs
+      - name: DB-1 inventory ownership and growth baseline contract
+        run: node scripts/smoke-db1-inventory-contract.mjs
+      - name: DB-2 schema and relationship integrity contract
+        run: node scripts/smoke-db2-reference-integrity-contract.mjs
+      - name: DB-3 query and index engineering contract
+        run: node scripts/smoke-db3-query-index-contract.mjs
+      - name: DB-4 high-volume data growth contract
+        run: node scripts/smoke-db4-growth-budget-contract.mjs
+      - name: DB-5 consistency and idempotency contract
+        run: node scripts/smoke-db5-consistency-contract.mjs
+      - name: DB-6 final database certification contract
+        run: node scripts/smoke-db6-final-certification-contract.mjs
       - name: Full handover gate suite
         run: npm run smoke:handover:all

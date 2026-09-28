@@ -4,11 +4,12 @@ import { schoolDirectorPermissions } from "../modules/schools/domain/schoolDirec
 /** Additive school context. User.schoolId remains the legacy compatibility field. */
 const schoolMembershipSchema = new Schema(
   {
-    userId: { type: String, required: true, index: true },
-    schoolId: { type: String, required: true, index: true },
+    userId: { type: String, required: true, trim: true, index: true },
+    schoolId: { type: String, required: true, trim: true, index: true },
     role: { type: String, enum: ["student", "teacher", "supervisor", "school_admin", "parent"], required: true },
     status: { type: String, enum: ["active", "inactive"], default: "active" },
     permissions: { type: [{ type: String, enum: schoolDirectorPermissions }], default: [] },
+    migrationKey: { type: String, default: undefined },
   },
   { timestamps: true },
 );

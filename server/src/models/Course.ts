@@ -1,4 +1,5 @@
 import mongoose, { Schema } from "mongoose";
+import { DB_GROWTH_BUDGETS, assertDocumentGrowthBudget } from "../modules/database/dbGrowthBudgets.js";
 
 const moduleSchema = new Schema(
   {
@@ -95,6 +96,10 @@ const courseSchema = new Schema(
     timestamps: true,
   },
 );
+
+courseSchema.pre("validate", function enforceCourseGrowthBudget() {
+  assertDocumentGrowthBudget("Course", this.toObject({ depopulate: true, versionKey: false }), DB_GROWTH_BUDGETS.courseDocumentBytes);
+});
 
 courseSchema.index({ createdAt: -1 });
 courseSchema.index({ isPublished: 1, showOnPlatform: 1, createdAt: -1 });

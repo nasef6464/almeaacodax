@@ -1,4 +1,5 @@
 import mongoose, { Schema } from "mongoose";
+import { DB_GROWTH_BUDGETS, assertDocumentGrowthBudget } from "../modules/database/dbGrowthBudgets.js";
 
 const announcementAdSchema = new Schema(
   {
@@ -24,6 +25,10 @@ const announcementAdSchema = new Schema(
     timestamps: true,
   },
 );
+
+announcementAdSchema.pre("validate", function enforceAnnouncementGrowthBudget() {
+  assertDocumentGrowthBudget("AnnouncementAd", this.toObject({ depopulate: true, versionKey: false }), DB_GROWTH_BUDGETS.announcementDocumentBytes);
+});
 
 announcementAdSchema.pre("findOneAndUpdate", function updateTimestamp(next) {
   this.set({ updatedAt: Date.now() });
