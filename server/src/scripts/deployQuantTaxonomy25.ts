@@ -455,136 +455,89 @@ export async function deploy() {
   console.log(`Created 25 parent topics and 95 child topics matching the approved taxonomy`);
 
   // 5. QUESTIONS MAPPING PHASE
-  console.log("\n--- Phase 5: Re-tagging 2,314 Questions with Domain Mapping ---");
+  console.log("\n--- Phase 5: Canonicalizing Existing Question Taxonomy Without Reclassification ---");
   const questionsCol = db.collection("questions");
   const allQuestions = await questionsCol.find({ subject: subjectId }).toArray();
-  console.log(`Found ${allQuestions.length} questions to re-tag for subject ${subjectId}`);
+  console.log(`Found ${allQuestions.length} questions to validate for subject ${subjectId}`);
 
-  // Mapping question to main skill using sectionId & tags
-  function determineMainSkill(q: any): string {
-    const secNum = parseInt((q.sectionId || "").split("_").pop() || "0", 10);
-    const tags = (q.tags || []).join(" ");
-    const expl = q.explanation || "";
-    const text = `${tags} ${expl} ${q.question || ""}`;
-
-    if (secNum === 1 || secNum === 2) {
-      if (text.includes("خانة الآحاد") || text.includes("آحاد")) return "skill_quant_01";
-      if (text.includes("أولي") || text.includes("أولية") || text.includes("عوامل أولية") || text.includes("يقبل القسمة") || text.includes("باقي")) return "skill_quant_02";
-      return "skill_quant_01";
-    }
-    if (secNum === 3) return "skill_quant_02";
-    if (secNum === 4) {
-      if (text.includes("ساعة") || text.includes("عقرب") || text.includes("عقارب") || text.includes("زاوية الدقائق")) return "skill_quant_15";
-      return "skill_quant_14";
-    }
-    if (secNum === 5) return "skill_quant_03";
-    if (secNum === 6) return "skill_quant_04";
-    if (secNum === 7) {
-      if (text.includes("جذر") || text.includes("الجذور") || text.includes("إنطاق")) return "skill_quant_06";
-      return "skill_quant_05";
-    }
-    if (secNum === 8) return "skill_quant_08";
-    if (secNum === 9) {
-      if (text.includes("ربح") || text.includes("خسارة") || text.includes("بيع") || text.includes("شراء") || text.includes("زكاة") || text.includes("راتب")) return "skill_quant_10";
-      return "skill_quant_09";
-    }
-    if (secNum === 10) return "skill_quant_07";
-    if (secNum === 11) return "skill_quant_17";
-    if (secNum === 12) return "skill_quant_18";
-    if (secNum === 13 || secNum === 15) return "skill_quant_13";
-    if (secNum === 14) return "skill_quant_12";
-    if (secNum === 16) return "skill_quant_16";
-    if (secNum === 17) return "skill_quant_19";
-    if (secNum === 18) return "skill_quant_20";
-    if (secNum === 19) {
-      if (text.includes("مربع")) return "skill_quant_22";
-      if (text.includes("معين") || text.includes("متوازي أضلاع") || text.includes("شبه منحرف")) return "skill_quant_23";
-      return "skill_quant_21";
-    }
-    if (secNum === 20 || secNum === 21) {
-      if (text.includes("دائرة") || text.includes("مظلل") || text.includes("نق") || text.includes("ط")) return "skill_quant_24";
-      if (text.includes("مستطيل")) return "skill_quant_21";
-      if (text.includes("مثلث")) return "skill_quant_20";
-      if (text.includes("مربع")) return "skill_quant_22";
-      return "skill_quant_24";
-    }
-    if (secNum === 22 || secNum === 23) return "skill_quant_25";
-    if (secNum === 24) return "skill_quant_11";
-
-    return "skill_quant_01";
-  }
-
-  // Group questions by main skill
-  const skillToQuestionsMap: Record<string, any[]> = {};
-  for (const s of QUANT_TAXONOMY) {
-    skillToQuestionsMap[s.id] = [];
-  }
-
-  for (const q of allQuestions) {
-    const mainSkillId = determineMainSkill(q);
-    skillToQuestionsMap[mainSkillId].push(q);
-  }
-
-  // Assign subskills within each main skill
+  // IMPORTANT:
+  // Never distribute questions across subskills by round-robin and never infer a
+  // subskill merely to make coverage look complete. The source-approved
+  // subSkillId is the semantic classification. This phase only canonicalizes
+  // parent/main-skill identity and the skillIds array around that approved
+  // subskill.
+  const subSkillParentMap = new Map<
+    string,
+    { mainSkillId: string; sectionId: string }
+  >();
   const subSkillQuestionsMap: Record<string, string[]> = {};
   const mainSkillQuestionsMap: Record<string, string[]> = {};
 
-  const bulkOps = [];
-  let explanationsAdded = 0;
-
-  for (const item of QUANT_TAXONOMY) {
-    const sQuestions = skillToQuestionsMap[item.id] || [];
+  for (let i = 0; i < QUANT_TAXONOMY.length; i++) {
+    const item = QUANT_TAXONOMY[i];
+    const sectionId = `sec_sub_1777779748206_${i + 1}`;
     mainSkillQuestionsMap[item.id] = [];
-    const subs = item.subSkills;
-
-    for (const sub of subs) {
+    for (const sub of item.subSkills) {
+      subSkillParentMap.set(sub.id, { mainSkillId: item.id, sectionId });
       subSkillQuestionsMap[sub.id] = [];
     }
+  }
 
-    // Distribute questions evenly / round-robin so all subskills receive questions
-    for (let idx = 0; idx < sQuestions.length; idx++) {
-      const q = sQuestions[idx];
-      const targetSub = subs[idx % subs.length];
-      const qIdStr = q._id.toString();
+  const invalidMappings: Array<{ questionId: string; questionCode: string; subSkillId: string }> = [];
+  const canonicalOps: any[] = [];
 
-      subSkillQuestionsMap[targetSub.id].push(qIdStr);
-      mainSkillQuestionsMap[item.id].push(qIdStr);
+  for (const q of allQuestions) {
+    const qIdStr = String(q._id);
+    const explicitSubSkillId = String(q.subSkillId || "").trim();
+    const fallbackSubSkillId = (Array.isArray(q.skillIds) ? q.skillIds : [])
+      .map((id: unknown) => String(id || "").trim())
+      .find((id: string) => subSkillParentMap.has(id)) || "";
+    const subSkillId = explicitSubSkillId || fallbackSubSkillId;
+    const canonical = subSkillParentMap.get(subSkillId);
 
-      let expl = (q.explanation || "").trim();
-      if (expl.length < 10) {
-        const correctOpt = q.options && q.options[q.correctOptionIndex] !== undefined ? q.options[q.correctOptionIndex] : "الخيار الصحيح";
-        expl = `طريقة الحل المنهجية: بتطبيق القواعد الأساسية للمسألة والتعويض المباشر، نجد أن الناتج الصحيح هو (${correctOpt}).`;
-        explanationsAdded++;
-      }
+    if (!canonical) {
+      invalidMappings.push({
+        questionId: qIdStr,
+        questionCode: String(q.questionCode || q.id || qIdStr),
+        subSkillId,
+      });
+      continue;
+    }
 
-      bulkOps.push({
-        updateOne: {
-          filter: { _id: q._id },
-          update: {
-            $set: {
-              skillId: item.id,
-              subSkillId: targetSub.id,
-              skillIds: [item.id, targetSub.id],
-              explanation: expl,
-              updatedAt: new Date(),
-            },
+    subSkillQuestionsMap[subSkillId].push(qIdStr);
+    mainSkillQuestionsMap[canonical.mainSkillId].push(qIdStr);
+
+    canonicalOps.push({
+      updateOne: {
+        filter: { _id: q._id },
+        update: {
+          $set: {
+            skillId: canonical.mainSkillId,
+            subSkillId,
+            skillIds: [canonical.mainSkillId, subSkillId],
+            sectionId: canonical.sectionId,
+            updatedAt: new Date(),
           },
         },
-      });
-
-      if (bulkOps.length >= 500) {
-        await questionsCol.bulkWrite(bulkOps);
-        bulkOps.length = 0;
-      }
-    }
+      },
+    });
   }
 
-  if (bulkOps.length > 0) {
-    await questionsCol.bulkWrite(bulkOps);
+  if (invalidMappings.length > 0) {
+    const sample = invalidMappings.slice(0, 20);
+    throw new Error(
+      `Refusing taxonomy deployment: ${invalidMappings.length} questions have no valid canonical subskill. ` +
+      `Fix them explicitly from source evidence before continuing. Sample: ${JSON.stringify(sample)}`
+    );
   }
 
-  console.log(`Re-tagged ${allQuestions.length} questions across 25 skills and 95 subskills.`);
-  console.log(`Ensured explanations for all questions (injected ${explanationsAdded} cached explanations).`);
+  for (let i = 0; i < canonicalOps.length; i += 500) {
+    await questionsCol.bulkWrite(canonicalOps.slice(i, i + 500));
+  }
+
+  console.log(
+    `Canonicalized ${canonicalOps.length} question mappings without changing semantic subskill assignments.`
+  );
 
   // 6. QUIZZES PHASE
   console.log("\n--- Phase 6: Cleaning and Regenerating Aligned Quizzes ---");
