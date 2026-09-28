@@ -7,9 +7,9 @@ Source-of-truth rule: the rendered source PDF/image is authoritative for questio
 
 ## Live dataset state
 - Total records: **946**
-- Draft: **943**
-- Rejected source defects: **3**
-- Approved: **0** (intentional: the collection remains isolated until full certification)
+- Draft: **0**
+- Rejected source defects: **7**
+- Approved: **939**
 - Missing imageUrl: **0**
 - Missing image hash: **0**
 - Missing voice explanation: **0**
@@ -48,7 +48,17 @@ Source-image review exposed four page-11 transcription defects where the stored 
    - verified result: **1/4 / د**
 
 ## Source defects quarantined
-Three source defects are now `rejected` and have no references in quizzes / assessment versions / assignments / public barcode tests:
+Seven source defects are now `rejected` and have no references in quizzes / assessment versions / public barcode tests:
+
+1. `QDR-QNT-COL2627-P009-Q05` — printed expression gives **-1.48**, no option matches; source key marks **ج**.
+2. `QDR-QNT-COL2627-P033-Q45` — printed equation yields **س=-10**, but the printed options do not contain -10; source key marks **ب=-3**.
+3. `QDR-QNT-COL2627-P033-Q46` — printed equation yields **س=-160/3**, but no option matches; source key marks **أ=-10**.
+4. `QDR-QNT-COL2627-P046-Q38` — for `ع<0`, the second value is always larger (**ب**), while source key marks **د**.
+5. `QDR-QNT-COL2627-P050-Q32` — equal-distance average speed of 100 and 80 is **800/9 ≈ 88.89**, while no exact option matches and the key marks **ب=90**.
+6. `QDR-QNT-COL2627-P051-Q01` — six people produce **15** unique handshakes (**أ**), while the source key marks **ج=30**.
+7. `QDR-QNT-COL2627-P053-Q07` — geometry gives **120°** and the source itself notes “الإجابة الأصح = 120”, but 120 is absent from the options and the source key marks **ب=118**.
+
+Historical three-defect list below is retained only as an earlier checkpoint:
 
 1. `QDR-QNT-COL2627-P009-Q05`
    - printed expression evaluates to **-1.48**
@@ -73,14 +83,14 @@ Three source defects are now `rejected` and have no references in quizzes / asse
 
 ## Whole-bank key reconciliation checkpoint
 - Printed answer-key comparison completed across the full imported set.
-- **945/946** live answer indexes match the printed source key.
-- The single live mismatch was `QDR-QNT-COL2627-P074-Q08`, now corrected to **د / 360**.
-- The three rejected records intentionally retain their printed source-key index for provenance while reviewer notes and voice explanation document the mathematical/source defect.
+- After correcting `QDR-QNT-COL2627-P074-Q08`, **946/946** live answer indexes now match the printed source key.
+- Rejected records intentionally retain the printed source-key index for provenance; their reviewer notes and voice explanation document why the printed source itself is defective.
 
 ## Structural checkpoint
 - Total: **946**
-- Draft: **943**
-- Rejected: **3**
+- Approved: **939**
+- Draft: **0**
+- Rejected: **7**
 - Missing images/hashes/voice/AI readable text: **0**
 - Invalid answer indexes / malformed 4-choice presentation: **0**
 - Generic voice explanations detected: **0**
@@ -104,15 +114,26 @@ Three source defects are now `rejected` and have no references in quizzes / asse
 
 ## Coverage checkpoint after semantic corrections
 - Main skills represented: **25/25**
-- Subskills represented by usable COL2627 questions: **91/95**
+- Subskills represented by approved COL2627 questions: **91/95**
 - Currently absent from COL2627 source content after audit:
   - `sub_quant_11_4` التدرج المنتظم والتقريب البديهي
-  - `sub_quant_15_3` زاوية الدقيقة الواحدة ومسائل الساعات المتقدمة
+  - `sub_quant_15_1` حساب الزاوية الصغرى والكبرى بين عقرب الساعات وعقرب الدقائق (its only remaining source item is rejected)
   - `sub_quant_16_3` مجموع وفروق الأعمار وثبات الفرق الزمني
   - `sub_quant_18_3` قراءة وتفسير الجداول والرسوم والقطاعات الدائرية
 - Absence alone is not treated as a defect; no synthetic questions or artificial remapping will be introduced merely to force 95/95 coverage.
 
-## Current gate
-**NOT YET CONTENT-LOCKED.**
+## Final gate
+**CONTENT-LOCKED / GREEN**
 
-The dataset remains draft/rejected only. Remaining work is the continuing page-by-page semantic/text/AI/voice audit before approval. No rejected source defect will be allowed into an assessment.
+- Approved usable questions: **939**
+- Rejected source defects: **7**
+- Draft: **0**
+- Duplicate codes / source IDs / image hashes / image URLs: **0**
+- Missing image / image hash / voice / AI readable text: **0**
+- Invalid answer index / malformed 4-choice presentation: **0**
+- Canonical main/subskill pair errors: **0**
+- `sectionId` / `skillIds` structural mismatches: **0**
+- Rejected-question references in quizzes / assessment versions / public barcode tests: **0**
+- Approved questions carrying source-defect language: **0**
+
+No rejected source defect is eligible for assessment use.
