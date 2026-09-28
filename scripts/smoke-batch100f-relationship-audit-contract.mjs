@@ -156,7 +156,7 @@ check("Local store persists both user-side and group-side relationship changes",
   assertIncludes(sources.store, "createStudentGroupMembershipSlice");
   assertIncludes(sources.studentMembership, "assignStudentToGroup");
   assertIncludes(sources.studentMembership, "api.updateAdminUser(userId");
-  assertIncludes(sources.studentMembership, "api.updateGroup(persistedGroup.id");
+  assertIncludes(sources.studentMembership, "api.updateGroup(group.id");
   assertIncludes(sources.studentMembership, "removeStudentFromGroup");
   assertIncludes(sources.store, "assignSupervisorToGroup");
   assertIncludes(sources.store, "removeSupervisorFromGroup");
