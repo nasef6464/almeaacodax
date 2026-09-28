@@ -10,6 +10,7 @@ import { assertManagedContentScope } from "../../../services/managedContentScope
 import { resolveCanonicalQuestionSkillIds } from "../application/questionSkillTaxonomy.js";
 import { questionSchema } from "./questionQuerySchemas.js";
 import { questionImportBatchParamsSchema, questionImportBatchSchema } from "./questionImportSchemas.js";
+import { parseQuestionCode } from "../domain/questionImportIdentity.js";
 
 export const questionImportRouter = Router();
 
@@ -42,8 +43,13 @@ const validateImportIdentity = (item: any, questionCode: string) => {
     return "Canonical source coordinates are required for Pilot import";
   }
 
+  const parsed = parseQuestionCode(questionCode);
+  if (!parsed.valid || !parsed.prefix) {
+    return "questionCode must be a valid QDR-QNT or TAH-MATH canonical code";
+  }
+
   const expectedQuestionCode =
-    `QDR-QNT-${documentCode}-P${padSourceNumber(printedPageNumber, 3)}-Q${padSourceNumber(printedQuestionNumber, 2)}`;
+    `${parsed.prefix}-${documentCode}-P${padSourceNumber(printedPageNumber, 3)}-Q${padSourceNumber(printedQuestionNumber, 2)}`;
   if (questionCode !== expectedQuestionCode) {
     return `questionCode must match canonical source identity: ${expectedQuestionCode}`;
   }

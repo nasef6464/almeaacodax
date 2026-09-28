@@ -22,8 +22,8 @@ const batchId = String(process.env.QUESTION_PILOT_BATCH_ID || "QBANK-COL2627-PIL
   .trim()
   .toUpperCase();
 const expectedCount = Number(process.env.QUESTION_PILOT_EXPECTED_COUNT || "5");
-if (![5, 40].includes(expectedCount)) {
-  throw new Error("QUESTION_PILOT_EXPECTED_COUNT must be 5 or 40");
+if (![5, 30, 40].includes(expectedCount)) {
+  throw new Error("QUESTION_PILOT_EXPECTED_COUNT must be 5, 30, or 40");
 }
 const outputFile = required("QUESTION_PILOT_OUTPUT_FILE");
 

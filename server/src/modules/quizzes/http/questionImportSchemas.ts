@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { questionBaseSchema } from "./questionQuerySchemas.js";
+import { QUESTION_CODE_REGEX } from "../domain/questionImportIdentity.js";
 
 const sourceMetaSchema = questionBaseSchema.shape.sourceMeta.unwrap();
 
@@ -10,7 +11,7 @@ const batchIdSchema = z.string()
   .regex(/^[A-Z0-9][A-Z0-9._-]+$/, "Batch ID must use uppercase letters, digits, dot, underscore or dash");
 
 const importItemSchema = questionBaseSchema.extend({
-  questionCode: z.string().trim().toUpperCase().regex(/^QDR-QNT-[A-Z0-9_-]+-P\d{3}-Q\d{2,}$/).max(120),
+  questionCode: z.string().trim().toUpperCase().regex(QUESTION_CODE_REGEX, "Question code must follow QDR-QNT or TAH-MATH approved format").max(120),
   sourceMeta: sourceMetaSchema.extend({
     sourceItemId: z.string().trim().min(3).max(200),
     importBatchId: z.string().trim().max(160).optional(),
