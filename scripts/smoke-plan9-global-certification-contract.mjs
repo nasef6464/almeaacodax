@@ -53,6 +53,16 @@ assert(safetyGate.includes("baseline-quality-gate"), "safety baseline gate missi
 assert(recoveryGate.includes("Core build + architecture") && recoveryGate.includes("Auth + security regression"), "recovery/security suites missing");
 assert(productionGate.includes("readiness"), "production readiness suite missing");
 assert(phaseGate.includes("PLAN 8 question bank integrity guard") && phaseGate.includes("PLAN 7 AI certification prerequisites"), "plan lineage guards missing");
+for (const marker of [
+  "PLAN 9 Smart Classroom security contract",
+  "PLAN 9 Smart Classroom UI/API contract",
+  "PLAN 9 Smart Classroom live-journey contract",
+  "PLAN 9 Smart Classroom hardening contract",
+  "PLAN 9 Smart Classroom report/entitlement contract",
+  "PLAN 9 Smart Classroom projector privacy contract",
+  "PLAN 9 privacy lifecycle contract",
+  "Exam and payment phase 8 contract",
+]) assert(phaseGate.includes(marker), `PLAN 9 domain certification step missing: ${marker}`);
 
 for (const endpoint of ["/live", "/ready", "/scale-ready", "/scale-metrics"]) assert(health.includes(endpoint), `health/observability endpoint missing: ${endpoint}`);
 assert(health.includes("failedCriticalChecks") && health.includes("warnings") && health.includes("resolveRuntimeCommit"), "health release/observability evidence missing");
