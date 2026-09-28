@@ -53,6 +53,10 @@ paymentRequestSchema.set("toJSON", {
 
 paymentRequestSchema.index({ status: 1, createdAt: -1 });
 paymentRequestSchema.index({ userId: 1, status: 1, createdAt: -1 });
+paymentRequestSchema.index(
+  { userId: 1, itemType: 1, itemId: 1 },
+  { unique: true, partialFilterExpression: { status: "pending" }, name: "unique_pending_purchase_per_item" },
+);
 paymentRequestSchema.index({ packageId: 1, status: 1, createdAt: -1 });
 paymentRequestSchema.index({ discountCodeId: 1, status: 1, createdAt: -1 });
 paymentRequestSchema.index({ paymentProviderCode: 1, status: 1, createdAt: -1 });

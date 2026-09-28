@@ -137,6 +137,22 @@ jobs:
         run: npm run smoke:deployment-handover-phase19
       - name: Current handover contract
         run: npm run smoke:handover-current
+      - name: PLAN 9 Smart Classroom security contract
+        run: npm run smoke:smart-classroom-g0
+      - name: PLAN 9 Smart Classroom UI/API contract
+        run: npm run smoke:smart-classroom-g2-contract
+      - name: PLAN 9 Smart Classroom live-journey contract
+        run: node scripts/smoke-smart-classroom-live-journey-contract.mjs
+      - name: PLAN 9 Smart Classroom hardening contract
+        run: node scripts/smoke-smart-classroom-hardening-contract.mjs
+      - name: PLAN 9 Smart Classroom report/entitlement contract
+        run: node scripts/smoke-smart-classroom-report-insights-contract.mjs
+      - name: PLAN 9 Smart Classroom projector privacy contract
+        run: node scripts/smoke-smart-classroom-projector-reveal-contract.mjs
+      - name: PLAN 9 privacy lifecycle contract
+        run: node scripts/smoke-privacy-lifecycle-contract.mjs
+      - name: PLAN 9 independent global certification guard
+        run: node scripts/smoke-plan9-global-certification-contract.mjs
       - name: PLAN 8 question bank integrity guard
         run: |
           node scripts/smoke-plan8-question-integrity-contract.mjs
@@ -149,5 +165,17 @@ jobs:
         run: node scripts/smoke-plan6-student-learning-loop-contract.mjs
       - name: PLAN 5 residual module-boundary guard
         run: node scripts/smoke-plan5-module-boundaries.mjs
+      - name: DB-1 inventory ownership and growth baseline contract
+        run: node scripts/smoke-db1-inventory-contract.mjs
+      - name: DB-2 schema and relationship integrity contract
+        run: node scripts/smoke-db2-reference-integrity-contract.mjs
+      - name: DB-3 query and index engineering contract
+        run: node scripts/smoke-db3-query-index-contract.mjs
+      - name: DB-4 high-volume data growth contract
+        run: node scripts/smoke-db4-growth-budget-contract.mjs
+      - name: DB-5 consistency and idempotency contract
+        run: node scripts/smoke-db5-consistency-contract.mjs
+      - name: DB-6 final database certification contract
+        run: node scripts/smoke-db6-final-certification-contract.mjs
       - name: Full handover gate suite
         run: npm run smoke:handover:all

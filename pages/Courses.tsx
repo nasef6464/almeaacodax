@@ -140,11 +140,12 @@ const Courses: React.FC = () => {
                         type="text" 
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        placeholder="ابحث في دوراتي..." 
+                        placeholder="ابحث في دوراتي..."
+                        aria-label="البحث في الدورات"
                         className="w-full pr-10 pl-4 py-3 rounded-xl border border-gray-200 focus:border-secondary-500 focus:ring-1 focus:ring-secondary-500 outline-none transition-all"
                     />
                 </div>
-                <button className="bg-white border border-gray-200 text-gray-600 px-4 py-3 rounded-xl hover:bg-gray-50 transition-colors w-full sm:w-auto flex items-center justify-center">
+                <button type="button" aria-label="خيارات فلترة الدورات" title="فلترة الدورات" className="bg-white border border-gray-200 text-gray-600 px-4 py-3 rounded-xl hover:bg-gray-50 transition-colors w-full sm:w-auto flex items-center justify-center">
                     <Filter size={20} />
                 </button>
             </div>

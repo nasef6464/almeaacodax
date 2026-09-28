@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { DB_GROWTH_BUDGETS } from "../../database/dbGrowthBudgets.js";
 
 export const passwordStrengthSchema = z.string()
   .min(8, "Password must be at least 8 characters")
@@ -53,13 +54,13 @@ export const adminTrainersQuerySchema = z.object({
 
 export const preferencesSchema = z.object({
   favorites: z.array(z.string()).optional(), reviewLater: z.array(z.string()).optional(),
-  enrolledPaths: z.array(z.string()).optional(), completedLessons: z.array(z.string()).optional(),
+  enrolledPaths: z.array(z.string()).optional(), completedLessons: z.array(z.string()).max(DB_GROWTH_BUDGETS.legacyCompletedLessons).optional(),
   interactiveVideoProgress: z.array(z.object({
     courseId: z.string().min(1).max(160), lessonId: z.string().min(1).max(160),
     positionSeconds: z.number().finite().min(0).max(86_400),
-    answeredQuestionIds: z.array(z.string().min(1).max(160)).max(100),
+    answeredQuestionIds: z.array(z.string().min(1).max(160)).max(DB_GROWTH_BUDGETS.answeredQuestionIdsPerLesson),
     updatedAt: z.number().int().positive(),
-  })).max(100).optional(),
+  })).max(DB_GROWTH_BUDGETS.interactiveVideoProgressRows).optional(),
 });
 export const updateMyProfileSchema = z.object({ name: z.string().min(2).max(120).optional(), avatar: z.string().max(2_000_000).optional() });
 export const redeemAccessCodeSchema = z.object({ code: z.string().min(4) });

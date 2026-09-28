@@ -1,4 +1,5 @@
 import mongoose, { Schema } from "mongoose";
+import { DB_GROWTH_BUDGETS, assertDocumentGrowthBudget } from "../modules/database/dbGrowthBudgets.js";
 
 const questionSnapshotSchema = new Schema(
   {
@@ -50,9 +51,9 @@ const classroomSessionSchema = new Schema(
     subjectName: { type: String, default: "" },
     className: { type: String, default: "" },
     publishedMode: { type: String, enum: ["single", "batch"], default: "single" },
-    publishedQuestionIds: { type: [String], default: [] },
-    questionSnapshots: { type: [questionSnapshotSchema], default: [] },
-    questionBatches: { type: [questionBatchSchema], default: [] },
+    publishedQuestionIds: { type: [String], default: [], validate: { validator: (value: string[]) => value.length <= DB_GROWTH_BUDGETS.classroomSessionQuestions, message: "publishedQuestionIds exceeds growth budget" } },
+    questionSnapshots: { type: [questionSnapshotSchema], default: [], validate: { validator: (value: unknown[]) => value.length <= DB_GROWTH_BUDGETS.classroomSessionQuestions, message: "questionSnapshots exceeds growth budget" } },
+    questionBatches: { type: [questionBatchSchema], default: [], validate: { validator: (value: unknown[]) => value.length <= DB_GROWTH_BUDGETS.classroomSessionBatches, message: "questionBatches exceeds growth budget" } },
     activeBatchId: { type: String, default: "" },
     activeQuestionIndex: { type: Number, default: null },
     pinHash: { type: String, required: true, index: true },
@@ -66,6 +67,10 @@ const classroomSessionSchema = new Schema(
     autoIndex: process.env.NODE_ENV !== "production",
   },
 );
+
+classroomSessionSchema.pre("validate", function enforceClassroomGrowthBudget() {
+  assertDocumentGrowthBudget("ClassroomSession", this.toObject({ depopulate: true, versionKey: false }), DB_GROWTH_BUDGETS.classroomSessionDocumentBytes);
+});
 
 classroomSessionSchema.index({ schoolId: 1, classId: 1, status: 1, createdAt: -1 });
 classroomSessionSchema.index(

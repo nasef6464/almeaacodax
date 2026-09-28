@@ -277,22 +277,80 @@ export const createSchoolDirectorIntervention = async (schoolId: string, actorId
 
 export const transferSchoolDirectorStudent = async (sourceSchoolId: string, targetSchoolId: string, studentId: string, targetClassId: string) => {
   if (sourceSchoolId === targetSchoolId) throw new SchoolDirectorOperationError("Use class move inside the same school", 400);
-  const [{ scope: source, student }, target] = await Promise.all([loadScopedStudent(sourceSchoolId, studentId), loadSchoolScope(targetSchoolId)]);
+  const [source, target] = await Promise.all([loadSchoolScope(sourceSchoolId), loadSchoolScope(targetSchoolId)]);
   const targetClass = target.classes.find((item) => idOf(item) === targetClassId);
   if (!targetClass) throw new SchoolDirectorOperationError("Target class does not belong to target school", 400);
+
+  const rawStudent = await UserModel.findOne(documentQuery(studentId)).select("id name email phone role isActive schoolId groupIds");
+  if (!rawStudent || String(rawStudent.role) !== "student") throw new SchoolDirectorOperationError("Student not found", 404);
+  const canonicalStudentId = idOf(rawStudent);
+  const targetClassCanonicalId = idOf(targetClass);
+  const currentGroups = uniqueStrings(rawStudent.groupIds || []);
+
+  if (String(rawStudent.schoolId || "") === target.schoolId && currentGroups.includes(targetClassCanonicalId)) {
+    const [targetMembership, sourceMembership] = await Promise.all([
+      SchoolMembershipModel.exists({ userId: canonicalStudentId, schoolId: target.schoolId, role: "student", status: "active" }),
+      SchoolMembershipModel.exists({ userId: canonicalStudentId, schoolId: source.schoolId, role: "student", status: "active" }),
+    ]);
+    if (targetMembership && !sourceMembership) {
+      return { studentId: canonicalStudentId, sourceSchoolId: source.schoolId, targetSchoolId: target.schoolId, targetClassId: targetClassCanonicalId, idempotent: true };
+    }
+  }
+
+  if (String(rawStudent.schoolId || "") !== source.schoolId) {
+    throw new SchoolDirectorOperationError("Student is no longer assigned to the source school", 409);
+  }
   const sourceClassIds = uniqueStrings(source.classes.flatMap((item) => [item.id, item._id]));
   const targetClassIds = uniqueStrings(target.classes.flatMap((item) => [item.id, item._id]));
-  const nextGroupIds = uniqueStrings([...(student.groupIds || []).filter((id: string) => !sourceClassIds.includes(String(id)) && !targetClassIds.includes(String(id))), idOf(targetClass)]);
-  await UserModel.updateOne({ _id: student._id }, { $set: { schoolId: target.schoolId, groupIds: nextGroupIds } });
-  await Promise.all([
-    GroupModel.updateOne({ _id: source.school._id }, { $pull: { studentIds: idOf(student) } }),
-    GroupModel.updateMany({ type: "CLASS", parentId: source.schoolId }, { $pull: { studentIds: idOf(student) } }),
-    SchoolMembershipModel.updateOne({ userId: idOf(student), schoolId: source.schoolId, role: "student" }, { $set: { status: "inactive" } }),
+  const originalGroupIds = uniqueStrings(rawStudent.groupIds || []);
+  const originalSourceClasses = source.classes.filter((item) => originalGroupIds.includes(idOf(item)));
+  const nextGroupIds = uniqueStrings([
+    ...originalGroupIds.filter((id) => !sourceClassIds.includes(String(id)) && !targetClassIds.includes(String(id))),
+    targetClassCanonicalId,
   ]);
-  await Promise.all([
-    GroupModel.updateOne({ _id: target.school._id }, { $addToSet: { studentIds: idOf(student) } }),
-    GroupModel.updateOne({ _id: targetClass._id }, { $addToSet: { studentIds: idOf(student) } }),
-    SchoolMembershipModel.findOneAndUpdate({ userId: idOf(student), schoolId: target.schoolId, role: "student" }, { $set: { status: "active" } }, { upsert: true, runValidators: true }),
-  ]);
-  return { studentId: idOf(student), sourceSchoolId: source.schoolId, targetSchoolId: target.schoolId, targetClassId: idOf(targetClass) };
+
+  const locked = await UserModel.findOneAndUpdate(
+    { _id: rawStudent._id, schoolId: source.schoolId },
+    { $set: { schoolId: target.schoolId, groupIds: nextGroupIds } },
+    { new: true, runValidators: true },
+  ).select("_id schoolId groupIds");
+  if (!locked) throw new SchoolDirectorOperationError("Student transfer conflicted with another concurrent update", 409);
+
+  try {
+    await Promise.all([
+      GroupModel.updateOne({ _id: source.school._id }, { $pull: { studentIds: canonicalStudentId } }),
+      GroupModel.updateMany({ type: "CLASS", parentId: source.schoolId }, { $pull: { studentIds: canonicalStudentId } }),
+      SchoolMembershipModel.updateOne({ userId: canonicalStudentId, schoolId: source.schoolId, role: "student" }, { $set: { status: "inactive" } }),
+    ]);
+    await Promise.all([
+      GroupModel.updateOne({ _id: target.school._id }, { $addToSet: { studentIds: canonicalStudentId } }),
+      GroupModel.updateOne({ _id: targetClass._id }, { $addToSet: { studentIds: canonicalStudentId } }),
+      SchoolMembershipModel.findOneAndUpdate(
+        { userId: canonicalStudentId, schoolId: target.schoolId, role: "student" },
+        { $set: { status: "active" } },
+        { upsert: true, runValidators: true },
+      ),
+    ]);
+  } catch (error) {
+    const rollback = await UserModel.updateOne(
+      { _id: rawStudent._id, schoolId: target.schoolId },
+      { $set: { schoolId: source.schoolId, groupIds: originalGroupIds } },
+    );
+    if (rollback.modifiedCount === 1) {
+      await Promise.allSettled([
+        GroupModel.updateOne({ _id: target.school._id }, { $pull: { studentIds: canonicalStudentId } }),
+        GroupModel.updateMany({ type: "CLASS", parentId: target.schoolId }, { $pull: { studentIds: canonicalStudentId } }),
+        SchoolMembershipModel.updateOne({ userId: canonicalStudentId, schoolId: target.schoolId, role: "student" }, { $set: { status: "inactive" } }),
+        GroupModel.updateOne({ _id: source.school._id }, { $addToSet: { studentIds: canonicalStudentId } }),
+        ...originalSourceClasses.map((classroom) => GroupModel.updateOne({ _id: classroom._id }, { $addToSet: { studentIds: canonicalStudentId } })),
+        SchoolMembershipModel.findOneAndUpdate(
+          { userId: canonicalStudentId, schoolId: source.schoolId, role: "student" },
+          { $set: { status: "active" } },
+          { upsert: true, runValidators: true },
+        ),
+      ]);
+    }
+    throw error;
+  }
+  return { studentId: canonicalStudentId, sourceSchoolId: source.schoolId, targetSchoolId: target.schoolId, targetClassId: targetClassCanonicalId, idempotent: false };
 };
