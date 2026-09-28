@@ -49,7 +49,7 @@ check('public AppState lesson action contract remains unchanged', () => {
     'addLesson: (lesson: Lesson) => void;',
     'updateLesson: (lessonId: string, data: Partial<Lesson>) => void;',
     'deleteLesson: (lessonId: string) => void;',
-  ]) assert.ok(store.includes(fragment), `AppState contract changed: ${fragment}`);
+  ]) assert.ok(appState.includes(fragment), `AppState contract changed: ${fragment}`);
 });
 
 check('slice remains bounded and UI-free', () => {
