@@ -1,0 +1,63 @@
+{
+  "audit": "COL2627_CONTENT_LOCK_FINAL",
+  "date": "2026-09-28",
+  "documentCode": "COL2627",
+  "source": "تجميع انشيتن معدل(1).pdf",
+  "pathId": "p_1777779639431",
+  "subjectId": "sub_1777779748206",
+  "totals": {
+    "records": 946,
+    "approved": 939,
+    "rejected": 7,
+    "draft": 0
+  },
+  "identity": {
+    "uniqueQuestionCodes": 946,
+    "uniqueSourceItemIds": 946,
+    "uniqueImageHashes": 946,
+    "uniqueImageUrls": 946
+  },
+  "completeness": {
+    "missingImageUrl": 0,
+    "missingImageHash": 0,
+    "missingVoiceExplanation": 0,
+    "missingAiReadableText": 0,
+    "invalidAnswerIndex": 0,
+    "invalidFourChoicePresentation": 0
+  },
+  "taxonomy": {
+    "mainSkillsRepresented": 25,
+    "totalMainSkills": 25,
+    "approvedSubskillsRepresented": 91,
+    "totalSubskills": 95,
+    "canonicalPairErrors": 0,
+    "sectionOrSkillIdsMismatches": 0
+  },
+  "answerKey": {
+    "printedKeyReconciled": true,
+    "liveIndexesMatchingPrintedKey": 946,
+    "total": 946,
+    "correctedLiveMismatch": "QDR-QNT-COL2627-P074-Q08"
+  },
+  "rejectedSourceDefects": [
+    "QDR-QNT-COL2627-P009-Q05",
+    "QDR-QNT-COL2627-P033-Q45",
+    "QDR-QNT-COL2627-P033-Q46",
+    "QDR-QNT-COL2627-P046-Q38",
+    "QDR-QNT-COL2627-P050-Q32",
+    "QDR-QNT-COL2627-P051-Q01",
+    "QDR-QNT-COL2627-P053-Q07"
+  ],
+  "rejectedReferences": {
+    "quizzes": 0,
+    "assessmentVersions": 0,
+    "publicBarcodeTests": 0
+  },
+  "missingApprovedSubskills": [
+    "sub_quant_11_4",
+    "sub_quant_15_1",
+    "sub_quant_16_3",
+    "sub_quant_18_3"
+  ],
+  "gate": "CONTENT_LOCKED_GREEN"
+}
