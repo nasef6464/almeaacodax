@@ -1,0 +1,48 @@
+{
+  "documentCode": "COL2627",
+  "auditedAt": "2026-09-28",
+  "scope": "production content audit",
+  "status": "IN_PROGRESS",
+  "counts": {
+    "total": 946,
+    "draft": 943,
+    "rejected": 3,
+    "approved": 0
+  },
+  "integrity": {
+    "missingImageUrl": 0,
+    "missingImageHash": 0,
+    "missingVoiceExplanation": 0,
+    "missingAiReadableText": 0,
+    "invalidAnswerIndex": 0,
+    "duplicateQuestionCode": 0,
+    "duplicateImageHash": 0,
+    "duplicateImageUrl": 0,
+    "structuralSkillMismatch": 0
+  },
+  "correctedAnswerKeyMismatch": [
+    "QDR-QNT-COL2627-P074-Q08"
+  ],
+  "correctedSourceTranscriptions": [
+    "QDR-QNT-COL2627-P011-Q27",
+    "QDR-QNT-COL2627-P011-Q28",
+    "QDR-QNT-COL2627-P011-Q31",
+    "QDR-QNT-COL2627-P011-Q38"
+  ],
+  "rejectedSourceDefects": [
+    {
+      "questionCode": "QDR-QNT-COL2627-P009-Q05",
+      "reason": "printed expression evaluates to -1.48; no matching option; printed key marks C"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P046-Q38",
+      "reason": "for a<0, 1/(7a) is always greater than 1/(5a); printed key marks insufficient data"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P051-Q01",
+      "reason": "six unique handshakes = 15; printed key marks 30"
+    }
+  ],
+  "assessmentReferencesToRejected": 0,
+  "gate": "NOT_YET_CONTENT_LOCKED"
+}
