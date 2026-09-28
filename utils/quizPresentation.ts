@@ -26,6 +26,7 @@ export const stripQuestionHtml = (value?: string | null) =>
     .trim();
 
 export const QUIZ_OPTION_LABELS = ['أ', 'ب', 'ج', 'د'] as const;
+export const LATIN_OPTION_LABELS = ['A', 'B', 'C', 'D'] as const;
 
 export const getQuizOptionLabel = (index: number) =>
   QUIZ_OPTION_LABELS[index] || String(index + 1);
@@ -36,16 +37,26 @@ export const usesImageEmbeddedOptions = (question?: {
 } | null) => Boolean(question?.imageUrl && question?.optionsEmbeddedInImage);
 
 export const getLearnerOptionLabel = (
-  question: { imageUrl?: string; optionsEmbeddedInImage?: boolean },
+  question: { imageUrl?: string; optionsEmbeddedInImage?: boolean; examType?: string; options?: unknown[] },
   option: unknown,
   index: number,
 ) => {
-  if (usesImageEmbeddedOptions(question)) return getQuizOptionLabel(index);
+  if (typeof option === 'string' && /^[A-D]$/i.test(option.trim())) {
+    return option.trim().toUpperCase();
+  }
+  const isLatin = question?.examType === 'tahsili' ||
+    (Array.isArray(question?.options) && question.options.some(opt => typeof opt === 'string' && /^[A-D]$/i.test(opt.trim())));
+
+  if (usesImageEmbeddedOptions(question)) {
+    return isLatin ? (LATIN_OPTION_LABELS[index] || String.fromCharCode(65 + index)) : getQuizOptionLabel(index);
+  }
   if (typeof option === 'string') {
     const normalized = stripQuestionHtml(option);
-    return normalized && normalized !== '[object Object]' ? normalized : getQuizOptionLabel(index);
+    return normalized && normalized !== '[object Object]'
+      ? normalized
+      : (isLatin ? (LATIN_OPTION_LABELS[index] || String(index + 1)) : getQuizOptionLabel(index));
   }
-  return getQuizOptionLabel(index);
+  return isLatin ? (LATIN_OPTION_LABELS[index] || String(index + 1)) : getQuizOptionLabel(index);
 };
 
 export const getQuizOptionGridClass = (

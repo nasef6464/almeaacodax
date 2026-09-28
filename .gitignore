@@ -62,3 +62,5 @@ migrated_prompt_history/
 !.codex/skills/almeaa-goal-delivery/
 !.codex/skills/almeaa-goal-delivery/**
 
+# Local asset ingestion and crop pipeline
+.local-imports/
