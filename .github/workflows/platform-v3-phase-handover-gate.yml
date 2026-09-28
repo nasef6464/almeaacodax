@@ -137,6 +137,20 @@ jobs:
         run: npm run smoke:deployment-handover-phase19
       - name: Current handover contract
         run: npm run smoke:handover-current
+      - name: PLAN 9 Smart Classroom security contract
+        run: npm run smoke:smart-classroom-g0
+      - name: PLAN 9 Smart Classroom UI/API contract
+        run: npm run smoke:smart-classroom-g2-contract
+      - name: PLAN 9 Smart Classroom live-journey contract
+        run: node scripts/smoke-smart-classroom-live-journey-contract.mjs
+      - name: PLAN 9 Smart Classroom hardening contract
+        run: node scripts/smoke-smart-classroom-hardening-contract.mjs
+      - name: PLAN 9 Smart Classroom report/entitlement contract
+        run: node scripts/smoke-smart-classroom-report-insights-contract.mjs
+      - name: PLAN 9 Smart Classroom projector privacy contract
+        run: node scripts/smoke-smart-classroom-projector-reveal-contract.mjs
+      - name: PLAN 9 privacy lifecycle contract
+        run: node scripts/smoke-privacy-lifecycle-contract.mjs
       - name: PLAN 9 independent global certification guard
         run: node scripts/smoke-plan9-global-certification-contract.mjs
       - name: PLAN 8 question bank integrity guard
