@@ -13,7 +13,7 @@ const [app, routeTree, seo, seoResolver, seoData, store, storeState, auth, authS
   read("server/src/modules/auth/http/authSchemas.ts"),
   read("server/src/modules/auth/application/trainerPortfolio.ts"),
   read("server/src/routes/quiz.routes.ts"),
-  read("server/src/modules/quizzes/domain/quizAccessPolicy.ts"),
+  read("server/src/modules/quizzes/application/quizAccessPolicy.ts"),
 ]);
 
 const assert = (ok, message) => { if (!ok) throw new Error(message); };
