@@ -60,7 +60,7 @@ import { resolveAssessmentDefinitionRead } from "../modules/quizzes/application/
 import { findLatestPublishedAssessmentVersion, publishAssessmentVersion } from "../modules/quizzes/infrastructure/assessmentVersionRepository.js";
 import { mirrorAssessmentSubmissionAfterLegacyResult } from "../modules/quizzes/application/assessmentSubmissionMirror.js";
 import { ensureQuestionRevisions } from "../services/questionRevision.js";
-import { assertSupervisorDirectedQuizScope, canSubmitQuiz, resolveDirectedQuizReadAccess } from "../modules/quizzes/domain/quizAccessPolicy.js";
+import { assertSupervisorDirectedQuizScope, canSubmitQuiz, resolveDirectedQuizReadAccess } from "../modules/quizzes/application/quizAccessPolicy.js";
 import {
   assertManagedContentScope,
   buildManagedContentScopeFilter,
