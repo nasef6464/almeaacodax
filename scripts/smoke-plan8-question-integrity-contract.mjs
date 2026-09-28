@@ -27,6 +27,7 @@ assert(importRoutes.includes("validateImportIdentity(item, questionCode)"), "can
 assert(importRoutes.includes("sourceMeta.imageHash must be the SHA-256 hash"), "import SHA-256 validation missing");
 assert(importRoutes.includes("imageUrl must be the exact R2 V2 object URL"), "content-addressed R2 validation missing");
 
+assert(approval.includes("visual source verification note"), "explicit visual verification approval check missing");
 assert(approval.includes("sourceMeta.sourceItemId") && approval.includes("SHA-256 imageHash"), "approved image provenance checks missing");
 assert(approval.includes("content-addressed by questionCode and imageHash"), "approved image content-addressing check missing");
 assert(approval.includes("exactly four options") && approval.includes("answer index"), "approved A/B/C/D index check missing");
