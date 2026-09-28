@@ -137,6 +137,8 @@ jobs:
         run: npm run smoke:deployment-handover-phase19
       - name: Current handover contract
         run: npm run smoke:handover-current
+      - name: PLAN 9 independent global certification guard
+        run: node scripts/smoke-plan9-global-certification-contract.mjs
       - name: PLAN 8 question bank integrity guard
         run: |
           node scripts/smoke-plan8-question-integrity-contract.mjs
