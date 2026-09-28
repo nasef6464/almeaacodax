@@ -829,7 +829,7 @@ paymentRouter.post(
     }
 
     const planDef = SUBSCRIPTION_PLANS[payload.plan];
-    const created = await PaymentRequestModel.create({
+    const createdPending = await createPendingPaymentRequest({
       id: `subreq_${Date.now()}`,
       userId: String(req.authUser?.id),
       userName: user.name || "",
@@ -855,6 +855,13 @@ paymentRouter.post(
       discountCode: "",
       status: "pending",
     });
+    if (createdPending.duplicate) {
+      return res.status(StatusCodes.CONFLICT).json({
+        message: "يوجد طلب شراء معلق بالفعل لنفس العنصر",
+        request: createdPending.request,
+      });
+    }
+    const created = createdPending.request;
 
     return res.status(StatusCodes.CREATED).json({
       request: created,
@@ -927,7 +934,7 @@ paymentRouter.post(
 
     const finalAmount = Math.max(0, trustedTarget.originalAmount - discountAmount);
 
-    const requestRecord = await PaymentRequestModel.create({
+    const requestRecordPending = await createPendingPaymentRequest({
       id: `tapreq_${Date.now()}`,
       userId: String(user._id),
       userName: user.name || "",
@@ -956,6 +963,13 @@ paymentRouter.post(
       discountCode: normalizedDiscountCode,
       status: "pending",
     });
+    if (requestRecordPending.duplicate) {
+      return res.status(StatusCodes.CONFLICT).json({
+        message: "يوجد طلب شراء معلق بالفعل لنفس العنصر",
+        request: requestRecordPending.request,
+      });
+    }
+    const requestRecord = requestRecordPending.request;
 
     const frontendBase = String(process.env.CLIENT_URL || process.env.APP_BASE_URL || "").trim();
     const redirectUrl = frontendBase
@@ -1547,7 +1561,7 @@ paymentRouter.post(
       discountCodeId = String(discountCode._id);
     }
 
-    const created = await PaymentRequestModel.create({
+    const createdPending = await createPendingPaymentRequest({
       id: createPaymentRequestId(),
       userId: String(user._id),
       userName: user.name,
@@ -1576,6 +1590,13 @@ paymentRouter.post(
       discountCode: normalizedDiscountCode,
       status: "pending",
     });
+    if (createdPending.duplicate) {
+      return res.status(StatusCodes.CONFLICT).json({
+        message: "يوجد طلب شراء معلق بالفعل لنفس العنصر",
+        request: createdPending.request,
+      });
+    }
+    const created = createdPending.request;
 
     return res.status(StatusCodes.CREATED).json({ request: created });
   }),
