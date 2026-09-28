@@ -1,0 +1,42 @@
+{
+  "generatedAt": "2026-09-28",
+  "scope": "YLM26 Tahsili Mathematics source-vs-live baseline audit",
+  "source": {
+    "file": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+    "pages": 96,
+    "documentCode": "YLM26",
+    "pathId": "p_1777779653351",
+    "subjectId": "sub_1777784609152",
+    "intendedScope": "Questions explicitly marked تجميعات only; examples/explanations are not bank questions.",
+    "expectedCompilationQuestions": 326,
+    "expectedMainLessons": 30,
+    "taxonomy": {
+      "mainSkills": 22,
+      "subSkills": 70
+    }
+  },
+  "live": {
+    "records": 156,
+    "approved": 0,
+    "draft": 156,
+    "pending": 0,
+    "rejected": 0,
+    "uniqueCodes": 156,
+    "uniqueImageHashes": 156,
+    "uniqueImageUrls": 156,
+    "quizReferences": 0,
+    "currentRecordedSubskillCoverage": 48,
+    "genericPlaceholderTextRecords": 126,
+    "genericPlaceholderOptionTextRecords": 126,
+    "contentRichRecords": 30,
+    "sourceGap": 170
+  },
+  "criticalFindings": [
+    "The live import is incomplete: 156 records vs 326 source compilation questions.",
+    "126/156 records use generic placeholder question text and A/B/C/D as AI option texts, so they are not content-locked.",
+    "Question identity numbering is inconsistent with the source lesson numbering. Example: source page 8 contains compilation questions 5–8, while live records are coded P008-Q01/P008-Q02. On page 9 the rich slope question is source compilation #1 but stored as P009-Q02.",
+    "At least 60 records have a main-skill assignment inconsistent with the source lesson/taxonomy page range; subskill correctness is therefore also not reliable.",
+    "No YLM26 record is approved and no quiz/mock exam currently references any of the 156 records, so the corrupted draft set is not exposed to students."
+  ],
+  "policy": "Do not approve or patch generic records by guess. Re-extract all compilation questions canonically from the source, preserve page + true printed compilation number, then perform answer/solution/subskill content lock."
+}
