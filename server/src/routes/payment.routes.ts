@@ -444,6 +444,22 @@ const buildPaymentRequestLookup = (id: string) => ({
 const createPaymentRequestId = () =>
   `payreq_${Date.now()}_${crypto.randomBytes(3).toString("hex")}`;
 
+const createPendingPaymentRequest = async (payload: Record<string, unknown>) => {
+  try {
+    return { request: await PaymentRequestModel.create(payload), duplicate: false as const };
+  } catch (error: any) {
+    if (error?.code !== 11000) throw error;
+    const existing = await PaymentRequestModel.findOne({
+      userId: String(payload.userId || ""),
+      itemType: String(payload.itemType || ""),
+      itemId: String(payload.itemId || ""),
+      status: "pending",
+    });
+    if (!existing) throw error;
+    return { request: existing, duplicate: true as const };
+  }
+};
+
 const normalizeDiscountCode = (code?: string) => String(code || "").trim().toUpperCase().replace(/\s+/g, "");
 
 const isDiscountCodeActive = (discountCode: any, now = Date.now()) => {
@@ -813,9 +829,7 @@ paymentRouter.post(
     }
 
     const planDef = SUBSCRIPTION_PLANS[payload.plan];
-    let created;
-    try {
-      created = await PaymentRequestModel.create({
+    const created = await PaymentRequestModel.create({
       id: `subreq_${Date.now()}`,
       userId: String(req.authUser?.id),
       userName: user.name || "",
@@ -1563,21 +1577,6 @@ paymentRouter.post(
       status: "pending",
     });
 
-    return res.status(StatusCodes.CREATED).json({ request: created });
-    } catch (error: any) {
-      if (error?.code !== 11000) throw error;
-      const concurrentPending = await PaymentRequestModel.findOne({
-        userId: String(user._id),
-        itemType: payload.itemType,
-        itemId: payload.itemId,
-        status: "pending",
-      }).lean();
-      if (!concurrentPending) throw error;
-      return res.status(StatusCodes.CONFLICT).json({
-        message: "يوجد طلب شراء معلق بالفعل لنفس العنصر",
-        request: concurrentPending,
-      });
-    }
     return res.status(StatusCodes.CREATED).json({ request: created });
   }),
 );
