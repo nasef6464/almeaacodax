@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { chromium } from "playwright";
 
-const BASE_URL = String(process.env.PLAN9_BASE_URL || process.env.UI_AUDIT_BASE_URL || "http://127.0.0.1:4173").replace(/\/$/, "");
+const BASE_URL = String(process.env.UI_AUDIT_BASE_URL || "http://127.0.0.1:4173").replace(/\/$/, "");
 const OUT_DIR = path.resolve("audit-artifacts", "plan9-public-quality");
 const routes = ["/", "/pricing", "/courses", "/quizzes"];
 const viewports = [
@@ -51,9 +51,14 @@ try {
         const paint = performance.getEntriesByType("paint");
         const fcp = paint.find((entry) => entry.name === "first-contentful-paint")?.startTime || 0;
         const nav = performance.getEntriesByType("navigation")[0];
-        const buttons = [...document.querySelectorAll("button")];
-        const controls = [...document.querySelectorAll("input, select, textarea")];
-        const imgs = [...document.querySelectorAll("img")];
+        const isVisible = (el) => {
+          const rect = el.getBoundingClientRect();
+          const style = getComputedStyle(el);
+          return rect.width > 0 && rect.height > 0 && style.visibility !== "hidden" && style.display !== "none";
+        };
+        const buttons = [...document.querySelectorAll("button")].filter(isVisible);
+        const controls = [...document.querySelectorAll("input, select, textarea")].filter(isVisible);
+        const imgs = [...document.querySelectorAll("img")].filter(isVisible);
         const unlabeledButtons = buttons.filter((el) => {
           const label = [
             el.textContent,
