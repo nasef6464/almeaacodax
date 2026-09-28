@@ -32,9 +32,11 @@ import { QuestionModel } from "../models/Question.js";
 import { QuizModel } from "../models/Quiz.js";
 import { QuizResultModel } from "../models/QuizResult.js";
 import { LibraryItemModel } from "../models/LibraryItem.js";
+import { LessonProgressModel } from "../models/LessonProgress.js";
 import { PlatformIntegrationSettingsModel } from "../models/PlatformIntegrationSettings.js";
 import { decryptIntegrationSecretsForRuntime } from "../utils/integrationSecretsCrypto.js";
 import { deleteUserLifecycle } from "../modules/privacy/application/deleteUserLifecycle.js";
+import { mirrorLessonProgress } from "../services/lessonProgressMirror.js";
 
 const passwordStrengthSchema = z
   .string()
@@ -1340,9 +1342,24 @@ authRouter.get(
       });
     }
 
-    return res.json({
-      user: serializeUser(user),
-    });
+    const serialized = serializeUser(user) as any;
+    const normalizedProgress = await LessonProgressModel.find({ userId: String(user._id) }).lean();
+    if (normalizedProgress.length > 0) {
+      serialized.completedLessons = normalizedProgress
+        .filter((item: any) => Boolean(item.completed))
+        .map((item: any) => String(item.lessonId));
+      serialized.interactiveVideoProgress = normalizedProgress
+        .filter((item: any) => Boolean(item.courseId) || Number(item.positionSeconds || 0) > 0 || (item.answeredQuestionIds || []).length > 0)
+        .map((item: any) => ({
+          courseId: String(item.courseId || ""),
+          lessonId: String(item.lessonId || ""),
+          positionSeconds: Number(item.positionSeconds || 0),
+          answeredQuestionIds: Array.isArray(item.answeredQuestionIds) ? item.answeredQuestionIds.map(String) : [],
+          updatedAt: Number(item.sourceUpdatedAt || 0),
+        }));
+    }
+
+    return res.json({ user: serialized });
   }),
 );
 
@@ -1600,6 +1617,28 @@ authRouter.patch(
     if (!user) {
       return res.status(StatusCodes.NOT_FOUND).json({
         message: "User not found",
+      });
+    }
+
+    // PLAN 4 compatibility dual-write: normalized LessonProgress is the /me read path\n    // after parity-backed cutover; legacy User fields remain as rollback compatibility\n    // until a later removal window.
+    if (payload.completedLessons || payload.interactiveVideoProgress) {
+      await mirrorLessonProgress({
+        userId: String(user._id),
+        completedLessons: payload.completedLessons
+          ? Array.from(new Set(payload.completedLessons))
+          : undefined,
+        interactiveVideoProgress: payload.interactiveVideoProgress?.map((item) => ({
+          courseId: String(item.courseId || ""),
+          lessonId: String(item.lessonId || ""),
+          positionSeconds: Number(item.positionSeconds || 0),
+          answeredQuestionIds: (item.answeredQuestionIds || []).map(String),
+          updatedAt: Number(item.updatedAt || 0),
+        })),
+      }).catch((error) => {
+        console.warn("[auth/preferences] lesson progress mirror failed; legacy User write remains authoritative", {
+          userId: String(user._id),
+          reason: error instanceof Error ? error.message : String(error || "unknown"),
+        });
       });
     }
 

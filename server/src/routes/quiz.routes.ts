@@ -59,6 +59,7 @@ import { matchesManagedContentScope } from "../modules/quizzes/application/quizM
 import { resolveAssessmentDefinitionRead } from "../modules/quizzes/application/assessmentDefinitionReadAdapter.js";
 import { findLatestPublishedAssessmentVersion, publishAssessmentVersion } from "../modules/quizzes/infrastructure/assessmentVersionRepository.js";
 import { mirrorAssessmentSubmissionAfterLegacyResult } from "../modules/quizzes/application/assessmentSubmissionMirror.js";
+import { ensureQuestionRevisions } from "../services/questionRevision.js";
 import {
   assertManagedContentScope,
   buildManagedContentScopeFilter,
@@ -898,8 +899,20 @@ quizRouter.post(
       sections,
     });
 
-    const { correctAnswers, wrongAnswers, unanswered, skillStats, questionReview } =
+    const { correctAnswers, wrongAnswers, unanswered, skillStats, questionReview: rawQuestionReview } =
       buildQuizSubmissionAnswerReview({ orderedQuestions, answers: payload.answers });
+    const questionRevisions = await ensureQuestionRevisions(orderedQuestions).catch((error) => {
+      console.warn("[quiz-submit] question revision mirror failed; preserving legacy result path", {
+        requestId: req.requestId || "",
+        quizId,
+        reason: error instanceof Error ? error.message : String(error || "unknown"),
+      });
+      return new Map<string, { revisionId: string; revisionHash: string }>();
+    });
+    const questionReview = rawQuestionReview.map((item) => ({
+      ...item,
+      ...(questionRevisions.get(String(item.questionId || "")) || {}),
+    }));
 
     const skillsAnalysis = buildQuizSubmissionSkillsAnalysis({
       skillStats,
