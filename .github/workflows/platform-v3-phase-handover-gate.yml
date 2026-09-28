@@ -167,5 +167,7 @@ jobs:
         run: node scripts/smoke-plan5-module-boundaries.mjs
       - name: DB-1 inventory ownership and growth baseline contract
         run: node scripts/smoke-db1-inventory-contract.mjs
+      - name: DB-2 schema and relationship integrity contract
+        run: node scripts/smoke-db2-reference-integrity-contract.mjs
       - name: Full handover gate suite
         run: npm run smoke:handover:all

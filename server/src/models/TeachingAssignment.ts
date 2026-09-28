@@ -3,10 +3,10 @@ import mongoose, { Schema } from "mongoose";
 /** Explicit authority for future classroom actions; does not reinterpret legacy groupIds. */
 const teachingAssignmentSchema = new Schema(
   {
-    schoolId: { type: String, required: true, index: true },
-    teacherId: { type: String, required: true, index: true },
-    classId: { type: String, required: true, index: true },
-    subjectId: { type: String, default: "" },
+    schoolId: { type: String, required: true, trim: true, index: true },
+    teacherId: { type: String, required: true, trim: true, index: true },
+    classId: { type: String, required: true, trim: true, index: true },
+    subjectId: { type: String, trim: true, default: "" },
     status: { type: String, enum: ["active", "inactive"], default: "active" },
   },
   { timestamps: true },
