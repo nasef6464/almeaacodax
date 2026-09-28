@@ -32,6 +32,7 @@ import { QuestionModel } from "../models/Question.js";
 import { QuizModel } from "../models/Quiz.js";
 import { QuizResultModel } from "../models/QuizResult.js";
 import { LibraryItemModel } from "../models/LibraryItem.js";
+import { LessonProgressModel } from "../models/LessonProgress.js";
 import { PlatformIntegrationSettingsModel } from "../models/PlatformIntegrationSettings.js";
 import { decryptIntegrationSecretsForRuntime } from "../utils/integrationSecretsCrypto.js";
 import { deleteUserLifecycle } from "../modules/privacy/application/deleteUserLifecycle.js";
@@ -1341,9 +1342,24 @@ authRouter.get(
       });
     }
 
-    return res.json({
-      user: serializeUser(user),
-    });
+    const serialized = serializeUser(user) as any;
+    const normalizedProgress = await LessonProgressModel.find({ userId: String(user._id) }).lean();
+    if (normalizedProgress.length > 0) {
+      serialized.completedLessons = normalizedProgress
+        .filter((item: any) => Boolean(item.completed))
+        .map((item: any) => String(item.lessonId));
+      serialized.interactiveVideoProgress = normalizedProgress
+        .filter((item: any) => Boolean(item.courseId) || Number(item.positionSeconds || 0) > 0 || (item.answeredQuestionIds || []).length > 0)
+        .map((item: any) => ({
+          courseId: String(item.courseId || ""),
+          lessonId: String(item.lessonId || ""),
+          positionSeconds: Number(item.positionSeconds || 0),
+          answeredQuestionIds: Array.isArray(item.answeredQuestionIds) ? item.answeredQuestionIds.map(String) : [],
+          updatedAt: Number(item.sourceUpdatedAt || 0),
+        }));
+    }
+
+    return res.json({ user: serialized });
   }),
 );
 
