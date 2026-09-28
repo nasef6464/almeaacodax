@@ -6,7 +6,10 @@ const builderSource = fs.readFileSync(path.join(root, 'dashboards/admin/Advanced
 const typeSource = fs.readFileSync(path.join(root, 'types.ts'), 'utf8');
 const serverCourseSource = fs.readFileSync(path.join(root, 'server/src/models/Course.ts'), 'utf8');
 const authApiSource = fs.readFileSync(path.join(root, 'services/apiGroups/authApi.ts'), 'utf8');
-const authRouteSource = fs.readFileSync(path.join(root, 'server/src/routes/auth.routes.ts'), 'utf8');
+const authRouteSource = [
+  fs.readFileSync(path.join(root, 'server/src/routes/auth.routes.ts'), 'utf8'),
+  fs.readFileSync(path.join(root, 'server/src/modules/auth/http/authSchemas.ts'), 'utf8'),
+].join('\n');
 const courseRouteSource = fs.readFileSync(path.join(root, 'server/src/routes/course.routes.ts'), 'utf8');
 
 const checks = [];
@@ -32,7 +35,7 @@ check('course builder loads real eligible trainers from the server', () => {
   assertIncludes(builderSource, 'تظهر الحسابات النشطة ذات المسارات أو المواد المسندة فقط.');
   assertIncludes(authApiSource, 'getPlatformTrainers:');
   assertIncludes(authApiSource, 'platformTrainer: true');
-  assertIncludes(authRouteSource, 'platformTrainer: z.preprocess');
+  assertIncludes(authRouteSource, 'platformTrainer: optionalBooleanQuery');
   assertIncludes(authRouteSource, '"managedPathIds.0"');
   assertIncludes(authRouteSource, 'Only platform administrators can browse the platform trainer directory.');
 });
