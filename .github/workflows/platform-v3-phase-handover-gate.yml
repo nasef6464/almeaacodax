@@ -165,5 +165,7 @@ jobs:
         run: node scripts/smoke-plan6-student-learning-loop-contract.mjs
       - name: PLAN 5 residual module-boundary guard
         run: node scripts/smoke-plan5-module-boundaries.mjs
+      - name: DB-1 inventory ownership and growth baseline contract
+        run: node scripts/smoke-db1-inventory-contract.mjs
       - name: Full handover gate suite
         run: npm run smoke:handover:all
