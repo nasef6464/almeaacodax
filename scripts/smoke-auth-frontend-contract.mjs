@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises";
 
 const files = {
-  app: await readFile(new URL("../App.tsx", import.meta.url), "utf8"),
+  app: `${await readFile(new URL("../App.tsx", import.meta.url), "utf8")}\n${await readFile(new URL("../app/AppRouteTree.tsx", import.meta.url), "utf8")}`,
   header: await readFile(new URL("../components/Header.tsx", import.meta.url), "utf8"),
   authContext: await readFile(new URL("../contexts/AuthContext.tsx", import.meta.url), "utf8"),
   requireAuth: await readFile(new URL("../components/auth/RequireAuth.tsx", import.meta.url), "utf8"),
