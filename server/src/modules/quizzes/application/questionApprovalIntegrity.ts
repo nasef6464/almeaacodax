@@ -6,6 +6,7 @@ type QuestionApprovalCandidate = {
   optionsEmbeddedInImage?: unknown;
   options?: unknown;
   correctOptionIndex?: unknown;
+  reviewerNotes?: unknown;
   sourceMeta?: {
     sourceItemId?: unknown;
     page?: unknown;
@@ -34,7 +35,14 @@ export const validateQuestionApprovalIntegrity = (value: QuestionApprovalCandida
   const page = Number(meta.page ?? meta.printedPageNumber);
   const options = Array.isArray(value.options) ? value.options : [];
   const answer = Number(value.correctOptionIndex);
+  const reviewerNotes = String(value.reviewerNotes || "").trim();
+  const visualVerificationRecorded =
+    /verified\s+visually/i.test(reviewerNotes) ||
+    /تم\s+التحقق.*بصري/i.test(reviewerNotes);
 
+  if (!visualVerificationRecorded) {
+    return { ok: false as const, message: "Approved imported image questions require an explicit visual source verification note" };
+  }
   if (!sourceItemId) {
     return { ok: false as const, message: "Approved imported image questions require sourceMeta.sourceItemId" };
   }
