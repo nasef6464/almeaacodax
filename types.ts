@@ -308,6 +308,9 @@ export interface Skill {
 
 export interface SkillGap {
     skillId?: string;
+    level?: 'main' | 'sub';
+    parentSkillId?: string;
+    parentSkill?: string;
     pathId?: string;
     subjectId?: string;
     sectionId?: string;
