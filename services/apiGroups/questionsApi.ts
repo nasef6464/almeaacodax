@@ -39,6 +39,7 @@ export interface QuestionBankCoverage {
   mainSkillCount: number;
   subSkillCount: number;
   pendingCount: number;
+  draftCount: number;
   approvedCount: number;
   skillQuestionCounts: Record<string, number>;
   sectionQuestionCounts: Record<string, number>;

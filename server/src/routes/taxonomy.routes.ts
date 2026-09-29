@@ -111,13 +111,33 @@ const clearTaxonomyBootstrapCache = () => {
 };
 
 const buildStaffTaxonomyBootstrapPayload = async (): Promise<TaxonomyBootstrapPayload> => {
-  const [paths, levels, subjects, sections, skills] = await Promise.all([
+  const [paths, levels, subjects] = await Promise.all([
     PathModel.find().select("id name color icon iconUrl iconStyle showInNavbar showInHome isActive parentPathId description settings createdAt").sort({ createdAt: 1 }).lean(),
     LevelModel.find().select("id pathId name createdAt").sort({ createdAt: 1 }).lean(),
     SubjectModel.find().select("id pathId levelId name color icon iconUrl iconStyle settings createdAt").sort({ createdAt: 1 }).lean(),
-    SectionModel.find().select("id subjectId name createdAt").sort({ createdAt: 1 }).lean(),
-    SkillModel.find().select("id pathId subjectId sectionId name description order subSkills lessonIds questionIds createdAt").sort({ createdAt: 1 }).lean(),
   ]);
+  const validPathIds = paths.map((item) => String(item._id)).filter(Boolean);
+  const validSubjectIds = subjects
+    .filter((item) => validPathIds.includes(String(item.pathId)))
+    .map((item) => String(item._id))
+    .filter(Boolean);
+  const sections = validSubjectIds.length > 0
+    ? await SectionModel.find({ subjectId: { $in: validSubjectIds } })
+        .select("id subjectId name createdAt")
+        .sort({ createdAt: 1 })
+        .lean()
+    : [];
+  const validSectionIds = sections.map((item) => String(item._id)).filter(Boolean);
+  const skills = validPathIds.length > 0 && validSubjectIds.length > 0 && validSectionIds.length > 0
+    ? await SkillModel.find({
+        pathId: { $in: validPathIds },
+        subjectId: { $in: validSubjectIds },
+        sectionId: { $in: validSectionIds },
+      })
+        .select("id pathId subjectId sectionId name description order subSkills lessonIds questionIds createdAt")
+        .sort({ createdAt: 1 })
+        .lean()
+    : [];
   return { paths, levels, subjects, sections, skills };
 };
 
@@ -540,6 +560,10 @@ taxonomyRouter.post(
   requireRole(["admin"]),
   asyncHandler(async (req, res) => {
     const payload = sectionSchema.parse(req.body);
+    const subject = await SubjectModel.findById(payload.subjectId).select("_id").lean();
+    if (!subject) {
+      return res.status(StatusCodes.BAD_REQUEST).json({ message: "Section subject does not exist." });
+    }
     const created = await SectionModel.create({
       ...payload,
       ...(payload.id ? { _id: payload.id } : {}),
@@ -554,6 +578,12 @@ taxonomyRouter.patch(
   requireRole(["admin"]),
   asyncHandler(async (req, res) => {
     const payload = sectionSchema.partial().parse(req.body);
+    if (payload.subjectId) {
+      const subject = await SubjectModel.findById(payload.subjectId).select("_id").lean();
+      if (!subject) {
+        return res.status(StatusCodes.BAD_REQUEST).json({ message: "Section subject does not exist." });
+      }
+    }
     const updated = await SectionModel.findByIdAndUpdate(req.params.id, payload, { new: true });
     if (!updated) {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Section not found" });
@@ -629,6 +659,14 @@ taxonomyRouter.post(
   requireRole(["admin"]),
   asyncHandler(async (req, res) => {
     const payload = skillSchema.parse(req.body);
+    const [path, subject, section] = await Promise.all([
+      PathModel.findById(payload.pathId).select("_id").lean(),
+      SubjectModel.findById(payload.subjectId).select("_id pathId").lean(),
+      SectionModel.findOne({ _id: payload.sectionId, subjectId: payload.subjectId }).select("_id").lean(),
+    ]);
+    if (!path || !subject || !section || String(subject.pathId) !== payload.pathId) {
+      return res.status(StatusCodes.BAD_REQUEST).json({ message: "Skill path, subject and section must reference one canonical taxonomy branch." });
+    }
     const created = await SkillModel.create({
       ...payload,
       ...(payload.id ? { _id: payload.id } : {}),
@@ -643,10 +681,23 @@ taxonomyRouter.patch(
   requireRole(["admin"]),
   asyncHandler(async (req, res) => {
     const payload = skillSchema.partial().parse(req.body);
-    const updated = await SkillModel.findByIdAndUpdate(req.params.id, payload, { new: true });
-    if (!updated) {
+    const existing = await SkillModel.findById(req.params.id).lean();
+    if (!existing) {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Skill not found" });
     }
+    const merged = { ...existing, ...payload };
+    const mergedPathId = String(merged.pathId || "");
+    const mergedSubjectId = String(merged.subjectId || "");
+    const mergedSectionId = String(merged.sectionId || "");
+    const [path, subject, section] = await Promise.all([
+      PathModel.findById(mergedPathId).select("_id").lean(),
+      SubjectModel.findById(mergedSubjectId).select("_id pathId").lean(),
+      SectionModel.findOne({ _id: mergedSectionId, subjectId: mergedSubjectId }).select("_id").lean(),
+    ]);
+    if (!path || !subject || !section || String(subject.pathId) !== mergedPathId) {
+      return res.status(StatusCodes.BAD_REQUEST).json({ message: "Skill path, subject and section must reference one canonical taxonomy branch." });
+    }
+    const updated = await SkillModel.findByIdAndUpdate(req.params.id, payload, { new: true });
     return res.json(updated);
   }),
 );
