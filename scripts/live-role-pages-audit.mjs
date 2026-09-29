@@ -163,6 +163,9 @@ async function login(page, role) {
   const authCookie = String(loginRes.headers.get("set-cookie") || "").match(/almeaa_access_token=([^;]+)/)?.[1] || payload?.token || "";
   const user = payload?.user;
   if (!authCookie || !user?.email || !user?.role) return { ok: false, reason: "api login missing session" };
+  if (String(user.role) !== String(role.role)) {
+    return { ok: false, reason: `role mismatch: expected ${role.role}, got ${user.role}` };
+  }
 
   const authCookies = [
     {
