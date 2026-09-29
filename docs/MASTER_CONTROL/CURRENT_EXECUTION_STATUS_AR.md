@@ -76,3 +76,33 @@ Ruleset: `Protect main`
 `main@e60a8f563dd406098378df70857423455739ef7a`
 
 Git HEAD always overrides this historical baseline.
+
+
+---
+
+## 2026-09-29 — ACTIVE OVERRIDE: Deep Role Journey V2
+
+> هذا القسم أحدث من الجداول التاريخية أعلاه فيما يخص فحص رحلات الأدوار.
+
+- Active issue: **#304 — ALM-E2E-ROLE-002**
+- Active PR: **#305**
+- Branch: `chatgpt/deep-role-journey-v2`
+- Detailed source of truth: `docs/MASTER_CONTROL/DEEP_ROLE_JOURNEY_V2_STATUS_AR.md`
+- Baseline main at start: `cc359e5fb77e4a1fbb77e86d6fd986bf555878de`
+- Goal: full Student / Teacher / Supervisor / Parent deep journeys on desktop + mobile, followed by live-safe Production verification.
+
+### Important discovery
+The standalone `Platform V3 Live Role Gate` was hard-coded to PR #26, so recent PRs showed it as **SKIPPED**. It also still pointed at the obsolete Render API `almeaacodax-k2ux`.
+
+PR #305 changes this so that:
+1. same-repository PRs run the Live Role Gate;
+2. `main` pushes run the gate automatically against Production;
+3. the API target is the current `https://almeaacodax-codex.onrender.com/api`;
+4. Parent + Teacher Deep Journey V2 is part of the live-safe gate.
+
+### Closure rule
+Do not mark #304 closed until:
+- exact-head isolated Deep E2E is green;
+- role-specific negative RBAC scopes are green;
+- live-safe Production run is green on the deployed `main` SHA;
+- evidence totals + exact SHA are written back to the dedicated status file and Issue #304.
