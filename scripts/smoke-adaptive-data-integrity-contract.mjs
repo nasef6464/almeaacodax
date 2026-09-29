@@ -72,6 +72,9 @@ check('foundation subtopics require one valid subskill and cannot cross main-ski
     'Selected subskill belongs to a different main Foundation topic',
     'Subskill is already linked to Foundation topic:',
     'parentTopicSkillId !== parentSkillId',
+    'syncFoundationTopicResourcesToSkill',
+    'update.$pull = { skillIds: previous }',
+    'update.$addToSet = { skillIds: next }',
   ]) {
     assert.ok(foundationSubtopicSkillLink.includes(fragment), `subtopic skill lock lost ${fragment}`);
   }
@@ -79,6 +82,8 @@ check('foundation subtopics require one valid subskill and cannot cross main-ski
   assert.ok(contentRoutes.includes('validateFoundationSubtopicSkillLink(payload)'));
   assert.ok(contentRoutes.includes('validateFoundationSubtopicSkillLink(mergedTopic, existing._id)'));
   assert.ok(contentRoutes.includes('normalizedPayload = { ...payload, ...validation.normalized }'));
+  assert.ok(contentRoutes.includes('await syncFoundationTopicResourcesToSkill(created.toObject())'));
+  assert.ok(contentRoutes.includes('await syncFoundationTopicResourcesToSkill(updated.toObject(), existing.skillId)'));
 });
 
 check('foundation admin requires subskill selection and supports many resources per subtopic', () => {
@@ -91,6 +96,8 @@ check('foundation admin requires subskill selection and supports many resources 
     'disabled={Boolean(editingTopic.parentId && !editingTopic.skillId)}',
     'يمكنك داخل الموضوع الواحد ربط أكثر من فيديو/درس وأكثر من تدريب وملف دعم',
     'Keep the attachment picker open',
+    'previousTopicSkillId',
+    'skillId !== previousTopicSkillId',
   ]) {
     assert.ok(foundationManager.includes(fragment), `FoundationManager lost ${fragment}`);
   }
