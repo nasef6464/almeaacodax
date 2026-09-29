@@ -60,12 +60,13 @@ const roleConfigs = {
     email: process.env.ROLE_TEACHER_EMAIL,
     password: process.env.ROLE_TEACHER_PASSWORD,
     checkpoints: [
-      { name: "teacher-school-overview", path: "/school-teacher-dashboard?tab=overview", expectAny: ["مساحة تعليمية مدرسية معتمدة", "ابدأ من فصلك"], minBody: 500 },
-      { name: "teacher-smart-classroom", path: "/school-teacher-dashboard?tab=smart-classroom", expectAny: ["مركز إدارة وإطلاق الحصص الذكية", "إطلاق حصة"], minBody: 450 },
-      { name: "teacher-prepared-bank", path: "/school-teacher-dashboard?tab=prepared-questions", expectAny: ["بنك التحضير المسبق"], minBody: 450 },
-      { name: "teacher-school-reports", path: "/school-teacher-dashboard?tab=reports", expectAny: ["سجل وتقارير الحصص الذكية وتشخيص المهارات", "لا توجد حصص مطابقة"], minBody: 250 },
-      { name: "teacher-skills-radar", path: "/school-teacher-dashboard?tab=skills-radar", expectAny: ["رادار فجوات الفصل المهارية", "متوسط دقة الفصل"], minBody: 250 },
-      { name: "teacher-assessments", path: "/school-teacher-dashboard?tab=assessments", expectAny: ["اختبارات وتكليفات المدرسة الموجهة لفصولي", "اختبار مركزي"], minBody: 350 },
+      { name: "teacher-platform-overview", path: "/instructor-dashboard", persona: "platform", expectAny: ["لوحة مدرب المنصة", "نظرة عامة"], minBody: 700 },
+      { name: "teacher-school-overview", path: "/school-teacher-dashboard?tab=overview", persona: "school", expectAny: ["مساحة تعليمية مدرسية معتمدة", "ابدأ من فصلك"], minBody: 500 },
+      { name: "teacher-smart-classroom", path: "/school-teacher-dashboard?tab=smart-classroom", persona: "school", expectAny: ["مركز إدارة وإطلاق الحصص الذكية", "إطلاق حصة"], minBody: 450 },
+      { name: "teacher-prepared-bank", path: "/school-teacher-dashboard?tab=prepared-questions", persona: "school", expectAny: ["بنك التحضير المسبق"], minBody: 450 },
+      { name: "teacher-school-reports", path: "/school-teacher-dashboard?tab=reports", persona: "school", expectAny: ["سجل وتقارير الحصص الذكية وتشخيص المهارات", "لا توجد حصص مطابقة"], minBody: 250 },
+      { name: "teacher-skills-radar", path: "/school-teacher-dashboard?tab=skills-radar", persona: "school", expectAny: ["رادار فجوات الفصل المهارية", "متوسط دقة الفصل"], minBody: 250 },
+      { name: "teacher-assessments", path: "/school-teacher-dashboard?tab=assessments", persona: "school", expectAny: ["اختبارات وتكليفات المدرسة الموجهة لفصولي", "اختبار مركزي"], minBody: 350 },
       {
         name: "teacher-platform-reports",
         path: "/reports",
@@ -211,6 +212,19 @@ async function login(context, config) {
   }, user);
 
   return { ok: true, userRole: user.role, userEmail: user.email };
+}
+
+async function detectTeacherPersonas(page) {
+  const inspectRoute = async (route, expectedPath) => {
+    await page.goto(`${BASE_URL}${route}`, { waitUntil: "domcontentloaded", timeout: 60_000 });
+    await page.waitForTimeout(1200);
+    const actualPath = new URL(page.url()).pathname;
+    const bodyLength = await page.evaluate(() => (document.body.innerText || "").length).catch(() => 0);
+    return actualPath === expectedPath && bodyLength > 250;
+  };
+  const platform = await inspectRoute("/instructor-dashboard", "/instructor-dashboard").catch(() => false);
+  const school = await inspectRoute("/school-teacher-dashboard?tab=overview", "/school-teacher-dashboard").catch(() => false);
+  return { platform, school };
 }
 
 async function inspectCheckpoint(page, role, checkpoint, viewport) {
@@ -390,7 +404,23 @@ try {
         continue;
       }
 
+      const teacherPersonas = role === "teacher"
+        ? await detectTeacherPersonas(page)
+        : { platform: true, school: true };
+
       for (const checkpoint of config.checkpoints) {
+        if (role === "teacher" && checkpoint.persona && !teacherPersonas[checkpoint.persona]) {
+          results.push({
+            role,
+            viewport: viewport.name,
+            checkpoint: checkpoint.name,
+            path: checkpoint.path,
+            status: "NOT_APPLICABLE",
+            failures: [],
+            notApplicableReason: `teacher account has no ${checkpoint.persona} workspace`,
+          });
+          continue;
+        }
         results.push(await inspectCheckpoint(page, role, checkpoint, viewport));
       }
       await context.close();
@@ -409,6 +439,7 @@ const summary = {
   pass: results.filter((item) => item.status === "PASS").length,
   fail: results.filter((item) => item.status === "FAIL").length,
   blocked: results.filter((item) => item.status === "BLOCKED").length,
+  notApplicable: results.filter((item) => item.status === "NOT_APPLICABLE").length,
   roles: Object.fromEntries(
     Object.keys(roleConfigs).map((role) => [
       role,
@@ -417,6 +448,7 @@ const summary = {
         pass: results.filter((item) => item.role === role && item.status === "PASS").length,
         fail: results.filter((item) => item.role === role && item.status === "FAIL").length,
         blocked: results.filter((item) => item.role === role && item.status === "BLOCKED").length,
+        notApplicable: results.filter((item) => item.role === role && item.status === "NOT_APPLICABLE").length,
       },
     ]),
   ),
@@ -437,9 +469,10 @@ fs.writeFileSync(
     `- PASS: ${summary.pass}`,
     `- FAIL: ${summary.fail}`,
     `- BLOCKED: ${summary.blocked}`,
+    `- NOT_APPLICABLE: ${summary.notApplicable}`,
     "",
     "## Role totals",
-    ...Object.entries(summary.roles).map(([role, value]) => `- ${role}: ${value.pass}/${value.total} PASS, fail=${value.fail}, blocked=${value.blocked}`),
+    ...Object.entries(summary.roles).map(([role, value]) => `- ${role}: ${value.pass}/${value.total} PASS, fail=${value.fail}, blocked=${value.blocked}, n/a=${value.notApplicable}`),
     "",
     "## Checkpoints",
     ...results.map((item) => `- [${item.status}] ${item.role} ${item.viewport} ${item.checkpoint} ${item.path}${item.failures?.length ? ` — ${item.failures.join("; ")}` : ""}`),
@@ -454,6 +487,7 @@ console.log(JSON.stringify({
   pass: summary.pass,
   fail: summary.fail,
   blocked: summary.blocked,
+  notApplicable: summary.notApplicable,
   roles: summary.roles,
 }, null, 2));
 
