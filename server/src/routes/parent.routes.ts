@@ -3,6 +3,8 @@ import { requireAuth, requireRole } from "../middleware/auth.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { UserModel } from "../models/User.js";
 import { QuizResultModel } from "../models/QuizResult.js";
+import { SkillProgressModel } from "../models/SkillProgress.js";
+import { projectSkillProgressRows } from "../modules/quizzes/application/skillMasteryProjection.js";
 import { PaymentRequestModel } from "../models/PaymentRequest.js";
 import { createNotificationDeliveries } from "../services/notificationService.js";
 import { enqueueNotificationDeliveries } from "../queues/notificationQueue.js";
@@ -25,7 +27,7 @@ parentRouter.get(
       return res.json({ children: [], summary: { count: 0, weakSkills: 0 } });
     }
 
-    const [students, weeklySummaries, latestResults] = await Promise.all([
+    const [students, weeklySummaries, latestResults, rawSkillProgress] = await Promise.all([
       UserModel.find({ $or: [{ id: { $in: linkedStudentIds } }, { _id: { $in: linkedStudentIds } }] })
         .select("id _id name enrolledCourses completedLessons")
         .lean(),
@@ -50,11 +52,24 @@ parentRouter.get(
           $group: {
             _id: "$userId",
             score: { $first: "$score" },
-            skillsAnalysis: { $first: "$skillsAnalysis" },
           },
         },
       ]),
+      SkillProgressModel.find({ userId: { $in: linkedStudentIds } })
+        .sort({ mastery: 1, lastAttemptAt: -1 })
+        .limit(2000)
+        .lean(),
     ]);
+
+    const projectedSkillProgress = await projectSkillProgressRows(rawSkillProgress as any[]);
+    const skillProgressByUser = new Map<string, any[]>();
+    for (const row of projectedSkillProgress as any[]) {
+      if (row.unresolvedTaxonomy) continue;
+      const key = String(row.userId || "");
+      const current = skillProgressByUser.get(key) || [];
+      current.push(row);
+      skillProgressByUser.set(key, current);
+    }
 
     const weeklyByUser = new Map<string, number>(
       (weeklySummaries as any[]).map((row) => [String(row._id || ""), Number(row.weeklyStudySeconds || 0)]),
@@ -69,14 +84,22 @@ parentRouter.get(
       const weeklyStudySeconds = weeklyByUser.get(sid) || 0;
       const latest = latestByUser.get(sid);
       const weeklyStudyMinutes = Math.round(weeklyStudySeconds / 60);
-      const weakSkills = Array.from(
-        new Set(
-          (latest?.skillsAnalysis || [])
-            .filter((skill: any) => Number(skill.mastery || 0) < 75 || String(skill.status || "") === "weak")
-            .map((skill: any) => String(skill.skill || skill.skillId || "").trim())
-            .filter(Boolean),
-        ),
-      ).slice(0, 5);
+      const weakSkillRows = (skillProgressByUser.get(sid) || [])
+        .filter((skill: any) => Number(skill.mastery || 0) < 75)
+        .sort((a: any, b: any) => Number(a.mastery || 0) - Number(b.mastery || 0))
+        .slice(0, 5);
+      const weakSkillDetails = weakSkillRows.map((skill: any) => ({
+        skillId: String(skill.skillId || ""),
+        skill: String(skill.skill || ""),
+        parentSkillId: String(skill.parentSkillId || ""),
+        parentSkill: String(skill.parentSkill || ""),
+        pathId: String(skill.pathId || ""),
+        subjectId: String(skill.subjectId || ""),
+        mastery: Number(skill.mastery || 0),
+        trend: String(skill.recent?.trend || "stable"),
+        evidenceCount: Number(skill.evidenceCount || 0),
+      }));
+      const weakSkills = weakSkillDetails.map((skill: any) => skill.skill).filter(Boolean);
 
       return {
         id: sid,
@@ -84,6 +107,7 @@ parentRouter.get(
         weeklyStudyMinutes,
         lastQuizScore: Number(latest?.score || 0),
         weakSkills,
+        weakSkillDetails,
         coursesInProgress: Array.isArray(student.enrolledCourses)
           ? student.enrolledCourses.map(String).filter(Boolean)
           : [],
@@ -111,10 +135,25 @@ parentRouter.post(
       return res.status(400).json({ message: "No linked students found for this parent account." });
     }
 
-    const latestResults = await QuizResultModel.find({ userId: { $in: linkedStudentIds } })
-      .select("userId score createdAt")
-      .sort({ createdAt: -1 })
-      .lean();
+    const [latestResults, rawSkillProgress] = await Promise.all([
+      QuizResultModel.find({ userId: { $in: linkedStudentIds } })
+        .select("userId score createdAt")
+        .sort({ createdAt: -1 })
+        .lean(),
+      SkillProgressModel.find({ userId: { $in: linkedStudentIds }, mastery: { $lt: 75 } })
+        .sort({ mastery: 1, lastAttemptAt: -1 })
+        .limit(1000)
+        .lean(),
+    ]);
+    const projectedSkillProgress = await projectSkillProgressRows(rawSkillProgress as any[]);
+    const weakByUser = new Map<string, any[]>();
+    for (const skill of projectedSkillProgress as any[]) {
+      if (skill.unresolvedTaxonomy) continue;
+      const key = String(skill.userId || "");
+      const rows = weakByUser.get(key) || [];
+      if (rows.length < 3) rows.push(skill);
+      weakByUser.set(key, rows);
+    }
 
     const latestByUser = new Map<string, any>();
     for (const row of latestResults as any[]) {
@@ -124,7 +163,11 @@ parentRouter.post(
 
     const rows = linkedStudentIds.map((sid: string) => {
       const row = latestByUser.get(String(sid));
-      return row ? `- الطالب ${sid}: آخر نتيجة ${Number(row.score || 0)}%` : `- الطالب ${sid}: لا توجد نتيجة حديثة`;
+      const weak = (weakByUser.get(String(sid)) || [])
+        .map((skill: any) => `${String(skill.skill || "مهارة")} (${Number(skill.mastery || 0)}%)`)
+        .join("، ");
+      const scoreText = row ? `آخر نتيجة ${Number(row.score || 0)}%` : "لا توجد نتيجة حديثة";
+      return `- الطالب ${sid}: ${scoreText}${weak ? ` — يحتاج متابعة: ${weak}` : " — لا توجد مهارات ضعيفة مؤكدة"}`;
     });
     const body = `تقرير أسبوعي مبسط:\n${rows.join("\n")}`;
 
