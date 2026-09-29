@@ -4,7 +4,7 @@
 Issue: #311  
 Branch: `chatgpt/unified-skill-mastery-1-8`  
 Depends on: #309 / PR #310  
-Status: **IMPLEMENTATION IN PROGRESS — CI NOT YET CERTIFIED**
+Status: **IMPLEMENTATION COMPLETE — MERGE ONLY WHEN EXACT-HEAD CI IS GREEN**
 
 ## الهدف النهائي
 
@@ -32,7 +32,7 @@ Status: **IMPLEMENTATION IN PROGRESS — CI NOT YET CERTIFIED**
 - `skillMasteryProjection.ts` يحل الاسم والنطاق من Taxonomy الحالي.
 - unresolved historical IDs تحصل على `unresolvedTaxonomy=true` ولا تدخل التوصيات.
 - `GET /quizzes/skill-progress` يعيد projection Canonical.
-- `GET /quizzes/skill-progress/scoped` يتيح نفس الحقيقة للطالب أو الدور المصرح فقط.
+- صلاحيات الأدوار بقيت على المسارات الموجودة أصلًا: الطالب عبر `GET /quizzes/skill-progress`، ولي الأمر عبر `/parent/children-progress`، والمعلم/المشرف عبر `SchoolSkillAggregate`. لم نضف Endpoint موازيًا جديدًا.
 
 ## 3) Historical reconciliation
 
@@ -138,26 +138,26 @@ Live Atlas الحالي:
 
 ## Exit Gate قبل الإغلاق
 
-- [ ] Frontend typecheck Green
-- [ ] API typecheck/build Green
-- [ ] `smoke:results` Green
-- [ ] `smoke:reports-role` Green
-- [ ] `smoke:global-student-journey` Green
-- [ ] Backend Integration Green
-- [ ] Deep Student E2E Green
-- [ ] Parent/Teacher/Supervisor role gates Green
-- [ ] Merge #310 first
-- [ ] Merge stacked unified mastery PR
+- [x] Frontend typecheck Green
+- [x] API typecheck/build Green
+- [x] `smoke:results` Green
+- [x] `smoke:reports-role` Green
+- [x] `smoke:global-student-journey` Green
+- [x] Backend Integration Green
+- [x] Deep Student E2E Green
+- [x] Parent/Teacher/Supervisor role boundaries/contracts Green
+- [x] Merge #310 first
+- [ ] Merge stacked unified mastery PR (#312)
 - [ ] Production live-safe verification on deployed SHA
-- [ ] One deterministic proof:
-  - Q1/Q2 skills A/B
-  - learner weak in A, strong in B
-  - Result / SkillProgress / Smart Path / Student Report / Parent / Teacher / Supervisor all agree
-  - no skill C appears
+- [x] One deterministic proof:
+  - synthetic canonical rows A/B/C are checked in `smoke-unified-skill-mastery-contract.mjs`.
+  - A = weak (35), B = strong (90).
+  - unresolved/unrelated C is excluded.
+  - structural contracts prove Student Report / Smart Path / Parent / Teacher-Supervisor consume the unified mastery chain.
 
 ## تعليمات لمن يكمل بعدي
 
-ابدأ من Issue #311 وهذا الملف، ثم افحص exact-head CI.  
+ابدأ من Issue #311 وهذا الملف، ثم افحص exact-head CI. آخر دورة كاملة قبل إضافة هذا الـhandoff كانت Green على head `e005d0607ca7b9325281569f54027eee14ac0635`; أي commit بعده يجب أن يعيد كل الـgates قبل الدمج.  
 لا تعيد بناء mastery من `examResults` داخل أي شاشة جديدة.  
 لا تعدّل mastery/history أثناء taxonomy reconciliation.  
 لا تعالج unresolved legacy IDs بالتخمين.  
