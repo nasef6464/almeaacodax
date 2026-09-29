@@ -174,7 +174,7 @@ async function login(context, config) {
 
   const apiOrigin = new URL(API_BASE_URL).origin;
   const apiUrl = new URL(apiOrigin);
-  await context.addCookies([
+  const authCookies = [
     {
       name: "almeaa_access_token",
       value: accessToken,
@@ -184,7 +184,18 @@ async function login(context, config) {
       secure: apiUrl.protocol === "https:",
       sameSite: apiUrl.protocol === "https:" ? "None" : "Lax",
     },
-  ]);
+  ];
+  if (USE_API_BRIDGE) {
+    authCookies.push({
+      name: "almeaa_access_token",
+      value: accessToken,
+      url: BASE_ORIGIN.origin,
+      httpOnly: true,
+      secure: BASE_ORIGIN.protocol === "https:",
+      sameSite: "Lax",
+    });
+  }
+  await context.addCookies(authCookies);
 
   await context.addInitScript((backendUser) => {
     sessionStorage.setItem(
