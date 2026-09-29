@@ -13,7 +13,10 @@ assert.ok(results.includes('buildSkillReportActionLink({ pathId: weakestSkill?.p
 assert.ok(foundationTarget.includes("kind: 'sub'"));
 assert.ok(foundationTarget.includes('item.subSkills?.find'));
 assert.ok(foundationTarget.includes('topic.skillId'));
+assert.ok(foundationTarget.includes("const topic = kind === 'sub'"));
+assert.ok(foundationTarget.includes('? explicitTopic'));
 assert.ok(recommendations.includes("target.kind === 'sub'"));
+assert.ok(recommendations.includes("directMappedTopic || (target.kind === 'sub' ? undefined"));
 assert.ok(recommendations.includes("buildFoundationActionLink(actionContext, 'quizzes')"));
 assert.ok(recommendations.includes('Explanation deliberately opens the topic (not one lesson)'));
 assert.ok(learningSection.includes("searchParams.get('skillId')"));
