@@ -313,7 +313,15 @@ async function inspectPage(page, role, pageSpec, viewport) {
       bodyLength: text.length,
       controlCount: controls.length,
       actionControlCount,
-      hasLoadingState: loadingPattern.test(text),
+      hasLoadingState: Array.from(document.querySelectorAll("body *")).some((el) => {
+        const rect = el.getBoundingClientRect();
+        const style = window.getComputedStyle(el);
+        const visible = rect.width > 0 && rect.height > 0 && style.display !== "none" && style.visibility !== "hidden";
+        if (!visible) return false;
+        const label = (el.textContent || "").trim();
+        const candidate = el.children.length === 0 || el.getAttribute("aria-busy") === "true" || el.getAttribute("role") === "status";
+        return candidate && label.length <= 120 && loadingPattern.test(label);
+      }),
       hasMojibakeText: mojibakePattern.test(text),
       hasLoginForm: Boolean(document.querySelector('input[type="password"]')) && /تسجيل الدخول|Login|البريد الإلكتروني/.test(text),
       hasGuardText: /تسجيل الدخول|ليس لديك صلاحية|غير مصرح|Authentication|Login/.test(text),
