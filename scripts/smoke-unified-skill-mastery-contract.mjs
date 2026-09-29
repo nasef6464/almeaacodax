@@ -82,10 +82,11 @@ check('7 teacher/supervisor reports use canonical SchoolSkillAggregate truth', (
   assert.ok(files.reports.includes('staffSkillAggregates'));
 });
 
-check('8 unified source preserves RBAC for scoped student mastery', () => {
-  assert.ok(files.telemetry.includes('"/skill-progress/scoped"'));
-  assert.ok(files.telemetry.includes('resolveScopedStudents(req.authUser'));
-  assert.ok(files.telemetry.includes('Skill progress scope is not allowed'));
+check('8 unified source preserves existing role-scoped boundaries', () => {
+  assert.ok(files.telemetry.includes('userId: req.authUser!.id'));
+  assert.ok(files.parentRoutes.includes('linkedStudentIds'));
+  assert.ok(files.parentRoutes.includes('SkillProgressModel.find'));
+  assert.ok(files.schoolView.includes('resolveSchoolReportStudents'));
 });
 
 check('student report skill actions stay inside exact Foundation mapping', () => {
