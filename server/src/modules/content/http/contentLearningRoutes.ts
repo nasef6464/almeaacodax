@@ -8,6 +8,7 @@ import { asyncHandler } from "../../../utils/asyncHandler.js";
 import { assertManagedContentScope } from "../../../services/managedContentScope.js";
 import { sanitizeLessonResourcePayload } from "../domain/learningResourceUrl.js";
 import { buildDocumentQuery } from "../infrastructure/contentDocumentQuery.js";
+import { validateFoundationSubtopicSkillLink } from "../application/foundationSubtopicSkillLink.js";
 import {
   buildOwnedDocumentQuery,
   getWorkflowDefaults,
@@ -32,8 +33,18 @@ contentLearningRouter.post(
   requireRole(["admin", "teacher"]),
   asyncHandler(async (req, res) => {
     const payload = topicSchema.parse(req.body);
-    await assertManagedContentScope(req.authUser!, payload);
-    const created = await TopicModel.create(payload);
+    let normalizedPayload = payload;
+
+    if (payload.parentId) {
+      const validation = await validateFoundationSubtopicSkillLink(payload);
+      if (!validation.ok) {
+        return res.status(validation.status).json({ message: validation.message });
+      }
+      normalizedPayload = { ...payload, ...validation.normalized };
+    }
+
+    await assertManagedContentScope(req.authUser!, normalizedPayload);
+    const created = await TopicModel.create(normalizedPayload);
     res.status(StatusCodes.CREATED).json(created);
   }),
 );
@@ -49,14 +60,25 @@ contentLearningRouter.patch(
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Topic not found" });
     }
 
-    await assertManagedContentScope(req.authUser!, { ...existing.toObject(), ...payload });
+    const mergedTopic = { ...existing.toObject(), ...payload };
+    let normalizedPayload = payload;
+
+    if (mergedTopic.parentId) {
+      const validation = await validateFoundationSubtopicSkillLink(mergedTopic, existing._id);
+      if (!validation.ok) {
+        return res.status(validation.status).json({ message: validation.message });
+      }
+      normalizedPayload = { ...payload, ...validation.normalized };
+    }
+
+    await assertManagedContentScope(req.authUser!, { ...existing.toObject(), ...normalizedPayload });
 
     const canManageTopic = hasTopicManagementScope(req.authUser!, existing as any);
     if (!canManageTopic) {
       return res.status(StatusCodes.FORBIDDEN).json({ message: "You do not have access to this topic" });
     }
 
-    const updated = await TopicModel.findOneAndUpdate(buildDocumentQuery(String(existing._id)), payload, {
+    const updated = await TopicModel.findOneAndUpdate(buildDocumentQuery(String(existing._id)), normalizedPayload, {
       new: true,
     });
 
