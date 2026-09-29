@@ -4,6 +4,10 @@ import { chromium } from "playwright";
 
 const BASE_URL = String(process.env.UI_AUDIT_BASE_URL || "https://almeaacodax.vercel.app").replace(/\/$/, "");
 const API_BASE_URL = String(process.env.UI_AUDIT_API_BASE_URL || "https://almeaacodax-codex.onrender.com/api").replace(/\/$/, "");
+const BASE_ORIGIN = new URL(BASE_URL);
+const API_ORIGIN = new URL(API_BASE_URL);
+const USE_API_BRIDGE = ["127.0.0.1", "localhost"].includes(BASE_ORIGIN.hostname);
+const LOADING_TIMEOUT_MS = Number(process.env.UI_AUDIT_LOADING_TIMEOUT_MS || 20000);
 const RUN_ID = process.env.ROLE_PAGES_AUDIT_RUN_ID
   ? `${process.env.ROLE_PAGES_AUDIT_RUN_ID}-v2`
   : `deep-role-v2-${new Date().toISOString().replace(/[:.]/g, "-")}`;
@@ -81,6 +85,62 @@ const roleConfigs = {
 
 function safeName(value) {
   return String(value || "").replace(/[^a-zA-Z0-9_-]+/g, "_").replace(/^_+|_+$/g, "").slice(0, 120) || "step";
+}
+
+async function installApiBridge(context) {
+  if (!USE_API_BRIDGE) return;
+
+  await context.route("**/api/**", async (route) => {
+    const request = route.request();
+    const originalUrl = new URL(request.url());
+    const apiIndex = originalUrl.pathname.indexOf("/api/");
+    if (apiIndex < 0) return route.continue();
+
+    const apiPath = originalUrl.pathname.slice(apiIndex + 4);
+    const targetUrl = `${API_BASE_URL}${apiPath}${originalUrl.search}`;
+    const headers = { ...request.headers() };
+    delete headers.host;
+    delete headers.origin;
+    delete headers.referer;
+    delete headers["content-length"];
+
+    try {
+      const maxAttempts = ["GET", "HEAD"].includes(request.method()) ? 3 : 1;
+      let response;
+      let lastError;
+      for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+        try {
+          response = await fetch(targetUrl, {
+            method: request.method(),
+            headers,
+            body: ["GET", "HEAD"].includes(request.method()) ? undefined : request.postDataBuffer() || undefined,
+            redirect: "manual",
+            signal: AbortSignal.timeout(20_000),
+          });
+          if (![502, 503, 504].includes(response.status) || attempt === maxAttempts) break;
+        } catch (error) {
+          lastError = error;
+          if (attempt === maxAttempts) throw error;
+        }
+        await new Promise((resolve) => setTimeout(resolve, 300 * attempt));
+      }
+      if (!response) throw lastError || new Error("API bridge produced no response");
+      const responseHeaders = Object.fromEntries(response.headers.entries());
+      delete responseHeaders["content-encoding"];
+      delete responseHeaders["content-length"];
+      delete responseHeaders["transfer-encoding"];
+      responseHeaders["access-control-allow-origin"] = BASE_ORIGIN.origin;
+      responseHeaders["access-control-allow-credentials"] = "true";
+      await route.fulfill({
+        status: response.status,
+        headers: responseHeaders,
+        body: Buffer.from(await response.arrayBuffer()),
+      });
+    } catch (error) {
+      console.error(`API bridge failed for ${targetUrl}:`, error instanceof Error ? error.message : String(error));
+      await route.abort("failed");
+    }
+  });
 }
 
 async function login(context, config) {
@@ -171,7 +231,7 @@ async function inspectCheckpoint(page, role, checkpoint, viewport) {
       .waitForFunction(
         ({ source, flags }) => !new RegExp(source, flags).test(document.body.innerText || ""),
         { source: LOADING.source, flags: LOADING.flags },
-        { timeout: 10_000 },
+        { timeout: LOADING_TIMEOUT_MS },
       )
       .catch(() => undefined);
   } catch (error) {
@@ -276,6 +336,7 @@ try {
         timezoneId: "Asia/Riyadh",
         viewport: { width: viewport.width, height: viewport.height },
       });
+      await installApiBridge(context);
       const page = await context.newPage();
       const loginResult = await login(context, config);
       if (loginResult.ok && String(loginResult.userRole) !== String(role)) {
