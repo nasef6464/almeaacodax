@@ -41,7 +41,9 @@ assert.ok(!skillProgressSideEffects.includes('Promise.all(\n    skillsAnalysis')
 
 assert.ok(telemetry.includes('const pathId = String(req.query.pathId'));
 assert.ok(telemetry.includes('const subjectId = String(req.query.subjectId'));
-assert.ok(telemetry.includes('summarizeRecentSkillEvidence'));
+assert.ok(telemetry.includes('projectSkillProgressRows'));
+assert.ok(telemetry.includes('"/skill-progress/scoped"'));
+assert.ok(telemetry.includes('resolveScopedStudents(req.authUser'));
 assert.ok(masteryRoutes.includes('"school_admin"'));
 
 assert.ok(studentAnalyticsSource.includes('weightedMasteryTotal'));
