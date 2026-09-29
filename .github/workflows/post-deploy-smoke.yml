@@ -70,6 +70,26 @@ jobs:
         # Render service when the backend is migrated.
         run: npm run smoke:operational
 
+      - name: Install Chromium for counter certification
+        if: github.event_name == 'push' && (contains(github.event.head_commit.message, 'counter') || contains(github.event.head_commit.message, 'Counter') || contains(github.event.head_commit.message, 'taxonomy'))
+        run: npx playwright install --with-deps chromium
+
+      - name: Live counter integrity — API + admin UI
+        if: github.event_name == 'push' && (contains(github.event.head_commit.message, 'counter') || contains(github.event.head_commit.message, 'Counter') || contains(github.event.head_commit.message, 'taxonomy'))
+        env:
+          UI_AUDIT_BASE_URL: https://almeaacodax.vercel.app
+          UI_AUDIT_API_BASE_URL: https://almeaacodax.vercel.app/api
+        run: npm run smoke:counter-integrity-live
+
+      - name: Upload counter integrity evidence
+        if: always() && github.event_name == 'push' && (contains(github.event.head_commit.message, 'counter') || contains(github.event.head_commit.message, 'Counter') || contains(github.event.head_commit.message, 'taxonomy'))
+        uses: actions/upload-artifact@v4
+        with:
+          name: counter-integrity-${{ github.sha }}
+          path: audit-artifacts/counter-integrity/
+          if-no-files-found: error
+          retention-days: 14
+
       - name: Google OAuth live start/callback proof
         run: npm run smoke:google-oauth-live-proof
 

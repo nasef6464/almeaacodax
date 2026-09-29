@@ -1314,7 +1314,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
       )}
 
       <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-5">
-        <div className="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
+        <div data-testid="question-counter-total" className="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
           <div className="flex items-center justify-between">
             <p className="text-xs font-black text-gray-500">الأسئلة الحالية</p>
             {hasActiveScope ? (
@@ -1325,19 +1325,19 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
           </div>
           <p className="mt-2 text-2xl font-black text-gray-900">{questionCoverageSummary.total}</p>
         </div>
-        <div className="rounded-2xl border border-indigo-100 bg-indigo-50 p-4">
+        <div data-testid="question-counter-main-covered" className="rounded-2xl border border-indigo-100 bg-indigo-50 p-4">
           <p className="text-xs font-black text-indigo-700">المهارات الرئيسية المغطاة بالأسئلة</p>
           <p className="mt-2 text-2xl font-black text-indigo-800">{questionCoverageSummary.mainSkillCount ?? '—'}</p>
         </div>
-        <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-4">
+        <div data-testid="question-counter-sub-covered" className="rounded-2xl border border-emerald-100 bg-emerald-50 p-4">
           <p className="text-xs font-black text-emerald-700">المهارات الفرعية المغطاة بالأسئلة</p>
           <p className="mt-2 text-2xl font-black text-emerald-800">{questionCoverageSummary.subSkillCount ?? '—'}</p>
         </div>
-        <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+        <div data-testid="question-counter-draft" className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
           <p className="text-xs font-black text-slate-700">المسودات</p>
           <p className="mt-2 text-2xl font-black text-slate-900">{questionCoverageSummary.draftCount ?? '—'}</p>
         </div>
-        <div className="rounded-2xl border border-amber-100 bg-amber-50 p-4">
+        <div data-testid="question-counter-pending" className="rounded-2xl border border-amber-100 bg-amber-50 p-4">
           <p className="text-xs font-black text-amber-700">بانتظار المراجعة</p>
           <p className="mt-2 text-2xl font-black text-amber-800">{questionCoverageSummary.pendingCount ?? '—'}</p>
         </div>
@@ -1349,6 +1349,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
           {!subjectId && (
             <>
               <select
+                data-testid="question-filter-path"
                 value={selectedPathId}
                 onChange={(event) => {
                   setSelectedPathId(event.target.value);
@@ -1366,6 +1367,7 @@ export const QuestionBankManager: React.FC<QuestionBankManagerProps> = ({ subjec
                 ))}
               </select>
               <select
+                data-testid="question-filter-subject"
                 value={selectedSubjectId}
                 onChange={(event) => {
                   setSelectedSubjectId(event.target.value);
