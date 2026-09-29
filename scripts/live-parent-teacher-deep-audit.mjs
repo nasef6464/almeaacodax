@@ -7,7 +7,7 @@ const API_BASE_URL = String(process.env.UI_AUDIT_API_BASE_URL || "https://almeaa
 const BASE_ORIGIN = new URL(BASE_URL);
 const API_ORIGIN = new URL(API_BASE_URL);
 const USE_API_BRIDGE = ["127.0.0.1", "localhost"].includes(BASE_ORIGIN.hostname);
-const LOADING_TIMEOUT_MS = Number(process.env.UI_AUDIT_LOADING_TIMEOUT_MS || 20000);
+const LOADING_TIMEOUT_MS = 20000;
 const RUN_ID = process.env.ROLE_PAGES_AUDIT_RUN_ID
   ? `${process.env.ROLE_PAGES_AUDIT_RUN_ID}-v2`
   : `deep-role-v2-${new Date().toISOString().replace(/[:.]/g, "-")}`;
