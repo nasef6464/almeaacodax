@@ -945,20 +945,37 @@ async function run() {
     `linkedStudentIds=${JSON.stringify(parentMe.user?.linkedStudentIds || [])}`,
   );
 
-  pushResult(
-    results,
-    "admin",
-    "pending lesson visible to reviewers",
-    hasLessonByTitle(adminContent.lessons, pendingLessonTitle),
-    pendingLessonTitle,
-  );
-  pushResult(
-    results,
-    "teacher",
-    "pending lesson visible to owner",
-    hasLessonByTitle(teacherContent.lessons, pendingLessonTitle),
-    pendingLessonTitle,
-  );
+  if (EXPECT_OPERATIONAL_FIXTURE) {
+    pushResult(
+      results,
+      "admin",
+      "pending lesson visible to reviewers",
+      hasLessonByTitle(adminContent.lessons, pendingLessonTitle),
+      pendingLessonTitle,
+    );
+    pushResult(
+      results,
+      "teacher",
+      "pending lesson visible to owner",
+      hasLessonByTitle(teacherContent.lessons, pendingLessonTitle),
+      pendingLessonTitle,
+    );
+  } else {
+    pushResult(
+      results,
+      "admin",
+      "reviewer lesson inventory queryable without fixture data",
+      Array.isArray(adminContent.lessons),
+      `lessons=${adminContent.lessons?.length || 0}`,
+    );
+    pushResult(
+      results,
+      "teacher",
+      "owner lesson inventory queryable without fixture data",
+      Array.isArray(teacherContent.lessons),
+      `lessons=${teacherContent.lessons?.length || 0}`,
+    );
+  }
   pushResult(
     results,
     "student",
@@ -1006,20 +1023,37 @@ async function run() {
     pendingQuizId,
   );
 
-  pushResult(
-    results,
-    "admin",
-    "pending library item visible to reviewers",
-    hasItemById(adminContent.libraryItems, pendingLibraryItemId),
-    pendingLibraryItemId,
-  );
-  pushResult(
-    results,
-    "teacher",
-    "pending library item visible to owner",
-    hasItemById(teacherContent.libraryItems, pendingLibraryItemId),
-    pendingLibraryItemId,
-  );
+  if (EXPECT_OPERATIONAL_FIXTURE) {
+    pushResult(
+      results,
+      "admin",
+      "pending library item visible to reviewers",
+      hasItemById(adminContent.libraryItems, pendingLibraryItemId),
+      pendingLibraryItemId,
+    );
+    pushResult(
+      results,
+      "teacher",
+      "pending library item visible to owner",
+      hasItemById(teacherContent.libraryItems, pendingLibraryItemId),
+      pendingLibraryItemId,
+    );
+  } else {
+    pushResult(
+      results,
+      "admin",
+      "reviewer library inventory queryable without fixture data",
+      Array.isArray(adminContent.libraryItems),
+      `libraryItems=${adminContent.libraryItems?.length || 0}`,
+    );
+    pushResult(
+      results,
+      "teacher",
+      "owner library inventory queryable without fixture data",
+      Array.isArray(teacherContent.libraryItems),
+      `libraryItems=${teacherContent.libraryItems?.length || 0}`,
+    );
+  }
   pushResult(
     results,
     "student",
