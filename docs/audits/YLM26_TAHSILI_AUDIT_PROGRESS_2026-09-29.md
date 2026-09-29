@@ -50,3 +50,22 @@ Evidence:
 - no Tahsili question is left without a skill link
 
 Next source span: circle / coordinate geometry onward.
+
+
+## Extension — Circle batch
+Printed pages **21 through 23** were subsequently locked.
+
+- additional visible source items: **14**
+- additional existing records reviewed: **13**
+- additional answer-key agreement: **13/13**
+- additional missing item: `TAH-MATH-YLM26-P022-Q05`
+- additional semantic retags: **2**
+
+### Cumulative source-reviewed span
+Printed pages **5 through 23**:
+- visible source items: **75**
+- existing Atlas records source-reviewed: **67**
+- answer-key agreement: **67/67**
+- missing source items: **8**
+- semantic skill/subskill corrections applied: **28**
+- approvals changed: **0**
