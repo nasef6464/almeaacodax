@@ -71,6 +71,23 @@
 
 ## حالة الإغلاق
 
+**CLOSED / VERIFIED — 2026-09-29**
+
 - PR #314: merged على `main` عند `8fb8ec5b1776fe0ba833942ca527ba1e233bafe0`.
-- Follow-up canonical routing hardening: قيد CI/PR.
-- Production verification: يتم تثبيته هنا بعد نجاح البوابات والنشر.
+- PR #315: canonical student-routing + cross-scope hardening، merged على `main` عند `9f01b5fb603313247a4e4133e7a72d9b80dcfa4b`.
+- Required CI على رأس PR #315:
+  - Refactor V2 Safety Gate: PASS.
+  - Refactor V2 Production Readiness Gate: PASS.
+  - Platform V3 Backend Integration Gate: PASS.
+  - Platform V3 Recovery Gate: PASS.
+  - Platform V3 Phase + Handover Gate: PASS.
+  - Platform V3 Public UI Gate: PASS.
+  - Platform V3 Deep Pre-Merge E2E Gate: PASS.
+- Deep E2E أثبت ضمن نفس الرأس:
+  - Student Learning Space desktop + mobile: PASS.
+  - Results and report actions desktop + mobile: PASS.
+  - Learning Space manager placement: PASS.
+  - كل deep suites المطلوبة: PASS.
+- Vercel Production: READY على `9f01b5fb603313247a4e4133e7a72d9b80dcfa4b`.
+- Render service `almeaacodax-codex`: LIVE على `9f01b5fb603313247a4e4133e7a72d9b80dcfa4b`.
+- Issue #313: يغلق بعد تثبيت تقرير التسليم النهائي.
