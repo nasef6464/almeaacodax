@@ -221,6 +221,9 @@ export async function updateSkillProgressFromQuestionAttempt(attempt: any, userI
     skill: any;
     skillId: string;
     skillName: string;
+    level: "main" | "sub";
+    parentSkillId: string;
+    parentSkill: string;
     pathId: string;
     subjectId: string;
     sectionId: string;
