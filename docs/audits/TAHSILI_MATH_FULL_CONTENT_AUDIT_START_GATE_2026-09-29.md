@@ -45,18 +45,19 @@ The source-book lesson boundaries and section-II markers show **1012 section-I q
 Current production:
 - live COL26: **966**
 - exact current source-page/question identities matching section I: **936**
-- live identities requiring provenance remap/review: **30**
-  - **26** have the same printed question number elsewhere in the same lesson and are candidates for page/source-meta correction after image verification.
-  - **4** are outside the section-I source range and are quarantined before any write:
+- exact current identities matching a section-I source page/question: **936**
+- exact section-I source identities absent from the current live set: **76**
+- live noncanonical identities requiring crop-level reconciliation: **30**
+  - **4** are already proven outside the section-I source range and are quarantined before any write:
     - `TAH-MATH-COL26-P054-Q41`
     - `TAH-MATH-COL26-P054-Q42`
     - `TAH-MATH-COL26-P092-Q46`
     - `TAH-MATH-COL26-P126-Q43`
-- after the 26 provenance remaps, the current set represents **962** section-I source identities.
-- therefore **50** section-I source questions are genuinely absent from the current live set.
+  - the remaining **26** cannot be automatically called remaps: several duplicate a printed question number that already exists at its canonical source page. Their images must be compared to the PDF before deciding whether they are duplicates, misnumbered crops, or recoverable missing questions.
+- net count deficit versus section-I source truth: **46** questions.
 - expected section-I source-lock count: **1012**.
 
-No delete or remap is executed until the crop/image for every candidate is visually checked against the source.
+No delete, remap, or missing-question insertion is executed until crop/image provenance is verified record by record.
 
 ## Existing quality problems already confirmed
 - All 1258 records are structurally linked to canonical taxonomy IDs, but structural validity is **not** semantic correctness.
