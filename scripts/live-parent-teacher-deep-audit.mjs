@@ -4,7 +4,9 @@ import { chromium } from "playwright";
 
 const BASE_URL = String(process.env.UI_AUDIT_BASE_URL || "https://almeaacodax.vercel.app").replace(/\/$/, "");
 const API_BASE_URL = String(process.env.UI_AUDIT_API_BASE_URL || "https://almeaacodax-codex.onrender.com/api").replace(/\/$/, "");
-const RUN_ID = process.env.DEEP_ROLE_V2_AUDIT_RUN_ID || `deep-role-v2-${new Date().toISOString().replace(/[:.]/g, "-")}`;
+const RUN_ID = process.env.ROLE_PAGES_AUDIT_RUN_ID
+  ? `${process.env.ROLE_PAGES_AUDIT_RUN_ID}-v2`
+  : `deep-role-v2-${new Date().toISOString().replace(/[:.]/g, "-")}`;
 const OUT_DIR = path.resolve("audit-artifacts", "ui-audit-exhaustive", RUN_ID);
 const CREDENTIALS_FILE = process.env.ROLE_CREDENTIALS_FILE || path.resolve("audit-artifacts", "ROLE_CREDENTIALS.env");
 const VIEWPORTS = [
