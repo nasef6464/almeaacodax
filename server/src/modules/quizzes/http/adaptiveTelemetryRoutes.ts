@@ -10,7 +10,8 @@ import { questionAttemptSchema } from "./submissionSchemas.js";
 import { buildQuestionAttemptDocument } from "../application/questionAttemptDocument.js";
 import { updateSkillProgressFromQuestionAttempt, upsertReviewCardFromQuestionAttempt } from "../application/quizSubmissionSideEffects.js";
 import { buildDocumentQuery } from "../infrastructure/quizDocumentQuery.js";
-import { summarizeRecentSkillEvidence } from "../analytics/skillAnalytics.js";
+import { resolveScopedStudents } from "../application/quizReportScope.js";
+import { projectSkillProgressRows } from "../application/skillMasteryProjection.js";
 
 export const adaptiveTelemetryRouter = Router();
 
@@ -38,14 +39,52 @@ adaptiveTelemetryRouter.get(
       ? pagination.skip + items.length + (hasMore ? 1 : 0)
       : await SkillProgressModel.countDocuments(filter);
     res.setHeader("X-Has-More", String(hasMore));
+    const projected = await projectSkillProgressRows(items as any[]);
     res.json({
-      skillProgress: items.map((item: any) => ({
-        ...item,
-        recent: summarizeRecentSkillEvidence(
-          Array.isArray(item.recentEvidence) ? item.recentEvidence : [],
-        ),
-      })),
+      skillProgress: projected,
       pagination: buildPaginatedResponse([], pagination, total),
+    });
+  }),
+);
+
+adaptiveTelemetryRouter.get(
+  "/skill-progress/scoped",
+  requireAuth,
+  asyncHandler(async (req, res) => {
+    const requestedUserId = String(req.query.userId || "").trim();
+    if (!requestedUserId) {
+      return res.status(StatusCodes.BAD_REQUEST).json({ message: "userId is required" });
+    }
+
+    const ownId = String(req.authUser!.id || "").trim();
+    let allowed = requestedUserId === ownId;
+
+    if (!allowed && ["parent", "teacher", "supervisor", "school_admin", "admin"].includes(String(req.authUser!.role || ""))) {
+      const scope = await resolveScopedStudents(req.authUser, { limit: 1000 });
+      allowed = scope.students.some((student: any) =>
+        [student?.id, student?._id].map((value) => String(value || "")).includes(requestedUserId),
+      );
+    }
+
+    if (!allowed) {
+      return res.status(StatusCodes.FORBIDDEN).json({ message: "Skill progress scope is not allowed" });
+    }
+
+    const pathId = String(req.query.pathId || "").trim();
+    const subjectId = String(req.query.subjectId || "").trim();
+    const rawItems = await SkillProgressModel.find({
+      userId: requestedUserId,
+      ...(pathId ? { pathId } : {}),
+      ...(subjectId ? { subjectId } : {}),
+    })
+      .sort({ mastery: 1, lastAttemptAt: -1 })
+      .limit(500)
+      .lean();
+
+    const skillProgress = await projectSkillProgressRows(rawItems as any[]);
+    return res.json({
+      userId: requestedUserId,
+      skillProgress,
     });
   }),
 );
@@ -73,7 +112,7 @@ adaptiveTelemetryRouter.post(
   asyncHandler(async (req, res) => {
     const payload = questionAttemptSchema.parse(req.body);
     const question = await QuestionModel.findOne(buildDocumentQuery(payload.questionId)).select(
-      "id pathId subject subjectId sectionId skillIds correctOptionIndex",
+      "id pathId subject subjectId sectionId skillIds skillId subSkillId correctOptionIndex",
     );
     if (!question) {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Question not found" });
