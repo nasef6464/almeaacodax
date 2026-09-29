@@ -69,37 +69,6 @@ const INITIAL_QA_THREAD: QuestionThreadItem[] = [
   },
 ];
 
-const getQuestionContextScore = (question: Question, quiz: Quiz) => {
-  let score = 0;
-  if (quiz.pathId && question.pathId === quiz.pathId) score += 4;
-  if (quiz.subjectId && question.subject === quiz.subjectId) score += 4;
-  if (quiz.sectionId && question.sectionId === quiz.sectionId) score += 2;
-  if (quiz.skillIds?.length && question.skillIds?.some((skillId) => quiz.skillIds?.includes(skillId))) score += 2;
-  return score;
-};
-
-const supplementMissingQuizQuestions = (
-  quiz: Quiz,
-  questionBank: Question[],
-  loadedQuestions: Question[],
-  targetCount: number,
-) => {
-  if (loadedQuestions.length >= targetCount) return loadedQuestions;
-
-  const usedIds = new Set(loadedQuestions.map((question) => question.id));
-  const contextualFallbackQuestions = questionBank
-    .filter((question) => !usedIds.has(question.id) && getQuestionContextScore(question, quiz) > 0)
-    .sort((a, b) => getQuestionContextScore(b, quiz) - getQuestionContextScore(a, quiz));
-  const remainingCount = Math.max(targetCount - loadedQuestions.length, 0);
-  const contextualSlice = contextualFallbackQuestions.slice(0, remainingCount);
-  const contextualIds = new Set(contextualSlice.map((question) => question.id));
-  const genericFallbackQuestions = questionBank
-    .filter((question) => !usedIds.has(question.id) && !contextualIds.has(question.id))
-    .slice(0, Math.max(remainingCount - contextualSlice.length, 0));
-
-  return [...loadedQuestions, ...contextualSlice, ...genericFallbackQuestions];
-};
-
 const extractPassage = (question?: Question | null): { passageText: string | null; questionText: string } => {
   if (!question) return { passageText: null, questionText: '' };
 
@@ -468,12 +437,9 @@ export const QuizPage: React.FC = () => {
     const resolvedQuestions = sourceQuestionIds
       .map((id) => resolveQuestionFromBank(questionBank, id))
       .filter((question): question is Question => Boolean(question));
-    const loadedQuestions = supplementMissingQuizQuestions(
-      foundQuiz,
-      questionBank,
-      resolvedQuestions,
-      sourceQuestionIds.length,
-    );
+    // Published assessments must use only their exact referenced question IDs.
+    // Never fill a missing reference with an unrelated question from the global bank.
+    const loadedQuestions = resolvedQuestions;
     const quizLoadKey = [
       foundQuiz.id,
       user.id,
