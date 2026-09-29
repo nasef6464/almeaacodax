@@ -22,6 +22,7 @@ export interface StudentWeeklyPlanItem {
     foundationTopicLink?: string;
     quizTitle?: string;
     quizLink?: string;
+    supportLink?: string;
     actionText: string;
 }
 
@@ -52,6 +53,7 @@ export const buildStudentWeeklyPlan = (
             foundationTopicLink: recommendation.foundationTopicLink,
             quizTitle: recommendation.quizTitle,
             quizLink: recommendation.quizLink,
+            supportLink: recommendation.supportLink,
             actionText:
                 recommendation.actionText ||
                 (skill.mastery < 50
