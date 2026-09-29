@@ -72,6 +72,8 @@ check('foundation subtopics require one valid subskill and cannot cross main-ski
     'Selected subskill belongs to a different main Foundation topic',
     'Subskill is already linked to Foundation topic:',
     'parentTopicSkillId !== parentSkillId',
+    'Foundation subtopic scope must match its parent topic path and subject',
+    'Selected subskill belongs to a different section',
     'syncFoundationTopicResourcesToSkill',
     'update.$pull = { skillIds: previous }',
     'update.$addToSet = { skillIds: next }',

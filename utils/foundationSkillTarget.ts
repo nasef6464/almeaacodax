@@ -107,7 +107,12 @@ export const resolveFoundationSkillTarget = (
       )
     : undefined;
 
-  const topic = explicitTopic || legacyIdTopic || titleTopic;
+  // Child Foundation topics are canonical remediation targets for subskills.
+  // Never fall back by legacy id/title for a subskill: if the explicit skillId mapping
+  // is missing, student routing must remain unresolved rather than opening wrong/general content.
+  const topic = kind === 'sub'
+    ? explicitTopic
+    : explicitTopic || legacyIdTopic || titleTopic;
 
   return {
     ...target,
