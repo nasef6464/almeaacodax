@@ -81,7 +81,7 @@ const roles = [
     email: process.env.ROLE_TEACHER_EMAIL,
     password: process.env.ROLE_TEACHER_PASSWORD,
     pages: [
-      { path: "/admin-dashboard", expect: "private" },
+      { path: "/instructor-dashboard", expect: "private" },
       { path: "/reports", expect: "private" },
       { path: "/profile", expect: "private" },
     ],
@@ -91,7 +91,7 @@ const roles = [
     email: process.env.ROLE_SUPERVISOR_EMAIL,
     password: process.env.ROLE_SUPERVISOR_PASSWORD,
     pages: [
-      { path: "/admin-dashboard", expect: "private" },
+      { path: "/supervisor-dashboard", expect: "private" },
       { path: "/reports", expect: "private" },
       { path: "/profile", expect: "private" },
     ],
@@ -321,7 +321,14 @@ async function inspectPage(page, role, pageSpec, viewport) {
   const textFailure = state.hasMojibakeText ? "visible mojibake text" : "";
   const loadingFailure = state.hasLoadingState ? "visible loading state did not settle" : "";
   const actionFailure = pageSpec.expect !== "guarded" && !hasActionHint ? "missing visible action hint" : "";
-  const status = navigationError || layoutFailure || textFailure || loadingFailure || actionFailure || network5xx.length || !(isGuardedOk || isOpenOk) ? "FAIL" : "PASS";
+  const expectedPathname = pageSpec.path.split("?")[0];
+  const actualPathname = (() => {
+    try { return new URL(state.href).pathname; } catch { return ""; }
+  })();
+  const routeFailure = pageSpec.expect === "private" && actualPathname !== expectedPathname
+    ? `unexpected redirect ${expectedPathname} -> ${actualPathname || "unknown"}`
+    : "";
+  const status = navigationError || layoutFailure || textFailure || loadingFailure || actionFailure || routeFailure || network5xx.length || !(isGuardedOk || isOpenOk) ? "FAIL" : "PASS";
 
   return {
     role: role.role,
@@ -339,6 +346,7 @@ async function inspectPage(page, role, pageSpec, viewport) {
     textFailure,
     loadingFailure,
     actionFailure,
+    routeFailure,
     ...state,
   };
 }
