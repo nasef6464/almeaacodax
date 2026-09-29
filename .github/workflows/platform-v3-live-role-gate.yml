@@ -108,8 +108,6 @@ jobs:
         run: npm run smoke:role-pages-live
 
       - name: Run read-only deep parent + teacher journeys
-        env:
-          DEEP_ROLE_V2_AUDIT_RUN_ID: platform-v3-live-role-v2-${{ github.run_id }}
         run: node scripts/live-parent-teacher-deep-audit.mjs
 
       - name: Require every role and page green
@@ -146,7 +144,7 @@ jobs:
           name: platform-v3-live-role-audit-${{ github.run_id }}
           path: |
             audit-artifacts/ui-audit-exhaustive/platform-v3-live-${{ github.run_id }}/
-            audit-artifacts/ui-audit-exhaustive/platform-v3-live-role-v2-${{ github.run_id }}/
+            audit-artifacts/ui-audit-exhaustive/platform-v3-live-${{ github.run_id }}-v2/
           if-no-files-found: warn
           retention-days: 14
 
