@@ -72,7 +72,8 @@ check('path progress helper owns only deterministic projection logic', () => {
 
 check('Dashboard retains page, store, smart-path, parent, routing, and path composition ownership', () => {
   for (const marker of [
-    'const buildSmartPathSkillsFromResults =',
+    'const buildSmartPathSkillsFromProgress =',
+    'const useStudentSkillProgress =',
     'const useParentScopedResults =',
     'const Dashboard: React.FC = () =>',
     'const { user } = useStore();',

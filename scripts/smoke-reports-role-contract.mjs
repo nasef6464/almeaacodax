@@ -106,10 +106,11 @@ check('student report shows the quick decision card instead of hiding it behind 
   assertIncludes(reportsSource, 'shareStudentSummary');
 });
 
-check('student skill performance report is explicitly driven by quiz answers and evidence', () => {
-  assertIncludes(reportsSource, 'تقرير أداء المهارات من الاختبارات');
-  assertIncludes(reportsSource, 'القياس مبني على {studentEvidenceSummary.totalQuestions} سؤال');
-  assertIncludes(reportsSource, 'نرتب المهارات من الأضعف للأقوى بناءً على الأسئلة التي حللتها في كل اختبار');
+check('student skill performance report is driven by canonical SkillProgress and evidence', () => {
+  assertIncludes(reportsSource, 'حالة إتقان المهارات الحالية');
+  assertIncludes(reportsSource, 'api.getSkillProgress(scope)');
+  assertIncludes(reportsSource, 'buildStudentSkillsFromProgress(studentSkillProgress');
+  assertIncludes(reportsSource, 'دليل سؤال عبر {studentEvidenceSummary.uniqueSkills} مهارة');
   assertIncludes(reportsSource, 'skill.totalEvidence');
   assertIncludes(reportsSource, 'skill.correctAttempts');
 });
@@ -184,8 +185,10 @@ check('student weak-skill actions open the linked foundation topic first', () =>
     /const actionContext[\s\S]{0,360}topicId: targetTopicId/,
     'foundation action context must preserve the resolved scoped topic',
   );
-  assertIncludes(studentReportActionsSource, "relearnLink: studentTodayFocus.lessonLink || studentTodayFocus.foundationTopicLink || '/courses'");
-  assertIncludes(recommendationSource, "quizLink: foundationTrainingLink || (recommendedQuiz?.id ? `/quiz/${recommendedQuiz.id}` : undefined)");
+  assertIncludes(recommendationSource, "const foundationSupportLink = buildFoundationActionLink(actionContext, 'support')");
+  assertIncludes(studentReportActionsSource, "relearnLink: studentTodayFocus.lessonLink || studentTodayFocus.foundationTopicLink || '/reports'");
+  assertIncludes(studentReportActionsSource, "adaptiveTrainingLink: studentTodayFocus.quizLink || '/reports'");
+  assertIncludes(recommendationSource, 'supportLink: recommendedTopic ? foundationSupportLink : undefined');
 });
 
 check('student smart remediation uses AI with a local fallback plan', () => {

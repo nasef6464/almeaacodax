@@ -1,3 +1,5 @@
+import { getCanonicalQuestionSkillIds } from "./quizSubmissionReadModelContext.js";
+
 export const buildQuestionAttemptDocument = ({
   payload,
   selectedOptionIndex,
@@ -19,5 +21,5 @@ export const buildQuestionAttemptDocument = ({
   pathId: String(question?.pathId || ""),
   subjectId: String(question?.subjectId || question?.subject || ""),
   sectionId: String(question?.sectionId || ""),
-  skillIds: Array.isArray(question?.skillIds) ? question.skillIds.map(String) : [],
+  skillIds: getCanonicalQuestionSkillIds(question),
 });

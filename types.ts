@@ -328,6 +328,10 @@ export interface SkillProgress {
     userId: string;
     skillId: string;
     skill: string;
+    level?: 'main' | 'sub';
+    parentSkillId?: string;
+    parentSkill?: string;
+    unresolvedTaxonomy?: boolean;
     pathId?: string;
     subjectId?: string;
     sectionId?: string;

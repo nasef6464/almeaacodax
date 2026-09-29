@@ -10,7 +10,7 @@ import { questionAttemptSchema } from "./submissionSchemas.js";
 import { buildQuestionAttemptDocument } from "../application/questionAttemptDocument.js";
 import { updateSkillProgressFromQuestionAttempt, upsertReviewCardFromQuestionAttempt } from "../application/quizSubmissionSideEffects.js";
 import { buildDocumentQuery } from "../infrastructure/quizDocumentQuery.js";
-import { summarizeRecentSkillEvidence } from "../analytics/skillAnalytics.js";
+import { projectSkillProgressRows } from "../application/skillMasteryProjection.js";
 
 export const adaptiveTelemetryRouter = Router();
 
@@ -38,13 +38,9 @@ adaptiveTelemetryRouter.get(
       ? pagination.skip + items.length + (hasMore ? 1 : 0)
       : await SkillProgressModel.countDocuments(filter);
     res.setHeader("X-Has-More", String(hasMore));
+    const projected = await projectSkillProgressRows(items as any[]);
     res.json({
-      skillProgress: items.map((item: any) => ({
-        ...item,
-        recent: summarizeRecentSkillEvidence(
-          Array.isArray(item.recentEvidence) ? item.recentEvidence : [],
-        ),
-      })),
+      skillProgress: projected,
       pagination: buildPaginatedResponse([], pagination, total),
     });
   }),
@@ -73,7 +69,7 @@ adaptiveTelemetryRouter.post(
   asyncHandler(async (req, res) => {
     const payload = questionAttemptSchema.parse(req.body);
     const question = await QuestionModel.findOne(buildDocumentQuery(payload.questionId)).select(
-      "id pathId subject subjectId sectionId skillIds correctOptionIndex",
+      "id pathId subject subjectId sectionId skillIds skillId subSkillId correctOptionIndex",
     );
     if (!question) {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Question not found" });

@@ -157,6 +157,17 @@ export const createLearningSupportApi = (request: ApiRequest) => ({
         weeklyStudyMinutes: number;
         lastQuizScore: number;
         weakSkills: string[];
+        weakSkillDetails?: Array<{
+          skillId: string;
+          skill: string;
+          parentSkillId?: string;
+          parentSkill?: string;
+          pathId?: string;
+          subjectId?: string;
+          mastery: number;
+          trend: string;
+          evidenceCount: number;
+        }>;
         coursesInProgress: string[];
       }>;
       summary: { count: number; weakSkills: number };

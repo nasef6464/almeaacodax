@@ -13,7 +13,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { SmartLearningPath } from '../components/SmartLearningPath';
 import { calculateStreak } from '../utils/streak';
 import { useStore } from '../store/useStore';
-import { Activity, QuizResult, Role, SkillGap } from '../types';
+import { Activity, QuizResult, Role, SkillGap, type SkillProgress } from '../types';
 import { QiyasCalculatorModal } from '../components/QiyasCalculatorModal';
 import { api } from '../services/api';
 import { adapter } from '../services/adapter';
@@ -44,75 +44,57 @@ const TabLoading = () => (
     </div>
 );
 
-const buildSmartPathSkillsFromResults = (
-    examResults: QuizResult[],
+const buildSmartPathSkillsFromProgress = (
+    rows: SkillProgress[],
     scope: { pathId?: string; subjectId?: string } = {},
-): SkillGap[] => {
-    if (!examResults || examResults.length === 0) return [];
-
-    const skillMap = new globalThis.Map<string, {
-        skillId?: string;
-        pathId?: string;
-        subjectId?: string;
-        sectionId?: string;
-        section?: string;
-        skill: string;
-        masterySum: number;
-        attempts: number;
-    }>();
-
-    examResults.forEach(result => {
-        result.skillsAnalysis
-            ?.filter((skill) =>
-                (!scope.pathId || skill.pathId === scope.pathId) &&
-                (!scope.subjectId || skill.subjectId === scope.subjectId),
-            )
-            .forEach(skill => {
-            const key = [skill.pathId || '', skill.subjectId || '', skill.skillId || skill.skill].join(':');
-            const existing = skillMap.get(key);
-
-            if (existing) {
-                existing.masterySum += skill.mastery;
-                existing.attempts += 1;
-                return;
-            }
-
-            skillMap.set(key, {
-                skillId: skill.skillId,
-                pathId: skill.pathId,
-                subjectId: skill.subjectId,
-                sectionId: skill.sectionId,
-                section: skill.section,
-                skill: skill.skill,
-                masterySum: skill.mastery,
-                attempts: 1
-            });
-        });
-    });
-
-    return Array.from(skillMap.values())
-        .map((item): SkillGap => {
-            const mastery = Math.round(item.masterySum / item.attempts);
-            const status: SkillGap['status'] = mastery < 50 ? 'weak' : mastery < 75 ? 'average' : 'strong';
-
+): SkillGap[] =>
+    rows
+        .filter((row) =>
+            !row.unresolvedTaxonomy &&
+            (!scope.pathId || row.pathId === scope.pathId) &&
+            (!scope.subjectId || row.subjectId === scope.subjectId),
+        )
+        .map((row): SkillGap => {
+            const mastery = Math.max(0, Math.min(100, Number(row.mastery || 0)));
             return {
-                skillId: item.skillId,
-                pathId: item.pathId,
-                subjectId: item.subjectId,
-                sectionId: item.sectionId,
-                section: item.section,
-                skill: item.skill,
+                skillId: row.skillId,
+                level: row.level,
+                parentSkillId: row.parentSkillId,
+                parentSkill: row.parentSkill,
+                pathId: row.pathId,
+                subjectId: row.subjectId,
+                sectionId: row.sectionId,
+                section: row.parentSkill,
+                skill: row.skill,
                 mastery,
-                status,
-                recommendation: status === 'weak'
-                    ? 'مراجعة عاجلة مع درس وتدريب'
-                    : status === 'average'
-                        ? 'تثبيت المهارة بتدريب إضافي'
-                        : 'استمرار وتمارين تعزيز'
+                status: mastery < 50 ? 'weak' : mastery < 75 ? 'average' : 'strong',
+                recommendation: row.recommendedAction,
             };
         })
         .sort((a, b) => a.mastery - b.mastery)
         .slice(0, 12);
+
+const useStudentSkillProgress = (scope: { pathId?: string; subjectId?: string } = {}) => {
+    const { user } = useStore();
+    const [rows, setRows] = useState<SkillProgress[]>([]);
+
+    useEffect(() => {
+        if (user.role !== Role.STUDENT) {
+            setRows([]);
+            return;
+        }
+        let cancelled = false;
+        api.getSkillProgress({ ...scope, noTotal: true })
+            .then((items) => {
+                if (!cancelled) setRows(items as SkillProgress[]);
+            })
+            .catch(() => {
+                if (!cancelled) setRows([]);
+            });
+        return () => { cancelled = true; };
+    }, [scope.pathId, scope.subjectId, user.role]);
+
+    return rows;
 };
 
 const formatQuizCardDate = (createdAt?: number) => {
@@ -196,6 +178,24 @@ const scoreTone = (score: number) => {
 const useParentScopedResults = () => {
     const { user, users } = useStore();
     const [scopedResults, setScopedResults] = useState<ScopedQuizResult[]>([]);
+    const [parentProgress, setParentProgress] = useState<Array<{
+        id: string;
+        name: string;
+        weeklyStudyMinutes: number;
+        lastQuizScore: number;
+        weakSkills: string[];
+        weakSkillDetails?: Array<{
+            skillId: string;
+            skill: string;
+            parentSkillId?: string;
+            parentSkill?: string;
+            pathId?: string;
+            subjectId?: string;
+            mastery: number;
+            trend: string;
+            evidenceCount: number;
+        }>;
+    }>>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [loadError, setLoadError] = useState<string | null>(null);
 
@@ -211,8 +211,11 @@ const useParentScopedResults = () => {
         setIsLoading(true);
         setLoadError(null);
 
-        api.getScopedQuizResults()
-            .then((payload) => {
+        Promise.all([
+            api.getScopedQuizResults(),
+            api.getParentChildrenProgress(),
+        ])
+            .then(([payload, progressPayload]) => {
                 window.clearTimeout(slowLoadTimer);
                 if (!isMounted) return;
                 setLoadError(null);
@@ -220,6 +223,7 @@ const useParentScopedResults = () => {
                     extractScopedQuizResults(payload)
                         .sort((a, b) => getResultTimestamp(b) - getResultTimestamp(a))
                 );
+                setParentProgress(Array.isArray(progressPayload?.children) ? progressPayload.children : []);
             })
             .catch((error) => {
                 window.clearTimeout(slowLoadTimer);
@@ -260,10 +264,13 @@ const useParentScopedResults = () => {
                 const average = studentResults.length
                     ? Math.round(studentResults.reduce((sum, result) => sum + (Number(result.score) || 0), 0) / studentResults.length)
                     : 0;
-                const weakCount = studentResults.reduce(
-                    (sum, result) => sum + (result.skillsAnalysis || []).filter((skill) => skill.mastery < 75 || skill.status === 'weak').length,
-                    0
-                );
+                const canonicalProgress = parentProgress.find((item) => item.id === student.id);
+                const weakCount = canonicalProgress?.weakSkillDetails?.length
+                    ?? canonicalProgress?.weakSkills?.length
+                    ?? studentResults.reduce(
+                        (sum, result) => sum + (result.skillsAnalysis || []).filter((skill) => skill.mastery < 75 || skill.status === 'weak').length,
+                        0
+                    );
                 return {
                     id: student.id,
                     name: student.name,
@@ -297,8 +304,20 @@ const useParentScopedResults = () => {
                 };
             });
 
-        const weakSkills = scopedResults
-            .flatMap((result) =>
+        const canonicalWeakSkills = parentProgress.flatMap((child) =>
+            (child.weakSkillDetails || []).map((skill) => ({
+                key: skill.skillId || `${skill.pathId || ''}:${skill.subjectId || ''}:${skill.skill}`,
+                skill: skill.skill,
+                section: skill.parentSkill,
+                mastery: skill.mastery,
+                status: skill.mastery < 50 ? 'weak' : 'average',
+                studentName: child.name,
+                quizTitle: 'الإتقان الحالي',
+            })),
+        );
+        const weakSkills = (canonicalWeakSkills.length > 0
+            ? canonicalWeakSkills
+            : scopedResults.flatMap((result) =>
                 (result.skillsAnalysis || [])
                     .filter((skill) => skill.mastery < 75 || skill.status === 'weak')
                     .map((skill) => ({
@@ -309,8 +328,8 @@ const useParentScopedResults = () => {
                         status: skill.status,
                         studentName: getStudentLabel(result),
                         quizTitle: result.quizTitle,
-                    }))
-            )
+                    })),
+            ))
             .sort((a, b) => a.mastery - b.mastery);
 
         const followUpPlan = weakSkills.slice(0, 3).map((skill, index) => {
@@ -368,7 +387,7 @@ const useParentScopedResults = () => {
             isLoading,
             loadError,
         };
-    }, [isLoading, linkedStudentIdsKey(user.linkedStudentIds), loadError, scopedResults, user.linkedStudentIds, users]);
+    }, [isLoading, linkedStudentIdsKey(user.linkedStudentIds), loadError, parentProgress, scopedResults, user.linkedStudentIds, users]);
 };
 
 const linkedStudentIdsKey = (ids?: string[]) => (ids || []).join('|');
@@ -508,7 +527,7 @@ const PathsTab = () => {
 };
 
 const SmartPathTab = () => {
-    const { examResults, paths, subjects, enrolledPaths } = useStore();
+    const { paths, subjects, enrolledPaths } = useStore();
     const [selectedPathId, setSelectedPathId] = useState('all');
     const [selectedSubjectId, setSelectedSubjectId] = useState('all');
 
@@ -531,12 +550,16 @@ const SmartPathTab = () => {
         }
     }, [selectedSubjectId, subjectOptions]);
 
+    const skillProgress = useStudentSkillProgress({
+        pathId: selectedPathId === 'all' ? undefined : selectedPathId,
+        subjectId: selectedSubjectId === 'all' ? undefined : selectedSubjectId,
+    });
     const smartPathSkills = useMemo(
-        () => buildSmartPathSkillsFromResults(examResults, {
+        () => buildSmartPathSkillsFromProgress(skillProgress, {
             pathId: selectedPathId === 'all' ? undefined : selectedPathId,
             subjectId: selectedSubjectId === 'all' ? undefined : selectedSubjectId,
         }),
-        [examResults, selectedPathId, selectedSubjectId],
+        [skillProgress, selectedPathId, selectedSubjectId],
     );
 
     return (
@@ -1943,7 +1966,11 @@ const ParentFollowUpPanel = ({ setActiveTab }: { setActiveTab: (tab: any) => voi
 // 1. OverviewTab (Smart Dashboard Content)
 const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => {
     const { courses, user, enrolledCourses, completedLessons, examResults, recentActivity, paths: storePaths, enrolledPaths, quizzes } = useStore();
-    const smartPathSkills = buildSmartPathSkillsFromResults(examResults);
+    const overviewSkillProgress = useStudentSkillProgress();
+    const smartPathSkills = useMemo(
+        () => buildSmartPathSkillsFromProgress(overviewSkillProgress),
+        [overviewSkillProgress],
+    );
     
     const [copiedCode, setCopiedCode] = useState(false);
     const [showCalculator, setShowCalculator] = useState(false);

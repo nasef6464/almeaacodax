@@ -105,7 +105,9 @@ check('student sidebar keeps a simple learning journey without changing the thre
 
 check('student dashboard keeps a clear continuation area and learner shortcuts', () => {
   assertIncludes(files.dashboard, "import { EmptyState } from '../components/ui/EmptyState'");
-  assertIncludes(files.dashboard, 'const smartPathSkills = buildSmartPathSkillsFromResults(examResults);');
+  assertIncludes(files.dashboard, 'buildSmartPathSkillsFromProgress');
+  assertIncludes(files.dashboard, 'useStudentSkillProgress');
+  assertIncludes(files.dashboard, 'api.getSkillProgress');
   assertIncludes(files.dashboard, '<SmartLearningPath skills={smartPathSkills} />');
   assertIncludes(files.dashboard, 'أكمل مساراتك');
   assertIncludes(files.dashboard, 'to={path.courses[0] ? `/course/${path.courses[0].id}` : `/category/${path.id}`}');
@@ -211,6 +213,7 @@ check('student report remains simple first and exposes retest/remediation action
   assertIncludes(files.reports, 'foundationTopicLink');
   assertIncludes(files.reports, "const lessonLink = buildFoundationActionLink(actionContext, 'lessons')");
   assertIncludes(files.reports, "const foundationTrainingLink = buildFoundationActionLink(actionContext, 'quizzes')");
+  assertIncludes(files.reports, "const foundationSupportLink = buildFoundationActionLink(actionContext, 'support')");
   assertIncludes(files.reports, 'pathId: recommendationPathId');
   assertIncludes(files.reports, 'subjectId: recommendationSubjectId');
   assertIncludes(files.reports, 'skillId: resolvedSkillId');
