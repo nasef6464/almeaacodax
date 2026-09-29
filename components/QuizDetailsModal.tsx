@@ -4,6 +4,7 @@ import { QuizHistoryItem, SkillGap } from '../types';
 import { sanitizeArabicText } from '../utils/sanitizeMojibakeArabic';
 import { printElementAsPdf } from '../utils/printPdf';
 import { shareTextSummary } from '../utils/shareText';
+import { useStore } from '../store/useStore';
 
 interface QuizDetailsModalProps {
   quiz: QuizHistoryItem;
@@ -45,11 +46,52 @@ const getScoreTone = (score: number) => {
   return 'border-rose-100 text-rose-600';
 };
 
+const resolveHistorySkill = (skill: SkillGap, taxonomy: ReturnType<typeof useStore.getState>['skills']): SkillGap => {
+  const skillId = String(skill.skillId || '').trim();
+  const storedName = displayText(skill.skill);
+  const placeholder = !storedName || storedName === 'مهارة غير مسماة' || storedName === 'مهارة غير معروفة';
+
+  if (!skillId) return skill;
+
+  for (const mainSkill of taxonomy) {
+    const mainId = String(mainSkill.id || (mainSkill as any)._id || '').trim();
+    if (mainId === skillId) {
+      return {
+        ...skill,
+        level: skill.level || 'main',
+        skill: placeholder ? displayText(mainSkill.name) : skill.skill,
+        pathId: skill.pathId || mainSkill.pathId,
+        subjectId: skill.subjectId || mainSkill.subjectId,
+        sectionId: skill.sectionId || mainSkill.sectionId,
+      };
+    }
+
+    const subSkill = ((mainSkill as any).subSkills || []).find(
+      (candidate: any) => String(candidate?.id || '').trim() === skillId,
+    );
+    if (subSkill) {
+      return {
+        ...skill,
+        level: 'sub',
+        parentSkillId: skill.parentSkillId || mainId,
+        parentSkill: displayText(skill.parentSkill) || displayText(mainSkill.name),
+        skill: placeholder ? displayText(subSkill.name) : skill.skill,
+        pathId: skill.pathId || mainSkill.pathId,
+        subjectId: skill.subjectId || mainSkill.subjectId,
+        sectionId: skill.sectionId || mainSkill.sectionId,
+        section: displayText(skill.parentSkill) || displayText(mainSkill.name) || skill.section,
+      };
+    }
+  }
+
+  return skill;
+};
+
 const buildSummaryText = (quiz: QuizHistoryItem, weakestSkill?: SkillGap) => {
   const title = displayText(quiz.title) || 'اختبار';
   const score = quiz.bestAttempt?.score ?? quiz.firstAttempt?.score ?? 0;
   const weakSkillName = displayText(weakestSkill?.skill);
-  const mainSkillName = displayText(weakestSkill?.section);
+  const mainSkillName = displayText(weakestSkill?.parentSkill) || displayText(weakestSkill?.section);
 
   if (!weakestSkill) {
     return `نتيجة ${title}: ${score}%. لا توجد مهارات تفصيلية كافية، والأفضل مراجعة الحلول ثم إعادة اختبار قصير.`;
@@ -59,13 +101,20 @@ const buildSummaryText = (quiz: QuizHistoryItem, weakestSkill?: SkillGap) => {
 };
 
 export const QuizDetailsModal: React.FC<QuizDetailsModalProps> = ({ quiz, onClose }) => {
+  const taxonomySkills = useStore((state) => state.skills);
   const [copied, setCopied] = React.useState(false);
   const [shared, setShared] = React.useState(false);
   const [showAllSkills, setShowAllSkills] = React.useState(false);
 
   const sortedSkills = React.useMemo(
-    () => [...(quiz.skillsAnalysis || [])].sort((a, b) => a.mastery - b.mastery),
-    [quiz.skillsAnalysis],
+    () => (quiz.skillsAnalysis || [])
+      .map((skill) => resolveHistorySkill(skill, taxonomySkills))
+      .filter((skill) => {
+        const name = displayText(skill.skill);
+        return Boolean(name) && name !== 'مهارة غير مسماة' && name !== 'مهارة غير معروفة';
+      })
+      .sort((a, b) => a.mastery - b.mastery),
+    [quiz.skillsAnalysis, taxonomySkills],
   );
   const weakestSkill = sortedSkills[0];
   const score = quiz.bestAttempt?.score ?? quiz.firstAttempt?.score ?? 0;
@@ -173,7 +222,7 @@ export const QuizDetailsModal: React.FC<QuizDetailsModalProps> = ({ quiz, onClos
                   visibleSkills.map((skill, index) => {
                     const tone = getMasteryTone(skill.mastery);
                     const skillName = displayText(skill.skill) || 'مهارة غير مسماة';
-                    const sectionName = displayText(skill.section);
+                    const sectionName = displayText(skill.parentSkill) || displayText(skill.section);
                     const recommendation = displayText(skill.recommendation);
 
                     return (

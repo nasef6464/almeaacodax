@@ -41,32 +41,6 @@ const getSimpleLevel = (percentage: number) => {
   };
 };
 
-const defaultSkills: Skill[] = [
-  {
-    name: 'الفهم الأساسي',
-    percentage: 85,
-    color: 'bg-blue-500',
-    subjectName: 'المادة الحالية',
-    sectionName: 'المهارة الرئيسية',
-    recommendation: 'تدريب قصير يكفي للتثبيت.',
-  },
-  {
-    name: 'المهارة التطبيقية',
-    percentage: 70,
-    color: 'bg-purple-500',
-    subjectName: 'المادة الحالية',
-    sectionName: 'المهارة الرئيسية',
-    recommendation: 'شرح قصير ثم أسئلة متدرجة.',
-  },
-  {
-    name: 'حل المسألة',
-    percentage: 45,
-    color: 'bg-rose-500',
-    subjectName: 'المادة الحالية',
-    sectionName: 'المهارة الرئيسية',
-    recommendation: 'ابدأ بها الآن.',
-  },
-];
 
 export const DetailedAnalysisModal: React.FC<DetailedAnalysisModalProps> = ({
   isOpen,
@@ -78,7 +52,7 @@ export const DetailedAnalysisModal: React.FC<DetailedAnalysisModalProps> = ({
 
   // Normalized display skills preserving authoritative values
   const displaySkills = React.useMemo(() => {
-    const raw = (skills && skills.length > 0 ? skills : defaultSkills).map((skill) => ({
+    const raw = (skills || []).map((skill) => ({
       ...skill,
       name: displayText(skill.name) || 'مهارة غير مسماة',
       subjectName: displayText(skill.subjectName),
@@ -147,7 +121,11 @@ export const DetailedAnalysisModal: React.FC<DetailedAnalysisModalProps> = ({
               جميع المهارات المقاسة ({displaySkills.length}):
             </span>
 
-            {displaySkills.map((skill, idx) => {
+            {displaySkills.length === 0 ? (
+              <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 p-5 text-center text-sm font-bold text-slate-500">
+                لا توجد مهارات موثقة لهذه المحاولة. لن نعرض مهارات افتراضية بدلًا من بيانات الاختبار الفعلية.
+              </div>
+            ) : displaySkills.map((skill, idx) => {
               const levelMeta = getSimpleLevel(skill.percentage);
 
               return (

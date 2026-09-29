@@ -15,13 +15,14 @@ check('submission read-model context is delegated while queries stay in the rout
   assert.ok(routeSource.includes('import { buildQuizSubmissionReadModelContext, getQuizSubmissionSkillIds } from "../modules/quizzes/application/quizSubmissionReadModelContext.js";'));
   assert.ok(routeSource.includes('const skillIds = getQuizSubmissionSkillIds(orderedQuestions);'));
   assert.ok(routeSource.includes('const { skillById, subjectNameById, sectionNameById } = buildQuizSubmissionReadModelContext({'));
-  assert.ok(routeSource.includes('SkillModel.find(buildDocumentsByIdsQuery(skillIds))'));
+  assert.ok(routeSource.includes('{ "subSkills.id": { $in: skillIds } }'));
+  assert.ok(routeSource.includes('const skillDocumentQuery = buildDocumentsByIdsQuery(skillIds);'));
   assert.ok(routeSource.includes('SubjectModel.find()'));
   assert.ok(routeSource.includes('SectionModel.find()'));
 });
 
 check('skill identity and display-map semantics remain explicit', () => {
-  for (const fragment of ['orderedQuestions.flatMap', 'question.skillIds || []', 'new Map<string, any>', 'skillById:', 'subjectNameById:', 'sectionNameById:']) {
+  for (const fragment of ['orderedQuestions.flatMap', 'question?.skillId', 'question?.subSkillId', 'canonical.length > 0', 'subSkills', 'level: "sub"', 'parentSkillId', 'new Map<string, any>', 'skillById:', 'subjectNameById:', 'sectionNameById:']) {
     assert.ok(moduleSource.includes(fragment), `read-model context missing ${fragment}`);
   }
 });
@@ -30,7 +31,7 @@ check('read-model context stays pure and bounded', () => {
   for (const forbidden of ['express', 'mongoose', 'Router(', 'req.', 'res.', 'SkillModel', 'SubjectModel', 'SectionModel', 'QuizModel', 'QuestionModel', 'QuizResultModel', 'requireRole', 'process.env']) {
     assert.ok(!moduleSource.includes(forbidden), `read-model context must not include ${forbidden}`);
   }
-  assert.ok(moduleSource.split(/\r?\n/).length <= 45, 'quizSubmissionReadModelContext.ts exceeded 45 lines');
+  assert.ok(moduleSource.split(/\r?\n/).length <= 100, 'quizSubmissionReadModelContext.ts exceeded 100 lines');
 });
 
 const failed = checks.filter((item) => item.status === 'FAIL');

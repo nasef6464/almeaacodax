@@ -1,3 +1,5 @@
+import { getCanonicalQuestionSkillIds } from "./quizSubmissionReadModelContext.js";
+
 type QuizSubmissionAnswerReviewInput = {
   orderedQuestions: any[];
   answers: Record<string, unknown>;
@@ -27,7 +29,7 @@ export const buildQuizSubmissionAnswerReview = ({
       wrongAnswers += 1;
     }
 
-    (question.skillIds || []).map(String).filter(Boolean).forEach((skillId: string) => {
+    getCanonicalQuestionSkillIds(question).forEach((skillId: string) => {
       const current = skillStats.get(skillId) || { total: 0, correct: 0 };
       current.total += 1;
       if (isCorrect) {

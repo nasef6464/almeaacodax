@@ -63,6 +63,9 @@ interface SkillRecommendation {
 
 interface ResolvedAnalysisItem {
   skillId?: string;
+  level?: 'main' | 'sub';
+  parentSkillId?: string;
+  parentSkillName?: string;
   pathId?: string;
   subjectId?: string;
   sectionId?: string;
@@ -85,43 +88,46 @@ interface ResolvedAnalysisItem {
 
 const displayText = (value?: string | null) => sanitizeArabicText(value) || '';
 
-const getQuestionContextScore = (
-  question: Question,
-  quiz?: ReturnType<typeof useStore.getState>['quizzes'][number],
+const resolveResultSkillTaxonomy = (
+  skillId: string | undefined,
+  allSkills: ReturnType<typeof useStore.getState>['skills'],
 ) => {
-  if (!quiz) return 0;
+  const requestedId = String(skillId || '').trim();
+  if (!requestedId) return undefined;
 
-  let score = 0;
-  if (quiz.pathId && question.pathId === quiz.pathId) score += 4;
-  if (quiz.subjectId && question.subject === quiz.subjectId) score += 4;
-  if (quiz.sectionId && question.sectionId === quiz.sectionId) score += 2;
-  if (quiz.skillIds?.length && question.skillIds?.some((skillId) => quiz.skillIds?.includes(skillId))) score += 2;
-  return score;
-};
+  for (const mainSkill of allSkills) {
+    const mainSkillId = String(mainSkill.id || (mainSkill as any)._id || '').trim();
+    if (mainSkillId === requestedId) {
+      return {
+        id: mainSkillId,
+        name: displayText(mainSkill.name),
+        level: 'main' as const,
+        parentSkillId: '',
+        parentSkill: '',
+        pathId: mainSkill.pathId,
+        subjectId: mainSkill.subjectId,
+        sectionId: mainSkill.sectionId,
+      };
+    }
 
-const supplementMissingReviewQuestions = (
-  questionBank: Question[],
-  quiz: ReturnType<typeof useStore.getState>['quizzes'][number] | undefined,
-  currentQuestions: QuizQuestionReview[],
-  targetCount: number,
-) => {
-  if (!quiz || currentQuestions.length >= targetCount) return currentQuestions;
+    const subSkill = ((mainSkill as any).subSkills || []).find(
+      (candidate: any) => String(candidate?.id || '').trim() === requestedId,
+    );
+    if (subSkill) {
+      return {
+        id: requestedId,
+        name: displayText(subSkill.name),
+        level: 'sub' as const,
+        parentSkillId: mainSkillId,
+        parentSkill: displayText(mainSkill.name),
+        pathId: mainSkill.pathId,
+        subjectId: mainSkill.subjectId,
+        sectionId: mainSkill.sectionId,
+      };
+    }
+  }
 
-  const usedIds = new Set(currentQuestions.map((question) => question.questionId));
-  const contextualFallbackQuestions = questionBank
-    .filter((question) => !usedIds.has(question.id) && getQuestionContextScore(question, quiz) > 0)
-    .sort((a, b) => getQuestionContextScore(b, quiz) - getQuestionContextScore(a, quiz))
-  const remainingCount = Math.max(targetCount - currentQuestions.length, 0);
-  const contextualSlice = contextualFallbackQuestions.slice(0, remainingCount);
-  const contextualIds = new Set(contextualSlice.map((question) => question.id));
-  const genericFallbackQuestions = questionBank
-    .filter((question) => !usedIds.has(question.id) && !contextualIds.has(question.id))
-    .slice(0, Math.max(remainingCount - contextualSlice.length, 0));
-  const fallbackQuestions = [...contextualSlice, ...genericFallbackQuestions].map((question) =>
-    toQuestionReviewFromBank(question),
-  );
-
-  return [...currentQuestions, ...fallbackQuestions];
+  return undefined;
 };
 
 const getSkillRecommendation = (
@@ -137,24 +143,24 @@ const getSkillRecommendation = (
     return {};
   }
 
-  const resolvedSkill = skill.skillId
-    ? allSkills.find((item) => item.id === skill.skillId || (item as any)._id === skill.skillId)
-    : allSkills.find((item) => displayText(item.name) === displayText(skill.skill));
+  const taxonomyEntry = resolveResultSkillTaxonomy(skill.skillId, allSkills);
+  const legacyMainSkill = !taxonomyEntry
+    ? allSkills.find((item) => displayText(item.name) === displayText(skill.skill))
+    : undefined;
 
-  if (!resolvedSkill) {
-    return {};
-  }
+  const resolvedSkillId = taxonomyEntry?.id || legacyMainSkill?.id || (legacyMainSkill as any)?._id;
+  if (!resolvedSkillId) return {};
 
-  const resolvedSkillId = resolvedSkill.id || (resolvedSkill as any)._id;
-  const recommendationPathId = resolvedSkill.pathId;
-  const recommendationSubjectId = resolvedSkill.subjectId;
-  const recommendationSectionId = resolvedSkill.sectionId;
+  const recommendationPathId = taxonomyEntry?.pathId || legacyMainSkill?.pathId;
+  const recommendationSubjectId = taxonomyEntry?.subjectId || legacyMainSkill?.subjectId;
+  const recommendationSectionId = taxonomyEntry?.sectionId || legacyMainSkill?.sectionId;
+  const resolvedSkillName = taxonomyEntry?.name || displayText(legacyMainSkill?.name);
 
   // 1. Direct sub-topic lookup
   const directTopic = topics.find((topic) =>
     topic.showOnPlatform !== false &&
     (matchesEntityId(topic, `topic_sub_${resolvedSkillId}`) ||
-     (topic.parentId && displayText(topic.title) === displayText(resolvedSkill.name) && (!recommendationSubjectId || topic.subjectId === recommendationSubjectId)) ||
+     (topic.parentId && displayText(topic.title) === resolvedSkillName && (!recommendationSubjectId || topic.subjectId === recommendationSubjectId)) ||
      (topic.quizIds || []).some((qid) => matchesEntityId({ id: qid }, `quiz_drill_${resolvedSkillId}`)))
   );
 
@@ -217,7 +223,7 @@ const getSkillRecommendation = (
     lessonTitle: displayText(recommendedLesson?.title),
     lessonLink,
     lessonVideoUrl: recommendedLesson?.videoUrl,
-    lessonTopicTitle: displayText(recommendedTopic?.title || resolvedSkill.name),
+    lessonTopicTitle: displayText(recommendedTopic?.title || resolvedSkillName),
     quizTitle: displayText(recommendedQuiz?.title || recommendedTopic?.title),
     quizLink: foundationTrainingLink || (recommendedQuiz?.id ? `/quiz/${recommendedQuiz.id}` : undefined),
     resourceTitle: displayText(recommendedResource?.title),
@@ -289,9 +295,9 @@ const Results: React.FC = () => {
 
     const decodedAttempt = decodeURIComponent(requestedAttempt);
     return (
-      examResults.find((result) => String(result.date) === decodedAttempt) ||
-      examResults.find((result) => String(result.quizId) === decodedAttempt) ||
-      examResults[0]
+      examResults.find((result) => String((result as QuizResult & { id?: string; _id?: string }).id || '') === decodedAttempt) ||
+      examResults.find((result) => String((result as QuizResult & { id?: string; _id?: string })._id || '') === decodedAttempt) ||
+      examResults.find((result) => String(result.date) === decodedAttempt)
     );
   }, [examResults, requestedAttempt]);
 
@@ -362,24 +368,32 @@ const Results: React.FC = () => {
     >();
 
     (latestResult.skillsAnalysis || []).forEach((item) => {
+        const taxonomyEntry = resolveResultSkillTaxonomy(item.skillId, skills);
         const recommendation = getSkillRecommendation(item, skills, lessons, quizzes, libraryItems, questions, topics);
+        const subjectId = item.subjectId || taxonomyEntry?.subjectId;
+        const sectionId = item.sectionId || taxonomyEntry?.sectionId;
         const subjectName =
           recommendation.subjectName ||
-          (item.subjectId ? displayText(subjects.find((subject) => subject.id === item.subjectId)?.name) : undefined);
+          (subjectId ? displayText(subjects.find((subject) => subject.id === subjectId)?.name) : undefined);
         const sectionName =
           recommendation.sectionName ||
-          displayText(item.section) ||
-          (item.sectionId ? displayText(sections.find((section) => section.id === item.sectionId)?.name) : undefined);
-        const skillName = displayText(item.skill) || 'مهارة غير مسماة';
-        const skillKey = item.skillId || `${item.subjectId || subjectName || 'subject'}-${item.sectionId || sectionName || 'section'}-${skillName}`;
+          (sectionId ? displayText(sections.find((section) => section.id === sectionId)?.name) : undefined) ||
+          displayText(item.section);
+        const storedName = displayText(item.skill);
+        const storedNameIsPlaceholder = storedName === 'مهارة غير مسماة' || storedName === 'مهارة غير معروفة';
+        const skillName = taxonomyEntry?.name || (storedNameIsPlaceholder ? '' : storedName);
+        const skillKey = item.skillId || `${subjectId || subjectName || 'subject'}-${sectionId || sectionName || 'section'}-${skillName}`;
         const current = aggregated.get(skillKey);
 
         if (!current) {
           aggregated.set(skillKey, {
             skillId: item.skillId,
-            pathId: item.pathId,
-            subjectId: item.subjectId,
-            sectionId: item.sectionId,
+            level: (item as any).level || taxonomyEntry?.level,
+            parentSkillId: (item as any).parentSkillId || taxonomyEntry?.parentSkillId,
+            parentSkillName: displayText((item as any).parentSkill) || taxonomyEntry?.parentSkill,
+            pathId: item.pathId || taxonomyEntry?.pathId,
+            subjectId,
+            sectionId,
             subjectName,
             sectionName,
             skillName,
@@ -1415,7 +1429,8 @@ const ReviewSolutions = ({
       })
       .filter((question): question is QuizQuestionReview => Boolean(question));
 
-    return supplementMissingReviewQuestions(questionBank, quiz, rebuiltQuestions, quizQuestionIds.length);
+    // Never invent review questions from the global bank. Only exact quiz IDs are valid.
+    return rebuiltQuestions;
   }, [questionBank, quizzes, result.questionReview, result.quizId, result.totalQuestions]);
   const questionFilterCounts = React.useMemo(() => {
     let wrong = 0;
