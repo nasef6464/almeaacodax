@@ -8,7 +8,7 @@ import { StudentNextActionStrip } from '../components/StudentNextActionStrip';
 import { useStore } from '../store/useStore';
 import { api } from '../services/api';
 import { adapter } from '../services/adapter';
-import { Role, type QuestionAttempt, type QuizResult } from '../types';
+import { Role, type QuestionAttempt, type QuizResult, type SkillProgress } from '../types';
 import { printElementAsPdf } from '../utils/printPdf';
 import { shareTextSummary } from '../utils/shareText';
 import { loadXlsx } from '../utils/xlsxLoader';
@@ -31,6 +31,7 @@ import {
     type StudentReportPeriod,
 } from './Reports/reportDomain';
 import { buildSkillRecommendation } from './Reports/recommendationViewModel';
+import { buildStudentSkillsFromProgress } from './Reports/skillProgressReportProjection';
 import {
     buildStudentAggregatedSkills,
     buildStudentEvidenceSummary,
@@ -99,7 +100,24 @@ const studentReadinessIcons: Record<StudentReadinessIconKey, LucideIcon> = { tar
 
 const Reports: React.FC = () => {
     const { examResults, questionAttempts, skills, lessons, quizzes, libraryItems, questions, topics, subjects, sections, paths, groups, users, enrolledPaths, user, hydrateContentBootstrap, hydrateQuestions } = useStore();
-    const [scopedAnalytics, setScopedAnalytics] = useState<ScopedAnalyticsOverview | null>(null);
+    const [scopedAnalyticsRaw, setScopedAnalytics] = useState<ScopedAnalyticsOverview | null>(null);
+    const [staffSkillAggregates, setStaffSkillAggregates] = useState<Array<{
+        skillId: string;
+        skill: string;
+        pathId: string;
+        subjectId: string;
+        sectionId?: string;
+        level?: 'main' | 'sub';
+        parentSkillId?: string;
+        parentSkill?: string;
+        mastery: number;
+        recentMastery: number;
+        confidence: number;
+        evidenceCount: number;
+        supportStudents?: number;
+        supportRate?: number;
+        studentCount?: number;
+    }>>([]);
     const [scopedResults, setScopedResults] = useState<ScopedQuizResult[]>([]);
     const [scopedAnalyticsLoading, setScopedAnalyticsLoading] = useState(false);
     const [selectedSkillKey, setSelectedSkillKey] = useState<string | null>(null);
@@ -130,6 +148,38 @@ const Reports: React.FC = () => {
     const [studentMasteryGoals, setStudentMasteryGoals] = useState<StudentMasteryGoal[]>([]);
     const [studentMasteryGoalsLoading, setStudentMasteryGoalsLoading] = useState(false);
     const [studentMasteryGoalSaving, setStudentMasteryGoalSaving] = useState(false);
+    const [studentSkillProgress, setStudentSkillProgress] = useState<SkillProgress[] | null>(null);
+    const [parentChildrenProgress, setParentChildrenProgress] = useState<Array<{
+        id: string;
+        name: string;
+        weakSkillDetails?: Array<{
+            skillId: string;
+            skill: string;
+            parentSkillId?: string;
+            parentSkill?: string;
+            pathId?: string;
+            subjectId?: string;
+            mastery: number;
+            trend: string;
+            evidenceCount: number;
+        }>;
+    }>>([]);
+
+    useEffect(() => {
+        if (user.role !== Role.PARENT) {
+            setParentChildrenProgress([]);
+            return;
+        }
+        let cancelled = false;
+        api.getParentChildrenProgress()
+            .then((payload) => {
+                if (!cancelled) setParentChildrenProgress(Array.isArray(payload?.children) ? payload.children : []);
+            })
+            .catch(() => {
+                if (!cancelled) setParentChildrenProgress([]);
+            });
+        return () => { cancelled = true; };
+    }, [user.role]);
 
     useEffect(() => {
         if (!user?.email || user.role === Role.STUDENT) {
@@ -174,6 +224,77 @@ const Reports: React.FC = () => {
         };
     }, [selectedScopedPathId, selectedScopedSubjectId, user?.email, user.role]);
 
+    useEffect(() => {
+        if (![Role.ADMIN, Role.SUPERVISOR, Role.TEACHER, Role.SCHOOL_ADMIN].includes(user.role as Role)) {
+            setStaffSkillAggregates([]);
+            return;
+        }
+        let cancelled = false;
+        api.getSchoolSkillAggregates({
+            groupBy: 'skill',
+            ...(selectedScopedPathId !== 'all' ? { pathId: selectedScopedPathId } : {}),
+            ...(selectedScopedSubjectId !== 'all' ? { subjectId: selectedScopedSubjectId } : {}),
+            limit: 50,
+        })
+            .then((payload) => {
+                if (!cancelled) setStaffSkillAggregates(Array.isArray(payload.rows) ? payload.rows : []);
+            })
+            .catch(() => {
+                if (!cancelled) setStaffSkillAggregates([]);
+            });
+        return () => { cancelled = true; };
+    }, [selectedScopedPathId, selectedScopedSubjectId, user.role]);
+
+    const scopedAnalytics = useMemo<ScopedAnalyticsOverview | null>(() => {
+        if (!scopedAnalyticsRaw || staffSkillAggregates.length === 0) return scopedAnalyticsRaw;
+        return {
+            ...scopedAnalyticsRaw,
+            weakestSkills: staffSkillAggregates
+                .filter((row) => row.mastery < 75)
+                .sort((a, b) => a.mastery - b.mastery || b.evidenceCount - a.evidenceCount)
+                .map((row) => ({
+                    skillId: row.skillId,
+                    skill: row.skill,
+                    pathId: row.pathId,
+                    subjectId: row.subjectId,
+                    section: row.parentSkill || row.sectionId || '',
+                    mastery: row.mastery,
+                    affectedStudents: row.supportStudents ?? row.studentCount ?? 0,
+                    attempts: row.evidenceCount,
+                    isReliable: row.evidenceCount >= MIN_SKILL_EVIDENCE_COUNT,
+                    evidenceThreshold: MIN_SKILL_EVIDENCE_COUNT,
+                    recommendedAction: row.mastery < 50
+                        ? 'شرح تأسيسي ثم تدريب موجه وإعادة قياس.'
+                        : 'تدريب مركز ثم إعادة قياس.',
+                })),
+        };
+    }, [scopedAnalyticsRaw, staffSkillAggregates]);
+
+    useEffect(() => {
+        if (user.role !== Role.STUDENT) {
+            setStudentSkillProgress(null);
+            return;
+        }
+
+        let cancelled = false;
+        const scope = {
+            ...(selectedStudentPathId !== 'all' ? { pathId: selectedStudentPathId } : {}),
+            ...(selectedStudentSubjectId !== 'all' ? { subjectId: selectedStudentSubjectId } : {}),
+            noTotal: true,
+        };
+
+        api.getSkillProgress(scope)
+            .then((rows) => {
+                if (!cancelled) setStudentSkillProgress(rows as SkillProgress[]);
+            })
+            .catch((error) => {
+                console.warn('Canonical skill progress unavailable; falling back to result evidence', error);
+                if (!cancelled) setStudentSkillProgress(null);
+            });
+
+        return () => { cancelled = true; };
+    }, [selectedStudentPathId, selectedStudentSubjectId, user.role]);
+
     const studentPeriodExamResults = useMemo(
         () => filterStudentReportPeriod(examResults, studentReportPeriod),
         [examResults, studentReportPeriod],
@@ -191,18 +312,21 @@ const Reports: React.FC = () => {
         [studentPeriodExamResults, studentPeriodQuestionAttempts],
     );
 
-    // Aggregate Skill Analysis
+    // Canonical mastery comes from SkillProgress. Result/attempt aggregation is compatibility-only
+    // when the canonical read-model is temporarily unavailable.
     const aggregatedSkills = useMemo(
-        () => buildStudentAggregatedSkills({
-            examResults: studentPeriodExamResults,
-            questionAttempts: studentPeriodQuestionAttempts,
-            questions,
-            skills,
-            subjects,
-            sections,
-            minSkillEvidence: MIN_SKILL_EVIDENCE_COUNT,
-        }),
-        [studentPeriodExamResults, studentPeriodQuestionAttempts, questions, sections, skills, subjects],
+        () => studentSkillProgress !== null
+            ? buildStudentSkillsFromProgress(studentSkillProgress, MIN_SKILL_EVIDENCE_COUNT)
+            : buildStudentAggregatedSkills({
+                examResults: studentPeriodExamResults,
+                questionAttempts: studentPeriodQuestionAttempts,
+                questions,
+                skills,
+                subjects,
+                sections,
+                minSkillEvidence: MIN_SKILL_EVIDENCE_COUNT,
+            }),
+        [studentSkillProgress, studentPeriodExamResults, studentPeriodQuestionAttempts, questions, sections, skills, subjects],
     );
 
     const studentEvidenceSummary = useMemo(
@@ -1022,8 +1146,24 @@ const Reports: React.FC = () => {
         const averageScore = scopedResults.length
             ? Math.round(scopedResults.reduce((total, result) => total + (Number(result.score) || 0), 0) / scopedResults.length)
             : 0;
-        const weakSkill = scopedAnalytics?.weakestSkills?.[0] || null;
-        const leadStudent = scopedAnalytics?.weakestStudents?.[0] || null;
+        const canonicalParentWeakSkill = parentChildrenProgress
+            .flatMap((child) => (child.weakSkillDetails || []).map((skill) => ({ child, skill })))
+            .sort((a, b) => a.skill.mastery - b.skill.mastery)[0] || null;
+        const weakSkill = canonicalParentWeakSkill
+            ? {
+                skillId: canonicalParentWeakSkill.skill.skillId,
+                skill: canonicalParentWeakSkill.skill.skill,
+                pathId: canonicalParentWeakSkill.skill.pathId,
+                subjectId: canonicalParentWeakSkill.skill.subjectId,
+                section: canonicalParentWeakSkill.skill.parentSkill,
+                mastery: canonicalParentWeakSkill.skill.mastery,
+                attempts: canonicalParentWeakSkill.skill.evidenceCount,
+                affectedStudents: 1,
+            }
+            : scopedAnalytics?.weakestSkills?.[0] || null;
+        const leadStudent = canonicalParentWeakSkill
+            ? { id: canonicalParentWeakSkill.child.id, name: canonicalParentWeakSkill.child.name }
+            : scopedAnalytics?.weakestStudents?.[0] || null;
         const parentWeakSkillRecommendation = getSkillRecommendation(weakSkill || undefined, skills, lessons, quizzes, libraryItems, questions, topics);
         const parentSkillActions = [
             parentWeakSkillRecommendation.lessonLink
@@ -2450,7 +2590,7 @@ const Reports: React.FC = () => {
                                     : 'عند اختيار المسار ستظهر لك الاختبارات والتقارير المناسبة مثل نافس أو القدرات أو التحصيلي.'}
                             </h3>
                             <p className="mt-0.5 text-xs font-bold text-gray-500">
-                                القياس مبني على {studentEvidenceSummary.totalQuestions} سؤال عبر {studentEvidenceSummary.uniqueSkills} مهارة.
+                                الحكم مبني على {studentEvidenceSummary.totalQuestions} دليل سؤال عبر {studentEvidenceSummary.uniqueSkills} مهارة، مع تحديث الإتقان بعد كل محاولة مؤهلة.
                             </p>
                         </div>
                     </div>
@@ -2661,7 +2801,7 @@ const Reports: React.FC = () => {
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                         <div>
                             <div className="mb-2 inline-flex rounded-full bg-slate-50 px-3 py-1 text-xs font-black text-slate-500">
-                                تقرير أداء المهارات من الاختبارات
+                                حالة إتقان المهارات الحالية
                             </div>
                             <h2 className="text-xl font-black text-gray-900">المهارات التي تبدأ بها</h2>
                         </div>
@@ -2731,7 +2871,7 @@ const Reports: React.FC = () => {
                     <div>
                         <h2 className="text-xl font-bold text-gray-900">مهاراتك أولًا</h2>
                         <p className="text-sm text-gray-500 mt-1">
-                            نرتب المهارات من الأضعف للأقوى بناءً على الأسئلة التي حللتها في كل اختبار، ثم نقترح لك خطوة علاجية مناسبة.
+                            نرتب المهارات من الأضعف للأقوى من سجل الإتقان الموحد، وتبقى الاختبارات والمحاولات أدلة تشرح لماذا وصل مستوى المهارة إلى هذه النسبة.
                         </p>
                     </div>
                     <div className="print-hide flex flex-wrap gap-2">
