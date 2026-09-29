@@ -405,7 +405,8 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
         });
       }
     }
-    setIsAttaching(false);
+    // Keep the attachment picker open so one Foundation subtopic can receive
+    // multiple videos/lessons, drills and support files in one editing session.
   };
 
   const isLessonReadyForLearner = (lesson: Lesson) =>
@@ -850,7 +851,10 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
       {isAttaching && attachingToTopicId && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl p-6 w-full max-w-2xl max-h-[80vh] flex flex-col">
-            <h3 className="text-xl font-bold mb-4">ربط محتوى بالموضوع</h3>
+            <h3 className="text-xl font-bold mb-2">ربط محتوى بالموضوع</h3>
+            <p className="mb-4 text-xs font-bold leading-5 text-gray-500">
+              يمكنك ربط أكثر من فيديو/درس وأكثر من تدريب وملف دعم بالموضوع الفرعي نفسه؛ كل محتوى مضاف يرث المهارة الفرعية المرتبطة بالموضوع.
+            </p>
             
             <div className="flex gap-2 mb-4">
               <button 
