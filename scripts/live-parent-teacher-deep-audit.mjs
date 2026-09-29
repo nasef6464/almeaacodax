@@ -276,6 +276,10 @@ try {
       });
       const page = await context.newPage();
       const loginResult = await login(context, config);
+      if (loginResult.ok && String(loginResult.userRole) !== String(role)) {
+        loginResult.ok = false;
+        loginResult.reason = `role mismatch: expected ${role}, got ${loginResult.userRole}`;
+      }
       logins.push({ role, viewport: viewport.name, ...loginResult });
 
       if (!loginResult.ok) {
