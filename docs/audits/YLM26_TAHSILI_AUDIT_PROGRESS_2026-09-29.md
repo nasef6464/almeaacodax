@@ -87,3 +87,18 @@ The 22 missing source identities are tracked explicitly in the canonical reconci
 New evidence:
 - `docs/audits/TAHSILI_MATH_YLM26_BATCH13_16_2026-09-29.md`
 - `docs/audits/TAHSILI_MATH_YLM26_P043_P055_FINGERPRINT_LOCK_2026-09-29.json`
+
+
+## Extension — source lock through printed page 63
+Additional source batch pages **56–63**:
+- visible canonical source items: **19**
+- exact identities audited: **15**
+- missing: **4**
+- quarantined provenance mismatch: **1** (`P057-Q02`)
+- promotions from draft: **0**
+
+Cumulative pages **5–63**:
+- visible canonical source items: **214**
+- exact live source identities audited: **188**
+- source identities missing: **26**
+- all accepted audited records remain draft pending the final content lock.
