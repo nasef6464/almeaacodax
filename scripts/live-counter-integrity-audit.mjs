@@ -4,7 +4,7 @@ import { chromium } from "playwright";
 
 const BASE_URL = String(process.env.UI_AUDIT_BASE_URL || "https://almeaacodax.vercel.app").replace(/\/$/, "");
 const API_BASE_URL = String(process.env.UI_AUDIT_API_BASE_URL || `${BASE_URL}/api`).replace(/\/$/, "");
-const RUN_ID = process.env.COUNTER_AUDIT_RUN_ID || `counter-integrity-${new Date().toISOString().replace(/[:.]/g, "-")}`;
+const RUN_ID = `counter-integrity-${new Date().toISOString().replace(/[:.]/g, "-")}`;
 const OUT_DIR = path.resolve("audit-artifacts", "counter-integrity", RUN_ID);
 const ADMIN_EMAIL = process.env.ROLE_ADMIN_EMAIL || process.env.SMOKE_ADMIN_EMAIL || process.env.ADMIN_EMAIL || "";
 const ADMIN_PASSWORD = process.env.ROLE_ADMIN_PASSWORD || process.env.SMOKE_ADMIN_PASSWORD || process.env.ADMIN_PASSWORD || "";
