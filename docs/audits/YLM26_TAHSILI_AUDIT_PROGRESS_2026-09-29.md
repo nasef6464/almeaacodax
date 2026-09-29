@@ -69,3 +69,21 @@ Printed pages **5 through 23**:
 - missing source items: **8**
 - semantic skill/subskill corrections applied: **28**
 - approvals changed: **0**
+
+
+## Extension — source lock through printed page 55
+The audit now covers every live YLM26 record from printed page **5 through 55**.
+
+Cumulative source reconciliation for pages 5–55:
+- visible canonical source items: **195**
+- exact live records reviewed: **173**
+- exact live identities matching source: **173**
+- missing source items: **22**
+- noncanonical live identities in this span: **0**
+- reviewed records promoted out of draft: **0**
+
+The 22 missing source identities are tracked explicitly in the canonical reconciliation and remain blocked from insertion until a verified crop, R2 URL and image hash exist.
+
+New evidence:
+- `docs/audits/TAHSILI_MATH_YLM26_BATCH13_16_2026-09-29.md`
+- `docs/audits/TAHSILI_MATH_YLM26_P043_P055_FINGERPRINT_LOCK_2026-09-29.json`
