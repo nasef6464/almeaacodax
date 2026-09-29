@@ -14,6 +14,49 @@ const DEFAULT_TIME_MINUTES = 20;
 const QUIZ_PROGRESS_KEY = 'quiz_progress';
 const QUIZ_PROGRESS_SNAPSHOT_KEY = 'quiz_progress_save';
 
+const getCanonicalQuestionSkillIds = (question: any) => {
+  const canonical = [question?.skillId, question?.subSkillId]
+    .map((value) => String(value || '').trim())
+    .filter(Boolean);
+  return canonical.length > 0
+    ? Array.from(new Set(canonical))
+    : Array.from(new Set((question?.skillIds || []).map(String).filter(Boolean)));
+};
+
+const resolveQuizSkillTaxonomy = (skillId: string, allSkills: any[]) => {
+  const requestedId = String(skillId || '').trim();
+  for (const mainSkill of allSkills) {
+    const mainId = String(mainSkill?.id || mainSkill?._id || '').trim();
+    if (mainId === requestedId) {
+      return {
+        id: mainId,
+        name: String(mainSkill?.name || ''),
+        level: 'main' as const,
+        parentSkillId: '',
+        parentSkill: '',
+        pathId: mainSkill?.pathId,
+        subjectId: mainSkill?.subjectId,
+        sectionId: mainSkill?.sectionId,
+      };
+    }
+    const subSkill = (Array.isArray(mainSkill?.subSkills) ? mainSkill.subSkills : [])
+      .find((candidate: any) => String(candidate?.id || '').trim() === requestedId);
+    if (subSkill) {
+      return {
+        id: requestedId,
+        name: String(subSkill?.name || ''),
+        level: 'sub' as const,
+        parentSkillId: mainId,
+        parentSkill: String(mainSkill?.name || ''),
+        pathId: mainSkill?.pathId,
+        subjectId: mainSkill?.subjectId,
+        sectionId: mainSkill?.sectionId,
+      };
+    }
+  }
+  return undefined;
+};
+
 interface SavedQuizSnapshot {
   entryMode: 'prepared' | 'self';
   difficulty: 'Easy' | 'Medium' | 'Hard';
@@ -572,7 +615,7 @@ const Quiz: React.FC = () => {
     const skillStats: Record<string, { total: number; correct: number }> = {};
     questions.forEach((question, idx) => {
       const isCorrect = answers[idx] === question.correctOptionIndex;
-      (question.skillIds || []).forEach((skillId) => {
+      getCanonicalQuestionSkillIds(question).forEach((skillId) => {
         if (!skillStats[skillId]) {
           skillStats[skillId] = { total: 0, correct: 0 };
         }
@@ -582,35 +625,39 @@ const Quiz: React.FC = () => {
     });
 
     
-    const skillsAnalysis = Object.entries(skillStats).map(([skillId, stats]) => {
-      const resolvedSkill = skills.find((skill) => skill.id === skillId);
-      const topicSkill = resolvedSkill ? { title: resolvedSkill.name } : undefined;
-      const nestedSkill = resolvedSkill ? { name: resolvedSkill.name } : undefined;
+    const skillsAnalysis = Object.entries(skillStats).flatMap(([skillId, stats]) => {
+      const resolvedSkill = resolveQuizSkillTaxonomy(skillId, skills);
+      if (!resolvedSkill) return [];
       const mastery = Math.round((stats.correct / stats.total) * 100);
       const status: 'weak' | 'average' | 'strong' = mastery < 50 ? 'weak' : mastery >= 80 ? 'strong' : 'average';
 
-      const sectionLabel = resolvedSkill?.sectionId
-        ? sections.find((section) => section.id === resolvedSkill.sectionId)?.name
-        : resolvedSkill?.subjectId
-          ? subjects.find((subject) => subject.id === resolvedSkill.subjectId)?.name
-          : undefined;
+      const sectionLabel = resolvedSkill.level === 'sub'
+        ? resolvedSkill.parentSkill
+        : resolvedSkill.sectionId
+          ? sections.find((section) => section.id === resolvedSkill.sectionId)?.name
+          : resolvedSkill.subjectId
+            ? subjects.find((subject) => subject.id === resolvedSkill.subjectId)?.name
+            : undefined;
 
-      return {
+      return [{
         skillId,
-        pathId: resolvedSkill?.pathId,
-        subjectId: resolvedSkill?.subjectId,
-        sectionId: resolvedSkill?.sectionId,
-        skill: topicSkill?.title || nestedSkill?.name || 'مهارة غير معروفة',
+        level: resolvedSkill.level,
+        parentSkillId: resolvedSkill.parentSkillId,
+        parentSkill: resolvedSkill.parentSkill,
+        pathId: resolvedSkill.pathId,
+        subjectId: resolvedSkill.subjectId,
+        sectionId: resolvedSkill.sectionId,
+        skill: resolvedSkill.name,
         mastery,
         status,
         recommendation:
           status === 'weak'
-            ? 'بحاجة لمراجعة الدروس والتدريب على نفس المهارة'
+            ? 'بحاجة إلى مراجعة الدروس والتدريب على نفس المهارة'
             : status === 'average'
               ? 'يمكن التحسين بالتدريب الموجّه على نفس المهارة'
               : 'أداء ممتاز في هذه المهارة',
         section: sectionLabel,
-      };
+      }];
     });
 
     const questionReview = questions.map((question, idx) => {
