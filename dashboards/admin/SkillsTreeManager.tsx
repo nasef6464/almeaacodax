@@ -432,6 +432,7 @@ export const SkillsTreeManager: React.FC<SkillsTreeManagerProps> = ({ subjectId 
       {!subjectId && (
         <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col md:flex-row gap-4">
           <select
+            data-testid="skills-filter-path"
             value={selectedPathId}
             onChange={(e) => {
               setSelectedPathId(e.target.value);
@@ -445,6 +446,7 @@ export const SkillsTreeManager: React.FC<SkillsTreeManagerProps> = ({ subjectId 
             ))}
           </select>
           <select
+            data-testid="skills-filter-subject"
             value={selectedSubjectId}
             onChange={(e) => setSelectedSubjectId(e.target.value)}
             className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 flex-1"
@@ -461,11 +463,11 @@ export const SkillsTreeManager: React.FC<SkillsTreeManagerProps> = ({ subjectId 
       )}
 
       <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
-        <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+        <div data-testid="skills-counter-main" className="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
           <div className="text-gray-500 text-sm mb-1">المهارات الرئيسة</div>
           <div className="text-2xl font-bold text-indigo-600">{mainSkills.length}</div>
         </div>
-        <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+        <div data-testid="skills-counter-sub" className="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
           <div className="text-gray-500 text-sm mb-1">المهارات الفرعية</div>
           <div className="text-2xl font-bold text-emerald-600">{relatedSubSkills.length}</div>
         </div>
@@ -473,7 +475,7 @@ export const SkillsTreeManager: React.FC<SkillsTreeManagerProps> = ({ subjectId 
           <div className="text-gray-500 text-sm mb-1">الدروس المرتبطة</div>
           <div className="text-2xl font-bold text-blue-600">{totalLinkedLessons}</div>
         </div>
-        <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
+        <div data-testid="skills-counter-questions" className="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
           <div className="text-gray-500 text-sm mb-1">الأسئلة المرتبطة</div>
           <div className="text-2xl font-bold text-amber-600">{isLoadingServerQuestionCount ? '…' : (totalLinkedQuestions ?? '—')}</div>
         </div>
