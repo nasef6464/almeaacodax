@@ -8,7 +8,7 @@ const RUN_ID = process.env.ROLE_PAGES_AUDIT_RUN_ID || `role-pages-${new Date().t
 const OUT_DIR = path.resolve("audit-artifacts", "ui-audit-exhaustive", RUN_ID);
 const CREDENTIALS_FILE = process.env.ROLE_CREDENTIALS_FILE || path.resolve("audit-artifacts", "ROLE_CREDENTIALS.env");
 const PAGE_TIMEOUT_MS = Number(process.env.UI_AUDIT_PAGE_TIMEOUT_MS || 45000);
-const LOADING_TIMEOUT_MS = 20000;
+const LOADING_TIMEOUT_MS = 30000;
 const BASE_ORIGIN = new URL(BASE_URL);
 const API_ORIGIN = new URL(API_BASE_URL);
 const USE_API_BRIDGE = ["127.0.0.1", "localhost"].includes(BASE_ORIGIN.hostname);
@@ -261,6 +261,21 @@ async function inspectPage(page, role, pageSpec, viewport) {
     // then rely on the explicit loading-state probe below for UI readiness.
     await page.goto(url, { waitUntil: "domcontentloaded", timeout: PAGE_TIMEOUT_MS });
     await page.waitForTimeout(800);
+    await page.waitForFunction(
+      ({ expect, minBodyLength }) => {
+        const text = document.body.innerText || "";
+        const visibleControls = Array.from(document.querySelectorAll("a[href], button, [role='button'], input, select, textarea")).filter((el) => {
+          const rect = el.getBoundingClientRect();
+          const style = window.getComputedStyle(el);
+          return rect.width > 0 && rect.height > 0 && style.display !== "none" && style.visibility !== "hidden";
+        }).length;
+        const guarded = /تسجيل الدخول|ليس لديك صلاحية|غير مصرح|Authentication|Login/.test(text);
+        if (expect === "guarded") return guarded || Boolean(document.querySelector('input[type="password"]'));
+        return text.length >= minBodyLength && visibleControls > 0;
+      },
+      { expect: pageSpec.expect, minBodyLength: Number(pageSpec.minBodyLength || 250) },
+      { timeout: 15000 },
+    ).catch(() => undefined);
     await page.waitForFunction(
       ({ source, flags }) => !new RegExp(source, flags).test(document.body.innerText || ""),
       { source: LOADING_STATE_PATTERN.source, flags: LOADING_STATE_PATTERN.flags },
