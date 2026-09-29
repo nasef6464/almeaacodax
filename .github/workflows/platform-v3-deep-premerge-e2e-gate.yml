@@ -297,6 +297,14 @@ jobs:
           SMOKE_STUDENT_JOURNEY_SUBJECT_ID: sub_quant
         run: node scripts/live-learning-manager-deep-audit.mjs
 
+      - name: Deep Role V2 parent + teacher journeys
+        id: deep_role_v2
+        continue-on-error: true
+        timeout-minutes: 12
+        env:
+          DEEP_ROLE_V2_AUDIT_RUN_ID: deep-premerge-role-v2-${{ github.run_id }}
+        run: node scripts/live-parent-teacher-deep-audit.mjs
+
       - name: Supervisor school command UI journey
         id: supervisor_school
         continue-on-error: true
@@ -344,6 +352,7 @@ jobs:
             echo "- Learning Space manager: ${{ steps.learning_manager.outcome }}"
             echo "- Assessment commercial: ${{ steps.assessment_commercial.outcome }}"
             echo "- Assessment mock session: ${{ steps.assessment_mock_session.outcome }}"
+            echo "- Deep Role V2 parent/teacher: ${{ steps.deep_role_v2.outcome }}"
             echo "- Supervisor school: ${{ steps.supervisor_school.outcome }}"
             echo "- School from scratch: ${{ steps.school_from_scratch.outcome }}"
             echo "- Barcode public test: ${{ steps.barcode.outcome }}"
@@ -378,6 +387,7 @@ jobs:
           check_outcome "Learning Space manager" "${{ steps.learning_manager.outcome }}"
           check_outcome "Assessment commercial" "${{ steps.assessment_commercial.outcome }}"
           check_outcome "Assessment mock session" "${{ steps.assessment_mock_session.outcome }}"
+          check_outcome "Deep Role V2 parent/teacher" "${{ steps.deep_role_v2.outcome }}"
           check_outcome "Supervisor school" "${{ steps.supervisor_school.outcome }}"
           check_outcome "School from scratch" "${{ steps.school_from_scratch.outcome }}"
           check_outcome "Barcode public test" "${{ steps.barcode.outcome }}"
