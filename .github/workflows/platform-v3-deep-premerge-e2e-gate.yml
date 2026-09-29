@@ -302,7 +302,7 @@ jobs:
         continue-on-error: true
         timeout-minutes: 12
         env:
-          DEEP_ROLE_V2_AUDIT_RUN_ID: deep-premerge-role-v2-${{ github.run_id }}
+          ROLE_PAGES_AUDIT_RUN_ID: deep-premerge-role-v2-${{ github.run_id }}
         run: node scripts/live-parent-teacher-deep-audit.mjs
 
       - name: Supervisor school command UI journey
