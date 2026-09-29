@@ -52,10 +52,10 @@ export const buildStudentAdaptiveLearningBridge = (
         evidenceLine: studentTodayFocus.isReliable
             ? `الحكم مؤكد من ${studentTodayFocus.attempts} محاولات على المهارة.`
             : `هذه قراءة أولية من ${studentTodayFocus.attempts} محاولة وتحتاج قياسًا إضافيًا.`,
-        relearnLink: studentTodayFocus.lessonLink || studentTodayFocus.foundationTopicLink || '/courses',
-        adaptiveTrainingLink: studentTodayFocus.quizLink || scopedPracticeLink || (studentTodayFocus.skillId ? `/quiz?skillIds=${encodeURIComponent(studentTodayFocus.skillId)}` : '/dashboard?tab=saher'),
+        relearnLink: studentTodayFocus.lessonLink || studentTodayFocus.foundationTopicLink || '/reports',
+        adaptiveTrainingLink: studentTodayFocus.quizLink || '/reports',
         smartPathLink: '/plan',
-        retestLink: scopedRecheckLink || studentTodayFocus.quizLink || (studentTodayFocus.skillId ? `/quiz?skillIds=${encodeURIComponent(studentTodayFocus.skillId)}` : '/dashboard?tab=saher'),
+        retestLink: scopedRecheckLink || studentTodayFocus.quizLink || '/reports',
     };
 };
 
@@ -67,22 +67,13 @@ export const buildStudentReportNextAction = (
 
     if (studentTodayFocus) {
         const skillName = displayText(studentTodayFocus.skill) || 'المهارة الأضعف';
-        const learningLink = studentTodayFocus.lessonLink || studentTodayFocus.foundationTopicLink || '/courses';
-        const trainingLink = studentTodayFocus.quizLink || buildSkillRemediationActionLink({
-            pathId: studentTodayFocus.pathId,
-            subjectId: studentTodayFocus.subjectId,
-            sectionId: studentTodayFocus.sectionId,
-            skillId: studentTodayFocus.skillId,
-        }) || buildSkillPracticeActionLink({
-            pathId: studentTodayFocus.pathId,
-            subjectId: studentTodayFocus.subjectId,
-            skillId: studentTodayFocus.skillId,
-        }) || (studentTodayFocus.skillId ? `/quiz?skillIds=${encodeURIComponent(studentTodayFocus.skillId)}` : '/dashboard?tab=saher');
+        const learningLink = studentTodayFocus.lessonLink || studentTodayFocus.foundationTopicLink || '/reports';
+        const trainingLink = studentTodayFocus.quizLink || '/reports';
 
         return {
             title: `ابدأ بـ ${skillName}`,
             description: 'افتح موضوع التأسيس المرتبط، ثم حل تدريبًا قصيرًا، وبعدها أعد القياس.',
-            primaryLabel: studentTodayFocus.lessonLink || studentTodayFocus.foundationTopicLink ? 'فتح موضوع التأسيس' : 'استعراض الشروحات',
+            primaryLabel: studentTodayFocus.lessonLink || studentTodayFocus.foundationTopicLink ? 'فتح موضوع التأسيس' : 'ربط التأسيس غير مكتمل',
             primaryHref: learningLink,
             secondaryLabel: 'تدريب قصير',
             secondaryHref: trainingLink,
