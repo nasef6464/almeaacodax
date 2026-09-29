@@ -113,6 +113,7 @@ jobs:
         run: node scripts/live-parent-teacher-deep-audit.mjs
 
       - name: Require every role and deep journey green
+        if: always()
         shell: bash
         env:
           ROLE_PAGES_OUTCOME: ${{ steps.role_pages.outcome }}
