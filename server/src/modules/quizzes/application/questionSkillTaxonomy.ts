@@ -3,6 +3,7 @@ import { SkillModel } from "../../../models/Skill.js";
 type QuestionSkillScope = {
   pathId?: string | null;
   subject?: string | null;
+  subjectId?: string | null;
   sectionId?: string | null;
   skillIds?: string[];
 };
@@ -13,8 +14,16 @@ const uniqueStrings = (values: unknown[]) =>
 export const resolveCanonicalQuestionSkillIds = async (input: QuestionSkillScope) => {
   const pathId = String(input.pathId || "").trim();
   const subjectId = String(input.subject || "").trim();
+  const explicitSubjectId = String(input.subjectId || "").trim();
   const sectionId = String(input.sectionId || "").trim();
   const requestedIds = uniqueStrings(input.skillIds || []);
+
+  if (explicitSubjectId && subjectId && explicitSubjectId !== subjectId) {
+    return {
+      ok: false as const,
+      message: "Question subject and subjectId must reference the same canonical subject.",
+    };
+  }
 
   if (!pathId || !subjectId || !sectionId) {
     return { ok: false as const, message: "Question path, subject and main skill are required." };
