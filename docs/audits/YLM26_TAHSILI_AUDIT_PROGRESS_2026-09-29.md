@@ -1,0 +1,52 @@
+# YLM26 Tahsili Math — Audit Progress — 2026-09-29
+
+## Current locked span
+Printed pages **5 through 20** have now been source-reviewed directly against the PDF.
+
+- visible source items in the span: **61**
+- existing Atlas records reviewed: **54**
+- answer-key agreement for reviewed records: **54/54**
+- reviewed records still in `draft`: **54/54**
+- missing visible source items: **7**
+- semantic skill/subskill corrections applied to reviewed YLM26 records: **26**
+- missing-skill records after changes: **0**
+
+## Missing source items in the locked span
+- `TAH-MATH-YLM26-P010-Q07`
+- `TAH-MATH-YLM26-P011-Q01`
+- `TAH-MATH-YLM26-P012-Q06`
+- `TAH-MATH-YLM26-P016-Q09`
+- `TAH-MATH-YLM26-P016-Q10`
+- `TAH-MATH-YLM26-P016-Q11`
+- `TAH-MATH-YLM26-P020-Q05`
+
+These are **not** replaced with placeholders. Each stays in the repair queue until a crop is verified from the PDF and stored with a stable R2 URL + image hash.
+
+## Reviewed curriculum branches so far
+1. المنطق والتبرير والبرهان
+2. الهندسة الأساسية والمستقيمات
+3. المثلثات والعلاقات في المثلث
+4. المضلعات والأشكال الرباعية
+5. التشابه
+6. التحويلات الهندسية
+
+Important cross-branch correction already proven:
+- `YLM26-P013-Q12` is an **indirect proof** question and was moved from the triangle branch to `skill_tah_math_01 / sub_tah_math_01_02`.
+
+## Fingerprint lock
+The live reviewed records are locked with:
+`questionCode|imageHash|answerLetter|skillId|subSkillId`
+
+Evidence:
+`docs/audits/TAHSILI_MATH_YLM26_P005_P020_FINGERPRINT_LOCK_2026-09-29.json`
+
+## Live safety checks after edits
+- Tahsili Math total: **1258**
+- Tahsili Math draft: **1258**
+- YLM26 live total: **292**
+- YLM26 draft: **292**
+- no reviewed question was approved automatically
+- no image hash was changed by semantic/content edits
+- no Tahsili question is left without a skill link
+
+Next source span: circle / coordinate geometry onward.
