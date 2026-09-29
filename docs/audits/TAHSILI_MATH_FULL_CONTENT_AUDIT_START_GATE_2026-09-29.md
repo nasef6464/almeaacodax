@@ -46,16 +46,17 @@ Current production:
 - live COL26: **966**
 - exact current source-page/question identities matching section I: **936**
 - live identities requiring provenance remap/review: **30**
-  - 27 have the same printed question number elsewhere in the same lesson and are candidates for page/source-meta correction after image verification.
-  - 3 are confirmed outside the section-I source range and must not survive the section-I lock:
+  - **26** have the same printed question number elsewhere in the same lesson and are candidates for page/source-meta correction after image verification.
+  - **4** are outside the section-I source range and are quarantined before any write:
     - `TAH-MATH-COL26-P054-Q41`
     - `TAH-MATH-COL26-P054-Q42`
     - `TAH-MATH-COL26-P092-Q46`
     - `TAH-MATH-COL26-P126-Q43`
-    
-Note: the last bullet contains four identities, not three; all four are quarantined for visual verification before any write. The arithmetic baseline is therefore intentionally not used as a delete plan until every candidate is source-checked.
+- after the 26 provenance remaps, the current set represents **962** section-I source identities.
+- therefore **50** section-I source questions are genuinely absent from the current live set.
+- expected section-I source-lock count: **1012**.
 
-The source-lock target will be recomputed from the final canonical manifest before any DB mutation.
+No delete or remap is executed until the crop/image for every candidate is visually checked against the source.
 
 ## Existing quality problems already confirmed
 - All 1258 records are structurally linked to canonical taxonomy IDs, but structural validity is **not** semantic correctness.
