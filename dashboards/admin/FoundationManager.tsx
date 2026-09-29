@@ -45,6 +45,21 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
       a.parentSkillName.localeCompare(b.parentSkillName, 'ar') ||
       a.name.localeCompare(b.name, 'ar'),
     );
+  const editingParentTopic = editingTopic?.parentId
+    ? subjectTopics.find((topic) => topic.id === editingTopic.parentId)
+    : undefined;
+  const editingSubSkillOptions = editingTopic?.parentId
+    ? foundationSubSkillOptions.filter((option) => {
+        if (editingParentTopic?.skillId) {
+          return option.parentSkillId === editingParentTopic.skillId;
+        }
+        if (editingParentTopic?.sectionId) {
+          return option.sectionId === editingParentTopic.sectionId;
+        }
+        return true;
+      })
+    : foundationSubSkillOptions;
+
   const availableLessons = lessons
     .filter((lesson) => {
       const matchesSubject = lesson.subjectId === subjectId;
@@ -243,6 +258,29 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
     const selectedSubSkill = editingTopic.skillId
       ? foundationSubSkillOptions.find((option) => option.id === editingTopic.skillId)
       : undefined;
+
+    if (editingTopic.parentId && !editingTopic.skillId) {
+      window.alert('يجب ربط كل موضوع تأسيسي فرعي بمهارة فرعية قبل الحفظ.');
+      return;
+    }
+
+    if (editingTopic.parentId && !selectedSubSkill) {
+      window.alert('المهارة الفرعية المختارة غير صالحة لهذا المسار أو المادة.');
+      return;
+    }
+
+    const parentTopic = editingTopic.parentId
+      ? subjectTopics.find((topic) => topic.id === editingTopic.parentId)
+      : undefined;
+    if (
+      editingTopic.parentId &&
+      selectedSubSkill &&
+      parentTopic?.skillId &&
+      selectedSubSkill.parentSkillId !== parentTopic.skillId
+    ) {
+      window.alert('المهارة الفرعية المختارة لا تتبع المهارة الرئيسية لهذا الموضوع.');
+      return;
+    }
 
     if (editingTopic.parentId && editingTopic.skillId) {
       const duplicateTopic = subjectTopics.find(
@@ -726,11 +764,11 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
               </div>
               {editingTopic.parentId ? (
                 <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-1">المهارة الفرعية المرتبطة</label>
+                  <label className="block text-sm font-bold text-gray-700 mb-1">المهارة الفرعية المرتبطة <span className="text-red-600">— مطلوب</span></label>
                   <select
                     value={editingTopic.skillId || ''}
                     onChange={(e) => {
-                      const selected = foundationSubSkillOptions.find((option) => option.id === e.target.value);
+                      const selected = editingSubSkillOptions.find((option) => option.id === e.target.value);
                       setEditingTopic({
                         ...editingTopic,
                         skillId: selected?.id || null,
@@ -741,8 +779,8 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
                     }}
                     className="w-full p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none bg-white"
                   >
-                    <option value="">بدون ربط — يحتاج ضبط قبل الاعتماد</option>
-                    {foundationSubSkillOptions.map((option) => {
+                    <option value="">اختر المهارة الفرعية — لا يمكن الحفظ بدونها</option>
+                    {editingSubSkillOptions.map((option) => {
                       const usedBy = subjectTopics.find(
                         (topic) =>
                           topic.id !== editingTopic.id &&
@@ -757,7 +795,7 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
                     })}
                   </select>
                   <p className="mt-1.5 text-xs leading-5 text-gray-500">
-                    هذا هو الربط القانوني الذي تستخدمه التقارير والتعلم الذكي لفتح نفس موضوع التأسيس ونفس تدريبات المهارة.
+                    هذا هو الربط القانوني الذي تستخدمه التقارير والتعلم الذكي لفتح نفس موضوع التأسيس. يمكنك داخل الموضوع الواحد ربط أكثر من فيديو/درس وأكثر من تدريب وملف دعم، وكلها ترث نفس المهارة الفرعية.
                   </p>
                 </div>
               ) : null}
@@ -790,11 +828,12 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
               </label>
             </div>
             <div className="flex gap-3 mt-6">
-              <button 
+              <button
                 onClick={handleSaveTopic}
-                className="flex-1 bg-indigo-600 text-white py-3 rounded-xl font-bold hover:bg-indigo-700 transition-colors"
+                disabled={Boolean(editingTopic.parentId && !editingTopic.skillId)}
+                className="flex-1 bg-indigo-600 disabled:bg-slate-300 disabled:cursor-not-allowed text-white py-3 rounded-xl font-bold hover:bg-indigo-700 disabled:hover:bg-slate-300 transition-colors"
               >
-                حفظ
+                {editingTopic.parentId && !editingTopic.skillId ? 'اختر المهارة الفرعية أولًا' : 'حفظ'}
               </button>
               <button 
                 onClick={() => setIsEditing(false)}
