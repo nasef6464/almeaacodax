@@ -60,12 +60,12 @@ const roleConfigs = {
     email: process.env.ROLE_TEACHER_EMAIL,
     password: process.env.ROLE_TEACHER_PASSWORD,
     checkpoints: [
-      { name: "teacher-school-overview", path: "/school-teacher-dashboard?tab=overview", expectAny: ["لوحة معلم المدرسة", "نظرة عامة"], minBody: 500 },
-      { name: "teacher-smart-classroom", path: "/school-teacher-dashboard?tab=smart-classroom", expectAny: ["إدارة الحصص والجدول"], minBody: 450 },
+      { name: "teacher-school-overview", path: "/school-teacher-dashboard?tab=overview", expectAny: ["مساحة تعليمية مدرسية معتمدة", "ابدأ من فصلك"], minBody: 500 },
+      { name: "teacher-smart-classroom", path: "/school-teacher-dashboard?tab=smart-classroom", expectAny: ["مركز إدارة وإطلاق الحصص الذكية", "إطلاق حصة"], minBody: 450 },
       { name: "teacher-prepared-bank", path: "/school-teacher-dashboard?tab=prepared-questions", expectAny: ["بنك التحضير المسبق"], minBody: 450 },
-      { name: "teacher-school-reports", path: "/school-teacher-dashboard?tab=reports", expectAny: ["تقارير الحصص والمهارات"], minBody: 450 },
-      { name: "teacher-skills-radar", path: "/school-teacher-dashboard?tab=skills-radar", expectAny: ["رادار فجوات الفصول"], minBody: 450 },
-      { name: "teacher-assessments", path: "/school-teacher-dashboard?tab=assessments", expectAny: ["اختبارات المدرسة"], minBody: 450 },
+      { name: "teacher-school-reports", path: "/school-teacher-dashboard?tab=reports", expectAny: ["سجل وتقارير الحصص الذكية وتشخيص المهارات", "لا توجد حصص مطابقة"], minBody: 250 },
+      { name: "teacher-skills-radar", path: "/school-teacher-dashboard?tab=skills-radar", expectAny: ["رادار فجوات الفصل المهارية", "متوسط دقة الفصل"], minBody: 250 },
+      { name: "teacher-assessments", path: "/school-teacher-dashboard?tab=assessments", expectAny: ["اختبارات وتكليفات المدرسة الموجهة لفصولي", "اختبار مركزي"], minBody: 350 },
       {
         name: "teacher-platform-reports",
         path: "/reports",
