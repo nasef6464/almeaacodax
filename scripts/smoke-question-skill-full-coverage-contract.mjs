@@ -10,6 +10,8 @@ const questionBank = read('dashboards/admin/QuestionBankManager.tsx');
 const questionBankCatalogData = read('dashboards/admin/questionBank/useQuestionBankCatalogData.ts');
 const skillsTree = read('dashboards/admin/SkillsTreeManager.tsx');
 const coverage = read('server/src/modules/quizzes/application/questionBankCoverage.ts');
+const skillTaxonomy = read('server/src/modules/quizzes/application/questionSkillTaxonomy.ts');
+const taxonomyRoutes = read('server/src/routes/taxonomy.routes.ts');
 
 const checks = [];
 const check = (name, assertion) => {
@@ -74,6 +76,28 @@ check('coverage exposes exact per-skill and per-section counts from the same ful
   ]) {
     assert.ok(coverage.includes(fragment), `questionBankCoverage lost ${fragment}`);
   }
+});
+
+check('coverage exposes draft totals without changing pending workflow semantics', () => {
+  assert.ok(coverage.includes('draftCount: number'));
+  assert.ok(coverage.includes('{ $eq: ["$approvalStatus", "draft"] }'));
+  assert.ok(questionBank.includes("questionCoverageSummary.draftCount ?? '—'"));
+  assert.ok(questionBank.includes('المسودات'));
+});
+
+check('question writes reject divergent subject and subjectId', () => {
+  assert.ok(skillTaxonomy.includes('explicitSubjectId'));
+  assert.ok(skillTaxonomy.includes('explicitSubjectId !== subjectId'));
+  assert.ok(skillTaxonomy.includes('Question subject and subjectId must reference the same canonical subject.'));
+});
+
+check('staff taxonomy bootstrap excludes orphan sections and skills', () => {
+  assert.ok(taxonomyRoutes.includes('validSubjectIds'));
+  assert.ok(taxonomyRoutes.includes('validSectionIds'));
+  assert.ok(taxonomyRoutes.includes('subjectId: { $in: validSubjectIds }'));
+  assert.ok(taxonomyRoutes.includes('sectionId: { $in: validSectionIds }'));
+  assert.ok(taxonomyRoutes.includes('Section subject does not exist.'));
+  assert.ok(taxonomyRoutes.includes('Skill path, subject and section must reference one canonical taxonomy branch.'));
 });
 
 check('coverage aggregation excludes empty taxonomy ids', () => {
