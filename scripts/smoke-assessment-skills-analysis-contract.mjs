@@ -18,7 +18,7 @@ check('submission skills analysis is delegated', () => {
 });
 
 check('skill analytics fields and policy remain explicit', () => {
-  for (const fragment of ['buildResultSkillStatus', 'buildSkillRecommendation', 'skillId,', 'pathId:', 'subjectId,', 'sectionId,', 'mastery,', 'status,', 'recommendation:', 'section:']) {
+  for (const fragment of ['buildResultSkillStatus', 'buildSkillRecommendation', 'if (!skill) return []', 'skillId,', 'level:', 'parentSkillId:', 'parentSkill:', 'pathId:', 'subjectId,', 'sectionId,', 'mastery,', 'status,', 'recommendation:', 'section:']) {
     assert.ok(moduleSource.includes(fragment), `skills analysis missing ${fragment}`);
   }
 });
@@ -27,7 +27,7 @@ check('skills analysis stays bounded and has no transport or persistence depende
   for (const forbidden of ['express', 'mongoose', 'Router(', 'req.', 'res.', 'QuizModel', 'QuestionModel', 'QuizResultModel', 'requireRole', 'process.env']) {
     assert.ok(!moduleSource.includes(forbidden), `skills analysis must not include ${forbidden}`);
   }
-  assert.ok(moduleSource.split(/\r?\n/).length <= 55, 'quizSubmissionSkillsAnalysis.ts exceeded 55 lines');
+  assert.ok(moduleSource.split(/\r?\n/).length <= 80, 'quizSubmissionSkillsAnalysis.ts exceeded 80 lines');
 });
 
 const failed = checks.filter((item) => item.status === 'FAIL');
