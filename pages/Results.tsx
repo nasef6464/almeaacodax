@@ -63,6 +63,9 @@ interface SkillRecommendation {
 
 interface ResolvedAnalysisItem {
   skillId?: string;
+  level?: 'main' | 'sub';
+  parentSkillId?: string;
+  parentSkillName?: string;
   pathId?: string;
   subjectId?: string;
   sectionId?: string;
@@ -365,24 +368,32 @@ const Results: React.FC = () => {
     >();
 
     (latestResult.skillsAnalysis || []).forEach((item) => {
+        const taxonomyEntry = resolveResultSkillTaxonomy(item.skillId, skills);
         const recommendation = getSkillRecommendation(item, skills, lessons, quizzes, libraryItems, questions, topics);
+        const subjectId = item.subjectId || taxonomyEntry?.subjectId;
+        const sectionId = item.sectionId || taxonomyEntry?.sectionId;
         const subjectName =
           recommendation.subjectName ||
-          (item.subjectId ? displayText(subjects.find((subject) => subject.id === item.subjectId)?.name) : undefined);
+          (subjectId ? displayText(subjects.find((subject) => subject.id === subjectId)?.name) : undefined);
         const sectionName =
           recommendation.sectionName ||
-          displayText(item.section) ||
-          (item.sectionId ? displayText(sections.find((section) => section.id === item.sectionId)?.name) : undefined);
-        const skillName = displayText(item.skill) || 'مهارة غير مسماة';
-        const skillKey = item.skillId || `${item.subjectId || subjectName || 'subject'}-${item.sectionId || sectionName || 'section'}-${skillName}`;
+          (sectionId ? displayText(sections.find((section) => section.id === sectionId)?.name) : undefined) ||
+          displayText(item.section);
+        const storedName = displayText(item.skill);
+        const storedNameIsPlaceholder = storedName === 'مهارة غير مسماة' || storedName === 'مهارة غير معروفة';
+        const skillName = taxonomyEntry?.name || (storedNameIsPlaceholder ? '' : storedName);
+        const skillKey = item.skillId || `${subjectId || subjectName || 'subject'}-${sectionId || sectionName || 'section'}-${skillName}`;
         const current = aggregated.get(skillKey);
 
         if (!current) {
           aggregated.set(skillKey, {
             skillId: item.skillId,
-            pathId: item.pathId,
-            subjectId: item.subjectId,
-            sectionId: item.sectionId,
+            level: (item as any).level || taxonomyEntry?.level,
+            parentSkillId: (item as any).parentSkillId || taxonomyEntry?.parentSkillId,
+            parentSkillName: displayText((item as any).parentSkill) || taxonomyEntry?.parentSkill,
+            pathId: item.pathId || taxonomyEntry?.pathId,
+            subjectId,
+            sectionId,
             subjectName,
             sectionName,
             skillName,
