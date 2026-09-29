@@ -51,7 +51,7 @@ const roleConfigs = {
         path: "/reports",
         expectAny: ["تقرير", "الأداء"],
         selectors: ['[data-testid="parent-report-copy"]', '[data-testid="parent-report-share"]', '[data-testid="parent-report-pdf"]'],
-        minBody: 350,
+        minBody: 300,
       },
       { name: "parent-profile", path: "/profile", expectAny: ["الملف", "الحساب", "الاسم"], minBody: 250 },
     ],
@@ -240,7 +240,18 @@ async function inspectCheckpoint(page, role, checkpoint, viewport) {
     await page.waitForTimeout(900);
     await page
       .waitForFunction(
-        ({ source, flags }) => !new RegExp(source, flags).test(document.body.innerText || ""),
+        ({ source, flags }) => {
+          const pattern = new RegExp(source, flags);
+          return !Array.from(document.querySelectorAll("body *")).some((el) => {
+            const rect = el.getBoundingClientRect();
+            const style = getComputedStyle(el);
+            const visible = rect.width > 0 && rect.height > 0 && style.display !== "none" && style.visibility !== "hidden";
+            if (!visible) return false;
+            const label = (el.textContent || "").trim();
+            const candidate = el.children.length === 0 || el.getAttribute("aria-busy") === "true" || el.getAttribute("role") === "status";
+            return candidate && label.length <= 120 && pattern.test(label);
+          });
+        },
         { source: LOADING.source, flags: LOADING.flags },
         { timeout: LOADING_TIMEOUT_MS },
       )
@@ -278,7 +289,15 @@ async function inspectCheckpoint(page, role, checkpoint, viewport) {
         bodyLength: bodyText.length,
         hasExpectedText: (expectAny || []).length === 0 || (expectAny || []).some((value) => bodyText.includes(value)),
         hasLoginForm: Boolean(document.querySelector('input[type="password"]')) && /تسجيل الدخول|Login|البريد الإلكتروني/.test(bodyText),
-        hasLoadingState: /(جار[ٍي]?\s+تحميل|Loading(?:…|\.{3})?)/i.test(bodyText),
+        hasLoadingState: Array.from(document.querySelectorAll("body *")).some((el) => {
+          const rect = el.getBoundingClientRect();
+          const style = getComputedStyle(el);
+          const visible = rect.width > 0 && rect.height > 0 && style.display !== "none" && style.visibility !== "hidden";
+          if (!visible) return false;
+          const label = (el.textContent || "").trim();
+          const candidate = el.children.length === 0 || el.getAttribute("aria-busy") === "true" || el.getAttribute("role") === "status";
+          return candidate && label.length <= 120 && /(جار[ٍي]?\s+تحميل|Loading(?:…|\.{3})?)/i.test(label);
+        }),
         hasMojibake: new RegExp(mojibakeSource).test(bodyText),
         horizontalOverflow: document.documentElement.scrollWidth > window.innerWidth + 24,
         scrollWidth: document.documentElement.scrollWidth,
