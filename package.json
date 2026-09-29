@@ -48,7 +48,7 @@
         "smoke:student-session-booking": "node scripts/smoke-student-session-booking-contract.mjs",
         "smoke:smart-classroom-g0": "npm --prefix server run verify:smart-classroom-g0 && node scripts/smoke-smart-classroom-g0-contract.mjs",
         "smoke:barcode-public-tests-live": "node scripts/live-barcode-public-tests-audit.mjs",
-        "smoke:results": "node scripts/smoke-results-contract.mjs",
+        "smoke:results": "node scripts/smoke-results-contract.mjs && node scripts/smoke-student-result-skill-integrity-contract.mjs",
         "smoke:saher-skills": "node scripts/smoke-saher-skill-scope.mjs",
         "smoke:course-builder": "node scripts/smoke-course-builder-contract.mjs",
         "smoke:trainer-management-g14": "node scripts/smoke-trainer-management-g14-contract.mjs",
