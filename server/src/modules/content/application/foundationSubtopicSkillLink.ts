@@ -52,6 +52,7 @@ export async function validateFoundationSubtopicSkillLink(
 
   const pathId = stringId(candidate.pathId);
   const subjectId = stringId(candidate.subjectId);
+  const requestedSectionId = stringId(candidate.sectionId);
   const skillId = stringId(candidate.skillId);
 
   if (!skillId) {
@@ -71,6 +72,19 @@ export async function validateFoundationSubtopicSkillLink(
       ok: false,
       status: 400,
       message: "Foundation subtopic must belong to a valid main Foundation topic",
+    };
+  }
+
+  const parentTopicPathId = stringId((parentTopic as any).pathId);
+  const parentTopicSubjectId = stringId((parentTopic as any).subjectId);
+  if (
+    (parentTopicPathId && parentTopicPathId !== pathId) ||
+    (parentTopicSubjectId && parentTopicSubjectId !== subjectId)
+  ) {
+    return {
+      ok: false,
+      status: 400,
+      message: "Foundation subtopic scope must match its parent topic path and subject",
     };
   }
 
@@ -94,6 +108,14 @@ export async function validateFoundationSubtopicSkillLink(
   const canonicalSectionId = stringId((skillDocument as any).sectionId);
   const parentTopicSkillId = stringId((parentTopic as any).skillId);
   const parentTopicSectionId = stringId((parentTopic as any).sectionId);
+
+  if (requestedSectionId && canonicalSectionId && requestedSectionId !== canonicalSectionId) {
+    return {
+      ok: false,
+      status: 400,
+      message: "Selected subskill belongs to a different section",
+    };
+  }
 
   if (
     (parentTopicSkillId && parentTopicSkillId !== parentSkillId) ||
