@@ -110,6 +110,10 @@ jobs:
         run: npm run smoke:role-pages-live
 
       - name: Run read-only deep parent + teacher journeys
+        id: deep_role_v2
+        continue-on-error: true
+        env:
+          DEEP_ROLE_V2_AUDIT_RUN_ID: platform-v3-live-${{ github.run_id }}-v2
         run: node scripts/live-parent-teacher-deep-audit.mjs
 
       - name: Require every role and deep journey green
@@ -143,7 +147,7 @@ jobs:
             failures.push(`role audit fail=${roleReport.fail}, blocked=${roleReport.blocked}`);
           }
 
-          const deepRunId = process.env.DEEP_ROLE_V2_AUDIT_RUN_ID;
+          const deepRunId = process.env.DEEP_ROLE_V2_AUDIT_RUN_ID || `${roleRunId}-v2`;
           const deepPath = path.join('audit-artifacts', 'ui-audit-exhaustive', deepRunId, 'deep-role-v2-parent-teacher.json');
           const deepReport = JSON.parse(fs.readFileSync(deepPath, 'utf8'));
           if (deepReport.fail !== 0 || deepReport.blocked !== 0) {
