@@ -560,9 +560,15 @@ quizRouter.post(
     }
 
     const skillIds = getQuizSubmissionSkillIds(orderedQuestions);
+    const skillDocumentQuery = buildDocumentsByIdsQuery(skillIds);
     const [skills, subjects, sections] = await Promise.all([
       skillIds.length
-        ? SkillModel.find(buildDocumentsByIdsQuery(skillIds))
+        ? SkillModel.find({
+            $or: [
+              ...(Array.isArray((skillDocumentQuery as any).$or) ? (skillDocumentQuery as any).$or : []),
+              { "subSkills.id": { $in: skillIds } },
+            ],
+          })
         : [],
       SubjectModel.find(),
       SectionModel.find(),
