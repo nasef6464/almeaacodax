@@ -37,7 +37,7 @@ contentLearningRouter.post(
 
     if (payload.parentId) {
       const validation = await validateFoundationSubtopicSkillLink(payload);
-      if (!validation.ok) {
+      if ("status" in validation) {
         return res.status(validation.status).json({ message: validation.message });
       }
       normalizedPayload = { ...payload, ...validation.normalized };
@@ -65,7 +65,7 @@ contentLearningRouter.patch(
 
     if (mergedTopic.parentId) {
       const validation = await validateFoundationSubtopicSkillLink(mergedTopic, existing._id);
-      if (!validation.ok) {
+      if ("status" in validation) {
         return res.status(validation.status).json({ message: validation.message });
       }
       normalizedPayload = { ...payload, ...validation.normalized };
