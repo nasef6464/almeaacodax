@@ -36,12 +36,14 @@ check('result page keeps review behind saved questionReview', () => {
   );
 });
 
-check('review can supplement missing saved questions from the question bank', () => {
-  assertIncludes(resultsSource, 'supplementMissingReviewQuestions');
-  assertIncludes(resultsSource, 'getQuestionContextScore');
+check('review is restricted to exact quiz question IDs without global-bank supplementation', () => {
+  if (resultsSource.includes('supplementMissingReviewQuestions')) {
+    throw new Error('review must not supplement missing saved questions from the global question bank');
+  }
   assertIncludes(resultsSource, 'rebuiltQuestions');
   assertIncludes(resultsSource, 'quizQuestionIds.length');
-  assertIncludes(resultsSource, 'toQuestionReviewFromBank(question)');
+  assertIncludes(resultsSource, 'resolveQuestionFromBank(questionBank, questionId)');
+  assertIncludes(resultsSource, 'return rebuiltQuestions;');
 });
 
 check('retry result action preserves quiz context', () => {
