@@ -102,3 +102,15 @@ Cumulative pages **5–63**:
 - exact live source identities audited: **188**
 - source identities missing: **26**
 - all accepted audited records remain draft pending the final content lock.
+
+
+## Extension — answer/skill audit through printed page 94
+Answer and semantic skill/subskill review now reaches printed page **94**.
+
+Production safety remains unchanged:
+- YLM26 = **292 / 292 draft**
+- Tahsili Math = **1258 / 1258 draft**
+- no missing skill links
+- no missing image hashes
+
+A mixed source-identity convention was discovered in the legacy YLM26 import. Five high-risk records are now quarantined for crop-level provenance before any rename/delete. Final source-lock counts will be recomputed after that identity reconciliation; older missing-count figures must not be treated as deletion instructions.
