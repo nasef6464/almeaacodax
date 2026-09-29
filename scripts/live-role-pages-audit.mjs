@@ -3,12 +3,12 @@ import path from "node:path";
 import { chromium } from "playwright";
 
 const BASE_URL = String(process.env.UI_AUDIT_BASE_URL || "https://almeaacodax.vercel.app").replace(/\/$/, "");
-const API_BASE_URL = String(process.env.UI_AUDIT_API_BASE_URL || "https://almeaacodax-k2ux.onrender.com/api").replace(/\/$/, "");
+const API_BASE_URL = String(process.env.UI_AUDIT_API_BASE_URL || "https://almeaacodax-codex.onrender.com/api").replace(/\/$/, "");
 const RUN_ID = process.env.ROLE_PAGES_AUDIT_RUN_ID || `role-pages-${new Date().toISOString().replace(/[:.]/g, "-")}`;
 const OUT_DIR = path.resolve("audit-artifacts", "ui-audit-exhaustive", RUN_ID);
 const CREDENTIALS_FILE = process.env.ROLE_CREDENTIALS_FILE || path.resolve("audit-artifacts", "ROLE_CREDENTIALS.env");
 const PAGE_TIMEOUT_MS = Number(process.env.UI_AUDIT_PAGE_TIMEOUT_MS || 45000);
-const LOADING_TIMEOUT_MS = 10000;
+const LOADING_TIMEOUT_MS = Number(process.env.UI_AUDIT_LOADING_TIMEOUT_MS || 20000);
 const BASE_ORIGIN = new URL(BASE_URL);
 const API_ORIGIN = new URL(API_BASE_URL);
 const USE_API_BRIDGE = ["127.0.0.1", "localhost"].includes(BASE_ORIGIN.hostname);
@@ -120,16 +120,34 @@ async function installApiBridge(context) {
     delete headers["content-length"];
 
     try {
-      const response = await fetch(targetUrl, {
-        method: request.method(),
-        headers,
-        body: ["GET", "HEAD"].includes(request.method()) ? undefined : request.postDataBuffer() || undefined,
-        redirect: "manual",
-      });
+      const maxAttempts = ["GET", "HEAD"].includes(request.method()) ? 3 : 1;
+      let response;
+      let lastError;
+      for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+        try {
+          response = await fetch(targetUrl, {
+            method: request.method(),
+            headers,
+            body: ["GET", "HEAD"].includes(request.method()) ? undefined : request.postDataBuffer() || undefined,
+            redirect: "manual",
+            signal: AbortSignal.timeout(20_000),
+          });
+          if (![502, 503, 504].includes(response.status) || attempt === maxAttempts) break;
+        } catch (error) {
+          lastError = error;
+          if (attempt === maxAttempts) throw error;
+        }
+        await new Promise((resolve) => setTimeout(resolve, 300 * attempt));
+      }
+      if (!response) throw lastError || new Error("API bridge produced no response");
       const responseHeaders = Object.fromEntries(response.headers.entries());
       delete responseHeaders["content-encoding"];
       delete responseHeaders["content-length"];
       delete responseHeaders["transfer-encoding"];
+      // Playwright fulfillment may preserve duplicated CORS values from an
+      // upstream test/runtime hop. Normalize the effective browser response.
+      responseHeaders["access-control-allow-origin"] = BASE_ORIGIN.origin;
+      responseHeaders["access-control-allow-credentials"] = "true";
       await route.fulfill({
         status: response.status,
         headers: responseHeaders,
@@ -171,11 +189,11 @@ async function login(page, role) {
     {
       name: "almeaa_access_token",
       value: authCookie,
-      domain: "almeaacodax-k2ux.onrender.com",
+      domain: API_ORIGIN.hostname,
       path: "/",
       httpOnly: true,
-      secure: true,
-      sameSite: "None",
+      secure: API_ORIGIN.protocol === "https:",
+      sameSite: API_ORIGIN.protocol === "https:" ? "None" : "Lax",
     },
   ];
   if (USE_API_BRIDGE) {
