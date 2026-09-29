@@ -141,6 +141,7 @@ export const buildSkillRecommendation = (
     // Explanation deliberately opens the topic (not one lesson) because a topic can contain multiple videos.
     const lessonLink = buildFoundationActionLink(actionContext, 'lessons');
     const foundationTrainingLink = buildFoundationActionLink(actionContext, 'quizzes');
+    const foundationSupportLink = buildFoundationActionLink(actionContext, 'support');
 
     const mainSkillTrainingLink = target.kind === 'main' && recommendedQuiz?.id
         ? `/quiz/${encodeURIComponent(String(recommendedQuiz.id))}?source=training`
@@ -155,9 +156,12 @@ export const buildSkillRecommendation = (
         lessonTopicTitle: displayText(recommendedTopic?.title || target.skillName),
         foundationTopicLink: recommendedTopic ? lessonLink : undefined,
         quizTitle: displayText(recommendedQuiz?.title || recommendedTopic?.title),
-        quizLink: target.kind === 'sub' && targetTopicId
-            ? subskillLinks.quizLink
-            : mainSkillTrainingLink || (recommendedQuiz?.id ? `/quiz/${recommendedQuiz.id}?source=training` : undefined),
+        quizLink: recommendedTopic
+            ? foundationTrainingLink
+            : target.kind === 'main'
+                ? mainSkillTrainingLink || (recommendedQuiz?.id ? `/quiz/${recommendedQuiz.id}?source=training` : undefined)
+                : undefined,
+        supportLink: recommendedTopic ? foundationSupportLink : undefined,
         resourceTitle: displayText(recommendedResource?.title),
         resourceUrl: recommendedResource?.url,
         subjectName: recommendationSubjectId
