@@ -86,7 +86,7 @@ check('8 unified source preserves existing role-scoped boundaries', () => {
   assert.ok(files.telemetry.includes('userId: req.authUser!.id'));
   assert.ok(files.parentRoutes.includes('linkedStudentIds'));
   assert.ok(files.parentRoutes.includes('SkillProgressModel.find'));
-  assert.ok(files.schoolView.includes('resolveSchoolReportStudents'));
+  assert.ok(files.schoolView.includes('resolveScopedStudents'));
 });
 
 check('student report skill actions stay inside exact Foundation mapping', () => {
