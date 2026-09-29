@@ -44,3 +44,42 @@ Existing semantic mismatches in this eighteen-question batch: **9/18**.
 - therefore the full 1258-question Tahsili set requires source-based semantic retagging question by question; mechanical distribution must not be preserved.
 
 No production tags were changed in this batch. This is discovery evidence only.
+
+
+## Applied to production Atlas
+The 13 source-proven semantic mismatches above were applied while keeping every record in `draft`.
+
+Backup / rollback key:
+`TAHSILI_MATH_SEMANTIC_AUDIT_BATCH01_20260929`
+
+Each prechange snapshot stores:
+- questionCode
+- source document / printed page / printed question
+- imageHash
+- correctOptionIndex
+- old subskill
+- new subskill
+- original document
+- canonical fingerprint: `questionCode|imageHash|answerIndex|targetSubSkill`
+
+Applied retags:
+- YLM26 P005-Q01 → `sub_tah_math_01_02`
+- YLM26 P006-Q04 → `sub_tah_math_01_01`
+- YLM26 P006-Q05 → `sub_tah_math_01_01`
+- YLM26 P006-Q06 → `sub_tah_math_01_01`
+- COL26 P005-Q01 → `sub_tah_math_01_02`
+- COL26 P005-Q03 → `sub_tah_math_01_02`
+- COL26 P005-Q05 → `sub_tah_math_01_02`
+- COL26 P005-Q08 → `sub_tah_math_01_01`
+- COL26 P005-Q10 → `sub_tah_math_01_01`
+- COL26 P005-Q12 → `sub_tah_math_01_01`
+- COL26 P005-Q14 → `sub_tah_math_01_01`
+- COL26 P006-Q15 → `sub_tah_math_01_02`
+- COL26 P006-Q17 → `sub_tah_math_01_02`
+
+Postcondition verified:
+- 13/13 now carry the intended canonical subskill.
+- main skill and section remain `skill_tah_math_01` / `sec_tah_math_01`.
+- source image hashes unchanged.
+- answer indexes unchanged.
+- approval status remains `draft`.
