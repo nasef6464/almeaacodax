@@ -1,6 +1,9 @@
 import { SkillModel } from "../../../models/Skill.js";
 import { TopicModel } from "../../../models/Topic.js";
-import { buildDocumentQuery } from "../infrastructure/contentDocumentQuery.js";
+import { LessonModel } from "../../../models/Lesson.js";
+import { QuizModel } from "../../../models/Quiz.js";
+import { LibraryItemModel } from "../../../models/LibraryItem.js";
+import { buildDocumentQuery, buildDocumentsByIdsQuery } from "../infrastructure/contentDocumentQuery.js";
 
 type FoundationTopicCandidate = {
   pathId?: string | null;
@@ -135,4 +138,52 @@ export async function validateFoundationSubtopicSkillLink(
     },
     parentSkillId,
   };
+}
+
+
+type FoundationTopicResourceLink = {
+  parentId?: string | null;
+  skillId?: string | null;
+  lessonIds?: string[];
+  quizIds?: string[];
+  libraryItemIds?: string[];
+};
+
+const normalizeIds = (values: unknown) =>
+  [...new Set((Array.isArray(values) ? values : []).map((value) => stringId(value)).filter(Boolean))];
+
+export async function syncFoundationTopicResourcesToSkill(
+  topic: FoundationTopicResourceLink,
+  previousSkillId?: string | null,
+) {
+  const previous = stringId(previousSkillId);
+  const next = stringId(topic.parentId) ? stringId(topic.skillId) : "";
+  if (!previous && !next) return;
+
+  const update: Record<string, unknown> = {};
+  if (previous && previous !== next) {
+    update.$pull = { skillIds: previous };
+  }
+  if (next) {
+    update.$addToSet = { skillIds: next };
+  }
+
+  const lessonIds = normalizeIds(topic.lessonIds);
+  const quizIds = normalizeIds(topic.quizIds);
+  const libraryItemIds = normalizeIds(topic.libraryItemIds);
+
+  await Promise.all([
+    lessonIds.length
+      ? LessonModel.updateMany(buildDocumentsByIdsQuery(lessonIds), update)
+      : Promise.resolve(),
+    quizIds.length
+      ? QuizModel.updateMany(
+          { $or: [{ id: { $in: quizIds } }, { _id: { $in: quizIds } }] },
+          update,
+        )
+      : Promise.resolve(),
+    libraryItemIds.length
+      ? LibraryItemModel.updateMany(buildDocumentsByIdsQuery(libraryItemIds), update)
+      : Promise.resolve(),
+  ]);
 }
