@@ -74,6 +74,9 @@ export interface ScopedQuizResult {
 export interface StudentAggregatedSkill {
     skill: string;
     skillId?: string;
+    level?: 'main' | 'sub';
+    parentSkillId?: string;
+    parentSkill?: string;
     pathId?: string;
     subjectId?: string;
     sectionId?: string;
@@ -101,6 +104,7 @@ export interface SkillRecommendation {
     foundationTopicLink?: string;
     quizTitle?: string;
     quizLink?: string;
+    supportLink?: string;
     resourceTitle?: string;
     resourceUrl?: string;
     subjectName?: string;
