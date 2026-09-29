@@ -9,6 +9,18 @@ export { updateSkillProgressFromQuestionAttempt } from "./quizSubmissionSkillPro
 const uniqueStrings = (values: Array<string | undefined | null>) =>
   [...new Set(values.map((value) => String(value || "").trim()).filter(Boolean))];
 
+const canonicalQuestionSkillIds = (question: any) => {
+  const mainSkillId = String(question?.skillId || "").trim();
+  const subSkillId = String(question?.subSkillId || "").trim();
+  const canonical = uniqueStrings([mainSkillId, subSkillId]);
+  return canonical.length > 0
+    ? canonical
+    : uniqueStrings(Array.isArray(question?.skillIds) ? question.skillIds.map(String) : []);
+};
+
+const primaryQuestionSkillId = (question: any) =>
+  String(question?.subSkillId || question?.skillId || canonicalQuestionSkillIds(question)[0] || "").trim();
+
 const qualityFromAttempt = (selectedOptionIndex?: number, isCorrect?: boolean) => {
   if (selectedOptionIndex === undefined || selectedOptionIndex < 0) return 1;
   return isCorrect ? 4 : 2;
@@ -26,8 +38,8 @@ const upsertReviewCardsFromQuestionReview = async (args: {
       if (!question) return null;
       const questionId = String(item.questionId || "");
       if (!questionId) return null;
-      const skillIds = Array.isArray(question.skillIds) ? uniqueStrings(question.skillIds.map(String)) : [];
-      const skillId = skillIds[0] || "";
+      const skillIds = canonicalQuestionSkillIds(question);
+      const skillId = primaryQuestionSkillId(question);
       const pathId = String(question.pathId || "");
       const subjectId = String(question.subjectId || question.subject || "");
       const sectionId = String(question.sectionId || "");
@@ -76,8 +88,8 @@ export async function upsertReviewCardFromQuestionAttempt(args: {
   const questionId = String(args.attempt?.questionId || args.question?.id || args.question?._id || "");
   if (!questionId) return;
 
-  const skillIds = Array.isArray(args.question?.skillIds) ? uniqueStrings(args.question.skillIds.map(String)) : [];
-  const skillId = skillIds[0] || "";
+  const skillIds = canonicalQuestionSkillIds(args.question);
+  const skillId = primaryQuestionSkillId(args.question);
   const quality = qualityFromAttempt(
     Number(args.attempt?.selectedOptionIndex ?? -1),
     Boolean(args.attempt?.isCorrect),
