@@ -2,6 +2,7 @@ import { SchoolSkillAggregateModel } from "../../../models/SchoolSkillAggregate.
 import { SUPPORT_MASTERY_THRESHOLD } from "../analytics/skillAnalytics.js";
 import { resolveScopedStudents } from "./quizReportScope.js";
 import { resolveAuthUserByAuthId } from "./quizUserLookup.js";
+import { buildSkillTaxonomyProjection } from "./skillMasteryProjection.js";
 
 const STAFF_ROLES = new Set(["admin", "supervisor", "teacher", "school_admin"]);
 const idOf = (value: any) => String(value?.id || value?._id || "");
@@ -83,11 +84,12 @@ export const buildSchoolSkillAggregateView = async (
 
   if (query.groupBy === "student") {
     const docs = await SchoolSkillAggregateModel.find(match)
-      .select("schoolId classId userId pathId subjectId sectionId skillId skill totalEvidence mastery recentMastery trend confidence lastEvidenceAt")
+      .select("schoolId classId userId pathId subjectId sectionId skillId skill level parentSkillId parentSkill totalEvidence mastery recentMastery trend confidence lastEvidenceAt")
       .sort({ mastery: 1, totalEvidence: -1, lastEvidenceAt: -1 })
       .limit(query.limit)
       .lean();
 
+    const taxonomy = await buildSkillTaxonomyProjection(docs.map((row: any) => String(row.skillId || "")));
     return {
       status: "ok" as const,
       scope: {
@@ -101,24 +103,31 @@ export const buildSchoolSkillAggregateView = async (
         classId: query.classId || undefined,
         skillId: query.skillId || undefined,
       },
-      rows: docs.map((row: any) => ({
-        schoolId: String(row.schoolId || ""),
-        classId: String(row.classId || ""),
-        userId: String(row.userId || ""),
-        studentName: studentNameById.get(String(row.userId || "")) || "طالب",
-        pathId: String(row.pathId || ""),
-        subjectId: String(row.subjectId || ""),
-        sectionId: String(row.sectionId || ""),
-        skillId: String(row.skillId || ""),
-        skill: String(row.skill || "مهارة"),
-        mastery: Number(row.mastery || 0),
-        recentMastery: Number(row.recentMastery || 0),
-        trend: String(row.trend || "stable"),
-        confidence: Number(row.confidence || 0),
-        evidenceCount: Number(row.totalEvidence || 0),
-        needsSupport: Number(row.mastery || 0) < SUPPORT_MASTERY_THRESHOLD,
-        lastEvidenceAt: row.lastEvidenceAt,
-      })),
+      rows: docs.map((row: any) => {
+        const canonical = taxonomy.get(String(row.skillId || ""));
+        return {
+          schoolId: String(row.schoolId || ""),
+          classId: String(row.classId || ""),
+          userId: String(row.userId || ""),
+          studentName: studentNameById.get(String(row.userId || "")) || "طالب",
+          pathId: String(canonical?.pathId || row.pathId || ""),
+          subjectId: String(canonical?.subjectId || row.subjectId || ""),
+          sectionId: String(canonical?.sectionId || row.sectionId || ""),
+          skillId: String(row.skillId || ""),
+          skill: String(canonical?.skill || row.skill || "مهارة"),
+          level: canonical?.level || (row.level === "sub" ? "sub" : "main"),
+          parentSkillId: String(canonical?.parentSkillId || row.parentSkillId || ""),
+          parentSkill: String(canonical?.parentSkill || row.parentSkill || ""),
+          mastery: Number(row.mastery || 0),
+          recentMastery: Number(row.recentMastery || 0),
+          trend: String(row.trend || "stable"),
+          confidence: Number(row.confidence || 0),
+          evidenceCount: Number(row.totalEvidence || 0),
+          needsSupport: Number(row.mastery || 0) < SUPPORT_MASTERY_THRESHOLD,
+          lastEvidenceAt: row.lastEvidenceAt,
+          unresolvedTaxonomy: !canonical,
+        };
+      }),
     };
   }
 
@@ -141,6 +150,9 @@ export const buildSchoolSkillAggregateView = async (
       $group: {
         _id: groupId,
         skill: { $first: "$skill" },
+        level: { $first: "$level" },
+        parentSkillId: { $first: "$parentSkillId" },
+        parentSkill: { $first: "$parentSkill" },
         sectionId: { $first: "$sectionId" },
         totalEvidence: { $sum: "$totalEvidence" },
         totalCorrect: { $sum: "$totalCorrect" },
@@ -159,6 +171,10 @@ export const buildSchoolSkillAggregateView = async (
     { $sort: { supportStudents: -1, totalEvidence: -1 } },
     { $limit: query.limit },
   ]);
+
+  const taxonomy = await buildSkillTaxonomyProjection(
+    rows.map((row: any) => String(row._id?.skillId || "")).filter(Boolean),
+  );
 
   return {
     status: "ok" as const,
@@ -184,8 +200,11 @@ export const buildSchoolSkillAggregateView = async (
         pathId: String(row._id?.pathId || ""),
         subjectId: String(row._id?.subjectId || ""),
         skillId: String(row._id?.skillId || ""),
-        skill: String(row.skill || "مهارة"),
-        sectionId: String(row.sectionId || ""),
+        skill: String(taxonomy.get(String(row._id?.skillId || ""))?.skill || row.skill || "مهارة"),
+        level: taxonomy.get(String(row._id?.skillId || ""))?.level || (row.level === "sub" ? "sub" : "main"),
+        parentSkillId: String(taxonomy.get(String(row._id?.skillId || ""))?.parentSkillId || row.parentSkillId || ""),
+        parentSkill: String(taxonomy.get(String(row._id?.skillId || ""))?.parentSkill || row.parentSkill || ""),
+        sectionId: String(taxonomy.get(String(row._id?.skillId || ""))?.sectionId || row.sectionId || ""),
         mastery: evidenceCount > 0 ? Math.round((correctCount / evidenceCount) * 100) : 0,
         recentMastery: Math.round(Number(row.averageRecentMastery || 0)),
         confidence: Math.round(Number(row.averageConfidence || 0)),
