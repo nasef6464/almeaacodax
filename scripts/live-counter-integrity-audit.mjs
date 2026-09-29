@@ -102,15 +102,28 @@ async function apiJson(page, pathname) {
 function taxonomyCounts(payload) {
   const sections = Array.isArray(payload?.sections) ? payload.sections : [];
   const skills = Array.isArray(payload?.skills) ? payload.skills : [];
-  const sumSubSkills = (subjectId) =>
-    skills
-      .filter((skill) => !subjectId || String(skill.subjectId || "") === subjectId)
-      .reduce((sum, skill) => sum + (Array.isArray(skill.subSkills) ? skill.subSkills.length : 0), 0);
+
+  const countSubSkillsForSections = (targetSections) =>
+    targetSections.reduce((total, section) => {
+      const sectionId = String(section?.id || section?._id || "");
+      const parentSkill = skills.find((skill) => {
+        const skillId = String(skill?.id || skill?._id || "");
+        return String(skill?.sectionId || "") === sectionId || skillId === sectionId;
+      });
+
+      if (parentSkill && Array.isArray(parentSkill.subSkills) && parentSkill.subSkills.length > 0) {
+        return total + parentSkill.subSkills.length;
+      }
+
+      return total + skills.filter((skill) => String(skill?.sectionId || "") === sectionId).length;
+    }, 0);
+
+  const quantSections = sections.filter((section) => String(section.subjectId || "") === QUANT_SUBJECT_ID);
   return {
-    global: { main: sections.length, sub: sumSubSkills("") },
+    global: { main: sections.length, sub: countSubSkillsForSections(sections) },
     quant: {
-      main: sections.filter((section) => String(section.subjectId || "") === QUANT_SUBJECT_ID).length,
-      sub: sumSubSkills(QUANT_SUBJECT_ID),
+      main: quantSections.length,
+      sub: countSubSkillsForSections(quantSections),
     },
   };
 }
