@@ -243,34 +243,6 @@ export const createQuizzesApi = (request: ApiRequest) => ({
       "skillProgress",
     ),
 
-  getScopedSkillProgress: (params: { userId: string; pathId?: string; subjectId?: string }) =>
-    request<{
-      userId: string;
-      skillProgress: Array<{
-        userId: string;
-        skillId: string;
-        skill: string;
-        level?: "main" | "sub";
-        parentSkillId?: string;
-        parentSkill?: string;
-        pathId?: string;
-        subjectId?: string;
-        sectionId?: string;
-        mastery: number;
-        status: string;
-        attempts: number;
-        evidenceCount?: number;
-        recent?: {
-          mastery: number;
-          evidenceCount: number;
-          sampleSize: number;
-          trend: "improving" | "stable" | "declining";
-        };
-        lastAttemptAt?: string;
-        unresolvedTaxonomy?: boolean;
-      }>;
-    }>(withQuery("/quizzes/skill-progress/scoped", params)),
-
   getQuestionAttempts: async (pagination: PaginationOptions = {}) =>
     extractList(await request<unknown>(withQuery("/quizzes/question-attempts", { limit: 100, ...pagination })), "questionAttempts"),
 
