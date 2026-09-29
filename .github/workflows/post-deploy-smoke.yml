@@ -79,7 +79,6 @@ jobs:
         env:
           UI_AUDIT_BASE_URL: https://almeaacodax.vercel.app
           UI_AUDIT_API_BASE_URL: https://almeaacodax.vercel.app/api
-          COUNTER_AUDIT_RUN_ID: counter-integrity-${{ github.run_id }}
         run: npm run smoke:counter-integrity-live
 
       - name: Upload counter integrity evidence
@@ -87,7 +86,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: counter-integrity-${{ github.sha }}
-          path: audit-artifacts/counter-integrity/counter-integrity-${{ github.run_id }}/
+          path: audit-artifacts/counter-integrity/
           if-no-files-found: error
           retention-days: 14
 
