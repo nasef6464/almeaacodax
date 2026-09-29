@@ -6,6 +6,7 @@ export type QuestionBankCoverage = {
   mainSkillCount: number;
   subSkillCount: number;
   pendingCount: number;
+  draftCount: number;
   approvedCount: number;
   skillQuestionCounts: Record<string, number>;
   sectionQuestionCounts: Record<string, number>;
@@ -16,6 +17,7 @@ const emptyCoverage: QuestionBankCoverage = {
   mainSkillCount: 0,
   subSkillCount: 0,
   pendingCount: 0,
+  draftCount: 0,
   approvedCount: 0,
   skillQuestionCounts: {},
   sectionQuestionCounts: {},
@@ -49,6 +51,9 @@ export async function getQuestionBankCoverage(filter: Record<string, unknown>): 
               skillIdArrays: { $push: "$skillIds" },
               pendingCount: {
                 $sum: { $cond: [{ $eq: ["$approvalStatus", "pending_review"] }, 1, 0] },
+              },
+              draftCount: {
+                $sum: { $cond: [{ $eq: ["$approvalStatus", "draft"] }, 1, 0] },
               },
               approvedCount: {
                 $sum: { $cond: [{ $eq: ["$approvalStatus", "approved"] }, 1, 0] },
@@ -94,6 +99,7 @@ export async function getQuestionBankCoverage(filter: Record<string, unknown>): 
                 },
               },
               pendingCount: 1,
+              draftCount: 1,
               approvedCount: 1,
             },
           },
@@ -129,6 +135,7 @@ export async function getQuestionBankCoverage(filter: Record<string, unknown>): 
     mainSkillCount: Number(summary.mainSkillCount || 0),
     subSkillCount: nestedSubSkillCount,
     pendingCount: Number(summary.pendingCount || 0),
+    draftCount: Number(summary.draftCount || 0),
     approvedCount: Number(summary.approvedCount || 0),
     skillQuestionCounts,
     sectionQuestionCounts: toCountMap(result?.sectionCounts),
