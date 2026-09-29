@@ -199,8 +199,18 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
     setIsEditing(true);
   };
 
-  const mergeTopicSkillIds = (existing: string[] | undefined, topic: Partial<Topic>) =>
-    topic.skillId ? Array.from(new Set([...(existing || []), topic.skillId])) : (existing || []);
+  const mergeTopicSkillIds = (
+    existing: string[] | undefined,
+    topic: Partial<Topic>,
+    previousTopicSkillId?: string | null,
+  ) => {
+    const withoutPrevious = (existing || []).filter(
+      (skillId) => !previousTopicSkillId || skillId !== previousTopicSkillId,
+    );
+    return topic.skillId
+      ? Array.from(new Set([...withoutPrevious, topic.skillId]))
+      : withoutPrevious;
+  };
 
   const buildFoundationPlacements = (quiz: Quiz, topic: Partial<Topic>) => {
     if (!topic.id || !topic.parentId) return quiz.learningPlacements || [];
@@ -224,21 +234,21 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
     ];
   };
 
-  const syncAttachedContentToTopicSkill = (topic: Topic) => {
+  const syncAttachedContentToTopicSkill = (topic: Topic, previousTopicSkillId?: string | null) => {
     const attachedLessons = lessons.filter((lesson) => topic.lessonIds?.includes(lesson.id));
     const attachedQuizzes = quizzes.filter((quiz) => topic.quizIds?.includes(quiz.id));
     const attachedLibraryItems = libraryItems.filter((item) => topic.libraryItemIds?.includes(item.id));
 
     attachedLessons.forEach((lesson) => {
       updateLesson(lesson.id, {
-        skillIds: mergeTopicSkillIds(lesson.skillIds, topic),
+        skillIds: mergeTopicSkillIds(lesson.skillIds, topic, previousTopicSkillId),
         sectionId: lesson.sectionId || topic.sectionId,
       });
     });
 
     attachedQuizzes.forEach((quiz) => {
       updateQuiz(quiz.id, {
-        skillIds: mergeTopicSkillIds(quiz.skillIds, topic),
+        skillIds: mergeTopicSkillIds(quiz.skillIds, topic, previousTopicSkillId),
         sectionId: quiz.sectionId || topic.sectionId,
         learningPlacements: buildFoundationPlacements(quiz, topic),
       });
@@ -246,7 +256,7 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
 
     attachedLibraryItems.forEach((item) => {
       updateLibraryItem(item.id, {
-        skillIds: mergeTopicSkillIds(item.skillIds, topic),
+        skillIds: mergeTopicSkillIds(item.skillIds, topic, previousTopicSkillId),
         sectionId: item.sectionId || topic.sectionId,
       });
     });
@@ -296,6 +306,7 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
     }
 
     if (editingTopic.id) {
+      const previousTopic = subjectTopics.find((topic) => topic.id === editingTopic.id);
       const updateData = {
         ...editingTopic,
         pathId: selectedSubSkill?.pathId || editingTopic.pathId || subject?.pathId,
@@ -307,7 +318,7 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
         updateData.parentId = null;
       }
       updateTopic(editingTopic.id, updateData);
-      syncAttachedContentToTopicSkill(updateData as Topic);
+      syncAttachedContentToTopicSkill(updateData as Topic, previousTopic?.skillId);
     } else {
       const newTopic: Topic = {
         ...(editingTopic as Topic),
@@ -352,7 +363,7 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
           pathId: lesson.pathId || topic.pathId || currentSubject?.pathId,
           subjectId: lesson.subjectId || topic.subjectId,
           sectionId: lesson.sectionId || topic.sectionId,
-          skillIds: mergeTopicSkillIds(lesson.skillIds, topic),
+          skillIds: mergeTopicSkillIds(lesson.skillIds, topic, previousTopicSkillId),
           ...(topic.showOnPlatform !== false ? {
           showOnPlatform: true,
           approvalStatus: 'approved',
@@ -371,7 +382,7 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
           pathId: quiz.pathId || topic.pathId || currentSubject?.pathId || '',
           subjectId: quiz.subjectId || topic.subjectId,
           sectionId: quiz.sectionId || topic.sectionId,
-          skillIds: mergeTopicSkillIds(quiz.skillIds, topic),
+          skillIds: mergeTopicSkillIds(quiz.skillIds, topic, previousTopicSkillId),
           learningPlacements: buildFoundationPlacements(quiz, topic),
           ...(topic.showOnPlatform !== false ? {
           showOnPlatform: true,
@@ -451,7 +462,7 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
         pathId: lesson.pathId || topic.pathId || currentSubject?.pathId,
         subjectId: lesson.subjectId || topic.subjectId || subjectId,
         sectionId: lesson.sectionId || topic.sectionId,
-        skillIds: mergeTopicSkillIds(lesson.skillIds, topic),
+        skillIds: mergeTopicSkillIds(lesson.skillIds, topic, previousTopicSkillId),
         showOnPlatform: true,
         approvalStatus: 'approved',
         approvedAt: lesson.approvedAt || Date.now(),
@@ -464,7 +475,7 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
         pathId: quiz.pathId || topic.pathId || currentSubject?.pathId || '',
         subjectId: quiz.subjectId || topic.subjectId || subjectId,
         sectionId: quiz.sectionId || topic.sectionId,
-        skillIds: mergeTopicSkillIds(quiz.skillIds, topic),
+        skillIds: mergeTopicSkillIds(quiz.skillIds, topic, previousTopicSkillId),
         learningPlacements: buildFoundationPlacements(quiz, topic),
         showOnPlatform: true,
         isPublished: true,
@@ -482,7 +493,7 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
         pathId: item.pathId || topic.pathId || currentSubject?.pathId,
         subjectId: item.subjectId || topic.subjectId || subjectId,
         sectionId: item.sectionId || topic.sectionId,
-        skillIds: mergeTopicSkillIds(item.skillIds, topic),
+        skillIds: mergeTopicSkillIds(item.skillIds, topic, previousTopicSkillId),
         showOnPlatform: true,
         approvalStatus: 'approved',
         approvedAt: item.approvedAt || Date.now(),
