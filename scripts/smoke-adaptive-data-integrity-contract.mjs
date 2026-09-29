@@ -11,6 +11,9 @@ const questionSchemas = read('server/src/modules/quizzes/http/questionQuerySchem
 const questionAttemptDocument = read('server/src/modules/quizzes/application/questionAttemptDocument.ts');
 const topicModel = read('server/src/models/Topic.ts');
 const contentSchemas = read('server/src/modules/content/http/learningContentSchemas.ts');
+const contentRoutes = read('server/src/modules/content/http/contentLearningRoutes.ts');
+const foundationSubtopicSkillLink = read('server/src/modules/content/application/foundationSubtopicSkillLink.ts');
+const foundationManager = read('dashboards/admin/FoundationManager.tsx');
 const store = read('store/useStore.ts');
 const audit = read('server/src/scripts/auditFoundationSkillMapping.ts');
 const env = read('server/src/config/env.ts');
@@ -60,6 +63,44 @@ check('foundation topic persistence supports explicit skill mapping without repl
   assert.ok(topicModel.includes('{ pathId: 1, subjectId: 1, skillId: 1 }, { sparse: true }'));
   assert.ok(contentSchemas.includes('skillId: z.string().min(1).nullable().optional()'));
   assert.ok(store.includes("skillId: topic?.skillId ? String(topic.skillId) : undefined"));
+});
+
+check('foundation subtopics require one valid subskill and cannot cross main-skill boundaries', () => {
+  for (const fragment of [
+    'Foundation subtopic must be linked to one subskill',
+    '"subSkills.id": skillId',
+    'Selected subskill belongs to a different main Foundation topic',
+    'Subskill is already linked to Foundation topic:',
+    'parentTopicSkillId !== parentSkillId',
+  ]) {
+    assert.ok(foundationSubtopicSkillLink.includes(fragment), `subtopic skill lock lost ${fragment}`);
+  }
+
+  assert.ok(contentRoutes.includes('validateFoundationSubtopicSkillLink(payload)'));
+  assert.ok(contentRoutes.includes('validateFoundationSubtopicSkillLink(mergedTopic, existing._id)'));
+  assert.ok(contentRoutes.includes('normalizedPayload = { ...payload, ...validation.normalized }'));
+});
+
+check('foundation admin requires subskill selection and supports many resources per subtopic', () => {
+  for (const fragment of [
+    'المهارة الفرعية المرتبطة <span className="text-red-600">— مطلوب</span>',
+    'يجب ربط كل موضوع تأسيسي فرعي بمهارة فرعية قبل الحفظ.',
+    'selectedSubSkill.parentSkillId !== parentTopic.skillId',
+    'editingSubSkillOptions.map',
+    'اختر المهارة الفرعية — لا يمكن الحفظ بدونها',
+    'disabled={Boolean(editingTopic.parentId && !editingTopic.skillId)}',
+    'يمكنك داخل الموضوع الواحد ربط أكثر من فيديو/درس وأكثر من تدريب وملف دعم',
+    'Keep the attachment picker open',
+  ]) {
+    assert.ok(foundationManager.includes(fragment), `FoundationManager lost ${fragment}`);
+  }
+
+  assert.ok(foundationManager.includes('lessonIds: []'));
+  assert.ok(foundationManager.includes('quizIds: []'));
+  assert.ok(foundationManager.includes('libraryItemIds: []'));
+  assert.ok(foundationManager.includes('skillIds: mergeTopicSkillIds(lesson.skillIds, topic)'));
+  assert.ok(foundationManager.includes('skillIds: mergeTopicSkillIds(quiz.skillIds, topic)'));
+  assert.ok(foundationManager.includes('skillIds: mergeTopicSkillIds(libraryItem.skillIds, topic)'));
 });
 
 check('foundation mapping audit is dry-run by default and refuses unsafe writes', () => {
