@@ -81,7 +81,9 @@ export const buildSkillRecommendation = (
             .sort((a, b) => b.score - a.score)
         : [];
 
-    const recommendedTopic = directMappedTopic || scoredFoundationTopics[0]?.topic;
+    // Subskills may route only through the canonical Topic.skillId mapping.
+    // Scored/title/content heuristics remain available only for main-skill compatibility.
+    const recommendedTopic = directMappedTopic || (target.kind === 'sub' ? undefined : scoredFoundationTopics[0]?.topic);
 
     const approvedQuiz = (quiz: Quiz) =>
         quiz.showOnPlatform !== false &&
