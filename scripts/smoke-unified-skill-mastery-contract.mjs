@@ -55,8 +55,8 @@ check('3 historical reconciliation is dry-run by default and never mutates maste
 check('4 student reports use SkillProgress as mastery truth', () => {
   assert.ok(files.reports.includes('api.getSkillProgress(scope)'));
   assert.ok(files.reports.includes('buildStudentSkillsFromProgress(studentSkillProgress'));
-  assert.ok(files.reportProjection.includes('rows.filter'));
-  assert.ok(files.reportProjection.includes('!row.unresolvedTaxonomy'));
+  assert.ok(files.reportProjection.includes('.filter((row) => !row.unresolvedTaxonomy'));
+  assert.ok(files.reportProjection.includes('Boolean(String(row.skillId || \'\').trim())'));
 });
 
 check('5 Smart Learning Path and overview use SkillProgress, not exam result aggregation', () => {
