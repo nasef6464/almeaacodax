@@ -8,7 +8,10 @@ import { asyncHandler } from "../../../utils/asyncHandler.js";
 import { assertManagedContentScope } from "../../../services/managedContentScope.js";
 import { sanitizeLessonResourcePayload } from "../domain/learningResourceUrl.js";
 import { buildDocumentQuery } from "../infrastructure/contentDocumentQuery.js";
-import { validateFoundationSubtopicSkillLink } from "../application/foundationSubtopicSkillLink.js";
+import {
+  syncFoundationTopicResourcesToSkill,
+  validateFoundationSubtopicSkillLink,
+} from "../application/foundationSubtopicSkillLink.js";
 import {
   buildOwnedDocumentQuery,
   getWorkflowDefaults,
@@ -45,6 +48,7 @@ contentLearningRouter.post(
 
     await assertManagedContentScope(req.authUser!, normalizedPayload);
     const created = await TopicModel.create(normalizedPayload);
+    await syncFoundationTopicResourcesToSkill(created.toObject());
     res.status(StatusCodes.CREATED).json(created);
   }),
 );
@@ -86,6 +90,7 @@ contentLearningRouter.patch(
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Topic not found" });
     }
 
+    await syncFoundationTopicResourcesToSkill(updated.toObject(), existing.skillId);
     return res.json(updated);
   }),
 );
