@@ -277,7 +277,18 @@ async function inspectPage(page, role, pageSpec, viewport) {
       { timeout: 15000 },
     ).catch(() => undefined);
     await page.waitForFunction(
-      ({ source, flags }) => !new RegExp(source, flags).test(document.body.innerText || ""),
+      ({ source, flags }) => {
+        const pattern = new RegExp(source, flags);
+        return !Array.from(document.querySelectorAll("body *")).some((el) => {
+          const rect = el.getBoundingClientRect();
+          const style = window.getComputedStyle(el);
+          const visible = rect.width > 0 && rect.height > 0 && style.display !== "none" && style.visibility !== "hidden";
+          if (!visible) return false;
+          const label = (el.textContent || "").trim();
+          const candidate = el.children.length === 0 || el.getAttribute("aria-busy") === "true" || el.getAttribute("role") === "status";
+          return candidate && label.length <= 120 && pattern.test(label);
+        });
+      },
       { source: LOADING_STATE_PATTERN.source, flags: LOADING_STATE_PATTERN.flags },
       { timeout: LOADING_TIMEOUT_MS },
     ).catch(() => undefined);
