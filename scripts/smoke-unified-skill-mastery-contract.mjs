@@ -89,6 +89,28 @@ check('8 unified source preserves existing role-scoped boundaries', () => {
   assert.ok(files.schoolView.includes('resolveScopedStudents'));
 });
 
+check('deterministic A/B mastery proof excludes unrelated or unresolved skill C', () => {
+  const rows = [
+    { skillId: 'A', skill: 'مهارة أ', mastery: 35, evidenceCount: 6, attempts: 6, unresolvedTaxonomy: false },
+    { skillId: 'B', skill: 'مهارة ب', mastery: 90, evidenceCount: 8, attempts: 8, unresolvedTaxonomy: false },
+    { skillId: 'C', skill: 'مهارة غير مرتبطة', mastery: 5, evidenceCount: 9, attempts: 9, unresolvedTaxonomy: true },
+  ];
+  const visible = rows
+    .filter((row) => !row.unresolvedTaxonomy && Boolean(String(row.skillId || '').trim()))
+    .map((row) => ({ skillId: row.skillId, mastery: row.mastery }))
+    .sort((a, b) => a.skillId.localeCompare(b.skillId));
+
+  assert.deepEqual(visible, [
+    { skillId: 'A', mastery: 35 },
+    { skillId: 'B', mastery: 90 },
+  ]);
+  assert.ok(!visible.some((row) => row.skillId === 'C'));
+  assert.ok(files.reportProjection.includes('.filter((row) => !row.unresolvedTaxonomy'));
+  assert.ok(files.dashboard.includes('buildSmartPathSkillsFromProgress'));
+  assert.ok(files.parentRoutes.includes('weakSkillDetails'));
+  assert.ok(files.reports.includes('staffSkillAggregates'));
+});
+
 check('student report skill actions stay inside exact Foundation mapping', () => {
   assert.ok(files.recommendation.includes("buildFoundationActionLink(actionContext, 'lessons')"));
   assert.ok(files.recommendation.includes("buildFoundationActionLink(actionContext, 'quizzes')"));
