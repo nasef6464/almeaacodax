@@ -45,6 +45,21 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
       a.parentSkillName.localeCompare(b.parentSkillName, 'ar') ||
       a.name.localeCompare(b.name, 'ar'),
     );
+  const editingParentTopic = editingTopic?.parentId
+    ? subjectTopics.find((topic) => topic.id === editingTopic.parentId)
+    : undefined;
+  const editingSubSkillOptions = editingTopic?.parentId
+    ? foundationSubSkillOptions.filter((option) => {
+        if (editingParentTopic?.skillId) {
+          return option.parentSkillId === editingParentTopic.skillId;
+        }
+        if (editingParentTopic?.sectionId) {
+          return option.sectionId === editingParentTopic.sectionId;
+        }
+        return true;
+      })
+    : foundationSubSkillOptions;
+
   const availableLessons = lessons
     .filter((lesson) => {
       const matchesSubject = lesson.subjectId === subjectId;
@@ -184,8 +199,18 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
     setIsEditing(true);
   };
 
-  const mergeTopicSkillIds = (existing: string[] | undefined, topic: Partial<Topic>) =>
-    topic.skillId ? Array.from(new Set([...(existing || []), topic.skillId])) : (existing || []);
+  const mergeTopicSkillIds = (
+    existing: string[] | undefined,
+    topic: Partial<Topic>,
+    previousTopicSkillId?: string | null,
+  ) => {
+    const withoutPrevious = (existing || []).filter(
+      (skillId) => !previousTopicSkillId || skillId !== previousTopicSkillId,
+    );
+    return topic.skillId
+      ? Array.from(new Set([...withoutPrevious, topic.skillId]))
+      : withoutPrevious;
+  };
 
   const buildFoundationPlacements = (quiz: Quiz, topic: Partial<Topic>) => {
     if (!topic.id || !topic.parentId) return quiz.learningPlacements || [];
@@ -209,21 +234,21 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
     ];
   };
 
-  const syncAttachedContentToTopicSkill = (topic: Topic) => {
+  const syncAttachedContentToTopicSkill = (topic: Topic, previousTopicSkillId?: string | null) => {
     const attachedLessons = lessons.filter((lesson) => topic.lessonIds?.includes(lesson.id));
     const attachedQuizzes = quizzes.filter((quiz) => topic.quizIds?.includes(quiz.id));
     const attachedLibraryItems = libraryItems.filter((item) => topic.libraryItemIds?.includes(item.id));
 
     attachedLessons.forEach((lesson) => {
       updateLesson(lesson.id, {
-        skillIds: mergeTopicSkillIds(lesson.skillIds, topic),
+        skillIds: mergeTopicSkillIds(lesson.skillIds, topic, previousTopicSkillId),
         sectionId: lesson.sectionId || topic.sectionId,
       });
     });
 
     attachedQuizzes.forEach((quiz) => {
       updateQuiz(quiz.id, {
-        skillIds: mergeTopicSkillIds(quiz.skillIds, topic),
+        skillIds: mergeTopicSkillIds(quiz.skillIds, topic, previousTopicSkillId),
         sectionId: quiz.sectionId || topic.sectionId,
         learningPlacements: buildFoundationPlacements(quiz, topic),
       });
@@ -231,7 +256,7 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
 
     attachedLibraryItems.forEach((item) => {
       updateLibraryItem(item.id, {
-        skillIds: mergeTopicSkillIds(item.skillIds, topic),
+        skillIds: mergeTopicSkillIds(item.skillIds, topic, previousTopicSkillId),
         sectionId: item.sectionId || topic.sectionId,
       });
     });
@@ -243,6 +268,29 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
     const selectedSubSkill = editingTopic.skillId
       ? foundationSubSkillOptions.find((option) => option.id === editingTopic.skillId)
       : undefined;
+
+    if (editingTopic.parentId && !editingTopic.skillId) {
+      window.alert('يجب ربط كل موضوع تأسيسي فرعي بمهارة فرعية قبل الحفظ.');
+      return;
+    }
+
+    if (editingTopic.parentId && !selectedSubSkill) {
+      window.alert('المهارة الفرعية المختارة غير صالحة لهذا المسار أو المادة.');
+      return;
+    }
+
+    const parentTopic = editingTopic.parentId
+      ? subjectTopics.find((topic) => topic.id === editingTopic.parentId)
+      : undefined;
+    if (
+      editingTopic.parentId &&
+      selectedSubSkill &&
+      parentTopic?.skillId &&
+      selectedSubSkill.parentSkillId !== parentTopic.skillId
+    ) {
+      window.alert('المهارة الفرعية المختارة لا تتبع المهارة الرئيسية لهذا الموضوع.');
+      return;
+    }
 
     if (editingTopic.parentId && editingTopic.skillId) {
       const duplicateTopic = subjectTopics.find(
@@ -258,6 +306,7 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
     }
 
     if (editingTopic.id) {
+      const previousTopic = subjectTopics.find((topic) => topic.id === editingTopic.id);
       const updateData = {
         ...editingTopic,
         pathId: selectedSubSkill?.pathId || editingTopic.pathId || subject?.pathId,
@@ -269,7 +318,7 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
         updateData.parentId = null;
       }
       updateTopic(editingTopic.id, updateData);
-      syncAttachedContentToTopicSkill(updateData as Topic);
+      syncAttachedContentToTopicSkill(updateData as Topic, previousTopic?.skillId);
     } else {
       const newTopic: Topic = {
         ...(editingTopic as Topic),
@@ -367,7 +416,8 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
         });
       }
     }
-    setIsAttaching(false);
+    // Keep the attachment picker open so one Foundation subtopic can receive
+    // multiple videos/lessons, drills and support files in one editing session.
   };
 
   const isLessonReadyForLearner = (lesson: Lesson) =>
@@ -726,11 +776,11 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
               </div>
               {editingTopic.parentId ? (
                 <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-1">المهارة الفرعية المرتبطة</label>
+                  <label className="block text-sm font-bold text-gray-700 mb-1">المهارة الفرعية المرتبطة <span className="text-red-600">— مطلوب</span></label>
                   <select
                     value={editingTopic.skillId || ''}
                     onChange={(e) => {
-                      const selected = foundationSubSkillOptions.find((option) => option.id === e.target.value);
+                      const selected = editingSubSkillOptions.find((option) => option.id === e.target.value);
                       setEditingTopic({
                         ...editingTopic,
                         skillId: selected?.id || null,
@@ -741,8 +791,8 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
                     }}
                     className="w-full p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none bg-white"
                   >
-                    <option value="">بدون ربط — يحتاج ضبط قبل الاعتماد</option>
-                    {foundationSubSkillOptions.map((option) => {
+                    <option value="">اختر المهارة الفرعية — لا يمكن الحفظ بدونها</option>
+                    {editingSubSkillOptions.map((option) => {
                       const usedBy = subjectTopics.find(
                         (topic) =>
                           topic.id !== editingTopic.id &&
@@ -757,7 +807,7 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
                     })}
                   </select>
                   <p className="mt-1.5 text-xs leading-5 text-gray-500">
-                    هذا هو الربط القانوني الذي تستخدمه التقارير والتعلم الذكي لفتح نفس موضوع التأسيس ونفس تدريبات المهارة.
+                    هذا هو الربط القانوني الذي تستخدمه التقارير والتعلم الذكي لفتح نفس موضوع التأسيس. يمكنك داخل الموضوع الواحد ربط أكثر من فيديو/درس وأكثر من تدريب وملف دعم، وكلها ترث نفس المهارة الفرعية.
                   </p>
                 </div>
               ) : null}
@@ -790,11 +840,12 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
               </label>
             </div>
             <div className="flex gap-3 mt-6">
-              <button 
+              <button
                 onClick={handleSaveTopic}
-                className="flex-1 bg-indigo-600 text-white py-3 rounded-xl font-bold hover:bg-indigo-700 transition-colors"
+                disabled={Boolean(editingTopic.parentId && !editingTopic.skillId)}
+                className="flex-1 bg-indigo-600 disabled:bg-slate-300 disabled:cursor-not-allowed text-white py-3 rounded-xl font-bold hover:bg-indigo-700 disabled:hover:bg-slate-300 transition-colors"
               >
-                حفظ
+                {editingTopic.parentId && !editingTopic.skillId ? 'اختر المهارة الفرعية أولًا' : 'حفظ'}
               </button>
               <button 
                 onClick={() => setIsEditing(false)}
@@ -811,7 +862,10 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
       {isAttaching && attachingToTopicId && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl p-6 w-full max-w-2xl max-h-[80vh] flex flex-col">
-            <h3 className="text-xl font-bold mb-4">ربط محتوى بالموضوع</h3>
+            <h3 className="text-xl font-bold mb-2">ربط محتوى بالموضوع</h3>
+            <p className="mb-4 text-xs font-bold leading-5 text-gray-500">
+              يمكنك ربط أكثر من فيديو/درس وأكثر من تدريب وملف دعم بالموضوع الفرعي نفسه؛ كل محتوى مضاف يرث المهارة الفرعية المرتبطة بالموضوع.
+            </p>
             
             <div className="flex gap-2 mb-4">
               <button 
