@@ -83,6 +83,10 @@ if (new Set(items.map(x => x.questionCode)).size !== 326 || new Set(items.map(x 
   throw new Error('Manifest identity uniqueness gate failed.');
 }
 
+const stableQuestionCode = (item) => `TAH-MATH-YLM26-P${String(Number(item.printedPageNumber)).padStart(3, '0')}-Q${String(Number(item.printedQuestionNumber)).padStart(2, '0')}`;
+const stableCodes = items.map(stableQuestionCode);
+if (new Set(stableCodes).size !== 326) throw new Error('Stable questionCode uniqueness gate failed.');
+
 const prepared = [];
 for (const item of items) {
   const filePath = path.join(imageDir, item.imageFileName);
@@ -90,7 +94,7 @@ for (const item of items) {
   const actual = sha256(bytes);
   if (actual !== item.imageHash) throw new Error(`Local image hash mismatch ${item.questionCode}`);
   if (!/\.webp$/i.test(item.imageFileName)) throw new Error(`Not WebP ${item.questionCode}`);
-  prepared.push({ item, bytes, actual });
+  prepared.push({ item, bytes, actual, stableCode: stableQuestionCode(item) });
 }
 
 const result = new Array(prepared.length);
@@ -99,15 +103,15 @@ async function worker() {
   while (true) {
     const idx = cursor++;
     if (idx >= prepared.length) return;
-    const { item, bytes, actual } = prepared[idx];
-    const intent = await withRetry(`presign ${item.questionCode}`, () => apiPost('/media/question-import-images/presign', {
-      questionCode: item.questionCode,
+    const { item, bytes, actual, stableCode } = prepared[idx];
+    const intent = await withRetry(`presign ${stableCode}`, () => apiPost('/media/question-import-images/presign', {
+      questionCode: stableCode,
       imageHash: actual,
       sizeBytes: bytes.length,
     }));
-    if (!intent?.uploadUrl || !intent?.publicUrl || !intent?.key) throw new Error(`Incomplete presign intent ${item.questionCode}`);
+    if (!intent?.uploadUrl || !intent?.publicUrl || !intent?.key) throw new Error(`Incomplete presign intent ${stableCode}`);
 
-    await withRetry(`PUT ${item.questionCode}`, async () => {
+    await withRetry(`PUT ${stableCode}`, async () => {
       const put = await fetch(intent.uploadUrl, {
         method: 'PUT',
         headers: { ...(intent.headers || {}), 'Content-Type': 'image/webp' },
@@ -117,7 +121,7 @@ async function worker() {
       if (!put.ok) throw new Error(`HTTP ${put.status}`);
     });
 
-    await withRetry(`GET/hash ${item.questionCode}`, async (attempt) => {
+    await withRetry(`GET/hash ${stableCode}`, async (attempt) => {
       const get = await fetch(`${intent.publicUrl}?ylm26v2=${Date.now()}-${attempt}`, {
         headers: { 'cache-control': 'no-cache' },
         signal: AbortSignal.timeout(30_000),
@@ -129,7 +133,8 @@ async function worker() {
     }, 5);
 
     result[idx] = {
-      questionCode: item.questionCode,
+      questionCode: stableCode,
+      cropQuestionCode: item.questionCode,
       sourceItemId: item.sourceItemId,
       pdfPageIndex: item.pdfPageIndex,
       printedPageNumber: item.printedPageNumber,
@@ -158,4 +163,5 @@ const out = {
   items: result,
 };
 await writeFile(outputPath, `${JSON.stringify(out, null, 2)}\n`, 'utf8');
-console.log(JSON.stringify({ status: 'PASS', uploaded: 326, publicHashVerified: 326, outputPath }, null, 2));
+const remappedCodes = result.filter(x => x.questionCode !== x.cropQuestionCode).length;
+console.log(JSON.stringify({ status: 'PASS', uploaded: 326, publicHashVerified: 326, stableCodes: 326, remappedCodes, outputPath }, null, 2));
