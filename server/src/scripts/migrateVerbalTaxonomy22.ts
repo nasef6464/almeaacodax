@@ -11,6 +11,7 @@ import {
 } from "./deployVerbalTaxonomy22.js";
 
 const idOf = (value: unknown) => String(value ?? "").trim();
+
 const subskillFromQuestion = (question: any) => {
   const canonical = idOf(question?.subSkillId);
   if (canonical && VERBAL_SUBSKILL_TO_MAIN[canonical]) return canonical;
@@ -18,6 +19,17 @@ const subskillFromQuestion = (question: any) => {
     .map(idOf)
     .find((id: string) => Boolean(VERBAL_SUBSKILL_TO_MAIN[id])) || "";
 };
+
+const settings = (timeLimit: number, maxAttempts: number, passingScore: number) => ({
+  showExplanations: true,
+  showAnswers: true,
+  showResultsReport: true,
+  timeLimit,
+  maxAttempts,
+  passingScore,
+  randomizeQuestions: true,
+  showProgressBar: true,
+});
 
 export async function migrateVerbalTaxonomy22() {
   validateVerbalTaxonomyV2();
@@ -27,27 +39,24 @@ export async function migrateVerbalTaxonomy22() {
 
   const questions = db.collection("questions");
   const quizzes = db.collection("quizzes");
-  const skills = db.collection("skills");
-  const topics = db.collection("topics");
 
-  const beforeQuestions = await questions.countDocuments({
+  const verbalFilter = {
     $or: [{ subject: VERBAL_SUBJECT_ID }, { subjectId: VERBAL_SUBJECT_ID }],
-  });
-  const beforeFoundation = await quizzes.countDocuments({
-    subjectId: VERBAL_SUBJECT_ID,
-    "learningPlacements.slot": "foundation",
-  });
+  };
+
+  const beforeQuestions = await questions.countDocuments(verbalFilter);
   const beforeMocks = await quizzes.countDocuments({
     subjectId: VERBAL_SUBJECT_ID,
-    "learningPlacements.slot": "tests",
+    id: { $regex: /^exam_verbal_mock_/ },
   });
 
-  if (beforeQuestions === 0) throw new Error("Refusing migration: no verbal questions found");
-  if (beforeFoundation !== 76) {
-    throw new Error(`Refusing migration: expected 76 foundation drills, found ${beforeFoundation}`);
+  if (beforeQuestions === 0) {
+    throw new Error(
+      "Refusing migration: no verbal questions found. Restore the canonical verbal bank before taxonomy migration.",
+    );
   }
 
-  // Taxonomy deployment reconnects internally; disconnect this preflight connection first.
+  // Taxonomy deployment changes taxonomy/topics only. Student result/mastery collections are never rewritten.
   await mongoose.disconnect();
   await deployTaxonomy();
   await mongoose.connect(env.MONGODB_URI || "mongodb://localhost:27017/almeaa");
@@ -59,13 +68,15 @@ export async function migrateVerbalTaxonomy22() {
   const skillCol = db.collection("skills");
   const topicCol = db.collection("topics");
 
-  const verbalQuestions = await qCol.find({
-    $or: [{ subject: VERBAL_SUBJECT_ID }, { subjectId: VERBAL_SUBJECT_ID }],
-  }).toArray();
-
+  const verbalQuestions = await qCol.find(verbalFilter).toArray();
   const unmapped: string[] = [];
+
   const mainQuestionIds = new Map<string, string[]>();
-  for (const main of VERBAL_TAXONOMY) mainQuestionIds.set(main.id, []);
+  const subQuestionIds = new Map<string, string[]>();
+  for (const main of VERBAL_TAXONOMY) {
+    mainQuestionIds.set(main.id, []);
+    for (const sub of main.subSkills) subQuestionIds.set(sub.id, []);
+  }
 
   const questionOps: any[] = [];
   for (const question of verbalQuestions) {
@@ -74,10 +85,18 @@ export async function migrateVerbalTaxonomy22() {
       unmapped.push(idOf(question.id || question._id));
       continue;
     }
+
     const mainSkillId = VERBAL_SUBSKILL_TO_MAIN[subSkillId];
     const sectionId = VERBAL_SUBSKILL_TO_SECTION[subSkillId];
     const questionId = idOf(question.id || question._id);
+    if (!questionId) {
+      unmapped.push("(missing-id)");
+      continue;
+    }
+
     mainQuestionIds.get(mainSkillId)?.push(questionId);
+    subQuestionIds.get(subSkillId)?.push(questionId);
+
     questionOps.push({
       updateOne: {
         filter: { _id: question._id },
@@ -89,7 +108,7 @@ export async function migrateVerbalTaxonomy22() {
             sectionId,
             skillId: mainSkillId,
             subSkillId,
-            skillIds: [subSkillId, mainSkillId],
+            skillIds: [mainSkillId, subSkillId],
             updatedAt: new Date(),
           },
         },
@@ -98,7 +117,9 @@ export async function migrateVerbalTaxonomy22() {
   }
 
   if (unmapped.length > 0) {
-    throw new Error(`Refusing migration: ${unmapped.length} verbal questions have no recognized subskill. First IDs: ${unmapped.slice(0, 10).join(", ")}`);
+    throw new Error(
+      `Refusing migration: ${unmapped.length} verbal questions have no recognized subskill. First IDs: ${unmapped.slice(0, 10).join(", ")}`,
+    );
   }
   if (questionOps.length !== beforeQuestions) {
     throw new Error(`Refusing migration: question mapping count changed (${questionOps.length}/${beforeQuestions})`);
@@ -106,46 +127,74 @@ export async function migrateVerbalTaxonomy22() {
 
   if (questionOps.length) await qCol.bulkWrite(questionOps, { ordered: true });
 
-  // Update parent skill questionIds from the actual canonical question evidence.
   for (const main of VERBAL_TAXONOMY) {
     await skillCol.updateOne(
-      { _id: main.id as any },
+      { id: main.id, subjectId: VERBAL_SUBJECT_ID },
       { $set: { questionIds: mainQuestionIds.get(main.id) || [], updatedAt: new Date() } },
     );
   }
 
-  // Preserve all 76 existing foundation drill IDs/questionIds; only realign their section and canonical skill.
+  // The production DB may have lost generated verbal quizzes. Rebuild/upsert all 76 foundation drills
+  // from canonical question/subskill evidence while preserving stable quiz IDs.
   for (const main of VERBAL_TAXONOMY) {
     const sectionId = `sec_${VERBAL_SUBJECT_ID}_${Number(main.num)}`;
     for (const sub of main.subSkills) {
       const drillId = `drill_verbal_sub_${sub.id.replace("sub_verbal_", "")}`;
       const childTopicId = `top_verbal_sub_${sub.id.replace("sub_verbal_", "")}`;
+      const questionIds = (subQuestionIds.get(sub.id) || []).slice(0, 10);
+      const now = new Date();
+
       await quizCol.updateOne(
-        { _id: drillId as any, subjectId: VERBAL_SUBJECT_ID },
-        { $set: {
-          sectionId,
-          skillIds: [sub.id],
-          learningPlacements: [{
+        { id: drillId },
+        {
+          $set: {
+            id: drillId,
+            title: `تدريب: ${sub.name}`,
+            description: `تدريب تأسيسي قصير على مهارة ${sub.name}.`,
             pathId: VERBAL_PATH_ID,
             subjectId: VERBAL_SUBJECT_ID,
-            slot: "foundation",
-            accessType: "inherit",
-            topicId: childTopicId,
-            isVisible: true,
-            order: sub.order,
-            updatedAt: Date.now(),
-          }],
-          updatedAt: new Date(),
-        } },
+            sectionId,
+            type: "quiz",
+            quizKind: "drill",
+            questionIds,
+            skillIds: [sub.id],
+            learningPlacements: [{
+              pathId: VERBAL_PATH_ID,
+              subjectId: VERBAL_SUBJECT_ID,
+              slot: "foundation",
+              accessType: "inherit",
+              topicId: childTopicId,
+              isVisible: true,
+              order: sub.order,
+              createdAt: Date.now(),
+              updatedAt: Date.now(),
+            }],
+            settings: settings(15, 5, 60),
+            access: { type: "free", price: 0, allowedGroupIds: [] },
+            approvalStatus: "approved",
+            isPublished: true,
+            updatedAt: now,
+          },
+          $setOnInsert: { createdAt: now },
+        },
+        { upsert: true },
       );
+
       await topicCol.updateOne(
-        { _id: childTopicId as any },
-        { $addToSet: { quizIds: drillId }, $set: { skillId: sub.id, updatedAt: new Date() } },
+        { id: childTopicId, subjectId: VERBAL_SUBJECT_ID },
+        {
+          $set: {
+            skillId: sub.id,
+            sectionId,
+            quizIds: [drillId],
+            updatedAt: now,
+          },
+        },
       );
     }
   }
 
-  // Replace only the generated main-skill training banks. User-created quizzes and all mock exams are untouched.
+  // Rebuild generated main-skill banks only; no user-created quiz is deleted.
   await quizCol.deleteMany({
     subjectId: VERBAL_SUBJECT_ID,
     id: { $regex: /^bank_verbal_skill_/ },
@@ -156,7 +205,6 @@ export async function migrateVerbalTaxonomy22() {
     const questionIds = (mainQuestionIds.get(main.id) || []).slice(0, 40);
     const bankId = `bank_verbal_skill_${main.num.padStart(2, "0")}`;
     await quizCol.insertOne({
-      _id: bankId as any,
       id: bankId,
       title: `تدريب: ${main.name}`,
       description: `تدريب شامل على ${main.name} من أسئلة المهارات الفرعية التابعة لها فقط.`,
@@ -177,16 +225,7 @@ export async function migrateVerbalTaxonomy22() {
         createdAt: Date.now(),
         updatedAt: Date.now(),
       }],
-      settings: {
-        showExplanations: true,
-        showAnswers: true,
-        showResultsReport: true,
-        timeLimit: 45,
-        maxAttempts: 5,
-        passingScore: 60,
-        randomizeQuestions: true,
-        showProgressBar: true,
-      },
+      settings: settings(45, 5, 60),
       access: { type: "free", price: 0, allowedGroupIds: [] },
       approvalStatus: "approved",
       isPublished: true,
@@ -195,19 +234,87 @@ export async function migrateVerbalTaxonomy22() {
     });
   }
 
-  const afterQuestions = await qCol.countDocuments({
-    $or: [{ subject: VERBAL_SUBJECT_ID }, { subjectId: VERBAL_SUBJECT_ID }],
-  });
+  // Keep stable mock IDs. If the collection was lost, recreate five balanced mocks.
+  for (let examNo = 1; examNo <= 5; examNo++) {
+    const examId = `exam_verbal_mock_${String(examNo).padStart(2, "0")}`;
+    const selected: string[] = [];
+
+    for (const main of VERBAL_TAXONOMY) {
+      const pool = mainQuestionIds.get(main.id) || [];
+      if (!pool.length) continue;
+      const offset = ((examNo - 1) * 3) % pool.length;
+      for (let j = 0; j < Math.min(3, pool.length); j++) {
+        const id = pool[(offset + j) % pool.length];
+        if (id && !selected.includes(id)) selected.push(id);
+      }
+    }
+    for (const question of verbalQuestions) {
+      const id = idOf(question.id || question._id);
+      if (id && !selected.includes(id)) selected.push(id);
+      if (selected.length >= 60) break;
+    }
+
+    await quizCol.updateOne(
+      { id: examId },
+      {
+        $set: {
+          id: examId,
+          title: `اختبار تجريبي — القسم اللفظي (${examNo})`,
+          description: "اختبار محاكاة معياري متوازن للقسم اللفظي.",
+          pathId: VERBAL_PATH_ID,
+          subjectId: VERBAL_SUBJECT_ID,
+          sectionId: `sec_${VERBAL_SUBJECT_ID}_1`,
+          type: "quiz",
+          quizKind: "mock",
+          questionIds: selected.slice(0, 60),
+          skillIds: [],
+          learningPlacements: [{
+            pathId: VERBAL_PATH_ID,
+            subjectId: VERBAL_SUBJECT_ID,
+            slot: "tests",
+            accessType: "free",
+            isVisible: true,
+            order: examNo,
+            createdAt: Date.now(),
+            updatedAt: Date.now(),
+          }],
+          settings: settings(60, 3, 65),
+          access: { type: "free", price: 0, allowedGroupIds: [] },
+          approvalStatus: "approved",
+          isPublished: true,
+          updatedAt: new Date(),
+        },
+        $setOnInsert: { createdAt: new Date() },
+      },
+      { upsert: true },
+    );
+  }
+
+  const afterQuestions = await qCol.countDocuments(verbalFilter);
   const mainSkills = await skillCol.countDocuments({ subjectId: VERBAL_SUBJECT_ID });
   const parentTopics = await topicCol.countDocuments({ subjectId: VERBAL_SUBJECT_ID, parentId: null });
   const childTopics = await topicCol.countDocuments({ subjectId: VERBAL_SUBJECT_ID, parentId: { $ne: null } });
-  const foundationDrills = await quizCol.countDocuments({ subjectId: VERBAL_SUBJECT_ID, "learningPlacements.slot": "foundation" });
-  const trainingDrills = await quizCol.countDocuments({ subjectId: VERBAL_SUBJECT_ID, "learningPlacements.slot": "training" });
-  const mockExams = await quizCol.countDocuments({ subjectId: VERBAL_SUBJECT_ID, "learningPlacements.slot": "tests" });
+  const foundationDrills = await quizCol.countDocuments({
+    subjectId: VERBAL_SUBJECT_ID,
+    id: { $regex: /^drill_verbal_sub_/ },
+  });
+  const trainingDrills = await quizCol.countDocuments({
+    subjectId: VERBAL_SUBJECT_ID,
+    id: { $regex: /^bank_verbal_skill_/ },
+  });
+  const mockExams = await quizCol.countDocuments({
+    subjectId: VERBAL_SUBJECT_ID,
+    id: { $regex: /^exam_verbal_mock_/ },
+  });
   const canonicalQuestions = await qCol.countDocuments({
-    $or: [{ subject: VERBAL_SUBJECT_ID }, { subjectId: VERBAL_SUBJECT_ID }],
+    ...verbalFilter,
     skillId: { $in: VERBAL_TAXONOMY.map((main) => main.id) },
     subSkillId: { $in: Object.keys(VERBAL_SUBSKILL_TO_MAIN) },
+  });
+  const emptyFoundation = await quizCol.countDocuments({
+    subjectId: VERBAL_SUBJECT_ID,
+    id: { $regex: /^drill_verbal_sub_/ },
+    questionIds: { $size: 0 },
   });
 
   const failures = [
@@ -218,7 +325,8 @@ export async function migrateVerbalTaxonomy22() {
     childTopics !== 76 && `child topics = ${childTopics}`,
     foundationDrills !== 76 && `foundation drills = ${foundationDrills}`,
     trainingDrills !== 22 && `training drills = ${trainingDrills}`,
-    mockExams !== beforeMocks && `mock exams changed ${beforeMocks} -> ${mockExams}`,
+    mockExams !== 5 && `mock exams = ${mockExams}`,
+    emptyFoundation > 0 && `foundation drills without questions = ${emptyFoundation}`,
   ].filter(Boolean);
 
   if (failures.length) throw new Error(`V2 verification failed: ${failures.join("; ")}`);
@@ -234,6 +342,7 @@ export async function migrateVerbalTaxonomy22() {
     foundationDrills,
     trainingDrills,
     mockExams,
+    previousMockCount: beforeMocks,
     note: "QuizResult and SkillProgress collections were intentionally not rewritten.",
   }, null, 2));
 
