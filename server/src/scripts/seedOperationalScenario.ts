@@ -19,6 +19,8 @@ import { ActivityModel } from "../models/Activity.js";
 import { B2BPackageModel } from "../models/B2BPackage.js";
 import { AccessCodeModel } from "../models/AccessCode.js";
 import { SchoolContractModel } from "../models/SchoolContract.js";
+import { SchoolMembershipModel } from "../models/SchoolMembership.js";
+import { TeachingAssignmentModel } from "../models/TeachingAssignment.js";
 
 const NOW = Date.now();
 const SAMPLE_VIDEO_URL = "https://www.w3schools.com/html/mov_bbb.mp4";
@@ -395,6 +397,47 @@ async function seedUsersAndGroups() {
     managedPathIds: ["p_qudrat"],
     managedSubjectIds: ["sub_quant"],
   });
+
+  const schoolId = String(school._id || school.id);
+  const teacherQuantId = String(createdUsers.get("teacherQuant")._id || createdUsers.get("teacherQuant").id);
+  const teacherMathId = String(createdUsers.get("teacherMath")._id || createdUsers.get("teacherMath").id);
+  const quantClassId = String(quantClass._id || quantClass.id);
+  const tahsiliClassId = String(tahsiliClass._id || tahsiliClass.id);
+
+  await Promise.all([
+    UserModel.findByIdAndUpdate(teacherQuantId, {
+      schoolId,
+      groupIds: [quantClassId],
+      managedPathIds: ["p_qudrat"],
+      managedSubjectIds: ["sub_quant"],
+    }),
+    UserModel.findByIdAndUpdate(teacherMathId, {
+      schoolId,
+      groupIds: [tahsiliClassId],
+      managedPathIds: ["p_tahsili"],
+      managedSubjectIds: ["sub_math"],
+    }),
+    SchoolMembershipModel.findOneAndUpdate(
+      { userId: teacherQuantId, schoolId, role: "teacher" },
+      { $set: { status: "active" } },
+      { upsert: true, new: true, setDefaultsOnInsert: true },
+    ),
+    SchoolMembershipModel.findOneAndUpdate(
+      { userId: teacherMathId, schoolId, role: "teacher" },
+      { $set: { status: "active" } },
+      { upsert: true, new: true, setDefaultsOnInsert: true },
+    ),
+    TeachingAssignmentModel.findOneAndUpdate(
+      { schoolId, teacherId: teacherQuantId, classId: quantClassId, subjectId: "sub_quant" },
+      { $set: { status: "active" } },
+      { upsert: true, new: true, setDefaultsOnInsert: true },
+    ),
+    TeachingAssignmentModel.findOneAndUpdate(
+      { schoolId, teacherId: teacherMathId, classId: tahsiliClassId, subjectId: "sub_math" },
+      { $set: { status: "active" } },
+      { upsert: true, new: true, setDefaultsOnInsert: true },
+    ),
+  ]);
 
   await UserModel.findByIdAndUpdate(createdUsers.get("parentA").id, {
     linkedStudentIds: [String(createdUsers.get("studentA").id), String(createdUsers.get("studentD").id)],
