@@ -245,11 +245,19 @@ export const AdminDashboard: React.FC = () => {
         setActiveTab(normalizedTabId);
 
         const url = new URL(window.location.href);
-        const currentTab = url.searchParams.get('tab');
-        if (currentTab !== normalizedTabId) {
-            url.searchParams.set('tab', normalizedTabId);
-            window.history.pushState(null, '', `${url.pathname}${url.search}${url.hash}`);
-        }
+        const hashPath = (url.hash.split('?')[0] || '#/admin-dashboard').trim() || '#/admin-dashboard';
+        const canonicalHashPath = hashPath.includes('/admin-dashboard') ? hashPath : '#/admin-dashboard';
+        const hashQuery = new URLSearchParams();
+        hashQuery.set('tab', normalizedTabId);
+
+        // Keep a single canonical source of truth for admin tabs.
+        // The dashboard reader gives hash query params priority, so leaving a stale
+        // `#/admin-dashboard?tab=...` while changing only the outer search param
+        // makes the old tab win. Remove the outer tab and update the hash atomically.
+        url.searchParams.delete('tab');
+        url.hash = `${canonicalHashPath}?${hashQuery.toString()}`;
+
+        window.history.pushState(null, '', `${url.pathname}${url.search}${url.hash}`);
     }, []);
 
     const librarySubjectOptions = useMemo(
