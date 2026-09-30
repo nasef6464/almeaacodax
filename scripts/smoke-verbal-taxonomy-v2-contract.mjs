@@ -23,10 +23,10 @@ for (const id of ["sub_verbal_01_1", "sub_verbal_08_7", "sub_verbal_13_7"]) {
 
 assert.ok(migration.includes("beforeQuestions"));
 assert.ok(migration.includes("afterQuestions !== beforeQuestions"));
-assert.ok(migration.includes("foundationDrills !== 76"));
+assert.ok(migration.includes("foundationDrills !== 76"));\nassert.ok(migration.includes("foundation drills without questions"));\nassert.ok(migration.includes("{ upsert: true }"), "migration must recover missing generated quizzes");
 assert.ok(migration.includes("trainingDrills !== 22"));
-assert.ok(migration.includes("mockExams !== beforeMocks"));
-assert.ok(migration.includes("skillIds: [subSkillId, mainSkillId]"));
+assert.ok(migration.includes("mockExams !== 5"));
+assert.ok(migration.includes("skillIds: [mainSkillId, subSkillId]"));
 assert.ok(!migration.includes('db.collection("skillprogresses")'), "migration must not rewrite SkillProgress");
 assert.ok(!migration.includes('db.collection("quizresults")'), "migration must not rewrite historical QuizResult");
 assert.ok(legacy.includes("./deployVerbalTaxonomy22.js"), "legacy entrypoint must route to V2");
