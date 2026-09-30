@@ -1,6 +1,6 @@
 # ALM-FND-SKILL-LOCK-001 — Foundation SubTopic ↔ SubSkill Canonical Control
 
-آخر تحديث: 2026-09-29
+آخر تحديث: 2026-09-30
 
 ## القانون الثابت
 
@@ -47,6 +47,7 @@
 الملفات الرئيسية:
 - `utils/foundationSkillTarget.ts`
 - `pages/Reports/recommendationViewModel.ts`
+- `pages/Results.tsx` — يستخدم نفس Recommendation ViewModel ولا يملك Router موازيًا.
 - `utils/skillActionLinks.ts`
 
 ## Regression Guards
@@ -61,6 +62,7 @@
 - `scripts/smoke-adaptive-phase3-result-actions-contract.mjs`
   - توجيه SubSkill يعتمد على explicit `Topic.skillId` فقط.
   - منع legacy/title/scored fallback للـSubSkill.
+  - يمنع `Results.tsx` من إعادة إنشاء `topic_sub_<skillId>` أو Router heuristic مستقل.
 
 ## حدود المهمة
 
@@ -72,5 +74,6 @@
 ## حالة الإغلاق
 
 - PR #314: merged على `main` عند `8fb8ec5b1776fe0ba833942ca527ba1e233bafe0`.
-- Follow-up canonical routing hardening: قيد CI/PR.
-- Production verification: يتم تثبيته هنا بعد نجاح البوابات والنشر.
+- PR #315: merged على `main` عند `9f01b5fb603313247a4e4133e7a72d9b80dcfa4b` — canonical SubSkill routing + منع fallback في Reports.
+- PR #317: يغلق مسار fallback متبقٍ تم اكتشافه في `Results.tsx` ويوحد Results مع نفس `recommendationViewModel`; لا يمس SkillProgress أو حساب النتائج.
+- Production verification النهائي: بعد Green exact-head ودمج #317.
