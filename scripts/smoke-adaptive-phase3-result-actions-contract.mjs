@@ -8,7 +8,10 @@ const foundationTarget=fs.readFileSync('utils/foundationSkillTarget.ts','utf8');
 for (const fragment of ['pathId','subjectId','skillId','encodeURIComponent(context.pathId)','safeInternalReturn']) {
   assert.ok(links.includes(fragment), `missing canonical link contract: ${fragment}`);
 }
-assert.ok(results.includes('buildFoundationActionLink(actionContext'));
+assert.ok(results.includes('buildCanonicalSkillRecommendation'));
+assert.ok(results.includes("skillId: skill.skillId"));
+assert.ok(!results.includes('topic_sub_${resolvedSkillId}'), 'Results must not synthesize Foundation topics for a subskill');
+assert.ok(!results.includes('const directTopic = topics.find'), 'Results must not keep a parallel heuristic Foundation router');
 assert.ok(results.includes('buildSkillReportActionLink({ pathId: weakestSkill?.pathId'));
 assert.ok(foundationTarget.includes("kind: 'sub'"));
 assert.ok(foundationTarget.includes('item.subSkills?.find'));
