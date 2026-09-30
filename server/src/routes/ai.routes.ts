@@ -1124,7 +1124,7 @@ aiRouter.get(
       AiInteractionModel.find().sort({ createdAt: -1 }).limit(limit).lean(),
       AiInteractionModel.countDocuments(),
       AiInteractionModel.countDocuments({ createdAt: { $gte: since } }),
-      AiInteractionModel.countDocuments({ usedFallback: true }),
+      AiInteractionModel.countDocuments({ usedFallback: true, createdAt: { $gte: since } }),
       AiInteractionModel.countDocuments({ status: "error" }),
       AiInteractionModel.aggregate([
         { $group: { _id: "$audience", count: { $sum: 1 } } },
