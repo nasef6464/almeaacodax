@@ -1197,31 +1197,44 @@ aiRouter.post(
       });
     }
 
-    try {
-      const startedAt = Date.now();
-      const text = await callSingleProvider(
-        provider,
-        "اكتب جملة عربية قصيرة تؤكد أن مزود الذكاء الاصطناعي يعمل.",
-        undefined,
-        quotaPoolId ? { quotaPoolId } : {},
-      );
-      return res.json({
-        ok: Boolean(text),
-        provider,
-        quotaPoolId: quotaPoolId || undefined,
-        model: descriptor.model,
-        latencyMs: Date.now() - startedAt,
-        sample: text.slice(0, 240),
-      });
-    } catch (error) {
-      return res.json({
-        ok: false,
-        provider,
-        quotaPoolId: quotaPoolId || undefined,
-        model: descriptor.model,
-        message: error instanceof Error ? error.message : "تعذر اختبار المزود.",
-      });
+    const startedAt = Date.now();
+    let lastError: unknown = null;
+    for (let attempt = 1; attempt <= 3; attempt += 1) {
+      try {
+        const text = await callSingleProvider(
+          provider,
+          "اكتب جملة عربية قصيرة تؤكد أن مزود الذكاء الاصطناعي يعمل.",
+          undefined,
+          quotaPoolId ? { quotaPoolId } : {},
+        );
+        return res.json({
+          ok: Boolean(text),
+          provider,
+          quotaPoolId: quotaPoolId || undefined,
+          model: descriptor.model,
+          latencyMs: Date.now() - startedAt,
+          attempts: attempt,
+          sample: text.slice(0, 240),
+        });
+      } catch (error) {
+        lastError = error;
+        const message = error instanceof Error ? error.message : "تعذر اختبار المزود.";
+        const transientProviderBusy =
+          message.includes("status 503") ||
+          message.toLowerCase().includes("high demand") ||
+          message.toLowerCase().includes("temporarily unavailable");
+        if (!transientProviderBusy || attempt === 3) break;
+        await new Promise((resolve) => setTimeout(resolve, 750 * attempt));
+      }
     }
+    return res.json({
+      ok: false,
+      provider,
+      quotaPoolId: quotaPoolId || undefined,
+      model: descriptor.model,
+      latencyMs: Date.now() - startedAt,
+      message: lastError instanceof Error ? lastError.message : "تعذر اختبار المزود.",
+    });
   }),
 );
 
