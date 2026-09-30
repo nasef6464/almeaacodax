@@ -14,6 +14,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ylm26-r2-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   upload-r2-only:
     runs-on: ubuntu-latest
@@ -27,7 +31,7 @@ jobs:
       YLM26_MANIFEST: /tmp/ylm26/YLM26_CROP_MANIFEST_V2.json
       YLM26_IMAGE_DIR: /tmp/ylm26/crops_v2
       YLM26_R2_MAP: /tmp/ylm26-r2-map.json
-      YLM26_UPLOAD_CONCURRENCY: '4'
+      YLM26_UPLOAD_CONCURRENCY: '2'
       YLM26_RECONCILE_PLAN: /tmp/ylm26-reconcile-plan.json
 
     steps:
