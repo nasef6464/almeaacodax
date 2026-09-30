@@ -21,6 +21,7 @@ assert(routes.includes("dailySpendCapUsd") && routes.includes("paidAllowed"), "A
 assert(routes.includes("incrementAiUsageDaily"), "usage ledger write path missing");
 assert(routes.includes("AiInteractionModel.create"), "interaction ledger missing");
 assert(adapters.includes("response.status === 429") && adapters.includes("if (poolRateLimited) break"), "429 pool failover handling missing");
+assert(adapters.includes('response.status === 404') && adapters.includes('"gemini-3.8-flash"'), "Gemini retired-model fallback missing");
 assert(adapters.includes("allowPaid || pool.plan !== \"paid\""), "paid pool kill switch missing");
 assert(usage.includes("estimatedCostMicrosUsd") && usage.includes("cachedTokens"), "token/cost daily accounting missing");
 assert(interactions.includes("totalTokens") && interactions.includes("estimatedCostMicrosUsd"), "interaction token/cost schema missing");

@@ -90,7 +90,7 @@ check("ai provider outbound URLs reject unsafe destinations in the provider adap
 });
 
 check("live AI audit records real-provider success separately from fallback", () => {
-  assertIncludes(liveAuditSource, "configured provider live test succeeds");
+  assertIncludes(liveAuditSource, "every configured free/trial quota pool live test succeeds");
   assertIncludes(liveAuditSource, "student chat used a real provider");
   assertIncludes(liveAuditSource, "readinessAfter");
   assertIncludes(liveAuditSource, "fallbackStudentChats24h");

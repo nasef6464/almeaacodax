@@ -98,19 +98,44 @@ const interactionsBefore = adminLogin?.ok
 
 const providersToTest = [...new Set([activeProvider, ...configuredProviders.filter((provider) => provider.source === "admin").map((provider) => provider.id)])]
   .filter((provider) => provider && provider !== "none")
-  .slice(0, 2);
+  .slice(0, 3);
+const freePools = Object.entries(status.body?.quotaPools || {})
+  .flatMap(([provider, pools]) =>
+    Array.isArray(pools)
+      ? pools
+          .filter((pool) => pool && pool.id && pool.keyCount > 0 && (pool.plan === "free" || pool.plan === "trial"))
+          .map((pool) => ({ provider, quotaPoolId: pool.id, label: pool.label, projectLabel: pool.projectLabel, plan: pool.plan }))
+      : [],
+  );
 const providerTests = [];
 if (adminLogin?.ok) {
-  for (const provider of providersToTest) {
+  for (const pool of freePools) {
     providerTests.push({
-      provider,
+      provider: pool.provider,
+      quotaPoolId: pool.quotaPoolId,
+      label: pool.label,
+      projectLabel: pool.projectLabel,
+      plan: pool.plan,
       result: await request("/ai/providers/test", {
         method: "POST",
         cookie: adminLogin.cookie,
         csrf: adminLogin.csrfToken,
-        body: JSON.stringify({ provider }),
+        body: JSON.stringify({ provider: pool.provider, quotaPoolId: pool.quotaPoolId }),
       }),
     });
+  }
+  if (!providerTests.length) {
+    for (const provider of providersToTest) {
+      providerTests.push({
+        provider,
+        result: await request("/ai/providers/test", {
+          method: "POST",
+          cookie: adminLogin.cookie,
+          csrf: adminLogin.csrfToken,
+          body: JSON.stringify({ provider }),
+        }),
+      });
+    }
   }
 }
 
@@ -123,8 +148,18 @@ const studentChat = await request("/ai/chat", {
   }),
 });
 
+const guestCsrf = await request("/auth/csrf-token", { headers: { "cache-control": "no-store" } });
+const guestFallback = await request("/ai/chat", {
+  method: "POST",
+  csrf: guestCsrf.body?.csrfToken || "",
+  cookie: guestCsrf.cookie,
+  body: JSON.stringify({
+    message: "اختبار fallback آمن بدون تسجيل دخول. أجب بجملة قصيرة.",
+  }),
+});
+
 const interactionsAfter = adminLogin?.ok
-  ? await request("/ai/interactions?limit=8", { cookie: adminLogin.cookie })
+  ? await request("/ai/interactions?limit=12", { cookie: adminLogin.cookie })
   : { ok: false, status: 0, body: { skipped: "missing-admin-login" } };
 
 const readinessAfter = adminLogin?.ok
@@ -161,6 +196,10 @@ const report = {
   },
   providerTests: providerTests.map((item) => ({
     provider: item.provider,
+    quotaPoolId: item.quotaPoolId,
+    label: item.label,
+    projectLabel: item.projectLabel,
+    plan: item.plan,
     ok: item.result.ok,
     status: item.result.status,
     providerOk: item.result.body?.ok,
@@ -169,6 +208,14 @@ const report = {
     message: redact(item.result.body?.message),
     samplePreview: redact(item.result.body?.sample),
   })),
+  guestFallback: {
+    ok: guestFallback.ok,
+    status: guestFallback.status,
+    provider: guestFallback.body?.provider,
+    model: guestFallback.body?.model,
+    usedFallback: guestFallback.body?.usedFallback,
+    fallbackReason: redact(guestFallback.body?.fallbackReason),
+  },
   studentChat: {
     ok: studentChat.ok,
     status: studentChat.status,
@@ -196,6 +243,10 @@ const report = {
           model: item.model,
           status: item.status,
           usedFallback: item.usedFallback,
+          inputTokens: Number(item.inputTokens || 0),
+          outputTokens: Number(item.outputTokens || 0),
+          totalTokens: Number(item.totalTokens || 0),
+          estimatedCostMicrosUsd: Number(item.estimatedCostMicrosUsd || 0),
           error: redact(item.error),
           fallbackReason: redact(item.metadata?.fallbackReason),
           hasImage: item.metadata?.hasImage,
@@ -220,11 +271,29 @@ const checks = [
   { name: "provider order comes from admin integrations", pass: report.status.providerOrderSource === "admin" },
   { name: "at least one real provider is configured", pass: report.status.configuredProviders.length > 0 },
   {
-    name: "configured provider live test succeeds",
-    pass: providerTests.length === 0 || providerTests.some((item) => item.result.body?.ok === true),
+    name: "every configured free/trial quota pool live test succeeds",
+    pass: freePools.length > 0 && providerTests.length >= freePools.length && providerTests.every((item) => item.result.body?.ok === true),
+  },
+  {
+    name: "at least two independent free/trial quota pools are available for failover",
+    pass: freePools.length >= 2,
   },
   { name: "student chat endpoint responded", pass: studentChat.ok },
+  {
+    name: "live safe no-AI fallback works for guest traffic",
+    pass: guestFallback.ok && guestFallback.body?.provider === "none" && guestFallback.body?.usedFallback === true,
+  },
   { name: "student chat used a real provider", pass: studentChat.body?.provider && studentChat.body.provider !== "none" && studentChat.body?.usedFallback !== true },
+  {
+    name: "real provider usage records token accounting",
+    pass:
+      Number(interactionsAfter.body?.summary?.totalTokensToday || 0) > Number(interactionsBefore.body?.summary?.totalTokensToday || 0) ||
+      (Array.isArray(interactionsAfter.body?.items) && interactionsAfter.body.items.some((item) => item.provider && item.provider !== "none" && Number(item.totalTokens || 0) > 0)),
+  },
+  {
+    name: "free-provider cost remains zero or non-positive",
+    pass: Number(interactionsAfter.body?.summary?.estimatedCostMicrosUsdToday || 0) <= 0,
+  },
   {
     name: "post-chat readiness reflects fallback pressure",
     pass:
@@ -261,4 +330,26 @@ fs.writeFileSync(
   ].join("\n"),
 );
 
-console.log(JSON.stringify({ outDir: OUT_DIR, ...report.summary, provider: report.status.provider, studentChat: report.studentChat }, null, 2));
+console.log(JSON.stringify({
+  outDir: OUT_DIR,
+  ...report.summary,
+  provider: report.status.provider,
+  studentChat: report.studentChat,
+  checks: report.checks,
+  providerTests: report.providerTests.map((item) => ({
+    provider: item.provider,
+    quotaPoolId: item.quotaPoolId,
+    projectLabel: item.projectLabel,
+    plan: item.plan,
+    providerOk: item.providerOk,
+    latencyMs: item.latencyMs,
+    message: item.message,
+  })),
+  tokenSummaryBefore: report.interactionsBefore.summary,
+  tokenSummaryAfter: report.interactionsAfter.summary,
+  guestFallback: report.guestFallback,
+}, null, 2));
+
+if (report.summary.review > 0) {
+  throw new Error(`PLAN 7 live certification has ${report.summary.review} REVIEW check(s): ${report.checks.filter((check) => check.status !== "PASS").map((check) => check.name).join(" | ")}`);
+}
