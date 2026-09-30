@@ -1254,7 +1254,6 @@ export const PlatformIntegrationsManager: React.FC = () => {
       <div className="flex flex-wrap items-center gap-2 rounded-2xl border border-gray-100 bg-white p-2 shadow-sm">
         {[
           { id: "providers", label: "مزودو الخدمات والتواصل", icon: "🔌" },
-          { id: "ai-platforms", label: "الذكاء الاصطناعي والتكاملات", icon: "🤖" },
           { id: "auth-registration", label: "التسجيل والحقول", icon: "🔐" },
           { id: "seo-branding", label: "محركات البحث SEO", icon: "🌐" },
           { id: "audit-tests", label: "فحص التشغيل والاختبار", icon: "🧪" },
@@ -1273,6 +1272,18 @@ export const PlatformIntegrationsManager: React.FC = () => {
             <span>{tab.label}</span>
           </button>
         ))}
+        <button
+          type="button"
+          onClick={() => { window.location.hash = '#/admin-dashboard?tab=ai-assistant'; }}
+          className="flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-black bg-indigo-50 text-indigo-700 border border-indigo-200 hover:bg-indigo-100"
+        >
+          <span>🤖</span>
+          <span>إدارة الذكاء الاصطناعي</span>
+        </button>
+      </div>
+
+      <div className="rounded-2xl border border-indigo-100 bg-indigo-50/60 p-4 text-xs text-indigo-900">
+        <span className="font-black">ملاحظة:</span> مفاتيح ومزودات الذكاء الاصطناعي تُدار من صفحة «إدارة الذكاء الاصطناعي» فقط لتجنب التكرار والالتباس.
       </div>
 
       {readiness ? (
