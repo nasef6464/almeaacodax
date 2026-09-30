@@ -110,6 +110,8 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
       const explicitQuizIds = new Set(activeTopic.quizIds || []);
       const activeTopicCleanTitle = (activeTopic.title || '').trim();
       const activeTopicId = String(activeTopic.id || (activeTopic as any)._id || '').trim();
+      const activeTopicSkillId = String(activeTopic.skillId || '').trim();
+      const isSubTopic = Boolean(activeTopic.parentId);
       const conventionalDrillId = activeTopicId ? `drill_${activeTopicId.replace(/^top_/, '')}` : '';
 
       return quizzes
@@ -129,6 +131,24 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
           ) {
             return true;
           }
+
+          // A subtopic may also surface a training quiz through the canonical inherited
+          // subskill when legacy content has not yet been attached to topic.quizIds.
+          // Keep this exact-skill + training-slot scoped; never fall back by title/id.
+          if (
+            isSubTopic &&
+            activeTopicSkillId &&
+            quiz.skillIds?.includes(activeTopicSkillId) &&
+            quiz.learningPlacements?.some((placement) =>
+              (placement.slot === 'training' || placement.slot === 'foundation') &&
+              (!placement.pathId || placement.pathId === selectedTopic.pathId) &&
+              (!placement.subjectId || placement.subjectId === selectedTopic.subjectId)
+            )
+          ) {
+            return true;
+          }
+
+          if (isSubTopic) return false;
 
           if (conventionalDrillId && matchesEntityId(quiz, conventionalDrillId)) {
             return true;
