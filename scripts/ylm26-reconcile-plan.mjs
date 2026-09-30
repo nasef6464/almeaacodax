@@ -42,8 +42,21 @@ if (r2?.uploaded !== 326 || r2?.publicHashVerified !== 326 || !Array.isArray(r2?
   throw new Error('R2 map gate failed before reconciliation planning.');
 }
 
-const stableCode = (item) => `TAH-MATH-YLM26-P${String(Number(item.printedPageNumber)).padStart(3, '0')}-Q${String(Number(item.printedQuestionNumber)).padStart(2, '0')}`;
-const manifestBySource = new Map(items.map(item => [String(item.sourceItemId), { ...item, stableQuestionCode: stableCode(item) }]));
+const canonicalIdentity = (item) => {
+  const page = Number(item.printedPageNumber);
+  let questionNumber = Number(item.printedQuestionNumber);
+  if (page === 88 && questionNumber === 2) questionNumber = 12;
+  if (page === 91 && questionNumber === 3) questionNumber = 13;
+  const pdfPageIndex = Number(item.pdfPageIndex);
+  return {
+    printedPageNumber: page,
+    printedQuestionNumber: questionNumber,
+    stableQuestionCode: `TAH-MATH-YLM26-P${String(page).padStart(3, '0')}-Q${String(questionNumber).padStart(2, '0')}`,
+    sourceItemId: `YLM26-PDF${String(pdfPageIndex).padStart(3, '0')}-P${String(page).padStart(3, '0')}-N${String(questionNumber).padStart(2, '0')}`,
+  };
+};
+const canonicalItems = items.map(item => ({ ...item, ...canonicalIdentity(item), cropSourceItemId: item.sourceItemId }));
+const manifestBySource = new Map(canonicalItems.map(item => [String(item.sourceItemId), item]));
 const r2BySource = new Map(r2.items.map(item => [String(item.sourceItemId), item]));
 if (manifestBySource.size !== 326 || r2BySource.size !== 326) throw new Error('Source identity uniqueness gate failed.');
 
@@ -140,7 +153,7 @@ const report = {
 };
 await writeFile(outputPath, `${JSON.stringify(report, null, 2)}\n`, 'utf8');
 console.log(JSON.stringify({
-  status: missing.length === 34 && matched.length === 292 && orphans.length === 0 && duplicateSourceItemIds.length === 0 ? 'PASS_EXPECTED_BASELINE' : 'REVIEW',
+  status: missing.length === 37 && matched.length === 289 && orphans.length === 3 && duplicateSourceItemIds.length === 0 ? 'PASS_EXPECTED_BASELINE' : 'REVIEW',
   currentYlmCount: ylm.length,
   matchedCount: matched.length,
   missingCount: missing.length,
