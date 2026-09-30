@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { AlertTriangle, CheckCircle2, KeyRound, Loader2, Plus, RefreshCw, Save, ShieldCheck, Trash2, Wallet } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, ChevronDown, ChevronUp, KeyRound, Loader2, Plus, RefreshCw, Save, ShieldCheck, Trash2, Wallet } from 'lucide-react';
 import { api } from '../../../services/api';
 import {
   AI_CAPABILITY_IDS,
@@ -113,6 +113,7 @@ export const AiControlCenterSettings: React.FC<{ onSaved?: () => Promise<void> |
   const [routeProfiles, setRouteProfiles] = useState<Record<AiCapabilityId, AiCapabilityProfile>>(createDefaultAiCapabilityProfiles);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [showAdvanced, setShowAdvanced] = useState(false);
   const [testingPool, setTestingPool] = useState<string | null>(null);
   const [poolTestResult, setPoolTestResult] = useState<Record<string, string>>({});
   const [message, setMessage] = useState<{ kind: 'success' | 'error'; text: string } | null>(null);
@@ -279,6 +280,19 @@ export const AiControlCenterSettings: React.FC<{ onSaved?: () => Promise<void> |
           {message.text}
         </div>
       )}
+      <div className="rounded-2xl border border-indigo-200 bg-indigo-50/60 p-5">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h3 className="font-black text-sm text-indigo-950">إضافة مفتاح AI في 3 خطوات</h3>
+            <p className="text-xs font-bold text-indigo-800/80 mt-1">1) اختر المزود واكتب اسم الـProject والمفتاح. 2) اضغط «إضافة المفتاح». 3) اضغط «حفظ وتشفير» ثم «اختبر».</p>
+          </div>
+          <button type="button" onClick={() => setShowAdvanced((value) => !value)} className="inline-flex items-center gap-2 rounded-xl border border-indigo-200 bg-white px-3 py-2 text-xs font-black text-indigo-700">
+            {showAdvanced ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+            {showAdvanced ? 'إخفاء الخيارات المتقدمة' : 'إعدادات متقدمة'}
+          </button>
+        </div>
+      </div>
+      {showAdvanced && (
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
         <div className="xl:col-span-2 rounded-2xl border border-gray-200 bg-white p-5 shadow-xs space-y-4">
           <div className="flex items-center justify-between gap-3">
@@ -317,6 +331,7 @@ export const AiControlCenterSettings: React.FC<{ onSaved?: () => Promise<void> |
         </div>
       </div>
       <AiCapabilityRoutingEditor profiles={routeProfiles} onChange={setRouteProfiles} />
+      )}
       <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-xs space-y-4">
         <div>
           <h3 className="font-black text-sm text-gray-900 flex items-center gap-2"><KeyRound size={17} className="text-violet-600" />الحسابات والمشاريع والمفاتيح</h3>
@@ -351,39 +366,44 @@ export const AiControlCenterSettings: React.FC<{ onSaved?: () => Promise<void> |
           ))}
         </div>
         <div className="border-t border-gray-100 pt-4 space-y-3">
-          <h4 className="text-xs font-black text-gray-800 flex items-center gap-2"><Plus size={15} />إضافة Account / Project / Quota Pool</h4>
-          <div className="grid md:grid-cols-3 gap-3">
+          <h4 className="text-sm font-black text-gray-900 flex items-center gap-2"><Plus size={15} />إضافة مفتاح جديد</h4>
+          <p className="text-xs font-bold text-gray-500">لـGemini: اكتب اسم الـProject ثم الصق API Key. باقي الحقول التقنية مضبوطة تلقائيًا.</p>
+          <div className="grid md:grid-cols-2 gap-3">
             <select value={draft.provider} onChange={(e) => {
               const provider = e.target.value as AiCloudProvider;
               setDraft((v) => ({ ...v, provider, model: defaultModel[provider], poolLabel: providerLabel[provider] }));
             }} className="rounded-xl border border-gray-200 px-3 py-2 text-xs font-bold">
               {Object.entries(providerLabel).map(([id, label]) => <option key={id} value={id}>{label}</option>)}
             </select>
-            <input value={draft.accountLabel} onChange={(e) => setDraft((v) => ({ ...v, accountLabel: e.target.value }))} placeholder="اسم الحساب - مثال Google A" className="rounded-xl border border-gray-200 px-3 py-2 text-xs" />
-            <input value={draft.projectLabel} onChange={(e) => setDraft((v) => ({ ...v, projectLabel: e.target.value }))} placeholder="Project / Workspace ID أو اسم" className="rounded-xl border border-gray-200 px-3 py-2 text-xs" />
-            <input value={draft.poolLabel} onChange={(e) => setDraft((v) => ({ ...v, poolLabel: e.target.value }))} placeholder="اسم الحصة داخل المنصة" className="rounded-xl border border-gray-200 px-3 py-2 text-xs" />
-            <input value={draft.model} onChange={(e) => setDraft((v) => ({ ...v, model: e.target.value }))} placeholder="Model" className="rounded-xl border border-gray-200 px-3 py-2 text-xs font-mono" />
-            <input type="number" min={1} value={draft.priority} onChange={(e) => setDraft((v) => ({ ...v, priority: Number(e.target.value || 1) }))} placeholder="Priority" className="rounded-xl border border-gray-200 px-3 py-2 text-xs" />
-            <select value={draft.plan} onChange={(e) => setDraft((v) => ({ ...v, plan: e.target.value as AiPlan }))} className="rounded-xl border border-gray-200 px-3 py-2 text-xs">
-              <option value="free">Free</option><option value="trial">Trial</option><option value="paid">Paid</option><option value="unknown">Unknown</option>
-            </select>
-            <select value={draft.quotaScope} onChange={(e) => setDraft((v) => ({ ...v, quotaScope: e.target.value as QuotaScope }))} className="rounded-xl border border-gray-200 px-3 py-2 text-xs">
-              <option value="project">Project</option><option value="account">Account</option><option value="organization">Organization</option><option value="workspace">Workspace</option><option value="model">Model</option><option value="unknown">Unknown</option>
-            </select>
-            <label className="rounded-xl border border-gray-200 px-3 py-2 text-xs font-bold flex items-center gap-2">
-              <input type="checkbox" checked={draft.freeOnly} onChange={(e) => setDraft((v) => ({ ...v, freeOnly: e.target.checked }))} />
-              Free-only
-            </label>
-            <input value={draft.baseUrl} onChange={(e) => setDraft((v) => ({ ...v, baseUrl: e.target.value }))} placeholder="Base URL اختياري" className="md:col-span-3 rounded-xl border border-gray-200 px-3 py-2 text-xs font-mono" />
-            <textarea value={draft.keysText} onChange={(e) => setDraft((v) => ({ ...v, keysText: e.target.value }))} rows={3} placeholder="API Keys — مفتاح في كل سطر. لن تُعرض بعد الحفظ." className="md:col-span-3 rounded-xl border border-gray-200 px-3 py-2 text-xs font-mono" />
+            <input value={draft.projectLabel} onChange={(e) => setDraft((v) => ({ ...v, projectLabel: e.target.value }))} placeholder="اسم الـProject — مثال Gemini Project 1" className="rounded-xl border border-gray-200 px-3 py-2 text-xs" />
+            <textarea value={draft.keysText} onChange={(e) => setDraft((v) => ({ ...v, keysText: e.target.value }))} rows={3} placeholder="API Key — الصقه هنا. لن يظهر بعد الحفظ." className="md:col-span-2 rounded-xl border border-gray-200 px-3 py-2 text-xs font-mono" />
+            {showAdvanced && (
+              <>
+                <input value={draft.accountLabel} onChange={(e) => setDraft((v) => ({ ...v, accountLabel: e.target.value }))} placeholder="اسم الحساب" className="rounded-xl border border-gray-200 px-3 py-2 text-xs" />
+                <input value={draft.poolLabel} onChange={(e) => setDraft((v) => ({ ...v, poolLabel: e.target.value }))} placeholder="اسم الحصة داخل المنصة" className="rounded-xl border border-gray-200 px-3 py-2 text-xs" />
+                <input value={draft.model} onChange={(e) => setDraft((v) => ({ ...v, model: e.target.value }))} placeholder="Model" className="rounded-xl border border-gray-200 px-3 py-2 text-xs font-mono" />
+                <input type="number" min={1} value={draft.priority} onChange={(e) => setDraft((v) => ({ ...v, priority: Number(e.target.value || 1) }))} placeholder="Priority" className="rounded-xl border border-gray-200 px-3 py-2 text-xs" />
+                <select value={draft.plan} onChange={(e) => setDraft((v) => ({ ...v, plan: e.target.value as AiPlan }))} className="rounded-xl border border-gray-200 px-3 py-2 text-xs">
+                  <option value="free">Free</option><option value="trial">Trial</option><option value="paid">Paid</option><option value="unknown">Unknown</option>
+                </select>
+                <select value={draft.quotaScope} onChange={(e) => setDraft((v) => ({ ...v, quotaScope: e.target.value as QuotaScope }))} className="rounded-xl border border-gray-200 px-3 py-2 text-xs">
+                  <option value="project">Project</option><option value="account">Account</option><option value="organization">Organization</option><option value="workspace">Workspace</option><option value="model">Model</option><option value="unknown">Unknown</option>
+                </select>
+                <label className="rounded-xl border border-gray-200 px-3 py-2 text-xs font-bold flex items-center gap-2">
+                  <input type="checkbox" checked={draft.freeOnly} onChange={(e) => setDraft((v) => ({ ...v, freeOnly: e.target.checked }))} />
+                  مجاني فقط
+                </label>
+                <input value={draft.baseUrl} onChange={(e) => setDraft((v) => ({ ...v, baseUrl: e.target.value }))} placeholder="Base URL اختياري" className="rounded-xl border border-gray-200 px-3 py-2 text-xs font-mono" />
+              </>
+            )}
           </div>
-          <button type="button" onClick={addPool} disabled={!draft.projectLabel.trim() && !draft.accountLabel.trim()} className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-violet-600 text-white text-xs font-black disabled:opacity-50"><Plus size={15} />إضافة الحصة</button>
+          <button type="button" onClick={addPool} disabled={!draft.projectLabel.trim() && !draft.accountLabel.trim()} className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-violet-600 text-white text-xs font-black disabled:opacity-50"><Plus size={15} />1) إضافة المفتاح</button>
         </div>
       </div>
       <div className="flex justify-end">
         <button type="button" onClick={() => void persist()} disabled={saving || !settings} className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gray-900 text-white text-xs font-black disabled:opacity-50">
           {saving ? <Loader2 size={15} className="animate-spin" /> : <Save size={15} />}
-          حفظ إعدادات الذكاء
+          2) حفظ وتشفير المفاتيح
         </button>
       </div>
     </div>
