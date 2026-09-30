@@ -19,6 +19,7 @@ import { getWorkflowDefaults, sanitizeWorkflowUpdate } from "../application/quiz
 import { getQuestionBankCoverage } from "../application/questionBankCoverage.js";
 import { touchesQuestionVisualIdentity, validateQuestionApprovalIntegrity } from "../application/questionApprovalIntegrity.js";
 import { resolveCanonicalQuestionSkillIds } from "../application/questionSkillTaxonomy.js";
+import { hydrateQuestionPassages } from "../application/questionPassageHydration.js";
 import { buildOwnedDocumentQuery, uniqueStrings } from "../infrastructure/quizDocumentQuery.js";
 import { questionImportRouter } from "./questionImportRoutes.js";
 
@@ -154,7 +155,7 @@ questionBankRouter.get(
       .limit(query.noTotal ? query.limit + 1 : query.limit)
       .lean();
     if (query.summary) {
-      queryBuilder.select("id questionCode text imageUrl imageAlt options optionsEmbeddedInImage correctOptionIndex explanation videoUrl skillIds pathId subject sectionId examType source year difficulty type ownerType ownerId createdBy assignedTeacherId approvalStatus approvedBy approvedAt reviewerNotes revenueSharePercentage createdAt updatedAt");
+      queryBuilder.select("id questionCode text passageId imageUrl imageAlt options optionsEmbeddedInImage correctOptionIndex explanation videoUrl skillIds pathId subject sectionId examType source year difficulty type ownerType ownerId createdBy assignedTeacherId approvalStatus approvedBy approvedAt reviewerNotes revenueSharePercentage createdAt updatedAt");
     }
 
     const shouldIncludeCoverage = Boolean(query.includeCoverage);
@@ -165,8 +166,11 @@ questionBankRouter.get(
     ]);
     const hasMore = query.noTotal && rawItems.length > query.limit;
     const limitedItems = query.noTotal ? rawItems.slice(0, query.limit) : rawItems;
+    const hydratedItems = query.summary
+      ? limitedItems
+      : await hydrateQuestionPassages(limitedItems as Array<Record<string, any>>);
     const items = buildQuestionResponseItems(
-      limitedItems as Array<Record<string, any>>,
+      hydratedItems as Array<Record<string, any>>,
       { summary: query.summary, canSeeAnswers: isStaffRole(req.authUser?.role) },
     );
     if (total !== null) {
