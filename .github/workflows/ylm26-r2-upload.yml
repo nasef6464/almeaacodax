@@ -7,6 +7,7 @@ on:
     paths:
       - '.github/workflows/ylm26-r2-upload.yml'
       - 'scripts/ylm26-upload-r2.mjs'
+      - 'scripts/ylm26-reconcile-plan.mjs'
       - 'tmp/ylm26-transfer/**'
   workflow_dispatch:
 
@@ -27,6 +28,7 @@ jobs:
       YLM26_IMAGE_DIR: /tmp/ylm26/crops_v2
       YLM26_R2_MAP: /tmp/ylm26-r2-map.json
       YLM26_UPLOAD_CONCURRENCY: '4'
+      YLM26_RECONCILE_PLAN: /tmp/ylm26-reconcile-plan.json
 
     steps:
       - uses: actions/checkout@v4
@@ -43,6 +45,18 @@ jobs:
 
       - name: Upload and verify R2 objects only
         run: node scripts/ylm26-upload-r2.mjs
+
+      - name: Build Atlas/API reconciliation plan (read-only)
+        run: node scripts/ylm26-reconcile-plan.mjs
+
+      - name: Upload reconciliation plan
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ylm26-reconcile-plan
+          path: /tmp/ylm26-reconcile-plan.json
+          if-no-files-found: error
+          retention-days: 7
 
       - name: Upload verified R2 map
         if: always()
