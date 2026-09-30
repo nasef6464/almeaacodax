@@ -1,0 +1,37 @@
+name: YLM26 Manifest Extract
+
+on:
+  push:
+    branches:
+      - chatgpt/ylm26-tahsili-content-audit-20260928
+    paths:
+      - '.github/workflows/ylm26-manifest-extract.yml'
+      - 'tmp/ylm26-transfer/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  extract-manifest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Reconstruct audited crop package
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat tmp/ylm26-transfer/chunk_*.txt | base64 --decode > /tmp/ylm26.zip
+          echo 'ed1f2e677f86cbb81769df28fc18386bccfe382e2604e3fbf41ee2a3ed0fffe1  /tmp/ylm26.zip' | sha256sum -c -
+          mkdir -p /tmp/ylm26
+          unzip -q /tmp/ylm26.zip -d /tmp/ylm26
+          test "$(find /tmp/ylm26/crops_v2 -maxdepth 1 -type f -name '*.webp' | wc -l)" -eq 326
+          node -e "const fs=require('fs');const p='/tmp/ylm26/YLM26_CROP_MANIFEST_V2.json';const d=JSON.parse(fs.readFileSync(p,'utf8'));if(d.count!==326||d.items?.length!==326||d.errors!==0)process.exit(1);console.log(JSON.stringify({count:d.count,errors:d.errors,keys:Object.keys(d),sample:d.items.slice(0,3)},null,2));"
+      - name: Upload canonical manifest
+        uses: actions/upload-artifact@v4
+        with:
+          name: ylm26-crop-manifest-v2
+          path: /tmp/ylm26/YLM26_CROP_MANIFEST_V2.json
+          if-no-files-found: error
+          retention-days: 7
