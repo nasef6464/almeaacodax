@@ -17,6 +17,7 @@ const assert = (ok, message) => { if (!ok) throw new Error(message); };
 
 assert(routes.includes('aiRouter.get("/status"') || routes.includes('"/status"'), "AI status endpoint missing");
 assert(routes.includes('"/providers/test"') && routes.includes("quotaPoolId"), "per-pool live provider test missing");
+assert(routes.includes("transientProviderBusy") && routes.includes("status 503") && routes.includes("attempt <= 3"), "per-pool live test must retry transient provider 503/high-demand responses");
 assert(routes.includes("dailySpendCapUsd") && routes.includes("paidAllowed"), "AI spend controls missing");
 assert(routes.includes("incrementAiUsageDaily"), "usage ledger write path missing");
 assert(routes.includes("AiInteractionModel.create"), "interaction ledger missing");
