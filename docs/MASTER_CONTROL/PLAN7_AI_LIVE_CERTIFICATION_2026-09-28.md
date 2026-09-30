@@ -73,3 +73,10 @@ After that action, the existing live audit can certify:
 - Question Tutor / Student Tutor live provider path.
 
 PLAN 7 must remain open/not green until that live evidence exists.
+
+
+## 2026-10-01 re-certification run
+
+Owner action completed: multiple encrypted Gemini free quota pools were added through AI Control Center.
+This cycle re-opens PLAN 7 execution to collect live per-pool, tutor, token/cost, and safe fallback evidence.
+Final status must remain pending until the dedicated live certification workflow passes on the current exact PR head.
