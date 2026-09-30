@@ -616,7 +616,12 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         const progressStats = getTopicProgressStats(parentTopic, subTopics);
 
         setActiveTab('skills');
-        const requestedContentTab = searchParams.get('content') === 'quizzes' ? 'quizzes' : 'lessons';
+        const requestedContent = searchParams.get('content');
+        const requestedContentTab = requestedContent === 'quizzes'
+            ? 'quizzes'
+            : requestedContent === 'support'
+                ? 'support'
+                : 'lessons';
         const requestedLessonId = searchParams.get('lesson');
 
         setSelectedSkill({
