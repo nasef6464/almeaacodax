@@ -48,6 +48,9 @@
 - `utils/foundationSkillTarget.ts`
 - `pages/Reports/recommendationViewModel.ts`
 - `pages/Results.tsx` — يستخدم نفس Recommendation ViewModel ولا يملك Router موازيًا.
+- `components/LearningSection.tsx` — يحترم `content=lessons|quizzes|support` ويُبقي نفس SubTopic.
+- `components/SkillDetailsModal.tsx` — تدريب SubTopic = attachment/placement صريح أو exact `Topic.skillId` مع slot `training|foundation` فقط؛ لا title/id fallback للـSubTopic.
+- `pages/Reports/studentSkillTaxonomy.ts` + `studentAnalyticsViewModel.ts` — يحلان Main/SubSkill من taxonomy الحالية حتى لا تعرض النتائج التاريخية ذات ID صحيح باسم «مهارة غير مسماة».
 - `utils/skillActionLinks.ts`
 
 ## Regression Guards
@@ -63,6 +66,11 @@
   - توجيه SubSkill يعتمد على explicit `Topic.skillId` فقط.
   - منع legacy/title/scored fallback للـSubSkill.
   - يمنع `Results.tsx` من إعادة إنشاء `topic_sub_<skillId>` أو Router heuristic مستقل.
+  - يتحقق من فتح `support` كتَبويب دعم حقيقي.
+  - يتحقق من أن تدريب SubTopic يعتمد exact SubSkill + training/foundation slot، مع منع title/id fallback.
+- `scripts/smoke-reports-student-analytics-boundary-contract.mjs`
+  - يثبت فهرسة Main Skills وSubSkills معًا في read-model التقارير.
+  - يثبت أن اسم SubSkill يُحل من taxonomy الحالية بدل الاعتماد على label تاريخي stale.
 
 ## حدود المهمة
 
@@ -75,5 +83,10 @@
 
 - PR #314: merged على `main` عند `8fb8ec5b1776fe0ba833942ca527ba1e233bafe0`.
 - PR #315: merged على `main` عند `9f01b5fb603313247a4e4133e7a72d9b80dcfa4b` — canonical SubSkill routing + منع fallback في Reports.
-- PR #317: يغلق مسار fallback متبقٍ تم اكتشافه في `Results.tsx` ويوحد Results مع نفس `recommendationViewModel`; لا يمس SkillProgress أو حساب النتائج.
+- PR #317: يغلق بقية فجوات رحلة الطالب: Results canonical routing، Support tab، exact-SubSkill training routing، وقراءة أسماء SubSkills التاريخية من taxonomy الحالية. لا يكتب إلى SkillProgress ولا يعيد احتساب/تعديل QuizResult المخزن.
+- Atlas read-only audit (2026-09-30):
+  - Quant child topics: `95/95` لديها `Topic.skillId`.
+  - Latest live training result for `sub_quant_01_5`: `5/5` question evidence في النتيجة يحمل نفس SubSkill، ومحاولات الأسئلة المقابلة تحمل `sub_quant_01_5` كذلك.
+  - التدريب الحي `تدريب العمليات الحسابية` يحمل `skillIds=[sub_quant_01_5]` وslot=`training` بينما Topic نفسه كان `quizIds=[]`; PR #317 يجعل العرض يربطه بالـSubTopic بالـexact skill بدل heuristics.
+  - يوجد `20` Topic→Lesson links حالية وتفتح عبر `Topic.lessonIds`; tags القديمة داخل `Lesson.skillIds` ما زالت legacy/stale. لم تُعدّل تلقائيًا لأن بعض الدروس مشتركة بين عدة SubTopics؛ حراسة PR #314 تطبق canonical inheritance على عمليات الربط/التعديل الجديدة.
 - Production verification النهائي: بعد Green exact-head ودمج #317.
