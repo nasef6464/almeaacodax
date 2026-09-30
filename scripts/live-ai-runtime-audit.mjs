@@ -327,4 +327,25 @@ fs.writeFileSync(
   ].join("\n"),
 );
 
-console.log(JSON.stringify({ outDir: OUT_DIR, ...report.summary, provider: report.status.provider, studentChat: report.studentChat }, null, 2));
+console.log(JSON.stringify({
+  outDir: OUT_DIR,
+  ...report.summary,
+  provider: report.status.provider,
+  studentChat: report.studentChat,
+  checks: report.checks,
+  providerTests: report.providerTests.map((item) => ({
+    provider: item.provider,
+    quotaPoolId: item.quotaPoolId,
+    projectLabel: item.projectLabel,
+    plan: item.plan,
+    providerOk: item.providerOk,
+    latencyMs: item.latencyMs,
+  })),
+  tokenSummaryBefore: report.interactionsBefore.summary,
+  tokenSummaryAfter: report.interactionsAfter.summary,
+  guestFallback: report.guestFallback,
+}, null, 2));
+
+if (report.summary.review > 0) {
+  throw new Error(`PLAN 7 live certification has ${report.summary.review} REVIEW check(s): ${report.checks.filter((check) => check.status !== "PASS").map((check) => check.name).join(" | ")}`);
+}
