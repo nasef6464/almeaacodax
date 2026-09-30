@@ -162,6 +162,7 @@
         "smoke:csrf": "node scripts/smoke-csrf-contract.mjs",
         "smoke:api-security": "node scripts/smoke-api-security-contract.mjs",
         "smoke:question-html-security": "node scripts/smoke-question-html-security-contract.mjs",
+        "smoke:verbal-foundation-v2": "node scripts/smoke-verbal-foundation-v2-contract.mjs",
         "smoke:question-editor-live": "node scripts/live-question-editor-audit.mjs",
         "smoke:counter-integrity-live": "node scripts/live-counter-integrity-audit.mjs",
         "smoke:route-loading": "node scripts/smoke-route-loading-contract.mjs",
