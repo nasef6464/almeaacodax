@@ -1,0 +1,54 @@
+name: YLM26 R2 Crop Upload
+
+on:
+  push:
+    branches:
+      - chatgpt/ylm26-tahsili-content-audit-20260928
+    paths:
+      - '.github/workflows/ylm26-r2-upload.yml'
+      - 'scripts/ylm26-upload-r2.mjs'
+      - 'tmp/ylm26-transfer/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  upload-r2-only:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      SMOKE_API_BASE_URL: https://almeaacodax.vercel.app/api
+      SMOKE_ADMIN_TOKEN: ${{ secrets.SMOKE_ADMIN_TOKEN }}
+      SMOKE_ADMIN_EMAIL: ${{ secrets.SMOKE_ADMIN_EMAIL || secrets.ROLE_ADMIN_EMAIL }}
+      SMOKE_ADMIN_PASSWORD: ${{ secrets.SMOKE_ADMIN_PASSWORD || secrets.ROLE_ADMIN_PASSWORD }}
+      SMOKE_ALLOW_PASSWORD_LOGIN: 'true'
+      YLM26_MANIFEST: /tmp/ylm26/YLM26_CROP_MANIFEST_V2.json
+      YLM26_IMAGE_DIR: /tmp/ylm26/crops_v2
+      YLM26_R2_MAP: /tmp/ylm26-r2-map.json
+      YLM26_UPLOAD_CONCURRENCY: '4'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Reconstruct audited crop package
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat tmp/ylm26-transfer/chunk_*.txt | base64 --decode > /tmp/ylm26.zip
+          echo 'ed1f2e677f86cbb81769df28fc18386bccfe382e2604e3fbf41ee2a3ed0fffe1  /tmp/ylm26.zip' | sha256sum -c -
+          mkdir -p /tmp/ylm26
+          unzip -q /tmp/ylm26.zip -d /tmp/ylm26
+          test "$(find /tmp/ylm26/crops_v2 -maxdepth 1 -type f -name '*.webp' | wc -l)" -eq 326
+
+      - name: Upload and verify R2 objects only
+        run: node scripts/ylm26-upload-r2.mjs
+
+      - name: Upload verified R2 map
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ylm26-r2-map
+          path: /tmp/ylm26-r2-map.json
+          if-no-files-found: error
+          retention-days: 7
