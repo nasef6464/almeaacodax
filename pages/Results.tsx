@@ -33,15 +33,15 @@ import { Question, QuizQuestionReview, QuizResult } from '../types';
 import { sanitizeArabicText } from '../utils/sanitizeMojibakeArabic';
 import { printElementAsPdf } from '../utils/printPdf';
 import { shareTextSummary } from '../utils/shareText';
-import { matchesEntityId } from '../utils/entityIds';
 import { flattenMockExamQuestionIds } from '../utils/mockExam';
 import { hasInlineQuestionMedia, normalizeQuestionHtml } from '../utils/questionHtml';
 import { buildQuizRouteWithContext } from '../utils/quizLinks';
-import { buildFoundationActionLink, buildSkillReportActionLink } from '../utils/skillActionLinks';
+import { buildSkillReportActionLink } from '../utils/skillActionLinks';
 import { getLearnerOptionLabel, getQuizOptionButtonHeightClass, getQuizOptionGridClass, getQuizQuestionMapButtonClass, resolveQuestionFromBank, toQuestionReviewFromBank, usesImageEmbeddedOptions } from '../utils/quizPresentation';
 import { getFriendlyResultMessage, getMasteryClasses, getScoreVisualTone, getSkillPriorityLabel, getStudentFriendlyChecklist } from '../components/results/resultScorePresentation';
 import { QuestionAssistantPanel } from '../components/results/QuestionAssistantPanel';
 import { QuestionVoiceExplanationPlayer } from '../components/results/QuestionVoiceExplanationPlayer';
+import { buildSkillRecommendation as buildCanonicalSkillRecommendation } from './Reports/recommendationViewModel';
 
 const ResultDonutChart = React.lazy(() =>
   import('../components/results/ResultDonutChart').then((module) => ({ default: module.ResultDonutChart })),
@@ -139,108 +139,27 @@ const getSkillRecommendation = (
   questions: ReturnType<typeof useStore.getState>['questions'],
   topics: ReturnType<typeof useStore.getState>['topics'],
 ): SkillRecommendation => {
-  if (!skill) {
-    return {};
-  }
+  if (!skill) return {};
 
-  const taxonomyEntry = resolveResultSkillTaxonomy(skill.skillId, allSkills);
-  const legacyMainSkill = !taxonomyEntry
-    ? allSkills.find((item) => displayText(item.name) === displayText(skill.skill))
-    : undefined;
-
-  const resolvedSkillId = taxonomyEntry?.id || legacyMainSkill?.id || (legacyMainSkill as any)?._id;
-  if (!resolvedSkillId) return {};
-
-  const recommendationPathId = taxonomyEntry?.pathId || legacyMainSkill?.pathId;
-  const recommendationSubjectId = taxonomyEntry?.subjectId || legacyMainSkill?.subjectId;
-  const recommendationSectionId = taxonomyEntry?.sectionId || legacyMainSkill?.sectionId;
-  const resolvedSkillName = taxonomyEntry?.name || displayText(legacyMainSkill?.name);
-
-  // 1. Direct sub-topic lookup
-  const directTopic = topics.find((topic) =>
-    topic.showOnPlatform !== false &&
-    (matchesEntityId(topic, `topic_sub_${resolvedSkillId}`) ||
-     (topic.parentId && displayText(topic.title) === resolvedSkillName && (!recommendationSubjectId || topic.subjectId === recommendationSubjectId)) ||
-     (topic.quizIds || []).some((qid) => matchesEntityId({ id: qid }, `quiz_drill_${resolvedSkillId}`)))
+  // Results and Reports must share one canonical Foundation routing rule.
+  // In particular, a subskill may only open a real Topic.skillId mapping;
+  // do not recreate legacy topic_sub_<skillId>, title, drill, or content heuristics here.
+  return buildCanonicalSkillRecommendation(
+    {
+      skill: skill.skill,
+      skillId: skill.skillId,
+    },
+    {
+      allSkills,
+      lessons,
+      quizzes,
+      libraryItems,
+      questions,
+      topics,
+      subjects: useStore.getState().subjects,
+      sections: useStore.getState().sections,
+    },
   );
-
-  // 2. Direct drill quiz lookup
-  const directDrill = quizzes.find((quiz) =>
-    quiz.showOnPlatform !== false &&
-    quiz.isPublished !== false &&
-    (!quiz.approvalStatus || quiz.approvalStatus === 'approved') &&
-    (matchesEntityId(quiz, `quiz_drill_${resolvedSkillId}`) ||
-     quiz.skillIds?.includes(resolvedSkillId))
-  );
-
-  const recommendedLesson = lessons.find(
-    (lesson) =>
-      lesson.skillIds?.includes(resolvedSkillId) &&
-      lesson.showOnPlatform !== false &&
-      (!lesson.approvalStatus || lesson.approvalStatus === 'approved'),
-  );
-  const recommendedQuiz = directDrill || quizzes.find((quiz) =>
-    quiz.showOnPlatform !== false &&
-    quiz.isPublished !== false &&
-    (!quiz.approvalStatus || quiz.approvalStatus === 'approved') &&
-    (quiz.questionIds?.some((questionId) => questions.find((question) => question.id === questionId)?.skillIds?.includes(resolvedSkillId)) ||
-      quiz.skillIds?.includes(resolvedSkillId)),
-  );
-  const recommendedResource = libraryItems.find(
-    (item) =>
-      item.skillIds?.includes(resolvedSkillId) &&
-      item.showOnPlatform !== false &&
-      (!item.approvalStatus || item.approvalStatus === 'approved'),
-  );
-
-  const recommendedTopic = directTopic || (
-    recommendedLesson && recommendationPathId && recommendationSubjectId
-      ? topics.find(
-          (topic) =>
-            topic.pathId === recommendationPathId &&
-            topic.subjectId === recommendationSubjectId &&
-            topic.showOnPlatform !== false &&
-            (topic.lessonIds || []).some((lessonId) => matchesEntityId(recommendedLesson, lessonId)),
-        )
-      : undefined
-  );
-  const targetTopicId = recommendedTopic?.id || (resolvedSkillId ? `topic_sub_${resolvedSkillId}` : undefined);
-
-  const actionContext = {
-    pathId: recommendationPathId,
-    subjectId: recommendationSubjectId,
-    skillId: resolvedSkillId,
-    topicId: targetTopicId,
-    lessonId: recommendedLesson?.id,
-    quizId: recommendedQuiz?.id,
-  };
-  const lessonLink = buildFoundationActionLink(actionContext, 'lessons');
-  const foundationTrainingLink = targetTopicId
-    ? buildFoundationActionLink(actionContext, 'quizzes')
-    : undefined;
-
-  return {
-    lessonTitle: displayText(recommendedLesson?.title),
-    lessonLink,
-    lessonVideoUrl: recommendedLesson?.videoUrl,
-    lessonTopicTitle: displayText(recommendedTopic?.title || resolvedSkillName),
-    quizTitle: displayText(recommendedQuiz?.title || recommendedTopic?.title),
-    quizLink: foundationTrainingLink || (recommendedQuiz?.id ? `/quiz/${recommendedQuiz.id}` : undefined),
-    resourceTitle: displayText(recommendedResource?.title),
-    resourceUrl: recommendedResource?.url,
-    subjectName: recommendationSubjectId ? displayText(useStore.getState().subjects.find((item) => item.id === recommendationSubjectId)?.name) : undefined,
-    sectionName: recommendationSectionId ? displayText(useStore.getState().sections.find((item) => item.id === recommendationSectionId)?.name) : undefined,
-    actionText:
-      recommendedLesson && recommendedQuiz
-        ? 'ابدأ بمراجعة الشرح أولًا ثم نفّذ تدريبًا قصيرًا على نفس المهارة.'
-        : recommendedLesson
-          ? 'الأولوية الآن لمراجعة الشرح المرتبط بهذه المهارة.'
-          : recommendedQuiz
-            ? 'ابدأ بتدريب قصير على هذه المهارة ثم أعد القياس.'
-            : recommendedResource
-              ? 'راجع الملف الداعم ثم ارجع للتدريب مرة أخرى.'
-              : 'هذه المهارة تحتاج متابعة أبسط خطوة بخطوة.',
-  };
 };
 
 const getStatusFromMastery = (mastery: number): ResolvedAnalysisItem['status'] => {
