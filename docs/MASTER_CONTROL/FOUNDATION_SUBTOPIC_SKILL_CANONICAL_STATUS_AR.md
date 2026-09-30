@@ -89,4 +89,10 @@
   - Latest live training result for `sub_quant_01_5`: `5/5` question evidence في النتيجة يحمل نفس SubSkill، ومحاولات الأسئلة المقابلة تحمل `sub_quant_01_5` كذلك.
   - التدريب الحي `تدريب العمليات الحسابية` يحمل `skillIds=[sub_quant_01_5]` وslot=`training` بينما Topic نفسه كان `quizIds=[]`; PR #317 يجعل العرض يربطه بالـSubTopic بالـexact skill بدل heuristics.
   - يوجد `20` Topic→Lesson links حالية وتفتح عبر `Topic.lessonIds`; tags القديمة داخل `Lesson.skillIds` ما زالت legacy/stale. لم تُعدّل تلقائيًا لأن بعض الدروس مشتركة بين عدة SubTopics؛ حراسة PR #314 تطبق canonical inheritance على عمليات الربط/التعديل الجديدة.
-- Production verification النهائي: بعد Green exact-head ودمج #317.
+- PR #317: merged على `main` عند `77761835d464687283f7ca9d65f43799ccd43962`.
+- Exact-head CI على `5ab3a2c4325a75514fa95785a930652e37c15221`: Deep Pre-Merge E2E + Backend Integration + Production Readiness + Recovery + Public UI + Phase/Handover + Safety Gate = Green.
+- Production backend: Render deploy `dep-daudbmff3r2c73fnknbg` نشر نفس merge SHA وأصبح `live` في 2026-09-30؛ build TypeScript ناجح، MongoDB connected، Redis connected، والـAPI listening.
+- Production frontend: Vercel status على merge SHA = `success`.
+- سجل Production بعد النشر أظهر طلبات الطالب/الإدارة/التقارير بحالات 200؛ تحذيرات latency فوق 1s مسجلة كأداء وليست فشلًا في canonical routing.
+- لا توجد في هذا الإغلاق أي كتابة إلى `SkillProgress` أو إعادة احتساب/تعديل QuizResult/mastery percentages.
+- **الحالة النهائية: CLOSED / GREEN.**
