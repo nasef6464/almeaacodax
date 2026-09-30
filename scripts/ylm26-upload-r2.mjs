@@ -112,7 +112,22 @@ if (new Set(items.map(x => x.questionCode)).size !== 326 || new Set(items.map(x 
   throw new Error('Manifest identity uniqueness gate failed.');
 }
 
-const stableQuestionCode = (item) => `TAH-MATH-YLM26-P${String(Number(item.printedPageNumber)).padStart(3, '0')}-Q${String(Number(item.printedQuestionNumber)).padStart(2, '0')}`;
+const canonicalIdentity = (item) => {
+  const page = Number(item.printedPageNumber);
+  let questionNumber = Number(item.printedQuestionNumber);
+  // Visual-source corrections: the crop detector dropped the leading "1"
+  // on exactly these two printed badges.
+  if (page === 88 && questionNumber === 2) questionNumber = 12;
+  if (page === 91 && questionNumber === 3) questionNumber = 13;
+  const pdfPageIndex = Number(item.pdfPageIndex);
+  return {
+    printedPageNumber: page,
+    printedQuestionNumber: questionNumber,
+    questionCode: `TAH-MATH-YLM26-P${String(page).padStart(3, '0')}-Q${String(questionNumber).padStart(2, '0')}`,
+    sourceItemId: `YLM26-PDF${String(pdfPageIndex).padStart(3, '0')}-P${String(page).padStart(3, '0')}-N${String(questionNumber).padStart(2, '0')}`,
+  };
+};
+const stableQuestionCode = (item) => canonicalIdentity(item).questionCode;
 const stableCodes = items.map(stableQuestionCode);
 if (new Set(stableCodes).size !== 326) throw new Error('Stable questionCode uniqueness gate failed.');
 
@@ -123,7 +138,7 @@ for (const item of items) {
   const actual = sha256(bytes);
   if (actual !== item.imageHash) throw new Error(`Local image hash mismatch ${item.questionCode}`);
   if (!/\.webp$/i.test(item.imageFileName)) throw new Error(`Not WebP ${item.questionCode}`);
-  prepared.push({ item, bytes, actual, stableCode: stableQuestionCode(item) });
+  prepared.push({ item, bytes, actual, identity: canonicalIdentity(item), stableCode: stableQuestionCode(item) });
 }
 
 await ensureCsrf();
@@ -134,7 +149,7 @@ async function worker() {
   while (true) {
     const idx = cursor++;
     if (idx >= prepared.length) return;
-    const { item, bytes, actual, stableCode } = prepared[idx];
+    const { item, bytes, actual, identity, stableCode } = prepared[idx];
     const intent = await withRetry(`presign ${stableCode}`, () => apiPost('/media/question-import-images/presign', {
       questionCode: stableCode,
       imageHash: actual,
@@ -166,10 +181,11 @@ async function worker() {
     result[idx] = {
       questionCode: stableCode,
       cropQuestionCode: item.questionCode,
-      sourceItemId: item.sourceItemId,
+      sourceItemId: identity.sourceItemId,
+      cropSourceItemId: item.sourceItemId,
       pdfPageIndex: item.pdfPageIndex,
-      printedPageNumber: item.printedPageNumber,
-      printedQuestionNumber: item.printedQuestionNumber,
+      printedPageNumber: identity.printedPageNumber,
+      printedQuestionNumber: identity.printedQuestionNumber,
       imageHash: actual,
       imageVersion: item.imageVersion,
       imageUrl: intent.publicUrl,
