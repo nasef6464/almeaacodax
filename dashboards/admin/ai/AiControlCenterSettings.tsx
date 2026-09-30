@@ -293,6 +293,7 @@ export const AiControlCenterSettings: React.FC<{ onSaved?: () => Promise<void> |
         </div>
       </div>
       {showAdvanced && (
+      <>
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
         <div className="xl:col-span-2 rounded-2xl border border-gray-200 bg-white p-5 shadow-xs space-y-4">
           <div className="flex items-center justify-between gap-3">
@@ -331,6 +332,7 @@ export const AiControlCenterSettings: React.FC<{ onSaved?: () => Promise<void> |
         </div>
       </div>
       <AiCapabilityRoutingEditor profiles={routeProfiles} onChange={setRouteProfiles} />
+      </>
       )}
       <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-xs space-y-4">
         <div>
