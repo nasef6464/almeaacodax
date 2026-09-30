@@ -4,6 +4,7 @@ const links=fs.readFileSync('utils/skillActionLinks.ts','utf8');
 const results=fs.readFileSync('pages/Results.tsx','utf8');
 const recommendations=fs.readFileSync('pages/Reports/recommendationViewModel.ts','utf8');
 const learningSection=fs.readFileSync('components/LearningSection.tsx','utf8');
+const skillDetails=fs.readFileSync('components/SkillDetailsModal.tsx','utf8');
 const foundationTarget=fs.readFileSync('utils/foundationSkillTarget.ts','utf8');
 for (const fragment of ['pathId','subjectId','skillId','encodeURIComponent(context.pathId)','safeInternalReturn']) {
   assert.ok(links.includes(fragment), `missing canonical link contract: ${fragment}`);
@@ -25,5 +26,8 @@ assert.ok(recommendations.includes('Explanation deliberately opens the topic (no
 assert.ok(learningSection.includes("searchParams.get('skillId')"));
 assert.ok(learningSection.includes("requestedContent === 'support'"));
 assert.ok(learningSection.includes('initialContentTab: requestedContentTab'));
+assert.ok(skillDetails.includes("const activeTopicSkillId = String(activeTopic.skillId || '').trim()"));
+assert.ok(skillDetails.includes("placement.slot === 'training' || placement.slot === 'foundation'"));
+assert.ok(skillDetails.includes('if (isSubTopic) return false'));
 assert.ok(learningSection.includes('resolveFoundationSkillTarget'));
 console.log(JSON.stringify({phase:'adaptive-phase3-result-actions',status:'PASS'},null,2));
