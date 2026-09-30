@@ -148,7 +148,7 @@ export async function migrateVerbalTaxonomy22() {
   // Replace only the generated main-skill training banks. User-created quizzes and all mock exams are untouched.
   await quizCol.deleteMany({
     subjectId: VERBAL_SUBJECT_ID,
-    _id: { $regex: /^bank_verbal_skill_/ },
+    id: { $regex: /^bank_verbal_skill_/ },
   });
 
   for (const main of VERBAL_TAXONOMY) {
