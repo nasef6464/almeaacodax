@@ -29,20 +29,49 @@ if (!adminToken) throw new Error('No production admin auth available for YLM26 R
 
 let csrfToken = '';
 let csrfCookie = '';
+let csrfBootstrapPromise = null;
+
+async function bootstrapCsrfWithBackoff() {
+  let lastStatus = 0;
+  for (let attempt = 1; attempt <= 12; attempt += 1) {
+    const res = await fetch(`${API_BASE_URL}/auth/csrf-token`, {
+      headers: { Authorization: `Bearer ${adminToken}`, Accept: 'application/json' },
+      signal: AbortSignal.timeout(15_000),
+    });
+    lastStatus = res.status;
+    const txt = await res.text();
+    let body = {};
+    try { body = JSON.parse(txt); } catch {}
+    const setCookie = String(res.headers.get('set-cookie') || '');
+    const m = setCookie.match(/almeaa_csrf_token=([^;]+)/);
+    const candidateCookie = String(m?.[1] || '').trim();
+    const candidateToken = String(body?.csrfToken || candidateCookie).trim();
+    if (res.ok && candidateToken && candidateCookie) {
+      csrfCookie = candidateCookie;
+      csrfToken = candidateToken;
+      return;
+    }
+    if (attempt < 12) {
+      const retryAfterHeader = Number(res.headers.get('retry-after') || 0);
+      const waitMs = retryAfterHeader > 0
+        ? Math.min(60_000, retryAfterHeader * 1000)
+        : Math.min(30_000, 2_500 * attempt);
+      console.log(`CSRF bootstrap HTTP ${res.status}; retrying in ${waitMs}ms (attempt ${attempt}/12)`);
+      await sleep(waitMs);
+    }
+  }
+  throw new Error(`CSRF bootstrap failed HTTP ${lastStatus} after backoff`);
+}
+
 async function ensureCsrf() {
   if (csrfToken && csrfCookie) return;
-  const res = await fetch(`${API_BASE_URL}/auth/csrf-token`, {
-    headers: { Authorization: `Bearer ${adminToken}`, Accept: 'application/json' },
-    signal: AbortSignal.timeout(15_000),
-  });
-  const txt = await res.text();
-  let body = {};
-  try { body = JSON.parse(txt); } catch {}
-  const setCookie = String(res.headers.get('set-cookie') || '');
-  const m = setCookie.match(/almeaa_csrf_token=([^;]+)/);
-  csrfCookie = String(m?.[1] || '').trim();
-  csrfToken = String(body?.csrfToken || csrfCookie).trim();
-  if (!res.ok || !csrfToken || !csrfCookie) throw new Error(`CSRF bootstrap failed HTTP ${res.status}`);
+  if (!csrfBootstrapPromise) {
+    csrfBootstrapPromise = bootstrapCsrfWithBackoff().catch((error) => {
+      csrfBootstrapPromise = null;
+      throw error;
+    });
+  }
+  await csrfBootstrapPromise;
 }
 
 async function apiPost(route, body) {
@@ -96,6 +125,8 @@ for (const item of items) {
   if (!/\.webp$/i.test(item.imageFileName)) throw new Error(`Not WebP ${item.questionCode}`);
   prepared.push({ item, bytes, actual, stableCode: stableQuestionCode(item) });
 }
+
+await ensureCsrf();
 
 const result = new Array(prepared.length);
 let cursor = 0;
