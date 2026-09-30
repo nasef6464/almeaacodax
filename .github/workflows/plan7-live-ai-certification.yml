@@ -37,7 +37,7 @@ jobs:
       - name: PLAN 7 static certification contract
         run: node scripts/smoke-plan7-ai-certification-contract.mjs
       - name: PLAN 7 executable 429/free-first failover contract
-        run: npm --prefix server exec tsx src/scripts/plan7AiFailoverContract.ts
+        run: cd server && npx tsx src/scripts/plan7AiFailoverContract.ts
       - name: Live provider + tutor + token + fallback audit
         run: node scripts/live-ai-runtime-audit.mjs
       - name: Upload PLAN 7 evidence
