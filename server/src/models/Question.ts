@@ -55,6 +55,10 @@ const questionSchema = new Schema(
     id: { type: String, index: true, sparse: true },
     questionCode: { type: String, unique: true, index: true, sparse: true, trim: true, uppercase: true },
     text: { type: String, default: "", trim: true },
+    // Legacy inline passage remains supported for backwards compatibility.
+    // New verbal banks should store the passage once in QuestionPassage and link by passageId.
+    passage: { type: String, default: "", trim: true },
+    passageId: { type: String, default: null, index: true, sparse: true, trim: true },
     options: { type: [String], default: [] },
     correctOptionIndex: { type: Number, default: 0 },
     explanation: { type: String, default: "" },
@@ -111,6 +115,7 @@ questionSchema.index({ skillIds: 1, difficulty: 1 });
 questionSchema.index({ ownerType: 1, ownerId: 1, approvalStatus: 1 });
 questionSchema.index({ examType: 1, source: 1, year: -1, approvalStatus: 1 });
 questionSchema.index({ "sourceMeta.documentCode": 1, "sourceMeta.page": 1, "sourceMeta.questionNumber": 1 });
+questionSchema.index({ subject: 1, passageId: 1 }, { sparse: true });
 questionSchema.index({ subject: 1, approvalStatus: 1, updatedAt: -1 });
 
 export const QuestionModel = mongoose.model("Question", questionSchema);
