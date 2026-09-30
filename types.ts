@@ -622,7 +622,10 @@ export interface Question extends ContentWorkflow {
     id: string;
     questionCode?: string;
     text: string;
+    /** Hydrated reading passage text for learner presentation; verbal imports prefer passageId storage. */
     passage?: string;
+    /** Canonical shared passage reference. Multiple questions may point to the same passage without duplicating text. */
+    passageId?: string | null;
     options: string[];
     correctOptionIndex: number;
     explanation?: string;
