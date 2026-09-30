@@ -12,8 +12,9 @@ const concurrency = Math.max(1, Math.min(6, Number(process.env.YLM26_UPLOAD_CONC
 const sha256 = (bytes) => createHash('sha256').update(bytes).digest('hex');
 const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 
-let adminToken = String(process.env.SMOKE_ADMIN_TOKEN || '').trim();
-if (!adminToken) {
+let adminToken = '';
+const hasLoginCreds = Boolean(String(process.env.SMOKE_ADMIN_EMAIL || '').trim() && String(process.env.SMOKE_ADMIN_PASSWORD || '').trim());
+if (hasLoginCreds) {
   const resolved = spawnSync('node', ['scripts/resolve-smoke-admin-token.mjs'], {
     env: { ...process.env, SMOKE_ALLOW_PASSWORD_LOGIN: 'true' },
     encoding: 'utf8',
@@ -23,6 +24,7 @@ if (!adminToken) {
     try { adminToken = String(JSON.parse(String(resolved.stdout || '{}'))?.token || '').trim(); } catch {}
   }
 }
+if (!adminToken) adminToken = String(process.env.SMOKE_ADMIN_TOKEN || '').trim();
 if (!adminToken) throw new Error('No production admin auth available for YLM26 R2 upload.');
 
 let csrfToken = '';
