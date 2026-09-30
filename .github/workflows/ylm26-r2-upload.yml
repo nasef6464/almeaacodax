@@ -8,6 +8,7 @@ on:
       - '.github/workflows/ylm26-r2-upload.yml'
       - 'scripts/ylm26-upload-r2.mjs'
       - 'scripts/ylm26-reconcile-plan.mjs'
+      - 'scripts/ylm26-apply-images.mjs'
       - 'tmp/ylm26-transfer/**'
   workflow_dispatch:
 
@@ -33,6 +34,7 @@ jobs:
       YLM26_R2_MAP: /tmp/ylm26-r2-map.json
       YLM26_UPLOAD_CONCURRENCY: '2'
       YLM26_RECONCILE_PLAN: /tmp/ylm26-reconcile-plan.json
+      YLM26_IMAGE_APPLY_REPORT: /tmp/ylm26-image-apply-report.json
 
     steps:
       - uses: actions/checkout@v4
@@ -52,6 +54,18 @@ jobs:
 
       - name: Build Atlas/API reconciliation plan (read-only)
         run: node scripts/ylm26-reconcile-plan.mjs
+
+      - name: Apply verified Crop V2 images to existing YLM26 drafts
+        run: node scripts/ylm26-apply-images.mjs
+
+      - name: Upload image apply report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ylm26-image-apply-report
+          path: /tmp/ylm26-image-apply-report.json
+          if-no-files-found: error
+          retention-days: 7
 
       - name: Upload reconciliation plan
         if: always()
