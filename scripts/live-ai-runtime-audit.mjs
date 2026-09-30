@@ -148,8 +148,11 @@ const studentChat = await request("/ai/chat", {
   }),
 });
 
+const guestCsrf = await request("/auth/csrf-token", { headers: { "cache-control": "no-store" } });
 const guestFallback = await request("/ai/chat", {
   method: "POST",
+  csrf: guestCsrf.body?.csrfToken || "",
+  cookie: guestCsrf.cookie,
   body: JSON.stringify({
     message: "اختبار fallback آمن بدون تسجيل دخول. أجب بجملة قصيرة.",
   }),
@@ -340,6 +343,7 @@ console.log(JSON.stringify({
     plan: item.plan,
     providerOk: item.providerOk,
     latencyMs: item.latencyMs,
+    message: item.message,
   })),
   tokenSummaryBefore: report.interactionsBefore.summary,
   tokenSummaryAfter: report.interactionsAfter.summary,
