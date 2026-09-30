@@ -7,6 +7,7 @@ const read = (file) => readFileSync(path.join(root, file), 'utf8').replace(/\r\n
 const reports = read('pages/Reports.tsx');
 const analytics = read('pages/Reports/studentAnalyticsViewModel.ts');
 const aggregationFinalize = read('pages/Reports/studentSkillAggregationFinalize.ts');
+const taxonomy = read('pages/Reports/studentSkillTaxonomy.ts');
 const evidence = read('pages/Reports/studentEvidenceViewModel.ts');
 const reportsRole = read('scripts/smoke-reports-role-contract.mjs');
 const globalJourney = read('scripts/smoke-global-student-journey-contract.mjs');
@@ -49,6 +50,12 @@ check('student analytics view-model preserves performance and aggregation semant
   assertIncludes(analytics, "worstSubject: { name: 'تحتاج متابعة', score: averageScore }");
   assertIncludes(analytics, "displayText(result.quizTitle).replace('اختبار ', '').replace('الوحدة الأولى', 'أساسيات')");
   assertIncludes(analytics, 'export const buildStudentAggregatedSkills = ({');
+  assertIncludes(analytics, 'const skillTaxonomyById = buildStudentSkillTaxonomyIndex(skills)');
+  assertIncludes(analytics, 'skillTaxonomyById.get(skill.skillId)');
+  assertIncludes(analytics, 'const resolvedSkillName = displayText(resolvedSkill?.name || skill.skill)');
+  assertIncludes(analytics, 'skillTaxonomyById.get(skillId)');
+  assertIncludes(taxonomy, '(mainSkill.subSkills || []).forEach((subSkill) => {');
+  assertIncludes(taxonomy, "level: 'sub'");
   assertIncludes(analytics, 'row.weightedMasteryTotal += mastery * evidenceCount');
   assertIncludes(analytics, 'row.weightedMasteryTotal += mastery');
   assertIncludes(aggregationFinalize, 'correctAttempts: Math.round(data.correctEvidence)');
@@ -72,7 +79,7 @@ check('student evidence view-model owns evidence totals and readiness messaging'
 });
 
 check('student analytics and evidence view-models are deterministic and runtime-side-effect free', () => {
-  for (const source of [analytics, evidence, aggregationFinalize]) {
+  for (const source of [analytics, evidence, aggregationFinalize, taxonomy]) {
     assertNotIncludes(source, 'useStore');
     assertNotIncludes(source, "from 'react'");
     assertNotIncludes(source, "from '../../services/api'");
@@ -95,10 +102,12 @@ check('student analytics split reduces responsibility without creating a replace
   const analyticsLines = analytics.split('\n').length;
   const evidenceLines = evidence.split('\n').length;
   const aggregationFinalizeLines = aggregationFinalize.split('\n').length;
+  const taxonomyLines = taxonomy.split('\n').length;
   if (reportLines >= 3350) throw new Error(`Reports.tsx remained too large after student analytics extraction: ${reportLines}`);
   if (analyticsLines > 220) throw new Error(`studentAnalyticsViewModel.ts exceeded 220 lines: ${analyticsLines}`);
   if (evidenceLines > 100) throw new Error(`studentEvidenceViewModel.ts exceeded 100 lines: ${evidenceLines}`);
   if (aggregationFinalizeLines > 120) throw new Error(`studentSkillAggregationFinalize.ts exceeded 120 lines: ${aggregationFinalizeLines}`);
+  if (taxonomyLines > 80) throw new Error(`studentSkillTaxonomy.ts exceeded 80 lines: ${taxonomyLines}`);
 });
 
 const failed = checks.filter((item) => item.status === 'FAIL');
@@ -109,6 +118,7 @@ const result = {
   analyticsLines: analytics.split('\n').length,
   evidenceLines: evidence.split('\n').length,
   aggregationFinalizeLines: aggregationFinalize.split('\n').length,
+  taxonomyLines: taxonomy.split('\n').length,
   checks,
 };
 
