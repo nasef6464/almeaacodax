@@ -64,6 +64,7 @@ const questionSchema = new Schema(
     imageUrl: { type: String, default: "" },
     imageAlt: { type: String, default: "" },
     optionsEmbeddedInImage: { type: Boolean, default: false },
+    fingerprint: { type: String, default: "", trim: true },
     aiContext: { type: questionAiContextSchema, default: () => ({}) },
     voiceExplanation: { type: questionVoiceExplanationSchema, default: () => ({}) },
     sourceMeta: { type: questionSourceMetaSchema, default: () => ({}) },
