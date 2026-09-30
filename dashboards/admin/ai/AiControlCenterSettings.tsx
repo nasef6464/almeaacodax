@@ -2,13 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { AlertTriangle, CheckCircle2, KeyRound, Loader2, Plus, RefreshCw, Save, ShieldCheck, Trash2, Wallet } from 'lucide-react';
 import { SimpleAiSetupHeader } from './SimpleAiSetupHeader';
 import { api } from '../../../services/api';
-import {
-  AI_CAPABILITY_IDS,
-  AiCapabilityRoutingEditor,
-  createDefaultAiCapabilityProfiles,
-  type AiCapabilityId,
-  type AiCapabilityProfile,
-} from './AiCapabilityRoutingEditor';
+import { AI_CAPABILITY_IDS, AiCapabilityRoutingEditor, createDefaultAiCapabilityProfiles, type AiCapabilityId, type AiCapabilityProfile } from './AiCapabilityRoutingEditor';
 type AiCloudProvider = 'gemini' | 'openrouter' | 'qwen' | 'deepseek' | 'openai';
 type AiPlan = 'free' | 'trial' | 'paid' | 'unknown';
 type QuotaScope = 'project' | 'account' | 'organization' | 'workspace' | 'model' | 'unknown';
