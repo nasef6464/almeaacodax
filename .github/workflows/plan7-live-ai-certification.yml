@@ -4,6 +4,8 @@ on:
   pull_request:
     branches: [main]
     types: [opened, synchronize, reopened]
+  push:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -11,7 +13,7 @@ permissions:
 
 jobs:
   live-ai-certification:
-    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository)
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository)
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
@@ -38,10 +40,19 @@ jobs:
         run: node scripts/smoke-plan7-ai-certification-contract.mjs
       - name: PLAN 7 executable 429/free-first failover contract
         run: cd server && npx tsx src/scripts/plan7AiFailoverContract.ts
+      - name: Wait for exact production release identity
+        if: github.event_name != 'pull_request'
+        env:
+          RELEASE_API_BASE: https://almeaacodax-codex.onrender.com/api
+          EXPECTED_RELEASE_SHA: ${{ github.sha }}
+          RELEASE_IDENTITY_MAX_ATTEMPTS: 48
+          RELEASE_IDENTITY_INTERVAL_MS: 10000
+        run: node scripts/smoke-production-release-identity.mjs
       - name: Live provider + tutor + token + fallback audit
+        if: github.event_name != 'pull_request'
         run: node scripts/live-ai-runtime-audit.mjs
       - name: Upload PLAN 7 evidence
-        if: always()
+        if: always() && github.event_name != 'pull_request'
         uses: actions/upload-artifact@v4
         with:
           name: plan7-live-ai-certification-${{ github.run_id }}
