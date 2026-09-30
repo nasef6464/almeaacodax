@@ -7,6 +7,7 @@ import type {
     Skill,
 } from '../../types';
 import { displayText, getReportItemTimestamp, type StudentAggregatedSkill } from './reportDomain';
+import { buildStudentSkillTaxonomyIndex } from './studentSkillTaxonomy';
 import {
     finalizeStudentAggregatedSkills,
     type StudentSkillAccumulator,
@@ -94,21 +95,28 @@ export const buildStudentAggregatedSkills = ({
     const skillsMap: Record<string, StudentSkillAccumulator> = {};
     const scopeKey = (pathId?: string, subjectId?: string, skillId?: string, skillName?: string) =>
         [String(pathId || ''), String(subjectId || ''), String(skillId || skillName || '')].join('::');
+    const skillTaxonomyById = buildStudentSkillTaxonomyIndex(skills);
 
     examResults.forEach((result) => {
         result.skillsAnalysis?.forEach((skill) => {
-            const key = scopeKey(skill.pathId, skill.subjectId, skill.skillId, skill.skill);
+            const resolvedSkill = skill.skillId ? skillTaxonomyById.get(skill.skillId) : undefined;
+            const resolvedSkillId = resolvedSkill?.id || skill.skillId;
+            const resolvedSkillName = displayText(resolvedSkill?.name || skill.skill);
+            const resolvedPathId = skill.pathId || resolvedSkill?.pathId;
+            const resolvedSubjectId = skill.subjectId || resolvedSkill?.subjectId;
+            const resolvedSectionId = skill.sectionId || resolvedSkill?.sectionId;
+            const key = scopeKey(resolvedPathId, resolvedSubjectId, resolvedSkillId, resolvedSkillName);
             if (!skillsMap[key]) {
                 skillsMap[key] = {
                     weightedMasteryTotal: 0,
                     evidenceCount: 0,
                     observationCount: 0,
                     correctEvidence: 0,
-                    skillName: skill.skill,
-                    skillId: skill.skillId,
-                    pathId: skill.pathId,
-                    subjectId: skill.subjectId,
-                    sectionId: skill.sectionId,
+                    skillName: resolvedSkillName,
+                    skillId: resolvedSkillId,
+                    pathId: resolvedPathId,
+                    subjectId: resolvedSubjectId,
+                    sectionId: resolvedSectionId,
                     observations: [],
                     hasResultEvidence: true,
                 };
@@ -134,15 +142,15 @@ export const buildStudentAggregatedSkills = ({
                 correctEvidence,
                 occurredAt: getReportItemTimestamp(result as any),
             });
-            if (!row.skillId && skill.skillId) row.skillId = skill.skillId;
-            if (!row.pathId && skill.pathId) row.pathId = skill.pathId;
-            if (!row.subjectId && skill.subjectId) row.subjectId = skill.subjectId;
-            if (!row.sectionId && skill.sectionId) row.sectionId = skill.sectionId;
+            if (!row.skillName && resolvedSkillName) row.skillName = resolvedSkillName;
+            if (!row.skillId && resolvedSkillId) row.skillId = resolvedSkillId;
+            if (!row.pathId && resolvedPathId) row.pathId = resolvedPathId;
+            if (!row.subjectId && resolvedSubjectId) row.subjectId = resolvedSubjectId;
+            if (!row.sectionId && resolvedSectionId) row.sectionId = resolvedSectionId;
         });
     });
 
     const questionById = new Map(questions.map((question) => [question.id, question]));
-    const skillById = new Map(skills.map((skill) => [skill.id, skill]));
 
     // QuestionAttempt is a compatibility fallback per scoped skill. Completed QuizResult
     // evidence has precedence so one answer cannot be counted once as an attempt and again
@@ -156,7 +164,7 @@ export const buildStudentAggregatedSkills = ({
                 : [];
 
         questionSkillIds.forEach((skillId) => {
-            const resolvedSkill = skillById.get(skillId);
+            const resolvedSkill = skillTaxonomyById.get(skillId);
             if (!resolvedSkill) return;
             const skillName = displayText(resolvedSkill.name);
             if (!skillName) return;
