@@ -282,7 +282,7 @@ export async function deploy() {
   }));
 
   const parentIds = VERBAL_TAXONOMY.map((main) => `top_verbal_main_${main.num.padStart(2, "0")}`);
-  await topics.deleteMany({ subjectId: VERBAL_SUBJECT_ID, parentId: null, _id: { $nin: parentIds } });
+  await topics.deleteMany({ subjectId: VERBAL_SUBJECT_ID, parentId: null, id: { $nin: parentIds } });
 
   for (let index = 0; index < VERBAL_TAXONOMY.length; index++) {
     const main = VERBAL_TAXONOMY[index];
