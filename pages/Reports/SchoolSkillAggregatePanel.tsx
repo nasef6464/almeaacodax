@@ -58,6 +58,13 @@ export const SchoolSkillAggregatePanel: React.FC<{
     setSelectedClassId('');
     setStudentRows([]);
 
+    const loadingTimeout = window.setTimeout(() => {
+      if (cancelled) return;
+      setRows([]);
+      setScope(null);
+      setLoading(false);
+    }, 8_000);
+
     api.getSchoolSkillAggregates({
       groupBy: 'skill',
       ...(pathId ? { pathId } : {}),
@@ -77,11 +84,13 @@ export const SchoolSkillAggregatePanel: React.FC<{
         }
       })
       .finally(() => {
+        window.clearTimeout(loadingTimeout);
         if (!cancelled) setLoading(false);
       });
 
     return () => {
       cancelled = true;
+      window.clearTimeout(loadingTimeout);
     };
   }, [classId, pathId, subjectId]);
 
