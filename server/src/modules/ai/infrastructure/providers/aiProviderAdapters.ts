@@ -151,8 +151,8 @@ export const createAiProviderAdapters = (config: AdapterConfig) => {
       let poolRateLimited = false;
       for (const apiKey of pool.apiKeys) {
         try {
-          const response = await fetchWithTimeout(
-            `https://generativelanguage.googleapis.com/v1beta/models/${pool.model}:generateContent?key=${apiKey}`,
+          const requestGeminiModel = (model: string) => fetchWithTimeout(
+            `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
             {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -166,6 +166,10 @@ export const createAiProviderAdapters = (config: AdapterConfig) => {
             },
             options.timeoutMs,
           );
+          let response = await requestGeminiModel(pool.model);
+          if (!response.ok && response.status === 404 && pool.model === "gemini-2.5-flash") {
+            response = await requestGeminiModel("gemini-3.8-flash");
+          }
           if (!response.ok) {
             const message = await responseFailureMessage("Gemini", response);
             if (response.status === 429) poolRateLimited = true;
