@@ -27,7 +27,24 @@ jobs:
           mkdir -p /tmp/ylm26
           unzip -q /tmp/ylm26.zip -d /tmp/ylm26
           test "$(find /tmp/ylm26/crops_v2 -maxdepth 1 -type f -name '*.webp' | wc -l)" -eq 326
-          node -e "const fs=require('fs');const p='/tmp/ylm26/YLM26_CROP_MANIFEST_V2.json';const d=JSON.parse(fs.readFileSync(p,'utf8'));if(d.count!==326||d.items?.length!==326||d.errors!==0)process.exit(1);console.log(JSON.stringify({count:d.count,errors:d.errors,keys:Object.keys(d),sample:d.items.slice(0,3)},null,2));"
+          test -s /tmp/ylm26/YLM26_CROP_MANIFEST_V2.json
+          node - <<'NODE'
+          const fs = require('fs');
+          const p = '/tmp/ylm26/YLM26_CROP_MANIFEST_V2.json';
+          const d = JSON.parse(fs.readFileSync(p, 'utf8'));
+          const items = Array.isArray(d) ? d : Array.isArray(d.items) ? d.items : Array.isArray(d.questions) ? d.questions : Array.isArray(d.records) ? d.records : null;
+          console.log(JSON.stringify({
+            rootType: Array.isArray(d) ? 'array' : typeof d,
+            keys: Array.isArray(d) ? [] : Object.keys(d),
+            itemCount: items?.length ?? null,
+            firstItemKeys: items?.[0] ? Object.keys(items[0]) : [],
+            sample: items?.slice(0, 2) ?? null
+          }, null, 2));
+          if (!items || items.length !== 326) process.exit(2);
+          const codes = new Set(items.map(x => x.questionCode).filter(Boolean));
+          const sources = new Set(items.map(x => x.sourceItemId).filter(Boolean));
+          if (codes.size !== 326 || sources.size !== 326) process.exit(3);
+          NODE
       - name: Upload canonical manifest
         uses: actions/upload-artifact@v4
         with:
