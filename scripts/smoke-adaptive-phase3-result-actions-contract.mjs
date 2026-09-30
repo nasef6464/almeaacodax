@@ -23,5 +23,7 @@ assert.ok(recommendations.includes("directMappedTopic || (target.kind === 'sub' 
 assert.ok(recommendations.includes("buildFoundationActionLink(actionContext, 'quizzes')"));
 assert.ok(recommendations.includes('Explanation deliberately opens the topic (not one lesson)'));
 assert.ok(learningSection.includes("searchParams.get('skillId')"));
+assert.ok(learningSection.includes("requestedContent === 'support'"));
+assert.ok(learningSection.includes('initialContentTab: requestedContentTab'));
 assert.ok(learningSection.includes('resolveFoundationSkillTarget'));
 console.log(JSON.stringify({phase:'adaptive-phase3-result-actions',status:'PASS'},null,2));
