@@ -5,6 +5,7 @@ import { requireAuth, requireRole } from "../../../middleware/auth.js";
 import { AccessCodeModel } from "../../../models/AccessCode.js";
 import { B2BPackageModel } from "../../../models/B2BPackage.js";
 import { GroupModel } from "../../../models/Group.js";
+import { SchoolMembershipModel } from "../../../models/SchoolMembership.js";
 import { QuizResultModel } from "../../../models/QuizResult.js";
 import { UserModel } from "../../../models/User.js";
 import { asyncHandler } from "../../../utils/asyncHandler.js";
@@ -258,6 +259,11 @@ contentSchoolReportImportRouter.post(
 
       const studentId = user.id || String(user._id);
       const studentIdAliases = uniqueStrings([user.id, String(user._id)]);
+      await SchoolMembershipModel.findOneAndUpdate(
+        { userId: String(user._id), schoolId: String(school._id), role: "student" },
+        { $set: { status: "active" } },
+        { upsert: true, new: true, setDefaultsOnInsert: true },
+      );
       await GroupModel.updateMany(
         { type: "CLASS", parentId: schoolId },
         { $pull: { studentIds: { $in: studentIdAliases } } },
