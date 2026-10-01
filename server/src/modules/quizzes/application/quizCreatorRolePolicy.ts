@@ -18,10 +18,10 @@ export const hasDirectedQuizTargets = (payload: Record<string, any>) =>
  * legacy platform-trainer workflow unless the assessment is explicitly
  * directed to assigned classes/students.
  */
-export const applyQuizCreatorRolePolicy = (
+export const applyQuizCreatorRolePolicy = <T extends Record<string, any>>(
   authUser: QuizCreatorPolicyUser,
-  payload: Record<string, any>,
-) => {
+  payload: T,
+): T => {
   if (authUser.role === "admin") return payload;
 
   const isDirectedStaffAssessment =
@@ -30,12 +30,12 @@ export const applyQuizCreatorRolePolicy = (
 
   if (!isDirectedStaffAssessment) return payload;
 
-  const nextPayload: Record<string, any> = {
+  const nextPayload: T = {
     ...payload,
     showOnPlatform: false,
     access: { type: "free" },
     learningPlacements: [],
-  };
+  } as T;
 
   delete nextPayload.revenueSharePercentage;
   return nextPayload;
