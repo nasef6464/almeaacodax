@@ -115,6 +115,7 @@
         "smoke:assessment-question-selection": "node scripts/smoke-assessment-question-selection-contract.mjs",
         "smoke:assessment-workflow": "node scripts/smoke-assessment-workflow-contract.mjs",
         "smoke:assessment-publication": "node scripts/smoke-assessment-publication-policy-contract.mjs",
+        "smoke:assessment-creator-role-policy": "node scripts/smoke-assessment-creator-role-policy-contract.mjs",
         "smoke:assessment-inline-question": "node scripts/smoke-assessment-inline-question-contract.mjs",
         "smoke:assessment-definition-document": "node scripts/smoke-assessment-definition-document-contract.mjs",
         "smoke:assessment-update-document": "node scripts/smoke-assessment-update-document-contract.mjs",
