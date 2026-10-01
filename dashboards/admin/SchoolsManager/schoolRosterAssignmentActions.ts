@@ -15,6 +15,8 @@ type RosterAssignmentActionsInput = {
     removeTeacherFromGroupAsync: (userId: string, groupId: string) => Promise<void>;
     assignStudentToGroupAsync: (userId: string, groupId: string) => Promise<void>;
     removeStudentFromGroupAsync: (userId: string, groupId: string) => Promise<void>;
+    upsertSchoolMembership: (payload: { userId: string; schoolId: string; role: "student" | "teacher" | "supervisor" | "parent"; status?: "active" | "inactive" }) => Promise<unknown>;
+    updateTeachingAssignment: (payload: { schoolId: string; teacherId: string; classId: string; subjectId?: string; status?: "active" | "inactive" }) => Promise<unknown>;
     refreshSchoolWorkspace: (schoolId: string) => Promise<unknown>;
     setRosterActionPending: (value: string | null) => void;
     setManagementError: (value: string | null) => void;
@@ -36,6 +38,8 @@ export const createSchoolRosterAssignmentActions = ({
     removeTeacherFromGroupAsync,
     assignStudentToGroupAsync,
     removeStudentFromGroupAsync,
+    upsertSchoolMembership,
+    updateTeachingAssignment,
     refreshSchoolWorkspace,
     setRosterActionPending,
     setManagementError,
@@ -52,6 +56,12 @@ export const createSchoolRosterAssignmentActions = ({
         setSaveVerificationState('saving');
         setSaveVerificationMessage('جاري ربط المشرف وحفظ النطاق...');
         try {
+            await upsertSchoolMembership({
+                userId: supervisorId,
+                schoolId: selectedSchool.id,
+                role: "supervisor",
+                status: "active",
+            });
             await assignSupervisorToGroupAsync(supervisorId, groupId);
             await refreshSchoolWorkspace(selectedSchool.id);
             setSaveVerificationState('success');
@@ -98,6 +108,12 @@ export const createSchoolRosterAssignmentActions = ({
         setManagementError(null);
         setManagementNotice(null);
         try {
+            await upsertSchoolMembership({
+                userId: studentId,
+                schoolId: selectedSchool.id,
+                role: "student",
+                status: "active",
+            });
             await assignStudentToGroupAsync(studentId, classId);
             await refreshSchoolWorkspace(selectedSchool.id);
             setManagementNotice(`تم حفظ نقل ${targetStudent?.name || 'الطالب'} إلى ${targetClass?.name || 'الفصل المحدد'}.`);
@@ -134,7 +150,20 @@ export const createSchoolRosterAssignmentActions = ({
         setSaveVerificationState('saving');
         setSaveVerificationMessage('جاري ربط المعلم وحفظ نطاق الفصل...');
         try {
+            await upsertSchoolMembership({
+                userId: teacherId,
+                schoolId: selectedSchool.id,
+                role: "teacher",
+                status: "active",
+            });
             await assignTeacherToGroupAsync(teacherId, classId);
+            await updateTeachingAssignment({
+                schoolId: selectedSchool.id,
+                teacherId,
+                classId,
+                subjectId: "",
+                status: "active",
+            });
             await refreshSchoolWorkspace(selectedSchool.id);
             setSaveVerificationState('success');
             setSaveVerificationMessage('تم ربط المعلم والتأكد من حفظ نطاق الفصل.');
