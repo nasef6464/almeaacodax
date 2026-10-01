@@ -18,6 +18,8 @@ interface SchoolClassPeopleManagerProps {
     supervisors: User[];
     initialSection: ActiveSection;
     isBusy: boolean;
+    notice?: string | null;
+    error?: string | null;
     onClose: () => void;
     onAssignStudents: (studentIds: string[]) => Promise<void>;
     onCreateStudent: (draft: ClassPersonDraft) => Promise<void>;
@@ -52,6 +54,8 @@ export const SchoolClassPeopleManager: React.FC<SchoolClassPeopleManagerProps> =
     supervisors,
     initialSection,
     isBusy,
+    notice,
+    error,
     onClose,
     onAssignStudents,
     onCreateStudent,
@@ -199,6 +203,17 @@ export const SchoolClassPeopleManager: React.FC<SchoolClassPeopleManagerProps> =
                 </div>
 
                 <div className="p-4">
+                    {error && (
+                        <div className="mb-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-xs font-bold text-rose-700">
+                            {error}
+                        </div>
+                    )}
+                    {notice && (
+                        <div className="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-xs font-bold text-emerald-700">
+                            {notice}
+                        </div>
+                    )}
+
                     <div className="mb-4 grid grid-cols-3 gap-2 rounded-2xl bg-slate-50 p-1.5">
                         {([
                             ['students', 'الطلاب'],
