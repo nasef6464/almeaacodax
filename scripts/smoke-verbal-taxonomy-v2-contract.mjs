@@ -29,6 +29,11 @@ assert.ok(migration.includes("{ upsert: true }"), "migration must recover missin
 assert.ok(migration.includes("trainingDrills !== 22"));
 assert.ok(migration.includes("mockExams !== 5"));
 assert.ok(migration.includes("skillIds: [mainSkillId, subSkillId]"));
+assert.ok(!taxonomy.includes("sections.deleteMany"), "taxonomy deploy must not delete verbal sections");
+assert.ok(!taxonomy.includes("skills.deleteMany"), "taxonomy deploy must not delete verbal skills");
+assert.ok(!taxonomy.includes("topics.deleteMany"), "taxonomy deploy must not delete verbal topics");
+assert.ok(!migration.includes("quizCol.deleteMany"), "taxonomy migration must not delete generated quiz sets before rebuilding");
+assert.ok(migration.includes("bank_verbal_skill_"), "migration must retain stable 22-bank IDs");
 assert.ok(!migration.includes('db.collection("skillprogresses")'), "migration must not rewrite SkillProgress");
 assert.ok(!migration.includes('db.collection("quizresults")'), "migration must not rewrite historical QuizResult");
 assert.ok(legacy.includes("./deployVerbalTaxonomy22.js"), "legacy entrypoint must route to V2");
