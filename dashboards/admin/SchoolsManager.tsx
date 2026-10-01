@@ -823,6 +823,183 @@ export const SchoolsManager: React.FC = () => {
             setSaveVerificationState,
             setSaveVerificationMessage,
         });
+        const handleAssignStudentsToClass = async (studentIds: string[], classId: string) => {
+            const uniqueStudentIds = Array.from(new Set(studentIds.filter(Boolean)));
+            if (!uniqueStudentIds.length) return;
+
+            const targetClass = schoolClasses.find((classroom) => classroom.id === classId);
+            setRosterActionPending(`students-bulk-assign-${classId}`);
+            setManagementError(null);
+            setManagementNotice(null);
+            setSaveVerificationState('saving');
+            setSaveVerificationMessage(`جاري إضافة ${uniqueStudentIds.length} طالب إلى الفصل...`);
+            try {
+                for (const studentId of uniqueStudentIds) {
+                    await api.upsertSchoolMembership({
+                        userId: studentId,
+                        schoolId: selectedSchool.id,
+                        role: 'student',
+                        status: 'active',
+                    });
+                    await assignStudentToGroupAsync(studentId, classId);
+                }
+                await refreshSchoolWorkspace(selectedSchool.id);
+                setSaveVerificationState('success');
+                setSaveVerificationMessage('تم حفظ الطلاب والتحقق من ظهورهم في الفصل.');
+                setManagementNotice(`تمت إضافة ${uniqueStudentIds.length} طالب إلى ${targetClass?.name || 'الفصل المحدد'}.`);
+            } catch (error) {
+                const message = getErrorMessage(error, 'تعذر إضافة الطلاب المحددين للفصل.');
+                setSaveVerificationState('error');
+                setSaveVerificationMessage(message);
+                setManagementError(message);
+                throw error;
+            } finally {
+                setRosterActionPending(null);
+            }
+        };
+
+        const handleCreateStudentForClass = async (classroom: Group, draft: ClassPersonDraft) => {
+            const normalizedEmail = draft.email.trim().toLowerCase();
+            const existingAccount = users.find((currentUser) => (currentUser.email || '').trim().toLowerCase() === normalizedEmail);
+            if (existingAccount) {
+                if (existingAccount.role !== Role.STUDENT) {
+                    throw new Error('هذا البريد مستخدم لحساب ليس طالبًا.');
+                }
+                if (existingAccount.schoolId && existingAccount.schoolId !== selectedSchool.id) {
+                    throw new Error('هذا الطالب مرتبط بمدرسة أخرى ولا يمكن نقله من هنا.');
+                }
+                await handleAssignStudentToClass(existingAccount.id, classroom.id);
+                return;
+            }
+
+            setRosterActionPending(`student-create-${classroom.id}`);
+            setManagementError(null);
+            try {
+                const response = await api.importSchoolStudents(selectedSchool.id, {
+                    rows: [{
+                        name: draft.name.trim(),
+                        email: normalizedEmail,
+                        className: classroom.name,
+                        ...(draft.password.trim() ? { password: draft.password.trim() } : {}),
+                    }],
+                }) as ImportResponse;
+                if (response.users?.length) {
+                    mergeSchoolUsers(response.users);
+                } else {
+                    await refreshUsers();
+                }
+                mergeSchoolGroups(response.groups);
+                await refreshSchoolWorkspace(selectedSchool.id);
+                setManagementNotice(`تم إنشاء الطالب وربطه بفصل ${classroom.name}.`);
+            } catch (error) {
+                setManagementError(getErrorMessage(error, 'تعذر إنشاء الطالب وربطه بالفصل.'));
+                throw error;
+            } finally {
+                setRosterActionPending(null);
+            }
+        };
+
+        const handleCreateTeacherForClass = async (classroom: Group, draft: ClassPersonDraft) => {
+            const normalizedEmail = draft.email.trim().toLowerCase();
+            const existingAccount = users.find((currentUser) => (currentUser.email || '').trim().toLowerCase() === normalizedEmail);
+            if (existingAccount && existingAccount.role !== Role.TEACHER) {
+                throw new Error('هذا البريد مستخدم لحساب ليس معلمًا.');
+            }
+
+            const password = draft.password.trim() || generateTemporaryPassword();
+            setRosterActionPending(`teacher-create-${classroom.id}`);
+            setManagementError(null);
+            try {
+                let teacher = existingAccount;
+                if (!teacher) {
+                    const response = await api.createAdminUser({
+                        name: draft.name.trim(),
+                        email: normalizedEmail,
+                        password,
+                        role: Role.TEACHER,
+                        schoolId: selectedSchool.id,
+                        groupIds: [classroom.id],
+                    }) as { user?: AdminUserPayload };
+                    if (!response.user) throw new Error('لم يرجع الخادم حساب المعلم الجديد.');
+                    teacher = buildStoreUser(response.user);
+                    addUser(teacher);
+                }
+
+                await api.upsertSchoolMembership({
+                    userId: teacher.id,
+                    schoolId: selectedSchool.id,
+                    role: 'teacher',
+                    status: 'active',
+                });
+                await assignTeacherToGroupAsync(teacher.id, classroom.id);
+                await api.updateTeachingAssignment({
+                    schoolId: selectedSchool.id,
+                    teacherId: teacher.id,
+                    classId: classroom.id,
+                    subjectId: '',
+                    status: 'active',
+                });
+                await refreshSchoolWorkspace(selectedSchool.id);
+                setManagementNotice(
+                    existingAccount
+                        ? `تم إسناد ${teacher.name} إلى ${classroom.name}.`
+                        : `تم إنشاء وإسناد ${teacher.name} إلى ${classroom.name}. كلمة المرور المؤقتة: ${password}`,
+                );
+            } catch (error) {
+                setManagementError(getErrorMessage(error, 'تعذر إنشاء المعلم أو إسناده للفصل.'));
+                throw error;
+            } finally {
+                setRosterActionPending(null);
+            }
+        };
+
+        const handleCreateSupervisorForClass = async (classroom: Group, draft: ClassPersonDraft) => {
+            const normalizedEmail = draft.email.trim().toLowerCase();
+            const existingAccount = users.find((currentUser) => (currentUser.email || '').trim().toLowerCase() === normalizedEmail);
+            if (existingAccount && existingAccount.role !== Role.SUPERVISOR) {
+                throw new Error('هذا البريد مستخدم لحساب ليس مشرفًا.');
+            }
+
+            const password = draft.password.trim() || generateTemporaryPassword();
+            setRosterActionPending(`supervisor-create-${classroom.id}`);
+            setManagementError(null);
+            try {
+                let supervisor = existingAccount;
+                if (!supervisor) {
+                    const response = await api.createAdminUser({
+                        name: draft.name.trim(),
+                        email: normalizedEmail,
+                        password,
+                        role: Role.SUPERVISOR,
+                        schoolId: selectedSchool.id,
+                        groupIds: [classroom.id],
+                    }) as { user?: AdminUserPayload };
+                    if (!response.user) throw new Error('لم يرجع الخادم حساب المشرف الجديد.');
+                    supervisor = buildStoreUser(response.user);
+                    addUser(supervisor);
+                }
+
+                await api.upsertSchoolMembership({
+                    userId: supervisor.id,
+                    schoolId: selectedSchool.id,
+                    role: 'supervisor',
+                    status: 'active',
+                });
+                await assignSupervisorToGroupAsync(supervisor.id, classroom.id);
+                await refreshSchoolWorkspace(selectedSchool.id);
+                setManagementNotice(
+                    existingAccount
+                        ? `تم ربط ${supervisor.name} بفصل ${classroom.name}.`
+                        : `تم إنشاء وربط ${supervisor.name} بفصل ${classroom.name}. كلمة المرور المؤقتة: ${password}`,
+                );
+            } catch (error) {
+                setManagementError(getErrorMessage(error, 'تعذر إنشاء المشرف أو ربطه بالفصل.'));
+                throw error;
+            } finally {
+                setRosterActionPending(null);
+            }
+        };
+
         const {
             handleCreateSchoolPackage,
             handleUpdateSchoolPackage,
