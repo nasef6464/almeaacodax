@@ -1,4 +1,5 @@
 import type { Group, User } from '../../../types';
+import { api } from '../../../services/api';
 import type { SaveVerificationState } from './contracts';
 import { getErrorMessage } from './errorMessageService';
 
@@ -17,19 +18,6 @@ type RosterAssignmentActionsInput = {
     removeTeacherFromGroupAsync: (userId: string, groupId: string) => Promise<void>;
     assignStudentToGroupAsync: (userId: string, groupId: string) => Promise<void>;
     removeStudentFromGroupAsync: (userId: string, groupId: string) => Promise<void>;
-    upsertSchoolMembership: (payload: {
-        userId: string;
-        schoolId: string;
-        role: MembershipRole;
-        status: 'active' | 'inactive';
-    }) => Promise<unknown>;
-    updateTeachingAssignment: (payload: {
-        schoolId: string;
-        teacherId: string;
-        classId: string;
-        subjectId?: string;
-        status: 'active' | 'inactive';
-    }) => Promise<unknown>;
     refreshSchoolWorkspace: (schoolId: string) => Promise<unknown>;
     setRosterActionPending: (value: string | null) => void;
     setManagementError: (value: string | null) => void;
@@ -51,8 +39,6 @@ export const createSchoolRosterAssignmentActions = ({
     removeTeacherFromGroupAsync,
     assignStudentToGroupAsync,
     removeStudentFromGroupAsync,
-    upsertSchoolMembership,
-    updateTeachingAssignment,
     refreshSchoolWorkspace,
     setRosterActionPending,
     setManagementError,
@@ -61,7 +47,7 @@ export const createSchoolRosterAssignmentActions = ({
     setSaveVerificationMessage,
 }: RosterAssignmentActionsInput) => {
     const saveMembership = (userId: string, role: MembershipRole, status: 'active' | 'inactive' = 'active') => (
-        upsertSchoolMembership({ userId, schoolId: selectedSchool.id, role, status })
+        api.updateSchoolMembership({ userId, schoolId: selectedSchool.id, role, status })
     );
 
     const handleAssignSchoolSupervisor = async (supervisorId: string, groupId: string) => {
@@ -189,7 +175,7 @@ export const createSchoolRosterAssignmentActions = ({
         setSaveVerificationMessage('جاري ربط المعلم وحفظ سلطة التدريس...');
         try {
             await saveMembership(teacherId, 'teacher');
-            await updateTeachingAssignment({
+            await api.updateTeachingAssignment({
                 schoolId: selectedSchool.id,
                 teacherId,
                 classId,
@@ -219,7 +205,7 @@ export const createSchoolRosterAssignmentActions = ({
         setSaveVerificationState('saving');
         setSaveVerificationMessage('جاري إزالة إسناد المعلم وحفظ النطاق...');
         try {
-            await updateTeachingAssignment({
+            await api.updateTeachingAssignment({
                 schoolId: selectedSchool.id,
                 teacherId: teacher.id,
                 classId: classroom.id,
