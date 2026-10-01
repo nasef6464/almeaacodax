@@ -737,6 +737,8 @@ export const api = {
     request<{ contract: { status: string; modules: string[] } | null }>(`/school-access/contracts/${encodeURIComponent(schoolId)}`, { token }),
   updateSchoolContract: (schoolId: string, payload: unknown, token?: string | null) =>
     request<{ contract: { status: string; modules: string[] } }>(`/school-access/contracts/${encodeURIComponent(schoolId)}`, { method: "PUT", body: payload, token }),
+  upsertSchoolMembership: (payload: { userId: string; schoolId: string; role: "student" | "teacher" | "supervisor" | "parent"; status?: "active" | "inactive" }, token?: string | null) =>
+    request<unknown>("/school-access/memberships", { method: "PUT", body: payload, token }),
   updateTeachingAssignment: (payload: unknown, token?: string | null) =>
     request<unknown>("/school-access/assignments", { method: "PUT", body: payload, token }),
   getSchoolDirectors: (schoolId: string, token?: string | null) =>
