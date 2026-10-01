@@ -2,6 +2,7 @@ import React from 'react';
 import { Building2, Download, Plus } from 'lucide-react';
 import type { Course, Group, User } from '../../../types';
 import { SchoolClassOperatingCard } from './SchoolClassOperatingCard';
+import type { ClassPersonDraft } from './SchoolClassPeopleManager';
 
 interface SchoolClassesPanelProps {
     schoolClasses: Group[];
@@ -26,6 +27,11 @@ interface SchoolClassesPanelProps {
     onFocusClassRoster: (classroom: Group) => void;
     onOpenImport: () => void;
     onOpenPackages: () => void;
+    onAssignStudents: (studentIds: string[], classId: string) => Promise<void>;
+    onRemoveStudent: (student: User, classId: string) => Promise<void>;
+    onCreateStudent: (classroom: Group, draft: ClassPersonDraft) => Promise<void>;
+    onCreateTeacher: (classroom: Group, draft: ClassPersonDraft) => Promise<void>;
+    onCreateSupervisorDirect: (classroom: Group, draft: ClassPersonDraft) => Promise<void>;
     onAssignSupervisor: (userId: string, classId: string) => Promise<void>;
     onCreateSupervisor: (classroom: Group) => void;
     onRemoveSupervisor: (classroom: Group, user: User) => void;
@@ -58,6 +64,11 @@ export const SchoolClassesPanel: React.FC<SchoolClassesPanelProps> = ({
     onFocusClassRoster,
     onOpenImport,
     onOpenPackages,
+    onAssignStudents,
+    onRemoveStudent,
+    onCreateStudent,
+    onCreateTeacher,
+    onCreateSupervisorDirect,
     onAssignSupervisor,
     onCreateSupervisor,
     onRemoveSupervisor,
@@ -153,6 +164,13 @@ export const SchoolClassesPanel: React.FC<SchoolClassesPanelProps> = ({
                             onCreateSupervisor={() => onCreateSupervisor(classroom)}
                             onRemoveSupervisor={(currentUser) => onRemoveSupervisor(classroom, currentUser)}
                             classTeachers={classTeachers}
+                            classStudents={classStudents}
+                            schoolStudents={schoolStudents}
+                            onAssignStudents={(studentIds) => onAssignStudents(studentIds, classroom.id)}
+                            onRemoveStudent={(student) => onRemoveStudent(student, classroom.id)}
+                            onCreateStudent={(draft) => onCreateStudent(classroom, draft)}
+                            onCreateTeacher={(draft) => onCreateTeacher(classroom, draft)}
+                            onCreateSupervisorDirect={(draft) => onCreateSupervisorDirect(classroom, draft)}
                             onAssignTeacher={(userId) => onAssignTeacher(userId, classroom.id)}
                             onRemoveTeacher={(currentUser) => onRemoveTeacher(classroom, currentUser)}
                             onAssignCourse={(courseId) => onAssignCourse(courseId, classroom.id)}
