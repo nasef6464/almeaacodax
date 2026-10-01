@@ -32,6 +32,14 @@ assert.ok(migration.includes("skillIds: [mainSkillId, subSkillId]"));
 assert.ok(!migration.includes('db.collection("skillprogresses")'), "migration must not rewrite SkillProgress");
 assert.ok(!migration.includes('db.collection("quizresults")'), "migration must not rewrite historical QuizResult");
 assert.ok(legacy.includes("./deployVerbalTaxonomy22.js"), "legacy entrypoint must route to V2");
-assert.ok(ecosystem.includes("ALLOW_DESTRUCTIVE_VERBAL_REBUILD"), "legacy rebuild must be guarded");
+assert.ok(ecosystem.includes("VERBAL26_DRY_RUN"), "VERBAL26 deployment must default to dry-run");
+assert.ok(ecosystem.includes("ALLOW_VERBAL26_APPLY"), "VERBAL26 writes must require explicit apply authorization");
+assert.ok(ecosystem.includes("VERBAL26_BACKUP_REFERENCE"), "VERBAL26 writes must require rollback/backup evidence");
+assert.ok(ecosystem.includes("verbal_approved_bank_v2.json"), "VERBAL26 deployment must consume the approved canonical bank");
+assert.ok(!ecosystem.includes("questionsCol.deleteMany"), "VERBAL26 deployment must never wipe verbal questions");
+assert.ok(!ecosystem.includes("quizzesCol.deleteMany"), "VERBAL26 ecosystem wrapper must not wipe verbal quizzes");
+assert.ok(!ecosystem.includes("selected40"), "legacy 40-question cross-skill top-up logic must stay removed");
+assert.ok(ecosystem.includes("skillIds: [q.mainSkillId, q.subSkillId]"), "imported questions must carry exact main/subskill lineage");
+assert.ok(ecosystem.includes("migrateVerbalTaxonomy22"), "canonical 22/76 migration must own generated drills and mocks");
 
 console.log("PASS: verbal taxonomy V2 contract — 22 main / 76 stable subskills / non-destructive migration guards.");
