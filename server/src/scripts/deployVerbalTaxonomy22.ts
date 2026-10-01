@@ -251,38 +251,51 @@ export async function deploy() {
   const topics = db.collection("topics");
   const now = new Date();
 
-  await sections.deleteMany({ subjectId: VERBAL_SUBJECT_ID });
+  // Stable-ID upserts only. Do not delete/reinsert taxonomy records because historical
+  // reports, mastery, topics, and quizzes may still reference these identifiers.
   for (let index = 0; index < VERBAL_TAXONOMY.length; index++) {
     const main = VERBAL_TAXONOMY[index];
     const sectionId = `sec_${VERBAL_SUBJECT_ID}_${index + 1}`;
-    await sections.insertOne({
-      _id: sectionId as any, id: sectionId, pathId: VERBAL_PATH_ID, subjectId: VERBAL_SUBJECT_ID,
-      name: main.name, order: index + 1, createdAt: now, updatedAt: now,
-    });
+    await sections.updateOne(
+      { id: sectionId },
+      {
+        $set: {
+          id: sectionId,
+          pathId: VERBAL_PATH_ID,
+          subjectId: VERBAL_SUBJECT_ID,
+          name: main.name,
+          order: index + 1,
+          updatedAt: now,
+        },
+        $setOnInsert: { _id: sectionId as any, createdAt: now },
+      },
+      { upsert: true },
+    );
+
+    await skills.updateOne(
+      { id: main.id, subjectId: VERBAL_SUBJECT_ID },
+      {
+        $set: {
+          id: main.id,
+          pathId: VERBAL_PATH_ID,
+          subjectId: VERBAL_SUBJECT_ID,
+          sectionId,
+          name: main.name,
+          description: main.description,
+          order: index + 1,
+          subSkills: main.subSkills.map((sub) => ({ ...sub })),
+          updatedAt: now,
+        },
+        $setOnInsert: {
+          _id: main.id as any,
+          lessonIds: [],
+          questionIds: [],
+          createdAt: now,
+        },
+      },
+      { upsert: true },
+    );
   }
-
-  await skills.deleteMany({ subjectId: VERBAL_SUBJECT_ID });
-  await skills.insertMany(VERBAL_TAXONOMY.map((main, index) => {
-    const sectionId = `sec_${VERBAL_SUBJECT_ID}_${index + 1}`;
-    return {
-      _id: main.id as any,
-      id: main.id,
-      pathId: VERBAL_PATH_ID,
-      subjectId: VERBAL_SUBJECT_ID,
-      sectionId,
-      name: main.name,
-      description: main.description,
-      order: index + 1,
-      lessonIds: [],
-      questionIds: [],
-      subSkills: main.subSkills.map((sub) => ({ ...sub })),
-      createdAt: now,
-      updatedAt: now,
-    };
-  }));
-
-  const parentIds = VERBAL_TAXONOMY.map((main) => `top_verbal_main_${main.num.padStart(2, "0")}`);
-  await topics.deleteMany({ subjectId: VERBAL_SUBJECT_ID, parentId: null, id: { $nin: parentIds } });
 
   for (let index = 0; index < VERBAL_TAXONOMY.length; index++) {
     const main = VERBAL_TAXONOMY[index];
