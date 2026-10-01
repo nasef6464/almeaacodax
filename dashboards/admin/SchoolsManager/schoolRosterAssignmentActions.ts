@@ -117,34 +117,6 @@ export const createSchoolRosterAssignmentActions = ({
         }
     };
 
-    const handleAssignStudentsToClass = async (studentIds: string[], classId: string) => {
-        const uniqueStudentIds = Array.from(new Set(studentIds)).filter(Boolean);
-        if (uniqueStudentIds.length === 0) return;
-        const targetClass = schoolClasses.find((classroom) => classroom.id === classId);
-        setRosterActionPending(`student-bulk-assign-${classId}`);
-        setManagementError(null);
-        setManagementNotice(null);
-        setSaveVerificationState('saving');
-        setSaveVerificationMessage(`جاري إضافة ${uniqueStudentIds.length} طالب للفصل...`);
-        try {
-            for (const studentId of uniqueStudentIds) {
-                await saveMembership(studentId, 'student');
-                await assignStudentToGroupAsync(studentId, classId);
-            }
-            await refreshSchoolWorkspace(selectedSchool.id);
-            setSaveVerificationState('success');
-            setSaveVerificationMessage('تم حفظ مجموعة الطلاب والتأكد منها من الخادم.');
-            setManagementNotice(`تمت إضافة ${uniqueStudentIds.length} طالب إلى ${targetClass?.name || 'الفصل المحدد'}.`);
-        } catch (error) {
-            const message = getErrorMessage(error, 'تعذر إضافة مجموعة الطلاب الآن.');
-            setSaveVerificationState('error');
-            setSaveVerificationMessage(message);
-            setManagementError(message);
-        } finally {
-            setRosterActionPending(null);
-        }
-    };
-
     const handleRemoveStudentScope = async (studentId: string, groupId: string) => {
         const targetStudent = schoolStudents.find((student) => student.id === studentId);
         const targetGroup = schoolScopeGroups.find((group) => group.id === groupId);
@@ -241,7 +213,6 @@ export const createSchoolRosterAssignmentActions = ({
         handleAssignSchoolSupervisor,
         handleRemoveSchoolSupervisor,
         handleAssignStudentToClass,
-        handleAssignStudentsToClass,
         handleRemoveStudentScope,
         confirmRemoveSchoolWideSupervisor,
         confirmRemoveClassSupervisor,
