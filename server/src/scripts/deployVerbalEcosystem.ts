@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import * as fs from "fs";
 import * as path from "path";
 import { env } from "../config/env.js";
-import { VERBAL_TAXONOMY } from "./deployVerbalTaxonomy13.js";
+import { VERBAL_TAXONOMY } from "./deployVerbalTaxonomy22.js";
 
 export async function deployVerbalEcosystem() {
   console.log("=== Starting Full Deployment of Verbal Ecosystem ===");
