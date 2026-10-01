@@ -33,6 +33,7 @@ import { SchoolReportsPanel } from './SchoolsManager/SchoolReportsPanel';
 import { SchoolStudentRosterPanel } from './SchoolsManager/SchoolStudentRosterPanel';
 import { SchoolCoursesPanel } from './SchoolsManager/SchoolCoursesPanel';
 import { SchoolClassesPanel } from './SchoolsManager/SchoolClassesPanel';
+import type { ClassPersonDraft } from './SchoolsManager/SchoolClassPeopleManager';
 import { SchoolSingleStudentPanel } from './SchoolsManager/SchoolSingleStudentPanel';
 import { SchoolWideSupervisorsPanel } from './SchoolsManager/SchoolWideSupervisorsPanel';
 import { SchoolOverviewOperationsPanel } from './SchoolsManager/SchoolOverviewOperationsPanel';
@@ -813,6 +814,8 @@ export const SchoolsManager: React.FC = () => {
             removeTeacherFromGroupAsync,
             assignStudentToGroupAsync,
             removeStudentFromGroupAsync,
+            upsertSchoolMembership: (payload) => api.upsertSchoolMembership(payload),
+            updateTeachingAssignment: (payload) => api.updateTeachingAssignment(payload),
             refreshSchoolWorkspace,
             setRosterActionPending,
             setManagementError,
