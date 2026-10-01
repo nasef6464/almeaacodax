@@ -20,6 +20,8 @@ const sources = {
     read("dashboards/admin/SchoolsManager/SchoolRelationsImportPanel.tsx"),
     read("dashboards/admin/SchoolsManager/SchoolStudentRosterPanel.tsx"),
     read("dashboards/admin/SchoolsManager/SchoolClassOperatingCard.tsx"),
+    read("dashboards/admin/SchoolsManager/SchoolClassPeopleManager.tsx"),
+    read("dashboards/admin/SchoolsManager/useSchoolClassPeopleActions.ts"),
     read("dashboards/admin/SchoolsManager/SchoolCoursesPanel.tsx"),
     read("dashboards/admin/SchoolsManager/SchoolClassesPanel.tsx"),
     read("dashboards/admin/SchoolsManager/SchoolSingleStudentPanel.tsx"),
@@ -141,8 +143,9 @@ check("Frontend uses the server relations endpoint and refreshes users/groups fr
 check("Admin UI exposes school/class supervisor assignment, class movement, and parent linking flows", () => {
   assertIncludes(sources.schoolsManager, "handleAssignSchoolSupervisor(value, selectedSchool.id)");
   assertIncludes(sources.schoolsManager, "onAssignSupervisor={handleAssignSchoolSupervisor}");
-  assertIncludes(sources.schoolsManager, "onAssignSupervisor={(userId) => onAssignSupervisor(userId, classroom.id)}");
-  assertIncludes(sources.schoolsManager, "onAssignSupervisor(value).finally");
+  assertIncludes(sources.schoolsManager, 'data-testid="school-class-manage-supervisors"');
+  assertIncludes(sources.schoolsManager, "إضافة مشرف مسجل على المنصة");
+  assertIncludes(sources.schoolsManager, "api.updateSchoolMembership");
   assertIncludes(sources.schoolsManager, "handleAssignStudentToClass(student.id, value)");
   assertIncludes(sources.schoolsManager, "handleApplyRelationImport");
   assertIncludes(sources.schoolsManager, "بريد ولي الأمر");
