@@ -2409,6 +2409,26 @@
     "amerTrainingsIndexed": 33,
     "amerApprovedRecords": 0,
     "amerDerivedReportCrossCheck": 938,
-    "amerDerivedReportIsAuthority": false
-  }
+    "amerDerivedReportIsAuthority": false,
+    "amerObservedQuestionCounts": {
+      "1": 29
+    }
+  },
+  "amerBatches": [
+    {
+      "id": "AMER-T01",
+      "training": 1,
+      "section": "التناظر اللفظي",
+      "relation": "الجزء من الكل / الكل إلى الجزء",
+      "printedPages": [
+        4,
+        5
+      ],
+      "observedQuestionRange": "1-29",
+      "observedQuestionCount": 29,
+      "status": "QUESTION_COUNT_VERIFIED_ANSWER_AND_TEXT_QA_PENDING",
+      "evidence": "Training 1 starts on printed page 4; source snippets show questions 1-29; table of contents starts Training 2 on printed page 6.",
+      "answerPolicy": "No answer is approved from semantic inference alone. Exact options and independently verified/source-backed key are required."
+    }
+  ]
 }
