@@ -66,7 +66,8 @@ check('classes panel preserves class creation and operating presentation', () =>
   assertIncludes(classesPanel, 'إضافة فصل');
   assertIncludes(classesPanel, 'إنشاء عدة فصول مرة واحدة');
   assertIncludes(classesPanel, '<SchoolClassOperatingCard');
-  assertIncludes(classesPanel, 'onAssignSupervisor={(userId) => onAssignSupervisor(userId, classroom.id)}');
+  assertIncludes(classesPanel, "onManageSupervisors={() => openPeopleManager(classroom, 'supervisors')}");
+  assertIncludes(classesPanel, '<SchoolClassPeopleManager');
   assertIncludes(classesPanel, 'onAssignCourse={(courseId) => onAssignCourse(courseId, classroom.id)}');
 });
 
