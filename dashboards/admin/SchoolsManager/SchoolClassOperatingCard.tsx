@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Download, Edit2, Printer, Trash2, UserPlus } from 'lucide-react';
 import type { Course, Group, User } from '../../../types';
+import { SchoolClassPeopleManager, type ClassPersonDraft } from './SchoolClassPeopleManager';
 
 interface SchoolClassOperatingCardProps {
     classroom: Group;
@@ -8,7 +9,9 @@ interface SchoolClassOperatingCardProps {
     studentsWithoutParentCount: number;
     classSupervisors: User[];
     classTeachers: User[];
+    classStudents: User[];
     classCourses: Course[];
+    schoolStudents: User[];
     supervisors: User[];
     teachers: User[];
     publishedCourses: Course[];
@@ -21,6 +24,11 @@ interface SchoolClassOperatingCardProps {
     onFocusStudentForm: () => void;
     onFocusRoster: () => void;
     onOpenImport: () => void;
+    onAssignStudents: (studentIds: string[]) => Promise<void>;
+    onRemoveStudent: (student: User) => Promise<void>;
+    onCreateStudent: (draft: ClassPersonDraft) => Promise<void>;
+    onCreateTeacher: (draft: ClassPersonDraft) => Promise<void>;
+    onCreateSupervisorDirect: (draft: ClassPersonDraft) => Promise<void>;
     onOpenPackages: () => void;
     onAssignSupervisor: (userId: string) => Promise<void>;
     onCreateSupervisor: () => void;
@@ -33,11 +41,13 @@ interface SchoolClassOperatingCardProps {
 
 export const SchoolClassOperatingCard: React.FC<SchoolClassOperatingCardProps> = ({
     classroom, classStudentCount, studentsWithoutParentCount, classSupervisors, classTeachers,
-    classCourses, supervisors, teachers, publishedCourses, rosterActionPending, isSchoolWorkspaceBusy,
+    classStudents, classCourses, schoolStudents, supervisors, teachers, publishedCourses, rosterActionPending, isSchoolWorkspaceBusy,
     onDownloadReport, onPrintReport, onRename, onDelete, onFocusStudentForm, onFocusRoster,
-    onOpenImport, onOpenPackages, onAssignSupervisor, onCreateSupervisor, onRemoveSupervisor,
+    onOpenImport, onAssignStudents, onRemoveStudent, onCreateStudent, onCreateTeacher, onCreateSupervisorDirect,
+    onOpenPackages, onAssignSupervisor, onCreateSupervisor, onRemoveSupervisor,
     onAssignTeacher, onRemoveTeacher, onAssignCourse, onRemoveCourse,
 }) => {
+    const [isPeopleManagerOpen, setIsPeopleManagerOpen] = useState(false);
     const availableSupervisors = supervisors.filter((currentUser) => !classroom.supervisorIds.includes(currentUser.id));
     const availableTeachers = teachers.filter((currentUser) => !classTeachers.some((teacher) => teacher.id === currentUser.id));
     const availableCourses = publishedCourses.filter((course) => !classroom.courseIds.includes(course.id));
@@ -95,8 +105,8 @@ export const SchoolClassOperatingCard: React.FC<SchoolClassOperatingCardProps> =
             {/* ── محتوى وإجراءات الفصل التشغيلية ── */}
             <div className="p-4 space-y-4">
                 <div data-testid="school-class-operating-actions" className="grid grid-cols-2 gap-2 rounded-2xl border border-gray-100 bg-gray-50 p-3 md:grid-cols-4">
-                    <button type="button" data-testid="school-class-add-students" onClick={onFocusStudentForm} className="rounded-xl bg-white px-3 py-2 text-xs font-black text-gray-800 transition-colors hover:bg-indigo-600 hover:text-white cursor-pointer shadow-2xs">
-                        إضافة طالب
+                    <button type="button" data-testid="school-class-manage-people" onClick={() => setIsPeopleManagerOpen(true)} className="rounded-xl bg-indigo-600 px-3 py-2 text-xs font-black text-white transition-colors hover:bg-indigo-700 cursor-pointer shadow-2xs">
+                        إدارة الفصل
                     </button>
                     <button type="button" data-testid="school-class-roster" onClick={onFocusRoster} className="rounded-xl bg-white px-3 py-2 text-xs font-black text-gray-800 transition-colors hover:bg-gray-900 hover:text-white cursor-pointer shadow-2xs">
                         طلاب الفصل
@@ -207,6 +217,32 @@ export const SchoolClassOperatingCard: React.FC<SchoolClassOperatingCardProps> =
                     </div>
                 </div>
             </div>
+
+            <SchoolClassPeopleManager
+                classroom={classroom}
+                isOpen={isPeopleManagerOpen}
+                onClose={() => setIsPeopleManagerOpen(false)}
+                schoolStudents={schoolStudents}
+                classStudents={classStudents}
+                teachers={teachers}
+                classTeachers={classTeachers}
+                supervisors={supervisors}
+                classSupervisors={classSupervisors}
+                isBusy={Boolean(rosterActionPending) || isSchoolWorkspaceBusy}
+                onAssignStudents={onAssignStudents}
+                onRemoveStudent={onRemoveStudent}
+                onCreateStudent={onCreateStudent}
+                onOpenImport={() => {
+                    setIsPeopleManagerOpen(false);
+                    onOpenImport();
+                }}
+                onAssignTeacher={onAssignTeacher}
+                onCreateTeacher={onCreateTeacher}
+                onRemoveTeacher={onRemoveTeacher}
+                onAssignSupervisor={onAssignSupervisor}
+                onCreateSupervisor={onCreateSupervisorDirect}
+                onRemoveSupervisor={onRemoveSupervisor}
+            />
         </div>
     );
 };
