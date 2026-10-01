@@ -2,6 +2,8 @@ import type { Group, User } from '../../../types';
 import type { SaveVerificationState } from './contracts';
 import { getErrorMessage } from './errorMessageService';
 
+type MembershipRole = 'student' | 'teacher' | 'supervisor' | 'parent';
+
 type RosterAssignmentActionsInput = {
     selectedSchool: Group;
     schoolScopeGroups: Group[];
@@ -15,6 +17,19 @@ type RosterAssignmentActionsInput = {
     removeTeacherFromGroupAsync: (userId: string, groupId: string) => Promise<void>;
     assignStudentToGroupAsync: (userId: string, groupId: string) => Promise<void>;
     removeStudentFromGroupAsync: (userId: string, groupId: string) => Promise<void>;
+    upsertSchoolMembership: (payload: {
+        userId: string;
+        schoolId: string;
+        role: MembershipRole;
+        status: 'active' | 'inactive';
+    }) => Promise<unknown>;
+    updateTeachingAssignment: (payload: {
+        schoolId: string;
+        teacherId: string;
+        classId: string;
+        subjectId?: string;
+        status: 'active' | 'inactive';
+    }) => Promise<unknown>;
     refreshSchoolWorkspace: (schoolId: string) => Promise<unknown>;
     setRosterActionPending: (value: string | null) => void;
     setManagementError: (value: string | null) => void;
@@ -36,6 +51,8 @@ export const createSchoolRosterAssignmentActions = ({
     removeTeacherFromGroupAsync,
     assignStudentToGroupAsync,
     removeStudentFromGroupAsync,
+    upsertSchoolMembership,
+    updateTeachingAssignment,
     refreshSchoolWorkspace,
     setRosterActionPending,
     setManagementError,
@@ -43,6 +60,10 @@ export const createSchoolRosterAssignmentActions = ({
     setSaveVerificationState,
     setSaveVerificationMessage,
 }: RosterAssignmentActionsInput) => {
+    const saveMembership = (userId: string, role: MembershipRole, status: 'active' | 'inactive' = 'active') => (
+        upsertSchoolMembership({ userId, schoolId: selectedSchool.id, role, status })
+    );
+
     const handleAssignSchoolSupervisor = async (supervisorId: string, groupId: string) => {
         const targetGroup = schoolScopeGroups.find((group) => group.id === groupId);
         const targetSupervisor = supervisors.find((currentUser) => currentUser.id === supervisorId);
@@ -52,6 +73,7 @@ export const createSchoolRosterAssignmentActions = ({
         setSaveVerificationState('saving');
         setSaveVerificationMessage('جاري ربط المشرف وحفظ النطاق...');
         try {
+            await saveMembership(supervisorId, 'supervisor');
             await assignSupervisorToGroupAsync(supervisorId, groupId);
             await refreshSchoolWorkspace(selectedSchool.id);
             setSaveVerificationState('success');
@@ -98,11 +120,40 @@ export const createSchoolRosterAssignmentActions = ({
         setManagementError(null);
         setManagementNotice(null);
         try {
+            await saveMembership(studentId, 'student');
             await assignStudentToGroupAsync(studentId, classId);
             await refreshSchoolWorkspace(selectedSchool.id);
             setManagementNotice(`تم حفظ نقل ${targetStudent?.name || 'الطالب'} إلى ${targetClass?.name || 'الفصل المحدد'}.`);
         } catch (error) {
             setManagementError(getErrorMessage(error, 'تعذر نقل الطالب الآن.'));
+        } finally {
+            setRosterActionPending(null);
+        }
+    };
+
+    const handleAssignStudentsToClass = async (studentIds: string[], classId: string) => {
+        const uniqueStudentIds = Array.from(new Set(studentIds)).filter(Boolean);
+        if (uniqueStudentIds.length === 0) return;
+        const targetClass = schoolClasses.find((classroom) => classroom.id === classId);
+        setRosterActionPending(`student-bulk-assign-${classId}`);
+        setManagementError(null);
+        setManagementNotice(null);
+        setSaveVerificationState('saving');
+        setSaveVerificationMessage(`جاري إضافة ${uniqueStudentIds.length} طالب للفصل...`);
+        try {
+            for (const studentId of uniqueStudentIds) {
+                await saveMembership(studentId, 'student');
+                await assignStudentToGroupAsync(studentId, classId);
+            }
+            await refreshSchoolWorkspace(selectedSchool.id);
+            setSaveVerificationState('success');
+            setSaveVerificationMessage('تم حفظ مجموعة الطلاب والتأكد منها من الخادم.');
+            setManagementNotice(`تمت إضافة ${uniqueStudentIds.length} طالب إلى ${targetClass?.name || 'الفصل المحدد'}.`);
+        } catch (error) {
+            const message = getErrorMessage(error, 'تعذر إضافة مجموعة الطلاب الآن.');
+            setSaveVerificationState('error');
+            setSaveVerificationMessage(message);
+            setManagementError(message);
         } finally {
             setRosterActionPending(null);
         }
@@ -116,6 +167,9 @@ export const createSchoolRosterAssignmentActions = ({
         setManagementNotice(null);
         try {
             await removeStudentFromGroupAsync(studentId, groupId);
+            if (groupId === selectedSchool.id) {
+                await saveMembership(studentId, 'student', 'inactive');
+            }
             await refreshSchoolWorkspace(selectedSchool.id);
             setManagementNotice(`تم حفظ إخراج ${targetStudent?.name || 'الطالب'} من ${targetGroup?.name || 'النطاق المحدد'}.`);
         } catch (error) {
@@ -132,12 +186,20 @@ export const createSchoolRosterAssignmentActions = ({
         setManagementError(null);
         setManagementNotice(null);
         setSaveVerificationState('saving');
-        setSaveVerificationMessage('جاري ربط المعلم وحفظ نطاق الفصل...');
+        setSaveVerificationMessage('جاري ربط المعلم وحفظ سلطة التدريس...');
         try {
+            await saveMembership(teacherId, 'teacher');
+            await updateTeachingAssignment({
+                schoolId: selectedSchool.id,
+                teacherId,
+                classId,
+                subjectId: '',
+                status: 'active',
+            });
             await assignTeacherToGroupAsync(teacherId, classId);
             await refreshSchoolWorkspace(selectedSchool.id);
             setSaveVerificationState('success');
-            setSaveVerificationMessage('تم ربط المعلم والتأكد من حفظ نطاق الفصل.');
+            setSaveVerificationMessage('تم ربط المعلم والتأكد من العضوية وإسناد التدريس.');
             setManagementNotice(`تم حفظ ربط ${targetTeacher?.name || 'المعلم'} على ${targetClass?.name || 'الفصل المحدد'}.`);
         } catch (error) {
             const message = getErrorMessage(error, 'تعذر ربط المعلم الآن.');
@@ -155,12 +217,19 @@ export const createSchoolRosterAssignmentActions = ({
         setManagementError(null);
         setManagementNotice(null);
         setSaveVerificationState('saving');
-        setSaveVerificationMessage('جاري إزالة ربط المعلم وحفظ النطاق...');
+        setSaveVerificationMessage('جاري إزالة إسناد المعلم وحفظ النطاق...');
         try {
+            await updateTeachingAssignment({
+                schoolId: selectedSchool.id,
+                teacherId: teacher.id,
+                classId: classroom.id,
+                subjectId: '',
+                status: 'inactive',
+            });
             await removeTeacherFromGroupAsync(teacher.id, classroom.id);
             await refreshSchoolWorkspace(selectedSchool.id);
             setSaveVerificationState('success');
-            setSaveVerificationMessage('تم إزالة ربط المعلم والتأكد من حفظ النطاق.');
+            setSaveVerificationMessage('تم إيقاف إسناد التدريس وإزالة ربط الفصل.');
             setManagementNotice(`تم حفظ إزالة ${teacher.name} من ${classroom.name}.`);
         } catch (error) {
             const message = getErrorMessage(error, 'تعذر إزالة المعلم الآن.');
@@ -186,6 +255,7 @@ export const createSchoolRosterAssignmentActions = ({
         handleAssignSchoolSupervisor,
         handleRemoveSchoolSupervisor,
         handleAssignStudentToClass,
+        handleAssignStudentsToClass,
         handleRemoveStudentScope,
         confirmRemoveSchoolWideSupervisor,
         confirmRemoveClassSupervisor,
