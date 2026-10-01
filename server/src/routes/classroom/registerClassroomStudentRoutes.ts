@@ -91,15 +91,30 @@ export function registerClassroomStudentRoutes(classroomRouter: Router) {
 
   classroomRouter.post("/sessions/join-by-pin", requireAuth, sensitiveActionRateLimiter, asyncHandler(async (req, res) => {
     const payload = joinSchema.parse(req.body);
-    const session = await ClassroomSessionModel.findOne({ pinHash: hashClassroomPin(payload.pin), status: "live", pinExpiresAt: { $gt: new Date() } })
-      .sort({ startedAt: -1, createdAt: -1 }).lean() as any;
+    const student = await UserModel.findById(req.authUser!.id).select("schoolId groupIds role").lean() as any;
+    if (!student || student.role !== "student") {
+      return res.status(StatusCodes.NOT_FOUND).json({ message: "لم يتم العثور على حصة مباشرة بهذا الرمز أو قد انتهت صلاحيته." });
+    }
+    const contexts = await resolveSchoolContexts({ id: req.authUser!.id, role: "student", schoolId: student.schoolId || null });
+    const studentSchoolIds = Array.from(new Set(
+      contexts.filter((context) => context.role === "student").map((context) => String(context.schoolId)).filter(Boolean),
+    ));
+    const entitlementChecks = await Promise.all(
+      studentSchoolIds.map(async (schoolId) => ({ schoolId, allowed: await smartClassroomEnabled(schoolId) })),
+    );
+    const entitledSchoolIds = entitlementChecks.filter((entry) => entry.allowed).map((entry) => entry.schoolId);
+    const studentClassIds = (student.groupIds || []).map(String).filter((id: string) => Types.ObjectId.isValid(id));
+    if (entitledSchoolIds.length === 0 || studentClassIds.length === 0) {
+      return res.status(StatusCodes.NOT_FOUND).json({ message: "لم يتم العثور على حصة مباشرة بهذا الرمز أو قد انتهت صلاحيته." });
+    }
+    const session = await ClassroomSessionModel.findOne({
+      pinHash: hashClassroomPin(payload.pin),
+      schoolId: { $in: entitledSchoolIds },
+      classId: { $in: studentClassIds },
+      status: "live",
+      pinExpiresAt: { $gt: new Date() },
+    }).sort({ startedAt: -1, createdAt: -1 }).lean() as any;
     if (!session) return res.status(StatusCodes.NOT_FOUND).json({ message: "لم يتم العثور على حصة مباشرة بهذا الرمز أو قد انتهت صلاحيته." });
-    const [classroomEnabled, student] = await Promise.all([
-      smartClassroomEnabled(String(session.schoolId)),
-      UserModel.findById(req.authUser!.id).select("schoolId groupIds role").lean(),
-    ]) as [boolean, any];
-    if (!classroomEnabled) return res.status(StatusCodes.FORBIDDEN).json({ message: "Smart Classroom is not enabled for this school" });
-    if (!(await studentCanAccessSession(student, req.authUser!.id, session))) return res.status(StatusCodes.FORBIDDEN).json({ message: "هذا الرمز مخصص لحصة فصل دراسي آخر أو مدرسة أخرى." });
     await ClassroomParticipantModel.updateOne(
       { sessionId: classroomSessionId(session), studentId: req.authUser!.id },
       { $setOnInsert: { joinedAt: new Date() } }, { upsert: true },
