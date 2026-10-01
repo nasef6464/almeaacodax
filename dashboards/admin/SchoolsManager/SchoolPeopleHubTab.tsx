@@ -167,7 +167,7 @@ export const SchoolPeopleHubTab: React.FC<SchoolPeopleHubTabProps> = ({
                         المجتمع المدرسي الموحد
                     </h3>
                     <p className="text-xs text-gray-500 mt-1">
-                        إدارة المدراء، المشرفين، المعلمين، الطلاب، وأولياء الأمور من شاشة واحدة متكاملة
+                        إدارة المدراء، المشرفين، المعلمين، الطلاب، وأولياء الأمور من شاشة واحدة، مع توزيع الطلاب على الفصول فرديًا أو بكشف كامل
                     </p>
                 </div>
 
@@ -215,7 +215,7 @@ export const SchoolPeopleHubTab: React.FC<SchoolPeopleHubTabProps> = ({
                         onClick={onOpenImport}
                         className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-xs font-black text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
                     >
-                        <Upload size={15} /> استيراد Excel
+                        <Upload size={15} /> كشف الطلاب والفصول
                     </button>
                     <button
                         type="button"
