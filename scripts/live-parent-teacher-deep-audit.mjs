@@ -270,6 +270,20 @@ async function inspectCheckpoint(page, role, checkpoint, viewport) {
         { timeout: LOADING_TIMEOUT_MS },
       )
       .catch(() => undefined);
+    // A live role route can briefly commit an empty React body while lazy chunks
+    // and the production API session settle. Wait for the checkpoint's real
+    // content instead of sampling that transient blank frame.
+    await page
+      .waitForFunction(
+        ({ expectAny, minBody }) => {
+          const bodyText = document.body.innerText || "";
+          const expectedReady = (expectAny || []).length === 0 || (expectAny || []).some((value) => bodyText.includes(value));
+          return bodyText.length >= minBody && expectedReady;
+        },
+        { expectAny: checkpoint.expectAny || [], minBody: Number(checkpoint.minBody || 250) },
+        { timeout: 8_000 },
+      )
+      .catch(() => undefined);
   } catch (error) {
     navigationError = String(error?.message || error || "").slice(0, 500);
   } finally {
