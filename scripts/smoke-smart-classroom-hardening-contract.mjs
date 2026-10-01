@@ -56,7 +56,7 @@ check('teacher realtime ownership requires active class assignment', socketPolic
 check('supervisor HTTP scope is filtered by current SMART_CLASSROOM entitlement', reportBuilder.includes('resolveSchoolEntitlement(schoolId, "SMART_CLASSROOM")') && reportBuilder.includes('entitledSchools.has(entry.schoolId)'));
 check('realtime student and teacher school scope is entitlement filtered', socketIndex.includes('currentRole === "student" || currentRole === "teacher"') && socketIndex.includes('resolveSchoolEntitlement(schoolId, "SMART_CLASSROOM")') && socketIndex.includes('roleSchoolIds = entitlementChecks.filter((entry) => entry.allowed)'));
 check('realtime supervisor classroom scope requires module entitlement', socketIndex.includes('async canSupervisorViewClassroom') && socketIndex.includes('if (!entitlement.allowed) return false'));
-check('student PIN join is live-only', routes.includes('pinHash: hashClassroomPin(payload.pin)') && routes.includes('status: "live"'));
+check('student PIN join is tenant-scoped before PIN resolution', routes.includes('entitledSchoolIds') && routes.includes('studentClassIds') && routes.includes('schoolId: { $in: entitledSchoolIds }') && routes.includes('classId: { $in: studentClassIds }') && routes.includes('pinHash: hashClassroomPin(payload.pin)') && routes.includes('status: "live"'));
 check('PIN rate limiter runs after authentication', routes.includes('post("/sessions/join-by-pin", requireAuth, sensitiveActionRateLimiter'));
 check('instant join uses lifecycle guard', routes.includes('canStudentJoinClassroom(session.status as ClassroomSessionStatus)'));
 check('lifecycle policy only permits students into live sessions', lifecycle.includes('status === "live"'));

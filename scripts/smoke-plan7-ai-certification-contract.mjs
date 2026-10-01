@@ -17,10 +17,12 @@ const assert = (ok, message) => { if (!ok) throw new Error(message); };
 
 assert(routes.includes('aiRouter.get("/status"') || routes.includes('"/status"'), "AI status endpoint missing");
 assert(routes.includes('"/providers/test"') && routes.includes("quotaPoolId"), "per-pool live provider test missing");
+assert(routes.includes("transientProviderBusy") && routes.includes("status 503") && routes.includes("attempt <= 3"), "per-pool live test must retry transient provider 503/high-demand responses");
 assert(routes.includes("dailySpendCapUsd") && routes.includes("paidAllowed"), "AI spend controls missing");
 assert(routes.includes("incrementAiUsageDaily"), "usage ledger write path missing");
 assert(routes.includes("AiInteractionModel.create"), "interaction ledger missing");
 assert(adapters.includes("response.status === 429") && adapters.includes("if (poolRateLimited) break"), "429 pool failover handling missing");
+assert(adapters.includes('response.status === 404') && adapters.includes('"gemini-3.8-flash"'), "Gemini retired-model fallback missing");
 assert(adapters.includes("allowPaid || pool.plan !== \"paid\""), "paid pool kill switch missing");
 assert(usage.includes("estimatedCostMicrosUsd") && usage.includes("cachedTokens"), "token/cost daily accounting missing");
 assert(interactions.includes("totalTokens") && interactions.includes("estimatedCostMicrosUsd"), "interaction token/cost schema missing");

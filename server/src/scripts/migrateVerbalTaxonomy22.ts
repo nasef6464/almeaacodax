@@ -175,7 +175,7 @@ export async function migrateVerbalTaxonomy22() {
             isPublished: true,
             updatedAt: now,
           },
-          $setOnInsert: { createdAt: now },
+          $setOnInsert: { _id: drillId as any, createdAt: now },
         },
         { upsert: true },
       );
@@ -194,44 +194,29 @@ export async function migrateVerbalTaxonomy22() {
     }
   }
 
-  // Rebuild generated main-skill banks only; no user-created quiz is deleted.
-  await quizCol.deleteMany({
-    subjectId: VERBAL_SUBJECT_ID,
-    id: { $regex: /^bank_verbal_skill_/ },
-  });
-
+  // Upsert generated main-skill banks only; no quiz deletion and no cross-skill fill.
   for (const main of VERBAL_TAXONOMY) {
     const sectionId = `sec_${VERBAL_SUBJECT_ID}_${Number(main.num)}`;
     const questionIds = (mainQuestionIds.get(main.id) || []).slice(0, 40);
     const bankId = `bank_verbal_skill_${main.num.padStart(2, "0")}`;
-    await quizCol.insertOne({
-      id: bankId,
-      title: `تدريب: ${main.name}`,
-      description: `تدريب شامل على ${main.name} من أسئلة المهارات الفرعية التابعة لها فقط.`,
-      pathId: VERBAL_PATH_ID,
-      subjectId: VERBAL_SUBJECT_ID,
-      sectionId,
-      type: "bank",
-      quizKind: "drill",
-      questionIds,
-      skillIds: [main.id],
-      learningPlacements: [{
-        pathId: VERBAL_PATH_ID,
-        subjectId: VERBAL_SUBJECT_ID,
-        slot: "training",
-        accessType: "free",
-        isVisible: true,
-        order: Number(main.num),
-        createdAt: Date.now(),
-        updatedAt: Date.now(),
-      }],
-      settings: settings(45, 5, 60),
-      access: { type: "free", price: 0, allowedGroupIds: [] },
-      approvalStatus: "approved",
-      isPublished: true,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    });
+    const now = new Date();
+    await quizCol.updateOne(
+      { id: bankId },
+      { $set: {
+          id: bankId,
+          title: `تدريب: ${main.name}`,
+          description: `تدريب شامل على ${main.name} من أسئلة المهارات الفرعية التابعة لها فقط.`,
+          pathId: VERBAL_PATH_ID, subjectId: VERBAL_SUBJECT_ID, sectionId,
+          type: "bank", quizKind: "drill", questionIds, skillIds: [main.id],
+          learningPlacements: [{ pathId: VERBAL_PATH_ID, subjectId: VERBAL_SUBJECT_ID, slot: "training",
+            accessType: "free", isVisible: true, order: Number(main.num), createdAt: Date.now(), updatedAt: Date.now() }],
+          settings: settings(45, 5, 60),
+          access: { type: "free", price: 0, allowedGroupIds: [] },
+          approvalStatus: "approved", isPublished: true, updatedAt: now,
+        },
+        $setOnInsert: { _id: bankId as any, createdAt: now } },
+      { upsert: true },
+    );
   }
 
   // Keep stable mock IDs. If the collection was lost, recreate five balanced mocks.
@@ -284,7 +269,7 @@ export async function migrateVerbalTaxonomy22() {
           isPublished: true,
           updatedAt: new Date(),
         },
-        $setOnInsert: { createdAt: new Date() },
+        $setOnInsert: { _id: examId as any, createdAt: new Date() },
       },
       { upsert: true },
     );

@@ -183,6 +183,7 @@ export const AiAssistantManager: React.FC = () => {
     const [loadingStatus, setLoadingStatus] = useState(true);
     const [statusError, setStatusError] = useState<string | null>(null);
     const [activeTab, setActiveTab] = useState<'chat' | 'control' | 'usage' | 'providers' | 'logs' | 'readiness'>('chat');
+    const [showAdvanced, setShowAdvanced] = useState(false);
     const [messages, setMessages] = useState<Message[]>([
         {
             id: 'welcome',
@@ -402,17 +403,18 @@ export const AiAssistantManager: React.FC = () => {
                 </div>
 
                 <div className="flex flex-wrap items-center gap-2.5">
-                    {/* زر قياس سرعة جميع المزودات الجديد */}
-                    <button
-                        type="button"
-                        onClick={benchmarkAllProviders}
-                        disabled={benchmarking || loadingStatus}
-                        className="inline-flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl border border-indigo-200 bg-indigo-50/80 text-indigo-700 font-black text-xs hover:bg-indigo-100 transition-all shadow-xs disabled:opacity-50"
-                        title="اختبار سرعة استجابة كافة المزودات المفعلة في وقت واحد"
-                    >
-                        {benchmarking ? <Loader2 size={15} className="animate-spin" /> : <Play size={15} />}
-                        <span>قياس سرعة المزودات</span>
-                    </button>
+                    {showAdvanced && (
+                        <button
+                            type="button"
+                            onClick={benchmarkAllProviders}
+                            disabled={benchmarking || loadingStatus}
+                            className="inline-flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl border border-indigo-200 bg-indigo-50/80 text-indigo-700 font-black text-xs hover:bg-indigo-100 transition-all shadow-xs disabled:opacity-50"
+                            title="اختبار سرعة استجابة كافة المزودات المفعلة في وقت واحد"
+                        >
+                            {benchmarking ? <Loader2 size={15} className="animate-spin" /> : <Play size={15} />}
+                            <span>قياس سرعة المزودات</span>
+                        </button>
+                    )}
 
                     <button
                         type="button"
@@ -538,22 +540,24 @@ export const AiAssistantManager: React.FC = () => {
             ══════════════════════════════════════════════════════════════════════ */}
             <div className="flex flex-wrap gap-2 border-b border-gray-200 pb-2">
                 {[
-                    { id: 'chat' as const, label: 'مساعد المدير التفاعلي', icon: <MessageCircle size={16} /> },
-                    { id: 'control' as const, label: 'المفاتيح والحصص والتكلفة', icon: <Settings size={16} /> },
-                    { id: 'usage' as const, label: 'الاستخدام والتنبيهات', icon: <BarChart2 size={16} /> },
-                    {
-                        id: 'providers' as const,
-                        label: 'مزودو الذكاء وسلسلة الانتقال',
-                        icon: <Zap size={16} />,
-                        badge: readiness?.configuredProviders.length,
-                    },
-                    {
-                        id: 'logs' as const,
-                        label: 'سجل التفاعلات والمراقبة',
-                        icon: <Activity size={16} />,
-                        badge: interactions?.summary.total,
-                    },
-                    { id: 'readiness' as const, label: 'جاهزية المساعد والطلاب', icon: <Target size={16} /> },
+                    { id: 'chat' as const, label: 'المساعد', icon: <MessageCircle size={16} /> },
+                    { id: 'control' as const, label: 'المفاتيح', icon: <Settings size={16} /> },
+                    { id: 'usage' as const, label: 'الاستخدام', icon: <BarChart2 size={16} /> },
+                    { id: 'readiness' as const, label: 'الجاهزية', icon: <Target size={16} /> },
+                    ...(showAdvanced ? [
+                        {
+                            id: 'providers' as const,
+                            label: 'مزودو الذكاء وسلسلة الانتقال',
+                            icon: <Zap size={16} />,
+                            badge: readiness?.configuredProviders.length,
+                        },
+                        {
+                            id: 'logs' as const,
+                            label: 'سجل التفاعلات والمراقبة',
+                            icon: <Activity size={16} />,
+                            badge: interactions?.summary.total,
+                        },
+                    ] : []),
                 ].map((tab) => (
                     <button
                         key={tab.id}
@@ -576,6 +580,17 @@ export const AiAssistantManager: React.FC = () => {
                         )}
                     </button>
                 ))}
+                <button
+                    type="button"
+                    onClick={() => {
+                        setShowAdvanced((value) => !value);
+                        if (showAdvanced && (activeTab === 'providers' || activeTab === 'logs')) setActiveTab('control');
+                    }}
+                    className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black bg-slate-50 border border-slate-200 text-slate-600 hover:bg-slate-100"
+                >
+                    {showAdvanced ? <ChevronDown size={15} /> : <Settings size={15} />}
+                    <span>{showAdvanced ? 'إخفاء الإعدادات المتقدمة' : 'إعدادات متقدمة'}</span>
+                </button>
             </div>
 
             {activeTab === 'control' && (

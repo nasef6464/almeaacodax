@@ -243,75 +243,66 @@ export function validateVerbalTaxonomyV2() {
 export async function deploy() {
   validateVerbalTaxonomyV2();
   await mongoose.connect(env.MONGODB_URI || "mongodb://localhost:27017/almeaa");
-  const db = mongoose.connection.db;
-  if (!db) throw new Error("Database connection failed");
+  try {
+    const db = mongoose.connection.db;
+    if (!db) throw new Error("Database connection failed");
+    const skills = db.collection("skills");
+    const sections = db.collection("sections");
+    const topics = db.collection("topics");
+    const now = new Date();
 
-  const skills = db.collection("skills");
-  const sections = db.collection("sections");
-  const topics = db.collection("topics");
-  const now = new Date();
+    for (let index = 0; index < VERBAL_TAXONOMY.length; index++) {
+      const main = VERBAL_TAXONOMY[index];
+      const sectionId = `sec_${VERBAL_SUBJECT_ID}_${index + 1}`;
 
-  await sections.deleteMany({ subjectId: VERBAL_SUBJECT_ID });
-  for (let index = 0; index < VERBAL_TAXONOMY.length; index++) {
-    const main = VERBAL_TAXONOMY[index];
-    const sectionId = `sec_${VERBAL_SUBJECT_ID}_${index + 1}`;
-    await sections.insertOne({
-      _id: sectionId as any, id: sectionId, pathId: VERBAL_PATH_ID, subjectId: VERBAL_SUBJECT_ID,
-      name: main.name, order: index + 1, createdAt: now, updatedAt: now,
-    });
-  }
-
-  await skills.deleteMany({ subjectId: VERBAL_SUBJECT_ID });
-  await skills.insertMany(VERBAL_TAXONOMY.map((main, index) => {
-    const sectionId = `sec_${VERBAL_SUBJECT_ID}_${index + 1}`;
-    return {
-      _id: main.id as any,
-      id: main.id,
-      pathId: VERBAL_PATH_ID,
-      subjectId: VERBAL_SUBJECT_ID,
-      sectionId,
-      name: main.name,
-      description: main.description,
-      order: index + 1,
-      lessonIds: [],
-      questionIds: [],
-      subSkills: main.subSkills.map((sub) => ({ ...sub })),
-      createdAt: now,
-      updatedAt: now,
-    };
-  }));
-
-  const parentIds = VERBAL_TAXONOMY.map((main) => `top_verbal_main_${main.num.padStart(2, "0")}`);
-  await topics.deleteMany({ subjectId: VERBAL_SUBJECT_ID, parentId: null, id: { $nin: parentIds } });
-
-  for (let index = 0; index < VERBAL_TAXONOMY.length; index++) {
-    const main = VERBAL_TAXONOMY[index];
-    const sectionId = `sec_${VERBAL_SUBJECT_ID}_${index + 1}`;
-    const parentTopicId = `top_verbal_main_${main.num.padStart(2, "0")}`;
-    await topics.updateOne(
-      { _id: parentTopicId as any },
-      { $set: {
-        id: parentTopicId, title: main.name, description: main.description,
-        pathId: VERBAL_PATH_ID, subjectId: VERBAL_SUBJECT_ID, sectionId,
-        parentId: null, order: index + 1, isPublished: true, updatedAt: now,
-      }, $setOnInsert: { createdAt: now, quizIds: [], lessonIds: [] } },
-      { upsert: true },
-    );
-    for (const sub of main.subSkills) {
-      const childTopicId = `top_verbal_sub_${sub.id.replace("sub_verbal_", "")}`;
-      await topics.updateOne(
-        { _id: childTopicId as any },
-        { $set: {
-          id: childTopicId, title: sub.name, description: `شرح وتدريبات مركزة على ${sub.name}`,
-          pathId: VERBAL_PATH_ID, subjectId: VERBAL_SUBJECT_ID, sectionId,
-          parentId: parentTopicId, order: sub.order, skillId: sub.id, isPublished: true, updatedAt: now,
-        }, $setOnInsert: { createdAt: now, quizIds: [], lessonIds: [] } },
+      await sections.updateOne(
+        { _id: sectionId as any },
+        { $set: { id: sectionId, pathId: VERBAL_PATH_ID, subjectId: VERBAL_SUBJECT_ID, name: main.name, order: index + 1, updatedAt: now },
+          $setOnInsert: { createdAt: now } },
         { upsert: true },
       );
-    }
-  }
 
-  await mongoose.disconnect();
+      await skills.updateOne(
+        { _id: main.id as any },
+        { $set: {
+            id: main.id, pathId: VERBAL_PATH_ID, subjectId: VERBAL_SUBJECT_ID, sectionId,
+            name: main.name, description: main.description, order: index + 1,
+            subSkills: main.subSkills.map((sub) => ({ ...sub })), updatedAt: now,
+          },
+          $setOnInsert: { createdAt: now, lessonIds: [], questionIds: [] } },
+        { upsert: true },
+      );
+
+      const parentTopicId = `top_verbal_main_${main.num.padStart(2, "0")}`;
+      await topics.updateOne(
+        { _id: parentTopicId as any },
+        { $set: {
+            id: parentTopicId, title: main.name, description: main.description,
+            pathId: VERBAL_PATH_ID, subjectId: VERBAL_SUBJECT_ID, sectionId,
+            parentId: null, order: index + 1, isPublished: true, updatedAt: now,
+          },
+          $setOnInsert: { createdAt: now, quizIds: [], lessonIds: [] } },
+        { upsert: true },
+      );
+
+      for (const sub of main.subSkills) {
+        const childTopicId = `top_verbal_sub_${sub.id.replace("sub_verbal_", "")}`;
+        await topics.updateOne(
+          { _id: childTopicId as any },
+          { $set: {
+              id: childTopicId, title: sub.name, description: `شرح وتدريبات مركزة على ${sub.name}`,
+              pathId: VERBAL_PATH_ID, subjectId: VERBAL_SUBJECT_ID, sectionId,
+              parentId: parentTopicId, order: sub.order, skillId: sub.id,
+              isPublished: true, updatedAt: now,
+            },
+            $setOnInsert: { createdAt: now, quizIds: [], lessonIds: [] } },
+          { upsert: true },
+        );
+      }
+    }
+  } finally {
+    await mongoose.disconnect();
+  }
 }
 
 if (process.argv[1]?.endsWith("deployVerbalTaxonomy22.ts") || process.argv[1]?.endsWith("deployVerbalTaxonomy22.js")) {

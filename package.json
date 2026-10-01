@@ -238,7 +238,10 @@
         "smoke:adaptive-phase11-final-certification": "node scripts/smoke-adaptive-phase11-final-certification-contract.mjs",
         "smoke:question-voice-explanation": "node scripts/smoke-question-voice-explanation-contract.mjs",
         "measure:plan3-route-footprint": "node scripts/measure-plan3-route-footprint.mjs",
-        "smoke:plan3-runtime-footprint": "node scripts/smoke-plan3-runtime-footprint-contract.mjs"
+        "smoke:plan3-runtime-footprint": "node scripts/smoke-plan3-runtime-footprint-contract.mjs",
+        "smoke:verbal-foundation-v2": "node scripts/smoke-verbal-foundation-v2-contract.mjs",
+        "smoke:verbal-taxonomy-v2": "node scripts/smoke-verbal-taxonomy-v2-contract.mjs",
+        "smoke:verbal-approved-source": "node scripts/smoke-verbal-approved-source-contract.mjs"
     },
     "dependencies": {
         "@e965/xlsx": "^0.20.3",

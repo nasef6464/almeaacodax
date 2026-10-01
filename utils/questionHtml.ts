@@ -31,3 +31,27 @@ export const normalizeQuestionHtml = (value?: string | null) => {
 };
 
 export const hasInlineQuestionMedia = (value?: string | null) => /<(img|svg|table|iframe)\b/i.test(normalizeQuestionHtml(value));
+
+
+const QUESTION_BLANK_PATTERN = /(?:\.{3,}|…{2,}|_{3,}|ـ{3,})/g;
+
+/**
+ * Presentation-only decoration for Arabic verbal questions.
+ * Storage text is never mutated: only visible blank markers are wrapped after sanitization.
+ */
+export const formatQuestionHtmlForDisplay = (value?: string | null) => {
+  const normalized = normalizeQuestionHtml(value);
+  if (!normalized) return '';
+
+  return normalized
+    .split(/(<[^>]+>)/g)
+    .map((part) =>
+      part.startsWith('<')
+        ? part
+        : part.replace(
+            QUESTION_BLANK_PATTERN,
+            (blank) => `<span class="question-blank" dir="ltr">${blank}</span>`,
+          ),
+    )
+    .join('');
+};

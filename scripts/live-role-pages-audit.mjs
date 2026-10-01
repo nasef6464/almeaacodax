@@ -3,12 +3,12 @@ import path from "node:path";
 import { chromium } from "playwright";
 
 const BASE_URL = String(process.env.UI_AUDIT_BASE_URL || "https://almeaacodax.vercel.app").replace(/\/$/, "");
-const API_BASE_URL = String(process.env.UI_AUDIT_API_BASE_URL || "https://almeaacodax-k2ux.onrender.com/api").replace(/\/$/, "");
+const API_BASE_URL = String(process.env.UI_AUDIT_API_BASE_URL || "https://almeaacodax-codex.onrender.com/api").replace(/\/$/, "");
 const RUN_ID = process.env.ROLE_PAGES_AUDIT_RUN_ID || `role-pages-${new Date().toISOString().replace(/[:.]/g, "-")}`;
 const OUT_DIR = path.resolve("audit-artifacts", "ui-audit-exhaustive", RUN_ID);
 const CREDENTIALS_FILE = process.env.ROLE_CREDENTIALS_FILE || path.resolve("audit-artifacts", "ROLE_CREDENTIALS.env");
 const PAGE_TIMEOUT_MS = Number(process.env.UI_AUDIT_PAGE_TIMEOUT_MS || 45000);
-const LOADING_TIMEOUT_MS = 10000;
+const LOADING_TIMEOUT_MS = 30000;
 const BASE_ORIGIN = new URL(BASE_URL);
 const API_ORIGIN = new URL(API_BASE_URL);
 const USE_API_BRIDGE = ["127.0.0.1", "localhost"].includes(BASE_ORIGIN.hostname);
@@ -81,7 +81,7 @@ const roles = [
     email: process.env.ROLE_TEACHER_EMAIL,
     password: process.env.ROLE_TEACHER_PASSWORD,
     pages: [
-      { path: "/admin-dashboard", expect: "private" },
+      { path: "/instructor-dashboard", expect: "private" },
       { path: "/reports", expect: "private" },
       { path: "/profile", expect: "private" },
     ],
@@ -91,7 +91,7 @@ const roles = [
     email: process.env.ROLE_SUPERVISOR_EMAIL,
     password: process.env.ROLE_SUPERVISOR_PASSWORD,
     pages: [
-      { path: "/admin-dashboard", expect: "private" },
+      { path: "/supervisor-dashboard", expect: "private" },
       { path: "/reports", expect: "private" },
       { path: "/profile", expect: "private" },
     ],
@@ -120,16 +120,34 @@ async function installApiBridge(context) {
     delete headers["content-length"];
 
     try {
-      const response = await fetch(targetUrl, {
-        method: request.method(),
-        headers,
-        body: ["GET", "HEAD"].includes(request.method()) ? undefined : request.postDataBuffer() || undefined,
-        redirect: "manual",
-      });
+      const maxAttempts = ["GET", "HEAD"].includes(request.method()) ? 3 : 1;
+      let response;
+      let lastError;
+      for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+        try {
+          response = await fetch(targetUrl, {
+            method: request.method(),
+            headers,
+            body: ["GET", "HEAD"].includes(request.method()) ? undefined : request.postDataBuffer() || undefined,
+            redirect: "manual",
+            signal: AbortSignal.timeout(20_000),
+          });
+          if (![502, 503, 504].includes(response.status) || attempt === maxAttempts) break;
+        } catch (error) {
+          lastError = error;
+          if (attempt === maxAttempts) throw error;
+        }
+        await new Promise((resolve) => setTimeout(resolve, 300 * attempt));
+      }
+      if (!response) throw lastError || new Error("API bridge produced no response");
       const responseHeaders = Object.fromEntries(response.headers.entries());
       delete responseHeaders["content-encoding"];
       delete responseHeaders["content-length"];
       delete responseHeaders["transfer-encoding"];
+      // Playwright fulfillment may preserve duplicated CORS values from an
+      // upstream test/runtime hop. Normalize the effective browser response.
+      responseHeaders["access-control-allow-origin"] = BASE_ORIGIN.origin;
+      responseHeaders["access-control-allow-credentials"] = "true";
       await route.fulfill({
         status: response.status,
         headers: responseHeaders,
@@ -163,16 +181,19 @@ async function login(page, role) {
   const authCookie = String(loginRes.headers.get("set-cookie") || "").match(/almeaa_access_token=([^;]+)/)?.[1] || payload?.token || "";
   const user = payload?.user;
   if (!authCookie || !user?.email || !user?.role) return { ok: false, reason: "api login missing session" };
+  if (String(user.role) !== String(role.role)) {
+    return { ok: false, reason: `role mismatch: expected ${role.role}, got ${user.role}` };
+  }
 
   const authCookies = [
     {
       name: "almeaa_access_token",
       value: authCookie,
-      domain: "almeaacodax-k2ux.onrender.com",
+      domain: API_ORIGIN.hostname,
       path: "/",
       httpOnly: true,
-      secure: true,
-      sameSite: "None",
+      secure: API_ORIGIN.protocol === "https:",
+      sameSite: API_ORIGIN.protocol === "https:" ? "None" : "Lax",
     },
   ];
   if (USE_API_BRIDGE) {
@@ -241,7 +262,33 @@ async function inspectPage(page, role, pageSpec, viewport) {
     await page.goto(url, { waitUntil: "domcontentloaded", timeout: PAGE_TIMEOUT_MS });
     await page.waitForTimeout(800);
     await page.waitForFunction(
-      ({ source, flags }) => !new RegExp(source, flags).test(document.body.innerText || ""),
+      ({ expect, minBodyLength }) => {
+        const text = document.body.innerText || "";
+        const visibleControls = Array.from(document.querySelectorAll("a[href], button, [role='button'], input, select, textarea")).filter((el) => {
+          const rect = el.getBoundingClientRect();
+          const style = window.getComputedStyle(el);
+          return rect.width > 0 && rect.height > 0 && style.display !== "none" && style.visibility !== "hidden";
+        }).length;
+        const guarded = /تسجيل الدخول|ليس لديك صلاحية|غير مصرح|Authentication|Login/.test(text);
+        if (expect === "guarded") return guarded || Boolean(document.querySelector('input[type="password"]'));
+        return text.length >= minBodyLength && visibleControls > 0;
+      },
+      { expect: pageSpec.expect, minBodyLength: Number(pageSpec.minBodyLength || 250) },
+      { timeout: 15000 },
+    ).catch(() => undefined);
+    await page.waitForFunction(
+      ({ source, flags }) => {
+        const pattern = new RegExp(source, flags);
+        return !Array.from(document.querySelectorAll("body *")).some((el) => {
+          const rect = el.getBoundingClientRect();
+          const style = window.getComputedStyle(el);
+          const visible = rect.width > 0 && rect.height > 0 && style.display !== "none" && style.visibility !== "hidden";
+          if (!visible) return false;
+          const label = (el.textContent || "").trim();
+          const candidate = el.children.length === 0 || el.getAttribute("aria-busy") === "true" || el.getAttribute("role") === "status";
+          return candidate && label.length <= 120 && pattern.test(label);
+        });
+      },
       { source: LOADING_STATE_PATTERN.source, flags: LOADING_STATE_PATTERN.flags },
       { timeout: LOADING_TIMEOUT_MS },
     ).catch(() => undefined);
@@ -277,7 +324,15 @@ async function inspectPage(page, role, pageSpec, viewport) {
       bodyLength: text.length,
       controlCount: controls.length,
       actionControlCount,
-      hasLoadingState: loadingPattern.test(text),
+      hasLoadingState: Array.from(document.querySelectorAll("body *")).some((el) => {
+        const rect = el.getBoundingClientRect();
+        const style = window.getComputedStyle(el);
+        const visible = rect.width > 0 && rect.height > 0 && style.display !== "none" && style.visibility !== "hidden";
+        if (!visible) return false;
+        const label = (el.textContent || "").trim();
+        const candidate = el.children.length === 0 || el.getAttribute("aria-busy") === "true" || el.getAttribute("role") === "status";
+        return candidate && label.length <= 120 && loadingPattern.test(label);
+      }),
       hasMojibakeText: mojibakePattern.test(text),
       hasLoginForm: Boolean(document.querySelector('input[type="password"]')) && /تسجيل الدخول|Login|البريد الإلكتروني/.test(text),
       hasGuardText: /تسجيل الدخول|ليس لديك صلاحية|غير مصرح|Authentication|Login/.test(text),
@@ -318,7 +373,14 @@ async function inspectPage(page, role, pageSpec, viewport) {
   const textFailure = state.hasMojibakeText ? "visible mojibake text" : "";
   const loadingFailure = state.hasLoadingState ? "visible loading state did not settle" : "";
   const actionFailure = pageSpec.expect !== "guarded" && !hasActionHint ? "missing visible action hint" : "";
-  const status = navigationError || layoutFailure || textFailure || loadingFailure || actionFailure || network5xx.length || !(isGuardedOk || isOpenOk) ? "FAIL" : "PASS";
+  const expectedPathname = pageSpec.path.split("?")[0];
+  const actualPathname = (() => {
+    try { return new URL(state.href).pathname; } catch { return ""; }
+  })();
+  const routeFailure = pageSpec.expect === "private" && actualPathname !== expectedPathname
+    ? `unexpected redirect ${expectedPathname} -> ${actualPathname || "unknown"}`
+    : "";
+  const status = navigationError || layoutFailure || textFailure || loadingFailure || actionFailure || routeFailure || network5xx.length || !(isGuardedOk || isOpenOk) ? "FAIL" : "PASS";
 
   return {
     role: role.role,
@@ -336,6 +398,7 @@ async function inspectPage(page, role, pageSpec, viewport) {
     textFailure,
     loadingFailure,
     actionFailure,
+    routeFailure,
     ...state,
   };
 }

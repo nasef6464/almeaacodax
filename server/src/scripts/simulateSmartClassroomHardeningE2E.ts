@@ -250,6 +250,25 @@ async function run() {
   const liveSessionId = live.body.sessionId;
   const pin = live.body.pin;
 
+  // Regression #124: the same six-digit PIN may exist in another tenant.
+  // Make School B's colliding session newer; Student A must still resolve only
+  // the entitled School A/Class A session.
+  const collisionSession = await ClassroomSessionModel.create({
+    schoolId: schoolBId,
+    classId: classBId,
+    teacherId: String(managerB._id),
+    className: `Collision ${RUN_ID}`,
+    questionSnapshots: [],
+    status: "live",
+    pinHash: live.body.pin ? (await ClassroomSessionModel.findById(liveSessionId).select("pinHash").lean() as any)?.pinHash : "",
+    pinExpiresAt: new Date(Date.now() + 10 * 60 * 1000),
+    startedAt: new Date(Date.now() + 1000),
+  });
+  const collisionJoin = await request("/classroom/sessions/join-by-pin", { method: "POST", token: studentAToken, body: { pin } });
+  assert.equal(collisionJoin.status, 200, JSON.stringify(collisionJoin.body));
+  assert.equal(String(collisionJoin.body.sessionId), liveSessionId, "Student A must resolve its own school's session when another tenant has a newer colliding PIN");
+  assert.notEqual(String(collisionJoin.body.sessionId), String(collisionSession._id), "Cross-tenant colliding PIN must never win resolution");
+
   assert.equal((await request(`/classroom/teacher/history?schoolId=${schoolAId}`, { token: managerAToken })).status, 200);
   assert.equal((await request(`/classroom/teacher/history?schoolId=${schoolAId}`, { token: managerBToken })).status, 403, "Manager B read School A history");
   assert.equal((await request(`/classroom/sessions/${liveSessionId}/aggregate`, { token: managerAToken })).status, 200);
