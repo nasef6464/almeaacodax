@@ -28,7 +28,268 @@
       "documentCode": "VERBAL26-AMER",
       "title": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
       "pdfPages": 98,
-      "status": "SOURCE_AVAILABLE"
+      "status": "INDEX_VERIFIED_EXTRACTION_IN_PROGRESS",
+      "indexEvidence": "Book table of contents visually/index-text verified; answer keys are not assumed.",
+      "trainingPlan": [
+        {
+          "training": 1,
+          "label": "التناظر — الجزء من الكل/الكل إلى الجزء",
+          "printedStartPage": 4,
+          "status": "SOURCE_RANGE_IDENTIFIED"
+        },
+        {
+          "training": 2,
+          "label": "التناظر — الترادف",
+          "printedStartPage": 6,
+          "status": "SOURCE_RANGE_IDENTIFIED"
+        },
+        {
+          "training": 3,
+          "label": "التناظر — التضاد",
+          "printedStartPage": 10,
+          "status": "SOURCE_RANGE_IDENTIFIED"
+        },
+        {
+          "training": 4,
+          "label": "التناظر — المكان والزمان",
+          "printedStartPage": 14,
+          "status": "SOURCE_RANGE_IDENTIFIED"
+        },
+        {
+          "training": 5,
+          "label": "التناظر — السبب والنتيجة أو العكس",
+          "printedStartPage": 16,
+          "status": "SOURCE_RANGE_IDENTIFIED"
+        },
+        {
+          "training": 6,
+          "label": "التناظر — الاستخدام",
+          "printedStartPage": 19,
+          "status": "SOURCE_RANGE_IDENTIFIED"
+        },
+        {
+          "training": 7,
+          "label": "التناظر — التدرج",
+          "printedStartPage": 22,
+          "status": "SOURCE_RANGE_IDENTIFIED"
+        },
+        {
+          "training": 8,
+          "label": "التناظر — الفئة",
+          "printedStartPage": 24,
+          "status": "SOURCE_RANGE_IDENTIFIED"
+        },
+        {
+          "training": 9,
+          "label": "التناظر — التصنيف",
+          "printedStartPage": 25,
+          "status": "SOURCE_RANGE_IDENTIFIED"
+        },
+        {
+          "training": 10,
+          "label": "التناظر — الاحتياج والضرورة",
+          "printedStartPage": 27,
+          "status": "SOURCE_RANGE_IDENTIFIED"
+        },
+        {
+          "training": 11,
+          "label": "التناظر — الأصوات",
+          "printedStartPage": 31,
+          "status": "SOURCE_RANGE_IDENTIFIED"
+        },
+        {
+          "training": 12,
+          "label": "التناظر — الحماية",
+          "printedStartPage": 32,
+          "status": "SOURCE_RANGE_IDENTIFIED"
+        },
+        {
+          "training": 13,
+          "label": "التناظر — التغطية والإحاطة",
+          "printedStartPage": 32,
+          "status": "SOURCE_RANGE_IDENTIFIED"
+        },
+        {
+          "training": 14,
+          "label": "التناظر — متنوع",
+          "groupPrintedPages": [
+            39,
+            46
+          ],
+          "status": "GROUP_RANGE_VERIFIED"
+        },
+        {
+          "training": 15,
+          "label": "التناظر — متنوع",
+          "groupPrintedPages": [
+            39,
+            46
+          ],
+          "status": "GROUP_RANGE_VERIFIED"
+        },
+        {
+          "training": 16,
+          "label": "التناظر — متنوع",
+          "groupPrintedPages": [
+            39,
+            46
+          ],
+          "status": "GROUP_RANGE_VERIFIED"
+        },
+        {
+          "training": 17,
+          "label": "المفردة الشاذة — متنوع",
+          "groupPrintedPages": [
+            49,
+            54
+          ],
+          "status": "GROUP_RANGE_VERIFIED"
+        },
+        {
+          "training": 18,
+          "label": "المفردة الشاذة — متنوع",
+          "groupPrintedPages": [
+            49,
+            54
+          ],
+          "status": "GROUP_RANGE_VERIFIED"
+        },
+        {
+          "training": 19,
+          "label": "المفردة الشاذة — متنوع",
+          "groupPrintedPages": [
+            49,
+            54
+          ],
+          "status": "GROUP_RANGE_VERIFIED"
+        },
+        {
+          "training": 20,
+          "label": "الربط والاختلاف — متنوع",
+          "groupPrintedPages": [
+            55,
+            57
+          ],
+          "status": "GROUP_RANGE_VERIFIED"
+        },
+        {
+          "training": 21,
+          "label": "الربط والاختلاف — متنوع",
+          "groupPrintedPages": [
+            55,
+            57
+          ],
+          "status": "GROUP_RANGE_VERIFIED"
+        },
+        {
+          "training": 22,
+          "label": "إكمال الجمل — متنوع",
+          "groupPrintedPages": [
+            61,
+            67
+          ],
+          "status": "GROUP_RANGE_VERIFIED"
+        },
+        {
+          "training": 23,
+          "label": "إكمال الجمل — متنوع",
+          "groupPrintedPages": [
+            61,
+            67
+          ],
+          "status": "GROUP_RANGE_VERIFIED"
+        },
+        {
+          "training": 24,
+          "label": "إكمال الجمل — متنوع",
+          "groupPrintedPages": [
+            61,
+            67
+          ],
+          "status": "GROUP_RANGE_VERIFIED"
+        },
+        {
+          "training": 25,
+          "label": "الخطأ السياقي — متنوع",
+          "groupPrintedPages": [
+            70,
+            77
+          ],
+          "status": "GROUP_RANGE_VERIFIED"
+        },
+        {
+          "training": 26,
+          "label": "الخطأ السياقي — متنوع",
+          "groupPrintedPages": [
+            70,
+            77
+          ],
+          "status": "GROUP_RANGE_VERIFIED"
+        },
+        {
+          "training": 27,
+          "label": "الخطأ السياقي — متنوع",
+          "groupPrintedPages": [
+            70,
+            77
+          ],
+          "status": "GROUP_RANGE_VERIFIED"
+        },
+        {
+          "training": 28,
+          "label": "الخطأ السياقي — متنوع",
+          "groupPrintedPages": [
+            70,
+            77
+          ],
+          "status": "GROUP_RANGE_VERIFIED"
+        },
+        {
+          "training": 29,
+          "label": "استيعاب المقروء — متنوع",
+          "groupPrintedPages": [
+            82,
+            98
+          ],
+          "status": "GROUP_RANGE_VERIFIED"
+        },
+        {
+          "training": 30,
+          "label": "استيعاب المقروء — متنوع",
+          "groupPrintedPages": [
+            82,
+            98
+          ],
+          "status": "GROUP_RANGE_VERIFIED"
+        },
+        {
+          "training": 31,
+          "label": "استيعاب المقروء — متنوع",
+          "groupPrintedPages": [
+            82,
+            98
+          ],
+          "status": "GROUP_RANGE_VERIFIED"
+        },
+        {
+          "training": 32,
+          "label": "استيعاب المقروء — متنوع",
+          "groupPrintedPages": [
+            82,
+            98
+          ],
+          "status": "GROUP_RANGE_VERIFIED"
+        },
+        {
+          "training": 33,
+          "label": "استيعاب المقروء — متنوع",
+          "groupPrintedPages": [
+            82,
+            98
+          ],
+          "status": "GROUP_RANGE_VERIFIED"
+        }
+      ]
     }
   ],
   "batches": [
@@ -2144,6 +2405,10 @@
     "sourceConflictRecords": 23,
     "anasObservedQuestions": 135,
     "anasKeyVerifiedQuestions": 112,
-    "anasConflictQuestions": 23
+    "anasConflictQuestions": 23,
+    "amerTrainingsIndexed": 33,
+    "amerApprovedRecords": 0,
+    "amerDerivedReportCrossCheck": 938,
+    "amerDerivedReportIsAuthority": false
   }
 }
