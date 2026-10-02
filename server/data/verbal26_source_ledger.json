@@ -318,7 +318,7 @@
           "subSkillId": "sub_verbal_11_2",
           "answerLetter": "D",
           "answerEvidencePdfPage": 9,
-          "status": "SOURCE_KEY_VERIFIED_TEXT_QA_PENDING",
+          "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
           "notes": "Answer key visually verified from the book key page; question text/options must be transcribed from page image before approval."
         },
         {
@@ -334,7 +334,7 @@
           "subSkillId": "sub_verbal_11_2",
           "answerLetter": "C",
           "answerEvidencePdfPage": 9,
-          "status": "SOURCE_KEY_VERIFIED_TEXT_QA_PENDING",
+          "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
           "notes": "Answer key visually verified from the book key page; question text/options must be transcribed from page image before approval."
         },
         {
@@ -350,7 +350,7 @@
           "subSkillId": "sub_verbal_11_2",
           "answerLetter": "D",
           "answerEvidencePdfPage": 9,
-          "status": "SOURCE_KEY_VERIFIED_TEXT_QA_PENDING",
+          "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
           "notes": "Answer key visually verified from the book key page; question text/options must be transcribed from page image before approval."
         },
         {
@@ -366,7 +366,7 @@
           "subSkillId": "sub_verbal_11_2",
           "answerLetter": "D",
           "answerEvidencePdfPage": 9,
-          "status": "SOURCE_KEY_VERIFIED_TEXT_QA_PENDING",
+          "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
           "notes": "Answer key visually verified from the book key page; question text/options must be transcribed from page image before approval."
         },
         {
@@ -382,7 +382,7 @@
           "subSkillId": "sub_verbal_11_2",
           "answerLetter": "B",
           "answerEvidencePdfPage": 9,
-          "status": "SOURCE_KEY_VERIFIED_TEXT_QA_PENDING",
+          "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
           "notes": "Answer key visually verified from the book key page; question text/options must be transcribed from page image before approval."
         },
         {
@@ -2400,7 +2400,7 @@
   ],
   "metrics": {
     "sourceKeyVerifiedRecords": 112,
-    "approvedBankRecords": 0,
+    "approvedBankRecords": 5,
     "note": "Ledger records are not approved-bank records until visual text/options and taxonomy QA pass.",
     "sourceConflictRecords": 23,
     "anasObservedQuestions": 135,
