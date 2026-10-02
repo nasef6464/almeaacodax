@@ -1,0 +1,272 @@
+[
+  {
+    "path": "/",
+    "category": "Public",
+    "name": "الصفحة الرئيسية (Landing)",
+    "desktopPass": true,
+    "mobilePass": true,
+    "title": "منصة المئة | قدرات وتحصيلي",
+    "h1": "حقق المئةفي اختباراتك",
+    "interactiveElementsCount": 38,
+    "consoleErrors": [],
+    "networkErrors": [],
+    "screenshots": {
+      "desktop": "C:\\ALMEAA MAY - codax\\docs\\FINAL_ACCEPTANCE\\evidence\\screenshots\\page_desktop__.png",
+      "mobile": "C:\\ALMEAA MAY - codax\\docs\\FINAL_ACCEPTANCE\\evidence\\screenshots\\page_mobile__.png"
+    },
+    "issues": [],
+    "status": 200
+  },
+  {
+    "path": "/courses",
+    "category": "Courses",
+    "name": "كتالوج الدورات (Courses)",
+    "desktopPass": true,
+    "mobilePass": true,
+    "title": "دورات القدرات والتحصيلي | منصة المئة",
+    "h1": "دوراتي",
+    "interactiveElementsCount": 10,
+    "consoleErrors": [],
+    "networkErrors": [],
+    "screenshots": {
+      "desktop": "C:\\ALMEAA MAY - codax\\docs\\FINAL_ACCEPTANCE\\evidence\\screenshots\\page_desktop__courses.png",
+      "mobile": "C:\\ALMEAA MAY - codax\\docs\\FINAL_ACCEPTANCE\\evidence\\screenshots\\page_mobile__courses.png"
+    },
+    "issues": [],
+    "status": 200
+  },
+  {
+    "path": "/pricing",
+    "category": "Commerce",
+    "name": "الباقات والأسعار (Pricing)",
+    "desktopPass": true,
+    "mobilePass": true,
+    "title": "عضويات المنصة | منصة المئة",
+    "h1": "عضويات المنصة",
+    "interactiveElementsCount": 13,
+    "consoleErrors": [],
+    "networkErrors": [],
+    "screenshots": {
+      "desktop": "C:\\ALMEAA MAY - codax\\docs\\FINAL_ACCEPTANCE\\evidence\\screenshots\\page_desktop__pricing.png",
+      "mobile": "C:\\ALMEAA MAY - codax\\docs\\FINAL_ACCEPTANCE\\evidence\\screenshots\\page_mobile__pricing.png"
+    },
+    "issues": [],
+    "status": 200
+  },
+  {
+    "path": "/about",
+    "category": "Support",
+    "name": "من نحن (About)",
+    "desktopPass": true,
+    "mobilePass": true,
+    "title": "من نحن | منصة المئة للقدرات والتحصيلي",
+    "h1": "من نحن",
+    "interactiveElementsCount": 6,
+    "consoleErrors": [],
+    "networkErrors": [],
+    "screenshots": {
+      "desktop": "C:\\ALMEAA MAY - codax\\docs\\FINAL_ACCEPTANCE\\evidence\\screenshots\\page_desktop__about.png",
+      "mobile": "C:\\ALMEAA MAY - codax\\docs\\FINAL_ACCEPTANCE\\evidence\\screenshots\\page_mobile__about.png"
+    },
+    "issues": [],
+    "status": 200
+  },
+  {
+    "path": "/contact",
+    "category": "Support",
+    "name": "تواصل معنا (Contact)",
+    "desktopPass": true,
+    "mobilePass": true,
+    "title": "اتصل بنا | الدعم الفني لمنصة المئة",
+    "h1": "تواصل معنا",
+    "interactiveElementsCount": 6,
+    "consoleErrors": [],
+    "networkErrors": [],
+    "screenshots": {
+      "desktop": "C:\\ALMEAA MAY - codax\\docs\\FINAL_ACCEPTANCE\\evidence\\screenshots\\page_desktop__contact.png",
+      "mobile": "C:\\ALMEAA MAY - codax\\docs\\FINAL_ACCEPTANCE\\evidence\\screenshots\\page_mobile__contact.png"
+    },
+    "issues": [],
+    "status": 200
+  },
+  {
+    "path": "/faq",
+    "category": "Support",
+    "name": "الأسئلة الشائعة (FAQ)",
+    "desktopPass": true,
+    "mobilePass": true,
+    "title": "الأسئلة الشائعة | منصة المئة",
+    "h1": "الأسئلة الشائعة",
+    "interactiveElementsCount": 5,
+    "consoleErrors": [],
+    "networkErrors": [],
+    "screenshots": {
+      "desktop": "C:\\ALMEAA MAY - codax\\docs\\FINAL_ACCEPTANCE\\evidence\\screenshots\\page_desktop__faq.png",
+      "mobile": "C:\\ALMEAA MAY - codax\\docs\\FINAL_ACCEPTANCE\\evidence\\screenshots\\page_mobile__faq.png"
+    },
+    "issues": [],
+    "status": 200
+  },
+  {
+    "path": "/privacy",
+    "category": "Legal",
+    "name": "سياسة الخصوصية (Privacy)",
+    "desktopPass": true,
+    "mobilePass": true,
+    "title": "سياسة الخصوصية | منصة المئة",
+    "h1": "سياسة الخصوصية",
+    "interactiveElementsCount": 6,
+    "consoleErrors": [],
+    "networkErrors": [],
+    "screenshots": {
+      "desktop": "C:\\ALMEAA MAY - codax\\docs\\FINAL_ACCEPTANCE\\evidence\\screenshots\\page_desktop__privacy.png",
+      "mobile": "C:\\ALMEAA MAY - codax\\docs\\FINAL_ACCEPTANCE\\evidence\\screenshots\\page_mobile__privacy.png"
+    },
+    "issues": [],
+    "status": 200
+  },
+  {
+    "path": "/terms",
+    "category": "Legal",
+    "name": "الشروط والأحكام (Terms)",
+    "desktopPass": true,
+    "mobilePass": true,
+    "title": "الشروط والأحكام | منصة المئة",
+    "h1": "الشروط والأحكام",
+    "interactiveElementsCount": 6,
+    "consoleErrors": [],
+    "networkErrors": [],
+    "screenshots": {
+      "desktop": "C:\\ALMEAA MAY - codax\\docs\\FINAL_ACCEPTANCE\\evidence\\screenshots\\page_desktop__terms.png",
+      "mobile": "C:\\ALMEAA MAY - codax\\docs\\FINAL_ACCEPTANCE\\evidence\\screenshots\\page_mobile__terms.png"
+    },
+    "issues": [],
+    "status": 200
+  },
+  {
+    "path": "/blog",
+    "category": "Content",
+    "name": "المدونة (Blog)",
+    "desktopPass": true,
+    "mobilePass": true,
+    "title": "مدونة منصة المئة",
+    "h1": "المدونة التعليمية",
+    "interactiveElementsCount": 25,
+    "consoleErrors": [],
+    "networkErrors": [],
+    "screenshots": {
+      "desktop": "C:\\ALMEAA MAY - codax\\docs\\FINAL_ACCEPTANCE\\evidence\\screenshots\\page_desktop__blog.png",
+      "mobile": "C:\\ALMEAA MAY - codax\\docs\\FINAL_ACCEPTANCE\\evidence\\screenshots\\page_mobile__blog.png"
+    },
+    "issues": [],
+    "status": 200
+  },
+  {
+    "path": "/achievements",
+    "category": "Student",
+    "name": "الإنجازات والشهادات (Achievements)",
+    "desktopPass": true,
+    "mobilePass": true,
+    "title": "لوحة الإنجازات والأوسمة | منصة المئة",
+    "h1": "الإنجازات",
+    "interactiveElementsCount": 5,
+    "consoleErrors": [],
+    "networkErrors": [],
+    "screenshots": {
+      "desktop": "C:\\ALMEAA MAY - codax\\docs\\FINAL_ACCEPTANCE\\evidence\\screenshots\\page_desktop__achievements.png",
+      "mobile": "C:\\ALMEAA MAY - codax\\docs\\FINAL_ACCEPTANCE\\evidence\\screenshots\\page_mobile__achievements.png"
+    },
+    "issues": [],
+    "status": 200
+  },
+  {
+    "path": "/cart",
+    "category": "Commerce",
+    "name": "سلة المشتريات (Cart)",
+    "desktopPass": true,
+    "mobilePass": true,
+    "title": "سلة المشتريات وإتمام الطلب | منصة المئة",
+    "h1": "سلة المشتريات فارغة",
+    "interactiveElementsCount": 6,
+    "consoleErrors": [],
+    "networkErrors": [],
+    "screenshots": {
+      "desktop": "C:\\ALMEAA MAY - codax\\docs\\FINAL_ACCEPTANCE\\evidence\\screenshots\\page_desktop__cart.png",
+      "mobile": "C:\\ALMEAA MAY - codax\\docs\\FINAL_ACCEPTANCE\\evidence\\screenshots\\page_mobile__cart.png"
+    },
+    "issues": [],
+    "status": 200
+  },
+  {
+    "path": "/barcode-test",
+    "category": "Public",
+    "name": "اختبارات باركود (Barcode Tests)",
+    "desktopPass": true,
+    "mobilePass": true,
+    "title": "اختبار الباركود السريع | منصة المئة",
+    "h1": "الانضمام لاختبار مباشر برمز PIN",
+    "interactiveElementsCount": 6,
+    "consoleErrors": [],
+    "networkErrors": [],
+    "screenshots": {
+      "desktop": "C:\\ALMEAA MAY - codax\\docs\\FINAL_ACCEPTANCE\\evidence\\screenshots\\page_desktop__barcode_test.png",
+      "mobile": "C:\\ALMEAA MAY - codax\\docs\\FINAL_ACCEPTANCE\\evidence\\screenshots\\page_mobile__barcode_test.png"
+    },
+    "issues": [],
+    "status": 200
+  },
+  {
+    "path": "/forgot-password",
+    "category": "Auth",
+    "name": "استعادة كلمة المرور (Forgot Password)",
+    "desktopPass": true,
+    "mobilePass": true,
+    "title": "استعادة كلمة المرور | منصة المئة",
+    "h1": "استعادة كلمة المرور",
+    "interactiveElementsCount": 6,
+    "consoleErrors": [],
+    "networkErrors": [],
+    "screenshots": {
+      "desktop": "C:\\ALMEAA MAY - codax\\docs\\FINAL_ACCEPTANCE\\evidence\\screenshots\\page_desktop__forgot_password.png",
+      "mobile": "C:\\ALMEAA MAY - codax\\docs\\FINAL_ACCEPTANCE\\evidence\\screenshots\\page_mobile__forgot_password.png"
+    },
+    "issues": [],
+    "status": 200
+  },
+  {
+    "path": "/?auth=login",
+    "category": "Auth",
+    "name": "نافذة تسجيل الدخول (Login Modal)",
+    "desktopPass": true,
+    "mobilePass": true,
+    "title": "منصة المئة | قدرات وتحصيلي",
+    "h1": "تسجيل الدخول",
+    "interactiveElementsCount": 10,
+    "consoleErrors": [],
+    "networkErrors": [],
+    "screenshots": {
+      "desktop": "C:\\ALMEAA MAY - codax\\docs\\FINAL_ACCEPTANCE\\evidence\\screenshots\\page_desktop___auth_login.png",
+      "mobile": "C:\\ALMEAA MAY - codax\\docs\\FINAL_ACCEPTANCE\\evidence\\screenshots\\page_mobile___auth_login.png"
+    },
+    "issues": [],
+    "status": 200
+  },
+  {
+    "path": "/?auth=signup",
+    "category": "Auth",
+    "name": "نافذة إنشاء حساب (Signup Modal)",
+    "desktopPass": true,
+    "mobilePass": true,
+    "title": "منصة المئة | قدرات وتحصيلي",
+    "h1": "إنشاء حساب جديد",
+    "interactiveElementsCount": 11,
+    "consoleErrors": [],
+    "networkErrors": [],
+    "screenshots": {
+      "desktop": "C:\\ALMEAA MAY - codax\\docs\\FINAL_ACCEPTANCE\\evidence\\screenshots\\page_desktop___auth_signup.png",
+      "mobile": "C:\\ALMEAA MAY - codax\\docs\\FINAL_ACCEPTANCE\\evidence\\screenshots\\page_mobile___auth_signup.png"
+    },
+    "issues": [],
+    "status": 200
+  }
+]
