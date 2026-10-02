@@ -35,8 +35,8 @@ export const SchoolImportPanel: React.FC<SchoolImportPanelProps> = ({
     return (
         <div className="max-w-4xl mx-auto py-8 space-y-8">
             <div className="text-center">
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">استيراد الطلاب دفعة واحدة</h2>
-                <p className="text-gray-500">حمّل النموذج، ثم ارفع ملف Excel أو CSV وسيقوم النظام بإنشاء الحسابات وربطها بالمدرسة والفصول.</p>
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">كشف الطلاب والفصول</h2>
+                <p className="text-gray-500">ارفع كشف المدرسة كاملًا مرة واحدة؛ كل صف طالب ويمكن أن يحمل اسم الفصل، والنظام ينشئ الفصول غير الموجودة ويربط الطلاب بها تلقائيًا.</p>
             </div>
 
             <div className="grid gap-2 rounded-2xl border border-slate-100 bg-slate-50 p-3 md:grid-cols-5">
@@ -69,7 +69,7 @@ export const SchoolImportPanel: React.FC<SchoolImportPanelProps> = ({
                         <Download size={32} />
                     </div>
                     <h3 className="font-bold text-gray-900 mb-2">1. تحميل النموذج</h3>
-                    <p className="text-sm text-gray-500 mb-4">نموذج Excel جاهز بالأعمدة الأساسية: الاسم، البريد، الفصل، وكلمة المرور الاختيارية.</p>
+                    <p className="text-sm text-gray-500 mb-4">نموذج Excel جاهز بالأعمدة الأساسية: الاسم، البريد، الفصل، وكلمة المرور الاختيارية. يمكن أن يحتوي الكشف على عدة فصول.</p>
                     <button onClick={downloadTemplate} className="text-amber-600 font-bold text-sm">تحميل school-import-template.xlsx</button>
                 </div>
 
