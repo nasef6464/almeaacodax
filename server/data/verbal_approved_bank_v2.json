@@ -1486,5 +1486,77 @@
       "بالتخمة"
     ],
     "correctOptionIndex": 3
+  },
+  {
+    "id": "VERBAL26-ANAS-COMP-P013-Q010",
+    "canonicalId": "VERBAL26-ANAS-COMP-P013-Q010",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 13,
+    "sourceQuestionNumber": 10,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "معظم السائقين يخطئون و..... أنوار السيارات، ويظنون أن أنوار الطريق تكفي لـ..... السيارات.",
+    "options": [
+      "يطفئون _ رؤية",
+      "يشعلون _ رؤية",
+      "يضيئون _ تفادي",
+      "يبصرون _ ملاحقة"
+    ],
+    "correctOptionIndex": 0
+  },
+  {
+    "id": "VERBAL26-ANAS-COMP-P013-Q011",
+    "canonicalId": "VERBAL26-ANAS-COMP-P013-Q011",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 13,
+    "sourceQuestionNumber": 11,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "أنا أحب أن أعيش لو فقدت ضوء عيني، فـ..... أحلامي، و....... أحلام الآخرين.",
+    "options": [
+      "أهندس _ أبني",
+      "أحقق _ أنفذ",
+      "أهدم _ أبني",
+      "أنفذ _ أهدم"
+    ],
+    "correctOptionIndex": 1
+  },
+  {
+    "id": "VERBAL26-ANAS-COMP-P013-Q012",
+    "canonicalId": "VERBAL26-ANAS-COMP-P013-Q012",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 13,
+    "sourceQuestionNumber": 12,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "أصدق ما في الوجود ..... الأطفال؛ لأنها لا تعرف المكر والخديعة، ولا .... قلوبهم الآثام والأحقاد.",
+    "options": [
+      "ثقة _ تحمل",
+      "براءة _ تحمل",
+      "محبة _ تدرك",
+      "حيوية _ تعرف"
+    ],
+    "correctOptionIndex": 1
+  },
+  {
+    "id": "VERBAL26-ANAS-COMP-P013-Q013",
+    "canonicalId": "VERBAL26-ANAS-COMP-P013-Q013",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 13,
+    "sourceQuestionNumber": 13,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "الزراعة تحقق ..... ونمو الإنسان والحيوان، و..... الصناعات الغذائية.",
+    "options": [
+      "الاكتفاء _ تطوير",
+      "الازدهار _ تبادل",
+      "الأمن _ إنتاج",
+      "الرخاء _ ازدهار"
+    ],
+    "correctOptionIndex": 3
   }
 ]
