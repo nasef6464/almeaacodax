@@ -1,5 +1,5 @@
 import React from 'react';
-import { BookOpenCheck, CalendarClock, Presentation, Target, Trophy, Zap } from 'lucide-react';
+import { BookOpenCheck, CalendarClock, Plus, Presentation, Target, Trophy, Zap } from 'lucide-react';
 import { SmartClassroomReportsSection } from '../../components/classroom/SmartClassroomReportsSection';
 import { ClassSkillGapsRadar } from '../../components/classroom/ClassSkillGapsRadar';
 import { ClassroomPreparedTemplatesManager, ClassroomPreparedTemplate } from '../../components/classroom/ClassroomPreparedTemplatesManager';
@@ -129,28 +129,48 @@ export const SchoolTeacherSkillsRadar: React.FC<{ selectedSchool: any }> = ({ se
   </div>
 );
 
-export const SchoolTeacherAssessments: React.FC<{ selectedSchool: any }> = ({ selectedSchool }) => (
+export const SchoolTeacherAssessments: React.FC<{ selectedSchool: any; onCreateAssessment: () => void }> = ({ selectedSchool, onCreateAssessment }) => (
   <div className="space-y-6 animate-fade-in" dir="rtl">
     <div className="rounded-3xl border border-slate-100 bg-white p-6 shadow-xs">
-      <h2 className="flex items-center gap-2 text-xl font-black text-slate-900">
-        <BookOpenCheck className="text-amber-600" size={22} /> اختبارات وتكليفات المدرسة الموجهة لفصولي
-      </h2>
-      <p className="mt-1 text-xs text-slate-500">قائمة الاختبارات المدرسية الموجهة للطلاب في فصولك المسندة مع تواريخ الاستحقاق ومتابعة الإنجاز.</p>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h2 className="flex items-center gap-2 text-xl font-black text-slate-900">
+            <BookOpenCheck className="text-amber-600" size={22} /> اختباراتي وتكليفاتي
+          </h2>
+          <p className="mt-1 text-xs text-slate-500">أنشئ اختباراً أو تدريباً موجهاً لفصولك فقط، وتابع التكليفات ومواعيد الاستحقاق.</p>
+        </div>
+        <button type="button" onClick={onCreateAssessment} data-testid="teacher-create-assessment" className="inline-flex items-center justify-center gap-2 rounded-2xl bg-indigo-600 px-4 py-2.5 text-xs font-black text-white hover:bg-indigo-700">
+          <Plus size={16} /> إنشاء اختبار / تدريب
+        </button>
+      </div>
       <div className="mt-6 space-y-3">
         {selectedSchool.assessments.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50/50 p-8 text-center text-slate-500">لا توجد اختبارات مدرسية موجهة لفصولك حالياً.</div>
         ) : (
-          selectedSchool.assessments.map((assessment: any) => (
-            <div key={assessment.assessmentId} className="flex flex-col gap-2 rounded-2xl border border-slate-100 bg-slate-50/40 p-4 shadow-xs sm:flex-row sm:items-center sm:justify-between">
-              <div>
-                <p className="font-black text-slate-900 text-sm">{assessment.title}</p>
-                <p className="mt-1 text-xs text-slate-500">المادة: {assessment.subjectId || 'عام'} · {assessment.classIds.length} فصول موجهة · نوع الاختبار: {assessment.quizKind || 'اختبار مدرسي'}</p>
+          selectedSchool.assessments.map((assessment: any) => {
+            const status = assessment.isPublished
+              ? { label: 'منشور', className: 'bg-emerald-100 text-emerald-700' }
+              : assessment.approvalStatus === 'pending_review'
+                ? { label: 'قيد المراجعة', className: 'bg-amber-100 text-amber-700' }
+                : assessment.approvalStatus === 'rejected'
+                  ? { label: 'يحتاج تعديل', className: 'bg-rose-100 text-rose-700' }
+                  : { label: 'مسودة', className: 'bg-slate-200 text-slate-700' };
+            return (
+              <div key={assessment.assessmentId} className="flex flex-col gap-2 rounded-2xl border border-slate-100 bg-slate-50/40 p-4 shadow-xs sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <p className="font-black text-slate-900 text-sm">{assessment.title}</p>
+                    {assessment.ownedByTeacher && <span className="rounded-full bg-indigo-100 px-2 py-0.5 text-[10px] font-black text-indigo-700">من إنشائي</span>}
+                    <span className={`rounded-full px-2 py-0.5 text-[10px] font-black ${status.className}`}>{status.label}</span>
+                  </div>
+                  <p className="mt-1 text-xs text-slate-500">المادة: {assessment.subjectId || 'عام'} · {assessment.classIds.length} فصول موجهة · نوع الاختبار: {assessment.quizKind || 'اختبار مدرسي'}</p>
+                </div>
+                <div className="flex items-center gap-2 text-xs font-bold text-slate-600">
+                  <CalendarClock size={15} /> {assessment.dueDate ? `تاريخ التسليم: ${assessment.dueDate}` : 'بدون موعد نهائي'}
+                </div>
               </div>
-              <div className="flex items-center gap-2 text-xs font-bold text-slate-600">
-                <CalendarClock size={15} /> {assessment.dueDate ? `تاريخ التسليم: ${assessment.dueDate}` : 'بدون موعد نهائي'}
-              </div>
-            </div>
-          ))
+            );
+          })
         )}
       </div>
     </div>

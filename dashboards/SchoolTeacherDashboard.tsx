@@ -11,6 +11,7 @@ import { ClassroomFilterState } from '../components/classroom/ClassroomQuestionF
 import { api } from '../services/api';
 import { useStore } from '../store/useStore';
 import { SchoolTeacherOverview, SchoolTeacherSmartClassroom } from './school-teacher/SchoolTeacherPrimaryTabs';
+import { UnifiedQuizBuilder } from './admin/UnifiedQuizBuilder';
 import {
   SchoolTeacherAssessments,
   SchoolTeacherCertificates,
@@ -34,7 +35,7 @@ const SCHOOL_TEACHER_NAV_ITEMS: Array<{ id: SchoolTeacherTab; label: string; ico
   { id: 'prepared-questions', label: 'بنك التحضير المسبق', icon: <Target size={19} /> },
   { id: 'reports', label: 'تقارير الحصص والمهارات', icon: <BarChart3 size={19} /> },
   { id: 'skills-radar', label: 'رادار فجوات الفصول', icon: <Award size={19} /> },
-  { id: 'assessments', label: 'اختبارات المدرسة', icon: <BookOpenCheck size={19} /> },
+  { id: 'assessments', label: 'اختباراتي وتكليفاتي', icon: <BookOpenCheck size={19} /> },
   { id: 'certificates', label: 'شهادات التقدير والتحفيز', icon: <Trophy size={19} /> },
 ];
 
@@ -71,6 +72,7 @@ export const SchoolTeacherDashboard: React.FC = () => {
     search: '',
   });
   const [questionsLoading, setQuestionsLoading] = useState(false);
+  const [showAssessmentBuilder, setShowAssessmentBuilder] = useState(false);
 
   const selectedSchool = useMemo(
     () => workspace?.schools.find((school) => school.schoolId === selectedSchoolId) || workspace?.schools[0],
@@ -246,7 +248,7 @@ export const SchoolTeacherDashboard: React.FC = () => {
         tabNode = <SchoolTeacherSkillsRadar selectedSchool={selectedSchool} />;
         break;
       case 'assessments':
-        tabNode = <SchoolTeacherAssessments selectedSchool={selectedSchool} />;
+        tabNode = <SchoolTeacherAssessments selectedSchool={selectedSchool} onCreateAssessment={() => setShowAssessmentBuilder(true)} />;
         break;
       case 'certificates':
         tabNode = <SchoolTeacherCertificates onOpenCertificate={() => setShowCertificateModal(true)} />;
@@ -301,9 +303,27 @@ export const SchoolTeacherDashboard: React.FC = () => {
     );
   };
 
+  const teacherGroupIds = Array.from(new Set(
+    (selectedSchool.assignments || []).flatMap((assignment: any) => [
+      assignment.classId,
+      assignment.groupId,
+    ]).filter(Boolean),
+  ));
+
   return (
     <>
       <DashboardLayout sidebar={sidebar}>{renderContent()}</DashboardLayout>
+      {showAssessmentBuilder && (
+        <UnifiedQuizBuilder
+          role="teacher"
+          allowedGroupIds={teacherGroupIds}
+          defaultKind="test"
+          initialTargetGroupIds={teacherGroupIds.length === 1 ? teacherGroupIds : []}
+          draftScope={`school-teacher:${selectedSchool.schoolId}:${user?.id || 'teacher'}`}
+          onClose={() => setShowAssessmentBuilder(false)}
+          onSave={() => setShowAssessmentBuilder(false)}
+        />
+      )}
       <SmartClassroomSessionSchedulerModal
         isOpen={showSchedulerModal}
         onClose={() => setShowSchedulerModal(false)}

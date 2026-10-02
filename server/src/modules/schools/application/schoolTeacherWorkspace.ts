@@ -13,7 +13,7 @@ const idsQuery = (ids: string[]): Record<string, unknown> => {
   return { $or: [{ _id: { $in: ids } }, ...(objectIds.length ? [{ _id: { $in: objectIds } }] : [])] };
 };
 
-type WorkspaceAssessment = { assessmentId: string; title: string; subjectId: string; classIds: string[]; dueDate: string | null; quizKind: string };
+type WorkspaceAssessment = { assessmentId: string; title: string; subjectId: string; classIds: string[]; dueDate: string | null; quizKind: string; approvalStatus?: string; isPublished: boolean; ownedByTeacher: boolean };
 type WorkspaceStudent = { studentId: string; name: string; isActive: boolean };
 type WorkspaceAssignment = {
   assignmentId: string;
@@ -76,8 +76,15 @@ export const buildSchoolTeacherWorkspace = async (actor: LegacySchoolUser): Prom
   );
   const [assessments, rosterStudents] = await Promise.all([
     validClassIds.length
-      ? QuizModel.find({ targetGroupIds: { $in: validClassIds }, isPublished: true })
-          .select("id title subjectId targetGroupIds dueDate quizKind")
+      ? QuizModel.find({
+          targetGroupIds: { $in: validClassIds },
+          $or: [
+            { isPublished: true },
+            { ownerId: actor.id },
+            { createdBy: actor.id },
+          ],
+        })
+          .select("id title subjectId targetGroupIds dueDate quizKind approvalStatus isPublished ownerId createdBy")
           .sort({ dueDate: 1, updatedAt: -1 })
           .limit(100)
           .lean()
@@ -143,6 +150,9 @@ export const buildSchoolTeacherWorkspace = async (actor: LegacySchoolUser): Prom
           classIds: (assessment.targetGroupIds || []).map(String).filter((id: string) => classIds.has(id)),
           dueDate: assessment.dueDate || null,
           quizKind: assessment.quizKind || "test",
+          approvalStatus: assessment.approvalStatus || undefined,
+          isPublished: assessment.isPublished === true,
+          ownedByTeacher: [assessment.ownerId, assessment.createdBy].some((id: unknown) => String(id || "") === String(actor.id)),
         })),
     };
   }));
