@@ -5,6 +5,33 @@
   "rule": "Observed counts only. No answer key, approval, taxonomy migration, or Production write is implied.",
   "verifiedAt": "2026-10-02",
   "trainings": {
+    "1": {
+      "observedQuestions": 25
+    },
+    "2": {
+      "observedQuestions": 37
+    },
+    "3": {
+      "observedQuestions": 35
+    },
+    "4": {
+      "observedQuestions": 34
+    },
+    "5": {
+      "observedQuestions": 25
+    },
+    "6": {
+      "observedQuestions": 27
+    },
+    "7": {
+      "observedQuestions": 16
+    },
+    "8": {
+      "observedQuestions": 15
+    },
+    "10": {
+      "observedQuestions": 22
+    },
     "16": {
       "pdfPages": [
         44,
@@ -76,5 +103,7 @@
       "observedQuestions": 24
     }
   },
-  "subtotal": 330
+  "previouslyVerifiedSubtotal": 236,
+  "newlyVerifiedSubtotal": 330,
+  "totalVerifiedObservedQuestions": 566
 }
