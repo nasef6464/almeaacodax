@@ -1450,5 +1450,41 @@
       "أقل"
     ],
     "correctOptionIndex": 3
+  },
+  {
+    "id": "VERBAL26-ANAS-P008-Q032",
+    "canonicalId": "VERBAL26-ANAS-P008-Q032",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 8,
+    "sourceQuestionNumber": 32,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "أفضل ما يثبت حسن أدبك تحمّلك حسن أدب غيرك.",
+    "options": [
+      "أفضل",
+      "أدبك",
+      "حسن",
+      "غيرك"
+    ],
+    "correctOptionIndex": 2
+  },
+  {
+    "id": "VERBAL26-ANAS-P008-Q034",
+    "canonicalId": "VERBAL26-ANAS-P008-Q034",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 8,
+    "sourceQuestionNumber": 34,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "تدني الشبع أفسد للبدن من إكثار الأغذية التي تعود عليه بالتخمة.",
+    "options": [
+      "أفسد",
+      "إكثار",
+      "الأغذية",
+      "بالتخمة"
+    ],
+    "correctOptionIndex": 3
   }
 ]
