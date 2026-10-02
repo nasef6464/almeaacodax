@@ -2290,8 +2290,11 @@
           "canonicalId": "VERBAL26-ANAS-RC-BEAUTY-Q01",
           "answerLetter": "A",
           "answerEvidencePdfPage": 43,
-          "status": "SOURCE_KEY_VERIFIED_CLASSIFICATION_AND_TEXT_QA_PENDING",
-          "notes": "Passage/question text and exact reading-comprehension subskill must be visually verified before approval."
+          "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
+          "notes": "Passage/question text and exact reading-comprehension subskill must be visually verified before approval.",
+          "mainSkillId": "skill_verbal_20",
+          "subSkillId": "sub_verbal_12_6",
+          "passageId": "VERBAL26-ANAS-PASSAGE-BEAUTY"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -2305,8 +2308,11 @@
           "canonicalId": "VERBAL26-ANAS-RC-BEAUTY-Q02",
           "answerLetter": "B",
           "answerEvidencePdfPage": 43,
-          "status": "SOURCE_KEY_VERIFIED_CLASSIFICATION_AND_TEXT_QA_PENDING",
-          "notes": "Passage/question text and exact reading-comprehension subskill must be visually verified before approval."
+          "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
+          "notes": "Passage/question text and exact reading-comprehension subskill must be visually verified before approval.",
+          "mainSkillId": "skill_verbal_21",
+          "subSkillId": "sub_verbal_13_1",
+          "passageId": "VERBAL26-ANAS-PASSAGE-BEAUTY"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -2320,8 +2326,11 @@
           "canonicalId": "VERBAL26-ANAS-RC-BEAUTY-Q03",
           "answerLetter": "B",
           "answerEvidencePdfPage": 43,
-          "status": "SOURCE_KEY_VERIFIED_CLASSIFICATION_AND_TEXT_QA_PENDING",
-          "notes": "Passage/question text and exact reading-comprehension subskill must be visually verified before approval."
+          "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
+          "notes": "Passage/question text and exact reading-comprehension subskill must be visually verified before approval.",
+          "mainSkillId": "skill_verbal_21",
+          "subSkillId": "sub_verbal_13_1",
+          "passageId": "VERBAL26-ANAS-PASSAGE-BEAUTY"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -2335,8 +2344,11 @@
           "canonicalId": "VERBAL26-ANAS-RC-BEAUTY-Q04",
           "answerLetter": "A",
           "answerEvidencePdfPage": 43,
-          "status": "SOURCE_KEY_VERIFIED_CLASSIFICATION_AND_TEXT_QA_PENDING",
-          "notes": "Passage/question text and exact reading-comprehension subskill must be visually verified before approval."
+          "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
+          "notes": "Passage/question text and exact reading-comprehension subskill must be visually verified before approval.",
+          "mainSkillId": "skill_verbal_19",
+          "subSkillId": "sub_verbal_12_1",
+          "passageId": "VERBAL26-ANAS-PASSAGE-BEAUTY"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -2490,7 +2502,7 @@
   ],
   "metrics": {
     "sourceKeyVerifiedRecords": 112,
-    "approvedBankRecords": 68,
+    "approvedBankRecords": 72,
     "note": "Ledger records are not approved-bank records until visual text/options and taxonomy QA pass.",
     "sourceConflictRecords": 23,
     "anasObservedQuestions": 135,
