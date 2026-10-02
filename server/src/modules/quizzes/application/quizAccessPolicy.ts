@@ -3,11 +3,18 @@ import { AccessGrantModel } from "../../../models/AccessGrant.js";
 import { B2BPackageModel } from "../../../models/B2BPackage.js";
 import { CourseModel } from "../../../models/Course.js";
 import { GroupModel } from "../../../models/Group.js";
+import { TeachingAssignmentModel } from "../../../models/TeachingAssignment.js";
 import { UserModel } from "../../../models/User.js";
 import { getActivePathIds, isStaffRole } from "../../../services/visibility.js";
 import { resolveSupervisorSchoolReportScope } from "../application/quizReportScope.js";
 import { resolveAuthUserByAuthId } from "../application/quizUserLookup.js";
 import { buildDocumentsByIdsQuery, uniqueStrings } from "../infrastructure/quizDocumentQuery.js";
+
+const directedScopeForbidden = (message: string) => {
+  const error = new Error(message) as Error & { statusCode?: number };
+  error.statusCode = StatusCodes.FORBIDDEN;
+  return error;
+};
 
 export const assertSupervisorDirectedQuizScope = async (
   authUser: any,
@@ -21,13 +28,18 @@ export const assertSupervisorDirectedQuizScope = async (
   let targetGroupIds = uniqueStrings(Array.isArray(payload.targetGroupIds) ? payload.targetGroupIds.map(String) : []);
   const targetUserIds = uniqueStrings(Array.isArray(payload.targetUserIds) ? payload.targetUserIds.map(String) : []);
 
-  if (targetGroupIds.length === 0 && targetUserIds.length === 0 && allowedGroupIds.size > 0) {
+  if (targetGroupIds.length === 0 && targetUserIds.length === 0) {
+    if (allowedGroupIds.size === 0) {
+      throw directedScopeForbidden("Supervisor has no school or class scope for directed assessments");
+    }
     targetGroupIds = Array.from(allowedGroupIds);
-    payload.targetGroupIds = targetGroupIds;
   }
-  if (targetGroupIds.length > 0 && allowedGroupIds.size > 0) {
-    payload.targetGroupIds = targetGroupIds.filter((groupId) => allowedGroupIds.has(groupId));
+
+  const outsideGroupIds = targetGroupIds.filter((groupId) => !allowedGroupIds.has(groupId));
+  if (outsideGroupIds.length > 0) {
+    throw directedScopeForbidden("Directed quiz targets groups outside supervisor scope");
   }
+  payload.targetGroupIds = targetGroupIds;
 
   if (targetUserIds.length > 0) {
     const students = await UserModel.find(buildDocumentsByIdsQuery(targetUserIds))
@@ -41,9 +53,75 @@ export const assertSupervisorDirectedQuizScope = async (
       return !supervisorScope.schoolIds.includes(schoolId) && !groupIds.some((groupId: string) => allowedGroupIds.has(groupId));
     });
     if (missingStudentIds.length > 0 || outsideStudents.length > 0) {
-      const error = new Error("Directed quiz targets students outside supervisor scope") as Error & { statusCode?: number };
-      error.statusCode = StatusCodes.FORBIDDEN;
-      throw error;
+      throw directedScopeForbidden("Directed quiz targets students outside supervisor scope");
+    }
+  }
+};
+
+export const assertTeacherDirectedQuizScope = async (
+  authUser: any,
+  payload: { subjectId?: unknown; targetGroupIds?: unknown; targetUserIds?: unknown },
+) => {
+  if (authUser.role !== "teacher") return;
+
+  const targetGroupIds = uniqueStrings(Array.isArray(payload.targetGroupIds) ? payload.targetGroupIds.map(String) : []);
+  const targetUserIds = uniqueStrings(Array.isArray(payload.targetUserIds) ? payload.targetUserIds.map(String) : []);
+  if (targetGroupIds.length === 0 && targetUserIds.length === 0) return;
+
+  const teacherId = String(authUser.id || "").trim();
+  const assignments = teacherId
+    ? await TeachingAssignmentModel.find({ teacherId, status: "active" })
+        .select("schoolId classId subjectId")
+        .lean()
+    : [];
+
+  const allowedClassIds = uniqueStrings(assignments.map((assignment: any) => String(assignment.classId || "")));
+  if (allowedClassIds.length === 0) {
+    throw directedScopeForbidden("Teacher has no active class assignments");
+  }
+
+  const allowedClassSet = new Set(allowedClassIds);
+  const outsideGroupIds = targetGroupIds.filter((groupId) => !allowedClassSet.has(groupId));
+  if (outsideGroupIds.length > 0) {
+    throw directedScopeForbidden("Directed quiz targets classes outside teacher assignments");
+  }
+
+  const subjectId = String(payload.subjectId || "").trim();
+  if (subjectId) {
+    const relevantAssignments = targetGroupIds.length > 0
+      ? assignments.filter((assignment: any) => targetGroupIds.includes(String(assignment.classId || "")))
+      : assignments;
+    const matchesSubject = relevantAssignments.some((assignment: any) => {
+      const assignedSubjectId = String(assignment.subjectId || "").trim();
+      return !assignedSubjectId || assignedSubjectId === subjectId;
+    });
+    if (!matchesSubject) {
+      throw directedScopeForbidden("Directed quiz subject is outside teacher assignments");
+    }
+  }
+
+  if (targetUserIds.length > 0) {
+    const assignedClasses = await GroupModel.find({
+      $and: [buildDocumentsByIdsQuery(allowedClassIds), { type: "CLASS" }],
+    }).select("id _id studentIds").lean();
+    const rosterStudentIds = new Set(
+      assignedClasses.flatMap((group: any) => (group.studentIds || []).map(String)),
+    );
+
+    const students = await UserModel.find(buildDocumentsByIdsQuery(targetUserIds))
+      .select("id _id role groupIds")
+      .lean();
+    const foundStudentIds = new Set(students.map((student: any) => String(student.id || student._id || "")));
+    const missingStudentIds = targetUserIds.filter((studentId) => !foundStudentIds.has(studentId));
+    const outsideStudents = students.filter((student: any) => {
+      if (student.role !== "student") return true;
+      const studentId = String(student.id || student._id || "");
+      const groupIds = (student.groupIds || []).map(String);
+      return !rosterStudentIds.has(studentId) && !groupIds.some((groupId: string) => allowedClassSet.has(groupId));
+    });
+
+    if (missingStudentIds.length > 0 || outsideStudents.length > 0) {
+      throw directedScopeForbidden("Directed quiz targets students outside teacher assignments");
     }
   }
 };

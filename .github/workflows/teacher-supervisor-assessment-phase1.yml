@@ -1,0 +1,57 @@
+name: Teacher Supervisor Assessment Phase 1
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'server/src/routes/quiz.routes.ts'
+      - 'server/src/modules/quizzes/application/quizAccessPolicy.ts'
+      - 'server/src/modules/quizzes/application/quizCreatorRolePolicy.ts'
+      - 'server/src/modules/quizzes/application/quizWorkflow.ts'
+      - 'scripts/smoke-assessment-creator-role-policy-contract.mjs'
+      - 'scripts/smoke-assessment-workflow-contract.mjs'
+      - 'scripts/smoke-assessment-publication-policy-contract.mjs'
+      - 'package.json'
+      - '.github/workflows/teacher-supervisor-assessment-phase1.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: teacher-supervisor-assessment-phase1-${{ github.event.pull_request.number || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  phase1-security-gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            server/package-lock.json
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Install API dependencies
+        run: npm --prefix server ci
+
+      - name: Creator role policy contract
+        run: npm run smoke:assessment-creator-role-policy
+
+      - name: Existing workflow boundary contract
+        run: npm run smoke:assessment-workflow
+
+      - name: Existing publication boundary contract
+        run: npm run smoke:assessment-publication
+
+      - name: API typecheck
+        run: npm run server:check
