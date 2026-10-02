@@ -1258,5 +1258,89 @@
       "القلب"
     ],
     "correctOptionIndex": 0
+  },
+  {
+    "id": "VERBAL26-ANAS-RC-BEAUTY-Q01",
+    "canonicalId": "VERBAL26-ANAS-RC-BEAUTY-Q01",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 40,
+    "sourceQuestionNumber": 1,
+    "mainSkillId": "skill_verbal_20",
+    "subSkillId": "sub_verbal_12_6",
+    "text": "في القطعة السابقة ذكرت كلمة «الجمال» أربع مرات، فأي الآتي صحيح؟",
+    "options": [
+      "الثانية والرابعة معنوية",
+      "الأولى والثانية معنوية",
+      "الثانية والثالثة حسية",
+      "الثالثة والرابعة حسية"
+    ],
+    "correctOptionIndex": 0,
+    "passageId": "VERBAL26-ANAS-PASSAGE-BEAUTY",
+    "passageTitle": "الجمال",
+    "passageText": "إن الجمال الذي نستمتع به حقًا هو: الجمال الذي ينبع بداخلك والذي يغنيك عن جمال الأشياء الخارجية وقبحها، فكلما اقترنت الأخلاق النبيلة داخل الإنسان زاد إحساسه بقيمة الجمال السامية."
+  },
+  {
+    "id": "VERBAL26-ANAS-RC-BEAUTY-Q02",
+    "canonicalId": "VERBAL26-ANAS-RC-BEAUTY-Q02",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 40,
+    "sourceQuestionNumber": 2,
+    "mainSkillId": "skill_verbal_21",
+    "subSkillId": "sub_verbal_13_1",
+    "text": "علاقة «زاد إحساسه بقيمة الجمال السامية» بـ«كلما اقترنت الأخلاق النبيلة»:",
+    "options": [
+      "سلبية",
+      "شرطية",
+      "تفسيرية",
+      "تقويمية"
+    ],
+    "correctOptionIndex": 1,
+    "passageId": "VERBAL26-ANAS-PASSAGE-BEAUTY",
+    "passageTitle": "الجمال",
+    "passageText": "إن الجمال الذي نستمتع به حقًا هو: الجمال الذي ينبع بداخلك والذي يغنيك عن جمال الأشياء الخارجية وقبحها، فكلما اقترنت الأخلاق النبيلة داخل الإنسان زاد إحساسه بقيمة الجمال السامية."
+  },
+  {
+    "id": "VERBAL26-ANAS-RC-BEAUTY-Q03",
+    "canonicalId": "VERBAL26-ANAS-RC-BEAUTY-Q03",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 40,
+    "sourceQuestionNumber": 3,
+    "mainSkillId": "skill_verbal_21",
+    "subSkillId": "sub_verbal_13_1",
+    "text": "في النص السابق:",
+    "options": [
+      "سبب واحد ونتيجتان",
+      "سبب واحد ونتيجة",
+      "سببان ونتيجة واحدة",
+      "سببان ونتيجتان"
+    ],
+    "correctOptionIndex": 1,
+    "passageId": "VERBAL26-ANAS-PASSAGE-BEAUTY",
+    "passageTitle": "الجمال",
+    "passageText": "إن الجمال الذي نستمتع به حقًا هو: الجمال الذي ينبع بداخلك والذي يغنيك عن جمال الأشياء الخارجية وقبحها، فكلما اقترنت الأخلاق النبيلة داخل الإنسان زاد إحساسه بقيمة الجمال السامية."
+  },
+  {
+    "id": "VERBAL26-ANAS-RC-BEAUTY-Q04",
+    "canonicalId": "VERBAL26-ANAS-RC-BEAUTY-Q04",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 40,
+    "sourceQuestionNumber": 4,
+    "mainSkillId": "skill_verbal_19",
+    "subSkillId": "sub_verbal_12_1",
+    "text": "نوع النص السابق:",
+    "options": [
+      "فلسفي",
+      "مقالي",
+      "بحث",
+      "تاريخي"
+    ],
+    "correctOptionIndex": 0,
+    "passageId": "VERBAL26-ANAS-PASSAGE-BEAUTY",
+    "passageTitle": "الجمال",
+    "passageText": "إن الجمال الذي نستمتع به حقًا هو: الجمال الذي ينبع بداخلك والذي يغنيك عن جمال الأشياء الخارجية وقبحها، فكلما اقترنت الأخلاق النبيلة داخل الإنسان زاد إحساسه بقيمة الجمال السامية."
   }
 ]
