@@ -826,5 +826,113 @@
     "passageId": "VERBAL26-ANAS-PASSAGE-HUMAN-PROBLEMS",
     "passageTitle": "الإنسان وتحمل المشاكل",
     "passageText": "يجب على الإنسان أن يتحمل مسؤولية نفسه؛ لأنه لو ظل ينتظر طويلاً من يأتي ليحل مشاكله فسيضيع وقته سدى."
+  },
+  {
+    "id": "VERBAL26-ANAS-P006-Q009",
+    "canonicalId": "VERBAL26-ANAS-P006-Q009",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 6,
+    "sourceQuestionNumber": 9,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "الرجل يفقد سيطرته عندما تموت المرأة.",
+    "options": [
+      "الرجل",
+      "سيطرته",
+      "تموت",
+      "المرأة"
+    ],
+    "correctOptionIndex": 2
+  },
+  {
+    "id": "VERBAL26-ANAS-P006-Q010",
+    "canonicalId": "VERBAL26-ANAS-P006-Q010",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 6,
+    "sourceQuestionNumber": 10,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "لا تتخذ القرارات وأنت غاضب؛ لأن أحسن القرارات تؤخذ عند الغضب.",
+    "options": [
+      "القرارات",
+      "غاضب",
+      "أحسن",
+      "القرارات"
+    ],
+    "correctOptionIndex": 2
+  },
+  {
+    "id": "VERBAL26-ANAS-P006-Q011",
+    "canonicalId": "VERBAL26-ANAS-P006-Q011",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 6,
+    "sourceQuestionNumber": 11,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "إن الأطفال الذين لا يتكلمون مع آبائهم كثيرًا بالصراحة يتعلمون الكلام بسرعة.",
+    "options": [
+      "يتكلمون",
+      "آبائهم",
+      "يتعلمون",
+      "بسرعة"
+    ],
+    "correctOptionIndex": 3
+  },
+  {
+    "id": "VERBAL26-ANAS-P006-Q012",
+    "canonicalId": "VERBAL26-ANAS-P006-Q012",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 6,
+    "sourceQuestionNumber": 12,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "مواجهة المشكلة جزء من الحل، ولكن عندما تطول ولا نجد لها حلًا فإدراكها أفضل حل.",
+    "options": [
+      "الحل",
+      "حلًا",
+      "فإدراكها",
+      "أفضل"
+    ],
+    "correctOptionIndex": 2
+  },
+  {
+    "id": "VERBAL26-ANAS-P006-Q013",
+    "canonicalId": "VERBAL26-ANAS-P006-Q013",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 6,
+    "sourceQuestionNumber": 13,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "إذا كان العمل الشاق مريحًا فالفراغ مفسدة.",
+    "options": [
+      "العمل",
+      "مريحًا",
+      "الفراغ",
+      "مفسدة"
+    ],
+    "correctOptionIndex": 1
+  },
+  {
+    "id": "VERBAL26-ANAS-P006-Q017",
+    "canonicalId": "VERBAL26-ANAS-P006-Q017",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 6,
+    "sourceQuestionNumber": 17,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "يجب عدم تأييد وجهة نظر ضد وجهة نظر أخرى إلا قبل أن نسمع للطرفين.",
+    "options": [
+      "عدم",
+      "ضد",
+      "قبل",
+      "للطرفين"
+    ],
+    "correctOptionIndex": 2
   }
 ]
