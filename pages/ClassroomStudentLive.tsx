@@ -262,7 +262,7 @@ export const ClassroomStudentLive: React.FC = () => {
             <div className="rounded-2xl border border-slate-100 bg-slate-50/80 p-3.5">
               <span className="text-[11px] font-bold text-slate-400 block">اسم الطالب</span>
               <span className="text-sm font-black text-slate-800 truncate block mt-0.5">
-                {user.displayName || user.name || 'طالب متميز'}
+                {user.displayName || (user as any)?.name || 'طالب متميز'}
               </span>
             </div>
             <div className="rounded-2xl border border-slate-100 bg-slate-50/80 p-3.5">
