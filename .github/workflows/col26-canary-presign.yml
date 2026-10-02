@@ -1,0 +1,45 @@
+name: COL26 Canary Presign
+on:
+  push:
+    branches: [ops/col26-canary-presign-20261002]
+    paths:
+      - "ops/col26-canary/presign.json"
+      - ".github/workflows/col26-canary-presign.yml"
+jobs:
+  presign:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      API_BASE: https://almeaacodax.vercel.app/api
+      ADMIN_TOKEN: ${{ secrets.SMOKE_ADMIN_TOKEN }}
+      ADMIN_EMAIL: ${{ secrets.SMOKE_ADMIN_EMAIL || secrets.ROLE_ADMIN_EMAIL }}
+      ADMIN_PASSWORD: ${{ secrets.SMOKE_ADMIN_PASSWORD || secrets.ROLE_ADMIN_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 24 }
+      - name: Presign bounded COL26 canary
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs=require("fs");
+          const API=(process.env.API_BASE||"").replace(/\/$/,"");
+          const items=JSON.parse(fs.readFileSync("ops/col26-canary/presign.json","utf8"));
+          if(items.length!==5) throw new Error("Canary must contain exactly 5 items");
+          let csrf="",cookie="";
+          async function csrfCtx(force=false){if(csrf&&cookie&&!force)return;const r=await fetch(API+"/auth/csrf-token");if(!r.ok)throw new Error("csrf "+r.status);const d=await r.json();csrf=d.csrfToken||"";const sc=r.headers.get("set-cookie")||"";cookie=sc.split(";")[0];if(!csrf||!cookie)throw new Error("missing csrf context");}
+          async function login(){await csrfCtx();const r=await fetch(API+"/auth/login",{method:"POST",headers:{"content-type":"application/json","x-csrf-token":csrf,"cookie":cookie},body:JSON.stringify({email:process.env.ADMIN_EMAIL,password:process.env.ADMIN_PASSWORD})});const t=await r.text();if(!r.ok)throw new Error("login "+r.status+" "+t.slice(0,200));let d={};try{d=JSON.parse(t)}catch{};const sc=r.headers.get("set-cookie")||"";const m=sc.match(/almeaa_access_token=([^;]+)/);return String(d.token||m?.[1]||"").trim();}
+          let token=String(process.env.ADMIN_TOKEN||"").trim();
+          if(!token){if(!process.env.ADMIN_EMAIL||!process.env.ADMIN_PASSWORD)throw new Error("No admin auth material");token=await login();}
+          async function post(path,body){for(let a=1;a<=3;a++){try{await csrfCtx(a>1);const r=await fetch(API+path,{method:"POST",headers:{"content-type":"application/json","authorization":"Bearer "+token,"x-csrf-token":csrf,"cookie":cookie},body:JSON.stringify(body)});const t=await r.text();if(r.status===401&&a===1&&process.env.ADMIN_EMAIL&&process.env.ADMIN_PASSWORD){token=await login();continue}if(!r.ok)throw new Error("HTTP "+r.status+" "+t.slice(0,300));return JSON.parse(t)}catch(e){if(a===3)throw e;await new Promise(x=>setTimeout(x,a*2000));}}}
+          const out=[];
+          for(const x of items){const d=await post("/media/question-import-images/presign",x);out.push({questionCode:x.questionCode,imageHash:x.imageHash,sizeBytes:x.sizeBytes,uploadUrl:d.uploadUrl,publicUrl:d.publicUrl,headers:d.headers||{}});}
+          fs.mkdirSync("audit-artifacts/col26-canary",{recursive:true});fs.writeFileSync("audit-artifacts/col26-canary/presign-intents.json",JSON.stringify(out,null,2));
+          console.log("COL26_CANARY_PRESIGN_PASS count="+out.length);
+          NODE
+      - uses: actions/upload-artifact@v4
+        with:
+          name: col26-canary-presign-${{ github.sha }}
+          path: audit-artifacts/col26-canary/presign-intents.json
+          if-no-files-found: error
+          retention-days: 2
