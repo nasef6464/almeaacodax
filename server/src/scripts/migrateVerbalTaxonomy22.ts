@@ -56,6 +56,33 @@ export async function migrateVerbalTaxonomy22() {
     );
   }
 
+  // PRE-WRITE SAFETY GATE: prove the complete 22/76 question mapping before deployTaxonomy()
+  // can mutate sections/skills/topics. This intentionally runs before the first production write.
+  const preflightQuestions = await questions.find(verbalFilter).toArray();
+  const preflightUnmapped: string[] = [];
+  const coveredMain = new Set<string>();
+  const coveredSub = new Set<string>();
+  for (const question of preflightQuestions) {
+    const subSkillId = subskillFromQuestion(question);
+    if (!subSkillId) {
+      preflightUnmapped.push(idOf(question.id || question._id) || "(missing-id)");
+      continue;
+    }
+    coveredSub.add(subSkillId);
+    coveredMain.add(VERBAL_SUBSKILL_TO_MAIN[subSkillId]);
+  }
+  const expectedMain = VERBAL_TAXONOMY.map((main) => main.id);
+  const expectedSub = Object.keys(VERBAL_SUBSKILL_TO_MAIN);
+  const missingMain = expectedMain.filter((id) => !coveredMain.has(id));
+  const missingSub = expectedSub.filter((id) => !coveredSub.has(id));
+  if (preflightUnmapped.length || missingMain.length || missingSub.length) {
+    throw new Error(
+      `Refusing migration before first write: unmapped=${preflightUnmapped.length}; ` +
+      `main coverage=${coveredMain.size}/22 (missing: ${missingMain.join(", ") || "none"}); ` +
+      `subskill coverage=${coveredSub.size}/76 (missing: ${missingSub.join(", ") || "none"}).`,
+    );
+  }
+
   // Taxonomy deployment changes taxonomy/topics only. Student result/mastery collections are never rewritten.
   await mongoose.disconnect();
   await deployTaxonomy();
