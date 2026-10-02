@@ -19,46 +19,78 @@ const submissionKeyForSession = (session: any) => {
   return `questions:${ids.join("|")}`;
 };
 
+interface StaffCacheEntry {
+  allowed: boolean;
+  expiresAt: number;
+}
+const staffAccessCache = new Map<string, StaffCacheEntry>();
+
+interface StudentNameCacheEntry {
+  name: string;
+  expiresAt: number;
+}
+const studentNameCache = new Map<string, StudentNameCacheEntry>();
+
+const resolveStaffAccessWithCache = async (authUser: any, session: any): Promise<boolean> => {
+  if (authUser.role === "admin") return true;
+
+  const schoolId = String(session.schoolId);
+  const classId = String(session.classId);
+  const cacheKey = `${authUser.id}:${authUser.role}:${schoolId}:${classId}:${session.teacherId}`;
+  const now = Date.now();
+  const cached = staffAccessCache.get(cacheKey);
+  if (cached && cached.expiresAt > now) {
+    return cached.allowed;
+  }
+
+  const entitlement = await resolveSchoolEntitlement(schoolId, "SMART_CLASSROOM");
+  if (!entitlement.allowed) {
+    staffAccessCache.set(cacheKey, { allowed: false, expiresAt: now + 30_000 });
+    return false;
+  }
+
+  let isTeacher = false;
+  if (authUser.role === "teacher" && String(session.teacherId) === authUser.id) {
+    const [hasSchoolAccess, hasClassAssignment] = await Promise.all([
+      ensureTeacherSchoolAccess(authUser, schoolId),
+      TeachingAssignmentModel.exists({
+        schoolId,
+        classId,
+        teacherId: authUser.id,
+        status: "active",
+      }),
+    ]);
+    isTeacher = Boolean(hasSchoolAccess && hasClassAssignment);
+  }
+
+  let isSupervisor = false;
+  if (authUser.role === "supervisor") {
+    const scope = await resolveClassroomSupervisorScope(authUser);
+    isSupervisor = scope.all || scope.schoolIds.includes(schoolId) || scope.classIds.includes(classId);
+  }
+
+  let isDirector = false;
+  if (authUser.role === "school_admin") {
+    isDirector = Boolean(await requireSchoolDirectorCapability(
+      authUser.id,
+      schoolId,
+      "SCHOOL_SMART_CLASSROOM_VIEW",
+      "SMART_CLASSROOM",
+    ));
+  }
+
+  const isStaff = isTeacher || isSupervisor || isDirector;
+  if (staffAccessCache.size > 1000) staffAccessCache.clear();
+  staffAccessCache.set(cacheKey, { allowed: isStaff, expiresAt: now + 60_000 });
+  return isStaff;
+};
+
 export function registerClassroomAggregateRoutes(classroomRouter: Router) {
   classroomRouter.get("/sessions/:id/aggregate", requireAuth, asyncHandler(async (req, res) => {
     const session = await ClassroomSessionModel.findById(req.params.id).lean() as any;
     if (!session) return res.status(StatusCodes.NOT_FOUND).json({ message: "Session not found" });
 
-    if (req.authUser!.role !== "admin" && !(await resolveSchoolEntitlement(String(session.schoolId), "SMART_CLASSROOM")).allowed) {
-      return res.status(StatusCodes.FORBIDDEN).json({ message: "Smart Classroom is not enabled for this school" });
-    }
-
-    let isTeacher = req.authUser!.role === "admin";
-    if (!isTeacher && req.authUser!.role === "teacher" && String(session.teacherId) === req.authUser!.id) {
-      const [hasSchoolAccess, hasClassAssignment] = await Promise.all([
-        ensureTeacherSchoolAccess(req.authUser!, String(session.schoolId)),
-        TeachingAssignmentModel.exists({
-          schoolId: String(session.schoolId),
-          classId: String(session.classId),
-          teacherId: req.authUser!.id,
-          status: "active",
-        }),
-      ]);
-      isTeacher = Boolean(hasSchoolAccess && hasClassAssignment);
-    }
-
-    let isSupervisor = false;
-    if (req.authUser!.role === "supervisor") {
-      const scope = await resolveClassroomSupervisorScope(req.authUser!);
-      isSupervisor = scope.all || scope.schoolIds.includes(String(session.schoolId)) || scope.classIds.includes(String(session.classId));
-    }
-
-    let isDirector = false;
-    if (req.authUser!.role === "school_admin") {
-      isDirector = Boolean(await requireSchoolDirectorCapability(
-        req.authUser!.id,
-        String(session.schoolId),
-        "SCHOOL_SMART_CLASSROOM_VIEW",
-        "SMART_CLASSROOM",
-      ));
-    }
-
-    const isStaff = isTeacher || isSupervisor || isDirector;
+    const isStaff = await resolveStaffAccessWithCache(req.authUser!, session);
     if (!isStaff) return res.status(StatusCodes.FORBIDDEN).json({ message: "Classroom analytics are staff-only" });
 
     const sessionId = classroomSessionId(session);
@@ -164,20 +196,34 @@ export function registerClassroomAggregateRoutes(classroomRouter: Router) {
       (participant.finalizedSubmissionKeys || []).map(String).includes(submissionKey),
     );
     const submittedStudentIds = submittedParticipants.map((participant: any) => String(participant.studentId));
-    const objectIds = submittedStudentIds.filter((studentId: string) => Types.ObjectId.isValid(studentId));
-    const submittedUsers = submittedStudentIds.length > 0
-      ? await UserModel.find({
-          $or: [
-            { id: { $in: submittedStudentIds } },
-            ...(objectIds.length ? [{ _id: { $in: objectIds } }] : []),
-          ],
-        }).select("id _id name displayName").lean() as any[]
-      : [];
+    const now = Date.now();
+    const missingIds = submittedStudentIds.filter((studentId: string) => {
+      const entry = studentNameCache.get(studentId);
+      return !entry || entry.expiresAt <= now;
+    });
+
+    if (missingIds.length > 0) {
+      const missingObjectIds = missingIds.filter((studentId: string) => Types.ObjectId.isValid(studentId));
+      const newlyFetched = await UserModel.find({
+        $or: [
+          { id: { $in: missingIds } },
+          ...(missingObjectIds.length ? [{ _id: { $in: missingObjectIds } }] : []),
+        ],
+      }).select("id _id name displayName").lean() as any[];
+
+      if (studentNameCache.size > 2000) studentNameCache.clear();
+      newlyFetched.forEach((student: any) => {
+        const name = String(student.displayName || student.name || "طالب");
+        const entry = { name, expiresAt: now + 300_000 };
+        if (student.id) studentNameCache.set(String(student.id), entry);
+        if (student._id) studentNameCache.set(String(student._id), entry);
+      });
+    }
+
     const nameByStudentId = new Map<string, string>();
-    submittedUsers.forEach((student: any) => {
-      const name = String(student.displayName || student.name || "طالب");
-      if (student.id) nameByStudentId.set(String(student.id), name);
-      if (student._id) nameByStudentId.set(String(student._id), name);
+    submittedStudentIds.forEach((studentId: string) => {
+      const cached = studentNameCache.get(studentId);
+      nameByStudentId.set(studentId, cached ? cached.name : "طالب");
     });
 
     const activeBatch = (session.questionBatches || []).find((batch: any) => String(batch.batchId) === String(session.activeBatchId || ""));
