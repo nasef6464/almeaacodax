@@ -1,0 +1,92 @@
+[
+  {
+    "id": "VERBAL26-ANAS-P005-Q001",
+    "canonicalId": "VERBAL26-ANAS-P005-Q001",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 5,
+    "sourceQuestionNumber": 1,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "الفشل هو الشيء الوحيد الذي يستطيع أي إنسان أن يتفاداه دون مجهود.",
+    "options": [
+      "الفشل",
+      "الوحيد",
+      "يستطيع",
+      "يتفاداه"
+    ],
+    "correctOptionIndex": 3
+  },
+  {
+    "id": "VERBAL26-ANAS-P005-Q002",
+    "canonicalId": "VERBAL26-ANAS-P005-Q002",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 5,
+    "sourceQuestionNumber": 2,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "أطع أخاك وإن عصاك، واتق الله وإن خالفك.",
+    "options": [
+      "أطع",
+      "أخاك",
+      "اتق الله",
+      "خالفك"
+    ],
+    "correctOptionIndex": 2
+  },
+  {
+    "id": "VERBAL26-ANAS-P005-Q003",
+    "canonicalId": "VERBAL26-ANAS-P005-Q003",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 5,
+    "sourceQuestionNumber": 3,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "إن أسوأ ما يصيب الإنسان أن يكون بلا عمل أو كسل.",
+    "options": [
+      "أسوأ",
+      "الإنسان",
+      "عمل",
+      "كسل"
+    ],
+    "correctOptionIndex": 3
+  },
+  {
+    "id": "VERBAL26-ANAS-P005-Q004",
+    "canonicalId": "VERBAL26-ANAS-P005-Q004",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 5,
+    "sourceQuestionNumber": 4,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "ذكي من يفهم الناس لكن الذي يفهم نفسه أقل ذكاء.",
+    "options": [
+      "ذكي",
+      "الناس",
+      "يفهم",
+      "أقل"
+    ],
+    "correctOptionIndex": 3
+  },
+  {
+    "id": "VERBAL26-ANAS-P005-Q005",
+    "canonicalId": "VERBAL26-ANAS-P005-Q005",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 5,
+    "sourceQuestionNumber": 5,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "يجب أن تكون صناعة ألعاب الأطفال بأدنى معايير الجودة.",
+    "options": [
+      "صناعة",
+      "ألعاب",
+      "أدنى",
+      "الجودة"
+    ],
+    "correctOptionIndex": 1
+  }
+]
