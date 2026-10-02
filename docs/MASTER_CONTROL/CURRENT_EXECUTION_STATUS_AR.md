@@ -1,6 +1,15 @@
 # ALMEAA — Current Execution Status
 
-آخر تحديث: 2026-09-27
+آخر تحديث: 2026-10-02
+
+## Ultimate Final Acceptance UAT (2026-10-02) — اعتمـاد التسليم النهائي
+- **الحالة العامة:** CLOSED ✅ — معتمد بالكامل من المتصفح الحقيقي (Local-First Real-Browser UAT).
+- **القاعدة الحاكمة:** Browser Is The Source Of Truth (`CLICK -> TYPE -> SAVE -> RELOAD -> VERIFY -> LOGOUT -> LOGIN -> VERIFY AGAIN`).
+- **المستودع و Commit SHA:** `nasef6464/almeaacodax` على `3a46efbf64836bddfd7ce31cdaca5575e4a5aa02` (origin/main).
+- **الخدمات المحلية:** Frontend (`http://localhost:3000` مع Vite `/api` proxy) + Backend (`http://localhost:4000/api`) + MongoDB Atlas (متصلة ونشطة).
+- **الكيانات المعتمدة:** مدرسة `ALMEAA UAT School` (`UAT-2026-ALMEAA-01`)، 3 فصول، 7 شخصيات اختبار (مدير، مشرف، 3 معلمين، 5 طلاب مدرسة، طالب مستقل).
+- **التغطية:** 15 صفحة عامة، 60 زراً بالتقييم الخماسي، رحلة تشغيل المدارس، رحلة المشرف، رحلة المعلمين، رحلة الطالب وحل اختبار معتمد بـ 4 أسئلة والحصول على 100% وتكامل التقارير الأربعة، فحص التبويبات الإدارية، فحص RBAC وCSRF، فحص Responsive عبر 6 مقاسات، وتوافق RTL.
+- **الأدلة الفنية:** 72 لقطة شاشة موثقة في `docs/FINAL_ACCEPTANCE/evidence/screenshots/`، 6 سجلات JSON، و11 تقريراً معتمداً في `docs/FINAL_ACCEPTANCE/`.
 
 ## الحالة المختصرة
 

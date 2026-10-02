@@ -1,0 +1,59 @@
+{
+  "timestamp": "2026-10-02T17:29:30.160Z",
+  "quizId": "quiz_1790961529583_853f3",
+  "quizTitle": "اختبار تقييمي شامل — UAT Class 101",
+  "student": {
+    "name": "UAT Student 01",
+    "email": "uat.student01@almeaa.local",
+    "quizCompleted": true,
+    "score": "100%",
+    "reviewLaterTriggered": true,
+    "resultsScreenshot": "C:\\ALMEAA MAY - codax\\docs\\FINAL_ACCEPTANCE\\evidence\\screenshots\\e2e_student_quiz_results.png",
+    "reportsScreenshot": "C:\\ALMEAA MAY - codax\\docs\\FINAL_ACCEPTANCE\\evidence\\screenshots\\e2e_student_reports_view.png"
+  },
+  "teacher": {
+    "name": "UAT Math Teacher",
+    "email": "uat.teacher.math@almeaa.local",
+    "dashboardLoaded": true,
+    "classReportsScreenshot": "C:\\ALMEAA MAY - codax\\docs\\FINAL_ACCEPTANCE\\evidence\\screenshots\\e2e_teacher_reports_view.png"
+  },
+  "supervisor": {
+    "name": "UAT Supervisor",
+    "email": "uat.supervisor@almeaa.local",
+    "dashboardLoaded": true,
+    "reportsScreenshot": "C:\\ALMEAA MAY - codax\\docs\\FINAL_ACCEPTANCE\\evidence\\screenshots\\e2e_supervisor_reports_view.png"
+  },
+  "admin": {
+    "name": "Platform Admin",
+    "email": "nasef64@gmail.com",
+    "schoolOperationsScreenshot": "C:\\ALMEAA MAY - codax\\docs\\FINAL_ACCEPTANCE\\evidence\\screenshots\\e2e_admin_reports_view.png",
+    "tabs": {
+      "users": {
+        "name": "المستخدمين",
+        "screenshot": "C:\\ALMEAA MAY - codax\\docs\\FINAL_ACCEPTANCE\\evidence\\screenshots\\admin_tab_users.png",
+        "status": "PASS"
+      },
+      "questions": {
+        "name": "مركز الأسئلة",
+        "screenshot": "C:\\ALMEAA MAY - codax\\docs\\FINAL_ACCEPTANCE\\evidence\\screenshots\\admin_tab_questions.png",
+        "status": "PASS"
+      },
+      "courses": {
+        "name": "إدارة الدورات",
+        "screenshot": "C:\\ALMEAA MAY - codax\\docs\\FINAL_ACCEPTANCE\\evidence\\screenshots\\admin_tab_courses.png",
+        "status": "PASS"
+      },
+      "operations": {
+        "name": "العمليات والمراقبة",
+        "screenshot": "C:\\ALMEAA MAY - codax\\docs\\FINAL_ACCEPTANCE\\evidence\\screenshots\\admin_tab_operations.png",
+        "status": "PASS"
+      },
+      "backups": {
+        "name": "النسخ الاحتياطي",
+        "screenshot": "C:\\ALMEAA MAY - codax\\docs\\FINAL_ACCEPTANCE\\evidence\\screenshots\\admin_tab_backups.png",
+        "status": "PASS"
+      }
+    }
+  },
+  "verificationSummary": "PASS — ALL ROLES VERIFIED FROM REAL BROWSER"
+}
