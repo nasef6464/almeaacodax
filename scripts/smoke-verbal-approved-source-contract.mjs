@@ -9,6 +9,7 @@ import path from "node:path";
 
 const bankPath = process.argv[2] || path.join(process.cwd(), "server", "data", "verbal_approved_bank_v2.json");
 const APPROVED = new Set(["abdelbaset", "anas"]);
+const EXPECTED_MAIN = new Set(Array.from({length: 22}, (_, i) => `skill_verbal_${String(i + 1).padStart(2, "0")}`));
 
 if (!fs.existsSync(bankPath)) {
   throw new Error(`Approved bank not found: ${bankPath}`);
@@ -57,4 +58,13 @@ if (failures.length) {
 
 const bySource = bank.reduce((m, q) => ((m[q.sourceBook] = (m[q.sourceBook] || 0) + 1), m), {});
 const byMain = bank.reduce((m, q) => ((m[q.mainSkillId] = (m[q.mainSkillId] || 0) + 1), m), {});
-console.log(JSON.stringify({status:"PASS",total:bank.length,bySource,mainSkills:Object.keys(byMain).length,byMain}, null, 2));
+const bySub = bank.reduce((m, q) => ((m[q.subSkillId] = (m[q.subSkillId] || 0) + 1), m), {});
+const presentMain = new Set(Object.keys(byMain));
+const missingMain = [...EXPECTED_MAIN].filter((id) => !presentMain.has(id));
+if (missingMain.length || Object.keys(bySub).length !== 76) {
+  throw new Error(
+    `VERBAL26 approved bank is not migration-ready: mainSkills=${presentMain.size}/22, ` +
+    `subSkills=${Object.keys(bySub).length}/76, missingMain=${missingMain.join(", ") || "none"}`,
+  );
+}
+console.log(JSON.stringify({status:"PASS",total:bank.length,bySource,mainSkills:Object.keys(byMain).length,subSkills:Object.keys(bySub).length,byMain}, null, 2));
