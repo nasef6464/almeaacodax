@@ -1558,5 +1558,59 @@
       "الرخاء _ ازدهار"
     ],
     "correctOptionIndex": 3
+  },
+  {
+    "id": "VERBAL26-ANAS-COMP-P014-Q020",
+    "canonicalId": "VERBAL26-ANAS-COMP-P014-Q020",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 14,
+    "sourceQuestionNumber": 20,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "إذا لم نصل إلى .......... الشافي، فإننا نكرر ......... بلغة أخرى.",
+    "options": [
+      "العظام _ الطلب",
+      "الدواء _ الوصفة",
+      "الجواب _ السؤال",
+      "السؤال _ الجواب"
+    ],
+    "correctOptionIndex": 2
+  },
+  {
+    "id": "VERBAL26-ANAS-COMP-P014-Q021",
+    "canonicalId": "VERBAL26-ANAS-COMP-P014-Q021",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 14,
+    "sourceQuestionNumber": 21,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "الحكيم هو الذي ....... بين ما يعلمه وما ......",
+    "options": [
+      "يفرق _ يتقنه",
+      "يميز _ يجهله",
+      "يقارن _ يتقنه",
+      "يعرف _ يحسنه"
+    ],
+    "correctOptionIndex": 1
+  },
+  {
+    "id": "VERBAL26-ANAS-COMP-P014-Q022",
+    "canonicalId": "VERBAL26-ANAS-COMP-P014-Q022",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 14,
+    "sourceQuestionNumber": 22,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "من دخل ................. بلا زاد كمن ركب البحر بلا ........",
+    "options": [
+      "المدينة _ مجداف",
+      "منزل _ قارب",
+      "القبر _ سفينة",
+      "البستان _ قارب"
+    ],
+    "correctOptionIndex": 2
   }
 ]
