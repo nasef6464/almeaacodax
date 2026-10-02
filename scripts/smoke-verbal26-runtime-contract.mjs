@@ -10,6 +10,7 @@ const passageModel = read('server/src/models/QuestionPassage.ts');
 const bankRoutes = read('server/src/modules/quizzes/http/questionBankRoutes.ts');
 const quizRoutes = read('server/src/routes/quiz.routes.ts');
 const taxonomy = read('server/src/scripts/deployVerbalTaxonomy22.ts');
+const importer = read('server/src/scripts/deployVerbalEcosystem.ts');
 
 const checks = [];
 const check = (name, fn) => {
@@ -54,6 +55,14 @@ check('reading passages are canonical shared records', () => {
 check('question and quiz reads hydrate passage references', () => {
   assert.match(bankRoutes, /hydrateQuestionPassages/);
   assert.match(quizRoutes, /hydrateQuestionPassages/);
+});
+
+check('VERBAL26 importer persists schema-safe provenance', () => {
+  assert.match(importer, /source:\s*"imported"/);
+  assert.match(importer, /questionCode:\s*q\.canonicalId/);
+  assert.match(importer, /sourceMeta:/);
+  assert.match(importer, /importBatchId:\s*"VERBAL26"/);
+  assert.match(importer, /sourceItemId:\s*q\.canonicalId/);
 });
 
 const failed = checks.filter((item) => !item.ok);
