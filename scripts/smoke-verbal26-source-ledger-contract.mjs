@@ -54,7 +54,15 @@ assert.deepEqual(
 );
 
 assert.equal(ledger?.metrics?.amerDerivedReportIsAuthority, false, "derived 938 report must not be authoritative");
-assert.equal(ledger?.metrics?.approvedBankRecords, 0, "ledger rows must not masquerade as final approved-bank records");
+const approvedBankPath = new URL("../server/data/verbal_approved_bank_v2.json", import.meta.url);
+const approvedBank = fs.existsSync(approvedBankPath)
+  ? JSON.parse(fs.readFileSync(approvedBankPath, "utf8"))
+  : [];
+assert.equal(
+  Number(ledger?.metrics?.approvedBankRecords || 0),
+  Array.isArray(approvedBank) ? approvedBank.length : 0,
+  "approved-bank metric must match the canonical approved-bank file",
+);
 
 console.log(JSON.stringify({
   status: "PASS",
