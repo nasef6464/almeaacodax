@@ -2521,24 +2521,47 @@
     "amerDerivedReportCrossCheck": 938,
     "amerDerivedReportIsAuthority": false,
     "amerObservedQuestionCounts": {
-      "1": 29
+      "1": 25,
+      "2": 37,
+      "3": 35,
+      "4": 34,
+      "5": 25
     }
   },
   "amerBatches": [
     {
-      "id": "AMER-T01",
-      "training": 1,
-      "section": "التناظر اللفظي",
-      "relation": "الجزء من الكل / الكل إلى الجزء",
-      "printedPages": [
-        4,
-        5
-      ],
-      "observedQuestionRange": "1-29",
-      "observedQuestionCount": 29,
+      "id": "AMER-T01", "training": 1, "section": "التناظر اللفظي", "relation": "الجزء من الكل / الكل إلى الجزء",
+      "printedPages": [4, 5], "observedQuestionRange": "1-25", "observedQuestionCount": 25,
       "status": "QUESTION_COUNT_VERIFIED_ANSWER_AND_TEXT_QA_PENDING",
-      "evidence": "Training 1 starts on printed page 4; source snippets show questions 1-29; table of contents starts Training 2 on printed page 6.",
+      "evidence": "Training 1 is printed pages 4-5; question numbering ends at 25 before the synonym lesson and Training 2.",
+      "answerPolicy": "No answer is approved from semantic inference alone. Exact options and independently verified/source-backed key are required."
+    },
+    {
+      "id": "AMER-T02", "training": 2, "section": "التناظر اللفظي", "relation": "الترادف",
+      "printedPages": [7, 8, 9], "observedQuestionRange": "1-37", "observedQuestionCount": 37,
+      "status": "QUESTION_COUNT_VERIFIED_ANSWER_AND_TEXT_QA_PENDING",
+      "evidence": "Training 2 begins on printed page 7 and numbering reaches 37 on printed page 9 before the antonym lesson.",
+      "answerPolicy": "No answer is approved from semantic inference alone. Exact options and independently verified/source-backed key are required."
+    },
+    {
+      "id": "AMER-T03", "training": 3, "section": "التناظر اللفظي", "relation": "التضاد",
+      "printedPages": [10, 11, 12], "observedQuestionRange": "1-35", "observedQuestionCount": 35,
+      "status": "QUESTION_COUNT_VERIFIED_ANSWER_AND_TEXT_QA_PENDING",
+      "evidence": "Training 3 begins on printed page 10 and numbering reaches 35 on printed page 12 before the next relation lesson.",
+      "answerPolicy": "No answer is approved from semantic inference alone. Exact options and independently verified/source-backed key are required."
+    },
+    {
+      "id": "AMER-T04", "training": 4, "section": "التناظر اللفظي", "relation": "المكانية والزمانية",
+      "printedPages": [14, 15, 16], "observedQuestionRange": "1-34", "observedQuestionCount": 34,
+      "status": "QUESTION_COUNT_VERIFIED_ANSWER_AND_TEXT_QA_PENDING",
+      "evidence": "Training 4 begins on printed page 14 and numbering reaches 34 on printed page 16 before the profession/function and cause/effect lessons.",
+      "answerPolicy": "No answer is approved from semantic inference alone. Exact options and independently verified/source-backed key are required."
+    },
+    {
+      "id": "AMER-T05", "training": 5, "section": "التناظر اللفظي", "relation": "السبب والنتيجة أو العكس",
+      "printedPages": [17, 18], "observedQuestionRange": "1-25", "observedQuestionCount": 25,
+      "status": "QUESTION_COUNT_VERIFIED_ANSWER_AND_TEXT_QA_PENDING",
+      "evidence": "Training 5 begins on printed page 17; numbering reaches 25 before Training 6 starts on printed page 19.",
       "answerPolicy": "No answer is approved from semantic inference alone. Exact options and independently verified/source-backed key are required."
     }
-  ]
-}
+  ]}
