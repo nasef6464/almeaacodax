@@ -90,6 +90,10 @@ export function registerClassroomAggregateRoutes(classroomRouter: Router) {
     const session = await ClassroomSessionModel.findById(req.params.id).lean() as any;
     if (!session) return res.status(StatusCodes.NOT_FOUND).json({ message: "Session not found" });
 
+    if (req.authUser!.role !== "admin" && !(await resolveSchoolEntitlement(String(session.schoolId), "SMART_CLASSROOM")).allowed) {
+      return res.status(StatusCodes.FORBIDDEN).json({ message: "Smart Classroom is not enabled for this school" });
+    }
+
     const isStaff = await resolveStaffAccessWithCache(req.authUser!, session);
     if (!isStaff) return res.status(StatusCodes.FORBIDDEN).json({ message: "Classroom analytics are staff-only" });
 
