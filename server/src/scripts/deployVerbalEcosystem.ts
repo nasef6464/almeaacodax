@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 import * as fs from "fs";
 import * as path from "path";
+import { createHash } from "node:crypto";
+import { QuestionPassageModel } from "../models/QuestionPassage.js";
 import { env } from "../config/env.js";
 import {
   VERBAL_SUBSKILL_TO_MAIN,
@@ -28,6 +30,9 @@ type ApprovedQuestion = {
   sourceQuestionNumber: string | number;
   explanation?: string;
   difficulty?: string;
+  passageId?: string;
+  passageTitle?: string;
+  passageText?: string;
 };
 
 function loadAndValidateApprovedBank(bankPath: string): ApprovedQuestion[] {
@@ -87,6 +92,13 @@ function loadAndValidateApprovedBank(bankPath: string): ApprovedQuestion[] {
       failures.push(`${at}: invalid correctOptionIndex`);
     }
     if (!asString(q?.text)) failures.push(`${at}: missing question text`);
+    const passageId = asString(q?.passageId);
+    const passageText = asString(q?.passageText);
+    const passageTitle = asString(q?.passageTitle);
+    if (passageId || passageText || passageTitle) {
+      if (!passageId) failures.push(`${at}: passageText/title requires passageId`);
+      if (!passageText) failures.push(`${at}: passageId requires passageText`);
+    }
   });
 
   if (failures.length) {
@@ -149,6 +161,47 @@ export async function deployVerbalEcosystem() {
     const questionsCol = db.collection("questions");
     const now = new Date();
 
+    // Shared reading passages are persisted once and referenced by passageId.
+    // This keeps the canonical question bank deduplicated while preserving learner hydration.
+    const passageRows = Array.from(
+      new Map(
+        questionsData
+          .filter((q) => asString(q.passageId) && asString(q.passageText))
+          .map((q) => [asString(q.passageId), q]),
+      ).values(),
+    );
+    for (const q of passageRows) {
+      const passageId = asString(q.passageId);
+      const passageText = asString(q.passageText);
+      const fingerprint = createHash("sha256")
+        .update(passageText.normalize("NFKC").replace(/\s+/g, " ").trim())
+        .digest("hex");
+      await QuestionPassageModel.updateOne(
+        { id: passageId },
+        {
+          $set: {
+            id: passageId,
+            title: asString(q.passageTitle),
+            text: passageText,
+            canonicalFingerprint: fingerprint,
+            pathId: VERBAL_PATH_ID,
+            subjectId: VERBAL_SUBJECT_ID,
+            sourceMeta: {
+              documentCode: q.sourceBook === "anas" ? "VERBAL26-ANAS" : "VERBAL26-AMER",
+              documentTitle: q.sourceBook === "anas" ? "تأسيس لفظي انس.pdf" : "دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+              sourceItemId: passageId,
+              pdfPageIndex: q.sourcePage,
+              printedPageNumber: null,
+              importBatchId: "VERBAL26",
+            },
+            updatedAt: now,
+          },
+          $setOnInsert: { createdAt: now },
+        },
+        { upsert: true },
+      );
+    }
+
     // Upsert only source-verified canonical records. Never delete the verbal bank here.
     const ops = questionsData.map((q) => ({
       updateOne: {
@@ -172,6 +225,8 @@ export async function deployVerbalEcosystem() {
             sourceBook: q.sourceBook,
             sourcePage: q.sourcePage,
             sourceQuestionNumber: q.sourceQuestionNumber,
+            passageId: asString(q.passageId) || null,
+            passage: "",
             year: 2026,
             difficulty: q.difficulty || "Medium",
             type: "mcq",
