@@ -934,5 +934,239 @@
       "للطرفين"
     ],
     "correctOptionIndex": 2
+  },
+  {
+    "id": "VERBAL26-ANAS-P007-Q018",
+    "canonicalId": "VERBAL26-ANAS-P007-Q018",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 7,
+    "sourceQuestionNumber": 18,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "ليس البخل حفظ المال وإنما إنفاقه بحكمة.",
+    "options": [
+      "البخل",
+      "حفظ",
+      "إنفاقه",
+      "حكمة"
+    ],
+    "correctOptionIndex": 0
+  },
+  {
+    "id": "VERBAL26-ANAS-P007-Q019",
+    "canonicalId": "VERBAL26-ANAS-P007-Q019",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 7,
+    "sourceQuestionNumber": 19,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "أوجد لجسمك مكانًا في القمة فالقاع مزدحم.",
+    "options": [
+      "لجسمك",
+      "مكانًا",
+      "القمة",
+      "مزدحم"
+    ],
+    "correctOptionIndex": 0
+  },
+  {
+    "id": "VERBAL26-ANAS-P007-Q020",
+    "canonicalId": "VERBAL26-ANAS-P007-Q020",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 7,
+    "sourceQuestionNumber": 20,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "قال الحسن البصري: إن معظم الناس متشابهون في المحن لكن إذا حل البلاء تباينوا.",
+    "options": [
+      "معظم",
+      "متشابهون",
+      "المحن",
+      "تباينوا"
+    ],
+    "correctOptionIndex": 1
+  },
+  {
+    "id": "VERBAL26-ANAS-P007-Q021",
+    "canonicalId": "VERBAL26-ANAS-P007-Q021",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 7,
+    "sourceQuestionNumber": 21,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "التاريخ ليس مقصودًا على روايته فقط، بل يجب تذكره.",
+    "options": [
+      "التاريخ",
+      "مقصودًا",
+      "روايته",
+      "تذكره"
+    ],
+    "correctOptionIndex": 3
+  },
+  {
+    "id": "VERBAL26-ANAS-P007-Q022",
+    "canonicalId": "VERBAL26-ANAS-P007-Q022",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 7,
+    "sourceQuestionNumber": 22,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "الخواطر أفكار ترد على القلب منها الإيجابي ومنها الحسن.",
+    "options": [
+      "أفكار",
+      "ترد",
+      "القلب",
+      "الحسن"
+    ],
+    "correctOptionIndex": 3
+  },
+  {
+    "id": "VERBAL26-ANAS-P007-Q023",
+    "canonicalId": "VERBAL26-ANAS-P007-Q023",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 7,
+    "sourceQuestionNumber": 23,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "ما أحد إلا وله كاره أو مبغض، فإن كان لا بد من ذلك فليكن المرء مع أهل طاعة الله عز وجل.",
+    "options": [
+      "أحد",
+      "كاره",
+      "المرء",
+      "أهل"
+    ],
+    "correctOptionIndex": 1
+  },
+  {
+    "id": "VERBAL26-ANAS-P007-Q024",
+    "canonicalId": "VERBAL26-ANAS-P007-Q024",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 7,
+    "sourceQuestionNumber": 24,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "قلل الاستشارة لتكثر عدة عقول؛ فإن من استعان برأيه ضل.",
+    "options": [
+      "قلل",
+      "عقول",
+      "لتكثر",
+      "برأيه"
+    ],
+    "correctOptionIndex": 0
+  },
+  {
+    "id": "VERBAL26-ANAS-P008-Q027",
+    "canonicalId": "VERBAL26-ANAS-P008-Q027",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 8,
+    "sourceQuestionNumber": 27,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "المرض مدرسة تربوية لو أحسن المتعافي الاستفادة منه لكان نعمة لا نقمة.",
+    "options": [
+      "مدرسة",
+      "المتعافي",
+      "نعمة",
+      "نقمة"
+    ],
+    "correctOptionIndex": 1
+  },
+  {
+    "id": "VERBAL26-ANAS-P008-Q028",
+    "canonicalId": "VERBAL26-ANAS-P008-Q028",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 8,
+    "sourceQuestionNumber": 28,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "يعنى العقل بالحقيقة وتهتم الأخلاق بالفضائل، أما الذوق فإنه يبحث عن الخير.",
+    "options": [
+      "بالحقيقة",
+      "بالفضائل",
+      "يبحث",
+      "الخير"
+    ],
+    "correctOptionIndex": 3
+  },
+  {
+    "id": "VERBAL26-ANAS-P008-Q029",
+    "canonicalId": "VERBAL26-ANAS-P008-Q029",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 8,
+    "sourceQuestionNumber": 29,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "امنح الطفل القليل من الحب يكن ربحك في المقابل كثيرًا.",
+    "options": [
+      "امنح",
+      "القليل",
+      "المقابل",
+      "كثيرًا"
+    ],
+    "correctOptionIndex": 1
+  },
+  {
+    "id": "VERBAL26-ANAS-P008-Q030",
+    "canonicalId": "VERBAL26-ANAS-P008-Q030",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 8,
+    "sourceQuestionNumber": 30,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "أسوأ ما يواجه العمل الفردي هو اتكال كل صاحبه إلى التخلي عن مهامه لبعض الأعضاء.",
+    "options": [
+      "يواجه",
+      "الفردي",
+      "اتكال",
+      "مهامه"
+    ],
+    "correctOptionIndex": 1
+  },
+  {
+    "id": "VERBAL26-ANAS-P008-Q031",
+    "canonicalId": "VERBAL26-ANAS-P008-Q031",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 8,
+    "sourceQuestionNumber": 31,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "من قرب السفيه وطرح أصحاب الحسن والمروءات استحق التكريم.",
+    "options": [
+      "قرب",
+      "طرح",
+      "المروءات",
+      "التكريم"
+    ],
+    "correctOptionIndex": 3
+  },
+  {
+    "id": "VERBAL26-ANAS-P008-Q035",
+    "canonicalId": "VERBAL26-ANAS-P008-Q035",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 8,
+    "sourceQuestionNumber": 35,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "المعلم الجيد هو الذي يشجع الطلاب للوصول إلى الهاوية.",
+    "options": [
+      "المعلم",
+      "الجيد",
+      "يشجع",
+      "الهاوية"
+    ],
+    "correctOptionIndex": 3
   }
 ]
