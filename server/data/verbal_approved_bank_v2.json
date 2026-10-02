@@ -88,5 +88,41 @@
       "الجودة"
     ],
     "correctOptionIndex": 1
+  },
+  {
+    "id": "VERBAL26-ANAS-COMP-P013-Q001",
+    "canonicalId": "VERBAL26-ANAS-COMP-P013-Q001",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 13,
+    "sourceQuestionNumber": 1,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "أربع .... الرزق: قيام الليل و.... الاستغفار بالأسحار، وتعاهد الصدقة، والذكر أول النهار.",
+    "options": [
+      "تمنع _ كثرة",
+      "تجلب _ قلة",
+      "تجلب _ كثرة",
+      "تمنع _ قلة"
+    ],
+    "correctOptionIndex": 2
+  },
+  {
+    "id": "VERBAL26-ANAS-COMP-P013-Q002",
+    "canonicalId": "VERBAL26-ANAS-COMP-P013-Q002",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 13,
+    "sourceQuestionNumber": 2,
+    "mainSkillId": "skill_verbal_11",
+    "subSkillId": "sub_verbal_08_1",
+    "text": "لم نعد نثق فيه بعد اليوم، لأنه .... العهود الغليظة التي قطعها على نفسه.",
+    "options": [
+      "نسي كل",
+      "تخلى عن",
+      "تعب من",
+      "حقق كل"
+    ],
+    "correctOptionIndex": 1
   }
 ]
