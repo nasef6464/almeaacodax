@@ -1414,5 +1414,41 @@
       "كالمدفأة _ الهواء"
     ],
     "correctOptionIndex": 1
+  },
+  {
+    "id": "VERBAL26-ANAS-P007-Q025",
+    "canonicalId": "VERBAL26-ANAS-P007-Q025",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 7,
+    "sourceQuestionNumber": 25,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "معرض الكتاب أتاح الكتاب المتجول للمكفوفين ومع ذلك مقته جميع المكفوفين.",
+    "options": [
+      "معرض",
+      "أتاح",
+      "المتجول",
+      "مقته"
+    ],
+    "correctOptionIndex": 3
+  },
+  {
+    "id": "VERBAL26-ANAS-P007-Q026",
+    "canonicalId": "VERBAL26-ANAS-P007-Q026",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 7,
+    "sourceQuestionNumber": 26,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "إذا شعر المخطئ بشناعة خطئه، اقتنع بصاحبه للتصحيح وصار يعرف أكثر وقناعة أقل.",
+    "options": [
+      "شعر",
+      "بشناعة",
+      "للتصحيح",
+      "أقل"
+    ],
+    "correctOptionIndex": 3
   }
 ]
