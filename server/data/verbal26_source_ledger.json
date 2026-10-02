@@ -1341,8 +1341,10 @@
           "canonicalId": "VERBAL26-ANAS-ANLG-P025-Q001",
           "answerLetter": "D",
           "answerEvidencePdfPage": 28,
-          "status": "SOURCE_KEY_VERIFIED_CLASSIFICATION_AND_TEXT_QA_PENDING",
-          "notes": "Relation-specific 22/76 classification must be verified per question from the source pair/options before approval."
+          "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
+          "notes": "Relation-specific 22/76 classification must be verified per question from the source pair/options before approval.",
+          "mainSkillId": "skill_verbal_01",
+          "subSkillId": "sub_verbal_01_1"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -1355,8 +1357,10 @@
           "canonicalId": "VERBAL26-ANAS-ANLG-P025-Q002",
           "answerLetter": "D",
           "answerEvidencePdfPage": 28,
-          "status": "SOURCE_KEY_VERIFIED_CLASSIFICATION_AND_TEXT_QA_PENDING",
-          "notes": "Relation-specific 22/76 classification must be verified per question from the source pair/options before approval."
+          "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
+          "notes": "Relation-specific 22/76 classification must be verified per question from the source pair/options before approval.",
+          "mainSkillId": "skill_verbal_04",
+          "subSkillId": "sub_verbal_03_5"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -1369,8 +1373,10 @@
           "canonicalId": "VERBAL26-ANAS-ANLG-P025-Q003",
           "answerLetter": "B",
           "answerEvidencePdfPage": 28,
-          "status": "SOURCE_KEY_VERIFIED_CLASSIFICATION_AND_TEXT_QA_PENDING",
-          "notes": "Relation-specific 22/76 classification must be verified per question from the source pair/options before approval."
+          "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
+          "notes": "Relation-specific 22/76 classification must be verified per question from the source pair/options before approval.",
+          "mainSkillId": "skill_verbal_04",
+          "subSkillId": "sub_verbal_03_7"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -1383,8 +1389,10 @@
           "canonicalId": "VERBAL26-ANAS-ANLG-P025-Q004",
           "answerLetter": "B",
           "answerEvidencePdfPage": 28,
-          "status": "SOURCE_KEY_VERIFIED_CLASSIFICATION_AND_TEXT_QA_PENDING",
-          "notes": "Relation-specific 22/76 classification must be verified per question from the source pair/options before approval."
+          "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
+          "notes": "Relation-specific 22/76 classification must be verified per question from the source pair/options before approval.",
+          "mainSkillId": "skill_verbal_08",
+          "subSkillId": "sub_verbal_06_2"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -1397,8 +1405,10 @@
           "canonicalId": "VERBAL26-ANAS-ANLG-P025-Q005",
           "answerLetter": "C",
           "answerEvidencePdfPage": 28,
-          "status": "SOURCE_KEY_VERIFIED_CLASSIFICATION_AND_TEXT_QA_PENDING",
-          "notes": "Relation-specific 22/76 classification must be verified per question from the source pair/options before approval."
+          "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
+          "notes": "Relation-specific 22/76 classification must be verified per question from the source pair/options before approval.",
+          "mainSkillId": "skill_verbal_08",
+          "subSkillId": "sub_verbal_06_4"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -1411,8 +1421,10 @@
           "canonicalId": "VERBAL26-ANAS-ANLG-P025-Q006",
           "answerLetter": "C",
           "answerEvidencePdfPage": 28,
-          "status": "SOURCE_KEY_VERIFIED_CLASSIFICATION_AND_TEXT_QA_PENDING",
-          "notes": "Relation-specific 22/76 classification must be verified per question from the source pair/options before approval."
+          "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
+          "notes": "Relation-specific 22/76 classification must be verified per question from the source pair/options before approval.",
+          "mainSkillId": "skill_verbal_03",
+          "subSkillId": "sub_verbal_02_4"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -1425,8 +1437,10 @@
           "canonicalId": "VERBAL26-ANAS-ANLG-P025-Q007",
           "answerLetter": "D",
           "answerEvidencePdfPage": 28,
-          "status": "SOURCE_KEY_VERIFIED_CLASSIFICATION_AND_TEXT_QA_PENDING",
-          "notes": "Relation-specific 22/76 classification must be verified per question from the source pair/options before approval."
+          "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
+          "notes": "Relation-specific 22/76 classification must be verified per question from the source pair/options before approval.",
+          "mainSkillId": "skill_verbal_06",
+          "subSkillId": "sub_verbal_04_2"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -1439,8 +1453,10 @@
           "canonicalId": "VERBAL26-ANAS-ANLG-P025-Q008",
           "answerLetter": "B",
           "answerEvidencePdfPage": 28,
-          "status": "SOURCE_KEY_VERIFIED_CLASSIFICATION_AND_TEXT_QA_PENDING",
-          "notes": "Relation-specific 22/76 classification must be verified per question from the source pair/options before approval."
+          "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
+          "notes": "Relation-specific 22/76 classification must be verified per question from the source pair/options before approval.",
+          "mainSkillId": "skill_verbal_09",
+          "subSkillId": "sub_verbal_06_6"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -1453,8 +1469,10 @@
           "canonicalId": "VERBAL26-ANAS-ANLG-P025-Q009",
           "answerLetter": "D",
           "answerEvidencePdfPage": 28,
-          "status": "SOURCE_KEY_VERIFIED_CLASSIFICATION_AND_TEXT_QA_PENDING",
-          "notes": "Relation-specific 22/76 classification must be verified per question from the source pair/options before approval."
+          "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
+          "notes": "Relation-specific 22/76 classification must be verified per question from the source pair/options before approval.",
+          "mainSkillId": "skill_verbal_05",
+          "subSkillId": "sub_verbal_05_1"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -1467,8 +1485,10 @@
           "canonicalId": "VERBAL26-ANAS-ANLG-P026-Q010",
           "answerLetter": "C",
           "answerEvidencePdfPage": 28,
-          "status": "SOURCE_KEY_VERIFIED_CLASSIFICATION_AND_TEXT_QA_PENDING",
-          "notes": "Relation-specific 22/76 classification must be verified per question from the source pair/options before approval."
+          "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
+          "notes": "Relation-specific 22/76 classification must be verified per question from the source pair/options before approval.",
+          "mainSkillId": "skill_verbal_09",
+          "subSkillId": "sub_verbal_06_6"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -1481,8 +1501,10 @@
           "canonicalId": "VERBAL26-ANAS-ANLG-P026-Q011",
           "answerLetter": "A",
           "answerEvidencePdfPage": 28,
-          "status": "SOURCE_KEY_VERIFIED_CLASSIFICATION_AND_TEXT_QA_PENDING",
-          "notes": "Relation-specific 22/76 classification must be verified per question from the source pair/options before approval."
+          "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
+          "notes": "Relation-specific 22/76 classification must be verified per question from the source pair/options before approval.",
+          "mainSkillId": "skill_verbal_04",
+          "subSkillId": "sub_verbal_03_3"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -1495,8 +1517,10 @@
           "canonicalId": "VERBAL26-ANAS-ANLG-P026-Q012",
           "answerLetter": "D",
           "answerEvidencePdfPage": 28,
-          "status": "SOURCE_KEY_VERIFIED_CLASSIFICATION_AND_TEXT_QA_PENDING",
-          "notes": "Relation-specific 22/76 classification must be verified per question from the source pair/options before approval."
+          "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
+          "notes": "Relation-specific 22/76 classification must be verified per question from the source pair/options before approval.",
+          "mainSkillId": "skill_verbal_03",
+          "subSkillId": "sub_verbal_02_2"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -1509,8 +1533,10 @@
           "canonicalId": "VERBAL26-ANAS-ANLG-P026-Q013",
           "answerLetter": "B",
           "answerEvidencePdfPage": 28,
-          "status": "SOURCE_KEY_VERIFIED_CLASSIFICATION_AND_TEXT_QA_PENDING",
-          "notes": "Relation-specific 22/76 classification must be verified per question from the source pair/options before approval."
+          "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
+          "notes": "Relation-specific 22/76 classification must be verified per question from the source pair/options before approval.",
+          "mainSkillId": "skill_verbal_05",
+          "subSkillId": "sub_verbal_05_1"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -1523,8 +1549,10 @@
           "canonicalId": "VERBAL26-ANAS-ANLG-P026-Q014",
           "answerLetter": "D",
           "answerEvidencePdfPage": 28,
-          "status": "SOURCE_KEY_VERIFIED_CLASSIFICATION_AND_TEXT_QA_PENDING",
-          "notes": "Relation-specific 22/76 classification must be verified per question from the source pair/options before approval."
+          "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
+          "notes": "Relation-specific 22/76 classification must be verified per question from the source pair/options before approval.",
+          "mainSkillId": "skill_verbal_09",
+          "subSkillId": "sub_verbal_06_6"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -1537,8 +1565,10 @@
           "canonicalId": "VERBAL26-ANAS-ANLG-P026-Q015",
           "answerLetter": "D",
           "answerEvidencePdfPage": 28,
-          "status": "SOURCE_KEY_VERIFIED_CLASSIFICATION_AND_TEXT_QA_PENDING",
-          "notes": "Relation-specific 22/76 classification must be verified per question from the source pair/options before approval."
+          "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
+          "notes": "Relation-specific 22/76 classification must be verified per question from the source pair/options before approval.",
+          "mainSkillId": "skill_verbal_07",
+          "subSkillId": "sub_verbal_05_3"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -1551,8 +1581,10 @@
           "canonicalId": "VERBAL26-ANAS-ANLG-P026-Q016",
           "answerLetter": "D",
           "answerEvidencePdfPage": 28,
-          "status": "SOURCE_KEY_VERIFIED_CLASSIFICATION_AND_TEXT_QA_PENDING",
-          "notes": "Relation-specific 22/76 classification must be verified per question from the source pair/options before approval."
+          "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
+          "notes": "Relation-specific 22/76 classification must be verified per question from the source pair/options before approval.",
+          "mainSkillId": "skill_verbal_01",
+          "subSkillId": "sub_verbal_01_3"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -1565,8 +1597,10 @@
           "canonicalId": "VERBAL26-ANAS-ANLG-P026-Q017",
           "answerLetter": "D",
           "answerEvidencePdfPage": 28,
-          "status": "SOURCE_KEY_VERIFIED_CLASSIFICATION_AND_TEXT_QA_PENDING",
-          "notes": "Relation-specific 22/76 classification must be verified per question from the source pair/options before approval."
+          "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
+          "notes": "Relation-specific 22/76 classification must be verified per question from the source pair/options before approval.",
+          "mainSkillId": "skill_verbal_04",
+          "subSkillId": "sub_verbal_03_3"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -1579,8 +1613,10 @@
           "canonicalId": "VERBAL26-ANAS-ANLG-P026-Q018",
           "answerLetter": "B",
           "answerEvidencePdfPage": 28,
-          "status": "SOURCE_KEY_VERIFIED_CLASSIFICATION_AND_TEXT_QA_PENDING",
-          "notes": "Relation-specific 22/76 classification must be verified per question from the source pair/options before approval."
+          "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
+          "notes": "Relation-specific 22/76 classification must be verified per question from the source pair/options before approval.",
+          "mainSkillId": "skill_verbal_09",
+          "subSkillId": "sub_verbal_06_6"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -1593,8 +1629,10 @@
           "canonicalId": "VERBAL26-ANAS-ANLG-P027-Q019",
           "answerLetter": "B",
           "answerEvidencePdfPage": 28,
-          "status": "SOURCE_KEY_VERIFIED_CLASSIFICATION_AND_TEXT_QA_PENDING",
-          "notes": "Relation-specific 22/76 classification must be verified per question from the source pair/options before approval."
+          "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
+          "notes": "Relation-specific 22/76 classification must be verified per question from the source pair/options before approval.",
+          "mainSkillId": "skill_verbal_06",
+          "subSkillId": "sub_verbal_04_3"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -1607,8 +1645,10 @@
           "canonicalId": "VERBAL26-ANAS-ANLG-P027-Q020",
           "answerLetter": "D",
           "answerEvidencePdfPage": 28,
-          "status": "SOURCE_KEY_VERIFIED_CLASSIFICATION_AND_TEXT_QA_PENDING",
-          "notes": "Relation-specific 22/76 classification must be verified per question from the source pair/options before approval."
+          "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
+          "notes": "Relation-specific 22/76 classification must be verified per question from the source pair/options before approval.",
+          "mainSkillId": "skill_verbal_05",
+          "subSkillId": "sub_verbal_05_1"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -1621,8 +1661,10 @@
           "canonicalId": "VERBAL26-ANAS-ANLG-P027-Q021",
           "answerLetter": "D",
           "answerEvidencePdfPage": 28,
-          "status": "SOURCE_KEY_VERIFIED_CLASSIFICATION_AND_TEXT_QA_PENDING",
-          "notes": "Relation-specific 22/76 classification must be verified per question from the source pair/options before approval."
+          "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
+          "notes": "Relation-specific 22/76 classification must be verified per question from the source pair/options before approval.",
+          "mainSkillId": "skill_verbal_09",
+          "subSkillId": "sub_verbal_06_6"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -1635,8 +1677,10 @@
           "canonicalId": "VERBAL26-ANAS-ANLG-P027-Q022",
           "answerLetter": "B",
           "answerEvidencePdfPage": 28,
-          "status": "SOURCE_KEY_VERIFIED_CLASSIFICATION_AND_TEXT_QA_PENDING",
-          "notes": "Relation-specific 22/76 classification must be verified per question from the source pair/options before approval."
+          "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
+          "notes": "Relation-specific 22/76 classification must be verified per question from the source pair/options before approval.",
+          "mainSkillId": "skill_verbal_01",
+          "subSkillId": "sub_verbal_01_4"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -1649,8 +1693,10 @@
           "canonicalId": "VERBAL26-ANAS-ANLG-P027-Q023",
           "answerLetter": "A",
           "answerEvidencePdfPage": 28,
-          "status": "SOURCE_KEY_VERIFIED_CLASSIFICATION_AND_TEXT_QA_PENDING",
-          "notes": "Relation-specific 22/76 classification must be verified per question from the source pair/options before approval."
+          "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
+          "notes": "Relation-specific 22/76 classification must be verified per question from the source pair/options before approval.",
+          "mainSkillId": "skill_verbal_05",
+          "subSkillId": "sub_verbal_05_1"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -1663,8 +1709,10 @@
           "canonicalId": "VERBAL26-ANAS-ANLG-P027-Q024",
           "answerLetter": "C",
           "answerEvidencePdfPage": 28,
-          "status": "SOURCE_KEY_VERIFIED_CLASSIFICATION_AND_TEXT_QA_PENDING",
-          "notes": "Relation-specific 22/76 classification must be verified per question from the source pair/options before approval."
+          "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
+          "notes": "Relation-specific 22/76 classification must be verified per question from the source pair/options before approval.",
+          "mainSkillId": "skill_verbal_08",
+          "subSkillId": "sub_verbal_06_3"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -1677,8 +1725,10 @@
           "canonicalId": "VERBAL26-ANAS-ANLG-P027-Q025",
           "answerLetter": "C",
           "answerEvidencePdfPage": 28,
-          "status": "SOURCE_KEY_VERIFIED_CLASSIFICATION_AND_TEXT_QA_PENDING",
-          "notes": "Relation-specific 22/76 classification must be verified per question from the source pair/options before approval."
+          "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
+          "notes": "Relation-specific 22/76 classification must be verified per question from the source pair/options before approval.",
+          "mainSkillId": "skill_verbal_02",
+          "subSkillId": "sub_verbal_02_1"
         }
       ]
     },
@@ -2404,7 +2454,7 @@
   ],
   "metrics": {
     "sourceKeyVerifiedRecords": 112,
-    "approvedBankRecords": 7,
+    "approvedBankRecords": 32,
     "note": "Ledger records are not approved-bank records until visual text/options and taxonomy QA pass.",
     "sourceConflictRecords": 23,
     "anasObservedQuestions": 135,
