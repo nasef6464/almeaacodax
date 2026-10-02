@@ -43,7 +43,7 @@ function loadAndValidateApprovedBank(bankPath: string): ApprovedQuestion[] {
   }
 
   validateVerbalTaxonomyV2();
-  const validMainIds = new Set(VERBAL_TAXONOMY.map((main) => main.id));
+  const validMainIds = new Set<string>(VERBAL_TAXONOMY.map((main) => main.id));
   const ids = new Set<string>();
   const canonicalIds = new Set<string>();
   const failures: string[] = [];
