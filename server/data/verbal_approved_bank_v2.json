@@ -574,5 +574,257 @@
       "أب : مسؤول"
     ],
     "correctOptionIndex": 2
+  },
+  {
+    "id": "VERBAL26-ANAS-RC-ECLIPSE-Q01",
+    "canonicalId": "VERBAL26-ANAS-RC-ECLIPSE-Q01",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 38,
+    "sourceQuestionNumber": 1,
+    "mainSkillId": "skill_verbal_20",
+    "subSkillId": "sub_verbal_12_6",
+    "text": "أسباب الكسوف والخسوف لا تتعدى:",
+    "options": [
+      "أربعة أسباب",
+      "سبب واحد",
+      "ثلاثة أسباب",
+      "سببين اثنين"
+    ],
+    "correctOptionIndex": 3,
+    "passageId": "VERBAL26-ANAS-PASSAGE-ECLIPSE",
+    "passageTitle": "الكسوف والخسوف",
+    "passageText": "الكسوف والخسوف ظاهرة تعتيم سماوي، تحدث عندما يسقط ظل جرم سماوي على جرم سماوي آخر، أو عندما يتحرك جرم أمام جرم فيحجب نوره وضياءه."
+  },
+  {
+    "id": "VERBAL26-ANAS-RC-ECLIPSE-Q02",
+    "canonicalId": "VERBAL26-ANAS-RC-ECLIPSE-Q02",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 38,
+    "sourceQuestionNumber": 2,
+    "mainSkillId": "skill_verbal_20",
+    "subSkillId": "sub_verbal_12_6",
+    "text": "ماذا تعني كلمة ظاهرة تعتيم سماوي؟",
+    "options": [
+      "لها شأن إلهي",
+      "عالية",
+      "تحدث في السماء",
+      "مائل للزرقة"
+    ],
+    "correctOptionIndex": 2,
+    "passageId": "VERBAL26-ANAS-PASSAGE-ECLIPSE",
+    "passageTitle": "الكسوف والخسوف",
+    "passageText": "الكسوف والخسوف ظاهرة تعتيم سماوي، تحدث عندما يسقط ظل جرم سماوي على جرم سماوي آخر، أو عندما يتحرك جرم أمام جرم فيحجب نوره وضياءه."
+  },
+  {
+    "id": "VERBAL26-ANAS-RC-ECLIPSE-Q03",
+    "canonicalId": "VERBAL26-ANAS-RC-ECLIPSE-Q03",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 38,
+    "sourceQuestionNumber": 3,
+    "mainSkillId": "skill_verbal_22",
+    "subSkillId": "sub_verbal_13_4",
+    "text": "الكلمة التي إذا حذفت لن تؤثر على المعنى:",
+    "options": [
+      "نور",
+      "جرم",
+      "ظل",
+      "تعتيم"
+    ],
+    "correctOptionIndex": 0,
+    "passageId": "VERBAL26-ANAS-PASSAGE-ECLIPSE",
+    "passageTitle": "الكسوف والخسوف",
+    "passageText": "الكسوف والخسوف ظاهرة تعتيم سماوي، تحدث عندما يسقط ظل جرم سماوي على جرم سماوي آخر، أو عندما يتحرك جرم أمام جرم فيحجب نوره وضياءه."
+  },
+  {
+    "id": "VERBAL26-ANAS-RC-ECLIPSE-Q04",
+    "canonicalId": "VERBAL26-ANAS-RC-ECLIPSE-Q04",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 38,
+    "sourceQuestionNumber": 4,
+    "mainSkillId": "skill_verbal_21",
+    "subSkillId": "sub_verbal_13_1",
+    "text": "علاقة «تحدث عندما يسقط جرم.....» بما قبلها:",
+    "options": [
+      "تعليل",
+      "تفصيل",
+      "تدليل",
+      "نتيجة"
+    ],
+    "correctOptionIndex": 1,
+    "passageId": "VERBAL26-ANAS-PASSAGE-ECLIPSE",
+    "passageTitle": "الكسوف والخسوف",
+    "passageText": "الكسوف والخسوف ظاهرة تعتيم سماوي، تحدث عندما يسقط ظل جرم سماوي على جرم سماوي آخر، أو عندما يتحرك جرم أمام جرم فيحجب نوره وضياءه."
+  },
+  {
+    "id": "VERBAL26-ANAS-RC-PEARLS-Q01",
+    "canonicalId": "VERBAL26-ANAS-RC-PEARLS-Q01",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 39,
+    "sourceQuestionNumber": 1,
+    "mainSkillId": "skill_verbal_21",
+    "subSkillId": "sub_verbal_13_2",
+    "text": "كم تضاداً في النص السابق؟",
+    "options": [
+      "أربعة",
+      "اثنان",
+      "ثلاثة",
+      "واحد"
+    ],
+    "correctOptionIndex": 3,
+    "passageId": "VERBAL26-ANAS-PASSAGE-PEARLS",
+    "passageTitle": "اللؤلؤ",
+    "passageText": "كان الناس قديماً يهتمون باستخراج اللؤلؤ وخاصة أهل الخليج، فكان من يمتهنون تلك المهنة من أهل الخليج يتركون أهلهم وكل ما يخصهم ويذهبون إلى الخليج العربي فيغوصون فيه بحثاً عن اللؤلؤ، وكان في استخراج اللؤلؤ الكثير من العناء والمشقة، وقد كان استخراج اللؤلؤ من أهم مصادر الدخل لديهم، ولمدة بعدهم الطويلة عن أهلهم كانوا يخافون عليهم ويتمنون لهم الأمن والسلامة."
+  },
+  {
+    "id": "VERBAL26-ANAS-RC-PEARLS-Q02",
+    "canonicalId": "VERBAL26-ANAS-RC-PEARLS-Q02",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 39,
+    "sourceQuestionNumber": 2,
+    "mainSkillId": "skill_verbal_19",
+    "subSkillId": "sub_verbal_12_1",
+    "text": "فكرة النص كانت:",
+    "options": [
+      "من التفسير إلى الإجمال",
+      "من الخصوص إلى العموم",
+      "من الإجمال إلى التفصيل",
+      "من العموم إلى الخصوص"
+    ],
+    "correctOptionIndex": 3,
+    "passageId": "VERBAL26-ANAS-PASSAGE-PEARLS",
+    "passageTitle": "اللؤلؤ",
+    "passageText": "كان الناس قديماً يهتمون باستخراج اللؤلؤ وخاصة أهل الخليج، فكان من يمتهنون تلك المهنة من أهل الخليج يتركون أهلهم وكل ما يخصهم ويذهبون إلى الخليج العربي فيغوصون فيه بحثاً عن اللؤلؤ، وكان في استخراج اللؤلؤ الكثير من العناء والمشقة، وقد كان استخراج اللؤلؤ من أهم مصادر الدخل لديهم، ولمدة بعدهم الطويلة عن أهلهم كانوا يخافون عليهم ويتمنون لهم الأمن والسلامة."
+  },
+  {
+    "id": "VERBAL26-ANAS-RC-PEARLS-Q03",
+    "canonicalId": "VERBAL26-ANAS-RC-PEARLS-Q03",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 39,
+    "sourceQuestionNumber": 3,
+    "mainSkillId": "skill_verbal_21",
+    "subSkillId": "sub_verbal_13_1",
+    "text": "علاقة العناء بالمشقة:",
+    "options": [
+      "الأولى مادية والثانية معنوية",
+      "الأولى معنوية والثانية مادية",
+      "الثانية تحمل معنى الأولى",
+      "الثانية جزء من الأولى"
+    ],
+    "correctOptionIndex": 2,
+    "passageId": "VERBAL26-ANAS-PASSAGE-PEARLS",
+    "passageTitle": "اللؤلؤ",
+    "passageText": "كان الناس قديماً يهتمون باستخراج اللؤلؤ وخاصة أهل الخليج، فكان من يمتهنون تلك المهنة من أهل الخليج يتركون أهلهم وكل ما يخصهم ويذهبون إلى الخليج العربي فيغوصون فيه بحثاً عن اللؤلؤ، وكان في استخراج اللؤلؤ الكثير من العناء والمشقة، وقد كان استخراج اللؤلؤ من أهم مصادر الدخل لديهم، ولمدة بعدهم الطويلة عن أهلهم كانوا يخافون عليهم ويتمنون لهم الأمن والسلامة."
+  },
+  {
+    "id": "VERBAL26-ANAS-RC-PEARLS-Q04",
+    "canonicalId": "VERBAL26-ANAS-RC-PEARLS-Q04",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 39,
+    "sourceQuestionNumber": 4,
+    "mainSkillId": "skill_verbal_20",
+    "subSkillId": "sub_verbal_12_6",
+    "text": "كان في استخراج اللؤلؤ عناء ومشقة، فلماذا استمروا في استخراجه؟",
+    "options": [
+      "لأنه هواية",
+      "لكسب الرزق",
+      "لدعم الأبناء",
+      "لجمع الصدف"
+    ],
+    "correctOptionIndex": 1,
+    "passageId": "VERBAL26-ANAS-PASSAGE-PEARLS",
+    "passageTitle": "اللؤلؤ",
+    "passageText": "كان الناس قديماً يهتمون باستخراج اللؤلؤ وخاصة أهل الخليج، فكان من يمتهنون تلك المهنة من أهل الخليج يتركون أهلهم وكل ما يخصهم ويذهبون إلى الخليج العربي فيغوصون فيه بحثاً عن اللؤلؤ، وكان في استخراج اللؤلؤ الكثير من العناء والمشقة، وقد كان استخراج اللؤلؤ من أهم مصادر الدخل لديهم، ولمدة بعدهم الطويلة عن أهلهم كانوا يخافون عليهم ويتمنون لهم الأمن والسلامة."
+  },
+  {
+    "id": "VERBAL26-ANAS-RC-HUMAN-PROBLEMS-Q01",
+    "canonicalId": "VERBAL26-ANAS-RC-HUMAN-PROBLEMS-Q01",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 41,
+    "sourceQuestionNumber": 1,
+    "mainSkillId": "skill_verbal_19",
+    "subSkillId": "sub_verbal_12_1",
+    "text": "يحث النص السابق على:",
+    "options": [
+      "الحرص على المال",
+      "قيمة الوقت",
+      "تحمل المسؤولية",
+      "ضعف الهمة"
+    ],
+    "correctOptionIndex": 2,
+    "passageId": "VERBAL26-ANAS-PASSAGE-HUMAN-PROBLEMS",
+    "passageTitle": "الإنسان وتحمل المشاكل",
+    "passageText": "يجب على الإنسان أن يتحمل مسؤولية نفسه؛ لأنه لو ظل ينتظر طويلاً من يأتي ليحل مشاكله فسيضيع وقته سدى."
+  },
+  {
+    "id": "VERBAL26-ANAS-RC-HUMAN-PROBLEMS-Q02",
+    "canonicalId": "VERBAL26-ANAS-RC-HUMAN-PROBLEMS-Q02",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 41,
+    "sourceQuestionNumber": 2,
+    "mainSkillId": "skill_verbal_21",
+    "subSkillId": "sub_verbal_13_1",
+    "text": "العلاقة بين «يجب على الإنسان أن يتحمل مسؤولية نفسه» و«لأنه لو ظل ينتظر طويلاً من يأتي ليحل مشاكله»:",
+    "options": [
+      "مرادفة",
+      "مقدمة",
+      "تأكيد",
+      "مقابلة"
+    ],
+    "correctOptionIndex": 3,
+    "passageId": "VERBAL26-ANAS-PASSAGE-HUMAN-PROBLEMS",
+    "passageTitle": "الإنسان وتحمل المشاكل",
+    "passageText": "يجب على الإنسان أن يتحمل مسؤولية نفسه؛ لأنه لو ظل ينتظر طويلاً من يأتي ليحل مشاكله فسيضيع وقته سدى."
+  },
+  {
+    "id": "VERBAL26-ANAS-RC-HUMAN-PROBLEMS-Q03",
+    "canonicalId": "VERBAL26-ANAS-RC-HUMAN-PROBLEMS-Q03",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 41,
+    "sourceQuestionNumber": 3,
+    "mainSkillId": "skill_verbal_20",
+    "subSkillId": "sub_verbal_12_6",
+    "text": "معنى «سدى» من سياق النص:",
+    "options": [
+      "بلا فائدة",
+      "مفيدة",
+      "رائعة",
+      "جميلة"
+    ],
+    "correctOptionIndex": 0,
+    "passageId": "VERBAL26-ANAS-PASSAGE-HUMAN-PROBLEMS",
+    "passageTitle": "الإنسان وتحمل المشاكل",
+    "passageText": "يجب على الإنسان أن يتحمل مسؤولية نفسه؛ لأنه لو ظل ينتظر طويلاً من يأتي ليحل مشاكله فسيضيع وقته سدى."
+  },
+  {
+    "id": "VERBAL26-ANAS-RC-HUMAN-PROBLEMS-Q04",
+    "canonicalId": "VERBAL26-ANAS-RC-HUMAN-PROBLEMS-Q04",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 41,
+    "sourceQuestionNumber": 4,
+    "mainSkillId": "skill_verbal_21",
+    "subSkillId": "sub_verbal_13_2",
+    "text": "أي الجمل التالية لا تتوافق مع ما ورد في النص؟",
+    "options": [
+      "نفسك أحرص عليك منك فاسألها",
+      "يجب على الإنسان حل مشاكله",
+      "ما حك جلدك مثل ظفرك",
+      "الغائب سيعود ومعه الحل الأمثل"
+    ],
+    "correctOptionIndex": 3,
+    "passageId": "VERBAL26-ANAS-PASSAGE-HUMAN-PROBLEMS",
+    "passageTitle": "الإنسان وتحمل المشاكل",
+    "passageText": "يجب على الإنسان أن يتحمل مسؤولية نفسه؛ لأنه لو ظل ينتظر طويلاً من يأتي ليحل مشاكله فسيضيع وقته سدى."
   }
 ]
