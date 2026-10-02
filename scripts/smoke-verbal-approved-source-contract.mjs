@@ -20,6 +20,7 @@ if (!Array.isArray(bank) || bank.length === 0) throw new Error("Approved verbal 
 const ids = new Set();
 const fingerprints = new Set();
 const failures = [];
+const passages = new Map();
 
 const norm = (v) => String(v ?? "").normalize("NFKC").replace(/[\u064B-\u065F\u0670]/g, "").replace(/\s+/g, " ").trim().toLowerCase();
 
@@ -34,6 +35,16 @@ for (const [i, q] of bank.entries()) {
   if (!q?.mainSkillId || !q?.subSkillId) failures.push(`${at}: missing 22/76 classification`);
   if (!Array.isArray(q?.options) || q.options.length !== 4) failures.push(`${at}: expected exactly four options`);
   if (!Number.isInteger(q?.correctOptionIndex) || q.correctOptionIndex < 0 || q.correctOptionIndex > 3) failures.push(`${at}: invalid answer key`);
+  const passageId = String(q?.passageId || "").trim();
+  const passageText = String(q?.passageText || "").trim();
+  if (passageId || passageText) {
+    if (!passageId || !passageText) failures.push(`${at}: passageId and passageText must be provided together`);
+    if (passageId && passageText) {
+      const prior = passages.get(passageId);
+      if (prior && norm(prior) !== norm(passageText)) failures.push(`${at}: passageId reused with divergent passageText`);
+      passages.set(passageId, passageText);
+    }
+  }
   const fp = [norm(q?.text), ...(q?.options || []).map(norm)].join("|");
   if (fp && fingerprints.has(fp)) failures.push(`${at}: exact normalized duplicate`);
   if (fp) fingerprints.add(fp);
