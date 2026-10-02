@@ -22,7 +22,7 @@ jobs:
         shell: bash
         run: |
           node <<'NODE'
-          const fs=require("fs");
+          const fs=require("fs");\n          (async()=>{
           const API=(process.env.API_BASE||"").replace(/\/$/,"");
           const items=JSON.parse(fs.readFileSync("ops/col26-canary/presign.json","utf8"));
           if(items.length!==5) throw new Error("Canary must contain exactly 5 items");
@@ -35,7 +35,7 @@ jobs:
           const out=[];
           for(const x of items){const d=await post("/media/question-import-images/presign",x);out.push({questionCode:x.questionCode,imageHash:x.imageHash,sizeBytes:x.sizeBytes,uploadUrl:d.uploadUrl,publicUrl:d.publicUrl,headers:d.headers||{}});}
           fs.mkdirSync("audit-artifacts/col26-canary",{recursive:true});fs.writeFileSync("audit-artifacts/col26-canary/presign-intents.json",JSON.stringify(out,null,2));
-          console.log("COL26_CANARY_PRESIGN_PASS count="+out.length);
+          console.log("COL26_CANARY_PRESIGN_PASS count="+out.length);\n          })().catch(e=>{console.error(e);process.exit(1)});
           NODE
       - uses: actions/upload-artifact@v4
         with:
