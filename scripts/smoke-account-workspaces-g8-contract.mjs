@@ -2,12 +2,15 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
-const [workspace, accessRoutes, classroomRoutes, app, dashboard, consolePage, contextGate] = await Promise.all([
+const [workspace, accessRoutes, classroomTeacherRoutes, classroomSupport, routeTree, dashboard, primaryTabs, secondaryTabs, consolePage, contextGate] = await Promise.all([
   read('server/src/modules/schools/application/schoolTeacherWorkspace.ts'),
   read('server/src/routes/schoolAccess.routes.ts'),
-  read('server/src/routes/classroom.routes.ts'),
-  read('App.tsx'),
+  read('server/src/routes/classroom/registerClassroomTeacherRoutes.ts'),
+  read('server/src/routes/classroom/classroomRouteSupport.ts'),
+  read('app/AppRouteTree.tsx'),
   read('dashboards/SchoolTeacherDashboard.tsx'),
+  read('dashboards/school-teacher/SchoolTeacherPrimaryTabs.tsx'),
+  read('dashboards/school-teacher/SchoolTeacherSecondaryTabs.tsx'),
   read('pages/ClassroomTeacherConsole.tsx'),
   read('components/teacher/TeacherWorkspaceContext.tsx'),
 ]);
@@ -24,9 +27,16 @@ includesAll(workspace, [
   'status: "active"',
   'String(classroom.parentId) === String(assignment.schoolId)',
   'targetGroupIds: { $in: validClassIds }',
+  '{ isPublished: true }',
+  '{ ownerId: actor.id }',
+  '{ createdBy: actor.id }',
+  '.select("id title subjectId targetGroupIds dueDate quizKind approvalStatus isPublished ownerId createdBy")',
+  'approvalStatus: assessment.approvalStatus || undefined',
+  'isPublished: assessment.isPublished === true',
+  'ownedByTeacher: [assessment.ownerId, assessment.createdBy].some',
   'platformTrainer:',
   'schoolTeacher: availableSchools.length > 0',
-], 'teacher workspace joins active membership assignment class and school assessment without cross-school leakage');
+], 'teacher workspace joins active membership assignment class and school assessment, preserves owned review lifecycle visibility, and prevents cross-school leakage');
 
 includesAll(accessRoutes, [
   '"/teacher-workspace"',
@@ -34,14 +44,19 @@ includesAll(accessRoutes, [
   'buildSchoolTeacherWorkspace(req.authUser!)',
 ], 'teacher workspace API is authenticated and teacher-only');
 
-includesAll(classroomRoutes, [
-  'hasActiveSchoolRole(req.authUser!, payload.schoolId, "teacher")',
+includesAll(classroomSupport, [
+  'hasActiveSchoolRole(actor, schoolId, "teacher")',
+  'TeachingAssignmentModel.exists({ schoolId, teacherId: actor.id, status: "active" })',
+], 'teacher school access requires active school role and active teaching assignment');
+
+includesAll(classroomTeacherRoutes, [
+  'GroupModel.exists({ _id: payload.classId, type: "CLASS", parentId: payload.schoolId })',
+  'TeachingAssignmentModel.exists({ schoolId: payload.schoolId, teacherId: req.authUser!.id, classId: payload.classId, status: "active" })',
   'Teacher is not assigned to this school and class',
   'Class does not belong to this school',
-  'parentId: schoolId',
 ], 'smart classroom requires school context valid assignment and a class belonging to the same school');
 
-includesAll(app, [
+includesAll(routeTree, [
   '<Route path="/school-teacher-dashboard"',
   '<TeacherWorkspaceGate workspace="school">',
   '<TeacherWorkspaceGate workspace="platform">',
@@ -54,15 +69,34 @@ includesAll(contextGate, [
 
 includesAll(dashboard, [
   'لوحة معلم المدرسة',
-  'data-testid="school-teacher-assignment"',
-  'اختبارات المدرسة الموجهة لفصولي',
-  '/classroom/teacher?schoolId=',
-], 'school teacher dashboard exposes only assigned classes assessments and Smart Classroom entry');
+  "selectedSchool.assignments",
+  "role=\"teacher\"",
+  "allowedGroupIds={teacherGroupIds}",
+  "اختباراتي وتكليفاتي",
+], 'school teacher dashboard binds the assessment builder to the active school and assigned teacher groups');
+
+includesAll(primaryTabs, [
+  'selectedSchool.assignments.map',
+  'فصولي المسندة وجدول الحصص',
+  'طلاب فصولي المسندة',
+  'اختبارات موجهة لفصولك',
+], 'school teacher primary workspace exposes only server-provided assigned classes and their students');
+
+includesAll(secondaryTabs, [
+  'اختباراتي وتكليفاتي',
+  'إنشاء اختبار / تدريب',
+  'selectedSchool.assessments.map',
+  'assessment.ownedByTeacher',
+  'assessment.approvalStatus',
+  'assessment.isPublished',
+], 'school teacher assessments show scoped assignments plus owned lifecycle state');
 
 includesAll(consolePage, [
-  'لا حاجة لإدخال أي معرّف يدويًا',
+  "user?.role === 'admin' && !workspace",
+  'placeholder="معرّف المدرسة"',
+  'placeholder="معرّف الفصل"',
   'selectedSchool?.assignments',
   '!selectedSchool?.smartClassroomEnabled',
-], 'teacher console selects server-provided assignments and respects the contract entitlement');
+], 'teacher console uses server-provided assignments while manual identifiers remain admin-only and entitlement-gated');
 
 console.log('Account Workspaces G8 contract passed.');

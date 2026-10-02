@@ -18,7 +18,7 @@ export type TeacherWorkspaceData = {
       studentCount: number;
       students: Array<{ studentId: string; name: string; isActive: boolean }>;
     }>;
-    assessments: Array<{ assessmentId: string; title: string; subjectId: string; classIds: string[]; dueDate: string | null; quizKind: string }>;
+    assessments: Array<{ assessmentId: string; title: string; subjectId: string; classIds: string[]; dueDate: string | null; quizKind: string; approvalStatus?: string; isPublished?: boolean; ownedByTeacher?: boolean }>;
   }>;
 };
 
