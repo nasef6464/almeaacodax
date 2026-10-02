@@ -56,6 +56,22 @@ assert.deepEqual(
   "Amer training plan must be continuous 1-33",
 );
 
+const amerBatches = Array.isArray(ledger?.amerBatches) ? ledger.amerBatches : [];
+const amerObserved = ledger?.metrics?.amerObservedQuestionCounts || {};
+for (const batch of amerBatches) {
+  const key = String(batch.training);
+  assert.equal(
+    Number(amerObserved[key]),
+    Number(batch.observedQuestionCount),
+    `Amer training ${key} metric must match source-verified batch count`,
+  );
+  assert.match(
+    String(batch.status || ""),
+    /QA_PENDING/,
+    `Amer training ${key} must remain pending until a source-backed answer key is verified`,
+  );
+}
+assert.equal(ledger?.metrics?.amerApprovedRecords, 0, "Amer records must not be approved before source-backed answer QA");
 assert.equal(ledger?.metrics?.amerDerivedReportIsAuthority, false, "derived 938 report must not be authoritative");
 const approvedBankPath = new URL("../server/data/verbal_approved_bank_v2.json", import.meta.url);
 const approvedBank = fs.existsSync(approvedBankPath)
