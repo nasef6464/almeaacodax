@@ -38,7 +38,10 @@ for (const row of conflictRecords) {
 const verified = batches
   .filter((b) => !String(b?.status || "").includes("CONFLICT"))
   .flatMap((b) => b.records || [])
-  .filter((r) => String(r?.status || "").includes("SOURCE_KEY_VERIFIED"));
+  .filter((r) => {
+    const status = String(r?.status || "");
+    return status.includes("SOURCE_KEY_VERIFIED") || /APPROVED_.*SOURCE_KEY/.test(status);
+  });
 assert.equal(
   verified.length,
   Number(ledger?.metrics?.sourceKeyVerifiedRecords || 0),
