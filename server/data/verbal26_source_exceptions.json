@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-10-02",
+  "policy": "No question with a defective, missing, or internally contradictory answer key enters the approved bank until the answer is independently resolved against authoritative source content.",
+  "exceptions": [
+    {
+      "id": "ANAS-ODD-001",
+      "sourceBook": "anas",
+      "section": "المفردة الشاذة",
+      "questionRange": "1-23",
+      "status": "SOURCE_KEY_DEFECT_QUARANTINED",
+      "observedQuestions": 23,
+      "reason": "The book's displayed key for this section contains 25 entries and reproduces the prior analogy-key pattern instead of matching the 23 odd-word questions."
+    },
+    {
+      "id": "ANAS-COMPLETION-Q14",
+      "sourceBook": "anas",
+      "section": "إكمال الجمل",
+      "questionRange": "14",
+      "status": "SOURCE_KEY_CONTRADICTION_REVIEW_REQUIRED",
+      "observedQuestions": 1,
+      "reason": "The printed key does not agree with the source sentence/options; the record is excluded pending source-consistent adjudication."
+    },
+    {
+      "id": "ANAS-READING-HAJJ",
+      "sourceBook": "anas",
+      "section": "استيعاب المقروء - قطعة الحج",
+      "questionRange": "1-5",
+      "status": "SOURCE_KEY_CONTRADICTION_REVIEW_REQUIRED",
+      "observedQuestions": 5,
+      "reason": "At least one printed key conflicts with explicit passage evidence (e.g. the stated means of استطاعة versus the keyed choice); the whole passage batch remains excluded pending question-by-question source review."
+    },
+    {
+      "id": "AMER-ANSWER-KEY",
+      "sourceBook": "abdelbaset",
+      "section": "كامل كتاب قدرات العامر",
+      "questionRange": "all observed training questions",
+      "status": "SOURCE_ANSWER_KEY_NOT_FOUND",
+      "reason": "The approved PDF exposes questions and relation/strategy rules, but no verified answer-key section has been found. Raw/recovery candidates are not accepted as an answer source."
+    }
+  ]
+}
