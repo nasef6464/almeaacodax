@@ -1168,5 +1168,95 @@
       "الهاوية"
     ],
     "correctOptionIndex": 3
+  },
+  {
+    "id": "VERBAL26-ANAS-P005-Q006",
+    "canonicalId": "VERBAL26-ANAS-P005-Q006",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 5,
+    "sourceQuestionNumber": 6,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "إنسان بدون هدف كسفينة بدون دفة كلاهما سوف يبدأ به الأمر على الصخور.",
+    "options": [
+      "بدون",
+      "سفينة",
+      "كلاهما",
+      "يبدأ"
+    ],
+    "correctOptionIndex": 3
+  },
+  {
+    "id": "VERBAL26-ANAS-P005-Q007",
+    "canonicalId": "VERBAL26-ANAS-P005-Q007",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 5,
+    "sourceQuestionNumber": 7,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "ينتشر في المغرب العربي المذهب الفقهي المالكي دون غيره من الأديان.",
+    "options": [
+      "ينتشر",
+      "العربي",
+      "المالكي",
+      "الأديان"
+    ],
+    "correctOptionIndex": 3
+  },
+  {
+    "id": "VERBAL26-ANAS-P005-Q008",
+    "canonicalId": "VERBAL26-ANAS-P005-Q008",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 5,
+    "sourceQuestionNumber": 8,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "الحياة تثبت كالبندول بين الألم والأمل.",
+    "options": [
+      "الحياة",
+      "تثبت",
+      "كالبندول",
+      "الأمل"
+    ],
+    "correctOptionIndex": 1
+  },
+  {
+    "id": "VERBAL26-ANAS-P006-Q015",
+    "canonicalId": "VERBAL26-ANAS-P006-Q015",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 6,
+    "sourceQuestionNumber": 15,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "هجرة الأدمغة العربية إلى بلاد الغرب بسبب وجود الدعم المالي والتقني يجب أن توحى.",
+    "options": [
+      "هجرة",
+      "إلى",
+      "الدعم",
+      "توحى"
+    ],
+    "correctOptionIndex": 3
+  },
+  {
+    "id": "VERBAL26-ANAS-P006-Q016",
+    "canonicalId": "VERBAL26-ANAS-P006-Q016",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 6,
+    "sourceQuestionNumber": 16,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "الكراهية لا تكلف وإنما شيئًا تقوي القلب.",
+    "options": [
+      "الكراهية",
+      "تكلف",
+      "تقوي",
+      "القلب"
+    ],
+    "correctOptionIndex": 0
   }
 ]
