@@ -116,6 +116,7 @@ export function registerClassroomAggregateRoutes(classroomRouter: Router) {
       const correctCount = (distributionRows as Array<{ correct: number }>).reduce((total, row) => total + row.correct, 0);
       return res.json({
         sessionId,
+        pin: session.pin || null,
         status: session.status,
         activeQuestionIndex: session.activeQuestionIndex,
         activeBatchId: session.activeBatchId || "",
@@ -248,6 +249,7 @@ export function registerClassroomAggregateRoutes(classroomRouter: Router) {
 
     res.json({
       sessionId,
+      pin: session.pin || null,
       schoolId: session.schoolId,
       classId: session.classId,
       status: session.status,

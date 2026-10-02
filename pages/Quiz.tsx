@@ -416,6 +416,26 @@ const Quiz: React.FC = () => {
 
   useEffect(() => {
     if (!quizStarted || questions.length === 0) return;
+    const snapshot: SavedQuizSnapshot = {
+      entryMode,
+      difficulty,
+      selectedPathId,
+      selectedSubjectId,
+      selectedSectionId,
+      questionTypeFilter,
+      questionCount,
+      timeLimitMinutes,
+      targetSkillIds,
+      evidenceType,
+      currentQuestion,
+      answers,
+      timeLeft,
+      activePreparedQuizId,
+      sessionQuestions: questions,
+    };
+    try {
+      localStorage.setItem(QUIZ_PROGRESS_SNAPSHOT_KEY, JSON.stringify(snapshot));
+    } catch {}
     localStorage.setItem(
       QUIZ_PROGRESS_KEY,
       JSON.stringify({
@@ -424,7 +444,24 @@ const Quiz: React.FC = () => {
         timeLeft,
       }),
     );
-  }, [quizStarted, currentQuestion, answers, timeLeft, questions.length]);
+  }, [
+    quizStarted,
+    currentQuestion,
+    answers,
+    timeLeft,
+    questions,
+    entryMode,
+    difficulty,
+    selectedPathId,
+    selectedSubjectId,
+    selectedSectionId,
+    questionTypeFilter,
+    questionCount,
+    timeLimitMinutes,
+    targetSkillIds,
+    evidenceType,
+    activePreparedQuizId,
+  ]);
 
   useEffect(() => {
     let timer: ReturnType<typeof setInterval> | undefined;

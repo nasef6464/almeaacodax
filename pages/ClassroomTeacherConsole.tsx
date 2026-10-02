@@ -85,6 +85,15 @@ export const ClassroomTeacherConsole: React.FC = () => {
   useEffect(() => {
     if (sessionId) return;
     let active = true;
+
+    api.getTeacherActiveClassroomSession()
+      .then((res) => {
+        if (active && res.hasActiveSession && res.session?.sessionId) {
+          navigate(`/classroom/${res.session.sessionId}/teacher`, { replace: true });
+        }
+      })
+      .catch(() => {});
+
     api.getSchoolTeacherWorkspace().then((result) => {
       if (!active) return;
       setWorkspace(result);
@@ -94,7 +103,7 @@ export const ClassroomTeacherConsole: React.FC = () => {
       if (!initialSchool.assignments.some((assignment) => assignment.classId === classId)) setClassId(initialSchool.assignments[0]?.classId || '');
     }).catch(() => setMessage('تعذر تحميل الفصول المسندة لك.'));
     return () => { active = false; };
-  }, [classId, schoolId, sessionId]);
+  }, [classId, navigate, schoolId, sessionId]);
 
   const filteredQuestions = useMemo(() => questions.filter((q: any) => {
     if (filters.track && q.examType !== filters.track && q.pathId !== filters.track) return false;
@@ -276,11 +285,23 @@ export const ClassroomTeacherConsole: React.FC = () => {
     );
   }
 
+  if (!data) {
+    return (
+      <main className="mx-auto max-w-5xl p-6" dir="rtl">
+        <div className="flex flex-col items-center justify-center rounded-3xl border border-slate-100 bg-white p-12 text-center shadow-xs dark:border-slate-800 dark:bg-slate-900">
+          <div className="h-10 w-10 animate-spin rounded-full border-4 border-indigo-600 border-t-transparent" />
+          <p className="mt-4 text-base font-black text-slate-800 dark:text-white">جارٍ مزامنة بيانات الحصة التفاعلية…</p>
+          <p className="mt-1 text-xs text-slate-500">يتم استعادة حالة الفصل والرمز والطلاب تلقائياً بدون فقدان أي بيانات.</p>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <ClassroomActiveSessionPanel
       sessionId={sessionId}
       data={data}
-      storedPin={storedPin}
+      storedPin={data?.pin || storedPin}
       challengeIds={challengeIds}
       onToggleChallenge={toggleChallenge}
       onPublish={(index) => { void publish(index); }}
