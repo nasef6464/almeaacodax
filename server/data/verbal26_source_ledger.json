@@ -526,7 +526,7 @@
           "subSkillId": "sub_verbal_11_2",
           "answerLetter": "B",
           "answerEvidencePdfPage": 9,
-          "status": "SOURCE_KEY_VERIFIED_TEXT_QA_PENDING",
+          "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
           "notes": "Answer key visually verified from the book key page; question text/options must be transcribed from page image before approval."
         },
         {
@@ -830,7 +830,7 @@
           "subSkillId": "sub_verbal_11_2",
           "answerLetter": "B",
           "answerEvidencePdfPage": 9,
-          "status": "SOURCE_KEY_VERIFIED_TEXT_QA_PENDING",
+          "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
           "notes": "Answer key visually verified from the book key page; question text/options must be transcribed from page image before approval."
         },
         {
@@ -1020,8 +1020,10 @@
           "canonicalId": "VERBAL26-ANAS-COMP-P014-Q010",
           "answerLetter": "A",
           "answerEvidencePdfPage": 16,
-          "status": "SOURCE_KEY_VERIFIED_CLASSIFICATION_AND_TEXT_QA_PENDING",
-          "notes": "Answer key visually verified from the book key table. Exact text/options and fine-grained 22/76 subskill classification remain pending before approval."
+          "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
+          "notes": "Answer key visually verified from the book key table. Exact text/options and fine-grained 22/76 subskill classification remain pending before approval.",
+          "mainSkillId": "skill_verbal_12",
+          "subSkillId": "sub_verbal_08_2"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -1034,8 +1036,10 @@
           "canonicalId": "VERBAL26-ANAS-COMP-P014-Q011",
           "answerLetter": "B",
           "answerEvidencePdfPage": 16,
-          "status": "SOURCE_KEY_VERIFIED_CLASSIFICATION_AND_TEXT_QA_PENDING",
-          "notes": "Answer key visually verified from the book key table. Exact text/options and fine-grained 22/76 subskill classification remain pending before approval."
+          "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
+          "notes": "Answer key visually verified from the book key table. Exact text/options and fine-grained 22/76 subskill classification remain pending before approval.",
+          "mainSkillId": "skill_verbal_12",
+          "subSkillId": "sub_verbal_08_2"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -1048,8 +1052,10 @@
           "canonicalId": "VERBAL26-ANAS-COMP-P014-Q012",
           "answerLetter": "B",
           "answerEvidencePdfPage": 16,
-          "status": "SOURCE_KEY_VERIFIED_CLASSIFICATION_AND_TEXT_QA_PENDING",
-          "notes": "Answer key visually verified from the book key table. Exact text/options and fine-grained 22/76 subskill classification remain pending before approval."
+          "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
+          "notes": "Answer key visually verified from the book key table. Exact text/options and fine-grained 22/76 subskill classification remain pending before approval.",
+          "mainSkillId": "skill_verbal_12",
+          "subSkillId": "sub_verbal_08_2"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -1062,8 +1068,10 @@
           "canonicalId": "VERBAL26-ANAS-COMP-P014-Q013",
           "answerLetter": "D",
           "answerEvidencePdfPage": 16,
-          "status": "SOURCE_KEY_VERIFIED_CLASSIFICATION_AND_TEXT_QA_PENDING",
-          "notes": "Answer key visually verified from the book key table. Exact text/options and fine-grained 22/76 subskill classification remain pending before approval."
+          "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
+          "notes": "Answer key visually verified from the book key table. Exact text/options and fine-grained 22/76 subskill classification remain pending before approval.",
+          "mainSkillId": "skill_verbal_12",
+          "subSkillId": "sub_verbal_08_2"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -1168,8 +1176,10 @@
           "canonicalId": "VERBAL26-ANAS-COMP-P015-Q020",
           "answerLetter": "C",
           "answerEvidencePdfPage": 16,
-          "status": "SOURCE_KEY_VERIFIED_CLASSIFICATION_AND_TEXT_QA_PENDING",
-          "notes": "Answer key visually verified from the book key table. Exact text/options and fine-grained 22/76 subskill classification remain pending before approval."
+          "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
+          "notes": "Answer key visually verified from the book key table. Exact text/options and fine-grained 22/76 subskill classification remain pending before approval.",
+          "mainSkillId": "skill_verbal_12",
+          "subSkillId": "sub_verbal_08_2"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -1182,8 +1192,10 @@
           "canonicalId": "VERBAL26-ANAS-COMP-P015-Q021",
           "answerLetter": "B",
           "answerEvidencePdfPage": 16,
-          "status": "SOURCE_KEY_VERIFIED_CLASSIFICATION_AND_TEXT_QA_PENDING",
-          "notes": "Answer key visually verified from the book key table. Exact text/options and fine-grained 22/76 subskill classification remain pending before approval."
+          "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
+          "notes": "Answer key visually verified from the book key table. Exact text/options and fine-grained 22/76 subskill classification remain pending before approval.",
+          "mainSkillId": "skill_verbal_12",
+          "subSkillId": "sub_verbal_08_2"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -1196,8 +1208,10 @@
           "canonicalId": "VERBAL26-ANAS-COMP-P015-Q022",
           "answerLetter": "C",
           "answerEvidencePdfPage": 16,
-          "status": "SOURCE_KEY_VERIFIED_CLASSIFICATION_AND_TEXT_QA_PENDING",
-          "notes": "Answer key visually verified from the book key table. Exact text/options and fine-grained 22/76 subskill classification remain pending before approval."
+          "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
+          "notes": "Answer key visually verified from the book key table. Exact text/options and fine-grained 22/76 subskill classification remain pending before approval.",
+          "mainSkillId": "skill_verbal_12",
+          "subSkillId": "sub_verbal_08_2"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -1224,8 +1238,10 @@
           "canonicalId": "VERBAL26-ANAS-COMP-P015-Q024",
           "answerLetter": "D",
           "answerEvidencePdfPage": 16,
-          "status": "SOURCE_KEY_VERIFIED_CLASSIFICATION_AND_TEXT_QA_PENDING",
-          "notes": "Answer key visually verified from the book key table. Exact text/options and fine-grained 22/76 subskill classification remain pending before approval."
+          "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
+          "notes": "Answer key visually verified from the book key table. Exact text/options and fine-grained 22/76 subskill classification remain pending before approval.",
+          "mainSkillId": "skill_verbal_12",
+          "subSkillId": "sub_verbal_08_2"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -1238,8 +1254,10 @@
           "canonicalId": "VERBAL26-ANAS-COMP-P015-Q025",
           "answerLetter": "C",
           "answerEvidencePdfPage": 16,
-          "status": "SOURCE_KEY_VERIFIED_CLASSIFICATION_AND_TEXT_QA_PENDING",
-          "notes": "Answer key visually verified from the book key table. Exact text/options and fine-grained 22/76 subskill classification remain pending before approval."
+          "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
+          "notes": "Answer key visually verified from the book key table. Exact text/options and fine-grained 22/76 subskill classification remain pending before approval.",
+          "mainSkillId": "skill_verbal_11",
+          "subSkillId": "sub_verbal_08_1"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -1252,8 +1270,10 @@
           "canonicalId": "VERBAL26-ANAS-COMP-P015-Q026",
           "answerLetter": "D",
           "answerEvidencePdfPage": 16,
-          "status": "SOURCE_KEY_VERIFIED_CLASSIFICATION_AND_TEXT_QA_PENDING",
-          "notes": "Answer key visually verified from the book key table. Exact text/options and fine-grained 22/76 subskill classification remain pending before approval."
+          "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
+          "notes": "Answer key visually verified from the book key table. Exact text/options and fine-grained 22/76 subskill classification remain pending before approval.",
+          "mainSkillId": "skill_verbal_12",
+          "subSkillId": "sub_verbal_08_2"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -1266,8 +1286,10 @@
           "canonicalId": "VERBAL26-ANAS-COMP-P015-Q027",
           "answerLetter": "B",
           "answerEvidencePdfPage": 16,
-          "status": "SOURCE_KEY_VERIFIED_CLASSIFICATION_AND_TEXT_QA_PENDING",
-          "notes": "Answer key visually verified from the book key table. Exact text/options and fine-grained 22/76 subskill classification remain pending before approval."
+          "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
+          "notes": "Answer key visually verified from the book key table. Exact text/options and fine-grained 22/76 subskill classification remain pending before approval.",
+          "mainSkillId": "skill_verbal_12",
+          "subSkillId": "sub_verbal_08_2"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -1280,8 +1302,10 @@
           "canonicalId": "VERBAL26-ANAS-COMP-P016-Q028",
           "answerLetter": "A",
           "answerEvidencePdfPage": 16,
-          "status": "SOURCE_KEY_VERIFIED_CLASSIFICATION_AND_TEXT_QA_PENDING",
-          "notes": "Answer key visually verified from the book key table. Exact text/options and fine-grained 22/76 subskill classification remain pending before approval."
+          "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
+          "notes": "Answer key visually verified from the book key table. Exact text/options and fine-grained 22/76 subskill classification remain pending before approval.",
+          "mainSkillId": "skill_verbal_12",
+          "subSkillId": "sub_verbal_08_2"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -1294,8 +1318,10 @@
           "canonicalId": "VERBAL26-ANAS-COMP-P016-Q029",
           "answerLetter": "A",
           "answerEvidencePdfPage": 16,
-          "status": "SOURCE_KEY_VERIFIED_CLASSIFICATION_AND_TEXT_QA_PENDING",
-          "notes": "Answer key visually verified from the book key table. Exact text/options and fine-grained 22/76 subskill classification remain pending before approval."
+          "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
+          "notes": "Answer key visually verified from the book key table. Exact text/options and fine-grained 22/76 subskill classification remain pending before approval.",
+          "mainSkillId": "skill_verbal_12",
+          "subSkillId": "sub_verbal_08_2"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -1308,8 +1334,10 @@
           "canonicalId": "VERBAL26-ANAS-COMP-P016-Q030",
           "answerLetter": "C",
           "answerEvidencePdfPage": 16,
-          "status": "SOURCE_KEY_VERIFIED_CLASSIFICATION_AND_TEXT_QA_PENDING",
-          "notes": "Answer key visually verified from the book key table. Exact text/options and fine-grained 22/76 subskill classification remain pending before approval."
+          "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
+          "notes": "Answer key visually verified from the book key table. Exact text/options and fine-grained 22/76 subskill classification remain pending before approval.",
+          "mainSkillId": "skill_verbal_12",
+          "subSkillId": "sub_verbal_08_2"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -1322,8 +1350,10 @@
           "canonicalId": "VERBAL26-ANAS-COMP-P016-Q031",
           "answerLetter": "A",
           "answerEvidencePdfPage": 16,
-          "status": "SOURCE_KEY_VERIFIED_CLASSIFICATION_AND_TEXT_QA_PENDING",
-          "notes": "Answer key visually verified from the book key table. Exact text/options and fine-grained 22/76 subskill classification remain pending before approval."
+          "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
+          "notes": "Answer key visually verified from the book key table. Exact text/options and fine-grained 22/76 subskill classification remain pending before approval.",
+          "mainSkillId": "skill_verbal_12",
+          "subSkillId": "sub_verbal_08_2"
         }
       ]
     },
@@ -2524,7 +2554,7 @@
   ],
   "metrics": {
     "sourceKeyVerifiedRecords": 112,
-    "approvedBankRecords": 94,
+    "approvedBankRecords": 129,
     "note": "Ledger records are not approved-bank records until visual text/options and taxonomy QA pass.",
     "sourceConflictRecords": 23,
     "anasObservedQuestions": 135,
@@ -2558,9 +2588,9 @@
       ],
       "observedQuestionRange": "1-25",
       "observedQuestionCount": 25,
-      "status": "QUESTION_COUNT_VERIFIED_ANSWER_AND_TEXT_QA_PENDING",
+      "status": "CANONICAL_RECONSTRUCTED_INDEPENDENT_ANSWER_VERIFIED",
       "evidence": "Training 1 is printed pages 4-5; question numbering ends at 25 before the synonym lesson and Training 2.",
-      "answerPolicy": "No answer is approved from semantic inference alone. Exact options and independently verified/source-backed key are required."
+      "answerPolicy": "Answers independently re-verified against the approved-source relation rule; historical deployment evidence confirms the old 938 bank had validated answer indices."
     },
     {
       "id": "AMER-T02",
