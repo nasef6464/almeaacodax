@@ -4763,5 +4763,405 @@
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
     "answerEvidence": "Approved-source text/options + cause/result direction verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T20-P055-Q001",
+    "canonicalId": "VERBAL26-AMER-T20-P055-Q001",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 55,
+    "sourceQuestionNumber": 1,
+    "mainSkillId": "skill_verbal_15",
+    "subSkillId": "sub_verbal_10_1",
+    "text": "الرياض : ؟",
+    "options": [
+      "دبي",
+      "أبو ظبي",
+      "الشارقة",
+      "عجمان"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + direct relation/classification verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T20-P055-Q004",
+    "canonicalId": "VERBAL26-AMER-T20-P055-Q004",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 55,
+    "sourceQuestionNumber": 4,
+    "mainSkillId": "skill_verbal_15",
+    "subSkillId": "sub_verbal_10_1",
+    "text": "أبو حنيفة : ؟",
+    "options": [
+      "النووي",
+      "الشافعي",
+      "ابن تيمية",
+      "ابن جني"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + direct relation/classification verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T20-P055-Q006",
+    "canonicalId": "VERBAL26-AMER-T20-P055-Q006",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 55,
+    "sourceQuestionNumber": 6,
+    "mainSkillId": "skill_verbal_15",
+    "subSkillId": "sub_verbal_10_1",
+    "text": "مكر : ؟",
+    "options": [
+      "ثعلب",
+      "بومة",
+      "حمار",
+      "نعامة"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + direct relation/classification verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T20-P055-Q007",
+    "canonicalId": "VERBAL26-AMER-T20-P055-Q007",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 55,
+    "sourceQuestionNumber": 7,
+    "mainSkillId": "skill_verbal_15",
+    "subSkillId": "sub_verbal_10_1",
+    "text": "دودة القز : ؟",
+    "options": [
+      "الحرير",
+      "الصوف",
+      "القطن",
+      "القش"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + direct relation/classification verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T20-P055-Q008",
+    "canonicalId": "VERBAL26-AMER-T20-P055-Q008",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 55,
+    "sourceQuestionNumber": 8,
+    "mainSkillId": "skill_verbal_15",
+    "subSkillId": "sub_verbal_10_3",
+    "text": "أوروبا : ؟",
+    "options": [
+      "ليبيا",
+      "الجزائر",
+      "تركيا",
+      "الهند"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + direct relation/classification verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T20-P055-Q009",
+    "canonicalId": "VERBAL26-AMER-T20-P055-Q009",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 55,
+    "sourceQuestionNumber": 9,
+    "mainSkillId": "skill_verbal_15",
+    "subSkillId": "sub_verbal_10_1",
+    "text": "حسام : ؟",
+    "options": [
+      "رمح",
+      "سيف",
+      "درع",
+      "مدفع"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + direct relation/classification verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T20-P055-Q010",
+    "canonicalId": "VERBAL26-AMER-T20-P055-Q010",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 55,
+    "sourceQuestionNumber": 10,
+    "mainSkillId": "skill_verbal_15",
+    "subSkillId": "sub_verbal_10_1",
+    "text": "ليث : ؟",
+    "options": [
+      "أسد",
+      "ضبع",
+      "كلب",
+      "سمكة"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + direct relation/classification verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T20-P055-Q011",
+    "canonicalId": "VERBAL26-AMER-T20-P055-Q011",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 55,
+    "sourceQuestionNumber": 11,
+    "mainSkillId": "skill_verbal_15",
+    "subSkillId": "sub_verbal_10_1",
+    "text": "فلاح : ؟",
+    "options": [
+      "قمح",
+      "قطن",
+      "زراعة",
+      "تفاح"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + direct relation/classification verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T20-P055-Q013",
+    "canonicalId": "VERBAL26-AMER-T20-P055-Q013",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 55,
+    "sourceQuestionNumber": 13,
+    "mainSkillId": "skill_verbal_15",
+    "subSkillId": "sub_verbal_10_1",
+    "text": "أسنان : ؟",
+    "options": [
+      "بكتيريا",
+      "فيروسات",
+      "تسوس",
+      "بطن"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + direct relation/classification verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T20-P056-Q015",
+    "canonicalId": "VERBAL26-AMER-T20-P056-Q015",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 56,
+    "sourceQuestionNumber": 15,
+    "mainSkillId": "skill_verbal_15",
+    "subSkillId": "sub_verbal_10_1",
+    "text": "سجاد : ؟",
+    "options": [
+      "مصر",
+      "عمان",
+      "إيران",
+      "المغرب"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + direct relation/classification verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T20-P056-Q016",
+    "canonicalId": "VERBAL26-AMER-T20-P056-Q016",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 56,
+    "sourceQuestionNumber": 16,
+    "mainSkillId": "skill_verbal_15",
+    "subSkillId": "sub_verbal_10_3",
+    "text": "النفيس : ؟",
+    "options": [
+      "نحاس",
+      "حديد",
+      "خشب",
+      "ذهب"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + direct relation/classification verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T20-P056-Q017",
+    "canonicalId": "VERBAL26-AMER-T20-P056-Q017",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 56,
+    "sourceQuestionNumber": 17,
+    "mainSkillId": "skill_verbal_15",
+    "subSkillId": "sub_verbal_10_1",
+    "text": "جفاف : ؟",
+    "options": [
+      "نهر",
+      "صحراء",
+      "بحر",
+      "محيط"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + direct relation/classification verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T20-P056-Q018",
+    "canonicalId": "VERBAL26-AMER-T20-P056-Q018",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 56,
+    "sourceQuestionNumber": 18,
+    "mainSkillId": "skill_verbal_15",
+    "subSkillId": "sub_verbal_10_3",
+    "text": "كيل : ؟",
+    "options": [
+      "لحم",
+      "تفاح",
+      "حليب",
+      "خيار"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + direct relation/classification verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T20-P056-Q019",
+    "canonicalId": "VERBAL26-AMER-T20-P056-Q019",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 56,
+    "sourceQuestionNumber": 19,
+    "mainSkillId": "skill_verbal_15",
+    "subSkillId": "sub_verbal_10_1",
+    "text": "إنسان : ؟",
+    "options": [
+      "نور",
+      "طين",
+      "زجاج",
+      "حديد"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + direct relation/classification verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T20-P056-Q020",
+    "canonicalId": "VERBAL26-AMER-T20-P056-Q020",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 56,
+    "sourceQuestionNumber": 20,
+    "mainSkillId": "skill_verbal_15",
+    "subSkillId": "sub_verbal_10_1",
+    "text": "جن : ؟",
+    "options": [
+      "نور",
+      "نار",
+      "طين",
+      "حديد"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + direct relation/classification verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T20-P056-Q021",
+    "canonicalId": "VERBAL26-AMER-T20-P056-Q021",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 56,
+    "sourceQuestionNumber": 21,
+    "mainSkillId": "skill_verbal_15",
+    "subSkillId": "sub_verbal_10_1",
+    "text": "ملائكة : ؟",
+    "options": [
+      "نور",
+      "نار",
+      "طين",
+      "حديد"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + direct relation/classification verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T20-P056-Q022",
+    "canonicalId": "VERBAL26-AMER-T20-P056-Q022",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 56,
+    "sourceQuestionNumber": 22,
+    "mainSkillId": "skill_verbal_15",
+    "subSkillId": "sub_verbal_10_1",
+    "text": "غسق : ؟",
+    "options": [
+      "الليل",
+      "النهار",
+      "الأرض",
+      "السماء"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + direct relation/classification verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T20-P056-Q023",
+    "canonicalId": "VERBAL26-AMER-T20-P056-Q023",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 56,
+    "sourceQuestionNumber": 23,
+    "mainSkillId": "skill_verbal_15",
+    "subSkillId": "sub_verbal_10_1",
+    "text": "دار الهجرة : ؟",
+    "options": [
+      "مكة",
+      "المدينة",
+      "ينبع",
+      "الدمام"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + direct relation/classification verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T20-P056-Q024",
+    "canonicalId": "VERBAL26-AMER-T20-P056-Q024",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 56,
+    "sourceQuestionNumber": 24,
+    "mainSkillId": "skill_verbal_15",
+    "subSkillId": "sub_verbal_10_1",
+    "text": "خريطة : ؟",
+    "options": [
+      "مفتاح",
+      "بحر",
+      "أرض",
+      "حدود"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + direct relation/classification verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T21-P057-Q002",
+    "canonicalId": "VERBAL26-AMER-T21-P057-Q002",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 57,
+    "sourceQuestionNumber": 2,
+    "mainSkillId": "skill_verbal_16",
+    "subSkillId": "sub_verbal_10_2",
+    "text": "السياسة : حدد المختلف.",
+    "options": [
+      "الجوازات",
+      "وزارة الداخلية",
+      "وزارة الخارجية",
+      "جامعة"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + direct relation/classification verification."
   }
 ]
