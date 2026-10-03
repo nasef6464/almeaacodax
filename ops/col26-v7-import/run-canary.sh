@@ -27,21 +27,41 @@ if(!items.length) throw new Error('COL26 V7 payload has no items');
 fs.writeFileSync('/tmp/col26-total',String(items.length));
 NODE
 TOTAL=$(cat /tmp/col26-total)
+# Query production batch state and build a resume payload containing only missing codes.
+node <<'NODE'
+const fs=require('fs');
+(async()=>{
+ const API=(process.env.PILOT_API_BASE||'').replace(/\/$/,'');
+ const token=process.env.PILOT_ADMIN_TOKEN||'';
+ const r=await fetch(API+'/quizzes/questions/import-batch/TAH-MATH-COL26-SEC1-V7',{headers:{authorization:'Bearer '+token,accept:'application/json'}});
+ if(!r.ok) throw new Error('batch checkpoint HTTP '+r.status);
+ const b=await r.json();
+ const existing=new Set((b.questionCodes||[]).map(String));
+ const p=JSON.parse(fs.readFileSync('COL26_PILOT_PAYLOAD_V7.full.json','utf8'));
+ const key=Array.isArray(p)?null:(Array.isArray(p.items)?'items':'questions');
+ const items=Array.isArray(p)?p:p[key];
+ const missing=items.filter(x=>!existing.has(String(x.questionCode||'').trim().toUpperCase()));
+ fs.writeFileSync('COL26_PILOT_PAYLOAD_V7.missing.json',JSON.stringify(Array.isArray(p)?missing:{...p,[key]:missing}));
+ fs.writeFileSync('/tmp/col26-missing',String(missing.length));
+ console.log('COL26_CHECKPOINT existing='+existing.size+' missing='+missing.length);
+})().catch(e=>{console.error(e.message);process.exit(1)});
+NODE
+MISSING=$(cat /tmp/col26-missing)
 SLICE_SIZE=20
-START=785
-while [ "$START" -lt "$TOTAL" ]; do
+START=0
+while [ "$START" -lt "$MISSING" ]; do
   node - "$START" "$SLICE_SIZE" <<'NODE'
 const fs=require('fs');
 const start=Number(process.argv[2]), size=Number(process.argv[3]);
-const p=JSON.parse(fs.readFileSync('COL26_PILOT_PAYLOAD_V7.full.json','utf8'));
-const key=Array.isArray(p)?null:(Array.isArray(p.items)?'items':(Array.isArray(p.questions)?'questions':null));
-const items=Array.isArray(p)?p:p[key];
-const baseline=items.slice(0,5);
-const fresh=items.slice(start,start+size);
+const full=JSON.parse(fs.readFileSync('COL26_PILOT_PAYLOAD_V7.full.json','utf8'));
+const miss=JSON.parse(fs.readFileSync('COL26_PILOT_PAYLOAD_V7.missing.json','utf8'));
+const key=Array.isArray(full)?null:(Array.isArray(full.items)?'items':'questions');
+const all=Array.isArray(full)?full:full[key], m=Array.isArray(miss)?miss:miss[key];
+const baseline=all.slice(0,5), fresh=m.slice(start,start+size);
 const slice=[...baseline,...fresh];
-const out=Array.isArray(p)?slice:{...p,[key]:slice};
+const out=Array.isArray(full)?slice:{...full,[key]:slice};
 fs.writeFileSync('COL26_PILOT_PAYLOAD_V7.json',JSON.stringify(out));
-console.log('COL26_SLICE',start,start+slice.length-1,'COUNT',slice.length);
+console.log('COL26_RESUME_SLICE',start,start+fresh.length-1,'NEW',fresh.length);
 NODE
   export COL26_MODE=full
   export COL26_EXPECTED_COUNT=$(node -e "const p=require('./COL26_PILOT_PAYLOAD_V7.json');console.log(Array.isArray(p)?p.length:(p.items||p.questions).length)")
