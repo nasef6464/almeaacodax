@@ -95,18 +95,15 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
     const issues: string[] = [];
 
     if (!topic.title.trim()) issues.push('العنوان غير مكتمل');
-    if (topic.parentId && !topic.skillId) {
-      issues.push('الموضوع الفرعي غير مربوط بمهارة فرعية');
-    }
-    if (topic.parentId && topic.skillId && !foundationSubSkillOptions.some((option) => option.id === topic.skillId)) {
-      issues.push('ربط المهارة الفرعية غير صالح لهذا المسار/المادة');
+    const topicSkillIds = Array.from(new Set([...(topic.skillIds || []), topic.skillId].filter(Boolean) as string[]));
+    if (topic.parentId && topicSkillIds.length === 0) {
+      issues.push('الموضوع الفرعي غير مربوط بأي مهارة فرعية');
     }
     if (
       topic.parentId &&
-      topic.skillId &&
-      subjectTopics.some((item) => item.id !== topic.id && item.parentId && item.skillId === topic.skillId)
+      topicSkillIds.some((skillId) => !foundationSubSkillOptions.some((option) => option.id === skillId))
     ) {
-      issues.push('المهارة الفرعية مرتبطة بأكثر من موضوع تأسيسي');
+      issues.push('يوجد ربط مهارة فرعية غير صالح لهذا المسار/المادة');
     }
     if (!topic.subjectId) issues.push('غير مربوط بمادة');
     if (!topic.pathId && !currentSubject?.pathId) issues.push('غير مربوط بمسار');
@@ -188,6 +185,7 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
       subjectId,
       sectionId: parentTopic?.sectionId,
       skillId: null,
+      skillIds: [],
       parentId,
       title: '',
       order: subjectTopics.filter(t => t.parentId === parentId).length,
@@ -199,17 +197,17 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
     setIsEditing(true);
   };
 
+  const getTopicSkillIds = (topic: Partial<Topic>) =>
+    Array.from(new Set([...(topic.skillIds || []), topic.skillId].filter(Boolean) as string[]));
+
   const mergeTopicSkillIds = (
     existing: string[] | undefined,
     topic: Partial<Topic>,
-    previousTopicSkillId?: string | null,
+    previousTopicSkillIds: string[] = [],
   ) => {
-    const withoutPrevious = (existing || []).filter(
-      (skillId) => !previousTopicSkillId || skillId !== previousTopicSkillId,
-    );
-    return topic.skillId
-      ? Array.from(new Set([...withoutPrevious, topic.skillId]))
-      : withoutPrevious;
+    const previousSet = new Set(previousTopicSkillIds.filter(Boolean));
+    const withoutPrevious = (existing || []).filter((skillId) => !previousSet.has(skillId));
+    return Array.from(new Set([...withoutPrevious, ...getTopicSkillIds(topic)]));
   };
 
   const buildFoundationPlacements = (quiz: Quiz, topic: Partial<Topic>) => {
@@ -234,21 +232,21 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
     ];
   };
 
-  const syncAttachedContentToTopicSkill = (topic: Topic, previousTopicSkillId?: string | null) => {
+  const syncAttachedContentToTopicSkill = (topic: Topic, previousTopicSkillIds: string[] = []) => {
     const attachedLessons = lessons.filter((lesson) => topic.lessonIds?.includes(lesson.id));
     const attachedQuizzes = quizzes.filter((quiz) => topic.quizIds?.includes(quiz.id));
     const attachedLibraryItems = libraryItems.filter((item) => topic.libraryItemIds?.includes(item.id));
 
     attachedLessons.forEach((lesson) => {
       updateLesson(lesson.id, {
-        skillIds: mergeTopicSkillIds(lesson.skillIds, topic, previousTopicSkillId),
+        skillIds: mergeTopicSkillIds(lesson.skillIds, topic, previousTopicSkillIds),
         sectionId: lesson.sectionId || topic.sectionId,
       });
     });
 
     attachedQuizzes.forEach((quiz) => {
       updateQuiz(quiz.id, {
-        skillIds: mergeTopicSkillIds(quiz.skillIds, topic, previousTopicSkillId),
+        skillIds: mergeTopicSkillIds(quiz.skillIds, topic, previousTopicSkillIds),
         sectionId: quiz.sectionId || topic.sectionId,
         learningPlacements: buildFoundationPlacements(quiz, topic),
       });
@@ -256,7 +254,7 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
 
     attachedLibraryItems.forEach((item) => {
       updateLibraryItem(item.id, {
-        skillIds: mergeTopicSkillIds(item.skillIds, topic, previousTopicSkillId),
+        skillIds: mergeTopicSkillIds(item.skillIds, topic, previousTopicSkillIds),
         sectionId: item.sectionId || topic.sectionId,
       });
     });
