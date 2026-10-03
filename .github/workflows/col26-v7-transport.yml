@@ -1,0 +1,11 @@
+name: COL26 V7 Transport Gate
+on:
+  push:
+    branches: [ops/col26-canary-presign-20261002]
+    paths: ["ops/col26-v7-transport/**", ".github/workflows/col26-v7-transport.yml"]
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: bash ops/col26-v7-transport/reconstruct.sh
