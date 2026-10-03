@@ -2960,26 +2960,6 @@
     "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices."
   },
   {
-    "id": "VERBAL26-AMER-T02-P009-Q034",
-    "canonicalId": "VERBAL26-AMER-T02-P009-Q034",
-    "sourceBook": "abdelbaset",
-    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
-    "sourcePage": 9,
-    "sourceQuestionNumber": 34,
-    "mainSkillId": "skill_verbal_02",
-    "subSkillId": "sub_verbal_02_1",
-    "text": "أفل : غاب",
-    "options": [
-      "أبان : أفصح",
-      "أفسد : أصلح",
-      "انقض : عزم",
-      "سيف : خنجر"
-    ],
-    "correctOptionIndex": 0,
-    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices."
-  },
-  {
     "id": "VERBAL26-AMER-T02-P009-Q035",
     "canonicalId": "VERBAL26-AMER-T02-P009-Q035",
     "sourceBook": "abdelbaset",
