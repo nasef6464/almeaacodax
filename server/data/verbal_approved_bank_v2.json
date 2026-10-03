@@ -15676,5 +15676,74 @@
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_TEXT_VERIFIED",
     "answerEvidence": "Direct Amer source p.94; answer explicitly supported by passage."
+  },
+  {
+    "id": "VERBAL26-AMER-T33-P095-AML-Q001",
+    "canonicalId": "VERBAL26-AMER-T33-P095-AML-Q001",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 95,
+    "sourceQuestionNumber": 1,
+    "sourceTraining": 33,
+    "passageId": "VERBAL26-AMER-PASSAGE-AML",
+    "passageText": "غسيل الأموال إخفاء وتمويه لعمليات غير مشروعة. بدأ المصطلح مع عصابات ومافيا المخدرات، إذ تدخل الأموال البنوك على شكل تجارة ثم تنقل بين بنوك محلية ودولية وتعود إلى بنك محلي لتمويه مصدرها وإظهارها كأموال مشروعة. وتمارس المافيا هذه العملية في دول كثيرة، وذُكرت الولايات المتحدة وروسيا وسويسرا في النص.",
+    "mainSkillId": "skill_verbal_20",
+    "subSkillId": "sub_verbal_12_6",
+    "text": "الهدف من غسيل الأموال:",
+    "options": [
+      "إضفاء صبغة شرعية للأموال المكتسبة من المخدرات",
+      "تنظيف الأموال بالمحاليل لغسلها من المخدرات",
+      "تنظيفها من الأوساخ",
+      "التفاخر بها"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_TEXT_VERIFIED",
+    "answerEvidence": "Direct Amer source p.95; answer explicit from passage."
+  },
+  {
+    "id": "VERBAL26-AMER-T33-P095-AML-Q002",
+    "canonicalId": "VERBAL26-AMER-T33-P095-AML-Q002",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 95,
+    "sourceQuestionNumber": 2,
+    "sourceTraining": 33,
+    "passageId": "VERBAL26-AMER-PASSAGE-AML",
+    "passageText": "غسيل الأموال إخفاء وتمويه لعمليات غير مشروعة. بدأ المصطلح مع عصابات ومافيا المخدرات، إذ تدخل الأموال البنوك على شكل تجارة ثم تنقل بين بنوك محلية ودولية وتعود إلى بنك محلي لتمويه مصدرها وإظهارها كأموال مشروعة. وتمارس المافيا هذه العملية في دول كثيرة، وذُكرت الولايات المتحدة وروسيا وسويسرا في النص.",
+    "mainSkillId": "skill_verbal_20",
+    "subSkillId": "sub_verbal_12_6",
+    "text": "ما الدول التي ذكر النص أن المافيا تمارس فيها أعمالها أو غسيل الأموال؟",
+    "options": [
+      "سويسرا وهولندا",
+      "كافة الدول",
+      "الدول المتقدمة",
+      "أمريكا وروسيا"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_TEXT_VERIFIED",
+    "answerEvidence": "Direct Amer source p.95; answer explicit from passage."
+  },
+  {
+    "id": "VERBAL26-AMER-T33-P095-AML-Q004",
+    "canonicalId": "VERBAL26-AMER-T33-P095-AML-Q004",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 95,
+    "sourceQuestionNumber": 4,
+    "sourceTraining": 33,
+    "passageId": "VERBAL26-AMER-PASSAGE-AML",
+    "passageText": "غسيل الأموال إخفاء وتمويه لعمليات غير مشروعة. بدأ المصطلح مع عصابات ومافيا المخدرات، إذ تدخل الأموال البنوك على شكل تجارة ثم تنقل بين بنوك محلية ودولية وتعود إلى بنك محلي لتمويه مصدرها وإظهارها كأموال مشروعة. وتمارس المافيا هذه العملية في دول كثيرة، وذُكرت الولايات المتحدة وروسيا وسويسرا في النص.",
+    "mainSkillId": "skill_verbal_20",
+    "subSkillId": "sub_verbal_12_6",
+    "text": "لماذا ينقلون الأموال من بنك إلى بنك آخر؟",
+    "options": [
+      "تمويه للدولة",
+      "اختصارًا للوقت",
+      "للقرب من التجار",
+      "لزيادة الأرباح"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_TEXT_VERIFIED",
+    "answerEvidence": "Direct Amer source p.95; answer explicit from passage."
   }
 ]
