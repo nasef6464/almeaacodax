@@ -1918,5 +1918,505 @@
       "مشاكل _ مصاعب"
     ],
     "correctOptionIndex": 0
+  },
+  {
+    "id": "VERBAL26-AMER-T01-P004-Q001",
+    "canonicalId": "VERBAL26-AMER-T01-P004-Q001",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 4,
+    "sourceQuestionNumber": 1,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_2",
+    "text": "ذيل : طائر",
+    "options": [
+      "عربة : قطار",
+      "ورقة : قلم",
+      "أنف : أذن",
+      "كتاب : صفحة"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices."
+  },
+  {
+    "id": "VERBAL26-AMER-T01-P004-Q002",
+    "canonicalId": "VERBAL26-AMER-T01-P004-Q002",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 4,
+    "sourceQuestionNumber": 2,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_1",
+    "text": "فقرة : عبارة",
+    "options": [
+      "كتاب : هامش",
+      "أنملة : أصابع",
+      "شهر : سنة",
+      "أمواج : بحر"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices."
+  },
+  {
+    "id": "VERBAL26-AMER-T01-P004-Q003",
+    "canonicalId": "VERBAL26-AMER-T01-P004-Q003",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 4,
+    "sourceQuestionNumber": 3,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_1",
+    "text": "بيت : حائط",
+    "options": [
+      "معصم : سوار",
+      "جسم : عقل",
+      "سيف : غمد",
+      "حجر : جدار"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices."
+  },
+  {
+    "id": "VERBAL26-AMER-T01-P004-Q004",
+    "canonicalId": "VERBAL26-AMER-T01-P004-Q004",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 4,
+    "sourceQuestionNumber": 4,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_2",
+    "text": "جندي : جيش",
+    "options": [
+      "غمد : سيف",
+      "ورقة : كتاب",
+      "ملعب : مدرجات",
+      "سنة : أشهر"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices."
+  },
+  {
+    "id": "VERBAL26-AMER-T01-P004-Q005",
+    "canonicalId": "VERBAL26-AMER-T01-P004-Q005",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 4,
+    "sourceQuestionNumber": 5,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_2",
+    "text": "حروف : كلمات",
+    "options": [
+      "أغصان : أشجار",
+      "ذهب : معادن",
+      "مكتبة : كتاب",
+      "أسد : شبل"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices."
+  },
+  {
+    "id": "VERBAL26-AMER-T01-P004-Q006",
+    "canonicalId": "VERBAL26-AMER-T01-P004-Q006",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 4,
+    "sourceQuestionNumber": 6,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_1",
+    "text": "طير : جناحان",
+    "options": [
+      "إنسان : عينان",
+      "عينان : أذنان",
+      "دراجة : طفل",
+      "بيت : ل"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices."
+  },
+  {
+    "id": "VERBAL26-AMER-T01-P004-Q007",
+    "canonicalId": "VERBAL26-AMER-T01-P004-Q007",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 4,
+    "sourceQuestionNumber": 7,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_2",
+    "text": "رف : دولاب",
+    "options": [
+      "رمش : حاجب",
+      "جبهة : رأس",
+      "كتاب : مطبعة",
+      "كهرباء : مولد"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices."
+  },
+  {
+    "id": "VERBAL26-AMER-T01-P004-Q008",
+    "canonicalId": "VERBAL26-AMER-T01-P004-Q008",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 4,
+    "sourceQuestionNumber": 8,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_1",
+    "text": "حزمة : أعواد",
+    "options": [
+      "عمارة : طوابق",
+      "شخصيات : مسرحية",
+      "حفرة : تراب",
+      "نخيل : أشجار"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices."
+  },
+  {
+    "id": "VERBAL26-AMER-T01-P004-Q009",
+    "canonicalId": "VERBAL26-AMER-T01-P004-Q009",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 4,
+    "sourceQuestionNumber": 9,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_1",
+    "text": "مسجد : مئذنة",
+    "options": [
+      "كتاب : منهج",
+      "ملعب : مدرجات",
+      "إدارة : مدير",
+      "أستاذ : مادة"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices."
+  },
+  {
+    "id": "VERBAL26-AMER-T01-P004-Q010",
+    "canonicalId": "VERBAL26-AMER-T01-P004-Q010",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 4,
+    "sourceQuestionNumber": 10,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_1",
+    "text": "مبنى : قاعة",
+    "options": [
+      "قتال : سلاح",
+      "إدارة : مدير",
+      "مسجد : مئذنة",
+      "مطبعة : نشر"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices."
+  },
+  {
+    "id": "VERBAL26-AMER-T01-P004-Q011",
+    "canonicalId": "VERBAL26-AMER-T01-P004-Q011",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 4,
+    "sourceQuestionNumber": 11,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_2",
+    "text": "تمرة : نخلة",
+    "options": [
+      "لحم : بعير",
+      "أطراف : قدم",
+      "تراب : ماء",
+      "دليل : قمر"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices."
+  },
+  {
+    "id": "VERBAL26-AMER-T01-P004-Q012",
+    "canonicalId": "VERBAL26-AMER-T01-P004-Q012",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 4,
+    "sourceQuestionNumber": 12,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_1",
+    "text": "جبهة : ناصية",
+    "options": [
+      "أسنان : نواجذ",
+      "رأس : صدر",
+      "ظهر : بطن",
+      "يعود : يرجع"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices."
+  },
+  {
+    "id": "VERBAL26-AMER-T01-P004-Q013",
+    "canonicalId": "VERBAL26-AMER-T01-P004-Q013",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 4,
+    "sourceQuestionNumber": 13,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_2",
+    "text": "محراب : مسجد",
+    "options": [
+      "شجرة : أغصان",
+      "مصلى : جامع",
+      "إصبع : يد",
+      "شوق : انتظار"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices."
+  },
+  {
+    "id": "VERBAL26-AMER-T01-P004-Q014",
+    "canonicalId": "VERBAL26-AMER-T01-P004-Q014",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 4,
+    "sourceQuestionNumber": 14,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_2",
+    "text": "كلمات : جملة",
+    "options": [
+      "مسرحية : مشاهد",
+      "أحاسيس : طبيعة",
+      "ألوان : لوحة",
+      "حشرات : بعوض"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices."
+  },
+  {
+    "id": "VERBAL26-AMER-T01-P004-Q015",
+    "canonicalId": "VERBAL26-AMER-T01-P004-Q015",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 4,
+    "sourceQuestionNumber": 15,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_2",
+    "text": "مزالج : باب",
+    "options": [
+      "أبريق : شاي",
+      "منارة : مسجد",
+      "بيت : قفل",
+      "جراثيم : مرض"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices."
+  },
+  {
+    "id": "VERBAL26-AMER-T01-P004-Q016",
+    "canonicalId": "VERBAL26-AMER-T01-P004-Q016",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 4,
+    "sourceQuestionNumber": 16,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_2",
+    "text": "عقل : إنسان",
+    "options": [
+      "حج : مكة",
+      "تلميذ : مدرسة",
+      "خياشيم : سمكة",
+      "عش : غصن"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices."
+  },
+  {
+    "id": "VERBAL26-AMER-T01-P005-Q017",
+    "canonicalId": "VERBAL26-AMER-T01-P005-Q017",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 5,
+    "sourceQuestionNumber": 17,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_2",
+    "text": "ورقة : شجرة",
+    "options": [
+      "فرد : قبيلة",
+      "سنة : شهر",
+      "غلاف : كتاب",
+      "قلب : ضخ"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices."
+  },
+  {
+    "id": "VERBAL26-AMER-T01-P005-Q018",
+    "canonicalId": "VERBAL26-AMER-T01-P005-Q018",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 5,
+    "sourceQuestionNumber": 18,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_1",
+    "text": "يد : إصبع",
+    "options": [
+      "لحم : عظم",
+      "قصيدة : بيت",
+      "ملعب : مدرجات",
+      "باب : مزلاج"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices."
+  },
+  {
+    "id": "VERBAL26-AMER-T01-P005-Q019",
+    "canonicalId": "VERBAL26-AMER-T01-P005-Q019",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 5,
+    "sourceQuestionNumber": 19,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_1",
+    "text": "ساعة : دقيقة",
+    "options": [
+      "خاتم : ذهب",
+      "لاعب : نادي",
+      "وجه : خال",
+      "وطن : دولة"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices."
+  },
+  {
+    "id": "VERBAL26-AMER-T01-P005-Q020",
+    "canonicalId": "VERBAL26-AMER-T01-P005-Q020",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 5,
+    "sourceQuestionNumber": 20,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_1",
+    "text": "عقد : درر",
+    "options": [
+      "كتاب : صفحات",
+      "دهن : شحم",
+      "بن : قهوة",
+      "جمهور : هيبة"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices."
+  },
+  {
+    "id": "VERBAL26-AMER-T01-P005-Q021",
+    "canonicalId": "VERBAL26-AMER-T01-P005-Q021",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 5,
+    "sourceQuestionNumber": 21,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_1",
+    "text": "عقد : عام",
+    "options": [
+      "شعاع : شمس",
+      "مرض : جرثومة",
+      "قلم : حبر",
+      "مجرة : كواكب"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices."
+  },
+  {
+    "id": "VERBAL26-AMER-T01-P005-Q022",
+    "canonicalId": "VERBAL26-AMER-T01-P005-Q022",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 5,
+    "sourceQuestionNumber": 22,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_2",
+    "text": "عقل : إنسان",
+    "options": [
+      "حج : مكة",
+      "خياشيم : أسماك",
+      "تلميذ : مدرسة",
+      "عش : غصن"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices."
+  },
+  {
+    "id": "VERBAL26-AMER-T01-P005-Q023",
+    "canonicalId": "VERBAL26-AMER-T01-P005-Q023",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 5,
+    "sourceQuestionNumber": 23,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_1",
+    "text": "بيت : مطبخ",
+    "options": [
+      "باب : مزالج",
+      "فصل : مدرسة",
+      "طوارئ : مستشفى",
+      "جناح : فندق"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices."
+  },
+  {
+    "id": "VERBAL26-AMER-T01-P005-Q024",
+    "canonicalId": "VERBAL26-AMER-T01-P005-Q024",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 5,
+    "sourceQuestionNumber": 24,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_2",
+    "text": "طبلة : أذن",
+    "options": [
+      "جسم : عقل",
+      "قلب : أذين",
+      "فصل : مدرسة",
+      "بيت : باب"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices."
+  },
+  {
+    "id": "VERBAL26-AMER-T01-P005-Q025",
+    "canonicalId": "VERBAL26-AMER-T01-P005-Q025",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 5,
+    "sourceQuestionNumber": 25,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_1",
+    "text": "إصبع : ظفر",
+    "options": [
+      "حبر : قلم",
+      "وردة : غصن",
+      "هاتف : رقم",
+      "كلمة : حرف"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices."
   }
 ]
