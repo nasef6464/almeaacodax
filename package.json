@@ -180,6 +180,7 @@
         "smoke:announcement-ads": "node scripts/smoke-announcement-ads-contract.mjs",
         "smoke:supervisor-dashboard": "node scripts/smoke-supervisor-dashboard-contract.mjs",
         "smoke:supervisor-classroom-intervention-phase4": "node scripts/smoke-supervisor-classroom-intervention-phase4.mjs",
+        "smoke:teacher-supervisor-final-certification": "npm run smoke:assessment-creator-role-policy && npm run smoke:unified-quiz-builder-role-policy && npm run smoke:account-workspaces-g8 && npm run smoke:supervisor-dashboard && npm run smoke:supervisor-classroom-intervention-phase4 && npm run smoke:assessment-directed-scope && npm run smoke:reports-role && npm run smoke:results && npm run smoke:quiz-access",
         "smoke:unified-quiz-builder-role-policy": "node scripts/smoke-unified-quiz-builder-role-policy-contract.mjs",
         "smoke:school-package-seat-capacity": "node scripts/smoke-school-package-seat-capacity-contract.mjs",
         "smoke:school-grant-expiry": "node scripts/smoke-school-grant-expiry-contract.mjs",

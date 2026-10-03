@@ -22,10 +22,14 @@ check('directed submission scope is delegated while database verification stays 
 
 check('hidden school-directed assessments are visible only after server audience verification', () => {
   for (const fragment of [
-    'viewerAudienceVerified: true',
-    'quiz.showOnPlatform !== false || isDirectedToLearner',
+    'const learnerAudienceUser =',
+    'GroupModel.find({ studentIds: learnerId })',
+    'const directedAudienceFilter = learnerId',
+    '{ targetUserIds: learnerId }',
+    '{ targetGroupIds: { $in: learnerAudienceIds } }',
+    '{ showOnPlatform: { $ne: false } }',
+    '...(directedAudienceFilter ? [directedAudienceFilter] : [])',
     '...(learnerAudienceRecord?.schoolId ? [String(learnerAudienceRecord.schoolId)] : [])',
-    '...(user.schoolId ? [String(user.schoolId)] : [])',
   ]) {
     assert.ok(routeSource.includes(fragment), `hidden directed catalogue contract missing ${fragment}`);
   }
