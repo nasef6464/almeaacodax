@@ -27,14 +27,18 @@ function check(name, fn) {
 }
 
 function assertIncludes(source, expected) {
-  if (!source.includes(expected)) {
-    throw new Error(`Expected to find: ${expected}`);
+  const normalizedSource = source.replace(/\r\n/g, '\n');
+  const normalizedExpected = expected.replace(/\r\n/g, '\n');
+  if (!normalizedSource.includes(normalizedExpected)) {
+    throw new Error('Expected to find: ' + expected);
   }
 }
 
 function assertExcludes(source, unexpected) {
-  if (source.includes(unexpected)) {
-    throw new Error(`Expected not to find: ${unexpected}`);
+  const normalizedSource = source.replace(/\r\n/g, '\n');
+  const normalizedExpected = unexpected.replace(/\r\n/g, '\n');
+  if (normalizedSource.includes(normalizedExpected)) {
+    throw new Error('Expected not to find: ' + unexpected);
   }
 }
 
