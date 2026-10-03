@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
-import { CheckCircle2, Lightbulb, Loader2, Presentation, Sparkles } from 'lucide-react';
+import { AlertCircle, CheckCircle2, Lightbulb, Loader2, Presentation, Sparkles } from 'lucide-react';
 import { api } from '../services/api';
 import { useClassroomRealtime } from '../hooks/useClassroomRealtime';
 import { useAuth } from '../contexts/AuthContext';
@@ -225,7 +225,24 @@ export const ClassroomStudentLive: React.FC = () => {
         <div className="mt-6 relative"><div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-200" /></div><div className="relative flex justify-center text-xs"><span className="bg-white px-3 text-slate-400">أو عبر رمز الحصة</span></div></div>
         <input inputMode="numeric" value={pin} onChange={(event) => setPin(event.target.value.replace(/\D/g, '').slice(0, 6))} className="mt-4 w-full rounded-2xl border border-slate-200 p-4 text-center text-3xl font-black tracking-[0.4em] text-indigo-700" placeholder="000000" />
         <button type="button" onClick={() => void joinByPin()} disabled={pin.length !== 6} className="mt-3 w-full rounded-xl bg-slate-800 p-3.5 font-black text-white disabled:opacity-40">انضمام بالرمز</button>
-        {message && <p className="mt-3 text-sm font-bold text-slate-600">{message}</p>}
+        {message && (
+          <div
+            role="status"
+            aria-live="polite"
+            className={`mt-3 flex items-center justify-center gap-2 rounded-xl p-3 text-xs sm:text-sm font-bold transition-all ${
+              message.includes('تعذر') || message.includes('فشل') || message.includes('خطأ')
+                ? 'border border-rose-200 bg-rose-50 text-rose-800'
+                : 'border border-indigo-200 bg-indigo-50 text-indigo-800'
+            }`}
+          >
+            {message.includes('تعذر') || message.includes('فشل') || message.includes('خطأ') ? (
+              <AlertCircle size={16} className="shrink-0 text-rose-600" />
+            ) : (
+              <CheckCircle2 size={16} className="shrink-0 text-emerald-600" />
+            )}
+            <span>{message}</span>
+          </div>
+        )}
       </main>
     );
   }

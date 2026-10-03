@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { AlertTriangle, Clock, Copy, Crown, ExternalLink, Flame, PlusCircle, Presentation, SkipForward, Trophy, Zap } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, Clock, Copy, Crown, ExternalLink, Flame, PlusCircle, Presentation, SkipForward, Trophy, Zap } from 'lucide-react';
 import { ClassroomTeacherLiveRadar } from './ClassroomTeacherLiveRadar';
 import { ClassroomQuestionReviewPanel } from './ClassroomQuestionReviewPanel';
 import { ClassroomPushQuestionsModal } from './ClassroomPushQuestionsModal';
@@ -280,7 +280,26 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
         </button>
         {isTeacher && <Link to="/school-teacher-dashboard?tab=smart-classroom" className="text-xs font-bold text-slate-500 hover:text-slate-700">العودة للوحة معلم المدرسة →</Link>}
       </div>
-      {message && <p className="mt-4 text-sm font-bold text-slate-600">{message}</p>}
+      {message && (
+        <div
+          role="status"
+          aria-live="polite"
+          className={`mt-4 flex items-center gap-2.5 rounded-xl border p-3.5 text-xs sm:text-sm font-bold transition-all ${
+            message.includes('تعذر') || message.includes('فشل') || message.includes('خطأ')
+              ? 'border-rose-200 bg-rose-50 text-rose-800'
+              : message.includes('تم') || message.includes('جاهز')
+                ? 'border-emerald-200 bg-emerald-50 text-emerald-800'
+                : 'border-indigo-200 bg-indigo-50 text-indigo-800'
+          }`}
+        >
+          {message.includes('تعذر') || message.includes('فشل') || message.includes('خطأ') ? (
+            <AlertTriangle size={18} className="shrink-0 text-rose-600" />
+          ) : (
+            <CheckCircle2 size={18} className="shrink-0 text-emerald-600" />
+          )}
+          <span>{message}</span>
+        </div>
+      )}
 
       {showEndConfirmModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-xs" dir="rtl">
