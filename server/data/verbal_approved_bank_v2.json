@@ -12438,5 +12438,25 @@
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
     "answerEvidence": "Approved-source page 32 options + independent semantic classification: الثلاثة الأخيرة مشروبات في التصنيف المباشر، و«نعناع» نبات/مكوّن."
+  },
+  {
+    "id": "VERBAL26-ANAS-COMP-P014-Q014",
+    "canonicalId": "VERBAL26-ANAS-COMP-P014-Q014",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 14,
+    "sourceQuestionNumber": 14,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "إذا كان ..... قد امتد إلى أبعد مما رأى غيري، فإن ذلك راجع إلى أنني كنت أقف على أكتاف ....",
+    "options": [
+      "لساني _ سفهاء",
+      "بصري _ عمالقة",
+      "رأيي _ غيري",
+      "عزمي _ بسطاء"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "SOURCE_KEY_AND_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved source page 14; printed answer key on page 16 gives Q14=B. Sentence is the established 'standing on shoulders of giants' construction."
   }
 ]
