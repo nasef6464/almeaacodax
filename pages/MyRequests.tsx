@@ -5,6 +5,7 @@ import { useStore } from '../store/useStore';
 import { api } from '../services/api';
 import { Activity, PaymentRequest } from '../types';
 import { sanitizeArabicText } from '../utils/sanitizeMojibakeArabic';
+import { useAuth } from '../contexts/AuthContext';
 
 type RequestStatus = 'completed' | 'pending' | 'cancelled';
 
@@ -42,6 +43,7 @@ const contentTypeLabel = (type: string) => {
 
 export const MyRequests: React.FC = () => {
   const { user, courses, enrolledCourses, b2bPackages, recentActivity, hasScopedPackageAccess } = useStore();
+  const { refreshProfile } = useAuth();
   const [paymentRequests, setPaymentRequests] = useState<PaymentRequest[]>([]);
   const [serverActivities, setServerActivities] = useState<Activity[]>([]);
   const [updatingRequestId, setUpdatingRequestId] = useState<string>('');
@@ -52,7 +54,10 @@ export const MyRequests: React.FC = () => {
       setPaymentRequests([]);
       return;
     }
-    const response = await api.getPaymentRequests();
+    const [response] = await Promise.all([
+      api.getPaymentRequests(),
+      refreshProfile ? refreshProfile().catch(() => null) : Promise.resolve(),
+    ]);
     setPaymentRequests(((response as { requests?: PaymentRequest[] })?.requests || []).map((request) => ({
       ...request,
       id: String(request.id),
@@ -68,7 +73,10 @@ export const MyRequests: React.FC = () => {
     let cancelled = false;
     const run = async () => {
       try {
-        const response = await api.getPaymentRequests();
+        const [response] = await Promise.all([
+          api.getPaymentRequests(),
+          refreshProfile ? refreshProfile().catch(() => null) : Promise.resolve(),
+        ]);
         if (!cancelled) {
           setPaymentRequests(((response as { requests?: PaymentRequest[] })?.requests || []).map((request) => ({
             ...request,
