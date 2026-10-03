@@ -69,5 +69,6 @@ NODE
   START=$((START+SLICE_SIZE))
 done
 cp COL26_PILOT_PAYLOAD_V7.full.json COL26_PILOT_PAYLOAD_V7.json
+unset COL26_EXPECTED_COUNT
 export COL26_MODE=verify
 node run-col26-v7-import.mjs
