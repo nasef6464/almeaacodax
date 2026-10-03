@@ -1,4 +1,5 @@
 name: Teacher Supervisor Assessment Phase 5
+# Final certification gate; touch after stacked-PR rebase to ensure PR synchronize checks are emitted.
 
 on:
   workflow_dispatch:
