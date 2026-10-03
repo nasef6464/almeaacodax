@@ -6983,5 +6983,1925 @@
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
     "answerEvidence": "Approved-source text/options + need/necessity relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T17-P049-Q001",
+    "canonicalId": "VERBAL26-AMER-T17-P049-Q001",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 49,
+    "sourceQuestionNumber": 1,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "غواص",
+      "مرجان",
+      "شعب",
+      "نجم البحر"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T17-P049-Q002",
+    "canonicalId": "VERBAL26-AMER-T17-P049-Q002",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 49,
+    "sourceQuestionNumber": 2,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "الأحد",
+      "الاثنين",
+      "الثلاثاء",
+      "الخميس"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T17-P049-Q003",
+    "canonicalId": "VERBAL26-AMER-T17-P049-Q003",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 49,
+    "sourceQuestionNumber": 3,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "قفز",
+      "طيران",
+      "ركض",
+      "مشي"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T17-P049-Q004",
+    "canonicalId": "VERBAL26-AMER-T17-P049-Q004",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 49,
+    "sourceQuestionNumber": 4,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "قراءة",
+      "نسخ",
+      "كتابة",
+      "رسم"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T17-P049-Q005",
+    "canonicalId": "VERBAL26-AMER-T17-P049-Q005",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 49,
+    "sourceQuestionNumber": 5,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "قميص",
+      "ثوب",
+      "سروال",
+      "عمامة"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T17-P049-Q006",
+    "canonicalId": "VERBAL26-AMER-T17-P049-Q006",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 49,
+    "sourceQuestionNumber": 6,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "حليب",
+      "بيض",
+      "سكر",
+      "عسل"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T17-P049-Q007",
+    "canonicalId": "VERBAL26-AMER-T17-P049-Q007",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 49,
+    "sourceQuestionNumber": 7,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "فيزياء",
+      "كيمياء",
+      "أحياء",
+      "جغرافيا"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T17-P049-Q008",
+    "canonicalId": "VERBAL26-AMER-T17-P049-Q008",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 49,
+    "sourceQuestionNumber": 8,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "مكة",
+      "بكة",
+      "أم القرى",
+      "المدينة"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T17-P049-Q009",
+    "canonicalId": "VERBAL26-AMER-T17-P049-Q009",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 49,
+    "sourceQuestionNumber": 9,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "عين",
+      "أنف",
+      "فم",
+      "ذقن"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T17-P049-Q010",
+    "canonicalId": "VERBAL26-AMER-T17-P049-Q010",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 49,
+    "sourceQuestionNumber": 10,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "سيارة",
+      "محرك",
+      "مقود",
+      "عجلات"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T17-P049-Q011",
+    "canonicalId": "VERBAL26-AMER-T17-P049-Q011",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 49,
+    "sourceQuestionNumber": 11,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "عن",
+      "في",
+      "على",
+      "إلا"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T17-P049-Q012",
+    "canonicalId": "VERBAL26-AMER-T17-P049-Q012",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 49,
+    "sourceQuestionNumber": 12,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "قلم",
+      "دفتر",
+      "مسطرة",
+      "حاسوب"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T17-P050-Q013",
+    "canonicalId": "VERBAL26-AMER-T17-P050-Q013",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 50,
+    "sourceQuestionNumber": 13,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "فرس",
+      "ناقة",
+      "أتان",
+      "زرافة"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T17-P050-Q014",
+    "canonicalId": "VERBAL26-AMER-T17-P050-Q014",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 50,
+    "sourceQuestionNumber": 14,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "أستاذ مساعد",
+      "أستاذ",
+      "أستاذ مشارك",
+      "معلم"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T17-P050-Q015",
+    "canonicalId": "VERBAL26-AMER-T17-P050-Q015",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 50,
+    "sourceQuestionNumber": 15,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "تسويف",
+      "تشبيه",
+      "تقريب",
+      "تمثيل"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T17-P050-Q016",
+    "canonicalId": "VERBAL26-AMER-T17-P050-Q016",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 50,
+    "sourceQuestionNumber": 16,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "باهظ",
+      "ثمين",
+      "كثير",
+      "غالي"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T17-P050-Q017",
+    "canonicalId": "VERBAL26-AMER-T17-P050-Q017",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 50,
+    "sourceQuestionNumber": 17,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "مجلة",
+      "جريدة",
+      "وسيلة",
+      "صحيفة"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T17-P050-Q018",
+    "canonicalId": "VERBAL26-AMER-T17-P050-Q018",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 50,
+    "sourceQuestionNumber": 18,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "هدية",
+      "نفقة",
+      "هبة",
+      "عطية"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T17-P050-Q019",
+    "canonicalId": "VERBAL26-AMER-T17-P050-Q019",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 50,
+    "sourceQuestionNumber": 19,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "ليل",
+      "عصر",
+      "فجر",
+      "ظهر"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T17-P050-Q021",
+    "canonicalId": "VERBAL26-AMER-T17-P050-Q021",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 50,
+    "sourceQuestionNumber": 21,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "قصة",
+      "رواية",
+      "أدب",
+      "أقصوصة"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T17-P050-Q022",
+    "canonicalId": "VERBAL26-AMER-T17-P050-Q022",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 50,
+    "sourceQuestionNumber": 22,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "سقف",
+      "باب",
+      "جدار",
+      "شجرة"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T17-P050-Q023",
+    "canonicalId": "VERBAL26-AMER-T17-P050-Q023",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 50,
+    "sourceQuestionNumber": 23,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "حج",
+      "سعي",
+      "طواف",
+      "رمي"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T17-P050-Q024",
+    "canonicalId": "VERBAL26-AMER-T17-P050-Q024",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 50,
+    "sourceQuestionNumber": 24,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "الرئتان",
+      "القلب",
+      "العين",
+      "الكبد"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T17-P050-Q026",
+    "canonicalId": "VERBAL26-AMER-T17-P050-Q026",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 50,
+    "sourceQuestionNumber": 26,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "طريق",
+      "سبيل",
+      "نهج",
+      "وضوح"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T17-P050-Q027",
+    "canonicalId": "VERBAL26-AMER-T17-P050-Q027",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 50,
+    "sourceQuestionNumber": 27,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "ولاء",
+      "استعلاء",
+      "طاعة",
+      "انتماء"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T17-P050-Q028",
+    "canonicalId": "VERBAL26-AMER-T17-P050-Q028",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 50,
+    "sourceQuestionNumber": 28,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "مصيدة",
+      "مكيدة",
+      "خدعة",
+      "هزيمة"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T17-P050-Q030",
+    "canonicalId": "VERBAL26-AMER-T17-P050-Q030",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 50,
+    "sourceQuestionNumber": 30,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "شاب",
+      "طفل",
+      "كهل",
+      "بطولة"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T17-P050-Q031",
+    "canonicalId": "VERBAL26-AMER-T17-P050-Q031",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 50,
+    "sourceQuestionNumber": 31,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "ماء",
+      "نار",
+      "عسل",
+      "زيت"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T17-P050-Q032",
+    "canonicalId": "VERBAL26-AMER-T17-P050-Q032",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 50,
+    "sourceQuestionNumber": 32,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "رمح",
+      "قوس",
+      "محراب",
+      "قبة"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T17-P050-Q033",
+    "canonicalId": "VERBAL26-AMER-T17-P050-Q033",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 50,
+    "sourceQuestionNumber": 33,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "ضفدع",
+      "تمساح",
+      "سمكة",
+      "سلحفاة"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T17-P050-Q034",
+    "canonicalId": "VERBAL26-AMER-T17-P050-Q034",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 50,
+    "sourceQuestionNumber": 34,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "منزل",
+      "سكن",
+      "مسجد",
+      "مكان"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T17-P051-Q035",
+    "canonicalId": "VERBAL26-AMER-T17-P051-Q035",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 51,
+    "sourceQuestionNumber": 35,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "محاضرة",
+      "جامعة",
+      "مكتبة",
+      "مدرسة"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T17-P051-Q036",
+    "canonicalId": "VERBAL26-AMER-T17-P051-Q036",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 51,
+    "sourceQuestionNumber": 36,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "بسمة",
+      "كره",
+      "حزن",
+      "حب"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T17-P051-Q037",
+    "canonicalId": "VERBAL26-AMER-T17-P051-Q037",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 51,
+    "sourceQuestionNumber": 37,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "الرياض",
+      "البصرة",
+      "صنعاء",
+      "المنامة"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T17-P051-Q039",
+    "canonicalId": "VERBAL26-AMER-T17-P051-Q039",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 51,
+    "sourceQuestionNumber": 39,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "إسلام",
+      "إحسان",
+      "إيمان",
+      "كرم"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T17-P051-Q042",
+    "canonicalId": "VERBAL26-AMER-T17-P051-Q042",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 51,
+    "sourceQuestionNumber": 42,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "إرشادات",
+      "تعليمات",
+      "توجيهات",
+      "إشادات"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T17-P051-Q043",
+    "canonicalId": "VERBAL26-AMER-T17-P051-Q043",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 51,
+    "sourceQuestionNumber": 43,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "الجناح",
+      "الأنف",
+      "المنقار",
+      "العين"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T17-P051-Q044",
+    "canonicalId": "VERBAL26-AMER-T17-P051-Q044",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 51,
+    "sourceQuestionNumber": 44,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "عهد",
+      "وعد",
+      "فقد",
+      "عقد"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T17-P051-Q045",
+    "canonicalId": "VERBAL26-AMER-T17-P051-Q045",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 51,
+    "sourceQuestionNumber": 45,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "معين",
+      "مربع",
+      "مستطيل",
+      "مثلث"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T17-P051-Q046",
+    "canonicalId": "VERBAL26-AMER-T17-P051-Q046",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 51,
+    "sourceQuestionNumber": 46,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "مثلث",
+      "مربع",
+      "مستطيل",
+      "دائرة"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T17-P051-Q047",
+    "canonicalId": "VERBAL26-AMER-T17-P051-Q047",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 51,
+    "sourceQuestionNumber": 47,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "صاروخ",
+      "سفينة",
+      "قطار",
+      "سيارة"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T17-P051-Q055",
+    "canonicalId": "VERBAL26-AMER-T17-P051-Q055",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 51,
+    "sourceQuestionNumber": 55,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "خسوف",
+      "كسوف",
+      "برق",
+      "براكين"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T17-P051-Q056",
+    "canonicalId": "VERBAL26-AMER-T17-P051-Q056",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 51,
+    "sourceQuestionNumber": 56,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "وضوء",
+      "تيمم",
+      "اغتسال",
+      "تنظيف"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T18-P052-Q001",
+    "canonicalId": "VERBAL26-AMER-T18-P052-Q001",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 52,
+    "sourceQuestionNumber": 1,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "سراج",
+      "جدار",
+      "حصن",
+      "سور"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T18-P052-Q002",
+    "canonicalId": "VERBAL26-AMER-T18-P052-Q002",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 52,
+    "sourceQuestionNumber": 2,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "هضاب",
+      "تلال",
+      "نجوم",
+      "صخور"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T18-P052-Q003",
+    "canonicalId": "VERBAL26-AMER-T18-P052-Q003",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 52,
+    "sourceQuestionNumber": 3,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "طالب",
+      "معلم",
+      "مدرب",
+      "طبيب"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T18-P052-Q004",
+    "canonicalId": "VERBAL26-AMER-T18-P052-Q004",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 52,
+    "sourceQuestionNumber": 4,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "داوود",
+      "خالد",
+      "علي",
+      "عمر"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T18-P052-Q006",
+    "canonicalId": "VERBAL26-AMER-T18-P052-Q006",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 52,
+    "sourceQuestionNumber": 6,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "تفاح",
+      "خوخ",
+      "خيار",
+      "فراولة"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T18-P052-Q008",
+    "canonicalId": "VERBAL26-AMER-T18-P052-Q008",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 52,
+    "sourceQuestionNumber": 8,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "الظهر",
+      "العصر",
+      "الوقت",
+      "الفجر"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T18-P052-Q010",
+    "canonicalId": "VERBAL26-AMER-T18-P052-Q010",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 52,
+    "sourceQuestionNumber": 10,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "عضد",
+      "رأس",
+      "فخذ",
+      "ساق"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T18-P052-Q012",
+    "canonicalId": "VERBAL26-AMER-T18-P052-Q012",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 52,
+    "sourceQuestionNumber": 12,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "شرطة",
+      "جوازات",
+      "بحرية",
+      "مرور"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T18-P052-Q013",
+    "canonicalId": "VERBAL26-AMER-T18-P052-Q013",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 52,
+    "sourceQuestionNumber": 13,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "آثار",
+      "بقايا",
+      "خفاء",
+      "خراب"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T18-P052-Q015",
+    "canonicalId": "VERBAL26-AMER-T18-P052-Q015",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 52,
+    "sourceQuestionNumber": 15,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "سروال",
+      "أزرار",
+      "قميص",
+      "ثوب"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T18-P052-Q017",
+    "canonicalId": "VERBAL26-AMER-T18-P052-Q017",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 52,
+    "sourceQuestionNumber": 17,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "أحصنة",
+      "حمير",
+      "بغال",
+      "خراف"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T18-P052-Q018",
+    "canonicalId": "VERBAL26-AMER-T18-P052-Q018",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 52,
+    "sourceQuestionNumber": 18,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "مصر",
+      "ليبيا",
+      "الجزائر",
+      "سوريا"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T18-P052-Q019",
+    "canonicalId": "VERBAL26-AMER-T18-P052-Q019",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 52,
+    "sourceQuestionNumber": 19,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "وجه",
+      "جهة",
+      "اتجاه",
+      "وجهة"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T18-P052-Q021",
+    "canonicalId": "VERBAL26-AMER-T18-P052-Q021",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 52,
+    "sourceQuestionNumber": 21,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "نباح",
+      "عواء",
+      "خرير",
+      "خوار"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T18-P052-Q023",
+    "canonicalId": "VERBAL26-AMER-T18-P052-Q023",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 52,
+    "sourceQuestionNumber": 23,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "حزام",
+      "حقيبة",
+      "ثوب",
+      "قميص"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T18-P052-Q025",
+    "canonicalId": "VERBAL26-AMER-T18-P052-Q025",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 52,
+    "sourceQuestionNumber": 25,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "سقف",
+      "جدار",
+      "بيت",
+      "شجرة"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T18-P053-Q026",
+    "canonicalId": "VERBAL26-AMER-T18-P053-Q026",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 53,
+    "sourceQuestionNumber": 26,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "حث",
+      "تحريض",
+      "تعويض",
+      "حض"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T18-P053-Q027",
+    "canonicalId": "VERBAL26-AMER-T18-P053-Q027",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 53,
+    "sourceQuestionNumber": 27,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "بيت",
+      "إسطبل",
+      "جحر",
+      "حيوان"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T18-P053-Q028",
+    "canonicalId": "VERBAL26-AMER-T18-P053-Q028",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 53,
+    "sourceQuestionNumber": 28,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "بطاطس",
+      "فجل",
+      "قرع",
+      "جزر"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T18-P053-Q029",
+    "canonicalId": "VERBAL26-AMER-T18-P053-Q029",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 53,
+    "sourceQuestionNumber": 29,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "كهولة",
+      "بنوة",
+      "فتوة",
+      "شيخوخة"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T18-P053-Q030",
+    "canonicalId": "VERBAL26-AMER-T18-P053-Q030",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 53,
+    "sourceQuestionNumber": 30,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "يسمع",
+      "ينصت",
+      "يصغي",
+      "يتمعن"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T18-P053-Q032",
+    "canonicalId": "VERBAL26-AMER-T18-P053-Q032",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 53,
+    "sourceQuestionNumber": 32,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "دواء",
+      "جراحة",
+      "تطعيم",
+      "فيروس"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T18-P053-Q034",
+    "canonicalId": "VERBAL26-AMER-T18-P053-Q034",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 53,
+    "sourceQuestionNumber": 34,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "متجدد",
+      "متطور",
+      "مقلد",
+      "مبدع"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T18-P053-Q035",
+    "canonicalId": "VERBAL26-AMER-T18-P053-Q035",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 53,
+    "sourceQuestionNumber": 35,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "محل",
+      "دكان",
+      "متجر",
+      "سلعة"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T18-P053-Q036",
+    "canonicalId": "VERBAL26-AMER-T18-P053-Q036",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 53,
+    "sourceQuestionNumber": 36,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "غرباء",
+      "وافدون",
+      "بؤساء",
+      "مستوطنون"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T18-P053-Q037",
+    "canonicalId": "VERBAL26-AMER-T18-P053-Q037",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 53,
+    "sourceQuestionNumber": 37,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "طحال",
+      "كبد",
+      "عين",
+      "رئة"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T18-P053-Q042",
+    "canonicalId": "VERBAL26-AMER-T18-P053-Q042",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 53,
+    "sourceQuestionNumber": 42,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "نفط",
+      "حديد",
+      "ذهب",
+      "نحاس"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T18-P053-Q045",
+    "canonicalId": "VERBAL26-AMER-T18-P053-Q045",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 53,
+    "sourceQuestionNumber": 45,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "خفاش",
+      "عصفور",
+      "حمام",
+      "بومة"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T18-P053-Q046",
+    "canonicalId": "VERBAL26-AMER-T18-P053-Q046",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 53,
+    "sourceQuestionNumber": 46,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "مدفون",
+      "مكنون",
+      "مضمون",
+      "مخزون"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T18-P053-Q048",
+    "canonicalId": "VERBAL26-AMER-T18-P053-Q048",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 53,
+    "sourceQuestionNumber": 48,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "رأى",
+      "شاهد",
+      "طالع",
+      "كتب"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T18-P053-Q049",
+    "canonicalId": "VERBAL26-AMER-T18-P053-Q049",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 53,
+    "sourceQuestionNumber": 49,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "أتان",
+      "حصان",
+      "غزالة",
+      "فرس"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T18-P053-Q050",
+    "canonicalId": "VERBAL26-AMER-T18-P053-Q050",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 53,
+    "sourceQuestionNumber": 50,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "أموال",
+      "دراهم",
+      "أملاك",
+      "نقود"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T19-P054-Q001",
+    "canonicalId": "VERBAL26-AMER-T19-P054-Q001",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 54,
+    "sourceQuestionNumber": 1,
+    "mainSkillId": "skill_verbal_14",
+    "subSkillId": "sub_verbal_09_3",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "تحديث",
+      "تجديد",
+      "تنويع",
+      "تطوير"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T19-P054-Q002",
+    "canonicalId": "VERBAL26-AMER-T19-P054-Q002",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 54,
+    "sourceQuestionNumber": 2,
+    "mainSkillId": "skill_verbal_14",
+    "subSkillId": "sub_verbal_09_3",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "فصيحة",
+      "صحيفة",
+      "صريحة",
+      "حصيفة"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T19-P054-Q003",
+    "canonicalId": "VERBAL26-AMER-T19-P054-Q003",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 54,
+    "sourceQuestionNumber": 3,
+    "mainSkillId": "skill_verbal_14",
+    "subSkillId": "sub_verbal_09_3",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "مساومة",
+      "ملاكمة",
+      "مبارزة",
+      "مصارعة"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T19-P054-Q004",
+    "canonicalId": "VERBAL26-AMER-T19-P054-Q004",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 54,
+    "sourceQuestionNumber": 4,
+    "mainSkillId": "skill_verbal_14",
+    "subSkillId": "sub_verbal_09_3",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "كمين",
+      "فخ",
+      "خديعة",
+      "هزيمة"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T19-P054-Q005",
+    "canonicalId": "VERBAL26-AMER-T19-P054-Q005",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 54,
+    "sourceQuestionNumber": 5,
+    "mainSkillId": "skill_verbal_14",
+    "subSkillId": "sub_verbal_09_3",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "الولاء",
+      "الطاعة",
+      "الانتماء",
+      "الاستعلاء"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T19-P054-Q006",
+    "canonicalId": "VERBAL26-AMER-T19-P054-Q006",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 54,
+    "sourceQuestionNumber": 6,
+    "mainSkillId": "skill_verbal_14",
+    "subSkillId": "sub_verbal_09_3",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "ساق",
+      "جذع",
+      "ورقة",
+      "يرقة"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T19-P054-Q007",
+    "canonicalId": "VERBAL26-AMER-T19-P054-Q007",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 54,
+    "sourceQuestionNumber": 7,
+    "mainSkillId": "skill_verbal_14",
+    "subSkillId": "sub_verbal_09_3",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "تطابق",
+      "تكافؤ",
+      "تقارب",
+      "تضارب"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T19-P054-Q009",
+    "canonicalId": "VERBAL26-AMER-T19-P054-Q009",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 54,
+    "sourceQuestionNumber": 9,
+    "mainSkillId": "skill_verbal_14",
+    "subSkillId": "sub_verbal_09_3",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "لا تعجل",
+      "لا تتسرع",
+      "لا تهدأ",
+      "لا تتهور"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T19-P054-Q011",
+    "canonicalId": "VERBAL26-AMER-T19-P054-Q011",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 54,
+    "sourceQuestionNumber": 11,
+    "mainSkillId": "skill_verbal_14",
+    "subSkillId": "sub_verbal_09_3",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "الذخيرة",
+      "القنبلة",
+      "البندقية",
+      "الصاروخ"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T19-P054-Q012",
+    "canonicalId": "VERBAL26-AMER-T19-P054-Q012",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 54,
+    "sourceQuestionNumber": 12,
+    "mainSkillId": "skill_verbal_14",
+    "subSkillId": "sub_verbal_09_3",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "مخاطرة",
+      "مغامرة",
+      "مجازفة",
+      "تعدية"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T19-P054-Q014",
+    "canonicalId": "VERBAL26-AMER-T19-P054-Q014",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 54,
+    "sourceQuestionNumber": 14,
+    "mainSkillId": "skill_verbal_14",
+    "subSkillId": "sub_verbal_09_3",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "ذهب",
+      "فضة",
+      "ألماس",
+      "لؤلؤ"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T19-P054-Q015",
+    "canonicalId": "VERBAL26-AMER-T19-P054-Q015",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 54,
+    "sourceQuestionNumber": 15,
+    "mainSkillId": "skill_verbal_14",
+    "subSkillId": "sub_verbal_09_3",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "حامد",
+      "ذاكر",
+      "شاكر",
+      "سامع"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T19-P054-Q017",
+    "canonicalId": "VERBAL26-AMER-T19-P054-Q017",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 54,
+    "sourceQuestionNumber": 17,
+    "mainSkillId": "skill_verbal_14",
+    "subSkillId": "sub_verbal_09_3",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "مشجع",
+      "لاعب",
+      "حكم",
+      "حارس"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T19-P054-Q018",
+    "canonicalId": "VERBAL26-AMER-T19-P054-Q018",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 54,
+    "sourceQuestionNumber": 18,
+    "mainSkillId": "skill_verbal_14",
+    "subSkillId": "sub_verbal_09_3",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "شعر",
+      "مقالة",
+      "رواية",
+      "طباعة"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T19-P054-Q019",
+    "canonicalId": "VERBAL26-AMER-T19-P054-Q019",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 54,
+    "sourceQuestionNumber": 19,
+    "mainSkillId": "skill_verbal_14",
+    "subSkillId": "sub_verbal_09_3",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "مدفع",
+      "رشاش",
+      "لغم",
+      "مسدس"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T19-P054-Q023",
+    "canonicalId": "VERBAL26-AMER-T19-P054-Q023",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 54,
+    "sourceQuestionNumber": 23,
+    "mainSkillId": "skill_verbal_14",
+    "subSkillId": "sub_verbal_09_3",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "لواء",
+      "طبيب",
+      "ضابط",
+      "عقيد"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T19-P054-Q024",
+    "canonicalId": "VERBAL26-AMER-T19-P054-Q024",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 54,
+    "sourceQuestionNumber": 24,
+    "mainSkillId": "skill_verbal_14",
+    "subSkillId": "sub_verbal_09_3",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "مسرور",
+      "حزين",
+      "عبوس",
+      "قاطب"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T19-P054-Q026",
+    "canonicalId": "VERBAL26-AMER-T19-P054-Q026",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 54,
+    "sourceQuestionNumber": 26,
+    "mainSkillId": "skill_verbal_14",
+    "subSkillId": "sub_verbal_09_3",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "منى",
+      "مزدلفة",
+      "عرفة",
+      "المدينة"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T19-P054-Q028",
+    "canonicalId": "VERBAL26-AMER-T19-P054-Q028",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 54,
+    "sourceQuestionNumber": 28,
+    "mainSkillId": "skill_verbal_14",
+    "subSkillId": "sub_verbal_09_3",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "صيف",
+      "خريف",
+      "شتاء",
+      "رياح"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T19-P054-Q029",
+    "canonicalId": "VERBAL26-AMER-T19-P054-Q029",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 54,
+    "sourceQuestionNumber": 29,
+    "mainSkillId": "skill_verbal_14",
+    "subSkillId": "sub_verbal_09_3",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "سيف",
+      "سهم",
+      "درع",
+      "رمح"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T19-P054-Q030",
+    "canonicalId": "VERBAL26-AMER-T19-P054-Q030",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 54,
+    "sourceQuestionNumber": 30,
+    "mainSkillId": "skill_verbal_14",
+    "subSkillId": "sub_verbal_09_3",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "العاديات",
+      "الصافات",
+      "الأنفال",
+      "الموريات"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
   }
 ]
