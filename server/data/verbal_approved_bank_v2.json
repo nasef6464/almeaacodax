@@ -1,0 +1,1742 @@
+[
+  {
+    "id": "VERBAL26-ANAS-P005-Q001",
+    "canonicalId": "VERBAL26-ANAS-P005-Q001",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 5,
+    "sourceQuestionNumber": 1,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "الفشل هو الشيء الوحيد الذي يستطيع أي إنسان أن يتفاداه دون مجهود.",
+    "options": [
+      "الفشل",
+      "الوحيد",
+      "يستطيع",
+      "يتفاداه"
+    ],
+    "correctOptionIndex": 3
+  },
+  {
+    "id": "VERBAL26-ANAS-P005-Q002",
+    "canonicalId": "VERBAL26-ANAS-P005-Q002",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 5,
+    "sourceQuestionNumber": 2,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "أطع أخاك وإن عصاك، واتق الله وإن خالفك.",
+    "options": [
+      "أطع",
+      "أخاك",
+      "اتق الله",
+      "خالفك"
+    ],
+    "correctOptionIndex": 2
+  },
+  {
+    "id": "VERBAL26-ANAS-P005-Q003",
+    "canonicalId": "VERBAL26-ANAS-P005-Q003",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 5,
+    "sourceQuestionNumber": 3,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "إن أسوأ ما يصيب الإنسان أن يكون بلا عمل أو كسل.",
+    "options": [
+      "أسوأ",
+      "الإنسان",
+      "عمل",
+      "كسل"
+    ],
+    "correctOptionIndex": 3
+  },
+  {
+    "id": "VERBAL26-ANAS-P005-Q004",
+    "canonicalId": "VERBAL26-ANAS-P005-Q004",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 5,
+    "sourceQuestionNumber": 4,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "ذكي من يفهم الناس لكن الذي يفهم نفسه أقل ذكاء.",
+    "options": [
+      "ذكي",
+      "الناس",
+      "يفهم",
+      "أقل"
+    ],
+    "correctOptionIndex": 3
+  },
+  {
+    "id": "VERBAL26-ANAS-P005-Q005",
+    "canonicalId": "VERBAL26-ANAS-P005-Q005",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 5,
+    "sourceQuestionNumber": 5,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "يجب أن تكون صناعة ألعاب الأطفال بأدنى معايير الجودة.",
+    "options": [
+      "صناعة",
+      "ألعاب",
+      "أدنى",
+      "الجودة"
+    ],
+    "correctOptionIndex": 1
+  },
+  {
+    "id": "VERBAL26-ANAS-COMP-P013-Q001",
+    "canonicalId": "VERBAL26-ANAS-COMP-P013-Q001",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 13,
+    "sourceQuestionNumber": 1,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "أربع .... الرزق: قيام الليل و.... الاستغفار بالأسحار، وتعاهد الصدقة، والذكر أول النهار.",
+    "options": [
+      "تمنع _ كثرة",
+      "تجلب _ قلة",
+      "تجلب _ كثرة",
+      "تمنع _ قلة"
+    ],
+    "correctOptionIndex": 2
+  },
+  {
+    "id": "VERBAL26-ANAS-COMP-P013-Q002",
+    "canonicalId": "VERBAL26-ANAS-COMP-P013-Q002",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 13,
+    "sourceQuestionNumber": 2,
+    "mainSkillId": "skill_verbal_10",
+    "subSkillId": "sub_verbal_07_1",
+    "text": "لم نعد نثق فيه بعد اليوم، لأنه .... العهود الغليظة التي قطعها على نفسه.",
+    "options": [
+      "نسي كل",
+      "تخلى عن",
+      "تعب من",
+      "حقق كل"
+    ],
+    "correctOptionIndex": 1
+  },
+  {
+    "id": "VERBAL26-ANAS-ANLG-P025-Q001",
+    "canonicalId": "VERBAL26-ANAS-ANLG-P025-Q001",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 25,
+    "sourceQuestionNumber": 1,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_1",
+    "text": "متر : سنتيمتر",
+    "options": [
+      "مساحة : أرض",
+      "قرن : دهر",
+      "عام : حول",
+      "سنة : شهر"
+    ],
+    "correctOptionIndex": 3
+  },
+  {
+    "id": "VERBAL26-ANAS-ANLG-P025-Q002",
+    "canonicalId": "VERBAL26-ANAS-ANLG-P025-Q002",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 25,
+    "sourceQuestionNumber": 2,
+    "mainSkillId": "skill_verbal_04",
+    "subSkillId": "sub_verbal_03_5",
+    "text": "دمع : عين",
+    "options": [
+      "عام : حول",
+      "بهجة : ملامح",
+      "شفاه : كلام",
+      "فلج : أسنان"
+    ],
+    "correctOptionIndex": 3
+  },
+  {
+    "id": "VERBAL26-ANAS-ANLG-P025-Q003",
+    "canonicalId": "VERBAL26-ANAS-ANLG-P025-Q003",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 25,
+    "sourceQuestionNumber": 3,
+    "mainSkillId": "skill_verbal_04",
+    "subSkillId": "sub_verbal_03_7",
+    "text": "صبح : نهار",
+    "options": [
+      "وسن : نوم",
+      "غسق : ليل",
+      "شمس : قمر",
+      "شهيق : زفير"
+    ],
+    "correctOptionIndex": 1
+  },
+  {
+    "id": "VERBAL26-ANAS-ANLG-P025-Q004",
+    "canonicalId": "VERBAL26-ANAS-ANLG-P025-Q004",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 25,
+    "sourceQuestionNumber": 4,
+    "mainSkillId": "skill_verbal_08",
+    "subSkillId": "sub_verbal_06_2",
+    "text": "خط : نسخ",
+    "options": [
+      "سطر : صفحة",
+      "أدب : شعر",
+      "نثر : أرجوزة",
+      "رواية : مقال"
+    ],
+    "correctOptionIndex": 1
+  },
+  {
+    "id": "VERBAL26-ANAS-ANLG-P025-Q005",
+    "canonicalId": "VERBAL26-ANAS-ANLG-P025-Q005",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 25,
+    "sourceQuestionNumber": 5,
+    "mainSkillId": "skill_verbal_08",
+    "subSkillId": "sub_verbal_06_4",
+    "text": "محرم : صفر",
+    "options": [
+      "سبت : جمعة",
+      "الصيف : الشتاء",
+      "ليل : نهار",
+      "رجب : شوال"
+    ],
+    "correctOptionIndex": 2
+  },
+  {
+    "id": "VERBAL26-ANAS-ANLG-P025-Q006",
+    "canonicalId": "VERBAL26-ANAS-ANLG-P025-Q006",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 25,
+    "sourceQuestionNumber": 6,
+    "mainSkillId": "skill_verbal_03",
+    "subSkillId": "sub_verbal_02_4",
+    "text": "مشكلة : طامة",
+    "options": [
+      "حادثة : كارثة",
+      "معضلة : معجزة",
+      "مصيبة : فاجعة",
+      "سيل : أمطار"
+    ],
+    "correctOptionIndex": 2
+  },
+  {
+    "id": "VERBAL26-ANAS-ANLG-P025-Q007",
+    "canonicalId": "VERBAL26-ANAS-ANLG-P025-Q007",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 25,
+    "sourceQuestionNumber": 7,
+    "mainSkillId": "skill_verbal_06",
+    "subSkillId": "sub_verbal_04_2",
+    "text": "مأذون : عقد",
+    "options": [
+      "لاعب : كرة",
+      "تجارة : بيع",
+      "صك : ملكية",
+      "ثلاجة : تبريد"
+    ],
+    "correctOptionIndex": 3
+  },
+  {
+    "id": "VERBAL26-ANAS-ANLG-P025-Q008",
+    "canonicalId": "VERBAL26-ANAS-ANLG-P025-Q008",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 25,
+    "sourceQuestionNumber": 8,
+    "mainSkillId": "skill_verbal_09",
+    "subSkillId": "sub_verbal_06_6",
+    "text": "عين : جاسوس",
+    "options": [
+      "يد : أخ",
+      "رأس : زعيم",
+      "سطح : بيت",
+      "مطر : ماء"
+    ],
+    "correctOptionIndex": 1
+  },
+  {
+    "id": "VERBAL26-ANAS-ANLG-P025-Q009",
+    "canonicalId": "VERBAL26-ANAS-ANLG-P025-Q009",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 25,
+    "sourceQuestionNumber": 9,
+    "mainSkillId": "skill_verbal_05",
+    "subSkillId": "sub_verbal_05_1",
+    "text": "صفعة : احمرار",
+    "options": [
+      "هرولة : تخفيف",
+      "انتحار : تسرب",
+      "جليد : شمس",
+      "سفر : متعة"
+    ],
+    "correctOptionIndex": 3
+  },
+  {
+    "id": "VERBAL26-ANAS-ANLG-P026-Q010",
+    "canonicalId": "VERBAL26-ANAS-ANLG-P026-Q010",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 26,
+    "sourceQuestionNumber": 10,
+    "mainSkillId": "skill_verbal_09",
+    "subSkillId": "sub_verbal_06_6",
+    "text": "العلماء : الأنبياء",
+    "options": [
+      "مصابيح : خير",
+      "علم : قمة",
+      "واضح : موضح",
+      "نجوم : اهتداء"
+    ],
+    "correctOptionIndex": 2
+  },
+  {
+    "id": "VERBAL26-ANAS-ANLG-P026-Q011",
+    "canonicalId": "VERBAL26-ANAS-ANLG-P026-Q011",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 26,
+    "sourceQuestionNumber": 11,
+    "mainSkillId": "skill_verbal_04",
+    "subSkillId": "sub_verbal_03_3",
+    "text": "ملك : عرش",
+    "options": [
+      "ميت : نعش",
+      "سماء : نجوم",
+      "رأس : تاج",
+      "غصن : عش"
+    ],
+    "correctOptionIndex": 0
+  },
+  {
+    "id": "VERBAL26-ANAS-ANLG-P026-Q012",
+    "canonicalId": "VERBAL26-ANAS-ANLG-P026-Q012",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 26,
+    "sourceQuestionNumber": 12,
+    "mainSkillId": "skill_verbal_03",
+    "subSkillId": "sub_verbal_02_2",
+    "text": "الإمساك : الإنفاق",
+    "options": [
+      "بذل : تقتير",
+      "فرج : يسر",
+      "كربة : هم",
+      "البلاء : المعافاة"
+    ],
+    "correctOptionIndex": 3
+  },
+  {
+    "id": "VERBAL26-ANAS-ANLG-P026-Q013",
+    "canonicalId": "VERBAL26-ANAS-ANLG-P026-Q013",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 26,
+    "sourceQuestionNumber": 13,
+    "mainSkillId": "skill_verbal_05",
+    "subSkillId": "sub_verbal_05_1",
+    "text": "دخان : اختناق",
+    "options": [
+      "تأمل : تفكير",
+      "تدريب : إتقان",
+      "جود : كرم",
+      "تفاح : فاكهة"
+    ],
+    "correctOptionIndex": 1
+  },
+  {
+    "id": "VERBAL26-ANAS-ANLG-P026-Q014",
+    "canonicalId": "VERBAL26-ANAS-ANLG-P026-Q014",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 26,
+    "sourceQuestionNumber": 14,
+    "mainSkillId": "skill_verbal_09",
+    "subSkillId": "sub_verbal_06_6",
+    "text": "الصديق : الصراحة",
+    "options": [
+      "العدو : الرفق",
+      "الوفاء : الكلب",
+      "النار : الغليان",
+      "المنافق : الخديعة"
+    ],
+    "correctOptionIndex": 3
+  },
+  {
+    "id": "VERBAL26-ANAS-ANLG-P026-Q015",
+    "canonicalId": "VERBAL26-ANAS-ANLG-P026-Q015",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 26,
+    "sourceQuestionNumber": 15,
+    "mainSkillId": "skill_verbal_07",
+    "subSkillId": "sub_verbal_05_3",
+    "text": "عطف : يتيم",
+    "options": [
+      "قتل : مجرم",
+      "مريض : مستشفى",
+      "جندي : حرب",
+      "تعليم : جاهل"
+    ],
+    "correctOptionIndex": 3
+  },
+  {
+    "id": "VERBAL26-ANAS-ANLG-P026-Q016",
+    "canonicalId": "VERBAL26-ANAS-ANLG-P026-Q016",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 26,
+    "sourceQuestionNumber": 16,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_3",
+    "text": "مطر : بحار",
+    "options": [
+      "بحر : أمواج",
+      "علماء : أرض",
+      "سماء : سحاب",
+      "تمر : نخيل"
+    ],
+    "correctOptionIndex": 3
+  },
+  {
+    "id": "VERBAL26-ANAS-ANLG-P026-Q017",
+    "canonicalId": "VERBAL26-ANAS-ANLG-P026-Q017",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 26,
+    "sourceQuestionNumber": 17,
+    "mainSkillId": "skill_verbal_04",
+    "subSkillId": "sub_verbal_03_3",
+    "text": "محلول : مختبر",
+    "options": [
+      "قوة : اتحاد",
+      "سماحة : دين",
+      "مريض : عليل",
+      "خيل : إسطبل"
+    ],
+    "correctOptionIndex": 3
+  },
+  {
+    "id": "VERBAL26-ANAS-ANLG-P026-Q018",
+    "canonicalId": "VERBAL26-ANAS-ANLG-P026-Q018",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 26,
+    "sourceQuestionNumber": 18,
+    "mainSkillId": "skill_verbal_09",
+    "subSkillId": "sub_verbal_06_6",
+    "text": "دولة : خريطة",
+    "options": [
+      "مصنع : أعمدة",
+      "بيت : مخطط",
+      "مدينة : سكان",
+      "لوحة : ألوان"
+    ],
+    "correctOptionIndex": 1
+  },
+  {
+    "id": "VERBAL26-ANAS-ANLG-P027-Q019",
+    "canonicalId": "VERBAL26-ANAS-ANLG-P027-Q019",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 27,
+    "sourceQuestionNumber": 19,
+    "mainSkillId": "skill_verbal_06",
+    "subSkillId": "sub_verbal_04_3",
+    "text": "كلام : لسان",
+    "options": [
+      "وقت : دقيقة",
+      "دموع : عين",
+      "عسل : نحل",
+      "فحم : منجم"
+    ],
+    "correctOptionIndex": 1
+  },
+  {
+    "id": "VERBAL26-ANAS-ANLG-P027-Q020",
+    "canonicalId": "VERBAL26-ANAS-ANLG-P027-Q020",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 27,
+    "sourceQuestionNumber": 20,
+    "mainSkillId": "skill_verbal_05",
+    "subSkillId": "sub_verbal_05_1",
+    "text": "حرب : شهداء",
+    "options": [
+      "سد : فيضان",
+      "كعبة : مكة",
+      "مرعى : ربيع",
+      "إهمال : أخطاء"
+    ],
+    "correctOptionIndex": 3
+  },
+  {
+    "id": "VERBAL26-ANAS-ANLG-P027-Q021",
+    "canonicalId": "VERBAL26-ANAS-ANLG-P027-Q021",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 27,
+    "sourceQuestionNumber": 21,
+    "mainSkillId": "skill_verbal_09",
+    "subSkillId": "sub_verbal_06_6",
+    "text": "حاسر : رأس",
+    "options": [
+      "جندي : أعزل",
+      "أشعث : شعر",
+      "عاري : ملابس",
+      "حاف : قدم"
+    ],
+    "correctOptionIndex": 3
+  },
+  {
+    "id": "VERBAL26-ANAS-ANLG-P027-Q022",
+    "canonicalId": "VERBAL26-ANAS-ANLG-P027-Q022",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 27,
+    "sourceQuestionNumber": 22,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_4",
+    "text": "ذهب : ذهاب",
+    "options": [
+      "عمر : عمار",
+      "جلس : جلوس",
+      "رجع : راجع",
+      "نام : نائم"
+    ],
+    "correctOptionIndex": 1
+  },
+  {
+    "id": "VERBAL26-ANAS-ANLG-P027-Q023",
+    "canonicalId": "VERBAL26-ANAS-ANLG-P027-Q023",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 27,
+    "sourceQuestionNumber": 23,
+    "mainSkillId": "skill_verbal_05",
+    "subSkillId": "sub_verbal_05_1",
+    "text": "حب : اتباع",
+    "options": [
+      "إعجاب : تقليد",
+      "ابتعاد : اقتراب",
+      "بغض : كره",
+      "حرص : خوف"
+    ],
+    "correctOptionIndex": 0
+  },
+  {
+    "id": "VERBAL26-ANAS-ANLG-P027-Q024",
+    "canonicalId": "VERBAL26-ANAS-ANLG-P027-Q024",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 27,
+    "sourceQuestionNumber": 24,
+    "mainSkillId": "skill_verbal_08",
+    "subSkillId": "sub_verbal_06_3",
+    "text": "طائر : سرب",
+    "options": [
+      "عقد : جلس",
+      "نار : ضوء",
+      "جندي : سرية",
+      "نفر : عمال"
+    ],
+    "correctOptionIndex": 2
+  },
+  {
+    "id": "VERBAL26-ANAS-ANLG-P027-Q025",
+    "canonicalId": "VERBAL26-ANAS-ANLG-P027-Q025",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 27,
+    "sourceQuestionNumber": 25,
+    "mainSkillId": "skill_verbal_02",
+    "subSkillId": "sub_verbal_02_1",
+    "text": "صاحب : صديق",
+    "options": [
+      "صدى : حيود",
+      "ضوء : نهار",
+      "عراك : قتال",
+      "أب : مسؤول"
+    ],
+    "correctOptionIndex": 2
+  },
+  {
+    "id": "VERBAL26-ANAS-RC-ECLIPSE-Q01",
+    "canonicalId": "VERBAL26-ANAS-RC-ECLIPSE-Q01",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 38,
+    "sourceQuestionNumber": 1,
+    "mainSkillId": "skill_verbal_20",
+    "subSkillId": "sub_verbal_12_6",
+    "text": "أسباب الكسوف والخسوف لا تتعدى:",
+    "options": [
+      "أربعة أسباب",
+      "سبب واحد",
+      "ثلاثة أسباب",
+      "سببين اثنين"
+    ],
+    "correctOptionIndex": 3,
+    "passageId": "VERBAL26-ANAS-PASSAGE-ECLIPSE",
+    "passageTitle": "الكسوف والخسوف",
+    "passageText": "الكسوف والخسوف ظاهرة تعتيم سماوي، تحدث عندما يسقط ظل جرم سماوي على جرم سماوي آخر، أو عندما يتحرك جرم أمام جرم فيحجب نوره وضياءه."
+  },
+  {
+    "id": "VERBAL26-ANAS-RC-ECLIPSE-Q02",
+    "canonicalId": "VERBAL26-ANAS-RC-ECLIPSE-Q02",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 38,
+    "sourceQuestionNumber": 2,
+    "mainSkillId": "skill_verbal_20",
+    "subSkillId": "sub_verbal_12_6",
+    "text": "ماذا تعني كلمة ظاهرة تعتيم سماوي؟",
+    "options": [
+      "لها شأن إلهي",
+      "عالية",
+      "تحدث في السماء",
+      "مائل للزرقة"
+    ],
+    "correctOptionIndex": 2,
+    "passageId": "VERBAL26-ANAS-PASSAGE-ECLIPSE",
+    "passageTitle": "الكسوف والخسوف",
+    "passageText": "الكسوف والخسوف ظاهرة تعتيم سماوي، تحدث عندما يسقط ظل جرم سماوي على جرم سماوي آخر، أو عندما يتحرك جرم أمام جرم فيحجب نوره وضياءه."
+  },
+  {
+    "id": "VERBAL26-ANAS-RC-ECLIPSE-Q03",
+    "canonicalId": "VERBAL26-ANAS-RC-ECLIPSE-Q03",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 38,
+    "sourceQuestionNumber": 3,
+    "mainSkillId": "skill_verbal_22",
+    "subSkillId": "sub_verbal_13_4",
+    "text": "الكلمة التي إذا حذفت لن تؤثر على المعنى:",
+    "options": [
+      "نور",
+      "جرم",
+      "ظل",
+      "تعتيم"
+    ],
+    "correctOptionIndex": 0,
+    "passageId": "VERBAL26-ANAS-PASSAGE-ECLIPSE",
+    "passageTitle": "الكسوف والخسوف",
+    "passageText": "الكسوف والخسوف ظاهرة تعتيم سماوي، تحدث عندما يسقط ظل جرم سماوي على جرم سماوي آخر، أو عندما يتحرك جرم أمام جرم فيحجب نوره وضياءه."
+  },
+  {
+    "id": "VERBAL26-ANAS-RC-ECLIPSE-Q04",
+    "canonicalId": "VERBAL26-ANAS-RC-ECLIPSE-Q04",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 38,
+    "sourceQuestionNumber": 4,
+    "mainSkillId": "skill_verbal_21",
+    "subSkillId": "sub_verbal_13_1",
+    "text": "علاقة «تحدث عندما يسقط جرم.....» بما قبلها:",
+    "options": [
+      "تعليل",
+      "تفصيل",
+      "تدليل",
+      "نتيجة"
+    ],
+    "correctOptionIndex": 1,
+    "passageId": "VERBAL26-ANAS-PASSAGE-ECLIPSE",
+    "passageTitle": "الكسوف والخسوف",
+    "passageText": "الكسوف والخسوف ظاهرة تعتيم سماوي، تحدث عندما يسقط ظل جرم سماوي على جرم سماوي آخر، أو عندما يتحرك جرم أمام جرم فيحجب نوره وضياءه."
+  },
+  {
+    "id": "VERBAL26-ANAS-RC-PEARLS-Q01",
+    "canonicalId": "VERBAL26-ANAS-RC-PEARLS-Q01",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 39,
+    "sourceQuestionNumber": 1,
+    "mainSkillId": "skill_verbal_21",
+    "subSkillId": "sub_verbal_13_2",
+    "text": "كم تضاداً في النص السابق؟",
+    "options": [
+      "أربعة",
+      "اثنان",
+      "ثلاثة",
+      "واحد"
+    ],
+    "correctOptionIndex": 3,
+    "passageId": "VERBAL26-ANAS-PASSAGE-PEARLS",
+    "passageTitle": "اللؤلؤ",
+    "passageText": "كان الناس قديماً يهتمون باستخراج اللؤلؤ وخاصة أهل الخليج، فكان من يمتهنون تلك المهنة من أهل الخليج يتركون أهلهم وكل ما يخصهم ويذهبون إلى الخليج العربي فيغوصون فيه بحثاً عن اللؤلؤ، وكان في استخراج اللؤلؤ الكثير من العناء والمشقة، وقد كان استخراج اللؤلؤ من أهم مصادر الدخل لديهم، ولمدة بعدهم الطويلة عن أهلهم كانوا يخافون عليهم ويتمنون لهم الأمن والسلامة."
+  },
+  {
+    "id": "VERBAL26-ANAS-RC-PEARLS-Q02",
+    "canonicalId": "VERBAL26-ANAS-RC-PEARLS-Q02",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 39,
+    "sourceQuestionNumber": 2,
+    "mainSkillId": "skill_verbal_19",
+    "subSkillId": "sub_verbal_12_1",
+    "text": "فكرة النص كانت:",
+    "options": [
+      "من التفسير إلى الإجمال",
+      "من الخصوص إلى العموم",
+      "من الإجمال إلى التفصيل",
+      "من العموم إلى الخصوص"
+    ],
+    "correctOptionIndex": 3,
+    "passageId": "VERBAL26-ANAS-PASSAGE-PEARLS",
+    "passageTitle": "اللؤلؤ",
+    "passageText": "كان الناس قديماً يهتمون باستخراج اللؤلؤ وخاصة أهل الخليج، فكان من يمتهنون تلك المهنة من أهل الخليج يتركون أهلهم وكل ما يخصهم ويذهبون إلى الخليج العربي فيغوصون فيه بحثاً عن اللؤلؤ، وكان في استخراج اللؤلؤ الكثير من العناء والمشقة، وقد كان استخراج اللؤلؤ من أهم مصادر الدخل لديهم، ولمدة بعدهم الطويلة عن أهلهم كانوا يخافون عليهم ويتمنون لهم الأمن والسلامة."
+  },
+  {
+    "id": "VERBAL26-ANAS-RC-PEARLS-Q03",
+    "canonicalId": "VERBAL26-ANAS-RC-PEARLS-Q03",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 39,
+    "sourceQuestionNumber": 3,
+    "mainSkillId": "skill_verbal_21",
+    "subSkillId": "sub_verbal_13_1",
+    "text": "علاقة العناء بالمشقة:",
+    "options": [
+      "الأولى مادية والثانية معنوية",
+      "الأولى معنوية والثانية مادية",
+      "الثانية تحمل معنى الأولى",
+      "الثانية جزء من الأولى"
+    ],
+    "correctOptionIndex": 2,
+    "passageId": "VERBAL26-ANAS-PASSAGE-PEARLS",
+    "passageTitle": "اللؤلؤ",
+    "passageText": "كان الناس قديماً يهتمون باستخراج اللؤلؤ وخاصة أهل الخليج، فكان من يمتهنون تلك المهنة من أهل الخليج يتركون أهلهم وكل ما يخصهم ويذهبون إلى الخليج العربي فيغوصون فيه بحثاً عن اللؤلؤ، وكان في استخراج اللؤلؤ الكثير من العناء والمشقة، وقد كان استخراج اللؤلؤ من أهم مصادر الدخل لديهم، ولمدة بعدهم الطويلة عن أهلهم كانوا يخافون عليهم ويتمنون لهم الأمن والسلامة."
+  },
+  {
+    "id": "VERBAL26-ANAS-RC-PEARLS-Q04",
+    "canonicalId": "VERBAL26-ANAS-RC-PEARLS-Q04",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 39,
+    "sourceQuestionNumber": 4,
+    "mainSkillId": "skill_verbal_20",
+    "subSkillId": "sub_verbal_12_6",
+    "text": "كان في استخراج اللؤلؤ عناء ومشقة، فلماذا استمروا في استخراجه؟",
+    "options": [
+      "لأنه هواية",
+      "لكسب الرزق",
+      "لدعم الأبناء",
+      "لجمع الصدف"
+    ],
+    "correctOptionIndex": 1,
+    "passageId": "VERBAL26-ANAS-PASSAGE-PEARLS",
+    "passageTitle": "اللؤلؤ",
+    "passageText": "كان الناس قديماً يهتمون باستخراج اللؤلؤ وخاصة أهل الخليج، فكان من يمتهنون تلك المهنة من أهل الخليج يتركون أهلهم وكل ما يخصهم ويذهبون إلى الخليج العربي فيغوصون فيه بحثاً عن اللؤلؤ، وكان في استخراج اللؤلؤ الكثير من العناء والمشقة، وقد كان استخراج اللؤلؤ من أهم مصادر الدخل لديهم، ولمدة بعدهم الطويلة عن أهلهم كانوا يخافون عليهم ويتمنون لهم الأمن والسلامة."
+  },
+  {
+    "id": "VERBAL26-ANAS-RC-HUMAN-PROBLEMS-Q01",
+    "canonicalId": "VERBAL26-ANAS-RC-HUMAN-PROBLEMS-Q01",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 41,
+    "sourceQuestionNumber": 1,
+    "mainSkillId": "skill_verbal_19",
+    "subSkillId": "sub_verbal_12_1",
+    "text": "يحث النص السابق على:",
+    "options": [
+      "الحرص على المال",
+      "قيمة الوقت",
+      "تحمل المسؤولية",
+      "ضعف الهمة"
+    ],
+    "correctOptionIndex": 2,
+    "passageId": "VERBAL26-ANAS-PASSAGE-HUMAN-PROBLEMS",
+    "passageTitle": "الإنسان وتحمل المشاكل",
+    "passageText": "يجب على الإنسان أن يتحمل مسؤولية نفسه؛ لأنه لو ظل ينتظر طويلاً من يأتي ليحل مشاكله فسيضيع وقته سدى."
+  },
+  {
+    "id": "VERBAL26-ANAS-RC-HUMAN-PROBLEMS-Q02",
+    "canonicalId": "VERBAL26-ANAS-RC-HUMAN-PROBLEMS-Q02",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 41,
+    "sourceQuestionNumber": 2,
+    "mainSkillId": "skill_verbal_21",
+    "subSkillId": "sub_verbal_13_1",
+    "text": "العلاقة بين «يجب على الإنسان أن يتحمل مسؤولية نفسه» و«لأنه لو ظل ينتظر طويلاً من يأتي ليحل مشاكله»:",
+    "options": [
+      "مرادفة",
+      "مقدمة",
+      "تأكيد",
+      "مقابلة"
+    ],
+    "correctOptionIndex": 3,
+    "passageId": "VERBAL26-ANAS-PASSAGE-HUMAN-PROBLEMS",
+    "passageTitle": "الإنسان وتحمل المشاكل",
+    "passageText": "يجب على الإنسان أن يتحمل مسؤولية نفسه؛ لأنه لو ظل ينتظر طويلاً من يأتي ليحل مشاكله فسيضيع وقته سدى."
+  },
+  {
+    "id": "VERBAL26-ANAS-RC-HUMAN-PROBLEMS-Q03",
+    "canonicalId": "VERBAL26-ANAS-RC-HUMAN-PROBLEMS-Q03",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 41,
+    "sourceQuestionNumber": 3,
+    "mainSkillId": "skill_verbal_20",
+    "subSkillId": "sub_verbal_12_6",
+    "text": "معنى «سدى» من سياق النص:",
+    "options": [
+      "بلا فائدة",
+      "مفيدة",
+      "رائعة",
+      "جميلة"
+    ],
+    "correctOptionIndex": 0,
+    "passageId": "VERBAL26-ANAS-PASSAGE-HUMAN-PROBLEMS",
+    "passageTitle": "الإنسان وتحمل المشاكل",
+    "passageText": "يجب على الإنسان أن يتحمل مسؤولية نفسه؛ لأنه لو ظل ينتظر طويلاً من يأتي ليحل مشاكله فسيضيع وقته سدى."
+  },
+  {
+    "id": "VERBAL26-ANAS-RC-HUMAN-PROBLEMS-Q04",
+    "canonicalId": "VERBAL26-ANAS-RC-HUMAN-PROBLEMS-Q04",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 41,
+    "sourceQuestionNumber": 4,
+    "mainSkillId": "skill_verbal_21",
+    "subSkillId": "sub_verbal_13_2",
+    "text": "أي الجمل التالية لا تتوافق مع ما ورد في النص؟",
+    "options": [
+      "نفسك أحرص عليك منك فاسألها",
+      "يجب على الإنسان حل مشاكله",
+      "ما حك جلدك مثل ظفرك",
+      "الغائب سيعود ومعه الحل الأمثل"
+    ],
+    "correctOptionIndex": 3,
+    "passageId": "VERBAL26-ANAS-PASSAGE-HUMAN-PROBLEMS",
+    "passageTitle": "الإنسان وتحمل المشاكل",
+    "passageText": "يجب على الإنسان أن يتحمل مسؤولية نفسه؛ لأنه لو ظل ينتظر طويلاً من يأتي ليحل مشاكله فسيضيع وقته سدى."
+  },
+  {
+    "id": "VERBAL26-ANAS-P006-Q009",
+    "canonicalId": "VERBAL26-ANAS-P006-Q009",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 6,
+    "sourceQuestionNumber": 9,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "الرجل يفقد سيطرته عندما تموت المرأة.",
+    "options": [
+      "الرجل",
+      "سيطرته",
+      "تموت",
+      "المرأة"
+    ],
+    "correctOptionIndex": 2
+  },
+  {
+    "id": "VERBAL26-ANAS-P006-Q010",
+    "canonicalId": "VERBAL26-ANAS-P006-Q010",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 6,
+    "sourceQuestionNumber": 10,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "لا تتخذ القرارات وأنت غاضب؛ لأن أحسن القرارات تؤخذ عند الغضب.",
+    "options": [
+      "القرارات",
+      "غاضب",
+      "أحسن",
+      "القرارات"
+    ],
+    "correctOptionIndex": 2
+  },
+  {
+    "id": "VERBAL26-ANAS-P006-Q011",
+    "canonicalId": "VERBAL26-ANAS-P006-Q011",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 6,
+    "sourceQuestionNumber": 11,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "إن الأطفال الذين لا يتكلمون مع آبائهم كثيرًا بالصراحة يتعلمون الكلام بسرعة.",
+    "options": [
+      "يتكلمون",
+      "آبائهم",
+      "يتعلمون",
+      "بسرعة"
+    ],
+    "correctOptionIndex": 3
+  },
+  {
+    "id": "VERBAL26-ANAS-P006-Q012",
+    "canonicalId": "VERBAL26-ANAS-P006-Q012",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 6,
+    "sourceQuestionNumber": 12,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "مواجهة المشكلة جزء من الحل، ولكن عندما تطول ولا نجد لها حلًا فإدراكها أفضل حل.",
+    "options": [
+      "الحل",
+      "حلًا",
+      "فإدراكها",
+      "أفضل"
+    ],
+    "correctOptionIndex": 2
+  },
+  {
+    "id": "VERBAL26-ANAS-P006-Q013",
+    "canonicalId": "VERBAL26-ANAS-P006-Q013",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 6,
+    "sourceQuestionNumber": 13,
+    "mainSkillId": "skill_verbal_18",
+    "subSkillId": "sub_verbal_11_3",
+    "text": "إذا كان العمل الشاق مريحًا فالفراغ مفسدة.",
+    "options": [
+      "العمل",
+      "مريحًا",
+      "الفراغ",
+      "مفسدة"
+    ],
+    "correctOptionIndex": 1
+  },
+  {
+    "id": "VERBAL26-ANAS-P006-Q017",
+    "canonicalId": "VERBAL26-ANAS-P006-Q017",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 6,
+    "sourceQuestionNumber": 17,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "يجب عدم تأييد وجهة نظر ضد وجهة نظر أخرى إلا قبل أن نسمع للطرفين.",
+    "options": [
+      "عدم",
+      "ضد",
+      "قبل",
+      "للطرفين"
+    ],
+    "correctOptionIndex": 2
+  },
+  {
+    "id": "VERBAL26-ANAS-P007-Q018",
+    "canonicalId": "VERBAL26-ANAS-P007-Q018",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 7,
+    "sourceQuestionNumber": 18,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "ليس البخل حفظ المال وإنما إنفاقه بحكمة.",
+    "options": [
+      "البخل",
+      "حفظ",
+      "إنفاقه",
+      "حكمة"
+    ],
+    "correctOptionIndex": 0
+  },
+  {
+    "id": "VERBAL26-ANAS-P007-Q019",
+    "canonicalId": "VERBAL26-ANAS-P007-Q019",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 7,
+    "sourceQuestionNumber": 19,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "أوجد لجسمك مكانًا في القمة فالقاع مزدحم.",
+    "options": [
+      "لجسمك",
+      "مكانًا",
+      "القمة",
+      "مزدحم"
+    ],
+    "correctOptionIndex": 0
+  },
+  {
+    "id": "VERBAL26-ANAS-P007-Q020",
+    "canonicalId": "VERBAL26-ANAS-P007-Q020",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 7,
+    "sourceQuestionNumber": 20,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "قال الحسن البصري: إن معظم الناس متشابهون في المحن لكن إذا حل البلاء تباينوا.",
+    "options": [
+      "معظم",
+      "متشابهون",
+      "المحن",
+      "تباينوا"
+    ],
+    "correctOptionIndex": 1
+  },
+  {
+    "id": "VERBAL26-ANAS-P007-Q021",
+    "canonicalId": "VERBAL26-ANAS-P007-Q021",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 7,
+    "sourceQuestionNumber": 21,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "التاريخ ليس مقصودًا على روايته فقط، بل يجب تذكره.",
+    "options": [
+      "التاريخ",
+      "مقصودًا",
+      "روايته",
+      "تذكره"
+    ],
+    "correctOptionIndex": 3
+  },
+  {
+    "id": "VERBAL26-ANAS-P007-Q022",
+    "canonicalId": "VERBAL26-ANAS-P007-Q022",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 7,
+    "sourceQuestionNumber": 22,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "الخواطر أفكار ترد على القلب منها الإيجابي ومنها الحسن.",
+    "options": [
+      "أفكار",
+      "ترد",
+      "القلب",
+      "الحسن"
+    ],
+    "correctOptionIndex": 3
+  },
+  {
+    "id": "VERBAL26-ANAS-P007-Q023",
+    "canonicalId": "VERBAL26-ANAS-P007-Q023",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 7,
+    "sourceQuestionNumber": 23,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "ما أحد إلا وله كاره أو مبغض، فإن كان لا بد من ذلك فليكن المرء مع أهل طاعة الله عز وجل.",
+    "options": [
+      "أحد",
+      "كاره",
+      "المرء",
+      "أهل"
+    ],
+    "correctOptionIndex": 1
+  },
+  {
+    "id": "VERBAL26-ANAS-P007-Q024",
+    "canonicalId": "VERBAL26-ANAS-P007-Q024",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 7,
+    "sourceQuestionNumber": 24,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "قلل الاستشارة لتكثر عدة عقول؛ فإن من استعان برأيه ضل.",
+    "options": [
+      "قلل",
+      "عقول",
+      "لتكثر",
+      "برأيه"
+    ],
+    "correctOptionIndex": 0
+  },
+  {
+    "id": "VERBAL26-ANAS-P008-Q027",
+    "canonicalId": "VERBAL26-ANAS-P008-Q027",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 8,
+    "sourceQuestionNumber": 27,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "المرض مدرسة تربوية لو أحسن المتعافي الاستفادة منه لكان نعمة لا نقمة.",
+    "options": [
+      "مدرسة",
+      "المتعافي",
+      "نعمة",
+      "نقمة"
+    ],
+    "correctOptionIndex": 1
+  },
+  {
+    "id": "VERBAL26-ANAS-P008-Q028",
+    "canonicalId": "VERBAL26-ANAS-P008-Q028",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 8,
+    "sourceQuestionNumber": 28,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "يعنى العقل بالحقيقة وتهتم الأخلاق بالفضائل، أما الذوق فإنه يبحث عن الخير.",
+    "options": [
+      "بالحقيقة",
+      "بالفضائل",
+      "يبحث",
+      "الخير"
+    ],
+    "correctOptionIndex": 3
+  },
+  {
+    "id": "VERBAL26-ANAS-P008-Q029",
+    "canonicalId": "VERBAL26-ANAS-P008-Q029",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 8,
+    "sourceQuestionNumber": 29,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "امنح الطفل القليل من الحب يكن ربحك في المقابل كثيرًا.",
+    "options": [
+      "امنح",
+      "القليل",
+      "المقابل",
+      "كثيرًا"
+    ],
+    "correctOptionIndex": 1
+  },
+  {
+    "id": "VERBAL26-ANAS-P008-Q030",
+    "canonicalId": "VERBAL26-ANAS-P008-Q030",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 8,
+    "sourceQuestionNumber": 30,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "أسوأ ما يواجه العمل الفردي هو اتكال كل صاحبه إلى التخلي عن مهامه لبعض الأعضاء.",
+    "options": [
+      "يواجه",
+      "الفردي",
+      "اتكال",
+      "مهامه"
+    ],
+    "correctOptionIndex": 1
+  },
+  {
+    "id": "VERBAL26-ANAS-P008-Q031",
+    "canonicalId": "VERBAL26-ANAS-P008-Q031",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 8,
+    "sourceQuestionNumber": 31,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "من قرب السفيه وطرح أصحاب الحسن والمروءات استحق التكريم.",
+    "options": [
+      "قرب",
+      "طرح",
+      "المروءات",
+      "التكريم"
+    ],
+    "correctOptionIndex": 3
+  },
+  {
+    "id": "VERBAL26-ANAS-P008-Q035",
+    "canonicalId": "VERBAL26-ANAS-P008-Q035",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 8,
+    "sourceQuestionNumber": 35,
+    "mainSkillId": "skill_verbal_18",
+    "subSkillId": "sub_verbal_11_3",
+    "text": "المعلم الجيد هو الذي يشجع الطلاب للوصول إلى الهاوية.",
+    "options": [
+      "المعلم",
+      "الجيد",
+      "يشجع",
+      "الهاوية"
+    ],
+    "correctOptionIndex": 3
+  },
+  {
+    "id": "VERBAL26-ANAS-P005-Q006",
+    "canonicalId": "VERBAL26-ANAS-P005-Q006",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 5,
+    "sourceQuestionNumber": 6,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "إنسان بدون هدف كسفينة بدون دفة كلاهما سوف يبدأ به الأمر على الصخور.",
+    "options": [
+      "بدون",
+      "سفينة",
+      "كلاهما",
+      "يبدأ"
+    ],
+    "correctOptionIndex": 3
+  },
+  {
+    "id": "VERBAL26-ANAS-P005-Q007",
+    "canonicalId": "VERBAL26-ANAS-P005-Q007",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 5,
+    "sourceQuestionNumber": 7,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "ينتشر في المغرب العربي المذهب الفقهي المالكي دون غيره من الأديان.",
+    "options": [
+      "ينتشر",
+      "العربي",
+      "المالكي",
+      "الأديان"
+    ],
+    "correctOptionIndex": 3
+  },
+  {
+    "id": "VERBAL26-ANAS-P005-Q008",
+    "canonicalId": "VERBAL26-ANAS-P005-Q008",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 5,
+    "sourceQuestionNumber": 8,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "الحياة تثبت كالبندول بين الألم والأمل.",
+    "options": [
+      "الحياة",
+      "تثبت",
+      "كالبندول",
+      "الأمل"
+    ],
+    "correctOptionIndex": 1
+  },
+  {
+    "id": "VERBAL26-ANAS-P006-Q015",
+    "canonicalId": "VERBAL26-ANAS-P006-Q015",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 6,
+    "sourceQuestionNumber": 15,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "هجرة الأدمغة العربية إلى بلاد الغرب بسبب وجود الدعم المالي والتقني يجب أن توحى.",
+    "options": [
+      "هجرة",
+      "إلى",
+      "الدعم",
+      "توحى"
+    ],
+    "correctOptionIndex": 3
+  },
+  {
+    "id": "VERBAL26-ANAS-P006-Q016",
+    "canonicalId": "VERBAL26-ANAS-P006-Q016",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 6,
+    "sourceQuestionNumber": 16,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "الكراهية لا تكلف وإنما شيئًا تقوي القلب.",
+    "options": [
+      "الكراهية",
+      "تكلف",
+      "تقوي",
+      "القلب"
+    ],
+    "correctOptionIndex": 0
+  },
+  {
+    "id": "VERBAL26-ANAS-RC-BEAUTY-Q01",
+    "canonicalId": "VERBAL26-ANAS-RC-BEAUTY-Q01",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 40,
+    "sourceQuestionNumber": 1,
+    "mainSkillId": "skill_verbal_20",
+    "subSkillId": "sub_verbal_12_6",
+    "text": "في القطعة السابقة ذكرت كلمة «الجمال» أربع مرات، فأي الآتي صحيح؟",
+    "options": [
+      "الثانية والرابعة معنوية",
+      "الأولى والثانية معنوية",
+      "الثانية والثالثة حسية",
+      "الثالثة والرابعة حسية"
+    ],
+    "correctOptionIndex": 0,
+    "passageId": "VERBAL26-ANAS-PASSAGE-BEAUTY",
+    "passageTitle": "الجمال",
+    "passageText": "إن الجمال الذي نستمتع به حقًا هو: الجمال الذي ينبع بداخلك والذي يغنيك عن جمال الأشياء الخارجية وقبحها، فكلما اقترنت الأخلاق النبيلة داخل الإنسان زاد إحساسه بقيمة الجمال السامية."
+  },
+  {
+    "id": "VERBAL26-ANAS-RC-BEAUTY-Q02",
+    "canonicalId": "VERBAL26-ANAS-RC-BEAUTY-Q02",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 40,
+    "sourceQuestionNumber": 2,
+    "mainSkillId": "skill_verbal_21",
+    "subSkillId": "sub_verbal_13_1",
+    "text": "علاقة «زاد إحساسه بقيمة الجمال السامية» بـ«كلما اقترنت الأخلاق النبيلة»:",
+    "options": [
+      "سلبية",
+      "شرطية",
+      "تفسيرية",
+      "تقويمية"
+    ],
+    "correctOptionIndex": 1,
+    "passageId": "VERBAL26-ANAS-PASSAGE-BEAUTY",
+    "passageTitle": "الجمال",
+    "passageText": "إن الجمال الذي نستمتع به حقًا هو: الجمال الذي ينبع بداخلك والذي يغنيك عن جمال الأشياء الخارجية وقبحها، فكلما اقترنت الأخلاق النبيلة داخل الإنسان زاد إحساسه بقيمة الجمال السامية."
+  },
+  {
+    "id": "VERBAL26-ANAS-RC-BEAUTY-Q03",
+    "canonicalId": "VERBAL26-ANAS-RC-BEAUTY-Q03",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 40,
+    "sourceQuestionNumber": 3,
+    "mainSkillId": "skill_verbal_21",
+    "subSkillId": "sub_verbal_13_1",
+    "text": "في النص السابق:",
+    "options": [
+      "سبب واحد ونتيجتان",
+      "سبب واحد ونتيجة",
+      "سببان ونتيجة واحدة",
+      "سببان ونتيجتان"
+    ],
+    "correctOptionIndex": 1,
+    "passageId": "VERBAL26-ANAS-PASSAGE-BEAUTY",
+    "passageTitle": "الجمال",
+    "passageText": "إن الجمال الذي نستمتع به حقًا هو: الجمال الذي ينبع بداخلك والذي يغنيك عن جمال الأشياء الخارجية وقبحها، فكلما اقترنت الأخلاق النبيلة داخل الإنسان زاد إحساسه بقيمة الجمال السامية."
+  },
+  {
+    "id": "VERBAL26-ANAS-RC-BEAUTY-Q04",
+    "canonicalId": "VERBAL26-ANAS-RC-BEAUTY-Q04",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 40,
+    "sourceQuestionNumber": 4,
+    "mainSkillId": "skill_verbal_19",
+    "subSkillId": "sub_verbal_12_1",
+    "text": "نوع النص السابق:",
+    "options": [
+      "فلسفي",
+      "مقالي",
+      "بحث",
+      "تاريخي"
+    ],
+    "correctOptionIndex": 0,
+    "passageId": "VERBAL26-ANAS-PASSAGE-BEAUTY",
+    "passageTitle": "الجمال",
+    "passageText": "إن الجمال الذي نستمتع به حقًا هو: الجمال الذي ينبع بداخلك والذي يغنيك عن جمال الأشياء الخارجية وقبحها، فكلما اقترنت الأخلاق النبيلة داخل الإنسان زاد إحساسه بقيمة الجمال السامية."
+  },
+  {
+    "id": "VERBAL26-ANAS-COMP-P014-Q015",
+    "canonicalId": "VERBAL26-ANAS-COMP-P014-Q015",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 14,
+    "sourceQuestionNumber": 15,
+    "mainSkillId": "skill_verbal_11",
+    "subSkillId": "sub_verbal_08_1",
+    "text": "........ هي الشيء الوحيد الذي تستطيع أن تعطيه دون أن تملكه.",
+    "options": [
+      "الحب",
+      "السعادة",
+      "الحزن",
+      "الحيرة"
+    ],
+    "correctOptionIndex": 1
+  },
+  {
+    "id": "VERBAL26-ANAS-COMP-P014-Q016",
+    "canonicalId": "VERBAL26-ANAS-COMP-P014-Q016",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 14,
+    "sourceQuestionNumber": 16,
+    "mainSkillId": "skill_verbal_11",
+    "subSkillId": "sub_verbal_08_1",
+    "text": "حق ما كُتب بمسك أن يُختم بـ ........",
+    "options": [
+      "رضا",
+      "عنبر",
+      "حبر",
+      "مداد"
+    ],
+    "correctOptionIndex": 1
+  },
+  {
+    "id": "VERBAL26-ANAS-COMP-P014-Q017",
+    "canonicalId": "VERBAL26-ANAS-COMP-P014-Q017",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 14,
+    "sourceQuestionNumber": 17,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "..... الناس من يمر في حياتنا ويترك ..... أثرًا جميلًا.",
+    "options": [
+      "أحقر _ أمامه",
+      "أعذب _ خلفه",
+      "أسوأ _ وراءه",
+      "أعظم _ بجواره"
+    ],
+    "correctOptionIndex": 1
+  },
+  {
+    "id": "VERBAL26-ANAS-COMP-P014-Q018",
+    "canonicalId": "VERBAL26-ANAS-COMP-P014-Q018",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 14,
+    "sourceQuestionNumber": 18,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "الصداقة ..... كلما اشتد ...... ازدادت الحاجة إليها.",
+    "options": [
+      "كالعملة _ الفقر",
+      "كالمظلة _ المطر",
+      "كالحديقة _ الغبار",
+      "كالمدفأة _ الهواء"
+    ],
+    "correctOptionIndex": 1
+  },
+  {
+    "id": "VERBAL26-ANAS-P007-Q025",
+    "canonicalId": "VERBAL26-ANAS-P007-Q025",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 7,
+    "sourceQuestionNumber": 25,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "معرض الكتاب أتاح الكتاب المتجول للمكفوفين ومع ذلك مقته جميع المكفوفين.",
+    "options": [
+      "معرض",
+      "أتاح",
+      "المتجول",
+      "مقته"
+    ],
+    "correctOptionIndex": 3
+  },
+  {
+    "id": "VERBAL26-ANAS-P007-Q026",
+    "canonicalId": "VERBAL26-ANAS-P007-Q026",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 7,
+    "sourceQuestionNumber": 26,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "إذا شعر المخطئ بشناعة خطئه، اقتنع بصاحبه للتصحيح وصار يعرف أكثر وقناعة أقل.",
+    "options": [
+      "شعر",
+      "بشناعة",
+      "للتصحيح",
+      "أقل"
+    ],
+    "correctOptionIndex": 3
+  },
+  {
+    "id": "VERBAL26-ANAS-P008-Q032",
+    "canonicalId": "VERBAL26-ANAS-P008-Q032",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 8,
+    "sourceQuestionNumber": 32,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "أفضل ما يثبت حسن أدبك تحمّلك حسن أدب غيرك.",
+    "options": [
+      "أفضل",
+      "أدبك",
+      "حسن",
+      "غيرك"
+    ],
+    "correctOptionIndex": 2
+  },
+  {
+    "id": "VERBAL26-ANAS-P008-Q034",
+    "canonicalId": "VERBAL26-ANAS-P008-Q034",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 8,
+    "sourceQuestionNumber": 34,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "تدني الشبع أفسد للبدن من إكثار الأغذية التي تعود عليه بالتخمة.",
+    "options": [
+      "أفسد",
+      "إكثار",
+      "الأغذية",
+      "بالتخمة"
+    ],
+    "correctOptionIndex": 3
+  },
+  {
+    "id": "VERBAL26-ANAS-COMP-P013-Q010",
+    "canonicalId": "VERBAL26-ANAS-COMP-P013-Q010",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 13,
+    "sourceQuestionNumber": 10,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "معظم السائقين يخطئون و..... أنوار السيارات، ويظنون أن أنوار الطريق تكفي لـ..... السيارات.",
+    "options": [
+      "يطفئون _ رؤية",
+      "يشعلون _ رؤية",
+      "يضيئون _ تفادي",
+      "يبصرون _ ملاحقة"
+    ],
+    "correctOptionIndex": 0
+  },
+  {
+    "id": "VERBAL26-ANAS-COMP-P013-Q011",
+    "canonicalId": "VERBAL26-ANAS-COMP-P013-Q011",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 13,
+    "sourceQuestionNumber": 11,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "أنا أحب أن أعيش لو فقدت ضوء عيني، فـ..... أحلامي، و....... أحلام الآخرين.",
+    "options": [
+      "أهندس _ أبني",
+      "أحقق _ أنفذ",
+      "أهدم _ أبني",
+      "أنفذ _ أهدم"
+    ],
+    "correctOptionIndex": 1
+  },
+  {
+    "id": "VERBAL26-ANAS-COMP-P013-Q012",
+    "canonicalId": "VERBAL26-ANAS-COMP-P013-Q012",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 13,
+    "sourceQuestionNumber": 12,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "أصدق ما في الوجود ..... الأطفال؛ لأنها لا تعرف المكر والخديعة، ولا .... قلوبهم الآثام والأحقاد.",
+    "options": [
+      "ثقة _ تحمل",
+      "براءة _ تحمل",
+      "محبة _ تدرك",
+      "حيوية _ تعرف"
+    ],
+    "correctOptionIndex": 1
+  },
+  {
+    "id": "VERBAL26-ANAS-COMP-P013-Q013",
+    "canonicalId": "VERBAL26-ANAS-COMP-P013-Q013",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 13,
+    "sourceQuestionNumber": 13,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "الزراعة تحقق ..... ونمو الإنسان والحيوان، و..... الصناعات الغذائية.",
+    "options": [
+      "الاكتفاء _ تطوير",
+      "الازدهار _ تبادل",
+      "الأمن _ إنتاج",
+      "الرخاء _ ازدهار"
+    ],
+    "correctOptionIndex": 3
+  },
+  {
+    "id": "VERBAL26-ANAS-COMP-P014-Q020",
+    "canonicalId": "VERBAL26-ANAS-COMP-P014-Q020",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 14,
+    "sourceQuestionNumber": 20,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "إذا لم نصل إلى .......... الشافي، فإننا نكرر ......... بلغة أخرى.",
+    "options": [
+      "العظام _ الطلب",
+      "الدواء _ الوصفة",
+      "الجواب _ السؤال",
+      "السؤال _ الجواب"
+    ],
+    "correctOptionIndex": 2
+  },
+  {
+    "id": "VERBAL26-ANAS-COMP-P014-Q021",
+    "canonicalId": "VERBAL26-ANAS-COMP-P014-Q021",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 14,
+    "sourceQuestionNumber": 21,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "الحكيم هو الذي ....... بين ما يعلمه وما ......",
+    "options": [
+      "يفرق _ يتقنه",
+      "يميز _ يجهله",
+      "يقارن _ يتقنه",
+      "يعرف _ يحسنه"
+    ],
+    "correctOptionIndex": 1
+  },
+  {
+    "id": "VERBAL26-ANAS-COMP-P014-Q022",
+    "canonicalId": "VERBAL26-ANAS-COMP-P014-Q022",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 14,
+    "sourceQuestionNumber": 22,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "من دخل ................. بلا زاد كمن ركب البحر بلا ........",
+    "options": [
+      "المدينة _ مجداف",
+      "منزل _ قارب",
+      "القبر _ سفينة",
+      "البستان _ قارب"
+    ],
+    "correctOptionIndex": 2
+  },
+  {
+    "id": "VERBAL26-ANAS-ODD-P032-Q001",
+    "canonicalId": "VERBAL26-ANAS-ODD-P032-Q001",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 32,
+    "sourceQuestionNumber": 1,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "الآزفة",
+      "الحاقة",
+      "القارعة",
+      "العاديات"
+    ],
+    "correctOptionIndex": 3
+  },
+  {
+    "id": "VERBAL26-ANAS-ODD-P032-Q002",
+    "canonicalId": "VERBAL26-ANAS-ODD-P032-Q002",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 32,
+    "sourceQuestionNumber": 2,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "قرأ",
+      "كتب",
+      "ذاكر",
+      "ينام"
+    ],
+    "correctOptionIndex": 3
+  },
+  {
+    "id": "VERBAL26-ANAS-ODD-P032-Q003",
+    "canonicalId": "VERBAL26-ANAS-ODD-P032-Q003",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 32,
+    "sourceQuestionNumber": 3,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "خالد",
+      "مهند",
+      "سعد",
+      "ماجد"
+    ],
+    "correctOptionIndex": 1
+  },
+  {
+    "id": "VERBAL26-ANAS-ODD-P032-Q004",
+    "canonicalId": "VERBAL26-ANAS-ODD-P032-Q004",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 32,
+    "sourceQuestionNumber": 4,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "فاعل",
+      "مضاف إليه",
+      "مبتدأ",
+      "نائب فاعل"
+    ],
+    "correctOptionIndex": 1
+  },
+  {
+    "id": "VERBAL26-ANAS-ODD-P032-Q005",
+    "canonicalId": "VERBAL26-ANAS-ODD-P032-Q005",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 32,
+    "sourceQuestionNumber": 5,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_5",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "مشرط",
+      "مبضع",
+      "طبيب",
+      "سماعة"
+    ],
+    "correctOptionIndex": 2
+  },
+  {
+    "id": "VERBAL26-ANAS-ODD-P032-Q006",
+    "canonicalId": "VERBAL26-ANAS-ODD-P032-Q006",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 32,
+    "sourceQuestionNumber": 6,
+    "mainSkillId": "skill_verbal_14",
+    "subSkillId": "sub_verbal_09_4",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "سور",
+      "جدار",
+      "شباك",
+      "حائط"
+    ],
+    "correctOptionIndex": 2
+  },
+  {
+    "id": "VERBAL26-ANAS-ODD-P032-Q007",
+    "canonicalId": "VERBAL26-ANAS-ODD-P032-Q007",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 32,
+    "sourceQuestionNumber": 7,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_1",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "بئر",
+      "جب",
+      "قليب",
+      "كهف"
+    ],
+    "correctOptionIndex": 3
+  }
+]

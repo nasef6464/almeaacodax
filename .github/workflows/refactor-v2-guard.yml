@@ -117,6 +117,9 @@ jobs:
       - name: Modern skill taxonomy hierarchy contract
         run: node scripts/smoke-modern-skill-taxonomy-contract.mjs
 
+      - name: VERBAL26 consolidated closure contract
+        run: npm run smoke:verbal26
+
       - name: Adaptive data integrity contract
         run: node scripts/smoke-adaptive-data-integrity-contract.mjs
 

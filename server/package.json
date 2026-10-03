@@ -89,6 +89,8 @@
   },
   "overrides": {
     "qs": "6.16.0",
-    "ip-address": "10.7.2"
+    "ip-address": "10.7.2",
+    "brace-expansion": "2.1.7",
+    "engine.io": "6.6.10"
   }
 }

@@ -4,6 +4,8 @@
 
 **Documentation map:** use `docs/REFERENCE_CENTER/README_AR.md` and `docs/REFERENCE_CENTER/REFERENCE_REGISTRY.json` to find the active domain reference. Do not infer current state from an old plan name.
 
+**Owner execution skill (mandatory for every ALMEAA task):** read and apply `.codex/skills/almeaa-owner-execution/SKILL.md` before any implementation, continuation, recovery, migration, testing, content-bank work, or closure. This skill defines checkpoint recovery, reuse-before-rebuild, heavy-batch execution, root-cause handling, data safety, exact-count reporting, and production closure evidence.
+
 For any Product Goal, Product Gate, commercial MVP, vertical slice, module completion, continuation, or closure, read and apply `.codex/skills/almeaa-goal-delivery/SKILL.md` before task work.
 
 Use Git HEAD + Master Control as execution truth. Before structural/domain work also read `docs/architecture/CURRENT_DIRECTORY_AND_MODULE_MAP.md` and `docs/architecture/DEEP_MODULARITY_AND_RESOURCE_AUDIT.md`. `FINAL_MASTER_PLAN_V3_AR.md` remains a product/architecture reference, not the active execution sequence.

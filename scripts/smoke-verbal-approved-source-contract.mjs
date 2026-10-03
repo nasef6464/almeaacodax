@@ -1,0 +1,83 @@
+/**
+ * VERBAL26 approved-source contract.
+ *
+ * This gate is intentionally read-only. It validates a prepared canonical bank before
+ * any production migration can be considered.
+ */
+import fs from "node:fs";
+import path from "node:path";
+
+const bankPath = process.argv[2] || path.join(process.cwd(), "server", "data", "verbal_approved_bank_v2.json");
+const APPROVED = new Set(["abdelbaset", "anas"]);
+const EXPECTED_MAIN = new Set(Array.from({length: 22}, (_, i) => `skill_verbal_${String(i + 1).padStart(2, "0")}`));
+
+if (!fs.existsSync(bankPath)) {
+  throw new Error(`Approved bank not found: ${bankPath}`);
+}
+
+const bank = JSON.parse(fs.readFileSync(bankPath, "utf8"));
+const ledgerPath = path.join(process.cwd(), "server", "data", "verbal26_source_ledger.json");
+const ledger = fs.existsSync(ledgerPath) ? JSON.parse(fs.readFileSync(ledgerPath, "utf8")) : {};
+const migrationReady = ledger?.migrationReady === true;
+if (!Array.isArray(bank) || bank.length === 0) throw new Error("Approved verbal bank is empty");
+
+const ids = new Set();
+const fingerprints = new Set();
+const failures = [];
+const passages = new Map();
+
+const norm = (v) => String(v ?? "").normalize("NFKC").replace(/[\u064B-\u065F\u0670]/g, "").replace(/\s+/g, " ").trim().toLowerCase();
+
+for (const [i, q] of bank.entries()) {
+  const at = `row ${i + 1} (${q?.id || "missing-id"})`;
+  if (!q?.id || !q?.canonicalId) failures.push(`${at}: missing id/canonicalId`);
+  if (q?.id && ids.has(q.id)) failures.push(`${at}: duplicate id`);
+  if (q?.id) ids.add(q.id);
+  if (!APPROVED.has(q?.sourceBook)) failures.push(`${at}: unapproved sourceBook=${q?.sourceBook}`);
+  if (!Number.isInteger(q?.sourcePage) || q.sourcePage < 1) failures.push(`${at}: invalid sourcePage`);
+  if (q?.sourceQuestionNumber === undefined || q.sourceQuestionNumber === null || String(q.sourceQuestionNumber).trim() === "") failures.push(`${at}: missing sourceQuestionNumber`);
+  if (!q?.mainSkillId || !q?.subSkillId) failures.push(`${at}: missing 22/76 classification`);
+  if (!Array.isArray(q?.options) || q.options.length !== 4) failures.push(`${at}: expected exactly four options`);
+  if (!Number.isInteger(q?.correctOptionIndex) || q.correctOptionIndex < 0 || q.correctOptionIndex > 3) failures.push(`${at}: invalid answer key`);
+  const passageId = String(q?.passageId || "").trim();
+  const passageText = String(q?.passageText || "").trim();
+  if (passageId || passageText) {
+    if (!passageId || !passageText) failures.push(`${at}: passageId and passageText must be provided together`);
+    if (passageId && passageText) {
+      const prior = passages.get(passageId);
+      if (prior && norm(prior) !== norm(passageText)) failures.push(`${at}: passageId reused with divergent passageText`);
+      passages.set(passageId, passageText);
+    }
+  }
+  const fp = [norm(q?.text), ...(q?.options || []).map(norm)].join("|");
+  if (fp && fingerprints.has(fp)) failures.push(`${at}: exact normalized duplicate`);
+  if (fp) fingerprints.add(fp);
+}
+
+if (failures.length) {
+  console.error(failures.join("\n"));
+  throw new Error(`VERBAL26 source contract failed with ${failures.length} issue(s)`);
+}
+
+const bySource = bank.reduce((m, q) => ((m[q.sourceBook] = (m[q.sourceBook] || 0) + 1), m), {});
+const byMain = bank.reduce((m, q) => ((m[q.mainSkillId] = (m[q.mainSkillId] || 0) + 1), m), {});
+const bySub = bank.reduce((m, q) => ((m[q.subSkillId] = (m[q.subSkillId] || 0) + 1), m), {});
+const presentMain = new Set(Object.keys(byMain));
+const missingMain = [...EXPECTED_MAIN].filter((id) => !presentMain.has(id));
+const subSkillCount = Object.keys(bySub).length;
+if (migrationReady && (missingMain.length || subSkillCount !== 76)) {
+  throw new Error(
+    `VERBAL26 approved bank is marked migrationReady but coverage is incomplete: mainSkills=${presentMain.size}/22, ` +
+    `subSkills=${subSkillCount}/76, missingMain=${missingMain.join(", ") || "none"}`,
+  );
+}
+console.log(JSON.stringify({
+  status:"PASS",
+  migrationReady,
+  total:bank.length,
+  bySource,
+  mainSkills:presentMain.size,
+  subSkills:subSkillCount,
+  missingMain,
+  byMain
+}, null, 2));

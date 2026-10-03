@@ -45,6 +45,8 @@ export const questionBaseSchema = z.object({
   id: z.string().optional(),
   questionCode: z.string().trim().min(3).max(120).optional(),
   text: z.string().default(""),
+  passage: z.string().max(50000).optional(),
+  passageId: z.string().trim().min(3).max(160).nullable().optional(),
   options: z.array(z.string()).default([]),
   correctOptionIndex: z.number().default(0),
   explanation: z.string().optional(),
