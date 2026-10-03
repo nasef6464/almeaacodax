@@ -263,68 +263,64 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
   const handleSaveTopic = () => {
     if (!editingTopic?.title) return;
     const subject = subjects.find(item => item.id === (editingTopic.subjectId || subjectId));
-    const selectedSubSkill = editingTopic.skillId
-      ? foundationSubSkillOptions.find((option) => option.id === editingTopic.skillId)
-      : undefined;
+    const selectedSkillIds = getTopicSkillIds(editingTopic);
+    const selectedSubSkills = selectedSkillIds
+      .map((skillId) => foundationSubSkillOptions.find((option) => option.id === skillId))
+      .filter(Boolean) as typeof foundationSubSkillOptions;
+    const primarySubSkill = selectedSubSkills[0];
 
-    if (editingTopic.parentId && !editingTopic.skillId) {
-      window.alert('يجب ربط كل موضوع تأسيسي فرعي بمهارة فرعية قبل الحفظ.');
+    if (editingTopic.parentId && selectedSkillIds.length === 0) {
+      window.alert('يجب ربط كل موضوع تأسيسي فرعي بمهارة فرعية واحدة على الأقل قبل الحفظ.');
       return;
     }
 
-    if (editingTopic.parentId && !selectedSubSkill) {
-      window.alert('المهارة الفرعية المختارة غير صالحة لهذا المسار أو المادة.');
+    if (editingTopic.parentId && selectedSubSkills.length !== selectedSkillIds.length) {
+      window.alert('إحدى المهارات الفرعية المختارة غير صالحة لهذا المسار أو المادة.');
       return;
     }
 
     const parentTopic = editingTopic.parentId
       ? subjectTopics.find((topic) => topic.id === editingTopic.parentId)
       : undefined;
+
     if (
       editingTopic.parentId &&
-      selectedSubSkill &&
       parentTopic?.skillId &&
-      selectedSubSkill.parentSkillId !== parentTopic.skillId
+      selectedSubSkills.some((selected) => selected.parentSkillId !== parentTopic.skillId)
     ) {
-      window.alert('المهارة الفرعية المختارة لا تتبع المهارة الرئيسية لهذا الموضوع.');
+      window.alert('كل المهارات المختارة يجب أن تتبع المهارة الرئيسية لهذا الموضوع.');
       return;
     }
 
-    if (editingTopic.parentId && editingTopic.skillId) {
-      const duplicateTopic = subjectTopics.find(
-        (topic) =>
-          topic.id !== editingTopic.id &&
-          topic.parentId &&
-          topic.skillId === editingTopic.skillId,
-      );
-      if (duplicateTopic) {
-        window.alert(`المهارة الفرعية مرتبطة بالفعل بالموضوع: ${duplicateTopic.title}`);
-        return;
-      }
-    }
+    const normalizedSkillIds = editingTopic.parentId ? selectedSkillIds : (editingTopic.skillIds || []);
+    const normalizedSkillId = editingTopic.parentId
+      ? normalizedSkillIds[0] || null
+      : editingTopic.skillId || null;
 
     if (editingTopic.id) {
       const previousTopic = subjectTopics.find((topic) => topic.id === editingTopic.id);
       const updateData = {
         ...editingTopic,
-        pathId: selectedSubSkill?.pathId || editingTopic.pathId || subject?.pathId,
-        subjectId: selectedSubSkill?.subjectId || editingTopic.subjectId || subjectId,
-        sectionId: selectedSubSkill?.sectionId || editingTopic.sectionId,
-        skillId: editingTopic.parentId ? editingTopic.skillId || null : editingTopic.skillId || null,
+        pathId: primarySubSkill?.pathId || editingTopic.pathId || subject?.pathId,
+        subjectId: primarySubSkill?.subjectId || editingTopic.subjectId || subjectId,
+        sectionId: primarySubSkill?.sectionId || editingTopic.sectionId,
+        skillId: normalizedSkillId,
+        skillIds: normalizedSkillIds,
       };
       if (updateData.parentId === undefined) {
         updateData.parentId = null;
       }
       updateTopic(editingTopic.id, updateData);
-      syncAttachedContentToTopicSkill(updateData as Topic, previousTopic?.skillId);
+      syncAttachedContentToTopicSkill(updateData as Topic, previousTopic ? getTopicSkillIds(previousTopic) : []);
     } else {
       const newTopic: Topic = {
         ...(editingTopic as Topic),
-        pathId: selectedSubSkill?.pathId || editingTopic.pathId || subject?.pathId,
-        subjectId: selectedSubSkill?.subjectId || editingTopic.subjectId || subjectId,
-        sectionId: selectedSubSkill?.sectionId || editingTopic.sectionId,
-        skillId: editingTopic.parentId ? editingTopic.skillId || null : editingTopic.skillId || null,
-        id: `topic_${Date.now()}`
+        pathId: primarySubSkill?.pathId || editingTopic.pathId || subject?.pathId,
+        subjectId: primarySubSkill?.subjectId || editingTopic.subjectId || subjectId,
+        sectionId: primarySubSkill?.sectionId || editingTopic.sectionId,
+        skillId: normalizedSkillId,
+        skillIds: normalizedSkillIds,
+        id: `topic_${Date.now()}`,
       };
       if (newTopic.parentId === undefined) {
         newTopic.parentId = null;
