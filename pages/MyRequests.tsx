@@ -47,7 +47,14 @@ export const MyRequests: React.FC = () => {
   const [paymentRequests, setPaymentRequests] = useState<PaymentRequest[]>([]);
   const [serverActivities, setServerActivities] = useState<Activity[]>([]);
   const [updatingRequestId, setUpdatingRequestId] = useState<string>('');
+  const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   const isRegisteredUser = Boolean(user?.id && user.id !== 'guest' && user.email);
+
+  useEffect(() => {
+    if (!feedback) return;
+    const timer = setTimeout(() => setFeedback(null), 5000);
+    return () => clearTimeout(timer);
+  }, [feedback]);
 
   const loadRequests = async () => {
     if (!isRegisteredUser) {
@@ -138,9 +145,12 @@ export const MyRequests: React.FC = () => {
         notes,
       });
       await loadRequests();
-      window.alert('تم تحديث الطلب بنجاح.');
+      setFeedback({ type: 'success', message: 'تم تحديث الطلب بنجاح.' });
     } catch (error) {
-      window.alert(error instanceof Error ? error.message : 'تعذر تحديث الطلب الآن.');
+      setFeedback({
+        type: 'error',
+        message: error instanceof Error ? error.message : 'تعذر تحديث الطلب الآن.',
+      });
     } finally {
       setUpdatingRequestId('');
     }
@@ -279,6 +289,35 @@ export const MyRequests: React.FC = () => {
         <h1 className="text-xl sm:text-2xl font-bold text-gray-800 leading-tight">طلباتي</h1>
         <p className="text-sm text-gray-500">سجل الاشتراكات والدورات والباقات المفعلة وحجوزات الجلسات على حسابك</p>
       </header>
+
+      {feedback && (
+        <div
+          role="status"
+          aria-live="polite"
+          className={`flex items-center justify-between p-4 rounded-xl border text-sm font-bold transition-all ${
+            feedback.type === 'success'
+              ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
+              : 'bg-rose-50 border-rose-200 text-rose-800'
+          }`}
+        >
+          <div className="flex items-center gap-2">
+            {feedback.type === 'success' ? (
+              <CheckCircle size={18} className="shrink-0 text-emerald-600" />
+            ) : (
+              <XCircle size={18} className="shrink-0 text-rose-600" />
+            )}
+            <span>{feedback.message}</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => setFeedback(null)}
+            className="text-gray-400 hover:text-gray-700 text-sm font-bold px-1"
+            aria-label="إغلاق التنبيه"
+          >
+            ✕
+          </button>
+        </div>
+      )}
 
       {rows.length === 0 ? (
         <Card className="p-8 sm:p-12 text-center text-gray-500">

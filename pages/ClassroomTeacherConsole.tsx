@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { Bookmark, Filter, Presentation, Zap } from 'lucide-react';
+import { AlertCircle, Bookmark, CheckCircle2, Filter, Presentation, Zap } from 'lucide-react';
 import { api } from '../services/api';
 import { useClassroomRealtime } from '../hooks/useClassroomRealtime';
 import type { TeacherWorkspaceData } from '../components/teacher/TeacherWorkspaceContext';
@@ -280,7 +280,26 @@ export const ClassroomTeacherConsole: React.FC = () => {
             </button>
           </>
         )}
-        <p className="mt-4 text-sm text-slate-600">{message}</p>
+        {message && (
+          <div
+            role="status"
+            aria-live="polite"
+            className={`mt-4 flex items-center gap-2.5 rounded-xl border p-3.5 text-xs sm:text-sm font-bold transition-all ${
+              message.includes('تعذر') || message.includes('فشل') || message.includes('خطأ')
+                ? 'border-rose-200 bg-rose-50 text-rose-800'
+                : message.includes('تم') || message.includes('جاهز')
+                  ? 'border-emerald-200 bg-emerald-50 text-emerald-800'
+                  : 'border-indigo-200 bg-indigo-50 text-indigo-800'
+            }`}
+          >
+            {message.includes('تعذر') || message.includes('فشل') || message.includes('خطأ') ? (
+              <AlertCircle size={18} className="shrink-0 text-rose-600" />
+            ) : (
+              <CheckCircle2 size={18} className="shrink-0 text-emerald-600" />
+            )}
+            <span>{message}</span>
+          </div>
+        )}
       </main>
     );
   }
