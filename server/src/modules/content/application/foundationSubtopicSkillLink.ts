@@ -208,7 +208,7 @@ export async function syncFoundationTopicResourcesToSkill(
   const libraryItemIds = normalizeIds(topic.libraryItemIds);
 
   const syncCollection = async (
-    model: typeof LessonModel | typeof QuizModel | typeof LibraryItemModel,
+    model: any,
     query: Record<string, unknown>,
   ) => {
     if (removed.length > 0) {
