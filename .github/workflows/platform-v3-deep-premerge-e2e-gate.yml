@@ -420,12 +420,24 @@ jobs:
     timeout-minutes: 90
     env:
       SMOKE_ADMIN_TOKEN: ${{ secrets.SMOKE_ADMIN_TOKEN }}
+      SMOKE_ADMIN_EMAIL: ${{ secrets.SMOKE_ADMIN_EMAIL || secrets.ROLE_ADMIN_EMAIL }}
+      SMOKE_ADMIN_PASSWORD: ${{ secrets.SMOKE_ADMIN_PASSWORD || secrets.ROLE_ADMIN_PASSWORD }}
+      SMOKE_API_BASE_URL: https://almeaacodax.vercel.app/api
     steps:
       - name: Checkout exact COL26 head
         uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 1
+      - name: Resolve fresh admin token without logging it
+        shell: bash
+        run: |
+          set -euo pipefail
+          resolved="$(node scripts/resolve-smoke-admin-token.mjs)"
+          token="$(printf '%s' "$resolved" | node -e 'let s="";process.stdin.on("data",d=>s+=d);process.stdin.on("end",()=>{const j=JSON.parse(s);if(!j.token)process.exit(1);process.stdout.write(j.token)})')"
+          echo "::add-mask::$token"
+          printf 'SMOKE_ADMIN_TOKEN=%s\n' "$token" >> "$GITHUB_ENV"
+          echo "fresh_admin_auth=PASS"
       - name: Run guarded COL26 canary then full Draft import
         run: bash scripts/ci-col26-v7-production-import.sh
       - name: Upload non-secret COL26 reports
