@@ -41,10 +41,15 @@ export const ClassroomStudentLive: React.FC = () => {
   const publishedSignatureRef = useRef('');
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setTipIndex((prev) => (prev + 1) % WAITING_TIPS.length);
-    }, 4500);
-    return () => clearInterval(interval);
+    let timer: ReturnType<typeof setTimeout>;
+    const cycleTips = () => {
+      timer = setTimeout(() => {
+        setTipIndex((prev) => (prev + 1) % WAITING_TIPS.length);
+        cycleTips();
+      }, 4500);
+    };
+    cycleTips();
+    return () => clearTimeout(timer);
   }, []);
 
   const clearLocalClassroomState = useCallback(() => {

@@ -2,6 +2,7 @@ import React from 'react';
 
 export type AiCapabilityId =
   | 'student_chat'
+  | 'vision_chat'
   | 'question_tutor'
   | 'admin_copilot'
   | 'study_plan'
@@ -18,6 +19,7 @@ export type AiCapabilityProfile = {
 
 const capabilityLabel: Record<AiCapabilityId, string> = {
   student_chat: 'مساعد الطالب',
+  vision_chat: 'رؤية الصور للطالب',
   question_tutor: 'مساعد السؤال',
   admin_copilot: 'مساعد المدير',
   study_plan: 'خطة الدراسة',

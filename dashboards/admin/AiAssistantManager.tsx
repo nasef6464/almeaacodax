@@ -541,8 +541,8 @@ export const AiAssistantManager: React.FC = () => {
             <div className="flex flex-wrap gap-2 border-b border-gray-200 pb-2">
                 {[
                     { id: 'chat' as const, label: 'المساعد', icon: <MessageCircle size={16} /> },
-                    { id: 'control' as const, label: 'المفاتيح', icon: <Settings size={16} /> },
-                    { id: 'usage' as const, label: 'الاستخدام', icon: <BarChart2 size={16} /> },
+                    { id: 'control' as const, label: 'المفاتيح والحصص والتكلفة', icon: <Settings size={16} /> },
+                    { id: 'usage' as const, label: 'الاستخدام والتنبيهات', icon: <BarChart2 size={16} /> },
                     { id: 'readiness' as const, label: 'الجاهزية', icon: <Target size={16} /> },
                     ...(showAdvanced ? [
                         {
