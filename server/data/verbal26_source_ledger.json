@@ -2554,7 +2554,7 @@
   ],
   "metrics": {
     "sourceKeyVerifiedRecords": 112,
-    "approvedBankRecords": 129,
+    "approvedBankRecords": 246,
     "note": "Ledger records are not approved-bank records until visual text/options and taxonomy QA pass.",
     "sourceConflictRecords": 23,
     "anasObservedQuestions": 135,
@@ -2574,7 +2574,35 @@
       "7": 16,
       "8": 15,
       "10": 22
-    }
+    },
+    "approvedBySource": {
+      "anas": 109,
+      "abdelbaset": 137
+    },
+    "approvedByMainSkill": {
+      "skill_verbal_17": 33,
+      "skill_verbal_12": 17,
+      "skill_verbal_10": 1,
+      "skill_verbal_01": 28,
+      "skill_verbal_04": 30,
+      "skill_verbal_08": 3,
+      "skill_verbal_03": 33,
+      "skill_verbal_06": 2,
+      "skill_verbal_09": 5,
+      "skill_verbal_05": 29,
+      "skill_verbal_07": 1,
+      "skill_verbal_02": 31,
+      "skill_verbal_20": 8,
+      "skill_verbal_22": 1,
+      "skill_verbal_21": 8,
+      "skill_verbal_19": 4,
+      "skill_verbal_18": 2,
+      "skill_verbal_11": 3,
+      "skill_verbal_13": 6,
+      "skill_verbal_14": 1
+    },
+    "approvedSubSkillCoverage": 36,
+    "approvedMainSkillCoverage": 20
   },
   "amerBatches": [
     {
@@ -2717,5 +2745,6 @@
     }
   ],
   "migrationReady": false,
-  "migrationReadinessReason": "Canonical approved bank is still under source QA/recovery; production import/migration must remain blocked until this flag is true and 22/76 coverage is complete."
+  "migrationReadinessReason": "Canonical approved bank is still under source QA/recovery; production import/migration must remain blocked until this flag is true and 22/76 coverage is complete.",
+  "progressNote": "Canonical bank is growing from the two approved PDFs only. Duplicate contract cleaned. Migration remains explicitly blocked until migrationReady=true and 22/76 coverage is complete."
 }
