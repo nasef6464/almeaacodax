@@ -12,4 +12,5 @@ export COL26_OUTPUT_FILE=col26-run-report.json
 export COL26_MODE=full
 export PILOT_ALLOW_EXTERNAL_RUN=YES
 export PILOT_WRITE_AUTHORIZATION=YES
+export PILOT_PRESIGN_EXPIRES_IN=3600
 node run-col26-v7-import.mjs
