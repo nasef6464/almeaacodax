@@ -9,5 +9,5 @@ export COL26_IMAGE_DIR=images
 export COL26_LEDGER_FILE=COL26_master_ledger_READY_UPLOAD_V7_CANONICAL.csv
 export COL26_CONTRACT_FILE=COL26_IMPORT_CONTRACT_GATE_V7.json
 export COL26_OUTPUT_FILE=col26-run-report.json
-export COL26_MODE=canary
+export COL26_MODE=prepare
 node run-col26-v7-import.mjs

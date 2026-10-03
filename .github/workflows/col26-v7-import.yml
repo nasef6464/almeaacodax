@@ -9,6 +9,9 @@ jobs:
   canary:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    env:
+      PILOT_API_BASE: https://almeaacodax.vercel.app/api
+      PILOT_ADMIN_TOKEN: ${{ secrets.SMOKE_ADMIN_TOKEN }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
