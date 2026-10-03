@@ -1,13 +1,4 @@
-import type {
-    CategorySection,
-    CategorySubject,
-    Lesson,
-    LibraryItem,
-    Question,
-    Quiz,
-    Skill,
-    Topic,
-} from '../../types';
+import type { CategorySection, CategorySubject, Lesson, LibraryItem, Question, Quiz, Skill, Topic } from '../../types';
 import { matchesEntityId } from '../../utils/entityIds';
 import { resolveFoundationSkillTarget } from '../../utils/foundationSkillTarget';
 import { buildFoundationActionLink } from '../../utils/skillActionLinks';
@@ -149,13 +140,17 @@ export const buildSkillRecommendation = (
     const mainSkillTrainingLink = target.kind === 'main' && recommendedQuiz?.id
         ? `/quiz/${encodeURIComponent(String(recommendedQuiz.id))}?source=training`
         : undefined;
+    const subskillFallbackQuiz = recommendedQuiz?.id
+        ? `/quiz/${recommendedQuiz.id}`
+        : `/quiz?mode=self&autostart=1&skillIds=${encodeURIComponent(resolvedSkillId)}`;
     const subskillLinks = {
-        quizLink: foundationTrainingLink || (recommendedQuiz?.id ? `/quiz/${recommendedQuiz.id}` : undefined),
+        quizLink: foundationTrainingLink || subskillFallbackQuiz,
     };
 
     return {
         lessonTitle: displayText(recommendedLesson?.title),
         lessonLink: recommendedTopic ? lessonLink : undefined,
+        lessonVideoUrl: recommendedLesson?.videoUrl,
         lessonTopicTitle: displayText(recommendedTopic?.title || target.skillName),
         foundationTopicLink: recommendedTopic ? lessonLink : undefined,
         quizTitle: displayText(recommendedQuiz?.title || recommendedTopic?.title),
@@ -163,7 +158,7 @@ export const buildSkillRecommendation = (
             ? foundationTrainingLink
             : target.kind === 'main'
                 ? mainSkillTrainingLink || (recommendedQuiz?.id ? `/quiz/${recommendedQuiz.id}?source=training` : undefined)
-                : undefined,
+                : subskillFallbackQuiz,
         supportLink: recommendedTopic ? foundationSupportLink : undefined,
         resourceTitle: displayText(recommendedResource?.title),
         resourceUrl: recommendedResource?.url,
