@@ -1488,11 +1488,11 @@
     "correctOptionIndex": 3
   },
   {
-    "id": "VERBAL26-ANAS-COMP-P013-Q010",
-    "canonicalId": "VERBAL26-ANAS-COMP-P013-Q010",
+    "id": "VERBAL26-ANAS-COMP-P014-Q010",
+    "canonicalId": "VERBAL26-ANAS-COMP-P014-Q010",
     "sourceBook": "anas",
     "sourceTitle": "تأسيس لفظي انس.pdf",
-    "sourcePage": 13,
+    "sourcePage": 14,
     "sourceQuestionNumber": 10,
     "mainSkillId": "skill_verbal_12",
     "subSkillId": "sub_verbal_08_2",
@@ -1506,11 +1506,11 @@
     "correctOptionIndex": 0
   },
   {
-    "id": "VERBAL26-ANAS-COMP-P013-Q011",
-    "canonicalId": "VERBAL26-ANAS-COMP-P013-Q011",
+    "id": "VERBAL26-ANAS-COMP-P014-Q011",
+    "canonicalId": "VERBAL26-ANAS-COMP-P014-Q011",
     "sourceBook": "anas",
     "sourceTitle": "تأسيس لفظي انس.pdf",
-    "sourcePage": 13,
+    "sourcePage": 14,
     "sourceQuestionNumber": 11,
     "mainSkillId": "skill_verbal_12",
     "subSkillId": "sub_verbal_08_2",
@@ -1524,11 +1524,11 @@
     "correctOptionIndex": 1
   },
   {
-    "id": "VERBAL26-ANAS-COMP-P013-Q012",
-    "canonicalId": "VERBAL26-ANAS-COMP-P013-Q012",
+    "id": "VERBAL26-ANAS-COMP-P014-Q012",
+    "canonicalId": "VERBAL26-ANAS-COMP-P014-Q012",
     "sourceBook": "anas",
     "sourceTitle": "تأسيس لفظي انس.pdf",
-    "sourcePage": 13,
+    "sourcePage": 14,
     "sourceQuestionNumber": 12,
     "mainSkillId": "skill_verbal_12",
     "subSkillId": "sub_verbal_08_2",
@@ -1542,11 +1542,11 @@
     "correctOptionIndex": 1
   },
   {
-    "id": "VERBAL26-ANAS-COMP-P013-Q013",
-    "canonicalId": "VERBAL26-ANAS-COMP-P013-Q013",
+    "id": "VERBAL26-ANAS-COMP-P014-Q013",
+    "canonicalId": "VERBAL26-ANAS-COMP-P014-Q013",
     "sourceBook": "anas",
     "sourceTitle": "تأسيس لفظي انس.pdf",
-    "sourcePage": 13,
+    "sourcePage": 14,
     "sourceQuestionNumber": 13,
     "mainSkillId": "skill_verbal_12",
     "subSkillId": "sub_verbal_08_2",
@@ -1560,11 +1560,11 @@
     "correctOptionIndex": 3
   },
   {
-    "id": "VERBAL26-ANAS-COMP-P014-Q020",
-    "canonicalId": "VERBAL26-ANAS-COMP-P014-Q020",
+    "id": "VERBAL26-ANAS-COMP-P015-Q020",
+    "canonicalId": "VERBAL26-ANAS-COMP-P015-Q020",
     "sourceBook": "anas",
     "sourceTitle": "تأسيس لفظي انس.pdf",
-    "sourcePage": 14,
+    "sourcePage": 15,
     "sourceQuestionNumber": 20,
     "mainSkillId": "skill_verbal_12",
     "subSkillId": "sub_verbal_08_2",
@@ -1578,11 +1578,11 @@
     "correctOptionIndex": 2
   },
   {
-    "id": "VERBAL26-ANAS-COMP-P014-Q021",
-    "canonicalId": "VERBAL26-ANAS-COMP-P014-Q021",
+    "id": "VERBAL26-ANAS-COMP-P015-Q021",
+    "canonicalId": "VERBAL26-ANAS-COMP-P015-Q021",
     "sourceBook": "anas",
     "sourceTitle": "تأسيس لفظي انس.pdf",
-    "sourcePage": 14,
+    "sourcePage": 15,
     "sourceQuestionNumber": 21,
     "mainSkillId": "skill_verbal_12",
     "subSkillId": "sub_verbal_08_2",
@@ -1596,11 +1596,11 @@
     "correctOptionIndex": 1
   },
   {
-    "id": "VERBAL26-ANAS-COMP-P014-Q022",
-    "canonicalId": "VERBAL26-ANAS-COMP-P014-Q022",
+    "id": "VERBAL26-ANAS-COMP-P015-Q022",
+    "canonicalId": "VERBAL26-ANAS-COMP-P015-Q022",
     "sourceBook": "anas",
     "sourceTitle": "تأسيس لفظي انس.pdf",
-    "sourcePage": 14,
+    "sourcePage": 15,
     "sourceQuestionNumber": 22,
     "mainSkillId": "skill_verbal_12",
     "subSkillId": "sub_verbal_08_2",
@@ -1738,5 +1738,185 @@
       "كهف"
     ],
     "correctOptionIndex": 3
+  },
+  {
+    "id": "VERBAL26-ANAS-P006-Q014",
+    "canonicalId": "VERBAL26-ANAS-P006-Q014",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 6,
+    "sourceQuestionNumber": 14,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "لا تحزن عندما يعطيك أقربهم إليك كأسًا؛ سيأتي شخص ويغرس هذا السهم ويعيد هذا الأمل إليك.",
+    "options": [
+      "يعطيك",
+      "يغرس",
+      "السهم",
+      "الأمل"
+    ],
+    "correctOptionIndex": 1
+  },
+  {
+    "id": "VERBAL26-ANAS-P008-Q033",
+    "canonicalId": "VERBAL26-ANAS-P008-Q033",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 8,
+    "sourceQuestionNumber": 33,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "المواقف تحدد الأشخاص، فلا تحكم على الناس من أفعالهم، فالناس رائعون وهم يتحدثون.",
+    "options": [
+      "المواقف",
+      "أفعالهم",
+      "رائعون",
+      "يتحدثون"
+    ],
+    "correctOptionIndex": 1
+  },
+  {
+    "id": "VERBAL26-ANAS-COMP-P015-Q024",
+    "canonicalId": "VERBAL26-ANAS-COMP-P015-Q024",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 15,
+    "sourceQuestionNumber": 24,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "لابد أن يتخلل ....... الإنسان من الألياف والخضروات والبروتينات، لأن ذلك يساعد الجهاز .....",
+    "options": [
+      "عقل _ العصبي",
+      "بيت _ العضلي",
+      "هواء _ التنفسي",
+      "طعام _ الهضمي"
+    ],
+    "correctOptionIndex": 3
+  },
+  {
+    "id": "VERBAL26-ANAS-COMP-P015-Q025",
+    "canonicalId": "VERBAL26-ANAS-COMP-P015-Q025",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 15,
+    "sourceQuestionNumber": 25,
+    "mainSkillId": "skill_verbal_11",
+    "subSkillId": "sub_verbal_08_1",
+    "text": "فالفرائض تسبق ........ قبل أن تكون كريماً.",
+    "options": [
+      "الأساسيات",
+      "الكماليات",
+      "النوافل",
+      "النواقص"
+    ],
+    "correctOptionIndex": 2
+  },
+  {
+    "id": "VERBAL26-ANAS-COMP-P015-Q026",
+    "canonicalId": "VERBAL26-ANAS-COMP-P015-Q026",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 15,
+    "sourceQuestionNumber": 26,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "أحيانًا ..... الفرص تساعدك على النجاح أكثر من .... الفرص التي تسبب لك التشتت والحيرة.",
+    "options": [
+      "تنويع _ اغتنام",
+      "كثرة _ قلة",
+      "روعة _ هائلة",
+      "قلة _ كثرة"
+    ],
+    "correctOptionIndex": 3
+  },
+  {
+    "id": "VERBAL26-ANAS-COMP-P015-Q027",
+    "canonicalId": "VERBAL26-ANAS-COMP-P015-Q027",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 15,
+    "sourceQuestionNumber": 27,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "لا يتسع الصندوق المليء ...... لـ ....",
+    "options": [
+      "الماء _ التراب",
+      "الجواهر _ الحصى",
+      "الحصى _ الجواهر",
+      "السراب _ الحقائق"
+    ],
+    "correctOptionIndex": 1
+  },
+  {
+    "id": "VERBAL26-ANAS-COMP-P016-Q028",
+    "canonicalId": "VERBAL26-ANAS-COMP-P016-Q028",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 16,
+    "sourceQuestionNumber": 28,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "...... يعد ....... مهمًا للتجارة.",
+    "options": [
+      "الخليج _ شريانًا",
+      "القصر _ يعتبر",
+      "الوطن _ يحتسب",
+      "الواقع _ يعتمد"
+    ],
+    "correctOptionIndex": 0
+  },
+  {
+    "id": "VERBAL26-ANAS-COMP-P016-Q029",
+    "canonicalId": "VERBAL26-ANAS-COMP-P016-Q029",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 16,
+    "sourceQuestionNumber": 29,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "الرجل ...... هو الذي يضع حجر الأساس وكل ما يأتي بعده ...... ما بدأه.",
+    "options": [
+      "الناجح _ يكمل",
+      "الحازم _ يشيد",
+      "الفاشل _ يهدم",
+      "القوي _ يهدم"
+    ],
+    "correctOptionIndex": 0
+  },
+  {
+    "id": "VERBAL26-ANAS-COMP-P016-Q030",
+    "canonicalId": "VERBAL26-ANAS-COMP-P016-Q030",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 16,
+    "sourceQuestionNumber": 30,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "...... لا يقتصر على إطعام الناس، بل ....... في جمع التبرعات للمصلحة العامة.",
+    "options": [
+      "العلم _ العمل",
+      "الجود _ البذل",
+      "الكرم _ البذل",
+      "الدعم _ الخصم"
+    ],
+    "correctOptionIndex": 2
+  },
+  {
+    "id": "VERBAL26-ANAS-COMP-P016-Q031",
+    "canonicalId": "VERBAL26-ANAS-COMP-P016-Q031",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 16,
+    "sourceQuestionNumber": 31,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "الاقتراض ....... بالليل، و........ بالنهار.",
+    "options": [
+      "هم _ ذل",
+      "بيتًا _ نقدًا",
+      "ذل _ عز",
+      "مشاكل _ مصاعب"
+    ],
+    "correctOptionIndex": 0
   }
 ]
