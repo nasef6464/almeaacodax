@@ -15883,5 +15883,93 @@
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_TEXT_VERIFIED",
     "answerEvidence": "Direct Amer source p.98; answer explicitly supported by passage."
+  },
+  {
+    "id": "VERBAL26-AMER-T29-P083-QK-Q001",
+    "canonicalId": "VERBAL26-AMER-T29-P083-QK-Q001",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 83,
+    "sourceQuestionNumber": 1,
+    "sourceTraining": 29,
+    "passageId": "VERBAL26-AMER-PASSAGE-RUB-AL-KHALI",
+    "mainSkillId": "skill_verbal_20",
+    "subSkillId": "sub_verbal_12_6",
+    "text": "يدل قول العرب «مثل رمل يبرين» على:",
+    "options": [
+      "الشدة",
+      "الاتساع",
+      "الجفاف",
+      "الكثرة"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_TEXT_VERIFIED",
+    "answerEvidence": "Direct Amer source p.83; independently verified from passage."
+  },
+  {
+    "id": "VERBAL26-AMER-T29-P083-QK-Q003",
+    "canonicalId": "VERBAL26-AMER-T29-P083-QK-Q003",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 83,
+    "sourceQuestionNumber": 3,
+    "sourceTraining": 29,
+    "passageId": "VERBAL26-AMER-PASSAGE-RUB-AL-KHALI",
+    "mainSkillId": "skill_verbal_20",
+    "subSkillId": "sub_verbal_12_6",
+    "text": "يدل تاريخ ولادة ووفاة ياقوت الحموي (575-626هـ) على أنه:",
+    "options": [
+      "ولد ومات في القرن الخامس",
+      "ولد في القرن الخامس ومات في القرن السادس",
+      "ولد ومات في القرن السادس",
+      "ولد في القرن السادس ومات في القرن السابع"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_TEXT_VERIFIED",
+    "answerEvidence": "Direct Amer source p.83; independently verified from passage."
+  },
+  {
+    "id": "VERBAL26-AMER-T29-P083-QK-Q004",
+    "canonicalId": "VERBAL26-AMER-T29-P083-QK-Q004",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 83,
+    "sourceQuestionNumber": 4,
+    "sourceTraining": 29,
+    "passageId": "VERBAL26-AMER-PASSAGE-RUB-AL-KHALI",
+    "mainSkillId": "skill_verbal_20",
+    "subSkillId": "sub_verbal_12_6",
+    "text": "يستنتج من الفقرة الثانية أن البيئة الطبيعية في هذه الصحراء:",
+    "options": [
+      "سهلة",
+      "مستوية",
+      "شديدة",
+      "ساكنة"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_TEXT_VERIFIED",
+    "answerEvidence": "Direct Amer source p.83; independently verified from passage."
+  },
+  {
+    "id": "VERBAL26-AMER-T29-P083-QK-Q005",
+    "canonicalId": "VERBAL26-AMER-T29-P083-QK-Q005",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 83,
+    "sourceQuestionNumber": 5,
+    "sourceTraining": 29,
+    "passageId": "VERBAL26-AMER-PASSAGE-RUB-AL-KHALI",
+    "mainSkillId": "skill_verbal_19",
+    "subSkillId": "sub_verbal_12_1",
+    "text": "أنسب عنوان لهذا النص هو:",
+    "options": [
+      "صحراء الربع الخالي: سهولها ووهادها",
+      "صحراء الربع الخالي: رمالها وكثبانها",
+      "صحراء الربع الخالي: نباتاتها وحيواناتها",
+      "صحراء الربع الخالي: ماضيها وحاضرها"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_TEXT_VERIFIED",
+    "answerEvidence": "Direct Amer source p.83; independently verified from passage."
   }
 ]
