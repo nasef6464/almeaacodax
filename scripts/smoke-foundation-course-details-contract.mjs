@@ -66,7 +66,7 @@ assertIncludes(
 );
 assertIncludes(
   'dashboards/admin/FoundationManager.tsx',
-  'يمكن ربط الموضوع بمهارة واحدة أو عدة مهارات فرعية',
+  'يمكنك ربط الموضوع بمهارة واحدة أو عدة مهارات فرعية',
   'Foundation admin allows one topic to map to one or more subskills.',
 );
 assertIncludes(
