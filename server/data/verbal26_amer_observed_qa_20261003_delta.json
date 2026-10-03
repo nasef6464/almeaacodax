@@ -2,9 +2,51 @@
   "schemaVersion": 1,
   "scope": "VERBAL26 Amer direct-source observed QA delta",
   "source": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
-  "rule": "Direct-source observed inventory only; no answer-key approval or Production write. Trainings 31-33 were page-by-page inventoried from the authoritative Amer PDF; explanatory examples on page 82 are excluded.",
+  "rule": "Direct-source observed inventory only; no answer-key approval or Production write. T1-T33 are now fully accounted across the 2026-10-02 base and this delta; explanatory examples are excluded.",
   "verifiedAt": "2026-10-03",
   "trainings": {
+    "9": {
+      "pdfPages": [
+        25,
+        26
+      ],
+      "observedQuestions": 14
+    },
+    "11": {
+      "pdfPages": [
+        31,
+        32
+      ],
+      "observedQuestions": 8
+    },
+    "12": {
+      "pdfPages": [
+        32
+      ],
+      "observedQuestions": 4
+    },
+    "13": {
+      "pdfPages": [
+        33,
+        34
+      ],
+      "observedQuestions": 15
+    },
+    "14": {
+      "pdfPages": [
+        39,
+        40,
+        41
+      ],
+      "observedQuestions": 33
+    },
+    "15": {
+      "pdfPages": [
+        42,
+        43
+      ],
+      "observedQuestions": 29
+    },
     "22": {
       "pdfPages": [
         61,
@@ -68,6 +110,6 @@
       "observedQuestions": 34
     }
   },
-  "deltaVerifiedObservedQuestions": 246,
-  "combinedWithPriorEvidenceTotal": 812
+  "deltaVerifiedObservedQuestions": 349,
+  "combinedWithPriorEvidenceTotal": 915
 }
