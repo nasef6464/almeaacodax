@@ -71,12 +71,17 @@ for (const batch of amerBatches) {
     `Amer training ${key} must remain pending until a source-backed answer key is verified`,
   );
 }
-assert.equal(ledger?.metrics?.amerApprovedRecords, 0, "Amer records must not be approved before source-backed answer QA");
-assert.equal(ledger?.metrics?.amerDerivedReportIsAuthority, false, "derived 938 report must not be authoritative");
 const approvedBankPath = new URL("../server/data/verbal_approved_bank_v2.json", import.meta.url);
 const approvedBank = fs.existsSync(approvedBankPath)
   ? JSON.parse(fs.readFileSync(approvedBankPath, "utf8"))
   : [];
+const approvedAmer = Array.isArray(approvedBank) ? approvedBank.filter((q) => q?.sourceBook === "abdelbaset").length : 0;
+assert.equal(
+  Number(ledger?.metrics?.amerApprovedRecords || 0),
+  approvedAmer,
+  "Amer approved metric must match canonical records that passed source-text plus trusted answer adjudication",
+);
+assert.equal(ledger?.metrics?.amerDerivedReportIsAuthority, false, "derived 938 report must not be authoritative");
 assert.equal(
   Number(ledger?.metrics?.approvedBankRecords || 0),
   Array.isArray(approvedBank) ? approvedBank.length : 0,
