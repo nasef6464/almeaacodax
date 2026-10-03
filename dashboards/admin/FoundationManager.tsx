@@ -521,9 +521,9 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
     const attachedQuizzes = quizzes.filter(q => topic.quizIds?.includes(q.id));
     const attachedLibraryItems = libraryItems.filter(item => topic.libraryItemIds?.includes(item.id));
     const totalAttachments = attachedLessons.length + attachedQuizzes.length + attachedLibraryItems.length;
-    const linkedSubSkill = topic.skillId
-      ? foundationSubSkillOptions.find((option) => option.id === topic.skillId)
-      : undefined;
+    const linkedSubSkills = getTopicSkillIds(topic)
+      .map((skillId) => foundationSubSkillOptions.find((option) => option.id === skillId))
+      .filter(Boolean) as typeof foundationSubSkillOptions;
     const readinessMeta = getTopicReadinessMeta(topic, attachedLessons, attachedQuizzes, attachedLibraryItems, subtopics.length);
 
     return (
@@ -544,8 +544,10 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
               {subtopics.length} مواضيع فرعية
             </span>
             {level > 0 ? (
-              <span className={`text-xs px-2 py-1 rounded-full font-bold ${linkedSubSkill ? 'bg-violet-50 text-violet-700' : 'bg-rose-50 text-rose-700'}`}>
-                {linkedSubSkill ? `مهارة: ${linkedSubSkill.name}` : 'غير مربوط بمهارة فرعية'}
+              <span className={`text-xs px-2 py-1 rounded-full font-bold ${linkedSubSkills.length ? 'bg-violet-50 text-violet-700' : 'bg-rose-50 text-rose-700'}`}>
+                {linkedSubSkills.length
+                  ? `${linkedSubSkills.length} مهارة: ${linkedSubSkills.map((item) => item.name).join('، ')}`
+                  : 'غير مربوط بمهارة فرعية'}
               </span>
             ) : null}
             <span className={`text-xs px-2 py-1 rounded-full font-bold ${topic.showOnPlatform === false ? 'bg-gray-100 text-gray-600' : 'bg-sky-50 text-sky-700'}`}>
