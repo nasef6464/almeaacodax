@@ -1,9 +1,13 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -e
 bash ops/col26-v7-transport/reconstruct.sh
-work=/tmp/col26-v7
-rm -rf "$work"
-mkdir -p "$work"
-unzip -q /tmp/COL26_V7_CANONICAL_READY_FINAL.zip -d "$work"
-cd "$work"
+mkdir -p /tmp/cv7
+unzip -oq /tmp/COL26_V7_CANONICAL_READY_FINAL.zip -d /tmp/cv7
+cd /tmp/cv7
+export COL26_PAYLOAD_FILE=COL26_PILOT_PAYLOAD_V7.json
+export COL26_IMAGE_DIR=images
+export COL26_LEDGER_FILE=COL26_master_ledger_READY_UPLOAD_V7_CANONICAL.csv
+export COL26_CONTRACT_FILE=COL26_IMPORT_CONTRACT_GATE_V7.json
+export COL26_OUTPUT_FILE=col26-run-report.json
+export COL26_MODE=canary
 node run-col26-v7-import.mjs
