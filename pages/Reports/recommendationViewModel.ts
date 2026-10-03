@@ -72,9 +72,10 @@ export const buildSkillRecommendation = (
                     lessons.some((lesson) => matchesEntityId(lesson, lessonId) && lesson.skillIds?.includes(resolvedSkillId)));
                 const topicHasQuiz = (topic.quizIds || []).some((quizId) =>
                     quizzes.some((quiz) => matchesEntityId(quiz, quizId) && (quiz.skillIds?.includes(resolvedSkillId) || quiz.questionIds?.some((id) => questions.find((q) => q.id === id)?.skillIds?.includes(resolvedSkillId)))));
-                const topicMatchesSkill = topic.skillId === resolvedSkillId || matchesEntityId(topic, `topic_sub_${resolvedSkillId}`) || displayText(topic.title) === displayText(target.skillName);
+                const topicHasExplicitSkill = topic.skillId === resolvedSkillId || topic.skillIds?.includes(resolvedSkillId);
+                const topicMatchesSkill = topicHasExplicitSkill || matchesEntityId(topic, `topic_sub_${resolvedSkillId}`) || displayText(topic.title) === displayText(target.skillName);
                 const topicMatchesSection = Boolean(recommendationSectionId && topic.sectionId === recommendationSectionId);
-                const explicitSkillScore = topic.skillId === resolvedSkillId ? 120 : 0;
+                const explicitSkillScore = topicHasExplicitSkill ? 120 : 0;
                 return { topic, score: explicitSkillScore + (topicHasLesson ? 60 : 0) + (topicHasQuiz ? 55 : 0) + (topicMatchesSkill ? 80 : 0) + (topicMatchesSection ? 35 : 0) };
             })
             .filter((item) => item.score > 0)

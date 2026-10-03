@@ -4,9 +4,9 @@
 
 ## القانون الثابت
 
-`Foundation SubTopic → exactly one SubSkill`
+`Foundation SubTopic → one or more SubSkills`
 
-المصدر القانوني للربط هو `Topic.skillId` نفسه. لا يوجد جدول Mapping موازٍ.
+المصدر القانوني للربط هو `Topic.skillIds`. يبقى `Topic.skillId` هو المهارة الأساسية/الأولى للتوافق مع المسارات القديمة. يمكن أن ترتبط المهارة نفسها بأكثر من Topic، ولا يوجد جدول Mapping موازٍ.
 
 ## خط الأساس قبل الإغلاق
 
@@ -19,10 +19,10 @@
 
 ## ضوابط الكتابة
 
-- أي Topic ابن (`parentId != null`) يجب أن يحمل `skillId`.
-- `skillId` يجب أن يكون SubSkill حقيقيًا، وليس Main Skill.
-- Path / Subject / Section يجب أن تكون متوافقة مع SubSkill ومع Main Foundation Topic الأب.
-- لا يسمح بتكرار نفس SubSkill على SubTopic آخر داخل نفس النطاق.
+- أي Topic ابن (`parentId != null`) يجب أن يحمل مهارة فرعية واحدة على الأقل داخل `skillIds`، مع حفظ أول مهارة أيضًا في `skillId` للتوافق.
+- كل عنصر داخل `skillIds` يجب أن يكون SubSkill حقيقيًا، وليس Main Skill.
+- جميع المهارات المختارة للموضوع الفرعي يجب أن تتبع نفس Main Skill / Section للأب، وأن تتوافق مع Path / Subject.
+- يسمح بربط Topic واحد بأكثر من SubSkill، كما يسمح باستخدام نفس SubSkill في أكثر من Topic تأسيسي.
 - عند تعديل `skillId` يتم استبدال المهارة القديمة على الموارد المرتبطة بدل إبقاء ربط stale.
 - الفيديوهات/الدروس والتدريبات وملفات الدعم ترث مهارة الـSubTopic؛ لا تحتاج Mapping مستقل.
 
@@ -59,7 +59,7 @@
   - SubTopic بدون SubSkill.
   - Main Skill داخل SubTopic.
   - cross-path / cross-subject / cross-section.
-  - duplicate SubSkill mapping.
+  - صحة تعدد SubSkills داخل Topic وعدم خلط Main Skill / Section.
   - فقد/استبدال الربط عند تعديل Topic.
   - inheritance للموارد المرتبطة.
 - `scripts/smoke-adaptive-phase3-result-actions-contract.mjs`

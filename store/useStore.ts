@@ -161,6 +161,7 @@ export const useStore = create<AppState>()(
                         ...topic,
                         id: String(topic?.id || topic?._id || ''),
                         skillId: topic?.skillId ? String(topic.skillId) : undefined,
+                        skillIds: normalizeIdList(topic?.skillIds),
                         lessonIds: normalizeIdList(topic?.lessonIds),
                         quizIds: normalizeIdList(topic?.quizIds),
                         libraryItemIds: normalizeIdList(topic?.libraryItemIds),

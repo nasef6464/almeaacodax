@@ -11,6 +11,7 @@ type FoundationTopicCandidate = {
   sectionId?: string | null;
   parentId?: string | null;
   skillId?: string | null;
+  skillIds?: string[] | null;
 };
 
 type FoundationTopicSkillValidation =
@@ -21,22 +22,30 @@ type FoundationTopicSkillValidation =
         subjectId: string;
         sectionId: string;
         skillId: string;
+        skillIds: string[];
       };
       parentSkillId: string;
     }
   | {
       ok: false;
-      status: 400 | 409;
+      status: 400;
       message: string;
     };
 
 const stringId = (value: unknown) => String(value ?? "").trim();
+const normalizeIds = (values: unknown) =>
+  [...new Set((Array.isArray(values) ? values : []).map((value) => stringId(value)).filter(Boolean))];
 
 export async function validateFoundationSubtopicSkillLink(
   candidate: FoundationTopicCandidate,
-  currentTopicMongoId?: unknown,
+  _currentTopicMongoId?: unknown,
 ): Promise<FoundationTopicSkillValidation> {
   const parentId = stringId(candidate.parentId);
+  const requestedSkillIds = normalizeIds([
+    ...(candidate.skillIds || []),
+    candidate.skillId,
+  ]);
+
   if (!parentId) {
     return {
       ok: true,
@@ -45,6 +54,7 @@ export async function validateFoundationSubtopicSkillLink(
         subjectId: stringId(candidate.subjectId),
         sectionId: stringId(candidate.sectionId),
         skillId: stringId(candidate.skillId),
+        skillIds: requestedSkillIds,
       },
       parentSkillId: "",
     };
@@ -53,18 +63,17 @@ export async function validateFoundationSubtopicSkillLink(
   const pathId = stringId(candidate.pathId);
   const subjectId = stringId(candidate.subjectId);
   const requestedSectionId = stringId(candidate.sectionId);
-  const skillId = stringId(candidate.skillId);
 
-  if (!skillId) {
+  if (requestedSkillIds.length === 0) {
     return {
       ok: false,
       status: 400,
-      message: "Foundation subtopic must be linked to one subskill",
+      message: "Foundation subtopic must be linked to at least one subskill",
     };
   }
 
   const parentTopic = await TopicModel.findOne(buildDocumentQuery(parentId))
-    .select("_id id pathId subjectId sectionId skillId parentId title")
+    .select("_id id pathId subjectId sectionId skillId skillIds parentId title")
     .lean();
 
   if (!parentTopic || stringId((parentTopic as any).parentId)) {
@@ -88,24 +97,56 @@ export async function validateFoundationSubtopicSkillLink(
     };
   }
 
-  const skillDocument = await SkillModel.findOne({
+  const skillDocuments = await SkillModel.find({
     pathId,
     subjectId,
-    "subSkills.id": skillId,
+    "subSkills.id": { $in: requestedSkillIds },
   })
     .select("_id id pathId subjectId sectionId name subSkills")
     .lean();
 
-  if (!skillDocument) {
+  const matched = new Map<string, { parentSkillId: string; sectionId: string }>();
+  for (const document of skillDocuments as any[]) {
+    const parentSkillId = stringId(document.id || document._id);
+    const sectionId = stringId(document.sectionId);
+    for (const subSkill of document.subSkills || []) {
+      const subSkillId = stringId(subSkill?.id);
+      if (requestedSkillIds.includes(subSkillId)) {
+        matched.set(subSkillId, { parentSkillId, sectionId });
+      }
+    }
+  }
+
+  const missingSkillIds = requestedSkillIds.filter((skillId) => !matched.has(skillId));
+  if (missingSkillIds.length > 0) {
     return {
       ok: false,
       status: 400,
-      message: "Selected subskill does not belong to this path and subject",
+      message: "One or more selected subskills do not belong to this path and subject",
     };
   }
 
-  const parentSkillId = stringId((skillDocument as any).id || (skillDocument as any)._id);
-  const canonicalSectionId = stringId((skillDocument as any).sectionId);
+  const parentSkillIds = [...new Set(requestedSkillIds.map((skillId) => matched.get(skillId)!.parentSkillId))];
+  const sectionIds = [...new Set(requestedSkillIds.map((skillId) => matched.get(skillId)!.sectionId).filter(Boolean))];
+
+  if (parentSkillIds.length !== 1) {
+    return {
+      ok: false,
+      status: 400,
+      message: "Selected subskills must belong to the same main Foundation skill",
+    };
+  }
+
+  if (sectionIds.length > 1) {
+    return {
+      ok: false,
+      status: 400,
+      message: "Selected subskills must belong to the same section",
+    };
+  }
+
+  const parentSkillId = parentSkillIds[0];
+  const canonicalSectionId = sectionIds[0] || requestedSectionId;
   const parentTopicSkillId = stringId((parentTopic as any).skillId);
   const parentTopicSectionId = stringId((parentTopic as any).sectionId);
 
@@ -113,7 +154,7 @@ export async function validateFoundationSubtopicSkillLink(
     return {
       ok: false,
       status: 400,
-      message: "Selected subskill belongs to a different section",
+      message: "Selected subskills belong to a different section",
     };
   }
 
@@ -124,29 +165,7 @@ export async function validateFoundationSubtopicSkillLink(
     return {
       ok: false,
       status: 400,
-      message: "Selected subskill belongs to a different main Foundation topic",
-    };
-  }
-
-  const duplicateFilter: Record<string, unknown> = {
-    pathId,
-    subjectId,
-    parentId: { $ne: null },
-    skillId,
-  };
-  if (currentTopicMongoId) {
-    duplicateFilter._id = { $ne: currentTopicMongoId };
-  }
-
-  const duplicate = await TopicModel.findOne(duplicateFilter)
-    .select("_id id title")
-    .lean();
-
-  if (duplicate) {
-    return {
-      ok: false,
-      status: 409,
-      message: `Subskill is already linked to Foundation topic: ${stringId((duplicate as any).title) || stringId((duplicate as any).id || (duplicate as any)._id)}`,
+      message: "Selected subskills belong to a different main Foundation topic",
     };
   }
 
@@ -156,56 +175,59 @@ export async function validateFoundationSubtopicSkillLink(
       pathId,
       subjectId,
       sectionId: canonicalSectionId,
-      skillId,
+      skillId: requestedSkillIds[0],
+      skillIds: requestedSkillIds,
     },
     parentSkillId,
   };
 }
 
-
 type FoundationTopicResourceLink = {
   parentId?: string | null;
   skillId?: string | null;
+  skillIds?: string[] | null;
   lessonIds?: string[];
   quizIds?: string[];
   libraryItemIds?: string[];
 };
 
-const normalizeIds = (values: unknown) =>
-  [...new Set((Array.isArray(values) ? values : []).map((value) => stringId(value)).filter(Boolean))];
-
 export async function syncFoundationTopicResourcesToSkill(
   topic: FoundationTopicResourceLink,
-  previousSkillId?: string | null,
+  previousSkillIds?: unknown,
 ) {
-  const previous = stringId(previousSkillId);
-  const next = stringId(topic.parentId) ? stringId(topic.skillId) : "";
-  if (!previous && !next) return;
+  const previous = normalizeIds(previousSkillIds);
+  const next = stringId(topic.parentId)
+    ? normalizeIds([...(topic.skillIds || []), topic.skillId])
+    : [];
 
-  const update: Record<string, unknown> = {};
-  if (previous && previous !== next) {
-    update.$pull = { skillIds: previous };
-  }
-  if (next) {
-    update.$addToSet = { skillIds: next };
-  }
+  if (previous.length === 0 && next.length === 0) return;
 
+  const removed = previous.filter((skillId) => !next.includes(skillId));
   const lessonIds = normalizeIds(topic.lessonIds);
   const quizIds = normalizeIds(topic.quizIds);
   const libraryItemIds = normalizeIds(topic.libraryItemIds);
 
+  const syncCollection = async (
+    model: any,
+    query: Record<string, unknown>,
+  ) => {
+    if (removed.length > 0) {
+      await model.updateMany(query, { $pull: { skillIds: { $in: removed } } } as any);
+    }
+    if (next.length > 0) {
+      await model.updateMany(query, { $addToSet: { skillIds: { $each: next } } } as any);
+    }
+  };
+
   await Promise.all([
     lessonIds.length
-      ? LessonModel.updateMany(buildDocumentsByIdsQuery(lessonIds), update)
+      ? syncCollection(LessonModel, buildDocumentsByIdsQuery(lessonIds))
       : Promise.resolve(),
     quizIds.length
-      ? QuizModel.updateMany(
-          { $or: [{ id: { $in: quizIds } }, { _id: { $in: quizIds } }] },
-          update,
-        )
+      ? syncCollection(QuizModel, { $or: [{ id: { $in: quizIds } }, { _id: { $in: quizIds } }] })
       : Promise.resolve(),
     libraryItemIds.length
-      ? LibraryItemModel.updateMany(buildDocumentsByIdsQuery(libraryItemIds), update)
+      ? syncCollection(LibraryItemModel, buildDocumentsByIdsQuery(libraryItemIds))
       : Promise.resolve(),
   ]);
 }

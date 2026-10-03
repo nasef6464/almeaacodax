@@ -110,7 +110,7 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
       const explicitQuizIds = new Set(activeTopic.quizIds || []);
       const activeTopicCleanTitle = (activeTopic.title || '').trim();
       const activeTopicId = String(activeTopic.id || (activeTopic as any)._id || '').trim();
-      const activeTopicSkillId = String(activeTopic.skillId || '').trim();
+      const activeTopicSkillIds = Array.from(new Set([...(activeTopic.skillIds || []), activeTopic.skillId].map((value) => String(value || '').trim()).filter(Boolean)));
       const isSubTopic = Boolean(activeTopic.parentId);
       const conventionalDrillId = activeTopicId ? `drill_${activeTopicId.replace(/^top_/, '')}` : '';
 
@@ -137,8 +137,8 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
           // Keep this exact-skill + training-slot scoped; never fall back by title/id.
           if (
             isSubTopic &&
-            activeTopicSkillId &&
-            quiz.skillIds?.includes(activeTopicSkillId) &&
+            activeTopicSkillIds.length > 0 &&
+            quiz.skillIds?.some((skillId) => activeTopicSkillIds.includes(skillId)) &&
             quiz.learningPlacements?.some((placement) =>
               (placement.slot === 'training' || placement.slot === 'foundation') &&
               (!placement.pathId || placement.pathId === selectedTopic.pathId) &&
