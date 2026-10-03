@@ -200,7 +200,7 @@ assertIncludes('server/src/routes/taxonomy.routes.ts', 'SubjectModel.find({ path
 assertIncludes('server/src/routes/taxonomy.routes.ts', 'SkillModel.find({');
 assertIncludes('server/src/modules/content/http/contentBootstrapRoutes.ts', 'CONTENT_BOOTSTRAP_CACHE_TTL_MS');
 assertIncludes('server/src/modules/content/http/contentBootstrapRoutes.ts', 'X-Content-Cache');
-assertIncludes('server/src/modules/content/http/contentBootstrapRoutes.ts', '.select("id pathId subjectId sectionId skillId title parentId order showOnPlatform isLocked lessonIds quizIds libraryItemIds")');
+assertIncludes('server/src/modules/content/http/contentBootstrapRoutes.ts', '.select("id pathId subjectId sectionId skillId skillIds title parentId order showOnPlatform isLocked lessonIds quizIds libraryItemIds")');
 assertIncludes('server/src/modules/content/http/contentBootstrapRoutes.ts', 'buildContentBootstrapVisibilityFilters');
 assertIncludes('server/src/modules/content/application/contentBootstrapVisibility.ts', 'scopeFilterToActivePaths');
 assertIncludes('server/src/modules/content/http/contentBootstrapRoutes.ts', 'PUBLIC_ANNOUNCEMENT_ADS_BOOTSTRAP_LIMIT');
