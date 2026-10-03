@@ -27,23 +27,41 @@ run_mode() {
 }
 
 run_mode prepare
-run_mode canary
-node <<'NODE'
+run_mode verify
+
+existing_count="$(node -e 'const r=require("/tmp/col26-verify.json");process.stdout.write(String(Number(r.verification?.count||0)))')"
+existing_drafts="$(node -e 'const r=require("/tmp/col26-verify.json");process.stdout.write(String(Number(r.verification?.drafts||0)))')"
+
+if [ "$existing_count" = "0" ] && [ "$existing_drafts" = "0" ]; then
+  run_mode canary
+  node <<'NODE'
 const fs=require("fs");
 const r=JSON.parse(fs.readFileSync("/tmp/col26-canary.json","utf8"));
 const v=r.verification||{};
 if (r.uploaded!==5 || Number(v.count)!==5 || Number(v.drafts)!==5) process.exit(1);
 console.log("COL26 canary PASS: 5/5 Draft");
 NODE
+  existing_count=5
+  existing_drafts=5
+elif [ "$existing_count" = "5" ] && [ "$existing_drafts" = "5" ]; then
+  echo "COL26 canary already PASS: 5/5 Draft; resuming at item 6."
+elif [ "$existing_count" = "1012" ] && [ "$existing_drafts" = "1012" ]; then
+  echo "COL26 full Draft batch already present; skipping writes."
+else
+  echo "Unexpected COL26 batch state count=$existing_count drafts=$existing_drafts" >&2
+  exit 1
+fi
 
-run_mode full
-node <<'NODE'
+if [ "$existing_count" = "5" ]; then
+  run_mode full
+  node <<'NODE'
 const fs=require("fs");
 const r=JSON.parse(fs.readFileSync("/tmp/col26-full.json","utf8"));
 const v=r.verification||{};
 if (r.uploaded!==1007 || Number(v.count)!==1012 || Number(v.drafts)!==1012) process.exit(1);
 console.log("COL26 full import PASS: 1012/1012 Draft");
 NODE
+fi
 
 run_mode verify
 node <<'NODE'
