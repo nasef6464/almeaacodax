@@ -27,8 +27,8 @@ if(!items.length) throw new Error('COL26 V7 payload has no items');
 fs.writeFileSync('/tmp/col26-total',String(items.length));
 NODE
 TOTAL=$(cat /tmp/col26-total)
-SLICE_SIZE=25
-START=0
+SLICE_SIZE=20
+START=785
 while [ "$START" -lt "$TOTAL" ]; do
   node - "$START" "$SLICE_SIZE" <<'NODE'
 const fs=require('fs');
@@ -36,7 +36,9 @@ const start=Number(process.argv[2]), size=Number(process.argv[3]);
 const p=JSON.parse(fs.readFileSync('COL26_PILOT_PAYLOAD_V7.full.json','utf8'));
 const key=Array.isArray(p)?null:(Array.isArray(p.items)?'items':(Array.isArray(p.questions)?'questions':null));
 const items=Array.isArray(p)?p:p[key];
-const slice=items.slice(start,start+size);
+const baseline=items.slice(0,5);
+const fresh=items.slice(start,start+size);
+const slice=[...baseline,...fresh];
 const out=Array.isArray(p)?slice:{...p,[key]:slice};
 fs.writeFileSync('COL26_PILOT_PAYLOAD_V7.json',JSON.stringify(out));
 console.log('COL26_SLICE',start,start+slice.length-1,'COUNT',slice.length);
