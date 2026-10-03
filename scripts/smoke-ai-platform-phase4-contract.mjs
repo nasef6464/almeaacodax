@@ -5,6 +5,7 @@ const control = await readFile(new URL("../dashboards/admin/ai/AiControlCenterSe
 const routingEditor = await readFile(new URL("../dashboards/admin/ai/AiCapabilityRoutingEditor.tsx", import.meta.url), "utf8");
 const usageAlerts = await readFile(new URL("../dashboards/admin/ai/AiUsageAndAlertsPanel.tsx", import.meta.url), "utf8");
 const api = await readFile(new URL("../services/api.ts", import.meta.url), "utf8");
+const aiApi = await readFile(new URL("../services/apiGroups/aiApi.ts", import.meta.url), "utf8");
 const runtime = await readFile(new URL("../server/src/modules/content/integrations/platformIntegrationRuntime.ts", import.meta.url), "utf8");
 
 const checks = [];
@@ -55,7 +56,7 @@ check("usage and alerts dashboard surfaces spend, cache, fallback and circuit he
 check("test lab can validate one quota pool instead of only a whole provider",
   control.includes("quotaPoolId: poolId") &&
   control.includes("اختبر الحصة") &&
-  api.includes("quotaPoolId?: string"));
+  (api.includes("quotaPoolId?: string") || aiApi.includes("quotaPoolId?: string")));
 
 check("existing platform integration endpoint remains the compatibility bridge",
   api.includes('request<unknown>("/content/platform-integrations"') &&

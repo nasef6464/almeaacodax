@@ -11,6 +11,9 @@ const source = fs.readFileSync(path.join(root, 'utils/quizBuilderDraft.ts'), 'ut
 const manager = fs.readFileSync(path.join(root, 'dashboards/admin/QuizzesManager.tsx'), 'utf8');
 const classroom = fs.readFileSync(path.join(root, 'pages/ClassroomStudentLive.tsx'), 'utf8');
 const app = fs.readFileSync(path.join(root, 'App.tsx'), 'utf8');
+const seo = fs.existsSync(path.join(root, 'app/resolveSeoRouteMeta.ts'))
+  ? fs.readFileSync(path.join(root, 'app/resolveSeoRouteMeta.ts'), 'utf8')
+  : '';
 const vercel = JSON.parse(fs.readFileSync(path.join(root, 'vercel.json'), 'utf8'));
 const transpiled = ts.transpileModule(source, {
   compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 },
@@ -89,7 +92,8 @@ check('quiz builder uses route-backed create/edit state and route-backed wizard 
   assert.ok(manager.includes("params.set('quizId', options.quizId)"));
   assert.ok(manager.includes("params.set('builderStep', String(options.step))"));
   assert.ok(manager.includes("params.set('builderMode', options.mode)"));
-  assert.ok(manager.includes('React.useEffect(() => {\n    const params = new URLSearchParams(location.search);'));
+  const normalizedManager = manager.replace(/\r\n/g, '\n');
+  assert.ok(normalizedManager.includes('React.useEffect(() => {\n    const params = new URLSearchParams(location.search);'));
   assert.ok(manager.includes("initialManagerParams.get('quizView')"));
 });
 check('student classroom refresh re-establishes server-authorized participation', () => {
@@ -98,8 +102,8 @@ check('student classroom refresh re-establishes server-authorized participation'
   assert.ok(classroom.includes('await loadCurrent()'));
 });
 check('classroom is private in metadata and Vercel response headers', () => {
-  assert.ok(app.includes("  '/classroom',"));
-  assert.ok(app.includes("title: 'الحصة الذكية المباشرة | منصة المئة'"));
+  assert.ok(seo.includes("'/classroom'") || app.includes("'/classroom'"));
+  assert.ok(seo.includes("title: 'الحصة الذكية المباشرة | منصة المئة'") || app.includes("title: 'الحصة الذكية المباشرة | منصة المئة'"));
   const privateRouteHeader = vercel.headers.find((entry) => String(entry.source || '').includes('classroom'));
   assert.ok(privateRouteHeader);
   assert.equal(privateRouteHeader.headers.find((header) => header.key === 'X-Robots-Tag')?.value, 'noindex, nofollow');
