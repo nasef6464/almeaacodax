@@ -37,11 +37,61 @@ export const UnifiedLessonBuilder: React.FC<UnifiedLessonBuilderProps> = ({
     [sections, lesson.subjectId]
   );
 
-  const availableSubSkills = useMemo(
-    () => skills.filter((skill) => !!lesson.subjectId && skill.subjectId === lesson.subjectId && (!lesson.sectionId || skill.sectionId === lesson.sectionId)),
-    [skills, lesson.subjectId, lesson.sectionId]
-  );
+  const nestedSubSkills = useMemo(() => {
+    const list: Array<{
+      id: string;
+      name: string;
+      code?: string;
+      description?: string;
+      order?: number;
+      subjectId: string;
+      sectionId?: string;
+      parentSkillId: string;
+      parentSkillName: string;
+    }> = [];
 
+    skills.forEach((skill) => {
+      if (Array.isArray(skill.subSkills) && skill.subSkills.length > 0) {
+        skill.subSkills.forEach((sub) => {
+          list.push({
+            id: sub.id,
+            name: sub.name,
+            code: sub.code,
+            description: sub.description,
+            order: sub.order,
+            subjectId: skill.subjectId,
+            sectionId: skill.sectionId,
+            parentSkillId: skill.id,
+            parentSkillName: skill.name,
+          });
+        });
+      } else {
+        list.push({
+          id: skill.id,
+          name: skill.name,
+          description: skill.description,
+          order: skill.order,
+          subjectId: skill.subjectId,
+          sectionId: skill.sectionId,
+          parentSkillId: skill.id,
+          parentSkillName: skill.name,
+        });
+      }
+    });
+
+    return list;
+  }, [skills]);
+
+  const availableSubSkills = useMemo(
+    () =>
+      nestedSubSkills.filter(
+        (subSkill) =>
+          !!lesson.subjectId &&
+          subSkill.subjectId === lesson.subjectId &&
+          (!lesson.sectionId || subSkill.sectionId === lesson.sectionId)
+      ),
+    [nestedSubSkills, lesson.subjectId, lesson.sectionId]
+  );
 
   useEffect(() => {
     if (!lesson.subjectId) return;
@@ -53,7 +103,25 @@ export const UnifiedLessonBuilder: React.FC<UnifiedLessonBuilderProps> = ({
     const sectionBelongsToSubject = !lesson.sectionId || sections.some(
       (section) => section.id === lesson.sectionId && section.subjectId === lesson.subjectId
     );
+
+    if (skills.length === 0) {
+      if (lesson.pathId !== nextPathId || !sectionBelongsToSubject) {
+        setLesson((prev) => ({
+          ...prev,
+          pathId: nextPathId,
+          sectionId: sectionBelongsToSubject ? prev.sectionId : undefined,
+        }));
+      }
+      return;
+    }
+
     const filteredSkillIds = (lesson.skillIds || []).filter((skillId) =>
+      nestedSubSkills.some(
+        (sub) =>
+          sub.id === skillId &&
+          sub.subjectId === lesson.subjectId &&
+          (!lesson.sectionId || sub.sectionId === lesson.sectionId)
+      ) ||
       skills.some(
         (skill) =>
           skill.id === skillId &&
@@ -74,7 +142,7 @@ export const UnifiedLessonBuilder: React.FC<UnifiedLessonBuilderProps> = ({
         skillIds: filteredSkillIds
       }));
     }
-  }, [lesson.subjectId, lesson.sectionId, lesson.pathId, lesson.skillIds, subjects, sections, skills]);
+  }, [lesson.subjectId, lesson.sectionId, lesson.pathId, lesson.skillIds, subjects, sections, skills, nestedSubSkills]);
 
   const getLessonIcon = (type: LessonType) => {
     switch (type) {
@@ -338,11 +406,12 @@ export const UnifiedLessonBuilder: React.FC<UnifiedLessonBuilderProps> = ({
             <label className="block text-sm font-bold text-gray-700 mb-1">ربط بالمهارات الفرعية</label>
             <div className="flex flex-wrap gap-2 mb-2">
               {lesson.skillIds?.map(skillId => {
-                const subSkill = skills.find(item => item.id === skillId);
+                const subSkill = nestedSubSkills.find(item => item.id === skillId) || skills.find(item => item.id === skillId);
                 return subSkill ? (
                   <span key={skillId} className="bg-indigo-100 text-indigo-800 px-2 py-1 rounded-lg text-sm flex items-center gap-1">
                     {subSkill.name}
                     <button
+                      type="button"
                       onClick={() => setLesson(prev => ({ ...prev, skillIds: prev.skillIds?.filter(id => id !== skillId) || [] }))}
                       className="text-indigo-600 hover:text-indigo-900"
                     >
@@ -372,7 +441,9 @@ export const UnifiedLessonBuilder: React.FC<UnifiedLessonBuilderProps> = ({
                       : '-- أضف مهارة فرعية --'}
               </option>
               {availableSubSkills.map(subSkill => (
-                <option key={subSkill.id} value={subSkill.id}>{subSkill.name}</option>
+                <option key={subSkill.id} value={subSkill.id}>
+                  {subSkill.code ? `[${subSkill.code}] ` : ''}{subSkill.name}
+                </option>
               ))}
             </select>
             <p className="text-xs text-gray-500 mt-1">مصدر المهارات هنا هو مركز المهارات الحقيقي: المهارة الرئيسة ثم المهارات الفرعية التابعة لها.</p>

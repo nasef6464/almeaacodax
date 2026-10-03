@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Search, Upload, UserPlus, Users, X } from 'lucide-react';
 import type { Group, User } from '../../../types';
 
@@ -186,10 +187,19 @@ export const SchoolClassPeopleManager: React.FC<SchoolClassPeopleManagerProps> =
         </div>
     );
 
-    return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/40 p-3" data-testid="school-class-people-manager">
-            <div className="max-h-[92vh] w-full max-w-5xl overflow-y-auto rounded-3xl bg-white shadow-2xl">
-                <div className="sticky top-0 z-10 flex items-center justify-between gap-3 border-b border-slate-100 bg-white/95 p-4 backdrop-blur">
+    return createPortal(
+        <div
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/60 p-3 sm:p-5 backdrop-blur-xs"
+            dir="rtl"
+            data-testid="school-class-people-manager"
+            onClick={(e) => {
+                if (e.target === e.currentTarget) {
+                    onClose();
+                }
+            }}
+        >
+            <div className="flex flex-col w-full max-w-4xl max-h-[90vh] rounded-3xl bg-white shadow-2xl overflow-hidden border border-slate-100">
+                <div className="shrink-0 flex items-center justify-between gap-3 border-b border-slate-100 bg-white px-5 py-4">
                     <div>
                         <div className="text-xs font-black text-indigo-600">إدارة الفصل</div>
                         <h3 className="text-lg font-black text-slate-900">{classroom.name}</h3>
@@ -197,12 +207,12 @@ export const SchoolClassPeopleManager: React.FC<SchoolClassPeopleManagerProps> =
                             الطلاب {currentStudents.length} • المعلمون {currentTeachers.length} • المشرفون {currentSupervisors.length}
                         </p>
                     </div>
-                    <button type="button" onClick={onClose} className="rounded-xl p-2 text-slate-500 hover:bg-slate-100" aria-label="إغلاق">
+                    <button type="button" onClick={onClose} className="rounded-xl p-2 text-slate-500 hover:bg-slate-100 transition" aria-label="إغلاق">
                         <X size={20} />
                     </button>
                 </div>
 
-                <div className="p-4">
+                <div className="flex-1 overflow-y-auto p-4 sm:p-6">
                     {error && (
                         <div className="mb-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-xs font-bold text-rose-700">
                             {error}
@@ -353,6 +363,7 @@ export const SchoolClassPeopleManager: React.FC<SchoolClassPeopleManagerProps> =
                     )}
                 </div>
             </div>
-        </div>
+        </div>,
+        document.body
     );
 };
