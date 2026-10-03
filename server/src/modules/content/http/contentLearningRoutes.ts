@@ -90,7 +90,7 @@ contentLearningRouter.patch(
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Topic not found" });
     }
 
-    await syncFoundationTopicResourcesToSkill(updated.toObject(), existing.skillId);
+    await syncFoundationTopicResourcesToSkill(updated.toObject(), [existing.skillId, ...(existing.skillIds || [])]);
     return res.json(updated);
   }),
 );
