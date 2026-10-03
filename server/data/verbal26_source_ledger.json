@@ -2559,14 +2559,14 @@
   ],
   "metrics": {
     "sourceKeyVerifiedRecords": 112,
-    "approvedBankRecords": 736,
+    "approvedBankRecords": 764,
     "note": "Ledger records are not approved-bank records until visual text/options and taxonomy QA pass.",
     "sourceConflictRecords": 23,
     "anasObservedQuestions": 135,
     "anasKeyVerifiedQuestions": 112,
     "anasConflictQuestions": 23,
     "amerTrainingsIndexed": 33,
-    "amerApprovedRecords": 620,
+    "amerApprovedRecords": 648,
     "amerDerivedReportCrossCheck": 938,
     "amerDerivedReportIsAuthority": false,
     "amerObservedQuestionCounts": {
@@ -2606,7 +2606,7 @@
     },
     "approvedBySource": {
       "anas": 116,
-      "abdelbaset": 620
+      "abdelbaset": 648
     },
     "approvedByMainSkill": {
       "skill_verbal_17": 48,
