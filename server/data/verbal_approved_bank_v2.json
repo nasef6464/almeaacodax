@@ -6503,5 +6503,485 @@
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
     "answerEvidence": "Approved-source text/options + covering/encirclement relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T09-P025-Q002",
+    "canonicalId": "VERBAL26-AMER-T09-P025-Q002",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 25,
+    "sourceQuestionNumber": 2,
+    "mainSkillId": "skill_verbal_08",
+    "subSkillId": "sub_verbal_06_2",
+    "text": "شجرة : نخلة",
+    "options": [
+      "غصن : جذع",
+      "طائرة : وقود",
+      "سيارة : فورد",
+      "يوم : أسابيع"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + type/classification relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T09-P025-Q003",
+    "canonicalId": "VERBAL26-AMER-T09-P025-Q003",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 25,
+    "sourceQuestionNumber": 3,
+    "mainSkillId": "skill_verbal_08",
+    "subSkillId": "sub_verbal_06_2",
+    "text": "كهرباء : طاقة",
+    "options": [
+      "صحن : أواني",
+      "شجرة : نبات",
+      "معادن : حديد",
+      "سقوط : تأرجح"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + type/classification relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T09-P025-Q004",
+    "canonicalId": "VERBAL26-AMER-T09-P025-Q004",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 25,
+    "sourceQuestionNumber": 4,
+    "mainSkillId": "skill_verbal_08",
+    "subSkillId": "sub_verbal_06_2",
+    "text": "سمك : تونة",
+    "options": [
+      "زنك : معادن",
+      "بحر : قارب",
+      "نحلة : رحيق",
+      "خضروات : كوسة"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + type/classification relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T09-P025-Q005",
+    "canonicalId": "VERBAL26-AMER-T09-P025-Q005",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 25,
+    "sourceQuestionNumber": 5,
+    "mainSkillId": "skill_verbal_08",
+    "subSkillId": "sub_verbal_06_2",
+    "text": "شجر : سدر",
+    "options": [
+      "طيور : نسر",
+      "كوخ : قصر",
+      "جندي : كتيبة",
+      "بناية : ترميم"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + type/classification relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T09-P025-Q006",
+    "canonicalId": "VERBAL26-AMER-T09-P025-Q006",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 25,
+    "sourceQuestionNumber": 6,
+    "mainSkillId": "skill_verbal_08",
+    "subSkillId": "sub_verbal_06_2",
+    "text": "عبادات : صوم",
+    "options": [
+      "آثام : عقوق",
+      "دعاء : أذكار",
+      "جبال : تل",
+      "دجلة : أنهار"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + type/classification relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T09-P025-Q007",
+    "canonicalId": "VERBAL26-AMER-T09-P025-Q007",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 25,
+    "sourceQuestionNumber": 7,
+    "mainSkillId": "skill_verbal_08",
+    "subSkillId": "sub_verbal_06_2",
+    "text": "أدلة : بصمات",
+    "options": [
+      "أجهزة : هاتف",
+      "نحاس : معادن",
+      "ورق : أقلام",
+      "شهر : سنة"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + type/classification relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T09-P026-Q008",
+    "canonicalId": "VERBAL26-AMER-T09-P026-Q008",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 26,
+    "sourceQuestionNumber": 8,
+    "mainSkillId": "skill_verbal_08",
+    "subSkillId": "sub_verbal_06_2",
+    "text": "أجهزة : حاسب",
+    "options": [
+      "نحاس : معادن",
+      "ورق : أقلام",
+      "شهر : سنة",
+      "معادن : حديد"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + type/classification relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T09-P026-Q009",
+    "canonicalId": "VERBAL26-AMER-T09-P026-Q009",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 26,
+    "sourceQuestionNumber": 9,
+    "mainSkillId": "skill_verbal_08",
+    "subSkillId": "sub_verbal_06_2",
+    "text": "سنجاب : قوارض",
+    "options": [
+      "غوريلا : قرود",
+      "نسر : طيور",
+      "ثعبان : حية",
+      "حشرات : نمل"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + type/classification relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T09-P026-Q010",
+    "canonicalId": "VERBAL26-AMER-T09-P026-Q010",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 26,
+    "sourceQuestionNumber": 10,
+    "mainSkillId": "skill_verbal_08",
+    "subSkillId": "sub_verbal_06_2",
+    "text": "موز : فاكهة",
+    "options": [
+      "شعر : أدب",
+      "أربعاء : أسبوع",
+      "موت : نوم",
+      "ذنب : معصية"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + type/classification relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T09-P026-Q011",
+    "canonicalId": "VERBAL26-AMER-T09-P026-Q011",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 26,
+    "sourceQuestionNumber": 11,
+    "mainSkillId": "skill_verbal_08",
+    "subSkillId": "sub_verbal_06_2",
+    "text": "رمضان : شهر",
+    "options": [
+      "حاز : نال",
+      "أربعاء : أسبوع",
+      "حشد : جماعة",
+      "ياسمين : ورد"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + type/classification relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T09-P026-Q012",
+    "canonicalId": "VERBAL26-AMER-T09-P026-Q012",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 26,
+    "sourceQuestionNumber": 12,
+    "mainSkillId": "skill_verbal_08",
+    "subSkillId": "sub_verbal_06_2",
+    "text": "دخل : راتب",
+    "options": [
+      "شيخ : كبير",
+      "أعلاف : برسيم",
+      "دراسة : مدرسة",
+      "حي : مدينة"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + type/classification relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T09-P026-Q013",
+    "canonicalId": "VERBAL26-AMER-T09-P026-Q013",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 26,
+    "sourceQuestionNumber": 13,
+    "mainSkillId": "skill_verbal_08",
+    "subSkillId": "sub_verbal_06_2",
+    "text": "سبعة : أعداد",
+    "options": [
+      "نهار : أيام",
+      "أذن : حواس",
+      "كتاب : عنوان",
+      "ثمانية : تسعة"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + type/classification relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T10-P027-Q001",
+    "canonicalId": "VERBAL26-AMER-T10-P027-Q001",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 27,
+    "sourceQuestionNumber": 1,
+    "mainSkillId": "skill_verbal_07",
+    "subSkillId": "sub_verbal_05_3",
+    "text": "قمح : طحن",
+    "options": [
+      "سيف : صقل",
+      "ليل : ظلام",
+      "لقاح : بذر",
+      "طبق : مطبخ"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + need/necessity relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T10-P027-Q002",
+    "canonicalId": "VERBAL26-AMER-T10-P027-Q002",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 27,
+    "sourceQuestionNumber": 2,
+    "mainSkillId": "skill_verbal_07",
+    "subSkillId": "sub_verbal_05_3",
+    "text": "أشجار : ماء",
+    "options": [
+      "جوال : شحن",
+      "شاعر : قصيدة",
+      "تأمل : تفكر",
+      "بقر : لبن"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + need/necessity relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T10-P027-Q003",
+    "canonicalId": "VERBAL26-AMER-T10-P027-Q003",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 27,
+    "sourceQuestionNumber": 3,
+    "mainSkillId": "skill_verbal_07",
+    "subSkillId": "sub_verbal_05_3",
+    "text": "باب : مفتاح",
+    "options": [
+      "شباك : رياح",
+      "طريق : سكة",
+      "بطيخ : سكري",
+      "حرب : بلد"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + need/necessity relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T10-P027-Q004",
+    "canonicalId": "VERBAL26-AMER-T10-P027-Q004",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 27,
+    "sourceQuestionNumber": 4,
+    "mainSkillId": "skill_verbal_07",
+    "subSkillId": "sub_verbal_05_3",
+    "text": "طفل : رعاية",
+    "options": [
+      "مريض : علاج",
+      "حمية : سمنة",
+      "مخطط : بناء",
+      "بطء : تمهل"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + need/necessity relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T10-P027-Q005",
+    "canonicalId": "VERBAL26-AMER-T10-P027-Q005",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 27,
+    "sourceQuestionNumber": 5,
+    "mainSkillId": "skill_verbal_07",
+    "subSkillId": "sub_verbal_05_3",
+    "text": "خطأ : اعتذار",
+    "options": [
+      "عرين : رأس",
+      "سجن : عقوبة",
+      "ذنب : توبة",
+      "أمن : سلامة"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + need/necessity relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T10-P027-Q006",
+    "canonicalId": "VERBAL26-AMER-T10-P027-Q006",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 27,
+    "sourceQuestionNumber": 6,
+    "mainSkillId": "skill_verbal_07",
+    "subSkillId": "sub_verbal_05_3",
+    "text": "مجتمع : بناء",
+    "options": [
+      "وطن : دفاع",
+      "نشأة : تربية",
+      "فصل : كتاب",
+      "عليل : كليل"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + need/necessity relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T10-P027-Q007",
+    "canonicalId": "VERBAL26-AMER-T10-P027-Q007",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 27,
+    "sourceQuestionNumber": 7,
+    "mainSkillId": "skill_verbal_07",
+    "subSkillId": "sub_verbal_05_3",
+    "text": "سيارة : وقود",
+    "options": [
+      "إنسان : غذاء",
+      "غزال : فهد",
+      "سمك : صيد",
+      "ناقة : جمل"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + need/necessity relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T10-P027-Q010",
+    "canonicalId": "VERBAL26-AMER-T10-P027-Q010",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 27,
+    "sourceQuestionNumber": 10,
+    "mainSkillId": "skill_verbal_07",
+    "subSkillId": "sub_verbal_05_3",
+    "text": "ذنب : استغفار",
+    "options": [
+      "نعمة : شكر",
+      "جوع : طعام",
+      "نوم : نشاط",
+      "حقير : ذنب"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + need/necessity relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T10-P027-Q011",
+    "canonicalId": "VERBAL26-AMER-T10-P027-Q011",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 27,
+    "sourceQuestionNumber": 11,
+    "mainSkillId": "skill_verbal_07",
+    "subSkillId": "sub_verbal_05_3",
+    "text": "جوع : طعام",
+    "options": [
+      "ذنب : استغفار",
+      "ماء : ارتواء",
+      "غصن : عش",
+      "ممثل : مسرحية"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + need/necessity relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T10-P027-Q012",
+    "canonicalId": "VERBAL26-AMER-T10-P027-Q012",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 27,
+    "sourceQuestionNumber": 12,
+    "mainSkillId": "skill_verbal_07",
+    "subSkillId": "sub_verbal_05_3",
+    "text": "حر : مكيف",
+    "options": [
+      "حرارة : ترمومتر",
+      "برد : شتاء",
+      "صيف : خريف",
+      "مطر : مظلة"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + need/necessity relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T10-P027-Q013",
+    "canonicalId": "VERBAL26-AMER-T10-P027-Q013",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 27,
+    "sourceQuestionNumber": 13,
+    "mainSkillId": "skill_verbal_07",
+    "subSkillId": "sub_verbal_05_3",
+    "text": "وقت : تنظيم",
+    "options": [
+      "متفوق : تكريم",
+      "تجربة : عمل",
+      "مال : تدبير",
+      "قاض : حكم"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + need/necessity relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T10-P027-Q014",
+    "canonicalId": "VERBAL26-AMER-T10-P027-Q014",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 27,
+    "sourceQuestionNumber": 14,
+    "mainSkillId": "skill_verbal_07",
+    "subSkillId": "sub_verbal_05_3",
+    "text": "أسلوب : تنميق",
+    "options": [
+      "رسم : تطبيق",
+      "دراسة : تعليق",
+      "حديقة : تنسيق",
+      "مهارة : تضييق"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + need/necessity relation verification."
   }
 ]
