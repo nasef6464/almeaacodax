@@ -2671,5 +2671,7 @@
       "evidence": "Training 10 begins on printed page 27 and numbering reaches 22 on printed page 28 before later relation notes.",
       "answerPolicy": "No answer is approved from semantic inference alone. Exact options and independently verified/source-backed key are required."
     }
-  ]
+  ],
+  "migrationReady": false,
+  "migrationReadinessReason": "Canonical approved bank is still under source QA/recovery; production import/migration must remain blocked until this flag is true and 22/76 coverage is complete."
 }
