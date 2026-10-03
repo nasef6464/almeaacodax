@@ -14533,5 +14533,68 @@
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
     "answerEvidence": "Direct approved source; text, options and semantic completion verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T23-P064-Q016",
+    "canonicalId": "VERBAL26-AMER-T23-P064-Q016",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 64,
+    "sourceQuestionNumber": 16,
+    "sourceTraining": 23,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "العيب في سفينتنا ليست ........ التي بدأت تلوح في الأفق بل في ........ تأكل جنباتها ونحن عنها غافلون.",
+    "options": [
+      "الغيوم – وقودنا",
+      "القراصنة – طعامنا",
+      "السفن – أطرافها",
+      "العاصفة – الفئران"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct approved source, Amer T23 p.64; independently verified from sentence meaning and grammar."
+  },
+  {
+    "id": "VERBAL26-AMER-T23-P064-Q024",
+    "canonicalId": "VERBAL26-AMER-T23-P064-Q024",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 64,
+    "sourceQuestionNumber": 24,
+    "sourceTraining": 23,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "يسعى ....... لتعليم الطلاب ليصبحوا متفوقين ويحققوا الإنجازات ويفيدوا بلدهم .... دخولهم المجال الوظيفي.",
+    "options": [
+      "النظام – قبل",
+      "التعليم – حين",
+      "المعلم – بعد",
+      "المجتمع – أثناء"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct approved source, Amer T23 p.64; independently verified from sentence meaning and grammar."
+  },
+  {
+    "id": "VERBAL26-AMER-T24-P065-Q003",
+    "canonicalId": "VERBAL26-AMER-T24-P065-Q003",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 65,
+    "sourceQuestionNumber": 3,
+    "sourceTraining": 24,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "الأصدقاء الحقيقيون: يصعب ..........، ويستحيل .......",
+    "options": [
+      "وجودهم – تذكرهم",
+      "عدهم – عودتهم",
+      "مصاحبتهم – قتلهم",
+      "تركهم – نسيانهم"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct approved source, Amer T24 p.65; independently verified from sentence meaning and grammar."
   }
 ]
