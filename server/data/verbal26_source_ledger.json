@@ -19,10 +19,10 @@
       "documentCode": "VERBAL26-ANAS",
       "title": "تأسيس لفظي انس.pdf",
       "pdfPages": 43,
-      "status": "SOURCE_INVENTORY_COMPLETE_KEY_QA_PARTIAL",
+      "status": "SOURCE_INVENTORY_COMPLETE_KEY_QA_PROGRESSING",
       "observedQuestions": 135,
-      "keyVerifiedQuestions": 112,
-      "conflictQuestions": 23
+      "keyVerifiedQuestions": 119,
+      "conflictQuestions": 16
     },
     {
       "documentCode": "VERBAL26-AMER",
@@ -506,8 +506,8 @@
           "sourcePrintedPage": 5,
           "sourceQuestionNumber": 13,
           "canonicalId": "VERBAL26-ANAS-P006-Q013",
-          "mainSkillId": "skill_verbal_17",
-          "subSkillId": "sub_verbal_11_2",
+          "mainSkillId": "skill_verbal_18",
+          "subSkillId": "sub_verbal_11_3",
           "answerLetter": "B",
           "answerEvidencePdfPage": 9,
           "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
@@ -858,8 +858,8 @@
           "sourcePrintedPage": 7,
           "sourceQuestionNumber": 35,
           "canonicalId": "VERBAL26-ANAS-P008-Q035",
-          "mainSkillId": "skill_verbal_17",
-          "subSkillId": "sub_verbal_11_2",
+          "mainSkillId": "skill_verbal_18",
+          "subSkillId": "sub_verbal_11_3",
           "answerLetter": "D",
           "answerEvidencePdfPage": 9,
           "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
@@ -908,8 +908,8 @@
           "answerEvidencePdfPage": 16,
           "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
           "notes": "Answer key visually verified from the book key table. Exact text/options and fine-grained 22/76 subskill classification remain pending before approval.",
-          "mainSkillId": "skill_verbal_11",
-          "subSkillId": "sub_verbal_08_1"
+          "mainSkillId": "skill_verbal_10",
+          "subSkillId": "sub_verbal_07_1"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -1762,9 +1762,11 @@
           "canonicalId": "VERBAL26-ANAS-ODD-P032-Q001",
           "candidateAnswerLetterFromKey": "D",
           "answerEvidencePdfPage": 33,
-          "status": "SOURCE_CONFLICT_REVIEW_REQUIRED",
+          "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
           "conflict": "Question page exposes 23 numbered items while the following answer-key table contains entries 1-25 and duplicates the same key pattern seen in the preceding analogy section. Do not approve automatically.",
-          "notes": "Visual source review and independent semantic answer validation required before approval."
+          "notes": "Visual source review and independent semantic answer validation required before approval.",
+          "mainSkillId": "skill_verbal_13",
+          "subSkillId": "sub_verbal_09_2"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -1777,9 +1779,11 @@
           "canonicalId": "VERBAL26-ANAS-ODD-P032-Q002",
           "candidateAnswerLetterFromKey": "D",
           "answerEvidencePdfPage": 33,
-          "status": "SOURCE_CONFLICT_REVIEW_REQUIRED",
+          "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
           "conflict": "Question page exposes 23 numbered items while the following answer-key table contains entries 1-25 and duplicates the same key pattern seen in the preceding analogy section. Do not approve automatically.",
-          "notes": "Visual source review and independent semantic answer validation required before approval."
+          "notes": "Visual source review and independent semantic answer validation required before approval.",
+          "mainSkillId": "skill_verbal_13",
+          "subSkillId": "sub_verbal_09_2"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -1792,9 +1796,11 @@
           "canonicalId": "VERBAL26-ANAS-ODD-P032-Q003",
           "candidateAnswerLetterFromKey": "B",
           "answerEvidencePdfPage": 33,
-          "status": "SOURCE_CONFLICT_REVIEW_REQUIRED",
+          "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
           "conflict": "Question page exposes 23 numbered items while the following answer-key table contains entries 1-25 and duplicates the same key pattern seen in the preceding analogy section. Do not approve automatically.",
-          "notes": "Visual source review and independent semantic answer validation required before approval."
+          "notes": "Visual source review and independent semantic answer validation required before approval.",
+          "mainSkillId": "skill_verbal_13",
+          "subSkillId": "sub_verbal_09_2"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -1807,9 +1813,11 @@
           "canonicalId": "VERBAL26-ANAS-ODD-P032-Q004",
           "candidateAnswerLetterFromKey": "B",
           "answerEvidencePdfPage": 33,
-          "status": "SOURCE_CONFLICT_REVIEW_REQUIRED",
+          "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
           "conflict": "Question page exposes 23 numbered items while the following answer-key table contains entries 1-25 and duplicates the same key pattern seen in the preceding analogy section. Do not approve automatically.",
-          "notes": "Visual source review and independent semantic answer validation required before approval."
+          "notes": "Visual source review and independent semantic answer validation required before approval.",
+          "mainSkillId": "skill_verbal_13",
+          "subSkillId": "sub_verbal_09_2"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -1822,9 +1830,11 @@
           "canonicalId": "VERBAL26-ANAS-ODD-P032-Q005",
           "candidateAnswerLetterFromKey": "C",
           "answerEvidencePdfPage": 33,
-          "status": "SOURCE_CONFLICT_REVIEW_REQUIRED",
+          "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
           "conflict": "Question page exposes 23 numbered items while the following answer-key table contains entries 1-25 and duplicates the same key pattern seen in the preceding analogy section. Do not approve automatically.",
-          "notes": "Visual source review and independent semantic answer validation required before approval."
+          "notes": "Visual source review and independent semantic answer validation required before approval.",
+          "mainSkillId": "skill_verbal_13",
+          "subSkillId": "sub_verbal_09_5"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -1837,9 +1847,11 @@
           "canonicalId": "VERBAL26-ANAS-ODD-P032-Q006",
           "candidateAnswerLetterFromKey": "C",
           "answerEvidencePdfPage": 33,
-          "status": "SOURCE_CONFLICT_REVIEW_REQUIRED",
+          "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
           "conflict": "Question page exposes 23 numbered items while the following answer-key table contains entries 1-25 and duplicates the same key pattern seen in the preceding analogy section. Do not approve automatically.",
-          "notes": "Visual source review and independent semantic answer validation required before approval."
+          "notes": "Visual source review and independent semantic answer validation required before approval.",
+          "mainSkillId": "skill_verbal_14",
+          "subSkillId": "sub_verbal_09_4"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -1852,9 +1864,11 @@
           "canonicalId": "VERBAL26-ANAS-ODD-P032-Q007",
           "candidateAnswerLetterFromKey": "D",
           "answerEvidencePdfPage": 33,
-          "status": "SOURCE_CONFLICT_REVIEW_REQUIRED",
+          "status": "APPROVED_VISUAL_TEXT_OPTIONS_SOURCE_KEY_TAXONOMY",
           "conflict": "Question page exposes 23 numbered items while the following answer-key table contains entries 1-25 and duplicates the same key pattern seen in the preceding analogy section. Do not approve automatically.",
-          "notes": "Visual source review and independent semantic answer validation required before approval."
+          "notes": "Visual source review and independent semantic answer validation required before approval.",
+          "mainSkillId": "skill_verbal_13",
+          "subSkillId": "sub_verbal_09_1"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -2510,7 +2524,7 @@
   ],
   "metrics": {
     "sourceKeyVerifiedRecords": 112,
-    "approvedBankRecords": 87,
+    "approvedBankRecords": 94,
     "note": "Ledger records are not approved-bank records until visual text/options and taxonomy QA pass.",
     "sourceConflictRecords": 23,
     "anasObservedQuestions": 135,
