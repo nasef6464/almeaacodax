@@ -2554,7 +2554,7 @@
   ],
   "metrics": {
     "sourceKeyVerifiedRecords": 112,
-    "approvedBankRecords": 308,
+    "approvedBankRecords": 624,
     "note": "Ledger records are not approved-bank records until visual text/options and taxonomy QA pass.",
     "sourceConflictRecords": 23,
     "anasObservedQuestions": 135,
@@ -2577,7 +2577,7 @@
     },
     "approvedBySource": {
       "anas": 109,
-      "abdelbaset": 199
+      "abdelbaset": 515
     },
     "approvedByMainSkill": {
       "skill_verbal_17": 33,
@@ -2601,7 +2601,7 @@
       "skill_verbal_13": 6,
       "skill_verbal_14": 1
     },
-    "approvedSubSkillCoverage": 43,
+    "approvedSubSkillCoverage": 47,
     "approvedMainSkillCoverage": 22
   },
   "amerBatches": [
@@ -2746,5 +2746,5 @@
   ],
   "migrationReady": false,
   "migrationReadinessReason": "Canonical approved bank is still under source QA/recovery; production import/migration must remain blocked until this flag is true and 22/76 coverage is complete.",
-  "progressNote": "Canonical bank is growing from the two approved PDFs only. Duplicate contract cleaned. Migration remains explicitly blocked until migrationReady=true and 22/76 coverage is complete."
+  "progressNote": "Canonical bank now contains 624 source-controlled approved records; exact normalized duplicates=0. Migration remains blocked until full-book QA and 76/76 subskill coverage complete."
 }
