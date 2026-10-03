@@ -2554,7 +2554,7 @@
   ],
   "metrics": {
     "sourceKeyVerifiedRecords": 112,
-    "approvedBankRecords": 246,
+    "approvedBankRecords": 308,
     "note": "Ledger records are not approved-bank records until visual text/options and taxonomy QA pass.",
     "sourceConflictRecords": 23,
     "anasObservedQuestions": 135,
@@ -2577,7 +2577,7 @@
     },
     "approvedBySource": {
       "anas": 109,
-      "abdelbaset": 137
+      "abdelbaset": 199
     },
     "approvedByMainSkill": {
       "skill_verbal_17": 33,
@@ -2601,8 +2601,8 @@
       "skill_verbal_13": 6,
       "skill_verbal_14": 1
     },
-    "approvedSubSkillCoverage": 36,
-    "approvedMainSkillCoverage": 20
+    "approvedSubSkillCoverage": 43,
+    "approvedMainSkillCoverage": 22
   },
   "amerBatches": [
     {
