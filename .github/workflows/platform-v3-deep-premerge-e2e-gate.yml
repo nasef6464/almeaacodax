@@ -412,3 +412,27 @@ jobs:
           if [ -f /tmp/platform-v3-deep-api.pid ]; then
             kill "$(cat /tmp/platform-v3-deep-api.pid)" 2>/dev/null || true
           fi
+
+  col26-production-import:
+    name: COL26 V7 guarded production import
+    if: ${{ github.event.pull_request.head.ref == 'col26/import-runner-v7' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      SMOKE_ADMIN_TOKEN: ${{ secrets.SMOKE_ADMIN_TOKEN }}
+    steps:
+      - name: Checkout exact COL26 head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 1
+      - name: Run guarded COL26 canary then full Draft import
+        run: bash scripts/ci-col26-v7-production-import.sh
+      - name: Upload non-secret COL26 reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: col26-v7-import-${{ github.run_id }}
+          path: /tmp/col26-*.json
+          if-no-files-found: ignore
+          retention-days: 7
