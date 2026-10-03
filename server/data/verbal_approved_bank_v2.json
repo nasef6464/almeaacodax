@@ -15745,5 +15745,143 @@
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_TEXT_VERIFIED",
     "answerEvidence": "Direct Amer source p.95; answer explicit from passage."
+  },
+  {
+    "id": "VERBAL26-AMER-T33-P098-QURAN-Q001",
+    "canonicalId": "VERBAL26-AMER-T33-P098-QURAN-Q001",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 98,
+    "sourceQuestionNumber": 1,
+    "sourceTraining": 33,
+    "passageId": "VERBAL26-AMER-PASSAGE-QURAN-MANUSCRIPT",
+    "passageText": "أدرج المركز الوطني لحماية المصنفات القديمة في الصين أقدم نسخة مخطوطة للقرآن على قائمة المصنفات القديمة النفيسة. تتكون النسخة من 30 جزءًا في 681 ورقة، وتحفظ في مسجد جيه تسي في مقاطعة تشينغهاي، وقد أحضرها أسلاف قومية سالار الذين هاجروا من آسيا الوسطى قبل 700 عام. شاركت النسخة في معرض دولي بدمشق عام 1954 ووصفها خبراء بأنها نسخة نفيسة نادرة.",
+    "mainSkillId": "skill_verbal_20",
+    "subSkillId": "sub_verbal_12_6",
+    "text": "نسخة القرآن الكريم التي تتحدث عنها القطعة تعد من:",
+    "options": [
+      "أندر نسخ القرآن الكريم المخطوطة بالكامل في العالم",
+      "أقدم نسخ القرآن الكاملة في العالم",
+      "أندر نسخ القرآن الكريم المخطوطة بالكامل في الصين",
+      "أقدم نسخ القرآن الكاملة في الصين"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_TEXT_VERIFIED",
+    "answerEvidence": "Direct Amer source p.98; answer explicitly supported by passage."
+  },
+  {
+    "id": "VERBAL26-AMER-T33-P098-QURAN-Q002",
+    "canonicalId": "VERBAL26-AMER-T33-P098-QURAN-Q002",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 98,
+    "sourceQuestionNumber": 2,
+    "sourceTraining": 33,
+    "passageId": "VERBAL26-AMER-PASSAGE-QURAN-MANUSCRIPT",
+    "passageText": "أدرج المركز الوطني لحماية المصنفات القديمة في الصين أقدم نسخة مخطوطة للقرآن على قائمة المصنفات القديمة النفيسة. تتكون النسخة من 30 جزءًا في 681 ورقة، وتحفظ في مسجد جيه تسي في مقاطعة تشينغهاي، وقد أحضرها أسلاف قومية سالار الذين هاجروا من آسيا الوسطى قبل 700 عام. شاركت النسخة في معرض دولي بدمشق عام 1954 ووصفها خبراء بأنها نسخة نفيسة نادرة.",
+    "mainSkillId": "skill_verbal_20",
+    "subSkillId": "sub_verbal_12_6",
+    "text": "تعد المخطوطات ذات أهمية لأنها:",
+    "options": [
+      "تعد تراثًا ثقافيًا نادرًا",
+      "تشارك الدول الإسلامية",
+      "تعرض في معرض دولي",
+      "سبب في زيادة السياح"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_TEXT_VERIFIED",
+    "answerEvidence": "Direct Amer source p.98; answer explicitly supported by passage."
+  },
+  {
+    "id": "VERBAL26-AMER-T33-P098-QURAN-Q003",
+    "canonicalId": "VERBAL26-AMER-T33-P098-QURAN-Q003",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 98,
+    "sourceQuestionNumber": 3,
+    "sourceTraining": 33,
+    "passageId": "VERBAL26-AMER-PASSAGE-QURAN-MANUSCRIPT",
+    "passageText": "أدرج المركز الوطني لحماية المصنفات القديمة في الصين أقدم نسخة مخطوطة للقرآن على قائمة المصنفات القديمة النفيسة. تتكون النسخة من 30 جزءًا في 681 ورقة، وتحفظ في مسجد جيه تسي في مقاطعة تشينغهاي، وقد أحضرها أسلاف قومية سالار الذين هاجروا من آسيا الوسطى قبل 700 عام. شاركت النسخة في معرض دولي بدمشق عام 1954 ووصفها خبراء بأنها نسخة نفيسة نادرة.",
+    "mainSkillId": "skill_verbal_20",
+    "subSkillId": "sub_verbal_12_6",
+    "text": "لماذا اهتمت البلاد بهذه النسخة؟",
+    "options": [
+      "لأنها تزيد السياحة",
+      "لأنها تشارك في المعارض",
+      "لأنها نسخة نادرة وقديمة",
+      "لأنها حديثة ومتطورة"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_TEXT_VERIFIED",
+    "answerEvidence": "Direct Amer source p.98; answer explicitly supported by passage."
+  },
+  {
+    "id": "VERBAL26-AMER-T33-P098-QURAN-Q004",
+    "canonicalId": "VERBAL26-AMER-T33-P098-QURAN-Q004",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 98,
+    "sourceQuestionNumber": 4,
+    "sourceTraining": 33,
+    "passageId": "VERBAL26-AMER-PASSAGE-QURAN-MANUSCRIPT",
+    "passageText": "أدرج المركز الوطني لحماية المصنفات القديمة في الصين أقدم نسخة مخطوطة للقرآن على قائمة المصنفات القديمة النفيسة. تتكون النسخة من 30 جزءًا في 681 ورقة، وتحفظ في مسجد جيه تسي في مقاطعة تشينغهاي، وقد أحضرها أسلاف قومية سالار الذين هاجروا من آسيا الوسطى قبل 700 عام. شاركت النسخة في معرض دولي بدمشق عام 1954 ووصفها خبراء بأنها نسخة نفيسة نادرة.",
+    "mainSkillId": "skill_verbal_20",
+    "subSkillId": "sub_verbal_12_6",
+    "text": "لماذا تهتم الشعوب باقتناء الكتب النادرة؟",
+    "options": [
+      "ليستخدموها في السياحة",
+      "ليدخلوا بها مؤتمرات",
+      "لحفظ الثقافة والتراث النادر والنفيس",
+      "للمحبة والمودة بين الشعوب"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_TEXT_VERIFIED",
+    "answerEvidence": "Direct Amer source p.98; answer explicitly supported by passage."
+  },
+  {
+    "id": "VERBAL26-AMER-T33-P098-QURAN-Q005",
+    "canonicalId": "VERBAL26-AMER-T33-P098-QURAN-Q005",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 98,
+    "sourceQuestionNumber": 5,
+    "sourceTraining": 33,
+    "passageId": "VERBAL26-AMER-PASSAGE-QURAN-MANUSCRIPT",
+    "passageText": "أدرج المركز الوطني لحماية المصنفات القديمة في الصين أقدم نسخة مخطوطة للقرآن على قائمة المصنفات القديمة النفيسة. تتكون النسخة من 30 جزءًا في 681 ورقة، وتحفظ في مسجد جيه تسي في مقاطعة تشينغهاي، وقد أحضرها أسلاف قومية سالار الذين هاجروا من آسيا الوسطى قبل 700 عام. شاركت النسخة في معرض دولي بدمشق عام 1954 ووصفها خبراء بأنها نسخة نفيسة نادرة.",
+    "mainSkillId": "skill_verbal_20",
+    "subSkillId": "sub_verbal_12_6",
+    "text": "تعتبر المخطوطة المذكورة بالنص:",
+    "options": [
+      "من أقدم المخطوطات في العالم",
+      "من أجمل المخطوطات في العالم",
+      "من أندر المخطوطات في الصين",
+      "ليست ذات أهمية"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_TEXT_VERIFIED",
+    "answerEvidence": "Direct Amer source p.98; answer explicitly supported by passage."
+  },
+  {
+    "id": "VERBAL26-AMER-T33-P098-QURAN-Q006",
+    "canonicalId": "VERBAL26-AMER-T33-P098-QURAN-Q006",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 98,
+    "sourceQuestionNumber": 6,
+    "sourceTraining": 33,
+    "passageId": "VERBAL26-AMER-PASSAGE-QURAN-MANUSCRIPT",
+    "passageText": "أدرج المركز الوطني لحماية المصنفات القديمة في الصين أقدم نسخة مخطوطة للقرآن على قائمة المصنفات القديمة النفيسة. تتكون النسخة من 30 جزءًا في 681 ورقة، وتحفظ في مسجد جيه تسي في مقاطعة تشينغهاي، وقد أحضرها أسلاف قومية سالار الذين هاجروا من آسيا الوسطى قبل 700 عام. شاركت النسخة في معرض دولي بدمشق عام 1954 ووصفها خبراء بأنها نسخة نفيسة نادرة.",
+    "mainSkillId": "skill_verbal_19",
+    "subSkillId": "sub_verbal_12_1",
+    "text": "العنوان المناسب للقطعة:",
+    "options": [
+      "أقدم نسخ القرآن",
+      "القرآن الكريم",
+      "تشكيل المصحف",
+      "كتابة المصحف"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_TEXT_VERIFIED",
+    "answerEvidence": "Direct Amer source p.98; answer explicitly supported by passage."
   }
 ]
