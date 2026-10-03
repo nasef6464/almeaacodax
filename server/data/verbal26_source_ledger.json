@@ -2559,14 +2559,14 @@
   ],
   "metrics": {
     "sourceKeyVerifiedRecords": 112,
-    "approvedBankRecords": 788,
+    "approvedBankRecords": 817,
     "note": "Ledger records are not approved-bank records until visual text/options and taxonomy QA pass.",
     "sourceConflictRecords": 23,
     "anasObservedQuestions": 135,
     "anasKeyVerifiedQuestions": 112,
     "anasConflictQuestions": 23,
     "amerTrainingsIndexed": 33,
-    "amerApprovedRecords": 672,
+    "amerApprovedRecords": 701,
     "amerDerivedReportCrossCheck": 938,
     "amerDerivedReportIsAuthority": false,
     "amerObservedQuestionCounts": {
@@ -2606,7 +2606,7 @@
     },
     "approvedBySource": {
       "anas": 116,
-      "abdelbaset": 672
+      "abdelbaset": 701
     },
     "approvedByMainSkill": {
       "skill_verbal_17": 48,
@@ -2806,6 +2806,49 @@
     }
   ],
   "migrationReady": false,
-  "migrationReadinessReason": "Canonical approved bank is still under source QA/recovery; production import/migration must remain blocked until this flag is true and 22/76 coverage is complete.",
-  "progressNote": "Canonical bank now contains 624 source-controlled approved records; exact normalized duplicates=0. Migration remains blocked until full-book QA and 76/76 subskill coverage complete."
+  "migrationReadinessReason": "Full-book source QA is still incomplete. Migration remains blocked until both books are fully accounted, dedupe/source contracts pass, and all unresolved answers are quarantined or resolved.",
+  "progressNote": "Canonical bank contains 817 approved records (Amer 701, Anas 116). Amer T29 is fully accounted: 29 canonical + 5 quarantine. Migration remains blocked pending remaining Amer/Anas gaps and final contracts.",
+  "amerCoverageByTraining": {
+    "29": {
+      "expectedObserved": 34,
+      "canonicalApproved": 29,
+      "quarantined": 5,
+      "duplicates": 0,
+      "excludedNonQuestionExamples": 0,
+      "remainingDelta": 0,
+      "sourcePages": [
+        83,
+        84,
+        85
+      ],
+      "status": "ACCOUNTED_WITH_QUARANTINE",
+      "quarantine": [
+        {
+          "page": 83,
+          "question": 2,
+          "reason": "direction/elevation wording requires visual recheck"
+        },
+        {
+          "page": 84,
+          "question": 2,
+          "reason": "no uniquely supported option from parsed text"
+        },
+        {
+          "page": 85,
+          "question": 1,
+          "reason": "parsed options corrupted"
+        },
+        {
+          "page": 85,
+          "question": 4,
+          "reason": "first option corrupted in parsed text"
+        },
+        {
+          "page": 85,
+          "question": 5,
+          "reason": "semantic option wording requires visual recheck"
+        }
+      ]
+    }
+  }
 }
