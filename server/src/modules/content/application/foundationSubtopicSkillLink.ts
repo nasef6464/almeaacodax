@@ -203,30 +203,31 @@ export async function syncFoundationTopicResourcesToSkill(
   if (previous.length === 0 && next.length === 0) return;
 
   const removed = previous.filter((skillId) => !next.includes(skillId));
-  const update: Record<string, unknown> = {};
-  if (removed.length > 0) {
-    update.$pull = { skillIds: { $in: removed } };
-  }
-  if (next.length > 0) {
-    update.$addToSet = { skillIds: { $each: next } };
-  }
-
   const lessonIds = normalizeIds(topic.lessonIds);
   const quizIds = normalizeIds(topic.quizIds);
   const libraryItemIds = normalizeIds(topic.libraryItemIds);
 
+  const syncCollection = async (
+    model: typeof LessonModel | typeof QuizModel | typeof LibraryItemModel,
+    query: Record<string, unknown>,
+  ) => {
+    if (removed.length > 0) {
+      await model.updateMany(query, { $pull: { skillIds: { $in: removed } } } as any);
+    }
+    if (next.length > 0) {
+      await model.updateMany(query, { $addToSet: { skillIds: { $each: next } } } as any);
+    }
+  };
+
   await Promise.all([
     lessonIds.length
-      ? LessonModel.updateMany(buildDocumentsByIdsQuery(lessonIds), update)
+      ? syncCollection(LessonModel, buildDocumentsByIdsQuery(lessonIds))
       : Promise.resolve(),
     quizIds.length
-      ? QuizModel.updateMany(
-          { $or: [{ id: { $in: quizIds } }, { _id: { $in: quizIds } }] },
-          update,
-        )
+      ? syncCollection(QuizModel, { $or: [{ id: { $in: quizIds } }, { _id: { $in: quizIds } }] })
       : Promise.resolve(),
     libraryItemIds.length
-      ? LibraryItemModel.updateMany(buildDocumentsByIdsQuery(libraryItemIds), update)
+      ? syncCollection(LibraryItemModel, buildDocumentsByIdsQuery(libraryItemIds))
       : Promise.resolve(),
   ]);
 }
