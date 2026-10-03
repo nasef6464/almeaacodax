@@ -1736,6 +1736,17 @@ const ReviewSolutions = ({
               );
             })}
           </div>
+          {questionFilterCounts.wrong > 0 && (
+            <div className="mt-3 pt-3 border-t border-slate-100">
+              <Link
+                to="/favorites?tab=mistakes"
+                className="w-full py-2 rounded-xl text-xs font-black bg-rose-50 border border-rose-200 text-rose-700 hover:bg-rose-100 transition-all text-center flex items-center justify-center gap-1.5"
+              >
+                <Sparkles size={13} />
+                <span>تدرب على أخطائك في بنك المراجعة ({questionFilterCounts.wrong})</span>
+              </Link>
+            </div>
+          )}
         </details>
 
         {/* Sidebar Column: Sticky Review Board (desktop) */}
@@ -1873,6 +1884,16 @@ const ReviewSolutions = ({
             </div>
 
             {/* Sidebar Bottom Action Button */}
+            {questionFilterCounts.wrong > 0 && (
+              <Link
+                to="/favorites?tab=mistakes"
+                className="w-full py-2.5 rounded-2xl text-xs font-black bg-rose-50 border border-rose-200 text-rose-700 hover:bg-rose-100 transition-all text-center flex items-center justify-center gap-1.5"
+              >
+                <Sparkles size={14} />
+                <span>تدرب على أخطائك في بنك المراجعة ({questionFilterCounts.wrong})</span>
+              </Link>
+            )}
+
             <button
               type="button"
               onClick={onBack}

@@ -7,6 +7,7 @@ export interface SavedQuizPageProgress {
   currentQuestionIndex: number;
   timeLeft: number | null;
   savedAt: string;
+  flaggedQuestionIds?: string[];
 }
 
 export const getQuizProgressStorageKey = (quizId: string) => `${QUIZ_PAGE_PROGRESS_PREFIX}${quizId}`;

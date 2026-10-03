@@ -1,4 +1,4 @@
-﻿import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   AlertTriangle, Award, BarChart3, CheckCircle2,
   ChevronRight, Download, Printer, Trophy, Users,
@@ -58,12 +58,12 @@ export const ClassReportPanel: React.FC<ClassReportPanelProps> = ({
     const withAttempts = filteredStudents.filter((s) => s.attempts > 0);
     const avg = withAttempts.length
       ? Math.round(withAttempts.reduce((t, s) => t + s.average, 0) / withAttempts.length) : 0;
-    const highest = withAttempts.reduce((best, s) => s.average > best ? s.average : best, 0);
-    const lowest = withAttempts.reduce((low, s) => s.average < low ? s.average : low, 100);
+    const highest = withAttempts.length ? withAttempts.reduce((best, s) => s.average > best ? s.average : best, 0) : 0;
+    const lowest = withAttempts.length ? withAttempts.reduce((low, s) => s.average < low ? s.average : low, 100) : 0;
 
     const bandCounts = BANDS.map((band) => ({
       ...band,
-      students: filteredStudents.filter((s) => s.average >= band.min && s.average <= band.max),
+      students: withAttempts.filter((s) => s.average >= band.min && s.average <= band.max),
     }));
 
     // المهارات الأضعف للمجموعة
@@ -127,10 +127,17 @@ export const ClassReportPanel: React.FC<ClassReportPanelProps> = ({
 
       {/* ── توزيع الدرجات ── */}
       <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
-        <h4 className="text-sm font-black text-gray-800 mb-4">توزيع مستويات الطلاب</h4>
+        <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
+          <h4 className="text-sm font-black text-gray-800">توزيع مستويات الطلاب في الاختبار</h4>
+          {stats.total > stats.withAttempts ? (
+            <span className="text-xs font-bold text-gray-500 bg-gray-50 border border-gray-200 rounded-lg px-2.5 py-1">
+              {stats.total - stats.withAttempts} طالب لم يؤدوا الاختبار بعد
+            </span>
+          ) : null}
+        </div>
         <div className="space-y-3">
           {stats.bandCounts.map((band) => {
-            const pct = stats.total > 0 ? Math.round((band.students.length / stats.total) * 100) : 0;
+            const pct = stats.withAttempts > 0 ? Math.round((band.students.length / stats.withAttempts) * 100) : 0;
             return (
               <div key={band.label} className="flex items-center gap-3">
                 <div className={`w-20 shrink-0 rounded-lg border px-2 py-1 text-center text-xs font-black ${band.bg} ${band.color} ${band.border}`}>
