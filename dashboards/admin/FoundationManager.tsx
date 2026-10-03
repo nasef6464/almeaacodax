@@ -772,38 +772,45 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
               </div>
               {editingTopic.parentId ? (
                 <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-1">المهارة الفرعية المرتبطة <span className="text-red-600">— مطلوب</span></label>
-                  <select
-                    value={editingTopic.skillId || ''}
-                    onChange={(e) => {
-                      const selected = editingSubSkillOptions.find((option) => option.id === e.target.value);
-                      setEditingTopic({
-                        ...editingTopic,
-                        skillId: selected?.id || null,
-                        sectionId: selected?.sectionId || editingTopic.sectionId,
-                        pathId: selected?.pathId || editingTopic.pathId,
-                        subjectId: selected?.subjectId || editingTopic.subjectId || subjectId,
-                      });
-                    }}
-                    className="w-full p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none bg-white"
-                  >
-                    <option value="">اختر المهارة الفرعية — لا يمكن الحفظ بدونها</option>
+                  <label className="block text-sm font-bold text-gray-700 mb-1">
+                    المهارات الفرعية المرتبطة <span className="text-red-600">— اختر واحدة على الأقل</span>
+                  </label>
+                  <div className="max-h-56 space-y-2 overflow-y-auto rounded-xl border border-gray-200 bg-white p-3">
                     {editingSubSkillOptions.map((option) => {
-                      const usedBy = subjectTopics.find(
-                        (topic) =>
-                          topic.id !== editingTopic.id &&
-                          topic.parentId &&
-                          topic.skillId === option.id,
-                      );
+                      const selectedIds = getTopicSkillIds(editingTopic);
+                      const checked = selectedIds.includes(option.id);
                       return (
-                        <option key={option.id} value={option.id} disabled={Boolean(usedBy)}>
-                          {option.parentSkillName} ← {option.name}{usedBy ? ` — مرتبط بـ ${usedBy.title}` : ''}
-                        </option>
+                        <label key={option.id} className="flex cursor-pointer items-start gap-3 rounded-lg p-2 hover:bg-indigo-50">
+                          <input
+                            type="checkbox"
+                            checked={checked}
+                            onChange={(e) => {
+                              const currentIds = getTopicSkillIds(editingTopic);
+                              const nextIds = e.target.checked
+                                ? Array.from(new Set([...currentIds, option.id]))
+                                : currentIds.filter((skillId) => skillId !== option.id);
+                              const primary = editingSubSkillOptions.find((item) => item.id === nextIds[0]);
+                              setEditingTopic({
+                                ...editingTopic,
+                                skillId: nextIds[0] || null,
+                                skillIds: nextIds,
+                                sectionId: primary?.sectionId || editingTopic.sectionId,
+                                pathId: primary?.pathId || editingTopic.pathId,
+                                subjectId: primary?.subjectId || editingTopic.subjectId || subjectId,
+                              });
+                            }}
+                            className="mt-1 h-4 w-4 rounded text-indigo-600"
+                          />
+                          <span className="text-sm text-gray-700">
+                            <span className="font-bold">{option.name}</span>
+                            <span className="block text-xs text-gray-500">{option.parentSkillName}</span>
+                          </span>
+                        </label>
                       );
                     })}
-                  </select>
+                  </div>
                   <p className="mt-1.5 text-xs leading-5 text-gray-500">
-                    هذا هو الربط القانوني الذي تستخدمه التقارير والتعلم الذكي لفتح نفس موضوع التأسيس. يمكنك داخل الموضوع الواحد ربط أكثر من فيديو/درس وأكثر من تدريب وملف دعم، وكلها ترث نفس المهارة الفرعية.
+                    يمكنك ربط الموضوع بمهارة واحدة أو عدة مهارات فرعية من نفس المهارة الرئيسية. ويمكن استخدام المهارة نفسها في أكثر من موضوع تأسيسي. الدروس والتدريبات وملفات الدعم داخل الموضوع ترث جميع المهارات المختارة.
                   </p>
                 </div>
               ) : null}
@@ -838,10 +845,10 @@ export const FoundationManager: React.FC<FoundationManagerProps> = ({ subjectId 
             <div className="flex gap-3 mt-6">
               <button
                 onClick={handleSaveTopic}
-                disabled={Boolean(editingTopic.parentId && !editingTopic.skillId)}
+                disabled={Boolean(editingTopic.parentId && getTopicSkillIds(editingTopic).length === 0)}
                 className="flex-1 bg-indigo-600 disabled:bg-slate-300 disabled:cursor-not-allowed text-white py-3 rounded-xl font-bold hover:bg-indigo-700 disabled:hover:bg-slate-300 transition-colors"
               >
-                {editingTopic.parentId && !editingTopic.skillId ? 'اختر المهارة الفرعية أولًا' : 'حفظ'}
+                {editingTopic.parentId && getTopicSkillIds(editingTopic).length === 0 ? 'اختر مهارة واحدة على الأقل' : 'حفظ'}
               </button>
               <button 
                 onClick={() => setIsEditing(false)}
