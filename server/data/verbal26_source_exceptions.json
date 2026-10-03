@@ -26,9 +26,11 @@
       "sourceBook": "anas",
       "section": "إكمال الجمل",
       "questionRange": "14",
-      "status": "SOURCE_KEY_CONTRADICTION_REVIEW_REQUIRED",
+      "status": "RESOLVED_SOURCE_KEY_AND_SEMANTIC_VERIFIED",
       "observedQuestions": 1,
-      "reason": "The printed key does not agree with the source sentence/options; the record is excluded pending source-consistent adjudication."
+      "reason": "Direct source page 14 establishes the sentence/options; printed answer key on page 16 gives Q14=B, consistent with the sentence meaning. Added to canonical bank.",
+      "approvedQuestions": 1,
+      "quarantinedQuestions": 0
     },
     {
       "id": "ANAS-READING-HAJJ",
