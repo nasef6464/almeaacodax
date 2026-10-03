@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import * as fs from "node:fs";
+import * as path from "node:path";
 import { env } from "../config/env.js";
 import {
   VERBAL_PATH_ID,
@@ -33,6 +35,11 @@ const settings = (timeLimit: number, maxAttempts: number, passingScore: number) 
 
 export async function migrateVerbalTaxonomy22() {
   validateVerbalTaxonomyV2();
+  const ledgerPath = path.join(process.cwd(), "server", "data", "verbal26_source_ledger.json");
+  const ledger = fs.existsSync(ledgerPath) ? JSON.parse(fs.readFileSync(ledgerPath, "utf8")) : {};
+  if (ledger?.migrationReady !== true) {
+    throw new Error("Refusing migration: VERBAL26 canonical bank is not marked migrationReady.");
+  }
   await mongoose.connect(env.MONGODB_URI || "mongodb://localhost:27017/almeaa");
   let db = mongoose.connection.db;
   if (!db) throw new Error("Database connection failed");
