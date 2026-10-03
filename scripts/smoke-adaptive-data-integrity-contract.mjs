@@ -98,7 +98,7 @@ check('foundation admin requires at least one subskill, allows multiple subskill
     'يجب ربط كل موضوع تأسيسي فرعي بمهارة فرعية واحدة على الأقل قبل الحفظ.',
     'selectedSubSkills.some((selected) => selected.parentSkillId !== parentTopic.skillId)',
     'editingSubSkillOptions.map',
-    'يمكن ربط الموضوع بمهارة واحدة أو عدة مهارات فرعية',
+    'يمكنك ربط الموضوع بمهارة واحدة أو عدة مهارات فرعية',
     'يمكن استخدام المهارة نفسها في أكثر من موضوع تأسيسي',
     'getTopicSkillIds',
     'previousTopicSkillIds',
