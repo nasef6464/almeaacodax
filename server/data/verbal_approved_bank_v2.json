@@ -12323,5 +12323,225 @@
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
     "answerEvidence": "Approved-source text/options + direct link/classification verification."
+  },
+  {
+    "id": "VERBAL26-ANAS-ODD-P032-Q009",
+    "canonicalId": "VERBAL26-ANAS-ODD-P032-Q009",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 32,
+    "sourceQuestionNumber": 9,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "ضحى",
+      "صباح",
+      "ظهيرة",
+      "عشاء"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source page 32 options + independent semantic classification: ثلاثة ألفاظ لأوقات النهار، بينما «عشاء» لليل."
+  },
+  {
+    "id": "VERBAL26-ANAS-ODD-P032-Q011",
+    "canonicalId": "VERBAL26-ANAS-ODD-P032-Q011",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 32,
+    "sourceQuestionNumber": 11,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_1",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "قدوم",
+      "غياب",
+      "زوال",
+      "ذهاب"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source page 32 options + independent semantic classification: «قدوم» يدل على الوصول، والبقية تدل على الغياب/الانصراف."
+  },
+  {
+    "id": "VERBAL26-ANAS-ODD-P032-Q012",
+    "canonicalId": "VERBAL26-ANAS-ODD-P032-Q012",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 32,
+    "sourceQuestionNumber": 12,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "نعامة",
+      "بطريق",
+      "دجاجة",
+      "عصفور"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source page 32 options + independent semantic classification: «عصفور» طائر قادر على الطيران المعتاد بخلاف الثلاثة الأخرى في سياق التصنيف المقصود."
+  },
+  {
+    "id": "VERBAL26-ANAS-ODD-P032-Q014",
+    "canonicalId": "VERBAL26-ANAS-ODD-P032-Q014",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 32,
+    "sourceQuestionNumber": 14,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_1",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "نبيه",
+      "حاذق",
+      "فطن",
+      "جاهل"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source page 32 options + independent semantic classification: الثلاثة الأولى صفات للفطنة والمهارة، و«جاهل» يخالفها."
+  },
+  {
+    "id": "VERBAL26-ANAS-ODD-P032-Q015",
+    "canonicalId": "VERBAL26-ANAS-ODD-P032-Q015",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 32,
+    "sourceQuestionNumber": 15,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "أنف",
+      "شفة",
+      "عين",
+      "سمع"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source page 32 options + independent semantic classification: الثلاثة الأولى أعضاء، و«سمع» حاسة/وظيفة."
+  },
+  {
+    "id": "VERBAL26-ANAS-ODD-P032-Q016",
+    "canonicalId": "VERBAL26-ANAS-ODD-P032-Q016",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 32,
+    "sourceQuestionNumber": 16,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_1",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "جلد",
+      "صبر",
+      "تحمل",
+      "جزع"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source page 32 options + independent semantic classification: الثلاثة الأولى تدل على الصبر والتحمل، و«جزع» ضدها."
+  },
+  {
+    "id": "VERBAL26-ANAS-ODD-P032-Q018",
+    "canonicalId": "VERBAL26-ANAS-ODD-P032-Q018",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 32,
+    "sourceQuestionNumber": 18,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "قصة",
+      "قصيدة",
+      "رواية",
+      "حكاية"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source page 32 options + independent semantic classification: «قصيدة» جنس شعري، والبقية أجناس/ألفاظ سردية."
+  },
+  {
+    "id": "VERBAL26-ANAS-ODD-P032-Q020",
+    "canonicalId": "VERBAL26-ANAS-ODD-P032-Q020",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 32,
+    "sourceQuestionNumber": 20,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_5",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "مهر",
+      "شبل",
+      "فرخ",
+      "ضبع"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source page 32 options + independent semantic classification: الثلاثة الأولى أسماء لصغار حيوانات/طير، و«ضبع» اسم الحيوان نفسه."
+  },
+  {
+    "id": "VERBAL26-ANAS-ODD-P032-Q021",
+    "canonicalId": "VERBAL26-ANAS-ODD-P032-Q021",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 32,
+    "sourceQuestionNumber": 21,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "إنجيل",
+      "قرآن",
+      "توراة",
+      "سنة"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source page 32 options + independent semantic classification: الثلاثة الأولى كتب، و«سنة» ليست كتابًا."
+  },
+  {
+    "id": "VERBAL26-ANAS-ODD-P032-Q022",
+    "canonicalId": "VERBAL26-ANAS-ODD-P032-Q022",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 32,
+    "sourceQuestionNumber": 22,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "المسيسيبي",
+      "النيل",
+      "إفرست",
+      "الأمازون"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source page 32 options + independent semantic classification: المسيسيبي والنيل والأمازون أنهار، و«إفرست» جبل."
+  },
+  {
+    "id": "VERBAL26-ANAS-ODD-P032-Q023",
+    "canonicalId": "VERBAL26-ANAS-ODD-P032-Q023",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 32,
+    "sourceQuestionNumber": 23,
+    "mainSkillId": "skill_verbal_13",
+    "subSkillId": "sub_verbal_09_5",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "نعناع",
+      "شاي",
+      "عصير",
+      "قهوة"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source page 32 options + independent semantic classification: الثلاثة الأخيرة مشروبات في التصنيف المباشر، و«نعناع» نبات/مكوّن."
   }
 ]
