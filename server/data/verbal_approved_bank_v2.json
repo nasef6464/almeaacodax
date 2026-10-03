@@ -8903,5 +8903,1645 @@
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
     "answerEvidence": "Approved-source options + direct odd-word category/relation verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T22-P061-Q001",
+    "canonicalId": "VERBAL26-AMER-T22-P061-Q001",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 61,
+    "sourceQuestionNumber": 1,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "من آداب ........ أن تبدي اهتمامًا في حديث المتحدث، ولا تصرف عنه ........ حتى يتحدث عما يريد.",
+    "options": [
+      "الإنصات - الكلام",
+      "الإنصات - النظر",
+      "الكلام - قلبك",
+      "الكرام - بصرك"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T22-P061-Q003",
+    "canonicalId": "VERBAL26-AMER-T22-P061-Q003",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 61,
+    "sourceQuestionNumber": 3,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "سرقة المال فيها ...... وتذكر العقوبة ......",
+    "options": [
+      "إثم - تزيده",
+      "ظلم - تنصفه",
+      "لذة - تذهبها",
+      "حسرة - تجلبها"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T22-P061-Q005",
+    "canonicalId": "VERBAL26-AMER-T22-P061-Q005",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 61,
+    "sourceQuestionNumber": 5,
+    "mainSkillId": "skill_verbal_11",
+    "subSkillId": "sub_verbal_08_1",
+    "text": "ثلاثة ليس معها غربة: حسن الأدب، ....... الأذى ومجانبة الريب.",
+    "options": [
+      "وبعد",
+      "ورد",
+      "وإزالة",
+      "وكف"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T22-P061-Q006",
+    "canonicalId": "VERBAL26-AMER-T22-P061-Q006",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 61,
+    "sourceQuestionNumber": 6,
+    "mainSkillId": "skill_verbal_11",
+    "subSkillId": "sub_verbal_08_1",
+    "text": "القرار هو الاختيار الذي تم التوصل إليه بعد ...... بين عدة اختيارات.",
+    "options": [
+      "المناقشة",
+      "الجمع",
+      "المراقبة",
+      "المفاضلة"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T22-P061-Q008",
+    "canonicalId": "VERBAL26-AMER-T22-P061-Q008",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 61,
+    "sourceQuestionNumber": 8,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "تنوء الأمة ........ أخطاء أبنائها الذين انحرفوا عن سبيل الحق ووقعوا في ........ الشيطان.",
+    "options": [
+      "بعمل - مصايد",
+      "بسوء - جوانب",
+      "ببوادر - حبائل",
+      "بثقل - براثن"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T22-P061-Q009",
+    "canonicalId": "VERBAL26-AMER-T22-P061-Q009",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 61,
+    "sourceQuestionNumber": 9,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "التعلم كالسباحة ضد التيار، إن لم ........ سوف ........",
+    "options": [
+      "تجتهد - ترسب",
+      "تتقدم - ترجع",
+      "تسبح - تغرق",
+      "تجدف - ترمي"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T22-P061-Q010",
+    "canonicalId": "VERBAL26-AMER-T22-P061-Q010",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 61,
+    "sourceQuestionNumber": 10,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "من أحدث ما توصلت إليه الدراسات ...... أن الأحياء البحرية تضعف ....... إذا تعرضت للنفايات الكيميائية.",
+    "options": [
+      "المعاصرة - مناعتها",
+      "الجيومورفولوجية - مقاومتها",
+      "الجيولوجية - قوتها",
+      "البحرية - حيلتها"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T22-P062-Q011",
+    "canonicalId": "VERBAL26-AMER-T22-P062-Q011",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 62,
+    "sourceQuestionNumber": 11,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "العالم الحقيقي ....... وينشأ ........",
+    "options": [
+      "بماله - مركزه",
+      "بإنجازه - نسبه",
+      "بخلقه - واجبه",
+      "بعلمه - عمله"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T22-P062-Q012",
+    "canonicalId": "VERBAL26-AMER-T22-P062-Q012",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 62,
+    "sourceQuestionNumber": 12,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "لا ........ الناس أن يقول بالحق إذا ........",
+    "options": [
+      "محبة - سمعه",
+      "هيبة - علمه",
+      "كثرة - فهمه",
+      "قلة - بلغه"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T22-P062-Q013",
+    "canonicalId": "VERBAL26-AMER-T22-P062-Q013",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 62,
+    "sourceQuestionNumber": 13,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "خطب يزيد يومًا عن المنبر فاستغلق عليه، وقال: أنتم إلى أمير ........ أحوج منكم إلى ........",
+    "options": [
+      "فاعل - قائل",
+      "عادل - مائل",
+      "رحيم - مائل",
+      "فاضل - متسامح"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T22-P062-Q014",
+    "canonicalId": "VERBAL26-AMER-T22-P062-Q014",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 62,
+    "sourceQuestionNumber": 14,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "أول من ........ الإبل؛ لأنه كان حسن ........",
+    "options": [
+      "عقر - الذبح",
+      "حدا - الصوت",
+      "جمع - العشرة",
+      "وسم - الإدراك"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T22-P062-Q015",
+    "canonicalId": "VERBAL26-AMER-T22-P062-Q015",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 62,
+    "sourceQuestionNumber": 15,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "كل واحد منا لابد أن يكون ........ لوطنه ........ عن مقوماته.",
+    "options": [
+      "محبًا - مسؤولًا",
+      "محبًا - مدافعًا",
+      "داعيًا - ممانعًا",
+      "سامعًا - منصرفًا"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T22-P062-Q016",
+    "canonicalId": "VERBAL26-AMER-T22-P062-Q016",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 62,
+    "sourceQuestionNumber": 16,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "المرأة تريد أن تكون ........ في حياة الرجل، ويريد الرجل أن يكون ........ في حياتها.",
+    "options": [
+      "الآن - الأفضل",
+      "الأهم - الخاتم",
+      "الأخيرة - الأول",
+      "الأجمل - الشديد"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T22-P062-Q017",
+    "canonicalId": "VERBAL26-AMER-T22-P062-Q017",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 62,
+    "sourceQuestionNumber": 17,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "الكريم ........ إذا استعطفته، واللئيم ........ إذا لاطفته.",
+    "options": [
+      "يلين - يقسو",
+      "يعطف - يرق",
+      "يعظم - يتمرد",
+      "يفرح - يعطي"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T22-P062-Q018",
+    "canonicalId": "VERBAL26-AMER-T22-P062-Q018",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 62,
+    "sourceQuestionNumber": 18,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "من ........ الله لا يخاف من أحد، ومن يخاف من الناس ........ كل.",
+    "options": [
+      "يهاب - يخاف",
+      "يعرف - يجهل",
+      "يسمع - يجد",
+      "يحذر - يكره"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T22-P062-Q020",
+    "canonicalId": "VERBAL26-AMER-T22-P062-Q020",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 62,
+    "sourceQuestionNumber": 20,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "كان عمر بن الخطاب يهتم ....... القوم، فلا يحابي ....... وكان حريصًا على عدم وضع أحد غير مكانه.",
+    "options": [
+      "بأغنياء - فقيرًا",
+      "بأعداء - كبيرًا",
+      "بفقراء - غنيًا",
+      "بأموال - مظلومًا"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T22-P062-Q022",
+    "canonicalId": "VERBAL26-AMER-T22-P062-Q022",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 62,
+    "sourceQuestionNumber": 22,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "من لاح له ........ الآخرة هان عليه ........ الدنيا.",
+    "options": [
+      "كمال - فراق",
+      "فوز - هزيمة",
+      "تمام - وداع",
+      "قوة - ترك"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T22-P062-Q023",
+    "canonicalId": "VERBAL26-AMER-T22-P062-Q023",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 62,
+    "sourceQuestionNumber": 23,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "لا تعاقب على ....... الصغيرة بعقوبة الإصرار، وعلى ...... بعقوبة العمد.",
+    "options": [
+      "تعمد - الإصرار",
+      "الكبيرة - الصغيرة",
+      "الهفوة - الخطأ",
+      "اتباع - الخير"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T22-P062-Q024",
+    "canonicalId": "VERBAL26-AMER-T22-P062-Q024",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 62,
+    "sourceQuestionNumber": 24,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "في العفو ........ لا توجد في ........",
+    "options": [
+      "لذة - الانتقام",
+      "شجاعة - الصبر",
+      "خيانة - الاستسلام",
+      "خسارة - الكناية"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T22-P062-Q025",
+    "canonicalId": "VERBAL26-AMER-T22-P062-Q025",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 62,
+    "sourceQuestionNumber": 25,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "السعادة ينبوع ........ الجميع أن يصلوا إليه وهم لا ........ أنه تحت أقدامهم.",
+    "options": [
+      "يفكر - يتمثلون",
+      "يسعى - يسمعون",
+      "يكاد - يؤمنون",
+      "يتمنى - يعرفون"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T23-P063-Q001",
+    "canonicalId": "VERBAL26-AMER-T23-P063-Q001",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 63,
+    "sourceQuestionNumber": 1,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "حارب عدوك بالسلاح الذي ........ لا بالسلاح الذي ........",
+    "options": [
+      "يريده - تريده",
+      "يخشاه - تخشاه",
+      "يحبه - تحبه",
+      "يصنعه - تصنعه"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T23-P063-Q002",
+    "canonicalId": "VERBAL26-AMER-T23-P063-Q002",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 63,
+    "sourceQuestionNumber": 2,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "من جمع المال ....... وبخل على ........",
+    "options": [
+      "لكثرته - قرابته",
+      "لغيره - نفسه",
+      "لعمره - ابنه",
+      "لنفسه - غيره"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T23-P063-Q003",
+    "canonicalId": "VERBAL26-AMER-T23-P063-Q003",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 63,
+    "sourceQuestionNumber": 3,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "إذا أردت عدم ...... فلا تتكلم ولا ........ حتى تصبح لا شيء.",
+    "options": [
+      "السخرية - تغضب",
+      "النقد - تعمل",
+      "الكذب - تكذب",
+      "الجدال - تسأل"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T23-P063-Q004",
+    "canonicalId": "VERBAL26-AMER-T23-P063-Q004",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 63,
+    "sourceQuestionNumber": 4,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "كل مياه البحر لا تقدر على إغراق ........ إلا إذا تسلل الماء داخلها، كذلك الفشل لا يستطيع أن يسيطر عليك إلا إذا تسلل ........ إلى نفسك.",
+    "options": [
+      "السفينة - التشاؤم",
+      "مسمار - التشاؤم",
+      "مركب - التفاؤل",
+      "قارب - الحب"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T23-P063-Q005",
+    "canonicalId": "VERBAL26-AMER-T23-P063-Q005",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 63,
+    "sourceQuestionNumber": 5,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "يعد العمران ........ من نماذج ........ البشرية.",
+    "options": [
+      "نموذجًا - الحضارة",
+      "واحدًا - تدهور",
+      "دليلًا - انهيار",
+      "نموذج - تخلف"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T23-P063-Q006",
+    "canonicalId": "VERBAL26-AMER-T23-P063-Q006",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 63,
+    "sourceQuestionNumber": 6,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "انتشار ........ الإسلامية في أنحاء العالم دليل على ........ الحضارة الإسلامية.",
+    "options": [
+      "الآراء - روعة",
+      "الأسواق - نهضة",
+      "العمارة - عظم",
+      "الأفكار - تقدم"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T23-P063-Q007",
+    "canonicalId": "VERBAL26-AMER-T23-P063-Q007",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 63,
+    "sourceQuestionNumber": 7,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "كما أن الغدر من سمات الخائن فإن ........ من سمات ........",
+    "options": [
+      "المروءة - الكريم",
+      "الأناة - المنافق",
+      "الدرب - المنافق",
+      "التهور - الحكيم"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T23-P063-Q008",
+    "canonicalId": "VERBAL26-AMER-T23-P063-Q008",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 63,
+    "sourceQuestionNumber": 8,
+    "mainSkillId": "skill_verbal_11",
+    "subSkillId": "sub_verbal_08_1",
+    "text": "الأشخاص الذين لا يتراجعون عن آرائهم هم أشخاص يحبون أنفسهم أكثر من ........",
+    "options": [
+      "غيرهم",
+      "آرائهم",
+      "ذاتهم",
+      "الحقيقة"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T23-P063-Q009",
+    "canonicalId": "VERBAL26-AMER-T23-P063-Q009",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 63,
+    "sourceQuestionNumber": 9,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "إذا استطعت أن تقابل الله أخمص البطن عن ........ الناس كافًا لسانك عن ........ فافعل ذلك.",
+    "options": [
+      "صادق - اللهجة",
+      "أموال - أعراضهم",
+      "عال - اليد",
+      "خفي - النفس"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T23-P063-Q010",
+    "canonicalId": "VERBAL26-AMER-T23-P063-Q010",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 63,
+    "sourceQuestionNumber": 10,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "الجليس الصالح ........ يهون عليك ........ ويفتح لك باب الرجاء، والمتشائم يسود الدنيا في عينك.",
+    "options": [
+      "الهادئ - الأمور",
+      "المثقف - المخاطر",
+      "المتفائل - الصعاب",
+      "المخادع - الآلام"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T23-P063-Q011",
+    "canonicalId": "VERBAL26-AMER-T23-P063-Q011",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 63,
+    "sourceQuestionNumber": 11,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "تطور العلم والمعرفة ........ والحوار ينتج عنهما ........ الأفكار.",
+    "options": [
+      "الجدال - التقاء",
+      "النقاش - تعارض",
+      "النقاش - تلاقح",
+      "الجدال - تباعد"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T23-P063-Q012",
+    "canonicalId": "VERBAL26-AMER-T23-P063-Q012",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 63,
+    "sourceQuestionNumber": 12,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "من ........ أن الدول ........ لا تهتم للغة العربية كما تفعل الدول الأخرى مع لغاتها.",
+    "options": [
+      "المحزن - العربية",
+      "المفرح - العربية",
+      "المبهج - الغربية",
+      "المخزي - الغربية"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T23-P063-Q013",
+    "canonicalId": "VERBAL26-AMER-T23-P063-Q013",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 63,
+    "sourceQuestionNumber": 13,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "الكرم ......... العيوب والبخل ............",
+    "options": [
+      "يكشف - يخفيها",
+      "يعرف - يجهلها",
+      "يضمر - يوريها",
+      "يخفي - يكشفها"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T23-P063-Q014",
+    "canonicalId": "VERBAL26-AMER-T23-P063-Q014",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 63,
+    "sourceQuestionNumber": 14,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "يجب أن يكون المسعفون قادرين على ........ على أعصابهم وأن يكون لديهم ........ في اتخاذ القرار المناسب.",
+    "options": [
+      "الحفاظ - السرعة",
+      "الحفاظ - النزعة",
+      "الحرص - النية",
+      "الضغط - الرغبة"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T23-P064-Q015",
+    "canonicalId": "VERBAL26-AMER-T23-P064-Q015",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 64,
+    "sourceQuestionNumber": 15,
+    "mainSkillId": "skill_verbal_11",
+    "subSkillId": "sub_verbal_08_1",
+    "text": "الألفاظ رداء ........ فيجب ألا تكون في ثياب رثة بالية.",
+    "options": [
+      "أفكارنا",
+      "أقوالنا",
+      "هيئاتنا",
+      "بيوتنا"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T23-P064-Q019",
+    "canonicalId": "VERBAL26-AMER-T23-P064-Q019",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 64,
+    "sourceQuestionNumber": 19,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "الدين لا يلغي ........ لكن يروضها، والأخلاق لا تغير الطباع بل ........",
+    "options": [
+      "الشهوات - تدمرها",
+      "الغرائز - تهذبها",
+      "الأخلاق - تتركها",
+      "المعرفة - تدمرها"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T23-P064-Q020",
+    "canonicalId": "VERBAL26-AMER-T23-P064-Q020",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 64,
+    "sourceQuestionNumber": 20,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "إن الاتصال في العلاقات ........ تشبه التنفس في الإنسان، كلاهما يهدف إلى ........ الحياة.",
+    "options": [
+      "المحاورة - المناظرة",
+      "المحكمة - المناظرة",
+      "العلمية - فناء",
+      "الإنسانية - استمرار"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T23-P064-Q021",
+    "canonicalId": "VERBAL26-AMER-T23-P064-Q021",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 64,
+    "sourceQuestionNumber": 21,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "تستطيع تجريد جيش من ........ ولكن لا تستطيع تجريد الناس من ........",
+    "options": [
+      "حلمه - طعامه",
+      "سلاحه - كرامتهم",
+      "مستقبله - خطواته",
+      "وطنه - حبهم"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T23-P064-Q022",
+    "canonicalId": "VERBAL26-AMER-T23-P064-Q022",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 64,
+    "sourceQuestionNumber": 22,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "لا ........ بدون ........",
+    "options": [
+      "جوع - فقر",
+      "حياة - موت",
+      "ازدهار - استقرار",
+      "أخ - أخت"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T23-P064-Q025",
+    "canonicalId": "VERBAL26-AMER-T23-P064-Q025",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 64,
+    "sourceQuestionNumber": 25,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "النفس ترتاح من قلة ........ والبدن يرتاح من قلة .........",
+    "options": [
+      "الآثام - الطعام",
+      "العمل - الإرهاق",
+      "المال - النوم",
+      "الهموم - الهواء"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T23-P064-Q026",
+    "canonicalId": "VERBAL26-AMER-T23-P064-Q026",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 64,
+    "sourceQuestionNumber": 26,
+    "mainSkillId": "skill_verbal_11",
+    "subSkillId": "sub_verbal_08_1",
+    "text": "تدنو من ....... بقدر ما تدنو من التواضع.",
+    "options": [
+      "التكبر",
+      "الضعف",
+      "الموت",
+      "العظمة"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T23-P064-Q028",
+    "canonicalId": "VERBAL26-AMER-T23-P064-Q028",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 64,
+    "sourceQuestionNumber": 28,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "الحج مؤتمر ........ تتحد فيه ........",
+    "options": [
+      "دولي - الأمم",
+      "إسلامي - الأمة",
+      "عربي - العالم",
+      "كبير - المتخاصمون"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T24-P065-Q001",
+    "canonicalId": "VERBAL26-AMER-T24-P065-Q001",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 65,
+    "sourceQuestionNumber": 1,
+    "mainSkillId": "skill_verbal_11",
+    "subSkillId": "sub_verbal_08_1",
+    "text": "ميخائيل نعيمة ........... تطوير الحركة الفكرية والثورة الثقافية.",
+    "options": [
+      "قاد",
+      "باد",
+      "كاد",
+      "عاد"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T24-P065-Q004",
+    "canonicalId": "VERBAL26-AMER-T24-P065-Q004",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 65,
+    "sourceQuestionNumber": 4,
+    "mainSkillId": "skill_verbal_11",
+    "subSkillId": "sub_verbal_08_1",
+    "text": "لا ......... الآخرين كي تكون قائدًا مميزًا.",
+    "options": [
+      "تقلد",
+      "تسامح",
+      "تنصح",
+      "تعاتب"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T24-P065-Q005",
+    "canonicalId": "VERBAL26-AMER-T24-P065-Q005",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 65,
+    "sourceQuestionNumber": 5,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "انصح صديقك في ....... وامدحه في ......",
+    "options": [
+      "السر - العلن",
+      "العلن - السر",
+      "الشدة - الضيق",
+      "الرخاء - الضعف"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T24-P065-Q006",
+    "canonicalId": "VERBAL26-AMER-T24-P065-Q006",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 65,
+    "sourceQuestionNumber": 6,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "الأعاصير تحدث فوق المحيطات وعند ..... لليابسة تحدث ...... كبيرًا.",
+    "options": [
+      "الوصول - دمارًا",
+      "الاقتراب - رواجًا",
+      "الابتعاد - دمارًا",
+      "الوصول - تعزيزًا"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T24-P065-Q007",
+    "canonicalId": "VERBAL26-AMER-T24-P065-Q007",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 65,
+    "sourceQuestionNumber": 7,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "...... تطفو على الماء و.......... يغوص في الأعماق.",
+    "options": [
+      "القشة - الحجر الكريم",
+      "السفينة - القرش",
+      "القوارب - الأسماك",
+      "الورقة - المسمار"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T24-P065-Q008",
+    "canonicalId": "VERBAL26-AMER-T24-P065-Q008",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 65,
+    "sourceQuestionNumber": 8,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "هناك أمل في الحياة ومروءة ما دمت أنت تزرع و .......... غيرك، مثلما أنت ......... زراعة غيرك.",
+    "options": [
+      "يحصد - تحصد",
+      "تطعم - تزرع",
+      "يزرع - تحصد",
+      "يزرع - تزرع"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T24-P065-Q009",
+    "canonicalId": "VERBAL26-AMER-T24-P065-Q009",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 65,
+    "sourceQuestionNumber": 9,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "السنة كالشجرة والأشهر كـ....... والأيام كـ ....... والساعات كأوراقها.",
+    "options": [
+      "فروعها - أغصانها",
+      "جذوعها - جذورها",
+      "لحائها - ساقها",
+      "أرضها - سمائها"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T24-P065-Q010",
+    "canonicalId": "VERBAL26-AMER-T24-P065-Q010",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 65,
+    "sourceQuestionNumber": 10,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "تسعى الدول إلى الاهتمام بالجيل و ...... النوعية لذا تحرص الدول ......... على إصلاح برامجها التعليمية.",
+    "options": [
+      "الكفايات - المتقدمة",
+      "الشخصيات - المتعلمة",
+      "حاجات - الكبيرة",
+      "الصفات - المتخلفة"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T24-P065-Q011",
+    "canonicalId": "VERBAL26-AMER-T24-P065-Q011",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 65,
+    "sourceQuestionNumber": 11,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "لولا ......... ما عرفنا النور ولو لا .......... ما عرفنا السعادة.",
+    "options": [
+      "الشمس - الفرح",
+      "الإبصار - القلق",
+      "الضياء - الضيق",
+      "الظلام - الحزن"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T24-P065-Q013",
+    "canonicalId": "VERBAL26-AMER-T24-P065-Q013",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 65,
+    "sourceQuestionNumber": 13,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "يجب أن ....... أخلاقيات القائد مع ........... أخلاقيات المهنة.",
+    "options": [
+      "تتقارب - يتفاخر",
+      "تتوافق - يسقط",
+      "تتطابق - يقوم",
+      "تختلف - يقوم"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T24-P065-Q014",
+    "canonicalId": "VERBAL26-AMER-T24-P065-Q014",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 65,
+    "sourceQuestionNumber": 14,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "يولد الإنسان كصفحة ..... والتجارب ...... عليها.",
+    "options": [
+      "بيضاء - تنقش",
+      "خالية - تحفر",
+      "مليئة - تشهد",
+      "سوداء - تكتب"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T24-P066-Q015",
+    "canonicalId": "VERBAL26-AMER-T24-P066-Q015",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 66,
+    "sourceQuestionNumber": 15,
+    "mainSkillId": "skill_verbal_11",
+    "subSkillId": "sub_verbal_08_1",
+    "text": "إن لم تحترمني فسوف ........... فأنا أمثل نفسي وأنت تمثل نفسك.",
+    "options": [
+      "أحترمك",
+      "أتجاهلك",
+      "أعاتبك",
+      "أواجهك"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T24-P066-Q016",
+    "canonicalId": "VERBAL26-AMER-T24-P066-Q016",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 66,
+    "sourceQuestionNumber": 16,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "من فوائد ...... يزيد المعرفة ويفتح الرزق ويريح النفس ويجعلك تتعرف على .......",
+    "options": [
+      "السفر - الأصحاب",
+      "التجارة - الأقارب",
+      "المال - الأهل",
+      "التعامل - الفقراء"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T24-P066-Q017",
+    "canonicalId": "VERBAL26-AMER-T24-P066-Q017",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 66,
+    "sourceQuestionNumber": 17,
+    "mainSkillId": "skill_verbal_11",
+    "subSkillId": "sub_verbal_08_1",
+    "text": "كلما زادت سلطتك زادت ...... فلا تأخذ من المنصب إلا الواجب.",
+    "options": [
+      "رغباتك",
+      "مسؤوليتك",
+      "عودتك",
+      "معرفتك"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T24-P066-Q018",
+    "canonicalId": "VERBAL26-AMER-T24-P066-Q018",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 66,
+    "sourceQuestionNumber": 18,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "يخرب بعض الناس حياتهم بالقلق على ......... والحزن على ..... الماضي.",
+    "options": [
+      "المستقبل - سلبيات",
+      "أبنائهم - ذكريات",
+      "الحاضر - مواقف",
+      "الماضي - سلبيات"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T24-P066-Q019",
+    "canonicalId": "VERBAL26-AMER-T24-P066-Q019",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 66,
+    "sourceQuestionNumber": 19,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "لو كان المال يغني عن ........ لما تزوجت بنات .........",
+    "options": [
+      "الناس - الرجال",
+      "الرجال - الملوك",
+      "الناس - النساء",
+      "النسب - الأغنياء"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T24-P066-Q020",
+    "canonicalId": "VERBAL26-AMER-T24-P066-Q020",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 66,
+    "sourceQuestionNumber": 20,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "الصديق الحقيقي ........ لا تعرف قيمته إلا في ........",
+    "options": [
+      "كالمصباح - الظلام",
+      "كالسمعة - الضياء",
+      "كالمال - الرخاء",
+      "كالأمل - النور"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T24-P066-Q021",
+    "canonicalId": "VERBAL26-AMER-T24-P066-Q021",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 66,
+    "sourceQuestionNumber": 21,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "........ الأمور هو ....... في كل شيء.",
+    "options": [
+      "أرفع - الارتفاع",
+      "أفسد - الزيادة",
+      "أصلح - الاعتدال",
+      "أجمل - الإهمال"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T24-P066-Q022",
+    "canonicalId": "VERBAL26-AMER-T24-P066-Q022",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 66,
+    "sourceQuestionNumber": 22,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "من الجميل أن ....... الصغير عندما ........ الكبير.",
+    "options": [
+      "يصمت - يسأل",
+      "ينصت - يتحدث",
+      "يفر - يغادر",
+      "يسمع - يكبر"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T24-P066-Q024",
+    "canonicalId": "VERBAL26-AMER-T24-P066-Q024",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 66,
+    "sourceQuestionNumber": 24,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "القلوب ........ والشفاه أقفالها و............. مفاتيحها؛ لذا فليصن كل إنسان لسانه.",
+    "options": [
+      "حافظة - القلوب",
+      "أوعية - الألسن",
+      "محاضن - العيون",
+      "مسكن - العقول"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T24-P066-Q025",
+    "canonicalId": "VERBAL26-AMER-T24-P066-Q025",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 66,
+    "sourceQuestionNumber": 25,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "إذا كان هناك .... لا يكون هناك .... في العمل.",
+    "options": [
+      "سرعة - إتقان",
+      "قوة - تميز",
+      "تخلف - تأخر",
+      "بطء - كسل"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T24-P066-Q026",
+    "canonicalId": "VERBAL26-AMER-T24-P066-Q026",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 66,
+    "sourceQuestionNumber": 26,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "الإفراط في الجود يتبعه .......، والإفراط في ....... يتبعه التذلل.",
+    "options": [
+      "البخل - الشح",
+      "الإسراف - التكبر",
+      "التبذير - التواضع",
+      "الكرم - الإسراف"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T24-P066-Q028",
+    "canonicalId": "VERBAL26-AMER-T24-P066-Q028",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 66,
+    "sourceQuestionNumber": 28,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "ممكن أن تكون التربية عامل ...... إذا فقد المربون .......",
+    "options": [
+      "هدم - الصدق",
+      "بناء - الصدق",
+      "هدم - الكذب",
+      "إنشاء - الحب"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T24-P066-Q029",
+    "canonicalId": "VERBAL26-AMER-T24-P066-Q029",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 66,
+    "sourceQuestionNumber": 29,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "أناقة فكرك من أناقة .............. فلا ترفع صوتك، ولكن ارفع صوت ............",
+    "options": [
+      "أقوالك - كلامك",
+      "ملابسك - أفعالك",
+      "لسانك - أفعالك",
+      "مظهرك - كلماتك"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T24-P066-Q030",
+    "canonicalId": "VERBAL26-AMER-T24-P066-Q030",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 66,
+    "sourceQuestionNumber": 30,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "التلوث الضوضائي أحد التأثيرات السلبية على البيئة وإن الموجات ..... تعدت الحد المسموح به ....",
+    "options": [
+      "الصوتية - للأذن",
+      "الكهربائية - للأجهزة",
+      "الضوئية - للعين",
+      "المغناطيسية - للرأس"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T24-P066-Q031",
+    "canonicalId": "VERBAL26-AMER-T24-P066-Q031",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 66,
+    "sourceQuestionNumber": 31,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "يجب أن تكون ...... عندما تعرف طريقًا ............. الآخرون.",
+    "options": [
+      "رجلًا - عمله",
+      "قائدًا - ضله",
+      "مرشدًا - عرفه",
+      "دليلًا - قاله"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T24-P066-Q032",
+    "canonicalId": "VERBAL26-AMER-T24-P066-Q032",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 66,
+    "sourceQuestionNumber": 32,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "قامت اليابان بصنع وسادة تفيد من ...... وكانت تكلفتها ......",
+    "options": [
+      "الأرق - فاحشة",
+      "العقم - زهيدة",
+      "العقم - رخيصة",
+      "الخوف - جميلة"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T24-P067-Q033",
+    "canonicalId": "VERBAL26-AMER-T24-P067-Q033",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 67,
+    "sourceQuestionNumber": 33,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "أصبح العصر الأموي في الشام ........ للشعراء الذين يريدون أن يتخذوا المدح وسيلة ...... وموردًا من موارد الرزق.",
+    "options": [
+      "هدفًا - للتكسب",
+      "غاية - للثور",
+      "مقصدًا - للمعرفة",
+      "غاية - للعمل"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T24-P067-Q034",
+    "canonicalId": "VERBAL26-AMER-T24-P067-Q034",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 67,
+    "sourceQuestionNumber": 34,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "الحرام ...... والحلال لا ...... له وذلك من رحمة الله ولطفه.",
+    "options": [
+      "محصور - حد",
+      "موجود - كبير",
+      "ممتد - كامل",
+      "قصير - حد"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T24-P067-Q035",
+    "canonicalId": "VERBAL26-AMER-T24-P067-Q035",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 67,
+    "sourceQuestionNumber": 35,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "............ مذموم إلا إذا كان بغرض ......",
+    "options": [
+      "الكذب - الإصلاح",
+      "الصدق - الصراحة",
+      "الخداع - الفساد",
+      "الصراحة - الوجود"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T24-P067-Q036",
+    "canonicalId": "VERBAL26-AMER-T24-P067-Q036",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 67,
+    "sourceQuestionNumber": 36,
+    "mainSkillId": "skill_verbal_11",
+    "subSkillId": "sub_verbal_08_1",
+    "text": "السعادة تعشق ....... وتؤذيها المقارنات.",
+    "options": [
+      "المال",
+      "الجمال",
+      "التغافل",
+      "التعافي"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T24-P067-Q037",
+    "canonicalId": "VERBAL26-AMER-T24-P067-Q037",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 67,
+    "sourceQuestionNumber": 37,
+    "mainSkillId": "skill_verbal_11",
+    "subSkillId": "sub_verbal_08_1",
+    "text": "في ...... نحتاج إلى خبير.",
+    "options": [
+      "الدراسة",
+      "المشكلة",
+      "المصيبة",
+      "الرخاء"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T24-P067-Q038",
+    "canonicalId": "VERBAL26-AMER-T24-P067-Q038",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 67,
+    "sourceQuestionNumber": 38,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "ما ........ أحد شيئًا إلا فلتات .... وصفحات وجهه.",
+    "options": [
+      "صنع - قلبه",
+      "أضمر - لسانه",
+      "كتب - رأسه",
+      "أخفى - عقله"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T24-P067-Q039",
+    "canonicalId": "VERBAL26-AMER-T24-P067-Q039",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 67,
+    "sourceQuestionNumber": 39,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "شهد العالم ...... في الاقتصاد لكن يوجد مؤشرات ...... قريبًا.",
+    "options": [
+      "انكماشًا - بنهوضه",
+      "ازدهارًا - بتأخره",
+      "تقدمًا - عودته",
+      "تأخرًا - تأخره"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T24-P067-Q040",
+    "canonicalId": "VERBAL26-AMER-T24-P067-Q040",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 67,
+    "sourceQuestionNumber": 40,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "بالصمت من بين كل الفضائل، فمن خلاله سوف ......... عيوب الآخرين و .............. عيوبك.",
+    "options": [
+      "تخفي - تعلن",
+      "تعرف - تخفي",
+      "ترى - يجد",
+      "تسمع - تظهر"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T24-P067-Q043",
+    "canonicalId": "VERBAL26-AMER-T24-P067-Q043",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 67,
+    "sourceQuestionNumber": 43,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "الطلاب ........ المنهج في البداية ويعتمدون على المذاكرة في ....... الأخيرة.",
+    "options": [
+      "يهملون - الأسابيع",
+      "يتفوقون - الفصول",
+      "يقصرون - السنوات",
+      "ينشطون - الثواب"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T24-P067-Q044",
+    "canonicalId": "VERBAL26-AMER-T24-P067-Q044",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 67,
+    "sourceQuestionNumber": 44,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "الطالب إذا ....... دراسته يفقد ..... المعلمين.",
+    "options": [
+      "أهمل - تقدير",
+      "اجتهد - تقدير",
+      "تفوق - تكريم",
+      "قصر - إهانة"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T24-P067-Q046",
+    "canonicalId": "VERBAL26-AMER-T24-P067-Q046",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 67,
+    "sourceQuestionNumber": 46,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "الطلاب يتنافسون على ......... لأجل الحصول على ..... الوظيفية.",
+    "options": [
+      "المسابقات - الدعاية",
+      "المكافآت - الإعلانات",
+      "الدرجات - الفرص",
+      "الأموال - المكانة"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T24-P067-Q047",
+    "canonicalId": "VERBAL26-AMER-T24-P067-Q047",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 67,
+    "sourceQuestionNumber": 47,
+    "mainSkillId": "skill_verbal_11",
+    "subSkillId": "sub_verbal_08_1",
+    "text": "عندما ترى شخصًا يمر بأزمة من الأفضل أن تذكره بـ ........",
+    "options": [
+      "مزاياه",
+      "أحزانه",
+      "ضعفه",
+      "هزيمته"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
+  },
+  {
+    "id": "VERBAL26-AMER-T24-P067-Q048",
+    "canonicalId": "VERBAL26-AMER-T24-P067-Q048",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 67,
+    "sourceQuestionNumber": 48,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "عمل ......... خير من فراغ .............",
+    "options": [
+      "ممل - ممتع",
+      "مجهد - مفسد",
+      "مهلك - مفسد",
+      "متعب - مربح"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Approved-source text/options + context-completion verification."
   }
 ]
