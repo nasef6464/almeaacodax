@@ -14453,5 +14453,85 @@
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
     "answerEvidence": "Direct approved-source T19 p.54; الأنفال is the independently verified odd item."
+  },
+  {
+    "id": "VERBAL26-AMER-T22-P061-Q004",
+    "canonicalId": "VERBAL26-AMER-T22-P061-Q004",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 61,
+    "sourceQuestionNumber": 4,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "الشعراء ...... تغنوا بالشجرة حين شبهوا المرأة بأغصانها ......",
+    "options": [
+      "الجاهليون - الطويلة",
+      "الفحول - الواقفة",
+      "الأقوياء - المورقة",
+      "العرب - المتمايلة"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct approved source; text, options and semantic completion verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T22-P061-Q007",
+    "canonicalId": "VERBAL26-AMER-T22-P061-Q007",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 61,
+    "sourceQuestionNumber": 7,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "ضروري أن نفرق بين التنجيم بمعناه السلبي كوسيلة لـ ...... المستقبل والوقوف على أحداث لم تزل بعد مجهولة، وبين ...... العلمي القائم على الحسابات الفلكية والأنشطة الجوية.",
+    "options": [
+      "لرؤية - للمناخ",
+      "لدراسة - للتطور",
+      "لتفسير - للجدل",
+      "لكشف - للتحقق"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct approved source; text, options and semantic completion verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T22-P062-Q019",
+    "canonicalId": "VERBAL26-AMER-T22-P062-Q019",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 62,
+    "sourceQuestionNumber": 19,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "لن يراك الناس ....... إذا تجاهلت السفهاء، ولكن قد ....... بينكم عندما تحاول مواجهتهم.",
+    "options": [
+      "متكبرًا - يخلطون",
+      "متغطرسًا - يميزون",
+      "متواضعًا - يمزجون",
+      "متحاملًا - يفرحون"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct approved source; text, options and semantic completion verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T22-P062-Q021",
+    "canonicalId": "VERBAL26-AMER-T22-P062-Q021",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 62,
+    "sourceQuestionNumber": 21,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "الصبر من شيم ........ الذين يتلقون ...... برحابة الصدر.",
+    "options": [
+      "الأشرار - الخطوب",
+      "الأصحاب - الصعاب",
+      "الأحرار - الظلم",
+      "الأفذاذ - المكاره"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct approved source; text, options and semantic completion verified."
   }
 ]
