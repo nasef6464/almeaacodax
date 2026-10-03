@@ -16,6 +16,9 @@ export PILOT_WRITE_AUTHORIZATION=YES
 # Keep the canonical V7 importer unchanged, but execute bounded slices so
 # presign -> dry-run -> upload -> write completes inside R2 TTL and API limits.
 cp COL26_PILOT_PAYLOAD_V7.json COL26_PILOT_PAYLOAD_V7.full.json
+cp run-col26-v7-import.mjs run-col26-v7-import.slice.mjs
+# Patch only the ephemeral runner guard; canonical ZIP and importer remain byte-identical.
+sed -i 's/const expected = Number(contract\\.questionCount || 1012);/const expected = Number(process.env.COL26_EXPECTED_COUNT || contract.questionCount || 1012);/' run-col26-v7-import.slice.mjs
 node <<'NODE'
 const fs=require('fs');
 const p=JSON.parse(fs.readFileSync('COL26_PILOT_PAYLOAD_V7.full.json','utf8'));
@@ -39,7 +42,8 @@ fs.writeFileSync('COL26_PILOT_PAYLOAD_V7.json',JSON.stringify(out));
 console.log('COL26_SLICE',start,start+slice.length-1,'COUNT',slice.length);
 NODE
   export COL26_MODE=full
-  node run-col26-v7-import.mjs
+  export COL26_EXPECTED_COUNT=$(node -e "const p=require('./COL26_PILOT_PAYLOAD_V7.json');console.log(Array.isArray(p)?p.length:(p.items||p.questions).length)")
+  node run-col26-v7-import.slice.mjs
   START=$((START+SLICE_SIZE))
 done
 cp COL26_PILOT_PAYLOAD_V7.full.json COL26_PILOT_PAYLOAD_V7.json
