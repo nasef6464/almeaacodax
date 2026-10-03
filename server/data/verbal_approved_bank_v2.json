@@ -15561,5 +15561,120 @@
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_TEXT_VERIFIED",
     "answerEvidence": "Direct Amer source pp.93-94; answer follows explicitly from passage/date semantics."
+  },
+  {
+    "id": "VERBAL26-AMER-T32-P094-ENZ-Q001",
+    "canonicalId": "VERBAL26-AMER-T32-P094-ENZ-Q001",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 94,
+    "sourceQuestionNumber": 1,
+    "sourceTraining": 32,
+    "passageId": "VERBAL26-AMER-PASSAGE-ENZYMES",
+    "passageText": "الإنزيمات مادة تعمل كمحفز في تسريع التفاعلات الكيميائية الحيوية في الكائنات الحية. ترتبط بالمواد الداخلة في التفاعل وتساعد الخلايا على الهضم، وتتأثر بالبرودة والحرارة؛ فعند تغير درجة الحرارة تقل فاعليتها، وتساعد الخلايا على إنهاء التفاعل ثم تعود من جديد.",
+    "mainSkillId": "skill_verbal_19",
+    "subSkillId": "sub_verbal_12_1",
+    "text": "العنوان المناسب للنص:",
+    "options": [
+      "وظيفة الإنزيمات",
+      "الإنزيمات في أجسامنا",
+      "تفاعلات كيميائية",
+      "البكتيريا والخمائر"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_TEXT_VERIFIED",
+    "answerEvidence": "Direct Amer source p.94; answer explicitly supported by passage."
+  },
+  {
+    "id": "VERBAL26-AMER-T32-P094-ENZ-Q002",
+    "canonicalId": "VERBAL26-AMER-T32-P094-ENZ-Q002",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 94,
+    "sourceQuestionNumber": 2,
+    "sourceTraining": 32,
+    "passageId": "VERBAL26-AMER-PASSAGE-ENZYMES",
+    "passageText": "الإنزيمات مادة تعمل كمحفز في تسريع التفاعلات الكيميائية الحيوية في الكائنات الحية. ترتبط بالمواد الداخلة في التفاعل وتساعد الخلايا على الهضم، وتتأثر بالبرودة والحرارة؛ فعند تغير درجة الحرارة تقل فاعليتها، وتساعد الخلايا على إنهاء التفاعل ثم تعود من جديد.",
+    "mainSkillId": "skill_verbal_21",
+    "subSkillId": "sub_verbal_13_1",
+    "text": "علاقة «ومن ثم لا تعود» بما قبلها:",
+    "options": [
+      "نتيجة",
+      "استئناف",
+      "تعارض",
+      "تشبيه"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_TEXT_VERIFIED",
+    "answerEvidence": "Direct Amer source p.94; answer explicitly supported by passage."
+  },
+  {
+    "id": "VERBAL26-AMER-T32-P094-ENZ-Q003",
+    "canonicalId": "VERBAL26-AMER-T32-P094-ENZ-Q003",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 94,
+    "sourceQuestionNumber": 3,
+    "sourceTraining": 32,
+    "passageId": "VERBAL26-AMER-PASSAGE-ENZYMES",
+    "passageText": "الإنزيمات مادة تعمل كمحفز في تسريع التفاعلات الكيميائية الحيوية في الكائنات الحية. ترتبط بالمواد الداخلة في التفاعل وتساعد الخلايا على الهضم، وتتأثر بالبرودة والحرارة؛ فعند تغير درجة الحرارة تقل فاعليتها، وتساعد الخلايا على إنهاء التفاعل ثم تعود من جديد.",
+    "mainSkillId": "skill_verbal_20",
+    "subSkillId": "sub_verbal_12_6",
+    "text": "تتأثر الإنزيمات بـ:",
+    "options": [
+      "الحركة",
+      "الاتجاه",
+      "البرودة",
+      "المياه"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_TEXT_VERIFIED",
+    "answerEvidence": "Direct Amer source p.94; answer explicitly supported by passage."
+  },
+  {
+    "id": "VERBAL26-AMER-T32-P094-ENZ-Q004",
+    "canonicalId": "VERBAL26-AMER-T32-P094-ENZ-Q004",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 94,
+    "sourceQuestionNumber": 4,
+    "sourceTraining": 32,
+    "passageId": "VERBAL26-AMER-PASSAGE-ENZYMES",
+    "passageText": "الإنزيمات مادة تعمل كمحفز في تسريع التفاعلات الكيميائية الحيوية في الكائنات الحية. ترتبط بالمواد الداخلة في التفاعل وتساعد الخلايا على الهضم، وتتأثر بالبرودة والحرارة؛ فعند تغير درجة الحرارة تقل فاعليتها، وتساعد الخلايا على إنهاء التفاعل ثم تعود من جديد.",
+    "mainSkillId": "skill_verbal_21",
+    "subSkillId": "sub_verbal_13_1",
+    "text": "علاقة «فإن الإنزيمات تقل» بما قبلها:",
+    "options": [
+      "نتيجة",
+      "استئناف",
+      "تعارض",
+      "تشبيه"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_TEXT_VERIFIED",
+    "answerEvidence": "Direct Amer source p.94; answer explicitly supported by passage."
+  },
+  {
+    "id": "VERBAL26-AMER-T32-P094-ENZ-Q005",
+    "canonicalId": "VERBAL26-AMER-T32-P094-ENZ-Q005",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 94,
+    "sourceQuestionNumber": 5,
+    "sourceTraining": 32,
+    "passageId": "VERBAL26-AMER-PASSAGE-ENZYMES",
+    "passageText": "الإنزيمات مادة تعمل كمحفز في تسريع التفاعلات الكيميائية الحيوية في الكائنات الحية. ترتبط بالمواد الداخلة في التفاعل وتساعد الخلايا على الهضم، وتتأثر بالبرودة والحرارة؛ فعند تغير درجة الحرارة تقل فاعليتها، وتساعد الخلايا على إنهاء التفاعل ثم تعود من جديد.",
+    "mainSkillId": "skill_verbal_20",
+    "subSkillId": "sub_verbal_12_6",
+    "text": "وفقًا للنص فإن الوظيفة الأساسية للإنزيمات في الجسد هي:",
+    "options": [
+      "تقليل العمليات الكيميائية",
+      "تسريع التفاعلات الكيميائية",
+      "تقليل الهضم",
+      "بطء العمليات الحيوية"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_TEXT_VERIFIED",
+    "answerEvidence": "Direct Amer source p.94; answer explicitly supported by passage."
   }
 ]
