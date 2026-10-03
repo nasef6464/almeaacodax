@@ -14596,5 +14596,68 @@
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
     "answerEvidence": "Direct approved source, Amer T24 p.65; independently verified from sentence meaning and grammar."
+  },
+  {
+    "id": "VERBAL26-AMER-T25-P070-Q006",
+    "canonicalId": "VERBAL26-AMER-T25-P070-Q006",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 70,
+    "sourceQuestionNumber": 6,
+    "sourceTraining": 25,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "لا أستخدم الصواب ما دام لا يجدي صمتي.",
+    "options": [
+      "أستخدم",
+      "ما دام",
+      "لا يجدي",
+      "صمتي"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct approved source, Amer T25 p.70; contextual contradiction independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T25-P070-Q009",
+    "canonicalId": "VERBAL26-AMER-T25-P070-Q009",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 70,
+    "sourceQuestionNumber": 9,
+    "sourceTraining": 25,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "إذا جالست العلماء فكن حريصًا على أن تسمع أحرص منك على أن تنصت.",
+    "options": [
+      "جالست",
+      "تسمع",
+      "منك",
+      "تنصت"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct approved source, Amer T25 p.70; contextual contradiction independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T28-P077-Q021",
+    "canonicalId": "VERBAL26-AMER-T28-P077-Q021",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 77,
+    "sourceQuestionNumber": 21,
+    "sourceTraining": 28,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "إن كنت تريد النجاح فاذهب مع من يحبون الفوز، وإن لم تستطع فاذهب مع من يرغبون الهزيمة.",
+    "options": [
+      "النجاح",
+      "يحبون",
+      "الفوز",
+      "يرغبون"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct approved source, Amer T28 p.77; contextual contradiction independently verified."
   }
 ]
