@@ -66,8 +66,8 @@ assertIncludes(
 );
 assertIncludes(
   'dashboards/admin/FoundationManager.tsx',
-  'topic.skillId === option.id',
-  'Foundation admin prevents duplicate child-topic mapping to the same subskill.',
+  'يمكن ربط الموضوع بمهارة واحدة أو عدة مهارات فرعية',
+  'Foundation admin allows one topic to map to one or more subskills.',
 );
 assertIncludes(
   'dashboards/admin/FoundationManager.tsx',
