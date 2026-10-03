@@ -94,7 +94,13 @@ When strong evidence shows a previous system/bank/module was already completed:
 
 Do not manually recreate hundreds of items if a verified historical bank can be safely recovered and reconciled.
 
-## 14. Closure mindset
+## 14. VERBAL26 owner rule: no new training paths
+- Do not create, auto-generate, approve, or rely on any new verbal training drill, training bank, or mock path unless the owner explicitly re-enables that scope.
+- VERBAL26 work is about extracting and importing all textual questions from the two approved books, mapping them to the approved taxonomy, and preserving existing training assets only.
+- If code contains a generator for new verbal drills/banks/mocks, remove that generation path from the active VERBAL26 execution route.
+- Existing historical quizzes/training assets may be read for evidence, but must not be silently recreated or expanded.
+
+## 15. Closure mindset
 - Work toward closure, not activity.
 - Do not open a new scope before the active scope is actually closed.
 - If a scheduled task is dedicated to a closure goal, disable it automatically once the closure evidence is complete.
