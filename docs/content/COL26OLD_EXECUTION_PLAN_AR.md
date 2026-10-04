@@ -67,11 +67,11 @@
 - لا إنشاء taxonomy موازية.
 
 ### OLD-6 - Canonical/Dedupe
-- الحالة: **IN PROGRESS — internal duplicate codes/hashes=0; exact/fuzzy cross-check against COL26 section-one found no duplicate candidate; final cross-bank gate continues before Production**.
+- الحالة: **CLOSED — source coverage 1,258; canonical new records 1,257; one semantic duplicate is aliased to existing YLM26 question; COL26 cross-check duplicates=0.**.
 - dedupe داخل COL26OLD ثم cross-dedupe مقابل COL26 وYLM26.
 - السؤال المطابق حقيقة لا يُكرر؛ يحفظ provenance للظهور في القسمين عند الحاجة.
 
-### OLD-7 - R2 + Mongo Draft
+### OLD-7 - R2 + Mongo Draft\n- الاستيراد المتوقع: **1,257 سجلًا جديدًا**؛ تغطية المصدر = **1,258** مع alias واحد إلى YLM26.
 - Dry-run كامل.
 - Canary 5: presign -> PUT -> Draft import -> audit.
 - ثم full import على دفعات <=100.
