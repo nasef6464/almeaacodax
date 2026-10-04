@@ -17004,5 +17004,120 @@
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_TEXT_VERIFIED",
     "answerEvidence": "Direct Amer source p.88; independently verified from passage meaning."
+  },
+  {
+    "id": "VERBAL26-AMER-T33-P095-FRIENDSHIP-Q001",
+    "canonicalId": "VERBAL26-AMER-T33-P095-FRIENDSHIP-Q001",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 95,
+    "sourceQuestionNumber": 1,
+    "sourceTraining": 33,
+    "passageId": "VERBAL26-AMER-PASSAGE-FRIENDSHIP",
+    "passageText": "الصداقة الحقيقية كالصحة الجيدة، قلما تعرف قيمتها إلا بعد فقدانها.",
+    "mainSkillId": "skill_verbal_20",
+    "subSkillId": "sub_verbal_12_6",
+    "text": "الكلمة الأنسب أن يبدأ بها النص هي:",
+    "options": [
+      "كانت",
+      "لعل",
+      "إن",
+      "ليت"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_TEXT_VERIFIED",
+    "answerEvidence": "Direct Amer source p.95; answer supported by passage semantics."
+  },
+  {
+    "id": "VERBAL26-AMER-T33-P095-FRIENDSHIP-Q002",
+    "canonicalId": "VERBAL26-AMER-T33-P095-FRIENDSHIP-Q002",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 95,
+    "sourceQuestionNumber": 2,
+    "sourceTraining": 33,
+    "passageId": "VERBAL26-AMER-PASSAGE-FRIENDSHIP",
+    "passageText": "الصداقة الحقيقية كالصحة الجيدة، قلما تعرف قيمتها إلا بعد فقدانها.",
+    "mainSkillId": "skill_verbal_20",
+    "subSkillId": "sub_verbal_12_6",
+    "text": "الكلمة التي يمكن حذفها دون أن يتأثر المعنى:",
+    "options": [
+      "الصداقة",
+      "الجيدة",
+      "قلما",
+      "فقدانها"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_TEXT_VERIFIED",
+    "answerEvidence": "Direct Amer source p.95; answer supported by passage semantics."
+  },
+  {
+    "id": "VERBAL26-AMER-T33-P095-FRIENDSHIP-Q003",
+    "canonicalId": "VERBAL26-AMER-T33-P095-FRIENDSHIP-Q003",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 95,
+    "sourceQuestionNumber": 3,
+    "sourceTraining": 33,
+    "passageId": "VERBAL26-AMER-PASSAGE-FRIENDSHIP",
+    "passageText": "الصداقة الحقيقية كالصحة الجيدة، قلما تعرف قيمتها إلا بعد فقدانها.",
+    "mainSkillId": "skill_verbal_20",
+    "subSkillId": "sub_verbal_12_6",
+    "text": "الضمير في كلمة «فقدانها» يعود على:",
+    "options": [
+      "الصداقة",
+      "الحقيقية",
+      "الجيدة",
+      "قيمتها"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_TEXT_VERIFIED",
+    "answerEvidence": "Direct Amer source p.95; answer supported by passage semantics."
+  },
+  {
+    "id": "VERBAL26-AMER-T33-P095-FRIENDSHIP-Q004",
+    "canonicalId": "VERBAL26-AMER-T33-P095-FRIENDSHIP-Q004",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 95,
+    "sourceQuestionNumber": 4,
+    "sourceTraining": 33,
+    "passageId": "VERBAL26-AMER-PASSAGE-FRIENDSHIP",
+    "passageText": "الصداقة الحقيقية كالصحة الجيدة، قلما تعرف قيمتها إلا بعد فقدانها.",
+    "mainSkillId": "skill_verbal_20",
+    "subSkillId": "sub_verbal_12_6",
+    "text": "العبارة التي تفيد نفس دلالة النص بمضمونها:",
+    "options": [
+      "من لم يعرف الحق لم يعرف الباطل",
+      "من لم يشكر الناس لم يشكر الله",
+      "من لم يعرف الخوف لم يعرف قيمة الأمن",
+      "من لا يتغير ويحاول لن يغادر مكانه"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_TEXT_VERIFIED",
+    "answerEvidence": "Direct Amer source p.95; answer supported by passage semantics."
+  },
+  {
+    "id": "VERBAL26-AMER-T33-P095-FRIENDSHIP-Q005",
+    "canonicalId": "VERBAL26-AMER-T33-P095-FRIENDSHIP-Q005",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 95,
+    "sourceQuestionNumber": 5,
+    "sourceTraining": 33,
+    "passageId": "VERBAL26-AMER-PASSAGE-FRIENDSHIP",
+    "passageText": "الصداقة الحقيقية كالصحة الجيدة، قلما تعرف قيمتها إلا بعد فقدانها.",
+    "mainSkillId": "skill_verbal_20",
+    "subSkillId": "sub_verbal_12_6",
+    "text": "يعني هذا النص أن:",
+    "options": [
+      "الصداقة مهمة في الحياة",
+      "الصداقة كالصحة في قيمتها",
+      "ما نملكه لا ندرك قيمته",
+      "كل ما نفقده مهم جدًا"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_TEXT_VERIFIED",
+    "answerEvidence": "Direct Amer source p.95; answer supported by passage semantics."
   }
 ]
