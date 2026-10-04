@@ -312,10 +312,11 @@ export async function runQuestionPilotPackageImportIfRequested() {
         let lastStatus = 0;
         for (let attempt = 1; attempt <= 3; attempt += 1) {
           try {
+            const uploadBody = Uint8Array.from(entry.bytes);
             const upload = await fetch(intent.uploadUrl, {
               method: "PUT",
               headers: intent.headers || {},
-              body: entry.bytes,
+              body: uploadBody,
               signal: AbortSignal.timeout(60_000),
             });
             lastStatus = upload.status;
