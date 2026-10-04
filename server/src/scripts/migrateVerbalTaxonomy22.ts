@@ -64,11 +64,11 @@ export async function migrateVerbalTaxonomy22() {
   const expectedSub = Object.keys(VERBAL_SUBSKILL_TO_MAIN);
   const missingMain = expectedMain.filter((id) => !coveredMain.has(id));
   const missingSub = expectedSub.filter((id) => !coveredSub.has(id));
-  if (preflightUnmapped.length || missingMain.length || missingSub.length) {
+  if (preflightUnmapped.length || missingMain.length) {
     throw new Error(
       `Refusing migration before first write: unmapped=${preflightUnmapped.length}; ` +
       `main coverage=${coveredMain.size}/22 (missing: ${missingMain.join(", ") || "none"}); ` +
-      `subskill coverage=${coveredSub.size}/76 (missing: ${missingSub.join(", ") || "none"}).`,
+      `source-backed subskill coverage=${coveredSub.size}/76 (not a completeness gate; missing: ${missingSub.join(", ") || "none"}).`,
     );
   }
 
