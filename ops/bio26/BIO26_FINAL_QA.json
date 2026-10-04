@@ -1,0 +1,61 @@
+{
+  "project": "BIO26",
+  "status": "SOURCE_FREEZE_COMPLETE_NOT_CLOSED",
+  "counts": {
+    "foundationPdfPages": 79,
+    "questionPdfPages": 226,
+    "lessons": 48,
+    "sourceQuestionOccurrences": 2835,
+    "section1Occurrences": 1673,
+    "section2Occurrences": 1162,
+    "mainSkills": 29,
+    "subSkills": 98,
+    "answerKeyMapped": 2835,
+    "preCropSkillMapped": 2835,
+    "rangeRules": 221,
+    "minQuestionsPerFrozenSubSkill": 3,
+    "maxQuestionsPerFrozenSubSkill": 109
+  },
+  "gates": {
+    "sourceAnalysis": "PASS",
+    "taxonomy": "PASS_FROZEN_V1",
+    "inventory": "PASS",
+    "questionToSkillLedger": "PASS_PRE_CROP_V1",
+    "answers": "PASS_SOURCE_KEY",
+    "crop": "NOT_STARTED",
+    "aiContext": "INITIALIZED_PENDING_AUTHORING",
+    "dedupe": "NOT_STARTED",
+    "draftImport": "BLOCKED",
+    "liveE2E": "NOT_RUN",
+    "approval": "NOT_RUN"
+  },
+  "integrityChecks": {
+    "lessonCount48": true,
+    "sourceOccurrences2835": true,
+    "sectionAccounting": true,
+    "questionCodeUnique": true,
+    "sourceItemIdUnique": true,
+    "allAnswersPresent": true,
+    "answerIndexValid": true,
+    "allSkillsMapped": true,
+    "taxonomyNoOrphans": true,
+    "minimumSubSkillCoverageAtLeast3": true,
+    "answerKeySequenceCompleteAllLessons": true,
+    "eachLessonQuestionSequenceContinuous": true
+  },
+  "sourceKeyValidation": {
+    "method": "Embedded source answer strips; visual source adjudication only where embedded text was unavailable.",
+    "manualVisualRows": 17,
+    "manualVisualRefs": [
+      "BIO26-L04-Q084",
+      "BIO26-L36-Q048..Q063"
+    ],
+    "inferredFromQuestionOCR": 0
+  },
+  "specialEvidence": [
+    "Lesson 7 pages 38–43 are raster-heavy; question ranges were visually verified.",
+    "Lesson 36 PDF page 164 Q48–Q63 and its answer strip were visually adjudicated without OCR.",
+    "Lesson 15 is a dedicated vertebrate-comparison block and has no explicit section-2 block before lesson 16."
+  ],
+  "closure": false
+}
