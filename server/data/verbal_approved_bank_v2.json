@@ -20500,5 +20500,89 @@
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
     "answerEvidence": "Direct Amer source p.97; answer verified against passage."
+  },
+  {
+    "id": "VERBAL26-AMER-T14-P039-Q001",
+    "canonicalId": "VERBAL26-AMER-T14-P039-Q001",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 39,
+    "sourceQuestionNumber": 1,
+    "sourceTraining": 14,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_1",
+    "text": "قاضي : عدل",
+    "options": [
+      "قائد : حرب",
+      "غني : كرم",
+      "معلم : معرفة",
+      "بخيل : إملاق"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.39; relation independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T14-P039-Q003",
+    "canonicalId": "VERBAL26-AMER-T14-P039-Q003",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 39,
+    "sourceQuestionNumber": 3,
+    "sourceTraining": 14,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_1",
+    "text": "أسد : صقر",
+    "options": [
+      "خير : جائع",
+      "غدر : هجوم",
+      "كرم : شجاعة",
+      "سرعة : طيران"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.39; relation independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T15-P042-Q009",
+    "canonicalId": "VERBAL26-AMER-T15-P042-Q009",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 42,
+    "sourceQuestionNumber": 9,
+    "sourceTraining": 15,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_1",
+    "text": "نبتة : سفر",
+    "options": [
+      "شباب : صحبة",
+      "روح : تقوى",
+      "فضاء : تحليق",
+      "سعادة : نفس"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.42; relation independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T15-P043-Q018",
+    "canonicalId": "VERBAL26-AMER-T15-P043-Q018",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 43,
+    "sourceQuestionNumber": 18,
+    "sourceTraining": 15,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_1",
+    "text": "الياسمين : الشذى",
+    "options": [
+      "الكادي : الأريج",
+      "جوري : فل",
+      "الزنبق : الخزامى",
+      "السندس : البر"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.43; relation independently verified."
   }
 ]
