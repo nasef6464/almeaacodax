@@ -2801,7 +2801,7 @@
     },
     {
       "training": 33,
-      "observedQuestionCount": 34,
+      "observedQuestionCount": 40,
       "status": "SOURCE_COUNT_COMPLETE_ANSWER_QA_PENDING"
     }
   ],
