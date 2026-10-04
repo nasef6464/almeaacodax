@@ -5,7 +5,7 @@ import { Course, PackageContentType, Question, Quiz, QuizResult } from '../types
 import { Clock, AlertCircle, CheckCircle2, XCircle, ArrowRight, ArrowLeft, FileQuestion, Target, Star, Moon, Sun, PauseCircle, Save, Bookmark, Video, BookOpen, LayoutGrid, ZoomIn } from 'lucide-react';
 import { api } from '../services/api';
 import { flattenMockExamQuestionIds, getMockExamSections, getMockExamTimeLimit } from '../utils/mockExam';
-import { normalizeQuestionHtml } from '../utils/questionHtml';
+import { formatQuestionHtmlForDisplay, normalizeQuestionHtml } from '../utils/questionHtml';
 import { getLearnerOptionLabel, getQuizDifficultyBadgeClass, getQuizDifficultyLabel, getQuizOptionButtonHeightClass, getQuizOptionGridClass, getQuizQuestionMapButtonClass, resolveQuestionFromBank, usesImageEmbeddedOptions } from '../utils/quizPresentation';
 import { isDevSessionUser } from '../utils/devSession';
 import { resolveQuizLearningAccessType } from '../utils/quizLearningPlacement';
@@ -559,9 +559,6 @@ export const QuizPage: React.FC = () => {
       );
       setSelectedOptions(safeSelectedOptions);
       setCurrentQuestionIndex(Math.min(Math.max(savedProgress.currentQuestionIndex || 0, 0), Math.max(nextQuestions.length - 1, 0)));
-      if (Array.isArray(savedProgress.flaggedQuestionIds)) {
-        setFlaggedQuestionIds(savedProgress.flaggedQuestionIds.filter((id) => allowedQuestionIds.has(id)));
-      }
       const restoredTimeLeft =
         defaultTimeLeft !== null
           ? (typeof savedProgress.timeLeft === 'number' && savedProgress.timeLeft > 0
@@ -573,7 +570,6 @@ export const QuizPage: React.FC = () => {
       setSelectedOptions({});
       setCurrentQuestionIndex(0);
       setTimeLeft(defaultTimeLeft);
-      setFlaggedQuestionIds([]);
     }
   }, [quizId, quizzes, questions, quizScopedQuestions, user, checkAccess, hasScopedPackageAccess, isResolvingScopedQuestions, sourceParam, sourceCourse, courseHasAccess]);
 
@@ -588,11 +584,10 @@ export const QuizPage: React.FC = () => {
       currentQuestionIndex,
       timeLeft: typeof timeLeft === 'number' && timeLeft > 0 ? timeLeft : null,
       savedAt: new Date().toISOString(),
-      flaggedQuestionIds,
     };
 
     writeQuizProgressDraft(draft);
-  }, [quiz, quizQuestions, selectedOptions, currentQuestionIndex, timeLeft, flaggedQuestionIds, isFinished, isSubmittingResult]);
+  }, [quiz, quizQuestions, selectedOptions, currentQuestionIndex, timeLeft, isFinished, isSubmittingResult]);
 
   useEffect(() => {
     if (quizQuestions.length > 0) {
@@ -885,32 +880,20 @@ export const QuizPage: React.FC = () => {
 
   const toggleQuestionSavedForReview = async (questionId: string) => {
     const wasSaved = flaggedQuestionIds.includes(questionId);
-    setFlaggedQuestionIds((prev) =>
-      wasSaved ? prev.filter((id) => id !== questionId) : [...new Set([...prev, questionId])]
-    );
-
     if (!user?.id || user.id === 'guest') {
-      setQuizStatusMessage(
-        wasSaved
-          ? 'تم إلغاء تعليم السؤال للمراجعة في هذا الاختبار.'
-          : 'تم تعليم السؤال للمراجعة 🚩 (سجّل الدخول لحفظه دائماً في حسابك).'
-      );
+      setQuizStatusMessage('سجّل الدخول لحفظ السؤال للمراجعة على حسابك.');
       setQuizStatusTone('info');
       return;
     }
-
+    setFlaggedQuestionIds((prev) => wasSaved ? prev.filter((id) => id !== questionId) : [...new Set([...prev, questionId])]);
     try {
       if (wasSaved) await api.removeQuestionFromReview(questionId);
       else await api.saveQuestionForReview(questionId);
       setQuizStatusMessage(wasSaved ? 'تمت إزالة السؤال من المراجعة.' : 'تم حفظ السؤال للمراجعة لاحقًا.');
       setQuizStatusTone('success');
     } catch {
-      // Keep in-exam flag active locally so student doesn't lose track during active test
-      setQuizStatusMessage(
-        wasSaved
-          ? 'تم إلغاء تعليم السؤال محلياً، وسيتزامن مع الخادم عند استقرار الاتصال.'
-          : 'تم حفظ السؤال محلياً للمراجعة، وسيتزامن مع الخادم عند استقرار الاتصال.'
-      );
+      setFlaggedQuestionIds((prev) => wasSaved ? [...new Set([...prev, questionId])] : prev.filter((id) => id !== questionId));
+      setQuizStatusMessage('تعذر تحديث قائمة المراجعة الآن.');
       setQuizStatusTone('info');
     }
   };
@@ -1631,7 +1614,9 @@ export const QuizPage: React.FC = () => {
                           </div>
                         </div>
                         <div
-                          className={`max-h-[340px] overflow-y-auto pr-2 font-normal leading-loose break-words select-text ${
+                          dir="rtl"
+                          lang="ar"
+                          className={`question-html max-h-[340px] overflow-y-auto pr-2 font-medium leading-[2] break-words select-text ${
                             passageFontSize === 'sm'
                               ? 'text-sm'
                               : passageFontSize === 'lg'
@@ -1648,10 +1633,12 @@ export const QuizPage: React.FC = () => {
                         data-testid="quiz-current-question"
                         data-question-id={currentQuestion?.id || ''}
                         onClick={handleInlineQuestionImageClick}
-                        className={`question-html text-base sm:text-lg lg:text-xl font-medium leading-relaxed break-words [&_img]:cursor-zoom-in [&_img]:rounded-xl [&_img]:max-h-[300px] [&_img]:mx-auto [&_img]:my-2 ${
+                        dir="rtl"
+                        lang="ar"
+                        className={`question-html verbal-question-text text-lg sm:text-xl lg:text-2xl break-words [&_img]:cursor-zoom-in [&_img]:rounded-xl [&_img]:max-h-[300px] [&_img]:mx-auto [&_img]:my-2 ${
                           isNightMode ? 'text-slate-100' : 'text-gray-900'
                         }`}
-                        dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(questionText) }}
+                        dangerouslySetInnerHTML={{ __html: formatQuestionHtmlForDisplay(questionText) }}
                       />
                     ) : null}
                     {/* Question Diagram / Image with Zoom */}
@@ -1704,40 +1691,45 @@ export const QuizPage: React.FC = () => {
                             data-testid={`quiz-answer-option-${displayIndex}`}
                             onClick={() => handleOptionSelect(displayIndex)}
                             className={`${optionButtonHeightClass} group w-full rounded-xl border-2 transition-all flex items-center gap-2 shadow-xs hover:shadow-sm ${
-                              imageQuestion ? 'justify-center px-1.5 py-1.5 text-center' : 'justify-between px-4 py-3 text-right'
+                              imageQuestion ? 'justify-center px-1.5 py-1.5 text-center' : 'justify-start px-3.5 sm:px-4 py-3 text-right'
                             } ${
                               isSelected
                                 ? (isNightMode ? 'border-indigo-500 bg-indigo-950/90 shadow-indigo-950/40 ring-1 ring-indigo-500/50' : 'border-indigo-600 bg-indigo-50/85 shadow-indigo-100 ring-2 ring-indigo-100')
                                 : (isNightMode ? 'border-slate-800 bg-slate-950/80 hover:border-slate-700 hover:bg-slate-800/60' : 'border-gray-200 hover:border-indigo-200 hover:bg-gray-50/90 bg-white')
                             }`}
                           >
-                            <span className={`${imageQuestion ? 'text-lg sm:text-xl font-black' : 'flex-1 text-xs sm:text-sm md:text-base font-bold'} leading-relaxed break-words text-center ${
-                              isSelected
-                                ? (isNightMode ? 'text-white' : 'text-indigo-950')
-                                : (isNightMode ? 'text-slate-200 group-hover:text-slate-100' : 'text-gray-800 group-hover:text-indigo-950')
-                            }`}>
-                              {imageQuestion ? (
-                                learnerLabel
-                              ) : hasText ? (
-                                <span className="question-html" dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(displayOption.text) }} />
-                              ) : (
-                                <span className="question-html font-black">{fallbackLetter}</span>
-                              )}
-                            </span>
-
-                            {!imageQuestion ? (
-                              <div className="flex items-center shrink-0">
-                                <div className={`flex h-6 w-6 items-center justify-center rounded-full border-2 transition-all ${
-                                  isSelected
-                                    ? 'border-indigo-600 bg-indigo-600 text-white shadow-xs'
-                                    : isNightMode
-                                      ? 'border-slate-600 bg-slate-900 group-hover:border-slate-500'
-                                      : 'border-slate-300 bg-white group-hover:border-indigo-300'
-                                }`}>
-                                  {isSelected ? <div className="h-2 w-2 rounded-full bg-white" /> : null}
-                                </div>
-                              </div>
-                            ) : null}
+                            {imageQuestion ? (
+                              <span className={`text-lg sm:text-xl font-black leading-relaxed text-center ${
+                                isSelected
+                                  ? (isNightMode ? 'text-white' : 'text-indigo-950')
+                                  : (isNightMode ? 'text-slate-200' : 'text-gray-900')
+                              }`}>
+                                {learnerLabel}
+                              </span>
+                            ) : (
+                              <>
+                                <span
+                                  aria-hidden="true"
+                                  className={`quiz-option-label ${
+                                    isSelected
+                                      ? (isNightMode ? '!border-indigo-400 !bg-indigo-600 !text-white' : '!border-indigo-700 !bg-indigo-600 !text-white')
+                                      : ''
+                                  }`}
+                                >
+                                  {fallbackLetter}
+                                </span>
+                                <span
+                                  dir="rtl"
+                                  lang="ar"
+                                  className={`question-html verbal-option-text flex-1 text-sm sm:text-base md:text-lg break-words text-right ${
+                                    isSelected
+                                      ? (isNightMode ? 'text-white' : 'text-indigo-950')
+                                      : (isNightMode ? 'text-slate-100 group-hover:text-white' : 'text-gray-900 group-hover:text-indigo-950')
+                                  }`}
+                                  dangerouslySetInnerHTML={{ __html: hasText ? formatQuestionHtmlForDisplay(displayOption.text) : '&nbsp;' }}
+                                />
+                              </>
+                            )}
                           </button>
                         );
                       })}
@@ -1776,7 +1768,14 @@ export const QuizPage: React.FC = () => {
 
                       <button
                         type="button"
-                        onClick={handleToggleCurrentReviewLater}
+                        onClick={() => {
+                          if (!currentQuestion) return;
+                          setFlaggedQuestionIds((prev) =>
+                            prev.includes(currentQuestion.id)
+                              ? prev.filter((id) => id !== currentQuestion.id)
+                              : [...prev, currentQuestion.id]
+                          );
+                        }}
                         className={`inline-flex items-center justify-center gap-1.5 rounded-xl border px-3.5 py-2 text-xs sm:text-sm font-black transition shadow-xs ${
                           currentQuestion && flaggedQuestionIds.includes(currentQuestion.id)
                             ? 'border-amber-400 bg-amber-500 text-white shadow-amber-200'
