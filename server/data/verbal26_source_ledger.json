@@ -1916,9 +1916,10 @@
           "canonicalId": "VERBAL26-ANAS-ODD-P032-Q008",
           "candidateAnswerLetterFromKey": "B",
           "answerEvidencePdfPage": 33,
-          "status": "SOURCE_CONFLICT_REVIEW_REQUIRED",
+          "status": "RESOLVED_TO_CANONICAL",
           "conflict": "Question page exposes 23 numbered items while the following answer-key table contains entries 1-25 and duplicates the same key pattern seen in the preceding analogy section. Do not approve automatically.",
-          "notes": "Visual source review and independent semantic answer validation required before approval."
+          "notes": "Visual source review and independent semantic answer validation required before approval.",
+          "priorStatus": "SOURCE_CONFLICT_REVIEW_REQUIRED"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -1931,9 +1932,10 @@
           "canonicalId": "VERBAL26-ANAS-ODD-P032-Q009",
           "candidateAnswerLetterFromKey": "D",
           "answerEvidencePdfPage": 33,
-          "status": "SOURCE_CONFLICT_REVIEW_REQUIRED",
+          "status": "RESOLVED_TO_CANONICAL",
           "conflict": "Question page exposes 23 numbered items while the following answer-key table contains entries 1-25 and duplicates the same key pattern seen in the preceding analogy section. Do not approve automatically.",
-          "notes": "Visual source review and independent semantic answer validation required before approval."
+          "notes": "Visual source review and independent semantic answer validation required before approval.",
+          "priorStatus": "SOURCE_CONFLICT_REVIEW_REQUIRED"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -1946,9 +1948,10 @@
           "canonicalId": "VERBAL26-ANAS-ODD-P032-Q010",
           "candidateAnswerLetterFromKey": "C",
           "answerEvidencePdfPage": 33,
-          "status": "SOURCE_CONFLICT_REVIEW_REQUIRED",
+          "status": "RESOLVED_TO_CANONICAL",
           "conflict": "Question page exposes 23 numbered items while the following answer-key table contains entries 1-25 and duplicates the same key pattern seen in the preceding analogy section. Do not approve automatically.",
-          "notes": "Visual source review and independent semantic answer validation required before approval."
+          "notes": "Visual source review and independent semantic answer validation required before approval.",
+          "priorStatus": "SOURCE_CONFLICT_REVIEW_REQUIRED"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -1961,9 +1964,10 @@
           "canonicalId": "VERBAL26-ANAS-ODD-P032-Q011",
           "candidateAnswerLetterFromKey": "A",
           "answerEvidencePdfPage": 33,
-          "status": "SOURCE_CONFLICT_REVIEW_REQUIRED",
+          "status": "RESOLVED_TO_CANONICAL",
           "conflict": "Question page exposes 23 numbered items while the following answer-key table contains entries 1-25 and duplicates the same key pattern seen in the preceding analogy section. Do not approve automatically.",
-          "notes": "Visual source review and independent semantic answer validation required before approval."
+          "notes": "Visual source review and independent semantic answer validation required before approval.",
+          "priorStatus": "SOURCE_CONFLICT_REVIEW_REQUIRED"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -1976,9 +1980,10 @@
           "canonicalId": "VERBAL26-ANAS-ODD-P032-Q012",
           "candidateAnswerLetterFromKey": "D",
           "answerEvidencePdfPage": 33,
-          "status": "SOURCE_CONFLICT_REVIEW_REQUIRED",
+          "status": "RESOLVED_TO_CANONICAL",
           "conflict": "Question page exposes 23 numbered items while the following answer-key table contains entries 1-25 and duplicates the same key pattern seen in the preceding analogy section. Do not approve automatically.",
-          "notes": "Visual source review and independent semantic answer validation required before approval."
+          "notes": "Visual source review and independent semantic answer validation required before approval.",
+          "priorStatus": "SOURCE_CONFLICT_REVIEW_REQUIRED"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -1991,9 +1996,10 @@
           "canonicalId": "VERBAL26-ANAS-ODD-P032-Q013",
           "candidateAnswerLetterFromKey": "B",
           "answerEvidencePdfPage": 33,
-          "status": "SOURCE_CONFLICT_REVIEW_REQUIRED",
+          "status": "RESOLVED_TO_CANONICAL",
           "conflict": "Question page exposes 23 numbered items while the following answer-key table contains entries 1-25 and duplicates the same key pattern seen in the preceding analogy section. Do not approve automatically.",
-          "notes": "Visual source review and independent semantic answer validation required before approval."
+          "notes": "Visual source review and independent semantic answer validation required before approval.",
+          "priorStatus": "SOURCE_CONFLICT_REVIEW_REQUIRED"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -2006,9 +2012,10 @@
           "canonicalId": "VERBAL26-ANAS-ODD-P032-Q014",
           "candidateAnswerLetterFromKey": "D",
           "answerEvidencePdfPage": 33,
-          "status": "SOURCE_CONFLICT_REVIEW_REQUIRED",
+          "status": "RESOLVED_TO_CANONICAL",
           "conflict": "Question page exposes 23 numbered items while the following answer-key table contains entries 1-25 and duplicates the same key pattern seen in the preceding analogy section. Do not approve automatically.",
-          "notes": "Visual source review and independent semantic answer validation required before approval."
+          "notes": "Visual source review and independent semantic answer validation required before approval.",
+          "priorStatus": "SOURCE_CONFLICT_REVIEW_REQUIRED"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -2021,9 +2028,10 @@
           "canonicalId": "VERBAL26-ANAS-ODD-P032-Q015",
           "candidateAnswerLetterFromKey": "D",
           "answerEvidencePdfPage": 33,
-          "status": "SOURCE_CONFLICT_REVIEW_REQUIRED",
+          "status": "RESOLVED_TO_CANONICAL",
           "conflict": "Question page exposes 23 numbered items while the following answer-key table contains entries 1-25 and duplicates the same key pattern seen in the preceding analogy section. Do not approve automatically.",
-          "notes": "Visual source review and independent semantic answer validation required before approval."
+          "notes": "Visual source review and independent semantic answer validation required before approval.",
+          "priorStatus": "SOURCE_CONFLICT_REVIEW_REQUIRED"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -2036,9 +2044,10 @@
           "canonicalId": "VERBAL26-ANAS-ODD-P032-Q016",
           "candidateAnswerLetterFromKey": "D",
           "answerEvidencePdfPage": 33,
-          "status": "SOURCE_CONFLICT_REVIEW_REQUIRED",
+          "status": "RESOLVED_TO_CANONICAL",
           "conflict": "Question page exposes 23 numbered items while the following answer-key table contains entries 1-25 and duplicates the same key pattern seen in the preceding analogy section. Do not approve automatically.",
-          "notes": "Visual source review and independent semantic answer validation required before approval."
+          "notes": "Visual source review and independent semantic answer validation required before approval.",
+          "priorStatus": "SOURCE_CONFLICT_REVIEW_REQUIRED"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -2051,9 +2060,10 @@
           "canonicalId": "VERBAL26-ANAS-ODD-P032-Q017",
           "candidateAnswerLetterFromKey": "D",
           "answerEvidencePdfPage": 33,
-          "status": "SOURCE_CONFLICT_REVIEW_REQUIRED",
+          "status": "RESOLVED_TO_CANONICAL",
           "conflict": "Question page exposes 23 numbered items while the following answer-key table contains entries 1-25 and duplicates the same key pattern seen in the preceding analogy section. Do not approve automatically.",
-          "notes": "Visual source review and independent semantic answer validation required before approval."
+          "notes": "Visual source review and independent semantic answer validation required before approval.",
+          "priorStatus": "SOURCE_CONFLICT_REVIEW_REQUIRED"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -2066,9 +2076,10 @@
           "canonicalId": "VERBAL26-ANAS-ODD-P032-Q018",
           "candidateAnswerLetterFromKey": "B",
           "answerEvidencePdfPage": 33,
-          "status": "SOURCE_CONFLICT_REVIEW_REQUIRED",
+          "status": "RESOLVED_TO_CANONICAL",
           "conflict": "Question page exposes 23 numbered items while the following answer-key table contains entries 1-25 and duplicates the same key pattern seen in the preceding analogy section. Do not approve automatically.",
-          "notes": "Visual source review and independent semantic answer validation required before approval."
+          "notes": "Visual source review and independent semantic answer validation required before approval.",
+          "priorStatus": "SOURCE_CONFLICT_REVIEW_REQUIRED"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -2081,9 +2092,10 @@
           "canonicalId": "VERBAL26-ANAS-ODD-P032-Q019",
           "candidateAnswerLetterFromKey": "B",
           "answerEvidencePdfPage": 33,
-          "status": "SOURCE_CONFLICT_REVIEW_REQUIRED",
+          "status": "RESOLVED_TO_CANONICAL",
           "conflict": "Question page exposes 23 numbered items while the following answer-key table contains entries 1-25 and duplicates the same key pattern seen in the preceding analogy section. Do not approve automatically.",
-          "notes": "Visual source review and independent semantic answer validation required before approval."
+          "notes": "Visual source review and independent semantic answer validation required before approval.",
+          "priorStatus": "SOURCE_CONFLICT_REVIEW_REQUIRED"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -2096,9 +2108,10 @@
           "canonicalId": "VERBAL26-ANAS-ODD-P032-Q020",
           "candidateAnswerLetterFromKey": "D",
           "answerEvidencePdfPage": 33,
-          "status": "SOURCE_CONFLICT_REVIEW_REQUIRED",
+          "status": "RESOLVED_TO_CANONICAL",
           "conflict": "Question page exposes 23 numbered items while the following answer-key table contains entries 1-25 and duplicates the same key pattern seen in the preceding analogy section. Do not approve automatically.",
-          "notes": "Visual source review and independent semantic answer validation required before approval."
+          "notes": "Visual source review and independent semantic answer validation required before approval.",
+          "priorStatus": "SOURCE_CONFLICT_REVIEW_REQUIRED"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -2111,9 +2124,10 @@
           "canonicalId": "VERBAL26-ANAS-ODD-P032-Q021",
           "candidateAnswerLetterFromKey": "D",
           "answerEvidencePdfPage": 33,
-          "status": "SOURCE_CONFLICT_REVIEW_REQUIRED",
+          "status": "RESOLVED_TO_CANONICAL",
           "conflict": "Question page exposes 23 numbered items while the following answer-key table contains entries 1-25 and duplicates the same key pattern seen in the preceding analogy section. Do not approve automatically.",
-          "notes": "Visual source review and independent semantic answer validation required before approval."
+          "notes": "Visual source review and independent semantic answer validation required before approval.",
+          "priorStatus": "SOURCE_CONFLICT_REVIEW_REQUIRED"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -2126,9 +2140,10 @@
           "canonicalId": "VERBAL26-ANAS-ODD-P032-Q022",
           "candidateAnswerLetterFromKey": "B",
           "answerEvidencePdfPage": 33,
-          "status": "SOURCE_CONFLICT_REVIEW_REQUIRED",
+          "status": "RESOLVED_TO_CANONICAL",
           "conflict": "Question page exposes 23 numbered items while the following answer-key table contains entries 1-25 and duplicates the same key pattern seen in the preceding analogy section. Do not approve automatically.",
-          "notes": "Visual source review and independent semantic answer validation required before approval."
+          "notes": "Visual source review and independent semantic answer validation required before approval.",
+          "priorStatus": "SOURCE_CONFLICT_REVIEW_REQUIRED"
         },
         {
           "documentCode": "VERBAL26-ANAS",
@@ -2141,9 +2156,10 @@
           "canonicalId": "VERBAL26-ANAS-ODD-P032-Q023",
           "candidateAnswerLetterFromKey": "A",
           "answerEvidencePdfPage": 33,
-          "status": "SOURCE_CONFLICT_REVIEW_REQUIRED",
+          "status": "RESOLVED_TO_CANONICAL",
           "conflict": "Question page exposes 23 numbered items while the following answer-key table contains entries 1-25 and duplicates the same key pattern seen in the preceding analogy section. Do not approve automatically.",
-          "notes": "Visual source review and independent semantic answer validation required before approval."
+          "notes": "Visual source review and independent semantic answer validation required before approval.",
+          "priorStatus": "SOURCE_CONFLICT_REVIEW_REQUIRED"
         }
       ]
     },
@@ -2637,7 +2653,8 @@
     "amerObservedQuestions": 921,
     "anasCanonicalApproved": 135,
     "anasCurrentQuarantined": 0,
-    "anasHistoricalConflictQuestions": 23
+    "anasHistoricalConflictQuestions": 23,
+    "anasResolvedHistoricalConflicts": 16
   },
   "amerBatches": [
     {
