@@ -2559,14 +2559,14 @@
   ],
   "metrics": {
     "sourceKeyVerifiedRecords": 112,
-    "approvedBankRecords": 838,
+    "approvedBankRecords": 843,
     "note": "Ledger records are not approved-bank records until visual text/options and taxonomy QA pass.",
     "sourceConflictRecords": 23,
     "anasObservedQuestions": 135,
     "anasKeyVerifiedQuestions": 112,
     "anasConflictQuestions": 23,
     "amerTrainingsIndexed": 33,
-    "amerApprovedRecords": 722,
+    "amerApprovedRecords": 727,
     "amerDerivedReportCrossCheck": 938,
     "amerDerivedReportIsAuthority": false,
     "amerObservedQuestionCounts": {
@@ -2606,11 +2606,11 @@
     },
     "approvedBySource": {
       "anas": 116,
-      "abdelbaset": 722
+      "abdelbaset": 727
     },
     "approvedByMainSkill": {
-      "skill_verbal_17": 48,
-      "skill_verbal_12": 88,
+      "skill_verbal_17": 51,
+      "skill_verbal_12": 171,
       "skill_verbal_10": 1,
       "skill_verbal_01": 29,
       "skill_verbal_04": 34,
@@ -2621,10 +2621,10 @@
       "skill_verbal_05": 30,
       "skill_verbal_07": 31,
       "skill_verbal_02": 34,
-      "skill_verbal_20": 5,
-      "skill_verbal_22": 1,
-      "skill_verbal_21": 7,
-      "skill_verbal_19": 3,
+      "skill_verbal_20": 83,
+      "skill_verbal_22": 2,
+      "skill_verbal_21": 26,
+      "skill_verbal_19": 12,
       "skill_verbal_18": 65,
       "skill_verbal_11": 15,
       "skill_verbal_13": 92,
@@ -2807,7 +2807,7 @@
   ],
   "migrationReady": false,
   "migrationReadinessReason": "Full-book source QA is still incomplete. Migration remains blocked until both books are fully accounted, dedupe/source contracts pass, and all unresolved answers are quarantined or resolved.",
-  "progressNote": "Canonical bank contains 817 approved records (Amer 701, Anas 116). Amer T29 is fully accounted: 29 canonical + 5 quarantine. Migration remains blocked pending remaining Amer/Anas gaps and final contracts.",
+  "progressNote": "Canonical bank contains 843 approved records (Amer 727, Anas 116). T33 friendship passage added from direct source; full-book QA remains incomplete.",
   "amerCoverageByTraining": {
     "29": {
       "expectedObserved": 34,
