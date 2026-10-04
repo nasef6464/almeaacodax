@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { chromium } from 'playwright';
 
-const BASE_URL = process.env.BASE_URL || 'http://localhost:4173';
+const BASE_URL = process.env.UI_AUDIT_BASE_URL || 'http://localhost:4173';
 const ARTIFACT_DIR = 'C:/Users/nasef/.gemini/antigravity/brain/0c3c6af8-1e75-4a63-a11e-838bcdff1929/screenshots';
 const REPO_EVIDENCE_DIR = 'audit-evidence/human-ux';
 

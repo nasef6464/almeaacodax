@@ -76,7 +76,7 @@ export const StudentMasteryGoalsPanel: React.FC<Props> = ({
 
         <div className="mt-4 grid gap-3 md:grid-cols-2">
             {loading ? (
-                <div className="rounded-2xl bg-slate-50 p-4 text-sm font-bold text-slate-500">جاري تحميل الأهداف...</div>
+                <div className="rounded-2xl bg-slate-50 p-4 text-sm font-bold text-slate-500 flex items-center gap-2"><span className="w-3.5 h-3.5 border-2 border-indigo-600/30 border-t-indigo-600 rounded-full animate-spin" />جارٍ تجهيز الأهداف…</div>
             ) : goals.length ? goals.map((goal) => (
                 <article key={goal.id} className="rounded-2xl border border-slate-100 bg-slate-50/70 p-4">
                     <div className="flex items-start justify-between gap-3">
