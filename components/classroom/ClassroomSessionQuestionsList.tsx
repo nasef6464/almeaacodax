@@ -12,7 +12,7 @@ interface ClassroomSessionQuestionsListProps {
   pushingQuestions: boolean;
   loadingBank: boolean;
   bankError: string | null;
-  onOpenPushModal: (mode: 'normal' | 'challenge') => void;
+  openPushModal: (mode: 'normal' | 'challenge') => void;
   pushChallengeSeconds: number;
   onChangePushChallengeSeconds: (sec: number) => void;
   currentQIndex: number | undefined;
@@ -33,7 +33,7 @@ export const ClassroomSessionQuestionsList: React.FC<ClassroomSessionQuestionsLi
   pushingQuestions,
   loadingBank,
   bankError,
-  onOpenPushModal,
+  openPushModal,
   pushChallengeSeconds,
   onChangePushChallengeSeconds,
   currentQIndex,
@@ -87,7 +87,7 @@ export const ClassroomSessionQuestionsList: React.FC<ClassroomSessionQuestionsLi
           )}
           <button
             type="button"
-            onClick={() => onOpenPushModal('normal')}
+            onClick={() => openPushModal('normal')}
             disabled={isEnded || hasActiveBatch || loadingBank || Boolean(bankError)}
             className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 px-3.5 py-2 text-xs font-black text-white disabled:opacity-50"
           >
@@ -106,7 +106,7 @@ export const ClassroomSessionQuestionsList: React.FC<ClassroomSessionQuestionsLi
           </select>
           <button
             type="button"
-            onClick={() => onOpenPushModal('challenge')}
+            onClick={() => openPushModal('challenge')}
             disabled={isEnded || hasActiveBatch || loadingBank || Boolean(bankError)}
             className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-3.5 py-2 text-xs font-black text-white disabled:opacity-50"
           >

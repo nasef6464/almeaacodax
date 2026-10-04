@@ -4,7 +4,15 @@ import path from 'node:path';
 
 const root = process.cwd();
 const teacherRoutes = fs.readFileSync(path.join(root, 'server/src/routes/classroom/registerClassroomTeacherRoutes.ts'), 'utf8');
-const teacherPanel = fs.readFileSync(path.join(root, 'components/classroom/ClassroomActiveSessionPanel.tsx'), 'utf8');
+const teacherPanel = [
+  fs.readFileSync(path.join(root, 'components/classroom/ClassroomActiveSessionPanel.tsx'), 'utf8'),
+  fs.existsSync(path.join(root, 'components/classroom/ClassroomSessionQuestionsList.tsx'))
+    ? fs.readFileSync(path.join(root, 'components/classroom/ClassroomSessionQuestionsList.tsx'), 'utf8')
+    : '',
+  fs.existsSync(path.join(root, 'components/classroom/ClassroomBatchSummaryCard.tsx'))
+    ? fs.readFileSync(path.join(root, 'components/classroom/ClassroomBatchSummaryCard.tsx'), 'utf8')
+    : '',
+].join('\n');
 const batchRoutes = fs.readFileSync(path.join(root, 'server/src/routes/classroom/registerClassroomBatchRoutes.ts'), 'utf8');
 
 assert.ok(teacherRoutes.includes('challengeDurationSeconds: z.number().int().min(10).max(600).optional()'));
@@ -28,6 +36,6 @@ assert.ok(batchRoutes.includes('"/sessions/:id/batches/:batchId/end"'));
 assert.ok(batchRoutes.includes('miniReport: await buildBatchMiniReport(session, batch)'));
 assert.ok(teacherPanel.includes('handleEndBatch'));
 assert.ok(teacherPanel.includes('إنهاء الدفعة وعرض ملخصها'));
-assert.ok(teacherPanel.includes('ملخص {batchMiniReport.label}'));
+assert.ok(teacherPanel.includes('ملخص {batchMiniReport.label}') || teacherPanel.includes('ملخص {report.label}'));
 
 console.log('Smart Classroom challenge-batch contract: PASS');
