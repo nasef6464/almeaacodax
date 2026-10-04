@@ -303,7 +303,7 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
         pushingQuestions={pushingQuestions}
         loadingBank={loadingBank}
         bankError={bankError}
-        onOpenPushModal={openPushModal}
+        openPushModal={openPushModal}
         pushChallengeSeconds={pushChallengeSeconds}
         onChangePushChallengeSeconds={setPushChallengeSeconds}
         currentQIndex={currentQIndex}
