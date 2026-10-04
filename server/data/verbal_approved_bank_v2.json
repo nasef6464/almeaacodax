@@ -8817,7 +8817,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + context-completion verification."
+    "answerEvidence": "Approved-source text/options + context-completion verification.",
+    "sourceTraining": 22
   },
   {
     "id": "VERBAL26-AMER-T22-P061-Q003",
@@ -8837,7 +8838,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + context-completion verification."
+    "answerEvidence": "Approved-source text/options + context-completion verification.",
+    "sourceTraining": 22
   },
   {
     "id": "VERBAL26-AMER-T22-P061-Q005",
@@ -8857,7 +8859,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + context-completion verification."
+    "answerEvidence": "Approved-source text/options + context-completion verification.",
+    "sourceTraining": 22
   },
   {
     "id": "VERBAL26-AMER-T22-P061-Q006",
@@ -8877,7 +8880,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + context-completion verification."
+    "answerEvidence": "Approved-source text/options + context-completion verification.",
+    "sourceTraining": 22
   },
   {
     "id": "VERBAL26-AMER-T22-P061-Q008",
@@ -8897,7 +8901,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + context-completion verification."
+    "answerEvidence": "Approved-source text/options + context-completion verification.",
+    "sourceTraining": 22
   },
   {
     "id": "VERBAL26-AMER-T22-P061-Q009",
@@ -8917,7 +8922,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + context-completion verification."
+    "answerEvidence": "Approved-source text/options + context-completion verification.",
+    "sourceTraining": 22
   },
   {
     "id": "VERBAL26-AMER-T22-P061-Q010",
@@ -8937,7 +8943,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + context-completion verification."
+    "answerEvidence": "Approved-source text/options + context-completion verification.",
+    "sourceTraining": 22
   },
   {
     "id": "VERBAL26-AMER-T22-P062-Q011",
@@ -8957,7 +8964,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + context-completion verification."
+    "answerEvidence": "Approved-source text/options + context-completion verification.",
+    "sourceTraining": 22
   },
   {
     "id": "VERBAL26-AMER-T22-P062-Q012",
@@ -8977,7 +8985,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + context-completion verification."
+    "answerEvidence": "Approved-source text/options + context-completion verification.",
+    "sourceTraining": 22
   },
   {
     "id": "VERBAL26-AMER-T22-P062-Q013",
@@ -8997,7 +9006,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + context-completion verification."
+    "answerEvidence": "Approved-source text/options + context-completion verification.",
+    "sourceTraining": 22
   },
   {
     "id": "VERBAL26-AMER-T22-P062-Q014",
@@ -9017,7 +9027,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + context-completion verification."
+    "answerEvidence": "Approved-source text/options + context-completion verification.",
+    "sourceTraining": 22
   },
   {
     "id": "VERBAL26-AMER-T22-P062-Q015",
@@ -9037,7 +9048,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + context-completion verification."
+    "answerEvidence": "Approved-source text/options + context-completion verification.",
+    "sourceTraining": 22
   },
   {
     "id": "VERBAL26-AMER-T22-P062-Q016",
@@ -9057,7 +9069,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + context-completion verification."
+    "answerEvidence": "Approved-source text/options + context-completion verification.",
+    "sourceTraining": 22
   },
   {
     "id": "VERBAL26-AMER-T22-P062-Q017",
@@ -9077,7 +9090,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + context-completion verification."
+    "answerEvidence": "Approved-source text/options + context-completion verification.",
+    "sourceTraining": 22
   },
   {
     "id": "VERBAL26-AMER-T22-P062-Q018",
@@ -9097,7 +9111,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + context-completion verification."
+    "answerEvidence": "Approved-source text/options + context-completion verification.",
+    "sourceTraining": 22
   },
   {
     "id": "VERBAL26-AMER-T22-P062-Q020",
@@ -9117,7 +9132,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + context-completion verification."
+    "answerEvidence": "Approved-source text/options + context-completion verification.",
+    "sourceTraining": 22
   },
   {
     "id": "VERBAL26-AMER-T22-P062-Q022",
@@ -9137,7 +9153,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + context-completion verification."
+    "answerEvidence": "Approved-source text/options + context-completion verification.",
+    "sourceTraining": 22
   },
   {
     "id": "VERBAL26-AMER-T22-P062-Q023",
@@ -9157,7 +9174,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + context-completion verification."
+    "answerEvidence": "Approved-source text/options + context-completion verification.",
+    "sourceTraining": 22
   },
   {
     "id": "VERBAL26-AMER-T22-P062-Q024",
@@ -9177,7 +9195,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + context-completion verification."
+    "answerEvidence": "Approved-source text/options + context-completion verification.",
+    "sourceTraining": 22
   },
   {
     "id": "VERBAL26-AMER-T22-P062-Q025",
@@ -9197,7 +9216,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + context-completion verification."
+    "answerEvidence": "Approved-source text/options + context-completion verification.",
+    "sourceTraining": 22
   },
   {
     "id": "VERBAL26-AMER-T23-P063-Q001",
@@ -14572,7 +14592,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Direct approved source; text, options and semantic completion verified."
+    "answerEvidence": "Direct approved source; text, options and semantic completion verified.",
+    "sourceTraining": 22
   },
   {
     "id": "VERBAL26-AMER-T22-P061-Q007",
@@ -14592,7 +14613,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Direct approved source; text, options and semantic completion verified."
+    "answerEvidence": "Direct approved source; text, options and semantic completion verified.",
+    "sourceTraining": 22
   },
   {
     "id": "VERBAL26-AMER-T22-P062-Q019",
@@ -14612,7 +14634,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Direct approved source; text, options and semantic completion verified."
+    "answerEvidence": "Direct approved source; text, options and semantic completion verified.",
+    "sourceTraining": 22
   },
   {
     "id": "VERBAL26-AMER-T22-P062-Q021",
@@ -14632,7 +14655,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Direct approved source; text, options and semantic completion verified."
+    "answerEvidence": "Direct approved source; text, options and semantic completion verified.",
+    "sourceTraining": 22
   },
   {
     "id": "VERBAL26-AMER-T23-P064-Q016",
@@ -18390,5 +18414,26 @@
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
     "answerEvidence": "Direct Amer source p.64; completion verified semantically from the four source options."
+  },
+  {
+    "id": "VERBAL26-AMER-T22-P061-Q002",
+    "canonicalId": "VERBAL26-AMER-T22-P061-Q002",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 61,
+    "sourceQuestionNumber": 2,
+    "sourceTraining": 22,
+    "mainSkillId": "skill_verbal_16",
+    "subSkillId": "sub_verbal_10_2",
+    "text": "ينبغي للعاقل أن يكون لنفسه ........؛ يدعوها للتواضع والعمل.",
+    "options": [
+      "مهتمًا",
+      "متوهمًا",
+      "متهمًا",
+      "متوهّمًا"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.61; idiom «يتهم نفسه» fits the explicit purpose of humility and work."
   }
 ]
