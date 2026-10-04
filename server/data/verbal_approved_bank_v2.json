@@ -12799,8 +12799,8 @@
       "عشاء"
     ],
     "correctOptionIndex": 3,
-    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source page 32 options + independent semantic classification: ثلاثة ألفاظ لأوقات النهار، بينما «عشاء» لليل."
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Source answer key, Anas PDF p.33, visually verified."
   },
   {
     "id": "VERBAL26-ANAS-ODD-P032-Q011",
@@ -12819,8 +12819,8 @@
       "ذهاب"
     ],
     "correctOptionIndex": 0,
-    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source page 32 options + independent semantic classification: «قدوم» يدل على الوصول، والبقية تدل على الغياب/الانصراف."
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Source answer key, Anas PDF p.33, visually verified."
   },
   {
     "id": "VERBAL26-ANAS-ODD-P032-Q012",
@@ -12839,8 +12839,8 @@
       "عصفور"
     ],
     "correctOptionIndex": 3,
-    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source page 32 options + independent semantic classification: «عصفور» طائر قادر على الطيران المعتاد بخلاف الثلاثة الأخرى في سياق التصنيف المقصود."
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Source answer key, Anas PDF p.33, visually verified."
   },
   {
     "id": "VERBAL26-ANAS-ODD-P032-Q014",
@@ -12859,8 +12859,8 @@
       "جاهل"
     ],
     "correctOptionIndex": 3,
-    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source page 32 options + independent semantic classification: الثلاثة الأولى صفات للفطنة والمهارة، و«جاهل» يخالفها."
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Source answer key, Anas PDF p.33, visually verified."
   },
   {
     "id": "VERBAL26-ANAS-ODD-P032-Q015",
@@ -12879,8 +12879,8 @@
       "سمع"
     ],
     "correctOptionIndex": 3,
-    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source page 32 options + independent semantic classification: الثلاثة الأولى أعضاء، و«سمع» حاسة/وظيفة."
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Source answer key, Anas PDF p.33, visually verified."
   },
   {
     "id": "VERBAL26-ANAS-ODD-P032-Q016",
@@ -12899,8 +12899,8 @@
       "جزع"
     ],
     "correctOptionIndex": 3,
-    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source page 32 options + independent semantic classification: الثلاثة الأولى تدل على الصبر والتحمل، و«جزع» ضدها."
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Source answer key, Anas PDF p.33, visually verified."
   },
   {
     "id": "VERBAL26-ANAS-ODD-P032-Q018",
@@ -12919,8 +12919,8 @@
       "حكاية"
     ],
     "correctOptionIndex": 1,
-    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source page 32 options + independent semantic classification: «قصيدة» جنس شعري، والبقية أجناس/ألفاظ سردية."
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Source answer key, Anas PDF p.33, visually verified."
   },
   {
     "id": "VERBAL26-ANAS-ODD-P032-Q020",
@@ -12939,8 +12939,8 @@
       "ضبع"
     ],
     "correctOptionIndex": 3,
-    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source page 32 options + independent semantic classification: الثلاثة الأولى أسماء لصغار حيوانات/طير، و«ضبع» اسم الحيوان نفسه."
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Source answer key, Anas PDF p.33, visually verified."
   },
   {
     "id": "VERBAL26-ANAS-ODD-P032-Q021",
@@ -12959,8 +12959,8 @@
       "سنة"
     ],
     "correctOptionIndex": 3,
-    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source page 32 options + independent semantic classification: الثلاثة الأولى كتب، و«سنة» ليست كتابًا."
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Source answer key, Anas PDF p.33, visually verified."
   },
   {
     "id": "VERBAL26-ANAS-ODD-P032-Q022",
@@ -12978,9 +12978,9 @@
       "إفرست",
       "الأمازون"
     ],
-    "correctOptionIndex": 2,
-    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source page 32 options + independent semantic classification: المسيسيبي والنيل والأمازون أنهار، و«إفرست» جبل."
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Source answer key, Anas PDF p.33, visually verified."
   },
   {
     "id": "VERBAL26-ANAS-ODD-P032-Q023",
@@ -12999,8 +12999,8 @@
       "قهوة"
     ],
     "correctOptionIndex": 0,
-    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source page 32 options + independent semantic classification: الثلاثة الأخيرة مشروبات في التصنيف المباشر، و«نعناع» نبات/مكوّن."
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Source answer key, Anas PDF p.33, visually verified."
   },
   {
     "id": "VERBAL26-ANAS-COMP-P014-Q014",
@@ -20982,8 +20982,8 @@
       "شبل"
     ],
     "correctOptionIndex": 1,
-    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED_SOURCE_KEY_CONFLICT",
-    "answerEvidence": "Direct Anas p.32 options; independently resolved because p.33 key is internally inconsistent/duplicated."
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Source answer key, Anas PDF p.33, visually verified."
   },
   {
     "id": "VERBAL26-ANAS-ODD-P032-Q010",
@@ -21002,9 +21002,9 @@
       "حوار",
       "حمار"
     ],
-    "correctOptionIndex": 3,
-    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED_SOURCE_KEY_CONFLICT",
-    "answerEvidence": "Direct Anas p.32 options; independently resolved because p.33 key is internally inconsistent/duplicated."
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Source answer key, Anas PDF p.33, visually verified."
   },
   {
     "id": "VERBAL26-ANAS-ODD-P032-Q013",
@@ -21023,9 +21023,9 @@
       "خيار",
       "طماطم"
     ],
-    "correctOptionIndex": 0,
-    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED_SOURCE_KEY_CONFLICT",
-    "answerEvidence": "Direct Anas p.32 options; independently resolved because p.33 key is internally inconsistent/duplicated."
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Source answer key, Anas PDF p.33, visually verified."
   },
   {
     "id": "VERBAL26-ANAS-ODD-P032-Q017",
@@ -21045,8 +21045,8 @@
       "نطيق"
     ],
     "correctOptionIndex": 3,
-    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED_SOURCE_KEY_CONFLICT",
-    "answerEvidence": "Direct Anas p.32 options; independently resolved because p.33 key is internally inconsistent/duplicated."
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Source answer key, Anas PDF p.33, visually verified."
   },
   {
     "id": "VERBAL26-ANAS-ODD-P032-Q019",
@@ -21065,9 +21065,9 @@
       "بهجة",
       "وجل"
     ],
-    "correctOptionIndex": 3,
-    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED_SOURCE_KEY_CONFLICT",
-    "answerEvidence": "Direct Anas p.32 options; independently resolved because p.33 key is internally inconsistent/duplicated."
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Source answer key, Anas PDF p.33, visually verified."
   },
   {
     "id": "VERBAL26-AMER-T2-P007-Q008",
