@@ -13106,27 +13106,6 @@
     "answerEvidence": "Direct approved-source T16 p.46; دولة وعاصمتها."
   },
   {
-    "id": "VERBAL26-AMER-T17-Q024",
-    "canonicalId": "VERBAL26-AMER-T17-Q024",
-    "sourceBook": "abdelbaset",
-    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
-    "sourcePage": 50,
-    "sourceQuestionNumber": 24,
-    "sourceTraining": 17,
-    "mainSkillId": "skill_verbal_12",
-    "subSkillId": "sub_verbal_08_1",
-    "text": "حدد المفردة الشاذة",
-    "options": [
-      "الرئتين",
-      "القلب",
-      "العين",
-      "الكبد"
-    ],
-    "correctOptionIndex": 2,
-    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Direct approved-source T17 p.50; العين is the independently verified odd item."
-  },
-  {
     "id": "VERBAL26-AMER-T17-Q040",
     "canonicalId": "VERBAL26-AMER-T17-Q040",
     "sourceBook": "abdelbaset",
