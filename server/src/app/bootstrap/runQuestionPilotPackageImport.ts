@@ -157,7 +157,8 @@ async function verifyLiveImages(questions: any[]) {
 }
 
 export async function runQuestionPilotPackageImportIfRequested() {
-  if (started || String(process.env.QUESTION_PILOT_MODE || "").trim().toLowerCase() !== COL26OLD_MODE) return;
+  const modeRaw = String(process.env.QUESTION_PILOT_MODE || "").trim();
+  if (started || !modeRaw.toLowerCase().startsWith(`${COL26OLD_MODE}.`)) return;
   started = true;
 
   if (process.env.PILOT_ALLOW_EXTERNAL_RUN !== "YES" || process.env.PILOT_WRITE_AUTHORIZATION !== "YES") {
@@ -167,8 +168,15 @@ export async function runQuestionPilotPackageImportIfRequested() {
 
   const batchId = requireEnv("QUESTION_PILOT_BATCH_ID").toUpperCase();
   const expectedCount = Number.parseInt(requireEnv("QUESTION_PILOT_EXPECTED_COUNT"), 10);
-  const packageUrl = requireEnv("QUESTION_PILOT_PACKAGE_URL");
-  const packageSha = requireEnv("QUESTION_PILOT_PACKAGE_SHA256").toLowerCase();
+  const transportEncoded = modeRaw.slice(COL26OLD_MODE.length + 1);
+  let transport: { packageUrl?: string; packageSha256?: string } = {};
+  try {
+    transport = JSON.parse(Buffer.from(transportEncoded, "base64url").toString("utf8"));
+  } catch {
+    throw new Error("Invalid COL26OLD transport envelope");
+  }
+  const packageUrl = String(transport.packageUrl || "").trim();
+  const packageSha = String(transport.packageSha256 || "").trim().toLowerCase();
 
   if (batchId !== "TAH-MATH-COL26OLD-SEC2-V1") throw new Error("Unexpected COL26OLD batch id");
   if (expectedCount !== 1257) throw new Error("COL26OLD canonical import must contain exactly 1257 new records");
