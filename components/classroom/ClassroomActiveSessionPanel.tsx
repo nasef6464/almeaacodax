@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Clock, Copy, Crown, ExternalLink, Flame, PlusCircle, Presentation, SkipForward, Trophy, Zap } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, Clock, Copy, Crown, ExternalLink, Flame, PlusCircle, Presentation, SkipForward, Trophy, Zap } from 'lucide-react';
 import { ClassroomTeacherLiveRadar } from './ClassroomTeacherLiveRadar';
 import { ClassroomQuestionReviewPanel } from './ClassroomQuestionReviewPanel';
 import { ClassroomPushQuestionsModal } from './ClassroomPushQuestionsModal';
@@ -73,6 +73,7 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
   const [loadingBank, setLoadingBank] = useState(false);
   const [bankError, setBankError] = useState('');
   const [sessionStorageMeta, setSessionStorageMeta] = useState<{ day?: string; period?: string; className?: string; subject?: string } | null>(null);
+  const [showEndConfirmModal, setShowEndConfirmModal] = useState(false);
 
   const schoolId = data?.schoolId || data?.meta?.schoolId || '';
 
@@ -268,8 +269,72 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
         <div className="mt-4 space-y-3">{(data?.questions || []).map((question: any) => { const isActive = data?.activeQuestionIndex === question.index; const isChallenge = canonicalChallengeIds.includes(question.questionId) || challengeIds.includes(question.questionId); return <div key={question.questionId} className={`flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-2xl border p-4 ${isActive ? 'border-indigo-600 bg-indigo-50/70' : 'border-slate-200 bg-white'}`}><div className="flex items-start sm:items-center gap-3"><span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl text-xs font-black ${isActive ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700'}`}>{question.index + 1}</span><div className="min-w-0 flex-1"><div className="font-bold text-slate-900 text-sm"><span className="text-indigo-600 ml-1 font-black">سؤال {question.index + 1}:</span><QuestionContentRenderer content={question.text} className="inline-block align-middle max-h-24 overflow-hidden" /></div><div className="mt-1 flex flex-wrap items-center gap-2 text-[11px] text-slate-500"><span>{question.options?.length || 4} خيارات</span>{isChallenge && <span className="inline-flex items-center gap-0.5 rounded-md bg-amber-100 px-1.5 py-0.5 font-black text-amber-800">⚡ تحدي سريع</span>}{isActive && <span className="font-black text-emerald-600">● معروض على أجهزة الطلاب</span>}</div></div></div><div className="flex items-center gap-2 self-end sm:self-center"><button type="button" onClick={() => onPublish(question.index)} disabled={data?.status === 'ended'} className={`rounded-xl px-3.5 py-2 text-xs font-bold disabled:opacity-50 ${isActive ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700'}`}>{isActive ? 'منشور حالياً ✓' : 'نشر اعتيادي'}</button></div></div>; })}</div>
       </section>
 
-      <div className="mt-6 flex flex-wrap items-center justify-between gap-3"><button type="button" onClick={onEnd} disabled={data?.status === 'ended'} className="rounded-2xl bg-rose-600 px-6 py-3 font-black text-white disabled:opacity-50">{data?.status === 'ended' ? 'الجلسة منتهية ومحفوظة بالأرشيف' : 'إنهاء الجلسة وحفظ التقرير بالأرشيف'}</button>{isTeacher && <Link to="/school-teacher-dashboard?tab=smart-classroom" className="text-xs font-bold text-slate-500">العودة للوحة معلم المدرسة →</Link>}</div>
-      {message && <p className="mt-4 text-sm font-bold text-slate-600">{message}</p>}
+      <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
+        <button
+          type="button"
+          onClick={() => setShowEndConfirmModal(true)}
+          disabled={data?.status === 'ended'}
+          className="rounded-2xl bg-rose-600 px-6 py-3 font-black text-white shadow-md hover:bg-rose-700 active:scale-95 transition-all disabled:opacity-50"
+        >
+          {data?.status === 'ended' ? 'الجلسة منتهية ومحفوظة بالأرشيف' : 'إنهاء الجلسة وحفظ التقرير بالأرشيف'}
+        </button>
+        {isTeacher && <Link to="/school-teacher-dashboard?tab=smart-classroom" className="text-xs font-bold text-slate-500 hover:text-slate-700">العودة للوحة معلم المدرسة →</Link>}
+      </div>
+      {message && (
+        <div
+          role="status"
+          aria-live="polite"
+          className={`mt-4 flex items-center gap-2.5 rounded-xl border p-3.5 text-xs sm:text-sm font-bold transition-all ${
+            message.includes('تعذر') || message.includes('فشل') || message.includes('خطأ')
+              ? 'border-rose-200 bg-rose-50 text-rose-800'
+              : message.includes('تم') || message.includes('جاهز')
+                ? 'border-emerald-200 bg-emerald-50 text-emerald-800'
+                : 'border-indigo-200 bg-indigo-50 text-indigo-800'
+          }`}
+        >
+          {message.includes('تعذر') || message.includes('فشل') || message.includes('خطأ') ? (
+            <AlertTriangle size={18} className="shrink-0 text-rose-600" />
+          ) : (
+            <CheckCircle2 size={18} className="shrink-0 text-emerald-600" />
+          )}
+          <span>{message}</span>
+        </div>
+      )}
+
+      {showEndConfirmModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-xs" dir="rtl">
+          <div className="w-full max-w-md rounded-3xl border border-slate-200 bg-white p-6 shadow-2xl dark:border-slate-800 dark:bg-slate-900 text-center animate-in fade-in zoom-in-95 duration-150">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-rose-50 text-rose-600 dark:bg-rose-950/50">
+              <AlertTriangle size={28} />
+            </div>
+            <h3 className="mt-4 text-lg font-black text-slate-900 dark:text-white">
+              تأكيد إنهاء الحصة الذكية
+            </h3>
+            <p className="mt-2 text-xs font-bold text-slate-500 leading-relaxed">
+              هل أنت متأكد من رغبتك في إنهاء الحصة لجميع الطلاب وحفظ التقرير في الأرشيف؟ سيتم قفل استقبال الإجابات وتثبيت نتائج المشاركة فوراً.
+            </p>
+            <div className="mt-6 flex items-center gap-3">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowEndConfirmModal(false);
+                  onEnd();
+                }}
+                className="flex-1 rounded-2xl bg-rose-600 py-3 text-xs font-black text-white hover:bg-rose-700 shadow-md active:scale-95 transition-all"
+              >
+                نعم، إنهاء وأرشفة
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowEndConfirmModal(false)}
+                className="flex-1 rounded-2xl border border-slate-200 bg-slate-50 py-3 text-xs font-black text-slate-700 hover:bg-slate-100 active:scale-95 transition-all dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
+              >
+                تراجع وإكمال الحصة
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <ClassroomPushQuestionsModal isOpen={showPushModal} pushingQuestions={pushingQuestions} pushFilterSubject={pushFilterSubject} pushFilterSection={pushFilterSection} pushFilterSkill={pushFilterSkill} subjects={subjects} sections={sections} skills={skills} availableQuestions={availablePushQuestions} selectedIds={selectedForPush} onClose={() => setShowPushModal(false)} onSubjectChange={(value) => { setPushFilterSubject(value); setPushFilterSection(''); setPushFilterSkill(''); }} onSectionChange={(value) => { setPushFilterSection(value); setPushFilterSkill(''); }} onSkillChange={setPushFilterSkill} onQuickSelectBatch={handleQuickSelectBatch} onClearSelection={() => setSelectedForPush([])} onToggleQuestion={(id) => setSelectedForPush((prev) => prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id])} onSubmit={() => void handlePushQuestionsSubmit()} />
     </main>

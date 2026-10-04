@@ -1,13 +1,4 @@
-import type {
-    CategorySection,
-    CategorySubject,
-    Lesson,
-    LibraryItem,
-    Question,
-    Quiz,
-    Skill,
-    Topic,
-} from '../../types';
+import type { CategorySection, CategorySubject, Lesson, LibraryItem, Question, Quiz, Skill, Topic } from '../../types';
 import { matchesEntityId } from '../../utils/entityIds';
 import { resolveFoundationSkillTarget } from '../../utils/foundationSkillTarget';
 import { buildFoundationActionLink } from '../../utils/skillActionLinks';
@@ -72,9 +63,10 @@ export const buildSkillRecommendation = (
                     lessons.some((lesson) => matchesEntityId(lesson, lessonId) && lesson.skillIds?.includes(resolvedSkillId)));
                 const topicHasQuiz = (topic.quizIds || []).some((quizId) =>
                     quizzes.some((quiz) => matchesEntityId(quiz, quizId) && (quiz.skillIds?.includes(resolvedSkillId) || quiz.questionIds?.some((id) => questions.find((q) => q.id === id)?.skillIds?.includes(resolvedSkillId)))));
-                const topicMatchesSkill = topic.skillId === resolvedSkillId || matchesEntityId(topic, `topic_sub_${resolvedSkillId}`) || displayText(topic.title) === displayText(target.skillName);
+                const topicHasExplicitSkill = topic.skillId === resolvedSkillId || topic.skillIds?.includes(resolvedSkillId);
+                const topicMatchesSkill = topicHasExplicitSkill || matchesEntityId(topic, `topic_sub_${resolvedSkillId}`) || displayText(topic.title) === displayText(target.skillName);
                 const topicMatchesSection = Boolean(recommendationSectionId && topic.sectionId === recommendationSectionId);
-                const explicitSkillScore = topic.skillId === resolvedSkillId ? 120 : 0;
+                const explicitSkillScore = topicHasExplicitSkill ? 120 : 0;
                 return { topic, score: explicitSkillScore + (topicHasLesson ? 60 : 0) + (topicHasQuiz ? 55 : 0) + (topicMatchesSkill ? 80 : 0) + (topicMatchesSection ? 35 : 0) };
             })
             .filter((item) => item.score > 0)
@@ -148,13 +140,17 @@ export const buildSkillRecommendation = (
     const mainSkillTrainingLink = target.kind === 'main' && recommendedQuiz?.id
         ? `/quiz/${encodeURIComponent(String(recommendedQuiz.id))}?source=training`
         : undefined;
+    const subskillFallbackQuiz = recommendedQuiz?.id
+        ? `/quiz/${recommendedQuiz.id}`
+        : `/quiz?mode=self&autostart=1&skillIds=${encodeURIComponent(resolvedSkillId)}`;
     const subskillLinks = {
-        quizLink: foundationTrainingLink || (recommendedQuiz?.id ? `/quiz/${recommendedQuiz.id}` : undefined),
+        quizLink: foundationTrainingLink || subskillFallbackQuiz,
     };
 
     return {
         lessonTitle: displayText(recommendedLesson?.title),
         lessonLink: recommendedTopic ? lessonLink : undefined,
+        lessonVideoUrl: recommendedLesson?.videoUrl,
         lessonTopicTitle: displayText(recommendedTopic?.title || target.skillName),
         foundationTopicLink: recommendedTopic ? lessonLink : undefined,
         quizTitle: displayText(recommendedQuiz?.title || recommendedTopic?.title),
@@ -162,7 +158,7 @@ export const buildSkillRecommendation = (
             ? foundationTrainingLink
             : target.kind === 'main'
                 ? mainSkillTrainingLink || (recommendedQuiz?.id ? `/quiz/${recommendedQuiz.id}?source=training` : undefined)
-                : undefined,
+                : subskillFallbackQuiz,
         supportLink: recommendedTopic ? foundationSupportLink : undefined,
         resourceTitle: displayText(recommendedResource?.title),
         resourceUrl: recommendedResource?.url,

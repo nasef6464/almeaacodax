@@ -10,6 +10,7 @@ import { getCourseAudienceCount, getCourseRating } from '../utils/courseStats';
 import { resolveIconComponent } from '../dashboards/admin/PathsManager/pathDisplayPresentation';
 import { DEFAULT_PLATFORM_ARTICLES, type PlatformArticle } from '../data/defaultArticles';
 import { ArticleReaderModal } from '../components/ArticleReaderModal';
+import { DEFAULT_AVATAR } from '../utils/defaultAvatar';
 
 const DEFAULT_HERO_BOY_IMAGE =
     '/images/homepage-hero-boy-platform.webp?v=20260512';
@@ -285,21 +286,21 @@ const defaultHomepageSettings: HomepageSettings = {
             name: 'سارة العتيبي',
             degree: '98% قدرات',
             text: 'المنصة غيرت طريقة مذاكرتي تمامًا. تحليل نقاط الضعف ساعدني أركز جهدي في المكان الصح.',
-            image: 'https://i.pravatar.cc/100?img=5',
+            image: DEFAULT_AVATAR,
         },
         {
             id: 't2',
             name: 'فهد الشمري',
             degree: '96% تحصيلي',
             text: 'الشروحات والتدريبات كانت مرتبة جدًا وواضحة، وحسيت فعلًا أن عندي خطة كاملة وليست مجرد دروس.',
-            image: 'https://i.pravatar.cc/100?img=11',
+            image: DEFAULT_AVATAR,
         },
         {
             id: 't3',
             name: 'نورة السالم',
             degree: '99% قدرات',
             text: 'الاختبارات المحاكية كانت قريبة جدًا من الاختبار الحقيقي، وهذا رفع ثقتي قبل يوم الاختبار.',
-            image: 'https://i.pravatar.cc/100?img=9',
+            image: DEFAULT_AVATAR,
         },
     ],
     featuredPathIds: [],
@@ -1465,7 +1466,7 @@ const TestimonialCard = ({ name, degree, text, image }: any) => (
             <div className="mb-5 flex items-center justify-between gap-3">
                 <div className="flex items-center gap-3.5">
                     <div className="relative">
-                        <img src={image} alt={name} className="w-12 h-12 rounded-full border-2 border-amber-400/80 object-cover shadow-sm" />
+                        <img src={image && !image.includes('pravatar.cc') ? image : DEFAULT_AVATAR} alt={name} className="w-12 h-12 rounded-full border-2 border-amber-400/80 object-cover shadow-sm bg-gray-100" />
                         <span className="absolute -bottom-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 text-white text-[9px] shadow-xs font-black">
                             ✓
                         </span>

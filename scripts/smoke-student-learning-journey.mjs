@@ -96,13 +96,29 @@ function matchesEntityId(item, value) {
   return actual === expected || actual === stripCopySuffix(expected) || stripCopySuffix(actual) === expected;
 }
 
-const [taxonomy, content, quizzesPayload, questions] = await Promise.all([
+const [taxonomy, content, quizzesPayload] = await Promise.all([
   fetchJson('/taxonomy/bootstrap'),
   fetchJson('/content/bootstrap'),
   fetchJson('/quizzes'),
-  fetchJson('/quizzes/questions'),
 ]);
 const quizzes = extractList(quizzesPayload, 'quizzes');
+
+const relevantQuizQuestionIds = quizzes
+  .flatMap((q) => q.questionIds || [])
+  .map(String)
+  .filter(Boolean);
+
+const [subjectQuestionsPayload, quizQuestionsPayload] = await Promise.all([
+  fetchJson(`/quizzes/questions?pathId=${encodeURIComponent(TARGET_PATH_ID)}&subject=${encodeURIComponent(TARGET_SUBJECT_ID)}&limit=100`),
+  relevantQuizQuestionIds.length > 0
+    ? fetchJson(`/quizzes/questions?ids=${encodeURIComponent(relevantQuizQuestionIds.slice(0, 100).join(','))}&limit=100`)
+    : Promise.resolve([]),
+]);
+
+const questions = [
+  ...extractList(subjectQuestionsPayload, 'questions'),
+  ...extractList(quizQuestionsPayload, 'questions'),
+];
 
 const path = (taxonomy.paths || []).find((item) => idOf(item) === TARGET_PATH_ID);
 const subject = (taxonomy.subjects || []).find((item) => idOf(item) === TARGET_SUBJECT_ID);

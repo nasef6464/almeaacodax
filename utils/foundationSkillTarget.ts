@@ -93,7 +93,10 @@ export const resolveFoundationSkillTarget = (
   const visibleTopics = topics.filter((topic) => topic.showOnPlatform !== false && topicMatchesScope(topic, target));
 
   const explicitTopic = skillId
-    ? visibleTopics.find((topic) => normalizeText(topic.skillId) === skillId)
+    ? visibleTopics.find((topic) =>
+        normalizeText(topic.skillId) === skillId ||
+        (topic.skillIds || []).some((topicSkillId) => normalizeText(topicSkillId) === skillId),
+      )
     : undefined;
 
   const legacyIdTopic = skillId

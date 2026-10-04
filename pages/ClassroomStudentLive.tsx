@@ -1,10 +1,17 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
-import { CheckCircle2, Loader2, Presentation, Sparkles } from 'lucide-react';
+import { AlertCircle, CheckCircle2, Lightbulb, Loader2, Presentation, Sparkles } from 'lucide-react';
 import { api } from '../services/api';
 import { useClassroomRealtime } from '../hooks/useClassroomRealtime';
 import { useAuth } from '../contexts/AuthContext';
 import { SmartClassroomExamRunner, type ClassroomExamQuestion } from '../components/classroom/SmartClassroomExamRunner';
+
+const WAITING_TIPS = [
+  '💡 اقرأ رأس السؤال والمطلوب بعناية قبل البدء في الحسابات.',
+  '⚡ في مسائل الجبر، التجريب الذكي للخيارات يختصر نصف الوقت.',
+  '🎯 ركز على الدقة أولاً ثم السرعة؛ الإجابة الصحيحة هي الأهم دائماً.',
+  '📐 في مسائل الهندسة، استعن بالرسم التخطيطي لتصور الشكل والأبعاد بدقة.',
+];
 
 type ChallengeState = {
   activeBatchId?: string;
@@ -20,6 +27,7 @@ export const ClassroomStudentLive: React.FC = () => {
   const { sessionId = '' } = useParams();
   const { user, loading: authLoading } = useAuth();
   const [pin, setPin] = useState(() => sessionStorage.getItem('classroom_pin') || '');
+  const [tipIndex, setTipIndex] = useState(0);
   const [questions, setQuestions] = useState<ClassroomExamQuestion[]>([]);
   const [activeIndex, setActiveIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<number, number>>({});
@@ -31,6 +39,18 @@ export const ClassroomStudentLive: React.FC = () => {
   const [sessionEnded, setSessionEnded] = useState(false);
   const [challengeState, setChallengeState] = useState<ChallengeState | null>(null);
   const publishedSignatureRef = useRef('');
+
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>;
+    const cycleTips = () => {
+      timer = setTimeout(() => {
+        setTipIndex((prev) => (prev + 1) % WAITING_TIPS.length);
+        cycleTips();
+      }, 4500);
+    };
+    cycleTips();
+    return () => clearTimeout(timer);
+  }, []);
 
   const clearLocalClassroomState = useCallback(() => {
     sessionStorage.removeItem('classroom_joined');
@@ -210,19 +230,87 @@ export const ClassroomStudentLive: React.FC = () => {
         <div className="mt-6 relative"><div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-200" /></div><div className="relative flex justify-center text-xs"><span className="bg-white px-3 text-slate-400">أو عبر رمز الحصة</span></div></div>
         <input inputMode="numeric" value={pin} onChange={(event) => setPin(event.target.value.replace(/\D/g, '').slice(0, 6))} className="mt-4 w-full rounded-2xl border border-slate-200 p-4 text-center text-3xl font-black tracking-[0.4em] text-indigo-700" placeholder="000000" />
         <button type="button" onClick={() => void joinByPin()} disabled={pin.length !== 6} className="mt-3 w-full rounded-xl bg-slate-800 p-3.5 font-black text-white disabled:opacity-40">انضمام بالرمز</button>
-        {message && <p className="mt-3 text-sm font-bold text-slate-600">{message}</p>}
+        {message && (
+          <div
+            role="status"
+            aria-live="polite"
+            className={`mt-3 flex items-center justify-center gap-2 rounded-xl p-3 text-xs sm:text-sm font-bold transition-all ${
+              message.includes('تعذر') || message.includes('فشل') || message.includes('خطأ')
+                ? 'border border-rose-200 bg-rose-50 text-rose-800'
+                : 'border border-indigo-200 bg-indigo-50 text-indigo-800'
+            }`}
+          >
+            {message.includes('تعذر') || message.includes('فشل') || message.includes('خطأ') ? (
+              <AlertCircle size={16} className="shrink-0 text-rose-600" />
+            ) : (
+              <CheckCircle2 size={16} className="shrink-0 text-emerald-600" />
+            )}
+            <span>{message}</span>
+          </div>
+        )}
       </main>
     );
   }
 
   if (questions.length === 0) {
     return (
-      <main className="mx-auto mt-16 max-w-md p-6 text-center" dir="rtl">
-        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600"><Loader2 size={32} className="animate-spin" /></div>
-        <h1 className="mt-4 text-2xl font-black text-slate-900">أنت داخل الحصة</h1>
-        <p className="mt-3 font-bold text-slate-600">بانتظار المعلم لنشر الدفعة التالية…</p>
-        <p className="mt-1 text-xs text-slate-400">ستظهر الأسئلة هنا فور إطلاقها من المعلم.</p>
-        <p className="mt-4 text-sm text-slate-500">{message}</p>
+      <main className="mx-auto mt-10 max-w-xl p-4 sm:p-6 text-center" dir="rtl">
+        <div className="relative overflow-hidden rounded-3xl border border-indigo-100 bg-white p-6 sm:p-8 shadow-xl">
+          <div className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-3.5 py-1.5 text-xs font-black text-emerald-700 border border-emerald-200">
+            <span className="relative flex h-2.5 w-2.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+            </span>
+            <span>متصل مباشرة بالفصل الذكي</span>
+          </div>
+
+          <div className="mt-6 flex justify-center">
+            <div className="relative flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-tr from-indigo-600 to-indigo-500 text-white shadow-lg shadow-indigo-200">
+              <Sparkles size={36} className="animate-pulse" />
+              <div className="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500 text-white border-2 border-white text-[10px] font-black">
+                ✓
+              </div>
+            </div>
+          </div>
+
+          <h1 className="mt-5 text-2xl sm:text-3xl font-black text-slate-900">
+            أنت الآن داخل الحصة الذكية!
+          </h1>
+          <p className="mt-2 text-sm font-bold text-slate-600">
+            بانتظار المعلم لنشر الدفعة التالية من الأسئلة التفاعلية…
+          </p>
+
+          <div className="mt-6 grid grid-cols-2 gap-3 text-right">
+            <div className="rounded-2xl border border-slate-100 bg-slate-50/80 p-3.5">
+              <span className="text-[11px] font-bold text-slate-400 block">اسم الطالب</span>
+              <span className="text-sm font-black text-slate-800 truncate block mt-0.5">
+                {user.displayName || (user as any)?.name || 'طالب متميز'}
+              </span>
+            </div>
+            <div className="rounded-2xl border border-slate-100 bg-slate-50/80 p-3.5">
+              <span className="text-[11px] font-bold text-slate-400 block">حالة الاتصال</span>
+              <span className="text-sm font-black text-emerald-600 flex items-center gap-1 mt-0.5">
+                جاهز ومستعد ⚡
+              </span>
+            </div>
+          </div>
+
+          <div className="mt-5 rounded-2xl border border-amber-100 bg-amber-50/60 p-4 text-right transition-all">
+            <div className="flex items-center gap-2 text-amber-800 text-xs font-black">
+              <Lightbulb size={16} className="text-amber-600 shrink-0" />
+              <span>إضاءة سريعة أثناء الانتظار:</span>
+            </div>
+            <p className="mt-1.5 text-xs sm:text-sm font-bold text-amber-900 leading-relaxed min-h-[2.5rem] flex items-center">
+              {WAITING_TIPS[tipIndex]}
+            </p>
+          </div>
+
+          {message && (
+            <p className="mt-4 text-xs font-bold text-indigo-600 bg-indigo-50/60 rounded-xl py-2 px-3">
+              {message}
+            </p>
+          )}
+        </div>
       </main>
     );
   }

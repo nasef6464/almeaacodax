@@ -30,10 +30,14 @@ check('canonical question fields override legacy skillIds when available', () =>
 
 check('nested subskills are loaded and flattened with parent context', () => {
   assert.ok(quizRoute.includes('{ "subSkills.id": { $in: skillIds } }'));
-  assert.ok(readModel.includes('for (const subSkill of Array.isArray(skill?.subSkills) ? skill.subSkills : [])'));
+  assert.ok(readModel.includes('toPlainSkillValue'));
+  assert.ok(readModel.includes('typeof value.toObject === "function"'));
+  assert.ok(readModel.includes('for (const rawSubSkill of Array.isArray(skill?.subSkills) ? skill.subSkills : [])'));
+  assert.ok(readModel.includes('name: String(skill?.name || rawSkill?.name || "")'));
+  assert.ok(readModel.includes('name: String(subSkill?.name || rawSubSkill?.name || "")'));
   assert.ok(readModel.includes('level: "sub"'));
   assert.ok(readModel.includes('parentSkillId'));
-  assert.ok(readModel.includes('parentSkill: String(skill.name || "")'));
+  assert.ok(readModel.includes('parentSkill: String(skill.name || rawSkill?.name || "")'));
 });
 
 check('result analysis persists only resolved taxonomy skills and hierarchy', () => {

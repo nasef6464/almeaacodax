@@ -1,0 +1,51 @@
+name: COL26 V7 Production Import
+on:
+  push:
+    branches:
+      - ops/col26-canary-presign-20261002
+    paths:
+      - ops/col26-v7-import/**
+      - .github/workflows/col26-v7-import.yml
+jobs:
+  canary:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      PILOT_API_BASE: https://almeaacodax.vercel.app/api
+      PILOT_ADMIN_TOKEN: ${{ secrets.SMOKE_ADMIN_TOKEN }}
+      ADMIN_EMAIL: ${{ secrets.SMOKE_ADMIN_EMAIL || secrets.ROLE_ADMIN_EMAIL }}
+      ADMIN_PASSWORD: ${{ secrets.SMOKE_ADMIN_PASSWORD || secrets.ROLE_ADMIN_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Refresh admin auth when the stored smoke token is stale
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs=require("fs");
+          (async()=>{
+            const API=(process.env.PILOT_API_BASE||"").replace(/\/$/,"");
+            let token=String(process.env.PILOT_ADMIN_TOKEN||"").trim();
+            if(token){
+              const probe=await fetch(API+"/auth/me",{headers:{authorization:"Bearer "+token}});
+              if(probe.ok) return;
+            }
+            if(!process.env.ADMIN_EMAIL||!process.env.ADMIN_PASSWORD) throw new Error("No refresh credentials available");
+            const c=await fetch(API+"/auth/csrf-token");
+            if(!c.ok) throw new Error("csrf "+c.status);
+            const d=await c.json(); const csrf=d.csrfToken||"";
+            const sc=c.headers.get("set-cookie")||""; const cookie=sc.split(";")[0];
+            const r=await fetch(API+"/auth/login",{method:"POST",headers:{"content-type":"application/json","x-csrf-token":csrf,"cookie":cookie},body:JSON.stringify({email:process.env.ADMIN_EMAIL,password:process.env.ADMIN_PASSWORD})});
+            const tx=await r.text(); if(!r.ok) throw new Error("login "+r.status+" "+tx.slice(0,120));
+            let body={}; try{body=JSON.parse(tx)}catch{}
+            const loginCookie=r.headers.get("set-cookie")||"";
+            const m=loginCookie.match(/almeaa_access_token=([^;]+)/);
+            token=String(body.token||m?.[1]||"").trim();
+            if(!token) throw new Error("login succeeded without reusable token");
+            fs.appendFileSync(process.env.GITHUB_ENV,"PILOT_ADMIN_TOKEN="+token+"\n");
+          })().catch(e=>{console.error(e.message);process.exit(1)});
+          NODE
+      - name: Run bounded COL26 canary
+        run: bash ops/col26-v7-import/run.sh

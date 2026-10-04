@@ -100,6 +100,7 @@ export type StudentReportPeriod = 'month' | 'quarter' | 'all';
 export interface SkillRecommendation {
     lessonTitle?: string;
     lessonLink?: string;
+    lessonVideoUrl?: string;
     lessonTopicTitle?: string;
     foundationTopicLink?: string;
     quizTitle?: string;

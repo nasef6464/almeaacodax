@@ -155,13 +155,29 @@ export function registerClassroomStudentRoutes(classroomRouter: Router) {
 
   classroomRouter.get("/sessions/:id/current", requireAuth, asyncHandler(async (req, res) => {
     const session = await ClassroomSessionModel.findById(req.params.id).lean() as any;
-    if (!session || session.status !== "live" || typeof session.activeQuestionIndex !== "number") return res.status(StatusCodes.NOT_FOUND).json({ message: "No active question" });
+    if (!session) return res.status(StatusCodes.NOT_FOUND).json({ message: "Session not found" });
+    if (session.status !== "live") return res.status(StatusCodes.NOT_FOUND).json({ message: "No active session" });
     if (!(await smartClassroomEnabled(String(session.schoolId)))) return res.status(StatusCodes.FORBIDDEN).json({ message: "Smart Classroom is not enabled for this school" });
     const student = await UserModel.findById(req.authUser!.id).select("schoolId groupIds role").lean() as any;
     if (!(await studentCanAccessSession(student, req.authUser!.id, session))) return res.status(StatusCodes.FORBIDDEN).json({ message: "Session access denied" });
     const participant = await ClassroomParticipantModel.findOne({ sessionId: classroomSessionId(session), studentId: req.authUser!.id })
       .select("finalizedSubmissionKeys").lean() as any;
     if (!participant) return res.status(StatusCodes.FORBIDDEN).json({ message: "Join the session before viewing questions" });
+
+    if (typeof session.activeQuestionIndex !== "number") {
+      return res.json({
+        sessionId: classroomSessionId(session),
+        question: null,
+        currentIndex: 0,
+        globalIndex: null,
+        totalQuestions: 0,
+        questions: [],
+        submissionKey: "",
+        submitted: false,
+        state: "waiting",
+      });
+    }
+
     const publishedSet = new Set(publishedQuestionIds(session));
     const safeQuestions = session.questionSnapshots
       .map((question: any, index: number) => ({ index, raw: question }))

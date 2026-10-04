@@ -1,7 +1,8 @@
-import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { api } from '../services/api';
 import { Role } from '../types';
 import { useStore } from '../store/useStore';
+import { DEFAULT_AVATAR } from '../utils/defaultAvatar';
 
 type BackendRole = 'student' | 'teacher' | 'admin' | 'supervisor' | 'school_admin' | 'parent';
 
@@ -50,8 +51,10 @@ interface AuthContextType {
   loading: boolean;
   signInWithGoogle: () => Promise<void>;
   signInWithEmail: (email: string, password: string) => Promise<SessionUser>;
+  signInWithNationalId: (nationalId: string, password: string) => Promise<SessionUser>;
   signUpWithEmail: (email: string, password: string, name?: string) => Promise<SessionUser>;
   logout: () => Promise<void>;
+  refreshProfile?: () => Promise<void>;
   devSwitchRole?: (role: BackendRole) => void;
 }
 
@@ -131,7 +134,7 @@ const buildSessionUser = (user: BackendAuthUser): SessionUser => ({
   id: String(user.id || user._id || user.email),
   email: user.email,
   displayName: user.name,
-  photoURL: user.avatar || `https://i.pravatar.cc/150?u=${encodeURIComponent(user.email)}`,
+  photoURL: user.avatar || DEFAULT_AVATAR,
   role: user.role,
   groupIds: Array.isArray(user.groupIds) ? user.groupIds.map(String) : [],
   schoolId: user.schoolId ?? null,
@@ -161,15 +164,19 @@ const syncStoreUser = (sessionUser: SessionUser | null, backendUser?: BackendAut
         ...existing?.subscription,
         plan: backendUser?.subscription?.plan ?? existing?.subscription?.plan ?? 'free',
         expiresAt: backendUser?.subscription?.expiresAt ?? existing?.subscription?.expiresAt,
-        purchasedCourses: toArray(backendUser?.subscription?.purchasedCourses),
-        purchasedPackages: toArray(backendUser?.subscription?.purchasedPackages),
+        purchasedCourses: backendUser
+          ? toArray(backendUser?.subscription?.purchasedCourses)
+          : (existing?.subscription?.purchasedCourses || []),
+        purchasedPackages: backendUser
+          ? toArray(backendUser?.subscription?.purchasedPackages)
+          : (existing?.subscription?.purchasedPackages || []),
       },
     },
-    favorites: backendUser?.favorites ?? useStore.getState().favorites,
-    reviewLater: backendUser?.reviewLater ?? useStore.getState().reviewLater,
-    enrolledCourses: backendUser?.enrolledCourses ?? useStore.getState().enrolledCourses,
-    enrolledPaths: backendUser?.enrolledPaths ?? useStore.getState().enrolledPaths,
-    completedLessons: backendUser?.completedLessons ?? useStore.getState().completedLessons,
+    favorites: backendUser ? (backendUser.favorites ?? useStore.getState().favorites) : useStore.getState().favorites,
+    reviewLater: backendUser ? (backendUser.reviewLater ?? useStore.getState().reviewLater) : useStore.getState().reviewLater,
+    enrolledCourses: backendUser ? (backendUser.enrolledCourses ?? useStore.getState().enrolledCourses) : useStore.getState().enrolledCourses,
+    enrolledPaths: backendUser ? (backendUser.enrolledPaths ?? useStore.getState().enrolledPaths) : useStore.getState().enrolledPaths,
+    completedLessons: backendUser ? (backendUser.completedLessons ?? useStore.getState().completedLessons) : useStore.getState().completedLessons,
   });
 };
 
@@ -181,7 +188,7 @@ const resetStoreUser = () => {
       id: 'guest',
       name: 'Guest User',
       email: undefined,
-      avatar: 'https://i.pravatar.cc/150?u=guest',
+      avatar: DEFAULT_AVATAR,
       role: Role.STUDENT,
       points: 0,
       badges: [],
@@ -358,6 +365,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return sessionUser;
   };
 
+  const signInWithNationalId = async (nationalId: string, password: string) => {
+    const response = (await api.nationalIdLogin(nationalId, password)) as { token?: string; user: BackendAuthUser };
+    const sessionUser = buildSessionUser(response.user);
+    persistSession(sessionUser, response.user);
+    return sessionUser;
+  };
+
   const signUpWithEmail = async (email: string, password: string, name?: string) => {
     const finalName = name?.trim() || email.split('@')[0] || 'Student';
     const response = (await api.register(finalName, email, password)) as { token?: string; user: BackendAuthUser };
@@ -389,9 +403,45 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     persistSession(sessionUser, backendUser);
   };
 
+  const refreshProfile = useCallback(async () => {
+    try {
+      const response = await api.getCurrentUser();
+      const backendUser = (response as { user?: BackendAuthUser })?.user;
+      if (backendUser && backendUser.email && backendUser.role) {
+        const sessionUser = buildSessionUser(backendUser);
+        sessionStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(sessionUser));
+        setUser(sessionUser);
+        syncStoreUser(sessionUser, backendUser);
+      }
+    } catch (error) {
+      console.warn('Failed to refresh profile in background:', error);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!user) return;
+
+    let lastSync = Date.now();
+    const handleFocusOrVisible = () => {
+      if (typeof document !== 'undefined' && document.visibilityState === 'hidden') return;
+      if (Date.now() - lastSync > 15000) {
+        lastSync = Date.now();
+        void refreshProfile();
+      }
+    };
+
+    window.addEventListener('focus', handleFocusOrVisible);
+    document.addEventListener('visibilitychange', handleFocusOrVisible);
+
+    return () => {
+      window.removeEventListener('focus', handleFocusOrVisible);
+      document.removeEventListener('visibilitychange', handleFocusOrVisible);
+    };
+  }, [user, refreshProfile]);
+
   const value = useMemo(
-    () => ({ user, loading, signInWithGoogle, signInWithEmail, signUpWithEmail, logout, devSwitchRole }),
-    [user, loading],
+    () => ({ user, loading, signInWithGoogle, signInWithEmail, signInWithNationalId, signUpWithEmail, logout, refreshProfile, devSwitchRole }),
+    [user, loading, refreshProfile],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

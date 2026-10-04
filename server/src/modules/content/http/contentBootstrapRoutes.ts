@@ -206,7 +206,7 @@ contentBootstrapRouter.get(
           ? Promise.resolve([])
           : isLearningCore
             ? TopicModel.find(combineMongoFilters(finalTopicFilter, managedFilter, requestedContentFilter))
-                .select("id pathId subjectId sectionId skillId title parentId order showOnPlatform isLocked lessonIds quizIds libraryItemIds")
+                .select("id pathId subjectId sectionId skillId skillIds title parentId order showOnPlatform isLocked lessonIds quizIds libraryItemIds")
                 .sort({ subjectId: 1, order: 1 })
                 .lean()
             : TopicModel.find(combineMongoFilters(finalTopicFilter, managedFilter, requestedContentFilter))

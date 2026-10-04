@@ -7,6 +7,7 @@ const topicSchema = new Schema(
     subjectId: { type: String, required: true, index: true },
     sectionId: { type: String, default: null, index: true },
     skillId: { type: String, default: null },
+    skillIds: { type: [String], default: [] },
     title: { type: String, required: true, trim: true },
     parentId: { type: String, default: null, index: true },
     order: { type: Number, default: 0 },
@@ -24,6 +25,7 @@ const topicSchema = new Schema(
 topicSchema.index({ pathId: 1, subjectId: 1, sectionId: 1, showOnPlatform: 1, order: 1 });
 topicSchema.index({ parentId: 1, order: 1 });
 topicSchema.index({ pathId: 1, subjectId: 1, skillId: 1 }, { sparse: true });
+topicSchema.index({ pathId: 1, subjectId: 1, skillIds: 1 });
 topicSchema.index({ lessonIds: 1 });
 topicSchema.index({ quizIds: 1 });
 topicSchema.index({ libraryItemIds: 1 });

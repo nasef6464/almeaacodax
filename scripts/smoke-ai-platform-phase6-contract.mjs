@@ -5,6 +5,7 @@ const routing = await readFile(new URL("../server/src/modules/ai/application/aiC
 const media = await readFile(new URL("../services/aiMediaClient.ts", import.meta.url), "utf8");
 const chat = await readFile(new URL("../components/ChatWidget.tsx", import.meta.url), "utf8");
 const control = await readFile(new URL("../dashboards/admin/ai/AiControlCenterSettings.tsx", import.meta.url), "utf8");
+const routingEditor = await readFile(new URL("../dashboards/admin/ai/AiCapabilityRoutingEditor.tsx", import.meta.url), "utf8");
 const policy = await readFile(new URL("../server/src/modules/ai/application/aiCapabilityPolicy.ts", import.meta.url), "utf8");
 const usage = await readFile(new URL("../server/src/modules/ai/application/aiUsageDaily.ts", import.meta.url), "utf8");
 
@@ -14,7 +15,7 @@ const check = (name, pass) => checks.push({ name, status: pass ? "PASS" : "FAIL"
 check("vision is an explicit capability rather than hidden inside generic chat",
   routing.includes('"vision_chat"') &&
   routes.includes('hasImage ? "vision_chat" : "student_chat"') &&
-  control.includes("vision_chat: 'رؤية الصور للطالب'"));
+  (control.includes("vision_chat: 'رؤية الصور للطالب'") || routingEditor.includes("vision_chat: 'رؤية الصور للطالب'")));
 
 check("current vision transport only routes images to the implemented Gemini image adapter",
   routes.includes('capability === "vision_chat"') &&

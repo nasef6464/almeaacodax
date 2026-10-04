@@ -184,15 +184,65 @@ export const LessonsManager: React.FC<LessonsManagerProps> = ({ subjectId }) => 
     [allowedSubjects, sections, selectedSubjectId],
   );
 
+  const allSubSkills = useMemo(() => {
+    const list: Array<{
+      id: string;
+      name: string;
+      code?: string;
+      subjectId: string;
+      sectionId?: string;
+      parentSkillId: string;
+      parentSkillName: string;
+    }> = [];
+
+    skills.forEach((skill) => {
+      if (Array.isArray(skill.subSkills) && skill.subSkills.length > 0) {
+        skill.subSkills.forEach((sub) => {
+          list.push({
+            id: sub.id,
+            name: sub.name,
+            code: sub.code,
+            subjectId: skill.subjectId,
+            sectionId: skill.sectionId,
+            parentSkillId: skill.id,
+            parentSkillName: skill.name,
+          });
+        });
+      } else {
+        list.push({
+          id: skill.id,
+          name: skill.name,
+          subjectId: skill.subjectId,
+          sectionId: skill.sectionId,
+          parentSkillId: skill.id,
+          parentSkillName: skill.name,
+        });
+      }
+    });
+
+    return list;
+  }, [skills]);
+
   const availableSubSkills = useMemo(
     () =>
-      skills
-        .filter((skill) => skill.subjectId === selectedSubjectId && (!selectedSectionId || skill.sectionId === selectedSectionId))
+      allSubSkills
+        .filter((sub) => (!selectedSubjectId || sub.subjectId === selectedSubjectId) && (!selectedSectionId || sub.sectionId === selectedSectionId))
         .sort((a, b) => a.name.localeCompare(b.name, 'ar')),
-    [skills, selectedSectionId, selectedSubjectId],
+    [allSubSkills, selectedSectionId, selectedSubjectId],
   );
 
-  const subSkillNameMap = useMemo(() => new Map(availableSubSkills.map((skill) => [skill.id, skill.name])), [availableSubSkills]);
+  const subSkillNameMap = useMemo(() => {
+    const map = new Map<string, string>();
+    skills.forEach((skill) => {
+      map.set(skill.id, skill.name);
+      if (Array.isArray(skill.subSkills)) {
+        skill.subSkills.forEach((sub) => {
+          map.set(sub.id, sub.name);
+        });
+      }
+    });
+    return map;
+  }, [skills]);
 
   const handleCreateNew = () => {
     setCurrentLesson({
@@ -288,7 +338,7 @@ export const LessonsManager: React.FC<LessonsManagerProps> = ({ subjectId }) => 
     subject: subjects.find((subject) => subject.id === lesson.subjectId)?.name || 'غير محدد',
     mainSkill: sections.find((section) => section.id === lesson.sectionId)?.name || 'غير محدد',
     subSkills: (lesson.skillIds || [])
-      .map((skillId) => skills.find((skill) => skill.id === skillId)?.name)
+      .map((skillId) => subSkillNameMap.get(skillId) || skills.find((skill) => skill.id === skillId)?.name)
       .filter(Boolean)
       .join('، ') || 'غير محدد',
     type: lesson.type === 'video' ? 'فيديو' : lesson.type === 'text' ? 'نصي' : lesson.type,
@@ -394,26 +444,38 @@ export const LessonsManager: React.FC<LessonsManagerProps> = ({ subjectId }) => 
     const requestedSkillNames = splitValues(skillName);
     const matchedSkillsById = requestedSkillIds
       .map((requestedSkillId) =>
+        allSubSkills.find(
+          (sub) =>
+            sub.id === requestedSkillId &&
+            sub.subjectId === matchedSubject.id &&
+            (!sub.sectionId || sub.sectionId === matchedSection.id),
+        ) ||
         skills.find(
           (skill) =>
             skill.id === requestedSkillId &&
             skill.subjectId === matchedSubject.id &&
-            skill.sectionId === matchedSection.id,
+            (!skill.sectionId || skill.sectionId === matchedSection.id),
         ),
       )
-      .filter(Boolean) as typeof skills;
+      .filter(Boolean) as Array<{ id: string; name: string }>;
     const matchedSkillsByName = requestedSkillNames
       .map((requestedSkillName) =>
+        allSubSkills.find(
+          (sub) =>
+            sub.subjectId === matchedSubject.id &&
+            (!sub.sectionId || sub.sectionId === matchedSection.id) &&
+            normalizeLookup(sub.name) === normalizeLookup(requestedSkillName),
+        ) ||
         skills.find(
           (skill) =>
             skill.subjectId === matchedSubject.id &&
-            skill.sectionId === matchedSection.id &&
+            (!skill.sectionId || skill.sectionId === matchedSection.id) &&
             normalizeLookup(skill.name) === normalizeLookup(requestedSkillName),
         ),
       )
-      .filter(Boolean) as typeof skills;
+      .filter(Boolean) as Array<{ id: string; name: string }>;
     const matchedSkills = [...matchedSkillsById, ...matchedSkillsByName].filter(
-      (skill, index, allSkills) => allSkills.findIndex((item) => item.id === skill.id) === index,
+      (skill, index, all) => all.findIndex((item) => item.id === skill.id) === index,
     );
 
     if (
@@ -483,7 +545,7 @@ export const LessonsManager: React.FC<LessonsManagerProps> = ({ subjectId }) => 
     const samplePath = allowedPaths[0];
     const sampleSubject = allowedSubjects.find((subject) => subject.pathId === samplePath?.id) || allowedSubjects[0];
     const sampleMainSkill = sections.find((section) => section.subjectId === sampleSubject?.id) || sections[0];
-    const sampleSubSkill = skills.find((skill) => skill.subjectId === sampleSubject?.id && skill.sectionId === sampleMainSkill?.id) || skills[0];
+    const sampleSubSkill = allSubSkills.find((sub) => sub.subjectId === sampleSubject?.id && sub.sectionId === sampleMainSkill?.id) || allSubSkills[0];
     const workbook = XLSX.utils.book_new();
 
     XLSX.utils.book_append_sheet(
@@ -548,11 +610,11 @@ export const LessonsManager: React.FC<LessonsManagerProps> = ({ subjectId }) => 
     );
     XLSX.utils.book_append_sheet(
       workbook,
-      XLSX.utils.json_to_sheet(skills.filter((skill) => allowedSubjects.some((subject) => subject.id === skill.subjectId)).map((skill) => ({
-        subSkillId: skill.id,
-        mainSkillId: skill.sectionId || '',
-        subjectId: skill.subjectId,
-        subSkillName: skill.name,
+      XLSX.utils.json_to_sheet(allSubSkills.filter((sub) => allowedSubjects.some((subject) => subject.id === sub.subjectId)).map((sub) => ({
+        subSkillId: sub.id,
+        mainSkillId: sub.sectionId || '',
+        subjectId: sub.subjectId,
+        subSkillName: sub.name,
       }))),
       'sub-skills-reference',
     );
@@ -878,7 +940,9 @@ export const LessonsManager: React.FC<LessonsManagerProps> = ({ subjectId }) => 
         >
           <option value="">كل المهارات الفرعية</option>
           {availableSubSkills.map((skill) => (
-            <option key={skill.id} value={skill.id}>{skill.name}</option>
+            <option key={skill.id} value={skill.id}>
+              {skill.code ? `[${skill.code}] ` : ''}{skill.name}
+            </option>
           ))}
         </select>
         <div className="relative flex-1">

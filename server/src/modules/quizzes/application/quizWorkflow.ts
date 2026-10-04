@@ -60,7 +60,7 @@ export const sanitizeWorkflowUpdate = (
 ) => {
   const nextPayload = { ...payload };
 
-  if (authUser.role !== "admin" && authUser.role !== "supervisor") {
+  if (authUser.role !== "admin") {
     delete nextPayload.ownerType;
     delete nextPayload.ownerId;
     delete nextPayload.createdBy;
@@ -68,11 +68,16 @@ export const sanitizeWorkflowUpdate = (
     delete nextPayload.approvedAt;
     delete nextPayload.reviewerNotes;
     delete nextPayload.revenueSharePercentage;
-    if (typeof nextPayload.approvalStatus === "string" && nextPayload.approvalStatus === "approved") {
-      nextPayload.approvalStatus = "pending_review";
-    }
-    if (options?.respectPublished && nextPayload.isPublished === true) {
-      nextPayload.isPublished = false;
+
+    if (authUser.role === "supervisor") {
+      delete nextPayload.approvalStatus;
+    } else {
+      if (typeof nextPayload.approvalStatus === "string" && nextPayload.approvalStatus === "approved") {
+        nextPayload.approvalStatus = "pending_review";
+      }
+      if (options?.respectPublished && nextPayload.isPublished === true) {
+        nextPayload.isPublished = false;
+      }
     }
   } else if (typeof nextPayload.approvalStatus === "string") {
     if (nextPayload.approvalStatus === "approved") {

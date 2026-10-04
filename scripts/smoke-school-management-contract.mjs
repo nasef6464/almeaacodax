@@ -28,6 +28,8 @@ const files = {
   await read("dashboards/admin/SchoolsManager/SchoolPerformanceReportPanel.tsx"),
   await read("dashboards/admin/SchoolsManager/SchoolStudentRosterPanel.tsx"),
   await read("dashboards/admin/SchoolsManager/SchoolClassOperatingCard.tsx"),
+  await read("dashboards/admin/SchoolsManager/SchoolClassPeopleManager.tsx"),
+  await read("dashboards/admin/SchoolsManager/useSchoolClassPeopleActions.ts"),
   await read("dashboards/admin/SchoolsManager/SchoolCoursesPanel.tsx"),
   await read("dashboards/admin/SchoolsManager/SchoolClassesPanel.tsx"),
   await read("dashboards/admin/SchoolsManager/SchoolSingleStudentPanel.tsx"),
@@ -191,17 +193,19 @@ check("school workspace exposes all guided setup panels", () => {
   assertIncludes(files.schools, "طالب يحتاج فصل واضح");
 });
 
-check("each class card works as an operating unit", () => {
+check("each class card works as an in-place people operating unit", () => {
   assertIncludes(files.schools, 'data-testid="school-class-card"');
   assertIncludes(files.schools, 'data-testid="school-class-operating-actions"');
-  assertIncludes(files.schools, 'data-testid="school-class-add-students"');
-  assertIncludes(files.schools, 'data-testid="school-class-roster"');
-  assertIncludes(files.schools, 'data-testid="school-class-import-students"');
-  assertIncludes(files.schools, 'data-testid="school-class-access"');
-  assertIncludes(files.schools, "focusClassStudentForm");
-  assertIncludes(files.schools, "focusClassRoster");
-  assertIncludes(files.schools, "setActiveTab('import')");
-  assertIncludes(files.schools, "setActiveTab('packages')");
+  assertIncludes(files.schools, 'data-testid="school-class-manage-students"');
+  assertIncludes(files.schools, 'data-testid="school-class-manage-teachers"');
+  assertIncludes(files.schools, 'data-testid="school-class-manage-supervisors"');
+  assertIncludes(files.schools, 'data-testid="school-class-people-manager"');
+  assertIncludes(files.schools, "طلاب موجودون في المدرسة");
+  assertIncludes(files.schools, "إضافة المحددين");
+  assertIncludes(files.schools, "إنشاء طالب جديد وربطه بهذا الفصل");
+  assertIncludes(files.schools, "إنشاء معلم جديد وربطه بهذا الفصل");
+  assertIncludes(files.schools, "إنشاء مشرف جديد وربطه بهذا الفصل");
+  assertIncludes(files.schools, "رفع كشف Excel للطلاب والفصول");
 });
 
 check("school supervisor scope is explicit and not mixed with platform admin", () => {
@@ -220,17 +224,15 @@ check("school supervisor management actions are wired", () => {
   assertIncludes(files.schools, "handleCreateQuickSupervisor");
   assertIncludes(files.schools, "api.createAdminUser");
   assertIncludes(files.schools, "existingSupervisor");
-  assertIncludes(files.schools, 'data-testid="school-class-create-supervisor"');
+  assertIncludes(files.schools, 'data-testid="school-class-manage-supervisors"');
+  assertIncludes(files.schools, "إضافة مشرف مسجل على المنصة");
+  assertIncludes(files.schools, "إنشاء مشرف جديد وربطه بهذا الفصل");
   assertIncludes(files.store, "assignSupervisorToGroupAsync: async");
   assertIncludes(files.store, "removeSupervisorFromGroupAsync: async");
   assertIncludes(files.schools, "handleAssignSchoolSupervisor(value, selectedSchool.id)");
   assertIncludes(files.schools, "handleRemoveSchoolSupervisor(currentUser.id, selectedSchool.id)");
-  assertIncludes(files.schools, "onAssignSupervisor={handleAssignSchoolSupervisor}");
-  assertIncludes(files.schools, "onAssignSupervisor={(userId) => onAssignSupervisor(userId, classroom.id)}");
-  assertIncludes(files.schools, "onAssignSupervisor(value).finally");
-  assertIncludes(files.schools, "handleRemoveSchoolSupervisor(currentUser.id, classroom.id)");
+  assertIncludes(files.schools, "api.updateSchoolMembership");
   assertIncludes(files.schools, "rosterActionPending");
-  assertIncludes(files.schools, "setActiveTab('relations')");
 });
 
 check("school student roster exposes direct removal actions", () => {
@@ -244,17 +246,17 @@ check("school student roster exposes direct removal actions", () => {
   assertIncludes(files.schools, "rosterActionPending");
 });
 
-check("school class cards provide direct teacher scope assignment without supervisor elevation", () => {
-  assertIncludes(files.schools, "data-testid=\"school-class-teachers\"");
-  assertIncludes(files.schools, "data-testid=\"school-assign-class-teacher\"");
-  assertIncludes(files.schools, "data-testid=\"school-remove-class-teacher\"");
-  assertIncludes(files.schools, "onAssignTeacher={handleAssignTeacherToClass}");
-  assertIncludes(files.schools, "onRemoveTeacher={handleRemoveTeacherFromClass}");
+check("school class cards provide canonical teacher assignment without supervisor elevation", () => {
+  assertIncludes(files.schools, 'data-testid="school-class-manage-teachers"');
+  assertIncludes(files.schools, "إضافة معلم مسجل على المنصة");
+  assertIncludes(files.schools, "إنشاء معلم جديد وربطه بهذا الفصل");
+  assertIncludes(files.schools, "api.updateSchoolMembership");
+  assertIncludes(files.schools, "api.updateTeachingAssignment");
+  assertIncludes(files.schools, "assignTeacherToGroupAsync");
+  assertIncludes(files.schools, "removeTeacherFromGroupAsync");
   assertIncludes(files.store, "assignTeacherToGroupAsync: async");
   assertIncludes(files.store, "removeTeacherFromGroupAsync: async");
   assertIncludes(files.store, "currentUser.role !== Role.TEACHER");
-  assertIncludes(files.store, "schoolId: schoolId || null");
-  assertIncludes(files.store, "groupIds: nextGroupIds");
 });
 
 check("school roster assignments stay server-backed and refresh the authoritative workspace", () => {
@@ -343,6 +345,13 @@ check("school student class assignment keeps one clear school/class relation", (
   assertIncludes(files.store, ".filter((classId) => classId !== targetGroup.id)");
   assertIncludes(files.store, "addStudentToGroup(targetGroup.parentId)");
   assertIncludes(files.store, "id !== targetGroup.id && !relatedClassIds.includes(id)");
+});
+
+check("school bulk import persists canonical student membership", () => {
+  assertIncludes(files.reportImportRoutes, "SchoolMembershipModel");
+  assertIncludes(files.reportImportRoutes, '{ userId: String(user._id), schoolId: String(school._id), role: "student" }');
+  assertIncludes(files.reportImportRoutes, '{ $set: { status: "active" } }');
+  assertIncludes(files.reportImportRoutes, "setDefaultsOnInsert: true");
 });
 
 check("school bulk import and relation uploads keep class membership singular", () => {

@@ -4,6 +4,7 @@ import { useStore } from '../../store/useStore';
 import { CategoryPath, CategorySubject, Role, User } from '../../types';
 import { api } from '../../services/api';
 import { loadXlsx } from '../../utils/xlsxLoader';
+import { DEFAULT_AVATAR } from '../../utils/defaultAvatar';
 
 type AdminUserPayload = {
     id?: string;
@@ -11,6 +12,8 @@ type AdminUserPayload = {
     name: string;
     email: string;
     avatar?: string;
+    nationalId?: string;
+    phone?: string;
     role: Role;
     points?: number;
     badges?: string[];
@@ -32,7 +35,9 @@ const buildStoreUser = (user: AdminUserPayload): User => ({
     id: String(user.id || user._id || user.email),
     name: user.name,
     email: user.email,
-    avatar: user.avatar || `https://i.pravatar.cc/150?u=${encodeURIComponent(user.email)}`,
+    avatar: user.avatar || DEFAULT_AVATAR,
+    nationalId: user.nationalId,
+    phone: user.phone,
     role: user.role,
     points: user.points ?? 0,
     badges: user.badges ?? [],
@@ -161,6 +166,8 @@ export const UsersManager: React.FC = () => {
         name: '',
         email: '',
         password: '',
+        nationalId: '',
+        phone: '',
         role: Role.STUDENT as Role,
         linkedStudentIds: [] as string[],
         managedPathIds: [] as string[],
@@ -421,7 +428,7 @@ export const UsersManager: React.FC = () => {
             setCreateError('');
             const isSchoolTeacher = newUserType === 'school_teacher';
             const isPlatformTrainer = newUserType === 'platform_trainer';
-            const response = await api.createAdminUser({
+            const payload: any = {
                 name: newUser.name.trim(),
                 email: newUser.email.trim(),
                 password: newUser.password,
@@ -431,7 +438,10 @@ export const UsersManager: React.FC = () => {
                 linkedStudentIds: newUser.role === Role.PARENT ? newUser.linkedStudentIds : [],
                 managedPathIds: isPlatformTrainer ? newUser.managedPathIds : [],
                 managedSubjectIds: isPlatformTrainer ? newUser.managedSubjectIds : [],
-            }) as { user?: AdminUserPayload };
+                nationalId: newUser.nationalId.trim() || undefined,
+                phone: newUser.phone.trim() || undefined,
+            };
+            const response = await api.createAdminUser(payload) as { user?: AdminUserPayload };
             if (response.user) {
                 const createdUser = buildStoreUser(response.user);
                 setPageUsers((current) => [createdUser, ...current]);
@@ -443,7 +453,7 @@ export const UsersManager: React.FC = () => {
                     }).catch(() => {});
                 }
             }
-            setNewUser({ name: '', email: '', password: '', role: Role.STUDENT, linkedStudentIds: [], managedPathIds: [], managedSubjectIds: [] });
+            setNewUser({ name: '', email: '', password: '', nationalId: '', phone: '', role: Role.STUDENT, linkedStudentIds: [], managedPathIds: [], managedSubjectIds: [] });
             setNewUserSchoolId('');
             setNewUserClassId('');
             setNewUserType('student');
@@ -817,6 +827,8 @@ export const UsersManager: React.FC = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div><label className="block text-sm font-bold text-gray-700 mb-2">الاسم</label><input type="text" value={newUser.name} onChange={(event) => setNewUser((current) => ({ ...current, name: event.target.value }))} className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500" placeholder="اسم المستخدم" /></div>
                         <div><label className="block text-sm font-bold text-gray-700 mb-2">البريد الإلكتروني</label><input type="email" value={newUser.email} onChange={(event) => setNewUser((current) => ({ ...current, email: event.target.value }))} className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500" placeholder="name@example.com" /></div>
+                        <div><label className="block text-sm font-bold text-gray-700 mb-2">رقم الهوية الوطنية / الأحوال</label><input type="text" value={newUser.nationalId} onChange={(event) => setNewUser((current) => ({ ...current, nationalId: event.target.value }))} className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500" dir="ltr" placeholder="10xxxxxxxx (اختياري / لدخول الطلاب)" /></div>
+                        <div><label className="block text-sm font-bold text-gray-700 mb-2">رقم الجوال</label><input type="text" value={newUser.phone} onChange={(event) => setNewUser((current) => ({ ...current, phone: event.target.value }))} className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500" dir="ltr" placeholder="05xxxxxxxx (اختياري)" /></div>
                         <div><label className="block text-sm font-bold text-gray-700 mb-2">كلمة المرور</label><input type="password" value={newUser.password} onChange={(event) => setNewUser((current) => ({ ...current, password: event.target.value }))} className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500" placeholder="******" /></div>
                         <div>
                             <label className="block text-sm font-bold text-gray-700 mb-2">الدور المطلوب</label>
@@ -962,7 +974,7 @@ export const UsersManager: React.FC = () => {
                     const parentCandidates = linkableStudents.filter((student) => !currentSchoolId || student.schoolId === currentSchoolId);
                     const isSavingRelationship = relationshipActionUserId === currentUser.id;
                     return <tr key={currentUser.id} className="hover:bg-gray-50/50 transition-colors">
-                        <td className="px-6 py-4"><div className="flex items-center gap-3"><img src={currentUser.avatar} alt={currentUser.name} className="w-10 h-10 rounded-full object-cover border border-gray-200" /><div>{isEditing ? <input type="text" value={nameDrafts[currentUser.id] ?? currentUser.name} onChange={(event) => setNameDrafts((current) => ({ ...current, [currentUser.id]: event.target.value }))} onBlur={() => saveUserName(currentUser)} onKeyDown={(event) => { if (event.key === 'Enter') stopEditingUser(currentUser); }} className="w-full min-w-[180px] px-3 py-1.5 border border-gray-300 rounded-lg text-sm font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-amber-500" /> : <p className="font-bold text-gray-900">{currentUser.name}</p>}<p className="text-xs text-gray-500">{currentUser.email || 'لا يوجد بريد'}</p></div></div></td>
+                        <td className="px-6 py-4"><div className="flex items-center gap-3"><img src={currentUser.avatar} alt={currentUser.name} className="w-10 h-10 rounded-full object-cover border border-gray-200" /><div>{isEditing ? <input type="text" value={nameDrafts[currentUser.id] ?? currentUser.name} onChange={(event) => setNameDrafts((current) => ({ ...current, [currentUser.id]: event.target.value }))} onBlur={() => saveUserName(currentUser)} onKeyDown={(event) => { if (event.key === 'Enter') stopEditingUser(currentUser); }} className="w-full min-w-[180px] px-3 py-1.5 border border-gray-300 rounded-lg text-sm font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-amber-500" /> : <p className="font-bold text-gray-900">{currentUser.name}</p>}<p className="text-xs text-gray-500">{currentUser.email || 'لا يوجد بريد'}</p>{currentUser.nationalId ? <p className="text-[11px] text-purple-600 font-mono font-bold mt-0.5">هوية: {currentUser.nationalId}</p> : null}{currentUser.phone ? <p className="text-[11px] text-emerald-600 font-mono font-bold mt-0.5">جوال: {currentUser.phone}</p> : null}</div></div></td>
                         <td className="px-6 py-4">
                             {isEditing ? (
                                 <select

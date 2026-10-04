@@ -1,9 +1,10 @@
 import { Course, ScheduleItem, NavItem, Role, SkillGap, FavoriteQuestion, QuizHistoryItem, QuizResult } from '../types';
+import { DEFAULT_AVATAR } from '../utils/defaultAvatar';
 
 export const currentUser = {
     id: 'u1',
     name: 'علي سالم',
-    avatar: 'https://i.pravatar.cc/150?u=u1',
+    avatar: DEFAULT_AVATAR,
     role: Role.STUDENT,
     points: 2450,
     badges: ['المستكشف', 'بطل الرياضيات', 'المواظب'],
