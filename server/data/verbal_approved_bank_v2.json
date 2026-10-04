@@ -18015,5 +18015,89 @@
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
     "answerEvidence": "Direct Amer source p.75; contextual contradiction independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T26-P072-Q002",
+    "canonicalId": "VERBAL26-AMER-T26-P072-Q002",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 72,
+    "sourceQuestionNumber": 2,
+    "sourceTraining": 26,
+    "mainSkillId": "skill_verbal_18",
+    "subSkillId": "sub_verbal_11_3",
+    "text": "إن للتعلم مرارة لن يذوقها إلا من ذاق مرارته.",
+    "options": [
+      "مرارة",
+      "يذوقها",
+      "ذاق",
+      "مرارته"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source pp.72-73; contextual-error answer independently verified from sentence meaning."
+  },
+  {
+    "id": "VERBAL26-AMER-T26-P073-Q019",
+    "canonicalId": "VERBAL26-AMER-T26-P073-Q019",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 73,
+    "sourceQuestionNumber": 19,
+    "sourceTraining": 26,
+    "mainSkillId": "skill_verbal_18",
+    "subSkillId": "sub_verbal_11_3",
+    "text": "يظل الإنسان في هذه الحياة مثل قلم الرصاص تمحيه العثرات ليكتب بخط أجمل، ويكون هكذا حتى يبقى له إلا جميل ما كتب.",
+    "options": [
+      "تمحيه",
+      "العثرات",
+      "حتى",
+      "يبقى"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source pp.72-73; contextual-error answer independently verified from sentence meaning."
+  },
+  {
+    "id": "VERBAL26-AMER-T26-P073-Q026",
+    "canonicalId": "VERBAL26-AMER-T26-P073-Q026",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 73,
+    "sourceQuestionNumber": 26,
+    "sourceTraining": 26,
+    "mainSkillId": "skill_verbal_18",
+    "subSkillId": "sub_verbal_11_3",
+    "text": "خطأ الشبان أنهم يرون أن الذكاء يغني عن التجارب، وخطأ الشيوخ أنهم يرون أن التجارب تغني عن الشباب.",
+    "options": [
+      "الشبان",
+      "يغني",
+      "يرون",
+      "الشباب"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source pp.72-73; contextual-error answer independently verified from sentence meaning."
+  },
+  {
+    "id": "VERBAL26-AMER-T26-P073-Q028",
+    "canonicalId": "VERBAL26-AMER-T26-P073-Q028",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 73,
+    "sourceQuestionNumber": 28,
+    "sourceTraining": 26,
+    "mainSkillId": "skill_verbal_18",
+    "subSkillId": "sub_verbal_11_3",
+    "text": "أحزم من الحازمين عرف الأمر بعد وقوعه فاحترس منه.",
+    "options": [
+      "أحزم",
+      "عرف",
+      "بعد",
+      "وقوعه"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source pp.72-73; contextual-error answer independently verified from sentence meaning."
   }
 ]
