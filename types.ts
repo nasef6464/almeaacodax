@@ -262,6 +262,7 @@ export interface Topic {
     pathId?: string;
     sectionId?: string;
     skillId?: string | null;
+    skillIds?: string[]; // one topic may teach one or more subskills; skillId remains the primary compatibility link
     title: string;
     parentId?: string | null; // null or undefined for main topics
     order: number;
@@ -941,6 +942,8 @@ export interface User {
     managedSubjectIds?: string[];
     schoolContexts?: Array<{ schoolId: string; role: string; permissions: string[] }>;
     interactiveVideoProgress?: InteractiveVideoProgress[];
+    nationalId?: string;
+    phone?: string;
 }
 
 export type GroupType = 'SCHOOL' | 'CLASS' | 'PRIVATE_GROUP';
