@@ -17,7 +17,7 @@ const assert = (ok, message) => { if (!ok) throw new Error(message); };
 
 assert(routes.includes('aiRouter.get("/status"') || routes.includes('"/status"'), "AI status endpoint missing");
 assert(routes.includes('"/providers/test"') && routes.includes("quotaPoolId"), "per-pool live provider test missing");
-assert(routes.includes("transientProviderBusy") && routes.includes("status 503") && routes.includes("attempt <= 3"), "per-pool live test must retry transient provider 503/high-demand responses");
+assert(routes.includes("transientProviderBusy") && routes.includes("status 503") && routes.includes("operation was aborted") && routes.includes("attempt <= 3"), "per-pool live test must retry transient provider 503/high-demand/timeout responses");
 assert(routes.includes("dailySpendCapUsd") && routes.includes("paidAllowed"), "AI spend controls missing");
 assert(routes.includes("incrementAiUsageDaily"), "usage ledger write path missing");
 assert(routes.includes("AiInteractionModel.create"), "interaction ledger missing");
@@ -27,6 +27,8 @@ assert(adapters.includes("allowPaid || pool.plan !== \"paid\""), "paid pool kill
 assert(usage.includes("estimatedCostMicrosUsd") && usage.includes("cachedTokens"), "token/cost daily accounting missing");
 assert(interactions.includes("totalTokens") && interactions.includes("estimatedCostMicrosUsd"), "interaction token/cost schema missing");
 assert(fallbackAudit.includes("student chat used a real provider"), "live AI runtime audit no longer requires real provider");
+assert(fallbackAudit.indexOf("const studentChatAttempts") < fallbackAudit.indexOf("const providerTests"), "learner-path certification must run before quota-consuming per-pool probes");
+assert(fallbackAudit.includes("free/trial quota pools are probed and at least one is live; other failures are transient capacity/quota only"), "live pool certification must distinguish transient free-tier capacity from broken configuration");
 assert(fallbackAudit.includes("usedFallback"), "live fallback proof missing");
 assert(phase8.includes('liveProviderCertification: "REQUIRES_POST_MERGE_REAL_PROVIDER"'), "pre-production certification must not impersonate live certification");
 assert(failoverContract.includes("429 advances to next free quota pool") && failoverContract.includes("paid pool must not be called"), "executable PLAN 7 failover contract missing");
