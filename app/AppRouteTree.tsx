@@ -1,5 +1,5 @@
 import React, { Suspense } from 'react';
-import { Navigate, Route, Routes, useParams } from 'react-router-dom';
+import { Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { RequireRole } from '../components/auth/RequireRole';
 import { RequireAuth } from '../components/auth/RequireAuth';
@@ -65,17 +65,15 @@ const LegacyPackagesRouteRedirect: React.FC = () => {
   return <Navigate replace to={`/category/${normalizePathId(pathId)}?tab=packages`} />;
 };
 
-const ClassroomStudentRedirect: React.FC = () => {
-  const { sessionId = '' } = useParams<{ sessionId: string }>();
-  return <Navigate replace to={`/classroom/${sessionId}`} />;
-};
-
 const DashboardRoleDispatcher: React.FC = () => {
   const { user } = useAuth();
+  const location = useLocation();
+  if (location.search && location.search.includes('tab=')) {
+    return <Dashboard />;
+  }
   if (user?.role === 'teacher') return <Navigate replace to="/classroom/teacher" />;
   if (user?.role === 'admin') return <Navigate replace to="/admin-dashboard" />;
   if (user?.role === 'supervisor') return <Navigate replace to="/supervisor-dashboard" />;
-  if (user?.role === 'parent') return <Navigate replace to="/parent-dashboard" />;
   return <Dashboard />;
 };
 
@@ -97,9 +95,7 @@ export const AppRouteTree: React.FC<{ loadingFallback: React.ReactNode }> = ({ l
     <Routes>
       <Route path="/quiz" element={<Quiz />} />
       <Route path="/quiz/:quizId" element={<QuizPage />} />
-      <Route path="/classroom" element={<Navigate replace to="/classroom/teacher" />} />
       <Route path="/classroom/:sessionId" element={<ClassroomStudentLive />} />
-      <Route path="/classroom/:sessionId/student" element={<ClassroomStudentRedirect />} />
       <Route path="/classroom/teacher" element={<RequireRole allowedRoles={['teacher', 'admin']}><ClassroomTeacherConsole /></RequireRole>} />
       <Route path="/classroom/:sessionId/teacher" element={<RequireRole allowedRoles={['teacher', 'admin']}><ClassroomTeacherConsole /></RequireRole>} />
       <Route path="/classroom/:sessionId/projector" element={<ClassroomProjectorView />} />
