@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import { spawnSync } from "node:child_process";
+import { resolveSmokeAdminToken } from "./resolve-smoke-admin-token.mjs";
 
 const API_BASE_URL = String(
   process.env.API_BASE_URL || process.env.SMOKE_API_BASE_URL || process.env.SMOKE_API_URL || "https://almeaacodax.vercel.app/api",
@@ -8,19 +8,23 @@ const API_BASE_URL = String(
 const env = { ...process.env };
 let token = String(env.SMOKE_ADMIN_TOKEN || "").trim();
 if (!token) {
-  const resolved = spawnSync("node", ["scripts/resolve-smoke-admin-token.mjs"], {
-    env,
-    encoding: "utf8",
-    shell: process.platform === "win32",
-  });
-  if (resolved.status === 0) {
-    try { token = String(JSON.parse(String(resolved.stdout || "{}"))?.token || "").trim(); } catch {}
+  try {
+    token = (await resolveSmokeAdminToken({ env, apiBase: API_BASE_URL })).token;
+  } catch (error) {
+    console.error(
+      `Missing live admin auth for R2 proof: ${error instanceof Error ? error.message : String(error)}`,
+    );
+    process.exit(1);
   }
 }
-if (!token) { console.error("Missing live admin auth for R2 proof"); process.exit(1); }
+if (!token) {
+  console.error("Missing live admin auth for R2 proof");
+  process.exit(1);
+}
 
 const csrfResponse = await fetch(`${API_BASE_URL}/auth/csrf-token`, {
   headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
+  signal: AbortSignal.timeout(15_000),
 });
 const csrfText = await csrfResponse.text();
 let csrfPayload = {};
@@ -46,6 +50,7 @@ const presignResponse = await fetch(`${API_BASE_URL}/media/question-images/presi
     Cookie: `almeaa_csrf_token=${csrfCookie}`,
   },
   body: JSON.stringify({ contentType: "image/png", sizeBytes: bytes.length }),
+  signal: AbortSignal.timeout(30_000),
 });
 const presignText = await presignResponse.text();
 let intent = {};
@@ -59,6 +64,7 @@ const uploadResponse = await fetch(intent.uploadUrl, {
   method: "PUT",
   headers: { "Content-Type": "image/png" },
   body: bytes,
+  signal: AbortSignal.timeout(60_000),
 });
 if (!uploadResponse.ok) {
   console.error(JSON.stringify({ ok:false, step:"put", status:uploadResponse.status }, null, 2));
@@ -67,7 +73,10 @@ if (!uploadResponse.ok) {
 
 let readResponse = null;
 for (let attempt = 1; attempt <= 5; attempt += 1) {
-  readResponse = await fetch(`${intent.publicUrl}?ops-proof=${Date.now()}`, { headers: { "cache-control": "no-cache" } });
+  readResponse = await fetch(`${intent.publicUrl}?ops-proof=${Date.now()}`, {
+    headers: { "cache-control": "no-cache" },
+    signal: AbortSignal.timeout(15_000),
+  });
   if (readResponse.ok) break;
   await new Promise((resolve) => setTimeout(resolve, attempt * 1000));
 }
