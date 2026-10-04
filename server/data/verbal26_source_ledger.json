@@ -3143,5 +3143,56 @@
         }
       ]
     }
+  },
+  "reconciliationCheckpoint": {
+    "verifiedAt": "2026-10-04",
+    "branch": "codex/verbal26-full-closure",
+    "policy": "Full-book source reconciliation; observed inventory is not sufficient for canonical approval.",
+    "canonicalApprovedTotal": 893,
+    "canonicalBySource": {
+      "abdelbaset": 777,
+      "anas": 116
+    },
+    "amerObservedTotal": 915,
+    "anasObservedTotal": 135,
+    "amerUnreconciledCases": 138,
+    "anasUnreconciledCases": 19,
+    "verifiedGaps": [
+      {
+        "training": 14,
+        "pdfPages": [
+          39,
+          40,
+          41
+        ],
+        "observedQuestions": 33,
+        "canonicalMatched": 0,
+        "status": "SOURCE_TRANSCRIPTION_REQUIRED",
+        "note": "No canonical records on source pages 39-41; original PDF bytes are not stored in the repository, so observed/recovery evidence alone must not be promoted."
+      },
+      {
+        "training": 15,
+        "pdfPages": [
+          42,
+          43
+        ],
+        "observedQuestions": 29,
+        "canonicalMatched": 0,
+        "status": "SOURCE_TRANSCRIPTION_REQUIRED",
+        "note": "No canonical records on source pages 42-43; original PDF bytes are not stored in the repository, so observed/recovery evidence alone must not be promoted."
+      },
+      {
+        "training": 16,
+        "pdfPages": [
+          44,
+          45,
+          46
+        ],
+        "observedQuestions": 38,
+        "canonicalMatched": 37,
+        "status": "ONE_CASE_QUARANTINED_PENDING_SOURCE_VISUAL"
+      }
+    ],
+    "migrationReady": false
   }
 }
