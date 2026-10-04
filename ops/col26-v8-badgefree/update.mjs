@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import crypto from "node:crypto";
 
-const API = String(process.env.PILOT_API_BASE || "https://almeaacodax.vercel.app/api").replace(/\/$/, "");
+const API = "https://almeaacodax.vercel.app/api";
 const ADMIN_EMAIL = String(process.env.SMOKE_ADMIN_EMAIL || process.env.ROLE_ADMIN_EMAIL || "").trim();
 const ADMIN_PASSWORD = String(process.env.SMOKE_ADMIN_PASSWORD || process.env.ROLE_ADMIN_PASSWORD || "").trim();
 const IMAGE_DIR = "/tmp/cv8-v8/images";
