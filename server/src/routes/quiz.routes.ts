@@ -40,6 +40,7 @@ import { normalizeQuizPlacementPayload } from "../modules/quizzes/application/qu
 import { getQuizQuestionIds, resolveQuizSkillIds } from "../modules/quizzes/application/quizQuestionSelection.js";
 import { getWorkflowDefaults, sanitizeWorkflowUpdate } from "../modules/quizzes/application/quizWorkflow.js";
 import { resolveQuizPublicationState } from "../modules/quizzes/application/quizPublicationPolicy.js";
+import { applyQuizCreatorRolePolicy, hasDirectedQuizTargets } from "../modules/quizzes/application/quizCreatorRolePolicy.js";
 import { processInlineQuestions } from "../modules/quizzes/application/quizInlineQuestions.js";
 import { buildQuizCreateDocument } from "../modules/quizzes/application/quizDefinitionDocument.js";
 import { buildQuizUpdateDocument } from "../modules/quizzes/application/quizUpdateDocument.js";
@@ -61,7 +62,7 @@ import { resolveAssessmentDefinitionRead } from "../modules/quizzes/application/
 import { findLatestPublishedAssessmentVersion, publishAssessmentVersion } from "../modules/quizzes/infrastructure/assessmentVersionRepository.js";
 import { mirrorAssessmentSubmissionAfterLegacyResult } from "../modules/quizzes/application/assessmentSubmissionMirror.js";
 import { ensureQuestionRevisions } from "../services/questionRevision.js";
-import { assertSupervisorDirectedQuizScope, canSubmitQuiz, resolveDirectedQuizReadAccess } from "../modules/quizzes/application/quizAccessPolicy.js";
+import { assertSupervisorDirectedQuizScope, assertTeacherDirectedQuizScope, canSubmitQuiz, resolveDirectedQuizReadAccess } from "../modules/quizzes/application/quizAccessPolicy.js";
 import {
   assertManagedContentScope,
   buildManagedContentScopeFilter,
@@ -298,7 +299,7 @@ quizRouter.post(
   requireAuth,
   requireRole(["admin", "teacher", "supervisor"]),
   asyncHandler(async (req, res) => {
-    const payload = normalizeQuizPlacementPayload(quizSchema.parse(req.body));
+    let payload = normalizeQuizPlacementPayload(quizSchema.parse(req.body));
     
     // Auto-fill supervisor defaults if needed
     if (req.authUser?.role === "supervisor") {
@@ -309,13 +310,20 @@ quizRouter.post(
       }
     }
 
+    payload = applyQuizCreatorRolePolicy(req.authUser!, payload);
+
+    const isTeacherDirectedAssessment =
+      req.authUser?.role === "teacher" && hasDirectedQuizTargets(payload);
+    if (!isTeacherDirectedAssessment) {
+      await assertManagedContentScope(req.authUser!, payload);
+    }
+    await assertSupervisorDirectedQuizScope(req.authUser!, payload);
+    await assertTeacherDirectedQuizScope(req.authUser!, payload);
+
     if (Array.isArray(req.body.questions) && req.body.questions.length > 0) {
       const inlineQuestionIds = await processInlineQuestions(req.body.questions, payload.pathId, payload.subjectId, req.authUser, (document) => QuestionModel.create(document));
       payload.questionIds = uniqueStrings([...(payload.questionIds || []), ...inlineQuestionIds]);
     }
-
-    await assertManagedContentScope(req.authUser!, payload);
-    await assertSupervisorDirectedQuizScope(req.authUser!, payload);
     const resolvedSkillIds = await resolveQuizSkillIds(getQuizQuestionIds(payload));
     const workflowDefaults = getWorkflowDefaults(req.authUser!);
     const hasQuestions = getQuizQuestionIds(payload).length > 0;
@@ -361,7 +369,7 @@ quizRouter.post(
 );
 
 const handleQuizUpdate = asyncHandler(async (req, res) => {
-  const payload = quizSchema.partial().parse(req.body);
+  let payload = quizSchema.partial().parse(req.body);
   const documentQuery = buildOwnedDocumentQuery(req.params.id, req.authUser!);
   const existing = await QuizModel.findOne(documentQuery);
 
@@ -379,6 +387,19 @@ const handleQuizUpdate = asyncHandler(async (req, res) => {
     };
   }
 
+  const proposedState = {
+    ...existing.toObject(),
+    ...payload,
+  };
+  const isTeacherDirectedAssessment =
+    req.authUser?.role === "teacher" && hasDirectedQuizTargets(proposedState);
+
+  if (!isTeacherDirectedAssessment) {
+    await assertManagedContentScope(req.authUser!, proposedState);
+  }
+  await assertSupervisorDirectedQuizScope(req.authUser!, proposedState);
+  await assertTeacherDirectedQuizScope(req.authUser!, proposedState);
+
   if (Array.isArray(req.body.questions) && req.body.questions.length > 0) {
     const nextPathId = String(payload.pathId || existing.pathId || "").trim();
     const nextSubjectId = String(payload.subjectId || existing.subjectId || "").trim();
@@ -387,20 +408,21 @@ const handleQuizUpdate = asyncHandler(async (req, res) => {
     payload.questionIds = uniqueStrings([...existingQuestionIds, ...(payload.questionIds || []), ...inlineQuestionIds]);
   }
 
-  await assertManagedContentScope(req.authUser!, {
-    ...existing.toObject(),
-    ...payload,
-  });
-  await assertSupervisorDirectedQuizScope(req.authUser!, {
-    ...existing.toObject(),
-    ...payload,
-  });
   const resolvedSkillIds = payload.questionIds || payload.mockExam
     ? await resolveQuizSkillIds(getQuizQuestionIds({ ...existing.toObject(), ...payload }))
     : undefined;
   const normalizedPayload = normalizeQuizPlacementPayload(payload, String(existing.type || "quiz"));
+  const roleScopedPayload = applyQuizCreatorRolePolicy(req.authUser!, {
+    ...normalizedPayload,
+    ...(isTeacherDirectedAssessment
+      ? {
+          targetGroupIds: proposedState.targetGroupIds || [],
+          targetUserIds: proposedState.targetUserIds || [],
+        }
+      : {}),
+  });
   const sanitizedPayload = sanitizeWorkflowUpdate(
-    buildQuizUpdateDocument(normalizedPayload as Record<string, unknown>, resolvedSkillIds),
+    buildQuizUpdateDocument(roleScopedPayload as Record<string, unknown>, resolvedSkillIds),
     req.authUser!,
     { respectPublished: true },
   );
@@ -448,7 +470,14 @@ quizRouter.post(
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Quiz not found" });
     }
 
-    await assertManagedContentScope(req.authUser!, existing.toObject());
+    const existingState = existing.toObject();
+    const isTeacherDirectedAssessment =
+      req.authUser?.role === "teacher" && hasDirectedQuizTargets(existingState);
+    if (!isTeacherDirectedAssessment) {
+      await assertManagedContentScope(req.authUser!, existingState);
+    }
+    await assertSupervisorDirectedQuizScope(req.authUser!, existingState);
+    await assertTeacherDirectedQuizScope(req.authUser!, existingState);
 
     const rawQuestions = Array.isArray(req.body.questions) ? req.body.questions : [req.body];
     const newQuestionIds = await processInlineQuestions(
