@@ -79,13 +79,10 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
       .then(async (res) => {
         if (!active) return;
         let list = Array.isArray(res?.questions) ? res.questions : [];
-        const validTextCount = list.filter((q: any) => q.text && String(q.text).trim().length > 0).length;
-        if (validTextCount < 10) {
+        if (list.filter((q: any) => q.text && String(q.text).trim().length > 0).length < 10) {
           try {
-            const fallbackRes = await api.getClassroomQuestions(schoolId, { pathId: 'p_1777779639431' });
-            if (Array.isArray(fallbackRes?.questions) && fallbackRes.questions.length > 0) {
-              list = [...list, ...fallbackRes.questions];
-            }
+            const fallback = await api.getClassroomQuestions(schoolId, { pathId: 'p_1777779639431' });
+            if (Array.isArray(fallback?.questions) && fallback.questions.length > 0) list = [...list, ...fallback.questions];
           } catch {}
         }
         if (active) setBankQuestions(list);
@@ -234,21 +231,13 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
 
   const handleDirectSendPreset = async (count: number) => {
     if (pushingQuestions || data?.status === 'ended') return;
-    const questionsToSend = availablePushQuestions.slice(0, count).map((question) => String(question.questionId || question.id));
-    if (questionsToSend.length === 0) {
-      openPushModal('normal');
-      return;
-    }
+    const questionsToSend = availablePushQuestions.slice(0, count).map((q) => String(q.questionId || q.id));
+    if (questionsToSend.length === 0) { openPushModal('normal'); return; }
     setPushingQuestions(true);
     try {
-      await api.post<any>(`/classroom/sessions/${encodeURIComponent(sessionId)}/append-questions`, {
-        questionIds: questionsToSend,
-        autoPublishFirst: true,
-      });
+      await api.post<any>(`/classroom/sessions/${encodeURIComponent(sessionId)}/append-questions`, { questionIds: questionsToSend, autoPublishFirst: true });
       onReload?.();
-    } finally {
-      setPushingQuestions(false);
-    }
+    } finally { setPushingQuestions(false); }
   };
 
   const podium = competitionResult?.podium || competitionResult?.leaderboard?.slice(0, 3) || [];
@@ -362,10 +351,7 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
 
       <ClassroomEndSessionModal
         isOpen={showEndConfirmModal}
-        onConfirm={() => {
-          setShowEndConfirmModal(false);
-          onEnd();
-        }}
+        onConfirm={() => { setShowEndConfirmModal(false); onEnd(); }}
         onCancel={() => setShowEndConfirmModal(false)}
       />
 

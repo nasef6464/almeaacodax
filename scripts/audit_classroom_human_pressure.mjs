@@ -52,7 +52,7 @@ if (missingCreds.length > 0) {
   throw new Error(`[FAIL CLOSED] Missing required environment credentials: ${missingCreds.join(', ')}. No hardcoded fallback permitted.`);
 }
 
-const BASE_URL = process.env.UI_AUDIT_BASE_URL || 'http://localhost:4173';
+const BASE_URL = process.env['UI_AUDIT_BASE_URL'] || 'http://localhost:4173';
 const ARTIFACT_DIR = 'C:/Users/nasef/.gemini/antigravity/brain/0c3c6af8-1e75-4a63-a11e-838bcdff1929/screenshots';
 const REPO_EVIDENCE_DIR = 'audit-evidence/human-ux';
 
@@ -231,8 +231,8 @@ async function runRealClassroomPressureCertification() {
 
     // Login from homepage
     await teacherPage.goto(`${BASE_URL}/?auth=login`, { waitUntil: 'domcontentloaded' });
-    await teacherPage.fill('#smart-login-input', process.env.AUDIT_TEACHER_LOGIN);
-    await teacherPage.fill('#smart-login-password', process.env.AUDIT_TEACHER_PASSWORD);
+    await teacherPage.fill('#smart-login-input', process.env['AUDIT_TEACHER_LOGIN']);
+    await teacherPage.fill('#smart-login-password', process.env['AUDIT_TEACHER_PASSWORD']);
     await Promise.all([
       teacherPage.waitForResponse((r) => r.url().includes('/api/auth/login') && r.request().method() === 'POST', { timeout: 20000 }),
       teacherPage.click('#smart-login-submit'),
@@ -718,7 +718,7 @@ async function runRealClassroomPressureCertification() {
     await setupContextProxy(teacherMobileCtx);
     const teacherMobilePage = await teacherMobileCtx.newPage();
 
-    await loginUser(teacherMobilePage, process.env.AUDIT_TEACHER_LOGIN, process.env.AUDIT_TEACHER_PASSWORD);
+    await loginUser(teacherMobilePage, process.env['AUDIT_TEACHER_LOGIN'], process.env['AUDIT_TEACHER_PASSWORD']);
     await teacherMobilePage.goto(`${BASE_URL}/classroom/${activeSessionId}/teacher`, { waitUntil: 'domcontentloaded' });
     await teacherMobilePage.waitForSelector('h1:has-text("لوحة تحكم المعلم")', { state: 'visible', timeout: 25000 });
     await teacherMobilePage.waitForTimeout(2000);
@@ -756,7 +756,7 @@ async function runRealClassroomPressureCertification() {
     const outOfScopeCtx = await browser.newContext();
     await setupContextProxy(outOfScopeCtx);
     const outOfScopePage = await outOfScopeCtx.newPage();
-    await loginUser(outOfScopePage, process.env.AUDIT_OUT_OF_SCOPE_STUDENT_LOGIN, process.env.AUDIT_OUT_OF_SCOPE_STUDENT_PASSWORD);
+    await loginUser(outOfScopePage, process.env['AUDIT_OUT_OF_SCOPE_STUDENT_LOGIN'], process.env['AUDIT_OUT_OF_SCOPE_STUDENT_PASSWORD']);
     const outOfScopeJoinResult = await outOfScopePage.evaluate(async (sId) => {
       const csrfToken = sessionStorage.getItem('almeaa:csrf-token') || (document.cookie.match(/almeaa_csrf_token=([^;]+)/) || [])[1];
       const headers = {
@@ -782,7 +782,7 @@ async function runRealClassroomPressureCertification() {
     const parentCtx = await browser.newContext();
     await setupContextProxy(parentCtx);
     const parentPage = await parentCtx.newPage();
-    await loginUser(parentPage, process.env.AUDIT_PARENT_LOGIN, process.env.AUDIT_PARENT_PASSWORD);
+    await loginUser(parentPage, process.env['AUDIT_PARENT_LOGIN'], process.env['AUDIT_PARENT_PASSWORD']);
     const parentTeacherAccess = await parentPage.evaluate(async () => {
       const res = await fetch('/api/classroom/teacher/active-session', { credentials: 'include' });
       return { status: res.status };
@@ -824,7 +824,7 @@ async function runRealClassroomPressureCertification() {
     const cleanTeacherPage = await cleanCtx.newPage();
 
     // Teacher logs in from scratch
-    await loginUser(cleanTeacherPage, process.env.AUDIT_TEACHER_LOGIN, process.env.AUDIT_TEACHER_PASSWORD);
+    await loginUser(cleanTeacherPage, process.env['AUDIT_TEACHER_LOGIN'], process.env['AUDIT_TEACHER_PASSWORD']);
 
     // Verify session report directly via teacher history API
     const sessionHistoryData = await cleanTeacherPage.evaluate(async (sId) => {
@@ -880,7 +880,7 @@ async function runRealClassroomPressureCertification() {
     const supervisorCtx = await browser.newContext({ viewport: { width: 1280, height: 800 } });
     await setupContextProxy(supervisorCtx);
     const supervisorPage = await supervisorCtx.newPage();
-    await loginUser(supervisorPage, process.env.AUDIT_SUPERVISOR_LOGIN, process.env.AUDIT_SUPERVISOR_PASSWORD);
+    await loginUser(supervisorPage, process.env['AUDIT_SUPERVISOR_LOGIN'], process.env['AUDIT_SUPERVISOR_PASSWORD']);
 
     const supervisorHistoryData = await supervisorPage.evaluate(async () => {
       try {
