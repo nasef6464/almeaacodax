@@ -1,0 +1,42 @@
+{
+  "project": "CHEM26",
+  "status": "PREPROD_IN_PROGRESS",
+  "taxonomy": {
+    "mainSkills": 27,
+    "subSkills": 99,
+    "allSubSkillsUsed": true
+  },
+  "inventory": {
+    "lessons": 32,
+    "section1": 1022,
+    "section2": 689,
+    "sourceCoverage": 1711
+  },
+  "mapping": {
+    "questionToSubSkill": 1711,
+    "unmapped": 0
+  },
+  "crops": {
+    "generated": 1711,
+    "uniqueHashes": 1711,
+    "format": "WebP lossless",
+    "questionNumberVisible": false,
+    "yearBadgeVisible": false
+  },
+  "answers": {
+    "complete": 1711,
+    "fromSourceTables": 1709,
+    "expertVerifiedMissingSourceKey": 2
+  },
+  "aiContext": {
+    "questions": 1711,
+    "foundationTopics": 33,
+    "videoBriefs": 99
+  },
+  "dedupe": {
+    "sourceCoverage": 1711,
+    "canonicalRecords": 1710,
+    "aliases": 1
+  },
+  "productionWrite": false
+}
