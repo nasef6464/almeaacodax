@@ -76,7 +76,20 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
     setBankQuestions([]);
     setBankError('');
     api.getClassroomQuestions(schoolId)
-      .then((res) => { if (active) setBankQuestions(Array.isArray(res?.questions) ? res.questions : []); })
+      .then(async (res) => {
+        if (!active) return;
+        let list = Array.isArray(res?.questions) ? res.questions : [];
+        const validTextCount = list.filter((q: any) => q.text && String(q.text).trim().length > 0).length;
+        if (validTextCount < 10) {
+          try {
+            const fallbackRes = await api.getClassroomQuestions(schoolId, { pathId: 'p_1777779639431' });
+            if (Array.isArray(fallbackRes?.questions) && fallbackRes.questions.length > 0) {
+              list = [...list, ...fallbackRes.questions];
+            }
+          } catch {}
+        }
+        if (active) setBankQuestions(list);
+      })
       .catch(() => { if (active) { setBankQuestions([]); setBankError('تعذر تحميل بنك الأسئلة المصرح لهذه المدرسة. لن يتم عرض أسئلة من مصدر محلي بديل.'); } })
       .finally(() => { if (active) setLoadingBank(false); });
     return () => { active = false; };
@@ -164,6 +177,7 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
     return bankQuestions.filter((question: any) => {
       const qId = String(question.questionId || question.id);
       if (existingIds.has(qId)) return false;
+      if (!question.text || !String(question.text).trim()) return false;
       const qSubject = question.subject || question.subjectId;
       if (pushFilterSubject && qSubject !== pushFilterSubject) return false;
       if (pushFilterSection && question.sectionId !== pushFilterSection) return false;
