@@ -19610,5 +19610,152 @@
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
     "answerEvidence": "Direct Amer source p.43; analogy relation independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T24-P065-Q002",
+    "canonicalId": "VERBAL26-AMER-T24-P065-Q002",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 65,
+    "sourceQuestionNumber": 2,
+    "sourceTraining": 24,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "عليكم بـ ........ الأخبار فإنها من صفات الملوك، ...... تصل إلى منزلتهم وعظمتهم.",
+    "options": [
+      "أجود – عندها",
+      "أخبار – به",
+      "طرائف – بها",
+      "عجائب – منهم"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.65; sentence meaning/grammar independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T24-P065-Q012",
+    "canonicalId": "VERBAL26-AMER-T24-P065-Q012",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 65,
+    "sourceQuestionNumber": 12,
+    "sourceTraining": 24,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "لن ........ لو رأيت في سير الأقدمين من أهلكه لسانه، والكلمات لا ........",
+    "options": [
+      "تحصى – قيلت",
+      "تجد – وقعت",
+      "تسمع – بدرت",
+      "تجد – عادت"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.65; sentence meaning/grammar independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T24-P066-Q023",
+    "canonicalId": "VERBAL26-AMER-T24-P066-Q023",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 66,
+    "sourceQuestionNumber": 23,
+    "sourceTraining": 24,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "لا تقصم ظهرك ........ التي ........",
+    "options": [
+      "الحمل – يسليك",
+      "الصفات – تجملك",
+      "الأماني – تضعفك",
+      "الرياضات – تقويك"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.66; sentence meaning/grammar independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T24-P066-Q027",
+    "canonicalId": "VERBAL26-AMER-T24-P066-Q027",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 66,
+    "sourceQuestionNumber": 27,
+    "sourceTraining": 24,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "من المطلوب .......، فخذ ما ....... في الحياة لو أخذت أكثر.",
+    "options": [
+      "تجد – يرجعك",
+      "تفرح – يضرك",
+      "تضيع – يضيعك",
+      "تهلك – يكفيك"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.66; sentence meaning/grammar independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T24-P067-Q041",
+    "canonicalId": "VERBAL26-AMER-T24-P067-Q041",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 67,
+    "sourceQuestionNumber": 41,
+    "sourceTraining": 24,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "لا يتصف ........ إلا ........",
+    "options": [
+      "بالحقد – دنيء",
+      "بضغينة – عظيم",
+      "بالنعم – كريم",
+      "بالكبر – كريم"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.67; sentence meaning/grammar independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T24-P067-Q042",
+    "canonicalId": "VERBAL26-AMER-T24-P067-Q042",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 67,
+    "sourceQuestionNumber": 42,
+    "sourceTraining": 24,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "لا ...... إلا من شعر بالنقص بنفسه ولا ...... إلا من شعر بالوهن بنفسه.",
+    "options": [
+      "يسخر – يتشاءم",
+      "يتجرأ – ينافس",
+      "يتواضع – يسب",
+      "يتكبر – يتطاول"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.67; sentence meaning/grammar independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T24-P067-Q045",
+    "canonicalId": "VERBAL26-AMER-T24-P067-Q045",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 67,
+    "sourceQuestionNumber": 45,
+    "sourceTraining": 24,
+    "mainSkillId": "skill_verbal_12",
+    "subSkillId": "sub_verbal_08_2",
+    "text": "إن الطيور تعاني ........ مستمرًا، فأعمال الصيد ........ تلاحقها وتسلبها موائلها الطبيعية.",
+    "options": [
+      "اضطهادًا – الجائر",
+      "قوميًا – المقيد",
+      "بيئيًا – المعتدل",
+      "حيوانيًا – الجميل"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.67; sentence meaning/grammar independently verified."
   }
 ]
