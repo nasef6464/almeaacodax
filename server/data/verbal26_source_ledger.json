@@ -2807,8 +2807,38 @@
   ],
   "migrationReady": false,
   "migrationReadinessReason": "Full-book source inventory and quarantine adjudication remain incomplete.",
-  "progressNote": "Amer T29-T33 are now fully source-accounted: T29 29+5Q, T30 27+2Q, T31 28/28, T32 20/20, T33 36+4Q. Continue backward unresolved trainings.",
+  "progressNote": "Amer T28-T33 fully source-accounted; T28 metadata restored (21 canonical + 3 quarantine). Continue T27 backward.",
   "amerCoverageByTraining": {
+    "28": {
+      "expectedObserved": 24,
+      "canonicalApproved": 21,
+      "quarantined": 3,
+      "duplicates": 0,
+      "excludedNonQuestionExamples": 0,
+      "remainingDelta": 0,
+      "sourcePages": [
+        76,
+        77
+      ],
+      "status": "ACCOUNTED_WITH_QUARANTINE",
+      "quarantine": [
+        {
+          "page": 76,
+          "question": 7,
+          "reason": "Parsed source sentence is corrupted; answer cannot be proven safely."
+        },
+        {
+          "page": 76,
+          "question": 9,
+          "reason": "Parsed jewel/heart sentence is ambiguous; visual adjudication required."
+        },
+        {
+          "page": 77,
+          "question": 18,
+          "reason": "Parsed stem/options do not expose a uniquely provable contextual target; visual adjudication required."
+        }
+      ]
+    },
     "29": {
       "expectedObserved": 34,
       "canonicalApproved": 29,
