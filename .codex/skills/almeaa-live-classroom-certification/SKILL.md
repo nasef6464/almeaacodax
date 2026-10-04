@@ -7,7 +7,43 @@ metadata:
 
 # ALMEAA Live Classroom Certification Protocol
 
-This skill codifies the verified end-to-end certification workflow for ALMEAA Smart Classroom sessions under real classroom pressure, ensuring exceptional usability for both teachers and students.
+This skill codifies the verified end-to-end certification workflow for ALMEAA Smart Classroom sessions under real classroom pressure, ensuring exceptional usability and verifiable integrity for both teachers and students.
+
+## Evidence Integrity Invariants (Non-Negotiable)
+
+To prevent superficial audits and ensure incontrovertible evidence:
+
+1. **Zero Hardcoded Credentials (Fail-Closed)**:
+   - Scripts and tests must NEVER embed emails, passwords, national IDs, or secrets in source code.
+   - Credentials must be sourced exclusively from environment variables (`AUDIT_TEACHER_LOGIN`, `AUDIT_TEACHER_PASSWORD`, `AUDIT_STUDENT_01_LOGIN` .. `AUDIT_STUDENT_20_LOGIN`, etc.).
+   - If any required credential is missing from the environment: **FAIL CLOSED** immediately. No static fallback or mock user is permitted.
+
+2. **20 Real Independent Browser Contexts**:
+   - Simulated single-student runs cannot claim multi-student certification.
+   - Tests must spawn 20 distinct Playwright browser contexts (`browser.newContext()`), each with separate cookies, storage, and authenticated sessions.
+
+3. **Programmatic Assertions Beyond Screenshots**:
+   - Screenshots serve as corroborating visual evidence, not primary proof.
+   - Every claim must be verified by explicit code assertions against DOM and backend state (e.g. `totalResponses === 20`, exact option counts `A === 4, B === 7, C === 6, D === 3`).
+   - Stepwise join counts must be asserted on the Teacher Console: 5 joined, 10 joined, 15 joined, and 20 joined.
+
+4. **Fail-Fast on Mandatory Critical Steps**:
+   - Critical path steps (session launch, student join, batch push, answer submission, radar update, reveal, batch end, continuous 10-question push, session archiving) must never be soft or optional (`if (visible) ...`).
+   - If any critical operation fails: throw an error immediately and halt certification.
+
+5. **Dynamic Evidence-Based Verdict (No Static 'CLOSED')**:
+   - The status must NEVER be hardcoded as `VERIFIED_CLOSED`.
+   - The test runner must dynamically calculate:
+     `status = (passedAssertions === requiredAssertions && requiredAssertions > 0) ? 'PASSED_CERTIFICATION' : 'FAILED'`
+   - Final certification is only achieved when `passedAssertions === requiredAssertions` with zero failures.
+
+6. **Negative RBAC & Data Leakage Inspection**:
+   - Cross-student access, cross-class session access, out-of-scope teacher access, and unauthorized role access must be explicitly tested and assert denial (HTTP 403/404).
+   - Network traffic, console output, storage, and visual DOM must be monitored for exposed credentials, unmasked National IDs, or sensitive tokens.
+
+7. **Clean Browser Persistence Verification**:
+   - After session closure, all student and teacher contexts must be destroyed.
+   - A fresh browser context must log in as teacher from scratch, navigate to historical reports, and assert that persisted database values exactly match live session data (`LIVE DATA == PERSISTED REPORT`).
 
 ## Core Pedagogical & UX Invariants
 
@@ -35,15 +71,16 @@ This skill codifies the verified end-to-end certification workflow for ALMEAA Sm
 - **Scenario A (Teacher Starts Class)**:
   - Homepage -> Login -> Classroom Console -> Start Session.
   - Threshold: <= 20s, <= 3 clicks.
-- **Scenario B (Student Join)**:
-  - Student Login -> Live Classroom URL or dashboard widget -> 1-Click Instant Join.
-  - Threshold: <= 15s, <= 2 clicks.
+- **Scenario B (20 Students Incremental Join)**:
+  - 20 independent browser contexts join in batches of 5 (5 -> 10 -> 15 -> 20).
+  - Teacher console asserts real participant count at each increment.
 - **Scenario C & E (5-Question Batch Push)**:
   - Teacher clicks `تخصيص حزمة مهارة` -> Clicks `حزمة 5 أسئلة` -> Clicks `إرسال فوراً لتابلت الطلاب (5) 🚀`.
   - Student receives Question 1 sequentially on mobile viewport (390×844).
 - **Scenario G & H (Live Radar & Solution Reveal)**:
-  - Student answers on mobile -> Teacher radar updates submission count live.
-  - Options distribution remains neutral. Teacher clicks `كشف الحل للفصل 💡` to reveal the model solution.
+  - 20 students submit answers with known distribution (A=4, B=7, C=6, D=3).
+  - Teacher console radar asserts totalResponses === 20 and exact counts per option.
+  - Options distribution remains neutral until teacher clicks `كشف الحل للفصل 💡`.
 - **Scenario I (Projector Mode)**:
   - Displayed on 1920×1080 theater view. Centralized question, large math rendering, aggregate counter.
 - **Scenario J & K (Post-Batch Summary)**:
@@ -64,7 +101,9 @@ node scripts/audit_classroom_human_pressure.mjs
 ```
 
 The script automatically:
-1. Proxies network requests to the live backend while testing local frontend components.
-2. Spawns independent browser contexts for Teacher Desktop (1280×800), Student Mobile (390×844), Projector (1920×1080), and Teacher Mobile Remote (390×844).
-3. Captures all 11 dual-stored evidence screenshots in `audit-evidence/human-ux/` and the conversation artifacts directory.
-4. Outputs structured timing and click ergonomics to `human_classroom_pressure_report.json`.
+1. Validates all required credentials from environment variables (`.env.audit`, `.env.local`, `.env`).
+2. Proxies network requests to the live backend while testing local frontend components.
+3. Spawns 20 independent browser contexts for Students, plus Teacher Desktop, Projector, and Teacher Mobile Remote.
+4. Executes incremental join assertions, exact answer distribution assertions, negative RBAC tests, data leakage audits, and fresh browser persistence checks.
+5. Captures 14 dual-stored evidence screenshots in `audit-evidence/human-ux/` and the conversation artifacts directory.
+6. Computes dynamic verdict based on `passedAssertions === requiredAssertions` and outputs structured JSON report to `human_classroom_pressure_report.json`.
