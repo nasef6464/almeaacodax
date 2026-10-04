@@ -10457,7 +10457,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification."
+    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification.",
+    "sourceTraining": 25
   },
   {
     "id": "VERBAL26-AMER-T25-P070-Q002",
@@ -10477,7 +10478,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification."
+    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification.",
+    "sourceTraining": 25
   },
   {
     "id": "VERBAL26-AMER-T25-P070-Q004",
@@ -10497,7 +10499,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification."
+    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification.",
+    "sourceTraining": 25
   },
   {
     "id": "VERBAL26-AMER-T25-P070-Q007",
@@ -10517,7 +10520,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification."
+    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification.",
+    "sourceTraining": 25
   },
   {
     "id": "VERBAL26-AMER-T25-P070-Q010",
@@ -10537,7 +10541,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification."
+    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification.",
+    "sourceTraining": 25
   },
   {
     "id": "VERBAL26-AMER-T25-P070-Q011",
@@ -10557,7 +10562,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification."
+    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification.",
+    "sourceTraining": 25
   },
   {
     "id": "VERBAL26-AMER-T25-P070-Q012",
@@ -10577,7 +10583,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification."
+    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification.",
+    "sourceTraining": 25
   },
   {
     "id": "VERBAL26-AMER-T25-P071-Q014",
@@ -10597,7 +10604,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification."
+    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification.",
+    "sourceTraining": 25
   },
   {
     "id": "VERBAL26-AMER-T25-P071-Q015",
@@ -10617,7 +10625,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification."
+    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification.",
+    "sourceTraining": 25
   },
   {
     "id": "VERBAL26-AMER-T25-P071-Q016",
@@ -10637,7 +10646,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification."
+    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification.",
+    "sourceTraining": 25
   },
   {
     "id": "VERBAL26-AMER-T25-P071-Q019",
@@ -10657,7 +10667,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification."
+    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification.",
+    "sourceTraining": 25
   },
   {
     "id": "VERBAL26-AMER-T25-P071-Q020",
@@ -10677,7 +10688,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification."
+    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification.",
+    "sourceTraining": 25
   },
   {
     "id": "VERBAL26-AMER-T25-P071-Q021",
@@ -10697,7 +10709,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification."
+    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification.",
+    "sourceTraining": 25
   },
   {
     "id": "VERBAL26-AMER-T25-P071-Q023",
@@ -10717,7 +10730,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification."
+    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification.",
+    "sourceTraining": 25
   },
   {
     "id": "VERBAL26-AMER-T25-P071-Q024",
@@ -10737,7 +10751,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification."
+    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification.",
+    "sourceTraining": 25
   },
   {
     "id": "VERBAL26-AMER-T25-P071-Q026",
@@ -10757,7 +10772,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification."
+    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification.",
+    "sourceTraining": 25
   },
   {
     "id": "VERBAL26-AMER-T25-P071-Q028",
@@ -10777,7 +10793,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification."
+    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification.",
+    "sourceTraining": 25
   },
   {
     "id": "VERBAL26-AMER-T26-P072-Q001",
