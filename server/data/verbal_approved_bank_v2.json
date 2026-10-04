@@ -22080,5 +22080,89 @@
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
     "answerEvidence": "Direct Amer source p.42; relation independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T03-P011-Q014",
+    "canonicalId": "VERBAL26-AMER-T03-P011-Q014",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 11,
+    "sourceQuestionNumber": 14,
+    "sourceTraining": 3,
+    "mainSkillId": "skill_verbal_02",
+    "subSkillId": "sub_verbal_02_1",
+    "text": "عقاب : ثواب",
+    "options": [
+      "صبر : جزع",
+      "ماء : جفاف",
+      "كفر : بواح",
+      "حلف : يمين"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.11; relation independently verified from source wording."
+  },
+  {
+    "id": "VERBAL26-AMER-T03-P011-Q018",
+    "canonicalId": "VERBAL26-AMER-T03-P011-Q018",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 11,
+    "sourceQuestionNumber": 18,
+    "sourceTraining": 3,
+    "mainSkillId": "skill_verbal_02",
+    "subSkillId": "sub_verbal_02_1",
+    "text": "عقوق : بر",
+    "options": [
+      "كأس : زجاج",
+      "أرض : فضاء",
+      "حر : خيال",
+      "يرقة : واقية"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.11; relation independently verified from source wording."
+  },
+  {
+    "id": "VERBAL26-AMER-T03-P011-Q019",
+    "canonicalId": "VERBAL26-AMER-T03-P011-Q019",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 11,
+    "sourceQuestionNumber": 19,
+    "sourceTraining": 3,
+    "mainSkillId": "skill_verbal_02",
+    "subSkillId": "sub_verbal_02_1",
+    "text": "إطلاق : دائمًا",
+    "options": [
+      "حسن : قبح",
+      "أمين : مخادع",
+      "حق : ظلم",
+      "فرح : سرور"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.11; relation independently verified from source wording."
+  },
+  {
+    "id": "VERBAL26-AMER-T04-P015-Q019",
+    "canonicalId": "VERBAL26-AMER-T04-P015-Q019",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 15,
+    "sourceQuestionNumber": 19,
+    "sourceTraining": 4,
+    "mainSkillId": "skill_verbal_03",
+    "subSkillId": "sub_verbal_03_1",
+    "text": "صحف : صحيفة",
+    "options": [
+      "قهوة : مقهى",
+      "مريض : مستشفى",
+      "محاضر : جامعة",
+      "شيخ : عبادة"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.15; relation independently verified from source wording."
   }
 ]
