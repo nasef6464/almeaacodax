@@ -731,7 +731,7 @@ export const Header: React.FC = () => {
                     >
                       <div className="hidden lg:block text-right">
                         <span className="block text-[10px] text-gray-400 font-medium leading-none">{text.account}</span>
-                        <span className="block text-xs font-black text-gray-800 dark:text-gray-100 leading-tight mt-0.5 max-w-[120px] truncate">
+                        <span className="block text-xs font-black text-gray-800 dark:text-gray-100 leading-tight mt-0.5 max-w-[200px] xl:max-w-[260px] truncate" title={user.displayName || text.guest}>
                           {user.displayName || text.guest}
                         </span>
                       </div>

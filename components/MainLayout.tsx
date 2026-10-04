@@ -141,7 +141,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                     href={whatsappHref}
                     target={contactWidget?.openInNewTab ? '_blank' : '_self'}
                     rel="noreferrer"
-                    className="fixed bottom-8 right-8 bg-[#25D366] hover:bg-[#20bd5a] text-white p-4 rounded-full shadow-lg transition-all z-50 flex items-center justify-center animate-bounce-slow"
+                    className="fixed bottom-24 right-4 sm:bottom-8 sm:right-8 bg-[#25D366] hover:bg-[#20bd5a] text-white p-3.5 sm:p-4 rounded-full shadow-lg transition-all z-40 flex items-center justify-center animate-bounce-slow"
                     aria-label="WhatsApp contact"
                     title="تواصل معنا عبر واتساب"
                 >
