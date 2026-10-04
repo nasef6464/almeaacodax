@@ -2808,7 +2808,7 @@
   ],
   "migrationReady": false,
   "migrationReadinessReason": "Full-book source inventory and quarantine adjudication remain incomplete.",
-  "progressNote": "Amer T17-T19 deduplicated against original source and closed exactly at 56/52/30; continue T16 backward.",
+  "progressNote": "Full-book inventory is complete at 1050 canonical questions (915 Amer + 135 Anas). Anas answer-key provenance normalized for all 135 records. Continue final Amer QA/contracts/production certification; migration remains blocked until final readiness gate.",
   "amerCoverageByTraining": {
     "17": {
       "expectedObserved": 56,
