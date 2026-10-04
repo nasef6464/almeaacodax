@@ -2564,7 +2564,7 @@
     "sourceConflictRecords": 23,
     "anasObservedQuestions": 135,
     "anasKeyVerifiedQuestions": 112,
-    "anasConflictQuestions": 23,
+    "anasConflictQuestions": 0,
     "amerTrainingsIndexed": 33,
     "amerApprovedRecords": 915,
     "amerDerivedReportCrossCheck": 938,
@@ -2636,7 +2636,8 @@
     "approvedMainSkillCoverage": 22,
     "amerObservedQuestions": 921,
     "anasCanonicalApproved": 135,
-    "anasCurrentQuarantined": 0
+    "anasCurrentQuarantined": 0,
+    "anasHistoricalConflictQuestions": 23
   },
   "amerBatches": [
     {
