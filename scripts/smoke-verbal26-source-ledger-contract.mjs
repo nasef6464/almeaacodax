@@ -23,16 +23,17 @@ assert.equal(anas?.pdfPages, 43, "Anas source page count changed");
 assert.equal(amer?.pdfPages, 98, "Amer source page count changed");
 
 const batches = Array.isArray(ledger?.batches) ? ledger.batches : [];
-const conflict = batches.filter((b) => String(b?.status || "").includes("CONFLICT"));
-const conflictRecords = conflict.flatMap((b) => b.records || []);
+const conflictRecords = batches
+  .flatMap((b) => b.records || [])
+  .filter((row) => String(row?.status || "").includes("CONFLICT"));
 assert.equal(
   conflictRecords.length,
-  Number(ledger?.metrics?.anasConflictQuestions || 0),
-  "conflict metric must match quarantined records",
+  Number(ledger?.metrics?.anasCurrentQuarantined || 0),
+  "current quarantine metric must match unresolved conflict rows",
 );
 for (const row of conflictRecords) {
-  assert.match(String(row?.status || ""), /CONFLICT/, "conflict rows must remain quarantined");
-  assert.equal(row?.answerLetter, undefined, "conflict rows must not expose an approved answerLetter");
+  assert.match(String(row?.status || ""), /CONFLICT/, "unresolved conflict rows must remain quarantined");
+  assert.equal(row?.answerLetter, undefined, "unresolved conflict rows must not expose an approved answerLetter");
 }
 
 const verified = batches
