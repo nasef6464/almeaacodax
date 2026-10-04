@@ -208,21 +208,42 @@ if(Number(submitted?.totalQuestions||0)!==5 || Number(submitted?.correctAnswers|
 }
 const reviewIds=unique((submitted?.questionReview||[]).map(x=>x.questionId));
 for(const qid of expectedQuestionIds) if(!reviewIds.includes(qid)) throw new Error("result questionReview missing "+qid);
-const resultSkills=unique((submitted?.skillsAnalysis||[]).map(x=>x.skillId));
+const resultSkillRows=submitted?.skillsAnalysis||[];
+const resultSkills=unique(resultSkillRows.map(x=>x.skillId));
 for(const skillId of expectedSkillIds) if(!resultSkills.includes(skillId)) throw new Error("result skillsAnalysis missing "+skillId);
-console.log("COL26_SUBMIT_PASS score=100 reviewQuestions="+reviewIds.length+" skills="+resultSkills.length);
+const assertNamedSkills=(rows,label)=>{
+  for(const skillId of expectedSkillIds){
+    const row=(rows||[]).find(x=>String(x?.skillId||"")===skillId);
+    const name=String(row?.skill||"").trim();
+    if(!name || name==="مهارة غير مسماة" || name==="مهارة غير معروفة") throw new Error(label+" missing canonical skill name "+skillId);
+  }
+};
+assertNamedSkills(resultSkillRows,"submit");
+console.log("COL26_SUBMIT_PASS score=100 reviewQuestions="+reviewIds.length+" skills="+resultSkills.length+" namedSkills="+expectedSkillIds.length);
 
 const studentReport=await request(student,"GET","/quizzes/results?quizId="+encodeURIComponent(createdQuizId)+"&limit=10&includeReview=true");
 const studentResult=(studentReport?.results||[]).find(r=>String(r.quizId||"")===createdQuizId);
 if(!studentResult) throw new Error("student report missing COL26 audit result");
 const reportSkills=unique((studentResult.skillsAnalysis||[]).map(x=>x.skillId));
 for(const skillId of expectedSkillIds) if(!reportSkills.includes(skillId)) throw new Error("student report missing skill "+skillId);
+assertNamedSkills(studentResult.skillsAnalysis||[],"student report");
 
 const adminReport=await request(admin,"GET","/quizzes/results/scoped?quizId="+encodeURIComponent(createdQuizId)+"&studentId="+encodeURIComponent(studentId)+"&limit=10&includeReview=true");
 const adminResult=(adminReport?.results||[]).find(r=>String(r.quizId||"")===createdQuizId);
 if(!adminResult) throw new Error("admin scoped report missing COL26 audit result");
 const adminSkills=unique((adminResult.skillsAnalysis||[]).map(x=>x.skillId));
 for(const skillId of expectedSkillIds) if(!adminSkills.includes(skillId)) throw new Error("admin report missing skill "+skillId);
+assertNamedSkills(adminResult.skillsAnalysis||[],"admin report");
+
+const skillProgressPayload=await request(student,"GET","/quizzes/skill-progress?pathId="+encodeURIComponent(PATH_ID)+"&subjectId="+encodeURIComponent(SUBJECT_ID)+"&noTotal=true&limit=100");
+const skillProgressRows=skillProgressPayload?.skillProgress||[];
+for(const skillId of expectedSkillIds){
+  const row=skillProgressRows.find(x=>String(x?.skillId||"")===skillId);
+  const name=String(row?.skill||"").trim();
+  if(!row) throw new Error("SkillProgress missing "+skillId);
+  if(!name || name==="مهارة غير مسماة" || name==="مهارة غير معروفة") throw new Error("SkillProgress missing canonical skill name "+skillId);
+}
+console.log("COL26_SKILL_PROGRESS_PASS skills="+expectedSkillIds.length+" names=canonical");
 
 const report={
   status:"PASS",
@@ -237,10 +258,12 @@ const report={
   score:Number(submitted.score),
   studentReport:true,
   adminScopedReport:true,
+  skillProgress:true,
+  canonicalSkillNames:true,
   learnerImages:5,
   answerLeak:0,
   generatedAt:new Date().toISOString(),
 };
 fs.mkdirSync("audit-artifacts/col26-v8-live",{recursive:true});
 fs.writeFileSync("audit-artifacts/col26-v8-live/closure.json",JSON.stringify(report,null,2));
-console.log("COL26_V8_LIVE_CLOSURE_PASS approved=1012 quizQuestions=5 score=100 reports=student+admin");
+console.log("COL26_V8_LIVE_CLOSURE_PASS approved=1012 quizQuestions=5 score=100 reports=student+admin skillProgress=canonical-names");
