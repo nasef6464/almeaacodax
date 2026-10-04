@@ -2526,7 +2526,23 @@
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
     "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
-    "sourceTraining": 2
+    "sourceTraining": 2,
+    "sourceOccurrences": [
+      {
+        "sourceBook": "abdelbaset",
+        "sourceTraining": 2,
+        "sourcePage": 7,
+        "sourceQuestionNumber": 4,
+        "passageId": null
+      },
+      {
+        "sourceBook": "abdelbaset",
+        "sourceTraining": 2,
+        "sourcePage": 9,
+        "sourceQuestionNumber": 34,
+        "passageId": null
+      }
+    ]
   },
   {
     "id": "VERBAL26-AMER-T02-P007-Q005",
@@ -3723,7 +3739,23 @@
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
     "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
-    "sourceTraining": 3
+    "sourceTraining": 3,
+    "sourceOccurrences": [
+      {
+        "sourceBook": "abdelbaset",
+        "sourceTraining": 3,
+        "sourcePage": 12,
+        "sourceQuestionNumber": 35,
+        "passageId": null
+      },
+      {
+        "sourceBook": "abdelbaset",
+        "sourceTraining": 16,
+        "sourcePage": 45,
+        "sourceQuestionNumber": 26,
+        "passageId": null
+      }
+    ]
   },
   {
     "id": "VERBAL26-AMER-T04-P014-Q001",
@@ -4017,7 +4049,23 @@
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
     "answerEvidence": "Approved-source text/options + place/time relation verification.",
-    "sourceTraining": 4
+    "sourceTraining": 4,
+    "sourceOccurrences": [
+      {
+        "sourceBook": "abdelbaset",
+        "sourceTraining": 4,
+        "sourcePage": 15,
+        "sourceQuestionNumber": 18,
+        "passageId": null
+      },
+      {
+        "sourceBook": "abdelbaset",
+        "sourceTraining": 4,
+        "sourcePage": 14,
+        "sourceQuestionNumber": 3,
+        "passageId": null
+      }
+    ]
   },
   {
     "id": "VERBAL26-AMER-T04-P015-Q021",
@@ -19189,27 +19237,6 @@
     "answerEvidence": "Direct Amer source p.45; source text/options verified and analogy relation independently verified."
   },
   {
-    "id": "VERBAL26-AMER-T16-P045-Q026",
-    "canonicalId": "VERBAL26-AMER-T16-P045-Q026",
-    "sourceBook": "abdelbaset",
-    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
-    "sourcePage": 45,
-    "sourceQuestionNumber": 26,
-    "sourceTraining": 16,
-    "mainSkillId": "skill_verbal_01",
-    "subSkillId": "sub_verbal_01_1",
-    "text": "الدنيا : الآجلة",
-    "options": [
-      "الموت : البعث",
-      "الموت : الحياة",
-      "البعث : القيامة",
-      "الغيب : الشهادة"
-    ],
-    "correctOptionIndex": 3,
-    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Direct Amer source p.45; source text/options verified and analogy relation independently verified."
-  },
-  {
     "id": "VERBAL26-AMER-T16-P045-Q029",
     "canonicalId": "VERBAL26-AMER-T16-P045-Q029",
     "sourceBook": "abdelbaset",
@@ -21116,27 +21143,6 @@
     "answerEvidence": "Direct Amer source p.8; relation independently verified."
   },
   {
-    "id": "VERBAL26-AMER-T2-P009-Q034",
-    "canonicalId": "VERBAL26-AMER-T2-P009-Q034",
-    "sourceBook": "abdelbaset",
-    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
-    "sourcePage": 9,
-    "sourceQuestionNumber": 34,
-    "sourceTraining": 2,
-    "mainSkillId": "skill_verbal_01",
-    "subSkillId": "sub_verbal_01_1",
-    "text": "أفل : غاب",
-    "options": [
-      "أبان : أفصح",
-      "أفسد : أصلح",
-      "انقض : عزم",
-      "سيف : خنجر"
-    ],
-    "correctOptionIndex": 0,
-    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Direct Amer source p.9; relation independently verified."
-  },
-  {
     "id": "VERBAL26-AMER-T3-P011-Q017",
     "canonicalId": "VERBAL26-AMER-T3-P011-Q017",
     "sourceBook": "abdelbaset",
@@ -21156,27 +21162,6 @@
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
     "answerEvidence": "Direct Amer source p.11; relation independently verified."
-  },
-  {
-    "id": "VERBAL26-AMER-T4-P014-Q003",
-    "canonicalId": "VERBAL26-AMER-T4-P014-Q003",
-    "sourceBook": "abdelbaset",
-    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
-    "sourcePage": 14,
-    "sourceQuestionNumber": 3,
-    "sourceTraining": 4,
-    "mainSkillId": "skill_verbal_03",
-    "subSkillId": "sub_verbal_03_1",
-    "text": "نواة : تمر",
-    "options": [
-      "فكرة : رأس",
-      "مروحية : مستشفى",
-      "جامعة : تعلم",
-      "جد : حفيد"
-    ],
-    "correctOptionIndex": 0,
-    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Direct Amer source p.14; relation independently verified."
   },
   {
     "id": "VERBAL26-AMER-T4-P014-Q008",
@@ -21365,7 +21350,23 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Direct Amer source p.20; relation independently verified."
+    "answerEvidence": "Direct Amer source p.20; relation independently verified.",
+    "sourceOccurrences": [
+      {
+        "sourceBook": "abdelbaset",
+        "sourceTraining": 6,
+        "sourcePage": 20,
+        "sourceQuestionNumber": 9,
+        "passageId": null
+      },
+      {
+        "sourceBook": "abdelbaset",
+        "sourceTraining": 10,
+        "sourcePage": 28,
+        "sourceQuestionNumber": 17,
+        "passageId": null
+      }
+    ]
   },
   {
     "id": "VERBAL26-AMER-T6-P020-Q014",
@@ -21554,7 +21555,23 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Direct Amer source p.23; relation independently verified."
+    "answerEvidence": "Direct Amer source p.23; relation independently verified.",
+    "sourceOccurrences": [
+      {
+        "sourceBook": "abdelbaset",
+        "sourceTraining": 7,
+        "sourcePage": 23,
+        "sourceQuestionNumber": 16,
+        "passageId": null
+      },
+      {
+        "sourceBook": "abdelbaset",
+        "sourceTraining": 10,
+        "sourcePage": 28,
+        "sourceQuestionNumber": 19,
+        "passageId": null
+      }
+    ]
   },
   {
     "id": "VERBAL26-AMER-T8-P024-Q004",
@@ -21767,27 +21784,6 @@
     "answerEvidence": "Direct Amer source p.28; relation independently verified."
   },
   {
-    "id": "VERBAL26-AMER-T10-P028-Q017",
-    "canonicalId": "VERBAL26-AMER-T10-P028-Q017",
-    "sourceBook": "abdelbaset",
-    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
-    "sourcePage": 28,
-    "sourceQuestionNumber": 17,
-    "sourceTraining": 10,
-    "mainSkillId": "skill_verbal_08",
-    "subSkillId": "sub_verbal_05_4",
-    "text": "كتابة : قلم",
-    "options": [
-      "شحن : باخرة",
-      "سيارة : سفر",
-      "ورود : زهور",
-      "طائرة : تحليق"
-    ],
-    "correctOptionIndex": 0,
-    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Direct Amer source p.28; relation independently verified."
-  },
-  {
     "id": "VERBAL26-AMER-T10-P028-Q018",
     "canonicalId": "VERBAL26-AMER-T10-P028-Q018",
     "sourceBook": "abdelbaset",
@@ -21805,27 +21801,6 @@
       "مدرب : فقير"
     ],
     "correctOptionIndex": 1,
-    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Direct Amer source p.28; relation independently verified."
-  },
-  {
-    "id": "VERBAL26-AMER-T10-P028-Q019",
-    "canonicalId": "VERBAL26-AMER-T10-P028-Q019",
-    "sourceBook": "abdelbaset",
-    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
-    "sourcePage": 28,
-    "sourceQuestionNumber": 19,
-    "sourceTraining": 10,
-    "mainSkillId": "skill_verbal_08",
-    "subSkillId": "sub_verbal_05_4",
-    "text": "عطس : حمد",
-    "options": [
-      "صدق : قول",
-      "سم : أكل",
-      "حقيقة : خيال",
-      "ذنب : استغفار"
-    ],
-    "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
     "answerEvidence": "Direct Amer source p.28; relation independently verified."
   },
