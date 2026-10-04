@@ -18116,5 +18116,110 @@
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
     "answerEvidence": "Direct Amer source pp.72-73; contextual-error answer independently verified from sentence meaning."
+  },
+  {
+    "id": "VERBAL26-AMER-T25-P070-Q003",
+    "canonicalId": "VERBAL26-AMER-T25-P070-Q003",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 70,
+    "sourceQuestionNumber": 3,
+    "sourceTraining": 25,
+    "mainSkillId": "skill_verbal_18",
+    "subSkillId": "sub_verbal_11_3",
+    "text": "من علامات النجاح في البدايات النهايات تطويره.",
+    "options": [
+      "علامات",
+      "النجاح",
+      "النهايات",
+      "تطويره"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer T25 p.70; contextual-error answer independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T25-P070-Q005",
+    "canonicalId": "VERBAL26-AMER-T25-P070-Q005",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 70,
+    "sourceQuestionNumber": 5,
+    "sourceTraining": 25,
+    "mainSkillId": "skill_verbal_18",
+    "subSkillId": "sub_verbal_11_3",
+    "text": "من علت همته طال همه.",
+    "options": [
+      "من",
+      "همته",
+      "طال",
+      "همه"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer T25 p.70; contextual-error answer independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T25-P070-Q013",
+    "canonicalId": "VERBAL26-AMER-T25-P070-Q013",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 70,
+    "sourceQuestionNumber": 13,
+    "sourceTraining": 25,
+    "mainSkillId": "skill_verbal_18",
+    "subSkillId": "sub_verbal_11_3",
+    "text": "لا تتعلم العلم لتباهي به الجهال وتماري به السفهاء وترائي به في المجالس.",
+    "options": [
+      "العلم",
+      "لتباهي",
+      "الجهال",
+      "السفهاء"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer T25 p.70; contextual-error answer independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T25-P071-Q022",
+    "canonicalId": "VERBAL26-AMER-T25-P071-Q022",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 71,
+    "sourceQuestionNumber": 22,
+    "sourceTraining": 25,
+    "mainSkillId": "skill_verbal_18",
+    "subSkillId": "sub_verbal_11_3",
+    "text": "لا ترفض الأعمال الجيدة بحجة الإنجاز، فهناك أفكار تزيد الإنتاجية.",
+    "options": [
+      "ترفض",
+      "الأعمال",
+      "بحجة",
+      "الإنجاز"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer T25 p.71; contextual-error answer independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T25-P071-Q027",
+    "canonicalId": "VERBAL26-AMER-T25-P071-Q027",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 71,
+    "sourceQuestionNumber": 27,
+    "sourceTraining": 25,
+    "mainSkillId": "skill_verbal_18",
+    "subSkillId": "sub_verbal_11_3",
+    "text": "إن لم تركب السفن لن تنال الرغائب.",
+    "options": [
+      "تركب",
+      "السفن",
+      "تنال",
+      "الرغائب"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer T25 p.71; contextual-error answer independently verified."
   }
 ]
