@@ -8,6 +8,7 @@ import { startNotificationWorkers } from "../../queues/notificationQueue.js";
 import { createSocketServer } from "../../sockets/index.js";
 import { registerGracefulShutdown } from "./registerGracefulShutdown.js";
 import { runStartupMaintenance } from "./runStartupMaintenance.js";
+import { runQuestionPilotPackageImportIfRequested } from "./runQuestionPilotPackageImport.js";
 
 /**
  * Composes the existing API runtime in one explicit bootstrap boundary.
@@ -25,6 +26,9 @@ export async function bootstrapServer() {
 
   server.listen(env.PORT, () => {
     console.log(`API server listening on http://localhost:${env.PORT}`);
+    void runQuestionPilotPackageImportIfRequested().catch((error) => {
+      console.error("COL26OLD_IMPORT_FAILED", error instanceof Error ? error.message : "Unknown error");
+    });
   });
 
   startWeeklyParentReportSchedule();
