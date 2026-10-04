@@ -21954,5 +21954,194 @@
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
     "answerEvidence": "Direct Amer source p.28; relation independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T13-P034-Q014",
+    "canonicalId": "VERBAL26-AMER-T13-P034-Q014",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 34,
+    "sourceQuestionNumber": 14,
+    "sourceTraining": 13,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_1",
+    "text": "وبر : ناقة",
+    "options": [
+      "ريش : حمام",
+      "لباد : بغل",
+      "خروف : صوف",
+      "موز : لحاء"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.34; relation independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T13-P034-Q015",
+    "canonicalId": "VERBAL26-AMER-T13-P034-Q015",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 34,
+    "sourceQuestionNumber": 15,
+    "sourceTraining": 13,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_1",
+    "text": "وبر : إبل",
+    "options": [
+      "غنم : صوف",
+      "قشرة : برتقالة",
+      "شجرة : لحاء",
+      "عين : جفن"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.34; relation independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T14-P040-Q005",
+    "canonicalId": "VERBAL26-AMER-T14-P040-Q005",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 40,
+    "sourceQuestionNumber": 5,
+    "sourceTraining": 14,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_1",
+    "text": "مطرقة : قاضي",
+    "options": [
+      "صدقة : فقير",
+      "تاج : ملك",
+      "عصا : راع",
+      "رتبة : عسكري"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.40; relation independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T14-P040-Q008",
+    "canonicalId": "VERBAL26-AMER-T14-P040-Q008",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 40,
+    "sourceQuestionNumber": 8,
+    "sourceTraining": 14,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_1",
+    "text": "ذب : دفع",
+    "options": [
+      "تأليب : هدوء",
+      "انحراف : ميل",
+      "إرشاد : إغواء",
+      "موظف : شركة"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.40; relation independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T14-P040-Q013",
+    "canonicalId": "VERBAL26-AMER-T14-P040-Q013",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 40,
+    "sourceQuestionNumber": 13,
+    "sourceTraining": 14,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_1",
+    "text": "طول : قدرة",
+    "options": [
+      "قوة : تفوق",
+      "تمادي : ضعف",
+      "عاد : قفل",
+      "أسد : نمر"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.40; relation independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T14-P040-Q019",
+    "canonicalId": "VERBAL26-AMER-T14-P040-Q019",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 40,
+    "sourceQuestionNumber": 19,
+    "sourceTraining": 14,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_1",
+    "text": "ورقة : غصن",
+    "options": [
+      "مدرسة : ملعب",
+      "حديقة : مظلة",
+      "سعادة : شعور",
+      "طاولة : سبورة"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.40; relation independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T14-P041-Q032",
+    "canonicalId": "VERBAL26-AMER-T14-P041-Q032",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 41,
+    "sourceQuestionNumber": 32,
+    "sourceTraining": 14,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_1",
+    "text": "سراج المؤمنين : الهدى",
+    "options": [
+      "سراج البيت : الدابة المطيعة",
+      "سراج النهار : الشمس المضيئة",
+      "السراج الكاسف : شاحب الوجه",
+      "السراج الوهاج : النجم الصغير"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.41; relation independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T14-P041-Q033",
+    "canonicalId": "VERBAL26-AMER-T14-P041-Q033",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 41,
+    "sourceQuestionNumber": 33,
+    "sourceTraining": 14,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_1",
+    "text": "حاجة : تدريب",
+    "options": [
+      "رغبة : إرادة",
+      "قحط : استسقاء",
+      "طبخ : جوع",
+      "رعي : تصحر"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.41; relation independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T15-P042-Q012",
+    "canonicalId": "VERBAL26-AMER-T15-P042-Q012",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 42,
+    "sourceQuestionNumber": 12,
+    "sourceTraining": 15,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_1",
+    "text": "شعير : إنجلين",
+    "options": [
+      "ملح : بحر",
+      "قمح : ذرة",
+      "نمر : حيوانات",
+      "ماء : طعام"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.42; relation independently verified."
   }
 ]
