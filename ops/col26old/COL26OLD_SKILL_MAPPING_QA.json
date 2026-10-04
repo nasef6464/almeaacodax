@@ -1,0 +1,12 @@
+{
+  "stage": "COL26OLD skill mapping final gate",
+  "questions": 1258,
+  "mapped": 1258,
+  "main_skills_used": 22,
+  "subskills_used": 67,
+  "invalid_live_taxonomy_pairs": 0,
+  "chapter_main_skill_mismatches_vs_COL26_section1": 0,
+  "unmapped": 0,
+  "duplicate_codes": 0,
+  "result": "PASS"
+}
