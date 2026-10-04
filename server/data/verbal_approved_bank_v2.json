@@ -20988,5 +20988,383 @@
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED_SOURCE_KEY_CONFLICT",
     "answerEvidence": "Direct Anas p.32 options; independently resolved because p.33 key is internally inconsistent/duplicated."
+  },
+  {
+    "id": "VERBAL26-AMER-T2-P007-Q008",
+    "canonicalId": "VERBAL26-AMER-T2-P007-Q008",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 7,
+    "sourceQuestionNumber": 8,
+    "sourceTraining": 2,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_1",
+    "text": "البحر : اليم",
+    "options": [
+      "فرن : خبز",
+      "دواء : صيدلية",
+      "مخزن : نقود",
+      "حسام : مهند"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.7; relation independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T2-P008-Q009",
+    "canonicalId": "VERBAL26-AMER-T2-P008-Q009",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 8,
+    "sourceQuestionNumber": 9,
+    "sourceTraining": 2,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_1",
+    "text": "أهملت : قصرت",
+    "options": [
+      "بخل : شح",
+      "تغاضت : أسرعت",
+      "مشيت : ركضت",
+      "علم : معرفة"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.8; relation independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T2-P008-Q017",
+    "canonicalId": "VERBAL26-AMER-T2-P008-Q017",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 8,
+    "sourceQuestionNumber": 17,
+    "sourceTraining": 2,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_1",
+    "text": "فقر : إملاق",
+    "options": [
+      "خنوع : ذل",
+      "ظلم : جور",
+      "رجل : شيخ",
+      "اعتذار : اعتراض"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.8; relation independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T2-P008-Q018",
+    "canonicalId": "VERBAL26-AMER-T2-P008-Q018",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 8,
+    "sourceQuestionNumber": 18,
+    "sourceTraining": 2,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_1",
+    "text": "عجيب : غريب",
+    "options": [
+      "أهملت : قصرت",
+      "حلم : رعونة",
+      "أرسل : أوصل",
+      "رسى : أشرى"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.8; relation independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T2-P008-Q024",
+    "canonicalId": "VERBAL26-AMER-T2-P008-Q024",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 8,
+    "sourceQuestionNumber": 24,
+    "sourceTraining": 2,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_1",
+    "text": "مبعثر : متناثر",
+    "options": [
+      "عجول : لحوح",
+      "فرح : سعيد",
+      "جان : متهم",
+      "مكفهر : مبتهج"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.8; relation independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T2-P008-Q028",
+    "canonicalId": "VERBAL26-AMER-T2-P008-Q028",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 8,
+    "sourceQuestionNumber": 28,
+    "sourceTraining": 2,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_1",
+    "text": "سعادة : ابتهاج",
+    "options": [
+      "بيع : قبول",
+      "رجوع : تقهقر",
+      "فوز : ندم",
+      "رجاء : خوف"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.8; relation independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T2-P009-Q034",
+    "canonicalId": "VERBAL26-AMER-T2-P009-Q034",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 9,
+    "sourceQuestionNumber": 34,
+    "sourceTraining": 2,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_1",
+    "text": "أفل : غاب",
+    "options": [
+      "أبان : أفصح",
+      "أفسد : أصلح",
+      "انقض : عزم",
+      "سيف : خنجر"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.9; relation independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T3-P011-Q017",
+    "canonicalId": "VERBAL26-AMER-T3-P011-Q017",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 11,
+    "sourceQuestionNumber": 17,
+    "sourceTraining": 3,
+    "mainSkillId": "skill_verbal_02",
+    "subSkillId": "sub_verbal_02_1",
+    "text": "كربة : فرج",
+    "options": [
+      "شر : خير",
+      "ليل : ظلام",
+      "كلام : حديث",
+      "مصيبة : صبر"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.11; relation independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T3-P011-Q020",
+    "canonicalId": "VERBAL26-AMER-T3-P011-Q020",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 11,
+    "sourceQuestionNumber": 20,
+    "sourceTraining": 3,
+    "mainSkillId": "skill_verbal_02",
+    "subSkillId": "sub_verbal_02_1",
+    "text": "يحيا : يموت",
+    "options": [
+      "يهرول : يركض",
+      "يرجع : يعود",
+      "ينام : ينعس",
+      "يفوز : يخسر"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.11; relation independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T3-P012-Q022",
+    "canonicalId": "VERBAL26-AMER-T3-P012-Q022",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 12,
+    "sourceQuestionNumber": 22,
+    "sourceTraining": 3,
+    "mainSkillId": "skill_verbal_02",
+    "subSkillId": "sub_verbal_02_1",
+    "text": "أنانية : إيثار",
+    "options": [
+      "خير : مكان",
+      "فهم : معرفة",
+      "حركة : سكون",
+      "عدل : مساواة"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.12; relation independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T3-P012-Q024",
+    "canonicalId": "VERBAL26-AMER-T3-P012-Q024",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 12,
+    "sourceQuestionNumber": 24,
+    "sourceTraining": 3,
+    "mainSkillId": "skill_verbal_02",
+    "subSkillId": "sub_verbal_02_1",
+    "text": "نزاهة : فساد",
+    "options": [
+      "تشغيل : انطلاق",
+      "حقيقة : خيال",
+      "أخبار : مفزعة",
+      "رفاهية : ارتياح"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.12; relation independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T4-P014-Q003",
+    "canonicalId": "VERBAL26-AMER-T4-P014-Q003",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 14,
+    "sourceQuestionNumber": 3,
+    "sourceTraining": 4,
+    "mainSkillId": "skill_verbal_03",
+    "subSkillId": "sub_verbal_03_1",
+    "text": "نواة : تمر",
+    "options": [
+      "فكرة : رأس",
+      "مروحية : مستشفى",
+      "جامعة : تعلم",
+      "جد : حفيد"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.14; relation independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T4-P014-Q008",
+    "canonicalId": "VERBAL26-AMER-T4-P014-Q008",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 14,
+    "sourceQuestionNumber": 8,
+    "sourceTraining": 4,
+    "mainSkillId": "skill_verbal_03",
+    "subSkillId": "sub_verbal_03_1",
+    "text": "قطار : ركاب",
+    "options": [
+      "قبطان : سفينة",
+      "منصة : حضور",
+      "طائرة : مطار",
+      "حواجز : جمارك"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.14; relation independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T4-P015-Q016",
+    "canonicalId": "VERBAL26-AMER-T4-P015-Q016",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 15,
+    "sourceQuestionNumber": 16,
+    "sourceTraining": 4,
+    "mainSkillId": "skill_verbal_03",
+    "subSkillId": "sub_verbal_03_1",
+    "text": "ملعقة : قدر",
+    "options": [
+      "شوكة : طعام",
+      "دلو : بئر",
+      "قلم : صفحة",
+      "سنبلة : قمح"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.15; relation independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T4-P015-Q017",
+    "canonicalId": "VERBAL26-AMER-T4-P015-Q017",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 15,
+    "sourceQuestionNumber": 17,
+    "sourceTraining": 4,
+    "mainSkillId": "skill_verbal_03",
+    "subSkillId": "sub_verbal_03_1",
+    "text": "روح : جسد",
+    "options": [
+      "سمك : ماء",
+      "غابة : جبال",
+      "طالب : مدرس",
+      "طبخ : طعام"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.15; relation independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T4-P015-Q020",
+    "canonicalId": "VERBAL26-AMER-T4-P015-Q020",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 15,
+    "sourceQuestionNumber": 20,
+    "sourceTraining": 4,
+    "mainSkillId": "skill_verbal_03",
+    "subSkillId": "sub_verbal_03_1",
+    "text": "محراب : مسجد",
+    "options": [
+      "ثريا : قبة",
+      "إضاءة : مصباح",
+      "كتاب : ورقة",
+      "مدرسة : فصل"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.15; relation independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T4-P015-Q022",
+    "canonicalId": "VERBAL26-AMER-T4-P015-Q022",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 15,
+    "sourceQuestionNumber": 22,
+    "sourceTraining": 4,
+    "mainSkillId": "skill_verbal_03",
+    "subSkillId": "sub_verbal_03_1",
+    "text": "ميت : قبر",
+    "options": [
+      "سيف : غمد",
+      "مدرسة : معلم",
+      "سفينة : قبطان",
+      "حبوب : ذرة"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.15; relation independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T4-P015-Q024",
+    "canonicalId": "VERBAL26-AMER-T4-P015-Q024",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 15,
+    "sourceQuestionNumber": 24,
+    "sourceTraining": 4,
+    "mainSkillId": "skill_verbal_03",
+    "subSkillId": "sub_verbal_03_1",
+    "text": "بيت : رجل",
+    "options": [
+      "صقر : وكر",
+      "خشب : حجر",
+      "عقل : فكرة",
+      "كتاب : حقيبة"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.15; relation independently verified."
   }
 ]
