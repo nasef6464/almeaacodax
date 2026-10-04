@@ -20571,9 +20571,9 @@
       "29 شهرًا",
       "30 شهرًا"
     ],
-    "correctOptionIndex": 0,
-    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Direct Amer source p.97; answer verified against passage.",
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_LOGICAL_VERIFIED",
+    "answerEvidence": "Direct source p.97: from the start of 1953 to the end of the first third of 1955 is 28 months inclusive; option ب.",
     "passageText": "في مستهل عام 1953 أعلن سالك اكتشاف لقاح تحت التجريب، وقد قُتلت الفيروسات التي احتواها بالفورمالدهيد. كان سالك وزوجته وثلاثة من أبنائه من أوائل من تطعموا به واتضح أن اللقاح لا خطر منه. جُرب جماعيًا على 1,830,000 من طلبة المدارس عام 1954، ثم أعلن عن سلامته وقدرته الفعالة في نهاية الثلث الأول من عام 1955. تلقى سالك تكريمات عديدة ورفض الجوائز النقدية وعاد إلى معمله لتحسين اللقاح."
   },
   {
