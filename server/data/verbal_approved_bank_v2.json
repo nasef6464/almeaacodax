@@ -9815,7 +9815,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + context-completion verification."
+    "answerEvidence": "Approved-source text/options + context-completion verification.",
+    "sourceTraining": 24
   },
   {
     "id": "VERBAL26-AMER-T24-P065-Q004",
@@ -9835,7 +9836,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + context-completion verification."
+    "answerEvidence": "Approved-source text/options + context-completion verification.",
+    "sourceTraining": 24
   },
   {
     "id": "VERBAL26-AMER-T24-P065-Q005",
@@ -9855,7 +9857,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + context-completion verification."
+    "answerEvidence": "Approved-source text/options + context-completion verification.",
+    "sourceTraining": 24
   },
   {
     "id": "VERBAL26-AMER-T24-P065-Q006",
@@ -9875,7 +9878,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + context-completion verification."
+    "answerEvidence": "Approved-source text/options + context-completion verification.",
+    "sourceTraining": 24
   },
   {
     "id": "VERBAL26-AMER-T24-P065-Q007",
@@ -9895,7 +9899,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + context-completion verification."
+    "answerEvidence": "Approved-source text/options + context-completion verification.",
+    "sourceTraining": 24
   },
   {
     "id": "VERBAL26-AMER-T24-P065-Q008",
@@ -9915,7 +9920,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + context-completion verification."
+    "answerEvidence": "Approved-source text/options + context-completion verification.",
+    "sourceTraining": 24
   },
   {
     "id": "VERBAL26-AMER-T24-P065-Q009",
@@ -9935,7 +9941,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + context-completion verification."
+    "answerEvidence": "Approved-source text/options + context-completion verification.",
+    "sourceTraining": 24
   },
   {
     "id": "VERBAL26-AMER-T24-P065-Q010",
@@ -9955,7 +9962,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + context-completion verification."
+    "answerEvidence": "Approved-source text/options + context-completion verification.",
+    "sourceTraining": 24
   },
   {
     "id": "VERBAL26-AMER-T24-P065-Q011",
@@ -9975,7 +9983,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + context-completion verification."
+    "answerEvidence": "Approved-source text/options + context-completion verification.",
+    "sourceTraining": 24
   },
   {
     "id": "VERBAL26-AMER-T24-P065-Q013",
@@ -9995,7 +10004,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + context-completion verification."
+    "answerEvidence": "Approved-source text/options + context-completion verification.",
+    "sourceTraining": 24
   },
   {
     "id": "VERBAL26-AMER-T24-P065-Q014",
@@ -10015,7 +10025,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + context-completion verification."
+    "answerEvidence": "Approved-source text/options + context-completion verification.",
+    "sourceTraining": 24
   },
   {
     "id": "VERBAL26-AMER-T24-P066-Q015",
@@ -10035,7 +10046,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + context-completion verification."
+    "answerEvidence": "Approved-source text/options + context-completion verification.",
+    "sourceTraining": 24
   },
   {
     "id": "VERBAL26-AMER-T24-P066-Q016",
@@ -10055,7 +10067,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + context-completion verification."
+    "answerEvidence": "Approved-source text/options + context-completion verification.",
+    "sourceTraining": 24
   },
   {
     "id": "VERBAL26-AMER-T24-P066-Q017",
@@ -10075,7 +10088,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + context-completion verification."
+    "answerEvidence": "Approved-source text/options + context-completion verification.",
+    "sourceTraining": 24
   },
   {
     "id": "VERBAL26-AMER-T24-P066-Q018",
@@ -10095,7 +10109,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + context-completion verification."
+    "answerEvidence": "Approved-source text/options + context-completion verification.",
+    "sourceTraining": 24
   },
   {
     "id": "VERBAL26-AMER-T24-P066-Q019",
@@ -10115,7 +10130,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + context-completion verification."
+    "answerEvidence": "Approved-source text/options + context-completion verification.",
+    "sourceTraining": 24
   },
   {
     "id": "VERBAL26-AMER-T24-P066-Q020",
@@ -10135,7 +10151,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + context-completion verification."
+    "answerEvidence": "Approved-source text/options + context-completion verification.",
+    "sourceTraining": 24
   },
   {
     "id": "VERBAL26-AMER-T24-P066-Q021",
@@ -10155,7 +10172,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + context-completion verification."
+    "answerEvidence": "Approved-source text/options + context-completion verification.",
+    "sourceTraining": 24
   },
   {
     "id": "VERBAL26-AMER-T24-P066-Q022",
@@ -10175,7 +10193,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + context-completion verification."
+    "answerEvidence": "Approved-source text/options + context-completion verification.",
+    "sourceTraining": 24
   },
   {
     "id": "VERBAL26-AMER-T24-P066-Q024",
@@ -10195,7 +10214,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + context-completion verification."
+    "answerEvidence": "Approved-source text/options + context-completion verification.",
+    "sourceTraining": 24
   },
   {
     "id": "VERBAL26-AMER-T24-P066-Q025",
@@ -10215,7 +10235,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + context-completion verification."
+    "answerEvidence": "Approved-source text/options + context-completion verification.",
+    "sourceTraining": 24
   },
   {
     "id": "VERBAL26-AMER-T24-P066-Q026",
@@ -10235,7 +10256,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + context-completion verification."
+    "answerEvidence": "Approved-source text/options + context-completion verification.",
+    "sourceTraining": 24
   },
   {
     "id": "VERBAL26-AMER-T24-P066-Q028",
@@ -10255,7 +10277,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + context-completion verification."
+    "answerEvidence": "Approved-source text/options + context-completion verification.",
+    "sourceTraining": 24
   },
   {
     "id": "VERBAL26-AMER-T24-P066-Q029",
@@ -10275,7 +10298,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + context-completion verification."
+    "answerEvidence": "Approved-source text/options + context-completion verification.",
+    "sourceTraining": 24
   },
   {
     "id": "VERBAL26-AMER-T24-P066-Q030",
@@ -10295,7 +10319,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + context-completion verification."
+    "answerEvidence": "Approved-source text/options + context-completion verification.",
+    "sourceTraining": 24
   },
   {
     "id": "VERBAL26-AMER-T24-P066-Q031",
@@ -10315,7 +10340,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + context-completion verification."
+    "answerEvidence": "Approved-source text/options + context-completion verification.",
+    "sourceTraining": 24
   },
   {
     "id": "VERBAL26-AMER-T24-P066-Q032",
@@ -10335,7 +10361,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + context-completion verification."
+    "answerEvidence": "Approved-source text/options + context-completion verification.",
+    "sourceTraining": 24
   },
   {
     "id": "VERBAL26-AMER-T24-P067-Q033",
@@ -10355,7 +10382,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + context-completion verification."
+    "answerEvidence": "Approved-source text/options + context-completion verification.",
+    "sourceTraining": 24
   },
   {
     "id": "VERBAL26-AMER-T24-P067-Q034",
@@ -10375,7 +10403,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + context-completion verification."
+    "answerEvidence": "Approved-source text/options + context-completion verification.",
+    "sourceTraining": 24
   },
   {
     "id": "VERBAL26-AMER-T24-P067-Q035",
@@ -10395,7 +10424,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + context-completion verification."
+    "answerEvidence": "Approved-source text/options + context-completion verification.",
+    "sourceTraining": 24
   },
   {
     "id": "VERBAL26-AMER-T24-P067-Q036",
@@ -10415,7 +10445,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + context-completion verification."
+    "answerEvidence": "Approved-source text/options + context-completion verification.",
+    "sourceTraining": 24
   },
   {
     "id": "VERBAL26-AMER-T24-P067-Q037",
@@ -10435,7 +10466,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + context-completion verification."
+    "answerEvidence": "Approved-source text/options + context-completion verification.",
+    "sourceTraining": 24
   },
   {
     "id": "VERBAL26-AMER-T24-P067-Q038",
@@ -10455,7 +10487,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + context-completion verification."
+    "answerEvidence": "Approved-source text/options + context-completion verification.",
+    "sourceTraining": 24
   },
   {
     "id": "VERBAL26-AMER-T24-P067-Q039",
@@ -10475,7 +10508,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + context-completion verification."
+    "answerEvidence": "Approved-source text/options + context-completion verification.",
+    "sourceTraining": 24
   },
   {
     "id": "VERBAL26-AMER-T24-P067-Q040",
@@ -10495,7 +10529,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + context-completion verification."
+    "answerEvidence": "Approved-source text/options + context-completion verification.",
+    "sourceTraining": 24
   },
   {
     "id": "VERBAL26-AMER-T24-P067-Q043",
@@ -10515,7 +10550,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + context-completion verification."
+    "answerEvidence": "Approved-source text/options + context-completion verification.",
+    "sourceTraining": 24
   },
   {
     "id": "VERBAL26-AMER-T24-P067-Q044",
@@ -10535,7 +10571,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + context-completion verification."
+    "answerEvidence": "Approved-source text/options + context-completion verification.",
+    "sourceTraining": 24
   },
   {
     "id": "VERBAL26-AMER-T24-P067-Q046",
@@ -10555,7 +10592,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + context-completion verification."
+    "answerEvidence": "Approved-source text/options + context-completion verification.",
+    "sourceTraining": 24
   },
   {
     "id": "VERBAL26-AMER-T24-P067-Q047",
@@ -10575,7 +10613,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + context-completion verification."
+    "answerEvidence": "Approved-source text/options + context-completion verification.",
+    "sourceTraining": 24
   },
   {
     "id": "VERBAL26-AMER-T24-P067-Q048",
@@ -10595,7 +10634,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + context-completion verification."
+    "answerEvidence": "Approved-source text/options + context-completion verification.",
+    "sourceTraining": 24
   },
   {
     "id": "VERBAL26-AMER-T25-P070-Q001",
