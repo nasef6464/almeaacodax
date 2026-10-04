@@ -1937,7 +1937,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 1
   },
   {
     "id": "VERBAL26-AMER-T01-P004-Q002",
@@ -1957,7 +1958,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 1
   },
   {
     "id": "VERBAL26-AMER-T01-P004-Q003",
@@ -1977,7 +1979,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 1
   },
   {
     "id": "VERBAL26-AMER-T01-P004-Q004",
@@ -1997,7 +2000,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 1
   },
   {
     "id": "VERBAL26-AMER-T01-P004-Q005",
@@ -2017,7 +2021,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 1
   },
   {
     "id": "VERBAL26-AMER-T01-P004-Q006",
@@ -2037,7 +2042,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 1
   },
   {
     "id": "VERBAL26-AMER-T01-P004-Q007",
@@ -2057,7 +2063,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 1
   },
   {
     "id": "VERBAL26-AMER-T01-P004-Q008",
@@ -2077,7 +2084,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 1
   },
   {
     "id": "VERBAL26-AMER-T01-P004-Q009",
@@ -2097,7 +2105,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 1
   },
   {
     "id": "VERBAL26-AMER-T01-P004-Q010",
@@ -2117,7 +2126,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 1
   },
   {
     "id": "VERBAL26-AMER-T01-P004-Q011",
@@ -2137,7 +2147,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 1
   },
   {
     "id": "VERBAL26-AMER-T01-P004-Q012",
@@ -2157,7 +2168,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 1
   },
   {
     "id": "VERBAL26-AMER-T01-P004-Q013",
@@ -2177,7 +2189,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 1
   },
   {
     "id": "VERBAL26-AMER-T01-P004-Q014",
@@ -2197,7 +2210,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 1
   },
   {
     "id": "VERBAL26-AMER-T01-P004-Q015",
@@ -2217,7 +2231,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 1
   },
   {
     "id": "VERBAL26-AMER-T01-P004-Q016",
@@ -2237,7 +2252,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 1
   },
   {
     "id": "VERBAL26-AMER-T01-P005-Q017",
@@ -2257,7 +2273,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 1
   },
   {
     "id": "VERBAL26-AMER-T01-P005-Q018",
@@ -2277,7 +2294,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 1
   },
   {
     "id": "VERBAL26-AMER-T01-P005-Q019",
@@ -2297,7 +2315,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 1
   },
   {
     "id": "VERBAL26-AMER-T01-P005-Q020",
@@ -2317,7 +2336,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 1
   },
   {
     "id": "VERBAL26-AMER-T01-P005-Q021",
@@ -2337,7 +2357,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 1
   },
   {
     "id": "VERBAL26-AMER-T01-P005-Q022",
@@ -2357,7 +2378,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 1
   },
   {
     "id": "VERBAL26-AMER-T01-P005-Q023",
@@ -2377,7 +2399,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 1
   },
   {
     "id": "VERBAL26-AMER-T01-P005-Q024",
@@ -2397,7 +2420,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 1
   },
   {
     "id": "VERBAL26-AMER-T01-P005-Q025",
@@ -2417,7 +2441,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + relation rule verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 1
   },
   {
     "id": "VERBAL26-AMER-T02-P007-Q001",
@@ -2437,7 +2462,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 2
   },
   {
     "id": "VERBAL26-AMER-T02-P007-Q002",
@@ -2457,7 +2483,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 2
   },
   {
     "id": "VERBAL26-AMER-T02-P007-Q003",
@@ -2477,7 +2504,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 2
   },
   {
     "id": "VERBAL26-AMER-T02-P007-Q004",
@@ -2497,7 +2525,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 2
   },
   {
     "id": "VERBAL26-AMER-T02-P007-Q005",
@@ -2517,7 +2546,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 2
   },
   {
     "id": "VERBAL26-AMER-T02-P007-Q006",
@@ -2537,7 +2567,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 2
   },
   {
     "id": "VERBAL26-AMER-T02-P007-Q007",
@@ -2557,7 +2588,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 2
   },
   {
     "id": "VERBAL26-AMER-T02-P007-Q010",
@@ -2577,7 +2609,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 2
   },
   {
     "id": "VERBAL26-AMER-T02-P007-Q011",
@@ -2597,7 +2630,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 2
   },
   {
     "id": "VERBAL26-AMER-T02-P007-Q012",
@@ -2617,7 +2651,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 2
   },
   {
     "id": "VERBAL26-AMER-T02-P007-Q013",
@@ -2637,7 +2672,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 2
   },
   {
     "id": "VERBAL26-AMER-T02-P008-Q014",
@@ -2657,7 +2693,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 2
   },
   {
     "id": "VERBAL26-AMER-T02-P008-Q015",
@@ -2677,7 +2714,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 2
   },
   {
     "id": "VERBAL26-AMER-T02-P008-Q016",
@@ -2697,7 +2735,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 2
   },
   {
     "id": "VERBAL26-AMER-T02-P008-Q019",
@@ -2717,7 +2756,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 2
   },
   {
     "id": "VERBAL26-AMER-T02-P008-Q020",
@@ -2737,7 +2777,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 2
   },
   {
     "id": "VERBAL26-AMER-T02-P008-Q021",
@@ -2757,7 +2798,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 2
   },
   {
     "id": "VERBAL26-AMER-T02-P008-Q022",
@@ -2777,7 +2819,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 2
   },
   {
     "id": "VERBAL26-AMER-T02-P008-Q023",
@@ -2797,7 +2840,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 2
   },
   {
     "id": "VERBAL26-AMER-T02-P008-Q025",
@@ -2817,7 +2861,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 2
   },
   {
     "id": "VERBAL26-AMER-T02-P008-Q026",
@@ -2837,7 +2882,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 2
   },
   {
     "id": "VERBAL26-AMER-T02-P008-Q027",
@@ -2857,7 +2903,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 2
   },
   {
     "id": "VERBAL26-AMER-T02-P008-Q029",
@@ -2877,7 +2924,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 2
   },
   {
     "id": "VERBAL26-AMER-T02-P009-Q030",
@@ -2897,7 +2945,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 2
   },
   {
     "id": "VERBAL26-AMER-T02-P009-Q031",
@@ -2917,7 +2966,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 2
   },
   {
     "id": "VERBAL26-AMER-T02-P009-Q032",
@@ -2937,7 +2987,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 2
   },
   {
     "id": "VERBAL26-AMER-T02-P009-Q033",
@@ -2957,7 +3008,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 2
   },
   {
     "id": "VERBAL26-AMER-T02-P009-Q035",
@@ -2977,7 +3029,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 2
   },
   {
     "id": "VERBAL26-AMER-T02-P009-Q036",
@@ -2997,7 +3050,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 2
   },
   {
     "id": "VERBAL26-AMER-T02-P009-Q037",
@@ -3017,7 +3071,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + synonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 2
   },
   {
     "id": "VERBAL26-AMER-T03-P010-Q001",
@@ -3037,7 +3092,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 3
   },
   {
     "id": "VERBAL26-AMER-T03-P010-Q002",
@@ -3057,7 +3113,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 3
   },
   {
     "id": "VERBAL26-AMER-T03-P010-Q003",
@@ -3077,7 +3134,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 3
   },
   {
     "id": "VERBAL26-AMER-T03-P010-Q004",
@@ -3097,7 +3155,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 3
   },
   {
     "id": "VERBAL26-AMER-T03-P010-Q005",
@@ -3117,7 +3176,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 3
   },
   {
     "id": "VERBAL26-AMER-T03-P010-Q006",
@@ -3137,7 +3197,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 3
   },
   {
     "id": "VERBAL26-AMER-T03-P010-Q007",
@@ -3157,7 +3218,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 3
   },
   {
     "id": "VERBAL26-AMER-T03-P011-Q008",
@@ -3177,7 +3239,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 3
   },
   {
     "id": "VERBAL26-AMER-T03-P011-Q009",
@@ -3197,7 +3260,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 3
   },
   {
     "id": "VERBAL26-AMER-T03-P011-Q010",
@@ -3217,7 +3281,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 3
   },
   {
     "id": "VERBAL26-AMER-T03-P011-Q011",
@@ -3237,7 +3302,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 3
   },
   {
     "id": "VERBAL26-AMER-T03-P011-Q012",
@@ -3257,7 +3323,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 3
   },
   {
     "id": "VERBAL26-AMER-T03-P011-Q013",
@@ -3277,7 +3344,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 3
   },
   {
     "id": "VERBAL26-AMER-T03-P011-Q015",
@@ -3297,7 +3365,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 3
   },
   {
     "id": "VERBAL26-AMER-T03-P011-Q016",
@@ -3317,7 +3386,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 3
   },
   {
     "id": "VERBAL26-AMER-T03-P011-Q020",
@@ -3337,7 +3407,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 3
   },
   {
     "id": "VERBAL26-AMER-T03-P011-Q021",
@@ -3357,7 +3428,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 3
   },
   {
     "id": "VERBAL26-AMER-T03-P012-Q022",
@@ -3377,7 +3449,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 3
   },
   {
     "id": "VERBAL26-AMER-T03-P012-Q023",
@@ -3397,7 +3470,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 3
   },
   {
     "id": "VERBAL26-AMER-T03-P012-Q024",
@@ -3417,7 +3491,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 3
   },
   {
     "id": "VERBAL26-AMER-T03-P012-Q025",
@@ -3437,7 +3512,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 3
   },
   {
     "id": "VERBAL26-AMER-T03-P012-Q026",
@@ -3457,7 +3533,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 3
   },
   {
     "id": "VERBAL26-AMER-T03-P012-Q027",
@@ -3477,7 +3554,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 3
   },
   {
     "id": "VERBAL26-AMER-T03-P012-Q028",
@@ -3497,7 +3575,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 3
   },
   {
     "id": "VERBAL26-AMER-T03-P012-Q029",
@@ -3517,7 +3596,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 3
   },
   {
     "id": "VERBAL26-AMER-T03-P012-Q030",
@@ -3537,7 +3617,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 3
   },
   {
     "id": "VERBAL26-AMER-T03-P012-Q031",
@@ -3557,7 +3638,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 3
   },
   {
     "id": "VERBAL26-AMER-T03-P012-Q032",
@@ -3577,7 +3659,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 3
   },
   {
     "id": "VERBAL26-AMER-T03-P012-Q033",
@@ -3597,7 +3680,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 3
   },
   {
     "id": "VERBAL26-AMER-T03-P012-Q034",
@@ -3617,7 +3701,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 3
   },
   {
     "id": "VERBAL26-AMER-T03-P012-Q035",
@@ -3637,7 +3722,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices."
+    "answerEvidence": "Approved-source text/options + antonym relation verification; historical 938-bank deployment independently reported validated answer indices.",
+    "sourceTraining": 3
   },
   {
     "id": "VERBAL26-AMER-T04-P014-Q001",
@@ -3657,7 +3743,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + place/time relation verification."
+    "answerEvidence": "Approved-source text/options + place/time relation verification.",
+    "sourceTraining": 4
   },
   {
     "id": "VERBAL26-AMER-T04-P014-Q002",
@@ -3677,7 +3764,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + place/time relation verification."
+    "answerEvidence": "Approved-source text/options + place/time relation verification.",
+    "sourceTraining": 4
   },
   {
     "id": "VERBAL26-AMER-T04-P014-Q004",
@@ -3697,7 +3785,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + place/time relation verification."
+    "answerEvidence": "Approved-source text/options + place/time relation verification.",
+    "sourceTraining": 4
   },
   {
     "id": "VERBAL26-AMER-T04-P014-Q005",
@@ -3717,7 +3806,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + place/time relation verification."
+    "answerEvidence": "Approved-source text/options + place/time relation verification.",
+    "sourceTraining": 4
   },
   {
     "id": "VERBAL26-AMER-T04-P014-Q006",
@@ -3737,7 +3827,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + place/time relation verification."
+    "answerEvidence": "Approved-source text/options + place/time relation verification.",
+    "sourceTraining": 4
   },
   {
     "id": "VERBAL26-AMER-T04-P014-Q007",
@@ -3757,7 +3848,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + place/time relation verification."
+    "answerEvidence": "Approved-source text/options + place/time relation verification.",
+    "sourceTraining": 4
   },
   {
     "id": "VERBAL26-AMER-T04-P014-Q009",
@@ -3777,7 +3869,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + place/time relation verification."
+    "answerEvidence": "Approved-source text/options + place/time relation verification.",
+    "sourceTraining": 4
   },
   {
     "id": "VERBAL26-AMER-T04-P014-Q010",
@@ -3797,7 +3890,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + place/time relation verification."
+    "answerEvidence": "Approved-source text/options + place/time relation verification.",
+    "sourceTraining": 4
   },
   {
     "id": "VERBAL26-AMER-T04-P014-Q011",
@@ -3817,7 +3911,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + place/time relation verification."
+    "answerEvidence": "Approved-source text/options + place/time relation verification.",
+    "sourceTraining": 4
   },
   {
     "id": "VERBAL26-AMER-T04-P014-Q012",
@@ -3837,7 +3932,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + place/time relation verification."
+    "answerEvidence": "Approved-source text/options + place/time relation verification.",
+    "sourceTraining": 4
   },
   {
     "id": "VERBAL26-AMER-T04-P014-Q013",
@@ -3857,7 +3953,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + place/time relation verification."
+    "answerEvidence": "Approved-source text/options + place/time relation verification.",
+    "sourceTraining": 4
   },
   {
     "id": "VERBAL26-AMER-T04-P014-Q014",
@@ -3877,7 +3974,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + place/time relation verification."
+    "answerEvidence": "Approved-source text/options + place/time relation verification.",
+    "sourceTraining": 4
   },
   {
     "id": "VERBAL26-AMER-T04-P014-Q015",
@@ -3897,7 +3995,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + place/time relation verification."
+    "answerEvidence": "Approved-source text/options + place/time relation verification.",
+    "sourceTraining": 4
   },
   {
     "id": "VERBAL26-AMER-T04-P015-Q018",
@@ -3917,7 +4016,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + place/time relation verification."
+    "answerEvidence": "Approved-source text/options + place/time relation verification.",
+    "sourceTraining": 4
   },
   {
     "id": "VERBAL26-AMER-T04-P015-Q021",
@@ -3937,7 +4037,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + place/time relation verification."
+    "answerEvidence": "Approved-source text/options + place/time relation verification.",
+    "sourceTraining": 4
   },
   {
     "id": "VERBAL26-AMER-T04-P015-Q023",
@@ -3957,7 +4058,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + place/time relation verification."
+    "answerEvidence": "Approved-source text/options + place/time relation verification.",
+    "sourceTraining": 4
   },
   {
     "id": "VERBAL26-AMER-T04-P015-Q025",
@@ -3977,7 +4079,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + place/time relation verification."
+    "answerEvidence": "Approved-source text/options + place/time relation verification.",
+    "sourceTraining": 4
   },
   {
     "id": "VERBAL26-AMER-T04-P015-Q026",
@@ -3997,7 +4100,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + place/time relation verification."
+    "answerEvidence": "Approved-source text/options + place/time relation verification.",
+    "sourceTraining": 4
   },
   {
     "id": "VERBAL26-AMER-T04-P015-Q027",
@@ -4017,7 +4121,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + place/time relation verification."
+    "answerEvidence": "Approved-source text/options + place/time relation verification.",
+    "sourceTraining": 4
   },
   {
     "id": "VERBAL26-AMER-T04-P015-Q028",
@@ -4037,7 +4142,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + place/time relation verification."
+    "answerEvidence": "Approved-source text/options + place/time relation verification.",
+    "sourceTraining": 4
   },
   {
     "id": "VERBAL26-AMER-T04-P015-Q029",
@@ -4057,7 +4163,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + place/time relation verification."
+    "answerEvidence": "Approved-source text/options + place/time relation verification.",
+    "sourceTraining": 4
   },
   {
     "id": "VERBAL26-AMER-T04-P015-Q030",
@@ -4077,7 +4184,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + place/time relation verification."
+    "answerEvidence": "Approved-source text/options + place/time relation verification.",
+    "sourceTraining": 4
   },
   {
     "id": "VERBAL26-AMER-T04-P016-Q031",
@@ -4097,7 +4205,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + place/time relation verification."
+    "answerEvidence": "Approved-source text/options + place/time relation verification.",
+    "sourceTraining": 4
   },
   {
     "id": "VERBAL26-AMER-T04-P016-Q032",
@@ -4117,7 +4226,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + place/time relation verification."
+    "answerEvidence": "Approved-source text/options + place/time relation verification.",
+    "sourceTraining": 4
   },
   {
     "id": "VERBAL26-AMER-T04-P016-Q033",
@@ -4137,7 +4247,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + place/time relation verification."
+    "answerEvidence": "Approved-source text/options + place/time relation verification.",
+    "sourceTraining": 4
   },
   {
     "id": "VERBAL26-AMER-T04-P016-Q034",
@@ -4157,7 +4268,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + place/time relation verification."
+    "answerEvidence": "Approved-source text/options + place/time relation verification.",
+    "sourceTraining": 4
   },
   {
     "id": "VERBAL26-AMER-T05-P017-Q001",
@@ -4177,7 +4289,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + cause/result direction verification."
+    "answerEvidence": "Approved-source text/options + cause/result direction verification.",
+    "sourceTraining": 5
   },
   {
     "id": "VERBAL26-AMER-T05-P017-Q002",
@@ -4197,7 +4310,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + cause/result direction verification."
+    "answerEvidence": "Approved-source text/options + cause/result direction verification.",
+    "sourceTraining": 5
   },
   {
     "id": "VERBAL26-AMER-T05-P017-Q003",
@@ -4217,7 +4331,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + cause/result direction verification."
+    "answerEvidence": "Approved-source text/options + cause/result direction verification.",
+    "sourceTraining": 5
   },
   {
     "id": "VERBAL26-AMER-T05-P017-Q004",
@@ -4237,7 +4352,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + cause/result direction verification."
+    "answerEvidence": "Approved-source text/options + cause/result direction verification.",
+    "sourceTraining": 5
   },
   {
     "id": "VERBAL26-AMER-T05-P017-Q005",
@@ -4257,7 +4373,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + cause/result direction verification."
+    "answerEvidence": "Approved-source text/options + cause/result direction verification.",
+    "sourceTraining": 5
   },
   {
     "id": "VERBAL26-AMER-T05-P017-Q006",
@@ -4277,7 +4394,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + cause/result direction verification."
+    "answerEvidence": "Approved-source text/options + cause/result direction verification.",
+    "sourceTraining": 5
   },
   {
     "id": "VERBAL26-AMER-T05-P017-Q007",
@@ -4297,7 +4415,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + cause/result direction verification."
+    "answerEvidence": "Approved-source text/options + cause/result direction verification.",
+    "sourceTraining": 5
   },
   {
     "id": "VERBAL26-AMER-T05-P017-Q008",
@@ -4317,7 +4436,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + cause/result direction verification."
+    "answerEvidence": "Approved-source text/options + cause/result direction verification.",
+    "sourceTraining": 5
   },
   {
     "id": "VERBAL26-AMER-T05-P017-Q009",
@@ -4337,7 +4457,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + cause/result direction verification."
+    "answerEvidence": "Approved-source text/options + cause/result direction verification.",
+    "sourceTraining": 5
   },
   {
     "id": "VERBAL26-AMER-T05-P017-Q010",
@@ -4357,7 +4478,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + cause/result direction verification."
+    "answerEvidence": "Approved-source text/options + cause/result direction verification.",
+    "sourceTraining": 5
   },
   {
     "id": "VERBAL26-AMER-T05-P018-Q011",
@@ -4377,7 +4499,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + cause/result direction verification."
+    "answerEvidence": "Approved-source text/options + cause/result direction verification.",
+    "sourceTraining": 5
   },
   {
     "id": "VERBAL26-AMER-T05-P018-Q012",
@@ -4397,7 +4520,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + cause/result direction verification."
+    "answerEvidence": "Approved-source text/options + cause/result direction verification.",
+    "sourceTraining": 5
   },
   {
     "id": "VERBAL26-AMER-T05-P018-Q013",
@@ -4417,7 +4541,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + cause/result direction verification."
+    "answerEvidence": "Approved-source text/options + cause/result direction verification.",
+    "sourceTraining": 5
   },
   {
     "id": "VERBAL26-AMER-T05-P018-Q014",
@@ -4437,7 +4562,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + cause/result direction verification."
+    "answerEvidence": "Approved-source text/options + cause/result direction verification.",
+    "sourceTraining": 5
   },
   {
     "id": "VERBAL26-AMER-T05-P018-Q015",
@@ -4457,7 +4583,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + cause/result direction verification."
+    "answerEvidence": "Approved-source text/options + cause/result direction verification.",
+    "sourceTraining": 5
   },
   {
     "id": "VERBAL26-AMER-T05-P018-Q016",
@@ -4477,7 +4604,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + cause/result direction verification."
+    "answerEvidence": "Approved-source text/options + cause/result direction verification.",
+    "sourceTraining": 5
   },
   {
     "id": "VERBAL26-AMER-T05-P018-Q017",
@@ -4497,7 +4625,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + cause/result direction verification."
+    "answerEvidence": "Approved-source text/options + cause/result direction verification.",
+    "sourceTraining": 5
   },
   {
     "id": "VERBAL26-AMER-T05-P018-Q018",
@@ -4517,7 +4646,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + cause/result direction verification."
+    "answerEvidence": "Approved-source text/options + cause/result direction verification.",
+    "sourceTraining": 5
   },
   {
     "id": "VERBAL26-AMER-T05-P018-Q019",
@@ -4537,7 +4667,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + cause/result direction verification."
+    "answerEvidence": "Approved-source text/options + cause/result direction verification.",
+    "sourceTraining": 5
   },
   {
     "id": "VERBAL26-AMER-T05-P018-Q020",
@@ -4557,7 +4688,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + cause/result direction verification."
+    "answerEvidence": "Approved-source text/options + cause/result direction verification.",
+    "sourceTraining": 5
   },
   {
     "id": "VERBAL26-AMER-T05-P018-Q021",
@@ -4577,7 +4709,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + cause/result direction verification."
+    "answerEvidence": "Approved-source text/options + cause/result direction verification.",
+    "sourceTraining": 5
   },
   {
     "id": "VERBAL26-AMER-T05-P018-Q022",
@@ -4597,7 +4730,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + cause/result direction verification."
+    "answerEvidence": "Approved-source text/options + cause/result direction verification.",
+    "sourceTraining": 5
   },
   {
     "id": "VERBAL26-AMER-T05-P018-Q023",
@@ -4617,7 +4751,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + cause/result direction verification."
+    "answerEvidence": "Approved-source text/options + cause/result direction verification.",
+    "sourceTraining": 5
   },
   {
     "id": "VERBAL26-AMER-T05-P018-Q024",
@@ -4637,7 +4772,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + cause/result direction verification."
+    "answerEvidence": "Approved-source text/options + cause/result direction verification.",
+    "sourceTraining": 5
   },
   {
     "id": "VERBAL26-AMER-T05-P018-Q025",
@@ -4657,7 +4793,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + cause/result direction verification."
+    "answerEvidence": "Approved-source text/options + cause/result direction verification.",
+    "sourceTraining": 5
   },
   {
     "id": "VERBAL26-AMER-T20-P055-Q001",
@@ -5097,7 +5234,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + use/function/person-tool relation verification."
+    "answerEvidence": "Approved-source text/options + use/function/person-tool relation verification.",
+    "sourceTraining": 6
   },
   {
     "id": "VERBAL26-AMER-T06-P019-Q002",
@@ -5117,7 +5255,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + use/function/person-tool relation verification."
+    "answerEvidence": "Approved-source text/options + use/function/person-tool relation verification.",
+    "sourceTraining": 6
   },
   {
     "id": "VERBAL26-AMER-T06-P019-Q003",
@@ -5137,7 +5276,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + use/function/person-tool relation verification."
+    "answerEvidence": "Approved-source text/options + use/function/person-tool relation verification.",
+    "sourceTraining": 6
   },
   {
     "id": "VERBAL26-AMER-T06-P019-Q004",
@@ -5157,7 +5297,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + use/function/person-tool relation verification."
+    "answerEvidence": "Approved-source text/options + use/function/person-tool relation verification.",
+    "sourceTraining": 6
   },
   {
     "id": "VERBAL26-AMER-T06-P019-Q007",
@@ -5177,7 +5318,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + use/function/person-tool relation verification."
+    "answerEvidence": "Approved-source text/options + use/function/person-tool relation verification.",
+    "sourceTraining": 6
   },
   {
     "id": "VERBAL26-AMER-T06-P019-Q008",
@@ -5197,7 +5339,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + use/function/person-tool relation verification."
+    "answerEvidence": "Approved-source text/options + use/function/person-tool relation verification.",
+    "sourceTraining": 6
   },
   {
     "id": "VERBAL26-AMER-T06-P020-Q010",
@@ -5217,7 +5360,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + use/function/person-tool relation verification."
+    "answerEvidence": "Approved-source text/options + use/function/person-tool relation verification.",
+    "sourceTraining": 6
   },
   {
     "id": "VERBAL26-AMER-T06-P020-Q011",
@@ -5237,7 +5381,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + use/function/person-tool relation verification."
+    "answerEvidence": "Approved-source text/options + use/function/person-tool relation verification.",
+    "sourceTraining": 6
   },
   {
     "id": "VERBAL26-AMER-T06-P020-Q012",
@@ -5257,7 +5402,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + use/function/person-tool relation verification."
+    "answerEvidence": "Approved-source text/options + use/function/person-tool relation verification.",
+    "sourceTraining": 6
   },
   {
     "id": "VERBAL26-AMER-T06-P020-Q013",
@@ -5277,7 +5423,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + use/function/person-tool relation verification."
+    "answerEvidence": "Approved-source text/options + use/function/person-tool relation verification.",
+    "sourceTraining": 6
   },
   {
     "id": "VERBAL26-AMER-T06-P020-Q015",
@@ -5297,7 +5444,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + use/function/person-tool relation verification."
+    "answerEvidence": "Approved-source text/options + use/function/person-tool relation verification.",
+    "sourceTraining": 6
   },
   {
     "id": "VERBAL26-AMER-T06-P020-Q016",
@@ -5317,7 +5465,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + use/function/person-tool relation verification."
+    "answerEvidence": "Approved-source text/options + use/function/person-tool relation verification.",
+    "sourceTraining": 6
   },
   {
     "id": "VERBAL26-AMER-T06-P020-Q017",
@@ -5337,7 +5486,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + use/function/person-tool relation verification."
+    "answerEvidence": "Approved-source text/options + use/function/person-tool relation verification.",
+    "sourceTraining": 6
   },
   {
     "id": "VERBAL26-AMER-T06-P020-Q018",
@@ -5357,7 +5507,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + use/function/person-tool relation verification."
+    "answerEvidence": "Approved-source text/options + use/function/person-tool relation verification.",
+    "sourceTraining": 6
   },
   {
     "id": "VERBAL26-AMER-T06-P020-Q019",
@@ -5377,7 +5528,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + use/function/person-tool relation verification."
+    "answerEvidence": "Approved-source text/options + use/function/person-tool relation verification.",
+    "sourceTraining": 6
   },
   {
     "id": "VERBAL26-AMER-T06-P020-Q020",
@@ -5397,7 +5549,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + use/function/person-tool relation verification."
+    "answerEvidence": "Approved-source text/options + use/function/person-tool relation verification.",
+    "sourceTraining": 6
   },
   {
     "id": "VERBAL26-AMER-T06-P020-Q021",
@@ -5417,7 +5570,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + use/function/person-tool relation verification."
+    "answerEvidence": "Approved-source text/options + use/function/person-tool relation verification.",
+    "sourceTraining": 6
   },
   {
     "id": "VERBAL26-AMER-T06-P020-Q022",
@@ -5437,7 +5591,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + use/function/person-tool relation verification."
+    "answerEvidence": "Approved-source text/options + use/function/person-tool relation verification.",
+    "sourceTraining": 6
   },
   {
     "id": "VERBAL26-AMER-T06-P020-Q024",
@@ -5457,7 +5612,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + use/function/person-tool relation verification."
+    "answerEvidence": "Approved-source text/options + use/function/person-tool relation verification.",
+    "sourceTraining": 6
   },
   {
     "id": "VERBAL26-AMER-T06-P021-Q025",
@@ -5477,7 +5633,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + use/function/person-tool relation verification."
+    "answerEvidence": "Approved-source text/options + use/function/person-tool relation verification.",
+    "sourceTraining": 6
   },
   {
     "id": "VERBAL26-AMER-T06-P021-Q026",
@@ -5497,7 +5654,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + use/function/person-tool relation verification."
+    "answerEvidence": "Approved-source text/options + use/function/person-tool relation verification.",
+    "sourceTraining": 6
   },
   {
     "id": "VERBAL26-AMER-T07-P022-Q001",
@@ -5517,7 +5675,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + ordered-stage/progression verification."
+    "answerEvidence": "Approved-source text/options + ordered-stage/progression verification.",
+    "sourceTraining": 7
   },
   {
     "id": "VERBAL26-AMER-T07-P022-Q002",
@@ -5537,7 +5696,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + ordered-stage/progression verification."
+    "answerEvidence": "Approved-source text/options + ordered-stage/progression verification.",
+    "sourceTraining": 7
   },
   {
     "id": "VERBAL26-AMER-T07-P022-Q003",
@@ -5557,7 +5717,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + ordered-stage/progression verification."
+    "answerEvidence": "Approved-source text/options + ordered-stage/progression verification.",
+    "sourceTraining": 7
   },
   {
     "id": "VERBAL26-AMER-T07-P022-Q004",
@@ -5577,7 +5738,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + ordered-stage/progression verification."
+    "answerEvidence": "Approved-source text/options + ordered-stage/progression verification.",
+    "sourceTraining": 7
   },
   {
     "id": "VERBAL26-AMER-T07-P022-Q005",
@@ -5597,7 +5759,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + ordered-stage/progression verification."
+    "answerEvidence": "Approved-source text/options + ordered-stage/progression verification.",
+    "sourceTraining": 7
   },
   {
     "id": "VERBAL26-AMER-T07-P022-Q006",
@@ -5617,7 +5780,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + ordered-stage/progression verification."
+    "answerEvidence": "Approved-source text/options + ordered-stage/progression verification.",
+    "sourceTraining": 7
   },
   {
     "id": "VERBAL26-AMER-T07-P022-Q008",
@@ -5637,7 +5801,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + ordered-stage/progression verification."
+    "answerEvidence": "Approved-source text/options + ordered-stage/progression verification.",
+    "sourceTraining": 7
   },
   {
     "id": "VERBAL26-AMER-T07-P022-Q010",
@@ -5657,7 +5822,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + ordered-stage/progression verification."
+    "answerEvidence": "Approved-source text/options + ordered-stage/progression verification.",
+    "sourceTraining": 7
   },
   {
     "id": "VERBAL26-AMER-T07-P023-Q012",
@@ -5677,7 +5843,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + ordered-stage/progression verification."
+    "answerEvidence": "Approved-source text/options + ordered-stage/progression verification.",
+    "sourceTraining": 7
   },
   {
     "id": "VERBAL26-AMER-T07-P023-Q013",
@@ -5697,7 +5864,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + ordered-stage/progression verification."
+    "answerEvidence": "Approved-source text/options + ordered-stage/progression verification.",
+    "sourceTraining": 7
   },
   {
     "id": "VERBAL26-AMER-T08-P023-Q001",
@@ -5717,7 +5885,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + same-category verification."
+    "answerEvidence": "Approved-source text/options + same-category verification.",
+    "sourceTraining": 8
   },
   {
     "id": "VERBAL26-AMER-T08-P024-Q002",
@@ -5737,7 +5906,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + same-category verification."
+    "answerEvidence": "Approved-source text/options + same-category verification.",
+    "sourceTraining": 8
   },
   {
     "id": "VERBAL26-AMER-T08-P024-Q003",
@@ -5757,7 +5927,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + same-category verification."
+    "answerEvidence": "Approved-source text/options + same-category verification.",
+    "sourceTraining": 8
   },
   {
     "id": "VERBAL26-AMER-T08-P024-Q005",
@@ -5777,7 +5948,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + same-category verification."
+    "answerEvidence": "Approved-source text/options + same-category verification.",
+    "sourceTraining": 8
   },
   {
     "id": "VERBAL26-AMER-T08-P024-Q006",
@@ -5797,7 +5969,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + same-category verification."
+    "answerEvidence": "Approved-source text/options + same-category verification.",
+    "sourceTraining": 8
   },
   {
     "id": "VERBAL26-AMER-T08-P024-Q007",
@@ -5817,7 +5990,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + same-category verification."
+    "answerEvidence": "Approved-source text/options + same-category verification.",
+    "sourceTraining": 8
   },
   {
     "id": "VERBAL26-AMER-T08-P024-Q010",
@@ -5837,7 +6011,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + same-category verification."
+    "answerEvidence": "Approved-source text/options + same-category verification.",
+    "sourceTraining": 8
   },
   {
     "id": "VERBAL26-AMER-T08-P024-Q012",
@@ -5857,7 +6032,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + same-category verification."
+    "answerEvidence": "Approved-source text/options + same-category verification.",
+    "sourceTraining": 8
   },
   {
     "id": "VERBAL26-AMER-T08-P024-Q013",
@@ -5877,7 +6053,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + same-category verification."
+    "answerEvidence": "Approved-source text/options + same-category verification.",
+    "sourceTraining": 8
   },
   {
     "id": "VERBAL26-AMER-T08-P024-Q014",
@@ -5897,7 +6074,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + same-category verification."
+    "answerEvidence": "Approved-source text/options + same-category verification.",
+    "sourceTraining": 8
   },
   {
     "id": "VERBAL26-AMER-T08-P024-Q015",
@@ -5917,7 +6095,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + same-category verification."
+    "answerEvidence": "Approved-source text/options + same-category verification.",
+    "sourceTraining": 8
   },
   {
     "id": "VERBAL26-AMER-T11-P031-Q001",
@@ -5937,7 +6116,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + sound-source relation verification."
+    "answerEvidence": "Approved-source text/options + sound-source relation verification.",
+    "sourceTraining": 11
   },
   {
     "id": "VERBAL26-AMER-T11-P031-Q002",
@@ -5957,7 +6137,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + sound-source relation verification."
+    "answerEvidence": "Approved-source text/options + sound-source relation verification.",
+    "sourceTraining": 11
   },
   {
     "id": "VERBAL26-AMER-T11-P031-Q003",
@@ -5977,7 +6158,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + sound-source relation verification."
+    "answerEvidence": "Approved-source text/options + sound-source relation verification.",
+    "sourceTraining": 11
   },
   {
     "id": "VERBAL26-AMER-T11-P031-Q004",
@@ -5997,7 +6179,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + sound-source relation verification."
+    "answerEvidence": "Approved-source text/options + sound-source relation verification.",
+    "sourceTraining": 11
   },
   {
     "id": "VERBAL26-AMER-T11-P031-Q005",
@@ -6017,7 +6200,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + sound-source relation verification."
+    "answerEvidence": "Approved-source text/options + sound-source relation verification.",
+    "sourceTraining": 11
   },
   {
     "id": "VERBAL26-AMER-T11-P031-Q006",
@@ -6037,7 +6221,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + sound-source relation verification."
+    "answerEvidence": "Approved-source text/options + sound-source relation verification.",
+    "sourceTraining": 11
   },
   {
     "id": "VERBAL26-AMER-T11-P032-Q007",
@@ -6057,7 +6242,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + sound-source relation verification."
+    "answerEvidence": "Approved-source text/options + sound-source relation verification.",
+    "sourceTraining": 11
   },
   {
     "id": "VERBAL26-AMER-T11-P032-Q008",
@@ -6077,7 +6263,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + sound-source relation verification."
+    "answerEvidence": "Approved-source text/options + sound-source relation verification.",
+    "sourceTraining": 11
   },
   {
     "id": "VERBAL26-AMER-T12-P032-Q001",
@@ -6097,7 +6284,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + protection relation verification."
+    "answerEvidence": "Approved-source text/options + protection relation verification.",
+    "sourceTraining": 12
   },
   {
     "id": "VERBAL26-AMER-T12-P032-Q002",
@@ -6117,7 +6305,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + protection relation verification."
+    "answerEvidence": "Approved-source text/options + protection relation verification.",
+    "sourceTraining": 12
   },
   {
     "id": "VERBAL26-AMER-T12-P032-Q003",
@@ -6137,7 +6326,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + protection relation verification."
+    "answerEvidence": "Approved-source text/options + protection relation verification.",
+    "sourceTraining": 12
   },
   {
     "id": "VERBAL26-AMER-T12-P032-Q004",
@@ -6157,7 +6347,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + protection relation verification."
+    "answerEvidence": "Approved-source text/options + protection relation verification.",
+    "sourceTraining": 12
   },
   {
     "id": "VERBAL26-AMER-T13-P033-Q001",
@@ -6177,7 +6368,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + covering/encirclement relation verification."
+    "answerEvidence": "Approved-source text/options + covering/encirclement relation verification.",
+    "sourceTraining": 13
   },
   {
     "id": "VERBAL26-AMER-T13-P033-Q002",
@@ -6197,7 +6389,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + covering/encirclement relation verification."
+    "answerEvidence": "Approved-source text/options + covering/encirclement relation verification.",
+    "sourceTraining": 13
   },
   {
     "id": "VERBAL26-AMER-T13-P033-Q003",
@@ -6217,7 +6410,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + covering/encirclement relation verification."
+    "answerEvidence": "Approved-source text/options + covering/encirclement relation verification.",
+    "sourceTraining": 13
   },
   {
     "id": "VERBAL26-AMER-T13-P033-Q004",
@@ -6237,7 +6431,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + covering/encirclement relation verification."
+    "answerEvidence": "Approved-source text/options + covering/encirclement relation verification.",
+    "sourceTraining": 13
   },
   {
     "id": "VERBAL26-AMER-T13-P033-Q005",
@@ -6257,7 +6452,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + covering/encirclement relation verification."
+    "answerEvidence": "Approved-source text/options + covering/encirclement relation verification.",
+    "sourceTraining": 13
   },
   {
     "id": "VERBAL26-AMER-T13-P033-Q006",
@@ -6277,7 +6473,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + covering/encirclement relation verification."
+    "answerEvidence": "Approved-source text/options + covering/encirclement relation verification.",
+    "sourceTraining": 13
   },
   {
     "id": "VERBAL26-AMER-T13-P033-Q007",
@@ -6297,7 +6494,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + covering/encirclement relation verification."
+    "answerEvidence": "Approved-source text/options + covering/encirclement relation verification.",
+    "sourceTraining": 13
   },
   {
     "id": "VERBAL26-AMER-T13-P033-Q008",
@@ -6317,7 +6515,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + covering/encirclement relation verification."
+    "answerEvidence": "Approved-source text/options + covering/encirclement relation verification.",
+    "sourceTraining": 13
   },
   {
     "id": "VERBAL26-AMER-T13-P033-Q009",
@@ -6337,7 +6536,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + covering/encirclement relation verification."
+    "answerEvidence": "Approved-source text/options + covering/encirclement relation verification.",
+    "sourceTraining": 13
   },
   {
     "id": "VERBAL26-AMER-T13-P033-Q010",
@@ -6357,7 +6557,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + covering/encirclement relation verification."
+    "answerEvidence": "Approved-source text/options + covering/encirclement relation verification.",
+    "sourceTraining": 13
   },
   {
     "id": "VERBAL26-AMER-T13-P033-Q011",
@@ -6377,7 +6578,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + covering/encirclement relation verification."
+    "answerEvidence": "Approved-source text/options + covering/encirclement relation verification.",
+    "sourceTraining": 13
   },
   {
     "id": "VERBAL26-AMER-T13-P033-Q012",
@@ -6397,7 +6599,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + covering/encirclement relation verification."
+    "answerEvidence": "Approved-source text/options + covering/encirclement relation verification.",
+    "sourceTraining": 13
   },
   {
     "id": "VERBAL26-AMER-T13-P033-Q013",
@@ -6417,7 +6620,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + covering/encirclement relation verification."
+    "answerEvidence": "Approved-source text/options + covering/encirclement relation verification.",
+    "sourceTraining": 13
   },
   {
     "id": "VERBAL26-AMER-T09-P025-Q002",
@@ -6437,7 +6641,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + type/classification relation verification."
+    "answerEvidence": "Approved-source text/options + type/classification relation verification.",
+    "sourceTraining": 9
   },
   {
     "id": "VERBAL26-AMER-T09-P025-Q003",
@@ -6457,7 +6662,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + type/classification relation verification."
+    "answerEvidence": "Approved-source text/options + type/classification relation verification.",
+    "sourceTraining": 9
   },
   {
     "id": "VERBAL26-AMER-T09-P025-Q004",
@@ -6477,7 +6683,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + type/classification relation verification."
+    "answerEvidence": "Approved-source text/options + type/classification relation verification.",
+    "sourceTraining": 9
   },
   {
     "id": "VERBAL26-AMER-T09-P025-Q005",
@@ -6497,7 +6704,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + type/classification relation verification."
+    "answerEvidence": "Approved-source text/options + type/classification relation verification.",
+    "sourceTraining": 9
   },
   {
     "id": "VERBAL26-AMER-T09-P025-Q006",
@@ -6517,7 +6725,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + type/classification relation verification."
+    "answerEvidence": "Approved-source text/options + type/classification relation verification.",
+    "sourceTraining": 9
   },
   {
     "id": "VERBAL26-AMER-T09-P025-Q007",
@@ -6537,7 +6746,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + type/classification relation verification."
+    "answerEvidence": "Approved-source text/options + type/classification relation verification.",
+    "sourceTraining": 9
   },
   {
     "id": "VERBAL26-AMER-T09-P026-Q008",
@@ -6557,7 +6767,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + type/classification relation verification."
+    "answerEvidence": "Approved-source text/options + type/classification relation verification.",
+    "sourceTraining": 9
   },
   {
     "id": "VERBAL26-AMER-T09-P026-Q009",
@@ -6577,7 +6788,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + type/classification relation verification."
+    "answerEvidence": "Approved-source text/options + type/classification relation verification.",
+    "sourceTraining": 9
   },
   {
     "id": "VERBAL26-AMER-T09-P026-Q010",
@@ -6597,7 +6809,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + type/classification relation verification."
+    "answerEvidence": "Approved-source text/options + type/classification relation verification.",
+    "sourceTraining": 9
   },
   {
     "id": "VERBAL26-AMER-T09-P026-Q011",
@@ -6617,7 +6830,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + type/classification relation verification."
+    "answerEvidence": "Approved-source text/options + type/classification relation verification.",
+    "sourceTraining": 9
   },
   {
     "id": "VERBAL26-AMER-T09-P026-Q012",
@@ -6637,7 +6851,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + type/classification relation verification."
+    "answerEvidence": "Approved-source text/options + type/classification relation verification.",
+    "sourceTraining": 9
   },
   {
     "id": "VERBAL26-AMER-T09-P026-Q013",
@@ -6657,7 +6872,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + type/classification relation verification."
+    "answerEvidence": "Approved-source text/options + type/classification relation verification.",
+    "sourceTraining": 9
   },
   {
     "id": "VERBAL26-AMER-T10-P027-Q001",
@@ -6677,7 +6893,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + need/necessity relation verification."
+    "answerEvidence": "Approved-source text/options + need/necessity relation verification.",
+    "sourceTraining": 10
   },
   {
     "id": "VERBAL26-AMER-T10-P027-Q002",
@@ -6697,7 +6914,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + need/necessity relation verification."
+    "answerEvidence": "Approved-source text/options + need/necessity relation verification.",
+    "sourceTraining": 10
   },
   {
     "id": "VERBAL26-AMER-T10-P027-Q003",
@@ -6717,7 +6935,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + need/necessity relation verification."
+    "answerEvidence": "Approved-source text/options + need/necessity relation verification.",
+    "sourceTraining": 10
   },
   {
     "id": "VERBAL26-AMER-T10-P027-Q004",
@@ -6737,7 +6956,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + need/necessity relation verification."
+    "answerEvidence": "Approved-source text/options + need/necessity relation verification.",
+    "sourceTraining": 10
   },
   {
     "id": "VERBAL26-AMER-T10-P027-Q005",
@@ -6757,7 +6977,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + need/necessity relation verification."
+    "answerEvidence": "Approved-source text/options + need/necessity relation verification.",
+    "sourceTraining": 10
   },
   {
     "id": "VERBAL26-AMER-T10-P027-Q006",
@@ -6777,7 +6998,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + need/necessity relation verification."
+    "answerEvidence": "Approved-source text/options + need/necessity relation verification.",
+    "sourceTraining": 10
   },
   {
     "id": "VERBAL26-AMER-T10-P027-Q007",
@@ -6797,7 +7019,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + need/necessity relation verification."
+    "answerEvidence": "Approved-source text/options + need/necessity relation verification.",
+    "sourceTraining": 10
   },
   {
     "id": "VERBAL26-AMER-T10-P027-Q010",
@@ -6817,7 +7040,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + need/necessity relation verification."
+    "answerEvidence": "Approved-source text/options + need/necessity relation verification.",
+    "sourceTraining": 10
   },
   {
     "id": "VERBAL26-AMER-T10-P027-Q011",
@@ -6837,7 +7061,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + need/necessity relation verification."
+    "answerEvidence": "Approved-source text/options + need/necessity relation verification.",
+    "sourceTraining": 10
   },
   {
     "id": "VERBAL26-AMER-T10-P027-Q012",
@@ -6857,7 +7082,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + need/necessity relation verification."
+    "answerEvidence": "Approved-source text/options + need/necessity relation verification.",
+    "sourceTraining": 10
   },
   {
     "id": "VERBAL26-AMER-T10-P027-Q013",
@@ -6877,7 +7103,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + need/necessity relation verification."
+    "answerEvidence": "Approved-source text/options + need/necessity relation verification.",
+    "sourceTraining": 10
   },
   {
     "id": "VERBAL26-AMER-T10-P027-Q014",
@@ -6897,7 +7124,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + need/necessity relation verification."
+    "answerEvidence": "Approved-source text/options + need/necessity relation verification.",
+    "sourceTraining": 10
   },
   {
     "id": "VERBAL26-AMER-T17-P049-Q001",
