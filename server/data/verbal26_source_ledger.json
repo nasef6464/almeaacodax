@@ -2559,14 +2559,14 @@
   ],
   "metrics": {
     "sourceKeyVerifiedRecords": 112,
-    "approvedBankRecords": 880,
+    "approvedBankRecords": 884,
     "note": "Ledger records are not approved-bank records until visual text/options and taxonomy QA pass.",
     "sourceConflictRecords": 23,
     "anasObservedQuestions": 135,
     "anasKeyVerifiedQuestions": 112,
     "anasConflictQuestions": 23,
     "amerTrainingsIndexed": 33,
-    "amerApprovedRecords": 764,
+    "amerApprovedRecords": 768,
     "amerDerivedReportCrossCheck": 938,
     "amerDerivedReportIsAuthority": false,
     "amerObservedQuestionCounts": {
@@ -2606,7 +2606,7 @@
     },
     "approvedBySource": {
       "anas": 116,
-      "abdelbaset": 764
+      "abdelbaset": 768
     },
     "approvedByMainSkill": {
       "skill_verbal_17": 51,
@@ -2807,8 +2807,53 @@
   ],
   "migrationReady": false,
   "migrationReadinessReason": "Full-book source inventory and quarantine adjudication remain incomplete.",
-  "progressNote": "Amer T27-T33 fully source-accounted. Continue T26 backward.",
+  "progressNote": "Amer T26-T33 fully source-accounted. Continue T25 backward.",
   "amerCoverageByTraining": {
+    "26": {
+      "expectedObserved": 29,
+      "canonicalApproved": 23,
+      "quarantined": 6,
+      "duplicates": 0,
+      "excludedNonQuestionExamples": 0,
+      "remainingDelta": 0,
+      "sourcePages": [
+        72,
+        73
+      ],
+      "status": "ACCOUNTED_WITH_QUARANTINE",
+      "quarantine": [
+        {
+          "page": 72,
+          "question": 5,
+          "reason": "Contextual replacement not uniquely provable from parsed source."
+        },
+        {
+          "page": 72,
+          "question": 6,
+          "reason": "Sentence meaning/options require visual or source-key adjudication."
+        },
+        {
+          "page": 72,
+          "question": 9,
+          "reason": "Parsed sentence/options are corrupted."
+        },
+        {
+          "page": 72,
+          "question": 15,
+          "reason": "Question number 15 is absent from parsed source between pages 72-73; visual recheck required."
+        },
+        {
+          "page": 73,
+          "question": 24,
+          "reason": "Parsed sentence is corrupted; do not guess."
+        },
+        {
+          "page": 73,
+          "question": 29,
+          "reason": "Parsed sentence is corrupted; do not guess."
+        }
+      ]
+    },
     "27": {
       "expectedObserved": 30,
       "canonicalApproved": 26,
