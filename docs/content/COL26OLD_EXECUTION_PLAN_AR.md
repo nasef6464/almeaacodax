@@ -39,30 +39,35 @@
 ### OLD-1 - Full Inventory
 - تحديد كل مواضع `القسم الثاني` في الكتاب.
 - بناء ledger لكل بلوك: الصفحة، أول/آخر رقم، العدد، الدرس/الموضوع، حالة التحقق.
-- baseline الآلي الحالي: 29 بلوك / 501 سؤال.
+- الجرد النهائي الموثق: 29 بلوك / 1,258 سؤال.
 - لا يغلق إلا بعد Visual QA 29/29.
-- الحالة: **IN PROGRESS**.
+- الحالة: **CLOSED — 29/29 blocks, 1,258 questions**.
 
 ### OLD-2 - Canonical Crops
+- الحالة: **CLOSED — 1,258/1,258 WebP lossless, 518px, unique SHA-256**.
 - قص كل سؤال بصورة مستقلة من المصدر.
 - إزالة رقم السؤال/السنة/شارة التجميع/النجوم من الصورة فقط.
 - الاحتفاظ بالرسم والجدول والخيارات كاملة.
 - WebP lossless + SHA-256.
 
 ### OLD-3 - Crop QA
+- الحالة: **CLOSED — A/B/C/D visible 1,258/1,258; question/year/badge strip excluded; next-topic heading contamination=0**.
 - 100% geometry gate + عينات بصرية تغطي كل البلوكات.
 - 0 سؤالين في صورة، 0 قص ناقص، 0 هوية جانبية ظاهرة.
 
 ### OLD-4 - Answer QA
+- الحالة: **CLOSED — 1,258/1,258 answers from source answer tables; invalid indexes=0**.
 - ربط A/B/C/D من جدول الإجابات المقابل لنفس البلوك.
 - أي تعارض -> quarantine لا تخمين.
 
 ### OLD-5 - Skills
+- الحالة: **CLOSED — 1,258/1,258 mapped to live existing taxonomy; 22 main / 67 subskills; invalid live pairs=0**.
 - MainSkill + SubSkill من taxonomy التحصيلي الحالية.
 - mapping بمفهوم الحل لا بمجرد اسم الصفحة.
 - لا إنشاء taxonomy موازية.
 
 ### OLD-6 - Canonical/Dedupe
+- الحالة: **IN PROGRESS — internal duplicate codes/hashes=0; exact/fuzzy cross-check against COL26 section-one found no duplicate candidate; final cross-bank gate continues before Production**.
 - dedupe داخل COL26OLD ثم cross-dedupe مقابل COL26 وYLM26.
 - السؤال المطابق حقيقة لا يُكرر؛ يحفظ provenance للظهور في القسمين عند الحاجة.
 
