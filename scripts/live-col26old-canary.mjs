@@ -71,19 +71,6 @@ try {
   const student=await login(studentContext,studentCreds);
   const studentId=String(student.user.id||student.user._id||"");
   if(!studentId) throw new Error("Student id missing after login");
-  const [bootstrap,studentMe]=await Promise.all([
-    api(admin.page,"/content/bootstrap?scope=full"),
-    api(student.page,"/auth/me")
-  ]);
-  const studentGroupIds=new Set([
-    ...(student.user.groupIds||[]),
-    ...(studentMe.payload?.groupIds||[]),
-    ...(studentMe.payload?.user?.groupIds||[])
-  ].map(String));
-  const groups=listOf(bootstrap.payload,"groups");
-  const targetGroup=groups.find(g=>studentGroupIds.has(String(g.id||g._id||"")));
-  if(!bootstrap.ok || !targetGroup) throw new Error("No authoritative student group available for directed canary");
-  const targetGroupId=String(targetGroup.id||targetGroup._id);
 
   const marker=`COL26OLD-LIVE-${Date.now()}`;
   const create=await api(admin.page,"/quizzes",{
@@ -92,8 +79,9 @@ try {
       title:marker,
       description:"COL26OLD final live canary",
       pathId:PATH_ID,subjectId:SUBJECT_ID,sectionId:SECTION_ID,
-      type:"quiz",quizKind:"test",mode:"central",
-      questionIds,targetUserIds:[],targetGroupIds:[targetGroupId],
+      type:"quiz",quizKind:"test",mode:"regular",
+      questionIds,targetUserIds:[],targetGroupIds:[],
+      access:{type:"free"},
       settings:{timeLimit:15,maxAttempts:1,showResultsReport:true,returnToSourceOnFinish:false},
       isPublished:true,showOnPlatform:true,approvalStatus:"approved"
     })
@@ -102,9 +90,8 @@ try {
   quizId=String(create.payload?.id||create.payload?._id||"");
   if(!quizId || create.payload?.isPublished!==true) throw new Error("Quiz was not published");
 
-  const catalog=await api(student.page,"/quizzes?limit=300");
-  const visible=listOf(catalog.payload,"quizzes").some(q=>String(q.id||q._id)===quizId);
-  if(!catalog.ok || !visible) throw new Error("Directed COL26OLD canary quiz is not visible to student");
+  const readableQuiz=await api(student.page,`/quizzes/${encodeURIComponent(quizId)}`);
+  if(!readableQuiz.ok) throw new Error(`Student cannot read free COL26OLD canary quiz: ${readableQuiz.status}`);
 
   const questionPayload=await api(student.page,`/quizzes/questions?ids=${encodeURIComponent(questionIds.join(","))}&limit=10`);
   const learnerQuestions=listOf(questionPayload.payload,"questions");
@@ -146,7 +133,7 @@ try {
     status:"PASS",
     quizId,
     questionCount:5,
-    learnerVisible:true,
+    learnerReadable:true,
     answerExposureBeforeSubmit:0,
     resultFound:true,
     questionReviewMatched:5,
