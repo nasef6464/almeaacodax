@@ -1,0 +1,15 @@
+{
+  "project": "BIO26",
+  "status": "NOT_STARTED",
+  "sourceOccurrences": 2835,
+  "scopes": {
+    "withinSection1": "NOT_RUN",
+    "withinSection2": "NOT_RUN",
+    "crossSections": "NOT_RUN",
+    "existingBiologyBank": "NOT_RUN"
+  },
+  "canonicalCount": null,
+  "duplicateAliases": null,
+  "quarantine": [],
+  "rule": "Do not duplicate a materially identical question only because printed number/year differs."
+}
