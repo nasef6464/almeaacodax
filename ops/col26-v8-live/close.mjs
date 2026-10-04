@@ -126,7 +126,7 @@ await pool(toApprove, async(q)=>{
   if(!id) throw new Error("missing question id for "+q.questionCode);
   const updated=await request(admin,"PATCH","/quizzes/questions/"+encodeURIComponent(id),{
     approvalStatus:"approved",
-    reviewerNotes:"COL26 V8 final production closure — badge-free crop and integrity gates passed.",
+    reviewerNotes:"تم التحقق من المصدر بصريًا — COL26 V8 badge-free crop, answer, skill, hash, and source identity gates passed.",
   });
   if(String(updated?.approvalStatus||"")!=="approved") throw new Error("approval failed "+q.questionCode);
   return q.questionCode;
