@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "scope": "VERBAL26 approved-source extraction ledger",
-  "generatedAt": "2026-10-02",
+  "generatedAt": "2026-10-04",
   "canonicalTaxonomy": {
     "mainSkills": 22,
     "subSkills": 76
@@ -12,7 +12,7 @@
       "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf"
     ],
     "recoveryRawIsAuthoritative": false,
-    "approvalRule": "Only records with exact visual question/options + source answer key + taxonomy QA may enter verbal_approved_bank_v2.json."
+    "approvalRule": "Questions may enter the canonical bank only after direct verification against one of the two approved source books, with exact textual question/options, taxonomy QA, and either a verified source answer key or high-confidence independent semantic/logical adjudication; ambiguous cases remain quarantined."
   },
   "sourceInventory": [
     {
@@ -2560,7 +2560,7 @@
   "metrics": {
     "sourceKeyVerifiedRecords": 112,
     "approvedBankRecords": 1050,
-    "note": "Canonical bank reconciled against both approved books: 1050 unique questions. Amer has 921 source occurrences resolving to 915 unique canonical questions after exact duplicate merging with sourceOccurrences provenance; Anas has 135/135 canonical questions. migrationReady remains false until all contracts and production gates pass.",
+    "note": "Full-book reconciliation checkpoint: 1050 unique canonical questions = 915 Amer + 135 Anas. Amer has 921 verified source occurrences resolving to 915 unique questions after six exact duplicate occurrences are merged with provenance. Anas is 135/135 canonical. Source-backed main-skill coverage is 22/22 and subskill coverage is 50/76; absent subskills are not manufactured. migrationReady remains false until exact-head contracts/CI and production certification pass.",
     "sourceConflictRecords": 23,
     "anasObservedQuestions": 135,
     "anasKeyVerifiedQuestions": 112,
