@@ -161,7 +161,7 @@ const answerMap=Object.fromEntries(picked.map(q=>[idOf(q),Number(q.correctOption
 if(Object.values(answerMap).some(v=>!Number.isInteger(v)||v<0||v>3)) throw new Error("invalid audit answer index");
 
 const quizId="quiz_col26_v8_closure_"+Date.now();
-const created=await request(admin,"POST","/quizzes/",{
+const created=await request(admin,"POST","/quizzes",{
   id:quizId,
   title:"COL26 V8 Closure Audit",
   description:"Automated production closure audit for Tahsili Math COL26 V8.",
