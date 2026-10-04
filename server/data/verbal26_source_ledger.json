@@ -2559,14 +2559,14 @@
   ],
   "metrics": {
     "sourceKeyVerifiedRecords": 112,
-    "approvedBankRecords": 865,
+    "approvedBankRecords": 876,
     "note": "Ledger records are not approved-bank records until visual text/options and taxonomy QA pass.",
     "sourceConflictRecords": 23,
     "anasObservedQuestions": 135,
     "anasKeyVerifiedQuestions": 112,
     "anasConflictQuestions": 23,
     "amerTrainingsIndexed": 33,
-    "amerApprovedRecords": 749,
+    "amerApprovedRecords": 760,
     "amerDerivedReportCrossCheck": 938,
     "amerDerivedReportIsAuthority": false,
     "amerObservedQuestionCounts": {
@@ -2606,7 +2606,7 @@
     },
     "approvedBySource": {
       "anas": 116,
-      "abdelbaset": 749
+      "abdelbaset": 760
     },
     "approvedByMainSkill": {
       "skill_verbal_17": 51,
@@ -2807,7 +2807,7 @@
   ],
   "migrationReady": false,
   "migrationReadinessReason": "Full-book source inventory and quarantine adjudication remain incomplete.",
-  "progressNote": "T33 source inventory corrected from historical 34 to source-proven 40; 36 canonical + 4 quarantined = fully accounted.",
+  "progressNote": "Amer T29-T33 are now fully source-accounted: T29 29+5Q, T30 27+2Q, T31 28/28, T32 20/20, T33 36+4Q. Continue backward unresolved trainings.",
   "amerCoverageByTraining": {
     "29": {
       "expectedObserved": 34,
@@ -2849,6 +2849,61 @@
           "reason": "semantic option wording requires visual recheck"
         }
       ]
+    },
+    "30": {
+      "expectedObserved": 29,
+      "canonicalApproved": 27,
+      "quarantined": 2,
+      "duplicates": 0,
+      "excludedNonQuestionExamples": 0,
+      "remainingDelta": 0,
+      "sourcePages": [
+        86,
+        87,
+        88,
+        89
+      ],
+      "status": "ACCOUNTED_WITH_QUARANTINE",
+      "quarantine": [
+        {
+          "page": 88,
+          "question": 8,
+          "reason": "ORG question options are semantically/typographically corrupted in parsed source; visual/source-key adjudication required"
+        },
+        {
+          "page": 88,
+          "question": 7,
+          "group": "ABUBAKR",
+          "reason": "Final-line attribute question does not have a uniquely supported option from parsed passage; do not guess"
+        }
+      ]
+    },
+    "31": {
+      "expectedObserved": 28,
+      "canonicalApproved": 28,
+      "quarantined": 0,
+      "duplicates": 0,
+      "excludedNonQuestionExamples": 0,
+      "remainingDelta": 0,
+      "sourcePages": [
+        90,
+        91,
+        92
+      ],
+      "status": "CLOSED_SOURCE_ACCOUNTED"
+    },
+    "32": {
+      "expectedObserved": 20,
+      "canonicalApproved": 20,
+      "quarantined": 0,
+      "duplicates": 0,
+      "excludedNonQuestionExamples": 0,
+      "remainingDelta": 0,
+      "sourcePages": [
+        93,
+        94
+      ],
+      "status": "CLOSED_SOURCE_ACCOUNTED"
     },
     "33": {
       "expectedObserved": 40,
