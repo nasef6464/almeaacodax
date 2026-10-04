@@ -20883,5 +20883,110 @@
     "correctOptionIndex": 0,
     "answerValidationStatus": "SOURCE_KEY_VERIFIED",
     "answerEvidence": "Anas source answer key p.43; direct passage/question text verified."
+  },
+  {
+    "id": "VERBAL26-ANAS-ODD-P032-Q008",
+    "canonicalId": "VERBAL26-ANAS-ODD-P032-Q008",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 32,
+    "sourceQuestionNumber": 8,
+    "sourceSection": "المفردة الشاذة",
+    "mainSkillId": "skill_verbal_09",
+    "subSkillId": "sub_verbal_06_1",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "رجل",
+      "ليث",
+      "مهر",
+      "شبل"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED_SOURCE_KEY_CONFLICT",
+    "answerEvidence": "Direct Anas p.32 options; independently resolved because p.33 key is internally inconsistent/duplicated."
+  },
+  {
+    "id": "VERBAL26-ANAS-ODD-P032-Q010",
+    "canonicalId": "VERBAL26-ANAS-ODD-P032-Q010",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 32,
+    "sourceQuestionNumber": 10,
+    "sourceSection": "المفردة الشاذة",
+    "mainSkillId": "skill_verbal_09",
+    "subSkillId": "sub_verbal_06_1",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "رجل",
+      "جدي",
+      "حوار",
+      "حمار"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED_SOURCE_KEY_CONFLICT",
+    "answerEvidence": "Direct Anas p.32 options; independently resolved because p.33 key is internally inconsistent/duplicated."
+  },
+  {
+    "id": "VERBAL26-ANAS-ODD-P032-Q013",
+    "canonicalId": "VERBAL26-ANAS-ODD-P032-Q013",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 32,
+    "sourceQuestionNumber": 13,
+    "sourceSection": "المفردة الشاذة",
+    "mainSkillId": "skill_verbal_09",
+    "subSkillId": "sub_verbal_06_1",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "بصل",
+      "باذنجان",
+      "خيار",
+      "طماطم"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED_SOURCE_KEY_CONFLICT",
+    "answerEvidence": "Direct Anas p.32 options; independently resolved because p.33 key is internally inconsistent/duplicated."
+  },
+  {
+    "id": "VERBAL26-ANAS-ODD-P032-Q017",
+    "canonicalId": "VERBAL26-ANAS-ODD-P032-Q017",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 32,
+    "sourceQuestionNumber": 17,
+    "sourceSection": "المفردة الشاذة",
+    "mainSkillId": "skill_verbal_09",
+    "subSkillId": "sub_verbal_06_1",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "نظير",
+      "صنو",
+      "ند",
+      "نطيق"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED_SOURCE_KEY_CONFLICT",
+    "answerEvidence": "Direct Anas p.32 options; independently resolved because p.33 key is internally inconsistent/duplicated."
+  },
+  {
+    "id": "VERBAL26-ANAS-ODD-P032-Q019",
+    "canonicalId": "VERBAL26-ANAS-ODD-P032-Q019",
+    "sourceBook": "anas",
+    "sourceTitle": "تأسيس لفظي انس.pdf",
+    "sourcePage": 32,
+    "sourceQuestionNumber": 19,
+    "sourceSection": "المفردة الشاذة",
+    "mainSkillId": "skill_verbal_09",
+    "subSkillId": "sub_verbal_06_1",
+    "text": "حدد المفردة الشاذة من الخيارات الآتية.",
+    "options": [
+      "حبور",
+      "غبطة",
+      "بهجة",
+      "وجل"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED_SOURCE_KEY_CONFLICT",
+    "answerEvidence": "Direct Anas p.32 options; independently resolved because p.33 key is internally inconsistent/duplicated."
   }
 ]
