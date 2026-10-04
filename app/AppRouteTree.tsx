@@ -3,6 +3,7 @@ import { Navigate, Route, Routes, useParams } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { RequireRole } from '../components/auth/RequireRole';
 import { RequireAuth } from '../components/auth/RequireAuth';
+import { useAuth } from '../contexts/AuthContext';
 import { TeacherWorkspaceGate } from '../components/teacher/TeacherWorkspaceContext';
 import { normalizePathId } from '../utils/normalizePathId';
 
@@ -64,6 +65,20 @@ const LegacyPackagesRouteRedirect: React.FC = () => {
   return <Navigate replace to={`/category/${normalizePathId(pathId)}?tab=packages`} />;
 };
 
+const ClassroomStudentRedirect: React.FC = () => {
+  const { sessionId = '' } = useParams<{ sessionId: string }>();
+  return <Navigate replace to={`/classroom/${sessionId}`} />;
+};
+
+const DashboardRoleDispatcher: React.FC = () => {
+  const { user } = useAuth();
+  if (user?.role === 'teacher') return <Navigate replace to="/classroom/teacher" />;
+  if (user?.role === 'admin') return <Navigate replace to="/admin-dashboard" />;
+  if (user?.role === 'supervisor') return <Navigate replace to="/supervisor-dashboard" />;
+  if (user?.role === 'parent') return <Navigate replace to="/parent-dashboard" />;
+  return <Dashboard />;
+};
+
 export const AppRouteTree: React.FC<{ loadingFallback: React.ReactNode }> = ({ loadingFallback }) => {
   const adminDashboard = (
     <RequireRole allowedRoles={['admin']}>
@@ -82,7 +97,9 @@ export const AppRouteTree: React.FC<{ loadingFallback: React.ReactNode }> = ({ l
     <Routes>
       <Route path="/quiz" element={<Quiz />} />
       <Route path="/quiz/:quizId" element={<QuizPage />} />
+      <Route path="/classroom" element={<Navigate replace to="/classroom/teacher" />} />
       <Route path="/classroom/:sessionId" element={<ClassroomStudentLive />} />
+      <Route path="/classroom/:sessionId/student" element={<ClassroomStudentRedirect />} />
       <Route path="/classroom/teacher" element={<RequireRole allowedRoles={['teacher', 'admin']}><ClassroomTeacherConsole /></RequireRole>} />
       <Route path="/classroom/:sessionId/teacher" element={<RequireRole allowedRoles={['teacher', 'admin']}><ClassroomTeacherConsole /></RequireRole>} />
       <Route path="/classroom/:sessionId/projector" element={<ClassroomProjectorView />} />
@@ -113,7 +130,7 @@ export const AppRouteTree: React.FC<{ loadingFallback: React.ReactNode }> = ({ l
           <Suspense fallback={loadingFallback}>
             <Routes>
               <Route path="/" element={<Landing />} />
-              <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />
+              <Route path="/dashboard" element={<RequireAuth><DashboardRoleDispatcher /></RequireAuth>} />
               <Route path="/courses" element={<Courses />} />
               <Route path="/course/:courseId" element={<CourseView />} />
               <Route path="/quizzes" element={<Quizzes />} />

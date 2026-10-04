@@ -201,7 +201,22 @@ export const ClassroomTeacherConsole: React.FC = () => {
         <h1 className="mt-4 text-3xl font-black">ابدأ فصلًا ذكيًا</h1>
         <p className="mt-2 text-slate-500">اختر الفصل ثم ابدأ مباشرة فارغًا، أو جهز أسئلة أولية وأرسل دفعات أخرى أثناء الشرح.</p>
 
-        {workspace?.schools.length === 0 && <div className="mt-6 rounded-2xl bg-amber-50 p-5 font-bold text-amber-900">لا يوجد تكليف مدرسي فعال لهذا الحساب.</div>}
+        {workspace?.schools.length === 0 && (
+          <div className="mt-8 rounded-3xl border border-amber-200 bg-amber-50/80 p-8 text-center shadow-xs">
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-100 text-amber-700">
+              <AlertCircle size={28} />
+            </div>
+            <h3 className="mt-4 text-base font-black text-amber-950">لا يوجد تكليف مدرسي فعال لهذا الحساب حالياً</h3>
+            <p className="mt-2 text-xs leading-relaxed text-amber-800/80 max-w-md mx-auto">
+              لم يتم ربط حسابك بمدرسة أو فصل دراسي حتى الآن. يرجى التواصل مع إدارة مدرستك أو مشرف المنصة لإسناد الفصول والمواد لك.
+            </p>
+            <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+              <Link to="/" className="rounded-xl border border-amber-300 bg-white px-5 py-2.5 text-xs font-bold text-amber-900 hover:bg-amber-100/60 shadow-xs transition">
+                العودة للرئيسية
+              </Link>
+            </div>
+          </div>
+        )}
 
         {user?.role === 'admin' && !workspace && (
           <div className="mt-6 grid gap-3 sm:grid-cols-2">

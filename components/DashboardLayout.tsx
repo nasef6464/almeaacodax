@@ -63,9 +63,9 @@ export const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children, side
                 </div>
             )}
 
-            <div className="flex flex-1 overflow-hidden pt-16"> {/* Add padding top to account for fixed header if any, otherwise adjust */}
+            <div className="flex flex-1 overflow-hidden">
                 {/* Sidebar */}
-                <aside className="w-64 bg-white border-l border-gray-200 overflow-y-auto hidden md:block shadow-sm z-10">
+                <aside className="w-64 bg-white border-l border-gray-200 overflow-y-auto hidden md:block shadow-sm z-20">
                     {sidebar}
                 </aside>
                 

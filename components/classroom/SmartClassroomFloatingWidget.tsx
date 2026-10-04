@@ -221,12 +221,12 @@ export const SmartClassroomFloatingWidget: React.FC = () => {
   return (
     <>
       {activeSessionAlert && !isOpen && !joined && (
-        <div className="fixed bottom-6 right-6 z-50 max-w-sm rounded-3xl border-2 border-indigo-500 bg-slate-900 p-4 text-white shadow-2xl" dir="rtl">
+        <div className="fixed bottom-4 inset-x-4 sm:inset-x-auto sm:bottom-6 sm:right-6 z-50 sm:max-w-sm rounded-3xl border-2 border-indigo-500 bg-slate-900 p-4 text-white shadow-2xl" dir="rtl">
           <div className="flex items-start justify-between gap-2">
             <div className="flex items-center gap-2.5"><span className="flex h-10 w-10 shrink-0 animate-pulse items-center justify-center rounded-2xl bg-indigo-600 text-white"><Presentation size={20} /></span><div><span className="inline-block rounded-md bg-emerald-500/20 px-2 py-0.5 text-[10px] font-black text-emerald-300">حصة ذكية نشطة الآن</span><h4 className="mt-0.5 text-xs font-black text-white">أ. {activeSessionAlert.teacherName} ({activeSessionAlert.className})</h4></div></div>
             <button type="button" onClick={() => setActiveSessionAlert(null)} className="rounded-lg p-1 text-slate-400 hover:text-white"><X size={15} /></button>
           </div>
-          <div className="mt-3 flex items-center gap-2"><button type="button" onClick={() => void handleInstantJoin()} className="flex-1 rounded-xl bg-indigo-600 py-2.5 text-xs font-black text-white">انضمام فوري للحصة</button><button type="button" onClick={() => { setActiveSessionAlert(null); setShowJoinModal(true); }} className="rounded-xl border border-slate-700 bg-slate-800 px-3 py-2.5 text-xs font-bold text-slate-300">بالرمز</button></div>
+          <div className="mt-3 flex items-center gap-2"><button type="button" onClick={() => void handleInstantJoin()} className="flex-1 rounded-xl bg-indigo-600 py-2.5 text-xs font-black text-white hover:bg-indigo-700 transition">انضمام فوري للحصة</button><button type="button" onClick={() => { setActiveSessionAlert(null); setShowJoinModal(true); }} className="rounded-xl border border-slate-700 bg-slate-800 px-3 py-2.5 text-xs font-bold text-slate-300 hover:bg-slate-700 transition">بالرمز</button></div>
         </div>
       )}
 
