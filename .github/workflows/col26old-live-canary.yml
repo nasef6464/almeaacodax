@@ -1,0 +1,30 @@
+name: COL26OLD Live Canary
+on:
+  push:
+    branches:
+      - ops/col26old-live-canary
+    paths:
+      - "scripts/live-col26old-canary.mjs"
+      - ".github/workflows/col26old-live-canary.yml"
+
+jobs:
+  live-canary:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      UI_AUDIT_BASE_URL: https://almeaacodax.vercel.app
+      UI_AUDIT_API_BASE_URL: https://almeaacodax.vercel.app/api
+      ROLE_ADMIN_EMAIL: ${{ secrets.ROLE_ADMIN_EMAIL }}
+      ROLE_ADMIN_PASSWORD: ${{ secrets.ROLE_ADMIN_PASSWORD }}
+      ROLE_STUDENT_EMAIL: ${{ secrets.ROLE_STUDENT_EMAIL }}
+      ROLE_STUDENT_PASSWORD: ${{ secrets.ROLE_STUDENT_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - name: Run COL26OLD live canary
+        run: node scripts/live-col26old-canary.mjs
