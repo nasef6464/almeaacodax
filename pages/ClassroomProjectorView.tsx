@@ -220,10 +220,10 @@ export const ClassroomProjectorView: React.FC = () => {
                     </span>
                     <div>
                       <h2 className="text-base sm:text-lg font-black text-emerald-300">
-                        مشاركة الفصل: {submittedCount} من {joinedCount || 1} طالب سلّموا الإجابة
+                        الطلاب الذين سلّموا: {submittedCount} من {joinedCount || 1} طالب
                       </h2>
                       <p className="text-xs text-slate-400">
-                        السبورة تحافظ على سرية إجابات الطلاب ولا تعرض تفاصيل أو درجات فردية.
+                        السبورة تحافظ على سرية المشاركة وتعرض حالة التسليم فقط بدون كشف الإجابة الصحيحة.
                       </p>
                     </div>
                   </div>

@@ -414,7 +414,7 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
               disabled={data?.status === 'ended' || hasActiveBatch || loadingBank || Boolean(bankError)}
               className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-3.5 py-2 text-xs font-black text-white disabled:opacity-50"
             >
-              <Zap size={14} /> إنشاء دفعة تحدي
+              <Zap size={14} /> إنشاء دفعة تحدي مستقلة
             </button>
             {currentQIndex !== undefined && currentQIndex < (data?.questions || []).length - 1 && (
               <button
