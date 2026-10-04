@@ -5,6 +5,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useStore } from '../../store/useStore';
 import { HomepageSettings, HomepageStat, HomepageTestimonial } from '../../types';
 import { sanitizeHomepageSettings } from '../../utils/sanitizeMojibakeArabic';
+import { DEFAULT_AVATAR } from '../../utils/defaultAvatar';
 
 const DEFAULT_HERO_BOY_IMAGE =
     '/images/homepage-hero-boy-platform.webp?v=20260512';
@@ -125,9 +126,9 @@ const defaultHomepageSettings: HomepageSettings = {
         ],
     },
     testimonials: [
-        { id: 't1', name: 'سارة العتيبي', degree: '98% قدرات', text: 'المنصة غيرت طريقة مذاكرتي تمامًا.', image: 'https://i.pravatar.cc/100?img=5' },
-        { id: 't2', name: 'فهد الشمري', degree: '96% تحصيلي', text: 'الشروحات والتدريبات كانت مرتبة جدًا.', image: 'https://i.pravatar.cc/100?img=11' },
-        { id: 't3', name: 'نورة السالم', degree: '99% قدرات', text: 'الاختبارات المحاكية كانت قريبة من الاختبار الحقيقي.', image: 'https://i.pravatar.cc/100?img=9' },
+        { id: 't1', name: 'سارة العتيبي', degree: '98% قدرات', text: 'المنصة غيرت طريقة مذاكرتي تمامًا.', image: DEFAULT_AVATAR },
+        { id: 't2', name: 'فهد الشمري', degree: '96% تحصيلي', text: 'الشروحات والتدريبات كانت مرتبة جدًا.', image: DEFAULT_AVATAR },
+        { id: 't3', name: 'نورة السالم', degree: '99% قدرات', text: 'الاختبارات المحاكية كانت قريبة من الاختبار الحقيقي.', image: DEFAULT_AVATAR },
     ],
     featuredPathIds: [],
     featuredCourseIds: [],

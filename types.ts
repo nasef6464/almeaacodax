@@ -939,6 +939,8 @@ export interface User {
     managedSubjectIds?: string[];
     schoolContexts?: Array<{ schoolId: string; role: string; permissions: string[] }>;
     interactiveVideoProgress?: InteractiveVideoProgress[];
+    nationalId?: string;
+    phone?: string;
 }
 
 export type GroupType = 'SCHOOL' | 'CLASS' | 'PRIVATE_GROUP';

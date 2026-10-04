@@ -23,6 +23,7 @@ import { isTrueMockExam } from "../utils/quizPlacement";
 import { EmptyState } from '../components/ui/EmptyState';
 import { isStandaloneMockExam } from '../utils/mockExam';
 import { ParentApprovalsModal } from './ParentApprovalsModal';
+import { DEFAULT_AVATAR } from '../utils/defaultAvatar';
 import { ParentStudentLinker } from '../components/ParentStudentLinker';
 import { courseBelongsToPath, resolvePathProgress } from './Dashboard/pathProgressProjection';
 import { SupervisorTasksStrip } from './Dashboard/SupervisorTasksStrip';
@@ -296,7 +297,7 @@ const useParentScopedResults = () => {
                     id: studentName,
                     name: studentName,
                     email: '',
-                    avatar: `https://i.pravatar.cc/100?u=${encodeURIComponent(studentName)}`,
+                    avatar: DEFAULT_AVATAR,
                     results: studentResults.length,
                     average,
                     weakCount,

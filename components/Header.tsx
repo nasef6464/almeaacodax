@@ -100,8 +100,10 @@ export const Header: React.FC = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [smartLoginLoading, setSmartLoginLoading] = useState(false);
 
+  const toAsciiDigits = (s: string) => s.replace(/[٠-٩]/g, (d) => '٠١٢٣٤٥٦٧٨٩'.indexOf(d).toString());
+
   const detectInputType = (value: string): 'email' | 'phone' | 'nationalId' | 'unknown' => {
-    const v = value.trim();
+    const v = toAsciiDigits(value.trim());
     if (v.includes('@')) return 'email';
     const digits = v.replace(/\D/g, '');
     if (/^[12]\d{9}$/.test(digits)) return 'nationalId';
@@ -120,7 +122,7 @@ export const Header: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { paths, subjects, levels, cartItems } = useStore();
-  const { user, signInWithGoogle, signInWithEmail, signUpWithEmail, logout } = useAuth();
+  const { user, signInWithGoogle, signInWithEmail, signInWithNationalId, signUpWithEmail, logout } = useAuth();
 
   const getDashboardPathForRole = (role?: string | null, targetUser?: any) => {
     const activeUser = targetUser || user;
@@ -432,18 +434,18 @@ export const Header: React.FC = () => {
     setSmartLoginLoading(true);
     const v = smartInput.trim();
     const pw = smartPassword.trim();
-    const digits = v.replace(/\D/g, '');
+    const asciiV = toAsciiDigits(v);
+    const asciiPw = toAsciiDigits(pw);
+    const digits = asciiV.replace(/\D/g, '');
     try {
       let sessionUser: any;
       if (smartInputType === 'email') {
         sessionUser = await signInWithEmail(v.toLowerCase(), pw);
       } else if (smartInputType === 'nationalId') {
-        await api.nationalIdLogin(digits, pw);
-        window.location.reload();
-        return;
+        sessionUser = await signInWithNationalId(digits, asciiPw);
       } else if (smartInputType === 'phone') {
         // الدخول بالجوال + كلمة المرور مباشرة
-        await api.post('/auth/login/phone-password', { phone: digits || v, password: pw });
+        await api.post('/auth/login/phone-password', { phone: digits || asciiV, password: asciiPw });
         window.location.reload();
         return;
       } else {

@@ -4,6 +4,7 @@ import { Camera, Save, User, Mail, Phone, CreditCard, School, ChevronDown, Chevr
 import { Card } from '../components/ui/Card';
 import { useStore } from '../store/useStore';
 import { api } from '../services/api';
+import { DEFAULT_AVATAR } from '../utils/defaultAvatar';
 
 const Profile: React.FC = () => {
     const user = useStore((state) => state.user);
@@ -12,7 +13,7 @@ const Profile: React.FC = () => {
     const lastName = fullNameParts.slice(1).join(' ') || '';
 
     // State for Profile Image
-    const [avatar, setAvatar] = useState(user?.avatar || 'https://i.pravatar.cc/150?u=profile-fallback');
+    const [avatar, setAvatar] = useState(user?.avatar || DEFAULT_AVATAR);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     // State for Form Fields matched to screenshot
@@ -53,7 +54,7 @@ const Profile: React.FC = () => {
     }, [completionRate]);
 
     useEffect(() => {
-        setAvatar(user?.avatar || 'https://i.pravatar.cc/150?u=profile-fallback');
+        setAvatar(user?.avatar || DEFAULT_AVATAR);
         setFormData({
             firstName,
             lastName,

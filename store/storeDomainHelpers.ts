@@ -1,9 +1,10 @@
 import { B2BPackage, Course, Group, PackageContentType, QuizResult, Role, User } from '../types';
+import { DEFAULT_AVATAR } from '../utils/defaultAvatar';
 
 export const createGuestUser = (): User => ({
     id: 'guest',
     name: 'حساب ضيف',
-    avatar: 'https://i.pravatar.cc/150?u=guest',
+    avatar: DEFAULT_AVATAR,
     role: Role.STUDENT,
     points: 0,
     badges: [],
