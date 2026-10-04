@@ -1,0 +1,19 @@
+{
+  "documentCode": "COL26OLD",
+  "stage": "OLD-1 Full Section-2 Inventory",
+  "result": "PASS",
+  "source": "كتاب تجميعات يلو للرياضيات 26 - النسخة المعدلة.pdf",
+  "section2_blocks": 29,
+  "expected_questions": 1255,
+  "answer_key_ranges_contiguous": true,
+  "answer_key_gaps": 0,
+  "text_layer_direct_question_blocks": 1238,
+  "text_layer_exceptions": 17,
+  "exceptions_accounted": 17,
+  "visual_header_gate": "PASS_29_OF_29",
+  "exceptionSummary": [
+    "16 formula/split-text questions are present in source text blocks but are not safely detectable by the normal Arabic-question heuristic.",
+    "Question 35 on PDF page 71 has no usable question text block and was visually confirmed from the rendered source page."
+  ],
+  "rule": "The 1,255 count is source-derived from contiguous answer-key ranges inside the 29 visually confirmed section-two blocks; no historical bank count was used."
+}
