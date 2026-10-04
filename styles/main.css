@@ -115,3 +115,66 @@ html.dark body {
 [data-testid="question-editor-word-paste"] .ql-container {
   min-height: 310px;
 }
+
+
+/* Verbal aptitude presentation: readable RTL typography without altering stored text. */
+.question-html {
+  unicode-bidi: plaintext;
+  overflow-wrap: anywhere;
+}
+
+.verbal-question-text {
+  font-weight: 800;
+  line-height: 2;
+  letter-spacing: 0.005em;
+}
+
+.verbal-option-text {
+  font-weight: 700;
+  line-height: 1.9;
+}
+
+.quiz-option-label {
+  display: inline-flex;
+  width: 2.15rem;
+  height: 2.15rem;
+  flex: 0 0 2.15rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.75rem;
+  border: 2px solid rgb(17 24 39 / 0.18);
+  background: rgb(255 255 255 / 0.95);
+  color: #111827;
+  font-size: 1rem;
+  font-weight: 900;
+  line-height: 1;
+  box-shadow: 0 1px 2px rgb(15 23 42 / 0.08);
+}
+
+.question-blank {
+  display: inline-block;
+  min-width: 2.4em;
+  margin-inline: 0.15em;
+  padding: 0 0.28em 0.08em;
+  border-bottom: 3px solid #2563eb;
+  border-radius: 0.35rem 0.35rem 0.15rem 0.15rem;
+  background: #fff7cc;
+  color: #1d4ed8;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  line-height: 1.25;
+  text-align: center;
+  unicode-bidi: isolate;
+}
+
+.dark .quiz-option-label {
+  border-color: rgb(148 163 184 / 0.4);
+  background: rgb(15 23 42 / 0.92);
+  color: #f8fafc;
+}
+
+.dark .question-blank {
+  border-bottom-color: #60a5fa;
+  background: rgb(133 77 14 / 0.35);
+  color: #93c5fd;
+}
