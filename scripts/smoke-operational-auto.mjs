@@ -1,4 +1,5 @@
 import { spawnSync } from "node:child_process";
+import { resolveSmokeAdminToken } from "./resolve-smoke-admin-token.mjs";
 
 const run = (command, args, options = {}) =>
   spawnSync(command, args, {
@@ -14,22 +15,13 @@ const hasCreds =
   String(env.SMOKE_ADMIN_PASSWORD || env.GOLIVE_ADMIN_PASSWORD || env.ADMIN_PASSWORD || "").trim().length > 0;
 
 if (!hasToken && hasCreds) {
-  const resolved = spawnSync("node", ["scripts/resolve-smoke-admin-token.mjs"], {
-    env,
-    encoding: "utf8",
-    shell: process.platform === "win32",
-  });
-
-  if (resolved.status === 0) {
-    try {
-      const parsed = JSON.parse(String(resolved.stdout || "{}"));
-      const token = String(parsed?.token || "").trim();
-      if (token) {
-        env.SMOKE_ADMIN_TOKEN = token;
-      }
-    } catch {
-      // no-op; keep fallback behavior
-    }
+  try {
+    const resolved = await resolveSmokeAdminToken({ env });
+    env.SMOKE_ADMIN_TOKEN = resolved.token;
+  } catch (error) {
+    console.error(
+      `Unable to resolve admin token for operational smoke: ${error instanceof Error ? error.message : String(error)}`,
+    );
   }
 }
 
