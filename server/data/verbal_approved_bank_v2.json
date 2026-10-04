@@ -17826,5 +17826,49 @@
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_TEXT_VERIFIED",
     "answerEvidence": "Direct Amer source p.91; answer follows explicitly from dates/wording in passage."
+  },
+  {
+    "canonicalId": "VERBAL26-AMER-T30-P088-ORG-Q010",
+    "sourcePage": 88,
+    "sourceQuestionNumber": 10,
+    "passageId": "VERBAL26-AMER-PASSAGE-ORG",
+    "text": "وفقًا لما ورد بالفقرة الرابعة فإن نشأة منظمة المؤتمر الإسلامي ناتجة عن:",
+    "options": [
+      "بعض من زعماء وقادة الدول الإسلامية",
+      "رؤساء الاتحاد الأوروبي",
+      "قادة دول الكومنولث",
+      "الولايات المتحدة الأمريكية"
+    ],
+    "correctOptionIndex": 0,
+    "answerEvidence": "Direct Amer source p.88; paragraph 4 attributes the organization to Islamic states gathering their word and ranks.",
+    "id": "VERBAL26-AMER-T30-P088-ORG-Q010",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourceTraining": 30,
+    "mainSkillId": "skill_verbal_20",
+    "subSkillId": "sub_verbal_12_6",
+    "answerValidationStatus": "INDEPENDENT_TEXT_VERIFIED"
+  },
+  {
+    "canonicalId": "VERBAL26-AMER-T30-P089-OIL-Q003",
+    "sourcePage": 89,
+    "sourceQuestionNumber": 3,
+    "passageId": "VERBAL26-AMER-PASSAGE-OIL",
+    "text": "تعتبر كلمة «بترول» في الفقرة الرابعة:",
+    "options": [
+      "مرادفة لكلمة «زيت»",
+      "أشمل من كلمة «زيت»",
+      "اسمًا لمشتق من مشتقات الزيت",
+      "اسمًا لبعض مشتقات الزيت الثقيلة"
+    ],
+    "correctOptionIndex": 1,
+    "answerEvidence": "Direct Amer source p.89; paragraph 4 uses petroleum as the broader industry/source encompassing products.",
+    "id": "VERBAL26-AMER-T30-P089-OIL-Q003",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourceTraining": 30,
+    "mainSkillId": "skill_verbal_20",
+    "subSkillId": "sub_verbal_12_6",
+    "answerValidationStatus": "INDEPENDENT_TEXT_VERIFIED"
   }
 ]
