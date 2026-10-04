@@ -19150,5 +19150,299 @@
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
     "answerEvidence": "Direct Amer source p.43; source text/options visually parsed and analogy relation independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T16-P044-Q001",
+    "canonicalId": "VERBAL26-AMER-T16-P044-Q001",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 44,
+    "sourceQuestionNumber": 1,
+    "sourceTraining": 16,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_1",
+    "text": "عقرب : سم",
+    "options": [
+      "نخلة : تمر",
+      "عسل : نحلة",
+      "كتاب : قلم",
+      "هواء : طاحونة"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.44; source text/options verified and analogy relation independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T16-P044-Q003",
+    "canonicalId": "VERBAL26-AMER-T16-P044-Q003",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 44,
+    "sourceQuestionNumber": 3,
+    "sourceTraining": 16,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_1",
+    "text": "ليمون : برتقال",
+    "options": [
+      "تفاح : موز",
+      "توت : خوخ",
+      "فراولة : كمثرى",
+      "بطيخ : شمام"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.44; source text/options verified and analogy relation independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T16-P044-Q009",
+    "canonicalId": "VERBAL26-AMER-T16-P044-Q009",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 44,
+    "sourceQuestionNumber": 9,
+    "sourceTraining": 16,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_1",
+    "text": "نهر : شاطئ",
+    "options": [
+      "رصيف : شارع",
+      "نص : هامش",
+      "شرطة : أمن",
+      "كبير : صغير"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.44; source text/options verified and analogy relation independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T16-P044-Q010",
+    "canonicalId": "VERBAL26-AMER-T16-P044-Q010",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 44,
+    "sourceQuestionNumber": 10,
+    "sourceTraining": 16,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_1",
+    "text": "كعبة : طواف",
+    "options": [
+      "سور : بيت",
+      "بطن : حزام",
+      "حديقة : ورد",
+      "مقام : حجر أسود"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.44; source text/options verified and analogy relation independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T16-P045-Q019",
+    "canonicalId": "VERBAL26-AMER-T16-P045-Q019",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 45,
+    "sourceQuestionNumber": 19,
+    "sourceTraining": 16,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_1",
+    "text": "مقود : سيارة",
+    "options": [
+      "حصان : لجام",
+      "كتاب : صفحة",
+      "سفينة : مرساة",
+      "جناح : طائرة"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.45; source text/options verified and analogy relation independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T16-P045-Q024",
+    "canonicalId": "VERBAL26-AMER-T16-P045-Q024",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 45,
+    "sourceQuestionNumber": 24,
+    "sourceTraining": 16,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_1",
+    "text": "شين : زين",
+    "options": [
+      "ماء : نار",
+      "وسامة : جسامة",
+      "فصاحة : ملاحة",
+      "أبان : أفصح"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.45; source text/options verified and analogy relation independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T16-P045-Q025",
+    "canonicalId": "VERBAL26-AMER-T16-P045-Q025",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 45,
+    "sourceQuestionNumber": 25,
+    "sourceTraining": 16,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_1",
+    "text": "كريم : بخيل",
+    "options": [
+      "واسع : عميق",
+      "طويل : ممتد",
+      "فقير : غني",
+      "عتيق : سحيق"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.45; source text/options verified and analogy relation independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T16-P045-Q026",
+    "canonicalId": "VERBAL26-AMER-T16-P045-Q026",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 45,
+    "sourceQuestionNumber": 26,
+    "sourceTraining": 16,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_1",
+    "text": "الدنيا : الآجلة",
+    "options": [
+      "الموت : البعث",
+      "الموت : الحياة",
+      "البعث : القيامة",
+      "الغيب : الشهادة"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.45; source text/options verified and analogy relation independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T16-P045-Q029",
+    "canonicalId": "VERBAL26-AMER-T16-P045-Q029",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 45,
+    "sourceQuestionNumber": 29,
+    "sourceTraining": 16,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_1",
+    "text": "الرجل : الطفل",
+    "options": [
+      "الشبل : الأسد",
+      "التمساح : الضب",
+      "الإنسان : الظفر",
+      "الحصان : المهر"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.45; source text/options verified and analogy relation independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T16-P046-Q030",
+    "canonicalId": "VERBAL26-AMER-T16-P046-Q030",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 46,
+    "sourceQuestionNumber": 30,
+    "sourceTraining": 16,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_1",
+    "text": "استغفار : سيئات",
+    "options": [
+      "زهايمر : معلومات",
+      "ماء : طهارة",
+      "ذكريات : نسيان",
+      "استحمام : منشفة"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.46; source text/options verified and analogy relation independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T16-P046-Q032",
+    "canonicalId": "VERBAL26-AMER-T16-P046-Q032",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 46,
+    "sourceQuestionNumber": 32,
+    "sourceTraining": 16,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_1",
+    "text": "ماء : صفاء",
+    "options": [
+      "شباب : نضارة",
+      "مواقع : تباعد",
+      "تصنيع : تلوث",
+      "العلم : الإيمان"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.46; source text/options verified and analogy relation independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T16-P046-Q033",
+    "canonicalId": "VERBAL26-AMER-T16-P046-Q033",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 46,
+    "sourceQuestionNumber": 33,
+    "sourceTraining": 16,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_1",
+    "text": "ثوب : بدن",
+    "options": [
+      "علم : نور",
+      "تقوى : روح",
+      "إيمان : جنة",
+      "مطر : مظلة"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.46; source text/options verified and analogy relation independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T16-P046-Q036",
+    "canonicalId": "VERBAL26-AMER-T16-P046-Q036",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 46,
+    "sourceQuestionNumber": 36,
+    "sourceTraining": 16,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_1",
+    "text": "سحر : فجر",
+    "options": [
+      "ضحى : ظهر",
+      "شمس : غسق",
+      "ظهر : مغرب",
+      "ساعة : وقت"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.46; source text/options verified and analogy relation independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T16-P046-Q038",
+    "canonicalId": "VERBAL26-AMER-T16-P046-Q038",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 46,
+    "sourceQuestionNumber": 38,
+    "sourceTraining": 16,
+    "mainSkillId": "skill_verbal_01",
+    "subSkillId": "sub_verbal_01_1",
+    "text": "بريد : رسالة",
+    "options": [
+      "ريح : غبار",
+      "مدونة : مدون",
+      "مرسل : مستقبل",
+      "كبير : صغير"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.46; source text/options verified and analogy relation independently verified."
   }
 ]
