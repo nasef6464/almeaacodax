@@ -559,6 +559,9 @@ export const QuizPage: React.FC = () => {
       );
       setSelectedOptions(safeSelectedOptions);
       setCurrentQuestionIndex(Math.min(Math.max(savedProgress.currentQuestionIndex || 0, 0), Math.max(nextQuestions.length - 1, 0)));
+      if (Array.isArray(savedProgress.flaggedQuestionIds)) {
+        setFlaggedQuestionIds(savedProgress.flaggedQuestionIds.filter((id) => allowedQuestionIds.has(id)));
+      }
       const restoredTimeLeft =
         defaultTimeLeft !== null
           ? (typeof savedProgress.timeLeft === 'number' && savedProgress.timeLeft > 0
@@ -570,6 +573,7 @@ export const QuizPage: React.FC = () => {
       setSelectedOptions({});
       setCurrentQuestionIndex(0);
       setTimeLeft(defaultTimeLeft);
+      setFlaggedQuestionIds([]);
     }
   }, [quizId, quizzes, questions, quizScopedQuestions, user, checkAccess, hasScopedPackageAccess, isResolvingScopedQuestions, sourceParam, sourceCourse, courseHasAccess]);
 
@@ -584,10 +588,11 @@ export const QuizPage: React.FC = () => {
       currentQuestionIndex,
       timeLeft: typeof timeLeft === 'number' && timeLeft > 0 ? timeLeft : null,
       savedAt: new Date().toISOString(),
+      flaggedQuestionIds,
     };
 
     writeQuizProgressDraft(draft);
-  }, [quiz, quizQuestions, selectedOptions, currentQuestionIndex, timeLeft, isFinished, isSubmittingResult]);
+  }, [quiz, quizQuestions, selectedOptions, currentQuestionIndex, timeLeft, flaggedQuestionIds, isFinished, isSubmittingResult]);
 
   useEffect(() => {
     if (quizQuestions.length > 0) {
@@ -880,20 +885,32 @@ export const QuizPage: React.FC = () => {
 
   const toggleQuestionSavedForReview = async (questionId: string) => {
     const wasSaved = flaggedQuestionIds.includes(questionId);
+    setFlaggedQuestionIds((prev) =>
+      wasSaved ? prev.filter((id) => id !== questionId) : [...new Set([...prev, questionId])]
+    );
+
     if (!user?.id || user.id === 'guest') {
-      setQuizStatusMessage('سجّل الدخول لحفظ السؤال للمراجعة على حسابك.');
+      setQuizStatusMessage(
+        wasSaved
+          ? 'تم إلغاء تعليم السؤال للمراجعة في هذا الاختبار.'
+          : 'تم تعليم السؤال للمراجعة 🚩 (سجّل الدخول لحفظه دائماً في حسابك).'
+      );
       setQuizStatusTone('info');
       return;
     }
-    setFlaggedQuestionIds((prev) => wasSaved ? prev.filter((id) => id !== questionId) : [...new Set([...prev, questionId])]);
+
     try {
       if (wasSaved) await api.removeQuestionFromReview(questionId);
       else await api.saveQuestionForReview(questionId);
       setQuizStatusMessage(wasSaved ? 'تمت إزالة السؤال من المراجعة.' : 'تم حفظ السؤال للمراجعة لاحقًا.');
       setQuizStatusTone('success');
     } catch {
-      setFlaggedQuestionIds((prev) => wasSaved ? [...new Set([...prev, questionId])] : prev.filter((id) => id !== questionId));
-      setQuizStatusMessage('تعذر تحديث قائمة المراجعة الآن.');
+      // Keep in-exam flag active locally so student doesn't lose track during active test
+      setQuizStatusMessage(
+        wasSaved
+          ? 'تم إلغاء تعليم السؤال محلياً، وسيتزامن مع الخادم عند استقرار الاتصال.'
+          : 'تم حفظ السؤال محلياً للمراجعة، وسيتزامن مع الخادم عند استقرار الاتصال.'
+      );
       setQuizStatusTone('info');
     }
   };
@@ -1623,7 +1640,7 @@ export const QuizPage: React.FC = () => {
                                 ? 'text-lg font-medium'
                                 : 'text-base'
                           } ${isNightMode ? 'text-slate-200' : 'text-gray-800'}`}
-                          dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(passageText) }}
+                          dangerouslySetInnerHTML={{ __html: formatQuestionHtmlForDisplay(passageText) }}
                         />
                       </div>
                     )}
@@ -1768,14 +1785,7 @@ export const QuizPage: React.FC = () => {
 
                       <button
                         type="button"
-                        onClick={() => {
-                          if (!currentQuestion) return;
-                          setFlaggedQuestionIds((prev) =>
-                            prev.includes(currentQuestion.id)
-                              ? prev.filter((id) => id !== currentQuestion.id)
-                              : [...prev, currentQuestion.id]
-                          );
-                        }}
+                        onClick={handleToggleCurrentReviewLater}
                         className={`inline-flex items-center justify-center gap-1.5 rounded-xl border px-3.5 py-2 text-xs sm:text-sm font-black transition shadow-xs ${
                           currentQuestion && flaggedQuestionIds.includes(currentQuestion.id)
                             ? 'border-amber-400 bg-amber-500 text-white shadow-amber-200'
