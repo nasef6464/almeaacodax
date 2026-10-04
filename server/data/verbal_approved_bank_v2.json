@@ -20412,5 +20412,93 @@
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
     "answerEvidence": "Direct Amer source p.88; answer verified against passage."
+  },
+  {
+    "id": "VERBAL26-AMER-T33-P095-AML-Q003",
+    "canonicalId": "VERBAL26-AMER-T33-P095-AML-Q003",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 95,
+    "sourceQuestionNumber": 3,
+    "sourceTraining": 33,
+    "passageId": "VERBAL26-AMER-PASSAGE-AML",
+    "mainSkillId": "skill_verbal_20",
+    "subSkillId": "sub_verbal_13_1",
+    "text": "أنسب عنوان للنص:",
+    "options": [
+      "غسيل الأموال: دور العصابات فيها",
+      "غسيل الأموال: دور سويسرا في القضاء عليها",
+      "غسيل الأموال: تقسيمها وآثارها",
+      "أنواع الأموال"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.95; answer verified against passage."
+  },
+  {
+    "id": "VERBAL26-AMER-T33-P095-AML-Q005",
+    "canonicalId": "VERBAL26-AMER-T33-P095-AML-Q005",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 95,
+    "sourceQuestionNumber": 5,
+    "sourceTraining": 33,
+    "passageId": "VERBAL26-AMER-PASSAGE-AML",
+    "mainSkillId": "skill_verbal_20",
+    "subSkillId": "sub_verbal_13_1",
+    "text": "ما المقصود بجملة «إحلال المال»؟",
+    "options": [
+      "جعله حلالًا",
+      "عدم تغيير مصدره",
+      "فقد المال",
+      "غسيل الأموال"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.95; answer verified against passage."
+  },
+  {
+    "id": "VERBAL26-AMER-T33-P097-SALK-Q003",
+    "canonicalId": "VERBAL26-AMER-T33-P097-SALK-Q003",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 97,
+    "sourceQuestionNumber": 3,
+    "sourceTraining": 33,
+    "passageId": "VERBAL26-AMER-PASSAGE-SALK",
+    "mainSkillId": "skill_verbal_20",
+    "subSkillId": "sub_verbal_13_1",
+    "text": "اكتشف سالك لقاحه منذ حوالي:",
+    "options": [
+      "5 عقود",
+      "6 عقود",
+      "4 عقود",
+      "7 عقود"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.97; answer verified against passage."
+  },
+  {
+    "id": "VERBAL26-AMER-T33-P097-SALK-Q013",
+    "canonicalId": "VERBAL26-AMER-T33-P097-SALK-Q013",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 97,
+    "sourceQuestionNumber": 13,
+    "sourceTraining": 33,
+    "passageId": "VERBAL26-AMER-PASSAGE-SALK",
+    "mainSkillId": "skill_verbal_20",
+    "subSkillId": "sub_verbal_13_1",
+    "text": "كم عدد الشهور بين اكتشاف سالك للقاح والإعلان عن سلامة اللقاح؟",
+    "options": [
+      "27 شهرًا",
+      "28 شهرًا",
+      "29 شهرًا",
+      "30 شهرًا"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.97; answer verified against passage."
   }
 ]
