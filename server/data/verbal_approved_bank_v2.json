@@ -19985,5 +19985,278 @@
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
     "answerEvidence": "Direct Amer source p.67; sentence meaning/grammar independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T25-P071-Q025",
+    "canonicalId": "VERBAL26-AMER-T25-P071-Q025",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 71,
+    "sourceQuestionNumber": 25,
+    "sourceTraining": 25,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "كلما ازداد استعمال ........، نقص عطاؤها.",
+    "options": [
+      "الآلة",
+      "البيئة",
+      "الذاكرة",
+      "الطاقة"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.71; contextual inconsistency independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T26-P072-Q005",
+    "canonicalId": "VERBAL26-AMER-T26-P072-Q005",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 72,
+    "sourceQuestionNumber": 5,
+    "sourceTraining": 26,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "من أسرع إلى الناس بما يحبون قالوا فيه ما لا يعلمون.",
+    "options": [
+      "أسرع",
+      "الناس",
+      "يحبون",
+      "يعلمون"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.72; contextual inconsistency independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T26-P072-Q006",
+    "canonicalId": "VERBAL26-AMER-T26-P072-Q006",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 72,
+    "sourceQuestionNumber": 6,
+    "sourceTraining": 26,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "يتناسب المستوى الحضاري للإنسان ولمجتمعه مع قيمة وحجم ما يحتاج من عمل وجهد.",
+    "options": [
+      "الحضاري",
+      "قيمة",
+      "يحتاج",
+      "جهد"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.72; contextual inconsistency independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T26-P072-Q009",
+    "canonicalId": "VERBAL26-AMER-T26-P072-Q009",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 72,
+    "sourceQuestionNumber": 9,
+    "sourceTraining": 26,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "صاحب من شئت وراقب من الذي يخونك في غيبتك.",
+    "options": [
+      "صاحب",
+      "راقب",
+      "غيبتك",
+      "شئت"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.72; contextual inconsistency independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T26-P073-Q024",
+    "canonicalId": "VERBAL26-AMER-T26-P073-Q024",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 73,
+    "sourceQuestionNumber": 24,
+    "sourceTraining": 26,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "العجلة في العمل وسرعة الإنجاز العلاقة بينهما والفعل عند العظماء.",
+    "options": [
+      "العجلة",
+      "الإنجاز",
+      "الفعل",
+      "العظماء"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.73; contextual inconsistency independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T26-P073-Q029",
+    "canonicalId": "VERBAL26-AMER-T26-P073-Q029",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 73,
+    "sourceQuestionNumber": 29,
+    "sourceTraining": 26,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "الطالب يستعد للمعركة يجب أن يستعد ويشحذ سكينه ويقصي الأمل.",
+    "options": [
+      "الطالب",
+      "يشحذ",
+      "سكينه",
+      "الأمل"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.73; contextual inconsistency independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T27-P074-Q007",
+    "canonicalId": "VERBAL26-AMER-T27-P074-Q007",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 74,
+    "sourceQuestionNumber": 7,
+    "sourceTraining": 27,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "منذ أمد التاريخ قامت التقنية بتطوير حياة الناس أما الآن فالتقنية تغير قدرات الناس وطموحاتهم.",
+    "options": [
+      "التقنية",
+      "تطوير",
+      "قدرات",
+      "طموحاتهم"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.74; contextual inconsistency independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T27-P074-Q012",
+    "canonicalId": "VERBAL26-AMER-T27-P074-Q012",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 74,
+    "sourceQuestionNumber": 12,
+    "sourceTraining": 27,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "عندما نتقن الكلام يحملونا وزر النوايا.",
+    "options": [
+      "نتقن",
+      "الكلام",
+      "وزر",
+      "النوايا"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.74; contextual inconsistency independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T27-P075-Q020",
+    "canonicalId": "VERBAL26-AMER-T27-P075-Q020",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 75,
+    "sourceQuestionNumber": 20,
+    "sourceTraining": 27,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "السلامة خير من الندامة والأسى خير من التكلف والقناعة خير من الطمع.",
+    "options": [
+      "خير",
+      "الأسى",
+      "التكلف",
+      "الطمع"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.75; contextual inconsistency independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T27-P075-Q026",
+    "canonicalId": "VERBAL26-AMER-T27-P075-Q026",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 75,
+    "sourceQuestionNumber": 26,
+    "sourceTraining": 27,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "إن الأشجار حول المنزل يكون لها حاجز يقيه من أشعة الشمس.",
+    "options": [
+      "الأشجار",
+      "حول",
+      "يكون",
+      "يقيه"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.75; contextual inconsistency independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T28-P076-Q007",
+    "canonicalId": "VERBAL26-AMER-T28-P076-Q007",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 76,
+    "sourceQuestionNumber": 7,
+    "sourceTraining": 28,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "لا يخلو مخلوق من عيب، فالسعيد من ترك عيوبه.",
+    "options": [
+      "عيب",
+      "السعيد",
+      "ترك",
+      "عيوبه"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.76; contextual inconsistency independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T28-P076-Q009",
+    "canonicalId": "VERBAL26-AMER-T28-P076-Q009",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 76,
+    "sourceQuestionNumber": 9,
+    "sourceTraining": 28,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "الصندوق المليء بالجواهر لا يتسع للحصى والقلب المليء بالحزن لا يتسع للصغائر.",
+    "options": [
+      "الصندوق",
+      "بالجواهر",
+      "الحزن",
+      "للصغائر"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.76; contextual inconsistency independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T28-P077-Q018",
+    "canonicalId": "VERBAL26-AMER-T28-P077-Q018",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 77,
+    "sourceQuestionNumber": 18,
+    "sourceTraining": 28,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "يشعر الإنسان بالضيق والتعب من أوقات الفراغ بشكل متكرر وذلك لعدم إدراكهم بأهمية الوقت وكيفية استغلاله.",
+    "options": [
+      "الضيق",
+      "التعب",
+      "الفراغ",
+      "الوقت"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.77; contextual inconsistency independently verified."
   }
 ]
