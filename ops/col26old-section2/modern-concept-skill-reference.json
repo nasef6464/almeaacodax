@@ -1,0 +1,2994 @@
+{
+  "source": "production COL26 V8",
+  "generatedAt": "2026-10-04",
+  "groups": [
+    {
+      "_id": {
+        "concepts": [
+          "األنماط"
+        ],
+        "skillId": "skill_tah_math_01",
+        "subSkillId": "sub_tah_math_01_01",
+        "sectionId": "sec_tah_math_01"
+      },
+      "count": 3,
+      "pages": [
+        5
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "العبارات الشرطية والعبارات الشرطية المرتبطة"
+        ],
+        "skillId": "skill_tah_math_01",
+        "subSkillId": "sub_tah_math_01_01",
+        "sectionId": "sec_tah_math_01"
+      },
+      "count": 5,
+      "pages": [
+        5
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "المضاد والعبارات المركبة"
+        ],
+        "skillId": "skill_tah_math_01",
+        "subSkillId": "sub_tah_math_01_01",
+        "sectionId": "sec_tah_math_01"
+      },
+      "count": 5,
+      "pages": [
+        5
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "العبارات المتكافئة منطقيً ا وأشكال فن"
+        ],
+        "skillId": "skill_tah_math_01",
+        "subSkillId": "sub_tah_math_01_02",
+        "sectionId": "sec_tah_math_01"
+      },
+      "count": 5,
+      "pages": [
+        5,
+        6
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "العالقات بين القطع المستقيمة"
+        ],
+        "skillId": "skill_tah_math_02",
+        "subSkillId": "sub_tah_math_02_01",
+        "sectionId": "sec_tah_math_02"
+      },
+      "count": 2,
+      "pages": [
+        8
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "خصائص األعداد الحقيقية"
+        ],
+        "skillId": "skill_tah_math_02",
+        "subSkillId": "sub_tah_math_02_01",
+        "sectionId": "sec_tah_math_02"
+      },
+      "count": 1,
+      "pages": [
+        8
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "مات وتقاطع المستقيمات والمستويات"
+        ],
+        "skillId": "skill_tah_math_02",
+        "subSkillId": "sub_tah_math_02_01",
+        "sectionId": "sec_tah_math_02"
+      },
+      "count": 1,
+      "pages": [
+        8
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "التوازي بحرف"
+        ],
+        "skillId": "skill_tah_math_02",
+        "subSkillId": "sub_tah_math_02_02",
+        "sectionId": "sec_tah_math_02"
+      },
+      "count": 2,
+      "pages": [
+        10
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "التوازي والتخالف"
+        ],
+        "skillId": "skill_tah_math_02",
+        "subSkillId": "sub_tah_math_02_02",
+        "sectionId": "sec_tah_math_02"
+      },
+      "count": 2,
+      "pages": [
+        9
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "العالقات بين الزوايا"
+        ],
+        "skillId": "skill_tah_math_02",
+        "subSkillId": "sub_tah_math_02_02",
+        "sectionId": "sec_tah_math_02"
+      },
+      "count": 10,
+      "pages": [
+        8
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "المستقيمان والقاطع"
+        ],
+        "skillId": "skill_tah_math_02",
+        "subSkillId": "sub_tah_math_02_02",
+        "sectionId": "sec_tah_math_02"
+      },
+      "count": 9,
+      "pages": [
+        9
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "البعد بين مستقيمين متوازيين"
+        ],
+        "skillId": "skill_tah_math_02",
+        "subSkillId": "sub_tah_math_02_03",
+        "sectionId": "sec_tah_math_02"
+      },
+      "count": 1,
+      "pages": [
+        14
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "البعد بين نقطة ومستقيم"
+        ],
+        "skillId": "skill_tah_math_02",
+        "subSkillId": "sub_tah_math_02_03",
+        "sectionId": "sec_tah_math_02"
+      },
+      "count": 1,
+      "pages": [
+        14
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "البعد بين نقطتين"
+        ],
+        "skillId": "skill_tah_math_02",
+        "subSkillId": "sub_tah_math_02_03",
+        "sectionId": "sec_tah_math_02"
+      },
+      "count": 2,
+      "pages": [
+        14
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "المستقيم الرأسي واألفقي"
+        ],
+        "skillId": "skill_tah_math_02",
+        "subSkillId": "sub_tah_math_02_03",
+        "sectionId": "sec_tah_math_02"
+      },
+      "count": 5,
+      "pages": [
+        14,
+        13
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "المستقيم العمودي والموازي"
+        ],
+        "skillId": "skill_tah_math_02",
+        "subSkillId": "sub_tah_math_02_03",
+        "sectionId": "sec_tah_math_02"
+      },
+      "count": 6,
+      "pages": [
+        13
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "معادلة المستقيم"
+        ],
+        "skillId": "skill_tah_math_02",
+        "subSkillId": "sub_tah_math_02_03",
+        "sectionId": "sec_tah_math_02"
+      },
+      "count": 6,
+      "pages": [
+        13
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "ميل المستقيم"
+        ],
+        "skillId": "skill_tah_math_02",
+        "subSkillId": "sub_tah_math_02_03",
+        "sectionId": "sec_tah_math_02"
+      },
+      "count": 2,
+      "pages": [
+        13
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "الزاوية الخارجية للمثلث"
+        ],
+        "skillId": "skill_tah_math_03",
+        "subSkillId": "sub_tah_math_03_01",
+        "sectionId": "sec_tah_math_03"
+      },
+      "count": 6,
+      "pages": [
+        17,
+        18
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "تصنيف المثلثات"
+        ],
+        "skillId": "skill_tah_math_03",
+        "subSkillId": "sub_tah_math_03_01",
+        "sectionId": "sec_tah_math_03"
+      },
+      "count": 3,
+      "pages": [
+        17
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "خصائص المثلثات"
+        ],
+        "skillId": "skill_tah_math_03",
+        "subSkillId": "sub_tah_math_03_01",
+        "sectionId": "sec_tah_math_03"
+      },
+      "count": 8,
+      "pages": [
+        17
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "تطابق المثلثات"
+        ],
+        "skillId": "skill_tah_math_03",
+        "subSkillId": "sub_tah_math_03_02",
+        "sectionId": "sec_tah_math_03"
+      },
+      "count": 6,
+      "pages": [
+        18
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "المتباينات في المثلث"
+        ],
+        "skillId": "skill_tah_math_03",
+        "subSkillId": "sub_tah_math_03_03",
+        "sectionId": "sec_tah_math_03"
+      },
+      "count": 7,
+      "pages": [
+        19
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "المنصفات"
+        ],
+        "skillId": "skill_tah_math_03",
+        "subSkillId": "sub_tah_math_03_03",
+        "sectionId": "sec_tah_math_03"
+      },
+      "count": 2,
+      "pages": [
+        18
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "قطع مستقيمة خاصة في المثلث"
+        ],
+        "skillId": "skill_tah_math_03",
+        "subSkillId": "sub_tah_math_03_03",
+        "sectionId": "sec_tah_math_03"
+      },
+      "count": 3,
+      "pages": [
+        19,
+        18
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "قوانين مهمة في المثلث"
+        ],
+        "skillId": "skill_tah_math_03",
+        "subSkillId": "sub_tah_math_03_03",
+        "sectionId": "sec_tah_math_03"
+      },
+      "count": 6,
+      "pages": [
+        19
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "مركز المثلث"
+        ],
+        "skillId": "skill_tah_math_03",
+        "subSkillId": "sub_tah_math_03_03",
+        "sectionId": "sec_tah_math_03"
+      },
+      "count": 1,
+      "pages": [
+        19
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "المضلع المنتظم"
+        ],
+        "skillId": "skill_tah_math_04",
+        "subSkillId": "sub_tah_math_04_01",
+        "sectionId": "sec_tah_math_04"
+      },
+      "count": 9,
+      "pages": [
+        24
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "قوانين المضلعات"
+        ],
+        "skillId": "skill_tah_math_04",
+        "subSkillId": "sub_tah_math_04_01",
+        "sectionId": "sec_tah_math_04"
+      },
+      "count": 7,
+      "pages": [
+        24
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "البرهان اإلحداثي"
+        ],
+        "skillId": "skill_tah_math_04",
+        "subSkillId": "sub_tah_math_04_02",
+        "sectionId": "sec_tah_math_04"
+      },
+      "count": 3,
+      "pages": [
+        26
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "المربع"
+        ],
+        "skillId": "skill_tah_math_04",
+        "subSkillId": "sub_tah_math_04_02",
+        "sectionId": "sec_tah_math_04"
+      },
+      "count": 4,
+      "pages": [
+        25,
+        26
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "المستطيل"
+        ],
+        "skillId": "skill_tah_math_04",
+        "subSkillId": "sub_tah_math_04_02",
+        "sectionId": "sec_tah_math_04"
+      },
+      "count": 2,
+      "pages": [
+        25
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "المعين"
+        ],
+        "skillId": "skill_tah_math_04",
+        "subSkillId": "sub_tah_math_04_02",
+        "sectionId": "sec_tah_math_04"
+      },
+      "count": 4,
+      "pages": [
+        25
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "شبه المنحرف"
+        ],
+        "skillId": "skill_tah_math_04",
+        "subSkillId": "sub_tah_math_04_02",
+        "sectionId": "sec_tah_math_04"
+      },
+      "count": 4,
+      "pages": [
+        26
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "متوازي األضالع"
+        ],
+        "skillId": "skill_tah_math_04",
+        "subSkillId": "sub_tah_math_04_02",
+        "sectionId": "sec_tah_math_04"
+      },
+      "count": 8,
+      "pages": [
+        25,
+        24
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "مقارنة بين األشكال الرباعية"
+        ],
+        "skillId": "skill_tah_math_04",
+        "subSkillId": "sub_tah_math_04_02",
+        "sectionId": "sec_tah_math_04"
+      },
+      "count": 3,
+      "pages": [
+        26
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "المضلعات المتشابهة"
+        ],
+        "skillId": "skill_tah_math_05",
+        "subSkillId": "sub_tah_math_05_01",
+        "sectionId": "sec_tah_math_05"
+      },
+      "count": 2,
+      "pages": [
+        30
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "القطعة المنصفة في مثلث"
+        ],
+        "skillId": "skill_tah_math_05",
+        "subSkillId": "sub_tah_math_05_02",
+        "sectionId": "sec_tah_math_05"
+      },
+      "count": 3,
+      "pages": [
+        31
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "المثلثات المتشابهة"
+        ],
+        "skillId": "skill_tah_math_05",
+        "subSkillId": "sub_tah_math_05_02",
+        "sectionId": "sec_tah_math_05"
+      },
+      "count": 9,
+      "pages": [
+        30
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "نظرية التناسب في المثلث"
+        ],
+        "skillId": "skill_tah_math_05",
+        "subSkillId": "sub_tah_math_05_02",
+        "sectionId": "sec_tah_math_05"
+      },
+      "count": 4,
+      "pages": [
+        31,
+        30
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "نظرية منصف الزاوية في المثلث"
+        ],
+        "skillId": "skill_tah_math_05",
+        "subSkillId": "sub_tah_math_05_02",
+        "sectionId": "sec_tah_math_05"
+      },
+      "count": 3,
+      "pages": [
+        31
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "اإلزاحة"
+        ],
+        "skillId": "skill_tah_math_06",
+        "subSkillId": "sub_tah_math_06_01",
+        "sectionId": "sec_tah_math_06"
+      },
+      "count": 4,
+      "pages": [
+        33
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "االنعكاس"
+        ],
+        "skillId": "skill_tah_math_06",
+        "subSkillId": "sub_tah_math_06_01",
+        "sectionId": "sec_tah_math_06"
+      },
+      "count": 4,
+      "pages": [
+        33
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "الدوران"
+        ],
+        "skillId": "skill_tah_math_06",
+        "subSkillId": "sub_tah_math_06_01",
+        "sectionId": "sec_tah_math_06"
+      },
+      "count": 4,
+      "pages": [
+        33
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "التماثل"
+        ],
+        "skillId": "skill_tah_math_06",
+        "subSkillId": "sub_tah_math_06_02",
+        "sectionId": "sec_tah_math_06"
+      },
+      "count": 5,
+      "pages": [
+        33
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "التمدد"
+        ],
+        "skillId": "skill_tah_math_06",
+        "subSkillId": "sub_tah_math_06_02",
+        "sectionId": "sec_tah_math_06"
+      },
+      "count": 1,
+      "pages": [
+        33
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "تركيب التحويالت الهندسية"
+        ],
+        "skillId": "skill_tah_math_06",
+        "subSkillId": "sub_tah_math_06_02",
+        "sectionId": "sec_tah_math_06"
+      },
+      "count": 1,
+      "pages": [
+        33
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "الدائرة"
+        ],
+        "skillId": "skill_tah_math_07",
+        "subSkillId": "sub_tah_math_07_01",
+        "sectionId": "sec_tah_math_07"
+      },
+      "count": 6,
+      "pages": [
+        36
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "الزاوية المركزية وقياس القوس"
+        ],
+        "skillId": "skill_tah_math_07",
+        "subSkillId": "sub_tah_math_07_01",
+        "sectionId": "sec_tah_math_07"
+      },
+      "count": 3,
+      "pages": [
+        36
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "الزوايا المحيطية ونظرياتها"
+        ],
+        "skillId": "skill_tah_math_07",
+        "subSkillId": "sub_tah_math_07_01",
+        "sectionId": "sec_tah_math_07"
+      },
+      "count": 9,
+      "pages": [
+        37
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "طول القوس"
+        ],
+        "skillId": "skill_tah_math_07",
+        "subSkillId": "sub_tah_math_07_01",
+        "sectionId": "sec_tah_math_07"
+      },
+      "count": 3,
+      "pages": [
+        36
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "نظريات في األوتار واألقواس"
+        ],
+        "skillId": "skill_tah_math_07",
+        "subSkillId": "sub_tah_math_07_01",
+        "sectionId": "sec_tah_math_07"
+      },
+      "count": 1,
+      "pages": [
+        36
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "نظرية قطع الوتر ونظريات القاطع"
+        ],
+        "skillId": "skill_tah_math_07",
+        "subSkillId": "sub_tah_math_07_02",
+        "sectionId": "sec_tah_math_07"
+      },
+      "count": 2,
+      "pages": [
+        37
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "معادلة الدائرة"
+        ],
+        "skillId": "skill_tah_math_07",
+        "subSkillId": "sub_tah_math_07_03",
+        "sectionId": "sec_tah_math_07"
+      },
+      "count": 5,
+      "pages": [
+        37
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "األعداد الحقيقية"
+        ],
+        "skillId": "skill_tah_math_08",
+        "subSkillId": "sub_tah_math_08_01",
+        "sectionId": "sec_tah_math_08"
+      },
+      "count": 8,
+      "pages": [
+        42
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "الدالة"
+        ],
+        "skillId": "skill_tah_math_08",
+        "subSkillId": "sub_tah_math_08_01",
+        "sectionId": "sec_tah_math_08"
+      },
+      "count": 11,
+      "pages": [
+        43
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "العالقات والدوال"
+        ],
+        "skillId": "skill_tah_math_08",
+        "subSkillId": "sub_tah_math_08_01",
+        "sectionId": "sec_tah_math_08"
+      },
+      "count": 4,
+      "pages": [
+        42,
+        43
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "تصنيف ومجموعات األعداد الحقيقية"
+        ],
+        "skillId": "skill_tah_math_08",
+        "subSkillId": "sub_tah_math_08_01",
+        "sectionId": "sec_tah_math_08"
+      },
+      "count": 5,
+      "pages": [
+        42
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          ")دالة أكبر عدد صحيح(الدالة الدرجية"
+        ],
+        "skillId": "skill_tah_math_08",
+        "subSkillId": "sub_tah_math_08_02",
+        "sectionId": "sec_tah_math_08"
+      },
+      "count": 3,
+      "pages": [
+        47
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "دالة القيمة المطلقة"
+        ],
+        "skillId": "skill_tah_math_08",
+        "subSkillId": "sub_tah_math_08_02",
+        "sectionId": "sec_tah_math_08"
+      },
+      "count": 8,
+      "pages": [
+        47
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "قيمة الدالة متعددة التعريف عند نقطة"
+        ],
+        "skillId": "skill_tah_math_08",
+        "subSkillId": "sub_tah_math_08_02",
+        "sectionId": "sec_tah_math_08"
+      },
+      "count": 2,
+      "pages": [
+        47
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "كتابة الدالة متعددة التعريف من خالل التمثيل البياني"
+        ],
+        "skillId": "skill_tah_math_08",
+        "subSkillId": "sub_tah_math_08_02",
+        "sectionId": "sec_tah_math_08"
+      },
+      "count": 5,
+      "pages": [
+        47,
+        46
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "مجال ومدى الدالة متعددة التعريف"
+        ],
+        "skillId": "skill_tah_math_08",
+        "subSkillId": "sub_tah_math_08_02",
+        "sectionId": "sec_tah_math_08"
+      },
+      "count": 8,
+      "pages": [
+        46
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "المتباينات الخطية"
+        ],
+        "skillId": "skill_tah_math_08",
+        "subSkillId": "sub_tah_math_08_03",
+        "sectionId": "sec_tah_math_08"
+      },
+      "count": 2,
+      "pages": [
+        49
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "تمثيل أنظمة المتباينات الخطية بيانيً ا"
+        ],
+        "skillId": "skill_tah_math_08",
+        "subSkillId": "sub_tah_math_08_03",
+        "sectionId": "sec_tah_math_08"
+      },
+      "count": 2,
+      "pages": [
+        49
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "حل المتباينات الخطية وأنظمة المتباينات الخطية"
+        ],
+        "skillId": "skill_tah_math_08",
+        "subSkillId": "sub_tah_math_08_03",
+        "sectionId": "sec_tah_math_08"
+      },
+      "count": 2,
+      "pages": [
+        49
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "رؤوس منطقة الحل"
+        ],
+        "skillId": "skill_tah_math_08",
+        "subSkillId": "sub_tah_math_08_03",
+        "sectionId": "sec_tah_math_08"
+      },
+      "count": 5,
+      "pages": [
+        49,
+        50
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "جمع وطرح المصفوفات، وضربها بعدد ثابت"
+        ],
+        "skillId": "skill_tah_math_09",
+        "subSkillId": "sub_tah_math_09_01",
+        "sectionId": "sec_tah_math_09"
+      },
+      "count": 7,
+      "pages": [
+        52
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "رتبة المصفوفة وعناصرها"
+        ],
+        "skillId": "skill_tah_math_09",
+        "subSkillId": "sub_tah_math_09_01",
+        "sectionId": "sec_tah_math_09"
+      },
+      "count": 11,
+      "pages": [
+        52
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "ضرب المصفوفات"
+        ],
+        "skillId": "skill_tah_math_09",
+        "subSkillId": "sub_tah_math_09_01",
+        "sectionId": "sec_tah_math_09"
+      },
+      "count": 4,
+      "pages": [
+        53
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "المعادالت المصفوفية"
+        ],
+        "skillId": "skill_tah_math_09",
+        "subSkillId": "sub_tah_math_09_02",
+        "sectionId": "sec_tah_math_09"
+      },
+      "count": 3,
+      "pages": [
+        54
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "النظير الضربي للمصفوفة"
+        ],
+        "skillId": "skill_tah_math_09",
+        "subSkillId": "sub_tah_math_09_02",
+        "sectionId": "sec_tah_math_09"
+      },
+      "count": 8,
+      "pages": [
+        54,
+        53
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "محددة الدرجة الثالثة"
+        ],
+        "skillId": "skill_tah_math_09",
+        "subSkillId": "sub_tah_math_09_02",
+        "sectionId": "sec_tah_math_09"
+      },
+      "count": 2,
+      "pages": [
+        53
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "محددة الدرجة الثانية"
+        ],
+        "skillId": "skill_tah_math_09",
+        "subSkillId": "sub_tah_math_09_02",
+        "sectionId": "sec_tah_math_09"
+      },
+      "count": 4,
+      "pages": [
+        53
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "مساحة المثلث"
+        ],
+        "skillId": "skill_tah_math_09",
+        "subSkillId": "sub_tah_math_09_02",
+        "sectionId": "sec_tah_math_09"
+      },
+      "count": 1,
+      "pages": [
+        53
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "العمليات على األعداد المركبة"
+        ],
+        "skillId": "skill_tah_math_10",
+        "subSkillId": "sub_tah_math_10_01",
+        "sectionId": "sec_tah_math_10"
+      },
+      "count": 8,
+      "pages": [
+        57
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "قوى العدد التخيلي"
+        ],
+        "skillId": "skill_tah_math_10",
+        "subSkillId": "sub_tah_math_10_01",
+        "sectionId": "sec_tah_math_10"
+      },
+      "count": 6,
+      "pages": [
+        57
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "القانون العام والمميز"
+        ],
+        "skillId": "skill_tah_math_10",
+        "subSkillId": "sub_tah_math_10_02",
+        "sectionId": "sec_tah_math_10"
+      },
+      "count": 3,
+      "pages": [
+        57
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "حل المعادالت التربيعية"
+        ],
+        "skillId": "skill_tah_math_10",
+        "subSkillId": "sub_tah_math_10_02",
+        "sectionId": "sec_tah_math_10"
+      },
+      "count": 4,
+      "pages": [
+        57
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "العمليات على كثيرات الحدود"
+        ],
+        "skillId": "skill_tah_math_10",
+        "subSkillId": "sub_tah_math_10_03",
+        "sectionId": "sec_tah_math_10"
+      },
+      "count": 11,
+      "pages": [
+        60
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "طرق تحليل كثيرات الحدود"
+        ],
+        "skillId": "skill_tah_math_10",
+        "subSkillId": "sub_tah_math_10_03",
+        "sectionId": "sec_tah_math_10"
+      },
+      "count": 3,
+      "pages": [
+        60
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "قسمة التركيبية"
+        ],
+        "skillId": "skill_tah_math_10",
+        "subSkillId": "sub_tah_math_10_03",
+        "sectionId": "sec_tah_math_10"
+      },
+      "count": 3,
+      "pages": [
+        61,
+        60
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "أصفار دالة كثيرة الحدود بيانيً ا"
+        ],
+        "skillId": "skill_tah_math_10",
+        "subSkillId": "sub_tah_math_10_04",
+        "sectionId": "sec_tah_math_10"
+      },
+      "count": 9,
+      "pages": [
+        61
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "النظرية األساسية في الجبر والجذور واألصفار"
+        ],
+        "skillId": "skill_tah_math_10",
+        "subSkillId": "sub_tah_math_10_04",
+        "sectionId": "sec_tah_math_10"
+      },
+      "count": 3,
+      "pages": [
+        62
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "نظرية الباقي"
+        ],
+        "skillId": "skill_tah_math_10",
+        "subSkillId": "sub_tah_math_10_04",
+        "sectionId": "sec_tah_math_10"
+      },
+      "count": 1,
+      "pages": [
+        62
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "نظرية العوامل"
+        ],
+        "skillId": "skill_tah_math_10",
+        "subSkillId": "sub_tah_math_10_04",
+        "sectionId": "sec_tah_math_10"
+      },
+      "count": 1,
+      "pages": [
+        62
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "نظرية ديكارت لإلشارات"
+        ],
+        "skillId": "skill_tah_math_10",
+        "subSkillId": "sub_tah_math_10_04",
+        "sectionId": "sec_tah_math_10"
+      },
+      "count": 2,
+      "pages": [
+        62
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "العمليات الحسابية"
+        ],
+        "skillId": "skill_tah_math_11",
+        "subSkillId": "sub_tah_math_11_01",
+        "sectionId": "sec_tah_math_11"
+      },
+      "count": 5,
+      "pages": [
+        66
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "تركيب دالتين"
+        ],
+        "skillId": "skill_tah_math_11",
+        "subSkillId": "sub_tah_math_11_02",
+        "sectionId": "sec_tah_math_11"
+      },
+      "count": 8,
+      "pages": [
+        66
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "الدالة الجذرية، مجالها ومداها"
+        ],
+        "skillId": "skill_tah_math_11",
+        "subSkillId": "sub_tah_math_11_03",
+        "sectionId": "sec_tah_math_11"
+      },
+      "count": 8,
+      "pages": [
+        69
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "الدالة العكسية"
+        ],
+        "skillId": "skill_tah_math_11",
+        "subSkillId": "sub_tah_math_11_03",
+        "sectionId": "sec_tah_math_11"
+      },
+      "count": 16,
+      "pages": [
+        67,
+        66
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "تبسيط العبارات الجذرية"
+        ],
+        "skillId": "skill_tah_math_11",
+        "subSkillId": "sub_tah_math_11_03",
+        "sectionId": "sec_tah_math_11"
+      },
+      "count": 10,
+      "pages": [
+        69
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "حل المعادالت والمتباينات الجذرية"
+        ],
+        "skillId": "skill_tah_math_11",
+        "subSkillId": "sub_tah_math_11_03",
+        "sectionId": "sec_tah_math_11"
+      },
+      "count": 7,
+      "pages": [
+        70
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "العمليات على الدوال النسبية وتبسيط العبارات"
+        ],
+        "skillId": "skill_tah_math_12",
+        "subSkillId": "sub_tah_math_12_01",
+        "sectionId": "sec_tah_math_12"
+      },
+      "count": 9,
+      "pages": [
+        72
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "المضاعف المشترك األصغر"
+        ],
+        "skillId": "skill_tah_math_12",
+        "subSkillId": "sub_tah_math_12_01",
+        "sectionId": "sec_tah_math_12"
+      },
+      "count": 1,
+      "pages": [
+        72
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "(عدم االتصال)"
+        ],
+        "skillId": "skill_tah_math_12",
+        "subSkillId": "sub_tah_math_12_02",
+        "sectionId": "sec_tah_math_12"
+      },
+      "count": 5,
+      "pages": [
+        72,
+        73
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "التغير الطردي"
+        ],
+        "skillId": "skill_tah_math_12",
+        "subSkillId": "sub_tah_math_12_02",
+        "sectionId": "sec_tah_math_12"
+      },
+      "count": 1,
+      "pages": [
+        73
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "التغير العكسي"
+        ],
+        "skillId": "skill_tah_math_12",
+        "subSkillId": "sub_tah_math_12_02",
+        "sectionId": "sec_tah_math_12"
+      },
+      "count": 4,
+      "pages": [
+        73
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "التغير المركب"
+        ],
+        "skillId": "skill_tah_math_12",
+        "subSkillId": "sub_tah_math_12_02",
+        "sectionId": "sec_tah_math_12"
+      },
+      "count": 2,
+      "pages": [
+        73
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "العبارة النسبية ونقاط عدم التعريف"
+        ],
+        "skillId": "skill_tah_math_12",
+        "subSkillId": "sub_tah_math_12_02",
+        "sectionId": "sec_tah_math_12"
+      },
+      "count": 2,
+      "pages": [
+        72
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "حل المعادالت النسبية"
+        ],
+        "skillId": "skill_tah_math_12",
+        "subSkillId": "sub_tah_math_12_02",
+        "sectionId": "sec_tah_math_12"
+      },
+      "count": 6,
+      "pages": [
+        73
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "خطوط التقارب"
+        ],
+        "skillId": "skill_tah_math_12",
+        "subSkillId": "sub_tah_math_12_02",
+        "sectionId": "sec_tah_math_12"
+      },
+      "count": 1,
+      "pages": [
+        73
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "مجال ومدى الدالة النسبية ودالة المقلوب"
+        ],
+        "skillId": "skill_tah_math_12",
+        "subSkillId": "sub_tah_math_12_02",
+        "sectionId": "sec_tah_math_12"
+      },
+      "count": 3,
+      "pages": [
+        72
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "الحد النوني واألوساط الحسابية للمتتابعات الحسابية"
+        ],
+        "skillId": "skill_tah_math_13",
+        "subSkillId": "sub_tah_math_13_01",
+        "sectionId": "sec_tah_math_13"
+      },
+      "count": 11,
+      "pages": [
+        77
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "المتتابعة الحسابية وأساسها"
+        ],
+        "skillId": "skill_tah_math_13",
+        "subSkillId": "sub_tah_math_13_01",
+        "sectionId": "sec_tah_math_13"
+      },
+      "count": 4,
+      "pages": [
+        77
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "المتسلسالت الحسابية"
+        ],
+        "skillId": "skill_tah_math_13",
+        "subSkillId": "sub_tah_math_13_01",
+        "sectionId": "sec_tah_math_13"
+      },
+      "count": 6,
+      "pages": [
+        77,
+        78
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "المتسلسالت بالرمز سيجما"
+        ],
+        "skillId": "skill_tah_math_13",
+        "subSkillId": "sub_tah_math_13_02",
+        "sectionId": "sec_tah_math_13"
+      },
+      "count": 1,
+      "pages": [
+        78
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "الحد النوني واألوساط الهندسية للمتتابعات الهندسية"
+        ],
+        "skillId": "skill_tah_math_13",
+        "subSkillId": "sub_tah_math_13_03",
+        "sectionId": "sec_tah_math_13"
+      },
+      "count": 3,
+      "pages": [
+        78
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "المتتابعات الهندسية وأساسها"
+        ],
+        "skillId": "skill_tah_math_13",
+        "subSkillId": "sub_tah_math_13_03",
+        "sectionId": "sec_tah_math_13"
+      },
+      "count": 3,
+      "pages": [
+        78
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "المتسلسالت الهندسية"
+        ],
+        "skillId": "skill_tah_math_13",
+        "subSkillId": "sub_tah_math_13_03",
+        "sectionId": "sec_tah_math_13"
+      },
+      "count": 2,
+      "pages": [
+        78
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "المتسلسالت الهندسية الالنهائية"
+        ],
+        "skillId": "skill_tah_math_13",
+        "subSkillId": "sub_tah_math_13_03",
+        "sectionId": "sec_tah_math_13"
+      },
+      "count": 4,
+      "pages": [
+        78
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "االحتمال"
+        ],
+        "skillId": "skill_tah_math_14",
+        "subSkillId": "sub_tah_math_14_01",
+        "sectionId": "sec_tah_math_14"
+      },
+      "count": 3,
+      "pages": [
+        84
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "ة"
+        ],
+        "skillId": "skill_tah_math_14",
+        "subSkillId": "sub_tah_math_14_01",
+        "sectionId": "sec_tah_math_14"
+      },
+      "count": 1,
+      "pages": [
+        86
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "فضاء العينة ومبدأ العد األساسي"
+        ],
+        "skillId": "skill_tah_math_14",
+        "subSkillId": "sub_tah_math_14_01",
+        "sectionId": "sec_tah_math_14"
+      },
+      "count": 7,
+      "pages": [
+        84
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "مفكوك ونظرية ذات الحدين"
+        ],
+        "skillId": "skill_tah_math_14",
+        "subSkillId": "sub_tah_math_14_01",
+        "sectionId": "sec_tah_math_14"
+      },
+      "count": 6,
+      "pages": [
+        82
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "التباديل الدائرية"
+        ],
+        "skillId": "skill_tah_math_14",
+        "subSkillId": "sub_tah_math_14_02",
+        "sectionId": "sec_tah_math_14"
+      },
+      "count": 4,
+      "pages": [
+        85,
+        84
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "التوافيق"
+        ],
+        "skillId": "skill_tah_math_14",
+        "subSkillId": "sub_tah_math_14_02",
+        "sectionId": "sec_tah_math_14"
+      },
+      "count": 1,
+      "pages": [
+        85
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "مضروب العدد والتباديل"
+        ],
+        "skillId": "skill_tah_math_14",
+        "subSkillId": "sub_tah_math_14_02",
+        "sectionId": "sec_tah_math_14"
+      },
+      "count": 6,
+      "pages": [
+        84
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "االحتماالت الهندسية"
+        ],
+        "skillId": "skill_tah_math_14",
+        "subSkillId": "sub_tah_math_14_03",
+        "sectionId": "sec_tah_math_14"
+      },
+      "count": 4,
+      "pages": [
+        85
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "األحداث المتنافية وغير المتنافية"
+        ],
+        "skillId": "skill_tah_math_14",
+        "subSkillId": "sub_tah_math_14_04",
+        "sectionId": "sec_tah_math_14"
+      },
+      "count": 2,
+      "pages": [
+        86
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "االحتمال المشروط"
+        ],
+        "skillId": "skill_tah_math_14",
+        "subSkillId": "sub_tah_math_14_04",
+        "sectionId": "sec_tah_math_14"
+      },
+      "count": 5,
+      "pages": [
+        86
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "الحوادث المستقلة"
+        ],
+        "skillId": "skill_tah_math_14",
+        "subSkillId": "sub_tah_math_14_04",
+        "sectionId": "sec_tah_math_14"
+      },
+      "count": 5,
+      "pages": [
+        85
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "الحوادث غير المستقلة"
+        ],
+        "skillId": "skill_tah_math_14",
+        "subSkillId": "sub_tah_math_14_04",
+        "sectionId": "sec_tah_math_14"
+      },
+      "count": 3,
+      "pages": [
+        85
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "االنخفاض واالرتفاع"
+        ],
+        "skillId": "skill_tah_math_15",
+        "subSkillId": "sub_tah_math_15_01",
+        "sectionId": "sec_tah_math_15"
+      },
+      "count": 5,
+      "pages": [
+        91
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "تبسيط العبارات المثلثية"
+        ],
+        "skillId": "skill_tah_math_15",
+        "subSkillId": "sub_tah_math_15_01",
+        "sectionId": "sec_tah_math_15"
+      },
+      "count": 1,
+      "pages": [
+        90
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "نون جيوب التمام"
+        ],
+        "skillId": "skill_tah_math_15",
+        "subSkillId": "sub_tah_math_15_01",
+        "sectionId": "sec_tah_math_15"
+      },
+      "count": 1,
+      "pages": [
+        92
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "وحدات قياس الزاوية"
+        ],
+        "skillId": "skill_tah_math_15",
+        "subSkillId": "sub_tah_math_15_01",
+        "sectionId": "sec_tah_math_15"
+      },
+      "count": 3,
+      "pages": [
+        90
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "إشارة الدوال المثلثية"
+        ],
+        "skillId": "skill_tah_math_15",
+        "subSkillId": "sub_tah_math_15_02",
+        "sectionId": "sec_tah_math_15"
+      },
+      "count": 1,
+      "pages": [
+        90
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "الدوال المثلثية في المثلث قائم الزاوية"
+        ],
+        "skillId": "skill_tah_math_15",
+        "subSkillId": "sub_tah_math_15_02",
+        "sectionId": "sec_tah_math_15"
+      },
+      "count": 3,
+      "pages": [
+        90
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "الدوال المثلثية للزوايا"
+        ],
+        "skillId": "skill_tah_math_15",
+        "subSkillId": "sub_tah_math_15_02",
+        "sectionId": "sec_tah_math_15"
+      },
+      "count": 2,
+      "pages": [
+        90,
+        91
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "تتمة الدوال المثلثية في المثلث قائم الزاوية"
+        ],
+        "skillId": "skill_tah_math_15",
+        "subSkillId": "sub_tah_math_15_02",
+        "sectionId": "sec_tah_math_15"
+      },
+      "count": 7,
+      "pages": [
+        90
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "قيم الدوال المثلثية المعروفة"
+        ],
+        "skillId": "skill_tah_math_15",
+        "subSkillId": "sub_tah_math_15_02",
+        "sectionId": "sec_tah_math_15"
+      },
+      "count": 3,
+      "pages": [
+        91
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "الدورة الكاملة"
+        ],
+        "skillId": "skill_tah_math_15",
+        "subSkillId": "sub_tah_math_15_03",
+        "sectionId": "sec_tah_math_15"
+      },
+      "count": 5,
+      "pages": [
+        92,
+        91
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "الزاوية المرجعية"
+        ],
+        "skillId": "skill_tah_math_15",
+        "subSkillId": "sub_tah_math_15_03",
+        "sectionId": "sec_tah_math_15"
+      },
+      "count": 3,
+      "pages": [
+        91
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "تمثيل الدوال المثلثية"
+        ],
+        "skillId": "skill_tah_math_15",
+        "subSkillId": "sub_tah_math_15_03",
+        "sectionId": "sec_tah_math_15"
+      },
+      "count": 1,
+      "pages": [
+        92
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "معكوس النسب المثلثية"
+        ],
+        "skillId": "skill_tah_math_15",
+        "subSkillId": "sub_tah_math_15_03",
+        "sectionId": "sec_tah_math_15"
+      },
+      "count": 4,
+      "pages": [
+        91
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "قانون الجيوب"
+        ],
+        "skillId": "skill_tah_math_15",
+        "subSkillId": "sub_tah_math_15_04",
+        "sectionId": "sec_tah_math_15"
+      },
+      "count": 1,
+      "pages": [
+        92
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "مساحة المثلث"
+        ],
+        "skillId": "skill_tah_math_15",
+        "subSkillId": "sub_tah_math_15_04",
+        "sectionId": "sec_tah_math_15"
+      },
+      "count": 5,
+      "pages": [
+        92
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "الدوال الفردية والزوجية"
+        ],
+        "skillId": "skill_tah_math_16",
+        "subSkillId": "sub_tah_math_16_01",
+        "sectionId": "sec_tah_math_16"
+      },
+      "count": 10,
+      "pages": [
+        98,
+        99
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "الفترات"
+        ],
+        "skillId": "skill_tah_math_16",
+        "subSkillId": "sub_tah_math_16_01",
+        "sectionId": "sec_tah_math_16"
+      },
+      "count": 2,
+      "pages": [
+        98
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "القيم العظمى والصغرى للدالة"
+        ],
+        "skillId": "skill_tah_math_16",
+        "subSkillId": "sub_tah_math_16_01",
+        "sectionId": "sec_tah_math_16"
+      },
+      "count": 9,
+      "pages": [
+        99,
+        100
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "تحليل التمثيل البياني للدوال"
+        ],
+        "skillId": "skill_tah_math_16",
+        "subSkillId": "sub_tah_math_16_01",
+        "sectionId": "sec_tah_math_16"
+      },
+      "count": 9,
+      "pages": [
+        98
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "فترات التزايد والتناقص والثبوت"
+        ],
+        "skillId": "skill_tah_math_16",
+        "subSkillId": "sub_tah_math_16_01",
+        "sectionId": "sec_tah_math_16"
+      },
+      "count": 4,
+      "pages": [
+        99
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "إزالة عدم االتصال"
+        ],
+        "skillId": "skill_tah_math_16",
+        "subSkillId": "sub_tah_math_16_02",
+        "sectionId": "sec_tah_math_16"
+      },
+      "count": 5,
+      "pages": [
+        101
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "النهايات وعدم االتصال"
+        ],
+        "skillId": "skill_tah_math_16",
+        "subSkillId": "sub_tah_math_16_02",
+        "sectionId": "sec_tah_math_16"
+      },
+      "count": 5,
+      "pages": [
+        101,
+        100
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "متوسط معدل التغير"
+        ],
+        "skillId": "skill_tah_math_16",
+        "subSkillId": "sub_tah_math_16_03",
+        "sectionId": "sec_tah_math_16"
+      },
+      "count": 5,
+      "pages": [
+        101
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "الدوال األم وتحويالت الدوال"
+        ],
+        "skillId": "skill_tah_math_16",
+        "subSkillId": "sub_tah_math_16_04",
+        "sectionId": "sec_tah_math_16"
+      },
+      "count": 15,
+      "pages": [
+        101,
+        103,
+        102
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "إيجاد مجال ومدى الدوال جبريًا"
+        ],
+        "skillId": "skill_tah_math_16",
+        "subSkillId": "sub_tah_math_16_05",
+        "sectionId": "sec_tah_math_16"
+      },
+      "count": 3,
+      "pages": [
+        103
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "تمثيل الدوال وإيجاد مجالها ومداها"
+        ],
+        "skillId": "skill_tah_math_16",
+        "subSkillId": "sub_tah_math_16_05",
+        "sectionId": "sec_tah_math_16"
+      },
+      "count": 2,
+      "pages": [
+        103
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "مجال ومدى الدوال العكسية"
+        ],
+        "skillId": "skill_tah_math_16",
+        "subSkillId": "sub_tah_math_16_05",
+        "sectionId": "sec_tah_math_16"
+      },
+      "count": 2,
+      "pages": [
+        103
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "التحويل بين الصورة اللوغاريتمية واألسية"
+        ],
+        "skillId": "skill_tah_math_17",
+        "subSkillId": "sub_tah_math_17_01",
+        "sectionId": "sec_tah_math_17"
+      },
+      "count": 6,
+      "pages": [
+        112
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "الدالة األسية"
+        ],
+        "skillId": "skill_tah_math_17",
+        "subSkillId": "sub_tah_math_17_01",
+        "sectionId": "sec_tah_math_17"
+      },
+      "count": 2,
+      "pages": [
+        111
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "الربح والربح المركب"
+        ],
+        "skillId": "skill_tah_math_17",
+        "subSkillId": "sub_tah_math_17_01",
+        "sectionId": "sec_tah_math_17"
+      },
+      "count": 2,
+      "pages": [
+        111
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "حل المعادالت والمتباينات األسية"
+        ],
+        "skillId": "skill_tah_math_17",
+        "subSkillId": "sub_tah_math_17_01",
+        "sectionId": "sec_tah_math_17"
+      },
+      "count": 12,
+      "pages": [
+        111
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "إيجاد قيم العبارات اللوغاريتمية"
+        ],
+        "skillId": "skill_tah_math_17",
+        "subSkillId": "sub_tah_math_17_02",
+        "sectionId": "sec_tah_math_17"
+      },
+      "count": 19,
+      "pages": [
+        113,
+        112
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "الدالة اللوغاريتمية"
+        ],
+        "skillId": "skill_tah_math_17",
+        "subSkillId": "sub_tah_math_17_02",
+        "sectionId": "sec_tah_math_17"
+      },
+      "count": 5,
+      "pages": [
+        112
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "اللوغاريتم"
+        ],
+        "skillId": "skill_tah_math_17",
+        "subSkillId": "sub_tah_math_17_02",
+        "sectionId": "sec_tah_math_17"
+      },
+      "count": 3,
+      "pages": [
+        111
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "حل المتباينات اللوغاريتمية"
+        ],
+        "skillId": "skill_tah_math_17",
+        "subSkillId": "sub_tah_math_17_02",
+        "sectionId": "sec_tah_math_17"
+      },
+      "count": 1,
+      "pages": [
+        114
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "حل المعادالت اللوغاريتمية"
+        ],
+        "skillId": "skill_tah_math_17",
+        "subSkillId": "sub_tah_math_17_02",
+        "sectionId": "sec_tah_math_17"
+      },
+      "count": 13,
+      "pages": [
+        114,
+        113
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "اللوغاريتم العشري"
+        ],
+        "skillId": "skill_tah_math_17",
+        "subSkillId": "sub_tah_math_17_03",
+        "sectionId": "sec_tah_math_17"
+      },
+      "count": 2,
+      "pages": [
+        114
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "المتطابقات النسبية ومتطابقات المقلوب"
+        ],
+        "skillId": "skill_tah_math_18",
+        "subSkillId": "sub_tah_math_18_01",
+        "sectionId": "sec_tah_math_18"
+      },
+      "count": 6,
+      "pages": [
+        119
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "متطابقات الزاويتين المتممتين والدوال الفردية والزوجية"
+        ],
+        "skillId": "skill_tah_math_18",
+        "subSkillId": "sub_tah_math_18_01",
+        "sectionId": "sec_tah_math_18"
+      },
+      "count": 1,
+      "pages": [
+        120
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "متطابقات فيثاغورس"
+        ],
+        "skillId": "skill_tah_math_18",
+        "subSkillId": "sub_tah_math_18_01",
+        "sectionId": "sec_tah_math_18"
+      },
+      "count": 18,
+      "pages": [
+        120,
+        119
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "متطابقات الضعف"
+        ],
+        "skillId": "skill_tah_math_18",
+        "subSkillId": "sub_tah_math_18_02",
+        "sectionId": "sec_tah_math_18"
+      },
+      "count": 4,
+      "pages": [
+        120
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "متطابقات المجموع والفرق"
+        ],
+        "skillId": "skill_tah_math_18",
+        "subSkillId": "sub_tah_math_18_02",
+        "sectionId": "sec_tah_math_18"
+      },
+      "count": 4,
+      "pages": [
+        120
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "حل المعادالت المثلثية"
+        ],
+        "skillId": "skill_tah_math_18",
+        "subSkillId": "sub_tah_math_18_03",
+        "sectionId": "sec_tah_math_18"
+      },
+      "count": 8,
+      "pages": [
+        120
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "القطع المكافئ"
+        ],
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_01",
+        "sectionId": "sec_tah_math_19"
+      },
+      "count": 21,
+      "pages": [
+        125,
+        124
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "القطع الناقص"
+        ],
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_02",
+        "sectionId": "sec_tah_math_19"
+      },
+      "count": 9,
+      "pages": [
+        125
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "القطع الزائد"
+        ],
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_03",
+        "sectionId": "sec_tah_math_19"
+      },
+      "count": 5,
+      "pages": [
+        125
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "تصنيف القطوع"
+        ],
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_04",
+        "sectionId": "sec_tah_math_19"
+      },
+      "count": 4,
+      "pages": [
+        126
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "معادلة الدائرة"
+        ],
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_04",
+        "sectionId": "sec_tah_math_19"
+      },
+      "count": 3,
+      "pages": [
+        126
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "أنواع الكميات الفيزيائية"
+        ],
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_01",
+        "sectionId": "sec_tah_math_20"
+      },
+      "count": 1,
+      "pages": [
+        131
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "أنواع المتجهات"
+        ],
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_01",
+        "sectionId": "sec_tah_math_20"
+      },
+      "count": 3,
+      "pages": [
+        131
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "التعبير عن االتجاهات"
+        ],
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_01",
+        "sectionId": "sec_tah_math_20"
+      },
+      "count": 2,
+      "pages": [
+        131
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "المتجهات في المستوى اإلحداثي"
+        ],
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_01",
+        "sectionId": "sec_tah_math_20"
+      },
+      "count": 23,
+      "pages": [
+        131,
+        132,
+        133
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "تحليل المتجه الى مركبتين متعامدتين"
+        ],
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_01",
+        "sectionId": "sec_tah_math_20"
+      },
+      "count": 4,
+      "pages": [
+        131
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "محصلة متجهين"
+        ],
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_01",
+        "sectionId": "sec_tah_math_20"
+      },
+      "count": 2,
+      "pages": [
+        131
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "الضرب االتجاهي في الفضاء ثالثي األبعاد"
+        ],
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_02",
+        "sectionId": "sec_tah_math_20"
+      },
+      "count": 2,
+      "pages": [
+        133
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "الضرب الداخلي في الفضاء ثالثي األبعاد"
+        ],
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_02",
+        "sectionId": "sec_tah_math_20"
+      },
+      "count": 3,
+      "pages": [
+        133
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "المتجهات في الفضاء ثالثي األبعاد"
+        ],
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_02",
+        "sectionId": "sec_tah_math_20"
+      },
+      "count": 1,
+      "pages": [
+        133
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "الجذور النونية"
+        ],
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_03",
+        "sectionId": "sec_tah_math_20"
+      },
+      "count": 1,
+      "pages": [
+        140
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "الصيغة القطبية للعدد المركب"
+        ],
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_03",
+        "sectionId": "sec_tah_math_20"
+      },
+      "count": 5,
+      "pages": [
+        139
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "ضرب وقسمة األعداد المركبة"
+        ],
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_03",
+        "sectionId": "sec_tah_math_20"
+      },
+      "count": 2,
+      "pages": [
+        139
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "نظرية ديموافر"
+        ],
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_03",
+        "sectionId": "sec_tah_math_20"
+      },
+      "count": 3,
+      "pages": [
+        139,
+        140
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "التحويل بين اإلحداثيات"
+        ],
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_04",
+        "sectionId": "sec_tah_math_20"
+      },
+      "count": 5,
+      "pages": [
+        138
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "التحويل من المعادلة الديكارتية إلى القطبية"
+        ],
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_04",
+        "sectionId": "sec_tah_math_20"
+      },
+      "count": 4,
+      "pages": [
+        139
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "التحويل من المعادلة القطبية إلى الديكارتية"
+        ],
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_04",
+        "sectionId": "sec_tah_math_20"
+      },
+      "count": 6,
+      "pages": [
+        139
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "المسافة بين نقطتين قطبيتين"
+        ],
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_04",
+        "sectionId": "sec_tah_math_20"
+      },
+      "count": 2,
+      "pages": [
+        138
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "المستوى القطبي وتمثيل المعادالت القطبية"
+        ],
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_04",
+        "sectionId": "sec_tah_math_20"
+      },
+      "count": 5,
+      "pages": [
+        138
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "أنواع الدراسات والبيانات اإلحصائية"
+        ],
+        "skillId": "skill_tah_math_21",
+        "subSkillId": "sub_tah_math_21_01",
+        "sectionId": "sec_tah_math_21"
+      },
+      "count": 2,
+      "pages": [
+        143
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "هامش الخطأ"
+        ],
+        "skillId": "skill_tah_math_21",
+        "subSkillId": "sub_tah_math_21_01",
+        "sectionId": "sec_tah_math_21"
+      },
+      "count": 1,
+      "pages": [
+        143
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "مقاييس التشتت"
+        ],
+        "skillId": "skill_tah_math_21",
+        "subSkillId": "sub_tah_math_21_02",
+        "sectionId": "sec_tah_math_21"
+      },
+      "count": 3,
+      "pages": [
+        143
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "مقاييس النزعة المركزية"
+        ],
+        "skillId": "skill_tah_math_21",
+        "subSkillId": "sub_tah_math_21_02",
+        "sectionId": "sec_tah_math_21"
+      },
+      "count": 7,
+      "pages": [
+        143
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "احتمالية النجاح والفشل"
+        ],
+        "skillId": "skill_tah_math_21",
+        "subSkillId": "sub_tah_math_21_03",
+        "sectionId": "sec_tah_math_21"
+      },
+      "count": 2,
+      "pages": [
+        144
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "التوزيع االحتمالي والقيمة المتوقعة"
+        ],
+        "skillId": "skill_tah_math_21",
+        "subSkillId": "sub_tah_math_21_03",
+        "sectionId": "sec_tah_math_21"
+      },
+      "count": 1,
+      "pages": [
+        144
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "لجداول التوافقية"
+        ],
+        "skillId": "skill_tah_math_21",
+        "subSkillId": "sub_tah_math_21_03",
+        "sectionId": "sec_tah_math_21"
+      },
+      "count": 3,
+      "pages": [
+        143,
+        144
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "التوزيع الطبيعي والتوزيعات الملتوية"
+        ],
+        "skillId": "skill_tah_math_21",
+        "subSkillId": "sub_tah_math_21_04",
+        "sectionId": "sec_tah_math_21"
+      },
+      "count": 11,
+      "pages": [
+        144
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "التوزيع ذو الحدين"
+        ],
+        "skillId": "skill_tah_math_21",
+        "subSkillId": "sub_tah_math_21_04",
+        "sectionId": "sec_tah_math_21"
+      },
+      "count": 1,
+      "pages": [
+        144
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "تقدير النهايات بيانيً ا وأمثلة عدم االتصال"
+        ],
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_01",
+        "sectionId": "sec_tah_math_22"
+      },
+      "count": 7,
+      "pages": [
+        148
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "الصيغة غير المحددة"
+        ],
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_02",
+        "sectionId": "sec_tah_math_22"
+      },
+      "count": 11,
+      "pages": [
+        149
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "حساب النهايات جبريًا"
+        ],
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_02",
+        "sectionId": "sec_tah_math_22"
+      },
+      "count": 9,
+      "pages": [
+        148
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "نهايات الدوال عند الماالنهاية"
+        ],
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_02",
+        "sectionId": "sec_tah_math_22"
+      },
+      "count": 19,
+      "pages": [
+        149,
+        150
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "مشتقة الدالة عند نقطة"
+        ],
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_03",
+        "sectionId": "sec_tah_math_22"
+      },
+      "count": 5,
+      "pages": [
+        153
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "مشتقة القسمة"
+        ],
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_03",
+        "sectionId": "sec_tah_math_22"
+      },
+      "count": 2,
+      "pages": [
+        153
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "مشتقة المجموع والفرق"
+        ],
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_03",
+        "sectionId": "sec_tah_math_22"
+      },
+      "count": 4,
+      "pages": [
+        153
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "ميل المماس واالشتقاق"
+        ],
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_03",
+        "sectionId": "sec_tah_math_22"
+      },
+      "count": 6,
+      "pages": [
+        153
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "تطبيقات االشتقاق"
+        ],
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_04",
+        "sectionId": "sec_tah_math_22"
+      },
+      "count": 7,
+      "pages": [
+        154,
+        153
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "التكامل المحدد"
+        ],
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_05",
+        "sectionId": "sec_tah_math_22"
+      },
+      "count": 10,
+      "pages": [
+        154,
+        155
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "الدوال األصلية والتكامل غير المحدد"
+        ],
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_05",
+        "sectionId": "sec_tah_math_22"
+      },
+      "count": 6,
+      "pages": [
+        154
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "المساحة تحت المنحنى بالتكامل"
+        ],
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_05",
+        "sectionId": "sec_tah_math_22"
+      },
+      "count": 5,
+      "pages": [
+        155
+      ]
+    },
+    {
+      "_id": {
+        "concepts": [
+          "تطبيقات التكامل"
+        ],
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_05",
+        "sectionId": "sec_tah_math_22"
+      },
+      "count": 1,
+      "pages": [
+        155
+      ]
+    }
+  ]
+}
