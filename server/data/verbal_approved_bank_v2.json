@@ -20258,5 +20258,115 @@
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
     "answerEvidence": "Direct Amer source p.77; contextual inconsistency independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T29-P083-QK-Q002",
+    "canonicalId": "VERBAL26-AMER-T29-P083-QK-Q002",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 83,
+    "sourceQuestionNumber": 2,
+    "sourceTraining": 29,
+    "passageId": "VERBAL26-AMER-PASSAGE-RUB-AL-KHALI",
+    "mainSkillId": "skill_verbal_20",
+    "subSkillId": "sub_verbal_13_1",
+    "text": "تفيد الفقرة الأولى أن صحراء الربع الخالي تحيط بها المرتفعات من:",
+    "options": [
+      "جميع الجهات",
+      "الجهات الغربية والشرقية والجنوبية",
+      "الجهتين الغربية والجنوبية",
+      "الجهات الشمالية والجنوبية والغربية"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.83; answer verified against passage."
+  },
+  {
+    "id": "VERBAL26-AMER-T29-P084-LISTEN-Q002",
+    "canonicalId": "VERBAL26-AMER-T29-P084-LISTEN-Q002",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 84,
+    "sourceQuestionNumber": 2,
+    "sourceTraining": 29,
+    "passageId": "VERBAL26-AMER-PASSAGE-LISTEN",
+    "mainSkillId": "skill_verbal_20",
+    "subSkillId": "sub_verbal_13_1",
+    "text": "يفهم من النص أن:",
+    "options": [
+      "العقل مركز تخزين المعلومات وحفظها",
+      "الناس يستمعون ضعف ما يتكلمون",
+      "تحصيل العلم محصور على الاستماع",
+      "نسبة الذكاء مرتفعة عند المستمعين"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.84; answer verified against passage."
+  },
+  {
+    "id": "VERBAL26-AMER-T29-P085-NOBLE-Q001",
+    "canonicalId": "VERBAL26-AMER-T29-P085-NOBLE-Q001",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 85,
+    "sourceQuestionNumber": 1,
+    "sourceTraining": 29,
+    "passageId": "VERBAL26-AMER-PASSAGE-NOBLE",
+    "mainSkillId": "skill_verbal_20",
+    "subSkillId": "sub_verbal_13_1",
+    "text": "تؤكد العبارة على أن:",
+    "options": [
+      "الاستلطاف يقسي الكريم",
+      "القوة تلين الكريم",
+      "الاستعطاف يقسي اللئيم",
+      "القسوة تلين اللئيم"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.85; answer verified against passage."
+  },
+  {
+    "id": "VERBAL26-AMER-T29-P085-NOBLE-Q004",
+    "canonicalId": "VERBAL26-AMER-T29-P085-NOBLE-Q004",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 85,
+    "sourceQuestionNumber": 4,
+    "sourceTraining": 29,
+    "passageId": "VERBAL26-AMER-PASSAGE-NOBLE",
+    "mainSkillId": "skill_verbal_20",
+    "subSkillId": "sub_verbal_13_1",
+    "text": "النص يقارن بين:",
+    "options": [
+      "الشريف واللئيم",
+      "الغني والفقير",
+      "الكبير والصغير",
+      "الرجل والمرأة"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.85; answer verified against passage."
+  },
+  {
+    "id": "VERBAL26-AMER-T29-P085-NOBLE-Q005",
+    "canonicalId": "VERBAL26-AMER-T29-P085-NOBLE-Q005",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 85,
+    "sourceQuestionNumber": 5,
+    "sourceTraining": 29,
+    "passageId": "VERBAL26-AMER-PASSAGE-NOBLE",
+    "mainSkillId": "skill_verbal_20",
+    "subSkillId": "sub_verbal_13_1",
+    "text": "يفهم من النص أن:",
+    "options": [
+      "اللئيم يزجر إذا استعطفته",
+      "الكريم يضام",
+      "اللئيم يصان",
+      "الكريم يحتاج إلى اللئيم"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.85; answer verified against passage."
   }
 ]
