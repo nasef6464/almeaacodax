@@ -3148,9 +3148,9 @@
     "verifiedAt": "2026-10-04",
     "branch": "codex/verbal26-full-closure",
     "policy": "Full-book source reconciliation; observed inventory is not sufficient for canonical approval.",
-    "canonicalApprovedTotal": 926,
+    "canonicalApprovedTotal": 965,
     "canonicalBySource": {
-      "abdelbaset": 810,
+      "abdelbaset": 849,
       "anas": 116
     },
     "amerObservedTotal": 915,
@@ -3195,6 +3195,26 @@
         "dedupedMalformedProvenance": 18
       }
     ],
-    "migrationReady": false
+    "migrationReady": false,
+    "sourceNumberingExceptions": [
+      {
+        "training": 26,
+        "pdfPages": [
+          72,
+          73
+        ],
+        "printedNumbers": "1-14,16-29",
+        "observedQuestions": 28,
+        "missingPrintedNumber": 15,
+        "status": "SOURCE_NUMBERING_GAP_NOT_A_MISSING_QUESTION"
+      }
+    ],
+    "closedTrainings": {
+      "T24": "48/48",
+      "T25": "28/28",
+      "T26": "28 observed; printed Q15 absent",
+      "T27": "30/30",
+      "T28": "24/24"
+    }
   }
 }
