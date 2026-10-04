@@ -21158,69 +21158,6 @@
     "answerEvidence": "Direct Amer source p.11; relation independently verified."
   },
   {
-    "id": "VERBAL26-AMER-T3-P011-Q020",
-    "canonicalId": "VERBAL26-AMER-T3-P011-Q020",
-    "sourceBook": "abdelbaset",
-    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
-    "sourcePage": 11,
-    "sourceQuestionNumber": 20,
-    "sourceTraining": 3,
-    "mainSkillId": "skill_verbal_02",
-    "subSkillId": "sub_verbal_02_1",
-    "text": "يحيا : يموت",
-    "options": [
-      "يهرول : يركض",
-      "يرجع : يعود",
-      "ينام : ينعس",
-      "يفوز : يخسر"
-    ],
-    "correctOptionIndex": 3,
-    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Direct Amer source p.11; relation independently verified."
-  },
-  {
-    "id": "VERBAL26-AMER-T3-P012-Q022",
-    "canonicalId": "VERBAL26-AMER-T3-P012-Q022",
-    "sourceBook": "abdelbaset",
-    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
-    "sourcePage": 12,
-    "sourceQuestionNumber": 22,
-    "sourceTraining": 3,
-    "mainSkillId": "skill_verbal_02",
-    "subSkillId": "sub_verbal_02_1",
-    "text": "أنانية : إيثار",
-    "options": [
-      "خير : مكان",
-      "فهم : معرفة",
-      "حركة : سكون",
-      "عدل : مساواة"
-    ],
-    "correctOptionIndex": 2,
-    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Direct Amer source p.12; relation independently verified."
-  },
-  {
-    "id": "VERBAL26-AMER-T3-P012-Q024",
-    "canonicalId": "VERBAL26-AMER-T3-P012-Q024",
-    "sourceBook": "abdelbaset",
-    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
-    "sourcePage": 12,
-    "sourceQuestionNumber": 24,
-    "sourceTraining": 3,
-    "mainSkillId": "skill_verbal_02",
-    "subSkillId": "sub_verbal_02_1",
-    "text": "نزاهة : فساد",
-    "options": [
-      "تشغيل : انطلاق",
-      "حقيقة : خيال",
-      "أخبار : مفزعة",
-      "رفاهية : ارتياح"
-    ],
-    "correctOptionIndex": 1,
-    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Direct Amer source p.12; relation independently verified."
-  },
-  {
     "id": "VERBAL26-AMER-T4-P014-Q003",
     "canonicalId": "VERBAL26-AMER-T4-P014-Q003",
     "sourceBook": "abdelbaset",
