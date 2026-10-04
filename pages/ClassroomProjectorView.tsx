@@ -58,6 +58,7 @@ export const ClassroomProjectorView: React.FC = () => {
   const [revealMode, setRevealMode] = useState<RevealMode>('submissions');
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [publishing, setPublishing] = useState(false);
+  const [showStudentList, setShowStudentList] = useState(false);
 
   useEffect(() => {
     const isPresenter = user?.role && ['teacher', 'school_admin', 'supervisor', 'admin'].includes(user.role);
@@ -211,19 +212,41 @@ export const ClassroomProjectorView: React.FC = () => {
             </div>
 
             {revealMode === 'submissions' && (
-              <section className="rounded-3xl border border-emerald-500/30 bg-emerald-950/15 p-5 sm:p-6">
+              <section className="rounded-3xl border border-emerald-500/30 bg-emerald-950/20 p-4 sm:p-5">
                 <div className="flex flex-wrap items-center justify-between gap-3">
-                  <div><h2 className="text-lg font-black text-emerald-300">الطلاب الذين سلّموا</h2><p className="mt-1 text-xs text-slate-400">لا تظهر هنا أي إجابة أو نتيجة. فقط حالة التسليم للدفعة الحالية.</p></div>
-                  <span className="rounded-full bg-emerald-500/15 px-3 py-1 text-xs font-black text-emerald-300">{submittedCount} من {joinedCount}</span>
+                  <div className="flex items-center gap-3">
+                    <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-emerald-500/20 text-emerald-400 font-black text-sm">
+                      <Users size={20} />
+                    </span>
+                    <div>
+                      <h2 className="text-base sm:text-lg font-black text-emerald-300">
+                        مشاركة الفصل: {submittedCount} من {joinedCount || 1} طالب سلّموا الإجابة
+                      </h2>
+                      <p className="text-xs text-slate-400">
+                        السبورة تحافظ على سرية إجابات الطلاب ولا تعرض تفاصيل أو درجات فردية.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setShowStudentList((prev) => !prev)}
+                      className="rounded-xl border border-slate-700 bg-slate-800/80 px-3 py-1.5 text-xs font-bold text-slate-300 hover:bg-slate-700"
+                    >
+                      {showStudentList ? 'إخفاء الأسماء' : 'عرض قائمة التسليم (اختياري)'}
+                    </button>
+                    <span className="rounded-full bg-emerald-500/15 px-3 py-1 font-mono text-sm font-black text-emerald-300">
+                      {joinedCount > 0 ? `${Math.round((submittedCount / joinedCount) * 100)}%` : '0%'}
+                    </span>
+                  </div>
                 </div>
-                {submittedStudents.length === 0 ? (
-                  <p className="mt-5 rounded-2xl border border-slate-800 bg-slate-900/70 p-5 text-center text-sm font-bold text-slate-400">بانتظار أول تسليم.</p>
-                ) : (
-                  <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+
+                {showStudentList && submittedStudents.length > 0 && (
+                  <div className="mt-4 pt-4 border-t border-emerald-500/20 grid gap-2 sm:grid-cols-3 lg:grid-cols-4">
                     {submittedStudents.map((student) => (
-                      <div key={student.studentId} className="flex items-center justify-between gap-3 rounded-2xl border border-slate-800 bg-slate-900/80 px-4 py-3">
-                        <div className="min-w-0"><p className="truncate font-black text-white">{student.name}</p><p className="text-[11px] text-slate-500">تم التسليم</p></div>
-                        {student.onTime === true ? <span className="rounded-full bg-emerald-500/20 px-2.5 py-1 text-[11px] font-black text-emerald-300">في الوقت ✓</span> : student.onTime === false ? <span className="rounded-full bg-rose-500/20 px-2.5 py-1 text-[11px] font-black text-rose-300">بعد الوقت</span> : <CheckCircle2 size={18} className="text-emerald-400" />}
+                      <div key={student.studentId} className="flex items-center justify-between gap-2 rounded-xl border border-slate-800 bg-slate-900/90 px-3 py-2 text-xs">
+                        <span className="truncate font-bold text-slate-200">{student.name}</span>
+                        <CheckCircle2 size={14} className="text-emerald-400 shrink-0" />
                       </div>
                     ))}
                   </div>
