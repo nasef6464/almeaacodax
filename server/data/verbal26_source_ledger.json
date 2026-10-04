@@ -2559,14 +2559,14 @@
   ],
   "metrics": {
     "sourceKeyVerifiedRecords": 112,
-    "approvedBankRecords": 843,
+    "approvedBankRecords": 865,
     "note": "Ledger records are not approved-bank records until visual text/options and taxonomy QA pass.",
     "sourceConflictRecords": 23,
     "anasObservedQuestions": 135,
     "anasKeyVerifiedQuestions": 112,
     "anasConflictQuestions": 23,
     "amerTrainingsIndexed": 33,
-    "amerApprovedRecords": 727,
+    "amerApprovedRecords": 749,
     "amerDerivedReportCrossCheck": 938,
     "amerDerivedReportIsAuthority": false,
     "amerObservedQuestionCounts": {
@@ -2602,11 +2602,11 @@
       "30": 29,
       "31": 28,
       "32": 20,
-      "33": 34
+      "33": 40
     },
     "approvedBySource": {
       "anas": 116,
-      "abdelbaset": 727
+      "abdelbaset": 749
     },
     "approvedByMainSkill": {
       "skill_verbal_17": 51,
@@ -2634,7 +2634,7 @@
     },
     "approvedSubSkillCoverage": 48,
     "approvedMainSkillCoverage": 22,
-    "amerObservedQuestions": 915,
+    "amerObservedQuestions": 921,
     "anasCanonicalApproved": 116,
     "anasCurrentQuarantined": 10
   },
@@ -2806,8 +2806,8 @@
     }
   ],
   "migrationReady": false,
-  "migrationReadinessReason": "Full-book source QA is still incomplete. Migration remains blocked until both books are fully accounted, dedupe/source contracts pass, and all unresolved answers are quarantined or resolved.",
-  "progressNote": "Canonical bank contains 843 approved records (Amer 727, Anas 116). T33 friendship passage added from direct source; full-book QA remains incomplete.",
+  "migrationReadinessReason": "Full-book source inventory and quarantine adjudication remain incomplete.",
+  "progressNote": "T33 source inventory corrected from historical 34 to source-proven 40; 36 canonical + 4 quarantined = fully accounted.",
   "amerCoverageByTraining": {
     "29": {
       "expectedObserved": 34,
@@ -2847,6 +2847,43 @@
           "page": 85,
           "question": 5,
           "reason": "semantic option wording requires visual recheck"
+        }
+      ]
+    },
+    "33": {
+      "expectedObserved": 40,
+      "canonicalApproved": 36,
+      "quarantined": 4,
+      "duplicates": 0,
+      "excludedNonQuestionExamples": 0,
+      "remainingDelta": 0,
+      "sourcePages": [
+        95,
+        96,
+        97,
+        98
+      ],
+      "status": "ACCOUNTED_WITH_QUARANTINE",
+      "quarantine": [
+        {
+          "page": 95,
+          "question": 3,
+          "reason": "AML title options are textually corrupted; visual/source recheck required before approval"
+        },
+        {
+          "page": 95,
+          "question": 5,
+          "reason": "Meaning of source phrase «إحلال المال» is ambiguous in parsed source; do not guess"
+        },
+        {
+          "page": 97,
+          "question": 3,
+          "reason": "Decades-since-1953 question depends on book-era reference date not explicit in passage"
+        },
+        {
+          "page": 97,
+          "question": 13,
+          "reason": "Month-count wording/timing boundary requires source-key or visual adjudication"
         }
       ]
     }
