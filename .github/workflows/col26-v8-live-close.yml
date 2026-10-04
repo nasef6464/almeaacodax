@@ -1,0 +1,34 @@
+name: COL26 V8 Live Closure
+on:
+  push:
+    branches:
+      - ops/col26-v8-live-close-20261004
+    paths:
+      - "ops/col26-v8-live/**"
+      - ".github/workflows/col26-v8-live-close.yml"
+
+jobs:
+  close:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      SMOKE_ADMIN_TOKEN: ${{ secrets.SMOKE_ADMIN_TOKEN }}
+      SMOKE_ADMIN_EMAIL: ${{ secrets.SMOKE_ADMIN_EMAIL || secrets.ROLE_ADMIN_EMAIL }}
+      SMOKE_ADMIN_PASSWORD: ${{ secrets.SMOKE_ADMIN_PASSWORD || secrets.ROLE_ADMIN_PASSWORD }}
+      ROLE_STUDENT_EMAIL: ${{ secrets.ROLE_STUDENT_EMAIL }}
+      ROLE_STUDENT_PASSWORD: ${{ secrets.ROLE_STUDENT_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Approve COL26 V8 and run live student/report closure
+        run: node ops/col26-v8-live/close.mjs
+      - name: Upload closure evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: col26-v8-live-closure-${{ github.sha }}
+          path: audit-artifacts/col26-v8-live/closure.json
+          if-no-files-found: warn
+          retention-days: 14
