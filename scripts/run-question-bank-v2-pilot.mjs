@@ -11,7 +11,7 @@
  */
 import { createHash } from "node:crypto";
 import { readFile, writeFile } from "node:fs/promises";
-import path from "node:path";
+import path from "node:path";\nimport { resolvePilotAdminToken } from "./resolve-smoke-admin-token.mjs";
 
 const required = (name) => {
   const value = process.env[name]?.trim();
