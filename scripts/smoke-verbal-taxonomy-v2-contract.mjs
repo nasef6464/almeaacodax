@@ -21,19 +21,16 @@ for (const id of ["sub_verbal_01_1", "sub_verbal_08_7", "sub_verbal_13_7"]) {
   assert.ok(subIds.includes(id), `missing stable legacy subskill ${id}`);
 }
 
-assert.ok(migration.includes("beforeQuestions"));
-assert.ok(migration.includes("afterQuestions !== beforeQuestions"));
-assert.ok(migration.includes("foundationDrills !== 76"));
-assert.ok(migration.includes("foundation drills without questions"));
-assert.ok(migration.includes("{ upsert: true }"), "migration must recover missing generated quizzes");
-assert.ok(migration.includes("trainingDrills !== 22"));
-assert.ok(migration.includes("mockExams !== 5"));
-assert.ok(migration.includes("skillIds: [mainSkillId, subSkillId]"));
+assert.ok(migration.includes("beforeQuestions"), "migration must retain question-count safety");
+assert.ok(migration.includes("afterQuestions !== beforeQuestions"), "migration must reject question-count drift");
+assert.ok(!migration.includes("foundationDrills"), "must not generate foundation drills");
+assert.ok(!migration.includes("trainingDrills"), "must not generate training drills");
+assert.ok(!migration.includes("mockExams"), "must not generate mock exams");
+assert.ok(!migration.includes("bank_verbal_skill_"), "must not synthesize generated skill banks");
+assert.ok(!migration.includes("quizCol"), "taxonomy migration must not mutate quiz collections");
 assert.ok(!taxonomy.includes("sections.deleteMany"), "taxonomy deploy must not delete verbal sections");
 assert.ok(!taxonomy.includes("skills.deleteMany"), "taxonomy deploy must not delete verbal skills");
 assert.ok(!taxonomy.includes("topics.deleteMany"), "taxonomy deploy must not delete verbal topics");
-assert.ok(!migration.includes("quizCol.deleteMany"), "taxonomy migration must not delete generated quiz sets before rebuilding");
-assert.ok(migration.includes("bank_verbal_skill_"), "migration must retain stable 22-bank IDs");
 assert.ok(!migration.includes('db.collection("skillprogresses")'), "migration must not rewrite SkillProgress");
 assert.ok(!migration.includes('db.collection("quizresults")'), "migration must not rewrite historical QuizResult");
 assert.ok(legacy.includes("./deployVerbalTaxonomy22.js"), "legacy entrypoint must route to V2");
@@ -45,6 +42,6 @@ assert.ok(!ecosystem.includes("questionsCol.deleteMany"), "VERBAL26 deployment m
 assert.ok(!ecosystem.includes("quizzesCol.deleteMany"), "VERBAL26 ecosystem wrapper must not wipe verbal quizzes");
 assert.ok(!ecosystem.includes("selected40"), "legacy 40-question cross-skill top-up logic must stay removed");
 assert.ok(ecosystem.includes("skillIds: [q.mainSkillId, q.subSkillId]"), "imported questions must carry exact main/subskill lineage");
-assert.ok(ecosystem.includes("migrateVerbalTaxonomy22"), "canonical 22/76 migration must own generated drills and mocks");
+assert.ok(ecosystem.includes("migrateVerbalTaxonomy22"), "canonical 22/76 taxonomy migration must remain wired");
 
-console.log("PASS: verbal taxonomy V2 contract — 22 main / 76 stable subskills / non-destructive migration guards.");
+console.log("PASS: verbal taxonomy V2 contract — 22 main / 76 stable taxonomy / source-only non-destructive migration guards.");
