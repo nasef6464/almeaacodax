@@ -1,0 +1,115 @@
+{
+  "schemaVersion": 1,
+  "scope": "VERBAL26 Amer direct-source observed QA delta",
+  "source": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+  "rule": "Direct-source observed inventory only; no answer-key approval or Production write. T1-T33 are now fully accounted across the 2026-10-02 base and this delta; explanatory examples are excluded.",
+  "verifiedAt": "2026-10-03",
+  "trainings": {
+    "9": {
+      "pdfPages": [
+        25,
+        26
+      ],
+      "observedQuestions": 14
+    },
+    "11": {
+      "pdfPages": [
+        31,
+        32
+      ],
+      "observedQuestions": 8
+    },
+    "12": {
+      "pdfPages": [
+        32
+      ],
+      "observedQuestions": 4
+    },
+    "13": {
+      "pdfPages": [
+        33,
+        34
+      ],
+      "observedQuestions": 15
+    },
+    "14": {
+      "pdfPages": [
+        39,
+        40,
+        41
+      ],
+      "observedQuestions": 33
+    },
+    "15": {
+      "pdfPages": [
+        42,
+        43
+      ],
+      "observedQuestions": 29
+    },
+    "22": {
+      "pdfPages": [
+        61,
+        62
+      ],
+      "observedQuestions": 25
+    },
+    "23": {
+      "pdfPages": [
+        63,
+        64
+      ],
+      "observedQuestions": 28
+    },
+    "24": {
+      "pdfPages": [
+        65,
+        66,
+        67
+      ],
+      "observedQuestions": 48
+    },
+    "29": {
+      "pdfPages": [
+        83,
+        84,
+        85
+      ],
+      "observedQuestions": 34
+    },
+    "30": {
+      "pdfPages": [
+        86,
+        87,
+        88,
+        89
+      ],
+      "observedQuestions": 29
+    },
+    "31": {
+      "pdfPages": [
+        90,
+        91,
+        92
+      ],
+      "observedQuestions": 28
+    },
+    "32": {
+      "pdfPages": [
+        93,
+        94
+      ],
+      "observedQuestions": 20
+    },
+    "33": {
+      "pdfPages": [
+        95,
+        96,
+        97
+      ],
+      "observedQuestions": 34
+    }
+  },
+  "deltaVerifiedObservedQuestions": 349,
+  "combinedWithPriorEvidenceTotal": 915
+}
