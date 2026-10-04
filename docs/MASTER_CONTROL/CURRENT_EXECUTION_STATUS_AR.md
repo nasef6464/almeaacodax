@@ -1,6 +1,6 @@
 # ALMEAA — Current Execution Status
 
-آخر تحديث: 2026-09-27
+آخر تحديث: 2026-10-02
 
 ## الحالة المختصرة
 
@@ -14,7 +14,7 @@
 | 5 — Residual Architecture | WAITING | auth/App/quiz/store residuals |
 | 6 — Student Journey Certification | MOSTLY MERGED | regression after structural/data changes |
 | 7 — AI Live Certification | PROVIDER PENDING | real quota/cost/failover proof |
-| 8 — Question Bank Integrity | DOMAIN ACTIVE | #264 + FND26/COL2627 |
+| 8 — Question Bank Integrity | DOMAIN ACTIVE | #264 + FND26؛ **COL2627 CLOSED ✅** |
 | 9 — Market Readiness | BLOCKED | requires 1–8 exit gates |
 
 ## PLAN 0 evidence
@@ -62,13 +62,21 @@ Ruleset: `Protect main`
 
 **PLAN 2 is not CLOSED yet. PLAN 3 must wait.**
 
+## COL2627 closure lock
+
+- **COL2627: CLOSED ✅ / CONTENT_LOCKED_GREEN**.
+- Final live state: **946 total = 939 approved + 7 rejected source defects + 0 draft**.
+- Final certification merged in **PR #302**; canonical subject/counter integrity repair merged in **PR #306**.
+- Legacy **PR #299** is **SUPERSEDED / CLOSED** and must not be treated as active work or as the current source of truth.
+- Reopen COL2627 only if a new verified production regression or explicitly new scope is created.
+
 ## Open operational/domain issues
 
 - #234 runtime integrations — CLOSED ✅.
 - #235 disaster recovery.
 - #236 topology/capacity — CLOSED ✅.
 - #237 governance/network — CLOSED ✅.
-- #264 question visual integrity.
+- #264 question visual integrity — لا يُستخدم لإعادة فتح COL2627؛ نطاق COL2627 أُغلق نهائيًا عبر #302/#306.
 - #268 residual performance/runtime footprint.
 
 ## Baseline at PLAN 0 creation
