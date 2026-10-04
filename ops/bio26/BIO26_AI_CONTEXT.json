@@ -1,0 +1,20 @@
+{
+  "project": "BIO26",
+  "status": "INITIALIZED_PENDING_CROP_AND_AUTHORING",
+  "expectedItems": 2835,
+  "fields": [
+    "MainSkill",
+    "SubSkill",
+    "concept",
+    "correctAnswer",
+    "explanation",
+    "whyCorrect",
+    "whyOthersWrong",
+    "commonMistake",
+    "hint",
+    "foundationReference",
+    "visualDescription"
+  ],
+  "sourceRule": "Do not infer answers from OCR. Diagram-dependent items require a visualDescription after crop.",
+  "items": []
+}
