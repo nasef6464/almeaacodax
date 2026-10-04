@@ -290,7 +290,7 @@
           "status": "GROUP_RANGE_VERIFIED"
         }
       ],
-      "observedQuestions": 915,
+      "observedQuestions": 920,
       "inventoryEvidence": [
         "server/data/verbal26_amer_observed_qa_20261002.json",
         "server/data/verbal26_amer_observed_qa_20261003_delta.json"
@@ -2560,7 +2560,7 @@
   "metrics": {
     "sourceKeyVerifiedRecords": 112,
     "approvedBankRecords": 1050,
-    "note": "Full-book reconciliation checkpoint: 1050 unique canonical questions = 915 Amer + 135 Anas. Amer has 921 verified source occurrences resolving to 915 unique questions after six exact duplicate occurrences are merged with provenance. Anas is 135/135 canonical. Source-backed main-skill coverage is 22/22 and subskill coverage is 50/76; absent subskills are not manufactured. migrationReady remains false until exact-head contracts/CI and production certification pass.",
+    "note": "Canonical bank reconciled against both approved books: 1050 unique questions. Amer has 920 actual source question occurrences resolving to 915 unique canonical questions after five exact duplicate occurrences are merged with sourceOccurrences provenance; printed T26 numbering skips Q15 and therefore contains 28 actual questions, not 29. Anas has 135/135 canonical questions. migrationReady remains false until contracts and production gates pass.",
     "sourceConflictRecords": 23,
     "anasObservedQuestions": 135,
     "anasKeyVerifiedQuestions": 112,
@@ -2595,7 +2595,7 @@
       "23": 28,
       "24": 48,
       "25": 28,
-      "26": 29,
+      "26": 28,
       "27": 30,
       "28": 24,
       "29": 34,
@@ -2634,7 +2634,7 @@
     },
     "approvedSubSkillCoverage": 50,
     "approvedMainSkillCoverage": 22,
-    "amerObservedQuestions": 921,
+    "amerObservedQuestions": 920,
     "anasCanonicalApproved": 135,
     "anasCurrentQuarantined": 0
   },
@@ -2766,8 +2766,9 @@
     },
     {
       "training": 26,
-      "observedQuestionCount": 29,
-      "status": "SOURCE_COUNT_COMPLETE_ANSWER_QA_PENDING"
+      "observedQuestionCount": 28,
+      "status": "SOURCE_COUNT_COMPLETE_ANSWER_QA_PENDING",
+      "notes": "Printed source numbering skips Q15; 28 actual questions observed."
     },
     {
       "training": 27,
