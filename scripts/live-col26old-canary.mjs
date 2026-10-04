@@ -71,6 +71,19 @@ try {
   const student=await login(studentContext,studentCreds);
   const studentId=String(student.user.id||student.user._id||"");
   if(!studentId) throw new Error("Student id missing after login");
+  const [bootstrap,studentMe]=await Promise.all([
+    api(admin.page,"/content/bootstrap?scope=full"),
+    api(student.page,"/auth/me")
+  ]);
+  const studentGroupIds=new Set([
+    ...(student.user.groupIds||[]),
+    ...(studentMe.payload?.groupIds||[]),
+    ...(studentMe.payload?.user?.groupIds||[])
+  ].map(String));
+  const groups=listOf(bootstrap.payload,"groups");
+  const targetGroup=groups.find(g=>studentGroupIds.has(String(g.id||g._id||"")));
+  if(!bootstrap.ok || !targetGroup) throw new Error("No authoritative student group available for directed canary");
+  const targetGroupId=String(targetGroup.id||targetGroup._id);
 
   const marker=`COL26OLD-LIVE-${Date.now()}`;
   const create=await api(admin.page,"/quizzes",{
@@ -80,7 +93,7 @@ try {
       description:"COL26OLD final live canary",
       pathId:PATH_ID,subjectId:SUBJECT_ID,sectionId:SECTION_ID,
       type:"quiz",quizKind:"test",mode:"central",
-      questionIds,targetUserIds:[studentId],targetGroupIds:[],
+      questionIds,targetUserIds:[],targetGroupIds:[targetGroupId],
       settings:{timeLimit:15,maxAttempts:1,showResultsReport:true,returnToSourceOnFinish:false},
       isPublished:true,showOnPlatform:true,approvalStatus:"approved"
     })
