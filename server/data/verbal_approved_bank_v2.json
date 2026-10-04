@@ -17738,5 +17738,93 @@
     ],
     "correctOptionIndex": 2,
     "answerEvidence": "Direct Amer source pp.93-94; Antithesis strengthens the intended meaning."
+  },
+  {
+    "id": "VERBAL26-AMER-T31-P091-KAABA-Q001",
+    "canonicalId": "VERBAL26-AMER-T31-P091-KAABA-Q001",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 91,
+    "sourceQuestionNumber": 1,
+    "sourceTraining": 31,
+    "passageId": "VERBAL26-AMER-PASSAGE-KAABA",
+    "mainSkillId": "skill_verbal_20",
+    "subSkillId": "sub_verbal_12_6",
+    "text": "في أي عقد من القرن العشرين بدأت السعودية في تصنيع كسوة الكعبة؟",
+    "options": [
+      "أوائل العقد السابع",
+      "أوائل العقد الثامن",
+      "الثلث الأخير من العقد السابع",
+      "الثلث الأخير من العقد الثامن"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_TEXT_VERIFIED",
+    "answerEvidence": "Direct Amer source p.91; answer follows explicitly from dates/wording in passage."
+  },
+  {
+    "id": "VERBAL26-AMER-T31-P091-KAABA-Q002",
+    "canonicalId": "VERBAL26-AMER-T31-P091-KAABA-Q002",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 91,
+    "sourceQuestionNumber": 2,
+    "sourceTraining": 31,
+    "passageId": "VERBAL26-AMER-PASSAGE-KAABA",
+    "mainSkillId": "skill_verbal_20",
+    "subSkillId": "sub_verbal_12_6",
+    "text": "جملة «وظلت كسوة الكعبة تحظى باهتمام الخلفاء المسلمين على مر العصور» تدل على:",
+    "options": [
+      "تنافس الأجيال في خدمة البيت",
+      "تنافس الحكام في فترات ما قبل الإسلام",
+      "العصور الإسلامية المبكرة",
+      "أنواع الكسوة"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_TEXT_VERIFIED",
+    "answerEvidence": "Direct Amer source p.91; answer follows explicitly from dates/wording in passage."
+  },
+  {
+    "id": "VERBAL26-AMER-T31-P091-KAABA-Q003",
+    "canonicalId": "VERBAL26-AMER-T31-P091-KAABA-Q003",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 91,
+    "sourceQuestionNumber": 3,
+    "sourceTraining": 31,
+    "passageId": "VERBAL26-AMER-PASSAGE-KAABA",
+    "mainSkillId": "skill_verbal_20",
+    "subSkillId": "sub_verbal_12_6",
+    "text": "المقصود بـ«الجد الأعلى»:",
+    "options": [
+      "الأعلى منزلة",
+      "الأكبر مرتبة",
+      "أقدم جد",
+      "الأعلى شهرة"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_TEXT_VERIFIED",
+    "answerEvidence": "Direct Amer source p.91; answer follows explicitly from dates/wording in passage."
+  },
+  {
+    "id": "VERBAL26-AMER-T31-P091-RAD-Q001",
+    "canonicalId": "VERBAL26-AMER-T31-P091-RAD-Q001",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 91,
+    "sourceQuestionNumber": 1,
+    "sourceTraining": 31,
+    "passageId": "VERBAL26-AMER-PASSAGE-RADIOACTIVITY",
+    "mainSkillId": "skill_verbal_20",
+    "subSkillId": "sub_verbal_12_6",
+    "text": "ترتيب العلماء حسب الزمن:",
+    "options": [
+      "ماري - هنري - ويلهلم",
+      "هنري - ويلهلم - ماري",
+      "ويلهلم - هنري - ماري",
+      "ويلهلم - ماري - هنري"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_TEXT_VERIFIED",
+    "answerEvidence": "Direct Amer source p.91; answer follows explicitly from dates/wording in passage."
   }
 ]
