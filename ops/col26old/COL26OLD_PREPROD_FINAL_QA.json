@@ -1,0 +1,42 @@
+{
+  "stage": "COL26OLD pre-production final gate",
+  "questions": 1258,
+  "blocks": 29,
+  "canonical_integrity": {
+    "unique_codes": 1258,
+    "unique_source_items": 1258,
+    "unique_hashes": 1258,
+    "image_files": 1258,
+    "widths": [518],
+    "duplicate_codes": 0,
+    "duplicate_hashes": 0,
+    "wrong_section": 0,
+    "wrong_star_tier": 0
+  },
+  "crop_qa": {
+    "options_abcd_visible": 1258,
+    "question_number_strip_leaks": 0,
+    "next_topic_heading_contamination": 0,
+    "year_badge_leaks": 0
+  },
+  "answers": {
+    "complete": 1258,
+    "distribution": {"A":368,"B":343,"C":327,"D":220},
+    "invalid_indexes": 0
+  },
+  "skills": {
+    "mapped": 1258,
+    "main_skills": 22,
+    "subskills": 67,
+    "invalid_live_taxonomy_pairs": 0,
+    "chapter_main_skill_mismatches_vs_COL26_section1": 0
+  },
+  "dedupe": {
+    "internal_duplicate_codes": 0,
+    "internal_duplicate_hashes": 0,
+    "exact_text_matches_vs_COL26_section1": 0,
+    "fuzzy_text_candidates_ge_88_vs_COL26_section1": 0
+  },
+  "production_baseline": "COL26OLD=0 before canary",
+  "result": "PASS_PREPRODUCTION"
+}
