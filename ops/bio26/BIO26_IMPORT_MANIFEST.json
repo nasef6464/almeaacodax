@@ -1,0 +1,24 @@
+{
+  "project": "BIO26",
+  "status": "BLOCKED_BY_PREIMPORT_GATES",
+  "expectedSourceOccurrences": 2835,
+  "canonicalReadyItems": 0,
+  "requiredGates": {
+    "inventory": "PASS",
+    "taxonomy": "PASS",
+    "ledger": "PASS",
+    "crop": "NOT_STARTED",
+    "answers": "PASS_SOURCE_KEY",
+    "skill": "PASS_PRE_CROP",
+    "dedupe": "NOT_STARTED"
+  },
+  "workflow": [
+    "DRY_RUN",
+    "CANARY_5",
+    "FULL_DRAFT_IMPORT",
+    "INTEGRITY_AUDIT",
+    "LIVE_E2E",
+    "APPROVAL"
+  ],
+  "items": []
+}
