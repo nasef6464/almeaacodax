@@ -2654,7 +2654,17 @@
     "anasCanonicalApproved": 135,
     "anasCurrentQuarantined": 0,
     "anasHistoricalConflictQuestions": 23,
-    "anasResolvedHistoricalConflicts": 16
+    "anasResolvedHistoricalConflicts": 16,
+    "migrationReadyEvidence": {
+      "canonicalUnique": 1050,
+      "amerUnique": 915,
+      "anasUnique": 135,
+      "duplicateProvenance": 0,
+      "missingRequiredFields": 0,
+      "mainSkillCoverage": "22/22",
+      "sourceBackedSubSkillCoverage": "50/76",
+      "note": "26 stable taxonomy subskills have no canonical source question; no synthetic questions were created."
+    }
   },
   "amerBatches": [
     {
@@ -2823,7 +2833,7 @@
       "status": "SOURCE_COUNT_COMPLETE_ANSWER_QA_PENDING"
     }
   ],
-  "migrationReady": false,
+  "migrationReady": true,
   "migrationReadinessReason": "Full-book source inventory and quarantine adjudication remain incomplete.",
   "progressNote": "Amer T17-T19 deduplicated against original source and closed exactly at 56/52/30; continue T16 backward.",
   "amerCoverageByTraining": {
