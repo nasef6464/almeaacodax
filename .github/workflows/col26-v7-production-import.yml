@@ -1,0 +1,160 @@
+name: COL26 V7 Production Import
+
+on:
+  push:
+    branches:
+      - col26/import-runner-v7
+    paths:
+      - ".github/workflows/col26-v7-production-import.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: col26-v7-production-import
+  cancel-in-progress: false
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      API_BASE: https://almeaacodax.vercel.app/api
+      COL26_PAYLOAD_FILE: /tmp/col26/COL26_PILOT_PAYLOAD_V7.json
+      COL26_IMAGE_DIR: /tmp/col26/images
+      COL26_EXPECTED_COUNT: "1012"
+      COL26_BATCH_ID: TAH-MATH-COL26-SEC1-V7
+      PILOT_API_BASE: https://almeaacodax.vercel.app/api
+      PILOT_ALLOW_EXTERNAL_RUN: "YES"
+      PILOT_WRITE_AUTHORIZATION: "YES"
+      SMOKE_ADMIN_TOKEN: ${{ secrets.SMOKE_ADMIN_TOKEN }}
+      SMOKE_ADMIN_EMAIL: ${{ secrets.SMOKE_ADMIN_EMAIL || secrets.ROLE_ADMIN_EMAIL }}
+      SMOKE_ADMIN_PASSWORD: ${{ secrets.SMOKE_ADMIN_PASSWORD || secrets.ROLE_ADMIN_PASSWORD }}
+
+    steps:
+      - name: Checkout transfer branch
+        uses: actions/checkout@v4
+
+      - name: Reconstruct and verify canonical package
+        shell: bash
+        run: |
+          set -euo pipefail
+          find .col26-package -type f -name '*.b64' -print0 | sort -z | xargs -0 cat > /tmp/col26.b64
+          base64 --decode /tmp/col26.b64 > /tmp/col26.zip
+          echo "d92e99514951d233e5141e1ef518d79eda4e0430e195fa8dde83c4cab629edc5  /tmp/col26.zip" | sha256sum -c -
+          mkdir -p /tmp/col26
+          unzip -q /tmp/col26.zip -d /tmp/col26
+          test "$(find /tmp/col26/images -type f -name '*.webp' | wc -l)" -eq 1012
+          node -e 'const p=require("/tmp/col26/COL26_PILOT_PAYLOAD_V7.json"); const a=Array.isArray(p)?p:p.items; if(!Array.isArray(a)||a.length!==1012) process.exit(1); console.log("payload=1012 images=1012 package_sha=PASS")'
+
+      - name: Resolve admin auth without exposing secrets
+        shell: bash
+        run: |
+          set -euo pipefail
+          node <<'NODE'
+          const fs = require("fs");
+          const base = String(process.env.API_BASE || "").replace(/\/$/, "");
+          let token = String(process.env.SMOKE_ADMIN_TOKEN || "").trim();
+          const cookieValue = (header, name) => {
+            const m = String(header || "").match(new RegExp(name + "=([^;]+)"));
+            return m ? m[1] : "";
+          };
+          (async () => {
+            if (!token) {
+              const email = String(process.env.SMOKE_ADMIN_EMAIL || "").trim();
+              const password = String(process.env.SMOKE_ADMIN_PASSWORD || "").trim();
+              if (!email || !password) throw new Error("Missing protected admin auth secret");
+              const csrf = await fetch(base + "/auth/csrf-token");
+              const csrfBody = await csrf.json();
+              const setCookie = csrf.headers.get("set-cookie") || "";
+              const csrfCookie = cookieValue(setCookie, "almeaa_csrf_token");
+              const csrfToken = String(csrfBody.csrfToken || csrfCookie || "").trim();
+              if (!csrf.ok || !csrfCookie || !csrfToken) throw new Error("CSRF bootstrap failed");
+              const login = await fetch(base + "/auth/login", {
+                method: "POST",
+                headers: {
+                  "content-type": "application/json",
+                  "x-csrf-token": csrfToken,
+                  cookie: "almeaa_csrf_token=" + csrfCookie,
+                },
+                body: JSON.stringify({ email, password }),
+              });
+              const raw = await login.text();
+              let body = {};
+              try { body = JSON.parse(raw); } catch {}
+              if (!login.ok) throw new Error("Admin login failed with HTTP " + login.status);
+              token = String(body.token || cookieValue(login.headers.get("set-cookie") || "", "almeaa_access_token") || "").trim();
+              if (!token) throw new Error("Admin login returned no token");
+            }
+            console.log("::add-mask::" + token);
+            fs.appendFileSync(process.env.GITHUB_ENV, "SMOKE_ADMIN_TOKEN=" + token + "\n");
+            console.log("admin_auth=PASS");
+          })().catch((e) => { console.error(e.message); process.exit(1); });
+          NODE
+
+      - name: Local canonical gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          COL26_MODE=prepare COL26_OUTPUT_FILE=/tmp/col26-prepare.json node /tmp/col26/run-col26-v7-import.mjs
+
+      - name: Canary 5 - R2 plus Mongo Draft
+        shell: bash
+        run: |
+          set -euo pipefail
+          COL26_MODE=canary COL26_OUTPUT_FILE=/tmp/col26-canary.json node /tmp/col26/run-col26-v7-import.mjs
+          node <<'NODE'
+          const fs=require("fs");
+          const r=JSON.parse(fs.readFileSync("/tmp/col26-canary.json","utf8"));
+          const v=r.verification||{};
+          if(r.uploaded!==5 || Number(v.count)!==5 || Number(v.drafts)!==5) {
+            console.error(JSON.stringify({uploaded:r.uploaded,count:v.count,drafts:v.drafts}));
+            process.exit(1);
+          }
+          console.log("canary=PASS count=5 drafts=5");
+          NODE
+
+      - name: Full remaining 1007 - R2 plus Mongo Draft
+        shell: bash
+        run: |
+          set -euo pipefail
+          COL26_MODE=full COL26_OUTPUT_FILE=/tmp/col26-full.json node /tmp/col26/run-col26-v7-import.mjs
+          node <<'NODE'
+          const fs=require("fs");
+          const r=JSON.parse(fs.readFileSync("/tmp/col26-full.json","utf8"));
+          const v=r.verification||{};
+          if(r.uploaded!==1007 || Number(v.count)!==1012 || Number(v.drafts)!==1012) {
+            console.error(JSON.stringify({uploaded:r.uploaded,count:v.count,drafts:v.drafts}));
+            process.exit(1);
+          }
+          console.log("full_import=PASS count=1012 drafts=1012");
+          NODE
+
+      - name: Read-only final batch verification
+        shell: bash
+        run: |
+          set -euo pipefail
+          COL26_MODE=verify COL26_OUTPUT_FILE=/tmp/col26-verify.json node /tmp/col26/run-col26-v7-import.mjs
+          node <<'NODE'
+          const fs=require("fs");
+          const r=JSON.parse(fs.readFileSync("/tmp/col26-verify.json","utf8"));
+          const v=r.verification||{};
+          if(Number(v.count)!==1012 || Number(v.drafts)!==1012) {
+            console.error(JSON.stringify({count:v.count,drafts:v.drafts}));
+            process.exit(1);
+          }
+          console.log("final_batch_verify=PASS count=1012 drafts=1012");
+          NODE
+
+      - name: Upload non-secret import reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: col26-v7-import-reports
+          path: |
+            /tmp/col26-prepare.json
+            /tmp/col26-canary.json
+            /tmp/col26-full.json
+            /tmp/col26-verify.json
+          if-no-files-found: ignore
+          retention-days: 7
