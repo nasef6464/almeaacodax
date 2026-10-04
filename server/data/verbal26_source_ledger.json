@@ -3148,14 +3148,14 @@
     "verifiedAt": "2026-10-04",
     "branch": "codex/verbal26-full-closure",
     "policy": "Full-book source reconciliation; observed inventory is not sufficient for canonical approval.",
-    "canonicalApprovedTotal": 925,
+    "canonicalApprovedTotal": 926,
     "canonicalBySource": {
-      "abdelbaset": 809,
+      "abdelbaset": 810,
       "anas": 116
     },
     "amerObservedTotal": 915,
     "anasObservedTotal": 135,
-    "amerUnreconciledCases": 106,
+    "amerUnreconciledCases": 105,
     "anasUnreconciledCases": 19,
     "verifiedGaps": [
       {
@@ -3189,8 +3189,10 @@
           46
         ],
         "observedQuestions": 38,
-        "canonicalMatched": 37,
-        "status": "ONE_CASE_QUARANTINED_PENDING_SOURCE_VISUAL"
+        "canonicalMatched": 38,
+        "status": "DIRECT_SOURCE_COMPLETE",
+        "remainingCases": 0,
+        "dedupedMalformedProvenance": 18
       }
     ],
     "migrationReady": false
