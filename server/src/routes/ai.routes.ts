@@ -1219,10 +1219,13 @@ aiRouter.post(
       } catch (error) {
         lastError = error;
         const message = error instanceof Error ? error.message : "تعذر اختبار المزود.";
+        const normalizedMessage = message.toLowerCase();
         const transientProviderBusy =
           message.includes("status 503") ||
-          message.toLowerCase().includes("high demand") ||
-          message.toLowerCase().includes("temporarily unavailable");
+          normalizedMessage.includes("high demand") ||
+          normalizedMessage.includes("temporarily unavailable") ||
+          normalizedMessage.includes("operation was aborted") ||
+          normalizedMessage.includes("timeout");
         if (!transientProviderBusy || attempt === 3) break;
         await new Promise((resolve) => setTimeout(resolve, 750 * attempt));
       }
