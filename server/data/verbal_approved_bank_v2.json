@@ -4677,7 +4677,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + direct relation/classification verification."
+    "answerEvidence": "Approved-source text/options + direct relation/classification verification.",
+    "sourceTraining": 20
   },
   {
     "id": "VERBAL26-AMER-T20-P055-Q004",
@@ -4697,7 +4698,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + direct relation/classification verification."
+    "answerEvidence": "Approved-source text/options + direct relation/classification verification.",
+    "sourceTraining": 20
   },
   {
     "id": "VERBAL26-AMER-T20-P055-Q006",
@@ -4717,7 +4719,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + direct relation/classification verification."
+    "answerEvidence": "Approved-source text/options + direct relation/classification verification.",
+    "sourceTraining": 20
   },
   {
     "id": "VERBAL26-AMER-T20-P055-Q007",
@@ -4737,7 +4740,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + direct relation/classification verification."
+    "answerEvidence": "Approved-source text/options + direct relation/classification verification.",
+    "sourceTraining": 20
   },
   {
     "id": "VERBAL26-AMER-T20-P055-Q008",
@@ -4757,7 +4761,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + direct relation/classification verification."
+    "answerEvidence": "Approved-source text/options + direct relation/classification verification.",
+    "sourceTraining": 20
   },
   {
     "id": "VERBAL26-AMER-T20-P055-Q009",
@@ -4777,7 +4782,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + direct relation/classification verification."
+    "answerEvidence": "Approved-source text/options + direct relation/classification verification.",
+    "sourceTraining": 20
   },
   {
     "id": "VERBAL26-AMER-T20-P055-Q010",
@@ -4797,7 +4803,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + direct relation/classification verification."
+    "answerEvidence": "Approved-source text/options + direct relation/classification verification.",
+    "sourceTraining": 20
   },
   {
     "id": "VERBAL26-AMER-T20-P055-Q011",
@@ -4817,7 +4824,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + direct relation/classification verification."
+    "answerEvidence": "Approved-source text/options + direct relation/classification verification.",
+    "sourceTraining": 20
   },
   {
     "id": "VERBAL26-AMER-T20-P055-Q013",
@@ -4837,7 +4845,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + direct relation/classification verification."
+    "answerEvidence": "Approved-source text/options + direct relation/classification verification.",
+    "sourceTraining": 20
   },
   {
     "id": "VERBAL26-AMER-T20-P056-Q015",
@@ -4857,7 +4866,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + direct relation/classification verification."
+    "answerEvidence": "Approved-source text/options + direct relation/classification verification.",
+    "sourceTraining": 20
   },
   {
     "id": "VERBAL26-AMER-T20-P056-Q016",
@@ -4877,7 +4887,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + direct relation/classification verification."
+    "answerEvidence": "Approved-source text/options + direct relation/classification verification.",
+    "sourceTraining": 20
   },
   {
     "id": "VERBAL26-AMER-T20-P056-Q017",
@@ -4897,7 +4908,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + direct relation/classification verification."
+    "answerEvidence": "Approved-source text/options + direct relation/classification verification.",
+    "sourceTraining": 20
   },
   {
     "id": "VERBAL26-AMER-T20-P056-Q018",
@@ -4917,7 +4929,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + direct relation/classification verification."
+    "answerEvidence": "Approved-source text/options + direct relation/classification verification.",
+    "sourceTraining": 20
   },
   {
     "id": "VERBAL26-AMER-T20-P056-Q019",
@@ -4937,7 +4950,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + direct relation/classification verification."
+    "answerEvidence": "Approved-source text/options + direct relation/classification verification.",
+    "sourceTraining": 20
   },
   {
     "id": "VERBAL26-AMER-T20-P056-Q020",
@@ -4957,7 +4971,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + direct relation/classification verification."
+    "answerEvidence": "Approved-source text/options + direct relation/classification verification.",
+    "sourceTraining": 20
   },
   {
     "id": "VERBAL26-AMER-T20-P056-Q021",
@@ -4977,7 +4992,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + direct relation/classification verification."
+    "answerEvidence": "Approved-source text/options + direct relation/classification verification.",
+    "sourceTraining": 20
   },
   {
     "id": "VERBAL26-AMER-T20-P056-Q022",
@@ -4997,7 +5013,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + direct relation/classification verification."
+    "answerEvidence": "Approved-source text/options + direct relation/classification verification.",
+    "sourceTraining": 20
   },
   {
     "id": "VERBAL26-AMER-T20-P056-Q023",
@@ -5017,7 +5034,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + direct relation/classification verification."
+    "answerEvidence": "Approved-source text/options + direct relation/classification verification.",
+    "sourceTraining": 20
   },
   {
     "id": "VERBAL26-AMER-T20-P056-Q024",
@@ -5037,7 +5055,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + direct relation/classification verification."
+    "answerEvidence": "Approved-source text/options + direct relation/classification verification.",
+    "sourceTraining": 20
   },
   {
     "id": "VERBAL26-AMER-T21-P057-Q002",
@@ -5057,7 +5076,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + direct relation/classification verification."
+    "answerEvidence": "Approved-source text/options + direct relation/classification verification.",
+    "sourceTraining": 21
   },
   {
     "id": "VERBAL26-AMER-T06-P019-Q001",
@@ -12137,7 +12157,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + direct link/classification verification."
+    "answerEvidence": "Approved-source text/options + direct link/classification verification.",
+    "sourceTraining": 20
   },
   {
     "id": "VERBAL26-AMER-T21-P057-Q003",
@@ -12157,7 +12178,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + direct link/classification verification."
+    "answerEvidence": "Approved-source text/options + direct link/classification verification.",
+    "sourceTraining": 21
   },
   {
     "id": "VERBAL26-AMER-T21-P057-Q004",
@@ -12177,7 +12199,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + direct link/classification verification."
+    "answerEvidence": "Approved-source text/options + direct link/classification verification.",
+    "sourceTraining": 21
   },
   {
     "id": "VERBAL26-AMER-T21-P057-Q005",
@@ -12197,7 +12220,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + direct link/classification verification."
+    "answerEvidence": "Approved-source text/options + direct link/classification verification.",
+    "sourceTraining": 21
   },
   {
     "id": "VERBAL26-AMER-T21-P057-Q006",
@@ -12217,7 +12241,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + direct link/classification verification."
+    "answerEvidence": "Approved-source text/options + direct link/classification verification.",
+    "sourceTraining": 21
   },
   {
     "id": "VERBAL26-AMER-T21-P057-Q007",
@@ -12237,7 +12262,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + direct link/classification verification."
+    "answerEvidence": "Approved-source text/options + direct link/classification verification.",
+    "sourceTraining": 21
   },
   {
     "id": "VERBAL26-AMER-T21-P057-Q008",
@@ -12257,7 +12283,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + direct link/classification verification."
+    "answerEvidence": "Approved-source text/options + direct link/classification verification.",
+    "sourceTraining": 21
   },
   {
     "id": "VERBAL26-AMER-T21-P057-Q009",
@@ -12277,7 +12304,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + direct link/classification verification."
+    "answerEvidence": "Approved-source text/options + direct link/classification verification.",
+    "sourceTraining": 21
   },
   {
     "id": "VERBAL26-AMER-T21-P057-Q012",
@@ -12297,7 +12325,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + direct link/classification verification."
+    "answerEvidence": "Approved-source text/options + direct link/classification verification.",
+    "sourceTraining": 21
   },
   {
     "id": "VERBAL26-AMER-T21-P057-Q014",
@@ -12317,7 +12346,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + direct link/classification verification."
+    "answerEvidence": "Approved-source text/options + direct link/classification verification.",
+    "sourceTraining": 21
   },
   {
     "id": "VERBAL26-AMER-T21-P057-Q016",
@@ -12337,7 +12367,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source text/options + direct link/classification verification."
+    "answerEvidence": "Approved-source text/options + direct link/classification verification.",
+    "sourceTraining": 21
   },
   {
     "id": "VERBAL26-ANAS-ODD-P032-Q009",
@@ -18435,5 +18466,257 @@
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
     "answerEvidence": "Direct Amer source p.61; idiom «يتهم نفسه» fits the explicit purpose of humility and work."
+  },
+  {
+    "id": "VERBAL26-AMER-T20-P055-Q002",
+    "canonicalId": "VERBAL26-AMER-T20-P055-Q002",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 55,
+    "sourceQuestionNumber": 2,
+    "sourceTraining": 20,
+    "mainSkillId": "skill_verbal_14",
+    "subSkillId": "sub_verbal_09_1",
+    "text": "السعودية : ؟",
+    "options": [
+      "مصر",
+      "الكويت",
+      "الإمارات",
+      "البحرين"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.55; relation/difference answer independently verified from the four source options."
+  },
+  {
+    "id": "VERBAL26-AMER-T20-P055-Q003",
+    "canonicalId": "VERBAL26-AMER-T20-P055-Q003",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 55,
+    "sourceQuestionNumber": 3,
+    "sourceTraining": 20,
+    "mainSkillId": "skill_verbal_14",
+    "subSkillId": "sub_verbal_09_1",
+    "text": "العنزة : ؟",
+    "options": [
+      "بطريق",
+      "غزال",
+      "عصفور",
+      "سمكة"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.55; relation/difference answer independently verified from the four source options."
+  },
+  {
+    "id": "VERBAL26-AMER-T20-P055-Q005",
+    "canonicalId": "VERBAL26-AMER-T20-P055-Q005",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 55,
+    "sourceQuestionNumber": 5,
+    "sourceTraining": 20,
+    "mainSkillId": "skill_verbal_14",
+    "subSkillId": "sub_verbal_09_1",
+    "text": "حقد : ؟",
+    "options": [
+      "جمل",
+      "أسد",
+      "ذئب",
+      "نمر"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.55; relation/difference answer independently verified from the four source options."
+  },
+  {
+    "id": "VERBAL26-AMER-T20-P055-Q012",
+    "canonicalId": "VERBAL26-AMER-T20-P055-Q012",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 55,
+    "sourceQuestionNumber": 12,
+    "sourceTraining": 20,
+    "mainSkillId": "skill_verbal_14",
+    "subSkillId": "sub_verbal_09_1",
+    "text": "جبن : ؟",
+    "options": [
+      "زيت",
+      "نبات",
+      "حليب",
+      "قمح"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.55; relation/difference answer independently verified from the four source options."
+  },
+  {
+    "id": "VERBAL26-AMER-T20-P056-Q014",
+    "canonicalId": "VERBAL26-AMER-T20-P056-Q014",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 56,
+    "sourceQuestionNumber": 14,
+    "sourceTraining": 20,
+    "mainSkillId": "skill_verbal_14",
+    "subSkillId": "sub_verbal_09_1",
+    "text": "وزن : ؟",
+    "options": [
+      "لتر",
+      "ماء",
+      "بنزين",
+      "تفاح"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.56; relation/difference answer independently verified from the four source options."
+  },
+  {
+    "id": "VERBAL26-AMER-T20-P056-Q025",
+    "canonicalId": "VERBAL26-AMER-T20-P056-Q025",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 56,
+    "sourceQuestionNumber": 25,
+    "sourceTraining": 20,
+    "mainSkillId": "skill_verbal_14",
+    "subSkillId": "sub_verbal_09_1",
+    "text": "مدرجات : ؟",
+    "options": [
+      "حكام",
+      "لاعبين",
+      "جماهير",
+      "مدربين"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.56; relation/difference answer independently verified from the four source options."
+  },
+  {
+    "id": "VERBAL26-AMER-T20-P056-Q026",
+    "canonicalId": "VERBAL26-AMER-T20-P056-Q026",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 56,
+    "sourceQuestionNumber": 26,
+    "sourceTraining": 20,
+    "mainSkillId": "skill_verbal_14",
+    "subSkillId": "sub_verbal_09_1",
+    "text": "غدر : ؟",
+    "options": [
+      "الرمل",
+      "الأرض",
+      "السماء",
+      "البحر"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.56; relation/difference answer independently verified from the four source options."
+  },
+  {
+    "id": "VERBAL26-AMER-T21-P057-Q001",
+    "canonicalId": "VERBAL26-AMER-T21-P057-Q001",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 57,
+    "sourceQuestionNumber": 1,
+    "sourceTraining": 21,
+    "mainSkillId": "skill_verbal_15",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "جرس : ؟",
+    "options": [
+      "بحر",
+      "محيط",
+      "نهر",
+      "مطر"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.57; relation/difference answer independently verified from the four source options."
+  },
+  {
+    "id": "VERBAL26-AMER-T21-P057-Q010",
+    "canonicalId": "VERBAL26-AMER-T21-P057-Q010",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 57,
+    "sourceQuestionNumber": 10,
+    "sourceTraining": 21,
+    "mainSkillId": "skill_verbal_15",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "عرش : ؟",
+    "options": [
+      "أذن",
+      "عين",
+      "أنف",
+      "قدم"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.57; relation/difference answer independently verified from the four source options."
+  },
+  {
+    "id": "VERBAL26-AMER-T21-P057-Q011",
+    "canonicalId": "VERBAL26-AMER-T21-P057-Q011",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 57,
+    "sourceQuestionNumber": 11,
+    "sourceTraining": 21,
+    "mainSkillId": "skill_verbal_15",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "عقال : ؟",
+    "options": [
+      "حمار",
+      "حصان",
+      "أسد",
+      "جمل"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.57; relation/difference answer independently verified from the four source options."
+  },
+  {
+    "id": "VERBAL26-AMER-T21-P057-Q013",
+    "canonicalId": "VERBAL26-AMER-T21-P057-Q013",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 57,
+    "sourceQuestionNumber": 13,
+    "sourceTraining": 21,
+    "mainSkillId": "skill_verbal_15",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "القمر : ؟",
+    "options": [
+      "الجمال",
+      "القرب",
+      "الحب",
+      "الكرم"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.57; relation/difference answer independently verified from the four source options."
+  },
+  {
+    "id": "VERBAL26-AMER-T21-P057-Q015",
+    "canonicalId": "VERBAL26-AMER-T21-P057-Q015",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 57,
+    "sourceQuestionNumber": 15,
+    "sourceTraining": 21,
+    "mainSkillId": "skill_verbal_15",
+    "subSkillId": "sub_verbal_09_2",
+    "text": "قناص : ؟",
+    "options": [
+      "سكين",
+      "بندقية",
+      "مقص",
+      "سوط"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.57; relation/difference answer independently verified from the four source options."
   }
 ]
