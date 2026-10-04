@@ -1,31 +1,31 @@
-block_index,source_pdf_page,first_printed_question,last_printed_question,baseline_count,status,verification_rule
-1,7,19,36,18,BASELINE,"Visual page QA + answer-table range"
-2,11,28,42,15,BASELINE,"Visual page QA + answer-table range"
-3,15,24,38,15,BASELINE,"Visual page QA + answer-table range"
-4,20,43,57,15,BASELINE,"Visual page QA + answer-table range"
-5,27,45,64,20,BASELINE,"Visual page QA + answer-table range"
-6,32,22,31,10,BASELINE,"Visual page QA + answer-table range"
-7,34,20,36,17,BASELINE,"Visual page QA + answer-table range"
-8,38,30,43,14,BASELINE,"Visual page QA + answer-table range"
-9,44,29,48,20,BASELINE,"Visual page QA + answer-table range"
-10,48,27,40,14,BASELINE,"Visual page QA + answer-table range"
-11,51,12,16,5,BASELINE,"Visual page QA + answer-table range"
-12,55,41,60,20,BASELINE,"Visual page QA + answer-table range"
-13,58,22,43,22,BASELINE,"Visual page QA + answer-table range"
-14,63,34,51,18,BASELINE,"Visual page QA + answer-table range"
-15,68,30,48,19,BASELINE,"Visual page QA + answer-table range"
-16,71,26,45,20,BASELINE,"Visual page QA + answer-table range"
-17,74,35,54,20,BASELINE,"Visual page QA + answer-table range"
-18,79,35,57,23,BASELINE,"Visual page QA + answer-table range"
-19,87,42,63,22,BASELINE,"Visual page QA + answer-table range"
-20,93,46,64,19,BASELINE,"Visual page QA + answer-table range"
-21,104,72,83,12,BASELINE,"Visual page QA + answer-table range"
-22,115,66,87,22,BASELINE,"Visual page QA + answer-table range"
-23,121,42,62,21,BASELINE,"Visual page QA + answer-table range"
-24,127,52,59,8,BASELINE,"Visual page QA + answer-table range"
-25,134,42,54,13,BASELINE,"Visual page QA + answer-table range"
-26,141,34,53,20,BASELINE,"Visual page QA + answer-table range"
-27,145,32,51,20,BASELINE,"Visual page QA + answer-table range"
-28,151,47,63,17,BASELINE,"Visual page QA + answer-table range"
-29,156,47,68,22,BASELINE,"Visual page QA + answer-table range"
-TOTAL,,,,501,PROVISIONAL_BASELINE,"Must pass 29/29 visual block verification before canonical freeze"
+chapter_index,chapter,section2_start_page,section2_end_page,first_question,last_question,count,status
+1,التبرير والبرهان,7,7,19,36,18,VERIFIED
+2,المسلمات والعلاقات الهندسية,11,12,28,56,29,VERIFIED
+3,المستقيم,15,16,24,53,30,VERIFIED
+4,المثلث,20,23,43,102,60,VERIFIED
+5,المضلعات والأشكال الرباعية,27,29,45,95,51,VERIFIED
+6,التشابه,32,32,22,31,10,VERIFIED
+7,التحويلات الهندسية,34,35,20,53,34,VERIFIED
+8,الدائرة,38,41,30,65,36,VERIFIED
+9,الأعداد الحقيقية والدوال,44,45,29,51,23,VERIFIED
+10,دوال خاصة,48,48,27,40,14,VERIFIED
+11,المتباينات,51,51,12,16,5,VERIFIED
+12,المصفوفات,55,56,41,76,36,VERIFIED
+13,الأعداد المركبة والمعادلة التربيعية,58,59,22,50,29,VERIFIED
+14,كثيرات الحدود,63,65,34,91,58,VERIFIED
+15,العمليات على الدوال,68,68,30,48,19,VERIFIED
+16,الدالة الجذرية,71,71,26,45,20,VERIFIED
+17,العلاقات والدوال النسبية,74,76,35,93,59,VERIFIED
+18,المتتابعات والمتسلسلات,79,81,35,93,59,VERIFIED
+20,الاحتمالات,87,89,42,96,55,VERIFIED
+21,حسابات المثلثات,93,97,46,107,62,VERIFIED
+22,تحليل الدوال,104,110,72,154,83,VERIFIED
+23,الدوال الأسية واللوغاريتمية,115,118,66,141,76,VERIFIED
+24,المتطابقات المثلثية,121,123,42,104,63,VERIFIED
+25,القطوع,127,130,43,105,63,VERIFIED
+26,المتجهات,134,137,42,115,74,VERIFIED
+27,الإحداثيات القطبية والديكارتية,141,142,34,68,35,VERIFIED
+28,الإحصاء,145,147,32,77,46,VERIFIED
+29,النهايات,151,152,47,84,38,VERIFIED
+30,الاشتقاق والتكامل,156,159,47,119,73,VERIFIED
+TOTAL,,,,,,1258,VERIFIED
