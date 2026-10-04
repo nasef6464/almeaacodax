@@ -11,7 +11,8 @@
  */
 import { createHash } from "node:crypto";
 import { readFile, writeFile } from "node:fs/promises";
-import path from "node:path";\nimport { resolvePilotAdminToken } from "./resolve-smoke-admin-token.mjs";
+import path from "node:path";
+import { resolvePilotAdminToken } from "./resolve-smoke-admin-token.mjs";
 
 const required = (name) => {
   const value = process.env[name]?.trim();
@@ -39,11 +40,13 @@ const batchId = String(raw?.batchId || process.env.QUESTION_PILOT_BATCH_ID || "Q
   .toUpperCase();
 
 const apiBase = mode === "prepare" ? "" : required("PILOT_API_BASE").replace(/\/$/, "");
-const adminToken = mode === "prepare" ? "" : required("PILOT_ADMIN_TOKEN");
-
 if (mode !== "prepare" && process.env.PILOT_ALLOW_EXTERNAL_RUN !== "YES") {
   throw new Error("External Pilot calls are fail-closed: set PILOT_ALLOW_EXTERNAL_RUN=YES only after owner authorization.");
 }
+
+const adminToken = mode === "prepare"
+  ? ""
+  : (await resolvePilotAdminToken({ env: process.env, apiBase })).token;
 if ((mode === "canary" || mode === "full") && process.env.PILOT_WRITE_AUTHORIZATION !== "YES") {
   throw new Error("Pilot writes are fail-closed: set PILOT_WRITE_AUTHORIZATION=YES only after owner authorization.");
 }
