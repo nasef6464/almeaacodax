@@ -18221,5 +18221,68 @@
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
     "answerEvidence": "Direct Amer T25 p.71; contextual-error answer independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T25-P070-Q008",
+    "canonicalId": "VERBAL26-AMER-T25-P070-Q008",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 70,
+    "sourceQuestionNumber": 8,
+    "sourceTraining": 25,
+    "mainSkillId": "skill_verbal_18",
+    "subSkillId": "sub_verbal_11_3",
+    "text": "أثبتت الدراسات أن الصناديق الاستثمارية للمهندسين تحقق أرباحًا مالية أكبر من التي تحققها الصناديق الاستثمارية للمستثمرين العاديين.",
+    "options": [
+      "المهندسين",
+      "مالية",
+      "أكبر",
+      "تحققها"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer T25 p.70; contextual-error answer independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T25-P071-Q017",
+    "canonicalId": "VERBAL26-AMER-T25-P071-Q017",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 71,
+    "sourceQuestionNumber": 17,
+    "sourceTraining": 25,
+    "mainSkillId": "skill_verbal_18",
+    "subSkillId": "sub_verbal_11_3",
+    "text": "احترس من الكريم إذا جالسته ومن اللئيم إذا أكرمته ومن الأحمق إذا رافقته.",
+    "options": [
+      "جالسته",
+      "اللئيم",
+      "الأحمق",
+      "رافقته"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer T25 p.71; contextual-error answer independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T25-P071-Q018",
+    "canonicalId": "VERBAL26-AMER-T25-P071-Q018",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 71,
+    "sourceQuestionNumber": 18,
+    "sourceTraining": 25,
+    "mainSkillId": "skill_verbal_18",
+    "subSkillId": "sub_verbal_11_3",
+    "text": "اجعل قلبك خزانتك، احشها من كل عمل صالح، فإذا وردت على الناس سرك ما ترى فيه.",
+    "options": [
+      "احشها",
+      "الناس",
+      "سرك",
+      "ترى"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer T25 p.71; contextual-error answer independently verified."
   }
 ]
