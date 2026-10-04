@@ -8,7 +8,13 @@ export const passwordStrengthSchema = z.string()
     message: "Password must include at least one letter and one number",
   });
 
-export const loginSchema = z.object({ email: z.string().email(), password: z.string().min(1).max(160) });
+const toAsciiDigits = (val: unknown) =>
+  typeof val === "string" ? val.replace(/[٠-٩]/g, (d) => "٠١٢٣٤٥٦٧٨٩".indexOf(d).toString()) : val;
+
+export const loginSchema = z.object({
+  email: z.preprocess(toAsciiDigits, z.string().min(3).max(160)),
+  password: z.string().min(1).max(160),
+});
 export const whatsappStartSchema = z.object({ phone: z.string().min(8).max(24) });
 export const whatsappVerifySchema = z.object({ phone: z.string().min(8).max(24), code: z.string().length(6) });
 export const registerSchema = z.object({ name: z.string().min(2), email: z.string().email(), password: passwordStrengthSchema });
@@ -19,6 +25,8 @@ export const adminCreateUserSchema = z.object({
   schoolId: z.string().nullable().optional(), groupIds: z.array(z.string()).optional(),
   linkedStudentIds: z.array(z.string()).optional(), managedPathIds: z.array(z.string()).optional(),
   managedSubjectIds: z.array(z.string()).optional(),
+  nationalId: z.preprocess(toAsciiDigits, z.string().nullable().optional()),
+  phone: z.preprocess(toAsciiDigits, z.string().nullable().optional()),
 });
 
 export const adminUpdateUserSchema = z.object({
@@ -27,6 +35,8 @@ export const adminUpdateUserSchema = z.object({
   isActive: z.boolean().optional(), schoolId: z.string().nullable().optional(),
   groupIds: z.array(z.string()).optional(), linkedStudentIds: z.array(z.string()).optional(),
   managedPathIds: z.array(z.string()).optional(), managedSubjectIds: z.array(z.string()).optional(),
+  nationalId: z.preprocess(toAsciiDigits, z.string().nullable().optional()),
+  phone: z.preprocess(toAsciiDigits, z.string().nullable().optional()),
 });
 
 const optionalBooleanQuery = z.preprocess((value) => {
@@ -67,7 +77,10 @@ export const redeemAccessCodeSchema = z.object({ code: z.string().min(4) });
 export const forgotPasswordSchema = z.object({ email: z.string().email() });
 export const resetPasswordSchema = z.object({ token: z.string().min(32).max(160), password: passwordStrengthSchema });
 export const verifyEmailSchema = z.object({ token: z.string().min(32).max(160) });
-export const nationalIdLoginSchema = z.object({ nationalId: z.string().regex(/^[12]\d{9}$/, "National ID must be 10 digits starting with 1 or 2"), password: z.string().min(1).max(160) });
+export const nationalIdLoginSchema = z.object({
+  nationalId: z.preprocess(toAsciiDigits, z.string().regex(/^[12]\d{9}$/, "National ID must be 10 digits starting with 1 or 2")),
+  password: z.string().min(1).max(160),
+});
 export const identityUpdateSchema = z.object({ nationalId: z.string().regex(/^[12]\d{9}$/).optional().nullable(), phone: z.string().min(8).max(24).optional().nullable() });
 export const linkStudentSchema = z.object({
   nationalId: z.string().regex(/^[12]\d{9}$/).optional(), phone: z.string().min(8).max(24).optional(),

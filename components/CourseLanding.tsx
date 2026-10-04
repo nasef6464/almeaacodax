@@ -11,6 +11,7 @@ import { PaymentModal } from './PaymentModal';
 import { motion, AnimatePresence } from 'motion/react';
 import { useStore } from '../store/useStore';
 import { getCourseAudienceCount, getCourseContentStats, getCourseRating } from '../utils/courseStats';
+import { DEFAULT_AVATAR } from '../utils/defaultAvatar';
 
 const CustomVideoPlayer = React.lazy(() =>
     import('./CustomVideoPlayer').then((module) => ({ default: module.CustomVideoPlayer })),
@@ -137,7 +138,7 @@ export const CourseLanding: React.FC<CourseLandingProps> = ({ course }) => {
                         <section className="bg-white p-6 md:p-10 rounded-3xl shadow-sm border border-gray-100">
                             <h2 className="text-2xl font-black text-gray-900 mb-10">عن المدرس</h2>
                             <div className="flex flex-col md:flex-row gap-10">
-                                <img src="https://i.pravatar.cc/150?u=instructor" alt={course.instructor} className="w-32 h-32 md:w-40 md:h-40 rounded-3xl object-cover shadow-xl" />
+                                <img src={DEFAULT_AVATAR} alt={course.instructor} className="w-32 h-32 md:w-40 md:h-40 rounded-3xl object-cover shadow-xl bg-gray-100" />
                                 <div className="flex-1">
                                     <h3 className="text-2xl font-bold text-gray-900 mb-2">{course.instructor}</h3>
                                     <p className="text-indigo-600 font-bold text-sm md:text-base mb-6">خبير تأسيس القدرات والتحصيلي</p>
@@ -341,7 +342,7 @@ export const CourseLanding: React.FC<CourseLandingProps> = ({ course }) => {
                             </div>
 
                             <div className="flex items-center gap-4">
-                                <img src="https://i.pravatar.cc/150?u=instructor" alt={course.instructor} className="w-12 h-12 rounded-full border-2 border-indigo-500" />
+                                <img src={DEFAULT_AVATAR} alt={course.instructor} className="w-12 h-12 rounded-full border-2 border-indigo-500 bg-gray-100" />
                                 <div>
                                     <p className="text-gray-400 text-[10px]">المدرس</p>
                                     <p className="font-bold text-lg">{course.instructor}</p>

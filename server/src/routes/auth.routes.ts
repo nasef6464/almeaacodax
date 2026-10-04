@@ -275,7 +275,13 @@ authRouter.post(
   "/login",
   asyncHandler(async (req, res) => {
     const payload = loginSchema.parse(req.body);
-    const user = await UserModel.findOne({ email: payload.email.toLowerCase() });
+    const identifier = payload.email.trim().toLowerCase();
+    const isNationalId = /^[12]\d{9}$/.test(identifier);
+    const user = await UserModel.findOne(
+      isNationalId
+        ? { $or: [{ nationalId: identifier }, { email: identifier }, { email: `${identifier}@almeaa.com` }] }
+        : { email: identifier }
+    );
 
     if (!user) {
       return res.status(StatusCodes.UNAUTHORIZED).json({
@@ -289,7 +295,13 @@ authRouter.post(
       });
     }
 
-    const valid = await bcrypt.compare(payload.password, user.passwordHash);
+    let valid = await bcrypt.compare(payload.password, user.passwordHash);
+    if (!valid) {
+      const asciiPassword = payload.password.replace(/[٠-٩]/g, (d) => "٠١٢٣٤٥٦٧٨٩".indexOf(d).toString());
+      if (asciiPassword !== payload.password) {
+        valid = await bcrypt.compare(asciiPassword, user.passwordHash);
+      }
+    }
     if (!valid) {
       await recordFailedLogin(user);
       return res.status(StatusCodes.UNAUTHORIZED).json({
@@ -641,6 +653,15 @@ authRouter.post(
       : [];
     const normalizedLinkedStudentIds = linkedStudents.map((student: any) => String(student.id || student._id || ""));
 
+    const nationalId = payload.nationalId ? String(payload.nationalId).trim() : undefined;
+    if (nationalId) {
+      const conflict = await UserModel.findOne({ nationalId, email: { $ne: email } });
+      if (conflict) {
+        return res.status(StatusCodes.CONFLICT).json({ message: "رقم الهوية الوطنية مرتبط بحساب آخر بالفعل" });
+      }
+    }
+    const phone = payload.phone !== undefined ? (payload.phone ? normalizePhone(payload.phone) : "") : undefined;
+
     const user = await UserModel.findOneAndUpdate(
       { email },
       {
@@ -654,6 +675,8 @@ authRouter.post(
         linkedStudentIds: normalizedLinkedStudentIds,
         managedPathIds: payload.managedPathIds || [],
         managedSubjectIds: payload.managedSubjectIds || [],
+        ...(nationalId !== undefined ? { nationalId: nationalId || null } : {}),
+        ...(phone !== undefined ? { phone } : {}),
       },
       {
         upsert: true,
@@ -1035,6 +1058,20 @@ authRouter.patch(
       if (staleMembershipUpdates.length > 0) {
         await Promise.all(staleMembershipUpdates);
       }
+    }
+
+    if (payload.nationalId !== undefined) {
+      const cleanNationalId = payload.nationalId ? String(payload.nationalId).trim() : null;
+      if (cleanNationalId) {
+        const conflict = await UserModel.findOne({ nationalId: cleanNationalId, _id: { $ne: targetUser._id } });
+        if (conflict) {
+          return res.status(StatusCodes.CONFLICT).json({ message: "رقم الهوية الوطنية مرتبط بحساب آخر بالفعل" });
+        }
+      }
+      nextPayload.nationalId = cleanNationalId;
+    }
+    if (payload.phone !== undefined) {
+      nextPayload.phone = payload.phone ? normalizePhone(payload.phone) : "";
     }
 
     const updated = await UserModel.findOneAndUpdate(buildDocumentQuery(targetId), nextPayload, { new: true });

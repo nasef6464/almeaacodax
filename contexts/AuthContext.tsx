@@ -2,6 +2,7 @@ import React, { createContext, useCallback, useContext, useEffect, useMemo, useS
 import { api } from '../services/api';
 import { Role } from '../types';
 import { useStore } from '../store/useStore';
+import { DEFAULT_AVATAR } from '../utils/defaultAvatar';
 
 type BackendRole = 'student' | 'teacher' | 'admin' | 'supervisor' | 'school_admin' | 'parent';
 
@@ -50,6 +51,7 @@ interface AuthContextType {
   loading: boolean;
   signInWithGoogle: () => Promise<void>;
   signInWithEmail: (email: string, password: string) => Promise<SessionUser>;
+  signInWithNationalId: (nationalId: string, password: string) => Promise<SessionUser>;
   signUpWithEmail: (email: string, password: string, name?: string) => Promise<SessionUser>;
   logout: () => Promise<void>;
   refreshProfile?: () => Promise<void>;
@@ -132,7 +134,7 @@ const buildSessionUser = (user: BackendAuthUser): SessionUser => ({
   id: String(user.id || user._id || user.email),
   email: user.email,
   displayName: user.name,
-  photoURL: user.avatar || `https://i.pravatar.cc/150?u=${encodeURIComponent(user.email)}`,
+  photoURL: user.avatar || DEFAULT_AVATAR,
   role: user.role,
   groupIds: Array.isArray(user.groupIds) ? user.groupIds.map(String) : [],
   schoolId: user.schoolId ?? null,
@@ -186,7 +188,7 @@ const resetStoreUser = () => {
       id: 'guest',
       name: 'Guest User',
       email: undefined,
-      avatar: 'https://i.pravatar.cc/150?u=guest',
+      avatar: DEFAULT_AVATAR,
       role: Role.STUDENT,
       points: 0,
       badges: [],
@@ -363,6 +365,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return sessionUser;
   };
 
+  const signInWithNationalId = async (nationalId: string, password: string) => {
+    const response = (await api.nationalIdLogin(nationalId, password)) as { token?: string; user: BackendAuthUser };
+    const sessionUser = buildSessionUser(response.user);
+    persistSession(sessionUser, response.user);
+    return sessionUser;
+  };
+
   const signUpWithEmail = async (email: string, password: string, name?: string) => {
     const finalName = name?.trim() || email.split('@')[0] || 'Student';
     const response = (await api.register(finalName, email, password)) as { token?: string; user: BackendAuthUser };
@@ -431,7 +440,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [user, refreshProfile]);
 
   const value = useMemo(
-    () => ({ user, loading, signInWithGoogle, signInWithEmail, signUpWithEmail, logout, refreshProfile, devSwitchRole }),
+    () => ({ user, loading, signInWithGoogle, signInWithEmail, signInWithNationalId, signUpWithEmail, logout, refreshProfile, devSwitchRole }),
     [user, loading, refreshProfile],
   );
 

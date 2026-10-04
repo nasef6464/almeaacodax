@@ -1,12 +1,13 @@
 import { api } from '../../../services/api';
 import { Group, Role, User } from '../../../types';
 import type { AdminUserPayload } from './contracts';
+import { DEFAULT_AVATAR } from '../../../utils/defaultAvatar';
 
 export const buildStoreUser = (user: AdminUserPayload): User => ({
     id: String(user.id || user._id || user.email),
     name: user.name,
     email: user.email,
-    avatar: user.avatar || `https://i.pravatar.cc/150?u=${encodeURIComponent(user.email)}`,
+    avatar: user.avatar || DEFAULT_AVATAR,
     role: user.role,
     points: user.points ?? 0,
     badges: user.badges ?? [],
