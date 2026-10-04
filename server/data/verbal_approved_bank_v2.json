@@ -17625,5 +17625,118 @@
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_TEXT_VERIFIED",
     "answerEvidence": "Direct Amer source p.97; answer independently verified from passage."
+  },
+  {
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourceTraining": 32,
+    "answerValidationStatus": "INDEPENDENT_TEXT_VERIFIED",
+    "id": "VERBAL26-AMER-T32-P093-ZAH-Q004",
+    "canonicalId": "VERBAL26-AMER-T32-P093-ZAH-Q004",
+    "sourcePage": 93,
+    "sourceQuestionNumber": 4,
+    "passageId": "VERBAL26-AMER-PASSAGE-ZAHRAWI",
+    "mainSkillId": "skill_verbal_20",
+    "subSkillId": "sub_verbal_12_6",
+    "text": "كم عدد أنواع الطب التي عمل فيها الزهراوي في الفقرة الثانية؟",
+    "options": [
+      "3",
+      "4",
+      "5",
+      "6"
+    ],
+    "correctOptionIndex": 1,
+    "answerEvidence": "Direct Amer source pp.93-94; Paragraph lists internal medicine, surgery, dentistry, and cancer treatment."
+  },
+  {
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourceTraining": 32,
+    "answerValidationStatus": "INDEPENDENT_TEXT_VERIFIED",
+    "id": "VERBAL26-AMER-T32-P093-ZAH-Q008",
+    "canonicalId": "VERBAL26-AMER-T32-P093-ZAH-Q008",
+    "sourcePage": 93,
+    "sourceQuestionNumber": 8,
+    "passageId": "VERBAL26-AMER-PASSAGE-ZAHRAWI",
+    "mainSkillId": "skill_verbal_20",
+    "subSkillId": "sub_verbal_12_6",
+    "text": "الفقرة الثالثة تدل على:",
+    "options": [
+      "الزهراوي أول من مارس الطب السريري",
+      "الطب السريري لم يكن شائعًا في عصره",
+      "عصر الزهراوي",
+      "الجراحة العامة"
+    ],
+    "correctOptionIndex": 1,
+    "answerEvidence": "Direct Amer source pp.93-94; Passage contrasts his practice with what is known as clinical observation today."
+  },
+  {
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourceTraining": 32,
+    "answerValidationStatus": "INDEPENDENT_TEXT_VERIFIED",
+    "id": "VERBAL26-AMER-T32-P094-JUSTICE-Q001",
+    "canonicalId": "VERBAL26-AMER-T32-P094-JUSTICE-Q001",
+    "sourcePage": 94,
+    "sourceQuestionNumber": 1,
+    "passageId": "VERBAL26-AMER-PASSAGE-JUSTICE",
+    "passageText": "يوم العدل على الظالم أشد من يوم الجور على المظلوم.",
+    "mainSkillId": "skill_verbal_21",
+    "subSkillId": "sub_verbal_13_2",
+    "text": "يميل النص «يوم العدل على الظالم أشد من يوم الجور على المظلوم» إلى:",
+    "options": [
+      "التكرار",
+      "المصارحة",
+      "المقارنة",
+      "التحليل"
+    ],
+    "correctOptionIndex": 2,
+    "answerEvidence": "Direct Amer source pp.93-94; Sentence explicitly contrasts two parallel states."
+  },
+  {
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourceTraining": 32,
+    "answerValidationStatus": "INDEPENDENT_TEXT_VERIFIED",
+    "id": "VERBAL26-AMER-T32-P094-JUSTICE-Q002",
+    "canonicalId": "VERBAL26-AMER-T32-P094-JUSTICE-Q002",
+    "sourcePage": 94,
+    "sourceQuestionNumber": 2,
+    "passageId": "VERBAL26-AMER-PASSAGE-JUSTICE",
+    "passageText": "يوم العدل على الظالم أشد من يوم الجور على المظلوم.",
+    "mainSkillId": "skill_verbal_21",
+    "subSkillId": "sub_verbal_13_2",
+    "text": "كم تضادًا في النص؟",
+    "options": [
+      "2",
+      "3",
+      "4",
+      "1"
+    ],
+    "correctOptionIndex": 0,
+    "answerEvidence": "Direct Amer source pp.93-94; Two antonym pairs: العدل/الجور and الظالم/المظلوم."
+  },
+  {
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourceTraining": 32,
+    "answerValidationStatus": "INDEPENDENT_TEXT_VERIFIED",
+    "id": "VERBAL26-AMER-T32-P094-JUSTICE-Q003",
+    "canonicalId": "VERBAL26-AMER-T32-P094-JUSTICE-Q003",
+    "sourcePage": 94,
+    "sourceQuestionNumber": 3,
+    "passageId": "VERBAL26-AMER-PASSAGE-JUSTICE",
+    "passageText": "يوم العدل على الظالم أشد من يوم الجور على المظلوم.",
+    "mainSkillId": "skill_verbal_21",
+    "subSkillId": "sub_verbal_13_2",
+    "text": "ما فائدة التضاد بين «الظالم» و«المظلوم»؟",
+    "options": [
+      "تحليل المعنى",
+      "تفسير المعنى",
+      "تقوية المعنى",
+      "تفسير المراد منها"
+    ],
+    "correctOptionIndex": 2,
+    "answerEvidence": "Direct Amer source pp.93-94; Antithesis strengthens the intended meaning."
   }
 ]
