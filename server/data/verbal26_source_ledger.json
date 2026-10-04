@@ -19,7 +19,7 @@
       "documentCode": "VERBAL26-ANAS",
       "title": "تأسيس لفظي انس.pdf",
       "pdfPages": 43,
-      "status": "SOURCE_INVENTORY_COMPLETE_KEY_QA_PROGRESSING",
+      "status": "SOURCE_INVENTORY_COMPLETE_CANONICAL_RECONCILED",
       "observedQuestions": 135,
       "keyVerifiedQuestions": 119,
       "conflictQuestions": 16
@@ -28,7 +28,7 @@
       "documentCode": "VERBAL26-AMER",
       "title": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
       "pdfPages": 98,
-      "status": "SOURCE_INVENTORY_COMPLETE_ANSWER_QA_PROGRESSING",
+      "status": "SOURCE_INVENTORY_COMPLETE_CANONICAL_RECONCILED",
       "indexEvidence": "Book table of contents visually/index-text verified; answer keys are not assumed.",
       "trainingPlan": [
         {
@@ -2559,14 +2559,14 @@
   ],
   "metrics": {
     "sourceKeyVerifiedRecords": 112,
-    "approvedBankRecords": 875,
-    "note": "Ledger records are not approved-bank records until visual text/options and taxonomy QA pass.",
+    "approvedBankRecords": 1050,
+    "note": "Canonical bank reconciled against both approved books: 1050 unique questions. Amer has 921 source occurrences resolving to 915 unique canonical questions after exact duplicate merging with sourceOccurrences provenance; Anas has 135/135 canonical questions. migrationReady remains false until all contracts and production gates pass.",
     "sourceConflictRecords": 23,
     "anasObservedQuestions": 135,
     "anasKeyVerifiedQuestions": 112,
     "anasConflictQuestions": 23,
     "amerTrainingsIndexed": 33,
-    "amerApprovedRecords": 759,
+    "amerApprovedRecords": 915,
     "amerDerivedReportCrossCheck": 938,
     "amerDerivedReportIsAuthority": false,
     "amerObservedQuestionCounts": {
@@ -2605,38 +2605,38 @@
       "33": 40
     },
     "approvedBySource": {
-      "anas": 116,
-      "abdelbaset": 759
+      "anas": 135,
+      "abdelbaset": 915
     },
     "approvedByMainSkill": {
-      "skill_verbal_17": 51,
-      "skill_verbal_12": 171,
+      "skill_verbal_17": 68,
+      "skill_verbal_12": 126,
       "skill_verbal_10": 1,
-      "skill_verbal_01": 29,
-      "skill_verbal_04": 34,
-      "skill_verbal_08": 36,
-      "skill_verbal_03": 35,
-      "skill_verbal_06": 25,
-      "skill_verbal_09": 18,
-      "skill_verbal_05": 30,
-      "skill_verbal_07": 31,
-      "skill_verbal_02": 34,
-      "skill_verbal_20": 83,
+      "skill_verbal_01": 117,
+      "skill_verbal_04": 40,
+      "skill_verbal_08": 44,
+      "skill_verbal_03": 42,
+      "skill_verbal_06": 29,
+      "skill_verbal_09": 23,
+      "skill_verbal_05": 36,
+      "skill_verbal_07": 33,
+      "skill_verbal_02": 38,
+      "skill_verbal_20": 128,
       "skill_verbal_22": 2,
-      "skill_verbal_21": 26,
-      "skill_verbal_19": 12,
-      "skill_verbal_18": 65,
+      "skill_verbal_21": 29,
+      "skill_verbal_19": 13,
+      "skill_verbal_18": 77,
       "skill_verbal_11": 15,
-      "skill_verbal_13": 92,
-      "skill_verbal_14": 22,
-      "skill_verbal_15": 29,
-      "skill_verbal_16": 2
+      "skill_verbal_13": 119,
+      "skill_verbal_14": 29,
+      "skill_verbal_15": 34,
+      "skill_verbal_16": 7
     },
-    "approvedSubSkillCoverage": 49,
+    "approvedSubSkillCoverage": 50,
     "approvedMainSkillCoverage": 22,
     "amerObservedQuestions": 921,
-    "anasCanonicalApproved": 116,
-    "anasCurrentQuarantined": 10
+    "anasCanonicalApproved": 135,
+    "anasCurrentQuarantined": 0
   },
   "amerBatches": [
     {
