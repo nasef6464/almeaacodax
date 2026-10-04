@@ -1,0 +1,67 @@
+name: COL26OLD Production Import
+
+on:
+  push:
+    branches:
+      - ops/col26old-production-import-20261004
+    paths:
+      - ".github/workflows/col26old-production-import.yml"
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      COL26OLD_API_BASE: https://almeaacodax.vercel.app/api
+      COL26OLD_PACKAGE_URL: "https://sdmntprnznorth.oaiusercontent.com/files/00000000-b6b0-820b-90a8-15c868ef9685/raw?se=2026-10-04T16%3A34%3A47Z&sp=r&sv=2026-02-06&sr=b&scid=201a5405-60f3-5a45-882f-70d55935d3a8&skoid=d5627e4c-566b-4761-a954-54993b0ed17b&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2026-10-04T03%3A04%3A09Z&ske=2026-10-05T03%3A04%3A09Z&sks=b&skv=2026-02-06&sig=bpWj0YJrZooJCiW3UIAgbFOKCS0pcaNwLFsxC2kz1RE%3D"
+      COL26OLD_PACKAGE_SHA256: 47dd0c71f7b07bd8c398b8dbf4e7caa1d7a1d56834e326914fdd51c2a84f4d91
+      SMOKE_API_BASE_URL: https://almeaacodax.vercel.app/api
+      SMOKE_ADMIN_TOKEN: ${{ secrets.SMOKE_ADMIN_TOKEN }}
+      SMOKE_ADMIN_EMAIL: ${{ secrets.SMOKE_ADMIN_EMAIL || secrets.ROLE_ADMIN_EMAIL }}
+      SMOKE_ADMIN_PASSWORD: ${{ secrets.SMOKE_ADMIN_PASSWORD || secrets.ROLE_ADMIN_PASSWORD }}
+
+    steps:
+      - name: Checkout exact import runner
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Resolve fresh admin auth without printing it
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -n "$SMOKE_ADMIN_EMAIL" ] && [ -n "$SMOKE_ADMIN_PASSWORD" ]; then
+            node scripts/resolve-smoke-admin-token.mjs > /tmp/col26old-admin.json
+            TOKEN="$(node -e "const f=require('fs');const j=JSON.parse(f.readFileSync('/tmp/col26old-admin.json','utf8'));process.stdout.write(String(j.token||''))")"
+            if [ -z "$TOKEN" ]; then
+              echo "Fresh admin token resolution returned empty output."
+              exit 1
+            fi
+            echo "::add-mask::$TOKEN"
+            echo "SMOKE_ADMIN_TOKEN=$TOKEN" >> "$GITHUB_ENV"
+            rm -f /tmp/col26old-admin.json
+          elif [ -n "$SMOKE_ADMIN_TOKEN" ]; then
+            echo "::add-mask::$SMOKE_ADMIN_TOKEN"
+          else
+            echo "No admin auth material is available."
+            exit 1
+          fi
+
+      - name: Dry-run, canary, full Draft import, and final R2 audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p audit-artifacts/col26old
+          node ops/col26old/action-import.mjs 2>&1 | tee audit-artifacts/col26old/import.log
+
+      - name: Upload import evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: col26old-production-import-${{ github.sha }}
+          path: audit-artifacts/col26old/import.log
+          if-no-files-found: error
+          retention-days: 14
