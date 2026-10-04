@@ -1,0 +1,781 @@
+{
+  "project": "BIO26",
+  "version": "1.0.0",
+  "status": "FROZEN_V1",
+  "sourceBoundary": {
+    "foundation": "تأسيس أحياء كامل.pdf — concepts/taxonomy/foundation/video/AI only; not question bank",
+    "questions": "تجميعات يلو للأحياء النهائية 2026 - المعدل.pdf — official question source"
+  },
+  "counts": {
+    "mainSkills": 29,
+    "subSkills": 98,
+    "sourceQuestionOccurrences": 2835,
+    "section1Occurrences": 1673,
+    "section2Occurrences": 1162,
+    "lessons": 48
+  },
+  "skills": [
+    {
+      "mainSkillId": "BIO26-M01",
+      "name": "الاستقصاء العلمي وخصائص الحياة",
+      "subSkills": [
+        {
+          "subSkillId": "BIO26-S01-01",
+          "name": "دور علم الأحياء والعلم الطبيعي ومجالاته",
+          "sourceQuestionOccurrences": 7,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S01-02",
+          "name": "خصائص الحياة والاتزان الداخلي والتكيف",
+          "sourceQuestionOccurrences": 18,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S01-03",
+          "name": "الطريقة العلمية والفرضيات والتجارب والمتغيرات",
+          "sourceQuestionOccurrences": 29,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S01-04",
+          "name": "الملاحظة والبيانات والقياس ومراجعة الأقران",
+          "sourceQuestionOccurrences": 5,
+          "targetFoundationVideoMinutes": 10
+        }
+      ]
+    },
+    {
+      "mainSkillId": "BIO26-M02",
+      "name": "التصنيف وتنظيم تنوع الحياة",
+      "subSkills": [
+        {
+          "subSkillId": "BIO26-S02-01",
+          "name": "التسمية الثنائية وقواعد الاسم العلمي",
+          "sourceQuestionOccurrences": 7,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S02-02",
+          "name": "مستويات التصنيف والمصنفات والعلاقات",
+          "sourceQuestionOccurrences": 22,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S02-03",
+          "name": "فوق الممالك والممالك الست وخصائصها",
+          "sourceQuestionOccurrences": 18,
+          "targetFoundationVideoMinutes": 10
+        }
+      ]
+    },
+    {
+      "mainSkillId": "BIO26-M03",
+      "name": "البدائيات والبكتيريا",
+      "subSkills": [
+        {
+          "subSkillId": "BIO26-S03-01",
+          "name": "البدائيات والبكتيريا: التركيب والأنواع والحركة",
+          "sourceQuestionOccurrences": 22,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S03-02",
+          "name": "صبغة جرام والجدار الخلوي والتراكيب الواقية",
+          "sourceQuestionOccurrences": 3,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S03-03",
+          "name": "تكاثر البكتيريا والبقاء والطفرات والأبواغ",
+          "sourceQuestionOccurrences": 11,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S03-04",
+          "name": "تغذية وأيض وأهمية البكتيريا",
+          "sourceQuestionOccurrences": 14,
+          "targetFoundationVideoMinutes": 10
+        }
+      ]
+    },
+    {
+      "mainSkillId": "BIO26-M04",
+      "name": "الفيروسات والبريونات والأمراض الميكروبية",
+      "subSkills": [
+        {
+          "subSkillId": "BIO26-S04-01",
+          "name": "الأمراض البكتيرية والمضادات والمقاومة",
+          "sourceQuestionOccurrences": 9,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S04-02",
+          "name": "تركيب الفيروسات وتضاعفها وتصنيفها",
+          "sourceQuestionOccurrences": 30,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S04-03",
+          "name": "الأمراض الفيروسية والفيروسات الارتجاعية والبريونات",
+          "sourceQuestionOccurrences": 22,
+          "targetFoundationVideoMinutes": 10
+        }
+      ]
+    },
+    {
+      "mainSkillId": "BIO26-M05",
+      "name": "الطلائعيات",
+      "subSkills": [
+        {
+          "subSkillId": "BIO26-S05-01",
+          "name": "الطلائعيات الشبيهة بالحيوانات والحركة والأعضاء",
+          "sourceQuestionOccurrences": 47,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S05-02",
+          "name": "الطحالب والطلائعيات الشبيهة بالنباتات",
+          "sourceQuestionOccurrences": 35,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S05-03",
+          "name": "الطلائعيات الشبيهة بالفطريات والأمراض الطلائعية",
+          "sourceQuestionOccurrences": 12,
+          "targetFoundationVideoMinutes": 10
+        }
+      ]
+    },
+    {
+      "mainSkillId": "BIO26-M06",
+      "name": "الفطريات",
+      "subSkills": [
+        {
+          "subSkillId": "BIO26-S06-01",
+          "name": "تركيب الفطريات وتغذيتها وتكاثرها",
+          "sourceQuestionOccurrences": 29,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S06-02",
+          "name": "تصنيف الفطريات وأمثلتها",
+          "sourceQuestionOccurrences": 17,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S06-03",
+          "name": "الأشنات والفطريات الجذرية وفوائد وأضرار الفطريات",
+          "sourceQuestionOccurrences": 13,
+          "targetFoundationVideoMinutes": 10
+        }
+      ]
+    },
+    {
+      "mainSkillId": "BIO26-M07",
+      "name": "أسس المملكة الحيوانية والإسفنجيات واللاسعات",
+      "subSkills": [
+        {
+          "subSkillId": "BIO26-S07-01",
+          "name": "خصائص الحيوانات والتناظر والتجاويف والنمو الجنيني",
+          "sourceQuestionOccurrences": 34,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S07-02",
+          "name": "الإسفنجيات: التركيب والتغذية والتكاثر",
+          "sourceQuestionOccurrences": 9,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S07-03",
+          "name": "اللاسعات: التركيب والأطوار والتكاثر والأهمية",
+          "sourceQuestionOccurrences": 31,
+          "targetFoundationVideoMinutes": 10
+        }
+      ]
+    },
+    {
+      "mainSkillId": "BIO26-M08",
+      "name": "الديدان والرخويات",
+      "subSkills": [
+        {
+          "subSkillId": "BIO26-S08-01",
+          "name": "الديدان المفلطحة والأسطوانية والدوارات",
+          "sourceQuestionOccurrences": 33,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S08-02",
+          "name": "الرخويات: التركيب والتنوع والوظائف",
+          "sourceQuestionOccurrences": 34,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S08-03",
+          "name": "الديدان الحلقية: التركيب والتنوع والوظائف",
+          "sourceQuestionOccurrences": 23,
+          "targetFoundationVideoMinutes": 10
+        }
+      ]
+    },
+    {
+      "mainSkillId": "BIO26-M09",
+      "name": "المفصليات وشوكيات الجلد واللافقاريات الحبلية",
+      "subSkills": [
+        {
+          "subSkillId": "BIO26-S09-01",
+          "name": "المفصليات: الخصائص والطوائف والتكيفات",
+          "sourceQuestionOccurrences": 68,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S09-02",
+          "name": "الحشرات والتحول والتنوع في المفصليات",
+          "sourceQuestionOccurrences": 11,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S09-03",
+          "name": "شوكيات الجلد واللافقاريات الحبلية",
+          "sourceQuestionOccurrences": 57,
+          "targetFoundationVideoMinutes": 10
+        }
+      ]
+    },
+    {
+      "mainSkillId": "BIO26-M10",
+      "name": "الفقاريات والمقارنات بينها",
+      "subSkills": [
+        {
+          "subSkillId": "BIO26-S10-01",
+          "name": "الأسماك: الخصائص والتصنيف والتكيفات",
+          "sourceQuestionOccurrences": 61,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S10-02",
+          "name": "البرمائيات والزواحف والبيضة الأمنيونية",
+          "sourceQuestionOccurrences": 76,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S10-03",
+          "name": "الطيور والثدييات: الخصائص والتنوع",
+          "sourceQuestionOccurrences": 109,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S10-04",
+          "name": "المقارنة بين الفقاريات والأجهزة والتكيفات",
+          "sourceQuestionOccurrences": 71,
+          "targetFoundationVideoMinutes": 10
+        }
+      ]
+    },
+    {
+      "mainSkillId": "BIO26-M11",
+      "name": "تنوع النباتات",
+      "subSkills": [
+        {
+          "subSkillId": "BIO26-S11-01",
+          "name": "النباتات اللاوعائية والوعائية اللابذرية وتعاقب الأجيال",
+          "sourceQuestionOccurrences": 20,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S11-02",
+          "name": "النباتات البذرية ومعراة ومغطاة البذور وتكيفاتها",
+          "sourceQuestionOccurrences": 20,
+          "targetFoundationVideoMinutes": 10
+        }
+      ]
+    },
+    {
+      "mainSkillId": "BIO26-M12",
+      "name": "خلايا وأنسجة النبات والنقل",
+      "subSkills": [
+        {
+          "subSkillId": "BIO26-S12-01",
+          "name": "الخلايا النباتية الأساسية والمرستيمية",
+          "sourceQuestionOccurrences": 14,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S12-02",
+          "name": "الأنسجة النباتية والبشرة والأنسجة الأساسية",
+          "sourceQuestionOccurrences": 9,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S12-03",
+          "name": "الأنسجة الوعائية ونقل الماء والمواد في النبات",
+          "sourceQuestionOccurrences": 9,
+          "targetFoundationVideoMinutes": 10
+        }
+      ]
+    },
+    {
+      "mainSkillId": "BIO26-M13",
+      "name": "تنظيم النبات وتكاثره",
+      "subSkills": [
+        {
+          "subSkillId": "BIO26-S13-01",
+          "name": "الهرمونات النباتية ووظائفها",
+          "sourceQuestionOccurrences": 13,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S13-02",
+          "name": "الانتحاءات والاستجابات والفترة الضوئية",
+          "sourceQuestionOccurrences": 22,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S13-03",
+          "name": "الأزهار والتلقيح والإخصاب والبذور والثمار",
+          "sourceQuestionOccurrences": 51,
+          "targetFoundationVideoMinutes": 10
+        }
+      ]
+    },
+    {
+      "mainSkillId": "BIO26-M14",
+      "name": "الجهازان الهيكلي والعضلي",
+      "subSkills": [
+        {
+          "subSkillId": "BIO26-S14-01",
+          "name": "الجهاز الهيكلي: العظام والمفاصل والوظائف والأمراض",
+          "sourceQuestionOccurrences": 58,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S14-02",
+          "name": "الجهاز العضلي: الأنواع والانقباض والطاقة والقوة",
+          "sourceQuestionOccurrences": 38,
+          "targetFoundationVideoMinutes": 10
+        }
+      ]
+    },
+    {
+      "mainSkillId": "BIO26-M15",
+      "name": "الجهاز العصبي وتنظيمه",
+      "subSkills": [
+        {
+          "subSkillId": "BIO26-S15-01",
+          "name": "الخلية العصبية والتشابك العصبي",
+          "sourceQuestionOccurrences": 7,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S15-02",
+          "name": "السيال العصبي وجهد الفعل ورد الفعل المنعكس",
+          "sourceQuestionOccurrences": 16,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S15-03",
+          "name": "الجهاز العصبي المركزي وتنظيمه",
+          "sourceQuestionOccurrences": 21,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S15-04",
+          "name": "الجهاز العصبي الطرفي والعقاقير وتأثيراتها",
+          "sourceQuestionOccurrences": 38,
+          "targetFoundationVideoMinutes": 10
+        }
+      ]
+    },
+    {
+      "mainSkillId": "BIO26-M16",
+      "name": "الدوران والتنفس والإخراج",
+      "subSkills": [
+        {
+          "subSkillId": "BIO26-S16-01",
+          "name": "القلب والأوعية والدورة الدموية",
+          "sourceQuestionOccurrences": 17,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S16-02",
+          "name": "مكونات الدم وفصائل الدم وعامل Rh",
+          "sourceQuestionOccurrences": 68,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S16-03",
+          "name": "الجهاز التنفسي وتبادل الغازات وأمراضه",
+          "sourceQuestionOccurrences": 17,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S16-04",
+          "name": "الكلية والنيفرون والإخراج والاتزان المائي",
+          "sourceQuestionOccurrences": 26,
+          "targetFoundationVideoMinutes": 10
+        }
+      ]
+    },
+    {
+      "mainSkillId": "BIO26-M17",
+      "name": "الهضم والتغذية والغدد الصماء",
+      "subSkills": [
+        {
+          "subSkillId": "BIO26-S17-01",
+          "name": "القناة الهضمية والهضم والامتصاص",
+          "sourceQuestionOccurrences": 58,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S17-02",
+          "name": "المغذيات الكبرى والسعرات والطاقة",
+          "sourceQuestionOccurrences": 49,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S17-03",
+          "name": "الفيتامينات والمعادن والاحتياجات الغذائية",
+          "sourceQuestionOccurrences": 24,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S17-04",
+          "name": "الغدد الصماء والهرمونات والتغذية الراجعة",
+          "sourceQuestionOccurrences": 77,
+          "targetFoundationVideoMinutes": 10
+        }
+      ]
+    },
+    {
+      "mainSkillId": "BIO26-M18",
+      "name": "التكاثر في الإنسان والنمو الجنيني",
+      "subSkills": [
+        {
+          "subSkillId": "BIO26-S18-01",
+          "name": "الجهاز التناسلي الذكري وتكوين الحيوانات المنوية",
+          "sourceQuestionOccurrences": 11,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S18-02",
+          "name": "الجهاز التناسلي الأنثوي والهرمونات ودورة الحيض",
+          "sourceQuestionOccurrences": 32,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S18-03",
+          "name": "الإخصاب وبدايات النمو والأغشية الجنينية والمشيمة",
+          "sourceQuestionOccurrences": 11,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S18-04",
+          "name": "نمو الجنين ومراحله والاختلالات ووسائل التشخيص",
+          "sourceQuestionOccurrences": 12,
+          "targetFoundationVideoMinutes": 10
+        }
+      ]
+    },
+    {
+      "mainSkillId": "BIO26-M19",
+      "name": "جهاز المناعة",
+      "subSkills": [
+        {
+          "subSkillId": "BIO26-S19-01",
+          "name": "المناعة غير المتخصصة والحواجز والالتهاب",
+          "sourceQuestionOccurrences": 24,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S19-02",
+          "name": "المناعة المتخصصة والخلايا اللمفية والأجسام المضادة",
+          "sourceQuestionOccurrences": 7,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S19-03",
+          "name": "المناعة النشطة والسلبية واللقاحات والذاكرة المناعية",
+          "sourceQuestionOccurrences": 10,
+          "targetFoundationVideoMinutes": 10
+        }
+      ]
+    },
+    {
+      "mainSkillId": "BIO26-M20",
+      "name": "التراكيب الخلوية والغشاء والنقل",
+      "subSkills": [
+        {
+          "subSkillId": "BIO26-S20-01",
+          "name": "بدائية وحقيقية النوى ومقارنة الخلية النباتية والحيوانية",
+          "sourceQuestionOccurrences": 30,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S20-02",
+          "name": "العضيات الغشائية ووظائفها وتصنيع ونقل المواد",
+          "sourceQuestionOccurrences": 50,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S20-03",
+          "name": "النواة والرايبوسومات والهيكل الخلوي والأهداب والأسواط",
+          "sourceQuestionOccurrences": 21,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S20-04",
+          "name": "الغشاء البلازمي والنقل والانتشار والأسموزية والنقل النشط",
+          "sourceQuestionOccurrences": 6,
+          "targetFoundationVideoMinutes": 10
+        }
+      ]
+    },
+    {
+      "mainSkillId": "BIO26-M21",
+      "name": "كيمياء الخلية والجزيئات الحيوية",
+      "subSkills": [
+        {
+          "subSkillId": "BIO26-S21-01",
+          "name": "الكربوهيدرات والدهون وبنيتها ووظائفها",
+          "sourceQuestionOccurrences": 13,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S21-02",
+          "name": "البروتينات والأحماض الأمينية والإنزيمات",
+          "sourceQuestionOccurrences": 19,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S21-03",
+          "name": "الأحماض النووية والنيوكليوتيدات والجزيئات الحيوية",
+          "sourceQuestionOccurrences": 7,
+          "targetFoundationVideoMinutes": 10
+        }
+      ]
+    },
+    {
+      "mainSkillId": "BIO26-M22",
+      "name": "الطاقة الخلوية والبناء الضوئي والتنفس",
+      "subSkills": [
+        {
+          "subSkillId": "BIO26-S22-01",
+          "name": "قوانين الطاقة والمسارات الأيضية وATP",
+          "sourceQuestionOccurrences": 34,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S22-02",
+          "name": "البناء الضوئي والتفاعلات الضوئية ودورة كالفن والمسارات البديلة",
+          "sourceQuestionOccurrences": 15,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S22-04",
+          "name": "التنفس الخلوي الهوائي واللاهوائي والتخمر",
+          "sourceQuestionOccurrences": 43,
+          "targetFoundationVideoMinutes": 10
+        }
+      ]
+    },
+    {
+      "mainSkillId": "BIO26-M23",
+      "name": "دورة الخلية والانقسام المتساوي والمنصف",
+      "subSkills": [
+        {
+          "subSkillId": "BIO26-S23-01",
+          "name": "حجم الخلية ونسبة السطح للحجم ودورة الخلية",
+          "sourceQuestionOccurrences": 18,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S23-02",
+          "name": "الانقسام المتساوي ومراحله وانقسام السيتوبلازم",
+          "sourceQuestionOccurrences": 57,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S23-03",
+          "name": "تنظيم دورة الخلية والسرطان والموت المبرمج والخلايا الجذعية",
+          "sourceQuestionOccurrences": 12,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S23-04",
+          "name": "الانقسام المنصف ومراحله ومقارنته بالمتساوي والتنوع الوراثي",
+          "sourceQuestionOccurrences": 38,
+          "targetFoundationVideoMinutes": 10
+        }
+      ]
+    },
+    {
+      "mainSkillId": "BIO26-M24",
+      "name": "الوراثة المندلية",
+      "subSkills": [
+        {
+          "subSkillId": "BIO26-S24-01",
+          "name": "مفاهيم مندل: السيادة والطراز الجيني والظاهري",
+          "sourceQuestionOccurrences": 16,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S24-02",
+          "name": "مربعات بانيت والتهجين الأحادي والاحتمالات",
+          "sourceQuestionOccurrences": 13,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S24-03",
+          "name": "التهجين الثنائي وقانون التوزيع الحر",
+          "sourceQuestionOccurrences": 5,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S24-04",
+          "name": "مصادر التنوع الوراثي وتعدد المجموعة الكروموسومية",
+          "sourceQuestionOccurrences": 19,
+          "targetFoundationVideoMinutes": 10
+        }
+      ]
+    },
+    {
+      "mainSkillId": "BIO26-M25",
+      "name": "الوراثة المعقدة والبشرية",
+      "subSkills": [
+        {
+          "subSkillId": "BIO26-S25-01",
+          "name": "السيادة غير التامة والمشتركة والجينات المتعددة المتقابلة",
+          "sourceQuestionOccurrences": 21,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S25-02",
+          "name": "الصفات متعددة الجينات والتفوق الجيني والتآثرات الجينية",
+          "sourceQuestionOccurrences": 27,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S25-03",
+          "name": "تحديد الجنس والصفات المرتبطة والمتأثرة بالجنس",
+          "sourceQuestionOccurrences": 9,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S25-04",
+          "name": "الوراثة البشرية: الاضطرابات ومخطط السلالة والكاريُوتايب وعدم الانفصال",
+          "sourceQuestionOccurrences": 68,
+          "targetFoundationVideoMinutes": 10
+        }
+      ]
+    },
+    {
+      "mainSkillId": "BIO26-M26",
+      "name": "المادة الوراثية والتعبير الجيني",
+      "subSkills": [
+        {
+          "subSkillId": "BIO26-S26-01",
+          "name": "تجارب اكتشاف المادة الوراثية وبنية DNA والكروموسوم",
+          "sourceQuestionOccurrences": 32,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S26-02",
+          "name": "تضاعف DNA وقواعد تشارجاف والطفرات",
+          "sourceQuestionOccurrences": 14,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S26-03",
+          "name": "RNA والنسخ والترجمة والشفرة الوراثية وتصنيع البروتين",
+          "sourceQuestionOccurrences": 29,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S26-04",
+          "name": "تنظيم الجينات والهندسة الوراثية والتقنيات الحيوية",
+          "sourceQuestionOccurrences": 28,
+          "targetFoundationVideoMinutes": 10
+        }
+      ]
+    },
+    {
+      "mainSkillId": "BIO26-M27",
+      "name": "العلاقات البيئية وانتقال الطاقة ودورات المواد",
+      "subSkills": [
+        {
+          "subSkillId": "BIO26-S27-01",
+          "name": "العوامل الحيوية واللاحيوية ومستويات التنظيم والعلاقات البيئية",
+          "sourceQuestionOccurrences": 61,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S27-02",
+          "name": "السلاسل والشبكات الغذائية والأدوار التغذوية",
+          "sourceQuestionOccurrences": 22,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S27-03",
+          "name": "انتقال الطاقة والأهرام البيئية والإنتاجية",
+          "sourceQuestionOccurrences": 40,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S27-04",
+          "name": "دورات الماء والكربون والأكسجين والنيتروجين والفوسفور",
+          "sourceQuestionOccurrences": 29,
+          "targetFoundationVideoMinutes": 10
+        }
+      ]
+    },
+    {
+      "mainSkillId": "BIO26-M28",
+      "name": "المجتمعات والجماعات والتنوع الحيوي",
+      "subSkills": [
+        {
+          "subSkillId": "BIO26-S28-01",
+          "name": "التعاقب والعوامل المحددة والمناطق الحيوية والأنظمة المائية",
+          "sourceQuestionOccurrences": 62,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S28-02",
+          "name": "كثافة وتوزيع ونمو الجماعات والقدرة الاستيعابية والديموغرافيا",
+          "sourceQuestionOccurrences": 53,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S28-03",
+          "name": "التنوع الحيوي والتهديدات والمحافظة على الموارد واستعادة الأنظمة",
+          "sourceQuestionOccurrences": 78,
+          "targetFoundationVideoMinutes": 10
+        }
+      ]
+    },
+    {
+      "mainSkillId": "BIO26-M29",
+      "name": "سلوك الحيوان",
+      "subSkills": [
+        {
+          "subSkillId": "BIO26-S29-01",
+          "name": "السلوك الفطري والمثيرات والإيقاعات الحيوية",
+          "sourceQuestionOccurrences": 34,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S29-02",
+          "name": "السلوك المتعلم: التعود والتكييف والمحاولة والخطأ والطبع",
+          "sourceQuestionOccurrences": 32,
+          "targetFoundationVideoMinutes": 10
+        },
+        {
+          "subSkillId": "BIO26-S29-03",
+          "name": "السلوك الاجتماعي والتواصل والتزاوج والهجرة والإقليمية",
+          "sourceQuestionOccurrences": 14,
+          "targetFoundationVideoMinutes": 10
+        }
+      ]
+    }
+  ]
+}
