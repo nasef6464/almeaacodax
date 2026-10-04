@@ -158,17 +158,25 @@ export const ClassroomPushQuestionsModal: React.FC<ClassroomPushQuestionsModalPr
           )}
         </div>
 
-        <div className="flex items-center justify-between border-t border-slate-100 p-4 dark:border-slate-800 bg-slate-50 dark:bg-slate-850">
-          <span className="text-xs font-black text-slate-700 dark:text-slate-300">
-            المحدد للإرسال: <strong className="text-emerald-600 text-sm font-black">{selectedIds.length}</strong> أسئلة
-          </span>
+        <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 p-4 dark:border-slate-800 bg-slate-50 dark:bg-slate-850">
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-black text-slate-700 dark:text-slate-300">
+              المحدد للإرسال: <strong className="text-emerald-600 text-sm font-black">{selectedIds.length}</strong> أسئلة
+            </span>
+            {selectedIds.length === 0 && (
+              <span className="hidden sm:inline-block rounded-lg bg-amber-100 px-2.5 py-0.5 text-[11px] font-bold text-amber-800">
+                👈 اختر سؤالاً أو اضغط &quot;تحديد حزمة تدريب&quot;
+              </span>
+            )}
+          </div>
           <div className="flex items-center gap-2">
             <button type="button" onClick={onClose} className="rounded-xl border border-slate-200 px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-300">إلغاء</button>
             <button
               type="button"
               onClick={onSubmit}
               disabled={selectedIds.length === 0 || pushingQuestions}
-              className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 px-5 py-2 text-xs font-black text-white hover:from-emerald-700 hover:to-teal-700 shadow-md disabled:opacity-50 transition-all active:scale-95"
+              title={selectedIds.length === 0 ? 'يرجى تحديد سؤال واحد على الأقل أو النقر على تحديد حزمة تدريب لتفعيل الإرسال' : 'إرسال الأسئلة المحددة فوراً إلى شاشات الطلاب'}
+              className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 px-5 py-2 text-xs font-black text-white hover:from-emerald-700 hover:to-teal-700 shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all active:scale-95"
             >
               <PlusCircle size={14} /> {pushingQuestions ? 'جارٍ الإرسال…' : `إرسال فوراً لتابلت الطلاب (${selectedIds.length}) 🚀`}
             </button>

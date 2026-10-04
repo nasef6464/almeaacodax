@@ -1,8 +1,9 @@
 import React, { Suspense } from 'react';
-import { Navigate, Route, Routes, useParams } from 'react-router-dom';
+import { Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { RequireRole } from '../components/auth/RequireRole';
 import { RequireAuth } from '../components/auth/RequireAuth';
+import { useAuth } from '../contexts/AuthContext';
 import { TeacherWorkspaceGate } from '../components/teacher/TeacherWorkspaceContext';
 import { normalizePathId } from '../utils/normalizePathId';
 
@@ -64,6 +65,18 @@ const LegacyPackagesRouteRedirect: React.FC = () => {
   return <Navigate replace to={`/category/${normalizePathId(pathId)}?tab=packages`} />;
 };
 
+const DashboardRoleDispatcher: React.FC = () => {
+  const { user } = useAuth();
+  const location = useLocation();
+  if (location.search && location.search.includes('tab=')) {
+    return <Dashboard />;
+  }
+  if (user?.role === 'teacher') return <Navigate replace to="/classroom/teacher" />;
+  if (user?.role === 'admin') return <Navigate replace to="/admin-dashboard" />;
+  if (user?.role === 'supervisor') return <Navigate replace to="/supervisor-dashboard" />;
+  return <Dashboard />;
+};
+
 export const AppRouteTree: React.FC<{ loadingFallback: React.ReactNode }> = ({ loadingFallback }) => {
   const adminDashboard = (
     <RequireRole allowedRoles={['admin']}>
@@ -113,7 +126,7 @@ export const AppRouteTree: React.FC<{ loadingFallback: React.ReactNode }> = ({ l
           <Suspense fallback={loadingFallback}>
             <Routes>
               <Route path="/" element={<Landing />} />
-              <Route path="/dashboard" element={<RequireAuth><Dashboard /></RequireAuth>} />
+              <Route path="/dashboard" element={<RequireAuth><DashboardRoleDispatcher /></RequireAuth>} />
               <Route path="/courses" element={<Courses />} />
               <Route path="/course/:courseId" element={<CourseView />} />
               <Route path="/quizzes" element={<Quizzes />} />
