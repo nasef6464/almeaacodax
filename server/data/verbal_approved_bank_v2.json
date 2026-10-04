@@ -20368,5 +20368,49 @@
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
     "answerEvidence": "Direct Amer source p.85; answer verified against passage."
+  },
+  {
+    "id": "VERBAL26-AMER-T30-P088-ORG-Q008",
+    "canonicalId": "VERBAL26-AMER-T30-P088-ORG-Q008",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 88,
+    "sourceQuestionNumber": 8,
+    "sourceTraining": 30,
+    "passageId": "VERBAL26-AMER-PASSAGE-ORG",
+    "mainSkillId": "skill_verbal_20",
+    "subSkillId": "sub_verbal_13_1",
+    "text": "يتضح من الفقرة الأولى أن من أهداف برنامج التضامن الإسلامي:",
+    "options": [
+      "العالم الإسلامي",
+      "تحقيق مقاصد استراتيجية",
+      "الاهتمام بالطلاب ماديًا",
+      "التنسيق مع المؤسسات"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.88; answer verified against passage."
+  },
+  {
+    "id": "VERBAL26-AMER-T30-P088-ABUBAKR-Q007",
+    "canonicalId": "VERBAL26-AMER-T30-P088-ABUBAKR-Q007",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 88,
+    "sourceQuestionNumber": 7,
+    "sourceTraining": 30,
+    "passageId": "VERBAL26-AMER-PASSAGE-ABUBAKR",
+    "mainSkillId": "skill_verbal_20",
+    "subSkillId": "sub_verbal_13_1",
+    "text": "ما الصفة التي عرفناها من آخر سطر؟",
+    "options": [
+      "الاقتداء",
+      "أحكام الشريعة",
+      "أحكام الاجتماع",
+      "التواضع"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.88; answer verified against passage."
   }
 ]
