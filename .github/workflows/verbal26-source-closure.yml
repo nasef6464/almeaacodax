@@ -1,0 +1,26 @@
+name: VERBAL26 source closure gate
+
+on:
+  pull_request:
+    paths:
+      - "server/data/verbal_approved_bank_v2.json"
+      - "server/data/verbal26_source_ledger.json"
+      - "server/src/scripts/deployVerbalTaxonomy22.ts"
+      - "server/src/scripts/migrateVerbalTaxonomy22.ts"
+      - "server/src/scripts/deployVerbalEcosystem.ts"
+      - "scripts/smoke-verbal*.mjs"
+      - ".github/workflows/verbal26-source-closure.yml"
+  workflow_dispatch:
+
+jobs:
+  verbal26-source-closure:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run smoke:verbal26

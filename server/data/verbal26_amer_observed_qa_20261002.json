@@ -1,0 +1,109 @@
+{
+  "schemaVersion": 1,
+  "scope": "VERBAL26 Amer direct-source observed question-count QA",
+  "source": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+  "rule": "Observed counts only. No answer key, approval, taxonomy migration, or Production write is implied.",
+  "verifiedAt": "2026-10-02",
+  "trainings": {
+    "1": {
+      "observedQuestions": 25
+    },
+    "2": {
+      "observedQuestions": 37
+    },
+    "3": {
+      "observedQuestions": 35
+    },
+    "4": {
+      "observedQuestions": 34
+    },
+    "5": {
+      "observedQuestions": 25
+    },
+    "6": {
+      "observedQuestions": 27
+    },
+    "7": {
+      "observedQuestions": 16
+    },
+    "8": {
+      "observedQuestions": 15
+    },
+    "10": {
+      "observedQuestions": 22
+    },
+    "16": {
+      "pdfPages": [
+        44,
+        45,
+        46
+      ],
+      "observedQuestions": 38
+    },
+    "17": {
+      "pdfPages": [
+        49,
+        50,
+        51
+      ],
+      "observedQuestions": 56
+    },
+    "18": {
+      "pdfPages": [
+        52,
+        53
+      ],
+      "observedQuestions": 52
+    },
+    "19": {
+      "pdfPages": [
+        54
+      ],
+      "observedQuestions": 30
+    },
+    "20": {
+      "pdfPages": [
+        55,
+        56
+      ],
+      "observedQuestions": 27
+    },
+    "21": {
+      "pdfPages": [
+        57
+      ],
+      "observedQuestions": 16
+    },
+    "25": {
+      "pdfPages": [
+        70,
+        71
+      ],
+      "observedQuestions": 28
+    },
+    "26": {
+      "pdfPages": [
+        72,
+        73
+      ],
+      "observedQuestions": 29
+    },
+    "27": {
+      "pdfPages": [
+        74,
+        75
+      ],
+      "observedQuestions": 30
+    },
+    "28": {
+      "pdfPages": [
+        76,
+        77
+      ],
+      "observedQuestions": 24
+    }
+  },
+  "previouslyVerifiedSubtotal": 236,
+  "newlyVerifiedSubtotal": 330,
+  "totalVerifiedObservedQuestions": 566
+}
