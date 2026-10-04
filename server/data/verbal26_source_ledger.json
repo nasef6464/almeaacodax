@@ -3148,14 +3148,14 @@
     "verifiedAt": "2026-10-04",
     "branch": "codex/verbal26-full-closure",
     "policy": "Full-book source reconciliation; observed inventory is not sufficient for canonical approval.",
-    "canonicalApprovedTotal": 893,
+    "canonicalApprovedTotal": 925,
     "canonicalBySource": {
-      "abdelbaset": 777,
+      "abdelbaset": 809,
       "anas": 116
     },
     "amerObservedTotal": 915,
     "anasObservedTotal": 135,
-    "amerUnreconciledCases": 138,
+    "amerUnreconciledCases": 106,
     "anasUnreconciledCases": 19,
     "verifiedGaps": [
       {
@@ -3166,9 +3166,9 @@
           41
         ],
         "observedQuestions": 33,
-        "canonicalMatched": 0,
-        "status": "SOURCE_TRANSCRIPTION_REQUIRED",
-        "note": "No canonical records on source pages 39-41; original PDF bytes are not stored in the repository, so observed/recovery evidence alone must not be promoted."
+        "canonicalMatched": 14,
+        "status": "PARTIAL_DIRECT_SOURCE_APPROVAL",
+        "remainingCases": 19
       },
       {
         "training": 15,
@@ -3177,9 +3177,9 @@
           43
         ],
         "observedQuestions": 29,
-        "canonicalMatched": 0,
-        "status": "SOURCE_TRANSCRIPTION_REQUIRED",
-        "note": "No canonical records on source pages 42-43; original PDF bytes are not stored in the repository, so observed/recovery evidence alone must not be promoted."
+        "canonicalMatched": 18,
+        "status": "PARTIAL_DIRECT_SOURCE_APPROVAL",
+        "remainingCases": 11
       },
       {
         "training": 16,
