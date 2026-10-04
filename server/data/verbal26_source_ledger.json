@@ -2559,14 +2559,14 @@
   ],
   "metrics": {
     "sourceKeyVerifiedRecords": 112,
-    "approvedBankRecords": 884,
+    "approvedBankRecords": 909,
     "note": "Ledger records are not approved-bank records until visual text/options and taxonomy QA pass.",
     "sourceConflictRecords": 23,
     "anasObservedQuestions": 135,
     "anasKeyVerifiedQuestions": 112,
     "anasConflictQuestions": 23,
     "amerTrainingsIndexed": 33,
-    "amerApprovedRecords": 768,
+    "amerApprovedRecords": 793,
     "amerDerivedReportCrossCheck": 938,
     "amerDerivedReportIsAuthority": false,
     "amerObservedQuestionCounts": {
@@ -2606,7 +2606,7 @@
     },
     "approvedBySource": {
       "anas": 116,
-      "abdelbaset": 768
+      "abdelbaset": 793
     },
     "approvedByMainSkill": {
       "skill_verbal_17": 51,
@@ -2807,8 +2807,60 @@
   ],
   "migrationReady": false,
   "migrationReadinessReason": "Full-book source inventory and quarantine adjudication remain incomplete.",
-  "progressNote": "Amer T26-T33 fully source-accounted. Continue T25 backward.",
+  "progressNote": "Amer T20-T23 fully source-accounted; continue T19 backward. Later T24-T33 accounting remains preserved in prior checkpoints.",
   "amerCoverageByTraining": {
+    "20": {
+      "expectedObserved": 27,
+      "canonicalApproved": 27,
+      "quarantined": 0,
+      "duplicates": 0,
+      "excludedNonQuestionExamples": 0,
+      "remainingDelta": 0,
+      "sourcePages": [
+        55,
+        56
+      ],
+      "status": "CLOSED_SOURCE_ACCOUNTED"
+    },
+    "21": {
+      "expectedObserved": 16,
+      "canonicalApproved": 16,
+      "quarantined": 0,
+      "duplicates": 0,
+      "excludedNonQuestionExamples": 0,
+      "remainingDelta": 0,
+      "sourcePages": [
+        57
+      ],
+      "status": "CLOSED_SOURCE_ACCOUNTED"
+    },
+    "22": {
+      "expectedObserved": 25,
+      "canonicalApproved": 25,
+      "quarantined": 0,
+      "duplicates": 0,
+      "excludedNonQuestionExamples": 2,
+      "remainingDelta": 0,
+      "sourcePages": [
+        61,
+        62
+      ],
+      "status": "CLOSED_SOURCE_ACCOUNTED",
+      "note": "Two worked examples before the T22 heading on p.61 are excluded instructional examples."
+    },
+    "23": {
+      "expectedObserved": 28,
+      "canonicalApproved": 28,
+      "quarantined": 0,
+      "duplicates": 0,
+      "excludedNonQuestionExamples": 0,
+      "remainingDelta": 0,
+      "sourcePages": [
+        63,
+        64
+      ],
+      "status": "CLOSED_SOURCE_ACCOUNTED"
+    },
     "26": {
       "expectedObserved": 29,
       "canonicalApproved": 23,
