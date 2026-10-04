@@ -11177,7 +11177,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification."
+    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification.",
+    "sourceTraining": 27
   },
   {
     "id": "VERBAL26-AMER-T27-P074-Q002",
@@ -11197,7 +11198,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification."
+    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification.",
+    "sourceTraining": 27
   },
   {
     "id": "VERBAL26-AMER-T27-P074-Q003",
@@ -11217,7 +11219,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification."
+    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification.",
+    "sourceTraining": 27
   },
   {
     "id": "VERBAL26-AMER-T27-P074-Q004",
@@ -11237,7 +11240,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification."
+    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification.",
+    "sourceTraining": 27
   },
   {
     "id": "VERBAL26-AMER-T27-P074-Q005",
@@ -11257,7 +11261,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification."
+    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification.",
+    "sourceTraining": 27
   },
   {
     "id": "VERBAL26-AMER-T27-P074-Q006",
@@ -11277,7 +11282,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification."
+    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification.",
+    "sourceTraining": 27
   },
   {
     "id": "VERBAL26-AMER-T27-P074-Q008",
@@ -11297,7 +11303,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification."
+    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification.",
+    "sourceTraining": 27
   },
   {
     "id": "VERBAL26-AMER-T27-P074-Q009",
@@ -11317,7 +11324,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification."
+    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification.",
+    "sourceTraining": 27
   },
   {
     "id": "VERBAL26-AMER-T27-P074-Q010",
@@ -11337,7 +11345,8 @@
     ],
     "correctOptionIndex": 0,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification."
+    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification.",
+    "sourceTraining": 27
   },
   {
     "id": "VERBAL26-AMER-T27-P074-Q013",
@@ -11357,7 +11366,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification."
+    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification.",
+    "sourceTraining": 27
   },
   {
     "id": "VERBAL26-AMER-T27-P074-Q014",
@@ -11377,7 +11387,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification."
+    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification.",
+    "sourceTraining": 27
   },
   {
     "id": "VERBAL26-AMER-T27-P075-Q015",
@@ -11397,7 +11408,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification."
+    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification.",
+    "sourceTraining": 27
   },
   {
     "id": "VERBAL26-AMER-T27-P075-Q016",
@@ -11417,7 +11429,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification."
+    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification.",
+    "sourceTraining": 27
   },
   {
     "id": "VERBAL26-AMER-T27-P075-Q017",
@@ -11437,7 +11450,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification."
+    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification.",
+    "sourceTraining": 27
   },
   {
     "id": "VERBAL26-AMER-T27-P075-Q021",
@@ -11457,7 +11471,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification."
+    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification.",
+    "sourceTraining": 27
   },
   {
     "id": "VERBAL26-AMER-T27-P075-Q022",
@@ -11477,7 +11492,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification."
+    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification.",
+    "sourceTraining": 27
   },
   {
     "id": "VERBAL26-AMER-T27-P075-Q023",
@@ -11497,7 +11513,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification."
+    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification.",
+    "sourceTraining": 27
   },
   {
     "id": "VERBAL26-AMER-T27-P075-Q025",
@@ -11517,7 +11534,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification."
+    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification.",
+    "sourceTraining": 27
   },
   {
     "id": "VERBAL26-AMER-T27-P075-Q027",
@@ -11537,7 +11555,8 @@
     ],
     "correctOptionIndex": 3,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification."
+    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification.",
+    "sourceTraining": 27
   },
   {
     "id": "VERBAL26-AMER-T27-P075-Q028",
@@ -11557,7 +11576,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification."
+    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification.",
+    "sourceTraining": 27
   },
   {
     "id": "VERBAL26-AMER-T27-P075-Q029",
@@ -11577,7 +11597,8 @@
     ],
     "correctOptionIndex": 2,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification."
+    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification.",
+    "sourceTraining": 27
   },
   {
     "id": "VERBAL26-AMER-T27-P075-Q030",
@@ -11597,7 +11618,8 @@
     ],
     "correctOptionIndex": 1,
     "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
-    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification."
+    "answerEvidence": "Approved-source sentence/options + contextual contradiction/word-choice verification.",
+    "sourceTraining": 27
   },
   {
     "id": "VERBAL26-AMER-T28-P076-Q001",
@@ -17890,5 +17912,89 @@
     "mainSkillId": "skill_verbal_20",
     "subSkillId": "sub_verbal_12_6",
     "answerValidationStatus": "INDEPENDENT_TEXT_VERIFIED"
+  },
+  {
+    "id": "VERBAL26-AMER-T27-P074-Q011",
+    "canonicalId": "VERBAL26-AMER-T27-P074-Q011",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 74,
+    "sourceQuestionNumber": 11,
+    "sourceTraining": 27,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "الذكاء يحول القبح غباءً، في حين الجمال لا يستطيع إصلاح الجهل.",
+    "options": [
+      "الذكاء",
+      "غباء",
+      "الجمال",
+      "معالجة"
+    ],
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.74; contextual contradiction independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T27-P075-Q018",
+    "canonicalId": "VERBAL26-AMER-T27-P075-Q018",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 75,
+    "sourceQuestionNumber": 18,
+    "sourceTraining": 27,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "من عزت عليه نفسه كرمت عليه ماله.",
+    "options": [
+      "عزت",
+      "نفسه",
+      "كرمت",
+      "ماله"
+    ],
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.75; contextual contradiction independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T27-P075-Q019",
+    "canonicalId": "VERBAL26-AMER-T27-P075-Q019",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 75,
+    "sourceQuestionNumber": 19,
+    "sourceTraining": 27,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "لا يتم أمر الإنسان إلا بالوزراء والأعوان، ولا ينفع الوزراء والأعوان إلا بالمودة والنصيحة، ولا تنفع المودة والنصيحة إلا بالرأي والعفة.",
+    "options": [
+      "الإنسان",
+      "الوزراء",
+      "المودة",
+      "ينفع"
+    ],
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.75; contextual contradiction independently verified."
+  },
+  {
+    "id": "VERBAL26-AMER-T27-P075-Q024",
+    "canonicalId": "VERBAL26-AMER-T27-P075-Q024",
+    "sourceBook": "abdelbaset",
+    "sourceTitle": "______دورة تأسيس اللفظي مع قدرات العامر- د. محمد عبد الباسط.pdf",
+    "sourcePage": 75,
+    "sourceQuestionNumber": 24,
+    "sourceTraining": 27,
+    "mainSkillId": "skill_verbal_17",
+    "subSkillId": "sub_verbal_11_2",
+    "text": "من أخطار النجاح هو أن تعتقد أن المرة الأولى ولفشلك هي الدليل على استمرار النجاح.",
+    "options": [
+      "أخطار",
+      "تعتقد",
+      "المرة",
+      "لفشلك"
+    ],
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "INDEPENDENT_SEMANTIC_VERIFIED",
+    "answerEvidence": "Direct Amer source p.75; contextual contradiction independently verified."
   }
 ]
