@@ -152,7 +152,7 @@ export const SmartClassroomSupervisorSignals: React.FC<Props> = ({
       <section className="rounded-2xl border border-amber-100 bg-amber-50/40 p-4">
         <div className="flex items-center gap-2">
           <UserRoundSearch size={17} className="text-amber-700" />
-          <h3 className="text-sm font-black text-amber-950">الطلاب الأقل مشاركة</h3>
+          <div><h3 className="text-sm font-black text-amber-950">الطلاب الأقل مشاركة</h3><p className="mt-0.5 text-[10px] font-bold text-amber-700/60">على كامل نطاق الإشراف في الفترة المختارة</p></div>
         </div>
         {leastParticipation.length === 0 ? (
           <p className="mt-3 text-xs font-bold text-amber-700/60">لا توجد أدلة كافية في الفترة الحالية.</p>
@@ -177,7 +177,7 @@ export const SmartClassroomSupervisorSignals: React.FC<Props> = ({
       <section className="rounded-2xl border border-emerald-100 bg-emerald-50/40 p-4">
         <div className="flex items-center gap-2">
           <TrendingUp size={17} className="text-emerald-700" />
-          <h3 className="text-sm font-black text-emerald-950">الأكثر تحسنًا</h3>
+          <div><h3 className="text-sm font-black text-emerald-950">الأكثر تحسنًا</h3><p className="mt-0.5 text-[10px] font-bold text-emerald-700/60">على كامل نطاق الإشراف في الفترة المختارة</p></div>
         </div>
         {mostImproved.length === 0 ? (
           <p className="mt-3 text-xs font-bold text-emerald-700/60">نحتاج حصتين على الأقل وأدلة كافية لحساب التحسن.</p>
