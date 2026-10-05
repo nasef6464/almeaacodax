@@ -1,28 +1,28 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-05T03:35:24.005Z",
-  "gitHead": "702f4e71803b631717e4a81c6c87b696588507d3",
+  "generatedAt": "2026-10-05T04:16:58.514Z",
+  "gitHead": "5257878f53e59bff3b8e8e8d8eca806275ab4f09",
   "summary": {
-    "trackedFiles": 1916,
-    "sourceFiles": 1279,
-    "runtimeSourceFiles": 798,
-    "sourceLines": 237213,
-    "runtimeSourceLines": 186715,
+    "trackedFiles": 1917,
+    "sourceFiles": 1280,
+    "runtimeSourceFiles": 799,
+    "sourceLines": 238206,
+    "runtimeSourceLines": 187667,
     "frontendRoutes": 55,
-    "backendRouteEntries": 331,
+    "backendRouteEntries": 332,
     "routerMounts": 34,
-    "runtimeRelativeImportEdges": 2500,
+    "runtimeRelativeImportEdges": 2505,
     "unresolvedRuntimeRelativeImports": 0,
     "unresolvedNonRuntimeRelativeImports": 6,
     "dependencyCycles": 0,
-    "crossDomainImportEdges": 1561,
+    "crossDomainImportEdges": 1562,
     "hotspots400Lines": 84,
-    "migrationCandidates": 785
+    "migrationCandidates": 786
   },
   "categoryStats": {
     "support": {
       "files": 156,
-      "bytes": 21023969,
+      "bytes": 21024332,
       "lines": 11489
     },
     "ci": {
@@ -31,9 +31,9 @@
       "lines": 8048
     },
     "web-source": {
-      "files": 389,
-      "bytes": 6695878,
-      "lines": 126625
+      "files": 390,
+      "bytes": 6722732,
+      "lines": 127222
     },
     "source-other": {
       "files": 13,
@@ -42,8 +42,8 @@
     },
     "documentation": {
       "files": 365,
-      "bytes": 5632522,
-      "lines": 130602
+      "bytes": 5672692,
+      "lines": 130603
     },
     "public-asset": {
       "files": 31,
@@ -52,8 +52,8 @@
     },
     "test-or-ops-script": {
       "files": 406,
-      "bytes": 2127852,
-      "lines": 42930
+      "bytes": 2130352,
+      "lines": 42971
     },
     "api-support": {
       "files": 14,
@@ -62,8 +62,8 @@
     },
     "api-source": {
       "files": 396,
-      "bytes": 2432363,
-      "lines": 58808
+      "bytes": 2450262,
+      "lines": 59163
     },
     "tooling": {
       "files": 84,
@@ -74,8 +74,8 @@
   "domainStats": {
     "shared": {
       "files": 191,
-      "lines": 37391,
-      "bytes": 1736749
+      "lines": 37411,
+      "bytes": 1737769
     },
     "notifications": {
       "files": 21,
@@ -93,9 +93,9 @@
       "bytes": 473049
     },
     "schools": {
-      "files": 176,
-      "lines": 30463,
-      "bytes": 1594597
+      "files": 177,
+      "lines": 31395,
+      "bytes": 1638330
     },
     "paths": {
       "files": 13,
@@ -166,9 +166,9 @@
       "file": "pages/Dashboard.tsx",
       "category": "web-source",
       "domain": "shared",
-      "bytes": 153489,
-      "lines": 2539,
-      "sha256": "26c8b806eb151b0bda67e2b385ddfa0cf9edd2312285d55fdb56294c9bebf023"
+      "bytes": 153802,
+      "lines": 2540,
+      "sha256": "c9431ca42f678a0431203532688b1890e73d5ca4e020abb9e8d9d620138b59dc"
     },
     {
       "file": "pages/QuizPage.tsx",
@@ -491,6 +491,14 @@
       "sha256": "89d455bf4156e601839e8a5c02b23b1bd3609a2d509ea22ec55475c9759ac641"
     },
     {
+      "file": "services/api.ts",
+      "category": "web-source",
+      "domain": "shared",
+      "bytes": 47738,
+      "lines": 1022,
+      "sha256": "1260f86c2327031c1bea888080ab06ab2877d6cc33339d12a9ca455b0dc93e1a"
+    },
+    {
       "file": "dashboards/admin/UsersManager.tsx",
       "category": "web-source",
       "domain": "users",
@@ -513,14 +521,6 @@
       "bytes": 57782,
       "lines": 1006,
       "sha256": "f76cde79227a7d833e09bdb5f9798a516ae9d5141c534340a9560a05916588d0"
-    },
-    {
-      "file": "services/api.ts",
-      "category": "web-source",
-      "domain": "shared",
-      "bytes": 47031,
-      "lines": 1003,
-      "sha256": "af520c323aa666e5420b1eff5090b6e83024d405d0a1809e46f7657bccc43370"
     },
     {
       "file": "server/src/routes/course.routes.ts",
@@ -1735,6 +1735,12 @@
       "file": "server/src/routes/classroom/registerClassroomCompetitionRoutes.ts",
       "method": "POST",
       "path": "/sessions/:id/competition/end",
+      "receiver": "classroomRouter"
+    },
+    {
+      "file": "server/src/routes/classroom/registerClassroomInsightsRoutes.ts",
+      "method": "GET",
+      "path": "/supervisor/insights",
       "receiver": "classroomRouter"
     },
     {
@@ -9436,6 +9442,12 @@
     {
       "source": "server/src/routes/classroom/registerClassroomInsightsRoutes.ts",
       "sourceDomain": "schools",
+      "target": "server/src/models/User.ts",
+      "targetDomain": "users"
+    },
+    {
+      "source": "server/src/routes/classroom/registerClassroomInsightsRoutes.ts",
+      "sourceDomain": "schools",
       "target": "server/src/utils/asyncHandler.ts",
       "targetDomain": "shared"
     },
@@ -14002,6 +14014,12 @@
       "confidence": "candidate"
     },
     {
+      "source": "dashboards/admin/SmartClassroomSupervisorSignals.tsx",
+      "target": "apps/web/src/features/schools/admin/SmartClassroomSupervisorSignals.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
       "source": "dashboards/admin/SmartQuestionSelector.tsx",
       "target": "apps/web/src/features/questions/admin/SmartQuestionSelector.tsx",
       "domain": "questions",
@@ -18127,9 +18145,9 @@
       "file": "audit-evidence/human-ux/human_classroom_pressure_report.json",
       "category": "support",
       "domain": "schools",
-      "bytes": 13184,
+      "bytes": 13547,
       "lines": 364,
-      "sha256": "12173a1204b7839b3cbecc5788f5c6fd7519c9e9f049fe5bc310a86a031aaa76"
+      "sha256": "f7ccaa64588c3b70feccd99276e99188db31abf0ca7500cb985a4c87004f9ed0"
     },
     {
       "file": "audit-evidence/human-ux/parent_dashboard.png",
@@ -18895,9 +18913,9 @@
       "file": "components/classroom/SmartClassroomFloatingWidget.tsx",
       "category": "web-source",
       "domain": "schools",
-      "bytes": 14183,
+      "bytes": 14251,
       "lines": 258,
-      "sha256": "6dcd3dea5a4990b2fd88fb7db0365655f5a7653e9d5a90083194bc06274a360c"
+      "sha256": "4a242d0ec6ef71b4ede91b9ae440286dec0dfd8a23f9d04a485d869523ba412b"
     },
     {
       "file": "components/classroom/SmartClassroomReportsSection.tsx",
@@ -20039,9 +20057,17 @@
       "file": "dashboards/admin/SmartClassroomReportsPanel.tsx",
       "category": "web-source",
       "domain": "schools",
-      "bytes": 5046,
-      "lines": 13,
-      "sha256": "cf7bd841b4cf9cde95f9210f9e917e12a04f3137167ddbb0fdf8c95a1c4f3e6a"
+      "bytes": 21559,
+      "lines": 386,
+      "sha256": "5bf6b4984dcbfbcef02ce2cf8bfd3aea566c323364bd6e511ee54606018d92fd"
+    },
+    {
+      "file": "dashboards/admin/SmartClassroomSupervisorSignals.tsx",
+      "category": "web-source",
+      "domain": "schools",
+      "bytes": 9253,
+      "lines": 204,
+      "sha256": "31bc053c8d4e627e736b8c848999f992c8001d9d810843c6a718df6546ef6508"
     },
     {
       "file": "dashboards/admin/SmartQuestionSelector.tsx",
@@ -21351,9 +21377,9 @@
       "file": "docs/architecture/APPROVED_CONTRACT_EXTENSIONS.json",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 8160,
-      "lines": 173,
-      "sha256": "0a6de1c85a28478f7a51f79b7c12e88416476543977a9d6262420698607f22ea"
+      "bytes": 8209,
+      "lines": 174,
+      "sha256": "91d17c86e0f8c1e20efbe29e22f1139d0a04b36444bcb8ed1ac879ba5cfff6c2"
     },
     {
       "file": "docs/architecture/APPROVED_CONTRACT_MIGRATIONS.json",
@@ -22215,33 +22241,33 @@
       "file": "docs/architecture/generated/BASELINE_CONTRACT_MANIFEST.json",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 76712,
+      "bytes": 79273,
       "lines": 2562,
-      "sha256": "77bbd16c85f9c493cc8b418f758d1e0a8ba4303e8e95fc430841b5b2ab5b75b4"
+      "sha256": "416b82b1082255337482a068d4d249dde1ad80d4b2b25a9ad26c91977bd95b49"
     },
     {
       "file": "docs/architecture/generated/CURRENT_REPOSITORY_AUDIT.json",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 1053873,
+      "bytes": 1086641,
       "lines": 32768,
-      "sha256": "5f48a70546571cf97d097f284cd9d7bdd4cbdc3efd44702c19396ff63e21d89a"
+      "sha256": "266a8570c2d045e0e76cc080f23d00446e0c19f80c04e5884590f914f639d310"
     },
     {
       "file": "docs/architecture/generated/CURRENT_REPOSITORY_AUDIT.md",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 4098,
+      "bytes": 4172,
       "lines": 75,
-      "sha256": "83043d244f68f70f99fd6d8bd246be11ed54abdc1b78c22ac6fd27b76cba02b7"
+      "sha256": "fe250e7e9efeec9e1ea315ac8749212d8b810f79970323f9692cf20053f768d6"
     },
     {
       "file": "docs/architecture/generated/MIGRATION_MAP_V2_CANDIDATE.json",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 172898,
+      "bytes": 177616,
       "lines": 4719,
-      "sha256": "bd31b1408f626eb01461bdfdb75cfcc042c3d93b3bde6fe69dc3307bc1ae99c5"
+      "sha256": "0e17b4d186c28d0afd0cd95399349e82c84b3e5ecdb7fe68d67331c56c5584fe"
     },
     {
       "file": "docs/architecture/generated/SOURCE_REFERENCE_AUDIT.json",
@@ -24063,9 +24089,9 @@
       "file": "pages/Dashboard.tsx",
       "category": "web-source",
       "domain": "shared",
-      "bytes": 153489,
-      "lines": 2539,
-      "sha256": "26c8b806eb151b0bda67e2b385ddfa0cf9edd2312285d55fdb56294c9bebf023"
+      "bytes": 153802,
+      "lines": 2540,
+      "sha256": "c9431ca42f678a0431203532688b1890e73d5ca4e020abb9e8d9d620138b59dc"
     },
     {
       "file": "pages/Dashboard/SupervisorTasksStrip.tsx",
@@ -27791,9 +27817,9 @@
       "file": "scripts/smoke-smart-classroom-report-insights-contract.mjs",
       "category": "test-or-ops-script",
       "domain": "schools",
-      "bytes": 1251,
-      "lines": 23,
-      "sha256": "521b42618b87fb1695da0e7b38060ee7256111084503b482a6d3c4713386813f"
+      "bytes": 3751,
+      "lines": 64,
+      "sha256": "aa32c4533213c6c0153af2c5274543c6fd83afd05526119a15672d192783d478"
     },
     {
       "file": "scripts/smoke-store-domain-helpers-boundary-contract.mjs",
@@ -30151,9 +30177,9 @@
       "file": "server/src/modules/schools/application/classroomReportInsights.ts",
       "category": "api-source",
       "domain": "schools",
-      "bytes": 4677,
-      "lines": 122,
-      "sha256": "c348d6420dd348714d9a78688d80d415840e391e41f6a139da2fe7f5394ff1da"
+      "bytes": 8356,
+      "lines": 212,
+      "sha256": "16f686433838cef1e44efaeab3d5382de3a17767092e4909cb3ec2b138409e11"
     },
     {
       "file": "server/src/modules/schools/application/classroomSchoolIntelligence.ts",
@@ -30351,9 +30377,9 @@
       "file": "server/src/routes/classroom/registerClassroomInsightsRoutes.ts",
       "category": "api-source",
       "domain": "schools",
-      "bytes": 3971,
-      "lines": 83,
-      "sha256": "1264c63e2ab35925ceffac2f2236e9b4050cb44886cf9ad1f1f72d860b7320bb"
+      "bytes": 15417,
+      "lines": 324,
+      "sha256": "1e18156001088264aa5cb61be7c1190fa5641449a3efc3e8f97460f8ae9dfe38"
     },
     {
       "file": "server/src/routes/classroom/registerClassroomStudentRoutes.ts",
@@ -31023,9 +31049,9 @@
       "file": "server/src/scripts/simulateSmartClassroomHardeningE2E.ts",
       "category": "api-source",
       "domain": "schools",
-      "bytes": 24264,
-      "lines": 369,
-      "sha256": "56a2602f4b218d61c0608999212b45ba7e1f11d4e992221eec1776622ef68d5a"
+      "bytes": 27038,
+      "lines": 393,
+      "sha256": "43b865a19c1a3abaee8746ad0b3f52d4512ff18d19f5c90337487cb5be44365f"
     },
     {
       "file": "server/src/scripts/smokeOperationalJourneysApi.ts",
@@ -31423,9 +31449,9 @@
       "file": "services/api.ts",
       "category": "web-source",
       "domain": "shared",
-      "bytes": 47031,
-      "lines": 1003,
-      "sha256": "af520c323aa666e5420b1eff5090b6e83024d405d0a1809e46f7657bccc43370"
+      "bytes": 47738,
+      "lines": 1022,
+      "sha256": "1260f86c2327031c1bea888080ab06ab2877d6cc33339d12a9ca455b0dc93e1a"
     },
     {
       "file": "services/apiGroups/accessCodesApi.ts",

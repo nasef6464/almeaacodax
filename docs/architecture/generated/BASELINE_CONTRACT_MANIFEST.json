@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-05T03:35:24.005Z",
-  "gitHead": "702f4e71803b631717e4a81c6c87b696588507d3",
+  "generatedAt": "2026-10-05T04:16:58.514Z",
+  "gitHead": "5257878f53e59bff3b8e8e8d8eca806275ab4f09",
   "frontendRoutes": [
     "*",
     "/",
@@ -910,6 +910,12 @@
       "file": "server/src/routes/classroom/registerClassroomCompetitionRoutes.ts",
       "method": "POST",
       "path": "/sessions/:id/competition/end",
+      "receiver": "classroomRouter"
+    },
+    {
+      "file": "server/src/routes/classroom/registerClassroomInsightsRoutes.ts",
+      "method": "GET",
+      "path": "/supervisor/insights",
       "receiver": "classroomRouter"
     },
     {
@@ -2530,7 +2536,7 @@
     "server/src/routes/classroom/registerClassroomAggregateRoutes.ts": "0e1016cf33590ab99c3084f20739898eca94f80c21efec7da79fd0c4245a4f0f",
     "server/src/routes/classroom/registerClassroomBatchRoutes.ts": "ae2b84e7b52fe53d0608d0508651f9dd48d02b3833d267cf9d6bb73e8ac8fede",
     "server/src/routes/classroom/registerClassroomCompetitionRoutes.ts": "20c36379e958be71349e497dbbd10bb64ee06d0998d71925b1ccc6548200c636",
-    "server/src/routes/classroom/registerClassroomInsightsRoutes.ts": "1264c63e2ab35925ceffac2f2236e9b4050cb44886cf9ad1f1f72d860b7320bb",
+    "server/src/routes/classroom/registerClassroomInsightsRoutes.ts": "1e18156001088264aa5cb61be7c1190fa5641449a3efc3e8f97460f8ae9dfe38",
     "server/src/routes/classroom/registerClassroomStudentRoutes.ts": "e59bd41311a1cae06ac40a355d7650210f51e7e690f9d54669d62e0d608e7921",
     "server/src/routes/classroom/registerClassroomSupervisorRoutes.ts": "7f6c7fc06e26ee1e1c4f8dc90ecacd1cf247004ac90a649c70162a5ef3a30ac4",
     "server/src/routes/classroom/registerClassroomTeacherRoutes.ts": "2bc3290cd02d1792be9501a252c155fb2385f2521540bae89385ef1e31bcab8a",
