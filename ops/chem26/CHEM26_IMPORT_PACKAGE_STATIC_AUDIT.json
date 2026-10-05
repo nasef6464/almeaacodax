@@ -1,0 +1,39 @@
+{
+  "project": "CHEM26",
+  "generatedAt": "2026-10-05T13:18:00+03:00",
+  "package": "CHEM26_IMPORT_PACKAGE_READY_1708_V2.zip",
+  "sha256": "0014da81af2c1d9cfe882897b16633d805b0df737800af37c1a5d16901522137",
+  "manifest": "CHEM26_IMPORT_MANIFEST_READY.json",
+  "items": 1708,
+  "validations": {
+    "uniqueQuestionCodes": 1708,
+    "uniqueSourceItemIds": 1708,
+    "uniqueImageHashes": 1708,
+    "imageFilesPresent": 1708,
+    "imageFileHashMatches": 1708,
+    "canonicalQuestionIdentityErrors": 0,
+    "canonicalSourceIdentityErrors": 0,
+    "taxonomyScopeErrors": 0,
+    "optionCountErrors": 0,
+    "correctOptionIndexErrors": 0,
+    "aiOptionTextErrors": 0,
+    "emptyExplanationErrors": 0
+  },
+  "productionScope": {
+    "pathId": "p_1777779653351",
+    "subjectId": "sub_1784980728386",
+    "sectionPattern": "sec_sub_chemistry_N",
+    "mainSkillPattern": "skill_tah_chem_XX",
+    "subSkillPattern": "sub_tah_chem_XX_*"
+  },
+  "draftContract": {
+    "approvalStatus": "draft",
+    "allItemsDraft": true,
+    "optionsEmbeddedInImage": true
+  },
+  "approvalGate": {
+    "currentReviewerNotesNonEmpty": 0,
+    "approvedQuestionsMustContainVisualVerificationNote": true,
+    "status": "BLOCKED_UNTIL_LIVE_VISUAL_QA_EVIDENCE"
+  }
+}
