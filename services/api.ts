@@ -5,6 +5,7 @@ import {
   type PaginationOptions,
 } from './apiQueryUtilities';
 import { createAiApi } from './apiGroups/aiApi';
+import { createCommandCenterApi } from './apiGroups/commandCenterApi';
 import { createAnnouncementAdsApi } from './apiGroups/announcementAdsApi';
 import { createAccessCodesApi } from './apiGroups/accessCodesApi';
 import { createAuthApi } from './apiGroups/authApi';
@@ -985,6 +986,7 @@ export const api = {
   ...createQuestionsApi(request),
   ...createQuizzesApi(request),
   ...createAiApi(request),
+  ...createCommandCenterApi(request),
   ...createOperationsApi(request),
   ...createLearningSupportApi(request),
   clearLiveExamsTestData: (token?: string | null) =>
