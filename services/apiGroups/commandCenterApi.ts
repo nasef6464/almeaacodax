@@ -133,6 +133,23 @@ export const createCommandCenterApi = (request: ApiRequest) => ({
       },
     ),
 
+  validateSchoolSetupCommandDraft: (payload: Record<string, unknown>, token?: string | null) =>
+    request<Record<string, unknown>>("/command-center/schools/validate", {
+      method: "POST",
+      body: payload,
+      token,
+    }),
+
+  createSchoolSetupCommandDraft: (payload: Record<string, unknown>, token?: string | null) =>
+    request<{ draft: CommandCenterDraft; validation: Record<string, unknown> }>(
+      "/command-center/schools/draft",
+      {
+        method: "POST",
+        body: payload,
+        token,
+      },
+    ),
+
   reviewCommandCenterDraft: (
     draftId: string,
     payload: { decision: "approved" | "rejected"; notes?: string },
