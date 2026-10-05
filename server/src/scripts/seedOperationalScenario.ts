@@ -25,12 +25,12 @@ import { TeachingAssignmentModel } from "../models/TeachingAssignment.js";
 const NOW = Date.now();
 const SAMPLE_VIDEO_URL = "https://www.w3schools.com/html/mov_bbb.mp4";
 const SAMPLE_PDF_URL = "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf";
-const SEED_TEACHER_PASSWORD = String(process.env.SEED_TEACHER_PASSWORD || "");
-const SEED_SUPERVISOR_PASSWORD = String(process.env.SEED_SUPERVISOR_PASSWORD || "");
-const SEED_STUDENT_PASSWORD = String(process.env.SEED_STUDENT_PASSWORD || "");
-const SEED_PARENT_PASSWORD = String(process.env.SEED_PARENT_PASSWORD || "");
-if (![SEED_TEACHER_PASSWORD, SEED_SUPERVISOR_PASSWORD, SEED_STUDENT_PASSWORD, SEED_PARENT_PASSWORD].every(Boolean)) {
-  throw new Error("Operational seed passwords must be supplied through SEED_*_PASSWORD environment variables.");
+const SMOKE_TEACHER_PASSWORD = String(process.env.SMOKE_TEACHER_PASSWORD || "");
+const SMOKE_SUPERVISOR_PASSWORD = String(process.env.SMOKE_SUPERVISOR_PASSWORD || "");
+const SMOKE_STUDENT_PASSWORD = String(process.env.SMOKE_STUDENT_PASSWORD || "");
+const SMOKE_PARENT_PASSWORD = String(process.env.SMOKE_PARENT_PASSWORD || "");
+if (![SMOKE_TEACHER_PASSWORD, SMOKE_SUPERVISOR_PASSWORD, SMOKE_STUDENT_PASSWORD, SMOKE_PARENT_PASSWORD].every(Boolean)) {
+  throw new Error("Operational seed passwords must be supplied through existing SMOKE_*_PASSWORD environment variables.");
 }
 
 type SeedUser = {
@@ -152,7 +152,7 @@ const seedUsers: SeedUser[] = [
     key: "teacherQuant",
     name: "أ. ريم الكمي",
     email: "teacher.quant@almeaa.local",
-    password: SEED_TEACHER_PASSWORD,
+    password: SMOKE_TEACHER_PASSWORD,
     role: "teacher",
     managedPathIds: ["p_qudrat"],
     managedSubjectIds: ["sub_quant"],
@@ -163,7 +163,7 @@ const seedUsers: SeedUser[] = [
     key: "teacherMath",
     name: "أ. خالد الرياضيات",
     email: "teacher.math@almeaa.local",
-    password: SEED_TEACHER_PASSWORD,
+    password: SMOKE_TEACHER_PASSWORD,
     role: "teacher",
     managedPathIds: ["p_tahsili"],
     managedSubjectIds: ["sub_math"],
@@ -174,7 +174,7 @@ const seedUsers: SeedUser[] = [
     key: "schoolSupervisor",
     name: "أ. نورة مشرفة المدرسة",
     email: "supervisor.school@almeaa.local",
-    password: SEED_SUPERVISOR_PASSWORD,
+    password: SMOKE_SUPERVISOR_PASSWORD,
     role: "supervisor",
     subscription: { plan: "premium" },
   },
@@ -182,7 +182,7 @@ const seedUsers: SeedUser[] = [
     key: "groupSupervisor",
     name: "أ. فهد مشرف المجموعة",
     email: "supervisor.group@almeaa.local",
-    password: SEED_SUPERVISOR_PASSWORD,
+    password: SMOKE_SUPERVISOR_PASSWORD,
     role: "supervisor",
     subscription: { plan: "premium" },
   },
@@ -190,7 +190,7 @@ const seedUsers: SeedUser[] = [
     key: "studentA",
     name: "سلمان أحمد",
     email: "student.a@almeaa.local",
-    password: SEED_STUDENT_PASSWORD,
+    password: SMOKE_STUDENT_PASSWORD,
     role: "student",
     subscription: { plan: "premium" },
   },
@@ -198,7 +198,7 @@ const seedUsers: SeedUser[] = [
     key: "studentB",
     name: "ليان محمد",
     email: "student.b@almeaa.local",
-    password: SEED_STUDENT_PASSWORD,
+    password: SMOKE_STUDENT_PASSWORD,
     role: "student",
     subscription: { plan: "premium" },
   },
@@ -206,7 +206,7 @@ const seedUsers: SeedUser[] = [
     key: "studentC",
     name: "مشعل عبدالعزيز",
     email: "student.c@almeaa.local",
-    password: SEED_STUDENT_PASSWORD,
+    password: SMOKE_STUDENT_PASSWORD,
     role: "student",
     subscription: { plan: "premium" },
   },
@@ -214,7 +214,7 @@ const seedUsers: SeedUser[] = [
     key: "studentD",
     name: "جود خالد",
     email: "student.d@almeaa.local",
-    password: SEED_STUDENT_PASSWORD,
+    password: SMOKE_STUDENT_PASSWORD,
     role: "student",
     subscription: { plan: "free" },
   },
@@ -222,7 +222,7 @@ const seedUsers: SeedUser[] = [
     key: "parentA",
     name: "أم سلمان",
     email: "parent.a@almeaa.local",
-    password: SEED_PARENT_PASSWORD,
+    password: SMOKE_PARENT_PASSWORD,
     role: "parent",
     subscription: { plan: "free" },
   },
@@ -230,7 +230,7 @@ const seedUsers: SeedUser[] = [
     key: "parentB",
     name: "ولي أمر ليان",
     email: "parent.b@almeaa.local",
-    password: SEED_PARENT_PASSWORD,
+    password: SMOKE_PARENT_PASSWORD,
     role: "parent",
     subscription: { plan: "free" },
   },
