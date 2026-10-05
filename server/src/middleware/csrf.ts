@@ -42,6 +42,22 @@ export function csrfGuard(req: Request, res: Response, next: NextFunction) {
     return next();
   }
 
+  // Command Center API-key requests are server-to-server credentials, not
+  // ambient browser-cookie authentication. They are therefore not vulnerable
+  // to browser CSRF. Limit this exemption strictly to the Command Center path
+  // and only when the configured key matches in constant time.
+  const commandPath = String(req.originalUrl || req.url || "").startsWith("/api/command-center");
+  const configuredCommandKey = String(env.ALMEAA_COMMAND_API_KEY || "").trim();
+  const providedCommandKey = String(req.header("x-almeaa-command-key") || "").trim();
+  if (
+    commandPath &&
+    configuredCommandKey &&
+    providedCommandKey &&
+    safeTokenEquals(configuredCommandKey, providedCommandKey)
+  ) {
+    return next();
+  }
+
   const cookieToken = typeof req.cookies?.[CSRF_COOKIE_NAME] === "string" ? req.cookies[CSRF_COOKIE_NAME] : "";
   const headerToken = typeof req.header(CSRF_HEADER_NAME) === "string" ? req.header(CSRF_HEADER_NAME) : "";
 
