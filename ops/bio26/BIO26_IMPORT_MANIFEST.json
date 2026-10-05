@@ -1,19 +1,25 @@
 {
   "project": "BIO26",
-  "status": "BLOCKED_BY_PREIMPORT_GATES",
+  "status": "BLOCKED_BY_EXISTING_BANK_AI_AND_ASSET_PACKAGE_GATES",
   "expectedSourceOccurrences": 2835,
+  "sourceInternalCanonicalCandidateCount": 2832,
   "canonicalReadyItems": 0,
   "requiredGates": {
     "inventory": "PASS",
     "taxonomy": "PASS",
     "ledger": "PASS",
-    "crop": "GEOMETRY_COMPLETE_VISUAL_BATCH_QA_IN_PROGRESS",
+    "crop": "PASS_STRATIFIED_VISUAL_QA",
+    "cropAssetPackage": "PENDING_REGENERATION_OR_RECOVERY",
     "answers": "PASS_SOURCE_KEY",
     "skill": "PASS_PRE_CROP",
-    "dedupe": "PARTIAL_EXACT_HASH_ONLY",
+    "dedupeSourceInternal": "PASS_2832_CANONICAL_CANDIDATES",
+    "dedupeExistingBiologyBank": "PENDING",
     "aiContext": "PENDING_AUTHORING"
   },
   "workflow": [
+    "RECOVER_OR_REGENERATE_FINAL_CROP_ASSETS",
+    "EXISTING_BIOLOGY_BANK_DEDUPE",
+    "AI_CONTEXT_AUTHORING",
     "DRY_RUN",
     "CANARY_5",
     "FULL_DRAFT_IMPORT",
