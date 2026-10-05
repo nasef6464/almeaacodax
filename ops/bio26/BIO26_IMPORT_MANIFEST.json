@@ -7,10 +7,11 @@
     "inventory": "PASS",
     "taxonomy": "PASS",
     "ledger": "PASS",
-    "crop": "NOT_STARTED",
+    "crop": "GEOMETRY_COMPLETE_VISUAL_BATCH_QA_IN_PROGRESS",
     "answers": "PASS_SOURCE_KEY",
     "skill": "PASS_PRE_CROP",
-    "dedupe": "NOT_STARTED"
+    "dedupe": "PARTIAL_EXACT_HASH_ONLY",
+    "aiContext": "PENDING_AUTHORING"
   },
   "workflow": [
     "DRY_RUN",
