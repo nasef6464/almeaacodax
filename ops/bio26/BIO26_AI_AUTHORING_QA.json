@@ -2,8 +2,8 @@
   "project": "BIO26",
   "status": "AUTHORING_IN_PROGRESS",
   "expectedCanonicalItems": 2832,
-  "authoredCanonicalItems": 1582,
-  "pendingCanonicalItems": 1250,
+  "authoredCanonicalItems": 1766,
+  "pendingCanonicalItems": 1066,
   "completedLessons": [
     "BIO26-L01",
     "BIO26-L02",
@@ -31,7 +31,11 @@
     "BIO26-L24",
     "BIO26-L25",
     "BIO26-L26",
-    "BIO26-L27"
+    "BIO26-L27",
+    "BIO26-L28",
+    "BIO26-L29",
+    "BIO26-L30",
+    "BIO26-L31"
   ],
   "lesson1": {
     "lesson": "دراسة الحياة",
@@ -50,10 +54,10 @@
     "answerInferredFromOCR": 0
   },
   "aggregateQa": {
-    "sourceAnswerCrossCheck": "PASS_1582_OF_1582",
-    "skillRangeCrossCheck": "PASS_1582_OF_1582",
-    "uniqueQuestionCodes": "PASS_1582_OF_1582",
-    "requiredFields": "PASS_1582_OF_1582",
+    "sourceAnswerCrossCheck": "PASS_1766_OF_1766",
+    "skillRangeCrossCheck": "PASS_1766_OF_1766",
+    "uniqueQuestionCodes": "PASS_1766_OF_1766",
+    "requiredFields": "PASS_1766_OF_1766",
     "duplicateQuestionCodes": 0,
     "answerInferredFromOCR": 0
   },
@@ -177,6 +181,38 @@
     "canonicalItems": 71,
     "sourceAnswerCrossCheck": "PASS_71_OF_71",
     "skillRangeCrossCheck": "PASS_71_OF_71",
+    "visualDescriptions": "PASS_FOR_VISUAL_ITEMS",
+    "answerInferredFromOCR": 0
+  },
+  "lesson28": {
+    "lesson": "جهاز الغدد الصم",
+    "canonicalItems": 77,
+    "sourceAnswerCrossCheck": "PASS_77_OF_77",
+    "skillRangeCrossCheck": "PASS_77_OF_77",
+    "visualDescriptions": "PASS_FOR_VISUAL_ITEMS",
+    "answerInferredFromOCR": 0
+  },
+  "lesson29": {
+    "lesson": "جهاز التكاثر في الإنسان",
+    "canonicalItems": 43,
+    "sourceAnswerCrossCheck": "PASS_43_OF_43",
+    "skillRangeCrossCheck": "PASS_43_OF_43",
+    "visualDescriptions": "PASS_FOR_VISUAL_ITEMS",
+    "answerInferredFromOCR": 0
+  },
+  "lesson30": {
+    "lesson": "مراحل نمو الجنين",
+    "canonicalItems": 23,
+    "sourceAnswerCrossCheck": "PASS_23_OF_23",
+    "skillRangeCrossCheck": "PASS_23_OF_23",
+    "visualDescriptions": "PASS_FOR_VISUAL_ITEMS",
+    "answerInferredFromOCR": 0
+  },
+  "lesson31": {
+    "lesson": "الجهاز المناعي",
+    "canonicalItems": 41,
+    "sourceAnswerCrossCheck": "PASS_41_OF_41",
+    "skillRangeCrossCheck": "PASS_41_OF_41",
     "visualDescriptions": "PASS_FOR_VISUAL_ITEMS",
     "answerInferredFromOCR": 0
   }
