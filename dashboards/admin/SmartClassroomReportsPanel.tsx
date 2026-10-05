@@ -12,31 +12,12 @@ import {
   X,
 } from 'lucide-react';
 import { api } from '../../services/api';
+import { SmartClassroomSupervisorSignals } from './SmartClassroomSupervisorSignals';
 
 type PeriodFilter = 'today' | 'week' | 'month' | 'all' | 'custom';
 
-type Summary = {
-  sessions: number;
-  participants: number;
-  expected: number;
-  participationRate: number | null;
-  responses: number;
-  correct: number;
-  accuracy: number | null;
-};
-
-type SessionSummary = {
-  sessionId: string;
-  classId: string;
-  className: string;
-  teacherId: string;
-  subjectName: string;
-  endedAt: string | null;
-  joined: number;
-  expected: number;
-  responses: number;
-  accuracy: number | null;
-};
+type Summary = { sessions: number; participants: number; expected: number; participationRate: number | null; responses: number; correct: number; accuracy: number | null };
+type SessionSummary = { sessionId: string; classId: string; className: string; teacherId: string; subjectName: string; endedAt: string | null; joined: number; expected: number; responses: number; accuracy: number | null };
 
 type ClassNode = {
   classId: string;
@@ -64,6 +45,7 @@ type SupervisorAnalytics = {
   range?: { from: string | null; to: string | null };
   totals: Summary;
   weakSkills?: Array<{ skillId: string; accuracy: number | null; answered: number; sessions: number }>;
+  studentSignals?: { leastParticipation: Array<{ studentId: string; name: string; joinedSessions: number; responses: number; possibleResponses: number; responseRate: number | null; accuracy: number | null; improvement: number | null; earlyAccuracy: number | null; recentAccuracy: number | null }>; mostImproved: Array<{ studentId: string; name: string; joinedSessions: number; responses: number; possibleResponses: number; responseRate: number | null; accuracy: number | null; improvement: number | null; earlyAccuracy: number | null; recentAccuracy: number | null }> };
   hierarchy: {
     summary: Summary;
     schools: SchoolNode[];
@@ -313,6 +295,14 @@ export const SmartClassroomReportsPanel: React.FC = () => {
               </div>
             </div>
           )}
+
+          <SmartClassroomSupervisorSignals
+            schools={schools}
+            selectedSchoolId={schoolId}
+            selectedTeacherId={teacherId}
+            leastParticipation={analytics.studentSignals?.leastParticipation || []}
+            mostImproved={analytics.studentSignals?.mostImproved || []}
+          />
 
           <div className="mt-5 overflow-hidden rounded-2xl border border-slate-100 bg-white">
             <div className="flex items-center justify-between border-b border-slate-100 p-4">
