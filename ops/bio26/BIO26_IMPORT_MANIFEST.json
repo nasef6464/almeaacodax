@@ -4,7 +4,7 @@
   "expectedSourceOccurrences": 2835,
   "duplicateAliases": 3,
   "finalCanonicalCount": 2832,
-  "canonicalReadyItems": 0,
+  "canonicalReadyItems": 106,
   "requiredGates": {
     "inventory": "PASS",
     "taxonomy": "PASS",
@@ -14,8 +14,9 @@
     "answers": "PASS_SOURCE_KEY",
     "skill": "PASS_PRE_CROP",
     "dedupe": "PASS_FINAL_2832_CANONICAL",
-    "aiContext": "PENDING_AUTHORING",
-    "r2Upload": "PENDING"
+    "aiContext": "AUTHORING_IN_PROGRESS_106_OF_2832",
+    "r2Upload": "PENDING",
+    "productionSubjectSafety": "PASS_DEDICATED_BIOLOGY_SUBJECT_REQUIRED"
   },
   "assetPackage": {
     "version": "V2_REGENERATED_2026-10-05",
@@ -32,5 +33,19 @@
     "LIVE_E2E",
     "APPROVAL"
   ],
-  "items": []
+  "items": [],
+  "aiContext": {
+    "authoredCanonicalItems": 106,
+    "pendingCanonicalItems": 2726,
+    "completedLessons": [
+      "BIO26-L01",
+      "BIO26-L02"
+    ]
+  },
+  "productionSubjectPlan": {
+    "action": "CREATE_DEDICATED_BIOLOGY_SUBJECT_AT_CONTROLLED_IMPORT",
+    "preserveExistingSubjectId": "sub_1784980740570",
+    "preserveExistingSubjectName": "علم البيئة",
+    "reason": "36 historical skill-progress records / 72 attempts reference its current generic skills"
+  }
 }
