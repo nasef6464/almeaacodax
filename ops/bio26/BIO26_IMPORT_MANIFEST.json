@@ -4,7 +4,7 @@
   "expectedSourceOccurrences": 2835,
   "duplicateAliases": 3,
   "finalCanonicalCount": 2832,
-  "canonicalReadyItems": 987,
+  "canonicalReadyItems": 1582,
   "requiredGates": {
     "inventory": "PASS",
     "taxonomy": "PASS",
@@ -14,7 +14,7 @@
     "answers": "PASS_SOURCE_KEY",
     "skill": "PASS_PRE_CROP",
     "dedupe": "PASS_FINAL_2832_CANONICAL",
-    "aiContext": "AUTHORING_IN_PROGRESS_987_OF_2832",
+    "aiContext": "AUTHORING_IN_PROGRESS_1582_OF_2832",
     "r2Upload": "PENDING",
     "productionSubjectSafety": "PASS_DEDICATED_BIOLOGY_SUBJECT_REQUIRED",
     "r2UploadManifest": "PASS_READY_2832"
@@ -36,8 +36,8 @@
   ],
   "items": [],
   "aiContext": {
-    "authoredCanonicalItems": 987,
-    "pendingCanonicalItems": 1845,
+    "authoredCanonicalItems": 1582,
+    "pendingCanonicalItems": 1250,
     "completedLessons": [
       "BIO26-L01",
       "BIO26-L02",
@@ -53,9 +53,21 @@
       "BIO26-L12",
       "BIO26-L13",
       "BIO26-L14",
-      "BIO26-L15"
+      "BIO26-L15",
+      "BIO26-L16",
+      "BIO26-L17",
+      "BIO26-L18",
+      "BIO26-L19",
+      "BIO26-L20",
+      "BIO26-L21",
+      "BIO26-L22",
+      "BIO26-L23",
+      "BIO26-L24",
+      "BIO26-L25",
+      "BIO26-L26",
+      "BIO26-L27"
     ],
-    "automatedQa": "PASS_987_OF_987"
+    "automatedQa": "PASS_1582_OF_1582"
   },
   "productionSubjectPlan": {
     "action": "CREATE_DEDICATED_BIOLOGY_SUBJECT_AT_CONTROLLED_IMPORT",
