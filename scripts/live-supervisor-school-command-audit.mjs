@@ -36,8 +36,8 @@ const ROLE_CANDIDATES = [
   },
   {
     role: "group-supervisor",
-    email: process.env.ROLE_GROUP_SUPERVISOR_EMAIL || "supervisor.group@almeaa.local",
-    password: process.env.ROLE_GROUP_SUPERVISOR_PASSWORD || process.env.ROLE_SUPERVISOR_PASSWORD || process.env.SUPERVISOR_PASSWORD,
+    email: "supervisor.group@almeaa.local",
+    password: process.env.ROLE_SUPERVISOR_PASSWORD || process.env.SUPERVISOR_PASSWORD,
   },
   {
     role: "admin",
