@@ -191,7 +191,11 @@ export const createAccessEnrollmentSlice = <TState extends AccessEnrollmentSlice
 
             const packagePathId = course.pathId || course.category;
             const packageSubjectId = course.subjectId || course.subject;
-            const packageContentTypes = course.packageContentTypes?.length ? course.packageContentTypes : ['all'];
+            // Legacy public packages without an explicit scope were course
+            // packages. Treating them as `all` here disagreed with the server
+            // policy and could make a course purchase appear to unlock banks,
+            // tests, library, or foundation content in the client.
+            const packageContentTypes = course.packageContentTypes?.length ? course.packageContentTypes : ['courses'];
             const matchesType = packageContentTypes.includes('all') || packageContentTypes.includes(contentType);
             const matchesPath = !pathId || !packagePathId || packagePathId === pathId;
             const matchesSubject = !subjectId || !packageSubjectId || packageSubjectId === subjectId;
