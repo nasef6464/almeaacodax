@@ -3,8 +3,8 @@
   "status": "AUTHORING_IN_PROGRESS",
   "expectedSourceOccurrences": 2835,
   "expectedCanonicalItems": 2832,
-  "authoredCanonicalItems": 1383,
-  "pendingCanonicalItems": 1449,
+  "authoredCanonicalItems": 1408,
+  "pendingCanonicalItems": 1424,
   "authoredLessons": [
     "BIO26-L01",
     "BIO26-L02",
@@ -28,7 +28,8 @@
     "BIO26-L20",
     "BIO26-L21",
     "BIO26-L22",
-    "BIO26-L23"
+    "BIO26-L23",
+    "BIO26-L24"
   ],
   "fields": [
     "MainSkill",
@@ -45,8 +46,8 @@
   ],
   "sourceRule": "Correct answers are source-key only. Explanations are grounded to the approved BIO26 foundation and the visible question content. Diagram/image items require visualDescription.",
   "authoringQa": {
-    "sourceAnswerCrossCheck": "L24_PARTIAL_PENDING",
-    "skillRangeCrossCheck": "L24_PARTIAL_PENDING",
+    "sourceAnswerCrossCheck": "PENDING_AUTOMATED_RECHECK_AFTER_L24",
+    "skillRangeCrossCheck": "PENDING_AUTOMATED_RECHECK_AFTER_L24",
     "visualDescriptionsPresent": "PASS_FOR_VISUAL_ITEMS_IN_AUTHORED_LESSONS",
     "answerInferredFromOCR": 0
   },
@@ -33241,6 +33242,606 @@
       "correctAnswer": "C — الشعيرات الدموية",
       "explanation": "جدران الشعيرات تسمح بتبادل المواد.",
       "whyCorrect": "جدران الشعيرات تسمح بتبادل المواد.",
+      "visualDescription": null
+    },
+    {
+      "questionCode": "TAH-BIO-BIO26-L24-Q061",
+      "lessonCode": "BIO26-L24",
+      "lesson": "الجهاز الدوراني",
+      "sourceSection": 2,
+      "MainSkill": {
+        "id": "BIO26-M16",
+        "name": "الدوران والتنفس والإخراج"
+      },
+      "SubSkill": {
+        "id": "BIO26-S16-01",
+        "name": "القلب والأوعية والدورة الدموية"
+      },
+      "whyOthersWrong": "البدائل الأخرى لا تطابق تركيب الجهاز الدوراني أو مكونات الدم أو قواعد فصائل الدم كما وردت في المصدر.",
+      "commonMistake": "الخلط بين الشريان والوريد والشعيرات، أو بين حجرات القلب، أو بين مولدات الضد والأجسام المضادة.",
+      "hint": "حدد محور السؤال ثم طبق قاعدة المصدر.",
+      "foundationReference": "تأسيس أحياء كامل.pdf — الجهاز الدوراني ومكونات الدم — PDF p.39–40",
+      "questionSummary": "ما الذي يقيسه الطبيب في ضغط الدم",
+      "concept": "ضغط الشرايين",
+      "correctAnswer": "A — ضغط الدم في الشرايين",
+      "explanation": "قياس ضغط الدم يعكس الضغط الواقع على جدران الشرايين.",
+      "whyCorrect": "قياس ضغط الدم يعكس الضغط الواقع على جدران الشرايين.",
+      "visualDescription": null
+    },
+    {
+      "questionCode": "TAH-BIO-BIO26-L24-Q062",
+      "lessonCode": "BIO26-L24",
+      "lesson": "الجهاز الدوراني",
+      "sourceSection": 2,
+      "MainSkill": {
+        "id": "BIO26-M16",
+        "name": "الدوران والتنفس والإخراج"
+      },
+      "SubSkill": {
+        "id": "BIO26-S16-01",
+        "name": "القلب والأوعية والدورة الدموية"
+      },
+      "whyOthersWrong": "البدائل الأخرى لا تطابق تركيب الجهاز الدوراني أو مكونات الدم أو قواعد فصائل الدم كما وردت في المصدر.",
+      "commonMistake": "الخلط بين الشريان والوريد والشعيرات، أو بين حجرات القلب، أو بين مولدات الضد والأجسام المضادة.",
+      "hint": "حدد محور السؤال ثم طبق قاعدة المصدر.",
+      "foundationReference": "تأسيس أحياء كامل.pdf — الجهاز الدوراني ومكونات الدم — PDF p.39–40",
+      "questionSummary": "20 نبضة في 15 ثانية كم في الدقيقة",
+      "concept": "معدل النبض",
+      "correctAnswer": "D — 80",
+      "explanation": "نضرب 20 في 4 للحصول على 80 نبضة في الدقيقة.",
+      "whyCorrect": "نضرب 20 في 4 للحصول على 80 نبضة في الدقيقة.",
+      "visualDescription": null
+    },
+    {
+      "questionCode": "TAH-BIO-BIO26-L24-Q063",
+      "lessonCode": "BIO26-L24",
+      "lesson": "الجهاز الدوراني",
+      "sourceSection": 2,
+      "MainSkill": {
+        "id": "BIO26-M16",
+        "name": "الدوران والتنفس والإخراج"
+      },
+      "SubSkill": {
+        "id": "BIO26-S16-01",
+        "name": "القلب والأوعية والدورة الدموية"
+      },
+      "whyOthersWrong": "البدائل الأخرى لا تطابق تركيب الجهاز الدوراني أو مكونات الدم أو قواعد فصائل الدم كما وردت في المصدر.",
+      "commonMistake": "الخلط بين الشريان والوريد والشعيرات، أو بين حجرات القلب، أو بين مولدات الضد والأجسام المضادة.",
+      "hint": "حدد محور السؤال ثم طبق قاعدة المصدر.",
+      "foundationReference": "تأسيس أحياء كامل.pdf — الجهاز الدوراني ومكونات الدم — PDF p.39–40",
+      "questionSummary": "المسؤول عن النبض المحسوس في الرسغ",
+      "concept": "الشريان",
+      "correctAnswer": "B — الشريان",
+      "explanation": "النبض ينتج من تمدد وانقباض جدار الشريان.",
+      "whyCorrect": "النبض ينتج من تمدد وانقباض جدار الشريان.",
+      "visualDescription": null
+    },
+    {
+      "questionCode": "TAH-BIO-BIO26-L24-Q064",
+      "lessonCode": "BIO26-L24",
+      "lesson": "الجهاز الدوراني",
+      "sourceSection": 2,
+      "MainSkill": {
+        "id": "BIO26-M16",
+        "name": "الدوران والتنفس والإخراج"
+      },
+      "SubSkill": {
+        "id": "BIO26-S16-01",
+        "name": "القلب والأوعية والدورة الدموية"
+      },
+      "whyOthersWrong": "البدائل الأخرى لا تطابق تركيب الجهاز الدوراني أو مكونات الدم أو قواعد فصائل الدم كما وردت في المصدر.",
+      "commonMistake": "الخلط بين الشريان والوريد والشعيرات، أو بين حجرات القلب، أو بين مولدات الضد والأجسام المضادة.",
+      "hint": "حدد محور السؤال ثم طبق قاعدة المصدر.",
+      "foundationReference": "تأسيس أحياء كامل.pdf — الجهاز الدوراني ومكونات الدم — PDF p.39–40",
+      "questionSummary": "موضع العقدة الجيبية الأذينية",
+      "concept": "منظم القلب",
+      "correctAnswer": "A — الأذين الأيمن",
+      "explanation": "العقدة الجيبية الأذينية تقع في الأذين الأيمن.",
+      "whyCorrect": "العقدة الجيبية الأذينية تقع في الأذين الأيمن.",
+      "visualDescription": null
+    },
+    {
+      "questionCode": "TAH-BIO-BIO26-L24-Q065",
+      "lessonCode": "BIO26-L24",
+      "lesson": "الجهاز الدوراني",
+      "sourceSection": 2,
+      "MainSkill": {
+        "id": "BIO26-M16",
+        "name": "الدوران والتنفس والإخراج"
+      },
+      "SubSkill": {
+        "id": "BIO26-S16-01",
+        "name": "القلب والأوعية والدورة الدموية"
+      },
+      "whyOthersWrong": "البدائل الأخرى لا تطابق تركيب الجهاز الدوراني أو مكونات الدم أو قواعد فصائل الدم كما وردت في المصدر.",
+      "commonMistake": "الخلط بين الشريان والوريد والشعيرات، أو بين حجرات القلب، أو بين مولدات الضد والأجسام المضادة.",
+      "hint": "حدد محور السؤال ثم طبق قاعدة المصدر.",
+      "foundationReference": "تأسيس أحياء كامل.pdf — الجهاز الدوراني ومكونات الدم — PDF p.39–40",
+      "questionSummary": "سبب نبض القلب",
+      "concept": "انقباض القلب",
+      "correctAnswer": "C — انقباض عضلاته",
+      "explanation": "انقباض وانبساط العضلة القلبية يسبب النبض.",
+      "whyCorrect": "انقباض وانبساط العضلة القلبية يسبب النبض.",
+      "visualDescription": null
+    },
+    {
+      "questionCode": "TAH-BIO-BIO26-L24-Q066",
+      "lessonCode": "BIO26-L24",
+      "lesson": "الجهاز الدوراني",
+      "sourceSection": 2,
+      "MainSkill": {
+        "id": "BIO26-M16",
+        "name": "الدوران والتنفس والإخراج"
+      },
+      "SubSkill": {
+        "id": "BIO26-S16-01",
+        "name": "القلب والأوعية والدورة الدموية"
+      },
+      "whyOthersWrong": "البدائل الأخرى لا تطابق تركيب الجهاز الدوراني أو مكونات الدم أو قواعد فصائل الدم كما وردت في المصدر.",
+      "commonMistake": "الخلط بين الشريان والوريد والشعيرات، أو بين حجرات القلب، أو بين مولدات الضد والأجسام المضادة.",
+      "hint": "حدد محور السؤال ثم طبق قاعدة المصدر.",
+      "foundationReference": "تأسيس أحياء كامل.pdf — الجهاز الدوراني ومكونات الدم — PDF p.39–40",
+      "questionSummary": "وجهة الدم بعد مغادرة البطين الأيمن",
+      "concept": "الدورة الرئوية",
+      "correctAnswer": "A — الرئتين",
+      "explanation": "البطين الأيمن يضخ الدم للرئتين.",
+      "whyCorrect": "البطين الأيمن يضخ الدم للرئتين.",
+      "visualDescription": null
+    },
+    {
+      "questionCode": "TAH-BIO-BIO26-L24-Q067",
+      "lessonCode": "BIO26-L24",
+      "lesson": "الجهاز الدوراني",
+      "sourceSection": 2,
+      "MainSkill": {
+        "id": "BIO26-M16",
+        "name": "الدوران والتنفس والإخراج"
+      },
+      "SubSkill": {
+        "id": "BIO26-S16-01",
+        "name": "القلب والأوعية والدورة الدموية"
+      },
+      "whyOthersWrong": "البدائل الأخرى لا تطابق تركيب الجهاز الدوراني أو مكونات الدم أو قواعد فصائل الدم كما وردت في المصدر.",
+      "commonMistake": "الخلط بين الشريان والوريد والشعيرات، أو بين حجرات القلب، أو بين مولدات الضد والأجسام المضادة.",
+      "hint": "حدد محور السؤال ثم طبق قاعدة المصدر.",
+      "foundationReference": "تأسيس أحياء كامل.pdf — الجهاز الدوراني ومكونات الدم — PDF p.39–40",
+      "questionSummary": "الجهاز الذي ينقل الدم لكل الجسم",
+      "concept": "الجهاز الدوري",
+      "correctAnswer": "C — الدوري",
+      "explanation": "الجهاز الدوري جهاز النقل في الجسم.",
+      "whyCorrect": "الجهاز الدوري جهاز النقل في الجسم.",
+      "visualDescription": null
+    },
+    {
+      "questionCode": "TAH-BIO-BIO26-L24-Q068",
+      "lessonCode": "BIO26-L24",
+      "lesson": "الجهاز الدوراني",
+      "sourceSection": 2,
+      "MainSkill": {
+        "id": "BIO26-M16",
+        "name": "الدوران والتنفس والإخراج"
+      },
+      "SubSkill": {
+        "id": "BIO26-S16-01",
+        "name": "القلب والأوعية والدورة الدموية"
+      },
+      "whyOthersWrong": "البدائل الأخرى لا تطابق تركيب الجهاز الدوراني أو مكونات الدم أو قواعد فصائل الدم كما وردت في المصدر.",
+      "commonMistake": "الخلط بين الشريان والوريد والشعيرات، أو بين حجرات القلب، أو بين مولدات الضد والأجسام المضادة.",
+      "hint": "حدد محور السؤال ثم طبق قاعدة المصدر.",
+      "foundationReference": "تأسيس أحياء كامل.pdf — الجهاز الدوراني ومكونات الدم — PDF p.39–40",
+      "questionSummary": "وعاء يحمل دمًا مؤكسجًا",
+      "concept": "الوريد الرئوي",
+      "correctAnswer": "B — الوريد الرئوي",
+      "explanation": "الأوردة الرئوية تعيد الدم المؤكسج من الرئتين.",
+      "whyCorrect": "الأوردة الرئوية تعيد الدم المؤكسج من الرئتين.",
+      "visualDescription": null
+    },
+    {
+      "questionCode": "TAH-BIO-BIO26-L24-Q069",
+      "lessonCode": "BIO26-L24",
+      "lesson": "الجهاز الدوراني",
+      "sourceSection": 2,
+      "MainSkill": {
+        "id": "BIO26-M16",
+        "name": "الدوران والتنفس والإخراج"
+      },
+      "SubSkill": {
+        "id": "BIO26-S16-01",
+        "name": "القلب والأوعية والدورة الدموية"
+      },
+      "whyOthersWrong": "البدائل الأخرى لا تطابق تركيب الجهاز الدوراني أو مكونات الدم أو قواعد فصائل الدم كما وردت في المصدر.",
+      "commonMistake": "الخلط بين الشريان والوريد والشعيرات، أو بين حجرات القلب، أو بين مولدات الضد والأجسام المضادة.",
+      "hint": "حدد محور السؤال ثم طبق قاعدة المصدر.",
+      "foundationReference": "تأسيس أحياء كامل.pdf — الجهاز الدوراني ومكونات الدم — PDF p.39–40",
+      "questionSummary": "إلى أين ينقل الأبهر الدم",
+      "concept": "الدورة الجسمية",
+      "correctAnswer": "B — إلى الجسم",
+      "explanation": "الأبهر يحمل الدم المؤكسج للجسم.",
+      "whyCorrect": "الأبهر يحمل الدم المؤكسج للجسم.",
+      "visualDescription": null
+    },
+    {
+      "questionCode": "TAH-BIO-BIO26-L24-Q070",
+      "lessonCode": "BIO26-L24",
+      "lesson": "الجهاز الدوراني",
+      "sourceSection": 2,
+      "MainSkill": {
+        "id": "BIO26-M16",
+        "name": "الدوران والتنفس والإخراج"
+      },
+      "SubSkill": {
+        "id": "BIO26-S16-01",
+        "name": "القلب والأوعية والدورة الدموية"
+      },
+      "whyOthersWrong": "البدائل الأخرى لا تطابق تركيب الجهاز الدوراني أو مكونات الدم أو قواعد فصائل الدم كما وردت في المصدر.",
+      "commonMistake": "الخلط بين الشريان والوريد والشعيرات، أو بين حجرات القلب، أو بين مولدات الضد والأجسام المضادة.",
+      "hint": "حدد محور السؤال ثم طبق قاعدة المصدر.",
+      "foundationReference": "تأسيس أحياء كامل.pdf — الجهاز الدوراني ومكونات الدم — PDF p.39–40",
+      "questionSummary": "أي حجرة تضخ الدم إلى الجسم",
+      "concept": "البطين الأيسر",
+      "correctAnswer": "B — البطين الأيسر",
+      "explanation": "البطين الأيسر يضخ الدم عبر الأبهر.",
+      "whyCorrect": "البطين الأيسر يضخ الدم عبر الأبهر.",
+      "visualDescription": null
+    },
+    {
+      "questionCode": "TAH-BIO-BIO26-L24-Q071",
+      "lessonCode": "BIO26-L24",
+      "lesson": "الجهاز الدوراني",
+      "sourceSection": 2,
+      "MainSkill": {
+        "id": "BIO26-M16",
+        "name": "الدوران والتنفس والإخراج"
+      },
+      "SubSkill": {
+        "id": "BIO26-S16-01",
+        "name": "القلب والأوعية والدورة الدموية"
+      },
+      "whyOthersWrong": "البدائل الأخرى لا تطابق تركيب الجهاز الدوراني أو مكونات الدم أو قواعد فصائل الدم كما وردت في المصدر.",
+      "commonMistake": "الخلط بين الشريان والوريد والشعيرات، أو بين حجرات القلب، أو بين مولدات الضد والأجسام المضادة.",
+      "hint": "حدد محور السؤال ثم طبق قاعدة المصدر.",
+      "foundationReference": "تأسيس أحياء كامل.pdf — الجهاز الدوراني ومكونات الدم — PDF p.39–40",
+      "questionSummary": "من أي حجرة ينطلق الدم المغذي للغدة الزعترية",
+      "concept": "البطين الأيسر",
+      "correctAnswer": "C — البطين الأيسر",
+      "explanation": "الدورة الجسمية تنطلق من البطين الأيسر.",
+      "whyCorrect": "الدورة الجسمية تنطلق من البطين الأيسر.",
+      "visualDescription": null
+    },
+    {
+      "questionCode": "TAH-BIO-BIO26-L24-Q072",
+      "lessonCode": "BIO26-L24",
+      "lesson": "الجهاز الدوراني",
+      "sourceSection": 2,
+      "MainSkill": {
+        "id": "BIO26-M16",
+        "name": "الدوران والتنفس والإخراج"
+      },
+      "SubSkill": {
+        "id": "BIO26-S16-02",
+        "name": "مكونات الدم وفصائل الدم وعامل Rh"
+      },
+      "whyOthersWrong": "البدائل الأخرى لا تطابق تركيب الجهاز الدوراني أو مكونات الدم أو قواعد فصائل الدم كما وردت في المصدر.",
+      "commonMistake": "الخلط بين الشريان والوريد والشعيرات، أو بين حجرات القلب، أو بين مولدات الضد والأجسام المضادة.",
+      "hint": "حدد محور السؤال ثم طبق قاعدة المصدر.",
+      "foundationReference": "تأسيس أحياء كامل.pdf — الجهاز الدوراني ومكونات الدم — PDF p.39–40",
+      "questionSummary": "المكوّن الذي يبدأ تكوين الخثرة عند قطع وعاء صغير",
+      "concept": "الصفائح",
+      "correctAnswer": "B — الصفائح الدموية",
+      "explanation": "الصفائح تساعد على بدء التجلط.",
+      "whyCorrect": "الصفائح تساعد على بدء التجلط.",
+      "visualDescription": null
+    },
+    {
+      "questionCode": "TAH-BIO-BIO26-L24-Q073",
+      "lessonCode": "BIO26-L24",
+      "lesson": "الجهاز الدوراني",
+      "sourceSection": 2,
+      "MainSkill": {
+        "id": "BIO26-M16",
+        "name": "الدوران والتنفس والإخراج"
+      },
+      "SubSkill": {
+        "id": "BIO26-S16-02",
+        "name": "مكونات الدم وفصائل الدم وعامل Rh"
+      },
+      "whyOthersWrong": "البدائل الأخرى لا تطابق تركيب الجهاز الدوراني أو مكونات الدم أو قواعد فصائل الدم كما وردت في المصدر.",
+      "commonMistake": "الخلط بين الشريان والوريد والشعيرات، أو بين حجرات القلب، أو بين مولدات الضد والأجسام المضادة.",
+      "hint": "حدد محور السؤال ثم طبق قاعدة المصدر.",
+      "foundationReference": "تأسيس أحياء كامل.pdf — الجهاز الدوراني ومكونات الدم — PDF p.39–40",
+      "questionSummary": "مكوّن الدم الذي يوصل الدواء للجزء المصاب",
+      "concept": "البلازما",
+      "correctAnswer": "B — البلازما",
+      "explanation": "البلازما تنقل الأدوية والمواد الذائبة.",
+      "whyCorrect": "البلازما تنقل الأدوية والمواد الذائبة.",
+      "visualDescription": null
+    },
+    {
+      "questionCode": "TAH-BIO-BIO26-L24-Q074",
+      "lessonCode": "BIO26-L24",
+      "lesson": "الجهاز الدوراني",
+      "sourceSection": 2,
+      "MainSkill": {
+        "id": "BIO26-M16",
+        "name": "الدوران والتنفس والإخراج"
+      },
+      "SubSkill": {
+        "id": "BIO26-S16-02",
+        "name": "مكونات الدم وفصائل الدم وعامل Rh"
+      },
+      "whyOthersWrong": "البدائل الأخرى لا تطابق تركيب الجهاز الدوراني أو مكونات الدم أو قواعد فصائل الدم كما وردت في المصدر.",
+      "commonMistake": "الخلط بين الشريان والوريد والشعيرات، أو بين حجرات القلب، أو بين مولدات الضد والأجسام المضادة.",
+      "hint": "حدد محور السؤال ثم طبق قاعدة المصدر.",
+      "foundationReference": "تأسيس أحياء كامل.pdf — الجهاز الدوراني ومكونات الدم — PDF p.39–40",
+      "questionSummary": "أهمية الحديد في الدم",
+      "concept": "خلايا الدم الحمراء",
+      "correctAnswer": "C — كريات الدم الحمراء",
+      "explanation": "الحديد جزء من الهيموجلوبين.",
+      "whyCorrect": "الحديد جزء من الهيموجلوبين.",
+      "visualDescription": null
+    },
+    {
+      "questionCode": "TAH-BIO-BIO26-L24-Q075",
+      "lessonCode": "BIO26-L24",
+      "lesson": "الجهاز الدوراني",
+      "sourceSection": 2,
+      "MainSkill": {
+        "id": "BIO26-M16",
+        "name": "الدوران والتنفس والإخراج"
+      },
+      "SubSkill": {
+        "id": "BIO26-S16-02",
+        "name": "مكونات الدم وفصائل الدم وعامل Rh"
+      },
+      "whyOthersWrong": "البدائل الأخرى لا تطابق تركيب الجهاز الدوراني أو مكونات الدم أو قواعد فصائل الدم كما وردت في المصدر.",
+      "commonMistake": "الخلط بين الشريان والوريد والشعيرات، أو بين حجرات القلب، أو بين مولدات الضد والأجسام المضادة.",
+      "hint": "حدد محور السؤال ثم طبق قاعدة المصدر.",
+      "foundationReference": "تأسيس أحياء كامل.pdf — الجهاز الدوراني ومكونات الدم — PDF p.39–40",
+      "questionSummary": "خلايا ناضجة تفتقد النواة",
+      "concept": "خلايا الدم الحمراء",
+      "correctAnswer": "D — خلايا الدم الحمراء في الجمل",
+      "explanation": "خلايا الدم الحمراء للثدييات البالغة تفتقد النواة.",
+      "whyCorrect": "خلايا الدم الحمراء للثدييات البالغة تفتقد النواة.",
+      "visualDescription": null
+    },
+    {
+      "questionCode": "TAH-BIO-BIO26-L24-Q076",
+      "lessonCode": "BIO26-L24",
+      "lesson": "الجهاز الدوراني",
+      "sourceSection": 2,
+      "MainSkill": {
+        "id": "BIO26-M16",
+        "name": "الدوران والتنفس والإخراج"
+      },
+      "SubSkill": {
+        "id": "BIO26-S16-02",
+        "name": "مكونات الدم وفصائل الدم وعامل Rh"
+      },
+      "whyOthersWrong": "البدائل الأخرى لا تطابق تركيب الجهاز الدوراني أو مكونات الدم أو قواعد فصائل الدم كما وردت في المصدر.",
+      "commonMistake": "الخلط بين الشريان والوريد والشعيرات، أو بين حجرات القلب، أو بين مولدات الضد والأجسام المضادة.",
+      "hint": "حدد محور السؤال ثم طبق قاعدة المصدر.",
+      "foundationReference": "تأسيس أحياء كامل.pdf — الجهاز الدوراني ومكونات الدم — PDF p.39–40",
+      "questionSummary": "مكوّن يساعد في تكوين خثر الدم",
+      "concept": "الصفائح",
+      "correctAnswer": "D — الصفائح الدموية",
+      "explanation": "الصفائح والفايبرين أساسيان في التجلط.",
+      "whyCorrect": "الصفائح والفايبرين أساسيان في التجلط.",
+      "visualDescription": null
+    },
+    {
+      "questionCode": "TAH-BIO-BIO26-L24-Q077",
+      "lessonCode": "BIO26-L24",
+      "lesson": "الجهاز الدوراني",
+      "sourceSection": 2,
+      "MainSkill": {
+        "id": "BIO26-M16",
+        "name": "الدوران والتنفس والإخراج"
+      },
+      "SubSkill": {
+        "id": "BIO26-S16-02",
+        "name": "مكونات الدم وفصائل الدم وعامل Rh"
+      },
+      "whyOthersWrong": "البدائل الأخرى لا تطابق تركيب الجهاز الدوراني أو مكونات الدم أو قواعد فصائل الدم كما وردت في المصدر.",
+      "commonMistake": "الخلط بين الشريان والوريد والشعيرات، أو بين حجرات القلب، أو بين مولدات الضد والأجسام المضادة.",
+      "hint": "حدد محور السؤال ثم طبق قاعدة المصدر.",
+      "foundationReference": "تأسيس أحياء كامل.pdf — الجهاز الدوراني ومكونات الدم — PDF p.39–40",
+      "questionSummary": "عند مرض بكتيري أي خلايا تستجيب",
+      "concept": "خلايا الدم البيضاء",
+      "correctAnswer": "C — كريات الدم البيضاء",
+      "explanation": "خلايا الدم البيضاء تستجيب للممرضات.",
+      "whyCorrect": "خلايا الدم البيضاء تستجيب للممرضات.",
+      "visualDescription": null
+    },
+    {
+      "questionCode": "TAH-BIO-BIO26-L24-Q078",
+      "lessonCode": "BIO26-L24",
+      "lesson": "الجهاز الدوراني",
+      "sourceSection": 2,
+      "MainSkill": {
+        "id": "BIO26-M16",
+        "name": "الدوران والتنفس والإخراج"
+      },
+      "SubSkill": {
+        "id": "BIO26-S16-02",
+        "name": "مكونات الدم وفصائل الدم وعامل Rh"
+      },
+      "whyOthersWrong": "البدائل الأخرى لا تطابق تركيب الجهاز الدوراني أو مكونات الدم أو قواعد فصائل الدم كما وردت في المصدر.",
+      "commonMistake": "الخلط بين الشريان والوريد والشعيرات، أو بين حجرات القلب، أو بين مولدات الضد والأجسام المضادة.",
+      "hint": "حدد محور السؤال ثم طبق قاعدة المصدر.",
+      "foundationReference": "تأسيس أحياء كامل.pdf — الجهاز الدوراني ومكونات الدم — PDF p.39–40",
+      "questionSummary": "عينة دم تحتوي الحديد تدل على ماذا",
+      "concept": "خلايا الدم الحمراء",
+      "correctAnswer": "A — خلايا دم حمراء",
+      "explanation": "الحديد يوجد في الهيموجلوبين.",
+      "whyCorrect": "الحديد يوجد في الهيموجلوبين.",
+      "visualDescription": null
+    },
+    {
+      "questionCode": "TAH-BIO-BIO26-L24-Q079",
+      "lessonCode": "BIO26-L24",
+      "lesson": "الجهاز الدوراني",
+      "sourceSection": 2,
+      "MainSkill": {
+        "id": "BIO26-M16",
+        "name": "الدوران والتنفس والإخراج"
+      },
+      "SubSkill": {
+        "id": "BIO26-S16-02",
+        "name": "مكونات الدم وفصائل الدم وعامل Rh"
+      },
+      "whyOthersWrong": "البدائل الأخرى لا تطابق تركيب الجهاز الدوراني أو مكونات الدم أو قواعد فصائل الدم كما وردت في المصدر.",
+      "commonMistake": "الخلط بين الشريان والوريد والشعيرات، أو بين حجرات القلب، أو بين مولدات الضد والأجسام المضادة.",
+      "hint": "حدد محور السؤال ثم طبق قاعدة المصدر.",
+      "foundationReference": "تأسيس أحياء كامل.pdf — الجهاز الدوراني ومكونات الدم — PDF p.39–40",
+      "questionSummary": "سائل أصفر يمثل أكثر من نصف الدم",
+      "concept": "البلازما",
+      "correctAnswer": "B — البلازما",
+      "explanation": "البلازما تمثل الجزء الأكبر من حجم الدم.",
+      "whyCorrect": "البلازما تمثل الجزء الأكبر من حجم الدم.",
+      "visualDescription": null
+    },
+    {
+      "questionCode": "TAH-BIO-BIO26-L24-Q080",
+      "lessonCode": "BIO26-L24",
+      "lesson": "الجهاز الدوراني",
+      "sourceSection": 2,
+      "MainSkill": {
+        "id": "BIO26-M16",
+        "name": "الدوران والتنفس والإخراج"
+      },
+      "SubSkill": {
+        "id": "BIO26-S16-02",
+        "name": "مكونات الدم وفصائل الدم وعامل Rh"
+      },
+      "whyOthersWrong": "البدائل الأخرى لا تطابق تركيب الجهاز الدوراني أو مكونات الدم أو قواعد فصائل الدم كما وردت في المصدر.",
+      "commonMistake": "الخلط بين الشريان والوريد والشعيرات، أو بين حجرات القلب، أو بين مولدات الضد والأجسام المضادة.",
+      "hint": "حدد محور السؤال ثم طبق قاعدة المصدر.",
+      "foundationReference": "تأسيس أحياء كامل.pdf — الجهاز الدوراني ومكونات الدم — PDF p.39–40",
+      "questionSummary": "صفة مشتركة بين A وB",
+      "concept": "التبرع لـAB",
+      "correctAnswer": "B — قدرتهم على إعطاء AB",
+      "explanation": "كل من A وB يمكنه إعطاء خلاياه لفصيلة AB.",
+      "whyCorrect": "كل من A وB يمكنه إعطاء خلاياه لفصيلة AB.",
+      "visualDescription": null
+    },
+    {
+      "questionCode": "TAH-BIO-BIO26-L24-Q081",
+      "lessonCode": "BIO26-L24",
+      "lesson": "الجهاز الدوراني",
+      "sourceSection": 2,
+      "MainSkill": {
+        "id": "BIO26-M16",
+        "name": "الدوران والتنفس والإخراج"
+      },
+      "SubSkill": {
+        "id": "BIO26-S16-02",
+        "name": "مكونات الدم وفصائل الدم وعامل Rh"
+      },
+      "whyOthersWrong": "البدائل الأخرى لا تطابق تركيب الجهاز الدوراني أو مكونات الدم أو قواعد فصائل الدم كما وردت في المصدر.",
+      "commonMistake": "الخلط بين الشريان والوريد والشعيرات، أو بين حجرات القلب، أو بين مولدات الضد والأجسام المضادة.",
+      "hint": "حدد محور السؤال ثم طبق قاعدة المصدر.",
+      "foundationReference": "تأسيس أحياء كامل.pdf — الجهاز الدوراني ومكونات الدم — PDF p.39–40",
+      "questionSummary": "فصيلة AB تستقبل من ماذا",
+      "concept": "المستقبل العام",
+      "correctAnswer": "D — جميع الفصائل",
+      "explanation": "AB مستقبل عام في نظام ABO.",
+      "whyCorrect": "AB مستقبل عام في نظام ABO.",
+      "visualDescription": null
+    },
+    {
+      "questionCode": "TAH-BIO-BIO26-L24-Q082",
+      "lessonCode": "BIO26-L24",
+      "lesson": "الجهاز الدوراني",
+      "sourceSection": 2,
+      "MainSkill": {
+        "id": "BIO26-M16",
+        "name": "الدوران والتنفس والإخراج"
+      },
+      "SubSkill": {
+        "id": "BIO26-S16-02",
+        "name": "مكونات الدم وفصائل الدم وعامل Rh"
+      },
+      "whyOthersWrong": "البدائل الأخرى لا تطابق تركيب الجهاز الدوراني أو مكونات الدم أو قواعد فصائل الدم كما وردت في المصدر.",
+      "commonMistake": "الخلط بين الشريان والوريد والشعيرات، أو بين حجرات القلب، أو بين مولدات الضد والأجسام المضادة.",
+      "hint": "حدد محور السؤال ثم طبق قاعدة المصدر.",
+      "foundationReference": "تأسيس أحياء كامل.pdf — الجهاز الدوراني ومكونات الدم — PDF p.39–40",
+      "questionSummary": "تجلط مع A وعدم تجلط مع B",
+      "concept": "اختبار التوافق",
+      "correctAnswer": "B — B",
+      "explanation": "مفتاح المصدر يحدد فصيلة القطرة B.",
+      "whyCorrect": "مفتاح المصدر يحدد فصيلة القطرة B.",
+      "visualDescription": null
+    },
+    {
+      "questionCode": "TAH-BIO-BIO26-L24-Q083",
+      "lessonCode": "BIO26-L24",
+      "lesson": "الجهاز الدوراني",
+      "sourceSection": 2,
+      "MainSkill": {
+        "id": "BIO26-M16",
+        "name": "الدوران والتنفس والإخراج"
+      },
+      "SubSkill": {
+        "id": "BIO26-S16-02",
+        "name": "مكونات الدم وفصائل الدم وعامل Rh"
+      },
+      "whyOthersWrong": "البدائل الأخرى لا تطابق تركيب الجهاز الدوراني أو مكونات الدم أو قواعد فصائل الدم كما وردت في المصدر.",
+      "commonMistake": "الخلط بين الشريان والوريد والشعيرات، أو بين حجرات القلب، أو بين مولدات الضد والأجسام المضادة.",
+      "hint": "حدد محور السؤال ثم طبق قاعدة المصدر.",
+      "foundationReference": "تأسيس أحياء كامل.pdf — الجهاز الدوراني ومكونات الدم — PDF p.39–40",
+      "questionSummary": "صاحب فصيلة A يستقبل ماذا",
+      "concept": "التوافق ABO",
+      "correctAnswer": "B — A أو O",
+      "explanation": "فصيلة A تستقبل A أو O.",
+      "whyCorrect": "فصيلة A تستقبل A أو O.",
+      "visualDescription": null
+    },
+    {
+      "questionCode": "TAH-BIO-BIO26-L24-Q084",
+      "lessonCode": "BIO26-L24",
+      "lesson": "الجهاز الدوراني",
+      "sourceSection": 2,
+      "MainSkill": {
+        "id": "BIO26-M16",
+        "name": "الدوران والتنفس والإخراج"
+      },
+      "SubSkill": {
+        "id": "BIO26-S16-02",
+        "name": "مكونات الدم وفصائل الدم وعامل Rh"
+      },
+      "whyOthersWrong": "البدائل الأخرى لا تطابق تركيب الجهاز الدوراني أو مكونات الدم أو قواعد فصائل الدم كما وردت في المصدر.",
+      "commonMistake": "الخلط بين الشريان والوريد والشعيرات، أو بين حجرات القلب، أو بين مولدات الضد والأجسام المضادة.",
+      "hint": "حدد محور السؤال ثم طبق قاعدة المصدر.",
+      "foundationReference": "تأسيس أحياء كامل.pdf — الجهاز الدوراني ومكونات الدم — PDF p.39–40",
+      "questionSummary": "شخص فصيلته A ماذا نعطيه من الخيارات",
+      "concept": "التوافق ABO",
+      "correctAnswer": "C — A",
+      "explanation": "فصيلة A متوافقة مع A.",
+      "whyCorrect": "فصيلة A متوافقة مع A.",
+      "visualDescription": null
+    },
+    {
+      "questionCode": "TAH-BIO-BIO26-L24-Q085",
+      "lessonCode": "BIO26-L24",
+      "lesson": "الجهاز الدوراني",
+      "sourceSection": 2,
+      "MainSkill": {
+        "id": "BIO26-M16",
+        "name": "الدوران والتنفس والإخراج"
+      },
+      "SubSkill": {
+        "id": "BIO26-S16-02",
+        "name": "مكونات الدم وفصائل الدم وعامل Rh"
+      },
+      "whyOthersWrong": "البدائل الأخرى لا تطابق تركيب الجهاز الدوراني أو مكونات الدم أو قواعد فصائل الدم كما وردت في المصدر.",
+      "commonMistake": "الخلط بين الشريان والوريد والشعيرات، أو بين حجرات القلب، أو بين مولدات الضد والأجسام المضادة.",
+      "hint": "حدد محور السؤال ثم طبق قاعدة المصدر.",
+      "foundationReference": "تأسيس أحياء كامل.pdf — الجهاز الدوراني ومكونات الدم — PDF p.39–40",
+      "questionSummary": "الفصيلة التي تستقبل من جميع الفصائل",
+      "concept": "المستقبل العام",
+      "correctAnswer": "C — AB",
+      "explanation": "AB مستقبل عام في نظام ABO.",
+      "whyCorrect": "AB مستقبل عام في نظام ABO.",
       "visualDescription": null
     }
   ]
