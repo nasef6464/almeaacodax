@@ -191,9 +191,9 @@ export async function deployChem26Taxonomy(options: { apply?: boolean } = {}) {
       }
     }
 
-    await sections.insertMany(sectionDocs, { ordered: true });
-    await skills.insertMany(skillDocs, { ordered: true });
-    await topics.insertMany(topicDocs, { ordered: true });
+    await sections.insertMany(sectionDocs as any[], { ordered: true });
+    await skills.insertMany(skillDocs as any[], { ordered: true });
+    await topics.insertMany(topicDocs as any[], { ordered: true });
 
     const [finalSections, finalSkills, finalTopics] = await Promise.all([
       sections.countDocuments({ subjectId: EXPECTED_SUBJECT_ID }),
