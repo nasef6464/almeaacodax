@@ -101,6 +101,7 @@
         "smoke:r2-live-proof": "node scripts/smoke-r2-live-proof.mjs",
         "smoke:google-oauth-live-proof": "node scripts/smoke-google-oauth-live-proof.mjs",
         "smoke:resolve-admin-token": "node scripts/resolve-smoke-admin-token.mjs",
+        "smoke:question-bank-admin-auth": "node scripts/smoke-question-bank-admin-auth-contract.mjs",
         "smoke:database": "node scripts/smoke-database-index-contract.mjs",
         "smoke:disaster-recovery": "node scripts/smoke-disaster-recovery-contract.mjs",
         "smoke:parent-authority": "node scripts/smoke-parent-authority-contract.mjs",
