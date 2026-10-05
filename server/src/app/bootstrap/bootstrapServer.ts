@@ -29,6 +29,9 @@ export async function bootstrapServer() {
     void runQuestionPilotPackageImportIfRequested().catch((error) => {
       console.error("COL26OLD_IMPORT_FAILED", error instanceof Error ? error.message : "Unknown error");
     });
+    void runChem26PackageImportIfRequested().catch((error) => {
+      console.error("CHEM26_IMPORT_FAILED", error instanceof Error ? error.message : "Unknown error");
+    });
   });
 
   startWeeklyParentReportSchedule();
