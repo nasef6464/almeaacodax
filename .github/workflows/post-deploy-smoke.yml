@@ -17,6 +17,16 @@ jobs:
       SMOKE_ADMIN_TOKEN: ${{ secrets.SMOKE_ADMIN_TOKEN }}
       SMOKE_ADMIN_EMAIL: ${{ secrets.SMOKE_ADMIN_EMAIL || secrets.ROLE_ADMIN_EMAIL }}
       SMOKE_ADMIN_PASSWORD: ${{ secrets.SMOKE_ADMIN_PASSWORD || secrets.ROLE_ADMIN_PASSWORD }}
+      SMOKE_TEACHER_EMAIL: ${{ secrets.ROLE_TEACHER_EMAIL }}
+      SMOKE_TEACHER_PASSWORD: ${{ secrets.ROLE_TEACHER_PASSWORD }}
+      SMOKE_SUPERVISOR_EMAIL: ${{ secrets.ROLE_SUPERVISOR_EMAIL }}
+      SMOKE_SUPERVISOR_PASSWORD: ${{ secrets.ROLE_SUPERVISOR_PASSWORD }}
+      SMOKE_STUDENT_EMAIL: ${{ secrets.ROLE_STUDENT_EMAIL }}
+      SMOKE_STUDENT_PASSWORD: ${{ secrets.ROLE_STUDENT_PASSWORD }}
+      SMOKE_STUDENT_REDEEMED_EMAIL: ${{ secrets.ROLE_STUDENT_EMAIL }}
+      SMOKE_STUDENT_REDEEMED_PASSWORD: ${{ secrets.ROLE_STUDENT_PASSWORD }}
+      SMOKE_PARENT_EMAIL: ${{ secrets.ROLE_PARENT_EMAIL }}
+      SMOKE_PARENT_PASSWORD: ${{ secrets.ROLE_PARENT_PASSWORD }}
       SMOKE_ALLOW_PASSWORD_LOGIN: "true"
       RELEASE_API_BASE: https://almeaacodax.vercel.app/api
       EXPECTED_RELEASE_SHA: ${{ github.sha }}
@@ -47,10 +57,18 @@ jobs:
       - name: Ensure operational auth material exists
         run: |
           if [ -z "$SMOKE_ADMIN_TOKEN" ] && { [ -z "$SMOKE_ADMIN_EMAIL" ] || [ -z "$SMOKE_ADMIN_PASSWORD" ]; }; then
-            echo "Operational smoke auth material is missing."
-            echo "Provide SMOKE_ADMIN_TOKEN or an admin email/password pair in SMOKE_ADMIN_* or ROLE_ADMIN_* GitHub Secrets."
+            echo "Operational admin auth material is missing."
             exit 1
           fi
+
+          for role in TEACHER SUPERVISOR STUDENT PARENT; do
+            email_var="SMOKE_${role}_EMAIL"
+            password_var="SMOKE_${role}_PASSWORD"
+            if [ -z "${!email_var}" ] || [ -z "${!password_var}" ]; then
+              echo "Operational smoke credentials are missing for ${role}."
+              exit 1
+            fi
+          done
 
       - name: Prefer dedicated admin credentials over a stale token
         run: |
