@@ -96,20 +96,10 @@ async function authenticate() {
 async function ensureUser(email, name) {
   const usersPayload = await request(`/auth/admin/users?search=${encodeURIComponent(email)}&limit=10`);
   const existing = (usersPayload.users || []).find((user) => String(user.email || "").toLowerCase() === email.toLowerCase());
-  if (existing) return existing;
-  const created = await request("/auth/admin/users", {
-    method: "POST",
-    body: {
-      name,
-      email,
-      password: "Supervisor@123",
-      role: "supervisor",
-      managedPathIds: [],
-      managedSubjectIds: [],
-      linkedStudentIds: [],
-    },
-  });
-  return created.user;
+  if (!existing) {
+    throw new Error(`Required supervisor account ${name} is missing. Provision it through the secure admin flow before running this repair.`);
+  }
+  return existing;
 }
 
 async function ensureGroup(groups, payload) {
