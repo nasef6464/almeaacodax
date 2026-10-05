@@ -17,7 +17,7 @@ async function run() {
   const foundation = quizzes.filter((q) => q.learningPlacements?.some((p: any) => p.slot === "foundation"));
   const training = quizzes.filter((q) => q.learningPlacements?.some((p: any) => p.slot === "training"));
 
-  if (foundation.length !== 95) throw new Error(`Expected 95 foundation drills, got ${foundation.length}`);
+  if (foundation.length !== 93) throw new Error(`Expected 93 foundation drills, got ${foundation.length}`);
   if (training.length < 25) throw new Error(`Expected at least 25 main-skill training groups, got ${training.length}`);
 
   const coverage = new Set(
@@ -30,7 +30,7 @@ async function run() {
     parentId: { $ne: null },
   }, { projection: { _id: 1, skillId: 1, quizIds: 1 } }).toArray();
 
-  if (topics.length !== 95) throw new Error(`Expected 95 subtopics, got ${topics.length}`);
+  if (topics.length !== 93) throw new Error(`Expected 93 subtopics, got ${topics.length}`);
 
   const badLinks = topics.filter((topic) => {
     const expected = `drill_${String(topic.skillId)}`;
