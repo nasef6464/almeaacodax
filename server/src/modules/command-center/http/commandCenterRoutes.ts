@@ -98,7 +98,20 @@ commandCenterRouter.post(
   asyncHandler(async (req, res) => {
     const principal = getCommandPrincipal(res)!;
     const input = draftSchema.parse(req.body);
-    const source = input.source || principal.source;
+    if (principal.type !== "admin_session") {
+      await recordCommandAudit({
+        principal,
+        action: "draft.generic.create",
+        toolId: input.toolId,
+        requestId: input.requestId,
+        outcome: "rejected",
+        metadata: { reason: "validated_tool_required" },
+      });
+      return res.status(StatusCodes.FORBIDDEN).json({
+        message: "External agents must use a validated Command Center tool endpoint",
+      });
+    }
+    const source = principal.source;
 
     if (input.idempotencyKey) {
       const existing = await CommandCenterDraftModel.findOne({
