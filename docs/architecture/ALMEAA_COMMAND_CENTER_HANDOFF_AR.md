@@ -69,11 +69,16 @@
 ## ما لم يبدأ بعد
 
 ### CC-4 Schools & Classrooms
-- [ ] school setup draft.
-- [ ] class creation plan.
-- [ ] student import plan.
-- [ ] teacher/supervisor assignment plan.
-- [ ] ownership/scope validation.
+- [x] school setup draft.
+- [x] class creation plan.
+- [x] existing-student placement validation.
+- [x] teacher assignment validation.
+- [x] supervisor validation.
+- [x] duplicate class-name/key detection.
+- [x] reuse-existing-accounts policy.
+- [x] explicit-only account creation policy.
+- [ ] CSV/XLSX import parser.
+- [ ] ownership/scope validation against school contract during apply.
 - [ ] safe apply adapter.
 
 ### CC-5 Workflow Engine
@@ -122,7 +127,7 @@
 1. إنهاء CI/TypeScript/contract checks للـPR #387.
 2. إصلاح أي gate يفشل على exact head.
 3. إكمال CC-3 rich course composer + apply adapter.
-4. CC-4 school tools.
+4. إكمال CC-4 import/apply adapter للمدارس.
 5. CC-5 workflow engine.
 6. CC-6 Remote MCP.
 7. CC-7 Smart Teacher/Whiteboard.
