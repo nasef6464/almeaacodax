@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { z } from "zod";
 import { GroupModel } from "../../../models/Group.js";
 import { UserModel } from "../../../models/User.js";
@@ -189,9 +190,11 @@ export async function validateSchoolSetupDraft(
 
   let targetSchool = null;
   if (input.schoolId) {
-    targetSchool = await GroupModel.findOne({ _id: input.schoolId, type: "SCHOOL" })
-      .select("_id name type ownerId")
-      .lean();
+    targetSchool = mongoose.Types.ObjectId.isValid(input.schoolId)
+      ? await GroupModel.findOne({ _id: input.schoolId, type: "SCHOOL" })
+          .select("_id name type ownerId")
+          .lean()
+      : null;
     if (!targetSchool) {
       issues.push({
         type: "school_not_found",
