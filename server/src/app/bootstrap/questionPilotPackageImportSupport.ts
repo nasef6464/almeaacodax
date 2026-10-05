@@ -36,7 +36,7 @@ export const pool = async <T, R>(
 
 export const requireEnv = (name: string) => {
   const value = String(process.env[name] || "").trim();
-  if (!value) throw new Error(`${name} is required for COL26OLD import`);
+  if (!value) throw new Error(`${name} is required for controlled question import`);
   return value;
 };
 
