@@ -1,10 +1,10 @@
 {
   "project": "BIO26",
-  "checkedCanonicalItems": 1839,
-  "uniqueQuestionCodes": 1839,
-  "answerSourceKeyMatches": 1839,
+  "checkedCanonicalItems": 1946,
+  "uniqueQuestionCodes": 1946,
+  "answerSourceKeyMatches": 1946,
   "answerSourceKeyMismatches": 0,
-  "skillRangeMatches": 1839,
+  "skillRangeMatches": 1946,
   "skillRangeMismatches": 0,
   "missingRequiredFields": 0,
   "duplicateQuestionCodes": 0,
@@ -40,6 +40,7 @@
     "BIO26-L29",
     "BIO26-L30",
     "BIO26-L31",
+    "BIO26-L32",
     "BIO26-L33",
     "BIO26-L34"
   ],
@@ -56,5 +57,5 @@
     "foundationReference"
   ],
   "result": "PASS",
-  "note": "Automated cross-check compares each authored correctAnswer letter against BIO26_ANSWERS.csv and MainSkill/SubSkill against BIO26_QUESTION_RANGE_MAP.csv."
+  "note": "Automated cross-check includes L32 107/107 certified source-answer and skill-range shards merged into canonical ledger."
 }
