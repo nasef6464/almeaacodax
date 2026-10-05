@@ -69,12 +69,9 @@ type SupervisorAnalytics = {
     schools: SchoolNode[];
   };
 };
-
 const percent = (value: number | null | undefined) =>
   value === null || value === undefined ? '—' : `${value}%`;
-
 const dateValue = (date: Date) => date.toISOString().slice(0, 10);
-
 const KpiCard: React.FC<{ label: string; value: React.ReactNode; hint: string }> = ({ label, value, hint }) => (
   <div className="rounded-2xl border border-slate-100 bg-white p-4 shadow-xs">
     <p className="text-xs font-bold text-slate-500">{label}</p>
@@ -82,7 +79,6 @@ const KpiCard: React.FC<{ label: string; value: React.ReactNode; hint: string }>
     <p className="mt-1 text-[11px] text-slate-400">{hint}</p>
   </div>
 );
-
 const emptySummary: Summary = {
   sessions: 0,
   participants: 0,
@@ -205,9 +201,7 @@ export const SmartClassroomReportsPanel: React.FC = () => {
     link.click();
     URL.revokeObjectURL(url);
   };
-
   const weakSkills = analytics?.weakSkills || [];
-
   return (
     <section className="rounded-3xl border border-indigo-100 bg-gradient-to-b from-indigo-50/70 to-white p-4 shadow-sm sm:p-6" dir="rtl">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
