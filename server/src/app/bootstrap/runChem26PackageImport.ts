@@ -102,7 +102,7 @@ export async function runChem26PackageImportIfRequested() {
       const skillId = String(item.skillId || "").trim();
       const subSkillId = String(item.subSkillId || "").trim();
       const sectionId = String(item.sectionId || "").trim();
-      const skillMatch = skillId.match(/^skill_tah_chem_(\\d{2})$/);
+      const skillMatch = skillId.match(/^skill_tah_chem_(\d{2})$/);
       if (!skillMatch) throw new Error(`Invalid CHEM26 main skill for ${code}: ${skillId}`);
       const expectedSectionId = `sec_sub_chemistry_${Number(skillMatch[1])}`;
       if (sectionId !== expectedSectionId) {
