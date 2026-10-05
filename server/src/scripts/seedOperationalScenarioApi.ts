@@ -3,11 +3,11 @@ const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "";
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "";
 const SAMPLE_VIDEO_URL = "https://www.w3schools.com/html/mov_bbb.mp4";
 const SAMPLE_PDF_URL = "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf";
-const SEED_TEACHER_PASSWORD = String(process.env.SEED_TEACHER_PASSWORD || "");
-const SEED_SUPERVISOR_PASSWORD = String(process.env.SEED_SUPERVISOR_PASSWORD || "");
-const SEED_STUDENT_PASSWORD = String(process.env.SEED_STUDENT_PASSWORD || "");
-const SEED_PARENT_PASSWORD = String(process.env.SEED_PARENT_PASSWORD || "");
-if (![ADMIN_EMAIL, ADMIN_PASSWORD, SEED_TEACHER_PASSWORD, SEED_SUPERVISOR_PASSWORD, SEED_STUDENT_PASSWORD, SEED_PARENT_PASSWORD].every(Boolean)) {
+const SMOKE_TEACHER_PASSWORD = String(process.env.SMOKE_TEACHER_PASSWORD || "");
+const SMOKE_SUPERVISOR_PASSWORD = String(process.env.SMOKE_SUPERVISOR_PASSWORD || "");
+const SMOKE_STUDENT_PASSWORD = String(process.env.SMOKE_STUDENT_PASSWORD || "");
+const SMOKE_PARENT_PASSWORD = String(process.env.SMOKE_PARENT_PASSWORD || "");
+if (![ADMIN_EMAIL, ADMIN_PASSWORD, SMOKE_TEACHER_PASSWORD, SMOKE_SUPERVISOR_PASSWORD, SMOKE_STUDENT_PASSWORD, SMOKE_PARENT_PASSWORD].every(Boolean)) {
   throw new Error("Operational API seed credentials must be supplied through environment variables.");
 }
 
@@ -125,7 +125,7 @@ const seedUsers: SeedUser[] = [
     key: "teacherQuant",
     name: "أ. ريم الكمي",
     email: "teacher.quant@almeaa.local",
-    password: SEED_TEACHER_PASSWORD,
+    password: SMOKE_TEACHER_PASSWORD,
     role: "teacher",
     managedPathIds: ["p_qudrat"],
     managedSubjectIds: ["sub_quant"],
@@ -134,7 +134,7 @@ const seedUsers: SeedUser[] = [
     key: "teacherMath",
     name: "أ. خالد الرياضيات",
     email: "teacher.math@almeaa.local",
-    password: SEED_TEACHER_PASSWORD,
+    password: SMOKE_TEACHER_PASSWORD,
     role: "teacher",
     managedPathIds: ["p_tahsili"],
     managedSubjectIds: ["sub_math"],
@@ -143,56 +143,56 @@ const seedUsers: SeedUser[] = [
     key: "schoolSupervisor",
     name: "أ. نورة مشرفة المدرسة",
     email: "supervisor.school@almeaa.local",
-    password: SEED_SUPERVISOR_PASSWORD,
+    password: SMOKE_SUPERVISOR_PASSWORD,
     role: "supervisor",
   },
   {
     key: "groupSupervisor",
     name: "أ. فهد مشرف المجموعة",
     email: "supervisor.group@almeaa.local",
-    password: SEED_SUPERVISOR_PASSWORD,
+    password: SMOKE_SUPERVISOR_PASSWORD,
     role: "supervisor",
   },
   {
     key: "studentA",
     name: "سلمان أحمد",
     email: "student.a@almeaa.local",
-    password: SEED_STUDENT_PASSWORD,
+    password: SMOKE_STUDENT_PASSWORD,
     role: "student",
   },
   {
     key: "studentB",
     name: "ليان محمد",
     email: "student.b@almeaa.local",
-    password: SEED_STUDENT_PASSWORD,
+    password: SMOKE_STUDENT_PASSWORD,
     role: "student",
   },
   {
     key: "studentC",
     name: "مشعل عبدالعزيز",
     email: "student.c@almeaa.local",
-    password: SEED_STUDENT_PASSWORD,
+    password: SMOKE_STUDENT_PASSWORD,
     role: "student",
   },
   {
     key: "studentD",
     name: "جود خالد",
     email: "student.d@almeaa.local",
-    password: SEED_STUDENT_PASSWORD,
+    password: SMOKE_STUDENT_PASSWORD,
     role: "student",
   },
   {
     key: "parentA",
     name: "أم سلمان",
     email: "parent.a@almeaa.local",
-    password: SEED_PARENT_PASSWORD,
+    password: SMOKE_PARENT_PASSWORD,
     role: "parent",
   },
   {
     key: "parentB",
     name: "ولي أمر ليان",
     email: "parent.b@almeaa.local",
-    password: SEED_PARENT_PASSWORD,
+    password: SMOKE_PARENT_PASSWORD,
     role: "parent",
   },
 ];
@@ -1406,10 +1406,10 @@ async function upsertPackagesAndCodes(adminToken: string, schoolId: string) {
 }
 
 async function seedStudentStateAndResults(adminToken: string) {
-  const studentALogin = await login("student.a@almeaa.local", SEED_STUDENT_PASSWORD);
-  const studentBLogin = await login("student.b@almeaa.local", SEED_STUDENT_PASSWORD);
-  const studentCLogin = await login("student.c@almeaa.local", SEED_STUDENT_PASSWORD);
-  const studentDLogin = await login("student.d@almeaa.local", SEED_STUDENT_PASSWORD);
+  const studentALogin = await login("student.a@almeaa.local", SMOKE_STUDENT_PASSWORD);
+  const studentBLogin = await login("student.b@almeaa.local", SMOKE_STUDENT_PASSWORD);
+  const studentCLogin = await login("student.c@almeaa.local", SMOKE_STUDENT_PASSWORD);
+  const studentDLogin = await login("student.d@almeaa.local", SMOKE_STUDENT_PASSWORD);
 
   const ensureApprovedPayment = async (session: AuthSession, payload: any) => {
     const me = await request<any>("/auth/me", "GET", undefined, session.token);
@@ -1532,10 +1532,10 @@ async function seedStudentStateAndResults(adminToken: string) {
 
 async function runSmokeChecks(schoolId: string) {
   const admin = await login(ADMIN_EMAIL, ADMIN_PASSWORD);
-  const teacher = await login("teacher.quant@almeaa.local", SEED_TEACHER_PASSWORD);
-  const supervisor = await login("supervisor.group@almeaa.local", SEED_SUPERVISOR_PASSWORD);
-  const student = await login("student.a@almeaa.local", SEED_STUDENT_PASSWORD);
-  const parent = await login("parent.a@almeaa.local", SEED_PARENT_PASSWORD);
+  const teacher = await login("teacher.quant@almeaa.local", SMOKE_TEACHER_PASSWORD);
+  const supervisor = await login("supervisor.group@almeaa.local", SMOKE_SUPERVISOR_PASSWORD);
+  const student = await login("student.a@almeaa.local", SMOKE_STUDENT_PASSWORD);
+  const parent = await login("parent.a@almeaa.local", SMOKE_PARENT_PASSWORD);
 
   const [adminAnalytics, teacherAnalytics, supervisorAnalytics, parentAnalytics, studentResults, schoolReport, studentQuizzes, studentCourses] =
     await Promise.all([
@@ -1567,8 +1567,8 @@ async function main() {
   await upsertTaxonomy(admin.token, await fetchSnapshots(admin.token));
   const usersByEmail = await upsertUsers(admin.token);
 
-  const teacherQuantLogin = await login("teacher.quant@almeaa.local", SEED_TEACHER_PASSWORD);
-  const teacherMathLogin = await login("teacher.math@almeaa.local", SEED_TEACHER_PASSWORD);
+  const teacherQuantLogin = await login("teacher.quant@almeaa.local", SMOKE_TEACHER_PASSWORD);
+  const teacherMathLogin = await login("teacher.math@almeaa.local", SMOKE_TEACHER_PASSWORD);
 
   await upsertLessonsQuestionsEtc(admin.token, teacherQuantLogin.token, teacherMathLogin.token, usersByEmail);
   const groups = await upsertGroupsAndAssignments(admin.token, usersByEmail);
