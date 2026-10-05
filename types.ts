@@ -642,6 +642,8 @@ export interface Question extends ContentWorkflow {
     skillIds?: string[];
     skillId?: string | null;
     subSkillId?: string | null;
+    /** Canonical multi-subskill links; subSkillId remains the primary compatibility link. */
+    subSkillIds?: string[];
     pathId?: string; // Added to support Path selection
     subject: string;
     subjectId?: string | null;

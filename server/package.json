@@ -55,7 +55,10 @@
     "repair:learner-references": "tsx src/scripts/repairLearnerReferenceIntegrity.ts",
     "validate:teaching-fingerprint": "tsx src/scripts/validateTeachingFingerprintV1.ts",
     "deploy:chem26-taxonomy": "tsx src/scripts/deployChemTaxonomy27.ts",
-    "verify:chem26-post-import": "tsx src/scripts/verifyChem26PostImport.ts"
+    "verify:chem26-post-import": "tsx src/scripts/verifyChem26PostImport.ts",
+    "deploy:quant-training": "tsx src/scripts/deployQuantTrainingDistribution.ts",
+    "deploy:quant-training:apply": "tsx src/scripts/deployQuantTrainingDistribution.ts --apply",
+    "verify:quant-training": "tsx src/scripts/verifyQuantTrainingDistribution.ts"
   },
   "dependencies": {
     "@sentry/node": "^9.18.0",

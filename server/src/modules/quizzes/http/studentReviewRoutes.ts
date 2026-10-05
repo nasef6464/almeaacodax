@@ -75,7 +75,7 @@ studentReviewRouter.get(
     const questionIds = cards.map((card: any) => String(card.questionId || "")).filter(Boolean);
     const questions = questionIds.length
       ? await QuestionModel.find(buildQuestionBatchQuery(questionIds))
-          .select("id questionCode text options correctOptionIndex explanation hint solvingStrategy videoUrl imageUrl imageAlt optionsEmbeddedInImage aiContext voiceExplanation skillIds skillId subSkillId pathId subject subjectId sectionId type")
+          .select("id questionCode text options correctOptionIndex explanation hint solvingStrategy videoUrl imageUrl imageAlt optionsEmbeddedInImage aiContext voiceExplanation skillIds skillId subSkillId subSkillIds pathId subject subjectId sectionId type")
           .lean()
       : [];
 

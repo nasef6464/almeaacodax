@@ -14,13 +14,16 @@ const toPlainSkillValue = (value: any) => {
 };
 
 /**
- * New question records have authoritative `skillId` + `subSkillId`.
- * Prefer those fields so a stale legacy `skillIds` entry cannot leak an
- * unrelated skill into one student's result. Legacy rows without canonical
- * fields still fall back to `skillIds`.
+ * New question records have authoritative `skillId` + `subSkillIds`.
+ * `subSkillId` remains the primary compatibility link. Legacy rows without
+ * canonical fields still fall back to `skillIds`.
  */
 export const getCanonicalQuestionSkillIds = (question: any) => {
-  const canonical = uniqueStrings([question?.skillId, question?.subSkillId]);
+  const canonical = uniqueStrings([
+    question?.skillId,
+    ...(Array.isArray(question?.subSkillIds) ? question.subSkillIds : []),
+    question?.subSkillId,
+  ]);
   return canonical.length > 0
     ? canonical
     : uniqueStrings(Array.isArray(question?.skillIds) ? question.skillIds : []);

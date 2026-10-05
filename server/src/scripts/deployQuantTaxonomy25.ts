@@ -3,7 +3,7 @@ import * as fs from "fs";
 import * as path from "path";
 import { env } from "../config/env.js";
 
-// Taxonomy Data Definition (25 Main Skills + 95 Subskills)
+// Taxonomy Data Definition (25 Main Skills + 93 Subskills)
 export const QUANT_TAXONOMY = [
   {
     num: "1",
@@ -136,7 +136,6 @@ export const QUANT_TAXONOMY = [
       { id: "sub_quant_11_1", code: "11.1", name: "تجريب الخيارات والتعويض الذكي والاستبعاد المنطقي", order: 1 },
       { id: "sub_quant_11_2", code: "11.2", name: "الحل العكسي (التراجع من النهاية للبداية)", order: 2 },
       { id: "sub_quant_11_3", code: "11.3", name: "الرسم والتمثيل البصري للمسألة", order: 3 },
-      { id: "sub_quant_11_4", code: "11.4", name: "التدرج المنتظم والتقريب البديهي", order: 4 },
     ],
   },
   {
@@ -217,7 +216,6 @@ export const QUANT_TAXONOMY = [
     subSkills: [
       { id: "sub_quant_18_1", code: "18.1", name: "الاحتمال البسيط وفضاء العينة وحساب النواتج", order: 1 },
       { id: "sub_quant_18_2", code: "18.2", name: "مبدأ العد الأساسي والتباديل والتوافيق المبسطة", order: 2 },
-      { id: "sub_quant_18_3", code: "18.3", name: "قراءة وتفسير الجداول والرسوم والقطاعات الدائرية", order: 3 },
     ],
   },
   {
@@ -359,7 +357,7 @@ export async function deploy() {
   console.log(`Synced 25 sections for subject ${subjectId}`);
 
   // 3. SKILLS PHASE
-  console.log("\n--- Phase 3: Deploying 25 Main Skills and 95 Subskills ---");
+  console.log("\n--- Phase 3: Deploying 25 Main Skills and 93 Subskills ---");
   const skillsCol = db.collection("skills");
   await skillsCol.deleteMany({ subjectId });
 
@@ -452,7 +450,7 @@ export async function deploy() {
       });
     }
   }
-  console.log(`Created 25 parent topics and 95 child topics matching the approved taxonomy`);
+  console.log(`Created 25 parent topics and 93 child topics matching the approved taxonomy`);
 
   // 5. QUESTIONS MAPPING PHASE
   // IMPORTANT: Never distribute questions round-robin across subskills.
@@ -556,7 +554,7 @@ export async function deploy() {
   console.log("Cleaned legacy/duplicate quizzes in training, tests, and foundation slots.");
 
   // A. SHORT FOUNDATION DRILLS (Max 10 questions each)
-  console.log("\n--- Generating 95 Foundation Drills (Max 10 questions) ---");
+  console.log("\n--- Generating 93 Foundation Drills (Max 10 questions) ---");
   const usedInShortDrills = new Set<string>();
 
   for (let i = 0; i < QUANT_TAXONOMY.length; i++) {
@@ -618,7 +616,7 @@ export async function deploy() {
       );
     }
   }
-  console.log(`Generated and linked 95 short drills to foundation subtopics`);
+  console.log(`Generated and linked 93 short drills to foundation subtopics`);
 
   // B. COMPREHENSIVE SKILL DRILLS (40 questions each in Training)
   console.log("\n--- Generating 25 Comprehensive Drills in Training Tab ---");

@@ -155,7 +155,7 @@ questionBankRouter.get(
       .limit(query.noTotal ? query.limit + 1 : query.limit)
       .lean();
     if (query.summary) {
-      queryBuilder.select("id questionCode text passageId imageUrl imageAlt options optionsEmbeddedInImage correctOptionIndex explanation videoUrl skillIds pathId subject sectionId examType source year difficulty type ownerType ownerId createdBy assignedTeacherId approvalStatus approvedBy approvedAt reviewerNotes revenueSharePercentage createdAt updatedAt");
+      queryBuilder.select("id questionCode text passageId imageUrl imageAlt options optionsEmbeddedInImage correctOptionIndex explanation videoUrl skillIds skillId subSkillId subSkillIds pathId subject sectionId examType source year difficulty type ownerType ownerId createdBy assignedTeacherId approvalStatus approvedBy approvedAt reviewerNotes revenueSharePercentage createdAt updatedAt");
     }
 
     const shouldIncludeCoverage = Boolean(query.includeCoverage);
@@ -229,6 +229,9 @@ questionBankRouter.post(
     const workflowDefaults = getWorkflowDefaults(req.authUser!);
     const payload = questionSchema.parse({
       ...draftPayload,
+      skillId: canonicalSkills.skillId,
+      subSkillId: canonicalSkills.subSkillId,
+      subSkillIds: canonicalSkills.subSkillIds,
       skillIds: canonicalSkills.skillIds,
       ...workflowDefaults,
       approvalStatus:
@@ -331,6 +334,9 @@ questionBankRouter.patch(
     }
     const mergedPayload = questionSchema.parse({
       ...mergedDraft,
+      skillId: canonicalSkills.skillId,
+      subSkillId: canonicalSkills.subSkillId,
+      subSkillIds: canonicalSkills.subSkillIds,
       skillIds: canonicalSkills.skillIds,
     });
 
@@ -345,7 +351,13 @@ questionBankRouter.patch(
       }
     }
     const sanitizedPayload = sanitizeWorkflowUpdate(
-      { ...payload, skillIds: canonicalSkills.skillIds } as Record<string, unknown>,
+      {
+        ...payload,
+        skillId: canonicalSkills.skillId,
+        subSkillId: canonicalSkills.subSkillId,
+        subSkillIds: canonicalSkills.subSkillIds,
+        skillIds: canonicalSkills.skillIds,
+      } as Record<string, unknown>,
       req.authUser!,
     );
     const updated = await QuestionModel.findOneAndUpdate(documentQuery, sanitizedPayload, { new: true });
