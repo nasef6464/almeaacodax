@@ -1,0 +1,64 @@
+{
+  "project": "CHEM26 Full Closure",
+  "scope": "chemistry-only",
+  "updatedAt": "2026-10-05T11:41:00+03:00",
+  "status": "READY_FOR_PRODUCTION_IMPORT",
+  "source": {
+    "questionPdf": "كتاب تجميعات يلو للكيمياء 26 - المعدل.pdf",
+    "coverage": 1709,
+    "section1": 1035,
+    "section2": 674,
+    "lessons": 32
+  },
+  "taxonomy": {
+    "productionApplied": true,
+    "sections": 27,
+    "mainSkills": 27,
+    "subSkills": 99,
+    "parentTopics": 27,
+    "childTopics": 99,
+    "badChildLinks": 0,
+    "legacyPlaceholdersRemoved": true
+  },
+  "questions": {
+    "canonical": 1708,
+    "aliases": 1,
+    "alias": {
+      "source": "TAH-CHEM-CHEM26-P131-Q26",
+      "canonical": "TAH-CHEM-CHEM26-P130-Q13"
+    }
+  },
+  "answers": {
+    "pass": 1709,
+    "quarantine": 0
+  },
+  "crops": {
+    "canonicalReady": 1708,
+    "uniqueHashes": 1708,
+    "repairedDefects": 5
+  },
+  "optionTextQA": {
+    "canonicalComplete": 1708,
+    "visualSourceFallbackRows": 26
+  },
+  "package": {
+    "name": "CHEM26_IMPORT_PACKAGE_READY_1708.zip",
+    "sha256": "875c57fdcd37dd6bc3a6669905bc9a6efb614318c6717a64ecd9085752750a66",
+    "batchId": "TAH-CHEM-CHEM26-FULL-V1"
+  },
+  "codeGates": {
+    "canonicalPrefixMerged": true,
+    "taxonomyProductionGateMerged": true,
+    "importRunnerPR": 373
+  },
+  "pending": [
+    "PR #373 CI + merge",
+    "Production API dry-run",
+    "5-question canary",
+    "Full draft import <=100",
+    "Live E2E",
+    "Approval"
+  ],
+  "transportBlocker": "Importer intentionally accepts only short-lived HTTPS oaiusercontent package URLs. The package bytes are prepared and hash-locked, but no external signed package URL is exposed by the current tool surface.",
+  "blockerPolicy": "Do not weaken transport/auth controls. Continue all independent QA and merge work; execute import immediately when a signed package URL is available."
+}
