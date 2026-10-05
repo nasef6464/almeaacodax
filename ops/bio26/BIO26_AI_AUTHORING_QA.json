@@ -2,8 +2,8 @@
   "project": "BIO26",
   "status": "AUTHORING_IN_PROGRESS",
   "expectedCanonicalItems": 2832,
-  "authoredCanonicalItems": 987,
-  "pendingCanonicalItems": 1845,
+  "authoredCanonicalItems": 1582,
+  "pendingCanonicalItems": 1250,
   "completedLessons": [
     "BIO26-L01",
     "BIO26-L02",
@@ -19,7 +19,19 @@
     "BIO26-L12",
     "BIO26-L13",
     "BIO26-L14",
-    "BIO26-L15"
+    "BIO26-L15",
+    "BIO26-L16",
+    "BIO26-L17",
+    "BIO26-L18",
+    "BIO26-L19",
+    "BIO26-L20",
+    "BIO26-L21",
+    "BIO26-L22",
+    "BIO26-L23",
+    "BIO26-L24",
+    "BIO26-L25",
+    "BIO26-L26",
+    "BIO26-L27"
   ],
   "lesson1": {
     "lesson": "دراسة الحياة",
@@ -38,10 +50,10 @@
     "answerInferredFromOCR": 0
   },
   "aggregateQa": {
-    "sourceAnswerCrossCheck": "PASS_987_OF_987",
-    "skillRangeCrossCheck": "PASS_987_OF_987",
-    "uniqueQuestionCodes": "PASS_987_OF_987",
-    "requiredFields": "PASS_987_OF_987",
+    "sourceAnswerCrossCheck": "PASS_1582_OF_1582",
+    "skillRangeCrossCheck": "PASS_1582_OF_1582",
+    "uniqueQuestionCodes": "PASS_1582_OF_1582",
+    "requiredFields": "PASS_1582_OF_1582",
     "duplicateQuestionCodes": 0,
     "answerInferredFromOCR": 0
   },
