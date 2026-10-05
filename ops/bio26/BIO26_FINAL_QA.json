@@ -1,6 +1,6 @@
 {
   "project": "BIO26",
-  "status": "CROP_PASS_INTERNAL_DEDUPE_PASS_EXISTING_BANK_AND_AI_PENDING",
+  "status": "PREIMPORT_CONTENT_GATES_PASS_AI_AND_R2_UPLOAD_PENDING",
   "counts": {
     "foundationPdfPages": 79,
     "questionPdfPages": 226,
@@ -16,12 +16,15 @@
     "croppedGeometryRows": 2835,
     "vectorTextAnchoredCrops": 2819,
     "rasterSpecialCrops": 16,
-    "uniqueCropImageHashes": 2835,
-    "exactCropHashDuplicateGroups": 0,
     "manualVisualQaUniqueQuestionCodes": 126,
-    "sourceInternalSemanticDuplicateGroups": 3,
-    "sourceInternalDuplicateAliases": 3,
-    "sourceInternalCanonicalCandidateCount": 2832,
+    "semanticDuplicateGroups": 3,
+    "duplicateAliases": 3,
+    "canonicalQuestions": 2832,
+    "existingLiveBiologyBankQuestions": 0,
+    "assetFilesGenerated": 2835,
+    "assetCanonicalCandidateImages": 2832,
+    "assetMissingFiles": 0,
+    "assetHashMismatchFiles": 0,
     "minQuestionsPerFrozenSubSkill": 3,
     "maxQuestionsPerFrozenSubSkill": 109
   },
@@ -32,9 +35,11 @@
     "questionToSkillLedger": "PASS_PRE_CROP_V1",
     "answers": "PASS_SOURCE_KEY",
     "crop": "PASS_STRATIFIED_VISUAL_QA",
-    "cropAssetPackage": "REGENERATION_OR_RECOVERY_REQUIRED_BEFORE_R2_UPLOAD",
+    "cropAssetPackage": "PASS_LOCAL_READY_FOR_R2_UPLOAD",
+    "dedupe": "PASS_FINAL_2832_CANONICAL",
     "aiContext": "INITIALIZED_PENDING_AUTHORING",
-    "dedupe": "PASS_SOURCE_INTERNAL_EXISTING_BANK_PENDING",
+    "r2Upload": "NOT_RUN",
+    "dryRun": "BLOCKED_BY_AI_AND_R2",
     "draftImport": "BLOCKED",
     "liveE2E": "NOT_RUN",
     "approval": "NOT_RUN"
@@ -43,7 +48,7 @@
     "lessonCount48": true,
     "sourceOccurrences2835": true,
     "sectionAccounting": true,
-    "questionCodeUnique": true,
+    "questionCodeUniqueBeforeDedupe": true,
     "sourceItemIdUnique": true,
     "allAnswersPresent": true,
     "answerIndexValid": true,
@@ -53,14 +58,29 @@
     "answerKeySequenceCompleteAllLessons": true,
     "eachLessonQuestionSequenceContinuous": true,
     "cropRows2835": true,
-    "cropImageHashUnique": true,
-    "exactImageHashDuplicatesZero": true,
     "stratifiedVisualCropQaAcrossAll48Lessons": true,
     "extremeHeightCropQa": true,
-    "sourceInternalSemanticDedupeComplete": true
+    "sourceInternalSemanticDedupeComplete": true,
+    "existingBiologyBankDedupeComplete": true,
+    "finalCanonicalCount2832": true,
+    "assetPackage2835Files": true,
+    "assetManifestHashesReverified": true
+  },
+  "assetPackage": {
+    "version": "V2_REGENERATED_2026-10-05",
+    "encoding": "WEBP lossless=True method=6 exact=True",
+    "canonicalZipSha256": "37e58c58dfbdeb8a956ee80e42f2c41cf476f506b3c825663c71bf214ee55a03",
+    "canonicalZipBytes": 30134017,
+    "evidenceFile": "BIO26_ASSET_PACKAGE_V2.json"
+  },
+  "dedupeValidation": {
+    "sourceOccurrences": 2835,
+    "duplicateAliasCount": 3,
+    "finalCanonicalCount": 2832,
+    "existingLiveBiologyBankQuestions": 0,
+    "existingBankResult": "PASS_EMPTY_BASELINE"
   },
   "sourceKeyValidation": {
-    "method": "Embedded source answer strips; visual source adjudication only where embedded text was unavailable.",
     "manualVisualRows": 17,
     "manualVisualRefs": [
       "BIO26-L04-Q084",
@@ -68,29 +88,5 @@
     ],
     "inferredFromQuestionOCR": 0
   },
-  "cropValidation": {
-    "methods": {
-      "VECTOR_TEXT_ANCHORED": 2819,
-      "RASTER_SPECIAL_P164_VERIFIED_LAYOUT": 16
-    },
-    "manualVisualQa": {
-      "firstLessonSample": "BIO26-L01-Q001..Q015",
-      "allLessonsTallestCrop": "48/48",
-      "globalShortestCropStressSet": 48,
-      "rasterSpecial": "BIO26-L36-Q048..Q063",
-      "uniqueQuestionCodesReviewed": 126
-    },
-    "finalVisualQA": "PASS"
-  },
-  "dedupeValidation": {
-    "sourceInternalCanonicalCandidateCount": 2832,
-    "duplicateAliasCount": 3,
-    "existingBiologyBankComparison": "PENDING"
-  },
-  "specialEvidence": [
-    "Lesson 7 pages 38–43 are raster-heavy; question ranges were visually verified.",
-    "Lesson 36 PDF page 164 Q48–Q63 and its answer strip were visually adjudicated without OCR.",
-    "Lesson 15 is a dedicated vertebrate-comparison block and has no explicit section-2 block before lesson 16."
-  ],
   "closure": false
 }
