@@ -7,7 +7,7 @@ const EXPECTED_PATH_ID = "p_1777779653351";
 const EXPECTED_SUBJECT_ID = "sub_1784980728386";
 const EXPECTED_MAIN = 27;
 const EXPECTED_SUB = 99;
-const APPLY = String(process.env.CHEM26_TAXONOMY_APPLY || "").trim().toUpperCase() === "YES";
+const APPLY = process.argv.includes("--apply");
 
 type SubSkill = {
   id: string; code: string; name: string; description: string; order: number;
