@@ -109,6 +109,53 @@ export function registerClassroomInsightsRoutes(classroomRouter: Router) {
         .lean();
 
       const reports = await Promise.all(sessions.map(buildClassroomSessionReport));
+      res.json({
+        insights: buildClassroomReportInsights(reports, {
+          period,
+          classId,
+          weakThreshold,
+        }),
+      });
+    }),
+  );
+  classroomRouter.get(
+    "/supervisor/insights",
+    requireAuth,
+    requireRole(["admin", "supervisor"]),
+    asyncHandler(async (req, res) => {
+      const scope = await resolveClassroomSupervisorScope(req.authUser!);
+      const period = supervisorPeriodSchema.catch("month").parse(req.query.period);
+      const from = typeof req.query.from === "string" && /^\d{4}-\d{2}-\d{2}$/.test(req.query.from) ? req.query.from : undefined;
+      const to = typeof req.query.to === "string" && /^\d{4}-\d{2}-\d{2}$/.test(req.query.to) ? req.query.to : undefined;
+      const range = periodRange(period, from, to);
+      if ("error" in range) return res.status(StatusCodes.BAD_REQUEST).json({ message: range.error });
+
+      const schoolId = typeof req.query.schoolId === "string" && req.query.schoolId.trim() ? req.query.schoolId.trim() : undefined;
+      const teacherId = typeof req.query.teacherId === "string" && req.query.teacherId.trim() ? req.query.teacherId.trim() : undefined;
+      const classId = typeof req.query.classId === "string" && req.query.classId.trim() ? req.query.classId.trim() : undefined;
+      const weakThreshold = z.coerce.number().min(1).max(99).catch(65).parse(req.query.weakThreshold);
+      const limit = z.coerce.number().int().min(1).max(1000).catch(500).parse(req.query.limit);
+
+      const filters: Record<string, unknown>[] = [
+        classroomScopeFilter(scope),
+        { status: { $in: ["ended", "archived"] } },
+      ];
+      if (schoolId) filters.push({ schoolId });
+      if (teacherId) filters.push({ teacherId });
+      if (classId) filters.push({ classId });
+      if (range.from) {
+        const endedAt: Record<string, Date> = { $gte: range.from };
+        if (range.to) endedAt.$lte = range.to;
+        filters.push({ endedAt });
+      }
+
+      const sessions = await ClassroomSessionModel.find({ $and: filters })
+        .select("schoolId classId className subjectName teacherId status endedAt reportSnapshot questionSnapshots createdAt startedAt")
+        .sort({ endedAt: -1, createdAt: -1 })
+        .limit(limit)
+        .lean();
+
+      const reports = await Promise.all(sessions.map(buildClassroomSessionReport));
       const sessionIds = reports.map((report) => String(report.sessionId || "")).filter(Boolean);
       const sessionMeta = new Map(reports.map((report) => [String(report.sessionId || ""), {
         endedAt: report.endedAt ? new Date(report.endedAt).getTime() : 0,
@@ -222,53 +269,6 @@ export function registerClassroomInsightsRoutes(classroomRouter: Router) {
         .filter((student) => student.improvement !== null && student.improvement > 0)
         .sort((left, right) => (right.improvement ?? -999) - (left.improvement ?? -999))
         .slice(0, 10);
-      res.json({
-        insights: buildClassroomReportInsights(reports, {
-          period,
-          classId,
-          weakThreshold,
-        }),
-      });
-    }),
-  );
-  classroomRouter.get(
-    "/supervisor/insights",
-    requireAuth,
-    requireRole(["admin", "supervisor"]),
-    asyncHandler(async (req, res) => {
-      const scope = await resolveClassroomSupervisorScope(req.authUser!);
-      const period = supervisorPeriodSchema.catch("month").parse(req.query.period);
-      const from = typeof req.query.from === "string" && /^\d{4}-\d{2}-\d{2}$/.test(req.query.from) ? req.query.from : undefined;
-      const to = typeof req.query.to === "string" && /^\d{4}-\d{2}-\d{2}$/.test(req.query.to) ? req.query.to : undefined;
-      const range = periodRange(period, from, to);
-      if ("error" in range) return res.status(StatusCodes.BAD_REQUEST).json({ message: range.error });
-
-      const schoolId = typeof req.query.schoolId === "string" && req.query.schoolId.trim() ? req.query.schoolId.trim() : undefined;
-      const teacherId = typeof req.query.teacherId === "string" && req.query.teacherId.trim() ? req.query.teacherId.trim() : undefined;
-      const classId = typeof req.query.classId === "string" && req.query.classId.trim() ? req.query.classId.trim() : undefined;
-      const weakThreshold = z.coerce.number().min(1).max(99).catch(65).parse(req.query.weakThreshold);
-      const limit = z.coerce.number().int().min(1).max(1000).catch(500).parse(req.query.limit);
-
-      const filters: Record<string, unknown>[] = [
-        classroomScopeFilter(scope),
-        { status: { $in: ["ended", "archived"] } },
-      ];
-      if (schoolId) filters.push({ schoolId });
-      if (teacherId) filters.push({ teacherId });
-      if (classId) filters.push({ classId });
-      if (range.from) {
-        const endedAt: Record<string, Date> = { $gte: range.from };
-        if (range.to) endedAt.$lte = range.to;
-        filters.push({ endedAt });
-      }
-
-      const sessions = await ClassroomSessionModel.find({ $and: filters })
-        .select("schoolId classId className subjectName teacherId status endedAt reportSnapshot questionSnapshots createdAt startedAt")
-        .sort({ endedAt: -1, createdAt: -1 })
-        .limit(limit)
-        .lean();
-
-      const reports = await Promise.all(sessions.map(buildClassroomSessionReport));
       const schoolIds = Array.from(new Set(reports.map((report) => String(report.schoolId || "")).filter(Boolean)));
       const teacherIds = Array.from(new Set(reports.map((report) => String(report.teacherId || "")).filter(Boolean)));
 
