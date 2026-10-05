@@ -7,7 +7,6 @@ const EXPECTED_PATH_ID = "p_1777779653351";
 const EXPECTED_SUBJECT_ID = "sub_1784980728386";
 const EXPECTED_MAIN = 27;
 const EXPECTED_SUB = 99;
-const APPLY = process.argv.includes("--apply");
 
 type SubSkill = {
   id: string; code: string; name: string; description: string; order: number;
@@ -72,7 +71,8 @@ const validateTaxonomy = (taxonomy: TaxonomyFile) => {
   });
 };
 
-async function main() {
+export async function deployChem26Taxonomy(options: { apply?: boolean } = {}) {
+  const apply = options.apply === true;
   const taxonomyPath = locateTaxonomy();
   const taxonomy = JSON.parse(fs.readFileSync(taxonomyPath, "utf8")) as TaxonomyFile;
   validateTaxonomy(taxonomy);
@@ -106,15 +106,32 @@ async function main() {
 
     console.log(JSON.stringify({
       project: "CHEM26",
-      mode: APPLY ? "APPLY" : "DRY_RUN",
+      mode: apply ? "APPLY" : "DRY_RUN",
       taxonomyPath,
       scope: { pathId: EXPECTED_PATH_ID, subjectId: EXPECTED_SUBJECT_ID, subjectName: subject.name },
       current: { questions: questionCount, sections: existingSections.length, mainSkills: existingSkills.length, subSkills: currentSubCount, topics: existingTopics.length },
       target: { sections: EXPECTED_MAIN, mainSkills: EXPECTED_MAIN, subSkills: EXPECTED_SUB, topics: EXPECTED_MAIN + EXPECTED_SUB },
     }, null, 2));
 
-    if (!APPLY) {
-      console.log("CHEM26_TAXONOMY_DRY_RUN_PASS");
+    const expectedMainIds = new Set(taxonomy.items.map((item) => item.id));
+    const existingMainIds = new Set(existingSkills.map((item: any) => String(item.id || item._id || "")));
+    const currentParentTopics = existingTopics.filter((item: any) => !item.parentId).length;
+    const currentChildTopics = existingTopics.filter((item: any) => Boolean(item.parentId)).length;
+    const alreadyApplied =
+      existingSections.length === EXPECTED_MAIN &&
+      existingSkills.length === EXPECTED_MAIN &&
+      currentSubCount === EXPECTED_SUB &&
+      existingTopics.length === EXPECTED_MAIN + EXPECTED_SUB &&
+      currentParentTopics === EXPECTED_MAIN &&
+      currentChildTopics === EXPECTED_SUB &&
+      [...expectedMainIds].every((id) => existingMainIds.has(id));
+
+    if (!apply) {
+      console.log(alreadyApplied ? "CHEM26_TAXONOMY_DRY_RUN_ALREADY_APPLIED" : "CHEM26_TAXONOMY_DRY_RUN_PASS");
+      return;
+    }
+    if (alreadyApplied) {
+      console.log("CHEM26_TAXONOMY_APPLY_ALREADY_COMPLETE");
       return;
     }
     if (questionCount !== 0) {
@@ -207,7 +224,11 @@ async function main() {
   }
 }
 
-main().catch((error) => {
-  console.error("CHEM26_TAXONOMY_FAILED", error instanceof Error ? error.message : error);
-  process.exitCode = 1;
-});
+const invokedDirectly = Boolean(process.argv[1]?.match(/deployChemTaxonomy27\.(?:ts|js)$/));
+
+if (invokedDirectly) {
+  deployChem26Taxonomy({ apply: process.argv.includes("--apply") }).catch((error) => {
+    console.error("CHEM26_TAXONOMY_FAILED", error instanceof Error ? error.message : error);
+    process.exitCode = 1;
+  });
+}
