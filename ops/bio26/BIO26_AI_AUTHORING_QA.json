@@ -2,12 +2,14 @@
   "project": "BIO26",
   "status": "AUTHORING_IN_PROGRESS",
   "expectedCanonicalItems": 2832,
-  "authoredCanonicalItems": 217,
-  "pendingCanonicalItems": 2615,
+  "authoredCanonicalItems": 370,
+  "pendingCanonicalItems": 2462,
   "completedLessons": [
     "BIO26-L01",
     "BIO26-L02",
-    "BIO26-L03"
+    "BIO26-L03",
+    "BIO26-L04",
+    "BIO26-L05"
   ],
   "lesson1": {
     "lesson": "دراسة الحياة",
@@ -26,8 +28,11 @@
     "answerInferredFromOCR": 0
   },
   "aggregateQa": {
-    "sourceAnswerCrossCheck": "PASS_217_OF_217",
-    "skillRangeCrossCheck": "PASS_217_OF_217",
+    "sourceAnswerCrossCheck": "PASS_370_OF_370",
+    "skillRangeCrossCheck": "PASS_370_OF_370",
+    "uniqueQuestionCodes": "PASS_370_OF_370",
+    "requiredFields": "PASS_370_OF_370",
+    "duplicateQuestionCodes": 0,
     "answerInferredFromOCR": 0
   },
   "fieldsAuthored": [
@@ -52,5 +57,25 @@
     "visualDescriptions": "PASS_FOR_ALL_VISUAL_ITEMS",
     "answerInferredFromOCR": 0,
     "foundationReference": "تأسيس أحياء كامل.pdf — درس البكتيريا والفيروسات — PDF p.7–9"
+  },
+  "lesson4": {
+    "lesson": "الطلائعيات",
+    "canonicalItems": 94,
+    "sourceAnswerCrossCheck": "PASS_94_OF_94",
+    "skillRangeCrossCheck": "PASS_94_OF_94",
+    "visualDescriptions": "PASS_FOR_ALL_VISUAL_ITEMS",
+    "manualCorrectionAfterAutomatedCrossCheck": [
+      "TAH-BIO-BIO26-L04-Q025",
+      "TAH-BIO-BIO26-L04-Q044"
+    ],
+    "answerInferredFromOCR": 0
+  },
+  "lesson5": {
+    "lesson": "الفطريات",
+    "canonicalItems": 59,
+    "sourceAnswerCrossCheck": "PASS_59_OF_59",
+    "skillRangeCrossCheck": "PASS_59_OF_59",
+    "visualDescriptions": "PASS_FOR_ALL_VISUAL_ITEMS",
+    "answerInferredFromOCR": 0
   }
 }
