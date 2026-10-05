@@ -49,6 +49,9 @@ jobs:
       - name: Install server dependencies
         run: npm --prefix server ci
 
+      - name: CHEM26 frozen taxonomy contract
+        run: node scripts/smoke-chem26-taxonomy-contract.mjs
+
       - name: CHEM26 taxonomy dry-run
         run: npm --prefix server run deploy:chem26-taxonomy
 
