@@ -15,7 +15,8 @@ console.log('--- RUNNING TAHSILI & QUDURAT IMPORT IDENTITY AND PRESENTATION TEST
 // 1. QUESTION CODE VALIDATION
 console.log('1. Testing Question Code Validation...');
 assert.equal(validateQuestionCode('TAH-MATH-YLM26-P006-Q07'), true, 'Valid Tahsili code must pass');
-assert.equal(validateQuestionCode('TAH-MATH-YLM26-P029-Q02'), true, 'Valid Tahsili code on page 29 must pass');
+assert.equal(validateQuestionCode('TAH-MATH-YLM26-P029-Q02'), true, 'Valid Tahsili Math code on page 29 must pass');
+assert.equal(validateQuestionCode('TAH-CHEM-CHEM26-P005-Q01'), true, 'Valid Tahsili Chemistry code must pass');
 assert.equal(validateQuestionCode('QDR-QNT-FND26-P005-Q01'), true, 'Valid Qudurat legacy code must pass');
 assert.equal(validateQuestionCode('INVALID-MATH-YLM26-P006-Q07'), false, 'Invalid prefix must fail');
 assert.equal(validateQuestionCode('TAH-MATH-YLM26-P6-Q7'), false, 'Unpadded numbers must fail');
@@ -30,6 +31,14 @@ assert.equal(parsedTah.documentCode, 'YLM26');
 assert.equal(parsedTah.pageNumber, 6);
 assert.equal(parsedTah.questionNumber, 7);
 assert.equal(parsedTah.domain, 'tahsili_math');
+
+const parsedChem = parseQuestionCode('TAH-CHEM-CHEM26-P134-Q32');
+assert.equal(parsedChem.valid, true);
+assert.equal(parsedChem.prefix, 'TAH-CHEM');
+assert.equal(parsedChem.documentCode, 'CHEM26');
+assert.equal(parsedChem.pageNumber, 134);
+assert.equal(parsedChem.questionNumber, 32);
+assert.equal(parsedChem.domain, 'tahsili_chemistry');
 
 const parsedQdr = parseQuestionCode('QDR-QNT-FND26-P035-Q62');
 assert.equal(parsedQdr.valid, true);
@@ -54,6 +63,9 @@ console.log('4. Testing Image Path & URL Builder...');
 const testHash = 'a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2';
 const imgPath = buildExpectedImagePath('TAH-MATH-YLM26-P006-Q07', testHash);
 assert.equal(imgPath, `questions/v2/TAH-MATH-YLM26-P006-Q07/${testHash}.webp`);
+
+const chemImgPath = buildExpectedImagePath('TAH-CHEM-CHEM26-P005-Q01', testHash);
+assert.equal(chemImgPath, `questions/v2/TAH-CHEM-CHEM26-P005-Q01/${testHash}.webp`);
 
 const pubUrl = buildExpectedPublicImageUrl('TAH-MATH-YLM26-P006-Q07', testHash, 'https://cdn.almeaa.com');
 assert.equal(pubUrl, `https://cdn.almeaa.com/questions/v2/TAH-MATH-YLM26-P006-Q07/${testHash}.webp`);
