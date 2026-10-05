@@ -245,6 +245,9 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
       ...question,
       passage: question.passage?.trim() || undefined,
       options: question.type === 'essay' ? [] : question.type === 'true_false' ? ['صح', 'خطأ'] : trimmedOptions,
+      skillId: activeMainSkill?.id || null,
+      subSkillId: selectedNestedSkillIds[0] || null,
+      subSkillIds: selectedNestedSkillIds,
       skillIds: normalizedSkillIds,
       correctOptionIndex: question.type === 'essay' ? 0 : question.type === 'true_false' ? Number(question.correctOptionIndex ?? 0) : normalizedCorrectOptionIndex,
     });
@@ -572,7 +575,7 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
                 ))}
               </select>
               <p className="text-xs text-gray-500 mt-1">
-                المهارات الفرعية هنا تُسحب من داخل المهارة الرئيسة الفعلية في مركز المهارات، وتُحفظ مع معرف المهارة الرئيسة تلقائيًا.
+                يمكنك اختيار أكثر من مهارة فرعية للسؤال نفسه. أول مهارة تختارها تكون المهارة الأساسية للسؤال، وبقية المهارات تُحفظ كمهارات إضافية ويحسبها تحليل النتائج أيضًا.
               </p>
             </div>
             <div>
