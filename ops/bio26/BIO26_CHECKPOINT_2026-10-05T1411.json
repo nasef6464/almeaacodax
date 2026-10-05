@@ -13,7 +13,16 @@
     "skillRangeMatches": 1839,
     "missingRequiredFields": 0,
     "duplicateQuestionCodes": 0,
-    "earliestUnfinishedLesson": "BIO26-L32"
+    "earliestUnfinishedLesson": "BIO26-L32",
+    "l32AuthoringShard": {
+      "status": "SOURCE_KEY_AND_SKILL_STAGED",
+      "rows": 107,
+      "sourceAnswerMatches": 107,
+      "skillRangeMatches": 107,
+      "sourcePages": "141-148",
+      "artifact": "ops/bio26/BIO26_L32_AUTHORING_SHARD.json",
+      "note": "Not counted as authored AI context until question-specific context is completed and merged."
+    }
   },
   "r2": {
     "canonicalImages": 2832,
@@ -32,5 +41,7 @@
     "liveE2E": "NOT_RUN",
     "approval": "NOT_RUN"
   },
-  "closed": false
+  "closed": false,
+  "headSha": "f74e29dc2167517f2275e8500dc39900d5139f70",
+  "next": "Complete question-specific AI context for L32 from staged 107-row shard; then continue remaining lessons. R2 authenticated remote verification still gates dry run."
 }
