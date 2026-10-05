@@ -45,6 +45,8 @@ const requiredCredentials = [
   'AUDIT_OUT_OF_SCOPE_STUDENT_PASSWORD',
   'AUDIT_OUT_OF_SCOPE_TEACHER_LOGIN',
   'AUDIT_OUT_OF_SCOPE_TEACHER_PASSWORD',
+  'AUDIT_OUT_OF_SCOPE_SUPERVISOR_LOGIN',
+  'AUDIT_OUT_OF_SCOPE_SUPERVISOR_PASSWORD',
 ];
 
 const missingCreds = requiredCredentials.filter((key) => !process.env[key] || !process.env[key].trim());
@@ -95,23 +97,70 @@ async function saveDualScreenshot(page, filename, options = { fullPage: true }) 
 // 4. DATA LEAKAGE INSPECTOR & PROXY SETUP
 // ---------------------------------------------------------------------------
 const detectedLeaks = [];
+const knownSensitiveValues = Array.from(new Set([
+  ...Object.entries(process.env)
+    .filter(([key, value]) => key.startsWith('AUDIT_') && key.endsWith('_PASSWORD') && value)
+    .map(([, value]) => String(value)),
+  ...Object.entries(process.env)
+    .filter(([key, value]) => key.startsWith('AUDIT_') && key.endsWith('_LOGIN') && /^\\d{10}$/.test(String(value || '')))
+    .map(([, value]) => String(value)),
+].filter((value) => value.length >= 6)));
+
+function inspectTextForLeaks(text, location, contextName) {
+  const source = String(text || '').slice(0, 2_000_000);
+  const kinds = new Set();
+  if (/passwordhash/i.test(source)) kinds.add('PASSWORD_HASH');
+  if (/eyJ[a-zA-Z0-9_-]{8,}\\.[a-zA-Z0-9_-]{8,}\\.[a-zA-Z0-9_-]{8,}/.test(source)) kinds.add('JWT');
+  for (const value of knownSensitiveValues) {
+    if (!source.includes(value)) continue;
+    if (/^\\d{10}$/.test(value)) kinds.add('FULL_NATIONAL_ID');
+    else kinds.add('PASSWORD_LITERAL');
+  }
+  for (const kind of kinds) {
+    detectedLeaks.push(`${location}_${kind} in ${contextName}`);
+    console.warn(`[LEAK WARNING] SENSITIVE DATA EXPOSED: ${location} / ${kind} in ${contextName}`);
+  }
+}
+
+async function inspectPageSensitiveState(page, contextName) {
+  try {
+    const snapshot = await page.evaluate(() => ({
+      dom: document.body?.innerText || '',
+      localStorage: Object.entries(localStorage),
+      sessionStorage: Object.entries(sessionStorage),
+    }));
+    inspectTextForLeaks(snapshot.dom, 'DOM', contextName);
+    for (const [key, value] of snapshot.localStorage || []) inspectTextForLeaks(`${key}=${value}`, 'LOCAL_STORAGE', contextName);
+    for (const [key, value] of snapshot.sessionStorage || []) inspectTextForLeaks(`${key}=${value}`, 'SESSION_STORAGE', contextName);
+  } catch {}
+}
 
 function monitorContextForDataLeaks(context, contextName) {
   context.on('page', (page) => {
-    page.on('console', (msg) => {
-      const text = msg.text();
-      if (/password|passwordhash|nationalid:\s*\d{10}|token:\s*ey/i.test(text)) {
-        detectedLeaks.push(`CONSOLE_LEAK in ${contextName}: ${msg.type()}`);
-        console.warn(`[LEAK WARNING] SENSITIVE DATA EXPOSED: Console in ${contextName}`);
-      }
-    });
+    page.on('console', (msg) => inspectTextForLeaks(msg.text(), `CONSOLE_${msg.type().toUpperCase()}`, contextName));
 
     page.on('request', (req) => {
       const url = req.url();
-      if (/[?&](password|token|pin)=\w+/i.test(url)) {
-        detectedLeaks.push(`URL_PARAM_LEAK in ${contextName}: ${url.split('?')[0]}`);
+      if (/[?&](password|token|pin)=/i.test(url)) {
+        detectedLeaks.push(`URL_PARAM_SECRET in ${contextName}: ${url.split('?')[0]}`);
         console.warn(`[LEAK WARNING] SENSITIVE DATA EXPOSED: URL parameters in ${contextName}`);
       }
+      inspectTextForLeaks(url, 'URL', contextName);
+    });
+
+    page.on('response', async (response) => {
+      try {
+        if (!response.url().includes('/api/')) return;
+        const contentType = String(response.headers()['content-type'] || '');
+        if (!/(json|text|javascript)/i.test(contentType)) return;
+        const body = await response.text();
+        inspectTextForLeaks(body, `NETWORK_RESPONSE_HTTP_${response.status()}`, contextName);
+      } catch {}
+    });
+
+    page.on('domcontentloaded', async () => {
+      await page.waitForTimeout(50).catch(() => {});
+      await inspectPageSensitiveState(page, contextName);
     });
   });
 }
@@ -215,6 +264,11 @@ async function runRealClassroomPressureCertification() {
   let teacherPage = null;
   const studentContexts = [];
   const studentPages = [];
+  let liveIntegritySnapshot = null;
+  let auditSchoolId = '';
+  let auditClassId = '';
+  let auditTeacherId = '';
+  let outOfScopeStudentId = '';
 
   try {
     // -----------------------------------------------------------------------
@@ -705,6 +759,65 @@ async function runRealClassroomPressureCertification() {
     );
     await saveDualScreenshot(student1, 'student_continuous_session_mobile.png');
 
+    // Capture a canonical live snapshot immediately before closure so persistence
+    // assertions compare the same session, teacher, class, questions and responses.
+    liveIntegritySnapshot = await teacherPage.evaluate(async (sId) => {
+      const [aggregateRes, meRes] = await Promise.all([
+        fetch(`/api/classroom/sessions/${encodeURIComponent(sId)}/aggregate`, { credentials: 'include' }),
+        fetch('/api/auth/me', { credentials: 'include' }),
+      ]);
+      const aggregate = await aggregateRes.json();
+      const me = await meRes.json();
+      const questions = Array.isArray(aggregate?.questions) ? aggregate.questions : [];
+      return {
+        aggregateStatus: aggregateRes.status,
+        teacherId: String(me?.user?.id || me?.user?._id || me?.id || me?._id || ''),
+        schoolId: String(aggregate?.schoolId || aggregate?.meta?.schoolId || ''),
+        classId: String(aggregate?.classId || aggregate?.meta?.classId || ''),
+        responseCount: Number(aggregate?.totalSessionResponses || 0),
+        questionCount: questions.length,
+        correctCount: questions.reduce((sum, question) => sum + Number(question?.correctCount || 0), 0),
+      };
+    }, activeSessionId);
+    assertStep(
+      'Live Integrity Snapshot Captured Before Session End',
+      liveIntegritySnapshot?.aggregateStatus === 200 && Boolean(liveIntegritySnapshot?.schoolId) && Boolean(liveIntegritySnapshot?.classId),
+      'Teacher aggregate snapshot is available with school/class identity',
+      `HTTP ${liveIntegritySnapshot?.aggregateStatus}; questions=${liveIntegritySnapshot?.questionCount}; responses=${liveIntegritySnapshot?.responseCount}`
+    );
+    auditSchoolId = liveIntegritySnapshot.schoolId;
+    auditClassId = liveIntegritySnapshot.classId;
+    auditTeacherId = liveIntegritySnapshot.teacherId;
+
+    // Student A may consume the student-facing current question endpoint, but it
+    // must never disclose another student's identity or selected answer.
+    const peerIdentity = await studentPages[1].evaluate(async () => {
+      const res = await fetch('/api/auth/me', { credentials: 'include' });
+      const body = await res.json();
+      return String(body?.user?.id || body?.user?._id || body?.id || body?._id || '');
+    });
+    const studentFacingCurrent = await student1.evaluate(async (sId) => {
+      const res = await fetch(`/api/classroom/sessions/${encodeURIComponent(sId)}/current`, { credentials: 'include' });
+      return { status: res.status, body: await res.json() };
+    }, activeSessionId);
+    const studentCurrentSerialized = JSON.stringify(studentFacingCurrent.body || {});
+    assertStep(
+      'RBAC Privacy: Student A cannot observe Student B identity/answer',
+      studentFacingCurrent.status === 200 && Boolean(peerIdentity) && !studentCurrentSerialized.includes(peerIdentity) && !/"studentId"\s*:/.test(studentCurrentSerialized),
+      'Student-facing classroom payload contains no peer student identity or answer ownership',
+      `HTTP ${studentFacingCurrent.status}; peer identity exposed=${Boolean(peerIdentity && studentCurrentSerialized.includes(peerIdentity))}`
+    );
+    const studentAggregateAttempt = await student1.evaluate(async (sId) => {
+      const res = await fetch(`/api/classroom/sessions/${encodeURIComponent(sId)}/aggregate`, { credentials: 'include' });
+      return { status: res.status };
+    }, activeSessionId);
+    assertStep(
+      'RBAC Negative: Student blocked from staff aggregate',
+      studentAggregateAttempt.status === 403,
+      'HTTP 403 Forbidden',
+      `HTTP ${studentAggregateAttempt.status}`
+    );
+
     // -----------------------------------------------------------------------
     // SCENARIO O: TEACHER MOBILE REMOTE (390x844)
     // -----------------------------------------------------------------------
@@ -776,6 +889,17 @@ async function runRealClassroomPressureCertification() {
       'HTTP 403 Forbidden or 404 Not Found',
       `HTTP ${outOfScopeJoinResult.status}`
     );
+    outOfScopeStudentId = await outOfScopePage.evaluate(async () => {
+      const res = await fetch('/api/auth/me', { credentials: 'include' });
+      const body = await res.json();
+      return String(body?.user?.id || body?.user?._id || body?.id || body?._id || '');
+    });
+    assertStep(
+      'Out-of-Scope Student Identity Resolved for Parent Isolation Test',
+      Boolean(outOfScopeStudentId),
+      'A non-empty unrelated student identifier is resolved without logging it',
+      outOfScopeStudentId ? 'Resolved (redacted)' : 'Missing'
+    );
     await outOfScopeCtx.close();
 
     // Negative 3: Parent attempts teacher active session
@@ -793,7 +917,54 @@ async function runRealClassroomPressureCertification() {
       'HTTP 403 Forbidden',
       `HTTP ${parentTeacherAccess.status}`
     );
+    const parentProgress = await parentPage.evaluate(async () => {
+      const res = await fetch('/api/parent/children-progress', { credentials: 'include' });
+      return { status: res.status, body: await res.json() };
+    });
+    const parentChildIds = Array.isArray(parentProgress?.body?.children)
+      ? parentProgress.body.children.map((child) => String(child?.id || ''))
+      : [];
+    assertStep(
+      'RBAC Negative: Parent cannot see unrelated student progress',
+      parentProgress.status === 200 && Boolean(outOfScopeStudentId) && !parentChildIds.includes(outOfScopeStudentId),
+      'Parent progress contains linked children only and excludes unrelated student',
+      `HTTP ${parentProgress.status}; unrelated present=${parentChildIds.includes(outOfScopeStudentId)}`
+    );
     await parentCtx.close();
+
+    // Negative 4: Teacher from another school/class cannot read this school history.
+    const outTeacherCtx = await browser.newContext();
+    await setupContextProxy(outTeacherCtx);
+    const outTeacherPage = await outTeacherCtx.newPage();
+    await loginUser(outTeacherPage, process.env['AUDIT_OUT_OF_SCOPE_TEACHER_LOGIN'], process.env['AUDIT_OUT_OF_SCOPE_TEACHER_PASSWORD']);
+    const outTeacherHistory = await outTeacherPage.evaluate(async (schoolId) => {
+      const res = await fetch(`/api/classroom/teacher/history?schoolId=${encodeURIComponent(schoolId)}`, { credentials: 'include' });
+      return { status: res.status };
+    }, auditSchoolId);
+    assertStep(
+      'RBAC Negative: Out-of-Scope Teacher blocked from School History',
+      outTeacherHistory.status === 403,
+      'HTTP 403 Forbidden',
+      `HTTP ${outTeacherHistory.status}`
+    );
+    await outTeacherCtx.close();
+
+    // Negative 5: A supervisor outside this school/class scope must not read this session report.
+    const outSupervisorCtx = await browser.newContext();
+    await setupContextProxy(outSupervisorCtx);
+    const outSupervisorPage = await outSupervisorCtx.newPage();
+    await loginUser(outSupervisorPage, process.env['AUDIT_OUT_OF_SCOPE_SUPERVISOR_LOGIN'], process.env['AUDIT_OUT_OF_SCOPE_SUPERVISOR_PASSWORD']);
+    const outSupervisorReport = await outSupervisorPage.evaluate(async (sId) => {
+      const res = await fetch(`/api/classroom/supervisor/sessions/${encodeURIComponent(sId)}/report`, { credentials: 'include' });
+      return { status: res.status };
+    }, activeSessionId);
+    assertStep(
+      'RBAC Negative: Out-of-Scope Supervisor blocked from Session Report',
+      outSupervisorReport.status === 403 || outSupervisorReport.status === 404,
+      'HTTP 403 Forbidden or 404 Not Found',
+      `HTTP ${outSupervisorReport.status}`
+    );
+    await outSupervisorCtx.close();
 
     // -----------------------------------------------------------------------
     // CLOSURE: END SESSION & PERSISTENCE VERIFICATION IN CLEAN BROWSER
@@ -862,6 +1033,49 @@ async function runRealClassroomPressureCertification() {
       'teacher_persisted_session_report.png'
     );
 
+    const persistedResponses = Number(persistedReport?.totals?.responses ?? persistedReport?.responseCount ?? 0);
+    const persistedCorrect = Number(persistedReport?.totals?.correct ?? persistedReport?.correctCount ?? 0);
+    const persistedQuestionCount = Array.isArray(persistedReport?.questions) ? persistedReport.questions.length : 0;
+    const persistedAccuracy = persistedResponses > 0 ? Math.round((persistedCorrect / persistedResponses) * 100) : null;
+    const liveAccuracy = liveIntegritySnapshot?.responseCount > 0
+      ? Math.round((Number(liveIntegritySnapshot.correctCount || 0) / Number(liveIntegritySnapshot.responseCount || 0)) * 100)
+      : null;
+
+    assertStep(
+      'Live vs Persisted Response Count Integrity',
+      persistedResponses === Number(liveIntegritySnapshot?.responseCount || 0),
+      `Persisted responses === live responses (${liveIntegritySnapshot?.responseCount})`,
+      `persisted=${persistedResponses}; live=${liveIntegritySnapshot?.responseCount}`
+    );
+    assertStep(
+      'Live vs Persisted Question Count Integrity',
+      persistedQuestionCount === Number(liveIntegritySnapshot?.questionCount || 0),
+      `Persisted questions === live questions (${liveIntegritySnapshot?.questionCount})`,
+      `persisted=${persistedQuestionCount}; live=${liveIntegritySnapshot?.questionCount}`
+    );
+    assertStep(
+      'Live vs Persisted Class Identity Integrity',
+      String(persistedReport?.classId || '') === String(auditClassId || ''),
+      'Persisted class identity matches live session class',
+      String(persistedReport?.classId || '') === String(auditClassId || '') ? 'MATCH' : 'MISMATCH'
+    );
+    assertStep(
+      'Live vs Persisted Teacher Identity Integrity',
+      Boolean(auditTeacherId) && String(persistedReport?.teacherId || '') === String(auditTeacherId),
+      'Persisted teacher identity matches authenticated live teacher',
+      Boolean(auditTeacherId) && String(persistedReport?.teacherId || '') === String(auditTeacherId) ? 'MATCH' : 'MISMATCH'
+    );
+    assertStep(
+      'Live vs Persisted Accuracy Integrity',
+      persistedAccuracy === liveAccuracy,
+      `Persisted accuracy === live accuracy (${liveAccuracy})`,
+      `persisted=${persistedAccuracy}; live=${liveAccuracy}`
+    );
+
+    await cleanTeacherPage.goto(`${BASE_URL}/school-teacher-dashboard`, { waitUntil: 'domcontentloaded' }).catch(() => {});
+    await cleanTeacherPage.waitForTimeout(1200);
+    await inspectPageSensitiveState(cleanTeacherPage, 'Clean Teacher History');
+
     await saveDualScreenshot(cleanTeacherPage, 'teacher_persisted_session_report.png');
 
     // -----------------------------------------------------------------------
@@ -869,12 +1083,8 @@ async function runRealClassroomPressureCertification() {
     // -----------------------------------------------------------------------
     console.log('\n[SUPERVISOR & HISTORICAL] 11. Auditing Historical & Supervisor views...');
 
-    // Audit teacher time filters
-    productGaps.push({
-      code: 'PRODUCT GAP — MONTHLY CLASSROOM SUMMARY',
-      description: 'Platform supports filtering reports within 7d/30d periods, but lacks an aggregated monthly executive matrix summarizing cross-class trends.',
-      recommendation: 'Add Monthly Aggregated Classroom Summary card to Teacher and Principal dashboards.',
-    });
+    // PR #363 closed the monthly/date-range reporting product gap. This audit
+    // now certifies the merged behavior instead of carrying a stale PRODUCT GAP.
 
     // Supervisor Login
     const supervisorCtx = await browser.newContext({ viewport: { width: 1280, height: 800 } });
@@ -882,36 +1092,96 @@ async function runRealClassroomPressureCertification() {
     const supervisorPage = await supervisorCtx.newPage();
     await loginUser(supervisorPage, process.env['AUDIT_SUPERVISOR_LOGIN'], process.env['AUDIT_SUPERVISOR_PASSWORD']);
 
-    const supervisorHistoryData = await supervisorPage.evaluate(async () => {
-      try {
-        const histPromise = fetch('/api/classroom/supervisor/history', { credentials: 'include' })
-          .then((r) => r.json())
-          .catch((e) => ({ error: e.message }));
-        const teachersPromise = fetch('/api/classroom/supervisor/teachers', { credentials: 'include' })
-          .then((r) => r.json())
-          .catch((e) => ({ error: e.message }));
-        const [history, teachers] = await Promise.all([histPromise, teachersPromise]);
-        return { history, teachers };
-      } catch (e) {
-        return { error: e.message };
-      }
-    });
+    const endedDate = persistedReport?.endedAt ? new Date(persistedReport.endedAt).toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10);
+    const supervisorHistoryData = await supervisorPage.evaluate(async ({ sessionId, date }) => {
+      const getJson = async (url) => {
+        const res = await fetch(url, { credentials: 'include' });
+        return { status: res.status, body: await res.json() };
+      };
+      const [history, teachers, week, month, all, custom] = await Promise.all([
+        getJson('/api/classroom/supervisor/history'),
+        getJson('/api/classroom/supervisor/teachers'),
+        getJson('/api/classroom/supervisor/insights?period=week'),
+        getJson('/api/classroom/supervisor/insights?period=month'),
+        getJson('/api/classroom/supervisor/insights?period=all'),
+        getJson(`/api/classroom/supervisor/insights?period=custom&from=${encodeURIComponent(date)}&to=${encodeURIComponent(date)}`),
+      ]);
+      const flattenSessionIds = (payload) => (payload?.analytics?.hierarchy?.schools || [])
+        .flatMap((school) => school.teachers || [])
+        .flatMap((teacher) => teacher.classes || [])
+        .flatMap((classroom) => classroom.sessions || [])
+        .map((session) => String(session.sessionId || ''));
+      return {
+        history,
+        teachers,
+        week: { status: week.status, ids: flattenSessionIds(week.body) },
+        month: { status: month.status, ids: flattenSessionIds(month.body) },
+        all: { status: all.status, ids: flattenSessionIds(all.body), body: all.body },
+        custom: { status: custom.status, ids: flattenSessionIds(custom.body) },
+        targetSessionId: sessionId,
+      };
+    }, { sessionId: activeSessionId, date: endedDate });
 
-    const supervisorHasSessions = Array.isArray(supervisorHistoryData?.history?.sessions);
+    const supervisorHasSessions = supervisorHistoryData?.history?.status === 200 && Array.isArray(supervisorHistoryData?.history?.body?.sessions);
     assertStep(
       'Supervisor Historical Sessions Accessibility',
       supervisorHasSessions,
       'Supervisor can access sessions list and teachers summary within scope',
-      `Sessions available: ${supervisorHistoryData?.history?.sessions?.length ?? 0}`,
+      `Sessions available: ${supervisorHistoryData?.history?.body?.sessions?.length ?? 0}`,
       'supervisor_classroom_history_view.png'
     );
+    for (const [label, periodResult] of [
+      ['7-Day', supervisorHistoryData.week],
+      ['30-Day', supervisorHistoryData.month],
+      ['Custom Date', supervisorHistoryData.custom],
+    ]) {
+      assertStep(
+        `Supervisor Historical Filter: ${label} includes certified session`,
+        periodResult?.status === 200 && periodResult.ids.includes(activeSessionId),
+        'HTTP 200 and current certified session present',
+        `HTTP ${periodResult?.status}; session present=${periodResult?.ids?.includes(activeSessionId)}`
+      );
+    }
+    const allDistinctSessions = Array.from(new Set(supervisorHistoryData?.all?.ids || []));
+    assertStep(
+      'Supervisor Multi-Session Historical Separation',
+      supervisorHistoryData?.all?.status === 200 && allDistinctSessions.length >= 2 && allDistinctSessions.includes(activeSessionId),
+      'At least two distinct persisted sessions are independently addressable and include the certified session',
+      `distinct sessions=${allDistinctSessions.length}; certified session present=${allDistinctSessions.includes(activeSessionId)}`
+    );
 
-    productGaps.push({
-      code: 'PRODUCT GAP — SUPERVISOR HIERARCHICAL DRILLDOWN',
-      description: 'Supervisor sees flat list of sessions and teacher summaries, but lacks interactive multi-level School -> Teacher -> Class -> Session hierarchy tree selector.',
-      recommendation: 'Introduce hierarchical tree filter in SmartClassroomReportsPanel for rapid inspection across large school networks.',
-    });
+    const hierarchySchools = supervisorHistoryData?.all?.body?.analytics?.hierarchy?.schools || [];
+    const hierarchyContainsCertifiedSession = hierarchySchools.some((school) =>
+      (school.teachers || []).some((teacher) =>
+        (teacher.classes || []).some((classroom) =>
+          String(classroom.classId || '') === String(auditClassId) &&
+          (classroom.sessions || []).some((session) => String(session.sessionId || '') === activeSessionId)
+        )
+      )
+    );
+    assertStep(
+      'Supervisor Hierarchical Drilldown: School → Teacher → Class → Session',
+      hierarchyContainsCertifiedSession,
+      'Certified session is reachable through the scoped hierarchy',
+      `hierarchy contains certified session=${hierarchyContainsCertifiedSession}`
+    );
 
+    await supervisorPage.goto(`${BASE_URL}/supervisor-dashboard?tab=reports`, { waitUntil: 'domcontentloaded' });
+    await supervisorPage.waitForTimeout(1800);
+    const supervisorReportUi = await supervisorPage.innerText('body');
+    assertStep(
+      'Supervisor Reporting UI exposes monthly/date-range drilldown',
+      supervisorReportUi.includes('تحليلات الحصص الذكية') &&
+        supervisorReportUi.includes('آخر 30') &&
+        supervisorReportUi.includes('آخر 7') &&
+        supervisorReportUi.includes('المدرسة') &&
+        supervisorReportUi.includes('المعلم') &&
+        supervisorReportUi.includes('الفصل'),
+      'Reporting UI visibly exposes period filters and School → Teacher → Class drilldown',
+      'Monthly/date-range hierarchy controls verified in browser',
+      'supervisor_classroom_history_view.png'
+    );
+    await inspectPageSensitiveState(supervisorPage, 'Supervisor Reports');
     await saveDualScreenshot(supervisorPage, 'supervisor_classroom_history_view.png');
     await supervisorCtx.close();
     await cleanCtx.close();
@@ -920,7 +1190,7 @@ async function runRealClassroomPressureCertification() {
     // DATA LEAKAGE ASSERTION
     // -----------------------------------------------------------------------
     assertStep(
-      'Zero Sensitive Data Leaks in Network/Console/DOM',
+      'Zero Sensitive Data Leaks in Network/Console/DOM/Storage',
       detectedLeaks.length === 0,
       '0 sensitive data leaks',
       `${detectedLeaks.length} leaks detected${detectedLeaks.length > 0 ? `: ${detectedLeaks.join('; ')}` : ''}`
