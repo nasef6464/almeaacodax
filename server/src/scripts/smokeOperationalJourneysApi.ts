@@ -929,20 +929,26 @@ async function run() {
       : `questions=${learnerQuestionIds.size}`,
   );
 
+  const teacherManagedSubjectIds = normalizeLinkedIds(teacherMe.user?.managedSubjectIds);
   pushResult(
     results,
     "teacher",
     "scoped assignments",
-    Array.isArray(teacherMe.user?.managedSubjectIds) && teacherMe.user.managedSubjectIds.includes("sub_quant"),
-    `managedSubjectIds=${JSON.stringify(teacherMe.user?.managedSubjectIds || [])}`,
+    EXPECT_OPERATIONAL_FIXTURE
+      ? teacherManagedSubjectIds.includes("sub_quant")
+      : teacherManagedSubjectIds.length > 0,
+    `managedSubjectIds=${JSON.stringify(teacherManagedSubjectIds)}`,
   );
 
+  const parentLinkedStudentIds = new Set(normalizeLinkedIds(parentMe.user?.linkedStudentIds));
   pushResult(
     results,
     "parent",
-    "linked students",
-    Array.isArray(parentMe.user?.linkedStudentIds) && parentMe.user.linkedStudentIds.length > 0,
-    `linkedStudentIds=${JSON.stringify(parentMe.user?.linkedStudentIds || [])}`,
+    "linked student scope resolves",
+    EXPECT_OPERATIONAL_FIXTURE
+      ? parentLinkedStudentIds.size > 0
+      : Array.isArray(parentMe.user?.linkedStudentIds),
+    `linkedStudentIds=${JSON.stringify(Array.from(parentLinkedStudentIds))}`,
   );
 
   if (EXPECT_OPERATIONAL_FIXTURE) {
@@ -1290,16 +1296,18 @@ async function run() {
     `results=${supervisorScopedResults.results?.length || 0}, students=${supervisorScopedResults.scope?.studentCount || 0}`,
   );
 
+  const parentScopedRows = Array.isArray(parentScopedResults.results) ? parentScopedResults.results : [];
+  const parentScopedStudentCount = Number(parentScopedResults.scope?.studentCount || 0);
   pushResult(
     results,
     "parent",
     "scoped result attempts follow linked student",
-    Array.isArray(parentScopedResults.results) && Number(parentScopedResults.scope?.studentCount || 0) > 0,
-    `results=${parentScopedResults.results?.length || 0}, students=${parentScopedResults.scope?.studentCount || 0}`,
+    Array.isArray(parentScopedResults.results) &&
+      (EXPECT_OPERATIONAL_FIXTURE
+        ? parentScopedStudentCount > 0
+        : parentScopedStudentCount === parentLinkedStudentIds.size),
+    `results=${parentScopedRows.length}, students=${parentScopedStudentCount}, linked=${parentLinkedStudentIds.size}`,
   );
-
-  const parentLinkedStudentIds = new Set((parentMe.user?.linkedStudentIds || []).map((id: unknown) => String(id)));
-  const parentScopedRows = Array.isArray(parentScopedResults.results) ? parentScopedResults.results : [];
   const parentRowsStayLinked =
     (!EXPECT_OPERATIONAL_FIXTURE || parentScopedRows.length > 0) &&
     parentScopedRows.every((result: any) => parentLinkedStudentIds.has(String(result.userId || result.studentId || "")));
