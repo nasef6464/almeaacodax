@@ -1,10 +1,10 @@
 {
   "project": "BIO26",
-  "checkedCanonicalItems": 613,
-  "uniqueQuestionCodes": 613,
-  "answerSourceKeyMatches": 613,
+  "checkedCanonicalItems": 987,
+  "uniqueQuestionCodes": 987,
+  "answerSourceKeyMatches": 987,
   "answerSourceKeyMismatches": 0,
-  "skillRangeMatches": 613,
+  "skillRangeMatches": 987,
   "skillRangeMismatches": 0,
   "missingRequiredFields": 0,
   "duplicateQuestionCodes": 0,
@@ -16,7 +16,14 @@
     "BIO26-L05",
     "BIO26-L06",
     "BIO26-L07",
-    "BIO26-L08"
+    "BIO26-L08",
+    "BIO26-L09",
+    "BIO26-L10",
+    "BIO26-L11",
+    "BIO26-L12",
+    "BIO26-L13",
+    "BIO26-L14",
+    "BIO26-L15"
   ],
   "requiredFields": [
     "MainSkill",
