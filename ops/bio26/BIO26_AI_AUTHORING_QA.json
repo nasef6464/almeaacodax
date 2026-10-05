@@ -2,9 +2,13 @@
   "project": "BIO26",
   "status": "AUTHORING_IN_PROGRESS",
   "expectedCanonicalItems": 2832,
-  "authoredCanonicalItems": 106,
-  "pendingCanonicalItems": 2726,
-  "completedLessons": ["BIO26-L01","BIO26-L02"],
+  "authoredCanonicalItems": 217,
+  "pendingCanonicalItems": 2615,
+  "completedLessons": [
+    "BIO26-L01",
+    "BIO26-L02",
+    "BIO26-L03"
+  ],
   "lesson1": {
     "lesson": "دراسة الحياة",
     "canonicalItems": 59,
@@ -22,13 +26,31 @@
     "answerInferredFromOCR": 0
   },
   "aggregateQa": {
-    "sourceAnswerCrossCheck": "PASS_106_OF_106",
-    "skillRangeCrossCheck": "PASS_106_OF_106",
+    "sourceAnswerCrossCheck": "PASS_217_OF_217",
+    "skillRangeCrossCheck": "PASS_217_OF_217",
     "answerInferredFromOCR": 0
   },
   "fieldsAuthored": [
-    "MainSkill","SubSkill","concept","correctAnswer","explanation","whyCorrect",
-    "whyOthersWrong","commonMistake","hint","foundationReference","visualDescription"
+    "MainSkill",
+    "SubSkill",
+    "concept",
+    "correctAnswer",
+    "explanation",
+    "whyCorrect",
+    "whyOthersWrong",
+    "commonMistake",
+    "hint",
+    "foundationReference",
+    "visualDescription"
   ],
-  "rule": "Correct answers remain source-key only; authoring explains the approved source-key answer and must not replace it."
+  "rule": "Correct answers remain source-key only; authoring explains the approved source-key answer and must not replace it.",
+  "lesson3": {
+    "lesson": "البكتيريا والفيروسات",
+    "canonicalItems": 111,
+    "sourceAnswerCrossCheck": "PASS_111_OF_111",
+    "skillRangeCrossCheck": "PASS_111_OF_111",
+    "visualDescriptions": "PASS_FOR_ALL_VISUAL_ITEMS",
+    "answerInferredFromOCR": 0,
+    "foundationReference": "تأسيس أحياء كامل.pdf — درس البكتيريا والفيروسات — PDF p.7–9"
+  }
 }
