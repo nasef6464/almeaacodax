@@ -3,26 +3,35 @@ import { z } from "zod";
 import { GroupModel } from "../../../models/Group.js";
 import { UserModel } from "../../../models/User.js";
 
-const personRefSchema = z.object({
+const personRefFields = {
   userId: z.string().trim().optional(),
   email: z.string().trim().email().optional(),
   name: z.string().trim().min(2).max(120).optional(),
-}).refine((value) => Boolean(value.userId || value.email), {
-  message: "userId or email is required",
-});
+};
+
+const personRefSchema = z.object(personRefFields).refine(
+  (value) => Boolean(value.userId || value.email),
+  { message: "userId or email is required" },
+);
 
 const classPlanSchema = z.object({
   key: z.string().trim().min(1).max(80),
   name: z.string().trim().min(2).max(120),
 });
 
-const studentPlacementSchema = personRefSchema.extend({
+const studentPlacementSchema = z.object({
+  ...personRefFields,
   classKey: z.string().trim().min(1).max(80),
+}).refine((value) => Boolean(value.userId || value.email), {
+  message: "userId or email is required",
 });
 
-const teacherAssignmentSchema = personRefSchema.extend({
+const teacherAssignmentSchema = z.object({
+  ...personRefFields,
   classKey: z.string().trim().min(1).max(80),
   subjectId: z.string().trim().max(120).optional().default(""),
+}).refine((value) => Boolean(value.userId || value.email), {
+  message: "userId or email is required",
 });
 
 export const schoolSetupDraftSchema = z.object({
@@ -42,9 +51,18 @@ const resolvePeople = async (refs: Array<z.infer<typeof personRefSchema>>) => {
   const userIds = [...new Set(refs.map((item) => String(item.userId || "").trim()).filter(Boolean))];
   const emails = [...new Set(refs.map((item) => normalizeEmail(item.email)).filter(Boolean))];
 
+  const validObjectIds = userIds.filter((id) => /^[a-f\d]{24}$/i.test(id));
+  if (validObjectIds.length === 0 && emails.length === 0) {
+    return {
+      users: [],
+      byId: new Map<string, any>(),
+      byEmail: new Map<string, any>(),
+    };
+  }
+
   const users = await UserModel.find({
     $or: [
-      ...(userIds.length ? [{ _id: { $in: userIds.filter((id) => /^[a-f\d]{24}$/i.test(id)) } }] : []),
+      ...(validObjectIds.length ? [{ _id: { $in: validObjectIds } }] : []),
       ...(emails.length ? [{ email: { $in: emails } }] : []),
     ],
   })
