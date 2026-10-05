@@ -62,6 +62,7 @@ export const questionBaseSchema = z.object({
   skillIds: z.array(z.string()).min(1),
   skillId: z.string().min(1).nullable().optional(),
   subSkillId: z.string().min(1).nullable().optional(),
+  subSkillIds: z.array(z.string().min(1)).max(20).optional().default([]),
   pathId: z.string().min(1),
   subject: z.string().min(1),
   subjectId: z.string().min(1).nullable().optional(),
