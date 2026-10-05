@@ -4,6 +4,7 @@ import { api } from '../../services/api';
 import { sanitizeArabicText } from '../../utils/sanitizeMojibakeArabic';
 import { AiControlCenterSettings } from './ai/AiControlCenterSettings';
 import { AiUsageAndAlertsPanel } from './ai/AiUsageAndAlertsPanel';
+import { CommandCenterOperationsPanel } from './command-center/CommandCenterOperationsPanel';
 
 type AiStatus = {
     provider: 'gemini' | 'openrouter' | 'deepseek' | 'qwen' | 'openai' | 'ollama' | 'lmstudio' | 'none';
@@ -182,7 +183,7 @@ export const AiAssistantManager: React.FC = () => {
     const [status, setStatus] = useState<AiStatus | null>(null);
     const [loadingStatus, setLoadingStatus] = useState(true);
     const [statusError, setStatusError] = useState<string | null>(null);
-    const [activeTab, setActiveTab] = useState<'chat' | 'control' | 'usage' | 'providers' | 'logs' | 'readiness'>('chat');
+    const [activeTab, setActiveTab] = useState<'commands' | 'chat' | 'control' | 'usage' | 'providers' | 'logs' | 'readiness'>('commands');
     const [showAdvanced, setShowAdvanced] = useState(false);
     const [messages, setMessages] = useState<Message[]>([
         {
@@ -350,7 +351,7 @@ export const AiAssistantManager: React.FC = () => {
             {
                 id: 'welcome',
                 role: 'assistant',
-                text: 'أهلاً بك! أنا مساعد المدير الذكي لمتابعة وتشخيص المنصة، فحص أخطاء الطلاب، تدقيق المحتوى الناقص، وتحديد أولويات العمل.',
+                text: 'أهلاً بك في مركز قيادة المنصة. أساعدك في إدارة المحتوى والاختبارات والدورات والمدارس والتشغيل من نقطة واحدة، مع تنفيذ آمن وتدقيق كامل.',
             },
         ]);
     };
@@ -540,6 +541,7 @@ export const AiAssistantManager: React.FC = () => {
             ══════════════════════════════════════════════════════════════════════ */}
             <div className="flex flex-wrap gap-2 border-b border-gray-200 pb-2">
                 {[
+                    { id: 'commands' as const, label: 'الأوامر والتنفيذ', icon: <CheckSquare size={16} /> },
                     { id: 'chat' as const, label: 'المساعد', icon: <MessageCircle size={16} /> },
                     { id: 'control' as const, label: 'المفاتيح والحصص والتكلفة', icon: <Settings size={16} /> },
                     { id: 'usage' as const, label: 'الاستخدام والتنبيهات', icon: <BarChart2 size={16} /> },
@@ -592,6 +594,10 @@ export const AiAssistantManager: React.FC = () => {
                     <span>{showAdvanced ? 'إخفاء الإعدادات المتقدمة' : 'إعدادات متقدمة'}</span>
                 </button>
             </div>
+
+            {activeTab === 'commands' && (
+                <CommandCenterOperationsPanel />
+            )}
 
             {activeTab === 'control' && (
                 <AiControlCenterSettings onSaved={loadStatus} />
