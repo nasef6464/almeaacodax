@@ -55,7 +55,7 @@ export async function runQuestionPilotPackageImportIfRequested() {
   started = true;
 
   if (process.env.PILOT_ALLOW_EXTERNAL_RUN !== "YES" || process.env.PILOT_WRITE_AUTHORIZATION !== "YES") {
-    console.error("${config.project}_IMPORT_BLOCKED authorization flags are not enabled");
+    console.error(`${config.project}_IMPORT_BLOCKED authorization flags are not enabled`);
     return;
   }
 
@@ -146,7 +146,7 @@ export async function runQuestionPilotPackageImportIfRequested() {
       const api = await createLocalApiClient();
       const finalBatch = await api("GET", `/quizzes/questions/import-batch/${encodeURIComponent(batchId)}`);
       if (finalBatch?.status !== "PASS" || Number(finalBatch?.count) !== expectedCount || Number(finalBatch?.drafts) !== expectedCount) {
-        throw new Error("Existing COL26OLD batch does not satisfy final draft gate");
+        throw new Error(`${config.project} import batch does not satisfy final draft gate`);
       }
       const liveSamples = await verifyLiveImages(finalBatch.questions || []);
       console.log(`${config.project}_IMPORT_ALREADY_COMPLETE count=${expectedCount} liveSamples=${liveSamples}`);
