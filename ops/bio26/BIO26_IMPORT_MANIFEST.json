@@ -1,25 +1,30 @@
 {
   "project": "BIO26",
-  "status": "BLOCKED_BY_EXISTING_BANK_AI_AND_ASSET_PACKAGE_GATES",
+  "status": "BLOCKED_BY_AI_CONTEXT_AND_R2_UPLOAD",
   "expectedSourceOccurrences": 2835,
-  "sourceInternalCanonicalCandidateCount": 2832,
+  "duplicateAliases": 3,
+  "finalCanonicalCount": 2832,
   "canonicalReadyItems": 0,
   "requiredGates": {
     "inventory": "PASS",
     "taxonomy": "PASS",
     "ledger": "PASS",
     "crop": "PASS_STRATIFIED_VISUAL_QA",
-    "cropAssetPackage": "PENDING_REGENERATION_OR_RECOVERY",
+    "cropAssetPackage": "PASS_LOCAL_READY_FOR_R2_UPLOAD",
     "answers": "PASS_SOURCE_KEY",
     "skill": "PASS_PRE_CROP",
-    "dedupeSourceInternal": "PASS_2832_CANONICAL_CANDIDATES",
-    "dedupeExistingBiologyBank": "PENDING",
-    "aiContext": "PENDING_AUTHORING"
+    "dedupe": "PASS_FINAL_2832_CANONICAL",
+    "aiContext": "PENDING_AUTHORING",
+    "r2Upload": "PENDING"
+  },
+  "assetPackage": {
+    "version": "V2_REGENERATED_2026-10-05",
+    "canonicalImageCount": 2832,
+    "zipSha256": "37e58c58dfbdeb8a956ee80e42f2c41cf476f506b3c825663c71bf214ee55a03"
   },
   "workflow": [
-    "RECOVER_OR_REGENERATE_FINAL_CROP_ASSETS",
-    "EXISTING_BIOLOGY_BANK_DEDUPE",
     "AI_CONTEXT_AUTHORING",
+    "R2_UPLOAD_AND_HASH_INTEGRITY",
     "DRY_RUN",
     "CANARY_5",
     "FULL_DRAFT_IMPORT",
