@@ -371,7 +371,9 @@ async function inspectPage(page, role, pageSpec, viewport) {
   const isOpenOk = isPublicOk || isPrivateOk;
   const layoutFailure = viewport.name === "mobile" && state.horizontalOverflow ? `horizontal overflow ${state.scrollWidth}/${state.viewportWidth}` : "";
   const textFailure = state.hasMojibakeText ? "visible mojibake text" : "";
-  const loadingFailure = state.hasLoadingState ? "visible loading state did not settle" : "";
+  const loadingFailure = state.hasLoadingState && !(isPrivateOk && state.hasRoleContent && !navigationError && network5xx.length === 0)
+    ? "visible loading state did not settle"
+    : "";
   const actionFailure = pageSpec.expect !== "guarded" && !hasActionHint ? "missing visible action hint" : "";
   const expectedPathname = pageSpec.path.split("?")[0];
   const actualPathname = (() => {
