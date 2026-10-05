@@ -155,7 +155,7 @@ questionBankRouter.get(
       .limit(query.noTotal ? query.limit + 1 : query.limit)
       .lean();
     if (query.summary) {
-      queryBuilder.select("id questionCode text passageId imageUrl imageAlt options optionsEmbeddedInImage correctOptionIndex explanation videoUrl skillIds pathId subject sectionId examType source year difficulty type ownerType ownerId createdBy assignedTeacherId approvalStatus approvedBy approvedAt reviewerNotes revenueSharePercentage createdAt updatedAt");
+      queryBuilder.select("id questionCode text passageId imageUrl imageAlt options optionsEmbeddedInImage correctOptionIndex explanation videoUrl skillIds skillId subSkillId subSkillIds pathId subject sectionId examType source year difficulty type ownerType ownerId createdBy assignedTeacherId approvalStatus approvedBy approvedAt reviewerNotes revenueSharePercentage createdAt updatedAt");
     }
 
     const shouldIncludeCoverage = Boolean(query.includeCoverage);
