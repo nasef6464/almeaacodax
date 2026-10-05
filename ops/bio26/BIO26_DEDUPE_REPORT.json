@@ -1,12 +1,12 @@
 {
   "project": "BIO26",
-  "status": "PARTIAL_EXACT_IMAGE_HASH_PASS",
+  "status": "SOURCE_INTERNAL_DEDUPE_PASS_EXISTING_BANK_PENDING",
   "sourceOccurrences": 2835,
   "scopes": {
-    "withinSection1": "EXACT_IMAGE_HASH_PASS",
-    "withinSection2": "EXACT_IMAGE_HASH_PASS",
-    "crossSections": "EXACT_IMAGE_HASH_PASS",
-    "materiallyIdenticalSemantic": "NOT_RUN",
+    "withinSection1": "PASS_WITH_2_CONFIRMED_ALIAS_GROUPS",
+    "withinSection2": "PASS_WITH_1_CONFIRMED_ALIAS_GROUP",
+    "crossSections": "PASS_NO_CONFIRMED_DUPLICATE_IN_HIGH_SIMILARITY_REVIEW",
+    "materiallyIdenticalSemantic": "PASS_SOURCE_INTERNAL",
     "existingBiologyBank": "NOT_RUN"
   },
   "exactCropHash": {
@@ -14,8 +14,38 @@
     "duplicateGroups": 0,
     "duplicateRows": 0
   },
-  "canonicalCount": null,
-  "duplicateAliases": null,
+  "semanticSourceInternal": {
+    "textReadableRowsScanned": 2819,
+    "rasterSpecialRowsVisuallyReviewed": 16,
+    "confirmedDuplicateGroups": 3,
+    "duplicateAliases": 3,
+    "canonicalCandidateCount": 2832,
+    "confirmedGroups": [
+      {
+        "canonicalQuestionCode": "TAH-BIO-BIO26-L10-Q009",
+        "aliasQuestionCode": "TAH-BIO-BIO26-L10-Q025",
+        "section": 1,
+        "answerConsistency": "A/A"
+      },
+      {
+        "canonicalQuestionCode": "TAH-BIO-BIO26-L35-Q033",
+        "aliasQuestionCode": "TAH-BIO-BIO26-L35-Q036",
+        "section": 1,
+        "answerConsistency": "A/A"
+      },
+      {
+        "canonicalQuestionCode": "TAH-BIO-BIO26-L40-Q091",
+        "aliasQuestionCode": "TAH-BIO-BIO26-L40-Q092",
+        "section": 2,
+        "answerConsistency": "D/D"
+      }
+    ],
+    "nearSimilarityDistinctPairsReviewed": 4,
+    "evidenceFile": "BIO26_SEMANTIC_DEDUPE_REVIEW.csv"
+  },
+  "canonicalCount": 2832,
+  "duplicateAliases": 3,
   "quarantine": [],
-  "rule": "Exact image-hash equality is only one dedupe layer. Do not declare final dedupe PASS until materially-identical semantic review and existing-bank comparison are complete."
+  "finalGate": "BLOCKED_ONLY_BY_EXISTING_BIOLOGY_BANK_COMPARISON",
+  "rule": "Do not declare final dedupe PASS until the 2,832 source-internal canonical candidates are compared against the existing live biology bank."
 }
