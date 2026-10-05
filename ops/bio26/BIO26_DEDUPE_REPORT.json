@@ -1,15 +1,21 @@
 {
   "project": "BIO26",
-  "status": "NOT_STARTED",
+  "status": "PARTIAL_EXACT_IMAGE_HASH_PASS",
   "sourceOccurrences": 2835,
   "scopes": {
-    "withinSection1": "NOT_RUN",
-    "withinSection2": "NOT_RUN",
-    "crossSections": "NOT_RUN",
+    "withinSection1": "EXACT_IMAGE_HASH_PASS",
+    "withinSection2": "EXACT_IMAGE_HASH_PASS",
+    "crossSections": "EXACT_IMAGE_HASH_PASS",
+    "materiallyIdenticalSemantic": "NOT_RUN",
     "existingBiologyBank": "NOT_RUN"
+  },
+  "exactCropHash": {
+    "uniqueHashes": 2835,
+    "duplicateGroups": 0,
+    "duplicateRows": 0
   },
   "canonicalCount": null,
   "duplicateAliases": null,
   "quarantine": [],
-  "rule": "Do not duplicate a materially identical question only because printed number/year differs."
+  "rule": "Exact image-hash equality is only one dedupe layer. Do not declare final dedupe PASS until materially-identical semantic review and existing-bank comparison are complete."
 }
