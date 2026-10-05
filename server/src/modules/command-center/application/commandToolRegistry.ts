@@ -22,7 +22,7 @@ export const commandToolRegistry: CommandToolDefinition[] = [
   { id: "create_quiz_draft", capability: "quizzes", description: "Create a quiz draft for admin review.", requiredScope: "drafts:write", risk: "draft_write", approvalRequired: true, availability: "active" },
   { id: "create_course_draft", capability: "courses", description: "Create a complete course structure draft before publishing.", requiredScope: "drafts:write", risk: "draft_write", approvalRequired: true, availability: "active" },
   { id: "create_school_setup_draft", capability: "schools", description: "Prepare a school/class/user setup plan as a reviewable draft.", requiredScope: "drafts:write", risk: "draft_write", approvalRequired: true, availability: "active" },
-  { id: "detect_question_duplicates", capability: "questions", description: "Detect exact and near-duplicate questions before import.", requiredScope: "questions:read", risk: "read", approvalRequired: false, availability: "planned" },
+  { id: "detect_question_duplicates", capability: "questions", description: "Detect exact normalized duplicate questions before import; near-duplicate scoring follows later.", requiredScope: "drafts:write", risk: "read", approvalRequired: false, availability: "active" },
   { id: "update_quiz_questions", capability: "quizzes", description: "Prepare changes to the questions of an existing quiz.", requiredScope: "quizzes:write", risk: "sensitive", approvalRequired: true, availability: "planned" },
   { id: "publish_approved_draft", capability: "operations", description: "Publish an already approved draft through the owning domain service.", requiredScope: "publish:write", risk: "sensitive", approvalRequired: true, availability: "planned" },
 ];
