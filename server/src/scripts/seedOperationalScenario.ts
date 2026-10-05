@@ -1765,11 +1765,11 @@ async function run() {
     console.log(
       JSON.stringify(
         {
-          teacherQuant: "teacher.quant@almeaa.local / Teacher@123",
-          teacherMath: "teacher.math@almeaa.local / Teacher@123",
-          supervisor: "supervisor.group@almeaa.local / Supervisor@123",
-          studentA: "student.a@almeaa.local / Student@123",
-          parentA: "parent.a@almeaa.local / Parent@123",
+          teacherQuant: "teacher.quant@almeaa.local / <secret-store>",
+          teacherMath: "teacher.math@almeaa.local / <secret-store>",
+          supervisor: "supervisor.group@almeaa.local / <secret-store>",
+          studentA: "student.a@almeaa.local / <secret-store>",
+          parentA: "parent.a@almeaa.local / <secret-store>",
           accessCode: "RIYADA-QUANT-2026",
         },
         null,
