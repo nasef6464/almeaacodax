@@ -14,6 +14,7 @@ import {
 } from "../application/commandAuthorization.js";
 import { recordCommandAudit } from "../application/commandAudit.js";
 import { commandToolRegistry } from "../application/commandToolRegistry.js";
+import { questionQuizDraftRouter } from "./questionQuizDraftRoutes.js";
 
 const draftSchema = z.object({
   kind: z.enum(COMMAND_DRAFT_KINDS),
@@ -40,6 +41,7 @@ const skillQuerySchema = z.object({
 export const commandCenterRouter = Router();
 
 commandCenterRouter.use(requireCommandPrincipal);
+commandCenterRouter.use("/authoring", questionQuizDraftRouter);
 
 commandCenterRouter.get(
   "/health",
