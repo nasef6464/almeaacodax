@@ -80,7 +80,7 @@ try {
   const studentId = String(me.body?.user?.id || me.body?.user?._id || student.user?.id || "");
   assert(studentId, "student id missing");
 
-  const catalog = await req("/quizzes/questions", { token: admin.token });
+  const catalog = await req(`/quizzes/questions?ids=${encodeURIComponent(QUESTION_ID)}&limit=10&page=1`, { token: admin.token });
   const question = asArray(catalog.body).find((q) => String(q?.id || q?._id || q?.canonicalId) === QUESTION_ID);
   assert(question, `VERBAL26 question not visible to admin catalog: ${QUESTION_ID}`);
   assert(Number(question.correctOptionIndex) === EXPECTED_CORRECT_INDEX, "production correctOptionIndex mismatch");
