@@ -2,8 +2,8 @@
   "project": "BIO26",
   "status": "AUTHORING_IN_PROGRESS",
   "expectedCanonicalItems": 2832,
-  "authoredCanonicalItems": 1839,
-  "pendingCanonicalItems": 993,
+  "authoredCanonicalItems": 1946,
+  "pendingCanonicalItems": 886,
   "completedLessons": [
     "BIO26-L01",
     "BIO26-L02",
@@ -36,6 +36,7 @@
     "BIO26-L29",
     "BIO26-L30",
     "BIO26-L31",
+    "BIO26-L32",
     "BIO26-L33",
     "BIO26-L34"
   ],
@@ -56,10 +57,10 @@
     "answerInferredFromOCR": 0
   },
   "aggregateQa": {
-    "sourceAnswerCrossCheck": "PASS_1839_OF_1839",
-    "skillRangeCrossCheck": "PASS_1839_OF_1839",
-    "uniqueQuestionCodes": "PASS_1839_OF_1839",
-    "requiredFields": "PASS_1839_OF_1839",
+    "sourceAnswerCrossCheck": "PASS_1946_OF_1946",
+    "skillRangeCrossCheck": "PASS_1946_OF_1946",
+    "uniqueQuestionCodes": "PASS_1946_OF_1946",
+    "requiredFields": "PASS_1946_OF_1946",
     "duplicateQuestionCodes": 0,
     "answerInferredFromOCR": 0
   },
@@ -232,6 +233,13 @@
     "sourceAnswerCrossCheck": "PASS_34_OF_34",
     "skillRangeCrossCheck": "PASS_34_OF_34",
     "visualDescriptions": "PASS_FOR_VISUAL_ITEMS",
+    "answerInferredFromOCR": 0
+  },
+  "lesson32": {
+    "lesson": "التراكيب الخلوية",
+    "canonicalItems": 107,
+    "sourceAnswerCrossCheck": "PASS_107_OF_107",
+    "skillRangeCrossCheck": "PASS_107_OF_107",
     "answerInferredFromOCR": 0
   }
 }
