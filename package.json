@@ -245,7 +245,8 @@
         "measure:plan3-route-footprint": "node scripts/measure-plan3-route-footprint.mjs",
         "smoke:plan3-runtime-footprint": "node scripts/smoke-plan3-runtime-footprint-contract.mjs",
         "smoke:verbal26:ledger": "node scripts/smoke-verbal26-source-ledger-contract.mjs",
-        "smoke:verbal26": "npm run smoke:verbal26:ledger && node scripts/smoke-verbal26-historical-recovery.mjs && node scripts/smoke-verbal-taxonomy-v2-contract.mjs && node scripts/smoke-verbal-approved-source-contract.mjs && node scripts/smoke-verbal26-runtime-contract.mjs"
+        "smoke:verbal26": "npm run smoke:verbal26:ledger && node scripts/smoke-verbal26-historical-recovery.mjs && node scripts/smoke-verbal-taxonomy-v2-contract.mjs && node scripts/smoke-verbal-approved-source-contract.mjs && node scripts/smoke-verbal26-runtime-contract.mjs",
+        "smoke:tracked-secret-hygiene": "node scripts/smoke-tracked-secret-hygiene-contract.mjs"
     },
     "dependencies": {
         "@e965/xlsx": "^0.20.3",

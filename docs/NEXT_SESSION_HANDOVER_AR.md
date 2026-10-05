@@ -3210,7 +3210,7 @@ BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep.
   - `SMOKE_ADMIN_TOKEN=<valid>`
   - `SMOKE_ALLOW_PASSWORD_LOGIN=true`
   - `SMOKE_STUDENT_REDEEMED_EMAIL=student.a@almeaa.local`
-  - `SMOKE_STUDENT_REDEEMED_PASSWORD=Student@123`
+  - `SMOKE_STUDENT_REDEEMED_PASSWORD=<secret-store>`
 - Why override redeemed account:
   - default `student.d@almeaa.local` is disabled in production (403), so operational smoke redeemed leg must use an active fallback identity or dedicated redeemed token.
 - Deploy verification:
@@ -3238,7 +3238,7 @@ BATCH 100N - Admin Dashboard Remaining Buttons Deep E2E Sweep.
   - `SMOKE_ADMIN_TOKEN=<valid>`
   - `SMOKE_ALLOW_PASSWORD_LOGIN=true`
   - `SMOKE_STUDENT_REDEEMED_EMAIL=student.a@almeaa.local`
-  - `SMOKE_STUDENT_REDEEMED_PASSWORD=Student@123`
+  - `SMOKE_STUDENT_REDEEMED_PASSWORD=<secret-store>`
 - Note:
   - default redeemed smoke identity is still disabled in production and should be replaced by a dedicated active smoke account/token for future runs.
 
@@ -3329,7 +3329,7 @@ pm run smoke:operational still needs admin auth context env.
   - SMOKE_ALLOW_PASSWORD_LOGIN=true
   - redeemed fallback:
     - SMOKE_STUDENT_REDEEMED_EMAIL=student.a@almeaa.local
-    - SMOKE_STUDENT_REDEEMED_PASSWORD=Student@123
+    - SMOKE_STUDENT_REDEEMED_PASSWORD=<secret-store>
 - Result:
   - 
 pm run smoke:operational PASS (71/71).
@@ -3388,7 +3388,7 @@ pm run smoke:operational PASS (71/71).
   - `SMOKE_API_BASE_URL=https://almeaacodax-k2ux.onrender.com/api`
   - `SMOKE_ADMIN_TOKEN=<session-only>`
   - `SMOKE_STUDENT_REDEEMED_EMAIL=student.a@almeaa.local`
-  - `SMOKE_STUDENT_REDEEMED_PASSWORD=Student@123`
+  - `SMOKE_STUDENT_REDEEMED_PASSWORD=<secret-store>`
 - Outcome:
   - لا يوجد regression في الدفع/الصلاحيات/العلاقات/رحلات الاستخدام بعد تعديل نطاق العضويات في `/pricing`.
 
@@ -3412,7 +3412,7 @@ pm run smoke:operational PASS (71/71).
   - `SMOKE_ADMIN_TOKEN=<session-only>`
   - redeemed fallback:
     - `SMOKE_STUDENT_REDEEMED_EMAIL=student.a@almeaa.local`
-    - `SMOKE_STUDENT_REDEEMED_PASSWORD=Student@123`
+    - `SMOKE_STUDENT_REDEEMED_PASSWORD=<secret-store>`
 - Result:
   - لا توجد إصلاحات مطلوبة في هذه الدفعة؛ الاستقرار التشغيلي مستمر.
 - Next exact action:
@@ -3438,7 +3438,7 @@ pm run smoke:operational PASS (71/71).
   - `SMOKE_ADMIN_TOKEN=<session-only>`
   - fallback redeemed account:
     - `SMOKE_STUDENT_REDEEMED_EMAIL=student.a@almeaa.local`
-    - `SMOKE_STUDENT_REDEEMED_PASSWORD=Student@123`
+    - `SMOKE_STUDENT_REDEEMED_PASSWORD=<secret-store>`
 - Note:
   - أداة فحص المتصفح الداخلي لم تكن قابلة للاستدعاء من هذه الجلسة؛ تم توثيق التحقق الحي عبر strict/runtime smokes على الإنتاج.
 - Next exact action:
@@ -3535,7 +3535,7 @@ pm run smoke:operational PASS (71/71).
     - `SMOKE_ADMIN_TOKEN=<session-only>`
     - redeemed fallback:
       - `SMOKE_STUDENT_REDEEMED_EMAIL=student.a@almeaa.local`
-      - `SMOKE_STUDENT_REDEEMED_PASSWORD=Student@123`
+      - `SMOKE_STUDENT_REDEEMED_PASSWORD=<secret-store>`
 - External blocker:
   - Render trigger unavailable in this shell (missing `RENDER_API_KEY`/`RENDER_DEPLOY_HOOK_URL`).
 - Next exact task:

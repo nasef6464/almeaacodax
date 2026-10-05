@@ -4,8 +4,8 @@
 - GitHub: `https://github.com/nasef6464/almeaacodax`
 - Branch: `main`
 - Render service: `almeaacodax`
-- Render backend: `https://almeaacodax-k2ux.onrender.com`
-- API base: `https://almeaacodax-k2ux.onrender.com/api`
+- Render backend: `https://almeaacodax-codex.onrender.com`
+- API base: `https://almeaacodax-codex.onrender.com/api`
 - Vercel production: `https://almeaacodax.vercel.app`
 - Vercel preview/main: `https://almeaacodax-git-main-nasefs-projects-18e6bdb1.vercel.app`
 - Atlas project: `almeaacodax`
@@ -28,7 +28,7 @@ npm --prefix server install
 ## Configure environment variables
 ### Frontend
 - `VITE_USE_REAL_API`
-- `VITE_API_URL=https://almeaacodax-k2ux.onrender.com/api`
+- `VITE_API_URL=https://almeaacodax-codex.onrender.com/api`
 
 ### Backend
 Copy `server/.env.example` to `server/.env` and set the documented variables:
@@ -90,17 +90,17 @@ Use the available seed scripts:
 
 For production API seeding, the default API target is:
 ```bash
-https://almeaacodax-k2ux.onrender.com/api
+https://almeaacodax-codex.onrender.com/api
 ```
 
 The current production seed was applied to the Atlas `almeaa` database because Render reads from that database.
 
 Seeded operational accounts:
 - Admin: `nasef64@gmail.com` / password stored in Render only
-- Teacher: `teacher.quant@almeaa.local / Teacher@123`
-- Student: `student.a@almeaa.local / Student@123`
-- Parent: `parent.a@almeaa.local / Parent@123`
-- Supervisor: `supervisor.group@almeaa.local / Supervisor@123`
+- Teacher: `teacher.quant@almeaa.local / <secret-store>`
+- Student: `student.a@almeaa.local / <secret-store>`
+- Parent: `parent.a@almeaa.local / <secret-store>`
+- Supervisor: `supervisor.group@almeaa.local / <secret-store>`
 
 ## Run tests / checks
 ```bash

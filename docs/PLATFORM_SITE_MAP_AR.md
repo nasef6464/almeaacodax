@@ -132,18 +132,14 @@
 
 ### حسابات التشغيل
 
-- مدير:
-  `nasef64@gmail.com / Nn@0120110367`
-- معلم قدرات كمي:
-  `teacher.quant@almeaa.local / Teacher@123`
-- معلم تحصيلي رياضيات:
-  `teacher.math@almeaa.local / Teacher@123`
-- مشرف مجموعة:
-  `supervisor.group@almeaa.local / Supervisor@123`
-- طالب:
-  `student.a@almeaa.local / Student@123`
-- ولي أمر:
-  `parent.a@almeaa.local / Parent@123`
+> لا تُحفظ كلمات مرور قابلة لإعادة الاستخدام في المستودع. بيانات الدخول التشغيلية تُدار فقط عبر Secret Stores المخصصة للاختبارات وبيئات النشر، وتُدوّر فورًا إذا ظهرت في Git أو سجلات أو محادثات.
+
+- مدير: حساب تشغيلي مُدار عبر الأسرار.
+- معلم قدرات كمي: `teacher.quant@almeaa.local`
+- معلم تحصيلي رياضيات: `teacher.math@almeaa.local`
+- مشرف مجموعة: `supervisor.group@almeaa.local`
+- طالب: `student.a@almeaa.local`
+- ولي أمر: `parent.a@almeaa.local`
 
 ### كيانات تم حقنها
 
