@@ -1,6 +1,6 @@
 {
   "project": "BIO26",
-  "status": "PREIMPORT_CONTENT_GATES_PASS_AI_AND_R2_UPLOAD_PENDING",
+  "status": "PREIMPORT_CONTENT_GATES_PASS_AI_AUTHORING_AND_R2_PENDING",
   "counts": {
     "foundationPdfPages": 79,
     "questionPdfPages": 226,
@@ -26,7 +26,9 @@
     "assetMissingFiles": 0,
     "assetHashMismatchFiles": 0,
     "minQuestionsPerFrozenSubSkill": 3,
-    "maxQuestionsPerFrozenSubSkill": 109
+    "maxQuestionsPerFrozenSubSkill": 109,
+    "aiContextAuthoredCanonical": 106,
+    "aiContextPendingCanonical": 2726
   },
   "gates": {
     "sourceAnalysis": "PASS",
@@ -37,12 +39,13 @@
     "crop": "PASS_STRATIFIED_VISUAL_QA",
     "cropAssetPackage": "PASS_LOCAL_READY_FOR_R2_UPLOAD",
     "dedupe": "PASS_FINAL_2832_CANONICAL",
-    "aiContext": "INITIALIZED_PENDING_AUTHORING",
+    "aiContext": "AUTHORING_IN_PROGRESS_106_OF_2832",
     "r2Upload": "NOT_RUN",
     "dryRun": "BLOCKED_BY_AI_AND_R2",
     "draftImport": "BLOCKED",
     "liveE2E": "NOT_RUN",
-    "approval": "NOT_RUN"
+    "approval": "NOT_RUN",
+    "productionSubjectSafety": "PASS_CREATE_DEDICATED_BIOLOGY_SUBJECT_DO_NOT_REPURPOSE_ENVIRONMENT"
   },
   "integrityChecks": {
     "lessonCount48": true,
@@ -64,7 +67,8 @@
     "existingBiologyBankDedupeComplete": true,
     "finalCanonicalCount2832": true,
     "assetPackage2835Files": true,
-    "assetManifestHashesReverified": true
+    "assetManifestHashesReverified": true,
+    "productionSubjectHistoryProtected": true
   },
   "assetPackage": {
     "version": "V2_REGENERATED_2026-10-05",
@@ -88,5 +92,25 @@
     ],
     "inferredFromQuestionOCR": 0
   },
-  "closure": false
+  "closure": false,
+  "aiAuthoring": {
+    "completedLessons": [
+      "BIO26-L01",
+      "BIO26-L02"
+    ],
+    "authoredCanonicalItems": 106,
+    "pendingCanonicalItems": 2726,
+    "sourceAnswerCrossCheck": "PASS_106_OF_106",
+    "skillRangeCrossCheck": "PASS_106_OF_106",
+    "answerInferredFromOCR": 0,
+    "evidenceFile": "BIO26_AI_AUTHORING_QA.json"
+  },
+  "productionSubjectSafety": {
+    "existingEnvironmentSubjectQuestionCount": 0,
+    "historicalSkillProgressRecords": 36,
+    "historicalAttempts": 72,
+    "distinctUsers": 4,
+    "decision": "PRESERVE_EXISTING_ENVIRONMENT_SUBJECT_CREATE_DEDICATED_BIOLOGY_SUBJECT",
+    "evidenceFile": "BIO26_PRODUCTION_SUBJECT_AUDIT.json"
+  }
 }
