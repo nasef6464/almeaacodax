@@ -60,7 +60,7 @@
 | Asset regeneration | **PASS LOCAL — 2,835 files** |
 | Dedupe | **PASS — 2,832 canonical** |
 | Existing biology-bank dedupe | **PASS — 0 existing** |
-| AI context | **IN PROGRESS — 1,766 / 2,832 canonical** |
+| AI context | **IN PROGRESS — 1,839 / 2,832 canonical** |
 | R2 upload | PENDING |
 | Dry run | BLOCKED BY AI/R2 |
 | Canary 5 | BLOCKED |
@@ -71,7 +71,7 @@
 | BIO26 CLOSED | **NO** |
 
 ## Next execution batch
-1. Continue AI context authoring from **1,766 / 2,832** canonical questions; L01–L31 are complete with **1,766/1,766 source-answer**, **1,766/1,766 skill-range**, required-field and uniqueness checks passing.
+1. Continue AI context authoring from **1,839 / 2,832** canonical questions. L01–L31 plus L33–L34 are authored; **L32 is deliberately still the earliest unfinished lesson**. Current automated integrity: **1,839/1,839 source-answer**, **1,839/1,839 skill-range**, required fields complete, duplicate questionCodes = 0.
 2. Create a **dedicated Biology subject** at controlled import time; preserve the existing `علم البيئة` subject and its historical progress.
 3. Upload **2,832** canonical V2 images to R2 and verify remote hashes/URLs.
 4. Dry Run → Canary 5 → Full Draft Import → Integrity Audit → Live E2E → Approval.
