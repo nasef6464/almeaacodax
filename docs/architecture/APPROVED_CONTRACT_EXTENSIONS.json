@@ -28,6 +28,7 @@
     "classroomRouter|GET|/sessions/:id/current",
     "classroomRouter|GET|/student/active-session",
     "classroomRouter|GET|/supervisor/history",
+    "classroomRouter|GET|/supervisor/insights",
     "classroomRouter|GET|/supervisor/intelligence",
     "classroomRouter|GET|/supervisor/interventions",
     "classroomRouter|GET|/supervisor/interventions/:id/outcome",
@@ -102,8 +103,8 @@
     "schoolAdminIntegrityRouter|PUT|/assignments",
     "schoolAdminIntegrityRouter|PUT|/contracts/:schoolId",
     "schoolAdminIntegrityRouter|PUT|/memberships",
-    "studentReviewRouter|GET|/library",
     "studentReviewRouter|DELETE|/questions/:questionId/saved",
+    "studentReviewRouter|GET|/library",
     "studentReviewRouter|PUT|/questions/:questionId/saved"
   ],
   "routerMountSignatures": [
