@@ -3,6 +3,8 @@ import { StatusCodes } from "http-status-codes";
 import { z } from "zod";
 import { requireAuth, requireRole } from "../../middleware/auth.js";
 import { ClassroomSessionModel } from "../../models/ClassroomSession.js";
+import { ClassroomParticipantModel } from "../../models/ClassroomParticipant.js";
+import { ClassroomResponseModel } from "../../models/ClassroomResponse.js";
 import { GroupModel } from "../../models/Group.js";
 import { TeachingAssignmentModel } from "../../models/TeachingAssignment.js";
 import { UserModel } from "../../models/User.js";
@@ -107,6 +109,119 @@ export function registerClassroomInsightsRoutes(classroomRouter: Router) {
         .lean();
 
       const reports = await Promise.all(sessions.map(buildClassroomSessionReport));
+      const sessionIds = reports.map((report) => String(report.sessionId || "")).filter(Boolean);
+      const sessionMeta = new Map(reports.map((report) => [String(report.sessionId || ""), {
+        endedAt: report.endedAt ? new Date(report.endedAt).getTime() : 0,
+        questionCount: Array.isArray(report.questions) ? report.questions.length : 0,
+      }]));
+      const [participants, responses] = sessionIds.length
+        ? await Promise.all([
+            ClassroomParticipantModel.find({ sessionId: { $in: sessionIds } }).select("sessionId studentId joinedAt").lean(),
+            ClassroomResponseModel.find({ sessionId: { $in: sessionIds } }).select("sessionId studentId isCorrect submittedAt").lean(),
+          ])
+        : [[], []];
+
+      const perStudent = new Map<string, {
+        studentId: string;
+        joinedSessions: Set<string>;
+        possibleResponses: number;
+        responses: number;
+        correct: number;
+        sessionEvidence: Map<string, { responses: number; correct: number; endedAt: number }>;
+      }>();
+
+      for (const participant of participants as any[]) {
+        const studentId = String(participant.studentId || "");
+        const sessionId = String(participant.sessionId || "");
+        if (!studentId || !sessionId) continue;
+        const current = perStudent.get(studentId) || {
+          studentId,
+          joinedSessions: new Set<string>(),
+          possibleResponses: 0,
+          responses: 0,
+          correct: 0,
+          sessionEvidence: new Map<string, { responses: number; correct: number; endedAt: number }>(),
+        };
+        if (!current.joinedSessions.has(sessionId)) {
+          current.joinedSessions.add(sessionId);
+          current.possibleResponses += Number(sessionMeta.get(sessionId)?.questionCount || 0);
+        }
+        if (!current.sessionEvidence.has(sessionId)) {
+          current.sessionEvidence.set(sessionId, {
+            responses: 0,
+            correct: 0,
+            endedAt: Number(sessionMeta.get(sessionId)?.endedAt || 0),
+          });
+        }
+        perStudent.set(studentId, current);
+      }
+
+      for (const response of responses as any[]) {
+        const studentId = String(response.studentId || "");
+        const sessionId = String(response.sessionId || "");
+        if (!studentId || !sessionId) continue;
+        const current = perStudent.get(studentId);
+        if (!current) continue;
+        current.responses += 1;
+        if (response.isCorrect) current.correct += 1;
+        const evidence = current.sessionEvidence.get(sessionId) || {
+          responses: 0,
+          correct: 0,
+          endedAt: Number(sessionMeta.get(sessionId)?.endedAt || 0),
+        };
+        evidence.responses += 1;
+        if (response.isCorrect) evidence.correct += 1;
+        current.sessionEvidence.set(sessionId, evidence);
+      }
+
+      const studentIds = Array.from(perStudent.keys());
+      const students = studentIds.length
+        ? await UserModel.find(idQuery(studentIds)).select("id _id name displayName").lean()
+        : [];
+      const studentNames: Record<string, string> = {};
+      for (const student of students as any[]) {
+        const name = String(student.displayName || student.name || "طالب");
+        if (student.id) studentNames[String(student.id)] = name;
+        if (student._id) studentNames[String(student._id)] = name;
+      }
+
+      const studentSignals = Array.from(perStudent.values()).map((student) => {
+        const orderedSessions = Array.from(student.sessionEvidence.values()).sort((a, b) => a.endedAt - b.endedAt);
+        const split = Math.ceil(orderedSessions.length / 2);
+        const summarizeEvidence = (rows: typeof orderedSessions) => {
+          const responseCount = rows.reduce((sum, row) => sum + row.responses, 0);
+          const correctCount = rows.reduce((sum, row) => sum + row.correct, 0);
+          return {
+            responses: responseCount,
+            accuracy: responseCount > 0 ? Math.round((correctCount / responseCount) * 100) : null,
+          };
+        };
+        const early = summarizeEvidence(orderedSessions.slice(0, split));
+        const recent = summarizeEvidence(orderedSessions.slice(split));
+        const improvement = orderedSessions.length >= 2 && early.responses > 0 && recent.responses > 0 && early.accuracy !== null && recent.accuracy !== null
+          ? recent.accuracy - early.accuracy
+          : null;
+        return {
+          studentId: student.studentId,
+          name: studentNames[student.studentId] || "طالب",
+          joinedSessions: student.joinedSessions.size,
+          responses: student.responses,
+          possibleResponses: student.possibleResponses,
+          responseRate: student.possibleResponses > 0 ? Math.round((student.responses / student.possibleResponses) * 100) : null,
+          accuracy: student.responses > 0 ? Math.round((student.correct / student.responses) * 100) : null,
+          improvement,
+          earlyAccuracy: early.accuracy,
+          recentAccuracy: recent.accuracy,
+        };
+      });
+      const leastParticipation = [...studentSignals]
+        .filter((student) => student.responseRate !== null)
+        .sort((left, right) => (left.responseRate ?? 101) - (right.responseRate ?? 101) || right.joinedSessions - left.joinedSessions)
+        .slice(0, 10);
+      const mostImproved = [...studentSignals]
+        .filter((student) => student.improvement !== null && student.improvement > 0)
+        .sort((left, right) => (right.improvement ?? -999) - (left.improvement ?? -999))
+        .slice(0, 10);
       res.json({
         insights: buildClassroomReportInsights(reports, {
           period,
@@ -196,6 +311,10 @@ export function registerClassroomInsightsRoutes(classroomRouter: Router) {
             classId: classId || null,
           },
           hierarchy,
+          studentSignals: {
+            leastParticipation,
+            mostImproved,
+          },
         },
       });
     }),
