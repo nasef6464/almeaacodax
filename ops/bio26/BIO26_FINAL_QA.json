@@ -68,14 +68,22 @@
     "finalCanonicalCount2832": true,
     "assetPackage2835Files": true,
     "assetManifestHashesReverified": true,
-    "productionSubjectHistoryProtected": true
+    "productionSubjectHistoryProtected": true,
+    "canonicalZipSha256Recomputed": true,
+    "canonicalZipEntriesVerified": true,
+    "canonicalZip2832ImageHashesMatchManifest": true
   },
   "assetPackage": {
     "version": "V2_REGENERATED_2026-10-05",
     "encoding": "WEBP lossless=True method=6 exact=True",
     "canonicalZipSha256": "37e58c58dfbdeb8a956ee80e42f2c41cf476f506b3c825663c71bf214ee55a03",
     "canonicalZipBytes": 30134017,
-    "evidenceFile": "BIO26_ASSET_PACKAGE_V2.json"
+    "evidenceFile": "BIO26_ASSET_PACKAGE_V2.json",
+    "archiveEntries": 2834,
+    "canonicalImages": 2832,
+    "embeddedControlFiles": 2,
+    "zipCrcTest": "PASS",
+    "zipImageHashVerification": "PASS_2832_OF_2832"
   },
   "dedupeValidation": {
     "sourceOccurrences": 2835,
