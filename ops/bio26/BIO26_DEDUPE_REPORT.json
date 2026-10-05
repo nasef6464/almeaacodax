@@ -1,16 +1,16 @@
 {
   "project": "BIO26",
-  "status": "SOURCE_INTERNAL_DEDUPE_PASS_EXISTING_BANK_PENDING",
+  "status": "PASS",
   "sourceOccurrences": 2835,
   "scopes": {
     "withinSection1": "PASS_WITH_2_CONFIRMED_ALIAS_GROUPS",
     "withinSection2": "PASS_WITH_1_CONFIRMED_ALIAS_GROUP",
     "crossSections": "PASS_NO_CONFIRMED_DUPLICATE_IN_HIGH_SIMILARITY_REVIEW",
     "materiallyIdenticalSemantic": "PASS_SOURCE_INTERNAL",
-    "existingBiologyBank": "NOT_RUN"
+    "existingBiologyBank": "PASS_EMPTY_BASELINE"
   },
   "exactCropHash": {
-    "uniqueHashes": 2835,
+    "uniqueHashesV1": 2835,
     "duplicateGroups": 0,
     "duplicateRows": 0
   },
@@ -43,9 +43,15 @@
     "nearSimilarityDistinctPairsReviewed": 4,
     "evidenceFile": "BIO26_SEMANTIC_DEDUPE_REVIEW.csv"
   },
+  "existingLiveBank": {
+    "questionsMatchedToCurrentCandidateBiologySubject": 0,
+    "questionsMatchedByBiologySourceMetadata": 0,
+    "result": "PASS_EMPTY_BASELINE",
+    "evidenceFile": "BIO26_EXISTING_BANK_AUDIT.json"
+  },
   "canonicalCount": 2832,
   "duplicateAliases": 3,
   "quarantine": [],
-  "finalGate": "BLOCKED_ONLY_BY_EXISTING_BIOLOGY_BANK_COMPARISON",
-  "rule": "Do not declare final dedupe PASS until the 2,832 source-internal canonical candidates are compared against the existing live biology bank."
+  "finalGate": "PASS",
+  "rule": "Import only the 2,832 canonical candidates; preserve 3 source aliases in audit metadata, not as duplicate production questions."
 }
