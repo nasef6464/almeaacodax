@@ -2,8 +2,8 @@
   "project": "BIO26",
   "status": "AUTHORING_IN_PROGRESS",
   "expectedCanonicalItems": 2832,
-  "authoredCanonicalItems": 613,
-  "pendingCanonicalItems": 2219,
+  "authoredCanonicalItems": 987,
+  "pendingCanonicalItems": 1845,
   "completedLessons": [
     "BIO26-L01",
     "BIO26-L02",
@@ -12,7 +12,14 @@
     "BIO26-L05",
     "BIO26-L06",
     "BIO26-L07",
-    "BIO26-L08"
+    "BIO26-L08",
+    "BIO26-L09",
+    "BIO26-L10",
+    "BIO26-L11",
+    "BIO26-L12",
+    "BIO26-L13",
+    "BIO26-L14",
+    "BIO26-L15"
   ],
   "lesson1": {
     "lesson": "دراسة الحياة",
@@ -31,10 +38,10 @@
     "answerInferredFromOCR": 0
   },
   "aggregateQa": {
-    "sourceAnswerCrossCheck": "PASS_613_OF_613",
-    "skillRangeCrossCheck": "PASS_613_OF_613",
-    "uniqueQuestionCodes": "PASS_613_OF_613",
-    "requiredFields": "PASS_613_OF_613",
+    "sourceAnswerCrossCheck": "PASS_987_OF_987",
+    "skillRangeCrossCheck": "PASS_987_OF_987",
+    "uniqueQuestionCodes": "PASS_987_OF_987",
+    "requiredFields": "PASS_987_OF_987",
     "duplicateQuestionCodes": 0,
     "answerInferredFromOCR": 0
   },
@@ -103,6 +110,62 @@
     "sourceAnswerCrossCheck": "PASS_79_OF_79",
     "skillRangeCrossCheck": "PASS_79_OF_79",
     "visualDescriptions": "PASS_FOR_ALL_VISUAL_ITEMS",
+    "answerInferredFromOCR": 0
+  },
+  "lesson9": {
+    "lesson": "شوكيات الجلد واللافقاريات الحبلية",
+    "canonicalItems": 57,
+    "sourceAnswerCrossCheck": "PASS_57_OF_57",
+    "skillRangeCrossCheck": "PASS_57_OF_57",
+    "visualDescriptions": "PASS_FOR_VISUAL_ITEMS",
+    "answerInferredFromOCR": 0
+  },
+  "lesson10": {
+    "lesson": "الأسماك",
+    "canonicalItems": 61,
+    "sourceAnswerCrossCheck": "PASS_61_OF_61",
+    "skillRangeCrossCheck": "PASS_61_OF_61",
+    "visualDescriptions": "PASS_FOR_VISUAL_ITEMS",
+    "answerInferredFromOCR": 0
+  },
+  "lesson11": {
+    "lesson": "البرمائيات",
+    "canonicalItems": 39,
+    "sourceAnswerCrossCheck": "PASS_39_OF_39",
+    "skillRangeCrossCheck": "PASS_39_OF_39",
+    "visualDescriptions": "PASS_FOR_VISUAL_ITEMS",
+    "answerInferredFromOCR": 0
+  },
+  "lesson12": {
+    "lesson": "الزواحف",
+    "canonicalItems": 37,
+    "sourceAnswerCrossCheck": "PASS_37_OF_37",
+    "skillRangeCrossCheck": "PASS_37_OF_37",
+    "visualDescriptions": "PASS_FOR_VISUAL_ITEMS",
+    "answerInferredFromOCR": 0
+  },
+  "lesson13": {
+    "lesson": "الطيور",
+    "canonicalItems": 32,
+    "sourceAnswerCrossCheck": "PASS_32_OF_32",
+    "skillRangeCrossCheck": "PASS_32_OF_32",
+    "visualDescriptions": "PASS_FOR_VISUAL_ITEMS",
+    "answerInferredFromOCR": 0
+  },
+  "lesson14": {
+    "lesson": "الثدييات",
+    "canonicalItems": 77,
+    "sourceAnswerCrossCheck": "PASS_77_OF_77_AFTER_5_SOURCE_KEY_CORRECTIONS",
+    "skillRangeCrossCheck": "PASS_77_OF_77",
+    "visualDescriptions": "PASS_FOR_VISUAL_ITEMS",
+    "answerInferredFromOCR": 0
+  },
+  "lesson15": {
+    "lesson": "أسئلة المقارنات بين الفقاريات",
+    "canonicalItems": 71,
+    "sourceAnswerCrossCheck": "PASS_71_OF_71",
+    "skillRangeCrossCheck": "PASS_71_OF_71",
+    "visualDescriptions": "PASS_FOR_VISUAL_ITEMS",
     "answerInferredFromOCR": 0
   }
 }
