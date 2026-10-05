@@ -105,7 +105,7 @@ async function run() {
     { projection: { _id: 0, id: 1, name: 1, sectionId: 1, order: 1, subSkills: 1 } },
   ).sort({ id: 1 }).toArray();
 
-  if (topics.length !== 95) throw new Error(`Expected 95 quant subtopics, got ${topics.length}`);
+  if (topics.length !== 93) throw new Error(`Expected 93 quant subtopics, got ${topics.length}`);
   if (skills.length !== 25) throw new Error(`Expected 25 quant main skills, got ${skills.length}`);
 
   const topicBySub = new Map(topics.map((topic) => [String(topic.skillId), topic]));
