@@ -1,17 +1,17 @@
 {
   "status": "PASSED_CERTIFICATION",
-  "executionTimestamp": "2026-10-04T22:05:29.725Z",
-  "activeSessionId": "6ac2cc6249ab3fadf1b0222f",
+  "executionTimestamp": "2026-10-05T03:34:09.845Z",
+  "activeSessionId": "6ac31913a0d1d023ca3cd3da",
   "assertions": {
-    "total": 23,
-    "passed": 23,
+    "total": 37,
+    "passed": 37,
     "failed": 0
   },
   "timings": {
-    "scenarioA_seconds": 14.9,
-    "scenarioB_20_students_join_seconds": 193.4,
-    "scenarioC_push_5_seconds": 7.4,
-    "scenarioF_push_10_seconds": 3.1
+    "scenarioA_seconds": 22.6,
+    "scenarioB_20_students_join_seconds": 243.7,
+    "scenarioC_push_5_seconds": 9.1,
+    "scenarioF_push_10_seconds": 4.1
   },
   "metrics": {
     "clicks": {
@@ -32,6 +32,11 @@
   },
   "productGaps": [
     {
+      "code": "PRODUCT GAP — CUSTOM DATE RANGE NOT SUPPORTED",
+      "description": "Classroom insights endpoint accepts standard time windows (today, week, month, all) but does not accept arbitrary custom date ranges (dateFrom / dateTo).",
+      "recommendation": "Extend periodSchema in registerClassroomInsightsRoutes to support custom dateFrom and dateTo range filters."
+    },
+    {
       "code": "PRODUCT GAP — MONTHLY CLASSROOM SUMMARY",
       "description": "Platform supports filtering reports within 7d/30d periods, but lacks an aggregated monthly executive matrix summarizing cross-class trends.",
       "recommendation": "Add Monthly Aggregated Classroom Summary card to Teacher and Principal dashboards."
@@ -46,7 +51,7 @@
     {
       "test": "Teacher Session Initialization",
       "expected": "Valid session ID created or recovered",
-      "actual": "Session ID: 6ac2cc6249ab3fadf1b0222f",
+      "actual": "Session ID: 6ac31913a0d1d023ca3cd3da",
       "assertion": "PASS",
       "evidence": "teacher_session_initialized.png",
       "verdict": "VERIFIED"
@@ -158,7 +163,7 @@
     {
       "test": "Same Session Continuity for Multiple Activities",
       "expected": "Student continues in same session ID without reconnecting or re-entering PIN",
-      "actual": "Session ID remained constant: 6ac2cc6249ab3fadf1b0222f",
+      "actual": "Session ID remained constant: 6ac31913a0d1d023ca3cd3da",
       "assertion": "PASS",
       "evidence": "student_continuous_session_mobile.png",
       "verdict": "VERIFIED"
@@ -180,7 +185,47 @@
       "verdict": "VERIFIED"
     },
     {
+      "test": "RBAC Negative: Student A blocked from Student B Quiz Report",
+      "expected": "HTTP 403 Forbidden",
+      "actual": "HTTP 403",
+      "assertion": "PASS",
+      "evidence": "",
+      "verdict": "VERIFIED"
+    },
+    {
+      "test": "RBAC Negative: Student blocked from Classroom Aggregate/Responses",
+      "expected": "HTTP 403 Forbidden",
+      "actual": "HTTP 403",
+      "assertion": "PASS",
+      "evidence": "",
+      "verdict": "VERIFIED"
+    },
+    {
       "test": "RBAC Negative: Out-of-Scope Student blocked from Session",
+      "expected": "HTTP 403 Forbidden or 404 Not Found",
+      "actual": "HTTP 403",
+      "assertion": "PASS",
+      "evidence": "",
+      "verdict": "VERIFIED"
+    },
+    {
+      "test": "RBAC Negative: Out-of-Scope Teacher blocked from Session Control",
+      "expected": "HTTP 403 Forbidden or 404 Not Found",
+      "actual": "HTTP 403",
+      "assertion": "PASS",
+      "evidence": "",
+      "verdict": "VERIFIED"
+    },
+    {
+      "test": "RBAC Negative: Out-of-Scope Teacher blocked from Foreign School History",
+      "expected": "HTTP 403 Forbidden or 404 Not Found",
+      "actual": "HTTP 403",
+      "assertion": "PASS",
+      "evidence": "",
+      "verdict": "VERIFIED"
+    },
+    {
+      "test": "RBAC Negative: Out-of-Scope Teacher blocked from Foreign Class Report",
       "expected": "HTTP 403 Forbidden or 404 Not Found",
       "actual": "HTTP 403",
       "assertion": "PASS",
@@ -196,19 +241,83 @@
       "verdict": "VERIFIED"
     },
     {
-      "test": "Session State Persisted as Ended/Archived",
+      "test": "RBAC Negative: Parent blocked from Unrelated Student Quiz Results",
+      "expected": "HTTP 403 Forbidden",
+      "actual": "HTTP 403",
+      "assertion": "PASS",
+      "evidence": "",
+      "verdict": "VERIFIED"
+    },
+    {
+      "test": "Persistence: Session State Persisted as Ended/Archived",
       "expected": "Session status is ended or archived in persistent database",
-      "actual": "Persisted status: ended",
+      "actual": "Live status: ended == Persisted status: ended",
       "assertion": "PASS",
       "evidence": "teacher_persisted_session_report.png",
       "verdict": "VERIFIED"
     },
     {
-      "test": "Participant Count Persisted across Clean Browser Session",
-      "expected": "Persisted participants count >= 20",
-      "actual": "Persisted participants: 20",
+      "test": "Persistence: Participant Count Matches Live Count (20 === 20)",
+      "expected": "Live participants (20) == Persisted participants (>= 20)",
+      "actual": "Live: 20 == Persisted: 20",
       "assertion": "PASS",
       "evidence": "teacher_persisted_session_report.png",
+      "verdict": "VERIFIED"
+    },
+    {
+      "test": "Persistence: Question Count Matches Live Session (15 === 15)",
+      "expected": "Live question count (15) == Persisted question count (15)",
+      "actual": "Live: 15 == Persisted: 15",
+      "assertion": "PASS",
+      "evidence": "teacher_persisted_session_report.png",
+      "verdict": "VERIFIED"
+    },
+    {
+      "test": "Persistence: Teacher Identity Matches Live Session",
+      "expected": "Live teacher ID == Persisted teacher ID",
+      "actual": "Live: 6aa453e4f90f22c716b20801 == Persisted: 6aa453e4f90f22c716b20801",
+      "assertion": "PASS",
+      "evidence": "teacher_persisted_session_report.png",
+      "verdict": "VERIFIED"
+    },
+    {
+      "test": "Persistence: Class Identity Matches Live Session",
+      "expected": "Live class ID/name == Persisted class ID/name",
+      "actual": "Live: 6ac1d397f67fa7d706600877 == Persisted: 6ac1d397f67fa7d706600877",
+      "assertion": "PASS",
+      "evidence": "teacher_persisted_session_report.png",
+      "verdict": "VERIFIED"
+    },
+    {
+      "test": "Persistence: Responses & Accuracy Summary Present",
+      "expected": "Live responses recorded and accuracy summary present in persistent report",
+      "actual": "Recorded responses: 20, summary present: true",
+      "assertion": "PASS",
+      "evidence": "teacher_persisted_session_report.png",
+      "verdict": "VERIFIED"
+    },
+    {
+      "test": "Historical Reporting: Multiple Distinct Sessions Retrievable",
+      "expected": "Teacher history contains >= 2 distinct historical sessions",
+      "actual": "Distinct historical sessions found: 47",
+      "assertion": "PASS",
+      "evidence": "",
+      "verdict": "VERIFIED"
+    },
+    {
+      "test": "Historical Reporting: 7-Day Window Filter (Week Period)",
+      "expected": "7-day historical insights return HTTP 200 and valid metrics",
+      "actual": "HTTP 200, valid insights: true",
+      "assertion": "PASS",
+      "evidence": "",
+      "verdict": "VERIFIED"
+    },
+    {
+      "test": "Historical Reporting: 30-Day Window Filter (Month Period)",
+      "expected": "30-day historical insights return HTTP 200 and valid metrics",
+      "actual": "HTTP 200, valid insights: true",
+      "assertion": "PASS",
+      "evidence": "",
       "verdict": "VERIFIED"
     },
     {
@@ -220,8 +329,16 @@
       "verdict": "VERIFIED"
     },
     {
-      "test": "Zero Sensitive Data Leaks in Network/Console/DOM",
-      "expected": "0 sensitive data leaks",
+      "test": "RBAC Negative: Supervisor blocked from Out-of-Scope School Interventions",
+      "expected": "HTTP 403 Forbidden",
+      "actual": "HTTP 403",
+      "assertion": "PASS",
+      "evidence": "",
+      "verdict": "VERIFIED"
+    },
+    {
+      "test": "Zero Sensitive Data Leaks across DOM, Storage, Network, and Console",
+      "expected": "0 sensitive data leaks detected",
       "actual": "0 leaks detected",
       "assertion": "PASS",
       "evidence": "",

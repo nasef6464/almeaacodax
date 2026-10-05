@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-09-14T03:20:46.635Z",
-  "gitHead": "84fe836539df60c7b91989bcf3dc1be4a239b85d",
+  "generatedAt": "2026-10-05T03:35:24.005Z",
+  "gitHead": "702f4e71803b631717e4a81c6c87b696588507d3",
   "frontendRoutes": [
     "*",
     "/",
@@ -60,6 +60,444 @@
     "/verify-email"
   ],
   "backendRouteEntries": [
+    {
+      "file": "server/src/modules/content/http/contentBootstrapRoutes.ts",
+      "method": "GET",
+      "path": "/bootstrap",
+      "receiver": "contentBootstrapRouter"
+    },
+    {
+      "file": "server/src/modules/content/http/contentBootstrapRoutes.ts",
+      "method": "GET",
+      "path": "/bootstrap/minimal",
+      "receiver": "contentBootstrapRouter"
+    },
+    {
+      "file": "server/src/modules/content/http/contentGroupRoutes.ts",
+      "method": "POST",
+      "path": "/groups",
+      "receiver": "contentGroupRouter"
+    },
+    {
+      "file": "server/src/modules/content/http/contentGroupRoutes.ts",
+      "method": "DELETE",
+      "path": "/groups/:id",
+      "receiver": "contentGroupRouter"
+    },
+    {
+      "file": "server/src/modules/content/http/contentGroupRoutes.ts",
+      "method": "PATCH",
+      "path": "/groups/:id",
+      "receiver": "contentGroupRouter"
+    },
+    {
+      "file": "server/src/modules/content/http/contentLearningRoutes.ts",
+      "method": "POST",
+      "path": "/lessons",
+      "receiver": "contentLearningRouter"
+    },
+    {
+      "file": "server/src/modules/content/http/contentLearningRoutes.ts",
+      "method": "DELETE",
+      "path": "/lessons/:id",
+      "receiver": "contentLearningRouter"
+    },
+    {
+      "file": "server/src/modules/content/http/contentLearningRoutes.ts",
+      "method": "PATCH",
+      "path": "/lessons/:id",
+      "receiver": "contentLearningRouter"
+    },
+    {
+      "file": "server/src/modules/content/http/contentLearningRoutes.ts",
+      "method": "POST",
+      "path": "/library-items",
+      "receiver": "contentLearningRouter"
+    },
+    {
+      "file": "server/src/modules/content/http/contentLearningRoutes.ts",
+      "method": "DELETE",
+      "path": "/library-items/:id",
+      "receiver": "contentLearningRouter"
+    },
+    {
+      "file": "server/src/modules/content/http/contentLearningRoutes.ts",
+      "method": "PATCH",
+      "path": "/library-items/:id",
+      "receiver": "contentLearningRouter"
+    },
+    {
+      "file": "server/src/modules/content/http/contentLearningRoutes.ts",
+      "method": "POST",
+      "path": "/topics",
+      "receiver": "contentLearningRouter"
+    },
+    {
+      "file": "server/src/modules/content/http/contentLearningRoutes.ts",
+      "method": "DELETE",
+      "path": "/topics/:id",
+      "receiver": "contentLearningRouter"
+    },
+    {
+      "file": "server/src/modules/content/http/contentLearningRoutes.ts",
+      "method": "PATCH",
+      "path": "/topics/:id",
+      "receiver": "contentLearningRouter"
+    },
+    {
+      "file": "server/src/modules/content/http/contentPlatformIntegrationRoutes.ts",
+      "method": "GET",
+      "path": "/platform-integrations",
+      "receiver": "contentPlatformIntegrationRouter"
+    },
+    {
+      "file": "server/src/modules/content/http/contentPlatformIntegrationRoutes.ts",
+      "method": "PATCH",
+      "path": "/platform-integrations",
+      "receiver": "contentPlatformIntegrationRouter"
+    },
+    {
+      "file": "server/src/modules/content/http/contentPlatformIntegrationRoutes.ts",
+      "method": "GET",
+      "path": "/platform-integrations/history",
+      "receiver": "contentPlatformIntegrationRouter"
+    },
+    {
+      "file": "server/src/modules/content/http/contentPlatformIntegrationRoutes.ts",
+      "method": "POST",
+      "path": "/platform-integrations/history/:id/restore",
+      "receiver": "contentPlatformIntegrationRouter"
+    },
+    {
+      "file": "server/src/modules/content/http/contentPlatformIntegrationRoutes.ts",
+      "method": "GET",
+      "path": "/public-contact-widget",
+      "receiver": "contentPlatformIntegrationRouter"
+    },
+    {
+      "file": "server/src/modules/content/http/contentPlatformIntegrationRuntimeRoutes.ts",
+      "method": "GET",
+      "path": "/platform-integrations/runtime-audit",
+      "receiver": "contentPlatformIntegrationRuntimeRouter"
+    },
+    {
+      "file": "server/src/modules/content/http/contentPlatformIntegrationRuntimeRoutes.ts",
+      "method": "GET",
+      "path": "/platform-integrations/setup-checklist",
+      "receiver": "contentPlatformIntegrationRuntimeRouter"
+    },
+    {
+      "file": "server/src/modules/content/http/contentPresentationRoutes.ts",
+      "method": "GET",
+      "path": "/announcement-ads",
+      "receiver": "contentPresentationRouter"
+    },
+    {
+      "file": "server/src/modules/content/http/contentPresentationRoutes.ts",
+      "method": "POST",
+      "path": "/announcement-ads",
+      "receiver": "contentPresentationRouter"
+    },
+    {
+      "file": "server/src/modules/content/http/contentPresentationRoutes.ts",
+      "method": "DELETE",
+      "path": "/announcement-ads/:id",
+      "receiver": "contentPresentationRouter"
+    },
+    {
+      "file": "server/src/modules/content/http/contentPresentationRoutes.ts",
+      "method": "PATCH",
+      "path": "/announcement-ads/:id",
+      "receiver": "contentPresentationRouter"
+    },
+    {
+      "file": "server/src/modules/content/http/contentPresentationRoutes.ts",
+      "method": "GET",
+      "path": "/homepage-settings",
+      "receiver": "contentPresentationRouter"
+    },
+    {
+      "file": "server/src/modules/content/http/contentPresentationRoutes.ts",
+      "method": "PATCH",
+      "path": "/homepage-settings",
+      "receiver": "contentPresentationRouter"
+    },
+    {
+      "file": "server/src/modules/content/http/contentPresentationRoutes.ts",
+      "method": "GET",
+      "path": "/platform-font-settings",
+      "receiver": "contentPresentationRouter"
+    },
+    {
+      "file": "server/src/modules/content/http/contentPresentationRoutes.ts",
+      "method": "PATCH",
+      "path": "/platform-font-settings",
+      "receiver": "contentPresentationRouter"
+    },
+    {
+      "file": "server/src/modules/content/http/contentReviewRoutes.ts",
+      "method": "GET",
+      "path": "/review-queue",
+      "receiver": "contentReviewRouter"
+    },
+    {
+      "file": "server/src/modules/content/http/contentReviewRoutes.ts",
+      "method": "PATCH",
+      "path": "/review-queue/:type/:id",
+      "receiver": "contentReviewRouter"
+    },
+    {
+      "file": "server/src/modules/content/http/contentSchoolCommercialRoutes.ts",
+      "method": "GET",
+      "path": "/access-code-redemptions",
+      "receiver": "contentSchoolCommercialRouter"
+    },
+    {
+      "file": "server/src/modules/content/http/contentSchoolCommercialRoutes.ts",
+      "method": "GET",
+      "path": "/access-codes",
+      "receiver": "contentSchoolCommercialRouter"
+    },
+    {
+      "file": "server/src/modules/content/http/contentSchoolCommercialRoutes.ts",
+      "method": "POST",
+      "path": "/access-codes",
+      "receiver": "contentSchoolCommercialRouter"
+    },
+    {
+      "file": "server/src/modules/content/http/contentSchoolCommercialRoutes.ts",
+      "method": "DELETE",
+      "path": "/access-codes/:id",
+      "receiver": "contentSchoolCommercialRouter"
+    },
+    {
+      "file": "server/src/modules/content/http/contentSchoolCommercialRoutes.ts",
+      "method": "PATCH",
+      "path": "/access-codes/:id",
+      "receiver": "contentSchoolCommercialRouter"
+    },
+    {
+      "file": "server/src/modules/content/http/contentSchoolCommercialRoutes.ts",
+      "method": "POST",
+      "path": "/b2b-packages",
+      "receiver": "contentSchoolCommercialRouter"
+    },
+    {
+      "file": "server/src/modules/content/http/contentSchoolCommercialRoutes.ts",
+      "method": "DELETE",
+      "path": "/b2b-packages/:id",
+      "receiver": "contentSchoolCommercialRouter"
+    },
+    {
+      "file": "server/src/modules/content/http/contentSchoolCommercialRoutes.ts",
+      "method": "PATCH",
+      "path": "/b2b-packages/:id",
+      "receiver": "contentSchoolCommercialRouter"
+    },
+    {
+      "file": "server/src/modules/content/http/contentSchoolRelationsRoutes.ts",
+      "method": "POST",
+      "path": "/schools/:id/relations",
+      "receiver": "contentSchoolRelationsRouter"
+    },
+    {
+      "file": "server/src/modules/content/http/contentSchoolReportImportRoutes.ts",
+      "method": "POST",
+      "path": "/schools/:id/import-students",
+      "receiver": "contentSchoolReportImportRouter"
+    },
+    {
+      "file": "server/src/modules/content/http/contentSchoolReportImportRoutes.ts",
+      "method": "GET",
+      "path": "/schools/:id/report",
+      "receiver": "contentSchoolReportImportRouter"
+    },
+    {
+      "file": "server/src/modules/content/http/contentStudyPlanRoutes.ts",
+      "method": "POST",
+      "path": "/study-plans",
+      "receiver": "contentStudyPlanRouter"
+    },
+    {
+      "file": "server/src/modules/content/http/contentStudyPlanRoutes.ts",
+      "method": "DELETE",
+      "path": "/study-plans/:id",
+      "receiver": "contentStudyPlanRouter"
+    },
+    {
+      "file": "server/src/modules/content/http/contentStudyPlanRoutes.ts",
+      "method": "PATCH",
+      "path": "/study-plans/:id",
+      "receiver": "contentStudyPlanRouter"
+    },
+    {
+      "file": "server/src/modules/content/http/contentStudyPlanRoutes.ts",
+      "method": "POST",
+      "path": "/study-plans/intervention",
+      "receiver": "contentStudyPlanRouter"
+    },
+    {
+      "file": "server/src/modules/quizzes/http/adaptiveMasteryRoutes.ts",
+      "method": "GET",
+      "path": "/mastery-goals",
+      "receiver": "adaptiveMasteryRouter"
+    },
+    {
+      "file": "server/src/modules/quizzes/http/adaptiveMasteryRoutes.ts",
+      "method": "POST",
+      "path": "/mastery-goals",
+      "receiver": "adaptiveMasteryRouter"
+    },
+    {
+      "file": "server/src/modules/quizzes/http/adaptiveMasteryRoutes.ts",
+      "method": "PATCH",
+      "path": "/mastery-goals/:goalId",
+      "receiver": "adaptiveMasteryRouter"
+    },
+    {
+      "file": "server/src/modules/quizzes/http/adaptiveMasteryRoutes.ts",
+      "method": "GET",
+      "path": "/mastery-readiness",
+      "receiver": "adaptiveMasteryRouter"
+    },
+    {
+      "file": "server/src/modules/quizzes/http/adaptiveMasteryRoutes.ts",
+      "method": "GET",
+      "path": "/next-best-action",
+      "receiver": "adaptiveMasteryRouter"
+    },
+    {
+      "file": "server/src/modules/quizzes/http/adaptiveTelemetryRoutes.ts",
+      "method": "GET",
+      "path": "/question-attempts",
+      "receiver": "adaptiveTelemetryRouter"
+    },
+    {
+      "file": "server/src/modules/quizzes/http/adaptiveTelemetryRoutes.ts",
+      "method": "POST",
+      "path": "/question-attempts",
+      "receiver": "adaptiveTelemetryRouter"
+    },
+    {
+      "file": "server/src/modules/quizzes/http/adaptiveTelemetryRoutes.ts",
+      "method": "GET",
+      "path": "/skill-progress",
+      "receiver": "adaptiveTelemetryRouter"
+    },
+    {
+      "file": "server/src/modules/quizzes/http/questionBankRoutes.ts",
+      "method": "GET",
+      "path": "/questions",
+      "receiver": "questionBankRouter"
+    },
+    {
+      "file": "server/src/modules/quizzes/http/questionBankRoutes.ts",
+      "method": "POST",
+      "path": "/questions",
+      "receiver": "questionBankRouter"
+    },
+    {
+      "file": "server/src/modules/quizzes/http/questionBankRoutes.ts",
+      "method": "DELETE",
+      "path": "/questions/:id",
+      "receiver": "questionBankRouter"
+    },
+    {
+      "file": "server/src/modules/quizzes/http/questionBankRoutes.ts",
+      "method": "GET",
+      "path": "/questions/:id",
+      "receiver": "questionBankRouter"
+    },
+    {
+      "file": "server/src/modules/quizzes/http/questionBankRoutes.ts",
+      "method": "PATCH",
+      "path": "/questions/:id",
+      "receiver": "questionBankRouter"
+    },
+    {
+      "file": "server/src/modules/quizzes/http/questionBankRoutes.ts",
+      "method": "PATCH",
+      "path": "/questions/video-links",
+      "receiver": "questionBankRouter"
+    },
+    {
+      "file": "server/src/modules/quizzes/http/questionImportRoutes.ts",
+      "method": "POST",
+      "path": "/questions/import-batch",
+      "receiver": "questionImportRouter"
+    },
+    {
+      "file": "server/src/modules/quizzes/http/questionImportRoutes.ts",
+      "method": "DELETE",
+      "path": "/questions/import-batch/:batchId",
+      "receiver": "questionImportRouter"
+    },
+    {
+      "file": "server/src/modules/quizzes/http/questionImportRoutes.ts",
+      "method": "GET",
+      "path": "/questions/import-batch/:batchId",
+      "receiver": "questionImportRouter"
+    },
+    {
+      "file": "server/src/modules/quizzes/http/quizAnalyticsRoutes.ts",
+      "method": "GET",
+      "path": "/analytics/overview",
+      "receiver": "quizAnalyticsRouter"
+    },
+    {
+      "file": "server/src/modules/quizzes/http/quizAnalyticsRoutes.ts",
+      "method": "GET",
+      "path": "/analytics/school-skills",
+      "receiver": "quizAnalyticsRouter"
+    },
+    {
+      "file": "server/src/modules/quizzes/http/quizResultsRoutes.ts",
+      "method": "GET",
+      "path": "/results",
+      "receiver": "quizResultsRouter"
+    },
+    {
+      "file": "server/src/modules/quizzes/http/quizResultsRoutes.ts",
+      "method": "POST",
+      "path": "/results",
+      "receiver": "quizResultsRouter"
+    },
+    {
+      "file": "server/src/modules/quizzes/http/quizResultsRoutes.ts",
+      "method": "GET",
+      "path": "/results/latest",
+      "receiver": "quizResultsRouter"
+    },
+    {
+      "file": "server/src/modules/quizzes/http/quizResultsRoutes.ts",
+      "method": "GET",
+      "path": "/results/scoped",
+      "receiver": "quizResultsRouter"
+    },
+    {
+      "file": "server/src/modules/quizzes/http/quizResultsRoutes.ts",
+      "method": "GET",
+      "path": "/results/section-analytics/:quizId",
+      "receiver": "quizResultsRouter"
+    },
+    {
+      "file": "server/src/modules/quizzes/http/studentReviewRoutes.ts",
+      "method": "GET",
+      "path": "/library",
+      "receiver": "studentReviewRouter"
+    },
+    {
+      "file": "server/src/modules/quizzes/http/studentReviewRoutes.ts",
+      "method": "DELETE",
+      "path": "/questions/:questionId/saved",
+      "receiver": "studentReviewRouter"
+    },
+    {
+      "file": "server/src/modules/quizzes/http/studentReviewRoutes.ts",
+      "method": "PUT",
+      "path": "/questions/:questionId/saved",
+      "receiver": "studentReviewRouter"
+    },
     {
       "file": "server/src/routes/activity.routes.ts",
       "method": "GET",
@@ -140,6 +578,12 @@
     },
     {
       "file": "server/src/routes/ai.routes.ts",
+      "method": "POST",
+      "path": "/question-assistant",
+      "receiver": "aiRouter"
+    },
+    {
+      "file": "server/src/routes/ai.routes.ts",
       "method": "GET",
       "path": "/readiness",
       "receiver": "aiRouter"
@@ -196,6 +640,18 @@
       "file": "server/src/routes/auth.routes.ts",
       "method": "PATCH",
       "path": "/admin/users/:id",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "PATCH",
+      "path": "/admin/users/bulk-status",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "GET",
+      "path": "/admin/users/summary",
       "receiver": "authRouter"
     },
     {
@@ -328,6 +784,12 @@
       "file": "server/src/routes/auth.routes.ts",
       "method": "POST",
       "path": "/reset-password",
+      "receiver": "authRouter"
+    },
+    {
+      "file": "server/src/routes/auth.routes.ts",
+      "method": "GET",
+      "path": "/trainer/performance",
       "receiver": "authRouter"
     },
     {
@@ -607,270 +1069,6 @@
       "receiver": "classroomRouter"
     },
     {
-      "file": "server/src/routes/content.routes.ts",
-      "method": "GET",
-      "path": "/access-code-redemptions",
-      "receiver": "contentRouter"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "method": "GET",
-      "path": "/access-codes",
-      "receiver": "contentRouter"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "method": "POST",
-      "path": "/access-codes",
-      "receiver": "contentRouter"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "method": "DELETE",
-      "path": "/access-codes/:id",
-      "receiver": "contentRouter"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "method": "PATCH",
-      "path": "/access-codes/:id",
-      "receiver": "contentRouter"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "method": "GET",
-      "path": "/announcement-ads",
-      "receiver": "contentRouter"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "method": "POST",
-      "path": "/announcement-ads",
-      "receiver": "contentRouter"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "method": "DELETE",
-      "path": "/announcement-ads/:id",
-      "receiver": "contentRouter"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "method": "PATCH",
-      "path": "/announcement-ads/:id",
-      "receiver": "contentRouter"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "method": "POST",
-      "path": "/b2b-packages",
-      "receiver": "contentRouter"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "method": "DELETE",
-      "path": "/b2b-packages/:id",
-      "receiver": "contentRouter"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "method": "PATCH",
-      "path": "/b2b-packages/:id",
-      "receiver": "contentRouter"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "method": "GET",
-      "path": "/bootstrap",
-      "receiver": "contentRouter"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "method": "GET",
-      "path": "/bootstrap/minimal",
-      "receiver": "contentRouter"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "method": "POST",
-      "path": "/groups",
-      "receiver": "contentRouter"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "method": "DELETE",
-      "path": "/groups/:id",
-      "receiver": "contentRouter"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "method": "PATCH",
-      "path": "/groups/:id",
-      "receiver": "contentRouter"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "method": "GET",
-      "path": "/homepage-settings",
-      "receiver": "contentRouter"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "method": "PATCH",
-      "path": "/homepage-settings",
-      "receiver": "contentRouter"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "method": "POST",
-      "path": "/lessons",
-      "receiver": "contentRouter"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "method": "DELETE",
-      "path": "/lessons/:id",
-      "receiver": "contentRouter"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "method": "PATCH",
-      "path": "/lessons/:id",
-      "receiver": "contentRouter"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "method": "POST",
-      "path": "/library-items",
-      "receiver": "contentRouter"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "method": "DELETE",
-      "path": "/library-items/:id",
-      "receiver": "contentRouter"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "method": "PATCH",
-      "path": "/library-items/:id",
-      "receiver": "contentRouter"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "method": "GET",
-      "path": "/platform-font-settings",
-      "receiver": "contentRouter"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "method": "PATCH",
-      "path": "/platform-font-settings",
-      "receiver": "contentRouter"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "method": "GET",
-      "path": "/platform-integrations",
-      "receiver": "contentRouter"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "method": "PATCH",
-      "path": "/platform-integrations",
-      "receiver": "contentRouter"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "method": "GET",
-      "path": "/platform-integrations/history",
-      "receiver": "contentRouter"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "method": "POST",
-      "path": "/platform-integrations/history/:id/restore",
-      "receiver": "contentRouter"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "method": "GET",
-      "path": "/platform-integrations/runtime-audit",
-      "receiver": "contentRouter"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "method": "GET",
-      "path": "/platform-integrations/setup-checklist",
-      "receiver": "contentRouter"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "method": "GET",
-      "path": "/public-contact-widget",
-      "receiver": "contentRouter"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "method": "POST",
-      "path": "/schools/:id/import-students",
-      "receiver": "contentRouter"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "method": "POST",
-      "path": "/schools/:id/relations",
-      "receiver": "contentRouter"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "method": "GET",
-      "path": "/schools/:id/report",
-      "receiver": "contentRouter"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "method": "POST",
-      "path": "/study-plans",
-      "receiver": "contentRouter"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "method": "DELETE",
-      "path": "/study-plans/:id",
-      "receiver": "contentRouter"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "method": "PATCH",
-      "path": "/study-plans/:id",
-      "receiver": "contentRouter"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "method": "POST",
-      "path": "/study-plans/intervention",
-      "receiver": "contentRouter"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "method": "POST",
-      "path": "/topics",
-      "receiver": "contentRouter"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "method": "DELETE",
-      "path": "/topics/:id",
-      "receiver": "contentRouter"
-    },
-    {
-      "file": "server/src/routes/content.routes.ts",
-      "method": "PATCH",
-      "path": "/topics/:id",
-      "receiver": "contentRouter"
-    },
-    {
       "file": "server/src/routes/course.routes.ts",
       "method": "GET",
       "path": "/",
@@ -969,6 +1167,12 @@
     {
       "file": "server/src/routes/health.routes.ts",
       "method": "GET",
+      "path": "/scale-metrics",
+      "receiver": "healthRouter"
+    },
+    {
+      "file": "server/src/routes/health.routes.ts",
+      "method": "GET",
       "path": "/scale-ready",
       "receiver": "healthRouter"
     },
@@ -1013,6 +1217,24 @@
       "method": "GET",
       "path": "/supervisor",
       "receiver": "router"
+    },
+    {
+      "file": "server/src/routes/media.routes.ts",
+      "method": "POST",
+      "path": "/question-explanations/presign",
+      "receiver": "mediaRouter"
+    },
+    {
+      "file": "server/src/routes/media.routes.ts",
+      "method": "POST",
+      "path": "/question-images/presign",
+      "receiver": "mediaRouter"
+    },
+    {
+      "file": "server/src/routes/media.routes.ts",
+      "method": "POST",
+      "path": "/question-import-images/presign",
+      "receiver": "mediaRouter"
     },
     {
       "file": "server/src/routes/notification.routes.ts",
@@ -1442,12 +1664,6 @@
     },
     {
       "file": "server/src/routes/quiz.routes.ts",
-      "method": "GET",
-      "path": "/analytics/overview",
-      "receiver": "quizRouter"
-    },
-    {
-      "file": "server/src/routes/quiz.routes.ts",
       "method": "POST",
       "path": "/integrity-repair",
       "receiver": "quizRouter"
@@ -1456,78 +1672,6 @@
       "file": "server/src/routes/quiz.routes.ts",
       "method": "GET",
       "path": "/integrity-report",
-      "receiver": "quizRouter"
-    },
-    {
-      "file": "server/src/routes/quiz.routes.ts",
-      "method": "GET",
-      "path": "/question-attempts",
-      "receiver": "quizRouter"
-    },
-    {
-      "file": "server/src/routes/quiz.routes.ts",
-      "method": "POST",
-      "path": "/question-attempts",
-      "receiver": "quizRouter"
-    },
-    {
-      "file": "server/src/routes/quiz.routes.ts",
-      "method": "GET",
-      "path": "/questions",
-      "receiver": "quizRouter"
-    },
-    {
-      "file": "server/src/routes/quiz.routes.ts",
-      "method": "POST",
-      "path": "/questions",
-      "receiver": "quizRouter"
-    },
-    {
-      "file": "server/src/routes/quiz.routes.ts",
-      "method": "DELETE",
-      "path": "/questions/:id",
-      "receiver": "quizRouter"
-    },
-    {
-      "file": "server/src/routes/quiz.routes.ts",
-      "method": "PATCH",
-      "path": "/questions/:id",
-      "receiver": "quizRouter"
-    },
-    {
-      "file": "server/src/routes/quiz.routes.ts",
-      "method": "GET",
-      "path": "/results",
-      "receiver": "quizRouter"
-    },
-    {
-      "file": "server/src/routes/quiz.routes.ts",
-      "method": "POST",
-      "path": "/results",
-      "receiver": "quizRouter"
-    },
-    {
-      "file": "server/src/routes/quiz.routes.ts",
-      "method": "GET",
-      "path": "/results/latest",
-      "receiver": "quizRouter"
-    },
-    {
-      "file": "server/src/routes/quiz.routes.ts",
-      "method": "GET",
-      "path": "/results/scoped",
-      "receiver": "quizRouter"
-    },
-    {
-      "file": "server/src/routes/quiz.routes.ts",
-      "method": "GET",
-      "path": "/results/section-analytics/:quizId",
-      "receiver": "quizRouter"
-    },
-    {
-      "file": "server/src/routes/quiz.routes.ts",
-      "method": "GET",
-      "path": "/skill-progress",
       "receiver": "quizRouter"
     },
     {
@@ -1564,6 +1708,12 @@
       "file": "server/src/routes/review.routes.ts",
       "method": "GET",
       "path": "/due",
+      "receiver": "reviewRouter"
+    },
+    {
+      "file": "server/src/routes/review.routes.ts",
+      "method": "GET",
+      "path": "/mastery-challenges",
       "receiver": "reviewRouter"
     },
     {
@@ -1913,6 +2063,12 @@
     {
       "file": "server/src/app.ts",
       "receiver": "app",
+      "prefix": "/api/ai/generate-mock-exam",
+      "mounted": "requireAuth"
+    },
+    {
+      "file": "server/src/app.ts",
+      "receiver": "app",
       "prefix": "/api/auth",
       "mounted": "express.json({ limit: \"100kb\" })"
     },
@@ -2003,6 +2159,12 @@
     {
       "file": "server/src/routes/index.ts",
       "receiver": "apiRouter",
+      "prefix": "/media",
+      "mounted": "mediaRouter"
+    },
+    {
+      "file": "server/src/routes/index.ts",
+      "receiver": "apiRouter",
       "prefix": "/notifications",
       "mounted": "notificationRouter"
     },
@@ -2047,6 +2209,12 @@
       "receiver": "apiRouter",
       "prefix": "/quizzes",
       "mounted": "quizRouter"
+    },
+    {
+      "file": "server/src/routes/index.ts",
+      "receiver": "apiRouter",
+      "prefix": "/review",
+      "mounted": "studentReviewRouter"
     },
     {
       "file": "server/src/routes/index.ts",
@@ -2100,14 +2268,22 @@
     "ADMIN_UI_GAP_RUN_ID",
     "ADMIN_XLSX_EXPORT_RUN_ID",
     "AI_DAILY_LIMIT",
+    "AI_PER_SCHOOL_DAILY_LIMIT",
     "AI_PER_USER_DAILY_LIMIT",
     "AI_PROVIDER",
     "AI_PROVIDER_ORDER",
+    "AI_QUESTION_ASSISTANT_CACHE_MINUTES",
+    "AI_QUESTION_ASSISTANT_MAX_OUTPUT_TOKENS",
+    "AI_QUESTION_ASSISTANT_PER_MINUTE",
     "AI_REQUEST_TIMEOUT_MS",
     "AI_RUNTIME_AUDIT_RUN_ID",
     "ALLOW_SMART_CLASSROOM_E2E_UNSAFE_DB",
     "ALLOW_SMART_CLASSROOM_INDEX_MIGRATION",
+    "ALLOW_VERBAL26_APPLY",
+    "ALMEAA_APPLY_FOUNDATION_SKILL_MAPPING",
+    "ALMEAA_APPLY_SKILL_MIGRATION",
     "API_BASE_URL",
+    "APPLY_R2_INLINE_IMAGE_MIGRATION",
     "APP_BASE_URL",
     "APP_VERSION",
     "ASSESSMENT_COMMERCIAL_AUDIT_RUN_ID",
@@ -2129,6 +2305,7 @@
     "EMAIL_PROVIDER",
     "EMAIL_WEBHOOK_TOKEN",
     "EMAIL_WEBHOOK_URL",
+    "EXPECTED_RELEASE_SHA",
     "FACEBOOK_APP_ID",
     "FACEBOOK_APP_SECRET",
     "GEMINI_API_KEY",
@@ -2151,6 +2328,7 @@
     "LM_STUDIO_MODEL",
     "LOAD_API_BASE",
     "LOAD_DURATION_SECONDS",
+    "LOAD_PROFILE",
     "LOAD_STUDENT_EMAIL",
     "LOAD_STUDENT_PASSWORD",
     "MODE",
@@ -2171,14 +2349,34 @@
     "OPENROUTER_MODEL",
     "PAYMENT_WEBHOOK_SECRET",
     "PILOT_ALLOW_EXTERNAL_RUN",
+    "PILOT_CSRF_COOKIE",
+    "PILOT_CSRF_TOKEN",
     "PILOT_WRITE_AUTHORIZATION",
     "PLATFORM_INTEGRATIONS_SECRET_KEY",
     "PORT",
     "PROD",
+    "PRODUCTION_API_BASE",
+    "PRODUCTION_LATENCY_ENFORCE",
+    "PRODUCTION_LATENCY_MAX_ERROR_RATE",
+    "PRODUCTION_LATENCY_MAX_P95_MS",
+    "PRODUCTION_LATENCY_OUTPUT",
+    "PRODUCTION_LATENCY_SAMPLES",
+    "PRODUCTION_LATENCY_TIMEOUT_MS",
     "QUESTION_EDITOR_AUDIT_RUN_ID",
+    "QUESTION_PILOT_BATCH_ID",
+    "QUESTION_PILOT_EXPECTED_COUNT",
+    "QUESTION_PILOT_MODE",
     "QWEN_API_KEY",
     "QWEN_BASE_URL",
     "QWEN_MODEL",
+    "R2_ACCESS_KEY_ID",
+    "R2_ACCOUNT_ID",
+    "R2_BUCKET",
+    "R2_PRESIGN_EXPIRES_SECONDS",
+    "R2_PUBLIC_BASE_URL",
+    "R2_SECRET_ACCESS_KEY",
+    "R2_UPLOAD_ENABLED",
+    "R2_UPLOAD_MAX_BYTES",
     "RATE_LIMIT_AUTH_LIMIT",
     "RATE_LIMIT_AUTH_WINDOW_MS",
     "RATE_LIMIT_GLOBAL_LIMIT",
@@ -2188,11 +2386,15 @@
     "RATE_LIMIT_SENSITIVE_WINDOW_MS",
     "REDIS_KEY_PREFIX",
     "REDIS_URL",
+    "RELEASE_API_BASE",
+    "RELEASE_IDENTITY_INTERVAL_MS",
+    "RELEASE_IDENTITY_MAX_ATTEMPTS",
     "RENDER_API_KEY",
     "RENDER_GIT_COMMIT",
     "RENDER_SERVICE_ID",
     "REPORT_ACTIONS_AUDIT_RUN_ID",
     "REQUEST_LOG_LEVEL",
+    "REQUIRE_SCALE_READY",
     "RESEND_API_KEY",
     "ROLE_ADMIN_EMAIL",
     "ROLE_ADMIN_PASSWORD",
@@ -2216,6 +2418,8 @@
     "SENTRY_ENVIRONMENT",
     "SENTRY_TRACES_SAMPLE_RATE",
     "SLOW_REQUEST_LOG_MS",
+    "SMART_CLASSROOM_LOAD_STUDENTS",
+    "SMART_CLASSROOM_SCENARIO",
     "SMOKE_ADMIN_EMAIL",
     "SMOKE_ADMIN_PASSWORD",
     "SMOKE_ADMIN_TOKEN",
@@ -2276,10 +2480,14 @@
     "UI_AUDIT_ROLES",
     "UI_AUDIT_ROLE_CREDENTIALS_JSON",
     "UI_AUDIT_RUN_ID",
+    "VERBAL26_APPROVED_BANK",
+    "VERBAL26_BACKUP_REFERENCE",
+    "VERBAL26_DRY_RUN",
     "VERCEL_GIT_COMMIT_SHA",
     "VERCEL_PROJECT_ID",
     "VERCEL_TEAM_ID",
     "VERCEL_TOKEN",
+    "VITE_GOOGLE_OAUTH_API_BASE",
     "VITE_PUBLIC_SITE_URL",
     "VITE_SENTRY_DSN",
     "VITE_SENTRY_ENVIRONMENT",
@@ -2294,45 +2502,60 @@
     "WHATSAPP_WEBHOOK_URL"
   ],
   "routeSourceHashes": {
-    "App.tsx": "a69c45223213f7397ccba951ec597c5ee6506db6d4bfab30bfefab4d9e8cea94",
-    "server/src/app.ts": "6a4e7c2477c42c73f8caf86d9c9076b20559af41a62fd8497e41a656dd67b1e7",
+    "App.tsx": "c71ef51dccde6bd51dadc82d6728486777c53791ed46af4fd2ea16fced890f96",
+    "server/src/app.ts": "60c461f179f67116cdd4b7b07f5293b6a43b697f26340b974a8a7c46bde3c882",
+    "server/src/modules/content/http/contentBootstrapRoutes.ts": "f716ee9422b5005fa88b30e9e42be5495b3e0c23a4d1a1813cac0a7849c9d973",
+    "server/src/modules/content/http/contentGroupRoutes.ts": "cca7c9dfc53262c25429dcce6c516b9c53e88d7d1c8b078ceb216d05d2664c08",
+    "server/src/modules/content/http/contentLearningRoutes.ts": "c4bad7a2a65c28f6abd8f7409d39acab69a7885e480edfe1528dc411a6051c1e",
+    "server/src/modules/content/http/contentPlatformIntegrationRoutes.ts": "539cc799a16515286293406e1bb2f24af12f19d5fd8680bc69e507d56de854e4",
+    "server/src/modules/content/http/contentPlatformIntegrationRuntimeRoutes.ts": "5a746c645597871bf4fcbb8f42827750a907a9d3aa56cf07293091c94307bd8c",
+    "server/src/modules/content/http/contentPresentationRoutes.ts": "c35653fd0a171ecbb8f03b1dabece1b05cec1530675bc8082e21ed1d75373d54",
+    "server/src/modules/content/http/contentReviewRoutes.ts": "399c3fd3e76ca15a85da30457aae8db67b40e1cf8fba760d57944ff0d4d942b0",
+    "server/src/modules/content/http/contentSchoolCommercialRoutes.ts": "ad6c2d375d7e00ddc58048b4883be58e56ddc75ff88a8b44e8074aad35a87053",
+    "server/src/modules/content/http/contentSchoolRelationsRoutes.ts": "f89c6a34123566fb2884e3b7cb7b701aa8c090f01c21d23e575621c9738d75a0",
+    "server/src/modules/content/http/contentSchoolReportImportRoutes.ts": "c7a6a2ba882a8aa8822617aec0ae01e0e5cfcd82c510fa6132ef2ca86d49b0d9",
+    "server/src/modules/content/http/contentStudyPlanRoutes.ts": "0d9a4bd2a036d2b2f9930b8cbf3f384acbae63c9aa5ee53ee4231ac8d692cc55",
+    "server/src/modules/quizzes/http/adaptiveMasteryRoutes.ts": "d1b31800f632b1b59dfb01d3b1c1d5fbb03230906200f4944ef12c639a48d8c0",
+    "server/src/modules/quizzes/http/adaptiveTelemetryRoutes.ts": "0cc69f8b837ccdffc0d29c953184d2d8a334e759cad86db30b8c42e14230456c",
+    "server/src/modules/quizzes/http/questionBankRoutes.ts": "c04bbee0888bbe9b39f85d010e76d16b849cf6d88a63a402fb9f50022610d0b8",
+    "server/src/modules/quizzes/http/questionImportRoutes.ts": "d4fcd8894e4428f3dc65ce33eb0c66e2600b5ba2ed946f6a19d75b5825533222",
+    "server/src/modules/quizzes/http/quizAnalyticsRoutes.ts": "3ff5e345c94b7a8b0da35683529bbe5c03916d7108b5199504a8652a67c4bda0",
+    "server/src/modules/quizzes/http/quizResultsRoutes.ts": "080454a7a2968993a1503b401e26684a5b520b843ec875a619eedf35eff84ee9",
+    "server/src/modules/quizzes/http/studentReviewRoutes.ts": "25c3628f4e4069f953b922c5b305a69cbddf06d4fbb9e9fe43e52f4d4c7e835b",
     "server/src/routes/activity.routes.ts": "0064ba5bfa47873cd04cd56171ada0f3d8097f3d7424e08c68bbf3ee4e05080a",
-    "server/src/routes/ai.routes.ts": "b0ce673311dbcba55fb4642c6574e02fadf52d443b51f123abbaf6f7ad8e84e7",
-    "server/src/routes/auth.routes.ts": "374755087cbe0a8212f558c6f7f8c87a546386bf5e9f7cebf95a3655fb6eed4f",
+    "server/src/routes/ai.routes.ts": "01c89f80c8cecb80e286bf6438ecc5afceb4a76f4073d7a1eb503e1b7aab1673",
+    "server/src/routes/auth.routes.ts": "89e478b4285cf48d2a2d59d8ff4336ab3be8b818d9de59d874fd26aebce0109a",
     "server/src/routes/backup.routes.ts": "7a2d96e02887120e64d23c4b573b6940dea05820feee08e92ba7a46ffc7985bd",
-    "server/src/routes/certificates.routes.ts": "a27e7f499c927ecbb9cb10ae16bfb45dc6eaf03a7ebc851ad1785491563b43f3",
-    "server/src/routes/classroom.routes.ts": "6d7ba99f3e3812d55c921b5a3b5a73cf16199cf1613e1e0afeb887cd8139ccbd",
-    "server/src/routes/classroom/classroomRouteSupport.ts": "7ef67ec7b8334166664241cb617443c1a11d4a648ddc3195fc24eadc42fc01e0",
-    "server/src/routes/classroom/registerClassroomAggregateRoutes.ts": "1442c744e4f6328b33e16c84748971240a2e12bb22e784753509c504bf32f9eb",
-    "server/src/routes/classroom/registerClassroomBatchRoutes.ts": "67072568cf359cc011c33d7e3aa9da14e9cf23d39146b4fbe4da62c899f99488",
+    "server/src/routes/certificates.routes.ts": "e4d29303c47a4faf34b9e473d99fe318976a8e641970deeafa0c2d4f309c0eca",
+    "server/src/routes/classroom/registerClassroomAggregateRoutes.ts": "0e1016cf33590ab99c3084f20739898eca94f80c21efec7da79fd0c4245a4f0f",
+    "server/src/routes/classroom/registerClassroomBatchRoutes.ts": "ae2b84e7b52fe53d0608d0508651f9dd48d02b3833d267cf9d6bb73e8ac8fede",
     "server/src/routes/classroom/registerClassroomCompetitionRoutes.ts": "20c36379e958be71349e497dbbd10bb64ee06d0998d71925b1ccc6548200c636",
     "server/src/routes/classroom/registerClassroomInsightsRoutes.ts": "1264c63e2ab35925ceffac2f2236e9b4050cb44886cf9ad1f1f72d860b7320bb",
-    "server/src/routes/classroom/registerClassroomStudentRoutes.ts": "a91705c3508d34ec6a5bb3efa2f22d638e8d110c4934462356c4922b8558bca7",
-    "server/src/routes/classroom/registerClassroomSupervisorRoutes.ts": "baec431f3f8dcc79d3c0760ee489b21f0635ecb9ba2ccf483318d5c8ff87ca62",
-    "server/src/routes/classroom/registerClassroomTeacherRoutes.ts": "539cb4530d7ca1f7b6052471256c003e0f23b66faf3a70246e9f9b2bb4c0393a",
+    "server/src/routes/classroom/registerClassroomStudentRoutes.ts": "e59bd41311a1cae06ac40a355d7650210f51e7e690f9d54669d62e0d608e7921",
+    "server/src/routes/classroom/registerClassroomSupervisorRoutes.ts": "7f6c7fc06e26ee1e1c4f8dc90ecacd1cf247004ac90a649c70162a5ef3a30ac4",
+    "server/src/routes/classroom/registerClassroomTeacherRoutes.ts": "2bc3290cd02d1792be9501a252c155fb2385f2521540bae89385ef1e31bcab8a",
     "server/src/routes/classroom/registerClassroomTemplateRoutes.ts": "5d22162bb830e3a22d99b9f6bd989ce79eb9e75d19de3785095937b8e064680e",
-    "server/src/routes/classroomRoot.routes.ts": "f76ba8de6fa50f0c3e6ffd9a8ab98f396e888d45276b78e076c3ee5b947017c2",
-    "server/src/routes/content.routes.ts": "c4237fa8f46b1a1dd62c3ad22a508a977a5d17aed94bd2b10ae32150ef6e7e81",
-    "server/src/routes/course.routes.ts": "8e15ce798fe451069163bfb18f14f60adeb5db44b63c813dadc9ce209d4c7d7c",
-    "server/src/routes/discussions.routes.ts": "73aa2402cc15ffc059fbd71c747999c22dd2443b2e832794c5cdbfe61d3a4bd7",
-    "server/src/routes/health.routes.ts": "dacc99ddbacd3638820daaeba9623f1d1e196b300c2081d9b69975ac0f1df1cf",
-    "server/src/routes/index.ts": "1723bf43c20bb303306204e49993a8f7172721cae47b1be482134479a1312465",
+    "server/src/routes/course.routes.ts": "eba5b4b3ddda9fc11591ca246d7fdd488f75bf495f6f83a3b413a5170bff6eda",
+    "server/src/routes/discussions.routes.ts": "5cfe31eca3c870fb3cd4b1114c41caf02699966f8b58e302561ca26b1e90fe63",
+    "server/src/routes/health.routes.ts": "b71dedf5b21eb145678bc2d88243797c796a23b27d18071b5908ef787f28d96e",
+    "server/src/routes/index.ts": "25f097d15c4a218748c3c8001a0a974c3484acfc228605276e7ed5b9122b45ad",
     "server/src/routes/leaderboard.routes.ts": "18f8b08b3c73d74c929aaefea226b99fb7085a1ccd23779a70139f82346fab30",
     "server/src/routes/live-exams.routes.ts": "012964a2474fde5a5c28532bbedca62e8b164dcaacb950db233aea5f63490d64",
-    "server/src/routes/notification.routes.ts": "9a4d2dbf2bb0ae6551db7dd5f365b4f401927c186fc5cf7121a9f87dccf5be21",
-    "server/src/routes/operations.routes.ts": "1ab34db92d48055705f3af88324b4e763b9082504f3b1049196d9149bb75364b",
-    "server/src/routes/parent.routes.ts": "8911fb79c9aee82c70710e841e590242d84bf72d8c9b2f015810bb25bd1bcde3",
-    "server/src/routes/payment.routes.ts": "278f9263a5be8796a8611cad3e2a546999a123b1d26b6c9b954b81b1d520ab17",
+    "server/src/routes/media.routes.ts": "75bb40dfa57268f2d8112ae17320a3cb581c8fe71095bbd92dbbc787cd89d213",
+    "server/src/routes/notification.routes.ts": "5874063fbb59afcc0f7ab7c32a023c7b35b955dd25383264d0573182ca30fb62",
+    "server/src/routes/operations.routes.ts": "c930004b5d36dcbd56cb3d3a011743e43d1f943f69d031659148a2032eee0bdd",
+    "server/src/routes/parent.routes.ts": "9d7f56423dc397d87855423a99bda4d01ac7127fb28410de77b8c46783f46d5e",
+    "server/src/routes/payment.routes.ts": "1237f2ad4547cdae412cedffacae4bc893a3a2232e3e2575cb16419574e047ef",
     "server/src/routes/productConfig.routes.ts": "c320823e126c1700360f5200fb82b7697d7d5bce7212ce11bf8fd262f714518f",
-    "server/src/routes/publicTests.routes.ts": "6dbbcd5502398027664212897e115e331150c43088f045f80c336f798544c33c",
+    "server/src/routes/publicTests.routes.ts": "72a018a1bd6c3e60a0a02615881a6e78a3861aec115f52168bff4aef350a7bde",
     "server/src/routes/questionAnalytics.routes.ts": "5bfe2f9c8c400574b284696cd0ee3f2d60186b17278aad6ac56c880574027bb5",
-    "server/src/routes/quiz.routes.ts": "f03e296efd18f9ad0a5ecbfb837e8f20a4bea9f2848ab5ec6287c36ce48627e7",
+    "server/src/routes/quiz.routes.ts": "bb320d2ead9499f87fbf25d3b5a954b9108acb8a3b8c535795f2512cc8115a57",
     "server/src/routes/quizResults.routes.ts": "759f2fc513eb2ed8055a04c406a17947f91d4867cfd1f4e01aba458c73d3c6fe",
-    "server/src/routes/review.routes.ts": "6dd3f20eb8beb4f864fb81e7efd7b5c53260402f4faec87ae1b5f6d4c8af56ff",
-    "server/src/routes/schoolAccess.routes.ts": "a78a4fe0717bc391880c68bfcff9b6fa44a3e4b7c6174c0c0852e3ee215d1300",
+    "server/src/routes/review.routes.ts": "836475c57cc350720af2e53f41961d54bbde6a916baf41ea720d2ee2371a08ef",
+    "server/src/routes/schoolAccess.routes.ts": "51f7fd4e034148729f93a96b94b6b3f78030bd42361c78c7552a751df7635b6e",
     "server/src/routes/schoolAdminIntegrity.routes.ts": "82107ad6c521dfb9f429bd34be8356cdab5f84767c8fc3f20f9d622d5e73f5fe",
-    "server/src/routes/search.routes.ts": "ffc0bec0a0985c5646c48f96574ff0b8790d12f16b930e173560807d4b47580b",
+    "server/src/routes/search.routes.ts": "2499d52eb8028894d8622cb1bebf896d90f3c3b03caf7e39cf231bf84381b104",
     "server/src/routes/seo.routes.ts": "5040a1d8a8f69879b9e978b57663b62e478559dc80ad73db1ac830752e604554",
-    "server/src/routes/taxonomy.routes.ts": "ebaa9cf5bcaa80418e593d24c2a73038952fef0560371cbd6a871e6c1bfa7818"
+    "server/src/routes/taxonomy.routes.ts": "7a20fb0d8e2d8553778a3e5d8fb2508e14d6a2ed3b18daa839ad71ce2acd1856"
   }
 }
