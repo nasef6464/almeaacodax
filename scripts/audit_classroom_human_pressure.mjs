@@ -110,7 +110,7 @@ function inspectTextForLeaks(text, location, contextName) {
   const source = String(text || '').slice(0, 2_000_000);
   const kinds = new Set();
   if (/passwordhash/i.test(source)) kinds.add('PASSWORD_HASH');
-  if (/eyJ[a-zA-Z0-9_-]{8,}\\.[a-zA-Z0-9_-]{8,}\\.[a-zA-Z0-9_-]{8,}/.test(source)) kinds.add('JWT');
+  if (/eyJ[a-zA-Z0-9_-]{8,}\.[a-zA-Z0-9_-]{8,}\.[a-zA-Z0-9_-]{8,}/.test(source)) kinds.add('JWT');
   for (const value of knownSensitiveValues) {
     if (!source.includes(value)) continue;
     if (/^\d{10}$/.test(value)) kinds.add('FULL_NATIONAL_ID');
