@@ -1,6 +1,6 @@
 {
   "project": "BIO26",
-  "status": "CROP_BATCH_ACTIVE_NOT_CLOSED",
+  "status": "CROP_PASS_INTERNAL_DEDUPE_PASS_EXISTING_BANK_AND_AI_PENDING",
   "counts": {
     "foundationPdfPages": 79,
     "questionPdfPages": 226,
@@ -18,6 +18,10 @@
     "rasterSpecialCrops": 16,
     "uniqueCropImageHashes": 2835,
     "exactCropHashDuplicateGroups": 0,
+    "manualVisualQaUniqueQuestionCodes": 126,
+    "sourceInternalSemanticDuplicateGroups": 3,
+    "sourceInternalDuplicateAliases": 3,
+    "sourceInternalCanonicalCandidateCount": 2832,
     "minQuestionsPerFrozenSubSkill": 3,
     "maxQuestionsPerFrozenSubSkill": 109
   },
@@ -27,9 +31,10 @@
     "inventory": "PASS",
     "questionToSkillLedger": "PASS_PRE_CROP_V1",
     "answers": "PASS_SOURCE_KEY",
-    "crop": "GEOMETRY_COMPLETE_VISUAL_BATCH_QA_IN_PROGRESS",
+    "crop": "PASS_STRATIFIED_VISUAL_QA",
+    "cropAssetPackage": "REGENERATION_OR_RECOVERY_REQUIRED_BEFORE_R2_UPLOAD",
     "aiContext": "INITIALIZED_PENDING_AUTHORING",
-    "dedupe": "EXACT_IMAGE_HASH_PASS_SEMANTIC_AND_EXISTING_BANK_PENDING",
+    "dedupe": "PASS_SOURCE_INTERNAL_EXISTING_BANK_PENDING",
     "draftImport": "BLOCKED",
     "liveE2E": "NOT_RUN",
     "approval": "NOT_RUN"
@@ -49,7 +54,10 @@
     "eachLessonQuestionSequenceContinuous": true,
     "cropRows2835": true,
     "cropImageHashUnique": true,
-    "exactImageHashDuplicatesZero": true
+    "exactImageHashDuplicatesZero": true,
+    "stratifiedVisualCropQaAcrossAll48Lessons": true,
+    "extremeHeightCropQa": true,
+    "sourceInternalSemanticDedupeComplete": true
   },
   "sourceKeyValidation": {
     "method": "Embedded source answer strips; visual source adjudication only where embedded text was unavailable.",
@@ -65,11 +73,19 @@
       "VECTOR_TEXT_ANCHORED": 2819,
       "RASTER_SPECIAL_P164_VERIFIED_LAYOUT": 16
     },
-    "representativeVisualPass": [
-      "BIO26-L01-Q001..Q015",
-      "BIO26-L36-Q048..Q063"
-    ],
-    "finalVisualQA": "IN_PROGRESS"
+    "manualVisualQa": {
+      "firstLessonSample": "BIO26-L01-Q001..Q015",
+      "allLessonsTallestCrop": "48/48",
+      "globalShortestCropStressSet": 48,
+      "rasterSpecial": "BIO26-L36-Q048..Q063",
+      "uniqueQuestionCodesReviewed": 126
+    },
+    "finalVisualQA": "PASS"
+  },
+  "dedupeValidation": {
+    "sourceInternalCanonicalCandidateCount": 2832,
+    "duplicateAliasCount": 3,
+    "existingBiologyBankComparison": "PENDING"
   },
   "specialEvidence": [
     "Lesson 7 pages 38–43 are raster-heavy; question ranges were visually verified.",
