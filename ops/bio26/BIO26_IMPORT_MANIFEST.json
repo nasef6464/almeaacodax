@@ -4,7 +4,7 @@
   "expectedSourceOccurrences": 2835,
   "duplicateAliases": 3,
   "finalCanonicalCount": 2832,
-  "canonicalReadyItems": 106,
+  "canonicalReadyItems": 217,
   "requiredGates": {
     "inventory": "PASS",
     "taxonomy": "PASS",
@@ -14,7 +14,7 @@
     "answers": "PASS_SOURCE_KEY",
     "skill": "PASS_PRE_CROP",
     "dedupe": "PASS_FINAL_2832_CANONICAL",
-    "aiContext": "AUTHORING_IN_PROGRESS_106_OF_2832",
+    "aiContext": "AUTHORING_IN_PROGRESS_217_OF_2832",
     "r2Upload": "PENDING",
     "productionSubjectSafety": "PASS_DEDICATED_BIOLOGY_SUBJECT_REQUIRED"
   },
@@ -35,11 +35,12 @@
   ],
   "items": [],
   "aiContext": {
-    "authoredCanonicalItems": 106,
-    "pendingCanonicalItems": 2726,
+    "authoredCanonicalItems": 217,
+    "pendingCanonicalItems": 2615,
     "completedLessons": [
       "BIO26-L01",
-      "BIO26-L02"
+      "BIO26-L02",
+      "BIO26-L03"
     ]
   },
   "productionSubjectPlan": {
