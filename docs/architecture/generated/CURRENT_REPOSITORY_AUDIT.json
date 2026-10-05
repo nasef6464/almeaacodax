@@ -1,13 +1,13 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-05T04:16:58.514Z",
-  "gitHead": "5257878f53e59bff3b8e8e8d8eca806275ab4f09",
+  "generatedAt": "2026-10-05T04:38:24.064Z",
+  "gitHead": "b9c269aea9f092d876db6f5dca19dcf6d7f60506",
   "summary": {
     "trackedFiles": 1917,
     "sourceFiles": 1280,
     "runtimeSourceFiles": 799,
-    "sourceLines": 238206,
-    "runtimeSourceLines": 187667,
+    "sourceLines": 238261,
+    "runtimeSourceLines": 187673,
     "frontendRoutes": 55,
     "backendRouteEntries": 332,
     "routerMounts": 34,
@@ -32,8 +32,8 @@
     },
     "web-source": {
       "files": 390,
-      "bytes": 6722732,
-      "lines": 127222
+      "bytes": 6723444,
+      "lines": 127228
     },
     "source-other": {
       "files": 13,
@@ -42,8 +42,8 @@
     },
     "documentation": {
       "files": 365,
-      "bytes": 5672692,
-      "lines": 130603
+      "bytes": 5674053,
+      "lines": 130641
     },
     "public-asset": {
       "files": 31,
@@ -52,8 +52,8 @@
     },
     "test-or-ops-script": {
       "files": 406,
-      "bytes": 2130352,
-      "lines": 42971
+      "bytes": 2133146,
+      "lines": 43020
     },
     "api-support": {
       "files": 14,
@@ -74,8 +74,8 @@
   "domainStats": {
     "shared": {
       "files": 191,
-      "lines": 37411,
-      "bytes": 1737769
+      "lines": 37417,
+      "bytes": 1738339
     },
     "notifications": {
       "files": 21,
@@ -130,7 +130,7 @@
     "reports": {
       "files": 36,
       "lines": 9443,
-      "bytes": 510525
+      "bytes": 510667
     },
     "ai": {
       "files": 3,
@@ -158,17 +158,17 @@
       "file": "pages/Reports.tsx",
       "category": "web-source",
       "domain": "reports",
-      "bytes": 210251,
+      "bytes": 210393,
       "lines": 3036,
-      "sha256": "50c604a464ba278810f218443d438db216124295413c225d9ac65c03acd75f17"
+      "sha256": "1156bb453876d72a129646643decec4922c856d8b2046030af7ce1cfc21547df"
     },
     {
       "file": "pages/Dashboard.tsx",
       "category": "web-source",
       "domain": "shared",
-      "bytes": 153802,
-      "lines": 2540,
-      "sha256": "c9431ca42f678a0431203532688b1890e73d5ca4e020abb9e8d9d620138b59dc"
+      "bytes": 154372,
+      "lines": 2546,
+      "sha256": "eaee8b6a94419a27f8a158390a7b5fed3d410e378914e0d149ae2605ea39ba88"
     },
     {
       "file": "pages/QuizPage.tsx",
@@ -22241,17 +22241,17 @@
       "file": "docs/architecture/generated/BASELINE_CONTRACT_MANIFEST.json",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 79273,
-      "lines": 2562,
-      "sha256": "416b82b1082255337482a068d4d249dde1ad80d4b2b25a9ad26c91977bd95b49"
+      "bytes": 79469,
+      "lines": 2568,
+      "sha256": "b8bfd6ae03406118fbfb37015a55143d30ebb9733744c011dfe9c1dfd00528c6"
     },
     {
       "file": "docs/architecture/generated/CURRENT_REPOSITORY_AUDIT.json",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 1086641,
-      "lines": 32768,
-      "sha256": "266a8570c2d045e0e76cc080f23d00446e0c19f80c04e5884590f914f639d310"
+      "bytes": 1087565,
+      "lines": 32794,
+      "sha256": "6a3957164dab51d586b4a1593a3cb5297877b3d2358330d189891398606c8785"
     },
     {
       "file": "docs/architecture/generated/CURRENT_REPOSITORY_AUDIT.md",
@@ -22259,15 +22259,15 @@
       "domain": "shared",
       "bytes": 4172,
       "lines": 75,
-      "sha256": "fe250e7e9efeec9e1ea315ac8749212d8b810f79970323f9692cf20053f768d6"
+      "sha256": "668b52dc8815264d5ea951e48ad853667da40572a3c86f66b713055bcc71a65b"
     },
     {
       "file": "docs/architecture/generated/MIGRATION_MAP_V2_CANDIDATE.json",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 177616,
-      "lines": 4719,
-      "sha256": "0e17b4d186c28d0afd0cd95399349e82c84b3e5ecdb7fe68d67331c56c5584fe"
+      "bytes": 177857,
+      "lines": 4725,
+      "sha256": "c0a599292919323313b26730a1960ecd56b30c044a35f1da10839f4523669ee2"
     },
     {
       "file": "docs/architecture/generated/SOURCE_REFERENCE_AUDIT.json",
@@ -24089,9 +24089,9 @@
       "file": "pages/Dashboard.tsx",
       "category": "web-source",
       "domain": "shared",
-      "bytes": 153802,
-      "lines": 2540,
-      "sha256": "c9431ca42f678a0431203532688b1890e73d5ca4e020abb9e8d9d620138b59dc"
+      "bytes": 154372,
+      "lines": 2546,
+      "sha256": "eaee8b6a94419a27f8a158390a7b5fed3d410e378914e0d149ae2605ea39ba88"
     },
     {
       "file": "pages/Dashboard/SupervisorTasksStrip.tsx",
@@ -24289,9 +24289,9 @@
       "file": "pages/Reports.tsx",
       "category": "web-source",
       "domain": "reports",
-      "bytes": 210251,
+      "bytes": 210393,
       "lines": 3036,
-      "sha256": "50c604a464ba278810f218443d438db216124295413c225d9ac65c03acd75f17"
+      "sha256": "1156bb453876d72a129646643decec4922c856d8b2046030af7ce1cfc21547df"
     },
     {
       "file": "pages/Reports/SchoolSkillAggregatePanel.tsx",
@@ -24945,9 +24945,9 @@
       "file": "scripts/audit_classroom_human_pressure.mjs",
       "category": "test-or-ops-script",
       "domain": "schools",
-      "bytes": 62086,
-      "lines": 1298,
-      "sha256": "d5bb71d95e412ea357438d5c567469e20a27bb6a931ebc0d721da46941b0b77b"
+      "bytes": 64880,
+      "lines": 1347,
+      "sha256": "015c321e605f9e544d581163dc8149b0261ee5ecc3cdf60788f1af3e77f2d6fa"
     },
     {
       "file": "scripts/backup-db.sh",

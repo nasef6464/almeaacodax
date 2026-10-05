@@ -422,8 +422,10 @@ const PathsTab = () => {
     return (
         <div className="space-y-8 animate-fade-in">
             <div>
-                <h2 className="text-2xl font-bold text-gray-800 mb-2">إدارة المسارات التعليمية</h2>
-                <p className="text-gray-500">تابع تقدمك في المسارات المسجل بها واستكشف مسارات جديدة.</p>
+                <h2 className="text-2xl font-bold text-gray-800 mb-2">إدارة المسارات التعليمية والخطط الدراسية</h2>
+                <p className="text-gray-500 leading-relaxed">
+                    تابع تقدمك في المسارات التعليمية المسجل بها، واستكشف مسارات تدريبية جديدة تناسب أهدافك مع إمكانية متابعة الدروس والاختبارات التأسيسية خطوة بخطوة.
+                </p>
             </div>
 
             {/* Active Paths */}
@@ -1387,7 +1389,7 @@ const ParentEmptyState = () => (
         <User size={42} className="mx-auto mb-4 text-gray-300" />
         <h3 className="text-xl font-black text-gray-900">لا توجد بيانات متابعة بعد</h3>
         <p className="mx-auto mt-2 max-w-xl text-sm leading-7 text-gray-500">
-            اربط حساب ولي الأمر بالطالب من إدارة المستخدمين. بعد أول اختبار أو محاولة تدريب ستظهر النتائج والمهارات هنا تلقائيًا.
+            اربط حساب ولي الأمر بالطالب من إدارة المستخدمين. بعد أول اختبار أو محاولة تدريب ستظهر النتائج والمهارات هنا تلقائيًا، مع تفاصيل أداء الأبناء والمهارات الضعيفة المطلوب مراجعتها خطوة بخطوة.
         </p>
     </Card>
 );
@@ -1672,15 +1674,17 @@ const ParentResultsTab = () => {
 
     if (data.isLoading) return <ParentLoadingState />;
     if (data.loadError) return <ParentErrorState message={data.loadError} />;
-    if (data.scopedResults.length === 0) return <ParentEmptyState />;
 
     return (
         <div className="space-y-6 animate-fade-in pb-20">
             <div>
                 <h2 className="text-2xl font-black text-gray-900">نتائج الأبناء</h2>
-                <p className="mt-1 text-sm text-gray-500">آخر المحاولات مرتبة من الأحدث للأقدم مع الدرجة وتاريخ الاختبار.</p>
+                <p className="mt-1 text-sm text-gray-500">آخر المحاولات مرتبة من الأحدث للأقدم مع الدرجة وتاريخ الاختبار ومستوى الأداء.</p>
             </div>
-            <div className="space-y-3">
+            {data.scopedResults.length === 0 ? (
+                <ParentEmptyState />
+            ) : (
+                <div className="space-y-3">
                 {data.scopedResults.map((result, index) => {
                     const weakSkills = [...(result.skillsAnalysis || [])]
                         .filter((skill) => Number(skill.mastery ?? 100) < 75 || skill.status === 'weak')
@@ -1730,6 +1734,7 @@ const ParentResultsTab = () => {
                     );
                 })}
             </div>
+            )}
         </div>
     );
 };
@@ -1739,15 +1744,16 @@ const ParentSkillsTab = () => {
 
     if (data.isLoading) return <ParentLoadingState />;
     if (data.loadError) return <ParentErrorState message={data.loadError} />;
-    if (data.scopedResults.length === 0) return <ParentEmptyState />;
 
     return (
         <div className="space-y-6 animate-fade-in pb-20">
             <div>
-                <h2 className="text-2xl font-black text-gray-900">المهارات التي تحتاج متابعة</h2>
-                <p className="mt-1 text-sm text-gray-500">ترتيب عملي لما يحتاجه الأبناء بناءً على نتائجهم الفعلية.</p>
+                <h2 className="text-2xl font-black text-gray-900">المهارات الضعيفة التي تحتاج متابعة</h2>
+                <p className="mt-1 text-sm text-gray-500">ترتيب عملي لما يحتاجه الأبناء بناءً على نتائجهم الفعلية، ومتابعة المهارات الضعيفة أولاً بأول.</p>
             </div>
-            {data.weakSkills.length > 0 ? (
+            {data.scopedResults.length === 0 ? (
+                <ParentEmptyState />
+            ) : data.weakSkills.length > 0 ? (
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     {data.weakSkills.map((skill) => (
                         <Card key={`${skill.key}-${skill.studentName}-${skill.quizTitle}`} className="p-5">
