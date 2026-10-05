@@ -1,22 +1,22 @@
 {
   "status": "PASSED_CERTIFICATION",
-  "executionTimestamp": "2026-10-05T03:34:09.845Z",
-  "activeSessionId": "6ac31913a0d1d023ca3cd3da",
+  "executionTimestamp": "2026-10-05T06:52:15.296Z",
+  "activeSessionId": "6ac3455eb570173a16b88629",
   "assertions": {
-    "total": 37,
-    "passed": 37,
+    "total": 42,
+    "passed": 42,
     "failed": 0
   },
   "timings": {
-    "scenarioA_seconds": 22.6,
-    "scenarioB_20_students_join_seconds": 243.7,
-    "scenarioC_push_5_seconds": 9.1,
+    "scenarioA_seconds": 42.4,
+    "scenarioB_20_students_join_seconds": 668,
+    "scenarioC_push_5_seconds": 3.3,
     "scenarioF_push_10_seconds": 4.1
   },
   "metrics": {
     "clicks": {
       "scenarioA": 3,
-      "scenarioC": 3
+      "scenarioC": 1
     },
     "observations": {}
   },
@@ -30,28 +30,12 @@
     "studentEase": 9.5,
     "mobileErgonomics": 9
   },
-  "productGaps": [
-    {
-      "code": "PRODUCT GAP — CUSTOM DATE RANGE NOT SUPPORTED",
-      "description": "Classroom insights endpoint accepts standard time windows (today, week, month, all) but does not accept arbitrary custom date ranges (dateFrom / dateTo).",
-      "recommendation": "Extend periodSchema in registerClassroomInsightsRoutes to support custom dateFrom and dateTo range filters."
-    },
-    {
-      "code": "PRODUCT GAP — MONTHLY CLASSROOM SUMMARY",
-      "description": "Platform supports filtering reports within 7d/30d periods, but lacks an aggregated monthly executive matrix summarizing cross-class trends.",
-      "recommendation": "Add Monthly Aggregated Classroom Summary card to Teacher and Principal dashboards."
-    },
-    {
-      "code": "PRODUCT GAP — SUPERVISOR HIERARCHICAL DRILLDOWN",
-      "description": "Supervisor sees flat list of sessions and teacher summaries, but lacks interactive multi-level School -> Teacher -> Class -> Session hierarchy tree selector.",
-      "recommendation": "Introduce hierarchical tree filter in SmartClassroomReportsPanel for rapid inspection across large school networks."
-    }
-  ],
+  "productGaps": [],
   "assertionMatrix": [
     {
       "test": "Teacher Session Initialization",
       "expected": "Valid session ID created or recovered",
-      "actual": "Session ID: 6ac31913a0d1d023ca3cd3da",
+      "actual": "Session ID: 6ac3455eb570173a16b88629",
       "assertion": "PASS",
       "evidence": "teacher_session_initialized.png",
       "verdict": "VERIFIED"
@@ -163,7 +147,7 @@
     {
       "test": "Same Session Continuity for Multiple Activities",
       "expected": "Student continues in same session ID without reconnecting or re-entering PIN",
-      "actual": "Session ID remained constant: 6ac31913a0d1d023ca3cd3da",
+      "actual": "Session ID remained constant: 6ac3455eb570173a16b88629",
       "assertion": "PASS",
       "evidence": "student_continuous_session_mobile.png",
       "verdict": "VERIFIED"
@@ -289,9 +273,17 @@
       "verdict": "VERIFIED"
     },
     {
-      "test": "Persistence: Responses & Accuracy Summary Present",
-      "expected": "Live responses recorded and accuracy summary present in persistent report",
-      "actual": "Recorded responses: 20, summary present: true",
+      "test": "Persistence: Response Count Matches Live Aggregate",
+      "expected": "Live response count (20) == Persisted response count (20)",
+      "actual": "Live: 20 == Persisted: 20",
+      "assertion": "PASS",
+      "evidence": "teacher_persisted_session_report.png",
+      "verdict": "VERIFIED"
+    },
+    {
+      "test": "Persistence: Accuracy Summary Matches Live Aggregate",
+      "expected": "Live accuracy (20%) == Persisted accuracy (20%)",
+      "actual": "Live: 20% == Persisted: 20%",
       "assertion": "PASS",
       "evidence": "teacher_persisted_session_report.png",
       "verdict": "VERIFIED"
@@ -299,7 +291,7 @@
     {
       "test": "Historical Reporting: Multiple Distinct Sessions Retrievable",
       "expected": "Teacher history contains >= 2 distinct historical sessions",
-      "actual": "Distinct historical sessions found: 47",
+      "actual": "Distinct historical sessions found: 50",
       "assertion": "PASS",
       "evidence": "",
       "verdict": "VERIFIED"
@@ -332,6 +324,38 @@
       "test": "RBAC Negative: Supervisor blocked from Out-of-Scope School Interventions",
       "expected": "HTTP 403 Forbidden",
       "actual": "HTTP 403",
+      "assertion": "PASS",
+      "evidence": "",
+      "verdict": "VERIFIED"
+    },
+    {
+      "test": "Supervisor Reporting: 7-Day Analytics Window",
+      "expected": "Supervisor 7-day analytics return HTTP 200 with analytics payload",
+      "actual": "HTTP 200, analytics: true",
+      "assertion": "PASS",
+      "evidence": "",
+      "verdict": "VERIFIED"
+    },
+    {
+      "test": "Supervisor Reporting: 30-Day Monthly Summary",
+      "expected": "Supervisor 30-day monthly summary returns aggregate totals",
+      "actual": "HTTP 200, sessions: 57",
+      "assertion": "PASS",
+      "evidence": "",
+      "verdict": "VERIFIED"
+    },
+    {
+      "test": "Supervisor Reporting: Custom Date Range",
+      "expected": "Supervisor custom date range returns HTTP 200 with explicit range metadata",
+      "actual": "HTTP 200, range: 2026-09-06T00:00:00.000Z -> 2026-10-05T23:59:59.999Z",
+      "assertion": "PASS",
+      "evidence": "",
+      "verdict": "VERIFIED"
+    },
+    {
+      "test": "Supervisor Reporting: School → Teacher → Class → Session Drilldown",
+      "expected": "Supervisor analytics exposes hierarchical School → Teacher → Class → Session structure",
+      "actual": "Schools in hierarchy: 1",
       "assertion": "PASS",
       "evidence": "",
       "verdict": "VERIFIED"

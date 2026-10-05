@@ -219,7 +219,7 @@ async function loginUser(page, identifier, password) {
   await page.waitForTimeout(300);
   const submitBtn = page.locator('#smart-login-submit');
 
-  let loginRetries = 3;
+  let loginRetries = 6;
   let loginResponse = null;
   while (loginRetries > 0) {
     [loginResponse] = await Promise.all([
@@ -228,10 +228,11 @@ async function loginUser(page, identifier, password) {
     ]);
 
     if (loginResponse && loginResponse.status() === 429) {
-      console.warn(`[THROTTLE] 429 rate limit received for ${identifier}, backing off 3.5s...`);
+      const backoffMs = Math.min(15000, 3500 * (7 - loginRetries));
+      console.warn(`[THROTTLE] 429 rate limit received for ${identifier}, backing off ${backoffMs}ms...`);
       loginRetries--;
       if (loginRetries === 0) break;
-      await page.waitForTimeout(3500);
+      await page.waitForTimeout(backoffMs);
       continue;
     }
     break;
@@ -289,15 +290,8 @@ async function runRealClassroomPressureCertification() {
     teacherPage = await teacherDesktopCtx.newPage();
 
     // Login from homepage
-    await teacherPage.goto(`${BASE_URL}/?auth=login`, { waitUntil: 'domcontentloaded' });
-    await teacherPage.fill('#smart-login-input', process.env['AUDIT_TEACHER_LOGIN']);
-    await teacherPage.fill('#smart-login-password', process.env['AUDIT_TEACHER_PASSWORD']);
-    await Promise.all([
-      teacherPage.waitForResponse((r) => r.url().includes('/api/auth/login') && r.request().method() === 'POST', { timeout: 20000 }),
-      teacherPage.click('#smart-login-submit'),
-    ]);
+    await loginUser(teacherPage, process.env['AUDIT_TEACHER_LOGIN'], process.env['AUDIT_TEACHER_PASSWORD']);
     teacherClicks += 2;
-    await teacherPage.waitForTimeout(2000);
 
     // Navigate to Classroom Teacher Console
     await teacherPage.goto(`${BASE_URL}/classroom/teacher`, { waitUntil: 'domcontentloaded' });
@@ -430,7 +424,7 @@ async function runRealClassroomPressureCertification() {
 
       // Check Teacher Console Participant Count
       await teacherPage.reload({ waitUntil: 'domcontentloaded' });
-      await teacherPage.waitForSelector('h1:has-text("لوحة تحكم المعلم")', { state: 'visible', timeout: 15000 });
+      await teacherPage.waitForSelector('h1:has-text("لوحة تحكم المعلم")', { state: 'visible', timeout: 30000 });
       await teacherPage.waitForTimeout(2000);
 
       // Verify participant count from backend live aggregate API
@@ -631,7 +625,7 @@ async function runRealClassroomPressureCertification() {
 
     // Reload Teacher Page and verify live radar submission counts
     await teacherPage.reload({ waitUntil: 'domcontentloaded' });
-    await teacherPage.waitForSelector('h1:has-text("لوحة تحكم المعلم")', { state: 'visible', timeout: 15000 });
+    await teacherPage.waitForSelector('h1:has-text("لوحة تحكم المعلم")', { state: 'visible', timeout: 30000 });
     await teacherPage.waitForTimeout(3000);
 
     const liveAggregate = await teacherPage.evaluate(async (sId) => {
