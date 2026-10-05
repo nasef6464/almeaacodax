@@ -151,6 +151,24 @@ paths:
         "422":
           description: Validation failed
 
+  /schools/validate:
+    post:
+      operationId: validateSchoolSetupDraft
+      description: Validate school, class, student, teacher and supervisor setup without live writes.
+      responses:
+        "200":
+          description: School setup validation result
+
+  /schools/draft:
+    post:
+      operationId: createSchoolSetupDraft
+      description: Creates a reviewable school setup draft using existing accounts only.
+      responses:
+        "201":
+          description: School setup draft created
+        "422":
+          description: Validation failed
+
 components:
   securitySchemes:
     CommandApiKey:
