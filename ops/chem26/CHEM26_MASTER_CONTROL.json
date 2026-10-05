@@ -1,7 +1,7 @@
 {
   "project": "CHEM26 Full Closure",
   "scope": "chemistry-only",
-  "updatedAt": "2026-10-05T11:41:00+03:00",
+  "updatedAt": "2026-10-05T13:18:00+03:00",
   "status": "READY_FOR_PRODUCTION_IMPORT",
   "source": {
     "questionPdf": "كتاب تجميعات يلو للكيمياء 26 - المعدل.pdf",
@@ -18,7 +18,8 @@
     "parentTopics": 27,
     "childTopics": 99,
     "badChildLinks": 0,
-    "legacyPlaceholdersRemoved": true
+    "legacyPlaceholdersRemoved": true,
+    "sectionIdPattern": "sec_sub_chemistry_{1..27}"
   },
   "questions": {
     "canonical": 1708,
@@ -39,12 +40,14 @@
   },
   "optionTextQA": {
     "canonicalComplete": 1708,
-    "visualSourceFallbackRows": 26
+    "sourceCompleteIncludingAlias": 1709,
+    "reviewRemaining": 0
   },
   "package": {
-    "name": "CHEM26_IMPORT_PACKAGE_READY_1708.zip",
-    "sha256": "875c57fdcd37dd6bc3a6669905bc9a6efb614318c6717a64ecd9085752750a66",
-    "batchId": "TAH-CHEM-CHEM26-FULL-V1"
+    "name": "CHEM26_IMPORT_PACKAGE_READY_1708_V2.zip",
+    "sha256": "0014da81af2c1d9cfe882897b16633d805b0df737800af37c1a5d16901522137",
+    "batchId": "TAH-CHEM-CHEM26-FULL-V1",
+    "sectionScopeAligned": true
   },
   "codeGates": {
     "canonicalPrefixMerged": true,
@@ -52,13 +55,13 @@
     "importRunnerPR": 373
   },
   "pending": [
-    "PR #373 CI + merge",
+    "PR #373 merge",
     "Production API dry-run",
     "5-question canary",
     "Full draft import <=100",
     "Live E2E",
     "Approval"
   ],
-  "transportBlocker": "Importer intentionally accepts only short-lived HTTPS oaiusercontent package URLs. The package bytes are prepared and hash-locked, but no external signed package URL is exposed by the current tool surface.",
+  "transportBlocker": "Importer intentionally accepts only short-lived HTTPS oaiusercontent package URLs. Package V2 is hash-locked and ready, but no signed external package URL is currently exposed by the available tool surface.",
   "blockerPolicy": "Do not weaken transport/auth controls. Continue all independent QA and merge work; execute import immediately when a signed package URL is available."
 }
