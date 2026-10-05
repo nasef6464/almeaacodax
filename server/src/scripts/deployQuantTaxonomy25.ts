@@ -554,7 +554,7 @@ export async function deploy() {
   console.log("Cleaned legacy/duplicate quizzes in training, tests, and foundation slots.");
 
   // A. SHORT FOUNDATION DRILLS (Max 10 questions each)
-  console.log("\n--- Generating 95 Foundation Drills (Max 10 questions) ---");
+  console.log("\n--- Generating 93 Foundation Drills (Max 10 questions) ---");
   const usedInShortDrills = new Set<string>();
 
   for (let i = 0; i < QUANT_TAXONOMY.length; i++) {
