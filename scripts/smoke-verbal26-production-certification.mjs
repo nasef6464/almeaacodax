@@ -15,6 +15,10 @@ function assert(condition, message) {
 function parseCookie(raw) {
   return String(raw || "").split(",")[0]?.split(";")[0]?.trim() || "";
 }
+function extractCookieValue(raw, cookieName) {
+  const match = String(raw || "").match(new RegExp(`${cookieName}=([^;]+)`));
+  return String(match?.[1] || "").trim();
+}
 async function csrf() {
   const res = await fetch(`${API_BASE}/auth/csrf-token`, { headers: { "Content-Type": "application/json" } });
   assert(res.ok, `csrf failed ${res.status}`);
@@ -34,8 +38,10 @@ async function login(email, password) {
   const text = await res.text();
   assert(res.ok, `login failed ${res.status}: ${text}`);
   const body = JSON.parse(text);
-  const token = String(body?.token || "").trim();
-  assert(token, "login returned no bearer token");
+  const bodyToken = String(body?.token || "").trim();
+  const cookieToken = extractCookieValue(res.headers.get("set-cookie"), "almeaa_access_token");
+  const token = bodyToken || cookieToken;
+  assert(token, "login returned no bearer token in JSON or auth cookie");
   return { token, user: body.user };
 }
 async function req(path, { method = "GET", token, body, expected } = {}) {
