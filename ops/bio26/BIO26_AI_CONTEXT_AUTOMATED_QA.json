@@ -1,0 +1,32 @@
+{
+  "project": "BIO26",
+  "checkedCanonicalItems": 370,
+  "uniqueQuestionCodes": 370,
+  "answerSourceKeyMatches": 370,
+  "answerSourceKeyMismatches": 0,
+  "skillRangeMatches": 370,
+  "skillRangeMismatches": 0,
+  "missingRequiredFields": 0,
+  "duplicateQuestionCodes": 0,
+  "completedLessons": [
+    "BIO26-L01",
+    "BIO26-L02",
+    "BIO26-L03",
+    "BIO26-L04",
+    "BIO26-L05"
+  ],
+  "requiredFields": [
+    "MainSkill",
+    "SubSkill",
+    "concept",
+    "correctAnswer",
+    "explanation",
+    "whyCorrect",
+    "whyOthersWrong",
+    "commonMistake",
+    "hint",
+    "foundationReference"
+  ],
+  "result": "PASS",
+  "note": "Automated cross-check compares each authored correctAnswer letter against BIO26_ANSWERS.csv and MainSkill/SubSkill against BIO26_QUESTION_RANGE_MAP.csv."
+}
