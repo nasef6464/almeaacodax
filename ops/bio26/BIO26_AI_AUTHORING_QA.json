@@ -1,0 +1,33 @@
+{
+  "project": "BIO26",
+  "status": "AUTHORING_IN_PROGRESS",
+  "expectedCanonicalItems": 2832,
+  "authoredCanonicalItems": 59,
+  "pendingCanonicalItems": 2773,
+  "completedLessons": ["BIO26-L01"],
+  "lesson1": {
+    "lesson": "دراسة الحياة",
+    "sourceOccurrences": 59,
+    "canonicalItems": 59,
+    "sourceAnswerCrossCheck": "PASS_59_OF_59",
+    "skillRangeCrossCheck": "PASS_59_OF_59",
+    "visualItems": 7,
+    "visualDescriptionsPresent": 7,
+    "answerInferredFromOCR": 0,
+    "foundationReference": "تأسيس أحياء كامل.pdf — درس دراسة الحياة — PDF p.5"
+  },
+  "fieldsAuthored": [
+    "MainSkill",
+    "SubSkill",
+    "concept",
+    "correctAnswer",
+    "explanation",
+    "whyCorrect",
+    "whyOthersWrong",
+    "commonMistake",
+    "hint",
+    "foundationReference",
+    "visualDescription"
+  ],
+  "rule": "Correct answers remain source-key only; authoring may explain the source-key answer but may not replace it."
+}
