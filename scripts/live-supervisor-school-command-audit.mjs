@@ -27,7 +27,7 @@ const ROLE_CANDIDATES = [
   {
     role: "school-supervisor",
     email: process.env.ROLE_SCHOOL_SUPERVISOR_EMAIL || "supervisor.school@almeaa.local",
-    password: process.env.ROLE_SCHOOL_SUPERVISOR_PASSWORD || "Supervisor@123",
+    password: process.env.ROLE_SCHOOL_SUPERVISOR_PASSWORD,
   },
   {
     role: "supervisor",
@@ -36,8 +36,8 @@ const ROLE_CANDIDATES = [
   },
   {
     role: "group-supervisor",
-    email: "supervisor.group@almeaa.local",
-    password: "Supervisor@123",
+    email: process.env.ROLE_GROUP_SUPERVISOR_EMAIL || "supervisor.group@almeaa.local",
+    password: process.env.ROLE_GROUP_SUPERVISOR_PASSWORD || process.env.ROLE_SUPERVISOR_PASSWORD || process.env.SUPERVISOR_PASSWORD,
   },
   {
     role: "admin",
