@@ -1,0 +1,54 @@
+{
+  "project": "CHEM26",
+  "status": "READY_FOR_API_DRY_RUN",
+  "sourceCoverage": 1709,
+  "canonicalImportCount": 1708,
+  "aliasCount": 1,
+  "alias": {
+    "sourceQuestionCode": "TAH-CHEM-CHEM26-P131-Q26",
+    "canonicalQuestionCode": "TAH-CHEM-CHEM26-P130-Q13",
+    "decision": "ALIAS_DUPLICATE_CONFIRMED_VISUALLY"
+  },
+  "taxonomyProduction": {
+    "pathId": "p_1777779653351",
+    "subjectId": "sub_1784980728386",
+    "sections": 27,
+    "mainSkills": 27,
+    "subSkills": 99,
+    "parentTopics": 27,
+    "childTopics": 99,
+    "legacyPlaceholderSectionsRemoved": 3,
+    "legacyPlaceholderSkillsRemoved": 9,
+    "questionsAtTaxonomyApply": 0,
+    "snapshotId": "chem26-taxonomy-preapply-20261005",
+    "verified": true
+  },
+  "qa": {
+    "answerPass": 1709,
+    "answerQuarantine": 0,
+    "skillMapped": 1709,
+    "cropGenerated": 1709,
+    "cropFourOptionLabelsDetected": 1709,
+    "uniqueCropHashes": 1709,
+    "actualDiskHashVerified": 1709,
+    "optionTextPass": 1709,
+    "optionTextVisualReviewResolved": 52,
+    "optionTextRemaining": 0,
+    "duplicateCanonicalQuestionCodes": 0,
+    "duplicateCanonicalSourceItemIds": 0,
+    "duplicateCanonicalImageHashes": 0
+  },
+  "package": {
+    "file": "CHEM26_IMPORT_PACKAGE_V1.zip",
+    "sha256": "ae41575190c1e64b0244125231b485df33e554bcda23c88e470def30a87a1930",
+    "canonicalImages": 1708,
+    "manifest": "CHEM26_IMPORT_MANIFEST_READY.json"
+  },
+  "remainingProductionGates": [
+    "API_DRY_RUN",
+    "CANARY_5_DRAFT",
+    "FULL_DRAFT_IMPORT",
+    "LIVE_E2E",
+    "APPROVAL"
+  ]
+}
