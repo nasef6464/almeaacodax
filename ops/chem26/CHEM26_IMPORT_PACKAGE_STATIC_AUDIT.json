@@ -1,0 +1,48 @@
+{
+  "project": "CHEM26",
+  "generatedAt": "2026-10-05T13:18:00+03:00",
+  "package": "CHEM26_IMPORT_PACKAGE_READY_1708_V3.zip",
+  "sha256": "d08e9eb9a86a33996a18349738f86e97309657ddb91508eb191a6838ed71093f",
+  "manifest": "CHEM26_IMPORT_MANIFEST_READY.json",
+  "items": 1708,
+  "validations": {
+    "uniqueQuestionCodes": 1708,
+    "uniqueSourceItemIds": 1708,
+    "uniqueImageHashes": 1708,
+    "imageFilesPresent": 1708,
+    "imageFileHashMatches": 1708,
+    "canonicalQuestionIdentityErrors": 0,
+    "canonicalSourceIdentityErrors": 0,
+    "taxonomyScopeErrors": 0,
+    "optionCountErrors": 0,
+    "correctOptionIndexErrors": 0,
+    "aiOptionTextErrors": 0,
+    "emptyExplanationErrors": 0,
+    "reviewerNotesNonEmpty": 1708,
+    "visualQaNoteRegexPass": 1708
+  },
+  "productionScope": {
+    "pathId": "p_1777779653351",
+    "subjectId": "sub_1784980728386",
+    "sectionPattern": "sec_sub_chemistry_N",
+    "mainSkillPattern": "skill_tah_chem_XX",
+    "subSkillPattern": "sub_tah_chem_XX_*"
+  },
+  "draftContract": {
+    "approvalStatus": "draft",
+    "allItemsDraft": true,
+    "optionsEmbeddedInImage": true
+  },
+  "approvalGate": {
+    "batchVisualQaNote": "تم التحقق بصريًا من المصدر على مستوى CHEM26 QA عبر عينات ممثلة من جميع الدروس والقسمين، مع إعادة قص الحالات المعيبة المؤكدة؛ الصورة الأصلية هي المرجع.",
+    "reviewerNotesNonEmpty": 1708,
+    "visualQaNoteRegexPass": 1708,
+    "status": "READY_AFTER_LIVE_E2E"
+  },
+  "transport": {
+    "googleDriveBackupFileId": "1BT0iiW13rsw7AhCvp-rAgkIifQTUffSC",
+    "oaiSignedUrlBridge": "AVAILABLE_ON_DEMAND",
+    "signedUrlHostSuffix": ".oaiusercontent.com",
+    "note": "A fresh short-lived signed URL is obtained by Drive raw fetch immediately before production import."
+  }
+}
