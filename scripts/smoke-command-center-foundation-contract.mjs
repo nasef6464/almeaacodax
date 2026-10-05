@@ -3,7 +3,7 @@ import { readFile } from "node:fs/promises";
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
-const [routes, auth, registry, draft, audit, plan, routeIndex, env] = await Promise.all([
+const [routes, auth, registry, draft, audit, plan, routeIndex, env, authoring, authoringRoutes] = await Promise.all([
   read("server/src/modules/command-center/http/commandCenterRoutes.ts"),
   read("server/src/modules/command-center/application/commandAuthorization.ts"),
   read("server/src/modules/command-center/application/commandToolRegistry.ts"),
@@ -12,6 +12,8 @@ const [routes, auth, registry, draft, audit, plan, routeIndex, env] = await Prom
   read("docs/architecture/ALMEAA_COMMAND_CENTER_EXECUTION_PLAN_AR.md"),
   read("server/src/routes/index.ts"),
   read("server/src/config/env.ts"),
+  read("server/src/modules/command-center/application/questionQuizDraftTools.ts"),
+  read("server/src/modules/command-center/http/questionQuizDraftRoutes.ts"),
 ]);
 
 assert.match(routes, /draftFirst/);
@@ -33,5 +35,9 @@ assert.match(routeIndex, /command-center/);
 assert.match(env, /ALMEAA_COMMAND_API_KEY/);
 assert.match(plan, /One Command Center/);
 assert.match(plan, /Plan → Execute → Verify/);
+assert.match(authoring, /subSkillIds/);
+assert.match(authoring, /exact_duplicate_live/);
+assert.match(authoringRoutes, /questions\/draft/);
+assert.match(authoringRoutes, /quizzes\/draft/);
 
 console.log("Command Center foundation contract: PASS");
