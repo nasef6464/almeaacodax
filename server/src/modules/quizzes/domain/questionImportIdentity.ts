@@ -1,8 +1,9 @@
 export type QuestionExamDomain = "qudurat_quantitative" | "tahsili_math" | "tahsili_chemistry";
 
-export const QUESTION_CODE_REGEX = /^(QDR-QNT|TAH-MATH)-[A-Z0-9_-]+-P\d{3}-Q\d{2,}$/;
+export const QUESTION_CODE_REGEX = /^(QDR-QNT|TAH-MATH|TAH-CHEM)-[A-Z0-9_-]+-P\d{3}-Q\d{2,}$/;
 export const QUDURAT_QUESTION_CODE_REGEX = /^QDR-QNT-[A-Z0-9_-]+-P\d{3}-Q\d{2,}$/;
 export const TAHSILI_MATH_QUESTION_CODE_REGEX = /^TAH-MATH-[A-Z0-9_-]+-P\d{3}-Q\d{2,}$/;
+export const TAHSILI_CHEM_QUESTION_CODE_REGEX = /^TAH-CHEM-[A-Z0-9_-]+-P\d{3}-Q\d{2,}$/;
 
 export interface ParsedQuestionCode {
   valid: boolean;
@@ -15,7 +16,7 @@ export interface ParsedQuestionCode {
 
 export function parseQuestionCode(code: string): ParsedQuestionCode {
   const normalized = String(code || "").trim().toUpperCase();
-  const match = normalized.match(/^(QDR-QNT|TAH-MATH)-([A-Z0-9_-]+)-P(\d{3})-Q(\d{2,})$/);
+  const match = normalized.match(/^(QDR-QNT|TAH-MATH|TAH-CHEM)-([A-Z0-9_-]+)-P(\d{3})-Q(\d{2,})$/);
   if (!match) {
     return { valid: false };
   }
@@ -24,7 +25,12 @@ export function parseQuestionCode(code: string): ParsedQuestionCode {
   const documentCode = match[2];
   const pageNumber = parseInt(match[3], 10);
   const questionNumber = parseInt(match[4], 10);
-  const domain: QuestionExamDomain =\n    prefix === "QDR-QNT" ? "qudurat_quantitative" : prefix === "TAH-CHEM" ? "tahsili_chemistry" : "tahsili_math";
+  const domain: QuestionExamDomain =
+    prefix === "QDR-QNT"
+      ? "qudurat_quantitative"
+      : prefix === "TAH-CHEM"
+        ? "tahsili_chemistry"
+        : "tahsili_math";
 
   return {
     valid: true,
