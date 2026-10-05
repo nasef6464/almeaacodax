@@ -3,7 +3,7 @@
 **Scope:** Biology only (`BIO26`).  
 **Repository:** `nasef6464/almeaacodax`  
 **Source-freeze version:** 1.0.0  
-**Status:** PRE-IMPORT CONTENT GATES PASS — AI CONTEXT + R2 UPLOAD PENDING — NOT CLOSED
+**Status:** PRE-IMPORT CONTENT GATES PASS — AI CONTEXT IN PROGRESS + R2 UPLOAD PENDING — NOT CLOSED
 
 ## Verified source inventory
 - Foundation PDF: **79 pages**.
@@ -45,7 +45,7 @@
 - Current Tahsili path exists.
 - The current production subject occupying the biology slot is named **علم البيئة**.
 - It currently has **0 questions** and only generic auto-seeded taxonomy (**3 generic sections / 9 generic skills**).
-- It is **not being mutated yet** until reference-safety checks against progress/evidence collections are complete.
+- Reference-safety audit is complete: its generic skills are referenced by **36 SkillProgress records** across **4 users**, carrying **72 historical attempts**. Therefore it will **not** be renamed or repurposed. BIO26 will receive a **dedicated الأحياء subject** during controlled import.
 
 ## Gate state
 | Gate | Status |
@@ -59,7 +59,7 @@
 | Asset regeneration | **PASS LOCAL — 2,835 files** |
 | Dedupe | **PASS — 2,832 canonical** |
 | Existing biology-bank dedupe | **PASS — 0 existing** |
-| AI context | AUTHORING PENDING |
+| AI context | **IN PROGRESS — 106 / 2,832 canonical** |
 | R2 upload | PENDING |
 | Dry run | BLOCKED BY AI/R2 |
 | Canary 5 | BLOCKED |
@@ -70,8 +70,8 @@
 | BIO26 CLOSED | **NO** |
 
 ## Next execution batch
-1. Complete reference-safety audit for the unused `علم البيئة` placeholder subject/taxonomy before replacing it with BIO26 taxonomy.
-2. Author canonical AI context for **2,832** questions, preserving source answers and adding diagram visual descriptions where required.
+1. Continue AI context authoring from **106 / 2,832** canonical questions; L01 and L02 are complete with source-answer and skill-range cross-checks.
+2. Create a **dedicated Biology subject** at controlled import time; preserve the existing `علم البيئة` subject and its historical progress.
 3. Upload **2,832** canonical V2 images to R2 and verify remote hashes/URLs.
 4. Dry Run → Canary 5 → Full Draft Import → Integrity Audit → Live E2E → Approval.
 
