@@ -8,6 +8,7 @@ const routeSource = fs.readFileSync(path.join(root, 'server/src/routes/classroom
 const routerSource = fs.readFileSync(path.join(root, 'server/src/routes/classroom.routes.ts'), 'utf8');
 const apiSource = fs.readFileSync(path.join(root, 'services/api.ts'), 'utf8');
 const supervisorUi = fs.readFileSync(path.join(root, 'dashboards/admin/SmartClassroomReportsPanel.tsx'), 'utf8');
+const supervisorSignalsUi = fs.readFileSync(path.join(root, 'dashboards/admin/SmartClassroomSupervisorSignals.tsx'), 'utf8');
 
 assert.ok(moduleSource.includes('source: "finalized_report_snapshots"'));
 assert.ok(moduleSource.includes('weakSkills'));
@@ -28,6 +29,12 @@ assert.ok(routeSource.includes('supervisorPeriodSchema'));
 assert.ok(routeSource.includes('"custom"'));
 assert.ok(routeSource.includes('from and to are required for custom period'));
 assert.ok(routeSource.includes('status: { $in: ["ended", "archived"] }'));
+assert.ok(routeSource.includes('ClassroomParticipantModel.find'));
+assert.ok(routeSource.includes('ClassroomResponseModel.find'));
+assert.ok(routeSource.includes('leastParticipation'));
+assert.ok(routeSource.includes('mostImproved'));
+assert.ok(routeSource.includes('responseRate'));
+assert.ok(routeSource.includes('improvement'));
 assert.ok(routeSource.includes('resolveSchoolEntitlement'));
 assert.ok(routeSource.includes('ensureTeacherSchoolAccess'));
 assert.ok(routeSource.includes('SCHOOL_SMART_CLASSROOM_VIEW'));
@@ -45,6 +52,11 @@ assert.ok(supervisorUi.includes('الحصص في النطاق الحالي'));
 assert.ok(supervisorUi.includes('أضعف المهارات في الفترة'));
 assert.ok(supervisorUi.includes('getSupervisorClassroomAnalytics'));
 assert.ok(supervisorUi.includes('getSupervisorClassroomReport'));
+assert.ok(supervisorUi.includes('SmartClassroomSupervisorSignals'));
+assert.ok(supervisorSignalsUi.includes('نشاط المعلمين في الفترة'));
+assert.ok(supervisorSignalsUi.includes('مقارنة الفصول'));
+assert.ok(supervisorSignalsUi.includes('الطلاب الأقل مشاركة'));
+assert.ok(supervisorSignalsUi.includes('الأكثر تحسنًا'));
 
 assert.ok(routerSource.includes('registerClassroomInsightsRoutes(classroomRouter)'));
 
