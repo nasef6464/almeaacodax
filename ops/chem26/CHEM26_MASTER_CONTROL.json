@@ -2,7 +2,7 @@
   "project": "CHEM26 Full Closure",
   "scope": "chemistry-only",
   "updatedAt": "2026-10-05T13:18:00+03:00",
-  "status": "READY_FOR_PRODUCTION_IMPORT",
+  "status": "IMPORT_RUNNER_MERGED_PACKAGE_VERIFIED",
   "source": {
     "questionPdf": "كتاب تجميعات يلو للكيمياء 26 - المعدل.pdf",
     "coverage": 1709,
@@ -47,21 +47,28 @@
     "name": "CHEM26_IMPORT_PACKAGE_READY_1708_V2.zip",
     "sha256": "0014da81af2c1d9cfe882897b16633d805b0df737800af37c1a5d16901522137",
     "batchId": "TAH-CHEM-CHEM26-FULL-V1",
-    "sectionScopeAligned": true
+    "sectionScopeAligned": true,
+    "staticAudit": "PASS",
+    "staticAuditErrors": 0
   },
   "codeGates": {
     "canonicalPrefixMerged": true,
     "taxonomyProductionGateMerged": true,
-    "importRunnerPR": 378
+    "importRunnerPR": 378,
+    "importRunnerMerged": true,
+    "postImportGatePR": 381
   },
   "pending": [
-    "Import runner merge",
+    "PR #381 CI + merge",
+    "Signed package transport to production runtime",
     "Production API dry-run",
     "5-question canary",
     "Full draft import <=100",
     "Live E2E",
-    "Approval"
+    "Visual QA reviewer evidence",
+    "Approval",
+    "Post-approval verification"
   ],
-  "transportBlocker": "Importer intentionally accepts only short-lived HTTPS oaiusercontent package URLs. Package V2 is hash-locked and ready, but no signed external package URL is currently exposed by the available tool surface.",
+  "transportBlocker": "Production importer is merged on main, but it intentionally accepts only a short-lived HTTPS oaiusercontent package URL. The V2 ZIP is locally available and SHA-locked; the current tool surface does not expose its signed transport URL.",
   "blockerPolicy": "Do not weaken transport/auth controls. Continue all independent QA and merge work; execute import immediately when a signed package URL is available."
 }
