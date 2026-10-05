@@ -76,3 +76,16 @@ Ruleset: `Protect main`
 `main@e60a8f563dd406098378df70857423455739ef7a`
 
 Git HEAD always overrides this historical baseline.
+
+## BIO26 — Full Closure checkpoint
+
+آخر تحديث BIO26: 2026-10-05
+
+- PR: #362 — `content/bio26-source-freeze` — Draft / Open / Mergeable.
+- Crop/QA: **2,835/2,835 PASS**.
+- Dedupe: **2,832 canonical + 3 aliases PASS**.
+- AI Context merged/authored: **1,839/2,832**; pending **993**. QA: 1,839/1,839 source-answer, 1,839/1,839 skill-range, 0 missing required fields, 0 duplicate question codes.
+- L32 authoring preparation: **107/107 source keys + 107/107 skill ranges staged** in `ops/bio26/BIO26_L32_AUTHORING_SHARD.json` from approved source PDF pp.141–148. This staging does **not** inflate the authored AI-context count.
+- R2: manifest **2,832 canonical images / 29,550,012 bytes**; authenticated production PUT + remote hash verification still NOT RUN.
+- Import gates: Dry Run BLOCKED by incomplete AI Context + R2 verification; Canary 5 / Full Draft Import / Integrity Audit / Live BIO26 E2E / Approval remain gated.
+- BIO26 status: **NOT CLOSED**.
