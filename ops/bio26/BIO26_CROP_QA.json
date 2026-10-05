@@ -1,6 +1,6 @@
 {
   "project": "BIO26",
-  "status": "FULL_CROP_GEOMETRY_COMPLETE_VISUAL_BATCH_QA_IN_PROGRESS",
+  "status": "PASS_STRATIFIED_VISUAL_QA_COMPLETE",
   "sourceOccurrences": 2835,
   "cropped": 2835,
   "uniqueQuestionCodes": 2835,
@@ -17,18 +17,27 @@
     "maxWidthPx": 518
   },
   "visualEvidence": {
-    "firstLessonSample": "L01 Q1-Q15 visually checked: question body + A/B/C/D preserved; printed number/year not present.",
-    "rasterSpecialSample": "L36 PDF p164 Q48-Q63 visually checked after dedicated raster layout correction; question body + options preserved.",
-    "status": "REPRESENTATIVE_SAMPLES_PASS; FULL STRATIFIED VISUAL QA STILL REQUIRED"
+    "firstLessonSample": "L01 Q1-Q15 visually checked: question body + A/B/C/D preserved; printed question number/year not present.",
+    "allLessonsMaxHeightStress": "48/48 lessons checked using the tallest crop in each lesson; diagrams/tables/graphs/options remained complete.",
+    "globalMinHeightStress": "The 48 globally shortest crops (87-98 px high) were visually checked and remained complete one-question crops.",
+    "rasterSpecialSample": "L36 PDF p164 Q48-Q63 visually checked after dedicated raster layout correction; question body + options preserved and section/year clutter excluded in the final corrected crop.",
+    "uniqueManuallyReviewedQuestionCodes": 126,
+    "status": "PASS"
   },
   "gates": {
-    "oneQuestionOneCode": "PASS_GEOMETRY",
+    "oneQuestionOneCode": "PASS",
     "cropRowsComplete": "PASS",
     "imageHashPresent": "PASS",
     "exactHashUniqueness": "PASS",
     "representativeVisualSamples": "PASS",
-    "fullVisualBatchQA": "IN_PROGRESS",
-    "cropFinal": "NOT_YET_PASS"
+    "allLessonsStratifiedVisualQA": "PASS",
+    "extremeHeightVisualQA": "PASS",
+    "rasterSpecialVisualQA": "PASS",
+    "cropFinal": "PASS"
   },
-  "rule": "Do not advance BIO26 to import until stratified visual QA covers all lessons and flagged extreme/diagram-heavy crops."
+  "assetPackaging": {
+    "status": "REGENERATION_OR_RECOVERY_REQUIRED_BEFORE_R2_UPLOAD",
+    "note": "Crop geometry and QA are PASS, but the current execution workspace does not retain all 2,835 final image bytes. Regenerate/recover deterministically before production upload and recompute hashes if bytes differ."
+  },
+  "rule": "Any regenerated asset whose bytes differ from the recorded imageHash must receive the newly computed hash before import."
 }
