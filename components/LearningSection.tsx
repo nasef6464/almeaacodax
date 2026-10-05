@@ -16,6 +16,7 @@ import { getCourseAudienceCount } from '../utils/courseStats';
 import { api } from '../services/api';
 import { normalizeLearningTab, type LearningTab } from '../utils/learningSpaceTabs';
 import { resolveFoundationSkillTarget } from '../utils/foundationSkillTarget';
+import { resolveFoundationTopicAccess } from '../utils/foundationTopicAccess';
 
 const SkillDetailsModal = React.lazy(() => import('./SkillDetailsModal').then((module) => ({ default: module.SkillDetailsModal })));
 const SimulatedTestExperience = React.lazy(() => import('./SimulatedTestExperience').then((module) => ({ default: module.SimulatedTestExperience })));
@@ -65,6 +66,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
     const [searchParams, setSearchParams] = useSearchParams();
     const navigate = useNavigate();
     const { user, enrolledCourses, subjects, paths, courses, lessons, libraryItems, quizzes, completedLessons, examResults, hasScopedPackageAccess, getMatchingPackage, hydrateCourses, hydrateQuizzes } = useStore();
+    const topicList = useStore(state => state.topics);
     const [activeTab, setActiveTab] = useState<LearningTab>(() => normalizeLearningTab(searchParams.get('tab')) || 'courses');
     const [scopedBootstrapState, setScopedBootstrapState] = useState<'idle' | 'loading' | 'ready' | 'error'>('idle');
     const [scopedBootstrapRetry, setScopedBootstrapRetry] = useState(0);
@@ -84,6 +86,13 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
     };
     const isTabEnabled = (tab: LearningTab) => enabledTabs[tab];
     const firstEnabledTab = (Object.entries(enabledTabs).find(([, enabled]) => enabled)?.[0] || 'courses') as typeof activeTab;
+    const matchesScopedContent = (pathId?: string | null, subjectId?: string | null) => {
+        const normalizedPathId = pathId || null;
+        const normalizedSubjectId = subjectId || null;
+        const pathMatches = !normalizedPathId || normalizedPathId === category;
+        const subjectMatches = !normalizedSubjectId || normalizedSubjectId === subject || normalizedSubjectId === `${category}_${subject}`;
+        return pathMatches && subjectMatches;
+    };
 
     
     useEffect(() => {
@@ -177,7 +186,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         courses
             .filter((course) => {
                 if (!isPublicPackageAvailable(course)) return false;
-                const contentTypes = course.packageContentTypes?.length ? course.packageContentTypes : ['all'];
+                const contentTypes = course.packageContentTypes?.length ? course.packageContentTypes : ['courses'];
                 const packagePathId = course.pathId || course.category;
                 const packageSubjectId = course.subjectId || course.subject;
                 const matchesType = contentTypes.includes('all') || contentTypes.includes(contentType);
@@ -187,7 +196,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
             })
             .sort((a, b) => {
                 const scorePackage = (course: (typeof courses)[number]) => {
-                    const contentTypes = course.packageContentTypes?.length ? course.packageContentTypes : ['all'];
+                    const contentTypes = course.packageContentTypes?.length ? course.packageContentTypes : ['courses'];
                     const packagePathId = course.pathId || course.category;
                     const packageSubjectId = course.subjectId || course.subject;
                     return (
@@ -243,8 +252,8 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                     price: option.price || 0,
                     currency: option.currency || 'ر.س',
                     description: option.description,
-                    contentTypes: option.packageContentTypes?.length ? option.packageContentTypes : ['all'],
-                    packageContentTypes: option.packageContentTypes?.length ? option.packageContentTypes : ['all'],
+                    contentTypes: option.packageContentTypes?.length ? option.packageContentTypes : ['courses'],
+                    packageContentTypes: option.packageContentTypes?.length ? option.packageContentTypes : ['courses'],
                     pathIds: [option.pathId || option.category || category].filter(Boolean),
                     subjectIds: [option.subjectId || option.subject || subject].filter(Boolean),
                     includedCourseIds: option.includedCourses || [],
@@ -262,6 +271,18 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
     const hasBanksAccess = isStaffViewer || hasScopedPackageAccess('banks', category, subject);
     const hasTestsAccess = isStaffViewer || hasScopedPackageAccess('tests', category, subject);
     const hasLibraryAccess = isStaffViewer || hasScopedPackageAccess('library', category, subject);
+    const resolveTopicAccess = (topic: (typeof topicList)[number] | null | undefined) =>
+        resolveFoundationTopicAccess(topic, {
+            isStaffViewer,
+            hasFoundationPackageAccess: hasFoundationAccess,
+            lockFoundationForSubject,
+        });
+    const visibleFoundationTopics = topicList.filter((topic) =>
+        (isStaffViewer || topic.showOnPlatform !== false) && matchesScopedContent(topic.pathId, topic.subjectId),
+    );
+    const hasLockedFoundationTopic = visibleFoundationTopics.some((topic) => !resolveTopicAccess(topic).hasAccess);
+    const hasOpenFoundationTopic = visibleFoundationTopics.some((topic) => resolveTopicAccess(topic).hasAccess);
+    const hasMixedFoundationTopicAccess = hasLockedFoundationTopic && hasOpenFoundationTopic;
     const tabAccessMap: Record<typeof activeTab, { hasAccess: boolean; contentType: PackageContentType; title: string; description: string; action: string }> = {
         courses: {
             hasAccess: hasCourseAccess,
@@ -271,10 +292,12 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
             action: 'فتح باقة الدورات',
         },
         skills: {
-            hasAccess: hasFoundationAccess,
+            hasAccess: hasFoundationAccess || !hasLockedFoundationTopic,
             contentType: 'foundation',
-            title: 'موضوعات التأسيس تحتاج باقة مناسبة',
-            description: 'التأسيس منفصل عن مركز المهارات، لكنه يستخدم نفس المسار والمادة حتى يتدرج الطالب في التعلم.',
+            title: hasMixedFoundationTopicAccess ? 'بعض موضوعات التأسيس تحتاج باقة مناسبة' : 'موضوعات التأسيس تحتاج باقة مناسبة',
+            description: hasMixedFoundationTopicAccess
+                ? 'الموضوعات المفتوحة تبقى متاحة، بينما تفتح الباقة الموضوعات المحددة ضمنها فقط في هذا المسار وهذه المادة.'
+                : 'التأسيس منفصل عن مركز المهارات، لكنه يستخدم نفس المسار والمادة حتى يتدرج الطالب في التعلم.',
             action: 'فتح باقة التأسيس',
         },
         banks: {
@@ -400,14 +423,6 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         const date = createdAt ? new Date(createdAt as string | number | Date) : new Date();
         return Number.isNaN(date.getTime()) ? new Date().toISOString() : date.toISOString();
     };
-    const matchesScopedContent = (pathId?: string | null, subjectId?: string | null) => {
-        const normalizedPathId = pathId || null;
-        const normalizedSubjectId = subjectId || null;
-        const pathMatches = !normalizedPathId || normalizedPathId === category;
-        const subjectMatches = !normalizedSubjectId || normalizedSubjectId === subject || normalizedSubjectId === `${category}_${subject}`;
-        return pathMatches && subjectMatches;
-    };
-
     const showPublicAdminDiagnostics = isAdminViewer && searchParams.get('adminDebug') === '1';
     const scopedLearningBootstrapRef = useRef('');
 
@@ -480,7 +495,6 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         setScopedBootstrapRetry((value) => value + 1);
     };
 
-    const topicList = useStore(state => state.topics);
     const skillList = useStore(state => state.skills);
     const quizList = useStore(state => state.quizzes);
     const requestedFoundationSkillId = searchParams.get('skillId') || undefined;
@@ -501,12 +515,8 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         : previewTopic;
 
     const canStudentSeeTopic = (topic: (typeof topicList)[number]) => isStaffViewer || topic.showOnPlatform !== false;
-    const getTopicParent = (topic: (typeof topicList)[number] | null | undefined) =>
-        topic?.parentId ? findByEntityId(topicList, topic.parentId) : null;
     const isFoundationTopicLockedForStudent = (topic: (typeof topicList)[number] | null | undefined) => {
-        if (!topic || isStaffViewer || hasFoundationAccess) return false;
-        const parentTopic = getTopicParent(topic);
-        return Boolean(lockFoundationForSubject || topic.isLocked === true || parentTopic?.isLocked === true);
+        return Boolean(topic && !resolveTopicAccess(topic).hasAccess);
     };
     const getTopicProgressStats = (
         topic: (typeof topicList)[number],
@@ -560,7 +570,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                 totalLessons: totalSubLessons,
                 completed: progressStats.completedLessons,
                 totalQuizzes: progressStats.totalQuizzes,
-                isLocked: isFoundationTopicLockedForStudent(topic),
+                isLocked: isFoundationTopicLockedForStudent(topic) && !subTopics.some((subTopic) => !isFoundationTopicLockedForStudent(subTopic)),
                 progress: progressStats.progress,
                 originalTopic: topic // Keep a reference to the real topic
             };
@@ -589,7 +599,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
             : requestedTopic;
         if (!parentTopic || !matchesScopedContent(parentTopic.pathId, parentTopic.subjectId)) return;
 
-        const topicIsLocked = isFoundationTopicLockedForStudent(requestedTopic) || isFoundationTopicLockedForStudent(parentTopic);
+        const topicIsLocked = isFoundationTopicLockedForStudent(requestedTopic);
         if (topicIsLocked) {
             const packageItem = buildScopedPackageItem(
                 'foundation',
@@ -1008,6 +1018,8 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         {mappedSkills.map((skill) => {
                             const lockedFoundationMessage = skill.isLocked ? getLockedContentMessage('foundation') : null;
+                            const skillSubTopics = topicList.filter((topic) => topic.parentId === skill.originalTopic?.id && canStudentSeeTopic(topic));
+                            const hasMixedSubTopicAccess = !skill.isLocked && skillSubTopics.some((topic) => isFoundationTopicLockedForStudent(topic));
                             const hasProgress = skill.completed > 0;
                             const progressPercentage = Math.round((skill.completed / skill.totalLessons) * 100);
 
@@ -1052,9 +1064,11 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                                             <span className={`rounded-md px-2 py-0.5 text-[10px] font-black ${
                                                 skill.isLocked
                                                     ? 'bg-amber-50 text-amber-700'
+                                                    : hasMixedSubTopicAccess
+                                                        ? 'bg-indigo-50 text-indigo-700'
                                                     : 'bg-emerald-50 text-emerald-700'
                                             }`}>
-                                                {skill.isLocked ? 'ضمن باقة' : 'مجاني'}
+                                                {skill.isLocked ? 'ضمن باقة' : hasMixedSubTopicAccess ? 'يتضمن موضوعات مجانية ومدفوعة' : 'مجاني'}
                                             </span>
                                             <span className="text-gray-300">•</span>
                                             <span className="text-gray-500 text-[11px] font-medium">{skill.totalLessons} {skill.totalLessons === 1 ? 'درس' : skill.totalLessons === 2 ? 'درسان' : skill.totalLessons >= 3 && skill.totalLessons <= 10 ? 'دروس' : 'درساً'}</span>
@@ -1343,6 +1357,19 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                         isOpen={!!selectedSkill} 
                         onClose={() => setSelectedSkill(null)} 
                         skill={selectedSkill} 
+                        isTopicLocked={isFoundationTopicLockedForStudent}
+                        onLockedTopicClick={() => {
+                            const packageItem = buildScopedPackageItem(
+                                'foundation',
+                                'باقة التأسيس',
+                                'اشترك الآن لفتح موضوعات التأسيس المرتبطة بهذه المادة.',
+                            );
+                            setPaymentModalData({
+                                isOpen: true,
+                                item: packageItem || { id: selectedSkill?.id, title: 'باقة التأسيس', purchaseType: 'skill', price: 99, currency: 'ر.س' },
+                                type: packageItem ? 'package' : 'skill',
+                            });
+                        }}
                     />
                 </React.Suspense>
             )}

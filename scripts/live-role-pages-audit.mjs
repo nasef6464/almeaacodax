@@ -164,20 +164,28 @@ async function login(page, role) {
   if (role.role === "guest") return { ok: true, skipped: true };
   if (!role.email || !role.password) return { ok: false, reason: "missing credentials" };
 
-  const csrfRes = await fetch(`${API_BASE_URL}/auth/csrf-token`, { headers: { accept: "application/json" } });
-  const csrfBody = await csrfRes.json().catch(() => ({}));
-  const csrfCookie = String(csrfRes.headers.get("set-cookie") || "").match(/almeaa_csrf_token=([^;]+)/)?.[1] || "";
-  const loginRes = await fetch(`${API_BASE_URL}/auth/login`, {
-    method: "POST",
-    headers: {
-      "content-type": "application/json",
-      "x-csrf-token": csrfBody?.csrfToken || csrfCookie,
-      cookie: csrfCookie ? `almeaa_csrf_token=${csrfCookie}` : "",
-    },
-    body: JSON.stringify({ email: role.email, password: role.password }),
-  });
-  const payload = await loginRes.json().catch(() => ({}));
-  if (!loginRes.ok) return { ok: false, reason: `api login ${loginRes.status}` };
+  let loginRes;
+  let payload = {};
+  for (let attempt = 1; attempt <= 4; attempt += 1) {
+    const csrfRes = await fetch(`${API_BASE_URL}/auth/csrf-token`, { headers: { accept: "application/json" } });
+    const csrfBody = await csrfRes.json().catch(() => ({}));
+    const csrfCookie = String(csrfRes.headers.get("set-cookie") || "").match(/almeaa_csrf_token=([^;]+)/)?.[1] || "";
+    loginRes = await fetch(`${API_BASE_URL}/auth/login`, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "x-csrf-token": csrfBody?.csrfToken || csrfCookie,
+        cookie: csrfCookie ? `almeaa_csrf_token=${csrfCookie}` : "",
+      },
+      body: JSON.stringify({ email: role.email, password: role.password }),
+    });
+    payload = await loginRes.json().catch(() => ({}));
+    if (loginRes.ok || loginRes.status !== 429 || attempt === 4) break;
+    const retryAfterSeconds = Number(loginRes.headers.get("retry-after") || 0);
+    const delayMs = Math.max(retryAfterSeconds * 1000, 1500 * attempt);
+    await new Promise((resolve) => setTimeout(resolve, delayMs));
+  }
+  if (!loginRes?.ok) return { ok: false, reason: `api login ${loginRes?.status || "unknown"}` };
   const authCookie = String(loginRes.headers.get("set-cookie") || "").match(/almeaa_access_token=([^;]+)/)?.[1] || payload?.token || "";
   const user = payload?.user;
   if (!authCookie || !user?.email || !user?.role) return { ok: false, reason: "api login missing session" };
