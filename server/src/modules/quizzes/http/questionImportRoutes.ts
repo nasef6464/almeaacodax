@@ -45,7 +45,7 @@ const validateImportIdentity = (item: any, questionCode: string) => {
 
   const parsed = parseQuestionCode(questionCode);
   if (!parsed.valid || !parsed.prefix) {
-    return "questionCode must be a valid QDR-QNT or TAH-MATH canonical code";
+    return "questionCode must be a valid QDR-QNT, TAH-MATH, or TAH-CHEM canonical code";
   }
 
   const expectedQuestionCode =
