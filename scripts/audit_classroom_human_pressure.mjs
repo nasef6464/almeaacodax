@@ -102,7 +102,7 @@ const knownSensitiveValues = Array.from(new Set([
     .filter(([key, value]) => key.startsWith('AUDIT_') && key.endsWith('_PASSWORD') && value)
     .map(([, value]) => String(value)),
   ...Object.entries(process.env)
-    .filter(([key, value]) => key.startsWith('AUDIT_') && key.endsWith('_LOGIN') && /^\\d{10}$/.test(String(value || '')))
+    .filter(([key, value]) => key.startsWith('AUDIT_') && key.endsWith('_LOGIN') && /^\d{10}$/.test(String(value || '')))
     .map(([, value]) => String(value)),
 ].filter((value) => value.length >= 6)));
 
@@ -113,7 +113,7 @@ function inspectTextForLeaks(text, location, contextName) {
   if (/eyJ[a-zA-Z0-9_-]{8,}\\.[a-zA-Z0-9_-]{8,}\\.[a-zA-Z0-9_-]{8,}/.test(source)) kinds.add('JWT');
   for (const value of knownSensitiveValues) {
     if (!source.includes(value)) continue;
-    if (/^\\d{10}$/.test(value)) kinds.add('FULL_NATIONAL_ID');
+    if (/^\d{10}$/.test(value)) kinds.add('FULL_NATIONAL_ID');
     else kinds.add('PASSWORD_LITERAL');
   }
   for (const kind of kinds) {
@@ -867,6 +867,7 @@ async function runRealClassroomPressureCertification() {
 
     // Negative 2: Out of scope student attempts to instant-join session
     const outOfScopeCtx = await browser.newContext();
+    monitorContextForDataLeaks(outOfScopeCtx, 'Out-of-Scope Student');
     await setupContextProxy(outOfScopeCtx);
     const outOfScopePage = await outOfScopeCtx.newPage();
     await loginUser(outOfScopePage, process.env['AUDIT_OUT_OF_SCOPE_STUDENT_LOGIN'], process.env['AUDIT_OUT_OF_SCOPE_STUDENT_PASSWORD']);
@@ -904,6 +905,7 @@ async function runRealClassroomPressureCertification() {
 
     // Negative 3: Parent attempts teacher active session
     const parentCtx = await browser.newContext();
+    monitorContextForDataLeaks(parentCtx, 'Parent');
     await setupContextProxy(parentCtx);
     const parentPage = await parentCtx.newPage();
     await loginUser(parentPage, process.env['AUDIT_PARENT_LOGIN'], process.env['AUDIT_PARENT_PASSWORD']);
@@ -934,6 +936,7 @@ async function runRealClassroomPressureCertification() {
 
     // Negative 4: Teacher from another school/class cannot read this school history.
     const outTeacherCtx = await browser.newContext();
+    monitorContextForDataLeaks(outTeacherCtx, 'Out-of-Scope Teacher');
     await setupContextProxy(outTeacherCtx);
     const outTeacherPage = await outTeacherCtx.newPage();
     await loginUser(outTeacherPage, process.env['AUDIT_OUT_OF_SCOPE_TEACHER_LOGIN'], process.env['AUDIT_OUT_OF_SCOPE_TEACHER_PASSWORD']);
@@ -951,6 +954,7 @@ async function runRealClassroomPressureCertification() {
 
     // Negative 5: A supervisor outside this school/class scope must not read this session report.
     const outSupervisorCtx = await browser.newContext();
+    monitorContextForDataLeaks(outSupervisorCtx, 'Out-of-Scope Supervisor');
     await setupContextProxy(outSupervisorCtx);
     const outSupervisorPage = await outSupervisorCtx.newPage();
     await loginUser(outSupervisorPage, process.env['AUDIT_OUT_OF_SCOPE_SUPERVISOR_LOGIN'], process.env['AUDIT_OUT_OF_SCOPE_SUPERVISOR_PASSWORD']);
@@ -991,6 +995,7 @@ async function runRealClassroomPressureCertification() {
     // Open brand new clean browser context from scratch
     console.log('[VERIFICATION] Opening clean browser context to verify persistent report...');
     const cleanCtx = await browser.newContext({ viewport: { width: 1280, height: 800 } });
+    monitorContextForDataLeaks(cleanCtx, 'Clean Teacher History');
     await setupContextProxy(cleanCtx);
     const cleanTeacherPage = await cleanCtx.newPage();
 
@@ -1088,6 +1093,7 @@ async function runRealClassroomPressureCertification() {
 
     // Supervisor Login
     const supervisorCtx = await browser.newContext({ viewport: { width: 1280, height: 800 } });
+    monitorContextForDataLeaks(supervisorCtx, 'Supervisor Reports');
     await setupContextProxy(supervisorCtx);
     const supervisorPage = await supervisorCtx.newPage();
     await loginUser(supervisorPage, process.env['AUDIT_SUPERVISOR_LOGIN'], process.env['AUDIT_SUPERVISOR_PASSWORD']);
