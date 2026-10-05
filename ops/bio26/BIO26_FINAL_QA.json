@@ -1,6 +1,6 @@
 {
   "project": "BIO26",
-  "status": "SOURCE_FREEZE_COMPLETE_NOT_CLOSED",
+  "status": "CROP_BATCH_ACTIVE_NOT_CLOSED",
   "counts": {
     "foundationPdfPages": 79,
     "questionPdfPages": 226,
@@ -13,6 +13,11 @@
     "answerKeyMapped": 2835,
     "preCropSkillMapped": 2835,
     "rangeRules": 221,
+    "croppedGeometryRows": 2835,
+    "vectorTextAnchoredCrops": 2819,
+    "rasterSpecialCrops": 16,
+    "uniqueCropImageHashes": 2835,
+    "exactCropHashDuplicateGroups": 0,
     "minQuestionsPerFrozenSubSkill": 3,
     "maxQuestionsPerFrozenSubSkill": 109
   },
@@ -22,9 +27,9 @@
     "inventory": "PASS",
     "questionToSkillLedger": "PASS_PRE_CROP_V1",
     "answers": "PASS_SOURCE_KEY",
-    "crop": "NOT_STARTED",
+    "crop": "GEOMETRY_COMPLETE_VISUAL_BATCH_QA_IN_PROGRESS",
     "aiContext": "INITIALIZED_PENDING_AUTHORING",
-    "dedupe": "NOT_STARTED",
+    "dedupe": "EXACT_IMAGE_HASH_PASS_SEMANTIC_AND_EXISTING_BANK_PENDING",
     "draftImport": "BLOCKED",
     "liveE2E": "NOT_RUN",
     "approval": "NOT_RUN"
@@ -41,7 +46,10 @@
     "taxonomyNoOrphans": true,
     "minimumSubSkillCoverageAtLeast3": true,
     "answerKeySequenceCompleteAllLessons": true,
-    "eachLessonQuestionSequenceContinuous": true
+    "eachLessonQuestionSequenceContinuous": true,
+    "cropRows2835": true,
+    "cropImageHashUnique": true,
+    "exactImageHashDuplicatesZero": true
   },
   "sourceKeyValidation": {
     "method": "Embedded source answer strips; visual source adjudication only where embedded text was unavailable.",
@@ -51,6 +59,17 @@
       "BIO26-L36-Q048..Q063"
     ],
     "inferredFromQuestionOCR": 0
+  },
+  "cropValidation": {
+    "methods": {
+      "VECTOR_TEXT_ANCHORED": 2819,
+      "RASTER_SPECIAL_P164_VERIFIED_LAYOUT": 16
+    },
+    "representativeVisualPass": [
+      "BIO26-L01-Q001..Q015",
+      "BIO26-L36-Q048..Q063"
+    ],
+    "finalVisualQA": "IN_PROGRESS"
   },
   "specialEvidence": [
     "Lesson 7 pages 38–43 are raster-heavy; question ranges were visually verified.",
