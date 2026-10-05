@@ -7,9 +7,30 @@ import { env } from "../../config/env.js";
 import { QuestionModel } from "../../models/Question.js";
 
 const execFileAsync = promisify(execFile);
-const COL26OLD_MODE = "col26old-import";
-const DOCUMENT_CODE = "COL26OLD";
-const CODE_PREFIX = "TAH-MATH-COL26OLD-";
+const IMPORT_CONFIGS = [
+  {
+    mode: "col26old-import",
+    project: "COL26OLD",
+    documentCode: "COL26OLD",
+    codePrefix: "TAH-MATH-COL26OLD-",
+    sourceItemPrefix: "COL26OLD-PDF",
+    batchId: "TAH-MATH-COL26OLD-SEC2-V1",
+    expectedCount: 1257,
+    manifestName: "COL26OLD_IMPORT_MANIFEST_READY.json",
+    workPrefix: "col26old-import-",
+  },
+  {
+    mode: "chem26-import",
+    project: "CHEM26",
+    documentCode: "CHEM26",
+    codePrefix: "TAH-CHEM-CHEM26-",
+    sourceItemPrefix: "CHEM26-PDF",
+    batchId: "TAH-CHEM-CHEM26-FULL-V1",
+    expectedCount: 1708,
+    manifestName: "CHEM26_IMPORT_MANIFEST_READY.json",
+    workPrefix: "chem26-import-",
+  },
+] as const;
 let started = false;
 
 type ManifestItem = Record<string, any> & {
@@ -29,54 +50,55 @@ import {
 
 export async function runQuestionPilotPackageImportIfRequested() {
   const modeRaw = String(process.env.QUESTION_PILOT_MODE || "").trim();
-  if (started || !modeRaw.toLowerCase().startsWith(`${COL26OLD_MODE}.`)) return;
+  const config = IMPORT_CONFIGS.find((item) => modeRaw.toLowerCase().startsWith(`${item.mode}.`));
+  if (started || !config) return;
   started = true;
 
   if (process.env.PILOT_ALLOW_EXTERNAL_RUN !== "YES" || process.env.PILOT_WRITE_AUTHORIZATION !== "YES") {
-    console.error("COL26OLD_IMPORT_BLOCKED authorization flags are not enabled");
+    console.error("${config.project}_IMPORT_BLOCKED authorization flags are not enabled");
     return;
   }
 
   const batchId = requireEnv("QUESTION_PILOT_BATCH_ID").toUpperCase();
   const expectedCount = Number.parseInt(requireEnv("QUESTION_PILOT_EXPECTED_COUNT"), 10);
-  const transportEncoded = modeRaw.slice(COL26OLD_MODE.length + 1);
+  const transportEncoded = modeRaw.slice(config.mode.length + 1);
   let transport: { packageUrl?: string; packageSha256?: string } = {};
   try {
     transport = JSON.parse(Buffer.from(transportEncoded, "base64url").toString("utf8"));
   } catch {
-    throw new Error("Invalid COL26OLD transport envelope");
+    throw new Error(`Invalid ${config.project} transport envelope`);
   }
   const packageUrl = String(transport.packageUrl || "").trim();
   const packageSha = String(transport.packageSha256 || "").trim().toLowerCase();
 
-  if (batchId !== "TAH-MATH-COL26OLD-SEC2-V1") throw new Error("Unexpected COL26OLD batch id");
-  if (expectedCount !== 1257) throw new Error("COL26OLD canonical import must contain exactly 1257 new records");
+  if (batchId !== config.batchId) throw new Error(`Unexpected ${config.project} batch id`);
+  if (expectedCount !== config.expectedCount) throw new Error(`${config.project} canonical import must contain exactly ${config.expectedCount} new records`);
   if (!/^[a-f0-9]{64}$/.test(packageSha)) throw new Error("Invalid package SHA-256");
   const parsedUrl = new URL(packageUrl);
   if (parsedUrl.protocol !== "https:" || !parsedUrl.hostname.endsWith(".oaiusercontent.com")) {
-    throw new Error("COL26OLD package URL must be a short-lived HTTPS oaiusercontent URL");
+    throw new Error(`${config.project} package URL must be a short-lived HTTPS oaiusercontent URL`);
   }
 
   const foreignCount = await QuestionModel.countDocuments({
-    questionCode: { $regex: "^TAH-MATH-COL26OLD-" },
+    questionCode: { $regex: `^${config.codePrefix}` },
     "sourceMeta.importBatchId": { $ne: batchId },
   });
-  if (foreignCount !== 0) throw new Error(`COL26OLD foreign records already exist: ${foreignCount}`);
+  if (foreignCount !== 0) throw new Error(`${config.project} foreign records already exist: ${foreignCount}`);
 
-  const work = await mkdtemp(path.join(tmpdir(), "col26old-import-"));
+  const work = await mkdtemp(path.join(tmpdir(), config.workPrefix));
   try {
     const zipPath = path.join(work, "package.zip");
     const packageResponse = await fetch(packageUrl, { signal: AbortSignal.timeout(120_000) });
     if (!packageResponse.ok) throw new Error(`Package download HTTP ${packageResponse.status}`);
     const packageBytes = Buffer.from(await packageResponse.arrayBuffer());
     const actualPackageSha = sha256(packageBytes);
-    if (actualPackageSha !== packageSha) throw new Error("COL26OLD package SHA-256 mismatch");
+    if (actualPackageSha !== packageSha) throw new Error(`${config.project} package SHA-256 mismatch`);
     await writeFile(zipPath, packageBytes);
 
     const extractDir = path.join(work, "payload");
     await execFileAsync("unzip", ["-oq", zipPath, "-d", extractDir], { timeout: 120_000 });
 
-    const manifestPath = path.join(extractDir, "COL26OLD_IMPORT_MANIFEST_READY.json");
+    const manifestPath = path.join(extractDir, config.manifestName);
     const manifest = JSON.parse(await readFile(manifestPath, "utf8"));
     const items: ManifestItem[] = Array.isArray(manifest) ? manifest : manifest.items;
     if (!Array.isArray(items) || items.length !== expectedCount) {
@@ -94,11 +116,11 @@ export async function runQuestionPilotPackageImportIfRequested() {
       const sourceItemId = String(sourceMeta.sourceItemId || "").trim().toUpperCase();
       const fileName = path.basename(String(item.imageFileName || "").trim());
       const expectedHash = String(sourceMeta.imageHash || "").trim().toLowerCase();
-      if (!code.startsWith(CODE_PREFIX)) throw new Error(`Invalid COL26OLD code: ${code}`);
-      if (String(sourceMeta.documentCode || "").trim().toUpperCase() !== DOCUMENT_CODE) {
+      if (!code.startsWith(config.codePrefix)) throw new Error(`Invalid ${config.project} code: ${code}`);
+      if (String(sourceMeta.documentCode || "").trim().toUpperCase() !== config.documentCode) {
         throw new Error(`Invalid documentCode for ${code}`);
       }
-      if (!sourceItemId.startsWith("COL26OLD-PDF")) throw new Error(`Invalid sourceItemId for ${code}`);
+      if (!sourceItemId.startsWith(config.sourceItemPrefix)) throw new Error(`Invalid sourceItemId for ${code}`);
       if (!/\.webp$/i.test(fileName)) throw new Error(`Invalid image filename for ${code}`);
       const bytes = await readFile(path.join(extractDir, "images", fileName));
       const actualHash = sha256(bytes);
@@ -114,11 +136,11 @@ export async function runQuestionPilotPackageImportIfRequested() {
       .select("questionCode approvalStatus sourceMeta.sourceItemId sourceMeta.imageHash")
       .lean() as any[];
     if (current.some((q: any) => q.approvalStatus !== "draft")) {
-      throw new Error("COL26OLD import batch contains non-draft records before closure");
+      throw new Error(`${config.project} import batch contains non-draft records before closure`);
     }
     const currentCodes = new Set(current.map((q: any) => String(q.questionCode || "").toUpperCase()));
     const unknownCurrent = [...currentCodes].filter((code) => !codes.has(code));
-    if (unknownCurrent.length) throw new Error(`Unexpected existing COL26OLD codes: ${unknownCurrent.slice(0, 5).join(",")}`);
+    if (unknownCurrent.length) throw new Error(`Unexpected existing ${config.project} codes: ${unknownCurrent.slice(0, 5).join(",")}`);
 
     if (current.length === expectedCount) {
       const api = await createLocalApiClient();
@@ -127,12 +149,12 @@ export async function runQuestionPilotPackageImportIfRequested() {
         throw new Error("Existing COL26OLD batch does not satisfy final draft gate");
       }
       const liveSamples = await verifyLiveImages(finalBatch.questions || []);
-      console.log(`COL26OLD_IMPORT_ALREADY_COMPLETE count=${expectedCount} liveSamples=${liveSamples}`);
+      console.log(`${config.project}_IMPORT_ALREADY_COMPLETE count=${expectedCount} liveSamples=${liveSamples}`);
       return;
     }
 
     const pending = verified.filter((entry) => !currentCodes.has(entry.code));
-    if (current.length + pending.length !== expectedCount) throw new Error("COL26OLD resume accounting mismatch");
+    if (current.length + pending.length !== expectedCount) throw new Error(`${config.project} resume accounting mismatch`);
 
     const api = await createLocalApiClient();
     const publicBase = env.R2_PUBLIC_BASE_URL.replace(/\/+$/, "");
@@ -145,7 +167,7 @@ export async function runQuestionPilotPackageImportIfRequested() {
         imageUrl,
         sourceMeta: {
           ...(payload.sourceMeta || {}),
-          documentCode: DOCUMENT_CODE,
+          documentCode: config.documentCode,
           sourceItemId: entry.sourceItemId,
           imageHash: entry.hash,
           importBatchId: batchId,
@@ -165,11 +187,11 @@ export async function runQuestionPilotPackageImportIfRequested() {
         items: dryItems,
       });
       if (result?.status !== "PASS" || Number(result?.prepared || 0) !== group.length) {
-        throw new Error(`COL26OLD dry-run chunk failed: ${JSON.stringify(result).slice(0, 1000)}`);
+        throw new Error(`${config.project} dry-run chunk failed: ${JSON.stringify(result).slice(0, 1000)}`);
       }
       dryPrepared += group.length;
     }
-    console.log(`COL26OLD_DRY_RUN_PASS pending=${pending.length} prepared=${dryPrepared}`);
+    console.log(`${config.project}_DRY_RUN_PASS pending=${pending.length} prepared=${dryPrepared}`);
 
     const writeGroup = async (group: typeof verified) => {
       const prepared = await pool(group, 12, async (entry) => {
@@ -212,7 +234,7 @@ export async function runQuestionPilotPackageImportIfRequested() {
         items: prepared.map((item) => item.payload),
       });
       if (result?.status !== "IMPORTED" || Number(result?.inserted || 0) !== group.length) {
-        throw new Error(`COL26OLD write chunk failed: ${JSON.stringify(result).slice(0, 1000)}`);
+        throw new Error(`${config.project} write chunk failed: ${JSON.stringify(result).slice(0, 1000)}`);
       }
       return group.length;
     };
@@ -224,9 +246,9 @@ export async function runQuestionPilotPackageImportIfRequested() {
       insertedThisRun += await writeGroup(canary);
       const canaryBatch = await api("GET", `/quizzes/questions/import-batch/${encodeURIComponent(batchId)}`);
       if (Number(canaryBatch?.count || 0) < 5 || canaryBatch?.integrityIssues?.length) {
-        throw new Error("COL26OLD canary verification failed");
+        throw new Error(`${config.project} canary verification failed`);
       }
-      console.log(`COL26OLD_CANARY_PASS count=${canaryBatch.count}`);
+      console.log(`${config.project}_CANARY_PASS count=${canaryBatch.count}`);
     }
 
     const alreadyWritten = new Set(
@@ -238,7 +260,7 @@ export async function runQuestionPilotPackageImportIfRequested() {
     for (const group of chunk(remaining, 100)) {
       insertedThisRun += await writeGroup(group);
       processed += group.length;
-      console.log(`COL26OLD_IMPORT_PROGRESS ${alreadyWritten.size + processed}/${expectedCount}`);
+      console.log(`${config.project}_IMPORT_PROGRESS ${alreadyWritten.size + processed}/${expectedCount}`);
     }
 
     const finalBatch = await api("GET", `/quizzes/questions/import-batch/${encodeURIComponent(batchId)}`);
@@ -250,7 +272,7 @@ export async function runQuestionPilotPackageImportIfRequested() {
       Number(finalBatch?.linkedQuizCount || 0) !== 0 ||
       (Array.isArray(finalBatch?.integrityIssues) && finalBatch.integrityIssues.length !== 0)
     ) {
-      throw new Error(`COL26OLD final batch gate failed: ${JSON.stringify({
+      throw new Error(`${config.project} final batch gate failed: ${JSON.stringify({
         status: finalBatch?.status,
         count: finalBatch?.count,
         drafts: finalBatch?.drafts,
@@ -261,7 +283,7 @@ export async function runQuestionPilotPackageImportIfRequested() {
 
     const liveSamples = await verifyLiveImages(finalBatch.questions || []);
     console.log(
-      `COL26OLD_IMPORT_PASS count=${expectedCount} drafts=${expectedCount} insertedThisRun=${insertedThisRun} liveSamples=${liveSamples}`,
+      `${config.project}_IMPORT_PASS count=${expectedCount} drafts=${expectedCount} insertedThisRun=${insertedThisRun} liveSamples=${liveSamples}`,
     );
   } finally {
     await rm(work, { recursive: true, force: true }).catch(() => undefined);
