@@ -27,8 +27,8 @@
     "assetHashMismatchFiles": 0,
     "minQuestionsPerFrozenSubSkill": 3,
     "maxQuestionsPerFrozenSubSkill": 109,
-    "aiContextAuthoredCanonical": 217,
-    "aiContextPendingCanonical": 2615
+    "aiContextAuthoredCanonical": 370,
+    "aiContextPendingCanonical": 2462
   },
   "gates": {
     "sourceAnalysis": "PASS",
@@ -39,7 +39,7 @@
     "crop": "PASS_STRATIFIED_VISUAL_QA",
     "cropAssetPackage": "PASS_LOCAL_READY_FOR_R2_UPLOAD",
     "dedupe": "PASS_FINAL_2832_CANONICAL",
-    "aiContext": "AUTHORING_IN_PROGRESS_217_OF_2832",
+    "aiContext": "AUTHORING_IN_PROGRESS_370_OF_2832",
     "r2Upload": "NOT_RUN",
     "dryRun": "BLOCKED_BY_AI_AND_R2",
     "draftImport": "BLOCKED",
@@ -105,14 +105,21 @@
     "completedLessons": [
       "BIO26-L01",
       "BIO26-L02",
-      "BIO26-L03"
+      "BIO26-L03",
+      "BIO26-L04",
+      "BIO26-L05"
     ],
-    "authoredCanonicalItems": 217,
-    "pendingCanonicalItems": 2615,
-    "sourceAnswerCrossCheck": "PASS_217_OF_217",
-    "skillRangeCrossCheck": "PASS_217_OF_217",
+    "authoredCanonicalItems": 370,
+    "pendingCanonicalItems": 2462,
+    "sourceAnswerCrossCheck": "PASS_370_OF_370",
+    "skillRangeCrossCheck": "PASS_370_OF_370",
+    "requiredFieldsCheck": "PASS_370_OF_370",
+    "duplicateQuestionCodes": 0,
     "answerInferredFromOCR": 0,
-    "evidenceFile": "BIO26_AI_AUTHORING_QA.json"
+    "evidenceFiles": [
+      "BIO26_AI_AUTHORING_QA.json",
+      "BIO26_AI_CONTEXT_AUTOMATED_QA.json"
+    ]
   },
   "productionSubjectSafety": {
     "existingEnvironmentSubjectQuestionCount": 0,
