@@ -15,7 +15,9 @@
       "يستطيع",
       "يتفاداه"
     ],
-    "correctOptionIndex": 3
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-P005-Q002",
@@ -33,7 +35,9 @@
       "اتق الله",
       "خالفك"
     ],
-    "correctOptionIndex": 2
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-P005-Q003",
@@ -51,7 +55,9 @@
       "عمل",
       "كسل"
     ],
-    "correctOptionIndex": 3
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-P005-Q004",
@@ -69,7 +75,9 @@
       "يفهم",
       "أقل"
     ],
-    "correctOptionIndex": 3
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-P005-Q005",
@@ -87,7 +95,9 @@
       "أدنى",
       "الجودة"
     ],
-    "correctOptionIndex": 1
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-COMP-P013-Q001",
@@ -105,7 +115,9 @@
       "تجلب _ كثرة",
       "تمنع _ قلة"
     ],
-    "correctOptionIndex": 2
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-COMP-P013-Q002",
@@ -123,7 +135,9 @@
       "تعب من",
       "حقق كل"
     ],
-    "correctOptionIndex": 1
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-ANLG-P025-Q001",
@@ -141,7 +155,9 @@
       "عام : حول",
       "سنة : شهر"
     ],
-    "correctOptionIndex": 3
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-ANLG-P025-Q002",
@@ -159,7 +175,9 @@
       "شفاه : كلام",
       "فلج : أسنان"
     ],
-    "correctOptionIndex": 3
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-ANLG-P025-Q003",
@@ -177,7 +195,9 @@
       "شمس : قمر",
       "شهيق : زفير"
     ],
-    "correctOptionIndex": 1
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-ANLG-P025-Q004",
@@ -195,7 +215,9 @@
       "نثر : أرجوزة",
       "رواية : مقال"
     ],
-    "correctOptionIndex": 1
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-ANLG-P025-Q005",
@@ -213,7 +235,9 @@
       "ليل : نهار",
       "رجب : شوال"
     ],
-    "correctOptionIndex": 2
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-ANLG-P025-Q006",
@@ -231,7 +255,9 @@
       "مصيبة : فاجعة",
       "سيل : أمطار"
     ],
-    "correctOptionIndex": 2
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-ANLG-P025-Q007",
@@ -249,7 +275,9 @@
       "صك : ملكية",
       "ثلاجة : تبريد"
     ],
-    "correctOptionIndex": 3
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-ANLG-P025-Q008",
@@ -267,7 +295,9 @@
       "سطح : بيت",
       "مطر : ماء"
     ],
-    "correctOptionIndex": 1
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-ANLG-P025-Q009",
@@ -285,7 +315,9 @@
       "جليد : شمس",
       "سفر : متعة"
     ],
-    "correctOptionIndex": 3
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-ANLG-P026-Q010",
@@ -303,7 +335,9 @@
       "واضح : موضح",
       "نجوم : اهتداء"
     ],
-    "correctOptionIndex": 2
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-ANLG-P026-Q011",
@@ -321,7 +355,9 @@
       "رأس : تاج",
       "غصن : عش"
     ],
-    "correctOptionIndex": 0
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-ANLG-P026-Q012",
@@ -339,7 +375,9 @@
       "كربة : هم",
       "البلاء : المعافاة"
     ],
-    "correctOptionIndex": 3
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-ANLG-P026-Q013",
@@ -357,7 +395,9 @@
       "جود : كرم",
       "تفاح : فاكهة"
     ],
-    "correctOptionIndex": 1
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-ANLG-P026-Q014",
@@ -375,7 +415,9 @@
       "النار : الغليان",
       "المنافق : الخديعة"
     ],
-    "correctOptionIndex": 3
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-ANLG-P026-Q015",
@@ -393,7 +435,9 @@
       "جندي : حرب",
       "تعليم : جاهل"
     ],
-    "correctOptionIndex": 3
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-ANLG-P026-Q016",
@@ -411,7 +455,9 @@
       "سماء : سحاب",
       "تمر : نخيل"
     ],
-    "correctOptionIndex": 3
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-ANLG-P026-Q017",
@@ -429,7 +475,9 @@
       "مريض : عليل",
       "خيل : إسطبل"
     ],
-    "correctOptionIndex": 3
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-ANLG-P026-Q018",
@@ -447,7 +495,9 @@
       "مدينة : سكان",
       "لوحة : ألوان"
     ],
-    "correctOptionIndex": 1
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-ANLG-P027-Q019",
@@ -465,7 +515,9 @@
       "عسل : نحل",
       "فحم : منجم"
     ],
-    "correctOptionIndex": 1
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-ANLG-P027-Q020",
@@ -483,7 +535,9 @@
       "مرعى : ربيع",
       "إهمال : أخطاء"
     ],
-    "correctOptionIndex": 3
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-ANLG-P027-Q021",
@@ -501,7 +555,9 @@
       "عاري : ملابس",
       "حاف : قدم"
     ],
-    "correctOptionIndex": 3
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-ANLG-P027-Q022",
@@ -519,7 +575,9 @@
       "رجع : راجع",
       "نام : نائم"
     ],
-    "correctOptionIndex": 1
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-ANLG-P027-Q023",
@@ -537,7 +595,9 @@
       "بغض : كره",
       "حرص : خوف"
     ],
-    "correctOptionIndex": 0
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-ANLG-P027-Q024",
@@ -555,7 +615,9 @@
       "جندي : سرية",
       "نفر : عمال"
     ],
-    "correctOptionIndex": 2
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-ANLG-P027-Q025",
@@ -573,7 +635,9 @@
       "عراك : قتال",
       "أب : مسؤول"
     ],
-    "correctOptionIndex": 2
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-RC-ECLIPSE-Q01",
@@ -594,7 +658,9 @@
     "correctOptionIndex": 3,
     "passageId": "VERBAL26-ANAS-PASSAGE-ECLIPSE",
     "passageTitle": "الكسوف والخسوف",
-    "passageText": "الكسوف والخسوف ظاهرة تعتيم سماوي، تحدث عندما يسقط ظل جرم سماوي على جرم سماوي آخر، أو عندما يتحرك جرم أمام جرم فيحجب نوره وضياءه."
+    "passageText": "الكسوف والخسوف ظاهرة تعتيم سماوي، تحدث عندما يسقط ظل جرم سماوي على جرم سماوي آخر، أو عندما يتحرك جرم أمام جرم فيحجب نوره وضياءه.",
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-RC-ECLIPSE-Q02",
@@ -615,7 +681,9 @@
     "correctOptionIndex": 2,
     "passageId": "VERBAL26-ANAS-PASSAGE-ECLIPSE",
     "passageTitle": "الكسوف والخسوف",
-    "passageText": "الكسوف والخسوف ظاهرة تعتيم سماوي، تحدث عندما يسقط ظل جرم سماوي على جرم سماوي آخر، أو عندما يتحرك جرم أمام جرم فيحجب نوره وضياءه."
+    "passageText": "الكسوف والخسوف ظاهرة تعتيم سماوي، تحدث عندما يسقط ظل جرم سماوي على جرم سماوي آخر، أو عندما يتحرك جرم أمام جرم فيحجب نوره وضياءه.",
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-RC-ECLIPSE-Q03",
@@ -636,7 +704,9 @@
     "correctOptionIndex": 0,
     "passageId": "VERBAL26-ANAS-PASSAGE-ECLIPSE",
     "passageTitle": "الكسوف والخسوف",
-    "passageText": "الكسوف والخسوف ظاهرة تعتيم سماوي، تحدث عندما يسقط ظل جرم سماوي على جرم سماوي آخر، أو عندما يتحرك جرم أمام جرم فيحجب نوره وضياءه."
+    "passageText": "الكسوف والخسوف ظاهرة تعتيم سماوي، تحدث عندما يسقط ظل جرم سماوي على جرم سماوي آخر، أو عندما يتحرك جرم أمام جرم فيحجب نوره وضياءه.",
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-RC-ECLIPSE-Q04",
@@ -657,7 +727,9 @@
     "correctOptionIndex": 1,
     "passageId": "VERBAL26-ANAS-PASSAGE-ECLIPSE",
     "passageTitle": "الكسوف والخسوف",
-    "passageText": "الكسوف والخسوف ظاهرة تعتيم سماوي، تحدث عندما يسقط ظل جرم سماوي على جرم سماوي آخر، أو عندما يتحرك جرم أمام جرم فيحجب نوره وضياءه."
+    "passageText": "الكسوف والخسوف ظاهرة تعتيم سماوي، تحدث عندما يسقط ظل جرم سماوي على جرم سماوي آخر، أو عندما يتحرك جرم أمام جرم فيحجب نوره وضياءه.",
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-RC-PEARLS-Q01",
@@ -678,7 +750,9 @@
     "correctOptionIndex": 3,
     "passageId": "VERBAL26-ANAS-PASSAGE-PEARLS",
     "passageTitle": "اللؤلؤ",
-    "passageText": "كان الناس قديماً يهتمون باستخراج اللؤلؤ وخاصة أهل الخليج، فكان من يمتهنون تلك المهنة من أهل الخليج يتركون أهلهم وكل ما يخصهم ويذهبون إلى الخليج العربي فيغوصون فيه بحثاً عن اللؤلؤ، وكان في استخراج اللؤلؤ الكثير من العناء والمشقة، وقد كان استخراج اللؤلؤ من أهم مصادر الدخل لديهم، ولمدة بعدهم الطويلة عن أهلهم كانوا يخافون عليهم ويتمنون لهم الأمن والسلامة."
+    "passageText": "كان الناس قديماً يهتمون باستخراج اللؤلؤ وخاصة أهل الخليج، فكان من يمتهنون تلك المهنة من أهل الخليج يتركون أهلهم وكل ما يخصهم ويذهبون إلى الخليج العربي فيغوصون فيه بحثاً عن اللؤلؤ، وكان في استخراج اللؤلؤ الكثير من العناء والمشقة، وقد كان استخراج اللؤلؤ من أهم مصادر الدخل لديهم، ولمدة بعدهم الطويلة عن أهلهم كانوا يخافون عليهم ويتمنون لهم الأمن والسلامة.",
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-RC-PEARLS-Q02",
@@ -699,7 +773,9 @@
     "correctOptionIndex": 3,
     "passageId": "VERBAL26-ANAS-PASSAGE-PEARLS",
     "passageTitle": "اللؤلؤ",
-    "passageText": "كان الناس قديماً يهتمون باستخراج اللؤلؤ وخاصة أهل الخليج، فكان من يمتهنون تلك المهنة من أهل الخليج يتركون أهلهم وكل ما يخصهم ويذهبون إلى الخليج العربي فيغوصون فيه بحثاً عن اللؤلؤ، وكان في استخراج اللؤلؤ الكثير من العناء والمشقة، وقد كان استخراج اللؤلؤ من أهم مصادر الدخل لديهم، ولمدة بعدهم الطويلة عن أهلهم كانوا يخافون عليهم ويتمنون لهم الأمن والسلامة."
+    "passageText": "كان الناس قديماً يهتمون باستخراج اللؤلؤ وخاصة أهل الخليج، فكان من يمتهنون تلك المهنة من أهل الخليج يتركون أهلهم وكل ما يخصهم ويذهبون إلى الخليج العربي فيغوصون فيه بحثاً عن اللؤلؤ، وكان في استخراج اللؤلؤ الكثير من العناء والمشقة، وقد كان استخراج اللؤلؤ من أهم مصادر الدخل لديهم، ولمدة بعدهم الطويلة عن أهلهم كانوا يخافون عليهم ويتمنون لهم الأمن والسلامة.",
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-RC-PEARLS-Q03",
@@ -720,7 +796,9 @@
     "correctOptionIndex": 2,
     "passageId": "VERBAL26-ANAS-PASSAGE-PEARLS",
     "passageTitle": "اللؤلؤ",
-    "passageText": "كان الناس قديماً يهتمون باستخراج اللؤلؤ وخاصة أهل الخليج، فكان من يمتهنون تلك المهنة من أهل الخليج يتركون أهلهم وكل ما يخصهم ويذهبون إلى الخليج العربي فيغوصون فيه بحثاً عن اللؤلؤ، وكان في استخراج اللؤلؤ الكثير من العناء والمشقة، وقد كان استخراج اللؤلؤ من أهم مصادر الدخل لديهم، ولمدة بعدهم الطويلة عن أهلهم كانوا يخافون عليهم ويتمنون لهم الأمن والسلامة."
+    "passageText": "كان الناس قديماً يهتمون باستخراج اللؤلؤ وخاصة أهل الخليج، فكان من يمتهنون تلك المهنة من أهل الخليج يتركون أهلهم وكل ما يخصهم ويذهبون إلى الخليج العربي فيغوصون فيه بحثاً عن اللؤلؤ، وكان في استخراج اللؤلؤ الكثير من العناء والمشقة، وقد كان استخراج اللؤلؤ من أهم مصادر الدخل لديهم، ولمدة بعدهم الطويلة عن أهلهم كانوا يخافون عليهم ويتمنون لهم الأمن والسلامة.",
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-RC-PEARLS-Q04",
@@ -741,7 +819,9 @@
     "correctOptionIndex": 1,
     "passageId": "VERBAL26-ANAS-PASSAGE-PEARLS",
     "passageTitle": "اللؤلؤ",
-    "passageText": "كان الناس قديماً يهتمون باستخراج اللؤلؤ وخاصة أهل الخليج، فكان من يمتهنون تلك المهنة من أهل الخليج يتركون أهلهم وكل ما يخصهم ويذهبون إلى الخليج العربي فيغوصون فيه بحثاً عن اللؤلؤ، وكان في استخراج اللؤلؤ الكثير من العناء والمشقة، وقد كان استخراج اللؤلؤ من أهم مصادر الدخل لديهم، ولمدة بعدهم الطويلة عن أهلهم كانوا يخافون عليهم ويتمنون لهم الأمن والسلامة."
+    "passageText": "كان الناس قديماً يهتمون باستخراج اللؤلؤ وخاصة أهل الخليج، فكان من يمتهنون تلك المهنة من أهل الخليج يتركون أهلهم وكل ما يخصهم ويذهبون إلى الخليج العربي فيغوصون فيه بحثاً عن اللؤلؤ، وكان في استخراج اللؤلؤ الكثير من العناء والمشقة، وقد كان استخراج اللؤلؤ من أهم مصادر الدخل لديهم، ولمدة بعدهم الطويلة عن أهلهم كانوا يخافون عليهم ويتمنون لهم الأمن والسلامة.",
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-RC-HUMAN-PROBLEMS-Q01",
@@ -762,7 +842,9 @@
     "correctOptionIndex": 2,
     "passageId": "VERBAL26-ANAS-PASSAGE-HUMAN-PROBLEMS",
     "passageTitle": "الإنسان وتحمل المشاكل",
-    "passageText": "يجب على الإنسان أن يتحمل مسؤولية نفسه؛ لأنه لو ظل ينتظر طويلاً من يأتي ليحل مشاكله فسيضيع وقته سدى."
+    "passageText": "يجب على الإنسان أن يتحمل مسؤولية نفسه؛ لأنه لو ظل ينتظر طويلاً من يأتي ليحل مشاكله فسيضيع وقته سدى.",
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-RC-HUMAN-PROBLEMS-Q02",
@@ -783,7 +865,9 @@
     "correctOptionIndex": 3,
     "passageId": "VERBAL26-ANAS-PASSAGE-HUMAN-PROBLEMS",
     "passageTitle": "الإنسان وتحمل المشاكل",
-    "passageText": "يجب على الإنسان أن يتحمل مسؤولية نفسه؛ لأنه لو ظل ينتظر طويلاً من يأتي ليحل مشاكله فسيضيع وقته سدى."
+    "passageText": "يجب على الإنسان أن يتحمل مسؤولية نفسه؛ لأنه لو ظل ينتظر طويلاً من يأتي ليحل مشاكله فسيضيع وقته سدى.",
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-RC-HUMAN-PROBLEMS-Q03",
@@ -804,7 +888,9 @@
     "correctOptionIndex": 0,
     "passageId": "VERBAL26-ANAS-PASSAGE-HUMAN-PROBLEMS",
     "passageTitle": "الإنسان وتحمل المشاكل",
-    "passageText": "يجب على الإنسان أن يتحمل مسؤولية نفسه؛ لأنه لو ظل ينتظر طويلاً من يأتي ليحل مشاكله فسيضيع وقته سدى."
+    "passageText": "يجب على الإنسان أن يتحمل مسؤولية نفسه؛ لأنه لو ظل ينتظر طويلاً من يأتي ليحل مشاكله فسيضيع وقته سدى.",
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-RC-HUMAN-PROBLEMS-Q04",
@@ -825,7 +911,9 @@
     "correctOptionIndex": 3,
     "passageId": "VERBAL26-ANAS-PASSAGE-HUMAN-PROBLEMS",
     "passageTitle": "الإنسان وتحمل المشاكل",
-    "passageText": "يجب على الإنسان أن يتحمل مسؤولية نفسه؛ لأنه لو ظل ينتظر طويلاً من يأتي ليحل مشاكله فسيضيع وقته سدى."
+    "passageText": "يجب على الإنسان أن يتحمل مسؤولية نفسه؛ لأنه لو ظل ينتظر طويلاً من يأتي ليحل مشاكله فسيضيع وقته سدى.",
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-P006-Q009",
@@ -843,7 +931,9 @@
       "تموت",
       "المرأة"
     ],
-    "correctOptionIndex": 2
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-P006-Q010",
@@ -861,7 +951,9 @@
       "أحسن",
       "القرارات"
     ],
-    "correctOptionIndex": 2
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-P006-Q011",
@@ -879,7 +971,9 @@
       "يتعلمون",
       "بسرعة"
     ],
-    "correctOptionIndex": 3
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-P006-Q012",
@@ -897,7 +991,9 @@
       "فإدراكها",
       "أفضل"
     ],
-    "correctOptionIndex": 2
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-P006-Q013",
@@ -915,7 +1011,9 @@
       "الفراغ",
       "مفسدة"
     ],
-    "correctOptionIndex": 1
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-P006-Q017",
@@ -933,7 +1031,9 @@
       "قبل",
       "للطرفين"
     ],
-    "correctOptionIndex": 2
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-P007-Q018",
@@ -951,7 +1051,9 @@
       "إنفاقه",
       "حكمة"
     ],
-    "correctOptionIndex": 0
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-P007-Q019",
@@ -969,7 +1071,9 @@
       "القمة",
       "مزدحم"
     ],
-    "correctOptionIndex": 0
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-P007-Q020",
@@ -987,7 +1091,9 @@
       "المحن",
       "تباينوا"
     ],
-    "correctOptionIndex": 1
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-P007-Q021",
@@ -1005,7 +1111,9 @@
       "روايته",
       "تذكره"
     ],
-    "correctOptionIndex": 3
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-P007-Q022",
@@ -1023,7 +1131,9 @@
       "القلب",
       "الحسن"
     ],
-    "correctOptionIndex": 3
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-P007-Q023",
@@ -1041,7 +1151,9 @@
       "المرء",
       "أهل"
     ],
-    "correctOptionIndex": 1
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-P007-Q024",
@@ -1059,7 +1171,9 @@
       "لتكثر",
       "برأيه"
     ],
-    "correctOptionIndex": 0
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-P008-Q027",
@@ -1077,7 +1191,9 @@
       "نعمة",
       "نقمة"
     ],
-    "correctOptionIndex": 1
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-P008-Q028",
@@ -1095,7 +1211,9 @@
       "يبحث",
       "الخير"
     ],
-    "correctOptionIndex": 3
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-P008-Q029",
@@ -1113,7 +1231,9 @@
       "المقابل",
       "كثيرًا"
     ],
-    "correctOptionIndex": 1
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-P008-Q030",
@@ -1131,7 +1251,9 @@
       "اتكال",
       "مهامه"
     ],
-    "correctOptionIndex": 1
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-P008-Q031",
@@ -1149,7 +1271,9 @@
       "المروءات",
       "التكريم"
     ],
-    "correctOptionIndex": 3
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-P008-Q035",
@@ -1167,7 +1291,9 @@
       "يشجع",
       "الهاوية"
     ],
-    "correctOptionIndex": 3
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-P005-Q006",
@@ -1185,7 +1311,9 @@
       "كلاهما",
       "يبدأ"
     ],
-    "correctOptionIndex": 3
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-P005-Q007",
@@ -1203,7 +1331,9 @@
       "المالكي",
       "الأديان"
     ],
-    "correctOptionIndex": 3
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-P005-Q008",
@@ -1221,7 +1351,9 @@
       "كالبندول",
       "الأمل"
     ],
-    "correctOptionIndex": 1
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-P006-Q015",
@@ -1239,7 +1371,9 @@
       "الدعم",
       "توحى"
     ],
-    "correctOptionIndex": 3
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-P006-Q016",
@@ -1257,7 +1391,9 @@
       "تقوي",
       "القلب"
     ],
-    "correctOptionIndex": 0
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-RC-BEAUTY-Q01",
@@ -1278,7 +1414,9 @@
     "correctOptionIndex": 0,
     "passageId": "VERBAL26-ANAS-PASSAGE-BEAUTY",
     "passageTitle": "الجمال",
-    "passageText": "إن الجمال الذي نستمتع به حقًا هو: الجمال الذي ينبع بداخلك والذي يغنيك عن جمال الأشياء الخارجية وقبحها، فكلما اقترنت الأخلاق النبيلة داخل الإنسان زاد إحساسه بقيمة الجمال السامية."
+    "passageText": "إن الجمال الذي نستمتع به حقًا هو: الجمال الذي ينبع بداخلك والذي يغنيك عن جمال الأشياء الخارجية وقبحها، فكلما اقترنت الأخلاق النبيلة داخل الإنسان زاد إحساسه بقيمة الجمال السامية.",
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-RC-BEAUTY-Q02",
@@ -1299,7 +1437,9 @@
     "correctOptionIndex": 1,
     "passageId": "VERBAL26-ANAS-PASSAGE-BEAUTY",
     "passageTitle": "الجمال",
-    "passageText": "إن الجمال الذي نستمتع به حقًا هو: الجمال الذي ينبع بداخلك والذي يغنيك عن جمال الأشياء الخارجية وقبحها، فكلما اقترنت الأخلاق النبيلة داخل الإنسان زاد إحساسه بقيمة الجمال السامية."
+    "passageText": "إن الجمال الذي نستمتع به حقًا هو: الجمال الذي ينبع بداخلك والذي يغنيك عن جمال الأشياء الخارجية وقبحها، فكلما اقترنت الأخلاق النبيلة داخل الإنسان زاد إحساسه بقيمة الجمال السامية.",
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-RC-BEAUTY-Q03",
@@ -1320,7 +1460,9 @@
     "correctOptionIndex": 1,
     "passageId": "VERBAL26-ANAS-PASSAGE-BEAUTY",
     "passageTitle": "الجمال",
-    "passageText": "إن الجمال الذي نستمتع به حقًا هو: الجمال الذي ينبع بداخلك والذي يغنيك عن جمال الأشياء الخارجية وقبحها، فكلما اقترنت الأخلاق النبيلة داخل الإنسان زاد إحساسه بقيمة الجمال السامية."
+    "passageText": "إن الجمال الذي نستمتع به حقًا هو: الجمال الذي ينبع بداخلك والذي يغنيك عن جمال الأشياء الخارجية وقبحها، فكلما اقترنت الأخلاق النبيلة داخل الإنسان زاد إحساسه بقيمة الجمال السامية.",
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-RC-BEAUTY-Q04",
@@ -1341,7 +1483,9 @@
     "correctOptionIndex": 0,
     "passageId": "VERBAL26-ANAS-PASSAGE-BEAUTY",
     "passageTitle": "الجمال",
-    "passageText": "إن الجمال الذي نستمتع به حقًا هو: الجمال الذي ينبع بداخلك والذي يغنيك عن جمال الأشياء الخارجية وقبحها، فكلما اقترنت الأخلاق النبيلة داخل الإنسان زاد إحساسه بقيمة الجمال السامية."
+    "passageText": "إن الجمال الذي نستمتع به حقًا هو: الجمال الذي ينبع بداخلك والذي يغنيك عن جمال الأشياء الخارجية وقبحها، فكلما اقترنت الأخلاق النبيلة داخل الإنسان زاد إحساسه بقيمة الجمال السامية.",
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-COMP-P014-Q015",
@@ -1359,7 +1503,9 @@
       "الحزن",
       "الحيرة"
     ],
-    "correctOptionIndex": 1
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-COMP-P014-Q016",
@@ -1377,7 +1523,9 @@
       "حبر",
       "مداد"
     ],
-    "correctOptionIndex": 1
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-COMP-P014-Q017",
@@ -1395,7 +1543,9 @@
       "أسوأ _ وراءه",
       "أعظم _ بجواره"
     ],
-    "correctOptionIndex": 1
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-COMP-P014-Q018",
@@ -1413,7 +1563,9 @@
       "كالحديقة _ الغبار",
       "كالمدفأة _ الهواء"
     ],
-    "correctOptionIndex": 1
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-P007-Q025",
@@ -1431,7 +1583,9 @@
       "المتجول",
       "مقته"
     ],
-    "correctOptionIndex": 3
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-P007-Q026",
@@ -1449,7 +1603,9 @@
       "للتصحيح",
       "أقل"
     ],
-    "correctOptionIndex": 3
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-P008-Q032",
@@ -1467,7 +1623,9 @@
       "حسن",
       "غيرك"
     ],
-    "correctOptionIndex": 2
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-P008-Q034",
@@ -1485,7 +1643,9 @@
       "الأغذية",
       "بالتخمة"
     ],
-    "correctOptionIndex": 3
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-COMP-P014-Q010",
@@ -1503,7 +1663,9 @@
       "يضيئون _ تفادي",
       "يبصرون _ ملاحقة"
     ],
-    "correctOptionIndex": 0
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-COMP-P014-Q011",
@@ -1521,7 +1683,9 @@
       "أهدم _ أبني",
       "أنفذ _ أهدم"
     ],
-    "correctOptionIndex": 1
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-COMP-P014-Q012",
@@ -1539,7 +1703,9 @@
       "محبة _ تدرك",
       "حيوية _ تعرف"
     ],
-    "correctOptionIndex": 1
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-COMP-P014-Q013",
@@ -1557,7 +1723,9 @@
       "الأمن _ إنتاج",
       "الرخاء _ ازدهار"
     ],
-    "correctOptionIndex": 3
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-COMP-P015-Q020",
@@ -1575,7 +1743,9 @@
       "الجواب _ السؤال",
       "السؤال _ الجواب"
     ],
-    "correctOptionIndex": 2
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-COMP-P015-Q021",
@@ -1593,7 +1763,9 @@
       "يقارن _ يتقنه",
       "يعرف _ يحسنه"
     ],
-    "correctOptionIndex": 1
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-COMP-P015-Q022",
@@ -1611,7 +1783,9 @@
       "القبر _ سفينة",
       "البستان _ قارب"
     ],
-    "correctOptionIndex": 2
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-ODD-P032-Q001",
@@ -1629,7 +1803,9 @@
       "القارعة",
       "العاديات"
     ],
-    "correctOptionIndex": 3
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-ODD-P032-Q002",
@@ -1647,7 +1823,9 @@
       "ذاكر",
       "ينام"
     ],
-    "correctOptionIndex": 3
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-ODD-P032-Q003",
@@ -1665,7 +1843,9 @@
       "سعد",
       "ماجد"
     ],
-    "correctOptionIndex": 1
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-ODD-P032-Q004",
@@ -1683,7 +1863,9 @@
       "مبتدأ",
       "نائب فاعل"
     ],
-    "correctOptionIndex": 1
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-ODD-P032-Q005",
@@ -1701,7 +1883,9 @@
       "طبيب",
       "سماعة"
     ],
-    "correctOptionIndex": 2
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-ODD-P032-Q006",
@@ -1719,7 +1903,9 @@
       "شباك",
       "حائط"
     ],
-    "correctOptionIndex": 2
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-ODD-P032-Q007",
@@ -1737,7 +1923,9 @@
       "قليب",
       "كهف"
     ],
-    "correctOptionIndex": 3
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-P006-Q014",
@@ -1755,7 +1943,9 @@
       "السهم",
       "الأمل"
     ],
-    "correctOptionIndex": 1
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-P008-Q033",
@@ -1773,7 +1963,9 @@
       "رائعون",
       "يتحدثون"
     ],
-    "correctOptionIndex": 1
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-COMP-P015-Q024",
@@ -1791,7 +1983,9 @@
       "هواء _ التنفسي",
       "طعام _ الهضمي"
     ],
-    "correctOptionIndex": 3
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-COMP-P015-Q025",
@@ -1809,7 +2003,9 @@
       "النوافل",
       "النواقص"
     ],
-    "correctOptionIndex": 2
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-COMP-P015-Q026",
@@ -1827,7 +2023,9 @@
       "روعة _ هائلة",
       "قلة _ كثرة"
     ],
-    "correctOptionIndex": 3
+    "correctOptionIndex": 3,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-COMP-P015-Q027",
@@ -1845,7 +2043,9 @@
       "الحصى _ الجواهر",
       "السراب _ الحقائق"
     ],
-    "correctOptionIndex": 1
+    "correctOptionIndex": 1,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-COMP-P016-Q028",
@@ -1863,7 +2063,9 @@
       "الوطن _ يحتسب",
       "الواقع _ يعتمد"
     ],
-    "correctOptionIndex": 0
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-COMP-P016-Q029",
@@ -1881,7 +2083,9 @@
       "الفاشل _ يهدم",
       "القوي _ يهدم"
     ],
-    "correctOptionIndex": 0
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-COMP-P016-Q030",
@@ -1899,7 +2103,9 @@
       "الكرم _ البذل",
       "الدعم _ الخصم"
     ],
-    "correctOptionIndex": 2
+    "correctOptionIndex": 2,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-ANAS-COMP-P016-Q031",
@@ -1917,7 +2123,9 @@
       "ذل _ عز",
       "مشاكل _ مصاعب"
     ],
-    "correctOptionIndex": 0
+    "correctOptionIndex": 0,
+    "answerValidationStatus": "SOURCE_KEY_VERIFIED",
+    "answerEvidence": "Verified against the answer key of تأسيس لفظي انس.pdf."
   },
   {
     "id": "VERBAL26-AMER-T01-P004-Q001",
