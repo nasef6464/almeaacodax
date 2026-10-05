@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: ALMEAA Command Center API
-  version: 0.1.0
+  version: 0.2.0
   description: Draft-first command surface for ALMEAA administrators and external agents.
 servers:
   - url: https://YOUR_BACKEND_HOST/api/command-center
@@ -14,12 +14,14 @@ paths:
       responses:
         "200":
           description: Command Center status
+
   /tools:
     get:
       operationId: listCommandTools
       responses:
         "200":
           description: Tool registry
+
   /skills:
     get:
       operationId: getSkillTree
@@ -36,6 +38,7 @@ paths:
       responses:
         "200":
           description: Canonical skills
+
   /drafts:
     get:
       operationId: listCommandDrafts
@@ -63,6 +66,7 @@ paths:
       responses:
         "201":
           description: Draft created
+
   /drafts/{id}/review:
     post:
       operationId: reviewCommandDraft
@@ -89,17 +93,31 @@ paths:
           description: Draft reviewed
         "403":
           description: Human approval required
-components:
-  securitySchemes:
-    CommandApiKey:
-      type: apiKey
-      in: header
-      name: x-almeaa-command-key
+
+  /authoring/questions/draft:
+    post:
+      operationId: createQuestionBatchDraft
+      description: Validates skill scope and exact duplicates, then stores a draft batch only.
+      responses:
+        "201":
+          description: Question batch draft created
+        "422":
+          description: Validation failed
+
+  /authoring/quizzes/draft:
+    post:
+      operationId: createQuizDraft
+      description: Validates referenced questions and stores an unpublished quiz draft.
+      responses:
+        "201":
+          description: Quiz draft created
+        "422":
+          description: Validation failed
 
   /courses/inventory:
     get:
       operationId: getReusableCourseInventory
-      description: Read existing lessons/videos/quizzes/library items/skills for reuse-first course composition.
+      description: Read existing lessons, videos, quizzes, library items, and skills for reuse-first course composition.
       parameters:
         - in: query
           name: pathId
@@ -115,34 +133,27 @@ components:
       responses:
         "200":
           description: Existing reusable course inventory
+
   /courses/validate:
     post:
       operationId: validateReuseFirstCourseDraft
       responses:
         "200":
           description: Course draft validation result
+
   /courses/draft:
     post:
       operationId: createReuseFirstCourseDraft
-      description: Creates a reviewable draft only; never publishes a live course.
+      description: Creates a reviewable course draft only; never publishes a live course.
       responses:
         "201":
           description: Course draft created
-  /authoring/questions/draft:
-    post:
-      operationId: createQuestionBatchDraft
-      description: Validates skills and exact duplicates, then stores a draft batch.
-      responses:
-        "201":
-          description: Question batch draft created
         "422":
           description: Validation failed
-  /authoring/quizzes/draft:
-    post:
-      operationId: createQuizDraft
-      description: Validates referenced questions and stores an unpublished quiz draft.
-      responses:
-        "201":
-          description: Quiz draft created
-        "422":
-          description: Validation failed
+
+components:
+  securitySchemes:
+    CommandApiKey:
+      type: apiKey
+      in: header
+      name: x-almeaa-command-key
