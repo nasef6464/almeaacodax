@@ -15,7 +15,11 @@ const QUIZ_PROGRESS_KEY = 'quiz_progress';
 const QUIZ_PROGRESS_SNAPSHOT_KEY = 'quiz_progress_save';
 
 const getCanonicalQuestionSkillIds = (question: any): string[] => {
-  const canonical: string[] = [question?.skillId, question?.subSkillId]
+  const canonical: string[] = [
+    question?.skillId,
+    ...(Array.isArray(question?.subSkillIds) ? question.subSkillIds : []),
+    question?.subSkillId,
+  ]
     .map((value) => String(value || '').trim())
     .filter((value): value is string => Boolean(value));
   const legacy: string[] = (Array.isArray(question?.skillIds) ? question.skillIds : [])
