@@ -2479,7 +2479,7 @@
     - `SMOKE_API_BASE_URL=https://almeaacodax-k2ux.onrender.com/api`
     - `SMOKE_ADMIN_TOKEN=<session-only>`
     - `SMOKE_STUDENT_REDEEMED_EMAIL=student.a@almeaa.local`
-    - `SMOKE_STUDENT_REDEEMED_PASSWORD=Student@123`
+    - `SMOKE_STUDENT_REDEEMED_PASSWORD=<secret-store>`
 - Runtime note:
   - localhost operational smoke can be distorted by local admin bypass; final closure must use production API context for role-accurate results.
 
