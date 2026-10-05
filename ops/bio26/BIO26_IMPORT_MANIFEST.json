@@ -16,7 +16,8 @@
     "dedupe": "PASS_FINAL_2832_CANONICAL",
     "aiContext": "AUTHORING_IN_PROGRESS_370_OF_2832",
     "r2Upload": "PENDING",
-    "productionSubjectSafety": "PASS_DEDICATED_BIOLOGY_SUBJECT_REQUIRED"
+    "productionSubjectSafety": "PASS_DEDICATED_BIOLOGY_SUBJECT_REQUIRED",
+    "r2UploadManifest": "PASS_READY_2832"
   },
   "assetPackage": {
     "version": "V2_REGENERATED_2026-10-05",
@@ -51,5 +52,12 @@
     "preserveExistingSubjectId": "sub_1784980740570",
     "preserveExistingSubjectName": "علم البيئة",
     "reason": "36 historical skill-progress records / 72 attempts reference its current generic skills"
+  },
+  "r2UploadPreparation": {
+    "canonicalImages": 2832,
+    "totalBytes": 29550012,
+    "manifestCsvSha256": "57b9f3ada37113dff0cbdd07c18db10bfffc8e0b09c1315d8e94b005585546e5",
+    "keyPattern": "questions/v2/{questionCode}/{imageHash}.webp",
+    "uploadStatus": "PENDING"
   }
 }
