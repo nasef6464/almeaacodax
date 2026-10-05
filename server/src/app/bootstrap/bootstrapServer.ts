@@ -9,6 +9,7 @@ import { createSocketServer } from "../../sockets/index.js";
 import { registerGracefulShutdown } from "./registerGracefulShutdown.js";
 import { runStartupMaintenance } from "./runStartupMaintenance.js";
 import { runQuestionPilotPackageImportIfRequested } from "./runQuestionPilotPackageImport.js";
+import { runChem26PackageImportIfRequested } from "./runChem26PackageImport.js";
 
 /**
  * Composes the existing API runtime in one explicit bootstrap boundary.
@@ -28,6 +29,9 @@ export async function bootstrapServer() {
     console.log(`API server listening on http://localhost:${env.PORT}`);
     void runQuestionPilotPackageImportIfRequested().catch((error) => {
       console.error("COL26OLD_IMPORT_FAILED", error instanceof Error ? error.message : "Unknown error");
+    });
+    void runChem26PackageImportIfRequested().catch((error) => {
+      console.error("CHEM26_IMPORT_FAILED", error instanceof Error ? error.message : "Unknown error");
     });
   });
 

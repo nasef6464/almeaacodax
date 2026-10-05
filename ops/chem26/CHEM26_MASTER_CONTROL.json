@@ -1,0 +1,67 @@
+{
+  "project": "CHEM26 Full Closure",
+  "scope": "chemistry-only",
+  "updatedAt": "2026-10-05T13:18:00+03:00",
+  "status": "READY_FOR_PRODUCTION_IMPORT",
+  "source": {
+    "questionPdf": "كتاب تجميعات يلو للكيمياء 26 - المعدل.pdf",
+    "coverage": 1709,
+    "section1": 1035,
+    "section2": 674,
+    "lessons": 32
+  },
+  "taxonomy": {
+    "productionApplied": true,
+    "sections": 27,
+    "mainSkills": 27,
+    "subSkills": 99,
+    "parentTopics": 27,
+    "childTopics": 99,
+    "badChildLinks": 0,
+    "legacyPlaceholdersRemoved": true,
+    "sectionIdPattern": "sec_sub_chemistry_{1..27}"
+  },
+  "questions": {
+    "canonical": 1708,
+    "aliases": 1,
+    "alias": {
+      "source": "TAH-CHEM-CHEM26-P131-Q26",
+      "canonical": "TAH-CHEM-CHEM26-P130-Q13"
+    }
+  },
+  "answers": {
+    "pass": 1709,
+    "quarantine": 0
+  },
+  "crops": {
+    "canonicalReady": 1708,
+    "uniqueHashes": 1708,
+    "repairedDefects": 5
+  },
+  "optionTextQA": {
+    "canonicalComplete": 1708,
+    "sourceCompleteIncludingAlias": 1709,
+    "reviewRemaining": 0
+  },
+  "package": {
+    "name": "CHEM26_IMPORT_PACKAGE_READY_1708_V2.zip",
+    "sha256": "0014da81af2c1d9cfe882897b16633d805b0df737800af37c1a5d16901522137",
+    "batchId": "TAH-CHEM-CHEM26-FULL-V1",
+    "sectionScopeAligned": true
+  },
+  "codeGates": {
+    "canonicalPrefixMerged": true,
+    "taxonomyProductionGateMerged": true,
+    "importRunnerPR": 378
+  },
+  "pending": [
+    "Import runner merge",
+    "Production API dry-run",
+    "5-question canary",
+    "Full draft import <=100",
+    "Live E2E",
+    "Approval"
+  ],
+  "transportBlocker": "Importer intentionally accepts only short-lived HTTPS oaiusercontent package URLs. Package V2 is hash-locked and ready, but no signed external package URL is currently exposed by the available tool surface.",
+  "blockerPolicy": "Do not weaken transport/auth controls. Continue all independent QA and merge work; execute import immediately when a signed package URL is available."
+}
