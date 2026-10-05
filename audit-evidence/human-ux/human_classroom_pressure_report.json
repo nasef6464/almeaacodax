@@ -1,0 +1,388 @@
+{
+  "status": "PASSED_CERTIFICATION",
+  "executionTimestamp": "2026-10-05T06:52:15.296Z",
+  "activeSessionId": "6ac3455eb570173a16b88629",
+  "assertions": {
+    "total": 42,
+    "passed": 42,
+    "failed": 0
+  },
+  "timings": {
+    "scenarioA_seconds": 42.4,
+    "scenarioB_20_students_join_seconds": 668,
+    "scenarioC_push_5_seconds": 3.3,
+    "scenarioF_push_10_seconds": 4.1
+  },
+  "metrics": {
+    "clicks": {
+      "scenarioA": 3,
+      "scenarioC": 1
+    },
+    "observations": {}
+  },
+  "uxScores": {
+    "functionality": 10,
+    "easeOfUse": 9.5,
+    "speedAndLatency": 9,
+    "visualClarity": 9.5,
+    "comprehensionSpeed": 9,
+    "teacherCognitiveLoad": 9,
+    "studentEase": 9.5,
+    "mobileErgonomics": 9
+  },
+  "productGaps": [],
+  "assertionMatrix": [
+    {
+      "test": "Teacher Session Initialization",
+      "expected": "Valid session ID created or recovered",
+      "actual": "Session ID: 6ac3455eb570173a16b88629",
+      "assertion": "PASS",
+      "evidence": "teacher_session_initialized.png",
+      "verdict": "VERIFIED"
+    },
+    {
+      "test": "Stepwise Join Assertion (5 joined)",
+      "expected": ">= 5 students joined",
+      "actual": "5 verified on teacher console live aggregate",
+      "assertion": "PASS",
+      "evidence": "teacher_students_joined_progress.png",
+      "verdict": "VERIFIED"
+    },
+    {
+      "test": "Stepwise Join Assertion (10 joined)",
+      "expected": ">= 10 students joined",
+      "actual": "10 verified on teacher console live aggregate",
+      "assertion": "PASS",
+      "evidence": "teacher_students_joined_progress.png",
+      "verdict": "VERIFIED"
+    },
+    {
+      "test": "Stepwise Join Assertion (15 joined)",
+      "expected": ">= 15 students joined",
+      "actual": "15 verified on teacher console live aggregate",
+      "assertion": "PASS",
+      "evidence": "teacher_students_joined_progress.png",
+      "verdict": "VERIFIED"
+    },
+    {
+      "test": "Stepwise Join Assertion (20 joined)",
+      "expected": ">= 20 students joined",
+      "actual": "20 verified on teacher console live aggregate",
+      "assertion": "PASS",
+      "evidence": "teacher_students_joined_progress.png",
+      "verdict": "VERIFIED"
+    },
+    {
+      "test": "Student Receives Batch Question 1 on Mobile",
+      "expected": "Question 1 visible on student tablet view",
+      "actual": "Question 1 active on mobile",
+      "assertion": "PASS",
+      "evidence": "student_question_received_mobile.png",
+      "verdict": "VERIFIED"
+    },
+    {
+      "test": "Total Student Responses Recorded",
+      "expected": "totalResponses === 20",
+      "actual": "totalResponses === 20",
+      "assertion": "PASS",
+      "evidence": "teacher_response_progress.png",
+      "verdict": "VERIFIED"
+    },
+    {
+      "test": "Answer Option Distribution: Option A (أ)",
+      "expected": "Option A count === 4",
+      "actual": "Option A count === 4",
+      "assertion": "PASS",
+      "evidence": "teacher_option_distribution_neutral.png",
+      "verdict": "VERIFIED"
+    },
+    {
+      "test": "Answer Option Distribution: Option B (ب)",
+      "expected": "Option B count === 7",
+      "actual": "Option B count === 7",
+      "assertion": "PASS",
+      "evidence": "teacher_option_distribution_neutral.png",
+      "verdict": "VERIFIED"
+    },
+    {
+      "test": "Answer Option Distribution: Option C (ج)",
+      "expected": "Option C count === 6",
+      "actual": "Option C count === 6",
+      "assertion": "PASS",
+      "evidence": "teacher_option_distribution_neutral.png",
+      "verdict": "VERIFIED"
+    },
+    {
+      "test": "Answer Option Distribution: Option D (د)",
+      "expected": "Option D count === 3",
+      "actual": "Option D count === 3",
+      "assertion": "PASS",
+      "evidence": "teacher_option_distribution_neutral.png",
+      "verdict": "VERIFIED"
+    },
+    {
+      "test": "Teacher Solution Reveal Action",
+      "expected": "Solution revealed with accuracy and distractor insights",
+      "actual": "Solution revealed successfully",
+      "assertion": "PASS",
+      "evidence": "teacher_solution_revealed.png",
+      "verdict": "VERIFIED"
+    },
+    {
+      "test": "Projector Theater Mode Render & Aggregate Visibility",
+      "expected": "Theater mode active with high visibility aggregate numbers",
+      "actual": "Projector view verified on 1920x1080",
+      "assertion": "PASS",
+      "evidence": "projector_live_theater_view.png",
+      "verdict": "VERIFIED"
+    },
+    {
+      "test": "Post-Batch Mini-Report Summary Card",
+      "expected": "Batch summary mini-report renders classroom performance metrics",
+      "actual": "Mini-report visible on teacher console",
+      "assertion": "PASS",
+      "evidence": "batch_summary_mini_report.png",
+      "verdict": "VERIFIED"
+    },
+    {
+      "test": "Same Session Continuity for Multiple Activities",
+      "expected": "Student continues in same session ID without reconnecting or re-entering PIN",
+      "actual": "Session ID remained constant: 6ac3455eb570173a16b88629",
+      "assertion": "PASS",
+      "evidence": "student_continuous_session_mobile.png",
+      "verdict": "VERIFIED"
+    },
+    {
+      "test": "Teacher Mobile Remote Usability",
+      "expected": "Teacher can control session progression from mobile phone while moving in class",
+      "actual": "Teacher mobile controls active on 390x844",
+      "assertion": "PASS",
+      "evidence": "teacher_mobile_remote_controls.png",
+      "verdict": "VERIFIED"
+    },
+    {
+      "test": "RBAC Negative: Student blocked from Teacher Console API",
+      "expected": "HTTP 403 Forbidden",
+      "actual": "HTTP 403",
+      "assertion": "PASS",
+      "evidence": "",
+      "verdict": "VERIFIED"
+    },
+    {
+      "test": "RBAC Negative: Student A blocked from Student B Quiz Report",
+      "expected": "HTTP 403 Forbidden",
+      "actual": "HTTP 403",
+      "assertion": "PASS",
+      "evidence": "",
+      "verdict": "VERIFIED"
+    },
+    {
+      "test": "RBAC Negative: Student blocked from Classroom Aggregate/Responses",
+      "expected": "HTTP 403 Forbidden",
+      "actual": "HTTP 403",
+      "assertion": "PASS",
+      "evidence": "",
+      "verdict": "VERIFIED"
+    },
+    {
+      "test": "RBAC Negative: Out-of-Scope Student blocked from Session",
+      "expected": "HTTP 403 Forbidden or 404 Not Found",
+      "actual": "HTTP 403",
+      "assertion": "PASS",
+      "evidence": "",
+      "verdict": "VERIFIED"
+    },
+    {
+      "test": "RBAC Negative: Out-of-Scope Teacher blocked from Session Control",
+      "expected": "HTTP 403 Forbidden or 404 Not Found",
+      "actual": "HTTP 403",
+      "assertion": "PASS",
+      "evidence": "",
+      "verdict": "VERIFIED"
+    },
+    {
+      "test": "RBAC Negative: Out-of-Scope Teacher blocked from Foreign School History",
+      "expected": "HTTP 403 Forbidden or 404 Not Found",
+      "actual": "HTTP 403",
+      "assertion": "PASS",
+      "evidence": "",
+      "verdict": "VERIFIED"
+    },
+    {
+      "test": "RBAC Negative: Out-of-Scope Teacher blocked from Foreign Class Report",
+      "expected": "HTTP 403 Forbidden or 404 Not Found",
+      "actual": "HTTP 403",
+      "assertion": "PASS",
+      "evidence": "",
+      "verdict": "VERIFIED"
+    },
+    {
+      "test": "RBAC Negative: Parent blocked from Teacher Console API",
+      "expected": "HTTP 403 Forbidden",
+      "actual": "HTTP 403",
+      "assertion": "PASS",
+      "evidence": "",
+      "verdict": "VERIFIED"
+    },
+    {
+      "test": "RBAC Negative: Parent blocked from Unrelated Student Quiz Results",
+      "expected": "HTTP 403 Forbidden",
+      "actual": "HTTP 403",
+      "assertion": "PASS",
+      "evidence": "",
+      "verdict": "VERIFIED"
+    },
+    {
+      "test": "Persistence: Session State Persisted as Ended/Archived",
+      "expected": "Session status is ended or archived in persistent database",
+      "actual": "Live status: ended == Persisted status: ended",
+      "assertion": "PASS",
+      "evidence": "teacher_persisted_session_report.png",
+      "verdict": "VERIFIED"
+    },
+    {
+      "test": "Persistence: Participant Count Matches Live Count (20 === 20)",
+      "expected": "Live participants (20) == Persisted participants (>= 20)",
+      "actual": "Live: 20 == Persisted: 20",
+      "assertion": "PASS",
+      "evidence": "teacher_persisted_session_report.png",
+      "verdict": "VERIFIED"
+    },
+    {
+      "test": "Persistence: Question Count Matches Live Session (15 === 15)",
+      "expected": "Live question count (15) == Persisted question count (15)",
+      "actual": "Live: 15 == Persisted: 15",
+      "assertion": "PASS",
+      "evidence": "teacher_persisted_session_report.png",
+      "verdict": "VERIFIED"
+    },
+    {
+      "test": "Persistence: Teacher Identity Matches Live Session",
+      "expected": "Live teacher ID == Persisted teacher ID",
+      "actual": "Live: 6aa453e4f90f22c716b20801 == Persisted: 6aa453e4f90f22c716b20801",
+      "assertion": "PASS",
+      "evidence": "teacher_persisted_session_report.png",
+      "verdict": "VERIFIED"
+    },
+    {
+      "test": "Persistence: Class Identity Matches Live Session",
+      "expected": "Live class ID/name == Persisted class ID/name",
+      "actual": "Live: 6ac1d397f67fa7d706600877 == Persisted: 6ac1d397f67fa7d706600877",
+      "assertion": "PASS",
+      "evidence": "teacher_persisted_session_report.png",
+      "verdict": "VERIFIED"
+    },
+    {
+      "test": "Persistence: Response Count Matches Live Aggregate",
+      "expected": "Live response count (20) == Persisted response count (20)",
+      "actual": "Live: 20 == Persisted: 20",
+      "assertion": "PASS",
+      "evidence": "teacher_persisted_session_report.png",
+      "verdict": "VERIFIED"
+    },
+    {
+      "test": "Persistence: Accuracy Summary Matches Live Aggregate",
+      "expected": "Live accuracy (20%) == Persisted accuracy (20%)",
+      "actual": "Live: 20% == Persisted: 20%",
+      "assertion": "PASS",
+      "evidence": "teacher_persisted_session_report.png",
+      "verdict": "VERIFIED"
+    },
+    {
+      "test": "Historical Reporting: Multiple Distinct Sessions Retrievable",
+      "expected": "Teacher history contains >= 2 distinct historical sessions",
+      "actual": "Distinct historical sessions found: 50",
+      "assertion": "PASS",
+      "evidence": "",
+      "verdict": "VERIFIED"
+    },
+    {
+      "test": "Historical Reporting: 7-Day Window Filter (Week Period)",
+      "expected": "7-day historical insights return HTTP 200 and valid metrics",
+      "actual": "HTTP 200, valid insights: true",
+      "assertion": "PASS",
+      "evidence": "",
+      "verdict": "VERIFIED"
+    },
+    {
+      "test": "Historical Reporting: 30-Day Window Filter (Month Period)",
+      "expected": "30-day historical insights return HTTP 200 and valid metrics",
+      "actual": "HTTP 200, valid insights: true",
+      "assertion": "PASS",
+      "evidence": "",
+      "verdict": "VERIFIED"
+    },
+    {
+      "test": "Supervisor Historical Sessions Accessibility",
+      "expected": "Supervisor can access sessions list and teachers summary within scope",
+      "actual": "Sessions available: 30",
+      "assertion": "PASS",
+      "evidence": "supervisor_classroom_history_view.png",
+      "verdict": "VERIFIED"
+    },
+    {
+      "test": "RBAC Negative: Supervisor blocked from Out-of-Scope School Interventions",
+      "expected": "HTTP 403 Forbidden",
+      "actual": "HTTP 403",
+      "assertion": "PASS",
+      "evidence": "",
+      "verdict": "VERIFIED"
+    },
+    {
+      "test": "Supervisor Reporting: 7-Day Analytics Window",
+      "expected": "Supervisor 7-day analytics return HTTP 200 with analytics payload",
+      "actual": "HTTP 200, analytics: true",
+      "assertion": "PASS",
+      "evidence": "",
+      "verdict": "VERIFIED"
+    },
+    {
+      "test": "Supervisor Reporting: 30-Day Monthly Summary",
+      "expected": "Supervisor 30-day monthly summary returns aggregate totals",
+      "actual": "HTTP 200, sessions: 57",
+      "assertion": "PASS",
+      "evidence": "",
+      "verdict": "VERIFIED"
+    },
+    {
+      "test": "Supervisor Reporting: Custom Date Range",
+      "expected": "Supervisor custom date range returns HTTP 200 with explicit range metadata",
+      "actual": "HTTP 200, range: 2026-09-06T00:00:00.000Z -> 2026-10-05T23:59:59.999Z",
+      "assertion": "PASS",
+      "evidence": "",
+      "verdict": "VERIFIED"
+    },
+    {
+      "test": "Supervisor Reporting: School → Teacher → Class → Session Drilldown",
+      "expected": "Supervisor analytics exposes hierarchical School → Teacher → Class → Session structure",
+      "actual": "Schools in hierarchy: 1",
+      "assertion": "PASS",
+      "evidence": "",
+      "verdict": "VERIFIED"
+    },
+    {
+      "test": "Zero Sensitive Data Leaks across DOM, Storage, Network, and Console",
+      "expected": "0 sensitive data leaks detected",
+      "actual": "0 leaks detected",
+      "assertion": "PASS",
+      "evidence": "",
+      "verdict": "VERIFIED"
+    }
+  ],
+  "screenshots": [
+    "teacher_session_initialized.png",
+    "teacher_students_joined_progress.png",
+    "teacher_push_5_dialog.png",
+    "student_question_received_mobile.png",
+    "teacher_response_progress.png",
+    "teacher_option_distribution_neutral.png",
+    "teacher_solution_revealed.png",
+    "projector_live_theater_view.png",
+    "batch_summary_mini_report.png",
+    "teacher_push_10_dialog.png",
+    "student_continuous_session_mobile.png",
+    "teacher_mobile_remote_controls.png",
+    "teacher_persisted_session_report.png",
+    "supervisor_classroom_history_view.png"
+  ]
+}

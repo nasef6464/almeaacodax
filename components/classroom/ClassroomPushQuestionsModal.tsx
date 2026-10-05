@@ -18,6 +18,7 @@ interface ClassroomPushQuestionsModalProps {
   onSectionChange: (value: string) => void;
   onSkillChange: (value: string) => void;
   onQuickSelectBatch: () => void;
+  onSelectCount?: (count: number) => void;
   onClearSelection: () => void;
   onToggleQuestion: (id: string) => void;
   onSubmit: () => void;
@@ -39,11 +40,20 @@ export const ClassroomPushQuestionsModal: React.FC<ClassroomPushQuestionsModalPr
   onSectionChange,
   onSkillChange,
   onQuickSelectBatch,
+  onSelectCount,
   onClearSelection,
   onToggleQuestion,
   onSubmit,
 }) => {
   if (!isOpen) return null;
+
+  const handleSelectCount = (count: number) => {
+    if (onSelectCount) {
+      onSelectCount(count);
+    } else {
+      onQuickSelectBatch();
+    }
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-xs" dir="rtl">
@@ -55,7 +65,7 @@ export const ClassroomPushQuestionsModal: React.FC<ClassroomPushQuestionsModalPr
             </span>
             <div>
               <h3 className="font-black text-slate-900 dark:text-white text-base">إرسال أسئلة أو حزمة مهارة جديدة للطلاب أثناء الحصة</h3>
-              <p className="text-xs text-slate-500">اختر سؤالاً فردياً أو حزمة 5-6 أسئلة على مهارة شرحتها تواً على السبورة</p>
+              <p className="text-xs text-slate-500">اختر سؤالاً فردياً أو حزمة تدريب جاهزة (5 أو 10 أسئلة) بضغطة زر واحدة</p>
             </div>
           </div>
           <button type="button" onClick={onClose} className="rounded-xl p-1 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800">
@@ -96,18 +106,35 @@ export const ClassroomPushQuestionsModal: React.FC<ClassroomPushQuestionsModalPr
           </div>
 
           <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-1.5">
+              <span className="text-[11px] font-bold text-slate-500 ml-1">تحديد سريع:</span>
               <button
                 type="button"
-                onClick={onQuickSelectBatch}
-                disabled={availableQuestions.length === 0}
+                onClick={() => handleSelectCount(1)}
+                disabled={availableQuestions.length < 1}
                 className="flex items-center gap-1 rounded-lg bg-indigo-50 px-2.5 py-1 text-xs font-black text-indigo-700 hover:bg-indigo-100 dark:bg-indigo-950/40 dark:text-indigo-300 disabled:opacity-40"
               >
-                <BookOpen size={13} /> تحديد حزمة تدريب (5 أسئلة)
+                <BookOpen size={12} /> سؤال واحد (1)
+              </button>
+              <button
+                type="button"
+                onClick={() => handleSelectCount(5)}
+                disabled={availableQuestions.length === 0}
+                className="flex items-center gap-1 rounded-lg bg-emerald-50 px-2.5 py-1 text-xs font-black text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-950/40 dark:text-emerald-300 disabled:opacity-40"
+              >
+                <BookOpen size={12} /> حزمة 5 أسئلة
+              </button>
+              <button
+                type="button"
+                onClick={() => handleSelectCount(10)}
+                disabled={availableQuestions.length === 0}
+                className="flex items-center gap-1 rounded-lg bg-purple-50 px-2.5 py-1 text-xs font-black text-purple-700 hover:bg-purple-100 dark:bg-purple-950/40 dark:text-purple-300 disabled:opacity-40"
+              >
+                <BookOpen size={12} /> حزمة 10 أسئلة
               </button>
               {selectedIds.length > 0 && (
-                <button type="button" onClick={onClearSelection} className="text-xs font-bold text-rose-600 hover:underline">
-                  إلغاء التحديد ({selectedIds.length})
+                <button type="button" onClick={onClearSelection} className="text-xs font-bold text-rose-600 hover:underline mr-1">
+                  إلغاء ({selectedIds.length})
                 </button>
               )}
             </div>

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Award, CheckCircle2, Crown, TrendingUp, Users, Zap } from 'lucide-react';
+import { Award, CheckCircle2, ChevronDown, ChevronUp, Crown, Eye, EyeOff, Sparkles, TrendingUp, Users, Zap } from 'lucide-react';
 import { api } from '../../services/api';
 import { useClassroomRealtime } from '../../hooks/useClassroomRealtime';
 
@@ -13,8 +13,16 @@ interface ClassroomTeacherLiveRadarProps {
     options: string[];
     correctOptionIndex?: number;
     isChallenge?: boolean;
+    explanation?: string;
   } | null;
   onToggleChallenge?: () => void;
+  submissionSummary?: {
+    joinedCount?: number;
+    submittedCount?: number;
+    submitted?: Array<{ studentId: string; name: string }>;
+  } | null;
+  solutionRevealed?: boolean;
+  onToggleReveal?: () => void;
 }
 
 type LeaderboardEntry = {
@@ -41,7 +49,15 @@ export const ClassroomTeacherLiveRadar: React.FC<ClassroomTeacherLiveRadarProps>
   distribution,
   activeQuestion,
   onToggleChallenge,
+  submissionSummary,
+  solutionRevealed,
+  onToggleReveal,
 }) => {
+  const [internalRevealed, setInternalRevealed] = useState(false);
+  const [showDrilldown, setShowDrilldown] = useState(false);
+  const isRevealed = typeof solutionRevealed === 'boolean' ? solutionRevealed : internalRevealed;
+  const toggleReveal = onToggleReveal || (() => setInternalRevealed((prev) => !prev));
+
   const options = activeQuestion?.options || [];
   const totalResponses = responseCount || 0;
   const correctIdx = activeQuestion?.correctOptionIndex;
@@ -109,29 +125,87 @@ export const ClassroomTeacherLiveRadar: React.FC<ClassroomTeacherLiveRadarProps>
               رادار التفاعل والتحليل الحي
               {isChallenge && <span className="rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-black text-amber-800 dark:bg-amber-900/40 dark:text-amber-300">⚡ سؤال تحدي ذكي</span>}
             </h3>
-            <p className="text-xs text-slate-500">متابعة دقيقة لاستجابات الطلاب وتحديد المشتتات المفهومية</p>
+            <p className="text-xs text-slate-500">متابعة دقيقة لاستجابات الطلاب وتوزيع البدائل لحظياً</p>
           </div>
         </div>
 
-        {onToggleChallenge && (
-          <button type="button" onClick={onToggleChallenge} className={`flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-black transition-all ${isChallenge ? 'bg-amber-500 text-white shadow-sm hover:bg-amber-600' : 'border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200'}`}>
-            <Zap size={14} />{isChallenge ? 'إلغاء وضع التحدي' : '⚡ تعيين كسؤال تحدي'}
-          </button>
-        )}
+        <div className="flex items-center gap-2">
+          {activeQuestion && (
+            <button
+              type="button"
+              onClick={toggleReveal}
+              className={`flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-black transition-all shadow-xs active:scale-95 ${
+                isRevealed
+                  ? 'bg-amber-500 text-slate-950 hover:bg-amber-400'
+                  : 'bg-indigo-600 text-white hover:bg-indigo-700'
+              }`}
+            >
+              {isRevealed ? <EyeOff size={14} /> : <Eye size={14} />}
+              {isRevealed ? 'إخفاء الحل 🔒' : 'كشف الحل للفصل 💡'}
+            </button>
+          )}
+
+          {onToggleChallenge && (
+            <button type="button" onClick={onToggleChallenge} className={`flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-black transition-all ${isChallenge ? 'bg-amber-500 text-white shadow-sm hover:bg-amber-600' : 'border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200'}`}>
+              <Zap size={14} />{isChallenge ? 'إلغاء وضع التحدي' : '⚡ تعيين كسؤال تحدي'}
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <div className="rounded-xl bg-slate-50 p-3 text-center dark:bg-slate-800/60"><span className="text-xs font-bold text-slate-500">إجمالي الإجابات</span><div className="mt-1 text-2xl font-black text-slate-900 dark:text-white">{totalResponses}</div></div>
-        <div className="rounded-xl bg-slate-50 p-3 text-center dark:bg-slate-800/60"><span className="text-xs font-bold text-slate-500">المتوقع / المسجل</span><div className="mt-1 text-2xl font-black text-indigo-600 dark:text-indigo-400">{expectedCount > 0 ? `${totalResponses}/${expectedCount}` : `${totalResponses}`}</div></div>
-        <div className="rounded-xl bg-emerald-50/70 p-3 text-center dark:bg-emerald-950/30"><span className="text-xs font-bold text-emerald-800 dark:text-emerald-300">دقة الإجابات</span><div className="mt-1 text-2xl font-black text-emerald-700 dark:text-emerald-400">{accuracyRate !== null ? `${accuracyRate}%` : '—'}</div></div>
-        <div className="rounded-xl bg-purple-50/70 p-3 text-center dark:bg-purple-950/30"><span className="text-xs font-bold text-purple-800 dark:text-purple-300">طبيعة السؤال</span><div className="mt-1 text-base font-black text-purple-700 dark:text-purple-400">{isChallenge ? 'تحدي استثنائي' : 'سؤال تكويني'}</div></div>
+        <div className="rounded-xl bg-slate-50 p-3 text-center dark:bg-slate-800/60">
+          <span className="text-xs font-bold text-slate-500">إجمالي الإجابات</span>
+          <div className="mt-1 text-2xl font-black text-slate-900 dark:text-white">{totalResponses}</div>
+        </div>
+        <div className="rounded-xl bg-slate-50 p-3 text-center dark:bg-slate-800/60">
+          <div className="flex items-center justify-between text-xs font-bold text-slate-500">
+            <span>المتوقع / المسجل</span>
+            {expectedCount > totalResponses && (
+              <button
+                type="button"
+                onClick={() => setShowDrilldown(!showDrilldown)}
+                className="rounded-md bg-rose-100 px-1.5 py-0.5 text-[10px] font-black text-rose-800 hover:bg-rose-200 dark:bg-rose-900/40 dark:text-rose-200"
+              >
+                {showDrilldown ? 'إخفاء' : `${expectedCount - totalResponses} لم يجيبوا`}
+              </button>
+            )}
+          </div>
+          <div className="mt-1 text-2xl font-black text-indigo-600 dark:text-indigo-400">
+            {expectedCount > 0 ? `${totalResponses}/${expectedCount}` : `${totalResponses}`}
+          </div>
+        </div>
+        <div className="rounded-xl bg-emerald-50/70 p-3 text-center dark:bg-emerald-950/30">
+          <span className="text-xs font-bold text-emerald-800 dark:text-emerald-300">دقة الإجابات</span>
+          <div className="mt-1 text-2xl font-black text-emerald-700 dark:text-emerald-400">
+            {isRevealed ? (accuracyRate !== null ? `${accuracyRate}%` : '—') : <span className="text-xs font-bold text-slate-400">مخفي حتى الكشف 🔒</span>}
+          </div>
+        </div>
+        <div className="rounded-xl bg-purple-50/70 p-3 text-center dark:bg-purple-950/30">
+          <span className="text-xs font-bold text-purple-800 dark:text-purple-300">طبيعة السؤال</span>
+          <div className="mt-1 text-base font-black text-purple-700 dark:text-purple-400">{isChallenge ? 'تحدي استثنائي' : 'سؤال تكويني'}</div>
+        </div>
       </div>
+
+      {showDrilldown && (
+        <div className="mt-4 rounded-xl border border-rose-200 bg-rose-50/70 p-4 text-xs dark:border-rose-900/40 dark:bg-rose-950/20">
+          <div className="flex items-center justify-between font-black text-rose-900 dark:text-rose-200">
+            <span>الطلاب الذين لم يجيبوا على هذا النشاط بعد ({Math.max(0, expectedCount - totalResponses)}):</span>
+            <button type="button" onClick={() => setShowDrilldown(false)} className="text-slate-400 hover:text-slate-600"><ChevronUp size={16} /></button>
+          </div>
+          <p className="mt-1.5 text-slate-600 dark:text-slate-400 text-xs leading-relaxed">
+            {submissionSummary?.submitted && submissionSummary.submitted.length > 0
+              ? `سلّم الإجابة: ${submissionSummary.submitted.map((s) => s.name).join('، ')} (${submissionSummary.submitted.length} طلاب)`
+              : 'بانتظار وصول استجابات الطلاب.'}
+          </p>
+        </div>
+      )}
 
       {isChallenge && competitionEnabled && (
         <div className="mt-5 rounded-2xl border border-amber-200 bg-amber-50/70 p-4 dark:border-amber-800/60 dark:bg-amber-950/30">
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-2"><Crown size={18} className="text-amber-600" /><h4 className="text-sm font-black text-amber-950 dark:text-amber-200">منصة التحدي · Top 3</h4></div>
-            <span className="text-[11px] font-bold text-amber-700 dark:text-amber-300">100 نقطة لكل إجابة صحيحة · بدون Bonus سرعة حالياً</span>
+            <span className="text-[11px] font-bold text-amber-700 dark:text-amber-300">100 نقطة لكل إجابة صحيحة</span>
           </div>
           {podium.length === 0 ? (
             <p className="mt-3 text-xs font-bold text-amber-700 dark:text-amber-300">بانتظار أولى الإجابات الصحيحة لظهور الترتيب.</p>
@@ -152,24 +226,55 @@ export const ClassroomTeacherLiveRadar: React.FC<ClassroomTeacherLiveRadarProps>
 
       {options.length > 0 && (
         <div className="mt-5 space-y-2.5">
-          <div className="flex items-center justify-between text-xs font-bold text-slate-600 dark:text-slate-400"><span>توزيع اختيارات الطلاب على البدائل:</span><span>{totalResponses} طالب شاركوا</span></div>
+          <div className="flex items-center justify-between text-xs font-bold text-slate-600 dark:text-slate-400">
+            <span>توزيع اختيارات الطلاب على البدائل {!isRevealed && <span className="text-amber-600 font-bold">(الحل مخفي)</span>}:</span>
+            <span>{totalResponses} طالب شاركوا</span>
+          </div>
           <div className="space-y-2">
             {options.map((option, idx) => {
               const count = distribution[String(idx)] || 0;
               const percentage = totalResponses > 0 ? Math.round((count / totalResponses) * 100) : 0;
-              const isCorrect = correctIdx !== undefined && idx === correctIdx;
-              const isTopDistractor = distractorIdx === idx && maxWrongCount > 0;
+              const isCorrect = isRevealed && correctIdx !== undefined && idx === correctIdx;
+              const isTopDistractor = isRevealed && distractorIdx === idx && maxWrongCount > 0;
               return (
-                <div key={idx} className={`relative overflow-hidden rounded-xl border p-2.5 transition-all ${isCorrect ? 'border-emerald-300 bg-emerald-50/40 dark:border-emerald-700 dark:bg-emerald-950/20' : isTopDistractor ? 'border-amber-300 bg-amber-50/40 dark:border-amber-700 dark:bg-amber-950/20' : 'border-slate-200 bg-slate-50/50 dark:border-slate-800 dark:bg-slate-800/40'}`}>
-                  <div className={`absolute bottom-0 right-0 top-0 opacity-20 transition-all duration-500 ${isCorrect ? 'bg-emerald-500' : isTopDistractor ? 'bg-amber-500' : 'bg-slate-400'}`} style={{ width: `${percentage}%` }} />
+                <div key={idx} className={`relative overflow-hidden rounded-xl border p-2.5 transition-all ${
+                  isCorrect
+                    ? 'border-emerald-300 bg-emerald-50/40 dark:border-emerald-700 dark:bg-emerald-950/20'
+                    : isTopDistractor
+                      ? 'border-amber-300 bg-amber-50/40 dark:border-amber-700 dark:bg-amber-950/20'
+                      : 'border-slate-200 bg-slate-50/50 dark:border-slate-800 dark:bg-slate-800/40'
+                }`}>
+                  <div
+                    className={`absolute bottom-0 right-0 top-0 opacity-20 transition-all duration-500 ${
+                      isCorrect ? 'bg-emerald-500' : isTopDistractor ? 'bg-amber-500' : 'bg-indigo-500'
+                    }`}
+                    style={{ width: `${percentage}%` }}
+                  />
                   <div className="relative flex items-center justify-between gap-3 text-xs">
                     <div className="flex items-center gap-2">
-                      <span className={`flex h-6 w-6 items-center justify-center rounded-lg font-black ${isCorrect ? 'bg-emerald-600 text-white' : isTopDistractor ? 'bg-amber-500 text-white' : 'bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-200'}`}>{OPTION_LETTERS[idx] || idx + 1}</span>
+                      <span className={`flex h-6 w-6 items-center justify-center rounded-lg font-black ${
+                        isCorrect
+                          ? 'bg-emerald-600 text-white'
+                          : isTopDistractor
+                            ? 'bg-amber-500 text-white'
+                            : 'bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-200'
+                      }`}>{OPTION_LETTERS[idx] || idx + 1}</span>
                       <span className="font-bold text-slate-800 dark:text-slate-200">{option}</span>
-                      {isCorrect && <span className="inline-flex items-center gap-1 rounded-md bg-emerald-100 px-1.5 py-0.5 text-[10px] font-black text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-300"><CheckCircle2 size={11} /> الخيار الصحيح</span>}
-                      {isTopDistractor && <span className="inline-flex items-center gap-1 rounded-md bg-amber-100 px-1.5 py-0.5 text-[10px] font-black text-amber-800 dark:bg-amber-900/50 dark:text-amber-300">الخطأ الشائع (المشتت)</span>}
+                      {isCorrect && (
+                        <span className="inline-flex items-center gap-1 rounded-md bg-emerald-100 px-1.5 py-0.5 text-[10px] font-black text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-300">
+                          <CheckCircle2 size={11} /> الخيار الصحيح
+                        </span>
+                      )}
+                      {isTopDistractor && (
+                        <span className="inline-flex items-center gap-1 rounded-md bg-amber-100 px-1.5 py-0.5 text-[10px] font-black text-amber-800 dark:bg-amber-900/50 dark:text-amber-300">
+                          الخطأ الشائع (المشتت)
+                        </span>
+                      )}
                     </div>
-                    <div className="flex items-center gap-2 font-black"><span className="text-slate-900 dark:text-white">{count} طالب</span><span className="text-slate-400">({percentage}%)</span></div>
+                    <div className="flex items-center gap-2 font-black">
+                      <span className="text-slate-900 dark:text-white">{count} طالب</span>
+                      <span className="text-slate-400">({percentage}%)</span>
+                    </div>
                   </div>
                 </div>
               );
@@ -178,7 +283,7 @@ export const ClassroomTeacherLiveRadar: React.FC<ClassroomTeacherLiveRadarProps>
         </div>
       )}
 
-      {distractorIdx !== null && maxWrongCount > 0 && (
+      {isRevealed && distractorIdx !== null && maxWrongCount > 0 && (
         <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50/70 p-3 text-xs text-amber-900 dark:border-amber-800/50 dark:bg-amber-950/30 dark:text-amber-200">
           <p className="font-black">ملاحظة تدريسية للسبورة التفاعلية:</p>
           <p className="mt-1">اختار {maxWrongCount} طالباً البديل ({OPTION_LETTERS[distractorIdx] || distractorIdx + 1}). ركّز في الشرح الآن على توضيح الفرق بين هذا الخيار والخيار الصحيح لتصحيح المفهوم اللحظي.</p>
