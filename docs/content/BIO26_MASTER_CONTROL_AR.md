@@ -26,6 +26,7 @@
 - Canonical production candidate images: **2,832**.
 - Canonical asset ZIP SHA-256: `37e58c58dfbdeb8a956ee80e42f2c41cf476f506b3c825663c71bf214ee55a03`.
 - R2 upload itself is still pending; V2 hashes are authoritative.
+- R2 presign manifest is prepared for **2,832/2,832** canonical images: **29,550,012 bytes**, unique question codes/hashes **2,832/2,832**, key pattern `questions/v2/{questionCode}/{imageHash}.webp`; actual authenticated PUT verification remains pending.
 
 ## Dedupe — PASS
 - Source-internal semantic duplicate groups: **3**.
@@ -59,7 +60,7 @@
 | Asset regeneration | **PASS LOCAL — 2,835 files** |
 | Dedupe | **PASS — 2,832 canonical** |
 | Existing biology-bank dedupe | **PASS — 0 existing** |
-| AI context | **IN PROGRESS — 217 / 2,832 canonical** |
+| AI context | **IN PROGRESS — 613 / 2,832 canonical** |
 | R2 upload | PENDING |
 | Dry run | BLOCKED BY AI/R2 |
 | Canary 5 | BLOCKED |
@@ -70,7 +71,7 @@
 | BIO26 CLOSED | **NO** |
 
 ## Next execution batch
-1. Continue AI context authoring from **217 / 2,832** canonical questions; L01, L02 and L03 are complete with **217/217 source-answer** and **217/217 skill-range** cross-checks.
+1. Continue AI context authoring from **613 / 2,832** canonical questions; L01–L08 are complete with **613/613 source-answer**, **613/613 skill-range**, and required-field integrity checks passing.
 2. Create a **dedicated Biology subject** at controlled import time; preserve the existing `علم البيئة` subject and its historical progress.
 3. Upload **2,832** canonical V2 images to R2 and verify remote hashes/URLs.
 4. Dry Run → Canary 5 → Full Draft Import → Integrity Audit → Live E2E → Approval.
