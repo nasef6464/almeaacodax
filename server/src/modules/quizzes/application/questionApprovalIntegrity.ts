@@ -15,7 +15,7 @@ type QuestionApprovalCandidate = {
   } | null;
 };
 
-const canonicalV2Code = /^(?:QDR-QNT|TAH-MATH)-[A-Z0-9._-]+-P\d{3}-Q\d{2}$/;
+const canonicalV2Code = /^(?:QDR-QNT|TAH-MATH|TAH-CHEM)-[A-Z0-9._-]+-P\d{3}-Q\d{2}$/;
 
 export const isCanonicalImportedImageQuestion = (value: QuestionApprovalCandidate) =>
   String(value?.source || "") === "imported" &&

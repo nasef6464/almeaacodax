@@ -11,7 +11,7 @@ const batchIdSchema = z.string()
   .regex(/^[A-Z0-9][A-Z0-9._-]+$/, "Batch ID must use uppercase letters, digits, dot, underscore or dash");
 
 const importItemSchema = questionBaseSchema.extend({
-  questionCode: z.string().trim().toUpperCase().regex(QUESTION_CODE_REGEX, "Question code must follow QDR-QNT or TAH-MATH approved format").max(120),
+  questionCode: z.string().trim().toUpperCase().regex(QUESTION_CODE_REGEX, "Question code must follow QDR-QNT, TAH-MATH, or TAH-CHEM approved format").max(120),
   sourceMeta: sourceMetaSchema.extend({
     sourceItemId: z.string().trim().min(3).max(200),
     importBatchId: z.string().trim().max(160).optional(),

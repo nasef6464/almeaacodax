@@ -49,7 +49,7 @@ export function createQuestionImportImageUploadIntent({
   const normalizedHash = String(imageHash || "").trim().toLowerCase();
 
   if (!validateQuestionCode(normalizedCode)) {
-    const error = new Error("Question code does not match the approved import format (QDR-QNT or TAH-MATH)") as Error & { statusCode?: number };
+    const error = new Error("Question code does not match the approved import format (QDR-QNT, TAH-MATH, or TAH-CHEM)") as Error & { statusCode?: number };
     error.statusCode = 400;
     throw error;
   }
