@@ -188,7 +188,7 @@ export const AiAssistantManager: React.FC = () => {
         {
             id: 'welcome',
             role: 'assistant',
-            text: 'أهلاً بك! أنا مساعد المدير الذكي لمتابعة وتشخيص المنصة، فحص أخطاء الطلاب، تدقيق المحتوى الناقص، وتحديد أولويات العمل.',
+            text: 'أهلاً بك في مركز قيادة المنصة. أساعدك في إدارة المحتوى والاختبارات والدورات والمدارس والتشغيل من نقطة واحدة، مع تنفيذ آمن وتدقيق كامل.',
         },
     ]);
     const [input, setInput] = useState('ما أهم شيء أراجعه الآن؟');
@@ -391,14 +391,14 @@ export const AiAssistantManager: React.FC = () => {
                         <span className="p-1 rounded-lg bg-indigo-50 text-indigo-700">
                             <Bot size={16} />
                         </span>
-                        <span>مركز قيادة وتشخيص الذكاء الاصطناعي</span>
+                        <span>مركز قيادة منصة ALMEAA</span>
                         <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
-                            مساعد الطالب والمدير
+                            إدارة موحدة
                         </span>
                     </div>
-                    <h1 className="text-2xl font-black text-gray-900">إدارة الذكاء الاصطناعي والمساعدين</h1>
+                    <h1 className="text-2xl font-black text-gray-900">مركز قيادة المنصة</h1>
                     <p className="text-xs font-bold text-gray-500 mt-1 max-w-2xl">
-                        مركز موحد لمتابعة المساعدين، المزودات، سلسلة الاستجابة، الاستخدام، والجاهزية مع الحفاظ على أقل تكلفة ممكنة.
+                        مركز موحد لإدارة الذكاء الاصطناعي والمحتوى والاختبارات والدورات والمدارس والتشغيل، مع إبقاء التنفيذ الحساس تحت المراجعة والاعتماد.
                     </p>
                 </div>
 
