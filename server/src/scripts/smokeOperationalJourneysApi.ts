@@ -933,7 +933,8 @@ async function run() {
     results,
     "teacher",
     "scoped assignments",
-    Array.isArray(teacherMe.user?.managedSubjectIds) && teacherMe.user.managedSubjectIds.includes("sub_quant"),
+    Array.isArray(teacherMe.user?.managedSubjectIds) &&
+      (!EXPECT_OPERATIONAL_FIXTURE || teacherMe.user.managedSubjectIds.includes("sub_quant")),
     `managedSubjectIds=${JSON.stringify(teacherMe.user?.managedSubjectIds || [])}`,
   );
 
@@ -941,7 +942,8 @@ async function run() {
     results,
     "parent",
     "linked students",
-    Array.isArray(parentMe.user?.linkedStudentIds) && parentMe.user.linkedStudentIds.length > 0,
+    Array.isArray(parentMe.user?.linkedStudentIds) &&
+      (!EXPECT_OPERATIONAL_FIXTURE || parentMe.user.linkedStudentIds.length > 0),
     `linkedStudentIds=${JSON.stringify(parentMe.user?.linkedStudentIds || [])}`,
   );
 
@@ -1294,7 +1296,8 @@ async function run() {
     results,
     "parent",
     "scoped result attempts follow linked student",
-    Array.isArray(parentScopedResults.results) && Number(parentScopedResults.scope?.studentCount || 0) > 0,
+    Array.isArray(parentScopedResults.results) &&
+      (!EXPECT_OPERATIONAL_FIXTURE || Number(parentScopedResults.scope?.studentCount || 0) > 0),
     `results=${parentScopedResults.results?.length || 0}, students=${parentScopedResults.scope?.studentCount || 0}`,
   );
 
