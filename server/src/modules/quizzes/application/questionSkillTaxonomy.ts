@@ -6,6 +6,9 @@ type QuestionSkillScope = {
   subjectId?: string | null;
   sectionId?: string | null;
   skillIds?: string[];
+  skillId?: string | null;
+  subSkillId?: string | null;
+  subSkillIds?: string[];
 };
 
 const uniqueStrings = (values: unknown[]) =>
@@ -16,7 +19,7 @@ export const resolveCanonicalQuestionSkillIds = async (input: QuestionSkillScope
   const subjectId = String(input.subject || "").trim();
   const explicitSubjectId = String(input.subjectId || "").trim();
   const sectionId = String(input.sectionId || "").trim();
-  const requestedIds = uniqueStrings(input.skillIds || []);
+  const requestedIds = uniqueStrings([...(input.skillIds || []), ...(input.subSkillIds || []), input.subSkillId]);
 
   if (explicitSubjectId && subjectId && explicitSubjectId !== subjectId) {
     return {
@@ -62,6 +65,9 @@ export const resolveCanonicalQuestionSkillIds = async (input: QuestionSkillScope
 
   return {
     ok: true as const,
+    skillId: mainSkillId,
+    subSkillId: requestedNestedIds[0] || null,
+    subSkillIds: requestedNestedIds,
     skillIds: uniqueStrings([mainSkillId, ...requestedNestedIds]),
   };
 };
