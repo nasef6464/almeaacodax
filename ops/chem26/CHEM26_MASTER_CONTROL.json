@@ -52,7 +52,7 @@
   "codeGates": {
     "canonicalPrefixMerged": true,
     "taxonomyProductionGateMerged": true,
-    "importRunnerPR": "PENDING_NEW_PR"
+    "importRunnerPR": 378
   },
   "pending": [
     "Import runner merge",
