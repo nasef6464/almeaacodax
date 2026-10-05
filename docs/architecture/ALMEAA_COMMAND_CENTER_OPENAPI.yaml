@@ -1,0 +1,97 @@
+openapi: 3.1.0
+info:
+  title: ALMEAA Command Center API
+  version: 0.1.0
+  description: Draft-first command surface for ALMEAA administrators and external agents.
+servers:
+  - url: https://YOUR_BACKEND_HOST/api/command-center
+security:
+  - CommandApiKey: []
+paths:
+  /health:
+    get:
+      operationId: commandCenterHealth
+      responses:
+        "200":
+          description: Command Center status
+  /tools:
+    get:
+      operationId: listCommandTools
+      responses:
+        "200":
+          description: Tool registry
+  /skills:
+    get:
+      operationId: getSkillTree
+      parameters:
+        - in: query
+          name: pathId
+          schema: { type: string }
+        - in: query
+          name: subjectId
+          schema: { type: string }
+        - in: query
+          name: sectionId
+          schema: { type: string }
+      responses:
+        "200":
+          description: Canonical skills
+  /drafts:
+    get:
+      operationId: listCommandDrafts
+      responses:
+        "200":
+          description: Draft queue
+    post:
+      operationId: createCommandDraft
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [kind, title, payload]
+              properties:
+                kind:
+                  type: string
+                  enum: [question_batch, quiz, course, school_setup, content, workflow]
+                title: { type: string }
+                payload: { type: object, additionalProperties: true }
+                toolId: { type: string }
+                requestId: { type: string }
+                idempotencyKey: { type: string }
+      responses:
+        "201":
+          description: Draft created
+  /drafts/{id}/review:
+    post:
+      operationId: reviewCommandDraft
+      description: Human admin session only. External API keys are rejected.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [decision]
+              properties:
+                decision:
+                  type: string
+                  enum: [approved, rejected]
+                notes: { type: string }
+      responses:
+        "200":
+          description: Draft reviewed
+        "403":
+          description: Human approval required
+components:
+  securitySchemes:
+    CommandApiKey:
+      type: apiKey
+      in: header
+      name: x-almeaa-command-key
