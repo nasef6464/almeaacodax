@@ -1,0 +1,34 @@
+{
+  "project": "BIO26",
+  "status": "FULL_CROP_GEOMETRY_COMPLETE_VISUAL_BATCH_QA_IN_PROGRESS",
+  "sourceOccurrences": 2835,
+  "cropped": 2835,
+  "uniqueQuestionCodes": 2835,
+  "uniqueImageHashes": 2835,
+  "exactImageHashDuplicateGroups": 0,
+  "methods": {
+    "VECTOR_TEXT_ANCHORED": 2819,
+    "RASTER_SPECIAL_P164_VERIFIED_LAYOUT": 16
+  },
+  "dimensions": {
+    "minHeightPx": 87,
+    "maxHeightPx": 854,
+    "minWidthPx": 506,
+    "maxWidthPx": 518
+  },
+  "visualEvidence": {
+    "firstLessonSample": "L01 Q1-Q15 visually checked: question body + A/B/C/D preserved; printed number/year not present.",
+    "rasterSpecialSample": "L36 PDF p164 Q48-Q63 visually checked after dedicated raster layout correction; question body + options preserved.",
+    "status": "REPRESENTATIVE_SAMPLES_PASS; FULL STRATIFIED VISUAL QA STILL REQUIRED"
+  },
+  "gates": {
+    "oneQuestionOneCode": "PASS_GEOMETRY",
+    "cropRowsComplete": "PASS",
+    "imageHashPresent": "PASS",
+    "exactHashUniqueness": "PASS",
+    "representativeVisualSamples": "PASS",
+    "fullVisualBatchQA": "IN_PROGRESS",
+    "cropFinal": "NOT_YET_PASS"
+  },
+  "rule": "Do not advance BIO26 to import until stratified visual QA covers all lessons and flagged extreme/diagram-heavy crops."
+}
