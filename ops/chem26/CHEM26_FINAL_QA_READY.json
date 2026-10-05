@@ -15,7 +15,8 @@
     "parentTopics": 27,
     "childTopics": 99,
     "badChildLinks": 0,
-    "verified": true
+    "verified": true,
+    "sectionIdPattern": "sec_sub_chemistry_{1..27}"
   },
   "answers": {
     "pass": 1709,
@@ -28,11 +29,20 @@
   },
   "optionTextQA": {
     "completeCanonical": 1708,
-    "visualSourceFallbackRows": 26
+    "completeSourceIncludingAlias": 1709,
+    "reviewRemaining": 0,
+    "imageIsAuthoritative": true
+  },
+  "aiContext": {
+    "structuredSourceRows": 1709,
+    "optionTextQaComplete": 1709,
+    "detailedDistractorAnalysis": "PENDING_ENRICHMENT_NOT_IMPORT_BLOCKER"
   },
   "importPackage": {
+    "name": "CHEM26_IMPORT_PACKAGE_READY_1708_V2.zip",
     "batchId": "TAH-CHEM-CHEM26-FULL-V1",
-    "sha256": "875c57fdcd37dd6bc3a6669905bc9a6efb614318c6717a64ecd9085752750a66"
+    "sha256": "0014da81af2c1d9cfe882897b16633d805b0df737800af37c1a5d16901522137",
+    "sectionScopeAligned": true
   },
   "nextGate": "PRODUCTION_API_DRY_RUN"
 }
