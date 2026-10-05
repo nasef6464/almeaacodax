@@ -1019,8 +1019,6 @@ async function runRealClassroomPressureCertification() {
         const monthInsightsRes = await fetch(`/api/classroom/teacher/insights?schoolId=${encodeURIComponent(schoolId)}&period=month`, { credentials: 'include' });
         const monthInsights = await monthInsightsRes.json();
 
-        const customInsightsRes = await fetch(`/api/classroom/teacher/insights?schoolId=${encodeURIComponent(schoolId)}&period=custom&dateFrom=2026-09-01&dateTo=2026-10-05`, { credentials: 'include' });
-
         return {
           schoolId,
           report: found,
@@ -1029,7 +1027,6 @@ async function runRealClassroomPressureCertification() {
           weekInsightsValid: Boolean(weekInsights?.insights),
           monthInsightsStatus: monthInsightsRes.status,
           monthInsightsValid: Boolean(monthInsights?.insights),
-          customInsightsStatus: customInsightsRes.status,
         };
       } catch (e) {
         return { error: e.message };
@@ -1086,10 +1083,23 @@ async function runRealClassroomPressureCertification() {
     );
 
     assertStep(
-      'Persistence: Responses & Accuracy Summary Present',
-      persistedResponses >= 20 || Boolean(persistedReport?.totals || persistedReport?.summary || persistedReport?.skillsSummary),
-      'Live responses recorded and accuracy summary present in persistent report',
-      `Recorded responses: ${persistedResponses >= 20 ? 20 : persistedResponses}, summary present: true`,
+      'Persistence: Response Count Matches Live Aggregate',
+      persistedResponses === totalResponses,
+      `Live response count (${totalResponses}) == Persisted response count (${totalResponses})`,
+      `Live: ${totalResponses} == Persisted: ${persistedResponses}`,
+      'teacher_persisted_session_report.png'
+    );
+
+    const persistedAccuracy = persistedResponses > 0
+      ? Math.round(((persistedReport?.totals?.correct ?? persistedReport?.correctCount ?? 0) / persistedResponses) * 100)
+      : null;
+    const liveCorrect = Number(liveAggregate?.correctCount ?? liveAggregate?.correct ?? 0);
+    const liveAccuracy = totalResponses > 0 ? Math.round((liveCorrect / totalResponses) * 100) : null;
+    assertStep(
+      'Persistence: Accuracy Summary Matches Live Aggregate',
+      persistedAccuracy === liveAccuracy,
+      `Live accuracy (${liveAccuracy ?? '—'}%) == Persisted accuracy (${liveAccuracy ?? '—'}%)`,
+      `Live: ${liveAccuracy ?? '—'}% == Persisted: ${persistedAccuracy ?? '—'}%`,
       'teacher_persisted_session_report.png'
     );
 
@@ -1116,18 +1126,8 @@ async function runRealClassroomPressureCertification() {
       `HTTP ${sessionHistoryData?.monthInsightsStatus}, valid insights: ${sessionHistoryData?.monthInsightsValid}`
     );
 
-    // Document Product Gaps:
-    productGaps.push({
-      code: 'PRODUCT GAP — CUSTOM DATE RANGE NOT SUPPORTED',
-      description: 'Classroom insights endpoint accepts standard time windows (today, week, month, all) but does not accept arbitrary custom date ranges (dateFrom / dateTo).',
-      recommendation: 'Extend periodSchema in registerClassroomInsightsRoutes to support custom dateFrom and dateTo range filters.',
-    });
-
-    productGaps.push({
-      code: 'PRODUCT GAP — MONTHLY CLASSROOM SUMMARY',
-      description: 'Platform supports filtering reports within 7d/30d periods, but lacks an aggregated monthly executive matrix summarizing cross-class trends.',
-      recommendation: 'Add Monthly Aggregated Classroom Summary card to Teacher and Principal dashboards.',
-    });
+    // PR #363 closed the previous monthly-summary and custom-range reporting gaps.
+    // They are certified below against the supervisor analytics endpoint rather than recorded as gaps.
 
     await inspectPageDomAndStorage(cleanTeacherPage, 'Clean Teacher Persistence Page');
     await saveDualScreenshot(cleanTeacherPage, 'teacher_persisted_session_report.png');
@@ -1147,24 +1147,42 @@ async function runRealClassroomPressureCertification() {
     const supervisorHistoryData = await supervisorPage.evaluate(async () => {
       try {
         const histPromise = fetch('/api/classroom/supervisor/history', { credentials: 'include' })
-          .then((r) => r.json())
-          .catch((e) => ({ error: e.message }));
+          .then(async (r) => ({ status: r.status, body: await r.json() }))
+          .catch((e) => ({ status: 0, body: { error: e.message } }));
         const teachersPromise = fetch('/api/classroom/supervisor/teachers', { credentials: 'include' })
-          .then((r) => r.json())
-          .catch((e) => ({ error: e.message }));
-        const [history, teachers] = await Promise.all([histPromise, teachersPromise]);
-        return { history, teachers };
+          .then(async (r) => ({ status: r.status, body: await r.json() }))
+          .catch((e) => ({ status: 0, body: { error: e.message } }));
+        const weekPromise = fetch('/api/classroom/supervisor/insights?period=week', { credentials: 'include' })
+          .then(async (r) => ({ status: r.status, body: await r.json() }))
+          .catch((e) => ({ status: 0, body: { error: e.message } }));
+        const monthPromise = fetch('/api/classroom/supervisor/insights?period=month', { credentials: 'include' })
+          .then(async (r) => ({ status: r.status, body: await r.json() }))
+          .catch((e) => ({ status: 0, body: { error: e.message } }));
+        const from = new Date(Date.now() - (29 * 24 * 60 * 60 * 1000)).toISOString().slice(0, 10);
+        const to = new Date().toISOString().slice(0, 10);
+        const customPromise = fetch(`/api/classroom/supervisor/insights?period=custom&from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`, { credentials: 'include' })
+          .then(async (r) => ({ status: r.status, body: await r.json() }))
+          .catch((e) => ({ status: 0, body: { error: e.message } }));
+        const [history, teachers, week, month, custom] = await Promise.all([
+          histPromise,
+          teachersPromise,
+          weekPromise,
+          monthPromise,
+          customPromise,
+        ]);
+        return { history, teachers, week, month, custom, from, to };
       } catch (e) {
         return { error: e.message };
       }
     });
 
-    const supervisorHasSessions = Array.isArray(supervisorHistoryData?.history?.sessions);
+    const supervisorHasSessions = supervisorHistoryData?.history?.status === 200
+      && Array.isArray(supervisorHistoryData?.history?.body?.sessions);
     assertStep(
       'Supervisor Historical Sessions Accessibility',
       supervisorHasSessions,
       'Supervisor can access sessions list and teachers summary within scope',
-      `Sessions available: ${supervisorHistoryData?.history?.sessions?.length ?? 0}`,
+      `Sessions available: ${supervisorHistoryData?.history?.body?.sessions?.length ?? 0}`,
       'supervisor_classroom_history_view.png'
     );
 
@@ -1196,11 +1214,42 @@ async function runRealClassroomPressureCertification() {
       `HTTP ${supervisorNegativeAccess.status}`
     );
 
-    productGaps.push({
-      code: 'PRODUCT GAP — SUPERVISOR HIERARCHICAL DRILLDOWN',
-      description: 'Supervisor sees flat list of sessions and teacher summaries, but lacks interactive multi-level School -> Teacher -> Class -> Session hierarchy tree selector.',
-      recommendation: 'Introduce hierarchical tree filter in SmartClassroomReportsPanel for rapid inspection across large school networks.',
-    });
+    assertStep(
+      'Supervisor Reporting: 7-Day Analytics Window',
+      supervisorHistoryData?.week?.status === 200 && Boolean(supervisorHistoryData?.week?.body?.analytics),
+      'Supervisor 7-day analytics return HTTP 200 with analytics payload',
+      `HTTP ${supervisorHistoryData?.week?.status}, analytics: ${Boolean(supervisorHistoryData?.week?.body?.analytics)}`
+    );
+
+    assertStep(
+      'Supervisor Reporting: 30-Day Monthly Summary',
+      supervisorHistoryData?.month?.status === 200 && Boolean(supervisorHistoryData?.month?.body?.analytics?.totals),
+      'Supervisor 30-day monthly summary returns aggregate totals',
+      `HTTP ${supervisorHistoryData?.month?.status}, sessions: ${supervisorHistoryData?.month?.body?.analytics?.totals?.sessions ?? 0}`
+    );
+
+    const customAnalytics = supervisorHistoryData?.custom?.body?.analytics;
+    assertStep(
+      'Supervisor Reporting: Custom Date Range',
+      supervisorHistoryData?.custom?.status === 200
+        && customAnalytics?.period === 'custom'
+        && Boolean(customAnalytics?.range?.from)
+        && Boolean(customAnalytics?.range?.to),
+      'Supervisor custom date range returns HTTP 200 with explicit range metadata',
+      `HTTP ${supervisorHistoryData?.custom?.status}, range: ${customAnalytics?.range?.from || '—'} -> ${customAnalytics?.range?.to || '—'}`
+    );
+
+    const hierarchySchools = customAnalytics?.hierarchy?.schools;
+    const hierarchyValid = Array.isArray(hierarchySchools)
+      && hierarchySchools.every((school) => Array.isArray(school.teachers)
+        && school.teachers.every((teacher) => Array.isArray(teacher.classes)
+          && teacher.classes.every((classroom) => Array.isArray(classroom.sessions))));
+    assertStep(
+      'Supervisor Reporting: School → Teacher → Class → Session Drilldown',
+      hierarchyValid,
+      'Supervisor analytics exposes hierarchical School → Teacher → Class → Session structure',
+      `Schools in hierarchy: ${Array.isArray(hierarchySchools) ? hierarchySchools.length : 0}`
+    );
 
     await inspectPageDomAndStorage(supervisorPage, 'Supervisor Page');
     await saveDualScreenshot(supervisorPage, 'supervisor_classroom_history_view.png');
