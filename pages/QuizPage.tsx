@@ -70,7 +70,11 @@ const INITIAL_QA_THREAD: QuestionThreadItem[] = [
 ];
 
 const getCanonicalQuestionSkillIds = (question: Question) => {
-  const canonical = [question.skillId, question.subSkillId]
+  const canonical = [
+    question.skillId,
+    ...(Array.isArray(question.subSkillIds) ? question.subSkillIds : []),
+    question.subSkillId,
+  ]
     .map((value) => String(value || '').trim())
     .filter(Boolean);
   return canonical.length > 0
