@@ -38,10 +38,10 @@
 تستخدم هذه الحسابات في الفحص البصري والآلي عند الحاجة:
 
 - المدير: الجلسة الحالية في المتصفح الداخلي أو التوكن التشغيلي المؤقت عند فحص API.
-- المعلم: `teacher.quant@almeaa.local` / `Teacher@123`
-- الطالب: `student.a@almeaa.local` / `Student@123`
-- ولي الأمر: `parent.a@almeaa.local` / `Parent@123`
-- المشرف: `supervisor.group@almeaa.local` / `Supervisor@123`
+- المعلم: `teacher.quant@almeaa.local` / `<secret-store>`
+- الطالب: `student.a@almeaa.local` / `<secret-store>`
+- ولي الأمر: `parent.a@almeaa.local` / `<secret-store>`
+- المشرف: `supervisor.group@almeaa.local` / `<secret-store>`
 
 لا يتم طباعة التوكنات أو الأسرار في التقارير.
 
