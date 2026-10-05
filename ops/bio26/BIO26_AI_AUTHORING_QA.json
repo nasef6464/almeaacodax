@@ -2,8 +2,8 @@
   "project": "BIO26",
   "status": "AUTHORING_IN_PROGRESS",
   "expectedCanonicalItems": 2832,
-  "authoredCanonicalItems": 1766,
-  "pendingCanonicalItems": 1066,
+  "authoredCanonicalItems": 1839,
+  "pendingCanonicalItems": 993,
   "completedLessons": [
     "BIO26-L01",
     "BIO26-L02",
@@ -35,7 +35,9 @@
     "BIO26-L28",
     "BIO26-L29",
     "BIO26-L30",
-    "BIO26-L31"
+    "BIO26-L31",
+    "BIO26-L33",
+    "BIO26-L34"
   ],
   "lesson1": {
     "lesson": "دراسة الحياة",
@@ -54,10 +56,10 @@
     "answerInferredFromOCR": 0
   },
   "aggregateQa": {
-    "sourceAnswerCrossCheck": "PASS_1766_OF_1766",
-    "skillRangeCrossCheck": "PASS_1766_OF_1766",
-    "uniqueQuestionCodes": "PASS_1766_OF_1766",
-    "requiredFields": "PASS_1766_OF_1766",
+    "sourceAnswerCrossCheck": "PASS_1839_OF_1839",
+    "skillRangeCrossCheck": "PASS_1839_OF_1839",
+    "uniqueQuestionCodes": "PASS_1839_OF_1839",
+    "requiredFields": "PASS_1839_OF_1839",
     "duplicateQuestionCodes": 0,
     "answerInferredFromOCR": 0
   },
@@ -213,6 +215,22 @@
     "canonicalItems": 41,
     "sourceAnswerCrossCheck": "PASS_41_OF_41",
     "skillRangeCrossCheck": "PASS_41_OF_41",
+    "visualDescriptions": "PASS_FOR_VISUAL_ITEMS",
+    "answerInferredFromOCR": 0
+  },
+  "lesson33": {
+    "lesson": "كيمياء الخلية",
+    "canonicalItems": 39,
+    "sourceAnswerCrossCheck": "PASS_39_OF_39",
+    "skillRangeCrossCheck": "PASS_39_OF_39",
+    "visualDescriptions": "PASS_FOR_VISUAL_ITEMS",
+    "answerInferredFromOCR": 0
+  },
+  "lesson34": {
+    "lesson": "الطاقة الخلوية",
+    "canonicalItems": 34,
+    "sourceAnswerCrossCheck": "PASS_34_OF_34",
+    "skillRangeCrossCheck": "PASS_34_OF_34",
     "visualDescriptions": "PASS_FOR_VISUAL_ITEMS",
     "answerInferredFromOCR": 0
   }
