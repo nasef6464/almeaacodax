@@ -7,7 +7,7 @@ const QUESTION_ID = "VERBAL26-ANAS-P005-Q001";
 const EXPECTED_SKILL_ID = "skill_verbal_17";
 const EXPECTED_SUBSKILL_ID = "sub_verbal_11_2";
 const EXPECTED_CORRECT_INDEX = 3;
-const QUIZ_ID = `verbal26-cert-${String(process.env.GITHUB_SHA || Date.now()).slice(0, 12)}`;
+const QUIZ_ID = `verbal26-cert-${Date.now()}`;
 
 function assert(condition, message) {
   if (!condition) throw new Error(message);
