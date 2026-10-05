@@ -45,7 +45,8 @@
     "draftImport": "BLOCKED",
     "liveE2E": "NOT_RUN",
     "approval": "NOT_RUN",
-    "productionSubjectSafety": "PASS_CREATE_DEDICATED_BIOLOGY_SUBJECT_DO_NOT_REPURPOSE_ENVIRONMENT"
+    "productionSubjectSafety": "PASS_CREATE_DEDICATED_BIOLOGY_SUBJECT_DO_NOT_REPURPOSE_ENVIRONMENT",
+    "r2UploadManifest": "PASS_READY_2832"
   },
   "integrityChecks": {
     "lessonCount48": true,
@@ -128,5 +129,15 @@
     "distinctUsers": 4,
     "decision": "PRESERVE_EXISTING_ENVIRONMENT_SUBJECT_CREATE_DEDICATED_BIOLOGY_SUBJECT",
     "evidenceFile": "BIO26_PRODUCTION_SUBJECT_AUDIT.json"
+  },
+  "r2UploadPreparation": {
+    "canonicalImages": 2832,
+    "uniqueQuestionCodes": 2832,
+    "uniqueHashes": 2832,
+    "totalBytes": 29550012,
+    "manifestCsvSha256": "57b9f3ada37113dff0cbdd07c18db10bfffc8e0b09c1315d8e94b005585546e5",
+    "keyPattern": "questions/v2/{questionCode}/{imageHash}.webp",
+    "actualUpload": "PENDING_AUTHENTICATED_PRODUCTION_PRESIGN",
+    "evidenceFile": "BIO26_R2_UPLOAD_MANIFEST_V2.json"
   }
 }
