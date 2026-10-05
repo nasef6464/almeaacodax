@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { z } from "zod";
 import { LessonModel } from "../../../models/Lesson.js";
 import { QuizModel } from "../../../models/Quiz.js";
@@ -40,9 +41,16 @@ export const courseReuseDraftSchema = z.object({
   idempotencyKey: z.string().trim().min(8).max(240).optional(),
 });
 
-const idQuery = (ids: string[]) => ({
-  $or: [{ id: { $in: ids } }, { _id: { $in: ids } }],
-});
+const idQuery = (ids: string[]) => {
+  const normalized = [...new Set(ids.map((id) => String(id || "").trim()).filter(Boolean))];
+  const objectIds = normalized.filter((id) => mongoose.Types.ObjectId.isValid(id));
+  return {
+    $or: [
+      { id: { $in: normalized } },
+      ...(objectIds.length ? [{ _id: { $in: objectIds } }] : []),
+    ],
+  };
+};
 
 export async function getReusableCourseInventory(
   input: z.infer<typeof courseInventoryQuerySchema>,
