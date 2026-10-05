@@ -1,0 +1,41 @@
+name: VERBAL26 Production Certification
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - scripts/smoke-verbal26-production-certification.mjs
+      - .github/workflows/verbal26-production-certification.yml
+  workflow_dispatch:
+
+jobs:
+  certify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      SMOKE_API_BASE_URL: https://almeaacodax.vercel.app/api
+      SMOKE_ADMIN_EMAIL: ${{ secrets.SMOKE_ADMIN_EMAIL || secrets.ROLE_ADMIN_EMAIL }}
+      SMOKE_ADMIN_PASSWORD: ${{ secrets.SMOKE_ADMIN_PASSWORD || secrets.ROLE_ADMIN_PASSWORD }}
+      SMOKE_STUDENT_EMAIL: ${{ secrets.ROLE_STUDENT_EMAIL }}
+      SMOKE_STUDENT_PASSWORD: ${{ secrets.ROLE_STUDENT_PASSWORD }}
+    steps:
+      - name: Checkout exact head
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Ensure production auth material exists
+        run: |
+          for var in SMOKE_ADMIN_EMAIL SMOKE_ADMIN_PASSWORD SMOKE_STUDENT_EMAIL SMOKE_STUDENT_PASSWORD; do
+            if [ -z "${!var}" ]; then
+              echo "Missing required production smoke credential: $var"
+              exit 1
+            fi
+          done
+
+      - name: VERBAL26 production question-to-report certification
+        run: node scripts/smoke-verbal26-production-certification.mjs
