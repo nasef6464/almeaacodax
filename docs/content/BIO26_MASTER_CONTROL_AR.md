@@ -3,7 +3,7 @@
 **Scope:** Biology only (`BIO26`).  
 **Repository:** `nasef6464/almeaacodax`  
 **Source-freeze version:** 1.0.0  
-**Status:** SOURCE FREEZE COMPLETE — NOT CLOSED
+**Status:** FULL CROP GEOMETRY COMPLETE — VISUAL/DEDUPE/AI QA IN PROGRESS — NOT CLOSED
 
 ## Source boundary
 - Foundation: `تأسيس أحياء كامل.pdf` — concepts, lesson ordering, Main/Sub Skills, foundation topics/videos, AI grounding. **Not a question-bank source.**
@@ -54,9 +54,9 @@
 | Inventory | PASS |
 | Question-to-Skill Ledger | PASS — PRE-CROP V1 |
 | Answer source | PASS — SOURCE KEY |
-| Crop | NOT STARTED |
+| Crop | 2,835/2,835 geometry rows complete; stratified visual QA IN PROGRESS |
 | AI context | INITIALIZED; authoring pending crop |
-| Dedupe | NOT STARTED |
+| Dedupe | exact image-hash layer PASS (2,835 unique); semantic + existing-bank layers pending |
 | Dry run | BLOCKED |
 | Canary 5 | BLOCKED |
 | Full draft import | BLOCKED |
@@ -66,11 +66,10 @@
 | BIO26 CLOSED | **NO** |
 
 ## Next execution batch
-1. Full crop from the question source only.
-2. Crop QA: one question → one image → one code; preserve diagrams/arrows/labels/tables/options.
-3. Populate imageHash and visual descriptions.
-4. Run within-section/cross-section/existing-bank dedupe.
-5. Complete AI explanations/hints/why-correct/why-others-wrong.
-6. Only after Crop + Skill + Answer + Dedupe PASS: Dry Run → Canary 5 → Full Draft Import → Integrity Audit → Live E2E → Approval.
+1. Complete stratified visual crop QA across all 48 lessons, including extreme-height and diagram-heavy rows.
+2. Resolve any crop quarantine; keep one question → one image → one code and preserve labels/arrows/tables/options.
+3. Run semantic dedupe within/between sections and compare against the existing biology bank.
+4. Author AI context/explanations/hints/why-correct/why-others-wrong + diagram visual descriptions.
+5. Only after Crop + Skill + Answer + Dedupe + AI readiness PASS: Dry Run → Canary 5 → Full Draft Import → Integrity Audit → Live E2E → Approval.
 
 **Closure rule:** do not write `BIO26 CLOSED` until production counts, integrity checks, exact-question skill analysis, and live student journey evidence pass.
