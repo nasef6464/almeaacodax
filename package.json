@@ -246,6 +246,7 @@
         "smoke:plan3-runtime-footprint": "node scripts/smoke-plan3-runtime-footprint-contract.mjs",
         "smoke:verbal26:ledger": "node scripts/smoke-verbal26-source-ledger-contract.mjs",
         "smoke:verbal26": "npm run smoke:verbal26:ledger && node scripts/smoke-verbal26-historical-recovery.mjs && node scripts/smoke-verbal-taxonomy-v2-contract.mjs && node scripts/smoke-verbal-approved-source-contract.mjs && node scripts/smoke-verbal26-runtime-contract.mjs",
+        "smoke:qudurat-practice-access": "node scripts/smoke-qudurat-practice-access-contract.mjs",
         "smoke:chem26-import-runner": "node scripts/smoke-chem26-import-runner-contract.mjs",
         "smoke:tracked-secret-hygiene": "node scripts/smoke-tracked-secret-hygiene-contract.mjs"
     },

@@ -1,0 +1,25 @@
+name: Qudurat practice access gate
+
+on:
+  pull_request:
+    paths:
+      - "server/src/scripts/reconcileQuduratPracticeAccess.ts"
+      - "scripts/smoke-qudurat-practice-access-contract.mjs"
+      - "package.json"
+      - ".github/workflows/qudurat-practice-access.yml"
+  workflow_dispatch:
+
+jobs:
+  qudurat-practice-access:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run smoke:qudurat-practice-access
+      - run: npm --prefix server ci
+      - run: npm --prefix server run check
