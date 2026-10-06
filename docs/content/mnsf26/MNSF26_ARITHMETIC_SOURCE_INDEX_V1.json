@@ -89,11 +89,11 @@
     {
       "testNumber": 9,
       "testTitle": "التاسع",
-      "topic": null,
+      "topic": "العمليات على الاعداد",
       "startPdfPage": 16,
       "startPageEvidence": "RAW_PDF_TEXT_HEADER",
       "cropAllowed": true,
-      "note": "Revalidated from authoritative raw PDF: visible/extracted test header for test 9 starts on PDF page 16."
+      "note": "Revalidated from authoritative raw PDF: visible/extracted test header for test 9 starts on PDF page 16, classified under العمليات على الاعداد in the source."
     },
     {
       "testNumber": 10,
