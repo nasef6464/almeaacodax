@@ -12,7 +12,7 @@ type CropItem = {
 
 const queuePath = path.resolve(
   process.cwd(),
-  "docs/content/mnsf26/MNSF26_CROP_QUEUE_V1.json",
+  "../docs/content/mnsf26/MNSF26_CROP_QUEUE_V1.json",
 );
 const data = JSON.parse(fs.readFileSync(queuePath, "utf8")) as {
   bank: string;
