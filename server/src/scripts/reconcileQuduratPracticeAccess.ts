@@ -295,15 +295,13 @@ async function reconcileSubject(db: any, config: (typeof SUBJECTS)[number], appl
       .toArray();
 
     if (apply) {
-      for (let i = 0; i < quantMainBanks.length; i++) {
-        const quiz: any = quantMainBanks[i];
-        const isFree = i < FREE_MAIN_TOPICS;
+      for (const quiz of quantMainBanks) {
         const placements = (Array.isArray(quiz.learningPlacements) ? quiz.learningPlacements : []).map((placement: any) =>
-          placement?.slot === "training" ? { ...placement, accessType: isFree ? "free" : "paid", updatedAt: Date.now() } : placement,
+          placement?.slot === "training" ? { ...placement, accessType: "paid", updatedAt: Date.now() } : placement,
         );
         await quizzesCol.updateOne(
           { _id: quiz._id },
-          { $set: { access: accessForFree(isFree), learningPlacements: placements, updatedAt: now() } },
+          { $set: { access: accessForFree(false), learningPlacements: placements, updatedAt: now() } },
         );
       }
     }
