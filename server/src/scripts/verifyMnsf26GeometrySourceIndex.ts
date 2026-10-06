@@ -68,6 +68,52 @@ if (resolved.length !== 50 || unresolved.length !== 0) {
     detail: { resolved: resolved.length, unresolved },
   });
 }
+const declaredResolved = data.discoveredStructure.resolvedTestStartPages;
+const declaredUnresolved = [...data.discoveredStructure.unresolvedTestStartPages].sort(
+  (a, b) => a - b,
+);
+if (
+  declaredResolved !== resolved.length ||
+  JSON.stringify(declaredUnresolved) !== JSON.stringify(unresolved)
+) {
+  failures.push({
+    gate: "declared-source-index-parity",
+    detail: {
+      declaredResolved,
+      actualResolved: resolved.length,
+      declaredUnresolved,
+      actualUnresolved: unresolved,
+    },
+  });
+}
+
+const lessonDeclarations = new Map(
+  data.lessons.map((lesson) => [lesson.lessonNumber, lesson.tests.slice().sort((a, b) => a - b)]),
+);
+const lessonMismatches = [...lessonDeclarations.entries()].filter(([lessonNumber, declaredTests]) => {
+  const actualTests = data.tests
+    .filter((test) => test.lessonNumber === lessonNumber)
+    .map((test) => test.testNumber)
+    .sort((a, b) => a - b);
+  return JSON.stringify(declaredTests) !== JSON.stringify(actualTests);
+});
+if (lessonDeclarations.size !== 11 || lessonMismatches.length) {
+  failures.push({
+    gate: "lesson-test-membership-parity",
+    detail: {
+      declaredLessons: lessonDeclarations.size,
+      mismatches: lessonMismatches.map(([lessonNumber, declaredTests]) => ({
+        lessonNumber,
+        declaredTests,
+        actualTests: data.tests
+          .filter((test) => test.lessonNumber === lessonNumber)
+          .map((test) => test.testNumber)
+          .sort((a, b) => a - b),
+      })),
+    },
+  });
+}
+
 const unsafeUnresolved = data.tests.filter(
   (test) => test.startPdfPage === null && test.cropAllowed,
 );
