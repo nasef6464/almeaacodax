@@ -110,11 +110,11 @@
   - `generate_only_when_missing`
 - [x] Course output remains Draft and unpublished.
 - [x] Admin Command Center shows command safety status, tool registry and draft queue.
-- [ ] Rich course composer UI from inventory.
+- [x] Command Center natural-language planner now passes selected path/subject/section scope so the planner can read the correct reuse-first inventory before composing a course draft.
 - [x] Approved Course Draft → canonical unpublished Course apply adapter.
 - [x] Apply is idempotent and tracked separately from approval/publish.
-- [ ] Course audit after apply.
-- [ ] Missing-content suggestion/generation workflow.
+- [x] Course audit after apply: read-only audit detects missing lesson content/skills, broken or empty quiz references, training/assessment gaps, and uncovered course skills.
+- [x] Missing-content gaps are surfaced as suggestions by the course audit; automatic generation remains intentionally disabled.
 
 ## ما لم يبدأ بعد
 
