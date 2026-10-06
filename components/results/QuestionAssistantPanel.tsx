@@ -1,6 +1,7 @@
 import React from 'react';
-import { Loader2, Mic, MicOff, Volume2 } from 'lucide-react';
+import { Bot, Loader2, Mic, MicOff, Volume2 } from 'lucide-react';
 import { api } from '../../services/api';
+import { InteractiveSmartTeacher } from './InteractiveSmartTeacher';
 
 type AssistantContext = "result_review" | "saved_review" | "mistake_review" | "mastery_review";
 
@@ -50,6 +51,7 @@ export const QuestionAssistantPanel: React.FC<{
   const [pending, setPending] = React.useState(false);
   const [status, setStatus] = React.useState('');
   const [error, setError] = React.useState('');
+  const [smartTeacherOpen, setSmartTeacherOpen] = React.useState(false);
 
   const stopListening = () => {
     recognitionRef.current?.stop();
@@ -127,27 +129,54 @@ export const QuestionAssistantPanel: React.FC<{
   if (context === "result_review" && !resultId) return null;
 
   return (
-    <div className="flex flex-col items-center gap-2 py-1" data-testid="question-assistant-panel">
-      <button
-        type="button"
-        onClick={listening ? stopListening : startListening}
-        disabled={pending}
-        className={`inline-flex h-12 min-w-12 items-center justify-center gap-2 rounded-full px-4 text-sm font-black shadow-sm transition active:scale-95 disabled:cursor-not-allowed disabled:opacity-60 ${
-          listening ? 'bg-rose-600 text-white' : 'bg-violet-600 text-white hover:bg-violet-700'
-        }`}
-        aria-label={listening ? 'إيقاف الاستماع' : 'التحدث مع المعلم الذكي'}
-        title={listening ? 'إيقاف الاستماع' : 'المعلم الذكي الصوتي'}
-      >
-        {pending ? <Loader2 size={20} className="animate-spin" /> : listening ? <MicOff size={20} /> : <Mic size={20} />}
-        <span className="hidden sm:inline">{listening ? 'إيقاف' : 'المعلم الصوتي'}</span>
-      </button>
-      {status ? (
-        <div className="inline-flex items-center gap-1.5 text-[11px] font-bold text-slate-500" aria-live="polite">
-          {status.includes('يشرح') ? <Volume2 size={13} /> : null}
-          {status}
+    <>
+      <div className="flex flex-col items-center gap-2 py-1" data-testid="question-assistant-panel">
+        <div className="flex flex-wrap items-center justify-center gap-2">
+          <button
+            type="button"
+            onClick={listening ? stopListening : startListening}
+            disabled={pending}
+            className={`inline-flex h-12 min-w-12 items-center justify-center gap-2 rounded-full px-4 text-sm font-black shadow-sm transition active:scale-95 disabled:cursor-not-allowed disabled:opacity-60 ${
+              listening ? 'bg-rose-600 text-white' : 'bg-violet-600 text-white hover:bg-violet-700'
+            }`}
+            aria-label={listening ? 'إيقاف الاستماع' : 'التحدث مع المعلم الذكي'}
+            title={listening ? 'إيقاف الاستماع' : 'المعلم الذكي الصوتي'}
+          >
+            {pending ? <Loader2 size={20} className="animate-spin" /> : listening ? <MicOff size={20} /> : <Mic size={20} />}
+            <span className="hidden sm:inline">{listening ? 'إيقاف' : 'المعلم الصوتي'}</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              stopListening();
+              setSmartTeacherOpen(true);
+            }}
+            disabled={pending}
+            className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-violet-200 bg-white px-4 text-sm font-black text-violet-700 shadow-sm transition hover:bg-violet-50 active:scale-95 disabled:opacity-60"
+            aria-label="افتح المعلم الذكي التفاعلي"
+            title="افتح المعلم الذكي والسبورة"
+          >
+            <Bot size={20} />
+            <span>افتح المعلم الذكي</span>
+          </button>
         </div>
-      ) : null}
-      {error ? <p className="max-w-sm text-center text-[11px] font-bold text-rose-600">{error}</p> : null}
-    </div>
+        {status ? (
+          <div className="inline-flex items-center gap-1.5 text-[11px] font-bold text-slate-500" aria-live="polite">
+            {status.includes('يشرح') ? <Volume2 size={13} /> : null}
+            {status}
+          </div>
+        ) : null}
+        {error ? <p className="max-w-sm text-center text-[11px] font-bold text-rose-600">{error}</p> : null}
+      </div>
+
+      <InteractiveSmartTeacher
+        isOpen={smartTeacherOpen}
+        onClose={() => setSmartTeacherOpen(false)}
+        resultId={resultId}
+        questionId={questionId}
+        context={context}
+        tutorSessionId={tutorSessionIdRef.current}
+      />
+    </>
   );
 };
