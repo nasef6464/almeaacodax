@@ -47,6 +47,7 @@ import { StudentMasteryReviewPanel } from './Reports/StudentMasteryReviewPanel';
 import { SchoolSkillAggregatePanel } from './Reports/SchoolSkillAggregatePanel';
 import { buildStudentAdaptiveLearningBridge, buildStudentFollowUpSummary, buildStudentReportNextAction } from './Reports/studentReportActionsViewModel';
 import { buildStudentSkillReportRows } from './Reports/studentSkillRowsViewModel';
+import { buildRecordedSkillAttemptChanges } from './Reports/studentSkillAttemptTrendViewModel';
 import { buildStudentReadinessDecision, type ServerReadinessSnapshot, type StudentReadinessIconKey } from './Reports/studentReadinessViewModel';
 import { buildStudentQuickActions, buildStudentTodayLearningLoop, type StudentLearningActionIconKey } from './Reports/studentLearningLoopViewModel';
 import { buildStudentReportScope } from './Reports/studentReportScopeViewModel';
@@ -303,6 +304,10 @@ const Reports: React.FC = () => {
     const studentPeriodQuestionAttempts = useMemo(
         () => filterStudentReportPeriod(questionAttempts, studentReportPeriod),
         [questionAttempts, studentReportPeriod],
+    );
+    const recordedSkillAttemptChanges = useMemo(
+        () => buildRecordedSkillAttemptChanges(studentPeriodExamResults),
+        [studentPeriodExamResults],
     );
     const studentPeriodLabel = studentReportPeriodLabels[studentReportPeriod];
     const studentReportDataCount = studentPeriodExamResults.length + studentPeriodQuestionAttempts.length;
@@ -2839,6 +2844,13 @@ const Reports: React.FC = () => {
                                 <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_auto_auto] lg:items-center">
                                     <div className="min-w-0">
                                         <div className="font-black leading-7 text-gray-900 break-words">{displayText(skill.skill)}</div>
+                                        {recordedSkillAttemptChanges.has(getReportSkillKey(skill)) ? (() => {
+                                            const change = recordedSkillAttemptChanges.get(getReportSkillKey(skill))!;
+                                            return <div className={`mt-1 text-xs font-black ${change.delta > 0 ? 'text-emerald-700' : change.delta < 0 ? 'text-rose-700' : 'text-slate-500'}`}>
+                                                آخر محاولتين: {change.previousMastery}% ← {change.latestMastery}%
+                                                {change.delta > 0 ? ` (تحسن +${change.delta} نقطة)` : change.delta < 0 ? ` (تراجع ${change.delta} نقطة)` : ' (مستقر)'}
+                                            </div>;
+                                        })() : null}
                                     </div>
                                     <div className="flex items-center gap-3">
                                         <div className={`w-14 text-center text-2xl font-black ${skill.tone.text}`}>{skill.mastery}%</div>
@@ -2948,6 +2960,13 @@ const Reports: React.FC = () => {
                                                 {skill.tone.label}
                                             </div>
                                             <div className="mt-3 break-words font-black leading-7 text-gray-900">{displayText(skill.skill)}</div>
+                                            {recordedSkillAttemptChanges.has(getReportSkillKey(skill)) ? (() => {
+                                                const change = recordedSkillAttemptChanges.get(getReportSkillKey(skill))!;
+                                                return <div className={`mt-1 text-xs font-black ${change.delta > 0 ? 'text-emerald-700' : change.delta < 0 ? 'text-rose-700' : 'text-slate-500'}`}>
+                                                    آخر محاولتين: {change.previousMastery}% ← {change.latestMastery}%
+                                                    {change.delta > 0 ? ` (تحسن +${change.delta} نقطة)` : change.delta < 0 ? ` (تراجع ${change.delta} نقطة)` : ' (مستقر)'}
+                                                </div>;
+                                            })() : null}
                                         </div>
                                         <div className={`text-2xl font-black ${skill.tone.text}`}>{skill.mastery}%</div>
                                     </div>
