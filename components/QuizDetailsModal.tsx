@@ -1,10 +1,12 @@
 import React from 'react';
-import { CheckCircle2, Copy, Download, Share2, Target, X } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { CheckCircle2, Copy, Download, FileText, Share2, Target, Video, X } from 'lucide-react';
 import { QuizHistoryItem, SkillGap } from '../types';
 import { sanitizeArabicText } from '../utils/sanitizeMojibakeArabic';
 import { printElementAsPdf } from '../utils/printPdf';
 import { shareTextSummary } from '../utils/shareText';
 import { useStore } from '../store/useStore';
+import { buildFoundationActionLink } from '../utils/skillActionLinks';
 
 interface QuizDetailsModalProps {
   quiz: QuizHistoryItem;
@@ -257,6 +259,44 @@ export const QuizDetailsModal: React.FC<QuizDetailsModalProps> = ({ quiz, onClos
                         </div>
                         <div className="mt-4 h-2 overflow-hidden rounded-full bg-white">
                           <div className={`h-full rounded-full ${tone.bar}`} style={{ width: `${skill.mastery}%` }} />
+                        </div>
+                        <div className="print-hide mt-3 grid grid-cols-2 gap-2">
+                          {buildFoundationActionLink({
+                            pathId: skill.pathId,
+                            subjectId: skill.subjectId,
+                            skillId: skill.skillId,
+                          }, 'lessons') ? (
+                            <Link
+                              to={buildFoundationActionLink({
+                                pathId: skill.pathId,
+                                subjectId: skill.subjectId,
+                                skillId: skill.skillId,
+                              }, 'lessons')!}
+                              onClick={onClose}
+                              className="inline-flex items-center justify-center gap-2 rounded-xl border border-indigo-100 bg-white px-3 py-2.5 text-xs font-black text-indigo-700 hover:bg-indigo-50"
+                            >
+                              <Video size={15} />
+                              فيديو
+                            </Link>
+                          ) : null}
+                          {buildFoundationActionLink({
+                            pathId: skill.pathId,
+                            subjectId: skill.subjectId,
+                            skillId: skill.skillId,
+                          }, 'quizzes') ? (
+                            <Link
+                              to={buildFoundationActionLink({
+                                pathId: skill.pathId,
+                                subjectId: skill.subjectId,
+                                skillId: skill.skillId,
+                              }, 'quizzes')!}
+                              onClick={onClose}
+                              className="inline-flex items-center justify-center gap-2 rounded-xl border border-amber-100 bg-white px-3 py-2.5 text-xs font-black text-amber-700 hover:bg-amber-50"
+                            >
+                              <FileText size={15} />
+                              تدريب
+                            </Link>
+                          ) : null}
                         </div>
                       </div>
                     );
