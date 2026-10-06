@@ -83,8 +83,14 @@ Git HEAD always overrides this historical baseline.
 - Content gates: source/crop/dedupe/answers/taxonomy PASS; canonical **2,832**; taxonomy **29/98**.
 - AI context: **2,832/2,832**, **48/48** lessons, pending=0; source-answer/skill-range/required-fields all PASS.
 - Production plumbing: PR #388 merged; dedicated subject `sub_tah_biology_bio26`; legacy `علم البيئة` remains protected.
-- Recovery package V3 audit: 2,832 items/images and self-hashes valid, but image bytes/geometry drift from frozen V2 and all `optionTexts` are bare A/B/C/D placeholders; production use rejected.
-- Hardening branch: `ops/bio26-production-ready-hardening-2026-10-06` from `main@ac03c73b72c9bd20bd72becd047f66932b237307`.
-- Importer and post-import verifier now fail closed on placeholder option text labels.
-- Current gate: qualified READY package + R2 remote verification. Dry Run/Canary/Full/Integrity/Live E2E/Approval remain not run.
+- PR #398 merged: the original placeholder READY manifest was correctly rejected and fail-closed validation hardened.
+- Fresh reconciliation branch: `ops/bio26-ready-r2-2026-10-06` from current `main@283c5a797e6a6733124ebed44587a9e5a5a8eddc`.
+- Semantic option recovery: **2,832/2,832 PASS** = **2,579 parsed source-text + 253 direct source-crop visual review**; unresolved **0**.
+- Importer/verifier require explicit `SOURCE_PDF` provenance + `optionTextsVerified=true`; Canary is restart-safe.
+- V3 assets independently re-qualified: **2,832 images / 2,832 unique hashes / 0 mismatches / 29,547,754 bytes / 118/118 stratified visual QA PASS**.
+- READY package: `BIO26_FINAL_ASSETS_V3_READY_2832.zip`, bytes **30,690,582**, SHA-256 `e2063da82250395c8e7f9c50a6cbba34269d9c6683c7db91a0ea9a92a494fa8f`; manifest SHA-256 `153e97e8468e4a7f84ba1488f7c4b919b19ab84095a00773de014c98b81cf8a5`.
+- READY local audit: **PASS / 0 errors**, 29/98 taxonomy coverage, 2,832/2,832 source provenance and image hashes.
+- Transport bridge: Drive file id `1-Hgg37LX92ZRYzNhSSylJdmyhl_ZP_Pg`; Drive raw-fetch → short-lived HTTPS `.oaiusercontent.com` verified. Signed URL itself is intentionally not persisted.
+- Production writes: **NONE** at this checkpoint.
+- Current gate: exact-head CI/merge → R2 **2,832/2,832** remote hash verification → Dry Run → Canary 5 → Full Draft → Integrity → Live E2E → Approval.
 - Closure rule: do not mark BIO26 CLOSED before all production gates and live learner journey pass.
