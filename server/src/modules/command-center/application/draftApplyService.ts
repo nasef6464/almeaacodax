@@ -1,5 +1,6 @@
 import { applyCourseDraft, applyQuizDraft } from "./draftApplyCourseQuiz.js";
 import { applySchoolDraft } from "./draftApplySchool.js";
+import { applyQuizUpdateDraft } from "./draftApplyQuizUpdate.js";
 import type { ApplyResult, CommandDraftLike } from "./draftApplyTypes.js";
 
 export async function applyApprovedCommandDraft(
@@ -8,6 +9,7 @@ export async function applyApprovedCommandDraft(
 ): Promise<ApplyResult> {
   if (draft.kind === "course") return applyCourseDraft(draft, actorId);
   if (draft.kind === "quiz") return applyQuizDraft(draft, actorId);
+  if (draft.kind === "quiz_update") return applyQuizUpdateDraft(draft, actorId);
   if (draft.kind === "school_setup") return applySchoolDraft(draft, actorId);
 
   throw Object.assign(

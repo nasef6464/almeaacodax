@@ -3,6 +3,7 @@ import mongoose, { Schema } from "mongoose";
 export const COMMAND_DRAFT_KINDS = [
   "question_batch",
   "quiz",
+  "quiz_update",
   "course",
   "school_setup",
   "content",

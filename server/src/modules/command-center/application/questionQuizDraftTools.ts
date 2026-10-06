@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { QuestionModel } from "../../../models/Question.js";
 import { SkillModel } from "../../../models/Skill.js";
+import { questionSimilarity } from "./questionSimilarity.js";
 
 export const questionDraftItemSchema = z.object({
   text: z.string().trim().min(1),
@@ -70,6 +71,12 @@ export async function validateQuestionDraftBatch(
     .select("id text subjectId skillId subSkillId skillIds")
     .lean();
   const existingByNormalizedText = new Map<string, typeof existingQuestions[number]>();
+  const searchableExisting = existingQuestions
+    .map((existing) => ({
+      existing,
+      normalized: normalizeText(String(existing.text || "")),
+    }))
+    .filter((item) => item.normalized.length >= 24);
   for (const existing of existingQuestions) {
     const normalized = normalizeText(String(existing.text || ""));
     if (normalized && !existingByNormalizedText.has(normalized)) {
@@ -83,6 +90,7 @@ export async function validateQuestionDraftBatch(
     type: string;
     message: string;
     existingQuestionId?: string;
+    similarity?: number;
   }> = [];
 
   input.questions.forEach((question, index) => {
@@ -124,7 +132,27 @@ export async function validateQuestionDraftBatch(
         type: "exact_duplicate_live",
         message: "An exact normalized question already exists in the live bank",
         existingQuestionId: String(liveDuplicate.id || liveDuplicate._id || ""),
+        similarity: 1,
       });
+    } else if (normalized.length >= 24) {
+      let bestMatch: { existing: typeof existingQuestions[number]; similarity: number } | null = null;
+      for (const candidate of searchableExisting) {
+        if (String(candidate.existing.subjectId || "") !== question.subjectId) continue;
+        const similarity = questionSimilarity(normalized, candidate.normalized);
+        if (similarity < 0.92) continue;
+        if (!bestMatch || similarity > bestMatch.similarity) {
+          bestMatch = { existing: candidate.existing, similarity };
+        }
+      }
+      if (bestMatch) {
+        issues.push({
+          index,
+          type: "near_duplicate_live",
+          message: "A highly similar question already exists in the live bank",
+          existingQuestionId: String(bestMatch.existing.id || bestMatch.existing._id || ""),
+          similarity: Number(bestMatch.similarity.toFixed(4)),
+        });
+      }
     }
     if (seenInBatch.has(normalized)) {
       issues.push({
@@ -146,6 +174,7 @@ export async function validateQuestionDraftBatch(
       exactDuplicateCount: issues.filter((issue) =>
         issue.type === "exact_duplicate_live" || issue.type === "exact_duplicate_batch",
       ).length,
+      nearDuplicateCount: issues.filter((issue) => issue.type === "near_duplicate_live").length,
     },
   };
 }

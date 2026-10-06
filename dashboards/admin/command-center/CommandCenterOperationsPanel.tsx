@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { CheckCircle2, Loader2, Play, RefreshCw, ShieldCheck, Sparkles, XCircle } from "lucide-react";
 import { api } from "../../../services/api";
 import type { CommandCenterDraft, CommandCenterTool, CommandCenterWorkflow } from "../../../services/apiGroups/commandCenterApi";
+import { CommandCenterSchoolImportPanel } from "./CommandCenterSchoolImportPanel";
 
 export const CommandCenterOperationsPanel: React.FC = () => {
   const [tools, setTools] = useState<CommandCenterTool[]>([]);
@@ -188,6 +189,11 @@ export const CommandCenterOperationsPanel: React.FC = () => {
           </div>
         )}
       </section>
+
+      <CommandCenterSchoolImportPanel
+        onDraftCreated={load}
+        onError={setError}
+      />
 
       <section className="rounded-2xl border border-slate-200 bg-white p-5">
         <h3 className="text-sm font-black text-slate-900">سير العمل — Plan → Execute → Verify</h3>

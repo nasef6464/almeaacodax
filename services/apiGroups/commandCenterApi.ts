@@ -18,7 +18,7 @@ export type CommandCenterTool = {
 
 export type CommandCenterDraft = {
   _id: string;
-  kind: "question_batch" | "quiz" | "course" | "school_setup" | "content" | "workflow";
+  kind: "question_batch" | "quiz" | "quiz_update" | "course" | "school_setup" | "content" | "workflow";
   title: string;
   payload: Record<string, unknown>;
   source: "admin_ui" | "mcp" | "external_agent" | "system";
@@ -162,6 +162,26 @@ export const createCommandCenterApi = (request: ApiRequest) => ({
         body: payload,
         token,
       },
+    ),
+
+  getQuizQuestionDiff: (
+    quizId: string,
+    payload: { questionIds: string[]; mode?: "replace" | "append" },
+    token?: string | null,
+  ) =>
+    request<Record<string, unknown>>(
+      `/command-center/authoring/quizzes/${encodeURIComponent(quizId)}/diff`,
+      { method: "POST", body: payload, token },
+    ),
+
+  createQuizUpdateCommandDraft: (
+    quizId: string,
+    payload: { questionIds: string[]; mode?: "replace" | "append"; idempotencyKey?: string; requestId?: string },
+    token?: string | null,
+  ) =>
+    request<{ draft: CommandCenterDraft; diff: Record<string, unknown> }>(
+      `/command-center/authoring/quizzes/${encodeURIComponent(quizId)}/update-draft`,
+      { method: "POST", body: payload, token },
     ),
 
   validateSchoolSetupCommandDraft: (payload: Record<string, unknown>, token?: string | null) =>

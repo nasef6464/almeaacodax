@@ -3,7 +3,9 @@
 > آخر تحديث: 2026-10-06
 > الفرع السابق المدموج: `feat/almeaa-command-center-foundation-2026-10-05`  
 > Merge SHA: `686763d09c40d279b0879ce93943503018c21571`  
-> الفرع الحالي: `feat/almeaa-command-center-execution-mcp-2026-10-06`
+> الفرع السابق المدموج: `feat/almeaa-command-center-execution-mcp-2026-10-06`  
+> Merge SHA: `79e518bc7bd54cb5c10087fb466dde55db11d1c2`  
+> الفرع الحالي: `feat/almeaa-command-center-content-ops-2026-10-06`
 > Issue: #386
 > PR foundation: #387 (merged)  
 > PR execution/MCP: #390 — OPEN, exact-head CI active
@@ -50,7 +52,8 @@
 - [ ] Near-duplicate semantic scoring.
 - [x] Approved Quiz Draft apply adapter (creates unpublished canonical quiz).
 - [ ] Publish adapter remains intentionally separate.
-- [ ] Existing-quiz update plan/diff tool.
+- [x] Existing-quiz diff + reviewable update draft + optimistic-concurrency apply adapter.
+- [x] Conservative near-duplicate detection (0.92 trigram similarity threshold) blocks highly similar incoming drafts.
 
 ### CC-3 Courses — Reuse-first
 - [x] Read reusable course inventory by path/subject/section.
@@ -85,7 +88,8 @@
 - [ ] CSV/XLSX import parser.
 - [x] cross-school assignment guard before apply.
 - [x] safe idempotent apply adapter for school/classes/existing users.
-- [ ] CSV/XLSX parser integration with Command Center draft input.
+- [x] Command Center UI reuses audited CSV/TSV/XLSX school parser to create validated school setup drafts.
+- [ ] Teacher/supervisor import columns in Command Center school file workflow (student/class import is wired now).
 
 ### CC-5 Workflow Engine
 - [x] Plan → Execute → Verify model.
