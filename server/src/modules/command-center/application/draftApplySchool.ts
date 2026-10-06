@@ -3,6 +3,7 @@ import { GroupModel } from "../../../models/Group.js";
 import { SchoolMembershipModel } from "../../../models/SchoolMembership.js";
 import { TeachingAssignmentModel } from "../../../models/TeachingAssignment.js";
 import { UserModel } from "../../../models/User.js";
+import { importSchoolStudents } from "../../content/application/schoolStudentImportService.js";
 import {
   stableObjectId,
   type ApplyResult,
@@ -192,6 +193,47 @@ export async function applySchoolDraft(
       students: Array.isArray(payload.students) ? payload.students.length : 0,
       teachers: Array.isArray(payload.teachers) ? payload.teachers.length : 0,
       supervisors: Array.isArray(payload.supervisors) ? payload.supervisors.length : 0,
+    },
+  };
+}
+
+
+export async function applySchoolRosterImportDraft(
+  draft: CommandDraftLike,
+  actorId: string,
+): Promise<ApplyResult> {
+  const payload = (draft.payload || {}) as any;
+  const schoolId = String(payload.schoolId || "").trim();
+  const rows = Array.isArray(payload.rows) ? payload.rows : [];
+  if (!schoolId || rows.length === 0) {
+    throw Object.assign(new Error("School roster import draft is incomplete"), {
+      statusCode: 422,
+    });
+  }
+
+  const result = await importSchoolStudents({
+    schoolId,
+    actorId,
+    rows,
+    policy: {
+      createMissingUsers: payload.createMissingUsers !== false,
+      createMissingClasses: payload.createMissingClasses !== false,
+      resetExistingPasswords: false,
+      allowCrossSchoolTransfer: false,
+    },
+  });
+
+  return {
+    resourceType: "school_roster_import",
+    resourceId: schoolId,
+    summary: {
+      ...result.summary,
+      credentialsIssued: result.credentials.length,
+      credentialsPersistedInDraft: false,
+    },
+    transient: {
+      credentials: result.credentials,
+      note: "هذه بيانات دخول مؤقتة أُعيدت في استجابة التنفيذ فقط ولم تُخزن داخل CommandCenterDraft.",
     },
   };
 }
