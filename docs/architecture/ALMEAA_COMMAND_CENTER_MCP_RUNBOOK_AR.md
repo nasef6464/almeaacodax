@@ -28,7 +28,7 @@ OAuth 2.1 Resource Server.
 - `ALMEAA_MCP_OAUTH_ISSUER=https://<issuer>`
 - `ALMEAA_MCP_OAUTH_AUDIENCE=<resource audience>`
 - `ALMEAA_MCP_OAUTH_REQUIRED_SCOPE=almeaa:admin`
-- `ALMEAA_MCP_OAUTH_SCOPES=...`
+- `ALMEAA_MCP_OAUTH_SCOPES=...` ويجب أن تتضمن `developer:read,developer:write` لتفعيل Developer/Codex bridge
 - `ALMEAA_MCP_JWKS_CACHE_MS=600000`
 
 الخادم يتحقق من:
