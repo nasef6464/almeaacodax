@@ -31,7 +31,24 @@ const SCHOOL_DAYS = [
 ];
 const PERIODS = Array.from({ length: 7 }, (_, index) => ({ id: String(index + 1), label: `الحصة ${index + 1}` }));
 
-type SessionMode = 'empty' | 'template' | 'selected' | 'quick_bank' | 'speed_challenge';
+type SessionMode = 'empty' | 'agent_plan' | 'template' | 'selected' | 'quick_bank' | 'speed_challenge';
+
+type AgentPreparedPlan = {
+  draftId: string;
+  title: string;
+  schoolId: string;
+  classId: string;
+  teacherId: string;
+  questionIds: string[];
+  day: string;
+  period: number | null;
+  subjectName: string;
+  className: string;
+  publishedMode: "single" | "batch";
+  teachingGoal: string;
+  boardOpeningPrompt: string;
+  skillIds: string[];
+};
 
 export const SmartClassroomSessionSchedulerModal: React.FC<SmartClassroomSessionSchedulerModalProps> = ({
   isOpen,
@@ -55,6 +72,8 @@ export const SmartClassroomSessionSchedulerModal: React.FC<SmartClassroomSession
   const [sessionMode, setSessionMode] = useState<SessionMode>(() => selectedQuestionIds.length > 0 ? 'selected' : 'empty');
   const [templates, setTemplates] = useState<ClassroomPreparedTemplate[]>([]);
   const [selectedTemplateId, setSelectedTemplateId] = useState('');
+  const [agentPlans, setAgentPlans] = useState<AgentPreparedPlan[]>([]);
+  const [selectedAgentPlanId, setSelectedAgentPlanId] = useState('');
   const [availableQuestions, setAvailableQuestions] = useState<any[]>([]);
   const [selectedSingleQuestionId, setSelectedSingleQuestionId] = useState('');
   const [challengeTimerSeconds, setChallengeTimerSeconds] = useState(45);
@@ -93,6 +112,30 @@ export const SmartClassroomSessionSchedulerModal: React.FC<SmartClassroomSession
   useEffect(() => {
     if (!isOpen || !schoolId) return;
     let active = true;
+    api.get<{ plans: AgentPreparedPlan[] }>(
+      `/classroom/teacher/prepared-plans?schoolId=${encodeURIComponent(schoolId)}`,
+    )
+      .then((result) => {
+        if (!active) return;
+        const next = Array.isArray(result.plans) ? result.plans : [];
+        setAgentPlans(next);
+        setSelectedAgentPlanId((current) =>
+          next.some((plan) => plan.draftId === current)
+            ? current
+            : (next.find((plan) => plan.classId === classId)?.draftId || next[0]?.draftId || ''),
+        );
+      })
+      .catch(() => {
+        if (!active) return;
+        setAgentPlans([]);
+        setSelectedAgentPlanId('');
+      });
+    return () => { active = false; };
+  }, [isOpen, schoolId, classId]);
+
+  useEffect(() => {
+    if (!isOpen || !schoolId) return;
+    let active = true;
     api.getClassroomQuestions(schoolId)
       .then((result) => {
         if (!active) return;
@@ -116,7 +159,16 @@ export const SmartClassroomSessionSchedulerModal: React.FC<SmartClassroomSession
     let questionIdsToLaunch: string[] = [];
     let challengeIdsToLaunch: string[] = [];
 
-    if (sessionMode === 'template') {
+    if (sessionMode === 'agent_plan') {
+      const plan = agentPlans.find((entry) => entry.draftId === selectedAgentPlanId);
+      if (!plan || plan.classId !== classId) {
+        setErrorMessage('اختر خطة معتمدة مخصصة لهذا الفصل أولاً.');
+        return;
+      }
+      questionIdsToLaunch = plan.questionIds;
+      setSelectedDay(plan.day || selectedDay);
+      if (plan.period) setSelectedPeriod(String(plan.period));
+    } else if (sessionMode === 'template') {
       const template = templates.find((entry) => entry.id === selectedTemplateId);
       if (!template?.questionIds.length) {
         setErrorMessage('اختر حزمة محفوظة وصالحة أولاً.');
@@ -158,7 +210,12 @@ export const SmartClassroomSessionSchedulerModal: React.FC<SmartClassroomSession
         period: selectedPeriod ? Number(selectedPeriod) : null,
         className: currentAssignment?.className || 'فصل مسند',
         subjectName: currentAssignment?.subjectId || 'عام',
-        publishedMode: sessionMode === 'speed_challenge' ? 'single' : 'batch',
+        publishedMode:
+          sessionMode === 'agent_plan'
+            ? (agentPlans.find((entry) => entry.draftId === selectedAgentPlanId)?.publishedMode || 'batch')
+            : sessionMode === 'speed_challenge'
+              ? 'single'
+              : 'batch',
         autoStart: true,
       });
       if (sessionMode === 'speed_challenge') {
@@ -264,6 +321,33 @@ export const SmartClassroomSessionSchedulerModal: React.FC<SmartClassroomSession
             </div>
           </div>
 
+          {agentPlans.some((plan) => plan.classId === classId) && (
+            <div className="rounded-2xl border border-violet-200 bg-violet-50/60 p-4 dark:border-violet-900 dark:bg-violet-950/20">
+              <div className="flex items-center justify-between gap-2">
+                <div>
+                  <p className="text-xs font-black text-violet-950 dark:text-violet-200">خطة معتمدة من مركز قيادة المنصة</p>
+                  <p className="mt-1 text-[11px] text-violet-700 dark:text-violet-300">الـAgent جهز الخطة فقط؛ بدء الحصة يظل بيدك من هنا.</p>
+                </div>
+                <button type="button" onClick={() => setSessionMode('agent_plan')} className="rounded-xl bg-violet-600 px-3 py-2 text-xs font-black text-white">
+                  استخدام خطة Agent
+                </button>
+              </div>
+              {sessionMode === 'agent_plan' && (
+                <select
+                  value={selectedAgentPlanId}
+                  onChange={(event) => setSelectedAgentPlanId(event.target.value)}
+                  className="mt-3 w-full rounded-xl border border-violet-200 bg-white p-2.5 text-xs font-bold dark:border-violet-800 dark:bg-slate-800 dark:text-white"
+                >
+                  {agentPlans.filter((plan) => plan.classId === classId).map((plan) => (
+                    <option key={plan.draftId} value={plan.draftId}>
+                      {plan.title} — {plan.questionIds.length} سؤال
+                    </option>
+                  ))}
+                </select>
+              )}
+            </div>
+          )}
+
           <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-5">
             <button type="button" onClick={() => setSessionMode('empty')} className={`rounded-2xl border p-3 text-right transition-all ${sessionMode === 'empty' ? 'border-violet-600 bg-violet-50/70 dark:bg-violet-950/50 shadow-xs' : 'border-slate-200 dark:border-slate-800 hover:border-slate-300'}`}>
               <div className="flex items-center gap-1.5 text-xs font-black text-slate-900 dark:text-white"><Presentation size={15} className="text-violet-600" /> ابدأ الحصة فارغة</div>
@@ -343,7 +427,7 @@ export const SmartClassroomSessionSchedulerModal: React.FC<SmartClassroomSession
           <button type="button" onClick={onClose} className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-bold text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">إلغاء</button>
           <button
             type="button"
-            disabled={isSubmitting || !selectedSchool?.smartClassroomEnabled || (sessionMode === 'template' && !selectedTemplateId) || (sessionMode === 'selected' && selectedQuestionIds.length === 0) || (sessionMode === 'quick_bank' && availableQuestions.length === 0) || (sessionMode === 'speed_challenge' && !selectedSingleQuestionId)}
+            disabled={isSubmitting || !selectedSchool?.smartClassroomEnabled || (sessionMode === 'agent_plan' && !selectedAgentPlanId) || (sessionMode === 'template' && !selectedTemplateId) || (sessionMode === 'selected' && selectedQuestionIds.length === 0) || (sessionMode === 'quick_bank' && availableQuestions.length === 0) || (sessionMode === 'speed_challenge' && !selectedSingleQuestionId)}
             onClick={() => void handleLaunch()}
             className="flex items-center gap-2 rounded-2xl bg-indigo-600 px-6 py-3 text-sm font-black text-white shadow-lg hover:bg-indigo-700 disabled:opacity-50"
           >
