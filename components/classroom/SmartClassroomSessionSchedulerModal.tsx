@@ -158,6 +158,12 @@ export const SmartClassroomSessionSchedulerModal: React.FC<SmartClassroomSession
 
     let questionIdsToLaunch: string[] = [];
     let challengeIdsToLaunch: string[] = [];
+    let launchDay = selectedDay;
+    let launchPeriod = selectedPeriod ? Number(selectedPeriod) : null;
+    let launchSubjectName = currentAssignment?.subjectId || 'عام';
+    let launchClassName = currentAssignment?.className || 'فصل مسند';
+    let launchPublishedMode: 'single' | 'batch' =
+      sessionMode === 'speed_challenge' ? 'single' : 'batch';
 
     if (sessionMode === 'agent_plan') {
       const plan = agentPlans.find((entry) => entry.draftId === selectedAgentPlanId);
@@ -166,8 +172,11 @@ export const SmartClassroomSessionSchedulerModal: React.FC<SmartClassroomSession
         return;
       }
       questionIdsToLaunch = plan.questionIds;
-      setSelectedDay(plan.day || selectedDay);
-      if (plan.period) setSelectedPeriod(String(plan.period));
+      launchDay = plan.day || selectedDay;
+      launchPeriod = plan.period ?? (selectedPeriod ? Number(selectedPeriod) : null);
+      launchSubjectName = plan.subjectName || launchSubjectName;
+      launchClassName = plan.className || launchClassName;
+      launchPublishedMode = plan.publishedMode;
     } else if (sessionMode === 'template') {
       const template = templates.find((entry) => entry.id === selectedTemplateId);
       if (!template?.questionIds.length) {
@@ -206,16 +215,11 @@ export const SmartClassroomSessionSchedulerModal: React.FC<SmartClassroomSession
         schoolId,
         classId,
         questionIds: questionIdsToLaunch,
-        day: selectedDay,
-        period: selectedPeriod ? Number(selectedPeriod) : null,
-        className: currentAssignment?.className || 'فصل مسند',
-        subjectName: currentAssignment?.subjectId || 'عام',
-        publishedMode:
-          sessionMode === 'agent_plan'
-            ? (agentPlans.find((entry) => entry.draftId === selectedAgentPlanId)?.publishedMode || 'batch')
-            : sessionMode === 'speed_challenge'
-              ? 'single'
-              : 'batch',
+        day: launchDay,
+        period: launchPeriod,
+        className: launchClassName,
+        subjectName: launchSubjectName,
+        publishedMode: launchPublishedMode,
         autoStart: true,
       });
       if (sessionMode === 'speed_challenge') {
