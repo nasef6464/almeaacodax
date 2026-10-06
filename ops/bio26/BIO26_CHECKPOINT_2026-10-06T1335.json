@@ -1,0 +1,83 @@
+{
+  "project": "BIO26",
+  "timestamp": "2026-10-06T13:35:00+03:00",
+  "branch": "ops/bio26-option-recovery-2026-10-06",
+  "pullRequest": 400,
+  "closure": false,
+  "productionWrites": "NONE",
+  "source": {
+    "questionPdf": "تجميعات يلو للأحياء النهائية 2026 - المعدل.pdf",
+    "pages": 226,
+    "sourceOccurrences": 2835
+  },
+  "canonical": {
+    "questions": 2832,
+    "aliases": 3
+  },
+  "taxonomy": {
+    "mainSkills": 29,
+    "subSkills": 98
+  },
+  "aiContext": {
+    "complete": 2832,
+    "pending": 0,
+    "lessons": "48/48"
+  },
+  "optionTextRecovery": {
+    "status": "PASS_2832_OF_2832",
+    "parsedSourceText": 2579,
+    "directVisualSourceCrop": 253,
+    "unresolved": 0,
+    "provenance": "SOURCE_PDF",
+    "verifiedFlag": true,
+    "parsedPartialSha256": "4f726999fe7d755b7fa7444156279c7604a9055d4566af93019786d9b743de21",
+    "visualMapSha256": "1b47a2aa4e09d5825b8f7f8bfebaa4a905922a0c08ac15859744133d2295a1af"
+  },
+  "assetRequalification": {
+    "version": "V3_RECOVERY_REQUALIFIED_2026-10-06",
+    "status": "PASS_LOCAL_REQUALIFIED_FOR_R2",
+    "canonicalImages": 2832,
+    "uniqueQuestionCodes": 2832,
+    "uniqueHashes": 2832,
+    "imageHashMismatches": 0,
+    "totalImageBytes": 29547754,
+    "methods": {
+      "vectorTableAnchored": 2816,
+      "rasterSpecial": 16
+    },
+    "stratifiedVisualQa": "PASS_118_OF_118"
+  },
+  "readyPackage": {
+    "fileName": "BIO26_FINAL_ASSETS_V3_READY_2832.zip",
+    "bytes": 30690582,
+    "sha256": "e2063da82250395c8e7f9c50a6cbba34269d9c6683c7db91a0ea9a92a494fa8f",
+    "manifestSha256": "153e97e8468e4a7f84ba1488f7c4b919b19ab84095a00773de014c98b81cf8a5",
+    "localImporterContractAudit": {
+      "status": "PASS_ZERO_ERRORS",
+      "manifestItems": 2832,
+      "uniqueCodes": 2832,
+      "uniqueSourceIds": 2832,
+      "uniqueImageHashes": 2832,
+      "mainSkillCoverage": 29,
+      "subSkillCoverage": 98,
+      "semanticOptionProvenance": 2832,
+      "localImageHashVerification": 2832
+    }
+  },
+  "codeHardening": {
+    "provenanceGate": true,
+    "importerCommit": "8c5e228e85c357ed2fa796ca48a43e5e272ef499",
+    "verifierCommit": "30a9be6e83d288a3f502d7c7c21e41e3d71ea0ff",
+    "smokeCommit": "f4e1307ef42f80ce5a7f8e42c5850f51ca1da6b9"
+  },
+  "next": [
+    "pr_400_exact_head_ci_and_main_reconcile",
+    "r2_upload_and_remote_sha_verify_2832",
+    "dry_run",
+    "canary_5",
+    "full_draft_import",
+    "integrity_audit",
+    "live_e2e",
+    "approval"
+  ]
+}
