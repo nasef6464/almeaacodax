@@ -17,8 +17,13 @@ assert.ok(!results.includes('const directTopic = topics.find'), 'Results must no
 assert.ok(results.includes('buildSkillReportActionLink({ pathId: weakestSkill?.pathId'));
 assert.ok(results.includes('buildFoundationActionLink(foundationActionContext, \'lessons\')'));
 assert.ok(results.includes('buildFoundationActionLink(foundationActionContext, \'quizzes\')'));
+assert.ok(results.includes("buildFoundationActionLink(foundationActionContext, 'support')"));
+assert.ok(results.includes("filter((item) => item.status === 'weak').slice(0, 10)"));
+assert.ok(results.includes('ملف الدعم'));
 assert.ok(reportRows.includes("buildFoundationActionLink(foundationActionContext, 'lessons')"));
 assert.ok(reportRows.includes("buildFoundationActionLink(foundationActionContext, 'quizzes')"));
+assert.ok(reportRows.includes("buildFoundationActionLink(foundationActionContext, 'support')"));
+assert.ok(reportRows.includes('limit = 10'));
 assert.ok(!reportRows.includes("recommendation.foundationTopicLink || '/courses'"));
 assert.ok(foundationTarget.includes("kind: 'sub'"));
 assert.ok(foundationTarget.includes('item.subSkills?.find'));
