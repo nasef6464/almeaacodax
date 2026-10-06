@@ -8,6 +8,7 @@ on:
       - "server/src/scripts/deployVerbalTaxonomy22.ts"
       - "server/src/scripts/migrateVerbalTaxonomy22.ts"
       - "server/src/scripts/deployVerbalEcosystem.ts"
+      - "server/src/routes/taxonomy.routes.ts"
       - "scripts/smoke-verbal*.mjs"
       - ".github/workflows/verbal26-source-closure.yml"
   workflow_dispatch:
