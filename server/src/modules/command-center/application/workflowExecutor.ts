@@ -14,6 +14,10 @@ import {
   validateQuizDraft,
 } from "./questionQuizDraftTools.js";
 import {
+  buildQuizUpdateDiff,
+  quizUpdateDraftSchema,
+} from "./quizUpdateDraftTools.js";
+import {
   schoolSetupDraftSchema,
   validateSchoolSetupDraft,
 } from "./schoolSetupDraftTools.js";
@@ -23,6 +27,7 @@ export const SAFE_WORKFLOW_TOOL_IDS = [
   "get_course_inventory",
   "create_question_drafts",
   "create_quiz_draft",
+  "plan_quiz_question_update",
   "create_course_draft",
   "create_school_setup_draft",
 ] as const;
@@ -127,6 +132,60 @@ const createQuizDraftStep = async (
   return {
     draftId: String(draft._id),
     questionCount: validation.questionCount,
+    idempotentReplay: false,
+  };
+};
+
+const createQuizUpdateDraftStep = async (
+  rawInput: unknown,
+  principal: CommandPrincipal,
+  idempotencyKey: string,
+) => {
+  const input = quizUpdateDraftSchema.parse({
+    ...(rawInput as Record<string, unknown>),
+    idempotencyKey,
+  });
+  const existing = await getExistingDraftByStepKey(idempotencyKey);
+  if (existing) return { draftId: String(existing._id), idempotentReplay: true };
+
+  const result = await buildQuizUpdateDiff(input);
+  if (!result.ok || !result.diff || !result.quiz) {
+    throw asError(
+      `Quiz update planning failed: ${result.issues.map((issue) => issue.type).join(", ")}`,
+    );
+  }
+
+  const draft = await CommandCenterDraftModel.create({
+    kind: "quiz_update",
+    title: `تحديث اختبار: ${result.quiz.title}`,
+    payload: {
+      targetQuizId: result.quiz.id,
+      baselineQuestionIdsHash: result.diff.baselineQuestionIdsHash,
+      beforeCount: result.diff.beforeCount,
+      nextQuestionIds: result.diff.nextQuestionIds,
+      nextSkillIds: result.diff.nextSkillIds,
+      addedQuestionIds: result.diff.addedQuestionIds,
+      removedQuestionIds: result.diff.removedQuestionIds,
+      retainedQuestionIds: result.diff.retainedQuestionIds,
+      exactDuplicateQuestionIds: result.diff.exactDuplicateQuestionIds,
+      nearDuplicateMatches: result.diff.nearDuplicateMatches,
+      mode: result.diff.mode,
+      targetWasPublished: result.quiz.isPublished,
+      targetShowOnPlatform: result.quiz.showOnPlatform,
+    },
+    source: principal.source,
+    requiredScopes: ["quizzes:write"],
+    createdBy: principal.id,
+    createdByType: principal.type,
+    requestId: input.requestId,
+    idempotencyKey,
+    status: "pending",
+  });
+
+  return {
+    draftId: String(draft._id),
+    targetQuizId: result.quiz.id,
+    diff: result.diff,
     idempotentReplay: false,
   };
 };
@@ -259,6 +318,9 @@ export async function executeSafeCommandTool(input: {
   }
   if (input.toolId === "create_quiz_draft") {
     return createQuizDraftStep(input.toolInput, input.principal, idempotencyKey);
+  }
+  if (input.toolId === "plan_quiz_question_update") {
+    return createQuizUpdateDraftStep(input.toolInput, input.principal, idempotencyKey);
   }
   if (input.toolId === "create_course_draft") {
     return createCourseDraftStep(input.toolInput, input.principal, idempotencyKey);

@@ -12,6 +12,7 @@ import { createDeveloperTaskDraft, getApprovedDeveloperTaskHandoff } from "./dev
 const writeToolNames = new Set([
   "create_question_drafts",
   "create_quiz_draft",
+  "plan_quiz_question_update",
   "create_course_draft",
   "create_school_setup_draft",
   "create_developer_task_draft",
