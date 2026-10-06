@@ -33,6 +33,31 @@ export type CommandCenterDraft = {
   updatedAt?: string;
 };
 
+export type CommandCenterWorkflow = {
+  _id: string;
+  title: string;
+  status: "planned" | "running" | "completed" | "failed";
+  source: "admin_ui" | "mcp" | "external_agent" | "system";
+  currentStepId?: string;
+  lastError?: string;
+  steps: Array<{
+    id: string;
+    toolId: string;
+    title?: string;
+    status: "planned" | "running" | "completed" | "failed" | "skipped";
+    output?: Record<string, unknown>;
+    error?: string;
+  }>;
+  verification?: {
+    ok: boolean;
+    completedSteps: number;
+    failedSteps: number;
+    missingDraftIds: string[];
+  };
+  createdAt?: string;
+  updatedAt?: string;
+};
+
 export type CourseInventory = {
   policy: {
     strategy: "reuse_first";
@@ -168,6 +193,18 @@ export const createCommandCenterApi = (request: ApiRequest) => ({
         body: { confirmation: "APPLY" },
         token,
       },
+    ),
+
+  getCommandCenterWorkflows: (limit = 30, token?: string | null) =>
+    request<{ workflows: CommandCenterWorkflow[] }>(
+      `/command-center/workflows?limit=${encodeURIComponent(String(limit))}`,
+      { token },
+    ),
+
+  executeCommandCenterWorkflow: (workflowId: string, token?: string | null) =>
+    request<{ workflow: CommandCenterWorkflow; idempotentReplay?: boolean }>(
+      `/command-center/workflows/${encodeURIComponent(workflowId)}/execute`,
+      { method: "POST", body: {}, token },
     ),
 
   reviewCommandCenterDraft: (
