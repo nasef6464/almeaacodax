@@ -14,12 +14,14 @@
     "status": "PASS"
   },
   "aiContext": {
-    "canonicalMerged": 1946,
-    "pendingCanonical": 886,
-    "l35SourceVerified": 58,
-    "l35AuthoredShardCommitted": 10,
-    "l35AuthoredRange": "Q001-Q010",
-    "nextRange": "Q011-Q058"
+    "canonicalMerged": 2832,
+    "pendingCanonical": 0,
+    "completedLessons": 48,
+    "sourceAnswerQa": "PASS_2832_OF_2832",
+    "skillRangeQa": "PASS_2832_OF_2832",
+    "requiredFieldsQa": "PASS_2832_OF_2832",
+    "duplicateQuestionCodes": 0,
+    "aliasExclusions": "PASS_3_OF_3"
   },
   "sources": {
     "questionBook": "تجميعات يلو للأحياء النهائية 2026 - المعدل.pdf pp.155-159",
@@ -28,7 +30,21 @@
   "r2": {
     "canonicalImages": 2832,
     "totalBytes": 29550012,
-    "remoteVerification": "NOT_RUN"
+    "remoteVerification": "PENDING"
   },
-  "closure": false
+  "closure": false,
+  "reconciledAt": "2026-10-06T09:46:47+03:00",
+  "reconciledFromMain": "9a40dac7268cbe4f1424223203ec2637c311ef55",
+  "bio26MergeSha": "cc9609771ba7203ff9d7a481598f1e2706c25ecc",
+  "import": {
+    "status": "BLOCKED_READY_PACKAGE_AND_R2",
+    "requiredManifest": "BIO26_IMPORT_MANIFEST_READY.json",
+    "expectedItems": 2832,
+    "dryRun": "BLOCKED",
+    "canary5": "BLOCKED",
+    "fullDraft": "BLOCKED",
+    "integrityAudit": "NOT_RUN",
+    "liveE2E": "NOT_RUN",
+    "approval": "NOT_RUN"
+  }
 }
