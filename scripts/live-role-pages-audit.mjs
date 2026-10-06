@@ -105,6 +105,11 @@ function safeName(input) {
 async function installApiBridge(context) {
   if (!USE_API_BRIDGE) return;
 
+  // The role audits are read-only. Cache identical successful GETs inside the
+  // same authenticated browser context so route-to-route navigation does not
+  // repeatedly hammer the tiny production API.
+  const responseCache = new Map();
+
   await context.route("**/api/**", async (route) => {
     const request = route.request();
     const originalUrl = new URL(request.url());
@@ -113,6 +118,28 @@ async function installApiBridge(context) {
 
     const apiPath = originalUrl.pathname.slice(apiIndex + 4);
     const targetUrl = `${API_BASE_URL}${apiPath}${originalUrl.search}`;
+
+    // EventSource reconnect loops are not part of this role-page audit. HTTP
+    // 204 is the SSE-defined signal to stop reconnecting, and is test-only.
+    if (apiPath === "notifications/stream") {
+      await route.fulfill({
+        status: 204,
+        headers: {
+          "access-control-allow-origin": BASE_ORIGIN.origin,
+          "access-control-allow-credentials": "true",
+        },
+        body: "",
+      });
+      return;
+    }
+
+    const cacheKey = request.method() === "GET" ? targetUrl : "";
+    const cached = cacheKey ? responseCache.get(cacheKey) : null;
+    if (cached) {
+      await route.fulfill(cached);
+      return;
+    }
+
     const headers = { ...request.headers() };
     delete headers.host;
     delete headers.origin;
@@ -148,11 +175,21 @@ async function installApiBridge(context) {
       // upstream test/runtime hop. Normalize the effective browser response.
       responseHeaders["access-control-allow-origin"] = BASE_ORIGIN.origin;
       responseHeaders["access-control-allow-credentials"] = "true";
-      await route.fulfill({
+      const responseBody = Buffer.from(await response.arrayBuffer());
+      const fulfillment = {
         status: response.status,
         headers: responseHeaders,
-        body: Buffer.from(await response.arrayBuffer()),
-      });
+        body: responseBody,
+      };
+      if (
+        cacheKey &&
+        response.ok &&
+        responseBody.byteLength <= 5 * 1024 * 1024 &&
+        responseCache.size < 128
+      ) {
+        responseCache.set(cacheKey, fulfillment);
+      }
+      await route.fulfill(fulfillment);
     } catch (error) {
       console.error(`API bridge failed for ${targetUrl}:`, error instanceof Error ? error.message : String(error));
       await route.abort("failed");
