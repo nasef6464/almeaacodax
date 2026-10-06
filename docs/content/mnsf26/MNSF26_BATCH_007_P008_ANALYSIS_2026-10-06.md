@@ -11,13 +11,15 @@ High-resolution render inspected directly from the source PDF. Page 8 contains p
 
 ## Records
 
-### Q01 — SOURCE WORDING HOLD
+### Q01 — RESOLVED AS INSUFFICIENT DATA
 Source: "إذا كانت هند تقرأ 3 قصص في 6 ساعات، قارن بين: القيمة الأولى: المدة التي تقرأ فيها صفحتين، القيمة الثانية: 8 ساعات."
-The source mixes "قصص" with "صفحتين", so the rate cannot be transferred without an unstated story/page relationship.
-- Answer: HOLD; do not guess.
-- Taxonomy: HOLD.
-- Difficulty: invalid-source wording.
+The source gives a rate in stories/hour but asks for a time in pages. No story-to-page conversion is supplied, so the first value is not determined.
+- Correct relation: **المعطيات غير كافية**.
+- Mapping: `skill_quant_11 / sub_quant_11_1` — الاستبعاد المنطقي عند نقص العلاقة اللازمة.
+- Difficulty: Easy/Medium.
 - Fingerprint: unit-mismatch / rate-comparison / insufficient-data.
+- Explanation fingerprint: تحقق من توافق الوحدات قبل التناسب؛ عند غياب تحويل القصص إلى صفحات لا يمكن تحديد الزمن المطلوب.
+- Speech: "المعطى يقول ثلاث قصص في ست ساعات، لكن المطلوب زمن قراءة صفحتين. لا توجد معلومة تربط عدد القصص بعدد الصفحات، لذلك لا يمكن حساب القيمة الأولى، وتكون المعطيات غير كافية."
 - Duplicate gate: no exact FND26/COL2627 text match.
 
 ### Q02
@@ -137,7 +139,8 @@ Distinctive-phrase queries against production questions found 0 exact matches fo
 ## Totals
 - Source cards reviewed: 12/12
 - Solved/answer locked: 11/12
-- Source wording HOLD: 1 (Q01)
+- Source wording HOLD: 0
+- Q01 resolved logically as insufficient data and mapped to `skill_quant_11 / sub_quant_11_1`
 - Canonical mapping locked: 10
 - Taxonomy HOLD: 0
 - Q02 canonical mapping resolved: `skill_quant_01 / sub_quant_01_5`
