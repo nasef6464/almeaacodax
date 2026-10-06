@@ -186,10 +186,30 @@ export async function applyQuestionBatchDraft(
             type: question.type,
             source: "imported" as const,
             sourceMeta: {
-              ...(question.sourceMeta || {}),
+              documentCode: String((question.sourceMeta as any)?.documentCode || ""),
+              documentTitle: String((question.sourceMeta as any)?.documentTitle || ""),
+              sourceItemId: String((question.sourceMeta as any)?.sourceItemId || ""),
+              questionNumber: String((question.sourceMeta as any)?.questionNumber || ""),
               importBatchId:
                 String((question.sourceMeta as any)?.importBatchId || "").trim() ||
                 `command-center:${draftId}`,
+              imageVersion: Number((question.sourceMeta as any)?.imageVersion || 1),
+              imageHash: String((question.sourceMeta as any)?.imageHash || ""),
+              ...((question.sourceMeta as any)?.page != null
+                ? { page: Number((question.sourceMeta as any).page) }
+                : {}),
+              ...((question.sourceMeta as any)?.pdfPageIndex != null
+                ? { pdfPageIndex: Number((question.sourceMeta as any).pdfPageIndex) }
+                : {}),
+              ...((question.sourceMeta as any)?.printedPageNumber != null
+                ? { printedPageNumber: Number((question.sourceMeta as any).printedPageNumber) }
+                : {}),
+              ...((question.sourceMeta as any)?.printedQuestionNumber != null
+                ? { printedQuestionNumber: Number((question.sourceMeta as any).printedQuestionNumber) }
+                : {}),
+              ...((question.sourceMeta as any)?.cropIndex != null
+                ? { cropIndex: Number((question.sourceMeta as any).cropIndex) }
+                : {}),
             },
             ownerType: "platform" as const,
             ownerId: actorId,
