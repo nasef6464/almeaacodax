@@ -57,7 +57,7 @@ const envSchema = z.object({
   JWT_SECRET: z.string().min(16, "JWT_SECRET must be at least 16 characters"),
   PLATFORM_INTEGRATIONS_SECRET_KEY: z.string().optional().default(""),
   ALMEAA_COMMAND_API_KEY: z.string().optional().default(""),
-  ALMEAA_COMMAND_API_SCOPES: z.string().default("taxonomy:read,courses:read,drafts:read,drafts:write"),
+  ALMEAA_COMMAND_API_SCOPES: z.string().default("taxonomy:read,courses:read,drafts:read,drafts:write,workflows:read,workflows:plan,workflows:execute"),
   JWT_EXPIRES_IN: z.string().default("7d"),
   GOOGLE_CLIENT_ID: z.string().optional().default(""),
   GOOGLE_CLIENT_SECRET: z.string().optional().default(""),
