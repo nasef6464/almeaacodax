@@ -50,10 +50,10 @@
     "sourceQuestionsReviewed": 138
   },
   "importReadiness": {
-    "uniqueNonHeldCandidates": 130,
+    "uniqueNonHeldCandidates": 129,
     "holds": 3,
     "quarantinedSourceDefects": 1,
-    "suppressedIntraMnsfDuplicates": 4
+    "suppressedDuplicates": 5
   },
   "holds": [
     {
@@ -169,6 +169,21 @@
       "status": "QUARANTINE_SOURCE_DEFECT",
       "reason": "UNIT_MISMATCH_SPOILED_EGGS_VS_SPOILED_TRAYS",
       "recoveryCondition": "Verified source crop/erratum must clarify the requested unit or define what constitutes a spoiled tray."
+    }
+  ],
+  "crossBankSuppressions": [
+    {
+      "mnsf": {
+        "batch": "004",
+        "pdfPage": 5,
+        "question": 20,
+        "questionCode": "QDR-QNT-MNSF26-P005-Q20"
+      },
+      "existing": {
+        "source": "COL2627",
+        "questionCode": "QDR-QNT-COL2627-P037-Q28"
+      },
+      "reason": "EXACT_NORMALIZED_TEXT_DUPLICATE"
     }
   ]
 }
