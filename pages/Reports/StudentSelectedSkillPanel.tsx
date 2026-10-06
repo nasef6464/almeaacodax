@@ -2,6 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { BookOpen, FileText, Video } from 'lucide-react';
 import { displayText, type StudentAggregatedSkill } from './reportDomain';
+import { useStore } from '../../store/useStore';
+import { buildCanonicalFoundationSkillActions } from '../../utils/skillActionLinks';
 import type { SkillRecommendation } from './reportTypes';
 
 interface StudentSelectedSkillPanelProps {
@@ -16,7 +18,40 @@ const UnavailableAction = ({ icon, label }: { icon: React.ReactNode; label: stri
     </div>
 );
 
-export const StudentSelectedSkillPanel: React.FC<StudentSelectedSkillPanelProps> = ({ skill, recommendation }) => (
+export const StudentSelectedSkillPanel: React.FC<StudentSelectedSkillPanelProps> = ({ skill, recommendation }) => {
+    const allSkills = useStore((state) => state.skills);
+    const topics = useStore((state) => state.topics);
+    const results = useStore((state) => state.examResults);
+    const actions = buildCanonicalFoundationSkillActions({
+        pathId: skill.pathId,
+        subjectId: skill.subjectId,
+        sectionId: skill.sectionId,
+        skillId: skill.skillId,
+        skillName: skill.skill,
+    }, allSkills, topics);
+    const topic = actions.topicId ? topics.find((item) => item.id === actions.topicId) : undefined;
+
+    const hasOpenedVideoOnThisDevice = React.useMemo(() => {
+        if (!topic?.lessonIds?.length || typeof window === 'undefined') return false;
+        try {
+            const stored = JSON.parse(window.localStorage.getItem('almeaa-watched-foundation-lessons') || '[]');
+            return Array.isArray(stored) && topic.lessonIds.some((id) => stored.includes(id));
+        } catch {
+            return false;
+        }
+    }, [topic?.id, topic?.lessonIds]);
+
+    const hasSavedTrainingAttempt = results.some(
+        (result) =>
+            (result.source === 'foundation' || result.source === 'training') &&
+            (result.skillsAnalysis || []).some((entry) =>
+                Boolean(skill.skillId) &&
+                entry.skillId === skill.skillId &&
+                (!entry.pathId || entry.pathId === skill.pathId) &&
+                (!entry.subjectId || entry.subjectId === skill.subjectId),
+            ),
+    );
+    return (
     <div className="mt-5 rounded-3xl border border-indigo-100 bg-indigo-50/60 p-4 sm:p-5">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
             <div className="min-w-0">
@@ -29,6 +64,12 @@ export const StudentSelectedSkillPanel: React.FC<StudentSelectedSkillPanelProps>
                     ) : null}
                 </div>
                 <h3 className="text-lg font-black text-gray-900 break-words">{displayText(skill.skill)}</h3>
+                {(hasOpenedVideoOnThisDevice || hasSavedTrainingAttempt) ? (
+                    <div className="mt-2 flex flex-wrap gap-2 text-[11px] font-black">
+                        {hasOpenedVideoOnThisDevice ? <span className="rounded-full bg-indigo-100 px-3 py-1 text-indigo-800">سبق فتح شرح من هذا الموضوع على هذا الجهاز</span> : null}
+                        {hasSavedTrainingAttempt ? <span className="rounded-full bg-emerald-100 px-3 py-1 text-emerald-800">تدريب سابق مسجل لهذه المهارة</span> : null}
+                    </div>
+                ) : null}
                 <p className="mt-2 text-sm leading-7 text-gray-600">
                     زر الفيديو يفتح موضوع التأسيس نفسه، وليس فيديو منفردًا، حتى يظهر للطالب كل الفيديوهات الموجودة داخل الموضوع.
                 </p>
@@ -64,4 +105,5 @@ export const StudentSelectedSkillPanel: React.FC<StudentSelectedSkillPanelProps>
             </div>
         </div>
     </div>
-);
+    );
+};
