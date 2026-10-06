@@ -14,6 +14,8 @@ const [
   workflowRoutes,
   mcpOAuth,
   mcpTools,
+  mcpToolCatalog,
+  mcpToolExecution,
   mcpRoutes,
   commandRoutes,
   aiRoutes,
@@ -36,6 +38,8 @@ const [
   read("server/src/modules/command-center/http/workflowRoutes.ts"),
   read("server/src/modules/command-center/application/mcpOAuth.ts"),
   read("server/src/modules/command-center/application/mcpTools.ts"),
+  read("server/src/modules/command-center/application/mcpToolCatalog.ts"),
+  read("server/src/modules/command-center/application/mcpToolExecution.ts"),
   read("server/src/modules/command-center/http/mcpRoutes.ts"),
   read("server/src/modules/command-center/http/commandCenterRoutes.ts"),
   read("server/src/routes/ai.routes.ts"),
@@ -74,12 +78,15 @@ assert.match(mcpOAuth, /issuer:/);
 assert.match(mcpOAuth, /audience:/);
 assert.match(mcpOAuth, /createPublicKey/);
 assert.match(mcpOAuth, /timingSafeEqual/);
-assert.match(mcpTools, /get_profile/);
-assert.match(mcpTools, /create_course_draft/);
-assert.match(mcpTools, /create_school_setup_draft/);
-assert.doesNotMatch(mcpTools, /name:\s*"publish_/);
-assert.doesNotMatch(mcpTools, /name:\s*"apply_/);
-assert.doesNotMatch(mcpTools, /name:\s*"delete_/);
+assert.match(mcpTools, /mcpToolCatalog/);
+assert.match(mcpTools, /mcpToolExecution/);
+assert.match(mcpToolCatalog, /get_profile/);
+assert.match(mcpToolCatalog, /create_course_draft/);
+assert.match(mcpToolCatalog, /create_school_setup_draft/);
+assert.match(mcpToolExecution, /executeMcpTool/);
+assert.doesNotMatch(mcpToolCatalog, /name:\s*"publish_/);
+assert.doesNotMatch(mcpToolCatalog, /name:\s*"apply_/);
+assert.doesNotMatch(mcpToolCatalog, /name:\s*"delete_/);
 assert.match(mcpRoutes, /2026-07-28/);
 assert.match(mcpRoutes, /2025-11-25/);
 assert.match(mcpRoutes, /server\/discover/);
