@@ -81,16 +81,15 @@ Git HEAD always overrides this historical baseline.
 
 آخر تحديث BIO26: 2026-10-06
 
-- Content PR: #362 — `content/bio26-source-freeze`; current HEAD at this checkpoint: `3feacb6e019f761a2b40f889da894898368928f5`.
-- Production plumbing PR: #388 — `ops/bio26-production-closure` from current `main`; dedicated BIO26 subject/taxonomy + staged importer are under CI.
-- Crop/QA: **2,835/2,835 PASS**.
+- PR #362 / `content/bio26-source-freeze`; checkpoint SHA `c9ce6741bc9f60d670efa070ce4a598893ae4559`; branch synced onto current main with behind=0.
+- Source/Crop: **2,835/2,835 PASS**; 2,819 vector + 16 raster special.
 - Dedupe: **2,832 canonical + 3 aliases PASS**.
-- AI Context effective canonical: **2,832/2,832 PASS**; pending **0**; **48/48 lessons complete**.
-- AI Context storage: **INDEXED_SHARDS_V2** — historical base 2,091 raw items, effective base 2,089 after excluding stale aliases `L10-Q025` and `L35-Q036`; L37–L48 shards add 743 canonical items; `L40-Q092` excluded per frozen dedupe report.
-- AI QA: **2,832/2,832 source-answer PASS**, **2,832/2,832 skill-range PASS**, **2,832/2,832 required-fields PASS**, 0 duplicate codes, 0 OCR-inferred answers, alias exclusions **3/3 PASS**.
-- Production subject safety: existing `sub_1784980740570` / **علم البيئة** remains protected and MUST NOT be renamed or repurposed. PR #388 defines dedicated subject `sub_tah_biology_bio26` / **الأحياء** on Tahsili path `p_1777779653351`, with frozen **29 main / 98 subskills** and guarded dry-run/apply.
-- Production importer design in PR #388: fail-closed phases **R2 → dry-run → canary 5 → full draft → verify**, fixed batch `TAH-BIO-BIO26-FULL-V1`, and no write without explicit write authorization.
-- R2 asset package audit remains internally PASS: **2,832 images / 29,550,012 bytes**, canonical ZIP `BIO26_FINAL_ASSETS_V2_CANONICAL.zip`, ZIP SHA-256 `37e58c58dfbdeb8a956ee80e42f2c41cf476f506b3c825663c71bf214ee55a03`, ZIP size **30,134,017 bytes**. However the actual ZIP bytes are **not present in GitHub, workflow artifacts, current Library, or mounted project storage**, so authenticated production PUT + remote hash verification is still **NOT RUN**.
-- Import-payload quality gap: no `BIO26_IMPORT_MANIFEST_READY.json` exists yet and repository search confirms no BIO26 `optionTexts/readableText` payload. Direct indexed PDF text read returns **no readable content** because the question source is image-based. PR #388 therefore requires 4 machine-readable option texts, readableText, visualDescription, explanation, and visual-QA reviewer note for every question before any draft insert.
-- Hard gates: production taxonomy must pass dry-run/apply first; then recover/regenerate the exact audited asset package + complete machine-readable manifest; then R2 verified; then Dry Run → Canary 5 → Full Draft Import → Integrity Audit → Live E2E → Approval.
-- BIO26 status: **NOT CLOSED**. AI/content taxonomy mapping is complete; production closure is intentionally fail-closed on the two package-level gaps above.
+- AI Context effective canonical: **2,832/2,832 PASS**, pending **0**, lessons **48/48**.
+- AI QA: source-answer / skill-range / required fields / unique codes all **2,832/2,832 PASS**, duplicates 0, OCR-inferred answers 0, alias exclusions 3/3.
+- Atlas Production: dedicated `sub_tah_biology_bio26` (**الأحياء**) exists under Tahsili path with **29 main / 98 subskills**; protected `sub_1784980740570` remains **علم البيئة** with **36 SkillProgress** rows; BIO26 questions **0**, import batch rows **0** before import.
+- Importer: dedicated fail-closed BIO26 runtime is wired in production baseline; phases r2 → dry-run → canary → full → verify.
+- R2 package evidence: expected canonical ZIP SHA `37e58c58dfbdeb8a956ee80e42f2c41cf476f506b3c825663c71bf214ee55a03`, 30,134,017 bytes; authenticated PUT/remote-hash verification still pending because package bytes are being recovered/regenerated.
+- CI at checkpoint: Secret Hygiene, Phase+Handover, PLAN7 Live AI, Backend, Recovery, Live Role **SUCCESS**; Deep Pre-Merge E2E in progress.
+- Next hard gate: package recovery → R2 **2,832/2,832 remote verified** → Dry Run → Canary 5 → Full Draft → Integrity → Live E2E → Approval.
+- BIO26 status: **NOT CLOSED**.
+

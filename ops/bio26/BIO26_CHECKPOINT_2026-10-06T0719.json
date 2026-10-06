@@ -1,0 +1,74 @@
+{
+  "project": "BIO26",
+  "timestamp": "2026-10-06T07:19:00+03:00",
+  "pr": 362,
+  "branch": "content/bio26-source-freeze",
+  "checkpointSha": "c9ce6741bc9f60d670efa070ce4a598893ae4559",
+  "source": {
+    "occurrences": 2835,
+    "canonical": 2832,
+    "aliases": 3,
+    "cropPass": 2835
+  },
+  "aiContext": {
+    "effectiveCanonical": 2832,
+    "pending": 0,
+    "lessonsComplete": 48,
+    "sourceAnswerPass": 2832,
+    "skillRangePass": 2832,
+    "requiredFieldsPass": 2832,
+    "duplicates": 0,
+    "ocrInferredAnswers": 0,
+    "aliasExclusions": 3
+  },
+  "production": {
+    "atlasProject": "almeaacodax",
+    "cluster": "almeaa",
+    "subject": {
+      "id": "sub_tah_biology_bio26",
+      "name": "الأحياء",
+      "pathId": "p_1777779653351"
+    },
+    "taxonomy": {
+      "mainSkills": 29,
+      "subSkills": 98
+    },
+    "protectedLegacySubject": {
+      "id": "sub_1784980740570",
+      "name": "علم البيئة",
+      "skillProgressRows": 36
+    },
+    "bioQuestionCodesBeforeImport": 0,
+    "importBatchRowsBeforeImport": 0
+  },
+  "assetPackage": {
+    "fileName": "BIO26_FINAL_ASSETS_V2_CANONICAL.zip",
+    "sha256": "37e58c58dfbdeb8a956ee80e42f2c41cf476f506b3c825663c71bf214ee55a03",
+    "bytes": 30134017,
+    "canonicalImages": 2832,
+    "imageBytes": 29550012,
+    "r2RemoteVerified": false
+  },
+  "gates": {
+    "content": "PASS",
+    "productionTaxonomy": "PASS",
+    "aiContext": "PASS",
+    "r2": "PENDING",
+    "dryRun": "BLOCKED_BY_R2_PACKAGE_BYTES",
+    "canary": "BLOCKED",
+    "fullDraftImport": "BLOCKED",
+    "integrity": "NOT_RUN",
+    "liveE2E": "NOT_RUN",
+    "approval": "NOT_RUN",
+    "closed": false
+  },
+  "ci": {
+    "secretHygiene": "SUCCESS",
+    "phaseHandover": "SUCCESS",
+    "plan7LiveAI": "SUCCESS",
+    "backendIntegration": "SUCCESS",
+    "recovery": "SUCCESS",
+    "liveRole": "SUCCESS",
+    "deepPreMergeE2E": "IN_PROGRESS_AT_CHECKPOINT"
+  }
+}

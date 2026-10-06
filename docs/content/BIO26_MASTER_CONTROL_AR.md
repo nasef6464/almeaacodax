@@ -2,78 +2,115 @@
 
 **Scope:** Biology only (`BIO26`).  
 **Repository:** `nasef6464/almeaacodax`  
-**Source-freeze version:** 1.0.0  
-**Status:** PRE-IMPORT CONTENT GATES PASS — AI CONTEXT IN PROGRESS + R2 UPLOAD PENDING — NOT CLOSED
+**PR / Branch:** #362 / `content/bio26-source-freeze`  
+**Checkpoint SHA:** `c9ce6741bc9f60d670efa070ce4a598893ae4559`  
+**Status:** CONTENT + PRODUCTION TAXONOMY GATES PASS — R2/PACKAGE TRANSPORT PENDING — NOT CLOSED
 
 ## Verified source inventory
 - Foundation PDF: **79 pages**.
 - Question PDF: **226 pages**.
-- Lessons: **48**.
+- Lessons: **48/48**.
 - Source occurrences: **2,835** = **1,673 section 1 + 1,162 section 2**.
 
 ## Taxonomy and skill linkage — PASS
-- Main Skills: **29**.
-- SubSkills: **98**.
+- Frozen source taxonomy: **29 main skills / 98 subskills**.
 - Question → skill ledger: **2,835/2,835**.
 - Source-key answers: **2,835/2,835**.
-- Foundation Topic ↔ MainSkill and Foundation SubTopic ↔ SubSkill are frozen.
+- Effective canonical questions after dedupe: **2,832**.
+- Production Atlas verification on 2026-10-06:
+  - Dedicated subject `sub_tah_biology_bio26` = **الأحياء**, path `p_1777779653351`.
+  - Production skills = **29 main / 98 subskills**.
+  - Protected legacy subject `sub_1784980740570` remains **علم البيئة**.
+  - Historical SkillProgress rows referencing protected legacy subject = **36**.
+  - BIO26 production question codes before import = **0**.
+  - BIO26 batch `TAH-BIO-BIO26-FULL-V1` before import = **0**.
 
-## Crop and asset package — PASS
-- Crop geometry: **2,835/2,835**.
-- Methods: **2,819** vector-text anchored + **16** dedicated raster corrections.
-- Stratified manual visual QA: **126 unique question codes**, including the tallest crop from **48/48 lessons**, the **48 globally shortest** crops, L01 Q1–Q15, and L36 p164 Q48–Q63.
-- V2 final asset package regenerated: **2,835/2,835 WEBP files**, **0 missing**, **0 SHA-256 mismatches**.
-- Canonical production candidate images: **2,832**.
-- Canonical asset ZIP SHA-256: `37e58c58dfbdeb8a956ee80e42f2c41cf476f506b3c825663c71bf214ee55a03`.
-- R2 upload itself is still pending; V2 hashes are authoritative.
-- R2 presign manifest is prepared for **2,832/2,832** canonical images: **29,550,012 bytes**, unique question codes/hashes **2,832/2,832**, key pattern `questions/v2/{questionCode}/{imageHash}.webp`; actual authenticated PUT verification remains pending.
+## Crop and asset package — PASS locally
+- Crop geometry/source QA: **2,835/2,835 PASS**.
+- Methods: **2,819 vector-text anchored + 16 dedicated raster corrections**.
+- Stratified manual visual QA: **126 unique question codes**.
+- V2 generated source assets: **2,835**, canonical production candidates: **2,832**.
+- Canonical ZIP expected name: `BIO26_FINAL_ASSETS_V2_CANONICAL.zip`.
+- Canonical ZIP SHA-256: `37e58c58dfbdeb8a956ee80e42f2c41cf476f506b3c825663c71bf214ee55a03`.
+- Canonical ZIP bytes: **30,134,017**.
+- R2 manifest: **2,832 images / 29,550,012 bytes**, unique question codes/hashes **2,832/2,832**.
+- R2 key pattern: `questions/v2/{questionCode}/{imageHash}.webp`.
+- The historical ZIP bytes themselves are not stored in GitHub/Actions/authorized raw Library export; authenticated R2 PUT + remote hash verification therefore remains pending while the package is recovered/regenerated.
 
 ## Dedupe — PASS
-- Source-internal semantic duplicate groups: **3**.
-- Alias occurrences: **3**.
-- Canonical count after source-internal dedupe: **2,832**.
-- Confirmed aliases:
+- Confirmed duplicate alias groups: **3**.
+- Canonical count: **2,832**.
+- Aliases:
   1. `L10-Q025` → `L10-Q009`.
   2. `L35-Q036` → `L35-Q033`.
   3. `L40-Q092` → `L40-Q091`.
-- Live existing biology-bank audit:
-  - Questions under current candidate biology/environment subject: **0**.
-  - Questions found by biology-identifying source metadata/code search: **0**.
-  - Existing-bank result: **PASS — EMPTY BASELINE**.
-- Final canonical BIO26 question count remains **2,832**.
 
-## Production subject readiness audit
-- Current Tahsili path exists.
-- The current production subject occupying the biology slot is named **علم البيئة**.
-- It currently has **0 questions** and only generic auto-seeded taxonomy (**3 generic sections / 9 generic skills**).
-- Reference-safety audit is complete: its generic skills are referenced by **36 SkillProgress records** across **4 users**, carrying **72 historical attempts**. Therefore it will **not** be renamed or repurposed. BIO26 will receive a **dedicated الأحياء subject** during controlled import.
+## AI Context — COMPLETE
+- Effective canonical AI context: **2,832/2,832 PASS**.
+- Pending: **0**.
+- Lessons: **48/48 complete**.
+- Storage: **INDEXED_SHARDS_V2**.
+- Historical base: 2,091 raw entries; effective base **2,089** after excluding stale aliases L10-Q025 and L35-Q036.
+- L37–L48 indexed shards add **743** canonical entries; L40-Q092 is excluded.
+- QA:
+  - source-answer **2,832/2,832 PASS**
+  - skill-range **2,832/2,832 PASS**
+  - required fields **2,832/2,832 PASS**
+  - unique question codes **2,832/2,832 PASS**
+  - duplicate codes **0**
+  - OCR-inferred correct answers **0**
+  - alias exclusions **3/3 PASS**
+
+## Production importer readiness
+Current production baseline contains a dedicated fail-closed BIO26 importer:
+- `server/src/app/bootstrap/runBio26PackageImport.ts`
+- batch: `TAH-BIO-BIO26-FULL-V1`
+- expected: **2,832**
+- phases: **r2 → dry-run → canary → full → verify**
+- R2 phase performs authenticated PUT and remote GET+SHA verification for all 2,832 images.
+- Canary inserts exactly **5 drafts**.
+- Full import is resumable and ends at **2,832 drafts**.
+- `server/src/scripts/verifyBio26PostImport.ts` verifies taxonomy, identity, images, machine-readable fields, status and draft isolation.
+
+## CI checkpoint
+At SHA `c9ce6741bc9f60d670efa070ce4a598893ae4559` after syncing current `main`:
+- Tracked Secret Hygiene — **SUCCESS**
+- Platform V3 Phase + Handover — **SUCCESS**
+- PLAN 7 Live AI — **SUCCESS**
+- Backend Integration — **SUCCESS**
+- Recovery — **SUCCESS**
+- Live Role — **SUCCESS** (previous 47/48 student-mobile overflow regression cleared after main sync)
+- Deep Pre-Merge E2E — **IN PROGRESS** at checkpoint
+- Public Smoke / Assessment V1 — skipped by workflow conditions.
 
 ## Gate state
 | Gate | Status |
 |---|---|
 | Source analysis | PASS |
-| Taxonomy | PASS — 29 / 98 |
+| Taxonomy source | PASS — 29 / 98 |
+| Production dedicated Biology subject | **PASS — Atlas verified** |
+| Protected علم البيئة references | **PASS — preserved, 36 SkillProgress rows** |
 | Inventory | PASS |
 | Question-to-Skill Ledger | PASS — 2,835/2,835 |
 | Answers | PASS — SOURCE KEY 2,835/2,835 |
-| Crop QA | **PASS** |
-| Asset regeneration | **PASS LOCAL — 2,835 files** |
-| Dedupe | **PASS — 2,832 canonical** |
-| Existing biology-bank dedupe | **PASS — 0 existing** |
-| AI context | **IN PROGRESS — 1,839 / 2,832 canonical** |
-| R2 upload | PENDING |
-| Dry run | BLOCKED BY AI/R2 |
+| Crop QA | PASS |
+| Asset regeneration evidence | PASS LOCAL |
+| Dedupe | PASS — 2,832 canonical |
+| AI context | **PASS — 2,832/2,832** |
+| Production BIO26 pre-import count | **PASS — 0** |
+| R2 authenticated upload + remote hash | **PENDING** |
+| Dry run | BLOCKED BY R2/PACKAGE BYTES |
 | Canary 5 | BLOCKED |
 | Full draft import | BLOCKED |
 | Integrity audit | NOT RUN |
-| Live E2E | NOT RUN |
+| Live BIO26 E2E | NOT RUN |
 | Approval | NOT RUN |
 | BIO26 CLOSED | **NO** |
 
-## Next execution batch
-1. Continue AI context authoring from **1,839 / 2,832** canonical questions. L01–L31 plus L33–L34 are authored; **L32 is deliberately still the earliest unfinished lesson**. Current automated integrity: **1,839/1,839 source-answer**, **1,839/1,839 skill-range**, required fields complete, duplicate questionCodes = 0.
-2. Create a **dedicated Biology subject** at controlled import time; preserve the existing `علم البيئة` subject and its historical progress.
-3. Upload **2,832** canonical V2 images to R2 and verify remote hashes/URLs.
-4. Dry Run → Canary 5 → Full Draft Import → Integrity Audit → Live E2E → Approval.
-
-**Closure rule:** no `BIO26 CLOSED` until production counts, asset integrity, exact-question skill analysis, and live learner journey pass.
+## Next execution
+1. Recover/regenerate the canonical 2,832-image package and verify package/image SHA integrity.
+2. Execute importer phase `r2` and verify **2,832/2,832** remote hashes.
+3. Execute **dry-run → canary 5 → full draft import**.
+4. Run post-import integrity audit and live learner E2E.
+5. Approve only after all preceding gates are green, then run post-approval verifier.
+6. Declare CLOSED and disable the scheduled BIO26 task only after all production/live gates pass.
