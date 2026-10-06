@@ -41,9 +41,10 @@ async function verify(expected:"draft"|"approved") {
  return {count:qs.length,main:main.size,sub:sub.size,linked};
 }
 
-async function main(){
- if(process.env.CHEM26_FINAL_CLOSURE!=="APPROVE_1708") { console.log("CHEM26_FINAL_CLOSURE_DISABLED"); return; }
- await mongoose.connect(env.MONGODB_URI);
+export async function runChem26FinalClosureIfRequested(){
+ if(process.env.CHEM26_FINAL_CLOSURE!=="APPROVE_1708") return;
+ const ownsConnection = mongoose.connection.readyState !== 1;
+ if(ownsConnection) await mongoose.connect(env.MONGODB_URI);
  try{
   const already=await QuestionModel.countDocuments({"sourceMeta.importBatchId":BATCH_ID,approvalStatus:"approved"});
   if(already===EXPECTED_COUNT){const p=await verify("approved");console.log("CHEM26_POST_APPROVAL_GATE_PASS",JSON.stringify(p));return;}
@@ -52,6 +53,5 @@ async function main(){
   const r=await QuestionModel.updateMany({"sourceMeta.importBatchId":BATCH_ID,approvalStatus:"draft"},{$set:{approvalStatus:"approved",approvedBy:APPROVER,approvedAt:now}});
   if(r.matchedCount!==EXPECTED_COUNT||r.modifiedCount!==EXPECTED_COUNT) fail(`approval write matched=${r.matchedCount} modified=${r.modifiedCount}`);
   const post=await verify("approved"); console.log("CHEM26_APPROVAL_WRITE_PASS",JSON.stringify({matched:r.matchedCount,modified:r.modifiedCount})); console.log("CHEM26_POST_APPROVAL_GATE_PASS",JSON.stringify(post));
- } finally {await mongoose.disconnect();}
+ } finally { if(ownsConnection) await mongoose.disconnect(); }
 }
-main().catch(e=>{console.error("CHEM26_FINAL_CLOSURE_FAILED",e instanceof Error?e.message:e);process.exitCode=1;});
