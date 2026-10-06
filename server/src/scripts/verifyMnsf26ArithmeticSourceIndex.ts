@@ -127,6 +127,22 @@ if (nonMonotonic.length) {
   });
 }
 
+const missingSourceSkillLabels = data.tests.filter(
+  (test) =>
+    test.cropAllowed === true &&
+    (!test.topic || String(test.topic).trim().length === 0),
+);
+if (missingSourceSkillLabels.length) {
+  failures.push({
+    gate: "source-skill-label-required",
+    detail: missingSourceSkillLabels.map((test) => ({
+      testNumber: test.testNumber,
+      startPdfPage: test.startPdfPage,
+      topic: test.topic,
+    })),
+  });
+}
+
 const duplicatePages = [...new Set(
   resolved
     .filter((test, index, all) =>
