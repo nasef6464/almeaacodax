@@ -6,6 +6,7 @@ export const COMMAND_DRAFT_KINDS = [
   "quiz_update",
   "course",
   "school_setup",
+  "school_roster_import",
   "content",
   "workflow",
 ] as const;
