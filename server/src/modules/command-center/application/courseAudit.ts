@@ -46,10 +46,10 @@ export async function auditCourse(courseId: string) {
 
   const modules = Array.isArray((course as any).modules) ? (course as any).modules : [];
   const assessments = Array.isArray((course as any).assessments) ? (course as any).assessments : [];
-  const courseSkills = new Set(
+  const courseSkills = new Set<string>(
     (Array.isArray((course as any).skills) ? (course as any).skills : [])
-      .map(clean)
-      .filter(Boolean),
+      .map((value: unknown) => clean(value))
+      .filter((value: string) => Boolean(value)),
   );
 
   const findings: CourseAuditFinding[] = [];
