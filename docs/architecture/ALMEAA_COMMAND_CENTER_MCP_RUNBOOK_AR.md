@@ -65,6 +65,8 @@ Read:
 - `get_profile`
 - `get_skill_tree`
 - `get_course_inventory`
+- `audit_course` — فحص قراءة فقط للدورة الحالية: المحتوى/الاختبارات/التغطية/الفجوات، بلا توليد أو Apply أو Publish.
+- `audit_course`
 - `list_drafts`
 - `get_workflow`
 
