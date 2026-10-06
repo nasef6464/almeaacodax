@@ -78,7 +78,8 @@ async function main() {
         q.correctOptionIndex > 3 ||
         normalizedOptionTexts.length !== 4 ||
         normalizedOptionTexts.some((x: string) => !x) ||
-        normalizedOptionTexts.some((x: string) => PLACEHOLDER_OPTION_LABELS.has(x.toUpperCase())) ||
+        String(q.aiContext?.optionTextsSource || "").trim().toUpperCase() !== "SOURCE_PDF" ||
+        q.aiContext?.optionTextsVerified !== true ||
         !String(q.aiContext?.readableText || "").trim() ||
         !String(q.aiContext?.visualDescription || "").trim() ||
         !String(q.explanation || "").trim()
