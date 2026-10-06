@@ -166,9 +166,34 @@ export async function migrateVerbalTaxonomy22() {
     skillId: { $in: VERBAL_TAXONOMY.map((main) => main.id) },
     subSkillId: { $in: Object.keys(VERBAL_SUBSKILL_TO_MAIN) },
   });
+  const expectedSectionIds = Array.from(new Set(Object.values(VERBAL_SUBSKILL_TO_SECTION)));
+  const uiLinkedQuestions = await qCol.countDocuments({
+    ...verbalFilter,
+    sectionId: { $in: expectedSectionIds },
+  });
+  const mainSkillDocs = await skillCol
+    .find({ subjectId: VERBAL_SUBJECT_ID, id: { $in: VERBAL_TAXONOMY.map((main) => main.id) } })
+    .project({ id: 1, subSkills: 1, questionIds: 1 })
+    .toArray();
+  const embeddedSubSkills = mainSkillDocs.reduce(
+    (total, skill: any) => total + (Array.isArray(skill.subSkills) ? skill.subSkills.length : 0),
+    0,
+  );
+  const mainQuestionRefs = mainSkillDocs.reduce(
+    (total, skill: any) => total + (Array.isArray(skill.questionIds) ? skill.questionIds.length : 0),
+    0,
+  );
+  const emptyMainSkills = mainSkillDocs
+    .filter((skill: any) => !Array.isArray(skill.questionIds) || skill.questionIds.length === 0)
+    .map((skill: any) => idOf(skill.id || skill._id));
   const failures = [
     afterQuestions !== beforeQuestions && `question count changed ${beforeQuestions} -> ${afterQuestions}`,
     canonicalQuestions !== afterQuestions && `canonical question coverage is ${canonicalQuestions}/${afterQuestions}`,
+    uiLinkedQuestions !== afterQuestions && `UI section lineage coverage is ${uiLinkedQuestions}/${afterQuestions}`,
+    mainSkillDocs.length !== 22 && `canonical main skill docs = ${mainSkillDocs.length}`,
+    embeddedSubSkills !== 76 && `embedded subskills = ${embeddedSubSkills}`,
+    mainQuestionRefs !== afterQuestions && `main skill question refs = ${mainQuestionRefs}/${afterQuestions}`,
+    emptyMainSkills.length > 0 && `main skills with zero question refs: ${emptyMainSkills.join(", ")}`,
     mainSkills !== 22 && `main skills = ${mainSkills}`,
     parentTopics !== 22 && `parent topics = ${parentTopics}`,
     childTopics !== 76 && `child topics = ${childTopics}`,
@@ -180,7 +205,10 @@ export async function migrateVerbalTaxonomy22() {
     status: "PASS",
     questions: afterQuestions,
     canonicalQuestions,
+    uiLinkedQuestions,
     mainSkills,
+    embeddedSubSkills,
+    mainQuestionRefs,
     subSkills: Object.keys(VERBAL_SUBSKILL_TO_MAIN).length,
     parentTopics,
     childTopics,
