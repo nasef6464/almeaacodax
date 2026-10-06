@@ -63,6 +63,9 @@ jobs:
       - name: Build branch frontend with same-origin API bridge path
         run: npm run build
 
+      - name: Live audit load-safety contract
+        run: node scripts/smoke-production-live-audit-load-contract.mjs
+
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
 
