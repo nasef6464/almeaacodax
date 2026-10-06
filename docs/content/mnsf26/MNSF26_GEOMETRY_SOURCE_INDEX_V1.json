@@ -7,11 +7,10 @@
   "discoveredStructure": {
     "tests": 50,
     "lessons": 11,
-    "resolvedTestStartPages": 47,
+    "resolvedTestStartPages": 48,
     "unresolvedTestStartPages": [
       4,
-      6,
-      17
+      6
     ]
   },
   "lessons": [
@@ -315,10 +314,10 @@
       "lessonNumber": 3,
       "lessonName": "المثلث",
       "lessonOrdinal": "الثالث",
-      "startPdfPage": null,
-      "evidence": "UNRESOLVED_START_PAGE",
-      "cropAllowed": false,
-      "note": "Do not infer a crop page. Resolve from original source pixels/search index before cropping."
+      "startPdfPage": 31,
+      "evidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
     },
     {
       "testNumber": 18,
