@@ -4,7 +4,12 @@ import {
   courseReuseDraftSchema,
   validateCourseReuseDraft,
 } from "./courseReuseDraftTools.js";
-import { quizDraftSchema, validateQuizDraft } from "./questionQuizDraftTools.js";
+import {
+  planQuizQuestionUpdate,
+  quizDraftSchema,
+  quizQuestionUpdateDraftSchema,
+  validateQuizDraft,
+} from "./questionQuizDraftTools.js";
 import {
   buildAliasMap,
   stableToken,
@@ -202,7 +207,116 @@ export async function applyQuizDraft(
   draft: CommandDraftLike,
   actorId: string,
 ): Promise<ApplyResult> {
-  const input = quizDraftSchema.parse(draft.payload || {});
+  const rawPayload = (draft.payload || {}) as any;
+  if (rawPayload.operation === "update_existing_questions") {
+    const updateInput = quizQuestionUpdateDraftSchema.parse({
+      targetQuizId: rawPayload.targetQuizId || rawPayload.targetQuizMongoId,
+      candidateQuestionIds: rawPayload.candidateQuestionIds,
+      mode: rawPayload.mode || "add",
+      title: draft.title,
+      requestId: String((draft as any).requestId || ""),
+    });
+    const refreshedPlan = await planQuizQuestionUpdate(updateInput);
+    if (!refreshedPlan.ok || !refreshedPlan.quiz || !refreshedPlan.diff) {
+      throw Object.assign(
+        new Error(
+          `Quiz update draft is no longer valid: ${refreshedPlan.issues
+            .map((issue) => issue.type)
+            .join(", ")}`,
+        ),
+        { statusCode: 422 },
+      );
+    }
+
+    const approvedFinalIds = Array.isArray(rawPayload.finalQuestionIds)
+      ? rawPayload.finalQuestionIds.map(String)
+      : [];
+    const currentFinalIds = refreshedPlan.diff.finalQuestionIds.map(String);
+    if (JSON.stringify(approvedFinalIds) !== JSON.stringify(currentFinalIds)) {
+      throw Object.assign(
+        new Error(
+          "Quiz update changed after review; create and approve a fresh diff draft before applying",
+        ),
+        { statusCode: 409 },
+      );
+    }
+
+    const target = await QuizModel.findOne({
+      $or: [
+        { _id: String(rawPayload.targetQuizMongoId || rawPayload.targetQuizId) },
+        { id: String(rawPayload.targetQuizId || "") },
+      ],
+    }).lean();
+    if (!target) {
+      throw Object.assign(new Error("Target quiz no longer exists"), { statusCode: 404 });
+    }
+
+    const draftId = String(draft._id);
+    const replacementRequired = Boolean((target as any).isPublished);
+    const resourceId = replacementRequired
+      ? `cc_quiz_revision_${stableToken(draftId, 20)}`
+      : String((target as any)._id);
+
+    if (replacementRequired) {
+      const existingReplacement = await QuizModel.findById(resourceId).lean();
+      if (!existingReplacement) {
+        const clone: Record<string, unknown> = { ...(target as any) };
+        delete clone._id;
+        delete clone.__v;
+        delete clone.createdAt;
+        delete clone.updatedAt;
+        await QuizModel.create({
+          ...clone,
+          _id: resourceId,
+          id: resourceId,
+          title: `${String((target as any).title || "اختبار")} — تحديث`,
+          questionIds: currentFinalIds,
+          skillIds: refreshedPlan.diff.afterSkillIds,
+          isPublished: false,
+          showOnPlatform: false,
+          approvalStatus: "approved",
+          approvedBy: actorId,
+          approvedAt: Date.now(),
+          createdBy: actorId,
+          reviewerNotes: `Replacement created from Command Center update draft ${draftId}; original published quiz was left unchanged.`,
+        });
+      }
+    } else {
+      await QuizModel.updateOne(
+        { _id: (target as any)._id },
+        {
+          $set: {
+            questionIds: currentFinalIds,
+            skillIds: refreshedPlan.diff.afterSkillIds,
+            approvalStatus: "approved",
+            approvedBy: actorId,
+            approvedAt: Date.now(),
+            reviewerNotes: `Updated from approved Command Center draft ${draftId}`,
+            isPublished: false,
+          },
+        },
+        { runValidators: true },
+      );
+    }
+
+    return {
+      resourceType: replacementRequired ? "quiz_replacement" : "quiz",
+      resourceId,
+      summary: {
+        operation: "update_existing_questions",
+        targetQuizId: refreshedPlan.quiz.id,
+        replacementRequired,
+        originalPublishedQuizUnchanged: replacementRequired,
+        added: refreshedPlan.diff.acceptedAdditionCount,
+        exactDuplicatesSkipped: refreshedPlan.diff.exactExistingCount,
+        nearDuplicatesSkipped: refreshedPlan.diff.nearDuplicateCount,
+        finalQuestionCount: currentFinalIds.length,
+        published: false,
+      },
+    };
+  }
+
+  const input = quizDraftSchema.parse(rawPayload);
   const validation = await validateQuizDraft(input);
   if (!validation.ok) {
     throw Object.assign(
