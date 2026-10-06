@@ -1,0 +1,57 @@
+{
+  "project": "CHEM26",
+  "canonical": true,
+  "questionBank": {
+    "batchId": "TAH-CHEM-CHEM26-FULL-V1",
+    "approved": 1708,
+    "draft": 0,
+    "status": "CLOSED"
+  },
+  "taxonomy": {
+    "mainSkills": 27,
+    "subSkills": 99,
+    "status": "CLOSED"
+  },
+  "foundation": {
+    "mainTopics": 27,
+    "subTopics": 99,
+    "totalTopics": 126,
+    "freeMainTopics": 5,
+    "lockedMainTopics": 22,
+    "freeSubTopics": 23,
+    "lockedSubTopics": 76
+  },
+  "training": {
+    "canonicalIdPrefixes": [
+      "chem26_foundation_",
+      "chem26_training_"
+    ],
+    "foundationDrills": 99,
+    "mainSkillTrainingDrills": 40,
+    "totalCanonicalDrills": 139,
+    "foundationFree": 23,
+    "foundationPaidPackage": 76,
+    "trainingFree": 8,
+    "trainingPaidPackage": 32,
+    "allApprovedPublishedVisible": true
+  },
+  "canonicalPRs": {
+    "questionClosure": 391,
+    "learningStructure": 410
+  },
+  "supersededPRs": [
+    367,
+    371
+  ],
+  "legacyCleanup": {
+    "removedPrefixes": [
+      "drill_sub_tah_chem_",
+      "bank_skill_tah_chem_"
+    ],
+    "removedCount": 130,
+    "backupCollection": "quizzes_backup_chem_manual_pre_unify_20261006",
+    "backupCount": 130
+  },
+  "repositoryMainAtRecord": "d388c74ea040ab38456faaaa257bebd6327f0da5",
+  "rule": "All CHEM26 chats must continue from this master and must not create parallel chemistry execution paths."
+}
