@@ -6,7 +6,7 @@ import { QuizModel } from "../../../models/Quiz.js";
 import { SchoolMembershipModel } from "../../../models/SchoolMembership.js";
 import { TeachingAssignmentModel } from "../../../models/TeachingAssignment.js";
 import { UserModel } from "../../../models/User.js";
-import type { CommandCenterDraftModel } from "../../../models/CommandCenterDraft.js";
+import { CommandCenterDraftModel } from "../../../models/CommandCenterDraft.js";
 import {
   courseReuseDraftSchema,
   validateCourseReuseDraft,
