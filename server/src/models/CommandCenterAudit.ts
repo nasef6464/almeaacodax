@@ -8,7 +8,7 @@ const commandCenterAuditSchema = new Schema(
     actorId: { type: String, required: true, index: true },
     actorType: {
       type: String,
-      enum: ["admin_session", "api_key", "system"],
+      enum: ["admin_session", "api_key", "oauth", "system"],
       required: true,
     },
     source: {
