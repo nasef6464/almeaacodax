@@ -12,9 +12,10 @@ permissions:
   contents: read
 
 concurrency:
-  # Serialize workflows that exercise the tiny production Render service. Keep
-  # full coverage, but prevent our own live gates from creating a load spike.
-  group: platform-production-live-audit-${{ github.event.pull_request.number || github.ref }}
+  # PR PLAN7 is static-only, so it must not occupy the same two-slot mutex as
+  # the two PR browser audits. On main pushes, PLAN7 does hit production and
+  # shares the live-audit mutex with the Live Role gate.
+  group: ${{ github.event_name == 'pull_request' && format('plan7-pr-{0}', github.event.pull_request.number) || format('platform-production-live-audit-{0}', github.ref) }}
   cancel-in-progress: false
 
 jobs:
