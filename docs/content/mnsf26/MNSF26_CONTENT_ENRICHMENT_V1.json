@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 3,
+  "schemaVersion": 4,
   "bank": "MNSF26",
   "generatedFrom": "analysis batches 001-013",
   "taxonomyContract": {
@@ -9,16 +9,16 @@
   },
   "coverage": {
     "total": 138,
-    "ready": 130,
+    "ready": 129,
     "holds": 3,
     "quarantined": 1,
-    "suppressed": 4,
-    "readyMapping": 130,
-    "readyCorrect": 130,
-    "readyDifficulty": 130,
-    "readyQuestionFingerprint": 130,
-    "readyExplanationFingerprint": 130,
-    "readySpeechText": 130
+    "suppressed": 5,
+    "readyMapping": 129,
+    "readyCorrect": 129,
+    "readyDifficulty": 129,
+    "readyQuestionFingerprint": 129,
+    "readyExplanationFingerprint": 129,
+    "readySpeechText": 129
   },
   "records": [
     {
@@ -1045,7 +1045,7 @@
       "pdfPage": 5,
       "printedQuestionNumber": 20,
       "title": "35 آية في 7 أيام",
-      "status": "CONTENT_READY_CROP_PENDING",
+      "status": "SUPPRESS_CROSS_BANK_DUPLICATE",
       "sourceText": "حفظ أحمد 35 آية في 7 أيام. كم آية حفظ في اليوم الواحد؟",
       "correct": "ج = 5.",
       "difficulty": "Easy",
@@ -1059,7 +1059,12 @@
         "status": "PENDING_ORIGINAL_PIXELS",
         "contract": "blank-blue-triangle; trim-whitespace; preserve-math; repair-dashed-border"
       },
-      "duplicate": null,
+      "duplicate": {
+        "keep": "QDR-QNT-COL2627-P037-Q28",
+        "source": "COL2627",
+        "reason": "EXACT_NORMALIZED_TEXT_DUPLICATE",
+        "similarity": 1
+      },
       "sourceAnalysisPath": "docs/content/mnsf26/MNSF26_BATCH_004_P005_ANALYSIS_AR.md"
     },
     {
