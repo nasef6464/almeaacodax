@@ -24,8 +24,12 @@ const subskillFromQuestion = (question: any) => {
 
 export async function migrateVerbalTaxonomy22() {
   validateVerbalTaxonomyV2();
-  const ledgerPath = path.join(process.cwd(), "server", "data", "verbal26_source_ledger.json");
-  const ledger = fs.existsSync(ledgerPath) ? JSON.parse(fs.readFileSync(ledgerPath, "utf8")) : {};
+  const ledgerCandidates = [
+    path.join(process.cwd(), "server", "data", "verbal26_source_ledger.json"),
+    path.join(process.cwd(), "data", "verbal26_source_ledger.json"),
+  ];
+  const ledgerPath = ledgerCandidates.find((candidate) => fs.existsSync(candidate));
+  const ledger = ledgerPath ? JSON.parse(fs.readFileSync(ledgerPath, "utf8")) : {};
   if (ledger?.migrationReady !== true) {
     throw new Error("Refusing migration: VERBAL26 canonical bank is not marked migrationReady.");
   }
