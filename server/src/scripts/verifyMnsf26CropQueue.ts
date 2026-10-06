@@ -68,6 +68,34 @@ if (invalidPendingAssets.length) {
   });
 }
 
+const expectedHoldCodes = new Set([
+  "QDR-QNT-MNSF26-P001-Q10",
+  "QDR-QNT-MNSF26-P011-Q19",
+  "QDR-QNT-MNSF26-P013-Q15",
+]);
+const actualHoldCodes = new Set(sourceReview.map((item) => item.questionCode));
+if (
+  actualHoldCodes.size !== expectedHoldCodes.size ||
+  [...expectedHoldCodes].some((code) => !actualHoldCodes.has(code))
+) {
+  failures.push({
+    gate: "crop-source-hold-allowlist",
+    detail: { expected: [...expectedHoldCodes], actual: [...actualHoldCodes] },
+  });
+}
+const unsafeHoldAssets = sourceReview.filter(
+  (item) =>
+    item.cropStatus !== "PENDING_ORIGINAL_PIXELS" ||
+    item.imageHash !== null ||
+    item.imageUrl !== null,
+);
+if (unsafeHoldAssets.length) {
+  failures.push({
+    gate: "source-hold-crop-fail-closed",
+    detail: unsafeHoldAssets.map((item) => item.questionCode),
+  });
+}
+
 const duplicateCodes = data.queue
   .filter(
     (item, index, all) =>
