@@ -36,8 +36,7 @@ import { shareTextSummary } from '../utils/shareText';
 import { flattenMockExamQuestionIds } from '../utils/mockExam';
 import { hasInlineQuestionMedia, normalizeQuestionHtml } from '../utils/questionHtml';
 import { buildQuizRouteWithContext } from '../utils/quizLinks';
-import { buildFoundationActionLink, buildSkillReportActionLink } from '../utils/skillActionLinks';
-import { resolveFoundationSkillTarget } from '../utils/foundationSkillTarget';
+import { buildCanonicalFoundationSkillActions, buildSkillReportActionLink } from '../utils/skillActionLinks';
 import { getLearnerOptionLabel, getQuizOptionButtonHeightClass, getQuizOptionGridClass, getQuizQuestionMapButtonClass, resolveQuestionFromBank, toQuestionReviewFromBank, usesImageEmbeddedOptions } from '../utils/quizPresentation';
 import { getFriendlyResultMessage, getMasteryClasses, getScoreVisualTone, getSkillPriorityLabel, getStudentFriendlyChecklist } from '../components/results/resultScorePresentation';
 import { QuestionAssistantPanel } from '../components/results/QuestionAssistantPanel';
@@ -296,24 +295,14 @@ const Results: React.FC = () => {
         const pathId = item.pathId || taxonomyEntry?.pathId;
         const subjectId = item.subjectId || taxonomyEntry?.subjectId;
         const sectionId = item.sectionId || taxonomyEntry?.sectionId;
-        const foundationTarget = resolveFoundationSkillTarget(
-          { skillId, pathId, subjectId, sectionId },
+        const foundationActions = buildCanonicalFoundationSkillActions(
+          { skillId, pathId, subjectId, sectionId, skillName: item.skill },
           skills,
           topics,
         );
-        const foundationActionContext = {
-          pathId: foundationTarget.pathId || pathId,
-          subjectId: foundationTarget.subjectId || subjectId,
-          skillId: foundationTarget.skillId || skillId,
-          topicId: foundationTarget.topicId,
-        };
-        const canUseFoundationFallback = foundationTarget.kind !== 'sub' || Boolean(foundationTarget.topicId);
-        const lessonLink = recommendation.lessonLink
-          || (canUseFoundationFallback ? buildFoundationActionLink(foundationActionContext, 'lessons') : undefined);
-        const quizLink = recommendation.quizLink
-          || (canUseFoundationFallback ? buildFoundationActionLink(foundationActionContext, 'quizzes') : undefined);
-        const supportLink = recommendation.supportLink
-          || (canUseFoundationFallback ? buildFoundationActionLink(foundationActionContext, 'support') : undefined);
+        const lessonLink = foundationActions.lessonLink;
+        const quizLink = foundationActions.quizLink;
+        const supportLink = foundationActions.supportLink;
         const subjectName =
           recommendation.subjectName ||
           (subjectId ? displayText(subjects.find((subject) => subject.id === subjectId)?.name) : undefined);
@@ -1983,18 +1972,11 @@ const DetailedAnalysis = ({ onBack, result }: { onBack: () => void; result: Quiz
       const pathId = item.pathId || taxonomyEntry?.pathId;
       const subjectId = item.subjectId || taxonomyEntry?.subjectId;
       const sectionId = item.sectionId || taxonomyEntry?.sectionId;
-      const foundationTarget = resolveFoundationSkillTarget(
-        { skillId, pathId, subjectId, sectionId },
+      const foundationActions = buildCanonicalFoundationSkillActions(
+        { skillId, pathId, subjectId, sectionId, skillName: item.skill },
         skills,
         topics,
       );
-      const foundationActionContext = {
-        pathId: foundationTarget.pathId || pathId,
-        subjectId: foundationTarget.subjectId || subjectId,
-        skillId: foundationTarget.skillId || skillId,
-        topicId: foundationTarget.topicId,
-      };
-      const canUseFoundationFallback = foundationTarget.kind !== 'sub' || Boolean(foundationTarget.topicId);
       return {
         ...item,
         ...recommendation,
@@ -2009,12 +1991,9 @@ const DetailedAnalysis = ({ onBack, result }: { onBack: () => void; result: Quiz
           recommendation.sectionName ||
           displayText(item.section) ||
           (sectionId ? displayText(sections.find((section) => section.id === sectionId)?.name) : undefined),
-        lessonLink: recommendation.lessonLink
-          || (canUseFoundationFallback ? buildFoundationActionLink(foundationActionContext, 'lessons') : undefined),
-        quizLink: recommendation.quizLink
-          || (canUseFoundationFallback ? buildFoundationActionLink(foundationActionContext, 'quizzes') : undefined),
-        supportLink: recommendation.supportLink
-          || (canUseFoundationFallback ? buildFoundationActionLink(foundationActionContext, 'support') : undefined),
+        lessonLink: foundationActions.lessonLink,
+        quizLink: foundationActions.quizLink,
+        supportLink: foundationActions.supportLink,
       };
     })
     .sort((a, b) => a.mastery - b.mastery);
