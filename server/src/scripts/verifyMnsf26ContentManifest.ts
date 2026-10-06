@@ -4,7 +4,11 @@ import { QUANT_TAXONOMY } from "./deployQuantTaxonomy25.js";
 
 type ManifestRecord = {
   questionCode: string;
-  status: "CONTENT_READY_CROP_PENDING" | "HOLD_SOURCE" | "SUPPRESS_DUPLICATE";
+  status:
+    | "CONTENT_READY_CROP_PENDING"
+    | "HOLD_SOURCE"
+    | "QUARANTINE_SOURCE_DEFECT"
+    | "SUPPRESS_DUPLICATE";
   skillId: string | null;
   subSkillId: string | null;
   correct: string | null;
@@ -33,6 +37,9 @@ const ready = manifest.records.filter(
   (record) => record.status === "CONTENT_READY_CROP_PENDING",
 );
 const holds = manifest.records.filter((record) => record.status === "HOLD_SOURCE");
+const quarantined = manifest.records.filter(
+  (record) => record.status === "QUARANTINE_SOURCE_DEFECT",
+);
 const suppressed = manifest.records.filter(
   (record) => record.status === "SUPPRESS_DUPLICATE",
 );
@@ -45,10 +52,20 @@ if (manifest.bank !== "MNSF26") {
 if (manifest.records.length !== 138) {
   failures.push({ gate: "record-count", detail: manifest.records.length });
 }
-if (ready.length !== 130 || holds.length !== 4 || suppressed.length !== 4) {
+if (
+  ready.length !== 130 ||
+  holds.length !== 3 ||
+  quarantined.length !== 1 ||
+  suppressed.length !== 4
+) {
   failures.push({
     gate: "status-counts",
-    detail: { ready: ready.length, holds: holds.length, suppressed: suppressed.length },
+    detail: {
+      ready: ready.length,
+      holds: holds.length,
+      quarantined: quarantined.length,
+      suppressed: suppressed.length,
+    },
   });
 }
 
@@ -103,6 +120,7 @@ const report = {
     total: manifest.records.length,
     ready: ready.length,
     holds: holds.length,
+    quarantined: quarantined.length,
     suppressed: suppressed.length,
   },
   failures,
