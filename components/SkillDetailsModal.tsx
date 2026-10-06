@@ -239,9 +239,10 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
   };
   const buildTrainingQuizPath = (quizId: string) => {
     const sourceQuiz = quizzes.find((quiz) => matchesEntityId(quiz, quizId));
+    const showResultsReport = sourceQuiz?.settings?.showResultsReport;
     const returnOnFinish =
-      sourceQuiz?.settings?.returnToSourceOnFinish === true ||
-      sourceQuiz?.settings?.showResultsReport === false;
+      showResultsReport === false ||
+      (showResultsReport !== true && sourceQuiz?.settings?.returnToSourceOnFinish === true);
 
     return buildQuizRouteWithContext(quizId, {
       returnTo: buildTopicReturnPath('quizzes'),
