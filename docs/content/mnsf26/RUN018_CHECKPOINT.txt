@@ -1,0 +1,27 @@
+MNSF26 Run 018 checkpoint
+Scope: MNSF26 only.
+
+Repository state at start:
+main 3aee9949bebe5b62a593760e76e4e02a55f9e2d2
+branch diverged: 115 ahead, 41 behind.
+No ref rewrite or merge performed.
+
+Arithmetic source PDF verified again: 34,783,189 bytes, 129 pages.
+
+Completed visible inventory for PDF pages 23 through 40.
+Added 164 visible question occurrences.
+Covered test 12 continuation and tests 13 through 20.
+Source labels were preserved from the book.
+Page 36 contained no visible printed question number 1 through 20, so no question was inferred from image-object count.
+
+Structured ledger:
+docs/content/mnsf26/MNSF26_ARITHMETIC_VISIBLE_INVENTORY_P023_P040_V1.json
+
+Checkpoint totals:
+Run 017: 90 occurrences.
+Run 018: 164 occurrences.
+Combined checkpointed occurrences: 254, including the 7 recovered page-2 occurrences.
+These are source occurrences, not deduplicated unique questions.
+
+No canonical mapping, dedupe, production crop, R2 upload, or import is claimed for this new slice.
+Next: PDF page 41, test 21, source label الكسور الاعتيادية.
