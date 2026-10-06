@@ -45,7 +45,7 @@ if (manifest.bank !== "MNSF26") {
 if (manifest.records.length !== 138) {
   failures.push({ gate: "record-count", detail: manifest.records.length });
 }
-if (ready.length !== 128 || holds.length !== 6 || suppressed.length !== 4) {
+if (ready.length !== 130 || holds.length !== 4 || suppressed.length !== 4) {
   failures.push({
     gate: "status-counts",
     detail: { ready: ready.length, holds: holds.length, suppressed: suppressed.length },
