@@ -20,12 +20,15 @@ const must = [
   'BIO26_IMPORT_DRAFT_PASS',
 ];
 for (const fragment of must) if (!importer.includes(fragment)) throw new Error(`missing BIO26 importer contract: ${fragment}`);
-if (!importer.includes("process.env.BIO26_IMPORT_MODE || process.env.QUESTION_PILOT_MODE")) throw new Error("BIO26 importer must prefer a dedicated runtime mode");
+if (!importer.includes("process.env.BIO26_IMPORT_PHASE")) throw new Error("BIO26 importer must support a dedicated plain phase");
+if (!importer.includes("process.env.BIO26_PACKAGE_URL") || !importer.includes("process.env.BIO26_PACKAGE_SHA256")) throw new Error("BIO26 importer must support dedicated package transport vars");
+if (!importer.includes("process.env.BIO26_IMPORT_MODE || process.env.QUESTION_PILOT_MODE")) throw new Error("BIO26 importer must retain envelope compatibility");
 if (!importer.includes("process.env.BIO26_IMPORT_BATCH_ID || process.env.QUESTION_PILOT_BATCH_ID")) throw new Error("BIO26 importer must prefer a dedicated batch id");
 if (!importer.includes("process.env.BIO26_IMPORT_EXPECTED_COUNT || process.env.QUESTION_PILOT_EXPECTED_COUNT")) throw new Error("BIO26 importer must prefer a dedicated expected count");
 if (!verifier.includes("optionTextsSource") || !verifier.includes("optionTextsVerified")) throw new Error("BIO26 post-import verifier does not enforce option-text provenance");
 if (!importer.includes("insertedThisRun=") || !importer.includes("canary contains unexpected resume state")) throw new Error("BIO26 canary is not restart-safe");
 if (!verifier.includes("BIO26_POST_IMPORT_DRAFT_GATE_PASS")) throw new Error("BIO26 post-import verifier missing");
 if (!verifier.includes("BIO26_POST_APPROVAL_GATE_PASS")) throw new Error("BIO26 approval verifier missing");
+if (!importer.includes("r.status !== 429") || !importer.includes("attempt <= 6") || !importer.includes("pool(verified, 4, verifyRemote)")) throw new Error("BIO26 R2 verification must retry/throttle transient rate limits");
 if (!bootstrap.includes("runBio26PackageImportIfRequested")) throw new Error("BIO26 importer is not wired into bootstrap");
 console.log("BIO26_IMPORT_RUNNER_CONTRACT_PASS");
