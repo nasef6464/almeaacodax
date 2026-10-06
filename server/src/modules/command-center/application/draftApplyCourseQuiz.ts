@@ -4,7 +4,12 @@ import {
   courseReuseDraftSchema,
   validateCourseReuseDraft,
 } from "./courseReuseDraftTools.js";
-import { quizDraftSchema, validateQuizDraft } from "./questionQuizDraftTools.js";
+import {
+  buildQuizUpdatePlan,
+  quizDraftSchema,
+  quizUpdatePreviewSchema,
+  validateQuizDraft,
+} from "./questionQuizDraftTools.js";
 import {
   buildAliasMap,
   stableToken,
@@ -246,6 +251,108 @@ export async function applyQuizDraft(
     summary: {
       idempotentReplay: Boolean(existing),
       questionCount: validation.questionCount,
+      published: false,
+    },
+  };
+}
+
+
+export async function applyQuizUpdateDraft(
+  draft: CommandDraftLike,
+  actorId: string,
+): Promise<ApplyResult> {
+  const payload = (draft.payload || {}) as Record<string, unknown>;
+  const input = quizUpdatePreviewSchema.parse({
+    targetQuizId: payload.targetQuizId,
+    mode: payload.mode,
+    questionIds: payload.requestedQuestionIds,
+    expectedQuestionIdsHash: payload.expectedQuestionIdsHash,
+  });
+  const plan = await buildQuizUpdatePlan(input);
+  if (!plan.ok || !plan.target || !plan.diff) {
+    throw Object.assign(
+      new Error("Quiz update draft is stale or no longer valid; rebuild its preview"),
+      { statusCode: 409 },
+    );
+  }
+
+  const storedFinal = Array.isArray(payload.finalQuestionIds)
+    ? payload.finalQuestionIds.map(String)
+    : [];
+  if (
+    storedFinal.length !== plan.diff.finalQuestionIds.length ||
+    storedFinal.some((id, index) => id !== plan.diff.finalQuestionIds[index])
+  ) {
+    throw Object.assign(
+      new Error("Quiz update diff changed after approval; rebuild the draft"),
+      { statusCode: 409 },
+    );
+  }
+
+  const target = await QuizModel.findOne({
+    $or: [{ _id: input.targetQuizId }, { id: input.targetQuizId }],
+  }).lean();
+  if (!target) {
+    throw Object.assign(new Error("Target quiz no longer exists"), { statusCode: 404 });
+  }
+
+  const draftId = String(draft._id);
+  const revisionId = `cc_quiz_revision_${stableToken(draftId, 20)}`;
+  const existing = await QuizModel.findById(revisionId).lean();
+  if (!existing) {
+    await QuizModel.create({
+      _id: revisionId,
+      id: revisionId,
+      title: String(payload.title || target.title || "نسخة اختبار محدثة"),
+      description: String(target.description || ""),
+      pathId: String(target.pathId || ""),
+      subjectId: String(target.subjectId || ""),
+      sectionId: target.sectionId ?? null,
+      type: target.type || "quiz",
+      quizKind: target.quizKind || "test",
+      placement: target.placement,
+      showInTraining: target.showInTraining,
+      showInMock: target.showInMock,
+      learningPlacements: Array.isArray(target.learningPlacements) ? target.learningPlacements : [],
+      mode: target.mode || "regular",
+      assessmentData: target.assessmentData || {},
+      settings: target.settings || {},
+      access: target.access || {},
+      questionIds: plan.diff.finalQuestionIds,
+      mockExam: target.mockExam || {},
+      skillIds: plan.diff.finalSkillIds,
+      targetGroupIds: Array.isArray(target.targetGroupIds) ? target.targetGroupIds : [],
+      targetUserIds: Array.isArray(target.targetUserIds) ? target.targetUserIds : [],
+      dueDate: target.dueDate ?? null,
+      supervisorMessage: target.supervisorMessage ?? null,
+      ownerType: target.ownerType || "platform",
+      ownerId: String(target.ownerId || actorId),
+      createdBy: actorId,
+      assignedTeacherId: String(target.assignedTeacherId || ""),
+      approvalStatus: "approved",
+      approvedBy: actorId,
+      approvedAt: Date.now(),
+      reviewerNotes: `Unpublished revision of ${plan.target.quizId} from Command Center draft ${draftId}`,
+      isPublished: false,
+      showOnPlatform: false,
+      revisionOfQuizId: plan.target.quizId,
+      revisionSourceHash: plan.target.currentQuestionIdsHash,
+      revisionDraftId: draftId,
+      revenueSharePercentage: target.revenueSharePercentage ?? null,
+    });
+  }
+
+  return {
+    resourceType: "quiz_revision",
+    resourceId: revisionId,
+    summary: {
+      idempotentReplay: Boolean(existing),
+      revisionOfQuizId: plan.target.quizId,
+      additions: plan.diff.additions.length,
+      removals: plan.diff.removals.length,
+      skippedSimilar: plan.diff.highSimilarityMatches.length,
+      reviewSimilar: plan.diff.reviewSimilarityMatches.length,
+      finalQuestionCount: plan.diff.finalQuestionCount,
       published: false,
     },
   };
