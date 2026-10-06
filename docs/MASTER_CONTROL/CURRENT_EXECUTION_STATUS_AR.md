@@ -85,6 +85,6 @@ Git HEAD always overrides this historical baseline.
 - Production plumbing: PR #388 merged; dedicated subject `sub_tah_biology_bio26`; legacy `علم البيئة` remains protected.
 - Recovery package V3 audit: 2,832 items/images and self-hashes valid, but image bytes/geometry drift from frozen V2 and all `optionTexts` are bare A/B/C/D placeholders; production use rejected.
 - Hardening branch: `ops/bio26-production-ready-hardening-2026-10-06` from `main@ac03c73b72c9bd20bd72becd047f66932b237307`.
-- Importer and post-import verifier now fail closed on placeholder option text labels.
-- Current gate: qualified READY package + R2 remote verification. Dry Run/Canary/Full/Integrity/Live E2E/Approval remain not run.
+- PR #400 (`ops/bio26-option-recovery-2026-10-06`) fixes the gate to require explicit `SOURCE_PDF` provenance instead of rejecting legitimate source values by label alone.\n- Source option-text recovery: **2,579/2,832** canonical recovered from the approved 226-page PDF; **253** remain quarantined for layout/visual review. Partial artifact SHA-256: `4f726999fe7d755b7fa7444156279c7604a9055d4566af93019786d9b743de21`.
+- Current gate: finish **253** option sets → assemble fully provenance-qualified READY package → R2 remote verification. Dry Run/Canary/Full/Integrity/Live E2E/Approval remain not run.
 - Closure rule: do not mark BIO26 CLOSED before all production gates and live learner journey pass.
