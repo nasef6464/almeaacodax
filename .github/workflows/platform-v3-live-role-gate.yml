@@ -114,6 +114,15 @@ jobs:
         continue-on-error: true
         run: npm run smoke:role-pages-live
 
+      - name: Cool down production API before deep journeys
+        shell: bash
+        run: |
+          set -euo pipefail
+          sleep 15
+          curl --fail --silent --show-error \
+            --retry 6 --retry-delay 5 --retry-all-errors \
+            https://almeaacodax-codex.onrender.com/api/health/live >/dev/null
+
       - name: Run read-only deep parent + teacher journeys
         id: deep_role_v2
         continue-on-error: true
