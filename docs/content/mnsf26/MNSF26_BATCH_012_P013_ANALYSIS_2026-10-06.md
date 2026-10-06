@@ -59,7 +59,7 @@ High-resolution page render inspected directly from the original PDF. Page 13 co
 - Difficulty: Easy/Medium.
 - Fingerprint: equal-sharing / hidden-group-size / quantitative-comparison.
 - External duplicate gate: no exact FND26/COL2627 match found.
-- Intra-MNSF duplicate gate: strong semantic/structural duplicate candidate of Batch 006 page-7 Q19 (same total 3710, seven persons, share 530); do not import both as independent unique questions without duplicate-policy resolution.
+- Intra-MNSF duplicate decision: **SUPPRESS_AS_DUPLICATE**. This is the same mathematical item as Batch 006 / page 7 / Q19: total 3710, hidden group size 7, equal share 530, and quantitative comparison against 530. Keep the earlier Batch 006 occurrence and do not import this later rewording.
 
 ### Q20
 - 115 شخصاً للتخييم، في كل خيمة 5 أشخاص.
@@ -77,5 +77,6 @@ High-resolution page render inspected directly from the original PDF. Page 13 co
 - Canonical mappings locked: 5
 - Taxonomy HOLD: 1 (Q18)
 - External exact duplicates FND26/COL2627: 0
-- Intra-MNSF semantic duplicate candidates: 1 (Q19 ↔ Batch006 Q19)
+- Unique import candidates after HOLD + duplicate gates: 4/7
+- Intra-MNSF duplicates suppressed: 1 (Q19 ↔ Batch 006 Q19; keep earlier occurrence)
 - New taxonomy entities: 0
