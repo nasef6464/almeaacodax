@@ -14,12 +14,14 @@ const must = [
   '"r2", "dry-run", "canary", "full", "verify"',
   'PILOT_WRITE_AUTHORIZATION !== "YES"',
   'BIO26 machine-readable optionTexts missing',
+  'BIO26 machine-readable optionTexts are placeholder labels',
   'BIO26_R2_VERIFIED_PASS',
   'BIO26_DRY_RUN_PASS',
   'BIO26_CANARY_PASS count=5 drafts=5',
   'BIO26_IMPORT_DRAFT_PASS',
 ];
 for (const fragment of must) if (!importer.includes(fragment)) throw new Error(`missing BIO26 importer contract: ${fragment}`);
+if (!verifier.includes("PLACEHOLDER_OPTION_LABELS")) throw new Error("BIO26 post-import verifier does not reject placeholder option text labels");
 if (!verifier.includes("BIO26_POST_IMPORT_DRAFT_GATE_PASS")) throw new Error("BIO26 post-import verifier missing");
 if (!verifier.includes("BIO26_POST_APPROVAL_GATE_PASS")) throw new Error("BIO26 approval verifier missing");
 if (!bootstrap.includes("runBio26PackageImportIfRequested")) throw new Error("BIO26 importer is not wired into bootstrap");
