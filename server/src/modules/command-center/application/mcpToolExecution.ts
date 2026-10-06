@@ -7,7 +7,7 @@ import {
   planCommandWorkflow,
 } from "./workflowService.js";
 import { MCP_TOOL_SCOPES } from "./mcpToolCatalog.js";
-import { createDeveloperTaskDraft } from "./developerTaskTools.js";
+import { createDeveloperTaskDraft, getApprovedDeveloperTaskHandoff } from "./developerTaskTools.js";
 
 const writeToolNames = new Set([
   "create_question_drafts",
@@ -51,6 +51,14 @@ export async function executeMcpTool(input: {
       },
       input.principal,
     );
+  }
+
+  if (input.name === "get_developer_task_handoff") {
+    const draftId = String(input.args.draftId || "").trim();
+    if (!draftId) {
+      throw Object.assign(new Error("draftId is required"), { statusCode: 422 });
+    }
+    return getApprovedDeveloperTaskHandoff(draftId, input.principal);
   }
 
   if (input.name === "plan_workflow") {
