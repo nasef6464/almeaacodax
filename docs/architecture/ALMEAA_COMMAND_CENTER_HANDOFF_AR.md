@@ -127,11 +127,11 @@
 - [x] duplicate class-name/key detection.
 - [x] reuse-existing-accounts policy.
 - [x] explicit-only account creation policy.
-- [ ] CSV/XLSX import parser.
+- [x] CSV/TSV/XLSX import uses the audited SchoolsManager parser.
 - [x] cross-school assignment guard before apply.
 - [x] safe idempotent apply adapter for school/classes/existing users.
 - [x] Command Center UI reuses audited CSV/TSV/XLSX school parser to create validated school setup drafts.
-- [ ] Teacher/supervisor import columns in Command Center school file workflow (student/class import is wired now).
+- [x] Teacher/supervisor relation import is wired through the optional audited relations file (teacherEmail/teacherName/supervisorEmail/supervisorName/className).
 
 ### CC-5 Workflow Engine
 - [x] Plan → Execute → Verify model.
