@@ -55,7 +55,14 @@
     "repair:learner-references": "tsx src/scripts/repairLearnerReferenceIntegrity.ts",
     "validate:teaching-fingerprint": "tsx src/scripts/validateTeachingFingerprintV1.ts",
     "deploy:chem26-taxonomy": "tsx src/scripts/deployChemTaxonomy27.ts",
-    "verify:chem26-post-import": "tsx src/scripts/verifyChem26PostImport.ts"
+    "verify:chem26-post-import": "tsx src/scripts/verifyChem26PostImport.ts",
+    "repair:mnsf26:taxonomy-parity": "tsx src/scripts/repairMnsf26CanonicalTaxonomyParity.ts",
+    "verify:mnsf26:preimport": "tsx src/scripts/verifyMnsf26PreImportGate.ts",
+    "verify:mnsf26:content-manifest": "tsx src/scripts/verifyMnsf26ContentManifest.ts",
+    "verify:mnsf26:crop-queue": "tsx src/scripts/verifyMnsf26CropQueue.ts",
+    "verify:mnsf26:geometry-index": "tsx src/scripts/verifyMnsf26GeometrySourceIndex.ts",
+    "verify:mnsf26:arithmetic-index": "tsx src/scripts/verifyMnsf26ArithmeticSourceIndex.ts",
+    "verify:mnsf26:all": "npm run verify:mnsf26:content-manifest && npm run verify:mnsf26:crop-queue && npm run verify:mnsf26:geometry-index && npm run verify:mnsf26:arithmetic-index && npm run verify:mnsf26:preimport"
   },
   "dependencies": {
     "@sentry/node": "^9.18.0",
