@@ -11,6 +11,7 @@ import { adapter } from '../services/adapter';
 import { Role, type QuestionAttempt, type QuizResult, type SkillProgress } from '../types';
 import { printElementAsPdf } from '../utils/printPdf';
 import { shareTextSummary } from '../utils/shareText';
+import { buildFoundationActionLink } from '../utils/skillActionLinks';
 import { loadXlsx } from '../utils/xlsxLoader';
 import {
     MIN_SKILL_EVIDENCE_COUNT,
@@ -374,7 +375,19 @@ const Reports: React.FC = () => {
         }
     }, [scopedSubjectOptions, selectedScopedSubjectId]);
 
-    const selectedSkillRecommendation = getSkillRecommendation(selectedReportSkill || undefined, skills, lessons, quizzes, libraryItems, questions, topics);
+    const selectedSkillRecommendationBase = getSkillRecommendation(selectedReportSkill || undefined, skills, lessons, quizzes, libraryItems, questions, topics);
+    const selectedSkillFoundationContext = {
+        pathId: selectedReportSkill?.pathId,
+        subjectId: selectedReportSkill?.subjectId,
+        skillId: selectedReportSkill?.skillId,
+    };
+    const selectedSkillRecommendation: SkillRecommendation = {
+        ...selectedSkillRecommendationBase,
+        lessonLink: selectedSkillRecommendationBase.lessonLink
+            || buildFoundationActionLink(selectedSkillFoundationContext, 'lessons'),
+        quizLink: selectedSkillRecommendationBase.quizLink
+            || buildFoundationActionLink(selectedSkillFoundationContext, 'quizzes'),
+    };
     const isStudentView = user?.role === Role.STUDENT;
 
     useEffect(() => {
@@ -2927,10 +2940,10 @@ const Reports: React.FC = () => {
                                         {selectedSkillRecommendation.lessonTopicTitle ? `شرح: ${selectedSkillRecommendation.lessonTopicTitle}` : 'ابدأ بالشرح'}
                                     </Link>
                                 ) : (
-                                    <Link to="/courses" className="rounded-xl bg-white px-4 py-3 text-sm font-black text-slate-600 border border-slate-200 hover:bg-slate-50 flex items-center justify-center gap-2">
+                                    <span className="rounded-xl bg-white px-4 py-3 text-sm font-black text-slate-500 border border-slate-200 flex items-center justify-center gap-2">
                                         <Video size={16} />
-                                        استعرض الشروح
-                                    </Link>
+                                        الشرح غير مربوط بعد
+                                    </span>
                                 )}
                                 {selectedSkillRecommendation.quizLink ? (
                                     <Link to={selectedSkillRecommendation.quizLink} className="rounded-xl bg-white px-4 py-3 text-sm font-black text-amber-700 border border-amber-100 hover:bg-amber-50 flex items-center justify-center gap-2">
