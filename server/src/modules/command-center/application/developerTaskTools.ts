@@ -112,3 +112,55 @@ export async function createDeveloperTaskDraft(
 
   return { draft, validation, idempotentReplay: false };
 }
+
+export async function getApprovedDeveloperTaskHandoff(
+  draftId: string,
+  principal: CommandPrincipal,
+) {
+  const draft = await CommandCenterDraftModel.findById(draftId).lean();
+  if (!draft || draft.kind !== "developer_task") {
+    throw Object.assign(new Error("Developer task draft not found"), { statusCode: 404 });
+  }
+  if (draft.status !== "approved") {
+    throw Object.assign(new Error("Developer task requires human approval before handoff"), {
+      statusCode: 409,
+    });
+  }
+
+  const payload = (draft.payload || {}) as Record<string, unknown>;
+  const handoff = {
+    draftId: String(draft._id),
+    repository: ALMEAA_CODE_REPOSITORY,
+    title: String(draft.title || ""),
+    problem: String(payload.problem || ""),
+    baseRef: String(payload.baseRef || "main"),
+    sourceIssue: payload.sourceIssue || null,
+    targetPaths: Array.isArray(payload.targetPaths) ? payload.targetPaths : [],
+    requestedActions: Array.isArray(payload.requestedActions) ? payload.requestedActions : [],
+    acceptanceCriteria: Array.isArray(payload.acceptanceCriteria) ? payload.acceptanceCriteria : [],
+    executionPolicy: {
+      domain: "source_code",
+      contentMutation: false,
+      mergeAllowed: false,
+      deployAllowed: false,
+      directDatabaseAccess: false,
+      requiresExactHeadTestsBeforePr: true,
+      requiresHumanMergeAuthority: true,
+    },
+  };
+
+  await recordCommandAudit({
+    principal,
+    action: "developer_task.handoff.read",
+    toolId: "get_developer_task_handoff",
+    draftId: String(draft._id),
+    outcome: "success",
+    metadata: {
+      repository: ALMEAA_CODE_REPOSITORY,
+      mergeAllowed: false,
+      deployAllowed: false,
+    },
+  });
+
+  return { handoff };
+}
