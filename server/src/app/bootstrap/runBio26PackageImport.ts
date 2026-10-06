@@ -22,7 +22,8 @@ const EXPECTED_SUBJECT_ID = "sub_tah_biology_bio26";
 const PROTECTED_LEGACY_SUBJECT_ID = "sub_1784980740570";
 const EXPECTED_MAIN = 29;
 const EXPECTED_SUB = 98;
-const CODE_REGEX = /^TAH-BIO-BIO26-L\d{2}-Q\d{3}$/;\nconst PLACEHOLDER_OPTION_LABELS = new Set(["A", "B", "C", "D", "أ", "ب", "ج", "د"]);
+const CODE_REGEX = /^TAH-BIO-BIO26-L\d{2}-Q\d{3}$/;
+const PLACEHOLDER_OPTION_LABELS = new Set(["A", "B", "C", "D", "أ", "ب", "ج", "د"]);
 let started = false;
 
 type ManifestItem = Record<string, any> & {
