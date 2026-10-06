@@ -7,11 +7,9 @@
   "discoveredStructure": {
     "tests": 50,
     "lessons": 11,
-    "resolvedTestStartPages": 48,
-    "unresolvedTestStartPages": [
-      4,
-      6
-    ]
+    "resolvedTestStartPages": 50,
+    "unresolvedTestStartPages": [],
+    "resolutionNote": "Tests 4 and 6 resolved from direct parsed page headers: PDF page 6 = الاختبار الرابع; PDF page 11 = الاختبار السادس."
   },
   "lessons": [
     {
@@ -171,10 +169,10 @@
       "lessonNumber": 2,
       "lessonName": "الزوايا",
       "lessonOrdinal": "الثاني",
-      "startPdfPage": null,
-      "evidence": "UNRESOLVED_START_PAGE",
-      "cropAllowed": false,
-      "note": "Do not infer a crop page. Resolve from original source pixels/search index before cropping."
+      "startPdfPage": 6,
+      "evidence": "FILES_READ_PARSED_PAGE_HEADER",
+      "cropAllowed": true,
+      "note": null
     },
     {
       "testNumber": 5,
@@ -193,10 +191,10 @@
       "lessonNumber": 2,
       "lessonName": "الزوايا",
       "lessonOrdinal": "الثاني",
-      "startPdfPage": null,
-      "evidence": "UNRESOLVED_START_PAGE",
-      "cropAllowed": false,
-      "note": "Do not infer a crop page. Resolve from original source pixels/search index before cropping."
+      "startPdfPage": 11,
+      "evidence": "FILES_READ_PARSED_PAGE_HEADER",
+      "cropAllowed": true,
+      "note": null
     },
     {
       "testNumber": 7,
