@@ -52,9 +52,31 @@ const normalizeText = (value: string) =>
   value
     .normalize("NFKC")
     .replace(/[\u064B-\u065F\u0670]/g, "")
+    .replace(/[^\p{L}\p{N}]+/gu, " ")
     .replace(/\s+/g, " ")
     .trim()
     .toLowerCase();
+
+const similarityTokens = (value: string) =>
+  new Set(
+    normalizeText(value)
+      .split(" ")
+      .map((token) => token.trim())
+      .filter((token) => token.length >= 2),
+  );
+
+const jaccardSimilarity = (left: Set<string>, right: Set<string>) => {
+  if (!left.size || !right.size) return 0;
+  let intersection = 0;
+  for (const token of left) {
+    if (right.has(token)) intersection += 1;
+  }
+  const union = left.size + right.size - intersection;
+  return union > 0 ? intersection / union : 0;
+};
+
+const NEAR_DUPLICATE_THRESHOLD = 0.88;
+const MIN_NEAR_DUPLICATE_TOKENS = 5;
 
 export async function validateQuestionDraftBatch(
   input: z.infer<typeof questionDraftBatchSchema>,
@@ -70,19 +92,27 @@ export async function validateQuestionDraftBatch(
     .select("id text subjectId skillId subSkillId skillIds")
     .lean();
   const existingByNormalizedText = new Map<string, typeof existingQuestions[number]>();
-  for (const existing of existingQuestions) {
+  const existingSimilarity = existingQuestions.map((existing) => {
     const normalized = normalizeText(String(existing.text || ""));
     if (normalized && !existingByNormalizedText.has(normalized)) {
       existingByNormalizedText.set(normalized, existing);
     }
-  }
+    return {
+      question: existing,
+      normalized,
+      tokens: similarityTokens(String(existing.text || "")),
+    };
+  });
 
   const seenInBatch = new Map<string, number>();
+  const batchSimilarity: Array<{ index: number; normalized: string; tokens: Set<string> }> = [];
   const issues: Array<{
     index: number;
     type: string;
     message: string;
     existingQuestionId?: string;
+    duplicateBatchIndex?: number;
+    similarity?: number;
   }> = [];
 
   input.questions.forEach((question, index) => {
@@ -135,6 +165,56 @@ export async function validateQuestionDraftBatch(
     } else {
       seenInBatch.set(normalized, index);
     }
+
+    const tokens = similarityTokens(question.text);
+    if (!liveDuplicate && tokens.size >= MIN_NEAR_DUPLICATE_TOKENS) {
+      let bestLive: { id: string; score: number } | null = null;
+      for (const candidate of existingSimilarity) {
+        if (
+          candidate.normalized === normalized ||
+          candidate.tokens.size < MIN_NEAR_DUPLICATE_TOKENS
+        ) {
+          continue;
+        }
+        const score = jaccardSimilarity(tokens, candidate.tokens);
+        if (score >= NEAR_DUPLICATE_THRESHOLD && (!bestLive || score > bestLive.score)) {
+          bestLive = {
+            id: String(candidate.question.id || candidate.question._id || ""),
+            score,
+          };
+        }
+      }
+      if (bestLive) {
+        issues.push({
+          index,
+          type: "near_duplicate_live",
+          message: "A highly similar question already exists in the live bank",
+          existingQuestionId: bestLive.id,
+          similarity: Number(bestLive.score.toFixed(4)),
+        });
+      }
+    }
+
+    if (tokens.size >= MIN_NEAR_DUPLICATE_TOKENS) {
+      let bestBatch: { index: number; score: number } | null = null;
+      for (const candidate of batchSimilarity) {
+        if (candidate.normalized === normalized) continue;
+        const score = jaccardSimilarity(tokens, candidate.tokens);
+        if (score >= NEAR_DUPLICATE_THRESHOLD && (!bestBatch || score > bestBatch.score)) {
+          bestBatch = { index: candidate.index, score };
+        }
+      }
+      if (bestBatch) {
+        issues.push({
+          index,
+          type: "near_duplicate_batch",
+          message: `Highly similar to batch index ${bestBatch.index}`,
+          duplicateBatchIndex: bestBatch.index,
+          similarity: Number(bestBatch.score.toFixed(4)),
+        });
+      }
+    }
+    batchSimilarity.push({ index, normalized, tokens });
   });
 
   return {
@@ -146,6 +226,10 @@ export async function validateQuestionDraftBatch(
       exactDuplicateCount: issues.filter((issue) =>
         issue.type === "exact_duplicate_live" || issue.type === "exact_duplicate_batch",
       ).length,
+      nearDuplicateCount: issues.filter((issue) =>
+        issue.type === "near_duplicate_live" || issue.type === "near_duplicate_batch",
+      ).length,
+      nearDuplicateThreshold: NEAR_DUPLICATE_THRESHOLD,
     },
   };
 }
