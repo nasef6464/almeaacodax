@@ -7,7 +7,7 @@ const routes = [
   { path: "/faq", expect: "public" },
   { path: "/privacy", expect: "public" },
   { path: "/terms", expect: "public" },
-  { path: "/forgot-password", expect: "auth" },
+  { path: "/forgot-password", expect: "public" },
   { path: "/login", expect: "auth" },
   { path: "/signup", expect: "auth" },
   { path: "/dashboard", expect: "guarded" },
