@@ -53,6 +53,8 @@ export const MCP_TOOL_SCOPES: Record<string, string[]> = {
   plan_workflow: ["workflows:plan"],
   get_workflow: ["workflows:read"],
   execute_workflow: ["workflows:execute"],
+  create_developer_task_draft: ["developer:write"],
+  get_developer_task_handoff: ["developer:read"],
 };
 
 const draftIdentityProperties = {
@@ -130,7 +132,7 @@ export const mcpToolDescriptors: McpToolDescriptor[] = [
       type: "object",
       properties: {
         status: { type: "string", enum: ["pending", "approved", "rejected"] },
-        kind: { type: "string", enum: ["question_batch", "quiz", "course", "school_setup", "content", "workflow"] },
+        kind: { type: "string", enum: ["question_batch", "quiz", "quiz_update", "course", "school_setup", "content", "workflow", "developer_task"] },
         limit: { type: "integer", minimum: 1, maximum: 100 },
       },
       additionalProperties: false,
@@ -232,6 +234,51 @@ export const mcpToolDescriptors: McpToolDescriptor[] = [
     annotations: draftAnnotations,
     securitySchemes: oauth("drafts:write"),
     _meta: meta(oauth("drafts:write"), "Validating school setup…", "School draft ready"),
+  },
+  {
+    name: "create_developer_task_draft",
+    title: "Create code-only developer task draft",
+    description: "Create a reviewable Codex/developer task for nasef6464/almeaacodax. It cannot mutate platform content, merge, or deploy.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        repository: { type: "string", const: "nasef6464/almeaacodax" },
+        title: { type: "string" },
+        problem: { type: "string" },
+        baseRef: { type: "string" },
+        sourceIssue: { type: "integer", minimum: 1 },
+        targetPaths: { type: "array", maxItems: 100, items: { type: "string" } },
+        requestedActions: {
+          type: "array",
+          minItems: 1,
+          maxItems: 4,
+          items: { type: "string", enum: ["investigate", "patch", "test", "pull_request"] },
+        },
+        acceptanceCriteria: { type: "array", minItems: 1, maxItems: 50, items: { type: "string" } },
+        ...draftIdentityProperties,
+      },
+      required: ["title", "problem", "requestedActions", "acceptanceCriteria", "idempotencyKey"],
+      additionalProperties: false,
+    },
+    outputSchema: completeObject,
+    annotations: draftAnnotations,
+    securitySchemes: oauth("developer:write"),
+    _meta: meta(oauth("developer:write"), "Preparing code task…", "Developer task draft ready"),
+  },
+  {
+    name: "get_developer_task_handoff",
+    title: "Read approved developer/Codex handoff",
+    description: "Read a human-approved code-only task handoff. This tool never merges, deploys, or mutates platform content.",
+    inputSchema: {
+      type: "object",
+      properties: { draftId: { type: "string" } },
+      required: ["draftId"],
+      additionalProperties: false,
+    },
+    outputSchema: completeObject,
+    annotations: readAnnotations,
+    securitySchemes: oauth("developer:read"),
+    _meta: meta(oauth("developer:read"), "Reading approved code task…", "Developer handoff ready"),
   },
   {
     name: "plan_workflow",

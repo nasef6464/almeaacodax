@@ -1,6 +1,6 @@
 # ALMEAA Command Center — Remote MCP Runbook
 
-> الحالة: IMPLEMENTED ON FEATURE BRANCH — deployment/configuration pending CI merge.
+> الحالة: MCP CORE MERGED — Developer/Codex code-only bridge in PR #397 — Production OAuth IdP / external connection proof pending.
 > التاريخ: 2026-10-06
 
 ## الهدف
@@ -28,7 +28,7 @@ OAuth 2.1 Resource Server.
 - `ALMEAA_MCP_OAUTH_ISSUER=https://<issuer>`
 - `ALMEAA_MCP_OAUTH_AUDIENCE=<resource audience>`
 - `ALMEAA_MCP_OAUTH_REQUIRED_SCOPE=almeaa:admin`
-- `ALMEAA_MCP_OAUTH_SCOPES=...`
+- `ALMEAA_MCP_OAUTH_SCOPES=...` ويجب أن تتضمن `developer:read,developer:write` لتفعيل Developer/Codex bridge
 - `ALMEAA_MCP_JWKS_CACHE_MS=600000`
 
 الخادم يتحقق من:
@@ -66,6 +66,17 @@ Workflow:
 - `plan_workflow`
 - `execute_workflow`
 
+Developer/Codex — code only:
+- `create_developer_task_draft`
+- `get_developer_task_handoff`
+
+سياسة Developer/Codex:
+- المستودع المسموح فقط: `nasef6464/almeaacodax`.
+- الإنشاء ينتج Draft قابلًا للمراجعة، وليس GitHub mutation مباشرًا.
+- handoff لا يُقرأ إلا بعد موافقة بشرية.
+- العمليات المسموحة في المواصفة: investigate / patch / test / pull_request.
+- Remote MCP لا يمنح merge أو deploy أو content mutation.
+
 ## أشياء غير معروضة للـMCP عمدًا
 
 - Approve draft
@@ -75,6 +86,8 @@ Workflow:
 - Permission changes
 - Raw Mongo queries
 - GitHub merge
+- GitHub deploy
+- Platform content mutation من Developer/Codex tools
 
 هذه العمليات تظل بشرية/داخلية في هذه المرحلة.
 

@@ -1,0 +1,61 @@
+name: ALMEAA Remote MCP Live Certification
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'server/src/modules/command-center/**'
+      - 'server/src/app.ts'
+      - 'scripts/smoke-command-center-mcp-live.mjs'
+      - '.github/workflows/command-center-mcp-live-certification.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  live-mcp-certification:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact main head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Wait for exact Render release identity
+        shell: bash
+        env:
+          EXPECTED_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          expected_short="$(printf '%s' "$EXPECTED_SHA" | cut -c1-12)"
+          for attempt in $(seq 1 40); do
+            body="$(curl -fsS https://almeaacodax.vercel.app/api/health/live || true)"
+            if printf '%s' "$body" | grep -q "$expected_short"; then
+              echo "Exact production release is live."
+              exit 0
+            fi
+            echo "Waiting for production release identity ($attempt/40)..."
+            sleep 15
+          done
+          echo "Production did not converge to exact main head." >&2
+          exit 1
+
+      - name: Remote MCP OAuth metadata + tool scan
+        run: node scripts/smoke-command-center-mcp-live.mjs
+
+      - name: Upload Remote MCP evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: command-center-mcp-live-${{ github.sha }}
+          path: audit-artifacts/command-center-mcp-live/summary.json
+          if-no-files-found: warn
+          retention-days: 30

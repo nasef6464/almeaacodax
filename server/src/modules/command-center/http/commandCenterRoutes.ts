@@ -20,6 +20,7 @@ import { courseDraftRouter } from "./courseDraftRoutes.js";
 import { schoolDraftRouter } from "./schoolDraftRoutes.js";
 import { workflowRouter } from "./workflowRoutes.js";
 import { mcpRouter } from "./mcpRoutes.js";
+import { developerDraftRouter } from "./developerDraftRoutes.js";
 
 const draftSchema = z.object({
   kind: z.enum(COMMAND_DRAFT_KINDS),
@@ -58,6 +59,7 @@ commandCenterRouter.use("/authoring", questionQuizDraftRouter);
 commandCenterRouter.use("/courses", courseDraftRouter);
 commandCenterRouter.use("/schools", schoolDraftRouter);
 commandCenterRouter.use("/workflows", workflowRouter);
+commandCenterRouter.use("/developer", developerDraftRouter);
 
 commandCenterRouter.get(
   "/health",
@@ -253,6 +255,18 @@ commandCenterRouter.post(
     const current = await CommandCenterDraftModel.findById(req.params.id);
     if (!current) {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Draft not found" });
+    }
+    if (current.kind === "developer_task") {
+      await recordCommandAudit({
+        principal,
+        action: "draft.apply",
+        draftId: String(current._id),
+        outcome: "rejected",
+        metadata: { reason: "developer_task_is_not_content_apply" },
+      });
+      return res.status(StatusCodes.CONFLICT).json({
+        message: "Developer tasks use the reviewed code-agent handoff and cannot be applied as platform content",
+      });
     }
     if (current.status !== "approved") {
       return res.status(StatusCodes.CONFLICT).json({
