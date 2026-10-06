@@ -1,8 +1,8 @@
 {
   "project": "CHEM26 Full Closure",
   "scope": "chemistry-only",
-  "updatedAt": "2026-10-06T09:10:30+03:00",
-  "status": "CLOSED",
+  "updatedAt": "2026-10-06T19:00:00+03:00",
+  "status": "CLOSED_FULL",
   "source": {
     "questionPdf": "كتاب تجميعات يلو للكيمياء 26 - المعدل.pdf",
     "coverage": 1709,
@@ -61,7 +61,11 @@
     "finalClosureRunnerPR": 389,
     "finalClosureRunnerMerged": true,
     "restartSafeImporterPR": 391,
-    "restartSafeImporterMerged": true
+    "restartSafeImporterMerged": true,
+    "learningStructurePR": 410,
+    "learningStructureMerged": true,
+    "standardTestsPR": 420,
+    "standardTestsMerged": true
   },
   "pending": [],
   "transportBlocker": null,
@@ -73,7 +77,10 @@
     "renderStatus": "LIVE",
     "backendHealthStatus": "ok",
     "backendHealthCommit": "fbc2c1131d16",
-    "vercelStatus": "READY"
+    "vercelStatus": "READY",
+    "learningStructureMergeCommit": "d388c74ea040ab38456faaaa257bebd6327f0da5",
+    "standardTestsMergeCommit": "f4131739d34b229d9d2c392bbbca6212adfa3397",
+    "standardTestsRenderDeploy": "dep-db2i5bjncjis73cofrq0"
   },
   "transport": {
     "status": "CLOSED_NO_LONGER_REQUIRED",
@@ -130,6 +137,49 @@
       "postRestartExpiredTransport403": 0,
       "importerFailureLogs": 0,
       "strategy": "Closed batches are fail-closed and restart-safe; importer exits before expired transport when requested, while inactive import mode produces no import activity."
+    },
+    "learningStructure": {
+      "status": "PASS",
+      "sourceQuestions": 1708,
+      "mainTopics": 27,
+      "subTopics": 99,
+      "freeMainTopics": 5,
+      "lockedMainTopics": 22,
+      "freeSubTopics": 23,
+      "lockedSubTopics": 76,
+      "foundationDrills": 99,
+      "trainingDrills": 40,
+      "totalCanonicalDrills": 139,
+      "freeFoundationDrills": 23,
+      "packageFoundationDrills": 76,
+      "freeTrainingDrills": 8,
+      "packageTrainingDrills": 32,
+      "allApprovedPublishedVisible": true,
+      "legacyDuplicateDrillsRemoved": 130,
+      "legacyBackupCollection": "quizzes_backup_chem_manual_pre_unify_20261006"
+    },
+    "standardTests": {
+      "status": "PASS",
+      "tests": 35,
+      "testSizes": {
+        "48": 7,
+        "49": 28
+      },
+      "totalQuestionRefs": 1708,
+      "uniqueQuestionRefs": 1708,
+      "duplicateQuestionRefs": 0,
+      "reserveQuestions": 0,
+      "freeTests": 5,
+      "paidPackageTests": 30,
+      "minMainSkillsPerTest": 26,
+      "maxMainSkillsPerTest": 27,
+      "fiveTestTranches": 7,
+      "allTranchesCoverAllMainSkills": true,
+      "allApprovedPublishedVisible": true,
+      "placement": "tests",
+      "quizKind": "test",
+      "renderDeploy": "dep-db2i5bjncjis73cofrq0",
+      "renderStatus": "LIVE"
     }
   }
 }
