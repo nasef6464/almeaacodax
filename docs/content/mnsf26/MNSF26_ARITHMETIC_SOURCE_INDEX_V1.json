@@ -6,11 +6,10 @@
   "sourceFileSizeBytes": 34783189,
   "discoveredStructure": {
     "tests": 63,
-    "resolvedTestStartPages": 62,
-    "unresolvedTestStartPages": [
-      33
-    ],
-    "highestVerifiedStartPdfPage": 122
+    "resolvedTestStartPages": 63,
+    "unresolvedTestStartPages": [],
+    "highestVerifiedStartPdfPage": 122,
+    "resolutionNote": "Test 33 resolved by direct page-boundary inspection between verified tests 32 and 34; all 63 test starts now resolved."
   },
   "tests": [
     {
@@ -305,10 +304,10 @@
       "testNumber": 33,
       "testTitle": "الثالث والثلاثون",
       "topic": "النسبة المئوية",
-      "startPdfPage": null,
-      "startPageEvidence": "UNRESOLVED_BETWEEN_VERIFIED_TEST_32_AND_34",
-      "cropAllowed": false,
-      "note": "Search index did not expose the test-33 title page. Do not infer page 63 for cropping until the original title page/pixels are resolved."
+      "startPdfPage": 63,
+      "startPageEvidence": "FILES_READ_BOUNDARY_DEDUCTION",
+      "cropAllowed": true,
+      "note": "Resolved from direct page boundary: PDF page 63 is test 32 page 1; PDF page 64 is its continuation page 2; verified test 34 starts PDF page 64 in zero-based search-index convention. Therefore test 33 starts at source index page 63. Evidence is boundary-based, not guessed from title search."
     },
     {
       "testNumber": 34,
