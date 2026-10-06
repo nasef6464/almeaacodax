@@ -29,7 +29,7 @@ High-resolution render from the original PDF was inspected visually. Page 11 con
 - Which expression equals 2121?
 - Correct expression: 2000 + 100 + 20 + 1.
 - Correct option: ب.
-- Mapping: HOLD — canonical taxonomy has no exact place-value decomposition subskill.
+- Mapping: `skill_quant_01 / sub_quant_01_5` — إعادة بناء العدد من قيم منازله تقع ضمن أقرب تصنيف قانوني للقيمة المنزلية داخل 25/95، دون إنشاء مهارة جديدة.
 - Difficulty: Easy.
 - Fingerprint: expanded-form / place-value reconstruction.
 
@@ -81,6 +81,7 @@ Distinctive-phrase searches against FND26/COL2627 returned no exact matches for 
 - Cards reviewed: 8/8
 - Answers locked: 8/8
 - Canonical mappings locked: 6
-- Taxonomy/transcription HOLD: 2 (Q15, Q19)
+- Remaining HOLD: 1 (Q19 — exact source transcription QA)
+- Q15 canonical mapping resolved: `skill_quant_01 / sub_quant_01_5`
 - Exact duplicates: 0
 - New taxonomy entities: 0
