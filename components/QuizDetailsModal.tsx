@@ -6,7 +6,7 @@ import { sanitizeArabicText } from '../utils/sanitizeMojibakeArabic';
 import { printElementAsPdf } from '../utils/printPdf';
 import { shareTextSummary } from '../utils/shareText';
 import { useStore } from '../store/useStore';
-import { buildFoundationActionLink } from '../utils/skillActionLinks';
+import { buildCanonicalFoundationSkillActions } from '../utils/skillActionLinks';
 
 interface QuizDetailsModalProps {
   quiz: QuizHistoryItem;
@@ -104,6 +104,7 @@ const buildSummaryText = (quiz: QuizHistoryItem, weakestSkill?: SkillGap) => {
 
 export const QuizDetailsModal: React.FC<QuizDetailsModalProps> = ({ quiz, onClose }) => {
   const taxonomySkills = useStore((state) => state.skills);
+  const topics = useStore((state) => state.topics);
   const [copied, setCopied] = React.useState(false);
   const [shared, setShared] = React.useState(false);
   const [showAllSkills, setShowAllSkills] = React.useState(false);
@@ -226,6 +227,13 @@ export const QuizDetailsModal: React.FC<QuizDetailsModalProps> = ({ quiz, onClos
                     const skillName = displayText(skill.skill) || 'مهارة غير مسماة';
                     const sectionName = displayText(skill.parentSkill) || displayText(skill.section);
                     const recommendation = displayText(skill.recommendation);
+                    const foundationActions = buildCanonicalFoundationSkillActions({
+                      pathId: skill.pathId,
+                      subjectId: skill.subjectId,
+                      sectionId: skill.sectionId,
+                      skillId: skill.skillId,
+                      skillName: skill.skill,
+                    }, taxonomySkills, topics);
 
                     return (
                       <div key={`${skillName}-${index}`} className={`rounded-2xl border p-4 ${tone.card}`}>
@@ -261,42 +269,16 @@ export const QuizDetailsModal: React.FC<QuizDetailsModalProps> = ({ quiz, onClos
                           <div className={`h-full rounded-full ${tone.bar}`} style={{ width: `${skill.mastery}%` }} />
                         </div>
                         <div className="print-hide mt-3 grid grid-cols-2 gap-2">
-                          {buildFoundationActionLink({
-                            pathId: skill.pathId,
-                            subjectId: skill.subjectId,
-                            skillId: skill.skillId,
-                          }, 'lessons') ? (
-                            <Link
-                              to={buildFoundationActionLink({
-                                pathId: skill.pathId,
-                                subjectId: skill.subjectId,
-                                skillId: skill.skillId,
-                              }, 'lessons')!}
-                              onClick={onClose}
-                              className="inline-flex items-center justify-center gap-2 rounded-xl border border-indigo-100 bg-white px-3 py-2.5 text-xs font-black text-indigo-700 hover:bg-indigo-50"
-                            >
-                              <Video size={15} />
-                              فيديو
+                          {foundationActions.lessonLink ? (
+                            <Link to={foundationActions.lessonLink} onClick={onClose} className="inline-flex items-center justify-center gap-2 rounded-xl border border-indigo-100 bg-white px-3 py-2.5 text-xs font-black text-indigo-700 hover:bg-indigo-50">
+                              <Video size={15} />فيديو
                             </Link>
-                          ) : null}
-                          {buildFoundationActionLink({
-                            pathId: skill.pathId,
-                            subjectId: skill.subjectId,
-                            skillId: skill.skillId,
-                          }, 'quizzes') ? (
-                            <Link
-                              to={buildFoundationActionLink({
-                                pathId: skill.pathId,
-                                subjectId: skill.subjectId,
-                                skillId: skill.skillId,
-                              }, 'quizzes')!}
-                              onClick={onClose}
-                              className="inline-flex items-center justify-center gap-2 rounded-xl border border-amber-100 bg-white px-3 py-2.5 text-xs font-black text-amber-700 hover:bg-amber-50"
-                            >
-                              <FileText size={15} />
-                              تدريب
+                          ) : <span className="rounded-xl border border-dashed border-slate-200 p-2.5 text-center text-xs text-slate-400" title="موضوع التأسيس غير مرتبط">فيديو</span>}
+                          {foundationActions.quizLink ? (
+                            <Link to={foundationActions.quizLink} onClick={onClose} className="inline-flex items-center justify-center gap-2 rounded-xl border border-amber-100 bg-white px-3 py-2.5 text-xs font-black text-amber-700 hover:bg-amber-50">
+                              <FileText size={15} />تدريب
                             </Link>
-                          ) : null}
+                          ) : <span className="rounded-xl border border-dashed border-slate-200 p-2.5 text-center text-xs text-slate-400" title="تدريب التأسيس غير مرتبط">تدريب</span>}
                         </div>
                       </div>
                     );
