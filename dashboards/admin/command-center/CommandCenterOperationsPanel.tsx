@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { CheckCircle2, FileSpreadsheet, Loader2, Play, RefreshCw, ShieldCheck, Sparkles, XCircle } from "lucide-react";
+import { CheckCircle2, Loader2, Play, RefreshCw, ShieldCheck, Sparkles, XCircle } from "lucide-react";
 import { api } from "../../../services/api";
 import type { CommandCenterDraft, CommandCenterTool, CommandCenterWorkflow } from "../../../services/apiGroups/commandCenterApi";
-import { parseImportFile } from "../SchoolsManager/importFileReaders";
+import { CommandCenterSchoolImportPanel } from "./CommandCenterSchoolImportPanel";
 
 export const CommandCenterOperationsPanel: React.FC = () => {
   const [tools, setTools] = useState<CommandCenterTool[]>([]);
@@ -12,9 +12,6 @@ export const CommandCenterOperationsPanel: React.FC = () => {
   const [commandSummary, setCommandSummary] = useState("");
   const [commandClarification, setCommandClarification] = useState("");
   const [planning, setPlanning] = useState(false);
-  const [schoolImportName, setSchoolImportName] = useState("");
-  const [schoolImporting, setSchoolImporting] = useState(false);
-  const [schoolImportSummary, setSchoolImportSummary] = useState("");
   const [health, setHealth] = useState<{
     draftFirst: boolean;
     liveWritesEnabled: boolean;
@@ -83,61 +80,6 @@ export const CommandCenterOperationsPanel: React.FC = () => {
       setError(planError instanceof Error ? planError.message : "تعذر تخطيط الأمر.");
     } finally {
       setPlanning(false);
-    }
-  };
-
-  const createSchoolImportDraft = async (file: File) => {
-    const schoolName = schoolImportName.trim();
-    if (!schoolName) {
-      setError("اكتب اسم المدرسة قبل رفع الملف.");
-      return;
-    }
-    setSchoolImporting(true);
-    setError("");
-    setSchoolImportSummary("");
-    try {
-      const rows = await parseImportFile(file);
-      const classNames = [
-        ...new Set(rows.map((row) => String(row.className || "").trim()).filter(Boolean)),
-      ];
-      if (!classNames.length) {
-        throw new Error("الملف لا يحتوي أسماء فصول. أضف عمود className/الفصل.");
-      }
-      const classKeyByName = new Map(
-        classNames.map((name, index) => [name, `class-${index + 1}`]),
-      );
-      const students = rows.map((row) => ({
-        email: row.email,
-        name: row.name,
-        classKey: classKeyByName.get(String(row.className || "").trim()) || "",
-      }));
-      const payload = {
-        schoolName,
-        classes: classNames.map((name) => ({
-          key: classKeyByName.get(name)!,
-          name,
-        })),
-        students,
-        teachers: [],
-        supervisors: [],
-        requestId: `command-center-school-import-${Date.now()}`,
-        idempotencyKey: `school-import:${schoolName}:${file.name}:${file.size}:${file.lastModified}`,
-      };
-      const validation = await api.validateSchoolSetupCommandDraft(payload);
-      if (!(validation as { ok?: boolean }).ok) {
-        const issues = Array.isArray((validation as { issues?: unknown[] }).issues)
-          ? (validation as { issues: unknown[] }).issues.length
-          : 0;
-        setSchoolImportSummary(`تم تحليل ${rows.length} طالب و${classNames.length} فصل، لكن توجد ${issues} ملاحظات قبل إنشاء المسودة.`);
-        return;
-      }
-      await api.createSchoolSetupCommandDraft(payload);
-      setSchoolImportSummary(`تم إنشاء مسودة مدرسة من ${rows.length} طالب و${classNames.length} فصل. راجعها ثم اعتمدها.`);
-      await load();
-    } catch (importError) {
-      setError(importError instanceof Error ? importError.message : "تعذر تحليل ملف المدرسة.");
-    } finally {
-      setSchoolImporting(false);
     }
   };
 
@@ -248,43 +190,10 @@ export const CommandCenterOperationsPanel: React.FC = () => {
         )}
       </section>
 
-      <section className="rounded-2xl border border-cyan-200 bg-cyan-50/60 p-5">
-        <div className="flex items-center gap-2 text-cyan-900 font-black">
-          <FileSpreadsheet size={18} />
-          استيراد مدرسة إلى مسودة آمنة
-        </div>
-        <p className="mt-1 text-xs font-bold text-cyan-700">
-          ارفع CSV/TSV/XLSX بنفس قالب إدارة المدارس. سيتم تحليل الطلاب والفصول محليًا ثم إنشاء Draft فقط؛ الحسابات غير الموجودة لن تُنشأ تلقائيًا.
-        </p>
-        <div className="mt-4 grid gap-3 md:grid-cols-[1fr_auto]">
-          <input
-            value={schoolImportName}
-            onChange={(event) => setSchoolImportName(event.target.value)}
-            placeholder="اسم المدرسة"
-            className="rounded-xl border border-cyan-200 bg-white px-3 py-2 text-sm font-bold text-slate-800 outline-none focus:border-cyan-400"
-          />
-          <label className={`inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-cyan-700 px-4 py-2 text-xs font-black text-white ${schoolImporting ? "pointer-events-none opacity-60" : ""}`}>
-            {schoolImporting ? <Loader2 size={14} className="animate-spin" /> : <FileSpreadsheet size={14} />}
-            رفع الملف
-            <input
-              type="file"
-              accept=".csv,.tsv,.xlsx,.xls"
-              className="hidden"
-              disabled={schoolImporting}
-              onChange={(event) => {
-                const file = event.target.files?.[0];
-                event.target.value = "";
-                if (file) void createSchoolImportDraft(file);
-              }}
-            />
-          </label>
-        </div>
-        {schoolImportSummary && (
-          <div className="mt-3 rounded-xl border border-cyan-200 bg-white p-3 text-xs font-bold text-cyan-900">
-            {schoolImportSummary}
-          </div>
-        )}
-      </section>
+      <CommandCenterSchoolImportPanel
+        onDraftCreated={load}
+        onError={setError}
+      />
 
       <section className="rounded-2xl border border-slate-200 bg-white p-5">
         <h3 className="text-sm font-black text-slate-900">سير العمل — Plan → Execute → Verify</h3>
