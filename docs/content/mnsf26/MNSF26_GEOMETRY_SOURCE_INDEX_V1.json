@@ -1,0 +1,694 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "sourcePart": "الهندسة",
+  "sourceFile": "نماذج المنصف مرتبة حسب الدروس - الهندسة - معدل - Copy.pdf",
+  "sourceFileSizeBytes": 22701243,
+  "discoveredStructure": {
+    "tests": 50,
+    "lessons": 11,
+    "resolvedTestStartPages": 47,
+    "unresolvedTestStartPages": [
+      4,
+      6,
+      17
+    ]
+  },
+  "lessons": [
+    {
+      "lessonNumber": 1,
+      "name": "الأشكال",
+      "tests": [
+        1,
+        2
+      ]
+    },
+    {
+      "lessonNumber": 2,
+      "name": "الزوايا",
+      "tests": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ]
+    },
+    {
+      "lessonNumber": 3,
+      "name": "المثلث",
+      "tests": [
+        16,
+        17,
+        18,
+        19,
+        20,
+        21
+      ]
+    },
+    {
+      "lessonNumber": 4,
+      "name": "الهندسة الإحداثية",
+      "tests": [
+        22,
+        23
+      ]
+    },
+    {
+      "lessonNumber": 5,
+      "name": "المستطيل",
+      "tests": [
+        24,
+        25,
+        26
+      ]
+    },
+    {
+      "lessonNumber": 6,
+      "name": "المربع",
+      "tests": [
+        27,
+        28,
+        29
+      ]
+    },
+    {
+      "lessonNumber": 7,
+      "name": "المعين وشبه المنحرف",
+      "tests": [
+        30
+      ]
+    },
+    {
+      "lessonNumber": 8,
+      "name": "المساحات المظللة",
+      "tests": [
+        31,
+        32,
+        33,
+        34,
+        35,
+        36
+      ]
+    },
+    {
+      "lessonNumber": 9,
+      "name": "الدائرة",
+      "tests": [
+        37,
+        38
+      ]
+    },
+    {
+      "lessonNumber": 10,
+      "name": "مسائل الأشكال المختلفة",
+      "tests": [
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47
+      ]
+    },
+    {
+      "lessonNumber": 11,
+      "name": "المجسمات",
+      "tests": [
+        48,
+        49,
+        50
+      ]
+    }
+  ],
+  "tests": [
+    {
+      "testNumber": 1,
+      "testTitle": "الأول",
+      "lessonNumber": 1,
+      "lessonName": "الأشكال",
+      "lessonOrdinal": "الأول",
+      "startPdfPage": 1,
+      "evidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 2,
+      "testTitle": "الثاني",
+      "lessonNumber": 1,
+      "lessonName": "الأشكال",
+      "lessonOrdinal": "الأول",
+      "startPdfPage": 3,
+      "evidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 3,
+      "testTitle": "الثالث",
+      "lessonNumber": 2,
+      "lessonName": "الزوايا",
+      "lessonOrdinal": "الثاني",
+      "startPdfPage": 4,
+      "evidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 4,
+      "testTitle": "الرابع",
+      "lessonNumber": 2,
+      "lessonName": "الزوايا",
+      "lessonOrdinal": "الثاني",
+      "startPdfPage": null,
+      "evidence": "UNRESOLVED_START_PAGE",
+      "cropAllowed": false,
+      "note": "Do not infer a crop page. Resolve from original source pixels/search index before cropping."
+    },
+    {
+      "testNumber": 5,
+      "testTitle": "الخامس",
+      "lessonNumber": 2,
+      "lessonName": "الزوايا",
+      "lessonOrdinal": "الثاني",
+      "startPdfPage": 8,
+      "evidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 6,
+      "testTitle": "السادس",
+      "lessonNumber": 2,
+      "lessonName": "الزوايا",
+      "lessonOrdinal": "الثاني",
+      "startPdfPage": null,
+      "evidence": "UNRESOLVED_START_PAGE",
+      "cropAllowed": false,
+      "note": "Do not infer a crop page. Resolve from original source pixels/search index before cropping."
+    },
+    {
+      "testNumber": 7,
+      "testTitle": "السابع",
+      "lessonNumber": 2,
+      "lessonName": "الزوايا",
+      "lessonOrdinal": "الثاني",
+      "startPdfPage": 12,
+      "evidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 8,
+      "testTitle": "الثامن",
+      "lessonNumber": 2,
+      "lessonName": "الزوايا",
+      "lessonOrdinal": "الثاني",
+      "startPdfPage": 14,
+      "evidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 9,
+      "testTitle": "التاسع",
+      "lessonNumber": 2,
+      "lessonName": "الزوايا",
+      "lessonOrdinal": "الثاني",
+      "startPdfPage": 16,
+      "evidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 10,
+      "testTitle": "العاشر",
+      "lessonNumber": 2,
+      "lessonName": "الزوايا",
+      "lessonOrdinal": "الثاني",
+      "startPdfPage": 18,
+      "evidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 11,
+      "testTitle": "الحادي عشر",
+      "lessonNumber": 2,
+      "lessonName": "الزوايا",
+      "lessonOrdinal": "الثاني",
+      "startPdfPage": 20,
+      "evidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 12,
+      "testTitle": "الثاني عشر",
+      "lessonNumber": 2,
+      "lessonName": "الزوايا",
+      "lessonOrdinal": "الثاني",
+      "startPdfPage": 22,
+      "evidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 13,
+      "testTitle": "الثالث عشر",
+      "lessonNumber": 2,
+      "lessonName": "الزوايا",
+      "lessonOrdinal": "الثاني",
+      "startPdfPage": 24,
+      "evidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 14,
+      "testTitle": "الرابع عشر",
+      "lessonNumber": 2,
+      "lessonName": "الزوايا",
+      "lessonOrdinal": "الثاني",
+      "startPdfPage": 26,
+      "evidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 15,
+      "testTitle": "الخامس عشر",
+      "lessonNumber": 2,
+      "lessonName": "الزوايا",
+      "lessonOrdinal": "الثاني",
+      "startPdfPage": 28,
+      "evidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 16,
+      "testTitle": "السادس عشر",
+      "lessonNumber": 3,
+      "lessonName": "المثلث",
+      "lessonOrdinal": "الثالث",
+      "startPdfPage": 29,
+      "evidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 17,
+      "testTitle": "السابع عشر",
+      "lessonNumber": 3,
+      "lessonName": "المثلث",
+      "lessonOrdinal": "الثالث",
+      "startPdfPage": null,
+      "evidence": "UNRESOLVED_START_PAGE",
+      "cropAllowed": false,
+      "note": "Do not infer a crop page. Resolve from original source pixels/search index before cropping."
+    },
+    {
+      "testNumber": 18,
+      "testTitle": "الثامن عشر",
+      "lessonNumber": 3,
+      "lessonName": "المثلث",
+      "lessonOrdinal": "الثالث",
+      "startPdfPage": 33,
+      "evidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 19,
+      "testTitle": "التاسع عشر",
+      "lessonNumber": 3,
+      "lessonName": "المثلث",
+      "lessonOrdinal": "الثالث",
+      "startPdfPage": 35,
+      "evidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 20,
+      "testTitle": "العشرون",
+      "lessonNumber": 3,
+      "lessonName": "المثلث",
+      "lessonOrdinal": "الثالث",
+      "startPdfPage": 37,
+      "evidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 21,
+      "testTitle": "الواحد والعشرون",
+      "lessonNumber": 3,
+      "lessonName": "المثلث",
+      "lessonOrdinal": "الثالث",
+      "startPdfPage": 39,
+      "evidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 22,
+      "testTitle": "الثاني والعشرون",
+      "lessonNumber": 4,
+      "lessonName": "الهندسة الإحداثية",
+      "lessonOrdinal": "الرابع",
+      "startPdfPage": 40,
+      "evidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 23,
+      "testTitle": "الثالث والعشرون",
+      "lessonNumber": 4,
+      "lessonName": "الهندسة الإحداثية",
+      "lessonOrdinal": "الرابع",
+      "startPdfPage": 42,
+      "evidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 24,
+      "testTitle": "الرابع والعشرون",
+      "lessonNumber": 5,
+      "lessonName": "المستطيل",
+      "lessonOrdinal": "الخامس",
+      "startPdfPage": 44,
+      "evidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 25,
+      "testTitle": "الخامس والعشرون",
+      "lessonNumber": 5,
+      "lessonName": "المستطيل",
+      "lessonOrdinal": "الخامس",
+      "startPdfPage": 46,
+      "evidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 26,
+      "testTitle": "السادس والعشرون",
+      "lessonNumber": 5,
+      "lessonName": "المستطيل",
+      "lessonOrdinal": "الخامس",
+      "startPdfPage": 48,
+      "evidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 27,
+      "testTitle": "السابع والعشرون",
+      "lessonNumber": 6,
+      "lessonName": "المربع",
+      "lessonOrdinal": "السادس",
+      "startPdfPage": 50,
+      "evidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 28,
+      "testTitle": "الثامن والعشرون",
+      "lessonNumber": 6,
+      "lessonName": "المربع",
+      "lessonOrdinal": "السادس",
+      "startPdfPage": 52,
+      "evidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 29,
+      "testTitle": "التاسع والعشرون",
+      "lessonNumber": 6,
+      "lessonName": "المربع",
+      "lessonOrdinal": "السادس",
+      "startPdfPage": 54,
+      "evidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 30,
+      "testTitle": "الثلاثون",
+      "lessonNumber": 7,
+      "lessonName": "المعين وشبه المنحرف",
+      "lessonOrdinal": "السابع",
+      "startPdfPage": 55,
+      "evidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 31,
+      "testTitle": "الواحد والثلاثون",
+      "lessonNumber": 8,
+      "lessonName": "المساحات المظللة",
+      "lessonOrdinal": "الثامن",
+      "startPdfPage": 57,
+      "evidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 32,
+      "testTitle": "الثاني والثلاثون",
+      "lessonNumber": 8,
+      "lessonName": "المساحات المظللة",
+      "lessonOrdinal": "الثامن",
+      "startPdfPage": 59,
+      "evidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 33,
+      "testTitle": "الثالث والثلاثون",
+      "lessonNumber": 8,
+      "lessonName": "المساحات المظللة",
+      "lessonOrdinal": "الثامن",
+      "startPdfPage": 61,
+      "evidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 34,
+      "testTitle": "الرابع والثلاثون",
+      "lessonNumber": 8,
+      "lessonName": "المساحات المظللة",
+      "lessonOrdinal": "الثامن",
+      "startPdfPage": 63,
+      "evidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 35,
+      "testTitle": "الخامس والثلاثون",
+      "lessonNumber": 8,
+      "lessonName": "المساحات المظللة",
+      "lessonOrdinal": "الثامن",
+      "startPdfPage": 65,
+      "evidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 36,
+      "testTitle": "السادس والثلاثون",
+      "lessonNumber": 8,
+      "lessonName": "المساحات المظللة",
+      "lessonOrdinal": "الثامن",
+      "startPdfPage": 67,
+      "evidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 37,
+      "testTitle": "السابع والثلاثون",
+      "lessonNumber": 9,
+      "lessonName": "الدائرة",
+      "lessonOrdinal": "التاسع",
+      "startPdfPage": 69,
+      "evidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 38,
+      "testTitle": "الثامن والثلاثون",
+      "lessonNumber": 9,
+      "lessonName": "الدائرة",
+      "lessonOrdinal": "التاسع",
+      "startPdfPage": 71,
+      "evidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 39,
+      "testTitle": "التاسع والثلاثون",
+      "lessonNumber": 10,
+      "lessonName": "مسائل الأشكال المختلفة",
+      "lessonOrdinal": "العاشر",
+      "startPdfPage": 73,
+      "evidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 40,
+      "testTitle": "الأربعون",
+      "lessonNumber": 10,
+      "lessonName": "مسائل الأشكال المختلفة",
+      "lessonOrdinal": "العاشر",
+      "startPdfPage": 75,
+      "evidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 41,
+      "testTitle": "الواحد والأربعون",
+      "lessonNumber": 10,
+      "lessonName": "مسائل الأشكال المختلفة",
+      "lessonOrdinal": "العاشر",
+      "startPdfPage": 77,
+      "evidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 42,
+      "testTitle": "الثاني والأربعون",
+      "lessonNumber": 10,
+      "lessonName": "مسائل الأشكال المختلفة",
+      "lessonOrdinal": "العاشر",
+      "startPdfPage": 79,
+      "evidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 43,
+      "testTitle": "الثالث والأربعون",
+      "lessonNumber": 10,
+      "lessonName": "مسائل الأشكال المختلفة",
+      "lessonOrdinal": "العاشر",
+      "startPdfPage": 81,
+      "evidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 44,
+      "testTitle": "الرابع والأربعون",
+      "lessonNumber": 10,
+      "lessonName": "مسائل الأشكال المختلفة",
+      "lessonOrdinal": "العاشر",
+      "startPdfPage": 83,
+      "evidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 45,
+      "testTitle": "الخامس والأربعون",
+      "lessonNumber": 10,
+      "lessonName": "مسائل الأشكال المختلفة",
+      "lessonOrdinal": "العاشر",
+      "startPdfPage": 85,
+      "evidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 46,
+      "testTitle": "السادس والأربعون",
+      "lessonNumber": 10,
+      "lessonName": "مسائل الأشكال المختلفة",
+      "lessonOrdinal": "العاشر",
+      "startPdfPage": 87,
+      "evidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 47,
+      "testTitle": "السابع والأربعون",
+      "lessonNumber": 10,
+      "lessonName": "مسائل الأشكال المختلفة",
+      "lessonOrdinal": "العاشر",
+      "startPdfPage": 89,
+      "evidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 48,
+      "testTitle": "الثامن والأربعون",
+      "lessonNumber": 11,
+      "lessonName": "المجسمات",
+      "lessonOrdinal": "11",
+      "startPdfPage": 90,
+      "evidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 49,
+      "testTitle": "التاسع والأربعون",
+      "lessonNumber": 11,
+      "lessonName": "المجسمات",
+      "lessonOrdinal": "11",
+      "startPdfPage": 92,
+      "evidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 50,
+      "testTitle": "الخمسون",
+      "lessonNumber": 11,
+      "lessonName": "المجسمات",
+      "lessonOrdinal": "11",
+      "startPdfPage": 94,
+      "evidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    }
+  ],
+  "sourcePolicy": {
+    "oneBankWithArithmeticAlgebra": true,
+    "createNewSkills": false,
+    "originalPixelsRequiredBeforeQuestionCrop": true,
+    "noQuestionTranscriptionFromBlankSearchSnippets": true,
+    "unresolvedStartPagesAreNotSafeToInfer": true
+  }
+}
