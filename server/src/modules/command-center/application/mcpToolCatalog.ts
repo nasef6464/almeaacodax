@@ -54,6 +54,7 @@ export const MCP_TOOL_SCOPES: Record<string, string[]> = {
   get_workflow: ["workflows:read"],
   execute_workflow: ["workflows:execute"],
   create_developer_task_draft: ["developer:write"],
+  get_developer_task_handoff: ["developer:read"],
 };
 
 const draftIdentityProperties = {
@@ -263,6 +264,21 @@ export const mcpToolDescriptors: McpToolDescriptor[] = [
     annotations: draftAnnotations,
     securitySchemes: oauth("developer:write"),
     _meta: meta(oauth("developer:write"), "Preparing code task…", "Developer task draft ready"),
+  },
+  {
+    name: "get_developer_task_handoff",
+    title: "Read approved developer/Codex handoff",
+    description: "Read a human-approved code-only task handoff. This tool never merges, deploys, or mutates platform content.",
+    inputSchema: {
+      type: "object",
+      properties: { draftId: { type: "string" } },
+      required: ["draftId"],
+      additionalProperties: false,
+    },
+    outputSchema: completeObject,
+    annotations: readAnnotations,
+    securitySchemes: oauth("developer:read"),
+    _meta: meta(oauth("developer:read"), "Reading approved code task…", "Developer handoff ready"),
   },
   {
     name: "plan_workflow",
