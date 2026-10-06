@@ -1,8 +1,8 @@
 {
   "project": "CHEM26 Full Closure",
   "scope": "chemistry-only",
-  "updatedAt": "2026-10-05T14:13:00+03:00",
-  "status": "TRANSPORT_READY_AWAITING_RENDER_WORKSPACE_CONFIRMATION",
+  "updatedAt": "2026-10-06T09:10:30+03:00",
+  "status": "CLOSED",
   "source": {
     "questionPdf": "كتاب تجميعات يلو للكيمياء 26 - المعدل.pdf",
     "coverage": 1709,
@@ -57,33 +57,79 @@
     "taxonomyProductionGateMerged": true,
     "importRunnerPR": 378,
     "importRunnerMerged": true,
-    "postImportGatePR": 381
+    "postImportGatePR": 381,
+    "finalClosureRunnerPR": 389,
+    "finalClosureRunnerMerged": true,
+    "restartSafeImporterPR": 391,
+    "restartSafeImporterMerged": true
   },
-  "pending": [
-    "PR #381 CI + merge",
-    "Explicit confirmation to use Render workspace My Workspace",
-    "Refresh signed package URL",
-    "Set importer env on Render and redeploy/restart",
-    "Production API dry-run",
-    "5-question canary",
-    "Full draft import <=100",
-    "Live E2E",
-    "Approval",
-    "Post-approval verification"
-  ],
-  "transportBlocker": "Resolved. A fresh signed oaiusercontent URL can be generated on demand from the Drive-backed V3 package.",
+  "pending": [],
+  "transportBlocker": null,
   "blockerPolicy": "Do not weaken transport/auth controls. Continue all independent QA and merge work; execute import immediately when a signed package URL is available.",
   "productionRelease": {
     "importerMergeCommit": "bab40601b13354faa9233dc996c435b63063876d",
-    "vercelDeployment": "READY",
-    "backendHealthCommit": "bab40601b133",
-    "backendHealthStatus": "ok"
+    "finalClosureMergeCommit": "c122d60098ec0832b7257cc28642b3a294045575",
+    "restartSafeImporterMergeCommit": "fbc2c1131d162e0020a803577fc1037eae62f482",
+    "renderStatus": "LIVE",
+    "backendHealthStatus": "ok",
+    "backendHealthCommit": "fbc2c1131d16",
+    "vercelStatus": "READY"
   },
   "transport": {
-    "status": "READY_ON_DEMAND",
+    "status": "CLOSED_NO_LONGER_REQUIRED",
     "driveFileId": "1BT0iiW13rsw7AhCvp-rAgkIifQTUffSC",
     "mechanism": "Google Drive raw fetch -> short-lived oaiusercontent signed URL",
     "importerHostGuardSatisfied": true
   },
-  "operationalBlocker": "Render connector requires explicit user confirmation of the workspace before any environment mutation. The only discovered workspace is `My Workspace`."
+  "operationalBlocker": null,
+  "productionClosure": {
+    "import": {
+      "dryRun": "PASS",
+      "canaryCount": 5,
+      "imported": 1708,
+      "liveImageSamples": 30,
+      "idempotencyProof": "CHEM26_IMPORT_ALREADY_COMPLETE count=1708 liveSamples=30"
+    },
+    "approval": {
+      "draftGate": "PASS",
+      "approvalWrite": {
+        "matched": 1708,
+        "modified": 1708
+      },
+      "postApprovalGate": "PASS",
+      "approved": 1708,
+      "drafts": 0
+    },
+    "atlas": {
+      "total": 1708,
+      "approved": 1708,
+      "drafts": 0,
+      "uniqueQuestionCodes": 1708,
+      "uniqueSourceItemIds": 1708,
+      "uniqueImageHashes": 1708,
+      "importedMainSkills": 27,
+      "importedSubSkills": 99,
+      "productionMainSkills": 27,
+      "productionSubSkills": 99,
+      "visualReviewerNotes": 1708
+    },
+    "liveE2E": {
+      "frontendHealthHttp": 200,
+      "backendHealthHttp": 200,
+      "learnerQuestionApiHttp": 200,
+      "learnerQuestionTotal": 1708,
+      "approvalStatus": "approved",
+      "learnerAnswerExposure": "PASS",
+      "imageUrlsPresent": true,
+      "optionsPresent": true,
+      "skillIdsPresent": true
+    },
+    "cleanup": {
+      "restartCommit": "fbc2c1131d162e0020a803577fc1037eae62f482",
+      "renderStatus": "LIVE",
+      "postRestartExpiredTransport403": 0,
+      "importerFailureLogs": 0,
+      "strategy": "Closed batches are fail-closed and restart-safe; importer exits before expired transport when requested, while inactive import mode produces no import activity."
+    }
+  }
 }
