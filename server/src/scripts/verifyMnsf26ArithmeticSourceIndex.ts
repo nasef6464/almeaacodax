@@ -76,6 +76,44 @@ if (missingEvidence.length) {
   });
 }
 
+const declaredResolved = data.discoveredStructure.resolvedTestStartPages;
+const declaredUnresolved = [...data.discoveredStructure.unresolvedTestStartPages].sort(
+  (a, b) => a - b,
+);
+if (
+  declaredResolved !== resolved.length ||
+  JSON.stringify(declaredUnresolved) !== JSON.stringify(unresolved)
+) {
+  failures.push({
+    gate: "declared-source-index-parity",
+    detail: {
+      declaredResolved,
+      actualResolved: resolved.length,
+      declaredUnresolved,
+      actualUnresolved: unresolved,
+    },
+  });
+}
+
+const nonMonotonic = data.tests
+  .slice()
+  .sort((a, b) => a.testNumber - b.testNumber)
+  .filter((test, index, all) =>
+    index > 0 &&
+    test.startPdfPage !== null &&
+    all[index - 1].startPdfPage !== null &&
+    test.startPdfPage! <= all[index - 1].startPdfPage!,
+  );
+if (nonMonotonic.length) {
+  failures.push({
+    gate: "start-pages-strictly-increasing",
+    detail: nonMonotonic.map((test) => ({
+      testNumber: test.testNumber,
+      startPdfPage: test.startPdfPage,
+    })),
+  });
+}
+
 const duplicatePages = [...new Set(
   resolved
     .filter((test, index, all) =>
