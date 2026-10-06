@@ -85,6 +85,8 @@ assert.match(quizUpdateTools, /question_not_approved/);
 assert.match(quizUpdateTools, /questionSimilarity/);
 assert.match(questionModel, /subSkillIds/);
 assert.match(schoolImportPanel, /parseRelationFile/);
+assert.match(schoolImportPanel, /stablePayloadFingerprint/);
+assert.match(schoolImportPanel, /idempotencyKey:\s*`school-import:\${fingerprint}`/);
 assert.match(schoolImportAdapter, /teachers/);
 assert.match(schoolImportAdapter, /supervisors/);
 assert.match(applySchool, /applySchoolDraft/);
