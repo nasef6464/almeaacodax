@@ -1,17 +1,14 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { CheckCircle2, Loader2, Play, RefreshCw, ShieldCheck, Sparkles, XCircle } from "lucide-react";
+import { CheckCircle2, Loader2, Play, RefreshCw, ShieldCheck, XCircle } from "lucide-react";
 import { api } from "../../../services/api";
 import type { CommandCenterDraft, CommandCenterTool, CommandCenterWorkflow } from "../../../services/apiGroups/commandCenterApi";
 import { CommandCenterSchoolImportPanel } from "./CommandCenterSchoolImportPanel";
+import { CommandCenterNaturalLanguagePanel } from "./CommandCenterNaturalLanguagePanel";
 
 export const CommandCenterOperationsPanel: React.FC = () => {
   const [tools, setTools] = useState<CommandCenterTool[]>([]);
   const [drafts, setDrafts] = useState<CommandCenterDraft[]>([]);
   const [workflows, setWorkflows] = useState<CommandCenterWorkflow[]>([]);
-  const [commandText, setCommandText] = useState("");
-  const [commandSummary, setCommandSummary] = useState("");
-  const [commandClarification, setCommandClarification] = useState("");
-  const [planning, setPlanning] = useState(false);
   const [health, setHealth] = useState<{
     draftFirst: boolean;
     liveWritesEnabled: boolean;
@@ -56,30 +53,6 @@ export const CommandCenterOperationsPanel: React.FC = () => {
       setError(applyError instanceof Error ? applyError.message : "تعذر تنفيذ المسودة.");
     } finally {
       setActingId(null);
-    }
-  };
-
-  const planNaturalLanguageCommand = async () => {
-    const message = commandText.trim();
-    if (!message) return;
-    setPlanning(true);
-    setError("");
-    setCommandSummary("");
-    setCommandClarification("");
-    try {
-      const result = await api.aiAdminCommandPlan({ message });
-      setCommandSummary(result.summary || "");
-      setCommandClarification(result.clarification || "");
-      if (result.workflow) {
-        setWorkflows((current) => [
-          result.workflow as CommandCenterWorkflow,
-          ...current.filter((item) => item._id !== result.workflow?._id),
-        ]);
-      }
-    } catch (planError) {
-      setError(planError instanceof Error ? planError.message : "تعذر تخطيط الأمر.");
-    } finally {
-      setPlanning(false);
     }
   };
 
@@ -156,39 +129,15 @@ export const CommandCenterOperationsPanel: React.FC = () => {
         </div>
       </div>
 
-      <section className="rounded-2xl border border-indigo-200 bg-indigo-50/60 p-5">
-        <div className="flex items-center gap-2 text-indigo-900 font-black">
-          <Sparkles size={18} />
-          أمر ذكي للمنصة
-        </div>
-        <p className="mt-1 text-xs font-bold text-indigo-700">
-          اكتب ما تريد تنفيذه. النظام سيحوّل الأمر إلى خطة آمنة أولًا، ولن يعتمد أو ينشر شيئًا تلقائيًا.
-        </p>
-        <textarea
-          value={commandText}
-          onChange={(event) => setCommandText(event.target.value)}
-          rows={4}
-          placeholder="مثال: راجع محتوى دورة الكمي الموجودة، كوّن خطة لإعادة استخدام الدروس والفيديوهات والاختبارات الحالية، وأظهر لي ما ينقص."
-          className="mt-4 w-full rounded-xl border border-indigo-200 bg-white p-3 text-sm font-bold text-slate-800 outline-none focus:border-indigo-400"
-        />
-        <div className="mt-3 flex flex-wrap items-center gap-3">
-          <button
-            type="button"
-            disabled={planning || !commandText.trim()}
-            onClick={() => void planNaturalLanguageCommand()}
-            className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2 text-xs font-black text-white disabled:opacity-50"
-          >
-            {planning ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />}
-            كوّن خطة التنفيذ
-          </button>
-          {commandSummary && <span className="text-xs font-black text-indigo-900">{commandSummary}</span>}
-        </div>
-        {commandClarification && (
-          <div className="mt-3 rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs font-bold text-amber-800">
-            {commandClarification}
-          </div>
-        )}
-      </section>
+      <CommandCenterNaturalLanguagePanel
+        onWorkflowPlanned={(workflow) =>
+          setWorkflows((current) => [
+            workflow,
+            ...current.filter((item) => item._id !== workflow._id),
+          ])
+        }
+        onError={setError}
+      />
 
       <CommandCenterSchoolImportPanel
         onDraftCreated={load}
