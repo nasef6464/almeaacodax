@@ -1,5 +1,16 @@
 # ALMEAA Command Center — Handoff / Execution State
 
+> **AUTHORITATIVE LATEST CHECKPOINT — 2026-10-06 18:33 Asia/Riyadh**  
+> PR #405 — merged into `main`: `3a38e0a8329c28848d7a95c7f38a215266d867df`  
+> PR #393 — closed as superseded; do not merge.  
+> PR #397 — merged earlier: `7c21eca9016146c380b861447967eae399805a1c`.  
+> Smart Teacher/Whiteboard code path from PR #395 is merged.  
+> Developer/Codex code-only bridge is merged.  
+> Quiz update planning is now exposed through the shared Command Tool Layer by PR #405.  
+> GitHub exact-head checks for #405 were green before merge.  
+> Current closure blocker remains external: trusted Production OAuth 2.1 IdP configuration + live Remote MCP client proof.  
+> Do not claim CLOSED until production deploy verification and external MCP proof pass.  
+
 > تحديث تنفيذي بعد دمج Developer Bridge — 2026-10-06 13:04 Asia/Riyadh  
 > Developer/Codex + Remote MCP PR #397 — merged: `7c21eca9016146c380b861447967eae399805a1c`  
 > Vercel Production: READY on exact merge SHA.  
@@ -116,11 +127,11 @@
 - [x] duplicate class-name/key detection.
 - [x] reuse-existing-accounts policy.
 - [x] explicit-only account creation policy.
-- [ ] CSV/XLSX import parser.
+- [x] CSV/TSV/XLSX import uses the audited SchoolsManager parser.
 - [x] cross-school assignment guard before apply.
 - [x] safe idempotent apply adapter for school/classes/existing users.
 - [x] Command Center UI reuses audited CSV/TSV/XLSX school parser to create validated school setup drafts.
-- [ ] Teacher/supervisor import columns in Command Center school file workflow (student/class import is wired now).
+- [x] Teacher/supervisor relation import is wired through the optional audited relations file (teacherEmail/teacherName/supervisorEmail/supervisorName/className).
 
 ### CC-5 Workflow Engine
 - [x] Plan → Execute → Verify model.
@@ -145,18 +156,19 @@
 - [ ] Gemini/Claude connection proof after deployment.
 
 ### CC-7 Smart Teacher / Smart Whiteboard
-- [ ] teacher orchestration tools.
-- [ ] lesson/session planning.
-- [ ] formative question selection.
-- [ ] Smart Classroom session integration.
-- [ ] whiteboard actions.
-- Existing Smart Classroom remains authority for session state.
+- [x] Smart Teacher orchestration path merged.
+- [x] lesson/session planning path merged.
+- [x] formative support integrated without taking authority from Smart Classroom.
+- [x] Smart Classroom remains authority for session state.
+- [x] Smart Whiteboard integration path merged.
+- [ ] final live production certification stays part of overall closure evidence.
 
 ### CC-8 Developer Agent
-- [ ] code-issue routing.
-- [ ] GitHub/Codex bridge.
-- [ ] reproduce → patch → tests → PR workflow.
-- Source code actions must remain separate from content actions.
+- [x] code-issue routing.
+- [x] GitHub/Codex code-only bridge.
+- [x] investigate → patch → test → pull_request handoff contract.
+- [x] Developer tools remain separate from platform content Apply/Publish.
+- [x] Remote MCP does not expose merge/deploy/publish/delete for Developer tasks.
 
 ## قواعد الاستمرار لأي Agent أو مطور
 
@@ -173,14 +185,12 @@
 
 ## الترتيب التالي المعتمد
 
-1. PR #390 مفتوح؛ أغلق exact-head CI على نفس الـSHA النهائي.
-2. أصلح أي gate يفشل ثم ادمج #390.
-3. إعداد Production OAuth IdP وتشغيل MCP tool scan الفعلي.
-4. ربط XLSX/CSV school import بمسودة Command Center.
-5. إضافة semantic near-duplicate + existing-quiz diff tools.
-6. CC-7 Smart Teacher/Whiteboard.
-7. CC-8 Developer Agent.
-8. Production deploy verification + end-to-end external connection proof.
+1. تحقق post-merge لـ `3a38e0a...`: Vercel READY + Render LIVE + health/live + required post-deploy gates.
+2. إعداد trusted Production OAuth 2.1 IdP الحقيقي وتعبئة issuer/audience/scopes بدون اختراع أسرار أو تعطيل الحماية.
+3. تشغيل Remote MCP live certification: protected-resource metadata → server/discover → tools/list → fail-closed unauthenticated.
+4. إثبات اتصال ChatGPT الخارجي، ثم Gemini/Claude إذا سمحت الحسابات.
+5. تنظيف أي وثائق/تعليقات قديمة بعد نجاح live proof.
+6. إغلاق Issue #386 وتعطيل المهمة المجدولة فقط بعد اكتمال جميع أدلة الإنتاج والـexternal proof.
 
 ## حالة الدمج
 
