@@ -16,11 +16,19 @@ async function run() {
 
     const questions = db.collection("questions");
     const skills = db.collection("skills");
+    const topics = db.collection("topics");
 
     const expectedMainIds = new Set(QUANT_TAXONOMY.map((item) => item.id));
     const expectedSubIds = new Set(
       QUANT_TAXONOMY.flatMap((item) => item.subSkills.map((sub) => sub.id)),
     );
+    const expectedSubTopicRows = QUANT_TAXONOMY.flatMap((item) =>
+      item.subSkills.map((sub) => ({
+        subSkillId: sub.id,
+        topicId: `top_quant_sub_${sub.id.replace("sub_", "")}`,
+      })),
+    );
+    const expectedSubTopicIds = new Set(expectedSubTopicRows.map((row) => row.topicId));
 
     const liveSkills = await skills
       .find({ subjectId: SUBJECT_ID })
@@ -40,6 +48,41 @@ async function run() {
     const extraMainIds = [...liveMainIds].filter((id) => !expectedMainIds.has(id));
     const missingSubIds = [...expectedSubIds].filter((id) => !liveSubIds.has(id));
     const extraSubIds = [...liveSubIds].filter((id) => !expectedSubIds.has(id));
+
+    const liveSubTopics = await topics
+      .find({
+        subjectId: SUBJECT_ID,
+        id: { $in: [...expectedSubTopicIds] },
+      })
+      .project({ _id: 0, id: 1, skillId: 1, skillIds: 1 })
+      .toArray();
+
+    const liveSubTopicById = new Map(
+      liveSubTopics.map((topic) => [String(topic.id), topic]),
+    );
+    const missingSubTopicIds = expectedSubTopicRows
+      .filter((row) => !liveSubTopicById.has(row.topicId))
+      .map((row) => row.topicId);
+    const mismatchedSubTopics = expectedSubTopicRows
+      .map((row) => {
+        const topic = liveSubTopicById.get(row.topicId);
+        if (!topic) return null;
+        const skillIds = Array.isArray(topic.skillIds)
+          ? topic.skillIds.map((id: unknown) => String(id))
+          : [];
+        const valid =
+          String(topic.skillId || "") === row.subSkillId &&
+          skillIds.includes(row.subSkillId);
+        return valid
+          ? null
+          : {
+              topicId: row.topicId,
+              expectedSubSkillId: row.subSkillId,
+              liveSkillId: topic.skillId ?? null,
+              liveSkillIds: skillIds,
+            };
+      })
+      .filter(Boolean);
 
     const [fnd26, col2627, mnsf26] = await Promise.all([
       questions.countDocuments({ "sourceMeta.documentCode": "FND26" }),
@@ -124,6 +167,17 @@ async function run() {
         },
       });
     }
+    if (missingSubTopicIds.length || mismatchedSubTopics.length) {
+      failures.push({
+        gate: "foundation-subtopic-parity",
+        detail: {
+          expected: expectedSubTopicIds.size,
+          liveCanonical: liveSubTopics.length,
+          missingSubTopicIds,
+          mismatchedSubTopics,
+        },
+      });
+    }
     if (fnd26 !== EXPECTED_FND26 || col2627 !== EXPECTED_COL2627) {
       failures.push({
         gate: "quant-baseline",
@@ -154,6 +208,12 @@ async function run() {
         missingSubIds,
         extraMainIds,
         extraSubIds,
+      },
+      foundationSubTopics: {
+        expected: expectedSubTopicIds.size,
+        liveCanonical: liveSubTopics.length,
+        missingSubTopicIds,
+        mismatchedSubTopics,
       },
       bankCounts: { FND26: fnd26, COL2627: col2627, MNSF26: mnsf26 },
       mnsf26Qa: {
