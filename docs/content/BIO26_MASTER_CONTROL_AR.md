@@ -3,7 +3,7 @@
 **Scope:** Biology only (`BIO26`).  
 **Repository:** `nasef6464/almeaacodax`  
 **Source-freeze version:** 1.0.0  
-**Status:** PRE-IMPORT CONTENT GATES PASS — AI CONTEXT COMPLETE — PRODUCTION READY PACKAGE/R2 PENDING — NOT CLOSED
+**Status:** PRE-IMPORT CONTENT GATES PASS — READY PACKAGE LOCAL QA PASS — R2/PRODUCTION IMPORT PENDING — NOT CLOSED
 
 ## Verified source inventory
 - Foundation PDF: **79 pages**.
@@ -25,7 +25,7 @@
 - V2 final asset package regenerated: **2,835/2,835 WEBP files**, **0 missing**, **0 SHA-256 mismatches**.
 - Canonical production candidate images: **2,832**.
 - Canonical asset ZIP SHA-256: `37e58c58dfbdeb8a956ee80e42f2c41cf476f506b3c825663c71bf214ee55a03`.
-- R2 upload itself is still pending; V2 hashes are authoritative.
+- Frozen V2 remains historical evidence. The recovered V3 asset set has now been re-qualified independently from the approved BIO26 source; V3 is not claimed byte-identical to V2.
 - R2 presign manifest is prepared for **2,832/2,832** canonical images: **29,550,012 bytes**, unique question codes/hashes **2,832/2,832**, key pattern `questions/v2/{questionCode}/{imageHash}.webp`; actual authenticated PUT verification remains pending.
 
 ## Dedupe — PASS
@@ -61,8 +61,9 @@
 | Dedupe | **PASS — 2,832 canonical** |
 | Existing biology-bank dedupe | **PASS — 0 existing** |
 | AI context | **PASS — 2,832 / 2,832 canonical; 48/48 lessons; pending=0** |
-| Option-text recovery | **IN PROGRESS — 2,579/2,832 source-verified; 253 review** |\n| R2 upload | PENDING |
-| Dry run | BLOCKED BY READY PACKAGE/R2 |
+| Option-text recovery | **IN PROGRESS — 2,579/2,832 source-verified; 253 review** |\n| READY package | **PASS LOCAL — 2,832/2,832 semantic option texts + 2,832/2,832 images** |
+| R2 upload | PENDING |
+| Dry run | BLOCKED BY R2 ONLY |
 | Canary 5 | BLOCKED |
 | Full draft import | BLOCKED |
 | Integrity audit | NOT RUN |
