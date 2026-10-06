@@ -46,8 +46,9 @@ export function rejectUnsafeMongoKeys(req: Request, res: Response, next: NextFun
   // MCP 2026 envelopes legitimately use dotted vendor metadata keys. Keep the
   // global Mongo-key protection on the actual tool arguments, where user data
   // enters ALMEAA domain validation, instead of rejecting the protocol envelope.
-  const bodyToScan = isMcpRequest ? req.body?.params?.arguments : req.body;
-  const unsafeBodyKey = findUnsafeMongoKey(bodyToScan, isMcpRequest ? "body.params.arguments" : "body");
+  const unsafeBodyKey = isMcpRequest
+    ? findUnsafeMongoKey(req.body?.params?.arguments, "body.params.arguments")
+    : findUnsafeMongoKey(req.body, "body");
   const unsafeQueryKey = findUnsafeMongoKey(req.query, "query");
   const unsafePath = unsafeBodyKey || unsafeQueryKey;
 
