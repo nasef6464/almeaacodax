@@ -39,7 +39,7 @@ const getSimpleLevel = (percentage: number) => {
   }
 
   return {
-    label: 'يحتاج دعم',
+    label: 'تحتاج تركيز وتأسيس',
     className: 'bg-rose-50 text-rose-800 border border-rose-200',
   };
 };
