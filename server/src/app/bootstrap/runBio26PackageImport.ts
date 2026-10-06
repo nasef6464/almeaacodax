@@ -98,11 +98,12 @@ const getOwnerAdminId = async () => {
 };
 
 export async function runBio26PackageImportIfRequested() {
-  const modeRaw = String(process.env.QUESTION_PILOT_MODE || "").trim();
+  const modeRaw = String(process.env.BIO26_IMPORT_MODE || process.env.QUESTION_PILOT_MODE || "").trim();
   if (started || !modeRaw.toLowerCase().startsWith(`${MODE_PREFIX}.`)) return;
   started = true;
 
-  if (process.env.PILOT_ALLOW_EXTERNAL_RUN !== "YES") {
+  const externalRunFlag = String(process.env.BIO26_IMPORT_ALLOW_EXTERNAL_RUN || process.env.PILOT_ALLOW_EXTERNAL_RUN || "").trim();
+  if (externalRunFlag !== "YES") {
     console.error("BIO26_IMPORT_BLOCKED external-run flag is not enabled");
     return;
   }
@@ -116,12 +117,18 @@ export async function runBio26PackageImportIfRequested() {
   const phase = String(transport.phase || "verify").trim().toLowerCase();
   if (!["r2", "dry-run", "canary", "full", "verify"].includes(phase)) throw new Error("Invalid BIO26 import phase");
   const writes = ["r2", "canary", "full"].includes(phase);
-  if (writes && process.env.PILOT_WRITE_AUTHORIZATION !== "YES") {
+  const writeAuthorization = String(process.env.BIO26_IMPORT_WRITE_AUTHORIZATION || process.env.PILOT_WRITE_AUTHORIZATION || "").trim();
+  if (writes && writeAuthorization !== "YES") {
     throw new Error("BIO26 write phase is fail-closed without PILOT_WRITE_AUTHORIZATION=YES");
   }
 
-  const expectedCount = Number.parseInt(String(process.env.QUESTION_PILOT_EXPECTED_COUNT || EXPECTED_COUNT), 10);
-  const batchId = String(process.env.QUESTION_PILOT_BATCH_ID || BATCH_ID).trim().toUpperCase();
+  const expectedCount = Number.parseInt(
+    String(process.env.BIO26_IMPORT_EXPECTED_COUNT || process.env.QUESTION_PILOT_EXPECTED_COUNT || EXPECTED_COUNT),
+    10,
+  );
+  const batchId = String(
+    process.env.BIO26_IMPORT_BATCH_ID || process.env.QUESTION_PILOT_BATCH_ID || BATCH_ID,
+  ).trim().toUpperCase();
   if (expectedCount !== EXPECTED_COUNT || batchId !== BATCH_ID) throw new Error("Unexpected BIO26 import contract");
 
   const packageUrl = String(transport.packageUrl || "").trim();
