@@ -25,7 +25,7 @@ Source: ما هي أكبر قيمة يمكن الحصول عليها عند إض
 Options: بين 1 و8؛ بين 5 و1؛ بين 8 و6؛ بين 3 و4.
 - Correct: بين 8 و6.
 - Reason: among offered insertion points this keeps the more significant prefix largest; 23,451,806 exceeds the alternatives.
-- Taxonomy: HOLD rather than force a nonmatching place-value subskill.
+- Mapping: `skill_quant_01 / sub_quant_01_5` — أقرب موضع قانوني داخل 25/95 لأسئلة القيمة المنزلية وتأثير إدراج رقم في موضع عددي؛ لا تُنشأ مهارة جديدة.
 - Difficulty: Medium.
 - Trap: assuming a zero always makes no change, or comparing only the local digits.
 - Speech: "عند إدخال رقم داخل عدد نقارن من الخانة الأكبر؛ أول اختلاف يحسم العدد الأكبر."
@@ -139,7 +139,8 @@ Distinctive-phrase queries against production questions found 0 exact matches fo
 - Solved/answer locked: 11/12
 - Source wording HOLD: 1 (Q01)
 - Canonical mapping locked: 10
-- Taxonomy HOLD: 1 (Q02)
+- Taxonomy HOLD: 0
+- Q02 canonical mapping resolved: `skill_quant_01 / sub_quant_01_5`
 - Mapping QA note: 1 (Q11)
 - Exact duplicates found: 0
 - New taxonomy entities: 0
