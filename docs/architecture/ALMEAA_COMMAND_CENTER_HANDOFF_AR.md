@@ -113,12 +113,18 @@
 - [ ] Gemini/Claude connection proof after deployment.
 
 ### CC-7 Smart Teacher / Smart Whiteboard
-- [ ] teacher orchestration tools.
-- [ ] lesson/session planning.
-- [ ] formative question selection.
-- [ ] Smart Classroom session integration.
-- [ ] whiteboard actions.
-- Existing Smart Classroom remains authority for session state.
+- [x] Existing voice teacher preserved.
+- [x] Independent "افتح المعلم الذكي" launcher added.
+- [x] Full-screen interactive whiteboard reuses the existing Question Assistant and the same questionId/tutorSessionId.
+- [x] Voice input + typed follow-up + Arabic TTS supported.
+- [x] Whiteboard quick actions: أبسط أكثر / مثال آخر / لماذا؟ / أعد الشرح.
+- [x] Smart Classroom preparation Draft tool validates school entitlement, class scope, assigned teacher and approved visible questions.
+- [x] Agent can prepare a lesson/session plan but cannot start a live classroom.
+- [x] Approved Agent-prepared plans are readable only by the assigned teacher/admin through Smart Classroom.
+- [x] Teacher explicitly launches the prepared plan through the existing Smart Classroom lifecycle.
+- [x] Workflow + MCP expose preparation only; no live-start tool is exposed.
+- [ ] exact-head CI + merge for Smart Teacher branch.
+- Existing Smart Classroom remains the authority for live session state, PINs, publication and lifecycle.
 
 ### CC-8 Developer Agent
 - [ ] code-issue routing.
