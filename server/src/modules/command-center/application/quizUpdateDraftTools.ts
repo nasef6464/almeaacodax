@@ -142,8 +142,11 @@ export async function buildQuizUpdateDiff(
   const retainedQuestionIds = nextQuestionIds.filter((id) => currentSet.has(id));
   const nextQuestions = nextQuestionIds.map((id) => byId.get(id)).filter(Boolean);
   const skillIds = [
-    ...new Set(
-      nextQuestions.flatMap((question: any) =>
+    ...new Set([
+      ...(input.mode === "append" && Array.isArray(quiz.skillIds)
+        ? quiz.skillIds.map(String)
+        : []),
+      ...nextQuestions.flatMap((question: any) =>
         [
           question.skillId,
           question.subSkillId,
@@ -153,7 +156,7 @@ export async function buildQuizUpdateDiff(
           .filter(Boolean)
           .map(String),
       ),
-    ),
+    ]),
   ];
 
   return {
