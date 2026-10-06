@@ -24,8 +24,10 @@ permissions:
   contents: read
 
 concurrency:
-  group: platform-v3-public-ui-${{ github.event.pull_request.head.ref || github.ref_name }}
-  cancel-in-progress: true
+  # Serialize with Live Role for this exact revision. Keep every audit run;
+  # only prevent simultaneous load against the production API.
+  group: platform-production-live-audit-${{ github.event.pull_request.head.sha || github.sha }}
+  cancel-in-progress: false
 
 jobs:
   public-ui-live:
