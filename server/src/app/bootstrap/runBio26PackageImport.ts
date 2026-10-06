@@ -98,8 +98,10 @@ const getOwnerAdminId = async () => {
 };
 
 export async function runBio26PackageImportIfRequested() {
+  const dedicatedPhase = String(process.env.BIO26_IMPORT_PHASE || "").trim().toLowerCase();
   const modeRaw = String(process.env.BIO26_IMPORT_MODE || process.env.QUESTION_PILOT_MODE || "").trim();
-  if (started || !modeRaw.toLowerCase().startsWith(`${MODE_PREFIX}.`)) return;
+  const envelopeRequested = modeRaw.toLowerCase().startsWith(`${MODE_PREFIX}.`);
+  if (started || (!dedicatedPhase && !envelopeRequested)) return;
   started = true;
 
   if (process.env.PILOT_ALLOW_EXTERNAL_RUN !== "YES") {
@@ -108,10 +110,18 @@ export async function runBio26PackageImportIfRequested() {
   }
 
   let transport: { packageUrl?: string; packageSha256?: string; phase?: string } = {};
-  try {
-    transport = JSON.parse(Buffer.from(modeRaw.slice(MODE_PREFIX.length + 1), "base64url").toString("utf8"));
-  } catch {
-    throw new Error("Invalid BIO26 transport envelope");
+  if (dedicatedPhase) {
+    transport = {
+      packageUrl: String(process.env.BIO26_PACKAGE_URL || "").trim(),
+      packageSha256: String(process.env.BIO26_PACKAGE_SHA256 || "").trim(),
+      phase: dedicatedPhase,
+    };
+  } else {
+    try {
+      transport = JSON.parse(Buffer.from(modeRaw.slice(MODE_PREFIX.length + 1), "base64url").toString("utf8"));
+    } catch {
+      throw new Error("Invalid BIO26 transport envelope");
+    }
   }
   const phase = String(transport.phase || "verify").trim().toLowerCase();
   if (!["r2", "dry-run", "canary", "full", "verify"].includes(phase)) throw new Error("Invalid BIO26 import phase");
@@ -251,11 +261,29 @@ export async function runBio26PackageImportIfRequested() {
 
     const verifyRemote = async (entry: typeof verified[number]) => {
       const url = publicUrlFor(entry.code, entry.hash);
-      const r = await fetch(url, { signal: AbortSignal.timeout(30_000) });
-      if (!r.ok) throw new Error(`BIO26 live R2 GET failed ${entry.code}: HTTP ${r.status}`);
-      const actual = sha256(Buffer.from(await r.arrayBuffer()));
-      if (actual !== entry.hash) throw new Error(`BIO26 live R2 hash mismatch for ${entry.code}`);
-      return true;
+      let lastStatus = 0;
+      for (let attempt = 1; attempt <= 6; attempt += 1) {
+        try {
+          const r = await fetch(url, { signal: AbortSignal.timeout(30_000) });
+          lastStatus = r.status;
+          if (r.ok) {
+            const actual = sha256(Buffer.from(await r.arrayBuffer()));
+            if (actual !== entry.hash) throw new Error(`BIO26 live R2 hash mismatch for ${entry.code}`);
+            return true;
+          }
+          if (r.status !== 429 && r.status < 500) {
+            throw new Error(`BIO26 live R2 GET failed ${entry.code}: HTTP ${r.status}`);
+          }
+        } catch (error) {
+          if (
+            error instanceof Error &&
+            (error.message.includes("hash mismatch") || error.message.includes("HTTP 4"))
+          ) throw error;
+          lastStatus = 0;
+        }
+        await new Promise((resolve) => setTimeout(resolve, attempt * 1_500));
+      }
+      throw new Error(`BIO26 live R2 GET failed after retries ${entry.code}: HTTP ${lastStatus || "network"}`);
     };
 
     if (phase === "r2") {
@@ -289,7 +317,7 @@ export async function runBio26PackageImportIfRequested() {
         }
         if (!ok) throw new Error(`BIO26 R2 PUT failed for ${entry.code}`);
       });
-      await pool(verified, 12, verifyRemote);
+      await pool(verified, 4, verifyRemote);
       console.log(`BIO26_R2_VERIFIED_PASS count=${EXPECTED_COUNT}`);
       return;
     }
@@ -297,7 +325,7 @@ export async function runBio26PackageImportIfRequested() {
     if (phase === "dry-run") {
       if (current.length !== 0) throw new Error("BIO26 dry-run phase requires zero imported questions");
       const samples = verified.filter((_, i) => i % Math.max(1, Math.floor(verified.length / 30)) === 0).slice(0, 30);
-      await pool(samples, 10, verifyRemote);
+      await pool(samples, 4, verifyRemote);
       console.log(`BIO26_DRY_RUN_PASS count=${EXPECTED_COUNT} liveImageSamples=${samples.length}`);
       return;
     }
@@ -315,7 +343,7 @@ export async function runBio26PackageImportIfRequested() {
       if (current.length > 5 || current.some((q: any) => !canaryCodes.has(String(q.questionCode || "").toUpperCase()))) {
         throw new Error(`BIO26 canary contains unexpected resume state; found ${current.length}`);
       }
-      await pool(canary, 5, verifyRemote);
+      await pool(canary, 4, verifyRemote);
       const missing = canary.filter((entry) => !currentCodes.has(entry.code));
       if (missing.length) await insertEntries(missing);
       const check = await QuestionModel.find({ "sourceMeta.importBatchId": BATCH_ID }).select("questionCode approvalStatus").lean() as any[];
@@ -340,7 +368,7 @@ export async function runBio26PackageImportIfRequested() {
       let done = current.length;
       for (let i = 0; i < pending.length; i += 100) {
         const group = pending.slice(i, i + 100);
-        await pool(group.filter((_, idx) => idx % 10 === 0), 8, verifyRemote);
+        await pool(group.filter((_, idx) => idx % 10 === 0), 4, verifyRemote);
         done += await insertEntries(group);
         console.log(`BIO26_IMPORT_PROGRESS ${done}/${EXPECTED_COUNT}`);
       }
@@ -362,7 +390,7 @@ export async function runBio26PackageImportIfRequested() {
     ) throw new Error("BIO26 final draft integrity gate failed");
 
     const finalSamples = verified.filter((_, i) => i % Math.max(1, Math.floor(verified.length / 30)) === 0).slice(0, 30);
-    await pool(finalSamples, 10, verifyRemote);
+    await pool(finalSamples, 4, verifyRemote);
     console.log(`BIO26_IMPORT_DRAFT_PASS count=${EXPECTED_COUNT} drafts=${EXPECTED_COUNT} liveImageSamples=${finalSamples.length}`);
   } finally {
     await rm(work, { recursive: true, force: true }).catch(() => undefined);
