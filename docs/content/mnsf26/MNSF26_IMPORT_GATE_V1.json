@@ -42,8 +42,8 @@
     "sourceQuestionsReviewed": 138
   },
   "importReadiness": {
-    "uniqueNonHeldCandidates": 128,
-    "holds": 6,
+    "uniqueNonHeldCandidates": 130,
+    "holds": 4,
     "suppressedIntraMnsfDuplicates": 4
   },
   "holds": [
@@ -52,18 +52,6 @@
       "pdfPage": 1,
       "question": 10,
       "reason": "SOURCE_AMBIGUITY"
-    },
-    {
-      "batch": "003",
-      "pdfPage": 4,
-      "question": 13,
-      "reason": "SOURCE_AMBIGUITY"
-    },
-    {
-      "batch": "007",
-      "pdfPage": 8,
-      "question": 1,
-      "reason": "SOURCE_WORDING"
     },
     {
       "batch": "010",
@@ -151,5 +139,23 @@
     "nextBatch": "014",
     "nextPdfPage": 15,
     "requiresOriginalPixelsBeforeImport": true
-  }
+  },
+  "resolvedSourceLogic": [
+    {
+      "batch": "003",
+      "pdfPage": 4,
+      "question": 13,
+      "correctRelation": "المعطيات غير كافية",
+      "skillId": "skill_quant_11",
+      "subSkillId": "sub_quant_11_1"
+    },
+    {
+      "batch": "007",
+      "pdfPage": 8,
+      "question": 1,
+      "correctRelation": "المعطيات غير كافية",
+      "skillId": "skill_quant_11",
+      "subSkillId": "sub_quant_11_1"
+    }
+  ]
 }
