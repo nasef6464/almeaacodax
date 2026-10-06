@@ -8,7 +8,7 @@ type ApiRequest = <T>(path: string, options?: {
 
 export type CommandCenterTool = {
   id: string;
-  capability: "taxonomy" | "questions" | "quizzes" | "courses" | "schools" | "operations";
+  capability: "taxonomy" | "questions" | "quizzes" | "courses" | "schools" | "smart_teacher" | "operations";
   description: string;
   requiredScope: string;
   risk: "read" | "draft_write" | "sensitive";
