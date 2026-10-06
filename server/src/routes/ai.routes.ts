@@ -2086,6 +2086,7 @@ aiRouter.post(
 5) plan_quiz_question_update
 6) create_course_draft
 7) create_school_setup_draft
+8) prepare_smart_classroom_session
 
 قواعد إلزامية:
 - لا تخترع IDs أو أسئلة أو مستخدمين غير موجودين في البيانات المقدمة.
@@ -2095,6 +2096,7 @@ aiRouter.post(
 - create_course_draft يجب أن يستخدم lessonId/quizId/libraryItemId الموجودة فقط.
 - plan_quiz_question_update يستخدم targetQuizId وcandidateQuestionIds حقيقية فقط، ويترك كشف التكرار للسيرفر.
 - create_school_setup_draft يستخدم حسابات موجودة؛ إنشاء حسابات جديدة ليس ضمن هذه الخطة.
+- prepare_smart_classroom_session يجهز خطة حصة فقط؛ autoStart ممنوع ويجب أن يبدأ المعلم الحصة من Smart Classroom.
 - كل step.id فريد وقصير.
 - لا تضف idempotencyKey داخل كل step؛ السيرفر يفرض idempotency تلقائيًا.
 - workflow.steps يجب أن تكون مستقلة؛ لا تعتمد خطوة كتابة على output خطوة سابقة غير موجود في المدخل.
