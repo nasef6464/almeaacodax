@@ -293,11 +293,14 @@ async function reconcileSubject(db: any, config: (typeof SUBJECTS)[number], appl
       })
       .sort({ "learningPlacements.order": 1, id: 1 })
       .toArray();
+    const freeMainSkillIds = new Set(
+      canonicalSkills.slice(0, FREE_MAIN_TOPICS).map((skill: any) => idOf(skill.id || skill._id)),
+    );
 
     if (apply) {
-      for (let i = 0; i < quantMainBanks.length; i++) {
-        const quiz: any = quantMainBanks[i];
-        const isFree = i < FREE_MAIN_TOPICS;
+      for (const quiz of quantMainBanks as any[]) {
+        const quizMainSkillId = (Array.isArray(quiz.skillIds) ? quiz.skillIds : []).map(idOf).find((id: string) => id.startsWith(config.skillPrefix)) || "";
+        const isFree = freeMainSkillIds.has(quizMainSkillId);
         const placements = (Array.isArray(quiz.learningPlacements) ? quiz.learningPlacements : []).map((placement: any) =>
           placement?.slot === "training" ? { ...placement, accessType: isFree ? "free" : "paid", updatedAt: Date.now() } : placement,
         );
