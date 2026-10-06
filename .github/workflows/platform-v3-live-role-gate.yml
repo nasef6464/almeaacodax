@@ -83,6 +83,9 @@ jobs:
           cat /tmp/platform-v3-live-role-preview.log || true
           exit 1
 
+      - name: Live audit load-safety contract
+        run: node scripts/smoke-production-live-audit-load-contract.mjs
+
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
 
