@@ -294,6 +294,9 @@ jobs:
       - name: API security contract
         run: npm run smoke:api-security
 
+      - name: Command Center execution + MCP contract
+        run: node scripts/smoke-command-center-execution-mcp-contract.mjs
+
       - name: Refactor workflow race-safety contract
         run: node scripts/smoke-refactor-workflow-race-contract.mjs
 
