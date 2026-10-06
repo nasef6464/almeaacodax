@@ -21,6 +21,10 @@ import {
   schoolSetupDraftSchema,
   validateSchoolSetupDraft,
 } from "./schoolSetupDraftTools.js";
+import {
+  smartTeacherSessionDraftSchema,
+  validateSmartTeacherSessionDraft,
+} from "./smartTeacherSessionDraftTools.js";
 
 export const SAFE_WORKFLOW_TOOL_IDS = [
   "get_skill_tree",
@@ -30,6 +34,7 @@ export const SAFE_WORKFLOW_TOOL_IDS = [
   "plan_quiz_question_update",
   "create_course_draft",
   "create_school_setup_draft",
+  "prepare_smart_classroom_session",
 ] as const;
 
 type SafeWorkflowToolId = (typeof SAFE_WORKFLOW_TOOL_IDS)[number];
@@ -237,6 +242,48 @@ const createCourseDraftStep = async (
   };
 };
 
+const createSmartTeacherSessionDraftStep = async (
+  rawInput: unknown,
+  principal: CommandPrincipal,
+  idempotencyKey: string,
+) => {
+  const input = smartTeacherSessionDraftSchema.parse({
+    ...(rawInput as Record<string, unknown>),
+    idempotencyKey,
+  });
+  const existing = await getExistingDraftByStepKey(idempotencyKey);
+  if (existing) return { draftId: String(existing._id), idempotentReplay: true };
+
+  const validation = await validateSmartTeacherSessionDraft(input);
+  if (!validation.ok) {
+    throw asError(
+      `Smart Teacher session planning failed: ${validation.issues
+        .map((issue) => issue.type)
+        .join(", ")}`,
+    );
+  }
+
+  const draft = await CommandCenterDraftModel.create({
+    kind: "content",
+    title: input.title,
+    payload: validation.plan,
+    source: principal.source,
+    requiredScopes: ["smart_classroom:prepare"],
+    createdBy: principal.id,
+    createdByType: principal.type,
+    requestId: input.requestId,
+    idempotencyKey,
+    status: "pending",
+  });
+
+  return {
+    draftId: String(draft._id),
+    validation: validation.stats,
+    teacherLaunchRequired: true,
+    idempotentReplay: false,
+  };
+};
+
 const createSchoolDraftStep = async (
   rawInput: unknown,
   principal: CommandPrincipal,
@@ -326,6 +373,13 @@ export async function executeSafeCommandTool(input: {
   }
   if (input.toolId === "create_school_setup_draft") {
     return createSchoolDraftStep(input.toolInput, input.principal, idempotencyKey);
+  }
+  if (input.toolId === "prepare_smart_classroom_session") {
+    return createSmartTeacherSessionDraftStep(
+      input.toolInput,
+      input.principal,
+      idempotencyKey,
+    );
   }
 
   throw asError(`Unsupported workflow tool: ${String(input.toolId)}`);
