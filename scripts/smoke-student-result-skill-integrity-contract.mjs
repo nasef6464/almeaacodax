@@ -85,9 +85,9 @@ check('detailed skill modal has truthful data, a wide layout, and two Foundation
 });
 
 check('test details uses the same canonical Foundation actions per skill', () => {
-  assert.ok(quizDetailsModal.includes("buildFoundationActionLink({"));
-  assert.ok(quizDetailsModal.includes("}, 'lessons')"));
-  assert.ok(quizDetailsModal.includes("}, 'quizzes')"));
+  assert.ok(quizDetailsModal.includes('buildCanonicalFoundationSkillActions({'));
+  assert.ok(quizDetailsModal.includes('foundationActions.lessonLink'));
+  assert.ok(quizDetailsModal.includes('foundationActions.quizLink'));
   assert.ok(quizDetailsModal.includes('فيديو'));
   assert.ok(quizDetailsModal.includes('تدريب'));
 });
