@@ -61,7 +61,8 @@
 | Dedupe | **PASS — 2,832 canonical** |
 | Existing biology-bank dedupe | **PASS — 0 existing** |
 | AI context | **PASS — 2,832 / 2,832 canonical; 48/48 lessons; pending=0** |
-| Option-text recovery | **IN PROGRESS — 2,579/2,832 source-verified; 253 review** |\n| READY package | **PASS LOCAL — 2,832/2,832 semantic option texts + 2,832/2,832 images** |
+| Option-text recovery | **PASS — 2,832/2,832 source-verified** |
+| READY package | **PASS LOCAL — 2,832/2,832 semantic option texts + 2,832/2,832 images** |
 | R2 upload | PENDING |
 | Dry run | BLOCKED BY R2 ONLY |
 | Canary 5 | BLOCKED |
@@ -80,13 +81,32 @@
 - Root-cause hardening in PR #398 rejected the all-placeholder recovery payload. Follow-up PR #400 replaces value-based rejection with explicit source provenance so legitimate source choices such as `A/B/C/D` or `1/2/3/4` remain valid when verified from the PDF.
 
 ## Source option-text recovery — 2026-10-06
-- Approved question source parsed across **226/226 PDF pages** and joined by `pdfPageIndex + printedQuestionNumber`.
-- High-confidence real option sets recovered from source text: **2,579/2,832 canonical (91.07%)**.
-- Remaining quarantined for layout/visual review: **253**.
-- Source-derived values include legitimate one-character diagram/numeric choices; therefore bare-value rejection is incorrect.
-- New READY contract in PR **#400**: `aiContext.optionTextsSource = "SOURCE_PDF"` and `aiContext.optionTextsVerified = true`.
-- Partial recovery artifact: `BIO26_OPTION_TEXT_RECOVERY_PARTIAL_2579.json`, SHA-256 `4f726999fe7d755b7fa7444156279c7604a9055d4566af93019786d9b743de21`.
-- No unresolved option set is authorized for import.
+- Approved question source parsed/reviewed across **226/226 PDF pages** and joined by `pdfPageIndex + printedQuestionNumber`.
+- Final semantic option-text recovery: **2,832/2,832 PASS**.
+  - High-confidence source-text parsing: **2,579**.
+  - Direct visual review/transcription from the original source crops/layout: **253**.
+- The visual-review set exactly equals the previous quarantine set: **253/253 resolved; 0 remaining**.
+- Every READY item carries `aiContext.optionTextsSource = "SOURCE_PDF"` and `aiContext.optionTextsVerified = true`.
+- Legitimate source choices such as A/B/C/D, 1/2/3/4, formulas, pedigrees and diagram choices are preserved by provenance rather than rejected by value.
+- Complete visual option map: **253/253**, SHA-256 `1b47a2aa4e09d5825b8f7f8bfebaa4a905922a0c08ac15859744133d2295a1af`.
+- Partial parsed recovery artifact: **2,579**, SHA-256 `4f726999fe7d755b7fa7444156279c7604a9055d4566af93019786d9b743de21`.
+
+## Re-qualified READY package — 2026-10-06
+- V3 recovery assets were independently re-qualified from the approved BIO26 source; they are **not** claimed byte-identical to frozen V2.
+- Asset qualification: **2,832/2,832 WEBP**, **2,832 unique question codes**, **2,832 unique hashes**, **0 hash mismatches**, **29,547,754 image bytes**.
+- Asset methods: **2,816 vector-table anchored + 16 raster special corrections**.
+- Re-qualification visual QA: **PASS 118/118** = lesson-tallest + globally-shortest + raster-special + manual corrections, de-duplicated.
+- READY package: `BIO26_FINAL_ASSETS_V3_READY_2832.zip`.
+- Package bytes: **30,690,582**.
+- Package SHA-256: `e2063da82250395c8e7f9c50a6cbba34269d9c6683c7db91a0ea9a92a494fa8f`.
+- READY manifest SHA-256: `153e97e8468e4a7f84ba1488f7c4b919b19ab84095a00773de014c98b81cf8a5`.
+- Full local importer-contract audit: **PASS / 0 errors**:
+  - manifest count **2,832**;
+  - unique codes/source IDs/image hashes **2,832/2,832/2,832**;
+  - taxonomy coverage **29 main / 98 sub**;
+  - semantic option provenance **2,832/2,832**;
+  - local image SHA verification **2,832/2,832**.
+- Production write status remains **NONE** at this checkpoint. Next gate is authenticated R2 PUT + live GET/SHA verification.
 
 ## Current AI-context truth
 - Effective canonical AI context: **2,832/2,832**.
@@ -99,9 +119,8 @@
 - Alias exclusions: **PASS_3_OF_3**.
 
 ## Next execution batch
-1. Recover the authoritative V2 bytes/hashes or regenerate a newly qualified package from the approved BIO26 sources with full crop QA.
-2. Finish the remaining **253** option sets by layout/visual review, merge them with the **2,579 source-verified** sets, then build `BIO26_IMPORT_MANIFEST_READY.json` with provenance for all **2,832** canonical questions.
-3. Upload **2,832** qualified images to R2 and verify live GET + SHA-256.
-4. Dry Run → Canary 5 → Full Draft Import → Integrity Audit → Live E2E → Approval.
+1. Get PR **#400** exact-head CI green and reconcile it with current `main`.
+2. Upload READY assets **2,832/2,832** to R2 and verify public/live GET + SHA-256 for every image.
+3. Production Dry Run → Canary 5 → Full Draft Import → Integrity Audit → Live E2E → Approval.
 
 **Closure rule:** no `BIO26 CLOSED` until production counts, asset integrity, exact-question skill analysis, and live learner journey pass.
