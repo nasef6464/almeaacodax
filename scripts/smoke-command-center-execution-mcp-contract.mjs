@@ -10,6 +10,7 @@ const [
   applyQuestion,
   applyQuizUpdate,
   applySchool,
+  courseAudit,
   quizUpdateTools,
   questionModel,
   schoolImportPanel,
@@ -143,6 +144,7 @@ assert.match(mcpToolCatalog, /developer:write/);
 assert.match(mcpToolCatalog, /developer:read/);
 assert.match(mcpToolExecution, /executeMcpTool/);
 assert.match(mcpToolExecution, /plan_quiz_question_update/);
+assert.match(mcpToolExecution, /audit_course/);
 assert.match(mcpToolExecution, /getApprovedDeveloperTaskHandoff/);
 assert.doesNotMatch(mcpToolCatalog, /name:\s*"publish_/);
 assert.doesNotMatch(mcpToolCatalog, /name:\s*"apply_/);
@@ -168,6 +170,7 @@ assert.match(aiRoutes, /\/admin-command-plan/);
 assert.match(aiRoutes, /Reuse-first/);
 assert.match(aiRoutes, /workflowPlanSchema/);
 assert.match(aiRoutes, /plan_quiz_question_update/);
+assert.match(aiRoutes, /audit_course/);
 assert.match(adminPanel, /أمر ذكي للمنصة/);
 assert.match(adminPanel, /Plan → Execute → Verify/);
 assert.match(commandApi, /executeCommandCenterWorkflow/);
