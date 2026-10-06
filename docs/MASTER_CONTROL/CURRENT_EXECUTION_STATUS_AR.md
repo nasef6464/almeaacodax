@@ -79,13 +79,17 @@ Git HEAD always overrides this historical baseline.
 
 ## BIO26 — Full Closure checkpoint
 
-آخر تحديث BIO26: 2026-10-05
+آخر تحديث BIO26: 2026-10-06
 
-- PR: #362 — `content/bio26-source-freeze` — Draft / Open / Mergeable. Latest BIO26 sync commits: `d75d396b`, `e61d94d3`.
+- PR: #362 — `content/bio26-source-freeze` — Draft / Open / Mergeable.
+- AI completion content SHA: `8f25bcbdac59174aa925e8c3876e147920972329`.
 - Crop/QA: **2,835/2,835 PASS**.
 - Dedupe: **2,832 canonical + 3 aliases PASS**.
-- AI Context merged/authored: **1,946/2,832**; pending **886**. QA: 1,946/1,946 source-answer, 1,946/1,946 skill-range, 0 missing required fields, 0 duplicate question codes.
-- L32 canonical authoring: **107/107 merged and certified**; source-answer + skill-range PASS; included in canonical AI ledger and QA.
-- R2: manifest **2,832 canonical images / 29,550,012 bytes**; authenticated production PUT + remote hash verification still NOT RUN.
-- Import gates: Dry Run BLOCKED by incomplete AI Context + R2 verification; Canary 5 / Full Draft Import / Integrity Audit / Live BIO26 E2E / Approval remain gated.
-- BIO26 status: **NOT CLOSED**.
+- AI Context effective canonical: **2,832/2,832 PASS**; pending **0**; **48/48 lessons complete**.
+- AI Context storage: **INDEXED_SHARDS_V2** — historical base 2,091 raw items, effective base 2,089 after excluding stale aliases `L10-Q025` and `L35-Q036`; L37–L48 shards add 743 canonical items; `L40-Q092` excluded per frozen dedupe report.
+- AI QA: **2,832/2,832 source-answer PASS**, **2,832/2,832 skill-range PASS**, **2,832/2,832 required-fields PASS**, 0 duplicate question codes, 0 OCR-inferred answers, alias exclusions **3/3 PASS**.
+- R2: manifest **2,832 canonical images / 29,550,012 bytes**; authenticated production PUT + remote hash verification still **NOT RUN**.
+- Import gates: AI gate **CLOSED/PASS**. Dry Run remains **BLOCKED_BY_R2**; Canary 5 / Full Draft Import / Integrity Audit / Live BIO26 E2E / Approval remain gated.
+- CI at AI completion SHA `8f25bcbdac59174aa925e8c3876e147920972329`: Tracked Secret Hygiene **SUCCESS**; PLAN 7 Live AI / Backend Integration / Phase+Handover / Deep Pre-Merge E2E in progress or queued at checkpoint; Public Smoke and Assessment V1 skipped by workflow conditions.
+- BIO26 status: **NOT CLOSED** — next hard gate is authenticated R2 upload + remote hash verification.
+
