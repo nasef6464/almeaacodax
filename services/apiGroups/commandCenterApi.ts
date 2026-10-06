@@ -127,6 +127,12 @@ export const createCommandCenterApi = (request: ApiRequest) => ({
       { token },
     ),
 
+  auditCommandCenterCourse: (courseId: string, token?: string | null) =>
+    request<Record<string, unknown>>(
+      `/command-center/courses/${encodeURIComponent(courseId)}/audit`,
+      { token },
+    ),
+
   validateCourseCommandDraft: (payload: Record<string, unknown>, token?: string | null) =>
     request<Record<string, unknown>>("/command-center/courses/validate", {
       method: "POST",
