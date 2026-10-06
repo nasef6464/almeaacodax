@@ -14,6 +14,7 @@ import {
 } from "../application/commandAuthorization.js";
 import { recordCommandAudit } from "../application/commandAudit.js";
 import { commandToolRegistry } from "../application/commandToolRegistry.js";
+import { applyApprovedCommandDraft } from "../application/draftApplyService.js";
 import { questionQuizDraftRouter } from "./questionQuizDraftRoutes.js";
 import { courseDraftRouter } from "./courseDraftRoutes.js";
 import { schoolDraftRouter } from "./schoolDraftRoutes.js";
@@ -32,6 +33,10 @@ const draftSchema = z.object({
 const reviewSchema = z.object({
   decision: z.enum(["approved", "rejected"]),
   notes: z.string().trim().max(2000).optional().default(""),
+});
+
+const applySchema = z.object({
+  confirmation: z.literal("APPLY"),
 });
 
 const skillQuerySchema = z.object({
@@ -214,5 +219,129 @@ commandCenterRouter.post(
     });
 
     return res.json({ draft });
+  }),
+);
+
+
+commandCenterRouter.post(
+  "/drafts/:id/apply",
+  requireCommandScope("drafts:apply"),
+  asyncHandler(async (req, res) => {
+    const principal = getCommandPrincipal(res)!;
+    applySchema.parse(req.body);
+
+    if (principal.type !== "admin_session") {
+      await recordCommandAudit({
+        principal,
+        action: "draft.apply",
+        draftId: req.params.id,
+        outcome: "rejected",
+        metadata: { reason: "human_apply_required" },
+      });
+      return res.status(StatusCodes.FORBIDDEN).json({
+        message: "Human admin execution is required for applying approved drafts",
+      });
+    }
+
+    const current = await CommandCenterDraftModel.findById(req.params.id);
+    if (!current) {
+      return res.status(StatusCodes.NOT_FOUND).json({ message: "Draft not found" });
+    }
+    if (current.status !== "approved") {
+      return res.status(StatusCodes.CONFLICT).json({
+        message: "Draft must be approved before it can be applied",
+        status: current.status,
+      });
+    }
+    if (current.applyStatus === "applied") {
+      return res.json({
+        draft: current,
+        idempotentReplay: true,
+        result: current.applyResult || {},
+      });
+    }
+    if (current.applyStatus === "applying") {
+      return res.status(StatusCodes.CONFLICT).json({
+        message: "Draft application is already in progress",
+      });
+    }
+
+    const claimed = await CommandCenterDraftModel.findOneAndUpdate(
+      {
+        _id: current._id,
+        status: "approved",
+        applyStatus: { $in: ["not_applied", "failed"] },
+      },
+      {
+        $set: {
+          applyStatus: "applying",
+          applyError: "",
+          appliedBy: principal.id,
+        },
+      },
+      { new: true },
+    );
+    if (!claimed) {
+      const refreshed = await CommandCenterDraftModel.findById(current._id);
+      if (refreshed?.applyStatus === "applied") {
+        return res.json({
+          draft: refreshed,
+          idempotentReplay: true,
+          result: refreshed.applyResult || {},
+        });
+      }
+      return res.status(StatusCodes.CONFLICT).json({
+        message: "Draft application could not be claimed safely",
+      });
+    }
+
+    try {
+      const result = await applyApprovedCommandDraft(claimed, principal.id);
+      const applied = await CommandCenterDraftModel.findByIdAndUpdate(
+        claimed._id,
+        {
+          $set: {
+            applyStatus: "applied",
+            appliedResourceType: result.resourceType,
+            appliedResourceId: result.resourceId,
+            appliedAt: Date.now(),
+            appliedBy: principal.id,
+            applyError: "",
+            applyResult: result.summary,
+          },
+        },
+        { new: true },
+      );
+
+      await recordCommandAudit({
+        principal,
+        action: "draft.apply",
+        draftId: String(claimed._id),
+        outcome: "success",
+        metadata: {
+          resourceType: result.resourceType,
+          resourceId: result.resourceId,
+          ...result.summary,
+        },
+      });
+
+      return res.json({ draft: applied, result });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Draft application failed";
+      await CommandCenterDraftModel.findByIdAndUpdate(claimed._id, {
+        $set: {
+          applyStatus: "failed",
+          applyError: message.slice(0, 2000),
+        },
+      });
+      await recordCommandAudit({
+        principal,
+        action: "draft.apply",
+        draftId: String(claimed._id),
+        outcome: "failed",
+        metadata: { message: message.slice(0, 500) },
+      });
+      throw error;
+    }
   }),
 );
