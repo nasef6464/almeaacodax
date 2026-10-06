@@ -1,8 +1,28 @@
 import React from "react";
-import { Bot, Loader2, Send, Volume2, VolumeX, X } from "lucide-react";
+import { Bot, Loader2, Mic, MicOff, Send, Volume2, VolumeX, X } from "lucide-react";
 import { api } from "../../services/api";
 
 type AssistantContext = "result_review" | "saved_review" | "mistake_review" | "mastery_review";
+
+type SpeechRecognitionLike = {
+  lang: string;
+  interimResults: boolean;
+  continuous: boolean;
+  onresult: ((event: any) => void) | null;
+  onerror: (() => void) | null;
+  onend: (() => void) | null;
+  start: () => void;
+  stop: () => void;
+};
+
+const getSpeechRecognition = (): (new () => SpeechRecognitionLike) | null => {
+  if (typeof window === "undefined") return null;
+  const target = window as typeof window & {
+    SpeechRecognition?: new () => SpeechRecognitionLike;
+    webkitSpeechRecognition?: new () => SpeechRecognitionLike;
+  };
+  return target.SpeechRecognition || target.webkitSpeechRecognition || null;
+};
 
 type SmartTeacherTurn = {
   id: string;
@@ -32,10 +52,17 @@ export const InteractiveSmartTeacher: React.FC<{
   const [pending, setPending] = React.useState(false);
   const [error, setError] = React.useState("");
   const [autoVoice, setAutoVoice] = React.useState(true);
+  const [listening, setListening] = React.useState(false);
+  const recognitionRef = React.useRef<SpeechRecognitionLike | null>(null);
 
   React.useEffect(() => {
-    if (!isOpen && typeof window !== "undefined" && "speechSynthesis" in window) {
-      window.speechSynthesis.cancel();
+    if (!isOpen) {
+      recognitionRef.current?.stop();
+      recognitionRef.current = null;
+      setListening(false);
+      if (typeof window !== "undefined" && "speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+      }
     }
   }, [isOpen]);
 
@@ -83,6 +110,45 @@ export const InteractiveSmartTeacher: React.FC<{
     } finally {
       setPending(false);
     }
+  };
+
+  const toggleListening = () => {
+    if (listening) {
+      recognitionRef.current?.stop();
+      recognitionRef.current = null;
+      setListening(false);
+      return;
+    }
+    if (pending) return;
+    const SpeechRecognitionCtor = getSpeechRecognition();
+    if (!SpeechRecognitionCtor) {
+      setError("المحادثة الصوتية غير مدعومة في هذا المتصفح. جرّب Chrome.");
+      return;
+    }
+
+    const recognition = new SpeechRecognitionCtor();
+    recognition.lang = "ar-SA";
+    recognition.interimResults = false;
+    recognition.continuous = false;
+    recognition.onresult = (event: any) => {
+      const transcript = String(event?.results?.[0]?.[0]?.transcript || "").trim();
+      recognitionRef.current = null;
+      setListening(false);
+      if (transcript) void ask(transcript, "follow_up");
+    };
+    recognition.onerror = () => {
+      recognitionRef.current = null;
+      setListening(false);
+      setError("لم ألتقط الكلام بوضوح. جرّب مرة أخرى.");
+    };
+    recognition.onend = () => {
+      recognitionRef.current = null;
+      setListening(false);
+    };
+    recognitionRef.current = recognition;
+    setListening(true);
+    setError("");
+    recognition.start();
   };
 
   const latestTeacherTurn = [...turns].reverse().find((turn) => turn.role === "teacher");
@@ -231,6 +297,20 @@ export const InteractiveSmartTeacher: React.FC<{
                 placeholder="اسأل المعلم…"
                 className="min-w-0 flex-1 rounded-xl border border-slate-700 bg-slate-900 px-3 py-2.5 text-sm font-bold text-white outline-none placeholder:text-slate-500 focus:border-violet-500"
               />
+              <button
+                type="button"
+                onClick={toggleListening}
+                disabled={pending}
+                className={`flex h-11 w-11 items-center justify-center rounded-xl border disabled:opacity-50 ${
+                  listening
+                    ? "border-rose-500 bg-rose-600 text-white"
+                    : "border-slate-700 bg-slate-900 text-slate-200"
+                }`}
+                aria-label={listening ? "إيقاف الاستماع" : "التحدث مع المعلم"}
+                title={listening ? "إيقاف الاستماع" : "تحدث مع المعلم"}
+              >
+                {listening ? <MicOff size={17} /> : <Mic size={17} />}
+              </button>
               <button
                 type="submit"
                 disabled={pending || !message.trim()}
