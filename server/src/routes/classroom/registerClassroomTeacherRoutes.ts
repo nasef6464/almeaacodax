@@ -33,6 +33,7 @@ const createSchema = z.object({
   subjectName: z.string().optional().default(""),
   className: z.string().optional().default(""),
   publishedMode: z.enum(["single", "batch"]).optional().default("single"),
+  preparedPlanDraftId: z.string().trim().optional().default(""),
   autoStart: z.boolean().optional().default(false),
 });
 
@@ -189,6 +190,34 @@ export function registerClassroomTeacherRoutes(classroomRouter: Router) {
       if (!hasTeacherContext || !assigned) return res.status(StatusCodes.FORBIDDEN).json({ message: "Teacher is not assigned to this school and class" });
     }
 
+    if (payload.preparedPlanDraftId) {
+      const preparedPlan = await CommandCenterDraftModel.findOne({
+        _id: payload.preparedPlanDraftId,
+        kind: "content",
+        status: "approved",
+        "payload.operation": "smart_classroom_session_plan",
+        "payload.schoolId": payload.schoolId,
+        "payload.classId": payload.classId,
+        "payload.teacherId": String(req.authUser!.role === "teacher" ? req.authUser!.id : req.body?.teacherId || req.authUser!.id),
+        "payload.policy.teacherLaunchRequired": true,
+      })
+        .select("_id payload")
+        .lean() as any;
+      if (!preparedPlan) {
+        return res.status(StatusCodes.CONFLICT).json({
+          message: "Prepared Smart Classroom plan is missing, revoked, or outside the teacher/class scope",
+        });
+      }
+      const plannedIds = Array.isArray(preparedPlan.payload?.questionIds)
+        ? preparedPlan.payload.questionIds.map(String)
+        : [];
+      if (JSON.stringify(plannedIds) !== JSON.stringify(payload.questionIds.map(String))) {
+        return res.status(StatusCodes.CONFLICT).json({
+          message: "Prepared plan questions changed after approval; reload the approved plan before launch",
+        });
+      }
+    }
+
     const snapshots = payload.questionIds.length > 0
       ? await loadApprovedVisibleQuestions(payload.questionIds, payload.schoolId, req.authUser!.id)
       : [];
@@ -223,6 +252,7 @@ export function registerClassroomTeacherRoutes(classroomRouter: Router) {
         subjectName: payload.subjectName || "",
         className: payload.className || "",
         publishedMode: payload.publishedMode || "single",
+        preparedPlanDraftId: payload.preparedPlanDraftId || "",
         publishedQuestionIds: initialPublished,
         status: initialStatus,
         activeQuestionIndex: payload.autoStart && canonicalQuestionIds.length > 0 ? 0 : null,
