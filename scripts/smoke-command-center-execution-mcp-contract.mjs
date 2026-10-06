@@ -8,6 +8,8 @@ const [
   applyService,
   applyCourseQuiz,
   applySchool,
+  developerTools,
+  developerRoutes,
   workflowModel,
   workflowService,
   workflowExecutor,
@@ -32,6 +34,8 @@ const [
   read("server/src/modules/command-center/application/draftApplyService.ts"),
   read("server/src/modules/command-center/application/draftApplyCourseQuiz.ts"),
   read("server/src/modules/command-center/application/draftApplySchool.ts"),
+  read("server/src/modules/command-center/application/developerTaskTools.ts"),
+  read("server/src/modules/command-center/http/developerDraftRoutes.ts"),
   read("server/src/models/CommandCenterWorkflow.ts"),
   read("server/src/modules/command-center/application/workflowService.ts"),
   read("server/src/modules/command-center/application/workflowExecutor.ts"),
@@ -63,6 +67,18 @@ assert.match(applyCourseQuiz, /isPublished:\s*false/);
 assert.match(applyCourseQuiz, /showOnPlatform:\s*false/);
 assert.match(commandRoutes, /human_apply_required/);
 assert.match(commandRoutes, /drafts\/:id\/apply/);
+assert.match(draftModel, /"developer_task"/);
+assert.match(developerTools, /nasef6464\/almeaacodax/);
+assert.match(developerTools, /contentMutation:\s*false/);
+assert.match(developerTools, /mergeAllowed:\s*false/);
+assert.match(developerTools, /deployAllowed:\s*false/);
+assert.match(developerTools, /requiresHumanMergeAuthority:\s*true/);
+assert.match(developerTools, /developer_task\.draft\.create/);
+assert.match(developerTools, /developer_task\.handoff\.read/);
+assert.match(developerRoutes, /developer:write/);
+assert.match(developerRoutes, /developer:read/);
+assert.match(commandRoutes, /developer_task_is_not_content_apply/);
+assert.match(commandRoutes, /use\("\/developer", developerDraftRouter\)/);
 
 assert.match(workflowModel, /planned/);
 assert.match(workflowModel, /completed/);
@@ -83,10 +99,17 @@ assert.match(mcpTools, /mcpToolExecution/);
 assert.match(mcpToolCatalog, /get_profile/);
 assert.match(mcpToolCatalog, /create_course_draft/);
 assert.match(mcpToolCatalog, /create_school_setup_draft/);
+assert.match(mcpToolCatalog, /create_developer_task_draft/);
+assert.match(mcpToolCatalog, /get_developer_task_handoff/);
+assert.match(mcpToolCatalog, /developer:write/);
+assert.match(mcpToolCatalog, /developer:read/);
 assert.match(mcpToolExecution, /executeMcpTool/);
+assert.match(mcpToolExecution, /getApprovedDeveloperTaskHandoff/);
 assert.doesNotMatch(mcpToolCatalog, /name:\s*"publish_/);
 assert.doesNotMatch(mcpToolCatalog, /name:\s*"apply_/);
 assert.doesNotMatch(mcpToolCatalog, /name:\s*"delete_/);
+assert.doesNotMatch(mcpToolCatalog, /name:\s*"merge_/);
+assert.doesNotMatch(mcpToolCatalog, /name:\s*"deploy_/);
 assert.match(mcpRoutes, /2026-07-28/);
 assert.match(mcpRoutes, /2025-11-25/);
 assert.match(mcpRoutes, /server\/discover/);
