@@ -5,7 +5,7 @@ import {
   EXPECTED_SOURCE_QUESTIONS,
   FREE_TEST_COUNT,
   PATH_ID,
-  QUESTIONS_PER_TEST,
+  TEST_SIZES,
   SUBJECT_ID,
   TEST_COUNT,
   TOTAL_TEST_QUESTION_REFS,
@@ -78,7 +78,7 @@ async function verifyExpected(tests: ReturnType<typeof buildChem26StandardTests>
       stringId(actual.pathId) !== PATH_ID ||
       stringId(actual.subjectId) !== SUBJECT_ID ||
       !Array.isArray(actual.questionIds) ||
-      actual.questionIds.length !== QUESTIONS_PER_TEST ||
+      actual.questionIds.length !== TEST_SIZES[number - 1] ||
       actual.questionIds.some((id: unknown, index: number) => stringId(id) !== expected.questionIds[index]) ||
       actual.access?.type !== (shouldBeFree ? "free" : "paid") ||
       !placement ||
@@ -111,7 +111,8 @@ export async function runChem26StandardTestsIfNeeded() {
       "CHEM26_STANDARD_TESTS_NOOP",
       JSON.stringify({
         tests: TEST_COUNT,
-        questionsPerTest: QUESTIONS_PER_TEST,
+        minQuestionsPerTest: Math.min(...TEST_SIZES),
+        maxQuestionsPerTest: Math.max(...TEST_SIZES),
         uniqueQuestionRefs: expected.usedQuestionCount,
         reserveQuestions: expected.reserveQuestionCount,
         freeTests: FREE_TEST_COUNT,
@@ -168,7 +169,8 @@ export async function runChem26StandardTestsIfNeeded() {
     "CHEM26_STANDARD_TESTS_PASS",
     JSON.stringify({
       tests: TEST_COUNT,
-      questionsPerTest: QUESTIONS_PER_TEST,
+      minQuestionsPerTest: Math.min(...TEST_SIZES),
+      maxQuestionsPerTest: Math.max(...TEST_SIZES),
       uniqueQuestionRefs: expected.usedQuestionCount,
       reserveQuestions: expected.reserveQuestionCount,
       freeTests: FREE_TEST_COUNT,
@@ -191,7 +193,8 @@ export async function verifyChem26StandardTests() {
     "CHEM26_STANDARD_TESTS_VERIFY_PASS",
     JSON.stringify({
       tests: TEST_COUNT,
-      questionsPerTest: QUESTIONS_PER_TEST,
+      minQuestionsPerTest: Math.min(...TEST_SIZES),
+      maxQuestionsPerTest: Math.max(...TEST_SIZES),
       uniqueQuestionRefs: expected.usedQuestionCount,
       reserveQuestions: expected.reserveQuestionCount,
       freeTests: FREE_TEST_COUNT,
