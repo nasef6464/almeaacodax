@@ -17,6 +17,8 @@
     "adaptiveMasteryRouter|POST|/mastery-goals",
     "aiRouter|POST|/admin-command-plan",
     "aiRouter|POST|/question-assistant",
+    "app|GET|/.well-known/oauth-protected-resource",
+    "app|GET|/.well-known/oauth-protected-resource/api/command-center/mcp",
     "authRouter|GET|/admin/trainers",
     "authRouter|GET|/admin/trainers/:id",
     "authRouter|GET|/admin/users/summary",
