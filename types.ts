@@ -642,6 +642,7 @@ export interface Question extends ContentWorkflow {
     skillIds?: string[];
     skillId?: string | null;
     subSkillId?: string | null;
+    subSkillIds?: string[];
     pathId?: string; // Added to support Path selection
     subject: string;
     subjectId?: string | null;
