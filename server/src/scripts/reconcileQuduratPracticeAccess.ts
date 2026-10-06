@@ -44,8 +44,16 @@ function assertApplyGuard() {
   return true;
 }
 
+const isTrainingOnly = (question: any) =>
+  idOf(question?.sourceMeta?.documentCode) === "QUDURAT-PRACTICE" ||
+  idOf(question?.sourceMeta?.importBatchId).startsWith("QUDURAT_PRACTICE_");
+
 const questionIdsForSubskill = (questions: any[], subSkillId: string) =>
-  questions.filter((q) => idOf(q.subSkillId) === subSkillId).map((q) => idOf(q.id || q._id)).filter(Boolean);
+  questions
+    .filter((q) => idOf(q.subSkillId) === subSkillId)
+    .sort((a, b) => Number(isTrainingOnly(a)) - Number(isTrainingOnly(b)) || idOf(a.id || a._id).localeCompare(idOf(b.id || b._id)))
+    .map((q) => idOf(q.id || q._id))
+    .filter(Boolean);
 
 const questionIdsForMain = (questions: any[], mainSkillId: string) =>
   questions.filter((q) => idOf(q.skillId) === mainSkillId).map((q) => idOf(q.id || q._id)).filter(Boolean);
