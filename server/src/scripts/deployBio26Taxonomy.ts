@@ -55,6 +55,14 @@ const validateTaxonomy = (taxonomy: TaxonomyFile) => {
       if (!sub.name.trim() || !sub.sourceSubSkillId.startsWith("BIO26-S")) {
         throw new Error(`Incomplete BIO26 subskill mapping for ${sub.id}`);
       }
+      const sourceMatch = sub.sourceSubSkillId.match(/^BIO26-S(\d{2})-(\d{2})$/);
+      if (!sourceMatch) throw new Error(`Invalid BIO26 frozen subskill source id ${sub.sourceSubSkillId}`);
+      const expectedId = `sub_tah_bio_${sourceMatch[1]}_${sourceMatch[2]}`;
+      if (sub.id !== expectedId || sub.code !== sub.sourceSubSkillId) {
+        throw new Error(
+          `BIO26 subskill identity drift: source=${sub.sourceSubSkillId} id=${sub.id} code=${sub.code} expectedId=${expectedId}`,
+        );
+      }
     });
   });
 };
