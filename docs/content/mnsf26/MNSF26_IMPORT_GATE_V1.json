@@ -33,6 +33,14 @@
         "question": 18,
         "skillId": "skill_quant_01",
         "subSkillId": "sub_quant_01_4"
+      },
+      {
+        "batch": "010",
+        "pdfPage": 11,
+        "question": 19,
+        "skillId": "skill_quant_03",
+        "subSkillId": "sub_quant_03_3",
+        "note": "taxonomy resolved; exact numerator/denominator transcription remains source HOLD"
       }
     ]
   },
@@ -43,7 +51,8 @@
   },
   "importReadiness": {
     "uniqueNonHeldCandidates": 130,
-    "holds": 4,
+    "holds": 3,
+    "quarantinedSourceDefects": 1,
     "suppressedIntraMnsfDuplicates": 4
   },
   "holds": [
@@ -64,12 +73,6 @@
       "pdfPage": 13,
       "question": 15,
       "reason": "SOURCE_MATH_TRANSCRIPTION"
-    },
-    {
-      "batch": "013",
-      "pdfPage": 14,
-      "question": 8,
-      "reason": "SOURCE_LOGIC"
     }
   ],
   "suppressions": [
@@ -156,6 +159,16 @@
       "correctRelation": "المعطيات غير كافية",
       "skillId": "skill_quant_11",
       "subSkillId": "sub_quant_11_1"
+    }
+  ],
+  "quarantines": [
+    {
+      "batch": "013",
+      "pdfPage": 14,
+      "question": 8,
+      "status": "QUARANTINE_SOURCE_DEFECT",
+      "reason": "UNIT_MISMATCH_SPOILED_EGGS_VS_SPOILED_TRAYS",
+      "recoveryCondition": "Verified source crop/erratum must clarify the requested unit or define what constitutes a spoiled tray."
     }
   ]
 }
