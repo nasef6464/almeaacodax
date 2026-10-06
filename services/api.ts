@@ -812,6 +812,7 @@ export const api = {
       subjectName?: string;
       className?: string;
       publishedMode?: 'single' | 'batch';
+      preparedPlanDraftId?: string;
       autoStart?: boolean;
     },
     token?: string | null,
