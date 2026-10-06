@@ -1,0 +1,50 @@
+{
+  "project": "BIO26",
+  "date": "2026-10-06",
+  "baselineMainSha": "7c21eca9016146c380b861447967eae399805a1c",
+  "branch": "ops/bio26-option-recovery-2026-10-06",
+  "pr": 400,
+  "closure": false,
+  "canonicalQuestions": 2832,
+  "sourcePagesParsed": "226/226",
+  "optionTextRecovery": {
+    "sourceVerified": 2579,
+    "remainingVisualOrLayoutReview": 253,
+    "percentage": 91.07,
+    "partialArtifact": "BIO26_OPTION_TEXT_RECOVERY_PARTIAL_2579.json",
+    "partialArtifactSha256": "4f726999fe7d755b7fa7444156279c7604a9055d4566af93019786d9b743de21",
+    "provenanceContract": {
+      "optionTextsSource": "SOURCE_PDF",
+      "optionTextsVerified": true
+    }
+  },
+  "contentGates": {
+    "crop": "PASS_2835_OF_2835",
+    "dedupe": "PASS_2832_CANONICAL",
+    "aiContext": "PASS_2832_OF_2832",
+    "lessons": "48/48",
+    "pendingAi": 0,
+    "taxonomy": "29/98"
+  },
+  "production": {
+    "r2": "PENDING",
+    "dryRun": "NOT_RUN",
+    "canary5": "NOT_RUN",
+    "fullDraftImport": "NOT_RUN",
+    "integrityAudit": "NOT_RUN",
+    "liveE2E": "NOT_RUN",
+    "approval": "NOT_RUN"
+  },
+  "next": [
+    "resolve_253_option_text_layout_visual_cases",
+    "assemble_ready_manifest_2832_with_source_provenance",
+    "qualify_assets",
+    "r2_upload_remote_hash_verify",
+    "dry_run",
+    "canary_5",
+    "full_draft_import",
+    "integrity_audit",
+    "live_e2e",
+    "approval"
+  ]
+}
