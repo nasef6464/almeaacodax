@@ -1,0 +1,92 @@
+import fs from "fs";
+import path from "path";
+
+type CropItem = {
+  questionCode: string;
+  sourceItemId: string;
+  contentStatus: "CONTENT_READY_CROP_PENDING" | "HOLD_SOURCE";
+  cropStatus: "PENDING_ORIGINAL_PIXELS" | "READY";
+  imageHash: string | null;
+  imageUrl: string | null;
+};
+
+const queuePath = path.resolve(
+  process.cwd(),
+  "docs/content/mnsf26/MNSF26_CROP_QUEUE_V1.json",
+);
+const data = JSON.parse(fs.readFileSync(queuePath, "utf8")) as {
+  bank: string;
+  counts: Record<string, number>;
+  queue: CropItem[];
+};
+
+const failures: Array<{ gate: string; detail: unknown }> = [];
+const ready = data.queue.filter((item) => item.contentStatus === "CONTENT_READY_CROP_PENDING");
+const sourceReview = data.queue.filter((item) => item.contentStatus === "HOLD_SOURCE");
+
+if (data.bank !== "MNSF26") failures.push({ gate: "bank-code", detail: data.bank });
+if (data.queue.length !== 134) {
+  failures.push({ gate: "queue-count", detail: data.queue.length });
+}
+if (ready.length !== 130 || sourceReview.length !== 4) {
+  failures.push({
+    gate: "content-status-counts",
+    detail: { ready: ready.length, sourceReview: sourceReview.length },
+  });
+}
+
+const duplicateCodes = data.queue
+  .filter(
+    (item, index, all) =>
+      all.findIndex((candidate) => candidate.questionCode === item.questionCode) !== index,
+  )
+  .map((item) => item.questionCode);
+if (duplicateCodes.length) {
+  failures.push({
+    gate: "question-code-uniqueness",
+    detail: [...new Set(duplicateCodes)],
+  });
+}
+
+const duplicateSourceIds = data.queue
+  .filter(
+    (item, index, all) =>
+      all.findIndex((candidate) => candidate.sourceItemId === item.sourceItemId) !== index,
+  )
+  .map((item) => item.sourceItemId);
+if (duplicateSourceIds.length) {
+  failures.push({
+    gate: "source-item-id-uniqueness",
+    detail: [...new Set(duplicateSourceIds)],
+  });
+}
+
+const invalidReadyAssets = data.queue.filter(
+  (item) =>
+    item.cropStatus === "READY" &&
+    (!item.imageHash ||
+      !/^[a-f0-9]{64}$/.test(item.imageHash) ||
+      !item.imageUrl ||
+      !item.imageUrl.includes(`/questions/v2/${item.questionCode}/${item.imageHash}.webp`)),
+);
+if (invalidReadyAssets.length) {
+  failures.push({
+    gate: "ready-crop-asset-contract",
+    detail: invalidReadyAssets.map((item) => item.questionCode),
+  });
+}
+
+const report = {
+  ok: failures.length === 0,
+  counts: {
+    total: data.queue.length,
+    contentReady: ready.length,
+    sourceReview: sourceReview.length,
+    cropReady: data.queue.filter((item) => item.cropStatus === "READY").length,
+    cropPending: data.queue.filter((item) => item.cropStatus !== "READY").length,
+  },
+  failures,
+};
+
+console.log(JSON.stringify(report, null, 2));
+if (!report.ok) process.exitCode = 1;
