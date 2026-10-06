@@ -1,6 +1,7 @@
 import { CommandCenterDraftModel } from "../../../models/CommandCenterDraft.js";
 import { SkillModel } from "../../../models/Skill.js";
 import type { CommandPrincipal } from "./commandAuthorization.js";
+import { auditCourse } from "./courseAudit.js";
 import {
   courseInventoryQuerySchema,
   courseReuseDraftSchema,
@@ -25,6 +26,7 @@ import {
 export const SAFE_WORKFLOW_TOOL_IDS = [
   "get_skill_tree",
   "get_course_inventory",
+  "audit_course",
   "create_question_drafts",
   "create_quiz_draft",
   "plan_quiz_question_update",
@@ -311,6 +313,11 @@ export async function executeSafeCommandTool(input: {
     const inventoryInput = courseInventoryQuerySchema.parse(input.toolInput || {});
     const inventory = await getReusableCourseInventory(inventoryInput);
     return inventory;
+  }
+
+  if (input.toolId === "audit_course") {
+    const raw = (input.toolInput || {}) as Record<string, unknown>;
+    return auditCourse(String(raw.courseId || ""));
   }
 
   if (input.toolId === "create_question_drafts") {
