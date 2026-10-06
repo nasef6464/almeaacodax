@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "productionComparedAgainst": [
+    "FND26",
+    "COL2627"
+  ],
+  "productionRowsScanned": 1804,
+  "mnsfContentReadyRowsScanned": 130,
+  "method": {
+    "exactNormalizedText": true,
+    "arabicNormalization": [
+      "NFKC",
+      "أ/إ/آ→ا",
+      "ة→ه",
+      "ى→ي",
+      "punctuation stripped",
+      "whitespace collapsed"
+    ],
+    "nearDuplicateRule": "same numeric signature + trigram Jaccard >= 0.82",
+    "sourceTextPreferred": true,
+    "titleFallback": true
+  },
+  "matches": [
+    {
+      "decision": "SUPPRESS_CROSS_BANK_DUPLICATE",
+      "mnsfQuestionCode": "QDR-QNT-MNSF26-P005-Q20",
+      "mnsfBatch": "004",
+      "mnsfPdfPage": 5,
+      "mnsfPrintedQuestionNumber": 20,
+      "existingQuestionCode": "QDR-QNT-COL2627-P037-Q28",
+      "existingSource": "COL2627",
+      "similarity": 1,
+      "numberSignature": [
+        "35",
+        "7"
+      ],
+      "reason": "Exact normalized stem and identical numerical task/result."
+    }
+  ],
+  "highConfidenceMatches": 1
+}
