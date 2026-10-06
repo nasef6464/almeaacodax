@@ -140,6 +140,7 @@ export async function applyQuestionBatchDraft(
       questions: missingQuestions,
       requestId: input.requestId,
     }),
+    { excludeQuestionIds: identities.map((identity) => identity.id) },
   );
   if (!validation.ok) {
     throw Object.assign(
