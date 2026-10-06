@@ -172,7 +172,7 @@
       "startPdfPage": 6,
       "evidence": "FILES_READ_PARSED_PAGE_HEADER",
       "cropAllowed": true,
-      "note": null
+      "note": "Revalidated 2026-10-06 by direct page-mode read: PDF page 6 header = الاختبار الرابع / الدرس الثاني / الزوايا."
     },
     {
       "testNumber": 5,
