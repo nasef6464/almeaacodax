@@ -1,6 +1,6 @@
 {
   "project": "BIO26",
-  "status": "PREIMPORT_CONTENT_GATES_PASS_AI_AUTHORING_AND_R2_PENDING",
+  "status": "PREIMPORT_CONTENT_GATES_PASS_R2_PENDING",
   "counts": {
     "foundationPdfPages": 79,
     "questionPdfPages": 226,
@@ -27,8 +27,8 @@
     "assetHashMismatchFiles": 0,
     "minQuestionsPerFrozenSubSkill": 3,
     "maxQuestionsPerFrozenSubSkill": 109,
-    "aiContextAuthoredCanonical": 1946,
-    "aiContextPendingCanonical": 886
+    "aiContextAuthoredCanonical": 2832,
+    "aiContextPendingCanonical": 0
   },
   "gates": {
     "sourceAnalysis": "PASS",
@@ -39,9 +39,9 @@
     "crop": "PASS_STRATIFIED_VISUAL_QA",
     "cropAssetPackage": "PASS_LOCAL_READY_FOR_R2_UPLOAD",
     "dedupe": "PASS_FINAL_2832_CANONICAL",
-    "aiContext": "AUTHORING_IN_PROGRESS_1946_OF_2832",
+    "aiContext": "PASS_2832_OF_2832",
     "r2Upload": "NOT_RUN",
-    "dryRun": "BLOCKED_BY_AI_AND_R2",
+    "dryRun": "BLOCKED_BY_R2",
     "draftImport": "BLOCKED",
     "liveE2E": "NOT_RUN",
     "approval": "NOT_RUN",
@@ -72,7 +72,10 @@
     "productionSubjectHistoryProtected": true,
     "canonicalZipSha256Recomputed": true,
     "canonicalZipEntriesVerified": true,
-    "canonicalZip2832ImageHashesMatchManifest": true
+    "canonicalZip2832ImageHashesMatchManifest": true,
+    "canonicalAiContext2832": true,
+    "dedupeAliasesExcludedFromEffectiveCanonicalAiContext": true,
+    "indexedAiContextShardsValidated": true
   },
   "assetPackage": {
     "version": "V2_REGENERATED_2026-10-05",
@@ -135,21 +138,38 @@
       "BIO26-L29",
       "BIO26-L30",
       "BIO26-L31",
+      "BIO26-L32",
       "BIO26-L33",
       "BIO26-L34",
-      "BIO26-L32"
+      "BIO26-L35",
+      "BIO26-L36",
+      "BIO26-L37",
+      "BIO26-L38",
+      "BIO26-L39",
+      "BIO26-L40",
+      "BIO26-L41",
+      "BIO26-L42",
+      "BIO26-L43",
+      "BIO26-L44",
+      "BIO26-L45",
+      "BIO26-L46",
+      "BIO26-L47",
+      "BIO26-L48"
     ],
-    "authoredCanonicalItems": 1946,
-    "pendingCanonicalItems": 886,
-    "sourceAnswerCrossCheck": "PASS_1839_OF_1839",
-    "skillRangeCrossCheck": "PASS_1839_OF_1839",
-    "requiredFieldsCheck": "PASS_1839_OF_1839",
+    "authoredCanonicalItems": 2832,
+    "pendingCanonicalItems": 0,
+    "sourceAnswerCrossCheck": "PASS_2832_OF_2832",
+    "skillRangeCrossCheck": "PASS_2832_OF_2832",
+    "requiredFieldsCheck": "PASS_2832_OF_2832",
     "duplicateQuestionCodes": 0,
     "answerInferredFromOCR": 0,
     "evidenceFiles": [
       "BIO26_AI_AUTHORING_QA.json",
       "BIO26_AI_CONTEXT_AUTOMATED_QA.json"
-    ]
+    ],
+    "dedupeAliasExclusions": "PASS_3_OF_3",
+    "storageMode": "INDEXED_SHARDS_V2",
+    "indexFile": "BIO26_AI_CONTEXT_INDEX.json"
   },
   "productionSubjectSafety": {
     "existingEnvironmentSubjectQuestionCount": 0,
