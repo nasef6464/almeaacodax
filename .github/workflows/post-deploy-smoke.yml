@@ -1,0 +1,133 @@
+name: Post Deploy Smoke
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      # Exercise the same production transport used by browsers. Vercel proxies
+      # /api to the current Render backend, avoiding stale Render service URLs.
+      SMOKE_API_BASE_URL: https://almeaacodax.vercel.app/api
+      SMOKE_ADMIN_TOKEN: ${{ secrets.SMOKE_ADMIN_TOKEN }}
+      SMOKE_ADMIN_EMAIL: ${{ secrets.SMOKE_ADMIN_EMAIL || secrets.ROLE_ADMIN_EMAIL }}
+      SMOKE_ADMIN_PASSWORD: ${{ secrets.SMOKE_ADMIN_PASSWORD || secrets.ROLE_ADMIN_PASSWORD }}
+      SMOKE_ALLOW_PASSWORD_LOGIN: "true"
+      RELEASE_API_BASE: https://almeaacodax.vercel.app/api
+      EXPECTED_RELEASE_SHA: ${{ github.sha }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install server dependencies
+        run: npm --prefix server ci
+
+      - name: Frontend strict smoke
+        run: npm run smoke:frontend:strict
+
+      - name: Production hardening smoke
+        run: npm run smoke:production-hardening
+
+      - name: Ensure operational auth material exists
+        run: |
+          if [ -z "$SMOKE_ADMIN_TOKEN" ] && { [ -z "$SMOKE_ADMIN_EMAIL" ] || [ -z "$SMOKE_ADMIN_PASSWORD" ]; }; then
+            echo "Operational smoke auth material is missing."
+            echo "Provide SMOKE_ADMIN_TOKEN or an admin email/password pair in SMOKE_ADMIN_* or ROLE_ADMIN_* GitHub Secrets."
+            exit 1
+          fi
+
+      - name: Prefer dedicated admin credentials over a stale token
+        run: |
+          if [ -n "$SMOKE_ADMIN_EMAIL" ] && [ -n "$SMOKE_ADMIN_PASSWORD" ]; then
+            echo "SMOKE_ADMIN_TOKEN=" >> "$GITHUB_ENV"
+          fi
+
+      - name: Release identity and readiness
+        env:
+          RELEASE_IDENTITY_MAX_ATTEMPTS: "40"
+          RELEASE_IDENTITY_INTERVAL_MS: "15000"
+        run: npm run smoke:release-identity
+
+      - name: Operational smoke
+        # Use the same production transport as real browsers. Vercel owns the
+        # current /api rewrite target, so the smoke cannot drift to a retired
+        # Render service when the backend is migrated.
+        run: npm run smoke:operational
+
+      - name: Install Chromium for counter certification
+        if: github.event_name == 'push' && (contains(github.event.head_commit.message, 'counter') || contains(github.event.head_commit.message, 'Counter') || contains(github.event.head_commit.message, 'taxonomy'))
+        run: npx playwright install --with-deps chromium
+
+      - name: Live counter integrity — API + admin UI
+        if: github.event_name == 'push' && (contains(github.event.head_commit.message, 'counter') || contains(github.event.head_commit.message, 'Counter') || contains(github.event.head_commit.message, 'taxonomy'))
+        env:
+          UI_AUDIT_BASE_URL: https://almeaacodax.vercel.app
+          UI_AUDIT_API_BASE_URL: https://almeaacodax.vercel.app/api
+        run: npm run smoke:counter-integrity-live
+
+      - name: Upload counter integrity evidence
+        if: always() && github.event_name == 'push' && (contains(github.event.head_commit.message, 'counter') || contains(github.event.head_commit.message, 'Counter') || contains(github.event.head_commit.message, 'taxonomy'))
+        uses: actions/upload-artifact@v4
+        with:
+          name: counter-integrity-${{ github.sha }}
+          path: audit-artifacts/counter-integrity/
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Google OAuth live start/callback proof
+        run: npm run smoke:google-oauth-live-proof
+
+      - name: R2 live presign/write/read proof — PLAN 2 closure only
+        if: github.event_name == 'push' && (contains(github.event.head_commit.message, 'plan2:') || contains(github.event.head_commit.message, 'PLAN 2'))
+        run: npm run smoke:r2-live-proof
+
+      - name: Production bounded latency evidence
+        env:
+          PRODUCTION_API_BASE: https://almeaacodax.vercel.app/api
+          PRODUCTION_LATENCY_SAMPLES: "7"
+          PRODUCTION_LATENCY_OUTPUT: audit-artifacts/production-latency/summary.json
+        run: npm run measure:production-latency
+
+      - name: Upload production latency evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-latency-${{ github.sha }}
+          path: audit-artifacts/production-latency/summary.json
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Bounded authenticated student read-load — PLAN 2 perf closure only
+        if: github.event_name == 'push' && contains(github.event.head_commit.message, 'plan2(perf):')
+        env:
+          SMOKE_STUDENT_EMAIL: ${{ secrets.ROLE_STUDENT_EMAIL }}
+          SMOKE_STUDENT_PASSWORD: ${{ secrets.ROLE_STUDENT_PASSWORD }}
+        run: npm run measure:production-auth-read-load
+
+      - name: Upload authenticated read-load evidence
+        if: github.event_name == 'push' && contains(github.event.head_commit.message, 'plan2(perf):')
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-auth-read-load-${{ github.sha }}
+          path: audit-artifacts/production-auth-read-load/summary.json
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Sentry live proof smoke
+        # Resolve fresh admin auth through the same production /api transport.
+        run: npm run smoke:sentry-live-proof

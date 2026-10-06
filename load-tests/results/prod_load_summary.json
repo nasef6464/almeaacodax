@@ -1,0 +1,251 @@
+[
+  {
+    "file": "prod_health_c20.jsonl",
+    "endpoint": "/health",
+    "concurrency": 20,
+    "requestsPerSec": 71.84,
+    "p95": 675,
+    "p99": 832,
+    "avg": 277.13,
+    "errors": 0,
+    "timeouts": 0,
+    "non2xx": 0,
+    "statusCodeStats": {
+      "200": {
+        "count": 862
+      }
+    }
+  },
+  {
+    "file": "prod_content_bootstrap_c20.jsonl",
+    "endpoint": "/content/bootstrap",
+    "concurrency": 20,
+    "requestsPerSec": 61.67,
+    "p95": 832,
+    "p99": 950,
+    "avg": 319.52,
+    "errors": 0,
+    "timeouts": 0,
+    "non2xx": 0,
+    "statusCodeStats": {
+      "200": {
+        "count": 740
+      }
+    }
+  },
+  {
+    "file": "prod_auth_login_c20.jsonl",
+    "endpoint": "/auth/login",
+    "concurrency": 20,
+    "requestsPerSec": 0,
+    "p95": 0,
+    "p99": 0,
+    "avg": 0,
+    "errors": 20,
+    "timeouts": 20,
+    "non2xx": 0,
+    "statusCodeStats": {}
+  },
+  {
+    "file": "prod_quizzes_results_c20.jsonl",
+    "endpoint": "/quizzes/results",
+    "concurrency": 20,
+    "requestsPerSec": 0,
+    "p95": 0,
+    "p99": 0,
+    "avg": 0,
+    "errors": 20,
+    "timeouts": 20,
+    "non2xx": 0,
+    "statusCodeStats": {}
+  },
+  {
+    "file": "prod_health_c100.jsonl",
+    "endpoint": "/health",
+    "concurrency": 100,
+    "requestsPerSec": 0,
+    "p95": 0,
+    "p99": 0,
+    "avg": 0,
+    "errors": 100,
+    "timeouts": 100,
+    "non2xx": 0,
+    "statusCodeStats": {}
+  },
+  {
+    "file": "prod_content_bootstrap_c100.jsonl",
+    "endpoint": "/content/bootstrap",
+    "concurrency": 100,
+    "requestsPerSec": 71.92,
+    "p95": 2283,
+    "p99": 2371,
+    "avg": 1398.41,
+    "errors": 0,
+    "timeouts": 0,
+    "non2xx": 0,
+    "statusCodeStats": {
+      "200": {
+        "count": 863
+      }
+    }
+  },
+  {
+    "file": "prod_auth_login_c100.jsonl",
+    "endpoint": "/auth/login",
+    "concurrency": 100,
+    "requestsPerSec": 0.75,
+    "p95": 9385,
+    "p99": 9385,
+    "avg": 7125.78,
+    "errors": 92,
+    "timeouts": 92,
+    "non2xx": 0,
+    "statusCodeStats": {
+      "200": {
+        "count": 9
+      }
+    }
+  },
+  {
+    "file": "prod_quizzes_results_c100.jsonl",
+    "endpoint": "/quizzes/results",
+    "concurrency": 100,
+    "requestsPerSec": 0,
+    "p95": 0,
+    "p99": 0,
+    "avg": 0,
+    "errors": 100,
+    "timeouts": 100,
+    "non2xx": 0,
+    "statusCodeStats": {}
+  },
+  {
+    "file": "prod_health_c500.jsonl",
+    "endpoint": "/health",
+    "concurrency": 500,
+    "requestsPerSec": 0,
+    "p95": 0,
+    "p99": 0,
+    "avg": 0,
+    "errors": 500,
+    "timeouts": 500,
+    "non2xx": 0,
+    "statusCodeStats": {}
+  },
+  {
+    "file": "prod_content_bootstrap_c500.jsonl",
+    "endpoint": "/content/bootstrap",
+    "concurrency": 500,
+    "requestsPerSec": 7.91,
+    "p95": 2858,
+    "p99": 2891,
+    "avg": 2282.99,
+    "errors": 500,
+    "timeouts": 500,
+    "non2xx": 87,
+    "statusCodeStats": {
+      "502": {
+        "count": 23
+      },
+      "503": {
+        "count": 64
+      }
+    }
+  },
+  {
+    "file": "prod_auth_login_c500.jsonl",
+    "endpoint": "/auth/login",
+    "concurrency": 500,
+    "requestsPerSec": 0,
+    "p95": 0,
+    "p99": 0,
+    "avg": 0,
+    "errors": 500,
+    "timeouts": 500,
+    "non2xx": 0,
+    "statusCodeStats": {}
+  },
+  {
+    "file": "prod_quizzes_results_c500.jsonl",
+    "endpoint": "/quizzes/results",
+    "concurrency": 500,
+    "requestsPerSec": 51.34,
+    "p95": 9529,
+    "p99": 9937,
+    "avg": 4655.95,
+    "errors": 165,
+    "timeouts": 165,
+    "non2xx": 616,
+    "statusCodeStats": {
+      "502": {
+        "count": 271
+      },
+      "503": {
+        "count": 345
+      }
+    }
+  },
+  {
+    "file": "prod_health_c1000.jsonl",
+    "endpoint": "/health",
+    "concurrency": 1000,
+    "requestsPerSec": 31,
+    "p95": 9936,
+    "p99": 11439,
+    "avg": 4915.52,
+    "errors": 833,
+    "timeouts": 833,
+    "non2xx": 310,
+    "statusCodeStats": {
+      "502": {
+        "count": 80
+      },
+      "503": {
+        "count": 230
+      }
+    }
+  },
+  {
+    "file": "prod_content_bootstrap_c1000.jsonl",
+    "endpoint": "/content/bootstrap",
+    "concurrency": 1000,
+    "requestsPerSec": 0,
+    "p95": 0,
+    "p99": 0,
+    "avg": 0,
+    "errors": 1000,
+    "timeouts": 1000,
+    "non2xx": 0,
+    "statusCodeStats": {}
+  },
+  {
+    "file": "prod_auth_login_c1000.jsonl",
+    "endpoint": "/auth/login",
+    "concurrency": 1000,
+    "requestsPerSec": 67.2,
+    "p95": 9103,
+    "p99": 9152,
+    "avg": 6479.95,
+    "errors": 579,
+    "timeouts": 579,
+    "non2xx": 672,
+    "statusCodeStats": {
+      "503": {
+        "count": 672
+      }
+    }
+  },
+  {
+    "file": "prod_quizzes_results_c1000.jsonl",
+    "endpoint": "/quizzes/results",
+    "concurrency": 1000,
+    "requestsPerSec": 0,
+    "p95": 0,
+    "p99": 0,
+    "avg": 0,
+    "errors": 1000,
+    "timeouts": 1000,
+    "non2xx": 0,
+    "statusCodeStats": {}
+  }
+]

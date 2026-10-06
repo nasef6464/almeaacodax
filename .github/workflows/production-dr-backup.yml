@@ -1,0 +1,335 @@
+name: Production DR Scheduled Backup
+
+on:
+  workflow_dispatch:
+  schedule:
+    # 04:17 Asia/Riyadh. Render stages the Mongo dump first at 04:05 Asia/Riyadh.
+    - cron: "17 1 * * *"
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: production-dr-backup
+  cancel-in-progress: false
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      R2_ENDPOINT: ${{ secrets.PRODUCTION_R2_ENDPOINT }}
+      R2_BUCKET: ${{ secrets.PRODUCTION_R2_BUCKET }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.PRODUCTION_R2_BACKUP_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.PRODUCTION_R2_BACKUP_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: auto
+      RETENTION_DAYS: "0"
+
+    steps:
+      - name: Checkout exact main
+        uses: actions/checkout@v4
+
+      - name: Fail closed when R2 source secrets are incomplete
+        shell: bash
+        run: |
+          set -euo pipefail
+          missing=()
+          for name in R2_ENDPOINT R2_BUCKET AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY
+          do
+            if [ -z "${!name:-}" ]; then
+              missing+=("$name")
+            fi
+          done
+
+          if [ "${#missing[@]}" -gt 0 ]; then
+            echo "::error::Production DR is not configured. Missing secret-backed values: ${missing[*]}"
+            exit 1
+          fi
+
+      - name: Install MongoDB Database Tools
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="100.19.0"
+          archive="mongodb-database-tools-ubuntu2404-x86_64-${version}.tgz"
+          curl --fail --silent --show-error --location             "https://fastdl.mongodb.org/tools/db/${archive}"             --output "/tmp/${archive}"
+          tar -xzf "/tmp/${archive}" -C /tmp
+          echo "/tmp/mongodb-database-tools-ubuntu2404-x86_64-${version}/bin" >> "$GITHUB_PATH"
+
+      - name: Verify recovery tooling
+        shell: bash
+        run: |
+          set -euo pipefail
+          mongorestore --version
+          aws --version
+          sha256sum --version | head -1
+          docker --version
+          python3 --version
+
+      - name: Resolve fresh MongoDB backup staged by Render
+        id: mongo_stage
+        shell: bash
+        run: |
+          set -euo pipefail
+          marker="/tmp/almeaa-dr-ready.json"
+          aws --endpoint-url "$R2_ENDPOINT" s3 cp             "s3://$R2_BUCKET/dr-staging/mongodb/current/ready.json"             "$marker"             --only-show-errors
+
+          python3 - "$GITHUB_OUTPUT" <<'PY'
+          import json
+          import sys
+          from datetime import datetime, timezone
+
+          marker_path = "/tmp/almeaa-dr-ready.json"
+          with open(marker_path, "r", encoding="utf-8") as handle:
+              data = json.load(handle)
+
+          required = ["createdAtUtc", "archiveKey", "checksumKey", "manifestKey", "sha256", "bytes"]
+          missing = [name for name in required if not data.get(name)]
+          if missing:
+              raise SystemExit(f"staged Mongo marker missing fields: {', '.join(missing)}")
+
+          created = datetime.fromisoformat(str(data["createdAtUtc"]).replace("Z", "+00:00"))
+          now = datetime.now(timezone.utc)
+          age = int((now - created).total_seconds())
+          if age < -300:
+              raise SystemExit(f"staged Mongo backup timestamp is unexpectedly in the future: {age}s")
+          if age > 7200:
+              raise SystemExit(f"staged Mongo backup is stale: {age}s old (limit 7200s)")
+
+          prefix = "dr-staging/mongodb/current/"
+          for field in ("archiveKey", "checksumKey", "manifestKey"):
+              value = str(data[field])
+              if not value.startswith(prefix) or ".." in value:
+                  raise SystemExit(f"invalid staged Mongo object key in {field}")
+
+          with open(sys.argv[1], "a", encoding="utf-8") as out:
+              out.write(f"archive_key={data['archiveKey']}\n")
+              out.write(f"checksum_key={data['checksumKey']}\n")
+              out.write(f"manifest_key={data['manifestKey']}\n")
+              out.write(f"created_at_utc={data['createdAtUtc']}\n")
+              out.write(f"age_seconds={age}\n")
+              out.write(f"source_commit={data.get('sourceCommit', 'unknown')}\n")
+          PY
+
+      - name: Download and verify staged MongoDB backup
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p backups/mongodb
+
+          aws --endpoint-url "$R2_ENDPOINT" s3 cp             "s3://$R2_BUCKET/${{ steps.mongo_stage.outputs.archive_key }}"             backups/mongodb/mongodb-staged.archive.gz             --only-show-errors
+          aws --endpoint-url "$R2_ENDPOINT" s3 cp             "s3://$R2_BUCKET/${{ steps.mongo_stage.outputs.checksum_key }}"             backups/mongodb/mongodb-staged.archive.gz.sha256             --only-show-errors
+          aws --endpoint-url "$R2_ENDPOINT" s3 cp             "s3://$R2_BUCKET/${{ steps.mongo_stage.outputs.manifest_key }}"             backups/mongodb/mongodb-staged.archive.gz.manifest             --only-show-errors
+
+          (
+            cd backups/mongodb
+            sha256sum --check mongodb-staged.archive.gz.sha256
+          )
+          grep -q '^format=mongodump-archive-gzip$' backups/mongodb/mongodb-staged.archive.gz.manifest
+          grep -q '^created_at_utc=' backups/mongodb/mongodb-staged.archive.gz.manifest
+
+      - name: Create verified R2 media backup
+        shell: bash
+        env:
+          MEDIA_BACKUP_DIR: backups/r2
+        run: npm run backup:media:r2
+
+      - name: Resolve verified backup artifact paths
+        id: paths
+        shell: bash
+        run: |
+          set -euo pipefail
+          mongo_archive="$(ls -1t backups/mongodb/mongodb-*.archive.gz | head -1)"
+          media_archive="$(ls -1t backups/r2/r2-*.tar.gz | head -1)"
+          media_inventory="$(ls -1t backups/r2/r2-*.inventory.txt | head -1)"
+
+          test -f "$mongo_archive"
+          test -f "$mongo_archive.sha256"
+          test -f "$media_archive"
+          test -f "$media_archive.sha256"
+          test -f "$media_inventory"
+
+          echo "mongo_archive=$mongo_archive" >> "$GITHUB_OUTPUT"
+          echo "media_archive=$media_archive" >> "$GITHUB_OUTPUT"
+          echo "media_inventory=$media_inventory" >> "$GITHUB_OUTPUT"
+
+      - name: Copy verified backup to independent GitHub Actions storage
+        id: offsite
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-dr-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            backups/mongodb/
+            backups/r2/
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 0
+
+      - name: Start isolated Mongo and S3-compatible recovery targets
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker run -d --rm --name almeaa-dr-mongo -p 27017:27017 mongo:8.0
+          docker run -d --rm --name almeaa-dr-minio             -p 9000:9000             -e MINIO_ROOT_USER=minioadmin             -e MINIO_ROOT_PASSWORD=minioadmin123             minio/minio server /data
+
+          for attempt in $(seq 1 30); do
+            if docker exec almeaa-dr-mongo mongosh --quiet --eval 'db.runCommand({ ping: 1 }).ok' | grep -q '^1$'; then
+              break
+            fi
+            if [ "$attempt" -eq 30 ]; then
+              echo "::error::Isolated Mongo recovery target did not become ready."
+              exit 1
+            fi
+            sleep 2
+          done
+
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:9000/minio/health/ready >/dev/null; then
+              break
+            fi
+            if [ "$attempt" -eq 30 ]; then
+              echo "::error::Isolated MinIO recovery target did not become ready."
+              exit 1
+            fi
+            sleep 2
+          done
+
+      - name: Restore MongoDB backup into isolated recovery target
+        id: mongo_restore
+        shell: bash
+        env:
+          BACKUP_ARCHIVE: ${{ steps.paths.outputs.mongo_archive }}
+          RESTORE_MONGODB_URI: mongodb://127.0.0.1:27017
+          RESTORE_TARGET_CONFIRMATION: isolated-recovery
+          ALLOW_DESTRUCTIVE_RESTORE: "true"
+        run: |
+          set -euo pipefail
+          started="$(date +%s)"
+          npm run restore:database:verified
+
+          restored_collections="$(docker exec almeaa-dr-mongo mongosh --quiet --eval 'db.getSiblingDB("almeaa").getCollectionNames().length')"
+          restored_users="$(docker exec almeaa-dr-mongo mongosh --quiet --eval 'db.getSiblingDB("almeaa").users.countDocuments({})')"
+          restored_questions="$(docker exec almeaa-dr-mongo mongosh --quiet --eval 'db.getSiblingDB("almeaa").questions.countDocuments({})')"
+
+          if [ "$restored_collections" -lt 10 ]; then
+            echo "::error::Mongo recovery drill restored too few collections: $restored_collections"
+            exit 1
+          fi
+          if [ "$restored_users" -lt 1 ]; then
+            echo "::error::Mongo recovery drill restored no users."
+            exit 1
+          fi
+          if [ "$restored_questions" -lt 1 ]; then
+            echo "::error::Mongo recovery drill restored no questions."
+            exit 1
+          fi
+
+          duration="$(( $(date +%s) - started ))"
+          echo "duration_seconds=$duration" >> "$GITHUB_OUTPUT"
+          echo "collections=$restored_collections" >> "$GITHUB_OUTPUT"
+          echo "users=$restored_users" >> "$GITHUB_OUTPUT"
+          echo "questions=$restored_questions" >> "$GITHUB_OUTPUT"
+
+      - name: Restore R2 media backup into isolated S3-compatible target
+        id: media_restore
+        shell: bash
+        env:
+          MEDIA_BACKUP_ARCHIVE: ${{ steps.paths.outputs.media_archive }}
+          MEDIA_INVENTORY: ${{ steps.paths.outputs.media_inventory }}
+          R2_ENDPOINT: http://127.0.0.1:9000
+          R2_RESTORE_BUCKET: almeaa-dr-restore
+          MEDIA_RESTORE_TARGET_CONFIRMATION: isolated-recovery-bucket
+          AWS_ACCESS_KEY_ID: minioadmin
+          AWS_SECRET_ACCESS_KEY: minioadmin123
+          AWS_DEFAULT_REGION: us-east-1
+        run: |
+          set -euo pipefail
+          started="$(date +%s)"
+
+          aws --endpoint-url "$R2_ENDPOINT" s3 mb "s3://$R2_RESTORE_BUCKET"
+          npm run restore:media:r2
+
+          source_objects="$(awk 'NF { count += 1 } END { print count + 0 }' "$MEDIA_INVENTORY")"
+          restored_objects="$(aws --endpoint-url "$R2_ENDPOINT" s3 ls "s3://$R2_RESTORE_BUCKET/" --recursive | wc -l | tr -d ' ')"
+
+          if [ "$source_objects" -lt 1 ]; then
+            echo "::error::R2 production inventory is empty."
+            exit 1
+          fi
+          if [ "$restored_objects" -ne "$source_objects" ]; then
+            echo "::error::R2 restore object count mismatch: source=$source_objects restored=$restored_objects"
+            exit 1
+          fi
+
+          sample_key="$(awk 'NF { print $1; exit }' "$MEDIA_INVENTORY")"
+          if [ -z "$sample_key" ]; then
+            echo "::error::R2 restore inventory did not contain a sample key."
+            exit 1
+          fi
+          aws --endpoint-url "$R2_ENDPOINT" s3api head-object             --bucket "$R2_RESTORE_BUCKET"             --key "$sample_key" >/dev/null
+
+          duration="$(( $(date +%s) - started ))"
+          echo "duration_seconds=$duration" >> "$GITHUB_OUTPUT"
+          echo "objects=$restored_objects" >> "$GITHUB_OUTPUT"
+          echo "sample_key=$sample_key" >> "$GITHUB_OUTPUT"
+
+      - name: Record achieved RPO/RTO and independent backup evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          mongo_rto="${{ steps.mongo_restore.outputs.duration_seconds }}"
+          media_rto="${{ steps.media_restore.outputs.duration_seconds }}"
+          total_rto="$(( mongo_rto + media_rto ))"
+
+          {
+            echo "### Production DR certification"
+            echo "- commit: `$GITHUB_SHA`"
+            echo "- UTC: `$(date -u +%FT%TZ)`"
+            echo "- staged Mongo created: `${{ steps.mongo_stage.outputs.created_at_utc }}`"
+            echo "- staged Mongo age at certification: `${{ steps.mongo_stage.outputs.age_seconds }}s`"
+            echo "- staged Mongo source commit: `${{ steps.mongo_stage.outputs.source_commit }}`"
+            echo "- scheduled cadence / achieved RPO objective: `<=24h`"
+            echo "- Mongo restore RTO: `${mongo_rto}s`"
+            echo "- R2 restore RTO: `${media_rto}s`"
+            echo "- combined isolated restore RTO: `${total_rto}s`"
+            echo "- restored Mongo collections: `${{ steps.mongo_restore.outputs.collections }}`"
+            echo "- restored users/questions: `${{ steps.mongo_restore.outputs.users }}/${{ steps.mongo_restore.outputs.questions }}`"
+            echo "- restored media objects: `${{ steps.media_restore.outputs.objects }}`"
+            echo "- stable sample media key: `${{ steps.media_restore.outputs.sample_key }}`"
+            echo "- independent artifact URL: `${{ steps.offsite.outputs.artifact-url }}`"
+            echo "- independent artifact digest: `${{ steps.offsite.outputs.artifact-digest }}`"
+            echo "- independent artifact retention: `30 days`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Cleanup isolated recovery targets
+        if: always()
+        shell: bash
+        run: |
+          docker rm -f almeaa-dr-mongo >/dev/null 2>&1 || true
+          docker rm -f almeaa-dr-minio >/dev/null 2>&1 || true
+
+  notify-failure:
+    name: Alert DR backup failure
+    if: ${{ always() && needs.backup.result == 'failure' }}
+    needs: backup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Record failure on ALM-DR-002
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 235,
+              body: [
+                '⛔ Scheduled production DR backup failed.',
+                '',
+                `Run: ${runUrl}`,
+                `Commit: \`${context.sha}\``,
+                '',
+                'This is a fail-closed alert. Do not count this run as backup evidence until the underlying failure is corrected and a later run succeeds.'
+              ].join('\n')
+            });

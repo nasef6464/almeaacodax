@@ -1,0 +1,62 @@
+name: Learner Assessment Entry Fix
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'scripts/patch-learner-assessment-entry.mjs'
+      - '.github/workflows/learner-assessment-entry-fix.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: learner-assessment-entry-fix-${{ github.event.pull_request.head.ref || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  apply-and-verify:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: codex/supervisor-student-journey-hardening
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            server/package-lock.json
+      - name: Apply bounded harness correction
+        run: node scripts/patch-learner-assessment-entry.mjs
+      - name: Install frontend dependencies
+        run: npm ci
+      - name: Install API dependencies
+        run: npm --prefix server ci
+      - name: Frontend typecheck
+        run: npm run typecheck
+      - name: API typecheck
+        run: npm run server:check
+      - name: Existing directed journey source contract
+        run: node scripts/smoke-supervisor-dashboard-contract.mjs
+      - name: Diff check
+        run: git diff --check
+      - name: Commit focused harness correction and runtime rollback
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- pages/QuizPage.tsx services/apiGroups/quizzesApi.ts scripts/smoke-supervisor-dashboard-contract.mjs scripts/live-assessment-commercial-audit.mjs; then
+            echo 'Harness correction already present.'
+            exit 0
+          fi
+          git config user.name 'almeaa-release-readiness'
+          git config user.email 'actions@users.noreply.github.com'
+          git add pages/QuizPage.tsx services/apiGroups/quizzesApi.ts scripts/smoke-supervisor-dashboard-contract.mjs scripts/live-assessment-commercial-audit.mjs
+          git commit -m 'Correct directed assessment E2E navigation target'
+          git push origin HEAD:codex/supervisor-student-journey-hardening

@@ -1,0 +1,181 @@
+name: Platform V3 Phase + Handover Gate
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - develop/platform-v3-recovery
+      - codex/supervisor-student-journey-hardening
+      - chatgpt/adaptive-phase11-final-certification
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+concurrency:
+  group: platform-v3-phase-handover-${{ github.event.pull_request.head.ref || github.ref_name }}
+  cancel-in-progress: true
+
+env:
+  CI: "true"
+
+jobs:
+  apply-supervisor-student-fixes:
+    if: github.event_name == 'push' && github.ref_name == 'codex/supervisor-student-journey-hardening'
+    name: Apply focused supervisor-student fixes
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: codex/supervisor-student-journey-hardening
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            server/package-lock.json
+      - name: Apply exact source patches
+        run: node scripts/patch-supervisor-student-e2e-findings.mjs
+      - name: Install frontend dependencies
+        run: npm ci
+      - name: Install API dependencies
+        run: npm --prefix server ci
+      - name: Verify type safety and journey source contract
+        run: |
+          npm run typecheck
+          npm run server:check
+          node scripts/smoke-supervisor-dashboard-contract.mjs
+      - name: Commit focused fixes
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- dashboards/admin/UnifiedQuizBuilder.tsx dashboards/admin/SupervisorDashboard.tsx server/src/models/Quiz.ts scripts/smoke-supervisor-dashboard-contract.mjs scripts/live-assessment-commercial-audit.mjs; then
+            echo "No focused source changes to commit."
+            exit 0
+          fi
+          git config user.name "almeaa-e2e-fix-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add dashboards/admin/UnifiedQuizBuilder.tsx dashboards/admin/SupervisorDashboard.tsx server/src/models/Quiz.ts scripts/smoke-supervisor-dashboard-contract.mjs scripts/live-assessment-commercial-audit.mjs
+          git commit -m "Fix directed assessment targeting and supervisor alerts"
+          git push origin HEAD:codex/supervisor-student-journey-hardening
+
+  cross-phase-handover:
+    if: github.event_name != 'push' || github.ref_name != 'codex/supervisor-student-journey-hardening'
+    name: Cross-phase + handover regression
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            server/package-lock.json
+      - name: Install frontend dependencies
+        run: npm ci
+      - name: Install API dependencies
+        run: npm --prefix server ci
+      - name: ProductConfig variant and secret-safety proof
+        run: npm --prefix server run verify:product-config
+      - name: ProductConfig admin ownership proof
+        run: node scripts/smoke-product-config-admin-ownership-contract.mjs
+      - name: Customer bootstrap dry-run and apply guards
+        run: npm --prefix server run verify:customer-bootstrap
+      - name: Customer deployment package proof
+        run: npm --prefix server run verify:customer-packaging
+      - name: Adaptive Phase 8 school aggregate contract
+        run: node scripts/smoke-adaptive-phase8-school-skill-aggregates-contract.mjs
+      - name: Adaptive Phase 9 question assistant contract
+        run: node scripts/smoke-adaptive-phase9-question-assistant-contract.mjs
+      - name: Adaptive Phase 10 resource hardening contract
+        run: node scripts/smoke-adaptive-phase10-resource-hardening-contract.mjs
+      - name: Adaptive Phase 11 final certification contract
+        run: npm run smoke:adaptive-phase11-final-certification
+      - name: API phase 4 contract
+        run: npm run smoke:api-phase4
+      - name: Frontend phase 5 contract
+        run: npm run smoke:frontend-phase5
+      - name: Security and RBAC phase 6 contract
+        run: npm run smoke:security-rbac-phase6
+      - name: Notification cookie-session contract
+        run: node scripts/smoke-notification-cookie-session-contract.mjs
+      - name: Gate 6 question AI authoring contract
+        run: node scripts/smoke-gate6-question-ai-authoring-contract.mjs
+      - name: Gate 6 question usage analytics contract
+        run: node scripts/smoke-gate6-question-usage-analytics-contract.mjs
+      - name: Gate 6 Questions commercial closure contract
+        run: node scripts/smoke-gate6-questions-commercial-closure-contract.mjs
+      - name: Gate 6 curriculum ownership contract
+        run: node scripts/smoke-gate6-curriculum-ownership-contract.mjs
+      - name: Gate 6 Curriculum commercial closure contract
+        run: node scripts/smoke-gate6-curriculum-commercial-closure-contract.mjs
+      - name: Gate 6 courses product boundary contract
+        run: node scripts/smoke-gate6-courses-product-boundary-contract.mjs
+      - name: Gate 6 media reference contract
+        run: node scripts/smoke-gate6-media-reference-contract.mjs
+      - name: Gate 6 operations audit boundary contract
+        run: node scripts/smoke-gate6-operations-audit-boundary-contract.mjs
+      - name: Gate 6 operations commercial closure contract
+        run: node scripts/smoke-gate6-operations-commercial-closure-contract.mjs
+      - name: Exam and payment phase 8 contract
+        run: npm run smoke:exam-payment-phase8
+      - name: Dashboards phase 11 contract
+        run: npm run smoke:dashboards-phase11
+      - name: Production ops phase 14 contract
+        run: npm run smoke:production-ops-phase14
+      - name: QA phase 17 contract
+        run: npm run smoke:qa-phase17
+      - name: Deployment handover phase 19 contract
+        run: npm run smoke:deployment-handover-phase19
+      - name: Current handover contract
+        run: npm run smoke:handover-current
+      - name: PLAN 9 Smart Classroom security contract
+        run: npm run smoke:smart-classroom-g0
+      - name: PLAN 9 Smart Classroom UI/API contract
+        run: npm run smoke:smart-classroom-g2-contract
+      - name: PLAN 9 Smart Classroom live-journey contract
+        run: node scripts/smoke-smart-classroom-live-journey-contract.mjs
+      - name: PLAN 9 Smart Classroom hardening contract
+        run: node scripts/smoke-smart-classroom-hardening-contract.mjs
+      - name: PLAN 9 Smart Classroom report/entitlement contract
+        run: node scripts/smoke-smart-classroom-report-insights-contract.mjs
+      - name: PLAN 9 Smart Classroom projector privacy contract
+        run: node scripts/smoke-smart-classroom-projector-reveal-contract.mjs
+      - name: PLAN 9 privacy lifecycle contract
+        run: node scripts/smoke-privacy-lifecycle-contract.mjs
+      - name: PLAN 9 independent global certification guard
+        run: node scripts/smoke-plan9-global-certification-contract.mjs
+      - name: PLAN 8 question bank integrity guard
+        run: |
+          node scripts/smoke-plan8-question-integrity-contract.mjs
+          cd server && npx tsx src/scripts/plan8QuestionApprovalIntegrityContract.ts
+      - name: PLAN 7 AI certification prerequisites
+        run: |
+          node scripts/smoke-plan7-ai-certification-contract.mjs
+          cd server && npx tsx src/scripts/plan7AiFailoverContract.ts
+      - name: PLAN 6 student learning-loop guard
+        run: node scripts/smoke-plan6-student-learning-loop-contract.mjs
+      - name: PLAN 5 residual module-boundary guard
+        run: node scripts/smoke-plan5-module-boundaries.mjs
+      - name: DB-1 inventory ownership and growth baseline contract
+        run: node scripts/smoke-db1-inventory-contract.mjs
+      - name: DB-2 schema and relationship integrity contract
+        run: node scripts/smoke-db2-reference-integrity-contract.mjs
+      - name: DB-3 query and index engineering contract
+        run: node scripts/smoke-db3-query-index-contract.mjs
+      - name: DB-4 high-volume data growth contract
+        run: node scripts/smoke-db4-growth-budget-contract.mjs
+      - name: DB-5 consistency and idempotency contract
+        run: node scripts/smoke-db5-consistency-contract.mjs
+      - name: DB-6 final database certification contract
+        run: node scripts/smoke-db6-final-certification-contract.mjs
+      - name: Full handover gate suite
+        run: npm run smoke:handover:all

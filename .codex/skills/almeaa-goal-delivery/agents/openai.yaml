@@ -1,0 +1,7 @@
+interface:
+  display_name: "Almeaa Goal Delivery"
+  short_description: "Focused ALMEAA Product Goal delivery"
+  default_prompt: "Use $almeaa-goal-delivery to deliver the active ALMEAA Product Goal."
+
+policy:
+  allow_implicit_invocation: true

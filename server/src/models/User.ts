@@ -1,0 +1,128 @@
+import mongoose, { Schema } from "mongoose";
+import { roles } from "../constants/roles.js";
+import { DB_GROWTH_BUDGETS } from "../modules/database/dbGrowthBudgets.js";
+
+const userSchema = new Schema(
+  {
+    name: { type: String, required: true, trim: true },
+    email: { type: String, required: true, unique: true, lowercase: true, trim: true },
+    passwordHash: { type: String, required: true },
+    passwordChangedAt: { type: Number, default: null },
+    failedLoginAttempts: { type: Number, default: 0 },
+    lastFailedLoginAt: { type: Number, default: null },
+    loginLockedUntil: { type: Number, default: null, index: true },
+    avatar: { type: String, default: "" },
+    role: { type: String, enum: roles, default: "student" },
+    points: { type: Number, default: 0 },
+    badges: { type: [String], default: [] },
+    subscription: {
+      plan: { type: String, enum: ["free", "premium"], default: "free" },
+      expiresAt: { type: Date },
+      purchasedCourses: { type: [String], default: [] },
+      purchasedPackages: { type: [String], default: [] },
+    },
+    isActive: { type: Boolean, default: true },
+    emailVerified: { type: Boolean, default: false, index: true },
+    emailVerifiedAt: { type: Number, default: null },
+    emailVerificationTokenHash: { type: String, default: "", index: true },
+    emailVerificationExpiresAt: { type: Number, default: null },
+    passwordResetTokenHash: { type: String, default: "", index: true },
+    passwordResetExpiresAt: { type: Number, default: null },
+    passwordResetUsedAt: { type: Number, default: null },
+    schoolId: { type: String, default: null },
+    groupIds: { type: [String], default: [] },
+    linkedStudentIds: { type: [String], default: [] },
+    managedPathIds: { type: [String], default: [] },
+    managedSubjectIds: { type: [String], default: [] },
+    enrolledCourses: { type: [String], default: [] },
+    enrolledPaths: { type: [String], default: [] },
+    completedLessons: {
+      type: [String],
+      default: [],
+      validate: { validator: (value: string[]) => value.length <= DB_GROWTH_BUDGETS.legacyCompletedLessons, message: "Legacy completedLessons exceeds growth budget" },
+    },
+    interactiveVideoProgress: {
+      type: [{
+        courseId: { type: String, required: true },
+        lessonId: { type: String, required: true },
+        positionSeconds: { type: Number, min: 0, default: 0 },
+        answeredQuestionIds: {
+          type: [String],
+          default: [],
+          validate: { validator: (value: string[]) => value.length <= DB_GROWTH_BUDGETS.answeredQuestionIdsPerLesson, message: "Interactive video answeredQuestionIds exceeds growth budget" },
+        },
+        updatedAt: { type: Number, required: true },
+      }],
+      default: [],
+      validate: { validator: (value: unknown[]) => value.length <= DB_GROWTH_BUDGETS.interactiveVideoProgressRows, message: "interactiveVideoProgress exceeds growth budget" },
+    },
+    favorites: { type: [String], default: [] },
+    reviewLater: { type: [String], default: [] },
+    phone: { type: String, default: "" },
+    nationalId: { type: String },
+    whatsappDigestEnabled: { type: Boolean, default: false },
+  },
+  {
+    timestamps: true,
+  },
+);
+
+// Password changes are a security boundary: JWTs issued before this instant
+// must no longer authorize requests. Skip initial creation because the first
+// token is issued immediately after the new user is saved.
+userSchema.pre("save", function (next) {
+  if (!this.isNew && this.isModified("passwordHash")) {
+    this.set("passwordChangedAt", Date.now());
+  }
+  next();
+});
+
+// Query updates bypass document save middleware. Keep the same revocation
+// boundary for admin upserts and any future findOneAndUpdate password rotation.
+userSchema.pre("findOneAndUpdate", function (next) {
+  const update = this.getUpdate() as Record<string, any> | null;
+  if (!update) return next();
+
+  const changesPassword =
+    Object.prototype.hasOwnProperty.call(update, "passwordHash") ||
+    Object.prototype.hasOwnProperty.call(update.$set || {}, "passwordHash");
+
+  if (changesPassword) {
+    if (update.$set) {
+      update.$set.passwordChangedAt = Date.now();
+    } else {
+      update.passwordChangedAt = Date.now();
+    }
+  }
+
+  next();
+});
+
+userSchema.set("toJSON", {
+  transform: (_doc, ret) => {
+    const safeRet = ret as Record<string, unknown>;
+    delete safeRet.passwordHash;
+    delete safeRet.passwordChangedAt;
+    delete safeRet.failedLoginAttempts;
+    delete safeRet.lastFailedLoginAt;
+    delete safeRet.loginLockedUntil;
+    delete safeRet.emailVerificationTokenHash;
+    delete safeRet.passwordResetTokenHash;
+    delete safeRet.__v;
+    return safeRet;
+  },
+});
+
+userSchema.index({ role: 1, createdAt: -1 });
+userSchema.index({ nationalId: 1 }, { unique: true, sparse: true });
+userSchema.index({ schoolId: 1, role: 1, createdAt: -1 });
+userSchema.index({ groupIds: 1, role: 1 });
+userSchema.index({ linkedStudentIds: 1 });
+userSchema.index({ managedPathIds: 1 });
+userSchema.index({ managedSubjectIds: 1 });
+userSchema.index({ "subscription.purchasedPackages": 1 });
+userSchema.index({ "subscription.purchasedCourses": 1 });
+userSchema.index({ emailVerificationTokenHash: 1, emailVerificationExpiresAt: 1 });
+userSchema.index({ passwordResetTokenHash: 1, passwordResetExpiresAt: 1 });
+
+export const UserModel = mongoose.model("User", userSchema);

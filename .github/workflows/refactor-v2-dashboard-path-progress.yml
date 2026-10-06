@@ -1,0 +1,111 @@
+name: Refactor V2 Dashboard Path Progress
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - refactor/repository-v2-safe
+    paths:
+      - 'pages/Dashboard.tsx'
+      - 'pages/Dashboard/pathProgressProjection.ts'
+      - 'scripts/smoke-dashboard-path-progress-boundary-contract.mjs'
+      - 'scripts/smoke-student-path-scope-contract.mjs'
+      - 'tools/refactor/apply-dashboard-path-progress.mjs'
+      - 'tools/refactor/phase-review-dashboard-path-progress.mjs'
+      - '.github/workflows/refactor-v2-dashboard-path-progress.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refactor-v2-dashboard-path-progress-${{ github.event.pull_request.head.ref || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  verify-and-apply:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - name: Checkout exact source head
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            server/package-lock.json
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Install API dependencies required by repository typecheck
+        run: npm --prefix server ci
+
+      - name: Verify post-extraction Dashboard path progress boundary
+        run: node scripts/smoke-dashboard-path-progress-boundary-contract.mjs
+
+      - name: Verify student path scope on source head
+        run: node scripts/smoke-student-path-scope-contract.mjs
+
+      - name: Repository typecheck on source head
+        run: npm run typecheck
+
+      - name: Apply current refactor phase — Dashboard path progress
+        if: github.actor != 'github-actions[bot]'
+        run: node tools/refactor/apply-dashboard-path-progress.mjs
+
+      - name: Run current refactor phase review
+        if: github.actor != 'github-actions[bot]'
+        run: node tools/refactor/phase-review-dashboard-path-progress.mjs
+
+      - name: Commit verified current refactor phase
+        if: github.actor != 'github-actions[bot]'
+        shell: bash
+        run: |
+          set -euo pipefail
+          EXPECTED_SHA="${{ github.event.pull_request.head.sha || github.sha }}"
+          ALLOWED="pages/Dashboard.tsx"
+
+          STAGED="$(git diff --cached --name-only | sort)"
+          for file in $STAGED; do
+            case " $ALLOWED " in
+              *" $file "*) ;;
+              *) echo "Unexpected staged file: $file" >&2; exit 1 ;;
+            esac
+          done
+
+          if git diff --cached --quiet; then
+            echo "No verified Dashboard path progress changes to commit."
+            exit 0
+          fi
+
+          git config user.name "almeaa-refactor-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git fetch origin refactor/repository-v2-safe
+          REMOTE_SHA="$(git rev-parse origin/refactor/repository-v2-safe)"
+          if [ "$REMOTE_SHA" != "$EXPECTED_SHA" ]; then
+            echo "Refactor branch moved from verified head ${EXPECTED_SHA} to ${REMOTE_SHA}; skipping stale auto-commit safely."
+            exit 0
+          fi
+
+          git commit -m "refactor(dashboard): extract path progress projection"
+          if git push origin HEAD:refactor/repository-v2-safe; then
+            echo "Verified Dashboard path progress refactor pushed successfully."
+            exit 0
+          fi
+
+          git fetch origin refactor/repository-v2-safe
+          NEW_REMOTE_SHA="$(git rev-parse origin/refactor/repository-v2-safe)"
+          if [ "$NEW_REMOTE_SHA" != "$EXPECTED_SHA" ]; then
+            echo "Refactor branch advanced to ${NEW_REMOTE_SHA} during push; newer verification run owns the save."
+            exit 0
+          fi
+
+          echo "Push failed while remote remained at verified head ${EXPECTED_SHA}." >&2
+          exit 1

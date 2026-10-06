@@ -1,0 +1,50 @@
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+
+const root = process.cwd();
+
+function read(path) {
+  return readFileSync(join(root, path), 'utf8');
+}
+
+function assert(condition, message) {
+  if (!condition) throw new Error(message);
+}
+
+function includes(path, text) {
+  const content = read(path);
+  assert(content.includes(text), `${path} must include: ${text}`);
+}
+
+includes('components/MainLayout.tsx', 'to="/about"');
+includes('components/MainLayout.tsx', 'to="/contact"');
+includes('components/MainLayout.tsx', 'to="/faq"');
+includes('components/MainLayout.tsx', 'to="/privacy"');
+includes('components/MainLayout.tsx', 'to="/terms"');
+
+includes('app/AppRouteTree.tsx', 'path="/about"');
+includes('app/AppRouteTree.tsx', 'path="/contact"');
+includes('app/AppRouteTree.tsx', 'path="/faq"');
+includes('app/AppRouteTree.tsx', 'path="/privacy"');
+includes('app/AppRouteTree.tsx', 'path="/terms"');
+includes('App.tsx', 'DATA_BOOTSTRAP_GATE_TIMEOUT_MS');
+includes('App.tsx', 'timedOutPath !== currentPath');
+
+includes('pages/StaticInfoPage.tsx', "title: 'من نحن'");
+includes('pages/StaticInfoPage.tsx', "title: 'تواصل معنا'");
+includes('pages/StaticInfoPage.tsx', "title: 'الأسئلة الشائعة'");
+includes('pages/StaticInfoPage.tsx', "title: 'سياسة الخصوصية'");
+includes('pages/StaticInfoPage.tsx', "title: 'الشروط والأحكام'");
+
+includes('pages/Blog.tsx', 'aria-label={`فتح المقال ${entry.title}`}');
+includes('pages/Cart.tsx', 'إتمام الدفع الآن');
+includes('pages/Cart.tsx', 'شراء الآن');
+includes('pages/Cart.tsx', 'totalsByCurrency');
+includes('pages/Cart.tsx', 'checkout-single-item-pay');
+includes('pages/Cart.tsx', 'checkout-multi-item-note');
+includes('pages/Cart.tsx', 'الدفع يتم لكل عنصر بشكل مستقل');
+includes('pages/ForgotPassword.tsx', 'to="/login"');
+includes('pages/QuizPage.tsx', 'التالي');
+includes('pages/QuizPage.tsx', 'السابق');
+
+console.log('Public open-items contract passed: footer, static info pages, blog links, cart checkout, and quiz navigation are covered.');

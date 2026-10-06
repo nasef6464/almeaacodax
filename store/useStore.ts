@@ -1,0 +1,916 @@
+import { create } from 'zustand';
+import type { AppState } from './AppState';
+import { persist } from 'zustand/middleware';
+import { api } from '../services/api';
+import { User, Activity, QuestionAttempt, QuizResult, Question, Role, Group, Skill, CategoryPath, CategorySubject, CategorySection, B2BPackage, AccessCode, AnnouncementAd, Course, NestedSkill, LibraryItem, Quiz, Lesson, PackageContentType, StudyPlan, SkillProgress, CartItem } from '../types';
+import { normalizeIdList } from '../utils/entityIds';
+import { isDevSessionUser } from '../utils/devSession';
+import { normalizeQuizPlacement } from '../utils/quizPlacement';
+import {
+    createGuestUser,
+    getUserSchoolIds,
+    isPublicPackageAvailable,
+    isRegisteredUser,
+    mergeQuizResultsForStore,
+    normalizeCourseForStore,
+    packageMatchesScope,
+    resolveEntityId,
+} from './storeDomainHelpers';
+import { createAccessEnrollmentSlice } from './slices/accessEnrollmentSlice';
+import { createAnnouncementAdsSlice } from './slices/announcementAdsSlice';
+import { createCartSlice } from './slices/cartSlice';
+import { createLearningInteractionsSlice } from './slices/learningInteractionsSlice';
+import { createLearningProgressSlice } from './slices/learningProgressSlice';
+import { createLibraryItemsSlice } from './slices/libraryItemsSlice';
+import { createStudyPlansSlice } from './slices/studyPlansSlice';
+import { createQuestionCatalogSlice } from './slices/questionCatalogSlice';
+import { createQuizCatalogSlice } from './slices/quizCatalogSlice';
+import { createCourseCatalogSlice } from './slices/courseCatalogSlice';
+import { createLessonCatalogSlice } from './slices/lessonCatalogSlice';
+import { createTopicCatalogSlice } from './slices/topicCatalogSlice';
+import { createGroupCrudSlice } from './slices/groupCrudSlice';
+import { createStudentGroupMembershipSlice } from './slices/studentGroupMembershipSlice';
+
+const runtimeEnv = (import.meta as ImportMeta & { env?: Record<string, string | boolean> }).env;
+const USE_REAL_API = runtimeEnv?.PROD === true || runtimeEnv?.VITE_USE_REAL_API !== 'false';
+const shouldSyncUserToApi = (user?: User | null) => Boolean(USE_REAL_API && user?.email && !isDevSessionUser(user));
+
+
+
+export const useStore = create<AppState>()(
+    persist(
+        (set, get) => ({
+            user: createGuestUser(),
+            users: [],
+            groups: [],
+            b2bPackages: [],
+            accessCodes: [],
+            announcementAds: [],
+            courses: [],
+            questions: [],
+            quizzes: [],
+            lessons: [],
+            topics: [],
+            paths: [],
+            levels: [],
+            subjects: [],
+            sections: [],
+            skills: [],
+            nestedSkills: [],
+            libraryItems: [],
+            ...createLibraryItemsSlice<AppState>(set, api),
+            enrolledCourses: [],
+            enrolledPaths: [],
+            completedLessons: [],
+            examResults: [],
+            questionAttempts: [],
+            favorites: [],
+            reviewLater: [],
+            recentActivity: [],
+            studyPlans: [],
+            skillProgress: [],
+            cartItems: [],
+
+            hydrateUsers: (users) => set(() => ({
+                users
+            })),
+
+            hydrateCourses: (courses) => set(() => ({
+                courses: (courses || [])
+                    .map((course: any) => normalizeCourseForStore(course))
+                    .filter((course: Course) => Boolean(course.id))
+            })),
+
+            hydrateQuestions: (questions) => set(() => ({
+                questions
+            })),
+
+            hydrateQuizzes: (quizzes) => set(() => ({
+                quizzes: quizzes.map((quiz) => normalizeQuizPlacement(quiz))
+            })),
+
+            hydrateTaxonomy: (payload) => set((state) => ({
+                paths: payload.paths !== undefined
+                  ? payload.paths
+                      .map((path: any) => ({
+                        ...path,
+                        id: String(path?.id || path?._id || ''),
+                      }))
+                      .filter((path: any) => path.id && path.name)
+                  : state.paths,
+                levels: payload.levels !== undefined
+                  ? payload.levels
+                      .map((level: any) => ({
+                        ...level,
+                        id: String(level?.id || level?._id || ''),
+                        pathId: String(level?.pathId || ''),
+                      }))
+                      .filter((level: any) => level.id && level.pathId)
+                  : state.levels,
+                subjects: payload.subjects !== undefined
+                  ? payload.subjects
+                      .map((subject: any) => ({
+                        ...subject,
+                        id: String(subject?.id || subject?._id || ''),
+                        pathId: String(subject?.pathId || ''),
+                      }))
+                      .filter((subject: any) => subject.id && subject.pathId && subject.name)
+                  : state.subjects,
+                sections: payload.sections !== undefined
+                  ? payload.sections
+                      .map((section: any) => ({
+                        ...section,
+                        id: String(section?.id || section?._id || ''),
+                        subjectId: String(section?.subjectId || ''),
+                      }))
+                      .filter((section: any) => section.id && section.subjectId && section.name)
+                  : state.sections,
+                skills: payload.skills !== undefined
+                  ? payload.skills
+                      .map((skill: any) => ({
+                        ...skill,
+                        id: String(skill?.id || skill?._id || ''),
+                        pathId: String(skill?.pathId || ''),
+                        subjectId: String(skill?.subjectId || ''),
+                        sectionId: String(skill?.sectionId || ''),
+                        order: typeof skill?.order === 'number' ? skill.order : undefined,
+                        subSkills: Array.isArray(skill?.subSkills)
+                          ? skill.subSkills
+                              .map((subSkill: any) => ({
+                                ...subSkill,
+                                id: String(subSkill?.id || ''),
+                                name: String(subSkill?.name || ''),
+                                code: subSkill?.code ? String(subSkill.code) : undefined,
+                                description: subSkill?.description ? String(subSkill.description) : undefined,
+                                order: typeof subSkill?.order === 'number' ? subSkill.order : undefined,
+                              }))
+                              .filter((subSkill: any) => subSkill.id && subSkill.name)
+                          : [],
+                        lessonIds: Array.isArray(skill?.lessonIds) ? skill.lessonIds.map(String) : [],
+                        questionIds: Array.isArray(skill?.questionIds) ? skill.questionIds.map(String) : [],
+                        createdAt: typeof skill?.createdAt === 'number' ? skill.createdAt : Date.now(),
+                      }))
+                      .filter((skill: any) => skill.id && skill.pathId && skill.subjectId && skill.sectionId && skill.name)
+                  : state.skills,
+            })),
+
+            hydrateContentBootstrap: (payload) => set((state) => ({
+                topics: payload.topics !== undefined
+                  ? payload.topics
+                      .map((topic: any) => ({
+                        ...topic,
+                        id: String(topic?.id || topic?._id || ''),
+                        skillId: topic?.skillId ? String(topic.skillId) : undefined,
+                        skillIds: normalizeIdList(topic?.skillIds),
+                        lessonIds: normalizeIdList(topic?.lessonIds),
+                        quizIds: normalizeIdList(topic?.quizIds),
+                        libraryItemIds: normalizeIdList(topic?.libraryItemIds),
+                      }))
+                      .filter((topic: any) => topic.id && topic.subjectId && topic.title)
+                  : state.topics,
+                lessons: payload.lessons !== undefined
+                  ? payload.lessons
+                      .map((lesson: any) => ({
+                        ...lesson,
+                        id: String(lesson?.id || lesson?._id || ''),
+                        skillIds: normalizeIdList(lesson?.skillIds),
+                      }))
+                      .filter((lesson: any) => lesson.id && lesson.title)
+                  : state.lessons,
+                libraryItems: payload.libraryItems !== undefined
+                  ? payload.libraryItems
+                      .map((item: any) => ({
+                        ...item,
+                        id: String(item?.id || item?._id || ''),
+                        pathId: item?.pathId ? String(item.pathId) : undefined,
+                        sectionId: item?.sectionId ? String(item.sectionId) : undefined,
+                        skillIds: Array.isArray(item?.skillIds) ? item.skillIds.map(String) : [],
+                      }))
+                      .filter((item: any) => item.id && item.title)
+                  : state.libraryItems,
+                groups: payload.groups !== undefined
+                  ? payload.groups
+                      .map((group: any) => ({
+                        ...group,
+                        id: String(group?.id || group?._id || ''),
+                      }))
+                      .filter((group: any) => group.id && group.name)
+                  : state.groups,
+                b2bPackages: payload.b2bPackages !== undefined
+                  ? payload.b2bPackages
+                      .map((pkg: any) => ({
+                        ...pkg,
+                        id: String(pkg?.id || pkg?._id || ''),
+                        schoolId: String(pkg?.schoolId || ''),
+                        courseIds: Array.isArray(pkg?.courseIds) ? pkg.courseIds.map(String) : [],
+                        contentTypes: Array.isArray(pkg?.contentTypes) && pkg.contentTypes.length ? pkg.contentTypes.map(String) : ['all'],
+                        pathIds: Array.isArray(pkg?.pathIds) ? pkg.pathIds.map(String) : [],
+                        subjectIds: Array.isArray(pkg?.subjectIds) ? pkg.subjectIds.map(String) : [],
+                      }))
+                      .filter((pkg: any) => pkg.id && pkg.schoolId && pkg.name)
+                  : state.b2bPackages,
+                accessCodes: payload.accessCodes !== undefined
+                  ? payload.accessCodes
+                      .map((code: any) => ({
+                        ...code,
+                        id: String(code?.id || code?._id || ''),
+                        schoolId: String(code?.schoolId || ''),
+                        packageId: String(code?.packageId || ''),
+                      }))
+                      .filter((code: any) => code.id && code.schoolId && code.packageId && code.code)
+                  : state.accessCodes,
+                announcementAds: payload.announcementAds !== undefined
+                  ? payload.announcementAds
+                      .map((ad: any) => ({
+                        ...ad,
+                        id: String(ad?.id || ad?._id || ''),
+                        title: String(ad?.title || ''),
+                        audience: ['all', 'guest', 'student', 'parent', 'staff'].includes(ad?.audience) ? ad.audience : 'all',
+                        isActive: ad?.isActive !== false,
+                        priority: Number(ad?.priority ?? 0),
+                        createdAt: typeof ad?.createdAt === 'number' ? ad.createdAt : Date.now(),
+                      }))
+                      .filter((ad: any) => ad.id && ad.title)
+                  : state.announcementAds,
+                studyPlans: payload.studyPlans !== undefined
+                  ? payload.studyPlans
+                      .map((plan: any) => ({
+                        ...plan,
+                        id: String(plan?.id || plan?._id || ''),
+                        subjectIds: Array.isArray(plan?.subjectIds) ? plan.subjectIds.map(String) : [],
+                        courseIds: Array.isArray(plan?.courseIds) ? plan.courseIds.map(String) : [],
+                        offDays: Array.isArray(plan?.offDays) ? plan.offDays.map(String) : [],
+                      }))
+                      .filter((plan: any) => plan.id && plan.userId && plan.name && plan.pathId)
+                  : state.studyPlans,
+            })),
+
+            ...createLearningProgressSlice<AppState>(set, get, api, { mergeQuizResultsForStore, shouldSyncUserToApi }),
+
+            ...createLearningInteractionsSlice<AppState>(set, get, api, { shouldSyncUserToApi }),
+
+            ...createAccessEnrollmentSlice<AppState>(set, get, api, {
+                getUserSchoolIds,
+                isPublicPackageAvailable,
+                isRegisteredUser,
+                packageMatchesScope,
+                shouldSyncUserToApi,
+            }),
+
+            ...createCartSlice<AppState>(set, get),
+
+            changeRole: (role) => set((state) => ({
+                user: { ...state.user, role }
+            })),
+
+            ...createStudyPlansSlice<AppState>(set, api),
+
+            addUser: (user) => set((state) => ({
+                users: [...state.users, user]
+            })),
+
+            updateUser: (userId, data) => set((state) => {
+                const previousUsers = state.users;
+                const previousCurrentUser = state.user;
+                api.updateAdminUser(userId, data).catch((error) => {
+                    console.error(error);
+                    set({
+                        users: previousUsers,
+                        user: previousCurrentUser,
+                    });
+                });
+                return {
+                    users: state.users.map(u => u.id === userId ? { ...u, ...data } : u),
+                    // Also update current user if it's the same
+                    user: state.user.id === userId ? { ...state.user, ...data } : state.user
+                };
+            }),
+
+            toggleUserStatus: (userId) => set((state) => {
+                const targetUser = state.users.find(u => u.id === userId);
+                const nextStatus = !(targetUser?.isActive ?? true);
+                api.updateAdminUser(userId, { isActive: nextStatus }).catch(console.error);
+                return {
+                    users: state.users.map(u => u.id === userId ? { ...u, isActive: nextStatus } : u)
+                };
+            }),
+
+            ...createCourseCatalogSlice<AppState>(set, api, { normalizeCourseForStore, resolveEntityId }),
+
+            ...createQuestionCatalogSlice<AppState>(set, api),
+
+            ...createQuizCatalogSlice<AppState>(set, get, api, { normalizeQuizPlacement }),
+
+            ...createLessonCatalogSlice<AppState>(set, api),
+
+            ...createTopicCatalogSlice<AppState>(set, api),
+
+            // Group Actions
+            ...createGroupCrudSlice<AppState>(set, api),
+
+            ...createStudentGroupMembershipSlice<AppState>(set, get, api),
+
+            assignSupervisorToGroup: (userId, groupId) => set((state) => {
+                const targetGroup = state.groups.find(group => group.id === groupId);
+                const currentUser = state.users.find(user => user.id === userId);
+                if (!targetGroup || !currentUser) return state;
+
+                const nextGroupIds = currentUser.groupIds?.includes(groupId)
+                    ? (currentUser.groupIds || [])
+                    : [...(currentUser.groupIds || []), groupId];
+                const nextSchoolId = targetGroup.type === 'SCHOOL'
+                    ? targetGroup.id
+                    : targetGroup.parentId || currentUser.schoolId;
+
+                api.updateAdminUser(userId, {
+                    schoolId: nextSchoolId || null,
+                    groupIds: nextGroupIds,
+                }).catch(console.error);
+
+                const newGroups = state.groups.map(group => {
+                    if (group.id === groupId && !group.supervisorIds.includes(userId)) {
+                        const updated = { ...group, supervisorIds: [...group.supervisorIds, userId], totalSupervisors: (group.totalSupervisors || group.supervisorIds.length || 0) + 1 };
+                        api.updateGroup(group.id, {
+                            supervisorIds: updated.supervisorIds,
+                            totalSupervisors: updated.totalSupervisors,
+                        }).catch(console.error);
+                        return updated;
+                    }
+                    return group;
+                });
+
+                const newUsers = state.users.map(existingUser => existingUser.id === userId ? { ...existingUser, schoolId: nextSchoolId, groupIds: nextGroupIds } : existingUser);
+                return {
+                    groups: newGroups,
+                    users: newUsers,
+                    user: newUsers.find(u => u.id === state.user.id) || state.user,
+                };
+            }),
+
+            assignSupervisorToGroupAsync: async (userId, groupId) => {
+                const state = get();
+                const targetGroup = state.groups.find(group => group.id === groupId);
+                const currentUser = state.users.find(user => user.id === userId);
+                if (!targetGroup || !currentUser) return;
+
+                const nextGroupIds = currentUser.groupIds?.includes(groupId)
+                    ? (currentUser.groupIds || [])
+                    : [...(currentUser.groupIds || []), groupId];
+                const nextSchoolId = targetGroup.type === 'SCHOOL'
+                    ? targetGroup.id
+                    : targetGroup.parentId || currentUser.schoolId;
+
+                const newGroups = state.groups.map(group => {
+                    if (group.id === groupId && !group.supervisorIds.includes(userId)) {
+                        return { ...group, supervisorIds: [...group.supervisorIds, userId], totalSupervisors: (group.totalSupervisors || group.supervisorIds.length || 0) + 1 };
+                    }
+                    return group;
+                });
+                const persistedGroup = newGroups.find(group => group.id === groupId);
+
+                await Promise.all([
+                    api.updateAdminUser(userId, {
+                        schoolId: nextSchoolId || null,
+                        groupIds: nextGroupIds,
+                    }),
+                    persistedGroup
+                        ? api.updateGroup(persistedGroup.id, {
+                            supervisorIds: persistedGroup.supervisorIds,
+                            totalSupervisors: persistedGroup.totalSupervisors,
+                        })
+                        : Promise.resolve(),
+                ]);
+
+                const newUsers = state.users.map(existingUser => existingUser.id === userId ? { ...existingUser, schoolId: nextSchoolId, groupIds: nextGroupIds } : existingUser);
+                set({
+                    groups: newGroups,
+                    users: newUsers,
+                    user: newUsers.find(u => u.id === state.user.id) || state.user,
+                });
+            },
+
+            removeSupervisorFromGroup: (userId, groupId) => set((state) => {
+                const currentUser = state.users.find(user => user.id === userId);
+                if (!currentUser) return state;
+
+                const nextGroupIds = (currentUser.groupIds || []).filter(id => id !== groupId);
+                const remainingSchoolIds = getUserSchoolIds(state.groups, nextGroupIds, undefined);
+                const nextSchoolId = currentUser.schoolId && remainingSchoolIds.has(currentUser.schoolId)
+                    ? currentUser.schoolId
+                    : Array.from(remainingSchoolIds)[0];
+                api.updateAdminUser(userId, {
+                    schoolId: nextSchoolId || null,
+                    groupIds: nextGroupIds,
+                }).catch(console.error);
+
+                const newGroups = state.groups.map(group => {
+                    if (group.id === groupId) {
+                        const updated = { ...group, supervisorIds: group.supervisorIds.filter(id => id !== userId), totalSupervisors: Math.max(0, (group.totalSupervisors || group.supervisorIds.length || 1) - 1) };
+                        api.updateGroup(group.id, {
+                            supervisorIds: updated.supervisorIds,
+                            totalSupervisors: updated.totalSupervisors,
+                        }).catch(console.error);
+                        return updated;
+                    }
+                    return group;
+                });
+
+                const newUsers = state.users.map(existingUser => existingUser.id === userId ? { ...existingUser, schoolId: nextSchoolId, groupIds: nextGroupIds } : existingUser);
+                return {
+                    groups: newGroups,
+                    users: newUsers,
+                    user: newUsers.find(u => u.id === state.user.id) || state.user,
+                };
+            }),
+
+            removeSupervisorFromGroupAsync: async (userId, groupId) => {
+                const state = get();
+                const currentUser = state.users.find(user => user.id === userId);
+                if (!currentUser) return;
+
+                const nextGroupIds = (currentUser.groupIds || []).filter(id => id !== groupId);
+                const remainingSchoolIds = getUserSchoolIds(state.groups, nextGroupIds, undefined);
+                const nextSchoolId = currentUser.schoolId && remainingSchoolIds.has(currentUser.schoolId)
+                    ? currentUser.schoolId
+                    : Array.from(remainingSchoolIds)[0];
+                const newGroups = state.groups.map(group => {
+                    if (group.id === groupId) {
+                        return { ...group, supervisorIds: group.supervisorIds.filter(id => id !== userId), totalSupervisors: Math.max(0, (group.totalSupervisors || group.supervisorIds.length || 1) - 1) };
+                    }
+                    return group;
+                });
+                const persistedGroup = newGroups.find(group => group.id === groupId);
+
+                await Promise.all([
+                    api.updateAdminUser(userId, {
+                        schoolId: nextSchoolId || null,
+                        groupIds: nextGroupIds,
+                    }),
+                    persistedGroup
+                        ? api.updateGroup(persistedGroup.id, {
+                            supervisorIds: persistedGroup.supervisorIds,
+                            totalSupervisors: persistedGroup.totalSupervisors,
+                        })
+                        : Promise.resolve(),
+                ]);
+
+                const newUsers = state.users.map(existingUser => existingUser.id === userId ? { ...existingUser, schoolId: nextSchoolId, groupIds: nextGroupIds } : existingUser);
+                set({
+                    groups: newGroups,
+                    users: newUsers,
+                    user: newUsers.find(u => u.id === state.user.id) || state.user,
+                });
+            },
+
+            assignTeacherToGroupAsync: async (userId, groupId) => {
+                const state = get();
+                const targetGroup = state.groups.find(group => group.id === groupId);
+                const currentUser = state.users.find(user => user.id === userId);
+                if (!targetGroup || !currentUser || currentUser.role !== Role.TEACHER) return;
+
+                const schoolId = targetGroup.type === 'SCHOOL' ? targetGroup.id : targetGroup.parentId || currentUser.schoolId;
+                const nextGroupIds = Array.from(new Set([
+                    ...(currentUser.groupIds || []),
+                    ...(schoolId ? [schoolId] : []),
+                    groupId,
+                ]));
+
+                await api.updateAdminUser(userId, {
+                    schoolId: schoolId || null,
+                    groupIds: nextGroupIds,
+                });
+
+                const newUsers = state.users.map(existingUser => existingUser.id === userId
+                    ? { ...existingUser, schoolId: schoolId || undefined, groupIds: nextGroupIds }
+                    : existingUser);
+                set({
+                    users: newUsers,
+                    user: newUsers.find(user => user.id === state.user.id) || state.user,
+                });
+            },
+
+            removeTeacherFromGroupAsync: async (userId, groupId) => {
+                const state = get();
+                const currentUser = state.users.find(user => user.id === userId);
+                if (!currentUser || currentUser.role !== Role.TEACHER) return;
+
+                const nextGroupIds = (currentUser.groupIds || []).filter(id => id !== groupId);
+                const remainingSchoolIds = getUserSchoolIds(state.groups, nextGroupIds, undefined);
+                const nextSchoolId = currentUser.schoolId && remainingSchoolIds.has(currentUser.schoolId)
+                    ? currentUser.schoolId
+                    : Array.from(remainingSchoolIds)[0];
+
+                await api.updateAdminUser(userId, {
+                    schoolId: nextSchoolId || null,
+                    groupIds: nextGroupIds,
+                });
+
+                const newUsers = state.users.map(existingUser => existingUser.id === userId
+                    ? { ...existingUser, schoolId: nextSchoolId || undefined, groupIds: nextGroupIds }
+                    : existingUser);
+                set({
+                    users: newUsers,
+                    user: newUsers.find(user => user.id === state.user.id) || state.user,
+                });
+            },
+
+            assignCourseToGroup: (courseId, groupId) => set((state) => {
+                const newGroups = state.groups.map(group => {
+                    if (group.id === groupId && !group.courseIds.includes(courseId)) {
+                        const updated = { ...group, courseIds: [...group.courseIds, courseId], totalCourses: (group.totalCourses || group.courseIds.length || 0) + 1 };
+                        api.updateGroup(group.id, {
+                            courseIds: updated.courseIds,
+                            totalCourses: updated.totalCourses,
+                        }).catch(console.error);
+                        return updated;
+                    }
+                    return group;
+                });
+                return { groups: newGroups };
+            }),
+
+            removeCourseFromGroup: (courseId, groupId) => set((state) => {
+                const newGroups = state.groups.map(group => {
+                    if (group.id === groupId) {
+                        const updated = { ...group, courseIds: group.courseIds.filter(id => id !== courseId), totalCourses: Math.max(0, (group.totalCourses || group.courseIds.length || 1) - 1) };
+                        api.updateGroup(group.id, {
+                            courseIds: updated.courseIds,
+                            totalCourses: updated.totalCourses,
+                        }).catch(console.error);
+                        return updated;
+                    }
+                    return group;
+                });
+                return { groups: newGroups };
+            }),
+
+            // B2B Actions
+            createB2BPackage: (pkg) => set((state) => {
+                const normalizedPackage: B2BPackage = {
+                    ...pkg,
+                    contentTypes: Array.isArray(pkg.contentTypes) && pkg.contentTypes.length ? pkg.contentTypes : ['all'],
+                    pathIds: Array.isArray(pkg.pathIds) ? pkg.pathIds : [],
+                    subjectIds: Array.isArray(pkg.subjectIds) ? pkg.subjectIds : [],
+                };
+                api.createB2BPackage(normalizedPackage).catch(console.error);
+                return {
+                    b2bPackages: [...state.b2bPackages, normalizedPackage]
+                };
+            }),
+            createB2BPackageAsync: async (pkg) => {
+                const normalizedPackage: B2BPackage = {
+                    ...pkg,
+                    contentTypes: Array.isArray(pkg.contentTypes) && pkg.contentTypes.length ? pkg.contentTypes : ['all'],
+                    pathIds: Array.isArray(pkg.pathIds) ? pkg.pathIds : [],
+                    subjectIds: Array.isArray(pkg.subjectIds) ? pkg.subjectIds : [],
+                };
+                const persisted = await api.createB2BPackage(normalizedPackage);
+                const nextPackage = {
+                    ...normalizedPackage,
+                    ...((persisted && typeof persisted === 'object') ? persisted as Partial<B2BPackage> : {}),
+                };
+                set((state) => ({
+                    b2bPackages: state.b2bPackages.some(pkg => pkg.id === nextPackage.id)
+                        ? state.b2bPackages.map(pkg => pkg.id === nextPackage.id ? nextPackage : pkg)
+                        : [...state.b2bPackages, nextPackage]
+                }));
+                return nextPackage;
+            },
+            updateB2BPackage: (id, data) => set((state) => {
+                const normalizedData: Partial<B2BPackage> = {
+                    ...data,
+                    ...(data.contentTypes ? { contentTypes: data.contentTypes as PackageContentType[] } : {}),
+                    ...(data.pathIds ? { pathIds: data.pathIds } : {}),
+                    ...(data.subjectIds ? { subjectIds: data.subjectIds } : {}),
+                };
+                api.updateB2BPackage(id, normalizedData).catch(console.error);
+                return {
+                    b2bPackages: state.b2bPackages.map((p): B2BPackage => {
+                        if (p.id !== id) {
+                            return p;
+                        }
+
+                        return {
+                            ...p,
+                            ...normalizedData,
+                            contentTypes: normalizedData.contentTypes ?? p.contentTypes,
+                            pathIds: normalizedData.pathIds ?? p.pathIds,
+                            subjectIds: normalizedData.subjectIds ?? p.subjectIds,
+                        };
+                    })
+                };
+            }),
+            updateB2BPackageAsync: async (id, data) => {
+                const normalizedData: Partial<B2BPackage> = {
+                    ...data,
+                    ...(data.contentTypes ? { contentTypes: data.contentTypes as PackageContentType[] } : {}),
+                    ...(data.pathIds ? { pathIds: data.pathIds } : {}),
+                    ...(data.subjectIds ? { subjectIds: data.subjectIds } : {}),
+                };
+                const persisted = await api.updateB2BPackage(id, normalizedData);
+                let nextPackage: B2BPackage | null = null;
+                set((state) => ({
+                    b2bPackages: state.b2bPackages.map((pkg): B2BPackage => {
+                        if (pkg.id !== id) {
+                            return pkg;
+                        }
+
+                        nextPackage = {
+                            ...pkg,
+                            ...normalizedData,
+                            ...((persisted && typeof persisted === 'object') ? persisted as Partial<B2BPackage> : {}),
+                            contentTypes: normalizedData.contentTypes ?? pkg.contentTypes,
+                            pathIds: normalizedData.pathIds ?? pkg.pathIds,
+                            subjectIds: normalizedData.subjectIds ?? pkg.subjectIds,
+                        };
+                        return nextPackage;
+                    })
+                }));
+                if (!nextPackage) {
+                    throw new Error('تعذر العثور على الباقة المدرسية بعد الحفظ.');
+                }
+                return nextPackage;
+            },
+            deleteB2BPackage: (id) => set((state) => {
+                api.deleteB2BPackage(id).catch(console.error);
+                return {
+                    b2bPackages: state.b2bPackages.filter(p => p.id !== id),
+                    accessCodes: state.accessCodes.filter(code => code.packageId !== id)
+                };
+            }),
+            deleteB2BPackageAsync: async (id) => {
+                await api.deleteB2BPackage(id);
+                set((state) => ({
+                    b2bPackages: state.b2bPackages.filter(pkg => pkg.id !== id),
+                    accessCodes: state.accessCodes.filter(code => code.packageId !== id)
+                }));
+            },
+            ...createAnnouncementAdsSlice<AppState>(set, api),
+            createAccessCode: (code) => set((state) => {
+                api.createAccessCode(code).catch(console.error);
+                return {
+                    accessCodes: [...state.accessCodes, code]
+                };
+            }),
+            createAccessCodeAsync: async (code) => {
+                const persisted = await api.createAccessCode(code);
+                const nextCode = {
+                    ...code,
+                    ...((persisted && typeof persisted === 'object') ? persisted as Partial<AccessCode> : {}),
+                };
+                set((state) => ({
+                    accessCodes: state.accessCodes.some(current => current.id === nextCode.id)
+                        ? state.accessCodes.map(current => current.id === nextCode.id ? nextCode : current)
+                        : [...state.accessCodes, nextCode]
+                }));
+                return nextCode;
+            },
+            deleteAccessCode: (id) => set((state) => {
+                api.deleteAccessCode(id).catch(console.error);
+                return {
+                    accessCodes: state.accessCodes.filter(c => c.id !== id)
+                };
+            }),
+            deleteAccessCodeAsync: async (id) => {
+                await api.deleteAccessCode(id);
+                set((state) => ({
+                    accessCodes: state.accessCodes.filter(code => code.id !== id)
+                }));
+            },
+
+            // Taxonomy Actions
+            addPath: (path) => {
+                set((state) => ({ paths: [...state.paths, path] }));
+                return api.createPath(path)
+                    .then(() => { api.clearTaxonomyBootstrapCache(); })
+                    .catch((err: Error) => {
+                        console.error('addPath failed:', err);
+                        // Rollback optimistic update
+                        set((state) => ({ paths: state.paths.filter(p => p.id !== path.id) }));
+                        throw err; // re-throw so caller (PathsManager) can show error
+                    });
+            },
+            updatePath: (pathId, data) => {
+                set((state) => ({
+                    paths: state.paths.map(p => p.id === pathId ? { ...p, ...data } : p)
+                }));
+                api.updatePath(pathId, data)
+                    .then(() => { api.clearTaxonomyBootstrapCache(); })
+                    .catch((err) => { console.error('updatePath failed:', err); });
+            },
+            deletePath: (pathId) => {
+                set((state) => ({
+                    paths: state.paths.filter(p => p.id !== pathId),
+                    subjects: state.subjects.filter(s => s.pathId !== pathId),
+                    levels: state.levels.filter(l => l.pathId !== pathId),
+                    sections: state.sections.filter(section => {
+                        const subject = state.subjects.find(s => s.id === section.subjectId);
+                        return subject?.pathId !== pathId;
+                    }),
+                    skills: state.skills.filter(skill => skill.pathId !== pathId)
+                }));
+                api.deletePath(pathId)
+                    .then(() => { api.clearTaxonomyBootstrapCache(); })
+                    .catch((err) => { console.error('deletePath failed:', err); });
+            },
+            addLevel: (level) => {
+                set((state) => ({ levels: [...state.levels, level] }));
+                api.createLevel(level)
+                    .then(() => { api.clearTaxonomyBootstrapCache(); })
+                    .catch((err) => {
+                        console.error('addLevel failed:', err);
+                        set((state) => ({ levels: state.levels.filter(l => l.id !== level.id) }));
+                    });
+            },
+            updateLevel: (levelId, data) => {
+                set((state) => ({
+                    levels: state.levels.map(l => l.id === levelId ? { ...l, ...data } : l)
+                }));
+                api.updateLevel(levelId, data)
+                    .then(() => { api.clearTaxonomyBootstrapCache(); })
+                    .catch((err) => { console.error('updateLevel failed:', err); });
+            },
+            deleteLevel: (levelId) => {
+                set((state) => ({
+                    levels: state.levels.filter(l => l.id !== levelId),
+                    subjects: state.subjects.filter(s => s.levelId !== levelId),
+                    sections: state.sections.filter(section => {
+                        const subject = state.subjects.find(s => s.id === section.subjectId);
+                        return subject?.levelId !== levelId;
+                    }),
+                    skills: state.skills.filter(skill => {
+                        const subject = state.subjects.find(s => s.id === skill.subjectId);
+                        return subject?.levelId !== levelId;
+                    })
+                }));
+                api.deleteLevel(levelId)
+                    .then(() => { api.clearTaxonomyBootstrapCache(); })
+                    .catch((err) => { console.error('deleteLevel failed:', err); });
+            },
+            addSubject: (subject) => {
+                set((state) => ({ subjects: [...state.subjects, subject] }));
+                api.createSubject(subject)
+                    .then(() => { api.clearTaxonomyBootstrapCache(); })
+                    .catch((err) => {
+                        console.error('addSubject failed:', err);
+                        set((state) => ({ subjects: state.subjects.filter(s => s.id !== subject.id) }));
+                    });
+            },
+            updateSubject: (subjectId, data) => {
+                set((state) => ({
+                    subjects: state.subjects.map(s => s.id === subjectId ? { ...s, ...data } : s)
+                }));
+                api.updateSubject(subjectId, data)
+                    .then(() => { api.clearTaxonomyBootstrapCache(); })
+                    .catch((err) => { console.error('updateSubject failed:', err); });
+            },
+            deleteSubject: (subjectId) => {
+                set((state) => ({
+                    subjects: state.subjects.filter(s => s.id !== subjectId),
+                    sections: state.sections.filter(sec => sec.subjectId !== subjectId),
+                    skills: state.skills.filter(skill => skill.subjectId !== subjectId),
+                    lessons: state.lessons.map(lesson =>
+                        lesson.subjectId === subjectId ? { ...lesson, sectionId: undefined, skillIds: [] } : lesson
+                    ),
+                    questions: state.questions.map(question =>
+                        question.subject === subjectId ? { ...question, sectionId: undefined, skillIds: [] } : question
+                    ),
+                    libraryItems: state.libraryItems.map(item =>
+                        item.subjectId === subjectId ? { ...item, sectionId: undefined, skillIds: [] } : item
+                    ),
+                    quizzes: state.quizzes.map(quiz =>
+                        quiz.subjectId === subjectId ? { ...quiz, sectionId: undefined, skillIds: [] } : quiz
+                    )
+                }));
+                api.deleteSubject(subjectId)
+                    .then(() => { api.clearTaxonomyBootstrapCache(); })
+                    .catch((err) => { console.error('deleteSubject failed:', err); });
+            },
+            addSection: (section) => {
+                set((state) => ({
+                    sections: [...state.sections.filter(existingSection => existingSection.id !== section.id), section]
+                }));
+                api.createSection(section)
+                    .then(() => { api.clearTaxonomyBootstrapCache(); })
+                    .catch((err) => {
+                        console.error('addSection failed:', err);
+                        set((state) => ({ sections: state.sections.filter(s => s.id !== section.id) }));
+                    });
+            },
+            updateSection: (sectionId, data) => {
+                set((state) => ({
+                    sections: state.sections.map(section => section.id === sectionId ? { ...section, ...data } : section)
+                }));
+                api.updateSection(sectionId, data)
+                    .then(() => { api.clearTaxonomyBootstrapCache(); })
+                    .catch((err) => { console.error('updateSection failed:', err); });
+            },
+            deleteSection: (sectionId) => {
+                set((state) => ({
+                    sections: state.sections.filter(section => section.id !== sectionId),
+                    skills: state.skills.filter(skill => skill.sectionId !== sectionId),
+                    lessons: state.lessons.map(lesson =>
+                        lesson.sectionId === sectionId ? { ...lesson, sectionId: undefined } : lesson
+                    ),
+                    questions: state.questions.map(question =>
+                        question.sectionId === sectionId ? { ...question, sectionId: undefined } : question
+                    )
+                }));
+                api.deleteSection(sectionId)
+                    .then(() => { api.clearTaxonomyBootstrapCache(); })
+                    .catch((err) => { console.error('deleteSection failed:', err); });
+            },
+
+            // Skill Actions
+            createSkill: (skill) => {
+                set((state) => ({
+                    skills: [...state.skills.filter(existingSkill => existingSkill.id !== skill.id), skill]
+                }));
+                api.createSkill(skill)
+                    .then(() => { api.clearTaxonomyBootstrapCache(); })
+                    .catch((err) => {
+                        console.error('createSkill failed:', err);
+                        set((state) => ({ skills: state.skills.filter(s => s.id !== skill.id) }));
+                    });
+            },
+
+            updateSkill: (skillId, data) => {
+                set((state) => ({
+                    skills: state.skills.map(s => s.id === skillId ? { ...s, ...data } : s)
+                }));
+                api.updateSkill(skillId, data)
+                    .then(() => { api.clearTaxonomyBootstrapCache(); })
+                    .catch((err) => { console.error('updateSkill failed:', err); });
+            },
+
+            deleteSkill: (skillId) => {
+                set((state) => ({
+                    skills: state.skills.filter(s => s.id !== skillId),
+                    lessons: state.lessons.map(lesson => ({
+                        ...lesson,
+                        skillIds: lesson.skillIds.filter(id => id !== skillId)
+                    })),
+                    questions: state.questions.map(question => ({
+                        ...question,
+                        skillIds: question.skillIds.filter(id => id !== skillId)
+                    })),
+                    libraryItems: state.libraryItems.map(item => ({
+                        ...item,
+                        skillIds: (item.skillIds || []).filter(id => id !== skillId)
+                    })),
+                    quizzes: state.quizzes.map(quiz => ({
+                        ...quiz,
+                        skillIds: (quiz.skillIds || []).filter(id => id !== skillId)
+                    }))
+                }));
+                api.deleteSkill(skillId)
+                    .then(() => { api.clearTaxonomyBootstrapCache(); })
+                    .catch((err) => { console.error('deleteSkill failed:', err); });
+            },
+
+            linkSkillToLesson: (skillId, lessonId) => set((state) => ({
+                skills: state.skills.map(s => {
+                    if (s.id === skillId && !s.lessonIds.includes(lessonId)) {
+                        return { ...s, lessonIds: [...s.lessonIds, lessonId] };
+                    }
+                    return s;
+                })
+            })),
+
+            unlinkSkillFromLesson: (skillId, lessonId) => set((state) => ({
+                skills: state.skills.map(s => {
+                    if (s.id === skillId) {
+                        return { ...s, lessonIds: s.lessonIds.filter(id => id !== lessonId) };
+                    }
+                    return s;
+                })
+            })),
+            
+            // Nested Skill Actions
+            updateNestedSkills: (skills) => set(() => ({
+                nestedSkills: skills,
+            }))
+        }),
+        {
+            name: 'learning-platform-storage',
+            version: 4,
+            // Session identity lives in AuthContext/sessionStorage and all learner
+            // progress/review/catalog data is server-authoritative. Keep only the
+            // small cart draft across browser restarts.
+            partialize: (state) => ({
+                cartItems: state.cartItems,
+            }),
+            migrate: (persistedState: any) => {
+                if (!persistedState || typeof persistedState !== 'object') {
+                    return { cartItems: [] };
+                }
+
+                return {
+                    cartItems: Array.isArray(persistedState.cartItems)
+                        ? persistedState.cartItems.slice(0, 50)
+                        : [],
+                };
+            }
+        }
+    )
+);

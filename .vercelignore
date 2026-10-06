@@ -1,0 +1,30 @@
+.git
+.github
+.vercel
+.vercel.bak-*
+node_modules
+dist
+dist-ssr
+coverage
+playwright-report
+test-results
+
+# Local logs and temporary runtime output
+*.log
+*.bundle
+tmp
+tmp_*
+local-mongodb
+backups
+
+# Audit evidence is committed/preserved in Git when needed, but should not be
+# uploaded by the Vercel CLI as source files during manual deployments.
+audit-artifacts
+
+# Handoff/report archives are not needed for the production build.
+BATCH_*_AR.md
+*_REPORT.md
+*_REPORT_AR.md
+*_PLAN_*.md
+*_GUIDE.md
+docs/superpowers

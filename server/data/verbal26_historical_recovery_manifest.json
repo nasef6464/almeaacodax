@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-10-03",
+  "scope": "VERBAL26 historical recovery evidence",
+  "historicalDeployment": {
+    "deployedQuestionCount": 938,
+    "idRange": [
+      "q_verbal_0001",
+      "q_verbal_0938"
+    ],
+    "taxonomy": {
+      "mainSkills": 13,
+      "subSkills": 76
+    },
+    "evidence": "Migration snapshot preserved exactly 938 unique historical verbal question IDs across the legacy 13-skill taxonomy."
+  },
+  "recoveryCandidates": {
+    "total": 900,
+    "source": "abdelbaset",
+    "authoritative": false,
+    "domains": {
+      "analogy": {
+        "count": 353,
+        "minPage": 3,
+        "maxPage": 46,
+        "idRange": [
+          "AB-AUTO-0001",
+          "AB-AUTO-0353"
+        ]
+      },
+      "odd": {
+        "count": 124,
+        "minPage": 49,
+        "maxPage": 54,
+        "idRange": [
+          "AB-AUTO-0354",
+          "AB-AUTO-0477"
+        ]
+      },
+      "link": {
+        "count": 39,
+        "minPage": 55,
+        "maxPage": 57,
+        "idRange": [
+          "AB-AUTO-0478",
+          "AB-AUTO-0516"
+        ]
+      },
+      "completion": {
+        "count": 117,
+        "minPage": 58,
+        "maxPage": 67,
+        "idRange": [
+          "AB-AUTO-0517",
+          "AB-AUTO-0633"
+        ]
+      },
+      "context": {
+        "count": 123,
+        "minPage": 68,
+        "maxPage": 77,
+        "idRange": [
+          "AB-AUTO-0634",
+          "AB-AUTO-0756"
+        ]
+      },
+      "reading": {
+        "count": 144,
+        "minPage": 78,
+        "maxPage": 98,
+        "idRange": [
+          "AB-AUTO-0757",
+          "AB-AUTO-0900"
+        ]
+      }
+    },
+    "deltaVsHistorical": 38,
+    "note": "The 900 raw candidates are recovery evidence only. They do not carry trusted answer keys and must not be imported directly."
+  },
+  "legacyMainSkillQuestionCounts": {
+    "skill_verbal_01": 39,
+    "skill_verbal_02": 84,
+    "skill_verbal_03": 47,
+    "skill_verbal_04": 43,
+    "skill_verbal_05": 77,
+    "skill_verbal_06": 83,
+    "skill_verbal_07": 41,
+    "skill_verbal_08": 64,
+    "skill_verbal_09": 154,
+    "skill_verbal_10": 42,
+    "skill_verbal_11": 127,
+    "skill_verbal_12": 51,
+    "skill_verbal_13": 86
+  },
+  "recoveryPolicy": {
+    "recoverBeforeRebuild": true,
+    "reuseHistoricalIds": true,
+    "rawCandidatesMaySupportTextRecovery": true,
+    "rawCandidatesMaySupplyAnswerKeys": false,
+    "productionImportRequiresCanonicalApprovedBank": true,
+    "productionMigrationRequiresMigrationReadyTrue": true
+  }
+}

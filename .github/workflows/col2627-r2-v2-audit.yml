@@ -1,0 +1,31 @@
+name: QBANK V2 R2 Reachability Audit
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: qbank-v2-r2-reachability-audit
+  cancel-in-progress: false
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Verify canonical COL2627 R2 V2 objects
+        run: node scripts/audit-col2627-r2-v2.mjs
+      - name: Upload reachability evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: col2627-r2-v2-reachability-audit
+          path: audit-artifacts/r2-v2/
+          if-no-files-found: error
+          retention-days: 14

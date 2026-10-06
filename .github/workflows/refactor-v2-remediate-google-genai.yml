@@ -1,0 +1,171 @@
+name: Refactor V2 Remediate Google GenAI
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - refactor/repository-v2-safe
+    paths:
+      - 'package.json'
+      - 'package-lock.json'
+      - 'services/ai.ts'
+      - 'services/ai/**'
+      - 'scripts/smoke-ai-config-bridge-contract.mjs'
+      - 'scripts/smoke-integrations-runtime-contract.mjs'
+      - 'scripts/smoke-monitoring-contract.mjs'
+      - 'docs/archive_reports/MONITORING_AND_LOGGING_GUIDE.md'
+      - 'docs/archive_reports/PRODUCTION_READINESS_REPORT.md'
+      - 'tools/refactor/assert-audit-packages-clean.mjs'
+      - '.github/workflows/refactor-v2-remediate-google-genai.yml'
+permissions:
+  contents: write
+
+concurrency:
+  group: refactor-v2-remediate-google-genai-${{ github.event.pull_request.head.ref || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  verify-and-remediate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout exact source head
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            server/package-lock.json
+
+      - name: Record pre-remediation production audit
+        shell: bash
+        run: |
+          set -uo pipefail
+          npm audit --omit=dev --json > /tmp/root-prod-before.json || true
+          node tools/refactor/dependency-audit-summary.mjs root-production-before /tmp/root-prod-before.json
+
+      - name: Update only GenAI-owned transitive lock resolutions
+        if: github.actor != 'github-actions[bot]'
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp package.json /tmp/package.json.before
+          npm update --package-lock-only ws protobufjs
+          cmp --silent package.json /tmp/package.json.before || {
+            echo "package.json changed during lock-only remediation; refusing scope expansion." >&2
+            git diff -- package.json
+            exit 1
+          }
+          git diff --check -- package-lock.json
+
+      - name: Verify GenAI transitive advisories are gone
+        shell: bash
+        run: |
+          set -uo pipefail
+          npm audit --omit=dev --json > /tmp/root-prod-after.json || true
+          node tools/refactor/dependency-audit-summary.mjs root-production-after /tmp/root-prod-after.json
+          node tools/refactor/assert-audit-packages-clean.mjs /tmp/root-prod-after.json ws protobufjs
+
+      - name: Explain remediated dependency provenance
+        shell: bash
+        run: |
+          set -uo pipefail
+          npm ci --ignore-scripts
+          echo '===== REMEDIATED PROVENANCE: @google/genai ====='
+          npm explain @google/genai || true
+          echo '===== REMEDIATED PROVENANCE: ws ====='
+          npm explain ws || true
+          echo '===== REMEDIATED PROVENANCE: protobufjs ====='
+          npm explain protobufjs || true
+
+      - name: Verify remediated packages remain GenAI-owned
+        shell: bash
+        run: |
+          set -euo pipefail
+          WS_EXPLAIN="$(npm explain ws 2>&1 || true)"
+          PROTO_EXPLAIN="$(npm explain protobufjs 2>&1 || true)"
+          printf '%s\n' "$WS_EXPLAIN"
+          printf '%s\n' "$PROTO_EXPLAIN"
+          printf '%s' "$WS_EXPLAIN" | grep -F '@google/genai' >/dev/null || {
+            echo "ws is no longer resolved through @google/genai; refusing an unrelated transitive rewrite." >&2
+            exit 1
+          }
+          printf '%s' "$PROTO_EXPLAIN" | grep -F '@google/genai' >/dev/null || {
+            echo "protobufjs is no longer resolved through @google/genai; refusing an unrelated transitive rewrite." >&2
+            exit 1
+          }
+
+      - name: Install unchanged API dependencies
+        run: npm --prefix server ci
+
+      - name: Repository typecheck
+        run: npm run typecheck
+
+      - name: Frontend production build
+        run: npm run build
+
+      - name: AI config bridge contract
+        run: npm run smoke:ai-config-bridge
+
+      - name: Integrations runtime contract
+        run: npm run smoke:integrations-runtime
+
+      - name: Monitoring contract
+        run: npm run smoke:monitoring
+
+      - name: Runtime source contract
+        run: npm run smoke:runtime-source
+
+      - name: Route loading contract
+        run: npm run smoke:route-loading
+
+      - name: Global student journey contract
+        run: npm run smoke:global-student-journey
+
+      - name: Confirm remediation scope
+        if: github.actor != 'github-actions[bot]'
+        shell: bash
+        run: |
+          set -euo pipefail
+          CHANGED="$(git diff --name-only)"
+          echo "$CHANGED"
+          if [ -z "$CHANGED" ]; then
+            echo "Google GenAI dependency tree is already clean; no lockfile remediation is required."
+            exit 0
+          fi
+          if [ "$CHANGED" != "package-lock.json" ]; then
+            echo "Google GenAI remediation must modify package-lock.json only." >&2
+            exit 1
+          fi
+
+      - name: Commit verified Google GenAI remediation
+        if: github.actor != 'github-actions[bot]'
+        shell: bash
+        run: |
+          set -euo pipefail
+          EXPECTED_SHA="${{ github.event.pull_request.head.sha || github.sha }}"
+          git config user.name "almeaa-refactor-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add package-lock.json
+
+          if git diff --cached --quiet; then
+            echo "No Google GenAI lockfile remediation changes to commit."
+            exit 0
+          fi
+
+          git fetch origin refactor/repository-v2-safe
+          REMOTE_SHA="$(git rev-parse origin/refactor/repository-v2-safe)"
+          if [ "$REMOTE_SHA" != "$EXPECTED_SHA" ]; then
+            echo "Refactor branch moved from verified head ${EXPECTED_SHA} to ${REMOTE_SHA}; skipping stale remediation commit safely."
+            exit 0
+          fi
+
+          git commit -m "fix(deps): remediate genai transitive advisories"
+          git push origin HEAD:refactor/repository-v2-safe

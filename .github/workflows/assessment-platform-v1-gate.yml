@@ -1,0 +1,95 @@
+name: Assessment Platform V1 Gate
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - develop/assessment-platform-v1
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: assessment-platform-v1-${{ github.event.pull_request.head.ref || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  assessment-contracts:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.ref == 'develop/assessment-platform-v1'
+    name: Classification + quiz regression contracts
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Checkout exact head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 1
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            server/package-lock.json
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Install API dependencies
+        run: npm --prefix server ci
+
+      - name: Frontend typecheck
+        run: npm run typecheck
+
+      - name: API typecheck
+        run: npm --prefix server run check
+
+      - name: Canonical assessment classification contract
+        run: node scripts/smoke-assessment-classification-contract.mjs
+
+      - name: Assessment settings compatibility contract
+        run: node scripts/smoke-assessment-settings-contract.mjs
+
+      - name: Assessment definition boundary contract
+        run: node scripts/smoke-assessment-definition-boundary-contract.mjs
+
+      - name: Mock exam contract
+        run: npm run smoke:mock-exams
+
+      - name: Unified exam question-source contract
+        run: npm run smoke:exam-question-source
+
+      - name: Builder subject-scope contract
+        run: node scripts/smoke-assessment-builder-subject-scope-contract.mjs
+
+      - name: Quiz access contract
+        run: npm run smoke:quiz-access
+
+      - name: Quiz integrity guard contract
+        run: npm run smoke:quiz-integrity-guard
+
+      - name: Quiz answer exposure contract
+        run: npm run smoke:quiz-answer-exposure
+
+      - name: Learning placement contract
+        run: npm run smoke:learning-placement-admin
+
+      - name: Barcode/public-test contract
+        run: npm run smoke:barcode-public-tests
+
+      - name: Results contract
+        run: npm run smoke:results
+
+      - name: Saher/self-practice contract
+        run: npm run smoke:saher-skills
+
+      - name: Course quiz context contract
+        run: npm run smoke:course-quiz-context

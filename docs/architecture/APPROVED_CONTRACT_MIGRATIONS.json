@@ -1,0 +1,291 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Explicit, reviewed structural contract migrations. Each entry replaces one immutable-baseline architecture signature with its new internal owner while preserving the externally mounted HTTP method/path contract. This file must never be used for product route removal or blanket allowlisting.",
+  "backendRouteSignatureReplacements": [
+    {
+      "from": "contentRouter|GET|/announcement-ads",
+      "to": "contentPresentationRouter|GET|/announcement-ads",
+      "reason": "Presentation routes moved to the content presentation HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|POST|/announcement-ads",
+      "to": "contentPresentationRouter|POST|/announcement-ads",
+      "reason": "Presentation routes moved to the content presentation HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|DELETE|/announcement-ads/:id",
+      "to": "contentPresentationRouter|DELETE|/announcement-ads/:id",
+      "reason": "Presentation routes moved to the content presentation HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|PATCH|/announcement-ads/:id",
+      "to": "contentPresentationRouter|PATCH|/announcement-ads/:id",
+      "reason": "Presentation routes moved to the content presentation HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|GET|/homepage-settings",
+      "to": "contentPresentationRouter|GET|/homepage-settings",
+      "reason": "Presentation routes moved to the content presentation HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|PATCH|/homepage-settings",
+      "to": "contentPresentationRouter|PATCH|/homepage-settings",
+      "reason": "Presentation routes moved to the content presentation HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|GET|/platform-font-settings",
+      "to": "contentPresentationRouter|GET|/platform-font-settings",
+      "reason": "Presentation routes moved to the content presentation HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|PATCH|/platform-font-settings",
+      "to": "contentPresentationRouter|PATCH|/platform-font-settings",
+      "reason": "Presentation routes moved to the content presentation HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|GET|/platform-integrations",
+      "to": "contentPlatformIntegrationRouter|GET|/platform-integrations",
+      "reason": "Platform integration routes moved to the dedicated content integration HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|GET|/public-contact-widget",
+      "to": "contentPlatformIntegrationRouter|GET|/public-contact-widget",
+      "reason": "Platform integration routes moved to the dedicated content integration HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|PATCH|/platform-integrations",
+      "to": "contentPlatformIntegrationRouter|PATCH|/platform-integrations",
+      "reason": "Platform integration routes moved to the dedicated content integration HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|GET|/platform-integrations/history",
+      "to": "contentPlatformIntegrationRouter|GET|/platform-integrations/history",
+      "reason": "Platform integration routes moved to the dedicated content integration HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|GET|/platform-integrations/setup-checklist",
+      "to": "contentPlatformIntegrationRuntimeRouter|GET|/platform-integrations/setup-checklist",
+      "reason": "Platform integration runtime checklist moved to the dedicated runtime integration HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|GET|/platform-integrations/runtime-audit",
+      "to": "contentPlatformIntegrationRuntimeRouter|GET|/platform-integrations/runtime-audit",
+      "reason": "Platform integration runtime audit moved to the dedicated runtime integration HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|POST|/platform-integrations/history/:id/restore",
+      "to": "contentPlatformIntegrationRouter|POST|/platform-integrations/history/:id/restore",
+      "reason": "Platform integration routes moved to the dedicated content integration HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|POST|/study-plans/intervention",
+      "to": "contentStudyPlanRouter|POST|/study-plans/intervention",
+      "reason": "Study plan routes moved to the dedicated content study-plan HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|POST|/study-plans",
+      "to": "contentStudyPlanRouter|POST|/study-plans",
+      "reason": "Study plan routes moved to the dedicated content study-plan HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|PATCH|/study-plans/:id",
+      "to": "contentStudyPlanRouter|PATCH|/study-plans/:id",
+      "reason": "Study plan routes moved to the dedicated content study-plan HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|DELETE|/study-plans/:id",
+      "to": "contentStudyPlanRouter|DELETE|/study-plans/:id",
+      "reason": "Study plan routes moved to the dedicated content study-plan HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|POST|/topics",
+      "to": "contentLearningRouter|POST|/topics",
+      "reason": "Learning content routes moved to the dedicated content learning HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|PATCH|/topics/:id",
+      "to": "contentLearningRouter|PATCH|/topics/:id",
+      "reason": "Learning content routes moved to the dedicated content learning HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|DELETE|/topics/:id",
+      "to": "contentLearningRouter|DELETE|/topics/:id",
+      "reason": "Learning content routes moved to the dedicated content learning HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|POST|/lessons",
+      "to": "contentLearningRouter|POST|/lessons",
+      "reason": "Learning content routes moved to the dedicated content learning HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|PATCH|/lessons/:id",
+      "to": "contentLearningRouter|PATCH|/lessons/:id",
+      "reason": "Learning content routes moved to the dedicated content learning HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|DELETE|/lessons/:id",
+      "to": "contentLearningRouter|DELETE|/lessons/:id",
+      "reason": "Learning content routes moved to the dedicated content learning HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|POST|/library-items",
+      "to": "contentLearningRouter|POST|/library-items",
+      "reason": "Learning content routes moved to the dedicated content learning HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|PATCH|/library-items/:id",
+      "to": "contentLearningRouter|PATCH|/library-items/:id",
+      "reason": "Learning content routes moved to the dedicated content learning HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|DELETE|/library-items/:id",
+      "to": "contentLearningRouter|DELETE|/library-items/:id",
+      "reason": "Learning content routes moved to the dedicated content learning HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|POST|/groups",
+      "to": "contentGroupRouter|POST|/groups",
+      "reason": "Group management routes moved to the dedicated content group HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|PATCH|/groups/:id",
+      "to": "contentGroupRouter|PATCH|/groups/:id",
+      "reason": "Group management routes moved to the dedicated content group HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|DELETE|/groups/:id",
+      "to": "contentGroupRouter|DELETE|/groups/:id",
+      "reason": "Group management routes moved to the dedicated content group HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|POST|/b2b-packages",
+      "to": "contentSchoolCommercialRouter|POST|/b2b-packages",
+      "reason": "School commercial package/access routes moved to the dedicated content commercial HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|PATCH|/b2b-packages/:id",
+      "to": "contentSchoolCommercialRouter|PATCH|/b2b-packages/:id",
+      "reason": "School commercial package/access routes moved to the dedicated content commercial HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|DELETE|/b2b-packages/:id",
+      "to": "contentSchoolCommercialRouter|DELETE|/b2b-packages/:id",
+      "reason": "School commercial package/access routes moved to the dedicated content commercial HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|POST|/access-codes",
+      "to": "contentSchoolCommercialRouter|POST|/access-codes",
+      "reason": "School commercial package/access routes moved to the dedicated content commercial HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|PATCH|/access-codes/:id",
+      "to": "contentSchoolCommercialRouter|PATCH|/access-codes/:id",
+      "reason": "School commercial package/access routes moved to the dedicated content commercial HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|DELETE|/access-codes/:id",
+      "to": "contentSchoolCommercialRouter|DELETE|/access-codes/:id",
+      "reason": "School commercial package/access routes moved to the dedicated content commercial HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|GET|/access-codes",
+      "to": "contentSchoolCommercialRouter|GET|/access-codes",
+      "reason": "School commercial package/access routes moved to the dedicated content commercial HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|GET|/access-code-redemptions",
+      "to": "contentSchoolCommercialRouter|GET|/access-code-redemptions",
+      "reason": "School commercial package/access routes moved to the dedicated content commercial HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|GET|/schools/:id/report",
+      "to": "contentSchoolReportImportRouter|GET|/schools/:id/report",
+      "reason": "School report/import/relations routes moved to dedicated bounded content school HTTP modules; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|POST|/schools/:id/import-students",
+      "to": "contentSchoolReportImportRouter|POST|/schools/:id/import-students",
+      "reason": "School report/import/relations routes moved to dedicated bounded content school HTTP modules; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|POST|/schools/:id/relations",
+      "to": "contentSchoolRelationsRouter|POST|/schools/:id/relations",
+      "reason": "School report/import/relations routes moved to dedicated bounded content school HTTP modules; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|GET|/bootstrap/minimal",
+      "to": "contentBootstrapRouter|GET|/bootstrap/minimal",
+      "reason": "Minimal content bootstrap moved to the dedicated bootstrap HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "contentRouter|GET|/bootstrap",
+      "to": "contentBootstrapRouter|GET|/bootstrap",
+      "reason": "Scoped content bootstrap moved to the dedicated bootstrap HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "quizRouter|GET|/questions",
+      "to": "questionBankRouter|GET|/questions",
+      "reason": "Question bank HTTP ownership moved to the dedicated question-bank router; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "quizRouter|POST|/questions",
+      "to": "questionBankRouter|POST|/questions",
+      "reason": "Question bank HTTP ownership moved to the dedicated question-bank router; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "quizRouter|PATCH|/questions/:id",
+      "to": "questionBankRouter|PATCH|/questions/:id",
+      "reason": "Question bank HTTP ownership moved to the dedicated question-bank router; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "quizRouter|DELETE|/questions/:id",
+      "to": "questionBankRouter|DELETE|/questions/:id",
+      "reason": "Question bank HTTP ownership moved to the dedicated question-bank router; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "quizRouter|GET|/skill-progress",
+      "to": "adaptiveTelemetryRouter|GET|/skill-progress",
+      "reason": "Learner adaptive telemetry routes moved to the dedicated telemetry HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "quizRouter|GET|/question-attempts",
+      "to": "adaptiveTelemetryRouter|GET|/question-attempts",
+      "reason": "Learner adaptive telemetry routes moved to the dedicated telemetry HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "quizRouter|POST|/question-attempts",
+      "to": "adaptiveTelemetryRouter|POST|/question-attempts",
+      "reason": "Learner adaptive telemetry routes moved to the dedicated telemetry HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "quizRouter|GET|/analytics/overview",
+      "to": "quizAnalyticsRouter|GET|/analytics/overview",
+      "reason": "Quiz analytics overview moved to the dedicated analytics HTTP module; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "quizRouter|GET|/results",
+      "to": "quizResultsRouter|GET|/results",
+      "reason": "Quiz results HTTP ownership moved to the dedicated results router after the legacy handlers were removed; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "quizRouter|POST|/results",
+      "to": "quizResultsRouter|POST|/results",
+      "reason": "Quiz results HTTP ownership moved to the dedicated results router after the legacy handlers were removed; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "quizRouter|GET|/results/latest",
+      "to": "quizResultsRouter|GET|/results/latest",
+      "reason": "Quiz results HTTP ownership moved to the dedicated results router after the legacy handlers were removed; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "quizRouter|GET|/results/scoped",
+      "to": "quizResultsRouter|GET|/results/scoped",
+      "reason": "Quiz results HTTP ownership moved to the dedicated results router after the legacy handlers were removed; public HTTP method/path remains unchanged."
+    },
+    {
+      "from": "quizRouter|GET|/results/section-analytics/:quizId",
+      "to": "quizResultsRouter|GET|/results/section-analytics/:quizId",
+      "reason": "Quiz results HTTP ownership moved to the dedicated results router after the legacy handlers were removed; public HTTP method/path remains unchanged."
+    }
+  ]
+}

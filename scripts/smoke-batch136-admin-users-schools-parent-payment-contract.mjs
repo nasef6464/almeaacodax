@@ -1,0 +1,140 @@
+import fs from "node:fs";
+import path from "node:path";
+import process from "node:process";
+
+const root = process.cwd();
+
+function read(relativePath) {
+  return fs.readFileSync(path.join(root, relativePath), "utf8");
+}
+
+function assertIncludes(file, needle, label = needle) {
+  const source = read(file);
+  if (!source.includes(needle)) {
+    throw new Error(`${file} is missing ${label}`);
+  }
+}
+
+function assertAllIncludes(file, entries) {
+  entries.forEach((entry) => {
+    if (typeof entry === "string") {
+      assertIncludes(file, entry);
+    } else {
+      assertIncludes(file, entry.needle, entry.label);
+    }
+  });
+}
+
+function assertAllIncludesSource(source, entries, label) {
+  entries.forEach((entry) => {
+    const needle = typeof entry === "string" ? entry : entry.needle;
+    const entryLabel = typeof entry === "string" ? entry : entry.label;
+    if (!source.includes(needle)) {
+      throw new Error(`${label} is missing ${entryLabel}`);
+    }
+  });
+}
+
+const schoolsRuntimeSource = [
+  read("dashboards/admin/SchoolsManager.tsx"),
+  read("dashboards/admin/SchoolsManager/SchoolStudentRosterPanel.tsx"),
+  read("dashboards/admin/SchoolsManager/SchoolClassOperatingCard.tsx"),
+  read("dashboards/admin/SchoolsManager/SchoolClassesPanel.tsx"),
+  read("dashboards/admin/SchoolsManager/SchoolWideSupervisorsPanel.tsx"),
+  read("dashboards/admin/SchoolsManager/schoolRosterAssignmentActions.ts"),
+].join("\n");
+
+assertAllIncludes("dashboards/admin/UsersManager.tsx", [
+  "toggleActionsMenu",
+  { needle: "حذف المستخدم", label: "Delete user action" },
+  "handleDeleteUser",
+  "allStudentsForLinking",
+  "linkableStudents",
+  "parentCandidates = linkableStudents.filter",
+  "options={linkableStudents.map((student) => ({ value: student.id, label: student.name }))}",
+  "const linkedStudent = linkableStudents.find((student) => student.id === studentId);",
+]);
+
+assertAllIncludesSource(`${read("services/api.ts")}\n${read("services/apiGroups/authApi.ts")}`, [
+  "deleteAdminUser: (id: string, token?: string | null)",
+  "`/auth/admin/users/${id}`",
+  "method: \"DELETE\"",
+], "auth api facade/source");
+
+assertAllIncludes("server/src/routes/auth.routes.ts", [
+  "authRouter.delete(",
+  "\"/admin/users/:id\"",
+  "You cannot delete your current account.",
+  "Cannot delete the last admin account.",
+  "auth.admin_user.delete",
+  "GroupModel.updateMany(",
+  "buildDocumentsQuery",
+  "role: \"student\"",
+  "nextPayload.linkedStudentIds = linkedStudents.map",
+]);
+
+assertAllIncludes("dashboards/admin/SchoolsManager.tsx", [
+  "toggleSchoolActions",
+  "activeSchoolActionsId === cardPortfolioRow.school.id",
+]);
+assertAllIncludes("dashboards/admin/SchoolsManager/SchoolPortfolioCard.tsx", [
+  "فتح تشغيل المدرسة",
+]);
+assertAllIncludes("dashboards/admin/SchoolsManager/workspaceViewModel.ts", [
+  "اربط مشرفًا أو معلمًا بالمدرسة",
+]);
+
+assertAllIncludes("dashboards/admin/AdminDashboard.tsx", [
+  "setActiveAdminTab('schools')",
+  "setActiveAdminTab('quizzes')",
+  "setActiveAdminTab('announcement-ads')",
+]);
+
+assertAllIncludes("server/src/routes/payment.routes.ts", [
+  "\"/settings/apply-country-preset\"",
+  "\"/requests/summary\"",
+  "verifyPaymentWebhookSignature",
+]);
+
+assertAllIncludesSource(schoolsRuntimeSource, [
+  "handleAssignSchoolSupervisor(value, selectedSchool.id)",
+  "handleRemoveSchoolSupervisor(currentUser.id, selectedSchool.id)",
+  "onAssignSupervisor={handleAssignSchoolSupervisor}",
+  "handleRemoveSchoolSupervisor(currentUser.id, classroom.id)",
+  "rosterActionPending",
+  "setActiveTab('relations')",
+  "setSelectedSchool((current) =>",
+], "school manager runtime modules");
+
+assertAllIncludes("store/useStore.ts", [
+  "assignSupervisorToGroupAsync: async",
+  "removeSupervisorFromGroupAsync: async",
+  "...createStudentGroupMembershipSlice<AppState>(set, get, api)",
+]);
+
+assertAllIncludes("store/slices/studentGroupMembershipSlice.ts", [
+  "assignStudentToGroupAsync:",
+  "removeStudentFromGroupAsync:",
+]);
+
+assertAllIncludes("dashboards/admin/UsersManager.tsx", [
+  "overflow-visible",
+]);
+
+assertAllIncludes("dashboards/admin/FinancialManager.tsx", [
+  "onClick={() => void reviewRequest(request, 'approved')}",
+  "onClick={() => void reviewRequest(request, 'rejected')}",
+  "api.reviewPaymentRequest(request.id, {",
+]);
+
+assertAllIncludesSource(`${read("services/api.ts")}\n${read("services/apiGroups/paymentsApi.ts")}`, [
+  "reviewPaymentRequest: (id: string, payload: unknown, token?: string | null)",
+  "`/payments/requests/${id}/review`",
+], "payments api facade/source");
+
+assertAllIncludes("server/src/routes/payment.routes.ts", [
+  "\"/requests/:id/review\"",
+  "payment.request.review",
+]);
+
+console.log("Batch 136 admin/users/schools/parent/payment contract passed.");

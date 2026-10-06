@@ -1,0 +1,68 @@
+{
+  "version": 1,
+  "customerKey": "alpha-learning",
+  "productName": "Alpha Learning",
+  "domain": "https://alpha.example.test",
+  "branding": {
+    "logoUrl": "/brands/alpha-learning/logo.svg",
+    "logoAlt": "Alpha Learning logo",
+    "logoText": "Alpha",
+    "logoAccentText": "Learning"
+  },
+  "navigation": {
+    "showAutoPaths": true,
+    "moreLabel": "More",
+    "items": [
+      { "id": "home", "label": "Home", "visible": true, "order": 0 },
+      { "id": "pricing", "label": "Plans", "visible": true, "order": 90 }
+    ]
+  },
+  "typography": {
+    "bodyFont": "tajawal",
+    "headingFont": "tajawal",
+    "navigationFont": "tajawal",
+    "buttonFont": "tajawal",
+    "bodyColor": "#20242b",
+    "headingColor": "#101828"
+  },
+  "features": {
+    "selfRegistration": true,
+    "emailPasswordLogin": true,
+    "emailVerificationRequired": false,
+    "adminApprovalRequired": false,
+    "contactWidget": true
+  },
+  "providers": {
+    "google": { "enabled": true, "mode": "oauth" },
+    "facebook": { "enabled": false, "mode": "oauth" },
+    "whatsapp": { "enabled": true, "mode": "otp" },
+    "telegram": { "enabled": false, "mode": "bot" },
+    "email": { "enabled": true, "mode": "smtp" },
+    "zoom": { "enabled": true, "mode": "oauth" },
+    "googleMeet": { "enabled": false, "mode": "oauth" },
+    "teams": { "enabled": false, "mode": "oauth" },
+    "youtubeLive": { "enabled": false, "mode": "api" }
+  },
+  "registration": {
+    "title": "Create your Alpha Learning account",
+    "subtitle": "Start learning with your organization.",
+    "termsLink": "/terms",
+    "privacyLink": "/privacy"
+  },
+  "seo": {
+    "enabled": true,
+    "defaultTitle": "Alpha Learning",
+    "defaultDescription": "Alpha Learning educational platform.",
+    "defaultKeywords": ["learning", "assessment"],
+    "defaultOgImage": "/brands/alpha-learning/og.png",
+    "robotsIndexingEnabled": true
+  },
+  "contactWidget": {
+    "channel": "whatsapp",
+    "whatsappNumber": "",
+    "whatsappMessage": "Hello, I need help with Alpha Learning.",
+    "openInNewTab": true,
+    "showOnPublicPages": true,
+    "showOnDashboardPages": false
+  }
+}

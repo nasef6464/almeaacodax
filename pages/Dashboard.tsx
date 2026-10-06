@@ -1,0 +1,2538 @@
+
+import React, { useEffect, useMemo, useState, Suspense } from 'react';
+import { 
+    Clock, TrendingUp, AlertTriangle, Zap, Sparkles, FileText, 
+    PieChart, Bookmark, Map as MapIcon, HelpCircle, LayoutDashboard, 
+    ShoppingCart, ChevronLeft, Menu, X, Target, Loader2, CheckCircle, BookOpen, Star, LogOut,
+    Route as RouteIcon, Brain, Calendar, User, Video, Copy, MessageCircle, ClipboardList, Activity as ActivityIcon, Calculator,
+    GraduationCap, Wrench, Headphones
+} from 'lucide-react';
+import { Card } from '../components/ui/Card';
+import { ProgressBar } from '../components/ui/ProgressBar';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { SmartLearningPath } from '../components/SmartLearningPath';
+import { calculateStreak } from '../utils/streak';
+import { useStore } from '../store/useStore';
+import { Activity, QuizResult, Role, SkillGap, type SkillProgress } from '../types';
+import { QiyasCalculatorModal } from '../components/QiyasCalculatorModal';
+import { api } from '../services/api';
+import { adapter } from '../services/adapter';
+import { useAuth } from '../contexts/AuthContext';
+import { useNotificationStream } from '../contexts/useNotificationStream';
+import { isTrueMockExam } from "../utils/quizPlacement";
+import { EmptyState } from '../components/ui/EmptyState';
+import { isStandaloneMockExam } from '../utils/mockExam';
+import { ParentApprovalsModal } from './ParentApprovalsModal';
+import { DEFAULT_AVATAR } from '../utils/defaultAvatar';
+import { ParentStudentLinker } from '../components/ParentStudentLinker';
+import { courseBelongsToPath, resolvePathProgress } from './Dashboard/pathProgressProjection';
+import { SupervisorTasksStrip } from './Dashboard/SupervisorTasksStrip';
+
+
+// Lazy Load Sub-Pages to optimize Dashboard initial load
+const Quizzes = React.lazy(() => import('./Quizzes'));
+const Reports = React.lazy(() => import('./Reports'));
+const Favorites = React.lazy(() => import('./Favorites'));
+const Plan = React.lazy(() => import('./Plan'));
+const QA = React.lazy(() => import('./QA'));
+const MyRequests = React.lazy(() => import('./MyRequests').then(module => ({ default: module.MyRequests })));
+const FlashcardsManager = React.lazy(() => import('./FlashcardsManager'));
+const MockExamStudentHub = React.lazy(() => import('./MockExamStudentHub'));
+
+const TabLoading = () => (
+    <div className="flex items-center justify-center h-64 text-amber-500">
+        <Loader2 size={40} className="animate-spin" />
+    </div>
+);
+
+const buildSmartPathSkillsFromProgress = (
+    rows: SkillProgress[],
+    scope: { pathId?: string; subjectId?: string } = {},
+): SkillGap[] =>
+    rows
+        .filter((row) =>
+            !row.unresolvedTaxonomy &&
+            (!scope.pathId || row.pathId === scope.pathId) &&
+            (!scope.subjectId || row.subjectId === scope.subjectId),
+        )
+        .map((row): SkillGap => {
+            const mastery = Math.max(0, Math.min(100, Number(row.mastery || 0)));
+            return {
+                skillId: row.skillId,
+                level: row.level,
+                parentSkillId: row.parentSkillId,
+                parentSkill: row.parentSkill,
+                pathId: row.pathId,
+                subjectId: row.subjectId,
+                sectionId: row.sectionId,
+                section: row.parentSkill,
+                skill: row.skill,
+                mastery,
+                status: mastery < 50 ? 'weak' : mastery < 75 ? 'average' : 'strong',
+                recommendation: row.recommendedAction,
+            };
+        })
+        .sort((a, b) => a.mastery - b.mastery)
+        .slice(0, 12);
+
+const useStudentSkillProgress = (scope: { pathId?: string; subjectId?: string } = {}) => {
+    const { user } = useStore();
+    const [rows, setRows] = useState<SkillProgress[]>([]);
+
+    useEffect(() => {
+        if (user.role !== Role.STUDENT) {
+            setRows([]);
+            return;
+        }
+        let cancelled = false;
+        api.getSkillProgress({ ...scope, noTotal: true })
+            .then((items) => {
+                if (!cancelled) setRows(items as SkillProgress[]);
+            })
+            .catch(() => {
+                if (!cancelled) setRows([]);
+            });
+        return () => { cancelled = true; };
+    }, [scope.pathId, scope.subjectId, user.role]);
+
+    return rows;
+};
+
+const formatQuizCardDate = (createdAt?: number) => {
+    if (!createdAt) return 'متاح الآن';
+    return new Date(createdAt).toLocaleDateString('ar-SA', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+};
+
+type ScopedQuizResult = QuizResult & {
+    id?: string;
+    studentId?: string;
+    studentName?: string;
+    studentEmail?: string;
+    createdAt?: number;
+    submittedAt?: number | string;
+    date?: number | string;
+};
+
+const extractScopedQuizResults = (payload: unknown): ScopedQuizResult[] => {
+    if (Array.isArray(payload)) return payload as ScopedQuizResult[];
+    if (payload && typeof payload === 'object' && Array.isArray((payload as { results?: unknown[] }).results)) {
+        return (payload as { results: unknown[] }).results as ScopedQuizResult[];
+    }
+    return [];
+};
+
+const getResultTimestamp = (result: ScopedQuizResult) => {
+    const raw = result.createdAt ?? result.submittedAt ?? result.date;
+    if (typeof raw === 'number') return raw;
+    if (typeof raw === 'string') {
+        const parsed = new Date(raw).getTime();
+        return Number.isNaN(parsed) ? 0 : parsed;
+    }
+    return 0;
+};
+
+type DashboardTab =
+    | 'overview'
+    | 'paths'
+    | 'my-courses'
+    | 'smart-path'
+    | 'sessions'
+    | 'saher'
+    | 'quizzes'
+    | 'mock-exams'
+    | 'school-tests'
+    | 'exams'
+    | 'reports'
+    | 'favorites'
+    | 'flashcards'
+    | 'plan'
+    | 'qa'
+    | 'requests'
+    | 'parent-results'
+    | 'parent-skills'
+    | 'parent-followup'
+    | 'parent-link';
+
+const formatParentDate = (result: ScopedQuizResult) => {
+    const timestamp = getResultTimestamp(result);
+    if (!timestamp) return 'غير محدد';
+    return new Date(timestamp).toLocaleDateString('ar-SA', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+    });
+};
+
+const getStudentLabel = (result: ScopedQuizResult) =>
+    result.studentName || result.studentEmail || result.studentId || result.userId || 'طالب مرتبط';
+
+const scoreTone = (score: number) => {
+    if (score < 60) return 'text-rose-600 bg-rose-50 border-rose-100';
+    if (score < 80) return 'text-amber-600 bg-amber-50 border-amber-100';
+    return 'text-emerald-600 bg-emerald-50 border-emerald-100';
+};
+
+const useParentScopedResults = () => {
+    const { user, users } = useStore();
+    const [scopedResults, setScopedResults] = useState<ScopedQuizResult[]>([]);
+    const [parentProgress, setParentProgress] = useState<Array<{
+        id: string;
+        name: string;
+        weeklyStudyMinutes: number;
+        lastQuizScore: number;
+        weakSkills: string[];
+        weakSkillDetails?: Array<{
+            skillId: string;
+            skill: string;
+            parentSkillId?: string;
+            parentSkill?: string;
+            pathId?: string;
+            subjectId?: string;
+            mastery: number;
+            trend: string;
+            evidenceCount: number;
+        }>;
+    }>>([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [loadError, setLoadError] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (user.role !== Role.PARENT) return;
+
+        let isMounted = true;
+        const slowLoadTimer = window.setTimeout(() => {
+            if (!isMounted) return;
+            setIsLoading(false);
+            setLoadError('استغرق تحميل نتائج الأبناء وقتًا أطول من المعتاد. يمكنك فتح التقرير أو تحديث الصفحة بعد قليل.');
+        }, 10000);
+        setIsLoading(true);
+        setLoadError(null);
+
+        Promise.all([
+            api.getScopedQuizResults(),
+            api.getParentChildrenProgress(),
+        ])
+            .then(([payload, progressPayload]) => {
+                window.clearTimeout(slowLoadTimer);
+                if (!isMounted) return;
+                setLoadError(null);
+                setScopedResults(
+                    extractScopedQuizResults(payload)
+                        .sort((a, b) => getResultTimestamp(b) - getResultTimestamp(a))
+                );
+                setParentProgress(Array.isArray(progressPayload?.children) ? progressPayload.children : []);
+            })
+            .catch((error) => {
+                window.clearTimeout(slowLoadTimer);
+                console.error('Failed to load parent scoped quiz results', error);
+                if (isMounted) {
+                    setLoadError('تعذر تحميل نتائج الأبناء الآن. حاول تحديث الصفحة بعد قليل.');
+                }
+            })
+            .finally(() => {
+                if (isMounted) setIsLoading(false);
+            });
+
+        return () => {
+            isMounted = false;
+            window.clearTimeout(slowLoadTimer);
+        };
+    }, [user.role]);
+
+    return useMemo(() => {
+        const linkedStudentIds = new Set(user.linkedStudentIds || []);
+        const linkedStudents = users.filter((item) => item.role === Role.STUDENT && linkedStudentIds.has(item.id));
+        const resultsByStudent = new globalThis.Map<string, ScopedQuizResult[]>();
+
+        scopedResults.forEach((result) => {
+            const key = String(result.studentId || result.userId || getStudentLabel(result));
+            const current = resultsByStudent.get(key) || [];
+            current.push(result);
+            resultsByStudent.set(key, current);
+        });
+
+        const fallbackNames = Array.from(
+            new Set(scopedResults.map((result) => getStudentLabel(result)).filter(Boolean))
+        );
+
+        const childCards = linkedStudents.length > 0
+            ? linkedStudents.map((student) => {
+                const studentResults = resultsByStudent.get(student.id) || scopedResults.filter((result) => result.studentId === student.id || result.userId === student.id);
+                const average = studentResults.length
+                    ? Math.round(studentResults.reduce((sum, result) => sum + (Number(result.score) || 0), 0) / studentResults.length)
+                    : 0;
+                const canonicalProgress = parentProgress.find((item) => item.id === student.id);
+                const weakCount = canonicalProgress?.weakSkillDetails?.length
+                    ?? canonicalProgress?.weakSkills?.length
+                    ?? studentResults.reduce(
+                        (sum, result) => sum + (result.skillsAnalysis || []).filter((skill) => skill.mastery < 75 || skill.status === 'weak').length,
+                        0
+                    );
+                return {
+                    id: student.id,
+                    name: student.name,
+                    email: student.email,
+                    avatar: student.avatar,
+                    results: studentResults.length,
+                    average,
+                    weakCount,
+                    latestResult: studentResults[0],
+                };
+            })
+            : fallbackNames.map((name) => {
+                const studentResults = scopedResults.filter((result) => getStudentLabel(result) === name);
+                const average = studentResults.length
+                    ? Math.round(studentResults.reduce((sum, result) => sum + (Number(result.score) || 0), 0) / studentResults.length)
+                    : 0;
+                const weakCount = studentResults.reduce(
+                    (sum, result) => sum + (result.skillsAnalysis || []).filter((skill) => skill.mastery < 75 || skill.status === 'weak').length,
+                    0
+                );
+                const studentName = String(name);
+                return {
+                    id: studentName,
+                    name: studentName,
+                    email: '',
+                    avatar: DEFAULT_AVATAR,
+                    results: studentResults.length,
+                    average,
+                    weakCount,
+                    latestResult: studentResults[0],
+                };
+            });
+
+        const canonicalWeakSkills = parentProgress.flatMap((child) =>
+            (child.weakSkillDetails || []).map((skill) => ({
+                key: skill.skillId || `${skill.pathId || ''}:${skill.subjectId || ''}:${skill.skill}`,
+                skill: skill.skill,
+                section: skill.parentSkill,
+                mastery: skill.mastery,
+                status: skill.mastery < 50 ? 'weak' : 'average',
+                studentName: child.name,
+                quizTitle: 'الإتقان الحالي',
+            })),
+        );
+        const weakSkills = (canonicalWeakSkills.length > 0
+            ? canonicalWeakSkills
+            : scopedResults.flatMap((result) =>
+                (result.skillsAnalysis || [])
+                    .filter((skill) => skill.mastery < 75 || skill.status === 'weak')
+                    .map((skill) => ({
+                        key: skill.skillId || `${skill.subjectId || ''}:${skill.sectionId || ''}:${skill.skill}`,
+                        skill: skill.skill,
+                        section: skill.section,
+                        mastery: skill.mastery,
+                        status: skill.status,
+                        studentName: getStudentLabel(result),
+                        quizTitle: result.quizTitle,
+                    })),
+            ))
+            .sort((a, b) => a.mastery - b.mastery);
+
+        const followUpPlan = weakSkills.slice(0, 3).map((skill, index) => {
+            const dayLabels = ['اليوم الأول', 'اليوم الثاني', 'اليوم الثالث'];
+            const action =
+                skill.mastery < 50
+                    ? 'راجع معه شرحًا قصيرًا ثم اطلب منه حل 5 أسئلة سهلة فقط.'
+                    : 'اطلب منه حل تدريب متوسط ثم مراجعة السؤال الذي أخطأ فيه بصوت عال.';
+            const check =
+                skill.mastery < 50
+                    ? 'علامة النجاح: يشرح لك فكرة المهارة في دقيقة واحدة.'
+                    : 'علامة النجاح: يصل إلى 75% أو أكثر في محاولة قصيرة.';
+
+            return {
+                id: `${skill.key}-${skill.studentName}-${index}`,
+                day: dayLabels[index],
+                studentName: skill.studentName,
+                skill: skill.skill,
+                mastery: skill.mastery,
+                action,
+                check,
+            };
+        });
+
+        const topWeakSkill = weakSkills[0];
+        const coachMessage = topWeakSkill
+            ? `ابدأ بهدوء مع ${topWeakSkill.studentName}. الأولوية الآن: ${topWeakSkill.skill} لأنها عند ${Math.round(topWeakSkill.mastery)}%. الأفضل جلسة قصيرة 15 دقيقة: شرح سريع، 5 أسئلة، ثم مراجعة خطأ واحد فقط بدون ضغط.`
+            : scopedResults.length > 0
+                ? 'الأداء مطمئن حاليًا. استمر بمتابعة خفيفة: سؤال واحد يوميًا عن ما تعلمه، ومراجعة قصيرة قبل أي اختبار.'
+                : 'اربط حساب الطالب أو انتظر أول اختبار حتى تظهر خطة متابعة مخصصة.';
+
+        const averageScore = scopedResults.length
+            ? Math.round(scopedResults.reduce((sum, result) => sum + (Number(result.score) || 0), 0) / scopedResults.length)
+            : 0;
+        const lastThreeAverage = scopedResults.slice(0, 3).length
+            ? Math.round(scopedResults.slice(0, 3).reduce((sum, result) => sum + (Number(result.score) || 0), 0) / scopedResults.slice(0, 3).length)
+            : 0;
+        const olderThreeAverage = scopedResults.slice(3, 6).length
+            ? Math.round(scopedResults.slice(3, 6).reduce((sum, result) => sum + (Number(result.score) || 0), 0) / scopedResults.slice(3, 6).length)
+            : 0;
+
+        return {
+            linkedStudents,
+            childCards,
+            scopedResults,
+            recentResults: scopedResults.slice(0, 6),
+            weakSkills,
+            priorityWeakSkills: weakSkills.slice(0, 6),
+            followUpPlan,
+            coachMessage,
+            childrenCount: Math.max(childCards.length, linkedStudents.length),
+            averageScore,
+            lastThreeAverage,
+            olderThreeAverage,
+            isLoading,
+            loadError,
+        };
+    }, [isLoading, linkedStudentIdsKey(user.linkedStudentIds), loadError, parentProgress, scopedResults, user.linkedStudentIds, users]);
+};
+
+const linkedStudentIdsKey = (ids?: string[]) => (ids || []).join('|');
+
+const PathsTab = () => {
+    const { paths: storePaths, courses, enrolledPaths, enrollPath, unenrollPath, completedLessons, user, examResults } = useStore();
+    const canSeeHiddenPaths = ['admin', 'teacher', 'supervisor'].includes(user?.role || '');
+    
+    // Fallback for icons and colors
+    const getPathStyle = (pathId: string) => {
+        if (pathId === 'p_qudrat') return { icon: <Target size={24} className="text-purple-500" />, bg: 'bg-purple-50', color: 'purple' };
+        if (pathId === 'p_tahsili') return { icon: <BookOpen size={24} className="text-blue-500" />, bg: 'bg-blue-50', color: 'blue' };
+        if (pathId === 'p_nafes' || pathId === 'nafes') return { icon: <Star size={24} className="text-emerald-500" />, bg: 'bg-emerald-50', color: 'emerald' };
+        return { icon: <RouteIcon size={24} className="text-indigo-500" />, bg: 'bg-indigo-50', color: 'indigo' };
+    };
+
+    const dPaths = storePaths
+        .filter(p => canSeeHiddenPaths || p.isActive !== false)
+        .filter(p => typeof p.id === 'string' && p.id.trim().length > 0 && typeof p.name === 'string' && p.name.trim().length > 0)
+        .map(p => ({
+            id: p.id,
+            title: p.name,
+            description: `مسار ${p.name}`,
+            category: p.name,
+            ...getPathStyle(p.id)
+        }));
+
+    const activePaths = dPaths.filter(p => enrolledPaths?.includes(p.id));
+    const availablePaths = dPaths.filter(p => !enrolledPaths?.includes(p.id));
+
+    return (
+        <div className="space-y-8 animate-fade-in">
+            <div>
+                <h2 className="text-2xl font-bold text-gray-800 mb-2">إدارة المسارات التعليمية</h2>
+                <p className="text-gray-500">تابع تقدمك في المسارات المسجل بها واستكشف مسارات جديدة.</p>
+            </div>
+
+            {/* Active Paths */}
+            <div>
+                <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <CheckCircle className="text-emerald-500" size={20} />
+                    المسارات الحالية
+                </h3>
+                {activePaths.length > 0 ? (
+                    <div className="grid gap-6">
+                        {activePaths.map(path => {
+                            const pathStats = resolvePathProgress(path, courses.filter((course) => !course.isPackage), completedLessons, examResults);
+
+                            return (
+                                <Card key={path.id} className="p-6 border-2 border-transparent hover:border-gray-100 transition-all">
+                                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                                        <div className="flex items-center gap-4">
+                                            <div className={`w-16 h-16 rounded-2xl flex items-center justify-center shrink-0 ${path.bg}`}>
+                                                {path.icon}
+                                            </div>
+                                            <div>
+                                                <h3 className="font-bold text-xl text-gray-900 mb-1">{path.title}</h3>
+                                                <p className="text-sm text-gray-500">{path.description}</p>
+                                            </div>
+                                        </div>
+                                        <div className="flex-1 max-w-md w-full">
+                                            <div className="flex justify-between text-sm mb-2">
+                                                <span className="font-bold text-gray-700">نسبة الإنجاز</span>
+                                                <span className="font-bold text-amber-500">{pathStats.progress}%</span>
+                                            </div>
+                                            <ProgressBar percentage={pathStats.progress} color="secondary" />
+                                            <p className="text-xs text-gray-400 mt-2 text-left">
+                                                {pathStats.coursesCount} دورات · {pathStats.examsCount} اختبارات محسوبة
+                                            </p>
+                                        </div>
+                                        <div className="shrink-0 flex flex-col gap-2">
+                                            <Link to={`/category/${path.id}`} className="bg-gray-900 text-white px-6 py-3 rounded-xl font-bold hover:bg-gray-800 transition-colors inline-block text-center w-full md:w-auto">
+                                                متابعة المسار
+                                            </Link>
+                                            <button 
+                                                data-testid="student-path-unenroll"
+                                                onClick={() => {
+                                                    if (window.confirm(`هل تريد إلغاء التسجيل في مسار "${path.title}"؟ سيظل بإمكانك التسجيل فيه مرة أخرى لاحقًا.`)) {
+                                                        unenrollPath(path.id);
+                                                    }
+                                                }}
+                                                className="text-red-500 text-sm font-bold hover:text-red-600 transition-colors text-center w-full"
+                                            >
+                                                إلغاء التسجيل
+                                            </button>
+                                        </div>
+                                    </div>
+                                </Card>
+                            );
+                        })}
+                    </div>
+                ) : (
+                    <div data-testid="student-paths-empty-state">
+                        <EmptyState
+                            eyebrow="مساراتي"
+                            title="لست مسجلاً في أي مسار حالياً"
+                            description="ابدأ بتسجيل مسار واحد فقط، ثم تابع التأسيس والتدريب والتقارير من نفس المكان."
+                            icon={<RouteIcon size={22} />}
+                            primaryAction={{ label: 'استكشف المسارات', href: '/dashboard?tab=paths#available-paths', icon: <Target size={15} /> }}
+                            secondaryAction={{ label: 'راجع الباقات', href: '/pricing', icon: <ShoppingCart size={15} /> }}
+                            tone="indigo"
+                            className="bg-white"
+                        />
+                    </div>
+                )}
+            </div>
+
+            {/* Available Paths */}
+            {availablePaths.length > 0 && (
+                <div id="available-paths">
+                    <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                        <Target className="text-indigo-500" size={20} />
+                        مسارات متاحة للتسجيل
+                    </h3>
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {availablePaths.map(path => (
+                            <Card key={path.id} className="p-6 flex flex-col h-full hover:shadow-md transition-shadow">
+                                <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 ${path.bg}`}>
+                                    {path.icon}
+                                </div>
+                                <h3 className="font-bold text-lg text-gray-900 mb-2">{path.title}</h3>
+                                <p className="text-sm text-gray-500 mb-6 flex-1">{path.description}</p>
+                                <button 
+                                    data-testid="student-path-enroll"
+                                    onClick={() => enrollPath(path.id)}
+                                    className="w-full bg-indigo-50 text-indigo-700 py-2 rounded-lg font-bold hover:bg-indigo-100 transition-colors"
+                                >
+                                    تسجيل في المسار
+                                </button>
+                            </Card>
+                        ))}
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+};
+
+const SmartPathTab = () => {
+    const { paths, subjects, enrolledPaths } = useStore();
+    const [selectedPathId, setSelectedPathId] = useState('all');
+    const [selectedSubjectId, setSelectedSubjectId] = useState('all');
+
+    const enrolledPathSet = useMemo(() => new Set(enrolledPaths || []), [enrolledPaths]);
+    const pathOptions = useMemo(
+        () => paths.filter((path) => path.isActive !== false && (enrolledPathSet.size === 0 || enrolledPathSet.has(path.id))),
+        [enrolledPathSet, paths],
+    );
+    const subjectOptions = useMemo(
+        () => subjects.filter((subject) => selectedPathId === 'all'
+            ? (enrolledPathSet.size === 0 || enrolledPathSet.has(subject.pathId))
+            : subject.pathId === selectedPathId),
+        [enrolledPathSet, selectedPathId, subjects],
+    );
+
+    useEffect(() => {
+        if (selectedSubjectId === 'all') return;
+        if (!subjectOptions.some((subject) => subject.id === selectedSubjectId)) {
+            setSelectedSubjectId('all');
+        }
+    }, [selectedSubjectId, subjectOptions]);
+
+    const skillProgress = useStudentSkillProgress({
+        pathId: selectedPathId === 'all' ? undefined : selectedPathId,
+        subjectId: selectedSubjectId === 'all' ? undefined : selectedSubjectId,
+    });
+    const smartPathSkills = useMemo(
+        () => buildSmartPathSkillsFromProgress(skillProgress, {
+            pathId: selectedPathId === 'all' ? undefined : selectedPathId,
+            subjectId: selectedSubjectId === 'all' ? undefined : selectedSubjectId,
+        }),
+        [skillProgress, selectedPathId, selectedSubjectId],
+    );
+
+    return (
+        <div className="space-y-6 animate-fade-in">
+            <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+                <div>
+                    <h2 className="text-2xl font-bold text-gray-800">مسار التعلم الذكي</h2>
+                    <p className="mt-2 text-gray-600">ترتيب داخلي مبني على أدلتك الفعلية، ويمكنك عزل أي مسار أو مادة بدون خلط المهارات.</p>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                    <select
+                        value={selectedPathId}
+                        onChange={(event) => {
+                            setSelectedPathId(event.target.value);
+                            setSelectedSubjectId('all');
+                        }}
+                        className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-black text-slate-700"
+                    >
+                        <option value="all">كل مساراتي</option>
+                        {pathOptions.map((path) => (
+                            <option key={path.id} value={path.id}>{path.name}</option>
+                        ))}
+                    </select>
+                    <select
+                        value={selectedSubjectId}
+                        onChange={(event) => setSelectedSubjectId(event.target.value)}
+                        className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-black text-slate-700"
+                    >
+                        <option value="all">كل المواد</option>
+                        {subjectOptions.map((subject) => (
+                            <option key={subject.id} value={subject.id}>{subject.name}</option>
+                        ))}
+                    </select>
+                </div>
+            </div>
+            <SmartLearningPath skills={smartPathSkills} />
+        </div>
+    );
+};
+
+const SessionsTab = () => {
+    const { recentActivity, lessons, user } = useStore();
+    const [serverActivities, setServerActivities] = useState<Activity[]>([]);
+    const [isLoadingRequests, setIsLoadingRequests] = useState(false);
+    const isRegisteredUser = Boolean(user?.id && user.id !== 'guest' && user.email);
+    useEffect(() => {
+        if (!isRegisteredUser) {
+            setServerActivities([]);
+            return;
+        }
+
+        let cancelled = false;
+        const run = async () => {
+            setIsLoadingRequests(true);
+            try {
+                const response = await api.getMyActivities({ limit: 50 });
+                if (!cancelled) {
+                    setServerActivities(((response.activities || []) as Activity[]).map((activity) => ({
+                        ...activity,
+                        id: String(activity.id),
+                    })));
+                }
+            } catch {
+                if (!cancelled) setServerActivities([]);
+            } finally {
+                if (!cancelled) setIsLoadingRequests(false);
+            }
+        };
+
+        void run();
+        return () => {
+            cancelled = true;
+        };
+    }, [isRegisteredUser]);
+
+    const sessions = useMemo(
+        () =>
+            Array.from(
+                new Map(
+                    [...serverActivities, ...recentActivity]
+                        .filter((activity) => activity.type === 'session_booked')
+                        .map((activity) => [String(activity.id), activity]),
+                ).values(),
+            ).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()),
+        [serverActivities, recentActivity],
+    );
+    const liveSessions = lessons
+        .filter((lesson) => ['live_youtube', 'zoom', 'google_meet', 'teams'].includes(lesson.type))
+        .filter((lesson) => {
+            if (lesson.showOnPlatform === false && user.role === 'student') return false;
+            if (lesson.approvalStatus && lesson.approvalStatus !== 'approved' && user.role === 'student') return false;
+            if (lesson.accessControl === 'public' || !lesson.accessControl) return true;
+            if (lesson.accessControl === 'specific_groups') {
+                const userGroups = user.groupIds || [];
+                return (lesson.allowedGroupIds || []).some((groupId: string) => userGroups.includes(groupId));
+            }
+            return user.role !== 'student' || user.subscription?.plan === 'premium' || (user.subscription?.purchasedPackages || []).length > 0;
+        })
+        .sort((a, b) => {
+            const aDate = a.meetingDate ? new Date(a.meetingDate).getTime() : Number.MAX_SAFE_INTEGER;
+            const bDate = b.meetingDate ? new Date(b.meetingDate).getTime() : Number.MAX_SAFE_INTEGER;
+            return aDate - bDate;
+        })
+        .slice(0, 3);
+
+    return (
+        <div className="space-y-6 animate-fade-in">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
+                <h2 className="text-2xl font-bold text-gray-800">جلساتي الخاصة</h2>
+                <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+                    <Link to="/live-sessions" className="bg-white border border-indigo-200 text-indigo-700 px-5 py-2 rounded-xl font-bold hover:bg-indigo-50 transition-colors flex items-center justify-center gap-2">
+                        <Video size={18} />
+                        الحصص المباشرة
+                    </Link>
+                    <Link to="/book-session" className="bg-indigo-600 text-white px-6 py-2 rounded-xl font-bold hover:bg-indigo-700 transition-colors flex items-center justify-center gap-2">
+                        <Calendar size={18} />
+                        حجز حصة جديدة
+                    </Link>
+                </div>
+            </div>
+
+            {liveSessions.length > 0 && (
+                <Card className="p-5 border border-indigo-100 bg-indigo-50/60">
+                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                        <div className="text-right">
+                            <h3 className="text-lg font-bold text-gray-900">أقرب الحصص المباشرة</h3>
+                            <p className="text-sm text-gray-600 mt-1">هذه الحصص متاحة لك الآن من المعلمين أو الإدارة داخل المنصة.</p>
+                        </div>
+                        <Link to="/live-sessions" className="text-indigo-700 font-bold hover:text-indigo-800 transition-colors">
+                            عرض كل الحصص
+                        </Link>
+                    </div>
+                    <div className="grid gap-3 mt-4">
+                        {liveSessions.map((lesson) => (
+                            <div key={lesson.id} className="bg-white rounded-xl border border-indigo-100 p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                                <div className="text-right">
+                                    <div className="font-bold text-gray-900">{lesson.title}</div>
+                                    <div className="text-sm text-gray-500 mt-1">
+                                        {lesson.meetingDate
+                                            ? new Date(lesson.meetingDate).toLocaleString('ar-SA', {
+                                                year: 'numeric',
+                                                month: 'long',
+                                                day: 'numeric',
+                                                hour: '2-digit',
+                                                minute: '2-digit',
+                                            })
+                                            : 'سيُحدد الموعد قريبًا'}
+                                    </div>
+                                </div>
+                                <Link to="/live-sessions" className="text-sm font-bold text-indigo-700 hover:text-indigo-800 transition-colors">
+                                    تفاصيل الحصة
+                                </Link>
+                            </div>
+                        ))}
+                    </div>
+                </Card>
+            )}
+
+            {sessions.length > 0 ? (
+                <div className="grid gap-4">
+                    {sessions.map(session => (
+                        <Card key={session.id} className="p-5 flex items-center justify-between border-l-4 border-indigo-500">
+                            <div className="flex items-center gap-4">
+                                <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center">
+                                    <Clock size={24} />
+                                </div>
+                                <div>
+                                    <h3 className="font-bold text-lg text-gray-900">{session.title}</h3>
+                                    <p className="text-sm text-gray-500">
+                                        {session.scheduledDate || session.scheduledTime
+                                            ? [session.scheduledDate, session.scheduledTime].filter(Boolean).join(' - ')
+                                            : new Date(session.date).toLocaleDateString('ar-SA', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                                    </p>
+                                    {session.targetLabel ? (
+                                        <p className="text-xs text-gray-400 mt-1">{session.targetLabel}</p>
+                                    ) : null}
+                                </div>
+                            </div>
+                            <span className={`px-3 py-1 rounded-full text-xs font-bold ${
+                                session.bookingStatus === 'confirmed'
+                                    ? 'bg-emerald-100 text-emerald-700'
+                                    : session.bookingStatus === 'cancelled'
+                                        ? 'bg-rose-100 text-rose-700'
+                                        : 'bg-amber-100 text-amber-700'
+                            }`}>
+                                {session.bookingStatus === 'confirmed' ? 'مؤكد' : session.bookingStatus === 'cancelled' ? 'ملغي' : 'بانتظار التأكيد'}
+                            </span>
+                        </Card>
+                    ))}
+                </div>
+            ) : (
+                <div className="text-center py-12 bg-white rounded-2xl border border-gray-100">
+                    <Calendar size={48} className="mx-auto text-gray-300 mb-4" />
+                    <h3 className="text-lg font-bold text-gray-700 mb-2">{isLoadingRequests ? 'جاري تحميل طلباتك...' : 'لا توجد جلسات قادمة'}</h3>
+                    <p className="text-gray-500 mb-6">احجز حصة خاصة مع نخبة من المعلمين أو تابع الحصص المباشرة المتاحة داخل المنصة.</p>
+                    <Link to="/book-session" className="bg-indigo-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-indigo-700 transition-colors inline-block">
+                        احجز الآن
+                    </Link>
+                </div>
+            )}
+        </div>
+    );
+};
+
+const MyCoursesTab = () => {
+    const { courses, enrolledCourses, completedLessons } = useStore();
+    const activeCourses = courses.filter(c => !c.isPackage && enrolledCourses.includes(c.id));
+
+    return (
+        <div className="space-y-6 animate-fade-in">
+            <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold text-gray-800">دوراتي</h2>
+                <Link to="/courses" className="text-amber-500 font-bold hover:text-amber-600 transition-colors">
+                    تصفح المزيد من الدورات
+                </Link>
+            </div>
+
+            {activeCourses.length > 0 ? (
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {activeCourses.map(course => {
+                        const totalLessons = course.modules?.reduce((acc, mod) => acc + mod.lessons.length, 0) || 0;
+                        const completed = course.modules?.reduce((acc, mod) => acc + mod.lessons.filter(l => completedLessons.includes(l.id)).length, 0) || 0;
+                        const progress = totalLessons > 0 ? Math.round((completed / totalLessons) * 100) : 0;
+
+                        return (
+                            <Card key={course.id} className="flex flex-col h-full hover:shadow-xl transition-shadow duration-300 border border-gray-100 overflow-hidden">
+                                <div className="relative h-40 bg-gray-100 group overflow-hidden">
+                                    <img src={course.thumbnail} alt={course.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-60"></div>
+                                </div>
+                                <div className="p-5 flex-1 flex flex-col">
+                                    <h3 className="font-bold text-lg text-gray-900 mb-2">{course.title}</h3>
+                                    <div className="flex items-center gap-2 text-sm text-gray-500 mb-4">
+                                        <User size={14} />
+                                        <span>{course.instructor}</span>
+                                    </div>
+                                    <div className="mt-auto">
+                                        <div className="flex justify-between text-sm mb-2">
+                                            <span className="font-bold text-gray-700">نسبة الإنجاز</span>
+                                            <span className="font-bold text-amber-500">{progress}%</span>
+                                        </div>
+                                        <ProgressBar percentage={progress} color="secondary" />
+                                        <Link to={`/course/${course.id}`} className="mt-4 w-full bg-gray-900 text-white py-2 rounded-lg font-bold hover:bg-gray-800 transition-colors block text-center">
+                                            متابعة التعلم
+                                        </Link>
+                                    </div>
+                                </div>
+                            </Card>
+                        );
+                    })}
+                </div>
+            ) : (
+                <div className="text-center py-12 bg-white rounded-2xl border border-gray-100">
+                    <BookOpen size={48} className="mx-auto text-gray-300 mb-4" />
+                    <h3 className="text-lg font-bold text-gray-700 mb-2">لا توجد دورات مسجلة</h3>
+                    <p className="text-gray-500 mb-6">قم بالتسجيل في دورات لتبدأ رحلتك التعليمية</p>
+                    <Link to="/courses" className="bg-amber-500 text-white px-6 py-2 rounded-lg font-bold hover:bg-amber-600 transition-colors inline-block">
+                        تصفح الدورات
+                    </Link>
+                </div>
+            )}
+        </div>
+    );
+};
+
+/** Student assessment hub: attempts, mock exams, and school-directed work. */
+const ExamsHubTab: React.FC<{ initialView?: 'attempts' | 'mock' | 'school' }> = ({ initialView = 'attempts' }) => {
+    const [view, setView] = React.useState<'attempts' | 'mock' | 'school'>(initialView);
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    React.useEffect(() => {
+        setView(initialView);
+    }, [initialView]);
+
+    const handleViewChange = (newView: 'attempts' | 'mock' | 'school') => {
+        setView(newView);
+        const tabName = newView === 'mock' ? 'mock-exams' : newView === 'school' ? 'school-tests' : 'quizzes';
+        const targetUrl = `/dashboard?tab=${tabName}`;
+        if (location.pathname + location.search !== targetUrl) {
+            navigate(targetUrl);
+        }
+    };
+
+    const examViews = [
+        { id: 'attempts' as const, label: 'اختباراتي', icon: <FileText size={16} />, iconColor: 'text-amber-500' },
+        { id: 'mock' as const, label: 'الاختبارات المحاكية', icon: <Star size={16} />, iconColor: 'text-purple-600' },
+        { id: 'school' as const, label: 'اختبارات المدرسة', icon: <Zap size={16} />, iconColor: 'text-sky-600' },
+    ];
+    return (
+        <div className="space-y-4">
+            <div className="flex flex-wrap gap-2 rounded-2xl border border-slate-200/80 bg-slate-100/90 p-1.5 shadow-xs w-fit">
+                {examViews.map(v => (
+                    <button key={v.id} onClick={() => handleViewChange(v.id)}
+                        className={`inline-flex items-center gap-1.5 rounded-xl px-4 py-2 text-sm font-black transition-all ${
+                            view === v.id
+                                ? 'bg-amber-500 text-white shadow-md shadow-amber-200'
+                                : 'bg-white text-slate-700 hover:bg-slate-50 border border-slate-200 shadow-2xs'
+                        }`}
+                    >
+                        <span className={view === v.id ? 'text-white' : v.iconColor}>{v.icon}</span>
+                        <span>{v.label}</span>
+                    </button>
+                ))}
+            </div>
+            <Suspense fallback={<TabLoading />}>
+                {view === 'attempts' && <Quizzes view="attempts" />}
+                {view === 'mock'     && <MockExamStudentHub />}
+                {view === 'school'   && <Quizzes view="school" />}
+            </Suspense>
+        </div>
+    );
+};
+
+const Dashboard: React.FC = () => {
+    const { user, hydrateContentBootstrap } = useStore();
+    const location = useLocation();
+    const navigate = useNavigate();
+    const isParentDashboard = user.role === Role.PARENT;
+    const { logout, user: authUser } = useAuth();
+
+    const [activeTab, setActiveTabState] = useState<DashboardTab>(() => {
+        if (typeof window !== 'undefined') {
+            const initialTab = new URLSearchParams(window.location.search).get('tab');
+            if (initialTab) {
+                const aliasMap: Record<string, string> = { saher: 'exams', quizzes: 'exams', 'mock-exams': 'exams', 'school-tests': 'exams' };
+                return (['mock-exams', 'school-tests', 'quizzes'].includes(initialTab) ? initialTab : (aliasMap[initialTab] ?? initialTab)) as DashboardTab;
+            }
+        }
+        return 'overview';
+    });
+
+    const setActiveTab = React.useCallback((tabOrAction: DashboardTab | ((prev: DashboardTab) => DashboardTab)) => {
+        setActiveTabState((prev) => {
+            const nextTab = typeof tabOrAction === 'function' ? tabOrAction(prev) : tabOrAction;
+            const currentSearchTab = new URLSearchParams(location.search).get('tab') || 'overview';
+            if (currentSearchTab !== nextTab) {
+                const targetUrl = nextTab === 'overview' ? '/dashboard' : `/dashboard?tab=${nextTab}`;
+                navigate(targetUrl);
+            }
+            return nextTab;
+        });
+    }, [location.search, navigate]);
+
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [notifToast, setNotifToast] = useState<{ title: string; body: string } | null>(null);
+    const [weeklyReportState, setWeeklyReportState] = useState<'idle' | 'sending' | 'done' | 'error'>('idle');
+
+    useEffect(() => {
+        const contentTabs: DashboardTab[] = ['sessions', 'exams', 'saher', 'quizzes', 'mock-exams', 'school-tests'];
+        if (user.role !== Role.STUDENT || !contentTabs.includes(activeTab)) return;
+
+        let cancelled = false;
+        void adapter.getContentBootstrap('learning', 'full')
+            .then((content) => {
+                if (cancelled) return;
+                hydrateContentBootstrap({
+                    topics: content.topics,
+                    lessons: content.lessons,
+                    libraryItems: content.libraryItems,
+                });
+            })
+            .catch((error) => {
+                console.warn('Dashboard on-demand learning resources unavailable:', error);
+            });
+
+        return () => {
+            cancelled = true;
+        };
+    }, [activeTab, hydrateContentBootstrap, user.role]);
+
+    // ── Real-time notifications ───────────────────────────────────────────
+    const { latestNotification } = useNotificationStream({
+        token: authUser?.token,
+        enabled: !!authUser?.token,
+    });
+    useEffect(() => {
+        if (!latestNotification) return;
+        setNotifToast({ title: latestNotification.title, body: latestNotification.body });
+        const timer = setTimeout(() => setNotifToast(null), 5000);
+        return () => clearTimeout(timer);
+    }, [latestNotification]);
+
+    // One friendly daily nudge keeps the learner experience alive without becoming noisy.
+    useEffect(() => {
+        if (typeof window === 'undefined' || isParentDashboard || user.role !== Role.STUDENT || activeTab !== 'overview' || latestNotification) return;
+
+        const today = new Date().toLocaleDateString('en-CA');
+        const storageKey = `student-daily-nudge:${user.id}:${today}`;
+        if (window.localStorage.getItem(storageKey)) return;
+
+        const timer = window.setTimeout(() => {
+            setNotifToast({
+                title: 'خطوتك اليوم جاهزة ✨',
+                body: 'ابدأ بمهمة واحدة فقط، والباقي نمشيه معك خطوة بخطوة.',
+            });
+            window.localStorage.setItem(storageKey, 'shown');
+        }, 900);
+
+        return () => window.clearTimeout(timer);
+    }, [activeTab, isParentDashboard, latestNotification, user.id, user.role]);
+
+    const studentMenuItems = [
+        { id: 'overview',     label: 'نظرة عامة',          icon: <LayoutDashboard size={20} /> },
+        { id: 'paths',        label: 'مساراتي',             icon: <RouteIcon size={20} /> },
+        { id: 'my-courses',   label: 'دوراتي',               icon: <BookOpen size={20} /> },
+        { id: 'smart-path',   label: 'المسار الذكي',        icon: <Brain size={20} /> },
+        { id: 'sessions',     label: 'جلساتي',               icon: <Calendar size={20} /> },
+        { id: 'quizzes',      label: 'الاختبارات السابقة',  icon: <FileText size={20} /> },
+        { id: 'school-tests', label: 'الاختبارات المدرسية', icon: <Target size={20} /> },
+        { id: 'mock-exams',   label: 'الاختبارات المحاكية', icon: <Star size={20} /> },
+        { id: 'exams',        label: 'الاختبارات',          icon: <Zap size={20} /> },
+        { id: 'reports',      label: 'تقاريري',              icon: <MapIcon size={20} /> },
+        { id: 'plan',         label: 'خططي',                 icon: <PieChart size={20} /> },
+        { id: 'favorites',    label: 'أسئلتي للمراجعة',      icon: <Bookmark size={20} /> },
+        { id: 'flashcards',   label: 'بطاقات التذكر',       icon: <Copy size={20} /> },
+        { id: 'qa',           label: 'سؤال وجواب',           icon: <MessageCircle size={20} /> },
+        { id: 'requests',     label: 'طلباتي',               icon: <FileText size={20} /> },
+    ];
+
+    const studentItemStyles: Record<string, { iconBg: string; iconColor: string; activeBg: string; activeBorder: string; activeText: string }> = {
+        overview:      { iconBg: 'bg-white/65',     iconColor: 'text-indigo-800',  activeBg: 'bg-white/35',     activeBorder: 'border-white/60',    activeText: 'text-indigo-950' },
+        paths:         { iconBg: 'bg-sky-100',      iconColor: 'text-sky-700',     activeBg: 'bg-sky-50/90',     activeBorder: 'border-sky-200',     activeText: 'text-sky-800' },
+        'my-courses':  { iconBg: 'bg-violet-100',   iconColor: 'text-violet-700',  activeBg: 'bg-violet-50/90',  activeBorder: 'border-violet-200',  activeText: 'text-violet-800' },
+        'smart-path':  { iconBg: 'bg-emerald-100',  iconColor: 'text-emerald-700', activeBg: 'bg-emerald-50/90', activeBorder: 'border-emerald-200', activeText: 'text-emerald-800' },
+        sessions:      { iconBg: 'bg-emerald-100',  iconColor: 'text-emerald-700', activeBg: 'bg-emerald-50/90', activeBorder: 'border-emerald-200', activeText: 'text-emerald-800' },
+        quizzes:       { iconBg: 'bg-rose-100',     iconColor: 'text-rose-700',    activeBg: 'bg-rose-50/90',    activeBorder: 'border-rose-200',    activeText: 'text-rose-800' },
+        'school-tests':{ iconBg: 'bg-sky-100',      iconColor: 'text-sky-700',     activeBg: 'bg-sky-50/90',     activeBorder: 'border-sky-200',     activeText: 'text-sky-800' },
+        'mock-exams':  { iconBg: 'bg-violet-100',   iconColor: 'text-violet-700',  activeBg: 'bg-violet-50/90',  activeBorder: 'border-violet-200',  activeText: 'text-violet-800' },
+        exams:         { iconBg: 'bg-rose-100',     iconColor: 'text-rose-700',    activeBg: 'bg-rose-50/90',    activeBorder: 'border-rose-200',    activeText: 'text-rose-800' },
+        reports:       { iconBg: 'bg-emerald-100',  iconColor: 'text-emerald-700', activeBg: 'bg-emerald-50/90', activeBorder: 'border-emerald-200', activeText: 'text-emerald-800' },
+        plan:          { iconBg: 'bg-rose-100',     iconColor: 'text-rose-700',    activeBg: 'bg-rose-50/90',    activeBorder: 'border-rose-200',    activeText: 'text-rose-800' },
+        favorites:     { iconBg: 'bg-violet-100',   iconColor: 'text-violet-700',  activeBg: 'bg-violet-50/90',  activeBorder: 'border-violet-200',  activeText: 'text-violet-800' },
+        flashcards:    { iconBg: 'bg-violet-100',   iconColor: 'text-violet-700',  activeBg: 'bg-violet-50/90',  activeBorder: 'border-violet-200',  activeText: 'text-violet-800' },
+        qa:            { iconBg: 'bg-sky-100',      iconColor: 'text-sky-700',     activeBg: 'bg-sky-50/90',     activeBorder: 'border-sky-200',     activeText: 'text-sky-800' },
+        requests:      { iconBg: 'bg-rose-100',     iconColor: 'text-rose-700',    activeBg: 'bg-rose-50/90',    activeBorder: 'border-rose-200',    activeText: 'text-rose-800' },
+    };
+
+    const parentMenuItems = [
+        { id: 'overview', label: 'متابعة الأبناء', icon: <LayoutDashboard size={20} /> },
+        { id: 'parent-results', label: 'نتائج الأبناء', icon: <FileText size={20} /> },
+        { id: 'parent-skills', label: 'المهارات الضعيفة', icon: <Target size={20} /> },
+        { id: 'parent-link', label: 'ربط طالب', icon: <User size={20} /> },
+        { id: 'reports', label: 'تقرير مبسط', icon: <PieChart size={20} /> },
+        { id: 'requests', label: 'طلبات الدفع', icon: <ShoppingCart size={20} /> },
+        { id: 'qa', label: 'سؤال وجواب', icon: <HelpCircle size={20} /> },
+    ];
+
+    const menuItems = isParentDashboard ? parentMenuItems : studentMenuItems;
+
+    useEffect(() => {
+        const requestedTab = new URLSearchParams(location.search).get('tab');
+        const allowedTabs = new Set(menuItems.map((item) => item.id));
+        // Alias legacy tab IDs to the merged 'exams' tab
+        const aliasMap: Record<string, string> = { saher: 'exams', quizzes: 'exams', 'mock-exams': 'exams', 'school-tests': 'exams' };
+        const resolved = requestedTab ? (['mock-exams', 'school-tests', 'quizzes'].includes(requestedTab) ? requestedTab : (aliasMap[requestedTab] ?? requestedTab)) : null;
+        if (resolved && allowedTabs.has(resolved)) {
+            setActiveTabState(resolved as typeof activeTab);
+        } else if (!requestedTab) {
+            setActiveTabState('overview');
+        }
+    }, [location.search, menuItems]);
+
+    const renderContent = () => {
+        if (isParentDashboard) {
+            switch(activeTab) {
+                case 'overview': return (
+                    <div className="space-y-4">
+                        <ParentDashboardOverview setActiveTab={setActiveTab} />
+                        {/* ── زر التقرير الأسبوعي ─────────────────── */}
+                        <div className="mx-auto max-w-sm">
+                            <button
+                                onClick={async () => {
+                                    if (weeklyReportState === 'sending') return;
+                                    setWeeklyReportState('sending');
+                                    try {
+                                        const r = await api.requestParentWeeklyReport();
+                                        const msg = (r as any).message === 'no_linked_students'
+                                            ? 'لا يوجد طلاب مرتبطون بحسابك بعد.'
+                                            : (r as any).message === 'no_results_this_week'
+                                                ? 'لا توجد نتائج لهذا الأسبوع حتى الآن.'
+                                                : `✅ تم إرسال التقرير الأسبوعي لـ ${(r as any).studentsReported || 0} طالب.`;
+                                        setNotifToast({ title: '📋 التقرير الأسبوعي', body: msg });
+                                        setWeeklyReportState('done');
+                                        setTimeout(() => setWeeklyReportState('idle'), 5000);
+                                    } catch {
+                                        setNotifToast({ title: '❌ خطأ', body: 'تعذر إرسال التقرير. تحقق من اتصالك وحاول مجدداً.' });
+                                        setWeeklyReportState('error');
+                                        setTimeout(() => setWeeklyReportState('idle'), 4000);
+                                    }
+                                }}
+                                disabled={weeklyReportState === 'sending'}
+                                className="w-full flex items-center justify-center gap-2 rounded-2xl border border-indigo-200 bg-indigo-50 px-5 py-3 text-sm font-black text-indigo-800 hover:bg-indigo-100 disabled:opacity-60 transition-all shadow-sm"
+                            >
+                                {weeklyReportState === 'sending' ? (
+                                    <><span className="animate-spin inline-block">⏳</span> جارٍ الإرسال...</>
+                                ) : weeklyReportState === 'done' ? (
+                                    <>✅ تم الإرسال بنجاح!</>
+                                ) : (
+                                    <>📋 طلب التقرير الأسبوعي لأبنائي</>
+                                )}
+                            </button>
+                            <p className="text-center text-[11px] text-gray-400 mt-1.5 font-bold">يُرسَل إشعار بملخص نتائج الأسبوع وأبرز المهارات</p>
+                        </div>
+                    </div>
+                );
+                case 'parent-results': return <ParentResultsTab />;
+                case 'parent-skills': return <ParentSkillsTab />;
+                case 'parent-followup': return <ParentDashboardOverview setActiveTab={setActiveTab} />;
+                case 'parent-link': return (
+                    <div className="max-w-lg mx-auto py-6 px-4">
+                        <ParentStudentLinker
+                            linkedStudentIds={[]} 
+                        />
+                    </div>
+                );
+                case 'reports': return <Suspense fallback={<TabLoading />}><Reports /></Suspense>;
+                case 'requests': return <Suspense fallback={<TabLoading />}><MyRequests /></Suspense>;
+                case 'qa': return <Suspense fallback={<TabLoading />}><QA /></Suspense>;
+                default: return <ParentDashboardOverview setActiveTab={setActiveTab} />;
+            }
+        }
+
+        switch(activeTab) {
+            case 'overview':   return <OverviewTab setActiveTab={setActiveTab} />;
+            case 'paths':      return <PathsTab />;
+            case 'my-courses': return <MyCoursesTab />;
+            case 'smart-path': return <SmartPathTab />;
+            case 'sessions':   return <SessionsTab />;
+            // Merged exams hub — replaces saher + quizzes + mock-exams
+            case 'exams':
+            // Legacy aliases (direct URL access still works)
+            case 'saher':
+            case 'quizzes':
+            case 'mock-exams':
+            case 'school-tests':
+                return <ExamsHubTab initialView={activeTab === 'mock-exams' ? 'mock' : activeTab === 'school-tests' ? 'school' : 'attempts'} />;
+            case 'reports':    return <Suspense fallback={<TabLoading />}><Reports /></Suspense>;
+            case 'plan':       return <Suspense fallback={<TabLoading />}><Plan /></Suspense>;
+            case 'favorites':  return <Suspense fallback={<TabLoading />}><Favorites /></Suspense>;
+            case 'flashcards': return <Suspense fallback={<TabLoading />}><FlashcardsManager /></Suspense>;
+            case 'qa':         return <Suspense fallback={<TabLoading />}><QA /></Suspense>;
+            case 'requests':   return <Suspense fallback={<TabLoading />}><MyRequests /></Suspense>;
+            default:           return <OverviewTab setActiveTab={setActiveTab} />;
+        }
+    };
+
+    const renderStudentMenuItem = (item: { id: string; label: string; icon: React.ReactNode }) => {
+        const isItemActive = item.id === 'quizzes'
+            ? ['quizzes', 'exams', 'saher'].includes(activeTab)
+            : activeTab === item.id;
+        const isOverview = item.id === 'overview';
+        const style = studentItemStyles[item.id] || {
+            iconBg: 'bg-indigo-50',
+            iconColor: 'text-indigo-600',
+            activeBg: 'bg-indigo-50/90',
+            activeBorder: 'border-indigo-200',
+            activeText: 'text-indigo-700',
+        };
+
+        return (
+            <button
+                key={item.id}
+                type="button"
+                onClick={() => { setActiveTab(item.id as any); setIsSidebarOpen(false); }}
+                className={`w-full flex items-center justify-between text-sm transition-all border ${
+                    isOverview
+                        ? `rounded-[20px] border-sky-200 bg-gradient-to-l from-sky-200/90 to-blue-100/90 px-3.5 py-2.5 font-black text-indigo-950 shadow-sm ${
+                            isItemActive ? 'ring-2 ring-sky-200/80 ring-offset-1' : 'hover:brightness-[0.99]'
+                        }`
+                        : `rounded-2xl px-3 py-2 ${
+                            isItemActive
+                                ? `${style.activeBg} ${style.activeText} font-black ${style.activeBorder} shadow-xs`
+                                : 'border-transparent text-gray-800 font-bold hover:bg-white/80 hover:text-gray-950'
+                        }`
+                }`}
+            >
+                <div className="flex min-w-0 items-center gap-3">
+                    <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl transition-colors ${
+                        isOverview
+                            ? 'bg-white/65 text-indigo-800 shadow-2xs'
+                            : isItemActive
+                                ? 'bg-white shadow-2xs ' + style.iconColor
+                                : style.iconBg + ' ' + style.iconColor
+                    }`}>
+                        {item.icon}
+                    </span>
+                    <span className="whitespace-nowrap">{item.label}</span>
+                </div>
+                {isOverview && (
+                    <ChevronLeft
+                        size={18}
+                        className="text-indigo-900"
+                        aria-hidden="true"
+                    />
+                )}
+            </button>
+        );
+    };
+
+    return (
+        <div className="flex min-h-screen bg-gray-50">
+            {/* ── Notification Toast (SSE real-time) ─────────────────────── */}
+            {notifToast && (
+                <div className="fixed top-24 right-4 left-4 z-[9999] w-auto animate-fade-in sm:right-auto sm:left-6 sm:max-w-sm sm:w-full">
+                    <div className="bg-white border border-indigo-100 rounded-2xl shadow-2xl p-4 flex items-start gap-3">
+                        <div className="shrink-0 w-9 h-9 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-black text-lg">
+                            🔔
+                        </div>
+                        <div className="flex-1 min-w-0">
+                            <p className="font-black text-gray-900 text-sm truncate">{notifToast.title}</p>
+                            <p className="text-xs text-gray-500 mt-0.5 line-clamp-2">{notifToast.body}</p>
+                        </div>
+                        <button onClick={() => setNotifToast(null)} className="shrink-0 text-gray-400 hover:text-gray-700">✕</button>
+                    </div>
+                </div>
+            )}
+
+            {/* Mobile Menu Toggle */}
+            <button 
+                className="lg:hidden fixed bottom-6 left-6 z-50 bg-amber-500 text-white p-3 rounded-full shadow-lg"
+                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+            >
+                {isSidebarOpen ? <X /> : <Menu />}
+            </button>
+
+            {/* Sidebar Navigation */}
+            <aside className={`
+                fixed lg:sticky top-20 right-0 bottom-0 w-72 max-w-[calc(100vw-1rem)] bg-white border-l border-gray-200 z-40 transition-transform duration-300 overflow-y-auto h-[calc(100vh-5rem)]
+                ${isSidebarOpen ? 'translate-x-0' : 'translate-x-full lg:translate-x-0'}
+            `}>
+                <div className="p-6">
+                    <div className="flex items-center gap-3 mb-8">
+                        <img src={user.avatar} alt={user.name} className="w-12 h-12 rounded-full border-2 border-amber-100" loading="lazy" />
+                        <div>
+                            <h3 className="font-bold text-gray-800 text-sm">{user.name}</h3>
+                            <span className="text-xs text-gray-500">
+                                {user.role === Role.PARENT ? 'لوحة تحكم ولي الأمر' : 'لوحة تحكم الطالب'}
+                            </span>
+                        </div>
+                    </div>
+
+                    <nav className="space-y-1">
+                        {isParentDashboard ? (
+                            <>
+                                {/* Group: المتابعة */}
+                                <p className="px-2 pb-1 pt-3 text-[10px] font-black uppercase tracking-widest text-gray-400">المتابعة</p>
+                                {menuItems.filter(i => ['overview','parent-results','parent-skills','reports'].includes(i.id)).map(item => (
+                                    <button
+                                        key={item.id}
+                                        onClick={() => { setActiveTab(item.id as any); setIsSidebarOpen(false); }}
+                                        className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                                            activeTab === item.id
+                                            ? 'bg-emerald-50 text-emerald-700 shadow-sm'
+                                            : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                                        }`}
+                                    >
+                                        <div className="flex items-center gap-3">{item.icon}{item.label}</div>
+                                        {activeTab === item.id && <ChevronLeft size={16} />}
+                                    </button>
+                                ))}
+                                {/* Group: إدارة الحساب */}
+                                <p className="px-2 pb-1 pt-3 text-[10px] font-black uppercase tracking-widest text-gray-400">إدارة الحساب</p>
+                                {menuItems.filter(i => ['parent-link','requests'].includes(i.id)).map(item => (
+                                    <button
+                                        key={item.id}
+                                        onClick={() => { setActiveTab(item.id as any); setIsSidebarOpen(false); }}
+                                        className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                                            activeTab === item.id
+                                            ? 'bg-emerald-50 text-emerald-700 shadow-sm'
+                                            : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                                        }`}
+                                    >
+                                        <div className="flex items-center gap-3">{item.icon}{item.label}</div>
+                                        {activeTab === item.id && <ChevronLeft size={16} />}
+                                    </button>
+                                ))}
+                                {/* Group: الدعم */}
+                                <p className="px-2 pb-1 pt-3 text-[10px] font-black uppercase tracking-widest text-gray-400">الدعم</p>
+                                {menuItems.filter(i => ['qa'].includes(i.id)).map(item => (
+                                    <button
+                                        key={item.id}
+                                        onClick={() => { setActiveTab(item.id as any); setIsSidebarOpen(false); }}
+                                        className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-bold transition-all ${
+                                            activeTab === item.id
+                                            ? 'bg-emerald-50 text-emerald-700 shadow-sm'
+                                            : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                                        }`}
+                                    >
+                                        <div className="flex items-center gap-3">{item.icon}{item.label}</div>
+                                        {activeTab === item.id && <ChevronLeft size={16} />}
+                                    </button>
+                                ))}
+                            </>
+                        ) : (
+                            <>
+                                {/* Primary overview strip */}
+                                <div data-testid="student-menu-overview" className="mb-2.5">
+                                    {menuItems.filter(i => i.id === 'overview').map(renderStudentMenuItem)}
+                                </div>
+
+                                {/* Main learning shortcuts — intentionally unlabeled to match the approved compact reference */}
+                                <div
+                                    data-testid="student-menu-group-learning"
+                                    className="space-y-1 rounded-[20px] border border-slate-100 bg-white/95 p-2 shadow-sm"
+                                >
+                                    {menuItems.filter(i => ['paths','my-courses','sessions'].includes(i.id)).map(renderStudentMenuItem)}
+                                </div>
+
+                                {/* Group: رحلتي التعليمية */}
+                                <div
+                                    data-testid="student-menu-group-journey"
+                                    className="mt-3 rounded-[22px] border border-emerald-200/80 bg-gradient-to-b from-emerald-100/90 to-emerald-50/80 p-2.5 shadow-sm"
+                                >
+                                    <div className="flex items-center gap-2 px-2.5 pb-2 pt-1 text-base font-black text-emerald-800">
+                                        <GraduationCap size={21} aria-hidden="true" />
+                                        <span>رحلتي التعليمية</span>
+                                    </div>
+                                    <div className="space-y-1 rounded-[16px] bg-white/60 p-1.5 ring-1 ring-white/70">
+                                        {menuItems.filter(i => ['smart-path','plan','reports'].includes(i.id)).map(renderStudentMenuItem)}
+                                    </div>
+                                </div>
+
+                                {/* Group: الاختبارات */}
+                                <div
+                                    data-testid="student-menu-group-exams"
+                                    className="mt-3 rounded-[22px] border border-rose-200/80 bg-gradient-to-b from-rose-100/90 to-rose-50/80 p-2.5 shadow-sm"
+                                >
+                                    <div className="flex items-center gap-2 px-2.5 pb-2 pt-1 text-base font-black text-rose-800">
+                                        <FileText size={21} aria-hidden="true" />
+                                        <span>الاختبارات</span>
+                                    </div>
+                                    <div className="space-y-1 rounded-[16px] bg-white/60 p-1.5 ring-1 ring-white/70">
+                                        {menuItems.filter(i => ['quizzes','school-tests','mock-exams'].includes(i.id)).map(renderStudentMenuItem)}
+                                    </div>
+                                </div>
+
+                                {/* Group: الأدوات */}
+                                <div
+                                    data-testid="student-menu-group-tools"
+                                    className="mt-3 rounded-[22px] border border-violet-200/80 bg-gradient-to-b from-violet-100/90 to-violet-50/80 p-2.5 shadow-sm"
+                                >
+                                    <div className="flex items-center gap-2 px-2.5 pb-2 pt-1 text-base font-black text-violet-800">
+                                        <Wrench size={21} aria-hidden="true" />
+                                        <span>الأدوات</span>
+                                    </div>
+                                    <div className="space-y-1 rounded-[16px] bg-white/60 p-1.5 ring-1 ring-white/70">
+                                        {menuItems.filter(i => ['favorites','flashcards'].includes(i.id)).map(renderStudentMenuItem)}
+                                    </div>
+                                </div>
+
+                                {/* Group: الدعم */}
+                                <div
+                                    data-testid="student-menu-group-support"
+                                    className="mt-3 rounded-[22px] border border-orange-200/80 bg-gradient-to-b from-orange-100/90 to-orange-50/80 p-2.5 shadow-sm"
+                                >
+                                    <div className="flex items-center gap-2 px-2.5 pb-2 pt-1 text-base font-black text-orange-800">
+                                        <Headphones size={21} aria-hidden="true" />
+                                        <span>الدعم</span>
+                                    </div>
+                                    <div className="space-y-1 rounded-[16px] bg-white/60 p-1.5 ring-1 ring-white/70">
+                                        {menuItems.filter(i => ['qa','requests'].includes(i.id)).map(renderStudentMenuItem)}
+                                    </div>
+                                </div>
+                            </>
+                        )}
+                    </nav>
+                    <div className="mt-6 border-t border-gray-100 pt-4">
+                        <button
+                            type="button"
+                            data-logout-explicit="true"
+                            onClick={async () => {
+                                await logout();
+                                window.location.assign('/?auth=login');
+                            }}
+                            className="w-full inline-flex items-center justify-center gap-2 rounded-[18px] border border-red-200 bg-gradient-to-l from-red-100 to-rose-50 px-4 py-2.5 text-sm font-black text-red-800 shadow-sm transition-colors hover:from-red-200 hover:to-rose-100"
+                        >
+                            <LogOut size={16} />
+                            تسجيل الخروج
+                        </button>
+                    </div>
+                </div>
+            </aside>
+
+            {/* Main Content Area */}
+            <main className="flex-1 p-4 lg:p-8 w-full max-w-[100vw] lg:max-w-[calc(100vw-18rem)]">
+                <div className="max-w-5xl mx-auto">
+                    {renderContent()}
+                </div>
+            </main>
+        </div>
+    );
+};
+
+// -- Sub-Components --
+
+const ParentLoadingState = () => (
+    <div className="rounded-3xl border border-dashed border-emerald-100 bg-white p-6">
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div className="flex items-start gap-3">
+                <Loader2 size={20} className="mt-1 shrink-0 animate-spin text-emerald-600" />
+                <div>
+                    <h3 className="text-lg font-black text-gray-900">جاري تجهيز متابعة الأبناء</h3>
+                    <p className="mt-2 max-w-2xl text-sm font-bold leading-7 text-gray-500">
+                        نجمع آخر النتائج والمهارات الضعيفة وخطوة المتابعة المناسبة. إذا استغرق التحميل لحظات، يمكنك فتح التقرير أو الرجوع للملف الشخصي بدون انتظار هذه البطاقة.
+                    </p>
+                </div>
+            </div>
+            <div className="flex shrink-0 flex-wrap gap-2">
+                <Link to="/reports" className="rounded-xl bg-emerald-600 px-4 py-2 text-sm font-black text-white hover:bg-emerald-700">
+                    فتح التقرير
+                </Link>
+                <Link to="/profile" className="rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-black text-gray-700 hover:bg-gray-50">
+                    الملف الشخصي
+                </Link>
+            </div>
+        </div>
+    </div>
+);
+
+const ParentEmptyState = () => (
+    <Card className="p-8 text-center">
+        <User size={42} className="mx-auto mb-4 text-gray-300" />
+        <h3 className="text-xl font-black text-gray-900">لا توجد بيانات متابعة بعد</h3>
+        <p className="mx-auto mt-2 max-w-xl text-sm leading-7 text-gray-500">
+            اربط حساب ولي الأمر بالطالب من إدارة المستخدمين. بعد أول اختبار أو محاولة تدريب ستظهر النتائج والمهارات هنا تلقائيًا.
+        </p>
+    </Card>
+);
+
+const ParentErrorState = ({ message }: { message: string }) => (
+    <div className="rounded-2xl border border-rose-100 bg-rose-50 p-5 text-sm font-bold text-rose-700">
+        {message}
+    </div>
+);
+
+const ParentDashboardOverview = ({ setActiveTab }: { setActiveTab: (tab: DashboardTab) => void }) => {
+    const data = useParentScopedResults();
+    const { user } = useStore();
+    const trend = data.lastThreeAverage - data.olderThreeAverage;
+    const [copiedCoachMessage, setCopiedCoachMessage] = useState(false);
+    const [showParentDetails, setShowParentDetails] = useState(false);
+    const [showApprovalsModal, setShowApprovalsModal] = useState(false);
+    const [whatsappEnabled, setWhatsappEnabled] = useState(false);
+    const [pendingApprovalsCount, setPendingApprovalsCount] = useState(0);
+
+    useEffect(() => {
+        setWhatsappEnabled((user as any).whatsappDigestEnabled || false);
+        api.get('/parent/approvals').then(data => {
+            if (Array.isArray(data)) setPendingApprovalsCount(data.length);
+        }).catch(console.error);
+    }, [user]);
+
+    const toggleWhatsapp = async () => {
+        try {
+            const next = !whatsappEnabled;
+            setWhatsappEnabled(next);
+            await api.post('/parent/settings/whatsapp', { enabled: next });
+        } catch (error) {
+            console.error('Failed to toggle whatsapp digest', error);
+            setWhatsappEnabled(!whatsappEnabled); // revert
+        }
+    };
+
+    const copyCoachMessage = async () => {
+        try {
+            await navigator.clipboard?.writeText(data.coachMessage);
+            setCopiedCoachMessage(true);
+            window.setTimeout(() => setCopiedCoachMessage(false), 1800);
+        } catch {
+            setCopiedCoachMessage(false);
+        }
+    };
+
+    return (
+        <div className="space-y-6 animate-fade-in pb-20">
+            <div className="rounded-3xl bg-gradient-to-br from-emerald-600 to-slate-900 p-5 text-white shadow-lg">
+                <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+                    <div>
+                        <div className="mb-2 text-xs font-black text-emerald-100">لوحة ولي الأمر</div>
+                        <h2 className="text-xl font-black md:text-2xl">متابعة الأبناء ببساطة</h2>
+                        <p className="mt-1 max-w-2xl text-sm leading-6 text-emerald-50">درجة، مهارة تحتاج متابعة، وخطوة واحدة واضحة.</p>
+                    </div>
+                    <button
+                        onClick={() => setActiveTab('reports')}
+                        className="self-start rounded-xl bg-white px-4 py-2 text-sm font-black text-emerald-700 hover:bg-emerald-50"
+                    >
+                        التقرير
+                    </button>
+                </div>
+            </div>
+
+            {/* ── أدوات ولي الأمر السريعة: ملخصات واتساب وسير عمل الموافقات ── */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Card className="p-5 flex items-center justify-between border border-emerald-100 bg-emerald-50/40 shadow-sm transition-all hover:shadow-md">
+                    <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-2xl bg-emerald-500 text-white flex items-center justify-center font-black shadow-sm">
+                            <MessageCircle size={22} />
+                        </div>
+                        <div>
+                            <h4 className="font-black text-gray-900 text-sm">ملخصات واتساب الأسبوعية</h4>
+                            <p className="text-xs text-gray-500 font-bold mt-1">احصل على تقرير أسبوعي لأداء أبنائك مباشرة.</p>
+                        </div>
+                    </div>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                        <input 
+                            type="checkbox" 
+                            className="sr-only peer" 
+                            checked={whatsappEnabled}
+                            onChange={toggleWhatsapp}
+                        />
+                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-500"></div>
+                    </label>
+                </Card>
+
+                <Card className="p-5 flex items-center justify-between border border-blue-100 bg-blue-50/40 shadow-sm transition-all hover:shadow-md">
+                    <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-2xl bg-blue-600 text-white flex items-center justify-center font-black shadow-sm">
+                            <CheckCircle size={22} />
+                        </div>
+                        <div>
+                            <h4 className="font-black text-gray-900 text-sm">سير عمل الموافقات</h4>
+                            <p className="text-xs text-gray-500 font-bold mt-1">طلبات واشتراكات بانتظار موافقتك ({pendingApprovalsCount}).</p>
+                        </div>
+                    </div>
+                    <button 
+                        onClick={() => setShowApprovalsModal(true)}
+                        className="text-white font-bold text-xs bg-blue-600 hover:bg-blue-700 px-4 py-2.5 rounded-xl transition-colors shadow-sm"
+                    >
+                        مراجعة الطلبات
+                    </button>
+                </Card>
+
+                {showApprovalsModal && (
+                    <ParentApprovalsModal 
+                        isOpen={showApprovalsModal} 
+                        onClose={() => {
+                            setShowApprovalsModal(false);
+                            // Refresh count
+                            api.get('/parent/approvals').then(data => {
+                                if (Array.isArray(data)) setPendingApprovalsCount(data.length);
+                            }).catch(console.error);
+                        }} 
+                    />
+                )}
+            </div>
+
+            {data.isLoading ? <ParentLoadingState /> : data.loadError ? <ParentErrorState message={data.loadError} /> : null}
+
+            {!data.isLoading && !data.loadError ? (
+                data.scopedResults.length === 0 ? (
+                    <ParentEmptyState />
+                ) : (
+                    <>
+                        <Card className="p-4">
+                            <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+                                <div>
+                                    <h3 className="text-lg font-black text-gray-900">متابعة اليوم</h3>
+                                    <p className="mt-1 text-sm text-gray-500">خطوة واحدة تكفي.</p>
+                                </div>
+                                <button
+                                    type="button"
+                                    onClick={() => setShowParentDetails((current) => !current)}
+                                    className="self-start rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-2 text-xs font-black text-emerald-700 hover:bg-emerald-100"
+                                >
+                                    {showParentDetails ? 'إخفاء التفاصيل' : 'استعراض أكثر'}
+                                </button>
+                            </div>
+                            {data.priorityWeakSkills.length > 0 ? (
+                                <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+                                    <div className="rounded-2xl border border-amber-100 bg-amber-50 p-4 md:col-span-2">
+                                        <div className="text-xs font-black text-amber-700">الأولوية الأقرب</div>
+                                        <div className="mt-2 text-lg font-black leading-7 text-gray-900">{data.priorityWeakSkills[0].skill}</div>
+                                        <p className="mt-2 text-sm leading-6 text-gray-600">10 دقائق مع {data.priorityWeakSkills[0].studentName}، ثم سؤالان فقط.</p>
+                                    </div>
+                                    <div className="rounded-2xl border border-gray-100 bg-slate-50 p-4">
+                                        <div className="text-xs font-black text-gray-500">درجة الإتقان</div>
+                                        <div className="mt-2 text-3xl font-black text-amber-700">{Math.round(data.priorityWeakSkills[0].mastery)}%</div>
+                                        <button
+                                            type="button"
+                                            onClick={() => setActiveTab('parent-skills')}
+                                            className="mt-4 w-full rounded-xl bg-white px-4 py-2 text-sm font-black text-emerald-700 hover:bg-emerald-50"
+                                        >
+                                            عرض المهارات
+                                        </button>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="rounded-2xl bg-emerald-50 p-5 text-sm font-bold leading-7 text-emerald-700">
+                                    الأداء الحالي مطمئن. يكفي سؤال قصير بعد المذاكرة.
+                                </div>
+                            )}
+                        </Card>
+
+                        {showParentDetails ? (
+                        <>
+                        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+                            <Card className="p-4">
+                                <div className="text-xs font-bold text-gray-500">الأبناء المرتبطون</div>
+                                <div className="mt-2 text-2xl font-black text-gray-900">{data.childrenCount}</div>
+                            </Card>
+                            <Card className="p-4">
+                                <div className="text-xs font-bold text-gray-500">اختبارات مرصودة</div>
+                                <div className="mt-2 text-2xl font-black text-blue-700">{data.scopedResults.length}</div>
+                            </Card>
+                            <Card className="p-4">
+                                <div className="text-xs font-bold text-gray-500">متوسط الأداء</div>
+                                <div className="mt-2 text-2xl font-black text-emerald-700">{data.averageScore}%</div>
+                            </Card>
+                            <Card className="p-4">
+                                <div className="text-xs font-bold text-gray-500">اتجاه آخر المحاولات</div>
+                                <div className={`mt-2 text-2xl font-black ${trend >= 0 ? 'text-emerald-700' : 'text-rose-600'}`}>
+                                    {trend > 0 ? '+' : ''}{trend}%
+                                </div>
+                            </Card>
+                        </div>
+
+                        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+                            <Card className="p-4">
+                                <div className="mb-3 flex items-center justify-between">
+                                    <h3 className="text-lg font-black text-gray-900">الأبناء</h3>
+                                    <button onClick={() => setActiveTab('parent-results')} className="text-xs font-black text-emerald-700 hover:underline">
+                                        كل النتائج
+                                    </button>
+                                </div>
+                                <div className="space-y-3">
+                                    {data.childCards.map((child) => (
+                                        <div key={child.id} className="rounded-2xl border border-gray-100 p-3">
+                                            <div className="flex items-center justify-between gap-4">
+                                                <div className="flex min-w-0 items-center gap-3">
+                                                    <img src={child.avatar} alt={child.name} className="h-10 w-10 rounded-full object-cover" />
+                                                    <div className="min-w-0">
+                                                        <div className="truncate font-black text-gray-900">{child.name}</div>
+                                                        <div className="text-xs text-gray-500">{child.results} محاولة مرصودة</div>
+                                                    </div>
+                                                </div>
+                                                <div className={`rounded-xl border px-3 py-2 text-sm font-black ${scoreTone(child.average)}`}>
+                                                    {child.average}%
+                                                </div>
+                                            </div>
+                                            <div className="mt-3 grid grid-cols-2 gap-2 text-xs font-bold">
+                                                <div className="truncate rounded-xl bg-gray-50 px-3 py-2 text-gray-600">{child.latestResult?.quizTitle || 'لا يوجد'}</div>
+                                                <div className="rounded-xl bg-amber-50 px-3 py-2 text-amber-700">متابعة: {child.weakCount}</div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </Card>
+
+                            <Card className="p-4">
+                                <div className="mb-3 flex items-center justify-between">
+                                    <h3 className="text-lg font-black text-gray-900">أولويات هذا الأسبوع</h3>
+                                    <button onClick={() => setActiveTab('parent-skills')} className="text-xs font-black text-emerald-700 hover:underline">
+                                        كل المهارات
+                                    </button>
+                                </div>
+                                {data.priorityWeakSkills.length > 0 ? (
+                                    <div className="space-y-3">
+                                        {data.priorityWeakSkills.map((skill) => (
+                                            <div key={`${skill.key}-${skill.studentName}-${skill.quizTitle}`} className="rounded-2xl bg-amber-50 p-3">
+                                                <div className="flex items-center justify-between gap-4">
+                                                    <div className="min-w-0">
+                                                        <div className="truncate font-black text-gray-900">{skill.skill}</div>
+                                                        <div className="mt-1 text-xs text-gray-500">{skill.studentName} - {skill.quizTitle}</div>
+                                                    </div>
+                                                    <div className="font-black text-amber-700">{Math.round(skill.mastery)}%</div>
+                                                </div>
+                                                <div className="mt-2 text-xs font-bold text-amber-700">شرح قصير ثم تدريب خفيف.</div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="rounded-2xl bg-emerald-50 p-5 text-sm font-bold text-emerald-700">
+                                        لا توجد نقاط ضعف واضحة في آخر النتائج. استمر في المتابعة الهادئة.
+                                    </div>
+                                )}
+                            </Card>
+
+                            <Card className="p-4">
+                                <div className="mb-3 flex items-center justify-between">
+                                    <h3 className="text-lg font-black text-gray-900">رسالة ولي الأمر</h3>
+                                    <MessageCircle size={18} className="text-emerald-600" />
+                                </div>
+                                <div className="rounded-2xl bg-emerald-50 p-3 text-sm font-bold leading-6 text-emerald-900">
+                                    {data.coachMessage}
+                                </div>
+                                <button
+                                    type="button"
+                                    onClick={() => void copyCoachMessage()}
+                                    className="mt-3 inline-flex w-full items-center justify-center gap-1.5 rounded-xl border border-emerald-100 bg-white px-3 py-2 text-sm font-black text-emerald-700 hover:bg-emerald-50"
+                                >
+                                    <Copy size={15} />
+                                    {copiedCoachMessage ? 'تم النسخ' : 'نسخ الرسالة'}
+                                </button>
+                            </Card>
+                        </div>
+                        </>
+                        ) : null}
+                    </>
+                )
+            ) : null}
+        </div>
+    );
+};
+
+const ParentResultsTab = () => {
+    const data = useParentScopedResults();
+
+    if (data.isLoading) return <ParentLoadingState />;
+    if (data.loadError) return <ParentErrorState message={data.loadError} />;
+    if (data.scopedResults.length === 0) return <ParentEmptyState />;
+
+    return (
+        <div className="space-y-6 animate-fade-in pb-20">
+            <div>
+                <h2 className="text-2xl font-black text-gray-900">نتائج الأبناء</h2>
+                <p className="mt-1 text-sm text-gray-500">آخر المحاولات مرتبة من الأحدث للأقدم مع الدرجة وتاريخ الاختبار.</p>
+            </div>
+            <div className="space-y-3">
+                {data.scopedResults.map((result, index) => {
+                    const weakSkills = [...(result.skillsAnalysis || [])]
+                        .filter((skill) => Number(skill.mastery ?? 100) < 75 || skill.status === 'weak')
+                        .sort((a, b) => Number(a.mastery || 0) - Number(b.mastery || 0))
+                        .slice(0, 2);
+
+                    return (
+                        <Card key={result.id || `${result.quizId}-${index}`} className="p-4">
+                            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                                <div>
+                                    <div className="text-lg font-black text-gray-900">{result.quizTitle}</div>
+                                    <div className="mt-1 text-sm text-gray-500">{getStudentLabel(result)} - {formatParentDate(result)}</div>
+                                </div>
+                                <div className={`self-start rounded-2xl border px-4 py-3 text-xl font-black md:self-auto ${scoreTone(Number(result.score) || 0)}`}>
+                                    {Math.round(Number(result.score) || 0)}%
+                                </div>
+                            </div>
+                            <div className="mt-4 grid grid-cols-2 gap-2 text-xs font-bold text-gray-600 sm:grid-cols-4">
+                                <div className="rounded-xl bg-gray-50 p-3">الأسئلة: {result.totalQuestions || 0}</div>
+                                <div className="rounded-xl bg-emerald-50 p-3 text-emerald-700">صحيح: {result.correctAnswers || 0}</div>
+                                <div className="rounded-xl bg-rose-50 p-3 text-rose-700">خطأ: {result.wrongAnswers || 0}</div>
+                                <div className="rounded-xl bg-blue-50 p-3 text-blue-700">الوقت: {result.timeSpent || 'غير محدد'}</div>
+                            </div>
+                            <div className="mt-4 rounded-2xl bg-slate-50 p-4">
+                                <div className="text-xs font-black text-slate-500">تحليل هذه المحاولة</div>
+                                {weakSkills.length ? (
+                                    <div className="mt-3 flex flex-wrap gap-2">
+                                        {weakSkills.map((skill) => (
+                                            <span key={`${result.id || result.quizId}-${skill.skillId || skill.skill}`} className="rounded-full bg-rose-50 px-3 py-1.5 text-xs font-black text-rose-700">
+                                                {skill.skill}: {Math.round(Number(skill.mastery) || 0)}%
+                                            </span>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="mt-2 text-sm font-bold text-emerald-700">لا توجد مهارة ضعيفة واضحة في هذه المحاولة.</div>
+                                )}
+                            </div>
+                            <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                                <Link to="/dashboard?tab=parent-skills" className="rounded-xl bg-indigo-600 px-4 py-2.5 text-center text-sm font-black text-white hover:bg-indigo-700">
+                                    التحليل العام للمهارات
+                                </Link>
+                                <Link to="/reports" className="rounded-xl border border-emerald-100 bg-emerald-50 px-4 py-2.5 text-center text-sm font-black text-emerald-700 hover:bg-emerald-100">
+                                    تقرير ولي الأمر
+                                </Link>
+                            </div>
+                        </Card>
+                    );
+                })}
+            </div>
+        </div>
+    );
+};
+
+const ParentSkillsTab = () => {
+    const data = useParentScopedResults();
+
+    if (data.isLoading) return <ParentLoadingState />;
+    if (data.loadError) return <ParentErrorState message={data.loadError} />;
+    if (data.scopedResults.length === 0) return <ParentEmptyState />;
+
+    return (
+        <div className="space-y-6 animate-fade-in pb-20">
+            <div>
+                <h2 className="text-2xl font-black text-gray-900">المهارات التي تحتاج متابعة</h2>
+                <p className="mt-1 text-sm text-gray-500">ترتيب عملي لما يحتاجه الأبناء بناءً على نتائجهم الفعلية.</p>
+            </div>
+            {data.weakSkills.length > 0 ? (
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                    {data.weakSkills.map((skill) => (
+                        <Card key={`${skill.key}-${skill.studentName}-${skill.quizTitle}`} className="p-5">
+                            <div className="flex items-start justify-between gap-4">
+                                <div className="min-w-0">
+                                    <h3 className="truncate text-lg font-black text-gray-900">{skill.skill}</h3>
+                                    <p className="mt-1 text-sm text-gray-500">{skill.studentName}</p>
+                                    <p className="mt-1 text-xs text-gray-400">{skill.quizTitle}</p>
+                                </div>
+                                <div className={`rounded-xl border px-3 py-2 text-sm font-black ${scoreTone(skill.mastery)}`}>
+                                    {Math.round(skill.mastery)}%
+                                </div>
+                            </div>
+                            <div className="mt-4 rounded-2xl bg-slate-50 p-4 text-sm leading-7 text-slate-600">
+                                خطة متابعة مقترحة: مراجعة شرح قصير، حل 5 أسئلة على نفس المهارة، ثم إعادة محاولة صغيرة بعد يوم.
+                            </div>
+                        </Card>
+                    ))}
+                </div>
+            ) : (
+                <Card className="p-8 text-center">
+                    <CheckCircle size={42} className="mx-auto mb-4 text-emerald-500" />
+                    <h3 className="text-xl font-black text-gray-900">الأداء مستقر حاليًا</h3>
+                    <p className="mt-2 text-sm text-gray-500">لا توجد مهارات ضعيفة واضحة في النتائج الحالية.</p>
+                </Card>
+            )}
+        </div>
+    );
+};
+
+const ParentFollowUpTab = () => {
+    const data = useParentScopedResults();
+    const [copiedPlan, setCopiedPlan] = useState(false);
+    const urgentChildren = data.childCards.filter((child) => child.average < 70 || child.weakCount >= 3);
+    const stableChildren = data.childCards.filter((child) => child.average >= 80 && child.weakCount === 0);
+    const weeklyPlanText = [
+        'خطة متابعة ولي الأمر:',
+        ...data.followUpPlan.map((item) => `${item.day}: ${item.studentName} - ${item.skill} (${Math.round(item.mastery)}%). ${item.action} ${item.check}`),
+        data.coachMessage ? `ملاحظة عامة: ${data.coachMessage}` : '',
+    ].filter(Boolean).join('\n');
+
+    const copyWeeklyPlan = async () => {
+        try {
+            await navigator.clipboard?.writeText(weeklyPlanText);
+            setCopiedPlan(true);
+            window.setTimeout(() => setCopiedPlan(false), 1800);
+        } catch {
+            setCopiedPlan(false);
+        }
+    };
+
+    if (data.isLoading) return <ParentLoadingState />;
+    if (data.loadError) return <ParentErrorState message={data.loadError} />;
+    if (data.scopedResults.length === 0) return <ParentEmptyState />;
+
+    return (
+        <div className="space-y-6 animate-fade-in pb-20">
+            <div className="rounded-3xl bg-white p-6 shadow-sm border border-gray-100">
+                <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+                    <div>
+                        <div className="text-sm font-bold text-emerald-600">خطة ولي الأمر</div>
+                        <h2 className="mt-2 text-2xl font-black text-gray-900">متابعة أسبوعية بدون ضغط</h2>
+                        <p className="mt-2 max-w-2xl text-sm leading-7 text-gray-500">
+                            هذه الصفحة تحول النتائج والمهارات الضعيفة إلى خطوات متابعة بسيطة تستطيع تنفيذها في البيت.
+                        </p>
+                    </div>
+                    <button
+                        type="button"
+                        onClick={() => void copyWeeklyPlan()}
+                        className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-5 py-3 text-sm font-black text-white hover:bg-emerald-700"
+                    >
+                        <Copy size={16} />
+                        {copiedPlan ? 'تم نسخ الخطة' : 'نسخ خطة المتابعة'}
+                    </button>
+                </div>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                <Card className="p-5">
+                    <div className="text-xs font-bold text-gray-500">يحتاجون متابعة قريبة</div>
+                    <div className="mt-2 text-3xl font-black text-rose-600">{urgentChildren.length}</div>
+                    <p className="mt-2 text-xs leading-6 text-gray-500">متوسط أقل من 70% أو ثلاث مهارات ضعيفة فأكثر.</p>
+                </Card>
+                <Card className="p-5">
+                    <div className="text-xs font-bold text-gray-500">أداء مستقر</div>
+                    <div className="mt-2 text-3xl font-black text-emerald-700">{stableChildren.length}</div>
+                    <p className="mt-2 text-xs leading-6 text-gray-500">متوسط 80% فأكثر ولا توجد مهارات ضعيفة واضحة.</p>
+                </Card>
+                <Card className="p-5">
+                    <div className="text-xs font-bold text-gray-500">خطوات هذا الأسبوع</div>
+                    <div className="mt-2 text-3xl font-black text-indigo-700">{data.followUpPlan.length}</div>
+                    <p className="mt-2 text-xs leading-6 text-gray-500">كل خطوة قصيرة ومحددة بعلامة تحقق واضحة.</p>
+                </Card>
+            </div>
+
+            <Card className="p-5">
+                <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+                    <div>
+                        <h3 className="text-lg font-black text-gray-900">جدول 3 أيام</h3>
+                        <p className="mt-1 text-sm text-gray-500">نفذ خطوة واحدة فقط في اليوم، والهدف هو تحسين عادة المراجعة لا الضغط.</p>
+                    </div>
+                    <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-black text-emerald-700">
+                        مناسب لولي الأمر
+                    </span>
+                </div>
+
+                {data.followUpPlan.length > 0 ? (
+                    <div className="mt-5 grid grid-cols-1 gap-4 lg:grid-cols-3">
+                        {data.followUpPlan.map((item) => (
+                            <div key={item.id} className="rounded-2xl border border-gray-100 bg-slate-50 p-5">
+                                <div className="flex items-center justify-between gap-2">
+                                    <span className="rounded-full bg-white px-3 py-1 text-xs font-black text-indigo-700">{item.day}</span>
+                                    <span className={`rounded-full px-3 py-1 text-xs font-black ${item.mastery < 50 ? 'bg-rose-50 text-rose-700' : 'bg-amber-50 text-amber-700'}`}>
+                                        {Math.round(item.mastery)}%
+                                    </span>
+                                </div>
+                                <div className="mt-4 text-sm font-bold text-gray-500">{item.studentName}</div>
+                                <h4 className="mt-1 text-lg font-black leading-7 text-gray-900">{item.skill}</h4>
+                                <p className="mt-3 text-sm leading-7 text-gray-600">{item.action}</p>
+                                <div className="mt-4 rounded-xl bg-white p-3 text-xs font-bold leading-6 text-emerald-700">{item.check}</div>
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <div className="mt-5 rounded-2xl bg-emerald-50 p-5 text-sm font-bold text-emerald-700">
+                        لا توجد خطة علاجية الآن لأن النتائج الحالية لا تظهر ضعفًا واضحًا.
+                    </div>
+                )}
+            </Card>
+
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                <Card className="p-5">
+                    <h3 className="text-lg font-black text-gray-900">تنبيهات تحتاج انتباه</h3>
+                    <div className="mt-4 space-y-3">
+                        {urgentChildren.length > 0 ? urgentChildren.map((child) => (
+                            <div key={child.id} className="rounded-2xl border border-rose-100 bg-rose-50 p-4">
+                                <div className="flex items-center justify-between gap-4">
+                                    <div className="font-black text-gray-900">{child.name}</div>
+                                    <div className="rounded-full bg-white px-3 py-1 text-xs font-black text-rose-700">{child.average}%</div>
+                                </div>
+                                <p className="mt-2 text-sm leading-6 text-rose-700">
+                                    ابدأ معه بجلسة قصيرة، وركز على مهارة واحدة فقط من القائمة بدل مراجعة كل شيء مرة واحدة.
+                                </p>
+                            </div>
+                        )) : (
+                            <div className="rounded-2xl bg-emerald-50 p-5 text-sm font-bold leading-7 text-emerald-700">
+                                لا توجد تنبيهات عاجلة الآن. المتابعة الخفيفة كافية.
+                            </div>
+                        )}
+                    </div>
+                </Card>
+
+                <Card className="p-5">
+                    <h3 className="text-lg font-black text-gray-900">أسئلة تسألها لابنك</h3>
+                    <div className="mt-4 space-y-3">
+                        {[
+                            'ما السؤال الذي كان أصعب شيء عليك اليوم؟',
+                            'ما المهارة التي تريد أن نراجعها في 10 دقائق فقط؟',
+                            'هل الخطأ كان بسبب فهم الفكرة أم بسبب السرعة؟',
+                            'اشرح لي الحل بصوتك كأنك أنت المعلم.',
+                        ].map((question) => (
+                            <div key={question} className="rounded-2xl border border-gray-100 bg-gray-50 p-4 text-sm font-bold leading-7 text-gray-700">
+                                {question}
+                            </div>
+                        ))}
+                    </div>
+                </Card>
+            </div>
+        </div>
+    );
+};
+
+const ParentFollowUpPanel = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => {
+    const data = useParentScopedResults();
+    const trend = data.lastThreeAverage - data.olderThreeAverage;
+
+    if (data.scopedResults.length === 0 && !data.isLoading && !data.loadError) return null;
+
+    return (
+        <section className="rounded-3xl border border-emerald-100 bg-white p-5 shadow-sm">
+            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                <div>
+                    <h3 className="text-xl font-black text-gray-900">متابعة الأبناء</h3>
+                    <p className="mt-1 text-sm leading-6 text-gray-500">
+                        ملخص سريع لآخر نتائج الأبناء المرتبطين بحسابك ونقاط الضعف التي تحتاج متابعة.
+                    </p>
+                </div>
+                <button
+                    onClick={() => setActiveTab('parent-followup')}
+                    className="rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-black text-white hover:bg-emerald-700"
+                >
+                    فتح خطة المتابعة
+                </button>
+            </div>
+
+            <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-4">
+                <div className="rounded-2xl bg-emerald-50 p-4">
+                    <div className="text-xs font-bold text-emerald-700">الأبناء المرتبطون</div>
+                    <div className="mt-2 text-2xl font-black text-emerald-800">{data.childrenCount}</div>
+                </div>
+                <div className="rounded-2xl bg-blue-50 p-4">
+                    <div className="text-xs font-bold text-blue-700">اختبارات مرصودة</div>
+                    <div className="mt-2 text-2xl font-black text-blue-800">{data.scopedResults.length}</div>
+                </div>
+                <div className="rounded-2xl bg-amber-50 p-4">
+                    <div className="text-xs font-bold text-amber-700">متوسط الأداء</div>
+                    <div className="mt-2 text-2xl font-black text-amber-800">{data.averageScore}%</div>
+                </div>
+                <div className="rounded-2xl bg-slate-50 p-4">
+                    <div className="text-xs font-bold text-slate-700">الاتجاه</div>
+                    <div className={`mt-2 text-2xl font-black ${trend >= 0 ? 'text-emerald-700' : 'text-rose-600'}`}>{trend > 0 ? '+' : ''}{trend}%</div>
+                </div>
+            </div>
+        </section>
+    );
+};
+
+// 1. OverviewTab (Smart Dashboard Content)
+const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => {
+    const { courses, user, enrolledCourses, completedLessons, examResults, recentActivity, paths: storePaths, enrolledPaths, quizzes } = useStore();
+    const overviewSkillProgress = useStudentSkillProgress();
+    const smartPathSkills = useMemo(
+        () => buildSmartPathSkillsFromProgress(overviewSkillProgress),
+        [overviewSkillProgress],
+    );
+    
+    const [copiedCode, setCopiedCode] = useState(false);
+    const [showCalculator, setShowCalculator] = useState(false);
+    
+    const assignedQuizzes = useMemo(() => {
+        return quizzes.filter(q => {
+            if (!q.isPublished) return false;
+            const userGroups = user.groupIds || [];
+            const isGroupTargeted = q.targetGroupIds && q.targetGroupIds.some(groupId => userGroups.includes(groupId));
+            const isUserTargeted = q.targetUserIds && q.targetUserIds.includes(user.id);
+            return isGroupTargeted || isUserTargeted;
+        });
+    }, [quizzes, user]);
+    
+    const streakDays = calculateStreak(recentActivity);
+
+    // Group learning by registered paths
+    const getSmallPathStyle = (pathId: string) => {
+        if (pathId === 'p_qudrat') return { icon: <Target size={24} className="text-purple-500" />, bg: 'bg-purple-100 text-purple-700' };
+        if (pathId === 'p_tahsili') return { icon: <BookOpen size={24} className="text-blue-500" />, bg: 'bg-blue-100 text-blue-700' };
+        if (pathId === 'p_nafes' || pathId === 'nafes') return { icon: <Star size={24} className="text-emerald-500" />, bg: 'bg-emerald-100 text-emerald-700' };
+        return { icon: <RouteIcon size={24} className="text-indigo-500" />, bg: 'bg-indigo-100 text-indigo-700' };
+    };
+
+    const enrolledPathSet = new Set(enrolledPaths ?? []);
+    const relevantPaths = enrolledPathSet.size > 0
+        ? storePaths.filter((path) => enrolledPathSet.has(path.id))
+        : [];
+
+    const paths = relevantPaths
+        .map((path) => {
+            const pathCourses = courses.filter((course) => !course.isPackage && courseBelongsToPath(course, path));
+            const pathStats = resolvePathProgress(path, pathCourses, completedLessons, examResults);
+
+            return {
+                id: path.id,
+                title: `مسار ${path.name}`,
+                courses: pathCourses,
+                stats: pathStats,
+                ...getSmallPathStyle(path.id)
+            };
+        })
+        .filter((path) => path.courses.length > 0 || path.stats.examsCount > 0);
+
+    const pendingAssignedQuiz = assignedQuizzes.find(
+        (quiz) => !examResults.some((result) => result.quizId === quiz.id && result.userId === user.id),
+    );
+    const topSmartSkill = smartPathSkills[0];
+
+    return (
+    <div className="space-y-4 animate-fade-in pb-16">
+        {/* Header & Streak */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-3.5 sm:p-4 rounded-2xl shadow-2xs border border-gray-100">
+            <div className="flex items-center gap-3">
+                <img src={user.avatar} alt="Profile" className="w-11 h-11 rounded-full border-2 border-amber-100 shrink-0" />
+                <div>
+                    <h2 className="text-lg sm:text-xl font-black text-gray-900">مرحباً يا بطل! 👋</h2>
+                    <p className="text-gray-500 text-xs font-bold mt-0.5">جاهز تحقق أهدافك اليوم؟</p>
+                </div>
+            </div>
+            <div className="flex items-center gap-2.5 bg-orange-50 border border-orange-100 px-3 py-1.5 rounded-xl self-start sm:self-auto">
+                <div className="w-8 h-8 flex items-center justify-center text-base bg-white rounded-lg shadow-2xs">🔥</div>
+                <div>
+                    <div className="text-[10px] font-black text-orange-600">شريط الاستمرارية</div>
+                    <div className="text-sm font-black text-orange-700 leading-tight">{streakDays} أيام متتالية</div>
+                </div>
+            </div>
+        </div>
+
+        {/* Student Today Focus: one clear action, no dashboard noise */}
+        <section
+            data-testid="student-today-focus"
+            className="rounded-3xl border border-emerald-100 bg-gradient-to-l from-emerald-50 via-white to-white p-4 sm:p-5 shadow-sm"
+        >
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div className="min-w-0">
+                    <div className="mb-1 inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-2.5 py-1 text-[11px] font-black text-emerald-700">
+                        <Sparkles size={13} />
+                        خطوتك اليوم
+                    </div>
+                    <h3 className="truncate text-base sm:text-lg font-black text-gray-900">
+                        {pendingAssignedQuiz
+                            ? pendingAssignedQuiz.title
+                            : topSmartSkill
+                                ? `ابدأ بـ ${topSmartSkill.skill}`
+                                : 'ابدأ بقياس قصير'}
+                    </h3>
+                    <p className="mt-1 text-xs sm:text-sm font-bold text-gray-500">
+                        {pendingAssignedQuiz
+                            ? 'اختبار موجه ينتظرك.'
+                            : topSmartSkill
+                                ? `مستواك الحالي ${Math.round(topSmartSkill.mastery)}% — خطوة واحدة تكفي الآن.`
+                                : 'قياس بسيط يساعدنا نحدد لك الخطوة التالية.'}
+                    </p>
+                </div>
+                {pendingAssignedQuiz ? (
+                    <Link
+                        to={`/quiz/${pendingAssignedQuiz.id}`}
+                        className="inline-flex shrink-0 items-center justify-center gap-2 rounded-2xl bg-emerald-600 px-5 py-2.5 text-sm font-black text-white hover:bg-emerald-700"
+                    >
+                        ابدأ الاختبار
+                        <ChevronLeft size={16} />
+                    </Link>
+                ) : (
+                    <button
+                        type="button"
+                        onClick={() => setActiveTab(topSmartSkill ? 'smart-path' : 'quizzes')}
+                        className="inline-flex shrink-0 items-center justify-center gap-2 rounded-2xl bg-emerald-600 px-5 py-2.5 text-sm font-black text-white hover:bg-emerald-700"
+                    >
+                        {topSmartSkill ? 'افتح المسار الذكي' : 'ابدأ القياس'}
+                        <ChevronLeft size={16} />
+                    </button>
+                )}
+            </div>
+        </section>
+
+        {/* ===== مهامي من المشرف ===== */}
+        {user.role === Role.STUDENT && assignedQuizzes.length > 0 && (
+          <SupervisorTasksStrip
+            assignedQuizzes={assignedQuizzes}
+            examResults={examResults}
+            userId={user.id}
+            onStartQuiz={(quizId) => {
+              window.location.assign(`/quiz/${quizId}`);
+            }}
+          />
+        )}
+
+        {/* Student Tools: Parent Code & Notifications */}
+        {user.role === Role.STUDENT && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 sm:gap-3">
+            <Card className="p-3 sm:p-3.5 rounded-2xl flex items-center justify-between border border-indigo-100 bg-indigo-50/30 shadow-2xs transition-all hover:shadow-md cursor-pointer" onClick={() => setShowCalculator(true)}>
+                <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-9 h-9 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-black shrink-0">
+                        <Target size={18} />
+                    </div>
+                    <div className="min-w-0">
+                        <h4 className="font-black text-gray-900 text-xs sm:text-sm truncate">حاسبة القبول الجامعي</h4>
+                        <p className="text-[10px] sm:text-xs text-gray-500 font-bold truncate">احسب النسبة الموزونة وفرصتك.</p>
+                    </div>
+                </div>
+                <div className="text-indigo-600 bg-indigo-100 p-1.5 rounded-lg shrink-0 mr-2">
+                    <Calculator size={18} />
+                </div>
+            </Card>
+
+            <Card className="p-3 sm:p-3.5 rounded-2xl flex items-center justify-between border border-indigo-100 bg-indigo-50/30 shadow-2xs">
+                <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-9 h-9 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center font-black shrink-0 text-sm">🔗</div>
+                    <div className="min-w-0">
+                        <h4 className="font-black text-gray-900 text-xs sm:text-sm truncate">كود ربط ولي الأمر</h4>
+                        <p className="text-[10px] sm:text-xs text-gray-500 font-bold truncate">شاركه مع ولي أمرك لمتابعة أدائك.</p>
+                    </div>
+                </div>
+                <div className="flex items-center gap-1.5 bg-white px-2.5 py-1 rounded-xl shadow-2xs border border-indigo-100 shrink-0 mr-2">
+                    <span className="font-mono font-black text-indigo-700 text-xs tracking-wider">{String(user?.id || '883921').slice(-6).toUpperCase()}</span>
+                    <button 
+                        onClick={() => {
+                            navigator.clipboard?.writeText(String(user?.id || '883921').slice(-6).toUpperCase());
+                            setCopiedCode(true);
+                            setTimeout(() => setCopiedCode(false), 2000);
+                        }}
+                        className="text-indigo-600 hover:text-indigo-800 bg-indigo-50 p-1 rounded-lg flex items-center gap-1 text-[11px] font-bold transition-colors"
+                        title="نسخ الكود"
+                    >
+                        <Copy size={14} />
+                        {copiedCode && <span className="text-[10px] text-emerald-600 font-black">تم النسخ ✓</span>}
+                    </button>
+                </div>
+            </Card>
+        </div>
+        )}
+
+        <div className="grid lg:grid-cols-3 gap-4">
+            <div className="lg:col-span-2 space-y-4">
+                {/* My Paths (مساراتي) */}
+                {paths.length > 0 && (
+                    <section>
+                        <h3 className="text-sm sm:text-base font-black text-gray-900 mb-2.5">أكمل مساراتك</h3>
+                        <div className="space-y-2.5">
+                            {paths.map(path => (
+                                <Card key={path.id} className="p-2.5 sm:p-3 rounded-2xl flex items-center gap-3 hover:shadow-md transition-shadow border-gray-100">
+                                    <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center shrink-0 ${path.bg}`}>
+                                        {path.icon}
+                                    </div>
+                                    <div className="flex-1 min-w-0 text-right">
+                                        <h4 className="font-black text-gray-900 text-xs sm:text-sm truncate">{path.title}</h4>
+                                        <div className="flex items-center gap-2 mt-1">
+                                            <div className="flex-1"><ProgressBar percentage={path.stats.progress} color="secondary" /></div>
+                                            <span className="text-[11px] font-black text-gray-500 min-w-[28px]">{path.stats.progress}%</span>
+                                        </div>
+                                    </div>
+                                    <Link 
+                                        to={path.courses[0] ? `/course/${path.courses[0].id}` : `/category/${path.id}`}
+                                        className="hidden sm:flex bg-gray-900 text-white px-3.5 py-1.5 rounded-xl font-black text-xs hover:bg-gray-800 items-center justify-center whitespace-nowrap"
+                                    >
+                                        متابعة
+                                    </Link>
+                                </Card>
+                            ))}
+                        </div>
+                    </section>
+                )}
+
+                {/* Assigned Quizzes (الاختبارات الموجهة) */}
+                {assignedQuizzes.length > 0 && (
+                    <section>
+                        <h3 className="text-sm sm:text-base font-black text-gray-900 mb-2.5 flex items-center gap-2">
+                            <ClipboardList className="text-indigo-600" size={18} />
+                            الاختبارات الموجهة لك
+                        </h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            {assignedQuizzes.map(quiz => {
+                                const hasCompleted = examResults.some(r => r.quizId === quiz.id && r.userId === user.id);
+                                return (
+                                    <Card key={quiz.id} className={`p-3 sm:p-3.5 rounded-2xl flex flex-col justify-between transition-all border ${hasCompleted ? 'border-emerald-100 bg-emerald-50/30' : 'border-indigo-100 bg-white hover:border-indigo-300 hover:shadow-md'}`}>
+                                        <div>
+                                            <div className="flex justify-between items-start mb-2">
+                                                <div className={`p-1.5 rounded-lg ${
+                                                quiz.quizKind === 'drill' ? 'bg-emerald-100 text-emerald-600'
+                                                : isTrueMockExam(quiz) ? 'bg-violet-100 text-violet-600'
+                                                : 'bg-indigo-100 text-indigo-600'
+                                              }`}>
+                                                  {isTrueMockExam(quiz) ? <ActivityIcon size={16} /> : <FileText size={16} />}
+                                              </div>
+                                              <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                                                quiz.quizKind === 'drill' ? 'bg-emerald-50 text-emerald-700'
+                                                : isTrueMockExam(quiz) ? 'bg-violet-50 text-violet-700'
+                                                : 'bg-indigo-50 text-indigo-700'
+                                              }`}>
+                                                  {quiz.quizKind === 'drill' ? 'تدريب' : isTrueMockExam(quiz) ? 'محاكي قياس' : 'اختبار'}
+                                                  </span>
+                                              </div>
+                                              <h4 className="font-black text-gray-900 text-xs sm:text-sm mb-1">{quiz.title}</h4>
+                                              {quiz.dueDate && (
+                                                  <p className="text-[11px] text-rose-600 font-bold mb-2 flex items-center gap-1">
+                                                      <Clock size={11} /> أخر موعد: {new Date(quiz.dueDate).toLocaleDateString('ar-EG')}
+                                                  </p>
+                                              )}
+                                          </div>
+                                          {hasCompleted ? (
+                                              <div className="mt-2 flex items-center justify-center gap-1.5 py-1.5 bg-emerald-100 text-emerald-700 rounded-lg text-xs font-bold">
+                                                  <CheckCircle size={14} /> تم الإنجاز
+                                              </div>
+                                          ) : (
+                                              <Link 
+                                                  to={`/quiz/${quiz.id}`}
+                                                  className="mt-2 w-full bg-indigo-600 text-white py-1.5 rounded-lg font-bold hover:bg-indigo-700 transition-colors block text-center text-xs"
+                                              >
+                                                  بدء الاختبار
+                                              </Link>
+                                          )}
+                                    </Card>
+                                );
+                            })}
+                        </div>
+                    </section>
+                )}
+
+                <SmartLearningPath skills={smartPathSkills} />
+            </div>
+
+            {/* Recent Activity */}
+            <div className="space-y-4">
+                <section className="bg-white p-3.5 sm:p-4 rounded-2xl border border-gray-100 shadow-2xs">
+                    <h3 className="text-sm sm:text-base font-black text-gray-900 mb-2.5">آخر إنجازاتك</h3>
+                    {recentActivity.length > 0 ? (
+                        <div className="space-y-2">
+                            {recentActivity.slice(0, 4).map((activity) => (
+                                <div key={activity.id} className="flex items-center gap-2.5 bg-gray-50 p-2 sm:p-2.5 rounded-xl">
+                                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
+                                        activity.type === 'lesson_complete' ? 'bg-emerald-100 text-emerald-600' :
+                                        activity.type === 'quiz_complete' ? 'bg-blue-100 text-blue-600' :
+                                        'bg-purple-100 text-purple-600'
+                                    }`}>
+                                        {activity.type === 'lesson_complete' ? <CheckCircle size={15} /> :
+                                         activity.type === 'quiz_complete' ? <FileText size={15} /> :
+                                         <Star size={15} />}
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                        <p className="font-bold text-xs text-gray-800 truncate">{activity.title}</p>
+                                        <p className="text-[10px] font-bold text-gray-500 mt-0.5">{new Date(activity.date).toLocaleDateString('ar-SA')}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="text-center py-4 text-gray-400">
+                            <Clock size={24} className="mx-auto mb-1.5 opacity-30" />
+                            <p className="text-xs font-bold">لم تقم بأي نشاط بعد.</p>
+                        </div>
+                    )}
+                </section>
+            </div>
+        </div>
+        
+        {showCalculator && <QiyasCalculatorModal isOpen={showCalculator} onClose={() => setShowCalculator(false)} />}
+    </div>
+)};
+
+// 2. Saher Tab
+const SaherTab = () => {
+    const { quizzes, user, checkAccess, examResults, subjects, lessons, libraryItems } = useStore();
+    const canAccessQuiz = (quiz: (typeof quizzes)[number]) => {
+        if (!quiz.isPublished || (quiz.type ?? 'quiz') !== 'quiz') return false;
+
+        if (quiz.dueDate) {
+            const deadline = new Date(`${quiz.dueDate}T23:59:59`);
+            if (!Number.isNaN(deadline.getTime()) && Date.now() > deadline.getTime()) return false;
+        }
+
+        if ((quiz.mode || 'regular') === 'central') {
+            const userGroups = user.groupIds || [];
+            const userTargeted = (quiz.targetUserIds || []).length === 0 || (quiz.targetUserIds || []).includes(user.id);
+            const groupTargeted =
+                (quiz.targetGroupIds || []).length === 0 ||
+                (quiz.targetGroupIds || []).some(groupId => userGroups.includes(groupId));
+            if (!userTargeted || !groupTargeted) return false;
+        }
+
+        const access = quiz.access || { type: 'free' as const };
+        if (access.type === 'free') return true;
+        if (access.type === 'paid') return checkAccess(quiz.id, true);
+        if (access.type === 'private') {
+            const userGroups = user.groupIds || [];
+            return !!access.allowedGroupIds?.some(groupId => userGroups.includes(groupId));
+        }
+        return false;
+    };
+
+    const preparedTests = quizzes
+        .filter((quiz) => !isStandaloneMockExam(quiz))
+        .filter((quiz) => canAccessQuiz(quiz))
+        .sort((a, b) => (b.createdAt ?? 0) - (a.createdAt ?? 0));
+    const saherTests = preparedTests
+        .filter((quiz) => (quiz.mode || 'regular') === 'saher')
+        .sort((a, b) => (b.createdAt ?? 0) - (a.createdAt ?? 0))
+        .slice(0, 4);
+    const centralTests = preparedTests
+        .filter((quiz) => (quiz.mode || 'regular') === 'central')
+        .sort((a, b) => (b.createdAt ?? 0) - (a.createdAt ?? 0))
+        .slice(0, 4);
+    const weakSkillRecommendations = Array.from(
+        examResults.reduce((map, result) => {
+            (result.skillsAnalysis || []).forEach(skill => {
+                if (skill.mastery >= 75 && skill.status !== 'weak') return;
+
+                const key = skill.skillId || [skill.subjectId, skill.sectionId, skill.skill].filter(Boolean).join(':');
+                const existing = map.get(key);
+                if (existing) {
+                    existing.masterySum += skill.mastery;
+                    existing.attempts += 1;
+                    return;
+                }
+
+                map.set(key, {
+                    key,
+                    skillId: skill.skillId,
+                    pathId: skill.pathId,
+                    subjectId: skill.subjectId,
+                    sectionId: skill.sectionId,
+                    section: skill.section,
+                    skill: skill.skill,
+                    masterySum: skill.mastery,
+                    attempts: 1,
+                });
+            });
+
+            return map;
+        }, new globalThis.Map<string, {
+            key: string;
+            skillId?: string;
+            pathId?: string;
+            subjectId?: string;
+            sectionId?: string;
+            section?: string;
+            skill: string;
+            masterySum: number;
+            attempts: number;
+        }>())
+    )
+        .map(([, item]) => {
+            const mastery = Math.round(item.masterySum / item.attempts);
+            const relatedQuiz = preparedTests.find((quiz) => {
+                const skillMatch = !!item.skillId && (quiz.skillIds || []).includes(item.skillId);
+                const subjectMatch = !!item.subjectId && quiz.subjectId === item.subjectId;
+                const sectionMatch = !item.sectionId || quiz.sectionId === item.sectionId;
+                return skillMatch || (subjectMatch && sectionMatch);
+            });
+
+            return {
+                ...item,
+                mastery,
+                subjectName: subjects.find(subject => subject.id === item.subjectId)?.name || 'بدون مادة',
+                relatedQuiz,
+                recommendedLesson: lessons.find((lesson) =>
+                    lesson.showOnPlatform !== false &&
+                    (!lesson.approvalStatus || lesson.approvalStatus === 'approved') &&
+                    ((!!item.skillId && lesson.skillIds?.includes(item.skillId)) ||
+                    (!!item.subjectId && lesson.subjectId === item.subjectId && (!item.sectionId || lesson.sectionId === item.sectionId)))
+                ),
+                recommendedResource: libraryItems.find((resource) =>
+                    resource.showOnPlatform !== false &&
+                    (!resource.approvalStatus || resource.approvalStatus === 'approved') &&
+                    ((!!item.skillId && resource.skillIds?.includes(item.skillId)) ||
+                    (!!item.subjectId && resource.subjectId === item.subjectId && (!item.sectionId || resource.sectionId === item.sectionId)))
+                ),
+            };
+        })
+        .filter(item => item.mastery < 75)
+        .sort((a, b) => a.mastery - b.mastery)
+        .slice(0, 2);
+
+    return (
+        <div className="max-w-3xl mx-auto space-y-8 animate-fade-in">
+            {/* Hero Card */}
+            <div className="bg-[#a855f7] text-white rounded-2xl p-5 sm:p-8 md:p-12 shadow-lg shadow-purple-100 text-center relative overflow-hidden">
+                <div className="relative z-10">
+                    <h1 className="text-2xl sm:text-3xl font-bold mb-3 leading-tight">اختبار "ساهر" السريع</h1>
+                    <p className="text-purple-100 text-base sm:text-lg mb-6 sm:mb-8">اختبر معرفتك في جميع المواد باختبار شامل وسريع</p>
+                    
+                    <Link 
+                        to="/quiz" 
+                        className="cta-attention inline-flex w-full justify-center rounded-xl bg-white px-6 py-2.5 text-base font-black text-[#7c3aed] shadow-md transition-transform hover:-translate-y-0.5 hover:shadow-md hover:bg-gray-50 sm:w-auto"
+                    >
+                        <span className="h-2 w-2 rounded-full bg-white/80 animate-pulse" />
+                        ابدأ اختبار ساهر
+                    </Link>
+                </div>
+                {/* Decorative elements */}
+                <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl"></div>
+                <div className="absolute bottom-0 left-0 w-48 h-48 bg-purple-900 opacity-10 rounded-full translate-y-1/2 -translate-x-1/2 blur-2xl"></div>
+            </div>
+
+            {weakSkillRecommendations.length > 0 && (
+                <div className="bg-white rounded-2xl border border-amber-100 p-5 space-y-4">
+                    <div className="text-right">
+                        <h3 className="text-lg font-bold text-gray-800">ترشيحات سريعة حسب نقاط الضعف</h3>
+                        <p className="text-sm text-gray-500 mt-1">هذه التوصيات مبنية على نتائجك الأخيرة لمساعدتك على العلاج بسرعة.</p>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {weakSkillRecommendations.map(item => (
+                            <Card key={item.key} className="p-4 border border-amber-100">
+                                <div className="space-y-3 text-right">
+                                    <div>
+                                        <div className="font-bold text-gray-800">{item.skill}</div>
+                                        <div className="text-xs text-gray-500">
+                                            {item.subjectName}
+                                            {item.section ? ` - ${item.section}` : ''}
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center justify-between text-sm">
+                                        <span className={`font-bold ${item.mastery < 50 ? 'text-red-500' : 'text-amber-600'}`}>{item.mastery}%</span>
+                                        <span className="text-gray-500">الإتقان الحالي</span>
+                                    </div>
+                                    {(item.recommendedLesson || item.recommendedResource) ? (
+                                        <div className="text-xs text-gray-600 space-y-1">
+                                            {item.recommendedLesson ? <div>شرح مقترح: <span className="font-bold">{item.recommendedLesson.title}</span></div> : null}
+                                            {item.recommendedResource ? <div>ملف داعم: <span className="font-bold">{item.recommendedResource.title}</span></div> : null}
+                                        </div>
+                                    ) : null}
+                                    <div className="space-y-2">
+                                        <Link
+                                            to={item.relatedQuiz ? `/quiz/${item.relatedQuiz.id}` : '/quiz'}
+                                            className="cta-attention inline-block w-full rounded-lg bg-amber-500 px-4 py-2 text-center text-sm font-black text-white transition-colors hover:bg-amber-600"
+                                        >
+                                            {item.relatedQuiz ? 'ابدأ الاختبار المقترح' : 'أنشئ اختبار ساهر'}
+                                        </Link>
+                                        {item.recommendedLesson ? (
+                                            <Link
+                                                to={
+                                                    item.subjectId && (item.recommendedLesson.pathId || item.pathId)
+                                                        ? `/category/${item.recommendedLesson.pathId || item.pathId}?subject=${item.subjectId}&tab=skills`
+                                                        : '/courses'
+                                                }
+                                                className="inline-block w-full rounded-lg border border-indigo-100 bg-indigo-50 px-4 py-2 text-center text-sm font-black text-indigo-700 transition-colors hover:bg-indigo-100"
+                                            >
+                                                راجع الشرح أولًا
+                                            </Link>
+                                        ) : null}
+                                        {item.recommendedResource?.url ? (
+                                            <a
+                                                href={item.recommendedResource.url}
+                                                target="_blank"
+                                                rel="noreferrer"
+                                                className="inline-block w-full text-center bg-amber-50 border border-amber-200 text-amber-700 px-4 py-2 rounded-lg font-bold text-sm hover:bg-amber-100 transition-colors"
+                                            >
+                                                افتح الملف الداعم
+                                            </a>
+                                        ) : null}
+                                    </div>
+                                </div>
+                            </Card>
+                        ))}
+                    </div>
+                </div>
+            )}
+
+            {/* Ready Saher Tests */}
+            <div>
+                <h3 className="text-xl font-bold text-gray-800 mb-6 text-right">اختبارات ساهر الجاهزة</h3>
+                <div className="space-y-4">
+                    {saherTests.length > 0 ? (
+                        saherTests.map(test => (
+                            <Card key={test.id} className="p-4 flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center hover:shadow-md transition-all border border-gray-100">
+                                {/* Button on Left (End in Flex RTL) */}
+                                <Link to={`/quiz/${test.id}`} className="w-full sm:w-auto text-center bg-amber-500 text-white px-6 py-2 rounded-lg font-bold text-sm hover:bg-amber-600 transition-colors shadow-sm">
+                                    تفاصيل
+                                </Link>
+
+                                {/* Content on Right (Start in Flex RTL) */}
+                                <div className="flex items-center gap-4 self-end sm:self-auto">
+                                    <div className="text-right">
+                                        <h4 className="font-bold text-gray-800 text-sm md:text-base">{test.title}</h4>
+                                        <span className="text-gray-400 text-sm font-sans font-medium">{formatQuizCardDate(test.createdAt)}</span>
+                                    </div>
+                                    <div className="w-12 h-12 rounded-full bg-purple-50 flex items-center justify-center text-purple-500 border-2 border-purple-100 shrink-0">
+                                        <Target size={24} />
+                                    </div>
+                                </div>
+                            </Card>
+                        ))
+                    ) : (
+                        <Card className="p-6 text-center border border-dashed border-gray-200">
+                            <p className="text-sm text-gray-500">لا توجد اختبارات ساهر جاهزة لك حاليًا.</p>
+                        </Card>
+                    )}
+                </div>
+            </div>
+
+            <div>
+                <h3 className="text-xl font-bold text-gray-800 mb-6 text-right">الاختبارات المركزية الموجهة</h3>
+                <div className="space-y-4">
+                    {centralTests.length > 0 ? (
+                        centralTests.map(test => (
+                            <Card key={test.id} className="p-4 flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center hover:shadow-md transition-all border border-amber-100">
+                                <Link to={`/quiz/${test.id}`} className="w-full sm:w-auto text-center bg-amber-500 text-white px-6 py-2 rounded-lg font-bold text-sm hover:bg-amber-600 transition-colors shadow-sm">
+                                    دخول
+                                </Link>
+
+                                <div className="flex items-center gap-4 self-end sm:self-auto">
+                                    <div className="text-right">
+                                        <h4 className="font-bold text-gray-800 text-sm md:text-base">{test.title}</h4>
+                                        <span className="text-gray-400 text-sm font-sans font-medium">{formatQuizCardDate(test.createdAt)}</span>
+                                    </div>
+                                    <div className="w-12 h-12 rounded-full bg-amber-50 flex items-center justify-center text-amber-500 border-2 border-amber-100 shrink-0">
+                                        <FileText size={24} />
+                                    </div>
+                                </div>
+                            </Card>
+                        ))
+                    ) : (
+                        <Card className="p-6 text-center border border-dashed border-gray-200">
+                            <p className="text-sm text-gray-500">لا توجد اختبارات مركزية موجهة لك الآن.</p>
+                        </Card>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default Dashboard;
+

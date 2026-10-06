@@ -1,0 +1,135 @@
+name: Refactor V2 Remediate Vite
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - refactor/repository-v2-safe
+    paths:
+      - 'package.json'
+      - 'package-lock.json'
+      - 'vite.config.ts'
+      - 'scripts/smoke-performance-contract.mjs'
+      - 'scripts/smoke-deployment-cache-contract.mjs'
+      - 'tools/refactor/assert-audit-packages-clean.mjs'
+      - '.github/workflows/refactor-v2-remediate-vite.yml'
+permissions:
+  contents: write
+
+concurrency:
+  group: refactor-v2-remediate-vite-${{ github.event.pull_request.head.ref || github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  verify-and-remediate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout exact source head
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            server/package-lock.json
+
+      - name: Record pre-remediation dependency audit
+        shell: bash
+        run: |
+          set -uo pipefail
+          npm audit --json > /tmp/root-all-before.json || true
+          node tools/refactor/dependency-audit-summary.mjs root-all-before /tmp/root-all-before.json
+
+      - name: Update only Vite lock resolution
+        if: github.actor != 'github-actions[bot]'
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp package.json /tmp/package.json.before
+          npm update --package-lock-only vite
+          cmp --silent package.json /tmp/package.json.before || {
+            echo "package.json changed during lock-only remediation; refusing scope expansion." >&2
+            git diff -- package.json
+            exit 1
+          }
+          git diff --check -- package-lock.json
+
+      - name: Verify Vite advisory is gone
+        shell: bash
+        run: |
+          set -uo pipefail
+          npm audit --json > /tmp/root-all-after.json || true
+          node tools/refactor/dependency-audit-summary.mjs root-all-after /tmp/root-all-after.json
+          node tools/refactor/assert-audit-packages-clean.mjs /tmp/root-all-after.json vite
+
+      - name: Install exact remediated frontend dependencies
+        run: npm ci
+
+      - name: Install unchanged API dependencies for repository typecheck
+        run: npm --prefix server ci
+
+      - name: Repository typecheck
+        run: npm run typecheck
+
+      - name: Frontend production build
+        run: npm run build
+
+      - name: Frontend performance contract
+        run: npm run smoke:performance
+
+      - name: Deployment cache contract
+        run: npm run smoke:deployment-cache
+
+      - name: Route loading contract
+        run: npm run smoke:route-loading
+
+      - name: Frontend live route contract
+        run: npm run smoke:frontend
+
+      - name: Confirm remediation scope
+        if: github.actor != 'github-actions[bot]'
+        shell: bash
+        run: |
+          set -euo pipefail
+          CHANGED="$(git diff --name-only)"
+          echo "$CHANGED"
+          if [ -z "$CHANGED" ]; then
+            echo "Vite is already clean; no lockfile remediation is required."
+            exit 0
+          fi
+          if [ "$CHANGED" != "package-lock.json" ]; then
+            echo "Vite remediation must modify package-lock.json only." >&2
+            exit 1
+          fi
+
+      - name: Commit verified Vite remediation
+        if: github.actor != 'github-actions[bot]'
+        shell: bash
+        run: |
+          set -euo pipefail
+          EXPECTED_SHA="${{ github.event.pull_request.head.sha || github.sha }}"
+          git config user.name "almeaa-refactor-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add package-lock.json
+
+          if git diff --cached --quiet; then
+            echo "No Vite lockfile remediation changes to commit."
+            exit 0
+          fi
+
+          git fetch origin refactor/repository-v2-safe
+          REMOTE_SHA="$(git rev-parse origin/refactor/repository-v2-safe)"
+          if [ "$REMOTE_SHA" != "$EXPECTED_SHA" ]; then
+            echo "Refactor branch moved from verified head ${EXPECTED_SHA} to ${REMOTE_SHA}; skipping stale remediation commit safely."
+            exit 0
+          fi
+
+          git commit -m "fix(deps): remediate vite advisory"
+          git push origin HEAD:refactor/repository-v2-safe

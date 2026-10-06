@@ -1,0 +1,34 @@
+{
+  "pilotRunId": "replace-with-approved-id",
+  "scenarios": [
+    {
+      "label": "class-a",
+      "schoolId": "approved-school-a",
+      "classId": "approved-class-a",
+      "sessionId": "approved-session-a",
+      "studentTokenEnv": "PILOT_CLASS_A_STUDENT_TOKEN",
+      "pinEnv": "PILOT_CLASS_A_PIN",
+      "weakNetworkMethod": "approved browser/network throttle description",
+      "answer": { "questionId": "approved-question-a", "selectedOptionIndex": 0 }
+    },
+    {
+      "label": "class-b",
+      "schoolId": "approved-school-b",
+      "classId": "approved-class-b",
+      "sessionId": "approved-session-b",
+      "studentTokenEnv": "PILOT_CLASS_B_STUDENT_TOKEN",
+      "pinEnv": "PILOT_CLASS_B_PIN",
+      "weakNetworkMethod": "approved browser/network throttle description",
+      "answer": { "questionId": "approved-question-b", "selectedOptionIndex": 0 }
+    }
+  ],
+  "negativeJoins": [
+    {
+      "label": "school-a-student-cannot-join-school-b",
+      "sessionId": "approved-session-b",
+      "studentTokenEnv": "PILOT_CLASS_A_STUDENT_TOKEN",
+      "pinEnv": "PILOT_CLASS_B_PIN",
+      "expectedStatus": 403
+    }
+  ]
+}
