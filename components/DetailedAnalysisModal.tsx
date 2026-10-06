@@ -31,7 +31,7 @@ const getSimpleLevel = (percentage: number) => {
     };
   }
 
-  if (percentage >= 60) {
+  if (percentage >= 50) {
     return {
       label: 'متوسط',
       className: 'bg-amber-50 text-amber-800 border border-amber-200',
@@ -97,7 +97,7 @@ export const DetailedAnalysisModal: React.FC<DetailedAnalysisModalProps> = ({
         </div>
 
         <div className="max-h-[78vh] overflow-y-auto p-3 sm:p-5">
-          {weakestSkill ? (
+          {weakestSkill && weakestSkill.percentage < 50 ? (
             <div className="mb-4 rounded-2xl border border-rose-200 bg-gradient-to-br from-rose-50/80 via-white to-rose-50/30 p-4 shadow-xs sm:p-5">
               <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <div>
@@ -144,7 +144,7 @@ export const DetailedAnalysisModal: React.FC<DetailedAnalysisModalProps> = ({
                           {levelMeta.label}
                         </span>
                         <span className={`min-w-12 text-left text-lg font-black ${
-                          skill.percentage >= 80 ? 'text-emerald-700' : skill.percentage >= 60 ? 'text-amber-700' : 'text-rose-700'
+                          skill.percentage >= 80 ? 'text-emerald-700' : skill.percentage >= 50 ? 'text-amber-700' : 'text-rose-700'
                         }`}>
                           {skill.percentage}%
                         </span>
@@ -154,9 +154,9 @@ export const DetailedAnalysisModal: React.FC<DetailedAnalysisModalProps> = ({
                     <div className="mt-3 h-2.5 w-full overflow-hidden rounded-full bg-slate-100">
                       <div
                         className={`h-full rounded-full ${
-                          skill.percentage >= 80 ? 'bg-emerald-500' : skill.percentage >= 60 ? 'bg-amber-500' : 'bg-rose-500'
+                          skill.percentage >= 80 ? 'bg-emerald-500' : skill.percentage >= 50 ? 'bg-amber-500' : 'bg-rose-500'
                         } transition-all duration-500 ease-out`}
-                        style={{ width: `${Math.max(4, Math.min(100, skill.percentage))}%` }}
+                        style={{ width: `${Math.max(0, Math.min(100, skill.percentage))}%` }}
                       />
                     </div>
 
