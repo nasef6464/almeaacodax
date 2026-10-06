@@ -1,0 +1,104 @@
+{
+  "project": "BIO26",
+  "version": "INDEXED_SHARDS_V2",
+  "status": "COMPLETE_EFFECTIVE_CANONICAL",
+  "expectedSourceOccurrences": 2835,
+  "expectedCanonicalItems": 2832,
+  "effectiveCanonicalItems": 2832,
+  "pendingCanonicalItems": 0,
+  "base": {
+    "file": "ops/bio26/BIO26_AI_CONTEXT.json",
+    "rawItems": 2091,
+    "excludeQuestionCodes": [
+      "TAH-BIO-BIO26-L10-Q025",
+      "TAH-BIO-BIO26-L35-Q036"
+    ],
+    "effectiveItems": 2089
+  },
+  "shards": [
+    {
+      "lessonCode": "BIO26-L37",
+      "file": "ops/bio26/BIO26-L37_AI_CONTEXT_Q001_Q038.json",
+      "count": 38
+    },
+    {
+      "lessonCode": "BIO26-L38",
+      "file": "ops/bio26/BIO26-L38_AI_CONTEXT_Q001_Q053.json",
+      "count": 53
+    },
+    {
+      "lessonCode": "BIO26-L39",
+      "file": "ops/bio26/BIO26-L39_AI_CONTEXT_Q001_Q125.json",
+      "count": 125
+    },
+    {
+      "lessonCode": "BIO26-L40",
+      "file": "ops/bio26/BIO26-L40_AI_CONTEXT_Q001_Q103.json",
+      "count": 102
+    },
+    {
+      "lessonCode": "BIO26-L41",
+      "file": "ops/bio26/BIO26-L41_AI_CONTEXT_Q001_Q061.json",
+      "count": 61
+    },
+    {
+      "lessonCode": "BIO26-L42",
+      "file": "ops/bio26/BIO26-L42_AI_CONTEXT_Q001_Q062.json",
+      "count": 62
+    },
+    {
+      "lessonCode": "BIO26-L43",
+      "file": "ops/bio26/BIO26-L43_AI_CONTEXT_Q001_Q029.json",
+      "count": 29
+    },
+    {
+      "lessonCode": "BIO26-L44",
+      "file": "ops/bio26/BIO26-L44_AI_CONTEXT_Q001_Q042.json",
+      "count": 42
+    },
+    {
+      "lessonCode": "BIO26-L45",
+      "file": "ops/bio26/BIO26-L45_AI_CONTEXT_Q001_Q020.json",
+      "count": 20
+    },
+    {
+      "lessonCode": "BIO26-L46",
+      "file": "ops/bio26/BIO26-L46_AI_CONTEXT_Q001_Q053.json",
+      "count": 53
+    },
+    {
+      "lessonCode": "BIO26-L47",
+      "file": "ops/bio26/BIO26-L47_AI_CONTEXT_Q001_Q078.json",
+      "count": 78
+    },
+    {
+      "lessonCode": "BIO26-L48",
+      "file": "ops/bio26/BIO26-L48_AI_CONTEXT_Q001_Q080.json",
+      "count": 80
+    }
+  ],
+  "sourceAliasExclusions": [
+    {
+      "canonical": "TAH-BIO-BIO26-L10-Q009",
+      "alias": "TAH-BIO-BIO26-L10-Q025"
+    },
+    {
+      "canonical": "TAH-BIO-BIO26-L35-Q033",
+      "alias": "TAH-BIO-BIO26-L35-Q036"
+    },
+    {
+      "canonical": "TAH-BIO-BIO26-L40-Q091",
+      "alias": "TAH-BIO-BIO26-L40-Q092"
+    }
+  ],
+  "qa": {
+    "sourceAnswerCrossCheck": "PASS_2832_OF_2832",
+    "skillRangeCrossCheck": "PASS_2832_OF_2832",
+    "requiredFields": "PASS_2832_OF_2832",
+    "uniqueQuestionCodes": "PASS_2832_OF_2832",
+    "duplicateQuestionCodes": 0,
+    "answerInferredFromOCR": 0,
+    "dedupeAliasExclusions": "PASS_3_OF_3"
+  },
+  "rule": "Effective canonical set = base items minus frozen aliases + indexed shards. Correct answers remain source-key only."
+}
