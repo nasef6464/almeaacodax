@@ -591,7 +591,7 @@ const Reports: React.FC = () => {
         }),
         [focusedReportSkills, lessons, libraryItems, questions, quizzes, sections, skills, subjects, topics],
     );
-    const studentPrintableSkillRows = compactStudentSkillRows.slice(0, 5);
+    const studentPrintableSkillRows = compactStudentSkillRows.slice(0, 10);
     const studentAdaptiveLearningBridge = useMemo(
         () => buildStudentAdaptiveLearningBridge(studentTodayFocus),
         [studentTodayFocus],
@@ -2853,15 +2853,15 @@ const Reports: React.FC = () => {
                                     <div className="print-hide flex flex-wrap gap-2 lg:justify-end">
                                         <Link to={skill.lessonLink} className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-white px-3 py-2 text-xs font-black text-indigo-700 ring-1 ring-indigo-100 hover:bg-indigo-50">
                                             <Video size={14} />
-                                            شرح
+                                            فيديو
                                         </Link>
                                         <Link to={skill.quizLink} className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-white px-3 py-2 text-xs font-black text-amber-700 ring-1 ring-amber-100 hover:bg-amber-50">
                                             <FileText size={14} />
                                             تدريب
                                         </Link>
-                                        <Link to={skill.retestLink} className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-white px-3 py-2 text-xs font-black text-emerald-700 ring-1 ring-emerald-100 hover:bg-emerald-50">
-                                            <CheckCircle size={14} />
-                                            قياس
+                                        <Link to={skill.supportLink} className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-white px-3 py-2 text-xs font-black text-slate-700 ring-1 ring-slate-200 hover:bg-slate-50">
+                                            <BookOpen size={14} />
+                                            ملف الدعم
                                         </Link>
                                     </div>
                                 </div>
@@ -3031,7 +3031,6 @@ const Reports: React.FC = () => {
                     <StudentSelectedSkillPanel
                         skill={selectedReportSkill}
                         recommendation={selectedSkillRecommendation}
-                        sessionLink={buildSkillSessionLink(selectedReportSkill)}
                     />
                 ) : null}
             </Card>
