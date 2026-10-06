@@ -57,10 +57,18 @@ const accessForFree = (isFree: boolean) => ({
 });
 
 async function reconcileSubject(db: any, config: (typeof SUBJECTS)[number], apply: boolean) {
+  const subjectsCol = db.collection("subjects");
   const skillsCol = db.collection("skills");
   const topicsCol = db.collection("topics");
   const questionsCol = db.collection("questions");
   const quizzesCol = db.collection("quizzes");
+
+  if (apply) {
+    await subjectsCol.updateOne(
+      { _id: config.subjectId },
+      { $set: { "settings.lockSkillsForNonSubscribers": false, "settings.lockBanksForNonSubscribers": false } },
+    );
+  }
 
   const skills = await skillsCol.find({ subjectId: config.subjectId }).sort({ order: 1, id: 1 }).toArray();
   const questions = await questionsCol
