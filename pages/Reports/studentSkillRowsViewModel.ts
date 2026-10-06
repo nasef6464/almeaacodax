@@ -10,6 +10,7 @@ export interface StudentSkillReportRow extends StudentAggregatedSkill {
     quizLink: string;
     quizLabel: string;
     retestLink: string;
+    supportLink: string;
     evidenceLabel: string;
     masteryLevel: MasteryLevel;
 }
@@ -17,7 +18,7 @@ export interface StudentSkillReportRow extends StudentAggregatedSkill {
 export const buildStudentSkillReportRows = (
     focusedReportSkills: StudentAggregatedSkill[],
     catalog: SkillRecommendationCatalog,
-    limit = 5,
+    limit = 10,
 ): StudentSkillReportRow[] =>
     focusedReportSkills.slice(0, limit).map((skill) => {
         const recommendation = buildSkillRecommendation(skill, catalog);
@@ -28,6 +29,7 @@ export const buildStudentSkillReportRows = (
         };
         const foundationLessonLink = buildFoundationActionLink(foundationActionContext, 'lessons');
         const foundationQuizLink = buildFoundationActionLink(foundationActionContext, 'quizzes');
+        const foundationSupportLink = buildFoundationActionLink(foundationActionContext, 'support');
         const quizLink = recommendation.quizLink
             || foundationQuizLink
             || (skill.skillId ? `/quiz?skillIds=${encodeURIComponent(skill.skillId)}` : '/dashboard?tab=saher');
@@ -46,6 +48,7 @@ export const buildStudentSkillReportRows = (
             quizLink,
             quizLabel: recommendation.quizTitle || 'تدريب',
             retestLink,
+            supportLink: recommendation.supportLink || foundationSupportLink || '/reports',
             masteryLevel: resolveMasteryLevel(skill.mastery, skill.totalEvidence || skill.attempts),
             evidenceLabel: skill.isReliable
                 ? [
