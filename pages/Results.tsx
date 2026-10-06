@@ -54,6 +54,7 @@ interface SkillRecommendation {
   lessonTopicTitle?: string;
   quizTitle?: string;
   quizLink?: string;
+  supportLink?: string;
   resourceTitle?: string;
   resourceUrl?: string;
   subjectName?: string;
@@ -81,6 +82,7 @@ interface ResolvedAnalysisItem {
   lessonTopicTitle?: string;
   quizTitle?: string;
   quizLink?: string;
+  supportLink?: string;
   resourceTitle?: string;
   resourceUrl?: string;
   actionText?: string;
@@ -296,6 +298,7 @@ const Results: React.FC = () => {
         const foundationActionContext = { pathId, subjectId, skillId };
         const lessonLink = recommendation.lessonLink || buildFoundationActionLink(foundationActionContext, 'lessons');
         const quizLink = recommendation.quizLink || buildFoundationActionLink(foundationActionContext, 'quizzes');
+        const supportLink = recommendation.supportLink || buildFoundationActionLink(foundationActionContext, 'support');
         const subjectName =
           recommendation.subjectName ||
           (subjectId ? displayText(subjects.find((subject) => subject.id === subjectId)?.name) : undefined);
@@ -330,6 +333,7 @@ const Results: React.FC = () => {
             lessonTopicTitle: recommendation.lessonTopicTitle,
             quizTitle: recommendation.quizTitle,
             quizLink,
+            supportLink,
             resourceTitle: recommendation.resourceTitle,
             resourceUrl: recommendation.resourceUrl,
             actionText: recommendation.actionText,
@@ -353,6 +357,7 @@ const Results: React.FC = () => {
           current.lessonTopicTitle = recommendation.lessonTopicTitle || current.lessonTopicTitle;
           current.quizTitle = recommendation.quizTitle || current.quizTitle;
           current.quizLink = quizLink || current.quizLink;
+          current.supportLink = supportLink || current.supportLink;
           current.resourceTitle = recommendation.resourceTitle || current.resourceTitle;
           current.resourceUrl = recommendation.resourceUrl || current.resourceUrl;
         }
@@ -378,7 +383,7 @@ const Results: React.FC = () => {
     return analysisItems.filter((item) => item.status === 'strong').slice(0, 4);
   }, [analysisItems]);
   const weakSkills = React.useMemo(() => {
-    return analysisItems.filter((item) => item.status === 'weak');
+    return analysisItems.filter((item) => item.status === 'weak').slice(0, 10);
   }, [analysisItems]);
   const isFullResult = resultDepth === 'full';
   const simplestNextStep = weakestSkill?.lessonTitle
@@ -975,23 +980,31 @@ const Results: React.FC = () => {
                     <div className="mt-3 flex flex-wrap gap-2">
                       {item.lessonLink ? (
                         <Link to={item.lessonLink} className="inline-flex rounded-lg border border-indigo-100 bg-indigo-50 px-2.5 py-1.5 text-[11px] font-black text-indigo-700 transition-colors hover:bg-indigo-100">
-                          فتح شرح المهارة
+                          فيديو
                         </Link>
-                      ) : null}
-                      {item.lessonVideoUrl ? (
-                        <button
-                          type="button"
-                          onClick={() => setVideoData({ url: item.lessonVideoUrl!, title: `شرح مهارة ${item.skillName}` })}
-                          className="inline-flex rounded-lg border border-emerald-100 bg-emerald-50 px-2.5 py-1.5 text-[11px] font-black text-emerald-700 transition-colors hover:bg-emerald-100"
-                        >
-                          شاهد الفيديو
-                        </button>
-                      ) : null}
+                      ) : (
+                        <span className="inline-flex rounded-lg border border-dashed border-slate-200 bg-slate-50 px-2.5 py-1.5 text-[11px] font-black text-slate-400">
+                          فيديو
+                        </span>
+                      )}
                       {item.quizLink ? (
                         <Link to={item.quizLink} className="inline-flex rounded-lg border border-amber-100 bg-amber-50 px-2.5 py-1.5 text-[11px] font-black text-amber-700 transition-colors hover:bg-amber-100">
-                          تدريب مناسب
+                          تدريب
                         </Link>
-                      ) : null}
+                      ) : (
+                        <span className="inline-flex rounded-lg border border-dashed border-slate-200 bg-slate-50 px-2.5 py-1.5 text-[11px] font-black text-slate-400">
+                          تدريب
+                        </span>
+                      )}
+                      {item.supportLink ? (
+                        <Link to={item.supportLink} className="inline-flex rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] font-black text-slate-700 transition-colors hover:bg-slate-50">
+                          ملف الدعم
+                        </Link>
+                      ) : (
+                        <span className="inline-flex rounded-lg border border-dashed border-slate-200 bg-slate-50 px-2.5 py-1.5 text-[11px] font-black text-slate-400">
+                          ملف الدعم
+                        </span>
+                      )}
                     </div>
                   </div>
                 ))}
@@ -1969,6 +1982,7 @@ const DetailedAnalysis = ({ onBack, result }: { onBack: () => void; result: Quiz
           (sectionId ? displayText(sections.find((section) => section.id === sectionId)?.name) : undefined),
         lessonLink: recommendation.lessonLink || buildFoundationActionLink(foundationActionContext, 'lessons'),
         quizLink: recommendation.quizLink || buildFoundationActionLink(foundationActionContext, 'quizzes'),
+        supportLink: recommendation.supportLink || buildFoundationActionLink(foundationActionContext, 'support'),
       };
     })
     .sort((a, b) => a.mastery - b.mastery);
@@ -2018,19 +2032,25 @@ const DetailedAnalysis = ({ onBack, result }: { onBack: () => void; result: Quiz
             <div className="mt-3 flex flex-wrap gap-2">
               {s.lessonLink ? (
                 <Link to={s.lessonLink} className="inline-flex rounded-xl border border-indigo-100 bg-indigo-50 px-3 py-1.5 text-xs font-black text-indigo-700 transition-colors hover:bg-indigo-100 sm:text-sm">
-                  راجع الشرح
+                  فيديو
                 </Link>
-              ) : null}
+              ) : (
+                <span className="inline-flex rounded-xl border border-dashed border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-black text-slate-400 sm:text-sm">فيديو</span>
+              )}
               {s.quizLink ? (
-                <Link to={s.quizLink} className="inline-flex rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-1.5 text-xs font-black text-emerald-700 transition-colors hover:bg-emerald-100 sm:text-sm">
-                  تدريب قصير
+                <Link to={s.quizLink} className="inline-flex rounded-xl border border-amber-100 bg-amber-50 px-3 py-1.5 text-xs font-black text-amber-700 transition-colors hover:bg-amber-100 sm:text-sm">
+                  تدريب
                 </Link>
-              ) : null}
-              {s.resourceTitle && s.resourceUrl ? (
-                <a href={s.resourceUrl} target="_blank" rel="noreferrer" className="inline-flex rounded-xl border border-amber-100 bg-amber-50 px-3 py-1.5 text-xs font-black text-amber-700 transition-colors hover:bg-amber-100 sm:text-sm">
-                  ملف داعم
-                </a>
-              ) : null}
+              ) : (
+                <span className="inline-flex rounded-xl border border-dashed border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-black text-slate-400 sm:text-sm">تدريب</span>
+              )}
+              {s.supportLink ? (
+                <Link to={s.supportLink} className="inline-flex rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-black text-slate-700 transition-colors hover:bg-slate-50 sm:text-sm">
+                  ملف الدعم
+                </Link>
+              ) : (
+                <span className="inline-flex rounded-xl border border-dashed border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-black text-slate-400 sm:text-sm">ملف الدعم</span>
+              )}
             </div>
           </Card>
         ))}
