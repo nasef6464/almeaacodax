@@ -7,6 +7,8 @@ import { recordCommandAudit } from "../application/commandAudit.js";
 import {
   questionDraftBatchSchema,
   quizDraftSchema,
+  quizQuestionUpdateDraftSchema,
+  planQuizQuestionUpdate,
   validateQuestionDraftBatch,
   validateQuizDraft,
 } from "../application/questionQuizDraftTools.js";
@@ -132,5 +134,95 @@ questionQuizDraftRouter.post(
     });
 
     return res.status(StatusCodes.CREATED).json({ draft, validation });
+  }),
+);
+
+
+questionQuizDraftRouter.post(
+  "/quizzes/update/validate",
+  requireCommandScope("drafts:write"),
+  asyncHandler(async (req, res) => {
+    const input = quizQuestionUpdateDraftSchema.parse(req.body);
+    const plan = await planQuizQuestionUpdate(input);
+    return res.status(plan.ok ? StatusCodes.OK : StatusCodes.UNPROCESSABLE_ENTITY).json(plan);
+  }),
+);
+
+questionQuizDraftRouter.post(
+  "/quizzes/update/draft",
+  requireCommandScope("drafts:write"),
+  asyncHandler(async (req, res) => {
+    const principal = getCommandPrincipal(res)!;
+    const input = quizQuestionUpdateDraftSchema.parse(req.body);
+    const plan = await planQuizQuestionUpdate(input);
+
+    if (!plan.ok || !plan.quiz || !plan.diff) {
+      await recordCommandAudit({
+        principal,
+        action: "quiz.update.plan",
+        toolId: "plan_quiz_question_update",
+        requestId: input.requestId,
+        outcome: "rejected",
+        metadata: { issues: plan.issues.length },
+      });
+      return res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({ plan });
+    }
+
+    if (plan.diff.acceptedAdditionCount === 0 && input.mode === "add") {
+      return res.status(StatusCodes.UNPROCESSABLE_ENTITY).json({
+        plan,
+        message: "No new non-duplicate approved questions remain after validation",
+      });
+    }
+
+    if (input.idempotencyKey) {
+      const existing = await CommandCenterDraftModel.findOne({
+        idempotencyKey: input.idempotencyKey,
+      }).lean();
+      if (existing) {
+        return res.json({ draft: existing, idempotentReplay: true, plan });
+      }
+    }
+
+    const draft = await CommandCenterDraftModel.create({
+      kind: "quiz",
+      title: input.title || `تحديث أسئلة: ${plan.quiz.title}`,
+      payload: {
+        operation: "update_existing_questions",
+        targetQuizId: plan.quiz.id,
+        targetQuizMongoId: plan.quiz.mongoId,
+        mode: input.mode,
+        candidateQuestionIds: input.candidateQuestionIds,
+        finalQuestionIds: plan.diff.finalQuestionIds,
+        diffSnapshot: plan.diff,
+        targetSnapshot: plan.targetSnapshot,
+        approvalStatus: "draft",
+      },
+      source: principal.source,
+      requiredScopes: ["quizzes:write"],
+      createdBy: principal.id,
+      createdByType: principal.type,
+      requestId: input.requestId,
+      idempotencyKey: input.idempotencyKey,
+      status: "pending",
+    });
+
+    await recordCommandAudit({
+      principal,
+      action: "quiz.update.draft.create",
+      toolId: "plan_quiz_question_update",
+      draftId: String(draft._id),
+      requestId: input.requestId,
+      outcome: "success",
+      metadata: {
+        targetQuizId: plan.quiz.id,
+        mode: input.mode,
+        acceptedAdditionCount: plan.diff.acceptedAdditionCount,
+        nearDuplicateCount: plan.diff.nearDuplicateCount,
+        finalCount: plan.diff.finalCount,
+      },
+    });
+
+    return res.status(StatusCodes.CREATED).json({ draft, plan });
   }),
 );
