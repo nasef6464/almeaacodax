@@ -1,9 +1,9 @@
 {
   "project": "BIO26",
-  "status": "AUTHORING_IN_PROGRESS",
+  "status": "COMPLETE",
   "expectedCanonicalItems": 2832,
-  "authoredCanonicalItems": 1946,
-  "pendingCanonicalItems": 886,
+  "authoredCanonicalItems": 2832,
+  "pendingCanonicalItems": 0,
   "completedLessons": [
     "BIO26-L01",
     "BIO26-L02",
@@ -38,7 +38,21 @@
     "BIO26-L31",
     "BIO26-L32",
     "BIO26-L33",
-    "BIO26-L34"
+    "BIO26-L34",
+    "BIO26-L35",
+    "BIO26-L36",
+    "BIO26-L37",
+    "BIO26-L38",
+    "BIO26-L39",
+    "BIO26-L40",
+    "BIO26-L41",
+    "BIO26-L42",
+    "BIO26-L43",
+    "BIO26-L44",
+    "BIO26-L45",
+    "BIO26-L46",
+    "BIO26-L47",
+    "BIO26-L48"
   ],
   "lesson1": {
     "lesson": "دراسة الحياة",
@@ -57,12 +71,13 @@
     "answerInferredFromOCR": 0
   },
   "aggregateQa": {
-    "sourceAnswerCrossCheck": "PASS_1946_OF_1946",
-    "skillRangeCrossCheck": "PASS_1946_OF_1946",
-    "uniqueQuestionCodes": "PASS_1946_OF_1946",
-    "requiredFields": "PASS_1946_OF_1946",
+    "sourceAnswerCrossCheck": "PASS_2832_OF_2832",
+    "skillRangeCrossCheck": "PASS_2832_OF_2832",
+    "uniqueQuestionCodes": "PASS_2832_OF_2832",
+    "requiredFields": "PASS_2832_OF_2832",
     "duplicateQuestionCodes": 0,
-    "answerInferredFromOCR": 0
+    "answerInferredFromOCR": 0,
+    "dedupeAliasExclusions": "PASS_3_OF_3"
   },
   "fieldsAuthored": [
     "MainSkill",
@@ -241,5 +256,15 @@
     "sourceAnswerCrossCheck": "PASS_107_OF_107",
     "skillRangeCrossCheck": "PASS_107_OF_107",
     "answerInferredFromOCR": 0
+  },
+  "storageMode": "INDEXED_SHARDS_V2",
+  "indexFile": "BIO26_AI_CONTEXT_INDEX.json",
+  "finalCompletion": {
+    "baseRawItems": 2091,
+    "baseEffectiveItems": 2089,
+    "newIndexedItems": 743,
+    "finalCanonicalItems": 2832,
+    "completedRange": "BIO26-L37..BIO26-L48",
+    "evidenceFile": "BIO26_AI_CONTEXT_INDEX.json"
   }
 }
