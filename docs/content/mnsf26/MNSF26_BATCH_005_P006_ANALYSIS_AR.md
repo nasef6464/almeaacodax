@@ -5,7 +5,7 @@ Bank: MNSF26 — تجميعات المنصف — القدرات الكمية
 Source part: الحساب / الجبر
 PDF page: 6
 Source heading: الاختبار الرابع — العمليات على الأعداد
-Status: ANALYZED — 14 accepted / 0 holds
+Status: ANALYZED — 13 UNIQUE IMPORT CANDIDATES / 1 INTRA-MNSF DUPLICATE SUPPRESSED / 0 HOLDS
 
 ## Q001 — ستة صفوف تتناقص المقاعد
 Stem: 6 صفوف، وكل صف ينقص عن الذي قبله بمقعد، وعدد مقاعد الصف الرابع = 5. ما مجموع المقاعد؟
@@ -14,6 +14,7 @@ Work: الصفوف = 8،7،6،5،4،3؛ المجموع = 33.
 Difficulty: Medium
 Canonical: skill_quant_01 / sub_quant_01_3
 Question fingerprint: متتابعة حسابية تناقصية + حد داخلي معلوم + مجموع.
+Duplicate decision: **SUPPRESS_AS_DUPLICATE** — same mathematical structure, same values (6 items, fourth = 5), same generated sequence 8،7،6،5،4،3, and same answer 33 as Batch 003 / PDF page 4 / Q005. Keep the earlier occurrence as canonical and do not import this later rewording as a second question.
 Explanation fingerprint: ارجع من الحد الرابع إلى البداية ثم أكمل للنهاية واجمع.
 Voice: "الصف الرابع فيه خمسة مقاعد. لأن كل صف يقل مقعدًا، فالصف الثالث ستة، والثاني سبعة، والأول ثمانية. وبعد الرابع يأتي أربعة ثم ثلاثة. نجمع ثمانية وسبعة وستة وخمسة وأربعة وثلاثة فنحصل على ثلاثة وثلاثين."
 
@@ -133,7 +134,9 @@ Explanation fingerprint: الإجمالي = المعدل × عدد الوحدا�
 
 ## Batch result
 - Source boxes reviewed: 14
-- Accepted with unique answer: 14
+- Solved with unique answer: 14
+- Unique import candidates after intra-MNSF duplicate suppression: 13
+- Suppressed duplicates: 1 (Q001 ↔ Batch 003 Q005; keep earlier occurrence)
 - Holds: 0
 - New skills: 0
 - Taxonomy mutations: 0
