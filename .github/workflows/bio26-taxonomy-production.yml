@@ -1,0 +1,60 @@
+name: BIO26 Taxonomy Production Gate
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "dry-run or apply"
+        required: true
+        default: "dry-run"
+        type: choice
+        options:
+          - dry-run
+          - apply
+      confirmation:
+        description: "For apply only, type APPLY-BIO26-TAXONOMY"
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bio26-taxonomy-production
+  cancel-in-progress: false
+
+jobs:
+  taxonomy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: production
+    env:
+      MONGODB_URI: ${{ secrets.MONGODB_URI }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate dispatch guard
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "${{ inputs.mode }}" == "apply" && "${{ inputs.confirmation }}" != "APPLY-BIO26-TAXONOMY" ]]; then
+            echo "Refusing production mutation: exact confirmation is required."
+            exit 1
+          fi
+          if [[ -z "${MONGODB_URI:-}" ]]; then
+            echo "MONGODB_URI secret is missing."
+            exit 1
+          fi
+
+      - name: Install server dependencies
+        run: npm --prefix server ci
+
+      - name: BIO26 frozen taxonomy contract
+        run: node scripts/smoke-bio26-taxonomy-contract.mjs
+
+      - name: BIO26 taxonomy dry-run
+        run: npm --prefix server run deploy:bio26-taxonomy
+
+      - name: BIO26 taxonomy apply
+        if: ${{ inputs.mode == 'apply' }}
+        run: npm --prefix server run deploy:bio26-taxonomy -- --apply
