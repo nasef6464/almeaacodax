@@ -10,6 +10,7 @@ export const COMMAND_DRAFT_KINDS = [
 ] as const;
 
 export const COMMAND_DRAFT_STATUSES = ["pending", "approved", "rejected"] as const;
+export const COMMAND_DRAFT_APPLY_STATUSES = ["not_applied", "applying", "applied", "failed"] as const;
 
 const commandCenterDraftSchema = new Schema(
   {
@@ -32,7 +33,7 @@ const commandCenterDraftSchema = new Schema(
     createdBy: { type: String, required: true, index: true },
     createdByType: {
       type: String,
-      enum: ["admin_session", "api_key", "system"],
+      enum: ["admin_session", "api_key", "oauth", "system"],
       required: true,
     },
     requestId: { type: String, default: "", index: true },
@@ -40,6 +41,18 @@ const commandCenterDraftSchema = new Schema(
     reviewedBy: { type: String, default: "" },
     reviewedAt: { type: Number, default: null },
     reviewNotes: { type: String, default: "" },
+    applyStatus: {
+      type: String,
+      enum: COMMAND_DRAFT_APPLY_STATUSES,
+      default: "not_applied",
+      index: true,
+    },
+    appliedResourceType: { type: String, default: "" },
+    appliedResourceId: { type: String, default: "" },
+    appliedAt: { type: Number, default: null },
+    appliedBy: { type: String, default: "" },
+    applyError: { type: String, default: "" },
+    applyResult: { type: Schema.Types.Mixed, default: {} },
   },
   { timestamps: true },
 );
@@ -53,6 +66,7 @@ commandCenterDraftSchema.index(
   },
 );
 commandCenterDraftSchema.index({ status: 1, kind: 1, createdAt: -1 });
+commandCenterDraftSchema.index({ applyStatus: 1, status: 1, createdAt: -1 });
 
 export const CommandCenterDraftModel = mongoose.model(
   "CommandCenterDraft",

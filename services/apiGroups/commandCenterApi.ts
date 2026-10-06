@@ -23,6 +23,37 @@ export type CommandCenterDraft = {
   payload: Record<string, unknown>;
   source: "admin_ui" | "mcp" | "external_agent" | "system";
   status: "pending" | "approved" | "rejected";
+  applyStatus?: "not_applied" | "applying" | "applied" | "failed";
+  appliedResourceType?: string;
+  appliedResourceId?: string;
+  appliedAt?: number | null;
+  applyError?: string;
+  applyResult?: Record<string, unknown>;
+  createdAt?: string;
+  updatedAt?: string;
+};
+
+export type CommandCenterWorkflow = {
+  _id: string;
+  title: string;
+  status: "planned" | "running" | "completed" | "failed";
+  source: "admin_ui" | "mcp" | "external_agent" | "system";
+  currentStepId?: string;
+  lastError?: string;
+  steps: Array<{
+    id: string;
+    toolId: string;
+    title?: string;
+    status: "planned" | "running" | "completed" | "failed" | "skipped";
+    output?: Record<string, unknown>;
+    error?: string;
+  }>;
+  verification?: {
+    ok: boolean;
+    completedSteps: number;
+    failedSteps: number;
+    missingDraftIds: string[];
+  };
   createdAt?: string;
   updatedAt?: string;
 };
@@ -148,6 +179,32 @@ export const createCommandCenterApi = (request: ApiRequest) => ({
         body: payload,
         token,
       },
+    ),
+
+  applyCommandCenterDraft: (draftId: string, token?: string | null) =>
+    request<{
+      draft: CommandCenterDraft;
+      result: { resourceType: string; resourceId: string; summary: Record<string, unknown> };
+      idempotentReplay?: boolean;
+    }>(
+      `/command-center/drafts/${encodeURIComponent(draftId)}/apply`,
+      {
+        method: "POST",
+        body: { confirmation: "APPLY" },
+        token,
+      },
+    ),
+
+  getCommandCenterWorkflows: (limit = 30, token?: string | null) =>
+    request<{ workflows: CommandCenterWorkflow[] }>(
+      `/command-center/workflows?limit=${encodeURIComponent(String(limit))}`,
+      { token },
+    ),
+
+  executeCommandCenterWorkflow: (workflowId: string, token?: string | null) =>
+    request<{ workflow: CommandCenterWorkflow; idempotentReplay?: boolean }>(
+      `/command-center/workflows/${encodeURIComponent(workflowId)}/execute`,
+      { method: "POST", body: {}, token },
     ),
 
   reviewCommandCenterDraft: (

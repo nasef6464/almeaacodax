@@ -46,7 +46,9 @@ export function csrfGuard(req: Request, res: Response, next: NextFunction) {
   // ambient browser-cookie authentication. They are therefore not vulnerable
   // to browser CSRF. Limit this exemption strictly to the Command Center path
   // and only when the configured key matches in constant time.
-  const commandPath = String(req.originalUrl || req.url || "").startsWith("/api/command-center");
+  const requestPath = String(req.originalUrl || req.url || "");
+  const commandPath = requestPath.startsWith("/api/command-center");
+  const mcpPath = requestPath.startsWith("/api/command-center/mcp");
   const configuredCommandKey = String(env.ALMEAA_COMMAND_API_KEY || "").trim();
   const providedCommandKey = String(req.header("x-almeaa-command-key") || "").trim();
   if (
@@ -55,6 +57,14 @@ export function csrfGuard(req: Request, res: Response, next: NextFunction) {
     providedCommandKey &&
     safeTokenEquals(configuredCommandKey, providedCommandKey)
   ) {
+    return next();
+  }
+
+  // OAuth MCP calls use an explicit Authorization header rather than ambient
+  // browser cookies. CSRF does not apply; token verification still happens in
+  // the MCP resource server before any tool executes.
+  const authorization = String(req.header("authorization") || "");
+  if (mcpPath && /^Bearer\s+\S+/i.test(authorization)) {
     return next();
   }
 

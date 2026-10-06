@@ -6,7 +6,7 @@ import { requireAuth, requireRole } from "../../../middleware/auth.js";
 
 export type CommandPrincipal = {
   id: string;
-  type: "admin_session" | "api_key";
+  type: "admin_session" | "api_key" | "oauth";
   source: "admin_ui" | "mcp" | "external_agent";
   scopes: string[];
 };

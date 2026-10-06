@@ -3,7 +3,7 @@ import { readFile } from "node:fs/promises";
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
-const [routes, auth, registry, draft, audit, plan, routeIndex, env, authoring, authoringRoutes, courseTools, courseRoutes, schoolTools, schoolRoutes] = await Promise.all([
+const [routes, auth, registry, draft, audit, plan, routeIndex, env, authoring, authoringRoutes, courseTools, courseRoutes, schoolTools, schoolRoutes, applyService, workflowModel, workflowExecutor, workflowRoutes, app] = await Promise.all([
   read("server/src/modules/command-center/http/commandCenterRoutes.ts"),
   read("server/src/modules/command-center/application/commandAuthorization.ts"),
   read("server/src/modules/command-center/application/commandToolRegistry.ts"),
@@ -18,6 +18,11 @@ const [routes, auth, registry, draft, audit, plan, routeIndex, env, authoring, a
   read("server/src/modules/command-center/http/courseDraftRoutes.ts"),
   read("server/src/modules/command-center/application/schoolSetupDraftTools.ts"),
   read("server/src/modules/command-center/http/schoolDraftRoutes.ts"),
+  read("server/src/modules/command-center/application/draftApplyService.ts"),
+  read("server/src/models/CommandCenterWorkflow.ts"),
+  read("server/src/modules/command-center/application/workflowExecutor.ts"),
+  read("server/src/modules/command-center/http/workflowRoutes.ts"),
+  read("server/src/app.ts"),
 ]);
 
 assert.match(routes, /draftFirst/);
@@ -51,5 +56,19 @@ assert.match(courseRoutes, /course\.reuse\.draft\.create/);
 assert.match(schoolTools, /validated_plan_first/);
 assert.match(schoolTools, /reuse_existing_accounts/);
 assert.match(schoolRoutes, /school\.setup\.draft\.create/);
+assert.match(draft, /applyStatus/);
+assert.match(routes, /drafts\/:id\/apply/);
+assert.match(routes, /human_apply_required/);
+assert.match(applyService, /applyCourseDraft/);
+assert.match(applyService, /applySchoolDraft/);
+assert.match(applyService, /isPublished:\s*false/);
+assert.match(registry, /apply_approved_draft/);
+assert.match(workflowModel, /planned/);
+assert.match(workflowModel, /completed/);
+assert.match(workflowExecutor, /SAFE_WORKFLOW_TOOL_IDS/);
+assert.match(workflowExecutor, /create_course_draft/);
+assert.match(workflowRoutes, /workflows:execute/);
+assert.match(workflowRoutes, /verifyWorkflowStepOutputs/);
+assert.match(app, /\/api\/command-center\/\*/);
 
 console.log("Command Center foundation contract: PASS");

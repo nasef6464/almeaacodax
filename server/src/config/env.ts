@@ -57,7 +57,16 @@ const envSchema = z.object({
   JWT_SECRET: z.string().min(16, "JWT_SECRET must be at least 16 characters"),
   PLATFORM_INTEGRATIONS_SECRET_KEY: z.string().optional().default(""),
   ALMEAA_COMMAND_API_KEY: z.string().optional().default(""),
-  ALMEAA_COMMAND_API_SCOPES: z.string().default("taxonomy:read,courses:read,drafts:read,drafts:write"),
+  ALMEAA_COMMAND_API_SCOPES: z.string().default("taxonomy:read,courses:read,drafts:read,drafts:write,workflows:read,workflows:plan,workflows:execute"),
+  ALMEAA_MCP_ENABLED: z.preprocess((value) => {
+    if (typeof value === "string") return ["true", "1", "yes", "on"].includes(value.trim().toLowerCase());
+    return value;
+  }, z.boolean()).default(false),
+  ALMEAA_MCP_OAUTH_ISSUER: z.string().optional().default(""),
+  ALMEAA_MCP_OAUTH_AUDIENCE: z.string().optional().default(""),
+  ALMEAA_MCP_OAUTH_REQUIRED_SCOPE: z.string().default("almeaa:admin"),
+  ALMEAA_MCP_OAUTH_SCOPES: z.string().default("almeaa:admin,taxonomy:read,courses:read,drafts:read,drafts:write,workflows:read,workflows:plan,workflows:execute"),
+  ALMEAA_MCP_JWKS_CACHE_MS: z.coerce.number().int().min(60_000).max(24 * 60 * 60 * 1000).default(10 * 60 * 1000),
   JWT_EXPIRES_IN: z.string().default("7d"),
   GOOGLE_CLIENT_ID: z.string().optional().default(""),
   GOOGLE_CLIENT_SECRET: z.string().optional().default(""),
@@ -127,6 +136,14 @@ const envSchema = z.object({
   }
   if (value.ADMIN_PASSWORD_SYNC_ON_BOOT) {
     ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["ADMIN_PASSWORD_SYNC_ON_BOOT"], message: "ADMIN_PASSWORD_SYNC_ON_BOOT must remain disabled in production" });
+  }
+  if (value.ALMEAA_MCP_ENABLED) {
+    if (!value.ALMEAA_MCP_OAUTH_ISSUER || !/^https:\/\//i.test(value.ALMEAA_MCP_OAUTH_ISSUER)) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["ALMEAA_MCP_OAUTH_ISSUER"], message: "ALMEAA_MCP_OAUTH_ISSUER must be an HTTPS issuer when ALMEAA_MCP_ENABLED=true" });
+    }
+    if (!value.ALMEAA_MCP_OAUTH_AUDIENCE) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["ALMEAA_MCP_OAUTH_AUDIENCE"], message: "ALMEAA_MCP_OAUTH_AUDIENCE is required when ALMEAA_MCP_ENABLED=true" });
+    }
   }
   if (value.R2_UPLOAD_ENABLED) {
     const requiredR2Fields = [

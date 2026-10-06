@@ -25,7 +25,8 @@ export const commandToolRegistry: CommandToolDefinition[] = [
   { id: "create_school_setup_draft", capability: "schools", description: "Validate and prepare school, class, student, teacher and supervisor setup as a reviewable draft.", requiredScope: "drafts:write", risk: "draft_write", approvalRequired: true, availability: "active" },
   { id: "detect_question_duplicates", capability: "questions", description: "Detect exact normalized duplicate questions before import; near-duplicate scoring follows later.", requiredScope: "drafts:write", risk: "read", approvalRequired: false, availability: "active" },
   { id: "update_quiz_questions", capability: "quizzes", description: "Prepare changes to the questions of an existing quiz.", requiredScope: "quizzes:write", risk: "sensitive", approvalRequired: true, availability: "planned" },
-  { id: "publish_approved_draft", capability: "operations", description: "Publish an already approved draft through the owning domain service.", requiredScope: "publish:write", risk: "sensitive", approvalRequired: true, availability: "planned" },
+  { id: "apply_approved_draft", capability: "operations", description: "Apply an approved course, quiz or school setup draft through an idempotent domain adapter without public publication.", requiredScope: "drafts:apply", risk: "sensitive", approvalRequired: true, availability: "active" },
+  { id: "publish_approved_draft", capability: "operations", description: "Publish an applied resource to learner-visible production surfaces.", requiredScope: "publish:write", risk: "sensitive", approvalRequired: true, availability: "planned" },
 ];
 
 export const commandToolById = new Map(commandToolRegistry.map((tool) => [tool.id, tool]));

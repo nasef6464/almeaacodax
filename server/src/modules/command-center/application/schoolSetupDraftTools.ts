@@ -191,11 +191,11 @@ export async function validateSchoolSetupDraft(
         ref: supervisor.email || supervisor.userId,
         message: "Supervisor account was not found",
       });
-    } else if (!["supervisor", "teacher"].includes(String(user.role))) {
+    } else if (String(user.role) !== "supervisor") {
       issues.push({
         type: "supervisor_role_mismatch",
         ref: String(user.email || user._id),
-        message: "Referenced account cannot act as a school supervisor",
+        message: "Referenced account is not a supervisor; teacher assignments must use the teacher plan",
       });
     } else if (user.isActive === false) {
       issues.push({
@@ -230,6 +230,19 @@ export async function validateSchoolSetupDraft(
         type: "school_name_exists",
         ref: String(sameNameSchool._id),
         message: "A school with the same name already exists; use schoolId to update it",
+      });
+    }
+  }
+
+  const targetSchoolId = targetSchool ? String(targetSchool._id) : "";
+  for (const user of resolved.users as any[]) {
+    const existingSchoolId = String(user.schoolId || "").trim();
+    if (!existingSchoolId) continue;
+    if (!targetSchoolId || existingSchoolId !== targetSchoolId) {
+      issues.push({
+        type: "cross_school_assignment_requires_transfer",
+        ref: String(user.email || user._id),
+        message: "Existing school membership cannot be changed implicitly by a Command Center setup draft",
       });
     }
   }

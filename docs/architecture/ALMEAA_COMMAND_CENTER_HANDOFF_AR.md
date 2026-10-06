@@ -1,10 +1,13 @@
 # ALMEAA Command Center — Handoff / Execution State
 
-> آخر تحديث: 2026-10-05
-> الفرع التنفيذي: `feat/almeaa-command-center-foundation-2026-10-05`
+> آخر تحديث: 2026-10-06
+> الفرع السابق المدموج: `feat/almeaa-command-center-foundation-2026-10-05`  
+> Merge SHA: `686763d09c40d279b0879ce93943503018c21571`  
+> الفرع الحالي: `feat/almeaa-command-center-execution-mcp-2026-10-06`
 > Issue: #386
-> PR: #387
-> الحالة: **ACTIVE — NOT MERGED TO MAIN YET**
+> PR foundation: #387 (merged)  
+> PR execution/MCP: #390 — OPEN, exact-head CI active
+> الحالة: **FOUNDATION MERGED — EXECUTION + MCP ACTIVE**
 
 ## الهدف النهائي
 
@@ -45,7 +48,8 @@
 - [x] Quiz draft validation against existing question IDs/path/subject.
 - [x] Quiz draft writes go to CommandCenterDraft only.
 - [ ] Near-duplicate semantic scoring.
-- [ ] Publish adapter after approval.
+- [x] Approved Quiz Draft apply adapter (creates unpublished canonical quiz).
+- [ ] Publish adapter remains intentionally separate.
 - [ ] Existing-quiz update plan/diff tool.
 
 ### CC-3 Courses — Reuse-first
@@ -62,7 +66,8 @@
 - [x] Course output remains Draft and unpublished.
 - [x] Admin Command Center shows command safety status, tool registry and draft queue.
 - [ ] Rich course composer UI from inventory.
-- [ ] Approved-draft → canonical Course/Lesson/Quiz service apply adapter.
+- [x] Approved Course Draft → canonical unpublished Course apply adapter.
+- [x] Apply is idempotent and tracked separately from approval/publish.
 - [ ] Course audit after apply.
 - [ ] Missing-content suggestion/generation workflow.
 
@@ -78,22 +83,31 @@
 - [x] reuse-existing-accounts policy.
 - [x] explicit-only account creation policy.
 - [ ] CSV/XLSX import parser.
-- [ ] ownership/scope validation against school contract during apply.
-- [ ] safe apply adapter.
+- [x] cross-school assignment guard before apply.
+- [x] safe idempotent apply adapter for school/classes/existing users.
+- [ ] CSV/XLSX parser integration with Command Center draft input.
 
 ### CC-5 Workflow Engine
-- [ ] Plan → Execute → Verify job model.
-- [ ] resumable multi-step jobs.
-- [ ] progress tracking.
-- [ ] retry/failure recovery.
-- [ ] per-step audit.
+- [x] Plan → Execute → Verify model.
+- [x] resumable multi-step execution.
+- [x] progress tracking.
+- [x] idempotent step retries / failure recovery.
+- [x] per-step audit.
+- [x] external workflow allowlist excludes approve/apply/publish/delete.
+- [x] natural-language Admin planner creates validated workflow plans inside ALMEAA.
 
 ### CC-6 Remote MCP
-- [ ] MCP transport adapter.
-- [ ] expose same registry, no duplicate business logic.
-- [ ] scoped credentials.
-- [ ] ChatGPT connection proof.
-- [ ] Gemini/Claude connection proof.
+- [x] MCP modern stateless 2026-07-28 transport.
+- [x] legacy 2025-11-25 compatibility path.
+- [x] same Command/Workflow services; no duplicate domain logic.
+- [x] OAuth 2.1 resource-server verification (issuer/audience/JWKS/scopes).
+- [x] protected-resource metadata endpoints.
+- [x] scoped service API-key fallback for controlled clients/tests.
+- [x] profile tool + read/draft/workflow tools.
+- [x] Apply/Approve/Publish/Delete intentionally not exposed through MCP.
+- [ ] configure production OAuth Identity Provider + issuer/audience.
+- [ ] deploy exact branch and run ChatGPT tool scan/connection proof.
+- [ ] Gemini/Claude connection proof after deployment.
 
 ### CC-7 Smart Teacher / Smart Whiteboard
 - [ ] teacher orchestration tools.
@@ -124,16 +138,19 @@
 
 ## الترتيب التالي المعتمد
 
-1. إنهاء CI/TypeScript/contract checks للـPR #387.
-2. إصلاح أي gate يفشل على exact head.
-3. إكمال CC-3 rich course composer + apply adapter.
-4. إكمال CC-4 import/apply adapter للمدارس.
-5. CC-5 workflow engine.
-6. CC-6 Remote MCP.
-7. CC-7 Smart Teacher/Whiteboard.
-8. CC-8 Developer Agent.
+1. PR #390 مفتوح؛ أغلق exact-head CI على نفس الـSHA النهائي.
+2. أصلح أي gate يفشل ثم ادمج #390.
+3. إعداد Production OAuth IdP وتشغيل MCP tool scan الفعلي.
+4. ربط XLSX/CSV school import بمسودة Command Center.
+5. إضافة semantic near-duplicate + existing-quiz diff tools.
+6. CC-7 Smart Teacher/Whiteboard.
+7. CC-8 Developer Agent.
+8. Production deploy verification + end-to-end external connection proof.
 
-## ملاحظة الدمج
+## حالة الدمج
 
-حتى كتابة هذه الوثيقة، PR #387 مفتوح ولم يتم دمجه في `main`.
-أي Agent لاحق يجب أن يفحص حالة الـPR والـrequired checks قبل الدمج.
+PR #387 تم دمجه في `main` بعد نجاح exact-head CI.
+Merge commit:
+`686763d09c40d279b0879ce93943503018c21571`
+
+المرحلة الحالية تعمل على فرع التنفيذ/MCP الجديد ولا يجوز اعتبارها Production قبل PR جديد + CI + merge + deploy verification.
