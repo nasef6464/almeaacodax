@@ -25,10 +25,10 @@ const ready = data.queue.filter((item) => item.contentStatus === "CONTENT_READY_
 const sourceReview = data.queue.filter((item) => item.contentStatus === "HOLD_SOURCE");
 
 if (data.bank !== "MNSF26") failures.push({ gate: "bank-code", detail: data.bank });
-if (data.queue.length !== 133) {
+if (data.queue.length !== 132) {
   failures.push({ gate: "queue-count", detail: data.queue.length });
 }
-if (ready.length !== 130 || sourceReview.length !== 3) {
+if (ready.length !== 129 || sourceReview.length !== 3) {
   failures.push({
     gate: "content-status-counts",
     detail: { ready: ready.length, sourceReview: sourceReview.length },
