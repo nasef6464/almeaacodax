@@ -10,6 +10,10 @@ import {
   validateQuestionDraftBatch,
   validateQuizDraft,
 } from "../application/questionQuizDraftTools.js";
+import {
+  buildQuizUpdateDiff,
+  quizUpdateDraftSchema,
+} from "../application/quizUpdateDraftTools.js";
 
 export const questionQuizDraftRouter = Router();
 
@@ -132,5 +136,87 @@ questionQuizDraftRouter.post(
     });
 
     return res.status(StatusCodes.CREATED).json({ draft, validation });
+  }),
+);
+
+
+questionQuizDraftRouter.post(
+  "/quizzes/:id/diff",
+  requireCommandScope("quizzes:write"),
+  asyncHandler(async (req, res) => {
+    const input = quizUpdateDraftSchema.parse({
+      ...req.body,
+      targetQuizId: req.params.id,
+    });
+    const result = await buildQuizUpdateDiff(input);
+    return res
+      .status(result.ok ? StatusCodes.OK : StatusCodes.UNPROCESSABLE_ENTITY)
+      .json(result);
+  }),
+);
+
+questionQuizDraftRouter.post(
+  "/quizzes/:id/update-draft",
+  requireCommandScope("quizzes:write"),
+  asyncHandler(async (req, res) => {
+    const principal = getCommandPrincipal(res)!;
+    const input = quizUpdateDraftSchema.parse({
+      ...req.body,
+      targetQuizId: req.params.id,
+    });
+    const result = await buildQuizUpdateDiff(input);
+    if (!result.ok || !result.diff || !result.quiz) {
+      return res.status(StatusCodes.UNPROCESSABLE_ENTITY).json(result);
+    }
+
+    if (input.idempotencyKey) {
+      const existing = await CommandCenterDraftModel.findOne({
+        idempotencyKey: input.idempotencyKey,
+      }).lean();
+      if (existing) return res.json({ draft: existing, idempotentReplay: true, diff: result.diff });
+    }
+
+    const draft = await CommandCenterDraftModel.create({
+      kind: "quiz_update",
+      title: `تحديث اختبار: ${result.quiz.title}`,
+      payload: {
+        targetQuizId: result.quiz.id,
+        baselineQuestionIdsHash: result.diff.baselineQuestionIdsHash,
+        beforeCount: result.diff.beforeCount,
+        nextQuestionIds: result.diff.nextQuestionIds,
+        nextSkillIds: result.diff.nextSkillIds,
+        addedQuestionIds: result.diff.addedQuestionIds,
+        removedQuestionIds: result.diff.removedQuestionIds,
+        retainedQuestionIds: result.diff.retainedQuestionIds,
+        mode: result.diff.mode,
+        targetWasPublished: result.quiz.isPublished,
+        targetShowOnPlatform: result.quiz.showOnPlatform,
+      },
+      source: principal.source,
+      requiredScopes: ["quizzes:write"],
+      createdBy: principal.id,
+      createdByType: principal.type,
+      requestId: input.requestId,
+      idempotencyKey: input.idempotencyKey,
+      status: "pending",
+    });
+
+    await recordCommandAudit({
+      principal,
+      action: "quiz.update.draft.create",
+      toolId: "update_quiz_questions",
+      draftId: String(draft._id),
+      requestId: input.requestId,
+      outcome: "success",
+      metadata: {
+        targetQuizId: result.quiz.id,
+        beforeCount: result.diff.beforeCount,
+        afterCount: result.diff.afterCount,
+        added: result.diff.addedQuestionIds.length,
+        removed: result.diff.removedQuestionIds.length,
+      },
+    });
+
+    return res.status(StatusCodes.CREATED).json({ draft, diff: result.diff });
   }),
 );
