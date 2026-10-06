@@ -2083,8 +2083,9 @@ aiRouter.post(
 2) get_course_inventory
 3) create_question_drafts
 4) create_quiz_draft
-5) create_course_draft
-6) create_school_setup_draft
+5) plan_quiz_question_update
+6) create_course_draft
+7) create_school_setup_draft
 
 قواعد إلزامية:
 - لا تخترع IDs أو أسئلة أو مستخدمين غير موجودين في البيانات المقدمة.
@@ -2092,6 +2093,7 @@ aiRouter.post(
 - لا يوجد Publish/Delete/Approve/Apply في هذه الخطة.
 - إذا كانت البيانات غير كافية، needsClarification=true ولا تُنشئ workflow.
 - create_course_draft يجب أن يستخدم lessonId/quizId/libraryItemId الموجودة فقط.
+- plan_quiz_question_update يستخدم targetQuizId وcandidateQuestionIds حقيقية فقط، ويترك كشف التكرار للسيرفر.
 - create_school_setup_draft يستخدم حسابات موجودة؛ إنشاء حسابات جديدة ليس ضمن هذه الخطة.
 - كل step.id فريد وقصير.
 - لا تضف idempotencyKey داخل كل step؛ السيرفر يفرض idempotency تلقائيًا.
