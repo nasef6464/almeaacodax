@@ -8,6 +8,7 @@ export const COMMAND_DRAFT_KINDS = [
   "school_setup",
   "content",
   "workflow",
+  "developer_task",
 ] as const;
 
 export const COMMAND_DRAFT_STATUSES = ["pending", "approved", "rejected"] as const;
