@@ -6,6 +6,8 @@ const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 const [
   draftModel,
   applyService,
+  applyCourseQuiz,
+  applySchool,
   workflowModel,
   workflowService,
   workflowExecutor,
@@ -26,6 +28,8 @@ const [
 ] = await Promise.all([
   read("server/src/models/CommandCenterDraft.ts"),
   read("server/src/modules/command-center/application/draftApplyService.ts"),
+  read("server/src/modules/command-center/application/draftApplyCourseQuiz.ts"),
+  read("server/src/modules/command-center/application/draftApplySchool.ts"),
   read("server/src/models/CommandCenterWorkflow.ts"),
   read("server/src/modules/command-center/application/workflowService.ts"),
   read("server/src/modules/command-center/application/workflowExecutor.ts"),
@@ -47,11 +51,12 @@ const [
 
 assert.match(draftModel, /applyStatus/);
 assert.match(draftModel, /"applying"/);
-assert.match(applyService, /applyCourseDraft/);
-assert.match(applyService, /applyQuizDraft/);
-assert.match(applyService, /applySchoolDraft/);
-assert.match(applyService, /isPublished:\s*false/);
-assert.match(applyService, /showOnPlatform:\s*false/);
+assert.match(applyService, /applyApprovedCommandDraft/);
+assert.match(applyCourseQuiz, /applyCourseDraft/);
+assert.match(applyCourseQuiz, /applyQuizDraft/);
+assert.match(applySchool, /applySchoolDraft/);
+assert.match(applyCourseQuiz, /isPublished:\s*false/);
+assert.match(applyCourseQuiz, /showOnPlatform:\s*false/);
 assert.match(commandRoutes, /human_apply_required/);
 assert.match(commandRoutes, /drafts\/:id\/apply/);
 
