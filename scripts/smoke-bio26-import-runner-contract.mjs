@@ -21,6 +21,9 @@ const must = [
 ];
 for (const fragment of must) if (!importer.includes(fragment)) throw new Error(`missing BIO26 importer contract: ${fragment}`);
 if (!importer.includes("process.env.BIO26_IMPORT_MODE || process.env.QUESTION_PILOT_MODE")) throw new Error("BIO26 importer must prefer a dedicated runtime mode");
+if (!importer.includes("process.env.BIO26_PACKAGE_URL")) throw new Error("BIO26 direct runtime must read package URL separately");
+if (!importer.includes("process.env.BIO26_PACKAGE_SHA256")) throw new Error("BIO26 direct runtime must read package SHA separately");
+if (!importer.includes('["r2", "dry-run", "canary", "full", "verify"].includes(modeRaw.toLowerCase())')) throw new Error("BIO26 dedicated mode must accept direct phases");
 if (!importer.includes("process.env.BIO26_IMPORT_BATCH_ID || process.env.QUESTION_PILOT_BATCH_ID")) throw new Error("BIO26 importer must prefer a dedicated batch id");
 if (!importer.includes("process.env.BIO26_IMPORT_EXPECTED_COUNT || process.env.QUESTION_PILOT_EXPECTED_COUNT")) throw new Error("BIO26 importer must prefer a dedicated expected count");
 if (!verifier.includes("optionTextsSource") || !verifier.includes("optionTextsVerified")) throw new Error("BIO26 post-import verifier does not enforce option-text provenance");
