@@ -83,6 +83,8 @@
     "questionQuizDraftRouter|POST|/questions/draft",
     "questionQuizDraftRouter|POST|/questions/validate",
     "questionQuizDraftRouter|POST|/quizzes/draft",
+    "questionQuizDraftRouter|POST|/quizzes/update/draft",
+    "questionQuizDraftRouter|POST|/quizzes/update/validate",
     "quizAnalyticsRouter|GET|/analytics/school-skills",
     "reviewRouter|GET|/mastery-challenges",
     "router|GET|/session/:quizId",
