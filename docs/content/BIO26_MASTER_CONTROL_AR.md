@@ -3,7 +3,7 @@
 **Scope:** Biology only (`BIO26`).  
 **Repository:** `nasef6464/almeaacodax`  
 **Source-freeze version:** 1.0.0  
-**Status:** PRE-IMPORT CONTENT GATES PASS — AI CONTEXT IN PROGRESS + R2 UPLOAD PENDING — NOT CLOSED
+**Status:** CONTENT + AI CONTEXT COMPLETE — R2/PACKAGE READINESS PENDING — NOT CLOSED
 
 ## Verified source inventory
 - Foundation PDF: **79 pages**.
@@ -60,9 +60,9 @@
 | Asset regeneration | **PASS LOCAL — 2,835 files** |
 | Dedupe | **PASS — 2,832 canonical** |
 | Existing biology-bank dedupe | **PASS — 0 existing** |
-| AI context | **IN PROGRESS — 1,839 / 2,832 canonical** |
+| AI context | **PASS — 2,832 / 2,832 canonical; 48/48 lessons; pending=0** |
 | R2 upload | PENDING |
-| Dry run | BLOCKED BY AI/R2 |
+| Dry run | BLOCKED BY R2 + READY PACKAGE PAYLOAD |
 | Canary 5 | BLOCKED |
 | Full draft import | BLOCKED |
 | Integrity audit | NOT RUN |
@@ -70,10 +70,18 @@
 | Approval | NOT RUN |
 | BIO26 CLOSED | **NO** |
 
+## Runtime checkpoint — 2026-10-06
+- PR #388 is merged to `main` at `cc9609771ba7203ff9d7a481598f1e2706c25ecc`.
+- AI context effective canonical set is **2,832/2,832** across **48/48 lessons**, pending **0**.
+- Automated AI QA: source-answer **2,832/2,832 PASS**, skill-range **2,832/2,832 PASS**, required fields **2,832/2,832 PASS**, duplicate questionCodes **0**, frozen aliases excluded **3/3**.
+- Import runner is fail-closed and requires `BIO26_IMPORT_MANIFEST_READY.json` with exactly **2,832** records, 4 machine-readable `optionTexts`, `readableText`, `visualDescription`, explanation, visual-review note, canonical image hash, and matching WEBP bytes.
+- Repository `BIO26_IMPORT_MANIFEST.json` is a gate/status manifest only: `items=[]`. It is **not** the production-ready payload and must never be used for canary/full import.
+- Canonical image package identity remains ZIP SHA-256 `37e58c58dfbdeb8a956ee80e42f2c41cf476f506b3c825663c71bf214ee55a03`; canonical images **2,832**, bytes **29,550,012**. Authenticated R2 PUT + public GET/hash verification is still pending.
+
 ## Next execution batch
-1. Continue AI context authoring from **1,839 / 2,832** canonical questions. L01–L31 plus L33–L34 are authored; **L32 is deliberately still the earliest unfinished lesson**. Current automated integrity: **1,839/1,839 source-answer**, **1,839/1,839 skill-range**, required fields complete, duplicate questionCodes = 0.
-2. Create a **dedicated Biology subject** at controlled import time; preserve the existing `علم البيئة` subject and its historical progress.
-3. Upload **2,832** canonical V2 images to R2 and verify remote hashes/URLs.
-4. Dry Run → Canary 5 → Full Draft Import → Integrity Audit → Live E2E → Approval.
+1. Recover/build the exact production package containing `BIO26_IMPORT_MANIFEST_READY.json` + **2,832** canonical WEBP bytes; reject any package whose SHA/record/image hashes diverge.
+2. Execute importer phase `r2`; require authenticated PUT and live GET/SHA verification for **2,832/2,832**.
+3. Execute `dry-run` only after R2 remote verification passes, then `canary` for exactly **5** draft questions.
+4. Verify canary isolation/integrity, then `full` draft import → post-import verifier → Live E2E → approval.
 
 **Closure rule:** no `BIO26 CLOSED` until production counts, asset integrity, exact-question skill analysis, and live learner journey pass.
