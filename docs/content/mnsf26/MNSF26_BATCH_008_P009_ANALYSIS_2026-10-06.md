@@ -83,7 +83,7 @@ Page 9 was rendered from the original PDF at high resolution and inspected visua
 - Options: 33، 3.3، 333، 303.
 - Solve: 22×303 = 6666.
 - Correct: 303.
-- Taxonomy: HOLD — no exact canonical subskill for plain integer long division; do not force a nearby skill.
+- Mapping: `skill_quant_01 / sub_quant_01_4` — عملية قسمة عددية مباشرة ضمن أساسيات العمليات الحسابية؛ نفس العائلة القانونية المستخدمة إنتاجيًا لتقييم التعبيرات التي تتضمن القسمة، دون إنشاء مهارة جديدة.
 - Difficulty: Easy/Medium.
 - Trap: dropping a zero or reading 303 as 33.
 - Fingerprint: integer-division / quotient-recognition.
@@ -105,7 +105,8 @@ Page 9 was rendered from the original PDF at high resolution and inspected visua
 - Solved: 8/8.
 - Answer locked: 8/8.
 - Canonical mappings locked: 7.
-- Taxonomy HOLD: 1 (Q19).
+- Taxonomy HOLD: 0.
+- Q19 canonical mapping resolved: `skill_quant_01 / sub_quant_01_4`.
 - New taxonomy entities: 0.
 - Exact duplicate hits against FND26/COL2627: 0.
 - High-resolution source render used: yes.
