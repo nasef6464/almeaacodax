@@ -33,6 +33,7 @@ const [
   app,
   env,
   adminPanel,
+  naturalLanguagePanel,
   commandApi,
   aiApi,
   handoff,
@@ -66,6 +67,7 @@ const [
   read("server/src/app.ts"),
   read("server/src/config/env.ts"),
   read("dashboards/admin/command-center/CommandCenterOperationsPanel.tsx"),
+  read("dashboards/admin/command-center/CommandCenterNaturalLanguagePanel.tsx"),
   read("services/apiGroups/commandCenterApi.ts"),
   read("services/apiGroups/aiApi.ts"),
   read("docs/architecture/ALMEAA_COMMAND_CENTER_HANDOFF_AR.md"),
@@ -171,7 +173,7 @@ assert.match(aiRoutes, /Reuse-first/);
 assert.match(aiRoutes, /workflowPlanSchema/);
 assert.match(aiRoutes, /plan_quiz_question_update/);
 assert.match(aiRoutes, /audit_course/);
-assert.match(adminPanel, /أمر ذكي للمنصة/);
+assert.match(naturalLanguagePanel, /أمر ذكي للمنصة/);
 assert.match(adminPanel, /Plan → Execute → Verify/);
 assert.match(commandApi, /executeCommandCenterWorkflow/);
 assert.match(aiApi, /aiAdminCommandPlan/);
