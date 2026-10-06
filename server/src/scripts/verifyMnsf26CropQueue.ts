@@ -35,6 +35,39 @@ if (ready.length !== 129 || sourceReview.length !== 3) {
   });
 }
 
+const declaredCounts = {
+  queued: data.counts.queued,
+  contentReady: data.counts.contentReady,
+  sourceReview: data.counts.sourceReview,
+};
+const actualCounts = {
+  queued: data.queue.length,
+  contentReady: ready.length,
+  sourceReview: sourceReview.length,
+};
+if (
+  declaredCounts.queued !== actualCounts.queued ||
+  declaredCounts.contentReady !== actualCounts.contentReady ||
+  declaredCounts.sourceReview !== actualCounts.sourceReview
+) {
+  failures.push({
+    gate: "declared-counts-parity",
+    detail: { declared: declaredCounts, actual: actualCounts },
+  });
+}
+
+const invalidPendingAssets = data.queue.filter(
+  (item) =>
+    item.cropStatus === "PENDING_ORIGINAL_PIXELS" &&
+    (item.imageHash !== null || item.imageUrl !== null),
+);
+if (invalidPendingAssets.length) {
+  failures.push({
+    gate: "pending-crop-must-not-claim-assets",
+    detail: invalidPendingAssets.map((item) => item.questionCode),
+  });
+}
+
 const duplicateCodes = data.queue
   .filter(
     (item, index, all) =>
