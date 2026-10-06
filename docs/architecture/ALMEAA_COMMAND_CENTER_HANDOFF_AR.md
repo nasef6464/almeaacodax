@@ -47,10 +47,11 @@
 - [x] Question batch writes go to CommandCenterDraft only.
 - [x] Quiz draft validation against existing question IDs/path/subject.
 - [x] Quiz draft writes go to CommandCenterDraft only.
-- [ ] Near-duplicate semantic scoring.
+- [x] High-confidence normalized token similarity guard for near-duplicates (live bank + incoming batch).
 - [x] Approved Quiz Draft apply adapter (creates unpublished canonical quiz).
 - [ ] Publish adapter remains intentionally separate.
-- [ ] Existing-quiz update plan/diff tool.
+- [x] Existing-quiz question diff/update draft tool with exact/near-duplicate skipping and skill coverage before/after.
+- [x] Published quizzes are never mutated by update apply; an unpublished replacement is created instead.
 
 ### CC-3 Courses — Reuse-first
 - [x] Read reusable course inventory by path/subject/section.
@@ -85,7 +86,9 @@
 - [ ] CSV/XLSX import parser.
 - [x] cross-school assignment guard before apply.
 - [x] safe idempotent apply adapter for school/classes/existing users.
-- [ ] CSV/XLSX parser integration with Command Center draft input.
+- [x] Existing safe CSV/XLSX school parser reused inside Command Center.
+- [x] Roster + relation rows adapt into validated School Setup Draft input.
+- [ ] Explicit missing-account creation draft remains separate by policy.
 
 ### CC-5 Workflow Engine
 - [x] Plan → Execute → Verify model.
@@ -146,6 +149,19 @@
 6. CC-7 Smart Teacher/Whiteboard.
 7. CC-8 Developer Agent.
 8. Production deploy verification + end-to-end external connection proof.
+
+## الدفعة الحالية — Final Closure
+
+- [x] Approved Question Batch → canonical Question apply adapter.
+- [x] Resumable/idempotent partial batch healing through deterministic identities.
+- [x] `subSkillIds[]` persisted canonically alongside primary `subSkillId` and combined `skillIds[]`.
+- [x] Near-duplicate guard added before draft creation.
+- [x] Existing Quiz diff/update Draft added.
+- [x] Published quiz update creates hidden replacement and leaves original unchanged.
+- [x] School XLSX/CSV import UI reuses existing safe parser and produces Drafts only.
+- [ ] exact-head CI + merge for this final-closure branch.
+- [ ] production deploy verification after merge.
+- [ ] external OAuth MCP connection proof after production IdP configuration.
 
 ## حالة الدمج
 
