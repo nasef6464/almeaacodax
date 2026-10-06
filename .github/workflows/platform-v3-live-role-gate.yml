@@ -14,7 +14,9 @@ permissions:
   contents: read
 
 concurrency:
-  group: platform-v3-live-role-gate-${{ github.event.pull_request.number || github.ref }}
+  # Serialize workflows that exercise the tiny production Render service. Keep
+  # full coverage, but prevent our own live gates from creating a load spike.
+  group: platform-production-live-audit-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: false
 
 jobs:
