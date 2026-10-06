@@ -8,6 +8,7 @@ export type CommandToolDefinition = {
     | "quizzes"
     | "courses"
     | "schools"
+    | "smart_teacher"
     | "operations";
   description: string;
   requiredScope: string;
@@ -22,6 +23,7 @@ export const commandToolRegistry: CommandToolDefinition[] = [
   { id: "create_quiz_draft", capability: "quizzes", description: "Create a quiz draft for admin review.", requiredScope: "drafts:write", risk: "draft_write", approvalRequired: true, availability: "active" },
   { id: "get_course_inventory", capability: "courses", description: "Read reusable lessons, videos, quizzes, files and skills for a course scope.", requiredScope: "courses:read", risk: "read", approvalRequired: false, availability: "active" },
   { id: "create_course_draft", capability: "courses", description: "Create a reuse-first course structure draft from existing platform content before publishing.", requiredScope: "drafts:write", risk: "draft_write", approvalRequired: true, availability: "active" },
+  { id: "prepare_smart_classroom_session", capability: "smart_teacher", description: "Prepare a scoped Smart Classroom session plan with approved questions; teacher launch remains mandatory.", requiredScope: "drafts:write", risk: "draft_write", approvalRequired: true, availability: "active" },
   { id: "create_school_setup_draft", capability: "schools", description: "Validate and prepare school, class, student, teacher and supervisor setup as a reviewable draft.", requiredScope: "drafts:write", risk: "draft_write", approvalRequired: true, availability: "active" },
   { id: "detect_question_duplicates", capability: "questions", description: "Detect exact and high-confidence near-duplicate questions before import.", requiredScope: "drafts:write", risk: "read", approvalRequired: false, availability: "active" },
   { id: "plan_quiz_question_update", capability: "quizzes", description: "Compare candidate questions with an existing quiz and create a reviewable update draft without mutating the quiz.", requiredScope: "drafts:write", risk: "draft_write", approvalRequired: true, availability: "active" },
