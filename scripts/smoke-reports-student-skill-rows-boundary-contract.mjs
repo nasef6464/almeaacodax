@@ -38,13 +38,14 @@ check('Reports delegates compact student skill rows to a focused view-model', ()
 check('student skill rows preserve recommendation, mastery tone, and direct learning links', () => {
   assertIncludes(rows, 'buildSkillRecommendation(skill, catalog)');
   assertIncludes(rows, 'getReportMasteryTone(skill.mastery)');
-  assertIncludes(rows, "recommendation.lessonLink || recommendation.foundationTopicLink || '/courses'");
-  assertIncludes(rows, "skill.skillId ? `/quiz?skillIds=${encodeURIComponent(skill.skillId)}` : '/dashboard?tab=saher'");
-  assertIncludes(rows, 'retestLink: quizLink');
+  assertIncludes(rows, "buildFoundationActionLink(foundationActionContext, 'lessons')");
+  assertIncludes(rows, "buildFoundationActionLink(foundationActionContext, 'quizzes')");
+  assertIncludes(rows, "buildFoundationActionLink(foundationActionContext, 'support')");
+  assertIncludes(rows, "supportLink: recommendation.supportLink || foundationSupportLink || '/reports'");
 });
 
-check('student skill rows preserve evidence labels and five-row compact default', () => {
-  assertIncludes(rows, 'limit = 5');
+check('student skill rows preserve evidence labels and ten-row compact default', () => {
+  assertIncludes(rows, 'limit = 10');
   assertIncludes(rows, 'focusedReportSkills.slice(0, limit).map((skill) => {');
   assertIncludes(rows, 'evidenceLabel: skill.isReliable');
   assertIncludes(rows, '`${skill.correctAttempts}/${skill.totalEvidence} صحيح`');
