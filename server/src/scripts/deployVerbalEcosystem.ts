@@ -6,6 +6,7 @@ import { QuestionPassageModel } from "../models/QuestionPassage.js";
 import { env } from "../config/env.js";
 import {
   VERBAL_SUBSKILL_TO_MAIN,
+  VERBAL_SUBSKILL_TO_SECTION,
   VERBAL_TAXONOMY,
   validateVerbalTaxonomyV2,
 } from "./deployVerbalTaxonomy22.js";
@@ -219,6 +220,7 @@ export async function deployVerbalEcosystem() {
             pathId: VERBAL_PATH_ID,
             subject: VERBAL_SUBJECT_ID,
             subjectId: VERBAL_SUBJECT_ID,
+            sectionId: VERBAL_SUBSKILL_TO_SECTION[q.subSkillId],
             skillId: q.mainSkillId,
             subSkillId: q.subSkillId,
             skillIds: [q.mainSkillId, q.subSkillId],
@@ -263,8 +265,8 @@ export async function deployVerbalEcosystem() {
     await mongoose.disconnect();
   }
 
-  // Canonical migration owns 22/76 taxonomy + 76 foundation drills + 22 same-skill
-  // training banks + 5 mocks. It does not rewrite historical SkillProgress/QuizResult.
+  // Canonical migration only reconciles the 22/76 taxonomy and question lineage.
+  // It never creates drills, training banks, or mocks, and it does not rewrite historical SkillProgress/QuizResult.
   await migrateVerbalTaxonomy22();
 }
 
