@@ -8,6 +8,28 @@ const EXPECTED_COL2627 = 946;
 
 type GateFailure = { gate: string; detail: unknown };
 
+function normalizeQuestionText(value: unknown) {
+  return String(value || "")
+    .normalize("NFKC")
+    .toLowerCase()
+    .replace(/[إأآ]/g, "ا")
+    .replace(/ة/g, "ه")
+    .replace(/ى/g, "ي")
+    .replace(/[^\p{L}\p{N}]+/gu, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function canonicalQuestionText(question: any) {
+  return (
+    question?.questionText ||
+    question?.text ||
+    question?.aiReadableText ||
+    question?.aiContext?.aiReadableText ||
+    ""
+  );
+}
+
 async function run() {
   await mongoose.connect(env.MONGODB_URI, { serverSelectionTimeoutMS: 12_000 });
   try {
@@ -140,6 +162,61 @@ async function run() {
       ])
       .toArray();
 
+    const [baselineTexts, mnsfTexts] = await Promise.all([
+      questions
+        .find(
+          { "sourceMeta.documentCode": { $in: ["FND26", "COL2627"] } },
+          {
+            projection: {
+              _id: 0,
+              questionCode: 1,
+              questionText: 1,
+              text: 1,
+              aiReadableText: 1,
+              "aiContext.aiReadableText": 1,
+              "sourceMeta.documentCode": 1,
+            },
+          },
+        )
+        .toArray(),
+      questions
+        .find(
+          { "sourceMeta.documentCode": "MNSF26" },
+          {
+            projection: {
+              _id: 0,
+              questionCode: 1,
+              questionText: 1,
+              text: 1,
+              aiReadableText: 1,
+              "aiContext.aiReadableText": 1,
+            },
+          },
+        )
+        .toArray(),
+    ]);
+
+    const baselineByNormalizedText = new Map<string, any[]>();
+    for (const question of baselineTexts) {
+      const normalized = normalizeQuestionText(canonicalQuestionText(question));
+      if (!normalized) continue;
+      const list = baselineByNormalizedText.get(normalized) || [];
+      list.push(question);
+      baselineByNormalizedText.set(normalized, list);
+    }
+
+    const crossBankTextDuplicates = mnsfTexts.flatMap((question) => {
+      const normalized = normalizeQuestionText(canonicalQuestionText(question));
+      if (!normalized) return [];
+      const matches = baselineByNormalizedText.get(normalized) || [];
+      return matches.map((match) => ({
+        mnsfQuestionCode: question.questionCode ?? null,
+        baselineQuestionCode: match.questionCode ?? null,
+        baselineSource: match.sourceMeta?.documentCode ?? null,
+        normalizedText: normalized,
+      }));
+    });
+
     const failures: GateFailure[] = [];
     if (expectedMainIds.size !== 25 || expectedSubIds.size !== 95) {
       failures.push({
@@ -196,6 +273,12 @@ async function run() {
     if (duplicateQuestionCodes.length) {
       failures.push({ gate: "mnsf26-question-code-uniqueness", detail: duplicateQuestionCodes });
     }
+    if (crossBankTextDuplicates.length) {
+      failures.push({
+        gate: "mnsf26-cross-bank-exact-text-dedupe",
+        detail: crossBankTextDuplicates,
+      });
+    }
 
     const report = {
       ok: failures.length === 0,
@@ -220,6 +303,7 @@ async function run() {
         malformedCount: malformedMnsf.length,
         invalidTaxonomyCount: taxonomyInvalidMnsf.length,
         duplicateQuestionCodeCount: duplicateQuestionCodes.length,
+        crossBankExactTextDuplicateCount: crossBankTextDuplicates.length,
       },
       failures,
     };
