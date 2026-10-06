@@ -1,8 +1,8 @@
 {
   "project": "CHEM26 Full Closure",
   "scope": "chemistry-only",
-  "updatedAt": "2026-10-05T14:13:00+03:00",
-  "status": "TRANSPORT_READY_AWAITING_RENDER_WORKSPACE_CONFIRMATION",
+  "updatedAt": "2026-10-06T08:46:00+03:00",
+  "status": "CLOSED",
   "source": {
     "questionPdf": "كتاب تجميعات يلو للكيمياء 26 - المعدل.pdf",
     "coverage": 1709,
@@ -57,33 +57,94 @@
     "taxonomyProductionGateMerged": true,
     "importRunnerPR": 378,
     "importRunnerMerged": true,
-    "postImportGatePR": 381
+    "postImportGatePR": 381,
+    "postImportGateMerged": true,
+    "finalClosurePR": 389,
+    "finalClosureMerged": true,
+    "finalClosureMergeCommit": "c122d60098ec0832b7257cc28642b3a294045575"
   },
-  "pending": [
-    "PR #381 CI + merge",
-    "Explicit confirmation to use Render workspace My Workspace",
-    "Refresh signed package URL",
-    "Set importer env on Render and redeploy/restart",
-    "Production API dry-run",
-    "5-question canary",
-    "Full draft import <=100",
-    "Live E2E",
-    "Approval",
-    "Post-approval verification"
-  ],
+  "pending": [],
   "transportBlocker": "Resolved. A fresh signed oaiusercontent URL can be generated on demand from the Drive-backed V3 package.",
   "blockerPolicy": "Do not weaken transport/auth controls. Continue all independent QA and merge work; execute import immediately when a signed package URL is available.",
   "productionRelease": {
     "importerMergeCommit": "bab40601b13354faa9233dc996c435b63063876d",
     "vercelDeployment": "READY",
     "backendHealthCommit": "bab40601b133",
-    "backendHealthStatus": "ok"
+    "backendHealthStatus": "ok",
+    "finalMergeCommit": "c122d60098ec0832b7257cc28642b3a294045575",
+    "renderDeploy": "dep-db28jo3ncjis73cbqk10",
+    "renderStatus": "live",
+    "cleanupDeploy": "dep-db28lf6i0phs73do7lv0",
+    "cleanupStatus": "live",
+    "chemImporterMode": "disabled"
   },
   "transport": {
-    "status": "READY_ON_DEMAND",
+    "status": "DISABLED_AFTER_CLOSURE",
     "driveFileId": "1BT0iiW13rsw7AhCvp-rAgkIifQTUffSC",
     "mechanism": "Google Drive raw fetch -> short-lived oaiusercontent signed URL",
     "importerHostGuardSatisfied": true
   },
-  "operationalBlocker": "Render connector requires explicit user confirmation of the workspace before any environment mutation. The only discovered workspace is `My Workspace`."
+  "operationalBlocker": null,
+  "productionImport": {
+    "batchId": "TAH-CHEM-CHEM26-FULL-V1",
+    "count": 1708,
+    "dryRun": "PASS",
+    "canary": 5,
+    "imported": 1708,
+    "initialStatus": "draft",
+    "liveImageSamples": 30,
+    "idempotency": "CHEM26_IMPORT_ALREADY_COMPLETE count=1708 liveSamples=30"
+  },
+  "productionApproval": {
+    "draftGate": "CHEM26_POST_IMPORT_DRAFT_GATE_PASS",
+    "approvalWrite": "CHEM26_APPROVAL_WRITE_PASS matched=1708 modified=1708",
+    "postApprovalGate": "CHEM26_POST_APPROVAL_GATE_PASS",
+    "finalCount": 1708,
+    "approved": 1708,
+    "draft": 0,
+    "uniqueQuestionCodes": 1708,
+    "uniqueSourceItemIds": 1708,
+    "uniqueImageHashes": 1708,
+    "importedCoverage": {
+      "mainSkills": 27,
+      "subSkills": 99
+    },
+    "productionTaxonomy": {
+      "mainSkills": 27,
+      "subSkills": 99
+    },
+    "integrityErrors": {
+      "scope": 0,
+      "options": 0,
+      "ai": 0,
+      "images": 0,
+      "skillArrays": 0
+    },
+    "reviewerNotesReady": 1708,
+    "linkedQuizCount": 0
+  },
+  "liveE2E": {
+    "releaseCommit": "c122d60098ec0832b7257cc28642b3a294045575",
+    "productionBase": "https://almeaacodax.vercel.app",
+    "rolePages": {
+      "total": 48,
+      "pass": 48,
+      "fail": 0,
+      "blocked": 0
+    },
+    "deepRoleV2": {
+      "total": 30,
+      "pass": 18,
+      "fail": 0,
+      "blocked": 0
+    },
+    "operationalSmoke": "PASS",
+    "learnerQuestionResolution": "PASS",
+    "releaseIdentity": "PASS"
+  },
+  "closureNotes": [
+    "CHEM26 importer package URL is short-lived; historical 403 events occurred only after the 1708 batch was already complete.",
+    "QUESTION_PILOT_MODE was set to disabled after successful approval and post-approval verification; subsequent cleanup deploy emitted no CHEM26 startup logs.",
+    "PILOT_* authorization flags are shared controls and were not forcibly disabled after connector safety blocked that mutation; the CHEM-specific mode is disabled."
+  ]
 }
