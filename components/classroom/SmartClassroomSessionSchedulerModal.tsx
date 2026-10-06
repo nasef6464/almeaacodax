@@ -164,6 +164,7 @@ export const SmartClassroomSessionSchedulerModal: React.FC<SmartClassroomSession
     let launchClassName = currentAssignment?.className || 'فصل مسند';
     let launchPublishedMode: 'single' | 'batch' =
       sessionMode === 'speed_challenge' ? 'single' : 'batch';
+    let launchPreparedPlanDraftId = "";
 
     if (sessionMode === 'agent_plan') {
       const plan = agentPlans.find((entry) => entry.draftId === selectedAgentPlanId);
@@ -177,6 +178,7 @@ export const SmartClassroomSessionSchedulerModal: React.FC<SmartClassroomSession
       launchSubjectName = plan.subjectName || launchSubjectName;
       launchClassName = plan.className || launchClassName;
       launchPublishedMode = plan.publishedMode;
+      launchPreparedPlanDraftId = plan.draftId;
     } else if (sessionMode === 'template') {
       const template = templates.find((entry) => entry.id === selectedTemplateId);
       if (!template?.questionIds.length) {
@@ -220,6 +222,9 @@ export const SmartClassroomSessionSchedulerModal: React.FC<SmartClassroomSession
         className: launchClassName,
         subjectName: launchSubjectName,
         publishedMode: launchPublishedMode,
+        ...(launchPreparedPlanDraftId
+          ? { preparedPlanDraftId: launchPreparedPlanDraftId }
+          : {}),
         autoStart: true,
       });
       if (sessionMode === 'speed_challenge') {
