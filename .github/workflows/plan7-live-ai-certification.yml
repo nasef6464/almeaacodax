@@ -7,6 +7,12 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      run_live_provider_certification:
+        description: "Run the quota-consuming live provider/chat/token certification"
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -27,6 +33,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || github.sha }}
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -34,25 +41,46 @@ jobs:
           cache-dependency-path: |
             package-lock.json
             server/package-lock.json
+
       - run: npm ci
       - run: npm --prefix server ci
+
       - name: PLAN 7 static certification contract
         run: node scripts/smoke-plan7-ai-certification-contract.mjs
+
       - name: PLAN 7 executable 429/free-first failover contract
         run: cd server && npx tsx src/scripts/plan7AiFailoverContract.ts
+
       - name: Wait for exact production release identity
         if: github.event_name != 'pull_request'
         env:
-          RELEASE_API_BASE: https://almeaacodax-codex.onrender.com/api
+          RELEASE_API_BASE: https://almeaacodax.vercel.app/api
           EXPECTED_RELEASE_SHA: ${{ github.sha }}
           RELEASE_IDENTITY_MAX_ATTEMPTS: 48
           RELEASE_IDENTITY_INTERVAL_MS: 10000
         run: node scripts/smoke-production-release-identity.mjs
-      - name: Live provider + tutor + token + fallback audit
-        if: github.event_name != 'pull_request'
+
+      - name: AI runtime status — no inference / no provider quota
+        if: github.event_name == 'push' || (github.event_name == 'workflow_dispatch' && inputs.run_live_provider_certification != true)
+        env:
+          AI_LIGHT_API_BASE_URL: https://almeaacodax.vercel.app/api
+        run: node scripts/smoke-ai-runtime-light.mjs
+
+      - name: Live provider + tutor + token + fallback audit — manual only
+        if: github.event_name == 'workflow_dispatch' && inputs.run_live_provider_certification == true
         run: node scripts/live-ai-runtime-audit.mjs
-      - name: Upload PLAN 7 evidence
+
+      - name: Upload lightweight PLAN 7 evidence
         if: always() && github.event_name != 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: plan7-runtime-boundary-${{ github.run_id }}
+          path: audit-artifacts/ai-runtime-light/summary.json
+          if-no-files-found: ignore
+          retention-days: 30
+
+      - name: Upload full PLAN 7 evidence
+        if: always() && github.event_name == 'workflow_dispatch' && inputs.run_live_provider_certification == true
         uses: actions/upload-artifact@v4
         with:
           name: plan7-live-ai-certification-${{ github.run_id }}
