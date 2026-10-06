@@ -83,8 +83,13 @@ Git HEAD always overrides this historical baseline.
 - Content gates: source/crop/dedupe/answers/taxonomy PASS; canonical **2,832**; taxonomy **29/98**.
 - AI context: **2,832/2,832**, **48/48** lessons, pending=0; source-answer/skill-range/required-fields all PASS.
 - Production plumbing: PR #388 merged; dedicated subject `sub_tah_biology_bio26`; legacy `علم البيئة` remains protected.
-- Recovery package V3 audit: 2,832 items/images and self-hashes valid, but image bytes/geometry drift from frozen V2 and all `optionTexts` are bare A/B/C/D placeholders; production use rejected.
-- Hardening branch: `ops/bio26-production-ready-hardening-2026-10-06` from `main@ac03c73b72c9bd20bd72becd047f66932b237307`.
-- PR #400 (`ops/bio26-option-recovery-2026-10-06`) fixes the gate to require explicit `SOURCE_PDF` provenance instead of rejecting legitimate source values by label alone.\n- Source option-text recovery: **2,579/2,832** canonical recovered from the approved 226-page PDF; **253** remain quarantined for layout/visual review. Partial artifact SHA-256: `4f726999fe7d755b7fa7444156279c7604a9055d4566af93019786d9b743de21`.
-- Current gate: finish **253** option sets → assemble fully provenance-qualified READY package → R2 remote verification. Dry Run/Canary/Full/Integrity/Live E2E/Approval remain not run.
+- PR #398 merged: original V3 placeholder payload rejected and fail-closed package gate hardened.
+- Active PR **#400**: `ops/bio26-option-recovery-2026-10-06`.
+- Semantic option recovery is now **2,832/2,832 PASS** = **2,579 parsed source-text + 253 direct source-crop visual review**; quarantine remaining **0**.
+- Importer/verifier now require explicit `SOURCE_PDF` provenance and `optionTextsVerified=true`, so legitimate source choices such as A/B/C/D or 1/2/3/4 are not falsely rejected.
+- V3 assets independently re-qualified from approved source: **2,832 images / 2,832 unique hashes / 0 mismatches / 29,547,754 image bytes / 118/118 stratified visual QA PASS**.
+- READY package: `BIO26_FINAL_ASSETS_V3_READY_2832.zip`, bytes **30,690,582**, SHA-256 `e2063da82250395c8e7f9c50a6cbba34269d9c6683c7db91a0ea9a92a494fa8f`; manifest SHA-256 `153e97e8468e4a7f84ba1488f7c4b919b19ab84095a00773de014c98b81cf8a5`.
+- Full local READY contract audit: **PASS / 0 errors** — 2,832 items, 2,832 unique codes/source IDs/hashes, 29/98 taxonomy, semantic option provenance 2,832/2,832, local image hash 2,832/2,832.
+- Production writes at this checkpoint: **NONE**.
+- Current gate: PR #400 exact-head CI/rebase → **R2 upload + 2,832 live GET/SHA verification** → Dry Run → Canary 5 → Full Draft → Integrity → Live E2E → Approval.
 - Closure rule: do not mark BIO26 CLOSED before all production gates and live learner journey pass.
