@@ -7,12 +7,14 @@ import {
   planCommandWorkflow,
 } from "./workflowService.js";
 import { MCP_TOOL_SCOPES } from "./mcpToolCatalog.js";
+import { createDeveloperTaskDraft } from "./developerTaskTools.js";
 
 const writeToolNames = new Set([
   "create_question_drafts",
   "create_quiz_draft",
   "create_course_draft",
   "create_school_setup_draft",
+  "create_developer_task_draft",
 ]);
 
 export async function executeMcpTool(input: {
@@ -33,6 +35,22 @@ export async function executeMcpTool(input: {
       .limit(limit)
       .lean();
     return { drafts };
+  }
+
+  if (input.name === "create_developer_task_draft") {
+    const rawKey = String(input.args.idempotencyKey || "").trim();
+    if (rawKey.length < 8) {
+      throw Object.assign(new Error("idempotencyKey of at least 8 characters is required"), {
+        statusCode: 422,
+      });
+    }
+    return createDeveloperTaskDraft(
+      {
+        ...input.args,
+        idempotencyKey: `mcp:${input.principal.id}:${rawKey}`,
+      },
+      input.principal,
+    );
   }
 
   if (input.name === "plan_workflow") {
@@ -66,7 +84,7 @@ export async function executeMcpTool(input: {
     MCP_TOOL_SCOPES[input.name] &&
     (input.name === "get_skill_tree" ||
       input.name === "get_course_inventory" ||
-      writeToolNames.has(input.name))
+      (writeToolNames.has(input.name) && input.name !== "create_developer_task_draft"))
   ) {
     const rawKey = writeToolNames.has(input.name)
       ? String(input.args.idempotencyKey || "").trim()
