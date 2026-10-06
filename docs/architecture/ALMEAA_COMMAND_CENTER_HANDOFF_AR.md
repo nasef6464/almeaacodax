@@ -1,6 +1,13 @@
 # ALMEAA Command Center — Handoff / Execution State
 
-> **AUTHORITATIVE LATEST CHECKPOINT — 2026-10-06 18:33 Asia/Riyadh**  
+> **Production Render load policy — OWNER DIRECTIVE**
+> - لا تستخدم Production Render لأي حمل ثقيل.
+> - PR role/public UI verification = local/CI/offline contracts and browser preview only.
+> - Production = health/live + paced auth/API/MCP smoke صغير فقط.
+> - لا LLM/PDF/OCR/bulk dedupe/PDF-PPT rendering/wide browser audit على Render.
+> - المعالجة الثقيلة تتم في Codex/GitHub Actions/host خارجي ثم تُرسل Batch Drafts منظمة إلى ALMEAA.
+
+> **AUTHORITATIVE LATEST CHECKPOINT — 2026-10-07 Asia/Riyadh**  
 > PR #405 — merged into `main`: `3a38e0a8329c28848d7a95c7f38a215266d867df`  
 > PR #393 — closed as superseded; do not merge.  
 > PR #397 — merged earlier: `7c21eca9016146c380b861447967eae399805a1c`.  
