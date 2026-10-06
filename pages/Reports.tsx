@@ -591,7 +591,7 @@ const Reports: React.FC = () => {
         }),
         [focusedReportSkills, lessons, libraryItems, questions, quizzes, sections, skills, subjects, topics],
     );
-    const studentPrintableSkillRows = compactStudentSkillRows.slice(0, 10);
+    const studentPrintableSkillRows = compactStudentSkillRows;
     const studentAdaptiveLearningBridge = useMemo(
         () => buildStudentAdaptiveLearningBridge(studentTodayFocus),
         [studentTodayFocus],
