@@ -243,11 +243,11 @@ async function run() {
     });
 
     const failures: GateFailure[] = [];
-    if (importableCropRows.length !== 129 || cropEvidenceFailures.length) {
+    if (importableCropRows.length !== 130 || cropEvidenceFailures.length) {
       failures.push({
         gate: "authoritative-crop-evidence",
         detail: {
-          expectedImportableCrops: 129,
+          expectedImportableCrops: 130,
           actualImportableCrops: importableCropRows.length,
           missingOrUnready: cropEvidenceFailures.map((item) => item.questionCode),
         },
