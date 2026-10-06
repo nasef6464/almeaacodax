@@ -35,9 +35,10 @@ jobs:
           EXPECTED_SHA: ${{ github.sha }}
         run: |
           set -euo pipefail
+          expected_short="$(printf '%s' "$EXPECTED_SHA" | cut -c1-12)"
           for attempt in $(seq 1 40); do
             body="$(curl -fsS https://almeaacodax.vercel.app/api/health/live || true)"
-            if printf '%s' "$body" | grep -q "$EXPECTED_SHA"; then
+            if printf '%s' "$body" | grep -q "$expected_short"; then
               echo "Exact production release is live."
               exit 0
             fi
