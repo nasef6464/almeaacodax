@@ -1,10 +1,10 @@
 {
   "project": "BIO26",
-  "checkedCanonicalItems": 1946,
-  "uniqueQuestionCodes": 1946,
-  "answerSourceKeyMatches": 1946,
+  "checkedCanonicalItems": 2004,
+  "uniqueQuestionCodes": 2004,
+  "answerSourceKeyMatches": 2004,
   "answerSourceKeyMismatches": 0,
-  "skillRangeMatches": 1946,
+  "skillRangeMatches": 2004,
   "skillRangeMismatches": 0,
   "missingRequiredFields": 0,
   "duplicateQuestionCodes": 0,
@@ -42,7 +42,8 @@
     "BIO26-L31",
     "BIO26-L32",
     "BIO26-L33",
-    "BIO26-L34"
+    "BIO26-L34",
+    "BIO26-L35"
   ],
   "requiredFields": [
     "MainSkill",
@@ -57,5 +58,5 @@
     "foundationReference"
   ],
   "result": "PASS",
-  "note": "Automated cross-check includes L32 107/107 certified source-answer and skill-range shards merged into canonical ledger."
+  "note": "Automated cross-check includes L35 58/58 certified source-answer and skill-range contexts merged into canonical ledger."
 }
