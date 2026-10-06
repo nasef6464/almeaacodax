@@ -64,6 +64,14 @@ import {
   type AiResponseMimeType,
 } from "../modules/ai/infrastructure/providers/aiProviderAdapters.js";
 import { buildDocumentsByIdsQuery } from "../modules/quizzes/infrastructure/quizDocumentQuery.js";
+import {
+  courseInventoryQuerySchema,
+  getReusableCourseInventory,
+} from "../modules/command-center/application/courseReuseDraftTools.js";
+import {
+  planCommandWorkflow,
+  workflowPlanSchema,
+} from "../modules/command-center/application/workflowService.js";
 
 const imageInputSchema = z.object({
   data: z.string().min(1),
@@ -89,6 +97,13 @@ const chatSchema = z.object({
 
 const adminAssistantSchema = z.object({
   message: z.string().min(1).max(2000),
+});
+
+const adminCommandPlanSchema = z.object({
+  message: z.string().trim().min(1).max(4000),
+  pathId: z.string().trim().max(160).optional(),
+  subjectId: z.string().trim().max(160).optional(),
+  sectionId: z.string().trim().max(160).optional(),
 });
 
 const providerTestSchema = z.object({
@@ -1988,6 +2003,191 @@ ${message}
         provider: "none",
       });
     }
+  }),
+);
+
+aiRouter.post(
+  "/admin-command-plan",
+  requireAuth,
+  requireRole(["admin"]),
+  asyncHandler(async (req, res) => {
+    const input = adminCommandPlanSchema.parse(req.body);
+    const requestId = String(req.requestId || `admin-command-${Date.now()}`);
+    const principal = {
+      id: String(req.authUser!.id),
+      type: "admin_session" as const,
+      source: "admin_ui" as const,
+      scopes: ["*"],
+    };
+
+    let courseInventoryContext: Record<string, unknown> | null = null;
+    if (input.pathId && input.subjectId) {
+      const inventoryInput = courseInventoryQuerySchema.parse({
+        pathId: input.pathId,
+        subjectId: input.subjectId,
+        ...(input.sectionId ? { sectionId: input.sectionId } : {}),
+        includeHidden: false,
+      });
+      const inventory = await getReusableCourseInventory(inventoryInput);
+      courseInventoryContext = {
+        policy: inventory.policy,
+        counts: inventory.counts,
+        lessons: inventory.lessons.slice(0, 180).map((lesson: any) => ({
+          id: String(lesson.id || lesson._id || ""),
+          title: String(lesson.title || ""),
+          type: String(lesson.type || ""),
+          videoUrl: String(lesson.videoUrl || ""),
+          skillIds: Array.isArray(lesson.skillIds) ? lesson.skillIds.map(String) : [],
+        })),
+        quizzes: inventory.quizzes.slice(0, 120).map((quiz: any) => ({
+          id: String(quiz.id || quiz._id || ""),
+          title: String(quiz.title || ""),
+          quizKind: String(quiz.quizKind || ""),
+          questionCount: Array.isArray(quiz.questionIds) ? quiz.questionIds.length : 0,
+          skillIds: Array.isArray(quiz.skillIds) ? quiz.skillIds.map(String) : [],
+        })),
+        libraryItems: inventory.libraryItems.slice(0, 120).map((item: any) => ({
+          id: String(item.id || item._id || ""),
+          title: String(item.title || ""),
+          type: String(item.type || ""),
+          skillIds: Array.isArray(item.skillIds) ? item.skillIds.map(String) : [],
+        })),
+        skills: inventory.skills.slice(0, 200).map((skill: any) => ({
+          id: String(skill.id || skill._id || ""),
+          name: String(skill.name || ""),
+          subSkills: Array.isArray(skill.subSkills)
+            ? skill.subSkills.map((subSkill: any) => ({
+                id: String(subSkill.id || ""),
+                name: String(subSkill.name || ""),
+              }))
+            : [],
+        })),
+      };
+    }
+
+    const fallback = {
+      summary: "لم أتمكن من تكوين خطة تنفيذ آمنة تلقائيًا.",
+      needsClarification: true,
+      clarification:
+        "حدد المطلوب بدقة، وللدورات اختر المسار والمادة أولًا حتى أستخدم المحتوى الموجود على المنصة.",
+      workflow: null,
+    };
+
+    const prompt = `
+أنت مخطط أوامر آمن لمنصة ALMEAA التعليمية.
+حوّل أمر المدير إلى خطة قابلة للتنفيذ، ولا تنفذ أي شيء بنفسك.
+أعد JSON فقط بلا Markdown.
+
+الأدوات المسموحة داخل Workflow:
+1) get_skill_tree
+2) get_course_inventory
+3) create_question_drafts
+4) create_quiz_draft
+5) create_course_draft
+6) create_school_setup_draft
+
+قواعد إلزامية:
+- لا تخترع IDs أو أسئلة أو مستخدمين غير موجودين في البيانات المقدمة.
+- للدورات: Reuse-first. استخدم الدروس والفيديوهات والاختبارات والملفات الموجودة أولًا.
+- لا يوجد Publish/Delete/Approve/Apply في هذه الخطة.
+- إذا كانت البيانات غير كافية، needsClarification=true ولا تُنشئ workflow.
+- create_course_draft يجب أن يستخدم lessonId/quizId/libraryItemId الموجودة فقط.
+- create_school_setup_draft يستخدم حسابات موجودة؛ إنشاء حسابات جديدة ليس ضمن هذه الخطة.
+- كل step.id فريد وقصير.
+- لا تضف idempotencyKey داخل كل step؛ السيرفر يفرض idempotency تلقائيًا.
+- workflow.steps يجب أن تكون مستقلة؛ لا تعتمد خطوة كتابة على output خطوة سابقة غير موجود في المدخل.
+- إذا كان المطلوب مجرد فحص/قراءة، استخدم أدوات القراءة فقط.
+
+صيغة JSON:
+{
+  "summary":"وصف قصير لما ستفعله",
+  "needsClarification":false,
+  "clarification":"",
+  "workflow":{
+    "title":"عنوان الخطة",
+    "steps":[
+      {"id":"step-1","toolId":"get_skill_tree","title":"...","input":{}}
+    ]
+  }
+}
+
+السياق المختار:
+${JSON.stringify({
+  pathId: input.pathId || "",
+  subjectId: input.subjectId || "",
+  sectionId: input.sectionId || "",
+})}
+
+مخزون الدورة المتاح عند وجود نطاق:
+${JSON.stringify(courseInventoryContext)}
+
+أمر المدير:
+${input.message}
+`;
+
+    const aiResult = await runBudgetedAiRequest({
+      req,
+      endpoint: "/ai/admin-command-plan",
+      capability: "admin_copilot",
+      message: input.message,
+      prompt,
+      fallbackText: JSON.stringify(fallback),
+      responseMimeType: "application/json",
+      maxOutputTokens: 5000,
+      metadata: {
+        commandPlanner: true,
+        pathId: input.pathId || "",
+        subjectId: input.subjectId || "",
+        sectionId: input.sectionId || "",
+        inventoryAttached: Boolean(courseInventoryContext),
+      },
+    });
+
+    const parsed = safeJsonParse(aiResult.text, fallback) as any;
+    const summary = String(parsed?.summary || fallback.summary).slice(0, 2000);
+    const needsClarification = Boolean(parsed?.needsClarification);
+    const clarification = String(parsed?.clarification || "").slice(0, 2000);
+
+    if (needsClarification || !parsed?.workflow) {
+      return res.json({
+        summary,
+        needsClarification: true,
+        clarification: clarification || fallback.clarification,
+        workflow: null,
+        provider: aiResult.provider,
+      });
+    }
+
+    const candidate = {
+      ...parsed.workflow,
+      requestId,
+      idempotencyKey: `admin-command:${requestId}`,
+    };
+    const validated = workflowPlanSchema.safeParse(candidate);
+    if (!validated.success) {
+      return res.status(422).json({
+        summary,
+        needsClarification: true,
+        clarification:
+          "الخطة المقترحة لم تجتز التحقق الآمن. أعد صياغة الأمر أو حدد المسار/المادة والمحتوى المطلوب.",
+        workflow: null,
+        validationIssues: validated.error.issues.map((issue) => ({
+          path: issue.path.join("."),
+          message: issue.message,
+        })),
+        provider: aiResult.provider,
+      });
+    }
+
+    const planned = await planCommandWorkflow(validated.data, principal);
+    return res.status(planned.idempotentReplay ? 200 : 201).json({
+      summary,
+      needsClarification: false,
+      clarification: "",
+      workflow: planned.workflow,
+      idempotentReplay: planned.idempotentReplay,
+      provider: aiResult.provider,
+    });
   }),
 );
 
