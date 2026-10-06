@@ -1,9 +1,7 @@
 import assert from "node:assert/strict";
 import { mkdir, writeFile } from "node:fs/promises";
 
-const base = String(
-  process.env.ALMEAA_MCP_LIVE_BASE_URL || "https://almeaacodax-codex.onrender.com",
-).replace(/\/$/, "");
+const base = "https://almeaacodax-codex.onrender.com";
 const endpoint = `${base}/api/command-center/mcp`;
 const protocol = "2026-07-28";
 
