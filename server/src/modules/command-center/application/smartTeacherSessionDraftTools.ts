@@ -32,17 +32,19 @@ export async function validateSmartTeacherSessionDraft(
 ) {
   const issues: Array<{ type: string; message: string; ref?: string }> = [];
 
+  const classroomPromise = Types.ObjectId.isValid(input.classId)
+    ? GroupModel.findOne({
+        _id: input.classId,
+        type: "CLASS",
+        parentId: input.schoolId,
+      })
+        .select("_id name parentId")
+        .lean()
+    : Promise.resolve(null);
+
   const [entitlement, classroom, teacher, assignment] = await Promise.all([
     resolveSchoolEntitlement(input.schoolId, "SMART_CLASSROOM"),
-    Types.ObjectId.isValid(input.classId)
-      ? GroupModel.findOne({
-          _id: input.classId,
-          type: "CLASS",
-          parentId: input.schoolId,
-        })
-      : Promise.resolve(null)
-      .select("_id name parentId")
-      .lean(),
+    classroomPromise,
     UserModel.findById(input.teacherId)
       .select("_id name email role isActive schoolId")
       .lean(),
