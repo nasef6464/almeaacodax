@@ -4,10 +4,10 @@
   "sourcePart": "الحساب/الجبر",
   "sourceFile": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
   "counts": {
-    "queued": 133,
-    "contentReady": 130,
+    "queued": 132,
+    "contentReady": 129,
     "sourceReview": 3,
-    "suppressedExcluded": 4,
+    "suppressedExcluded": 5,
     "quarantinedExcluded": 1
   },
   "queue": [
@@ -974,29 +974,6 @@
         "outputFormat": "webp"
       },
       "expectedLocalName": "QDR-QNT-MNSF26-P005-Q19.webp",
-      "imageHash": null,
-      "imageUrl": null
-    },
-    {
-      "questionCode": "QDR-QNT-MNSF26-P005-Q20",
-      "batch": "004",
-      "pdfPageIndex": 5,
-      "printedPageNumber": 5,
-      "printedQuestionNumber": 20,
-      "sourceItemId": "MNSF26-PDF005-P005-N20",
-      "contentStatus": "CONTENT_READY_CROP_PENDING",
-      "cropPriority": "NORMAL",
-      "cropStatus": "PENDING_ORIGINAL_PIXELS",
-      "cropContract": {
-        "keepOriginalPixels": true,
-        "removePrintedQuestionNumberOnly": true,
-        "keepBlankBlueTriangle": true,
-        "repairDashedBorder": true,
-        "trimExcessWhitespace": true,
-        "preserveMathAndOptionsExactly": true,
-        "outputFormat": "webp"
-      },
-      "expectedLocalName": "QDR-QNT-MNSF26-P005-Q20.webp",
       "imageHash": null,
       "imageUrl": null
     },
@@ -3076,6 +3053,11 @@
       "questionCode": "QDR-QNT-MNSF26-P014-Q08",
       "reason": "QUARANTINE_SOURCE_DEFECT",
       "recoveryCondition": "Only requeue after verified source crop/erratum resolves unit mismatch."
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P005-Q20",
+      "reason": "SUPPRESS_CROSS_BANK_DUPLICATE",
+      "keep": "QDR-QNT-COL2627-P037-Q28"
     }
   ]
 }
