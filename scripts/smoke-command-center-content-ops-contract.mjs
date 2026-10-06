@@ -49,7 +49,7 @@ assert.match(updateApply, /showOnPlatform:\s*false/);
 assert.match(updateApply, /targetGroupIds:\s*\[\]/);
 assert.match(applyFacade, /quiz_update/);
 assert.match(draftModel, /"quiz_update"/);
-assert.match(registry, /update_quiz_questions/);
+assert.match(registry, /plan_quiz_question_update/);
 assert.match(registry, /availability: "active"/);
 assert.match(routes, /quizzes\/:id\/diff/);
 assert.match(routes, /quizzes\/:id\/update-draft/);
