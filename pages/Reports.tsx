@@ -11,7 +11,6 @@ import { adapter } from '../services/adapter';
 import { Role, type QuestionAttempt, type QuizResult, type SkillProgress } from '../types';
 import { printElementAsPdf } from '../utils/printPdf';
 import { shareTextSummary } from '../utils/shareText';
-import { buildFoundationActionLink } from '../utils/skillActionLinks';
 import { loadXlsx } from '../utils/xlsxLoader';
 import {
     MIN_SKILL_EVIDENCE_COUNT,
@@ -137,6 +136,7 @@ const Reports: React.FC = () => {
     const [scopedInterventionPlanCreated, setScopedInterventionPlanCreated] = useState(false);
     const [scopedInterventionPlanError, setScopedInterventionPlanError] = useState('');
     const [studentReportDepth, setStudentReportDepth] = useState<'simple' | 'full'>('simple');
+    const [showAllReportSkills, setShowAllReportSkills] = useState(false);
     const [studentReportPeriod, setStudentReportPeriod] = useState<StudentReportPeriod>('month');
     const [selectedStudentPathId, setSelectedStudentPathId] = useState<string>('all');
     const [selectedStudentSubjectId, setSelectedStudentSubjectId] = useState<string>('all');
@@ -375,19 +375,7 @@ const Reports: React.FC = () => {
         }
     }, [scopedSubjectOptions, selectedScopedSubjectId]);
 
-    const selectedSkillRecommendationBase = getSkillRecommendation(selectedReportSkill || undefined, skills, lessons, quizzes, libraryItems, questions, topics);
-    const selectedSkillFoundationContext = {
-        pathId: selectedReportSkill?.pathId,
-        subjectId: selectedReportSkill?.subjectId,
-        skillId: selectedReportSkill?.skillId,
-    };
-    const selectedSkillRecommendation: SkillRecommendation = {
-        ...selectedSkillRecommendationBase,
-        lessonLink: selectedSkillRecommendationBase.lessonLink
-            || buildFoundationActionLink(selectedSkillFoundationContext, 'lessons'),
-        quizLink: selectedSkillRecommendationBase.quizLink
-            || buildFoundationActionLink(selectedSkillFoundationContext, 'quizzes'),
-    };
+    const selectedSkillRecommendation: SkillRecommendation = getSkillRecommendation(selectedReportSkill || undefined, skills, lessons, quizzes, libraryItems, questions, topics);
     const isStudentView = user?.role === Role.STUDENT;
 
     useEffect(() => {
@@ -592,6 +580,14 @@ const Reports: React.FC = () => {
         [focusedReportSkills, lessons, libraryItems, questions, quizzes, sections, skills, subjects, topics],
     );
     const studentPrintableSkillRows = compactStudentSkillRows;
+    // Keep every measured skill available for export, while making long reports easier to browse.
+    const visibleStudentSkillRows = showAllReportSkills
+        ? compactStudentSkillRows
+        : compactStudentSkillRows.slice(0, 12);
+    useEffect(() => {
+        setShowAllReportSkills(false);
+    }, [studentReportPeriod, selectedStudentPathId, selectedStudentSubjectId]);
+
     const studentAdaptiveLearningBridge = useMemo(
         () => buildStudentAdaptiveLearningBridge(studentTodayFocus),
         [studentTodayFocus],
@@ -2838,7 +2834,7 @@ const Reports: React.FC = () => {
                     </div>
 
                     <div className="mt-5 space-y-2">
-                        {studentPrintableSkillRows.length > 0 ? studentPrintableSkillRows.map((skill) => (
+                        {studentPrintableSkillRows.length > 0 ? visibleStudentSkillRows.map((skill) => (
                             <div key={getReportSkillKey(skill)} className={`rounded-2xl border p-3 ${skill.tone.bg} ${skill.tone.border}`}>
                                 <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_auto_auto] lg:items-center">
                                     <div className="min-w-0">
@@ -2851,18 +2847,15 @@ const Reports: React.FC = () => {
                                         </div>
                                     </div>
                                     <div className="print-hide flex flex-wrap gap-2 lg:justify-end">
-                                        <Link to={skill.lessonLink} className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-white px-3 py-2 text-xs font-black text-indigo-700 ring-1 ring-indigo-100 hover:bg-indigo-50">
-                                            <Video size={14} />
-                                            فيديو
-                                        </Link>
-                                        <Link to={skill.quizLink} className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-white px-3 py-2 text-xs font-black text-amber-700 ring-1 ring-amber-100 hover:bg-amber-50">
-                                            <FileText size={14} />
-                                            تدريب
-                                        </Link>
-                                        <Link to={skill.supportLink} className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-white px-3 py-2 text-xs font-black text-slate-700 ring-1 ring-slate-200 hover:bg-slate-50">
-                                            <BookOpen size={14} />
-                                            ملف الدعم
-                                        </Link>
+                                        {skill.lessonLink ? (
+                                            <Link to={skill.lessonLink} className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-white px-3 py-2 text-xs font-black text-indigo-700 ring-1 ring-indigo-100 hover:bg-indigo-50"><Video size={14} />فيديو</Link>
+                                        ) : <span className="rounded-xl bg-slate-100 px-3 py-2 text-xs text-slate-400" title="موضوع التأسيس غير مرتبط">فيديو</span>}
+                                        {skill.quizLink ? (
+                                            <Link to={skill.quizLink} className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-white px-3 py-2 text-xs font-black text-amber-700 ring-1 ring-amber-100 hover:bg-amber-50"><FileText size={14} />تدريب</Link>
+                                        ) : <span className="rounded-xl bg-slate-100 px-3 py-2 text-xs text-slate-400" title="تدريب التأسيس غير مرتبط">تدريب</span>}
+                                        {skill.supportLink ? (
+                                            <Link to={skill.supportLink} className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-white px-3 py-2 text-xs font-black text-slate-700 ring-1 ring-slate-200 hover:bg-slate-50"><BookOpen size={14} />ملف الدعم</Link>
+                                        ) : <span className="rounded-xl bg-slate-100 px-3 py-2 text-xs text-slate-400" title="ملف الدعم غير مرتبط">ملف الدعم</span>}
                                     </div>
                                 </div>
                             </div>
@@ -2872,6 +2865,11 @@ const Reports: React.FC = () => {
                             </div>
                         )}
                     </div>
+                    {compactStudentSkillRows.length > 12 ? (
+                        <button type="button" onClick={() => setShowAllReportSkills((value) => !value)} className="print-hide mt-3 rounded-xl border border-indigo-100 bg-indigo-50 px-4 py-2 text-sm font-black text-indigo-700 hover:bg-indigo-100">
+                            {showAllReportSkills ? 'عرض أول 12 مهارة' : `عرض جميع المهارات (${compactStudentSkillRows.length})`}
+                        </button>
+                    ) : null}
 
                 </Card>
             ) : null}
@@ -2931,7 +2929,7 @@ const Reports: React.FC = () => {
                 </div>
 
                 <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
-                    {compactStudentSkillRows.map((skill) => {
+                    {visibleStudentSkillRows.map((skill) => {
                         const isSelected = selectedReportSkill && getReportSkillKey(selectedReportSkill) === getReportSkillKey(skill);
 
                         return (
@@ -2962,25 +2960,22 @@ const Reports: React.FC = () => {
                                 </button>
 
                                 <div className="print-hide mt-3 grid grid-cols-2 gap-2">
-                                    <Link
-                                        to={skill.lessonLink}
-                                        className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-white px-3 py-2 text-xs font-black text-indigo-700 ring-1 ring-indigo-100 hover:bg-indigo-50"
-                                    >
-                                        <Video size={14} />
-                                        فيديو
-                                    </Link>
-                                    <Link
-                                        to={skill.quizLink}
-                                        className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-white px-3 py-2 text-xs font-black text-amber-700 ring-1 ring-amber-100 hover:bg-amber-50"
-                                    >
-                                        <FileText size={14} />
-                                        تدريب
-                                    </Link>
+                                    {skill.lessonLink ? (
+                                        <Link to={skill.lessonLink} className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-white px-3 py-2 text-xs font-black text-indigo-700 ring-1 ring-indigo-100 hover:bg-indigo-50"><Video size={14} />فيديو</Link>
+                                    ) : <span className="rounded-xl bg-slate-100 px-3 py-2 text-center text-xs font-black text-slate-400" title="موضوع التأسيس غير مرتبط">فيديو</span>}
+                                    {skill.quizLink ? (
+                                        <Link to={skill.quizLink} className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-white px-3 py-2 text-xs font-black text-amber-700 ring-1 ring-amber-100 hover:bg-amber-50"><FileText size={14} />تدريب</Link>
+                                    ) : <span className="rounded-xl bg-slate-100 px-3 py-2 text-center text-xs font-black text-slate-400" title="تدريب التأسيس غير مرتبط">تدريب</span>}
                                 </div>
                             </div>
                         );
                     })}
                 </div>
+                {compactStudentSkillRows.length > 12 ? (
+                    <button type="button" onClick={() => setShowAllReportSkills((value) => !value)} className="print-hide mt-4 rounded-xl border border-indigo-100 bg-indigo-50 px-4 py-2 text-sm font-black text-indigo-700 hover:bg-indigo-100">
+                        {showAllReportSkills ? 'عرض أول 12 مهارة' : `عرض جميع المهارات (${compactStudentSkillRows.length})`}
+                    </button>
+                ) : null}
 
                 {selectedReportSkill ? (
                     <StudentSelectedSkillPanel
