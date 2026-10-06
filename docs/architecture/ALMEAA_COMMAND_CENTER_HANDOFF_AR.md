@@ -1,5 +1,16 @@
 # ALMEAA Command Center — Handoff / Execution State
 
+> **CI single-owner production smoke checkpoint — 2026-10-07**
+> - PR #430 merged into `main`: `3aee9949bebe5b62a593760e76e4e02a55f9e2d2`.
+> - Vercel Production: READY on the exact #430 merge SHA.
+> - Render `almeaacodax-codex`: LIVE on the exact #430 merge SHA.
+> - PLAN 7 push: no-inference runtime status only; full provider/chat/token certification is manual-only.
+> - Remote MCP push: fail-closed boundary proof only; full metadata/discovery/tool scan is manual-only.
+> - Post Deploy is the single automatic owner of paced production role-auth smoke.
+> - Live Role Gate no longer runs on main push; it is PR-local/offline plus manual production verification only.
+> - External closure blocker remains unchanged: trusted OAuth 2.1 IdP + real external MCP client proof.
+
+
 > **POST-MERGE CHECKPOINT — 2026-10-07**
 > - PR #429 merged into `main`: `79d96b2cd0b0834769f2e927c73f6552c2216f24`.
 > - Vercel Production: READY on the exact merge SHA.
