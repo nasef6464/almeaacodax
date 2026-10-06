@@ -1,10 +1,10 @@
 {
   "project": "BIO26",
-  "checkedCanonicalItems": 2091,
-  "uniqueQuestionCodes": 2091,
-  "answerSourceKeyMatches": 2091,
+  "checkedCanonicalItems": 2832,
+  "uniqueQuestionCodes": 2832,
+  "answerSourceKeyMatches": 2832,
   "answerSourceKeyMismatches": 0,
-  "skillRangeMatches": 2091,
+  "skillRangeMatches": 2832,
   "skillRangeMismatches": 0,
   "missingRequiredFields": 0,
   "duplicateQuestionCodes": 0,
@@ -44,7 +44,19 @@
     "BIO26-L33",
     "BIO26-L34",
     "BIO26-L35",
-    "BIO26-L36"
+    "BIO26-L36",
+    "BIO26-L37",
+    "BIO26-L38",
+    "BIO26-L39",
+    "BIO26-L40",
+    "BIO26-L41",
+    "BIO26-L42",
+    "BIO26-L43",
+    "BIO26-L44",
+    "BIO26-L45",
+    "BIO26-L46",
+    "BIO26-L47",
+    "BIO26-L48"
   ],
   "requiredFields": [
     "MainSkill",
@@ -59,5 +71,12 @@
     "foundationReference"
   ],
   "result": "PASS",
-  "note": "Automated cross-check through L36: 2,091/2,091 canonical AI-context items PASS; L36 adds 87/87 source-answer, skill-range, and required-fields PASS."
+  "note": "Effective canonical QA complete: 2,832/2,832 PASS. Base aliases L10-Q025/L35-Q036 excluded and L40-Q092 omitted from indexed shard.",
+  "dedupeAliasExclusions": {
+    "expected": 3,
+    "excluded": 3,
+    "result": "PASS"
+  },
+  "storageMode": "INDEXED_SHARDS_V2",
+  "indexFile": "BIO26_AI_CONTEXT_INDEX.json"
 }
