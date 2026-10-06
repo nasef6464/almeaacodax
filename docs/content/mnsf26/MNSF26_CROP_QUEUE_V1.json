@@ -4,10 +4,11 @@
   "sourcePart": "الحساب/الجبر",
   "sourceFile": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
   "counts": {
-    "queued": 134,
+    "queued": 133,
     "contentReady": 130,
-    "sourceReview": 4,
-    "suppressedExcluded": 4
+    "sourceReview": 3,
+    "suppressedExcluded": 4,
+    "quarantinedExcluded": 1
   },
   "queue": [
     {
@@ -2955,29 +2956,6 @@
       "imageUrl": null
     },
     {
-      "questionCode": "QDR-QNT-MNSF26-P014-Q08",
-      "batch": "013",
-      "pdfPageIndex": 14,
-      "printedPageNumber": 14,
-      "printedQuestionNumber": 8,
-      "sourceItemId": "MNSF26-PDF014-P014-N08",
-      "contentStatus": "HOLD_SOURCE",
-      "cropPriority": "SOURCE_REVIEW",
-      "cropStatus": "PENDING_ORIGINAL_PIXELS",
-      "cropContract": {
-        "keepOriginalPixels": true,
-        "removePrintedQuestionNumberOnly": true,
-        "keepBlankBlueTriangle": true,
-        "repairDashedBorder": true,
-        "trimExcessWhitespace": true,
-        "preserveMathAndOptionsExactly": true,
-        "outputFormat": "webp"
-      },
-      "expectedLocalName": "QDR-QNT-MNSF26-P014-Q08.webp",
-      "imageHash": null,
-      "imageUrl": null
-    },
-    {
       "questionCode": "QDR-QNT-MNSF26-P014-Q09",
       "batch": "013",
       "pdfPageIndex": 14,
@@ -3091,6 +3069,13 @@
       "expectedLocalName": "QDR-QNT-MNSF26-P014-Q13.webp",
       "imageHash": null,
       "imageUrl": null
+    }
+  ],
+  "excluded": [
+    {
+      "questionCode": "QDR-QNT-MNSF26-P014-Q08",
+      "reason": "QUARANTINE_SOURCE_DEFECT",
+      "recoveryCondition": "Only requeue after verified source crop/erratum resolves unit mismatch."
     }
   ]
 }
