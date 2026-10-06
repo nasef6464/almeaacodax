@@ -1,6 +1,7 @@
 import React from 'react';
-import { Loader2, Mic, MicOff, Volume2 } from 'lucide-react';
+import { BrainCircuit, Loader2, Mic, MicOff, Volume2 } from 'lucide-react';
 import { api } from '../../services/api';
+import { SmartTeacherBoard } from './SmartTeacherBoard';
 
 type AssistantContext = "result_review" | "saved_review" | "mistake_review" | "mastery_review";
 
@@ -47,6 +48,7 @@ export const QuestionAssistantPanel: React.FC<{
   );
   const recognitionRef = React.useRef<SpeechRecognitionLike | null>(null);
   const [listening, setListening] = React.useState(false);
+  const [boardOpen, setBoardOpen] = React.useState(false);
   const [pending, setPending] = React.useState(false);
   const [status, setStatus] = React.useState('');
   const [error, setError] = React.useState('');
@@ -128,19 +130,32 @@ export const QuestionAssistantPanel: React.FC<{
 
   return (
     <div className="flex flex-col items-center gap-2 py-1" data-testid="question-assistant-panel">
-      <button
-        type="button"
-        onClick={listening ? stopListening : startListening}
-        disabled={pending}
-        className={`inline-flex h-12 min-w-12 items-center justify-center gap-2 rounded-full px-4 text-sm font-black shadow-sm transition active:scale-95 disabled:cursor-not-allowed disabled:opacity-60 ${
-          listening ? 'bg-rose-600 text-white' : 'bg-violet-600 text-white hover:bg-violet-700'
-        }`}
-        aria-label={listening ? 'إيقاف الاستماع' : 'التحدث مع المعلم الذكي'}
-        title={listening ? 'إيقاف الاستماع' : 'المعلم الذكي الصوتي'}
-      >
-        {pending ? <Loader2 size={20} className="animate-spin" /> : listening ? <MicOff size={20} /> : <Mic size={20} />}
-        <span className="hidden sm:inline">{listening ? 'إيقاف' : 'المعلم الصوتي'}</span>
-      </button>
+      <div className="flex flex-wrap items-center justify-center gap-2">
+        <button
+          type="button"
+          onClick={listening ? stopListening : startListening}
+          disabled={pending}
+          className={`inline-flex h-12 min-w-12 items-center justify-center gap-2 rounded-full px-4 text-sm font-black shadow-sm transition active:scale-95 disabled:cursor-not-allowed disabled:opacity-60 ${
+            listening ? 'bg-rose-600 text-white' : 'bg-violet-600 text-white hover:bg-violet-700'
+          }`}
+          aria-label={listening ? 'إيقاف الاستماع' : 'التحدث مع المعلم الذكي'}
+          title={listening ? 'إيقاف الاستماع' : 'المعلم الذكي الصوتي'}
+        >
+          {pending ? <Loader2 size={20} className="animate-spin" /> : listening ? <MicOff size={20} /> : <Mic size={20} />}
+          <span className="hidden sm:inline">{listening ? 'إيقاف' : 'المعلم الصوتي'}</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => setBoardOpen(true)}
+          disabled={pending}
+          className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-slate-950 px-4 text-sm font-black text-white shadow-sm transition hover:bg-slate-800 active:scale-95 disabled:opacity-60"
+          aria-label="افتح المعلم الذكي"
+          title="افتح المعلم الذكي والسبورة"
+        >
+          <BrainCircuit size={20} />
+          <span>افتح المعلم الذكي</span>
+        </button>
+      </div>
       {status ? (
         <div className="inline-flex items-center gap-1.5 text-[11px] font-bold text-slate-500" aria-live="polite">
           {status.includes('يشرح') ? <Volume2 size={13} /> : null}
@@ -148,6 +163,14 @@ export const QuestionAssistantPanel: React.FC<{
         </div>
       ) : null}
       {error ? <p className="max-w-sm text-center text-[11px] font-bold text-rose-600">{error}</p> : null}
+      <SmartTeacherBoard
+        open={boardOpen}
+        onClose={() => setBoardOpen(false)}
+        questionId={questionId}
+        resultId={resultId}
+        context={context}
+        tutorSessionId={tutorSessionIdRef.current}
+      />
     </div>
   );
 };
