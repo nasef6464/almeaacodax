@@ -1,7 +1,7 @@
 import fs from "node:fs";
-import path from "node:path";
 import mongoose from "mongoose";
 import { env } from "../config/env.js";
+import { locateTaxonomy, unique, type TaxonomyFile } from "./bio26TaxonomySupport.js";
 
 const EXPECTED_PATH_ID = "p_1777779653351";
 const EXPECTED_SUBJECT_ID = "sub_tah_biology_bio26";
@@ -10,51 +10,6 @@ const PROTECTED_LEGACY_SUBJECT_ID = "sub_1784980740570";
 const EXPECTED_MAIN = 29;
 const EXPECTED_SUB = 98;
 const APPLY = process.argv.includes("--apply");
-
-type SubSkill = {
-  sourceSubSkillId: string;
-  id: string;
-  code: string;
-  name: string;
-  order: number;
-  targetFoundationVideoMinutes: number;
-  sourceQuestionOccurrences: number;
-};
-type MainSkill = {
-  sourceMainSkillId: string;
-  id: string;
-  name: string;
-  order: number;
-  sectionId: string;
-  sourceQuestionOccurrences: number;
-  subSkills: SubSkill[];
-};
-type TaxonomyFile = {
-  project: string;
-  status: string;
-  pathId: string;
-  subjectId: string;
-  subjectName: string;
-  protectedLegacySubjectId: string;
-  mainSkillCount: number;
-  subSkillCount: number;
-  sourceQuestionOccurrences: number;
-  canonicalQuestionCount: number;
-  items: MainSkill[];
-};
-
-const locateTaxonomy = () => {
-  const candidates = [
-    path.resolve(process.cwd(), "../ops/bio26/BIO26_TAXONOMY_PRODUCTION.json"),
-    path.resolve(process.cwd(), "ops/bio26/BIO26_TAXONOMY_PRODUCTION.json"),
-    path.resolve(process.cwd(), "../../ops/bio26/BIO26_TAXONOMY_PRODUCTION.json"),
-  ];
-  const found = candidates.find((candidate) => fs.existsSync(candidate));
-  if (!found) throw new Error(`BIO26 production taxonomy not found. Checked: ${candidates.join(", ")}`);
-  return found;
-};
-
-const unique = (values: string[]) => new Set(values).size === values.length;
 
 const validateTaxonomy = (taxonomy: TaxonomyFile) => {
   if (taxonomy.project !== "BIO26" || taxonomy.status !== "FROZEN_PRODUCTION_V1") {
