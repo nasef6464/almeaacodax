@@ -137,16 +137,6 @@ export const buildSkillRecommendation = (
     const foundationTrainingLink = buildFoundationActionLink(actionContext, 'quizzes');
     const foundationSupportLink = buildFoundationActionLink(actionContext, 'support');
 
-    const mainSkillTrainingLink = target.kind === 'main' && recommendedQuiz?.id
-        ? `/quiz/${encodeURIComponent(String(recommendedQuiz.id))}?source=training`
-        : undefined;
-    const subskillFallbackQuiz = recommendedQuiz?.id
-        ? `/quiz/${recommendedQuiz.id}`
-        : `/quiz?mode=self&autostart=1&skillIds=${encodeURIComponent(resolvedSkillId)}`;
-    const subskillLinks = {
-        quizLink: foundationTrainingLink || subskillFallbackQuiz,
-    };
-
     return {
         lessonTitle: displayText(recommendedLesson?.title),
         lessonLink: recommendedTopic ? lessonLink : undefined,
@@ -154,11 +144,7 @@ export const buildSkillRecommendation = (
         lessonTopicTitle: displayText(recommendedTopic?.title || target.skillName),
         foundationTopicLink: recommendedTopic ? lessonLink : undefined,
         quizTitle: displayText(recommendedQuiz?.title || recommendedTopic?.title),
-        quizLink: recommendedTopic
-            ? foundationTrainingLink
-            : target.kind === 'main'
-                ? mainSkillTrainingLink || (recommendedQuiz?.id ? `/quiz/${recommendedQuiz.id}?source=training` : undefined)
-                : subskillFallbackQuiz,
+        quizLink: recommendedTopic ? foundationTrainingLink : undefined,
         supportLink: recommendedTopic ? foundationSupportLink : undefined,
         resourceTitle: displayText(recommendedResource?.title),
         resourceUrl: recommendedResource?.url,
