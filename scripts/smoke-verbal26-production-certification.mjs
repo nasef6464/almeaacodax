@@ -80,6 +80,21 @@ try {
   const studentId = String(me.body?.user?.id || me.body?.user?._id || student.user?.id || "");
   assert(studentId, "student id missing");
 
+  const taxonomy = await req("/taxonomy/bootstrap?phase=full", { token: admin.token });
+  const verbalSections = (taxonomy.body?.sections || []).filter((item) => String(item?.subjectId || "") === "sub_1777779759038");
+  const verbalSkills = (taxonomy.body?.skills || []).filter((item) => String(item?.subjectId || "") === "sub_1777779759038");
+  const verbalSubSkillCount = verbalSkills.reduce((sum, item) => sum + (Array.isArray(item?.subSkills) ? item.subSkills.length : 0), 0);
+  assert(verbalSections.length === 22, `taxonomy sections mismatch: ${verbalSections.length}/22`);
+  assert(verbalSkills.length === 22, `taxonomy main skill records mismatch: ${verbalSkills.length}/22`);
+  assert(verbalSubSkillCount === 76, `taxonomy subskills mismatch: ${verbalSubSkillCount}/76`);
+
+  const coverageResponse = await req("/quizzes/questions?subject=sub_1777779759038&skillLinkStatus=linked&limit=1&page=1&summary=true&noTotal=true&includeCoverage=true&paginate=true", { token: admin.token });
+  const coverage = coverageResponse.body?.coverage || {};
+  assert(Number(coverage.total) === 1050, `question coverage total mismatch: ${coverage.total}/1050`);
+  assert(Number(coverage.mainSkillCount) === 22, `question coverage main skills mismatch: ${coverage.mainSkillCount}/22`);
+  assert(Number(coverage.subSkillCount) === 50, `question coverage used subskills mismatch: ${coverage.subSkillCount}/50`);
+  assert(Object.keys(coverage.sectionQuestionCounts || {}).length === 22, "section question coverage does not include all 22 main skills");
+
   const catalog = await req(`/quizzes/questions?ids=${encodeURIComponent(QUESTION_ID)}&limit=10&page=1`, { token: admin.token });
   const question = asArray(catalog.body).find((q) => String(q?.id || q?._id || q?.canonicalId) === QUESTION_ID);
   assert(question, `VERBAL26 question not visible to admin catalog: ${QUESTION_ID}`);
@@ -139,7 +154,8 @@ try {
     score: submission.body?.score,
     mainSkillId: EXPECTED_SKILL_ID,
     subSkillId: EXPECTED_SUBSKILL_ID,
-    checks: ["question","answer","result","review","retry-guard","results-history","same-attempt-skill-analysis"],
+    taxonomy: { mainSkills: 22, subSkills: 76, usedSubSkills: 50, questions: 1050 },
+    checks: ["taxonomy-ui-lineage","question-bank-coverage","question","answer","result","review","retry-guard","results-history","same-attempt-skill-analysis"],
   }, null, 2));
 } finally {
   if (admin?.token) {
