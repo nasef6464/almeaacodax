@@ -10,6 +10,8 @@ const questionAiContextSchema = z.object({
   speechText: z.string().max(12000).default(""),
   visualDescription: z.string().max(12000).default(""),
   optionTexts: z.array(z.string().max(4000)).max(12).default([]),
+  optionTextsSource: z.string().trim().max(80).default(""),
+  optionTextsVerified: z.boolean().default(false),
   mathExpressions: z.array(questionMathExpressionSchema).max(32).default([]),
   concepts: z.array(z.string().max(240)).max(32).default([]),
   requiredData: z.array(z.string().max(500)).max(64).default([]),
