@@ -9,6 +9,7 @@ const taxonomy = read("server/src/scripts/deployVerbalTaxonomy22.ts");
 const migration = read("server/src/scripts/migrateVerbalTaxonomy22.ts");
 const legacy = read("server/src/scripts/deployVerbalTaxonomy13.ts");
 const ecosystem = read("server/src/scripts/deployVerbalEcosystem.ts");
+const taxonomyRoutes = read("server/src/routes/taxonomy.routes.ts");
 
 const mainIds = [...taxonomy.matchAll(/id:\s*"skill_verbal_(\d{2})"/g)].map((m) => m[0]);
 const subIds = [...taxonomy.matchAll(/id:\s*"(sub_verbal_\d{2}_\d+)"/g)].map((m) => m[1]);
@@ -45,5 +46,8 @@ assert.ok(ecosystem.includes("skillIds: [q.mainSkillId, q.subSkillId]"), "import
 assert.ok(ecosystem.includes("migrateVerbalTaxonomy22"), "canonical 22/76 taxonomy migration must remain wired");
 assert.ok(migration.includes('path.join(process.cwd(), "data", "verbal26_source_ledger.json")'), "migration must support Render server cwd for ledger lookup");
 assert.ok(ecosystem.includes('path.join(process.cwd(), "data", "verbal_approved_bank_v2.json")'), "ecosystem deploy must support Render server cwd for approved bank lookup");
+assert.ok(taxonomyRoutes.includes("const canonicalTaxonomyId"), "taxonomy bootstrap must resolve canonical id before _id");
+assert.ok(taxonomyRoutes.includes("sections.map(canonicalTaxonomyId)"), "staff taxonomy bootstrap must join skills through canonical section ids");
+assert.ok(taxonomyRoutes.includes("const visibleSectionIds = sections.map(canonicalTaxonomyId)"), "public taxonomy bootstrap must join skills through canonical section ids");
 
 console.log("PASS: verbal taxonomy V2 contract — 22 main / 76 stable taxonomy / source-only non-destructive migration guards.");
