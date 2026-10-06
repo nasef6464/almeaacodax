@@ -256,7 +256,19 @@ commandCenterRouter.post(
     if (!current) {
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Draft not found" });
     }
-    if (current.kind === "developer_task") {\n      await recordCommandAudit({\n        principal,\n        action: "draft.apply",\n        draftId: String(current._id),\n        outcome: "rejected",\n        metadata: { reason: "developer_task_is_not_content_apply" },\n      });\n      return res.status(StatusCodes.CONFLICT).json({\n        message: "Developer tasks use the reviewed code-agent handoff and cannot be applied as platform content",\n      });\n    }\n    if (current.status !== "approved") {
+    if (current.kind === "developer_task") {
+      await recordCommandAudit({
+        principal,
+        action: "draft.apply",
+        draftId: String(current._id),
+        outcome: "rejected",
+        metadata: { reason: "developer_task_is_not_content_apply" },
+      });
+      return res.status(StatusCodes.CONFLICT).json({
+        message: "Developer tasks use the reviewed code-agent handoff and cannot be applied as platform content",
+      });
+    }
+    if (current.status !== "approved") {
       return res.status(StatusCodes.CONFLICT).json({
         message: "Draft must be approved before it can be applied",
         status: current.status,
