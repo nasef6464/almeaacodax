@@ -56,8 +56,9 @@ const validateMachineReadable = (item: ManifestItem, code: string) => {
   if (normalizedOptionTexts.length !== 4 || normalizedOptionTexts.some((x: string) => !x)) {
     throw new Error(`BIO26 machine-readable optionTexts missing for ${code}`);
   }
-  if (normalizedOptionTexts.some((x: string) => PLACEHOLDER_OPTION_LABELS.has(x.toUpperCase()))) {
-    throw new Error(`BIO26 machine-readable optionTexts are placeholder labels for ${code}`);
+  const optionTextsSource = String(item?.aiContext?.optionTextsSource || "").trim().toUpperCase();
+  if (optionTextsSource !== "SOURCE_PDF" || item?.aiContext?.optionTextsVerified !== true) {
+    throw new Error(`BIO26 machine-readable optionTexts provenance missing for ${code}`);
   }
   if (!String(item?.aiContext?.readableText || "").trim()) throw new Error(`BIO26 readableText missing for ${code}`);
   if (!String(item?.aiContext?.visualDescription || "").trim()) throw new Error(`BIO26 visualDescription missing for ${code}`);
