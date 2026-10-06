@@ -13,6 +13,7 @@ const results = read('pages/Results.tsx');
 const quizPage = read('pages/QuizPage.tsx');
 const selfQuiz = read('pages/Quiz.tsx');
 const detailedModal = read('components/DetailedAnalysisModal.tsx');
+const quizDetailsModal = read('components/QuizDetailsModal.tsx');
 
 const checks = [];
 const check = (name, fn) => {
@@ -81,6 +82,14 @@ check('detailed skill modal has truthful data, a wide layout, and two Foundation
   assert.ok(detailedModal.includes('to={skill.videoLink}'));
   assert.ok(detailedModal.includes('to={skill.trainingLink}'));
   assert.ok(detailedModal.includes('تفاصيل أكثر — تحليل المهارات'));
+});
+
+check('test details uses the same canonical Foundation actions per skill', () => {
+  assert.ok(quizDetailsModal.includes("buildFoundationActionLink({"));
+  assert.ok(quizDetailsModal.includes("}, 'lessons')"));
+  assert.ok(quizDetailsModal.includes("}, 'quizzes')"));
+  assert.ok(quizDetailsModal.includes('فيديو'));
+  assert.ok(quizDetailsModal.includes('تدريب'));
 });
 
 check('self and prepared quiz clients use canonical main/subskill evidence', () => {
