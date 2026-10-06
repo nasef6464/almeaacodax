@@ -124,8 +124,10 @@ function requireApplyGuard() {
 }
 
 export async function deployVerbalEcosystem() {
-  const bankPath =
-    process.env.VERBAL26_APPROVED_BANK ||
+  const bankPath = process.env.VERBAL26_APPROVED_BANK || [
+    path.join(process.cwd(), "server", "data", "verbal_approved_bank_v2.json"),
+    path.join(process.cwd(), "data", "verbal_approved_bank_v2.json"),
+  ].find((candidate) => fs.existsSync(candidate)) ||
     path.join(process.cwd(), "server", "data", "verbal_approved_bank_v2.json");
   const questionsData = loadAndValidateApprovedBank(bankPath);
 
