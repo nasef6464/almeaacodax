@@ -1,10 +1,12 @@
 # ALMEAA Command Center — Handoff / Execution State
 
 > آخر تحديث: 2026-10-05
-> الفرع التنفيذي: `feat/almeaa-command-center-foundation-2026-10-05`
+> الفرع السابق المدموج: `feat/almeaa-command-center-foundation-2026-10-05`  
+> Merge SHA: `686763d09c40d279b0879ce93943503018c21571`  
+> الفرع الحالي: `feat/almeaa-command-center-execution-mcp-2026-10-06`
 > Issue: #386
 > PR: #387
-> الحالة: **ACTIVE — NOT MERGED TO MAIN YET**
+> الحالة: **FOUNDATION MERGED — EXECUTION + MCP ACTIVE**
 
 ## الهدف النهائي
 
@@ -133,7 +135,10 @@
 7. CC-7 Smart Teacher/Whiteboard.
 8. CC-8 Developer Agent.
 
-## ملاحظة الدمج
+## حالة الدمج
 
-حتى كتابة هذه الوثيقة، PR #387 مفتوح ولم يتم دمجه في `main`.
-أي Agent لاحق يجب أن يفحص حالة الـPR والـrequired checks قبل الدمج.
+PR #387 تم دمجه في `main` بعد نجاح exact-head CI.
+Merge commit:
+`686763d09c40d279b0879ce93943503018c21571`
+
+المرحلة الحالية تعمل على فرع التنفيذ/MCP الجديد ولا يجوز اعتبارها Production قبل PR جديد + CI + merge + deploy verification.
