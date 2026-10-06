@@ -125,17 +125,17 @@ export async function validateCourseReuseDraft(
   const [lessons, quizzes, libraryItems, mainSkills] = await Promise.all([
     lessonIds.length
       ? LessonModel.find(idQuery(lessonIds))
-          .select("id title pathId subjectId sectionId skillIds approvalStatus showOnPlatform type videoUrl quizId")
+          .select("id title description pathId subjectId sectionId skillIds approvalStatus showOnPlatform type duration content videoUrl videoSource interactiveQuestions fileUrl meetingUrl meetingDate recordingUrl joinInstructions showRecordingOnPlatform quizId isLocked")
           .lean()
       : [],
     quizIds.length
       ? QuizModel.find(idQuery(quizIds))
-          .select("id title pathId subjectId sectionId skillIds approvalStatus isPublished showOnPlatform questionIds quizKind")
+          .select("id title description pathId subjectId sectionId skillIds approvalStatus isPublished showOnPlatform questionIds quizKind settings")
           .lean()
       : [],
     libraryIds.length
       ? LibraryItemModel.find(idQuery(libraryIds))
-          .select("id title pathId subjectId sectionId skillIds approvalStatus showOnPlatform type url")
+          .select("id title pathId subjectId sectionId skillIds approvalStatus showOnPlatform type url size")
           .lean()
       : [],
     SkillModel.find({ _id: { $in: input.skillIds } }).select("_id pathId subjectId sectionId").lean(),
