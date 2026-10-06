@@ -149,30 +149,51 @@ async function login(context, config) {
 
   let loginRes;
   let payload = {};
-  for (let attempt = 1; attempt <= 4; attempt += 1) {
-    const csrfRes = await fetch(`${API_BASE_URL}/auth/csrf-token`, {
-      headers: { accept: "application/json" },
-      signal: AbortSignal.timeout(20_000),
-    });
-    const csrfBody = await csrfRes.json().catch(() => ({}));
-    const csrfCookie = String(csrfRes.headers.get("set-cookie") || "").match(/almeaa_csrf_token=([^;]+)/)?.[1] || "";
-    loginRes = await fetch(`${API_BASE_URL}/auth/login`, {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-        "x-csrf-token": csrfBody?.csrfToken || csrfCookie,
-        cookie: csrfCookie ? `almeaa_csrf_token=${csrfCookie}` : "",
-      },
-      body: JSON.stringify({ email: config.email, password: config.password }),
-      signal: AbortSignal.timeout(20_000),
-    });
-    payload = await loginRes.json().catch(() => ({}));
-    if (loginRes.ok || loginRes.status !== 429 || attempt === 4) break;
-    const retryAfterSeconds = Number(loginRes.headers.get("retry-after") || 0);
-    const delayMs = Math.max(retryAfterSeconds * 1000, 1500 * attempt);
-    await new Promise((resolve) => setTimeout(resolve, delayMs));
+  let lastError = "";
+  const maxAttempts = 5;
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    try {
+      const csrfRes = await fetch(`${API_BASE_URL}/auth/csrf-token`, {
+        headers: { accept: "application/json" },
+        signal: AbortSignal.timeout(25_000),
+      });
+      const csrfBody = await csrfRes.json().catch(() => ({}));
+      const csrfCookie = String(csrfRes.headers.get("set-cookie") || "").match(/almeaa_csrf_token=([^;]+)/)?.[1] || "";
+
+      loginRes = await fetch(`${API_BASE_URL}/auth/login`, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          "x-csrf-token": csrfBody?.csrfToken || csrfCookie,
+          cookie: csrfCookie ? `almeaa_csrf_token=${csrfCookie}` : "",
+        },
+        body: JSON.stringify({ email: config.email, password: config.password }),
+        signal: AbortSignal.timeout(25_000),
+      });
+      payload = await loginRes.json().catch(() => ({}));
+
+      if (loginRes.ok) break;
+      if (loginRes.status !== 429 && ![502, 503, 504].includes(loginRes.status)) break;
+
+      const retryAfterSeconds = Number(loginRes.headers.get("retry-after") || 0);
+      const delayMs = Math.max(retryAfterSeconds * 1000, 1500 * attempt);
+      await new Promise((resolve) => setTimeout(resolve, delayMs));
+    } catch (error) {
+      lastError = error instanceof Error ? error.message : String(error);
+      console.warn(`login attempt ${attempt}/${maxAttempts} failed: ${lastError}`);
+      if (attempt < maxAttempts) {
+        await new Promise((resolve) => setTimeout(resolve, 1500 * attempt));
+      }
+    }
   }
-  if (!loginRes?.ok) return { ok: false, reason: `api login ${loginRes?.status || "unknown"}` };
+
+  if (!loginRes?.ok) {
+    const reason = loginRes?.status
+      ? `api login ${loginRes.status}`
+      : `api login unavailable${lastError ? `: ${lastError}` : ""}`;
+    return { ok: false, reason };
+  }
 
   const accessToken =
     String(loginRes.headers.get("set-cookie") || "").match(/almeaa_access_token=([^;]+)/)?.[1] ||
