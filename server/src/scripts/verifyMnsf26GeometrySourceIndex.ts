@@ -124,12 +124,29 @@ if (unsafeUnresolved.length) {
   });
 }
 const missingEvidence = resolved.filter(
-  (test) => !["SEARCH_INDEX", "FILES_READ_PARSED_PAGE_HEADER"].includes(test.evidence) || !test.cropAllowed,
+  (test) => !["SEARCH_INDEX", "FILES_READ_PARSED_PAGE_HEADER", "RAW_PDF_TEXT_HEADER"].includes(test.evidence) || !test.cropAllowed,
 );
 if (missingEvidence.length) {
   failures.push({
     gate: "resolved-page-evidence",
     detail: missingEvidence.map((test) => test.testNumber),
+  });
+}
+
+const ordered = data.tests.slice().sort((a, b) => a.testNumber - b.testNumber);
+const nonMonotonic = ordered.filter((test, index) =>
+  index > 0 &&
+  test.startPdfPage !== null &&
+  ordered[index - 1].startPdfPage !== null &&
+  test.startPdfPage! <= ordered[index - 1].startPdfPage!,
+);
+if (nonMonotonic.length) {
+  failures.push({
+    gate: "start-pages-strictly-increasing",
+    detail: nonMonotonic.map((test) => ({
+      testNumber: test.testNumber,
+      startPdfPage: test.startPdfPage,
+    })),
   });
 }
 
