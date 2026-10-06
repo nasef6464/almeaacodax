@@ -1,0 +1,590 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "sourcePart": "الحساب/الجبر",
+  "sourceFile": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+  "sourceFileSizeBytes": 34783189,
+  "discoveredStructure": {
+    "tests": 63,
+    "resolvedTestStartPages": 62,
+    "unresolvedTestStartPages": [
+      33
+    ],
+    "highestVerifiedStartPdfPage": 122
+  },
+  "tests": [
+    {
+      "testNumber": 1,
+      "testTitle": "الأول",
+      "topic": "قراءة الأعداد والأعداد المحصورة",
+      "startPdfPage": 1,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 2,
+      "testTitle": "الثاني",
+      "topic": "قراءة الأعداد والأعداد المحصورة",
+      "startPdfPage": 3,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 3,
+      "testTitle": "الثالث",
+      "topic": "العمليات على الاعداد",
+      "startPdfPage": 4,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 4,
+      "testTitle": "الرابع",
+      "topic": "العمليات على الاعداد",
+      "startPdfPage": 6,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 5,
+      "testTitle": "الخامس",
+      "topic": "العمليات على الاعداد",
+      "startPdfPage": 8,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 6,
+      "testTitle": "السادس",
+      "topic": "العمليات على الاعداد",
+      "startPdfPage": 10,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 7,
+      "testTitle": "السابع",
+      "topic": "العمليات على الاعداد",
+      "startPdfPage": 12,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 8,
+      "testTitle": "الثامن",
+      "topic": "العمليات على الاعداد",
+      "startPdfPage": 14,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 9,
+      "testTitle": "التاسع",
+      "topic": null,
+      "startPdfPage": 16,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 10,
+      "testTitle": "العاشر",
+      "topic": "ترتيب العمليات – قابلية القسمة",
+      "startPdfPage": 18,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 11,
+      "testTitle": "الحادي عشر",
+      "topic": "ترتيب العمليات – قابلية القسمة",
+      "startPdfPage": 20,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 12,
+      "testTitle": "الثاني عشر",
+      "topic": "الأعداد الأولية - العوامل الأولى",
+      "startPdfPage": 22,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 13,
+      "testTitle": "الثالث عشر",
+      "topic": "الأعداد الأولية - العوامل الأولى",
+      "startPdfPage": 24,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 14,
+      "testTitle": "الرابع عشر",
+      "topic": "الأعداد الأولية - العوامل الأولى",
+      "startPdfPage": 26,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 15,
+      "testTitle": "الخامس عشر",
+      "topic": "جمع الأعداد - المتتابعات - ضرب الأعداد",
+      "startPdfPage": 28,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 16,
+      "testTitle": "السادس عشر",
+      "topic": "جمع الأعداد - المتتابعات - ضرب الأعداد",
+      "startPdfPage": 30,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 17,
+      "testTitle": "السابع عشر",
+      "topic": "جمع الأعداد - المتتابعات - ضرب الأعداد",
+      "startPdfPage": 32,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 18,
+      "testTitle": "الثامن عشر",
+      "topic": "جمع الأعداد - المتتابعات - ضرب الأعداد",
+      "startPdfPage": 34,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 19,
+      "testTitle": "التاسع عشر",
+      "topic": "الدورات - المصافحات الأعمدة - المشابك",
+      "startPdfPage": 36,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 20,
+      "testTitle": "العشرون",
+      "topic": "الكسور الاعتيادية",
+      "startPdfPage": 38,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 21,
+      "testTitle": "الحادي والعشرون",
+      "topic": "الكسور الاعتيادية",
+      "startPdfPage": 40,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 22,
+      "testTitle": "الثاني والعشرون",
+      "topic": "الكسور الاعتيادية",
+      "startPdfPage": 42,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 23,
+      "testTitle": "الثالث والعشرون",
+      "topic": "الكسور الاعتيادية",
+      "startPdfPage": 44,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 24,
+      "testTitle": "الرابع والعشرون",
+      "topic": "الكسور الاعتيادية",
+      "startPdfPage": 46,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 25,
+      "testTitle": "الخامس والعشرون",
+      "topic": "الكسور العشرية",
+      "startPdfPage": 48,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 26,
+      "testTitle": "السادس والعشرون",
+      "topic": "الكسور العشرية",
+      "startPdfPage": 50,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 27,
+      "testTitle": "السابع والعشرون",
+      "topic": "الكسور العشرية",
+      "startPdfPage": 52,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 28,
+      "testTitle": "الثامن والعشرون",
+      "topic": "باقي الواحد – الحل العكسي",
+      "startPdfPage": 54,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 29,
+      "testTitle": "التاسع والعشرون",
+      "topic": "باقي الواحد – الحل العكسي",
+      "startPdfPage": 56,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 30,
+      "testTitle": "الثالثون",
+      "topic": "باقي الواحد – الحل العكسي",
+      "startPdfPage": 58,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 31,
+      "testTitle": "الحادي والثلاثون",
+      "topic": "النسبة المئوية",
+      "startPdfPage": 60,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 32,
+      "testTitle": "الثاني والثلاثون",
+      "topic": "النسبة المئوية",
+      "startPdfPage": 62,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 33,
+      "testTitle": "الثالث والثلاثون",
+      "topic": "النسبة المئوية",
+      "startPdfPage": null,
+      "startPageEvidence": "UNRESOLVED_BETWEEN_VERIFIED_TEST_32_AND_34",
+      "cropAllowed": false,
+      "note": "Search index did not expose the test-33 title page. Do not infer page 63 for cropping until the original title page/pixels are resolved."
+    },
+    {
+      "testNumber": 34,
+      "testTitle": "الرابع والثلاثون",
+      "topic": "النسبة المئوية",
+      "startPdfPage": 64,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 35,
+      "testTitle": "الخامس والثلاثون",
+      "topic": "النسبة المئوية",
+      "startPdfPage": 66,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 36,
+      "testTitle": "السادس والثلاثون",
+      "topic": "النسبة المئوية",
+      "startPdfPage": 68,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 37,
+      "testTitle": "السابع والثلاثون",
+      "topic": "النسبة المئوية",
+      "startPdfPage": 70,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 38,
+      "testTitle": "الثامن والثلاثون",
+      "topic": "النسبة المئوية",
+      "startPdfPage": 72,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 39,
+      "testTitle": "التاسع والثلاثون",
+      "topic": "النسبة المئوية",
+      "startPdfPage": 74,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 40,
+      "testTitle": "الأربعون",
+      "topic": "النسبة المئوية",
+      "startPdfPage": 76,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 41,
+      "testTitle": "الحادي والأربعون",
+      "topic": "التناسب",
+      "startPdfPage": 78,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 42,
+      "testTitle": "الثاني والأربعون",
+      "topic": "التناسب",
+      "startPdfPage": 80,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 43,
+      "testTitle": "الثالث والأربعون",
+      "topic": "التناسب",
+      "startPdfPage": 82,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 44,
+      "testTitle": "الرابع والأربعون",
+      "topic": "التناسب",
+      "startPdfPage": 84,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 45,
+      "testTitle": "الخامس والأربعون",
+      "topic": "أجزاء النسب",
+      "startPdfPage": 86,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 46,
+      "testTitle": "السادس والأربعون",
+      "topic": "السرعة",
+      "startPdfPage": 88,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 47,
+      "testTitle": "السابع والأربعون",
+      "topic": "السرعة",
+      "startPdfPage": 90,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 48,
+      "testTitle": "الثامن والأربعون",
+      "topic": "الأعمار والعملات",
+      "startPdfPage": 92,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 49,
+      "testTitle": "التاسع والأربعون",
+      "topic": "الأعمار والمعادلات",
+      "startPdfPage": 94,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 50,
+      "testTitle": "الخمسون",
+      "topic": "الساعات",
+      "startPdfPage": 96,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 51,
+      "testTitle": "الحادي والخمسون",
+      "topic": "الساعات",
+      "startPdfPage": 98,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 52,
+      "testTitle": "الثاني والخمسون",
+      "topic": "التحويلات والمعادلات",
+      "startPdfPage": 100,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 53,
+      "testTitle": "الثالث والخمسون",
+      "topic": "التحويلات والمعادلات",
+      "startPdfPage": 102,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 54,
+      "testTitle": "الرابع والخمسون",
+      "topic": "التحويلات والمعادلات",
+      "startPdfPage": 104,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 55,
+      "testTitle": "الخامس والخمسون",
+      "topic": "التحويلات والمعادلات",
+      "startPdfPage": 106,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 56,
+      "testTitle": "السادس والخمسون",
+      "topic": "التحويلات والمعادلات",
+      "startPdfPage": 108,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 57,
+      "testTitle": "السابع والخمسون",
+      "topic": "التحويلات والمعادلات",
+      "startPdfPage": 110,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 58,
+      "testTitle": "الثامن والخمسون",
+      "topic": "التحويلات والمعادلات",
+      "startPdfPage": 112,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 59,
+      "testTitle": "التاسع والخمسون",
+      "topic": "التحويلات والمعادلات",
+      "startPdfPage": 114,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 60,
+      "testTitle": "الستون",
+      "topic": "التحويلات والمعادلات",
+      "startPdfPage": 116,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 61,
+      "testTitle": "الواحد والستون",
+      "topic": "التحويلات والمعادلات",
+      "startPdfPage": 118,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 62,
+      "testTitle": "الثاني والستون",
+      "topic": "التحويلات والمعادلات",
+      "startPdfPage": 120,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    },
+    {
+      "testNumber": 63,
+      "testTitle": "الثالث الستون",
+      "topic": "التحويلات والمعادلات",
+      "startPdfPage": 122,
+      "startPageEvidence": "SEARCH_INDEX",
+      "cropAllowed": true,
+      "note": null
+    }
+  ],
+  "sourcePolicy": {
+    "oneBankWithGeometry": true,
+    "originalPixelsRequiredBeforeQuestionCrop": true,
+    "noPageInferenceForCrop": true,
+    "noNewSkills": true
+  }
+}
