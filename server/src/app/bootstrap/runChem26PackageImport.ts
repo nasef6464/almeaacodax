@@ -39,6 +39,25 @@ export async function runChem26PackageImportIfRequested() {
 
   const batchId = requireEnv("QUESTION_PILOT_BATCH_ID").toUpperCase();
   const expectedCount = Number.parseInt(requireEnv("QUESTION_PILOT_EXPECTED_COUNT"), 10);
+
+  if (batchId !== "TAH-CHEM-CHEM26-FULL-V1") throw new Error("Unexpected CHEM26 batch id");
+  if (expectedCount !== 1708) throw new Error("CHEM26 canonical import must contain exactly 1708 new records");
+
+  // Final closure is intentionally idempotent. Once the exact canonical batch is
+  // fully approved, do not touch the expired transport envelope or attempt any
+  // package/image writes on subsequent service restarts.
+  const [closedApprovedCount, closedBatchCount] = await Promise.all([
+    QuestionModel.countDocuments({ "sourceMeta.importBatchId": batchId, approvalStatus: "approved" }),
+    QuestionModel.countDocuments({ "sourceMeta.importBatchId": batchId }),
+  ]);
+  if (closedApprovedCount === expectedCount) {
+    if (closedBatchCount !== expectedCount) {
+      throw new Error(`CHEM26 closed batch count drift: expected ${expectedCount}, received ${closedBatchCount}`);
+    }
+    console.log(`CHEM26_IMPORT_CLOSED_NOOP count=${expectedCount}`);
+    return;
+  }
+
   const transportEncoded = modeRaw.slice(CHEM26_MODE.length + 1);
   let transport: { packageUrl?: string; packageSha256?: string } = {};
   try {
@@ -49,8 +68,6 @@ export async function runChem26PackageImportIfRequested() {
   const packageUrl = String(transport.packageUrl || "").trim();
   const packageSha = String(transport.packageSha256 || "").trim().toLowerCase();
 
-  if (batchId !== "TAH-CHEM-CHEM26-FULL-V1") throw new Error("Unexpected CHEM26 batch id");
-  if (expectedCount !== 1708) throw new Error("CHEM26 canonical import must contain exactly 1708 new records");
   if (!/^[a-f0-9]{64}$/.test(packageSha)) throw new Error("Invalid package SHA-256");
   const parsedUrl = new URL(packageUrl);
   if (parsedUrl.protocol !== "https:" || !parsedUrl.hostname.endsWith(".oaiusercontent.com")) {
