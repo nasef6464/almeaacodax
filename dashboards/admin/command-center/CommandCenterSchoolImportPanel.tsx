@@ -11,6 +11,16 @@ import {
 
 type Issue = { type?: string; message?: string; ref?: string };
 
+const stablePayloadFingerprint = (value: unknown) => {
+  const text = JSON.stringify(value);
+  let hash = 2166136261;
+  for (let index = 0; index < text.length; index += 1) {
+    hash ^= text.charCodeAt(index);
+    hash = Math.imul(hash, 16777619);
+  }
+  return (hash >>> 0).toString(36);
+};
+
 export const CommandCenterSchoolImportPanel: React.FC<{
   onDraftCreated: () => Promise<void>;
   onError: (message: string) => void;
@@ -86,11 +96,11 @@ export const CommandCenterSchoolImportPanel: React.FC<{
         return;
       }
 
-      const stamp = Date.now();
+      const fingerprint = stablePayloadFingerprint(payload);
       await api.createSchoolSetupCommandDraft({
         ...payload,
-        requestId: `school-import-${stamp}`,
-        idempotencyKey: `school-import:${schoolId || schoolName}:${roster.length}:${relations.length}:${stamp}`,
+        requestId: `school-import-${fingerprint}`,
+        idempotencyKey: `school-import:${fingerprint}`,
       });
       setSummary("تم إنشاء Draft المدرسة فقط؛ لا توجد حسابات أو علاقات حية قبل اعتماد وتطبيق بشري.");
       await onDraftCreated();
