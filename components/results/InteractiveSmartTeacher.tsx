@@ -56,6 +56,7 @@ export const InteractiveSmartTeacher: React.FC<{
   const recognitionRef = React.useRef<SpeechRecognitionLike | null>(null);
 
   React.useEffect(() => {
+    if (typeof document === "undefined") return;
     if (!isOpen) {
       recognitionRef.current?.stop();
       recognitionRef.current = null;
@@ -63,8 +64,23 @@ export const InteractiveSmartTeacher: React.FC<{
       if (typeof window !== "undefined" && "speechSynthesis" in window) {
         window.speechSynthesis.cancel();
       }
+      return;
     }
-  }, [isOpen]);
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", onKeyDown);
+      recognitionRef.current?.stop();
+      recognitionRef.current = null;
+      if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+    };
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
