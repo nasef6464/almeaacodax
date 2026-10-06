@@ -4,6 +4,7 @@ import { CommandCenterDraftModel } from "../../../models/CommandCenterDraft.js";
 import { asyncHandler } from "../../../utils/asyncHandler.js";
 import { getCommandPrincipal, requireCommandScope } from "../application/commandAuthorization.js";
 import { recordCommandAudit } from "../application/commandAudit.js";
+import { auditCourse } from "../application/courseAudit.js";
 import {
   courseInventoryQuerySchema,
   courseReuseDraftSchema,
@@ -95,5 +96,15 @@ courseDraftRouter.post(
     });
 
     return res.status(StatusCodes.CREATED).json({ draft, validation });
+  }),
+);
+
+
+courseDraftRouter.get(
+  "/:courseId/audit",
+  requireCommandScope("courses:read"),
+  asyncHandler(async (req, res) => {
+    const audit = await auditCourse(req.params.courseId);
+    return res.json(audit);
   }),
 );
