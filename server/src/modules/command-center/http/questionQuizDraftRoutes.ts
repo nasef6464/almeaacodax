@@ -206,7 +206,7 @@ questionQuizDraftRouter.post(
     await recordCommandAudit({
       principal,
       action: "quiz.update.draft.create",
-      toolId: "update_quiz_questions",
+      toolId: "plan_quiz_question_update",
       draftId: String(draft._id),
       requestId: input.requestId,
       outcome: "success",
