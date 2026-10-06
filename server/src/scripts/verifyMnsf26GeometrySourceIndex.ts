@@ -4,6 +4,7 @@ import path from "path";
 type GeometryTest = {
   testNumber: number;
   lessonNumber: number;
+  lessonName: string;
   startPdfPage: number | null;
   evidence: string;
   cropAllowed: boolean;
@@ -22,7 +23,7 @@ const data = JSON.parse(fs.readFileSync(sourcePath, "utf8")) as {
     resolvedTestStartPages: number;
     unresolvedTestStartPages: number[];
   };
-  lessons: Array<{ lessonNumber: number; tests: number[] }>;
+  lessons: Array<{ lessonNumber: number; name: string; tests: number[] }>;
   tests: GeometryTest[];
 };
 
@@ -111,6 +112,25 @@ if (lessonDeclarations.size !== 11 || lessonMismatches.length) {
           .sort((a, b) => a - b),
       })),
     },
+  });
+}
+
+const lessonNameByNumber = new Map(
+  data.lessons.map((lesson) => [lesson.lessonNumber, String(lesson.name || "").trim()]),
+);
+const sourceSkillLabelMismatches = data.tests.filter((test) => {
+  const expectedName = lessonNameByNumber.get(test.lessonNumber) || "";
+  return !expectedName || String(test.lessonName || "").trim() !== expectedName;
+});
+if (sourceSkillLabelMismatches.length) {
+  failures.push({
+    gate: "source-skill-label-required",
+    detail: sourceSkillLabelMismatches.map((test) => ({
+      testNumber: test.testNumber,
+      lessonNumber: test.lessonNumber,
+      lessonName: test.lessonName,
+      expectedLessonName: lessonNameByNumber.get(test.lessonNumber) || null,
+    })),
   });
 }
 
