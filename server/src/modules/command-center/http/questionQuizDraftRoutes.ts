@@ -188,6 +188,8 @@ questionQuizDraftRouter.post(
         addedQuestionIds: result.diff.addedQuestionIds,
         removedQuestionIds: result.diff.removedQuestionIds,
         retainedQuestionIds: result.diff.retainedQuestionIds,
+        exactDuplicateQuestionIds: result.diff.exactDuplicateQuestionIds,
+        nearDuplicateMatches: result.diff.nearDuplicateMatches,
         mode: result.diff.mode,
         targetWasPublished: result.quiz.isPublished,
         targetShowOnPlatform: result.quiz.showOnPlatform,
@@ -214,6 +216,8 @@ questionQuizDraftRouter.post(
         afterCount: result.diff.afterCount,
         added: result.diff.addedQuestionIds.length,
         removed: result.diff.removedQuestionIds.length,
+        exactDuplicatesSkipped: result.diff.exactDuplicateQuestionIds.length,
+        nearDuplicatesSkipped: result.diff.nearDuplicateCount,
       },
     });
 
