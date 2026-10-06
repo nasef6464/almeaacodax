@@ -26,6 +26,13 @@ const answerHandler=quiz.slice(quiz.indexOf('const handleAnswerSelect'),quiz.ind
 assert.ok(!answerHandler.includes('recordQuestionAttempt('), 'answer changes must not persist evidence');
 assert.ok(quiz.includes('Evidence is committed once per question at finish'));
 assert.ok(quiz.includes('evidenceType,'));
+assert.ok(quiz.includes("const isTargetedMeasurement ="));
+assert.ok(quiz.includes("question.subjectId || question.subject || ''"));
+assert.ok(quiz.includes("getCanonicalQuestionSkillIds(question).some"));
+assert.ok(quiz.includes("run a shorter truthful measurement instead of contaminating the result"));
+assert.ok(quiz.includes("startSelfQuiz({"));
+assert.ok(quiz.includes("pathId: pathId || ''"));
+assert.ok(quiz.includes("subjectId: subjectId || ''"));
 assert.ok(report.includes("String(skill.pathId || '')"));
 assert.ok(report.includes("String(skill.subjectId || '')"));
 assert.ok(questionSchema.includes('Published or review-ready image questions require a written explanation'));
