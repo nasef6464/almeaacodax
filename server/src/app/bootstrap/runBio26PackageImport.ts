@@ -98,7 +98,7 @@ const getOwnerAdminId = async () => {
 };
 
 export async function runBio26PackageImportIfRequested() {
-  const modeRaw = String(process.env.QUESTION_PILOT_MODE || "").trim();
+  const modeRaw = String(process.env.BIO26_IMPORT_MODE || process.env.QUESTION_PILOT_MODE || "").trim();
   if (started || !modeRaw.toLowerCase().startsWith(`${MODE_PREFIX}.`)) return;
   started = true;
 
@@ -120,8 +120,13 @@ export async function runBio26PackageImportIfRequested() {
     throw new Error("BIO26 write phase is fail-closed without PILOT_WRITE_AUTHORIZATION=YES");
   }
 
-  const expectedCount = Number.parseInt(String(process.env.QUESTION_PILOT_EXPECTED_COUNT || EXPECTED_COUNT), 10);
-  const batchId = String(process.env.QUESTION_PILOT_BATCH_ID || BATCH_ID).trim().toUpperCase();
+  const expectedCount = Number.parseInt(
+    String(process.env.BIO26_IMPORT_EXPECTED_COUNT || process.env.QUESTION_PILOT_EXPECTED_COUNT || EXPECTED_COUNT),
+    10,
+  );
+  const batchId = String(process.env.BIO26_IMPORT_BATCH_ID || process.env.QUESTION_PILOT_BATCH_ID || BATCH_ID)
+    .trim()
+    .toUpperCase();
   if (expectedCount !== EXPECTED_COUNT || batchId !== BATCH_ID) throw new Error("Unexpected BIO26 import contract");
 
   const packageUrl = String(transport.packageUrl || "").trim();
