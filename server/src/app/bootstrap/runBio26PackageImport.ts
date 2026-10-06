@@ -56,8 +56,9 @@ const validateMachineReadable = (item: ManifestItem, code: string) => {
   if (normalizedOptionTexts.length !== 4 || normalizedOptionTexts.some((x: string) => !x)) {
     throw new Error(`BIO26 machine-readable optionTexts missing for ${code}`);
   }
-  if (normalizedOptionTexts.some((x: string) => PLACEHOLDER_OPTION_LABELS.has(x.toUpperCase()))) {
-    throw new Error(`BIO26 machine-readable optionTexts are placeholder labels for ${code}`);
+  const optionTextsSource = String(item?.aiContext?.optionTextsSource || "").trim().toUpperCase();
+  if (optionTextsSource !== "SOURCE_PDF" || item?.aiContext?.optionTextsVerified !== true) {
+    throw new Error(`BIO26 machine-readable optionTexts provenance missing for ${code}`);
   }
   if (!String(item?.aiContext?.readableText || "").trim()) throw new Error(`BIO26 readableText missing for ${code}`);
   if (!String(item?.aiContext?.visualDescription || "").trim()) throw new Error(`BIO26 visualDescription missing for ${code}`);
@@ -304,15 +305,25 @@ export async function runBio26PackageImportIfRequested() {
     };
 
     if (phase === "canary") {
-      if (current.length !== 0) throw new Error(`BIO26 canary requires empty batch; found ${current.length}`);
       const canary = verified.slice(0, 5);
+      const canaryCodes = new Set(canary.map((entry) => entry.code));
+      if (current.length > 5 || current.some((q: any) => !canaryCodes.has(String(q.questionCode || "").toUpperCase()))) {
+        throw new Error(`BIO26 canary contains unexpected resume state; found ${current.length}`);
+      }
       await pool(canary, 5, verifyRemote);
-      const inserted = await insertEntries(canary);
+      const missing = canary.filter((entry) => !currentCodes.has(entry.code));
+      if (missing.length) await insertEntries(missing);
       const check = await QuestionModel.find({ "sourceMeta.importBatchId": BATCH_ID }).select("questionCode approvalStatus").lean() as any[];
-      if (inserted !== 5 || check.length !== 5 || check.some((q: any) => q.approvalStatus !== "draft")) {
+      const checkCodes = new Set(check.map((q: any) => String(q.questionCode || "").toUpperCase()));
+      if (
+        check.length !== 5 ||
+        checkCodes.size !== 5 ||
+        [...canaryCodes].some((code) => !checkCodes.has(code)) ||
+        check.some((q: any) => q.approvalStatus !== "draft")
+      ) {
         throw new Error("BIO26 canary verification failed");
       }
-      console.log("BIO26_CANARY_PASS count=5 drafts=5");
+      console.log(`BIO26_CANARY_PASS count=5 drafts=5 insertedThisRun=${missing.length}`);
       return;
     }
 

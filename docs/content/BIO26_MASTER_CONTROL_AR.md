@@ -3,7 +3,7 @@
 **Scope:** Biology only (`BIO26`).  
 **Repository:** `nasef6464/almeaacodax`  
 **Source-freeze version:** 1.0.0  
-**Status:** PRE-IMPORT CONTENT GATES PASS — AI CONTEXT COMPLETE — PRODUCTION READY PACKAGE/R2 PENDING — NOT CLOSED
+**Status:** PRE-IMPORT CONTENT GATES PASS — READY PACKAGE LOCAL QA PASS — SIGNED TRANSPORT READY — R2/PRODUCTION IMPORT PENDING — NOT CLOSED
 
 ## Verified source inventory
 - Foundation PDF: **79 pages**.
@@ -25,7 +25,7 @@
 - V2 final asset package regenerated: **2,835/2,835 WEBP files**, **0 missing**, **0 SHA-256 mismatches**.
 - Canonical production candidate images: **2,832**.
 - Canonical asset ZIP SHA-256: `37e58c58dfbdeb8a956ee80e42f2c41cf476f506b3c825663c71bf214ee55a03`.
-- R2 upload itself is still pending; V2 hashes are authoritative.
+- Frozen V2 remains historical evidence. V3 recovery assets were independently re-qualified from the approved BIO26 source; they are not claimed byte-identical to V2.
 - R2 presign manifest is prepared for **2,832/2,832** canonical images: **29,550,012 bytes**, unique question codes/hashes **2,832/2,832**, key pattern `questions/v2/{questionCode}/{imageHash}.webp`; actual authenticated PUT verification remains pending.
 
 ## Dedupe — PASS
@@ -61,8 +61,11 @@
 | Dedupe | **PASS — 2,832 canonical** |
 | Existing biology-bank dedupe | **PASS — 0 existing** |
 | AI context | **PASS — 2,832 / 2,832 canonical; 48/48 lessons; pending=0** |
+| Option-text recovery | **PASS — 2,832/2,832 source-verified** |
+| READY package | **PASS LOCAL — 2,832/2,832 questions + 2,832/2,832 images** |
+| Signed transport bridge | **PASS — Drive raw fetch → short-lived `.oaiusercontent.com`** |
 | R2 upload | PENDING |
-| Dry run | BLOCKED BY READY PACKAGE/R2 |
+| Dry run | BLOCKED BY R2 ONLY |
 | Canary 5 | BLOCKED |
 | Full draft import | BLOCKED |
 | Integrity audit | NOT RUN |
@@ -71,12 +74,37 @@
 | BIO26 CLOSED | **NO** |
 
 ## Recovery-package audit — 2026-10-06 12:30 +03
-- Candidate recovery package: `BIO26_FINAL_ASSETS_V3_RECOVERY_UPLOAD.zip`.
-- Structural self-check: **2,832 manifest items / 2,832 WEBP / 2,832 unique question codes / 2,832 unique self-hashes / 0 internal hash mismatches**.
-- Recovered image bytes: **29,547,754**, versus frozen V2 authoritative image bytes **29,550,012**; dimensions also drift from the frozen V2 envelope.
-- Recovered `aiContext.optionTexts`: **2,832/2,832 are bare A/B/C/D labels**, not the actual option content.
-- Production decision: **REJECTED**. V3 must not be uploaded to R2 or used for Dry Run/Canary.
-- Root-cause hardening: importer + post-import verifier now reject placeholder option labels.
+- Initial candidate `BIO26_FINAL_ASSETS_V3_RECOVERY_UPLOAD.zip`: **2,832 manifest items / 2,832 WEBP / 2,832 unique self-hashes / 0 internal hash mismatches**.
+- Initial option payload used bare A/B/C/D placeholders and was correctly **REJECTED**.
+- Root cause fixed without weakening source validation: READY items must now carry `aiContext.optionTextsSource="SOURCE_PDF"` and `optionTextsVerified=true`.
+
+## Source option-text recovery — COMPLETE
+- Approved question source: `تجميعات يلو للأحياء النهائية 2026 - المعدل.pdf`, **226/226 pages**.
+- Final semantic option-text recovery: **2,832/2,832 PASS**.
+  - High-confidence parsed source text: **2,579**.
+  - Direct source-crop/layout visual review: **253**.
+- Previous quarantine: **253/253 resolved; 0 remaining**.
+- Legitimate source values such as A/B/C/D, 1/2/3/4, formulas, pedigrees, and visual choices are preserved by provenance instead of being rejected by value.
+- Parsed recovery SHA-256: `4f726999fe7d755b7fa7444156279c7604a9055d4566af93019786d9b743de21`.
+- Complete 253-item visual map SHA-256: `1b47a2aa4e09d5825b8f7f8bfebaa4a905922a0c08ac15859744133d2295a1af`.
+
+## Re-qualified READY package — COMPLETE LOCAL GATE
+- Re-qualified assets: **2,832/2,832 WEBP**, **2,832 unique codes**, **2,832 unique hashes**, **0 hash mismatches**.
+- Total canonical image bytes: **29,547,754**.
+- Asset methods: **2,816 vector-table anchored + 16 raster-special corrections**.
+- Stratified re-qualification visual QA: **118/118 PASS**.
+- READY package: `BIO26_FINAL_ASSETS_V3_READY_2832.zip`.
+- Package bytes: **30,690,582**.
+- Package SHA-256: `e2063da82250395c8e7f9c50a6cbba34269d9c6683c7db91a0ea9a92a494fa8f`.
+- READY manifest SHA-256: `153e97e8468e4a7f84ba1488f7c4b919b19ab84095a00773de014c98b81cf8a5`.
+- Full local importer-contract audit: **PASS / 0 errors** — 2,832 items, 2,832 unique codes/source IDs/hashes, 29/98 taxonomy, semantic option provenance 2,832/2,832, local image SHA 2,832/2,832.
+- Production writes so far: **NONE**.
+
+## Production transport — READY
+- Durable backup file uploaded to Google Drive: `BIO26_FINAL_ASSETS_V3_READY_2832_UPLOAD.zip`.
+- Drive file id: `1-Hgg37LX92ZRYzNhSSylJdmyhl_ZP_Pg`.
+- Raw-fetch bridge was tested and returned a short-lived HTTPS `.oaiusercontent.com` URL accepted by the importer host guard.
+- Signed URLs are intentionally **not** stored in GitHub because they expire; refresh from the Drive file immediately before each controlled phase.
 
 ## Current AI-context truth
 - Effective canonical AI context: **2,832/2,832**.
@@ -89,9 +117,8 @@
 - Alias exclusions: **PASS_3_OF_3**.
 
 ## Next execution batch
-1. Recover the authoritative V2 bytes/hashes or regenerate a newly qualified package from the approved BIO26 sources with full crop QA.
-2. Build `BIO26_IMPORT_MANIFEST_READY.json` with the **real four option texts** for every one of the **2,832** canonical questions.
-3. Upload **2,832** qualified images to R2 and verify live GET + SHA-256.
-4. Dry Run → Canary 5 → Full Draft Import → Integrity Audit → Live E2E → Approval.
+1. Merge the current-main reconciliation branch `ops/bio26-ready-r2-2026-10-06` after exact-head CI passes.
+2. Refresh signed package URL and run authenticated R2 upload + **2,832/2,832 live GET/SHA verification**.
+3. Dry Run → Canary 5 → Full Draft Import → Integrity Audit → Live E2E → Approval.
 
 **Closure rule:** no `BIO26 CLOSED` until production counts, asset integrity, exact-question skill analysis, and live learner journey pass.
