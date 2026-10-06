@@ -81,15 +81,17 @@ Git HEAD always overrides this historical baseline.
 
 آخر تحديث BIO26: 2026-10-06
 
-- PR: #362 — `content/bio26-source-freeze` — Draft / Open / Mergeable.
-- AI completion content SHA: `8f25bcbdac59174aa925e8c3876e147920972329`.
+- Content PR: #362 — `content/bio26-source-freeze`; current HEAD at this checkpoint: `3feacb6e019f761a2b40f889da894898368928f5`.
+- Production plumbing PR: #388 — `ops/bio26-production-closure` from current `main`; dedicated BIO26 subject/taxonomy + staged importer are under CI.
 - Crop/QA: **2,835/2,835 PASS**.
 - Dedupe: **2,832 canonical + 3 aliases PASS**.
 - AI Context effective canonical: **2,832/2,832 PASS**; pending **0**; **48/48 lessons complete**.
 - AI Context storage: **INDEXED_SHARDS_V2** — historical base 2,091 raw items, effective base 2,089 after excluding stale aliases `L10-Q025` and `L35-Q036`; L37–L48 shards add 743 canonical items; `L40-Q092` excluded per frozen dedupe report.
-- AI QA: **2,832/2,832 source-answer PASS**, **2,832/2,832 skill-range PASS**, **2,832/2,832 required-fields PASS**, 0 duplicate question codes, 0 OCR-inferred answers, alias exclusions **3/3 PASS**.
-- R2: manifest **2,832 canonical images / 29,550,012 bytes**; authenticated production PUT + remote hash verification still **NOT RUN**.
-- Import gates: AI gate **CLOSED/PASS**. Dry Run remains **BLOCKED_BY_R2**; Canary 5 / Full Draft Import / Integrity Audit / Live BIO26 E2E / Approval remain gated.
-- CI at AI completion SHA `8f25bcbdac59174aa925e8c3876e147920972329`: Tracked Secret Hygiene **SUCCESS**; PLAN 7 Live AI / Backend Integration / Phase+Handover / Deep Pre-Merge E2E in progress or queued at checkpoint; Public Smoke and Assessment V1 skipped by workflow conditions.
-- BIO26 status: **NOT CLOSED** — next hard gate is authenticated R2 upload + remote hash verification.
+- AI QA: **2,832/2,832 source-answer PASS**, **2,832/2,832 skill-range PASS**, **2,832/2,832 required-fields PASS**, 0 duplicate codes, 0 OCR-inferred answers, alias exclusions **3/3 PASS**.
+- Production subject safety: existing `sub_1784980740570` / **علم البيئة** remains protected and MUST NOT be renamed or repurposed. PR #388 defines dedicated subject `sub_tah_biology_bio26` / **الأحياء** on Tahsili path `p_1777779653351`, with frozen **29 main / 98 subskills** and guarded dry-run/apply.
+- Production importer design in PR #388: fail-closed phases **R2 → dry-run → canary 5 → full draft → verify**, fixed batch `TAH-BIO-BIO26-FULL-V1`, and no write without explicit write authorization.
+- R2 asset package audit remains internally PASS: **2,832 images / 29,550,012 bytes**, canonical ZIP `BIO26_FINAL_ASSETS_V2_CANONICAL.zip`, ZIP SHA-256 `37e58c58dfbdeb8a956ee80e42f2c41cf476f506b3c825663c71bf214ee55a03`, ZIP size **30,134,017 bytes**. However the actual ZIP bytes are **not present in GitHub, workflow artifacts, current Library, or mounted project storage**, so authenticated production PUT + remote hash verification is still **NOT RUN**.
+- Import-payload quality gap: no `BIO26_IMPORT_MANIFEST_READY.json` exists yet and repository search confirms no BIO26 `optionTexts/readableText` payload. Direct indexed PDF text read returns **no readable content** because the question source is image-based. PR #388 therefore requires 4 machine-readable option texts, readableText, visualDescription, explanation, and visual-QA reviewer note for every question before any draft insert.
+- Hard gates: production taxonomy must pass dry-run/apply first; then recover/regenerate the exact audited asset package + complete machine-readable manifest; then R2 verified; then Dry Run → Canary 5 → Full Draft Import → Integrity Audit → Live E2E → Approval.
+- BIO26 status: **NOT CLOSED**. AI/content taxonomy mapping is complete; production closure is intentionally fail-closed on the two package-level gaps above.
 
