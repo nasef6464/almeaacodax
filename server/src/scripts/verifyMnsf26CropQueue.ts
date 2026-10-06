@@ -28,7 +28,7 @@ if (data.bank !== "MNSF26") failures.push({ gate: "bank-code", detail: data.bank
 if (data.queue.length !== 132) {
   failures.push({ gate: "queue-count", detail: data.queue.length });
 }
-if (ready.length !== 129 || sourceReview.length !== 3) {
+if (ready.length !== 130 || sourceReview.length !== 2) {
   failures.push({
     gate: "content-status-counts",
     detail: { ready: ready.length, sourceReview: sourceReview.length },
@@ -70,7 +70,6 @@ if (invalidPendingAssets.length) {
 
 const expectedHoldCodes = new Set([
   "QDR-QNT-MNSF26-P001-Q10",
-  "QDR-QNT-MNSF26-P011-Q19",
   "QDR-QNT-MNSF26-P013-Q15",
 ]);
 const actualHoldCodes = new Set(sourceReview.map((item) => item.questionCode));
