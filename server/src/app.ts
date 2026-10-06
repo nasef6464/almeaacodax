@@ -99,6 +99,7 @@ export function createApp() {
     [
       "/api/quizzes/*/submit",
       "/api/ai/*",
+      "/api/command-center/*",
       "/api/payments/*",
       "/api/auth/me/redeem-access-code",
       "/auth/me/redeem-access-code",
