@@ -1,5 +1,12 @@
 # ALMEAA Command Center — Remote MCP Runbook
 
+> **AUTHORITATIVE LATEST CHECKPOINT — 2026-10-06 18:33 Asia/Riyadh**  
+> PR #405 merged: `3a38e0a8329c28848d7a95c7f38a215266d867df`.  
+> Shared MCP/Command Tool Layer now includes safe quiz-update planning in addition to the previously merged content/workflow/developer tools.  
+> PR #393 is closed as superseded.  
+> Production MCP remains intentionally fail-closed until a trusted OAuth 2.1 IdP is configured.  
+> Next proof: production deploy → protected-resource metadata → server/discover → tools/list → external ChatGPT connection.  
+
 > تحديث إنتاجي 2026-10-06: PR #397 merged at `7c21eca9016146c380b861447967eae399805a1c`; Vercel READY وRender LIVE على نفس SHA.  
 > أول Remote MCP Live Certification وصل إلى النسخة الصحيحة ثم فشل fail-closed لأن Protected Resource Metadata أعاد 404 مع MCP غير مفعّل في production.  
 > لا يتم تفعيل `ALMEAA_MCP_ENABLED=true` قبل وجود Identity Provider موثوق وإعداد issuer/audience/scopes الفعلية.  
@@ -58,12 +65,14 @@ Read:
 - `get_profile`
 - `get_skill_tree`
 - `get_course_inventory`
+- `audit_course` — فحص قراءة فقط للدورة الحالية: المحتوى/الاختبارات/التغطية/الفجوات، بلا توليد أو Apply أو Publish.
 - `list_drafts`
 - `get_workflow`
 
 Draft write:
 - `create_question_drafts`
 - `create_quiz_draft`
+- `plan_quiz_question_update`
 - `create_course_draft`
 - `create_school_setup_draft`
 

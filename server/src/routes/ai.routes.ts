@@ -2081,15 +2081,17 @@ aiRouter.post(
 الأدوات المسموحة داخل Workflow:
 1) get_skill_tree
 2) get_course_inventory
-3) create_question_drafts
-4) create_quiz_draft
-5) plan_quiz_question_update
-6) create_course_draft
-7) create_school_setup_draft
+3) audit_course
+4) create_question_drafts
+5) create_quiz_draft
+6) plan_quiz_question_update
+7) create_course_draft
+8) create_school_setup_draft
 
 قواعد إلزامية:
 - لا تخترع IDs أو أسئلة أو مستخدمين غير موجودين في البيانات المقدمة.
 - للدورات: Reuse-first. استخدم الدروس والفيديوهات والاختبارات والملفات الموجودة أولًا.
+- audit_course أداة قراءة فقط وتحتاج courseId موجودًا صراحة؛ استخدمها عند طلب فحص دورة حالية أو كشف النواقص.
 - لا يوجد Publish/Delete/Approve/Apply في هذه الخطة.
 - إذا كانت البيانات غير كافية، needsClarification=true ولا تُنشئ workflow.
 - create_course_draft يجب أن يستخدم lessonId/quizId/libraryItemId الموجودة فقط.

@@ -10,6 +10,7 @@ const [
   applyQuestion,
   applyQuizUpdate,
   applySchool,
+  courseAudit,
   quizUpdateTools,
   questionModel,
   schoolImportPanel,
@@ -32,6 +33,7 @@ const [
   app,
   env,
   adminPanel,
+  naturalLanguagePanel,
   commandApi,
   aiApi,
   handoff,
@@ -42,6 +44,7 @@ const [
   read("server/src/modules/command-center/application/draftApplyQuestion.ts"),
   read("server/src/modules/command-center/application/draftApplyQuizUpdate.ts"),
   read("server/src/modules/command-center/application/draftApplySchool.ts"),
+  read("server/src/modules/command-center/application/courseAudit.ts"),
   read("server/src/modules/command-center/application/quizUpdateDraftTools.ts"),
   read("server/src/models/Question.ts"),
   read("dashboards/admin/command-center/CommandCenterSchoolImportPanel.tsx"),
@@ -64,6 +67,7 @@ const [
   read("server/src/app.ts"),
   read("server/src/config/env.ts"),
   read("dashboards/admin/command-center/CommandCenterOperationsPanel.tsx"),
+  read("dashboards/admin/command-center/CommandCenterNaturalLanguagePanel.tsx"),
   read("services/apiGroups/commandCenterApi.ts"),
   read("services/apiGroups/aiApi.ts"),
   read("docs/architecture/ALMEAA_COMMAND_CENTER_HANDOFF_AR.md"),
@@ -92,6 +96,12 @@ assert.match(schoolImportAdapter, /supervisors/);
 assert.match(applySchool, /applySchoolDraft/);
 assert.match(applyCourseQuiz, /isPublished:\s*false/);
 assert.match(applyCourseQuiz, /showOnPlatform:\s*false/);
+assert.match(courseAudit, /lesson_training_gap/);
+assert.match(courseAudit, /module_assessment_gap/);
+assert.match(courseAudit, /referenced_quiz_not_found/);
+assert.match(courseAudit, /course_skill_without_content_coverage/);
+assert.match(courseAudit, /automaticGeneration:\s*false/);
+assert.match(courseAudit, /automaticPublish:\s*false/);
 assert.match(commandRoutes, /human_apply_required/);
 assert.match(commandRoutes, /drafts\/:id\/apply/);
 assert.match(draftModel, /"developer_task"/);
@@ -114,6 +124,7 @@ assert.match(workflowService, /executeCommandWorkflow/);
 assert.match(workflowExecutor, /SAFE_WORKFLOW_TOOL_IDS/);
 assert.match(workflowExecutor, /executeSafeCommandTool/);
 assert.match(workflowExecutor, /plan_quiz_question_update/);
+assert.match(workflowExecutor, /audit_course/);
 assert.match(workflowExecutor, /buildQuizUpdateDiff/);
 assert.match(workflowRoutes, /workflows:execute/);
 
@@ -126,6 +137,7 @@ assert.match(mcpOAuth, /timingSafeEqual/);
 assert.match(mcpTools, /mcpToolCatalog/);
 assert.match(mcpTools, /mcpToolExecution/);
 assert.match(mcpToolCatalog, /get_profile/);
+assert.match(mcpToolCatalog, /audit_course/);
 assert.match(mcpToolCatalog, /create_course_draft/);
 assert.match(mcpToolCatalog, /plan_quiz_question_update/);
 assert.match(mcpToolCatalog, /create_school_setup_draft/);
@@ -135,6 +147,7 @@ assert.match(mcpToolCatalog, /developer:write/);
 assert.match(mcpToolCatalog, /developer:read/);
 assert.match(mcpToolExecution, /executeMcpTool/);
 assert.match(mcpToolExecution, /plan_quiz_question_update/);
+assert.match(mcpToolExecution, /audit_course/);
 assert.match(mcpToolExecution, /getApprovedDeveloperTaskHandoff/);
 assert.doesNotMatch(mcpToolCatalog, /name:\s*"publish_/);
 assert.doesNotMatch(mcpToolCatalog, /name:\s*"apply_/);
@@ -160,7 +173,8 @@ assert.match(aiRoutes, /\/admin-command-plan/);
 assert.match(aiRoutes, /Reuse-first/);
 assert.match(aiRoutes, /workflowPlanSchema/);
 assert.match(aiRoutes, /plan_quiz_question_update/);
-assert.match(adminPanel, /أمر ذكي للمنصة/);
+assert.match(aiRoutes, /audit_course/);
+assert.match(naturalLanguagePanel, /أمر ذكي للمنصة/);
 assert.match(adminPanel, /Plan → Execute → Verify/);
 assert.match(commandApi, /executeCommandCenterWorkflow/);
 assert.match(aiApi, /aiAdminCommandPlan/);

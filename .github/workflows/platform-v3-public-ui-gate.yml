@@ -1,5 +1,5 @@
 name: Platform V3 Public UI Gate
-# Visitor audit covers route rendering plus read-only interactive journeys on desktop and mobile.
+# PR audit is intentionally offline: browser rendering + contracts, zero production API traffic.
 
 on:
   workflow_dispatch:
@@ -17,7 +17,9 @@ on:
       - 'styles/**'
       - 'index.html'
       - 'vite.config.ts'
-      - 'scripts/live-public-ui-audit.mjs'
+      - 'scripts/pr-public-ui-offline-audit.mjs'
+      - 'scripts/smoke-membership-pricing-contract.mjs'
+      - 'scripts/smoke-public-open-items-contract.mjs'
       - '.github/workflows/platform-v3-public-ui-gate.yml'
 
 permissions:
@@ -31,9 +33,10 @@ jobs:
   public-ui-live:
     name: Branch public UI — desktop + mobile
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 30
     env:
       VITE_API_URL: /api
+      UI_AUDIT_BASE_URL: http://127.0.0.1:4173
     steps:
       - name: Checkout exact recovery head
         uses: actions/checkout@v4
@@ -58,8 +61,16 @@ jobs:
       - name: Frontend typecheck
         run: npm run typecheck
 
-      - name: Build branch frontend with same-origin API bridge path
+      - name: Build exact branch frontend
         run: npm run build
+
+      - name: Public commerce and auth contracts
+        run: |
+          set -euo pipefail
+          npm run smoke:membership-pricing
+          npm run smoke:public-open-items
+          npm run smoke:auth-frontend
+          npm run smoke:barcode-public-tests
 
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
@@ -78,24 +89,10 @@ jobs:
             sleep 1
           done
           cat /tmp/platform-v3-preview.log || true
-          echo "Branch preview failed to start." >&2
           exit 1
 
-      - name: Audit public and guarded UI routes
-        run: >
-          node scripts/live-public-ui-audit.mjs
-          --base-url http://127.0.0.1:4173
-          --api-target https://almeaacodax-codex.onrender.com/api
-          --run-id platform-v3-public-${{ github.run_id }}
-
-      - name: Upload public UI evidence
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: platform-v3-public-ui-${{ github.run_id }}
-          path: audit-artifacts/platform-v3-public-ui/platform-v3-public-${{ github.run_id }}/
-          if-no-files-found: warn
-          retention-days: 14
+      - name: Offline public and guarded UI audit — zero production API traffic
+        run: node scripts/pr-public-ui-offline-audit.mjs
 
       - name: Stop built frontend
         if: always()

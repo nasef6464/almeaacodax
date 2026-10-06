@@ -45,6 +45,7 @@ export const MCP_TOOL_SCOPES: Record<string, string[]> = {
   get_profile: [],
   get_skill_tree: ["taxonomy:read"],
   get_course_inventory: ["courses:read"],
+  audit_course: ["courses:read"],
   list_drafts: ["drafts:read"],
   create_question_drafts: ["drafts:write"],
   create_quiz_draft: ["drafts:write"],
@@ -124,6 +125,23 @@ export const mcpToolDescriptors: McpToolDescriptor[] = [
     annotations: readAnnotations,
     securitySchemes: oauth("courses:read"),
     _meta: meta(oauth("courses:read"), "Reading course inventory…", "Inventory ready"),
+  },
+  {
+    name: "audit_course",
+    title: "Audit existing course",
+    description: "Read-only audit of an ALMEAA course for missing content, broken quiz references, skill coverage gaps, lesson training gaps, and assessment gaps. It never generates, applies, or publishes content.",
+    inputSchema: {
+      type: "object",
+      properties: {
+        courseId: { type: "string" },
+      },
+      required: ["courseId"],
+      additionalProperties: false,
+    },
+    outputSchema: completeObject,
+    annotations: readAnnotations,
+    securitySchemes: oauth("courses:read"),
+    _meta: meta(oauth("courses:read"), "Auditing course…", "Course audit ready"),
   },
   {
     name: "list_drafts",

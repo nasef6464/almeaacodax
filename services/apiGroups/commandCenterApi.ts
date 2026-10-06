@@ -8,7 +8,7 @@ type ApiRequest = <T>(path: string, options?: {
 
 export type CommandCenterTool = {
   id: string;
-  capability: "taxonomy" | "questions" | "quizzes" | "courses" | "schools" | "operations";
+  capability: "taxonomy" | "questions" | "quizzes" | "courses" | "schools" | "operations" | "developer";
   description: string;
   requiredScope: string;
   risk: "read" | "draft_write" | "sensitive";
@@ -18,7 +18,7 @@ export type CommandCenterTool = {
 
 export type CommandCenterDraft = {
   _id: string;
-  kind: "question_batch" | "quiz" | "quiz_update" | "course" | "school_setup" | "content" | "workflow";
+  kind: "question_batch" | "quiz" | "quiz_update" | "course" | "school_setup" | "content" | "workflow" | "developer_task";
   title: string;
   payload: Record<string, unknown>;
   source: "admin_ui" | "mcp" | "external_agent" | "system";
@@ -124,6 +124,12 @@ export const createCommandCenterApi = (request: ApiRequest) => ({
   ) =>
     request<CourseInventory>(
       `/command-center/courses/inventory${query(input)}`,
+      { token },
+    ),
+
+  auditCommandCenterCourse: (courseId: string, token?: string | null) =>
+    request<Record<string, unknown>>(
+      `/command-center/courses/${encodeURIComponent(courseId)}/audit`,
       { token },
     ),
 

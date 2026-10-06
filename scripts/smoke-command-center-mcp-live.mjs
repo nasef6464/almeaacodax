@@ -70,6 +70,7 @@ for (const required of [
   "get_profile",
   "get_skill_tree",
   "get_course_inventory",
+  "audit_course",
   "list_drafts",
   "create_question_drafts",
   "create_quiz_draft",

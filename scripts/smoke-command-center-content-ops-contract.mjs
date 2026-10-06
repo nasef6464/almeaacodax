@@ -14,6 +14,8 @@ const [
   routes,
   commandApi,
   panel,
+  naturalLanguagePanel,
+  courseAudit,
   schoolImportPanel,
   schoolReader,
   approved,
@@ -28,6 +30,8 @@ const [
   read("server/src/modules/command-center/http/questionQuizDraftRoutes.ts"),
   read("services/apiGroups/commandCenterApi.ts"),
   read("dashboards/admin/command-center/CommandCenterOperationsPanel.tsx"),
+  read("dashboards/admin/command-center/CommandCenterNaturalLanguagePanel.tsx"),
+  read("server/src/modules/command-center/application/courseAudit.ts"),
   read("dashboards/admin/command-center/CommandCenterSchoolImportPanel.tsx"),
   read("dashboards/admin/SchoolsManager/importFileReaders.ts"),
   read("docs/architecture/APPROVED_CONTRACT_EXTENSIONS.json"),
@@ -57,7 +61,18 @@ assert.match(commandApi, /getQuizQuestionDiff/);
 assert.match(commandApi, /createQuizUpdateCommandDraft/);
 
 assert.match(panel, /CommandCenterSchoolImportPanel/);
+assert.match(panel, /CommandCenterNaturalLanguagePanel/);
 assert.ok(panel.split(/\r?\n/).length < 400, "Command Center operations panel must stay below runtime hotspot budget.");
+assert.match(naturalLanguagePanel, /useStore/);
+assert.match(naturalLanguagePanel, /pathId/);
+assert.match(naturalLanguagePanel, /subjectId/);
+assert.match(naturalLanguagePanel, /sectionId/);
+assert.match(naturalLanguagePanel, /aiAdminCommandPlan/);
+assert.match(courseAudit, /lesson_training_gap/);
+assert.match(courseAudit, /module_assessment_gap/);
+assert.match(courseAudit, /referenced_quiz_not_found/);
+assert.match(courseAudit, /automaticGeneration:\s*false/);
+assert.match(courseAudit, /automaticPublish:\s*false/);
 assert.match(schoolImportPanel, /parseImportFile/);
 assert.match(schoolImportPanel, /parseRelationFile/);
 assert.match(schoolImportPanel, /استيراد مدرسة إلى مسودة آمنة/);
@@ -74,6 +89,10 @@ assert.ok(
 assert.ok(
   approvedJson.backendRouteSignatures.includes("questionQuizDraftRouter|POST|/quizzes/:id/update-draft"),
   "Quiz update-draft route must be explicitly approved.",
+);
+assert.ok(
+  approvedJson.backendRouteSignatures.includes("courseDraftRouter|GET|/:courseId/audit"),
+  "Course audit route must be explicitly approved.",
 );
 
 console.log("Command Center content operations contract: PASS");
