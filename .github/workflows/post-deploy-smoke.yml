@@ -19,14 +19,19 @@ jobs:
       SMOKE_ADMIN_PASSWORD: ${{ secrets.SMOKE_ADMIN_PASSWORD || secrets.ROLE_ADMIN_PASSWORD }}
       SMOKE_TEACHER_EMAIL: ${{ secrets.ROLE_TEACHER_EMAIL }}
       SMOKE_TEACHER_PASSWORD: ${{ secrets.ROLE_TEACHER_PASSWORD }}
+      SMOKE_TEACHER_TOKEN: ${{ secrets.SMOKE_TEACHER_TOKEN }}
       SMOKE_SUPERVISOR_EMAIL: ${{ secrets.ROLE_SUPERVISOR_EMAIL }}
       SMOKE_SUPERVISOR_PASSWORD: ${{ secrets.ROLE_SUPERVISOR_PASSWORD }}
+      SMOKE_SUPERVISOR_TOKEN: ${{ secrets.SMOKE_SUPERVISOR_TOKEN }}
       SMOKE_STUDENT_EMAIL: ${{ secrets.ROLE_STUDENT_EMAIL }}
       SMOKE_STUDENT_PASSWORD: ${{ secrets.ROLE_STUDENT_PASSWORD }}
+      SMOKE_STUDENT_TOKEN: ${{ secrets.SMOKE_STUDENT_TOKEN }}
       SMOKE_STUDENT_REDEEMED_EMAIL: ${{ secrets.ROLE_STUDENT_EMAIL }}
       SMOKE_STUDENT_REDEEMED_PASSWORD: ${{ secrets.ROLE_STUDENT_PASSWORD }}
+      SMOKE_STUDENT_REDEEMED_TOKEN: ${{ secrets.SMOKE_STUDENT_REDEEMED_TOKEN }}
       SMOKE_PARENT_EMAIL: ${{ secrets.ROLE_PARENT_EMAIL }}
       SMOKE_PARENT_PASSWORD: ${{ secrets.ROLE_PARENT_PASSWORD }}
+      SMOKE_PARENT_TOKEN: ${{ secrets.SMOKE_PARENT_TOKEN }}
       SMOKE_ALLOW_PASSWORD_LOGIN: "true"
       RELEASE_API_BASE: https://almeaacodax.vercel.app/api
       EXPECTED_RELEASE_SHA: ${{ github.sha }}
@@ -70,11 +75,10 @@ jobs:
             fi
           done
 
-      - name: Prefer dedicated admin credentials over a stale token
+      - name: Prefer role tokens and allow explicit credential fallback
         run: |
-          if [ -n "$SMOKE_ADMIN_EMAIL" ] && [ -n "$SMOKE_ADMIN_PASSWORD" ]; then
-            echo "SMOKE_ADMIN_TOKEN=" >> "$GITHUB_ENV"
-          fi
+          echo "Operational smoke will prefer configured SMOKE_*_TOKEN values."
+          echo "If a token is stale, the smoke script may use the explicitly enabled password fallback."
 
       - name: Release identity and readiness
         env:

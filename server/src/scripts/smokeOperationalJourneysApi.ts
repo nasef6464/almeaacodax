@@ -64,6 +64,42 @@ function extractCookieValue(rawHeader: string | null, cookieName: string) {
   return String(match?.[1] || "").trim();
 }
 
+function authRetryDelayMs(response: Response, attempt: number) {
+  const retryAfter = Number(response.headers.get("retry-after") || 0);
+  if (Number.isFinite(retryAfter) && retryAfter > 0) {
+    return Math.min(Math.ceil(retryAfter * 1000) + 1000, 16 * 60 * 1000);
+  }
+
+  const resetHeader = Number(response.headers.get("ratelimit-reset") || 0);
+  if (Number.isFinite(resetHeader) && resetHeader > 0) {
+    const nowSeconds = Math.floor(Date.now() / 1000);
+    const seconds = resetHeader > nowSeconds ? resetHeader - nowSeconds : resetHeader;
+    if (seconds > 0) {
+      return Math.min(Math.ceil(seconds * 1000) + 1000, 16 * 60 * 1000);
+    }
+  }
+
+  const combinedRateLimit = String(response.headers.get("ratelimit") || "");
+  const combinedMatch = combinedRateLimit.match(/(?:reset=|\bt=)(\d+)/i);
+  if (combinedMatch) {
+    const seconds = Number(combinedMatch[1]);
+    if (Number.isFinite(seconds) && seconds > 0) {
+      return Math.min(Math.ceil(seconds * 1000) + 1000, 16 * 60 * 1000);
+    }
+  }
+
+  // Production auth uses a 15-minute window by default. When a proxy or
+  // provider strips rate-limit headers, wait progressively instead of
+  // hammering the same limiter and producing a false-negative smoke failure.
+  return [60_000, 180_000, 420_000][Math.min(attempt - 1, 2)];
+}
+
+async function waitForAuthRetry(response: Response, attempt: number, label: string) {
+  const delayMs = authRetryDelayMs(response, attempt);
+  console.warn(`[auth] ${label} rate-limited (429); retrying after ${Math.ceil(delayMs / 1000)}s`);
+  await new Promise((resolve) => setTimeout(resolve, delayMs));
+}
+
 async function ensureCsrfContext(forceRefresh = false) {
   if (!forceRefresh && cachedCsrfToken && cachedCsrfCookie) {
     return { csrfToken: cachedCsrfToken, csrfCookie: cachedCsrfCookie };
@@ -172,39 +208,54 @@ async function requestText(path: string): Promise<string> {
   return response.text();
 }
 
-async function login(email: string, password: string): Promise<AuthSession> {
-  const csrf = await ensureCsrfContext();
-  const response = await fetch(`${API_BASE}/auth/login`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-csrf-token": csrf.csrfToken,
-      Cookie: csrf.csrfCookie,
-    },
-    body: JSON.stringify({ email, password }),
-  });
+async function login(email: string, password: string, label = "role"): Promise<AuthSession> {
+  let lastBody = "";
+  let lastStatus = 0;
 
-  const rawBody = await response.text();
-  let payload: any = null;
-  try {
-    payload = rawBody ? JSON.parse(rawBody) : null;
-  } catch {
-    payload = null;
+  for (let attempt = 1; attempt <= 4; attempt += 1) {
+    const csrf = await ensureCsrfContext(attempt > 1);
+    const response = await fetch(`${API_BASE}/auth/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-csrf-token": csrf.csrfToken,
+        Cookie: csrf.csrfCookie,
+      },
+      body: JSON.stringify({ email, password }),
+    });
+
+    const rawBody = await response.text();
+    lastBody = rawBody;
+    lastStatus = response.status;
+
+    if (response.status === 429 && attempt < 4) {
+      await waitForAuthRetry(response, attempt, label);
+      continue;
+    }
+
+    let payload: any = null;
+    try {
+      payload = rawBody ? JSON.parse(rawBody) : null;
+    } catch {
+      payload = null;
+    }
+
+    if (!response.ok) {
+      throw new Error(`POST /auth/login failed (${response.status}): ${rawBody}`);
+    }
+
+    const bodyToken = String(payload?.token || "").trim();
+    const cookieToken = extractCookieValue(response.headers.get("set-cookie"), AUTH_COOKIE_NAME);
+    const token = bodyToken || cookieToken;
+    if (!token) {
+      throw new Error("POST /auth/login succeeded but no token found in JSON or Set-Cookie.");
+    }
+
+    const user = payload?.user || null;
+    return { token, user };
   }
 
-  if (!response.ok) {
-    throw new Error(`POST /auth/login failed (${response.status}): ${rawBody}`);
-  }
-
-  const bodyToken = String(payload?.token || "").trim();
-  const cookieToken = extractCookieValue(response.headers.get("set-cookie"), AUTH_COOKIE_NAME);
-  const token = bodyToken || cookieToken;
-  if (!token) {
-    throw new Error("POST /auth/login succeeded but no token found in JSON or Set-Cookie.");
-  }
-
-  const user = payload?.user || null;
-  return { token, user };
+  throw new Error(`POST /auth/login failed (${lastStatus || "no-status"}): ${lastBody || "rate limit retry exhausted"}`);
 }
 
 async function sessionFromToken(token: string): Promise<AuthSession> {
@@ -219,7 +270,10 @@ async function resolveSession(label: string, email: string, password: string, to
       return await sessionFromToken(normalizedToken);
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
-      throw new Error(`[${label}] token session failed: ${message}`);
+      if (!SMOKE_ALLOW_PASSWORD_LOGIN || !email || !password) {
+        throw new Error(`[${label}] token session failed: ${message}`);
+      }
+      console.warn(`[${label}] token session unavailable; falling back to explicit password login`);
     }
   }
 
@@ -230,7 +284,7 @@ async function resolveSession(label: string, email: string, password: string, to
   }
 
   try {
-    return await login(email, password);
+    return await login(email, password, label);
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     throw new Error(`[${label}] login failed for ${email}: ${message}`);
