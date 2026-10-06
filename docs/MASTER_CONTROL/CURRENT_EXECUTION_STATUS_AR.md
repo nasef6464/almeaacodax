@@ -76,3 +76,15 @@ Ruleset: `Protect main`
 `main@e60a8f563dd406098378df70857423455739ef7a`
 
 Git HEAD always overrides this historical baseline.
+
+## BIO26 operational lane — 2026-10-06
+
+- Scope: الأحياء فقط، batch `TAH-BIO-BIO26-FULL-V1`.
+- Content gates: source/crop/dedupe/answers/taxonomy PASS; canonical **2,832**; taxonomy **29/98**.
+- AI context: **2,832/2,832**, **48/48** lessons, pending=0; source-answer/skill-range/required-fields all PASS.
+- Production plumbing: PR #388 merged; dedicated subject `sub_tah_biology_bio26`; legacy `علم البيئة` remains protected.
+- Recovery package V3 audit: 2,832 items/images and self-hashes valid, but image bytes/geometry drift from frozen V2 and all `optionTexts` are bare A/B/C/D placeholders; production use rejected.
+- Hardening branch: `ops/bio26-production-ready-hardening-2026-10-06` from `main@ac03c73b72c9bd20bd72becd047f66932b237307`.
+- Importer and post-import verifier now fail closed on placeholder option text labels.
+- Current gate: qualified READY package + R2 remote verification. Dry Run/Canary/Full/Integrity/Live E2E/Approval remain not run.
+- Closure rule: do not mark BIO26 CLOSED before all production gates and live learner journey pass.
