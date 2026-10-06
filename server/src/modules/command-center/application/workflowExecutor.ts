@@ -223,14 +223,13 @@ const createSchoolDraftStep = async (
   };
 };
 
-export async function executeSafeWorkflowTool(input: {
-  workflowId: string;
-  stepId: string;
+export async function executeSafeCommandTool(input: {
   toolId: SafeWorkflowToolId;
   toolInput: unknown;
   principal: CommandPrincipal;
+  idempotencyKey: string;
 }) {
-  const idempotencyKey = scopedStepKey(input.workflowId, input.stepId);
+  const idempotencyKey = input.idempotencyKey;
 
   if (input.toolId === "get_skill_tree") {
     const query = (input.toolInput || {}) as Record<string, unknown>;
@@ -269,6 +268,21 @@ export async function executeSafeWorkflowTool(input: {
   }
 
   throw asError(`Unsupported workflow tool: ${String(input.toolId)}`);
+}
+
+export async function executeSafeWorkflowTool(input: {
+  workflowId: string;
+  stepId: string;
+  toolId: SafeWorkflowToolId;
+  toolInput: unknown;
+  principal: CommandPrincipal;
+}) {
+  return executeSafeCommandTool({
+    toolId: input.toolId,
+    toolInput: input.toolInput,
+    principal: input.principal,
+    idempotencyKey: scopedStepKey(input.workflowId, input.stepId),
+  });
 }
 
 export async function verifyWorkflowStepOutputs(outputs: Array<Record<string, unknown>>) {
