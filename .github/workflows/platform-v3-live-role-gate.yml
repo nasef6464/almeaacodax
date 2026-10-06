@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      PRODUCTION_API_BASE_URL: https://almeaacodax-codex.onrender.com/api
+      UI_AUDIT_API_BASE_URL: https://almeaacodax-codex.onrender.com/api
       ROLE_STUDENT_EMAIL: ${{ secrets.ROLE_STUDENT_EMAIL }}
       ROLE_STUDENT_PASSWORD: ${{ secrets.ROLE_STUDENT_PASSWORD }}
       ROLE_ADMIN_EMAIL: ${{ secrets.ROLE_ADMIN_EMAIL }}
