@@ -59,6 +59,7 @@ const normalizeText = (value: string) =>
 
 export async function validateQuestionDraftBatch(
   input: z.infer<typeof questionDraftBatchSchema>,
+  options: { excludeQuestionIds?: string[] } = {},
 ) {
   const skillIds = [...new Set(input.questions.map((question) => question.skillId))];
   const skills = await SkillModel.find({ _id: { $in: skillIds } })
@@ -67,7 +68,11 @@ export async function validateQuestionDraftBatch(
   const skillById = new Map(skills.map((skill) => [String(skill._id), skill]));
 
   const subjectIds = [...new Set(input.questions.map((question) => question.subjectId))];
-  const existingQuestions = await QuestionModel.find({ subjectId: { $in: subjectIds } })
+  const excludedQuestionIds = [...new Set((options.excludeQuestionIds || []).map(String).filter(Boolean))];
+  const existingQuestions = await QuestionModel.find({
+    subjectId: { $in: subjectIds },
+    ...(excludedQuestionIds.length ? { id: { $nin: excludedQuestionIds } } : {}),
+  })
     .select("id text subjectId skillId subSkillId skillIds")
     .lean();
   const existingByNormalizedText = new Map<string, typeof existingQuestions[number]>();
