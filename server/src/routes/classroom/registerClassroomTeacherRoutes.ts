@@ -5,6 +5,7 @@ import { Types } from "mongoose";
 import { z } from "zod";
 import { requireAuth, requireRole } from "../../middleware/auth.js";
 import { ClassroomSessionModel } from "../../models/ClassroomSession.js";
+import { CommandCenterDraftModel } from "../../models/CommandCenterDraft.js";
 import { GroupModel } from "../../models/Group.js";
 import { QuestionModel } from "../../models/Question.js";
 import { TeachingAssignmentModel } from "../../models/TeachingAssignment.js";
@@ -118,6 +119,56 @@ export function registerClassroomTeacherRoutes(classroomRouter: Router) {
         startedAt: session.startedAt || session.createdAt,
         createdAt: session.createdAt,
       },
+    });
+  }));
+
+  classroomRouter.get("/teacher/prepared-plans", requireAuth, requireRole(["teacher", "admin"]), asyncHandler(async (req, res) => {
+    const schoolId = z.string().min(1).parse(req.query.schoolId);
+    const teacherId = req.authUser!.role === "teacher"
+      ? String(req.authUser!.id)
+      : String(req.query.teacherId || req.authUser!.id);
+    if (req.authUser!.role === "teacher" && !(await ensureTeacherSchoolAccess(req.authUser!, schoolId))) {
+      return res.status(StatusCodes.FORBIDDEN).json({ message: "Teacher is not assigned to this school" });
+    }
+    if (!(await smartClassroomEnabled(schoolId))) {
+      return res.status(StatusCodes.FORBIDDEN).json({ message: "Smart Classroom is not enabled for this school" });
+    }
+
+    const plans = await CommandCenterDraftModel.find({
+      kind: "content",
+      status: "approved",
+      "payload.operation": "smart_classroom_session_plan",
+      "payload.schoolId": schoolId,
+      "payload.teacherId": teacherId,
+      "payload.policy.teacherLaunchRequired": true,
+    })
+      .select("_id title payload reviewedAt reviewNotes createdAt")
+      .sort({ reviewedAt: -1, createdAt: -1 })
+      .limit(30)
+      .lean();
+
+    return res.json({
+      plans: plans.map((draft: any) => ({
+        draftId: String(draft._id),
+        title: String(draft.title || "خطة حصة ذكية"),
+        schoolId: String(draft.payload?.schoolId || ""),
+        classId: String(draft.payload?.classId || ""),
+        teacherId: String(draft.payload?.teacherId || ""),
+        questionIds: Array.isArray(draft.payload?.questionIds)
+          ? draft.payload.questionIds.map(String)
+          : [],
+        day: String(draft.payload?.day || ""),
+        period: draft.payload?.period ?? null,
+        subjectName: String(draft.payload?.subjectName || ""),
+        className: String(draft.payload?.className || ""),
+        publishedMode: draft.payload?.publishedMode === "batch" ? "batch" : "single",
+        teachingGoal: String(draft.payload?.teachingGoal || ""),
+        boardOpeningPrompt: String(draft.payload?.boardOpeningPrompt || ""),
+        skillIds: Array.isArray(draft.payload?.skillIds)
+          ? draft.payload.skillIds.map(String)
+          : [],
+        reviewedAt: draft.reviewedAt || null,
+      })),
     });
   }));
 
