@@ -128,8 +128,12 @@ export async function runBio26PackageImportIfRequested() {
   const packageSha = String(transport.packageSha256 || "").trim().toLowerCase();
   if (!/^[a-f0-9]{64}$/.test(packageSha)) throw new Error("Invalid BIO26 package SHA-256");
   const parsedUrl = new URL(packageUrl);
-  if (parsedUrl.protocol !== "https:" || !parsedUrl.hostname.endsWith(".oaiusercontent.com")) {
-    throw new Error("BIO26 package URL must be a short-lived HTTPS oaiusercontent URL");
+  const approvedPackageHosts = [".oaiusercontent.com", ".r2.dev"];
+  if (
+    parsedUrl.protocol !== "https:" ||
+    !approvedPackageHosts.some((suffix) => parsedUrl.hostname.toLowerCase().endsWith(suffix))
+  ) {
+    throw new Error("BIO26 package URL must use an approved HTTPS transport host");
   }
 
   const [subject, protectedLegacy, skills, foreignCodes] = await Promise.all([
