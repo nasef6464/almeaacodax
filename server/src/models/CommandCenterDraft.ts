@@ -33,7 +33,7 @@ const commandCenterDraftSchema = new Schema(
     createdBy: { type: String, required: true, index: true },
     createdByType: {
       type: String,
-      enum: ["admin_session", "api_key", "system"],
+      enum: ["admin_session", "api_key", "oauth", "system"],
       required: true,
     },
     requestId: { type: String, default: "", index: true },
