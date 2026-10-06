@@ -129,6 +129,9 @@ jobs:
       - name: Question pilot import contract
         run: node scripts/smoke-question-pilot-import-contract.mjs
 
+      - name: BIO26 import and final closure contract
+        run: npm run smoke:bio26-import-runner
+
       - name: Teaching fingerprint V1 contract
         run: node scripts/smoke-teaching-fingerprint-v1-contract.mjs
 
