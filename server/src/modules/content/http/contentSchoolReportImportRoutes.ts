@@ -1,11 +1,9 @@
 import { Router } from "express";
-import bcrypt from "bcryptjs";
 import { StatusCodes } from "http-status-codes";
 import { requireAuth, requireRole } from "../../../middleware/auth.js";
 import { AccessCodeModel } from "../../../models/AccessCode.js";
 import { B2BPackageModel } from "../../../models/B2BPackage.js";
 import { GroupModel } from "../../../models/Group.js";
-import { SchoolMembershipModel } from "../../../models/SchoolMembership.js";
 import { QuizResultModel } from "../../../models/QuizResult.js";
 import { UserModel } from "../../../models/User.js";
 import { asyncHandler } from "../../../utils/asyncHandler.js";
@@ -13,7 +11,8 @@ import { buildPaginatedResponse, resolvePagination } from "../../../utils/pagina
 import { schoolImportSchema } from "./schoolOperationsSchemas.js";
 import { buildDocumentQuery } from "../infrastructure/contentDocumentQuery.js";
 import { assertSchoolManagementScope } from "../application/schoolOperationsScope.js";
-import { getModelDocumentId, uniqueStrings } from "../application/schoolOperationsUtilities.js";
+import { getModelDocumentId } from "../application/schoolOperationsUtilities.js";
+import { importSchoolStudents } from "../application/schoolStudentImportService.js";
 
 export const contentSchoolReportImportRouter = Router();
 
@@ -191,134 +190,18 @@ contentSchoolReportImportRouter.post(
       return res.status(StatusCodes.FORBIDDEN).json({ message: "You cannot manage this school" });
     }
 
-    const schoolId = school.id || String(school._id);
-    const existingClasses = await GroupModel.find({ type: "CLASS", parentId: schoolId }).sort({ createdAt: -1 });
-    const classById = new Map(existingClasses.map((item) => [item.id || String(item._id), item]));
-    const classByName = new Map(existingClasses.map((item) => [item.name.trim().toLowerCase(), item]));
-    let currentSchoolClassIds = uniqueStrings(existingClasses.flatMap((item) => [item.id, String(item._id)]));
-    const credentials: Array<{ name: string; email: string; password: string; className?: string }> = [];
-    const importedUsers: any[] = [];
-
-    for (const row of payload.rows) {
-      let targetClass = row.classId ? classById.get(row.classId) : undefined;
-
-      if (!targetClass && row.className?.trim()) {
-        targetClass = classByName.get(row.className.trim().toLowerCase());
-      }
-
-      if (!targetClass && row.className?.trim()) {
-        targetClass = await GroupModel.create({
-          id: `class_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
-          name: row.className.trim(),
-          type: "CLASS",
-          parentId: schoolId,
-          ownerId: req.authUser?.id,
-          supervisorIds: [],
-          studentIds: [],
-          courseIds: [],
-          createdAt: Date.now(),
-          totalStudents: 0,
-          totalSupervisors: 0,
-          totalCourses: 0,
-        });
-
-        const createdClassId = targetClass.id || String(targetClass._id);
-        classById.set(createdClassId, targetClass);
-        classByName.set(targetClass.name.trim().toLowerCase(), targetClass);
-        currentSchoolClassIds = uniqueStrings([...currentSchoolClassIds, createdClassId, String(targetClass._id)]);
-      }
-
-      const generatedPassword = row.password || `Nn@${Math.floor(100000 + Math.random() * 900000)}`;
-      const passwordHash = await bcrypt.hash(generatedPassword, 10);
-      const normalizedEmail = row.email.toLowerCase().trim();
-      const classId = targetClass ? targetClass.id || String(targetClass._id) : undefined;
-      const existingUser = await UserModel.findOne({ email: normalizedEmail }).select("groupIds").lean();
-      const existingGroupIds = Array.isArray(existingUser?.groupIds) ? existingUser.groupIds.map(String) : [];
-      const nextGroupIds = uniqueStrings([
-        ...existingGroupIds.filter((id) => !currentSchoolClassIds.includes(id)),
-        ...(classId ? [classId] : []),
-      ]);
-
-      const user = await UserModel.findOneAndUpdate(
-        { email: normalizedEmail },
-        {
-          name: row.name.trim(),
-          email: normalizedEmail,
-          passwordHash,
-          role: "student",
-          isActive: true,
-          schoolId,
-          groupIds: nextGroupIds,
-        },
-        {
-          upsert: true,
-          new: true,
-          setDefaultsOnInsert: true,
-        },
-      );
-
-      const studentId = user.id || String(user._id);
-      const studentIdAliases = uniqueStrings([user.id, String(user._id)]);
-      await SchoolMembershipModel.findOneAndUpdate(
-        { userId: String(user._id), schoolId: String(school._id), role: "student" },
-        { $set: { status: "active" } },
-        { upsert: true, new: true, setDefaultsOnInsert: true },
-      );
-      await GroupModel.updateMany(
-        { type: "CLASS", parentId: schoolId },
-        { $pull: { studentIds: { $in: studentIdAliases } } },
-      );
-      if (classId) {
-        await GroupModel.findOneAndUpdate(buildDocumentQuery(classId), { $addToSet: { studentIds: studentId } });
-      }
-
-      importedUsers.push(user);
-      credentials.push({
-        name: row.name.trim(),
-        email: normalizedEmail,
-        password: generatedPassword,
-        className: targetClass?.name,
-      });
-    }
-
-    const studentIds = importedUsers.map((user) => user.id || String(user._id));
-
-    await GroupModel.findOneAndUpdate(
-      buildDocumentQuery(schoolId),
-      {
-        $addToSet: { studentIds: { $each: studentIds } },
-        $set: { totalStudents: await UserModel.countDocuments({ schoolId, role: "student" }) },
+    const result = await importSchoolStudents({
+      schoolId: String(school._id),
+      actorId: String(req.authUser!.id),
+      rows: payload.rows,
+      policy: {
+        createMissingUsers: true,
+        createMissingClasses: true,
+        resetExistingPasswords: false,
+        allowCrossSchoolTransfer: false,
       },
-      { new: true },
-    );
-
-    const latestClasses = await GroupModel.find({ type: "CLASS", parentId: schoolId });
-    await Promise.all(
-      latestClasses.map(async (group) => {
-        const classId = group.id || String(group._id);
-        const count = await UserModel.countDocuments({ role: "student", groupIds: classId });
-        await GroupModel.findOneAndUpdate(buildDocumentQuery(classId), { $set: { totalStudents: count } });
-      }),
-    );
-
-    const [updatedGroups, updatedUsers] = await Promise.all([
-      GroupModel.find({
-        $or: [{ _id: school._id }, { id: schoolId }, { parentId: schoolId }],
-      }).sort({ createdAt: -1 }),
-      UserModel.find({ schoolId }).select("-passwordHash").sort({ createdAt: -1 }),
-    ]);
-
-    return res.status(StatusCodes.CREATED).json({
-      summary: {
-        totalRows: payload.rows.length,
-        imported: credentials.length,
-        classesTouched: Array.from(
-          new Set(credentials.map((item) => item.className).filter(Boolean)),
-        ).length,
-      },
-      credentials,
-      groups: updatedGroups,
-      users: updatedUsers,
     });
+
+    return res.status(StatusCodes.CREATED).json(result);
   }),
 );
