@@ -20,10 +20,12 @@ assert.ok(results.includes('buildFoundationActionLink(foundationActionContext, \
 assert.ok(results.includes("buildFoundationActionLink(foundationActionContext, 'support')"));
 assert.ok(results.includes("filter((item) => item.status === 'weak').slice(0, 10)"));
 assert.ok(results.includes('ملف الدعم'));
+assert.ok(results.includes('videoLink: item.lessonLink'));
+assert.ok(results.includes('trainingLink: item.quizLink'));
 assert.ok(reportRows.includes("buildFoundationActionLink(foundationActionContext, 'lessons')"));
 assert.ok(reportRows.includes("buildFoundationActionLink(foundationActionContext, 'quizzes')"));
 assert.ok(reportRows.includes("buildFoundationActionLink(foundationActionContext, 'support')"));
-assert.ok(reportRows.includes('limit = 10'));
+assert.ok(reportRows.includes('limit?: number'));
 assert.ok(!reportRows.includes("recommendation.foundationTopicLink || '/courses'"));
 assert.ok(foundationTarget.includes("kind: 'sub'"));
 assert.ok(foundationTarget.includes('item.subSkills?.find'));
