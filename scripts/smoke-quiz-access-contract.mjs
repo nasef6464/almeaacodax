@@ -203,6 +203,12 @@ check('foundation admin treats topic lock as package access instead of readiness
   }
 });
 
+check('training result settings show analysis before returning to source', () => {
+  assertIncludes(quizPageSource, 'const resolvedQuizSettings = resolveQuizSettings(quiz)');
+  assertIncludes(quizPageSource, 'resolvedQuizSettings.showResultsReport !== true');
+  assertIncludes(quizPageSource, "searchParams.get('returnOnFinish') === '1'");
+});
+
 check('server paid quiz submission respects training and test package scopes separately', () => {
   assertIncludes(quizRoutesSource, 'const paidContentTypes = (quiz: any, source?: string) =>');
   assertIncludes(quizRoutesSource, 'const sourceContentType = (source?: string) =>');
