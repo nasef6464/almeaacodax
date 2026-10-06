@@ -62,7 +62,7 @@ if (
     },
   });
 }
-if (resolved.length !== 48 || JSON.stringify(unresolved) !== JSON.stringify([4, 6])) {
+if (resolved.length !== 50 || unresolved.length !== 0) {
   failures.push({
     gate: "resolved-start-pages",
     detail: { resolved: resolved.length, unresolved },
@@ -78,7 +78,7 @@ if (unsafeUnresolved.length) {
   });
 }
 const missingEvidence = resolved.filter(
-  (test) => test.evidence !== "SEARCH_INDEX" || !test.cropAllowed,
+  (test) => !["SEARCH_INDEX", "FILES_READ_PARSED_PAGE_HEADER"].includes(test.evidence) || !test.cropAllowed,
 );
 if (missingEvidence.length) {
   failures.push({
