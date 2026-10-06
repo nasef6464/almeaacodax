@@ -1946,17 +1946,29 @@ const DetailedAnalysis = ({ onBack, result }: { onBack: () => void; result: Quiz
   const { skills, lessons, quizzes, libraryItems, questions, topics, subjects, sections } = useStore();
   const analysisItems = (result.skillsAnalysis || [])
     .map((item) => {
+      const taxonomyEntry = resolveResultSkillTaxonomy(item.skillId, skills);
       const recommendation = getSkillRecommendation(item, skills, lessons, quizzes, libraryItems, questions, topics);
+      const skillId = item.skillId || taxonomyEntry?.id;
+      const pathId = item.pathId || taxonomyEntry?.pathId;
+      const subjectId = item.subjectId || taxonomyEntry?.subjectId;
+      const sectionId = item.sectionId || taxonomyEntry?.sectionId;
+      const foundationActionContext = { pathId, subjectId, skillId };
       return {
         ...item,
+        ...recommendation,
+        skillId,
+        pathId,
+        subjectId,
+        sectionId,
         subjectName:
           recommendation.subjectName ||
-          (item.subjectId ? displayText(subjects.find((subject) => subject.id === item.subjectId)?.name) : undefined),
+          (subjectId ? displayText(subjects.find((subject) => subject.id === subjectId)?.name) : undefined),
         sectionName:
           recommendation.sectionName ||
           displayText(item.section) ||
-          (item.sectionId ? displayText(sections.find((section) => section.id === item.sectionId)?.name) : undefined),
-        ...recommendation,
+          (sectionId ? displayText(sections.find((section) => section.id === sectionId)?.name) : undefined),
+        lessonLink: recommendation.lessonLink || buildFoundationActionLink(foundationActionContext, 'lessons'),
+        quizLink: recommendation.quizLink || buildFoundationActionLink(foundationActionContext, 'quizzes'),
       };
     })
     .sort((a, b) => a.mastery - b.mastery);
@@ -2004,13 +2016,13 @@ const DetailedAnalysis = ({ onBack, result }: { onBack: () => void; result: Quiz
             </div>
             {s.actionText ? <p className="mt-3 text-xs font-bold leading-6 text-gray-600">{s.actionText}</p> : null}
             <div className="mt-3 flex flex-wrap gap-2">
-              {s.lessonTitle ? (
-                <Link to={s.lessonLink || '/reports'} className="inline-flex rounded-xl border border-indigo-100 bg-indigo-50 px-3 py-1.5 text-xs font-black text-indigo-700 transition-colors hover:bg-indigo-100 sm:text-sm">
-                  راجع الدرس
+              {s.lessonLink ? (
+                <Link to={s.lessonLink} className="inline-flex rounded-xl border border-indigo-100 bg-indigo-50 px-3 py-1.5 text-xs font-black text-indigo-700 transition-colors hover:bg-indigo-100 sm:text-sm">
+                  راجع الشرح
                 </Link>
               ) : null}
-              {s.quizTitle ? (
-                <Link to={s.quizLink || '/dashboard?tab=saher'} className="inline-flex rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-1.5 text-xs font-black text-emerald-700 transition-colors hover:bg-emerald-100 sm:text-sm">
+              {s.quizLink ? (
+                <Link to={s.quizLink} className="inline-flex rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-1.5 text-xs font-black text-emerald-700 transition-colors hover:bg-emerald-100 sm:text-sm">
                   تدريب قصير
                 </Link>
               ) : null}
