@@ -10,8 +10,8 @@ import { SkillModel } from "../../models/Skill.js";
 import { SubjectModel } from "../../models/Subject.js";
 import { UserModel } from "../../models/User.js";
 import { questionSchema } from "../../modules/quizzes/http/questionQuerySchemas.js";
-import { createR2PresignedPutUrl } from "../../modules/media/infrastructure/r2PresignedPut.js";
 import { pool, sha256 } from "./questionPilotPackageImportSupport.js";
+import { publicBio26R2Url, syncBio26R2Assets, verifyBio26RemoteImage } from "./bio26R2UploadSupport.js";
 
 const execFileAsync = promisify(execFile);
 const MODE_PREFIX = "bio26-import";
@@ -23,7 +23,6 @@ const PROTECTED_LEGACY_SUBJECT_ID = "sub_1784980740570";
 const EXPECTED_MAIN = 29;
 const EXPECTED_SUB = 98;
 const CODE_REGEX = /^TAH-BIO-BIO26-L\d{2}-Q\d{3}$/;
-const PLACEHOLDER_OPTION_LABELS = new Set(["A", "B", "C", "D", "أ", "ب", "ج", "د"]);
 let started = false;
 
 type ManifestItem = Record<string, any> & {
@@ -31,20 +30,6 @@ type ManifestItem = Record<string, any> & {
   imageFileName: string;
   sourceMeta: Record<string, any>;
 };
-
-const requireR2 = () => {
-  if (
-    !env.R2_UPLOAD_ENABLED ||
-    !env.R2_ACCOUNT_ID ||
-    !env.R2_BUCKET ||
-    !env.R2_ACCESS_KEY_ID ||
-    !env.R2_SECRET_ACCESS_KEY ||
-    !env.R2_PUBLIC_BASE_URL
-  ) throw new Error("BIO26 R2 upload is not fully configured");
-};
-
-const publicUrlFor = (code: string, hash: string) =>
-  `${env.R2_PUBLIC_BASE_URL.replace(/\/+$/, "")}/questions/v2/${code}/${hash}.webp`;
 
 const validateMachineReadable = (item: ManifestItem, code: string) => {
   const options = Array.isArray(item.options) ? item.options : [];
@@ -213,7 +198,7 @@ export async function runBio26PackageImportIfRequested() {
         ...entry.item,
         id: `q_${new mongoose.Types.ObjectId()}`,
         questionCode: entry.code,
-        imageUrl: publicUrlFor(entry.code, entry.hash),
+        imageUrl: publicBio26R2Url(entry.code, entry.hash),
         source: "imported",
         approvalStatus: "draft",
         ownerType: "platform",
@@ -244,55 +229,17 @@ export async function runBio26PackageImportIfRequested() {
     const currentCodes = new Set(current.map((q: any) => String(q.questionCode || "").toUpperCase()));
     if ([...currentCodes].some((code) => !codes.has(code))) throw new Error("BIO26 batch contains an unknown question code");
 
-    const verifyRemote = async (entry: typeof verified[number]) => {
-      const url = publicUrlFor(entry.code, entry.hash);
-      const r = await fetch(url, { signal: AbortSignal.timeout(30_000) });
-      if (!r.ok) throw new Error(`BIO26 live R2 GET failed ${entry.code}: HTTP ${r.status}`);
-      const actual = sha256(Buffer.from(await r.arrayBuffer()));
-      if (actual !== entry.hash) throw new Error(`BIO26 live R2 hash mismatch for ${entry.code}`);
-      return true;
-    };
-
     if (phase === "r2") {
       if (current.length !== 0) throw new Error("BIO26 R2 phase requires zero imported questions");
-      requireR2();
-      await pool(verified, 10, async (entry) => {
-        const key = `questions/v2/${entry.code}/${entry.hash}.webp`;
-        const uploadUrl = createR2PresignedPutUrl({
-          accountId: env.R2_ACCOUNT_ID,
-          bucket: env.R2_BUCKET,
-          key,
-          accessKeyId: env.R2_ACCESS_KEY_ID,
-          secretAccessKey: env.R2_SECRET_ACCESS_KEY,
-          contentType: "image/webp",
-          expiresSeconds: env.R2_PRESIGN_EXPIRES_SECONDS,
-        });
-        let ok = false;
-        for (let attempt = 1; attempt <= 3 && !ok; attempt += 1) {
-          try {
-            const put = await fetch(uploadUrl, {
-              method: "PUT",
-              headers: { "Content-Type": "image/webp" },
-              body: Uint8Array.from(entry.bytes),
-              signal: AbortSignal.timeout(60_000),
-            });
-            ok = put.ok;
-          } catch {
-            ok = false;
-          }
-          if (!ok) await new Promise((resolve) => setTimeout(resolve, attempt * 700));
-        }
-        if (!ok) throw new Error(`BIO26 R2 PUT failed for ${entry.code}`);
-      });
-      await pool(verified, 12, verifyRemote);
-      console.log(`BIO26_R2_VERIFIED_PASS count=${EXPECTED_COUNT}`);
+      const result = await syncBio26R2Assets(verified);
+      console.log(`BIO26_R2_VERIFIED_PASS count=${EXPECTED_COUNT} uploaded=${result.uploaded} alreadyPresent=${result.alreadyPresent}`);
       return;
     }
 
     if (phase === "dry-run") {
       if (current.length !== 0) throw new Error("BIO26 dry-run phase requires zero imported questions");
       const samples = verified.filter((_, i) => i % Math.max(1, Math.floor(verified.length / 30)) === 0).slice(0, 30);
-      await pool(samples, 10, verifyRemote);
+      await pool(samples, 10, verifyBio26RemoteImage);
       console.log(`BIO26_DRY_RUN_PASS count=${EXPECTED_COUNT} liveImageSamples=${samples.length}`);
       return;
     }
@@ -310,7 +257,7 @@ export async function runBio26PackageImportIfRequested() {
       if (current.length > 5 || current.some((q: any) => !canaryCodes.has(String(q.questionCode || "").toUpperCase()))) {
         throw new Error(`BIO26 canary contains unexpected resume state; found ${current.length}`);
       }
-      await pool(canary, 5, verifyRemote);
+      await pool(canary, 5, verifyBio26RemoteImage);
       const missing = canary.filter((entry) => !currentCodes.has(entry.code));
       if (missing.length) await insertEntries(missing);
       const check = await QuestionModel.find({ "sourceMeta.importBatchId": BATCH_ID }).select("questionCode approvalStatus").lean() as any[];
@@ -335,7 +282,7 @@ export async function runBio26PackageImportIfRequested() {
       let done = current.length;
       for (let i = 0; i < pending.length; i += 100) {
         const group = pending.slice(i, i + 100);
-        await pool(group.filter((_, idx) => idx % 10 === 0), 8, verifyRemote);
+        await pool(group.filter((_, idx) => idx % 10 === 0), 8, verifyBio26RemoteImage);
         done += await insertEntries(group);
         console.log(`BIO26_IMPORT_PROGRESS ${done}/${EXPECTED_COUNT}`);
       }
@@ -357,7 +304,7 @@ export async function runBio26PackageImportIfRequested() {
     ) throw new Error("BIO26 final draft integrity gate failed");
 
     const finalSamples = verified.filter((_, i) => i % Math.max(1, Math.floor(verified.length / 30)) === 0).slice(0, 30);
-    await pool(finalSamples, 10, verifyRemote);
+    await pool(finalSamples, 10, verifyBio26RemoteImage);
     console.log(`BIO26_IMPORT_DRAFT_PASS count=${EXPECTED_COUNT} drafts=${EXPECTED_COUNT} liveImageSamples=${finalSamples.length}`);
   } finally {
     await rm(work, { recursive: true, force: true }).catch(() => undefined);

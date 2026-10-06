@@ -2,6 +2,7 @@ import fs from "node:fs";
 
 const importer = fs.readFileSync("server/src/app/bootstrap/runBio26PackageImport.ts", "utf8");
 const verifier = fs.readFileSync("server/src/scripts/verifyBio26PostImport.ts", "utf8");
+const r2Support = fs.readFileSync("server/src/app/bootstrap/bio26R2UploadSupport.ts", "utf8");
 const bootstrap = fs.readFileSync("server/src/app/bootstrap/bootstrapServer.ts", "utf8");
 
 const must = [
@@ -14,7 +15,6 @@ const must = [
   '"r2", "dry-run", "canary", "full", "verify"',
   'PILOT_WRITE_AUTHORIZATION !== "YES"',
   'BIO26 machine-readable optionTexts missing',
-  'BIO26 machine-readable optionTexts are placeholder labels',
   'BIO26_R2_VERIFIED_PASS',
   'BIO26_DRY_RUN_PASS',
   'BIO26_CANARY_PASS count=5 drafts=5',
@@ -22,6 +22,7 @@ const must = [
 ];
 for (const fragment of must) if (!importer.includes(fragment)) throw new Error(`missing BIO26 importer contract: ${fragment}`);
 if (importer.includes("PLACEHOLDER_OPTION_LABELS")) throw new Error("BIO26 importer must not reject legitimate source option values by label alone");
+for (const fragment of ["BIO26_R2_PROGRESS", "BIO26_R2_REMOTE_PRECHECK_MISS", "alreadyPresent", "BIO26 live R2 verification failed code=", "BIO26 R2 PUT failed code="]) if (!r2Support.includes(fragment)) throw new Error(`missing BIO26 R2 support contract: ${fragment}`);
 if (!verifier.includes("optionTextsSource") || !verifier.includes("optionTextsVerified")) throw new Error("BIO26 post-import verifier does not enforce option-text provenance");
 if (!importer.includes("insertedThisRun=") || !importer.includes("canary contains unexpected resume state")) throw new Error("BIO26 canary is not restart-safe");
 if (!verifier.includes("BIO26_POST_IMPORT_DRAFT_GATE_PASS")) throw new Error("BIO26 post-import verifier missing");
