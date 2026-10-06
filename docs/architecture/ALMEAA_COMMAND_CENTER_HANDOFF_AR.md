@@ -1,5 +1,16 @@
 # ALMEAA Command Center — Handoff / Execution State
 
+> تحديث تنفيذي بعد دمج Developer Bridge — 2026-10-06 13:04 Asia/Riyadh  
+> Developer/Codex + Remote MCP PR #397 — merged: `7c21eca9016146c380b861447967eae399805a1c`  
+> Vercel Production: READY on exact merge SHA.  
+> Render `almeaacodax-codex`: LIVE on exact merge SHA.  
+> Remote MCP Live Certification run #1: **FAILED CLOSED** at OAuth protected-resource metadata because production returned HTTP 404 while `ALMEAA_MCP_ENABLED` is not active.  
+> Root cause: production OAuth/IdP configuration remains an owner/provider configuration gate; code routes and OAuth resource-server verification are merged.  
+> Safety: MCP remains disabled rather than exposing an unconfigured OAuth surface. No RBAC/CSRF/server-authority relaxation was made.  
+> External connection proof: BLOCKED until a trusted OAuth 2.1 IdP issuer/audience/scopes are configured.  
+> Issue: #386 remains OPEN.  
+> الحالة: **CODE MERGED + VERCEL READY + RENDER LIVE — OAUTH IDP/EXTERNAL MCP PROOF BLOCKED**
+
 > آخر تحديث: 2026-10-06 10:54 Asia/Riyadh  
 > Foundation PR #387 — merged: `686763d09c40d279b0879ce93943503018c21571`  
 > Execution/MCP PR #390 — merged: `79e518bc7bd54cb5c10087fb466dde55db11d1c2`  
