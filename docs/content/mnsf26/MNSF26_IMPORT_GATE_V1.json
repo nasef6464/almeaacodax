@@ -4,7 +4,37 @@
   "taxonomy": {
     "canonicalMainSkills": 25,
     "canonicalSubSkills": 95,
-    "newSkillsAllowed": false
+    "newSkillsAllowed": false,
+    "resolvedLegacyHolds": [
+      {
+        "batch": "007",
+        "pdfPage": 8,
+        "question": 2,
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_5"
+      },
+      {
+        "batch": "008",
+        "pdfPage": 9,
+        "question": 19,
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_4"
+      },
+      {
+        "batch": "010",
+        "pdfPage": 11,
+        "question": 15,
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_5"
+      },
+      {
+        "batch": "012",
+        "pdfPage": 13,
+        "question": 18,
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_4"
+      }
+    ]
   },
   "analyzedSourceRange": {
     "batches": "001-013",
@@ -12,9 +42,9 @@
     "sourceQuestionsReviewed": 138
   },
   "importReadiness": {
-    "uniqueNonHeldCandidates": 126,
-    "holds": 10,
-    "suppressedIntraMnsfDuplicates": 2
+    "uniqueNonHeldCandidates": 128,
+    "holds": 6,
+    "suppressedIntraMnsfDuplicates": 4
   },
   "holds": [
     {
@@ -36,24 +66,6 @@
       "reason": "SOURCE_WORDING"
     },
     {
-      "batch": "007",
-      "pdfPage": 8,
-      "question": 2,
-      "reason": "TAXONOMY_NO_EXACT_MATCH"
-    },
-    {
-      "batch": "008",
-      "pdfPage": 9,
-      "question": 19,
-      "reason": "TAXONOMY_NO_EXACT_MATCH"
-    },
-    {
-      "batch": "010",
-      "pdfPage": 11,
-      "question": 15,
-      "reason": "TAXONOMY_NO_EXACT_MATCH"
-    },
-    {
       "batch": "010",
       "pdfPage": 11,
       "question": 19,
@@ -66,12 +78,6 @@
       "reason": "SOURCE_MATH_TRANSCRIPTION"
     },
     {
-      "batch": "012",
-      "pdfPage": 13,
-      "question": 18,
-      "reason": "TAXONOMY_NO_EXACT_MATCH"
-    },
-    {
       "batch": "013",
       "pdfPage": 14,
       "question": 8,
@@ -79,6 +85,34 @@
     }
   ],
   "suppressions": [
+    {
+      "later": {
+        "batch": "002",
+        "pdfPage": 3,
+        "question": 9
+      },
+      "keep": {
+        "batch": "002",
+        "pdfPage": 3,
+        "question": 4
+      },
+      "reason": "EXACT_IN_SOURCE_DUPLICATE",
+      "evidence": "Same stem, numerical constraints, answer set, and mathematical item on the same source page."
+    },
+    {
+      "later": {
+        "batch": "002",
+        "pdfPage": 3,
+        "question": 10
+      },
+      "keep": {
+        "batch": "002",
+        "pdfPage": 3,
+        "question": 8
+      },
+      "reason": "EXACT_IN_SOURCE_DUPLICATE",
+      "evidence": "Same mathematical item as Q008 on the same source page; do not create a second canonical question."
+    },
     {
       "later": {
         "batch": "005",
