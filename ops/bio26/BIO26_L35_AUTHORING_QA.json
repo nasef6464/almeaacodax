@@ -1,0 +1,12 @@
+{
+  "project": "BIO26",
+  "lessonCode": "BIO26-L35",
+  "status": "PASS_READY_FOR_CANONICAL_MERGE",
+  "canonicalItems": 58,
+  "uniqueQuestionCodes": 58,
+  "sourceAnswerCrossCheck": "PASS_58_OF_58",
+  "skillRangeCrossCheck": "PASS_58_OF_58",
+  "requiredFieldsCrossCheck": "PASS_58_OF_58",
+  "duplicateQuestionCodes": 0,
+  "answerInferredFromOCR": 0
+}

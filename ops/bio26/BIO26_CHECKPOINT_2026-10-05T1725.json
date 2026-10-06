@@ -1,0 +1,39 @@
+{
+  "project": "BIO26",
+  "checkpointDate": "2026-10-05",
+  "branch": "content/bio26-source-freeze",
+  "pr": 362,
+  "headAfterL32Shard": "3333ac0ee6100a6ebe81cced26104792ee89dd6a",
+  "cropQA": {
+    "status": "PASS",
+    "sourceRows": 2835
+  },
+  "dedupe": {
+    "status": "PASS",
+    "canonical": 2832,
+    "aliases": 3
+  },
+  "aiContext": {
+    "canonicalMerged": 1839,
+    "canonicalPending": 993,
+    "L32Authored": 107,
+    "L32SourceAnswerMatches": 107,
+    "L32SkillRangeMatches": 107,
+    "L32OcrInferredAnswers": 0,
+    "canonicalMergeStatus": "PENDING"
+  },
+  "r2": {
+    "canonicalImages": 2832,
+    "totalBytes": 29550012,
+    "remoteVerification": "NOT_RUN"
+  },
+  "import": {
+    "dryRun": "BLOCKED",
+    "canary5": "BLOCKED",
+    "fullDraftImport": "BLOCKED",
+    "integrityAudit": "BLOCKED",
+    "liveE2E": "BLOCKED",
+    "approval": "BLOCKED"
+  },
+  "status": "NOT_CLOSED"
+}
