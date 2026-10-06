@@ -7,7 +7,11 @@ const [
   draftModel,
   applyService,
   applyCourseQuiz,
+  applyQuestion,
   applySchool,
+  questionDraftTools,
+  quizUpdateTools,
+  questionModel,
   workflowModel,
   workflowService,
   workflowExecutor,
@@ -24,6 +28,8 @@ const [
   app,
   env,
   adminPanel,
+  schoolImportPanel,
+  schoolImportAdapter,
   commandApi,
   aiApi,
   handoff,
@@ -31,7 +37,11 @@ const [
   read("server/src/models/CommandCenterDraft.ts"),
   read("server/src/modules/command-center/application/draftApplyService.ts"),
   read("server/src/modules/command-center/application/draftApplyCourseQuiz.ts"),
+  read("server/src/modules/command-center/application/draftApplyQuestion.ts"),
   read("server/src/modules/command-center/application/draftApplySchool.ts"),
+  read("server/src/modules/command-center/application/questionQuizDraftTools.ts"),
+  read("server/src/modules/command-center/application/quizQuestionUpdateTools.ts"),
+  read("server/src/models/Question.ts"),
   read("server/src/models/CommandCenterWorkflow.ts"),
   read("server/src/modules/command-center/application/workflowService.ts"),
   read("server/src/modules/command-center/application/workflowExecutor.ts"),
@@ -48,6 +58,8 @@ const [
   read("server/src/app.ts"),
   read("server/src/config/env.ts"),
   read("dashboards/admin/command-center/CommandCenterOperationsPanel.tsx"),
+  read("dashboards/admin/command-center/SchoolImportDraftPanel.tsx"),
+  read("dashboards/admin/command-center/schoolImportDraftAdapter.ts"),
   read("services/apiGroups/commandCenterApi.ts"),
   read("services/apiGroups/aiApi.ts"),
   read("docs/architecture/ALMEAA_COMMAND_CENTER_HANDOFF_AR.md"),
@@ -58,7 +70,17 @@ assert.match(draftModel, /"applying"/);
 assert.match(applyService, /applyApprovedCommandDraft/);
 assert.match(applyCourseQuiz, /applyCourseDraft/);
 assert.match(applyCourseQuiz, /applyQuizDraft/);
+assert.match(applyQuestion, /applyQuestionBatchDraft/);
+assert.match(applyQuestion, /bulkWrite/);
+assert.match(applyQuestion, /approvalStatus:\s*"draft"/);
 assert.match(applySchool, /applySchoolDraft/);
+assert.match(questionDraftTools, /near_duplicate_live/);
+assert.match(questionDraftTools, /NEAR_DUPLICATE_THRESHOLD/);
+assert.match(quizUpdateTools, /planQuizQuestionUpdate/);
+assert.match(quizUpdateTools, /nearDuplicateCandidates/);
+assert.match(applyCourseQuiz, /update_existing_questions/);
+assert.match(applyCourseQuiz, /originalPublishedQuizUnchanged/);
+assert.match(questionModel, /subSkillIds/);
 assert.match(applyCourseQuiz, /isPublished:\s*false/);
 assert.match(applyCourseQuiz, /showOnPlatform:\s*false/);
 assert.match(commandRoutes, /human_apply_required/);
@@ -83,6 +105,7 @@ assert.match(mcpTools, /mcpToolExecution/);
 assert.match(mcpToolCatalog, /get_profile/);
 assert.match(mcpToolCatalog, /create_course_draft/);
 assert.match(mcpToolCatalog, /create_school_setup_draft/);
+assert.match(mcpToolCatalog, /plan_quiz_question_update/);
 assert.match(mcpToolExecution, /executeMcpTool/);
 assert.doesNotMatch(mcpToolCatalog, /name:\s*"publish_/);
 assert.doesNotMatch(mcpToolCatalog, /name:\s*"apply_/);
@@ -107,6 +130,10 @@ assert.match(aiRoutes, /Reuse-first/);
 assert.match(aiRoutes, /workflowPlanSchema/);
 assert.match(adminPanel, /أمر ذكي للمنصة/);
 assert.match(adminPanel, /Plan → Execute → Verify/);
+assert.match(adminPanel, /SchoolImportDraftPanel/);
+assert.match(schoolImportPanel, /parseImportFile/);
+assert.match(schoolImportPanel, /parseRelationFile/);
+assert.match(schoolImportAdapter, /buildSchoolDraftFromImportedRows/);
 assert.match(commandApi, /executeCommandCenterWorkflow/);
 assert.match(aiApi, /aiAdminCommandPlan/);
 assert.match(handoff, /686763d09c40d279b0879ce93943503018c21571/);
