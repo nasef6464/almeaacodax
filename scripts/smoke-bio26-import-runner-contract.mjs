@@ -3,6 +3,8 @@ import fs from "node:fs";
 const importer = fs.readFileSync("server/src/app/bootstrap/runBio26PackageImport.ts", "utf8");
 const verifier = fs.readFileSync("server/src/scripts/verifyBio26PostImport.ts", "utf8");
 const bootstrap = fs.readFileSync("server/src/app/bootstrap/bootstrapServer.ts", "utf8");
+const questionModel = fs.readFileSync("server/src/models/Question.ts", "utf8");
+const questionSchemas = fs.readFileSync("server/src/modules/quizzes/http/questionQuerySchemas.ts", "utf8");
 
 const must = [
   'const MODE_PREFIX = "bio26-import";',
@@ -26,6 +28,8 @@ if (!importer.includes("process.env.BIO26_IMPORT_MODE || process.env.QUESTION_PI
 if (!importer.includes("process.env.BIO26_IMPORT_BATCH_ID || process.env.QUESTION_PILOT_BATCH_ID")) throw new Error("BIO26 importer must prefer a dedicated batch id");
 if (!importer.includes("process.env.BIO26_IMPORT_EXPECTED_COUNT || process.env.QUESTION_PILOT_EXPECTED_COUNT")) throw new Error("BIO26 importer must prefer a dedicated expected count");
 if (!verifier.includes("optionTextsSource") || !verifier.includes("optionTextsVerified")) throw new Error("BIO26 post-import verifier does not enforce option-text provenance");
+if (!questionModel.includes("optionTextsSource") || !questionModel.includes("optionTextsVerified")) throw new Error("Question model drops BIO26 option-text provenance");
+if (!questionSchemas.includes("optionTextsSource") || !questionSchemas.includes("optionTextsVerified")) throw new Error("Question validation schema drops BIO26 option-text provenance");
 if (!importer.includes("insertedThisRun=") || !importer.includes("canary contains unexpected resume state")) throw new Error("BIO26 canary is not restart-safe");
 if (!verifier.includes("BIO26_POST_IMPORT_DRAFT_GATE_PASS")) throw new Error("BIO26 post-import verifier missing");
 if (!verifier.includes("BIO26_POST_APPROVAL_GATE_PASS")) throw new Error("BIO26 approval verifier missing");
