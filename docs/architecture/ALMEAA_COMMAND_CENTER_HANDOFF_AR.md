@@ -1,5 +1,17 @@
 # ALMEAA Command Center — Handoff / Execution State
 
+> **POST-MERGE CHECKPOINT — 2026-10-07**
+> - PR #429 merged into `main`: `79d96b2cd0b0834769f2e927c73f6552c2216f24`.
+> - Vercel Production: READY on the exact merge SHA.
+> - Render service `almeaacodax-codex`: LIVE on the exact merge SHA.
+> - Automatic PR role/public UI checks now generate zero Production Render traffic.
+> - Current post-merge cleanup branch: `fix/production-smoke-boundary-2026-10-07`.
+> - PLAN 7 automatic push checks are being reduced to no-inference status checks; quota-consuming provider certification becomes manual-only.
+> - Remote MCP automatic push check becomes a lightweight fail-closed boundary proof. Full metadata/discovery/tool scan remains manual closure proof.
+> - Generic post-deploy push smoke is reduced to release identity + paced sequential role auth only. Operational/OAuth/latency/Sentry/counter/R2/load tests become explicit manual checks.
+> - External closure blocker remains trusted OAuth 2.1 IdP configuration + real external MCP client proof.
+
+
 > **Production Render load policy — OWNER DIRECTIVE**
 > - لا تستخدم Production Render لأي حمل ثقيل.
 > - PR role/public UI verification = local/CI/offline contracts and browser preview only.
