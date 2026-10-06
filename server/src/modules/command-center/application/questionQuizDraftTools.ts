@@ -54,14 +54,21 @@ export const quizDraftSchema = z.object({
   idempotencyKey: z.string().trim().min(8).max(240).optional(),
 });
 
-export const quizUpdateDraftSchema = z.object({
+const quizUpdateBaseSchema = z.object({
   targetQuizId: z.string().trim().min(1).max(180),
   mode: z.enum(["append", "replace"]).default("append"),
   questionIds: z.array(z.string().trim().min(1)).min(1).max(500),
-  expectedQuestionIdsHash: z.string().trim().regex(/^[a-f0-9]{64}$/i),
   title: z.string().trim().min(1).max(240).optional(),
   requestId: z.string().trim().max(160).optional().default(""),
   idempotencyKey: z.string().trim().min(8).max(240).optional(),
+});
+
+export const quizUpdatePreviewSchema = quizUpdateBaseSchema.extend({
+  expectedQuestionIdsHash: z.string().trim().regex(/^[a-f0-9]{64}$/i).optional(),
+});
+
+export const quizUpdateDraftSchema = quizUpdateBaseSchema.extend({
+  expectedQuestionIdsHash: z.string().trim().regex(/^[a-f0-9]{64}$/i),
 });
 
 const normalizeText = (value: string) =>
@@ -223,7 +230,7 @@ const uniqueInOrder = (values: string[]) => {
 };
 
 export async function buildQuizUpdatePlan(
-  input: z.infer<typeof quizUpdateDraftSchema>,
+  input: z.infer<typeof quizUpdatePreviewSchema>,
 ) {
   const target = await QuizModel.findOne({
     $or: [{ _id: input.targetQuizId }, { id: input.targetQuizId }],
@@ -243,7 +250,7 @@ export async function buildQuizUpdatePlan(
     (Array.isArray(target.questionIds) ? target.questionIds : []).map(String),
   );
   const currentQuestionIdsHash = hashQuestionIds(currentQuestionIds);
-  const staleSource = currentQuestionIdsHash !== input.expectedQuestionIdsHash;
+  const staleSource = Boolean(input.expectedQuestionIdsHash) && currentQuestionIdsHash !== input.expectedQuestionIdsHash;
   const requestedIds = uniqueInOrder(input.questionIds);
   const duplicateRequestedIds = input.questionIds.filter(
     (id, index) => input.questionIds.indexOf(id) !== index,
