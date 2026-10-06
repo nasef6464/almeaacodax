@@ -13,6 +13,7 @@ import { runChem26PackageImportIfRequested } from "./runChem26PackageImport.js";
 import { runBio26PackageImportIfRequested } from "./runBio26PackageImport.js";
 import { runChem26FinalClosureIfRequested } from "../../scripts/runChem26FinalClosure.js";
 import { runChem26LearningStructureIfNeeded } from "./runChem26LearningStructure.js";
+import { runChem26StandardTestsIfNeeded } from "./runChem26StandardTests.js";
 
 /**
  * Composes the existing API runtime in one explicit bootstrap boundary.
@@ -41,6 +42,9 @@ export async function bootstrapServer() {
     });
     void runChem26LearningStructureIfNeeded().catch((error) => {
       console.error("CHEM26_LEARNING_STRUCTURE_FAILED", error instanceof Error ? error.message : "Unknown error");
+    });
+    void runChem26StandardTestsIfNeeded().catch((error) => {
+      console.error("CHEM26_STANDARD_TESTS_FAILED", error instanceof Error ? error.message : "Unknown error");
     });
     void runBio26PackageImportIfRequested().catch((error) => {
       console.error("BIO26_IMPORT_FAILED", error instanceof Error ? error.message : "Unknown error");
