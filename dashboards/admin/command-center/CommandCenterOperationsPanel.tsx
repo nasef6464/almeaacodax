@@ -1,11 +1,16 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { CheckCircle2, Loader2, RefreshCw, ShieldCheck, XCircle } from "lucide-react";
+import { CheckCircle2, Loader2, Play, RefreshCw, ShieldCheck, Sparkles, XCircle } from "lucide-react";
 import { api } from "../../../services/api";
-import type { CommandCenterDraft, CommandCenterTool } from "../../../services/apiGroups/commandCenterApi";
+import type { CommandCenterDraft, CommandCenterTool, CommandCenterWorkflow } from "../../../services/apiGroups/commandCenterApi";
 
 export const CommandCenterOperationsPanel: React.FC = () => {
   const [tools, setTools] = useState<CommandCenterTool[]>([]);
   const [drafts, setDrafts] = useState<CommandCenterDraft[]>([]);
+  const [workflows, setWorkflows] = useState<CommandCenterWorkflow[]>([]);
+  const [commandText, setCommandText] = useState("");
+  const [commandSummary, setCommandSummary] = useState("");
+  const [commandClarification, setCommandClarification] = useState("");
+  const [planning, setPlanning] = useState(false);
   const [health, setHealth] = useState<{
     draftFirst: boolean;
     liveWritesEnabled: boolean;
@@ -19,14 +24,16 @@ export const CommandCenterOperationsPanel: React.FC = () => {
     setLoading(true);
     setError("");
     try {
-      const [healthResponse, toolResponse, draftResponse] = await Promise.all([
+      const [healthResponse, toolResponse, draftResponse, workflowResponse] = await Promise.all([
         api.commandCenterHealth(),
         api.getCommandCenterTools(),
         api.getCommandCenterDrafts({ limit: 30 }),
+        api.getCommandCenterWorkflows(20),
       ]);
       setHealth(healthResponse);
       setTools(toolResponse.tools || []);
       setDrafts(draftResponse.drafts || []);
+      setWorkflows(workflowResponse.workflows || []);
     } catch (loadError) {
       setError(loadError instanceof Error ? loadError.message : "تعذر تحميل مركز الأوامر.");
     } finally {
@@ -46,6 +53,43 @@ export const CommandCenterOperationsPanel: React.FC = () => {
       await load();
     } catch (applyError) {
       setError(applyError instanceof Error ? applyError.message : "تعذر تنفيذ المسودة.");
+    } finally {
+      setActingId(null);
+    }
+  };
+
+  const planNaturalLanguageCommand = async () => {
+    const message = commandText.trim();
+    if (!message) return;
+    setPlanning(true);
+    setError("");
+    setCommandSummary("");
+    setCommandClarification("");
+    try {
+      const result = await api.aiAdminCommandPlan({ message });
+      setCommandSummary(result.summary || "");
+      setCommandClarification(result.clarification || "");
+      if (result.workflow) {
+        setWorkflows((current) => [
+          result.workflow as CommandCenterWorkflow,
+          ...current.filter((item) => item._id !== result.workflow?._id),
+        ]);
+      }
+    } catch (planError) {
+      setError(planError instanceof Error ? planError.message : "تعذر تخطيط الأمر.");
+    } finally {
+      setPlanning(false);
+    }
+  };
+
+  const executeWorkflow = async (workflowId: string) => {
+    setActingId(workflowId);
+    setError("");
+    try {
+      await api.executeCommandCenterWorkflow(workflowId);
+      await load();
+    } catch (workflowError) {
+      setError(workflowError instanceof Error ? workflowError.message : "تعذر تنفيذ سير العمل.");
     } finally {
       setActingId(null);
     }
@@ -110,6 +154,85 @@ export const CommandCenterOperationsPanel: React.FC = () => {
           <Stat label="الهوية الحالية" value={health?.principalType === "admin_session" ? "مدير" : "Agent"} />
         </div>
       </div>
+
+      <section className="rounded-2xl border border-indigo-200 bg-indigo-50/60 p-5">
+        <div className="flex items-center gap-2 text-indigo-900 font-black">
+          <Sparkles size={18} />
+          أمر ذكي للمنصة
+        </div>
+        <p className="mt-1 text-xs font-bold text-indigo-700">
+          اكتب ما تريد تنفيذه. النظام سيحوّل الأمر إلى خطة آمنة أولًا، ولن يعتمد أو ينشر شيئًا تلقائيًا.
+        </p>
+        <textarea
+          value={commandText}
+          onChange={(event) => setCommandText(event.target.value)}
+          rows={4}
+          placeholder="مثال: راجع محتوى دورة الكمي الموجودة، كوّن خطة لإعادة استخدام الدروس والفيديوهات والاختبارات الحالية، وأظهر لي ما ينقص."
+          className="mt-4 w-full rounded-xl border border-indigo-200 bg-white p-3 text-sm font-bold text-slate-800 outline-none focus:border-indigo-400"
+        />
+        <div className="mt-3 flex flex-wrap items-center gap-3">
+          <button
+            type="button"
+            disabled={planning || !commandText.trim()}
+            onClick={() => void planNaturalLanguageCommand()}
+            className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2 text-xs font-black text-white disabled:opacity-50"
+          >
+            {planning ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />}
+            كوّن خطة التنفيذ
+          </button>
+          {commandSummary && <span className="text-xs font-black text-indigo-900">{commandSummary}</span>}
+        </div>
+        {commandClarification && (
+          <div className="mt-3 rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs font-bold text-amber-800">
+            {commandClarification}
+          </div>
+        )}
+      </section>
+
+      <section className="rounded-2xl border border-slate-200 bg-white p-5">
+        <h3 className="text-sm font-black text-slate-900">سير العمل — Plan → Execute → Verify</h3>
+        <p className="mt-1 text-xs font-bold text-slate-500">
+          كل خطوة محفوظة، وإعادة التنفيذ تكمل من آخر خطوة غير مكتملة بدل تكرار ما نجح.
+        </p>
+        <div className="mt-4 space-y-2">
+          {workflows.length === 0 && (
+            <div className="rounded-xl border border-dashed border-slate-200 p-4 text-center text-xs font-bold text-slate-400">
+              لا توجد خطط تنفيذ حتى الآن.
+            </div>
+          )}
+          {workflows.map((workflow) => (
+            <div key={workflow._id} className="rounded-xl border border-slate-100 bg-slate-50 p-3">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <div className="text-xs font-black text-slate-900">{workflow.title}</div>
+                  <div className="mt-1 text-[10px] font-bold text-slate-500">
+                    {workflow.status} • {workflow.steps.filter((step) => step.status === "completed").length}/{workflow.steps.length} خطوة
+                  </div>
+                </div>
+                {workflow.status !== "completed" && workflow.status !== "running" && (
+                  <button
+                    type="button"
+                    disabled={actingId === workflow._id}
+                    onClick={() => void executeWorkflow(workflow._id)}
+                    className="inline-flex items-center gap-1 rounded-lg bg-indigo-600 px-3 py-1.5 text-[10px] font-black text-white disabled:opacity-50"
+                  >
+                    {actingId === workflow._id ? <Loader2 size={12} className="animate-spin" /> : <Play size={12} />}
+                    {workflow.status === "failed" ? "استكمال" : "تنفيذ الخطة"}
+                  </button>
+                )}
+                {workflow.status === "completed" && (
+                  <span className="rounded-lg bg-emerald-50 px-2.5 py-1.5 text-[10px] font-black text-emerald-700">
+                    تم التحقق
+                  </span>
+                )}
+              </div>
+              {workflow.lastError && (
+                <div className="mt-2 text-[10px] font-bold text-rose-700">{workflow.lastError}</div>
+              )}
+            </div>
+          ))}
+        </div>
+      </section>
 
       {error && (
         <div className="rounded-xl border border-rose-200 bg-rose-50 p-3 text-xs font-bold text-rose-700">
