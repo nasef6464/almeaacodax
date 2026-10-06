@@ -8,6 +8,7 @@ export type ApplyResult = {
   resourceType: string;
   resourceId: string;
   summary: Record<string, unknown>;
+  transient?: Record<string, unknown>;
 };
 
 export const stableToken = (value: string, length = 12) =>
