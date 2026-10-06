@@ -4,12 +4,11 @@ import {
   courseReuseDraftSchema,
   validateCourseReuseDraft,
 } from "./courseReuseDraftTools.js";
+import { quizDraftSchema, validateQuizDraft } from "./questionQuizDraftTools.js";
 import {
   planQuizQuestionUpdate,
-  quizDraftSchema,
   quizQuestionUpdateDraftSchema,
-  validateQuizDraft,
-} from "./questionQuizDraftTools.js";
+} from "./quizQuestionUpdateTools.js";
 import {
   buildAliasMap,
   stableToken,
