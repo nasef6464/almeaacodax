@@ -7,11 +7,13 @@ import { recordCommandAudit } from "../application/commandAudit.js";
 import {
   questionDraftBatchSchema,
   quizDraftSchema,
-  quizQuestionUpdateDraftSchema,
-  planQuizQuestionUpdate,
   validateQuestionDraftBatch,
   validateQuizDraft,
 } from "../application/questionQuizDraftTools.js";
+import {
+  planQuizQuestionUpdate,
+  quizQuestionUpdateDraftSchema,
+} from "../application/quizQuestionUpdateTools.js";
 
 export const questionQuizDraftRouter = Router();
 
