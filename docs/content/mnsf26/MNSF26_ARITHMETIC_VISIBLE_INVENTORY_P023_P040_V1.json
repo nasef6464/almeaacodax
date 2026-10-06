@@ -1,0 +1,341 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "sourcePart": "الحساب/الجبر",
+  "inventoryPolicy": "VISIBLE_PRINTED_QUESTION_NUMBERS_FROM_RENDERED_SOURCE; NOT_HIDDEN_XOBJECT_COUNT",
+  "sourceSkillPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95",
+  "runContinuationFromPdfPage": 23,
+  "pages": [
+    {
+      "pdfPage": 23,
+      "testNumber": 12,
+      "sourceSkillLabel": "الأعداد الأولية - العوامل الأولى",
+      "printedQuestions": [
+        17,
+        18,
+        19,
+        20
+      ],
+      "count": 4
+    },
+    {
+      "pdfPage": 24,
+      "testNumber": 13,
+      "sourceSkillLabel": "الأعداد الأولية - العوامل الأولى",
+      "printedQuestions": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ],
+      "count": 14
+    },
+    {
+      "pdfPage": 25,
+      "testNumber": 13,
+      "sourceSkillLabel": "الأعداد الأولية - العوامل الأولى",
+      "printedQuestions": [
+        15,
+        16,
+        17,
+        18,
+        19,
+        20
+      ],
+      "count": 6
+    },
+    {
+      "pdfPage": 26,
+      "testNumber": 14,
+      "sourceSkillLabel": "الأعداد الأولية - العوامل الأولى",
+      "printedQuestions": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "count": 15
+    },
+    {
+      "pdfPage": 27,
+      "testNumber": 14,
+      "sourceSkillLabel": "الأعداد الأولية - العوامل الأولى",
+      "printedQuestions": [
+        16,
+        17,
+        18,
+        19,
+        20
+      ],
+      "count": 5
+    },
+    {
+      "pdfPage": 28,
+      "testNumber": 15,
+      "sourceSkillLabel": "جمع الأعداد - المتتابعات - ضرب الأعداد",
+      "printedQuestions": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16
+      ],
+      "count": 16
+    },
+    {
+      "pdfPage": 29,
+      "testNumber": 15,
+      "sourceSkillLabel": "جمع الأعداد - المتتابعات - ضرب الأعداد",
+      "printedQuestions": [
+        17,
+        18,
+        19,
+        20
+      ],
+      "count": 4
+    },
+    {
+      "pdfPage": 30,
+      "testNumber": 16,
+      "sourceSkillLabel": "جمع الأعداد - المتتابعات - ضرب الأعداد",
+      "printedQuestions": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16
+      ],
+      "count": 16
+    },
+    {
+      "pdfPage": 31,
+      "testNumber": 16,
+      "sourceSkillLabel": "جمع الأعداد - المتتابعات - ضرب الأعداد",
+      "printedQuestions": [
+        17,
+        18,
+        19,
+        20
+      ],
+      "count": 4
+    },
+    {
+      "pdfPage": 32,
+      "testNumber": 17,
+      "sourceSkillLabel": "جمع الأعداد - المتتابعات - ضرب الأعداد",
+      "printedQuestions": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "count": 15
+    },
+    {
+      "pdfPage": 33,
+      "testNumber": 17,
+      "sourceSkillLabel": "جمع الأعداد - المتتابعات - ضرب الأعداد",
+      "printedQuestions": [
+        16,
+        17,
+        18,
+        19,
+        20
+      ],
+      "count": 5
+    },
+    {
+      "pdfPage": 34,
+      "testNumber": 18,
+      "sourceSkillLabel": "جمع الأعداد - المتتابعات - ضرب الأعداد",
+      "printedQuestions": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16
+      ],
+      "count": 16
+    },
+    {
+      "pdfPage": 35,
+      "testNumber": 18,
+      "sourceSkillLabel": "جمع الأعداد - المتتابعات - ضرب الأعداد",
+      "printedQuestions": [
+        17,
+        18,
+        19,
+        20
+      ],
+      "count": 4
+    },
+    {
+      "pdfPage": 36,
+      "testNumber": 18,
+      "sourceSkillLabel": "جمع الأعداد - المتتابعات - ضرب الأعداد",
+      "printedQuestions": [],
+      "count": 0,
+      "note": "No visible printed question number 1-20 extracted; do not infer hidden-XObject questions."
+    },
+    {
+      "pdfPage": 37,
+      "testNumber": 19,
+      "sourceSkillLabel": "الدورات - المصافحات الأعمدة - المشابك",
+      "printedQuestions": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ],
+      "count": 14
+    },
+    {
+      "pdfPage": 38,
+      "testNumber": 19,
+      "sourceSkillLabel": "الدورات - المصافحات الأعمدة - المشابك",
+      "printedQuestions": [
+        15,
+        16,
+        17,
+        18,
+        19,
+        20
+      ],
+      "count": 6
+    },
+    {
+      "pdfPage": 39,
+      "testNumber": 20,
+      "sourceSkillLabel": "الكسور الاعتيادية",
+      "printedQuestions": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12
+      ],
+      "count": 12
+    },
+    {
+      "pdfPage": 40,
+      "testNumber": 20,
+      "sourceSkillLabel": "الكسور الاعتيادية",
+      "printedQuestions": [
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20
+      ],
+      "count": 8
+    }
+  ],
+  "totals": {
+    "visibleSourceOccurrences": 164,
+    "testsCompleted": [
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20
+    ],
+    "nextPdfPage": 41,
+    "nextTestNumber": 21
+  },
+  "claims": {
+    "canonicalMappingCompleted": false,
+    "dedupeCompleted": false,
+    "productionCropCompleted": false,
+    "r2Uploaded": false,
+    "imported": false
+  }
+}
