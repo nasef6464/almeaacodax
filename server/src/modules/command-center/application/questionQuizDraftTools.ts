@@ -1,6 +1,11 @@
 import { z } from "zod";
 import { QuestionModel } from "../../../models/Question.js";
 import { SkillModel } from "../../../models/Skill.js";
+import {
+  buildQuestionTokenIndex,
+  candidateIndexesForQuestion,
+  scoreQuestionSimilarity,
+} from "./questionSimilarity.js";
 
 export const questionDraftItemSchema = z.object({
   text: z.string().trim().min(1),
@@ -70,6 +75,7 @@ export async function validateQuestionDraftBatch(
     .select("id text subjectId skillId subSkillId skillIds")
     .lean();
   const existingByNormalizedText = new Map<string, typeof existingQuestions[number]>();
+  const existingTokenIndex = buildQuestionTokenIndex(existingQuestions);
   for (const existing of existingQuestions) {
     const normalized = normalizeText(String(existing.text || ""));
     if (normalized && !existingByNormalizedText.has(normalized)) {
@@ -83,6 +89,14 @@ export async function validateQuestionDraftBatch(
     type: string;
     message: string;
     existingQuestionId?: string;
+    similarity?: number;
+  }> = [];
+  const warnings: Array<{
+    index: number;
+    type: string;
+    message: string;
+    existingQuestionId?: string;
+    similarity?: number;
   }> = [];
 
   input.questions.forEach((question, index) => {
@@ -125,6 +139,38 @@ export async function validateQuestionDraftBatch(
         message: "An exact normalized question already exists in the live bank",
         existingQuestionId: String(liveDuplicate.id || liveDuplicate._id || ""),
       });
+    } else {
+      let bestCandidate:
+        | { existingQuestionId: string; similarity: number }
+        | undefined;
+      for (const candidateIndex of candidateIndexesForQuestion(question.text, existingTokenIndex)) {
+        const candidate = existingQuestions[candidateIndex];
+        if (!candidate?.text) continue;
+        const similarity = scoreQuestionSimilarity(question.text, String(candidate.text)).score;
+        if (!bestCandidate || similarity > bestCandidate.similarity) {
+          bestCandidate = {
+            existingQuestionId: String(candidate.id || candidate._id || ""),
+            similarity,
+          };
+        }
+      }
+      if (bestCandidate && bestCandidate.similarity >= 0.94) {
+        issues.push({
+          index,
+          type: "near_duplicate_live",
+          message: "A highly similar question already exists in the live bank",
+          existingQuestionId: bestCandidate.existingQuestionId,
+          similarity: bestCandidate.similarity,
+        });
+      } else if (bestCandidate && bestCandidate.similarity >= 0.82) {
+        warnings.push({
+          index,
+          type: "possible_near_duplicate_live",
+          message: "A similar live question should be reviewed before approval",
+          existingQuestionId: bestCandidate.existingQuestionId,
+          similarity: bestCandidate.similarity,
+        });
+      }
     }
     if (seenInBatch.has(normalized)) {
       issues.push({
@@ -140,12 +186,15 @@ export async function validateQuestionDraftBatch(
   return {
     ok: issues.length === 0,
     issues,
+    warnings,
     stats: {
       total: input.questions.length,
       uniqueMainSkills: skillIds.length,
       exactDuplicateCount: issues.filter((issue) =>
         issue.type === "exact_duplicate_live" || issue.type === "exact_duplicate_batch",
       ).length,
+      nearDuplicateBlockCount: issues.filter((issue) => issue.type === "near_duplicate_live").length,
+      nearDuplicateReviewCount: warnings.filter((warning) => warning.type === "possible_near_duplicate_live").length,
     },
   };
 }
