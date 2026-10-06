@@ -23,6 +23,9 @@ const must = [
   'verifyLiveImages',
   'allDraft',
   'linkedQuizCount',
+  'approvalStatus: "approved"',
+  'CHEM26_IMPORT_CLOSED_NOOP',
+  'closedBatchCount !== expectedCount',
 ];
 for (const fragment of must) {
   if (!chem.includes(fragment)) throw new Error(`missing CHEM26 importer contract: ${fragment}`);
@@ -34,3 +37,9 @@ if (!bootstrap.includes('runChem26PackageImportIfRequested')) {
   throw new Error("CHEM26 importer is not wired into bootstrap");
 }
 console.log("CHEM26_IMPORT_RUNNER_CONTRACT_PASS");
+
+const closedNoopIndex = chem.indexOf("CHEM26_IMPORT_CLOSED_NOOP");
+const transportDecodeIndex = chem.indexOf('Buffer.from(transportEncoded, "base64url")');
+if (closedNoopIndex < 0 || transportDecodeIndex < 0 || closedNoopIndex > transportDecodeIndex) {
+  throw new Error("CHEM26 closed-batch no-op must execute before transport decoding");
+}
