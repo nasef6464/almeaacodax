@@ -17,7 +17,9 @@ import {
   expectedTopicIdForSub,
   fail,
   foundationQuizId,
+  stableQuestionId,
   stringId,
+  type ExpectedQuiz,
   type QuestionRef,
   type SkillDoc,
 } from "./chem26LearningStructurePlan.js";
