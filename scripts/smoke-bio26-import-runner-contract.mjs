@@ -5,6 +5,7 @@ const verifier = fs.readFileSync("server/src/scripts/verifyBio26PostImport.ts", 
 const bootstrap = fs.readFileSync("server/src/app/bootstrap/bootstrapServer.ts", "utf8");
 const questionModel = fs.readFileSync("server/src/models/Question.ts", "utf8");
 const questionSchemas = fs.readFileSync("server/src/modules/quizzes/http/questionQuerySchemas.ts", "utf8");
+const finalClosure = fs.readFileSync("server/src/scripts/runBio26FinalClosure.ts", "utf8");
 
 const must = [
   'const MODE_PREFIX = "bio26-import";',
@@ -34,5 +35,13 @@ if (!importer.includes("insertedThisRun=") || !importer.includes("canary contain
 if (!verifier.includes("BIO26_POST_IMPORT_DRAFT_GATE_PASS")) throw new Error("BIO26 post-import verifier missing");
 if (!verifier.includes("BIO26_POST_APPROVAL_GATE_PASS")) throw new Error("BIO26 approval verifier missing");
 if (!importer.includes("r.status !== 429") || !importer.includes("attempt <= 6") || !importer.includes("pool(verified, 4, verifyRemote)")) throw new Error("BIO26 R2 verification must retry/throttle transient rate limits");
+if (!finalClosure.includes('BIO26_FINAL_CLOSURE_AUTHORIZATION') || !finalClosure.includes('BIO26_APPROVE_2832')) throw new Error("BIO26 final closure lacks dedicated explicit authorization");
+if (!finalClosure.includes("withTransaction") || !finalClosure.includes("BIO26_APPROVAL_ROLLBACK_PASS")) throw new Error("BIO26 final approval must be transactional and rollback-safe");
+for (const marker of ["BIO26_POST_IMPORT_DRAFT_GATE_PASS", "BIO26_LIVE_E2E_DRAFT_PASS", "BIO26_APPROVAL_WRITE_PASS", "BIO26_LIVE_E2E_APPROVED_PASS", "BIO26_POST_APPROVAL_GATE_PASS"]) {
+  if (!finalClosure.includes(marker)) throw new Error(`BIO26 final closure marker missing: ${marker}`);
+}
+if (!finalClosure.includes("learner answer/provenance leak") || !finalClosure.includes("publicQuestionLookup")) throw new Error("BIO26 final closure must prove learner-safe API visibility");
+if (!finalClosure.includes("verifyLiveImages")) throw new Error("BIO26 final closure must re-verify live R2 images");
 if (!bootstrap.includes("runBio26PackageImportIfRequested")) throw new Error("BIO26 importer is not wired into bootstrap");
+if (!bootstrap.includes("runBio26FinalClosureIfRequested")) throw new Error("BIO26 final closure is not wired into bootstrap");
 console.log("BIO26_IMPORT_RUNNER_CONTRACT_PASS");
