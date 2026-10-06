@@ -1,5 +1,12 @@
 # ALMEAA Command Center — Remote MCP Runbook
 
+> **Production boundary update — 2026-10-07**
+> - PR #429 merged at `79d96b2cd0b0834769f2e927c73f6552c2216f24`; Vercel READY and Render LIVE on the exact SHA.
+> - When MCP is intentionally disabled because trusted OAuth is not configured, automatic production CI must prove 404/fail-closed and record `fullExternalProof=false`; this is not external certification.
+> - Full metadata/discovery/tools scan remains manual-only and must still fail until MCP is deliberately enabled with real issuer/audience/scopes.
+> - Heavy external-client or provider testing is not run automatically against the small Production Render service.
+
+
 > **AUTHORITATIVE LATEST CHECKPOINT — 2026-10-06 18:33 Asia/Riyadh**  
 > PR #405 merged: `3a38e0a8329c28848d7a95c7f38a215266d867df`.  
 > Shared MCP/Command Tool Layer now includes safe quiz-update planning in addition to the previously merged content/workflow/developer tools.  
