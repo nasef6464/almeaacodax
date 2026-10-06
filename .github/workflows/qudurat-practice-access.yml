@@ -21,4 +21,5 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run smoke:qudurat-practice-access
+      - run: npm --prefix server ci
       - run: npm --prefix server run check
