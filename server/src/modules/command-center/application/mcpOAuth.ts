@@ -168,7 +168,7 @@ const verifyOAuthToken = async (token: string) => {
   }
   if (!jwk) throw new McpAuthError("OAuth signing key not found");
 
-  const key = createPublicKey({ key: jwk as JsonWebKey, format: "jwk" });
+  const key = createPublicKey({ key: jwk as any, format: "jwk" });
   const payload = jwt.verify(token, key, {
     algorithms: [alg as jwt.Algorithm],
     issuer: normalizedIssuer(),
