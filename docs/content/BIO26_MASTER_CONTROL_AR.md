@@ -61,7 +61,7 @@
 | Dedupe | **PASS — 2,832 canonical** |
 | Existing biology-bank dedupe | **PASS — 0 existing** |
 | AI context | **PASS — 2,832 / 2,832 canonical; 48/48 lessons; pending=0** |
-| R2 upload | PENDING |
+| Option-text recovery | **IN PROGRESS — 2,579/2,832 source-verified; 253 review** |\n| R2 upload | PENDING |
 | Dry run | BLOCKED BY READY PACKAGE/R2 |
 | Canary 5 | BLOCKED |
 | Full draft import | BLOCKED |
@@ -76,7 +76,16 @@
 - Recovered image bytes: **29,547,754**, versus frozen V2 authoritative image bytes **29,550,012**; dimensions also drift from the frozen V2 envelope.
 - Recovered `aiContext.optionTexts`: **2,832/2,832 are bare A/B/C/D labels**, not the actual option content.
 - Production decision: **REJECTED**. V3 must not be uploaded to R2 or used for Dry Run/Canary.
-- Root-cause hardening: importer + post-import verifier now reject placeholder option labels.
+- Root-cause hardening in PR #398 rejected the all-placeholder recovery payload. Follow-up PR #400 replaces value-based rejection with explicit source provenance so legitimate source choices such as `A/B/C/D` or `1/2/3/4` remain valid when verified from the PDF.
+
+## Source option-text recovery — 2026-10-06
+- Approved question source parsed across **226/226 PDF pages** and joined by `pdfPageIndex + printedQuestionNumber`.
+- High-confidence real option sets recovered from source text: **2,579/2,832 canonical (91.07%)**.
+- Remaining quarantined for layout/visual review: **253**.
+- Source-derived values include legitimate one-character diagram/numeric choices; therefore bare-value rejection is incorrect.
+- New READY contract in PR **#400**: `aiContext.optionTextsSource = "SOURCE_PDF"` and `aiContext.optionTextsVerified = true`.
+- Partial recovery artifact: `BIO26_OPTION_TEXT_RECOVERY_PARTIAL_2579.json`, SHA-256 `4f726999fe7d755b7fa7444156279c7604a9055d4566af93019786d9b743de21`.
+- No unresolved option set is authorized for import.
 
 ## Current AI-context truth
 - Effective canonical AI context: **2,832/2,832**.
@@ -90,7 +99,7 @@
 
 ## Next execution batch
 1. Recover the authoritative V2 bytes/hashes or regenerate a newly qualified package from the approved BIO26 sources with full crop QA.
-2. Build `BIO26_IMPORT_MANIFEST_READY.json` with the **real four option texts** for every one of the **2,832** canonical questions.
+2. Finish the remaining **253** option sets by layout/visual review, merge them with the **2,579 source-verified** sets, then build `BIO26_IMPORT_MANIFEST_READY.json` with provenance for all **2,832** canonical questions.
 3. Upload **2,832** qualified images to R2 and verify live GET + SHA-256.
 4. Dry Run → Canary 5 → Full Draft Import → Integrity Audit → Live E2E → Approval.
 
