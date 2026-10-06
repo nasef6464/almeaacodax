@@ -191,11 +191,11 @@ export async function validateSchoolSetupDraft(
         ref: supervisor.email || supervisor.userId,
         message: "Supervisor account was not found",
       });
-    } else if (!["supervisor", "teacher"].includes(String(user.role))) {
+    } else if (String(user.role) !== "supervisor") {
       issues.push({
         type: "supervisor_role_mismatch",
         ref: String(user.email || user._id),
-        message: "Referenced account cannot act as a school supervisor",
+        message: "Referenced account is not a supervisor; teacher assignments must use the teacher plan",
       });
     } else if (user.isActive === false) {
       issues.push({
