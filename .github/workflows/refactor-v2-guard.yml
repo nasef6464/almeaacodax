@@ -297,6 +297,9 @@ jobs:
       - name: Command Center execution + MCP contract
         run: node scripts/smoke-command-center-execution-mcp-contract.mjs
 
+      - name: CI production-load boundary contract
+        run: node scripts/smoke-ci-production-load-boundary-contract.mjs
+
       - name: Command Center content operations contract
         run: node scripts/smoke-command-center-content-ops-contract.mjs
 
