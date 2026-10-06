@@ -20,3 +20,13 @@ Run-start repo state:
 main = 3aee9949bebe5b62a593760e76e4e02a55f9e2d2
 branch compare = diverged, 112 ahead / 41 behind.
 No force update or unsafe merge performed.
+
+Additional visible inventory:
+page 19 / test 10 / Q16-Q20 = 5
+page 20 / test 11 / Q1-Q16 = 16
+page 21 / test 11 / Q17-Q20 = 4
+page 22 / test 12 / Q1-Q16 = 16
+
+Updated run total: 90 visible source occurrences across 9 PDF pages.
+Recovered page-2 gap: 7. Newly inventoried after page 14: 83.
+Next continuation point: arithmetic PDF page 23 (test 12 continuation).
