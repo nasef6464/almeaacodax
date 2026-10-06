@@ -1,8 +1,0 @@
-canonicalQuestionCode,aliasQuestionCode,canonicalSection,aliasSection,decision,answerConsistency,evidence,reviewNote
-TAH-BIO-BIO26-L10-Q009,TAH-BIO-BIO26-L10-Q025,1,1,DUPLICATE_ALIAS,PASS_A_A,EXACT_NORMALIZED_CROP_TEXT_PLUS_VISUAL,"Identical fish question and identical A/B/C/D options; source key A for both."
-TAH-BIO-BIO26-L35-Q033,TAH-BIO-BIO26-L35-Q036,1,1,DUPLICATE_ALIAS,PASS_A_A,EXACT_NORMALIZED_CROP_TEXT_PLUS_VISUAL,"Identical carotenoids wavelength graph question and identical options; source key A for both."
-TAH-BIO-BIO26-L40-Q091,TAH-BIO-BIO26-L40-Q092,2,2,DUPLICATE_ALIAS,PASS_D_D,EXACT_NORMALIZED_CROP_TEXT_PLUS_VISUAL,"Identical prokaryotic gene regulation question and identical options; source key D for both."
-TAH-BIO-BIO26-L46-Q015,TAH-BIO-BIO26-L46-Q036,1,2,DISTINCT,NOT_APPLICABLE,HIGH_SIMILARITY_REVIEW,"Different concept direction: individuals joining a population versus individuals leaving it."
-TAH-BIO-BIO26-L40-Q024,TAH-BIO-BIO26-L40-Q068,1,2,DISTINCT,NOT_APPLICABLE,HIGH_SIMILARITY_REVIEW,"DNA-base question versus RNA/messenger-RNA-base context; materially different item."
-TAH-BIO-BIO26-L43-Q003,TAH-BIO-BIO26-L43-Q021,1,2,DISTINCT,NOT_APPLICABLE,HIGH_SIMILARITY_REVIEW,"Largest share of freshwater versus largest share of total water; materially different item."
-TAH-BIO-BIO26-L40-Q023,TAH-BIO-BIO26-L40-Q068,1,2,DISTINCT,NOT_APPLICABLE,HIGH_SIMILARITY_REVIEW,"DNA thymine context versus RNA uracil context; materially different item."
