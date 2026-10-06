@@ -8,7 +8,8 @@ type ManifestRecord = {
     | "CONTENT_READY_CROP_PENDING"
     | "HOLD_SOURCE"
     | "QUARANTINE_SOURCE_DEFECT"
-    | "SUPPRESS_DUPLICATE";
+    | "SUPPRESS_DUPLICATE"
+    | "SUPPRESS_CROSS_BANK_DUPLICATE";
   skillId: string | null;
   subSkillId: string | null;
   correct: string | null;
@@ -41,7 +42,7 @@ const quarantined = manifest.records.filter(
   (record) => record.status === "QUARANTINE_SOURCE_DEFECT",
 );
 const suppressed = manifest.records.filter(
-  (record) => record.status === "SUPPRESS_DUPLICATE",
+  (record) => record.status.startsWith("SUPPRESS_"),
 );
 
 const failures: Array<{ gate: string; detail: unknown }> = [];
@@ -53,10 +54,10 @@ if (manifest.records.length !== 138) {
   failures.push({ gate: "record-count", detail: manifest.records.length });
 }
 if (
-  ready.length !== 130 ||
+  ready.length !== 129 ||
   holds.length !== 3 ||
   quarantined.length !== 1 ||
-  suppressed.length !== 4
+  suppressed.length !== 5
 ) {
   failures.push({
     gate: "status-counts",
