@@ -2,6 +2,7 @@ import { CommandCenterDraftModel } from "../../../models/CommandCenterDraft.js";
 import { SkillModel } from "../../../models/Skill.js";
 import type { CommandPrincipal } from "./commandAuthorization.js";
 import {
+  courseInventoryQuerySchema,
   courseReuseDraftSchema,
   getReusableCourseInventory,
   validateCourseReuseDraft,
@@ -249,9 +250,8 @@ export async function executeSafeWorkflowTool(input: {
   }
 
   if (input.toolId === "get_course_inventory") {
-    const inventory = await getReusableCourseInventory(
-      input.toolInput as Parameters<typeof getReusableCourseInventory>[0],
-    );
+    const inventoryInput = courseInventoryQuerySchema.parse(input.toolInput || {});
+    const inventory = await getReusableCourseInventory(inventoryInput);
     return inventory;
   }
 
