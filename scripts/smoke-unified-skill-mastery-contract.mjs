@@ -116,11 +116,13 @@ check('student report skill actions stay inside exact Foundation mapping', () =>
   assert.ok(files.recommendation.includes("buildFoundationActionLink(actionContext, 'quizzes')"));
   assert.ok(files.recommendation.includes("buildFoundationActionLink(actionContext, 'support')"));
   assert.ok(files.recommendation.includes('topic.quizIds'));
-  assert.ok(files.selectedSkillPanel.includes('شرح/فيديو'));
-  assert.ok(files.selectedSkillPanel.includes('تدريب المهارة في التأسيس'));
+  assert.ok(files.selectedSkillPanel.includes('فيديو'));
+  assert.ok(files.selectedSkillPanel.includes('تدريب'));
   assert.ok(files.selectedSkillPanel.includes('ملف الدعم'));
-  assert.ok(files.selectedSkillPanel.includes('إعادة قياس المهارة'));
-  assert.ok(files.selectedSkillPanel.includes('غير مرتبط بالتأسيس بعد'));
+  assert.ok(!files.selectedSkillPanel.includes('إعادة قياس المهارة'));
+  assert.ok(files.selectedSkillPanel.includes('موضوع التأسيس غير مرتبط بعد'));
+  assert.ok(files.selectedSkillPanel.includes('تدريب التأسيس غير مرتبط بعد'));
+  assert.ok(files.selectedSkillPanel.includes('ملف الدعم غير مرتبط بعد'));
   assert.ok(!files.selectedSkillPanel.includes('to="/courses"'));
   assert.ok(!files.selectedSkillPanel.includes('/dashboard?tab=saher'));
 });
