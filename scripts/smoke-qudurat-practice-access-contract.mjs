@@ -13,7 +13,8 @@ assert.ok(!file.includes('questionsCol.insert'), "practice reconciliation must n
 assert.ok(file.includes('subskillGaps'), "under-ten source gaps must be reported instead of fabricated");
 assert.ok(file.includes('isLocked: !isFreeMainTopic'), "topic entitlement must lock everything after the first five");
 assert.ok(file.includes('access: accessForFree(isFreeMainTopic)'), "foundation drill access must follow the parent free-five policy");
-assert.ok(file.includes('i < FREE_MAIN_TOPICS'), "only the first five ordered main-skill training cards may remain free");
+assert.ok(file.includes("freeMainSkillIds"), "free main-skill training access must be keyed by the first five canonical skills, not bank-row count");
+assert.ok(file.includes("freeMainSkillIds.has(quizMainSkillId)"), "every bank group for the first five canonical main skills must remain free");
 assert.ok(file.includes('"settings.lockSkillsForNonSubscribers": false'), "subject-wide foundation hard lock must be disabled for granular free-five policy");
 assert.ok(file.includes('"settings.lockBanksForNonSubscribers": false'), "subject-wide bank hard lock must be disabled for granular free-five policy");
 assert.ok(file.includes('QUDURAT_PRACTICE_BACKUP_REFERENCE'), "production apply must require rollback evidence");
