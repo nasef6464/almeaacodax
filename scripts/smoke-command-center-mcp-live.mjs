@@ -48,10 +48,12 @@ assert.ok(
   Array.isArray(metadata.authorization_servers) && metadata.authorization_servers.length > 0,
   "Production OAuth issuer must be configured before MCP certification can close",
 );
-assert.ok(
-  Array.isArray(metadata.scopes_supported) && metadata.scopes_supported.includes("almeaa:admin"),
-  "Production MCP metadata must advertise almeaa:admin",
-);
+for (const scope of ["almeaa:admin", "developer:read", "developer:write"]) {
+  assert.ok(
+    Array.isArray(metadata.scopes_supported) && metadata.scopes_supported.includes(scope),
+    `Production MCP metadata must advertise ${scope}`,
+  );
+}
 
 const discovered = await post("server/discover");
 assert.equal(discovered.response.status, 200);
