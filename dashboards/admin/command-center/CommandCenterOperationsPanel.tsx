@@ -125,6 +125,8 @@ export const CommandCenterOperationsPanel: React.FC = () => {
 
   const activeTools = tools.filter((tool) => tool.availability === "active");
   const pendingDrafts = drafts.filter((draft) => draft.status === "pending");
+  const isApplySupported = (draft: CommandCenterDraft) =>
+    ["question_batch", "quiz", "course", "school_setup"].includes(draft.kind);
 
   return (
     <div className="space-y-5" dir="rtl">
@@ -311,7 +313,7 @@ export const CommandCenterOperationsPanel: React.FC = () => {
                       </button>
                     </div>
                   )}
-                  {draft.status === "approved" && draft.applyStatus !== "applied" && (
+                  {draft.status === "approved" && draft.applyStatus !== "applied" && isApplySupported(draft) && (
                     <button
                       type="button"
                       disabled={actingId === draft._id || draft.applyStatus === "applying"}
@@ -323,6 +325,11 @@ export const CommandCenterOperationsPanel: React.FC = () => {
                         : <CheckCircle2 size={12} />}
                       {draft.applyStatus === "failed" ? "إعادة التنفيذ" : "تنفيذ"}
                     </button>
+                  )}
+                  {draft.status === "approved" && !isApplySupported(draft) && (
+                    <span className="rounded-lg bg-violet-50 px-2.5 py-1.5 text-[10px] font-black text-violet-700">
+                      معتمد • جاهز للتسليم في الوحدة المختصة
+                    </span>
                   )}
                   {draft.applyStatus === "applied" && (
                     <span className="rounded-lg bg-emerald-50 px-2.5 py-1.5 text-[10px] font-black text-emerald-700">
