@@ -43,5 +43,7 @@ assert.ok(!ecosystem.includes("quizzesCol.deleteMany"), "VERBAL26 ecosystem wrap
 assert.ok(!ecosystem.includes("selected40"), "legacy 40-question cross-skill top-up logic must stay removed");
 assert.ok(ecosystem.includes("skillIds: [q.mainSkillId, q.subSkillId]"), "imported questions must carry exact main/subskill lineage");
 assert.ok(ecosystem.includes("migrateVerbalTaxonomy22"), "canonical 22/76 taxonomy migration must remain wired");
+assert.ok(migration.includes('path.join(process.cwd(), "data", "verbal26_source_ledger.json")'), "migration must support Render server cwd for ledger lookup");
+assert.ok(ecosystem.includes('path.join(process.cwd(), "data", "verbal_approved_bank_v2.json")'), "ecosystem deploy must support Render server cwd for approved bank lookup");
 
 console.log("PASS: verbal taxonomy V2 contract — 22 main / 76 stable taxonomy / source-only non-destructive migration guards.");
