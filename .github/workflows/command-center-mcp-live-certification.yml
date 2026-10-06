@@ -7,9 +7,16 @@ on:
     paths:
       - 'server/src/modules/command-center/**'
       - 'server/src/app.ts'
+      - 'scripts/smoke-command-center-mcp-boundary.mjs'
       - 'scripts/smoke-command-center-mcp-live.mjs'
       - '.github/workflows/command-center-mcp-live-certification.yml'
   workflow_dispatch:
+    inputs:
+      run_full_live_scan:
+        description: "Require enabled MCP metadata/discovery/tool scan (manual closure proof)"
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -48,14 +55,27 @@ jobs:
           echo "Production did not converge to exact main head." >&2
           exit 1
 
-      - name: Remote MCP OAuth metadata + tool scan
+      - name: Remote MCP fail-closed boundary — lightweight
+        run: node scripts/smoke-command-center-mcp-boundary.mjs
+
+      - name: Remote MCP metadata + discovery + tool scan — manual closure proof only
+        if: github.event_name == 'workflow_dispatch' && inputs.run_full_live_scan == true
         run: node scripts/smoke-command-center-mcp-live.mjs
 
-      - name: Upload Remote MCP evidence
+      - name: Upload Remote MCP boundary evidence
         if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: command-center-mcp-boundary-${{ github.sha }}
+          path: audit-artifacts/command-center-mcp-boundary/summary.json
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Upload full Remote MCP evidence
+        if: always() && github.event_name == 'workflow_dispatch' && inputs.run_full_live_scan == true
         uses: actions/upload-artifact@v4
         with:
           name: command-center-mcp-live-${{ github.sha }}
           path: audit-artifacts/command-center-mcp-live/summary.json
-          if-no-files-found: warn
+          if-no-files-found: error
           retention-days: 30
