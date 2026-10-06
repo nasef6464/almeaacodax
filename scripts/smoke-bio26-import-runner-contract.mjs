@@ -21,7 +21,8 @@ const must = [
   'BIO26_IMPORT_DRAFT_PASS',
 ];
 for (const fragment of must) if (!importer.includes(fragment)) throw new Error(`missing BIO26 importer contract: ${fragment}`);
-if (!verifier.includes("PLACEHOLDER_OPTION_LABELS")) throw new Error("BIO26 post-import verifier does not reject placeholder option text labels");
+if (importer.includes("PLACEHOLDER_OPTION_LABELS")) throw new Error("BIO26 importer must not reject legitimate source A/B/C/D option values by label alone");
+if (!verifier.includes("optionTextsSource") || !verifier.includes("optionTextsVerified")) throw new Error("BIO26 post-import verifier does not enforce option text provenance");
 if (!verifier.includes("BIO26_POST_IMPORT_DRAFT_GATE_PASS")) throw new Error("BIO26 post-import verifier missing");
 if (!verifier.includes("BIO26_POST_APPROVAL_GATE_PASS")) throw new Error("BIO26 approval verifier missing");
 if (!bootstrap.includes("runBio26PackageImportIfRequested")) throw new Error("BIO26 importer is not wired into bootstrap");
