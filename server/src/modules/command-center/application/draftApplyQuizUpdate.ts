@@ -1,5 +1,5 @@
 import { QuizModel } from "../../../models/Quiz.js";
-import type { ApplyResult, CommandDraftLike } from "./draftApplyTypes.js";
+import { stableToken, type ApplyResult, type CommandDraftLike } from "./draftApplyTypes.js";
 import { quizQuestionIdsHash } from "./quizUpdateDraftTools.js";
 
 export async function applyQuizUpdateDraft(
@@ -22,30 +22,36 @@ export async function applyQuizUpdateDraft(
 
   const quiz = await QuizModel.findOne({
     $or: [{ _id: targetQuizId }, { id: targetQuizId }],
-  }).select("_id id questionIds skillIds isPublished showOnPlatform");
+  }).lean();
   if (!quiz) {
     throw Object.assign(new Error("Target quiz no longer exists"), { statusCode: 404 });
   }
 
-  const currentQuestionIds = Array.isArray(quiz.questionIds)
-    ? quiz.questionIds.map(String)
+  const currentQuestionIds = Array.isArray((quiz as any).questionIds)
+    ? (quiz as any).questionIds.map(String)
     : [];
   const currentHash = quizQuestionIdsHash(currentQuestionIds);
+  const targetPublished = Boolean((quiz as any).isPublished);
 
-  const alreadyApplied =
-    quizQuestionIdsHash(nextQuestionIds) === currentHash &&
-    nextSkillIds.every((id) => (quiz.skillIds || []).map(String).includes(id));
+  if (!targetPublished) {
+    const currentSkillIds = Array.isArray((quiz as any).skillIds)
+      ? (quiz as any).skillIds.map(String)
+      : [];
+    const alreadyApplied =
+      quizQuestionIdsHash(nextQuestionIds) === currentHash &&
+      nextSkillIds.every((id) => currentSkillIds.includes(id));
 
-  if (alreadyApplied) {
-    return {
-      resourceType: "quiz",
-      resourceId: String(quiz.id || quiz._id),
-      summary: {
-        idempotentReplay: true,
-        questionCount: nextQuestionIds.length,
-        publishedStatePreserved: Boolean(quiz.isPublished),
-      },
-    };
+    if (alreadyApplied) {
+      return {
+        resourceType: "quiz",
+        resourceId: String((quiz as any).id || (quiz as any)._id),
+        summary: {
+          idempotentReplay: true,
+          questionCount: nextQuestionIds.length,
+          published: false,
+        },
+      };
+    }
   }
 
   if (currentHash !== baselineQuestionIdsHash) {
@@ -55,19 +61,74 @@ export async function applyQuizUpdateDraft(
     );
   }
 
-  quiz.questionIds = nextQuestionIds as any;
-  quiz.skillIds = nextSkillIds as any;
-  quiz.reviewerNotes = `Updated from Command Center draft ${String(draft._id)} by ${actorId}`;
-  await quiz.save();
+  if (targetPublished) {
+    const draftId = String(draft._id);
+    const replacementId = `cc_quiz_revision_${stableToken(draftId, 20)}`;
+    const existingReplacement = await QuizModel.findById(replacementId).lean();
+    if (!existingReplacement) {
+      const clone: Record<string, unknown> = { ...(quiz as any) };
+      delete clone._id;
+      delete clone.__v;
+      delete clone.createdAt;
+      delete clone.updatedAt;
+      await QuizModel.create({
+        ...clone,
+        _id: replacementId,
+        id: replacementId,
+        title: `${String((quiz as any).title || "اختبار")} — تحديث`,
+        questionIds: nextQuestionIds,
+        skillIds: nextSkillIds,
+        isPublished: false,
+        showOnPlatform: false,
+        showInTraining: false,
+        showInMock: false,
+        learningPlacements: [],
+        targetGroupIds: [],
+        targetUserIds: [],
+        dueDate: null,
+        approvalStatus: "approved",
+        approvedBy: actorId,
+        approvedAt: Date.now(),
+        createdBy: actorId,
+        reviewerNotes: `Replacement created from Command Center draft ${draftId}; original published quiz was left unchanged.`,
+      });
+    }
+
+    return {
+      resourceType: "quiz_replacement",
+      resourceId: replacementId,
+      summary: {
+        idempotentReplay: Boolean(existingReplacement),
+        originalQuizId: String((quiz as any).id || (quiz as any)._id),
+        originalPublishedQuizUnchanged: true,
+        questionCount: nextQuestionIds.length,
+        published: false,
+        showOnPlatform: false,
+      },
+    };
+  }
+
+  await QuizModel.updateOne(
+    { _id: (quiz as any)._id },
+    {
+      $set: {
+        questionIds: nextQuestionIds,
+        skillIds: nextSkillIds,
+        reviewerNotes: `Updated from Command Center draft ${String(draft._id)} by ${actorId}`,
+        isPublished: false,
+      },
+    },
+    { runValidators: true },
+  );
 
   return {
     resourceType: "quiz",
-    resourceId: String(quiz.id || quiz._id),
+    resourceId: String((quiz as any).id || (quiz as any)._id),
     summary: {
       idempotentReplay: false,
       questionCount: nextQuestionIds.length,
-      publishedStatePreserved: Boolean(quiz.isPublished),
-      visibilityPreserved: quiz.showOnPlatform !== false,
+      published: false,
+      originalPublishedQuizUnchanged: false,
     },
   };
 }

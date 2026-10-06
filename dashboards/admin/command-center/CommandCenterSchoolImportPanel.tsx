@@ -1,113 +1,185 @@
 import React, { useState } from "react";
-import { FileSpreadsheet, Loader2 } from "lucide-react";
+import { FileSpreadsheet, Loader2, ShieldCheck } from "lucide-react";
 import { api } from "../../../services/api";
-import { parseImportFile } from "../SchoolsManager/importFileReaders";
+import { parseImportFile, parseRelationFile } from "../SchoolsManager/importFileReaders";
+import { getDuplicateImportEmails } from "../SchoolsManager/importRowParsing";
+import type { ImportRow, RelationImportRow } from "../SchoolsManager/contracts";
+import {
+  buildSchoolDraftFromImportedRows,
+  importedRowsMissingClasses,
+} from "./schoolImportDraftAdapter";
+
+type Issue = { type?: string; message?: string; ref?: string };
+
+const stablePayloadFingerprint = (value: unknown) => {
+  const text = JSON.stringify(value);
+  let hash = 2166136261;
+  for (let index = 0; index < text.length; index += 1) {
+    hash ^= text.charCodeAt(index);
+    hash = Math.imul(hash, 16777619);
+  }
+  return (hash >>> 0).toString(36);
+};
 
 export const CommandCenterSchoolImportPanel: React.FC<{
   onDraftCreated: () => Promise<void>;
   onError: (message: string) => void;
 }> = ({ onDraftCreated, onError }) => {
   const [schoolName, setSchoolName] = useState("");
-  const [importing, setImporting] = useState(false);
+  const [schoolId, setSchoolId] = useState("");
+  const [roster, setRoster] = useState<ImportRow[]>([]);
+  const [relations, setRelations] = useState<RelationImportRow[]>([]);
+  const [issues, setIssues] = useState<Issue[]>([]);
   const [summary, setSummary] = useState("");
+  const [busy, setBusy] = useState(false);
 
-  const createDraft = async (file: File) => {
-    const normalizedSchoolName = schoolName.trim();
-    if (!normalizedSchoolName) {
-      onError("اكتب اسم المدرسة قبل رفع الملف.");
-      return;
-    }
-
-    setImporting(true);
-    setSummary("");
+  const readRoster = async (file?: File) => {
+    if (!file) return;
     onError("");
     try {
       const rows = await parseImportFile(file);
-      const classNames = [
-        ...new Set(rows.map((row) => String(row.className || "").trim()).filter(Boolean)),
-      ];
-      if (!classNames.length) {
-        throw new Error("الملف لا يحتوي أسماء فصول. أضف عمود className/الفصل.");
+      const duplicates = getDuplicateImportEmails(rows);
+      if (duplicates.length) throw new Error(`بريد مكرر: ${duplicates.slice(0, 5).join("، ")}`);
+      setRoster(rows);
+      setSummary(`تمت قراءة ${rows.length} طالب.`);
+    } catch (error) {
+      onError(error instanceof Error ? error.message : "تعذر قراءة ملف الطلاب.");
+    }
+  };
+
+  const readRelations = async (file?: File) => {
+    if (!file) return;
+    onError("");
+    try {
+      const rows = await parseRelationFile(file);
+      setRelations(rows);
+      setSummary(`تمت قراءة ${rows.length} صف علاقات للطلاب/المعلمين/المشرفين.`);
+    } catch (error) {
+      onError(error instanceof Error ? error.message : "تعذر قراءة ملف العلاقات.");
+    }
+  };
+
+  const run = async (createDraft: boolean) => {
+    onError("");
+    setIssues([]);
+    setSummary("");
+    if (!schoolName.trim()) return onError("اكتب اسم المدرسة أولًا.");
+    const missingClasses = importedRowsMissingClasses(roster);
+    if (missingClasses.length) {
+      return onError(`يوجد ${missingClasses.length} طالب بدون فصل.`);
+    }
+
+    const payload = buildSchoolDraftFromImportedRows({
+      schoolName,
+      schoolId,
+      roster,
+      relations,
+    });
+    if (!payload.classes.length) return onError("الملفات تحتاج فصلًا واحدًا على الأقل.");
+
+    setBusy(true);
+    try {
+      const validation = (await api.validateSchoolSetupCommandDraft(payload)) as {
+        ok?: boolean;
+        issues?: Issue[];
+      };
+      setIssues(validation.issues || []);
+      if (!validation.ok) {
+        setSummary("راجع المشكلات الظاهرة قبل إنشاء المسودة.");
+        return;
       }
 
-      const classKeyByName = new Map(
-        classNames.map((name, index) => [name, `class-${index + 1}`]),
-      );
-      const payload = {
-        schoolName: normalizedSchoolName,
-        classes: classNames.map((name) => ({
-          key: classKeyByName.get(name)!,
-          name,
-        })),
-        students: rows.map((row) => ({
-          email: row.email,
-          name: row.name,
-          classKey: classKeyByName.get(String(row.className || "").trim()) || "",
-        })),
-        teachers: [],
-        supervisors: [],
-        requestId: `command-center-school-import-${Date.now()}`,
-        idempotencyKey: `school-import:${normalizedSchoolName}:${file.name}:${file.size}:${file.lastModified}`,
-      };
-
-      const validation = await api.validateSchoolSetupCommandDraft(payload);
-      if (!(validation as { ok?: boolean }).ok) {
-        const issues = Array.isArray((validation as { issues?: unknown[] }).issues)
-          ? (validation as { issues: unknown[] }).issues.length
-          : 0;
+      if (!createDraft) {
         setSummary(
-          `تم تحليل ${rows.length} طالب و${classNames.length} فصل، لكن توجد ${issues} ملاحظات قبل إنشاء المسودة.`,
+          `الفحص ناجح: ${payload.students.length} طالب، ${payload.teachers.length} معلم، ${payload.supervisors.length} مشرف، ${payload.classes.length} فصل.`,
         );
         return;
       }
 
-      await api.createSchoolSetupCommandDraft(payload);
-      setSummary(
-        `تم إنشاء مسودة مدرسة من ${rows.length} طالب و${classNames.length} فصل. راجعها ثم اعتمدها.`,
-      );
+      const fingerprint = stablePayloadFingerprint(payload);
+      await api.createSchoolSetupCommandDraft({
+        ...payload,
+        requestId: `school-import-${fingerprint}`,
+        idempotencyKey: `school-import:${fingerprint}`,
+      });
+      setSummary("تم إنشاء Draft المدرسة فقط؛ لا توجد حسابات أو علاقات حية قبل اعتماد وتطبيق بشري.");
       await onDraftCreated();
     } catch (error) {
-      onError(error instanceof Error ? error.message : "تعذر تحليل ملف المدرسة.");
+      onError(error instanceof Error ? error.message : "تعذر تنفيذ استيراد المدرسة.");
     } finally {
-      setImporting(false);
+      setBusy(false);
     }
   };
 
   return (
-    <section className="rounded-2xl border border-cyan-200 bg-cyan-50/60 p-5">
-      <div className="flex items-center gap-2 text-cyan-900 font-black">
+    <section className="rounded-2xl border border-cyan-200 bg-cyan-50/60 p-5" dir="rtl">
+      <div className="flex items-center gap-2 font-black text-cyan-900">
         <FileSpreadsheet size={18} />
         استيراد مدرسة إلى مسودة آمنة
       </div>
-      <p className="mt-1 text-xs font-bold text-cyan-700">
-        ارفع CSV/TSV/XLSX بنفس قالب إدارة المدارس. سيتم تحليل الطلاب والفصول محليًا ثم إنشاء Draft فقط؛ الحسابات غير الموجودة لن تُنشأ تلقائيًا.
+      <p className="mt-1 text-xs font-bold leading-6 text-cyan-700">
+        يدعم كشف الطلاب والفصول وملف العلاقات للمعلمين والمشرفين باستخدام نفس قارئ إدارة المدارس. النتيجة Draft فقط، ولا تُنشئ حسابات جديدة تلقائيًا.
       </p>
-      <div className="mt-4 grid gap-3 md:grid-cols-[1fr_auto]">
+      <div className="mt-4 grid gap-3 md:grid-cols-2">
         <input
           value={schoolName}
           onChange={(event) => setSchoolName(event.target.value)}
           placeholder="اسم المدرسة"
-          className="rounded-xl border border-cyan-200 bg-white px-3 py-2 text-sm font-bold text-slate-800 outline-none focus:border-cyan-400"
+          className="rounded-xl border border-cyan-200 bg-white px-3 py-2 text-xs font-bold"
         />
-        <label className={`inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-cyan-700 px-4 py-2 text-xs font-black text-white ${importing ? "pointer-events-none opacity-60" : ""}`}>
-          {importing ? <Loader2 size={14} className="animate-spin" /> : <FileSpreadsheet size={14} />}
-          رفع الملف
+        <input
+          value={schoolId}
+          onChange={(event) => setSchoolId(event.target.value)}
+          placeholder="School ID اختياري عند تحديث مدرسة موجودة"
+          className="rounded-xl border border-cyan-200 bg-white px-3 py-2 text-xs font-bold"
+        />
+        <label className="rounded-xl border border-dashed border-cyan-300 bg-white p-3 text-xs font-bold">
+          كشف الطلاب والفصول
           <input
             type="file"
             accept=".csv,.tsv,.xlsx,.xls"
-            className="hidden"
-            disabled={importing}
-            onChange={(event) => {
-              const file = event.target.files?.[0];
-              event.target.value = "";
-              if (file) void createDraft(file);
-            }}
+            className="mt-2 block w-full text-[11px]"
+            onChange={(event) => void readRoster(event.target.files?.[0])}
           />
+          <span className="mt-1 block text-[10px] text-slate-500">{roster.length} صف</span>
+        </label>
+        <label className="rounded-xl border border-dashed border-cyan-300 bg-white p-3 text-xs font-bold">
+          ملف العلاقات — اختياري
+          <input
+            type="file"
+            accept=".csv,.tsv,.xlsx,.xls"
+            className="mt-2 block w-full text-[11px]"
+            onChange={(event) => void readRelations(event.target.files?.[0])}
+          />
+          <span className="mt-1 block text-[10px] text-slate-500">{relations.length} صف</span>
         </label>
       </div>
-      {summary && (
-        <div className="mt-3 rounded-xl border border-cyan-200 bg-white p-3 text-xs font-bold text-cyan-900">
-          {summary}
+      <div className="mt-3 flex flex-wrap gap-2">
+        <button
+          type="button"
+          disabled={busy}
+          onClick={() => void run(false)}
+          className="inline-flex items-center gap-2 rounded-xl border border-cyan-200 bg-white px-3 py-2 text-xs font-black text-cyan-800 disabled:opacity-50"
+        >
+          {busy ? <Loader2 size={13} className="animate-spin" /> : <ShieldCheck size={13} />} فحص
+        </button>
+        <button
+          type="button"
+          disabled={busy}
+          onClick={() => void run(true)}
+          className="inline-flex items-center gap-2 rounded-xl bg-cyan-700 px-3 py-2 text-xs font-black text-white disabled:opacity-50"
+        >
+          <FileSpreadsheet size={13} /> إنشاء Draft
+        </button>
+      </div>
+      {summary && <div className="mt-3 text-xs font-bold text-slate-700">{summary}</div>}
+      {issues.length > 0 && (
+        <div className="mt-3 max-h-40 overflow-auto rounded-xl border border-amber-200 bg-amber-50 p-3">
+          {issues.slice(0, 30).map((issue, index) => (
+            <div key={index} className="text-[11px] font-bold text-amber-900">
+              {issue.message || issue.type}{issue.ref ? ` • ${issue.ref}` : ""}
+            </div>
+          ))}
         </div>
       )}
     </section>
