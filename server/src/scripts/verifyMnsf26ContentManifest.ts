@@ -17,6 +17,8 @@ type ManifestRecord = {
   questionFingerprint: string | null;
   explanationFingerprint: string | null;
   speechText: string | null;
+  sourceText?: string | null;
+  educationalExplanation?: string | null;
 };
 
 const manifestPath = path.resolve(
@@ -108,6 +110,59 @@ if (invalidTaxonomy.length) {
     gate: "ready-taxonomy-membership",
     detail: invalidTaxonomy.map((record) => ({
       questionCode: record.questionCode,
+      skillId: record.skillId,
+      subSkillId: record.subSkillId,
+    })),
+  });
+}
+
+const expectedHoldCodes = new Set([
+  "QDR-QNT-MNSF26-P001-Q10",
+  "QDR-QNT-MNSF26-P011-Q19",
+  "QDR-QNT-MNSF26-P013-Q15",
+]);
+const actualHoldCodes = new Set(holds.map((record) => record.questionCode));
+if (
+  actualHoldCodes.size !== expectedHoldCodes.size ||
+  [...expectedHoldCodes].some((code) => !actualHoldCodes.has(code))
+) {
+  failures.push({
+    gate: "source-hold-allowlist",
+    detail: {
+      expected: [...expectedHoldCodes],
+      actual: [...actualHoldCodes],
+    },
+  });
+}
+
+const invalidHolds = holds.filter(
+  (record) =>
+    record.sourceText !== null ||
+    !record.questionFingerprint ||
+    !record.speechText,
+);
+if (invalidHolds.length) {
+  failures.push({
+    gate: "source-hold-fail-closed",
+    detail: invalidHolds.map((record) => record.questionCode),
+  });
+}
+
+const expectedQuarantineCode = "QDR-QNT-MNSF26-P014-Q08";
+if (
+  quarantined.length !== 1 ||
+  quarantined[0]?.questionCode !== expectedQuarantineCode ||
+  quarantined[0]?.sourceText !== null ||
+  quarantined[0]?.correct !== null ||
+  quarantined[0]?.skillId !== null ||
+  quarantined[0]?.subSkillId !== null
+) {
+  failures.push({
+    gate: "source-defect-quarantine-contract",
+    detail: quarantined.map((record) => ({
+      questionCode: record.questionCode,
+      sourceText: record.sourceText,
+      correct: record.correct,
       skillId: record.skillId,
       subSkillId: record.subSkillId,
     })),
