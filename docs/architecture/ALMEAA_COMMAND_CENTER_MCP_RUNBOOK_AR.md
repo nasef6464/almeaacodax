@@ -66,13 +66,13 @@ Read:
 - `get_skill_tree`
 - `get_course_inventory`
 - `audit_course` — فحص قراءة فقط للدورة الحالية: المحتوى/الاختبارات/التغطية/الفجوات، بلا توليد أو Apply أو Publish.
-- `audit_course`
 - `list_drafts`
 - `get_workflow`
 
 Draft write:
 - `create_question_drafts`
 - `create_quiz_draft`
+- `plan_quiz_question_update`
 - `create_course_draft`
 - `create_school_setup_draft`
 
