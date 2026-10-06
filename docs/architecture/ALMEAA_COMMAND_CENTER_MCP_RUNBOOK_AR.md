@@ -1,5 +1,10 @@
 # ALMEAA Command Center — Remote MCP Runbook
 
+> تحديث إنتاجي 2026-10-06: PR #397 merged at `7c21eca9016146c380b861447967eae399805a1c`; Vercel READY وRender LIVE على نفس SHA.  
+> أول Remote MCP Live Certification وصل إلى النسخة الصحيحة ثم فشل fail-closed لأن Protected Resource Metadata أعاد 404 مع MCP غير مفعّل في production.  
+> لا يتم تفعيل `ALMEAA_MCP_ENABLED=true` قبل وجود Identity Provider موثوق وإعداد issuer/audience/scopes الفعلية.  
+> Owner/provider blocker: configure trusted OAuth 2.1 IdP, then rerun certification and external ChatGPT → Gemini/Claude proof.
+
 > الحالة: MCP CORE MERGED — Developer/Codex code-only bridge in PR #397 — Production OAuth IdP / external connection proof pending.
 > التاريخ: 2026-10-06
 
