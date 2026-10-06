@@ -2904,72 +2904,6 @@ const Reports: React.FC = () => {
                     </div>
                 </div>
 
-                {selectedReportSkill ? (
-                    <div className="mb-5 rounded-3xl border border-rose-100 bg-gradient-to-br from-rose-50 via-white to-amber-50 p-4 sm:p-5">
-                        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-                            <div className="min-w-0">
-                                <div className="mb-3 inline-flex rounded-full bg-white px-3 py-1 text-xs font-black text-rose-700">
-                                    المهارة التي تبدأ بها اليوم
-                                </div>
-                                <div className="grid grid-cols-1 gap-2 text-xs font-bold sm:grid-cols-3">
-                                    {selectedReportSkill.subjectName ? (
-                                        <div className="rounded-xl bg-white px-3 py-2 text-gray-700">
-                                            <span className="mb-1 block text-gray-400">المادة</span>
-                                            {displayText(selectedReportSkill.subjectName)}
-                                        </div>
-                                    ) : null}
-                                    {selectedReportSkill.sectionName ? (
-                                        <div className="rounded-xl bg-white px-3 py-2 text-indigo-700">
-                                            <span className="mb-1 block text-indigo-300">المهارة الرئيسية</span>
-                                            {displayText(selectedReportSkill.sectionName)}
-                                        </div>
-                                    ) : null}
-                                    <div className="rounded-xl bg-white px-3 py-2 text-rose-700">
-                                        <span className="mb-1 block text-rose-300">المهارة الفرعية</span>
-                                        {displayText(selectedReportSkill.skill)}
-                                    </div>
-                                </div>
-                                <p className="mt-3 text-sm leading-7 text-gray-600">
-                                    {displayText(selectedSkillRecommendation.actionText) || 'ابدأ بمراجعة قصيرة، ثم حل تدريبًا بسيطًا، وبعدها أعد القياس.'}
-                                </p>
-                            </div>
-                            <div className="grid w-full gap-2 sm:grid-cols-2 lg:w-auto lg:min-w-[320px]">
-                                {selectedSkillRecommendation.lessonLink ? (
-                                    <Link to={selectedSkillRecommendation.lessonLink} className="rounded-xl bg-white px-4 py-3 text-sm font-black text-indigo-700 border border-indigo-100 hover:bg-indigo-50 flex items-center justify-center gap-2">
-                                        <Video size={16} />
-                                        {selectedSkillRecommendation.lessonTopicTitle ? `شرح: ${selectedSkillRecommendation.lessonTopicTitle}` : 'ابدأ بالشرح'}
-                                    </Link>
-                                ) : (
-                                    <span className="rounded-xl bg-white px-4 py-3 text-sm font-black text-slate-500 border border-slate-200 flex items-center justify-center gap-2">
-                                        <Video size={16} />
-                                        الشرح غير مربوط بعد
-                                    </span>
-                                )}
-                                {selectedSkillRecommendation.quizLink ? (
-                                    <Link to={selectedSkillRecommendation.quizLink} className="rounded-xl bg-white px-4 py-3 text-sm font-black text-amber-700 border border-amber-100 hover:bg-amber-50 flex items-center justify-center gap-2">
-                                        <FileText size={16} />
-                                        ابدأ بالتدريب
-                                    </Link>
-                                ) : (
-                                    <Link to="/dashboard?tab=saher" className="rounded-xl bg-white px-4 py-3 text-sm font-black text-slate-600 border border-slate-200 hover:bg-slate-50 flex items-center justify-center gap-2">
-                                        <FileText size={16} />
-                                        ابحث عن تدريب
-                                    </Link>
-                                )}
-                                {selectedSkillRecommendation.resourceUrl ? (
-                                    <a href={selectedSkillRecommendation.resourceUrl} target="_blank" rel="noreferrer" className="rounded-xl bg-white px-4 py-3 text-sm font-black text-slate-700 border border-slate-200 hover:bg-slate-50 flex items-center justify-center gap-2">
-                                        <BookOpen size={16} />
-                                        ملف مساعد
-                                    </a>
-                                ) : null}
-                                <Link to={buildSkillSessionLink(selectedReportSkill)} className="rounded-xl bg-indigo-600 px-4 py-3 text-sm font-black text-white hover:bg-indigo-700 flex items-center justify-center gap-2">
-                                    <Clock size={16} />
-                                    حجز حصة
-                                </Link>
-                            </div>
-                        </div>
-                    </div>
-                ) : null}
 
                 <div className="mb-5 grid grid-cols-1 gap-3 lg:grid-cols-[1fr_2fr]">
                     <div className="rounded-2xl border border-indigo-100 bg-indigo-50 p-4">
@@ -2997,32 +2931,53 @@ const Reports: React.FC = () => {
                 </div>
 
                 <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
-                    {focusedReportSkills.map((skill) => {
-                        const tone = getReportMasteryTone(skill.mastery);
+                    {compactStudentSkillRows.map((skill) => {
                         const isSelected = selectedReportSkill && getReportSkillKey(selectedReportSkill) === getReportSkillKey(skill);
 
                         return (
-                            <button
+                            <div
                                 key={getReportSkillKey(skill)}
-                                onClick={() => setSelectedSkillKey(getReportSkillKey(skill))}
-                                className={`text-right rounded-2xl border p-4 transition-all hover:shadow-md ${tone.bg} ${isSelected ? `${tone.border} ring-2 ring-indigo-100` : 'border-transparent'}`}
+                                className={`rounded-2xl border p-4 transition-all hover:shadow-md ${skill.tone.bg} ${isSelected ? `${skill.tone.border} ring-2 ring-indigo-100` : 'border-transparent'}`}
                             >
-                                <div className="flex items-start justify-between gap-3">
-                                    <div className="min-w-0">
-                                        <div className={`inline-flex rounded-full px-3 py-1 text-[11px] font-black ${tone.text} bg-white/70`}>
-                                            {tone.label}
+                                <button
+                                    type="button"
+                                    onClick={() => setSelectedSkillKey(getReportSkillKey(skill))}
+                                    className="w-full text-right"
+                                >
+                                    <div className="flex items-start justify-between gap-3">
+                                        <div className="min-w-0">
+                                            <div className={`inline-flex rounded-full bg-white/70 px-3 py-1 text-[11px] font-black ${skill.tone.text}`}>
+                                                {skill.tone.label}
+                                            </div>
+                                            <div className="mt-3 break-words font-black leading-7 text-gray-900">{displayText(skill.skill)}</div>
                                         </div>
-                                        <div className="mt-3 font-black text-gray-900 leading-7 break-words">{displayText(skill.skill)}</div>
+                                        <div className={`text-2xl font-black ${skill.tone.text}`}>{skill.mastery}%</div>
                                     </div>
-                                    <div className={`text-2xl font-black ${tone.text}`}>{skill.mastery}%</div>
+                                    <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/70">
+                                        <div className={`h-full rounded-full ${skill.tone.bar}`} style={{ width: `${skill.mastery}%` }} />
+                                    </div>
+                                    <div className="mt-3 text-xs font-bold text-gray-500">
+                                        {skill.isReliable ? 'قياس مؤكد من عدة محاولات' : `قراءة أولية حتى ${MIN_SKILL_EVIDENCE_COUNT} محاولات`}
+                                    </div>
+                                </button>
+
+                                <div className="print-hide mt-3 grid grid-cols-2 gap-2">
+                                    <Link
+                                        to={skill.lessonLink}
+                                        className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-white px-3 py-2 text-xs font-black text-indigo-700 ring-1 ring-indigo-100 hover:bg-indigo-50"
+                                    >
+                                        <Video size={14} />
+                                        فيديو
+                                    </Link>
+                                    <Link
+                                        to={skill.quizLink}
+                                        className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-white px-3 py-2 text-xs font-black text-amber-700 ring-1 ring-amber-100 hover:bg-amber-50"
+                                    >
+                                        <FileText size={14} />
+                                        تدريب
+                                    </Link>
                                 </div>
-                                <div className="mt-4 h-2 rounded-full bg-white/70 overflow-hidden">
-                                    <div className={`h-full rounded-full ${tone.bar}`} style={{ width: `${skill.mastery}%` }} />
-                                </div>
-                                <div className="mt-3 text-xs font-bold text-gray-500">
-                                    {skill.isReliable ? 'قياس مؤكد من عدة محاولات' : `قراءة أولية حتى ${MIN_SKILL_EVIDENCE_COUNT} محاولات`}
-                                </div>
-                            </button>
+                            </div>
                         );
                     })}
                 </div>
