@@ -64,10 +64,13 @@ Canonical candidate: skill_quant_01 / sub_quant_01_4
 Question fingerprint: كمية كلية موزعة بالتساوي على عدد أيام.
 Explanation fingerprint: نصيب الوحدة = الإجمالي ÷ عدد الوحدات.
 Voice: "نقسم عدد الآيات على عدد الأيام: خمسة وثلاثون على سبعة يساوي خمسة. إذن حفظ خمس آيات في اليوم الواحد."
+Duplicate decision: **SUPPRESS_CROSS_BANK_DUPLICATE** — exact normalized duplicate of `QDR-QNT-COL2627-P037-Q28` in production COL2627 (same stem, values 35/7, operation, and result 5). Keep the existing COL2627 record; do not import a second MNSF26 copy.
 
 ## Batch result
 - Source boxes reviewed: 6
-- Accepted with unique answer: 6
+- Solved with unique answer: 6
+- Unique MNSF26 import candidates after cross-bank dedupe: 5
+- Suppressed cross-bank duplicates: 1 (Q020 ↔ COL2627 `QDR-QNT-COL2627-P037-Q28`)
 - Holds: 0
 - New skills: 0
 - Taxonomy mutations: 0
