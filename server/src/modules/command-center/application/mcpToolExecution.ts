@@ -14,6 +14,7 @@ const writeToolNames = new Set([
   "plan_quiz_question_update",
   "create_course_draft",
   "create_school_setup_draft",
+  "prepare_smart_classroom_session",
 ]);
 
 export async function executeMcpTool(input: {
