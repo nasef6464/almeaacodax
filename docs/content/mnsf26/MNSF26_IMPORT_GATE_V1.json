@@ -1,0 +1,121 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "taxonomy": {
+    "canonicalMainSkills": 25,
+    "canonicalSubSkills": 95,
+    "newSkillsAllowed": false
+  },
+  "analyzedSourceRange": {
+    "batches": "001-013",
+    "pdfPages": "1-14",
+    "sourceQuestionsReviewed": 138
+  },
+  "importReadiness": {
+    "uniqueNonHeldCandidates": 126,
+    "holds": 10,
+    "suppressedIntraMnsfDuplicates": 2
+  },
+  "holds": [
+    {
+      "batch": "001",
+      "pdfPage": 1,
+      "question": 10,
+      "reason": "SOURCE_AMBIGUITY"
+    },
+    {
+      "batch": "003",
+      "pdfPage": 4,
+      "question": 13,
+      "reason": "SOURCE_AMBIGUITY"
+    },
+    {
+      "batch": "007",
+      "pdfPage": 8,
+      "question": 1,
+      "reason": "SOURCE_WORDING"
+    },
+    {
+      "batch": "007",
+      "pdfPage": 8,
+      "question": 2,
+      "reason": "TAXONOMY_NO_EXACT_MATCH"
+    },
+    {
+      "batch": "008",
+      "pdfPage": 9,
+      "question": 19,
+      "reason": "TAXONOMY_NO_EXACT_MATCH"
+    },
+    {
+      "batch": "010",
+      "pdfPage": 11,
+      "question": 15,
+      "reason": "TAXONOMY_NO_EXACT_MATCH"
+    },
+    {
+      "batch": "010",
+      "pdfPage": 11,
+      "question": 19,
+      "reason": "SOURCE_TRANSCRIPTION_QA"
+    },
+    {
+      "batch": "012",
+      "pdfPage": 13,
+      "question": 15,
+      "reason": "SOURCE_MATH_TRANSCRIPTION"
+    },
+    {
+      "batch": "012",
+      "pdfPage": 13,
+      "question": 18,
+      "reason": "TAXONOMY_NO_EXACT_MATCH"
+    },
+    {
+      "batch": "013",
+      "pdfPage": 14,
+      "question": 8,
+      "reason": "SOURCE_LOGIC"
+    }
+  ],
+  "suppressions": [
+    {
+      "later": {
+        "batch": "005",
+        "pdfPage": 6,
+        "question": 1
+      },
+      "keep": {
+        "batch": "003",
+        "pdfPage": 4,
+        "question": 5
+      },
+      "reason": "SEMANTIC_DUPLICATE_SAME_SEQUENCE_AND_VALUES",
+      "evidence": "Both produce 8,7,6,5,4,3 from six positions with the fourth equal to 5 and answer 33; only surface nouns differ."
+    },
+    {
+      "later": {
+        "batch": "012",
+        "pdfPage": 13,
+        "question": 19
+      },
+      "keep": {
+        "batch": "006",
+        "pdfPage": 7,
+        "question": 19
+      },
+      "reason": "SEMANTIC_DUPLICATE_SAME_VALUES_AND_COMPARISON",
+      "evidence": "Both use total 3710, seven people, equal share 530, and compare that share with 530."
+    }
+  ],
+  "productionBaseline": {
+    "FND26": 858,
+    "COL2627": 946,
+    "MNSF26": 0
+  },
+  "sourceResume": {
+    "nextBatch": "014",
+    "nextPdfPage": 15,
+    "requiresOriginalPixelsBeforeImport": true
+  }
+}
