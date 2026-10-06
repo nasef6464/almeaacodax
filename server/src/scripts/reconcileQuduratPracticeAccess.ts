@@ -48,10 +48,27 @@ const isTrainingOnly = (question: any) =>
   idOf(question?.sourceMeta?.documentCode) === "QUDURAT-PRACTICE" ||
   idOf(question?.sourceMeta?.importBatchId).startsWith("QUDURAT_PRACTICE_");
 
-const questionIdsForSubskill = (questions: any[], subSkillId: string) =>
+const isApprovedQuestion = (question: any) => idOf(question?.approvalStatus).toLowerCase() === "approved";
+const isQuantCanonicalSourceQuestion = (question: any) =>
+  ["FND26", "COL2627"].includes(idOf(question?.sourceMeta?.documentCode));
+
+const questionIdsForSubskill = (questions: any[], subSkillId: string, subjectKey: string) =>
   questions
-    .filter((q) => idOf(q.subSkillId) === subSkillId)
+    .filter((q) =>
+      idOf(q.subSkillId) === subSkillId &&
+      (
+        subjectKey !== "quant" ||
+        (isApprovedQuestion(q) && isQuantCanonicalSourceQuestion(q) && !isTrainingOnly(q))
+      )
+    )
     .sort((a, b) => Number(isTrainingOnly(a)) - Number(isTrainingOnly(b)) || idOf(a.id || a._id).localeCompare(idOf(b.id || b._id)))
+    .map((q) => idOf(q.id || q._id))
+    .filter(Boolean);
+
+const helperQuestionIdsForSubskill = (questions: any[], subSkillId: string) =>
+  questions
+    .filter((q) => idOf(q.subSkillId) === subSkillId && isApprovedQuestion(q) && isTrainingOnly(q))
+    .sort((a, b) => idOf(a.id || a._id).localeCompare(idOf(b.id || b._id)))
     .map((q) => idOf(q.id || q._id))
     .filter(Boolean);
 
@@ -121,8 +138,13 @@ async function reconcileSubject(db: any, config: (typeof SUBJECTS)[number], appl
       const childTopic = topics.find((topic: any) => idOf(topic.parentId) === idOf(parentTopic?.id || parentTopic?._id) && idOf(topic.title) === idOf(subSkill.name))
         || topics.find((topic: any) => Array.isArray(topic.skillIds) && topic.skillIds.map(idOf).includes(subSkillId))
         || topics.find((topic: any) => idOf(topic.id || topic._id).includes(subSkillId.replace("sub_", "")));
-      const allIds = questionIdsForSubskill(questions, subSkillId);
-      const drillIds = allIds.slice(0, SUB_DRILL_MAX_QUESTIONS);
+      const allIds = questionIdsForSubskill(questions, subSkillId, config.key);
+      const sourceDrillIds = allIds.slice(0, SUB_DRILL_MAX_QUESTIONS);
+      const helperIds = config.key === "quant" ? helperQuestionIdsForSubskill(questions, subSkillId) : [];
+      const helperNeeded = config.key === "quant"
+        ? Math.max(0, Math.min(SUB_DRILL_TARGET_MIN - sourceDrillIds.length, SUB_DRILL_MAX_QUESTIONS - sourceDrillIds.length))
+        : 0;
+      const drillIds = [...sourceDrillIds, ...helperIds.slice(0, helperNeeded)];
 
       if (childTopic) {
         topicOps.push({
@@ -301,20 +323,14 @@ async function reconcileSubject(db: any, config: (typeof SUBJECTS)[number], appl
       })
       .sort({ "learningPlacements.order": 1, id: 1 })
       .toArray();
-    const freeMainSkillIds = new Set(
-      canonicalSkills.slice(0, FREE_MAIN_TOPICS).map((skill: any) => idOf(skill.id || skill._id)),
-    );
-
     if (apply) {
       for (const quiz of quantMainBanks as any[]) {
-        const quizMainSkillId = (Array.isArray(quiz.skillIds) ? quiz.skillIds : []).map(idOf).find((id: string) => id.startsWith(config.skillPrefix)) || "";
-        const isFree = freeMainSkillIds.has(quizMainSkillId);
         const placements = (Array.isArray(quiz.learningPlacements) ? quiz.learningPlacements : []).map((placement: any) =>
-          placement?.slot === "training" ? { ...placement, accessType: isFree ? "free" : "paid", updatedAt: Date.now() } : placement,
+          placement?.slot === "training" ? { ...placement, accessType: "paid", updatedAt: Date.now() } : placement,
         );
         await quizzesCol.updateOne(
           { _id: quiz._id },
-          { $set: { access: accessForFree(isFree), learningPlacements: placements, updatedAt: now() } },
+          { $set: { access: accessForFree(false), learningPlacements: placements, updatedAt: now() } },
         );
       }
     }
