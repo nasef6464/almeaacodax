@@ -5,8 +5,8 @@
   "sourceFile": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
   "counts": {
     "queued": 132,
-    "contentReady": 129,
-    "sourceReview": 3,
+    "contentReady": 130,
+    "sourceReview": 2,
     "suppressedExcluded": 5,
     "quarantinedExcluded": 1
   },
@@ -2295,8 +2295,8 @@
       "printedPageNumber": 11,
       "printedQuestionNumber": 19,
       "sourceItemId": "MNSF26-PDF011-P011-N19",
-      "contentStatus": "HOLD_SOURCE",
-      "cropPriority": "SOURCE_REVIEW",
+      "contentStatus": "CONTENT_READY_CROP_PENDING",
+      "cropPriority": "NORMAL",
       "cropStatus": "PENDING_ORIGINAL_PIXELS",
       "cropContract": {
         "keepOriginalPixels": true,
