@@ -234,6 +234,19 @@ export async function validateSchoolSetupDraft(
     }
   }
 
+  const targetSchoolId = targetSchool ? String(targetSchool._id) : "";
+  for (const user of resolved.users as any[]) {
+    const existingSchoolId = String(user.schoolId || "").trim();
+    if (!existingSchoolId) continue;
+    if (!targetSchoolId || existingSchoolId !== targetSchoolId) {
+      issues.push({
+        type: "cross_school_assignment_requires_transfer",
+        ref: String(user.email || user._id),
+        message: "Existing school membership cannot be changed implicitly by a Command Center setup draft",
+      });
+    }
+  }
+
   const existingClasses = targetSchool
     ? await GroupModel.find({ type: "CLASS", parentId: String(targetSchool._id) })
         .select("_id name parentId")
