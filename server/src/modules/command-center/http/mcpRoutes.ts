@@ -72,6 +72,14 @@ const validateModernHeaders = (
   const protocol = requestProtocol(req, message);
   if (protocol !== MODERN_PROTOCOL) return null;
 
+  const protocolHeader = String(req.header("mcp-protocol-version") || "").trim();
+  const envelopeVersion = String(
+    message.params?._meta?.["io.modelcontextprotocol/protocolVersion"] || "",
+  ).trim();
+  if (protocolHeader !== MODERN_PROTOCOL || envelopeVersion !== MODERN_PROTOCOL) {
+    return "Modern MCP requests must carry matching 2026-07-28 protocol versions in the header and _meta envelope";
+  }
+
   const methodHeader = String(req.header("mcp-method") || "").trim();
   if (!methodHeader || methodHeader !== String(message.method || "")) {
     return "Mcp-Method header must match the JSON-RPC method";
