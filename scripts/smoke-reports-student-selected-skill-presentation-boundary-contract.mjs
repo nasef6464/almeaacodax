@@ -33,31 +33,27 @@ check('Reports keeps selected-skill ownership while delegating presentation', ()
   assertIncludes(reports, '<StudentSelectedSkillPanel');
   assertIncludes(reports, 'skill={selectedReportSkill}');
   assertIncludes(reports, 'recommendation={selectedSkillRecommendation}');
-  assertIncludes(reports, 'sessionLink={buildSkillSessionLink(selectedReportSkill)}');
   assertIncludes(reports, 'setSelectedSkillKey(');
   assertNotIncludes(reports, 'مقترحات لهذه المهارة');
 });
 
-check('selected-skill panel preserves recommendation copy and all action fallbacks', () => {
+check('selected-skill panel keeps exactly the three Foundation actions', () => {
   for (const fragment of [
-    'مقترحات لهذه المهارة',
-    'اختر من المقترحات التالية ما يناسب وقتك الآن. الأفضل أن تبدأ بالشرح ثم تنتقل للتدريب.',
-    'يمكنك تغيير المقترحات بالضغط على أي مهارة من البطاقات بالأعلى.',
+    'زر الفيديو يفتح موضوع التأسيس نفسه',
     'to={recommendation.lessonLink}',
-    "recommendation.lessonTopicTitle ? `درس: ${recommendation.lessonTopicTitle}` : 'فيديو أو درس'",
-    'to="/courses"',
-    'استعرض الشروح',
+    'فيديو',
     'to={recommendation.quizLink}',
-    'اختبار علاجي',
-    'to="/dashboard?tab=saher"',
-    'ابحث عن اختبار',
-    'href={recommendation.resourceUrl}',
-    'target="_blank"',
-    'rel="noreferrer"',
-    'ملف داعم',
-    'to={sessionLink}',
-    'حجز حصة',
+    'تدريب',
+    'to={recommendation.supportLink}',
+    'ملف الدعم',
   ]) assertIncludes(panel, fragment);
+  for (const forbidden of [
+    'إعادة قياس المهارة',
+    'حجز حصة',
+    'to={sessionLink}',
+    'RefreshCw',
+    'Clock',
+  ]) assertNotIncludes(panel, forbidden);
 });
 
 check('selected-skill panel is presentation-only', () => {
