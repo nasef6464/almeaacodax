@@ -57,7 +57,7 @@ const envSchema = z.object({
   JWT_SECRET: z.string().min(16, "JWT_SECRET must be at least 16 characters"),
   PLATFORM_INTEGRATIONS_SECRET_KEY: z.string().optional().default(""),
   ALMEAA_COMMAND_API_KEY: z.string().optional().default(""),
-  ALMEAA_COMMAND_API_SCOPES: z.string().default("taxonomy:read,courses:read,drafts:read,drafts:write,workflows:read,workflows:plan,workflows:execute"),
+  ALMEAA_COMMAND_API_SCOPES: z.string().default("taxonomy:read,courses:read,drafts:read,drafts:write,workflows:read,workflows:plan,workflows:execute,developer:read,developer:write"),
   ALMEAA_MCP_ENABLED: z.preprocess((value) => {
     if (typeof value === "string") return ["true", "1", "yes", "on"].includes(value.trim().toLowerCase());
     return value;
@@ -65,7 +65,7 @@ const envSchema = z.object({
   ALMEAA_MCP_OAUTH_ISSUER: z.string().optional().default(""),
   ALMEAA_MCP_OAUTH_AUDIENCE: z.string().optional().default(""),
   ALMEAA_MCP_OAUTH_REQUIRED_SCOPE: z.string().default("almeaa:admin"),
-  ALMEAA_MCP_OAUTH_SCOPES: z.string().default("almeaa:admin,taxonomy:read,courses:read,drafts:read,drafts:write,workflows:read,workflows:plan,workflows:execute"),
+  ALMEAA_MCP_OAUTH_SCOPES: z.string().default("almeaa:admin,taxonomy:read,courses:read,drafts:read,drafts:write,workflows:read,workflows:plan,workflows:execute,developer:read,developer:write"),
   ALMEAA_MCP_JWKS_CACHE_MS: z.coerce.number().int().min(60_000).max(24 * 60 * 60 * 1000).default(10 * 60 * 1000),
   JWT_EXPIRES_IN: z.string().default("7d"),
   GOOGLE_CLIENT_ID: z.string().optional().default(""),
