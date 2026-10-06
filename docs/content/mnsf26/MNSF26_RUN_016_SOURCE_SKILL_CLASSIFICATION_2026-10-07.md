@@ -35,3 +35,20 @@ Geometry explicitly declares lessons such as shapes, angles, triangles, coordina
 
 ## Production
 No production import was performed in this run. Full-book crops/classification/dedupe remain prerequisites before R2/dry-run/canary/import.
+
+## Follow-up hardening
+- Added consolidated source skill index: `MNSF26_SOURCE_SKILL_INDEX_V1.json`.
+- Current source groups: **28 total = 17 arithmetic/algebra + 11 geometry**.
+- Coverage in that index: **63/63 arithmetic nominal tests + 50/50 geometry tests**.
+- Added `verifyMnsf26SourceSkillIndex.ts` and wired `verify:mnsf26:source-skills` into `verify:mnsf26:all`.
+- Connector-level structural validation after writes: arithmetic missing source labels = 0; geometry lesson-name mismatches = 0; manifest source-classification mismatches = 0 across all 138 analyzed records.
+
+### Commits in this run
+- `34c823c6ffd3215dd54f15efff88b027a25059c6` — restore source label for arithmetic test 9.
+- `ca5a6e61139c06cde5ae0736d517159f372634e3` — persist source classification on 138 records.
+- `197d7683b554470c714c0eab869b016460a9348d` — enforce content-manifest/source-index classification parity.
+- `b0a98f58418e60229c47ae14bf4d01424f0e6456` — require arithmetic source skill labels.
+- `6bc7aad9f7bc5fea1585e36d522e7330644eeea5` — require geometry source lesson labels.
+- `88c89c94f54ee79f69b52ac7b7c9584a2f05ab29` — add consolidated source skill index.
+- `c25aefa729b3aa2d58bcf4d055406452be0cebcb` — add source-skill verifier.
+- `c42154c2fd3faee0f01dae4cafe1581c67d1835c` — wire source-skill verifier into full MNSF26 gate.
