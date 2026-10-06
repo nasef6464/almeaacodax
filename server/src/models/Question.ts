@@ -74,6 +74,7 @@ const questionSchema = new Schema(
     skillIds: { type: [String], default: [] },
     skillId: { type: String, default: null },
     subSkillId: { type: String, default: null },
+    subSkillIds: { type: [String], default: [] },
     pathId: { type: String, default: null },
     subject: { type: String, required: true, index: true },
     subjectId: { type: String, default: null, index: true },
