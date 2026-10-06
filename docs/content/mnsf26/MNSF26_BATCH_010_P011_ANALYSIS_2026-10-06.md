@@ -61,7 +61,7 @@ High-resolution render from the original PDF was inspected visually. Page 11 con
 ### Q19
 - Compare 44 with the source fraction 3636/9 (visually verified fraction is far greater than 44).
 - Correct: القيمة الثانية أكبر.
-- Mapping: HOLD pending exact numeral transcription QA; comparison result is unambiguous from source magnitude.
+- Mapping: `skill_quant_03 / sub_quant_03_3` — مقارنة كسر عددي بعدد صحيح. **Source transcription remains HOLD** حتى تثبيت أرقام البسط/المقام من crop الأصلي؛ الربط المهاري نفسه محسوم ولا يحتاج مهارة جديدة.
 - Difficulty: Easy.
 - Fingerprint: fraction-vs-integer / quantitative-comparison.
 - QA note: do not import until exact numerator digits are transcribed from the production crop.
@@ -80,8 +80,8 @@ Distinctive-phrase searches against FND26/COL2627 returned no exact matches for 
 ## Totals
 - Cards reviewed: 8/8
 - Answers locked: 8/8
-- Canonical mappings locked: 6
-- Remaining HOLD: 1 (Q19 — exact source transcription QA)
+- Canonical mappings locked: 7
+- Remaining HOLD: 1 (Q19 — exact source transcription QA only; taxonomy resolved to `skill_quant_03 / sub_quant_03_3`)
 - Q15 canonical mapping resolved: `skill_quant_01 / sub_quant_01_5`
 - Exact duplicates: 0
 - New taxonomy entities: 0
