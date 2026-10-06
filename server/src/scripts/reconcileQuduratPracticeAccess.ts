@@ -44,8 +44,16 @@ function assertApplyGuard() {
   return true;
 }
 
+const isTrainingOnly = (question: any) =>
+  idOf(question?.sourceMeta?.documentCode) === "QUDURAT-PRACTICE" ||
+  idOf(question?.sourceMeta?.importBatchId).startsWith("QUDURAT_PRACTICE_");
+
 const questionIdsForSubskill = (questions: any[], subSkillId: string) =>
-  questions.filter((q) => idOf(q.subSkillId) === subSkillId).map((q) => idOf(q.id || q._id)).filter(Boolean);
+  questions
+    .filter((q) => idOf(q.subSkillId) === subSkillId)
+    .sort((a, b) => Number(isTrainingOnly(a)) - Number(isTrainingOnly(b)) || idOf(a.id || a._id).localeCompare(idOf(b.id || b._id)))
+    .map((q) => idOf(q.id || q._id))
+    .filter(Boolean);
 
 const questionIdsForMain = (questions: any[], mainSkillId: string) =>
   questions.filter((q) => idOf(q.skillId) === mainSkillId).map((q) => idOf(q.id || q._id)).filter(Boolean);
@@ -293,11 +301,14 @@ async function reconcileSubject(db: any, config: (typeof SUBJECTS)[number], appl
       })
       .sort({ "learningPlacements.order": 1, id: 1 })
       .toArray();
+    const freeMainSkillIds = new Set(
+      canonicalSkills.slice(0, FREE_MAIN_TOPICS).map((skill: any) => idOf(skill.id || skill._id)),
+    );
 
     if (apply) {
-      for (let i = 0; i < quantMainBanks.length; i++) {
-        const quiz: any = quantMainBanks[i];
-        const isFree = i < FREE_MAIN_TOPICS;
+      for (const quiz of quantMainBanks as any[]) {
+        const quizMainSkillId = (Array.isArray(quiz.skillIds) ? quiz.skillIds : []).map(idOf).find((id: string) => id.startsWith(config.skillPrefix)) || "";
+        const isFree = freeMainSkillIds.has(quizMainSkillId);
         const placements = (Array.isArray(quiz.learningPlacements) ? quiz.learningPlacements : []).map((placement: any) =>
           placement?.slot === "training" ? { ...placement, accessType: isFree ? "free" : "paid", updatedAt: Date.now() } : placement,
         );
