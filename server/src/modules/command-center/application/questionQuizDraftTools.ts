@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { z } from "zod";
 import { QuestionModel } from "../../../models/Question.js";
 import { SkillModel } from "../../../models/Skill.js";
@@ -49,6 +50,16 @@ export const quizDraftSchema = z.object({
   questionIds: z.array(z.string().trim().min(1)).min(1).max(500),
   skillIds: z.array(z.string().trim().min(1)).max(100).optional().default([]),
   settings: z.record(z.any()).optional().default({}),
+  requestId: z.string().trim().max(160).optional().default(""),
+  idempotencyKey: z.string().trim().min(8).max(240).optional(),
+});
+
+export const quizUpdateDraftSchema = z.object({
+  targetQuizId: z.string().trim().min(1).max(180),
+  mode: z.enum(["append", "replace"]).default("append"),
+  questionIds: z.array(z.string().trim().min(1)).min(1).max(500),
+  expectedQuestionIdsHash: z.string().trim().regex(/^[a-f0-9]{64}$/i),
+  title: z.string().trim().min(1).max(240).optional(),
   requestId: z.string().trim().max(160).optional().default(""),
   idempotencyKey: z.string().trim().min(8).max(240).optional(),
 });
@@ -195,6 +206,207 @@ export async function validateQuestionDraftBatch(
       ).length,
       nearDuplicateBlockCount: issues.filter((issue) => issue.type === "near_duplicate_live").length,
       nearDuplicateReviewCount: warnings.filter((warning) => warning.type === "possible_near_duplicate_live").length,
+    },
+  };
+}
+
+const hashQuestionIds = (questionIds: string[]) =>
+  createHash("sha256").update(questionIds.join("\u0000")).digest("hex");
+
+const uniqueInOrder = (values: string[]) => {
+  const seen = new Set<string>();
+  return values.filter((value) => {
+    if (seen.has(value)) return false;
+    seen.add(value);
+    return true;
+  });
+};
+
+export async function buildQuizUpdatePlan(
+  input: z.infer<typeof quizUpdateDraftSchema>,
+) {
+  const target = await QuizModel.findOne({
+    $or: [{ _id: input.targetQuizId }, { id: input.targetQuizId }],
+  })
+    .select("_id id title pathId subjectId sectionId questionIds skillIds settings isPublished showOnPlatform approvalStatus ownerType ownerId")
+    .lean();
+
+  if (!target) {
+    return {
+      ok: false,
+      issues: [{ type: "target_quiz_not_found", message: "Target quiz does not exist" }],
+      target: null,
+    };
+  }
+
+  const currentQuestionIds = uniqueInOrder(
+    (Array.isArray(target.questionIds) ? target.questionIds : []).map(String),
+  );
+  const currentQuestionIdsHash = hashQuestionIds(currentQuestionIds);
+  const staleSource = currentQuestionIdsHash !== input.expectedQuestionIdsHash;
+  const requestedIds = uniqueInOrder(input.questionIds);
+  const duplicateRequestedIds = input.questionIds.filter(
+    (id, index) => input.questionIds.indexOf(id) !== index,
+  );
+
+  const requestedQuestions = await QuestionModel.find({
+    id: { $in: requestedIds },
+    pathId: String(target.pathId || ""),
+    subjectId: String(target.subjectId || ""),
+  })
+    .select("id text skillId subSkillId skillIds")
+    .lean();
+  const requestedById = new Map(
+    requestedQuestions.map((question) => [String(question.id || ""), question]),
+  );
+  const missingQuestionIds = requestedIds.filter((id) => !requestedById.has(id));
+
+  const currentQuestions = currentQuestionIds.length
+    ? await QuestionModel.find({ id: { $in: currentQuestionIds } })
+        .select("id text skillId subSkillId skillIds")
+        .lean()
+    : [];
+  const currentById = new Map(
+    currentQuestions.map((question) => [String(question.id || ""), question]),
+  );
+  const currentTokenIndex = buildQuestionTokenIndex(currentQuestions);
+
+  const alreadyPresentIds: string[] = [];
+  const highSimilarityMatches: Array<{
+    questionId: string;
+    existingQuestionId: string;
+    similarity: number;
+  }> = [];
+  const reviewSimilarityMatches: Array<{
+    questionId: string;
+    existingQuestionId: string;
+    similarity: number;
+  }> = [];
+  const acceptedRequestedIds: string[] = [];
+
+  for (const questionId of requestedIds) {
+    if (!requestedById.has(questionId)) continue;
+    if (currentById.has(questionId)) {
+      alreadyPresentIds.push(questionId);
+      continue;
+    }
+
+    const question = requestedById.get(questionId)!;
+    let best:
+      | { existingQuestionId: string; similarity: number }
+      | undefined;
+    for (const candidateIndex of candidateIndexesForQuestion(
+      String(question.text || ""),
+      currentTokenIndex,
+    )) {
+      const candidate = currentQuestions[candidateIndex];
+      if (!candidate?.text) continue;
+      const similarity = scoreQuestionSimilarity(
+        String(question.text || ""),
+        String(candidate.text || ""),
+      ).score;
+      if (!best || similarity > best.similarity) {
+        best = {
+          existingQuestionId: String(candidate.id || ""),
+          similarity,
+        };
+      }
+    }
+
+    if (best && best.similarity >= 0.94) {
+      highSimilarityMatches.push({
+        questionId,
+        existingQuestionId: best.existingQuestionId,
+        similarity: best.similarity,
+      });
+      continue;
+    }
+    if (best && best.similarity >= 0.82) {
+      reviewSimilarityMatches.push({
+        questionId,
+        existingQuestionId: best.existingQuestionId,
+        similarity: best.similarity,
+      });
+    }
+    acceptedRequestedIds.push(questionId);
+  }
+
+  const finalQuestionIds =
+    input.mode === "append"
+      ? uniqueInOrder([...currentQuestionIds, ...acceptedRequestedIds])
+      : uniqueInOrder(
+          requestedIds.filter(
+            (id) =>
+              requestedById.has(id) &&
+              !highSimilarityMatches.some((match) => match.questionId === id),
+          ),
+        );
+
+  const finalQuestions = await QuestionModel.find({
+    id: { $in: finalQuestionIds },
+  })
+    .select("id skillId subSkillId skillIds")
+    .lean();
+
+  const finalSkillIds = [
+    ...new Set(
+      finalQuestions.flatMap((question) =>
+        [
+          question.skillId,
+          question.subSkillId,
+          ...(Array.isArray(question.skillIds) ? question.skillIds : []),
+        ]
+          .filter(Boolean)
+          .map(String),
+      ),
+    ),
+  ];
+
+  const additions = finalQuestionIds.filter((id) => !currentQuestionIds.includes(id));
+  const removals = currentQuestionIds.filter((id) => !finalQuestionIds.includes(id));
+  const issues = [
+    ...(staleSource
+      ? [{
+          type: "quiz_changed_since_preview",
+          message: "Target quiz changed after the preview; rebuild the diff before creating a draft",
+        }]
+      : []),
+    ...(missingQuestionIds.length
+      ? [{
+          type: "missing_questions",
+          message: "Some requested questions do not exist in the target quiz scope",
+          questionIds: missingQuestionIds,
+        }]
+      : []),
+  ];
+
+  return {
+    ok: issues.length === 0,
+    issues,
+    target: {
+      quizId: String(target.id || target._id || ""),
+      title: String(target.title || ""),
+      pathId: String(target.pathId || ""),
+      subjectId: String(target.subjectId || ""),
+      sectionId: String(target.sectionId || ""),
+      isPublished: Boolean(target.isPublished),
+      showOnPlatform: Boolean(target.showOnPlatform),
+      approvalStatus: String(target.approvalStatus || ""),
+      currentQuestionIds,
+      currentQuestionIdsHash,
+    },
+    diff: {
+      mode: input.mode,
+      requested: requestedIds.length,
+      duplicateRequestedIds: [...new Set(duplicateRequestedIds)],
+      alreadyPresentIds,
+      highSimilarityMatches,
+      reviewSimilarityMatches,
+      additions,
+      removals,
+      finalQuestionIds,
+      finalSkillIds,
+      finalQuestionCount: finalQuestionIds.length,
     },
   };
 }
