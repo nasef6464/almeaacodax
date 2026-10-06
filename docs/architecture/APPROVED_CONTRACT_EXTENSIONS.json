@@ -82,6 +82,8 @@
     "questionImportRouter|POST|/questions/import-batch",
     "questionQuizDraftRouter|POST|/questions/draft",
     "questionQuizDraftRouter|POST|/questions/validate",
+    "questionQuizDraftRouter|POST|/quizzes/:id/diff",
+    "questionQuizDraftRouter|POST|/quizzes/:id/update-draft",
     "questionQuizDraftRouter|POST|/quizzes/draft",
     "quizAnalyticsRouter|GET|/analytics/school-skills",
     "reviewRouter|GET|/mastery-challenges",
