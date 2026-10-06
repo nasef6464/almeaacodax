@@ -38,6 +38,19 @@ export const CommandCenterOperationsPanel: React.FC = () => {
     void load();
   }, [load]);
 
+  const applyDraft = async (draftId: string) => {
+    setActingId(draftId);
+    setError("");
+    try {
+      await api.applyCommandCenterDraft(draftId);
+      await load();
+    } catch (applyError) {
+      setError(applyError instanceof Error ? applyError.message : "تعذر تنفيذ المسودة.");
+    } finally {
+      setActingId(null);
+    }
+  };
+
   const review = async (draftId: string, decision: "approved" | "rejected") => {
     setActingId(draftId);
     setError("");
@@ -147,6 +160,7 @@ export const CommandCenterOperationsPanel: React.FC = () => {
                     <div className="text-xs font-black text-slate-900">{draft.title}</div>
                     <div className="mt-1 text-[10px] font-bold text-slate-500">
                       {draft.kind} • {draft.source} • {draft.status}
+                      {draft.applyStatus ? ` • ${draft.applyStatus}` : ""}
                     </div>
                   </div>
                   {draft.status === "pending" && (
@@ -170,6 +184,24 @@ export const CommandCenterOperationsPanel: React.FC = () => {
                         رفض
                       </button>
                     </div>
+                  )}
+                  {draft.status === "approved" && draft.applyStatus !== "applied" && (
+                    <button
+                      type="button"
+                      disabled={actingId === draft._id || draft.applyStatus === "applying"}
+                      onClick={() => void applyDraft(draft._id)}
+                      className="inline-flex items-center gap-1 rounded-lg bg-indigo-600 px-3 py-1.5 text-[10px] font-black text-white disabled:opacity-50"
+                    >
+                      {actingId === draft._id || draft.applyStatus === "applying"
+                        ? <Loader2 size={12} className="animate-spin" />
+                        : <CheckCircle2 size={12} />}
+                      {draft.applyStatus === "failed" ? "إعادة التنفيذ" : "تنفيذ"}
+                    </button>
+                  )}
+                  {draft.applyStatus === "applied" && (
+                    <span className="rounded-lg bg-emerald-50 px-2.5 py-1.5 text-[10px] font-black text-emerald-700">
+                      تم التنفيذ • {draft.appliedResourceType || "resource"}
+                    </span>
                   )}
                 </div>
               </div>
