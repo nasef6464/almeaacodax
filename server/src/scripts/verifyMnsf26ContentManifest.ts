@@ -56,8 +56,8 @@ if (manifest.records.length !== 138) {
   failures.push({ gate: "record-count", detail: manifest.records.length });
 }
 if (
-  ready.length !== 129 ||
-  holds.length !== 3 ||
+  ready.length !== 130 ||
+  holds.length !== 2 ||
   quarantined.length !== 1 ||
   suppressed.length !== 5
 ) {
@@ -69,6 +69,39 @@ if (
       quarantined: quarantined.length,
       suppressed: suppressed.length,
     },
+  });
+}
+
+const declaredCoverage = {
+  total: manifest.coverage.total,
+  ready: manifest.coverage.ready,
+  holds: manifest.coverage.holds,
+  quarantined: manifest.coverage.quarantined,
+  suppressed: manifest.coverage.suppressed,
+  readyMapping: manifest.coverage.readyMapping,
+  readyCorrect: manifest.coverage.readyCorrect,
+  readyDifficulty: manifest.coverage.readyDifficulty,
+  readyQuestionFingerprint: manifest.coverage.readyQuestionFingerprint,
+  readyExplanationFingerprint: manifest.coverage.readyExplanationFingerprint,
+  readySpeechText: manifest.coverage.readySpeechText,
+};
+const actualCoverage = {
+  total: manifest.records.length,
+  ready: ready.length,
+  holds: holds.length,
+  quarantined: quarantined.length,
+  suppressed: suppressed.length,
+  readyMapping: ready.filter((r) => r.skillId && r.subSkillId).length,
+  readyCorrect: ready.filter((r) => r.correct).length,
+  readyDifficulty: ready.filter((r) => r.difficulty).length,
+  readyQuestionFingerprint: ready.filter((r) => r.questionFingerprint).length,
+  readyExplanationFingerprint: ready.filter((r) => r.explanationFingerprint).length,
+  readySpeechText: ready.filter((r) => r.speechText).length,
+};
+if (JSON.stringify(declaredCoverage) !== JSON.stringify(actualCoverage)) {
+  failures.push({
+    gate: "declared-coverage-parity",
+    detail: { declared: declaredCoverage, actual: actualCoverage },
   });
 }
 
@@ -118,7 +151,6 @@ if (invalidTaxonomy.length) {
 
 const expectedHoldCodes = new Set([
   "QDR-QNT-MNSF26-P001-Q10",
-  "QDR-QNT-MNSF26-P011-Q19",
   "QDR-QNT-MNSF26-P013-Q15",
 ]);
 const actualHoldCodes = new Set(holds.map((record) => record.questionCode));
