@@ -137,6 +137,7 @@ assert.match(mcpOAuth, /timingSafeEqual/);
 assert.match(mcpTools, /mcpToolCatalog/);
 assert.match(mcpTools, /mcpToolExecution/);
 assert.match(mcpToolCatalog, /get_profile/);
+assert.match(mcpToolCatalog, /audit_course/);
 assert.match(mcpToolCatalog, /create_course_draft/);
 assert.match(mcpToolCatalog, /plan_quiz_question_update/);
 assert.match(mcpToolCatalog, /create_school_setup_draft/);
