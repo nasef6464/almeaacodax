@@ -44,8 +44,8 @@ if (JSON.stringify(numbers) !== JSON.stringify(expectedNumbers)) {
 if (
   data.discoveredStructure.tests !== 63 ||
   data.tests.length !== 63 ||
-  resolved.length !== 63 ||
-  unresolved.length !== 0
+  resolved.length !== 62 ||
+  JSON.stringify(unresolved) !== JSON.stringify([33])
 ) {
   failures.push({
     gate: "structure-counts",
@@ -66,8 +66,21 @@ if (unsafeUnresolved.length) {
     detail: unsafeUnresolved.map((test) => test.testNumber),
   });
 }
+const unresolvedTest33 = data.tests.find((test) => test.testNumber === 33);
+if (
+  !unresolvedTest33 ||
+  unresolvedTest33.startPdfPage !== null ||
+  unresolvedTest33.cropAllowed !== false ||
+  unresolvedTest33.startPageEvidence !== "RAW_PDF_TEXT_HEADER_ABSENT"
+) {
+  failures.push({
+    gate: "test-33-source-gap-fail-closed",
+    detail: unresolvedTest33 || null,
+  });
+}
+
 const missingEvidence = resolved.filter(
-  (test) => !["SEARCH_INDEX", "FILES_READ_BOUNDARY_DEDUCTION"].includes(test.startPageEvidence) || !test.cropAllowed,
+  (test) => !["SEARCH_INDEX", "FILES_READ_BOUNDARY_DEDUCTION", "RAW_PDF_TEXT_HEADER"].includes(test.startPageEvidence) || !test.cropAllowed,
 );
 if (missingEvidence.length) {
   failures.push({
