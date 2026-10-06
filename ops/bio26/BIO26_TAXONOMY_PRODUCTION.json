@@ -870,8 +870,8 @@
         },
         {
           "sourceSubSkillId": "BIO26-S22-04",
-          "id": "sub_tah_bio_22_03",
-          "code": "BIO26-S22-03",
+          "id": "sub_tah_bio_22_04",
+          "code": "BIO26-S22-04",
           "name": "التنفس الخلوي الهوائي واللاهوائي والتخمر",
           "order": 3,
           "targetFoundationVideoMinutes": 10,
