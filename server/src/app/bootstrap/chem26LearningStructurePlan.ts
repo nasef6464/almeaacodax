@@ -81,7 +81,7 @@ export const stringId = (value: unknown) => String(value ?? "").trim();
 export const exactArray = (left: unknown, right: string[]) =>
   Array.isArray(left) && left.length === right.length && left.every((value, index) => String(value) === right[index]);
 
-const stableQuestionId = (question: any) => stringId(question.id || question._id);
+export const stableQuestionId = (question: any) => stringId(question.id || question._id);
 
 const difficultyRank = (value: string) => {
   const normalized = value.toLowerCase();
