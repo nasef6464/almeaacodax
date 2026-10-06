@@ -1,39 +1,11 @@
 #!/usr/bin/env node
 import fs from "node:fs";
 import path from "node:path";
-
-const ROOT = process.cwd();
-const readJson = (p) => JSON.parse(fs.readFileSync(path.join(ROOT,p),"utf8"));
-const qa = readJson("ops/bio26/BIO26_FINAL_QA.json");
-const author = readJson("ops/bio26/BIO26_AI_AUTHORING_QA.json");
-const imp = readJson("ops/bio26/BIO26_IMPORT_MANIFEST.json");
-const r2 = readJson("ops/bio26/BIO26_R2_UPLOAD_MANIFEST_V2.json");
-
-const failures = [];
-const expect = (ok, msg) => { if (!ok) failures.push(msg); };
-expect(qa.counts?.canonicalQuestions === 2832, "canonicalQuestions must equal 2832");
-expect(qa.gates?.crop?.startsWith("PASS"), "crop gate must PASS");
-expect(qa.gates?.dedupe?.startsWith("PASS"), "dedupe gate must PASS");
-expect(author.expectedCanonicalItems === 2832, "AI expectedCanonicalItems must equal 2832");
-expect(author.authoredCanonicalItems === 2832, `AI context incomplete: ${author.authoredCanonicalItems}/2832`);
-expect(author.pendingCanonicalItems === 0, `AI pending must be 0, got ${author.pendingCanonicalItems}`);
-expect(author.aggregateQa?.sourceAnswerCrossCheck === "PASS_2832_OF_2832", "AI source-answer QA must PASS 2832/2832");
-expect(author.aggregateQa?.skillRangeCrossCheck === "PASS_2832_OF_2832", "AI skill-range QA must PASS 2832/2832");
-expect(author.aggregateQa?.requiredFields === "PASS_2832_OF_2832", "AI required-fields QA must PASS 2832/2832");
-expect(author.aggregateQa?.duplicateQuestionCodes === 0, "AI duplicateQuestionCodes must be 0");
-expect(r2.canonicalImages === 2832 && r2.uniqueQuestionCodes === 2832 && r2.uniqueHashes === 2832, "R2 manifest cardinality/hash uniqueness must be 2832");
-expect(/VERIFIED|PASS/i.test(String(r2.upload ?? r2.status)) && !/PENDING|READY_FOR_PRESIGN/i.test(String(r2.upload ?? r2.status)), "R2 upload must be remotely VERIFIED, not merely staged");
-expect(imp.finalCanonicalCount === 2832, "import canonical count must equal 2832");
-
-const report = {
-  project: "BIO26",
-  gate: "PREIMPORT_FAIL_CLOSED",
-  pass: failures.length === 0,
-  canonicalQuestions: qa.counts?.canonicalQuestions,
-  aiAuthored: author.authoredCanonicalItems,
-  aiPending: author.pendingCanonicalItems,
-  r2State: r2.upload ?? r2.status,
-  failures
-};
-console.log(JSON.stringify(report,null,2));
-if (failures.length) process.exit(1);
+const ROOT=process.cwd(); const readJson=(p)=>JSON.parse(fs.readFileSync(path.join(ROOT,p),"utf8"));
+const qa=readJson("ops/bio26/BIO26_FINAL_QA.json"); const author=readJson("ops/bio26/BIO26_AI_AUTHORING_QA.json"); const imp=readJson("ops/bio26/BIO26_IMPORT_MANIFEST.json"); const r2=readJson("ops/bio26/BIO26_R2_UPLOAD_MANIFEST_V2.json"); const idx=readJson("ops/bio26/BIO26_AI_CONTEXT_INDEX.json"); const base=readJson(idx.base.file);
+const excluded=new Set(idx.base.excludeQuestionCodes||[]); const items=base.items.filter(x=>!excluded.has(x.questionCode)); for(const shard of idx.shards||[]){const s=readJson(shard.file); if(s.items.length!==shard.count) throw new Error(`Shard count mismatch: ${shard.file}`); items.push(...s.items);}
+const required=["MainSkill","SubSkill","concept","correctAnswer","explanation","whyCorrect","whyOthersWrong","commonMistake","hint","foundationReference"]; const unique=new Set(items.map(x=>x.questionCode)); const sourceAliases=new Set((idx.sourceAliasExclusions||[]).map(x=>x.alias)); const failures=[]; const expect=(ok,msg)=>{if(!ok)failures.push(msg);};
+expect(qa.counts?.canonicalQuestions===2832,"canonicalQuestions must equal 2832"); expect(qa.gates?.crop?.startsWith("PASS"),"crop gate must PASS"); expect(qa.gates?.dedupe?.startsWith("PASS"),"dedupe gate must PASS"); expect(author.expectedCanonicalItems===2832,"AI expectedCanonicalItems must equal 2832"); expect(author.authoredCanonicalItems===2832,`AI context incomplete: ${author.authoredCanonicalItems}/2832`); expect(author.pendingCanonicalItems===0,`AI pending must be 0, got ${author.pendingCanonicalItems}`);
+expect(author.aggregateQa?.sourceAnswerCrossCheck==="PASS_2832_OF_2832","AI source-answer QA must PASS 2832/2832"); expect(author.aggregateQa?.skillRangeCrossCheck==="PASS_2832_OF_2832","AI skill-range QA must PASS 2832/2832"); expect(author.aggregateQa?.requiredFields==="PASS_2832_OF_2832","AI required-fields QA must PASS 2832/2832"); expect(items.length===2832,`effective AI items must equal 2832, got ${items.length}`); expect(unique.size===2832,`effective AI question codes must be unique, got ${unique.size}`); expect(!items.some(x=>sourceAliases.has(x.questionCode)),"frozen duplicate aliases must be absent from effective AI canonical set"); expect(!items.some(x=>required.some(k=>x[k]===undefined||x[k]===null||x[k]==="")),"effective AI items contain missing required fields");
+expect(r2.canonicalImages===2832&&r2.uniqueQuestionCodes===2832&&r2.uniqueHashes===2832,"R2 manifest cardinality/hash uniqueness must be 2832"); expect(/VERIFIED|PASS/i.test(String(r2.upload??r2.status))&&!/PENDING|READY_FOR_PRESIGN/i.test(String(r2.upload??r2.status)),"R2 upload must be remotely VERIFIED, not merely staged"); expect(imp.finalCanonicalCount===2832,"import canonical count must equal 2832");
+const report={project:"BIO26",gate:"PREIMPORT_FAIL_CLOSED",pass:failures.length===0,canonicalQuestions:qa.counts?.canonicalQuestions,effectiveAiItems:items.length,aiAuthored:author.authoredCanonicalItems,aiPending:author.pendingCanonicalItems,r2State:r2.upload??r2.status,failures}; console.log(JSON.stringify(report,null,2)); if(failures.length)process.exit(1);
