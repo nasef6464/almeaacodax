@@ -131,6 +131,11 @@ async function addDynamicPublicRoutes() {
   }
 }
 
+// Public UI certification is read-only. Share a bounded cache across browser
+// contexts so the same anonymous platform bootstrap data is not downloaded
+// dozens of times from the small production API.
+const publicApiGetCache = new Map();
+
 async function installApiBridge(context) {
   await context.route('**/api/**', async (route) => {
     const request = route.request();
@@ -141,6 +146,18 @@ async function installApiBridge(context) {
 
     const apiPath = originalUrl.pathname.slice(apiIndex + 4);
     const targetUrl = `${API_TARGET}${apiPath}${originalUrl.search}`;
+    if (apiPath === 'notifications/stream') {
+      await route.fulfill({ status: 204, body: '' });
+      return;
+    }
+
+    const cacheKey = request.method() === 'GET' ? targetUrl : '';
+    const cached = cacheKey ? publicApiGetCache.get(cacheKey) : null;
+    if (cached) {
+      await route.fulfill(cached);
+      return;
+    }
+
     const headers = { ...request.headers() };
     delete headers.host;
     delete headers.origin;
@@ -158,11 +175,21 @@ async function installApiBridge(context) {
       delete responseHeaders['content-encoding'];
       delete responseHeaders['content-length'];
       delete responseHeaders['transfer-encoding'];
-      await route.fulfill({
+      const responseBody = Buffer.from(await response.arrayBuffer());
+      const fulfillment = {
         status: response.status,
         headers: responseHeaders,
-        body: Buffer.from(await response.arrayBuffer()),
-      });
+        body: responseBody,
+      };
+      if (
+        cacheKey &&
+        response.ok &&
+        responseBody.byteLength <= 5 * 1024 * 1024 &&
+        publicApiGetCache.size < 128
+      ) {
+        publicApiGetCache.set(cacheKey, fulfillment);
+      }
+      await route.fulfill(fulfillment);
     } catch (error) {
       console.error(`API bridge failed for ${targetUrl}:`, error instanceof Error ? error.message : String(error));
       await route.abort('failed');
