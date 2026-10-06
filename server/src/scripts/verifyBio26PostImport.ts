@@ -12,7 +12,8 @@ const EXPECTED_SUB = 98;
 const EXPECTED_PATH_ID = "p_1777779653351";
 const EXPECTED_SUBJECT_ID = "sub_tah_biology_bio26";
 const PROTECTED_LEGACY_SUBJECT_ID = "sub_1784980740570";
-const expectStatus = process.argv.includes("--approved") ? "approved" : "draft";\nconst PLACEHOLDER_OPTION_LABELS = new Set(["A", "B", "C", "D", "أ", "ب", "ج", "د"]);
+const expectStatus = process.argv.includes("--approved") ? "approved" : "draft";
+const PLACEHOLDER_OPTION_LABELS = new Set(["A", "B", "C", "D", "أ", "ب", "ج", "د"]);
 
 const fail = (message: string): never => { throw new Error(message); };
 const unique = (values: unknown[]) => new Set(values.map((v) => String(v || "").trim()).filter(Boolean));
@@ -68,13 +69,16 @@ async function main() {
       mainIds.add(main); subIds.add(sub);
 
       const options = Array.isArray(q.options) ? q.options : [];
-      const optionTexts = Array.isArray(q.aiContext?.optionTexts) ? q.aiContext.optionTexts : [];\n      const normalizedOptionTexts = optionTexts.map((x: unknown) => String(x || "").trim());
+      const optionTexts = Array.isArray(q.aiContext?.optionTexts) ? q.aiContext.optionTexts : [];
+      const normalizedOptionTexts = optionTexts.map((x: unknown) => String(x || "").trim());
       if (
         options.length !== 4 ||
         !Number.isInteger(q.correctOptionIndex) ||
         q.correctOptionIndex < 0 ||
         q.correctOptionIndex > 3 ||
-        normalizedOptionTexts.length !== 4 ||\n        normalizedOptionTexts.some((x: string) => !x) ||\n        normalizedOptionTexts.some((x: string) => PLACEHOLDER_OPTION_LABELS.has(x.toUpperCase())) ||
+        normalizedOptionTexts.length !== 4 ||
+        normalizedOptionTexts.some((x: string) => !x) ||
+        normalizedOptionTexts.some((x: string) => PLACEHOLDER_OPTION_LABELS.has(x.toUpperCase())) ||
         !String(q.aiContext?.readableText || "").trim() ||
         !String(q.aiContext?.visualDescription || "").trim() ||
         !String(q.explanation || "").trim()
