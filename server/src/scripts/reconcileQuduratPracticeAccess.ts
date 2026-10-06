@@ -44,11 +44,33 @@ function assertApplyGuard() {
   return true;
 }
 
-const questionIdsForSubskill = (questions: any[], subSkillId: string) =>
-  questions.filter((q) => idOf(q.subSkillId) === subSkillId).map((q) => idOf(q.id || q._id)).filter(Boolean);
+const isApprovedQuestion = (question: any) => idOf(question?.approvalStatus).toLowerCase() === "approved";
+const isTrainingHelper = (question: any) => idOf(question?.id || question?._id).startsWith("train_sub_");
+const isQuantCanonicalSourceQuestion = (question: any) =>
+  ["FND26", "COL2627"].includes(idOf(question?.sourceMeta?.documentCode));
+
+const questionIdsForSubskill = (questions: any[], subSkillId: string, subjectKey: string) =>
+  questions
+    .filter((q) =>
+      idOf(q.subSkillId) === subSkillId &&
+      isApprovedQuestion(q) &&
+      !isTrainingHelper(q) &&
+      (subjectKey !== "quant" || isQuantCanonicalSourceQuestion(q)),
+    )
+    .map((q) => idOf(q.id || q._id))
+    .filter(Boolean);
+
+const helperQuestionIdsForSubskill = (questions: any[], subSkillId: string) =>
+  questions
+    .filter((q) => idOf(q.subSkillId) === subSkillId && isApprovedQuestion(q) && isTrainingHelper(q))
+    .map((q) => idOf(q.id || q._id))
+    .filter(Boolean);
 
 const questionIdsForMain = (questions: any[], mainSkillId: string) =>
-  questions.filter((q) => idOf(q.skillId) === mainSkillId).map((q) => idOf(q.id || q._id)).filter(Boolean);
+  questions
+    .filter((q) => idOf(q.skillId) === mainSkillId && isApprovedQuestion(q) && !isTrainingHelper(q))
+    .map((q) => idOf(q.id || q._id))
+    .filter(Boolean);
 
 const accessForFree = (isFree: boolean) => ({
   type: isFree ? "free" : "paid",
@@ -113,8 +135,14 @@ async function reconcileSubject(db: any, config: (typeof SUBJECTS)[number], appl
       const childTopic = topics.find((topic: any) => idOf(topic.parentId) === idOf(parentTopic?.id || parentTopic?._id) && idOf(topic.title) === idOf(subSkill.name))
         || topics.find((topic: any) => Array.isArray(topic.skillIds) && topic.skillIds.map(idOf).includes(subSkillId))
         || topics.find((topic: any) => idOf(topic.id || topic._id).includes(subSkillId.replace("sub_", "")));
-      const allIds = questionIdsForSubskill(questions, subSkillId);
-      const drillIds = allIds.slice(0, SUB_DRILL_MAX_QUESTIONS);
+      const sourceIds = questionIdsForSubskill(questions, subSkillId, config.key);
+      const sourceDrillIds = sourceIds.slice(0, SUB_DRILL_MAX_QUESTIONS);
+      const helperIds = helperQuestionIdsForSubskill(questions, subSkillId);
+      const helperNeeded = Math.max(
+        0,
+        Math.min(SUB_DRILL_TARGET_MIN - sourceDrillIds.length, SUB_DRILL_MAX_QUESTIONS - sourceDrillIds.length),
+      );
+      const drillIds = [...sourceDrillIds, ...helperIds.slice(0, helperNeeded)];
 
       if (childTopic) {
         topicOps.push({
@@ -125,8 +153,8 @@ async function reconcileSubject(db: any, config: (typeof SUBJECTS)[number], appl
         });
       }
 
-      if (allIds.length < SUB_DRILL_TARGET_MIN) {
-        subskillGaps.push({ subSkillId, questionCount: allIds.length });
+      if (sourceIds.length < SUB_DRILL_TARGET_MIN) {
+        subskillGaps.push({ subSkillId, questionCount: sourceIds.length });
       }
       if (drillIds.length === 0 || !childTopic) continue;
 
