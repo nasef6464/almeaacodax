@@ -37,6 +37,7 @@ import { flattenMockExamQuestionIds } from '../utils/mockExam';
 import { hasInlineQuestionMedia, normalizeQuestionHtml } from '../utils/questionHtml';
 import { buildQuizRouteWithContext } from '../utils/quizLinks';
 import { buildFoundationActionLink, buildSkillReportActionLink } from '../utils/skillActionLinks';
+import { resolveFoundationSkillTarget } from '../utils/foundationSkillTarget';
 import { getLearnerOptionLabel, getQuizOptionButtonHeightClass, getQuizOptionGridClass, getQuizQuestionMapButtonClass, resolveQuestionFromBank, toQuestionReviewFromBank, usesImageEmbeddedOptions } from '../utils/quizPresentation';
 import { getFriendlyResultMessage, getMasteryClasses, getScoreVisualTone, getSkillPriorityLabel, getStudentFriendlyChecklist } from '../components/results/resultScorePresentation';
 import { QuestionAssistantPanel } from '../components/results/QuestionAssistantPanel';
@@ -295,10 +296,24 @@ const Results: React.FC = () => {
         const pathId = item.pathId || taxonomyEntry?.pathId;
         const subjectId = item.subjectId || taxonomyEntry?.subjectId;
         const sectionId = item.sectionId || taxonomyEntry?.sectionId;
-        const foundationActionContext = { pathId, subjectId, skillId };
-        const lessonLink = recommendation.lessonLink || buildFoundationActionLink(foundationActionContext, 'lessons');
-        const quizLink = recommendation.quizLink || buildFoundationActionLink(foundationActionContext, 'quizzes');
-        const supportLink = recommendation.supportLink || buildFoundationActionLink(foundationActionContext, 'support');
+        const foundationTarget = resolveFoundationSkillTarget(
+          { skillId, pathId, subjectId, sectionId },
+          skills,
+          topics,
+        );
+        const foundationActionContext = {
+          pathId: foundationTarget.pathId || pathId,
+          subjectId: foundationTarget.subjectId || subjectId,
+          skillId: foundationTarget.skillId || skillId,
+          topicId: foundationTarget.topicId,
+        };
+        const canUseFoundationFallback = foundationTarget.kind !== 'sub' || Boolean(foundationTarget.topicId);
+        const lessonLink = recommendation.lessonLink
+          || (canUseFoundationFallback ? buildFoundationActionLink(foundationActionContext, 'lessons') : undefined);
+        const quizLink = recommendation.quizLink
+          || (canUseFoundationFallback ? buildFoundationActionLink(foundationActionContext, 'quizzes') : undefined);
+        const supportLink = recommendation.supportLink
+          || (canUseFoundationFallback ? buildFoundationActionLink(foundationActionContext, 'support') : undefined);
         const subjectName =
           recommendation.subjectName ||
           (subjectId ? displayText(subjects.find((subject) => subject.id === subjectId)?.name) : undefined);
@@ -1968,7 +1983,18 @@ const DetailedAnalysis = ({ onBack, result }: { onBack: () => void; result: Quiz
       const pathId = item.pathId || taxonomyEntry?.pathId;
       const subjectId = item.subjectId || taxonomyEntry?.subjectId;
       const sectionId = item.sectionId || taxonomyEntry?.sectionId;
-      const foundationActionContext = { pathId, subjectId, skillId };
+      const foundationTarget = resolveFoundationSkillTarget(
+        { skillId, pathId, subjectId, sectionId },
+        skills,
+        topics,
+      );
+      const foundationActionContext = {
+        pathId: foundationTarget.pathId || pathId,
+        subjectId: foundationTarget.subjectId || subjectId,
+        skillId: foundationTarget.skillId || skillId,
+        topicId: foundationTarget.topicId,
+      };
+      const canUseFoundationFallback = foundationTarget.kind !== 'sub' || Boolean(foundationTarget.topicId);
       return {
         ...item,
         ...recommendation,
@@ -1983,9 +2009,12 @@ const DetailedAnalysis = ({ onBack, result }: { onBack: () => void; result: Quiz
           recommendation.sectionName ||
           displayText(item.section) ||
           (sectionId ? displayText(sections.find((section) => section.id === sectionId)?.name) : undefined),
-        lessonLink: recommendation.lessonLink || buildFoundationActionLink(foundationActionContext, 'lessons'),
-        quizLink: recommendation.quizLink || buildFoundationActionLink(foundationActionContext, 'quizzes'),
-        supportLink: recommendation.supportLink || buildFoundationActionLink(foundationActionContext, 'support'),
+        lessonLink: recommendation.lessonLink
+          || (canUseFoundationFallback ? buildFoundationActionLink(foundationActionContext, 'lessons') : undefined),
+        quizLink: recommendation.quizLink
+          || (canUseFoundationFallback ? buildFoundationActionLink(foundationActionContext, 'quizzes') : undefined),
+        supportLink: recommendation.supportLink
+          || (canUseFoundationFallback ? buildFoundationActionLink(foundationActionContext, 'support') : undefined),
       };
     })
     .sort((a, b) => a.mastery - b.mastery);
