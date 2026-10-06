@@ -62,7 +62,7 @@ if (
     },
   });
 }
-if (resolved.length !== 47 || JSON.stringify(unresolved) !== JSON.stringify([4, 6, 17])) {
+if (resolved.length !== 48 || JSON.stringify(unresolved) !== JSON.stringify([4, 6])) {
   failures.push({
     gate: "resolved-start-pages",
     detail: { resolved: resolved.length, unresolved },
