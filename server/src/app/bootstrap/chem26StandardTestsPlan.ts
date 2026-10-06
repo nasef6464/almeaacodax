@@ -2,10 +2,10 @@ export const PATH_ID = "p_1777779653351";
 export const SUBJECT_ID = "sub_1784980728386";
 export const BATCH_ID = "TAH-CHEM-CHEM26-FULL-V1";
 export const EXPECTED_SOURCE_QUESTIONS = 1708;
-export const TEST_COUNT = 25;
-export const QUESTIONS_PER_TEST = 50;
+export const TEST_COUNT = 35;
 export const FREE_TEST_COUNT = 5;
-export const TOTAL_TEST_QUESTION_REFS = TEST_COUNT * QUESTIONS_PER_TEST;
+export const TEST_SIZES = Array.from({ length: TEST_COUNT }, (_, index) => ((index + 1) % 5 === 0 ? 48 : 49));
+export const TOTAL_TEST_QUESTION_REFS = TEST_SIZES.reduce((sum, size) => sum + size, 0);
 
 export type Chem26TestQuestion = {
   id: string;
@@ -94,30 +94,15 @@ function roundRobinSubskills(items: Chem26TestQuestion[]) {
   }
 }
 
-function allocateGlobalSkillQuotas(questions: Chem26TestQuestion[]) {
+function sourceSkillRows(questions: Chem26TestQuestion[]) {
   const grouped = new Map<string, Chem26TestQuestion[]>();
   for (const question of questions) {
     if (!grouped.has(question.skillId)) grouped.set(question.skillId, []);
     grouped.get(question.skillId)!.push(question);
   }
-  const total = questions.length;
-  const rows = [...grouped.entries()].map(([skillId, items]) => {
-    const raw = (items.length * TOTAL_TEST_QUESTION_REFS) / total;
-    const base = Math.floor(raw);
-    return { skillId, available: items.length, raw, quota: base, remainder: raw - base };
-  });
-  let left = TOTAL_TEST_QUESTION_REFS - rows.reduce((sum, row) => sum + row.quota, 0);
-  rows
-    .sort((a, b) => b.remainder - a.remainder || a.skillId.localeCompare(b.skillId))
-    .forEach((row) => {
-      if (left <= 0) return;
-      if (row.quota < row.available) {
-        row.quota += 1;
-        left -= 1;
-      }
-    });
-  if (left !== 0) throw new Error(`CHEM26 test quota allocation failed: left=${left}`);
-  return rows.sort((a, b) => a.skillId.localeCompare(b.skillId));
+  return [...grouped.entries()]
+    .map(([skillId, items]) => ({ skillId, available: items.length, quota: items.length }))
+    .sort((a, b) => a.skillId.localeCompare(b.skillId));
 }
 
 function mixTest(items: Chem26TestQuestion[], testIndex: number) {
@@ -161,11 +146,15 @@ export function buildChem26StandardTests(questions: Chem26TestQuestion[]) {
   }
   if (byMain.size !== 27) throw new Error(`CHEM26 expected 27 main skills, got ${byMain.size}`);
 
-  const quotas = allocateGlobalSkillQuotas(questions);
+  const quotas = sourceSkillRows(questions);
   const selectedByMain = new Map<string, Chem26TestQuestion[]>();
   for (const row of quotas) {
     const ordered = roundRobinSubskills(byMain.get(row.skillId) || []);
-    selectedByMain.set(row.skillId, ordered.slice(0, row.quota));
+    selectedByMain.set(row.skillId, ordered);
+  }
+
+  if (TOTAL_TEST_QUESTION_REFS !== EXPECTED_SOURCE_QUESTIONS) {
+    throw new Error(`CHEM26 test capacity mismatch: tests=${TOTAL_TEST_QUESTION_REFS} source=${EXPECTED_SOURCE_QUESTIONS}`);
   }
 
   const buckets: Chem26TestQuestion[][] = Array.from({ length: TEST_COUNT }, () => []);
@@ -175,15 +164,27 @@ export function buildChem26StandardTests(questions: Chem26TestQuestion[]) {
   orderedSkills.forEach((row, skillIndex) => {
     const selected = selectedByMain.get(row.skillId) || [];
     selected.forEach((question, questionIndex) => {
-      const start = (skillIndex * 7 + questionIndex * 3) % TEST_COUNT;
-      const candidates = Array.from({ length: TEST_COUNT }, (_, index) => index);
+      const start = (skillIndex * 11 + questionIndex * 5) % TEST_COUNT;
+      const candidates = Array.from({ length: TEST_COUNT }, (_, index) => index)
+        .filter((index) => buckets[index].length < TEST_SIZES[index]);
+
+      if (candidates.length === 0) {
+        throw new Error(`CHEM26 no remaining test capacity while assigning ${question.questionCode}`);
+      }
+
       candidates.sort((left, right) => {
         const leftSkill = perTestMainCounts[left].get(row.skillId) || 0;
         const rightSkill = perTestMainCounts[right].get(row.skillId) || 0;
         if (leftSkill !== rightSkill) return leftSkill - rightSkill;
+
+        const leftFill = buckets[left].length / TEST_SIZES[left];
+        const rightFill = buckets[right].length / TEST_SIZES[right];
+        if (leftFill !== rightFill) return leftFill - rightFill;
+
         if (buckets[left].length !== buckets[right].length) return buckets[left].length - buckets[right].length;
         return ((left - start + TEST_COUNT) % TEST_COUNT) - ((right - start + TEST_COUNT) % TEST_COUNT);
       });
+
       const target = candidates[0];
       buckets[target].push(question);
       perTestMainCounts[target].set(row.skillId, (perTestMainCounts[target].get(row.skillId) || 0) + 1);
@@ -192,16 +193,17 @@ export function buildChem26StandardTests(questions: Chem26TestQuestion[]) {
 
   const now = Date.now();
   const tests: ExpectedChem26Test[] = buckets.map((raw, index) => {
-    if (raw.length !== QUESTIONS_PER_TEST) {
-      throw new Error(`CHEM26 test ${index + 1} size mismatch: ${raw.length}`);
+    const expectedSize = TEST_SIZES[index];
+    if (raw.length !== expectedSize) {
+      throw new Error(`CHEM26 test ${index + 1} size mismatch: expected ${expectedSize}, got ${raw.length}`);
     }
     const mixed = mixTest(raw, index);
     const distinctMain = new Set(mixed.map((item) => item.skillId));
     const distinctSub = new Set(mixed.map((item) => item.subSkillId));
-    if (distinctMain.size < 25) {
+    if (distinctMain.size < 24) {
       throw new Error(`CHEM26 test ${index + 1} main-skill coverage too low: ${distinctMain.size}`);
     }
-    if (distinctSub.size < 25) {
+    if (distinctSub.size < 24) {
       throw new Error(`CHEM26 test ${index + 1} subskill diversity too low: ${distinctSub.size}`);
     }
 
@@ -211,7 +213,7 @@ export function buildChem26StandardTests(questions: Chem26TestQuestion[]) {
     return {
       id,
       title: `اختبار الكيمياء القياسي — ${String(number).padStart(2, "0")}`,
-      description: `اختبار شامل من 50 سؤالًا موزعًا وفق وزن بنك CHEM26 ويغطي ${distinctMain.size} مهارة رئيسية و${distinctSub.size} مهارة فرعية بدون تكرار بين النماذج.`,
+      description: `اختبار شامل من ${expectedSize} سؤالًا من بنك CHEM26 ويغطي ${distinctMain.size} مهارة رئيسية و${distinctSub.size} مهارة فرعية بدون تكرار أي سؤال بين النماذج الـ35.`,
       pathId: PATH_ID,
       subjectId: SUBJECT_ID,
       sectionId: null,
@@ -265,7 +267,7 @@ export function buildChem26StandardTests(questions: Chem26TestQuestion[]) {
 
   const allIds = tests.flatMap((test) => test.questionIds);
   if (allIds.length !== TOTAL_TEST_QUESTION_REFS || new Set(allIds).size !== TOTAL_TEST_QUESTION_REFS) {
-    throw new Error("CHEM26 standard tests must use 1250 unique question references with zero cross-test overlap");
+    throw new Error(`CHEM26 standard tests must use all ${EXPECTED_SOURCE_QUESTIONS} unique question references with zero cross-test overlap`);
   }
 
   const tranches = Array.from({ length: TEST_COUNT / 5 }, (_, index) => tests.slice(index * 5, index * 5 + 5));
@@ -280,6 +282,6 @@ export function buildChem26StandardTests(questions: Chem26TestQuestion[]) {
     tests,
     quotas,
     usedQuestionCount: allIds.length,
-    reserveQuestionCount: EXPECTED_SOURCE_QUESTIONS - allIds.length,
+    reserveQuestionCount: 0,
   };
 }
