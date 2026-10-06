@@ -58,7 +58,8 @@
     "verify:chem26-post-import": "tsx src/scripts/verifyChem26PostImport.ts",
     "deploy:bio26-taxonomy": "tsx src/scripts/deployBio26Taxonomy.ts",
     "verify:bio26-post-import": "tsx src/scripts/verifyBio26PostImport.ts",
-    "verify:chem26-learning-structure": "tsx src/scripts/verifyChem26LearningStructure.ts"
+    "verify:chem26-learning-structure": "tsx src/scripts/verifyChem26LearningStructure.ts",
+    "verify:chem26-standard-tests": "tsx src/scripts/verifyChem26StandardTests.ts"
   },
   "dependencies": {
     "@sentry/node": "^9.18.0",
