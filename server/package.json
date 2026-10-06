@@ -62,8 +62,9 @@
     "verify:mnsf26:crop-queue": "tsx src/scripts/verifyMnsf26CropQueue.ts",
     "verify:mnsf26:geometry-index": "tsx src/scripts/verifyMnsf26GeometrySourceIndex.ts",
     "verify:mnsf26:arithmetic-index": "tsx src/scripts/verifyMnsf26ArithmeticSourceIndex.ts",
-    "verify:mnsf26:all": "npm run verify:mnsf26:content-manifest && npm run verify:mnsf26:crop-queue && npm run verify:mnsf26:geometry-index && npm run verify:mnsf26:arithmetic-index && npm run verify:mnsf26:dedupe && npm run verify:mnsf26:preimport",
-    "verify:mnsf26:dedupe": "tsx src/scripts/verifyMnsf26CrossBankDedupe.ts"
+    "verify:mnsf26:all": "npm run verify:mnsf26:content-manifest && npm run verify:mnsf26:crop-queue && npm run verify:mnsf26:geometry-index && npm run verify:mnsf26:arithmetic-index && npm run verify:mnsf26:source-skills && npm run verify:mnsf26:dedupe && npm run verify:mnsf26:preimport",
+    "verify:mnsf26:dedupe": "tsx src/scripts/verifyMnsf26CrossBankDedupe.ts",
+    "verify:mnsf26:source-skills": "tsx src/scripts/verifyMnsf26SourceSkillIndex.ts"
   },
   "dependencies": {
     "@sentry/node": "^9.18.0",
