@@ -13,10 +13,10 @@ assert.ok(!file.includes('questionsCol.insert'), "practice reconciliation must n
 assert.ok(file.includes('subskillGaps'), "under-ten source gaps must be reported instead of fabricated");
 assert.ok(file.includes('isLocked: !isFreeMainTopic'), "topic entitlement must lock everything after the first five");
 assert.ok(file.includes('access: accessForFree(isFreeMainTopic)'), "foundation drill access must follow the parent free-five policy");
-assert.ok(file.includes('i < FREE_MAIN_TOPICS'), "only the first five ordered main-skill training cards may remain free");
+assert.ok(file.includes('{ $set: { access: accessForFree(false), learningPlacements: placements, updatedAt: now() } }'), "quantitative main-skill training cards must stay paid regardless of the free-five foundation preview");
 assert.ok(file.includes('"settings.lockSkillsForNonSubscribers": false'), "subject-wide foundation hard lock must be disabled for granular free-five policy");
 assert.ok(file.includes('"settings.lockBanksForNonSubscribers": false'), "subject-wide bank hard lock must be disabled for granular free-five policy");
 assert.ok(file.includes('QUDURAT_PRACTICE_BACKUP_REFERENCE'), "production apply must require rollback evidence");
 assert.ok(file.includes('ALLOW_QUDURAT_PRACTICE_APPLY'), "production apply must require explicit authorization");
 
-console.log("PASS: Qudurat practice/free-five contract — source-backed drills, five free main topics, five free main-skill trainings.");
+console.log("PASS: Qudurat practice/free-five contract — source-backed drills, five free foundation topics, quantitative main-skill trainings paid.");
