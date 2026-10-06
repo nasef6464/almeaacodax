@@ -64,6 +64,7 @@
     "commandCenterRouter|POST|/drafts/:id/review",
     "contentReviewRouter|GET|/review-queue",
     "contentReviewRouter|PATCH|/review-queue/:type/:id",
+    "courseDraftRouter|GET|/:courseId/audit",
     "courseDraftRouter|GET|/inventory",
     "courseDraftRouter|POST|/draft",
     "courseDraftRouter|POST|/validate",
