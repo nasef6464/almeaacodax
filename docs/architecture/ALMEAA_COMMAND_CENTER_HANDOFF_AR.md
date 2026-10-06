@@ -1,15 +1,35 @@
 # ALMEAA Command Center — Handoff / Execution State
 
-> آخر تحديث: 2026-10-06
-> الفرع السابق المدموج: `feat/almeaa-command-center-foundation-2026-10-05`  
-> Merge SHA: `686763d09c40d279b0879ce93943503018c21571`  
-> الفرع السابق المدموج: `feat/almeaa-command-center-execution-mcp-2026-10-06`  
-> Merge SHA: `79e518bc7bd54cb5c10087fb466dde55db11d1c2`  
-> الفرع الحالي: `feat/almeaa-command-center-content-ops-2026-10-06`
-> Issue: #386
-> PR foundation: #387 (merged)  
-> PR execution/MCP: #390 — OPEN, exact-head CI active
-> الحالة: **FOUNDATION MERGED — EXECUTION + MCP ACTIVE**
+> آخر تحديث: 2026-10-06 10:54 Asia/Riyadh  
+> Foundation PR #387 — merged: `686763d09c40d279b0879ce93943503018c21571`  
+> Execution/MCP PR #390 — merged: `79e518bc7bd54cb5c10087fb466dde55db11d1c2`  
+> Content Ops PR #392 — merged: `9a40dac7268cbe4f1424223203ec2637c311ef55`  
+> Smart Teacher PR #395 — merged: `12b971a37f7f09924e5fb93ab164052c171cd64a`  
+> أحدث main عند بدء دفعة Developer Bridge: `ac03c73b72c9bd20bd72becd047f66932b237307`  
+> الفرع الحالي: `feat/almeaa-command-center-developer-bridge-2026-10-06`  
+> PR الحالي: #397 — exact-head CI pending  
+> Issue: #386  
+> الحالة: **SMART TEACHER MERGED/DEPLOYED — DEVELOPER BRIDGE ACTIVE — EXTERNAL OAUTH/MCP PROOF PENDING**
+
+## checkpoint الحالي
+
+تم في هذه الدفعة:
+- دمج PR #395 بعد نجاح exact-head CI؛ Smart Teacher merge SHA هو `12b971a37f7f09924e5fb93ab164052c171cd64a`.
+- Vercel Production أصبح READY على Smart Teacher SHA، ثم أصبح أحدث main `ac03c73...` READY أيضًا.
+- Render أصبح LIVE على Smart Teacher SHA؛ أحدث main دخل auto-deploy بعده.
+- فتح PR #397 لإضافة Developer/Codex bridge للكود فقط.
+- Developer bridge يستخدم نفس CommandCenterDraft/Audit/scopes/idempotency ولا ينشئ Gateway موازيًا.
+- المستودع المسموح ثابت: `nasef6464/almeaacodax`.
+- External MCP يستطيع إنشاء Developer Task Draft وقراءة handoff بعد موافقة بشرية فقط.
+- لا توجد أدوات MCP للـmerge/deploy/publish/delete، وDeveloper Draft لا يمر عبر content Apply adapter.
+- اختبار `smoke-command-center-execution-mcp-contract.mjs` تم توسيعه لتثبيت هذه الحدود داخل CI.
+
+المتبقي قبل CLOSED:
+1. إغلاق exact-head CI لـ#397 وإصلاح أي failure ثم merge.
+2. تحقق Vercel + Render + live E2E بعد merge النهائي.
+3. إعداد Production OAuth IdP الحقيقي (issuer/audience/scopes) وتشغيل Remote MCP tool scan فعلي.
+4. إثبات اتصال ChatGPT الخارجي، ثم Gemini/Claude إذا سمحت إعدادات الحساب/المزود.
+5. تحديث Issue #386 بنتيجة الإغلاق وتعطيل المهمة المجدولة فقط بعد تحقق جميع البنود.
 
 ## الهدف النهائي
 
