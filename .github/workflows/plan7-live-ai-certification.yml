@@ -11,6 +11,12 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  # PR certification is static-only and does not compete for the production
+  # mutex. On main push, the live PLAN7 audit serializes with Live Role.
+  group: ${{ github.event_name == 'pull_request' && format('plan7-pr-{0}', github.event.pull_request.head.sha) || format('platform-production-live-audit-{0}', github.sha) }}
+  cancel-in-progress: false
+
 jobs:
   live-ai-certification:
     if: github.event_name == 'workflow_dispatch' || github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository)
