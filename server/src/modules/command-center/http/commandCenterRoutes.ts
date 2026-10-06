@@ -19,6 +19,7 @@ import { questionQuizDraftRouter } from "./questionQuizDraftRoutes.js";
 import { courseDraftRouter } from "./courseDraftRoutes.js";
 import { schoolDraftRouter } from "./schoolDraftRoutes.js";
 import { workflowRouter } from "./workflowRoutes.js";
+import { mcpRouter } from "./mcpRoutes.js";
 
 const draftSchema = z.object({
   kind: z.enum(COMMAND_DRAFT_KINDS),
@@ -47,6 +48,10 @@ const skillQuerySchema = z.object({
 });
 
 export const commandCenterRouter = Router();
+
+// MCP performs its own OAuth/API-key authentication and must be mounted before
+// the browser/admin Command Center principal middleware.
+commandCenterRouter.use("/mcp", mcpRouter);
 
 commandCenterRouter.use(requireCommandPrincipal);
 commandCenterRouter.use("/authoring", questionQuizDraftRouter);
