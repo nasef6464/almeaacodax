@@ -24,6 +24,9 @@ assert.match(teacher, /اسأل المعلم/);
 assert.match(teacher, /aiQuestionAssistant/);
 assert.match(teacher, /helpLevel/);
 assert.match(teacher, /SpeechSynthesisUtterance/);
+assert.match(teacher, /SpeechRecognition/);
+assert.match(teacher, /ar-SA/);
+assert.match(teacher, /toggleListening/);
 assert.match(teacher, /الدرجة والإتقان يحسبهما النظام/);
 assert.ok(teacher.split(/\r?\n/).length < 400, "Interactive Smart Teacher must stay below runtime hotspot budget.");
 
