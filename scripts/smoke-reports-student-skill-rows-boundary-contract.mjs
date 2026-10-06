@@ -44,9 +44,9 @@ check('student skill rows preserve recommendation, mastery tone, and direct lear
   assertIncludes(rows, "supportLink: recommendation.supportLink || foundationSupportLink || '/reports'");
 });
 
-check('student skill rows preserve evidence labels and ten-row compact default', () => {
-  assertIncludes(rows, 'limit = 10');
-  assertIncludes(rows, 'focusedReportSkills.slice(0, limit).map((skill) => {');
+check('student skill rows preserve evidence labels and show all measured skills by default', () => {
+  assertIncludes(rows, 'limit?: number');
+  assertIncludes(rows, "typeof limit === 'number' ? focusedReportSkills.slice(0, limit) : focusedReportSkills");
   assertIncludes(rows, 'evidenceLabel: skill.isReliable');
   assertIncludes(rows, '`${skill.correctAttempts}/${skill.totalEvidence} صحيح`');
   assertIncludes(rows, '`قراءة أولية ${skill.correctAttempts}/${skill.totalEvidence}`');
