@@ -184,17 +184,17 @@ export async function applyQuestionBatchDraft(
             skillIds,
             difficulty: question.difficulty,
             type: question.type,
-            source: "imported",
+            source: "imported" as const,
             sourceMeta: {
               ...(question.sourceMeta || {}),
               importBatchId:
                 String((question.sourceMeta as any)?.importBatchId || "").trim() ||
                 `command-center:${draftId}`,
             },
-            ownerType: "platform",
+            ownerType: "platform" as const,
             ownerId: actorId,
             createdBy: actorId,
-            approvalStatus: "draft",
+            approvalStatus: "draft" as const,
             reviewerNotes: `Created from approved Command Center draft ${draftId}; publication requires a separate review/publish action.`,
           },
         },
