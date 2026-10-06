@@ -297,6 +297,9 @@ jobs:
       - name: Command Center execution + MCP contract
         run: node scripts/smoke-command-center-execution-mcp-contract.mjs
 
+      - name: Smart Teacher interactive board contract
+        run: node scripts/smoke-smart-teacher-board-contract.mjs
+
       - name: Refactor workflow race-safety contract
         run: node scripts/smoke-refactor-workflow-race-contract.mjs
 
