@@ -99,7 +99,11 @@ const getOwnerAdminId = async () => {
 
 export async function runBio26PackageImportIfRequested() {
   const modeRaw = String(process.env.BIO26_IMPORT_MODE || process.env.QUESTION_PILOT_MODE || "").trim();
-  if (started || !modeRaw.toLowerCase().startsWith(`${MODE_PREFIX}.`)) return;
+  const directPhase = ["r2", "dry-run", "canary", "full", "verify"].includes(modeRaw.toLowerCase())
+    ? modeRaw.toLowerCase()
+    : "";
+  const legacyEnvelopeMode = modeRaw.toLowerCase().startsWith(`${MODE_PREFIX}.`);
+  if (started || (!directPhase && !legacyEnvelopeMode)) return;
   started = true;
 
   if (process.env.PILOT_ALLOW_EXTERNAL_RUN !== "YES") {
@@ -108,10 +112,18 @@ export async function runBio26PackageImportIfRequested() {
   }
 
   let transport: { packageUrl?: string; packageSha256?: string; phase?: string } = {};
-  try {
-    transport = JSON.parse(Buffer.from(modeRaw.slice(MODE_PREFIX.length + 1), "base64url").toString("utf8"));
-  } catch {
-    throw new Error("Invalid BIO26 transport envelope");
+  if (directPhase) {
+    transport = {
+      phase: directPhase,
+      packageUrl: String(process.env.BIO26_PACKAGE_URL || "").trim(),
+      packageSha256: String(process.env.BIO26_PACKAGE_SHA256 || "").trim(),
+    };
+  } else {
+    try {
+      transport = JSON.parse(Buffer.from(modeRaw.slice(MODE_PREFIX.length + 1), "base64url").toString("utf8"));
+    } catch {
+      throw new Error("Invalid BIO26 transport envelope");
+    }
   }
   const phase = String(transport.phase || "verify").trim().toLowerCase();
   if (!["r2", "dry-run", "canary", "full", "verify"].includes(phase)) throw new Error("Invalid BIO26 import phase");
