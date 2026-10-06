@@ -2,8 +2,18 @@ import fs from "fs";
 import path from "path";
 import { QUANT_TAXONOMY } from "./deployQuantTaxonomy25.js";
 
+type SourceClassification = {
+  sourcePart: string;
+  testNumber: number;
+  testTitle: string;
+  sourceSkillLabel: string | null;
+  evidence: string;
+  mappingPolicy: string;
+};
+
 type ManifestRecord = {
   questionCode: string;
+  pdfPage: number;
   status:
     | "CONTENT_READY_CROP_PENDING"
     | "HOLD_SOURCE"
@@ -19,6 +29,7 @@ type ManifestRecord = {
   speechText: string | null;
   sourceText?: string | null;
   educationalExplanation?: string | null;
+  sourceClassification?: SourceClassification | null;
 };
 
 const manifestPath = path.resolve(
@@ -27,8 +38,46 @@ const manifestPath = path.resolve(
 );
 const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8")) as {
   bank: string;
+  taxonomyContract: {
+    main: number;
+    sub: number;
+    newSkillsAllowed: boolean;
+    sourceSkillClassificationRequired?: boolean;
+    sourceSkillMappingPolicy?: string;
+    unrelatedCrossTopicMappingRequiresReview?: boolean;
+  };
   coverage: Record<string, number>;
   records: ManifestRecord[];
+};
+
+const arithmeticIndexPath = path.resolve(
+  process.cwd(),
+  "../docs/content/mnsf26/MNSF26_ARITHMETIC_SOURCE_INDEX_V1.json",
+);
+const arithmeticIndex = JSON.parse(fs.readFileSync(arithmeticIndexPath, "utf8")) as {
+  sourcePart: string;
+  tests: Array<{
+    testNumber: number;
+    testTitle: string;
+    topic: string | null;
+    startPdfPage: number | null;
+    startPageEvidence: string;
+    cropAllowed: boolean;
+  }>;
+};
+
+const resolvedArithmeticTests = arithmeticIndex.tests
+  .filter((test) => Number.isInteger(test.startPdfPage))
+  .slice()
+  .sort((a, b) => Number(a.startPdfPage) - Number(b.startPdfPage));
+
+const expectedSourceClassificationForPage = (pdfPage: number) => {
+  let matched: (typeof resolvedArithmeticTests)[number] | null = null;
+  for (const test of resolvedArithmeticTests) {
+    if (Number(test.startPdfPage) <= pdfPage) matched = test;
+    else break;
+  }
+  return matched;
 };
 
 const mainIds = new Set(QUANT_TAXONOMY.map((item) => item.id));
@@ -51,6 +100,63 @@ const failures: Array<{ gate: string; detail: unknown }> = [];
 
 if (manifest.bank !== "MNSF26") {
   failures.push({ gate: "bank-code", detail: manifest.bank });
+}
+
+const expectedMappingPolicy = "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95";
+if (
+  manifest.taxonomyContract?.sourceSkillClassificationRequired !== true ||
+  manifest.taxonomyContract?.sourceSkillMappingPolicy !== expectedMappingPolicy ||
+  manifest.taxonomyContract?.unrelatedCrossTopicMappingRequiresReview !== true
+) {
+  failures.push({
+    gate: "source-skill-mapping-policy",
+    detail: manifest.taxonomyContract,
+  });
+}
+
+const sourceClassificationMismatches = manifest.records
+  .map((record) => {
+    const expected = expectedSourceClassificationForPage(Number(record.pdfPage));
+    const actual = record.sourceClassification;
+    if (!expected || !actual) {
+      return {
+        questionCode: record.questionCode,
+        pdfPage: record.pdfPage,
+        reason: !expected ? "NO_SOURCE_TEST_FOR_PAGE" : "MISSING_SOURCE_CLASSIFICATION",
+      };
+    }
+
+    const ok =
+      actual.sourcePart === arithmeticIndex.sourcePart &&
+      actual.testNumber === expected.testNumber &&
+      actual.testTitle === expected.testTitle &&
+      actual.sourceSkillLabel === expected.topic &&
+      actual.evidence === expected.startPageEvidence &&
+      actual.mappingPolicy === expectedMappingPolicy;
+
+    return ok
+      ? null
+      : {
+          questionCode: record.questionCode,
+          pdfPage: record.pdfPage,
+          expected: {
+            sourcePart: arithmeticIndex.sourcePart,
+            testNumber: expected.testNumber,
+            testTitle: expected.testTitle,
+            sourceSkillLabel: expected.topic,
+            evidence: expected.startPageEvidence,
+            mappingPolicy: expectedMappingPolicy,
+          },
+          actual,
+        };
+  })
+  .filter(Boolean);
+
+if (sourceClassificationMismatches.length) {
+  failures.push({
+    gate: "source-skill-classification-parity",
+    detail: sourceClassificationMismatches,
+  });
 }
 if (manifest.records.length !== 138) {
   failures.push({ gate: "record-count", detail: manifest.records.length });
