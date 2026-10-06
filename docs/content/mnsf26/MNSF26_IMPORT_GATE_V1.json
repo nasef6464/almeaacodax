@@ -40,7 +40,7 @@
         "question": 19,
         "skillId": "skill_quant_03",
         "subSkillId": "sub_quant_03_3",
-        "note": "taxonomy resolved; exact numerator/denominator transcription remains source HOLD"
+        "note": "taxonomy and exact source transcription resolved from authoritative raw-PDF crop; 3636/9=404 > 44."
       }
     ]
   },
@@ -50,8 +50,8 @@
     "sourceQuestionsReviewed": 138
   },
   "importReadiness": {
-    "uniqueNonHeldCandidates": 129,
-    "holds": 3,
+    "uniqueNonHeldCandidates": 130,
+    "holds": 2,
     "quarantinedSourceDefects": 1,
     "suppressedDuplicates": 5
   },
@@ -61,12 +61,6 @@
       "pdfPage": 1,
       "question": 10,
       "reason": "SOURCE_AMBIGUITY"
-    },
-    {
-      "batch": "010",
-      "pdfPage": 11,
-      "question": 19,
-      "reason": "SOURCE_TRANSCRIPTION_QA"
     },
     {
       "batch": "012",
@@ -141,7 +135,9 @@
   "sourceResume": {
     "nextBatch": "014",
     "nextPdfPage": 15,
-    "requiresOriginalPixelsBeforeImport": true
+    "requiresOriginalPixelsBeforeImport": true,
+    "originalPixelsRecovered": true,
+    "sourceRecoveryPath": "Google Drive raw PDF bytes; authoritative embedded-image extraction"
   },
   "resolvedSourceLogic": [
     {
@@ -159,6 +155,15 @@
       "correctRelation": "المعطيات غير كافية",
       "skillId": "skill_quant_11",
       "subSkillId": "sub_quant_11_1"
+    },
+    {
+      "batch": "010",
+      "pdfPage": 11,
+      "question": 19,
+      "correctRelation": "القيمة الثانية أكبر",
+      "sourceEvidence": "authoritative embedded-image crop from raw PDF; first value 44, second value 3636/9=404",
+      "skillId": "skill_quant_03",
+      "subSkillId": "sub_quant_03_3"
     }
   ],
   "quarantines": [
