@@ -1320,6 +1320,7 @@ const Results: React.FC = () => {
       <DetailedAnalysisModal
         isOpen={isAnalysisOpen}
         onClose={() => setIsAnalysisOpen(false)}
+        mode={latestResult?.source === 'training' || latestResult?.source === 'foundation' ? 'bank' : 'test'}
         skills={analysisItems.map((item) => ({
           name: item.skillName,
           percentage: item.mastery,
