@@ -208,7 +208,7 @@ async function verifyApprovedLiveE2E(questions: any[]) {
   await verifyStaffSample("approved");
   const learnerItems = await publicQuestionLookup();
   const sample = learnerItems.find((item) => String(item.questionCode || "") === SAMPLE_CODE);
-  if (!sample) fail("BIO26 approved sample is not learner-visible");
+  if (!sample) throw new Error("BIO26 approved sample is not learner-visible");
   for (const forbidden of [
     "correctOptionIndex",
     "explanation",
