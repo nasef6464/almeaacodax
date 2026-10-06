@@ -11,6 +11,12 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  # Serialize workflows that exercise the tiny production Render service. Keep
+  # full coverage, but prevent our own live gates from creating a load spike.
+  group: platform-production-live-audit-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: false
+
 jobs:
   live-ai-certification:
     if: github.event_name == 'workflow_dispatch' || github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository)
