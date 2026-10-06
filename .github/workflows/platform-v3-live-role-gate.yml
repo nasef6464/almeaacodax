@@ -14,7 +14,9 @@ permissions:
   contents: read
 
 concurrency:
-  group: platform-v3-live-role-gate-${{ github.event.pull_request.number || github.ref }}
+  # Live Role and Public UI share one mutex per exact tested revision.
+  # The SHA prevents stale PR attempts from cancelling the current exact head.
+  group: platform-production-live-audit-${{ github.event.pull_request.head.sha || github.sha }}
   cancel-in-progress: false
 
 jobs:
