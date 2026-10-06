@@ -48,8 +48,6 @@ jobs:
           exit 1
 
       - name: Remote MCP OAuth metadata + tool scan
-        env:
-          ALMEAA_MCP_LIVE_BASE_URL: https://almeaacodax-codex.onrender.com
         run: node scripts/smoke-command-center-mcp-live.mjs
 
       - name: Upload Remote MCP evidence
