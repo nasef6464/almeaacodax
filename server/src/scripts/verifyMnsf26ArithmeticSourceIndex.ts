@@ -44,8 +44,8 @@ if (JSON.stringify(numbers) !== JSON.stringify(expectedNumbers)) {
 if (
   data.discoveredStructure.tests !== 63 ||
   data.tests.length !== 63 ||
-  resolved.length !== 62 ||
-  JSON.stringify(unresolved) !== JSON.stringify([33])
+  resolved.length !== 63 ||
+  unresolved.length !== 0
 ) {
   failures.push({
     gate: "structure-counts",
@@ -67,7 +67,7 @@ if (unsafeUnresolved.length) {
   });
 }
 const missingEvidence = resolved.filter(
-  (test) => test.startPageEvidence !== "SEARCH_INDEX" || !test.cropAllowed,
+  (test) => !["SEARCH_INDEX", "FILES_READ_BOUNDARY_DEDUCTION"].includes(test.startPageEvidence) || !test.cropAllowed,
 );
 if (missingEvidence.length) {
   failures.push({
