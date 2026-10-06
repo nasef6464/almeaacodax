@@ -9,7 +9,7 @@ import { createSocketServer } from "../../sockets/index.js";
 import { registerGracefulShutdown } from "./registerGracefulShutdown.js";
 import { runStartupMaintenance } from "./runStartupMaintenance.js";
 import { runQuestionPilotPackageImportIfRequested } from "./runQuestionPilotPackageImport.js";
-import { runChem26PackageImportIfRequested } from "./runChem26PackageImport.js";
+import { runChem26PackageImportIfRequested } from "./runChem26PackageImport.js";\nimport { runBio26PackageImportIfRequested } from "./runBio26PackageImport.js";
 
 /**
  * Composes the existing API runtime in one explicit bootstrap boundary.
