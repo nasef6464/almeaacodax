@@ -10,11 +10,13 @@ import {
 import {
   questionDraftBatchSchema,
   quizDraftSchema,
-  quizQuestionUpdateDraftSchema,
-  planQuizQuestionUpdate,
   validateQuestionDraftBatch,
   validateQuizDraft,
 } from "./questionQuizDraftTools.js";
+import {
+  planQuizQuestionUpdate,
+  quizQuestionUpdateDraftSchema,
+} from "./quizQuestionUpdateTools.js";
 import {
   schoolSetupDraftSchema,
   validateSchoolSetupDraft,
