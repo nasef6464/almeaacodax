@@ -1,7 +1,7 @@
 import { getReportMasteryTone, type StudentAggregatedSkill } from './reportDomain';
 import { buildSkillRecommendation, type SkillRecommendationCatalog } from './recommendationViewModel';
 import { resolveMasteryLevel, type MasteryLevel } from '../../services/masteryPolicy';
-import { buildSkillRecheckActionLink } from '../../utils/skillActionLinks';
+import { buildFoundationActionLink, buildSkillRecheckActionLink } from '../../utils/skillActionLinks';
 
 export interface StudentSkillReportRow extends StudentAggregatedSkill {
     tone: ReturnType<typeof getReportMasteryTone>;
@@ -21,7 +21,15 @@ export const buildStudentSkillReportRows = (
 ): StudentSkillReportRow[] =>
     focusedReportSkills.slice(0, limit).map((skill) => {
         const recommendation = buildSkillRecommendation(skill, catalog);
+        const foundationActionContext = {
+            pathId: skill.pathId,
+            subjectId: skill.subjectId,
+            skillId: skill.skillId,
+        };
+        const foundationLessonLink = buildFoundationActionLink(foundationActionContext, 'lessons');
+        const foundationQuizLink = buildFoundationActionLink(foundationActionContext, 'quizzes');
         const quizLink = recommendation.quizLink
+            || foundationQuizLink
             || (skill.skillId ? `/quiz?skillIds=${encodeURIComponent(skill.skillId)}` : '/dashboard?tab=saher');
         const retestLink = buildSkillRecheckActionLink({
             pathId: skill.pathId,
@@ -33,7 +41,7 @@ export const buildStudentSkillReportRows = (
         return {
             ...skill,
             tone: getReportMasteryTone(skill.mastery),
-            lessonLink: recommendation.lessonLink || recommendation.foundationTopicLink || '/courses',
+            lessonLink: recommendation.lessonLink || recommendation.foundationTopicLink || foundationLessonLink || '/reports',
             lessonLabel: recommendation.lessonTopicTitle || recommendation.lessonTitle || 'شرح',
             quizLink,
             quizLabel: recommendation.quizTitle || 'تدريب',
