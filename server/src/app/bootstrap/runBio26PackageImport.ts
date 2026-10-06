@@ -23,7 +23,10 @@ const PROTECTED_LEGACY_SUBJECT_ID = "sub_1784980740570";
 const EXPECTED_MAIN = 29;
 const EXPECTED_SUB = 98;
 const CODE_REGEX = /^TAH-BIO-BIO26-L\d{2}-Q\d{3}$/;
-const PLACEHOLDER_OPTION_LABELS = new Set(["A", "B", "C", "D", "أ", "ب", "ج", "د"]);
+const PLACEHOLDER_OPTION_SEQUENCES = [
+  ["A", "B", "C", "D"],
+  ["أ", "ب", "ج", "د"],
+] as const;
 let started = false;
 
 type ManifestItem = Record<string, any> & {
@@ -56,7 +59,11 @@ const validateMachineReadable = (item: ManifestItem, code: string) => {
   if (normalizedOptionTexts.length !== 4 || normalizedOptionTexts.some((x: string) => !x)) {
     throw new Error(`BIO26 machine-readable optionTexts missing for ${code}`);
   }
-  if (normalizedOptionTexts.some((x: string) => PLACEHOLDER_OPTION_LABELS.has(x.toUpperCase()))) {
+  const normalizedUpper = normalizedOptionTexts.map((x: string) => x.toUpperCase());
+  const isBarePlaceholderSequence = PLACEHOLDER_OPTION_SEQUENCES.some((sequence) =>
+    sequence.every((value, index) => normalizedUpper[index] === value.toUpperCase()),
+  );
+  if (isBarePlaceholderSequence) {
     throw new Error(`BIO26 machine-readable optionTexts are placeholder labels for ${code}`);
   }
   if (!String(item?.aiContext?.readableText || "").trim()) throw new Error(`BIO26 readableText missing for ${code}`);
