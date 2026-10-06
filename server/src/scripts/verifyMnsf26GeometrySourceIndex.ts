@@ -11,7 +11,7 @@ type GeometryTest = {
 
 const sourcePath = path.resolve(
   process.cwd(),
-  "docs/content/mnsf26/MNSF26_GEOMETRY_SOURCE_INDEX_V1.json",
+  "../docs/content/mnsf26/MNSF26_GEOMETRY_SOURCE_INDEX_V1.json",
 );
 const data = JSON.parse(fs.readFileSync(sourcePath, "utf8")) as {
   bank: string;
