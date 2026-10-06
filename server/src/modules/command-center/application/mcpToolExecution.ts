@@ -93,6 +93,7 @@ export async function executeMcpTool(input: {
     MCP_TOOL_SCOPES[input.name] &&
     (input.name === "get_skill_tree" ||
       input.name === "get_course_inventory" ||
+      input.name === "audit_course" ||
       (writeToolNames.has(input.name) && input.name !== "create_developer_task_draft"))
   ) {
     const rawKey = writeToolNames.has(input.name)
