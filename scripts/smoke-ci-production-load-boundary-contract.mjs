@@ -27,6 +27,21 @@ assert.match(roleGate, /PR role and auth contracts — zero production traffic/)
 assert.match(roleGate, /Production role auth smoke — paced and low-load/);
 assert.doesNotMatch(roleGate, /smoke:role-pages-live/);
 assert.doesNotMatch(roleGate, /live-parent-teacher-deep-audit/);
+assert.doesNotMatch(
+  roleGate,
+  /push:\s*\n\s*branches:\s*\n\s*- main/,
+  "Live Role Gate must not run automatically on main push; Post Deploy owns paced production role auth",
+);
+assert.match(
+  roleGate,
+  /Production role auth smoke — paced and low-load[\s\S]*?if:\s*github\.event_name == 'workflow_dispatch'/,
+  "Production role auth in Live Role Gate must be manual-only",
+);
+assert.match(
+  postDeploy,
+  /Production role auth smoke — paced and low-load/,
+  "Post Deploy must remain the single automatic owner of paced production role auth",
+);
 
 assert.match(publicGate, /Offline public and guarded UI audit — zero production API traffic/);
 assert.match(publicGate, /pr-public-ui-offline-audit\.mjs/);
