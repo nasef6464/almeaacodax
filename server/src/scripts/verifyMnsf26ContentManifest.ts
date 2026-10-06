@@ -21,7 +21,7 @@ type ManifestRecord = {
 
 const manifestPath = path.resolve(
   process.cwd(),
-  "docs/content/mnsf26/MNSF26_CONTENT_ENRICHMENT_V1.json",
+  "../docs/content/mnsf26/MNSF26_CONTENT_ENRICHMENT_V1.json",
 );
 const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8")) as {
   bank: string;
