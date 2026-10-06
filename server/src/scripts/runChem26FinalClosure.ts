@@ -42,7 +42,7 @@ async function verify(expected:"draft"|"approved") {
 }
 
 export async function runChem26FinalClosureIfRequested(){
- if(process.env.CHEM26_FINAL_CLOSURE!=="APPROVE_1708") return;
+ if(process.env.PILOT_WRITE_AUTHORIZATION!=="CHEM26_APPROVE_1708" || process.env.QUESTION_PILOT_BATCH_ID!==BATCH_ID) return;
  const ownsConnection = mongoose.connection.readyState !== 1;
  if(ownsConnection) await mongoose.connect(env.MONGODB_URI);
  try{
