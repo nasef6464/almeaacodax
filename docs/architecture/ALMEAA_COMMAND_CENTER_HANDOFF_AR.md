@@ -6,7 +6,7 @@
 > الفرع الحالي: `feat/almeaa-command-center-execution-mcp-2026-10-06`
 > Issue: #386
 > PR foundation: #387 (merged)  
-> PR execution/MCP: pending creation
+> PR execution/MCP: #390 — OPEN, exact-head CI active
 > الحالة: **FOUNDATION MERGED — EXECUTION + MCP ACTIVE**
 
 ## الهدف النهائي
@@ -138,8 +138,8 @@
 
 ## الترتيب التالي المعتمد
 
-1. فتح PR التنفيذ/MCP وتشغيل exact-head CI.
-2. إصلاح أي gate يفشل ثم الدمج.
+1. PR #390 مفتوح؛ أغلق exact-head CI على نفس الـSHA النهائي.
+2. أصلح أي gate يفشل ثم ادمج #390.
 3. إعداد Production OAuth IdP وتشغيل MCP tool scan الفعلي.
 4. ربط XLSX/CSV school import بمسودة Command Center.
 5. إضافة semantic near-duplicate + existing-quiz diff tools.
