@@ -136,6 +136,36 @@ export const createAiApi = (request: ApiRequest) => ({
       token,
     }),
 
+  aiAdminCommandPlan: (
+    payload: { message: string; pathId?: string; subjectId?: string; sectionId?: string },
+    token?: string | null,
+  ) =>
+    request<{
+      summary: string;
+      needsClarification: boolean;
+      clarification: string;
+      workflow: null | {
+        _id: string;
+        title: string;
+        status: "planned" | "running" | "completed" | "failed";
+        steps: Array<{
+          id: string;
+          toolId: string;
+          title?: string;
+          status: string;
+          output?: Record<string, unknown>;
+          error?: string;
+        }>;
+      };
+      idempotentReplay?: boolean;
+      provider: AiProvider;
+      validationIssues?: Array<{ path: string; message: string }>;
+    }>("/ai/admin-command-plan", {
+      method: "POST",
+      body: payload,
+      token,
+    }),
+
   aiAdminAssistant: (payload: { message: string }, token?: string | null) =>
     request<{
       text: string;
