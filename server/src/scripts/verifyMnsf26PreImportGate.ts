@@ -1,3 +1,5 @@
+import fs from "fs";
+import path from "path";
 import mongoose from "mongoose";
 import { env } from "../config/env.js";
 import { QUANT_TAXONOMY } from "./deployQuantTaxonomy25.js";
@@ -31,6 +33,29 @@ function canonicalQuestionText(question: any) {
 }
 
 async function run() {
+  const cropQueuePath = path.resolve(
+    process.cwd(),
+    "../docs/content/mnsf26/MNSF26_CROP_QUEUE_V1.json",
+  );
+  const cropQueue = JSON.parse(fs.readFileSync(cropQueuePath, "utf8")) as {
+    queue: Array<{
+      questionCode: string;
+      contentStatus: string;
+      cropStatus: string;
+      imageHash: string | null;
+      imageUrl: string | null;
+    }>;
+  };
+  const importableCropRows = cropQueue.queue.filter(
+    (item) => item.contentStatus === "CONTENT_READY_CROP_PENDING",
+  );
+  const cropEvidenceFailures = importableCropRows.filter(
+    (item) =>
+      item.cropStatus !== "READY" ||
+      !item.imageHash ||
+      !item.imageUrl,
+  );
+
   await mongoose.connect(env.MONGODB_URI, { serverSelectionTimeoutMS: 12_000 });
   try {
     const db = mongoose.connection.db;
@@ -218,6 +243,16 @@ async function run() {
     });
 
     const failures: GateFailure[] = [];
+    if (importableCropRows.length !== 129 || cropEvidenceFailures.length) {
+      failures.push({
+        gate: "authoritative-crop-evidence",
+        detail: {
+          expectedImportableCrops: 129,
+          actualImportableCrops: importableCropRows.length,
+          missingOrUnready: cropEvidenceFailures.map((item) => item.questionCode),
+        },
+      });
+    }
     if (expectedMainIds.size !== 25 || expectedSubIds.size !== 95) {
       failures.push({
         gate: "canonical-code-taxonomy",
