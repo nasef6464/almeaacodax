@@ -300,6 +300,9 @@ jobs:
       - name: Command Center content operations contract
         run: node scripts/smoke-command-center-content-ops-contract.mjs
 
+      - name: Interactive Smart Teacher contract
+        run: node scripts/smoke-interactive-smart-teacher-contract.mjs
+
       - name: Refactor workflow race-safety contract
         run: node scripts/smoke-refactor-workflow-race-contract.mjs
 
