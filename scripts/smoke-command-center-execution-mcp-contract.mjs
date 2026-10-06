@@ -7,7 +7,13 @@ const [
   draftModel,
   applyService,
   applyCourseQuiz,
+  applyQuestion,
+  applyQuizUpdate,
   applySchool,
+  quizUpdateTools,
+  questionModel,
+  schoolImportPanel,
+  schoolImportAdapter,
   developerTools,
   developerRoutes,
   workflowModel,
@@ -33,7 +39,13 @@ const [
   read("server/src/models/CommandCenterDraft.ts"),
   read("server/src/modules/command-center/application/draftApplyService.ts"),
   read("server/src/modules/command-center/application/draftApplyCourseQuiz.ts"),
+  read("server/src/modules/command-center/application/draftApplyQuestion.ts"),
+  read("server/src/modules/command-center/application/draftApplyQuizUpdate.ts"),
   read("server/src/modules/command-center/application/draftApplySchool.ts"),
+  read("server/src/modules/command-center/application/quizUpdateDraftTools.ts"),
+  read("server/src/models/Question.ts"),
+  read("dashboards/admin/command-center/CommandCenterSchoolImportPanel.tsx"),
+  read("dashboards/admin/command-center/schoolImportDraftAdapter.ts"),
   read("server/src/modules/command-center/application/developerTaskTools.ts"),
   read("server/src/modules/command-center/http/developerDraftRoutes.ts"),
   read("server/src/models/CommandCenterWorkflow.ts"),
@@ -62,6 +74,19 @@ assert.match(draftModel, /"applying"/);
 assert.match(applyService, /applyApprovedCommandDraft/);
 assert.match(applyCourseQuiz, /applyCourseDraft/);
 assert.match(applyCourseQuiz, /applyQuizDraft/);
+assert.match(applyQuestion, /applyQuestionBatchDraft/);
+assert.match(applyQuestion, /bulkWrite/);
+assert.match(applyQuestion, /approvalStatus:\s*"draft"/);
+assert.match(applyQuizUpdate, /originalPublishedQuizUnchanged:\s*true/);
+assert.match(applyQuizUpdate, /isPublished:\s*false/);
+assert.match(applyQuizUpdate, /showOnPlatform:\s*false/);
+assert.match(quizUpdateTools, /nearDuplicateMatches/);
+assert.match(quizUpdateTools, /question_not_approved/);
+assert.match(quizUpdateTools, /questionSimilarity/);
+assert.match(questionModel, /subSkillIds/);
+assert.match(schoolImportPanel, /parseRelationFile/);
+assert.match(schoolImportAdapter, /teachers/);
+assert.match(schoolImportAdapter, /supervisors/);
 assert.match(applySchool, /applySchoolDraft/);
 assert.match(applyCourseQuiz, /isPublished:\s*false/);
 assert.match(applyCourseQuiz, /showOnPlatform:\s*false/);
