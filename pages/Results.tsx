@@ -882,7 +882,7 @@ const Results: React.FC = () => {
               className="inline-flex items-center justify-center gap-2 rounded-xl border border-indigo-200 bg-indigo-50/80 px-4 py-3 text-xs sm:text-sm font-black text-indigo-700 shadow-xs transition-all hover:bg-indigo-100 hover:border-indigo-300"
             >
               <BarChart3 size={16} />
-              <span>تقرير تفصيلي</span>
+              <span>تفاصيل أكثر</span>
             </button>
             <button
               onClick={() => setViewMode('history')}
@@ -1327,6 +1327,8 @@ const Results: React.FC = () => {
           subjectName: item.subjectName,
           sectionName: item.sectionName,
           recommendation: item.actionText,
+          videoLink: item.lessonLink,
+          trainingLink: item.quizLink,
         }))}
       />
 
