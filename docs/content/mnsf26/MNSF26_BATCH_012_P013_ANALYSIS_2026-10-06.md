@@ -47,7 +47,7 @@ High-resolution page render inspected directly from the original PDF. Page 13 co
 - أي مما يلي الناتج يكون 7؟
 - Correct relation in the source options: 91÷13 =7.
 - Correct option: أ.
-- Mapping: HOLD — plain integer division has no exact dedicated canonical subskill in the approved 25/95 taxonomy.
+- Mapping: `skill_quant_01 / sub_quant_01_4` — التعرف على ناتج قسمة صحيحة مباشرة ضمن أساسيات العمليات الحسابية في التصنيف الحالي؛ لا تُنشأ مهارة جديدة.
 - Difficulty: Easy.
 - Fingerprint: quotient-recognition / integer-division.
 
@@ -75,8 +75,9 @@ High-resolution page render inspected directly from the original PDF. Page 13 co
 - Answer locked: 6/7
 - Source math HOLD: 1 (Q15)
 - Canonical mappings locked: 5
-- Taxonomy HOLD: 1 (Q18)
+- Taxonomy HOLD: 0
+- Q18 canonical mapping resolved: `skill_quant_01 / sub_quant_01_4`
 - External exact duplicates FND26/COL2627: 0
-- Unique import candidates after HOLD + duplicate gates: 4/7
+- Unique import candidates after HOLD + duplicate gates: 5/7
 - Intra-MNSF duplicates suppressed: 1 (Q19 ↔ Batch 006 Q19; keep earlier occurrence)
 - New taxonomy entities: 0
