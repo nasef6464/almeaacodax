@@ -1,16 +1,16 @@
 import { getReportMasteryTone, type StudentAggregatedSkill } from './reportDomain';
 import { buildSkillRecommendation, type SkillRecommendationCatalog } from './recommendationViewModel';
 import { resolveMasteryLevel, type MasteryLevel } from '../../services/masteryPolicy';
-import { buildFoundationActionLink, buildSkillRecheckActionLink } from '../../utils/skillActionLinks';
+import { buildCanonicalFoundationSkillActions, buildSkillRecheckActionLink } from '../../utils/skillActionLinks';
 
 export interface StudentSkillReportRow extends StudentAggregatedSkill {
     tone: ReturnType<typeof getReportMasteryTone>;
-    lessonLink: string;
+    lessonLink?: string;
     lessonLabel: string;
-    quizLink: string;
+    quizLink?: string;
     quizLabel: string;
     retestLink: string;
-    supportLink: string;
+    supportLink?: string;
     evidenceLabel: string;
     masteryLevel: MasteryLevel;
 }
@@ -22,33 +22,30 @@ export const buildStudentSkillReportRows = (
 ): StudentSkillReportRow[] =>
     (typeof limit === 'number' ? focusedReportSkills.slice(0, limit) : focusedReportSkills).map((skill) => {
         const recommendation = buildSkillRecommendation(skill, catalog);
-        const foundationActionContext = {
+        const foundationActions = buildCanonicalFoundationSkillActions({
             pathId: skill.pathId,
             subjectId: skill.subjectId,
+            sectionId: skill.sectionId,
             skillId: skill.skillId,
-        };
-        const foundationLessonLink = buildFoundationActionLink(foundationActionContext, 'lessons');
-        const foundationQuizLink = buildFoundationActionLink(foundationActionContext, 'quizzes');
-        const foundationSupportLink = buildFoundationActionLink(foundationActionContext, 'support');
-        const quizLink = recommendation.quizLink
-            || foundationQuizLink
-            || (skill.skillId ? `/quiz?skillIds=${encodeURIComponent(skill.skillId)}` : '/dashboard?tab=saher');
+            skillName: skill.skill,
+        }, catalog.allSkills, catalog.topics);
+        const quizLink = foundationActions.quizLink;
         const retestLink = buildSkillRecheckActionLink({
             pathId: skill.pathId,
             subjectId: skill.subjectId,
             sectionId: skill.sectionId,
             skillId: skill.skillId,
-        }) || quizLink;
+        }) || '/reports';
 
         return {
             ...skill,
             tone: getReportMasteryTone(skill.mastery),
-            lessonLink: recommendation.lessonLink || recommendation.foundationTopicLink || foundationLessonLink || '/reports',
+            lessonLink: foundationActions.lessonLink,
             lessonLabel: recommendation.lessonTopicTitle || recommendation.lessonTitle || 'شرح',
             quizLink,
             quizLabel: recommendation.quizTitle || 'تدريب',
             retestLink,
-            supportLink: recommendation.supportLink || foundationSupportLink || '/reports',
+            supportLink: foundationActions.supportLink,
             masteryLevel: resolveMasteryLevel(skill.mastery, skill.totalEvidence || skill.attempts),
             evidenceLabel: skill.isReliable
                 ? [
