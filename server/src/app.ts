@@ -15,6 +15,7 @@ import { authRateLimiter, globalRateLimiter, sensitiveActionRateLimiter } from "
 import { requireActiveAuth, requireAuth } from "./middleware/auth.js";
 import { aiStudentTargetGuard } from "./middleware/aiStudentTargetGuard.js";
 import { initSentry } from "./observability/sentry.js";
+import { mcpProtectedResourceMetadataHandler } from "./modules/command-center/http/mcpRoutes.js";
 
 function parseAllowedOrigins() {
   const configuredOrigins = env.CORS_ALLOWED_ORIGINS.split(",")
@@ -125,6 +126,9 @@ export function createApp() {
       status: "running",
     });
   });
+
+  app.get("/.well-known/oauth-protected-resource", mcpProtectedResourceMetadataHandler);
+  app.get("/.well-known/oauth-protected-resource/api/command-center/mcp", mcpProtectedResourceMetadataHandler);
 
   app.use("/auth", authRouter);
   app.use("/api", apiRouter);
