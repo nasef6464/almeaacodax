@@ -68,13 +68,14 @@ High-resolution render inspected directly from original PDF. Page 14 contains pr
 - Fingerprint: workforce-proportion / equal-productivity.
 - Source visual confirmed 100 (not 20).
 
-### Q08 — SOURCE LOGIC HOLD
+### Q08 — QUARANTINED SOURCE DEFECT
 - Source states: 30 egg cartons, each carton 12 trays, each tray 30 eggs, and "between every 3 trays there are 9 spoiled eggs", then asks "how many spoiled trays?"
 - The premise gives spoiled eggs, not a rule that defines a whole tray as spoiled, so the requested "number of spoiled trays" is not derivable without an unstated assumption.
-- Answer: HOLD; do not guess from options 12/24/36/48.
-- Taxonomy: HOLD.
+- Status: **QUARANTINE_SOURCE_DEFECT** — لا يُستورد كسؤال صالح لأن وحدة المعطى (بيض فاسد) لا تطابق وحدة المطلوب (أطباق فاسدة)، ولا توجد قاعدة في النص لتحويل إحداهما إلى الأخرى.
+- Answer: لا توجد إجابة قابلة للاعتماد من النص الحالي؛ لا تخمّن من الخيارات 12/24/36/48.
+- Taxonomy: لا يلزم ربط إنتاجي لسجل محجور؛ يبقى خارج import candidates.
 - Fingerprint: unit-mismatch / spoiled-eggs-vs-spoiled-trays.
-- Required: source-author clarification or verified erratum.
+- Recovery condition: يعاد فتحه فقط إذا ظهر crop/erratum موثوق يثبت أن المطلوب الأصلي كان عدد البيض الفاسد أو يضيف تعريفًا صريحًا للطبق الفاسد.
 
 ### Q09
 - Factory A produces 500 units/day; factory B 125/day. If A produces 2500 units, same time=5 days; B produces 625.
