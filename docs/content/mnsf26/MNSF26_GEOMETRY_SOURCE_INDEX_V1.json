@@ -9,7 +9,7 @@
     "lessons": 11,
     "resolvedTestStartPages": 50,
     "unresolvedTestStartPages": [],
-    "resolutionNote": "Tests 4 and 6 resolved from direct parsed page headers: PDF page 6 = الاختبار الرابع; PDF page 11 = الاختبار السادس."
+    "resolutionNote": "All 50 geometry test starts revalidated from the authoritative raw PDF text layer after raw-byte recovery; separator/blank pages corrected (notably test 5 starts on PDF page 9, not page 8)."
   },
   "lessons": [
     {
@@ -137,9 +137,9 @@
       "lessonName": "الأشكال",
       "lessonOrdinal": "الأول",
       "startPdfPage": 1,
-      "evidence": "SEARCH_INDEX",
+      "evidence": "RAW_PDF_TEXT_HEADER",
       "cropAllowed": true,
-      "note": null
+      "note": "Revalidated from authoritative raw PDF: visible/extracted test header for test 1 starts on PDF page 1."
     },
     {
       "testNumber": 2,
@@ -148,9 +148,9 @@
       "lessonName": "الأشكال",
       "lessonOrdinal": "الأول",
       "startPdfPage": 3,
-      "evidence": "SEARCH_INDEX",
+      "evidence": "RAW_PDF_TEXT_HEADER",
       "cropAllowed": true,
-      "note": null
+      "note": "Revalidated from authoritative raw PDF: visible/extracted test header for test 2 starts on PDF page 3."
     },
     {
       "testNumber": 3,
@@ -159,9 +159,9 @@
       "lessonName": "الزوايا",
       "lessonOrdinal": "الثاني",
       "startPdfPage": 4,
-      "evidence": "SEARCH_INDEX",
+      "evidence": "RAW_PDF_TEXT_HEADER",
       "cropAllowed": true,
-      "note": null
+      "note": "Revalidated from authoritative raw PDF: visible/extracted test header for test 3 starts on PDF page 4."
     },
     {
       "testNumber": 4,
@@ -170,9 +170,9 @@
       "lessonName": "الزوايا",
       "lessonOrdinal": "الثاني",
       "startPdfPage": 6,
-      "evidence": "FILES_READ_PARSED_PAGE_HEADER",
+      "evidence": "RAW_PDF_TEXT_HEADER",
       "cropAllowed": true,
-      "note": "Revalidated 2026-10-06 by direct page-mode read: PDF page 6 header = الاختبار الرابع / الدرس الثاني / الزوايا."
+      "note": "Revalidated from authoritative raw PDF: visible/extracted test header for test 4 starts on PDF page 6."
     },
     {
       "testNumber": 5,
@@ -180,10 +180,10 @@
       "lessonNumber": 2,
       "lessonName": "الزوايا",
       "lessonOrdinal": "الثاني",
-      "startPdfPage": 8,
-      "evidence": "SEARCH_INDEX",
+      "startPdfPage": 9,
+      "evidence": "RAW_PDF_TEXT_HEADER",
       "cropAllowed": true,
-      "note": null
+      "note": "Revalidated from authoritative raw PDF: visible/extracted test header for test 5 starts on PDF page 9."
     },
     {
       "testNumber": 6,
@@ -192,9 +192,9 @@
       "lessonName": "الزوايا",
       "lessonOrdinal": "الثاني",
       "startPdfPage": 11,
-      "evidence": "FILES_READ_PARSED_PAGE_HEADER",
+      "evidence": "RAW_PDF_TEXT_HEADER",
       "cropAllowed": true,
-      "note": null
+      "note": "Revalidated from authoritative raw PDF: visible/extracted test header for test 6 starts on PDF page 11."
     },
     {
       "testNumber": 7,
@@ -202,10 +202,10 @@
       "lessonNumber": 2,
       "lessonName": "الزوايا",
       "lessonOrdinal": "الثاني",
-      "startPdfPage": 12,
-      "evidence": "SEARCH_INDEX",
+      "startPdfPage": 13,
+      "evidence": "RAW_PDF_TEXT_HEADER",
       "cropAllowed": true,
-      "note": null
+      "note": "Revalidated from authoritative raw PDF: visible/extracted test header for test 7 starts on PDF page 13."
     },
     {
       "testNumber": 8,
@@ -213,10 +213,10 @@
       "lessonNumber": 2,
       "lessonName": "الزوايا",
       "lessonOrdinal": "الثاني",
-      "startPdfPage": 14,
-      "evidence": "SEARCH_INDEX",
+      "startPdfPage": 15,
+      "evidence": "RAW_PDF_TEXT_HEADER",
       "cropAllowed": true,
-      "note": null
+      "note": "Revalidated from authoritative raw PDF: visible/extracted test header for test 8 starts on PDF page 15."
     },
     {
       "testNumber": 9,
@@ -224,10 +224,10 @@
       "lessonNumber": 2,
       "lessonName": "الزوايا",
       "lessonOrdinal": "الثاني",
-      "startPdfPage": 16,
-      "evidence": "SEARCH_INDEX",
+      "startPdfPage": 17,
+      "evidence": "RAW_PDF_TEXT_HEADER",
       "cropAllowed": true,
-      "note": null
+      "note": "Revalidated from authoritative raw PDF: visible/extracted test header for test 9 starts on PDF page 17."
     },
     {
       "testNumber": 10,
@@ -235,10 +235,10 @@
       "lessonNumber": 2,
       "lessonName": "الزوايا",
       "lessonOrdinal": "الثاني",
-      "startPdfPage": 18,
-      "evidence": "SEARCH_INDEX",
+      "startPdfPage": 19,
+      "evidence": "RAW_PDF_TEXT_HEADER",
       "cropAllowed": true,
-      "note": null
+      "note": "Revalidated from authoritative raw PDF: visible/extracted test header for test 10 starts on PDF page 19."
     },
     {
       "testNumber": 11,
@@ -246,10 +246,10 @@
       "lessonNumber": 2,
       "lessonName": "الزوايا",
       "lessonOrdinal": "الثاني",
-      "startPdfPage": 20,
-      "evidence": "SEARCH_INDEX",
+      "startPdfPage": 21,
+      "evidence": "RAW_PDF_TEXT_HEADER",
       "cropAllowed": true,
-      "note": null
+      "note": "Revalidated from authoritative raw PDF: visible/extracted test header for test 11 starts on PDF page 21."
     },
     {
       "testNumber": 12,
@@ -257,10 +257,10 @@
       "lessonNumber": 2,
       "lessonName": "الزوايا",
       "lessonOrdinal": "الثاني",
-      "startPdfPage": 22,
-      "evidence": "SEARCH_INDEX",
+      "startPdfPage": 23,
+      "evidence": "RAW_PDF_TEXT_HEADER",
       "cropAllowed": true,
-      "note": null
+      "note": "Revalidated from authoritative raw PDF: visible/extracted test header for test 12 starts on PDF page 23."
     },
     {
       "testNumber": 13,
@@ -268,10 +268,10 @@
       "lessonNumber": 2,
       "lessonName": "الزوايا",
       "lessonOrdinal": "الثاني",
-      "startPdfPage": 24,
-      "evidence": "SEARCH_INDEX",
+      "startPdfPage": 25,
+      "evidence": "RAW_PDF_TEXT_HEADER",
       "cropAllowed": true,
-      "note": null
+      "note": "Revalidated from authoritative raw PDF: visible/extracted test header for test 13 starts on PDF page 25."
     },
     {
       "testNumber": 14,
@@ -279,10 +279,10 @@
       "lessonNumber": 2,
       "lessonName": "الزوايا",
       "lessonOrdinal": "الثاني",
-      "startPdfPage": 26,
-      "evidence": "SEARCH_INDEX",
+      "startPdfPage": 27,
+      "evidence": "RAW_PDF_TEXT_HEADER",
       "cropAllowed": true,
-      "note": null
+      "note": "Revalidated from authoritative raw PDF: visible/extracted test header for test 14 starts on PDF page 27."
     },
     {
       "testNumber": 15,
@@ -290,10 +290,10 @@
       "lessonNumber": 2,
       "lessonName": "الزوايا",
       "lessonOrdinal": "الثاني",
-      "startPdfPage": 28,
-      "evidence": "SEARCH_INDEX",
+      "startPdfPage": 29,
+      "evidence": "RAW_PDF_TEXT_HEADER",
       "cropAllowed": true,
-      "note": null
+      "note": "Revalidated from authoritative raw PDF: visible/extracted test header for test 15 starts on PDF page 29."
     },
     {
       "testNumber": 16,
@@ -301,10 +301,10 @@
       "lessonNumber": 3,
       "lessonName": "المثلث",
       "lessonOrdinal": "الثالث",
-      "startPdfPage": 29,
-      "evidence": "SEARCH_INDEX",
+      "startPdfPage": 30,
+      "evidence": "RAW_PDF_TEXT_HEADER",
       "cropAllowed": true,
-      "note": null
+      "note": "Revalidated from authoritative raw PDF: visible/extracted test header for test 16 starts on PDF page 30."
     },
     {
       "testNumber": 17,
@@ -312,10 +312,10 @@
       "lessonNumber": 3,
       "lessonName": "المثلث",
       "lessonOrdinal": "الثالث",
-      "startPdfPage": 31,
-      "evidence": "SEARCH_INDEX",
+      "startPdfPage": 32,
+      "evidence": "RAW_PDF_TEXT_HEADER",
       "cropAllowed": true,
-      "note": null
+      "note": "Revalidated from authoritative raw PDF: visible/extracted test header for test 17 starts on PDF page 32."
     },
     {
       "testNumber": 18,
@@ -323,10 +323,10 @@
       "lessonNumber": 3,
       "lessonName": "المثلث",
       "lessonOrdinal": "الثالث",
-      "startPdfPage": 33,
-      "evidence": "SEARCH_INDEX",
+      "startPdfPage": 34,
+      "evidence": "RAW_PDF_TEXT_HEADER",
       "cropAllowed": true,
-      "note": null
+      "note": "Revalidated from authoritative raw PDF: visible/extracted test header for test 18 starts on PDF page 34."
     },
     {
       "testNumber": 19,
@@ -334,10 +334,10 @@
       "lessonNumber": 3,
       "lessonName": "المثلث",
       "lessonOrdinal": "الثالث",
-      "startPdfPage": 35,
-      "evidence": "SEARCH_INDEX",
+      "startPdfPage": 36,
+      "evidence": "RAW_PDF_TEXT_HEADER",
       "cropAllowed": true,
-      "note": null
+      "note": "Revalidated from authoritative raw PDF: visible/extracted test header for test 19 starts on PDF page 36."
     },
     {
       "testNumber": 20,
@@ -345,10 +345,10 @@
       "lessonNumber": 3,
       "lessonName": "المثلث",
       "lessonOrdinal": "الثالث",
-      "startPdfPage": 37,
-      "evidence": "SEARCH_INDEX",
+      "startPdfPage": 38,
+      "evidence": "RAW_PDF_TEXT_HEADER",
       "cropAllowed": true,
-      "note": null
+      "note": "Revalidated from authoritative raw PDF: visible/extracted test header for test 20 starts on PDF page 38."
     },
     {
       "testNumber": 21,
@@ -356,10 +356,10 @@
       "lessonNumber": 3,
       "lessonName": "المثلث",
       "lessonOrdinal": "الثالث",
-      "startPdfPage": 39,
-      "evidence": "SEARCH_INDEX",
+      "startPdfPage": 40,
+      "evidence": "RAW_PDF_TEXT_HEADER",
       "cropAllowed": true,
-      "note": null
+      "note": "Revalidated from authoritative raw PDF: visible/extracted test header for test 21 starts on PDF page 40."
     },
     {
       "testNumber": 22,
@@ -367,10 +367,10 @@
       "lessonNumber": 4,
       "lessonName": "الهندسة الإحداثية",
       "lessonOrdinal": "الرابع",
-      "startPdfPage": 40,
-      "evidence": "SEARCH_INDEX",
+      "startPdfPage": 41,
+      "evidence": "RAW_PDF_TEXT_HEADER",
       "cropAllowed": true,
-      "note": null
+      "note": "Revalidated from authoritative raw PDF: visible/extracted test header for test 22 starts on PDF page 41."
     },
     {
       "testNumber": 23,
@@ -378,10 +378,10 @@
       "lessonNumber": 4,
       "lessonName": "الهندسة الإحداثية",
       "lessonOrdinal": "الرابع",
-      "startPdfPage": 42,
-      "evidence": "SEARCH_INDEX",
+      "startPdfPage": 43,
+      "evidence": "RAW_PDF_TEXT_HEADER",
       "cropAllowed": true,
-      "note": null
+      "note": "Revalidated from authoritative raw PDF: visible/extracted test header for test 23 starts on PDF page 43."
     },
     {
       "testNumber": 24,
@@ -389,10 +389,10 @@
       "lessonNumber": 5,
       "lessonName": "المستطيل",
       "lessonOrdinal": "الخامس",
-      "startPdfPage": 44,
-      "evidence": "SEARCH_INDEX",
+      "startPdfPage": 45,
+      "evidence": "RAW_PDF_TEXT_HEADER",
       "cropAllowed": true,
-      "note": null
+      "note": "Revalidated from authoritative raw PDF: visible/extracted test header for test 24 starts on PDF page 45."
     },
     {
       "testNumber": 25,
@@ -400,10 +400,10 @@
       "lessonNumber": 5,
       "lessonName": "المستطيل",
       "lessonOrdinal": "الخامس",
-      "startPdfPage": 46,
-      "evidence": "SEARCH_INDEX",
+      "startPdfPage": 47,
+      "evidence": "RAW_PDF_TEXT_HEADER",
       "cropAllowed": true,
-      "note": null
+      "note": "Revalidated from authoritative raw PDF: visible/extracted test header for test 25 starts on PDF page 47."
     },
     {
       "testNumber": 26,
@@ -411,10 +411,10 @@
       "lessonNumber": 5,
       "lessonName": "المستطيل",
       "lessonOrdinal": "الخامس",
-      "startPdfPage": 48,
-      "evidence": "SEARCH_INDEX",
+      "startPdfPage": 49,
+      "evidence": "RAW_PDF_TEXT_HEADER",
       "cropAllowed": true,
-      "note": null
+      "note": "Revalidated from authoritative raw PDF: visible/extracted test header for test 26 starts on PDF page 49."
     },
     {
       "testNumber": 27,
@@ -422,10 +422,10 @@
       "lessonNumber": 6,
       "lessonName": "المربع",
       "lessonOrdinal": "السادس",
-      "startPdfPage": 50,
-      "evidence": "SEARCH_INDEX",
+      "startPdfPage": 51,
+      "evidence": "RAW_PDF_TEXT_HEADER",
       "cropAllowed": true,
-      "note": null
+      "note": "Revalidated from authoritative raw PDF: visible/extracted test header for test 27 starts on PDF page 51."
     },
     {
       "testNumber": 28,
@@ -433,10 +433,10 @@
       "lessonNumber": 6,
       "lessonName": "المربع",
       "lessonOrdinal": "السادس",
-      "startPdfPage": 52,
-      "evidence": "SEARCH_INDEX",
+      "startPdfPage": 53,
+      "evidence": "RAW_PDF_TEXT_HEADER",
       "cropAllowed": true,
-      "note": null
+      "note": "Revalidated from authoritative raw PDF: visible/extracted test header for test 28 starts on PDF page 53."
     },
     {
       "testNumber": 29,
@@ -444,10 +444,10 @@
       "lessonNumber": 6,
       "lessonName": "المربع",
       "lessonOrdinal": "السادس",
-      "startPdfPage": 54,
-      "evidence": "SEARCH_INDEX",
+      "startPdfPage": 55,
+      "evidence": "RAW_PDF_TEXT_HEADER",
       "cropAllowed": true,
-      "note": null
+      "note": "Revalidated from authoritative raw PDF: visible/extracted test header for test 29 starts on PDF page 55."
     },
     {
       "testNumber": 30,
@@ -455,10 +455,10 @@
       "lessonNumber": 7,
       "lessonName": "المعين وشبه المنحرف",
       "lessonOrdinal": "السابع",
-      "startPdfPage": 55,
-      "evidence": "SEARCH_INDEX",
+      "startPdfPage": 56,
+      "evidence": "RAW_PDF_TEXT_HEADER",
       "cropAllowed": true,
-      "note": null
+      "note": "Revalidated from authoritative raw PDF: visible/extracted test header for test 30 starts on PDF page 56."
     },
     {
       "testNumber": 31,
@@ -466,10 +466,10 @@
       "lessonNumber": 8,
       "lessonName": "المساحات المظللة",
       "lessonOrdinal": "الثامن",
-      "startPdfPage": 57,
-      "evidence": "SEARCH_INDEX",
+      "startPdfPage": 59,
+      "evidence": "RAW_PDF_TEXT_HEADER",
       "cropAllowed": true,
-      "note": null
+      "note": "Revalidated from authoritative raw PDF: visible/extracted test header for test 31 starts on PDF page 59."
     },
     {
       "testNumber": 32,
@@ -477,10 +477,10 @@
       "lessonNumber": 8,
       "lessonName": "المساحات المظللة",
       "lessonOrdinal": "الثامن",
-      "startPdfPage": 59,
-      "evidence": "SEARCH_INDEX",
+      "startPdfPage": 61,
+      "evidence": "RAW_PDF_TEXT_HEADER",
       "cropAllowed": true,
-      "note": null
+      "note": "Revalidated from authoritative raw PDF: visible/extracted test header for test 32 starts on PDF page 61."
     },
     {
       "testNumber": 33,
@@ -488,10 +488,10 @@
       "lessonNumber": 8,
       "lessonName": "المساحات المظللة",
       "lessonOrdinal": "الثامن",
-      "startPdfPage": 61,
-      "evidence": "SEARCH_INDEX",
+      "startPdfPage": 63,
+      "evidence": "RAW_PDF_TEXT_HEADER",
       "cropAllowed": true,
-      "note": null
+      "note": "Revalidated from authoritative raw PDF: visible/extracted test header for test 33 starts on PDF page 63."
     },
     {
       "testNumber": 34,
@@ -499,10 +499,10 @@
       "lessonNumber": 8,
       "lessonName": "المساحات المظللة",
       "lessonOrdinal": "الثامن",
-      "startPdfPage": 63,
-      "evidence": "SEARCH_INDEX",
+      "startPdfPage": 65,
+      "evidence": "RAW_PDF_TEXT_HEADER",
       "cropAllowed": true,
-      "note": null
+      "note": "Revalidated from authoritative raw PDF: visible/extracted test header for test 34 starts on PDF page 65."
     },
     {
       "testNumber": 35,
@@ -510,10 +510,10 @@
       "lessonNumber": 8,
       "lessonName": "المساحات المظللة",
       "lessonOrdinal": "الثامن",
-      "startPdfPage": 65,
-      "evidence": "SEARCH_INDEX",
+      "startPdfPage": 67,
+      "evidence": "RAW_PDF_TEXT_HEADER",
       "cropAllowed": true,
-      "note": null
+      "note": "Revalidated from authoritative raw PDF: visible/extracted test header for test 35 starts on PDF page 67."
     },
     {
       "testNumber": 36,
@@ -521,10 +521,10 @@
       "lessonNumber": 8,
       "lessonName": "المساحات المظللة",
       "lessonOrdinal": "الثامن",
-      "startPdfPage": 67,
-      "evidence": "SEARCH_INDEX",
+      "startPdfPage": 69,
+      "evidence": "RAW_PDF_TEXT_HEADER",
       "cropAllowed": true,
-      "note": null
+      "note": "Revalidated from authoritative raw PDF: visible/extracted test header for test 36 starts on PDF page 69."
     },
     {
       "testNumber": 37,
@@ -532,10 +532,10 @@
       "lessonNumber": 9,
       "lessonName": "الدائرة",
       "lessonOrdinal": "التاسع",
-      "startPdfPage": 69,
-      "evidence": "SEARCH_INDEX",
+      "startPdfPage": 71,
+      "evidence": "RAW_PDF_TEXT_HEADER",
       "cropAllowed": true,
-      "note": null
+      "note": "Revalidated from authoritative raw PDF: visible/extracted test header for test 37 starts on PDF page 71."
     },
     {
       "testNumber": 38,
@@ -543,10 +543,10 @@
       "lessonNumber": 9,
       "lessonName": "الدائرة",
       "lessonOrdinal": "التاسع",
-      "startPdfPage": 71,
-      "evidence": "SEARCH_INDEX",
+      "startPdfPage": 73,
+      "evidence": "RAW_PDF_TEXT_HEADER",
       "cropAllowed": true,
-      "note": null
+      "note": "Revalidated from authoritative raw PDF: visible/extracted test header for test 38 starts on PDF page 73."
     },
     {
       "testNumber": 39,
@@ -554,10 +554,10 @@
       "lessonNumber": 10,
       "lessonName": "مسائل الأشكال المختلفة",
       "lessonOrdinal": "العاشر",
-      "startPdfPage": 73,
-      "evidence": "SEARCH_INDEX",
+      "startPdfPage": 75,
+      "evidence": "RAW_PDF_TEXT_HEADER",
       "cropAllowed": true,
-      "note": null
+      "note": "Revalidated from authoritative raw PDF: visible/extracted test header for test 39 starts on PDF page 75."
     },
     {
       "testNumber": 40,
@@ -565,10 +565,10 @@
       "lessonNumber": 10,
       "lessonName": "مسائل الأشكال المختلفة",
       "lessonOrdinal": "العاشر",
-      "startPdfPage": 75,
-      "evidence": "SEARCH_INDEX",
+      "startPdfPage": 77,
+      "evidence": "RAW_PDF_TEXT_HEADER",
       "cropAllowed": true,
-      "note": null
+      "note": "Revalidated from authoritative raw PDF: visible/extracted test header for test 40 starts on PDF page 77."
     },
     {
       "testNumber": 41,
@@ -576,10 +576,10 @@
       "lessonNumber": 10,
       "lessonName": "مسائل الأشكال المختلفة",
       "lessonOrdinal": "العاشر",
-      "startPdfPage": 77,
-      "evidence": "SEARCH_INDEX",
+      "startPdfPage": 79,
+      "evidence": "RAW_PDF_TEXT_HEADER",
       "cropAllowed": true,
-      "note": null
+      "note": "Revalidated from authoritative raw PDF: visible/extracted test header for test 41 starts on PDF page 79."
     },
     {
       "testNumber": 42,
@@ -587,10 +587,10 @@
       "lessonNumber": 10,
       "lessonName": "مسائل الأشكال المختلفة",
       "lessonOrdinal": "العاشر",
-      "startPdfPage": 79,
-      "evidence": "SEARCH_INDEX",
+      "startPdfPage": 81,
+      "evidence": "RAW_PDF_TEXT_HEADER",
       "cropAllowed": true,
-      "note": null
+      "note": "Revalidated from authoritative raw PDF: visible/extracted test header for test 42 starts on PDF page 81."
     },
     {
       "testNumber": 43,
@@ -598,10 +598,10 @@
       "lessonNumber": 10,
       "lessonName": "مسائل الأشكال المختلفة",
       "lessonOrdinal": "العاشر",
-      "startPdfPage": 81,
-      "evidence": "SEARCH_INDEX",
+      "startPdfPage": 83,
+      "evidence": "RAW_PDF_TEXT_HEADER",
       "cropAllowed": true,
-      "note": null
+      "note": "Revalidated from authoritative raw PDF: visible/extracted test header for test 43 starts on PDF page 83."
     },
     {
       "testNumber": 44,
@@ -609,10 +609,10 @@
       "lessonNumber": 10,
       "lessonName": "مسائل الأشكال المختلفة",
       "lessonOrdinal": "العاشر",
-      "startPdfPage": 83,
-      "evidence": "SEARCH_INDEX",
+      "startPdfPage": 85,
+      "evidence": "RAW_PDF_TEXT_HEADER",
       "cropAllowed": true,
-      "note": null
+      "note": "Revalidated from authoritative raw PDF: visible/extracted test header for test 44 starts on PDF page 85."
     },
     {
       "testNumber": 45,
@@ -620,10 +620,10 @@
       "lessonNumber": 10,
       "lessonName": "مسائل الأشكال المختلفة",
       "lessonOrdinal": "العاشر",
-      "startPdfPage": 85,
-      "evidence": "SEARCH_INDEX",
+      "startPdfPage": 87,
+      "evidence": "RAW_PDF_TEXT_HEADER",
       "cropAllowed": true,
-      "note": null
+      "note": "Revalidated from authoritative raw PDF: visible/extracted test header for test 45 starts on PDF page 87."
     },
     {
       "testNumber": 46,
@@ -631,10 +631,10 @@
       "lessonNumber": 10,
       "lessonName": "مسائل الأشكال المختلفة",
       "lessonOrdinal": "العاشر",
-      "startPdfPage": 87,
-      "evidence": "SEARCH_INDEX",
+      "startPdfPage": 89,
+      "evidence": "RAW_PDF_TEXT_HEADER",
       "cropAllowed": true,
-      "note": null
+      "note": "Revalidated from authoritative raw PDF: visible/extracted test header for test 46 starts on PDF page 89."
     },
     {
       "testNumber": 47,
@@ -642,10 +642,10 @@
       "lessonNumber": 10,
       "lessonName": "مسائل الأشكال المختلفة",
       "lessonOrdinal": "العاشر",
-      "startPdfPage": 89,
-      "evidence": "SEARCH_INDEX",
+      "startPdfPage": 91,
+      "evidence": "RAW_PDF_TEXT_HEADER",
       "cropAllowed": true,
-      "note": null
+      "note": "Revalidated from authoritative raw PDF: visible/extracted test header for test 47 starts on PDF page 91."
     },
     {
       "testNumber": 48,
@@ -653,10 +653,10 @@
       "lessonNumber": 11,
       "lessonName": "المجسمات",
       "lessonOrdinal": "11",
-      "startPdfPage": 90,
-      "evidence": "SEARCH_INDEX",
+      "startPdfPage": 92,
+      "evidence": "RAW_PDF_TEXT_HEADER",
       "cropAllowed": true,
-      "note": null
+      "note": "Revalidated from authoritative raw PDF: visible/extracted test header for test 48 starts on PDF page 92."
     },
     {
       "testNumber": 49,
@@ -664,10 +664,10 @@
       "lessonNumber": 11,
       "lessonName": "المجسمات",
       "lessonOrdinal": "11",
-      "startPdfPage": 92,
-      "evidence": "SEARCH_INDEX",
+      "startPdfPage": 94,
+      "evidence": "RAW_PDF_TEXT_HEADER",
       "cropAllowed": true,
-      "note": null
+      "note": "Revalidated from authoritative raw PDF: visible/extracted test header for test 49 starts on PDF page 94."
     },
     {
       "testNumber": 50,
@@ -675,10 +675,10 @@
       "lessonNumber": 11,
       "lessonName": "المجسمات",
       "lessonOrdinal": "11",
-      "startPdfPage": 94,
-      "evidence": "SEARCH_INDEX",
+      "startPdfPage": 96,
+      "evidence": "RAW_PDF_TEXT_HEADER",
       "cropAllowed": true,
-      "note": null
+      "note": "Revalidated from authoritative raw PDF: visible/extracted test header for test 50 starts on PDF page 96."
     }
   ],
   "sourcePolicy": {
