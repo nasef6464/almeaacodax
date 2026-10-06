@@ -18,9 +18,9 @@ export interface StudentSkillReportRow extends StudentAggregatedSkill {
 export const buildStudentSkillReportRows = (
     focusedReportSkills: StudentAggregatedSkill[],
     catalog: SkillRecommendationCatalog,
-    limit = 10,
+    limit?: number,
 ): StudentSkillReportRow[] =>
-    focusedReportSkills.slice(0, limit).map((skill) => {
+    (typeof limit === 'number' ? focusedReportSkills.slice(0, limit) : focusedReportSkills).map((skill) => {
         const recommendation = buildSkillRecommendation(skill, catalog);
         const foundationActionContext = {
             pathId: skill.pathId,
