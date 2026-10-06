@@ -115,6 +115,9 @@ const quizSchema = new Schema(
     approvedBy: { type: String, default: "" },
     approvedAt: { type: Number, default: null },
     reviewerNotes: { type: String, default: "" },
+    revisionOfQuizId: { type: String, default: "", index: true },
+    revisionSourceHash: { type: String, default: "" },
+    revisionDraftId: { type: String, default: "" },
     revenueSharePercentage: { type: Number, default: null },
   },
   {
