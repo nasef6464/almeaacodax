@@ -25,6 +25,13 @@ import { TeachingAssignmentModel } from "../models/TeachingAssignment.js";
 const NOW = Date.now();
 const SAMPLE_VIDEO_URL = "https://www.w3schools.com/html/mov_bbb.mp4";
 const SAMPLE_PDF_URL = "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf";
+const SMOKE_TEACHER_PASSWORD = String(process.env.SMOKE_TEACHER_PASSWORD || "");
+const SMOKE_SUPERVISOR_PASSWORD = String(process.env.SMOKE_SUPERVISOR_PASSWORD || "");
+const SMOKE_STUDENT_PASSWORD = String(process.env.SMOKE_STUDENT_PASSWORD || "");
+const SMOKE_PARENT_PASSWORD = String(process.env.SMOKE_PARENT_PASSWORD || "");
+if (![SMOKE_TEACHER_PASSWORD, SMOKE_SUPERVISOR_PASSWORD, SMOKE_STUDENT_PASSWORD, SMOKE_PARENT_PASSWORD].every(Boolean)) {
+  throw new Error("Operational seed passwords must be supplied through existing SMOKE_*_PASSWORD environment variables.");
+}
 
 type SeedUser = {
   key: string;
@@ -145,7 +152,7 @@ const seedUsers: SeedUser[] = [
     key: "teacherQuant",
     name: "أ. ريم الكمي",
     email: "teacher.quant@almeaa.local",
-    password: "Teacher@123",
+    password: SMOKE_TEACHER_PASSWORD,
     role: "teacher",
     managedPathIds: ["p_qudrat"],
     managedSubjectIds: ["sub_quant"],
@@ -156,7 +163,7 @@ const seedUsers: SeedUser[] = [
     key: "teacherMath",
     name: "أ. خالد الرياضيات",
     email: "teacher.math@almeaa.local",
-    password: "Teacher@123",
+    password: SMOKE_TEACHER_PASSWORD,
     role: "teacher",
     managedPathIds: ["p_tahsili"],
     managedSubjectIds: ["sub_math"],
@@ -167,7 +174,7 @@ const seedUsers: SeedUser[] = [
     key: "schoolSupervisor",
     name: "أ. نورة مشرفة المدرسة",
     email: "supervisor.school@almeaa.local",
-    password: "Supervisor@123",
+    password: SMOKE_SUPERVISOR_PASSWORD,
     role: "supervisor",
     subscription: { plan: "premium" },
   },
@@ -175,7 +182,7 @@ const seedUsers: SeedUser[] = [
     key: "groupSupervisor",
     name: "أ. فهد مشرف المجموعة",
     email: "supervisor.group@almeaa.local",
-    password: "Supervisor@123",
+    password: SMOKE_SUPERVISOR_PASSWORD,
     role: "supervisor",
     subscription: { plan: "premium" },
   },
@@ -183,7 +190,7 @@ const seedUsers: SeedUser[] = [
     key: "studentA",
     name: "سلمان أحمد",
     email: "student.a@almeaa.local",
-    password: "Student@123",
+    password: SMOKE_STUDENT_PASSWORD,
     role: "student",
     subscription: { plan: "premium" },
   },
@@ -191,7 +198,7 @@ const seedUsers: SeedUser[] = [
     key: "studentB",
     name: "ليان محمد",
     email: "student.b@almeaa.local",
-    password: "Student@123",
+    password: SMOKE_STUDENT_PASSWORD,
     role: "student",
     subscription: { plan: "premium" },
   },
@@ -199,7 +206,7 @@ const seedUsers: SeedUser[] = [
     key: "studentC",
     name: "مشعل عبدالعزيز",
     email: "student.c@almeaa.local",
-    password: "Student@123",
+    password: SMOKE_STUDENT_PASSWORD,
     role: "student",
     subscription: { plan: "premium" },
   },
@@ -207,7 +214,7 @@ const seedUsers: SeedUser[] = [
     key: "studentD",
     name: "جود خالد",
     email: "student.d@almeaa.local",
-    password: "Student@123",
+    password: SMOKE_STUDENT_PASSWORD,
     role: "student",
     subscription: { plan: "free" },
   },
@@ -215,7 +222,7 @@ const seedUsers: SeedUser[] = [
     key: "parentA",
     name: "أم سلمان",
     email: "parent.a@almeaa.local",
-    password: "Parent@123",
+    password: SMOKE_PARENT_PASSWORD,
     role: "parent",
     subscription: { plan: "free" },
   },
@@ -223,7 +230,7 @@ const seedUsers: SeedUser[] = [
     key: "parentB",
     name: "ولي أمر ليان",
     email: "parent.b@almeaa.local",
-    password: "Parent@123",
+    password: SMOKE_PARENT_PASSWORD,
     role: "parent",
     subscription: { plan: "free" },
   },
@@ -1758,11 +1765,11 @@ async function run() {
     console.log(
       JSON.stringify(
         {
-          teacherQuant: "teacher.quant@almeaa.local / Teacher@123",
-          teacherMath: "teacher.math@almeaa.local / Teacher@123",
-          supervisor: "supervisor.group@almeaa.local / Supervisor@123",
-          studentA: "student.a@almeaa.local / Student@123",
-          parentA: "parent.a@almeaa.local / Parent@123",
+          teacherQuant: "teacher.quant@almeaa.local / <secret-store>",
+          teacherMath: "teacher.math@almeaa.local / <secret-store>",
+          supervisor: "supervisor.group@almeaa.local / <secret-store>",
+          studentA: "student.a@almeaa.local / <secret-store>",
+          parentA: "parent.a@almeaa.local / <secret-store>",
           accessCode: "RIYADA-QUANT-2026",
         },
         null,

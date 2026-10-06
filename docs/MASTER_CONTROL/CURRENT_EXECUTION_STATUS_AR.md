@@ -94,4 +94,3 @@ Git HEAD always overrides this historical baseline.
 - Import-payload quality gap: no `BIO26_IMPORT_MANIFEST_READY.json` exists yet and repository search confirms no BIO26 `optionTexts/readableText` payload. Direct indexed PDF text read returns **no readable content** because the question source is image-based. PR #388 therefore requires 4 machine-readable option texts, readableText, visualDescription, explanation, and visual-QA reviewer note for every question before any draft insert.
 - Hard gates: production taxonomy must pass dry-run/apply first; then recover/regenerate the exact audited asset package + complete machine-readable manifest; then R2 verified; then Dry Run → Canary 5 → Full Draft Import → Integrity Audit → Live E2E → Approval.
 - BIO26 status: **NOT CLOSED**. AI/content taxonomy mapping is complete; production closure is intentionally fail-closed on the two package-level gaps above.
-

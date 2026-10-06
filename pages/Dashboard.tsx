@@ -422,8 +422,10 @@ const PathsTab = () => {
     return (
         <div className="space-y-8 animate-fade-in">
             <div>
-                <h2 className="text-2xl font-bold text-gray-800 mb-2">إدارة المسارات التعليمية</h2>
-                <p className="text-gray-500">تابع تقدمك في المسارات المسجل بها واستكشف مسارات جديدة.</p>
+                <h2 className="text-2xl font-bold text-gray-800 mb-2">إدارة المسارات التعليمية والخطط الدراسية</h2>
+                <p className="text-gray-500 leading-relaxed">
+                    تابع تقدمك في المسارات التعليمية المسجل بها، واستكشف مسارات تدريبية جديدة تناسب أهدافك مع إمكانية متابعة الدروس والاختبارات التأسيسية خطوة بخطوة.
+                </p>
             </div>
 
             {/* Active Paths */}
@@ -1162,7 +1164,7 @@ const Dashboard: React.FC = () => {
     };
 
     return (
-        <div className="flex min-h-screen bg-gray-50">
+        <div className="flex min-h-screen bg-gray-50 overflow-x-hidden w-full max-w-full">
             {/* ── Notification Toast (SSE real-time) ─────────────────────── */}
             {notifToast && (
                 <div className="fixed top-24 right-4 left-4 z-[9999] w-auto animate-fade-in sm:right-auto sm:left-6 sm:max-w-sm sm:w-full">
@@ -1183,6 +1185,7 @@ const Dashboard: React.FC = () => {
             <button 
                 className="lg:hidden fixed bottom-6 left-6 z-50 bg-amber-500 text-white p-3 rounded-full shadow-lg"
                 onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                aria-label={isSidebarOpen ? 'إغلاق القائمة' : 'فتح القائمة'}
             >
                 {isSidebarOpen ? <X /> : <Menu />}
             </button>
@@ -1190,7 +1193,7 @@ const Dashboard: React.FC = () => {
             {/* Sidebar Navigation */}
             <aside className={`
                 fixed lg:sticky top-20 right-0 bottom-0 w-72 max-w-[calc(100vw-1rem)] bg-white border-l border-gray-200 z-40 transition-transform duration-300 overflow-y-auto h-[calc(100vh-5rem)]
-                ${isSidebarOpen ? 'translate-x-0' : 'translate-x-full lg:translate-x-0'}
+                ${isSidebarOpen ? 'translate-x-0 visible pointer-events-auto' : 'translate-x-full lg:translate-x-0 invisible lg:visible pointer-events-none lg:pointer-events-auto'}
             `}>
                 <div className="p-6">
                     <div className="flex items-center gap-3 mb-8">
@@ -1346,8 +1349,8 @@ const Dashboard: React.FC = () => {
             </aside>
 
             {/* Main Content Area */}
-            <main className="flex-1 p-4 lg:p-8 w-full max-w-[100vw] lg:max-w-[calc(100vw-18rem)]">
-                <div className="max-w-5xl mx-auto">
+            <main className="flex-1 min-w-0 p-4 lg:p-8 w-full max-w-full lg:max-w-[calc(100vw-18rem)] overflow-x-hidden">
+                <div className="max-w-5xl mx-auto w-full min-w-0">
                     {renderContent()}
                 </div>
             </main>
@@ -1386,7 +1389,7 @@ const ParentEmptyState = () => (
         <User size={42} className="mx-auto mb-4 text-gray-300" />
         <h3 className="text-xl font-black text-gray-900">لا توجد بيانات متابعة بعد</h3>
         <p className="mx-auto mt-2 max-w-xl text-sm leading-7 text-gray-500">
-            اربط حساب ولي الأمر بالطالب من إدارة المستخدمين. بعد أول اختبار أو محاولة تدريب ستظهر النتائج والمهارات هنا تلقائيًا.
+            اربط حساب ولي الأمر بالطالب من إدارة المستخدمين. بعد أول اختبار أو محاولة تدريب ستظهر النتائج والمهارات هنا تلقائيًا، مع تفاصيل أداء الأبناء والمهارات الضعيفة المطلوب مراجعتها خطوة بخطوة.
         </p>
     </Card>
 );
@@ -1671,15 +1674,17 @@ const ParentResultsTab = () => {
 
     if (data.isLoading) return <ParentLoadingState />;
     if (data.loadError) return <ParentErrorState message={data.loadError} />;
-    if (data.scopedResults.length === 0) return <ParentEmptyState />;
 
     return (
         <div className="space-y-6 animate-fade-in pb-20">
             <div>
                 <h2 className="text-2xl font-black text-gray-900">نتائج الأبناء</h2>
-                <p className="mt-1 text-sm text-gray-500">آخر المحاولات مرتبة من الأحدث للأقدم مع الدرجة وتاريخ الاختبار.</p>
+                <p className="mt-1 text-sm text-gray-500">آخر المحاولات مرتبة من الأحدث للأقدم مع الدرجة وتاريخ الاختبار ومستوى الأداء.</p>
             </div>
-            <div className="space-y-3">
+            {data.scopedResults.length === 0 ? (
+                <ParentEmptyState />
+            ) : (
+                <div className="space-y-3">
                 {data.scopedResults.map((result, index) => {
                     const weakSkills = [...(result.skillsAnalysis || [])]
                         .filter((skill) => Number(skill.mastery ?? 100) < 75 || skill.status === 'weak')
@@ -1729,6 +1734,7 @@ const ParentResultsTab = () => {
                     );
                 })}
             </div>
+            )}
         </div>
     );
 };
@@ -1738,15 +1744,16 @@ const ParentSkillsTab = () => {
 
     if (data.isLoading) return <ParentLoadingState />;
     if (data.loadError) return <ParentErrorState message={data.loadError} />;
-    if (data.scopedResults.length === 0) return <ParentEmptyState />;
 
     return (
         <div className="space-y-6 animate-fade-in pb-20">
             <div>
-                <h2 className="text-2xl font-black text-gray-900">المهارات التي تحتاج متابعة</h2>
-                <p className="mt-1 text-sm text-gray-500">ترتيب عملي لما يحتاجه الأبناء بناءً على نتائجهم الفعلية.</p>
+                <h2 className="text-2xl font-black text-gray-900">المهارات الضعيفة التي تحتاج متابعة</h2>
+                <p className="mt-1 text-sm text-gray-500">ترتيب عملي لما يحتاجه الأبناء بناءً على نتائجهم الفعلية، ومتابعة المهارات الضعيفة أولاً بأول.</p>
             </div>
-            {data.weakSkills.length > 0 ? (
+            {data.scopedResults.length === 0 ? (
+                <ParentEmptyState />
+            ) : data.weakSkills.length > 0 ? (
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     {data.weakSkills.map((skill) => (
                         <Card key={`${skill.key}-${skill.studentName}-${skill.quizTitle}`} className="p-5">
@@ -2022,9 +2029,9 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
     const topSmartSkill = smartPathSkills[0];
 
     return (
-    <div className="space-y-4 animate-fade-in pb-16">
+    <div className="space-y-4 animate-fade-in pb-16 w-full min-w-0">
         {/* Header & Streak */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-3.5 sm:p-4 rounded-2xl shadow-2xs border border-gray-100">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-3.5 sm:p-4 rounded-2xl shadow-2xs border border-gray-100 min-w-0">
             <div className="flex items-center gap-3">
                 <img src={user.avatar} alt="Profile" className="w-11 h-11 rounded-full border-2 border-amber-100 shrink-0" />
                 <div>
@@ -2044,7 +2051,7 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
         {/* Student Today Focus: one clear action, no dashboard noise */}
         <section
             data-testid="student-today-focus"
-            className="rounded-3xl border border-emerald-100 bg-gradient-to-l from-emerald-50 via-white to-white p-4 sm:p-5 shadow-sm"
+            className="rounded-3xl border border-emerald-100 bg-gradient-to-l from-emerald-50 via-white to-white p-4 sm:p-5 shadow-sm min-w-0 overflow-hidden"
         >
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div className="min-w-0">

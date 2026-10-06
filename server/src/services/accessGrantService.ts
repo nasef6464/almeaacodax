@@ -61,7 +61,10 @@ export async function mirrorGrantToUserSubscription(payload: {
 export async function grantAccessToUser(payload: GrantAccessPayload) {
   const packageId = String(payload.packageId || "").trim();
   const courseIds = uniqueStrings(payload.courseIds || []);
-  const contentTypes = uniqueStrings(payload.contentTypes?.length ? payload.contentTypes : ["all"]);
+  // A package with no explicit content type is a legacy course package, not a
+  // platform-wide entitlement. Keep no-package grants compatible with the
+  // dedicated membership/admin flows that intentionally use `all`.
+  const contentTypes = uniqueStrings(payload.contentTypes?.length ? payload.contentTypes : (packageId ? ["courses"] : ["all"]));
   const pathIds = uniqueStrings(payload.pathIds || []);
   const subjectIds = uniqueStrings(payload.subjectIds || []);
 

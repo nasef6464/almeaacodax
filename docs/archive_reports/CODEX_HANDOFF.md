@@ -1072,7 +1072,7 @@ Large publish/verify closure (BATCH 156 - 2026-05-25):
   - default redeemed smoke identity (`student.d@almeaa.local`) is disabled in production.
   - fallback run used:
     - `SMOKE_STUDENT_REDEEMED_EMAIL=student.a@almeaa.local`
-    - `SMOKE_STUDENT_REDEEMED_PASSWORD=Student@123`
+    - `SMOKE_STUDENT_REDEEMED_PASSWORD=<secret-store>`
 - Vercel note:
   - `vercel --prod` CLI encountered local transport error (`ECONNREFUSED 127.0.0.1:9`) in this environment.
   - strict frontend smoke remained PASS on public production URL after push, so frontend runtime stayed healthy.
@@ -1096,7 +1096,7 @@ Large publish/verify closure (BATCH 156 - 2026-05-25):
   - `SMOKE_ALLOW_PASSWORD_LOGIN=true`
   - fallback redeemed identity:
     - `SMOKE_STUDENT_REDEEMED_EMAIL=student.a@almeaa.local`
-    - `SMOKE_STUDENT_REDEEMED_PASSWORD=Student@123`
+    - `SMOKE_STUDENT_REDEEMED_PASSWORD=<secret-store>`
 - Findings:
   - no new critical/high regressions discovered in runtime contracts.
   - payment scope/access guards remained intact after recheck.
@@ -1302,7 +1302,7 @@ Deploy and verification:
   - `SMOKE_API_BASE_URL=https://almeaacodax-k2ux.onrender.com/api`
   - `SMOKE_ADMIN_TOKEN=<session-only>`
   - `SMOKE_STUDENT_REDEEMED_EMAIL=student.a@almeaa.local`
-  - `SMOKE_STUDENT_REDEEMED_PASSWORD=Student@123`
+  - `SMOKE_STUDENT_REDEEMED_PASSWORD=<secret-store>`
 
 Important runtime note:
 - Localhost operational runs can be misleading under `DEV_LOCAL_ADMIN_BYPASS`; final closure evidence must use production API context for role-accurate journeys.

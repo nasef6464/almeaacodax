@@ -1293,9 +1293,9 @@ const Reports: React.FC = () => {
                 ) : !scopedAnalytics || scopedResults.length === 0 ? (
                     <Card className="p-10 text-center">
                         <PieChart size={42} className="mx-auto mb-4 text-gray-300" />
-                        <h2 className="text-xl font-black text-gray-900">لا توجد نتائج بعد</h2>
+                        <h2 className="text-xl font-black text-gray-900">لا توجد نتائج بعد للأداء</h2>
                         <p className="mx-auto mt-2 max-w-xl text-sm leading-7 text-gray-500">
-                            بعد أن يحل الطالب أول اختبار ستظهر هنا الدرجة، آخر محاولة، والمهارة التي تحتاج متابعة.
+                            بعد أن يحل الطالب أول اختبار أو نشاط تدريبي ستظهر هنا نتائج الأداء والدرجة، آخر محاولة، والمهارة التي تحتاج متابعة مع توصيات مخصصة للتحسين والتطوير المستمر.
                         </p>
                     </Card>
                 ) : (

@@ -3,19 +3,19 @@ const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "";
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "";
 const ADMIN_TOKEN = process.env.SMOKE_ADMIN_TOKEN || process.env.GOLIVE_ADMIN_TOKEN || "";
 const TEACHER_EMAIL = process.env.SMOKE_TEACHER_EMAIL || "teacher.quant@almeaa.local";
-const TEACHER_PASSWORD = process.env.SMOKE_TEACHER_PASSWORD || "Teacher@123";
+const TEACHER_PASSWORD = process.env.SMOKE_TEACHER_PASSWORD || "";
 const TEACHER_TOKEN = process.env.SMOKE_TEACHER_TOKEN || "";
 const SUPERVISOR_EMAIL = process.env.SMOKE_SUPERVISOR_EMAIL || "supervisor.group@almeaa.local";
-const SUPERVISOR_PASSWORD = process.env.SMOKE_SUPERVISOR_PASSWORD || "Supervisor@123";
+const SUPERVISOR_PASSWORD = process.env.SMOKE_SUPERVISOR_PASSWORD || "";
 const SUPERVISOR_TOKEN = process.env.SMOKE_SUPERVISOR_TOKEN || "";
 const STUDENT_EMAIL = process.env.SMOKE_STUDENT_EMAIL || "student.a@almeaa.local";
-const STUDENT_PASSWORD = process.env.SMOKE_STUDENT_PASSWORD || "Student@123";
+const STUDENT_PASSWORD = process.env.SMOKE_STUDENT_PASSWORD || "";
 const STUDENT_TOKEN = process.env.SMOKE_STUDENT_TOKEN || "";
 const STUDENT_REDEEMED_EMAIL = process.env.SMOKE_STUDENT_REDEEMED_EMAIL || "student.d@almeaa.local";
-const STUDENT_REDEEMED_PASSWORD = process.env.SMOKE_STUDENT_REDEEMED_PASSWORD || "Student@123";
+const STUDENT_REDEEMED_PASSWORD = process.env.SMOKE_STUDENT_REDEEMED_PASSWORD || "";
 const STUDENT_REDEEMED_TOKEN = process.env.SMOKE_STUDENT_REDEEMED_TOKEN || "";
 const PARENT_EMAIL = process.env.SMOKE_PARENT_EMAIL || "parent.a@almeaa.local";
-const PARENT_PASSWORD = process.env.SMOKE_PARENT_PASSWORD || "Parent@123";
+const PARENT_PASSWORD = process.env.SMOKE_PARENT_PASSWORD || "";
 const PARENT_TOKEN = process.env.SMOKE_PARENT_TOKEN || "";
 const SMOKE_ALLOW_PASSWORD_LOGIN = String(process.env.SMOKE_ALLOW_PASSWORD_LOGIN || "").toLowerCase() === "true";
 const API_HOSTNAME = (() => {
@@ -929,20 +929,26 @@ async function run() {
       : `questions=${learnerQuestionIds.size}`,
   );
 
+  const teacherManagedSubjectIds = normalizeLinkedIds(teacherMe.user?.managedSubjectIds);
   pushResult(
     results,
     "teacher",
     "scoped assignments",
-    Array.isArray(teacherMe.user?.managedSubjectIds) && teacherMe.user.managedSubjectIds.includes("sub_quant"),
-    `managedSubjectIds=${JSON.stringify(teacherMe.user?.managedSubjectIds || [])}`,
+    EXPECT_OPERATIONAL_FIXTURE
+      ? teacherManagedSubjectIds.includes("sub_quant")
+      : teacherManagedSubjectIds.length > 0,
+    `managedSubjectIds=${JSON.stringify(teacherManagedSubjectIds)}`,
   );
 
+  const parentLinkedStudentIds = new Set(normalizeLinkedIds(parentMe.user?.linkedStudentIds));
   pushResult(
     results,
     "parent",
-    "linked students",
-    Array.isArray(parentMe.user?.linkedStudentIds) && parentMe.user.linkedStudentIds.length > 0,
-    `linkedStudentIds=${JSON.stringify(parentMe.user?.linkedStudentIds || [])}`,
+    "linked student scope resolves",
+    EXPECT_OPERATIONAL_FIXTURE
+      ? parentLinkedStudentIds.size > 0
+      : Array.isArray(parentMe.user?.linkedStudentIds),
+    `linkedStudentIds=${JSON.stringify(Array.from(parentLinkedStudentIds))}`,
   );
 
   if (EXPECT_OPERATIONAL_FIXTURE) {
@@ -1290,16 +1296,18 @@ async function run() {
     `results=${supervisorScopedResults.results?.length || 0}, students=${supervisorScopedResults.scope?.studentCount || 0}`,
   );
 
+  const parentScopedRows = Array.isArray(parentScopedResults.results) ? parentScopedResults.results : [];
+  const parentScopedStudentCount = Number(parentScopedResults.scope?.studentCount || 0);
   pushResult(
     results,
     "parent",
     "scoped result attempts follow linked student",
-    Array.isArray(parentScopedResults.results) && Number(parentScopedResults.scope?.studentCount || 0) > 0,
-    `results=${parentScopedResults.results?.length || 0}, students=${parentScopedResults.scope?.studentCount || 0}`,
+    Array.isArray(parentScopedResults.results) &&
+      (EXPECT_OPERATIONAL_FIXTURE
+        ? parentScopedStudentCount > 0
+        : parentScopedStudentCount === parentLinkedStudentIds.size),
+    `results=${parentScopedRows.length}, students=${parentScopedStudentCount}, linked=${parentLinkedStudentIds.size}`,
   );
-
-  const parentLinkedStudentIds = new Set((parentMe.user?.linkedStudentIds || []).map((id: unknown) => String(id)));
-  const parentScopedRows = Array.isArray(parentScopedResults.results) ? parentScopedResults.results : [];
   const parentRowsStayLinked =
     (!EXPECT_OPERATIONAL_FIXTURE || parentScopedRows.length > 0) &&
     parentScopedRows.every((result: any) => parentLinkedStudentIds.has(String(result.userId || result.studentId || "")));

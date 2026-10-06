@@ -1,0 +1,48 @@
+{
+  "project": "CHEM26",
+  "status": "READY_FOR_DRY_RUN",
+  "sourceCoverage": 1709,
+  "canonical": 1708,
+  "aliases": 1,
+  "alias": {
+    "source": "TAH-CHEM-CHEM26-P131-Q26",
+    "canonical": "TAH-CHEM-CHEM26-P130-Q13"
+  },
+  "productionTaxonomy": {
+    "sections": 27,
+    "mainSkills": 27,
+    "subSkills": 99,
+    "parentTopics": 27,
+    "childTopics": 99,
+    "badChildLinks": 0,
+    "verified": true,
+    "sectionIdPattern": "sec_sub_chemistry_{1..27}"
+  },
+  "answers": {
+    "pass": 1709,
+    "quarantine": 0
+  },
+  "crops": {
+    "canonicalImages": 1708,
+    "uniqueHashes": 1708,
+    "repairedOptionCropDefects": 5
+  },
+  "optionTextQA": {
+    "completeCanonical": 1708,
+    "completeSourceIncludingAlias": 1709,
+    "reviewRemaining": 0,
+    "imageIsAuthoritative": true
+  },
+  "aiContext": {
+    "structuredSourceRows": 1709,
+    "optionTextQaComplete": 1709,
+    "detailedDistractorAnalysis": "PENDING_ENRICHMENT_NOT_IMPORT_BLOCKER"
+  },
+  "importPackage": {
+    "name": "CHEM26_IMPORT_PACKAGE_READY_1708_V2.zip",
+    "batchId": "TAH-CHEM-CHEM26-FULL-V1",
+    "sha256": "0014da81af2c1d9cfe882897b16633d805b0df737800af37c1a5d16901522137",
+    "sectionScopeAligned": true
+  },
+  "nextGate": "PRODUCTION_API_DRY_RUN"
+}

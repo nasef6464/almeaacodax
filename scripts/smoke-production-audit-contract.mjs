@@ -47,8 +47,14 @@ const checks = [
   {
     name: "foundation paid/free access is controlled per topic",
     ok: () => {
-      const source = read("components/LearningSection.tsx");
-      return /topic\.isLocked === true/.test(source) && !/isLocked: isPremiumLocked\(settings\.lockSkillsForNonSubscribers/.test(source);
+      const learningSection = read("components/LearningSection.tsx");
+      const topicAccessResolver = read("utils/foundationTopicAccess.ts");
+      return (
+        /resolveFoundationTopicAccess/.test(learningSection) &&
+        /topic\.isLocked !== true/.test(topicAccessResolver) &&
+        /context\.lockFoundationForSubject/.test(topicAccessResolver) &&
+        !/parentTopic\?\.isLocked === true/.test(learningSection)
+      );
     },
   },
 ];

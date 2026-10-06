@@ -7,8 +7,11 @@ type ReportQuestion = {
 
 type FinalizedClassroomReport = {
   sessionId?: string;
+  schoolId?: string;
   classId?: string;
   className?: string;
+  subjectName?: string;
+  teacherId?: string;
   endedAt?: string | Date | null;
   roster?: { expected?: number; joined?: number; absentFromSession?: number };
   totals?: { responses?: number; correct?: number };
@@ -16,6 +19,21 @@ type FinalizedClassroomReport = {
 };
 
 export type ClassroomInsightsPeriod = "today" | "week" | "month" | "all";
+
+type ClassroomSummary = {
+  sessions: number;
+  participants: number;
+  expected: number;
+  participationRate: number | null;
+  responses: number;
+  correct: number;
+  accuracy: number | null;
+};
+
+type ClassroomSupervisorLabels = {
+  schoolNames?: Record<string, string>;
+  teacherNames?: Record<string, string>;
+};
 
 const periodStart = (period: ClassroomInsightsPeriod, now = new Date()) => {
   if (period === "all") return null;
@@ -30,6 +48,22 @@ const periodStart = (period: ClassroomInsightsPeriod, now = new Date()) => {
 };
 
 const accuracy = (correct: number, answered: number) => answered > 0 ? Math.round((correct / answered) * 100) : null;
+
+export const summarizeClassroomReports = (reports: FinalizedClassroomReport[]): ClassroomSummary => {
+  const participants = reports.reduce((sum, report) => sum + Number(report.roster?.joined || 0), 0);
+  const expected = reports.reduce((sum, report) => sum + Number(report.roster?.expected || 0), 0);
+  const responses = reports.reduce((sum, report) => sum + Number(report.totals?.responses || 0), 0);
+  const correct = reports.reduce((sum, report) => sum + Number(report.totals?.correct || 0), 0);
+  return {
+    sessions: reports.length,
+    participants,
+    expected,
+    participationRate: expected > 0 ? Math.round((participants / expected) * 100) : null,
+    responses,
+    correct,
+    accuracy: accuracy(correct, responses),
+  };
+};
 
 export const buildClassroomReportInsights = (
   reports: FinalizedClassroomReport[],
@@ -46,17 +80,8 @@ export const buildClassroomReportInsights = (
   });
 
   const skillMap = new Map<string, { skillId: string; answered: number; correct: number; sessions: Set<string> }>();
-  let participants = 0;
-  let expected = 0;
-  let responses = 0;
-  let correct = 0;
 
   for (const report of filtered) {
-    participants += Number(report.roster?.joined || 0);
-    expected += Number(report.roster?.expected || 0);
-    responses += Number(report.totals?.responses || 0);
-    correct += Number(report.totals?.correct || 0);
-
     for (const question of report.questions || []) {
       const skillIds = Array.from(new Set((question.skillIds || []).map(String).filter(Boolean)));
       const keys = skillIds.length > 0 ? skillIds : (question.subject ? [`subject:${question.subject}`] : []);
@@ -104,18 +129,83 @@ export const buildClassroomReportInsights = (
     period: input.period,
     classId: input.classId || null,
     weakThreshold,
-    totals: {
-      sessions: filtered.length,
-      participants,
-      expected,
-      participationRate: expected > 0 ? Math.round((participants / expected) * 100) : null,
-      responses,
-      correct,
-      accuracy: accuracy(correct, responses),
-    },
+    totals: summarizeClassroomReports(filtered),
     skills,
     weakSkills: skills.filter((skill) => skill.weak),
     strongSkills: [...skills].filter((skill) => !skill.weak).sort((left, right) => (right.accuracy ?? -1) - (left.accuracy ?? -1)).slice(0, 10),
     trend,
+  };
+};
+
+export const buildClassroomSupervisorDrilldown = (
+  reports: FinalizedClassroomReport[],
+  labels: ClassroomSupervisorLabels = {},
+) => {
+  const schoolBuckets = new Map<string, FinalizedClassroomReport[]>();
+  for (const report of reports) {
+    const schoolId = String(report.schoolId || "");
+    if (!schoolId) continue;
+    const bucket = schoolBuckets.get(schoolId) || [];
+    bucket.push(report);
+    schoolBuckets.set(schoolId, bucket);
+  }
+
+  const schools = Array.from(schoolBuckets.entries()).map(([schoolId, schoolReports]) => {
+    const teacherBuckets = new Map<string, FinalizedClassroomReport[]>();
+    for (const report of schoolReports) {
+      const teacherId = String(report.teacherId || "unknown");
+      const bucket = teacherBuckets.get(teacherId) || [];
+      bucket.push(report);
+      teacherBuckets.set(teacherId, bucket);
+    }
+
+    const teachers = Array.from(teacherBuckets.entries()).map(([teacherId, teacherReports]) => {
+      const classBuckets = new Map<string, FinalizedClassroomReport[]>();
+      for (const report of teacherReports) {
+        const classId = String(report.classId || "unknown");
+        const bucket = classBuckets.get(classId) || [];
+        bucket.push(report);
+        classBuckets.set(classId, bucket);
+      }
+
+      const classes = Array.from(classBuckets.entries()).map(([classId, classReports]) => ({
+        classId,
+        className: String(classReports.find((report) => report.className)?.className || classId),
+        summary: summarizeClassroomReports(classReports),
+        sessions: classReports
+          .map((report) => ({
+            sessionId: String(report.sessionId || ""),
+            classId,
+            className: String(report.className || classId),
+            teacherId,
+            subjectName: String(report.subjectName || ""),
+            endedAt: report.endedAt || null,
+            joined: Number(report.roster?.joined || 0),
+            expected: Number(report.roster?.expected || 0),
+            responses: Number(report.totals?.responses || 0),
+            accuracy: accuracy(Number(report.totals?.correct || 0), Number(report.totals?.responses || 0)),
+          }))
+          .sort((left, right) => new Date(right.endedAt || 0).getTime() - new Date(left.endedAt || 0).getTime()),
+      })).sort((left, right) => left.className.localeCompare(right.className, "ar"));
+
+      return {
+        teacherId,
+        teacherName: labels.teacherNames?.[teacherId] || teacherId,
+        summary: summarizeClassroomReports(teacherReports),
+        classes,
+      };
+    }).sort((left, right) => left.teacherName.localeCompare(right.teacherName, "ar"));
+
+    return {
+      schoolId,
+      schoolName: labels.schoolNames?.[schoolId] || schoolId,
+      summary: summarizeClassroomReports(schoolReports),
+      teachers,
+    };
+  }).sort((left, right) => left.schoolName.localeCompare(right.schoolName, "ar"));
+
+  return {
+    summary: summarizeClassroomReports(reports),
+    schools,
   };
 };

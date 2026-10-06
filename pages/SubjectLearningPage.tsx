@@ -35,6 +35,7 @@ import { isMaterialQuizCandidate } from '../utils/mockExam';
 import { buildQuizRouteWithContext } from '../utils/quizLinks';
 import { resolveCoursePathId, resolveCourseSubjectId } from '../utils/courseScope';
 import { getCourseAudienceCount } from '../utils/courseStats';
+import { resolveFoundationTopicAccess } from '../utils/foundationTopicAccess';
 
 export const SubjectLearningPage: React.FC = () => {
   const { pathId, subjectId } = useParams();
@@ -107,19 +108,17 @@ export const SubjectLearningPage: React.FC = () => {
     if (accessType === 'private') return true;
     return !hasScopedPackageAccess(contentType, quiz.pathId || pathId, quiz.subjectId || subjectId);
   };
-  const getTopicParent = (topic: Topic | null | undefined) =>
-    topic?.parentId ? findByEntityId(topics as Topic[], topic.parentId) : null;
+  const resolveTopicAccess = (topic: Topic | null | undefined) =>
+    resolveFoundationTopicAccess(topic, {
+      isStaffViewer,
+      hasFoundationPackageAccess: hasFoundationAccess,
+      lockFoundationForSubject,
+    });
   const topicRequiresFoundationPackage = (topic: Topic | null | undefined) => {
-    if (!topic) return false;
-    const parentTopic = getTopicParent(topic);
-
-    // The subject-wide switch is an explicit admin policy that locks the whole
-    // foundation area. Otherwise each topic (and a locked parent) carries the
-    // free/package classification shown to the learner.
-    return Boolean(lockFoundationForSubject || topic.isLocked === true || parentTopic?.isLocked === true);
+    return resolveTopicAccess(topic).requiresPackage;
   };
   const isTopicLockedForStudent = (topic: Topic | null | undefined) =>
-    Boolean(topic && !isStaffViewer && topicRequiresFoundationPackage(topic) && !hasFoundationAccess);
+    Boolean(topic && !resolveTopicAccess(topic).hasAccess);
   const isLibraryItemLockedForStudent = (item: (typeof libraryItems)[number]) =>
     Boolean(item.isLocked && !hasLibraryAccess && !isStaffViewer);
   const isTopicSupportLockedForStudent = (topic: Topic | null | undefined) => isTopicLockedForStudent(topic);
@@ -387,17 +386,17 @@ export const SubjectLearningPage: React.FC = () => {
   };
 
   const handleOpenTopicModal = (mainTopic: Topic) => {
-    if (isTopicLockedForStudent(mainTopic)) {
+    const subTopics = subjectTopics.filter((item) => item.parentId === mainTopic.id).sort((a, b) => a.order - b.order);
+    const firstAccessibleSubTopic = subTopics.find((topic) => !isTopicLockedForStudent(topic));
+    if (isTopicLockedForStudent(mainTopic) && !firstAccessibleSubTopic) {
       openPackageTab('foundation');
       return;
     }
 
     setSelectedTopic(mainTopic);
-    const subTopics = subjectTopics.filter((item) => item.parentId === mainTopic.id).sort((a, b) => a.order - b.order);
-
-    if (subTopics.length > 0) {
-      setSelectedSubTopic(subTopics[0]);
-      updateSubjectQuery({ tab: 'skills', topic: subTopics[0].id, content: 'lessons' });
+    if (firstAccessibleSubTopic) {
+      setSelectedSubTopic(firstAccessibleSubTopic);
+      updateSubjectQuery({ tab: 'skills', topic: firstAccessibleSubTopic.id, content: 'lessons' });
     } else {
       setSelectedSubTopic(null);
       updateSubjectQuery({ tab: 'skills', topic: mainTopic.id, content: 'lessons' });
@@ -635,6 +634,8 @@ export const SubjectLearningPage: React.FC = () => {
               {mainTopics.length > 0 ? mainTopics.map((topic) => {
                 const subTopics = subjectTopics.filter((item) => item.parentId === topic.id);
                 const requiresPackage = topicRequiresFoundationPackage(topic);
+                const hasAccessibleSubTopic = subTopics.some((subTopic) => !isTopicLockedForStudent(subTopic));
+                const hasMixedTopicAccess = requiresPackage && hasAccessibleSubTopic;
                 let totalLessons = topic.lessonIds?.length || 0;
                 let totalQuizzes = topic.quizIds?.length || 0;
                 subTopics.forEach((subTopic) => {
@@ -647,7 +648,7 @@ export const SubjectLearningPage: React.FC = () => {
                     key={topic.id}
                     onClick={() => handleOpenTopicModal(topic)}
                     className={`bg-white p-6 rounded-2xl border hover:shadow-lg cursor-pointer transition-all flex flex-col justify-between h-56 relative overflow-hidden group ${
-                      requiresPackage ? 'border-amber-200' : 'border-gray-200 hover:border-indigo-400'
+                      requiresPackage && !hasMixedTopicAccess ? 'border-amber-200' : 'border-gray-200 hover:border-indigo-400'
                     }`}
                   >
                     <div className="flex justify-between items-start mb-4">
@@ -659,10 +660,10 @@ export const SubjectLearningPage: React.FC = () => {
                           {subTopics.length} موضوعات فرعية
                         </span>
                         <span className={`mt-2 flex items-center gap-1 text-xs font-bold px-2 py-1 rounded-lg ${
-                          requiresPackage ? 'text-amber-700 bg-amber-50' : 'text-emerald-700 bg-emerald-50'
+                          requiresPackage && !hasMixedTopicAccess ? 'text-amber-700 bg-amber-50' : 'text-emerald-700 bg-emerald-50'
                         }`}>
-                          {requiresPackage ? <Lock size={13} /> : <Eye size={13} />}
-                          {requiresPackage ? 'ضمن باقة' : 'مجاني'}
+                          {requiresPackage && !hasMixedTopicAccess ? <Lock size={13} /> : <Eye size={13} />}
+                          {hasMixedTopicAccess ? 'يتضمن موضوعات مجانية' : requiresPackage ? 'ضمن باقة' : 'مجاني'}
                         </span>
                       </div>
                     </div>

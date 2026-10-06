@@ -1,0 +1,60 @@
+import mongoose, { Schema } from "mongoose";
+
+export const COMMAND_DRAFT_KINDS = [
+  "question_batch",
+  "quiz",
+  "course",
+  "school_setup",
+  "content",
+  "workflow",
+] as const;
+
+export const COMMAND_DRAFT_STATUSES = ["pending", "approved", "rejected"] as const;
+
+const commandCenterDraftSchema = new Schema(
+  {
+    kind: { type: String, enum: COMMAND_DRAFT_KINDS, required: true, index: true },
+    title: { type: String, required: true, trim: true },
+    payload: { type: Schema.Types.Mixed, required: true },
+    source: {
+      type: String,
+      enum: ["admin_ui", "mcp", "external_agent", "system"],
+      default: "admin_ui",
+      index: true,
+    },
+    status: {
+      type: String,
+      enum: COMMAND_DRAFT_STATUSES,
+      default: "pending",
+      index: true,
+    },
+    requiredScopes: { type: [String], default: [] },
+    createdBy: { type: String, required: true, index: true },
+    createdByType: {
+      type: String,
+      enum: ["admin_session", "api_key", "system"],
+      required: true,
+    },
+    requestId: { type: String, default: "", index: true },
+    idempotencyKey: { type: String, default: undefined },
+    reviewedBy: { type: String, default: "" },
+    reviewedAt: { type: Number, default: null },
+    reviewNotes: { type: String, default: "" },
+  },
+  { timestamps: true },
+);
+
+commandCenterDraftSchema.index(
+  { idempotencyKey: 1 },
+  {
+    unique: true,
+    sparse: true,
+    partialFilterExpression: { idempotencyKey: { $type: "string" } },
+  },
+);
+commandCenterDraftSchema.index({ status: 1, kind: 1, createdAt: -1 });
+
+export const CommandCenterDraftModel = mongoose.model(
+  "CommandCenterDraft",
+  commandCenterDraftSchema,
+);

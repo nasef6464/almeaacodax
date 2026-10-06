@@ -4,8 +4,9 @@ import path from "node:path";
 
 const API_BASE = String(process.env.SMOKE_API_BASE_URL || process.env.LOAD_API_BASE || "https://almeaacodax.vercel.app/api").replace(/\/$/, "");
 const STUDENT_EMAIL = String(process.env.SMOKE_STUDENT_EMAIL || process.env.ROLE_STUDENT_EMAIL || "student.a@almeaa.local").trim();
-const STUDENT_PASSWORD = String(process.env.SMOKE_STUDENT_PASSWORD || process.env.ROLE_STUDENT_PASSWORD || "Student@123");
+const STUDENT_PASSWORD = String(process.env.SMOKE_STUDENT_PASSWORD || process.env.ROLE_STUDENT_PASSWORD || "");
 const EXPECTED_SHA = String(process.env.EXPECTED_RELEASE_SHA || "").trim();
+if (!STUDENT_PASSWORD) throw new Error("SMOKE_STUDENT_PASSWORD or ROLE_STUDENT_PASSWORD is required for authenticated production load measurement.");
 const LEVELS = [10, 25, 50];
 const ENDPOINTS = [
   { id: "me", path: "/auth/me" },

@@ -5,6 +5,7 @@ import {
   type PaginationOptions,
 } from './apiQueryUtilities';
 import { createAiApi } from './apiGroups/aiApi';
+import { createCommandCenterApi } from './apiGroups/commandCenterApi';
 import { createAnnouncementAdsApi } from './apiGroups/announcementAdsApi';
 import { createAccessCodesApi } from './apiGroups/accessCodesApi';
 import { createAuthApi } from './apiGroups/authApi';
@@ -846,6 +847,25 @@ export const api = {
   getSupervisorClassroomToday: (token?: string | null) => request<{ sessions: any[] }>("/classroom/supervisor/today", { token, cache: "no-store" }),
   getSupervisorClassroomHistory: (token?: string | null) => request<{ sessions: any[] }>("/classroom/supervisor/history", { token, cache: "no-store" }),
   getSupervisorClassroomTeachers: (token?: string | null) => request<{ teachers: any[] }>("/classroom/supervisor/teachers", { token, cache: "no-store" }),
+  getSupervisorClassroomAnalytics: (
+    params?: {
+      period?: "today" | "week" | "month" | "all" | "custom";
+      from?: string;
+      to?: string;
+      schoolId?: string;
+      teacherId?: string;
+      classId?: string;
+      weakThreshold?: number;
+      limit?: number;
+    },
+    token?: string | null,
+  ) => {
+    const query = new URLSearchParams();
+    Object.entries(params || {}).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && value !== "") query.set(key, String(value));
+    });
+    return request<{ analytics: any }>(`/classroom/supervisor/insights${query.toString() ? `?${query.toString()}` : ""}`, { token, cache: "no-store" });
+  },
   getSupervisorClassroomIntelligence: (token?: string | null) => request<{ intelligence: any }>("/classroom/supervisor/intelligence", { token, cache: "no-store" }),
   getSupervisorInterventions: (token?: string | null) => request<{ interventions: any[] }>("/classroom/supervisor/interventions", { token, cache: "no-store" }),
   createSupervisorIntervention: (payload: unknown, token?: string | null) => request<any>("/classroom/supervisor/interventions", { method: "POST", body: payload, token }),
@@ -966,6 +986,7 @@ export const api = {
   ...createQuestionsApi(request),
   ...createQuizzesApi(request),
   ...createAiApi(request),
+  ...createCommandCenterApi(request),
   ...createOperationsApi(request),
   ...createLearningSupportApi(request),
   clearLiveExamsTestData: (token?: string | null) =>

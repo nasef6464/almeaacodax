@@ -28,6 +28,7 @@ import { classroomRouter } from "./classroomRoot.routes.js";
 import { questionAnalyticsRouter } from "./questionAnalytics.routes.js";
 import { mediaRouter } from "./media.routes.js";
 import liveExamsRouter from "./live-exams.routes.js";
+import { commandCenterRouter } from "../modules/command-center/http/commandCenterRoutes.js";
 
 export const apiRouter = Router();
 
@@ -42,6 +43,7 @@ apiRouter.use("/media", mediaRouter);
 apiRouter.use("/live-exams", liveExamsRouter);
 apiRouter.use("/payments", paymentRouter);
 apiRouter.use("/ai", aiRouter);
+apiRouter.use("/command-center", commandCenterRouter);
 apiRouter.use("/operations", operationsRouter);
 apiRouter.use("/backups", backupRouter);
 apiRouter.use("/seo", seoRouter);

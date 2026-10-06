@@ -2634,7 +2634,7 @@ pm run smoke:frontend:strict (26/26, production commit match b9f161).
   - initial run with admin JWT succeeded for admin session but failed on disabled default redeemed account (student.d@almeaa.local).
   - rerun with approved fallback redeemed identity:
     - SMOKE_STUDENT_REDEEMED_EMAIL=student.a@almeaa.local
-    - SMOKE_STUDENT_REDEEMED_PASSWORD=Student@123
+    - SMOKE_STUDENT_REDEEMED_PASSWORD=<secret-store>
   - result: 
 pm run smoke:operational PASS (71/71).
 - Live verification PASS:

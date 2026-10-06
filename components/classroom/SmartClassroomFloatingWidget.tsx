@@ -230,10 +230,10 @@ export const SmartClassroomFloatingWidget: React.FC = () => {
         </div>
       )}
 
-      <div className="fixed bottom-6 left-6 z-40 flex flex-col items-start gap-2" dir="rtl">
+      <div className="fixed bottom-20 left-6 sm:bottom-6 sm:left-6 z-40 flex flex-col items-start gap-2 max-w-[calc(100vw-3rem)]" dir="rtl">
         {!isOpen && (
-          <button type="button" onClick={() => joined ? setIsOpen(true) : setShowJoinModal(true)} className={`group flex items-center gap-2.5 rounded-full px-4 py-3 font-black shadow-xl ${joined && questionsList.length > 0 && !submitted ? 'bg-gradient-to-r from-amber-500 to-rose-600 text-white' : joined ? 'bg-gradient-to-r from-indigo-600 to-slate-900 text-white' : 'border border-indigo-200 bg-white text-indigo-700'}`}>
-            <Presentation size={20} /><span className="text-xs sm:text-sm">{joined ? questionsList.length > 0 && !submitted ? `${questionsList.length > 1 ? `${questionsList.length} أسئلة نشطة` : 'سؤال تفاعلي نشط'} الآن` : submitted ? 'تم تسليم الدفعة' : 'الحصة الذكية جارية' : 'انضم للفصل الذكي'}</span>
+          <button type="button" onClick={() => joined ? setIsOpen(true) : setShowJoinModal(true)} className={`group flex max-w-full items-center gap-2.5 rounded-full px-4 py-3 font-black shadow-xl ${joined && questionsList.length > 0 && !submitted ? 'bg-gradient-to-r from-amber-500 to-rose-600 text-white' : joined ? 'bg-gradient-to-r from-indigo-600 to-slate-900 text-white' : 'border border-indigo-200 bg-white text-indigo-700'}`}>
+            <Presentation size={20} /><span className="truncate text-xs sm:text-sm">{joined ? questionsList.length > 0 && !submitted ? `${questionsList.length > 1 ? `${questionsList.length} أسئلة نشطة` : 'سؤال تفاعلي نشط'} الآن` : submitted ? 'تم تسليم الدفعة' : 'الحصة الذكية جارية' : 'انضم للفصل الذكي'}</span>
           </button>
         )}
         {!joined && message.includes('انتهت الحصة') && <div className="max-w-xs rounded-2xl border border-emerald-200 bg-white px-4 py-3 text-xs font-bold text-emerald-700 shadow-lg">{message}</div>}

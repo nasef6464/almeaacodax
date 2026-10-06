@@ -125,9 +125,9 @@ Notes:
 
 - Frontend: `https://almeaacodax.vercel.app`
 - Vercel preview/main branch: `https://almeaacodax-git-main-nasefs-projects-18e6bdb1.vercel.app`
-- Backend API: `https://almeaacodax-k2ux.onrender.com/api`
-- Backend health: `https://almeaacodax-k2ux.onrender.com/api/health`
-- MongoDB Atlas: `mongodb+srv://nasef64:<db_password>@almeaa.5y2fzx5.mongodb.net/almeaa?appName=almeaa`
+- Backend API: `https://almeaacodax-codex.onrender.com/api`
+- Backend health: `https://almeaacodax-codex.onrender.com/api/health`
+- MongoDB Atlas: configure `MONGODB_URI` only in the deployment secret store using a dedicated least-privilege runtime database user; never use an Atlas administrative account in application runtime.
 - GitHub repository: `https://github.com/nasef6464/almeaacodax`
 
 Current production notes:

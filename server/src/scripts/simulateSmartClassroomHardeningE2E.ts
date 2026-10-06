@@ -170,9 +170,11 @@ async function run() {
     SchoolContractModel.create({ schoolId: schoolBId, status: "active", modules: ["SCHOOL_CORE", "SMART_CLASSROOM"] }),
   ]);
 
-  const [managerA, managerB, teacherA, teacherA2, studentA, studentA2, studentB] = await Promise.all([
+  const [managerA, managerB, supervisorA, supervisorB, teacherA, teacherA2, studentA, studentA2, studentB] = await Promise.all([
     UserModel.create({ name: "Manager A", email: `manager_a_${RUN_ID}@example.com`, passwordHash: "x", role: "school_admin", schoolId: schoolAId, isActive: true }),
     UserModel.create({ name: "Manager B", email: `manager_b_${RUN_ID}@example.com`, passwordHash: "x", role: "school_admin", schoolId: schoolBId, isActive: true }),
+    UserModel.create({ name: "Supervisor A", email: `supervisor_a_${RUN_ID}@example.com`, passwordHash: "x", role: "supervisor", schoolId: schoolAId, isActive: true }),
+    UserModel.create({ name: "Supervisor B", email: `supervisor_b_${RUN_ID}@example.com`, passwordHash: "x", role: "supervisor", schoolId: schoolBId, isActive: true }),
     UserModel.create({ name: "Teacher A", email: `teacher_a_${RUN_ID}@example.com`, passwordHash: "x", role: "teacher", schoolId: schoolAId, isActive: true }),
     UserModel.create({ name: "Teacher A2", email: `teacher_a2_${RUN_ID}@example.com`, passwordHash: "x", role: "teacher", schoolId: schoolAId, isActive: true }),
     UserModel.create({ name: "Student A", email: `student_a_${RUN_ID}@example.com`, passwordHash: "x", role: "student", schoolId: schoolAId, groupIds: [], isActive: true }),
@@ -203,6 +205,8 @@ async function run() {
   await Promise.all([
     SchoolMembershipModel.create({ userId: String(managerA._id), schoolId: schoolAId, role: "school_admin", status: "active", permissions: ["SCHOOL_SMART_CLASSROOM_VIEW"] }),
     SchoolMembershipModel.create({ userId: String(managerB._id), schoolId: schoolBId, role: "school_admin", status: "active", permissions: ["SCHOOL_SMART_CLASSROOM_VIEW"] }),
+    SchoolMembershipModel.create({ userId: String(supervisorA._id), schoolId: schoolAId, role: "supervisor", status: "active" }),
+    SchoolMembershipModel.create({ userId: String(supervisorB._id), schoolId: schoolBId, role: "supervisor", status: "active" }),
     SchoolMembershipModel.create({ userId: String(teacherA._id), schoolId: schoolAId, role: "teacher", status: "active" }),
     SchoolMembershipModel.create({ userId: String(teacherA2._id), schoolId: schoolAId, role: "teacher", status: "active" }),
     SchoolMembershipModel.create({ userId: String(studentA._id), schoolId: schoolAId, role: "student", status: "active" }),
@@ -228,6 +232,8 @@ async function run() {
   const teacher2Token = tokenFor(teacherA2);
   const managerAToken = tokenFor(managerA);
   const managerBToken = tokenFor(managerB);
+  const supervisorAToken = tokenFor(supervisorA);
+  const supervisorBToken = tokenFor(supervisorB);
   const studentAToken = tokenFor(studentA);
   const studentA2Token = tokenFor(studentA2);
   const studentBToken = tokenFor(studentB);
@@ -348,6 +354,24 @@ async function run() {
   assert.equal(endedAgain.status, 200, "Repeated end-session should be idempotent");
   assert.deepEqual(endedAgain.body.report, ended.body.report, "Repeated end-session must return the immutable stored snapshot");
   assert.equal((await request(`/classroom/sessions/${liveSessionId}/instant-join`, { method: "POST", token: studentAToken })).status, 404);
+
+  const supervisorMonth = await request("/classroom/supervisor/insights?period=month", { token: supervisorAToken });
+  assert.equal(supervisorMonth.status, 200, JSON.stringify(supervisorMonth.body));
+  assert.ok(supervisorMonth.body.analytics.totals.sessions >= 1, "Supervisor A monthly analytics should include the ended School A session");
+  assert.ok(supervisorMonth.body.analytics.hierarchy.schools.some((school: any) => String(school.schoolId) === schoolAId), "Supervisor A hierarchy should include School A");
+  assert.equal(supervisorMonth.body.analytics.hierarchy.schools.some((school: any) => String(school.schoolId) === schoolBId), false, "Supervisor A analytics leaked School B");
+  assert.ok(Array.isArray(supervisorMonth.body.analytics.studentSignals.leastParticipation), "Monthly analytics should expose scoped student participation signals");
+
+  const supervisorBMonth = await request("/classroom/supervisor/insights?period=month", { token: supervisorBToken });
+  assert.equal(supervisorBMonth.status, 200, JSON.stringify(supervisorBMonth.body));
+  assert.equal(supervisorBMonth.body.analytics.hierarchy.schools.some((school: any) => String(school.schoolId) === schoolAId), false, "Supervisor B analytics leaked School A");
+  assert.equal((await request("/classroom/supervisor/insights?period=month", { token: studentAToken })).status, 403, "Student accessed supervisor analytics");
+
+  const endedDate = new Date(ended.body.report.endedAt || Date.now()).toISOString().slice(0, 10);
+  const customRange = await request(`/classroom/supervisor/insights?period=custom&from=${endedDate}&to=${endedDate}`, { token: supervisorAToken });
+  assert.equal(customRange.status, 200, JSON.stringify(customRange.body));
+  assert.ok(customRange.body.analytics.totals.sessions >= 1, "Custom date range should include the ended session");
+  assert.equal((await request(`/classroom/supervisor/insights?period=custom&from=${endedDate}`, { token: supervisorAToken })).status, 400, "Incomplete custom date range must fail closed");
 
   emitMetrics();
   console.log("Smart Classroom hardening E2E: PASS");

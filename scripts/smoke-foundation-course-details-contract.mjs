@@ -40,24 +40,29 @@ assertNotIncludes(
   'Course landing no longer falls back to a fake lesson label.',
 );
 assertIncludes(
-  'pages/SubjectLearningPage.tsx',
-  'parentTopic?.isLocked === true',
-  'Student subject page inherits foundation lock from the parent topic.',
+  'utils/foundationTopicAccess.ts',
+  'export const resolveFoundationTopicAccess',
+  'Foundation access has one reusable topic-level resolver.',
 );
 assertIncludes(
   'pages/SubjectLearningPage.tsx',
-  'lockFoundationForSubject || topic.isLocked === true || parentTopic?.isLocked === true',
-  'Student subject page honors subject-level foundation package lock.',
+  'resolveFoundationTopicAccess',
+  'Student subject page resolves a child topic from its own explicit free/paid setting.',
+);
+assertNotIncludes(
+  'pages/SubjectLearningPage.tsx',
+  'parentTopic?.isLocked === true',
+  'A paid parent must not silently lock an explicitly free child topic.',
 );
 assertIncludes(
   'components/LearningSection.tsx',
   'isFoundationTopicLockedForStudent(topic)',
-  'Learning section maps foundation cards with inherited lock state.',
+  'Learning section maps foundation cards from the shared topic access resolver.',
 );
 assertIncludes(
   'components/LearningSection.tsx',
-  'isFoundationTopicLockedForStudent(requestedTopic) || isFoundationTopicLockedForStudent(parentTopic)',
-  'Learning section blocks direct deep links into locked foundation subtopics.',
+  'const topicIsLocked = isFoundationTopicLockedForStudent(requestedTopic);',
+  'Learning section applies a deep-link decision to the requested topic only.',
 );
 assertIncludes(
   'dashboards/admin/FoundationManager.tsx',

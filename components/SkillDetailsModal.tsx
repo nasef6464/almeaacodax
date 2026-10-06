@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { CheckCircle2, Clock, FileText, Layers, Play, Target, Video, X } from 'lucide-react';
+import { CheckCircle2, Clock, FileText, Layers, Lock, Play, Target, Video, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useStore } from '../store/useStore';
 import { Topic } from '../types';
@@ -14,9 +14,11 @@ interface SkillDetailsModalProps {
   isOpen: boolean;
   onClose: () => void;
   skill: any;
+  isTopicLocked?: (topic: Topic) => boolean;
+  onLockedTopicClick?: (topic: Topic) => void;
 }
 
-export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, onClose, skill }) => {
+export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, onClose, skill, isTopicLocked, onLockedTopicClick }) => {
   const { user, topics, lessons, quizzes, libraryItems, paths, subjects } = useStore();
   const [selectedSubTopic, setSelectedSubTopic] = useState<Topic | null>(null);
   const [topicModalTab, setTopicModalTab] = useState<'lessons' | 'quizzes' | 'support'>('lessons');
@@ -344,20 +346,34 @@ export const SkillDetailsModal: React.FC<SkillDetailsModalProps> = ({ isOpen, on
               </button>
 
               {subTopics.map((subTopic) => (
-                <button
-                  key={subTopic.id}
-                  ref={(element) => {
-                    subTopicRefs.current[subTopic.id] = element;
-                  }}
-                  onClick={() => setSelectedSubTopic(subTopic)}
-                  className={`w-full text-right p-4 rounded-xl transition-all border ${
-                    selectedSubTopic?.id === subTopic.id ? 'bg-indigo-50 border-indigo-100 shadow-sm' : 'hover:bg-gray-50 border-transparent'
-                  }`}
-                >
-                  <h4 className={`font-bold ${selectedSubTopic?.id === subTopic.id ? 'text-indigo-700' : 'text-gray-700'}`}>
-                    {subTopic.title}
-                  </h4>
-                </button>
+                (() => {
+                  const locked = !isStaffViewer && Boolean(isTopicLocked?.(subTopic));
+                  return (
+                    <button
+                      key={subTopic.id}
+                      ref={(element) => {
+                        subTopicRefs.current[subTopic.id] = element;
+                      }}
+                      onClick={() => {
+                        if (locked) {
+                          onLockedTopicClick?.(subTopic);
+                          return;
+                        }
+                        setSelectedSubTopic(subTopic);
+                      }}
+                      className={`w-full text-right p-4 rounded-xl transition-all border ${
+                        selectedSubTopic?.id === subTopic.id ? 'bg-indigo-50 border-indigo-100 shadow-sm' : 'hover:bg-gray-50 border-transparent'
+                      }`}
+                    >
+                      <span className="flex items-center justify-between gap-3">
+                        <h4 className={`font-bold ${locked ? 'text-amber-700' : selectedSubTopic?.id === subTopic.id ? 'text-indigo-700' : 'text-gray-700'}`}>
+                          {subTopic.title}
+                        </h4>
+                        {locked ? <span className="inline-flex items-center gap-1 text-xs font-bold text-amber-700"><Lock size={14} /> ضمن باقة</span> : null}
+                      </span>
+                    </button>
+                  );
+                })()
               ))}
             </div>
           </div>

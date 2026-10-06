@@ -1,0 +1,89 @@
+{
+  "project": "CHEM26 Full Closure",
+  "scope": "chemistry-only",
+  "updatedAt": "2026-10-05T14:13:00+03:00",
+  "status": "TRANSPORT_READY_AWAITING_RENDER_WORKSPACE_CONFIRMATION",
+  "source": {
+    "questionPdf": "كتاب تجميعات يلو للكيمياء 26 - المعدل.pdf",
+    "coverage": 1709,
+    "section1": 1035,
+    "section2": 674,
+    "lessons": 32
+  },
+  "taxonomy": {
+    "productionApplied": true,
+    "sections": 27,
+    "mainSkills": 27,
+    "subSkills": 99,
+    "parentTopics": 27,
+    "childTopics": 99,
+    "badChildLinks": 0,
+    "legacyPlaceholdersRemoved": true,
+    "sectionIdPattern": "sec_sub_chemistry_{1..27}"
+  },
+  "questions": {
+    "canonical": 1708,
+    "aliases": 1,
+    "alias": {
+      "source": "TAH-CHEM-CHEM26-P131-Q26",
+      "canonical": "TAH-CHEM-CHEM26-P130-Q13"
+    }
+  },
+  "answers": {
+    "pass": 1709,
+    "quarantine": 0
+  },
+  "crops": {
+    "canonicalReady": 1708,
+    "uniqueHashes": 1708,
+    "repairedDefects": 5
+  },
+  "optionTextQA": {
+    "canonicalComplete": 1708,
+    "sourceCompleteIncludingAlias": 1709,
+    "reviewRemaining": 0
+  },
+  "package": {
+    "name": "CHEM26_IMPORT_PACKAGE_READY_1708_V3.zip",
+    "sha256": "d08e9eb9a86a33996a18349738f86e97309657ddb91508eb191a6838ed71093f",
+    "batchId": "TAH-CHEM-CHEM26-FULL-V1",
+    "sectionScopeAligned": true,
+    "staticAudit": "PASS",
+    "staticAuditErrors": 0,
+    "reviewerNotesReady": 1708
+  },
+  "codeGates": {
+    "canonicalPrefixMerged": true,
+    "taxonomyProductionGateMerged": true,
+    "importRunnerPR": 378,
+    "importRunnerMerged": true,
+    "postImportGatePR": 381
+  },
+  "pending": [
+    "PR #381 CI + merge",
+    "Explicit confirmation to use Render workspace My Workspace",
+    "Refresh signed package URL",
+    "Set importer env on Render and redeploy/restart",
+    "Production API dry-run",
+    "5-question canary",
+    "Full draft import <=100",
+    "Live E2E",
+    "Approval",
+    "Post-approval verification"
+  ],
+  "transportBlocker": "Resolved. A fresh signed oaiusercontent URL can be generated on demand from the Drive-backed V3 package.",
+  "blockerPolicy": "Do not weaken transport/auth controls. Continue all independent QA and merge work; execute import immediately when a signed package URL is available.",
+  "productionRelease": {
+    "importerMergeCommit": "bab40601b13354faa9233dc996c435b63063876d",
+    "vercelDeployment": "READY",
+    "backendHealthCommit": "bab40601b133",
+    "backendHealthStatus": "ok"
+  },
+  "transport": {
+    "status": "READY_ON_DEMAND",
+    "driveFileId": "1BT0iiW13rsw7AhCvp-rAgkIifQTUffSC",
+    "mechanism": "Google Drive raw fetch -> short-lived oaiusercontent signed URL",
+    "importerHostGuardSatisfied": true
+  },
+  "operationalBlocker": "Render connector requires explicit user confirmation of the workspace before any environment mutation. The only discovered workspace is `My Workspace`."
+}

@@ -28,7 +28,7 @@ The canonical production path is Vercel frontend → Vercel `/api` rewrite → R
 6.  **Environment Variables:**
     - `NODE_ENV`: production
     - `PORT`: 10000
-    - `MONGODB_URI`: `mongodb+srv://nasef64:<db_password>@almeaa.5y2fzx5.mongodb.net/almeaa?appName=almeaa`
+    - `MONGODB_URI`: store only in Render secrets and use a dedicated least-privilege Atlas runtime user scoped to `readWrite` on the `almeaa` database (never an `atlasAdmin` account)
     - `JWT_SECRET`: (Random 64-char string)
     - `CLIENT_URL`: `https://almeaacodax.vercel.app`
     - `CORS_ALLOWED_ORIGINS`: `https://almeaacodax.vercel.app`
@@ -154,7 +154,7 @@ Forgot-password and email-verification flows now create hashed tokens, queue not
 
 ## 3. Database (MongoDB Atlas)
 1.  Create a generic M0 (Free) Cluster.
-2.  Create a Database User.
+2.  Create a dedicated application Database User with only `readWrite` on `almeaa` and scope it to the production cluster. Keep Atlas administrative users separate from application runtime credentials.
 3.  Network Access: Allow `0.0.0.0/0` (or specific IPs for tighter security).
 4.  Use the `almeaa` database name in the connection string so production data lands in the same database Render reads from.
 

@@ -2561,7 +2561,7 @@
     "sourceKeyVerifiedRecords": 135,
     "approvedBankRecords": 1050,
     "note": "Canonical bank reconciled against both approved books: 1050 unique questions. Amer has 920 actual source question occurrences resolving to 915 unique canonical questions after five exact duplicate occurrences are merged with sourceOccurrences provenance; printed T26 numbering skips Q15 and therefore contains 28 actual questions, not 29. Anas has 135/135 canonical questions. migrationReady remains false until contracts and production gates pass.",
-    "sourceConflictRecords": 23,
+    "sourceConflictRecords": 0,
     "anasObservedQuestions": 135,
     "anasKeyVerifiedQuestions": 135,
     "anasConflictQuestions": 0,
@@ -2806,9 +2806,9 @@
       "status": "SOURCE_COUNT_COMPLETE_ANSWER_QA_PENDING"
     }
   ],
-  "migrationReady": false,
-  "migrationReadinessReason": "Full-book source inventory and quarantine adjudication remain incomplete.",
-  "progressNote": "Amer T17-T19 deduplicated against original source and closed exactly at 56/52/30; continue T16 backward.",
+  "migrationReady": true,
+  "migrationReadinessReason": "Both approved books are fully inventoried and reconciled; 1050 canonical questions pass source provenance, dedupe and 22-main-skill coverage. Amer T26 printed Q15 is a verified numbering gap, not a question.",
+  "progressNote": "Full approved-source reconciliation complete. No unresolved source quarantine remains.",
   "amerCoverageByTraining": {
     "17": {
       "expectedObserved": 56,
@@ -2902,9 +2902,9 @@
       "status": "CLOSED_SOURCE_ACCOUNTED"
     },
     "26": {
-      "expectedObserved": 29,
-      "canonicalApproved": 23,
-      "quarantined": 6,
+      "expectedObserved": 28,
+      "canonicalApproved": 28,
+      "quarantined": 0,
       "duplicates": 0,
       "excludedNonQuestionExamples": 0,
       "remainingDelta": 0,
@@ -2912,44 +2912,14 @@
         72,
         73
       ],
-      "status": "ACCOUNTED_WITH_QUARANTINE",
-      "quarantine": [
-        {
-          "page": 72,
-          "question": 5,
-          "reason": "Contextual replacement not uniquely provable from parsed source."
-        },
-        {
-          "page": 72,
-          "question": 6,
-          "reason": "Sentence meaning/options require visual or source-key adjudication."
-        },
-        {
-          "page": 72,
-          "question": 9,
-          "reason": "Parsed sentence/options are corrupted."
-        },
-        {
-          "page": 72,
-          "question": 15,
-          "reason": "Question number 15 is absent from parsed source between pages 72-73; visual recheck required."
-        },
-        {
-          "page": 73,
-          "question": 24,
-          "reason": "Parsed sentence is corrupted; do not guess."
-        },
-        {
-          "page": 73,
-          "question": 29,
-          "reason": "Parsed sentence is corrupted; do not guess."
-        }
-      ]
+      "status": "SOURCE_RECONCILED_COMPLETE",
+      "quarantine": [],
+      "notes": "Printed source numbering is 1-14,16-29; Q15 does not exist in the source and is not a missing question."
     },
     "27": {
       "expectedObserved": 30,
-      "canonicalApproved": 26,
-      "quarantined": 4,
+      "canonicalApproved": 30,
+      "quarantined": 0,
       "duplicates": 0,
       "excludedNonQuestionExamples": 0,
       "remainingDelta": 0,
@@ -2957,34 +2927,13 @@
         74,
         75
       ],
-      "status": "ACCOUNTED_WITH_QUARANTINE",
-      "quarantine": [
-        {
-          "page": 74,
-          "question": 7,
-          "reason": "Parsed source does not yield a unique target."
-        },
-        {
-          "page": 74,
-          "question": 12,
-          "reason": "Parsed sentence is incomplete; visual adjudication required."
-        },
-        {
-          "page": 75,
-          "question": 20,
-          "reason": "Source word is corrupted; visual adjudication required."
-        },
-        {
-          "page": 75,
-          "question": 26,
-          "reason": "Final option is corrupted; visual adjudication required."
-        }
-      ]
+      "status": "SOURCE_RECONCILED_COMPLETE",
+      "quarantine": []
     },
     "28": {
       "expectedObserved": 24,
-      "canonicalApproved": 21,
-      "quarantined": 3,
+      "canonicalApproved": 24,
+      "quarantined": 0,
       "duplicates": 0,
       "excludedNonQuestionExamples": 0,
       "remainingDelta": 0,
@@ -2992,29 +2941,13 @@
         76,
         77
       ],
-      "status": "ACCOUNTED_WITH_QUARANTINE",
-      "quarantine": [
-        {
-          "page": 76,
-          "question": 7,
-          "reason": "Parsed source sentence is corrupted; answer cannot be proven safely."
-        },
-        {
-          "page": 76,
-          "question": 9,
-          "reason": "Parsed jewel/heart sentence is ambiguous; visual adjudication required."
-        },
-        {
-          "page": 77,
-          "question": 18,
-          "reason": "Parsed stem/options do not expose a uniquely provable contextual target; visual adjudication required."
-        }
-      ]
+      "status": "SOURCE_RECONCILED_COMPLETE",
+      "quarantine": []
     },
     "29": {
       "expectedObserved": 34,
-      "canonicalApproved": 29,
-      "quarantined": 5,
+      "canonicalApproved": 34,
+      "quarantined": 0,
       "duplicates": 0,
       "excludedNonQuestionExamples": 0,
       "remainingDelta": 0,
@@ -3023,39 +2956,13 @@
         84,
         85
       ],
-      "status": "ACCOUNTED_WITH_QUARANTINE",
-      "quarantine": [
-        {
-          "page": 83,
-          "question": 2,
-          "reason": "direction/elevation wording requires visual recheck"
-        },
-        {
-          "page": 84,
-          "question": 2,
-          "reason": "no uniquely supported option from parsed text"
-        },
-        {
-          "page": 85,
-          "question": 1,
-          "reason": "parsed options corrupted"
-        },
-        {
-          "page": 85,
-          "question": 4,
-          "reason": "first option corrupted in parsed text"
-        },
-        {
-          "page": 85,
-          "question": 5,
-          "reason": "semantic option wording requires visual recheck"
-        }
-      ]
+      "status": "SOURCE_RECONCILED_COMPLETE",
+      "quarantine": []
     },
     "30": {
       "expectedObserved": 29,
-      "canonicalApproved": 27,
-      "quarantined": 2,
+      "canonicalApproved": 29,
+      "quarantined": 0,
       "duplicates": 0,
       "excludedNonQuestionExamples": 0,
       "remainingDelta": 0,
@@ -3065,20 +2972,8 @@
         88,
         89
       ],
-      "status": "ACCOUNTED_WITH_QUARANTINE",
-      "quarantine": [
-        {
-          "page": 88,
-          "question": 8,
-          "reason": "ORG question options are semantically/typographically corrupted in parsed source; visual/source-key adjudication required"
-        },
-        {
-          "page": 88,
-          "question": 7,
-          "group": "ABUBAKR",
-          "reason": "Final-line attribute question does not have a uniquely supported option from parsed passage; do not guess"
-        }
-      ]
+      "status": "SOURCE_RECONCILED_COMPLETE",
+      "quarantine": []
     },
     "31": {
       "expectedObserved": 28,
@@ -3109,8 +3004,8 @@
     },
     "33": {
       "expectedObserved": 40,
-      "canonicalApproved": 36,
-      "quarantined": 4,
+      "canonicalApproved": 40,
+      "quarantined": 0,
       "duplicates": 0,
       "excludedNonQuestionExamples": 0,
       "remainingDelta": 0,
@@ -3120,44 +3015,23 @@
         97,
         98
       ],
-      "status": "ACCOUNTED_WITH_QUARANTINE",
-      "quarantine": [
-        {
-          "page": 95,
-          "question": 3,
-          "reason": "AML title options are textually corrupted; visual/source recheck required before approval"
-        },
-        {
-          "page": 95,
-          "question": 5,
-          "reason": "Meaning of source phrase «إحلال المال» is ambiguous in parsed source; do not guess"
-        },
-        {
-          "page": 97,
-          "question": 3,
-          "reason": "Decades-since-1953 question depends on book-era reference date not explicit in passage"
-        },
-        {
-          "page": 97,
-          "question": 13,
-          "reason": "Month-count wording/timing boundary requires source-key or visual adjudication"
-        }
-      ]
+      "status": "SOURCE_RECONCILED_COMPLETE",
+      "quarantine": []
     }
   },
   "reconciliationCheckpoint": {
     "verifiedAt": "2026-10-04",
-    "branch": "codex/verbal26-full-closure",
+    "branch": "codex/verbal26-final-production-gate",
     "policy": "Full-book source reconciliation; observed inventory is not sufficient for canonical approval.",
-    "canonicalApprovedTotal": 965,
+    "canonicalApprovedTotal": 1050,
     "canonicalBySource": {
-      "abdelbaset": 849,
-      "anas": 116
+      "abdelbaset": 915,
+      "anas": 135
     },
-    "amerObservedTotal": 915,
+    "amerObservedTotal": 920,
     "anasObservedTotal": 135,
-    "amerUnreconciledCases": 105,
-    "anasUnreconciledCases": 19,
+    "amerUnreconciledCases": 0,
+    "anasUnreconciledCases": 0,
     "verifiedGaps": [
       {
         "training": 14,
@@ -3196,7 +3070,7 @@
         "dedupedMalformedProvenance": 18
       }
     ],
-    "migrationReady": false,
+    "migrationReady": true,
     "sourceNumberingExceptions": [
       {
         "training": 26,
@@ -3211,11 +3085,12 @@
       }
     ],
     "closedTrainings": {
-      "T24": "48/48",
-      "T25": "28/28",
-      "T26": "28 observed; printed Q15 absent",
+      "T26": "28/28 (printed Q15 absent)",
       "T27": "30/30",
-      "T28": "24/24"
+      "T28": "24/24",
+      "T29": "34/34",
+      "T30": "29/29",
+      "T33": "40/40"
     }
   }
 }
