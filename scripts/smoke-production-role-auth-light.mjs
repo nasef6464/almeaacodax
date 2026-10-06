@@ -1,5 +1,5 @@
 const API_BASE_URL = String(
-  process.env.PRODUCTION_API_BASE_URL || "https://almeaacodax-codex.onrender.com/api",
+  process.env.UI_AUDIT_API_BASE_URL || "https://almeaacodax-codex.onrender.com/api",
 ).replace(/\/$/, "");
 
 const roles = [
