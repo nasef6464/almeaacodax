@@ -23,6 +23,12 @@ export type CommandCenterDraft = {
   payload: Record<string, unknown>;
   source: "admin_ui" | "mcp" | "external_agent" | "system";
   status: "pending" | "approved" | "rejected";
+  applyStatus?: "not_applied" | "applying" | "applied" | "failed";
+  appliedResourceType?: string;
+  appliedResourceId?: string;
+  appliedAt?: number | null;
+  applyError?: string;
+  applyResult?: Record<string, unknown>;
   createdAt?: string;
   updatedAt?: string;
 };
@@ -146,6 +152,20 @@ export const createCommandCenterApi = (request: ApiRequest) => ({
       {
         method: "POST",
         body: payload,
+        token,
+      },
+    ),
+
+  applyCommandCenterDraft: (draftId: string, token?: string | null) =>
+    request<{
+      draft: CommandCenterDraft;
+      result: { resourceType: string; resourceId: string; summary: Record<string, unknown> };
+      idempotentReplay?: boolean;
+    }>(
+      `/command-center/drafts/${encodeURIComponent(draftId)}/apply`,
+      {
+        method: "POST",
+        body: { confirmation: "APPLY" },
         token,
       },
     ),
