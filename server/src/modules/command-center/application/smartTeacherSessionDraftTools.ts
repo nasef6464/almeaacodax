@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import { z } from "zod";
 import { GroupModel } from "../../../models/Group.js";
 import { TeachingAssignmentModel } from "../../../models/TeachingAssignment.js";
@@ -33,11 +34,13 @@ export async function validateSmartTeacherSessionDraft(
 
   const [entitlement, classroom, teacher, assignment] = await Promise.all([
     resolveSchoolEntitlement(input.schoolId, "SMART_CLASSROOM"),
-    GroupModel.findOne({
-      _id: input.classId,
-      type: "CLASS",
-      parentId: input.schoolId,
-    })
+    Types.ObjectId.isValid(input.classId)
+      ? GroupModel.findOne({
+          _id: input.classId,
+          type: "CLASS",
+          parentId: input.schoolId,
+        })
+      : Promise.resolve(null)
       .select("_id name parentId")
       .lean(),
     UserModel.findById(input.teacherId)
