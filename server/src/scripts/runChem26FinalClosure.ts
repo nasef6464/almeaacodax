@@ -42,7 +42,14 @@ async function verify(expected:"draft"|"approved") {
 }
 
 export async function runChem26FinalClosureIfRequested(){
- if(process.env.PILOT_WRITE_AUTHORIZATION!=="CHEM26_APPROVE_1708" || process.env.QUESTION_PILOT_BATCH_ID!==BATCH_ID) return;
+ const batchMatches = String(process.env.QUESTION_PILOT_BATCH_ID || "").trim().toUpperCase() === BATCH_ID;
+ const mode = String(process.env.QUESTION_PILOT_MODE || "").trim().toLowerCase();
+ const explicitClosure = process.env.PILOT_WRITE_AUTHORIZATION === "CHEM26_APPROVE_1708";
+ const completedImportHandoff =
+   process.env.PILOT_WRITE_AUTHORIZATION === "YES" &&
+   process.env.PILOT_ALLOW_EXTERNAL_RUN === "YES" &&
+   mode.startsWith("chem26-import.");
+ if(!batchMatches || (!explicitClosure && !completedImportHandoff)) return;
  const ownsConnection = mongoose.connection.readyState !== 1;
  if(ownsConnection) await mongoose.connect(env.MONGODB_URI);
  try{
