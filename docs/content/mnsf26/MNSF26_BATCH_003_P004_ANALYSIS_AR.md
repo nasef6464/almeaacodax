@@ -113,8 +113,12 @@ Voice: "نجرب أصغر ثلاثة أعداد موجبة متتالية: وا�
 
 ## Q013 — مقارنة ما دفعه شخصان من مجموعة
 Stem: ذهب 5 أشخاص لحفلة ومجموع ما دفعوه 1000 ريال. قارن بين 400 ريال وما دفعه شخصان.
-Status: HOLD — المعطيات لا تحدد أي شخصين ولا توزيع المدفوعات، فلا توجد مقارنة وحيدة مضمونة.
-Action: لا تعتمد إجابة بالتخمين. احتفظ بالصورة والمصدر للمراجعة.
+Correct relation: **المعطيات غير كافية**؛ لأن مجموع الخمسة = 1000 لا يحدد ما دفعه أي شخصين بعينهما، فيمكن أن يكون مجموعهما أقل من 400 أو مساويًا لها أو أكبر منها بحسب التوزيع.
+Canonical: `skill_quant_11 / sub_quant_11_1` — الاستبعاد المنطقي عند عدم كفاية المعطيات.
+Difficulty: Easy/Medium.
+Question fingerprint: quantitative-comparison / unspecified-subset / insufficient-data.
+Explanation fingerprint: افحص هل المعطيات تثبت قيمة الطرف الثاني؛ إذا تعددت القيم الممكنة فلا توجد علاقة واحدة لازمة.
+Voice: "المجموع الكلي لأشخاص خمسة هو ألف ريال، لكن السؤال لم يحدد ما دفعه الشخصان المقصودان. لذلك لا نستطيع الجزم بأن مجموعهما أقل من أربعمئة أو يساويها أو أكبر منها. إذن المعطيات غير كافية."
 
 ## Q014 — 9 صناديق داخل كل صندوق 5 صناديق
 Correct: ج = 54.
@@ -127,8 +131,8 @@ Common trap: اختيار 45 ونسيان الصناديق التسعة الأص
 
 ## Batch result
 - Source boxes reviewed: 14
-- Accepted with unique answer: 13
-- Holds: 1 (Q013)
+- Accepted with unique answer: 14
+- Holds: 0
 - New skills: 0
 - Taxonomy mutations: 0
 - Explanation/voice/fingerprint layer: prepared for accepted items
