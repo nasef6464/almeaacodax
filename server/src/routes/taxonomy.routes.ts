@@ -93,6 +93,9 @@ type TaxonomyBootstrapPayload = {
   skills: unknown[];
 };
 
+const canonicalTaxonomyId = (item: any) =>
+  String(item?.id || item?._id || "").trim();
+
 let publicTaxonomyBootstrapCache = new Map<"core" | "compact" | "full", { expiresAt: number; payload: TaxonomyBootstrapPayload }>();
 let publicTaxonomyBootstrapPromises = new Map<"core" | "compact" | "full", Promise<TaxonomyBootstrapPayload>>();
 const publicTaxonomyBootstrapPromise = publicTaxonomyBootstrapPromises;
@@ -116,10 +119,10 @@ const buildStaffTaxonomyBootstrapPayload = async (): Promise<TaxonomyBootstrapPa
     LevelModel.find().select("id pathId name createdAt").sort({ createdAt: 1 }).lean(),
     SubjectModel.find().select("id pathId levelId name color icon iconUrl iconStyle settings createdAt").sort({ createdAt: 1 }).lean(),
   ]);
-  const validPathIds = paths.map((item) => String(item._id)).filter(Boolean);
+  const validPathIds = paths.map(canonicalTaxonomyId).filter(Boolean);
   const validSubjectIds = subjects
     .filter((item) => validPathIds.includes(String(item.pathId)))
-    .map((item) => String(item._id))
+    .map(canonicalTaxonomyId)
     .filter(Boolean);
   const sections = validSubjectIds.length > 0
     ? await SectionModel.find({ subjectId: { $in: validSubjectIds } })
@@ -127,7 +130,7 @@ const buildStaffTaxonomyBootstrapPayload = async (): Promise<TaxonomyBootstrapPa
         .sort({ createdAt: 1 })
         .lean()
     : [];
-  const validSectionIds = sections.map((item) => String(item._id)).filter(Boolean);
+  const validSectionIds = sections.map(canonicalTaxonomyId).filter(Boolean);
   const skills = validPathIds.length > 0 && validSubjectIds.length > 0 && validSectionIds.length > 0
     ? await SkillModel.find({
         pathId: { $in: validPathIds },
@@ -185,7 +188,7 @@ const buildPublicTaxonomyBootstrapPayload = async (phase: "core" | "compact" | "
     .select("id name color icon iconUrl iconStyle showInNavbar showInHome isActive parentPathId description settings createdAt")
     .sort({ createdAt: 1 })
     .lean();
-  const visiblePathIds = paths.map((path) => String(path._id)).filter(Boolean);
+  const visiblePathIds = paths.map(canonicalTaxonomyId).filter(Boolean);
   const [levels, subjects] =
     visiblePathIds.length > 0
       ? await Promise.all([
@@ -197,12 +200,12 @@ const buildPublicTaxonomyBootstrapPayload = async (phase: "core" | "compact" | "
         ])
       : [[], []];
 
-  const visibleSubjectIds = subjects.map((subject) => String(subject._id)).filter(Boolean);
+  const visibleSubjectIds = subjects.map(canonicalTaxonomyId).filter(Boolean);
   const sections =
     visibleSubjectIds.length > 0
       ? await SectionModel.find({ subjectId: { $in: visibleSubjectIds } }).select("id subjectId name createdAt").sort({ createdAt: 1 }).lean()
       : [];
-  const visibleSectionIds = sections.map((section) => String(section._id)).filter(Boolean);
+  const visibleSectionIds = sections.map(canonicalTaxonomyId).filter(Boolean);
   const skills =
     phase === "core"
       ? []
