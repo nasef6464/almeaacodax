@@ -14,6 +14,7 @@ const [
   routes,
   commandApi,
   panel,
+  schoolImportPanel,
   schoolReader,
   approved,
 ] = await Promise.all([
@@ -27,6 +28,7 @@ const [
   read("server/src/modules/command-center/http/questionQuizDraftRoutes.ts"),
   read("services/apiGroups/commandCenterApi.ts"),
   read("dashboards/admin/command-center/CommandCenterOperationsPanel.tsx"),
+  read("dashboards/admin/command-center/CommandCenterSchoolImportPanel.tsx"),
   read("dashboards/admin/SchoolsManager/importFileReaders.ts"),
   read("docs/architecture/APPROVED_CONTRACT_EXTENSIONS.json"),
 ]);
@@ -49,10 +51,12 @@ assert.match(routes, /quizzes\/:id\/update-draft/);
 assert.match(commandApi, /getQuizQuestionDiff/);
 assert.match(commandApi, /createQuizUpdateCommandDraft/);
 
-assert.match(panel, /parseImportFile/);
-assert.match(panel, /استيراد مدرسة إلى مسودة آمنة/);
-assert.match(panel, /createSchoolSetupCommandDraft/);
-assert.match(panel, /validateSchoolSetupCommandDraft/);
+assert.match(panel, /CommandCenterSchoolImportPanel/);
+assert.ok(panel.split(/\r?\n/).length < 400, "Command Center operations panel must stay below runtime hotspot budget.");
+assert.match(schoolImportPanel, /parseImportFile/);
+assert.match(schoolImportPanel, /استيراد مدرسة إلى مسودة آمنة/);
+assert.match(schoolImportPanel, /createSchoolSetupCommandDraft/);
+assert.match(schoolImportPanel, /validateSchoolSetupCommandDraft/);
 assert.match(schoolReader, /safe lazy XLSX|loadXlsx/);
 assert.match(schoolReader, /readWorkbookFromBuffer/);
 
