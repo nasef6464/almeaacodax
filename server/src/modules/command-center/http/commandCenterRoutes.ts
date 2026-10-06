@@ -20,6 +20,7 @@ import { courseDraftRouter } from "./courseDraftRoutes.js";
 import { schoolDraftRouter } from "./schoolDraftRoutes.js";
 import { workflowRouter } from "./workflowRoutes.js";
 import { mcpRouter } from "./mcpRoutes.js";
+import { smartTeacherDraftRouter } from "./smartTeacherDraftRoutes.js";
 
 const draftSchema = z.object({
   kind: z.enum(COMMAND_DRAFT_KINDS),
@@ -58,6 +59,7 @@ commandCenterRouter.use("/authoring", questionQuizDraftRouter);
 commandCenterRouter.use("/courses", courseDraftRouter);
 commandCenterRouter.use("/schools", schoolDraftRouter);
 commandCenterRouter.use("/workflows", workflowRouter);
+commandCenterRouter.use("/smart-teacher", smartTeacherDraftRouter);
 
 commandCenterRouter.get(
   "/health",
