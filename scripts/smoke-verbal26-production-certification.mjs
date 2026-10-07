@@ -5,6 +5,7 @@ const STUDENT_EMAIL = process.env.SMOKE_STUDENT_EMAIL || "";
 const STUDENT_PASSWORD = process.env.SMOKE_STUDENT_PASSWORD || "";
 const QUESTION_ID = "VERBAL26-ANAS-P005-Q001";
 const EXPECTED_SKILL_ID = "skill_verbal_17";
+const EXPECTED_SKILL_NAME = "الخطأ السياقي — فهم السياق وتحديد الخطأ";
 const EXPECTED_SUBSKILL_ID = "sub_verbal_11_2";
 const EXPECTED_SUBSKILL_NAME = "تحديد الكلمة الخاطئة";
 const EXPECTED_CORRECT_INDEX = 3;
@@ -88,6 +89,15 @@ try {
   assert(verbalSections.length === 22, `taxonomy sections mismatch: ${verbalSections.length}/22`);
   assert(verbalSkills.length === 22, `taxonomy main skill records mismatch: ${verbalSkills.length}/22`);
   assert(verbalSubSkillCount === 76, `taxonomy subskills mismatch: ${verbalSubSkillCount}/76`);
+  const expectedMainSkill = verbalSkills.find((item) => String(item?.id || item?._id || "") === EXPECTED_SKILL_ID);
+  assert(expectedMainSkill, `taxonomy missing expected main skill: ${EXPECTED_SKILL_ID}`);
+  assert(String(expectedMainSkill.name || "").trim() === EXPECTED_SKILL_NAME,
+    `taxonomy main skill name mismatch: ${expectedMainSkill?.name || "<blank>"}`);
+  const expectedSubSkill = (Array.isArray(expectedMainSkill.subSkills) ? expectedMainSkill.subSkills : [])
+    .find((item) => String(item?.id || "") === EXPECTED_SUBSKILL_ID);
+  assert(expectedSubSkill, `taxonomy missing expected subskill: ${EXPECTED_SUBSKILL_ID}`);
+  assert(String(expectedSubSkill.name || "").trim() === EXPECTED_SUBSKILL_NAME,
+    `taxonomy subskill name mismatch: ${expectedSubSkill?.name || "<blank>"}`);
 
   const coverageResponse = await req("/quizzes/questions?subject=sub_1777779759038&skillLinkStatus=linked&limit=1&page=1&summary=true&noTotal=true&includeCoverage=true&paginate=true", { token: admin.token });
   const coverage = coverageResponse.body?.coverage || {};
@@ -138,6 +148,8 @@ try {
   assert(detailText.includes(QUIZ_ID), "result detail missing certification quiz id");
   assert(detailText.includes(EXPECTED_SKILL_ID), "result/review analysis missing main skill from same attempt");
   assert(detailText.includes(EXPECTED_SUBSKILL_ID), "result/review analysis missing subskill from same attempt");
+  assert(detailText.includes(EXPECTED_SKILL_NAME), "result/review analysis missing main skill name from same attempt");
+  assert(detailText.includes(EXPECTED_SUBSKILL_NAME), "result/review analysis missing subskill name from same attempt");
 
   const history = await req(`/quiz-results/my?quizId=${encodeURIComponent(QUIZ_ID)}&limit=10`, { token: student.token });
   assert(asArray(history.body).some((r) => String(r?.id || r?._id) === resultId), "student results history missing certification result");
@@ -154,6 +166,7 @@ try {
     resultId,
     score: submission.body?.score,
     mainSkillId: EXPECTED_SKILL_ID,
+    mainSkillName: EXPECTED_SKILL_NAME,
     subSkillId: EXPECTED_SUBSKILL_ID,
     subSkillName: EXPECTED_SUBSKILL_NAME,
     taxonomy: { mainSkills: 22, subSkills: 76, usedSubSkills: 50, questions: 1050 },
