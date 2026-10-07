@@ -11,6 +11,7 @@ import { runStartupMaintenance } from "./runStartupMaintenance.js";
 import { runQuestionPilotPackageImportIfRequested } from "./runQuestionPilotPackageImport.js";
 import { runChem26PackageImportIfRequested } from "./runChem26PackageImport.js";
 import { runBio26PackageImportIfRequested } from "./runBio26PackageImport.js";
+import { runBio26FinalClosureIfRequested } from "../../scripts/runBio26FinalClosure.js";
 import { runChem26FinalClosureIfRequested } from "../../scripts/runChem26FinalClosure.js";
 import { runChem26LearningStructureIfNeeded } from "./runChem26LearningStructure.js";
 import { runChem26StandardTestsIfNeeded } from "./runChem26StandardTests.js";
@@ -48,6 +49,9 @@ export async function bootstrapServer() {
     });
     void runBio26PackageImportIfRequested().catch((error) => {
       console.error("BIO26_IMPORT_FAILED", error instanceof Error ? error.message : "Unknown error");
+    });
+    void runBio26FinalClosureIfRequested().catch((error) => {
+      console.error("BIO26_FINAL_CLOSURE_FAILED", error instanceof Error ? error.message : "Unknown error");
     });
   });
 
