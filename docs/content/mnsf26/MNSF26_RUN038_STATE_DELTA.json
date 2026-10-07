@@ -1,0 +1,18 @@
+{
+  "bank": "MNSF26",
+  "baseGitStateCommit": "ec5d3da0ca62371ff165ac1e2d92d6a5519e62b9",
+  "run": "RUN038_AR_T18",
+  "directlyInspected": [
+    "T018 Q01-Q20"
+  ],
+  "masteredAdded": 13,
+  "holdsAdded": 7,
+  "effectiveMapping": 269,
+  "effectiveMasteredComplete": 269,
+  "masterPayloadPersistence": "BLOCKED_BY_CONNECTOR_POLICY_ON_CREATE_FILE; do not reconcile 269 into authoritative state until full Run038 master payload is persisted",
+  "nextCursor": [
+    "persist Run038 master payload",
+    "arithmetic T19 complete master records"
+  ],
+  "note": "All 20 T18 crops directly inspected. 13 mastered, 7 fail-closed HOLD; no R2/import touched."
+}
