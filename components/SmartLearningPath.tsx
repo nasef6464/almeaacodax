@@ -139,26 +139,39 @@ export const SmartLearningPath: React.FC<Props> = ({ skills }) => {
                             {current.actionLabel || 'ابدأ الآن'}
                             <ArrowLeft size={15} />
                         </Link>
-                    ) : null}
+                    ) : (
+                        <p className="mt-3 rounded-xl border border-dashed border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-500">
+                            موضوع التأسيس لهذه المهارة غير مربوط بعد. لا يمكن فتح تدريب أو فيديو لمادة أخرى.
+                        </p>
+                    )}
                 </div>
 
                 {nextItems.length ? (
                     <div className="mt-4">
                         <p className="mb-2 text-xs font-black text-gray-500">بعدها</p>
                         <div className="grid gap-2 sm:grid-cols-3">
-                            {nextItems.map((item) => (
-                                <Link
-                                    key={item.id}
-                                    to={item.link || '#'}
-                                    className="rounded-2xl border border-gray-100 bg-gray-50 p-3 transition hover:border-emerald-200 hover:bg-emerald-50/40"
-                                >
-                                    <div className="flex items-center justify-between gap-2">
-                                        <span className="truncate text-xs font-black text-gray-800">{item.title}</span>
-                                        <Zap size={13} className="shrink-0 text-amber-500" />
+                            {nextItems.map((item) => {
+                                const content = (
+                                    <>
+                                        <div className="flex items-center justify-between gap-2">
+                                            <span className="truncate text-xs font-black text-gray-800">{item.title}</span>
+                                            <Zap size={13} className="shrink-0 text-amber-500" />
+                                        </div>
+                                        <p className="mt-1 text-[11px] font-bold text-gray-400">
+                                            {item.link ? item.duration : 'موضوع التأسيس غير مربوط بعد'}
+                                        </p>
+                                    </>
+                                );
+                                return item.link ? (
+                                    <Link key={item.id} to={item.link} className="rounded-2xl border border-gray-100 bg-gray-50 p-3 transition hover:border-emerald-200 hover:bg-emerald-50/40">
+                                        {content}
+                                    </Link>
+                                ) : (
+                                    <div key={item.id} className="rounded-2xl border border-dashed border-gray-200 bg-gray-50 p-3 text-slate-400">
+                                        {content}
                                     </div>
-                                    <p className="mt-1 text-[11px] font-bold text-gray-400">{item.duration}</p>
-                                </Link>
-                            ))}
+                                );
+                            })}
                         </div>
                     </div>
                 ) : null}

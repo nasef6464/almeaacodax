@@ -57,7 +57,8 @@ const recommendationForSkill = (
   index: number,
 ): LearningRecommendation => {
   const skill = normalizeSignal(rawSkill);
-  const topicId = skill.topicId || (skill.skillId ? `topic_sub_${skill.skillId}` : undefined);
+  // Topic identity comes only from the canonical taxonomy resolver, never a synthesized id.
+  const topicId = skill.topicId || undefined;
   const scope = {
     pathId: skill.pathId || undefined,
     subjectId: skill.subjectId || undefined,
@@ -68,17 +69,13 @@ const recommendationForSkill = (
 
   const insufficientEvidence = skill.evidenceCount > 0 && skill.evidenceCount < 3;
   const usePractice = insufficientEvidence || index % 2 === 1;
+  // An evidence-only measurement is a separate explicit action; study/practice
+  // must remain inside the mapped Foundation topic, with no direct-quiz fallback.
   const link = insufficientEvidence
     ? buildSkillRemediationActionLink(scope, 5)
-      || buildFoundationActionLink(scope, 'quizzes')
-      || '/reports'
-    : usePractice
-      ? buildFoundationActionLink(scope, 'quizzes')
-        || buildSkillRemediationActionLink(scope, 7)
-        || '/reports'
-      : buildFoundationActionLink(scope, 'lessons')
-        || buildSkillRemediationActionLink(scope)
-        || '/reports';
+    : topicId && scope.pathId && scope.subjectId
+      ? buildFoundationActionLink(scope, usePractice ? 'quizzes' : 'lessons')
+      : undefined;
 
   return {
     id: `internal_${skill.skillId || index + 1}`,
@@ -96,7 +93,7 @@ const recommendationForSkill = (
         : `مستوى الإتقان الحالي ${skill.mastery}% ويحتاج دعمًا داخل نفس المسار والمادة.`,
     skillTargeted: skill.skill || 'مهارة',
     priority: skill.status === 'weak' || skill.trend === 'declining' ? 'high' : 'medium',
-    actionLabel: usePractice ? 'ابدأ التدريب' : 'افتح الشرح',
+    actionLabel: insufficientEvidence ? 'ابدأ القياس' : usePractice ? 'تدريب' : 'فيديو',
     link,
   };
 };

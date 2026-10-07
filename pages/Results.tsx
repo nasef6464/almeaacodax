@@ -36,7 +36,7 @@ import { shareTextSummary } from '../utils/shareText';
 import { flattenMockExamQuestionIds } from '../utils/mockExam';
 import { hasInlineQuestionMedia, normalizeQuestionHtml } from '../utils/questionHtml';
 import { buildQuizRouteWithContext } from '../utils/quizLinks';
-import { buildSkillReportActionLink } from '../utils/skillActionLinks';
+import { buildCanonicalFoundationSkillActions, buildSkillReportActionLink } from '../utils/skillActionLinks';
 import { getLearnerOptionLabel, getQuizOptionButtonHeightClass, getQuizOptionGridClass, getQuizQuestionMapButtonClass, resolveQuestionFromBank, toQuestionReviewFromBank, usesImageEmbeddedOptions } from '../utils/quizPresentation';
 import { getFriendlyResultMessage, getMasteryClasses, getScoreVisualTone, getSkillPriorityLabel, getStudentFriendlyChecklist } from '../components/results/resultScorePresentation';
 import { QuestionAssistantPanel } from '../components/results/QuestionAssistantPanel';
@@ -54,6 +54,7 @@ interface SkillRecommendation {
   lessonTopicTitle?: string;
   quizTitle?: string;
   quizLink?: string;
+  supportLink?: string;
   resourceTitle?: string;
   resourceUrl?: string;
   subjectName?: string;
@@ -81,6 +82,7 @@ interface ResolvedAnalysisItem {
   lessonTopicTitle?: string;
   quizTitle?: string;
   quizLink?: string;
+  supportLink?: string;
   resourceTitle?: string;
   resourceUrl?: string;
   actionText?: string;
@@ -289,8 +291,18 @@ const Results: React.FC = () => {
     (latestResult.skillsAnalysis || []).forEach((item) => {
         const taxonomyEntry = resolveResultSkillTaxonomy(item.skillId, skills);
         const recommendation = getSkillRecommendation(item, skills, lessons, quizzes, libraryItems, questions, topics);
+        const skillId = item.skillId || taxonomyEntry?.id;
+        const pathId = item.pathId || taxonomyEntry?.pathId;
         const subjectId = item.subjectId || taxonomyEntry?.subjectId;
         const sectionId = item.sectionId || taxonomyEntry?.sectionId;
+        const foundationActions = buildCanonicalFoundationSkillActions(
+          { skillId, pathId, subjectId, sectionId, skillName: item.skill },
+          skills,
+          topics,
+        );
+        const lessonLink = foundationActions.lessonLink;
+        const quizLink = foundationActions.quizLink;
+        const supportLink = foundationActions.supportLink;
         const subjectName =
           recommendation.subjectName ||
           (subjectId ? displayText(subjects.find((subject) => subject.id === subjectId)?.name) : undefined);
@@ -306,11 +318,11 @@ const Results: React.FC = () => {
 
         if (!current) {
           aggregated.set(skillKey, {
-            skillId: item.skillId,
+            skillId,
             level: (item as any).level || taxonomyEntry?.level,
             parentSkillId: (item as any).parentSkillId || taxonomyEntry?.parentSkillId,
             parentSkillName: displayText((item as any).parentSkill) || taxonomyEntry?.parentSkill,
-            pathId: item.pathId || taxonomyEntry?.pathId,
+            pathId,
             subjectId,
             sectionId,
             subjectName,
@@ -320,11 +332,12 @@ const Results: React.FC = () => {
             status: item.status || getStatusFromMastery(item.mastery),
             attempts: 1,
             lessonTitle: recommendation.lessonTitle,
-            lessonLink: recommendation.lessonLink,
+            lessonLink,
             lessonVideoUrl: recommendation.lessonVideoUrl,
             lessonTopicTitle: recommendation.lessonTopicTitle,
             quizTitle: recommendation.quizTitle,
-            quizLink: recommendation.quizLink,
+            quizLink,
+            supportLink,
             resourceTitle: recommendation.resourceTitle,
             resourceUrl: recommendation.resourceUrl,
             actionText: recommendation.actionText,
@@ -343,11 +356,12 @@ const Results: React.FC = () => {
         if (item.mastery <= current.lowestMastery) {
           current.actionText = recommendation.actionText || current.actionText;
           current.lessonTitle = recommendation.lessonTitle || current.lessonTitle;
-          current.lessonLink = recommendation.lessonLink || current.lessonLink;
+          current.lessonLink = lessonLink || current.lessonLink;
           current.lessonVideoUrl = recommendation.lessonVideoUrl || current.lessonVideoUrl;
           current.lessonTopicTitle = recommendation.lessonTopicTitle || current.lessonTopicTitle;
           current.quizTitle = recommendation.quizTitle || current.quizTitle;
-          current.quizLink = recommendation.quizLink || current.quizLink;
+          current.quizLink = quizLink || current.quizLink;
+          current.supportLink = supportLink || current.supportLink;
           current.resourceTitle = recommendation.resourceTitle || current.resourceTitle;
           current.resourceUrl = recommendation.resourceUrl || current.resourceUrl;
         }
@@ -373,7 +387,7 @@ const Results: React.FC = () => {
     return analysisItems.filter((item) => item.status === 'strong').slice(0, 4);
   }, [analysisItems]);
   const weakSkills = React.useMemo(() => {
-    return analysisItems.filter((item) => item.status === 'weak').slice(0, 4);
+    return analysisItems.filter((item) => item.status === 'weak').slice(0, 10);
   }, [analysisItems]);
   const isFullResult = resultDepth === 'full';
   const simplestNextStep = weakestSkill?.lessonTitle
@@ -872,7 +886,7 @@ const Results: React.FC = () => {
               className="inline-flex items-center justify-center gap-2 rounded-xl border border-indigo-200 bg-indigo-50/80 px-4 py-3 text-xs sm:text-sm font-black text-indigo-700 shadow-xs transition-all hover:bg-indigo-100 hover:border-indigo-300"
             >
               <BarChart3 size={16} />
-              <span>تقرير تفصيلي</span>
+              <span>تفاصيل أكثر</span>
             </button>
             <button
               onClick={() => setViewMode('history')}
@@ -966,6 +980,35 @@ const Results: React.FC = () => {
                     ) : null}
                     <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-rose-100">
                       <div className="h-full rounded-full bg-rose-500 transition-all duration-500" style={{ width: `${item.mastery}%` }} />
+                    </div>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {item.lessonLink ? (
+                        <Link to={item.lessonLink} className="inline-flex rounded-lg border border-indigo-100 bg-indigo-50 px-2.5 py-1.5 text-[11px] font-black text-indigo-700 transition-colors hover:bg-indigo-100">
+                          فيديو
+                        </Link>
+                      ) : (
+                        <span className="inline-flex rounded-lg border border-dashed border-slate-200 bg-slate-50 px-2.5 py-1.5 text-[11px] font-black text-slate-400">
+                          فيديو
+                        </span>
+                      )}
+                      {item.quizLink ? (
+                        <Link to={item.quizLink} className="inline-flex rounded-lg border border-amber-100 bg-amber-50 px-2.5 py-1.5 text-[11px] font-black text-amber-700 transition-colors hover:bg-amber-100">
+                          تدريب
+                        </Link>
+                      ) : (
+                        <span className="inline-flex rounded-lg border border-dashed border-slate-200 bg-slate-50 px-2.5 py-1.5 text-[11px] font-black text-slate-400">
+                          تدريب
+                        </span>
+                      )}
+                      {item.supportLink ? (
+                        <Link to={item.supportLink} className="inline-flex rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] font-black text-slate-700 transition-colors hover:bg-slate-50">
+                          ملف الدعم
+                        </Link>
+                      ) : (
+                        <span className="inline-flex rounded-lg border border-dashed border-slate-200 bg-slate-50 px-2.5 py-1.5 text-[11px] font-black text-slate-400">
+                          ملف الدعم
+                        </span>
+                      )}
                     </div>
                   </div>
                 ))}
@@ -1281,6 +1324,7 @@ const Results: React.FC = () => {
       <DetailedAnalysisModal
         isOpen={isAnalysisOpen}
         onClose={() => setIsAnalysisOpen(false)}
+        mode={latestResult?.source === 'training' || latestResult?.source === 'foundation' ? 'bank' : 'test'}
         skills={analysisItems.map((item) => ({
           name: item.skillName,
           percentage: item.mastery,
@@ -1288,6 +1332,8 @@ const Results: React.FC = () => {
           subjectName: item.subjectName,
           sectionName: item.sectionName,
           recommendation: item.actionText,
+          videoLink: item.lessonLink,
+          trainingLink: item.quizLink,
         }))}
       />
 
@@ -1920,17 +1966,34 @@ const DetailedAnalysis = ({ onBack, result }: { onBack: () => void; result: Quiz
   const { skills, lessons, quizzes, libraryItems, questions, topics, subjects, sections } = useStore();
   const analysisItems = (result.skillsAnalysis || [])
     .map((item) => {
+      const taxonomyEntry = resolveResultSkillTaxonomy(item.skillId, skills);
       const recommendation = getSkillRecommendation(item, skills, lessons, quizzes, libraryItems, questions, topics);
+      const skillId = item.skillId || taxonomyEntry?.id;
+      const pathId = item.pathId || taxonomyEntry?.pathId;
+      const subjectId = item.subjectId || taxonomyEntry?.subjectId;
+      const sectionId = item.sectionId || taxonomyEntry?.sectionId;
+      const foundationActions = buildCanonicalFoundationSkillActions(
+        { skillId, pathId, subjectId, sectionId, skillName: item.skill },
+        skills,
+        topics,
+      );
       return {
         ...item,
+        ...recommendation,
+        skillId,
+        pathId,
+        subjectId,
+        sectionId,
         subjectName:
           recommendation.subjectName ||
-          (item.subjectId ? displayText(subjects.find((subject) => subject.id === item.subjectId)?.name) : undefined),
+          (subjectId ? displayText(subjects.find((subject) => subject.id === subjectId)?.name) : undefined),
         sectionName:
           recommendation.sectionName ||
           displayText(item.section) ||
-          (item.sectionId ? displayText(sections.find((section) => section.id === item.sectionId)?.name) : undefined),
-        ...recommendation,
+          (sectionId ? displayText(sections.find((section) => section.id === sectionId)?.name) : undefined),
+        lessonLink: foundationActions.lessonLink,
+        quizLink: foundationActions.quizLink,
+        supportLink: foundationActions.supportLink,
       };
     })
     .sort((a, b) => a.mastery - b.mastery);
@@ -1978,21 +2041,27 @@ const DetailedAnalysis = ({ onBack, result }: { onBack: () => void; result: Quiz
             </div>
             {s.actionText ? <p className="mt-3 text-xs font-bold leading-6 text-gray-600">{s.actionText}</p> : null}
             <div className="mt-3 flex flex-wrap gap-2">
-              {s.lessonTitle ? (
-                <Link to={s.lessonLink || '/reports'} className="inline-flex rounded-xl border border-indigo-100 bg-indigo-50 px-3 py-1.5 text-xs font-black text-indigo-700 transition-colors hover:bg-indigo-100 sm:text-sm">
-                  راجع الدرس
+              {s.lessonLink ? (
+                <Link to={s.lessonLink} className="inline-flex rounded-xl border border-indigo-100 bg-indigo-50 px-3 py-1.5 text-xs font-black text-indigo-700 transition-colors hover:bg-indigo-100 sm:text-sm">
+                  فيديو
                 </Link>
-              ) : null}
-              {s.quizTitle ? (
-                <Link to={s.quizLink || '/dashboard?tab=saher'} className="inline-flex rounded-xl border border-emerald-100 bg-emerald-50 px-3 py-1.5 text-xs font-black text-emerald-700 transition-colors hover:bg-emerald-100 sm:text-sm">
-                  تدريب قصير
+              ) : (
+                <span className="inline-flex rounded-xl border border-dashed border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-black text-slate-400 sm:text-sm">فيديو</span>
+              )}
+              {s.quizLink ? (
+                <Link to={s.quizLink} className="inline-flex rounded-xl border border-amber-100 bg-amber-50 px-3 py-1.5 text-xs font-black text-amber-700 transition-colors hover:bg-amber-100 sm:text-sm">
+                  تدريب
                 </Link>
-              ) : null}
-              {s.resourceTitle && s.resourceUrl ? (
-                <a href={s.resourceUrl} target="_blank" rel="noreferrer" className="inline-flex rounded-xl border border-amber-100 bg-amber-50 px-3 py-1.5 text-xs font-black text-amber-700 transition-colors hover:bg-amber-100 sm:text-sm">
-                  ملف داعم
-                </a>
-              ) : null}
+              ) : (
+                <span className="inline-flex rounded-xl border border-dashed border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-black text-slate-400 sm:text-sm">تدريب</span>
+              )}
+              {s.supportLink ? (
+                <Link to={s.supportLink} className="inline-flex rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-black text-slate-700 transition-colors hover:bg-slate-50 sm:text-sm">
+                  ملف الدعم
+                </Link>
+              ) : (
+                <span className="inline-flex rounded-xl border border-dashed border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-black text-slate-400 sm:text-sm">ملف الدعم</span>
+              )}
             </div>
           </Card>
         ))}

@@ -127,7 +127,7 @@ const actionForSkill = (skill: SmartSkillSignal, index: number): LearningRecomme
         : 'هذه من أقل المهارات إتقانًا وتحتاج تأسيسًا قصيرًا قبل التدريب.',
       skillTargeted: skill.skill,
       priority: 'high',
-      actionLabel: 'افتح الشرح',
+      actionLabel: 'فيديو',
       link: buildFoundationActionLink(context, 'lessons') || '/reports',
     };
   }
@@ -142,8 +142,8 @@ const actionForSkill = (skill: SmartSkillSignal, index: number): LearningRecomme
       : 'المهارة قريبة من التحسن وتحتاج تدريبًا مركزًا بدل إعادة شرح كامل.',
     skillTargeted: skill.skill,
     priority: 'medium',
-    actionLabel: 'ابدأ التدريب',
-    link: buildSkillRemediationActionLink(context) || '/quiz',
+    actionLabel: 'تدريب',
+    link: buildFoundationActionLink(context, 'quizzes') || buildSkillRemediationActionLink(context) || '/quiz',
   };
 };
 

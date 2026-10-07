@@ -239,11 +239,13 @@ export const QuizPage: React.FC = () => {
     if (quiz?.mode === 'saher') return 'self';
     return undefined;
   }, [quiz?.mockExam?.enabled, quiz?.quizKind, quiz?.mode, sourceParam]);
+  const resolvedQuizSettings = resolveQuizSettings(quiz);
   const shouldReturnToSourceAfterFinish =
     Boolean(safeReturnTo) &&
+    resolvedQuizSettings.showResultsReport !== true &&
     (searchParams.get('returnOnFinish') === '1' ||
-      resolveQuizSettings(quiz).returnToSourceOnFinish === true ||
-      resolveQuizSettings(quiz).showResultsReport === false);
+      resolvedQuizSettings.returnToSourceOnFinish === true ||
+      resolvedQuizSettings.showResultsReport === false);
   const returnLabel = useMemo(() => {
     if (sourceParam === 'foundation') return 'العودة لموضوع التأسيس';
     if (sourceParam === 'training') return 'العودة للتدريب';
@@ -415,7 +417,7 @@ export const QuizPage: React.FC = () => {
 
     if (
       !isStaffViewer &&
-      (!foundQuiz.isPublished ||
+      (foundQuiz.isPublished === false ||
         (foundQuiz.showOnPlatform === false && !isServerVerifiedDirectedAudience) ||
         (!!foundQuiz.approvalStatus && foundQuiz.approvalStatus !== 'approved'))
     ) {

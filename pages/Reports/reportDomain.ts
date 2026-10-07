@@ -101,7 +101,7 @@ export const buildDirectedQuizManagerLink = (context?: {
 export const getReportMasteryTone = (mastery: number) => {
     if (mastery < 50) {
         return {
-            label: 'ابدأ بها',
+            label: 'تحتاج تركيز وتأسيس',
             bg: 'bg-rose-50',
             text: 'text-rose-700',
             bar: 'bg-rose-500',

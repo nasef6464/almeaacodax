@@ -1,3 +1,6 @@
+import type { Skill, Topic } from '../types';
+import { resolveFoundationSkillTarget } from './foundationSkillTarget';
+
 export type SkillActionContext = {
   pathId?: string;
   subjectId?: string;
@@ -23,6 +26,35 @@ export const buildFoundationActionLink = (
   const returnTo = safeInternalReturn(context.returnTo);
   if (returnTo) params.set('returnTo', returnTo);
   return `/category/${encodeURIComponent(context.pathId)}?${params.toString()}`;
+};
+
+/**
+ * Common learner contract across reports, result details and future subjects:
+ * three actions always open the SAME Foundation topic, selecting only a content tab.
+ * No mapped topic means an unavailable action, never a guessed course/quiz route.
+ */
+export const buildCanonicalFoundationSkillActions = (
+  context: SkillActionContext & { sectionId?: string; skillName?: string },
+  skills: Skill[],
+  topics: Topic[],
+) => {
+  const target = resolveFoundationSkillTarget(context, skills, topics);
+  if (!target.topicId || !target.pathId || !target.subjectId || !target.skillId) {
+    return { topicId: undefined, lessonLink: undefined, quizLink: undefined, supportLink: undefined };
+  }
+  const scope: SkillActionContext = {
+    pathId: target.pathId,
+    subjectId: target.subjectId,
+    topicId: target.topicId,
+    skillId: target.skillId,
+    returnTo: context.returnTo,
+  };
+  return {
+    topicId: target.topicId,
+    lessonLink: buildFoundationActionLink(scope, 'lessons'),
+    quizLink: buildFoundationActionLink(scope, 'quizzes'),
+    supportLink: buildFoundationActionLink(scope, 'support'),
+  };
 };
 
 export const buildSkillPracticeActionLink = (context: SkillActionContext) => {

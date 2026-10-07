@@ -42,8 +42,8 @@ check('student report scope preserves evidence reliability and focus ordering', 
   assertIncludes(scope, 'skill.mastery < 50');
   assertIncludes(scope, 'skill.mastery >= 50 && skill.mastery < 75');
   assertIncludes(scope, 'skill.mastery < 50 && !skill.isReliable');
-  assertIncludes(scope, '[...reliableWeakSkills, ...reliableAverageSkills]');
-  assertIncludes(scope, ').slice(0, 6);');
+  assertIncludes(scope, 'const focusedReportSkills = reportBaseSkills;');
+  assertNotIncludes(scope, ').slice(0, 6);');
 });
 
 check('student report scope preserves selected skill and track labels', () => {

@@ -51,7 +51,8 @@ check('recommendation view-model preserves content ranking and links', () => {
   assertIncludes(recommendation, "import { buildFoundationActionLink } from '../../utils/skillActionLinks';");
   assertIncludes(recommendation, "buildFoundationActionLink(actionContext, 'lessons')");
   assertIncludes(recommendation, "buildFoundationActionLink(actionContext, 'quizzes')");
-  assertIncludes(recommendation, 'quizLink: foundationTrainingLink ||');
+  assertIncludes(recommendation, 'quizLink: recommendedTopic ? foundationTrainingLink : undefined');
+  assertNotIncludes(recommendation, "const subskillFallbackQuiz =");
   assertIncludes(recommendation, 'ابدأ بالشرح أولًا ثم نفّذ اختبارًا قصيرًا لقياس التحسن.');
   assertIncludes(recommendation, 'أعد المحاولة عبر اختبار ساهر مخصص لهذه المهارة.');
 });

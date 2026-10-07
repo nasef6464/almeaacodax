@@ -72,13 +72,9 @@ export const buildStudentReportScope = ({
     const reliableWeakSkills = reliableAggregatedSkills.filter((skill) => skill.mastery < 50);
     const reliableAverageSkills = reliableAggregatedSkills.filter((skill) => skill.mastery >= 50 && skill.mastery < 75);
     const earlyWeakSignals = reportBaseSkills.filter((skill) => skill.mastery < 50 && !skill.isReliable);
-    const focusedReportSkills = (
-        reliableWeakSkills.length > 0
-            ? [...reliableWeakSkills, ...reliableAverageSkills]
-            : reliableAggregatedSkills.length > 0
-                ? reliableAggregatedSkills
-                : reportBaseSkills
-    ).slice(0, 6);
+    // The report should not hide measured skills behind an arbitrary cap.
+    // reportBaseSkills is already ordered from weakest to strongest.
+    const focusedReportSkills = reportBaseSkills;
     const primaryReportSkill = focusedReportSkills[0] || scopedWeakestSkill;
     const selectedReportSkill = reportBaseSkills.find(
         (skill) => getReportSkillKey(skill) === selectedSkillKey,
