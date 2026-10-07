@@ -27,7 +27,8 @@
     "pages": 97,
     "pendingCrops": 0,
     "stagedCrops": 931,
-    "pendingCanonicalMappings": 931
+    "pendingCanonicalMappings": 925,
+    "approvedCanonicalMappings": 6
   },
   "records": [
     {
@@ -7025,12 +7026,14 @@
       "endPdfPage": 42,
       "sourceCoverageEvidence": "RUN021_GEOMETRY_CROP_MANIFEST_VERIFIED",
       "cropStatus": "EXACT_EMBEDDED_PIXEL_CROP_STAGED_RUN021",
-      "canonicalSkillId": null,
-      "canonicalSubSkillId": null,
+      "canonicalSkillId": "skill_quant_19",
+      "canonicalSubSkillId": "sub_quant_19_3",
       "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95",
       "dedupeStatus": "PENDING",
       "imageSha256": null,
-      "imageUrl": null
+      "imageUrl": null,
+      "mappingStatus": "APPROVED_QUESTION_LEVEL_VISUAL_RUN024",
+      "mappingEvidence": "مجموع زوايا مضلع سداسي"
     },
     {
       "sourceId": "MNSF26-GEO-T022-Q05",
@@ -7115,12 +7118,14 @@
       "endPdfPage": 42,
       "sourceCoverageEvidence": "RUN021_GEOMETRY_CROP_MANIFEST_VERIFIED",
       "cropStatus": "EXACT_EMBEDDED_PIXEL_CROP_STAGED_RUN021",
-      "canonicalSkillId": null,
-      "canonicalSubSkillId": null,
+      "canonicalSkillId": "skill_quant_19",
+      "canonicalSubSkillId": "sub_quant_19_3",
       "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95",
       "dedupeStatus": "PENDING",
       "imageSha256": null,
-      "imageUrl": null
+      "imageUrl": null,
+      "mappingStatus": "APPROVED_QUESTION_LEVEL_VISUAL_RUN024",
+      "mappingEvidence": "مقارنة مجموع الزوايا الداخلية لمضلعين"
     },
     {
       "sourceId": "MNSF26-GEO-T022-Q10",
@@ -7169,12 +7174,14 @@
       "endPdfPage": 42,
       "sourceCoverageEvidence": "RUN021_GEOMETRY_CROP_MANIFEST_VERIFIED",
       "cropStatus": "EXACT_EMBEDDED_PIXEL_CROP_STAGED_RUN021",
-      "canonicalSkillId": null,
-      "canonicalSubSkillId": null,
+      "canonicalSkillId": "skill_quant_25",
+      "canonicalSubSkillId": "sub_quant_25_3",
       "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95",
       "dedupeStatus": "PENDING",
       "imageSha256": null,
-      "imageUrl": null
+      "imageUrl": null,
+      "mappingStatus": "APPROVED_QUESTION_LEVEL_VISUAL_RUN024",
+      "mappingEvidence": "تحديد الشكل الناتج من نقاط إحداثية"
     },
     {
       "sourceId": "MNSF26-GEO-T022-Q13",
@@ -7205,12 +7212,14 @@
       "endPdfPage": 42,
       "sourceCoverageEvidence": "RUN021_GEOMETRY_CROP_MANIFEST_VERIFIED",
       "cropStatus": "EXACT_EMBEDDED_PIXEL_CROP_STAGED_RUN021",
-      "canonicalSkillId": null,
-      "canonicalSubSkillId": null,
+      "canonicalSkillId": "skill_quant_20",
+      "canonicalSubSkillId": "sub_quant_20_4",
       "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95",
       "dedupeStatus": "PENDING",
       "imageSha256": null,
-      "imageUrl": null
+      "imageUrl": null,
+      "mappingStatus": "APPROVED_QUESTION_LEVEL_VISUAL_RUN024",
+      "mappingEvidence": "مساحة مثلث مرسوم على المحاور"
     },
     {
       "sourceId": "MNSF26-GEO-T022-Q15",
@@ -7403,12 +7412,14 @@
       "endPdfPage": 44,
       "sourceCoverageEvidence": "RUN021_GEOMETRY_CROP_MANIFEST_VERIFIED",
       "cropStatus": "EXACT_EMBEDDED_PIXEL_CROP_STAGED_RUN021",
-      "canonicalSkillId": null,
-      "canonicalSubSkillId": null,
+      "canonicalSkillId": "skill_quant_25",
+      "canonicalSubSkillId": "sub_quant_25_3",
       "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95",
       "dedupeStatus": "PENDING",
       "imageSha256": null,
-      "imageUrl": null
+      "imageUrl": null,
+      "mappingStatus": "APPROVED_QUESTION_LEVEL_VISUAL_RUN024",
+      "mappingEvidence": "إحداثيات مركز دائرة من الرسم"
     },
     {
       "sourceId": "MNSF26-GEO-T023-Q06",
@@ -7583,12 +7594,14 @@
       "endPdfPage": 44,
       "sourceCoverageEvidence": "RUN021_GEOMETRY_CROP_MANIFEST_VERIFIED",
       "cropStatus": "EXACT_EMBEDDED_PIXEL_CROP_STAGED_RUN021",
-      "canonicalSkillId": null,
-      "canonicalSubSkillId": null,
+      "canonicalSkillId": "skill_quant_24",
+      "canonicalSubSkillId": "sub_quant_24_1",
       "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95",
       "dedupeStatus": "PENDING",
       "imageSha256": null,
-      "imageUrl": null
+      "imageUrl": null,
+      "mappingStatus": "APPROVED_QUESTION_LEVEL_VISUAL_RUN024",
+      "mappingEvidence": "نسبة مساحتي دائرتين من أنصاف الأقطار"
     },
     {
       "sourceId": "MNSF26-GEO-T023-Q16",
