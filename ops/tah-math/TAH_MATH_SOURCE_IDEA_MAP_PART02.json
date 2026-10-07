@@ -94,5 +94,6 @@
   "cumulativeCompletedLessons": 16,
   "totalLessons": 31,
   "nextLessons": "17-24",
-  "bindingStatus": "PENDING_EXACT_RUNTIME_TAXONOMY_EXPORT"
+  "bindingStatus": "BOUND_EXACT_RUNTIME_TAXONOMY",
+  "runtimeTaxonomyBinding": "BOUND_EXACT_22_MAIN_67_SUBSKILLS"
 }
