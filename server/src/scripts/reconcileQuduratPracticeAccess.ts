@@ -5,6 +5,7 @@ const PATH_ID = "p_1777779639431";
 const FREE_MAIN_TOPICS = 5;
 const SUB_DRILL_MAX_QUESTIONS = 15;
 const SUB_DRILL_TARGET_MIN = 10;
+const MAIN_DRILL_TARGET_MIN = 30;
 const MAIN_DRILL_MAX_QUESTIONS = 40;
 
 const SUBJECTS = [
@@ -75,6 +76,12 @@ const questionIdsForMain = (questions: any[], mainSkillId: string) =>
     .map((q) => idOf(q.id || q._id))
     .filter(Boolean);
 
+const helperQuestionIdsForMain = (questions: any[], mainSkillId: string) =>
+  questions
+    .filter((q) => idOf(q.skillId) === mainSkillId && isApprovedQuestion(q) && isTrainingOnly(q))
+    .map((q) => idOf(q.id || q._id))
+    .filter(Boolean);
+
 const accessForFree = (isFree: boolean) => ({
   type: isFree ? "free" : "paid",
   price: 0,
@@ -114,6 +121,7 @@ async function reconcileSubject(db: any, config: (typeof SUBJECTS)[number], appl
   const topicOps: any[] = [];
   const quizOps: any[] = [];
   const subskillGaps: Array<{ subSkillId: string; questionCount: number }> = [];
+  const mainSkillGaps: Array<{ mainSkillId: string; sourceCount: number; helperCount: number; trainingCount: number }> = [];
   let sourceBackedSubDrills = 0;
 
   for (let mainIndex = 0; mainIndex < canonicalSkills.length; mainIndex++) {
@@ -243,8 +251,23 @@ async function reconcileSubject(db: any, config: (typeof SUBJECTS)[number], appl
     for (let mainIndex = 0; mainIndex < canonicalSkills.length; mainIndex++) {
       const skill: any = canonicalSkills[mainIndex];
       const mainSkillId = idOf(skill.id || skill._id);
-      const mainIds = questionIdsForMain(questions, mainSkillId).slice(0, MAIN_DRILL_MAX_QUESTIONS);
+      const mainSourceIds = questionIdsForMain(questions, mainSkillId);
+      const mainSourceDrillIds = mainSourceIds.slice(0, MAIN_DRILL_MAX_QUESTIONS);
+      const mainHelperIds = helperQuestionIdsForMain(questions, mainSkillId);
+      const mainHelperNeeded = Math.max(
+        0,
+        Math.min(MAIN_DRILL_TARGET_MIN - mainSourceDrillIds.length, MAIN_DRILL_MAX_QUESTIONS - mainSourceDrillIds.length),
+      );
+      const mainIds = [...mainSourceDrillIds, ...mainHelperIds.slice(0, mainHelperNeeded)];
       if (mainIds.length === 0) continue;
+      if (mainIds.length < MAIN_DRILL_TARGET_MIN) {
+        mainSkillGaps.push({
+          mainSkillId,
+          sourceCount: mainSourceIds.length,
+          helperCount: mainHelperIds.length,
+          trainingCount: mainIds.length,
+        });
+      }
       const bankId = `bank_verbal_skill_${mainSkillId.replace("skill_verbal_", "")}`;
       const isFree = mainIndex < FREE_MAIN_TOPICS;
       quizOps.push({
@@ -322,7 +345,9 @@ async function reconcileSubject(db: any, config: (typeof SUBJECTS)[number], appl
     sourceBackedSubDrills,
     subskillsBelowTen: subskillGaps.length,
     zeroQuestionSubskills: subskillGaps.filter((item) => item.questionCount === 0).length,
-    gaps: subskillGaps,
+    mainSkillsBelowThirty: mainSkillGaps.length,
+    subskillGaps,
+    mainSkillGaps,
   };
 }
 
@@ -334,7 +359,7 @@ export async function reconcileQuduratPracticeAccess() {
   try {
     const report = [];
     for (const config of SUBJECTS) report.push(await reconcileSubject(db, config, apply));
-    console.log(JSON.stringify({ status: apply ? "APPLY_PASS" : "DRY_RUN_PASS", freeMainTopics: FREE_MAIN_TOPICS, subDrillMaxQuestions: SUB_DRILL_MAX_QUESTIONS, report }, null, 2));
+    console.log(JSON.stringify({ status: apply ? "APPLY_PASS" : "DRY_RUN_PASS", freeMainTopics: FREE_MAIN_TOPICS, subDrillTargetMin: SUB_DRILL_TARGET_MIN, subDrillMaxQuestions: SUB_DRILL_MAX_QUESTIONS, mainDrillTargetMin: MAIN_DRILL_TARGET_MIN, mainDrillMaxQuestions: MAIN_DRILL_MAX_QUESTIONS, report }, null, 2));
   } finally {
     await mongoose.disconnect();
   }
