@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "status": "LOCKED_EXECUTION_CONTRACT",
+  "objective": "Shortest safe path to Production/E2E with each question mastered once before upload.",
+  "immutableRules": [
+    "CROP is CLOSED at 2135/2135; reopen only for a proven crop defect.",
+    "A source group/title is provenance only and never sufficient evidence for exact canonical skill.",
+    "Each question is mastered in one pass: provenance + canonical main/subskill + correctAnswer + stepByStepSolution + educationalExplanation + difficulty + difficultyReason + imageHash + contentFingerprint + ideaFingerprint.",
+    "Unclear evidence is HOLD/REVIEW fail-closed; continue immediately with the next question.",
+    "No new skills outside canonical 25 main / 95 subskills.",
+    "No production/R2 upload while QUESTION_MASTERING, QA_LOCK or DEDUPE_LOCK is open.",
+    "A PASS+LOCK stage is not reopened unless a documented defect invalidates its evidence."
+  ],
+  "stages": [
+    {
+      "order": 1,
+      "name": "CROP_LOCK",
+      "status": "PASS_LOCKED",
+      "done": 2135,
+      "total": 2135
+    },
+    {
+      "order": 2,
+      "name": "QUESTION_MASTERING",
+      "status": "IN_PROGRESS",
+      "done": 135,
+      "total": 2135,
+      "gate": "Every non-HOLD record has the complete one-pass master payload."
+    },
+    {
+      "order": 3,
+      "name": "QA_LOCK",
+      "status": "BLOCKED",
+      "gate": "Independent full-book question↔answer↔solution↔skill consistency and required-fields QA."
+    },
+    {
+      "order": 4,
+      "name": "DEDUPE_LOCK",
+      "status": "BLOCKED",
+      "gate": "Full MNSF26 internal + FND26(858) + COL2627(946), imageHash plus content/idea fingerprints; no imageHash-only suppression."
+    },
+    {
+      "order": 5,
+      "name": "R2_UPLOAD_LOCK",
+      "status": "BLOCKED",
+      "gate": "Presign/upload + remote SHA verification; persist imageUrl/imageHash/cropStatus."
+    },
+    {
+      "order": 6,
+      "name": "IMPORT_LOCK",
+      "status": "BLOCKED",
+      "gate": "verify:mnsf26:all full-book → dry-run → canary5 → verify → full draft import → integrity/live-image."
+    },
+    {
+      "order": 7,
+      "name": "PRODUCTION_E2E_LOCK",
+      "status": "BLOCKED",
+      "gate": "Production learner/results/reporting paths verified and documented."
+    }
+  ],
+  "preservedFailClosed": [
+    "P001/Q10 HOLD",
+    "P013/Q15 HOLD",
+    "P014/Q08 QUARANTINE",
+    "arithmetic test33 SOURCE_ABSENT_UNRESOLVED",
+    "geometry T24/Q18 SOURCE_ABSENT"
+  ],
+  "preservedFacts": [
+    "P011/Q19 correctAnswer=B",
+    "5 known suppressions remain preserved"
+  ],
+  "execution": "Work source-order in large batches. Save checkpoints to GitHub but do not treat commits as stage completion. Update MNSF26_EXECUTION_STATE_V1.json after every substantial batch."
+}
