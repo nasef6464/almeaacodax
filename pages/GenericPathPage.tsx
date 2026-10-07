@@ -121,7 +121,8 @@ export const GenericPathPage: React.FC = () => {
         if (!subjectId) return null;
         if (pathSubjects.some((subject) => subject.id === subjectId)) return subjectId;
         const aliases = legacySubjectNameAliases[subjectId] || [];
-        return pathSubjects.find((subject) => hasNameAlias(subject.name, aliases))?.id || null;
+        const matchedAlias = pathSubjects.find((subject) => hasNameAlias(subject.name, aliases))?.id;
+        return matchedAlias || subjectId;
     };
 
     // Sync state with URL changes
@@ -159,7 +160,8 @@ export const GenericPathPage: React.FC = () => {
     }, [navigate, pathId, resolvedPathId]);
 
     useEffect(() => {
-        if (!path?.id || !selectedSubjectId) {
+        const effectivePathId = path?.id || resolvedPathId;
+        if (!effectivePathId || !selectedSubjectId) {
             return;
         }
 
@@ -177,7 +179,7 @@ export const GenericPathPage: React.FC = () => {
                 const batch = await adapter.getQuizzes({
                     page,
                     limit: pageSize,
-                    pathId: path.id,
+                    pathId: effectivePathId,
                     subjectId: scopedSubjectId,
                 });
                 scopedQuizzes.push(...batch);
