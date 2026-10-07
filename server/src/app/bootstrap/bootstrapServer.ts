@@ -15,6 +15,8 @@ import { runBio26FinalClosureIfRequested } from "../../scripts/runBio26FinalClos
 import { runChem26FinalClosureIfRequested } from "../../scripts/runChem26FinalClosure.js";
 import { runChem26LearningStructureIfNeeded } from "./runChem26LearningStructure.js";
 import { runChem26StandardTestsIfNeeded } from "./runChem26StandardTests.js";
+import { runBio26LearningStructureIfNeeded } from "./runBio26LearningStructure.js";
+import { runBio26StandardTestsIfNeeded } from "./runBio26StandardTests.js";
 
 /**
  * Composes the existing API runtime in one explicit bootstrap boundary.
@@ -52,6 +54,12 @@ export async function bootstrapServer() {
     });
     void runBio26FinalClosureIfRequested().catch((error) => {
       console.error("BIO26_FINAL_CLOSURE_FAILED", error instanceof Error ? error.message : "Unknown error");
+    });
+    void runBio26LearningStructureIfNeeded().catch((error) => {
+      console.error("BIO26_LEARNING_STRUCTURE_FAILED", error instanceof Error ? error.message : "Unknown error");
+    });
+    void runBio26StandardTestsIfNeeded().catch((error) => {
+      console.error("BIO26_STANDARD_TESTS_FAILED", error instanceof Error ? error.message : "Unknown error");
     });
   });
 
