@@ -1,5 +1,15 @@
 # ALMEAA Command Center — Handoff / Execution State
 
+> **AUTHORITATIVE POST-#430 CHECKPOINT — 2026-10-07**
+> - PR #430 merged; Command Center verified checkpoint: `3aee9949bebe5b62a593760e76e4e02a55f9e2d2`. Repository `main` has since advanced with unrelated work; re-certify only if overlapping Command Center/MCP code changes land.
+> - Vercel Production deployment `dpl_3EKdDrCLX2CEvgFMjbLuST4mpdzJ`: READY on the verified Command Center SHA.
+> - Lightweight post-merge gates are Green: Secret Hygiene; PLAN7 no-inference boundary; Post Deploy Smoke; Remote MCP fail-closed boundary; Platform V3 Live Role paced low-load auth (run `37543754793`, attempt 2).
+> - Production Render is light-only: release identity/health and small paced auth/API/MCP boundary smoke. Heavy LLM/provider quota/PDF/OCR/bulk processing/rendering/wide-browser/load tests stay off Production.
+> - Remote MCP remains intentionally fail-closed. Do not enable `ALMEAA_MCP_ENABLED` without a trusted Production OAuth 2.1 IdP and real issuer/audience/scopes.
+> - Issue #386 remains OPEN. CC-6 is the only closure gate still pending: trusted Production OAuth IdP + limited live MCP certification + real external MCP client proof.
+> - All older checkpoints below are historical/non-authoritative where they conflict with this block.
+
+
 > **POST-MERGE CHECKPOINT — 2026-10-07**
 > - PR #429 merged into `main`: `79d96b2cd0b0834769f2e927c73f6552c2216f24`.
 > - Vercel Production: READY on the exact merge SHA.
