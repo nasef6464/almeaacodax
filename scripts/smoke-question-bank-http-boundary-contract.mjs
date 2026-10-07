@@ -74,7 +74,7 @@ check('question bank mutations remain scoped and workflow-safe', () => {
     'assertManagedContentScope(req.authUser!',
     'buildOwnedDocumentQuery(req.params.id, req.authUser!)',
     'sanitizeWorkflowUpdate(',
-    '{ ...payload, skillIds: canonicalSkills.skillIds } as Record<string, unknown>',
+    '{ ...payload, skillIds: canonicalSkills.skillIds, skillId: canonicalSkills.skillId, subSkillId: canonicalSkills.subSkillId, subSkillIds: canonicalSkills.subSkillIds } as Record<string, unknown>',
     'QuizModel.updateMany(',
   ]) assert.ok(questionRoutes.includes(fragment), `question route lost ${fragment}`);
 });
