@@ -69,14 +69,19 @@ const INITIAL_QA_THREAD: QuestionThreadItem[] = [
   },
 ];
 
-const getCanonicalQuestionSkillIds = (question: Question) => {
-  const canonical = [question.skillId, question.subSkillId]
-    .map((value) => String(value || '').trim())
-    .filter(Boolean);
-  return canonical.length > 0
-    ? Array.from(new Set(canonical))
-    : Array.from(new Set((question.skillIds || []).map(String).filter(Boolean)));
-};
+const getCanonicalQuestionSkillIds = (question: Question) =>
+  Array.from(
+    new Set(
+      [
+        question.skillId,
+        question.subSkillId,
+        ...(question.subSkillIds || []),
+        ...(question.skillIds || []),
+      ]
+        .map((value) => String(value || '').trim())
+        .filter(Boolean),
+    ),
+  );
 
 const resolveQuizSkillTaxonomy = (skillId: string, allSkills: any[]) => {
   const requestedId = String(skillId || '').trim();
