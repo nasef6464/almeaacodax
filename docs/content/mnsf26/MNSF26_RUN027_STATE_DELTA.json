@@ -1,0 +1,12 @@
+{
+  "bank": "MNSF26",
+  "baseStateMapping": 141,
+  "run027": {
+    "mastered": 5,
+    "review": 2
+  },
+  "effectiveMapping": 146,
+  "effectiveMasteredComplete": 144,
+  "next": "finish T22 then T23",
+  "stateUpdate": "DEFERRED_CONNECTOR_POLICY_BLOCK"
+}
