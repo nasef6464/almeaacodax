@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 5,
+  "schemaVersion": 6,
   "bank": "MNSF26",
   "generatedFrom": "analysis batches 001-013",
   "taxonomyContract": {
@@ -21,7 +21,9 @@
     "readyDifficulty": 130,
     "readyQuestionFingerprint": 130,
     "readyExplanationFingerprint": 130,
-    "readySpeechText": 130
+    "readySpeechText": 130,
+    "difficultyNormalized": 128,
+    "difficultyReasonAuthored": 4
   },
   "records": [
     {
@@ -363,6 +365,13 @@
         "sourceSkillLabel": "قراءة الأعداد والأعداد المحصورة",
         "evidence": "RAW_PDF_TEXT_HEADER",
         "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "mappingReview": {
+        "decision": "APPROVE_CROSS_TOPIC",
+        "reviewedSubSkillId": "sub_quant_01_5",
+        "rationale": "السؤال يختبر خانة الآحاد مباشرة؛ 1.5 هو أقرب canonical مطابق لطريقة الحل، مع حفظ تصنيف المصدر.",
+        "sourceClassificationPreserved": true,
+        "reviewBasis": "QUESTION_MATH_PLUS_CANONICAL_TAXONOMY_NAME"
       }
     },
     {
@@ -394,6 +403,13 @@
         "sourceSkillLabel": "قراءة الأعداد والأعداد المحصورة",
         "evidence": "RAW_PDF_TEXT_HEADER",
         "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "mappingReview": {
+        "decision": "KEEP_REVIEW",
+        "reviewedSubSkillId": null,
+        "rationale": "عد مدى شامل ثم أخذ المتممة لا يطابق مرشحًا واحدًا بصورة آمنة؛ لا تخمين.",
+        "sourceClassificationPreserved": true,
+        "reviewBasis": "QUESTION_MATH_PLUS_CANONICAL_TAXONOMY_NAME"
       }
     },
     {
@@ -425,6 +441,13 @@
         "sourceSkillLabel": "قراءة الأعداد والأعداد المحصورة",
         "evidence": "RAW_PDF_TEXT_HEADER",
         "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "mappingReview": {
+        "decision": "APPROVE_CROSS_TOPIC",
+        "reviewedSubSkillId": "sub_quant_01_5",
+        "rationale": "المطلوب قيمة منزلية للرقم 3؛ canonical 1.5 هو الأقرب لمفهوم الخانة.",
+        "sourceClassificationPreserved": true,
+        "reviewBasis": "QUESTION_MATH_PLUS_CANONICAL_TAXONOMY_NAME"
       }
     },
     {
@@ -865,6 +888,13 @@
         "sourceSkillLabel": "العمليات على الاعداد",
         "evidence": "RAW_PDF_TEXT_HEADER",
         "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "mappingReview": {
+        "decision": "APPROVE_CROSS_TOPIC",
+        "reviewedSubSkillId": "sub_quant_13_4",
+        "rationale": "عد خانات ترقيم الصفحات عكسيًا؛ taxonomy 13.4 ينص صراحة على قانون عدد الصفحات.",
+        "sourceClassificationPreserved": true,
+        "reviewBasis": "QUESTION_MATH_PLUS_CANONICAL_TAXONOMY_NAME"
       }
     },
     {
@@ -989,6 +1019,13 @@
         "sourceSkillLabel": "العمليات على الاعداد",
         "evidence": "RAW_PDF_TEXT_HEADER",
         "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "mappingReview": {
+        "decision": "APPROVE_CROSS_TOPIC",
+        "reviewedSubSkillId": "sub_quant_18_2",
+        "rationale": "بنية اختيارات/طبقات 5×5×5×5؛ مبدأ العد الأساسي 18.2.",
+        "sourceClassificationPreserved": true,
+        "reviewBasis": "QUESTION_MATH_PLUS_CANONICAL_TAXONOMY_NAME"
       }
     },
     {
@@ -1082,6 +1119,13 @@
         "sourceSkillLabel": "العمليات على الاعداد",
         "evidence": "RAW_PDF_TEXT_HEADER",
         "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "mappingReview": {
+        "decision": "APPROVE_CROSS_TOPIC",
+        "reviewedSubSkillId": "sub_quant_07_2",
+        "rationale": "الحالة الابتدائية مجهولة وتُحل بالمعادلة س-6+4=28؛ معادلة خطية 7.2.",
+        "sourceClassificationPreserved": true,
+        "reviewBasis": "QUESTION_MATH_PLUS_CANONICAL_TAXONOMY_NAME"
       }
     },
     {
@@ -1175,6 +1219,13 @@
         "sourceSkillLabel": "العمليات على الاعداد",
         "evidence": "RAW_PDF_TEXT_HEADER",
         "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "mappingReview": {
+        "decision": "APPROVE_CROSS_TOPIC",
+        "reviewedSubSkillId": "sub_quant_11_1",
+        "rationale": "الطريقة الأسرع المعتمدة هي تجريب الأعداد/الخيارات حتى تحقق ضرب=جمع؛ 11.1.",
+        "sourceClassificationPreserved": true,
+        "reviewBasis": "QUESTION_MATH_PLUS_CANONICAL_TAXONOMY_NAME"
       }
     },
     {
@@ -1186,7 +1237,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": "ذهب 5 أشخاص لحفلة ومجموع ما دفعوه 1000 ريال. قارن بين 400 ريال وما دفعه شخصان.",
       "correct": "المعطيات غير كافية؛ لأن مجموع الخمسة = 1000 لا يحدد ما دفعه أي شخصين بعينهما، فيمكن أن يكون مجموعهما أقل من 400 أو مساويًا لها أو أكبر منها بحسب التوزيع.",
-      "difficulty": "Easy/Medium.",
+      "difficulty": "Medium",
       "skillId": "skill_quant_11",
       "subSkillId": "sub_quant_11_1",
       "questionFingerprint": "quantitative-comparison / unspecified-subset / insufficient-data.",
@@ -1206,6 +1257,14 @@
         "sourceSkillLabel": "العمليات على الاعداد",
         "evidence": "RAW_PDF_TEXT_HEADER",
         "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "difficultyReason": "يتطلب إدراك أن مجموع الخمسة لا يحدد نصيب شخصين بعينهما، ثم اختبار تعدد الحالات الممكنة قبل الحكم بأن المعطيات غير كافية.",
+      "mappingReview": {
+        "decision": "APPROVE_CROSS_TOPIC",
+        "reviewedSubSkillId": "sub_quant_11_1",
+        "rationale": "مقارنة كمية بمعطيات غير كافية تُحسم بالاستبعاد المنطقي وإثبات تعدد الحالات؛ 11.1.",
+        "sourceClassificationPreserved": true,
+        "reviewBasis": "QUESTION_MATH_PLUS_CANONICAL_TAXONOMY_NAME"
       }
     },
     {
@@ -1237,6 +1296,13 @@
         "sourceSkillLabel": "العمليات على الاعداد",
         "evidence": "RAW_PDF_TEXT_HEADER",
         "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "mappingReview": {
+        "decision": "APPROVE_CROSS_TOPIC",
+        "reviewedSubSkillId": "sub_quant_18_2",
+        "rationale": "عد مستويين: 9×5 ثم إضافة الحاويات الأصلية؛ جوهرها مبدأ العد 18.2.",
+        "sourceClassificationPreserved": true,
+        "reviewBasis": "QUESTION_MATH_PLUS_CANONICAL_TAXONOMY_NAME"
       }
     },
     {
@@ -1299,6 +1365,13 @@
         "sourceSkillLabel": "العمليات على الاعداد",
         "evidence": "RAW_PDF_TEXT_HEADER",
         "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "mappingReview": {
+        "decision": "APPROVE_CROSS_TOPIC",
+        "reviewedSubSkillId": "sub_quant_05_2",
+        "rationale": "3×3×3 تمثل قوة صغيرة ثم مقارنة الناتج؛ تصنيف الأسس/القوى الحالي متسق مع طريقة الحل.",
+        "sourceClassificationPreserved": true,
+        "reviewBasis": "QUESTION_MATH_PLUS_CANONICAL_TAXONOMY_NAME"
       }
     },
     {
@@ -1617,6 +1690,13 @@
         "sourceSkillLabel": "العمليات على الاعداد",
         "evidence": "RAW_PDF_TEXT_HEADER",
         "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "mappingReview": {
+        "decision": "APPROVE_CROSS_TOPIC",
+        "reviewedSubSkillId": "sub_quant_08_2",
+        "rationale": "تحويل كل كمية إلى معدل يومي ثم المقارنة؛ تناسب/معدل طردي 8.2.",
+        "sourceClassificationPreserved": true,
+        "reviewBasis": "QUESTION_MATH_PLUS_CANONICAL_TAXONOMY_NAME"
       }
     },
     {
@@ -1648,6 +1728,13 @@
         "sourceSkillLabel": "العمليات على الاعداد",
         "evidence": "RAW_PDF_TEXT_HEADER",
         "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "mappingReview": {
+        "decision": "APPROVE_CROSS_TOPIC",
+        "reviewedSubSkillId": "sub_quant_18_2",
+        "rationale": "5 شقق ×6 غرف ×5 لوحات؛ مبدأ العد متعدد الطبقات 18.2.",
+        "sourceClassificationPreserved": true,
+        "reviewBasis": "QUESTION_MATH_PLUS_CANONICAL_TAXONOMY_NAME"
       }
     },
     {
@@ -1710,6 +1797,13 @@
         "sourceSkillLabel": "العمليات على الاعداد",
         "evidence": "RAW_PDF_TEXT_HEADER",
         "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "mappingReview": {
+        "decision": "APPROVE_CROSS_TOPIC",
+        "reviewedSubSkillId": "sub_quant_04_2",
+        "rationale": "1470÷10؛ taxonomy 4.2 يشمل القسمة وقوى 10.",
+        "sourceClassificationPreserved": true,
+        "reviewBasis": "QUESTION_MATH_PLUS_CANONICAL_TAXONOMY_NAME"
       }
     },
     {
@@ -1741,6 +1835,13 @@
         "sourceSkillLabel": "العمليات على الاعداد",
         "evidence": "RAW_PDF_TEXT_HEADER",
         "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "mappingReview": {
+        "decision": "APPROVE_CROSS_TOPIC",
+        "reviewedSubSkillId": "sub_quant_13_4",
+        "rationale": "إكمال عدد المقاعد في الصفوف والأعمدة من موضع شخص؛ 13.4 ينص على المقاعد والترتيب في الصف.",
+        "sourceClassificationPreserved": true,
+        "reviewBasis": "QUESTION_MATH_PLUS_CANONICAL_TAXONOMY_NAME"
       }
     },
     {
@@ -1876,7 +1977,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": "إذا كان عدد طلاب الفصل 145 طالب وقام المعلم بتوزيع ورق الاختبار لكل طالب 3 ورقات، كم عدد أوراق الاختبار بالكامل؟",
       "correct": "أ (435).",
-      "difficulty": "Easy.",
+      "difficulty": "Easy",
       "skillId": "skill_quant_08",
       "subSkillId": "sub_quant_08_2",
       "questionFingerprint": "direct-proportion / fixed-units-per-person / total = count × units.",
@@ -1896,6 +1997,13 @@
         "sourceSkillLabel": "العمليات على الاعداد",
         "evidence": "RAW_PDF_TEXT_HEADER",
         "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "mappingReview": {
+        "decision": "APPROVE_CROSS_TOPIC",
+        "reviewedSubSkillId": "sub_quant_08_2",
+        "rationale": "3 أوراق لكل طالب ×145؛ معدل ثابت/تناسب طردي مباشر 8.2.",
+        "sourceClassificationPreserved": true,
+        "reviewBasis": "QUESTION_MATH_PLUS_CANONICAL_TAXONOMY_NAME"
       }
     },
     {
@@ -1907,7 +2015,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": "يعمل شخص 8 ساعات يومياً من الأحد إلى الخميس ويوم الجمعة إجازة ويوم السبت يعمل 4 ساعات، ما عدد ساعات عمله في الأسبوع؟",
       "correct": "ج (44).",
-      "difficulty": "Easy.",
+      "difficulty": "Easy",
       "skillId": "skill_quant_01",
       "subSkillId": "sub_quant_01_2",
       "questionFingerprint": "repeated-equal-addends / weekly schedule / count-days-then-add-exception.",
@@ -1938,7 +2046,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": "فاطمة معها 45 تفاحة وزينب معها 25 برتقالة، قارن بين: القيمة الأولى مجموع ما معهما، القيمة الثانية 60.",
       "correct": "أ (القيمة الأولى أكبر).",
-      "difficulty": "Easy.",
+      "difficulty": "Easy",
       "skillId": "skill_quant_01",
       "subSkillId": "sub_quant_01_1",
       "questionFingerprint": "quantitative-comparison / sum-two-counts / compare-to-constant.",
@@ -1969,7 +2077,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": "إذا كان درجة إبراهيم في الرياضيات 98 ودرجة يوسف 93، قارن بين: القيمة الأولى الفرق بين درجتيهما، القيمة الثانية 4.",
       "correct": "أ (القيمة الأولى أكبر).",
-      "difficulty": "Easy.",
+      "difficulty": "Easy",
       "skillId": "skill_quant_01",
       "subSkillId": "sub_quant_01_1",
       "questionFingerprint": "quantitative-comparison / absolute-difference / compare-to-constant.",
@@ -2000,7 +2108,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": "علي وستة أشخاص يملكون 3710 ريال وزع عليهم بالتساوي، قارن بين: القيمة الأولى نصيب كل شخص، القيمة الثانية 530 ريال.",
       "correct": "ج (القيمتان متساويتان).",
-      "difficulty": "Easy/Medium.",
+      "difficulty": "Medium",
       "skillId": "skill_quant_08",
       "subSkillId": "sub_quant_08_1",
       "questionFingerprint": "equal-sharing / hidden-total-person-count / compare-share-to-constant.",
@@ -2020,6 +2128,14 @@
         "sourceSkillLabel": "العمليات على الاعداد",
         "evidence": "RAW_PDF_TEXT_HEADER",
         "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "difficultyReason": "يتطلب خطوتين: ملاحظة أن علي مع ستة أشخاص يعني 7 مستفيدين، ثم القسمة والمقارنة.",
+      "mappingReview": {
+        "decision": "APPROVE_CROSS_TOPIC",
+        "reviewedSubSkillId": "sub_quant_08_1",
+        "rationale": "تحديد 7 مستفيدين ثم تقسيم 3710 بالتساوي؛ مفهوم النسبة والتقسيم التناسبي 8.1.",
+        "sourceClassificationPreserved": true,
+        "reviewBasis": "QUESTION_MATH_PLUS_CANONICAL_TAXONOMY_NAME"
       }
     },
     {
@@ -2031,7 +2147,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": "أعطى أب ابنه 5 ريال وكل يوم يعطيه مثلي اليوم السابق، ما مجموع ما أعطاه في 6 أيام؟",
       "correct": "ج (315).",
-      "difficulty": "Medium.",
+      "difficulty": "Medium",
       "skillId": "skill_quant_14",
       "subSkillId": "sub_quant_14_4",
       "questionFingerprint": "multiplicative-sequence / doubling-each-step / finite-sum.",
@@ -2051,6 +2167,13 @@
         "sourceSkillLabel": "العمليات على الاعداد",
         "evidence": "RAW_PDF_TEXT_HEADER",
         "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "mappingReview": {
+        "decision": "APPROVE_CROSS_TOPIC",
+        "reviewedSubSkillId": "sub_quant_14_4",
+        "rationale": "تضاعف يومي 5،10،20... ثم جمع ستة حدود؛ نمط/متتابعة متكررة 14.4.",
+        "sourceClassificationPreserved": true,
+        "reviewBasis": "QUESTION_MATH_PLUS_CANONICAL_TAXONOMY_NAME"
       }
     },
     {
@@ -2062,7 +2185,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": "\"إذا كانت هند تقرأ 3 قصص في 6 ساعات، قارن بين: القيمة الأولى: المدة التي تقرأ فيها صفحتين، القيمة الثانية: 8 ساعات.\"",
       "correct": "المعطيات غير كافية.",
-      "difficulty": "Easy/Medium.",
+      "difficulty": "Medium",
       "skillId": "skill_quant_11",
       "subSkillId": "sub_quant_11_1",
       "questionFingerprint": "unit-mismatch / rate-comparison / insufficient-data.",
@@ -2082,6 +2205,14 @@
         "sourceSkillLabel": "العمليات على الاعداد",
         "evidence": "RAW_PDF_TEXT_HEADER",
         "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "difficultyReason": "يتطلب فحص توافق الوحدات أولًا واكتشاف أن عدد القصص لا يحدد عدد الصفحات، ثم رفض التناسب غير الصالح.",
+      "mappingReview": {
+        "decision": "APPROVE_CROSS_TOPIC",
+        "reviewedSubSkillId": "sub_quant_11_1",
+        "rationale": "الوحدات غير متوافقة (قصص مقابل صفحات)، لذا المعطيات غير كافية ويُحسم بالاستبعاد المنطقي 11.1.",
+        "sourceClassificationPreserved": true,
+        "reviewBasis": "QUESTION_MATH_PLUS_CANONICAL_TAXONOMY_NAME"
       }
     },
     {
@@ -2093,7 +2224,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": "ما هي أكبر قيمة يمكن الحصول عليها عند إضافة صفر للرقم 2345186؟",
       "correct": "بين 8 و6.",
-      "difficulty": "Medium.",
+      "difficulty": "Medium",
       "skillId": "skill_quant_01",
       "subSkillId": "sub_quant_01_5",
       "questionFingerprint": "digit-insertion / maximize-positional-value / compare-place-values.",
@@ -2124,7 +2255,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": null,
       "correct": "ج = 14.",
-      "difficulty": "Easy.",
+      "difficulty": "Easy",
       "skillId": "skill_quant_10",
       "subSkillId": "sub_quant_10_3",
       "questionFingerprint": "savings-goal / monthly-fixed-saving / months = target ÷ monthly.",
@@ -2155,7 +2286,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": null,
       "correct": "ج = 70.",
-      "difficulty": "Easy.",
+      "difficulty": "Easy",
       "skillId": "skill_quant_01",
       "subSkillId": "sub_quant_01_1",
       "questionFingerprint": "sum-three-amounts / mental-grouping.",
@@ -2186,7 +2317,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": null,
       "correct": "أ = 50.",
-      "difficulty": "Easy.",
+      "difficulty": "Easy",
       "skillId": "skill_quant_10",
       "subSkillId": "sub_quant_10_3",
       "questionFingerprint": "unit-price × quantity / mixed-purchase-total.",
@@ -2217,7 +2348,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": null,
       "correct": "ج = 48.",
-      "difficulty": "Medium.",
+      "difficulty": "Medium",
       "skillId": "skill_quant_07",
       "subSkillId": "sub_quant_07_2",
       "questionFingerprint": "reverse-linear-state / passenger-change / half-capacity.",
@@ -2248,7 +2379,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": null,
       "correct": "أ = 13.",
-      "difficulty": "Medium.",
+      "difficulty": "Medium",
       "skillId": "skill_quant_18",
       "subSkillId": "sub_quant_18_1",
       "questionFingerprint": "bounded-outcomes / repeated-die / impossibility-by-maximum.",
@@ -2279,7 +2410,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": null,
       "correct": "ب = 102.",
-      "difficulty": "Medium.",
+      "difficulty": "Medium",
       "skillId": "skill_quant_01",
       "subSkillId": "sub_quant_01_3",
       "questionFingerprint": "consecutive-even-sequence / total-to-first-term.",
@@ -2310,7 +2441,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": null,
       "correct": "ج = equal.",
-      "difficulty": "Easy.",
+      "difficulty": "Easy",
       "skillId": "skill_quant_01",
       "subSkillId": "sub_quant_01_2",
       "questionFingerprint": "out-and-back / double-one-way-distance.",
@@ -2341,7 +2472,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": null,
       "correct": "ب = 25.",
-      "difficulty": "Medium.",
+      "difficulty": "Medium",
       "skillId": "skill_quant_07",
       "subSkillId": "sub_quant_07_2",
       "questionFingerprint": "transfer-between-two / invariant-total / equal-after-transfer.",
@@ -2372,7 +2503,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": null,
       "correct": "ب = 15.",
-      "difficulty": "Easy.",
+      "difficulty": "Easy",
       "skillId": "skill_quant_06",
       "subSkillId": "sub_quant_06_4",
       "questionFingerprint": "square-array / rows=columns / square-root-total.",
@@ -2403,7 +2534,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": null,
       "correct": "ج = 69.",
-      "difficulty": "Easy.",
+      "difficulty": "Easy",
       "skillId": "skill_quant_01",
       "subSkillId": "sub_quant_01_2",
       "questionFingerprint": "partitioned-length / repeated-addition / total-from-groups.",
@@ -2434,7 +2565,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": "يوجد في مسجد 5 أشخاص وبعد ربع ساعة دخل 5 أشخاص وبعد التكبير لإقامة الصلاة دخل إلى المسجد مثلي عدد الأشخاص الموجودين، كم عدد المصلين عند إقامة الصلاة؟",
       "correct": "30.",
-      "difficulty": "Medium.",
+      "difficulty": "Medium",
       "skillId": "skill_quant_01",
       "subSkillId": "sub_quant_01_2",
       "questionFingerprint": "staged-count / double-current-group / add-new-arrivals.",
@@ -2465,7 +2596,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": "تقرأ أميرة كل يوم 10 صفحات من كتاب، كم صفحة تقرأ في أربعة أيام؟",
       "correct": "40.",
-      "difficulty": "Easy.",
+      "difficulty": "Easy",
       "skillId": "skill_quant_01",
       "subSkillId": "sub_quant_01_2",
       "questionFingerprint": "fixed-daily-rate / repeated-addition.",
@@ -2496,7 +2627,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": "3 □ 4 □ 3 = 15؛ اختر العمليتين المناسبتين.",
       "correct": "× ثم + (الخيار أ في المصدر).",
-      "difficulty": "Medium.",
+      "difficulty": "Medium",
       "skillId": "skill_quant_01",
       "subSkillId": "sub_quant_01_4",
       "questionFingerprint": "fill-operators / target-value / operation-order.",
@@ -2527,7 +2658,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": "إذا كان سعر البطيخة 10 ريال ورجل لديه 100 ريال ويريد شراء أكبر عدد من البطيخ، كم بطيخة يستطيع الشراء؟",
       "correct": "10.",
-      "difficulty": "Easy.",
+      "difficulty": "Easy",
       "skillId": "skill_quant_10",
       "subSkillId": "sub_quant_10_3",
       "questionFingerprint": "budget / unit-price / maximum-whole-units.",
@@ -2558,7 +2689,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": "طفل كل 3 شهور يزيد وزنه 2 كجم، ما الزيادة في وزنه خلال سنة؟",
       "correct": "8.",
-      "difficulty": "Easy.",
+      "difficulty": "Easy",
       "skillId": "skill_quant_14",
       "subSkillId": "sub_quant_14_4",
       "questionFingerprint": "periodic-increase / convert-year-to-periods / repeated-gain.",
@@ -2589,7 +2720,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": "إذا كان أحمد يستغرق 2 دقيقة ذهاباً وإياباً إلى منزل صديقه، فإذا سار أحمد لمدة 10 دقائق، كم مرة ذهب لمنزل صديقه؟",
       "correct": "5 (وفق قراءة دورة الذهاب والإياب الكاملة في المصدر).",
-      "difficulty": "Medium.",
+      "difficulty": "Medium",
       "skillId": "skill_quant_14",
       "subSkillId": "sub_quant_14_4",
       "questionFingerprint": "repeated-cycle / round-trip-duration / count-visits.",
@@ -2620,7 +2751,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": "أوجد قيمة 6666 ÷ 22.",
       "correct": "303.",
-      "difficulty": "Easy/Medium.",
+      "difficulty": "Easy",
       "skillId": "skill_quant_01",
       "subSkillId": "sub_quant_01_4",
       "questionFingerprint": "integer-division / quotient-recognition.",
@@ -2640,7 +2771,8 @@
         "sourceSkillLabel": "العمليات على الاعداد",
         "evidence": "RAW_PDF_TEXT_HEADER",
         "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
-      }
+      },
+      "difficultyReason": "عملية قسمة عددية مباشرة بفكرة واحدة ويمكن التحقق منها بضرب 22×303."
     },
     {
       "questionCode": "QDR-QNT-MNSF26-P009-Q20",
@@ -2651,7 +2783,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": "يصوم خالد 5 أيام في الشهرين، وأحمد يصوم 2 يوم كل شهر؛ قارن بين عدد أيام صيام خالد في السنة وعدد أيام صيام أحمد في السنة.",
       "correct": "القيمة الأولى أكبر.",
-      "difficulty": "Medium.",
+      "difficulty": "Medium",
       "skillId": "skill_quant_08",
       "subSkillId": "sub_quant_08_2",
       "questionFingerprint": "rate-comparison / normalize-time-window / annualize-rates.",
@@ -2682,7 +2814,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": "150 ريال distributed among خالد، أحمد، ليان، روان، ماجد. أحمد وخالد معهما ثلثا المبلغ; روان معها نصف خالد; ليان معها ثلثا ما مع روان; ماجد معه ما مع روان وليان. Find خالد.",
       "correct": "30.",
-      "difficulty": "Hard.",
+      "difficulty": "Hard",
       "skillId": "skill_quant_08",
       "subSkillId": "sub_quant_08_1",
       "questionFingerprint": "multi-person-ratio-allocation / total-conservation / chained-fractions.",
@@ -2744,7 +2876,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": null,
       "correct": "القيمة الأولى أكبر.",
-      "difficulty": "Easy.",
+      "difficulty": "Easy",
       "skillId": "skill_quant_01",
       "subSkillId": "sub_quant_01_2",
       "questionFingerprint": "multiply-then-compare.",
@@ -2775,7 +2907,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": null,
       "correct": "3250.",
-      "difficulty": "Medium.",
+      "difficulty": "Medium",
       "skillId": "skill_quant_10",
       "subSkillId": "sub_quant_10_3",
       "questionFingerprint": "fixed-pay-plus-commission / multi-period-income.",
@@ -2806,7 +2938,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": null,
       "correct": "2.",
-      "difficulty": "Easy.",
+      "difficulty": "Easy",
       "skillId": "skill_quant_01",
       "subSkillId": "sub_quant_01_1",
       "questionFingerprint": "complement-count / compare-remainders.",
@@ -2837,7 +2969,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": null,
       "correct": "5000.",
-      "difficulty": "Easy.",
+      "difficulty": "Easy",
       "skillId": "skill_quant_08",
       "subSkillId": "sub_quant_08_2",
       "questionFingerprint": "unit-rate × time.",
@@ -2868,7 +3000,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": null,
       "correct": "option أ.",
-      "difficulty": "Medium.",
+      "difficulty": "Medium",
       "skillId": "skill_quant_08",
       "subSkillId": "sub_quant_08_2",
       "questionFingerprint": "equivalent-ratio / scale-both-terms.",
@@ -2899,7 +3031,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": null,
       "correct": "225.",
-      "difficulty": "Medium.",
+      "difficulty": "Medium",
       "skillId": "skill_quant_14",
       "subSkillId": "sub_quant_14_4",
       "questionFingerprint": "doubling-sequence / finite-sum.",
@@ -2930,7 +3062,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": null,
       "correct": "2.",
-      "difficulty": "Easy.",
+      "difficulty": "Easy",
       "skillId": "skill_quant_10",
       "subSkillId": "sub_quant_10_3",
       "questionFingerprint": "purchase-total / unit-price.",
@@ -2961,7 +3093,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": null,
       "correct": "5.",
-      "difficulty": "Easy.",
+      "difficulty": "Easy",
       "skillId": "skill_quant_01",
       "subSkillId": "sub_quant_01_3",
       "questionFingerprint": "consecutive-integers / known-sum / middle-as-average.",
@@ -2992,7 +3124,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": null,
       "correct": "40.",
-      "difficulty": "Easy.",
+      "difficulty": "Easy",
       "skillId": "skill_quant_10",
       "subSkillId": "sub_quant_10_3",
       "questionFingerprint": "mixed-purchase / quantity×unit-price / total-cost.",
@@ -3023,7 +3155,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": null,
       "correct": "القيمتان متساويتان.",
-      "difficulty": "Medium.",
+      "difficulty": "Medium",
       "skillId": "skill_quant_08",
       "subSkillId": "sub_quant_08_1",
       "questionFingerprint": "equal-share / subset-contribution / quantitative-comparison.",
@@ -3054,7 +3186,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": "(6+4)/2.",
       "correct": "5.",
-      "difficulty": "Easy.",
+      "difficulty": "Easy",
       "skillId": "skill_quant_01",
       "subSkillId": "sub_quant_01_4",
       "questionFingerprint": "arithmetic-expression / parentheses-first / division.",
@@ -3085,7 +3217,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": null,
       "correct": "القيمة الثانية أكبر.",
-      "difficulty": "Easy.",
+      "difficulty": "Easy",
       "skillId": "skill_quant_01",
       "subSkillId": "sub_quant_01_2",
       "questionFingerprint": "equal-share / reconstruct-total / quantitative-comparison.",
@@ -3116,7 +3248,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": null,
       "correct": "ب.",
-      "difficulty": "Easy.",
+      "difficulty": "Easy",
       "skillId": "skill_quant_01",
       "subSkillId": "sub_quant_01_5",
       "questionFingerprint": "expanded-form / place-value reconstruction.",
@@ -3147,7 +3279,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": null,
       "correct": "33.",
-      "difficulty": "Easy.",
+      "difficulty": "Easy",
       "skillId": "skill_quant_01",
       "subSkillId": "sub_quant_01_3",
       "questionFingerprint": "consecutive-integers / minimum-condition / sum.",
@@ -3178,7 +3310,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": null,
       "correct": "5.",
-      "difficulty": "Medium.",
+      "difficulty": "Medium",
       "skillId": "skill_quant_10",
       "subSkillId": "sub_quant_10_3",
       "questionFingerprint": "fixed-budget / price-increase / affordable-quantity.",
@@ -3209,7 +3341,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": null,
       "correct": "القيمة الثانية أكبر.",
-      "difficulty": "Easy.",
+      "difficulty": "Easy",
       "skillId": "skill_quant_01",
       "subSkillId": "sub_quant_01_4",
       "questionFingerprint": "arithmetic-comparison / operation-order.",
@@ -3271,7 +3403,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": null,
       "correct": "300.",
-      "difficulty": "Easy.",
+      "difficulty": "Easy",
       "skillId": "skill_quant_01",
       "subSkillId": "sub_quant_01_2",
       "questionFingerprint": "additive-consumption / combine-rates.",
@@ -3302,7 +3434,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": null,
       "correct": "القيمتان متساويتان.",
-      "difficulty": "Medium.",
+      "difficulty": "Medium",
       "skillId": "skill_quant_01",
       "subSkillId": "sub_quant_01_2",
       "questionFingerprint": "product-comparison / factor-regrouping.",
@@ -3333,7 +3465,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": null,
       "correct": "القيمتان متساويتان.",
-      "difficulty": "Medium.",
+      "difficulty": "Medium",
       "skillId": "skill_quant_01",
       "subSkillId": "sub_quant_01_2",
       "questionFingerprint": "product-comparison / factorial-style-equivalence.",
@@ -3364,7 +3496,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": null,
       "correct": "خاصية العنصر المحايد.",
-      "difficulty": "Easy.",
+      "difficulty": "Easy",
       "skillId": "skill_quant_01",
       "subSkillId": "sub_quant_01_1",
       "questionFingerprint": "additive-identity / arithmetic-property.",
@@ -3395,7 +3527,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": null,
       "correct": "القيمتان متساويتان.",
-      "difficulty": "Easy.",
+      "difficulty": "Easy",
       "skillId": "skill_quant_01",
       "subSkillId": "sub_quant_01_2",
       "questionFingerprint": "repeated-addition / multiplication-equivalence.",
@@ -3457,7 +3589,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": null,
       "correct": "1800.",
-      "difficulty": "Easy.",
+      "difficulty": "Easy",
       "skillId": "skill_quant_10",
       "subSkillId": "sub_quant_10_3",
       "questionFingerprint": "relative-price / total-purchase.",
@@ -3488,7 +3620,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": null,
       "correct": "30.",
-      "difficulty": "Easy.",
+      "difficulty": "Easy",
       "skillId": "skill_quant_14",
       "subSkillId": "sub_quant_14_4",
       "questionFingerprint": "constant-monthly-increase / repeated-pattern.",
@@ -3519,7 +3651,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": null,
       "correct": "48 students.",
-      "difficulty": "Hard.",
+      "difficulty": "Hard",
       "skillId": "skill_quant_07",
       "subSkillId": "sub_quant_07_2",
       "questionFingerprint": "two-capacity-conditions / linear-equation / classroom-seating.",
@@ -3550,7 +3682,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": null,
       "correct": "18.",
-      "difficulty": "Medium.",
+      "difficulty": "Medium",
       "skillId": "skill_quant_13",
       "subSkillId": "sub_quant_13_3",
       "questionFingerprint": "pieces-vs-cuts / interval-count.",
@@ -3581,7 +3713,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": null,
       "correct": "50.",
-      "difficulty": "Easy.",
+      "difficulty": "Easy",
       "skillId": "skill_quant_01",
       "subSkillId": "sub_quant_01_2",
       "questionFingerprint": "equal-groups / multiplication.",
@@ -3612,7 +3744,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": null,
       "correct": "6.",
-      "difficulty": "Easy.",
+      "difficulty": "Easy",
       "skillId": "skill_quant_08",
       "subSkillId": "sub_quant_08_2",
       "questionFingerprint": "fixed-units-per-object / total-to-count.",
@@ -3643,7 +3775,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": null,
       "correct": "30.",
-      "difficulty": "Medium.",
+      "difficulty": "Medium",
       "skillId": "skill_quant_01",
       "subSkillId": "sub_quant_01_1",
       "questionFingerprint": "complement-from-total / compare-two-years.",
@@ -3674,7 +3806,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": null,
       "correct": "48.",
-      "difficulty": "Medium.",
+      "difficulty": "Medium",
       "skillId": "skill_quant_13",
       "subSkillId": "sub_quant_13_4",
       "questionFingerprint": "newspaper-page-pair / total-pages-rule.",
@@ -3705,7 +3837,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": null,
       "correct": "القيمة الثانية أكبر.",
-      "difficulty": "Easy.",
+      "difficulty": "Easy",
       "skillId": "skill_quant_10",
       "subSkillId": "sub_quant_10_3",
       "questionFingerprint": "fixed-daily-saving / quantitative-comparison.",
@@ -3767,7 +3899,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": null,
       "correct": "320.",
-      "difficulty": "Easy.",
+      "difficulty": "Easy",
       "skillId": "skill_quant_08",
       "subSkillId": "sub_quant_08_2",
       "questionFingerprint": "unit-rate × time.",
@@ -3798,7 +3930,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": null,
       "correct": "4.",
-      "difficulty": "Easy.",
+      "difficulty": "Easy",
       "skillId": "skill_quant_14",
       "subSkillId": "sub_quant_14_4",
       "questionFingerprint": "visual-number-pattern / doubling.",
@@ -3829,7 +3961,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": null,
       "correct": "91÷13 =7.",
-      "difficulty": "Easy.",
+      "difficulty": "Easy",
       "skillId": "skill_quant_01",
       "subSkillId": "sub_quant_01_4",
       "questionFingerprint": "quotient-recognition / integer-division.",
@@ -3894,7 +4026,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": null,
       "correct": "23.",
-      "difficulty": "Easy.",
+      "difficulty": "Easy",
       "skillId": "skill_quant_08",
       "subSkillId": "sub_quant_08_2",
       "questionFingerprint": "equal-grouping / total-to-group-count.",
@@ -3925,7 +4057,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": "8 □ 3 □ 1 = 6.",
       "correct": "subtraction then addition.",
-      "difficulty": "Easy.",
+      "difficulty": "Easy",
       "skillId": "skill_quant_01",
       "subSkillId": "sub_quant_01_4",
       "questionFingerprint": "fill-operators / target-value / operation-order.",
@@ -3956,7 +4088,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": null,
       "correct": "1632.",
-      "difficulty": "Easy.",
+      "difficulty": "Easy",
       "skillId": "skill_quant_08",
       "subSkillId": "sub_quant_08_2",
       "questionFingerprint": "unit-rate × quantity.",
@@ -3987,7 +4119,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": null,
       "correct": "القيمة الثانية أكبر.",
-      "difficulty": "Easy.",
+      "difficulty": "Easy",
       "skillId": "skill_quant_01",
       "subSkillId": "sub_quant_01_4",
       "questionFingerprint": "fraction-expression comparison.",
@@ -4018,7 +4150,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": null,
       "correct": "8680.",
-      "difficulty": "Easy.",
+      "difficulty": "Easy",
       "skillId": "skill_quant_08",
       "subSkillId": "sub_quant_08_2",
       "questionFingerprint": "daily-distance × days.",
@@ -4049,7 +4181,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": null,
       "correct": "48.",
-      "difficulty": "Easy.",
+      "difficulty": "Easy",
       "skillId": "skill_quant_08",
       "subSkillId": "sub_quant_08_1",
       "questionFingerprint": "equal-sharing / total-to-unit.",
@@ -4080,7 +4212,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": null,
       "correct": "9th floor.",
-      "difficulty": "Hard.",
+      "difficulty": "Hard",
       "skillId": "skill_quant_07",
       "subSkillId": "sub_quant_07_2",
       "questionFingerprint": "two-state-floor-count / linear-equation consistency.",
@@ -4111,7 +4243,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": null,
       "correct": "80.",
-      "difficulty": "Medium.",
+      "difficulty": "Medium",
       "skillId": "skill_quant_08",
       "subSkillId": "sub_quant_08_2",
       "questionFingerprint": "workforce-proportion / equal-productivity.",
@@ -4173,7 +4305,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": null,
       "correct": "625.",
-      "difficulty": "Easy.",
+      "difficulty": "Easy",
       "skillId": "skill_quant_08",
       "subSkillId": "sub_quant_08_2",
       "questionFingerprint": "same-time-rate comparison.",
@@ -4204,7 +4336,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": null,
       "correct": "المعطيات غير كافية.",
-      "difficulty": "Easy.",
+      "difficulty": "Easy",
       "skillId": "skill_quant_11",
       "subSkillId": "sub_quant_11_1",
       "questionFingerprint": "quantitative-comparison / insufficient-data.",
@@ -4235,7 +4367,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": null,
       "correct": "15.",
-      "difficulty": "Medium.",
+      "difficulty": "Medium",
       "skillId": "skill_quant_11",
       "subSkillId": "sub_quant_11_2",
       "questionFingerprint": "wrong-operation / reverse-to-original / apply-correct-operation.",
@@ -4266,7 +4398,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": null,
       "correct": "18.",
-      "difficulty": "Hard.",
+      "difficulty": "Hard",
       "skillId": "skill_quant_01",
       "subSkillId": "sub_quant_01_3",
       "questionFingerprint": "consecutive-even / residual-odd / primality-filter.",
@@ -4297,7 +4429,7 @@
       "status": "CONTENT_READY_CROP_PENDING",
       "sourceText": null,
       "correct": "23.",
-      "difficulty": "Easy.",
+      "difficulty": "Easy",
       "skillId": "skill_quant_01",
       "subSkillId": "sub_quant_01_1",
       "questionFingerprint": "elapsed-years / subtraction.",
@@ -4319,5 +4451,10 @@
         "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
       }
     }
-  ]
+  ],
+  "mappingAdjudication": {
+    "batch001Applied": 18,
+    "approvedCrossTopic": 17,
+    "stillReview": 1
+  }
 }
