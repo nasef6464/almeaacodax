@@ -85,7 +85,12 @@
 - Post-approval E2E: `BIO26_LIVE_E2E_APPROVED_PASS learnerVisible=1 answerLeak=0 liveImageSamples=30`.
 - Final gate: `BIO26_POST_APPROVAL_GATE_PASS count=2832 main=29 sub=98 linked=0`.
 - PR #433 merged: `7b07579b4aa68c46562ac451711328a06ab055ee`.
-- BIO26 closure-certified application SHA after learning/test closure: `2885b2b30eff2f959fdad3a0c098a2bd461f1b73`.
+- Initial BIO26 learning/test closure SHA: `2885b2b30eff2f959fdad3a0c098a2bd461f1b73`.
+- Runtime-repair PR #445 merged as `54f20dfa7524a212d18bc7bf316fded4b0bb82e6` after exact-head Safety/Backend/Deep E2E PASS.
+- Restart-stable production proof: 71 standard tests NOOP with 2,832 unique refs and learning structure PASS/NOOP on successive restarts.
+- Runtime Atlas audit: 71/71 approved+published+visible; 63 tests × 40 + 8 × 39; 0 duplicate refs; first 5 free; 14/14 five-test tranches cover 29/29 main skills.
+- Learning Atlas audit: 147/147 approved+published = 98 foundation + 49 training. 84 foundation drills have 10 source questions; 14 use all unique source questions available (<10) without fabricated content.
+- BIO26 closure-certified restart-stable application SHA: `54f20dfa7524a212d18bc7bf316fded4b0bb82e6`.
 - Closure-record PR #442: `1bdc0ce150ff018745a37b7461a5b419c986f410` (docs-only; deployed LIVE after closure).
 - PR #437 merged learning topics/drills/71 all-bank tests.
 - PR #439 aligned main-skill training count to **49**.
@@ -116,7 +121,7 @@
 - Package SHA-256: `e2063da82250395c8e7f9c50a6cbba34269d9c6683c7db91a0ea9a92a494fa8f`.
 - READY manifest SHA-256: `153e97e8468e4a7f84ba1488f7c4b919b19ab84095a00773de014c98b81cf8a5`.
 - Full local importer-contract audit: **PASS / 0 errors** — 2,832 items, 2,832 unique codes/source IDs/hashes, 29/98 taxonomy, semantic option provenance 2,832/2,832, local image SHA 2,832/2,832.
-- Production writes so far: **NONE**.
+- Historical recovery checkpoint at that stage: production writes were **NONE**. This line is pre-import history; final production closure and runtime deployment are recorded above.
 
 ## Production transport — READY
 - Durable backup file uploaded to Google Drive: `BIO26_FINAL_ASSETS_V3_READY_2832_UPLOAD.zip`.
