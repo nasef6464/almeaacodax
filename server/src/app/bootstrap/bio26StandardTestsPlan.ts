@@ -159,11 +159,64 @@ export function buildBio26StandardTests(questions: Bio26TestQuestion[]) {
 
   const buckets: Bio26TestQuestion[][] = Array.from({ length: TEST_COUNT }, () => []);
   const perTestMainCounts = Array.from({ length: TEST_COUNT }, () => new Map<string, number>());
-  const orderedSkills = [...quotas].sort((a, b) => b.quota - a.quota || a.skillId.localeCompare(b.skillId));
+  const perTestSubCounts = Array.from({ length: TEST_COUNT }, () => new Map<string, number>());
+  const trancheCount = Math.floor(TEST_COUNT / 5);
+  const orderedSkills = [...quotas].sort((a, b) => a.quota - b.quota || a.skillId.localeCompare(b.skillId));
+
+  const assign = (target: number, question: Bio26TestQuestion) => {
+    buckets[target].push(question);
+    perTestMainCounts[target].set(
+      question.skillId,
+      (perTestMainCounts[target].get(question.skillId) || 0) + 1,
+    );
+    perTestSubCounts[target].set(
+      question.subSkillId,
+      (perTestSubCounts[target].get(question.subSkillId) || 0) + 1,
+    );
+  };
 
   orderedSkills.forEach((row, skillIndex) => {
-    const selected = selectedByMain.get(row.skillId) || [];
-    selected.forEach((question, questionIndex) => {
+    const selected = [...(selectedByMain.get(row.skillId) || [])];
+    if (selected.length < trancheCount) {
+      throw new Error(
+        `BIO26 main skill ${row.skillId} has only ${selected.length} questions; needs at least ${trancheCount} for five-test tranche coverage`,
+      );
+    }
+
+    // Reserve one question from every main skill in every complete five-test tranche.
+    // This makes the 29-skill tranche gate constructive instead of merely aspirational.
+    for (let trancheIndex = 0; trancheIndex < trancheCount; trancheIndex += 1) {
+      const question = selected[trancheIndex];
+      const start = trancheIndex * 5;
+      const candidates = Array.from({ length: 5 }, (_, offset) => start + offset)
+        .filter((index) => buckets[index].length < TEST_SIZES[index]);
+
+      if (candidates.length === 0) {
+        throw new Error(`BIO26 tranche ${trancheIndex + 1} has no capacity while seeding ${row.skillId}`);
+      }
+
+      const preferred = start + ((skillIndex + trancheIndex) % 5);
+      candidates.sort((left, right) => {
+        const leftSkill = perTestMainCounts[left].get(row.skillId) || 0;
+        const rightSkill = perTestMainCounts[right].get(row.skillId) || 0;
+        if (leftSkill !== rightSkill) return leftSkill - rightSkill;
+
+        const leftSub = perTestSubCounts[left].get(question.subSkillId) || 0;
+        const rightSub = perTestSubCounts[right].get(question.subSkillId) || 0;
+        if (leftSub !== rightSub) return leftSub - rightSub;
+
+        const leftFill = buckets[left].length / TEST_SIZES[left];
+        const rightFill = buckets[right].length / TEST_SIZES[right];
+        if (leftFill !== rightFill) return leftFill - rightFill;
+
+        if (buckets[left].length !== buckets[right].length) return buckets[left].length - buckets[right].length;
+        return ((left - preferred + 5) % 5) - ((right - preferred + 5) % 5);
+      });
+
+      assign(candidates[0], question);
+    }
+
+    selected.slice(trancheCount).forEach((question, questionIndex) => {
       const start = (skillIndex * 11 + questionIndex * 5) % TEST_COUNT;
       const candidates = Array.from({ length: TEST_COUNT }, (_, index) => index)
         .filter((index) => buckets[index].length < TEST_SIZES[index]);
@@ -177,6 +230,10 @@ export function buildBio26StandardTests(questions: Bio26TestQuestion[]) {
         const rightSkill = perTestMainCounts[right].get(row.skillId) || 0;
         if (leftSkill !== rightSkill) return leftSkill - rightSkill;
 
+        const leftSub = perTestSubCounts[left].get(question.subSkillId) || 0;
+        const rightSub = perTestSubCounts[right].get(question.subSkillId) || 0;
+        if (leftSub !== rightSub) return leftSub - rightSub;
+
         const leftFill = buckets[left].length / TEST_SIZES[left];
         const rightFill = buckets[right].length / TEST_SIZES[right];
         if (leftFill !== rightFill) return leftFill - rightFill;
@@ -185,9 +242,7 @@ export function buildBio26StandardTests(questions: Bio26TestQuestion[]) {
         return ((left - start + TEST_COUNT) % TEST_COUNT) - ((right - start + TEST_COUNT) % TEST_COUNT);
       });
 
-      const target = candidates[0];
-      buckets[target].push(question);
-      perTestMainCounts[target].set(row.skillId, (perTestMainCounts[target].get(row.skillId) || 0) + 1);
+      assign(candidates[0], question);
     });
   });
 
