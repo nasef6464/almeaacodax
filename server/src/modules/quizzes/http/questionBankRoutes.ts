@@ -229,10 +229,7 @@ questionBankRouter.post(
     const workflowDefaults = getWorkflowDefaults(req.authUser!);
     const payload = questionSchema.parse({
       ...draftPayload,
-      skillIds: canonicalSkills.skillIds,
-      skillId: canonicalSkills.skillId,
-      subSkillId: canonicalSkills.subSkillId,
-      subSkillIds: canonicalSkills.subSkillIds,
+      skillIds: canonicalSkills.skillIds, skillId: canonicalSkills.skillId, subSkillId: canonicalSkills.subSkillId, subSkillIds: canonicalSkills.subSkillIds,
       ...workflowDefaults,
       approvalStatus:
         req.authUser?.role === "admin"
@@ -334,10 +331,7 @@ questionBankRouter.patch(
     }
     const mergedPayload = questionSchema.parse({
       ...mergedDraft,
-      skillIds: canonicalSkills.skillIds,
-      skillId: canonicalSkills.skillId,
-      subSkillId: canonicalSkills.subSkillId,
-      subSkillIds: canonicalSkills.subSkillIds,
+      skillIds: canonicalSkills.skillIds, skillId: canonicalSkills.skillId, subSkillId: canonicalSkills.subSkillId, subSkillIds: canonicalSkills.subSkillIds,
     });
 
     await assertManagedContentScope(req.authUser!, mergedPayload);
@@ -351,13 +345,7 @@ questionBankRouter.patch(
       }
     }
     const sanitizedPayload = sanitizeWorkflowUpdate(
-      {
-        ...payload,
-        skillIds: canonicalSkills.skillIds,
-        skillId: canonicalSkills.skillId,
-        subSkillId: canonicalSkills.subSkillId,
-        subSkillIds: canonicalSkills.subSkillIds,
-      } as Record<string, unknown>,
+      { ...payload, skillIds: canonicalSkills.skillIds, skillId: canonicalSkills.skillId, subSkillId: canonicalSkills.subSkillId, subSkillIds: canonicalSkills.subSkillIds } as Record<string, unknown>,
       req.authUser!,
     );
     const updated = await QuestionModel.findOneAndUpdate(documentQuery, sanitizedPayload, { new: true });
