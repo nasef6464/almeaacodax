@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN048",
+  "baseHead": "fd1025cfce2f269cfd72d196a53aa38e56aeb3b5",
+  "sourceStateMastered": 470,
+  "sourceStateReviewHold": 48,
+  "inspectedNewQuestions": 118,
+  "libraryPersisted": {
+    "mastered": 106,
+    "hold": 12,
+    "paths": [
+      "/MNSF26/Run048/MNSF26_QUESTION_MASTERING_RUN048_AR_T31_V1.json",
+      "/MNSF26/Run048/MNSF26_QUESTION_MASTERING_RUN048_AR_T32_V1.json",
+      "/MNSF26/Run048/MNSF26_QUESTION_MASTERING_RUN048_AR_T34_V1.json",
+      "/MNSF26/Run048/MNSF26_QUESTION_MASTERING_RUN048_AR_T35_V1.json",
+      "/MNSF26/Run048/MNSF26_QUESTION_MASTERING_RUN048_AR_T36_V1.json",
+      "/MNSF26/Run048/MNSF26_QUESTION_MASTERING_RUN048_AR_T37_V1.json"
+    ]
+  },
+  "githubPersisted": {
+    "uniqueRecords": 57,
+    "mastered": 53,
+    "hold": 4,
+    "expectedSafeCount": 523,
+    "unpersistedMastered": 53,
+    "unpersistedHold": 8
+  },
+  "activeStage": "QUESTION_MASTERING",
+  "nextCursor": "AR T38",
+  "gate": "Do not count 61 Library-only records until GitHub payload persistence. Reconcile by unique sourceKey; no QA/R2/import."
+}
