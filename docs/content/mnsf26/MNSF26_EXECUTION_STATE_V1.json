@@ -1,1 +1,206 @@
-{"schemaVersion":1,"bank":"MNSF26","purpose":"Single authoritative execution cursor; prevents re-opening completed stages or losing work between runs.","headBeforeCreation":"3e28cbb9ad659434d8a4ae4becce57766476942a","totals":{"crops":2135,"arithmetic":1204,"geometry":931},"stages":[{"name":"crop","status":"COMPLETE","done":2135,"total":2135,"evidence":["Run017 arithmetic 1204","Run021 geometry 931"],"reopenOnlyOn":"PROVEN_CROP_DEFECT"},{"name":"mapping","status":"IN_PROGRESS","done":470,"total":2135,"rule":"QUESTION_MATH_REQUIRED; source label preserved; no group-title auto approval","reviewHold":48,"evidence":["Ready130 audit candidate-pass 74","Adjudication batch001 added 17 question-level approvals","Adjudication batch002 added 38 question-level approvals; only P001/Q12 remains fail-closed in ready130","Geometry T22-T23 Run024 visual audit: 6 explicit question-level examples persisted to geometry queue"]},{"name":"enrichment","status":"IN_PROGRESS_LEGACY_SUBSET","done":470,"total":2135,"rule":"answer+solution+educationalExplanation+difficulty+difficultyReason+fingerprints","mappingApprovedWithinReady":129},{"name":"dedupe","status":"LEGACY_SUBSET_ONLY","done":130,"total":2135,"rule":"within MNSF26 then FND26 858 + COL2627 946"},{"name":"r2","status":"BLOCKED_BY_MAPPING_ENRICHMENT_DEDUPE"},{"name":"dryRun","status":"BLOCKED"},{"name":"canary5","status":"BLOCKED"},{"name":"draftImport","status":"BLOCKED"},{"name":"productionE2E","status":"BLOCKED"}],"failClosed":["arithmetic test33 SOURCE_ABSENT_UNRESOLVED","geometry T24/Q18 SOURCE_ABSENT","P001/Q10 HOLD","P013/Q15 HOLD","P014/Q08 QUARANTINE","MNSF26-GEO-T022-Q04 HOLD (prior sub_quant_19_3 retracted after direct crop inspection)","MNSF26-AR-T012-Q01 HOLD","MNSF26-AR-T012-Q07 HOLD","MNSF26-AR-T012-Q08 HOLD","MNSF26-AR-T012-Q14 HOLD taxonomy gap","MNSF26-AR-T013-Q13 HOLD taxonomy gap","MNSF26-AR-T014-Q09 HOLD source/remainder ambiguity","MNSF26-AR-T014-Q13 HOLD non-unique answer","MNSF26-AR-T014-Q20 HOLD taxonomy gap","MNSF26-AR-T019-Q03 HOLD calendar-year ambiguity","MNSF26-AR-T019-Q14 HOLD recurrence-model ambiguity","MNSF26-AR-T022-Q17 HOLD","MNSF26-AR-T022-Q20 HOLD","MNSF26-AR-T023-Q01 HOLD","MNSF26-AR-T023-Q02 HOLD","MNSF26-AR-T024-Q08 HOLD","MNSF26-AR-T024-Q19 HOLD","MNSF26-AR-T025-Q16 HOLD","MNSF26-AR-T026-Q05 HOLD","MNSF26-AR-T026-Q07 HOLD","MNSF26-AR-T027-Q09 HOLD","MNSF26-AR-T027-Q11 HOLD","MNSF26-AR-T028-Q16 HOLD percent-base ambiguity"],"nextCursor":{"stage":"QUESTION_MASTERING","strategy":"ONE_PASS_VISUAL_MATH","priority":["arithmetic T31 onward; T33 source absent","persist Run038 T18 payload before counting its 13 records","retain all documented holds fail-closed"]},"antiLoopRules":["Do not redo crop inventory","Do not use source-group title as exact subskill proof","Do not rerun legacy 130-only verifier as closure evidence","On ambiguous question: HOLD and continue","Checkpoint commits are not stop points","Stage order is immutable: CROP_LOCK → QUESTION_MASTERING → QA_LOCK → DEDUPE_LOCK → R2_UPLOAD_LOCK → IMPORT_LOCK → PRODUCTION_E2E_LOCK","Do not upload to R2 or import while QUESTION_MASTERING is open","A question is processed once into a complete master payload; QA validates it rather than recreating it"],"lastCompletedBatch":{"name":"RUN046_RUN047_AR_T29_T30","completeMasterRecords":31,"holds":6,"questionsProcessed":37,"effectiveMasteredComplete":470,"evidenceGitHubPaths":["docs/content/mnsf26/MNSF26_QUESTION_MASTERING_RUN046_AR_T29_V1.json","docs/content/mnsf26/MNSF26_QUESTION_MASTERING_RUN047_AR_T30_V1.json"]},"executionContract":"docs/content/mnsf26/MNSF26_LOCKED_PIPELINE_V1.json","activeStage":{"order":2,"name":"QUESTION_MASTERING","status":"IN_PROGRESS","done":470,"total":2135,"mode":"ONE_PASS_PER_QUESTION","requiredPayload":["sourceProvenance","canonicalMainSkill","canonicalSubskill","correctAnswer","stepByStepSolution","educationalExplanation","difficulty","difficultyReason","imageHash","contentFingerprint","ideaFingerprint"],"gate":"No question advances without complete payload or explicit HOLD/REVIEW.","masteredComplete":470}}
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "purpose": "Single authoritative execution cursor; prevents re-opening completed stages or losing work between runs.",
+  "headBeforeCreation": "3e28cbb9ad659434d8a4ae4becce57766476942a",
+  "totals": {
+    "crops": 2135,
+    "arithmetic": 1204,
+    "geometry": 931
+  },
+  "stages": [
+    {
+      "name": "crop",
+      "status": "COMPLETE",
+      "done": 2135,
+      "total": 2135,
+      "evidence": [
+        "Run017 arithmetic 1204",
+        "Run021 geometry 931"
+      ],
+      "reopenOnlyOn": "PROVEN_CROP_DEFECT"
+    },
+    {
+      "name": "mapping",
+      "status": "IN_PROGRESS",
+      "done": 689,
+      "total": 2135,
+      "rule": "QUESTION_MATH_REQUIRED; source label preserved; no group-title auto approval",
+      "reviewHold": 67,
+      "evidence": [
+        "Ready130 audit candidate-pass 74",
+        "Adjudication batch001 added 17 question-level approvals",
+        "Adjudication batch002 added 38 question-level approvals; only P001/Q12 remains fail-closed in ready130",
+        "Geometry T22-T23 Run024 visual audit: 6 explicit question-level examples persisted to geometry queue"
+      ]
+    },
+    {
+      "name": "enrichment",
+      "status": "IN_PROGRESS_LEGACY_SUBSET",
+      "done": 689,
+      "total": 2135,
+      "rule": "answer+solution+educationalExplanation+difficulty+difficultyReason+fingerprints",
+      "mappingApprovedWithinReady": 129
+    },
+    {
+      "name": "dedupe",
+      "status": "LEGACY_SUBSET_ONLY",
+      "done": 130,
+      "total": 2135,
+      "rule": "within MNSF26 then FND26 858 + COL2627 946"
+    },
+    {
+      "name": "r2",
+      "status": "BLOCKED_BY_MAPPING_ENRICHMENT_DEDUPE"
+    },
+    {
+      "name": "dryRun",
+      "status": "BLOCKED"
+    },
+    {
+      "name": "canary5",
+      "status": "BLOCKED"
+    },
+    {
+      "name": "draftImport",
+      "status": "BLOCKED"
+    },
+    {
+      "name": "productionE2E",
+      "status": "BLOCKED"
+    }
+  ],
+  "failClosed": [
+    "arithmetic test33 SOURCE_ABSENT_UNRESOLVED",
+    "geometry T24/Q18 SOURCE_ABSENT",
+    "P001/Q10 HOLD",
+    "P013/Q15 HOLD",
+    "P014/Q08 QUARANTINE",
+    "MNSF26-GEO-T022-Q04 HOLD (prior sub_quant_19_3 retracted after direct crop inspection)",
+    "MNSF26-AR-T012-Q01 HOLD",
+    "MNSF26-AR-T012-Q07 HOLD",
+    "MNSF26-AR-T012-Q08 HOLD",
+    "MNSF26-AR-T012-Q14 HOLD taxonomy gap",
+    "MNSF26-AR-T013-Q13 HOLD taxonomy gap",
+    "MNSF26-AR-T014-Q09 HOLD source/remainder ambiguity",
+    "MNSF26-AR-T014-Q13 HOLD non-unique answer",
+    "MNSF26-AR-T014-Q20 HOLD taxonomy gap",
+    "MNSF26-AR-T019-Q03 HOLD calendar-year ambiguity",
+    "MNSF26-AR-T019-Q14 HOLD recurrence-model ambiguity",
+    "MNSF26-AR-T022-Q17 HOLD",
+    "MNSF26-AR-T022-Q20 HOLD",
+    "MNSF26-AR-T023-Q01 HOLD",
+    "MNSF26-AR-T023-Q02 HOLD",
+    "MNSF26-AR-T024-Q08 HOLD",
+    "MNSF26-AR-T024-Q19 HOLD",
+    "MNSF26-AR-T025-Q16 HOLD",
+    "MNSF26-AR-T026-Q05 HOLD",
+    "MNSF26-AR-T026-Q07 HOLD",
+    "MNSF26-AR-T027-Q09 HOLD",
+    "MNSF26-AR-T027-Q11 HOLD",
+    "MNSF26-AR-T028-Q16 HOLD percent-base ambiguity",
+    "MNSF26-AR-T031-Q03 HOLD خيارات الإجابة مقصوصة من أسفل الصورة، فلا يمكن اعتماد تطابق الاختيار ولو أمكن حل المعادلة.",
+    "MNSF26-AR-T031-Q06 HOLD سطر الخيارات والنهاية السفلى للسؤال مقصوصان من crop؛ يحتاج إصلاحًا مثبتًا قبل اعتماد السؤال.",
+    "MNSF26-AR-T032-Q11 HOLD النسبة الحسابية 3:22 لكن ترتيب النسب في الخيارات الظاهرة معكوس/ملتبس (مثل 22:3)؛ يحتاج اعتماد اتجاه النسبة.",
+    "MNSF26-AR-T034-Q02 HOLD المعادلة تعطي 80 ولدًا بينما الخيارات 4/5/6/8؛ تضارب صريح بين المعطيات والاختيارات.",
+    "MNSF26-AR-T034-Q17 HOLD درجة الاختبار الكلية غير معطاة صراحة، ولا يمكن الجزم بحد النجاح دون افتراض أقصى درجة؛ يلزم مراجعة المصدر.",
+    "MNSF26-AR-T035-Q06 HOLD النسبة الحسابية 6:9=2:3 غير موجودة ضمن الخيارات المرئية؛ تعارض يتطلب مراجعة.",
+    "MNSF26-AR-T035-Q15 HOLD علاقة 20% بالمصروفات المذكورة غير واضحة ولا تنتج إحدى الخيارات الظاهرة؛ يلزم مراجعة المصدر قبل الإقرار.",
+    "MNSF26-AR-T036-Q08 HOLD المعادلة 6س=21 تعطي 3.5 كجم بينما الخيارات 2/3/4/5؛ تحتاج مراجعة النص والخيارات.",
+    "MNSF26-AR-T036-Q10 HOLD العبارة الرياضية المطبوعـة لا تنتج خيارًا ظاهرًا دون تأويل؛ لا نعتمد جوابًا تخمينيًا.",
+    "MNSF26-AR-T037-Q13 HOLD المخطط المصور وصياغة الصافي لا يحددان أساس الربح بصورة متسقة مع الخيارات؛ يلزم تحكيم مستقل.",
+    "MNSF26-AR-T037-Q15 HOLD اتجاه كتابة النسبة والأعداد في الصورة يتيح أكثر من تفسير ولا يطابق الاختيارات عند القراءة المباشرة.",
+    "MNSF26-AR-T037-Q16 HOLD المعطيات لا توضح أطراف علاقة الأعمار بدقة في القص؛ يلزم تحكيم الصياغة قبل ربط المهارة.",
+    "MNSF26-AR-T038-Q19 HOLD المعادلة 432/0.70≈617.14 لا توافق الخيارات الصحيحة 1200/1440/1600/1800؛ تعارض ظاهر.",
+    "MNSF26-AR-T039-Q07 HOLD صورة الأسس والاختيارات تحتاج تحكيمًا مستقلًا لضمان قراءة الأسس الصغيرة دون تخمين.",
+    "MNSF26-AR-T039-Q17 HOLD قص السؤال يفتقد بقية الرسم/الخيارات اللازمة لتثبيت تفسير النسبة؛ يحتاج مراجعة صورة الصفحة.",
+    "MNSF26-AR-T041-Q06 HOLD المعطيات تعطي80 جنيهًا بينما الخيارات 240/360/640/720؛ تعارض مصدر.",
+    "MNSF26-AR-T041-Q12 HOLD السنة تحوي52 أسبوعًا عادة فينتج36400، بينما الخيارات تعكس50 أسبوعًا دون تحديد عطلة؛ يلزم توضيح فرضية عدد الأسابيع.",
+    "MNSF26-AR-T042-Q09 HOLD اتجاه التحويل من الأقل إلى الأكثر يجعل التساوي مستحيلًا وفق النسبة المكتوبة؛ مصدر يحتاج مراجعة.",
+    "MNSF26-AR-T042-Q13 HOLD حساب السعة لا يعطي أي خيار ظاهر (30/32/36/42)، وتفسير وجود الأطفال في الحالة الأولى ملتبس."
+  ],
+  "nextCursor": {
+    "stage": "QUESTION_MASTERING",
+    "strategy": "ONE_PASS_VISUAL_MATH",
+    "priority": [
+      "arithmetic T44 onward",
+      "persist any remaining prior uncounted T18 payload only with complete records",
+      "retain all documented holds fail-closed"
+    ]
+  },
+  "antiLoopRules": [
+    "Do not redo crop inventory",
+    "Do not use source-group title as exact subskill proof",
+    "Do not rerun legacy 130-only verifier as closure evidence",
+    "On ambiguous question: HOLD and continue",
+    "Checkpoint commits are not stop points",
+    "Stage order is immutable: CROP_LOCK → QUESTION_MASTERING → QA_LOCK → DEDUPE_LOCK → R2_UPLOAD_LOCK → IMPORT_LOCK → PRODUCTION_E2E_LOCK",
+    "Do not upload to R2 or import while QUESTION_MASTERING is open",
+    "A question is processed once into a complete master payload; QA validates it rather than recreating it"
+  ],
+  "lastCompletedBatch": {
+    "name": "RUN049_RECOVER_RUN048_AR_T31_T43",
+    "completeMasterRecords": 219,
+    "holds": 19,
+    "questionsProcessed": 238,
+    "effectiveMasteredComplete": 689,
+    "evidenceGitHubPaths": [
+      "docs/content/mnsf26/MNSF26_QUESTION_MASTERING_RUN049_AR_T31_RECONCILED_V1.json",
+      "docs/content/mnsf26/MNSF26_QUESTION_MASTERING_RUN049_AR_T32_RECONCILED_V1.json",
+      "docs/content/mnsf26/MNSF26_QUESTION_MASTERING_RUN049_AR_T34_RECONCILED_V1.json",
+      "docs/content/mnsf26/MNSF26_QUESTION_MASTERING_RUN049_AR_T35_RECONCILED_V1.json",
+      "docs/content/mnsf26/MNSF26_QUESTION_MASTERING_RUN049_AR_T36_RECONCILED_V1.json",
+      "docs/content/mnsf26/MNSF26_QUESTION_MASTERING_RUN049_AR_T37_RECONCILED_V1.json",
+      "docs/content/mnsf26/MNSF26_QUESTION_MASTERING_RUN049_AR_T38_RECONCILED_V1.json",
+      "docs/content/mnsf26/MNSF26_QUESTION_MASTERING_RUN049_AR_T39_RECONCILED_V1.json",
+      "docs/content/mnsf26/MNSF26_QUESTION_MASTERING_RUN049_AR_T40_RECONCILED_V1.json",
+      "docs/content/mnsf26/MNSF26_QUESTION_MASTERING_RUN049_AR_T41_RECONCILED_V1.json",
+      "docs/content/mnsf26/MNSF26_QUESTION_MASTERING_RUN049_AR_T42_RECONCILED_V1.json",
+      "docs/content/mnsf26/MNSF26_QUESTION_MASTERING_RUN049_AR_T43_RECONCILED_V1.json"
+    ]
+  },
+  "executionContract": "docs/content/mnsf26/MNSF26_LOCKED_PIPELINE_V1.json",
+  "activeStage": {
+    "order": 2,
+    "name": "QUESTION_MASTERING",
+    "status": "IN_PROGRESS",
+    "done": 689,
+    "total": 2135,
+    "mode": "ONE_PASS_PER_QUESTION",
+    "requiredPayload": [
+      "sourceProvenance",
+      "canonicalMainSkill",
+      "canonicalSubskill",
+      "correctAnswer",
+      "stepByStepSolution",
+      "educationalExplanation",
+      "difficulty",
+      "difficultyReason",
+      "imageHash",
+      "contentFingerprint",
+      "ideaFingerprint"
+    ],
+    "gate": "No question advances without complete payload or explicit HOLD/REVIEW.",
+    "masteredComplete": 689
+  },
+  "reconciliationRun049": {
+    "source": "Library /MNSF26/Run048 full JSON records, validated unique sourceKeys and required fields, persisted to GitHub complete test files",
+    "masteredAdded": 219,
+    "holdsAdded": 19,
+    "tests": [
+      31,
+      32,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43
+    ],
+    "sourceAbsentTest33": true
+  }
+}
