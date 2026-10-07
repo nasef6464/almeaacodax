@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "baselineHead": "b9693bf3036656a13094c7cbd5fc5f6fa958cfad",
+  "scope": "Full-book Run017 arithmetic + Run021 geometry crop manifests",
+  "counts": {
+    "arithmetic": 1204,
+    "geometry": 931,
+    "total": 2135,
+    "arithmeticUniqueSourceIds": 1204,
+    "geometryUniqueSourceIds": 931,
+    "uniqueImageHashes": 2090,
+    "exactImageDuplicateGroups": 43,
+    "extraDuplicateOccurrences": 45
+  },
+  "arithmeticBySourceGroup": {
+    "قراءة الأعداد والأعداد المحصورة": 32,
+    "العمليات على الاعداد": 136,
+    "ترتيب العمليات – قابلية القسمة": 38,
+    "الأعداد الأولية - العوامل الأولى": 59,
+    "جمع الأعداد - المتتابعات - ضرب الأعداد": 80,
+    "الدورات - المصافحات الأعمدة - المشابك": 20,
+    "الكسور الاعتيادية": 99,
+    "الكسور العشرية": 58,
+    "باقي الواحد – الحل العكسي": 57,
+    "النسبة المئوية": 178,
+    "التناسب": 80,
+    "أجزاء النسب": 20,
+    "السرعة": 40,
+    "الأعمار والعملات": 20,
+    "الأعمار والمعادلات": 20,
+    "الساعات": 37,
+    "التحويلات والمعادلات": 230
+  },
+  "geometryBySourceGroup": {
+    "الأشكال": 29,
+    "الزوايا": 249,
+    "المثلث": 107,
+    "الهندسة الإحداثية": 37,
+    "المستطيل": 56,
+    "المربع": 52,
+    "المعين وشبه المنحرف": 19,
+    "المساحات المظللة": 120,
+    "الدائرة": 36,
+    "مسائل الأشكال المختلفة": 166,
+    "المجسمات": 60
+  },
+  "gates": {
+    "canonicalMapping": "PENDING_QUESTION_MATH",
+    "contentIdeaFingerprint": "PENDING_FULLBOOK_ENRICHMENT",
+    "crossBankDedupe": "PENDING_AFTER_CONTENT_FINGERPRINT",
+    "r2": "FAIL_CLOSED_UNTIL_MAPPING_DEDUPE",
+    "import": "FAIL_CLOSED"
+  },
+  "failClosed": [
+    {
+      "sourcePart": "الحساب/الجبر",
+      "testNumber": 33,
+      "reason": "SOURCE_ABSENT_UNRESOLVED"
+    },
+    {
+      "sourcePart": "الهندسة",
+      "testNumber": 24,
+      "questionNumber": 18,
+      "reason": "SOURCE_ABSENT"
+    }
+  ],
+  "finding": "Exact crop hashes already expose 43 within-MNSF26 duplicate groups / 45 extra occurrences before semantic fingerprinting. These are candidates, not automatic suppressions; semantic/source review remains required."
+}
