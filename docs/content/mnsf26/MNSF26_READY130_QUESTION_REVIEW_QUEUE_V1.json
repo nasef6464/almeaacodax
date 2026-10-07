@@ -1,0 +1,3347 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "purpose": "Question-level review queue generated from existing ready-130 enrichment; source classification is preserved and no mismatch is auto-remapped.",
+  "policy": {
+    "sourceFirst": true,
+    "questionMathMustConfirmExactCanonicalSubskill": true,
+    "noKeywordOnlyMapping": true,
+    "noNewSkills": true,
+    "crossTopicFailClosed": true,
+    "hybridDifficultyFailClosed": true,
+    "safeDifficultyPunctuationNormalizationMayBeAppliedAfterReview": true
+  },
+  "counts": {
+    "readyBaseline": 130,
+    "queue": 90,
+    "mappingReview": 56,
+    "difficultyPunctuation": 70,
+    "difficultyHybrid": 6
+  },
+  "records": [
+    {
+      "questionCode": "QDR-QNT-MNSF26-P001-Q11",
+      "pdfPage": 1,
+      "printedQuestionNumber": 11,
+      "title": "الرقم 7 في خانة الآحاد من 1 إلى 100",
+      "sourceText": "كم مرة يظهر الرقم 7 في خانة الآحاد في الأعداد من 1 إلى 100؟",
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 1,
+        "testTitle": "الأول",
+        "sourceSkillLabel": "قراءة الأعداد والأعداد المحصورة",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_5"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_3",
+        "sub_quant_02_3",
+        "sub_quant_13_4"
+      ],
+      "mappingReview": true,
+      "correct": "ب = 10",
+      "educationalExplanation": "يُطبَّق النمط المعتمد في خانة آحاد ثابتة داخل مدى 100. ثم تُراجع النتيجة: ب = 10.",
+      "questionFingerprint": "خانة آحاد ثابتة داخل مدى 100.",
+      "explanationFingerprint": "كل عشرة أعداد تتكرر خانة الآحاد مرة واحدة.",
+      "difficulty": {
+        "raw": "Easy",
+        "safePunctuationNormalization": null,
+        "hybridReviewRequired": false
+      },
+      "gate": "REVIEW_REQUIRED"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P001-Q12",
+      "pdfPage": 1,
+      "printedQuestionNumber": 12,
+      "title": "أعمدة إنارة: جزء كهربائي وجزء شمسي",
+      "sourceText": "طريق به 200 عمود إنارة مرقمين ومقسمين إلى جزئين. جزء كهربائي وجزء شمسي. إذا كانت الأعمدة بالطاقة الشمسية من 22 إلى 80، كم عدد الأعمدة التي تعمل بالطاقة الكهربائية؟",
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 1,
+        "testTitle": "الأول",
+        "sourceSkillLabel": "قراءة الأعداد والأعداد المحصورة",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_13",
+        "subSkillId": "sub_quant_13_3"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_3",
+        "sub_quant_02_3",
+        "sub_quant_13_4"
+      ],
+      "mappingReview": true,
+      "correct": "ب = 141",
+      "educationalExplanation": "يُطبَّق النمط المعتمد في مدى مرقم داخل إجمالي، ثم مطلوب متممة العدد. ثم تُراجع النتيجة: ب = 141.",
+      "questionFingerprint": "مدى مرقم داخل إجمالي، ثم مطلوب متممة العدد.",
+      "explanationFingerprint": "احسب المدى الشامل بإضافة 1، ثم اطرحه من الإجمالي.",
+      "difficulty": {
+        "raw": "Medium",
+        "safePunctuationNormalization": null,
+        "hybridReviewRequired": false
+      },
+      "gate": "REVIEW_REQUIRED"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P001-Q13",
+      "pdfPage": 1,
+      "printedQuestionNumber": 13,
+      "title": "مقارنة القيمة المنزلية للرقم 3",
+      "sourceText": "قارن بين القيمة المنزلية للرقم 3 في العدد 1538 والقيمة المنزلية للرقم 3 في العدد 39.",
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 1,
+        "testTitle": "الأول",
+        "sourceSkillLabel": "قراءة الأعداد والأعداد المحصورة",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_5"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_3",
+        "sub_quant_02_3",
+        "sub_quant_13_4"
+      ],
+      "mappingReview": true,
+      "correct": "ج — القيمتان متساويتان",
+      "educationalExplanation": "يُطبَّق النمط المعتمد في نفس الرقم داخل عددين + مقارنة القيمة المنزلية. ثم تُراجع النتيجة: ج — القيمتان متساويتان.",
+      "questionFingerprint": "نفس الرقم داخل عددين + مقارنة القيمة المنزلية.",
+      "explanationFingerprint": "لا تقارن الرقم نفسه؛ حدّد خانته أولًا ثم حوّلها إلى قيمة.",
+      "difficulty": {
+        "raw": "Easy",
+        "safePunctuationNormalization": null,
+        "hybridReviewRequired": false
+      },
+      "gate": "REVIEW_REQUIRED"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P004-Q02",
+      "pdfPage": 4,
+      "printedQuestionNumber": 2,
+      "title": "عدد صفحات كتاب من عدد أرقام الترقيم",
+      "sourceText": "بدأت الطابعة ترقيم الكتاب من صفحة 1، واستخدمت 258 رقمًا في ترقيم الصفحات. كم عدد صفحات الكتاب؟",
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 3,
+        "testTitle": "الثالث",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_13",
+        "subSkillId": "sub_quant_13_4"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": true,
+      "correct": "ب = 122.",
+      "educationalExplanation": "الصفحات 1–9 تستهلك 9 أرقام. الصفحات 10–99 تستهلك 90×2=180 رقمًا. المتبقي 258-189=69 رقمًا، أي 23 صفحة ثلاثية: 100–122.",
+      "questionFingerprint": "عد خانات أرقام الصفحات عكسيًا للوصول إلى آخر صفحة.",
+      "explanationFingerprint": "قسّم الترقيم إلى خانات أحادية ثم ثنائية ثم ثلاثية، واطرح استهلاك كل نطاق.",
+      "difficulty": {
+        "raw": "Hard",
+        "safePunctuationNormalization": null,
+        "hybridReviewRequired": false
+      },
+      "gate": "REVIEW_REQUIRED"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P004-Q06",
+      "pdfPage": 4,
+      "printedQuestionNumber": 6,
+      "title": "خمسة بيوت وخمسة أقفاص وخمسة عصافير وخمس حبات",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 3,
+        "testTitle": "الثالث",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_18",
+        "subSkillId": "sub_quant_18_2"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": true,
+      "correct": "ب = 625.",
+      "educationalExplanation": "5×5×5×5 = 625.",
+      "questionFingerprint": "مبدأ عد متعدد المراحل بعدد ثابت في كل طبقة.",
+      "explanationFingerprint": "كل اختيار/وحدة يضاعف العدد بخمسة؛ اضرب عوامل الطبقات.",
+      "difficulty": {
+        "raw": "Easy",
+        "safePunctuationNormalization": null,
+        "hybridReviewRequired": false
+      },
+      "gate": "REVIEW_REQUIRED"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P004-Q09",
+      "pdfPage": 4,
+      "printedQuestionNumber": 9,
+      "title": "كتب الطالب قبل الإعارة والاستعارة",
+      "sourceText": "طالب أعار أصدقاءه 6 كتب، واستعار 4 كتب، فأصبح معه 28 كتابًا. كم كان معه؟",
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 3,
+        "testTitle": "الثالث",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_07",
+        "subSkillId": "sub_quant_07_2"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": true,
+      "correct": "ب = 30.",
+      "educationalExplanation": "س - 6 + 4 = 28 ⇒ س=30.",
+      "questionFingerprint": "حالة ابتدائية مجهولة + نقص ثم زيادة + قيمة نهائية.",
+      "explanationFingerprint": "اعكس أثر العمليات أو كوّن معادلة خطية قصيرة.",
+      "difficulty": {
+        "raw": "Easy",
+        "safePunctuationNormalization": null,
+        "hybridReviewRequired": false
+      },
+      "gate": "REVIEW_REQUIRED"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P004-Q12",
+      "pdfPage": 4,
+      "printedQuestionNumber": 12,
+      "title": "ثلاثة أعداد متتالية موجبة حاصل ضربها يساوي حاصل جمعها",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 3,
+        "testTitle": "الثالث",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_11",
+        "subSkillId": "sub_quant_11_1"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": true,
+      "correct": "ج = 3.",
+      "educationalExplanation": "1×2×3 = 6 و1+2+3 = 6، إذن العدد الأكبر 3.",
+      "questionFingerprint": "شرط ضرب = جمع لثلاثة أعداد متتالية صغيرة.",
+      "explanationFingerprint": "لأن الأعداد موجبة ومتتالية والخيارات صغيرة، جرّب البداية الدنيا 1،2،3؛ تتحقق فورًا.",
+      "difficulty": {
+        "raw": "Medium",
+        "safePunctuationNormalization": null,
+        "hybridReviewRequired": false
+      },
+      "gate": "REVIEW_REQUIRED"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P004-Q13",
+      "pdfPage": 4,
+      "printedQuestionNumber": 13,
+      "title": "مقارنة ما دفعه شخصان من مجموعة",
+      "sourceText": "ذهب 5 أشخاص لحفلة ومجموع ما دفعوه 1000 ريال. قارن بين 400 ريال وما دفعه شخصان.",
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 3,
+        "testTitle": "الثالث",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_11",
+        "subSkillId": "sub_quant_11_1"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": true,
+      "correct": "المعطيات غير كافية؛ لأن مجموع الخمسة = 1000 لا يحدد ما دفعه أي شخصين بعينهما، فيمكن أن يكون مجموعهما أقل من 400 أو مساويًا لها أو أكبر منها بحسب التوزيع.",
+      "educationalExplanation": "يُطبَّق النمط المعتمد في quantitative-comparison / unspecified-subset / insufficient-data. ثم تُراجع النتيجة: المعطيات غير كافية؛ لأن مجموع الخمسة = 1000 لا يحدد ما دفعه أي شخصين بعينهما، فيمكن أن يكون مجموعهما أقل من 400 أو مساويًا لها أو أكبر منها بحسب التوزيع..",
+      "questionFingerprint": "quantitative-comparison / unspecified-subset / insufficient-data.",
+      "explanationFingerprint": "افحص هل المعطيات تثبت قيمة الطرف الثاني؛ إذا تعددت القيم الممكنة فلا توجد علاقة واحدة لازمة.",
+      "difficulty": {
+        "raw": "Easy/Medium.",
+        "safePunctuationNormalization": null,
+        "hybridReviewRequired": true
+      },
+      "gate": "REVIEW_REQUIRED"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P004-Q14",
+      "pdfPage": 4,
+      "printedQuestionNumber": 14,
+      "title": "9 صناديق داخل كل صندوق 5 صناديق",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 3,
+        "testTitle": "الثالث",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_18",
+        "subSkillId": "sub_quant_18_2"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": true,
+      "correct": "ج = 54.",
+      "educationalExplanation": "الصناديق الداخلية = 9×5 =45، ومع الصناديق التسعة الأصلية يصبح الإجمالي 54.",
+      "questionFingerprint": "عد بنية ذات مستويين مع احتساب الحاويات الأصلية والمحتويات.",
+      "explanationFingerprint": "احسب المستوى الداخلي بالضرب ثم أضف المستوى الخارجي إذا كان السؤال يطلب جميع الصناديق.",
+      "difficulty": {
+        "raw": "Easy",
+        "safePunctuationNormalization": null,
+        "hybridReviewRequired": false
+      },
+      "gate": "REVIEW_REQUIRED"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P005-Q16",
+      "pdfPage": 5,
+      "printedQuestionNumber": 16,
+      "title": "مقارنة 3×3×3 مع 18",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 3,
+        "testTitle": "الثالث",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_05",
+        "subSkillId": "sub_quant_05_2"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": true,
+      "correct": "أ — القيمة الأولى أكبر.",
+      "educationalExplanation": "3×3×3 = 27، و27 > 18.",
+      "questionFingerprint": "ضرب متكرر لأساس واحد + مقارنة عددية.",
+      "explanationFingerprint": "حوّل الضرب المتكرر إلى قيمة قوة صغيرة ثم قارن.",
+      "difficulty": {
+        "raw": "Easy",
+        "safePunctuationNormalization": null,
+        "hybridReviewRequired": false
+      },
+      "gate": "REVIEW_REQUIRED"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P006-Q06",
+      "pdfPage": 6,
+      "printedQuestionNumber": 6,
+      "title": "مقارنة معدل كتابة أيمن ومحمد",
+      "sourceText": "أيمن يطبع 240 كلمة في 6 أيام، ومحمد 270 كلمة في 9 أيام. قارن ما يطبعه كل منهما في يوم.",
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 4,
+        "testTitle": "الرابع",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_2"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": true,
+      "correct": "أ — القيمة الأولى أكبر.",
+      "educationalExplanation": "أيمن 40 كلمة/يوم، محمد 30 كلمة/يوم.",
+      "questionFingerprint": "مقارنة معدلين من كميتين وزمنين مختلفين.",
+      "explanationFingerprint": "وحّد المقام إلى \"في اليوم\" بالقسمة قبل المقارنة.",
+      "difficulty": {
+        "raw": "Easy",
+        "safePunctuationNormalization": null,
+        "hybridReviewRequired": false
+      },
+      "gate": "REVIEW_REQUIRED"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P006-Q07",
+      "pdfPage": 6,
+      "printedQuestionNumber": 7,
+      "title": "عمارة وشقق وغرف ولوحات",
+      "sourceText": "عمارة بها 5 شقق، كل شقة بها 6 غرف، وكل غرفة بها 5 لوحات. كم عدد اللوحات؟",
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 4,
+        "testTitle": "الرابع",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_18",
+        "subSkillId": "sub_quant_18_2"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": true,
+      "correct": "ج = 150.",
+      "educationalExplanation": "5×6×5 =150.",
+      "questionFingerprint": "عد متعدد الطبقات.",
+      "explanationFingerprint": "اضرب عدد الوحدات في كل مستوى لأن البنية متساوية.",
+      "difficulty": {
+        "raw": "Easy",
+        "safePunctuationNormalization": null,
+        "hybridReviewRequired": false
+      },
+      "gate": "REVIEW_REQUIRED"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P006-Q09",
+      "pdfPage": 6,
+      "printedQuestionNumber": 9,
+      "title": "1470 ريال على 10 أشخاص",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 4,
+        "testTitle": "الرابع",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_04",
+        "subSkillId": "sub_quant_04_2"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": true,
+      "correct": "ب = 147 ريالًا.",
+      "educationalExplanation": "1470 ÷10 =147.",
+      "questionFingerprint": "قسمة على قوة للعدد 10.",
+      "explanationFingerprint": "عند القسمة على 10 حرّك القيمة منزلة واحدة إلى اليمين في القيمة المنزلية/الفاصلة.",
+      "difficulty": {
+        "raw": "Easy",
+        "safePunctuationNormalization": null,
+        "hybridReviewRequired": false
+      },
+      "gate": "REVIEW_REQUIRED"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P006-Q10",
+      "pdfPage": 6,
+      "printedQuestionNumber": 10,
+      "title": "عدد مقاعد المسرح من موضع محمد",
+      "sourceText": "يجلس محمد في مسرح على هيئة صفوف وأعمدة. يجلس يمينه 6 أشخاص ويساره 8، وأمامه 9 صفوف وخلفه 11 صفًا. ما عدد المقاعد؟",
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 4,
+        "testTitle": "الرابع",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_13",
+        "subSkillId": "sub_quant_13_4"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": true,
+      "correct": "ج = 315.",
+      "educationalExplanation": "عدد المقاعد في الصف = 6+1+8=15. عدد الصفوف = 9+1+11=21. الإجمالي =15×21=315.",
+      "questionFingerprint": "موضع فرد داخل شبكة صفوف وأعمدة + تحويل الأمام/الخلف واليمين/اليسار إلى أبعاد كاملة.",
+      "explanationFingerprint": "أضف الشخص نفسه في البعدين ثم اضرب عدد الصفوف في عدد المقاعد بكل صف.",
+      "difficulty": {
+        "raw": "Medium",
+        "safePunctuationNormalization": null,
+        "hybridReviewRequired": false
+      },
+      "gate": "REVIEW_REQUIRED"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P007-Q15",
+      "pdfPage": 7,
+      "printedQuestionNumber": 15,
+      "title": "سؤال 15",
+      "sourceText": "إذا كان عدد طلاب الفصل 145 طالب وقام المعلم بتوزيع ورق الاختبار لكل طالب 3 ورقات، كم عدد أوراق الاختبار بالكامل؟",
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 4,
+        "testTitle": "الرابع",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_2"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": true,
+      "correct": "أ (435).",
+      "educationalExplanation": "لكل طالب 3 أوراق. نبدأ من طالب واحد = 3 أوراق، ثم نضرب في 145 طالبًا: 145×3 = 435 ورقة.",
+      "questionFingerprint": "direct-proportion / fixed-units-per-person / total = count × units.",
+      "explanationFingerprint": "identify unit rate → multiply by population → sanity-check magnitude.",
+      "difficulty": {
+        "raw": "Easy.",
+        "safePunctuationNormalization": "Easy",
+        "hybridReviewRequired": false
+      },
+      "gate": "REVIEW_REQUIRED"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P007-Q16",
+      "pdfPage": 7,
+      "printedQuestionNumber": 16,
+      "title": "سؤال 16",
+      "sourceText": "يعمل شخص 8 ساعات يومياً من الأحد إلى الخميس ويوم الجمعة إجازة ويوم السبت يعمل 4 ساعات، ما عدد ساعات عمله في الأسبوع؟",
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 4,
+        "testTitle": "الرابع",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_2"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": false,
+      "correct": "ج (44).",
+      "educationalExplanation": "عد الأيام أولاً: الأحد، الاثنين، الثلاثاء، الأربعاء، الخميس = 5. إذن 5×8=40، والسبت 4، فيكون المجموع 44.",
+      "questionFingerprint": "repeated-equal-addends / weekly schedule / count-days-then-add-exception.",
+      "explanationFingerprint": "count eligible days → repeated addition as multiplication → add exceptional day.",
+      "difficulty": {
+        "raw": "Easy.",
+        "safePunctuationNormalization": "Easy",
+        "hybridReviewRequired": false
+      },
+      "gate": "SOURCE_CANDIDATE_CONSISTENT"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P007-Q17",
+      "pdfPage": 7,
+      "printedQuestionNumber": 17,
+      "title": "سؤال 17",
+      "sourceText": "فاطمة معها 45 تفاحة وزينب معها 25 برتقالة، قارن بين: القيمة الأولى مجموع ما معهما، القيمة الثانية 60.",
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 4,
+        "testTitle": "الرابع",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_1"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": false,
+      "correct": "أ (القيمة الأولى أكبر).",
+      "educationalExplanation": "المطلوب في القيمة الأولى ليس عدد التفاح أو البرتقال منفردًا بل مجموعهما: 45+25=70، ثم نقارن 70 مع 60.",
+      "questionFingerprint": "quantitative-comparison / sum-two-counts / compare-to-constant.",
+      "explanationFingerprint": "compute defined expression → compare numerical values → select comparison relation.",
+      "difficulty": {
+        "raw": "Easy.",
+        "safePunctuationNormalization": "Easy",
+        "hybridReviewRequired": false
+      },
+      "gate": "SOURCE_CANDIDATE_CONSISTENT"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P007-Q18",
+      "pdfPage": 7,
+      "printedQuestionNumber": 18,
+      "title": "سؤال 18",
+      "sourceText": "إذا كان درجة إبراهيم في الرياضيات 98 ودرجة يوسف 93، قارن بين: القيمة الأولى الفرق بين درجتيهما، القيمة الثانية 4.",
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 4,
+        "testTitle": "الرابع",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_1"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": false,
+      "correct": "أ (القيمة الأولى أكبر).",
+      "educationalExplanation": "الفرق بين الدرجتين هو 5 درجات، ثم نقارن 5 مع 4؛ إذن القيمة الأولى أكبر.",
+      "questionFingerprint": "quantitative-comparison / absolute-difference / compare-to-constant.",
+      "explanationFingerprint": "compute positive difference → compare → choose relation.",
+      "difficulty": {
+        "raw": "Easy.",
+        "safePunctuationNormalization": "Easy",
+        "hybridReviewRequired": false
+      },
+      "gate": "SOURCE_CANDIDATE_CONSISTENT"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P007-Q19",
+      "pdfPage": 7,
+      "printedQuestionNumber": 19,
+      "title": "سؤال 19",
+      "sourceText": "علي وستة أشخاص يملكون 3710 ريال وزع عليهم بالتساوي، قارن بين: القيمة الأولى نصيب كل شخص، القيمة الثانية 530 ريال.",
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 4,
+        "testTitle": "الرابع",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_1"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": true,
+      "correct": "ج (القيمتان متساويتان).",
+      "educationalExplanation": "عدد المستفيدين ليس ستة بل سبعة؛ علي نفسه إضافة إلى الستة. بالتساوي يعني القسمة على 7: 3710÷7=530.",
+      "questionFingerprint": "equal-sharing / hidden-total-person-count / compare-share-to-constant.",
+      "explanationFingerprint": "determine actual group size → equal division → compare result.",
+      "difficulty": {
+        "raw": "Easy/Medium.",
+        "safePunctuationNormalization": null,
+        "hybridReviewRequired": true
+      },
+      "gate": "REVIEW_REQUIRED"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P007-Q20",
+      "pdfPage": 7,
+      "printedQuestionNumber": 20,
+      "title": "سؤال 20",
+      "sourceText": "أعطى أب ابنه 5 ريال وكل يوم يعطيه مثلي اليوم السابق، ما مجموع ما أعطاه في 6 أيام؟",
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 4,
+        "testTitle": "الرابع",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_14",
+        "subSkillId": "sub_quant_14_4"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": true,
+      "correct": "ج (315).",
+      "educationalExplanation": "اكتب مبالغ الأيام الستة أولاً: 5، 10، 20، 40، 80، 160، ثم اجمعها = 315. المطلوب \"مجموع ما أعطاه\" وليس مبلغ اليوم السادس.",
+      "questionFingerprint": "multiplicative-sequence / doubling-each-step / finite-sum.",
+      "explanationFingerprint": "generate pattern explicitly → verify six terms → sum terms.",
+      "difficulty": {
+        "raw": "Medium.",
+        "safePunctuationNormalization": "Medium",
+        "hybridReviewRequired": false
+      },
+      "gate": "REVIEW_REQUIRED"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P008-Q01",
+      "pdfPage": 8,
+      "printedQuestionNumber": 1,
+      "title": "RESOLVED AS INSUFFICIENT DATA",
+      "sourceText": "\"إذا كانت هند تقرأ 3 قصص في 6 ساعات، قارن بين: القيمة الأولى: المدة التي تقرأ فيها صفحتين، القيمة الثانية: 8 ساعات.\"",
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 5,
+        "testTitle": "الخامس",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_11",
+        "subSkillId": "sub_quant_11_1"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": true,
+      "correct": "المعطيات غير كافية.",
+      "educationalExplanation": "يُطبَّق النمط المعتمد في unit-mismatch / rate-comparison / insufficient-data. ثم تُراجع النتيجة: المعطيات غير كافية..",
+      "questionFingerprint": "unit-mismatch / rate-comparison / insufficient-data.",
+      "explanationFingerprint": "تحقق من توافق الوحدات قبل التناسب؛ عند غياب تحويل القصص إلى صفحات لا يمكن تحديد الزمن المطلوب.",
+      "difficulty": {
+        "raw": "Easy/Medium.",
+        "safePunctuationNormalization": null,
+        "hybridReviewRequired": true
+      },
+      "gate": "REVIEW_REQUIRED"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P008-Q02",
+      "pdfPage": 8,
+      "printedQuestionNumber": 2,
+      "title": "سؤال 2",
+      "sourceText": "ما هي أكبر قيمة يمكن الحصول عليها عند إضافة صفر للرقم 2345186؟",
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 5,
+        "testTitle": "الخامس",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_5"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": false,
+      "correct": "بين 8 و6.",
+      "educationalExplanation": "among offered insertion points this keeps the more significant prefix largest; 23,451,806 exceeds the alternatives.",
+      "questionFingerprint": "digit-insertion / maximize-positional-value / compare-place-values.",
+      "explanationFingerprint": "build candidate numerals → compare lexicographically by place value.",
+      "difficulty": {
+        "raw": "Medium.",
+        "safePunctuationNormalization": "Medium",
+        "hybridReviewRequired": false
+      },
+      "gate": "SOURCE_CANDIDATE_CONSISTENT"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P008-Q03",
+      "pdfPage": 8,
+      "printedQuestionNumber": 3,
+      "title": "سؤال 3",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 5,
+        "testTitle": "الخامس",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_10",
+        "subSkillId": "sub_quant_10_3"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": true,
+      "correct": "ج = 14.",
+      "educationalExplanation": "يُطبَّق النمط المعتمد في savings-goal / monthly-fixed-saving / months = target ÷ monthly. ثم تُراجع النتيجة: ج = 14..",
+      "questionFingerprint": "savings-goal / monthly-fixed-saving / months = target ÷ monthly.",
+      "explanationFingerprint": "حدد نمط السؤال (savings-goal / monthly-fixed-saving / months = target ÷ monthly.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Easy.",
+        "safePunctuationNormalization": "Easy",
+        "hybridReviewRequired": false
+      },
+      "gate": "REVIEW_REQUIRED"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P008-Q04",
+      "pdfPage": 8,
+      "printedQuestionNumber": 4,
+      "title": "سؤال 4",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 5,
+        "testTitle": "الخامس",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_1"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": false,
+      "correct": "ج = 70.",
+      "educationalExplanation": "يُطبَّق النمط المعتمد في sum-three-amounts / mental-grouping. ثم تُراجع النتيجة: ج = 70..",
+      "questionFingerprint": "sum-three-amounts / mental-grouping.",
+      "explanationFingerprint": "حدد نمط السؤال (sum-three-amounts / mental-grouping.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Easy.",
+        "safePunctuationNormalization": "Easy",
+        "hybridReviewRequired": false
+      },
+      "gate": "SOURCE_CANDIDATE_CONSISTENT"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P008-Q05",
+      "pdfPage": 8,
+      "printedQuestionNumber": 5,
+      "title": "سؤال 5",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 5,
+        "testTitle": "الخامس",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_10",
+        "subSkillId": "sub_quant_10_3"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": true,
+      "correct": "أ = 50.",
+      "educationalExplanation": "احسب تكلفة كل نوع منفرداً ثم اجمع.",
+      "questionFingerprint": "unit-price × quantity / mixed-purchase-total.",
+      "explanationFingerprint": "حدد نمط السؤال (unit-price × quantity / mixed-purchase-total.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Easy.",
+        "safePunctuationNormalization": "Easy",
+        "hybridReviewRequired": false
+      },
+      "gate": "REVIEW_REQUIRED"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P008-Q06",
+      "pdfPage": 8,
+      "printedQuestionNumber": 6,
+      "title": "سؤال 6",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 5,
+        "testTitle": "الخامس",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_07",
+        "subSkillId": "sub_quant_07_2"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": true,
+      "correct": "ج = 48.",
+      "educationalExplanation": "يُطبَّق النمط المعتمد في reverse-linear-state / passenger-change / half-capacity. ثم تُراجع النتيجة: ج = 48..",
+      "questionFingerprint": "reverse-linear-state / passenger-change / half-capacity.",
+      "explanationFingerprint": "حدد نمط السؤال (reverse-linear-state / passenger-change / half-capacity.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Medium.",
+        "safePunctuationNormalization": "Medium",
+        "hybridReviewRequired": false
+      },
+      "gate": "REVIEW_REQUIRED"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P008-Q07",
+      "pdfPage": 8,
+      "printedQuestionNumber": 7,
+      "title": "سؤال 7",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 5,
+        "testTitle": "الخامس",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_18",
+        "subSkillId": "sub_quant_18_1"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": true,
+      "correct": "أ = 13.",
+      "educationalExplanation": "يُطبَّق النمط المعتمد في bounded-outcomes / repeated-die / impossibility-by-maximum. ثم تُراجع النتيجة: أ = 13..",
+      "questionFingerprint": "bounded-outcomes / repeated-die / impossibility-by-maximum.",
+      "explanationFingerprint": "حدد نمط السؤال (bounded-outcomes / repeated-die / impossibility-by-maximum.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Medium.",
+        "safePunctuationNormalization": "Medium",
+        "hybridReviewRequired": false
+      },
+      "gate": "REVIEW_REQUIRED"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P008-Q08",
+      "pdfPage": 8,
+      "printedQuestionNumber": 8,
+      "title": "سؤال 8",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 5,
+        "testTitle": "الخامس",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_3"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": false,
+      "correct": "ب = 102.",
+      "educationalExplanation": "يُطبَّق النمط المعتمد في consecutive-even-sequence / total-to-first-term. ثم تُراجع النتيجة: ب = 102..",
+      "questionFingerprint": "consecutive-even-sequence / total-to-first-term.",
+      "explanationFingerprint": "حدد نمط السؤال (consecutive-even-sequence / total-to-first-term.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Medium.",
+        "safePunctuationNormalization": "Medium",
+        "hybridReviewRequired": false
+      },
+      "gate": "SOURCE_CANDIDATE_CONSISTENT"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P008-Q09",
+      "pdfPage": 8,
+      "printedQuestionNumber": 9,
+      "title": "سؤال 9",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 5,
+        "testTitle": "الخامس",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_2"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": false,
+      "correct": "ج = equal.",
+      "educationalExplanation": "يُطبَّق النمط المعتمد في out-and-back / double-one-way-distance. ثم تُراجع النتيجة: ج = equal..",
+      "questionFingerprint": "out-and-back / double-one-way-distance.",
+      "explanationFingerprint": "حدد نمط السؤال (out-and-back / double-one-way-distance.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Easy.",
+        "safePunctuationNormalization": "Easy",
+        "hybridReviewRequired": false
+      },
+      "gate": "SOURCE_CANDIDATE_CONSISTENT"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P008-Q10",
+      "pdfPage": 8,
+      "printedQuestionNumber": 10,
+      "title": "سؤال 10",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 5,
+        "testTitle": "الخامس",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_07",
+        "subSkillId": "sub_quant_07_2"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": true,
+      "correct": "ب = 25.",
+      "educationalExplanation": "يُطبَّق النمط المعتمد في transfer-between-two / invariant-total / equal-after-transfer. ثم تُراجع النتيجة: ب = 25..",
+      "questionFingerprint": "transfer-between-two / invariant-total / equal-after-transfer.",
+      "explanationFingerprint": "حدد نمط السؤال (transfer-between-two / invariant-total / equal-after-transfer.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Medium.",
+        "safePunctuationNormalization": "Medium",
+        "hybridReviewRequired": false
+      },
+      "gate": "REVIEW_REQUIRED"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P008-Q11",
+      "pdfPage": 8,
+      "printedQuestionNumber": 11,
+      "title": "سؤال 11",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 5,
+        "testTitle": "الخامس",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_06",
+        "subSkillId": "sub_quant_06_4"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": true,
+      "correct": "ب = 15.",
+      "educationalExplanation": "يُطبَّق النمط المعتمد في square-array / rows=columns / square-root-total. ثم تُراجع النتيجة: ب = 15..",
+      "questionFingerprint": "square-array / rows=columns / square-root-total.",
+      "explanationFingerprint": "حدد نمط السؤال (square-array / rows=columns / square-root-total.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Easy.",
+        "safePunctuationNormalization": "Easy",
+        "hybridReviewRequired": false
+      },
+      "gate": "REVIEW_REQUIRED"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P008-Q12",
+      "pdfPage": 8,
+      "printedQuestionNumber": 12,
+      "title": "سؤال 12",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 5,
+        "testTitle": "الخامس",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_2"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": false,
+      "correct": "ج = 69.",
+      "educationalExplanation": "يُطبَّق النمط المعتمد في partitioned-length / repeated-addition / total-from-groups. ثم تُراجع النتيجة: ج = 69..",
+      "questionFingerprint": "partitioned-length / repeated-addition / total-from-groups.",
+      "explanationFingerprint": "حدد نمط السؤال (partitioned-length / repeated-addition / total-from-groups.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Easy.",
+        "safePunctuationNormalization": "Easy",
+        "hybridReviewRequired": false
+      },
+      "gate": "SOURCE_CANDIDATE_CONSISTENT"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P009-Q13",
+      "pdfPage": 9,
+      "printedQuestionNumber": 13,
+      "title": "سؤال 13",
+      "sourceText": "يوجد في مسجد 5 أشخاص وبعد ربع ساعة دخل 5 أشخاص وبعد التكبير لإقامة الصلاة دخل إلى المسجد مثلي عدد الأشخاص الموجودين، كم عدد المصلين عند إقامة الصلاة؟",
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 5,
+        "testTitle": "الخامس",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_2"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": false,
+      "correct": "30.",
+      "educationalExplanation": "احسب الموجودين قبل التكبير أولاً، ثم ضاعف هذا العدد لمعرفة الداخلين الجدد، ثم اجمع.",
+      "questionFingerprint": "staged-count / double-current-group / add-new-arrivals.",
+      "explanationFingerprint": "establish intermediate total → multiply current count by 2 → add.",
+      "difficulty": {
+        "raw": "Medium.",
+        "safePunctuationNormalization": "Medium",
+        "hybridReviewRequired": false
+      },
+      "gate": "SOURCE_CANDIDATE_CONSISTENT"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P009-Q14",
+      "pdfPage": 9,
+      "printedQuestionNumber": 14,
+      "title": "سؤال 14",
+      "sourceText": "تقرأ أميرة كل يوم 10 صفحات من كتاب، كم صفحة تقرأ في أربعة أيام؟",
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 5,
+        "testTitle": "الخامس",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_2"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": false,
+      "correct": "40.",
+      "educationalExplanation": "10×4=40.",
+      "questionFingerprint": "fixed-daily-rate / repeated-addition.",
+      "explanationFingerprint": "حدد نمط السؤال (fixed-daily-rate / repeated-addition.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Easy.",
+        "safePunctuationNormalization": "Easy",
+        "hybridReviewRequired": false
+      },
+      "gate": "SOURCE_CANDIDATE_CONSISTENT"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P009-Q15",
+      "pdfPage": 9,
+      "printedQuestionNumber": 15,
+      "title": "سؤال 15",
+      "sourceText": "3 □ 4 □ 3 = 15؛ اختر العمليتين المناسبتين.",
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 5,
+        "testTitle": "الخامس",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_4"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": false,
+      "correct": "× ثم + (الخيار أ في المصدر).",
+      "educationalExplanation": "3×4+3=15.",
+      "questionFingerprint": "fill-operators / target-value / operation-order.",
+      "explanationFingerprint": "test operation pair → apply precedence → verify target.",
+      "difficulty": {
+        "raw": "Medium.",
+        "safePunctuationNormalization": "Medium",
+        "hybridReviewRequired": false
+      },
+      "gate": "SOURCE_CANDIDATE_CONSISTENT"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P009-Q16",
+      "pdfPage": 9,
+      "printedQuestionNumber": 16,
+      "title": "سؤال 16",
+      "sourceText": "إذا كان سعر البطيخة 10 ريال ورجل لديه 100 ريال ويريد شراء أكبر عدد من البطيخ، كم بطيخة يستطيع الشراء؟",
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 5,
+        "testTitle": "الخامس",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_10",
+        "subSkillId": "sub_quant_10_3"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": true,
+      "correct": "10.",
+      "educationalExplanation": "100÷10=10.",
+      "questionFingerprint": "budget / unit-price / maximum-whole-units.",
+      "explanationFingerprint": "حدد نمط السؤال (budget / unit-price / maximum-whole-units.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Easy.",
+        "safePunctuationNormalization": "Easy",
+        "hybridReviewRequired": false
+      },
+      "gate": "REVIEW_REQUIRED"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P009-Q17",
+      "pdfPage": 9,
+      "printedQuestionNumber": 17,
+      "title": "سؤال 17",
+      "sourceText": "طفل كل 3 شهور يزيد وزنه 2 كجم، ما الزيادة في وزنه خلال سنة؟",
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 5,
+        "testTitle": "الخامس",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_14",
+        "subSkillId": "sub_quant_14_4"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": true,
+      "correct": "8.",
+      "educationalExplanation": "12÷3=4 فترات؛ 4×2=8 كجم.",
+      "questionFingerprint": "periodic-increase / convert-year-to-periods / repeated-gain.",
+      "explanationFingerprint": "حدد نمط السؤال (periodic-increase / convert-year-to-periods / repeated-gain.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Easy.",
+        "safePunctuationNormalization": "Easy",
+        "hybridReviewRequired": false
+      },
+      "gate": "REVIEW_REQUIRED"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P009-Q18",
+      "pdfPage": 9,
+      "printedQuestionNumber": 18,
+      "title": "سؤال 18",
+      "sourceText": "إذا كان أحمد يستغرق 2 دقيقة ذهاباً وإياباً إلى منزل صديقه، فإذا سار أحمد لمدة 10 دقائق، كم مرة ذهب لمنزل صديقه؟",
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 5,
+        "testTitle": "الخامس",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_14",
+        "subSkillId": "sub_quant_14_4"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": true,
+      "correct": "5 (وفق قراءة دورة الذهاب والإياب الكاملة في المصدر).",
+      "educationalExplanation": "يصل إلى منزل الصديق عند الدقيقة 1 أو 2 بحسب تفسير \"ذهاباً وإياباً\"؛ لكن المصدر يقصد زمن الذهاب والإياب معاً = دقيقتان، فتكون الزيارة إلى منزل الصديق مرة كل دقيقتين ابتداءً من إتمام الذهاب الأول. على تسلسل الرحلات الكاملة خلال 10 دقائق = 5 دورات، وكل دورة تشمل ذهاباً واحداً؛ النتيجة 5.",
+      "questionFingerprint": "repeated-cycle / round-trip-duration / count-visits.",
+      "explanationFingerprint": "حدد نمط السؤال (repeated-cycle / round-trip-duration / count-visits.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Medium.",
+        "safePunctuationNormalization": "Medium",
+        "hybridReviewRequired": false
+      },
+      "gate": "REVIEW_REQUIRED"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P009-Q19",
+      "pdfPage": 9,
+      "printedQuestionNumber": 19,
+      "title": "سؤال 19",
+      "sourceText": "أوجد قيمة 6666 ÷ 22.",
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 5,
+        "testTitle": "الخامس",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_4"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": false,
+      "correct": "303.",
+      "educationalExplanation": "22×303 = 6666.",
+      "questionFingerprint": "integer-division / quotient-recognition.",
+      "explanationFingerprint": "حدد نمط السؤال (integer-division / quotient-recognition.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Easy/Medium.",
+        "safePunctuationNormalization": null,
+        "hybridReviewRequired": true
+      },
+      "gate": "REVIEW_REQUIRED"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P009-Q20",
+      "pdfPage": 9,
+      "printedQuestionNumber": 20,
+      "title": "سؤال 20",
+      "sourceText": "يصوم خالد 5 أيام في الشهرين، وأحمد يصوم 2 يوم كل شهر؛ قارن بين عدد أيام صيام خالد في السنة وعدد أيام صيام أحمد في السنة.",
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 5,
+        "testTitle": "الخامس",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_2"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": true,
+      "correct": "القيمة الأولى أكبر.",
+      "educationalExplanation": "وحّد الفترة أولاً إلى سنة كاملة ثم قارن.",
+      "questionFingerprint": "rate-comparison / normalize-time-window / annualize-rates.",
+      "explanationFingerprint": "حدد نمط السؤال (rate-comparison / normalize-time-window / annualize-rates.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Medium.",
+        "safePunctuationNormalization": "Medium",
+        "hybridReviewRequired": false
+      },
+      "gate": "REVIEW_REQUIRED"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P010-Q01",
+      "pdfPage": 10,
+      "printedQuestionNumber": 1,
+      "title": "سؤال 1",
+      "sourceText": "150 ريال distributed among خالد، أحمد، ليان، روان، ماجد. أحمد وخالد معهما ثلثا المبلغ; روان معها نصف خالد; ليان معها ثلثا ما مع روان; ماجد معه ما مع روان وليان. Find خالد.",
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 6,
+        "testTitle": "السادس",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_1"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": true,
+      "correct": "30.",
+      "educationalExplanation": "أحمد+خالد=100. Let خالد=x. روان=x/2, ليان=x/3, ماجد=5x/6. Total gives 100 + 5x/3 =150, so x=30.",
+      "questionFingerprint": "multi-person-ratio-allocation / total-conservation / chained-fractions.",
+      "explanationFingerprint": "convert verbal shares to algebraic fractions → preserve total → solve one variable.",
+      "difficulty": {
+        "raw": "Hard.",
+        "safePunctuationNormalization": "Hard",
+        "hybridReviewRequired": false
+      },
+      "gate": "REVIEW_REQUIRED"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P010-Q02",
+      "pdfPage": 10,
+      "printedQuestionNumber": 2,
+      "title": "سؤال 2",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 6,
+        "testTitle": "السادس",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_2"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": false,
+      "correct": "13.",
+      "educationalExplanation": "يُطبَّق النمط المعتمد في hierarchical-count / family-members / grouped-addition. ثم تُراجع النتيجة: 13..",
+      "questionFingerprint": "hierarchical-count / family-members / grouped-addition.",
+      "explanationFingerprint": "حدد نمط السؤال (hierarchical-count / family-members / grouped-addition.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Easy/Medium.",
+        "safePunctuationNormalization": null,
+        "hybridReviewRequired": true
+      },
+      "gate": "REVIEW_REQUIRED"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P010-Q03",
+      "pdfPage": 10,
+      "printedQuestionNumber": 3,
+      "title": "سؤال 3",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 6,
+        "testTitle": "السادس",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_2"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": false,
+      "correct": "القيمة الأولى أكبر.",
+      "educationalExplanation": "يُطبَّق النمط المعتمد في multiply-then-compare. ثم تُراجع النتيجة: القيمة الأولى أكبر..",
+      "questionFingerprint": "multiply-then-compare.",
+      "explanationFingerprint": "حدد نمط السؤال (multiply-then-compare.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Easy.",
+        "safePunctuationNormalization": "Easy",
+        "hybridReviewRequired": false
+      },
+      "gate": "SOURCE_CANDIDATE_CONSISTENT"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P010-Q04",
+      "pdfPage": 10,
+      "printedQuestionNumber": 4,
+      "title": "سؤال 4",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 6,
+        "testTitle": "السادس",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_10",
+        "subSkillId": "sub_quant_10_3"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": true,
+      "correct": "3250.",
+      "educationalExplanation": "يُطبَّق النمط المعتمد في fixed-pay-plus-commission / multi-period-income. ثم تُراجع النتيجة: 3250..",
+      "questionFingerprint": "fixed-pay-plus-commission / multi-period-income.",
+      "explanationFingerprint": "حدد نمط السؤال (fixed-pay-plus-commission / multi-period-income.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Medium.",
+        "safePunctuationNormalization": "Medium",
+        "hybridReviewRequired": false
+      },
+      "gate": "REVIEW_REQUIRED"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P010-Q05",
+      "pdfPage": 10,
+      "printedQuestionNumber": 5,
+      "title": "سؤال 5",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 6,
+        "testTitle": "السادس",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_1"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": false,
+      "correct": "2.",
+      "educationalExplanation": "يُطبَّق النمط المعتمد في complement-count / compare-remainders. ثم تُراجع النتيجة: 2..",
+      "questionFingerprint": "complement-count / compare-remainders.",
+      "explanationFingerprint": "حدد نمط السؤال (complement-count / compare-remainders.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Easy.",
+        "safePunctuationNormalization": "Easy",
+        "hybridReviewRequired": false
+      },
+      "gate": "SOURCE_CANDIDATE_CONSISTENT"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P010-Q06",
+      "pdfPage": 10,
+      "printedQuestionNumber": 6,
+      "title": "سؤال 6",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 6,
+        "testTitle": "السادس",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_2"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": true,
+      "correct": "5000.",
+      "educationalExplanation": "يُطبَّق النمط المعتمد في unit-rate × time. ثم تُراجع النتيجة: 5000..",
+      "questionFingerprint": "unit-rate × time.",
+      "explanationFingerprint": "حدد نمط السؤال (unit-rate × time.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Easy.",
+        "safePunctuationNormalization": "Easy",
+        "hybridReviewRequired": false
+      },
+      "gate": "REVIEW_REQUIRED"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P010-Q07",
+      "pdfPage": 10,
+      "printedQuestionNumber": 7,
+      "title": "سؤال 7",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 6,
+        "testTitle": "السادس",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_2"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": true,
+      "correct": "option أ.",
+      "educationalExplanation": "يُطبَّق النمط المعتمد في equivalent-ratio / scale-both-terms. ثم تُراجع النتيجة: option أ..",
+      "questionFingerprint": "equivalent-ratio / scale-both-terms.",
+      "explanationFingerprint": "حدد نمط السؤال (equivalent-ratio / scale-both-terms.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Medium.",
+        "safePunctuationNormalization": "Medium",
+        "hybridReviewRequired": false
+      },
+      "gate": "REVIEW_REQUIRED"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P010-Q08",
+      "pdfPage": 10,
+      "printedQuestionNumber": 8,
+      "title": "سؤال 8",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 6,
+        "testTitle": "السادس",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_14",
+        "subSkillId": "sub_quant_14_4"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": true,
+      "correct": "225.",
+      "educationalExplanation": "يُطبَّق النمط المعتمد في doubling-sequence / finite-sum. ثم تُراجع النتيجة: 225..",
+      "questionFingerprint": "doubling-sequence / finite-sum.",
+      "explanationFingerprint": "حدد نمط السؤال (doubling-sequence / finite-sum.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Medium.",
+        "safePunctuationNormalization": "Medium",
+        "hybridReviewRequired": false
+      },
+      "gate": "REVIEW_REQUIRED"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P010-Q09",
+      "pdfPage": 10,
+      "printedQuestionNumber": 9,
+      "title": "سؤال 9",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 6,
+        "testTitle": "السادس",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_10",
+        "subSkillId": "sub_quant_10_3"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": true,
+      "correct": "2.",
+      "educationalExplanation": "يُطبَّق النمط المعتمد في purchase-total / unit-price. ثم تُراجع النتيجة: 2..",
+      "questionFingerprint": "purchase-total / unit-price.",
+      "explanationFingerprint": "حدد نمط السؤال (purchase-total / unit-price.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Easy.",
+        "safePunctuationNormalization": "Easy",
+        "hybridReviewRequired": false
+      },
+      "gate": "REVIEW_REQUIRED"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P010-Q10",
+      "pdfPage": 10,
+      "printedQuestionNumber": 10,
+      "title": "سؤال 10",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 6,
+        "testTitle": "السادس",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_3"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": false,
+      "correct": "5.",
+      "educationalExplanation": "يُطبَّق النمط المعتمد في consecutive-integers / known-sum / middle-as-average. ثم تُراجع النتيجة: 5..",
+      "questionFingerprint": "consecutive-integers / known-sum / middle-as-average.",
+      "explanationFingerprint": "حدد نمط السؤال (consecutive-integers / known-sum / middle-as-average.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Easy.",
+        "safePunctuationNormalization": "Easy",
+        "hybridReviewRequired": false
+      },
+      "gate": "SOURCE_CANDIDATE_CONSISTENT"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P010-Q11",
+      "pdfPage": 10,
+      "printedQuestionNumber": 11,
+      "title": "سؤال 11",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 6,
+        "testTitle": "السادس",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_10",
+        "subSkillId": "sub_quant_10_3"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": true,
+      "correct": "40.",
+      "educationalExplanation": "يُطبَّق النمط المعتمد في mixed-purchase / quantity×unit-price / total-cost. ثم تُراجع النتيجة: 40..",
+      "questionFingerprint": "mixed-purchase / quantity×unit-price / total-cost.",
+      "explanationFingerprint": "حدد نمط السؤال (mixed-purchase / quantity×unit-price / total-cost.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Easy.",
+        "safePunctuationNormalization": "Easy",
+        "hybridReviewRequired": false
+      },
+      "gate": "REVIEW_REQUIRED"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P010-Q12",
+      "pdfPage": 10,
+      "printedQuestionNumber": 12,
+      "title": "سؤال 12",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 6,
+        "testTitle": "السادس",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_1"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": true,
+      "correct": "القيمتان متساويتان.",
+      "educationalExplanation": "يُطبَّق النمط المعتمد في equal-share / subset-contribution / quantitative-comparison. ثم تُراجع النتيجة: القيمتان متساويتان..",
+      "questionFingerprint": "equal-share / subset-contribution / quantitative-comparison.",
+      "explanationFingerprint": "حدد نمط السؤال (equal-share / subset-contribution / quantitative-comparison.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Medium.",
+        "safePunctuationNormalization": "Medium",
+        "hybridReviewRequired": false
+      },
+      "gate": "REVIEW_REQUIRED"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P011-Q13",
+      "pdfPage": 11,
+      "printedQuestionNumber": 13,
+      "title": "سؤال 13",
+      "sourceText": "(6+4)/2.",
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 6,
+        "testTitle": "السادس",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_4"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": false,
+      "correct": "5.",
+      "educationalExplanation": "نجمع داخل البسط 6+4=10 ثم نقسم على 2 فنحصل على 5.",
+      "questionFingerprint": "arithmetic-expression / parentheses-first / division.",
+      "explanationFingerprint": "حدد نمط السؤال (arithmetic-expression / parentheses-first / division.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Easy.",
+        "safePunctuationNormalization": "Easy",
+        "hybridReviewRequired": false
+      },
+      "gate": "SOURCE_CANDIDATE_CONSISTENT"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P011-Q14",
+      "pdfPage": 11,
+      "printedQuestionNumber": 14,
+      "title": "سؤال 14",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 6,
+        "testTitle": "السادس",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_2"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": false,
+      "correct": "القيمة الثانية أكبر.",
+      "educationalExplanation": "يُطبَّق النمط المعتمد في equal-share / reconstruct-total / quantitative-comparison. ثم تُراجع النتيجة: القيمة الثانية أكبر..",
+      "questionFingerprint": "equal-share / reconstruct-total / quantitative-comparison.",
+      "explanationFingerprint": "حدد نمط السؤال (equal-share / reconstruct-total / quantitative-comparison.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Easy.",
+        "safePunctuationNormalization": "Easy",
+        "hybridReviewRequired": false
+      },
+      "gate": "SOURCE_CANDIDATE_CONSISTENT"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P011-Q15",
+      "pdfPage": 11,
+      "printedQuestionNumber": 15,
+      "title": "سؤال 15",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 6,
+        "testTitle": "السادس",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_5"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": false,
+      "correct": "ب.",
+      "educationalExplanation": "يُطبَّق النمط المعتمد في expanded-form / place-value reconstruction. ثم تُراجع النتيجة: ب..",
+      "questionFingerprint": "expanded-form / place-value reconstruction.",
+      "explanationFingerprint": "حدد نمط السؤال (expanded-form / place-value reconstruction.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Easy.",
+        "safePunctuationNormalization": "Easy",
+        "hybridReviewRequired": false
+      },
+      "gate": "SOURCE_CANDIDATE_CONSISTENT"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P011-Q16",
+      "pdfPage": 11,
+      "printedQuestionNumber": 16,
+      "title": "سؤال 16",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 6,
+        "testTitle": "السادس",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_3"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": false,
+      "correct": "33.",
+      "educationalExplanation": "يُطبَّق النمط المعتمد في consecutive-integers / minimum-condition / sum. ثم تُراجع النتيجة: 33..",
+      "questionFingerprint": "consecutive-integers / minimum-condition / sum.",
+      "explanationFingerprint": "حدد نمط السؤال (consecutive-integers / minimum-condition / sum.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Easy.",
+        "safePunctuationNormalization": "Easy",
+        "hybridReviewRequired": false
+      },
+      "gate": "SOURCE_CANDIDATE_CONSISTENT"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P011-Q17",
+      "pdfPage": 11,
+      "printedQuestionNumber": 17,
+      "title": "سؤال 17",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 6,
+        "testTitle": "السادس",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_10",
+        "subSkillId": "sub_quant_10_3"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": true,
+      "correct": "5.",
+      "educationalExplanation": "يُطبَّق النمط المعتمد في fixed-budget / price-increase / affordable-quantity. ثم تُراجع النتيجة: 5..",
+      "questionFingerprint": "fixed-budget / price-increase / affordable-quantity.",
+      "explanationFingerprint": "حدد نمط السؤال (fixed-budget / price-increase / affordable-quantity.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Medium.",
+        "safePunctuationNormalization": "Medium",
+        "hybridReviewRequired": false
+      },
+      "gate": "REVIEW_REQUIRED"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P011-Q18",
+      "pdfPage": 11,
+      "printedQuestionNumber": 18,
+      "title": "سؤال 18",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 6,
+        "testTitle": "السادس",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_4"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": false,
+      "correct": "القيمة الثانية أكبر.",
+      "educationalExplanation": "يُطبَّق النمط المعتمد في arithmetic-comparison / operation-order. ثم تُراجع النتيجة: القيمة الثانية أكبر..",
+      "questionFingerprint": "arithmetic-comparison / operation-order.",
+      "explanationFingerprint": "حدد نمط السؤال (arithmetic-comparison / operation-order.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Easy.",
+        "safePunctuationNormalization": "Easy",
+        "hybridReviewRequired": false
+      },
+      "gate": "SOURCE_CANDIDATE_CONSISTENT"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P011-Q19",
+      "pdfPage": 11,
+      "printedQuestionNumber": 19,
+      "title": "سؤال 19",
+      "sourceText": "قارن بين: القيمة الأولى ٤٤، والقيمة الثانية ٣٦٣٦/٩.",
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 6,
+        "testTitle": "السادس",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_03",
+        "subSkillId": "sub_quant_03_3"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": true,
+      "correct": "ب = القيمة الثانية أكبر",
+      "educationalExplanation": "القيمة الثانية تساوي ٣٦٣٦÷٩ = ٤٠٤، و٤٠٤ أكبر من ٤٤؛ إذن الإجابة ب: القيمة الثانية أكبر.",
+      "questionFingerprint": "مقارنة كمية: ٤٤ مقابل ٣٦٣٦÷٩.",
+      "explanationFingerprint": "احسب ٣٦٣٦÷٩ = ٤٠٤، ثم قارن ٤٠٤ مع ٤٤.",
+      "difficulty": {
+        "raw": "Easy",
+        "safePunctuationNormalization": null,
+        "hybridReviewRequired": false
+      },
+      "gate": "REVIEW_REQUIRED"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P011-Q20",
+      "pdfPage": 11,
+      "printedQuestionNumber": 20,
+      "title": "سؤال 20",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 6,
+        "testTitle": "السادس",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_2"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": false,
+      "correct": "300.",
+      "educationalExplanation": "يُطبَّق النمط المعتمد في additive-consumption / combine-rates. ثم تُراجع النتيجة: 300..",
+      "questionFingerprint": "additive-consumption / combine-rates.",
+      "explanationFingerprint": "حدد نمط السؤال (additive-consumption / combine-rates.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Easy.",
+        "safePunctuationNormalization": "Easy",
+        "hybridReviewRequired": false
+      },
+      "gate": "SOURCE_CANDIDATE_CONSISTENT"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P012-Q01",
+      "pdfPage": 12,
+      "printedQuestionNumber": 1,
+      "title": "سؤال 1",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 7,
+        "testTitle": "السابع",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_2"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": false,
+      "correct": "القيمتان متساويتان.",
+      "educationalExplanation": "يُطبَّق النمط المعتمد في product-comparison / factor-regrouping. ثم تُراجع النتيجة: القيمتان متساويتان..",
+      "questionFingerprint": "product-comparison / factor-regrouping.",
+      "explanationFingerprint": "حدد نمط السؤال (product-comparison / factor-regrouping.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Medium.",
+        "safePunctuationNormalization": "Medium",
+        "hybridReviewRequired": false
+      },
+      "gate": "SOURCE_CANDIDATE_CONSISTENT"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P012-Q02",
+      "pdfPage": 12,
+      "printedQuestionNumber": 2,
+      "title": "سؤال 2",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 7,
+        "testTitle": "السابع",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_2"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": false,
+      "correct": "القيمتان متساويتان.",
+      "educationalExplanation": "يُطبَّق النمط المعتمد في product-comparison / factorial-style-equivalence. ثم تُراجع النتيجة: القيمتان متساويتان..",
+      "questionFingerprint": "product-comparison / factorial-style-equivalence.",
+      "explanationFingerprint": "حدد نمط السؤال (product-comparison / factorial-style-equivalence.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Medium.",
+        "safePunctuationNormalization": "Medium",
+        "hybridReviewRequired": false
+      },
+      "gate": "SOURCE_CANDIDATE_CONSISTENT"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P012-Q03",
+      "pdfPage": 12,
+      "printedQuestionNumber": 3,
+      "title": "سؤال 3",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 7,
+        "testTitle": "السابع",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_1"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": false,
+      "correct": "خاصية العنصر المحايد.",
+      "educationalExplanation": "يُطبَّق النمط المعتمد في additive-identity / arithmetic-property. ثم تُراجع النتيجة: خاصية العنصر المحايد..",
+      "questionFingerprint": "additive-identity / arithmetic-property.",
+      "explanationFingerprint": "حدد نمط السؤال (additive-identity / arithmetic-property.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Easy.",
+        "safePunctuationNormalization": "Easy",
+        "hybridReviewRequired": false
+      },
+      "gate": "SOURCE_CANDIDATE_CONSISTENT"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P012-Q04",
+      "pdfPage": 12,
+      "printedQuestionNumber": 4,
+      "title": "سؤال 4",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 7,
+        "testTitle": "السابع",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_2"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": false,
+      "correct": "القيمتان متساويتان.",
+      "educationalExplanation": "يُطبَّق النمط المعتمد في repeated-addition / multiplication-equivalence. ثم تُراجع النتيجة: القيمتان متساويتان..",
+      "questionFingerprint": "repeated-addition / multiplication-equivalence.",
+      "explanationFingerprint": "حدد نمط السؤال (repeated-addition / multiplication-equivalence.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Easy.",
+        "safePunctuationNormalization": "Easy",
+        "hybridReviewRequired": false
+      },
+      "gate": "SOURCE_CANDIDATE_CONSISTENT"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P012-Q05",
+      "pdfPage": 12,
+      "printedQuestionNumber": 5,
+      "title": "سؤال 5",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 7,
+        "testTitle": "السابع",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_2"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": false,
+      "correct": "20.",
+      "educationalExplanation": "يُطبَّق النمط المعتمد في repeated-dosage / weekly-total / subtract-from-stock. ثم تُراجع النتيجة: 20..",
+      "questionFingerprint": "repeated-dosage / weekly-total / subtract-from-stock.",
+      "explanationFingerprint": "حدد نمط السؤال (repeated-dosage / weekly-total / subtract-from-stock.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Easy/Medium.",
+        "safePunctuationNormalization": null,
+        "hybridReviewRequired": true
+      },
+      "gate": "REVIEW_REQUIRED"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P012-Q06",
+      "pdfPage": 12,
+      "printedQuestionNumber": 6,
+      "title": "سؤال 6",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 7,
+        "testTitle": "السابع",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_10",
+        "subSkillId": "sub_quant_10_3"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": true,
+      "correct": "1800.",
+      "educationalExplanation": "يُطبَّق النمط المعتمد في relative-price / total-purchase. ثم تُراجع النتيجة: 1800..",
+      "questionFingerprint": "relative-price / total-purchase.",
+      "explanationFingerprint": "حدد نمط السؤال (relative-price / total-purchase.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Easy.",
+        "safePunctuationNormalization": "Easy",
+        "hybridReviewRequired": false
+      },
+      "gate": "REVIEW_REQUIRED"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P012-Q07",
+      "pdfPage": 12,
+      "printedQuestionNumber": 7,
+      "title": "سؤال 7",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 7,
+        "testTitle": "السابع",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_14",
+        "subSkillId": "sub_quant_14_4"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": true,
+      "correct": "30.",
+      "educationalExplanation": "يُطبَّق النمط المعتمد في constant-monthly-increase / repeated-pattern. ثم تُراجع النتيجة: 30..",
+      "questionFingerprint": "constant-monthly-increase / repeated-pattern.",
+      "explanationFingerprint": "حدد نمط السؤال (constant-monthly-increase / repeated-pattern.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Easy.",
+        "safePunctuationNormalization": "Easy",
+        "hybridReviewRequired": false
+      },
+      "gate": "REVIEW_REQUIRED"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P012-Q08",
+      "pdfPage": 12,
+      "printedQuestionNumber": 8,
+      "title": "سؤال 8",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 7,
+        "testTitle": "السابع",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_07",
+        "subSkillId": "sub_quant_07_2"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": true,
+      "correct": "48 students.",
+      "educationalExplanation": "يُطبَّق النمط المعتمد في two-capacity-conditions / linear-equation / classroom-seating. ثم تُراجع النتيجة: 48 students..",
+      "questionFingerprint": "two-capacity-conditions / linear-equation / classroom-seating.",
+      "explanationFingerprint": "حدد نمط السؤال (two-capacity-conditions / linear-equation / classroom-seating.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Hard.",
+        "safePunctuationNormalization": "Hard",
+        "hybridReviewRequired": false
+      },
+      "gate": "REVIEW_REQUIRED"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P012-Q09",
+      "pdfPage": 12,
+      "printedQuestionNumber": 9,
+      "title": "سؤال 9",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 7,
+        "testTitle": "السابع",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_13",
+        "subSkillId": "sub_quant_13_3"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": true,
+      "correct": "18.",
+      "educationalExplanation": "عدد القطع = عدد القصات + 1.",
+      "questionFingerprint": "pieces-vs-cuts / interval-count.",
+      "explanationFingerprint": "حدد نمط السؤال (pieces-vs-cuts / interval-count.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Medium.",
+        "safePunctuationNormalization": "Medium",
+        "hybridReviewRequired": false
+      },
+      "gate": "REVIEW_REQUIRED"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P012-Q10",
+      "pdfPage": 12,
+      "printedQuestionNumber": 10,
+      "title": "سؤال 10",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 7,
+        "testTitle": "السابع",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_2"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": false,
+      "correct": "50.",
+      "educationalExplanation": "يُطبَّق النمط المعتمد في equal-groups / multiplication. ثم تُراجع النتيجة: 50..",
+      "questionFingerprint": "equal-groups / multiplication.",
+      "explanationFingerprint": "حدد نمط السؤال (equal-groups / multiplication.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Easy.",
+        "safePunctuationNormalization": "Easy",
+        "hybridReviewRequired": false
+      },
+      "gate": "SOURCE_CANDIDATE_CONSISTENT"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P012-Q11",
+      "pdfPage": 12,
+      "printedQuestionNumber": 11,
+      "title": "سؤال 11",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 7,
+        "testTitle": "السابع",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_2"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": true,
+      "correct": "6.",
+      "educationalExplanation": "يُطبَّق النمط المعتمد في fixed-units-per-object / total-to-count. ثم تُراجع النتيجة: 6..",
+      "questionFingerprint": "fixed-units-per-object / total-to-count.",
+      "explanationFingerprint": "حدد نمط السؤال (fixed-units-per-object / total-to-count.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Easy.",
+        "safePunctuationNormalization": "Easy",
+        "hybridReviewRequired": false
+      },
+      "gate": "REVIEW_REQUIRED"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P012-Q12",
+      "pdfPage": 12,
+      "printedQuestionNumber": 12,
+      "title": "سؤال 12",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 7,
+        "testTitle": "السابع",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_1"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": false,
+      "correct": "30.",
+      "educationalExplanation": "يُطبَّق النمط المعتمد في complement-from-total / compare-two-years. ثم تُراجع النتيجة: 30..",
+      "questionFingerprint": "complement-from-total / compare-two-years.",
+      "explanationFingerprint": "حدد نمط السؤال (complement-from-total / compare-two-years.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Medium.",
+        "safePunctuationNormalization": "Medium",
+        "hybridReviewRequired": false
+      },
+      "gate": "SOURCE_CANDIDATE_CONSISTENT"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P012-Q13",
+      "pdfPage": 12,
+      "printedQuestionNumber": 13,
+      "title": "سؤال 13",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 7,
+        "testTitle": "السابع",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_13",
+        "subSkillId": "sub_quant_13_4"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": true,
+      "correct": "48.",
+      "educationalExplanation": "يُطبَّق النمط المعتمد في newspaper-page-pair / total-pages-rule. ثم تُراجع النتيجة: 48..",
+      "questionFingerprint": "newspaper-page-pair / total-pages-rule.",
+      "explanationFingerprint": "حدد نمط السؤال (newspaper-page-pair / total-pages-rule.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Medium.",
+        "safePunctuationNormalization": "Medium",
+        "hybridReviewRequired": false
+      },
+      "gate": "REVIEW_REQUIRED"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P013-Q14",
+      "pdfPage": 13,
+      "printedQuestionNumber": 14,
+      "title": "سؤال 14",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 7,
+        "testTitle": "السابع",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_10",
+        "subSkillId": "sub_quant_10_3"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": true,
+      "correct": "القيمة الثانية أكبر.",
+      "educationalExplanation": "يُطبَّق النمط المعتمد في fixed-daily-saving / quantitative-comparison. ثم تُراجع النتيجة: القيمة الثانية أكبر..",
+      "questionFingerprint": "fixed-daily-saving / quantitative-comparison.",
+      "explanationFingerprint": "حدد نمط السؤال (fixed-daily-saving / quantitative-comparison.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Easy.",
+        "safePunctuationNormalization": "Easy",
+        "hybridReviewRequired": false
+      },
+      "gate": "REVIEW_REQUIRED"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P013-Q16",
+      "pdfPage": 13,
+      "printedQuestionNumber": 16,
+      "title": "سؤال 16",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 7,
+        "testTitle": "السابع",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_2"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": true,
+      "correct": "320.",
+      "educationalExplanation": "يُطبَّق النمط المعتمد في unit-rate × time. ثم تُراجع النتيجة: 320..",
+      "questionFingerprint": "unit-rate × time.",
+      "explanationFingerprint": "حدد نمط السؤال (unit-rate × time.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Easy.",
+        "safePunctuationNormalization": "Easy",
+        "hybridReviewRequired": false
+      },
+      "gate": "REVIEW_REQUIRED"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P013-Q17",
+      "pdfPage": 13,
+      "printedQuestionNumber": 17,
+      "title": "سؤال 17",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 7,
+        "testTitle": "السابع",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_14",
+        "subSkillId": "sub_quant_14_4"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": true,
+      "correct": "4.",
+      "educationalExplanation": "يُطبَّق النمط المعتمد في visual-number-pattern / doubling. ثم تُراجع النتيجة: 4..",
+      "questionFingerprint": "visual-number-pattern / doubling.",
+      "explanationFingerprint": "حدد نمط السؤال (visual-number-pattern / doubling.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Easy.",
+        "safePunctuationNormalization": "Easy",
+        "hybridReviewRequired": false
+      },
+      "gate": "REVIEW_REQUIRED"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P013-Q18",
+      "pdfPage": 13,
+      "printedQuestionNumber": 18,
+      "title": "سؤال 18",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 7,
+        "testTitle": "السابع",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_4"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": false,
+      "correct": "91÷13 =7.",
+      "educationalExplanation": "يُطبَّق النمط المعتمد في quotient-recognition / integer-division. ثم تُراجع النتيجة: 91÷13 =7..",
+      "questionFingerprint": "quotient-recognition / integer-division.",
+      "explanationFingerprint": "حدد نمط السؤال (quotient-recognition / integer-division.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Easy.",
+        "safePunctuationNormalization": "Easy",
+        "hybridReviewRequired": false
+      },
+      "gate": "SOURCE_CANDIDATE_CONSISTENT"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P013-Q20",
+      "pdfPage": 13,
+      "printedQuestionNumber": 20,
+      "title": "سؤال 20",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 7,
+        "testTitle": "السابع",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_2"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": true,
+      "correct": "23.",
+      "educationalExplanation": "يُطبَّق النمط المعتمد في equal-grouping / total-to-group-count. ثم تُراجع النتيجة: 23..",
+      "questionFingerprint": "equal-grouping / total-to-group-count.",
+      "explanationFingerprint": "حدد نمط السؤال (equal-grouping / total-to-group-count.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Easy.",
+        "safePunctuationNormalization": "Easy",
+        "hybridReviewRequired": false
+      },
+      "gate": "REVIEW_REQUIRED"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P014-Q01",
+      "pdfPage": 14,
+      "printedQuestionNumber": 1,
+      "title": "سؤال 1",
+      "sourceText": "8 □ 3 □ 1 = 6.",
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 8,
+        "testTitle": "الثامن",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_4"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": false,
+      "correct": "subtraction then addition.",
+      "educationalExplanation": "يُطبَّق النمط المعتمد في fill-operators / target-value / operation-order. ثم تُراجع النتيجة: subtraction then addition..",
+      "questionFingerprint": "fill-operators / target-value / operation-order.",
+      "explanationFingerprint": "حدد نمط السؤال (fill-operators / target-value / operation-order.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Easy.",
+        "safePunctuationNormalization": "Easy",
+        "hybridReviewRequired": false
+      },
+      "gate": "SOURCE_CANDIDATE_CONSISTENT"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P014-Q02",
+      "pdfPage": 14,
+      "printedQuestionNumber": 2,
+      "title": "سؤال 2",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 8,
+        "testTitle": "الثامن",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_2"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": true,
+      "correct": "1632.",
+      "educationalExplanation": "يُطبَّق النمط المعتمد في unit-rate × quantity. ثم تُراجع النتيجة: 1632..",
+      "questionFingerprint": "unit-rate × quantity.",
+      "explanationFingerprint": "حدد نمط السؤال (unit-rate × quantity.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Easy.",
+        "safePunctuationNormalization": "Easy",
+        "hybridReviewRequired": false
+      },
+      "gate": "REVIEW_REQUIRED"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P014-Q03",
+      "pdfPage": 14,
+      "printedQuestionNumber": 3,
+      "title": "سؤال 3",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 8,
+        "testTitle": "الثامن",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_4"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": false,
+      "correct": "القيمة الثانية أكبر.",
+      "educationalExplanation": "يُطبَّق النمط المعتمد في fraction-expression comparison. ثم تُراجع النتيجة: القيمة الثانية أكبر..",
+      "questionFingerprint": "fraction-expression comparison.",
+      "explanationFingerprint": "حدد نمط السؤال (fraction-expression comparison.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Easy.",
+        "safePunctuationNormalization": "Easy",
+        "hybridReviewRequired": false
+      },
+      "gate": "SOURCE_CANDIDATE_CONSISTENT"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P014-Q04",
+      "pdfPage": 14,
+      "printedQuestionNumber": 4,
+      "title": "سؤال 4",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 8,
+        "testTitle": "الثامن",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_2"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": true,
+      "correct": "8680.",
+      "educationalExplanation": "يُطبَّق النمط المعتمد في daily-distance × days. ثم تُراجع النتيجة: 8680..",
+      "questionFingerprint": "daily-distance × days.",
+      "explanationFingerprint": "حدد نمط السؤال (daily-distance × days.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Easy.",
+        "safePunctuationNormalization": "Easy",
+        "hybridReviewRequired": false
+      },
+      "gate": "REVIEW_REQUIRED"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P014-Q05",
+      "pdfPage": 14,
+      "printedQuestionNumber": 5,
+      "title": "سؤال 5",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 8,
+        "testTitle": "الثامن",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_1"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": true,
+      "correct": "48.",
+      "educationalExplanation": "يُطبَّق النمط المعتمد في equal-sharing / total-to-unit. ثم تُراجع النتيجة: 48..",
+      "questionFingerprint": "equal-sharing / total-to-unit.",
+      "explanationFingerprint": "حدد نمط السؤال (equal-sharing / total-to-unit.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Easy.",
+        "safePunctuationNormalization": "Easy",
+        "hybridReviewRequired": false
+      },
+      "gate": "REVIEW_REQUIRED"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P014-Q06",
+      "pdfPage": 14,
+      "printedQuestionNumber": 6,
+      "title": "سؤال 6",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 8,
+        "testTitle": "الثامن",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_07",
+        "subSkillId": "sub_quant_07_2"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": true,
+      "correct": "9th floor.",
+      "educationalExplanation": "يُطبَّق النمط المعتمد في two-state-floor-count / linear-equation consistency. ثم تُراجع النتيجة: 9th floor..",
+      "questionFingerprint": "two-state-floor-count / linear-equation consistency.",
+      "explanationFingerprint": "حدد نمط السؤال (two-state-floor-count / linear-equation consistency.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Hard.",
+        "safePunctuationNormalization": "Hard",
+        "hybridReviewRequired": false
+      },
+      "gate": "REVIEW_REQUIRED"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P014-Q07",
+      "pdfPage": 14,
+      "printedQuestionNumber": 7,
+      "title": "سؤال 7",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 8,
+        "testTitle": "الثامن",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_2"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": true,
+      "correct": "80.",
+      "educationalExplanation": "يُطبَّق النمط المعتمد في workforce-proportion / equal-productivity. ثم تُراجع النتيجة: 80..",
+      "questionFingerprint": "workforce-proportion / equal-productivity.",
+      "explanationFingerprint": "حدد نمط السؤال (workforce-proportion / equal-productivity.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Medium.",
+        "safePunctuationNormalization": "Medium",
+        "hybridReviewRequired": false
+      },
+      "gate": "REVIEW_REQUIRED"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P014-Q09",
+      "pdfPage": 14,
+      "printedQuestionNumber": 9,
+      "title": "سؤال 9",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 8,
+        "testTitle": "الثامن",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_2"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": true,
+      "correct": "625.",
+      "educationalExplanation": "يُطبَّق النمط المعتمد في same-time-rate comparison. ثم تُراجع النتيجة: 625..",
+      "questionFingerprint": "same-time-rate comparison.",
+      "explanationFingerprint": "حدد نمط السؤال (same-time-rate comparison.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Easy.",
+        "safePunctuationNormalization": "Easy",
+        "hybridReviewRequired": false
+      },
+      "gate": "REVIEW_REQUIRED"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P014-Q10",
+      "pdfPage": 14,
+      "printedQuestionNumber": 10,
+      "title": "سؤال 10",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 8,
+        "testTitle": "الثامن",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_11",
+        "subSkillId": "sub_quant_11_1"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": true,
+      "correct": "المعطيات غير كافية.",
+      "educationalExplanation": "no numerical relation links the two groups.",
+      "questionFingerprint": "quantitative-comparison / insufficient-data.",
+      "explanationFingerprint": "حدد نمط السؤال (quantitative-comparison / insufficient-data.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Easy.",
+        "safePunctuationNormalization": "Easy",
+        "hybridReviewRequired": false
+      },
+      "gate": "REVIEW_REQUIRED"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P014-Q11",
+      "pdfPage": 14,
+      "printedQuestionNumber": 11,
+      "title": "سؤال 11",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 8,
+        "testTitle": "الثامن",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_11",
+        "subSkillId": "sub_quant_11_2"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": true,
+      "correct": "15.",
+      "educationalExplanation": "يُطبَّق النمط المعتمد في wrong-operation / reverse-to-original / apply-correct-operation. ثم تُراجع النتيجة: 15..",
+      "questionFingerprint": "wrong-operation / reverse-to-original / apply-correct-operation.",
+      "explanationFingerprint": "حدد نمط السؤال (wrong-operation / reverse-to-original / apply-correct-operation.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Medium.",
+        "safePunctuationNormalization": "Medium",
+        "hybridReviewRequired": false
+      },
+      "gate": "REVIEW_REQUIRED"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P014-Q12",
+      "pdfPage": 14,
+      "printedQuestionNumber": 12,
+      "title": "سؤال 12",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 8,
+        "testTitle": "الثامن",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_3"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": false,
+      "correct": "18.",
+      "educationalExplanation": "يُطبَّق النمط المعتمد في consecutive-even / residual-odd / primality-filter. ثم تُراجع النتيجة: 18..",
+      "questionFingerprint": "consecutive-even / residual-odd / primality-filter.",
+      "explanationFingerprint": "حدد نمط السؤال (consecutive-even / residual-odd / primality-filter.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Hard.",
+        "safePunctuationNormalization": "Hard",
+        "hybridReviewRequired": false
+      },
+      "gate": "SOURCE_CANDIDATE_CONSISTENT"
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P014-Q13",
+      "pdfPage": 14,
+      "printedQuestionNumber": 13,
+      "title": "سؤال 13",
+      "sourceText": null,
+      "sourceClassification": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 8,
+        "testTitle": "الثامن",
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "evidence": "RAW_PDF_TEXT_HEADER",
+        "mappingPolicy": "SOURCE_SKILL_FIRST_THEN_QUESTION_MATH_TO_CANONICAL_25_95"
+      },
+      "currentMapping": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_1"
+      },
+      "sourceCandidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "mappingReview": false,
+      "correct": "23.",
+      "educationalExplanation": "يُطبَّق النمط المعتمد في elapsed-years / subtraction. ثم تُراجع النتيجة: 23..",
+      "questionFingerprint": "elapsed-years / subtraction.",
+      "explanationFingerprint": "حدد نمط السؤال (elapsed-years / subtraction.) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "difficulty": {
+        "raw": "Easy.",
+        "safePunctuationNormalization": "Easy",
+        "hybridReviewRequired": false
+      },
+      "gate": "SOURCE_CANDIDATE_CONSISTENT"
+    }
+  ]
+}
