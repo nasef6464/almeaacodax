@@ -23,13 +23,14 @@
     {
       "name": "mapping",
       "status": "IN_PROGRESS",
-      "done": 91,
+      "done": 129,
       "total": 2135,
       "rule": "QUESTION_MATH_REQUIRED; source label preserved; no group-title auto approval",
-      "reviewHold": 39,
+      "reviewHold": 1,
       "evidence": [
         "Ready130 audit candidate-pass 74",
-        "Adjudication batch001 added 17 question-level approvals"
+        "Adjudication batch001 added 17 question-level approvals",
+        "Adjudication batch002 added 38 question-level approvals; only P001/Q12 remains fail-closed in ready130"
       ]
     },
     {
@@ -38,7 +39,7 @@
       "done": 130,
       "total": 2135,
       "rule": "answer+solution+educationalExplanation+difficulty+difficultyReason+fingerprints",
-      "mappingApprovedWithinReady": 91
+      "mappingApprovedWithinReady": 129
     },
     {
       "name": "dedupe",
@@ -79,10 +80,10 @@
     "stage": "mapping",
     "strategy": "QUESTION_LEVEL_VISUAL_MATH",
     "priority": [
-      "resolve remaining 39 ready130 review rows where evidence permits",
       "geometry T22-T23 37 visual review",
       "arithmetic T12-T14 59 visual review",
-      "continue source order"
+      "continue source order",
+      "retain P001/Q12 fail-closed until stronger evidence"
     ]
   },
   "antiLoopRules": [
@@ -93,9 +94,9 @@
     "Checkpoint commits are not stop points"
   ],
   "lastCompletedBatch": {
-    "name": "READY130_ADJUDICATION_APPLICATION",
-    "mappedApproved": 91,
-    "reviewHold": 39,
-    "headBeforeBatch": "a769c499ea831bc034099e729e89ae65309afd6f"
+    "name": "READY130_ADJUDICATION_BATCH_002",
+    "mappedApproved": 129,
+    "reviewHold": 1,
+    "headBeforeBatch": "08a5caffb6924292e5fa75da76c6e654f461107b"
   }
 }
