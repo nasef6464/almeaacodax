@@ -1,6 +1,6 @@
 export const PATH_ID = "p_1777779653351";
 export const SUBJECT_ID = "sub_tah_biology_bio26";
-export const BATCH_ID = "TAH-CHEM-BIO26-FULL-V1";
+export const BATCH_ID = "TAH-BIO-BIO26-FULL-V1";
 export const EXPECTED_QUESTIONS = 2832;
 export const EXPECTED_MAIN_SKILLS = 29;
 export const EXPECTED_SUB_SKILLS = 98;
