@@ -3,7 +3,7 @@
 **Scope:** Biology only (`BIO26`).  
 **Repository:** `nasef6464/almeaacodax`  
 **Source-freeze version:** 1.0.0  
-**Status:** PRE-IMPORT CONTENT GATES PASS — READY PACKAGE LOCAL QA PASS — SIGNED TRANSPORT READY — R2/PRODUCTION IMPORT PENDING — NOT CLOSED
+**Status:** CLOSED ✅ — PRODUCTION IMPORT + INTEGRITY + LIVE E2E + APPROVAL + POST-APPROVAL PASS
 
 ## Verified source inventory
 - Foundation PDF: **79 pages**.
@@ -56,22 +56,39 @@
 | Inventory | PASS |
 | Question-to-Skill Ledger | PASS — 2,835/2,835 |
 | Answers | PASS — SOURCE KEY 2,835/2,835 |
-| Crop QA | **PASS** |
-| Asset regeneration | **PASS LOCAL — 2,835 files** |
-| Dedupe | **PASS — 2,832 canonical** |
-| Existing biology-bank dedupe | **PASS — 0 existing** |
-| AI context | **PASS — 2,832 / 2,832 canonical; 48/48 lessons; pending=0** |
-| Option-text recovery | **PASS — 2,832/2,832 source-verified** |
-| READY package | **PASS LOCAL — 2,832/2,832 questions + 2,832/2,832 images** |
-| Signed transport bridge | **PASS — Drive raw fetch → short-lived `.oaiusercontent.com`** |
-| R2 upload | PENDING |
-| Dry run | BLOCKED BY R2 ONLY |
-| Canary 5 | BLOCKED |
-| Full draft import | BLOCKED |
-| Integrity audit | NOT RUN |
-| Live E2E | NOT RUN |
-| Approval | NOT RUN |
-| BIO26 CLOSED | **NO** |
+| Crop QA | PASS |
+| Dedupe | PASS — 2,832 canonical |
+| AI context | PASS — 2,832/2,832 |
+| Option-text recovery | PASS — 2,832/2,832 |
+| READY package | PASS |
+| R2 upload + authenticated hash verification | **PASS — 2,832/2,832** |
+| Dry run | **PASS — 2,832/2,832** |
+| Canary 5 | **PASS — 5/5** |
+| Full draft import | **PASS — 2,832/2,832** |
+| Integrity audit | **PASS — 0 errors; 29/98; 0 linked quizzes** |
+| Live E2E pre-approval | **PASS — learner hidden; 30 live images** |
+| Approval | **PASS — 2,832/2,832** |
+| Live E2E post-approval | **PASS — learner visible; answer leak=0; 30 live images** |
+| Post-Approval Audit | **PASS — 2,832; 29/98; linked=0** |
+| Learning structure | **PASS — 29 main / 98 subtopics / 49 main-skill trainings** |
+| Standard tests | **PASS — 71 tests consume all 2,832 exactly once** |
+| BIO26 CLOSED | **YES ✅** |
+
+## Production closure evidence — 2026-10-07
+- R2: `BIO26_R2_VERIFIED_PASS count=2832`.
+- Dry Run: `BIO26_DRY_RUN_PASS count=2832 liveImageSamples=30`.
+- Canary: `BIO26_CANARY_PASS count=5 drafts=5 insertedThisRun=5`.
+- Full Draft: `BIO26_IMPORT_DRAFT_PASS count=2832 drafts=2832 liveImageSamples=30`.
+- Integrity: **2,832 unique codes / source IDs / image hashes**, taxonomy **29/98**, **0** scope/taxonomy/content/identity errors, **0** linked quizzes.
+- Pre-approval E2E: `BIO26_LIVE_E2E_DRAFT_PASS learnerHidden=1 liveImageSamples=30`.
+- Approval: `BIO26_APPROVAL_WRITE_PASS count=2832 approver=BIO26_FULL_CLOSURE_2026_10_07`.
+- Post-approval E2E: `BIO26_LIVE_E2E_APPROVED_PASS learnerVisible=1 answerLeak=0 liveImageSamples=30`.
+- Final gate: `BIO26_POST_APPROVAL_GATE_PASS count=2832 main=29 sub=98 linked=0`.
+- PR #433 merged: `7b07579b4aa68c46562ac451711328a06ab055ee`.
+- Current production main after learning/test closure: `2885b2b30eff2f959fdad3a0c098a2bd461f1b73`.
+- PR #437 merged learning topics/drills/71 all-bank tests.
+- PR #439 aligned main-skill training count to **49**.
+- Closure evidence file: `ops/bio26/BIO26_PRODUCTION_CLOSURE_2026-10-07.json`.
 
 ## Recovery-package audit — 2026-10-06 12:30 +03
 - Initial candidate `BIO26_FINAL_ASSETS_V3_RECOVERY_UPLOAD.zip`: **2,832 manifest items / 2,832 WEBP / 2,832 unique self-hashes / 0 internal hash mismatches**.
@@ -116,9 +133,7 @@
 - Duplicate question codes: **0**.
 - Alias exclusions: **PASS_3_OF_3**.
 
-## Next execution batch
-1. Merge the current-main reconciliation branch `ops/bio26-ready-r2-2026-10-06` after exact-head CI passes.
-2. Refresh signed package URL and run authenticated R2 upload + **2,832/2,832 live GET/SHA verification**.
-3. Dry Run → Canary 5 → Full Draft Import → Integrity Audit → Live E2E → Approval.
+## Final state
+BIO26 is production-closed. Future BIO26 work is a **new revision/change request**, not continuation of this import closure.
 
-**Closure rule:** no `BIO26 CLOSED` until production counts, asset integrity, exact-question skill analysis, and live learner journey pass.
+**Closure rule satisfied:** production counts, R2 integrity, exact taxonomy linkage, learner visibility, answer redaction, approval, and post-approval audit all PASS.
