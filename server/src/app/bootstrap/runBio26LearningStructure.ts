@@ -52,7 +52,7 @@ async function loadAndValidateSource() {
     fail(`BIO26 sub taxonomy drift: expected ${EXPECTED_SUB_SKILLS}, got ${subCount}`);
   }
   if (topics.length !== EXPECTED_MAIN_SKILLS + EXPECTED_SUB_SKILLS) {
-    fail(`BIO26 foundation topic count drift: expected 126, got ${topics.length}`);
+    fail(`BIO26 foundation topic count drift: expected ${EXPECTED_MAIN_SKILLS + EXPECTED_SUB_SKILLS}, got ${topics.length}`);
   }
 
   const skillById = new Map(skills.map((skill) => [stringId(skill.id || skill._id), skill]));
@@ -195,8 +195,8 @@ export async function runBio26LearningStructureIfNeeded() {
   if (expected.foundationQuizzes.length !== EXPECTED_SUB_SKILLS) {
     fail(`BIO26 expected 98 foundation drills, got ${expected.foundationQuizzes.length}`);
   }
-  if (expected.trainingQuizzes.length !== 40) {
-    fail(`BIO26 expected 40 main-skill training drills, got ${expected.trainingQuizzes.length}`);
+  if (expected.trainingQuizzes.length !== 49) {
+    fail(`BIO26 expected 49 main-skill training drills, got ${expected.trainingQuizzes.length}`);
   }
 
   const before = await verifyExpected(source.skills, source.topics, expected);
