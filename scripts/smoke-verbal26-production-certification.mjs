@@ -1,3 +1,5 @@
+import fs from "node:fs";
+
 const API_BASE = process.env.SMOKE_API_BASE_URL || "https://almeaacodax.vercel.app/api";
 const ADMIN_EMAIL = process.env.SMOKE_ADMIN_EMAIL || "";
 const ADMIN_PASSWORD = process.env.SMOKE_ADMIN_PASSWORD || "";
@@ -5,10 +7,12 @@ const STUDENT_EMAIL = process.env.SMOKE_STUDENT_EMAIL || "";
 const STUDENT_PASSWORD = process.env.SMOKE_STUDENT_PASSWORD || "";
 const QUESTION_ID = "VERBAL26-ANAS-P005-Q001";
 const EXPECTED_SKILL_ID = "skill_verbal_17";
+const EXPECTED_SKILL_NAME = "الخطأ السياقي — فهم السياق وتحديد الخطأ";
 const EXPECTED_SUBSKILL_ID = "sub_verbal_11_2";
 const EXPECTED_SUBSKILL_NAME = "تحديد الكلمة الخاطئة";
 const EXPECTED_CORRECT_INDEX = 3;
 const QUIZ_ID = `verbal26-cert-${Date.now()}`;
+const APPROVED_BANK = JSON.parse(fs.readFileSync(new URL("../server/data/verbal_approved_bank_v2.json", import.meta.url), "utf8"));
 
 function assert(condition, message) {
   if (!condition) throw new Error(message);
@@ -73,7 +77,7 @@ function asArray(value) {
   return [];
 }
 
-let admin, student, resultId = "";
+let admin, student, resultId = "", quizCreated = false;
 try {
   admin = await login(ADMIN_EMAIL, ADMIN_PASSWORD);
   student = await login(STUDENT_EMAIL, STUDENT_PASSWORD);
@@ -88,13 +92,46 @@ try {
   assert(verbalSections.length === 22, `taxonomy sections mismatch: ${verbalSections.length}/22`);
   assert(verbalSkills.length === 22, `taxonomy main skill records mismatch: ${verbalSkills.length}/22`);
   assert(verbalSubSkillCount === 76, `taxonomy subskills mismatch: ${verbalSubSkillCount}/76`);
+  const expectedMainSkill = verbalSkills.find((item) => String(item?.id || item?._id || "") === EXPECTED_SKILL_ID);
+  assert(expectedMainSkill, `taxonomy missing expected main skill: ${EXPECTED_SKILL_ID}`);
+  assert(String(expectedMainSkill.name || "").trim() === EXPECTED_SKILL_NAME,
+    `taxonomy main skill name mismatch: ${expectedMainSkill?.name || "<blank>"}`);
+  const expectedSubSkill = verbalSkills
+    .flatMap((item) => Array.isArray(item?.subSkills) ? item.subSkills : [])
+    .find((item) => String(item?.id || "") === EXPECTED_SUBSKILL_ID);
+  assert(expectedSubSkill, `taxonomy missing expected subskill: ${EXPECTED_SUBSKILL_ID}`);
+  assert(String(expectedSubSkill.name || "").trim() === EXPECTED_SUBSKILL_NAME,
+    `taxonomy subskill name mismatch: ${expectedSubSkill?.name || "<blank>"}`);
 
-  const coverageResponse = await req("/quizzes/questions?subject=sub_1777779759038&skillLinkStatus=linked&limit=1&page=1&summary=true&noTotal=true&includeCoverage=true&paginate=true", { token: admin.token });
-  const coverage = coverageResponse.body?.coverage || {};
-  assert(Number(coverage.total) === 1050, `question coverage total mismatch: ${coverage.total}/1050`);
-  assert(Number(coverage.mainSkillCount) === 22, `question coverage main skills mismatch: ${coverage.mainSkillCount}/22`);
-  assert(Number(coverage.subSkillCount) === 50, `question coverage used subskills mismatch: ${coverage.subSkillCount}/50`);
-  assert(Object.keys(coverage.sectionQuestionCounts || {}).length === 22, "section question coverage does not include all 22 main skills");
+  assert(Array.isArray(APPROVED_BANK) && APPROVED_BANK.length === 1050, `approved canonical bank mismatch: ${APPROVED_BANK?.length}/1050`);
+  const canonicalById = new Map(APPROVED_BANK.map((item) => [String(item.id || item.canonicalId), item]));
+  const productionCanonical = [];
+  const canonicalIds = [...canonicalById.keys()];
+  for (let i = 0; i < canonicalIds.length; i += 100) {
+    const chunk = canonicalIds.slice(i, i + 100);
+    const response = await req(`/quizzes/questions?ids=${encodeURIComponent(chunk.join(","))}&limit=100&page=1`, { token: admin.token });
+    const items = asArray(response.body);
+    assert(items.length === chunk.length, `production canonical chunk mismatch at ${i}: ${items.length}/${chunk.length}`);
+    productionCanonical.push(...items);
+  }
+  const productionById = new Map(productionCanonical.map((item) => [String(item.id || item._id || item.canonicalId), item]));
+  assert(productionById.size === 1050, `production canonical unique total mismatch: ${productionById.size}/1050`);
+  const coveredMain = new Set();
+  const coveredSub = new Set();
+  const coveredSections = new Set();
+  for (const [id, expected] of canonicalById) {
+    const actual = productionById.get(id);
+    assert(actual, `production canonical question missing: ${id}`);
+    assert(Number(actual.correctOptionIndex) === Number(expected.correctOptionIndex), `correctOptionIndex mismatch: ${id}`);
+    assert(String(actual.skillId || actual.mainSkillId || "") === String(expected.mainSkillId || ""), `main skill mismatch: ${id}`);
+    assert(String(actual.subSkillId || "") === String(expected.subSkillId || ""), `subskill mismatch: ${id}`);
+    coveredMain.add(String(actual.skillId || actual.mainSkillId || ""));
+    coveredSub.add(String(actual.subSkillId || ""));
+    coveredSections.add(String(actual.sectionId || ""));
+  }
+  assert(coveredMain.size === 22, `canonical main coverage mismatch: ${coveredMain.size}/22`);
+  assert(coveredSub.size === 50, `canonical used subskill coverage mismatch: ${coveredSub.size}/50`);
+  assert(coveredSections.size === 22, `canonical section coverage mismatch: ${coveredSections.size}/22`);
 
   const catalog = await req(`/quizzes/questions?ids=${encodeURIComponent(QUESTION_ID)}&limit=10&page=1`, { token: admin.token });
   const question = asArray(catalog.body).find((q) => String(q?.id || q?._id || q?.canonicalId) === QUESTION_ID);
@@ -120,6 +157,7 @@ try {
       settings: { maxAttempts: 1, passingScore: 0 },
     },
   });
+  quizCreated = true;
 
   const definition = await req(`/quizzes/${QUIZ_ID}`, { token: student.token });
   const definitionText = JSON.stringify(definition.body);
@@ -138,6 +176,8 @@ try {
   assert(detailText.includes(QUIZ_ID), "result detail missing certification quiz id");
   assert(detailText.includes(EXPECTED_SKILL_ID), "result/review analysis missing main skill from same attempt");
   assert(detailText.includes(EXPECTED_SUBSKILL_ID), "result/review analysis missing subskill from same attempt");
+  assert(detailText.includes(EXPECTED_SKILL_NAME), "result/review analysis missing main skill name from same attempt");
+  assert(detailText.includes(EXPECTED_SUBSKILL_NAME), "result/review analysis missing subskill name from same attempt");
 
   const history = await req(`/quiz-results/my?quizId=${encodeURIComponent(QUIZ_ID)}&limit=10`, { token: student.token });
   assert(asArray(history.body).some((r) => String(r?.id || r?._id) === resultId), "student results history missing certification result");
@@ -154,13 +194,14 @@ try {
     resultId,
     score: submission.body?.score,
     mainSkillId: EXPECTED_SKILL_ID,
+    mainSkillName: EXPECTED_SKILL_NAME,
     subSkillId: EXPECTED_SUBSKILL_ID,
     subSkillName: EXPECTED_SUBSKILL_NAME,
     taxonomy: { mainSkills: 22, subSkills: 76, usedSubSkills: 50, questions: 1050 },
-    checks: ["taxonomy-ui-lineage","question-bank-coverage","question","answer","result","review","retry-guard","results-history","same-attempt-skill-analysis"],
+    checks: ["taxonomy-ui-lineage","canonical-1050-production-map","answer-contract","question","answer","result","review","retry-guard","results-history","same-attempt-skill-names"],
   }, null, 2));
 } finally {
-  if (admin?.token) {
+  if (admin?.token && quizCreated) {
     const cleanup = await req(`/quizzes/${QUIZ_ID}`, { method: "DELETE", token: admin.token, expected: 200 }).catch((error) => ({ cleanupError: String(error) }));
     if (cleanup?.cleanupError) console.error(cleanup.cleanupError);
   }

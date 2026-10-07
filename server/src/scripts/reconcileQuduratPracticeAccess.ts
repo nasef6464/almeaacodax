@@ -52,6 +52,8 @@ const isTrainingOnly = (question: any) =>
   idOf(question?.id || question?._id).startsWith("train_sub_");
 const isQuantCanonicalSourceQuestion = (question: any) =>
   ["FND26", "COL2627"].includes(idOf(question?.sourceMeta?.documentCode));
+const isVerbalCanonicalSourceQuestion = (question: any) =>
+  ["abdelbaset", "anas"].includes(idOf(question?.sourceBook));
 
 const questionIdsForSubskill = (questions: any[], subSkillId: string, subjectKey: string) =>
   questions
@@ -59,7 +61,8 @@ const questionIdsForSubskill = (questions: any[], subSkillId: string, subjectKey
       idOf(q.subSkillId) === subSkillId &&
       isApprovedQuestion(q) &&
       !isTrainingOnly(q) &&
-      (subjectKey !== "quant" || isQuantCanonicalSourceQuestion(q)),
+      (subjectKey !== "quant" || isQuantCanonicalSourceQuestion(q)) &&
+      (subjectKey !== "verbal" || isVerbalCanonicalSourceQuestion(q)),
     )
     .map((q) => idOf(q.id || q._id))
     .filter(Boolean);
@@ -70,9 +73,14 @@ const helperQuestionIdsForSubskill = (questions: any[], subSkillId: string) =>
     .map((q) => idOf(q.id || q._id))
     .filter(Boolean);
 
-const questionIdsForMain = (questions: any[], mainSkillId: string) =>
+const questionIdsForMain = (questions: any[], mainSkillId: string, subjectKey: string) =>
   questions
-    .filter((q) => idOf(q.skillId) === mainSkillId && isApprovedQuestion(q) && !isTrainingOnly(q))
+    .filter((q) =>
+      idOf(q.skillId) === mainSkillId &&
+      isApprovedQuestion(q) &&
+      !isTrainingOnly(q) &&
+      (subjectKey !== "verbal" || isVerbalCanonicalSourceQuestion(q)),
+    )
     .map((q) => idOf(q.id || q._id))
     .filter(Boolean);
 
@@ -251,7 +259,7 @@ async function reconcileSubject(db: any, config: (typeof SUBJECTS)[number], appl
     for (let mainIndex = 0; mainIndex < canonicalSkills.length; mainIndex++) {
       const skill: any = canonicalSkills[mainIndex];
       const mainSkillId = idOf(skill.id || skill._id);
-      const mainSourceIds = questionIdsForMain(questions, mainSkillId);
+      const mainSourceIds = questionIdsForMain(questions, mainSkillId, config.key);
       const mainSourceDrillIds = mainSourceIds.slice(0, MAIN_DRILL_MAX_QUESTIONS);
       const mainHelperIds = helperQuestionIdsForMain(questions, mainSkillId);
       const mainHelperNeeded = Math.max(
