@@ -199,4 +199,12 @@ Started from main:
 `4ced0cdf609e31fdb29338d9fc46b788752559c8`
 
 Current active task:
-**Source lesson/idea extraction is complete for lessons 1-31. Exact runtime taxonomy binding is next, followed by the YLM26 deterministic review manifest.**
+**P1 is now complete. The exact production taxonomy snapshot (22 main / 67 subskills) is frozen and the 31 source lessons are bound to it. P2 YLM26 is IN PROGRESS with a 326-row deterministic review manifest. Structural core fields are complete 326/326, parent-child taxonomy integrity is 326/326, but difficulty is invalid as a pedagogical distribution (326 Medium / 0 Easy / 0 Hard). Five page-vs-skill anomalies were triaged: 3 confirmed REMAP and 2 KEEP after source/content review. No production mutation has been applied yet.**
+
+Production pre-audit also confirms:
+- COL26 = 1,012 approved records, skill mapping populated, but 1,012/1,012 lack hint and AI context and all are Medium.
+- COL26OLD = 1,257 approved canonical records (1,258 source inventory including one protected alias), 67 mapped subskills, but all are Medium and hint/AI enrichment is absent.
+- Exact cross-bank imageHash duplicate scan currently returns 0; historical protected alias remains handled by source identity rather than relying on imageHash alone.
+
+Next heavy gate:
+**finish YLM26 difficulty + pedagogical enrichment review, finalize the 326-row manifest, then apply only reviewed mapping corrections with rollback evidence; immediately continue into COL26 1,012 full content review.**
