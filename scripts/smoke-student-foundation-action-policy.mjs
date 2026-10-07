@@ -33,10 +33,14 @@ required(links, [
 ], 'central contract');
 
 required(foundation, [
-  "const topic = kind === 'sub'",
-  '? explicitTopic',
+  "const explicitRootTopic = skillId",
+  "const explicitChildTopic = skillId",
+  "kind === 'sub'",
+  "? explicitChildTopic",
+  "kind === 'main'",
+  "? explicitRootTopic || titleTopic || legacyIdTopic",
   'topic.skillId',
-], 'canonical subskill mapping');
+], 'canonical root/main and child/subskill mapping');
 
 required(learner, [
   "searchParams.get('content')",
