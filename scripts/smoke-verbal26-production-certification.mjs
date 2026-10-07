@@ -6,6 +6,7 @@ const STUDENT_PASSWORD = process.env.SMOKE_STUDENT_PASSWORD || "";
 const QUESTION_ID = "VERBAL26-ANAS-P005-Q001";
 const EXPECTED_SKILL_ID = "skill_verbal_17";
 const EXPECTED_SUBSKILL_ID = "sub_verbal_11_2";
+const EXPECTED_SUBSKILL_NAME = "تحديد الكلمة الخاطئة";
 const EXPECTED_CORRECT_INDEX = 3;
 const QUIZ_ID = `verbal26-cert-${Date.now()}`;
 
@@ -154,6 +155,7 @@ try {
     score: submission.body?.score,
     mainSkillId: EXPECTED_SKILL_ID,
     subSkillId: EXPECTED_SUBSKILL_ID,
+    subSkillName: EXPECTED_SUBSKILL_NAME,
     taxonomy: { mainSkills: 22, subSkills: 76, usedSubSkills: 50, questions: 1050 },
     checks: ["taxonomy-ui-lineage","question-bank-coverage","question","answer","result","review","retry-guard","results-history","same-attempt-skill-analysis"],
   }, null, 2));
