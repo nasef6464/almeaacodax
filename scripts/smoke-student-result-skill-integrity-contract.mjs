@@ -21,12 +21,13 @@ const check = (name, fn) => {
   catch (error) { checks.push({ name, status: 'FAIL', details: error instanceof Error ? error.message : String(error) }); }
 };
 
-check('canonical question fields override legacy skillIds when available', () => {
+check('all explicit question skill links participate in result analysis', () => {
   assert.ok(readModel.includes('question?.skillId'));
   assert.ok(readModel.includes('question?.subSkillId'));
-  assert.ok(readModel.includes('canonical.length > 0'));
+  assert.ok(readModel.includes('question?.subSkillIds'));
+  assert.ok(readModel.includes('question?.skillIds'));
+  assert.ok(!readModel.includes('canonical.length > 0'));
   assert.ok(answerReview.includes('getCanonicalQuestionSkillIds(question)'));
-  assert.ok(!answerReview.includes('(question.skillIds || []).map(String)'));
 });
 
 check('nested subskills are loaded and flattened with parent context', () => {
