@@ -92,11 +92,24 @@ export const resolveFoundationSkillTarget = (
   const target = { skillId, skillName, pathId, subjectId, sectionId, kind };
   const visibleTopics = topics.filter((topic) => topic.showOnPlatform !== false && topicMatchesScope(topic, target));
 
-  const explicitTopic = skillId
-    ? visibleTopics.find((topic) =>
+  const topicMapsSkill = (topic: Topic) =>
+    Boolean(
+      skillId && (
         normalizeText(topic.skillId) === skillId ||
-        (topic.skillIds || []).some((topicSkillId) => normalizeText(topicSkillId) === skillId),
-      )
+        (topic.skillIds || []).some((topicSkillId) => normalizeText(topicSkillId) === skillId)
+      ),
+    );
+
+  const explicitRootTopic = skillId
+    ? visibleTopics.find((topic) => !topic.parentId && topicMapsSkill(topic))
+    : undefined;
+
+  const explicitChildTopic = skillId
+    ? visibleTopics.find((topic) => Boolean(topic.parentId) && topicMapsSkill(topic))
+    : undefined;
+
+  const explicitTopic = skillId
+    ? visibleTopics.find((topic) => topicMapsSkill(topic))
     : undefined;
 
   const legacyIdTopic = skillId
@@ -106,16 +119,19 @@ export const resolveFoundationSkillTarget = (
   const titleTopic = skillName
     ? visibleTopics.find((topic) =>
         normalizeText(topic.title) === skillName &&
-        (kind !== 'sub' || Boolean(topic.parentId)),
+        (kind === 'sub' ? Boolean(topic.parentId) : kind === 'main' ? !topic.parentId : true),
       )
     : undefined;
 
-  // Child Foundation topics are canonical remediation targets for subskills.
-  // Never fall back by legacy id/title for a subskill: if the explicit skillId mapping
-  // is missing, student routing must remain unresolved rather than opening wrong/general content.
+  // Main skills must resolve to their root Foundation topic even when every child topic
+  // also carries the parent skill in skillIds. Subskills must resolve only to a child topic.
+  // Never fall back by legacy id/title for a subskill: if its explicit child mapping is
+  // missing, student routing remains unresolved rather than opening wrong/general content.
   const topic = kind === 'sub'
-    ? explicitTopic
-    : explicitTopic || legacyIdTopic || titleTopic;
+    ? explicitChildTopic
+    : kind === 'main'
+      ? explicitRootTopic || titleTopic || legacyIdTopic
+      : explicitTopic || legacyIdTopic || titleTopic;
 
   return {
     ...target,
