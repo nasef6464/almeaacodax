@@ -77,20 +77,28 @@ Ruleset: `Protect main`
 
 Git HEAD always overrides this historical baseline.
 
-## BIO26 operational lane — 2026-10-06
+## BIO26 operational lane — CLOSED ✅ — 2026-10-07
 
 - Scope: الأحياء فقط، batch `TAH-BIO-BIO26-FULL-V1`.
-- Content gates: source/crop/dedupe/answers/taxonomy PASS; canonical **2,832**; taxonomy **29/98**.
-- AI context: **2,832/2,832**, **48/48** lessons, pending=0; source-answer/skill-range/required-fields all PASS.
-- Production plumbing: PR #388 merged; dedicated subject `sub_tah_biology_bio26`; legacy `علم البيئة` remains protected.
-- PR #398 merged: the original placeholder READY manifest was correctly rejected and fail-closed validation hardened.
-- Fresh reconciliation branch: `ops/bio26-ready-r2-2026-10-06` from current `main@283c5a797e6a6733124ebed44587a9e5a5a8eddc`.
-- Semantic option recovery: **2,832/2,832 PASS** = **2,579 parsed source-text + 253 direct source-crop visual review**; unresolved **0**.
-- Importer/verifier require explicit `SOURCE_PDF` provenance + `optionTextsVerified=true`; Canary is restart-safe.
-- V3 assets independently re-qualified: **2,832 images / 2,832 unique hashes / 0 mismatches / 29,547,754 bytes / 118/118 stratified visual QA PASS**.
-- READY package: `BIO26_FINAL_ASSETS_V3_READY_2832.zip`, bytes **30,690,582**, SHA-256 `e2063da82250395c8e7f9c50a6cbba34269d9c6683c7db91a0ea9a92a494fa8f`; manifest SHA-256 `153e97e8468e4a7f84ba1488f7c4b919b19ab84095a00773de014c98b81cf8a5`.
-- READY local audit: **PASS / 0 errors**, 29/98 taxonomy coverage, 2,832/2,832 source provenance and image hashes.
-- Transport bridge: Drive file id `1-Hgg37LX92ZRYzNhSSylJdmyhl_ZP_Pg`; Drive raw-fetch → short-lived HTTPS `.oaiusercontent.com` verified. Signed URL itself is intentionally not persisted.
-- Production writes: **NONE** at this checkpoint.
-- Current gate: exact-head CI/merge → R2 **2,832/2,832** remote hash verification → Dry Run → Canary 5 → Full Draft → Integrity → Live E2E → Approval.
-- Closure rule: do not mark BIO26 CLOSED before all production gates and live learner journey pass.
+- Canonical production bank: **2,832/2,832 approved**; aliases excluded: **3/3**.
+- Taxonomy coverage: **29 main / 98 subskills**.
+- Package: `BIO26_FINAL_ASSETS_V3_READY_2832.zip`, bytes **30,690,582**, SHA-256 `e2063da82250395c8e7f9c50a6cbba34269d9c6683c7db91a0ea9a92a494fa8f`.
+- R2 authenticated verification: **PASS 2,832/2,832** (`BIO26_R2_VERIFIED_PASS`).
+- Dry Run: **PASS 2,832/2,832**, live image samples **30**.
+- Canary: **PASS 5/5 drafts**.
+- Full Draft Import: **PASS 2,832/2,832**, live image samples **30**.
+- Integrity audit: **PASS** — 2,832 unique codes/sourceItemIds/image hashes, 29/98 coverage, **0** scope/taxonomy/content/identity errors, **0** linked quizzes.
+- Provenance persistence defect discovered pre-approval and fixed in PR **#433**; targeted draft-only backfill restored `aiContext.optionTextsSource=SOURCE_PDF` + `optionTextsVerified=true` for **2,832/2,832**.
+- PR #433 merged as `7b07579b4aa68c46562ac451711328a06ab055ee`; exact-head gates PASS including BIO26 closure contract.
+- Live E2E before approval: learner hidden **PASS**, live image samples **30**.
+- Approval: **PASS 2,832/2,832** by dedicated atomic BIO26 closure gate.
+- Live E2E after approval: learner-visible **PASS**, answer/provenance leak **0**, live image samples **30**.
+- Post-Approval Audit: **PASS 2,832**, 29/98, linked quizzes **0**.
+- Learning structure subsequently merged:
+  - PR #437: **29 main topics / 98 subtopics**, subskill foundation drills, main-skill training, first five free, and **71** standard all-bank tests.
+  - PR #439/current main: **49** main-skill training drills after split policy for high-volume skills.
+  - 71 standard tests consume all **2,832** approved questions exactly once (**63×40 + 8×39 = 2,832**).
+- Current production Render deploy: `main@2885b2b30eff2f959fdad3a0c098a2bd461f1b73`.
+- **BIO26 CLOSED ✅** — no remaining production-import, integrity, Live E2E, approval, or post-approval gate.
+
+**BIO26 must not be reopened unless a new source/content revision is explicitly requested.**
