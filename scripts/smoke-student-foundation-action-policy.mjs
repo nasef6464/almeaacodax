@@ -46,7 +46,7 @@ required(learner, [
   'initialSubTopicId: requestedTopic.parentId ? requestedTopic.id : null',
 ], 'Foundation topic view');
 required(modal, ['initialContentTab', "openLessonVideo(lesson)", "initialLessonId = skill?.initialLessonId"], 'Foundation media selection');
-required(rows, ['buildCanonicalFoundationSkillActions({', 'lessonLink: foundationActions.lessonLink', 'quizLink: foundationActions.quizLink', 'supportLink: foundationActions.supportLink'], 'skill rows');
+required(rows, ['buildCanonicalFoundationSkillActions({', 'lessonLink: foundationActions.lessonLink', 'const quizLink = foundationActions.quizLink', 'supportLink: foundationActions.supportLink'], 'skill rows');
 required(results, ['buildCanonicalFoundationSkillActions(', 'const lessonLink = foundationActions.lessonLink', 'const quizLink = foundationActions.quizLink', 'const supportLink = foundationActions.supportLink'], 'results');
 required(details, ['buildCanonicalFoundationSkillActions({', 'foundationActions.lessonLink', 'foundationActions.quizLink'], 'quiz history');
 required(selected, ['موضوع التأسيس غير مرتبط بعد', 'تدريب التأسيس غير مرتبط بعد', 'ملف الدعم غير مرتبط بعد'], 'unlinked actions');
