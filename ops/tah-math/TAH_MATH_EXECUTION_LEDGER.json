@@ -19,9 +19,9 @@
       "status": "IN_PROGRESS",
       "batching": "lesson-aligned",
       "lessons": "1-31",
-      "sourceIdeasExtractedLessons": "1-8",
-      "progress": "8/31",
-      "next": "lessons 9-16 then runtime taxonomy binding"
+      "sourceIdeasExtractedLessons": "1-16",
+      "progress": "16/31",
+      "next": "lessons 17-24, then 25-31; bind only against exact runtime taxonomy export"
     },
     {
       "id": "P2",
@@ -78,10 +78,11 @@
       2
     ]
   },
-  "lastCheckpoint": "2026-10-07-run1",
+  "lastCheckpoint": "2026-10-07-run2",
   "evidence": [
     "ops/tah-math/TAH_MATH_RUN1_BASELINE.json",
-    "ops/tah-math/TAH_MATH_SOURCE_IDEA_MAP_PART01.json"
+    "ops/tah-math/TAH_MATH_SOURCE_IDEA_MAP_PART01.json",
+    "ops/tah-math/TAH_MATH_SOURCE_IDEA_MAP_PART02.json"
   ],
   "blockers": [
     {
