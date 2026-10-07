@@ -23,16 +23,22 @@
     {
       "name": "mapping",
       "status": "IN_PROGRESS",
-      "done": 0,
+      "done": 91,
       "total": 2135,
-      "rule": "QUESTION_MATH_REQUIRED; source label preserved; no group-title auto approval"
+      "rule": "QUESTION_MATH_REQUIRED; source label preserved; no group-title auto approval",
+      "reviewHold": 39,
+      "evidence": [
+        "Ready130 audit candidate-pass 74",
+        "Adjudication batch001 added 17 question-level approvals"
+      ]
     },
     {
       "name": "enrichment",
       "status": "IN_PROGRESS_LEGACY_SUBSET",
       "done": 130,
       "total": 2135,
-      "rule": "answer+solution+educationalExplanation+difficulty+difficultyReason+fingerprints"
+      "rule": "answer+solution+educationalExplanation+difficulty+difficultyReason+fingerprints",
+      "mappingApprovedWithinReady": 91
     },
     {
       "name": "dedupe",
@@ -73,10 +79,10 @@
     "stage": "mapping",
     "strategy": "QUESTION_LEVEL_VISUAL_MATH",
     "priority": [
-      "reuse 130 legacy ready after adjudication",
+      "resolve remaining 39 ready130 review rows where evidence permits",
       "geometry T22-T23 37 visual review",
       "arithmetic T12-T14 59 visual review",
-      "continue source order across remaining crops"
+      "continue source order"
     ]
   },
   "antiLoopRules": [
@@ -85,5 +91,11 @@
     "Do not rerun legacy 130-only verifier as closure evidence",
     "On ambiguous question: HOLD and continue",
     "Checkpoint commits are not stop points"
-  ]
+  ],
+  "lastCompletedBatch": {
+    "name": "READY130_ADJUDICATION_APPLICATION",
+    "mappedApproved": 91,
+    "reviewHold": 39,
+    "headBeforeBatch": "a769c499ea831bc034099e729e89ae65309afd6f"
+  }
 }
