@@ -18,7 +18,10 @@
       "name": "foundation_dictionary",
       "status": "IN_PROGRESS",
       "batching": "lesson-aligned",
-      "lessons": "1-31"
+      "lessons": "1-31",
+      "sourceIdeasExtractedLessons": "1-8",
+      "progress": "8/31",
+      "next": "lessons 9-16 then runtime taxonomy binding"
     },
     {
       "id": "P2",
@@ -74,5 +77,17 @@
       1,
       2
     ]
-  }
+  },
+  "lastCheckpoint": "2026-10-07-run1",
+  "evidence": [
+    "ops/tah-math/TAH_MATH_RUN1_BASELINE.json",
+    "ops/tah-math/TAH_MATH_SOURCE_IDEA_MAP_PART01.json"
+  ],
+  "blockers": [
+    {
+      "scope": "taxonomy_binding",
+      "status": "NOT_BLOCKING_SOURCE_EXTRACTION",
+      "detail": "Repository does not contain a complete 22-main/67-sub Tahsili Math taxonomy export. Do not invent IDs; obtain runtime/export evidence before binding."
+    }
+  ]
 }
