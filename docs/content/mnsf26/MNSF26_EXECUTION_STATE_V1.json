@@ -23,10 +23,10 @@
     {
       "name": "mapping",
       "status": "IN_PROGRESS",
-      "done": 728,
+      "done": 766,
       "total": 2135,
       "rule": "QUESTION_MATH_REQUIRED; source label preserved; no group-title auto approval",
-      "reviewHold": 68,
+      "reviewHold": 70,
       "evidence": [
         "Ready130 audit candidate-pass 74",
         "Adjudication batch001 added 17 question-level approvals",
@@ -37,7 +37,7 @@
     {
       "name": "enrichment",
       "status": "IN_PROGRESS_LEGACY_SUBSET",
-      "done": 728,
+      "done": 766,
       "total": 2135,
       "rule": "answer+solution+educationalExplanation+difficulty+difficultyReason+fingerprints",
       "mappingApprovedWithinReady": 129
@@ -124,9 +124,9 @@
     "stage": "QUESTION_MASTERING",
     "strategy": "ONE_PASS_VISUAL_MATH",
     "priority": [
-      "arithmetic T46 onward",
-      "AR-T045-Q01 HOLD answer-options mismatch",
-      "preserve previous holds and quarantines"
+      "arithmetic T48 onward",
+      "T45/Q01 T47/Q12 T47/Q19 hold",
+      "geometry later"
     ]
   },
   "antiLoopRules": [
@@ -140,14 +140,16 @@
     "A question is processed once into a complete master payload; QA validates it rather than recreating it"
   ],
   "lastCompletedBatch": {
-    "name": "RUN050_AR_T44_T45",
-    "completeMasterRecords": 39,
-    "holds": 1,
-    "questionsProcessed": 40,
-    "effectiveMasteredComplete": 728,
+    "name": "RUN050_AR_T44_T47",
+    "completeMasterRecords": 77,
+    "holds": 3,
+    "questionsProcessed": 80,
+    "effectiveMasteredComplete": 766,
     "evidenceGitHubPaths": [
       "docs/content/mnsf26/MNSF26_QUESTION_MASTERING_RUN050_AR_T44_V1.json",
-      "docs/content/mnsf26/MNSF26_QUESTION_MASTERING_RUN050_AR_T45_V1.json"
+      "docs/content/mnsf26/MNSF26_QUESTION_MASTERING_RUN050_AR_T45_V1.json",
+      "docs/content/mnsf26/MNSF26_QUESTION_MASTERING_RUN050_AR_T46_V1.json",
+      "docs/content/mnsf26/MNSF26_QUESTION_MASTERING_RUN050_AR_T47_V1.json"
     ]
   },
   "executionContract": "docs/content/mnsf26/MNSF26_LOCKED_PIPELINE_V1.json",
@@ -155,7 +157,7 @@
     "order": 2,
     "name": "QUESTION_MASTERING",
     "status": "IN_PROGRESS",
-    "done": 728,
+    "done": 766,
     "total": 2135,
     "mode": "ONE_PASS_PER_QUESTION",
     "requiredPayload": [
@@ -172,7 +174,7 @@
       "ideaFingerprint"
     ],
     "gate": "No question advances without complete payload or explicit HOLD/REVIEW.",
-    "masteredComplete": 728
+    "masteredComplete": 766
   },
   "reconciliationRun049": {
     "source": "Library /MNSF26/Run048 full JSON records, validated unique sourceKeys and required fields, persisted to GitHub complete test files",
