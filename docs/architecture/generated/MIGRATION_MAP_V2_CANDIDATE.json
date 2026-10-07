@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-05T04:38:24.064Z",
-  "sourceGitHead": "b9c269aea9f092d876db6f5dca19dcf6d7f60506",
+  "generatedAt": "2026-10-07T18:54:59.571Z",
+  "sourceGitHead": "266b9ceeeabffb5ee5dac58f4618edb262b23ed1",
   "warning": "Candidate ownership map only. review-required entries must not be moved automatically until domain ownership is approved by architecture checks.",
   "entries": [
     {
@@ -371,6 +371,18 @@
       "confidence": "review-required"
     },
     {
+      "source": "components/results/InteractiveSmartTeacher.tsx",
+      "target": "apps/web/src/features/schools/results/InteractiveSmartTeacher.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "components/results/InteractiveWhiteboardCanvas.tsx",
+      "target": "apps/web/src/features/reports/results/InteractiveWhiteboardCanvas.tsx",
+      "domain": "reports",
+      "confidence": "candidate"
+    },
+    {
       "source": "components/results/QuestionAssistantPanel.tsx",
       "target": "apps/web/src/features/questions/results/QuestionAssistantPanel.tsx",
       "domain": "questions",
@@ -391,6 +403,12 @@
     {
       "source": "components/results/resultScorePresentation.ts",
       "target": "apps/web/src/features/reports/results/resultScorePresentation.ts",
+      "domain": "reports",
+      "confidence": "candidate"
+    },
+    {
+      "source": "components/results/whiteboardParser.tsx",
+      "target": "apps/web/src/features/reports/results/whiteboardParser.tsx",
       "domain": "reports",
       "confidence": "candidate"
     },
@@ -590,6 +608,30 @@
       "source": "dashboards/admin/ClassSkillsMapPanel.tsx",
       "target": "apps/web/src/features/questions/admin/ClassSkillsMapPanel.tsx",
       "domain": "questions",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/command-center/CommandCenterNaturalLanguagePanel.tsx",
+      "target": "apps/web/src/features/shared/admin/command-center/CommandCenterNaturalLanguagePanel.tsx",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "dashboards/admin/command-center/CommandCenterOperationsPanel.tsx",
+      "target": "apps/web/src/features/operations/admin/command-center/CommandCenterOperationsPanel.tsx",
+      "domain": "operations",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/command-center/CommandCenterSchoolImportPanel.tsx",
+      "target": "apps/web/src/features/schools/admin/command-center/CommandCenterSchoolImportPanel.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/command-center/schoolImportDraftAdapter.ts",
+      "target": "apps/web/src/features/schools/admin/command-center/schoolImportDraftAdapter.ts",
+      "domain": "schools",
       "confidence": "candidate"
     },
     {
@@ -1781,6 +1823,12 @@
       "confidence": "candidate"
     },
     {
+      "source": "pages/Reports/studentSkillAttemptTrendViewModel.ts",
+      "target": "apps/web/src/features/questions/Reports/studentSkillAttemptTrendViewModel.ts",
+      "domain": "questions",
+      "confidence": "candidate"
+    },
+    {
       "source": "pages/Reports/studentSkillRowsViewModel.ts",
       "target": "apps/web/src/features/questions/Reports/studentSkillRowsViewModel.ts",
       "domain": "questions",
@@ -1871,8 +1919,32 @@
       "confidence": "review-required"
     },
     {
+      "source": "server/src/app/bootstrap/bio26LearningStructurePlan.ts",
+      "target": "apps/api/src/app/bootstrap/bio26LearningStructurePlan.ts",
+      "domain": "learning",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/app/bootstrap/bio26StandardTestsPlan.ts",
+      "target": "apps/api/src/app/bootstrap/bio26StandardTestsPlan.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
       "source": "server/src/app/bootstrap/bootstrapServer.ts",
       "target": "apps/api/src/app/bootstrap/bootstrapServer.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/app/bootstrap/chem26LearningStructurePlan.ts",
+      "target": "apps/api/src/app/bootstrap/chem26LearningStructurePlan.ts",
+      "domain": "learning",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/app/bootstrap/chem26StandardTestsPlan.ts",
+      "target": "apps/api/src/app/bootstrap/chem26StandardTestsPlan.ts",
       "domain": "shared",
       "confidence": "review-required"
     },
@@ -1892,6 +1964,42 @@
       "source": "server/src/app/bootstrap/reportStartupFailure.ts",
       "target": "apps/api/src/app/bootstrap/reportStartupFailure.ts",
       "domain": "reports",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/app/bootstrap/runBio26LearningStructure.ts",
+      "target": "apps/api/src/app/bootstrap/runBio26LearningStructure.ts",
+      "domain": "learning",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/app/bootstrap/runBio26PackageImport.ts",
+      "target": "apps/api/src/app/bootstrap/runBio26PackageImport.ts",
+      "domain": "payments",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/app/bootstrap/runBio26StandardTests.ts",
+      "target": "apps/api/src/app/bootstrap/runBio26StandardTests.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/app/bootstrap/runChem26LearningStructure.ts",
+      "target": "apps/api/src/app/bootstrap/runChem26LearningStructure.ts",
+      "domain": "learning",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/app/bootstrap/runChem26PackageImport.ts",
+      "target": "apps/api/src/app/bootstrap/runChem26PackageImport.ts",
+      "domain": "payments",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/app/bootstrap/runChem26StandardTests.ts",
+      "target": "apps/api/src/app/bootstrap/runChem26StandardTests.ts",
+      "domain": "shared",
       "confidence": "review-required"
     },
     {
@@ -2077,6 +2185,24 @@
     {
       "source": "server/src/models/ClientEvent.ts",
       "target": "apps/api/src/modules/shared/infrastructure/persistence/ClientEvent.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/models/CommandCenterAudit.ts",
+      "target": "apps/api/src/modules/shared/infrastructure/persistence/CommandCenterAudit.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/models/CommandCenterDraft.ts",
+      "target": "apps/api/src/modules/shared/infrastructure/persistence/CommandCenterDraft.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/models/CommandCenterWorkflow.ts",
+      "target": "apps/api/src/modules/shared/infrastructure/persistence/CommandCenterWorkflow.ts",
       "domain": "shared",
       "confidence": "review-required"
     },
@@ -2444,6 +2570,180 @@
       "source": "server/src/modules/auth/http/authSchemas.ts",
       "target": "apps/api/src/modules/auth/http/authSchemas.ts",
       "domain": "auth",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/command-center/application/commandAudit.ts",
+      "target": "apps/api/src/modules/command-center/application/commandAudit.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/command-center/application/commandAuthorization.ts",
+      "target": "apps/api/src/modules/command-center/application/commandAuthorization.ts",
+      "domain": "auth",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/command-center/application/commandToolRegistry.ts",
+      "target": "apps/api/src/modules/command-center/application/commandToolRegistry.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/command-center/application/courseAudit.ts",
+      "target": "apps/api/src/modules/command-center/application/courseAudit.ts",
+      "domain": "courses",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/command-center/application/courseReuseDraftTools.ts",
+      "target": "apps/api/src/modules/command-center/application/courseReuseDraftTools.ts",
+      "domain": "courses",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/command-center/application/developerTaskTools.ts",
+      "target": "apps/api/src/modules/command-center/application/developerTaskTools.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/command-center/application/draftApplyCourseQuiz.ts",
+      "target": "apps/api/src/modules/command-center/application/draftApplyCourseQuiz.ts",
+      "domain": "quizzes",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/command-center/application/draftApplyQuestion.ts",
+      "target": "apps/api/src/modules/command-center/application/draftApplyQuestion.ts",
+      "domain": "questions",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/command-center/application/draftApplyQuizUpdate.ts",
+      "target": "apps/api/src/modules/command-center/application/draftApplyQuizUpdate.ts",
+      "domain": "quizzes",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/command-center/application/draftApplySchool.ts",
+      "target": "apps/api/src/modules/command-center/application/draftApplySchool.ts",
+      "domain": "schools",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/command-center/application/draftApplyService.ts",
+      "target": "apps/api/src/modules/command-center/application/draftApplyService.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/command-center/application/draftApplyTypes.ts",
+      "target": "apps/api/src/modules/command-center/application/draftApplyTypes.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/command-center/application/mcpOAuth.ts",
+      "target": "apps/api/src/modules/command-center/application/mcpOAuth.ts",
+      "domain": "auth",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/command-center/application/mcpToolCatalog.ts",
+      "target": "apps/api/src/modules/command-center/application/mcpToolCatalog.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/command-center/application/mcpToolExecution.ts",
+      "target": "apps/api/src/modules/command-center/application/mcpToolExecution.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/command-center/application/mcpTools.ts",
+      "target": "apps/api/src/modules/command-center/application/mcpTools.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/command-center/application/questionQuizDraftTools.ts",
+      "target": "apps/api/src/modules/command-center/application/questionQuizDraftTools.ts",
+      "domain": "questions",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/command-center/application/questionSimilarity.ts",
+      "target": "apps/api/src/modules/command-center/application/questionSimilarity.ts",
+      "domain": "questions",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/command-center/application/quizUpdateDraftTools.ts",
+      "target": "apps/api/src/modules/command-center/application/quizUpdateDraftTools.ts",
+      "domain": "quizzes",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/command-center/application/schoolSetupDraftTools.ts",
+      "target": "apps/api/src/modules/command-center/application/schoolSetupDraftTools.ts",
+      "domain": "schools",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/command-center/application/workflowExecutor.ts",
+      "target": "apps/api/src/modules/command-center/application/workflowExecutor.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/command-center/application/workflowService.ts",
+      "target": "apps/api/src/modules/command-center/application/workflowService.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/command-center/http/commandCenterRoutes.ts",
+      "target": "apps/api/src/modules/command-center/http/commandCenterRoutes.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/command-center/http/courseDraftRoutes.ts",
+      "target": "apps/api/src/modules/command-center/http/courseDraftRoutes.ts",
+      "domain": "courses",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/command-center/http/developerDraftRoutes.ts",
+      "target": "apps/api/src/modules/command-center/http/developerDraftRoutes.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/command-center/http/mcpRoutes.ts",
+      "target": "apps/api/src/modules/command-center/http/mcpRoutes.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/command-center/http/questionQuizDraftRoutes.ts",
+      "target": "apps/api/src/modules/command-center/http/questionQuizDraftRoutes.ts",
+      "domain": "questions",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/command-center/http/schoolDraftRoutes.ts",
+      "target": "apps/api/src/modules/command-center/http/schoolDraftRoutes.ts",
+      "domain": "schools",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/command-center/http/workflowRoutes.ts",
+      "target": "apps/api/src/modules/command-center/http/workflowRoutes.ts",
+      "domain": "shared",
       "confidence": "review-required"
     },
     {
@@ -3695,6 +3995,12 @@
       "confidence": "review-required"
     },
     {
+      "source": "server/src/scripts/bio26TaxonomySupport.ts",
+      "target": "apps/api/src/scripts/bio26TaxonomySupport.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
       "source": "server/src/scripts/bootstrapCustomerInstance.ts",
       "target": "apps/api/src/scripts/bootstrapCustomerInstance.ts",
       "domain": "shared",
@@ -3745,6 +4051,18 @@
     {
       "source": "server/src/scripts/db6ScaleCertificationGate.ts",
       "target": "apps/api/src/scripts/db6ScaleCertificationGate.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/scripts/deployBio26Taxonomy.ts",
+      "target": "apps/api/src/scripts/deployBio26Taxonomy.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/scripts/deployChemTaxonomy27.ts",
+      "target": "apps/api/src/scripts/deployChemTaxonomy27.ts",
       "domain": "shared",
       "confidence": "review-required"
     },
@@ -3899,6 +4217,12 @@
       "confidence": "review-required"
     },
     {
+      "source": "server/src/scripts/reconcileQuduratPracticeAccess.ts",
+      "target": "apps/api/src/scripts/reconcileQuduratPracticeAccess.ts",
+      "domain": "payments",
+      "confidence": "review-required"
+    },
+    {
       "source": "server/src/scripts/reconcileSkillProgressTaxonomy.ts",
       "target": "apps/api/src/scripts/reconcileSkillProgressTaxonomy.ts",
       "domain": "questions",
@@ -3926,6 +4250,18 @@
       "source": "server/src/scripts/restoreLearningContent.ts",
       "target": "apps/api/src/scripts/restoreLearningContent.ts",
       "domain": "learning",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/scripts/runBio26FinalClosure.ts",
+      "target": "apps/api/src/scripts/runBio26FinalClosure.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/scripts/runChem26FinalClosure.ts",
+      "target": "apps/api/src/scripts/runChem26FinalClosure.ts",
+      "domain": "shared",
       "confidence": "review-required"
     },
     {
@@ -4003,6 +4339,30 @@
     {
       "source": "server/src/scripts/verify_fursan_import.ts",
       "target": "apps/api/src/scripts/verify_fursan_import.ts",
+      "domain": "auth",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/scripts/verifyBio26PostImport.ts",
+      "target": "apps/api/src/scripts/verifyBio26PostImport.ts",
+      "domain": "auth",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/scripts/verifyChem26LearningStructure.ts",
+      "target": "apps/api/src/scripts/verifyChem26LearningStructure.ts",
+      "domain": "auth",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/scripts/verifyChem26PostImport.ts",
+      "target": "apps/api/src/scripts/verifyChem26PostImport.ts",
+      "domain": "auth",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/scripts/verifyChem26StandardTests.ts",
+      "target": "apps/api/src/scripts/verifyChem26StandardTests.ts",
       "domain": "auth",
       "confidence": "review-required"
     },
@@ -4301,6 +4661,12 @@
       "confidence": "review-required"
     },
     {
+      "source": "services/apiGroups/commandCenterApi.ts",
+      "target": "apps/web/src/core/api/apiGroups/commandCenterApi.ts",
+      "domain": "core-api",
+      "confidence": "review-required"
+    },
+    {
       "source": "services/apiGroups/coursesApi.ts",
       "target": "apps/web/src/core/api/apiGroups/coursesApi.ts",
       "domain": "core-api",
@@ -4579,6 +4945,12 @@
     {
       "source": "utils/foundationSkillTarget.ts",
       "target": "apps/web/src/shared/lib/foundationSkillTarget.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "utils/foundationTopicAccess.ts",
+      "target": "apps/web/src/shared/lib/foundationTopicAccess.ts",
       "domain": "shared",
       "confidence": "review-required"
     },

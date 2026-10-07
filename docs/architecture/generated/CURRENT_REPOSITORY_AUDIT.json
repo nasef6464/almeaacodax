@@ -1,39 +1,39 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-05T04:38:24.064Z",
-  "gitHead": "b9c269aea9f092d876db6f5dca19dcf6d7f60506",
+  "generatedAt": "2026-10-07T18:54:59.571Z",
+  "gitHead": "266b9ceeeabffb5ee5dac58f4618edb262b23ed1",
   "summary": {
-    "trackedFiles": 1917,
-    "sourceFiles": 1280,
-    "runtimeSourceFiles": 799,
-    "sourceLines": 238261,
-    "runtimeSourceLines": 187673,
+    "trackedFiles": 2072,
+    "sourceFiles": 1362,
+    "runtimeSourceFiles": 861,
+    "sourceLines": 252929,
+    "runtimeSourceLines": 200632,
     "frontendRoutes": 55,
-    "backendRouteEntries": 332,
-    "routerMounts": 34,
-    "runtimeRelativeImportEdges": 2505,
+    "backendRouteEntries": 360,
+    "routerMounts": 35,
+    "runtimeRelativeImportEdges": 2705,
     "unresolvedRuntimeRelativeImports": 0,
-    "unresolvedNonRuntimeRelativeImports": 6,
+    "unresolvedNonRuntimeRelativeImports": 8,
     "dependencyCycles": 0,
-    "crossDomainImportEdges": 1562,
+    "crossDomainImportEdges": 1686,
     "hotspots400Lines": 84,
-    "migrationCandidates": 786
+    "migrationCandidates": 848
   },
   "categoryStats": {
     "support": {
-      "files": 156,
-      "bytes": 21024332,
-      "lines": 11489
+      "files": 213,
+      "bytes": 30130560,
+      "lines": 78941
     },
     "ci": {
-      "files": 62,
-      "bytes": 305882,
-      "lines": 8048
+      "files": 68,
+      "bytes": 314004,
+      "lines": 8359
     },
     "web-source": {
-      "files": 390,
-      "bytes": 6723444,
-      "lines": 127228
+      "files": 400,
+      "bytes": 6829726,
+      "lines": 129692
     },
     "source-other": {
       "files": 13,
@@ -41,9 +41,9 @@
       "lines": 1282
     },
     "documentation": {
-      "files": 365,
-      "bytes": 5674053,
-      "lines": 130641
+      "files": 375,
+      "bytes": 5806545,
+      "lines": 135042
     },
     "public-asset": {
       "files": 31,
@@ -51,19 +51,19 @@
       "lines": 28
     },
     "test-or-ops-script": {
-      "files": 406,
-      "bytes": 2133146,
-      "lines": 43020
+      "files": 426,
+      "bytes": 2220263,
+      "lines": 44729
     },
     "api-support": {
       "files": 14,
-      "bytes": 1258062,
-      "lines": 30339
+      "bytes": 1274008,
+      "lines": 30559
     },
     "api-source": {
-      "files": 396,
-      "bytes": 2450262,
-      "lines": 59163
+      "files": 448,
+      "bytes": 2855294,
+      "lines": 69658
     },
     "tooling": {
       "files": 84,
@@ -73,9 +73,9 @@
   },
   "domainStats": {
     "shared": {
-      "files": 191,
-      "lines": 37417,
-      "bytes": 1738339
+      "files": 218,
+      "lines": 42254,
+      "bytes": 1924884
     },
     "notifications": {
       "files": 21,
@@ -83,39 +83,39 @@
       "bytes": 143541
     },
     "courses": {
-      "files": 23,
-      "lines": 8539,
-      "bytes": 464425
+      "files": 26,
+      "lines": 9187,
+      "bytes": 487080
     },
     "learning": {
-      "files": 33,
-      "lines": 9706,
-      "bytes": 473049
+      "files": 37,
+      "lines": 11067,
+      "bytes": 527223
     },
     "schools": {
-      "files": 177,
-      "lines": 31395,
-      "bytes": 1638330
+      "files": 184,
+      "lines": 32864,
+      "bytes": 1693412
     },
     "paths": {
       "files": 13,
-      "lines": 6172,
-      "bytes": 340138
+      "lines": 6174,
+      "bytes": 340263
     },
     "payments": {
-      "files": 18,
-      "lines": 7024,
-      "bytes": 353880
+      "files": 22,
+      "lines": 8160,
+      "bytes": 405349
     },
     "questions": {
-      "files": 86,
-      "lines": 16881,
-      "bytes": 760700
+      "files": 91,
+      "lines": 17837,
+      "bytes": 796872
     },
     "quizzes": {
-      "files": 91,
-      "lines": 18740,
-      "bytes": 903593
+      "files": 94,
+      "lines": 19478,
+      "bytes": 930977
     },
     "exams": {
       "files": 14,
@@ -123,24 +123,24 @@
       "bytes": 317552
     },
     "auth": {
-      "files": 42,
-      "lines": 8446,
-      "bytes": 396530
+      "files": 48,
+      "lines": 9106,
+      "bytes": 422476
     },
     "reports": {
-      "files": 36,
-      "lines": 9443,
-      "bytes": 510667
+      "files": 38,
+      "lines": 10054,
+      "bytes": 537383
     },
     "ai": {
       "files": 3,
-      "lines": 3825,
-      "bytes": 186447
+      "lines": 4035,
+      "bytes": 195112
     },
     "operations": {
-      "files": 18,
-      "lines": 14057,
-      "bytes": 666490
+      "files": 19,
+      "lines": 14388,
+      "bytes": 682871
     },
     "content": {
       "files": 24,
@@ -158,9 +158,17 @@
       "file": "pages/Reports.tsx",
       "category": "web-source",
       "domain": "reports",
-      "bytes": 210393,
-      "lines": 3036,
-      "sha256": "1156bb453876d72a129646643decec4922c856d8b2046030af7ce1cfc21547df"
+      "bytes": 210011,
+      "lines": 3017,
+      "sha256": "7de0e756af8044a0ac04c5a48c47b5d7c744e17e0a0fcddf37dff37215217431"
+    },
+    {
+      "file": "server/src/routes/ai.routes.ts",
+      "category": "api-source",
+      "domain": "ai",
+      "bytes": 102857,
+      "lines": 2547,
+      "sha256": "ff527ded363e2d9ff0b3890e0f33d6b38e503b95248ae286e2827cc0afdee43e"
     },
     {
       "file": "pages/Dashboard.tsx",
@@ -174,9 +182,9 @@
       "file": "pages/QuizPage.tsx",
       "category": "web-source",
       "domain": "quizzes",
-      "bytes": 136615,
-      "lines": 2485,
-      "sha256": "bb10e9226d59e45736af4ff287c641b97fc0c31a1bc32a3ad7fa26607034e23a"
+      "bytes": 137835,
+      "lines": 2524,
+      "sha256": "b417b13e4b22344f75c3956e73f400067071d195425666c28cdecba59cb77093"
     },
     {
       "file": "dashboards/admin/PathsManager.tsx",
@@ -185,14 +193,6 @@
       "bytes": 134417,
       "lines": 2383,
       "sha256": "6def53c2eefacb1ec2e6aea5f583936b143054dec2066f053fe0520ee5bf85cc"
-    },
-    {
-      "file": "server/src/routes/ai.routes.ts",
-      "category": "api-source",
-      "domain": "ai",
-      "bytes": 94568,
-      "lines": 2343,
-      "sha256": "01c89f80c8cecb80e286bf6438ecc5afceb4a76f4073d7a1eb503e1b7aab1673"
     },
     {
       "file": "dashboards/admin/PlatformIntegrationsManagerLegacy.tsx",
@@ -214,9 +214,9 @@
       "file": "pages/Results.tsx",
       "category": "web-source",
       "domain": "reports",
-      "bytes": 110420,
-      "lines": 2213,
-      "sha256": "ecf5989240752a564d0bffcd3124a5374aa53453a386f294d27bc1b8d5a7ac59"
+      "bytes": 114337,
+      "lines": 2282,
+      "sha256": "5d24ab2c1181df4d653a99bbae906a35ca6566fe8f9447646fd6ca5e36645485"
     },
     {
       "file": "dashboards/admin/SchoolsManager.tsx",
@@ -246,9 +246,9 @@
       "file": "dashboards/admin/AdminDashboard.tsx",
       "category": "web-source",
       "domain": "shared",
-      "bytes": 127562,
+      "bytes": 127552,
       "lines": 2101,
-      "sha256": "091897cae78ab143d970ef42768c343c2dc05d5721bfa82fc92eecb7b4f96e55"
+      "sha256": "0aace7bfa4ffc7946d4eb090b1ca67161aacda0eeb186ebe4457e392bb237d05"
     },
     {
       "file": "dashboards/admin/QuizzesManager.tsx",
@@ -286,9 +286,9 @@
       "file": "server/src/scripts/seedOperationalScenario.ts",
       "category": "api-source",
       "domain": "operations",
-      "bytes": 64738,
-      "lines": 1781,
-      "sha256": "fad47f93affa7af645ed862b1b27db047616c9d5fd2ab3b103b45191cde49a20"
+      "bytes": 65423,
+      "lines": 1788,
+      "sha256": "c1cb2a5c2d5dfe791e33a0b76a4e706d2016ea3aacff116f5349881d439a990c"
     },
     {
       "file": "pages/Plan.tsx",
@@ -307,20 +307,28 @@
       "sha256": "20b2caaa2fc025978eed28509bae59a5a9524c989795c7299e1940887a37a67b"
     },
     {
+      "file": "pages/Quiz.tsx",
+      "category": "web-source",
+      "domain": "quizzes",
+      "bytes": 74300,
+      "lines": 1642,
+      "sha256": "ba0d49b2d779161e3b854cd0a2f5d3fff88c05c56ca0a6decd44df7f45e8d676"
+    },
+    {
       "file": "server/src/scripts/seedOperationalScenarioApi.ts",
       "category": "api-source",
       "domain": "operations",
-      "bytes": 59365,
-      "lines": 1615,
-      "sha256": "17773796742dff4f96e7e9719b4e411042fea5d7bdc71f18eaa67a5afb1e334d"
+      "bytes": 60146,
+      "lines": 1622,
+      "sha256": "db6b6a11804f835432fc51497c58a646fb7c7f647d2e77396b99407d6e0e546e"
     },
     {
       "file": "pages/GenericPathPage.tsx",
       "category": "web-source",
       "domain": "paths",
-      "bytes": 93240,
-      "lines": 1556,
-      "sha256": "803f84e25c73ef8290dc65dbd01e42504ca9a5400a356dc8504c813fc700a777"
+      "bytes": 93365,
+      "lines": 1558,
+      "sha256": "cd7e31e6d97848bfbb7d9736b45b020fc8035b6b33eaef05d275178c5774a291"
     },
     {
       "file": "dashboards/admin/MockExamManager.tsx",
@@ -329,14 +337,6 @@
       "bytes": 82630,
       "lines": 1550,
       "sha256": "942c44d079dbcb50da55f7072a580672fb42e770dec802531fb31183b7293bb7"
-    },
-    {
-      "file": "pages/Quiz.tsx",
-      "category": "web-source",
-      "domain": "quizzes",
-      "bytes": 70336,
-      "lines": 1548,
-      "sha256": "a0b38fe76756a2dbe6628314a53d63db531d74abe656ca468516de207d56ecef"
     },
     {
       "file": "dashboards/admin/HomepageManager.tsx",
@@ -363,6 +363,14 @@
       "sha256": "dd58b61be6bc80d12287a30bbd433130875673dd571a54c48476f0f04424f98a"
     },
     {
+      "file": "components/LearningSection.tsx",
+      "category": "web-source",
+      "domain": "learning",
+      "bytes": 93309,
+      "lines": 1448,
+      "sha256": "1b7589226b7864c5f4378165407bca1d93a0ac6672dd447d12771ce65dc2300e"
+    },
+    {
       "file": "components/Header.tsx",
       "category": "web-source",
       "domain": "shared",
@@ -371,20 +379,12 @@
       "sha256": "d7ec24e906c03b0845f4efdfc98d2295f29cf6e68cdf083ad00dc4bb4572870f"
     },
     {
-      "file": "components/LearningSection.tsx",
-      "category": "web-source",
-      "domain": "learning",
-      "bytes": 90026,
-      "lines": 1408,
-      "sha256": "2ba5b922174190d165b9cba494d55979ac1998130b31c3cf1dbf2adb5c97cf11"
-    },
-    {
       "file": "server/src/scripts/smokeOperationalJourneysApi.ts",
       "category": "api-source",
       "domain": "operations",
-      "bytes": 54051,
-      "lines": 1388,
-      "sha256": "cc063ec54a502feb280a80b5aa97c0bd5b44153ec47dd8f2db01e7dd15558861"
+      "bytes": 54290,
+      "lines": 1396,
+      "sha256": "77920131dabd60b1fbf6877cb5b783ac50923d5a286c045e5af12815348fe816"
     },
     {
       "file": "dashboards/admin/LessonsManager.tsx",
@@ -398,9 +398,9 @@
       "file": "dashboards/admin/AiAssistantManager.tsx",
       "category": "web-source",
       "domain": "ai",
-      "bytes": 84954,
-      "lines": 1315,
-      "sha256": "c58691cf417ece2eb872eb8bb10ae1158aa0c7ce53d1ed284bd0156088985b4f"
+      "bytes": 85330,
+      "lines": 1321,
+      "sha256": "ffbe48a16940cb8424143cfac870749a6fec86f356edda531314a7b7fa1a6bcc"
     },
     {
       "file": "dashboards/admin/PublicBarcodeTestsManager.tsx",
@@ -422,9 +422,9 @@
       "file": "pages/SubjectLearningPage.tsx",
       "category": "web-source",
       "domain": "learning",
-      "bytes": 68674,
-      "lines": 1226,
-      "sha256": "489ae72bd3e90337fe2575b8f807ebc22226607ee502c7573028f2df89f10d5b"
+      "bytes": 68929,
+      "lines": 1227,
+      "sha256": "4e2001168bb7cf8909226e10a38e8e8b914cd683604932fb05a6d36ddf07afe6"
     },
     {
       "file": "components/CourseOverview.tsx",
@@ -438,9 +438,9 @@
       "file": "types.ts",
       "category": "web-source",
       "domain": "shared",
-      "bytes": 32201,
-      "lines": 1138,
-      "sha256": "03427aee9b96c815babca8d19764aee11a71a1becbf517776071c1636bfab198"
+      "bytes": 32230,
+      "lines": 1139,
+      "sha256": "c313d25a1e9cd856919be8129b27a247d41a050b5079ac05fd80331146ec2aaf"
     },
     {
       "file": "pages/Quizzes.tsx",
@@ -494,9 +494,9 @@
       "file": "services/api.ts",
       "category": "web-source",
       "domain": "shared",
-      "bytes": 47738,
-      "lines": 1022,
-      "sha256": "1260f86c2327031c1bea888080ab06ab2877d6cc33339d12a9ca455b0dc93e1a"
+      "bytes": 47849,
+      "lines": 1024,
+      "sha256": "3999c1a0839ecfa822879b0e0b3df5a0a96b85e0ae17840581774c3c1235d188"
     },
     {
       "file": "dashboards/admin/UsersManager.tsx",
@@ -606,9 +606,9 @@
       "file": "dashboards/admin/builders/UnifiedQuestionBuilder.tsx",
       "category": "web-source",
       "domain": "questions",
-      "bytes": 38081,
-      "lines": 773,
-      "sha256": "662dcf81e98c34eeea1f349769571950608fd6e5f0c153ef4979d120829b837a"
+      "bytes": 38246,
+      "lines": 777,
+      "sha256": "ff084705cb34f72028e3ebc27897c1771d4d07c680edf0af0fc6e3e69de02975"
     },
     {
       "file": "server/src/routes/publicTests.routes.ts",
@@ -638,9 +638,9 @@
       "file": "server/src/routes/taxonomy.routes.ts",
       "category": "api-source",
       "domain": "shared",
-      "bytes": 26789,
-      "lines": 726,
-      "sha256": "7a20fb0d8e2d8553778a3e5d8fb2508e14d6a2ed3b18daa839ad71ce2acd1856"
+      "bytes": 26828,
+      "lines": 729,
+      "sha256": "8411f4a959714f8dbd3ae4ba0d7e2d46f7955e1ef9f3963bffb37f0f7b097018"
     },
     {
       "file": "components/SimulatedTestExperience.tsx",
@@ -678,9 +678,9 @@
       "file": "components/SkillDetailsModal.tsx",
       "category": "web-source",
       "domain": "questions",
-      "bytes": 34507,
-      "lines": 674,
-      "sha256": "b1ca39e7f563e39348c5b1265d242af66143591e7d82f916e840e02c30415758"
+      "bytes": 35493,
+      "lines": 691,
+      "sha256": "bdb4186517385924c752b1f2230bbeb7e73c31a15c6bc348a11dcd39a2343520"
     },
     {
       "file": "dashboards/admin/SchoolsManager/importExportService.ts",
@@ -699,20 +699,20 @@
       "sha256": "52d7db6827c018381c33988ab20e78395f9c4301af216b76d62004f69123c785"
     },
     {
+      "file": "services/adapter.ts",
+      "category": "web-source",
+      "domain": "shared",
+      "bytes": 27479,
+      "lines": 599,
+      "sha256": "9929fcb7353fbedcfa795b8d92c491571c40bc78982d2a4d182b29c6b9fdf525"
+    },
+    {
       "file": "server/src/scripts/seedLearningInventoryApi.ts",
       "category": "api-source",
       "domain": "learning",
       "bytes": 22284,
       "lines": 593,
       "sha256": "73e63aa7a355d45106104b1e2fc2df4069ef05773f3a779f5f1348b8cdf69b59"
-    },
-    {
-      "file": "services/adapter.ts",
-      "category": "web-source",
-      "domain": "shared",
-      "bytes": 27046,
-      "lines": 583,
-      "sha256": "1a71a813c15ee39f02fe80885e7a9a743a6b2d36a88a2abaf3ae2be294e18c95"
     },
     {
       "file": "dashboards/admin/CoursesManager.tsx",
@@ -885,6 +885,168 @@
     "/verify-email"
   ],
   "backendRouteEntries": [
+    {
+      "file": "server/src/modules/command-center/http/commandCenterRoutes.ts",
+      "method": "GET",
+      "path": "/drafts",
+      "receiver": "commandCenterRouter"
+    },
+    {
+      "file": "server/src/modules/command-center/http/commandCenterRoutes.ts",
+      "method": "POST",
+      "path": "/drafts",
+      "receiver": "commandCenterRouter"
+    },
+    {
+      "file": "server/src/modules/command-center/http/commandCenterRoutes.ts",
+      "method": "POST",
+      "path": "/drafts/:id/apply",
+      "receiver": "commandCenterRouter"
+    },
+    {
+      "file": "server/src/modules/command-center/http/commandCenterRoutes.ts",
+      "method": "POST",
+      "path": "/drafts/:id/review",
+      "receiver": "commandCenterRouter"
+    },
+    {
+      "file": "server/src/modules/command-center/http/commandCenterRoutes.ts",
+      "method": "GET",
+      "path": "/health",
+      "receiver": "commandCenterRouter"
+    },
+    {
+      "file": "server/src/modules/command-center/http/commandCenterRoutes.ts",
+      "method": "GET",
+      "path": "/skills",
+      "receiver": "commandCenterRouter"
+    },
+    {
+      "file": "server/src/modules/command-center/http/commandCenterRoutes.ts",
+      "method": "GET",
+      "path": "/tools",
+      "receiver": "commandCenterRouter"
+    },
+    {
+      "file": "server/src/modules/command-center/http/courseDraftRoutes.ts",
+      "method": "GET",
+      "path": "/:courseId/audit",
+      "receiver": "courseDraftRouter"
+    },
+    {
+      "file": "server/src/modules/command-center/http/courseDraftRoutes.ts",
+      "method": "POST",
+      "path": "/draft",
+      "receiver": "courseDraftRouter"
+    },
+    {
+      "file": "server/src/modules/command-center/http/courseDraftRoutes.ts",
+      "method": "GET",
+      "path": "/inventory",
+      "receiver": "courseDraftRouter"
+    },
+    {
+      "file": "server/src/modules/command-center/http/courseDraftRoutes.ts",
+      "method": "POST",
+      "path": "/validate",
+      "receiver": "courseDraftRouter"
+    },
+    {
+      "file": "server/src/modules/command-center/http/developerDraftRoutes.ts",
+      "method": "GET",
+      "path": "/tasks/:id/handoff",
+      "receiver": "developerDraftRouter"
+    },
+    {
+      "file": "server/src/modules/command-center/http/developerDraftRoutes.ts",
+      "method": "POST",
+      "path": "/tasks/draft",
+      "receiver": "developerDraftRouter"
+    },
+    {
+      "file": "server/src/modules/command-center/http/developerDraftRoutes.ts",
+      "method": "POST",
+      "path": "/tasks/validate",
+      "receiver": "developerDraftRouter"
+    },
+    {
+      "file": "server/src/modules/command-center/http/mcpRoutes.ts",
+      "method": "GET",
+      "path": "/",
+      "receiver": "mcpRouter"
+    },
+    {
+      "file": "server/src/modules/command-center/http/mcpRoutes.ts",
+      "method": "POST",
+      "path": "/",
+      "receiver": "mcpRouter"
+    },
+    {
+      "file": "server/src/modules/command-center/http/questionQuizDraftRoutes.ts",
+      "method": "POST",
+      "path": "/questions/draft",
+      "receiver": "questionQuizDraftRouter"
+    },
+    {
+      "file": "server/src/modules/command-center/http/questionQuizDraftRoutes.ts",
+      "method": "POST",
+      "path": "/questions/validate",
+      "receiver": "questionQuizDraftRouter"
+    },
+    {
+      "file": "server/src/modules/command-center/http/questionQuizDraftRoutes.ts",
+      "method": "POST",
+      "path": "/quizzes/:id/diff",
+      "receiver": "questionQuizDraftRouter"
+    },
+    {
+      "file": "server/src/modules/command-center/http/questionQuizDraftRoutes.ts",
+      "method": "POST",
+      "path": "/quizzes/:id/update-draft",
+      "receiver": "questionQuizDraftRouter"
+    },
+    {
+      "file": "server/src/modules/command-center/http/questionQuizDraftRoutes.ts",
+      "method": "POST",
+      "path": "/quizzes/draft",
+      "receiver": "questionQuizDraftRouter"
+    },
+    {
+      "file": "server/src/modules/command-center/http/schoolDraftRoutes.ts",
+      "method": "POST",
+      "path": "/draft",
+      "receiver": "schoolDraftRouter"
+    },
+    {
+      "file": "server/src/modules/command-center/http/schoolDraftRoutes.ts",
+      "method": "POST",
+      "path": "/validate",
+      "receiver": "schoolDraftRouter"
+    },
+    {
+      "file": "server/src/modules/command-center/http/workflowRoutes.ts",
+      "method": "GET",
+      "path": "/",
+      "receiver": "workflowRouter"
+    },
+    {
+      "file": "server/src/modules/command-center/http/workflowRoutes.ts",
+      "method": "GET",
+      "path": "/:id",
+      "receiver": "workflowRouter"
+    },
+    {
+      "file": "server/src/modules/command-center/http/workflowRoutes.ts",
+      "method": "POST",
+      "path": "/:id/execute",
+      "receiver": "workflowRouter"
+    },
+    {
+      "file": "server/src/modules/command-center/http/workflowRoutes.ts",
+      "method": "POST",
+      "path": "/plan",
+      "receiver": "workflowRouter"
+    },
     {
       "file": "server/src/modules/content/http/contentBootstrapRoutes.ts",
       "method": "GET",
@@ -1357,6 +1519,12 @@
       "file": "server/src/routes/ai.routes.ts",
       "method": "POST",
       "path": "/admin-assistant",
+      "receiver": "aiRouter"
+    },
+    {
+      "file": "server/src/routes/ai.routes.ts",
+      "method": "POST",
+      "path": "/admin-command-plan",
       "receiver": "aiRouter"
     },
     {
@@ -2954,6 +3122,12 @@
     {
       "file": "server/src/routes/index.ts",
       "receiver": "apiRouter",
+      "prefix": "/command-center",
+      "mounted": "commandCenterRouter"
+    },
+    {
+      "file": "server/src/routes/index.ts",
+      "receiver": "apiRouter",
       "prefix": "/content",
       "mounted": "contentRouter"
     },
@@ -3099,6 +3273,7 @@
     "ADMIN_UI_GAP_RUN_ID",
     "ADMIN_XLSX_EXPORT_RUN_ID",
     "AI_DAILY_LIMIT",
+    "AI_LIGHT_API_BASE_URL",
     "AI_PER_SCHOOL_DAILY_LIMIT",
     "AI_PER_USER_DAILY_LIMIT",
     "AI_PROVIDER",
@@ -3108,11 +3283,20 @@
     "AI_QUESTION_ASSISTANT_PER_MINUTE",
     "AI_REQUEST_TIMEOUT_MS",
     "AI_RUNTIME_AUDIT_RUN_ID",
+    "ALLOW_QUDURAT_PRACTICE_APPLY",
     "ALLOW_SMART_CLASSROOM_E2E_UNSAFE_DB",
     "ALLOW_SMART_CLASSROOM_INDEX_MIGRATION",
     "ALLOW_VERBAL26_APPLY",
     "ALMEAA_APPLY_FOUNDATION_SKILL_MAPPING",
     "ALMEAA_APPLY_SKILL_MIGRATION",
+    "ALMEAA_COMMAND_API_KEY",
+    "ALMEAA_COMMAND_API_SCOPES",
+    "ALMEAA_MCP_ENABLED",
+    "ALMEAA_MCP_JWKS_CACHE_MS",
+    "ALMEAA_MCP_OAUTH_AUDIENCE",
+    "ALMEAA_MCP_OAUTH_ISSUER",
+    "ALMEAA_MCP_OAUTH_REQUIRED_SCOPE",
+    "ALMEAA_MCP_OAUTH_SCOPES",
     "API_BASE_URL",
     "APPLY_R2_INLINE_IMAGE_MIGRATION",
     "APP_BASE_URL",
@@ -3122,6 +3306,13 @@
     "BACKEND_PORT",
     "BARCODE_LIVE_AUDIT_RUN_ID",
     "BARCODE_PUBLIC_TEST_AUDIT_RUN_ID",
+    "BIO26_FINAL_CLOSURE_AUTHORIZATION",
+    "BIO26_IMPORT_BATCH_ID",
+    "BIO26_IMPORT_EXPECTED_COUNT",
+    "BIO26_IMPORT_MODE",
+    "BIO26_IMPORT_PHASE",
+    "BIO26_PACKAGE_SHA256",
+    "BIO26_PACKAGE_URL",
     "CF_PAGES_COMMIT_SHA",
     "CLIENT_URL",
     "COMMIT_SHA",
@@ -3162,6 +3353,7 @@
     "LOAD_PROFILE",
     "LOAD_STUDENT_EMAIL",
     "LOAD_STUDENT_PASSWORD",
+    "MCP_BOUNDARY_BASE_URL",
     "MODE",
     "MONGODB_MAX_IDLE_TIME_MS",
     "MONGODB_MAX_POOL_SIZE",
@@ -3193,6 +3385,8 @@
     "PRODUCTION_LATENCY_OUTPUT",
     "PRODUCTION_LATENCY_SAMPLES",
     "PRODUCTION_LATENCY_TIMEOUT_MS",
+    "QUDURAT_PRACTICE_BACKUP_REFERENCE",
+    "QUDURAT_PRACTICE_DRY_RUN",
     "QUESTION_EDITOR_AUDIT_RUN_ID",
     "QUESTION_PILOT_BATCH_ID",
     "QUESTION_PILOT_EXPECTED_COUNT",
@@ -3349,6 +3543,14 @@
     {
       "file": "scripts/smoke-assessment-settings-consumption-contract.mjs",
       "specifier": "../node_modules/typescript/lib/typescript.js"
+    },
+    {
+      "file": "scripts/smoke-bio26-import-runner-contract.mjs",
+      "specifier": "../server/dist/app/bootstrap/bio26LearningStructurePlan.js"
+    },
+    {
+      "file": "scripts/smoke-bio26-import-runner-contract.mjs",
+      "specifier": "../server/dist/app/bootstrap/bio26StandardTestsPlan.js"
     },
     {
       "file": "scripts/smoke-performance-p1-contract.mjs",
@@ -3826,6 +4028,12 @@
     {
       "source": "components/LearningSection.tsx",
       "sourceDomain": "learning",
+      "target": "utils/foundationTopicAccess.ts",
+      "targetDomain": "payments"
+    },
+    {
+      "source": "components/LearningSection.tsx",
+      "sourceDomain": "learning",
       "target": "utils/mockExam.ts",
       "targetDomain": "exams"
     },
@@ -3954,6 +4162,12 @@
       "sourceDomain": "quizzes",
       "target": "utils/shareText.ts",
       "targetDomain": "shared"
+    },
+    {
+      "source": "components/QuizDetailsModal.tsx",
+      "sourceDomain": "quizzes",
+      "target": "utils/skillActionLinks.ts",
+      "targetDomain": "questions"
     },
     {
       "source": "components/QuizGenerator.tsx",
@@ -4242,6 +4456,24 @@
       "sourceDomain": "auth",
       "target": "services/api.ts",
       "targetDomain": "shared"
+    },
+    {
+      "source": "components/results/InteractiveSmartTeacher.tsx",
+      "sourceDomain": "schools",
+      "target": "components/results/InteractiveWhiteboardCanvas.tsx",
+      "targetDomain": "reports"
+    },
+    {
+      "source": "components/results/InteractiveSmartTeacher.tsx",
+      "sourceDomain": "schools",
+      "target": "services/api.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "components/results/QuestionAssistantPanel.tsx",
+      "sourceDomain": "questions",
+      "target": "components/results/InteractiveSmartTeacher.tsx",
+      "targetDomain": "schools"
     },
     {
       "source": "components/results/QuestionAssistantPanel.tsx",
@@ -4536,6 +4768,12 @@
       "sourceDomain": "ai",
       "target": "dashboards/admin/ai/AiUsageAndAlertsPanel.tsx",
       "targetDomain": "shared"
+    },
+    {
+      "source": "dashboards/admin/AiAssistantManager.tsx",
+      "sourceDomain": "ai",
+      "target": "dashboards/admin/command-center/CommandCenterOperationsPanel.tsx",
+      "targetDomain": "operations"
     },
     {
       "source": "dashboards/admin/AiAssistantManager.tsx",
@@ -5894,6 +6132,42 @@
       "targetDomain": "shared"
     },
     {
+      "source": "dashboards/admin/command-center/CommandCenterNaturalLanguagePanel.tsx",
+      "sourceDomain": "shared",
+      "target": "services/apiGroups/commandCenterApi.ts",
+      "targetDomain": "schools"
+    },
+    {
+      "source": "dashboards/admin/command-center/CommandCenterOperationsPanel.tsx",
+      "sourceDomain": "operations",
+      "target": "dashboards/admin/command-center/CommandCenterNaturalLanguagePanel.tsx",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "dashboards/admin/command-center/CommandCenterOperationsPanel.tsx",
+      "sourceDomain": "operations",
+      "target": "dashboards/admin/command-center/CommandCenterSchoolImportPanel.tsx",
+      "targetDomain": "schools"
+    },
+    {
+      "source": "dashboards/admin/command-center/CommandCenterOperationsPanel.tsx",
+      "sourceDomain": "operations",
+      "target": "services/api.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "dashboards/admin/command-center/CommandCenterOperationsPanel.tsx",
+      "sourceDomain": "operations",
+      "target": "services/apiGroups/commandCenterApi.ts",
+      "targetDomain": "schools"
+    },
+    {
+      "source": "dashboards/admin/command-center/CommandCenterSchoolImportPanel.tsx",
+      "sourceDomain": "schools",
+      "target": "services/api.ts",
+      "targetDomain": "shared"
+    },
+    {
       "source": "dashboards/admin/notificationsPresentation.tsx",
       "sourceDomain": "notifications",
       "target": "types.ts",
@@ -6610,6 +6884,12 @@
     {
       "source": "pages/QuizPage.tsx",
       "sourceDomain": "quizzes",
+      "target": "services/adapter.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "pages/QuizPage.tsx",
+      "sourceDomain": "quizzes",
       "target": "services/api.ts",
       "targetDomain": "shared"
     },
@@ -6748,6 +7028,12 @@
     {
       "source": "pages/Reports.tsx",
       "sourceDomain": "reports",
+      "target": "pages/Reports/studentSkillAttemptTrendViewModel.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "pages/Reports.tsx",
+      "sourceDomain": "reports",
       "target": "pages/Reports/studentSkillRowsViewModel.ts",
       "targetDomain": "questions"
     },
@@ -6816,6 +7102,12 @@
       "sourceDomain": "questions",
       "target": "pages/Reports/reportTypes.ts",
       "targetDomain": "reports"
+    },
+    {
+      "source": "pages/Reports/StudentSelectedSkillPanel.tsx",
+      "sourceDomain": "questions",
+      "target": "store/useStore.ts",
+      "targetDomain": "shared"
     },
     {
       "source": "pages/Reports/StudentSmartRemediationPanel.tsx",
@@ -6981,6 +7273,18 @@
     },
     {
       "source": "pages/Reports/studentSkillAggregationFinalize.ts",
+      "sourceDomain": "questions",
+      "target": "types.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "pages/Reports/studentSkillAttemptTrendViewModel.ts",
+      "sourceDomain": "questions",
+      "target": "pages/Reports/reportDomain.ts",
+      "targetDomain": "reports"
+    },
+    {
+      "source": "pages/Reports/studentSkillAttemptTrendViewModel.ts",
       "sourceDomain": "questions",
       "target": "types.ts",
       "targetDomain": "shared"
@@ -7216,6 +7520,12 @@
     {
       "source": "pages/SubjectLearningPage.tsx",
       "sourceDomain": "learning",
+      "target": "utils/foundationTopicAccess.ts",
+      "targetDomain": "payments"
+    },
+    {
+      "source": "pages/SubjectLearningPage.tsx",
+      "sourceDomain": "learning",
       "target": "utils/mockExam.ts",
       "targetDomain": "exams"
     },
@@ -7282,6 +7592,30 @@
     {
       "source": "server/src/app/bootstrap/bootstrapServer.ts",
       "sourceDomain": "shared",
+      "target": "server/src/app/bootstrap/runBio26LearningStructure.ts",
+      "targetDomain": "learning"
+    },
+    {
+      "source": "server/src/app/bootstrap/bootstrapServer.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/app/bootstrap/runBio26PackageImport.ts",
+      "targetDomain": "payments"
+    },
+    {
+      "source": "server/src/app/bootstrap/bootstrapServer.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/app/bootstrap/runChem26LearningStructure.ts",
+      "targetDomain": "learning"
+    },
+    {
+      "source": "server/src/app/bootstrap/bootstrapServer.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/app/bootstrap/runChem26PackageImport.ts",
+      "targetDomain": "payments"
+    },
+    {
+      "source": "server/src/app/bootstrap/bootstrapServer.ts",
+      "sourceDomain": "shared",
       "target": "server/src/app/bootstrap/runQuestionPilotPackageImport.ts",
       "targetDomain": "questions"
     },
@@ -7338,6 +7672,132 @@
       "sourceDomain": "shared",
       "target": "server/src/queues/notificationQueue.ts",
       "targetDomain": "notifications"
+    },
+    {
+      "source": "server/src/app/bootstrap/runBio26LearningStructure.ts",
+      "sourceDomain": "learning",
+      "target": "server/src/models/Question.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/app/bootstrap/runBio26LearningStructure.ts",
+      "sourceDomain": "learning",
+      "target": "server/src/models/Quiz.ts",
+      "targetDomain": "quizzes"
+    },
+    {
+      "source": "server/src/app/bootstrap/runBio26LearningStructure.ts",
+      "sourceDomain": "learning",
+      "target": "server/src/models/Skill.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/app/bootstrap/runBio26PackageImport.ts",
+      "sourceDomain": "payments",
+      "target": "server/src/app/bootstrap/questionPilotPackageImportSupport.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/app/bootstrap/runBio26PackageImport.ts",
+      "sourceDomain": "payments",
+      "target": "server/src/config/env.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/app/bootstrap/runBio26PackageImport.ts",
+      "sourceDomain": "payments",
+      "target": "server/src/models/Question.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/app/bootstrap/runBio26PackageImport.ts",
+      "sourceDomain": "payments",
+      "target": "server/src/models/Skill.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/app/bootstrap/runBio26PackageImport.ts",
+      "sourceDomain": "payments",
+      "target": "server/src/models/Subject.ts",
+      "targetDomain": "courses"
+    },
+    {
+      "source": "server/src/app/bootstrap/runBio26PackageImport.ts",
+      "sourceDomain": "payments",
+      "target": "server/src/models/User.ts",
+      "targetDomain": "users"
+    },
+    {
+      "source": "server/src/app/bootstrap/runBio26PackageImport.ts",
+      "sourceDomain": "payments",
+      "target": "server/src/modules/media/infrastructure/r2PresignedPut.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/app/bootstrap/runBio26PackageImport.ts",
+      "sourceDomain": "payments",
+      "target": "server/src/modules/quizzes/http/questionQuerySchemas.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/app/bootstrap/runBio26StandardTests.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/models/Question.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/app/bootstrap/runBio26StandardTests.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/models/Quiz.ts",
+      "targetDomain": "quizzes"
+    },
+    {
+      "source": "server/src/app/bootstrap/runChem26LearningStructure.ts",
+      "sourceDomain": "learning",
+      "target": "server/src/models/Question.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/app/bootstrap/runChem26LearningStructure.ts",
+      "sourceDomain": "learning",
+      "target": "server/src/models/Quiz.ts",
+      "targetDomain": "quizzes"
+    },
+    {
+      "source": "server/src/app/bootstrap/runChem26LearningStructure.ts",
+      "sourceDomain": "learning",
+      "target": "server/src/models/Skill.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/app/bootstrap/runChem26PackageImport.ts",
+      "sourceDomain": "payments",
+      "target": "server/src/app/bootstrap/questionPilotPackageImportSupport.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/app/bootstrap/runChem26PackageImport.ts",
+      "sourceDomain": "payments",
+      "target": "server/src/config/env.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/app/bootstrap/runChem26PackageImport.ts",
+      "sourceDomain": "payments",
+      "target": "server/src/models/Question.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/app/bootstrap/runChem26StandardTests.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/models/Question.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/app/bootstrap/runChem26StandardTests.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/models/Quiz.ts",
+      "targetDomain": "quizzes"
     },
     {
       "source": "server/src/app/bootstrap/runQuestionPilotPackageImport.ts",
@@ -7536,6 +7996,336 @@
       "sourceDomain": "auth",
       "target": "server/src/modules/database/dbGrowthBudgets.ts",
       "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/modules/command-center/application/commandAudit.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/modules/command-center/application/commandAuthorization.ts",
+      "targetDomain": "auth"
+    },
+    {
+      "source": "server/src/modules/command-center/application/commandAuthorization.ts",
+      "sourceDomain": "auth",
+      "target": "server/src/config/env.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/modules/command-center/application/courseAudit.ts",
+      "sourceDomain": "courses",
+      "target": "server/src/models/Quiz.ts",
+      "targetDomain": "quizzes"
+    },
+    {
+      "source": "server/src/modules/command-center/application/courseReuseDraftTools.ts",
+      "sourceDomain": "courses",
+      "target": "server/src/models/Lesson.ts",
+      "targetDomain": "learning"
+    },
+    {
+      "source": "server/src/modules/command-center/application/courseReuseDraftTools.ts",
+      "sourceDomain": "courses",
+      "target": "server/src/models/LibraryItem.ts",
+      "targetDomain": "learning"
+    },
+    {
+      "source": "server/src/modules/command-center/application/courseReuseDraftTools.ts",
+      "sourceDomain": "courses",
+      "target": "server/src/models/Quiz.ts",
+      "targetDomain": "quizzes"
+    },
+    {
+      "source": "server/src/modules/command-center/application/courseReuseDraftTools.ts",
+      "sourceDomain": "courses",
+      "target": "server/src/models/Skill.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/modules/command-center/application/developerTaskTools.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/modules/command-center/application/commandAuthorization.ts",
+      "targetDomain": "auth"
+    },
+    {
+      "source": "server/src/modules/command-center/application/draftApplyCourseQuiz.ts",
+      "sourceDomain": "quizzes",
+      "target": "server/src/models/Course.ts",
+      "targetDomain": "courses"
+    },
+    {
+      "source": "server/src/modules/command-center/application/draftApplyCourseQuiz.ts",
+      "sourceDomain": "quizzes",
+      "target": "server/src/modules/command-center/application/courseReuseDraftTools.ts",
+      "targetDomain": "courses"
+    },
+    {
+      "source": "server/src/modules/command-center/application/draftApplyCourseQuiz.ts",
+      "sourceDomain": "quizzes",
+      "target": "server/src/modules/command-center/application/draftApplyTypes.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/modules/command-center/application/draftApplyCourseQuiz.ts",
+      "sourceDomain": "quizzes",
+      "target": "server/src/modules/command-center/application/questionQuizDraftTools.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/modules/command-center/application/draftApplyQuestion.ts",
+      "sourceDomain": "questions",
+      "target": "server/src/modules/command-center/application/draftApplyTypes.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/modules/command-center/application/draftApplyQuizUpdate.ts",
+      "sourceDomain": "quizzes",
+      "target": "server/src/modules/command-center/application/draftApplyTypes.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/modules/command-center/application/draftApplySchool.ts",
+      "sourceDomain": "schools",
+      "target": "server/src/models/TeachingAssignment.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/modules/command-center/application/draftApplySchool.ts",
+      "sourceDomain": "schools",
+      "target": "server/src/models/User.ts",
+      "targetDomain": "users"
+    },
+    {
+      "source": "server/src/modules/command-center/application/draftApplySchool.ts",
+      "sourceDomain": "schools",
+      "target": "server/src/modules/command-center/application/draftApplyTypes.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/modules/command-center/application/draftApplyService.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/modules/command-center/application/draftApplyCourseQuiz.ts",
+      "targetDomain": "quizzes"
+    },
+    {
+      "source": "server/src/modules/command-center/application/draftApplyService.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/modules/command-center/application/draftApplyQuestion.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/modules/command-center/application/draftApplyService.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/modules/command-center/application/draftApplyQuizUpdate.ts",
+      "targetDomain": "quizzes"
+    },
+    {
+      "source": "server/src/modules/command-center/application/draftApplyService.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/modules/command-center/application/draftApplySchool.ts",
+      "targetDomain": "schools"
+    },
+    {
+      "source": "server/src/modules/command-center/application/mcpOAuth.ts",
+      "sourceDomain": "auth",
+      "target": "server/src/config/env.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/modules/command-center/application/mcpToolExecution.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/modules/command-center/application/commandAuthorization.ts",
+      "targetDomain": "auth"
+    },
+    {
+      "source": "server/src/modules/command-center/application/quizUpdateDraftTools.ts",
+      "sourceDomain": "quizzes",
+      "target": "server/src/models/Question.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/modules/command-center/application/quizUpdateDraftTools.ts",
+      "sourceDomain": "quizzes",
+      "target": "server/src/modules/command-center/application/questionSimilarity.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/modules/command-center/application/schoolSetupDraftTools.ts",
+      "sourceDomain": "schools",
+      "target": "server/src/models/User.ts",
+      "targetDomain": "users"
+    },
+    {
+      "source": "server/src/modules/command-center/application/workflowExecutor.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/models/Skill.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/modules/command-center/application/workflowExecutor.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/modules/command-center/application/commandAuthorization.ts",
+      "targetDomain": "auth"
+    },
+    {
+      "source": "server/src/modules/command-center/application/workflowExecutor.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/modules/command-center/application/courseAudit.ts",
+      "targetDomain": "courses"
+    },
+    {
+      "source": "server/src/modules/command-center/application/workflowExecutor.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/modules/command-center/application/courseReuseDraftTools.ts",
+      "targetDomain": "courses"
+    },
+    {
+      "source": "server/src/modules/command-center/application/workflowExecutor.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/modules/command-center/application/questionQuizDraftTools.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/modules/command-center/application/workflowExecutor.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/modules/command-center/application/quizUpdateDraftTools.ts",
+      "targetDomain": "quizzes"
+    },
+    {
+      "source": "server/src/modules/command-center/application/workflowExecutor.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/modules/command-center/application/schoolSetupDraftTools.ts",
+      "targetDomain": "schools"
+    },
+    {
+      "source": "server/src/modules/command-center/application/workflowService.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/modules/command-center/application/commandAuthorization.ts",
+      "targetDomain": "auth"
+    },
+    {
+      "source": "server/src/modules/command-center/http/commandCenterRoutes.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/models/Skill.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/modules/command-center/http/commandCenterRoutes.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/modules/command-center/application/commandAuthorization.ts",
+      "targetDomain": "auth"
+    },
+    {
+      "source": "server/src/modules/command-center/http/commandCenterRoutes.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/modules/command-center/http/courseDraftRoutes.ts",
+      "targetDomain": "courses"
+    },
+    {
+      "source": "server/src/modules/command-center/http/commandCenterRoutes.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/modules/command-center/http/questionQuizDraftRoutes.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/modules/command-center/http/commandCenterRoutes.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/modules/command-center/http/schoolDraftRoutes.ts",
+      "targetDomain": "schools"
+    },
+    {
+      "source": "server/src/modules/command-center/http/courseDraftRoutes.ts",
+      "sourceDomain": "courses",
+      "target": "server/src/models/CommandCenterDraft.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/modules/command-center/http/courseDraftRoutes.ts",
+      "sourceDomain": "courses",
+      "target": "server/src/modules/command-center/application/commandAudit.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/modules/command-center/http/courseDraftRoutes.ts",
+      "sourceDomain": "courses",
+      "target": "server/src/modules/command-center/application/commandAuthorization.ts",
+      "targetDomain": "auth"
+    },
+    {
+      "source": "server/src/modules/command-center/http/courseDraftRoutes.ts",
+      "sourceDomain": "courses",
+      "target": "server/src/utils/asyncHandler.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/modules/command-center/http/developerDraftRoutes.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/modules/command-center/application/commandAuthorization.ts",
+      "targetDomain": "auth"
+    },
+    {
+      "source": "server/src/modules/command-center/http/mcpRoutes.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/modules/command-center/application/mcpOAuth.ts",
+      "targetDomain": "auth"
+    },
+    {
+      "source": "server/src/modules/command-center/http/questionQuizDraftRoutes.ts",
+      "sourceDomain": "questions",
+      "target": "server/src/models/CommandCenterDraft.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/modules/command-center/http/questionQuizDraftRoutes.ts",
+      "sourceDomain": "questions",
+      "target": "server/src/modules/command-center/application/commandAudit.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/modules/command-center/http/questionQuizDraftRoutes.ts",
+      "sourceDomain": "questions",
+      "target": "server/src/modules/command-center/application/commandAuthorization.ts",
+      "targetDomain": "auth"
+    },
+    {
+      "source": "server/src/modules/command-center/http/questionQuizDraftRoutes.ts",
+      "sourceDomain": "questions",
+      "target": "server/src/modules/command-center/application/quizUpdateDraftTools.ts",
+      "targetDomain": "quizzes"
+    },
+    {
+      "source": "server/src/modules/command-center/http/questionQuizDraftRoutes.ts",
+      "sourceDomain": "questions",
+      "target": "server/src/utils/asyncHandler.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/modules/command-center/http/schoolDraftRoutes.ts",
+      "sourceDomain": "schools",
+      "target": "server/src/models/CommandCenterDraft.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/modules/command-center/http/schoolDraftRoutes.ts",
+      "sourceDomain": "schools",
+      "target": "server/src/modules/command-center/application/commandAudit.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/modules/command-center/http/schoolDraftRoutes.ts",
+      "sourceDomain": "schools",
+      "target": "server/src/modules/command-center/application/commandAuthorization.ts",
+      "targetDomain": "auth"
+    },
+    {
+      "source": "server/src/modules/command-center/http/schoolDraftRoutes.ts",
+      "sourceDomain": "schools",
+      "target": "server/src/utils/asyncHandler.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/modules/command-center/http/workflowRoutes.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/modules/command-center/application/commandAuthorization.ts",
+      "targetDomain": "auth"
     },
     {
       "source": "server/src/modules/content/application/foundationSubtopicSkillLink.ts",
@@ -9041,6 +9831,18 @@
       "source": "server/src/routes/ai.routes.ts",
       "sourceDomain": "ai",
       "target": "server/src/modules/ai/infrastructure/providers/aiProviderAdapters.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/routes/ai.routes.ts",
+      "sourceDomain": "ai",
+      "target": "server/src/modules/command-center/application/courseReuseDraftTools.ts",
+      "targetDomain": "courses"
+    },
+    {
+      "source": "server/src/routes/ai.routes.ts",
+      "sourceDomain": "ai",
+      "target": "server/src/modules/command-center/application/workflowService.ts",
       "targetDomain": "shared"
     },
     {
@@ -11318,6 +12120,12 @@
       "targetDomain": "shared"
     },
     {
+      "source": "server/src/scripts/reconcileQuduratPracticeAccess.ts",
+      "sourceDomain": "payments",
+      "target": "server/src/config/env.ts",
+      "targetDomain": "shared"
+    },
+    {
       "source": "server/src/scripts/reconcileSkillProgressTaxonomy.ts",
       "sourceDomain": "questions",
       "target": "server/src/config/db.ts",
@@ -11442,6 +12250,54 @@
       "sourceDomain": "learning",
       "target": "server/src/models/Subject.ts",
       "targetDomain": "courses"
+    },
+    {
+      "source": "server/src/scripts/runBio26FinalClosure.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/app/bootstrap/questionPilotPackageImportSupport.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/scripts/runBio26FinalClosure.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/models/Question.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/scripts/runBio26FinalClosure.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/models/Quiz.ts",
+      "targetDomain": "quizzes"
+    },
+    {
+      "source": "server/src/scripts/runBio26FinalClosure.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/models/Skill.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/scripts/runBio26FinalClosure.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/models/Subject.ts",
+      "targetDomain": "courses"
+    },
+    {
+      "source": "server/src/scripts/runChem26FinalClosure.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/models/Question.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/scripts/runChem26FinalClosure.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/models/Quiz.ts",
+      "targetDomain": "quizzes"
+    },
+    {
+      "source": "server/src/scripts/runChem26FinalClosure.ts",
+      "sourceDomain": "shared",
+      "target": "server/src/models/Skill.ts",
+      "targetDomain": "questions"
     },
     {
       "source": "server/src/scripts/seedAdmin.ts",
@@ -11668,6 +12524,84 @@
     {
       "source": "server/src/scripts/validateQuestionBankV2Manifest.ts",
       "sourceDomain": "questions",
+      "target": "server/src/config/env.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/scripts/verifyBio26PostImport.ts",
+      "sourceDomain": "auth",
+      "target": "server/src/config/env.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/scripts/verifyBio26PostImport.ts",
+      "sourceDomain": "auth",
+      "target": "server/src/models/Question.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/scripts/verifyBio26PostImport.ts",
+      "sourceDomain": "auth",
+      "target": "server/src/models/Quiz.ts",
+      "targetDomain": "quizzes"
+    },
+    {
+      "source": "server/src/scripts/verifyBio26PostImport.ts",
+      "sourceDomain": "auth",
+      "target": "server/src/models/Skill.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/scripts/verifyBio26PostImport.ts",
+      "sourceDomain": "auth",
+      "target": "server/src/models/Subject.ts",
+      "targetDomain": "courses"
+    },
+    {
+      "source": "server/src/scripts/verifyChem26LearningStructure.ts",
+      "sourceDomain": "auth",
+      "target": "server/src/app/bootstrap/runChem26LearningStructure.ts",
+      "targetDomain": "learning"
+    },
+    {
+      "source": "server/src/scripts/verifyChem26LearningStructure.ts",
+      "sourceDomain": "auth",
+      "target": "server/src/config/env.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/scripts/verifyChem26PostImport.ts",
+      "sourceDomain": "auth",
+      "target": "server/src/config/env.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/scripts/verifyChem26PostImport.ts",
+      "sourceDomain": "auth",
+      "target": "server/src/models/Question.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/scripts/verifyChem26PostImport.ts",
+      "sourceDomain": "auth",
+      "target": "server/src/models/Quiz.ts",
+      "targetDomain": "quizzes"
+    },
+    {
+      "source": "server/src/scripts/verifyChem26PostImport.ts",
+      "sourceDomain": "auth",
+      "target": "server/src/models/Skill.ts",
+      "targetDomain": "questions"
+    },
+    {
+      "source": "server/src/scripts/verifyChem26StandardTests.ts",
+      "sourceDomain": "auth",
+      "target": "server/src/app/bootstrap/runChem26StandardTests.ts",
+      "targetDomain": "shared"
+    },
+    {
+      "source": "server/src/scripts/verifyChem26StandardTests.ts",
+      "sourceDomain": "auth",
       "target": "server/src/config/env.ts",
       "targetDomain": "shared"
     },
@@ -12328,6 +13262,12 @@
     {
       "source": "services/api.ts",
       "sourceDomain": "shared",
+      "target": "services/apiGroups/commandCenterApi.ts",
+      "targetDomain": "schools"
+    },
+    {
+      "source": "services/api.ts",
+      "sourceDomain": "shared",
       "target": "services/apiGroups/coursesApi.ts",
       "targetDomain": "schools"
     },
@@ -12728,6 +13668,12 @@
       "targetDomain": "shared"
     },
     {
+      "source": "utils/skillActionLinks.ts",
+      "sourceDomain": "questions",
+      "target": "types.ts",
+      "targetDomain": "shared"
+    },
+    {
       "source": "utils/videoQuestionSnapshot.ts",
       "sourceDomain": "questions",
       "target": "types.ts",
@@ -13102,6 +14048,18 @@
       "confidence": "review-required"
     },
     {
+      "source": "components/results/InteractiveSmartTeacher.tsx",
+      "target": "apps/web/src/features/schools/results/InteractiveSmartTeacher.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "components/results/InteractiveWhiteboardCanvas.tsx",
+      "target": "apps/web/src/features/reports/results/InteractiveWhiteboardCanvas.tsx",
+      "domain": "reports",
+      "confidence": "candidate"
+    },
+    {
       "source": "components/results/QuestionAssistantPanel.tsx",
       "target": "apps/web/src/features/questions/results/QuestionAssistantPanel.tsx",
       "domain": "questions",
@@ -13122,6 +14080,12 @@
     {
       "source": "components/results/resultScorePresentation.ts",
       "target": "apps/web/src/features/reports/results/resultScorePresentation.ts",
+      "domain": "reports",
+      "confidence": "candidate"
+    },
+    {
+      "source": "components/results/whiteboardParser.tsx",
+      "target": "apps/web/src/features/reports/results/whiteboardParser.tsx",
       "domain": "reports",
       "confidence": "candidate"
     },
@@ -13321,6 +14285,30 @@
       "source": "dashboards/admin/ClassSkillsMapPanel.tsx",
       "target": "apps/web/src/features/questions/admin/ClassSkillsMapPanel.tsx",
       "domain": "questions",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/command-center/CommandCenterNaturalLanguagePanel.tsx",
+      "target": "apps/web/src/features/shared/admin/command-center/CommandCenterNaturalLanguagePanel.tsx",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "dashboards/admin/command-center/CommandCenterOperationsPanel.tsx",
+      "target": "apps/web/src/features/operations/admin/command-center/CommandCenterOperationsPanel.tsx",
+      "domain": "operations",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/command-center/CommandCenterSchoolImportPanel.tsx",
+      "target": "apps/web/src/features/schools/admin/command-center/CommandCenterSchoolImportPanel.tsx",
+      "domain": "schools",
+      "confidence": "candidate"
+    },
+    {
+      "source": "dashboards/admin/command-center/schoolImportDraftAdapter.ts",
+      "target": "apps/web/src/features/schools/admin/command-center/schoolImportDraftAdapter.ts",
+      "domain": "schools",
       "confidence": "candidate"
     },
     {
@@ -14512,6 +15500,12 @@
       "confidence": "candidate"
     },
     {
+      "source": "pages/Reports/studentSkillAttemptTrendViewModel.ts",
+      "target": "apps/web/src/features/questions/Reports/studentSkillAttemptTrendViewModel.ts",
+      "domain": "questions",
+      "confidence": "candidate"
+    },
+    {
       "source": "pages/Reports/studentSkillRowsViewModel.ts",
       "target": "apps/web/src/features/questions/Reports/studentSkillRowsViewModel.ts",
       "domain": "questions",
@@ -14602,8 +15596,32 @@
       "confidence": "review-required"
     },
     {
+      "source": "server/src/app/bootstrap/bio26LearningStructurePlan.ts",
+      "target": "apps/api/src/app/bootstrap/bio26LearningStructurePlan.ts",
+      "domain": "learning",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/app/bootstrap/bio26StandardTestsPlan.ts",
+      "target": "apps/api/src/app/bootstrap/bio26StandardTestsPlan.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
       "source": "server/src/app/bootstrap/bootstrapServer.ts",
       "target": "apps/api/src/app/bootstrap/bootstrapServer.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/app/bootstrap/chem26LearningStructurePlan.ts",
+      "target": "apps/api/src/app/bootstrap/chem26LearningStructurePlan.ts",
+      "domain": "learning",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/app/bootstrap/chem26StandardTestsPlan.ts",
+      "target": "apps/api/src/app/bootstrap/chem26StandardTestsPlan.ts",
       "domain": "shared",
       "confidence": "review-required"
     },
@@ -14623,6 +15641,42 @@
       "source": "server/src/app/bootstrap/reportStartupFailure.ts",
       "target": "apps/api/src/app/bootstrap/reportStartupFailure.ts",
       "domain": "reports",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/app/bootstrap/runBio26LearningStructure.ts",
+      "target": "apps/api/src/app/bootstrap/runBio26LearningStructure.ts",
+      "domain": "learning",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/app/bootstrap/runBio26PackageImport.ts",
+      "target": "apps/api/src/app/bootstrap/runBio26PackageImport.ts",
+      "domain": "payments",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/app/bootstrap/runBio26StandardTests.ts",
+      "target": "apps/api/src/app/bootstrap/runBio26StandardTests.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/app/bootstrap/runChem26LearningStructure.ts",
+      "target": "apps/api/src/app/bootstrap/runChem26LearningStructure.ts",
+      "domain": "learning",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/app/bootstrap/runChem26PackageImport.ts",
+      "target": "apps/api/src/app/bootstrap/runChem26PackageImport.ts",
+      "domain": "payments",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/app/bootstrap/runChem26StandardTests.ts",
+      "target": "apps/api/src/app/bootstrap/runChem26StandardTests.ts",
+      "domain": "shared",
       "confidence": "review-required"
     },
     {
@@ -14808,6 +15862,24 @@
     {
       "source": "server/src/models/ClientEvent.ts",
       "target": "apps/api/src/modules/shared/infrastructure/persistence/ClientEvent.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/models/CommandCenterAudit.ts",
+      "target": "apps/api/src/modules/shared/infrastructure/persistence/CommandCenterAudit.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/models/CommandCenterDraft.ts",
+      "target": "apps/api/src/modules/shared/infrastructure/persistence/CommandCenterDraft.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/models/CommandCenterWorkflow.ts",
+      "target": "apps/api/src/modules/shared/infrastructure/persistence/CommandCenterWorkflow.ts",
       "domain": "shared",
       "confidence": "review-required"
     },
@@ -15175,6 +16247,180 @@
       "source": "server/src/modules/auth/http/authSchemas.ts",
       "target": "apps/api/src/modules/auth/http/authSchemas.ts",
       "domain": "auth",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/command-center/application/commandAudit.ts",
+      "target": "apps/api/src/modules/command-center/application/commandAudit.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/command-center/application/commandAuthorization.ts",
+      "target": "apps/api/src/modules/command-center/application/commandAuthorization.ts",
+      "domain": "auth",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/command-center/application/commandToolRegistry.ts",
+      "target": "apps/api/src/modules/command-center/application/commandToolRegistry.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/command-center/application/courseAudit.ts",
+      "target": "apps/api/src/modules/command-center/application/courseAudit.ts",
+      "domain": "courses",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/command-center/application/courseReuseDraftTools.ts",
+      "target": "apps/api/src/modules/command-center/application/courseReuseDraftTools.ts",
+      "domain": "courses",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/command-center/application/developerTaskTools.ts",
+      "target": "apps/api/src/modules/command-center/application/developerTaskTools.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/command-center/application/draftApplyCourseQuiz.ts",
+      "target": "apps/api/src/modules/command-center/application/draftApplyCourseQuiz.ts",
+      "domain": "quizzes",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/command-center/application/draftApplyQuestion.ts",
+      "target": "apps/api/src/modules/command-center/application/draftApplyQuestion.ts",
+      "domain": "questions",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/command-center/application/draftApplyQuizUpdate.ts",
+      "target": "apps/api/src/modules/command-center/application/draftApplyQuizUpdate.ts",
+      "domain": "quizzes",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/command-center/application/draftApplySchool.ts",
+      "target": "apps/api/src/modules/command-center/application/draftApplySchool.ts",
+      "domain": "schools",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/command-center/application/draftApplyService.ts",
+      "target": "apps/api/src/modules/command-center/application/draftApplyService.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/command-center/application/draftApplyTypes.ts",
+      "target": "apps/api/src/modules/command-center/application/draftApplyTypes.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/command-center/application/mcpOAuth.ts",
+      "target": "apps/api/src/modules/command-center/application/mcpOAuth.ts",
+      "domain": "auth",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/command-center/application/mcpToolCatalog.ts",
+      "target": "apps/api/src/modules/command-center/application/mcpToolCatalog.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/command-center/application/mcpToolExecution.ts",
+      "target": "apps/api/src/modules/command-center/application/mcpToolExecution.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/command-center/application/mcpTools.ts",
+      "target": "apps/api/src/modules/command-center/application/mcpTools.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/command-center/application/questionQuizDraftTools.ts",
+      "target": "apps/api/src/modules/command-center/application/questionQuizDraftTools.ts",
+      "domain": "questions",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/command-center/application/questionSimilarity.ts",
+      "target": "apps/api/src/modules/command-center/application/questionSimilarity.ts",
+      "domain": "questions",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/command-center/application/quizUpdateDraftTools.ts",
+      "target": "apps/api/src/modules/command-center/application/quizUpdateDraftTools.ts",
+      "domain": "quizzes",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/command-center/application/schoolSetupDraftTools.ts",
+      "target": "apps/api/src/modules/command-center/application/schoolSetupDraftTools.ts",
+      "domain": "schools",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/command-center/application/workflowExecutor.ts",
+      "target": "apps/api/src/modules/command-center/application/workflowExecutor.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/command-center/application/workflowService.ts",
+      "target": "apps/api/src/modules/command-center/application/workflowService.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/command-center/http/commandCenterRoutes.ts",
+      "target": "apps/api/src/modules/command-center/http/commandCenterRoutes.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/command-center/http/courseDraftRoutes.ts",
+      "target": "apps/api/src/modules/command-center/http/courseDraftRoutes.ts",
+      "domain": "courses",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/command-center/http/developerDraftRoutes.ts",
+      "target": "apps/api/src/modules/command-center/http/developerDraftRoutes.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/command-center/http/mcpRoutes.ts",
+      "target": "apps/api/src/modules/command-center/http/mcpRoutes.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/command-center/http/questionQuizDraftRoutes.ts",
+      "target": "apps/api/src/modules/command-center/http/questionQuizDraftRoutes.ts",
+      "domain": "questions",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/command-center/http/schoolDraftRoutes.ts",
+      "target": "apps/api/src/modules/command-center/http/schoolDraftRoutes.ts",
+      "domain": "schools",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/modules/command-center/http/workflowRoutes.ts",
+      "target": "apps/api/src/modules/command-center/http/workflowRoutes.ts",
+      "domain": "shared",
       "confidence": "review-required"
     },
     {
@@ -16426,6 +17672,12 @@
       "confidence": "review-required"
     },
     {
+      "source": "server/src/scripts/bio26TaxonomySupport.ts",
+      "target": "apps/api/src/scripts/bio26TaxonomySupport.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
       "source": "server/src/scripts/bootstrapCustomerInstance.ts",
       "target": "apps/api/src/scripts/bootstrapCustomerInstance.ts",
       "domain": "shared",
@@ -16476,6 +17728,18 @@
     {
       "source": "server/src/scripts/db6ScaleCertificationGate.ts",
       "target": "apps/api/src/scripts/db6ScaleCertificationGate.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/scripts/deployBio26Taxonomy.ts",
+      "target": "apps/api/src/scripts/deployBio26Taxonomy.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/scripts/deployChemTaxonomy27.ts",
+      "target": "apps/api/src/scripts/deployChemTaxonomy27.ts",
       "domain": "shared",
       "confidence": "review-required"
     },
@@ -16630,6 +17894,12 @@
       "confidence": "review-required"
     },
     {
+      "source": "server/src/scripts/reconcileQuduratPracticeAccess.ts",
+      "target": "apps/api/src/scripts/reconcileQuduratPracticeAccess.ts",
+      "domain": "payments",
+      "confidence": "review-required"
+    },
+    {
       "source": "server/src/scripts/reconcileSkillProgressTaxonomy.ts",
       "target": "apps/api/src/scripts/reconcileSkillProgressTaxonomy.ts",
       "domain": "questions",
@@ -16657,6 +17927,18 @@
       "source": "server/src/scripts/restoreLearningContent.ts",
       "target": "apps/api/src/scripts/restoreLearningContent.ts",
       "domain": "learning",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/scripts/runBio26FinalClosure.ts",
+      "target": "apps/api/src/scripts/runBio26FinalClosure.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/scripts/runChem26FinalClosure.ts",
+      "target": "apps/api/src/scripts/runChem26FinalClosure.ts",
+      "domain": "shared",
       "confidence": "review-required"
     },
     {
@@ -16734,6 +18016,30 @@
     {
       "source": "server/src/scripts/verify_fursan_import.ts",
       "target": "apps/api/src/scripts/verify_fursan_import.ts",
+      "domain": "auth",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/scripts/verifyBio26PostImport.ts",
+      "target": "apps/api/src/scripts/verifyBio26PostImport.ts",
+      "domain": "auth",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/scripts/verifyChem26LearningStructure.ts",
+      "target": "apps/api/src/scripts/verifyChem26LearningStructure.ts",
+      "domain": "auth",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/scripts/verifyChem26PostImport.ts",
+      "target": "apps/api/src/scripts/verifyChem26PostImport.ts",
+      "domain": "auth",
+      "confidence": "review-required"
+    },
+    {
+      "source": "server/src/scripts/verifyChem26StandardTests.ts",
+      "target": "apps/api/src/scripts/verifyChem26StandardTests.ts",
       "domain": "auth",
       "confidence": "review-required"
     },
@@ -17032,6 +18338,12 @@
       "confidence": "review-required"
     },
     {
+      "source": "services/apiGroups/commandCenterApi.ts",
+      "target": "apps/web/src/core/api/apiGroups/commandCenterApi.ts",
+      "domain": "core-api",
+      "confidence": "review-required"
+    },
+    {
       "source": "services/apiGroups/coursesApi.ts",
       "target": "apps/web/src/core/api/apiGroups/coursesApi.ts",
       "domain": "core-api",
@@ -17314,6 +18626,12 @@
       "confidence": "review-required"
     },
     {
+      "source": "utils/foundationTopicAccess.ts",
+      "target": "apps/web/src/shared/lib/foundationTopicAccess.ts",
+      "domain": "shared",
+      "confidence": "review-required"
+    },
+    {
       "source": "utils/interactiveVideoProgress.ts",
       "target": "apps/web/src/shared/lib/interactiveVideoProgress.ts",
       "domain": "shared",
@@ -17534,6 +18852,22 @@
       "sha256": "fa9c75acf7e04987af349038b3859d402ee32f7aeaa532bc488084db60554f08"
     },
     {
+      "file": ".github/workflows/bio26-taxonomy-production.yml",
+      "category": "ci",
+      "domain": "shared",
+      "bytes": 1637,
+      "lines": 61,
+      "sha256": "005eaa7a53ea2296e56dc5f1cf18e442d4582b7cf3b955ad9585f80d9a5d7a74"
+    },
+    {
+      "file": ".github/workflows/chem26-taxonomy-production.yml",
+      "category": "ci",
+      "domain": "shared",
+      "bytes": 1647,
+      "lines": 61,
+      "sha256": "ad218c8df1c83cc3fef671afa5d093884e32c25362eb8038f51a2a640bc10456"
+    },
+    {
       "file": ".github/workflows/col26-canary-presign.yml",
       "category": "ci",
       "domain": "shared",
@@ -17574,6 +18908,14 @@
       "sha256": "8f70bca2c2c4bda94aec60c5558bcecac4da6a621b4f231c7bb8edd8b088f120"
     },
     {
+      "file": ".github/workflows/command-center-mcp-live-certification.yml",
+      "category": "ci",
+      "domain": "shared",
+      "bytes": 2815,
+      "lines": 82,
+      "sha256": "78c63ff08a00f9ba24fabffa56e0e0ace866990d2a8c4590a5e8dea97400414e"
+    },
+    {
       "file": ".github/workflows/course-free-enrollment-ui-gate.yml",
       "category": "ci",
       "domain": "courses",
@@ -17593,9 +18935,9 @@
       "file": ".github/workflows/plan7-live-ai-certification.yml",
       "category": "ci",
       "domain": "ai",
-      "bytes": 2525,
-      "lines": 62,
-      "sha256": "9d97a12b161771cee519e5eca1d70c15218ee48a539f66c26b78d750553858a0"
+      "bytes": 3581,
+      "lines": 90,
+      "sha256": "6ce63136e48de0beb23f4f001c999cc4e3881d97b9938cb5304eda26b70d707f"
     },
     {
       "file": ".github/workflows/platform-v3-backend-integration-gate.yml",
@@ -17617,9 +18959,9 @@
       "file": ".github/workflows/platform-v3-live-role-gate.yml",
       "category": "ci",
       "domain": "shared",
-      "bytes": 7785,
-      "lines": 187,
-      "sha256": "f1cf1cf7601ae03b3a4a83a0248fb09b2a68d2335dff3c04acc9cd302434c6ba"
+      "bytes": 3499,
+      "lines": 98,
+      "sha256": "659ad2860681e1438ab8f19de87730bbd59f1805b7f9fa236c40acc77d6da642"
     },
     {
       "file": ".github/workflows/platform-v3-phase-handover-gate.yml",
@@ -17641,9 +18983,9 @@
       "file": ".github/workflows/platform-v3-public-ui-gate.yml",
       "category": "ci",
       "domain": "shared",
-      "bytes": 3190,
-      "lines": 107,
-      "sha256": "78b1fb36bef1034fe176b96c85acdfb89634db09a7daf36c69b3e5a555712677"
+      "bytes": 3056,
+      "lines": 104,
+      "sha256": "adf096a1bc64f52075d455262dcd7526bae44e80a1b54e6213a9ede5c7bb0982"
     },
     {
       "file": ".github/workflows/platform-v3-recovery-gate.yml",
@@ -17657,9 +18999,9 @@
       "file": ".github/workflows/post-deploy-smoke.yml",
       "category": "ci",
       "domain": "shared",
-      "bytes": 5768,
-      "lines": 134,
-      "sha256": "a827dbe8a1e0cb8ad139842a181fb8a330c13bf9ef7aa2a2f07010e513a74b20"
+      "bytes": 7466,
+      "lines": 180,
+      "sha256": "96e6516b996ba3d7009e37a4024b84b5e7e65727e734f049d09590c05a8d9d7f"
     },
     {
       "file": ".github/workflows/production-dr-backup.yml",
@@ -17668,6 +19010,14 @@
       "bytes": 14751,
       "lines": 336,
       "sha256": "c75638a818896999882f0d5d1c9aa93b7a8b7c1c1b7fb02e5feb6acbd6876075"
+    },
+    {
+      "file": ".github/workflows/qudurat-practice-access.yml",
+      "category": "ci",
+      "domain": "payments",
+      "bytes": 694,
+      "lines": 26,
+      "sha256": "9d3f1a60dc7219696b505e1edd479cc208f316b5f608323ae73d389c251eb038"
     },
     {
       "file": ".github/workflows/refactor-v2-api-query-utilities.yml",
@@ -17745,9 +19095,9 @@
       "file": ".github/workflows/refactor-v2-guard.yml",
       "category": "ci",
       "domain": "shared",
-      "bytes": 18196,
-      "lines": 450,
-      "sha256": "fd4fc3f447e98644eb5d1f39750055c6ad4ad17e5d1f701a87a2cf391a42f749"
+      "bytes": 18818,
+      "lines": 465,
+      "sha256": "e7db3b17b7cbf60ba58e38a184ebc9c377bf04c086392d4f260d2642cd2f3d9d"
     },
     {
       "file": ".github/workflows/refactor-v2-paths-display-presentation.yml",
@@ -18006,12 +19356,28 @@
       "sha256": "bb5a08fd38dd83c938c54c4f654fe9510fac3c85c38123ecc366b505ac44ee85"
     },
     {
+      "file": ".github/workflows/tracked-secret-hygiene.yml",
+      "category": "ci",
+      "domain": "shared",
+      "bytes": 943,
+      "lines": 41,
+      "sha256": "c0c4d1f76dbc54062a74107c0578b94d600ff06bf9d8b6396b912d834b500f0a"
+    },
+    {
+      "file": ".github/workflows/verbal26-production-certification.yml",
+      "category": "ci",
+      "domain": "shared",
+      "bytes": 1382,
+      "lines": 42,
+      "sha256": "810acb37630a1221a489f5b989fd6edc5914070120874d441195e0fd41ef6495"
+    },
+    {
       "file": ".github/workflows/verbal26-source-closure.yml",
       "category": "ci",
       "domain": "shared",
-      "bytes": 756,
-      "lines": 27,
-      "sha256": "a5c917ed3f230edfe015ed12ae1d748c61dbedaa1da8455e17f235390dcd8911"
+      "bytes": 804,
+      "lines": 28,
+      "sha256": "6cc4a70774a01fea06994f13a55896ccec5d57f1d2625ae85bb7ebfabf58546a"
     },
     {
       "file": ".gitignore",
@@ -18065,9 +19431,9 @@
       "file": "README.md",
       "category": "support",
       "domain": "shared",
-      "bytes": 5565,
+      "bytes": 5663,
       "lines": 156,
-      "sha256": "346be8cfaea7c49c9e08b0d57b291f87bcd7db9e6e8e7626d47b84a441d2a21b"
+      "sha256": "f51e7ebdd8bc8f785431fa889e1e8d958a17ee25dfe64792780f98566a756934"
     },
     {
       "file": "app/AppRouteTree.tsx",
@@ -18129,7 +19495,7 @@
       "file": "audit-evidence/human-ux/batch_summary_mini_report.png",
       "category": "support",
       "domain": "reports",
-      "bytes": 147211,
+      "bytes": 147595,
       "lines": 0,
       "sha256": null
     },
@@ -18145,9 +19511,9 @@
       "file": "audit-evidence/human-ux/human_classroom_pressure_report.json",
       "category": "support",
       "domain": "schools",
-      "bytes": 13547,
-      "lines": 364,
-      "sha256": "f7ccaa64588c3b70feccd99276e99188db31abf0ca7500cb985a4c87004f9ed0"
+      "bytes": 13932,
+      "lines": 388,
+      "sha256": "8bfbb8ad84a9dd423afcb3a7cde3ef317c5c4fbddd87de6fdb47d3d8d18bb26d"
     },
     {
       "file": "audit-evidence/human-ux/parent_dashboard.png",
@@ -18169,7 +19535,7 @@
       "file": "audit-evidence/human-ux/projector_live_theater_view.png",
       "category": "support",
       "domain": "shared",
-      "bytes": 40135,
+      "bytes": 40116,
       "lines": 0,
       "sha256": null
     },
@@ -18209,7 +19575,7 @@
       "file": "audit-evidence/human-ux/student_continuous_session_mobile.png",
       "category": "support",
       "domain": "auth",
-      "bytes": 49685,
+      "bytes": 49686,
       "lines": 0,
       "sha256": null
     },
@@ -18233,7 +19599,7 @@
       "file": "audit-evidence/human-ux/student_question_received_mobile.png",
       "category": "support",
       "domain": "questions",
-      "bytes": 48399,
+      "bytes": 48397,
       "lines": 0,
       "sha256": null
     },
@@ -18329,7 +19695,7 @@
       "file": "audit-evidence/human-ux/teacher_mobile_remote_controls.png",
       "category": "support",
       "domain": "schools",
-      "bytes": 290602,
+      "bytes": 290942,
       "lines": 0,
       "sha256": null
     },
@@ -18345,7 +19711,7 @@
       "file": "audit-evidence/human-ux/teacher_option_distribution_neutral.png",
       "category": "support",
       "domain": "schools",
-      "bytes": 183498,
+      "bytes": 183906,
       "lines": 0,
       "sha256": null
     },
@@ -18361,7 +19727,7 @@
       "file": "audit-evidence/human-ux/teacher_push_10_dialog.png",
       "category": "support",
       "domain": "schools",
-      "bytes": 147211,
+      "bytes": 147595,
       "lines": 0,
       "sha256": null
     },
@@ -18385,7 +19751,7 @@
       "file": "audit-evidence/human-ux/teacher_response_progress.png",
       "category": "support",
       "domain": "schools",
-      "bytes": 183498,
+      "bytes": 183906,
       "lines": 0,
       "sha256": null
     },
@@ -18425,7 +19791,7 @@
       "file": "audit-evidence/human-ux/teacher_session_initialized.png",
       "category": "support",
       "domain": "auth",
-      "bytes": 76729,
+      "bytes": 81321,
       "lines": 0,
       "sha256": null
     },
@@ -18433,7 +19799,7 @@
       "file": "audit-evidence/human-ux/teacher_solution_revealed.png",
       "category": "support",
       "domain": "schools",
-      "bytes": 205681,
+      "bytes": 206088,
       "lines": 0,
       "sha256": null
     },
@@ -18441,7 +19807,7 @@
       "file": "audit-evidence/human-ux/teacher_students_joined_progress.png",
       "category": "support",
       "domain": "schools",
-      "bytes": 73988,
+      "bytes": 78336,
       "lines": 0,
       "sha256": null
     },
@@ -18537,9 +19903,9 @@
       "file": "components/DetailedAnalysisModal.tsx",
       "category": "web-source",
       "domain": "shared",
-      "bytes": 8304,
-      "lines": 188,
-      "sha256": "5ce26072ecd4c04edf8d29519418aed76610fa85a90c7cb223b25149329e9704"
+      "bytes": 10396,
+      "lines": 216,
+      "sha256": "3a0f8df4c05218e7ea5982a50974c8e463b9a3caca7457062ab3d2fe7b798fdb"
     },
     {
       "file": "components/FileModal.tsx",
@@ -18569,9 +19935,9 @@
       "file": "components/LearningSection.tsx",
       "category": "web-source",
       "domain": "learning",
-      "bytes": 90026,
-      "lines": 1408,
-      "sha256": "2ba5b922174190d165b9cba494d55979ac1998130b31c3cf1dbf2adb5c97cf11"
+      "bytes": 93309,
+      "lines": 1448,
+      "sha256": "1b7589226b7864c5f4378165407bca1d93a0ac6672dd447d12771ce65dc2300e"
     },
     {
       "file": "components/MainLayout.tsx",
@@ -18665,9 +20031,9 @@
       "file": "components/QuizDetailsModal.tsx",
       "category": "web-source",
       "domain": "quizzes",
-      "bytes": 14503,
-      "lines": 291,
-      "sha256": "600eaee18b85c405d5c9d37ce2fe27fa6a3861e916f16698719ffdd863c2916c"
+      "bytes": 16455,
+      "lines": 313,
+      "sha256": "fc0d72d8c21dc9bcc96c5822601adf1a101fbf1a9cbae7e8fde844fdade3bb73"
     },
     {
       "file": "components/QuizGenerator.tsx",
@@ -18737,17 +20103,17 @@
       "file": "components/SkillDetailsModal.tsx",
       "category": "web-source",
       "domain": "questions",
-      "bytes": 34507,
-      "lines": 674,
-      "sha256": "b1ca39e7f563e39348c5b1265d242af66143591e7d82f916e840e02c30415758"
+      "bytes": 35493,
+      "lines": 691,
+      "sha256": "bdb4186517385924c752b1f2230bbeb7e73c31a15c6bc348a11dcd39a2343520"
     },
     {
       "file": "components/SmartLearningPath.tsx",
       "category": "web-source",
       "domain": "learning",
-      "bytes": 7998,
-      "lines": 169,
-      "sha256": "02b44f00b691d8b1f1b9220d4b139af5d094e8611695c6ce1c45e1c1fc174f89"
+      "bytes": 8991,
+      "lines": 182,
+      "sha256": "86e4f1b24e3a4446d9cebc68ed522256df8b5adad947b4b6811036e473a8f40e"
     },
     {
       "file": "components/StudentNextActionStrip.tsx",
@@ -18966,12 +20332,28 @@
       "sha256": "35b661254b523ee6285a82ec0c65f01c72fad38b1d8f2710c7867f8c4cbf42c5"
     },
     {
+      "file": "components/results/InteractiveSmartTeacher.tsx",
+      "category": "web-source",
+      "domain": "schools",
+      "bytes": 14784,
+      "lines": 351,
+      "sha256": "0c2c0c1b364955d2d2beb38ecec792e7046596a4920dbdaa6eab8dce3a145288"
+    },
+    {
+      "file": "components/results/InteractiveWhiteboardCanvas.tsx",
+      "category": "web-source",
+      "domain": "reports",
+      "bytes": 17071,
+      "lines": 384,
+      "sha256": "b3180c6c847a971fd1b74aaf6fa3c786545bd957ba87bbe1b9451882d90db8d7"
+    },
+    {
       "file": "components/results/QuestionAssistantPanel.tsx",
       "category": "web-source",
       "domain": "questions",
-      "bytes": 6121,
-      "lines": 154,
-      "sha256": "c8baf04528331b6dbc5e1bcd6928a34814b2b6c9e189f60acb17eaefd1542f1e"
+      "bytes": 7655,
+      "lines": 190,
+      "sha256": "c420d5a3f8ec9f10ca4fae271f3ba216f68c64b20405b1a9c1dcd23f4f26320f"
     },
     {
       "file": "components/results/QuestionVoiceExplanationPlayer.tsx",
@@ -18996,6 +20378,14 @@
       "bytes": 3282,
       "lines": 96,
       "sha256": "60510f47ea916b625f3008770cc68259c67dd47ddc7816644a5f9b46f6003790"
+    },
+    {
+      "file": "components/results/whiteboardParser.tsx",
+      "category": "web-source",
+      "domain": "reports",
+      "bytes": 6867,
+      "lines": 195,
+      "sha256": "26cad403c5536f0e89c729fe9d1411a1bec1a013a1e4031e34477da09f19a8a1"
     },
     {
       "file": "components/teacher/TeacherWorkspaceContext.tsx",
@@ -19113,9 +20503,9 @@
       "file": "dashboards/admin/AdminDashboard.tsx",
       "category": "web-source",
       "domain": "shared",
-      "bytes": 127562,
+      "bytes": 127552,
       "lines": 2101,
-      "sha256": "091897cae78ab143d970ef42768c343c2dc05d5721bfa82fc92eecb7b4f96e55"
+      "sha256": "0aace7bfa4ffc7946d4eb090b1ca67161aacda0eeb186ebe4457e392bb237d05"
     },
     {
       "file": "dashboards/admin/AdvancedCourseBuilder.tsx",
@@ -19129,9 +20519,9 @@
       "file": "dashboards/admin/AiAssistantManager.tsx",
       "category": "web-source",
       "domain": "ai",
-      "bytes": 84954,
-      "lines": 1315,
-      "sha256": "c58691cf417ece2eb872eb8bb10ae1158aa0c7ce53d1ed284bd0156088985b4f"
+      "bytes": 85330,
+      "lines": 1321,
+      "sha256": "ffbe48a16940cb8424143cfac870749a6fec86f356edda531314a7b7fa1a6bcc"
     },
     {
       "file": "dashboards/admin/AnnouncementAdsManager.tsx",
@@ -20209,9 +21599,9 @@
       "file": "dashboards/admin/builders/UnifiedQuestionBuilder.tsx",
       "category": "web-source",
       "domain": "questions",
-      "bytes": 38081,
-      "lines": 773,
-      "sha256": "662dcf81e98c34eeea1f349769571950608fd6e5f0c153ef4979d120829b837a"
+      "bytes": 38246,
+      "lines": 777,
+      "sha256": "ff084705cb34f72028e3ebc27897c1771d4d07c680edf0af0fc6e3e69de02975"
     },
     {
       "file": "dashboards/admin/builders/VideoQuestionPicker.tsx",
@@ -20220,6 +21610,38 @@
       "bytes": 22693,
       "lines": 365,
       "sha256": "efa68177d12736c31594debca20639369f4e42fae47def6e2625ad3c2557d37c"
+    },
+    {
+      "file": "dashboards/admin/command-center/CommandCenterNaturalLanguagePanel.tsx",
+      "category": "web-source",
+      "domain": "shared",
+      "bytes": 5770,
+      "lines": 137,
+      "sha256": "96e62cf5adf394aba538c97570024f9c42d36c6bf6c15b85393b4f44611e0a37"
+    },
+    {
+      "file": "dashboards/admin/command-center/CommandCenterOperationsPanel.tsx",
+      "category": "web-source",
+      "domain": "operations",
+      "bytes": 14676,
+      "lines": 309,
+      "sha256": "5ebfce9208941b245f37ef694475cc53a9f17f4577b804102734d49e7f07f8b5"
+    },
+    {
+      "file": "dashboards/admin/command-center/CommandCenterSchoolImportPanel.tsx",
+      "category": "web-source",
+      "domain": "schools",
+      "bytes": 8006,
+      "lines": 188,
+      "sha256": "0b47782889e6e320d4746070f2d22b47c92d564c9e65dc029e3d855b207facfb"
+    },
+    {
+      "file": "dashboards/admin/command-center/schoolImportDraftAdapter.ts",
+      "category": "web-source",
+      "domain": "schools",
+      "bytes": 2395,
+      "lines": 72,
+      "sha256": "7b1cd20ff95261b2c720f16f3e5da5f3947b581cd4118c19d292c1d38eee1954"
     },
     {
       "file": "dashboards/admin/components/AdminBreadcrumbHeader.tsx",
@@ -20681,9 +22103,9 @@
       "file": "docs/DEPLOYMENT.md",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 9590,
+      "bytes": 9840,
       "lines": 175,
-      "sha256": "4458ab0a0121393f1ec585c0b9aab1bcfadd937355ff64145afa03fbfe0dfd70"
+      "sha256": "0b9a955937f0f40b88d4b403c27235deb89aec1cc689f8ad8c180553a3f8428d"
     },
     {
       "file": "docs/DEVELOPMENT_STATUS_AR.md",
@@ -20708,6 +22130,14 @@
       "bytes": 1781,
       "lines": 27,
       "sha256": "a932c86298f1f2fd132eb2dd49556a8e83cbafe3600d0bd516f44e54eed3f1d9"
+    },
+    {
+      "file": "docs/FINAL_ACCEPTANCE/ENTITLEMENT_PAYMENT_FIX.md",
+      "category": "documentation",
+      "domain": "payments",
+      "bytes": 4736,
+      "lines": 103,
+      "sha256": "c69a7f7c5f90b28c27b74cf42c962569830741296d110f714ab8e1f4e30d94f0"
     },
     {
       "file": "docs/FINAL_CAPACITY_READINESS_2026-05-14_AR.md",
@@ -20785,9 +22215,9 @@
       "file": "docs/MASTER_CONTROL/CURRENT_EXECUTION_STATUS_AR.md",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 3894,
-      "lines": 79,
-      "sha256": "04aa87077d88e5dc74ef4e107e2cf155d81408288458dbb7493a47e33aa7e76c"
+      "bytes": 7301,
+      "lines": 112,
+      "sha256": "4560bcaa9c0e7994c85f8457a61f0923f7d0e715d2c8c53d51ef5512a2d981f8"
     },
     {
       "file": "docs/MASTER_CONTROL/DB1_INVENTORY_GROWTH_BASELINE_2026-09-28.md",
@@ -20942,6 +22372,14 @@
       "sha256": "71e2bf4c04d85d67b5ce40db122e210f8bb3f1a5e6d538af2e8b9f3b3d116915"
     },
     {
+      "file": "docs/MASTER_CONTROL/STUDENT_SKILL_FOUNDATION_ACTION_POLICY_AR.md",
+      "category": "documentation",
+      "domain": "questions",
+      "bytes": 4572,
+      "lines": 33,
+      "sha256": "e4af09ab6387df9cde86af4e33e97bc7d4d179ddbb8cedf053628700a933fcd0"
+    },
+    {
       "file": "docs/MASTER_CONTROL/UNIFIED_SKILL_MASTERY_STATUS_AR.md",
       "category": "documentation",
       "domain": "questions",
@@ -20961,9 +22399,9 @@
       "file": "docs/NEXT_SESSION_HANDOVER_AR.md",
       "category": "documentation",
       "domain": "auth",
-      "bytes": 299009,
+      "bytes": 299030,
       "lines": 5017,
-      "sha256": "4886f0d1997d5e1ff27b94c1dcfc939c0a67b59394f508b6b3782e8649eb2e16"
+      "sha256": "0ff5881d1750abace1a2863077a334c814ebe47950aedc998e441d412409179b"
     },
     {
       "file": "docs/OPERATIONAL_QA_FLOW_AR.md",
@@ -21001,9 +22439,9 @@
       "file": "docs/PLATFORM_SITE_MAP_AR.md",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 8173,
-      "lines": 205,
-      "sha256": "eab91cd7a93bad3d946711d6a7eca609ed2275cdf3e3a7900792c20b3a9d3236"
+      "bytes": 8648,
+      "lines": 201,
+      "sha256": "96c9564d8dbf5cf9de8410effa6801ce61bd61aabcb1ee94cb00d67f66b574e4"
     },
     {
       "file": "docs/PLATFORM_V3_BARCODE_RECOVERY_CHECKPOINT_AR.md",
@@ -21121,9 +22559,9 @@
       "file": "docs/SPARK_BATCH_LEDGER_AR.md",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 215190,
+      "bytes": 215806,
       "lines": 4156,
-      "sha256": "4798e68815a79ed68d052de8e88a32f4b911ebbb02f13c632d9ce49d9ecd629e"
+      "sha256": "8ff080618a1faa1b2adf036bb6c9beaeebd8365747ac8e9000b29b4692ed3d7c"
     },
     {
       "file": "docs/SPARK_EXECUTION_ROADMAP_AR.md",
@@ -21342,12 +22780,52 @@
       "sha256": "5bf4911e5faa9b69759ebe4db1ec1da97e4116f9121f86dfa16f76ca7878303b"
     },
     {
+      "file": "docs/architecture/ALMEAA_COMMAND_CENTER_EXECUTION_PLAN_AR.md",
+      "category": "documentation",
+      "domain": "shared",
+      "bytes": 3265,
+      "lines": 112,
+      "sha256": "d55e51c054c84a51cd97735fa519b154fa2043ae797c41fd88218257e7f5750c"
+    },
+    {
+      "file": "docs/architecture/ALMEAA_COMMAND_CENTER_HANDOFF_AR.md",
+      "category": "documentation",
+      "domain": "shared",
+      "bytes": 13588,
+      "lines": 221,
+      "sha256": "4ecf6c69f3502fd5208c5a6724462f87698e6e741f3b4f0bf2a12f1062e2c296"
+    },
+    {
+      "file": "docs/architecture/ALMEAA_COMMAND_CENTER_MCP_RUNBOOK_AR.md",
+      "category": "documentation",
+      "domain": "shared",
+      "bytes": 6146,
+      "lines": 147,
+      "sha256": "034387a2927fbe2e4f8d2c7a5e4ae468d4213082efad7ed0b99461286dc73be1"
+    },
+    {
+      "file": "docs/architecture/ALMEAA_COMMAND_CENTER_OPENAPI.yaml",
+      "category": "documentation",
+      "domain": "shared",
+      "bytes": 5010,
+      "lines": 178,
+      "sha256": "b45a21d8ec67a2709c3ef837957f1ac3634f4f724219c4158e77bbc34f2716b8"
+    },
+    {
       "file": "docs/architecture/ALMEAA_MASTER_PRODUCTION_CHECKPOINT_2026-09-23_AR.md",
       "category": "documentation",
       "domain": "shared",
       "bytes": 9264,
       "lines": 246,
       "sha256": "d54e5e2a8a885c2ba0842a8a09606bf5705982f9bf1e2f1ac7f51c0aca303f83"
+    },
+    {
+      "file": "docs/architecture/ALMEAA_SMART_TEACHER_UNIFIED_CAPABILITY_AR.md",
+      "category": "documentation",
+      "domain": "schools",
+      "bytes": 2401,
+      "lines": 62,
+      "sha256": "aa612b3ac049cbfa3f361cdba94d6b9d62e0c00e639ebd7b65432689e59f9a17"
     },
     {
       "file": "docs/architecture/ALMEAA_SYSTEM_MAP.md",
@@ -21377,9 +22855,9 @@
       "file": "docs/architecture/APPROVED_CONTRACT_EXTENSIONS.json",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 8209,
-      "lines": 174,
-      "sha256": "91d17c86e0f8c1e20efbe29e22f1139d0a04b36444bcb8ed1ac879ba5cfff6c2"
+      "bytes": 10120,
+      "lines": 223,
+      "sha256": "5b9ffbf4cbc4d67bf3f33b09ff057ceecbb08a023fe6ae0253f1ce7f4c963bd3"
     },
     {
       "file": "docs/architecture/APPROVED_CONTRACT_MIGRATIONS.json",
@@ -22241,33 +23719,33 @@
       "file": "docs/architecture/generated/BASELINE_CONTRACT_MANIFEST.json",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 79469,
-      "lines": 2568,
-      "sha256": "b8bfd6ae03406118fbfb37015a55143d30ebb9733744c011dfe9c1dfd00528c6"
+      "bytes": 83706,
+      "lines": 2769,
+      "sha256": "c7a1c5f1833b61181b96ebc00625740aa05ed625a90bf6fe2afb348e285225b6"
     },
     {
       "file": "docs/architecture/generated/CURRENT_REPOSITORY_AUDIT.json",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 1087565,
-      "lines": 32794,
-      "sha256": "6a3957164dab51d586b4a1593a3cb5297877b3d2358330d189891398606c8785"
+      "bytes": 1141518,
+      "lines": 35343,
+      "sha256": "92d2cba3241f86ce244d10e052aafdbb764070a4b1365e84dc6c2632ae8f8f10"
     },
     {
       "file": "docs/architecture/generated/CURRENT_REPOSITORY_AUDIT.md",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 4172,
+      "bytes": 4099,
       "lines": 75,
-      "sha256": "668b52dc8815264d5ea951e48ad853667da40572a3c86f66b713055bcc71a65b"
+      "sha256": "10d9a7251ee40aa2c74a8e0e607b16efebd0764009280f01cbb72e9a8a81106a"
     },
     {
       "file": "docs/architecture/generated/MIGRATION_MAP_V2_CANDIDATE.json",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 177857,
-      "lines": 4725,
-      "sha256": "c0a599292919323313b26730a1960ecd56b30c044a35f1da10839f4523669ee2"
+      "bytes": 187472,
+      "lines": 5091,
+      "sha256": "f0e4d8da54551d2c0ad7cd9af514f880d6ba7d2c437128d0d836c6b36169815d"
     },
     {
       "file": "docs/architecture/generated/SOURCE_REFERENCE_AUDIT.json",
@@ -22441,17 +23919,17 @@
       "file": "docs/archive_reports/CODEX_5_3_VISUAL_QA_EXECUTION_PLAN_AR.md",
       "category": "documentation",
       "domain": "reports",
-      "bytes": 11705,
+      "bytes": 12035,
       "lines": 321,
-      "sha256": "f5ac5931e7150358dbe841042438ff7edb421af2994fcf8baf845e50b445d6aa"
+      "sha256": "048bbc08c42894c5b6a28ab9415ab854a77818f83d21dadb57fb562ea39b5acb"
     },
     {
       "file": "docs/archive_reports/CODEX_HANDOFF.md",
       "category": "documentation",
       "domain": "reports",
-      "bytes": 136892,
+      "bytes": 137490,
       "lines": 2957,
-      "sha256": "a39761e327f140fa11e23ede6b54c5a4514b755b2f68de3b06806fadf772d794"
+      "sha256": "1ac9242fc6c90af6b4adb1030c59623063885dbb89df411ae67b000333c9922c"
     },
     {
       "file": "docs/archive_reports/COURSE_LINKAGE_AUDIT_2026-05-18_AR.md",
@@ -22809,9 +24287,9 @@
       "file": "docs/archive_reports/PROJECT_STATUS.md",
       "category": "documentation",
       "domain": "reports",
-      "bytes": 234212,
+      "bytes": 234820,
       "lines": 4546,
-      "sha256": "917ff2647b65f4c275e3b21b7079fe7cfef3165ae9d20f7cac23e21dcdf6a206"
+      "sha256": "473825bf8f711b317c6e702683533f75272ea3db5f3db3fdb8896d80285d2d00"
     },
     {
       "file": "docs/archive_reports/QUESTIONS_PAGINATION_AND_SAFE_SERIALIZER_FIX_2026-05-14_AR.md",
@@ -23062,6 +24540,30 @@
       "sha256": "dbaf66835adf4235f1084704e66b692cb0c524a992c1407f1e27a0f73a8d4628"
     },
     {
+      "file": "docs/audits/QUDURAT_TRAINING_FULL_COVERAGE_2026-10-06.md",
+      "category": "documentation",
+      "domain": "shared",
+      "bytes": 2213,
+      "lines": 65,
+      "sha256": "ab962671ad9090dc482b03b2b27baa37c342f8b6b7b9af0645d8b57cab83d478"
+    },
+    {
+      "file": "docs/content/BIO26_MASTER_CONTROL_AR.md",
+      "category": "documentation",
+      "domain": "content",
+      "bytes": 9485,
+      "lines": 146,
+      "sha256": "afd157cbcf19a3d545bc33a897ad9dc86836456221c652696190eee65c859d4e"
+    },
+    {
+      "file": "docs/content/CHEM26_CANONICAL_MASTER.md",
+      "category": "documentation",
+      "domain": "content",
+      "bytes": 4958,
+      "lines": 140,
+      "sha256": "f50ce539e6451e7ccb259ce341d29841d77bfdb6a152399b8de5decbda701002"
+    },
+    {
       "file": "docs/content/COL26OLD_FINAL_CLOSURE_AR.md",
       "category": "documentation",
       "domain": "content",
@@ -23233,9 +24735,9 @@
       "file": "docs/project-handover/14_SETUP_AND_RUNBOOK.md",
       "category": "documentation",
       "domain": "shared",
-      "bytes": 4351,
+      "bytes": 4521,
       "lines": 157,
-      "sha256": "ebe0a4d9a108a91ce9c6856b25ca6a4151852bca138d597c5ef1395d6122c757"
+      "sha256": "85d374ecc9e9be27dde67ae4703928ea221fc8b1f3d990307c15e26c90be6421"
     },
     {
       "file": "docs/project-handover/15_RISK_REGISTER.md",
@@ -23686,6 +25188,462 @@
       "sha256": "72b52b31adca3cdd3be82371ac04b1a3ab785047c207bca2c77298ac3d2e9e75"
     },
     {
+      "file": "ops/bio26/BIO26-L37_AI_CONTEXT_Q001_Q038.json",
+      "category": "support",
+      "domain": "ai",
+      "bytes": 78593,
+      "lines": 1,
+      "sha256": "1957da7b8b26d9083a792e739dcdcce49055e6161896516233dfa6620dc332a9"
+    },
+    {
+      "file": "ops/bio26/BIO26-L38_AI_CONTEXT_Q001_Q053.json",
+      "category": "support",
+      "domain": "ai",
+      "bytes": 100787,
+      "lines": 1,
+      "sha256": "fa84d1e66f4227033d4c3c6b8184b362b96e3388798ad81377f898f0de8443b0"
+    },
+    {
+      "file": "ops/bio26/BIO26-L39_AI_CONTEXT_Q001_Q125.json",
+      "category": "support",
+      "domain": "ai",
+      "bytes": 263957,
+      "lines": 1,
+      "sha256": "2f8e5d4f46d2aa32acb11e986a6c01dc80732aecf7e7c63356c8a7a0d6815ff8"
+    },
+    {
+      "file": "ops/bio26/BIO26-L40_AI_CONTEXT_Q001_Q103.json",
+      "category": "support",
+      "domain": "ai",
+      "bytes": 195907,
+      "lines": 1,
+      "sha256": "bfe38bf91c3b5e408fc74c8470ca18542e1c7c7aa8a0de9e36345915fd8e7727"
+    },
+    {
+      "file": "ops/bio26/BIO26-L41_AI_CONTEXT_Q001_Q061.json",
+      "category": "support",
+      "domain": "ai",
+      "bytes": 133659,
+      "lines": 1,
+      "sha256": "83323dd7f4efa371891787f5b9a4ab64f8d741d6b542cec4844b1b744b26c1dc"
+    },
+    {
+      "file": "ops/bio26/BIO26-L42_AI_CONTEXT_Q001_Q062.json",
+      "category": "support",
+      "domain": "ai",
+      "bytes": 120862,
+      "lines": 1,
+      "sha256": "75fd1f42e35e71c590765a8bd28455ec7d5a3cbd0b745c535f1e952058ece27e"
+    },
+    {
+      "file": "ops/bio26/BIO26-L43_AI_CONTEXT_Q001_Q029.json",
+      "category": "support",
+      "domain": "ai",
+      "bytes": 58153,
+      "lines": 1,
+      "sha256": "6e264ece174e4f864a792fad86b3211a622f19b97873ab97b96383138f376a0d"
+    },
+    {
+      "file": "ops/bio26/BIO26-L44_AI_CONTEXT_Q001_Q042.json",
+      "category": "support",
+      "domain": "ai",
+      "bytes": 88328,
+      "lines": 1,
+      "sha256": "c8b47c9374674b2ba9164a4502600611f089e33749fdc7b8bbd6d8bbc9f3904a"
+    },
+    {
+      "file": "ops/bio26/BIO26-L45_AI_CONTEXT_Q001_Q020.json",
+      "category": "support",
+      "domain": "ai",
+      "bytes": 41970,
+      "lines": 1,
+      "sha256": "286409ced1b85ba2b824e2c6c6257035ec5a91e52e050699586c5263798e8164"
+    },
+    {
+      "file": "ops/bio26/BIO26-L46_AI_CONTEXT_Q001_Q053.json",
+      "category": "support",
+      "domain": "ai",
+      "bytes": 112335,
+      "lines": 1,
+      "sha256": "09e6d27470a12575d7ea3b2080174d4c4462cf56ca7a58fac15046b70ce4cc79"
+    },
+    {
+      "file": "ops/bio26/BIO26-L47_AI_CONTEXT_Q001_Q078.json",
+      "category": "support",
+      "domain": "ai",
+      "bytes": 168467,
+      "lines": 1,
+      "sha256": "c6f25ff72f8efbb1ede5750e3a785a58c8af8f95604edc0300517502833dafb9"
+    },
+    {
+      "file": "ops/bio26/BIO26-L48_AI_CONTEXT_Q001_Q080.json",
+      "category": "support",
+      "domain": "ai",
+      "bytes": 152049,
+      "lines": 1,
+      "sha256": "4aa0e7f85d8c99b1b91c3c089390cb2e6f9315cb47fa53fa4a96442dca910dda"
+    },
+    {
+      "file": "ops/bio26/BIO26_AI_AUTHORING_QA.json",
+      "category": "support",
+      "domain": "auth",
+      "bytes": 8421,
+      "lines": 271,
+      "sha256": "12c51c58d065b5c3467e7e2e3ea81f32a3ad2f8ab7c686faa5ffd07dc4f31b94"
+    },
+    {
+      "file": "ops/bio26/BIO26_AI_CONTEXT.json",
+      "category": "support",
+      "domain": "ai",
+      "bytes": 3586664,
+      "lines": 50872,
+      "sha256": "89a9c3619176b8cd4ded62164c5b5c2e1d53fc23b4b67e91f1b347d8322ab4ac"
+    },
+    {
+      "file": "ops/bio26/BIO26_AI_CONTEXT_AUTOMATED_QA.json",
+      "category": "support",
+      "domain": "ai",
+      "bytes": 1758,
+      "lines": 83,
+      "sha256": "596e019acbb44aca55b1856cfcc36571ec27d6a9dac25030d0c3d35ebd638e30"
+    },
+    {
+      "file": "ops/bio26/BIO26_AI_CONTEXT_INDEX.json",
+      "category": "support",
+      "domain": "ai",
+      "bytes": 2870,
+      "lines": 105,
+      "sha256": "60c03c83bfb230eb17641ff0f936e3b9263b269e776474963dfc25ce237f50cd"
+    },
+    {
+      "file": "ops/bio26/BIO26_ANSWERS.csv",
+      "category": "support",
+      "domain": "shared",
+      "bytes": 707902,
+      "lines": 0,
+      "sha256": null
+    },
+    {
+      "file": "ops/bio26/BIO26_ASSET_PACKAGE_V2.json",
+      "category": "support",
+      "domain": "payments",
+      "bytes": 1539,
+      "lines": 41,
+      "sha256": "8a92fc4d89551faf4bfd10944bbf3196ceac8f666908801066c37e75ad1b508b"
+    },
+    {
+      "file": "ops/bio26/BIO26_CHECKPOINT_2026-10-05T1411.json",
+      "category": "support",
+      "domain": "shared",
+      "bytes": 1522,
+      "lines": 47,
+      "sha256": "ec09feaa8428405ac5140df8b38863dce352cbb1fa93f7869bc7e660b5375997"
+    },
+    {
+      "file": "ops/bio26/BIO26_CHECKPOINT_2026-10-05T1725.json",
+      "category": "support",
+      "domain": "shared",
+      "bytes": 929,
+      "lines": 39,
+      "sha256": "d3e8100a9ed9f90030f530b8f9d0bbc140bccad36551380fbc9bc44ca02e3bec"
+    },
+    {
+      "file": "ops/bio26/BIO26_CHECKPOINT_2026-10-06T0011.json",
+      "category": "support",
+      "domain": "shared",
+      "bytes": 911,
+      "lines": 35,
+      "sha256": "e61833cbf54734deb97d618797b46b482105a1acd62d9278385bf03e3eb5faab"
+    },
+    {
+      "file": "ops/bio26/BIO26_CHECKPOINT_2026-10-06T1230.json",
+      "category": "support",
+      "domain": "shared",
+      "bytes": 1691,
+      "lines": 56,
+      "sha256": "5744c1adb03b079e5805f5a264ad1941db591e632be111fbe41f77b44f460746"
+    },
+    {
+      "file": "ops/bio26/BIO26_CHECKPOINT_2026-10-06T1410.json",
+      "category": "support",
+      "domain": "shared",
+      "bytes": 1930,
+      "lines": 66,
+      "sha256": "1efa17322aaf8ff73783dc16dd9ae886d36ddb7bfc52af928b9de3107c435c21"
+    },
+    {
+      "file": "ops/bio26/BIO26_CROP_MANIFEST.csv",
+      "category": "support",
+      "domain": "shared",
+      "bytes": 893822,
+      "lines": 0,
+      "sha256": null
+    },
+    {
+      "file": "ops/bio26/BIO26_CROP_QA.json",
+      "category": "support",
+      "domain": "shared",
+      "bytes": 2074,
+      "lines": 50,
+      "sha256": "135a08721a071afa1d8e76de91ab79c4d07e976156ccef1060e6ecbb3ac62841"
+    },
+    {
+      "file": "ops/bio26/BIO26_DEDUPE_REPORT.json",
+      "category": "support",
+      "domain": "reports",
+      "bytes": 1931,
+      "lines": 57,
+      "sha256": "4b7efb7374ae3c5d43065b49c3248255d9c26ff24907bbba0014ba8068d3c5f5"
+    },
+    {
+      "file": "ops/bio26/BIO26_EXISTING_BANK_AUDIT.json",
+      "category": "support",
+      "domain": "shared",
+      "bytes": 1052,
+      "lines": 30,
+      "sha256": "39f2004ecb559aa65470302f6049e32211bba09904aca247e2f0d52f3cd2b18d"
+    },
+    {
+      "file": "ops/bio26/BIO26_FINAL_QA.json",
+      "category": "support",
+      "domain": "shared",
+      "bytes": 8410,
+      "lines": 261,
+      "sha256": "827236a42653db31d95de08934e8bf19488568e064cb4ddbd8c807d7b4904f80"
+    },
+    {
+      "file": "ops/bio26/BIO26_FOUNDATION_MAP.csv",
+      "category": "support",
+      "domain": "paths",
+      "bytes": 25008,
+      "lines": 0,
+      "sha256": null
+    },
+    {
+      "file": "ops/bio26/BIO26_IMPORT_MANIFEST.json",
+      "category": "support",
+      "domain": "shared",
+      "bytes": 4411,
+      "lines": 142,
+      "sha256": "9558dcdcb3ea69c036c48b21a7346fbdf7c05cee26825a337d3e4b697b583396"
+    },
+    {
+      "file": "ops/bio26/BIO26_L32_AI_CONTEXT_Q001_Q049.json",
+      "category": "support",
+      "domain": "ai",
+      "bytes": 93483,
+      "lines": 1336,
+      "sha256": "1358ab67bfd36d5f695967de6455591e1934e65f7efb989c95083bbd98462d67"
+    },
+    {
+      "file": "ops/bio26/BIO26_L32_AI_CONTEXT_Q050_Q107.json",
+      "category": "support",
+      "domain": "ai",
+      "bytes": 111251,
+      "lines": 1579,
+      "sha256": "683cd74b61d6588c5e8bad3d05987944fef84b75948d18498bbff951a8f52cfc"
+    },
+    {
+      "file": "ops/bio26/BIO26_L32_AUTHORING_SHARD.json",
+      "category": "support",
+      "domain": "auth",
+      "bytes": 75778,
+      "lines": 2047,
+      "sha256": "5fd3a628a33ec71295038f7960e3f62c72c4c4840ad103caadd61830314a2e4b"
+    },
+    {
+      "file": "ops/bio26/BIO26_L35_AI_CONTEXT_Q001_Q010.json",
+      "category": "support",
+      "domain": "ai",
+      "bytes": 18649,
+      "lines": 283,
+      "sha256": "0cd2a5fb162bd6d6d11c9308da8761653150acc3007c2145c96de86f46d4dc4a"
+    },
+    {
+      "file": "ops/bio26/BIO26_L35_AI_CONTEXT_Q011_Q058.json",
+      "category": "support",
+      "domain": "ai",
+      "bytes": 82508,
+      "lines": 1261,
+      "sha256": "cd2f23ff3b692a6910fe91a8b88580c157ee2c6023c3cdc4a383d0664ce98498"
+    },
+    {
+      "file": "ops/bio26/BIO26_L35_AUTHORING_QA.json",
+      "category": "support",
+      "domain": "auth",
+      "bytes": 361,
+      "lines": 13,
+      "sha256": "a7b185fbf0f0cec1bac9fcd16b388c06eed144c02f8c78570490289809d4590d"
+    },
+    {
+      "file": "ops/bio26/BIO26_L35_AUTHORING_SHARD.json",
+      "category": "support",
+      "domain": "auth",
+      "bytes": 45070,
+      "lines": 1007,
+      "sha256": "66f33df7ed6d87b6e1d0e66eb97c72b72091b420d402bae0e91e849d6e56b172"
+    },
+    {
+      "file": "ops/bio26/BIO26_L36_AI_CONTEXT_Q001_Q044.json",
+      "category": "support",
+      "domain": "ai",
+      "bytes": 76465,
+      "lines": 1157,
+      "sha256": "e539c1b2031ff7fb00f55ec10300647e22ab1b740e85e018044c0cfda170547d"
+    },
+    {
+      "file": "ops/bio26/BIO26_L36_AI_CONTEXT_Q045_Q087.json",
+      "category": "support",
+      "domain": "ai",
+      "bytes": 75064,
+      "lines": 1131,
+      "sha256": "8311893fd90f55a7a0ab9a21088b02ae146f3b127f65e2a0d749211370564d21"
+    },
+    {
+      "file": "ops/bio26/BIO26_L36_AUTHORING_QA.json",
+      "category": "support",
+      "domain": "auth",
+      "bytes": 482,
+      "lines": 15,
+      "sha256": "48e45bed94df0ce8ebc92a3d0bd4559ae04b95ae9d6e7d5f96abd95e22266a15"
+    },
+    {
+      "file": "ops/bio26/BIO26_L36_AUTHORING_SHARD.json",
+      "category": "support",
+      "domain": "auth",
+      "bytes": 62877,
+      "lines": 1503,
+      "sha256": "6d07044293cfe0dfdfc6b9b1370e9583348b9cdb08c68e303d9dbf8f182089ee"
+    },
+    {
+      "file": "ops/bio26/BIO26_LESSON_INVENTORY.csv",
+      "category": "support",
+      "domain": "learning",
+      "bytes": 5710,
+      "lines": 0,
+      "sha256": null
+    },
+    {
+      "file": "ops/bio26/BIO26_MAIN_SKILLS.csv",
+      "category": "support",
+      "domain": "questions",
+      "bytes": 2408,
+      "lines": 0,
+      "sha256": null
+    },
+    {
+      "file": "ops/bio26/BIO26_PRODUCTION_CLOSURE_2026-10-07.json",
+      "category": "support",
+      "domain": "shared",
+      "bytes": 4638,
+      "lines": 122,
+      "sha256": "9392ba39e1bc04172c161bc2d86fd6d7e46d988a51dce169873bab5642317e82"
+    },
+    {
+      "file": "ops/bio26/BIO26_PRODUCTION_SUBJECT_AUDIT.json",
+      "category": "support",
+      "domain": "courses",
+      "bytes": 1092,
+      "lines": 26,
+      "sha256": "32b27d7b4f9effd69d81580c1647101387bcb7a1e1aab1dc356051a2f9a29a41"
+    },
+    {
+      "file": "ops/bio26/BIO26_QUESTION_RANGE_MAP.csv",
+      "category": "support",
+      "domain": "questions",
+      "bytes": 41628,
+      "lines": 0,
+      "sha256": null
+    },
+    {
+      "file": "ops/bio26/BIO26_QUESTION_TO_SKILL_LEDGER.csv",
+      "category": "support",
+      "domain": "questions",
+      "bytes": 1418523,
+      "lines": 0,
+      "sha256": null
+    },
+    {
+      "file": "ops/bio26/BIO26_R2_UPLOAD_MANIFEST_V2.json",
+      "category": "support",
+      "domain": "shared",
+      "bytes": 967,
+      "lines": 26,
+      "sha256": "9f69a94a02f8f641127ff3aaaf2fab9ef7ff73f709e1728268556226a209b411"
+    },
+    {
+      "file": "ops/bio26/BIO26_SEMANTIC_DEDUPE_REVIEW.csv",
+      "category": "support",
+      "domain": "learning",
+      "bytes": 1477,
+      "lines": 0,
+      "sha256": null
+    },
+    {
+      "file": "ops/bio26/BIO26_SUBSKILLS.csv",
+      "category": "support",
+      "domain": "questions",
+      "bytes": 17427,
+      "lines": 0,
+      "sha256": null
+    },
+    {
+      "file": "ops/bio26/BIO26_TAXONOMY_FINAL.csv",
+      "category": "support",
+      "domain": "shared",
+      "bytes": 17427,
+      "lines": 0,
+      "sha256": null
+    },
+    {
+      "file": "ops/bio26/BIO26_TAXONOMY_FINAL.json",
+      "category": "support",
+      "domain": "shared",
+      "bytes": 30235,
+      "lines": 782,
+      "sha256": "ea00d07d92285dcddaf15834493e69a892e0c8d50344f9b6320b2014157a29d8"
+    },
+    {
+      "file": "ops/bio26/BIO26_TAXONOMY_PRODUCTION.json",
+      "category": "support",
+      "domain": "shared",
+      "bytes": 44166,
+      "lines": 1188,
+      "sha256": "24bf20c7b27ac0d2f682b2d0aeb0a09a182d364f792497d94560999145f2fd2a"
+    },
+    {
+      "file": "ops/chem26/CHEM26_FINAL_QA_READY.json",
+      "category": "support",
+      "domain": "shared",
+      "bytes": 1277,
+      "lines": 49,
+      "sha256": "eb073c1e94a00fb77744aa62a7b6436d23e09f8fe39ee743d385410443058b5a"
+    },
+    {
+      "file": "ops/chem26/CHEM26_IMPORT_PACKAGE_STATIC_AUDIT.json",
+      "category": "support",
+      "domain": "payments",
+      "bytes": 1897,
+      "lines": 49,
+      "sha256": "881a3923aac65b2291bae1903ad6f0c38bd58a9224acbaed2a3b244c7548725a"
+    },
+    {
+      "file": "ops/chem26/CHEM26_MASTER_CONTROL.json",
+      "category": "support",
+      "domain": "shared",
+      "bytes": 5915,
+      "lines": 186,
+      "sha256": "58f0d470494c2fc0df63fbdfc872ac2a3a4201365318858efca404a136ec4e07"
+    },
+    {
+      "file": "ops/chem26/CHEM26_TAXONOMY_FINAL.json",
+      "category": "support",
+      "domain": "shared",
+      "bytes": 89249,
+      "lines": 1496,
+      "sha256": "16374972a886d0525ea4d7d580aa138253bb45c86212820295c5203f8a055148"
+    },
+    {
       "file": "ops/col26-canary/images/TAH-MATH-COL26-P005-Q01.webp",
       "category": "support",
       "domain": "shared",
@@ -23993,9 +25951,9 @@
       "file": "package.json",
       "category": "support",
       "domain": "payments",
-      "bytes": 25218,
-      "lines": 285,
-      "sha256": "6ba9a251bb53b724325f132ea8f52423a84d20523c1632e4d44efec919dc3258"
+      "bytes": 25776,
+      "lines": 290,
+      "sha256": "8757f92596f8b112b11f31209068a566823e067e5c8584bcc48c0e3753466843"
     },
     {
       "file": "pages/Achievements.tsx",
@@ -24137,9 +26095,9 @@
       "file": "pages/GenericPathPage.tsx",
       "category": "web-source",
       "domain": "paths",
-      "bytes": 93240,
-      "lines": 1556,
-      "sha256": "803f84e25c73ef8290dc65dbd01e42504ca9a5400a356dc8504c813fc700a777"
+      "bytes": 93365,
+      "lines": 1558,
+      "sha256": "cd7e31e6d97848bfbb7d9736b45b020fc8035b6b33eaef05d275178c5774a291"
     },
     {
       "file": "pages/Home.tsx",
@@ -24265,17 +26223,17 @@
       "file": "pages/Quiz.tsx",
       "category": "web-source",
       "domain": "quizzes",
-      "bytes": 70336,
-      "lines": 1548,
-      "sha256": "a0b38fe76756a2dbe6628314a53d63db531d74abe656ca468516de207d56ecef"
+      "bytes": 74300,
+      "lines": 1642,
+      "sha256": "ba0d49b2d779161e3b854cd0a2f5d3fff88c05c56ca0a6decd44df7f45e8d676"
     },
     {
       "file": "pages/QuizPage.tsx",
       "category": "web-source",
       "domain": "quizzes",
-      "bytes": 136615,
-      "lines": 2485,
-      "sha256": "bb10e9226d59e45736af4ff287c641b97fc0c31a1bc32a3ad7fa26607034e23a"
+      "bytes": 137835,
+      "lines": 2524,
+      "sha256": "b417b13e4b22344f75c3956e73f400067071d195425666c28cdecba59cb77093"
     },
     {
       "file": "pages/Quizzes.tsx",
@@ -24289,9 +26247,9 @@
       "file": "pages/Reports.tsx",
       "category": "web-source",
       "domain": "reports",
-      "bytes": 210393,
-      "lines": 3036,
-      "sha256": "1156bb453876d72a129646643decec4922c856d8b2046030af7ce1cfc21547df"
+      "bytes": 210011,
+      "lines": 3017,
+      "sha256": "7de0e756af8044a0ac04c5a48c47b5d7c744e17e0a0fcddf37dff37215217431"
     },
     {
       "file": "pages/Reports/SchoolSkillAggregatePanel.tsx",
@@ -24321,9 +26279,9 @@
       "file": "pages/Reports/StudentSelectedSkillPanel.tsx",
       "category": "web-source",
       "domain": "questions",
-      "bytes": 5734,
-      "lines": 97,
-      "sha256": "54b8a73a60635cc0eba58f8f31cd0e841939402716bfd12291046f749e1a0b0c"
+      "bytes": 6042,
+      "lines": 110,
+      "sha256": "38526434a53868a2367c4e345414f08eef3234426a63759c9f48f38e8745c0de"
     },
     {
       "file": "pages/Reports/StudentSmartRemediationPanel.tsx",
@@ -24361,17 +26319,17 @@
       "file": "pages/Reports/recommendationViewModel.ts",
       "category": "web-source",
       "domain": "reports",
-      "bytes": 9176,
-      "lines": 185,
-      "sha256": "963b99f0dce64e43cdcc145ce0f5c9e99eb91ed2b94fba19a9307bf934ff6a79"
+      "bytes": 8492,
+      "lines": 171,
+      "sha256": "5050ec82a5c5763f3bb0408ce9a70cf70621d965283ba011932730d6810caadc"
     },
     {
       "file": "pages/Reports/reportDomain.ts",
       "category": "web-source",
       "domain": "reports",
-      "bytes": 4991,
+      "bytes": 5010,
       "lines": 136,
-      "sha256": "8984ce00ba88698c1fe8d31a2b5fe2f0aab32aef275c7b374bb490f1fa8b3553"
+      "sha256": "56e09d116e1ec5a814d7febacecb4c4902978730f96012b02cb37bab05c8bfaf"
     },
     {
       "file": "pages/Reports/reportTypes.ts",
@@ -24489,9 +26447,9 @@
       "file": "pages/Reports/studentReportScopeViewModel.ts",
       "category": "web-source",
       "domain": "reports",
-      "bytes": 5300,
-      "lines": 112,
-      "sha256": "ebab8ae65c70f8a93f84a89ec00ad7d437939f5b29fd12c76ad6013c50745cee"
+      "bytes": 5208,
+      "lines": 108,
+      "sha256": "a6237f6f2d11ec90ae1a2d13b769133c0e9e7d7800b737c249e53679ce79286b"
     },
     {
       "file": "pages/Reports/studentSkillAggregationFinalize.ts",
@@ -24502,12 +26460,20 @@
       "sha256": "0ccf388a3a963c21748c28e13af825007d064fc7404a5c4bd2005e3efab85666"
     },
     {
+      "file": "pages/Reports/studentSkillAttemptTrendViewModel.ts",
+      "category": "web-source",
+      "domain": "questions",
+      "bytes": 2515,
+      "lines": 61,
+      "sha256": "588d4fc1ee123144d6daf338bae0878d1d4579ba411288bc70495342693c1462"
+    },
+    {
       "file": "pages/Reports/studentSkillRowsViewModel.ts",
       "category": "web-source",
       "domain": "questions",
-      "bytes": 2538,
-      "lines": 51,
-      "sha256": "d4917eeabb18d6c7aec0564d7dc1daff4f5013fedd2e0007e2c596d7e780d609"
+      "bytes": 2875,
+      "lines": 59,
+      "sha256": "7b55fca49404a912f909839697a0088f7840dc02b38b7c6133a1010a3553e7bd"
     },
     {
       "file": "pages/Reports/studentSkillTaxonomy.ts",
@@ -24537,9 +26503,9 @@
       "file": "pages/Results.tsx",
       "category": "web-source",
       "domain": "reports",
-      "bytes": 110420,
-      "lines": 2213,
-      "sha256": "ecf5989240752a564d0bffcd3124a5374aa53453a386f294d27bc1b8d5a7ac59"
+      "bytes": 114337,
+      "lines": 2282,
+      "sha256": "5d24ab2c1181df4d653a99bbae906a35ca6566fe8f9447646fd6ca5e36645485"
     },
     {
       "file": "pages/ReviewSession.tsx",
@@ -24569,9 +26535,9 @@
       "file": "pages/SubjectLearningPage.tsx",
       "category": "web-source",
       "domain": "learning",
-      "bytes": 68674,
-      "lines": 1226,
-      "sha256": "489ae72bd3e90337fe2575b8f807ebc22226607ee502c7573028f2df89f10d5b"
+      "bytes": 68929,
+      "lines": 1227,
+      "sha256": "4e2001168bb7cf8909226e10a38e8e8b914cd683604932fb05a6d36ddf07afe6"
     },
     {
       "file": "pages/Tahsili.tsx",
@@ -24945,9 +26911,9 @@
       "file": "scripts/audit_classroom_human_pressure.mjs",
       "category": "test-or-ops-script",
       "domain": "schools",
-      "bytes": 64880,
-      "lines": 1347,
-      "sha256": "015c321e605f9e544d581163dc8149b0261ee5ecc3cdf60788f1af3e77f2d6fa"
+      "bytes": 64540,
+      "lines": 1341,
+      "sha256": "36a42d12b3169d25f84859ced25c83c5eced7714d420243c4e3def76cf04515d"
     },
     {
       "file": "scripts/backup-db.sh",
@@ -25041,9 +27007,9 @@
       "file": "scripts/live-parent-teacher-deep-audit.mjs",
       "category": "test-or-ops-script",
       "domain": "schools",
-      "bytes": 22370,
-      "lines": 509,
-      "sha256": "12321f48fa95e86c8577e524582b46b9ae22efbdc5f9efe101c5cdd40089d87f"
+      "bytes": 23392,
+      "lines": 538,
+      "sha256": "d7932a8539fcf2ab8be630d638a433237e23b70107d27d0546534f65203dc9ae"
     },
     {
       "file": "scripts/live-plan9-public-quality-audit.mjs",
@@ -25081,9 +27047,9 @@
       "file": "scripts/live-role-pages-audit.mjs",
       "category": "test-or-ops-script",
       "domain": "shared",
-      "bytes": 21956,
-      "lines": 484,
-      "sha256": "038deced8a8e3a7ca8e0934ae133e89c3f1a1ac809e2c5eefd3f35e25bacc029"
+      "bytes": 22377,
+      "lines": 492,
+      "sha256": "876e769b10fb0cb156efeb46f485af71d3687d9233fc3ceac6903ceaa868e555"
     },
     {
       "file": "scripts/live-school-from-scratch-audit.mjs",
@@ -25129,9 +27095,9 @@
       "file": "scripts/live-supervisor-school-command-audit.mjs",
       "category": "test-or-ops-script",
       "domain": "schools",
-      "bytes": 22726,
+      "bytes": 22761,
       "lines": 461,
-      "sha256": "006f3bedcc1014ab96737f293e43faea5aa1df6b41c3ceede28edddea2d8199e"
+      "sha256": "25f1c79a8d38ffab842594511e59abade8c08d286a69c64b12c6f80ff1912ce4"
     },
     {
       "file": "scripts/measure-plan3-route-footprint.mjs",
@@ -25145,9 +27111,9 @@
       "file": "scripts/measure-production-auth-read-load.mjs",
       "category": "test-or-ops-script",
       "domain": "auth",
-      "bytes": 6066,
-      "lines": 143,
-      "sha256": "d621f1fe7b8ce28285cfee4ce4bef8d06ccf325aca84beec4ac98a3810f527b7"
+      "bytes": 6206,
+      "lines": 144,
+      "sha256": "b384e1a179f02df34f959498a8f933d16745745cfa05f59aa3c3fbb3ba468c4f"
     },
     {
       "file": "scripts/measure-production-latency.mjs",
@@ -25182,6 +27148,14 @@
       "sha256": "b54091aea1642fbb628129591fcc88798fa369ab73b5f2b617274e4ec427ac5f"
     },
     {
+      "file": "scripts/pr-public-ui-offline-audit.mjs",
+      "category": "test-or-ops-script",
+      "domain": "shared",
+      "bytes": 4595,
+      "lines": 126,
+      "sha256": "f9eba62e0cc21a0266569b9967086f409959f3abcaa20a0648942ccd7be55b95"
+    },
+    {
       "file": "scripts/render-stage-mongo-backup.mjs",
       "category": "test-or-ops-script",
       "domain": "operations",
@@ -25193,9 +27167,9 @@
       "file": "scripts/repair-live-supervisor-school-scope.mjs",
       "category": "test-or-ops-script",
       "domain": "schools",
-      "bytes": 7587,
-      "lines": 223,
-      "sha256": "0c585b1b34b87021a0dbcc392640c4fbe9a2ef61cfb3101cabb2b6fc2d5f4ba5"
+      "bytes": 7660,
+      "lines": 213,
+      "sha256": "6ffa8c874cbd49fbd176c11c1a171abd85cbba3d5724728275ce0d8e7800c0fb"
     },
     {
       "file": "scripts/resolve-smoke-admin-token.mjs",
@@ -25361,25 +27335,25 @@
       "file": "scripts/smoke-adaptive-phase11-final-certification-contract.mjs",
       "category": "test-or-ops-script",
       "domain": "shared",
-      "bytes": 2418,
-      "lines": 41,
-      "sha256": "e4a9aed629b5a2525a7aba2e5b0aabf81a6d88eeb98d4be6b96a37e5af3e9bf1"
+      "bytes": 2510,
+      "lines": 42,
+      "sha256": "b5ae7eefcb223904eb6b77048e6d5264c8b3f8f13a74b11d56d9012dd1ea4d79"
     },
     {
       "file": "scripts/smoke-adaptive-phase3-result-actions-contract.mjs",
       "category": "test-or-ops-script",
       "domain": "reports",
-      "bytes": 2523,
-      "lines": 34,
-      "sha256": "6b93772d6bde50f3602ae5c985c56dfb2c10d41cad224101a7f111559c95bd2c"
+      "bytes": 3562,
+      "lines": 49,
+      "sha256": "358aeb265a06372d78adb69425914a4da957cb9b130ed3d2c2de5398206e8328"
     },
     {
       "file": "scripts/smoke-adaptive-phase4-treatment-recheck-contract.mjs",
       "category": "test-or-ops-script",
       "domain": "shared",
-      "bytes": 1970,
-      "lines": 33,
-      "sha256": "203cb2fdc05aa66e6ab52652dab3c58eb00ac16ab1c57d06d3fbe19287903f20"
+      "bytes": 2434,
+      "lines": 40,
+      "sha256": "a817c4433173c250c20d68edbab6dc74561bdc31bc28b4272d526da4899801d2"
     },
     {
       "file": "scripts/smoke-adaptive-phase5-next-best-action-contract.mjs",
@@ -25393,9 +27367,9 @@
       "file": "scripts/smoke-adaptive-phase5-smart-path-scope-contract.mjs",
       "category": "test-or-ops-script",
       "domain": "paths",
-      "bytes": 2383,
-      "lines": 40,
-      "sha256": "a7a504affdc6509c5758afb6638b95e1981286348e63e7bedfcfcc52ebf3cfa9"
+      "bytes": 2667,
+      "lines": 44,
+      "sha256": "81bcb6b1d6ecd98e7745ce17dabd825c1464e72bb86ea787b835d9437de276c8"
     },
     {
       "file": "scripts/smoke-adaptive-phase6-mastery-readiness-contract.mjs",
@@ -25556,6 +27530,14 @@
       "bytes": 4094,
       "lines": 79,
       "sha256": "855de3087232e13b9289ef44c42265cd18bfadfe5c1cf59dac19106047b6d21c"
+    },
+    {
+      "file": "scripts/smoke-ai-runtime-light.mjs",
+      "category": "test-or-ops-script",
+      "domain": "ai",
+      "bytes": 1683,
+      "lines": 47,
+      "sha256": "9cbe7f94a9ee8c2351cd954b752f95c210b2eef049069a2f1cae55fe278c0b6e"
     },
     {
       "file": "scripts/smoke-ai-target-scope-contract.mjs",
@@ -25737,9 +27719,9 @@
       "file": "scripts/smoke-assessment-read-model-context-contract.mjs",
       "category": "test-or-ops-script",
       "domain": "shared",
-      "bytes": 2651,
+      "bytes": 2674,
       "lines": 40,
-      "sha256": "89e5b406ad73ae81421cfc36ad63ef8aa16209eb8e670b2bfa743e61b863af19"
+      "sha256": "5d52e585545c299ab7ffec74aecde4167d13047931ebb8e7aa1a0da81c64d65f"
     },
     {
       "file": "scripts/smoke-assessment-result-document-contract.mjs",
@@ -26022,6 +28004,22 @@
       "sha256": "2390bcbc14c52a80c9e81068b0b354c4782da10185a3ecd42bc4bc874f5d8aea"
     },
     {
+      "file": "scripts/smoke-bio26-import-runner-contract.mjs",
+      "category": "test-or-ops-script",
+      "domain": "shared",
+      "bytes": 7912,
+      "lines": 118,
+      "sha256": "c6ddea9334fdac40bc03a3d77448a004ead11bf4a6dc3bd06b94c42d3bf96c84"
+    },
+    {
+      "file": "scripts/smoke-bio26-taxonomy-contract.mjs",
+      "category": "test-or-ops-script",
+      "domain": "shared",
+      "bytes": 2128,
+      "lines": 28,
+      "sha256": "586846a10a27a14b2a910ee06835b3de82f95de3fb14ef2529e013c4338dc877"
+    },
+    {
       "file": "scripts/smoke-catalog-bootstrap-performance-contract.mjs",
       "category": "test-or-ops-script",
       "domain": "shared",
@@ -26036,6 +28034,70 @@
       "bytes": 2390,
       "lines": 29,
       "sha256": "f89cc73c74c1ffff0511f8cc49bde0daeef92521b8184a206dc115e063a50d5b"
+    },
+    {
+      "file": "scripts/smoke-chem26-import-runner-contract.mjs",
+      "category": "test-or-ops-script",
+      "domain": "shared",
+      "bytes": 1810,
+      "lines": 46,
+      "sha256": "9853924f985c46616869ab0c52ffee3e8c7b449978a532dc3dc50de6bf37ab36"
+    },
+    {
+      "file": "scripts/smoke-chem26-taxonomy-contract.mjs",
+      "category": "test-or-ops-script",
+      "domain": "shared",
+      "bytes": 2399,
+      "lines": 44,
+      "sha256": "3601fe739206f9e104c3a4e4014bae05010cac90f4d57efe873375a8c752f692"
+    },
+    {
+      "file": "scripts/smoke-ci-production-load-boundary-contract.mjs",
+      "category": "test-or-ops-script",
+      "domain": "shared",
+      "bytes": 3820,
+      "lines": 76,
+      "sha256": "4c4eec261834bce5b5589537211aabbbc552d48b939188d2ff5dfede5dde39b4"
+    },
+    {
+      "file": "scripts/smoke-command-center-content-ops-contract.mjs",
+      "category": "test-or-ops-script",
+      "domain": "content",
+      "bytes": 4507,
+      "lines": 99,
+      "sha256": "70ffbf35129ff05e78b849ffdb933234862dd213bd1e8f2f233104acc563bb74"
+    },
+    {
+      "file": "scripts/smoke-command-center-execution-mcp-contract.mjs",
+      "category": "test-or-ops-script",
+      "domain": "shared",
+      "bytes": 8479,
+      "lines": 184,
+      "sha256": "158b677c12fcfc3e92bf2994b482505eff35161d87ddf03f9f31e087a61a3fc0"
+    },
+    {
+      "file": "scripts/smoke-command-center-foundation-contract.mjs",
+      "category": "test-or-ops-script",
+      "domain": "paths",
+      "bytes": 3899,
+      "lines": 75,
+      "sha256": "af629e85be259438aab81f4258f737d82328c899c098f68b504c18c7c461d21c"
+    },
+    {
+      "file": "scripts/smoke-command-center-mcp-boundary.mjs",
+      "category": "test-or-ops-script",
+      "domain": "shared",
+      "bytes": 3427,
+      "lines": 97,
+      "sha256": "cf8e568746231c0f71f944ddd64119eacde751975a7dd21227ac6ade871341c9"
+    },
+    {
+      "file": "scripts/smoke-command-center-mcp-live.mjs",
+      "category": "test-or-ops-script",
+      "domain": "shared",
+      "bytes": 4288,
+      "lines": 130,
+      "sha256": "671d673e6fa072d11a3d4fdbbd176b3ec03fb098d756fe04f5cab75d88198d6f"
     },
     {
       "file": "scripts/smoke-content-bootstrap-cache-contract.mjs",
@@ -26334,6 +28396,14 @@
       "sha256": "a9e1364124767250c7c89e32eb0cf207b7d8884d653a74728940ab98c9fc08cd"
     },
     {
+      "file": "scripts/smoke-entitlement-topic-access-contract.ts",
+      "category": "test-or-ops-script",
+      "domain": "payments",
+      "bytes": 4509,
+      "lines": 74,
+      "sha256": "7b12b906aabdfbd52dc5f76123641386871a0377a10876b6025d5655dbd0848d"
+    },
+    {
       "file": "scripts/smoke-exam-payment-phase8-contract.mjs",
       "category": "test-or-ops-script",
       "domain": "exams",
@@ -26353,9 +28423,9 @@
       "file": "scripts/smoke-foundation-course-details-contract.mjs",
       "category": "test-or-ops-script",
       "domain": "courses",
-      "bytes": 5560,
-      "lines": 154,
-      "sha256": "499cfda2b4688a859d06e93a9099212e19885d3a3de0fdaa48e5655c1ac88d09"
+      "bytes": 5677,
+      "lines": 159,
+      "sha256": "ebac1ab4464277fa7dd7984d7f9099753acd00d41c431416003e350750399e40"
     },
     {
       "file": "scripts/smoke-frontend-phase5-contract.mjs",
@@ -26558,6 +28628,14 @@
       "sha256": "e8e5bf8cd191fe95af6fbede71c43bf01a33ba16ccc2bf4d18c2201b4bbc3035"
     },
     {
+      "file": "scripts/smoke-interactive-smart-teacher-contract.mjs",
+      "category": "test-or-ops-script",
+      "domain": "schools",
+      "bytes": 1784,
+      "lines": 41,
+      "sha256": "12145e4a5dc49286d55be7e6fc9e8c4d257c1591146e64d79a4229f23ceb0c9d"
+    },
+    {
       "file": "scripts/smoke-learner-reference-audit-contract.mjs",
       "category": "test-or-ops-script",
       "domain": "shared",
@@ -26593,9 +28671,9 @@
       "file": "scripts/smoke-learning-scoped-bootstrap-contract.mjs",
       "category": "test-or-ops-script",
       "domain": "learning",
-      "bytes": 2090,
-      "lines": 41,
-      "sha256": "45dcb2b4c311d8a5b41fb568a5b16f1e65dd680d106855a5c8fef387f4e23b42"
+      "bytes": 2357,
+      "lines": 46,
+      "sha256": "53d389c372b02fe188d38aa9cb2459b7411a8392b41ec05be1e3ddc5df3fa33f"
     },
     {
       "file": "scripts/smoke-learning-tab-contract.mjs",
@@ -26937,9 +29015,9 @@
       "file": "scripts/smoke-production-audit-contract.mjs",
       "category": "test-or-ops-script",
       "domain": "shared",
-      "bytes": 2467,
-      "lines": 65,
-      "sha256": "043326c49af2fe88e2ae8d49954c4e4b17e59d904ad9c32953a571a10e55ff46"
+      "bytes": 2709,
+      "lines": 71,
+      "sha256": "1f740fd84ef07fafa3f5b210824537290c50d43d343cdd9f36a233938376c7f8"
     },
     {
       "file": "scripts/smoke-production-hardening-contract.mjs",
@@ -26966,6 +29044,14 @@
       "sha256": "9fd0fabc00f56e7af9134c22d15a723a4331dcc7ee6e0a7f4aa22db249c8be9c"
     },
     {
+      "file": "scripts/smoke-production-role-auth-light.mjs",
+      "category": "test-or-ops-script",
+      "domain": "auth",
+      "bytes": 2535,
+      "lines": 68,
+      "sha256": "8d8c1e9ed726212ff745a24b16da986f1d7577448a86c12b7c004945c4e08558"
+    },
+    {
       "file": "scripts/smoke-production-speed.mjs",
       "category": "test-or-ops-script",
       "domain": "shared",
@@ -26990,6 +29076,14 @@
       "sha256": "14ed0e30fdb5179e246fe0cd9261f8e0e0066d67c634b822342c055c0bf5f1ae"
     },
     {
+      "file": "scripts/smoke-qudurat-practice-access-contract.mjs",
+      "category": "test-or-ops-script",
+      "domain": "payments",
+      "bytes": 2941,
+      "lines": 28,
+      "sha256": "e5f14efe600c0ebf1ae1fa600fc0c170855b0092a342d0b0f521a582617b4597"
+    },
+    {
       "file": "scripts/smoke-question-bank-full-coverage-contract.mjs",
       "category": "test-or-ops-script",
       "domain": "questions",
@@ -27001,9 +29095,9 @@
       "file": "scripts/smoke-question-bank-http-boundary-contract.mjs",
       "category": "test-or-ops-script",
       "domain": "questions",
-      "bytes": 6519,
+      "bytes": 6635,
       "lines": 145,
-      "sha256": "6b7d8dbea4c92c187d44a2efe38cc79d8d9917f1ad3e242651003b7c75ccd5d6"
+      "sha256": "0f7c8f49a9513e486276b01162f0dcccf9055637cd20b912bd7269d58c2b423f"
     },
     {
       "file": "scripts/smoke-question-catalog-store-boundary-contract.mjs",
@@ -27025,9 +29119,9 @@
       "file": "scripts/smoke-question-pilot-import-contract.mjs",
       "category": "test-or-ops-script",
       "domain": "questions",
-      "bytes": 7495,
-      "lines": 162,
-      "sha256": "d207063c83c41f769b9deba8a1f4006ddef45c5ac4cea414f23b6112e3d43142"
+      "bytes": 7751,
+      "lines": 166,
+      "sha256": "5367ca29c3a66379e77dee10cd052f12f607a1cc68804c048533b6b36e43ae08"
     },
     {
       "file": "scripts/smoke-question-skill-full-coverage-contract.mjs",
@@ -27049,9 +29143,9 @@
       "file": "scripts/smoke-quiz-access-contract.mjs",
       "category": "test-or-ops-script",
       "domain": "quizzes",
-      "bytes": 14746,
-      "lines": 232,
-      "sha256": "92fde19383deaf0c431bf8204b661c9d327144d43b0cdcfbf7c6fc600f1924de"
+      "bytes": 15097,
+      "lines": 238,
+      "sha256": "4624fc8cc83603fc600c3e0df60c72a947ca1bda7eb1218b98590b7d7fcc1d0d"
     },
     {
       "file": "scripts/smoke-quiz-answer-exposure-contract.mjs",
@@ -27257,9 +29351,9 @@
       "file": "scripts/smoke-reports-recommendation-boundary-contract.mjs",
       "category": "test-or-ops-script",
       "domain": "reports",
-      "bytes": 4783,
-      "lines": 94,
-      "sha256": "1ebce82bac90391e3c7faa9938609dfe9c9357416b90c55f56ecbb9b50cc9d57"
+      "bytes": 4881,
+      "lines": 95,
+      "sha256": "28186b8a8fadd34008792f693a05d05935405b6d3773794d8bcb7ce3ec91b416"
     },
     {
       "file": "scripts/smoke-reports-role-contract.mjs",
@@ -27361,25 +29455,25 @@
       "file": "scripts/smoke-reports-student-report-scope-boundary-contract.mjs",
       "category": "test-or-ops-script",
       "domain": "reports",
-      "bytes": 4210,
+      "bytes": 4209,
       "lines": 83,
-      "sha256": "290d501cf77b4a8d070209a1697797e98566d957726c0e46cdca1faab1157fa6"
+      "sha256": "fe4aaf87b22533de686bb9b148d560eed4b82ebbadccfa629a54b2a27fcc2166"
     },
     {
       "file": "scripts/smoke-reports-student-selected-skill-presentation-boundary-contract.mjs",
       "category": "test-or-ops-script",
       "domain": "questions",
-      "bytes": 4113,
-      "lines": 92,
-      "sha256": "4bb9594ab608afdb90ef059537532e57ecf6b9007f967f78eb2a823bab0dbdcb"
+      "bytes": 3617,
+      "lines": 88,
+      "sha256": "466c2e9834fafd1c1e26135e4e0a8dd97d164887daaf1256a985f42961fa928e"
     },
     {
       "file": "scripts/smoke-reports-student-skill-rows-boundary-contract.mjs",
       "category": "test-or-ops-script",
       "domain": "questions",
-      "bytes": 4090,
-      "lines": 95,
-      "sha256": "49d2a00ecb5e0805bb7d3f3118778f1d362b115b478221c454b554d1ff819158"
+      "bytes": 4278,
+      "lines": 97,
+      "sha256": "67eb987a02020867acfd8667d4583f5dc308adcae1ba123a3df8ef7477923b1a"
     },
     {
       "file": "scripts/smoke-reports-student-smart-remediation-presentation-boundary-contract.mjs",
@@ -27830,6 +29924,14 @@
       "sha256": "533f2785fe5eecc2b5ee1cba435ce793e4497cf466711b777f81fb4b17f34395"
     },
     {
+      "file": "scripts/smoke-student-foundation-action-policy.mjs",
+      "category": "test-or-ops-script",
+      "domain": "paths",
+      "bytes": 4353,
+      "lines": 72,
+      "sha256": "3c70fef48c2ac3097bab8ef13183730160ddad81ff77db783f4ec2b29d9a2cac"
+    },
+    {
       "file": "scripts/smoke-student-group-membership-boundary-contract.mjs",
       "category": "test-or-ops-script",
       "domain": "schools",
@@ -27873,9 +29975,9 @@
       "file": "scripts/smoke-student-result-skill-integrity-contract.mjs",
       "category": "test-or-ops-script",
       "domain": "questions",
-      "bytes": 4893,
-      "lines": 97,
-      "sha256": "08fc9a5cc7c6b247567b64f8d20028dc724b78ee4df76d00cdb30597784182ed"
+      "bytes": 5843,
+      "lines": 113,
+      "sha256": "5c8b9583345ba4353c722dff08cfb3c07dd5659b1d43727fafa8d2e6dbf33e12"
     },
     {
       "file": "scripts/smoke-student-session-booking-contract.mjs",
@@ -27926,6 +30028,14 @@
       "sha256": "6ef907fd863fa89a8fc0d1e1de52bef46e26b421c44bfa0ea799b4cea956011b"
     },
     {
+      "file": "scripts/smoke-tracked-secret-hygiene-contract.mjs",
+      "category": "test-or-ops-script",
+      "domain": "shared",
+      "bytes": 2111,
+      "lines": 57,
+      "sha256": "246eea9f86447307efba9b8ffccd413f336dcb8bb3c3c5ee0e86bd65404962a5"
+    },
+    {
       "file": "scripts/smoke-trainer-courses-g15-contract.mjs",
       "category": "test-or-ops-script",
       "domain": "courses",
@@ -27961,9 +30071,9 @@
       "file": "scripts/smoke-unified-skill-mastery-contract.mjs",
       "category": "test-or-ops-script",
       "domain": "questions",
-      "bytes": 7521,
-      "lines": 138,
-      "sha256": "557c3f8b20184c6cf9984e70f085d18d4629b1fb11dd827e15f02317e63b5ec4"
+      "bytes": 7830,
+      "lines": 142,
+      "sha256": "7cdd6d6037715ef404f863e1d75abd50a57ca3eb56e4a1c7434e37f720dae1c9"
     },
     {
       "file": "scripts/smoke-users-manager-g17-contract.mjs",
@@ -27977,17 +30087,17 @@
       "file": "scripts/smoke-verbal-approved-source-contract.mjs",
       "category": "test-or-ops-script",
       "domain": "shared",
-      "bytes": 4170,
-      "lines": 84,
-      "sha256": "93ac0236501742723c88b98c34658cfc70af32694792416774e6ecfd38a45087"
+      "bytes": 4647,
+      "lines": 93,
+      "sha256": "0ea745ef8dcde52d84bb7528dfd95c9ae9e85e85e79f749276d69324eff6acfe"
     },
     {
       "file": "scripts/smoke-verbal-taxonomy-v2-contract.mjs",
       "category": "test-or-ops-script",
       "domain": "shared",
-      "bytes": 3572,
-      "lines": 48,
-      "sha256": "11dc049a21ce834f995b71fa747134da484737afb2e5b405467cfe4ee91b8d63"
+      "bytes": 4429,
+      "lines": 54,
+      "sha256": "5ffe38ba25d82b38b888712dda3a28787b29c9152a047836e7b4a9d81ca8ad88"
     },
     {
       "file": "scripts/smoke-verbal26-historical-recovery.mjs",
@@ -27996,6 +30106,14 @@
       "bytes": 1597,
       "lines": 21,
       "sha256": "7f858f7b971a0108cfd77e898a137df08711dcd1417b898d868028d30e54ac13"
+    },
+    {
+      "file": "scripts/smoke-verbal26-production-certification.mjs",
+      "category": "test-or-ops-script",
+      "domain": "shared",
+      "bytes": 8914,
+      "lines": 166,
+      "sha256": "643eb21b4f83e9bbf940e8723bfc3fe3566ce2e8df5c844d8cf29e7b3023e817"
     },
     {
       "file": "scripts/smoke-verbal26-runtime-contract.mjs",
@@ -28057,9 +30175,9 @@
       "file": "scripts/test-tahsili-import-identity.mjs",
       "category": "test-or-ops-script",
       "domain": "paths",
-      "bytes": 4931,
-      "lines": 96,
-      "sha256": "fc6de99e7118e630fb989c88b09b45ae7e1ca54fb662bc05b08a82a9d887352e"
+      "bytes": 5703,
+      "lines": 108,
+      "sha256": "8908713941d19ea6705d3b9ab333842b8f09c2389002079a0ff242492dcb890a"
     },
     {
       "file": "scripts/ui-audit-exhaustive-batch.mjs",
@@ -28092,6 +30210,14 @@
       "bytes": 6112,
       "lines": 149,
       "sha256": "3df0ea91942fbc505facb1ced1db1a6c3b4679333512a6a8ea75273a8a05d8bb"
+    },
+    {
+      "file": "scripts/verify-bio26-preimport-gates.mjs",
+      "category": "test-or-ops-script",
+      "domain": "auth",
+      "bytes": 3267,
+      "lines": 12,
+      "sha256": "bb176b017a7c6c5a62e6c883e56911735c5e8b77fc9a3a4db206d54dc83269c3"
     },
     {
       "file": "scripts/verify-db-backup.sh",
@@ -28187,31 +30313,31 @@
       "domain": "shared",
       "bytes": 129953,
       "lines": 3097,
-      "sha256": "4bdd1d7d539af15d48f8b0d3ea531a4096ea854c8cb9c71647cf2f3e3a366aac"
+      "sha256": "35472b84aab23a667149ac5c5032509e2975f99184d4a1637ad8d5d560d177b3"
     },
     {
       "file": "server/data/verbal_approved_bank_v2.json",
       "category": "api-support",
       "domain": "shared",
-      "bytes": 946178,
-      "lines": 22197,
-      "sha256": "490ae42244f45ac04d405547b3359bad553eec002cc56c71b70cb863ee245855"
+      "bytes": 961466,
+      "lines": 22405,
+      "sha256": "bd72c2b517947b21e01cd39a4d0705689f7aa6f7f21e249f6d016c04ba1c7977"
     },
     {
       "file": "server/package-lock.json",
       "category": "api-support",
       "domain": "payments",
-      "bytes": 139700,
-      "lines": 3722,
-      "sha256": "3135f5f8395b784c72f4d79c77c5f12996de89346904c52582220bb81f33a8ad"
+      "bytes": 139850,
+      "lines": 3727,
+      "sha256": "2ac5fd9f6603adb61d77eb7a4c11f6f9c28af43bb5661cac5c5d54f7ed6c2e34"
     },
     {
       "file": "server/package.json",
       "category": "api-support",
       "domain": "payments",
-      "bytes": 5221,
-      "lines": 97,
-      "sha256": "a962e9fbeba469e996b9af0ff371723cfa1163ba648e22e27d8b396ae00b2f78"
+      "bytes": 5729,
+      "lines": 104,
+      "sha256": "65474fc5d3fa3d30f957e260d5ad0f1df1820790ccb49bd3fe3f45313476991f"
     },
     {
       "file": "server/realign_all_quant_skills.mjs",
@@ -28233,17 +30359,49 @@
       "file": "server/src/app.ts",
       "category": "api-source",
       "domain": "shared",
-      "bytes": 4299,
-      "lines": 135,
-      "sha256": "60c461f179f67116cdd4b7b07f5293b6a43b697f26340b974a8a7c46bde3c882"
+      "bytes": 4635,
+      "lines": 140,
+      "sha256": "e85ca94ad4e0372c92fbf58679d12f0b81e07de8505d090c515f2d9eb8fd03fb"
+    },
+    {
+      "file": "server/src/app/bootstrap/bio26LearningStructurePlan.ts",
+      "category": "api-source",
+      "domain": "learning",
+      "bytes": 11467,
+      "lines": 323,
+      "sha256": "233b0d775d223a0f431c6d4c20b8ba26a0467475dabbd6e40875921aefed0487"
+    },
+    {
+      "file": "server/src/app/bootstrap/bio26StandardTestsPlan.ts",
+      "category": "api-source",
+      "domain": "shared",
+      "bytes": 13477,
+      "lines": 343,
+      "sha256": "dbc082e38163a71306f52315e5b6a02e3ff459c623af3d551a87dabe66cc7311"
     },
     {
       "file": "server/src/app/bootstrap/bootstrapServer.ts",
       "category": "api-source",
       "domain": "shared",
-      "bytes": 1591,
-      "lines": 37,
-      "sha256": "4c6124f66c1d9de4e7407283b2ec47b04ed244fa986b417a0a3321eb9d6ea0b9"
+      "bytes": 3727,
+      "lines": 69,
+      "sha256": "3e2825a5e616ed52e6c53c80e9ef21a3a3e42c4c41cb285b0aa49cdf69d17948"
+    },
+    {
+      "file": "server/src/app/bootstrap/chem26LearningStructurePlan.ts",
+      "category": "api-source",
+      "domain": "learning",
+      "bytes": 11483,
+      "lines": 323,
+      "sha256": "6926f054659b233a6c3010425dae1600892f372cd2e57347671fd385248a9976"
+    },
+    {
+      "file": "server/src/app/bootstrap/chem26StandardTestsPlan.ts",
+      "category": "api-source",
+      "domain": "shared",
+      "bytes": 10958,
+      "lines": 288,
+      "sha256": "8ff639422bbc4a8361b09082a8e22acf4046218a810edb96679f3a14123ccb8e"
     },
     {
       "file": "server/src/app/bootstrap/questionPilotPackageImportSupport.ts",
@@ -28268,6 +30426,54 @@
       "bytes": 1209,
       "lines": 31,
       "sha256": "955edcdf881df601174b41faace3467431cb5f65ebe353c45e7703c76ce95043"
+    },
+    {
+      "file": "server/src/app/bootstrap/runBio26LearningStructure.ts",
+      "category": "api-source",
+      "domain": "learning",
+      "bytes": 13328,
+      "lines": 332,
+      "sha256": "26b913a8b54811d4b13375b1dd7fdebd01543a72f66988bb8c754fcfdd334f84"
+    },
+    {
+      "file": "server/src/app/bootstrap/runBio26PackageImport.ts",
+      "category": "api-source",
+      "domain": "payments",
+      "bytes": 19995,
+      "lines": 399,
+      "sha256": "a990c26ad8d54db305f4cdb9902c81dcc20b9daf3ba2b0af0a0097264d7ab607"
+    },
+    {
+      "file": "server/src/app/bootstrap/runBio26StandardTests.ts",
+      "category": "api-source",
+      "domain": "shared",
+      "bytes": 7800,
+      "lines": 208,
+      "sha256": "2d8a2bfe26f503d311d6476fd9208bdbce547fb561b2472ef64df4df14f02d13"
+    },
+    {
+      "file": "server/src/app/bootstrap/runChem26LearningStructure.ts",
+      "category": "api-source",
+      "domain": "learning",
+      "bytes": 13304,
+      "lines": 332,
+      "sha256": "6843964b2fc4095e16dd1d23e8f082e35ca4f23e39a6cf96713f630bae0614fa"
+    },
+    {
+      "file": "server/src/app/bootstrap/runChem26PackageImport.ts",
+      "category": "api-source",
+      "domain": "payments",
+      "bytes": 14538,
+      "lines": 303,
+      "sha256": "525bd0c0f2a7a0973cbdbb4bc0b20028244c402d47a6d802dd591bf0a8561370"
+    },
+    {
+      "file": "server/src/app/bootstrap/runChem26StandardTests.ts",
+      "category": "api-source",
+      "domain": "shared",
+      "bytes": 7816,
+      "lines": 208,
+      "sha256": "5ba1b90832869df6fdcf591b274b1c37a6e3159ae515aa477895a16ee68bc04d"
     },
     {
       "file": "server/src/app/bootstrap/runQuestionPilotPackageImport.ts",
@@ -28297,9 +30503,9 @@
       "file": "server/src/config/env.ts",
       "category": "api-source",
       "domain": "shared",
-      "bytes": 8323,
-      "lines": 149,
-      "sha256": "e0340a6be0fb9e9e46911683df9b02972bedf1ee0f75f3f81d962ec7c158e2ca"
+      "bytes": 9835,
+      "lines": 168,
+      "sha256": "77f59de391b5423f0982a65fc89fafba0399ce8cc20b779cbe90ef70eb92846c"
     },
     {
       "file": "server/src/config/redis.ts",
@@ -28345,9 +30551,9 @@
       "file": "server/src/middleware/csrf.ts",
       "category": "api-source",
       "domain": "shared",
-      "bytes": 1761,
-      "lines": 57,
-      "sha256": "ec3e10f3ddbf7b6532da6d6b9c6ab0cb6128d111e2481b4fc04138a4a02e508b"
+      "bytes": 2983,
+      "lines": 83,
+      "sha256": "4be3b0e747bfc3e07b453d24d623b4723ddd97f825d449048fac171102942892"
     },
     {
       "file": "server/src/middleware/errorHandler.ts",
@@ -28361,9 +30567,9 @@
       "file": "server/src/middleware/mongoSanitize.ts",
       "category": "api-source",
       "domain": "shared",
-      "bytes": 1526,
-      "lines": 57,
-      "sha256": "a522f2483171cf5c16810fe3c8b8f0787e7bca3fbcf34fb6679b29c2a98f4bc6"
+      "bytes": 2065,
+      "lines": 64,
+      "sha256": "9305e15cd012f9c7066cecee5cb4d8652c0abcc2b7a58f29b48796a940b91f19"
     },
     {
       "file": "server/src/middleware/rateLimiters.ts",
@@ -28516,6 +30722,30 @@
       "bytes": 1248,
       "lines": 39,
       "sha256": "4740b2c42dd6bb98b0c594b538464c499a97824e6a63bbcb25d281a89dd8535e"
+    },
+    {
+      "file": "server/src/models/CommandCenterAudit.ts",
+      "category": "api-source",
+      "domain": "shared",
+      "bytes": 1150,
+      "lines": 39,
+      "sha256": "4008630f5fdb4c7252fa888b46a43f6e2f454d3eba54ffbd0e01957be6cd6497"
+    },
+    {
+      "file": "server/src/models/CommandCenterDraft.ts",
+      "category": "api-source",
+      "domain": "shared",
+      "bytes": 2426,
+      "lines": 77,
+      "sha256": "abee0d1508e54da11f0b2d4a24dec292f40c792486c4c9adcca361e520d28df3"
+    },
+    {
+      "file": "server/src/models/CommandCenterWorkflow.ts",
+      "category": "api-source",
+      "domain": "shared",
+      "bytes": 2434,
+      "lines": 82,
+      "sha256": "e4a13e5bf9215342032d5386ad341159509d345cc380bb6166dd0721f7c2d49e"
     },
     {
       "file": "server/src/models/Course.ts",
@@ -28729,9 +30959,9 @@
       "file": "server/src/models/Question.ts",
       "category": "api-source",
       "domain": "questions",
-      "bytes": 5661,
-      "lines": 122,
-      "sha256": "f51b4ef4564e7c5491bb38f2df5c01ed1cd33967d104b7af6883aa00d7b4244f"
+      "bytes": 5840,
+      "lines": 125,
+      "sha256": "8691872e4f92ac9e6e979ed82a343b21e58ba4e100a4a44794022dbcf6d596a3"
     },
     {
       "file": "server/src/models/QuestionAttempt.ts",
@@ -28961,9 +31191,9 @@
       "file": "server/src/modules/ai/application/questionAssistant.ts",
       "category": "api-source",
       "domain": "questions",
-      "bytes": 6865,
-      "lines": 125,
-      "sha256": "78faa2f7f8f03ef15e25beff066fdc0be9e1be5db251b75ff68bdcc2d3d7dae9"
+      "bytes": 7808,
+      "lines": 131,
+      "sha256": "af6f2c12e048d840841e92fc590a6ec4a2de1a766fdda4ecdf10d54932680d98"
     },
     {
       "file": "server/src/modules/ai/application/studentTutorContext.ts",
@@ -29004,6 +31234,238 @@
       "bytes": 5660,
       "lines": 89,
       "sha256": "830395f199b4fe21e0216d59495313ec691a88b1726223efd5377018cc19c558"
+    },
+    {
+      "file": "server/src/modules/command-center/application/commandAudit.ts",
+      "category": "api-source",
+      "domain": "shared",
+      "bytes": 771,
+      "lines": 25,
+      "sha256": "48050fe809cfd4ee29240a1e26d18385f781a742d2987c271ace5727620ba162"
+    },
+    {
+      "file": "server/src/modules/command-center/application/commandAuthorization.ts",
+      "category": "api-source",
+      "domain": "auth",
+      "bytes": 2400,
+      "lines": 70,
+      "sha256": "863013839abbce02a2eb5c6a231a18f5310e8f61b9d3f0e9b978dda04c9a7606"
+    },
+    {
+      "file": "server/src/modules/command-center/application/commandToolRegistry.ts",
+      "category": "api-source",
+      "domain": "shared",
+      "bytes": 4043,
+      "lines": 37,
+      "sha256": "fa96b21676b6286ee114e20a7274e2940ba96d21d2094e1f8cc887bf70a7439b"
+    },
+    {
+      "file": "server/src/modules/command-center/application/courseAudit.ts",
+      "category": "api-source",
+      "domain": "courses",
+      "bytes": 10059,
+      "lines": 286,
+      "sha256": "98446f202183bd7d1acdd96f5dcc4274b4114986aa871acd860a93d90778837a"
+    },
+    {
+      "file": "server/src/modules/command-center/application/courseReuseDraftTools.ts",
+      "category": "api-source",
+      "domain": "courses",
+      "bytes": 9059,
+      "lines": 251,
+      "sha256": "7106787eaf0a0340e7da72d5a2290ce8ccf25ce7d442a177a89ac0ff5b9182c2"
+    },
+    {
+      "file": "server/src/modules/command-center/application/developerTaskTools.ts",
+      "category": "api-source",
+      "domain": "shared",
+      "bytes": 5672,
+      "lines": 167,
+      "sha256": "8d454ef8579ef147b7362396b1746df3eeb9a0619aaeebb22adbe99dc69ff0dc"
+    },
+    {
+      "file": "server/src/modules/command-center/application/draftApplyCourseQuiz.ts",
+      "category": "api-source",
+      "domain": "quizzes",
+      "bytes": 8858,
+      "lines": 253,
+      "sha256": "8236717346d8fd4b9e65e9e30e4a802b327ef04a7267d9c3ef1558a3aab0bc7b"
+    },
+    {
+      "file": "server/src/modules/command-center/application/draftApplyQuestion.ts",
+      "category": "api-source",
+      "domain": "questions",
+      "bytes": 9464,
+      "lines": 260,
+      "sha256": "c0cdfd0fbb981f3f56a969a93b819090d780283144ad9dee7b800cefced66c33"
+    },
+    {
+      "file": "server/src/modules/command-center/application/draftApplyQuizUpdate.ts",
+      "category": "api-source",
+      "domain": "quizzes",
+      "bytes": 4558,
+      "lines": 135,
+      "sha256": "4bc539bde66ece8cfce4b5bcadeb6dc9747380f144f3bc4593599bbc5629124e"
+    },
+    {
+      "file": "server/src/modules/command-center/application/draftApplySchool.ts",
+      "category": "api-source",
+      "domain": "schools",
+      "bytes": 8041,
+      "lines": 198,
+      "sha256": "37f26a60bab9eb7eaa5cb8a083f34f58535d6b212c68d0765b55f9fd326fbf71"
+    },
+    {
+      "file": "server/src/modules/command-center/application/draftApplyService.ts",
+      "category": "api-source",
+      "domain": "shared",
+      "bytes": 1020,
+      "lines": 22,
+      "sha256": "d99393b87b3e97631cb98fd95811eeaf818f76192578b371337dcd4d96f7412f"
+    },
+    {
+      "file": "server/src/modules/command-center/application/draftApplyTypes.ts",
+      "category": "api-source",
+      "domain": "shared",
+      "bytes": 935,
+      "lines": 31,
+      "sha256": "3f44dbfd1e3e6fce1eca6648fe0c8ef58860be082e8b966b0163462087be043a"
+    },
+    {
+      "file": "server/src/modules/command-center/application/mcpOAuth.ts",
+      "category": "api-source",
+      "domain": "auth",
+      "bytes": 8372,
+      "lines": 256,
+      "sha256": "cb2f7cafd394fab06a19b90e25dcede3cc3c894c592c75df4115f90f87351e44"
+    },
+    {
+      "file": "server/src/modules/command-center/application/mcpToolCatalog.ts",
+      "category": "api-source",
+      "domain": "shared",
+      "bytes": 14637,
+      "lines": 372,
+      "sha256": "cd21c51e68100d8ecac76bea89b4967d6e416e06c3ba3756db1b74debb6f97ba"
+    },
+    {
+      "file": "server/src/modules/command-center/application/mcpToolExecution.ts",
+      "category": "api-source",
+      "domain": "shared",
+      "bytes": 4203,
+      "lines": 120,
+      "sha256": "506934b7a7a8446980c073f6102d6324f705e5f9fba70c65707af160a85990d3"
+    },
+    {
+      "file": "server/src/modules/command-center/application/mcpTools.ts",
+      "category": "api-source",
+      "domain": "shared",
+      "bytes": 157,
+      "lines": 3,
+      "sha256": "f02c076945086876ad4ed9d9d77264df0b5d73337607daa3df3ee8a96a4157e1"
+    },
+    {
+      "file": "server/src/modules/command-center/application/questionQuizDraftTools.ts",
+      "category": "api-source",
+      "domain": "questions",
+      "bytes": 8115,
+      "lines": 217,
+      "sha256": "bd94942849ec2698b0eeff95867d4b062cbcb71aea07be8d6fa7fca12a2e3355"
+    },
+    {
+      "file": "server/src/modules/command-center/application/questionSimilarity.ts",
+      "category": "api-source",
+      "domain": "questions",
+      "bytes": 1323,
+      "lines": 47,
+      "sha256": "f0d44bb2c198b33472eae45f6bce275b7477a96dd29940e4794b41f396d6bae9"
+    },
+    {
+      "file": "server/src/modules/command-center/application/quizUpdateDraftTools.ts",
+      "category": "api-source",
+      "domain": "quizzes",
+      "bytes": 6882,
+      "lines": 193,
+      "sha256": "014c97431202e28d63d4fd432699ae5a046030aa27dfd13d2044834987da5d00"
+    },
+    {
+      "file": "server/src/modules/command-center/application/schoolSetupDraftTools.ts",
+      "category": "api-source",
+      "domain": "schools",
+      "bytes": 10222,
+      "lines": 297,
+      "sha256": "09b191ce16f26e281676f5e621ba209f80111a54c4a07aee673fd748e1c3a72b"
+    },
+    {
+      "file": "server/src/modules/command-center/application/workflowExecutor.ts",
+      "category": "api-source",
+      "domain": "shared",
+      "bytes": 11690,
+      "lines": 372,
+      "sha256": "d1b1ffdffee90cc976480a43605d5a25ed82ec5072c0d1b620f7284a7508059b"
+    },
+    {
+      "file": "server/src/modules/command-center/application/workflowService.ts",
+      "category": "api-source",
+      "domain": "shared",
+      "bytes": 8082,
+      "lines": 251,
+      "sha256": "5b6c1b19d73505608b99a7c3eb87e517f43881370d839ca811c79a944f17fe13"
+    },
+    {
+      "file": "server/src/modules/command-center/http/commandCenterRoutes.ts",
+      "category": "api-source",
+      "domain": "shared",
+      "bytes": 11794,
+      "lines": 369,
+      "sha256": "287fc828900a556e00b98aab11b617675ca61f583e3bccc6982118e1c1b7b583"
+    },
+    {
+      "file": "server/src/modules/command-center/http/courseDraftRoutes.ts",
+      "category": "api-source",
+      "domain": "courses",
+      "bytes": 3537,
+      "lines": 111,
+      "sha256": "7a0353079dde86f0e3b73e6012e6e681ab7b0a070d6c2f2da47889e202ac551e"
+    },
+    {
+      "file": "server/src/modules/command-center/http/developerDraftRoutes.ts",
+      "category": "api-source",
+      "domain": "shared",
+      "bytes": 1210,
+      "lines": 33,
+      "sha256": "6f0653b32d515ec01baedada40a40ff9c79e5b35b3dd8e4e7323afd87c2885fb"
+    },
+    {
+      "file": "server/src/modules/command-center/http/mcpRoutes.ts",
+      "category": "api-source",
+      "domain": "shared",
+      "bytes": 9200,
+      "lines": 298,
+      "sha256": "84ca8862b7038345bb586998d6dc2751d8e4b92db74f2ac6ebda4dde0cf4aee8"
+    },
+    {
+      "file": "server/src/modules/command-center/http/questionQuizDraftRoutes.ts",
+      "category": "api-source",
+      "domain": "questions",
+      "bytes": 7774,
+      "lines": 227,
+      "sha256": "6a158af5444d59b61b644d96a3416f3fcfad55bbd8eeaf158fded4a6e4beb150"
+    },
+    {
+      "file": "server/src/modules/command-center/http/schoolDraftRoutes.ts",
+      "category": "api-source",
+      "domain": "schools",
+      "bytes": 2742,
+      "lines": 83,
+      "sha256": "d5aae51ce416b70cae97b5767327ee66dc4ac5975f0c544a7b0d1bce2cdfa64a"
+    },
+    {
+      "file": "server/src/modules/command-center/http/workflowRoutes.ts",
+      "category": "api-source",
+      "domain": "shared",
+      "bytes": 1939,
+      "lines": 64,
+      "sha256": "a31ef348c4c32282bca7ace4c22b1a97c5a434a43fe21b1139d7d225f847b994"
     },
     {
       "file": "server/src/modules/content/application/contentBootstrapCache.ts",
@@ -29289,9 +31751,9 @@
       "file": "server/src/modules/media/application/questionImportImageUpload.ts",
       "category": "api-source",
       "domain": "questions",
-      "bytes": 3083,
+      "bytes": 3094,
       "lines": 93,
-      "sha256": "5fba17168ccdb91a6b87f70bfee54bdfc0f4c3a71583afb6db0193d79c519779"
+      "sha256": "55b20776846aff2e16bbe1cbe8adfd7739c89cda4d5997fd803d378ee81b03c0"
     },
     {
       "file": "server/src/modules/media/infrastructure/r2PresignedPut.ts",
@@ -29529,9 +31991,9 @@
       "file": "server/src/modules/quizzes/application/questionApprovalIntegrity.ts",
       "category": "api-source",
       "domain": "questions",
-      "bytes": 3285,
+      "bytes": 3294,
       "lines": 72,
-      "sha256": "98fb269b57e66bbbe3ac5202ac7db52660b8c3006eaad5c6d2e7e4213fdda2e4"
+      "sha256": "625761c16025dd5b110751f3109daa7ae7b49fcf9f486445a6105e933a769cf4"
     },
     {
       "file": "server/src/modules/quizzes/application/questionAttemptDocument.ts",
@@ -29561,9 +32023,9 @@
       "file": "server/src/modules/quizzes/application/questionSkillTaxonomy.ts",
       "category": "api-source",
       "domain": "questions",
-      "bytes": 2374,
-      "lines": 68,
-      "sha256": "8fc28cb883e1c73b26f782324b2f6f1dbd75c656e9b6e46cf374034d0a5e9b4f"
+      "bytes": 2695,
+      "lines": 81,
+      "sha256": "9930b93a83567e4221961a0502bb0796b3a32af1fe7ebfd514180a71c9b7762a"
     },
     {
       "file": "server/src/modules/quizzes/application/quizAccessPolicy.ts",
@@ -29729,9 +32191,9 @@
       "file": "server/src/modules/quizzes/application/quizSubmissionReadModelContext.ts",
       "category": "api-source",
       "domain": "quizzes",
-      "bytes": 3128,
+      "bytes": 3107,
       "lines": 92,
-      "sha256": "cdf994e5564d727edaa9048672421413caa089a295eef74bc8acfbbc4de354dc"
+      "sha256": "974b76c9f607f73dd2064d56508c5f53c4c77c7f679beb985af43d4f57e0ba1f"
     },
     {
       "file": "server/src/modules/quizzes/application/quizSubmissionResultDocument.ts",
@@ -29761,9 +32223,9 @@
       "file": "server/src/modules/quizzes/application/quizSubmissionSideEffects.ts",
       "category": "api-source",
       "domain": "quizzes",
-      "bytes": 6833,
-      "lines": 162,
-      "sha256": "45da90d2ca25e7ca0a77bd88429cce4bb74adbd5b7e2c65747af9ae1ead67a19"
+      "bytes": 6717,
+      "lines": 161,
+      "sha256": "175d878e773ba90351814a842764378504e270c62c975364f4c244dde6a03c89"
     },
     {
       "file": "server/src/modules/quizzes/application/quizSubmissionSkillProgress.ts",
@@ -29873,9 +32335,9 @@
       "file": "server/src/modules/quizzes/domain/questionImportIdentity.ts",
       "category": "api-source",
       "domain": "questions",
-      "bytes": 2583,
-      "lines": 74,
-      "sha256": "59ad974b2766f67bfcba2ad359770b2c4755c371bb17cbcafe27f19f11811800"
+      "bytes": 2822,
+      "lines": 80,
+      "sha256": "a7f6c5e02fc26706a84a27eb9a087db1e82537f814c639013f229c2ce049be42"
     },
     {
       "file": "server/src/modules/quizzes/http/adaptiveMasteryRoutes.ts",
@@ -29913,33 +32375,33 @@
       "file": "server/src/modules/quizzes/http/questionBankRoutes.ts",
       "category": "api-source",
       "domain": "questions",
-      "bytes": 16414,
+      "bytes": 16762,
       "lines": 389,
-      "sha256": "c04bbee0888bbe9b39f85d010e76d16b849cf6d88a63a402fb9f50022610d0b8"
+      "sha256": "cc63a1a3c2ea8d3142c09214a6f6b8c523bc30dcd4d2d3d1bc79ad330ca92c35"
     },
     {
       "file": "server/src/modules/quizzes/http/questionImportRoutes.ts",
       "category": "api-source",
       "domain": "questions",
-      "bytes": 12369,
-      "lines": 320,
-      "sha256": "d4fcd8894e4428f3dc65ce33eb0c66e2600b5ba2ed946f6a19d75b5825533222"
+      "bytes": 12529,
+      "lines": 323,
+      "sha256": "cf6f6c4212025f825e32f074966fada83e29608b38d3e209bf721afdcef6e15e"
     },
     {
       "file": "server/src/modules/quizzes/http/questionImportSchemas.ts",
       "category": "api-source",
       "domain": "questions",
-      "bytes": 1076,
+      "bytes": 1087,
       "lines": 30,
-      "sha256": "7b9f82953ee7df65df9c0bd39806e2124df5f45a1ddebd6b88e8599077c070de"
+      "sha256": "b41102cfca96f5c6a4bc5ece39177b5445993748d8fd199e9d8a3359dac0f81c"
     },
     {
       "file": "server/src/modules/quizzes/http/questionQuerySchemas.ts",
       "category": "api-source",
       "domain": "questions",
-      "bytes": 8054,
-      "lines": 185,
-      "sha256": "9974dd64176926c68c44f48ee5dcac4160d2f971fa7663c692100a12d2529b0a"
+      "bytes": 8216,
+      "lines": 188,
+      "sha256": "b4346fe1825cdd465c4c4c412ac1acea7fc9874c91fee7087fd2d5e209483934"
     },
     {
       "file": "server/src/modules/quizzes/http/quizAnalyticsRoutes.ts",
@@ -30305,9 +32767,9 @@
       "file": "server/src/routes/ai.routes.ts",
       "category": "api-source",
       "domain": "ai",
-      "bytes": 94568,
-      "lines": 2343,
-      "sha256": "01c89f80c8cecb80e286bf6438ecc5afceb4a76f4073d7a1eb503e1b7aab1673"
+      "bytes": 102857,
+      "lines": 2547,
+      "sha256": "ff527ded363e2d9ff0b3890e0f33d6b38e503b95248ae286e2827cc0afdee43e"
     },
     {
       "file": "server/src/routes/auth.routes.ts",
@@ -30457,9 +32919,9 @@
       "file": "server/src/routes/index.ts",
       "category": "api-source",
       "domain": "shared",
-      "bytes": 3241,
-      "lines": 65,
-      "sha256": "25f097d15c4a218748c3c8001a0a974c3484acfc228605276e7ed5b9122b45ad"
+      "bytes": 3391,
+      "lines": 67,
+      "sha256": "39e6d5a273b02a686ce72d9fe2535c0079e352a88db250855508a3ee924713b5"
     },
     {
       "file": "server/src/routes/leaderboard.routes.ts",
@@ -30601,9 +33063,9 @@
       "file": "server/src/routes/taxonomy.routes.ts",
       "category": "api-source",
       "domain": "shared",
-      "bytes": 26789,
-      "lines": 726,
-      "sha256": "7a20fb0d8e2d8553778a3e5d8fb2508e14d6a2ed3b18daa839ad71ce2acd1856"
+      "bytes": 26828,
+      "lines": 729,
+      "sha256": "8411f4a959714f8dbd3ae4ba0d7e2d46f7955e1ef9f3963bffb37f0f7b097018"
     },
     {
       "file": "server/src/scripts/auditFoundationSkillMapping.ts",
@@ -30668,6 +33130,14 @@
       "bytes": 3387,
       "lines": 97,
       "sha256": "c004acbec33c4ff822e0e0afe7b8dff5e9240896d58ffba6c4f61d2bb665c11b"
+    },
+    {
+      "file": "server/src/scripts/bio26TaxonomySupport.ts",
+      "category": "api-source",
+      "domain": "shared",
+      "bytes": 1393,
+      "lines": 50,
+      "sha256": "e84d82ef53e18b24285457591096901c905191369a3a794c18a8579f49f2c0d0"
     },
     {
       "file": "server/src/scripts/bootstrapCustomerInstance.ts",
@@ -30742,6 +33212,22 @@
       "sha256": "7b6b501b4df64e5acedae99abc0c8f1e7e72becb07b8f02f088aec99b8d2a362"
     },
     {
+      "file": "server/src/scripts/deployBio26Taxonomy.ts",
+      "category": "api-source",
+      "domain": "shared",
+      "bytes": 14960,
+      "lines": 378,
+      "sha256": "cb876ad94a072b29529a773bb4d03d8bca266d4cdb97330b7154390c6f1ab239"
+    },
+    {
+      "file": "server/src/scripts/deployChemTaxonomy27.ts",
+      "category": "api-source",
+      "domain": "shared",
+      "bytes": 10975,
+      "lines": 214,
+      "sha256": "5b8d39eb1c39accbb3ef27c83925a4986f3824416ea58cbaed628501edbc0b2f"
+    },
+    {
       "file": "server/src/scripts/deployQuantTaxonomy25.ts",
       "category": "api-source",
       "domain": "shared",
@@ -30753,9 +33239,9 @@
       "file": "server/src/scripts/deployVerbalEcosystem.ts",
       "category": "api-source",
       "domain": "shared",
-      "bytes": 10525,
-      "lines": 279,
-      "sha256": "d481543e77cef06cf1affe22686244f2a22a02f14bdf6f644bae65baf9b0a862"
+      "bytes": 10852,
+      "lines": 283,
+      "sha256": "85331a3fc5fd6fcec8c1dc6f97739d37913edbc74ed71375cb15059dd0e112a2"
     },
     {
       "file": "server/src/scripts/deployVerbalTaxonomy13.ts",
@@ -30873,9 +33359,9 @@
       "file": "server/src/scripts/migrateVerbalTaxonomy22.ts",
       "category": "api-source",
       "domain": "shared",
-      "bytes": 7836,
-      "lines": 194,
-      "sha256": "bec519a394e80f3b6963faa0c286692c6595b00301c4693eda7ea304a1d19f73"
+      "bytes": 9774,
+      "lines": 231,
+      "sha256": "a94ff4bc96297c49fa5da64f126be3544552ff0527a21295ea442495973e9549"
     },
     {
       "file": "server/src/scripts/packageCustomerInstance.ts",
@@ -30942,6 +33428,14 @@
       "sha256": "098cf753e38b93cbbcc30bde14bf905205ea34be9e723ae5dbc2c41e687be342"
     },
     {
+      "file": "server/src/scripts/reconcileQuduratPracticeAccess.ts",
+      "category": "api-source",
+      "domain": "payments",
+      "bytes": 13724,
+      "lines": 350,
+      "sha256": "30fbebc29f74c17a7b46476248571d2b7d7d4a7ce00c561fa5c548d826385eb7"
+    },
+    {
       "file": "server/src/scripts/reconcileSkillProgressTaxonomy.ts",
       "category": "api-source",
       "domain": "questions",
@@ -30982,6 +33476,22 @@
       "sha256": "e146f1936173ba3ec4ff4b5233916e459b8ac73e19777c08684f37fe1938517e"
     },
     {
+      "file": "server/src/scripts/runBio26FinalClosure.ts",
+      "category": "api-source",
+      "domain": "shared",
+      "bytes": 15181,
+      "lines": 386,
+      "sha256": "f0d2e559482c061b7a9693a91517fb35e0b55d68ef768cf0a6e8c0445f6672d5"
+    },
+    {
+      "file": "server/src/scripts/runChem26FinalClosure.ts",
+      "category": "api-source",
+      "domain": "shared",
+      "bytes": 5409,
+      "lines": 64,
+      "sha256": "467367074e9a81411ac7f9225efc86a9caf8eeb21396e5026f33d19f26c53bba"
+    },
+    {
       "file": "server/src/scripts/seedAdmin.ts",
       "category": "api-source",
       "domain": "shared",
@@ -31017,17 +33527,17 @@
       "file": "server/src/scripts/seedOperationalScenario.ts",
       "category": "api-source",
       "domain": "operations",
-      "bytes": 64738,
-      "lines": 1781,
-      "sha256": "fad47f93affa7af645ed862b1b27db047616c9d5fd2ab3b103b45191cde49a20"
+      "bytes": 65423,
+      "lines": 1788,
+      "sha256": "c1cb2a5c2d5dfe791e33a0b76a4e706d2016ea3aacff116f5349881d439a990c"
     },
     {
       "file": "server/src/scripts/seedOperationalScenarioApi.ts",
       "category": "api-source",
       "domain": "operations",
-      "bytes": 59365,
-      "lines": 1615,
-      "sha256": "17773796742dff4f96e7e9719b4e411042fea5d7bdc71f18eaa67a5afb1e334d"
+      "bytes": 60146,
+      "lines": 1622,
+      "sha256": "db6b6a11804f835432fc51497c58a646fb7c7f647d2e77396b99407d6e0e546e"
     },
     {
       "file": "server/src/scripts/seedPlatformData.ts",
@@ -31057,9 +33567,9 @@
       "file": "server/src/scripts/smokeOperationalJourneysApi.ts",
       "category": "api-source",
       "domain": "operations",
-      "bytes": 54051,
-      "lines": 1388,
-      "sha256": "cc063ec54a502feb280a80b5aa97c0bd5b44153ec47dd8f2db01e7dd15558861"
+      "bytes": 54290,
+      "lines": 1396,
+      "sha256": "77920131dabd60b1fbf6877cb5b783ac50923d5a286c045e5af12815348fe816"
     },
     {
       "file": "server/src/scripts/validateQuestionBankV2Manifest.ts",
@@ -31076,6 +33586,38 @@
       "bytes": 8510,
       "lines": 272,
       "sha256": "a35d97c24deec0c9236457b4e2581caf09ffbf34912ccf116ade3a929c543a08"
+    },
+    {
+      "file": "server/src/scripts/verifyBio26PostImport.ts",
+      "category": "api-source",
+      "domain": "auth",
+      "bytes": 7200,
+      "lines": 138,
+      "sha256": "236c68b655cb0f4df7acc62468f9e5470853649157891fe6cbdeeca6d0738533"
+    },
+    {
+      "file": "server/src/scripts/verifyChem26LearningStructure.ts",
+      "category": "api-source",
+      "domain": "auth",
+      "bytes": 521,
+      "lines": 18,
+      "sha256": "2ed289ff39d5305a3b7ebdd36bea8ece271de39f9f31704881b19b55fe4b11f3"
+    },
+    {
+      "file": "server/src/scripts/verifyChem26PostImport.ts",
+      "category": "api-source",
+      "domain": "auth",
+      "bytes": 6948,
+      "lines": 160,
+      "sha256": "fbc8fd18aa745f58e2fa2cf440d028b9c3c21eddedb0bec65082ef6e471405bd"
+    },
+    {
+      "file": "server/src/scripts/verifyChem26StandardTests.ts",
+      "category": "api-source",
+      "domain": "auth",
+      "bytes": 505,
+      "lines": 18,
+      "sha256": "a67d0a2909f5ee72fb27374e36460f830a5c03d7e3bcea658097536712683e21"
     },
     {
       "file": "server/src/scripts/verifyCustomerBootstrapDryRun.ts",
@@ -31169,17 +33711,17 @@
       "file": "server/src/server.ts",
       "category": "api-source",
       "domain": "shared",
-      "bytes": 249,
-      "lines": 8,
-      "sha256": "d0625c3ad80a986db01ffadd585f6c61c13ad0021a17a8cc3df2055ed53cf227"
+      "bytes": 838,
+      "lines": 25,
+      "sha256": "eb9a7547e9e8b866e002a22db562e5bc5b37c4c2b989d9e0aafe2acdab4df91e"
     },
     {
       "file": "server/src/services/accessGrantService.ts",
       "category": "api-source",
       "domain": "payments",
-      "bytes": 3635,
-      "lines": 123,
-      "sha256": "3de007a0958d39df5f6325ec34147a866c72bd8cc6b25e8865947ef6ed1f6293"
+      "bytes": 3888,
+      "lines": 126,
+      "sha256": "2387d72dca0fa0f7c5f7348ee6b5510ff4f8284cf6e10628183d2b3149c8aaad"
     },
     {
       "file": "server/src/services/adminAuditLog.ts",
@@ -31409,17 +33951,17 @@
       "file": "services/adapter.ts",
       "category": "web-source",
       "domain": "shared",
-      "bytes": 27046,
-      "lines": 583,
-      "sha256": "1a71a813c15ee39f02fe80885e7a9a743a6b2d36a88a2abaf3ae2be294e18c95"
+      "bytes": 27479,
+      "lines": 599,
+      "sha256": "9929fcb7353fbedcfa795b8d92c491571c40bc78982d2a4d182b29c6b9fdf525"
     },
     {
       "file": "services/adaptiveLearningPathService.ts",
       "category": "web-source",
       "domain": "learning",
-      "bytes": 5409,
-      "lines": 126,
-      "sha256": "d96426caf6acf94c4043fb7028010d1b02d6fd517e587d254004a3a73f5dcd0c"
+      "bytes": 5443,
+      "lines": 123,
+      "sha256": "fd6514fa5f607b01b59629129af1b119ed0157438b8b716fedde63c34da1ddab"
     },
     {
       "file": "services/adaptiveTreatmentPolicy.ts",
@@ -31449,9 +33991,9 @@
       "file": "services/api.ts",
       "category": "web-source",
       "domain": "shared",
-      "bytes": 47738,
-      "lines": 1022,
-      "sha256": "1260f86c2327031c1bea888080ab06ab2877d6cc33339d12a9ca455b0dc93e1a"
+      "bytes": 47849,
+      "lines": 1024,
+      "sha256": "3999c1a0839ecfa822879b0e0b3df5a0a96b85e0ae17840581774c3c1235d188"
     },
     {
       "file": "services/apiGroups/accessCodesApi.ts",
@@ -31465,9 +34007,9 @@
       "file": "services/apiGroups/aiApi.ts",
       "category": "web-source",
       "domain": "schools",
-      "bytes": 8177,
-      "lines": 260,
-      "sha256": "d7ed0965ce91f760b45f948d7a14ee44bb17fc03a9589e5a30642aed5bc798f0"
+      "bytes": 9033,
+      "lines": 290,
+      "sha256": "40dbe2b1d87681f1a73a3c896634087570a6d773c4a200bef8f3f9bd939b604e"
     },
     {
       "file": "services/apiGroups/announcementAdsApi.ts",
@@ -31484,6 +34026,14 @@
       "bytes": 8378,
       "lines": 258,
       "sha256": "2b08be117f69101f3de9abd08774f7d036d7790a3deff84f03ba49778e04147b"
+    },
+    {
+      "file": "services/apiGroups/commandCenterApi.ts",
+      "category": "web-source",
+      "domain": "schools",
+      "bytes": 8036,
+      "lines": 250,
+      "sha256": "9e2f88b8371c12fcc6fa8c9d19d0131e5945ee537aac99db1ad8bbc91295af77"
     },
     {
       "file": "services/apiGroups/coursesApi.ts",
@@ -31537,9 +34087,9 @@
       "file": "services/apiGroups/quizzesApi.ts",
       "category": "web-source",
       "domain": "quizzes",
-      "bytes": 8636,
-      "lines": 256,
-      "sha256": "33257f0ab6c926660983978dd74a80cba16cf0b59d27ed50552d1c5e227cc09a"
+      "bytes": 8723,
+      "lines": 259,
+      "sha256": "99bdb916e7411de2c73b828e80bb07f043be7cb6e2cb53013f6a4d108c3cd782"
     },
     {
       "file": "services/apiGroups/studyPlansApi.ts",
@@ -31601,9 +34151,9 @@
       "file": "services/smartLearningPath.ts",
       "category": "web-source",
       "domain": "learning",
-      "bytes": 6671,
+      "bytes": 6698,
       "lines": 174,
-      "sha256": "ae8cb39b51fd3283c8a5c67ec6d729088ada166e5efe51ea8538ae4c0acd45de"
+      "sha256": "8072c8484bb580036274c2555766fe08af181f30af8ece611ff4b114f8645a6a"
     },
     {
       "file": "src/observability/sentry.ts",
@@ -31625,9 +34175,9 @@
       "file": "store/slices/accessEnrollmentSlice.ts",
       "category": "web-source",
       "domain": "payments",
-      "bytes": 9613,
-      "lines": 230,
-      "sha256": "9e3439ec04ae1e7452eee9536a7f5179ec42ae054d3903166b12cfaa46c93715"
+      "bytes": 9923,
+      "lines": 234,
+      "sha256": "0b163efc8a2b706e291582ff4b6d122d16bb732dcbc4f6267b4da88397d2dd01"
     },
     {
       "file": "store/slices/announcementAdsSlice.ts",
@@ -32457,9 +35007,9 @@
       "file": "types.ts",
       "category": "web-source",
       "domain": "shared",
-      "bytes": 32201,
-      "lines": 1138,
-      "sha256": "03427aee9b96c815babca8d19764aee11a71a1becbf517776071c1636bfab198"
+      "bytes": 32230,
+      "lines": 1139,
+      "sha256": "c313d25a1e9cd856919be8129b27a247d41a050b5079ac05fd80331146ec2aaf"
     },
     {
       "file": "types/url-search-params.d.ts",
@@ -32572,6 +35122,14 @@
       "bytes": 4440,
       "lines": 125,
       "sha256": "b526bc1989aae7071e2ea61c42e2a0abae3fcd340aacaa6bb8ce56b536529476"
+    },
+    {
+      "file": "utils/foundationTopicAccess.ts",
+      "category": "web-source",
+      "domain": "payments",
+      "bytes": 2649,
+      "lines": 77,
+      "sha256": "1d4b91b34f6c119f57bc9c8019b1f0caf7a80f713b29a896540613cfa8fec765"
     },
     {
       "file": "utils/interactiveVideoProgress.ts",
@@ -32721,9 +35279,9 @@
       "file": "utils/skillActionLinks.ts",
       "category": "web-source",
       "domain": "questions",
-      "bytes": 3324,
-      "lines": 84,
-      "sha256": "0b99c16d3f4f6466af3f0cac23abcdfd2f3d82bfb6182e8f042354bbf7d9ddb7"
+      "bytes": 4592,
+      "lines": 116,
+      "sha256": "2dc0fef65f0f4bbb7d5c2b2e740e7226b9864f3b9919780cbdc3a7bcf4e98d7d"
     },
     {
       "file": "utils/streak.ts",
