@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "bank": "MNSF26",
   "purpose": "Safe full-book mapping acceleration: only source groups whose candidate map contains exactly one canonical subskill. These remain provisional until question-math confirmation; no auto-import.",
   "policy": {
@@ -10,7 +10,9 @@
   },
   "counts": {
     "groups": 2,
-    "questions": 96
+    "questions": 96,
+    "approved": 0,
+    "retracted": 96
   },
   "groups": [
     {
@@ -24,7 +26,7 @@
       "questionCount": 59,
       "provisionalCanonicalSubSkillId": "sub_quant_02_3",
       "canonicalName": "الأعداد الأولية والتحليل للعوامل الأولية",
-      "status": "PROVISIONAL_PENDING_QUESTION_MATH_CONFIRMATION"
+      "status": "RETRACTED_PENDING_QUESTION_LEVEL_VISUAL_MAPPING"
     },
     {
       "sourcePart": "الهندسة",
@@ -36,7 +38,14 @@
       "questionCount": 37,
       "provisionalCanonicalSubSkillId": "sub_quant_25_3",
       "canonicalName": "هندسة الإحداثيات (تحديد النقاط، المسافة، ونقطة المنتصف)",
-      "status": "PROVISIONAL_PENDING_QUESTION_MATH_CONFIRMATION"
+      "status": "RETRACTED_PENDING_QUESTION_LEVEL_VISUAL_MAPPING"
     }
-  ]
+  ],
+  "status": "RETRACTED_BY_RUN024_VISUAL_QUESTION_MATH_AUDIT",
+  "retraction": {
+    "reason": "Both supposedly single-candidate source groups contain mixed question-level mathematics. Group-title-only exact mapping is unsafe.",
+    "coordinateAudit": "MNSF26_COORDINATE_GROUP_VISUAL_AUDIT_RUN024_V1.json",
+    "primeFactorsAudit": "MNSF26_PRIME_FACTORS_GROUP_VISUAL_AUDIT_RUN024_V1.json",
+    "next": "QUESTION_LEVEL_VISUAL_MAPPING"
+  }
 }
