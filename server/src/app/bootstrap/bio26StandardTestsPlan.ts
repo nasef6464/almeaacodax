@@ -270,10 +270,10 @@ export function buildBio26StandardTests(questions: Bio26TestQuestion[]) {
     throw new Error(`BIO26 standard tests must use all ${EXPECTED_SOURCE_QUESTIONS} unique question references with zero cross-test overlap`);
   }
 
-  const tranches = Array.from({ length: Math.floor(TEST_COUNT / 5) }, (_, index) => tests.slice(index * 5, index * 5 + 5));
+  const tranches = Array.from({ length: Math.ceil(TEST_COUNT / 5) }, (_, index) => tests.slice(index * 5, Math.min(index * 5 + 5, TEST_COUNT)));
   for (const [index, tranche] of tranches.entries()) {
     const skills = new Set(tranche.flatMap((test) => test.skillIds));
-    if (skills.size !== 29) {
+    if (tranche.length === 5 && skills.size !== 29) {
       throw new Error(`BIO26 five-test tranche ${index + 1} does not cover all 29 main skills`);
     }
   }
