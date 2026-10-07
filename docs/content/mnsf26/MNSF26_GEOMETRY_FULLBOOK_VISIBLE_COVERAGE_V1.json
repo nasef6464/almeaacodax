@@ -173,6 +173,7 @@
         8,
         9,
         10,
+        11,
         12,
         13,
         14,
@@ -184,10 +185,15 @@
         20
       ],
       "maxObservedQuestionNumber": 20,
-      "missingWithinObservedRange": [
-        11
-      ],
-      "sourceEvidence": "FILES_PARSED_PAGE_TEXT_FULLBOOK"
+      "missingWithinObservedRange": [],
+      "sourceEvidence": "FILES_PARSED_PAGE_TEXT_FULLBOOK",
+      "visualRepairEvidence": {
+        "method": "RENDERED_PAGE_VISUAL_CONFIRMATION",
+        "recoveredQuestionNumbers": [
+          11
+        ],
+        "status": "RECOVERED_VISIBLE_SOURCE_QUESTION"
+      }
     },
     {
       "testNumber": 7,
@@ -736,7 +742,13 @@
       "missingWithinObservedRange": [
         18
       ],
-      "sourceEvidence": "FILES_PARSED_PAGE_TEXT_FULLBOOK"
+      "sourceEvidence": "FILES_PARSED_PAGE_TEXT_FULLBOOK",
+      "visualRepairEvidence": {
+        "method": "RENDERED_PAGE_VISUAL_CONFIRMATION",
+        "checkedQuestionNumber": 18,
+        "status": "SOURCE_ABSENT_FAIL_CLOSED",
+        "detail": "Rendered source has Q14-Q17 and Q19 on the continuation page, with no visible Q18 question block."
+      }
     },
     {
       "testNumber": 25,
@@ -748,6 +760,7 @@
         1,
         2,
         3,
+        4,
         5,
         6,
         7,
@@ -766,10 +779,15 @@
         20
       ],
       "maxObservedQuestionNumber": 20,
-      "missingWithinObservedRange": [
-        4
-      ],
-      "sourceEvidence": "FILES_PARSED_PAGE_TEXT_FULLBOOK"
+      "missingWithinObservedRange": [],
+      "sourceEvidence": "FILES_PARSED_PAGE_TEXT_FULLBOOK",
+      "visualRepairEvidence": {
+        "method": "RENDERED_PAGE_VISUAL_CONFIRMATION",
+        "recoveredQuestionNumbers": [
+          4
+        ],
+        "status": "RECOVERED_VISIBLE_SOURCE_QUESTION"
+      }
     },
     {
       "testNumber": 26,
@@ -941,6 +959,7 @@
         12,
         13,
         14,
+        15,
         16,
         17,
         18,
@@ -948,10 +967,15 @@
         20
       ],
       "maxObservedQuestionNumber": 20,
-      "missingWithinObservedRange": [
-        15
-      ],
-      "sourceEvidence": "FILES_PARSED_PAGE_TEXT_FULLBOOK"
+      "missingWithinObservedRange": [],
+      "sourceEvidence": "FILES_PARSED_PAGE_TEXT_FULLBOOK",
+      "visualRepairEvidence": {
+        "method": "RENDERED_PAGE_VISUAL_CONFIRMATION",
+        "recoveredQuestionNumbers": [
+          15
+        ],
+        "status": "RECOVERED_VISIBLE_SOURCE_QUESTION"
+      }
     },
     {
       "testNumber": 32,
@@ -1313,6 +1337,7 @@
         3,
         4,
         5,
+        6,
         7,
         8,
         9,
@@ -1329,10 +1354,15 @@
         20
       ],
       "maxObservedQuestionNumber": 20,
-      "missingWithinObservedRange": [
-        6
-      ],
-      "sourceEvidence": "FILES_PARSED_PAGE_TEXT_FULLBOOK"
+      "missingWithinObservedRange": [],
+      "sourceEvidence": "FILES_PARSED_PAGE_TEXT_FULLBOOK",
+      "visualRepairEvidence": {
+        "method": "RENDERED_PAGE_VISUAL_CONFIRMATION",
+        "recoveredQuestionNumbers": [
+          6
+        ],
+        "status": "RECOVERED_VISIBLE_SOURCE_QUESTION"
+      }
     },
     {
       "testNumber": 44,
@@ -1550,11 +1580,19 @@
     "lessons": 11,
     "pagesCovered": 97,
     "testsWithInternalNumberGaps": [
-      6,
-      24,
-      25,
-      31,
-      43
-    ]
+      24
+    ],
+    "visualRepair": {
+      "recoveredGapTests": [
+        6,
+        25,
+        31,
+        43
+      ],
+      "sourceAbsentFailClosedTests": [
+        24
+      ],
+      "remainingUnresolvedVisualGaps": []
+    }
   }
 }
