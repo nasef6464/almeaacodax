@@ -7,7 +7,7 @@ const coverage = JSON.parse(fs.readFileSync(path.join(root, "MNSF26_GEOMETRY_FUL
   sourcePart: string;
   pages: number;
   tests: Array<{ testNumber:number; lessonNumber:number; lessonName:string; startPdfPage:number; endPdfPage:number; observedQuestionNumbers:number[]; maxObservedQuestionNumber:number; missingWithinObservedRange:number[] }>;
-  summary: { tests:number; lessons:number; pagesCovered:number; testsWithInternalNumberGaps:number[] };
+  summary: { tests:number; lessons:number; pagesCovered:number; testsWithInternalNumberGaps:number[]; visualRepair?: { recoveredGapTests:number[]; sourceAbsentFailClosedTests:number[]; remainingUnresolvedVisualGaps:number[] } };
 };
 const index = JSON.parse(fs.readFileSync(path.join(root, "MNSF26_GEOMETRY_SOURCE_INDEX_V1.json"), "utf8")) as {
   tests: Array<{ testNumber:number; lessonNumber:number; lessonName:string; startPdfPage:number|null }>;
@@ -24,5 +24,9 @@ for(let i=0;i<index.tests.length;i++){
 const declared=coverage.tests.filter(t=>t.missingWithinObservedRange.length).map(t=>t.testNumber).sort((a,b)=>a-b);
 const summary=coverage.summary.testsWithInternalNumberGaps.slice().sort((a,b)=>a-b);
 if(JSON.stringify(declared)!==JSON.stringify(summary)) failures.push({gate:"gap-summary-parity",detail:{declared,summary}});
+const visualRepair=coverage.summary.visualRepair;
+if(!visualRepair || JSON.stringify(visualRepair.recoveredGapTests)!==JSON.stringify([6,25,31,43]) || JSON.stringify(visualRepair.sourceAbsentFailClosedTests)!==JSON.stringify([24]) || visualRepair.remainingUnresolvedVisualGaps.length!==0) failures.push({gate:"visual-gap-repair-contract",detail:visualRepair});
+const t24=byTest.get(24);
+if(!t24 || JSON.stringify(t24.missingWithinObservedRange)!==JSON.stringify([18])) failures.push({gate:"source-absent-fail-closed",detail:t24});
 console.log(JSON.stringify({ok:failures.length===0,counts:{tests:coverage.tests.length,lessons:coverage.summary.lessons,pages:coverage.summary.pagesCovered,internalGapTests:summary},failures},null,2));
 if(failures.length) process.exitCode=1;
