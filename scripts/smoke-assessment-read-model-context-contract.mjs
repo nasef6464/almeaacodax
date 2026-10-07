@@ -22,7 +22,7 @@ check('submission read-model context is delegated while queries stay in the rout
 });
 
 check('skill identity and display-map semantics remain explicit', () => {
-  for (const fragment of ['orderedQuestions.flatMap', 'question?.skillId', 'question?.subSkillId', 'canonical.length > 0', 'subSkills', 'level: "sub"', 'parentSkillId', 'new Map<string, any>', 'skillById:', 'subjectNameById:', 'sectionNameById:']) {
+  for (const fragment of ['orderedQuestions.flatMap', 'question?.skillId', 'question?.subSkillId', 'question?.subSkillIds', 'question?.skillIds', 'subSkills', 'level: "sub"', 'parentSkillId', 'new Map<string, any>', 'skillById:', 'subjectNameById:', 'sectionNameById:']) {
     assert.ok(moduleSource.includes(fragment), `read-model context missing ${fragment}`);
   }
 });

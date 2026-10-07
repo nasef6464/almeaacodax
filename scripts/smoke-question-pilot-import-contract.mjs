@@ -69,6 +69,9 @@ check("pilot import forces imported draft workflow and canonical taxonomy", () =
   includes(importRoutes, 'approvalStatus: "draft"');
   includes(importRoutes, 'id: `q_${new mongoose.Types.ObjectId()}`');
   includes(importRoutes, "skillIds: canonicalSkills.skillIds");
+  includes(importRoutes, "skillId: canonicalSkills.skillId");
+  includes(importRoutes, "subSkillId: canonicalSkills.subSkillId");
+  includes(importRoutes, "subSkillIds: canonicalSkills.subSkillIds");
   includes(importRoutes, "importBatchId: batchId");
 });
 
@@ -109,6 +112,7 @@ check("canonical provenance survives the production question contract", () => {
     "pdfPageIndex: z.number().int().min(1)",
     "printedPageNumber: z.number().int().min(1)",
     "printedQuestionNumber: z.number().int().min(0)",
+    "subSkillIds: z.array(z.string()).default([])",
   ]) includes(questionSchemas, fragment);
 });
 

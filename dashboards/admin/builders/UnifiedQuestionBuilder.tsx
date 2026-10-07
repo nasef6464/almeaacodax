@@ -51,6 +51,7 @@ const normalizeQuestionForEditing = (source?: Partial<Question>, fallbackSubject
     subject: fallbackSubjectId,
     sectionId: fallbackSectionId,
     skillIds: [],
+    subSkillIds: [],
     ...(source || {}),
     type,
     options,
@@ -246,6 +247,9 @@ export const UnifiedQuestionBuilder: React.FC<UnifiedQuestionBuilderProps> = ({
       passage: question.passage?.trim() || undefined,
       options: question.type === 'essay' ? [] : question.type === 'true_false' ? ['صح', 'خطأ'] : trimmedOptions,
       skillIds: normalizedSkillIds,
+      skillId: activeMainSkill?.id || null,
+      subSkillId: selectedNestedSkillIds[0] || null,
+      subSkillIds: selectedNestedSkillIds,
       correctOptionIndex: question.type === 'essay' ? 0 : question.type === 'true_false' ? Number(question.correctOptionIndex ?? 0) : normalizedCorrectOptionIndex,
     });
   };
