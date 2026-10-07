@@ -16,35 +16,84 @@
     {
       "id": "P1",
       "name": "foundation_dictionary",
-      "status": "SOURCE_MAP_DONE_BINDING_PENDING",
+      "status": "DONE",
       "batching": "lesson-aligned",
       "lessons": "1-31",
       "sourceIdeasExtractedLessons": "1-31",
-      "progress": "31/31 source map",
-      "next": "Obtain exact runtime taxonomy snapshot, bind source ideas without invented IDs, then generate YLM26 deterministic review manifest."
+      "progress": "31/31 source map + exact 22-main/67-sub runtime binding frozen",
+      "next": "YLM26 326-row full content/difficulty/enrichment review"
     },
     {
       "id": "P2",
       "name": "ylm26_full_review",
-      "status": "PENDING",
-      "expectedBaseline": 326
+      "status": "IN_PROGRESS",
+      "expectedBaseline": 326,
+      "currentProgress": {
+        "deterministicManifestRows": 326,
+        "structuralCoreComplete": 326,
+        "invalidParentChildPairs": 0,
+        "currentDifficultyDistribution": {
+          "easy": 0,
+          "medium": 326,
+          "hard": 0
+        },
+        "difficultyAudit": "FAIL_RECLASSIFICATION_REQUIRED",
+        "pageVsSkillCandidates": 5,
+        "confirmedRemaps": 3,
+        "confirmedKeeps": 2,
+        "productionMutationApplied": false
+      }
     },
     {
       "id": "P3",
       "name": "col26_full_review",
-      "status": "PENDING",
-      "expectedBaseline": 1012
+      "status": "PREAUDIT_DONE_REVIEW_PENDING",
+      "expectedBaseline": 1012,
+      "preAudit": {
+        "productionCount": 1012,
+        "approved": 1012,
+        "missingSkill": 0,
+        "missingExplanation": 0,
+        "missingHint": 1012,
+        "missingStrategy": 0,
+        "missingAiContext": 1012,
+        "difficulty": {
+          "easy": 0,
+          "medium": 1012,
+          "hard": 0
+        }
+      }
     },
     {
       "id": "P4",
       "name": "col26old_regression",
-      "status": "PENDING",
-      "sourceInventory": 1258
+      "status": "PREAUDIT_DONE_REGRESSION_PENDING",
+      "sourceInventory": 1258,
+      "productionCanonical": 1257,
+      "preAudit": {
+        "productionCount": 1257,
+        "approved": 1257,
+        "missingSkill": 0,
+        "missingExplanation": 0,
+        "missingHint": 1257,
+        "missingStrategy": 0,
+        "missingAiContext": 1257,
+        "difficulty": {
+          "easy": 0,
+          "medium": 1257,
+          "hard": 0
+        },
+        "distinctMappedSubSkills": 67
+      }
     },
     {
       "id": "P5",
       "name": "cross_bank_dedupe",
-      "status": "PENDING"
+      "status": "PREAUDIT_DONE_FINAL_DEDUPE_PENDING",
+      "preAudit": {
+        "crossBankExactImageHashDuplicates": 0,
+        "note": "No exact cross-bank duplicates found by current production imageHash. Historical COL26OLD alias remains protected separately."
+      }
     },
     {
       "id": "P6",
@@ -78,19 +127,24 @@
       2
     ]
   },
-  "lastCheckpoint": "2026-10-07-run4",
+  "lastCheckpoint": "2026-10-07-heavy-run5",
   "evidence": [
     "ops/tah-math/TAH_MATH_RUN1_BASELINE.json",
     "ops/tah-math/TAH_MATH_SOURCE_IDEA_MAP_PART01.json",
     "ops/tah-math/TAH_MATH_SOURCE_IDEA_MAP_PART02.json",
     "ops/tah-math/TAH_MATH_SOURCE_IDEA_MAP_PART03.json",
-    "ops/tah-math/TAH_MATH_SOURCE_IDEA_MAP_PART04.json"
+    "ops/tah-math/TAH_MATH_SOURCE_IDEA_MAP_PART04.json",
+    "ops/tah-math/TAH_MATH_RUNTIME_TAXONOMY_22_67.json",
+    "ops/tah-math/TAH_MATH_SOURCE_TAXONOMY_BINDING.json",
+    "ops/tah-math/TAH_MATH_YLM26_AUDIT_RUN5.json",
+    "ops/tah-math/TAH_MATH_YLM26_MAPPING_CORRECTIONS_MANIFEST_V1.json",
+    "ops/tah-math/TAH_MATH_YLM26_REVIEW_MANIFEST_V1.json"
   ],
   "blockers": [
     {
-      "scope": "taxonomy_binding",
-      "status": "NOT_BLOCKING_SOURCE_EXTRACTION",
-      "detail": "Repository does not contain a complete 22-main/67-sub Tahsili Math taxonomy export. Do not invent IDs; obtain runtime/export evidence before binding."
+      "scope": "difficulty_and_enrichment",
+      "status": "ACTIVE_NOT_STOPPING",
+      "detail": "All three banks are currently Medium-only. YLM26 has core explanation/hint/strategy/AI; COL26/COL26OLD lack hint and AI context in production. Full pedagogical review and enrichment is required before final closure."
     }
   ]
 }
