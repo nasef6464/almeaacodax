@@ -52,7 +52,7 @@ async function loadAndValidateSource() {
     fail(`BIO26 sub taxonomy drift: expected ${EXPECTED_SUB_SKILLS}, got ${subCount}`);
   }
   if (topics.length !== EXPECTED_MAIN_SKILLS + EXPECTED_SUB_SKILLS) {
-    fail(`BIO26 foundation topic count drift: expected 126, got ${topics.length}`);
+    fail(`BIO26 foundation topic count drift: expected ${EXPECTED_MAIN_SKILLS + EXPECTED_SUB_SKILLS}, got ${topics.length}`);
   }
 
   const skillById = new Map(skills.map((skill) => [stringId(skill.id || skill._id), skill]));
