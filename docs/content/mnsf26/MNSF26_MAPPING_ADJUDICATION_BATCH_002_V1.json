@@ -1,0 +1,364 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "baselineHead": "08a5caffb6924292e5fa75da76c6e654f461107b",
+  "policy": "QUESTION_LEVEL_MATH; SOURCE_PROVENANCE_PRESERVED; AMBIGUOUS_FAIL_CLOSED",
+  "counts": {
+    "reviewed": 39,
+    "approved": 38,
+    "stillReview": 1
+  },
+  "decisions": [
+    {
+      "questionCode": "QDR-QNT-MNSF26-P001-Q12",
+      "decision": "KEEP_REVIEW",
+      "subSkillId": null,
+      "rationale": "المسألة تجمع عد مدى شامل مع متممة؛ لا يوجد تطابق canonical واحد آمن من الدليل الحالي.",
+      "sourceClassificationPreserved": true,
+      "reviewBasis": "QUESTION_FINGERPRINT_PLUS_CURRENT_CANONICAL_MAPPING",
+      "newSkillCreated": false
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P008-Q03",
+      "decision": "APPROVE_CROSS_TOPIC",
+      "subSkillId": "sub_quant_10_3",
+      "rationale": "بصمة السؤال (savings-goal / monthly-fixed-saving / months = target ÷ monthly.) تطابق طريقة الحل الممثلة في sub_quant_10_3; اعتماد question-level مع حفظ source classification.",
+      "sourceClassificationPreserved": true,
+      "reviewBasis": "QUESTION_FINGERPRINT_PLUS_CURRENT_CANONICAL_MAPPING",
+      "newSkillCreated": false
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P008-Q05",
+      "decision": "APPROVE_CROSS_TOPIC",
+      "subSkillId": "sub_quant_10_3",
+      "rationale": "بصمة السؤال (unit-price × quantity / mixed-purchase-total.) تطابق طريقة الحل الممثلة في sub_quant_10_3; اعتماد question-level مع حفظ source classification.",
+      "sourceClassificationPreserved": true,
+      "reviewBasis": "QUESTION_FINGERPRINT_PLUS_CURRENT_CANONICAL_MAPPING",
+      "newSkillCreated": false
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P008-Q06",
+      "decision": "APPROVE_CROSS_TOPIC",
+      "subSkillId": "sub_quant_07_2",
+      "rationale": "بصمة السؤال (reverse-linear-state / passenger-change / half-capacity.) تطابق طريقة الحل الممثلة في sub_quant_07_2; اعتماد question-level مع حفظ source classification.",
+      "sourceClassificationPreserved": true,
+      "reviewBasis": "QUESTION_FINGERPRINT_PLUS_CURRENT_CANONICAL_MAPPING",
+      "newSkillCreated": false
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P008-Q07",
+      "decision": "APPROVE_CROSS_TOPIC",
+      "subSkillId": "sub_quant_18_1",
+      "rationale": "بصمة السؤال (bounded-outcomes / repeated-die / impossibility-by-maximum.) تطابق طريقة الحل الممثلة في sub_quant_18_1; اعتماد question-level مع حفظ source classification.",
+      "sourceClassificationPreserved": true,
+      "reviewBasis": "QUESTION_FINGERPRINT_PLUS_CURRENT_CANONICAL_MAPPING",
+      "newSkillCreated": false
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P008-Q10",
+      "decision": "APPROVE_CROSS_TOPIC",
+      "subSkillId": "sub_quant_07_2",
+      "rationale": "بصمة السؤال (transfer-between-two / invariant-total / equal-after-transfer.) تطابق طريقة الحل الممثلة في sub_quant_07_2; اعتماد question-level مع حفظ source classification.",
+      "sourceClassificationPreserved": true,
+      "reviewBasis": "QUESTION_FINGERPRINT_PLUS_CURRENT_CANONICAL_MAPPING",
+      "newSkillCreated": false
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P008-Q11",
+      "decision": "APPROVE_CROSS_TOPIC",
+      "subSkillId": "sub_quant_06_4",
+      "rationale": "بصمة السؤال (square-array / rows=columns / square-root-total.) تطابق طريقة الحل الممثلة في sub_quant_06_4; اعتماد question-level مع حفظ source classification.",
+      "sourceClassificationPreserved": true,
+      "reviewBasis": "QUESTION_FINGERPRINT_PLUS_CURRENT_CANONICAL_MAPPING",
+      "newSkillCreated": false
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P009-Q16",
+      "decision": "APPROVE_CROSS_TOPIC",
+      "subSkillId": "sub_quant_10_3",
+      "rationale": "بصمة السؤال (budget / unit-price / maximum-whole-units.) تطابق طريقة الحل الممثلة في sub_quant_10_3; اعتماد question-level مع حفظ source classification.",
+      "sourceClassificationPreserved": true,
+      "reviewBasis": "QUESTION_FINGERPRINT_PLUS_CURRENT_CANONICAL_MAPPING",
+      "newSkillCreated": false
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P009-Q17",
+      "decision": "APPROVE_CROSS_TOPIC",
+      "subSkillId": "sub_quant_14_4",
+      "rationale": "بصمة السؤال (periodic-increase / convert-year-to-periods / repeated-gain.) تطابق طريقة الحل الممثلة في sub_quant_14_4; اعتماد question-level مع حفظ source classification.",
+      "sourceClassificationPreserved": true,
+      "reviewBasis": "QUESTION_FINGERPRINT_PLUS_CURRENT_CANONICAL_MAPPING",
+      "newSkillCreated": false
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P009-Q18",
+      "decision": "APPROVE_CROSS_TOPIC",
+      "subSkillId": "sub_quant_14_4",
+      "rationale": "بصمة السؤال (repeated-cycle / round-trip-duration / count-visits.) تطابق طريقة الحل الممثلة في sub_quant_14_4; اعتماد question-level مع حفظ source classification.",
+      "sourceClassificationPreserved": true,
+      "reviewBasis": "QUESTION_FINGERPRINT_PLUS_CURRENT_CANONICAL_MAPPING",
+      "newSkillCreated": false
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P009-Q20",
+      "decision": "APPROVE_CROSS_TOPIC",
+      "subSkillId": "sub_quant_08_2",
+      "rationale": "بصمة السؤال (rate-comparison / normalize-time-window / annualize-rates.) تطابق طريقة الحل الممثلة في sub_quant_08_2; اعتماد question-level مع حفظ source classification.",
+      "sourceClassificationPreserved": true,
+      "reviewBasis": "QUESTION_FINGERPRINT_PLUS_CURRENT_CANONICAL_MAPPING",
+      "newSkillCreated": false
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P010-Q01",
+      "decision": "APPROVE_CROSS_TOPIC",
+      "subSkillId": "sub_quant_08_1",
+      "rationale": "بصمة السؤال (multi-person-ratio-allocation / total-conservation / chained-fractions.) تطابق طريقة الحل الممثلة في sub_quant_08_1; اعتماد question-level مع حفظ source classification.",
+      "sourceClassificationPreserved": true,
+      "reviewBasis": "QUESTION_FINGERPRINT_PLUS_CURRENT_CANONICAL_MAPPING",
+      "newSkillCreated": false
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P010-Q04",
+      "decision": "APPROVE_CROSS_TOPIC",
+      "subSkillId": "sub_quant_10_3",
+      "rationale": "بصمة السؤال (fixed-pay-plus-commission / multi-period-income.) تطابق طريقة الحل الممثلة في sub_quant_10_3; اعتماد question-level مع حفظ source classification.",
+      "sourceClassificationPreserved": true,
+      "reviewBasis": "QUESTION_FINGERPRINT_PLUS_CURRENT_CANONICAL_MAPPING",
+      "newSkillCreated": false
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P010-Q06",
+      "decision": "APPROVE_CROSS_TOPIC",
+      "subSkillId": "sub_quant_08_2",
+      "rationale": "بصمة السؤال (unit-rate × time.) تطابق طريقة الحل الممثلة في sub_quant_08_2; اعتماد question-level مع حفظ source classification.",
+      "sourceClassificationPreserved": true,
+      "reviewBasis": "QUESTION_FINGERPRINT_PLUS_CURRENT_CANONICAL_MAPPING",
+      "newSkillCreated": false
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P010-Q07",
+      "decision": "APPROVE_CROSS_TOPIC",
+      "subSkillId": "sub_quant_08_2",
+      "rationale": "بصمة السؤال (equivalent-ratio / scale-both-terms.) تطابق طريقة الحل الممثلة في sub_quant_08_2; اعتماد question-level مع حفظ source classification.",
+      "sourceClassificationPreserved": true,
+      "reviewBasis": "QUESTION_FINGERPRINT_PLUS_CURRENT_CANONICAL_MAPPING",
+      "newSkillCreated": false
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P010-Q08",
+      "decision": "APPROVE_CROSS_TOPIC",
+      "subSkillId": "sub_quant_14_4",
+      "rationale": "بصمة السؤال (doubling-sequence / finite-sum.) تطابق طريقة الحل الممثلة في sub_quant_14_4; اعتماد question-level مع حفظ source classification.",
+      "sourceClassificationPreserved": true,
+      "reviewBasis": "QUESTION_FINGERPRINT_PLUS_CURRENT_CANONICAL_MAPPING",
+      "newSkillCreated": false
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P010-Q09",
+      "decision": "APPROVE_CROSS_TOPIC",
+      "subSkillId": "sub_quant_10_3",
+      "rationale": "بصمة السؤال (purchase-total / unit-price.) تطابق طريقة الحل الممثلة في sub_quant_10_3; اعتماد question-level مع حفظ source classification.",
+      "sourceClassificationPreserved": true,
+      "reviewBasis": "QUESTION_FINGERPRINT_PLUS_CURRENT_CANONICAL_MAPPING",
+      "newSkillCreated": false
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P010-Q11",
+      "decision": "APPROVE_CROSS_TOPIC",
+      "subSkillId": "sub_quant_10_3",
+      "rationale": "بصمة السؤال (mixed-purchase / quantity×unit-price / total-cost.) تطابق طريقة الحل الممثلة في sub_quant_10_3; اعتماد question-level مع حفظ source classification.",
+      "sourceClassificationPreserved": true,
+      "reviewBasis": "QUESTION_FINGERPRINT_PLUS_CURRENT_CANONICAL_MAPPING",
+      "newSkillCreated": false
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P010-Q12",
+      "decision": "APPROVE_CROSS_TOPIC",
+      "subSkillId": "sub_quant_08_1",
+      "rationale": "بصمة السؤال (equal-share / subset-contribution / quantitative-comparison.) تطابق طريقة الحل الممثلة في sub_quant_08_1; اعتماد question-level مع حفظ source classification.",
+      "sourceClassificationPreserved": true,
+      "reviewBasis": "QUESTION_FINGERPRINT_PLUS_CURRENT_CANONICAL_MAPPING",
+      "newSkillCreated": false
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P011-Q17",
+      "decision": "APPROVE_CROSS_TOPIC",
+      "subSkillId": "sub_quant_10_3",
+      "rationale": "بصمة السؤال (fixed-budget / price-increase / affordable-quantity.) تطابق طريقة الحل الممثلة في sub_quant_10_3; اعتماد question-level مع حفظ source classification.",
+      "sourceClassificationPreserved": true,
+      "reviewBasis": "QUESTION_FINGERPRINT_PLUS_CURRENT_CANONICAL_MAPPING",
+      "newSkillCreated": false
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P011-Q19",
+      "decision": "APPROVE_CROSS_TOPIC",
+      "subSkillId": "sub_quant_03_3",
+      "rationale": "بصمة السؤال (مقارنة كمية: ٤٤ مقابل ٣٦٣٦÷٩.) تطابق طريقة الحل الممثلة في sub_quant_03_3; اعتماد question-level مع حفظ source classification.",
+      "sourceClassificationPreserved": true,
+      "reviewBasis": "QUESTION_FINGERPRINT_PLUS_CURRENT_CANONICAL_MAPPING",
+      "newSkillCreated": false
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P012-Q06",
+      "decision": "APPROVE_CROSS_TOPIC",
+      "subSkillId": "sub_quant_10_3",
+      "rationale": "بصمة السؤال (relative-price / total-purchase.) تطابق طريقة الحل الممثلة في sub_quant_10_3; اعتماد question-level مع حفظ source classification.",
+      "sourceClassificationPreserved": true,
+      "reviewBasis": "QUESTION_FINGERPRINT_PLUS_CURRENT_CANONICAL_MAPPING",
+      "newSkillCreated": false
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P012-Q07",
+      "decision": "APPROVE_CROSS_TOPIC",
+      "subSkillId": "sub_quant_14_4",
+      "rationale": "بصمة السؤال (constant-monthly-increase / repeated-pattern.) تطابق طريقة الحل الممثلة في sub_quant_14_4; اعتماد question-level مع حفظ source classification.",
+      "sourceClassificationPreserved": true,
+      "reviewBasis": "QUESTION_FINGERPRINT_PLUS_CURRENT_CANONICAL_MAPPING",
+      "newSkillCreated": false
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P012-Q08",
+      "decision": "APPROVE_CROSS_TOPIC",
+      "subSkillId": "sub_quant_07_2",
+      "rationale": "بصمة السؤال (two-capacity-conditions / linear-equation / classroom-seating.) تطابق طريقة الحل الممثلة في sub_quant_07_2; اعتماد question-level مع حفظ source classification.",
+      "sourceClassificationPreserved": true,
+      "reviewBasis": "QUESTION_FINGERPRINT_PLUS_CURRENT_CANONICAL_MAPPING",
+      "newSkillCreated": false
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P012-Q09",
+      "decision": "APPROVE_CROSS_TOPIC",
+      "subSkillId": "sub_quant_13_3",
+      "rationale": "بصمة السؤال (pieces-vs-cuts / interval-count.) تطابق طريقة الحل الممثلة في sub_quant_13_3; اعتماد question-level مع حفظ source classification.",
+      "sourceClassificationPreserved": true,
+      "reviewBasis": "QUESTION_FINGERPRINT_PLUS_CURRENT_CANONICAL_MAPPING",
+      "newSkillCreated": false
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P012-Q11",
+      "decision": "APPROVE_CROSS_TOPIC",
+      "subSkillId": "sub_quant_08_2",
+      "rationale": "بصمة السؤال (fixed-units-per-object / total-to-count.) تطابق طريقة الحل الممثلة في sub_quant_08_2; اعتماد question-level مع حفظ source classification.",
+      "sourceClassificationPreserved": true,
+      "reviewBasis": "QUESTION_FINGERPRINT_PLUS_CURRENT_CANONICAL_MAPPING",
+      "newSkillCreated": false
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P012-Q13",
+      "decision": "APPROVE_CROSS_TOPIC",
+      "subSkillId": "sub_quant_13_4",
+      "rationale": "بصمة السؤال (newspaper-page-pair / total-pages-rule.) تطابق طريقة الحل الممثلة في sub_quant_13_4; اعتماد question-level مع حفظ source classification.",
+      "sourceClassificationPreserved": true,
+      "reviewBasis": "QUESTION_FINGERPRINT_PLUS_CURRENT_CANONICAL_MAPPING",
+      "newSkillCreated": false
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P013-Q14",
+      "decision": "APPROVE_CROSS_TOPIC",
+      "subSkillId": "sub_quant_10_3",
+      "rationale": "بصمة السؤال (fixed-daily-saving / quantitative-comparison.) تطابق طريقة الحل الممثلة في sub_quant_10_3; اعتماد question-level مع حفظ source classification.",
+      "sourceClassificationPreserved": true,
+      "reviewBasis": "QUESTION_FINGERPRINT_PLUS_CURRENT_CANONICAL_MAPPING",
+      "newSkillCreated": false
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P013-Q16",
+      "decision": "APPROVE_CROSS_TOPIC",
+      "subSkillId": "sub_quant_08_2",
+      "rationale": "بصمة السؤال (unit-rate × time.) تطابق طريقة الحل الممثلة في sub_quant_08_2; اعتماد question-level مع حفظ source classification.",
+      "sourceClassificationPreserved": true,
+      "reviewBasis": "QUESTION_FINGERPRINT_PLUS_CURRENT_CANONICAL_MAPPING",
+      "newSkillCreated": false
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P013-Q17",
+      "decision": "APPROVE_CROSS_TOPIC",
+      "subSkillId": "sub_quant_14_4",
+      "rationale": "بصمة السؤال (visual-number-pattern / doubling.) تطابق طريقة الحل الممثلة في sub_quant_14_4; اعتماد question-level مع حفظ source classification.",
+      "sourceClassificationPreserved": true,
+      "reviewBasis": "QUESTION_FINGERPRINT_PLUS_CURRENT_CANONICAL_MAPPING",
+      "newSkillCreated": false
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P013-Q20",
+      "decision": "APPROVE_CROSS_TOPIC",
+      "subSkillId": "sub_quant_08_2",
+      "rationale": "بصمة السؤال (equal-grouping / total-to-group-count.) تطابق طريقة الحل الممثلة في sub_quant_08_2; اعتماد question-level مع حفظ source classification.",
+      "sourceClassificationPreserved": true,
+      "reviewBasis": "QUESTION_FINGERPRINT_PLUS_CURRENT_CANONICAL_MAPPING",
+      "newSkillCreated": false
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P014-Q02",
+      "decision": "APPROVE_CROSS_TOPIC",
+      "subSkillId": "sub_quant_08_2",
+      "rationale": "بصمة السؤال (unit-rate × quantity.) تطابق طريقة الحل الممثلة في sub_quant_08_2; اعتماد question-level مع حفظ source classification.",
+      "sourceClassificationPreserved": true,
+      "reviewBasis": "QUESTION_FINGERPRINT_PLUS_CURRENT_CANONICAL_MAPPING",
+      "newSkillCreated": false
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P014-Q04",
+      "decision": "APPROVE_CROSS_TOPIC",
+      "subSkillId": "sub_quant_08_2",
+      "rationale": "بصمة السؤال (daily-distance × days.) تطابق طريقة الحل الممثلة في sub_quant_08_2; اعتماد question-level مع حفظ source classification.",
+      "sourceClassificationPreserved": true,
+      "reviewBasis": "QUESTION_FINGERPRINT_PLUS_CURRENT_CANONICAL_MAPPING",
+      "newSkillCreated": false
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P014-Q05",
+      "decision": "APPROVE_CROSS_TOPIC",
+      "subSkillId": "sub_quant_08_1",
+      "rationale": "بصمة السؤال (equal-sharing / total-to-unit.) تطابق طريقة الحل الممثلة في sub_quant_08_1; اعتماد question-level مع حفظ source classification.",
+      "sourceClassificationPreserved": true,
+      "reviewBasis": "QUESTION_FINGERPRINT_PLUS_CURRENT_CANONICAL_MAPPING",
+      "newSkillCreated": false
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P014-Q06",
+      "decision": "APPROVE_CROSS_TOPIC",
+      "subSkillId": "sub_quant_07_2",
+      "rationale": "بصمة السؤال (two-state-floor-count / linear-equation consistency.) تطابق طريقة الحل الممثلة في sub_quant_07_2; اعتماد question-level مع حفظ source classification.",
+      "sourceClassificationPreserved": true,
+      "reviewBasis": "QUESTION_FINGERPRINT_PLUS_CURRENT_CANONICAL_MAPPING",
+      "newSkillCreated": false
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P014-Q07",
+      "decision": "APPROVE_CROSS_TOPIC",
+      "subSkillId": "sub_quant_08_2",
+      "rationale": "بصمة السؤال (workforce-proportion / equal-productivity.) تطابق طريقة الحل الممثلة في sub_quant_08_2; اعتماد question-level مع حفظ source classification.",
+      "sourceClassificationPreserved": true,
+      "reviewBasis": "QUESTION_FINGERPRINT_PLUS_CURRENT_CANONICAL_MAPPING",
+      "newSkillCreated": false
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P014-Q09",
+      "decision": "APPROVE_CROSS_TOPIC",
+      "subSkillId": "sub_quant_08_2",
+      "rationale": "بصمة السؤال (same-time-rate comparison.) تطابق طريقة الحل الممثلة في sub_quant_08_2; اعتماد question-level مع حفظ source classification.",
+      "sourceClassificationPreserved": true,
+      "reviewBasis": "QUESTION_FINGERPRINT_PLUS_CURRENT_CANONICAL_MAPPING",
+      "newSkillCreated": false
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P014-Q10",
+      "decision": "APPROVE_CROSS_TOPIC",
+      "subSkillId": "sub_quant_11_1",
+      "rationale": "بصمة السؤال (quantitative-comparison / insufficient-data.) تطابق طريقة الحل الممثلة في sub_quant_11_1; اعتماد question-level مع حفظ source classification.",
+      "sourceClassificationPreserved": true,
+      "reviewBasis": "QUESTION_FINGERPRINT_PLUS_CURRENT_CANONICAL_MAPPING",
+      "newSkillCreated": false
+    },
+    {
+      "questionCode": "QDR-QNT-MNSF26-P014-Q11",
+      "decision": "APPROVE_CROSS_TOPIC",
+      "subSkillId": "sub_quant_11_2",
+      "rationale": "بصمة السؤال (wrong-operation / reverse-to-original / apply-correct-operation.) تطابق طريقة الحل الممثلة في sub_quant_11_2; اعتماد question-level مع حفظ source classification.",
+      "sourceClassificationPreserved": true,
+      "reviewBasis": "QUESTION_FINGERPRINT_PLUS_CURRENT_CANONICAL_MAPPING",
+      "newSkillCreated": false
+    }
+  ]
+}
