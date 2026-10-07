@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "purpose": "Safe full-book mapping acceleration: only source groups whose candidate map contains exactly one canonical subskill. These remain provisional until question-math confirmation; no auto-import.",
+  "policy": {
+    "sourceLabelPreserved": true,
+    "noNewSkills": true,
+    "questionMathConfirmationRequired": true,
+    "crossTopicFailClosed": true
+  },
+  "counts": {
+    "groups": 2,
+    "questions": 96
+  },
+  "groups": [
+    {
+      "sourcePart": "الحساب/الجبر",
+      "sourceSkillLabel": "الأعداد الأولية - العوامل الأولى",
+      "tests": [
+        12,
+        13,
+        14
+      ],
+      "questionCount": 59,
+      "provisionalCanonicalSubSkillId": "sub_quant_02_3",
+      "canonicalName": "الأعداد الأولية والتحليل للعوامل الأولية",
+      "status": "PROVISIONAL_PENDING_QUESTION_MATH_CONFIRMATION"
+    },
+    {
+      "sourcePart": "الهندسة",
+      "sourceSkillLabel": "الهندسة الإحداثية",
+      "tests": [
+        22,
+        23
+      ],
+      "questionCount": 37,
+      "provisionalCanonicalSubSkillId": "sub_quant_25_3",
+      "canonicalName": "هندسة الإحداثيات (تحديد النقاط، المسافة، ونقطة المنتصف)",
+      "status": "PROVISIONAL_PENDING_QUESTION_MATH_CONFIRMATION"
+    }
+  ]
+}
