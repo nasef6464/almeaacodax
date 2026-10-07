@@ -165,6 +165,25 @@ Closure requires:
 - live learner E2E PASS
 - no silent production mutation outside exact approved scope
 
+## Full question completeness gate
+
+A question is not considered reviewed only because its skill ID is valid. Every completed row must also carry:
+
+- difficulty: easy / medium / hard;
+- complete question text and A/B/C/D option texts;
+- approved answer (correctOptionIndex + answerLetter);
+- explanation + whyCorrect + whyOthersWrong;
+- hint (and hint2 when useful) without leaking the answer immediately;
+- solvingStrategy and any genuinely applicable fast/mental/elimination/option-testing method;
+- commonMistakes;
+- AI context: readableText, speechText, visualDescription, mathExpressions, concepts, requiredData;
+- foundationReference linking back to the matching lesson/idea/topic/training where available;
+- questionFingerprint + teachingFingerprint;
+- source identity: document/bank, sourceItemId, PDF/printed page/question numbers, imageHash/imageVersion;
+- source/answer/visual/taxonomy/audit verification status.
+
+No placeholder content is accepted. AI/teaching content must stay grounded in the actual source question and source book.
+
 ## Mutation safety
 
 - Review first, mutate second.
