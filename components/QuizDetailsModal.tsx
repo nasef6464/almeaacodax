@@ -25,7 +25,7 @@ const getMasteryTone = (mastery: number) => {
     };
   }
 
-  if (mastery >= 60) {
+  if (mastery >= 50) {
     return {
       label: 'تحتاج مراجعة',
       card: 'border-amber-100 bg-amber-50',
@@ -35,7 +35,7 @@ const getMasteryTone = (mastery: number) => {
   }
 
   return {
-    label: 'ابدأ بها',
+    label: 'تحتاج تركيز وتأسيس',
     card: 'border-rose-100 bg-rose-50',
     badge: 'bg-white text-rose-700',
     bar: 'bg-rose-500',
