@@ -315,28 +315,6 @@ async function reconcileSubject(db: any, config: (typeof SUBJECTS)[number], appl
     if (quizOps.length) await quizzesCol.bulkWrite(quizOps, { ordered: true });
   }
 
-  if (config.key === "quant") {
-    const quantMainBanks = await quizzesCol
-      .find({
-        subjectId: config.subjectId,
-        quizKind: "drill",
-        id: { $regex: /^bank_skill_quant_/ },
-      })
-      .sort({ "learningPlacements.order": 1, id: 1 })
-      .toArray();
-    if (apply) {
-      for (const quiz of quantMainBanks as any[]) {
-        const placements = (Array.isArray(quiz.learningPlacements) ? quiz.learningPlacements : []).map((placement: any) =>
-          placement?.slot === "training" ? { ...placement, accessType: "paid", updatedAt: Date.now() } : placement,
-        );
-        await quizzesCol.updateOne(
-          { _id: quiz._id },
-          { $set: { access: accessForFree(false), learningPlacements: placements, updatedAt: now() } },
-        );
-      }
-    }
-  }
-
   return {
     subject: config.key,
     questions: questions.length,

@@ -449,18 +449,12 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         const scopeKey = `${category}:${subject}`;
         if (scopedLearningBootstrapRef.current === scopeKey) return;
 
-        const hasScopedCourses = courses.some((course) => {
-            if (course.isPackage) return false;
-            return matchesScopedContent(resolveCoursePathId(course, subjects), resolveCourseSubjectId(course, subjects));
-        });
-        const hasScopedQuizzes = quizzes.some((quiz) => matchesScopedContent(quiz.pathId, quiz.subjectId));
-        if (hasScopedCourses && hasScopedQuizzes) {
-            setScopedBootstrapState('ready');
-            return;
-        }
-
         scopedLearningBootstrapRef.current = scopeKey;
         setScopedBootstrapState('loading');
+
+        // Always refresh the bounded scoped quiz catalog once per subject.
+        // A partially hydrated shared store (for example 5 of 39 training cards)
+        // must not be mistaken for a complete subject catalog.
         void Promise.allSettled([
             api.getCourses({ pathId: category, subjectId: subject, limit: 100 }),
             api.getQuizzes({ pathId: category, subjectId: subject, limit: 100 }),
