@@ -458,14 +458,15 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         void Promise.allSettled([
             api.getCourses({ pathId: category, subjectId: subject, limit: 100 }),
             api.getQuizzes({ pathId: category, subjectId: subject, limit: 100 }),
-        ]).then(([coursesResult, quizzesResult]) => {
+        ]).then(async ([coursesResult, quizzesResult]) => {
             // hydrateCourses/hydrateQuizzes replace the shared collections. Ignore an
             // older route response so it cannot overwrite the currently viewed scope.
             if (scopedLearningBootstrapRef.current !== scopeKey) return;
 
             if (coursesResult.status === 'fulfilled' && Array.isArray(coursesResult.value) && coursesResult.value.length > 0) {
+                const currentCourses = useStore.getState().courses;
                 const mergedCourses = new Map<string, any>();
-                [...courses, ...(coursesResult.value as any[])].forEach((course) => {
+                [...currentCourses, ...(coursesResult.value as any[])].forEach((course) => {
                     const id = String(course?.id || course?._id || '');
                     if (id) mergedCourses.set(id, course);
                 });
@@ -473,8 +474,26 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
             }
 
             if (quizzesResult.status === 'fulfilled' && Array.isArray(quizzesResult.value) && quizzesResult.value.length > 0) {
+                const collectedQuizzes = [...(quizzesResult.value as any[])];
+                if (quizzesResult.value.length >= 100) {
+                    try {
+                        for (let nextPage = 2; nextPage <= 10; nextPage += 1) {
+                            if (scopedLearningBootstrapRef.current !== scopeKey) break;
+                            const nextBatch = await api.getQuizzes({ pathId: category, subjectId: subject, page: nextPage, limit: 100 });
+                            if (!Array.isArray(nextBatch) || nextBatch.length === 0) break;
+                            collectedQuizzes.push(...nextBatch);
+                            if (nextBatch.length < 100) break;
+                        }
+                    } catch (paginationError) {
+                        console.warn('Scoped quiz pagination error:', paginationError);
+                    }
+                }
+
+                if (scopedLearningBootstrapRef.current !== scopeKey) return;
+
+                const currentQuizzes = useStore.getState().quizzes;
                 const mergedQuizzes = new Map<string, any>();
-                [...quizzes, ...(quizzesResult.value as any[])].forEach((quiz) => {
+                [...currentQuizzes, ...collectedQuizzes].forEach((quiz) => {
                     const id = String(quiz?.id || quiz?._id || '');
                     if (id) mergedQuizzes.set(id, quiz);
                 });

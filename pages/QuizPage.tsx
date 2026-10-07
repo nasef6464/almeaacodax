@@ -4,6 +4,7 @@ import { useStore } from '../store/useStore';
 import { Course, PackageContentType, Question, Quiz, QuizResult } from '../types';
 import { Clock, AlertCircle, CheckCircle2, XCircle, ArrowRight, ArrowLeft, FileQuestion, Target, Star, Moon, Sun, PauseCircle, Save, Bookmark, Video, BookOpen, LayoutGrid, ZoomIn } from 'lucide-react';
 import { api } from '../services/api';
+import { adapter } from '../services/adapter';
 import { flattenMockExamQuestionIds, getMockExamSections, getMockExamTimeLimit } from '../utils/mockExam';
 import { formatQuestionHtmlForDisplay, normalizeQuestionHtml } from '../utils/questionHtml';
 import { getLearnerOptionLabel, getQuizDifficultyBadgeClass, getQuizDifficultyLabel, getQuizOptionButtonHeightClass, getQuizOptionGridClass, getQuizQuestionMapButtonClass, resolveQuestionFromBank, usesImageEmbeddedOptions } from '../utils/quizPresentation';
@@ -209,6 +210,7 @@ export const QuizPage: React.FC = () => {
   const [showFormulaSheet, setShowFormulaSheet] = useState(false);
   const [videoModalUrl, setVideoModalUrl] = useState<string | null>(null);
   const [isResolvingScopedQuestions, setIsResolvingScopedQuestions] = useState(false);
+  const [isFetchingQuiz, setIsFetchingQuiz] = useState(false);
   const [questionHydrationStartedAt, setQuestionHydrationStartedAt] = useState<number | null>(null);
   // Per-section timer (قياس-style): tracks seconds left in the CURRENT section
   const [sectionTimeLeft, setSectionTimeLeft] = useState<number | null>(null);
@@ -346,7 +348,37 @@ export const QuizPage: React.FC = () => {
   }, [isNightMode]);
 
   useEffect(() => {
-    const foundQuiz = quizzes.find((item) => item.id === quizId);
+    if (!quizId) return;
+    const exists = quizzes.some((item) => item.id === quizId) || (quiz?.id === quizId);
+    if (exists) return;
+
+    let cancelled = false;
+    setIsFetchingQuiz(true);
+
+    adapter.getQuiz(quizId).then((fetchedQuiz) => {
+      if (cancelled || !fetchedQuiz) {
+        setIsFetchingQuiz(false);
+        return;
+      }
+      const current = useStore.getState().quizzes;
+      if (!current.some((q) => q.id === fetchedQuiz.id)) {
+        useStore.getState().hydrateQuizzes([...current, fetchedQuiz]);
+      }
+      setIsFetchingQuiz(false);
+    }).catch((err) => {
+      console.warn('Unable to fetch quiz by id:', err);
+      if (!cancelled) {
+        setIsFetchingQuiz(false);
+      }
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [quizId, quizzes, quiz?.id]);
+
+  useEffect(() => {
+    const foundQuiz = quizzes.find((item) => item.id === quizId) || (quiz?.id === quizId ? quiz : null);
     if (!foundQuiz) {
       setQuizScopedQuestions([]);
       setIsResolvingScopedQuestions(false);
@@ -395,14 +427,14 @@ export const QuizPage: React.FC = () => {
     return () => {
       cancelled = true;
     };
-  }, [quizId, quizzes, questions, quizScopedQuestions]);
+  }, [quizId, quizzes, questions, quizScopedQuestions, quiz?.id]);
 
   useEffect(() => {
-    if (isResolvingScopedQuestions) {
+    if (isResolvingScopedQuestions || isFetchingQuiz) {
       return;
     }
 
-    const foundQuiz = quizzes.find((item) => item.id === quizId);
+    const foundQuiz = quizzes.find((item) => item.id === quizId) || (quiz?.id === quizId ? quiz : null);
     if (!foundQuiz) {
       activeQuizLoadKeyRef.current = '';
       setHasAccess(false);
@@ -582,7 +614,7 @@ export const QuizPage: React.FC = () => {
       setTimeLeft(defaultTimeLeft);
       setFlaggedQuestionIds([]);
     }
-  }, [quizId, quizzes, questions, quizScopedQuestions, user, checkAccess, hasScopedPackageAccess, isResolvingScopedQuestions, sourceParam, sourceCourse, courseHasAccess]);
+  }, [quizId, quizzes, questions, quizScopedQuestions, user, checkAccess, hasScopedPackageAccess, isResolvingScopedQuestions, isFetchingQuiz, sourceParam, sourceCourse, courseHasAccess, quiz?.id]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -1283,7 +1315,7 @@ export const QuizPage: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  if (hasAccess === null) {
+  if (hasAccess === null || isFetchingQuiz) {
     return <div className="min-h-screen flex items-center justify-center">جاري التحميل...</div>;
   }
 

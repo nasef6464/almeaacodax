@@ -579,4 +579,20 @@ export const adapter = {
       return [];
     }
   },
+
+  async getQuiz(id: string): Promise<Quiz | null> {
+    if (!USE_REAL_API || !id) {
+      return null;
+    }
+
+    try {
+      const data = await api.getQuiz(id);
+      if (!data) return null;
+      const normalized = normalizeQuiz(data);
+      return normalized.id && normalized.title ? normalized : null;
+    } catch (error) {
+      console.warn("Unable to fetch quiz by id:", error);
+      return null;
+    }
+  },
 };
