@@ -1,6 +1,6 @@
 {
   "project": "BIO26",
-  "status": "BLOCKED_BY_R2_UPLOAD",
+  "status": "CLOSED_PRODUCTION_APPROVED",
   "expectedSourceOccurrences": 2835,
   "duplicateAliases": 3,
   "finalCanonicalCount": 2832,
@@ -15,9 +15,16 @@
     "skill": "PASS_PRE_CROP",
     "dedupe": "PASS_FINAL_2832_CANONICAL",
     "aiContext": "PASS_2832_OF_2832",
-    "r2Upload": "PENDING",
+    "r2Upload": "PASS_2832_OF_2832_AUTHENTICATED_VERIFIED",
     "productionSubjectSafety": "PASS_DEDICATED_BIOLOGY_SUBJECT_REQUIRED",
-    "r2UploadManifest": "PASS_READY_2832"
+    "r2UploadManifest": "PASS_READY_2832",
+    "dryRun": "PASS_2832_OF_2832",
+    "canary5": "PASS_5_OF_5",
+    "fullDraftImport": "PASS_2832_OF_2832",
+    "integrityAudit": "PASS_0_ERRORS",
+    "liveE2E": "PASS_PRE_AND_POST_APPROVAL",
+    "approval": "PASS_2832_OF_2832",
+    "postApprovalAudit": "PASS"
   },
   "assetPackage": {
     "version": "V2_REGENERATED_2026-10-05",
@@ -25,14 +32,17 @@
     "zipSha256": "37e58c58dfbdeb8a956ee80e42f2c41cf476f506b3c825663c71bf214ee55a03"
   },
   "workflow": [
-    "AI_CONTEXT_AUTHORING",
-    "R2_UPLOAD_AND_HASH_INTEGRITY",
-    "DRY_RUN",
-    "CANARY_5",
-    "FULL_DRAFT_IMPORT",
-    "INTEGRITY_AUDIT",
-    "LIVE_E2E",
-    "APPROVAL"
+    "AI_CONTEXT_AUTHORING_PASS",
+    "R2_UPLOAD_AND_HASH_INTEGRITY_PASS",
+    "DRY_RUN_PASS",
+    "CANARY_5_PASS",
+    "FULL_DRAFT_IMPORT_PASS",
+    "INTEGRITY_AUDIT_PASS",
+    "LIVE_E2E_PRE_APPROVAL_PASS",
+    "APPROVAL_PASS",
+    "LIVE_E2E_POST_APPROVAL_PASS",
+    "POST_APPROVAL_AUDIT_PASS",
+    "CLOSED"
   ],
   "items": [],
   "aiContext": {
@@ -104,6 +114,18 @@
     "totalBytes": 29550012,
     "manifestCsvSha256": "57b9f3ada37113dff0cbdd07c18db10bfffc8e0b09c1315d8e94b005585546e5",
     "keyPattern": "questions/v2/{questionCode}/{imageHash}.webp",
-    "uploadStatus": "PENDING"
-  }
+    "uploadStatus": "PASS_2832_OF_2832_AUTHENTICATED_VERIFIED"
+  },
+  "productionClosure": {
+    "approvedQuestions": 2832,
+    "approvalStatus": "approved",
+    "integrityErrors": 0,
+    "linkedQuizCount": 0,
+    "learnerVisible": true,
+    "answerLeakCount": 0,
+    "closurePr": 433,
+    "closureMergeSha": "7b07579b4aa68c46562ac451711328a06ab055ee",
+    "currentProductionMainSha": "2885b2b30eff2f959fdad3a0c098a2bd461f1b73"
+  },
+  "closure": true
 }
