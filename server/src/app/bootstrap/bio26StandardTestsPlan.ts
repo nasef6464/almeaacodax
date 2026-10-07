@@ -1,6 +1,6 @@
 export const PATH_ID = "p_1777779653351";
 export const SUBJECT_ID = "sub_tah_biology_bio26";
-export const BATCH_ID = "TAH-CHEM-BIO26-FULL-V1";
+export const BATCH_ID = "TAH-BIO-BIO26-FULL-V1";
 export const EXPECTED_SOURCE_QUESTIONS = 2832;
 export const TEST_COUNT = 71;
 export const FREE_TEST_COUNT = 5;
@@ -212,7 +212,7 @@ export function buildBio26StandardTests(questions: Bio26TestQuestion[]) {
     const id = `bio26_standard_test_${String(number).padStart(2, "0")}`;
     return {
       id,
-      title: `اختبار الكيمياء القياسي — ${String(number).padStart(2, "0")}`,
+      title: `اختبار الأحياء القياسي — ${String(number).padStart(2, "0")}`,
       description: `اختبار شامل من ${expectedSize} سؤالًا من بنك BIO26 ويغطي ${distinctMain.size} مهارة رئيسية و${distinctSub.size} مهارة فرعية بدون تكرار أي سؤال بين النماذج الـ71.`,
       pathId: PATH_ID,
       subjectId: SUBJECT_ID,
