@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "purpose": "Single authoritative execution cursor; prevents re-opening completed stages or losing work between runs.",
+  "headBeforeCreation": "3e28cbb9ad659434d8a4ae4becce57766476942a",
+  "totals": {
+    "crops": 2135,
+    "arithmetic": 1204,
+    "geometry": 931
+  },
+  "stages": [
+    {
+      "name": "crop",
+      "status": "COMPLETE",
+      "done": 2135,
+      "total": 2135,
+      "evidence": [
+        "Run017 arithmetic 1204",
+        "Run021 geometry 931"
+      ],
+      "reopenOnlyOn": "PROVEN_CROP_DEFECT"
+    },
+    {
+      "name": "mapping",
+      "status": "IN_PROGRESS",
+      "done": 0,
+      "total": 2135,
+      "rule": "QUESTION_MATH_REQUIRED; source label preserved; no group-title auto approval"
+    },
+    {
+      "name": "enrichment",
+      "status": "IN_PROGRESS_LEGACY_SUBSET",
+      "done": 130,
+      "total": 2135,
+      "rule": "answer+solution+educationalExplanation+difficulty+difficultyReason+fingerprints"
+    },
+    {
+      "name": "dedupe",
+      "status": "LEGACY_SUBSET_ONLY",
+      "done": 130,
+      "total": 2135,
+      "rule": "within MNSF26 then FND26 858 + COL2627 946"
+    },
+    {
+      "name": "r2",
+      "status": "BLOCKED_BY_MAPPING_ENRICHMENT_DEDUPE"
+    },
+    {
+      "name": "dryRun",
+      "status": "BLOCKED"
+    },
+    {
+      "name": "canary5",
+      "status": "BLOCKED"
+    },
+    {
+      "name": "draftImport",
+      "status": "BLOCKED"
+    },
+    {
+      "name": "productionE2E",
+      "status": "BLOCKED"
+    }
+  ],
+  "failClosed": [
+    "arithmetic test33 SOURCE_ABSENT_UNRESOLVED",
+    "geometry T24/Q18 SOURCE_ABSENT",
+    "P001/Q10 HOLD",
+    "P013/Q15 HOLD",
+    "P014/Q08 QUARANTINE"
+  ],
+  "nextCursor": {
+    "stage": "mapping",
+    "strategy": "QUESTION_LEVEL_VISUAL_MATH",
+    "priority": [
+      "reuse 130 legacy ready after adjudication",
+      "geometry T22-T23 37 visual review",
+      "arithmetic T12-T14 59 visual review",
+      "continue source order across remaining crops"
+    ]
+  },
+  "antiLoopRules": [
+    "Do not redo crop inventory",
+    "Do not use source-group title as exact subskill proof",
+    "Do not rerun legacy 130-only verifier as closure evidence",
+    "On ambiguous question: HOLD and continue",
+    "Checkpoint commits are not stop points"
+  ]
+}
