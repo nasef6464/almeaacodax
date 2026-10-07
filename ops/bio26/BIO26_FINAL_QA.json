@@ -1,6 +1,6 @@
 {
   "project": "BIO26",
-  "status": "PREIMPORT_CONTENT_GATES_PASS_R2_PENDING",
+  "status": "CLOSED_PRODUCTION_APPROVED",
   "counts": {
     "foundationPdfPages": 79,
     "questionPdfPages": 226,
@@ -40,13 +40,20 @@
     "cropAssetPackage": "PASS_LOCAL_READY_FOR_R2_UPLOAD",
     "dedupe": "PASS_FINAL_2832_CANONICAL",
     "aiContext": "PASS_2832_OF_2832",
-    "r2Upload": "NOT_RUN",
-    "dryRun": "BLOCKED_BY_R2",
-    "draftImport": "BLOCKED",
+    "r2Upload": "PASS_2832_OF_2832_AUTHENTICATED_VERIFIED",
+    "dryRun": "PASS_2832_OF_2832",
+    "draftImport": "PASS_2832_OF_2832",
     "liveE2E": "NOT_RUN",
-    "approval": "NOT_RUN",
+    "approval": "PASS_2832_OF_2832",
     "productionSubjectSafety": "PASS_CREATE_DEDICATED_BIOLOGY_SUBJECT_DO_NOT_REPURPOSE_ENVIRONMENT",
-    "r2UploadManifest": "PASS_READY_2832"
+    "r2UploadManifest": "PASS_READY_2832",
+    "canary5": "PASS_5_OF_5",
+    "integrityAudit": "PASS_0_ERRORS_29_MAIN_98_SUB_0_LINKED",
+    "liveE2EPreApproval": "PASS_LEARNER_HIDDEN_30_IMAGES",
+    "liveE2EPostApproval": "PASS_LEARNER_VISIBLE_ANSWER_LEAK_0_30_IMAGES",
+    "postApprovalAudit": "PASS_2832_29_MAIN_98_SUB_0_LINKED",
+    "learningStructure": "PASS_29_MAIN_98_SUBTOPICS_49_MAIN_TRAININGS",
+    "standardTests": "PASS_71_TESTS_ALL_2832_EXACTLY_ONCE"
   },
   "integrityChecks": {
     "lessonCount48": true,
@@ -104,7 +111,7 @@
     ],
     "inferredFromQuestionOCR": 0
   },
-  "closure": false,
+  "closure": true,
   "aiAuthoring": {
     "completedLessons": [
       "BIO26-L01",
@@ -188,5 +195,41 @@
     "keyPattern": "questions/v2/{questionCode}/{imageHash}.webp",
     "actualUpload": "PENDING_AUTHENTICATED_PRODUCTION_PRESIGN",
     "evidenceFile": "BIO26_R2_UPLOAD_MANIFEST_V2.json"
+  },
+  "productionClosure": {
+    "batchId": "TAH-BIO-BIO26-FULL-V1",
+    "approvedQuestions": 2832,
+    "approvalStatus": "approved",
+    "taxonomy": {
+      "mainSkills": 29,
+      "subSkills": 98
+    },
+    "uniqueQuestionCodes": 2832,
+    "uniqueSourceItemIds": 2832,
+    "uniqueImageHashes": 2832,
+    "linkedQuizCount": 0,
+    "integrityErrors": 0,
+    "r2Verified": 2832,
+    "dryRunCount": 2832,
+    "canaryCount": 5,
+    "fullDraftCount": 2832,
+    "liveImageSamples": {
+      "dryRun": 30,
+      "fullDraft": 30,
+      "preApproval": 30,
+      "postApproval": 30
+    },
+    "learnerPreApprovalVisible": false,
+    "learnerPostApprovalVisible": true,
+    "answerLeakCount": 0,
+    "approver": "BIO26_FULL_CLOSURE_2026_10_07",
+    "closurePr": 433,
+    "closureMergeSha": "7b07579b4aa68c46562ac451711328a06ab055ee",
+    "finalProductionMainSha": "2885b2b30eff2f959fdad3a0c098a2bd461f1b73",
+    "learningStructurePr": 437,
+    "learningClosurePr": 439,
+    "mainSkillTrainingCount": 49,
+    "standardTestCount": 71,
+    "allBankQuestionAllocation": "63x40 + 8x39 = 2832"
   }
 }
