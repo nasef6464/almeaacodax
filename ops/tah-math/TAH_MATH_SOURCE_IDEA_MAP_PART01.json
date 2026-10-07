@@ -1,52 +1,114 @@
 {
   "project": "TAH-MATH",
-  "status": "IN_PROGRESS",
-  "source": "كتاب تجميعات يلو للرياضيات 26 - النسخة المعدلة.pdf",
-  "purpose": "Source-backed lesson/idea dictionary before runtime taxonomy binding",
+  "status": "SOURCE_IDEAS_EXTRACTED_1_8",
+  "authority": "كتاب تجميعات يلو للرياضيات 26 - النسخة المعدلة.pdf; cross-checked against foundation index",
+  "bindingPolicy": "Source headings are evidence. Existing production taxonomy IDs must be read from runtime/export before ID binding; do not invent IDs.",
   "lessons": [
     {
       "lessonNumber": 1,
       "title": "التبرير والبرهان",
-      "collectionsStartPage": 5,
-      "sourceIdeas": [
+      "ideas": [
         "الأنماط",
         "المثال المضاد والعبارات المركبة",
         "العبارات الشرطية والعبارات الشرطية المرتبطة",
         "العبارات المتكافئة منطقيًا وأشكال فن",
         "التبرير والبرهان"
-      ],
-      "taxonomyBindingStatus": "PENDING_RUNTIME_TAXONOMY_SNAPSHOT"
+      ]
     },
     {
       "lessonNumber": 2,
       "title": "المسلمات والعلاقات الهندسية",
-      "collectionsStartPage": 8,
-      "sourceIdeas": [
+      "ideas": [
         "المسلمات وتقاطع المستقيمات والمستويات",
         "العلاقات بين القطع المستقيمة",
-        "بعض خصائص الأعداد الحقيقية",
-        "بعض العلاقات بين الزوايا",
+        "خصائص الأعداد الحقيقية",
+        "العلاقات بين الزوايا",
         "التوازي والتخالف",
         "المستقيمان والقاطع",
-        "التوازي بحرف M"
-      ],
-      "taxonomyBindingStatus": "PENDING_RUNTIME_TAXONOMY_SNAPSHOT"
+        "إثبات التوازي والعلاقات الزاوية"
+      ]
     },
     {
       "lessonNumber": 3,
       "title": "المستقيم",
-      "collectionsStartPage": 13,
-      "sourceIdeas": [
+      "ideas": [
         "ميل المستقيم",
         "صيغ معادلة المستقيم",
-        "المستقيم العمودي والموازي",
+        "المستقيمان المتوازيان والمتعامدان",
         "المستقيم الرأسي والأفقي",
         "البعد بين نقطة ومستقيم",
         "البعد بين نقطتين",
         "البعد بين مستقيمين متوازيين"
-      ],
-      "taxonomyBindingStatus": "PENDING_RUNTIME_TAXONOMY_SNAPSHOT"
+      ]
+    },
+    {
+      "lessonNumber": 4,
+      "title": "المثلث",
+      "ideas": [
+        "تصنيف المثلثات",
+        "خصائص المثلثات والزوايا",
+        "مسلمات تطابق المثلثات",
+        "نظريات المنصفات والقطع المستقيمة الخاصة في المثلث",
+        "مركز المثلث",
+        "المتباينات في المثلث"
+      ]
+    },
+    {
+      "lessonNumber": 5,
+      "title": "المضلعات والأشكال الرباعية",
+      "ideas": [
+        "زوايا المضلعات والمضلعات المنتظمة",
+        "متوازي الأضلاع",
+        "المستطيل",
+        "المعين والمربع",
+        "شبه المنحرف",
+        "مقارنة خصائص الأشكال الرباعية",
+        "البرهان الإحداثي"
+      ]
+    },
+    {
+      "lessonNumber": 6,
+      "title": "التشابه",
+      "ideas": [
+        "المضلعات المتشابهة",
+        "المثلثات المتشابهة",
+        "نظرية التناسب في المثلث",
+        "القطعة المنصفة في مثلث",
+        "نظرية منصف الزاوية في المثلث"
+      ]
+    },
+    {
+      "lessonNumber": 7,
+      "title": "التحويلات الهندسية",
+      "ideas": [
+        "الانعكاس",
+        "الإزاحة",
+        "الدوران",
+        "تركيب التحويلات الهندسية",
+        "التماثل",
+        "التمدد",
+        "تمييز تحويلات التطابق"
+      ]
+    },
+    {
+      "lessonNumber": 8,
+      "title": "الدائرة",
+      "ideas": [
+        "مفاهيم الدائرة ومحيطها ومساحتها",
+        "الزاوية المركزية وقياس القوس",
+        "طول القوس",
+        "نظريات الأوتار والأقواس",
+        "الزوايا المحيطية ونظرياتها",
+        "نظرية قطع الوتر ونظريات القاطع",
+        "معادلة الدائرة",
+        "الشكل الرباعي المحاط بدائرة",
+        "المماس",
+        "تقاطع الأوتار والمماسات",
+        "الزاوية المماسية"
+      ]
     }
   ],
-  "next": "Bind these source ideas to the existing Tahsili Math main/subskill taxonomy; then review YLM26 and COL26 lesson-aligned questions."
+  "completedLessons": 8,
+  "totalLessons": 31,
+  "nextLessons": "9-16"
 }
