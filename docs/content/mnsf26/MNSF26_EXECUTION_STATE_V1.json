@@ -23,10 +23,10 @@
     {
       "name": "mapping",
       "status": "IN_PROGRESS",
-      "done": 211,
+      "done": 256,
       "total": 2135,
       "rule": "QUESTION_MATH_REQUIRED; source label preserved; no group-title auto approval",
-      "reviewHold": 13,
+      "reviewHold": 28,
       "evidence": [
         "Ready130 audit candidate-pass 74",
         "Adjudication batch001 added 17 question-level approvals",
@@ -37,7 +37,7 @@
     {
       "name": "enrichment",
       "status": "IN_PROGRESS_LEGACY_SUBSET",
-      "done": 211,
+      "done": 256,
       "total": 2135,
       "rule": "answer+solution+educationalExplanation+difficulty+difficultyReason+fingerprints",
       "mappingApprovedWithinReady": 129
@@ -90,7 +90,7 @@
     "stage": "QUESTION_MASTERING",
     "strategy": "ONE_PASS_VISUAL_MATH",
     "priority": [
-      "arithmetic T15-T18 complete master records",
+      "arithmetic T18 complete master records",
       "continue arithmetic source order",
       "retain all documented holds fail-closed"
     ]
@@ -106,24 +106,26 @@
     "A question is processed once into a complete master payload; QA validates it rather than recreating it"
   ],
   "lastCompletedBatch": {
-    "name": "RUN030_RUN032_AR_T12_T14",
-    "completeMasterRecords": 51,
-    "holds": 8,
-    "effectiveMapping": 211,
-    "effectiveMasteredComplete": 211,
+    "name": "RUN033_RUN037_AR_T15_T17_T16",
+    "completeMasterRecordsAddedSinceRun032": 45,
+    "holdsAddedSinceRun032": 15,
+    "effectiveMapping": 256,
+    "effectiveMasteredComplete": 256,
     "evidenceLibraryPaths": [
-      "/MNSF26/Run030/MNSF26_QUESTION_MASTERING_RUN030_AR_T12_V1.json",
-      "/MNSF26/Run031/MNSF26_QUESTION_MASTERING_RUN031_AR_T13_V1.json",
-      "/MNSF26/Run031/MNSF26_QUESTION_MASTERING_RUN032_AR_T14_V1.json"
+      "/MNSF26/Run031/MNSF26_QUESTION_MASTERING_RUN033_AR_T15_V1.json",
+      "/MNSF26/Run034/MNSF26_QUESTION_MASTERING_RUN034_AR_T17_A_V1.json",
+      "/MNSF26/Run035/MNSF26_QUESTION_MASTERING_RUN035_AR_T17_B_V1.json",
+      "/MNSF26/Run036/MNSF26_QUESTION_MASTERING_RUN036_AR_T16_B_V1.json",
+      "/MNSF26/Run037/MNSF26_QUESTION_MASTERING_RUN037_AR_T16_A_V1.json"
     ],
-    "note": "Includes unreconciled Run028/029 delta. T12-T14 all 59 Run017 crops inspected directly; 51 mastered, 8 HOLD; no source-group auto approval."
+    "note": "Reconciled Library state deltas Run033-Run037 after direct crop inspection; no crop/R2/import stages reopened."
   },
   "executionContract": "docs/content/mnsf26/MNSF26_LOCKED_PIPELINE_V1.json",
   "activeStage": {
     "order": 2,
     "name": "QUESTION_MASTERING",
     "status": "IN_PROGRESS",
-    "done": 211,
+    "done": 256,
     "total": 2135,
     "mode": "ONE_PASS_PER_QUESTION",
     "requiredPayload": [
@@ -140,6 +142,6 @@
       "ideaFingerprint"
     ],
     "gate": "No question advances without complete payload or explicit HOLD/REVIEW.",
-    "masteredComplete": 211
+    "masteredComplete": 256
   }
 }
