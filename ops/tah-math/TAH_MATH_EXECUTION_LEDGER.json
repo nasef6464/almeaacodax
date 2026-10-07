@@ -16,12 +16,12 @@
     {
       "id": "P1",
       "name": "foundation_dictionary",
-      "status": "IN_PROGRESS",
+      "status": "SOURCE_MAP_DONE_BINDING_PENDING",
       "batching": "lesson-aligned",
       "lessons": "1-31",
-      "sourceIdeasExtractedLessons": "1-16",
-      "progress": "16/31",
-      "next": "lessons 17-24, then 25-31; bind only against exact runtime taxonomy export"
+      "sourceIdeasExtractedLessons": "1-31",
+      "progress": "31/31 source map",
+      "next": "Obtain exact runtime taxonomy snapshot, bind source ideas without invented IDs, then generate YLM26 deterministic review manifest."
     },
     {
       "id": "P2",
@@ -78,11 +78,13 @@
       2
     ]
   },
-  "lastCheckpoint": "2026-10-07-run2",
+  "lastCheckpoint": "2026-10-07-run4",
   "evidence": [
     "ops/tah-math/TAH_MATH_RUN1_BASELINE.json",
     "ops/tah-math/TAH_MATH_SOURCE_IDEA_MAP_PART01.json",
-    "ops/tah-math/TAH_MATH_SOURCE_IDEA_MAP_PART02.json"
+    "ops/tah-math/TAH_MATH_SOURCE_IDEA_MAP_PART02.json",
+    "ops/tah-math/TAH_MATH_SOURCE_IDEA_MAP_PART03.json",
+    "ops/tah-math/TAH_MATH_SOURCE_IDEA_MAP_PART04.json"
   ],
   "blockers": [
     {
