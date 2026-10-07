@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "bank": "MNSF26",
   "generatedFromHead": "b30245ede778677e052422a1727f3b54437dcd29",
   "policy": "SOURCE_FIRST_QUESTION_MATH_FAIL_CLOSED",
@@ -10,8 +10,8 @@
     "candidateReview": 56,
     "difficultyNeedsNormalization": 76,
     "missingRequiredRows": 0,
-    "questionLevelApproved": 91,
-    "questionLevelReview": 39
+    "questionLevelApproved": 129,
+    "questionLevelReview": 1
   },
   "bySource": {
     "الحساب/الجبر|قراءة الأعداد والأعداد المحصورة": 22,
@@ -1038,7 +1038,7 @@
       "difficultyNeedsNormalization": true,
       "difficultyReasonRequired": true,
       "missingRequired": [],
-      "mappingGate": "REVIEW_REQUIRED"
+      "mappingGate": "APPROVED_QUESTION_LEVEL"
     },
     {
       "questionCode": "QDR-QNT-MNSF26-P008-Q04",
@@ -1070,7 +1070,7 @@
       "difficultyNeedsNormalization": true,
       "difficultyReasonRequired": true,
       "missingRequired": [],
-      "mappingGate": "REVIEW_REQUIRED"
+      "mappingGate": "APPROVED_QUESTION_LEVEL"
     },
     {
       "questionCode": "QDR-QNT-MNSF26-P008-Q06",
@@ -1086,7 +1086,7 @@
       "difficultyNeedsNormalization": true,
       "difficultyReasonRequired": true,
       "missingRequired": [],
-      "mappingGate": "REVIEW_REQUIRED"
+      "mappingGate": "APPROVED_QUESTION_LEVEL"
     },
     {
       "questionCode": "QDR-QNT-MNSF26-P008-Q07",
@@ -1102,7 +1102,7 @@
       "difficultyNeedsNormalization": true,
       "difficultyReasonRequired": true,
       "missingRequired": [],
-      "mappingGate": "REVIEW_REQUIRED"
+      "mappingGate": "APPROVED_QUESTION_LEVEL"
     },
     {
       "questionCode": "QDR-QNT-MNSF26-P008-Q08",
@@ -1150,7 +1150,7 @@
       "difficultyNeedsNormalization": true,
       "difficultyReasonRequired": true,
       "missingRequired": [],
-      "mappingGate": "REVIEW_REQUIRED"
+      "mappingGate": "APPROVED_QUESTION_LEVEL"
     },
     {
       "questionCode": "QDR-QNT-MNSF26-P008-Q11",
@@ -1166,7 +1166,7 @@
       "difficultyNeedsNormalization": true,
       "difficultyReasonRequired": true,
       "missingRequired": [],
-      "mappingGate": "REVIEW_REQUIRED"
+      "mappingGate": "APPROVED_QUESTION_LEVEL"
     },
     {
       "questionCode": "QDR-QNT-MNSF26-P008-Q12",
@@ -1246,7 +1246,7 @@
       "difficultyNeedsNormalization": true,
       "difficultyReasonRequired": true,
       "missingRequired": [],
-      "mappingGate": "REVIEW_REQUIRED"
+      "mappingGate": "APPROVED_QUESTION_LEVEL"
     },
     {
       "questionCode": "QDR-QNT-MNSF26-P009-Q17",
@@ -1262,7 +1262,7 @@
       "difficultyNeedsNormalization": true,
       "difficultyReasonRequired": true,
       "missingRequired": [],
-      "mappingGate": "REVIEW_REQUIRED"
+      "mappingGate": "APPROVED_QUESTION_LEVEL"
     },
     {
       "questionCode": "QDR-QNT-MNSF26-P009-Q18",
@@ -1278,7 +1278,7 @@
       "difficultyNeedsNormalization": true,
       "difficultyReasonRequired": true,
       "missingRequired": [],
-      "mappingGate": "REVIEW_REQUIRED"
+      "mappingGate": "APPROVED_QUESTION_LEVEL"
     },
     {
       "questionCode": "QDR-QNT-MNSF26-P009-Q19",
@@ -1310,7 +1310,7 @@
       "difficultyNeedsNormalization": true,
       "difficultyReasonRequired": true,
       "missingRequired": [],
-      "mappingGate": "REVIEW_REQUIRED"
+      "mappingGate": "APPROVED_QUESTION_LEVEL"
     },
     {
       "questionCode": "QDR-QNT-MNSF26-P010-Q01",
@@ -1326,7 +1326,7 @@
       "difficultyNeedsNormalization": true,
       "difficultyReasonRequired": true,
       "missingRequired": [],
-      "mappingGate": "REVIEW_REQUIRED"
+      "mappingGate": "APPROVED_QUESTION_LEVEL"
     },
     {
       "questionCode": "QDR-QNT-MNSF26-P010-Q02",
@@ -1374,7 +1374,7 @@
       "difficultyNeedsNormalization": true,
       "difficultyReasonRequired": true,
       "missingRequired": [],
-      "mappingGate": "REVIEW_REQUIRED"
+      "mappingGate": "APPROVED_QUESTION_LEVEL"
     },
     {
       "questionCode": "QDR-QNT-MNSF26-P010-Q05",
@@ -1406,7 +1406,7 @@
       "difficultyNeedsNormalization": true,
       "difficultyReasonRequired": true,
       "missingRequired": [],
-      "mappingGate": "REVIEW_REQUIRED"
+      "mappingGate": "APPROVED_QUESTION_LEVEL"
     },
     {
       "questionCode": "QDR-QNT-MNSF26-P010-Q07",
@@ -1422,7 +1422,7 @@
       "difficultyNeedsNormalization": true,
       "difficultyReasonRequired": true,
       "missingRequired": [],
-      "mappingGate": "REVIEW_REQUIRED"
+      "mappingGate": "APPROVED_QUESTION_LEVEL"
     },
     {
       "questionCode": "QDR-QNT-MNSF26-P010-Q08",
@@ -1438,7 +1438,7 @@
       "difficultyNeedsNormalization": true,
       "difficultyReasonRequired": true,
       "missingRequired": [],
-      "mappingGate": "REVIEW_REQUIRED"
+      "mappingGate": "APPROVED_QUESTION_LEVEL"
     },
     {
       "questionCode": "QDR-QNT-MNSF26-P010-Q09",
@@ -1454,7 +1454,7 @@
       "difficultyNeedsNormalization": true,
       "difficultyReasonRequired": true,
       "missingRequired": [],
-      "mappingGate": "REVIEW_REQUIRED"
+      "mappingGate": "APPROVED_QUESTION_LEVEL"
     },
     {
       "questionCode": "QDR-QNT-MNSF26-P010-Q10",
@@ -1486,7 +1486,7 @@
       "difficultyNeedsNormalization": true,
       "difficultyReasonRequired": true,
       "missingRequired": [],
-      "mappingGate": "REVIEW_REQUIRED"
+      "mappingGate": "APPROVED_QUESTION_LEVEL"
     },
     {
       "questionCode": "QDR-QNT-MNSF26-P010-Q12",
@@ -1502,7 +1502,7 @@
       "difficultyNeedsNormalization": true,
       "difficultyReasonRequired": true,
       "missingRequired": [],
-      "mappingGate": "REVIEW_REQUIRED"
+      "mappingGate": "APPROVED_QUESTION_LEVEL"
     },
     {
       "questionCode": "QDR-QNT-MNSF26-P011-Q13",
@@ -1582,7 +1582,7 @@
       "difficultyNeedsNormalization": true,
       "difficultyReasonRequired": true,
       "missingRequired": [],
-      "mappingGate": "REVIEW_REQUIRED"
+      "mappingGate": "APPROVED_QUESTION_LEVEL"
     },
     {
       "questionCode": "QDR-QNT-MNSF26-P011-Q18",
@@ -1614,7 +1614,7 @@
       "difficultyNeedsNormalization": false,
       "difficultyReasonRequired": true,
       "missingRequired": [],
-      "mappingGate": "REVIEW_REQUIRED"
+      "mappingGate": "APPROVED_QUESTION_LEVEL"
     },
     {
       "questionCode": "QDR-QNT-MNSF26-P011-Q20",
@@ -1726,7 +1726,7 @@
       "difficultyNeedsNormalization": true,
       "difficultyReasonRequired": true,
       "missingRequired": [],
-      "mappingGate": "REVIEW_REQUIRED"
+      "mappingGate": "APPROVED_QUESTION_LEVEL"
     },
     {
       "questionCode": "QDR-QNT-MNSF26-P012-Q07",
@@ -1742,7 +1742,7 @@
       "difficultyNeedsNormalization": true,
       "difficultyReasonRequired": true,
       "missingRequired": [],
-      "mappingGate": "REVIEW_REQUIRED"
+      "mappingGate": "APPROVED_QUESTION_LEVEL"
     },
     {
       "questionCode": "QDR-QNT-MNSF26-P012-Q08",
@@ -1758,7 +1758,7 @@
       "difficultyNeedsNormalization": true,
       "difficultyReasonRequired": true,
       "missingRequired": [],
-      "mappingGate": "REVIEW_REQUIRED"
+      "mappingGate": "APPROVED_QUESTION_LEVEL"
     },
     {
       "questionCode": "QDR-QNT-MNSF26-P012-Q09",
@@ -1774,7 +1774,7 @@
       "difficultyNeedsNormalization": true,
       "difficultyReasonRequired": true,
       "missingRequired": [],
-      "mappingGate": "REVIEW_REQUIRED"
+      "mappingGate": "APPROVED_QUESTION_LEVEL"
     },
     {
       "questionCode": "QDR-QNT-MNSF26-P012-Q10",
@@ -1806,7 +1806,7 @@
       "difficultyNeedsNormalization": true,
       "difficultyReasonRequired": true,
       "missingRequired": [],
-      "mappingGate": "REVIEW_REQUIRED"
+      "mappingGate": "APPROVED_QUESTION_LEVEL"
     },
     {
       "questionCode": "QDR-QNT-MNSF26-P012-Q12",
@@ -1838,7 +1838,7 @@
       "difficultyNeedsNormalization": true,
       "difficultyReasonRequired": true,
       "missingRequired": [],
-      "mappingGate": "REVIEW_REQUIRED"
+      "mappingGate": "APPROVED_QUESTION_LEVEL"
     },
     {
       "questionCode": "QDR-QNT-MNSF26-P013-Q14",
@@ -1854,7 +1854,7 @@
       "difficultyNeedsNormalization": true,
       "difficultyReasonRequired": true,
       "missingRequired": [],
-      "mappingGate": "REVIEW_REQUIRED"
+      "mappingGate": "APPROVED_QUESTION_LEVEL"
     },
     {
       "questionCode": "QDR-QNT-MNSF26-P013-Q16",
@@ -1870,7 +1870,7 @@
       "difficultyNeedsNormalization": true,
       "difficultyReasonRequired": true,
       "missingRequired": [],
-      "mappingGate": "REVIEW_REQUIRED"
+      "mappingGate": "APPROVED_QUESTION_LEVEL"
     },
     {
       "questionCode": "QDR-QNT-MNSF26-P013-Q17",
@@ -1886,7 +1886,7 @@
       "difficultyNeedsNormalization": true,
       "difficultyReasonRequired": true,
       "missingRequired": [],
-      "mappingGate": "REVIEW_REQUIRED"
+      "mappingGate": "APPROVED_QUESTION_LEVEL"
     },
     {
       "questionCode": "QDR-QNT-MNSF26-P013-Q18",
@@ -1918,7 +1918,7 @@
       "difficultyNeedsNormalization": true,
       "difficultyReasonRequired": true,
       "missingRequired": [],
-      "mappingGate": "REVIEW_REQUIRED"
+      "mappingGate": "APPROVED_QUESTION_LEVEL"
     },
     {
       "questionCode": "QDR-QNT-MNSF26-P014-Q01",
@@ -1950,7 +1950,7 @@
       "difficultyNeedsNormalization": true,
       "difficultyReasonRequired": true,
       "missingRequired": [],
-      "mappingGate": "REVIEW_REQUIRED"
+      "mappingGate": "APPROVED_QUESTION_LEVEL"
     },
     {
       "questionCode": "QDR-QNT-MNSF26-P014-Q03",
@@ -1982,7 +1982,7 @@
       "difficultyNeedsNormalization": true,
       "difficultyReasonRequired": true,
       "missingRequired": [],
-      "mappingGate": "REVIEW_REQUIRED"
+      "mappingGate": "APPROVED_QUESTION_LEVEL"
     },
     {
       "questionCode": "QDR-QNT-MNSF26-P014-Q05",
@@ -1998,7 +1998,7 @@
       "difficultyNeedsNormalization": true,
       "difficultyReasonRequired": true,
       "missingRequired": [],
-      "mappingGate": "REVIEW_REQUIRED"
+      "mappingGate": "APPROVED_QUESTION_LEVEL"
     },
     {
       "questionCode": "QDR-QNT-MNSF26-P014-Q06",
@@ -2014,7 +2014,7 @@
       "difficultyNeedsNormalization": true,
       "difficultyReasonRequired": true,
       "missingRequired": [],
-      "mappingGate": "REVIEW_REQUIRED"
+      "mappingGate": "APPROVED_QUESTION_LEVEL"
     },
     {
       "questionCode": "QDR-QNT-MNSF26-P014-Q07",
@@ -2030,7 +2030,7 @@
       "difficultyNeedsNormalization": true,
       "difficultyReasonRequired": true,
       "missingRequired": [],
-      "mappingGate": "REVIEW_REQUIRED"
+      "mappingGate": "APPROVED_QUESTION_LEVEL"
     },
     {
       "questionCode": "QDR-QNT-MNSF26-P014-Q09",
@@ -2046,7 +2046,7 @@
       "difficultyNeedsNormalization": true,
       "difficultyReasonRequired": true,
       "missingRequired": [],
-      "mappingGate": "REVIEW_REQUIRED"
+      "mappingGate": "APPROVED_QUESTION_LEVEL"
     },
     {
       "questionCode": "QDR-QNT-MNSF26-P014-Q10",
@@ -2062,7 +2062,7 @@
       "difficultyNeedsNormalization": true,
       "difficultyReasonRequired": true,
       "missingRequired": [],
-      "mappingGate": "REVIEW_REQUIRED"
+      "mappingGate": "APPROVED_QUESTION_LEVEL"
     },
     {
       "questionCode": "QDR-QNT-MNSF26-P014-Q11",
@@ -2078,7 +2078,7 @@
       "difficultyNeedsNormalization": true,
       "difficultyReasonRequired": true,
       "missingRequired": [],
-      "mappingGate": "REVIEW_REQUIRED"
+      "mappingGate": "APPROVED_QUESTION_LEVEL"
     },
     {
       "questionCode": "QDR-QNT-MNSF26-P014-Q12",
@@ -2113,5 +2113,9 @@
       "mappingGate": "APPROVED_QUESTION_LEVEL"
     }
   ],
-  "adjudicationApplied": "MNSF26_MAPPING_ADJUDICATION_BATCH_001_V1.json"
+  "adjudicationApplied": "MNSF26_MAPPING_ADJUDICATION_BATCH_001_V1.json",
+  "adjudicationEvidence": [
+    "MNSF26_MAPPING_ADJUDICATION_BATCH_001_V1.json",
+    "MNSF26_MAPPING_ADJUDICATION_BATCH_002_V1.json"
+  ]
 }
