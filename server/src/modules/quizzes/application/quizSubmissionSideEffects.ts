@@ -9,14 +9,13 @@ export { updateSkillProgressFromQuestionAttempt } from "./quizSubmissionSkillPro
 const uniqueStrings = (values: Array<string | undefined | null>) =>
   [...new Set(values.map((value) => String(value || "").trim()).filter(Boolean))];
 
-const canonicalQuestionSkillIds = (question: any) => {
-  const mainSkillId = String(question?.skillId || "").trim();
-  const subSkillId = String(question?.subSkillId || "").trim();
-  const canonical = uniqueStrings([mainSkillId, subSkillId]);
-  return canonical.length > 0
-    ? canonical
-    : uniqueStrings(Array.isArray(question?.skillIds) ? question.skillIds.map(String) : []);
-};
+const canonicalQuestionSkillIds = (question: any) =>
+  uniqueStrings([
+    question?.skillId,
+    question?.subSkillId,
+    ...(Array.isArray(question?.subSkillIds) ? question.subSkillIds : []),
+    ...(Array.isArray(question?.skillIds) ? question.skillIds : []),
+  ]);
 
 const primaryQuestionSkillId = (question: any) =>
   String(question?.subSkillId || question?.skillId || canonicalQuestionSkillIds(question)[0] || "").trim();
