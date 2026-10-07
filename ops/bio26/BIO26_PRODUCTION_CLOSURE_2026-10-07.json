@@ -79,6 +79,8 @@
     "standardTests": 71,
     "allocation": "63×40 + 8×39 = 2832 questions exactly once"
   },
-  "finalProductionMainSha": "2885b2b30eff2f959fdad3a0c098a2bd461f1b73",
-  "closureRule": "Satisfied: production import + integrity + live E2E + approval + post-approval audit all PASS"
+  "closureRule": "Satisfied: production import + integrity + live E2E + approval + post-approval audit all PASS",
+  "closureCertifiedApplicationSha": "2885b2b30eff2f959fdad3a0c098a2bd461f1b73",
+  "closureRecordMergeSha": "1bdc0ce150ff018745a37b7461a5b419c986f410",
+  "closureRecordDeploy": "LIVE"
 }

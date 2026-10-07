@@ -96,9 +96,10 @@ Git HEAD always overrides this historical baseline.
 - Post-Approval Audit: **PASS 2,832**, 29/98, linked quizzes **0**.
 - Learning structure subsequently merged:
   - PR #437: **29 main topics / 98 subtopics**, subskill foundation drills, main-skill training, first five free, and **71** standard all-bank tests.
-  - PR #439/current main: **49** main-skill training drills after split policy for high-volume skills.
+  - PR #439: **49** main-skill training drills after split policy for high-volume skills.
   - 71 standard tests consume all **2,832** approved questions exactly once (**63×40 + 8×39 = 2,832**).
-- Current production Render deploy: `main@2885b2b30eff2f959fdad3a0c098a2bd461f1b73`.
+- BIO26 closure-certified application SHA: `2885b2b30eff2f959fdad3a0c098a2bd461f1b73`.
+- Closure-record PR #442 merged as `1bdc0ce150ff018745a37b7461a5b419c986f410`; Render deployed that docs-only merge LIVE with no BIO26 code/data change.
 - **BIO26 CLOSED ✅** — no remaining production-import, integrity, Live E2E, approval, or post-approval gate.
 
 **BIO26 must not be reopened unless a new source/content revision is explicitly requested.**

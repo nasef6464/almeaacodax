@@ -85,7 +85,8 @@
 - Post-approval E2E: `BIO26_LIVE_E2E_APPROVED_PASS learnerVisible=1 answerLeak=0 liveImageSamples=30`.
 - Final gate: `BIO26_POST_APPROVAL_GATE_PASS count=2832 main=29 sub=98 linked=0`.
 - PR #433 merged: `7b07579b4aa68c46562ac451711328a06ab055ee`.
-- Current production main after learning/test closure: `2885b2b30eff2f959fdad3a0c098a2bd461f1b73`.
+- BIO26 closure-certified application SHA after learning/test closure: `2885b2b30eff2f959fdad3a0c098a2bd461f1b73`.
+- Closure-record PR #442: `1bdc0ce150ff018745a37b7461a5b419c986f410` (docs-only; deployed LIVE after closure).
 - PR #437 merged learning topics/drills/71 all-bank tests.
 - PR #439 aligned main-skill training count to **49**.
 - Closure evidence file: `ops/bio26/BIO26_PRODUCTION_CLOSURE_2026-10-07.json`.
