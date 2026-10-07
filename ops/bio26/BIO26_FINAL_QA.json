@@ -225,11 +225,12 @@
     "approver": "BIO26_FULL_CLOSURE_2026_10_07",
     "closurePr": 433,
     "closureMergeSha": "7b07579b4aa68c46562ac451711328a06ab055ee",
-    "finalProductionMainSha": "2885b2b30eff2f959fdad3a0c098a2bd461f1b73",
     "learningStructurePr": 437,
     "learningClosurePr": 439,
     "mainSkillTrainingCount": 49,
     "standardTestCount": 71,
-    "allBankQuestionAllocation": "63x40 + 8x39 = 2832"
+    "allBankQuestionAllocation": "63x40 + 8x39 = 2832",
+    "closureCertifiedApplicationSha": "2885b2b30eff2f959fdad3a0c098a2bd461f1b73",
+    "closureRecordMergeSha": "1bdc0ce150ff018745a37b7461a5b419c986f410"
   }
 }
