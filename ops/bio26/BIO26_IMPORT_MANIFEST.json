@@ -24,7 +24,10 @@
     "integrityAudit": "PASS_0_ERRORS",
     "liveE2E": "PASS_PRE_AND_POST_APPROVAL",
     "approval": "PASS_2832_OF_2832",
-    "postApprovalAudit": "PASS"
+    "postApprovalAudit": "PASS",
+    "learningStructureRuntime": "PASS_147_APPROVED_PUBLISHED",
+    "standardTestsRuntime": "PASS_71_APPROVED_PUBLISHED_VISIBLE_2832_UNIQUE_REFS",
+    "restartIdempotence": "PASS_LEARNING_AND_STANDARD_TESTS_NOOP"
   },
   "assetPackage": {
     "version": "V2_REGENERATED_2026-10-05",
@@ -120,13 +123,19 @@
     "approvedQuestions": 2832,
     "approvalStatus": "approved",
     "integrityErrors": 0,
-    "linkedQuizCount": 0,
     "learnerVisible": true,
     "answerLeakCount": 0,
     "closurePr": 433,
     "closureMergeSha": "7b07579b4aa68c46562ac451711328a06ab055ee",
-    "closureCertifiedApplicationSha": "2885b2b30eff2f959fdad3a0c098a2bd461f1b73",
-    "closureRecordMergeSha": "1bdc0ce150ff018745a37b7461a5b419c986f410"
+    "closureCertifiedApplicationSha": "54f20dfa7524a212d18bc7bf316fded4b0bb82e6",
+    "closureRecordMergeSha": "1bdc0ce150ff018745a37b7461a5b419c986f410",
+    "postApprovalGateLinkedQuizCount": 0,
+    "runtimeRepairPr": 445,
+    "runtimeRepairMergeSha": "54f20dfa7524a212d18bc7bf316fded4b0bb82e6",
+    "learningQuizCount": 147,
+    "standardTestCount": 71,
+    "standardTestUniqueQuestionRefs": 2832,
+    "standardTestDuplicateRefs": 0
   },
   "closure": true
 }
