@@ -1,0 +1,78 @@
+{
+  "project": "TAH-MATH",
+  "branch": "content/tah-math-full-taxonomy-closure",
+  "strategy": "source-aligned large batches; review first, mutate second",
+  "stages": [
+    {
+      "id": "P0",
+      "name": "freeze_inventory",
+      "status": "DONE",
+      "deliverables": [
+        "master control",
+        "source lesson map",
+        "review schema"
+      ]
+    },
+    {
+      "id": "P1",
+      "name": "foundation_dictionary",
+      "status": "IN_PROGRESS",
+      "batching": "lesson-aligned",
+      "lessons": "1-31"
+    },
+    {
+      "id": "P2",
+      "name": "ylm26_full_review",
+      "status": "PENDING",
+      "expectedBaseline": 326
+    },
+    {
+      "id": "P3",
+      "name": "col26_full_review",
+      "status": "PENDING",
+      "expectedBaseline": 1012
+    },
+    {
+      "id": "P4",
+      "name": "col26old_regression",
+      "status": "PENDING",
+      "sourceInventory": 1258
+    },
+    {
+      "id": "P5",
+      "name": "cross_bank_dedupe",
+      "status": "PENDING"
+    },
+    {
+      "id": "P6",
+      "name": "coverage_matrix",
+      "status": "PENDING"
+    },
+    {
+      "id": "P7",
+      "name": "training_test_rebuild",
+      "status": "PENDING"
+    },
+    {
+      "id": "P8",
+      "name": "live_student_e2e",
+      "status": "PENDING"
+    },
+    {
+      "id": "P9",
+      "name": "final_closure",
+      "status": "PENDING"
+    }
+  ],
+  "rules": {
+    "mutation": "No production mapping mutation before deterministic review manifest",
+    "newTaxonomy": false,
+    "syntheticCanonicalQuestions": false,
+    "preserveSourceIdentity": true,
+    "useFoundationPlacementAsPrimaryYLM26Evidence": true,
+    "keepCollectionSections": [
+      1,
+      2
+    ]
+  }
+}
