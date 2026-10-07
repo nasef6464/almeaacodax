@@ -19,6 +19,11 @@ check('learning bootstrap is scoped to the active path and subject', () => {
   assert.ok(source.includes('api.getQuizzes({ pathId: category, subjectId: subject, limit: 100 })'));
 });
 
+check('partial scoped quiz state is refreshed instead of treated as complete', () => {
+  assert.ok(source.includes('Always refresh the bounded scoped quiz catalog once per subject.'));
+  assert.ok(!source.includes('const hasScopedQuizzes = quizzes.some'));
+});
+
 check('late scoped responses cannot replace the current shared collections', () => {
   assert.ok(source.includes('if (scopedLearningBootstrapRef.current !== scopeKey) return;'));
   assert.ok(source.indexOf('if (scopedLearningBootstrapRef.current !== scopeKey) return;') < source.indexOf('hydrateCourses(Array.from(mergedCourses.values()))'));
