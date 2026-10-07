@@ -13,7 +13,7 @@
         "القطع الزائد",
         "تصنيف القطوع"
       ],
-      "taxonomyBindingStatus": "PENDING_RUNTIME_TAXONOMY_SNAPSHOT"
+      "taxonomyBindingStatus": "BOUND_EXACT_RUNTIME_TAXONOMY"
     },
     {
       "lessonNumber": 26,
@@ -25,7 +25,7 @@
         "طول المتجه ومركباته",
         "الضرب الداخلي والاتجاهي"
       ],
-      "taxonomyBindingStatus": "PENDING_RUNTIME_TAXONOMY_SNAPSHOT"
+      "taxonomyBindingStatus": "BOUND_EXACT_RUNTIME_TAXONOMY"
     },
     {
       "lessonNumber": 27,
@@ -37,7 +37,7 @@
         "التحويل بين الإحداثيات القطبية والديكارتية",
         "تمثيل المتجهات والإحداثيات"
       ],
-      "taxonomyBindingStatus": "PENDING_RUNTIME_TAXONOMY_SNAPSHOT"
+      "taxonomyBindingStatus": "BOUND_EXACT_RUNTIME_TAXONOMY"
     },
     {
       "lessonNumber": 28,
@@ -49,7 +49,7 @@
         "مقاييس التشتت",
         "قراءة وتحليل البيانات"
       ],
-      "taxonomyBindingStatus": "PENDING_RUNTIME_TAXONOMY_SNAPSHOT"
+      "taxonomyBindingStatus": "BOUND_EXACT_RUNTIME_TAXONOMY"
     },
     {
       "lessonNumber": 29,
@@ -61,7 +61,7 @@
         "النهايات والصيغ غير المحددة",
         "الاتصال وعلاقته بالنهايات"
       ],
-      "taxonomyBindingStatus": "PENDING_RUNTIME_TAXONOMY_SNAPSHOT"
+      "taxonomyBindingStatus": "BOUND_EXACT_RUNTIME_TAXONOMY"
     },
     {
       "lessonNumber": 30,
@@ -73,7 +73,7 @@
         "تطبيقات المشتقة",
         "الدوال الأصلية والتكامل غير المحدد"
       ],
-      "taxonomyBindingStatus": "PENDING_RUNTIME_TAXONOMY_SNAPSHOT"
+      "taxonomyBindingStatus": "BOUND_EXACT_RUNTIME_TAXONOMY"
     },
     {
       "lessonNumber": 31,
@@ -81,7 +81,8 @@
       "collectionsStartPage": null,
       "sourceIdeas": [],
       "note": "Foundation-only enrichment; no collection mapping is fabricated.",
-      "taxonomyBindingStatus": "PENDING_RUNTIME_TAXONOMY_SNAPSHOT"
+      "taxonomyBindingStatus": "NO_BINDING_FOUNDATION_ENRICHMENT"
     }
-  ]
+  ],
+  "runtimeTaxonomyBinding": "BOUND_EXACT_22_MAIN_67_SUBSKILLS"
 }
