@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN040_AR_T20_T40_VISUAL_EVIDENCE",
+  "headAtStart": {
+    "branch": "2b04a24134cf289c920a956b4fdf61687cebf0df",
+    "main": "f40a785ee777a0be16e48f70727793e8f9ee0695"
+  },
+  "inspection": {
+    "pdfPagesRendered": "39-78",
+    "renderedPageCount": 40,
+    "nominalRange": "arithmetic T20-T40",
+    "sourceAbsentPreserved": "T33",
+    "visualInspection": "COMPLETE_FOR_RENDERED_PAGES",
+    "questionMathReadable": true,
+    "note": "Rendered directly from the authoritative arithmetic PDF and visually inspected in ten four-page contact sheets. Visual evidence alone does not increment masteredComplete."
+  },
+  "sourceTransitions": [
+    {"tests":"20-24","label":"ordinary fractions"},
+    {"tests":"25-27","label":"decimal fractions"},
+    {"tests":"28-30","label":"reverse/remainder"},
+    {"tests":"31-32,34-40","label":"percent"}
+  ],
+  "safety": {
+    "masteredCountAdded": 0,
+    "stateCountChanged": false,
+    "r2Touched": false,
+    "productionTouched": false
+  },
+  "nextAction": "Create complete per-question master records from the inspected rendered pages; keep T33 SOURCE_ABSENT_UNRESOLVED."
+}
