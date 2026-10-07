@@ -1,0 +1,505 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "policy": "SOURCE_GROUP_CONSTRAINS_CANDIDATES_THEN_QUESTION_MATH_SELECTS_EXACT_SUBSKILL",
+  "canonicalContract": {
+    "mainSkills": 25,
+    "subSkills": 95,
+    "newSkillsAllowed": false
+  },
+  "rules": {
+    "sourceLabelRequired": true,
+    "questionMathRequired": true,
+    "crossTopicRequiresReview": true,
+    "ambiguousFailClosed": true
+  },
+  "sourceGroups": [
+    {
+      "sourcePart": "الحساب/الجبر",
+      "sourceSkillLabel": "قراءة الأعداد والأعداد المحصورة",
+      "tests": [
+        1,
+        2
+      ],
+      "candidates": [
+        "sub_quant_01_3",
+        "sub_quant_02_3",
+        "sub_quant_13_4"
+      ],
+      "selection": "QUESTION_MATH_REQUIRED"
+    },
+    {
+      "sourcePart": "الحساب/الجبر",
+      "sourceSkillLabel": "العمليات على الاعداد",
+      "tests": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "candidates": [
+        "sub_quant_01_1",
+        "sub_quant_01_2",
+        "sub_quant_01_3",
+        "sub_quant_01_4",
+        "sub_quant_01_5"
+      ],
+      "selection": "QUESTION_MATH_REQUIRED"
+    },
+    {
+      "sourcePart": "الحساب/الجبر",
+      "sourceSkillLabel": "ترتيب العمليات – قابلية القسمة",
+      "tests": [
+        10,
+        11
+      ],
+      "candidates": [
+        "sub_quant_01_4",
+        "sub_quant_02_1",
+        "sub_quant_02_2"
+      ],
+      "selection": "QUESTION_MATH_REQUIRED"
+    },
+    {
+      "sourcePart": "الحساب/الجبر",
+      "sourceSkillLabel": "الأعداد الأولية - العوامل الأولى",
+      "tests": [
+        12,
+        13,
+        14
+      ],
+      "candidates": [
+        "sub_quant_02_3"
+      ],
+      "selection": "QUESTION_MATH_REQUIRED"
+    },
+    {
+      "sourcePart": "الحساب/الجبر",
+      "sourceSkillLabel": "جمع الأعداد - المتتابعات - ضرب الأعداد",
+      "tests": [
+        15,
+        16,
+        17,
+        18
+      ],
+      "candidates": [
+        "sub_quant_01_2",
+        "sub_quant_01_3"
+      ],
+      "selection": "QUESTION_MATH_REQUIRED"
+    },
+    {
+      "sourcePart": "الحساب/الجبر",
+      "sourceSkillLabel": "الدورات - المصافحات الأعمدة - المشابك",
+      "tests": [
+        19
+      ],
+      "candidates": [
+        "sub_quant_13_2",
+        "sub_quant_13_3",
+        "sub_quant_14_4"
+      ],
+      "selection": "QUESTION_MATH_REQUIRED"
+    },
+    {
+      "sourcePart": "الحساب/الجبر",
+      "sourceSkillLabel": "الكسور الاعتيادية",
+      "tests": [
+        20,
+        21,
+        22,
+        23,
+        24
+      ],
+      "candidates": [
+        "sub_quant_03_1",
+        "sub_quant_03_2",
+        "sub_quant_03_3",
+        "sub_quant_03_4"
+      ],
+      "selection": "QUESTION_MATH_REQUIRED"
+    },
+    {
+      "sourcePart": "الحساب/الجبر",
+      "sourceSkillLabel": "الكسور العشرية",
+      "tests": [
+        25,
+        26,
+        27
+      ],
+      "candidates": [
+        "sub_quant_04_1",
+        "sub_quant_04_2",
+        "sub_quant_04_3",
+        "sub_quant_04_4"
+      ],
+      "selection": "QUESTION_MATH_REQUIRED"
+    },
+    {
+      "sourcePart": "الحساب/الجبر",
+      "sourceSkillLabel": "باقي الواحد – الحل العكسي",
+      "tests": [
+        28,
+        29,
+        30
+      ],
+      "candidates": [
+        "sub_quant_02_2",
+        "sub_quant_11_2"
+      ],
+      "selection": "QUESTION_MATH_REQUIRED"
+    },
+    {
+      "sourcePart": "الحساب/الجبر",
+      "sourceSkillLabel": "النسبة المئوية",
+      "tests": [
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39,
+        40
+      ],
+      "candidates": [
+        "sub_quant_09_1",
+        "sub_quant_09_2",
+        "sub_quant_09_3",
+        "sub_quant_09_4",
+        "sub_quant_10_1",
+        "sub_quant_10_2",
+        "sub_quant_10_4"
+      ],
+      "selection": "QUESTION_MATH_REQUIRED"
+    },
+    {
+      "sourcePart": "الحساب/الجبر",
+      "sourceSkillLabel": "التناسب",
+      "tests": [
+        41,
+        42,
+        43,
+        44
+      ],
+      "candidates": [
+        "sub_quant_08_1",
+        "sub_quant_08_2",
+        "sub_quant_08_3",
+        "sub_quant_08_4"
+      ],
+      "selection": "QUESTION_MATH_REQUIRED"
+    },
+    {
+      "sourcePart": "الحساب/الجبر",
+      "sourceSkillLabel": "أجزاء النسب",
+      "tests": [
+        45
+      ],
+      "candidates": [
+        "sub_quant_08_1",
+        "sub_quant_08_2"
+      ],
+      "selection": "QUESTION_MATH_REQUIRED"
+    },
+    {
+      "sourcePart": "الحساب/الجبر",
+      "sourceSkillLabel": "السرعة",
+      "tests": [
+        46,
+        47
+      ],
+      "candidates": [
+        "sub_quant_12_1",
+        "sub_quant_12_2",
+        "sub_quant_12_3",
+        "sub_quant_12_4"
+      ],
+      "selection": "QUESTION_MATH_REQUIRED"
+    },
+    {
+      "sourcePart": "الحساب/الجبر",
+      "sourceSkillLabel": "الأعمار والعملات",
+      "tests": [
+        48
+      ],
+      "candidates": [
+        "sub_quant_16_1",
+        "sub_quant_16_2",
+        "sub_quant_16_3",
+        "sub_quant_10_3"
+      ],
+      "selection": "QUESTION_MATH_REQUIRED"
+    },
+    {
+      "sourcePart": "الحساب/الجبر",
+      "sourceSkillLabel": "الأعمار والمعادلات",
+      "tests": [
+        49
+      ],
+      "candidates": [
+        "sub_quant_16_1",
+        "sub_quant_16_2",
+        "sub_quant_16_3",
+        "sub_quant_07_2"
+      ],
+      "selection": "QUESTION_MATH_REQUIRED"
+    },
+    {
+      "sourcePart": "الحساب/الجبر",
+      "sourceSkillLabel": "الساعات",
+      "tests": [
+        50,
+        51
+      ],
+      "candidates": [
+        "sub_quant_15_1",
+        "sub_quant_15_2",
+        "sub_quant_15_3",
+        "sub_quant_14_2"
+      ],
+      "selection": "QUESTION_MATH_REQUIRED"
+    },
+    {
+      "sourcePart": "الحساب/الجبر",
+      "sourceSkillLabel": "التحويلات والمعادلات",
+      "tests": [
+        52,
+        53,
+        54,
+        55,
+        56,
+        57,
+        58,
+        59,
+        60,
+        61,
+        62,
+        63
+      ],
+      "candidates": [
+        "sub_quant_07_2",
+        "sub_quant_07_3",
+        "sub_quant_04_3"
+      ],
+      "selection": "QUESTION_MATH_REQUIRED"
+    },
+    {
+      "sourcePart": "الهندسة",
+      "sourceSkillLabel": "الأشكال",
+      "tests": [
+        1,
+        2
+      ],
+      "candidates": [
+        "sub_quant_19_3",
+        "sub_quant_20_4",
+        "sub_quant_21_1",
+        "sub_quant_22_1",
+        "sub_quant_23_1",
+        "sub_quant_23_2",
+        "sub_quant_23_3",
+        "sub_quant_24_3"
+      ],
+      "selection": "QUESTION_MATH_REQUIRED"
+    },
+    {
+      "sourcePart": "الهندسة",
+      "sourceSkillLabel": "الزوايا",
+      "tests": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "candidates": [
+        "sub_quant_19_1",
+        "sub_quant_19_2",
+        "sub_quant_19_3"
+      ],
+      "selection": "QUESTION_MATH_REQUIRED"
+    },
+    {
+      "sourcePart": "الهندسة",
+      "sourceSkillLabel": "المثلث",
+      "tests": [
+        16,
+        17,
+        18,
+        19,
+        20,
+        21
+      ],
+      "candidates": [
+        "sub_quant_20_1",
+        "sub_quant_20_2",
+        "sub_quant_20_3",
+        "sub_quant_20_4",
+        "sub_quant_20_5"
+      ],
+      "selection": "QUESTION_MATH_REQUIRED"
+    },
+    {
+      "sourcePart": "الهندسة",
+      "sourceSkillLabel": "الهندسة الإحداثية",
+      "tests": [
+        22,
+        23
+      ],
+      "candidates": [
+        "sub_quant_25_3"
+      ],
+      "selection": "QUESTION_MATH_REQUIRED"
+    },
+    {
+      "sourcePart": "الهندسة",
+      "sourceSkillLabel": "المستطيل",
+      "tests": [
+        24,
+        25,
+        26
+      ],
+      "candidates": [
+        "sub_quant_21_1",
+        "sub_quant_21_2",
+        "sub_quant_21_3"
+      ],
+      "selection": "QUESTION_MATH_REQUIRED"
+    },
+    {
+      "sourcePart": "الهندسة",
+      "sourceSkillLabel": "المربع",
+      "tests": [
+        27,
+        28,
+        29
+      ],
+      "candidates": [
+        "sub_quant_22_1",
+        "sub_quant_22_2",
+        "sub_quant_22_3"
+      ],
+      "selection": "QUESTION_MATH_REQUIRED"
+    },
+    {
+      "sourcePart": "الهندسة",
+      "sourceSkillLabel": "المعين وشبه المنحرف",
+      "tests": [
+        30
+      ],
+      "candidates": [
+        "sub_quant_23_1",
+        "sub_quant_23_2",
+        "sub_quant_23_3"
+      ],
+      "selection": "QUESTION_MATH_REQUIRED"
+    },
+    {
+      "sourcePart": "الهندسة",
+      "sourceSkillLabel": "المساحات المظللة",
+      "tests": [
+        31,
+        32,
+        33,
+        34,
+        35,
+        36
+      ],
+      "candidates": [
+        "sub_quant_24_3",
+        "sub_quant_24_4"
+      ],
+      "selection": "QUESTION_MATH_REQUIRED"
+    },
+    {
+      "sourcePart": "الهندسة",
+      "sourceSkillLabel": "الدائرة",
+      "tests": [
+        37,
+        38
+      ],
+      "candidates": [
+        "sub_quant_24_1",
+        "sub_quant_24_2"
+      ],
+      "selection": "QUESTION_MATH_REQUIRED"
+    },
+    {
+      "sourcePart": "الهندسة",
+      "sourceSkillLabel": "مسائل الأشكال المختلفة",
+      "tests": [
+        39,
+        40,
+        41,
+        42,
+        43,
+        44,
+        45,
+        46,
+        47
+      ],
+      "candidates": [
+        "sub_quant_19_1",
+        "sub_quant_19_2",
+        "sub_quant_19_3",
+        "sub_quant_20_1",
+        "sub_quant_20_3",
+        "sub_quant_20_4",
+        "sub_quant_20_5",
+        "sub_quant_21_1",
+        "sub_quant_21_2",
+        "sub_quant_22_1",
+        "sub_quant_22_2",
+        "sub_quant_23_1",
+        "sub_quant_23_2",
+        "sub_quant_23_3",
+        "sub_quant_24_1",
+        "sub_quant_24_2",
+        "sub_quant_24_3",
+        "sub_quant_24_4"
+      ],
+      "selection": "QUESTION_MATH_REQUIRED"
+    },
+    {
+      "sourcePart": "الهندسة",
+      "sourceSkillLabel": "المجسمات",
+      "tests": [
+        48,
+        49,
+        50
+      ],
+      "candidates": [
+        "sub_quant_25_1",
+        "sub_quant_25_2"
+      ],
+      "selection": "QUESTION_MATH_REQUIRED"
+    }
+  ],
+  "explicitFailClosed": [
+    {
+      "sourcePart": "الحساب/الجبر",
+      "testNumber": 33,
+      "reason": "SOURCE_ABSENT_UNRESOLVED"
+    },
+    {
+      "sourcePart": "الهندسة",
+      "testNumber": 24,
+      "questionNumber": 18,
+      "reason": "SOURCE_ABSENT"
+    }
+  ]
+}
