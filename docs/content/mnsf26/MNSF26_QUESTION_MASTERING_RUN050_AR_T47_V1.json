@@ -5,8 +5,8 @@
   "directImageInspection": true,
   "sourceCropArchive": "/MNSF26/Run017/mnsf26_arithmetic_crops_run017.zip",
   "sourceInventory": "/MNSF26/Run017/MNSF26_FULLBOOK_CROP_INVENTORY_V1.json",
-  "masteredCount": 18,
-  "holdCount": 2,
+  "masteredCount": 16,
+  "holdCount": 4,
   "records": [
     {
       "sourceKey": "MNSF26-AR-T047-Q01",
@@ -103,18 +103,16 @@
         "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
       },
       "imageHash": "189b89e1289ffc2e50941d08ef556e5e82f7a33aca54543c63916707482e6056",
-      "status": "MASTERED",
+      "status": "REVIEW",
       "questionText": "عامل يبني جدارين في 24 ساعة وآخر يبني جدارين في المدة نفسها؛ كم ساعة لبناء جدار واحد معًا؟",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN050_2026-10-08",
-      "canonicalMainSkill": "main_quant_13",
-      "canonicalSubskill": "sub_quant_13_1",
-      "correctAnswer": "6 ساعات",
-      "stepByStepSolution": "كل عامل يبني 2/24=1/12 جدار/ساعة؛ معًا 1/6 جدار/ساعة؛ الزمن=6 ساعات.",
-      "educationalExplanation": "الفكرة التعليمية: معدلا عمل متوازيان لبناء جدار؛ تُختار علاقة المسافة والسرعة والزمن وفق معطيات الصورة الفعلية.",
-      "difficulty": "Medium",
-      "difficultyReason": "جمع معدلات الإنجاز ثم عكسها.",
-      "contentFingerprint": "514e0c0136f59c7bff55b14163a75ba709fb8101278d05d1ef3875853b76627d",
-      "ideaFingerprint": "e40cb044d4d1656bd4643e01275bb4b0ab7747f77df16cac43ef408de1b4a451"
+      "reviewCandidate": {
+        "canonicalMainSkill": "main_quant_13",
+        "canonicalSubskill": "sub_quant_13_1",
+        "correctAnswer": "6 ساعات",
+        "stepByStepSolution": "كل عامل يبني 2/24=1/12 جدار/ساعة؛ معًا 1/6 جدار/ساعة؛ الزمن=6 ساعات."
+      },
+      "holdReason": "Question mathematics is work-sharing, but source group is speed; cross-topic mapping requires explicit independent taxonomy review before MASTERED."
     },
     {
       "sourceKey": "MNSF26-AR-T047-Q05",
@@ -422,18 +420,16 @@
         "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
       },
       "imageHash": "b2868d452ec36556e2377d9d2a257711317df18c824aeb8d52591df53191ecde",
-      "status": "MASTERED",
+      "status": "REVIEW",
       "questionText": "عامل يطلي غرفة في ساعتين وآخر في 3 ساعات؛ كم دقيقة يطليان الغرفة معًا؟",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN050_2026-10-08",
-      "canonicalMainSkill": "main_quant_13",
-      "canonicalSubskill": "sub_quant_13_1",
-      "correctAnswer": "72 دقيقة",
-      "stepByStepSolution": "معدل الأول1/2 غرفة/ساعة والثاني1/3؛ معًا5/6؛ الزمن6/5 ساعة=72 دقيقة.",
-      "educationalExplanation": "الفكرة التعليمية: العمل المشترك بمعدل إنجاز؛ تُختار علاقة المسافة والسرعة والزمن وفق معطيات الصورة الفعلية.",
-      "difficulty": "Medium",
-      "difficultyReason": "جمع معدلات ثم تحويل إلى دقائق.",
-      "contentFingerprint": "5822900954d41e75ffaccda283e0f1a2a97b201a2fe621a316ada05f0c64ece1",
-      "ideaFingerprint": "eb59cabb596d9b4b88faa2ac660fe37b631f4ad41d584ac06a3b4404d09e0619"
+      "reviewCandidate": {
+        "canonicalMainSkill": "main_quant_13",
+        "canonicalSubskill": "sub_quant_13_1",
+        "correctAnswer": "72 دقيقة",
+        "stepByStepSolution": "معدل الأول1/2 غرفة/ساعة والثاني1/3؛ معًا5/6؛ الزمن6/5 ساعة=72 دقيقة."
+      },
+      "holdReason": "Question mathematics is work-sharing, but source group is speed; cross-topic mapping requires explicit independent taxonomy review before MASTERED."
     },
     {
       "sourceKey": "MNSF26-AR-T047-Q17",
@@ -540,5 +536,5 @@
     }
   ],
   "status": "QUESTION_MASTERING",
-  "reviewNote": "Q12 contradictory fixed-speed premise; Q19 mathematically 160km/h absent from visible choices. Both fail-closed."
+  "reviewNote": "Q04/Q16 cross-topic work-sharing taxonomy REVIEW; Q12 contradictory speed; Q19 answer absent in options. All fail-closed pending review."
 }

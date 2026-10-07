@@ -23,10 +23,10 @@
     {
       "name": "mapping",
       "status": "IN_PROGRESS",
-      "done": 766,
+      "done": 764,
       "total": 2135,
       "rule": "QUESTION_MATH_REQUIRED; source label preserved; no group-title auto approval",
-      "reviewHold": 70,
+      "reviewHold": 72,
       "evidence": [
         "Ready130 audit candidate-pass 74",
         "Adjudication batch001 added 17 question-level approvals",
@@ -37,7 +37,7 @@
     {
       "name": "enrichment",
       "status": "IN_PROGRESS_LEGACY_SUBSET",
-      "done": 766,
+      "done": 764,
       "total": 2135,
       "rule": "answer+solution+educationalExplanation+difficulty+difficultyReason+fingerprints",
       "mappingApprovedWithinReady": 129
@@ -118,15 +118,20 @@
     "MNSF26-AR-T041-Q12 HOLD السنة تحوي52 أسبوعًا عادة فينتج36400، بينما الخيارات تعكس50 أسبوعًا دون تحديد عطلة؛ يلزم توضيح فرضية عدد الأسابيع.",
     "MNSF26-AR-T042-Q09 HOLD اتجاه التحويل من الأقل إلى الأكثر يجعل التساوي مستحيلًا وفق النسبة المكتوبة؛ مصدر يحتاج مراجعة.",
     "MNSF26-AR-T042-Q13 HOLD حساب السعة لا يعطي أي خيار ظاهر (30/32/36/42)، وتفسير وجود الأطفال في الحالة الأولى ملتبس.",
-    "MNSF26-AR-T045-Q01 HOLD (derived 3/10 absent from visible options)"
+    "MNSF26-AR-T045-Q01 HOLD (derived 3/10 absent from visible options)",
+    "MNSF26-AR-T047-Q04 REVIEW cross-topic work sharing",
+    "MNSF26-AR-T047-Q16 REVIEW cross-topic work sharing",
+    "MNSF26-AR-T047-Q12 HOLD inconsistent constant speed",
+    "MNSF26-AR-T047-Q19 HOLD 160 km/h absent from options"
   ],
   "nextCursor": {
     "stage": "QUESTION_MASTERING",
     "strategy": "ONE_PASS_VISUAL_MATH",
     "priority": [
       "arithmetic T48 onward",
-      "T45/Q01 T47/Q12 T47/Q19 hold",
-      "geometry later"
+      "cross-topic T47/Q04 and Q16 REVIEW",
+      "T47/Q12 and Q19 HOLD",
+      "retain previous fail-closed"
     ]
   },
   "antiLoopRules": [
@@ -141,10 +146,10 @@
   ],
   "lastCompletedBatch": {
     "name": "RUN050_AR_T44_T47",
-    "completeMasterRecords": 77,
-    "holds": 3,
+    "completeMasterRecords": 75,
+    "holds": 5,
     "questionsProcessed": 80,
-    "effectiveMasteredComplete": 766,
+    "effectiveMasteredComplete": 764,
     "evidenceGitHubPaths": [
       "docs/content/mnsf26/MNSF26_QUESTION_MASTERING_RUN050_AR_T44_V1.json",
       "docs/content/mnsf26/MNSF26_QUESTION_MASTERING_RUN050_AR_T45_V1.json",
@@ -157,7 +162,7 @@
     "order": 2,
     "name": "QUESTION_MASTERING",
     "status": "IN_PROGRESS",
-    "done": 766,
+    "done": 764,
     "total": 2135,
     "mode": "ONE_PASS_PER_QUESTION",
     "requiredPayload": [
@@ -174,7 +179,7 @@
       "ideaFingerprint"
     ],
     "gate": "No question advances without complete payload or explicit HOLD/REVIEW.",
-    "masteredComplete": 766
+    "masteredComplete": 764
   },
   "reconciliationRun049": {
     "source": "Library /MNSF26/Run048 full JSON records, validated unique sourceKeys and required fields, persisted to GitHub complete test files",
