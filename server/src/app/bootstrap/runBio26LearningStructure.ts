@@ -195,8 +195,8 @@ export async function runBio26LearningStructureIfNeeded() {
   if (expected.foundationQuizzes.length !== EXPECTED_SUB_SKILLS) {
     fail(`BIO26 expected 98 foundation drills, got ${expected.foundationQuizzes.length}`);
   }
-  if (expected.trainingQuizzes.length !== 40) {
-    fail(`BIO26 expected 40 main-skill training drills, got ${expected.trainingQuizzes.length}`);
+  if (expected.trainingQuizzes.length !== 49) {
+    fail(`BIO26 expected 49 main-skill training drills, got ${expected.trainingQuizzes.length}`);
   }
 
   const before = await verifyExpected(source.skills, source.topics, expected);
