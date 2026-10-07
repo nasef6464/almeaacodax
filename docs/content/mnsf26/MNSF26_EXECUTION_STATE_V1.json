@@ -23,7 +23,7 @@
     {
       "name": "mapping",
       "status": "IN_PROGRESS",
-      "done": 141,
+      "done": 146,
       "total": 2135,
       "rule": "QUESTION_MATH_REQUIRED; source label preserved; no group-title auto approval",
       "reviewHold": 2,
@@ -99,24 +99,19 @@
     "A question is processed once into a complete master payload; QA validates it rather than recreating it"
   ],
   "lastCompletedBatch": {
-    "name": "QUESTION_MASTERING_RUN026_GEO_T22_A",
-    "headBeforeBatch": "d081eb238df114d38e79e6ff1ac47d02e659c8fb",
-    "completeMasterRecords": 10,
-    "newMappingsNet": 6,
-    "retractedBadPriorMapping": [
-      "MNSF26-GEO-T022-Q04 sub_quant_19_3"
-    ],
-    "newHold": [
-      "MNSF26-GEO-T022-Q04"
-    ],
-    "evidenceFile": "docs/content/mnsf26/MNSF26_QUESTION_MASTERING_RUN026_GEO_T22_A_V1.json"
+    "name": "QUESTION_MASTERING_RUN027_GEO_T22_B",
+    "completeMasterRecords": 5,
+    "review": 2,
+    "effectiveMapping": 146,
+    "effectiveMasteredComplete": 144,
+    "evidenceFile": "docs/content/mnsf26/MNSF26_RUN027_STATE_DELTA.json"
   },
   "executionContract": "docs/content/mnsf26/MNSF26_LOCKED_PIPELINE_V1.json",
   "activeStage": {
     "order": 2,
     "name": "QUESTION_MASTERING",
     "status": "IN_PROGRESS",
-    "done": 141,
+    "done": 146,
     "total": 2135,
     "mode": "ONE_PASS_PER_QUESTION",
     "requiredPayload": [
@@ -133,6 +128,6 @@
       "ideaFingerprint"
     ],
     "gate": "No question advances without complete payload or explicit HOLD/REVIEW.",
-    "masteredComplete": 139
+    "masteredComplete": 144
   }
 }
