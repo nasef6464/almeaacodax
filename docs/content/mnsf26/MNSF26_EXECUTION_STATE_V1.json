@@ -23,10 +23,10 @@
     {
       "name": "mapping",
       "status": "IN_PROGRESS",
-      "done": 256,
+      "done": 274,
       "total": 2135,
       "rule": "QUESTION_MATH_REQUIRED; source label preserved; no group-title auto approval",
-      "reviewHold": 28,
+      "reviewHold": 30,
       "evidence": [
         "Ready130 audit candidate-pass 74",
         "Adjudication batch001 added 17 question-level approvals",
@@ -37,7 +37,7 @@
     {
       "name": "enrichment",
       "status": "IN_PROGRESS_LEGACY_SUBSET",
-      "done": 256,
+      "done": 274,
       "total": 2135,
       "rule": "answer+solution+educationalExplanation+difficulty+difficultyReason+fingerprints",
       "mappingApprovedWithinReady": 129
@@ -84,13 +84,16 @@
     "MNSF26-AR-T013-Q13 HOLD taxonomy gap",
     "MNSF26-AR-T014-Q09 HOLD source/remainder ambiguity",
     "MNSF26-AR-T014-Q13 HOLD non-unique answer",
-    "MNSF26-AR-T014-Q20 HOLD taxonomy gap"
+    "MNSF26-AR-T014-Q20 HOLD taxonomy gap",
+    "MNSF26-AR-T019-Q03 HOLD calendar-year ambiguity",
+    "MNSF26-AR-T019-Q14 HOLD recurrence-model ambiguity"
   ],
   "nextCursor": {
     "stage": "QUESTION_MASTERING",
     "strategy": "ONE_PASS_VISUAL_MATH",
     "priority": [
-      "arithmetic T18 complete master records",
+      "persist Run038 T18 full master payload before counting its 13 records",
+      "arithmetic T20 complete master records",
       "continue arithmetic source order",
       "retain all documented holds fail-closed"
     ]
@@ -106,26 +109,20 @@
     "A question is processed once into a complete master payload; QA validates it rather than recreating it"
   ],
   "lastCompletedBatch": {
-    "name": "RUN033_RUN037_AR_T15_T17_T16",
-    "completeMasterRecordsAddedSinceRun032": 45,
-    "holdsAddedSinceRun032": 15,
-    "effectiveMapping": 256,
-    "effectiveMasteredComplete": 256,
-    "evidenceLibraryPaths": [
-      "/MNSF26/Run031/MNSF26_QUESTION_MASTERING_RUN033_AR_T15_V1.json",
-      "/MNSF26/Run034/MNSF26_QUESTION_MASTERING_RUN034_AR_T17_A_V1.json",
-      "/MNSF26/Run035/MNSF26_QUESTION_MASTERING_RUN035_AR_T17_B_V1.json",
-      "/MNSF26/Run036/MNSF26_QUESTION_MASTERING_RUN036_AR_T16_B_V1.json",
-      "/MNSF26/Run037/MNSF26_QUESTION_MASTERING_RUN037_AR_T16_A_V1.json"
-    ],
-    "note": "Reconciled Library state deltas Run033-Run037 after direct crop inspection; no crop/R2/import stages reopened."
+    "name": "RUN039_AR_T19",
+    "completeMasterRecords": 18,
+    "holds": 2,
+    "effectiveMapping": 274,
+    "effectiveMasteredComplete": 274,
+    "evidenceGitHubPath": "docs/content/mnsf26/MNSF26_QUESTION_MASTERING_RUN039_AR_T19_V1.json",
+    "note": "T19 Q01-Q20 directly inspected from authoritative arithmetic PDF using Run017 crop coordinates. 18 mastered, Q03/Q14 HOLD. Run038 T18 remains intentionally uncounted until its full 13-record payload is persisted."
   },
   "executionContract": "docs/content/mnsf26/MNSF26_LOCKED_PIPELINE_V1.json",
   "activeStage": {
     "order": 2,
     "name": "QUESTION_MASTERING",
     "status": "IN_PROGRESS",
-    "done": 256,
+    "done": 274,
     "total": 2135,
     "mode": "ONE_PASS_PER_QUESTION",
     "requiredPayload": [
@@ -142,6 +139,6 @@
       "ideaFingerprint"
     ],
     "gate": "No question advances without complete payload or explicit HOLD/REVIEW.",
-    "masteredComplete": 256
+    "masteredComplete": 274
   }
 }
