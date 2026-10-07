@@ -1,0 +1,402 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN039_AR_T19",
+  "directImageInspection": true,
+  "masteredCount": 18,
+  "holdCount": 2,
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T019-Q01",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 19,
+        "pdfPage": 37,
+        "sourceSkillLabel": "الدورات - المصافحات الأعمدة - المشابك",
+        "cropFile": "AR/AR-T019-Q01.webp"
+      },
+      "canonicalMainSkill": "main_quant_13",
+      "canonicalSubskill": "sub_quant_13_3",
+      "correctAnswer": "12",
+      "stepByStepSolution": "13 قطعة على خط واحد تحتاج 13-1=12 مشبكًا بين القطع المتجاورة.",
+      "educationalExplanation": "عدد الفواصل بين عناصر مصطفة أقل بواحد من عدد العناصر.",
+      "difficulty": "Easy",
+      "difficultyReason": "تطبيق مباشر لقاعدة الفواصل.",
+      "imageHash": "a9462af5cf098ef023e7af60c4242c72b8ae52a0ccba5b68621a7de8846558d4",
+      "contentFingerprint": "c696a85fd5bd875e1e5c3666b56f7d777c749a20c2ddc8f075efdc408b5980af",
+      "ideaFingerprint": "72dd531a1dc37156f02f77b63e7035010abd5f800dedb13363574b92494e31d9",
+      "status": "MASTERED"
+    },
+    {
+      "sourceKey": "MNSF26-AR-T019-Q02",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 19,
+        "pdfPage": 37,
+        "sourceSkillLabel": "الدورات - المصافحات الأعمدة - المشابك",
+        "cropFile": "AR/AR-T019-Q02.webp"
+      },
+      "canonicalMainSkill": "main_quant_14",
+      "canonicalSubskill": "sub_quant_14_2",
+      "correctAnswer": "شوال",
+      "stepByStepSolution": "27=24+3 شهرًا؛ بعد 24 نعود لرجب ثم شعبان فرمضان فشوال.",
+      "educationalExplanation": "نختزل الأشهر بدورة 12.",
+      "difficulty": "Easy",
+      "difficultyReason": "دورة أشهر مباشرة.",
+      "imageHash": "5c64ba82104f871f8704a06f5d3c894fca283d2387a05cfcf533410d15f85c2f",
+      "contentFingerprint": "34b07695f2e145c51deb3c1a186357fe67af921027b8dfcaecfa76bd344ce154",
+      "ideaFingerprint": "971773157ce1dbdfe4c873ea03a58d98656e04e4403db566532bfea276528b51",
+      "status": "MASTERED"
+    },
+    {
+      "sourceKey": "MNSF26-AR-T019-Q04",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 19,
+        "pdfPage": 37,
+        "sourceSkillLabel": "الدورات - المصافحات الأعمدة - المشابك",
+        "cropFile": "AR/AR-T019-Q04.webp"
+      },
+      "canonicalMainSkill": "main_quant_14",
+      "canonicalSubskill": "sub_quant_14_4",
+      "correctAnswer": "4",
+      "stepByStepSolution": "الدورة أزرق،أحمر،أسود؛ 12 قلمًا=4 دورات، إذن 4 زرقاء.",
+      "educationalExplanation": "نعد العنصر المطلوب داخل الدورات الكاملة.",
+      "difficulty": "Easy",
+      "difficultyReason": "نمط دوري قصير.",
+      "imageHash": "997571ceceb64873047c9717091323b89ad8ac5818fd31f70ea465c93544d673",
+      "contentFingerprint": "8cbb2ee0fb791e26bc421505be7f1120ba6261343ee5eb4dada8bce8310f69d8",
+      "ideaFingerprint": "69403aeb54fd8fdc7260f38a39bfd0cada370757c687bfe9a6ab81a7b4336343",
+      "status": "MASTERED"
+    },
+    {
+      "sourceKey": "MNSF26-AR-T019-Q05",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 19,
+        "pdfPage": 37,
+        "sourceSkillLabel": "الدورات - المصافحات الأعمدة - المشابك",
+        "cropFile": "AR/AR-T019-Q05.webp"
+      },
+      "canonicalMainSkill": "main_quant_14",
+      "canonicalSubskill": "sub_quant_14_4",
+      "correctAnswer": "2",
+      "stepByStepSolution": "8 أصدقاء×3 أشهر لكل دور=24 شهرًا=سنتين حتى يعود الدور لنفس الشخص.",
+      "educationalExplanation": "عودة المضيف تتطلب دورة كاملة على الأصدقاء.",
+      "difficulty": "Medium",
+      "difficultyReason": "ربط طول الدورة بالزمن.",
+      "imageHash": "8b954f6d280accd9cc6eb138af32882cefa344af490bc0b96d254b18ffe7f215",
+      "contentFingerprint": "f41fc8ca6a64d9ce4b145afd60b8a94a1a9c7f936022952270452666fcfdccdc",
+      "ideaFingerprint": "5e18ac08d50ef61b22502739143553fa88305944fc75effe3fb5f101f5535833",
+      "status": "MASTERED"
+    },
+    {
+      "sourceKey": "MNSF26-AR-T019-Q06",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 19,
+        "pdfPage": 37,
+        "sourceSkillLabel": "الدورات - المصافحات الأعمدة - المشابك",
+        "cropFile": "AR/AR-T019-Q06.webp"
+      },
+      "canonicalMainSkill": "main_quant_14",
+      "canonicalSubskill": "sub_quant_14_4",
+      "correctAnswer": "أزرق",
+      "stepByStepSolution": "الدورة 4 ألوان؛ 50 mod 4=2، فاللون الثاني أزرق.",
+      "educationalExplanation": "موضع العنصر يحدده باقي القسمة على طول الدورة.",
+      "difficulty": "Easy",
+      "difficultyReason": "باقٍ مباشر.",
+      "imageHash": "035cdce86b33d9e6676990f9911e841669426ebad10591ad0ea25535126c21a2",
+      "contentFingerprint": "878cfbe285f7115b548e289aaa3e5a81af55496ef0396bb5f65f0cbdc415b790",
+      "ideaFingerprint": "b1941e7895d2dd46c7b1d2d6d3d4a03026eae359fe0534eb4caf7b540d932414",
+      "status": "MASTERED"
+    },
+    {
+      "sourceKey": "MNSF26-AR-T019-Q07",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 19,
+        "pdfPage": 37,
+        "sourceSkillLabel": "الدورات - المصافحات الأعمدة - المشابك",
+        "cropFile": "AR/AR-T019-Q07.webp"
+      },
+      "canonicalMainSkill": "main_quant_01",
+      "canonicalSubskill": "sub_quant_01_1",
+      "correctAnswer": "15 مل",
+      "stepByStepSolution": "3 جرعات×5=15 مل يوميًا؛ أسبوع=105 مل؛ 120-105=15 مل.",
+      "educationalExplanation": "نحسب الاستهلاك الكلي ثم نطرحه من السعة.",
+      "difficulty": "Easy",
+      "difficultyReason": "ضرب وطرح مباشران.",
+      "imageHash": "89f15e4f8022c251f2ad7289d1bc3eae09a59ec9e3f59c66a505f61e376a24cb",
+      "contentFingerprint": "b19b93314cf17b3d20380d375ab9e1a2cef1c584aea1813c829da4a872d05d15",
+      "ideaFingerprint": "a2eea8e0fb72bdb3ec82ddf887572c5954b7cc5717c8c07c9023dc25d275a4f4",
+      "status": "MASTERED"
+    },
+    {
+      "sourceKey": "MNSF26-AR-T019-Q08",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 19,
+        "pdfPage": 37,
+        "sourceSkillLabel": "الدورات - المصافحات الأعمدة - المشابك",
+        "cropFile": "AR/AR-T019-Q08.webp"
+      },
+      "canonicalMainSkill": "main_quant_14",
+      "canonicalSubskill": "sub_quant_14_4",
+      "correctAnswer": "أزرق",
+      "stepByStepSolution": "كل جزء 70؛ 320 يقع في الجزء الخامس (280<320≤350)، واللون الخامس أزرق.",
+      "educationalExplanation": "نحدد المجموعة ثم نطابق ترتيب اللون.",
+      "difficulty": "Medium",
+      "difficultyReason": "خطوتان مترابطتان.",
+      "imageHash": "ad65a55683b40ea365b0fd35e6b356b430ff3be986201b708d9918d29d319a16",
+      "contentFingerprint": "1a30be2de8c5c91428ed9624728dcac39c154b608d32ebdc632dfe5099f041c1",
+      "ideaFingerprint": "48c073c22e912bc2b8dff178e26ec5f204b99be15b534e2410dd646669850eef",
+      "status": "MASTERED"
+    },
+    {
+      "sourceKey": "MNSF26-AR-T019-Q09",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 19,
+        "pdfPage": 37,
+        "sourceSkillLabel": "الدورات - المصافحات الأعمدة - المشابك",
+        "cropFile": "AR/AR-T019-Q09.webp"
+      },
+      "canonicalMainSkill": "main_quant_14",
+      "canonicalSubskill": "sub_quant_14_1",
+      "correctAnswer": "الثلاثاء",
+      "stepByStepSolution": "اليوم10 يبعد9 أيام عن الأحد؛ 9 mod7=2؛ الناتج الثلاثاء.",
+      "educationalExplanation": "نستخدم دورة الأسبوع ذات 7 أيام.",
+      "difficulty": "Easy",
+      "difficultyReason": "باقي مباشر.",
+      "imageHash": "91842fcee0f368b91fec47bb46526db6cab29756941e6cc2e9be8f7f1395371f",
+      "contentFingerprint": "daedbe49b8cd03fa03fa8d20eec3d83d2a0df08eb73566f2a7e85ec1b9d43c3b",
+      "ideaFingerprint": "fcf75d6063b2e76620d1a9584ab8e0ee75d5dcc26de530c6cd91fe4c984fd1f4",
+      "status": "MASTERED"
+    },
+    {
+      "sourceKey": "MNSF26-AR-T019-Q10",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 19,
+        "pdfPage": 37,
+        "sourceSkillLabel": "الدورات - المصافحات الأعمدة - المشابك",
+        "cropFile": "AR/AR-T019-Q10.webp"
+      },
+      "canonicalMainSkill": "main_quant_14",
+      "canonicalSubskill": "sub_quant_14_1",
+      "correctAnswer": "الاثنين",
+      "stepByStepSolution": "اليوم100 يبعد99 يومًا؛ 99 mod7=1؛ بعد الأحد يوم=الاثنين.",
+      "educationalExplanation": "نختزل فرق الأيام بدورة أسبوعية.",
+      "difficulty": "Easy",
+      "difficultyReason": "باقي مباشر.",
+      "imageHash": "64d10a5d015c705c0d924e17c6e1444b683bae5ee752fa651a19b0cf2df8deb3",
+      "contentFingerprint": "2391753acfaa6c1603b59890857d2be48151866ec97eb5c0d78d771e0c42480d",
+      "ideaFingerprint": "0f1cd9e767c723124e2b6c6d3fc1a15b4994cdedb543a015bf7c6b4a8d12d601",
+      "status": "MASTERED"
+    },
+    {
+      "sourceKey": "MNSF26-AR-T019-Q11",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 19,
+        "pdfPage": 37,
+        "sourceSkillLabel": "الدورات - المصافحات الأعمدة - المشابك",
+        "cropFile": "AR/AR-T019-Q11.webp"
+      },
+      "canonicalMainSkill": "main_quant_14",
+      "canonicalSubskill": "sub_quant_14_4",
+      "correctAnswer": "أحمر",
+      "stepByStepSolution": "الدورة أزرق،أحمر،أصفر،أخضر؛ 50 mod4=2؛ اللون الثاني أحمر.",
+      "educationalExplanation": "نستخدم باقي القسمة لتحديد موضع اللون.",
+      "difficulty": "Easy",
+      "difficultyReason": "نمط دوري من 4.",
+      "imageHash": "3625973bb356ba1bd7d54167cdbad8c6e737f943850cedba146442139486bdf7",
+      "contentFingerprint": "426d6d8734183a521b9e75c8b7e2d5eb07c9ab2624c21f98d202f7090cff712a",
+      "ideaFingerprint": "8b96a19cad6af88085372f838624b536c9392f8f60f32fcce9cc13d43e9f50fd",
+      "status": "MASTERED"
+    },
+    {
+      "sourceKey": "MNSF26-AR-T019-Q12",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 19,
+        "pdfPage": 37,
+        "sourceSkillLabel": "الدورات - المصافحات الأعمدة - المشابك",
+        "cropFile": "AR/AR-T019-Q12.webp"
+      },
+      "canonicalMainSkill": "main_quant_14",
+      "canonicalSubskill": "sub_quant_14_1",
+      "correctAnswer": "8",
+      "stepByStepSolution": "28 يومًا=4 أسابيع فيها8 إجازات؛ اليومان29 و30 بداية عمل، فيبقى8.",
+      "educationalExplanation": "نحسب الدورات الكاملة ثم الأيام الزائدة.",
+      "difficulty": "Medium",
+      "difficultyReason": "يتطلب معالجة الباقي بعد الأسابيع.",
+      "imageHash": "637c079d68bfc9a08d78542334712ea9346eb017c32e315fcf94dd52e453b4a3",
+      "contentFingerprint": "e60e4e122a1e9e943e57e25bf2fd83dfda41226dea9f8ecf117b04263bfb6494",
+      "ideaFingerprint": "2f47d026f5f4c84e74be5c873716944cbd5e3f751b541c32aa50c77df9c2ed43",
+      "status": "MASTERED"
+    },
+    {
+      "sourceKey": "MNSF26-AR-T019-Q13",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 19,
+        "pdfPage": 37,
+        "sourceSkillLabel": "الدورات - المصافحات الأعمدة - المشابك",
+        "cropFile": "AR/AR-T019-Q13.webp"
+      },
+      "canonicalMainSkill": "main_quant_14",
+      "canonicalSubskill": "sub_quant_14_1",
+      "correctAnswer": "الجمعة",
+      "stepByStepSolution": "38=35+3؛ نرجع3 أيام من الاثنين: الأحد،السبت،الجمعة.",
+      "educationalExplanation": "35 يومًا خمسة أسابيع كاملة.",
+      "difficulty": "Easy",
+      "difficultyReason": "اختزال بدورة 7.",
+      "imageHash": "129a751053b0c2d0a1ad687e302592052c2442bbf680cc8e8f044bf16de445f2",
+      "contentFingerprint": "6a5075559acf815836a09afdabedd04d4002a91e536c50d1716511155fa3bb1c",
+      "ideaFingerprint": "df09003f429d59f349ebd55ce839ae4255e8b25b4feec2591a3a0643bc0733d3",
+      "status": "MASTERED"
+    },
+    {
+      "sourceKey": "MNSF26-AR-T019-Q15",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 19,
+        "pdfPage": 38,
+        "sourceSkillLabel": "الدورات - المصافحات الأعمدة - المشابك",
+        "cropFile": "AR/AR-T019-Q15.webp"
+      },
+      "canonicalMainSkill": "main_quant_14",
+      "canonicalSubskill": "sub_quant_14_4",
+      "correctAnswer": "7",
+      "stepByStepSolution": "النمط 9،7،5،3،1 يتكرر كل5؛ 27 mod5=2؛ العنصر الثاني=7.",
+      "educationalExplanation": "نحدد طول الدورة وموضع الحد.",
+      "difficulty": "Easy",
+      "difficultyReason": "دورة عددية قصيرة.",
+      "imageHash": "57ec6b7909de07b6f25d0c527fada08901a659ad00a4b33db400b0427fa44988",
+      "contentFingerprint": "f392db634299ffb88791055e71d805c7f4b7763a5c89aa7415b8a88a36845f77",
+      "ideaFingerprint": "ec52ce5b6dd179e0ca44da090ad50840fec3a59811f776934a4d41f5aba40b03",
+      "status": "MASTERED"
+    },
+    {
+      "sourceKey": "MNSF26-AR-T019-Q16",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 19,
+        "pdfPage": 38,
+        "sourceSkillLabel": "الدورات - المصافحات الأعمدة - المشابك",
+        "cropFile": "AR/AR-T019-Q16.webp"
+      },
+      "canonicalMainSkill": "main_quant_14",
+      "canonicalSubskill": "sub_quant_14_3",
+      "correctAnswer": "3",
+      "stepByStepSolution": "آحاد 3^2023=7 ودورة 4^2014 تعطي6؛ 7+6=13، فالآحاد3.",
+      "educationalExplanation": "نستخدم دورات آحاد القوى.",
+      "difficulty": "Medium",
+      "difficultyReason": "دورتان ثم جمع.",
+      "imageHash": "04463aa92196c4c9a97973ee4a7907908003530ccad0dd4336e1e83c1b54f3da",
+      "contentFingerprint": "54c86aebf9234e5a6b6d7f5efd99c27cc6c8859e9cffa4ae1fd377e71fba8658",
+      "ideaFingerprint": "cb2aeb7af26a35323a22a8b334e3c5137975c31ae15cea6098389aa8a3972d50",
+      "status": "MASTERED"
+    },
+    {
+      "sourceKey": "MNSF26-AR-T019-Q17",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 19,
+        "pdfPage": 38,
+        "sourceSkillLabel": "الدورات - المصافحات الأعمدة - المشابك",
+        "cropFile": "AR/AR-T019-Q17.webp"
+      },
+      "canonicalMainSkill": "main_quant_13",
+      "canonicalSubskill": "sub_quant_13_2",
+      "correctAnswer": "4",
+      "stepByStepSolution": "n(n-1)=12؛ 4×3=12، إذن n=4.",
+      "educationalExplanation": "تبادل الهدايا الموجه يحسب n(n-1).",
+      "difficulty": "Medium",
+      "difficultyReason": "تحويل الوصف إلى علاقة عددية.",
+      "imageHash": "d95a39002f3150923173145c7844ce80714cdf98f6cc357f199e4f6a985960b4",
+      "contentFingerprint": "d5b15b7b4c33ca049f242987fbd8650c408fc666693bec6431a01fdc30c4172f",
+      "ideaFingerprint": "f6c0580ef69c2f7ea2134576a09b7c1198bce33c1e7dd3a93652c6032ee4178d",
+      "status": "MASTERED"
+    },
+    {
+      "sourceKey": "MNSF26-AR-T019-Q18",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 19,
+        "pdfPage": 38,
+        "sourceSkillLabel": "الدورات - المصافحات الأعمدة - المشابك",
+        "cropFile": "AR/AR-T019-Q18.webp"
+      },
+      "canonicalMainSkill": "main_quant_13",
+      "canonicalSubskill": "sub_quant_13_2",
+      "correctAnswer": "360",
+      "stepByStepSolution": "C(16,2)=120 زوجًا؛ كل زوج3 مباريات؛ 120×3=360.",
+      "educationalExplanation": "نحسب الأزواج ثم نضرب في مباريات كل زوج.",
+      "difficulty": "Medium",
+      "difficultyReason": "عد أزواج ثم مضاعفة.",
+      "imageHash": "ce020fdfafafaef435b3a7b62b43b6587f4df6e67411bbc82836067cf2315e85",
+      "contentFingerprint": "8cf7c2858ec9eb1621878c8f279976162916b504886d6f85f2770856786eabf5",
+      "ideaFingerprint": "6dc7fc59a574944d9a51c623718c77b1141231dace452e28e233ee33498bd5ae",
+      "status": "MASTERED"
+    },
+    {
+      "sourceKey": "MNSF26-AR-T019-Q19",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 19,
+        "pdfPage": 38,
+        "sourceSkillLabel": "الدورات - المصافحات الأعمدة - المشابك",
+        "cropFile": "AR/AR-T019-Q19.webp"
+      },
+      "canonicalMainSkill": "main_quant_13",
+      "canonicalSubskill": "sub_quant_13_2",
+      "correctAnswer": "45",
+      "stepByStepSolution": "C(10,2)=10×9÷2=45 مباراة.",
+      "educationalExplanation": "مباراة واحدة لكل زوج تساوي عدد الأزواج غير المرتبة.",
+      "difficulty": "Easy",
+      "difficultyReason": "تطبيق مباشر لقانون الأزواج.",
+      "imageHash": "c4ec42b7500b4b2b7801caf2176a96dc6371ff34e0b16abe4953066f7a937dc1",
+      "contentFingerprint": "21f96ea06e22815b4d04d3a7e8c78e686e1e32400db93983718e329066c81f16",
+      "ideaFingerprint": "73ce2b817398f0c1a38d813dfe393de984069f55e070930ac20e9031180821fe",
+      "status": "MASTERED"
+    },
+    {
+      "sourceKey": "MNSF26-AR-T019-Q20",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "testNumber": 19,
+        "pdfPage": 38,
+        "sourceSkillLabel": "الدورات - المصافحات الأعمدة - المشابك",
+        "cropFile": "AR/AR-T019-Q20.webp"
+      },
+      "canonicalMainSkill": "main_quant_13",
+      "canonicalSubskill": "sub_quant_13_2",
+      "correctAnswer": "12",
+      "stepByStepSolution": "n(n-1)=132؛ 12×11=132، إذن n=12.",
+      "educationalExplanation": "نحل علاقة تبادل الهدايا لإيجاد عدد الطلاب.",
+      "difficulty": "Medium",
+      "difficultyReason": "عكس نموذج التبادل.",
+      "imageHash": "b5c8e29cf4c3d023d682cf4a1e2164288375fbce83ffb774847ffbbab312b4f0",
+      "contentFingerprint": "ebc67d2644949834c14779e1f7db1f51fa7ee3faa49461f357f6ca90c48be487",
+      "ideaFingerprint": "240d1ed6295b42e1e8458edeb60dd4a5df2357757bb2df63a603d84ef62f9241",
+      "status": "MASTERED"
+    }
+  ],
+  "holds": [
+    {
+      "sourceKey": "MNSF26-AR-T019-Q03",
+      "status": "HOLD_REVIEW",
+      "reason": "انتقال السنة لا يحدد إجابة فريدة من الصورة دون سنة/شرط كبيسة، والخيارات الظاهرة لا تدعم استنتاجًا آمنًا.",
+      "imageHash": "2c24d03db3bc027246a92d721e289c8d770691a5f9f009dd323cf993353763e9"
+    },
+    {
+      "sourceKey": "MNSF26-AR-T019-Q14",
+      "status": "HOLD_REVIEW",
+      "reason": "صياغة تكرار الحضوري/الأونلاين لا تثبت نموذج تكرار وحيدًا متسقًا مع الخيارات؛ fail-closed.",
+      "imageHash": "0eefc0c0a88779dd47e11691abdae31fa953f8cd90b83edcecf5d2db41a2819e"
+    }
+  ]
+}
