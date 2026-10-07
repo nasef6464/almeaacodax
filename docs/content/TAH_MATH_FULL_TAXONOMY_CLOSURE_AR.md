@@ -198,5 +198,5 @@ No placeholder content is accepted. AI/teaching content must stay grounded in th
 Started from main:
 `4ced0cdf609e31fdb29338d9fc46b788752559c8`
 
-First active task:
-**Foundation lesson map + source-backed classification dictionary.**
+Current active task:
+**Source lesson/idea extraction is complete for lessons 1-31. Exact runtime taxonomy binding is next, followed by the YLM26 deterministic review manifest.**
