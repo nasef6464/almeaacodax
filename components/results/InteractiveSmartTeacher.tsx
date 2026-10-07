@@ -1,6 +1,7 @@
 import React from "react";
 import { Bot, Loader2, Mic, MicOff, Send, Volume2, VolumeX, X } from "lucide-react";
 import { api } from "../../services/api";
+import { InteractiveWhiteboardCanvas } from "./InteractiveWhiteboardCanvas";
 
 type AssistantContext = "result_review" | "saved_review" | "mistake_review" | "mastery_review";
 
@@ -219,27 +220,32 @@ export const InteractiveSmartTeacher: React.FC<{
               </div>
             </div>
 
-            <div className="min-h-0 flex-1 overflow-y-auto rounded-3xl border border-slate-700 bg-slate-50 p-5 shadow-inner sm:p-8">
+            <div className="min-h-0 flex-1 overflow-y-auto rounded-3xl border border-slate-800 bg-slate-950 p-4 shadow-inner sm:p-6">
               {!latestTeacherTurn ? (
                 <div className="flex h-full min-h-64 flex-col items-center justify-center text-center">
-                  <Bot size={42} className="text-violet-600" />
-                  <h3 className="mt-4 text-xl font-black text-slate-900">السبورة جاهزة</h3>
-                  <p className="mt-2 max-w-md text-sm font-bold leading-7 text-slate-500">
+                  <Bot size={42} className="text-emerald-400" />
+                  <h3 className="mt-4 text-xl font-black text-white">السبورة جاهزة</h3>
+                  <p className="mt-2 max-w-md text-sm font-bold leading-7 text-slate-400">
                     ابدأ بالشرح، أو اطلب تبسيط الفكرة، أو ناقش المعلم في سبب كل خطوة.
                   </p>
                   <button
                     type="button"
                     disabled={pending}
                     onClick={() => void ask("ابدأ شرح هذا السؤال خطوة بخطوة وناقشني باختصار.", "steps")}
-                    className="mt-5 rounded-2xl bg-violet-600 px-5 py-3 text-sm font-black text-white disabled:opacity-50"
+                    className="mt-5 rounded-2xl bg-emerald-600 px-5 py-3 text-sm font-black text-white hover:bg-emerald-500 disabled:opacity-50"
                   >
                     ابدأ الشرح
                   </button>
                 </div>
               ) : (
-                <div className="whitespace-pre-wrap text-lg font-bold leading-9 text-slate-800 sm:text-xl sm:leading-10">
-                  {latestTeacherTurn.text}
-                </div>
+                <InteractiveWhiteboardCanvas
+                  text={latestTeacherTurn.text}
+                  onAskAboutStep={(prompt) => void ask(prompt, "follow_up")}
+                  onSpeakText={(speech) => {
+                    if (autoVoice) speakArabic(speech);
+                  }}
+                  isPending={pending}
+                />
               )}
             </div>
 

@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-05T04:38:24.064Z",
-  "gitHead": "b9c269aea9f092d876db6f5dca19dcf6d7f60506",
+  "generatedAt": "2026-10-07T18:54:59.571Z",
+  "gitHead": "266b9ceeeabffb5ee5dac58f4618edb262b23ed1",
   "frontendRoutes": [
     "*",
     "/",
@@ -60,6 +60,168 @@
     "/verify-email"
   ],
   "backendRouteEntries": [
+    {
+      "file": "server/src/modules/command-center/http/commandCenterRoutes.ts",
+      "method": "GET",
+      "path": "/drafts",
+      "receiver": "commandCenterRouter"
+    },
+    {
+      "file": "server/src/modules/command-center/http/commandCenterRoutes.ts",
+      "method": "POST",
+      "path": "/drafts",
+      "receiver": "commandCenterRouter"
+    },
+    {
+      "file": "server/src/modules/command-center/http/commandCenterRoutes.ts",
+      "method": "POST",
+      "path": "/drafts/:id/apply",
+      "receiver": "commandCenterRouter"
+    },
+    {
+      "file": "server/src/modules/command-center/http/commandCenterRoutes.ts",
+      "method": "POST",
+      "path": "/drafts/:id/review",
+      "receiver": "commandCenterRouter"
+    },
+    {
+      "file": "server/src/modules/command-center/http/commandCenterRoutes.ts",
+      "method": "GET",
+      "path": "/health",
+      "receiver": "commandCenterRouter"
+    },
+    {
+      "file": "server/src/modules/command-center/http/commandCenterRoutes.ts",
+      "method": "GET",
+      "path": "/skills",
+      "receiver": "commandCenterRouter"
+    },
+    {
+      "file": "server/src/modules/command-center/http/commandCenterRoutes.ts",
+      "method": "GET",
+      "path": "/tools",
+      "receiver": "commandCenterRouter"
+    },
+    {
+      "file": "server/src/modules/command-center/http/courseDraftRoutes.ts",
+      "method": "GET",
+      "path": "/:courseId/audit",
+      "receiver": "courseDraftRouter"
+    },
+    {
+      "file": "server/src/modules/command-center/http/courseDraftRoutes.ts",
+      "method": "POST",
+      "path": "/draft",
+      "receiver": "courseDraftRouter"
+    },
+    {
+      "file": "server/src/modules/command-center/http/courseDraftRoutes.ts",
+      "method": "GET",
+      "path": "/inventory",
+      "receiver": "courseDraftRouter"
+    },
+    {
+      "file": "server/src/modules/command-center/http/courseDraftRoutes.ts",
+      "method": "POST",
+      "path": "/validate",
+      "receiver": "courseDraftRouter"
+    },
+    {
+      "file": "server/src/modules/command-center/http/developerDraftRoutes.ts",
+      "method": "GET",
+      "path": "/tasks/:id/handoff",
+      "receiver": "developerDraftRouter"
+    },
+    {
+      "file": "server/src/modules/command-center/http/developerDraftRoutes.ts",
+      "method": "POST",
+      "path": "/tasks/draft",
+      "receiver": "developerDraftRouter"
+    },
+    {
+      "file": "server/src/modules/command-center/http/developerDraftRoutes.ts",
+      "method": "POST",
+      "path": "/tasks/validate",
+      "receiver": "developerDraftRouter"
+    },
+    {
+      "file": "server/src/modules/command-center/http/mcpRoutes.ts",
+      "method": "GET",
+      "path": "/",
+      "receiver": "mcpRouter"
+    },
+    {
+      "file": "server/src/modules/command-center/http/mcpRoutes.ts",
+      "method": "POST",
+      "path": "/",
+      "receiver": "mcpRouter"
+    },
+    {
+      "file": "server/src/modules/command-center/http/questionQuizDraftRoutes.ts",
+      "method": "POST",
+      "path": "/questions/draft",
+      "receiver": "questionQuizDraftRouter"
+    },
+    {
+      "file": "server/src/modules/command-center/http/questionQuizDraftRoutes.ts",
+      "method": "POST",
+      "path": "/questions/validate",
+      "receiver": "questionQuizDraftRouter"
+    },
+    {
+      "file": "server/src/modules/command-center/http/questionQuizDraftRoutes.ts",
+      "method": "POST",
+      "path": "/quizzes/:id/diff",
+      "receiver": "questionQuizDraftRouter"
+    },
+    {
+      "file": "server/src/modules/command-center/http/questionQuizDraftRoutes.ts",
+      "method": "POST",
+      "path": "/quizzes/:id/update-draft",
+      "receiver": "questionQuizDraftRouter"
+    },
+    {
+      "file": "server/src/modules/command-center/http/questionQuizDraftRoutes.ts",
+      "method": "POST",
+      "path": "/quizzes/draft",
+      "receiver": "questionQuizDraftRouter"
+    },
+    {
+      "file": "server/src/modules/command-center/http/schoolDraftRoutes.ts",
+      "method": "POST",
+      "path": "/draft",
+      "receiver": "schoolDraftRouter"
+    },
+    {
+      "file": "server/src/modules/command-center/http/schoolDraftRoutes.ts",
+      "method": "POST",
+      "path": "/validate",
+      "receiver": "schoolDraftRouter"
+    },
+    {
+      "file": "server/src/modules/command-center/http/workflowRoutes.ts",
+      "method": "GET",
+      "path": "/",
+      "receiver": "workflowRouter"
+    },
+    {
+      "file": "server/src/modules/command-center/http/workflowRoutes.ts",
+      "method": "GET",
+      "path": "/:id",
+      "receiver": "workflowRouter"
+    },
+    {
+      "file": "server/src/modules/command-center/http/workflowRoutes.ts",
+      "method": "POST",
+      "path": "/:id/execute",
+      "receiver": "workflowRouter"
+    },
+    {
+      "file": "server/src/modules/command-center/http/workflowRoutes.ts",
+      "method": "POST",
+      "path": "/plan",
+      "receiver": "workflowRouter"
+    },
     {
       "file": "server/src/modules/content/http/contentBootstrapRoutes.ts",
       "method": "GET",
@@ -532,6 +694,12 @@
       "file": "server/src/routes/ai.routes.ts",
       "method": "POST",
       "path": "/admin-assistant",
+      "receiver": "aiRouter"
+    },
+    {
+      "file": "server/src/routes/ai.routes.ts",
+      "method": "POST",
+      "path": "/admin-command-plan",
       "receiver": "aiRouter"
     },
     {
@@ -2129,6 +2297,12 @@
     {
       "file": "server/src/routes/index.ts",
       "receiver": "apiRouter",
+      "prefix": "/command-center",
+      "mounted": "commandCenterRouter"
+    },
+    {
+      "file": "server/src/routes/index.ts",
+      "receiver": "apiRouter",
       "prefix": "/content",
       "mounted": "contentRouter"
     },
@@ -2274,6 +2448,7 @@
     "ADMIN_UI_GAP_RUN_ID",
     "ADMIN_XLSX_EXPORT_RUN_ID",
     "AI_DAILY_LIMIT",
+    "AI_LIGHT_API_BASE_URL",
     "AI_PER_SCHOOL_DAILY_LIMIT",
     "AI_PER_USER_DAILY_LIMIT",
     "AI_PROVIDER",
@@ -2283,11 +2458,20 @@
     "AI_QUESTION_ASSISTANT_PER_MINUTE",
     "AI_REQUEST_TIMEOUT_MS",
     "AI_RUNTIME_AUDIT_RUN_ID",
+    "ALLOW_QUDURAT_PRACTICE_APPLY",
     "ALLOW_SMART_CLASSROOM_E2E_UNSAFE_DB",
     "ALLOW_SMART_CLASSROOM_INDEX_MIGRATION",
     "ALLOW_VERBAL26_APPLY",
     "ALMEAA_APPLY_FOUNDATION_SKILL_MAPPING",
     "ALMEAA_APPLY_SKILL_MIGRATION",
+    "ALMEAA_COMMAND_API_KEY",
+    "ALMEAA_COMMAND_API_SCOPES",
+    "ALMEAA_MCP_ENABLED",
+    "ALMEAA_MCP_JWKS_CACHE_MS",
+    "ALMEAA_MCP_OAUTH_AUDIENCE",
+    "ALMEAA_MCP_OAUTH_ISSUER",
+    "ALMEAA_MCP_OAUTH_REQUIRED_SCOPE",
+    "ALMEAA_MCP_OAUTH_SCOPES",
     "API_BASE_URL",
     "APPLY_R2_INLINE_IMAGE_MIGRATION",
     "APP_BASE_URL",
@@ -2297,6 +2481,13 @@
     "BACKEND_PORT",
     "BARCODE_LIVE_AUDIT_RUN_ID",
     "BARCODE_PUBLIC_TEST_AUDIT_RUN_ID",
+    "BIO26_FINAL_CLOSURE_AUTHORIZATION",
+    "BIO26_IMPORT_BATCH_ID",
+    "BIO26_IMPORT_EXPECTED_COUNT",
+    "BIO26_IMPORT_MODE",
+    "BIO26_IMPORT_PHASE",
+    "BIO26_PACKAGE_SHA256",
+    "BIO26_PACKAGE_URL",
     "CF_PAGES_COMMIT_SHA",
     "CLIENT_URL",
     "COMMIT_SHA",
@@ -2337,6 +2528,7 @@
     "LOAD_PROFILE",
     "LOAD_STUDENT_EMAIL",
     "LOAD_STUDENT_PASSWORD",
+    "MCP_BOUNDARY_BASE_URL",
     "MODE",
     "MONGODB_MAX_IDLE_TIME_MS",
     "MONGODB_MAX_POOL_SIZE",
@@ -2368,6 +2560,8 @@
     "PRODUCTION_LATENCY_OUTPUT",
     "PRODUCTION_LATENCY_SAMPLES",
     "PRODUCTION_LATENCY_TIMEOUT_MS",
+    "QUDURAT_PRACTICE_BACKUP_REFERENCE",
+    "QUDURAT_PRACTICE_DRY_RUN",
     "QUESTION_EDITOR_AUDIT_RUN_ID",
     "QUESTION_PILOT_BATCH_ID",
     "QUESTION_PILOT_EXPECTED_COUNT",
@@ -2509,7 +2703,14 @@
   ],
   "routeSourceHashes": {
     "App.tsx": "c71ef51dccde6bd51dadc82d6728486777c53791ed46af4fd2ea16fced890f96",
-    "server/src/app.ts": "60c461f179f67116cdd4b7b07f5293b6a43b697f26340b974a8a7c46bde3c882",
+    "server/src/app.ts": "e85ca94ad4e0372c92fbf58679d12f0b81e07de8505d090c515f2d9eb8fd03fb",
+    "server/src/modules/command-center/http/commandCenterRoutes.ts": "287fc828900a556e00b98aab11b617675ca61f583e3bccc6982118e1c1b7b583",
+    "server/src/modules/command-center/http/courseDraftRoutes.ts": "7a0353079dde86f0e3b73e6012e6e681ab7b0a070d6c2f2da47889e202ac551e",
+    "server/src/modules/command-center/http/developerDraftRoutes.ts": "6f0653b32d515ec01baedada40a40ff9c79e5b35b3dd8e4e7323afd87c2885fb",
+    "server/src/modules/command-center/http/mcpRoutes.ts": "84ca8862b7038345bb586998d6dc2751d8e4b92db74f2ac6ebda4dde0cf4aee8",
+    "server/src/modules/command-center/http/questionQuizDraftRoutes.ts": "6a158af5444d59b61b644d96a3416f3fcfad55bbd8eeaf158fded4a6e4beb150",
+    "server/src/modules/command-center/http/schoolDraftRoutes.ts": "d5aae51ce416b70cae97b5767327ee66dc4ac5975f0c544a7b0d1bce2cdfa64a",
+    "server/src/modules/command-center/http/workflowRoutes.ts": "a31ef348c4c32282bca7ace4c22b1a97c5a434a43fe21b1139d7d225f847b994",
     "server/src/modules/content/http/contentBootstrapRoutes.ts": "f716ee9422b5005fa88b30e9e42be5495b3e0c23a4d1a1813cac0a7849c9d973",
     "server/src/modules/content/http/contentGroupRoutes.ts": "cca7c9dfc53262c25429dcce6c516b9c53e88d7d1c8b078ceb216d05d2664c08",
     "server/src/modules/content/http/contentLearningRoutes.ts": "c4bad7a2a65c28f6abd8f7409d39acab69a7885e480edfe1528dc411a6051c1e",
@@ -2523,13 +2724,13 @@
     "server/src/modules/content/http/contentStudyPlanRoutes.ts": "0d9a4bd2a036d2b2f9930b8cbf3f384acbae63c9aa5ee53ee4231ac8d692cc55",
     "server/src/modules/quizzes/http/adaptiveMasteryRoutes.ts": "d1b31800f632b1b59dfb01d3b1c1d5fbb03230906200f4944ef12c639a48d8c0",
     "server/src/modules/quizzes/http/adaptiveTelemetryRoutes.ts": "0cc69f8b837ccdffc0d29c953184d2d8a334e759cad86db30b8c42e14230456c",
-    "server/src/modules/quizzes/http/questionBankRoutes.ts": "c04bbee0888bbe9b39f85d010e76d16b849cf6d88a63a402fb9f50022610d0b8",
-    "server/src/modules/quizzes/http/questionImportRoutes.ts": "d4fcd8894e4428f3dc65ce33eb0c66e2600b5ba2ed946f6a19d75b5825533222",
+    "server/src/modules/quizzes/http/questionBankRoutes.ts": "cc63a1a3c2ea8d3142c09214a6f6b8c523bc30dcd4d2d3d1bc79ad330ca92c35",
+    "server/src/modules/quizzes/http/questionImportRoutes.ts": "cf6f6c4212025f825e32f074966fada83e29608b38d3e209bf721afdcef6e15e",
     "server/src/modules/quizzes/http/quizAnalyticsRoutes.ts": "3ff5e345c94b7a8b0da35683529bbe5c03916d7108b5199504a8652a67c4bda0",
     "server/src/modules/quizzes/http/quizResultsRoutes.ts": "080454a7a2968993a1503b401e26684a5b520b843ec875a619eedf35eff84ee9",
     "server/src/modules/quizzes/http/studentReviewRoutes.ts": "25c3628f4e4069f953b922c5b305a69cbddf06d4fbb9e9fe43e52f4d4c7e835b",
     "server/src/routes/activity.routes.ts": "0064ba5bfa47873cd04cd56171ada0f3d8097f3d7424e08c68bbf3ee4e05080a",
-    "server/src/routes/ai.routes.ts": "01c89f80c8cecb80e286bf6438ecc5afceb4a76f4073d7a1eb503e1b7aab1673",
+    "server/src/routes/ai.routes.ts": "ff527ded363e2d9ff0b3890e0f33d6b38e503b95248ae286e2827cc0afdee43e",
     "server/src/routes/auth.routes.ts": "89e478b4285cf48d2a2d59d8ff4336ab3be8b818d9de59d874fd26aebce0109a",
     "server/src/routes/backup.routes.ts": "7a2d96e02887120e64d23c4b573b6940dea05820feee08e92ba7a46ffc7985bd",
     "server/src/routes/certificates.routes.ts": "e4d29303c47a4faf34b9e473d99fe318976a8e641970deeafa0c2d4f309c0eca",
@@ -2544,7 +2745,7 @@
     "server/src/routes/course.routes.ts": "eba5b4b3ddda9fc11591ca246d7fdd488f75bf495f6f83a3b413a5170bff6eda",
     "server/src/routes/discussions.routes.ts": "5cfe31eca3c870fb3cd4b1114c41caf02699966f8b58e302561ca26b1e90fe63",
     "server/src/routes/health.routes.ts": "b71dedf5b21eb145678bc2d88243797c796a23b27d18071b5908ef787f28d96e",
-    "server/src/routes/index.ts": "25f097d15c4a218748c3c8001a0a974c3484acfc228605276e7ed5b9122b45ad",
+    "server/src/routes/index.ts": "39e6d5a273b02a686ce72d9fe2535c0079e352a88db250855508a3ee924713b5",
     "server/src/routes/leaderboard.routes.ts": "18f8b08b3c73d74c929aaefea226b99fb7085a1ccd23779a70139f82346fab30",
     "server/src/routes/live-exams.routes.ts": "012964a2474fde5a5c28532bbedca62e8b164dcaacb950db233aea5f63490d64",
     "server/src/routes/media.routes.ts": "75bb40dfa57268f2d8112ae17320a3cb581c8fe71095bbd92dbbc787cd89d213",
@@ -2562,6 +2763,6 @@
     "server/src/routes/schoolAdminIntegrity.routes.ts": "82107ad6c521dfb9f429bd34be8356cdab5f84767c8fc3f20f9d622d5e73f5fe",
     "server/src/routes/search.routes.ts": "2499d52eb8028894d8622cb1bebf896d90f3c3b03caf7e39cf231bf84381b104",
     "server/src/routes/seo.routes.ts": "5040a1d8a8f69879b9e978b57663b62e478559dc80ad73db1ac830752e604554",
-    "server/src/routes/taxonomy.routes.ts": "7a20fb0d8e2d8553778a3e5d8fb2508e14d6a2ed3b18daa839ad71ce2acd1856"
+    "server/src/routes/taxonomy.routes.ts": "8411f4a959714f8dbd3ae4ba0d7e2d46f7955e1ef9f3963bffb37f0f7b097018"
   }
 }

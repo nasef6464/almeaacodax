@@ -1,7 +1,10 @@
 import React from 'react';
 import { Bot, Loader2, Mic, MicOff, Volume2 } from 'lucide-react';
 import { api } from '../../services/api';
-import { InteractiveSmartTeacher } from './InteractiveSmartTeacher';
+
+const InteractiveSmartTeacher = React.lazy(() =>
+  import('./InteractiveSmartTeacher').then((m) => ({ default: m.InteractiveSmartTeacher }))
+);
 
 type AssistantContext = "result_review" | "saved_review" | "mistake_review" | "mastery_review";
 
@@ -169,14 +172,18 @@ export const QuestionAssistantPanel: React.FC<{
         {error ? <p className="max-w-sm text-center text-[11px] font-bold text-rose-600">{error}</p> : null}
       </div>
 
-      <InteractiveSmartTeacher
-        isOpen={smartTeacherOpen}
-        onClose={() => setSmartTeacherOpen(false)}
-        resultId={resultId}
-        questionId={questionId}
-        context={context}
-        tutorSessionId={tutorSessionIdRef.current}
-      />
+      {smartTeacherOpen ? (
+        <React.Suspense fallback={null}>
+          <InteractiveSmartTeacher
+            isOpen={smartTeacherOpen}
+            onClose={() => setSmartTeacherOpen(false)}
+            resultId={resultId}
+            questionId={questionId}
+            context={context}
+            tutorSessionId={tutorSessionIdRef.current}
+          />
+        </React.Suspense>
+      ) : null}
     </>
   );
 };
