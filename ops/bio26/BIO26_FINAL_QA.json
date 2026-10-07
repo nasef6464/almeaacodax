@@ -207,7 +207,6 @@
     "uniqueQuestionCodes": 2832,
     "uniqueSourceItemIds": 2832,
     "uniqueImageHashes": 2832,
-    "linkedQuizCount": 0,
     "integrityErrors": 0,
     "r2Verified": 2832,
     "dryRunCount": 2832,
@@ -230,7 +229,32 @@
     "mainSkillTrainingCount": 49,
     "standardTestCount": 71,
     "allBankQuestionAllocation": "63x40 + 8x39 = 2832",
-    "closureCertifiedApplicationSha": "2885b2b30eff2f959fdad3a0c098a2bd461f1b73",
-    "closureRecordMergeSha": "1bdc0ce150ff018745a37b7461a5b419c986f410"
+    "closureCertifiedApplicationSha": "54f20dfa7524a212d18bc7bf316fded4b0bb82e6",
+    "closureRecordMergeSha": "1bdc0ce150ff018745a37b7461a5b419c986f410",
+    "postApprovalGateLinkedQuizCount": 0,
+    "runtimeRepairPr": 445,
+    "runtimeRepairMergeSha": "54f20dfa7524a212d18bc7bf316fded4b0bb82e6",
+    "learningRuntime": {
+      "totalQuizzes": 147,
+      "foundation": 98,
+      "training": 49,
+      "approvedPublished": 147,
+      "foundationWith10": 84,
+      "sourceLimitedUnder10": 14
+    },
+    "standardTestsRuntime": {
+      "tests": 71,
+      "approvedPublishedVisible": 71,
+      "free": 5,
+      "paid": 66,
+      "sizes": {
+        "39": 8,
+        "40": 63
+      },
+      "uniqueQuestionRefs": 2832,
+      "duplicateRefs": 0,
+      "fiveTestTranches": 14,
+      "tranchesCoveringAll29MainSkills": 14
+    }
   }
 }
