@@ -38,8 +38,13 @@ export async function migrateVerbalTaxonomy22() {
   if (!db) throw new Error("Database connection failed");
 
   const questions = db.collection("questions");
+  // Scope VERBAL26 strictly to the two approved source books. Historical verbal
+  // rows without approved provenance must never enter this reconciliation.
   const verbalFilter = {
-    $or: [{ subject: VERBAL_SUBJECT_ID }, { subjectId: VERBAL_SUBJECT_ID }],
+    $and: [
+      { $or: [{ subject: VERBAL_SUBJECT_ID }, { subjectId: VERBAL_SUBJECT_ID }] },
+      { sourceBook: { $in: ["abdelbaset", "anas"] } },
+    ],
   };
 
   const beforeQuestions = await questions.countDocuments(verbalFilter);

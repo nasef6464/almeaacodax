@@ -71,6 +71,15 @@ if (migrationReady && missingMain.length) {
     `source-backed subSkills=${subSkillCount}/76, missingMain=${missingMain.join(", ") || "none"}`,
   );
 }
+
+
+const migrationPath = path.join(process.cwd(), "server", "src", "scripts", "migrateVerbalTaxonomy22.ts");
+if (!fs.existsSync(migrationPath)) throw new Error(`VERBAL26 migration not found: ${migrationPath}`);
+const migrationSource = fs.readFileSync(migrationPath, "utf8");
+if (!migrationSource.includes('sourceBook: { $in: ["abdelbaset", "anas"] }')) {
+  throw new Error("VERBAL26 migration must scope question reconciliation to approved sourceBook values only");
+}
+
 console.log(JSON.stringify({
   status:"PASS",
   migrationReady,
