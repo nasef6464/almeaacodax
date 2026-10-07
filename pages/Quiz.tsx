@@ -14,17 +14,19 @@ const DEFAULT_TIME_MINUTES = 20;
 const QUIZ_PROGRESS_KEY = 'quiz_progress';
 const QUIZ_PROGRESS_SNAPSHOT_KEY = 'quiz_progress_save';
 
-const getCanonicalQuestionSkillIds = (question: any): string[] => {
-  const canonical: string[] = [question?.skillId, question?.subSkillId]
-    .map((value) => String(value || '').trim())
-    .filter((value): value is string => Boolean(value));
-  const legacy: string[] = (Array.isArray(question?.skillIds) ? question.skillIds : [])
-    .map((value: unknown) => String(value || '').trim())
-    .filter((value: string) => Boolean(value));
-  return canonical.length > 0
-    ? Array.from(new Set<string>(canonical))
-    : Array.from(new Set<string>(legacy));
-};
+const getCanonicalQuestionSkillIds = (question: any): string[] =>
+  Array.from(
+    new Set<string>(
+      [
+        question?.skillId,
+        question?.subSkillId,
+        ...(Array.isArray(question?.subSkillIds) ? question.subSkillIds : []),
+        ...(Array.isArray(question?.skillIds) ? question.skillIds : []),
+      ]
+        .map((value: unknown) => String(value || '').trim())
+        .filter((value: string): value is string => Boolean(value)),
+    ),
+  );
 
 const resolveQuizSkillTaxonomy = (skillId: string, allSkills: any[]) => {
   const requestedId = String(skillId || '').trim();
