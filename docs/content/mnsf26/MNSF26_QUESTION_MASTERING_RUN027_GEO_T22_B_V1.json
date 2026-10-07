@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "stage": "QUESTION_MASTERING",
+  "batch": "RUN027_GEO_T22_B",
+  "summary": {
+    "mastered": 5,
+    "hold": 2
+  },
+  "masteredIds": [
+    "MNSF26-GEO-T022-Q11",
+    "MNSF26-GEO-T022-Q16",
+    "MNSF26-GEO-T022-Q18",
+    "MNSF26-GEO-T022-Q19",
+    "MNSF26-GEO-T022-Q20"
+  ],
+  "holdIds": [
+    "MNSF26-GEO-T022-Q06",
+    "MNSF26-GEO-T022-Q08"
+  ],
+  "note": "Full one-pass visual adjudication completed for this batch; ambiguous records remain HOLD."
+}
