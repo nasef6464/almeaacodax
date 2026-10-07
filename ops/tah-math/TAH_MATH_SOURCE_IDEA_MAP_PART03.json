@@ -1,0 +1,108 @@
+{
+  "project": "TAH-MATH",
+  "status": "SOURCE_EXTRACTED_PENDING_TAXONOMY_BINDING",
+  "source": "كتاب تجميعات يلو للرياضيات 26 - النسخة المعدلة.pdf",
+  "lessons": [
+    {
+      "lessonNumber": 17,
+      "title": "العلاقات والدوال النسبية",
+      "collectionsStartPage": 72,
+      "sourceIdeas": [
+        "العبارة النسبية ونقاط عدم التعريف",
+        "المضاعف المشترك الأصغر",
+        "العمليات على الدوال النسبية وتبسيط العبارات",
+        "المعادلات والدوال النسبية ومجالاتها"
+      ],
+      "taxonomyBindingStatus": "PENDING_RUNTIME_TAXONOMY_SNAPSHOT"
+    },
+    {
+      "lessonNumber": 18,
+      "title": "المتتابعات والمتسلسلات",
+      "collectionsStartPage": 77,
+      "sourceIdeas": [
+        "المتتابعة الحسابية وأساسها",
+        "الحد النوني والأوساط الحسابية للمتتابعات الحسابية",
+        "المتتابعات الهندسية",
+        "المتسلسلات الحسابية",
+        "المتسلسلات الهندسية"
+      ],
+      "taxonomyBindingStatus": "PENDING_RUNTIME_TAXONOMY_SNAPSHOT"
+    },
+    {
+      "lessonNumber": 19,
+      "title": "نظرية ذات الحدين",
+      "collectionsStartPage": 82,
+      "sourceIdeas": [
+        "نظرية ذات الحدين",
+        "مفكوك ذات الحدين",
+        "معاملات وحدود المفكوك"
+      ],
+      "taxonomyBindingStatus": "PENDING_RUNTIME_TAXONOMY_SNAPSHOT"
+    },
+    {
+      "lessonNumber": 20,
+      "title": "الاحتمالات",
+      "collectionsStartPage": 84,
+      "sourceIdeas": [
+        "فضاء العينة والاحتمال",
+        "الاحتمال الهندسي",
+        "التباديل والتوافيق",
+        "احتمال الأحداث المركبة"
+      ],
+      "taxonomyBindingStatus": "PENDING_RUNTIME_TAXONOMY_SNAPSHOT"
+    },
+    {
+      "lessonNumber": 21,
+      "title": "حسابات المثلثات",
+      "collectionsStartPage": 90,
+      "sourceIdeas": [
+        "تبسيط العبارات المثلثية",
+        "الدوال المثلثية في المثلث قائم الزاوية",
+        "إشارة الدوال المثلثية",
+        "تتمة الدوال المثلثية في المثلث قائم الزاوية",
+        "الدوال المثلثية للزوايا"
+      ],
+      "taxonomyBindingStatus": "PENDING_RUNTIME_TAXONOMY_SNAPSHOT"
+    },
+    {
+      "lessonNumber": 22,
+      "title": "تحليل الدوال",
+      "collectionsStartPage": 98,
+      "sourceIdeas": [
+        "تحليل التمثيل البياني للدالة",
+        "المجال والمدى",
+        "الدوال الفردية والزوجية",
+        "فترات التزايد والتناقص",
+        "القيم القصوى",
+        "تحويلات الدوال"
+      ],
+      "taxonomyBindingStatus": "PENDING_RUNTIME_TAXONOMY_SNAPSHOT"
+    },
+    {
+      "lessonNumber": 23,
+      "title": "الدوال الأسية واللوغاريتمية",
+      "collectionsStartPage": 111,
+      "sourceIdeas": [
+        "الدوال الأسية",
+        "الدوال اللوغاريتمية",
+        "خصائص اللوغاريتمات",
+        "المعادلات الأسية واللوغاريتمية",
+        "الدوال العكسية الأسية واللوغاريتمية"
+      ],
+      "taxonomyBindingStatus": "PENDING_RUNTIME_TAXONOMY_SNAPSHOT"
+    },
+    {
+      "lessonNumber": 24,
+      "title": "المتطابقات المثلثية",
+      "collectionsStartPage": 119,
+      "sourceIdeas": [
+        "المتطابقات النسبية ومتطابقات المقلوب",
+        "تبسيط العبارات المثلثية بالمتطابقات",
+        "متطابقات مجموع زاويتين والفرق بينهما",
+        "متطابقات الزاوية المضاعفة"
+      ],
+      "taxonomyBindingStatus": "PENDING_RUNTIME_TAXONOMY_SNAPSHOT"
+    }
+  ],
+  "evidence": "Source headings and lesson start pages extracted from canonical collections PDF; uncertain subheadings remain source-grounded candidates until page-level manifest review."
+}
