@@ -13,6 +13,8 @@ const results = read('pages/Results.tsx');
 const details = read('components/QuizDetailsModal.tsx');
 const recommendations = read('pages/Reports/recommendationViewModel.ts');
 const attemptTrend = read('pages/Reports/studentSkillAttemptTrendViewModel.ts');
+const adaptive = read('services/adaptiveLearningPathService.ts');
+const smartPath = read('components/SmartLearningPath.tsx');
 
 const required = (source, fragments, label) => {
   for (const fragment of fragments) assert.ok(source.includes(fragment), `${label}: missing ${fragment}`);
@@ -52,6 +54,14 @@ required(recommendations, ['quizLink: recommendedTopic ? foundationTrainingLink 
 absent(recommendations, ['const subskillFallbackQuiz =', 'quizLink: foundationTrainingLink ||'], 'no direct quiz fallback');
 
 required(report, ['compactStudentSkillRows.slice(0, 12)', 'showAllReportSkills', 'عرض جميع المهارات', 'const studentPrintableSkillRows = compactStudentSkillRows', 'buildRecordedSkillAttemptChanges(studentPeriodExamResults)'], 'all-skill UI');
+required(adaptive, [
+  'const topicId = skill.topicId || undefined;',
+  "buildFoundationActionLink(scope, usePractice ? 'quizzes' : 'lessons')",
+  "actionLabel: insufficientEvidence ? 'ابدأ القياس' : usePractice ? 'تدريب' : 'فيديو'",
+], 'adaptive study route');
+absent(adaptive, ['topic_sub_${skill.skillId}', "buildFoundationActionLink(scope, 'quizzes')\n        || buildSkillRemediationActionLink"], 'adaptive no guessed content');
+absent(smartPath, ["to={item.link || '#'}"], 'no dead smart path actions');
+
 required(attemptTrend, [
   'if (!item.skillId || !item.pathId || !item.subjectId) continue;',
   'if (series.length < 2) return;',
