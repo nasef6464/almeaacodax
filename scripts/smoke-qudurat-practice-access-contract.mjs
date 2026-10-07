@@ -11,6 +11,8 @@ assert.ok(file.includes('const MAIN_DRILL_MAX_QUESTIONS = 40;'), "main-skill tra
 assert.ok(file.includes('questionIdsForSubskill'), "subskill drills must be built from canonical mapped questions");
 assert.ok(file.includes('const helperQuestionIdsForSubskill'), "approved training helpers may fill only source shortages");
 assert.ok(file.includes('["FND26", "COL2627"].includes'), "quant source-backed drills must use the two canonical source books");
+assert.ok(file.includes('["abdelbaset", "anas"].includes'), "verbal canonical practice must use only the two approved source books");
+assert.ok(file.includes('subjectKey !== "verbal" || isVerbalCanonicalSourceQuestion(q)'), "verbal historical rows without approved sourceBook must be excluded from source-backed practice");
 assert.ok(file.includes('isApprovedQuestion'), "rejected questions must never be selected by reconciliation");
 assert.ok(file.includes('helperNeeded'), "helper questions must be bounded to the minimum target instead of replacing source questions");
 assert.ok(file.includes('questionIdsForMain'), "main-skill drills must be built from canonical mapped questions");
