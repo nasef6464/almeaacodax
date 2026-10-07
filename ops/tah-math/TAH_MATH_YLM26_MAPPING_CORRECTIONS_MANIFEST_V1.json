@@ -1,0 +1,52 @@
+{
+  "project": "TAH-MATH",
+  "bank": "YLM26",
+  "manifestVersion": 1,
+  "status": "REVIEWED_NOT_APPLIED",
+  "productionMutation": false,
+  "rollbackPolicy": "Each row records old and new mapping; apply only after full YLM26 manifest gate passes.",
+  "rows": [
+    {
+      "questionCode": "TAH-MATH-YLM26-P013-Q12",
+      "sourcePage": 13,
+      "old": {
+        "skillId": "skill_tah_math_01",
+        "subSkillId": "sub_tah_math_01_02"
+      },
+      "decision": "REMAP",
+      "new": {
+        "skillId": "skill_tah_math_03",
+        "subSkillId": "sub_tah_math_03_03"
+      },
+      "evidence": "Source page 13 is inside the triangle lesson and the item is indirect proof in the triangle-inequalities block; sub_tah_math_03_03 explicitly includes triangle inequalities."
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P016-Q10",
+      "sourcePage": 16,
+      "old": {
+        "skillId": "skill_tah_math_03",
+        "subSkillId": "sub_tah_math_03_01"
+      },
+      "decision": "REMAP",
+      "new": {
+        "skillId": "skill_tah_math_04",
+        "subSkillId": "sub_tah_math_04_02"
+      },
+      "evidence": "Source page 16 is quadrilaterals/coordinate proof; the item determines a coordinate using a congruent isosceles-trapezoid style coordinate setup. sub_tah_math_04_02 includes quadrilateral properties and coordinate proof."
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P050-Q02",
+      "sourcePage": 50,
+      "old": {
+        "skillId": "skill_tah_math_18",
+        "subSkillId": "sub_tah_math_18_01"
+      },
+      "decision": "REMAP",
+      "new": {
+        "skillId": "skill_tah_math_15",
+        "subSkillId": "sub_tah_math_15_02"
+      },
+      "evidence": "Source page 50 is Calculus of Trigonometry, and the item simplifies sin(theta)*cot(theta) using reciprocal/quotient trig ratios. sub_tah_math_15_02 covers sin/cos/tan and reciprocals."
+    }
+  ]
+}
