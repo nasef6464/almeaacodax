@@ -1,0 +1,52 @@
+{
+  "project": "TAH-MATH",
+  "status": "IN_PROGRESS",
+  "source": "كتاب تجميعات يلو للرياضيات 26 - النسخة المعدلة.pdf",
+  "purpose": "Source-backed lesson/idea dictionary before runtime taxonomy binding",
+  "lessons": [
+    {
+      "lessonNumber": 1,
+      "title": "التبرير والبرهان",
+      "collectionsStartPage": 5,
+      "sourceIdeas": [
+        "الأنماط",
+        "المثال المضاد والعبارات المركبة",
+        "العبارات الشرطية والعبارات الشرطية المرتبطة",
+        "العبارات المتكافئة منطقيًا وأشكال فن",
+        "التبرير والبرهان"
+      ],
+      "taxonomyBindingStatus": "PENDING_RUNTIME_TAXONOMY_SNAPSHOT"
+    },
+    {
+      "lessonNumber": 2,
+      "title": "المسلمات والعلاقات الهندسية",
+      "collectionsStartPage": 8,
+      "sourceIdeas": [
+        "المسلمات وتقاطع المستقيمات والمستويات",
+        "العلاقات بين القطع المستقيمة",
+        "بعض خصائص الأعداد الحقيقية",
+        "بعض العلاقات بين الزوايا",
+        "التوازي والتخالف",
+        "المستقيمان والقاطع",
+        "التوازي بحرف M"
+      ],
+      "taxonomyBindingStatus": "PENDING_RUNTIME_TAXONOMY_SNAPSHOT"
+    },
+    {
+      "lessonNumber": 3,
+      "title": "المستقيم",
+      "collectionsStartPage": 13,
+      "sourceIdeas": [
+        "ميل المستقيم",
+        "صيغ معادلة المستقيم",
+        "المستقيم العمودي والموازي",
+        "المستقيم الرأسي والأفقي",
+        "البعد بين نقطة ومستقيم",
+        "البعد بين نقطتين",
+        "البعد بين مستقيمين متوازيين"
+      ],
+      "taxonomyBindingStatus": "PENDING_RUNTIME_TAXONOMY_SNAPSHOT"
+    }
+  ],
+  "next": "Bind these source ideas to the existing Tahsili Math main/subskill taxonomy; then review YLM26 and COL26 lesson-aligned questions."
+}
