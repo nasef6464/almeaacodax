@@ -125,7 +125,8 @@
     "answerLeakCount": 0,
     "closurePr": 433,
     "closureMergeSha": "7b07579b4aa68c46562ac451711328a06ab055ee",
-    "currentProductionMainSha": "2885b2b30eff2f959fdad3a0c098a2bd461f1b73"
+    "closureCertifiedApplicationSha": "2885b2b30eff2f959fdad3a0c098a2bd461f1b73",
+    "closureRecordMergeSha": "1bdc0ce150ff018745a37b7461a5b419c986f410"
   },
   "closure": true
 }
