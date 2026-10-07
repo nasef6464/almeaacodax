@@ -1,0 +1,84 @@
+{
+  "project": "BIO26",
+  "scope": "Biology only",
+  "closureDate": "2026-10-07",
+  "status": "CLOSED",
+  "batchId": "TAH-BIO-BIO26-FULL-V1",
+  "package": {
+    "name": "BIO26_FINAL_ASSETS_V3_READY_2832.zip",
+    "bytes": 30690582,
+    "sha256": "e2063da82250395c8e7f9c50a6cbba34269d9c6683c7db91a0ea9a92a494fa8f",
+    "canonicalQuestions": 2832
+  },
+  "productionSequence": [
+    {
+      "gate": "R2 authenticated verification",
+      "marker": "BIO26_R2_VERIFIED_PASS count=2832",
+      "status": "PASS"
+    },
+    {
+      "gate": "Dry Run",
+      "marker": "BIO26_DRY_RUN_PASS count=2832 liveImageSamples=30",
+      "status": "PASS"
+    },
+    {
+      "gate": "Canary 5",
+      "marker": "BIO26_CANARY_PASS count=5 drafts=5 insertedThisRun=5",
+      "status": "PASS"
+    },
+    {
+      "gate": "Full Draft Import",
+      "marker": "BIO26_IMPORT_DRAFT_PASS count=2832 drafts=2832 liveImageSamples=30",
+      "status": "PASS"
+    },
+    {
+      "gate": "Integrity Audit",
+      "details": "2832 unique codes/sourceItemIds/image hashes; 29/98; 0 errors; 0 linked quizzes",
+      "status": "PASS"
+    },
+    {
+      "gate": "Live E2E pre-approval",
+      "marker": "BIO26_LIVE_E2E_DRAFT_PASS learnerHidden=1 liveImageSamples=30",
+      "status": "PASS"
+    },
+    {
+      "gate": "Approval",
+      "marker": "BIO26_APPROVAL_WRITE_PASS count=2832 approver=BIO26_FULL_CLOSURE_2026_10_07",
+      "status": "PASS"
+    },
+    {
+      "gate": "Live E2E post-approval",
+      "marker": "BIO26_LIVE_E2E_APPROVED_PASS learnerVisible=1 answerLeak=0 liveImageSamples=30",
+      "status": "PASS"
+    },
+    {
+      "gate": "Post-Approval Audit",
+      "marker": "BIO26_POST_APPROVAL_GATE_PASS count=2832 main=29 sub=98 linked=0",
+      "status": "PASS"
+    }
+  ],
+  "finalCounts": {
+    "approvedQuestions": 2832,
+    "draftQuestions": 0,
+    "mainSkills": 29,
+    "subSkills": 98,
+    "linkedQuizzes": 0,
+    "integrityErrors": 0,
+    "answerLeaks": 0
+  },
+  "provenanceFix": {
+    "issue": "Mongoose/Zod schemas stripped aiContext.optionTextsSource and aiContext.optionTextsVerified during import",
+    "resolution": "Schema persistence fix + targeted draft-only backfill for the BIO26 batch before approval",
+    "affectedAndRepaired": 2832,
+    "pr": 433,
+    "mergeSha": "7b07579b4aa68c46562ac451711328a06ab055ee"
+  },
+  "learningStructure": {
+    "pr437": "29 main topics / 98 subtopics, foundation drills, main-skill training, first five free, 71 standard all-bank tests",
+    "pr439": "main-skill training aligned to 49 drills",
+    "standardTests": 71,
+    "allocation": "63×40 + 8×39 = 2832 questions exactly once"
+  },
+  "finalProductionMainSha": "2885b2b30eff2f959fdad3a0c098a2bd461f1b73",
+  "closureRule": "Satisfied: production import + integrity + live E2E + approval + post-approval audit all PASS"
+}
