@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "audit": "VISUAL_QUESTION_MATH_AUDIT",
+  "sourceGroup": {
+    "sourcePart": "الهندسة",
+    "sourceSkillLabel": "الهندسة الإحداثية",
+    "tests": [
+      22,
+      23
+    ],
+    "questions": 37
+  },
+  "finding": "SOURCE_GROUP_IS_MIXED_AT_QUESTION_LEVEL",
+  "decision": "RETRACT_GROUP_LEVEL_SINGLE_CANDIDATE_APPROVAL",
+  "previousProvisional": "sub_quant_25_3",
+  "evidence": {
+    "auditedCrops": 37,
+    "examples": [
+      {
+        "sourceId": "MNSF26-GEO-T022-Q04",
+        "actualMath": "مجموع زوايا مضلع سداسي",
+        "candidate": "sub_quant_19_3"
+      },
+      {
+        "sourceId": "MNSF26-GEO-T022-Q09",
+        "actualMath": "مقارنة مجموع الزوايا الداخلية لمضلعين",
+        "candidate": "sub_quant_19_3"
+      },
+      {
+        "sourceId": "MNSF26-GEO-T022-Q12",
+        "actualMath": "تحديد الشكل الناتج من نقاط إحداثية",
+        "candidate": "sub_quant_25_3"
+      },
+      {
+        "sourceId": "MNSF26-GEO-T022-Q14",
+        "actualMath": "مساحة مثلث مرسوم على المحاور",
+        "candidate": "sub_quant_20_4"
+      },
+      {
+        "sourceId": "MNSF26-GEO-T023-Q05",
+        "actualMath": "إحداثيات مركز دائرة من الرسم",
+        "candidate": "sub_quant_25_3"
+      },
+      {
+        "sourceId": "MNSF26-GEO-T023-Q15",
+        "actualMath": "نسبة مساحتي دائرتين من أنصاف الأقطار",
+        "candidate": "sub_quant_24_1"
+      }
+    ]
+  },
+  "policyChange": {
+    "groupTitleMaySeedReview": true,
+    "groupTitleCannotApproveExactSubskill": true,
+    "questionMathRequiredForEveryQuestion": true,
+    "crossTopicAllowedWithExplicitRationale": true
+  },
+  "importGate": "FAIL_CLOSED_UNTIL_37_QUESTION_LEVEL_DECISIONS"
+}
