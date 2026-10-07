@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "audit": "VISUAL_QUESTION_MATH_AUDIT",
+  "sourceGroup": {
+    "sourcePart": "الحساب/الجبر",
+    "sourceSkillLabel": "الأعداد الأولية - العوامل الأولى",
+    "tests": [
+      12,
+      13,
+      14
+    ],
+    "questions": 59
+  },
+  "finding": "SOURCE_GROUP_IS_MIXED_AT_QUESTION_LEVEL",
+  "decision": "RETRACT_GROUP_LEVEL_SINGLE_CANDIDATE_APPROVAL",
+  "previousProvisional": "sub_quant_02_3",
+  "observedMathFamilies": [
+    "الأعداد الأولية والتحليل للعوامل",
+    "قابلية القسمة",
+    "العوامل والمضاعفات والمشترك",
+    "زوجي/فردي",
+    "مقارنة كميات",
+    "مسائل مصافحات/عد عرضية"
+  ],
+  "requiredCandidateReview": [
+    "sub_quant_02_1",
+    "sub_quant_02_3",
+    "sub_quant_01_3",
+    "sub_quant_13_2",
+    "sub_quant_11_1"
+  ],
+  "policy": "QUESTION_MATH_REQUIRED_FOR_EACH_OF_59; SOURCE_LABEL_PRESERVED; NO_AUTO_APPROVAL_FROM_GROUP_TITLE",
+  "importGate": "FAIL_CLOSED_UNTIL_59_QUESTION_LEVEL_DECISIONS"
+}
