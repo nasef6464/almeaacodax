@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "recordType": "TAH_MATH_SKILL_REVIEW",
+  "required": [
+    "questionCode",
+    "sourceBank",
+    "sourcePage",
+    "sourceLessonNumber",
+    "sourceLessonTitle",
+    "mappingDecision",
+    "primarySkillId",
+    "primarySubSkillId",
+    "answerVerified",
+    "visualVerified"
+  ],
+  "properties": {
+    "questionCode": {
+      "type": "string"
+    },
+    "sourceBank": {
+      "enum": [
+        "YLM26",
+        "COL26",
+        "COL26OLD"
+      ]
+    },
+    "sourcePage": {
+      "type": "integer"
+    },
+    "sourceSection": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "enum": [
+        1,
+        2,
+        null
+      ]
+    },
+    "sourceLessonNumber": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 31
+    },
+    "sourceLessonTitle": {
+      "type": "string"
+    },
+    "sourceIdeaTitle": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "primarySkillId": {
+      "type": "string"
+    },
+    "primarySubSkillId": {
+      "type": "string"
+    },
+    "additionalSubSkillIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "mappingDecision": {
+      "enum": [
+        "KEEP",
+        "REMAP",
+        "MULTI_SKILL",
+        "REVIEW"
+      ]
+    },
+    "mappingEvidence": {
+      "type": "string"
+    },
+    "answerVerified": {
+      "type": "boolean"
+    },
+    "visualVerified": {
+      "type": "boolean"
+    },
+    "difficulty": {
+      "enum": [
+        "easy",
+        "medium",
+        "hard",
+        "unrated"
+      ]
+    },
+    "reviewerNotes": {
+      "type": "string"
+    }
+  }
+}
