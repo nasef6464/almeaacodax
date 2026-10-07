@@ -49,6 +49,7 @@
         "smoke:smart-classroom-g0": "npm --prefix server run verify:smart-classroom-g0 && node scripts/smoke-smart-classroom-g0-contract.mjs",
         "smoke:barcode-public-tests-live": "node scripts/live-barcode-public-tests-audit.mjs",
         "smoke:results": "node scripts/smoke-results-contract.mjs && node scripts/smoke-student-result-skill-integrity-contract.mjs && node scripts/smoke-unified-skill-mastery-contract.mjs && node scripts/smoke-student-foundation-action-policy.mjs",
+        "smoke:quant-skill-mapping": "node scripts/verify-quant-skill-mapping-regression.mjs",
         "smoke:unified-skill-mastery": "node scripts/smoke-unified-skill-mastery-contract.mjs",
         "smoke:saher-skills": "node scripts/smoke-saher-skill-scope.mjs",
         "smoke:course-builder": "node scripts/smoke-course-builder-contract.mjs",
@@ -246,7 +247,7 @@
         "smoke:plan3-runtime-footprint": "node scripts/smoke-plan3-runtime-footprint-contract.mjs",
         "smoke:verbal26:ledger": "node scripts/smoke-verbal26-source-ledger-contract.mjs",
         "smoke:verbal26": "npm run smoke:verbal26:ledger && node scripts/smoke-verbal26-historical-recovery.mjs && node scripts/smoke-verbal-taxonomy-v2-contract.mjs && node scripts/smoke-verbal-approved-source-contract.mjs && node scripts/smoke-verbal26-runtime-contract.mjs",
-        "smoke:qudurat-practice-access": "node scripts/smoke-qudurat-practice-access-contract.mjs",
+        "smoke:qudurat-practice-access": "node scripts/smoke-qudurat-practice-access-contract.mjs && node --check scripts/verify-quant-skill-mapping-regression.mjs",
         "smoke:chem26-import-runner": "node scripts/smoke-chem26-import-runner-contract.mjs",
         "smoke:bio26-import-runner": "node scripts/smoke-bio26-import-runner-contract.mjs",
         "smoke:tracked-secret-hygiene": "node scripts/smoke-tracked-secret-hygiene-contract.mjs"
