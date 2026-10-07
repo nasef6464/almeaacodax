@@ -23,10 +23,10 @@
     {
       "name": "mapping",
       "status": "IN_PROGRESS",
-      "done": 135,
+      "done": 141,
       "total": 2135,
       "rule": "QUESTION_MATH_REQUIRED; source label preserved; no group-title auto approval",
-      "reviewHold": 1,
+      "reviewHold": 2,
       "evidence": [
         "Ready130 audit candidate-pass 74",
         "Adjudication batch001 added 17 question-level approvals",
@@ -75,16 +75,17 @@
     "geometry T24/Q18 SOURCE_ABSENT",
     "P001/Q10 HOLD",
     "P013/Q15 HOLD",
-    "P014/Q08 QUARANTINE"
+    "P014/Q08 QUARANTINE",
+    "MNSF26-GEO-T022-Q04 HOLD (prior sub_quant_19_3 retracted after direct crop inspection)"
   ],
   "nextCursor": {
     "stage": "QUESTION_MASTERING",
     "strategy": "ONE_PASS_VISUAL_MATH",
     "priority": [
-      "geometry T22-T23 remaining 31 complete master records",
+      "finish T22 unresolved questions with complete master payload or HOLD",
+      "T23 complete master payload",
       "arithmetic T12-T14 59 complete master records",
-      "continue source order",
-      "retain P001/Q12 fail-closed until stronger evidence"
+      "continue source order"
     ]
   },
   "antiLoopRules": [
@@ -98,18 +99,24 @@
     "A question is processed once into a complete master payload; QA validates it rather than recreating it"
   ],
   "lastCompletedBatch": {
-    "name": "GEOMETRY_T22_T23_EVIDENCED_MAPPING_BATCH_003",
-    "mappedApproved": 135,
-    "reviewHold": 1,
-    "headBeforeBatch": "c18f0775c2223953aafbb8cb28c0d8ea67c8ff21",
-    "geometryQuestionsApprovedThisBatch": 6
+    "name": "QUESTION_MASTERING_RUN026_GEO_T22_A",
+    "headBeforeBatch": "d081eb238df114d38e79e6ff1ac47d02e659c8fb",
+    "completeMasterRecords": 10,
+    "newMappingsNet": 6,
+    "retractedBadPriorMapping": [
+      "MNSF26-GEO-T022-Q04 sub_quant_19_3"
+    ],
+    "newHold": [
+      "MNSF26-GEO-T022-Q04"
+    ],
+    "evidenceFile": "docs/content/mnsf26/MNSF26_QUESTION_MASTERING_RUN026_GEO_T22_A_V1.json"
   },
   "executionContract": "docs/content/mnsf26/MNSF26_LOCKED_PIPELINE_V1.json",
   "activeStage": {
     "order": 2,
     "name": "QUESTION_MASTERING",
     "status": "IN_PROGRESS",
-    "done": 135,
+    "done": 141,
     "total": 2135,
     "mode": "ONE_PASS_PER_QUESTION",
     "requiredPayload": [
@@ -125,6 +132,7 @@
       "contentFingerprint",
       "ideaFingerprint"
     ],
-    "gate": "No question advances without complete payload or explicit HOLD/REVIEW."
+    "gate": "No question advances without complete payload or explicit HOLD/REVIEW.",
+    "masteredComplete": 139
   }
 }
