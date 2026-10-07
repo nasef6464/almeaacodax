@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "bank": "MNSF26",
   "policy": "SOURCE_GROUP_CONSTRAINS_CANDIDATES_THEN_QUESTION_MATH_SELECTS_EXACT_SUBSKILL",
   "canonicalContract": {
@@ -72,9 +72,13 @@
         14
       ],
       "candidates": [
-        "sub_quant_02_3"
+        "sub_quant_02_1",
+        "sub_quant_02_3",
+        "sub_quant_01_3",
+        "sub_quant_13_2",
+        "sub_quant_11_1"
       ],
-      "selection": "QUESTION_MATH_REQUIRED"
+      "selection": "QUESTION_MATH_REQUIRED_VISUAL_AUDIT_RUN024"
     },
     {
       "sourcePart": "الحساب/الجبر",
@@ -361,9 +365,16 @@
         23
       ],
       "candidates": [
-        "sub_quant_25_3"
+        "sub_quant_25_3",
+        "sub_quant_19_3",
+        "sub_quant_20_4",
+        "sub_quant_24_1",
+        "sub_quant_04_4",
+        "sub_quant_08_1",
+        "sub_quant_08_2",
+        "sub_quant_09_1"
       ],
-      "selection": "QUESTION_MATH_REQUIRED"
+      "selection": "QUESTION_MATH_REQUIRED_VISUAL_AUDIT_RUN024"
     },
     {
       "sourcePart": "الهندسة",
@@ -501,5 +512,6 @@
       "questionNumber": 18,
       "reason": "SOURCE_ABSENT"
     }
-  ]
+  ],
+  "run024Correction": "Candidate sets widened only where visual audit proved source groups mixed; exact mapping still requires each question's mathematics."
 }
