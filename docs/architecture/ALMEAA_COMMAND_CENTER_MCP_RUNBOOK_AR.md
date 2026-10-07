@@ -1,5 +1,15 @@
 # ALMEAA Command Center — Remote MCP Runbook
 
+> **AUTHORITATIVE POST-#430 PRODUCTION BOUNDARY — 2026-10-07**
+> - Current verified main: `3aee9949bebe5b62a593760e76e4e02a55f9e2d2`; Vercel Production is READY on that exact SHA.
+> - Automatic production certification is intentionally lightweight: no-inference PLAN7, release identity/paced auth, and MCP fail-closed boundary only.
+> - Production Render must not receive LLM/provider quota/PDF/OCR/bulk processing/rendering/wide-browser/load-test traffic.
+> - Remote MCP stays disabled/fail-closed until a trusted Production OAuth 2.1 IdP supplies real issuer/audience/scopes.
+> - After real OAuth exists, final certification is limited to protected-resource metadata, `server/discover`, `tools/list`, unauthenticated fail-closed, required safe tools including `audit_course` and `plan_quiz_question_update`, and proof that approve/apply/publish/delete/merge/deploy are absent; then prove a real external ChatGPT MCP connection.
+> - Issue #386 stays OPEN until that live/external proof passes or the owner explicitly re-scopes it.
+> - Older checkpoints below are historical/non-authoritative where they conflict with this block.
+
+
 > **Production boundary update — 2026-10-07**
 > - PR #429 merged at `79d96b2cd0b0834769f2e927c73f6552c2216f24`; Vercel READY and Render LIVE on the exact SHA.
 > - When MCP is intentionally disabled because trusted OAuth is not configured, automatic production CI must prove 404/fail-closed and record `fullExternalProof=false`; this is not external certification.
