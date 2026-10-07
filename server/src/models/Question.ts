@@ -14,6 +14,8 @@ const questionAiContextSchema = new Schema(
     speechText: { type: String, default: "", trim: true },
     visualDescription: { type: String, default: "", trim: true },
     optionTexts: { type: [String], default: [] },
+    optionTextsSource: { type: String, default: "", trim: true },
+    optionTextsVerified: { type: Boolean, default: false },
     mathExpressions: { type: [questionMathExpressionSchema], default: [] },
     concepts: { type: [String], default: [] },
     requiredData: { type: [String], default: [] },
