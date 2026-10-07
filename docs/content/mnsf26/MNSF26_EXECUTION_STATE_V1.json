@@ -23,10 +23,10 @@
     {
       "name": "mapping",
       "status": "IN_PROGRESS",
-      "done": 689,
+      "done": 728,
       "total": 2135,
       "rule": "QUESTION_MATH_REQUIRED; source label preserved; no group-title auto approval",
-      "reviewHold": 67,
+      "reviewHold": 68,
       "evidence": [
         "Ready130 audit candidate-pass 74",
         "Adjudication batch001 added 17 question-level approvals",
@@ -37,7 +37,7 @@
     {
       "name": "enrichment",
       "status": "IN_PROGRESS_LEGACY_SUBSET",
-      "done": 689,
+      "done": 728,
       "total": 2135,
       "rule": "answer+solution+educationalExplanation+difficulty+difficultyReason+fingerprints",
       "mappingApprovedWithinReady": 129
@@ -117,15 +117,16 @@
     "MNSF26-AR-T041-Q06 HOLD المعطيات تعطي80 جنيهًا بينما الخيارات 240/360/640/720؛ تعارض مصدر.",
     "MNSF26-AR-T041-Q12 HOLD السنة تحوي52 أسبوعًا عادة فينتج36400، بينما الخيارات تعكس50 أسبوعًا دون تحديد عطلة؛ يلزم توضيح فرضية عدد الأسابيع.",
     "MNSF26-AR-T042-Q09 HOLD اتجاه التحويل من الأقل إلى الأكثر يجعل التساوي مستحيلًا وفق النسبة المكتوبة؛ مصدر يحتاج مراجعة.",
-    "MNSF26-AR-T042-Q13 HOLD حساب السعة لا يعطي أي خيار ظاهر (30/32/36/42)، وتفسير وجود الأطفال في الحالة الأولى ملتبس."
+    "MNSF26-AR-T042-Q13 HOLD حساب السعة لا يعطي أي خيار ظاهر (30/32/36/42)، وتفسير وجود الأطفال في الحالة الأولى ملتبس.",
+    "MNSF26-AR-T045-Q01 HOLD (derived 3/10 absent from visible options)"
   ],
   "nextCursor": {
     "stage": "QUESTION_MASTERING",
     "strategy": "ONE_PASS_VISUAL_MATH",
     "priority": [
-      "arithmetic T44 onward",
-      "persist any remaining prior uncounted T18 payload only with complete records",
-      "retain all documented holds fail-closed"
+      "arithmetic T46 onward",
+      "AR-T045-Q01 HOLD answer-options mismatch",
+      "preserve previous holds and quarantines"
     ]
   },
   "antiLoopRules": [
@@ -139,24 +140,14 @@
     "A question is processed once into a complete master payload; QA validates it rather than recreating it"
   ],
   "lastCompletedBatch": {
-    "name": "RUN049_RECOVER_RUN048_AR_T31_T43",
-    "completeMasterRecords": 219,
-    "holds": 19,
-    "questionsProcessed": 238,
-    "effectiveMasteredComplete": 689,
+    "name": "RUN050_AR_T44_T45",
+    "completeMasterRecords": 39,
+    "holds": 1,
+    "questionsProcessed": 40,
+    "effectiveMasteredComplete": 728,
     "evidenceGitHubPaths": [
-      "docs/content/mnsf26/MNSF26_QUESTION_MASTERING_RUN049_AR_T31_RECONCILED_V1.json",
-      "docs/content/mnsf26/MNSF26_QUESTION_MASTERING_RUN049_AR_T32_RECONCILED_V1.json",
-      "docs/content/mnsf26/MNSF26_QUESTION_MASTERING_RUN049_AR_T34_RECONCILED_V1.json",
-      "docs/content/mnsf26/MNSF26_QUESTION_MASTERING_RUN049_AR_T35_RECONCILED_V1.json",
-      "docs/content/mnsf26/MNSF26_QUESTION_MASTERING_RUN049_AR_T36_RECONCILED_V1.json",
-      "docs/content/mnsf26/MNSF26_QUESTION_MASTERING_RUN049_AR_T37_RECONCILED_V1.json",
-      "docs/content/mnsf26/MNSF26_QUESTION_MASTERING_RUN049_AR_T38_RECONCILED_V1.json",
-      "docs/content/mnsf26/MNSF26_QUESTION_MASTERING_RUN049_AR_T39_RECONCILED_V1.json",
-      "docs/content/mnsf26/MNSF26_QUESTION_MASTERING_RUN049_AR_T40_RECONCILED_V1.json",
-      "docs/content/mnsf26/MNSF26_QUESTION_MASTERING_RUN049_AR_T41_RECONCILED_V1.json",
-      "docs/content/mnsf26/MNSF26_QUESTION_MASTERING_RUN049_AR_T42_RECONCILED_V1.json",
-      "docs/content/mnsf26/MNSF26_QUESTION_MASTERING_RUN049_AR_T43_RECONCILED_V1.json"
+      "docs/content/mnsf26/MNSF26_QUESTION_MASTERING_RUN050_AR_T44_V1.json",
+      "docs/content/mnsf26/MNSF26_QUESTION_MASTERING_RUN050_AR_T45_V1.json"
     ]
   },
   "executionContract": "docs/content/mnsf26/MNSF26_LOCKED_PIPELINE_V1.json",
@@ -164,7 +155,7 @@
     "order": 2,
     "name": "QUESTION_MASTERING",
     "status": "IN_PROGRESS",
-    "done": 689,
+    "done": 728,
     "total": 2135,
     "mode": "ONE_PASS_PER_QUESTION",
     "requiredPayload": [
@@ -181,7 +172,7 @@
       "ideaFingerprint"
     ],
     "gate": "No question advances without complete payload or explicit HOLD/REVIEW.",
-    "masteredComplete": 689
+    "masteredComplete": 728
   },
   "reconciliationRun049": {
     "source": "Library /MNSF26/Run048 full JSON records, validated unique sourceKeys and required fields, persisted to GitHub complete test files",
