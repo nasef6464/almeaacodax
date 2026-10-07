@@ -23,10 +23,10 @@
     {
       "name": "mapping",
       "status": "IN_PROGRESS",
-      "done": 146,
+      "done": 211,
       "total": 2135,
       "rule": "QUESTION_MATH_REQUIRED; source label preserved; no group-title auto approval",
-      "reviewHold": 2,
+      "reviewHold": 13,
       "evidence": [
         "Ready130 audit candidate-pass 74",
         "Adjudication batch001 added 17 question-level approvals",
@@ -37,7 +37,7 @@
     {
       "name": "enrichment",
       "status": "IN_PROGRESS_LEGACY_SUBSET",
-      "done": 130,
+      "done": 211,
       "total": 2135,
       "rule": "answer+solution+educationalExplanation+difficulty+difficultyReason+fingerprints",
       "mappingApprovedWithinReady": 129
@@ -76,16 +76,23 @@
     "P001/Q10 HOLD",
     "P013/Q15 HOLD",
     "P014/Q08 QUARANTINE",
-    "MNSF26-GEO-T022-Q04 HOLD (prior sub_quant_19_3 retracted after direct crop inspection)"
+    "MNSF26-GEO-T022-Q04 HOLD (prior sub_quant_19_3 retracted after direct crop inspection)",
+    "MNSF26-AR-T012-Q01 HOLD",
+    "MNSF26-AR-T012-Q07 HOLD",
+    "MNSF26-AR-T012-Q08 HOLD",
+    "MNSF26-AR-T012-Q14 HOLD taxonomy gap",
+    "MNSF26-AR-T013-Q13 HOLD taxonomy gap",
+    "MNSF26-AR-T014-Q09 HOLD source/remainder ambiguity",
+    "MNSF26-AR-T014-Q13 HOLD non-unique answer",
+    "MNSF26-AR-T014-Q20 HOLD taxonomy gap"
   ],
   "nextCursor": {
     "stage": "QUESTION_MASTERING",
     "strategy": "ONE_PASS_VISUAL_MATH",
     "priority": [
-      "finish T22 unresolved questions with complete master payload or HOLD",
-      "T23 complete master payload",
-      "arithmetic T12-T14 59 complete master records",
-      "continue source order"
+      "arithmetic T15-T18 complete master records",
+      "continue arithmetic source order",
+      "retain all documented holds fail-closed"
     ]
   },
   "antiLoopRules": [
@@ -99,19 +106,24 @@
     "A question is processed once into a complete master payload; QA validates it rather than recreating it"
   ],
   "lastCompletedBatch": {
-    "name": "QUESTION_MASTERING_RUN027_GEO_T22_B",
-    "completeMasterRecords": 5,
-    "review": 2,
-    "effectiveMapping": 146,
-    "effectiveMasteredComplete": 144,
-    "evidenceFile": "docs/content/mnsf26/MNSF26_RUN027_STATE_DELTA.json"
+    "name": "RUN030_RUN032_AR_T12_T14",
+    "completeMasterRecords": 51,
+    "holds": 8,
+    "effectiveMapping": 211,
+    "effectiveMasteredComplete": 211,
+    "evidenceLibraryPaths": [
+      "/MNSF26/Run030/MNSF26_QUESTION_MASTERING_RUN030_AR_T12_V1.json",
+      "/MNSF26/Run031/MNSF26_QUESTION_MASTERING_RUN031_AR_T13_V1.json",
+      "/MNSF26/Run031/MNSF26_QUESTION_MASTERING_RUN032_AR_T14_V1.json"
+    ],
+    "note": "Includes unreconciled Run028/029 delta. T12-T14 all 59 Run017 crops inspected directly; 51 mastered, 8 HOLD; no source-group auto approval."
   },
   "executionContract": "docs/content/mnsf26/MNSF26_LOCKED_PIPELINE_V1.json",
   "activeStage": {
     "order": 2,
     "name": "QUESTION_MASTERING",
     "status": "IN_PROGRESS",
-    "done": 146,
+    "done": 211,
     "total": 2135,
     "mode": "ONE_PASS_PER_QUESTION",
     "requiredPayload": [
@@ -128,6 +140,6 @@
       "ideaFingerprint"
     ],
     "gate": "No question advances without complete payload or explicit HOLD/REVIEW.",
-    "masteredComplete": 144
+    "masteredComplete": 211
   }
 }
