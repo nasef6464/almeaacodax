@@ -1,0 +1,79 @@
+{
+  "project": "TAH-MATH",
+  "bank": "YLM26",
+  "scope": "foundation lessons 1-8 / printed pages 5-23",
+  "source": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+  "method": "Cross-check database correctOptionIndex against source answer-key sequences printed at the end of each lesson. Source keys are read in the displayed descending question-number order. No production mutation.",
+  "reviewedQuestions": 75,
+  "exactAnswerMatches": 74,
+  "discrepancies": 1,
+  "lessonResults": [
+    {
+      "lesson": 1,
+      "questions": 7,
+      "status": "PASS",
+      "matches": 7
+    },
+    {
+      "lesson": 2,
+      "questions": 8,
+      "status": "PASS",
+      "matches": 8
+    },
+    {
+      "lesson": 3,
+      "questions": 9,
+      "status": "PASS",
+      "matches": 9
+    },
+    {
+      "lesson": 4,
+      "questions": 12,
+      "status": "PASS",
+      "matches": 12
+    },
+    {
+      "lesson": 5,
+      "questions": 11,
+      "status": "PASS",
+      "matches": 11
+    },
+    {
+      "lesson": 6,
+      "questions": 6,
+      "status": "PASS",
+      "matches": 6
+    },
+    {
+      "lesson": 7,
+      "questions": 8,
+      "status": "PASS",
+      "matches": 8
+    },
+    {
+      "lesson": 8,
+      "questions": 14,
+      "status": "REVIEW",
+      "matches": 13,
+      "discrepancy": {
+        "questionCode": "TAH-MATH-YLM26-P021-Q04",
+        "databaseCorrectOptionIndex": 2,
+        "databaseAnswerLetter": "C",
+        "parsedSourceKeyCandidate": "B",
+        "decision": "REVIEW_VISUAL_CONFIRMATION_REQUIRED",
+        "note": "Do not mutate from parsed text alone. Confirm the printed key visually before any answer correction."
+      }
+    }
+  ],
+  "evidenceNotes": [
+    "Lesson 1 key (q7..q1): B C D B B A A; database q1..q7 = A A B B D C B.",
+    "Lesson 2 key (q8..q1): D A C C A C C B; database matches when reversed.",
+    "Lesson 3 key (q9..q1): D C A A D D D A A; database matches when reversed.",
+    "Lesson 4 key (q12..q1): C C D A C D A D C A D D; database matches when reversed.",
+    "Lesson 5 key (q11..q1): A B B A D A C D B D C; database matches when reversed.",
+    "Lesson 6 key (q6..q1): A B A A B B; database matches when reversed.",
+    "Lesson 7 key (q8..q1): A B C A C A A B; database matches when reversed.",
+    "Lesson 8 parsed key (q14..q1): D B A D A B C B B B B C A C; one candidate mismatch at q4."
+  ],
+  "sourceCitation": "Library file: كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf"
+}
