@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "bank": "MNSF26",
   "baselineHead": "b9693bf3036656a13094c7cbd5fc5f6fa958cfad",
   "scope": "Full-book Run017 arithmetic + Run021 geometry crop manifests",
@@ -46,7 +46,7 @@
     "المجسمات": 60
   },
   "gates": {
-    "canonicalMapping": "PENDING_QUESTION_MATH",
+    "canonicalMapping": "QUESTION_LEVEL_REQUIRED_RUN024",
     "contentIdeaFingerprint": "PENDING_FULLBOOK_ENRICHMENT",
     "crossBankDedupe": "PENDING_AFTER_CONTENT_FINGERPRINT",
     "r2": "FAIL_CLOSED_UNTIL_MAPPING_DEDUPE",
@@ -65,5 +65,32 @@
       "reason": "SOURCE_ABSENT"
     }
   ],
-  "finding": "Exact crop hashes already expose 43 within-MNSF26 duplicate groups / 45 extra occurrences before semantic fingerprinting. These are candidates, not automatic suppressions; semantic/source review remains required."
+  "finding": "Exact crop hashes already expose 43 within-MNSF26 duplicate groups / 45 extra occurrences before semantic fingerprinting. These are candidates, not automatic suppressions; semantic/source review remains required.",
+  "progress": {
+    "crop": {
+      "complete": 2135,
+      "total": 2135
+    },
+    "mapping": {
+      "approved": 0,
+      "total": 2135,
+      "policy": "QUESTION_LEVEL_MATH_REQUIRED"
+    },
+    "enrichment": {
+      "legacyReady": 130,
+      "total": 2135
+    },
+    "dedupe": {
+      "legacyScanned": 130,
+      "total": 2135
+    },
+    "r2": {
+      "status": "BLOCKED_BY_MAPPING_ENRICHMENT_DEDUPE"
+    }
+  },
+  "run024": {
+    "unsafeGroupMappingsRetracted": 96,
+    "reason": "Visual audit proved mixed mathematics inside source-labelled groups",
+    "candidateMapCorrected": true
+  }
 }
