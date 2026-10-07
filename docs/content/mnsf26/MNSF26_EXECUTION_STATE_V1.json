@@ -78,11 +78,11 @@
     "P014/Q08 QUARANTINE"
   ],
   "nextCursor": {
-    "stage": "mapping",
-    "strategy": "QUESTION_LEVEL_VISUAL_MATH",
+    "stage": "QUESTION_MASTERING",
+    "strategy": "ONE_PASS_VISUAL_MATH",
     "priority": [
-      "geometry T22-T23 remaining 31 visual decisions",
-      "arithmetic T12-T14 59 visual review",
+      "geometry T22-T23 remaining 31 complete master records",
+      "arithmetic T12-T14 59 complete master records",
       "continue source order",
       "retain P001/Q12 fail-closed until stronger evidence"
     ]
@@ -92,7 +92,10 @@
     "Do not use source-group title as exact subskill proof",
     "Do not rerun legacy 130-only verifier as closure evidence",
     "On ambiguous question: HOLD and continue",
-    "Checkpoint commits are not stop points"
+    "Checkpoint commits are not stop points",
+    "Stage order is immutable: CROP_LOCK → QUESTION_MASTERING → QA_LOCK → DEDUPE_LOCK → R2_UPLOAD_LOCK → IMPORT_LOCK → PRODUCTION_E2E_LOCK",
+    "Do not upload to R2 or import while QUESTION_MASTERING is open",
+    "A question is processed once into a complete master payload; QA validates it rather than recreating it"
   ],
   "lastCompletedBatch": {
     "name": "GEOMETRY_T22_T23_EVIDENCED_MAPPING_BATCH_003",
@@ -100,5 +103,28 @@
     "reviewHold": 1,
     "headBeforeBatch": "c18f0775c2223953aafbb8cb28c0d8ea67c8ff21",
     "geometryQuestionsApprovedThisBatch": 6
+  },
+  "executionContract": "docs/content/mnsf26/MNSF26_LOCKED_PIPELINE_V1.json",
+  "activeStage": {
+    "order": 2,
+    "name": "QUESTION_MASTERING",
+    "status": "IN_PROGRESS",
+    "done": 135,
+    "total": 2135,
+    "mode": "ONE_PASS_PER_QUESTION",
+    "requiredPayload": [
+      "sourceProvenance",
+      "canonicalMainSkill",
+      "canonicalSubskill",
+      "correctAnswer",
+      "stepByStepSolution",
+      "educationalExplanation",
+      "difficulty",
+      "difficultyReason",
+      "imageHash",
+      "contentFingerprint",
+      "ideaFingerprint"
+    ],
+    "gate": "No question advances without complete payload or explicit HOLD/REVIEW."
   }
 }
