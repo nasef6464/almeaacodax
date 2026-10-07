@@ -27,10 +27,12 @@ const check = (name, fn) => {
   catch (error) { checks.push({ name, status: 'FAIL', details: error instanceof Error ? error.message : String(error) }); }
 };
 
-check('1 result evidence uses exact canonical main/subskill fields', () => {
+check('1 result evidence preserves canonical main skill and every linked subskill', () => {
   assert.ok(files.readModel.includes('question?.skillId'));
   assert.ok(files.readModel.includes('question?.subSkillId'));
-  assert.ok(files.readModel.includes('canonical.length > 0'));
+  assert.ok(files.readModel.includes('question?.subSkillIds'));
+  assert.ok(files.readModel.includes('question?.skillIds'));
+  assert.ok(!files.readModel.includes('canonical.length > 0'));
 });
 
 check('2 SkillProgress persists and reads canonical hierarchy', () => {
