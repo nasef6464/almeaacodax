@@ -6,6 +6,7 @@ const STUDENT_PASSWORD = process.env.SMOKE_STUDENT_PASSWORD || "";
 const QUESTION_ID = "VERBAL26-ANAS-P005-Q001";
 const EXPECTED_SKILL_ID = "skill_verbal_17";
 const EXPECTED_SUBSKILL_ID = "sub_verbal_11_2";
+const EXPECTED_SUBSKILL_NAME = "تحديد الكلمة الخاطئة";
 const EXPECTED_CORRECT_INDEX = 3;
 const QUIZ_ID = `verbal26-cert-${Date.now()}`;
 
@@ -87,6 +88,11 @@ try {
   assert(verbalSections.length === 22, `taxonomy sections mismatch: ${verbalSections.length}/22`);
   assert(verbalSkills.length === 22, `taxonomy main skill records mismatch: ${verbalSkills.length}/22`);
   assert(verbalSubSkillCount === 76, `taxonomy subskills mismatch: ${verbalSubSkillCount}/76`);
+  const expectedSubSkill = verbalSkills.flatMap((item) => Array.isArray(item?.subSkills) ? item.subSkills : [])
+    .find((item) => String(item?.id || "") === EXPECTED_SUBSKILL_ID);
+  assert(expectedSubSkill, `taxonomy missing expected subskill: ${EXPECTED_SUBSKILL_ID}`);
+  assert(String(expectedSubSkill.name || "").trim() === EXPECTED_SUBSKILL_NAME,
+    `taxonomy subskill name mismatch: ${expectedSubSkill?.name || "<blank>"}`);
 
   const coverageResponse = await req("/quizzes/questions?subject=sub_1777779759038&skillLinkStatus=linked&limit=1&page=1&summary=true&noTotal=true&includeCoverage=true&paginate=true", { token: admin.token });
   const coverage = coverageResponse.body?.coverage || {};
@@ -154,6 +160,7 @@ try {
     score: submission.body?.score,
     mainSkillId: EXPECTED_SKILL_ID,
     subSkillId: EXPECTED_SUBSKILL_ID,
+    subSkillName: EXPECTED_SUBSKILL_NAME,
     taxonomy: { mainSkills: 22, subSkills: 76, usedSubSkills: 50, questions: 1050 },
     checks: ["taxonomy-ui-lineage","question-bank-coverage","question","answer","result","review","retry-guard","results-history","same-attempt-skill-analysis"],
   }, null, 2));
