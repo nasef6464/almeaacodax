@@ -1,0 +1,256 @@
+{
+  "project": "TAH-MATH",
+  "status": "IN_PROGRESS",
+  "sourceAuthority": "Yellow 2026 foundation + collections modified editions",
+  "logicalPool": "TAH-MATH",
+  "banks": [
+    {
+      "documentCode": "YLM26",
+      "role": "foundation",
+      "section": null,
+      "baselineCount": 326
+    },
+    {
+      "documentCode": "COL26",
+      "role": "collections",
+      "section": 1,
+      "baselineCount": 1012
+    },
+    {
+      "documentCode": "COL26OLD",
+      "role": "collections",
+      "section": 2,
+      "sourceInventory": 1258,
+      "canonicalRecords": 1257,
+      "aliases": 1
+    }
+  ],
+  "lessons": [
+    {
+      "lessonNumber": 1,
+      "title": "التبرير والبرهان",
+      "foundationStartPage": 5,
+      "collectionsStartPage": 5
+    },
+    {
+      "lessonNumber": 2,
+      "title": "المسلمات والعلاقات الهندسية",
+      "foundationStartPage": 7,
+      "collectionsStartPage": 8
+    },
+    {
+      "lessonNumber": 3,
+      "title": "المستقيم",
+      "foundationStartPage": 9,
+      "collectionsStartPage": 13
+    },
+    {
+      "lessonNumber": 4,
+      "title": "المثلث",
+      "foundationStartPage": 11,
+      "collectionsStartPage": 17
+    },
+    {
+      "lessonNumber": 5,
+      "title": "المضلعات والأشكال الرباعية",
+      "foundationStartPage": 14,
+      "collectionsStartPage": 24
+    },
+    {
+      "lessonNumber": 6,
+      "title": "التشابه",
+      "foundationStartPage": 17,
+      "collectionsStartPage": 30
+    },
+    {
+      "lessonNumber": 7,
+      "title": "التحويلات الهندسية",
+      "foundationStartPage": 19,
+      "collectionsStartPage": 33
+    },
+    {
+      "lessonNumber": 8,
+      "title": "الدائرة",
+      "foundationStartPage": 21,
+      "collectionsStartPage": 36
+    },
+    {
+      "lessonNumber": 9,
+      "title": "الأعداد الحقيقية والدوال",
+      "foundationStartPage": 25,
+      "collectionsStartPage": 42
+    },
+    {
+      "lessonNumber": 10,
+      "title": "دوال خاصة",
+      "foundationStartPage": 27,
+      "collectionsStartPage": 46
+    },
+    {
+      "lessonNumber": 11,
+      "title": "المتباينات",
+      "foundationStartPage": 29,
+      "collectionsStartPage": 49
+    },
+    {
+      "lessonNumber": 12,
+      "title": "المصفوفات",
+      "foundationStartPage": 30,
+      "collectionsStartPage": 52
+    },
+    {
+      "lessonNumber": 13,
+      "title": "الأعداد المركبة والمعادلة التربيعية",
+      "foundationStartPage": 32,
+      "collectionsStartPage": 57
+    },
+    {
+      "lessonNumber": 14,
+      "title": "كثيرات الحدود",
+      "foundationStartPage": 34,
+      "collectionsStartPage": 60
+    },
+    {
+      "lessonNumber": 15,
+      "title": "العمليات على الدوال",
+      "foundationStartPage": 38,
+      "collectionsStartPage": 66
+    },
+    {
+      "lessonNumber": 16,
+      "title": "الدالة الجذرية",
+      "foundationStartPage": 39,
+      "collectionsStartPage": 69
+    },
+    {
+      "lessonNumber": 17,
+      "title": "العلاقات والدوال النسبية",
+      "foundationStartPage": 40,
+      "collectionsStartPage": 72
+    },
+    {
+      "lessonNumber": 18,
+      "title": "المتتابعات والمتسلسلات",
+      "foundationStartPage": 42,
+      "collectionsStartPage": 77
+    },
+    {
+      "lessonNumber": 19,
+      "title": "نظرية ذات الحدين",
+      "foundationStartPage": 45,
+      "collectionsStartPage": 82
+    },
+    {
+      "lessonNumber": 20,
+      "title": "الاحتمالات",
+      "foundationStartPage": 46,
+      "collectionsStartPage": 84
+    },
+    {
+      "lessonNumber": 21,
+      "title": "حسابات المثلثات",
+      "foundationStartPage": 50,
+      "collectionsStartPage": 90
+    },
+    {
+      "lessonNumber": 22,
+      "title": "تحليل الدوال",
+      "foundationStartPage": 55,
+      "collectionsStartPage": 98
+    },
+    {
+      "lessonNumber": 23,
+      "title": "الدوال الأسية واللوغاريتمية",
+      "foundationStartPage": 64,
+      "collectionsStartPage": 111
+    },
+    {
+      "lessonNumber": 24,
+      "title": "المتطابقات المثلثية",
+      "foundationStartPage": 68,
+      "collectionsStartPage": 119
+    },
+    {
+      "lessonNumber": 25,
+      "title": "القطوع",
+      "foundationStartPage": 72,
+      "collectionsStartPage": 124
+    },
+    {
+      "lessonNumber": 26,
+      "title": "المتجهات",
+      "foundationStartPage": 77,
+      "collectionsStartPage": 131
+    },
+    {
+      "lessonNumber": 27,
+      "title": "الإحداثيات القطبية والديكارتية",
+      "foundationStartPage": 81,
+      "collectionsStartPage": 138
+    },
+    {
+      "lessonNumber": 28,
+      "title": "الإحصاء",
+      "foundationStartPage": 85,
+      "collectionsStartPage": 143
+    },
+    {
+      "lessonNumber": 29,
+      "title": "النهايات",
+      "foundationStartPage": 89,
+      "collectionsStartPage": 148
+    },
+    {
+      "lessonNumber": 30,
+      "title": "الاشتقاق والتكامل",
+      "foundationStartPage": 92,
+      "collectionsStartPage": 153
+    },
+    {
+      "lessonNumber": 31,
+      "title": "إثراء",
+      "foundationStartPage": 95,
+      "collectionsStartPage": null
+    }
+  ],
+  "mappingDecisionStates": [
+    "KEEP",
+    "REMAP",
+    "MULTI_SKILL",
+    "REVIEW"
+  ],
+  "classificationAuthority": [
+    "source_lesson",
+    "source_idea_heading",
+    "question_required_math",
+    "existing_tahsili_taxonomy",
+    "existing_mapping_candidate"
+  ],
+  "closureGates": {
+    "ylm26": [
+      "source",
+      "answer",
+      "visual",
+      "skill"
+    ],
+    "col26": [
+      "source",
+      "answer",
+      "visual",
+      "skill",
+      "parentChildIntegrity"
+    ],
+    "col26old": [
+      "regression",
+      "source",
+      "answer",
+      "skill"
+    ],
+    "global": [
+      "dedupe",
+      "coverage",
+      "trainingRebuild",
+      "studentE2E"
+    ]
+  }
+}
