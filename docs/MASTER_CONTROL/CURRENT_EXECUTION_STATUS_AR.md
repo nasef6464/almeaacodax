@@ -98,7 +98,13 @@ Git HEAD always overrides this historical baseline.
   - PR #437: **29 main topics / 98 subtopics**, subskill foundation drills, main-skill training, first five free, and **71** standard all-bank tests.
   - PR #439: **49** main-skill training drills after split policy for high-volume skills.
   - 71 standard tests consume all **2,832** approved questions exactly once (**63×40 + 8×39 = 2,832**).
-- BIO26 closure-certified application SHA: `2885b2b30eff2f959fdad3a0c098a2bd461f1b73`.
+- Runtime restart audit exposed two bootstrap defects after closure: wrong learning batch id + non-constructive five-test coverage allocation.
+- PR #445 fixed both defects and merged as `54f20dfa7524a212d18bc7bf316fded4b0bb82e6`; exact-head Safety/Backend/Deep E2E all PASS.
+- Production restart proof after #445: `BIO26_STANDARD_TESTS_NOOP tests=71 uniqueQuestionRefs=2832 reserveQuestions=0 freeTests=5` and `BIO26_LEARNING_STRUCTURE_PASS`.
+- A later unrelated production restart also returned `BIO26_STANDARD_TESTS_NOOP` + `BIO26_LEARNING_STRUCTURE_NOOP`, proving idempotent stability.
+- Atlas runtime audit: **71/71 approved+published+visible**, **63×40 + 8×39**, **2,832 unique refs / 0 duplicates**, tests 01–05 free, tests 06–71 package, every 5-test tranche 1–14 covers **29/29** main skills.
+- Learning runtime audit: **147/147 approved+published** = **98 foundation + 49 main-skill training**; 84 foundation drills have 10 source questions and 14 use all unique source questions available (<10) rather than inventing unsupported items.
+- BIO26 closure-certified restart-stable application SHA: `54f20dfa7524a212d18bc7bf316fded4b0bb82e6`.
 - Closure-record PR #442 merged as `1bdc0ce150ff018745a37b7461a5b419c986f410`; Render deployed that docs-only merge LIVE with no BIO26 code/data change.
 - **BIO26 CLOSED ✅** — no remaining production-import, integrity, Live E2E, approval, or post-approval gate.
 
