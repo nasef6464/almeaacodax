@@ -170,11 +170,10 @@
   ],
   "nextCursor": {
     "stage": "QA_LOCK",
-    "strategy": "INDEPENDENT_VISUAL_SEMANTIC_QA",
     "priority": [
-      "Reconcile Run063 39 Library-only full records to GitHub by approved writes; no duplicate sourceKeys",
-      "Continue 2029 independent visual semantic checks from actual Run017/Run021 crops, preserving 2 Run064 REVIEW overrides",
-      "Only after QA PASS_LOCKED enter DEDUPE_LOCK; no R2 or production before gates"
+      "279 visually screened GEO questions awaiting independent math/answer/skill review",
+      "1411 remaining active questions outside Run066 screening",
+      "7 Run063 Library-only records pending GitHub sync"
     ]
   },
   "antiLoopRules": [
@@ -188,28 +187,29 @@
     "A question is processed once into a complete master payload; QA validates it rather than recreating it"
   ],
   "lastCompletedBatch": {
-    "name": "RUN064_QA_INDEPENDENT_VISUAL_100",
-    "visualInspectedNew": 0,
-    "qaVisualReviewed": 100,
-    "qaPass": 86,
-    "qaHoldPreserved": 12,
-    "qaNewReview": 2,
-    "libraryMasteringActivePayloads": 2129,
-    "githubPendingSync": 39,
-    "stage": "QA_LOCK"
+    "name": "RUN066_QA_GEO",
+    "qaVisualScreenedNewUnique": 403,
+    "qaIndependentlyAdjudicatedNew": 124,
+    "qaPassNew": 50,
+    "qaHoldNew": 74,
+    "qaPendingDeepMath": 279,
+    "sourceImageSHAverified": 420,
+    "evidence": "MNSF26_RUN066_GEO_SOURCEKEY_VERDICTS_V1.json"
   },
   "executionContract": "docs/content/mnsf26/MNSF26_LOCKED_PIPELINE_V1.json",
   "activeStage": {
     "order": 3,
     "name": "QA_LOCK",
     "status": "IN_PROGRESS",
-    "reviewed": 100,
+    "reviewed": 439,
     "totalActive": 2129,
-    "remaining": 2029,
-    "qaPass": 86,
-    "holdPreserved": 12,
+    "remaining": 1690,
+    "qaPass": 329,
+    "holdPreserved": 105,
     "newReview": 2,
-    "gate": "Independent full-book semantic question↔answer↔solution↔skill QA before DEDUPE_LOCK"
+    "gate": "Independent full-book semantic question↔answer↔solution↔skill QA before DEDUPE_LOCK",
+    "correctedMasterRecords": 3,
+    "screenedPendingDeepMath": 279
   },
   "reconciliationRun049": {
     "source": "Library /MNSF26/Run048 full JSON records, validated unique sourceKeys and required fields, persisted to GitHub complete test files",
@@ -500,5 +500,13 @@
     "githubPendingRun063": 39,
     "qaLock": "IN_PROGRESS",
     "productionUntouched": true
+  },
+  "reconciliationRun066": {
+    "qaNewVisualScreened": 403,
+    "qaNewIndependent": 124,
+    "qaReviewedTotal": 439,
+    "qaRemaining": 1690,
+    "qaFullBookPass": false,
+    "evidence": "MNSF26_RUN066_GEO_SOURCEKEY_VERDICTS_V1.json"
   }
 }
