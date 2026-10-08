@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN060_AR_T15_LIBRARY_PAYLOAD_RECOVERY",
+  "previouslyCounted": true,
+  "records": [
+    {
+      "id": "MNSF26-AR-T015-Q02",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T015",
+        "sourceLesson": "جمع الأعداد - المتتابعات - ضرب الأعداد"
+      },
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_3",
+      "correctAnswer": "ج",
+      "answerValue": "37",
+      "stepByStepSolution": "الصف العلوي 10،9،8،7،6... والسفلي يتبع ن²+1: 10²+1=101، 9²+1=82، 8²+1=65، 7²+1=50؛ عند ن=6 تكون س=36+1=37.",
+      "educationalExplanation": "نستنتج قاعدة النمط من أزواج القيم ثم نطبقها.",
+      "difficulty": "Medium",
+      "difficultyReason": "استنتاج قاعدة عددية من جدول.",
+      "imageHash": "91b5522d32943a30f0db530a4dcbdd30ea5fdeb2388e836d298b5649f51cd5a8",
+      "contentFingerprint": "56961b8e5f0fba32a402789f78aabfab7ed7208ab1199e5cc791e348b872b317",
+      "ideaFingerprint": "6e859d9cf9486defd73a78b995403a0697e00c481ad6b96e6ea06889560d9d9c",
+      "status": "MASTERED"
+    },
+    {
+      "id": "MNSF26-AR-T015-Q06",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T015",
+        "sourceLesson": "جمع الأعداد - المتتابعات - ضرب الأعداد"
+      },
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_3",
+      "correctAnswer": "أ",
+      "answerValue": "150",
+      "stepByStepSolution": "المتتابعة تحتوي 50 حدًا وكل حد يساوي3، فالمجموع=50×3=150.",
+      "educationalExplanation": "مجموع حدود متساوية = عدد الحدود × قيمة الحد.",
+      "difficulty": "Easy",
+      "difficultyReason": "تكرار ثابت مباشر.",
+      "imageHash": "6b90dfec712ad53e0ba25c21e32c390805311a7a1523b4fcf564724333065400",
+      "contentFingerprint": "ec92c6d55fe4a88b724619cf2e0758d7c6dda61377e86b899c6b2504faa959ed",
+      "ideaFingerprint": "3230f4591bc5ef005ca79a2489365409f803f270456bb374592e6d7271bd6186",
+      "status": "MASTERED"
+    },
+    {
+      "id": "MNSF26-AR-T015-Q08",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T015",
+        "sourceLesson": "جمع الأعداد - المتتابعات - ضرب الأعداد"
+      },
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_3",
+      "correctAnswer": "ج",
+      "answerValue": "6×7",
+      "stepByStepSolution": "1+2+3+4+5+6+6+5+4+3+2+1=2(1+2+3+4+5+6)=2×21=42=6×7.",
+      "educationalExplanation": "نجمع الطرفين المتناظرين أو نضاعف مجموع 1 إلى6.",
+      "difficulty": "Easy",
+      "difficultyReason": "تجميع متناظر.",
+      "imageHash": "65166e069f9429cfa85fbd15976e417347c7237ad6b1a3f61e5c2d2a8e2497cc",
+      "contentFingerprint": "35ef8820f211733949ce0b245be31558ad398463097989b41fab99c9191672d0",
+      "ideaFingerprint": "b4a176ae57011179ce61d1dd637283b7df6953e2a2cc1ba431674ece23588464",
+      "status": "MASTERED"
+    },
+    {
+      "id": "MNSF26-AR-T015-Q09",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T015",
+        "sourceLesson": "جمع الأعداد - المتتابعات - ضرب الأعداد"
+      },
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_3",
+      "correctAnswer": "ب",
+      "answerValue": "4501500",
+      "stepByStepSolution": "مجموع 1 إلى3000 =3000×3001÷2=4,501,500.",
+      "educationalExplanation": "نستخدم قانون مجموع الأعداد من1 إلى ن.",
+      "difficulty": "Easy",
+      "difficultyReason": "قانون مجموع متتابعة حسابية.",
+      "imageHash": "d7ffe322123da796d35e68862ade5a49cac2a42fb2e1f8a525a1b85bc6f52b1e",
+      "contentFingerprint": "dfe852912345bebe9404186007ca434ba90b7a89981576e8f65c1b699d2c7e7c",
+      "ideaFingerprint": "524f6b695f675241a39a85843ea8377250569c25a2547cb24c51ce7b88e3daa5",
+      "status": "MASTERED"
+    }
+  ]
+}
