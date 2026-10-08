@@ -1,0 +1,111 @@
+name: ALMEAA 30-Seat Smart Classroom Isolation
+
+on:
+  push:
+    branches:
+      - test/almeaa-isolated-20261008
+    paths:
+      - .github/workflows/almeaa-30-seat-classroom-test.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  classroom:
+    name: 30 synthetic participants + realtime + scoped reports
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    services:
+      mongodb:
+        image: mongo:7.0
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --quiet --eval 'db.adminCommand({ ping: 1 }).ok'"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 15
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 15
+    env:
+      NODE_ENV: test
+      CLIENT_URL: http://127.0.0.1:4173
+      CORS_ALLOWED_ORIGINS: http://127.0.0.1:4173
+      MONGODB_URI: mongodb://127.0.0.1:27017/almeaa_test_classroom_@@{{ github.run_id }}
+      REDIS_URL: redis://127.0.0.1:6379
+      REDIS_KEY_PREFIX: almeaa_ci_classroom_@@{{ github.run_id }}
+      RATE_LIMIT_REDIS_ENABLED: "true"
+      RATE_LIMIT_GLOBAL_LIMIT: "5000"
+      RATE_LIMIT_AUTH_LIMIT: "500"
+      RATE_LIMIT_SENSITIVE_LIMIT: "2000"
+      NOTIFICATION_QUEUE_ENABLED: "false"
+      GOOGLE_OAUTH_ENABLED: "false"
+      AI_PROVIDER: none
+      R2_UPLOAD_ENABLED: "false"
+      SMART_CLASSROOM_SCENARIO: 30-students
+      SMART_CLASSROOM_LOAD_STUDENTS: "28"
+
+    steps:
+      - name: Checkout isolated branch only
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Enforce synthetic localhost DB and generate ephemeral JWT secret
+        shell: bash
+        run: |
+          set -euo pipefail
+          node <<'NODE'
+          const assert = require('node:assert/strict');
+          const {randomBytes} = require('node:crypto');
+          const m = new URL(process.env.MONGODB_URI);
+          const r = new URL(process.env.REDIS_URL);
+          assert.equal(process.env.NODE_ENV, 'test');
+          assert.equal(m.hostname, '127.0.0.1');
+          assert.match(m.pathname, /^\/almeaa_test_classroom_[0-9]+$/);
+          assert.equal(r.hostname, '127.0.0.1');
+          assert.equal(process.env.R2_UPLOAD_ENABLED, 'false');
+          const value = randomBytes(48).toString('base64url');
+          console.log('::add-mask::'+value);
+          require('node:fs').appendFileSync(process.env.GITHUB_ENV, 'JWT_SECRET='+value+'\n');
+          NODE
+
+      - name: Install API and typecheck
+        run: |
+          npm --prefix server ci
+          npm --prefix server run check
+
+      - name: Live synthetic 30-student session lifecycle
+        timeout-minutes: 12
+        run: |
+          mkdir -p audit-artifacts/isolated-classroom
+          npm --prefix server run simulate:smart-classroom-hardening | tee audit-artifacts/isolated-classroom/30-student-lifecycle.log
+
+      - name: Realtime multi-teacher and school isolation
+        timeout-minutes: 5
+        run: npm --prefix server run verify:smart-classroom-realtime
+
+      - name: Revoked accounts and contracts deny classroom access
+        timeout-minutes: 5
+        run: npm --prefix server run verify:smart-classroom-active-auth
+
+      - name: Finalized classroom report cannot be overwritten
+        timeout-minutes: 5
+        run: npm --prefix server run verify:smart-classroom-report-immutability
+
+      - name: Save synthetic classroom evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: almeaa-30-seat-classroom-@@{{ github.run_id }}
+          path: audit-artifacts/isolated-classroom/
+          if-no-files-found: warn
+          retention-days: 7
