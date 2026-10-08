@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN051_AR_T51",
+  "directImageInspection": true,
+  "sourceCropArchive": "/MNSF26/Run017/mnsf26_arithmetic_crops_run017.zip",
+  "sourceInventory": "/MNSF26/Run017/MNSF26_FULLBOOK_CROP_INVENTORY_V1.json",
+  "masteredCount": 1,
+  "holdCount": 1,
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T051-Q01",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "testNumber": 51,
+        "pdfPage": 102,
+        "sourceSkillLabel": "الساعات",
+        "printedQuestionNumber": 1,
+        "cropFile": "AR/AR-T051-Q01.webp",
+        "cropSha256": "827612d381b31406e1fb9edd23fd4669269d80e004e9339911eed0480529f0b0",
+        "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
+      },
+      "imageHash": "827612d381b31406e1fb9edd23fd4669269d80e004e9339911eed0480529f0b0",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
+      "status": "MASTERED",
+      "questionText": "برنامج تلفزيوني يبدأ الثامنة صباحًا ويدوم سبع ساعات، وآخر يبدأ العاشرة صباحًا ويدوم خمس ساعات؛ متى ينتهيان معًا؟",
+      "canonicalMainSkill": "main_quant_14",
+      "canonicalSubskill": "sub_quant_14_2",
+      "correctAnswer": "3 مساءً",
+      "stepByStepSolution": "الأول8+7=15؛ الثاني10+5=15؛ كلاهما ينتهي الثالثة مساء.",
+      "educationalExplanation": "المهارة: تزامن نهاية برنامجين مختلفي البداية؛ نقرأ معطيات السؤال من الصورة ونطبّق العلاقة الحسابية ثم نراجع الناتج مع المطلوب.",
+      "difficulty": "Easy",
+      "difficultyReason": "خطوات مباشرة في تزامن نهاية برنامجين مختلفي البداية.",
+      "contentFingerprint": "6ff8a4a6f13fdcf79da5e93de3112369fa6f5d10be49b13dfcd9fa7031adf0f4",
+      "ideaFingerprint": "92691107c08762e9e88b28646145026290aa0fccf87b7e1b43ba165926b4849a"
+    },
+    {
+      "sourceKey": "MNSF26-AR-T051-Q02",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "testNumber": 51,
+        "pdfPage": 102,
+        "sourceSkillLabel": "الساعات",
+        "printedQuestionNumber": 2,
+        "cropFile": "AR/AR-T051-Q02.webp",
+        "cropSha256": "b5acbeda23b1caf0e664155498528414b78822decd491af56298f0395d1f659a",
+        "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
+      },
+      "imageHash": "b5acbeda23b1caf0e664155498528414b78822decd491af56298f0395d1f659a",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
+      "status": "HOLD",
+      "questionText": "طائرة تقلع من الرياض وتصل الهند مع فارق توقيت 3 ساعات؛ احسب مدة الرحلة.",
+      "holdReason": "فارق توقيت الهند والرياض وساعة إقلاع ووصول الطائرة يحتاج قراءة دقيقة؛ الحساب الأولي لا يطابق خيارات مدة الرحلة.",
+      "canonicalMainSkill": null,
+      "canonicalSubskill": null,
+      "correctAnswer": null,
+      "stepByStepSolution": null,
+      "educationalExplanation": null,
+      "difficulty": null,
+      "difficultyReason": null,
+      "contentFingerprint": "22296cb53c8f0f71bc0cd5648f6654b9a141c19e0451eabf251401ecd6382783",
+      "ideaFingerprint": "e29e14d0f9aec7b0ccb3c252fbc4b4431d5f44238c2a76e829e30c0b77ffde53"
+    }
+  ],
+  "part": "01A"
+}
