@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN051_AR_T51",
+  "directImageInspection": true,
+  "sourceCropArchive": "/MNSF26/Run017/mnsf26_arithmetic_crops_run017.zip",
+  "sourceInventory": "/MNSF26/Run017/MNSF26_FULLBOOK_CROP_INVENTORY_V1.json",
+  "masteredCount": 1,
+  "holdCount": 0,
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T051-Q19",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "testNumber": 51,
+        "pdfPage": 103,
+        "sourceSkillLabel": "الساعات",
+        "printedQuestionNumber": 19,
+        "cropFile": "AR/AR-T051-Q19.webp",
+        "cropSha256": "fe6cdc1c4d4f1bec3610637f2a8fb0e3213097ebf8b9d630454bbd532538ca09",
+        "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
+      },
+      "imageHash": "fe6cdc1c4d4f1bec3610637f2a8fb0e3213097ebf8b9d630454bbd532538ca09",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
+      "status": "MASTERED",
+      "questionText": "إذا قطع الأب دورة كاملة قطع الابن 4/5 دورة، والأب قطع ثلاث دورات طول الواحدة 400 متر؛ كم قطع الابن؟",
+      "canonicalMainSkill": "main_quant_08",
+      "canonicalSubskill": "sub_quant_08_2",
+      "correctAnswer": "960 مترًا",
+      "stepByStepSolution": "الأب3×400=1200 متر؛ الابن4/5×1200=960.",
+      "educationalExplanation": "المهارة: تناسب مسافة الابن والأب على مضمار؛ نقرأ معطيات السؤال من الصورة ونطبّق العلاقة الحسابية ثم نراجع الناتج مع المطلوب.",
+      "difficulty": "Easy",
+      "difficultyReason": "خطوات مباشرة في تناسب مسافة الابن والأب على مضمار.",
+      "contentFingerprint": "2e6f08fba20e8be77158e9d7dadd5e7e40b969347e905cda29f8c5ff0923c050",
+      "ideaFingerprint": "ae2b501d809b5bf31ea1de1eb7e2d461947c7f1e3f02e8c835455e13557ec20d"
+    }
+  ],
+  "part": "Q19"
+}
