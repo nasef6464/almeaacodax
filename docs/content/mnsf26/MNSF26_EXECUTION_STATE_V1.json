@@ -23,7 +23,7 @@
     {
       "name": "mapping",
       "status": "IN_PROGRESS",
-      "done": 1112,
+      "done": 1132,
       "total": 2135,
       "rule": "QUESTION_MATH_REQUIRED; source label preserved; no group-title auto approval",
       "reviewHold": 204,
@@ -37,7 +37,7 @@
     {
       "name": "enrichment",
       "status": "IN_PROGRESS_LEGACY_SUBSET",
-      "done": 1112,
+      "done": 1132,
       "total": 2135,
       "rule": "answer+solution+educationalExplanation+difficulty+difficultyReason+fingerprints",
       "mappingApprovedWithinReady": 129
@@ -129,8 +129,9 @@
     "stage": "QUESTION_MASTERING",
     "strategy": "ONE_PASS_VISUAL_MATH",
     "priority": [
-      "geometry T35 onward",
-      "reconcile Run052 state delta and Library-only records"
+      "geometry T36 onward",
+      "GEO T31/Q11-Q20 Library-only pending official GitHub write",
+      "AR T53/Q17,Q20 and T62/Q09-Q12 Library-only"
     ]
   },
   "antiLoopRules": [
@@ -144,18 +145,18 @@
     "A question is processed once into a complete master payload; QA validates it rather than recreating it"
   ],
   "lastCompletedBatch": {
-    "name": "RUN052_GEO_T31_T34",
-    "completeMasterRecords": 56,
+    "name": "RUN052_GEO_T31_PART01_T32_T33_T34_T35",
+    "completeMasterRecords": 76,
     "holds": 14,
-    "questionsProcessed": 70,
-    "effectiveMasteredComplete": 1112
+    "questionsProcessed": 90,
+    "effectiveMasteredComplete": 1132
   },
   "executionContract": "docs/content/mnsf26/MNSF26_LOCKED_PIPELINE_V1.json",
   "activeStage": {
     "order": 2,
     "name": "QUESTION_MASTERING",
     "status": "IN_PROGRESS",
-    "done": 1112,
+    "done": 1132,
     "total": 2135,
     "mode": "ONE_PASS_PER_QUESTION",
     "requiredPayload": [
@@ -172,7 +173,7 @@
       "ideaFingerprint"
     ],
     "gate": "No question advances without complete payload or explicit HOLD/REVIEW.",
-    "masteredComplete": 1112
+    "masteredComplete": 1132
   },
   "reconciliationRun049": {
     "source": "Library /MNSF26/Run048 full JSON records, validated unique sourceKeys and required fields, persisted to GitHub complete test files",
