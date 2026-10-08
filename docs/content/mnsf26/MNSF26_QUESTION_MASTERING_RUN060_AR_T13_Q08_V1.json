@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN060_AR_T13_RECOVERY",
+  "previouslyCounted": true,
+  "records": [
+    {
+      "id": "MNSF26-AR-T013-Q08",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T013",
+        "sourceLesson": "الأعداد الأولية - العوامل الأولى"
+      },
+      "canonicalMainSkill": "skill_quant_02",
+      "canonicalSubskill": "sub_quant_02_1",
+      "correctAnswer": "ج",
+      "answerValue": "16",
+      "stepByStepSolution": "أكبر عدد غرف يقسم 64 حاسبًا و48 طابعة بالتساوي هو ق.م.أ(64،48)=16.",
+      "educationalExplanation": "عدد المجموعات المتساوية الأقصى يساوي القاسم المشترك الأكبر.",
+      "difficulty": "Easy",
+      "difficultyReason": "ق.م.أ مباشر.",
+      "imageHash": "f796652f1ae19c52e7e8fc653fc00943349b1451e4babdf80db6ce929b1ef66a",
+      "contentFingerprint": "6148081e9627b0a5cdf7866e25c883194bef121b1e9039f7fe9e2cd0b700f92c",
+      "ideaFingerprint": "7b2be80b0b39e986062eb88c716373487a37d2b6a89e01c80d6388a434a29c4c",
+      "status": "MASTERED"
+    }
+  ]
+}
