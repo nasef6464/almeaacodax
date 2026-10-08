@@ -37,7 +37,8 @@ for (const [i,m] of tax.mainSkills.entries()) {
 }
 lessons.sort((a,b)=>a-b);
 check(lessons.length===31 && lessons.every((n,i)=>n===i+1),"collection 1..31 coverage gap/duplication");
-check(src.productionBaseline.questions==="NOT_QUERIED","do not assert unverifed Atlas baseline");
+check(src.productionBaseline.subjectId==="sub_1784980706034" && src.productionBaseline.questions===0, "verified Physics subject baseline drift");
+check(src.productionBaseline.genericSkillRows===9 && src.productionBaseline.skillprogressRowsReferencingLegacySkillsOrSubject===36 && src.productionBaseline.protectLegacySkillIds===true, "legacy Physics skill/progress protection drift");
 check(src.safety==="NO_PRODUCTION_WRITES","production safety policy changed");
 check(ledger.currentPhase===1 && ledger.cumulative.canonicalQuestionsVerified===0,"phase 1 evidence overstated");
 console.log(JSON.stringify({gate:"PHYS26_STATIC_CANDIDATE_PASS",main:mainIds.size,sub:subIds.size,collectionLessons:lessons.length,sourcePDFs:src.sources.length,foundationMissingGrade3:true,productionWrites:false}));
