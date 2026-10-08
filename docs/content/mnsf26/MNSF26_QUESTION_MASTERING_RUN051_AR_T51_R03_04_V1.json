@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN051_AR_T51",
+  "directImageInspection": true,
+  "sourceCropArchive": "/MNSF26/Run017/mnsf26_arithmetic_crops_run017.zip",
+  "sourceInventory": "/MNSF26/Run017/MNSF26_FULLBOOK_CROP_INVENTORY_V1.json",
+  "masteredCount": 1,
+  "holdCount": 1,
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T051-Q03",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "testNumber": 51,
+        "pdfPage": 102,
+        "sourceSkillLabel": "الساعات",
+        "printedQuestionNumber": 3,
+        "cropFile": "AR/AR-T051-Q03.webp",
+        "cropSha256": "a0885ddca81e6b1ca499456401bd0a3ee1edca31eb3360352d521fd1cf60bd58",
+        "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
+      },
+      "imageHash": "a0885ddca81e6b1ca499456401bd0a3ee1edca31eb3360352d521fd1cf60bd58",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
+      "status": "HOLD",
+      "questionText": "بطارية عمرها 584 ساعة وتستخدم 8 ساعات يوميًا؛ كم يتبقى بعد سنة؟",
+      "holdReason": "نص بطارية 584 ساعة مع استخدامها ثماني ساعات يوميًا وسؤال المدة بعد مرور سنة غير متسق؛ لا تثبت إجابة.",
+      "canonicalMainSkill": null,
+      "canonicalSubskill": null,
+      "correctAnswer": null,
+      "stepByStepSolution": null,
+      "educationalExplanation": null,
+      "difficulty": null,
+      "difficultyReason": null,
+      "contentFingerprint": "698083c12d1d580f201dbda0998450ef159ee573378afa5e5a98273d994b411e",
+      "ideaFingerprint": "ab1935a0485c41c5cfb5e1f4c735ad8cbf9525c61bc1cd301403c4bc4fcde19b"
+    },
+    {
+      "sourceKey": "MNSF26-AR-T051-Q04",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "testNumber": 51,
+        "pdfPage": 102,
+        "sourceSkillLabel": "الساعات",
+        "printedQuestionNumber": 4,
+        "cropFile": "AR/AR-T051-Q04.webp",
+        "cropSha256": "85589044e0f102e5f0590b178959e650ffde5061be9323929d1daa199feb4c79",
+        "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
+      },
+      "imageHash": "85589044e0f102e5f0590b178959e650ffde5061be9323929d1daa199feb4c79",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
+      "status": "MASTERED",
+      "questionText": "منبه يرن كل 15 دقيقة وآخر كل 18 دقيقة؛ إذا رنا 12:00 فمتى يرنان معًا أول مرة؟",
+      "canonicalMainSkill": "main_quant_02",
+      "canonicalSubskill": "sub_quant_02_3",
+      "correctAnswer": "1:30",
+      "stepByStepSolution": "المضاعف المشترك الأصغر لـ15 و18 هو90 دقيقة؛ 12:00+90=1:30.",
+      "educationalExplanation": "المهارة: المضاعف المشترك الأصغر لدوريتين زمنيتين؛ نقرأ معطيات السؤال من الصورة ونطبّق العلاقة الحسابية ثم نراجع الناتج مع المطلوب.",
+      "difficulty": "Medium",
+      "difficultyReason": "تتطلب ربط أكثر من معطى أو تحويل وحدات في المضاعف المشترك الأصغر لدوريتين زمنيتين.",
+      "contentFingerprint": "f121f0d67e3ebb27fc51faa5ab7c77a05b03780f733d4349ccf35b3a40753797",
+      "ideaFingerprint": "6ae3c7b654167ae4d2dc10551ed52eda7605da61202960e818a0dbdb1431c46a"
+    }
+  ],
+  "part": "R3_4"
+}
