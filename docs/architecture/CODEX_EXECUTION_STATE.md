@@ -1,5 +1,11 @@
 # ALMEAA — Codex Execution State
 
+## School assessment and classroom audit — 2026-10-08
+- Owner scope: supervisor/teacher/student assessment targeting, analytics and teacher-created classroom participation. Baseline main@877940bda4b4; branch codex/school-assignment-classroom-audit. Original checkout and PR #480 preserved.
+- Fixed frontend class-to-parent school widening in three supervisor surfaces with a shared scope helper matching the unchanged server. Added reminder loading/failure handling and restored isolated supervisor/student CI execution after its skipped legacy dependency.
+- Local scope parity9/9, consumer wiring3/3, supervisor14/14, directed5/5, classroom journey58/58, hardening35/35, frontend typecheck/build PASS. Exact-head required CI and runtime delivery pending. Status PARTIAL; no production educational writes or 20-browser production certification.
+- Action/API/DB/RBAC evidence: docs/audits/SCHOOL_ASSESSMENT_CLASSROOM_JOURNEY_2026-10-08.md. Next: exact-head CI plus isolated journeys and delivery verification.
+
 ## Final reference result continuation — 2026-10-08
 - Current mainc4234fc6 (#475) deployed verified;18SUCCESS3SKIPPED, allrequired CI and production identity/readiness/Vercel/PostDeploySmoke PASS. Real division3/3 complete Arabic/reply/English, raw procedural hints safe, output204/95/191; teacher only stated unit digit, not full requested quotient.
 - Branch codex/teaching-board-reference-result: within existing owned-review steps authority, final scene writes/boxes/speaks trusted option text selected by existing result snapshot index (result review) or existing canonical owned question index (other authorized reviews). Original correctOptionIndex prompt behavior is unchanged; references never enter practice/reply. Cache includes reference index revision4. No grades/API shape/RBAC/data writes changed.

@@ -1,4 +1,5 @@
 import { readFile } from "node:fs/promises";
+import './smoke-supervisor-scope-parity.mjs';
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 

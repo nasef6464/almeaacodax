@@ -30,6 +30,8 @@ export const SupervisorTestsManager: React.FC = () => {
   const [assignQuizId, setAssignQuizId] = useState<string | null>(null);
   const [detailQuizId, setDetailQuizId] = useState<string | null>(null);
   const [notifiedQuizId, setNotifiedQuizId] = useState<string | null>(null);
+  const [remindingQuizId, setRemindingQuizId] = useState<string | null>(null);
+  const [reminderError, setReminderError] = useState<string | null>(null);
 
   const {
     user, groups, quizzes, scopedGroupIds, scopedStudentIds, scopedStudents,
@@ -43,12 +45,21 @@ export const SupervisorTestsManager: React.FC = () => {
   };
 
   const remindAbsent = async (quiz: (typeof quizzesWithStats)[number]) => {
+    if (remindingQuizId) return;
     const participated = new Set(quiz.stats.results.map((result) => result.userId).filter(Boolean));
     const absentIds = quiz.stats.targetStudentIds.filter((id) => !participated.has(id));
     if (!absentIds.length) return;
-    await sendScopedAlert(absentIds, 'تذكير بأداء الاختبار', `نذكرك بضرورة أداء الاختبار: ${quiz.title}`);
-    setNotifiedQuizId(quiz.id);
-    window.setTimeout(() => setNotifiedQuizId(null), 2500);
+    setRemindingQuizId(quiz.id);
+    setReminderError(null);
+    try {
+      await sendScopedAlert(absentIds, 'تذكير بأداء الاختبار', `نذكرك بضرورة أداء الاختبار: ${quiz.title}`);
+      setNotifiedQuizId(quiz.id);
+      window.setTimeout(() => setNotifiedQuizId((current) => current === quiz.id ? null : current), 2500);
+    } catch {
+      setReminderError('تعذر إرسال التذكير. حاول مرة أخرى.');
+    } finally {
+      setRemindingQuizId(null);
+    }
   };
 
   if (viewMode === 'create') {
@@ -97,6 +108,7 @@ export const SupervisorTestsManager: React.FC = () => {
 
   return (
     <div className="space-y-6 animate-fade-in">
+      {reminderError && <p role="alert" className="rounded-xl bg-rose-50 p-3 text-sm text-rose-700">{reminderError}</p>}
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
           <h2 className="flex items-center gap-2 text-2xl font-black text-gray-900"><ClipboardList className="text-indigo-600"/> الاختبارات والتدخلات</h2>
@@ -143,7 +155,7 @@ export const SupervisorTestsManager: React.FC = () => {
             <div className="mt-5 grid grid-cols-2 gap-2">
               <button onClick={() => setDetailQuizId(quiz.id)} className="flex items-center justify-center gap-1.5 rounded-xl border border-violet-200 bg-violet-50 px-3 py-2 text-xs font-black text-violet-700"><BarChart size={14}/> متابعة الطلاب</button>
               <button onClick={() => setAssignQuizId(quiz.id)} className="flex items-center justify-center gap-1.5 rounded-xl border border-indigo-200 bg-indigo-50 px-3 py-2 text-xs font-black text-indigo-700"><RefreshCw size={14}/> توجيه/إعادة توجيه</button>
-              {quiz.stats.participationRate < 100 && quiz.stats.totalTargetStudents > 0 && <button onClick={() => void remindAbsent(quiz)} className={`col-span-2 flex items-center justify-center gap-1.5 rounded-xl border px-3 py-2 text-xs font-black ${notifiedQuizId === quiz.id ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-amber-200 bg-amber-50 text-amber-700'}`}>{notifiedQuizId === quiz.id ? <><CheckCircle size={14}/> تم التذكير</> : <><Bell size={14}/> تذكير من لم يؤدوا</>}</button>}
+              {quiz.stats.participationRate < 100 && quiz.stats.totalTargetStudents > 0 && <button disabled={!!remindingQuizId} aria-busy={remindingQuizId === quiz.id} onClick={() => void remindAbsent(quiz)} className={`col-span-2 flex items-center justify-center gap-1.5 rounded-xl border px-3 py-2 text-xs font-black ${notifiedQuizId === quiz.id ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-amber-200 bg-amber-50 text-amber-700'}`}>{remindingQuizId === quiz.id ? 'جارٍ إرسال التذكير…' : notifiedQuizId === quiz.id ? <><CheckCircle size={14}/> تم التذكير</> : <><Bell size={14}/> تذكير من لم يؤدوا</>}</button>}
             </div>
             <button onClick={() => { setSelectedQuizId(quiz.id); setViewMode('analytics'); }} className="mt-3 flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-3 py-2.5 text-sm font-black text-white"><BarChart size={16}/> التحليل الكامل</button>
           </div>

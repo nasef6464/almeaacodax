@@ -1,3 +1,4 @@
+import { resolveSupervisorSchoolScope } from '../../utils/supervisorSchoolScope';
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   Activity,
@@ -270,16 +271,7 @@ export const SupervisorDashboard: React.FC = () => {
   }, [skillSubjectFilter, skillSubjectOptions]);
 
   const supervisorScopeSummary = useMemo(() => {
-    const directGroupIds = new Set(user.groupIds || []);
-    const directGroups = groups.filter((g) => directGroupIds.has(g.id) || g.supervisorIds?.includes(user.id));
-    const scopedSchoolIds = new Set<string>();
-    if (user.schoolId) scopedSchoolIds.add(user.schoolId);
-    directGroups.forEach((g) => {
-      if (g.type === 'SCHOOL') scopedSchoolIds.add(g.id);
-      if (g.parentId) scopedSchoolIds.add(g.parentId);
-    });
-    const scopedGroupIds = new Set<string>([...Array.from(directGroupIds), ...directGroups.map((g) => g.id)]);
-    groups.forEach((g) => { if (g.parentId && scopedSchoolIds.has(g.parentId)) scopedGroupIds.add(g.id); });
+    const { schoolIds: scopedSchoolIds, groupIds: scopedGroupIds } = resolveSupervisorSchoolScope(user, groups);
     const scopedGroupList = groups.filter((g) => scopedGroupIds.has(g.id) || scopedSchoolIds.has(g.id));
 
     const primarySchool = scopedGroupList.find((g) => g.type === 'SCHOOL') || groups.find((g) => g.id === user.schoolId);
