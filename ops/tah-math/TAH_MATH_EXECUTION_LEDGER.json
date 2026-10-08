@@ -73,7 +73,7 @@
     {
       "id": "P3",
       "name": "col26_full_review",
-      "status": "PREAUDIT_DONE_REVIEW_PENDING",
+      "status": "SOURCE_ANSWER_PASS_PEDAGOGY_IN_PROGRESS",
       "expectedBaseline": 1012,
       "preAudit": {
         "productionCount": 1012,
@@ -88,6 +88,22 @@
           "medium": 1012,
           "hard": 0
         }
+      },
+      "sourceAnswerAudit": {
+        "reviewed": 1012,
+        "matches": 1012,
+        "sourceTextAvailable": 993,
+        "rasterOnly": 19
+      },
+      "sourceOptionReview": {
+        "partialRows": 214,
+        "groundedSegments": 642,
+        "firstOptionBoundaryPending": 214
+      },
+      "sourceVisualMath": {
+        "page132Rows": 19,
+        "independentMathMatches": 19,
+        "productionMutation": false
       }
     },
     {
