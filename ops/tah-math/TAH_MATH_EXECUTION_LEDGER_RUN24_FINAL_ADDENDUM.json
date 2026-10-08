@@ -1,0 +1,19 @@
+{
+  "run": "RUN24_FINAL",
+  "sourceQuestionsReviewed": 223,
+  "newDistinctMathCandidates": 178,
+  "cumulativeYLM26Candidates": 326,
+  "sourceAnswerLiveMatches": 221,
+  "sourceAnswerLiveMismatches": 2,
+  "confirmedWrongKeys": [
+    "P021-Q04",
+    "P090-Q10"
+  ],
+  "explanationContradictions": 23,
+  "explanationOnlyErrors": 22,
+  "keyErrorWithinContradictions": 1,
+  "semanticCaveats": 3,
+  "productionMutation": false,
+  "fullPedagogyClosed": 0,
+  "next": "Correct keys/AI text via rollback manifests; fix 22 explanation errors; complete actual options and pedagogical references; COL26 next."
+}
