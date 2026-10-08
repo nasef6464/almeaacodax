@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN059_AR_T17_DIRECT_VISUAL",
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T017-Q16",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+        "testNumber": 17,
+        "pdfPage": 33,
+        "sourceSkillLabel": "جمع الأعداد - المتتابعات - ضرب الأعداد",
+        "sourceTopic": "عنوان المصدر للتوثيق فقط؛ التصنيف من رياضيات الصورة",
+        "sourceLesson": "الحساب والجبر اختبار017 سؤال16",
+        "printedQuestionNumber": 16,
+        "cropFile": "mnsf26_fullbook_crops/AR/AR-T017-Q16.webp",
+        "cropSha256": "335f55cf2e992d251f36a07948b3817ba804728de5148f71bc48d820081f0286",
+        "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
+      },
+      "imageHash": "335f55cf2e992d251f36a07948b3817ba804728de5148f71bc48d820081f0286",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN059_2026-10-08_T017_Q16",
+      "status": "REVIEW",
+      "questionText": "أوجد الناقص في1،6،21،...،201.",
+      "canonicalMainSkill": null,
+      "canonicalSubskill": null,
+      "correctAnswer": null,
+      "stepByStepSolution": null,
+      "educationalExplanation": "REVIEW fail-closed: متتابعة بفروق هندسية وليست حسابية ثابتة؛ يلزم اعتماد تصنيفها.؛ الإجابة الرياضية المرشحة: 66 (ب)؛ الحل: الفروق5،15،45،135 تتضاعف3 مرات؛ بعد21 نضيف45 فنحصل66، ثم+135=201.",
+      "difficulty": null,
+      "difficultyReason": "متتابعة بفروق هندسية وليست حسابية ثابتة؛ يلزم اعتماد تصنيفها.",
+      "contentFingerprint": "7c4721f4480a371733a38fa13ad5be6d5933a6da1846cebfa690dc52b96ac68c",
+      "ideaFingerprint": "6ccde3a41e13e2bb21d96570ad7817728d8fc2c1cf9272262aee71405a6e6181",
+      "holdReason": "متتابعة بفروق هندسية وليست حسابية ثابتة؛ يلزم اعتماد تصنيفها.",
+      "proposedCanonicalSubskill": "sub_quant_01_3"
+    }
+  ]
+}
