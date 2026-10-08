@@ -3,11 +3,12 @@ import { readFile } from "node:fs/promises";
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
-const [panel, teacher, aiApi, policy] = await Promise.all([
+const [panel, teacher, aiApi, policy, narrator] = await Promise.all([
   read("components/results/QuestionAssistantPanel.tsx"),
   read("components/results/InteractiveSmartTeacher.tsx"),
   read("services/apiGroups/aiApi.ts"),
   read("server/src/modules/ai/application/questionAssistant.ts"),
+  read("components/results/teaching/narrationEngine.ts"),
 ]);
 
 assert.match(panel, /المعلم الصوتي/);
@@ -23,7 +24,7 @@ assert.match(teacher, /أعد الشرح/);
 assert.match(teacher, /اسأل المعلم/);
 assert.match(teacher, /aiQuestionAssistant/);
 assert.match(teacher, /helpLevel/);
-assert.match(teacher, /SpeechSynthesisUtterance/);
+assert.match(narrator, /SpeechSynthesisUtterance/);
 assert.match(teacher, /SpeechRecognition/);
 assert.match(teacher, /ar-SA/);
 assert.match(teacher, /toggleListening/);

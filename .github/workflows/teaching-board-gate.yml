@@ -1,0 +1,26 @@
+name: Interactive teaching board
+on:
+  pull_request:
+    paths:
+      - 'components/results/**'
+      - 'server/src/modules/ai/**'
+      - 'server/src/routes/ai.routes.ts'
+      - 'services/apiGroups/aiApi.ts'
+      - 'scripts/test-teaching-*.**'
+      - 'scripts/fixtures/teaching-board.*'
+      - '.github/workflows/teaching-board-gate.yml'
+jobs:
+  teaching-board:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm --prefix server ci
+      - run: node --import ./server/node_modules/tsx/dist/loader.mjs scripts/test-teaching-storyboard.ts
+      - run: npx playwright install --with-deps chromium
+      - run: node scripts/test-teaching-board-browser.mjs

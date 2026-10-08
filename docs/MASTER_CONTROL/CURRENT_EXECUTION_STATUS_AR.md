@@ -77,6 +77,12 @@ Ruleset: `Protect main`
 
 Git HEAD always overrides this historical baseline.
 
+## Owner-directed smart teacher practice — 2026-10-08
+
+- PR #459 / branch `codex/smart-teacher-live-board`: optional practice checkpoint, two progressive local hints, contextual review of a student attempt and return to the saved board.
+- Status: PARTIAL, review implementation; production AI/audio quality remains unproven. Exact code/CI evidence is on PR #459 and `docs/audits/INTERACTIVE_TEACHING_BOARD_V1_2026-10-08.md`.
+- No changes to grades, mastery, auth, persisted data, provider budgets or production deployment. This owner-directed lane does not close PLAN 2 or start PLAN 3.
+
 ## BIO26 operational lane — CLOSED ✅ — 2026-10-07
 
 - Scope: الأحياء فقط، batch `TAH-BIO-BIO26-FULL-V1`.
@@ -109,3 +115,10 @@ Git HEAD always overrides this historical baseline.
 - **BIO26 CLOSED ✅** — no remaining production-import, integrity, Live E2E, approval, or post-approval gate.
 
 **BIO26 must not be reopened unless a new source/content revision is explicitly requested.**
+
+## Interactive teaching board V1 — 2026-10-08
+- Real-provider continuation: Gemini connectivity PASS; 4 bounded live-chat samples were truncated. Focused board-only Flash generation repair is on PR #459; owned-review post-deploy audit remains required. See docs/audits/TEACHING_BOARD_REAL_PROVIDER_2026-10-08.md.
+- Owner-directed scope: current AI gateway integration and browser-side interactive board; baseline main@f40a785e, branch codex/smart-teacher-live-board.
+- Status: PARTIAL; no production closure or deployment. Existing Master Control plan exit gates remain as recorded.
+- Added validated versioned plans, local deterministic playback, narration adapter, contextual follow-up board and saved main-lesson resume. Existing authorization, budgets, scoring and image policy preserved.
+- Evidence and remaining live-provider/voice checks: docs/audits/INTERACTIVE_TEACHING_BOARD_V1_2026-10-08.md. Exact-head CI is tracked on the attached PR.

@@ -95,6 +95,8 @@ jobs:
         run: node scripts/smoke-adaptive-phase8-school-skill-aggregates-contract.mjs
       - name: Adaptive Phase 9 question assistant contract
         run: node scripts/smoke-adaptive-phase9-question-assistant-contract.mjs
+      - name: Teaching storyboard validation and interruption replay
+        run: node --import ./server/node_modules/tsx/dist/loader.mjs scripts/test-teaching-storyboard.ts
       - name: Adaptive Phase 10 resource hardening contract
         run: node scripts/smoke-adaptive-phase10-resource-hardening-contract.mjs
       - name: Adaptive Phase 11 final certification contract

@@ -1,0 +1,34 @@
+import { validateTeachingStoryboard, type TeachingStoryboard } from '../contracts/teachingStoryboard.js';
+
+export const teachingPlanInstruction = `
+أنت تشرح على سبورة حية. الشرح المعتمد مرجع لصحة الحل، وليس نصاً تقرؤه حرفياً. ابدأ مباشرة دون تحيات.
+أرجع JSON فقط: {"version":1,"language":"ar-SA","scenes":[{"id":"s1","narration":"كلام قصير واضح","actions":[{"type":"write","id":"eq","kind":"formula","content":"x=2"}]}]}.
+اختر ar-SA أو en-US حسب لغة السؤال والطالب. افصل الكلام المنطوق عن LaTeX المكتوب؛ انطق الرموز بكلمات مفهومة.
+استخدم مشهدين أو ثلاثة فقط، وفعلًا واحدًا لكل مشهد، وجملة منطوقة لا تتجاوز 8 كلمات. لا تحل من الصفر: حوّل الشرح المرجعي إلى خطوات قصيرة. الأفعال المسموحة فقط:
+write: id فريد، kind=text أو formula، content.
+transform: target لعنصر مكتوب سابقاً، content جديد؛ لتحويل المعادلة في نفس الموضع.
+highlight أو box أو erase: target لعنصر مكتوب سابقاً.
+ابدأ بكتابة السؤال/المعطيات، ثم القانون والتعويض، ثم النتيجة المسموح بها في سياق المراجعة.
+عند الاستفسار اشرح النقطة الحالية تحديداً على سبورة فرعية؛ لا تعِد الحل كله إلا بطلب صريح.
+لا تخترع رسماً أو معطيات بصرية غير موجودة في المرجع. لا تكتب HTML أو أوامر LaTeX مخصصة.
+في الشرح الأساسي أضف لمشهد واحد قبل الحل checkpoint: {"prompt":"سؤال قصير عن الخطوة التالية","hints":["تلميح للفكرة","تلميح أكثر تحديداً"]}.
+لا تكشف إجابة هذا السؤال في نفس المشهد أو التلميحات؛ اجعل الحل في المشهد التالي. التلميحات ليست درجات أو تقييم إتقان.
+عند طلب مراجعة محاولة الطالب: استخدم المرجع لتحديد صحة الخطوة، وإذا أخطأ أعطه تلميحاً موجهاً دون كشف الحل كله. لا تضف checkpoint في ردود الاستفسار.
+السؤال التدريبي لا يتجاوز 8 كلمات، وكل تلميح 5 كلمات. للمتابعة يكفي مشهد واحد. اكتب JSON مضغوطًا بلا مسافات زائدة أو أسوار كود، والتزم بـ450 توكن للإخراج.`;
+
+/** Existing cache stores a string; no collection migration is necessary. */
+export function decodeQuestionTeachingPlan(raw: string): { text: string; storyboard?: TeachingStoryboard } {
+  try {
+    const storyboard = validateTeachingStoryboard(JSON.parse(raw));
+    if (storyboard) return { text: storyboard.scenes.map(scene => scene.narration).join('\n'), storyboard };
+  } catch { /* legacy text */ }
+  return { text: raw };
+}
+
+export function normalizeQuestionTeachingPlan(raw: string, fallback: string): string {
+  const decoded = decodeQuestionTeachingPlan(raw);
+  if (decoded.storyboard) return JSON.stringify(decoded.storyboard);
+  // Never expose invalid JSON as a lesson; use the already-authorized explanation.
+  const text = raw.trim();
+  return (!text || /^[{\[]|^```/.test(text)) ? fallback : text.slice(0, 4000);
+}
