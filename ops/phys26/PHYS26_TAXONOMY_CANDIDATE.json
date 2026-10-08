@@ -1,0 +1,1029 @@
+{
+  "project": "ALMEAA",
+  "track": "PHYS26",
+  "version": "candidate-1.0",
+  "status": "PROPOSED_NOT_IMPORTED",
+  "derivedFrom": [
+    "كتاب تأسيس يلو للفيزياء 26.pdf",
+    "كتاب تجميعات يلو للفيزياء 26 - المعدل.pdf",
+    "ملخصات متنوعة للفيزياء - يلو 26.pdf"
+  ],
+  "targets": {
+    "mainSkills": 25,
+    "subSkills": 90
+  },
+  "actual": {
+    "mainSkills": 25,
+    "subSkills": 90,
+    "collectionLessonCoverage": 31
+  },
+  "policies": {
+    "firstFiveMainFreeIsEditable": true,
+    "subtopicFreeFollowsMainAtInitialConfiguration": true,
+    "avoidSyntheticSourceQuestions": true,
+    "noProductionWrites": true,
+    "noMissingFoundationClaimAsCompleted": true,
+    "mustVerifySourceAndRightsBeforePublishing": true,
+    "noVideoUploadRequired": true,
+    "subSkillTrainingTarget": 10,
+    "mainSkillTrainingTargetMin": 30,
+    "mainSkillTrainingTargetMax": 40,
+    "questionMappingsAndCorrectAnswers": "PENDING_SOURCE_VERIFICATION"
+  },
+  "mainSkills": [
+    {
+      "id": "PHYS26-M01",
+      "order": 1,
+      "nameAr": "أساسيات الفيزياء والقياس والطريقة العلمية",
+      "source": {
+        "collectionLessonNumbers": [
+          1
+        ],
+        "foundationLessonNumbers": [
+          1,
+          2
+        ],
+        "foundationBookStatus": "present_first_second_secondary",
+        "summaryBookRole": "secondary_reference"
+      },
+      "proposedFree": true,
+      "status": "CANDIDATE_REVIEW_REQUIRED",
+      "subSkills": [
+        {
+          "id": "PHYS26-S01-01",
+          "order": 1,
+          "nameAr": "العمليات الرياضية والصيغة العلمية والتناسب الفيزيائي",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S01-02",
+          "order": 2,
+          "nameAr": "الطريقة العلمية والفرضيات والنظريات والقوانين",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S01-03",
+          "order": 3,
+          "nameAr": "القياس والدقة والضبط والأجهزة",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S01-04",
+          "order": 4,
+          "nameAr": "الكميات الفيزيائية والنظام الدولي والبادئات",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        }
+      ]
+    },
+    {
+      "id": "PHYS26-M02",
+      "order": 2,
+      "nameAr": "الحركة الخطية والتسارع والسقوط الحر",
+      "source": {
+        "collectionLessonNumbers": [
+          2,
+          3
+        ],
+        "foundationLessonNumbers": [
+          3,
+          4
+        ],
+        "foundationBookStatus": "present_first_second_secondary",
+        "summaryBookRole": "secondary_reference"
+      },
+      "proposedFree": true,
+      "status": "CANDIDATE_REVIEW_REQUIRED",
+      "subSkills": [
+        {
+          "id": "PHYS26-S02-01",
+          "order": 1,
+          "nameAr": "المسافة والإزاحة والتمثيل الحركي",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S02-02",
+          "order": 2,
+          "nameAr": "السرعة المتوسطة والمتجهة واللحظية",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S02-03",
+          "order": 3,
+          "nameAr": "منحنيات الموقع والزمن والسرعة والزمن",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S02-04",
+          "order": 4,
+          "nameAr": "التسارع ومعادلات الحركة بتسارع ثابت",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S02-05",
+          "order": 5,
+          "nameAr": "السقوط الحر والحركة الرأسية",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        }
+      ]
+    },
+    {
+      "id": "PHYS26-M03",
+      "order": 3,
+      "nameAr": "القوى والوزن وقوانين نيوتن",
+      "source": {
+        "collectionLessonNumbers": [
+          4
+        ],
+        "foundationLessonNumbers": [
+          5
+        ],
+        "foundationBookStatus": "present_first_second_secondary",
+        "summaryBookRole": "secondary_reference"
+      },
+      "proposedFree": true,
+      "status": "CANDIDATE_REVIEW_REQUIRED",
+      "subSkills": [
+        {
+          "id": "PHYS26-S03-01",
+          "order": 1,
+          "nameAr": "مفهوم القوة وتمثيل القوى المؤثرة",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S03-02",
+          "order": 2,
+          "nameAr": "قوانين نيوتن الثلاثة وتطبيقاتها",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S03-03",
+          "order": 3,
+          "nameAr": "الوزن والقوة العمودية",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S03-04",
+          "order": 4,
+          "nameAr": "الوزن الظاهري وحالات المصعد",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        }
+      ]
+    },
+    {
+      "id": "PHYS26-M04",
+      "order": 4,
+      "nameAr": "المتجهات والاحتكاك والحركة على مستوى مائل",
+      "source": {
+        "collectionLessonNumbers": [
+          5
+        ],
+        "foundationLessonNumbers": [
+          6
+        ],
+        "foundationBookStatus": "present_first_second_secondary",
+        "summaryBookRole": "secondary_reference"
+      },
+      "proposedFree": true,
+      "status": "CANDIDATE_REVIEW_REQUIRED",
+      "subSkills": [
+        {
+          "id": "PHYS26-S04-01",
+          "order": 1,
+          "nameAr": "جمع المتجهات وطرحها",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S04-02",
+          "order": 2,
+          "nameAr": "تحليل المتجهات إلى مركبات وحساب المحصلة",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S04-03",
+          "order": 3,
+          "nameAr": "الاحتكاك السكوني والحركي",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S04-04",
+          "order": 4,
+          "nameAr": "القوى والحركة على المستوى المائل",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        }
+      ]
+    },
+    {
+      "id": "PHYS26-M05",
+      "order": 5,
+      "nameAr": "المقذوفات والحركة الدائرية",
+      "source": {
+        "collectionLessonNumbers": [
+          6
+        ],
+        "foundationLessonNumbers": [
+          7
+        ],
+        "foundationBookStatus": "present_first_second_secondary",
+        "summaryBookRole": "secondary_reference"
+      },
+      "proposedFree": true,
+      "status": "CANDIDATE_REVIEW_REQUIRED",
+      "subSkills": [
+        {
+          "id": "PHYS26-S05-01",
+          "order": 1,
+          "nameAr": "المقذوفات الأفقية والمائلة ومركبات الحركة",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S05-02",
+          "order": 2,
+          "nameAr": "زمن التحليق والمدى الأفقي وأقصى ارتفاع",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S05-03",
+          "order": 3,
+          "nameAr": "السرعة الخطية والزاوية في الحركة الدائرية",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S05-04",
+          "order": 4,
+          "nameAr": "التسارع والقوة المركزية",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        }
+      ]
+    },
+    {
+      "id": "PHYS26-M06",
+      "order": 6,
+      "nameAr": "الجاذبية والحركة المدارية",
+      "source": {
+        "collectionLessonNumbers": [
+          7
+        ],
+        "foundationLessonNumbers": [
+          8
+        ],
+        "foundationBookStatus": "present_first_second_secondary",
+        "summaryBookRole": "secondary_reference"
+      },
+      "proposedFree": false,
+      "status": "CANDIDATE_REVIEW_REQUIRED",
+      "subSkills": [
+        {
+          "id": "PHYS26-S06-01",
+          "order": 1,
+          "nameAr": "قانون الجذب الكوني والقوة بين الكتل",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S06-02",
+          "order": 2,
+          "nameAr": "تسارع الجاذبية وتغيره مع البعد",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S06-03",
+          "order": 3,
+          "nameAr": "قوانين كبلر والأقمار الصناعية",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        }
+      ]
+    },
+    {
+      "id": "PHYS26-M07",
+      "order": 7,
+      "nameAr": "الحركة الدورانية والعزم",
+      "source": {
+        "collectionLessonNumbers": [
+          8
+        ],
+        "foundationLessonNumbers": [
+          9
+        ],
+        "foundationBookStatus": "present_first_second_secondary",
+        "summaryBookRole": "secondary_reference"
+      },
+      "proposedFree": false,
+      "status": "CANDIDATE_REVIEW_REQUIRED",
+      "subSkills": [
+        {
+          "id": "PHYS26-S07-01",
+          "order": 1,
+          "nameAr": "الإزاحة والسرعة والتسارع الزاوي",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S07-02",
+          "order": 2,
+          "nameAr": "العلاقات بين الكميات الخطية والزاوية",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S07-03",
+          "order": 3,
+          "nameAr": "عزم القوة والمفاهيم الدورانية",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        }
+      ]
+    },
+    {
+      "id": "PHYS26-M08",
+      "order": 8,
+      "nameAr": "الاتزان والدفع والزخم",
+      "source": {
+        "collectionLessonNumbers": [
+          9
+        ],
+        "foundationLessonNumbers": [
+          10
+        ],
+        "foundationBookStatus": "present_first_second_secondary",
+        "summaryBookRole": "secondary_reference"
+      },
+      "proposedFree": false,
+      "status": "CANDIDATE_REVIEW_REQUIRED",
+      "subSkills": [
+        {
+          "id": "PHYS26-S08-01",
+          "order": 1,
+          "nameAr": "الاتزان الانتقالي والدوراني ومركز الكتلة",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S08-02",
+          "order": 2,
+          "nameAr": "الدفع وعلاقته بتغير الزخم",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S08-03",
+          "order": 3,
+          "nameAr": "الزخم الخطي وقانون حفظه",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S08-04",
+          "order": 4,
+          "nameAr": "التصادمات وتطبيقات حفظ الزخم",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        }
+      ]
+    },
+    {
+      "id": "PHYS26-M09",
+      "order": 9,
+      "nameAr": "الشغل والطاقة والقدرة والآلات",
+      "source": {
+        "collectionLessonNumbers": [
+          10,
+          11
+        ],
+        "foundationLessonNumbers": [
+          11,
+          12
+        ],
+        "foundationBookStatus": "present_first_second_secondary",
+        "summaryBookRole": "secondary_reference"
+      },
+      "proposedFree": false,
+      "status": "CANDIDATE_REVIEW_REQUIRED",
+      "subSkills": [
+        {
+          "id": "PHYS26-S09-01",
+          "order": 1,
+          "nameAr": "الشغل والقوة والإزاحة",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S09-02",
+          "order": 2,
+          "nameAr": "الطاقة الحركية وطاقة الوضع",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S09-03",
+          "order": 3,
+          "nameAr": "نظرية الشغل والطاقة وحفظ الطاقة الميكانيكية",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S09-04",
+          "order": 4,
+          "nameAr": "القدرة والآلات والفائدة الميكانيكية والكفاءة",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        }
+      ]
+    },
+    {
+      "id": "PHYS26-M10",
+      "order": 10,
+      "nameAr": "الحرارة والديناميكا الحرارية",
+      "source": {
+        "collectionLessonNumbers": [
+          12
+        ],
+        "foundationLessonNumbers": [
+          13
+        ],
+        "foundationBookStatus": "present_first_second_secondary",
+        "summaryBookRole": "secondary_reference"
+      },
+      "proposedFree": false,
+      "status": "CANDIDATE_REVIEW_REQUIRED",
+      "subSkills": [
+        {
+          "id": "PHYS26-S10-01",
+          "order": 1,
+          "nameAr": "درجة الحرارة والاتزان الحراري والحرارة النوعية",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S10-02",
+          "order": 2,
+          "nameAr": "انتقال الحرارة والتمدد الحراري",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S10-03",
+          "order": 3,
+          "nameAr": "تغيرات الحالة والحرارة الكامنة",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S10-04",
+          "order": 4,
+          "nameAr": "القانونان الأول والثاني للديناميكا الحرارية والإنتروبي",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        }
+      ]
+    },
+    {
+      "id": "PHYS26-M11",
+      "order": 11,
+      "nameAr": "مبادئ وخصائص الموائع",
+      "source": {
+        "collectionLessonNumbers": [
+          13
+        ],
+        "foundationLessonNumbers": [],
+        "foundationBookStatus": "not_in_uploaded_foundation",
+        "summaryBookRole": "secondary_reference"
+      },
+      "proposedFree": false,
+      "status": "CANDIDATE_REVIEW_REQUIRED",
+      "subSkills": [
+        {
+          "id": "PHYS26-S11-01",
+          "order": 1,
+          "nameAr": "الكثافة والضغط وخصائص الموائع",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S11-02",
+          "order": 2,
+          "nameAr": "ضغط الموائع ومبدأ باسكال",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S11-03",
+          "order": 3,
+          "nameAr": "الطفو ومبدأ أرخميدس",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S11-04",
+          "order": 4,
+          "nameAr": "الاستمرارية ومبدأ برنولي وتدفق الموائع",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        }
+      ]
+    },
+    {
+      "id": "PHYS26-M12",
+      "order": 12,
+      "nameAr": "الاهتزازات والموجات ودوبلر والرنين",
+      "source": {
+        "collectionLessonNumbers": [
+          14,
+          15
+        ],
+        "foundationLessonNumbers": [],
+        "foundationBookStatus": "not_in_uploaded_foundation",
+        "summaryBookRole": "secondary_reference"
+      },
+      "proposedFree": false,
+      "status": "CANDIDATE_REVIEW_REQUIRED",
+      "subSkills": [
+        {
+          "id": "PHYS26-S12-01",
+          "order": 1,
+          "nameAr": "الحركة الاهتزازية والتوافقية البسيطة",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S12-02",
+          "order": 2,
+          "nameAr": "خصائص الموجات والتردد والطول الموجي",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S12-03",
+          "order": 3,
+          "nameAr": "الصوت وتأثير دوبلر",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S12-04",
+          "order": 4,
+          "nameAr": "الموجات الواقفة والرنين في الأعمدة الهوائية",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        }
+      ]
+    },
+    {
+      "id": "PHYS26-M13",
+      "order": 13,
+      "nameAr": "الضوء والألوان",
+      "source": {
+        "collectionLessonNumbers": [
+          16
+        ],
+        "foundationLessonNumbers": [],
+        "foundationBookStatus": "not_in_uploaded_foundation",
+        "summaryBookRole": "secondary_reference"
+      },
+      "proposedFree": false,
+      "status": "CANDIDATE_REVIEW_REQUIRED",
+      "subSkills": [
+        {
+          "id": "PHYS26-S13-01",
+          "order": 1,
+          "nameAr": "خصائص الضوء وانتشاره وطبيعته الموجية",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S13-02",
+          "order": 2,
+          "nameAr": "الألوان والضوء المرئي والمرشحات",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S13-03",
+          "order": 3,
+          "nameAr": "استقطاب الضوء وقانون مالوس",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        }
+      ]
+    },
+    {
+      "id": "PHYS26-M14",
+      "order": 14,
+      "nameAr": "الانعكاس والمرايا",
+      "source": {
+        "collectionLessonNumbers": [
+          17
+        ],
+        "foundationLessonNumbers": [],
+        "foundationBookStatus": "not_in_uploaded_foundation",
+        "summaryBookRole": "secondary_reference"
+      },
+      "proposedFree": false,
+      "status": "CANDIDATE_REVIEW_REQUIRED",
+      "subSkills": [
+        {
+          "id": "PHYS26-S14-01",
+          "order": 1,
+          "nameAr": "قانون الانعكاس والمرايا المستوية",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S14-02",
+          "order": 2,
+          "nameAr": "المرايا الكروية وتكوين الصور",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S14-03",
+          "order": 3,
+          "nameAr": "معادلة المرايا والتكبير",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        }
+      ]
+    },
+    {
+      "id": "PHYS26-M15",
+      "order": 15,
+      "nameAr": "الانكسار والعدسات",
+      "source": {
+        "collectionLessonNumbers": [
+          18
+        ],
+        "foundationLessonNumbers": [],
+        "foundationBookStatus": "not_in_uploaded_foundation",
+        "summaryBookRole": "secondary_reference"
+      },
+      "proposedFree": false,
+      "status": "CANDIDATE_REVIEW_REQUIRED",
+      "subSkills": [
+        {
+          "id": "PHYS26-S15-01",
+          "order": 1,
+          "nameAr": "الانكسار ومعامل الانكسار وقانون سنل",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S15-02",
+          "order": 2,
+          "nameAr": "الزاوية الحرجة والانعكاس الداخلي الكلي",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S15-03",
+          "order": 3,
+          "nameAr": "العدسات المحدبة والمقعرة وتكوين الصور",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S15-04",
+          "order": 4,
+          "nameAr": "معادلة العدسة والتكبير والتطبيقات البصرية",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        }
+      ]
+    },
+    {
+      "id": "PHYS26-M16",
+      "order": 16,
+      "nameAr": "التداخل والحيود",
+      "source": {
+        "collectionLessonNumbers": [
+          19
+        ],
+        "foundationLessonNumbers": [],
+        "foundationBookStatus": "not_in_uploaded_foundation",
+        "summaryBookRole": "secondary_reference"
+      },
+      "proposedFree": false,
+      "status": "CANDIDATE_REVIEW_REQUIRED",
+      "subSkills": [
+        {
+          "id": "PHYS26-S16-01",
+          "order": 1,
+          "nameAr": "التداخل البناء والهدام",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S16-02",
+          "order": 2,
+          "nameAr": "تجربة يونج وهدب التداخل",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S16-03",
+          "order": 3,
+          "nameAr": "الحيود ومحزوز الحيود",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        }
+      ]
+    },
+    {
+      "id": "PHYS26-M17",
+      "order": 17,
+      "nameAr": "الكهرباء والمجالات الكهربائية",
+      "source": {
+        "collectionLessonNumbers": [
+          20,
+          21
+        ],
+        "foundationLessonNumbers": [],
+        "foundationBookStatus": "not_in_uploaded_foundation",
+        "summaryBookRole": "secondary_reference"
+      },
+      "proposedFree": false,
+      "status": "CANDIDATE_REVIEW_REQUIRED",
+      "subSkills": [
+        {
+          "id": "PHYS26-S17-01",
+          "order": 1,
+          "nameAr": "الشحنات الكهربائية وطرق التكهرب",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S17-02",
+          "order": 2,
+          "nameAr": "قانون كولوم والقوى الكهربائية",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S17-03",
+          "order": 3,
+          "nameAr": "المجال الكهربائي وخطوط المجال",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S17-04",
+          "order": 4,
+          "nameAr": "الجهد والطاقة الكهربائية والمكثفات",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        }
+      ]
+    },
+    {
+      "id": "PHYS26-M18",
+      "order": 18,
+      "nameAr": "الكهرباء التيارية والدوائر الكهربائية",
+      "source": {
+        "collectionLessonNumbers": [
+          22,
+          23
+        ],
+        "foundationLessonNumbers": [],
+        "foundationBookStatus": "not_in_uploaded_foundation",
+        "summaryBookRole": "secondary_reference"
+      },
+      "proposedFree": false,
+      "status": "CANDIDATE_REVIEW_REQUIRED",
+      "subSkills": [
+        {
+          "id": "PHYS26-S18-01",
+          "order": 1,
+          "nameAr": "التيار الكهربائي وفرق الجهد والمقاومة",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S18-02",
+          "order": 2,
+          "nameAr": "قانون أوم والمقاومية الكهربائية",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S18-03",
+          "order": 3,
+          "nameAr": "توصيل المقاومات وتحليل الدوائر",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S18-04",
+          "order": 4,
+          "nameAr": "القدرة والطاقة الكهربائية وأجهزة القياس",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        }
+      ]
+    },
+    {
+      "id": "PHYS26-M19",
+      "order": 19,
+      "nameAr": "المجالات والقوى المغناطيسية وقواعد اليد اليمنى",
+      "source": {
+        "collectionLessonNumbers": [
+          24,
+          25
+        ],
+        "foundationLessonNumbers": [],
+        "foundationBookStatus": "not_in_uploaded_foundation",
+        "summaryBookRole": "secondary_reference"
+      },
+      "proposedFree": false,
+      "status": "CANDIDATE_REVIEW_REQUIRED",
+      "subSkills": [
+        {
+          "id": "PHYS26-S19-01",
+          "order": 1,
+          "nameAr": "المجال المغناطيسي ومصادره",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S19-02",
+          "order": 2,
+          "nameAr": "القوة المغناطيسية على الشحنة والسلك",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S19-03",
+          "order": 3,
+          "nameAr": "حركة الجسيمات المشحونة في مجال مغناطيسي",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S19-04",
+          "order": 4,
+          "nameAr": "قواعد اليد اليمنى واتجاه المجال والقوة",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        }
+      ]
+    },
+    {
+      "id": "PHYS26-M20",
+      "order": 20,
+      "nameAr": "الحث الكهرومغناطيسي",
+      "source": {
+        "collectionLessonNumbers": [
+          26
+        ],
+        "foundationLessonNumbers": [],
+        "foundationBookStatus": "not_in_uploaded_foundation",
+        "summaryBookRole": "secondary_reference"
+      },
+      "proposedFree": false,
+      "status": "CANDIDATE_REVIEW_REQUIRED",
+      "subSkills": [
+        {
+          "id": "PHYS26-S20-01",
+          "order": 1,
+          "nameAr": "الفيض المغناطيسي والقوة الدافعة المستحثة",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S20-02",
+          "order": 2,
+          "nameAr": "قانونا فاراداي ولنـز",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S20-03",
+          "order": 3,
+          "nameAr": "المولدات والمحولات وتطبيقات الحث",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        }
+      ]
+    },
+    {
+      "id": "PHYS26-M21",
+      "order": 21,
+      "nameAr": "الكهرومغناطيسية",
+      "source": {
+        "collectionLessonNumbers": [
+          27
+        ],
+        "foundationLessonNumbers": [],
+        "foundationBookStatus": "not_in_uploaded_foundation",
+        "summaryBookRole": "secondary_reference"
+      },
+      "proposedFree": false,
+      "status": "CANDIDATE_REVIEW_REQUIRED",
+      "subSkills": [
+        {
+          "id": "PHYS26-S21-01",
+          "order": 1,
+          "nameAr": "ترابط المجالين الكهربائي والمغناطيسي",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S21-02",
+          "order": 2,
+          "nameAr": "الموجات الكهرومغناطيسية وانتشارها",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S21-03",
+          "order": 3,
+          "nameAr": "الطيف الكهرومغناطيسي وتطبيقاته",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        }
+      ]
+    },
+    {
+      "id": "PHYS26-M22",
+      "order": 22,
+      "nameAr": "نظرية الكم",
+      "source": {
+        "collectionLessonNumbers": [
+          28
+        ],
+        "foundationLessonNumbers": [],
+        "foundationBookStatus": "not_in_uploaded_foundation",
+        "summaryBookRole": "secondary_reference"
+      },
+      "proposedFree": false,
+      "status": "CANDIDATE_REVIEW_REQUIRED",
+      "subSkills": [
+        {
+          "id": "PHYS26-S22-01",
+          "order": 1,
+          "nameAr": "تكميم الطاقة وإشعاع الجسم الأسود",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S22-02",
+          "order": 2,
+          "nameAr": "التأثير الكهروضوئي والفوتونات",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S22-03",
+          "order": 3,
+          "nameAr": "الطبيعة الموجية للجسيمات ومبادئ الكم",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        }
+      ]
+    },
+    {
+      "id": "PHYS26-M23",
+      "order": 23,
+      "nameAr": "الذرة والنماذج الذرية",
+      "source": {
+        "collectionLessonNumbers": [
+          29
+        ],
+        "foundationLessonNumbers": [],
+        "foundationBookStatus": "not_in_uploaded_foundation",
+        "summaryBookRole": "secondary_reference"
+      },
+      "proposedFree": false,
+      "status": "CANDIDATE_REVIEW_REQUIRED",
+      "subSkills": [
+        {
+          "id": "PHYS26-S23-01",
+          "order": 1,
+          "nameAr": "النماذج الذرية والتجارب المؤسسة لها",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S23-02",
+          "order": 2,
+          "nameAr": "نموذج بور ومستويات الطاقة",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S23-03",
+          "order": 3,
+          "nameAr": "الأطياف الذرية والانبعاث والامتصاص",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        }
+      ]
+    },
+    {
+      "id": "PHYS26-M24",
+      "order": 24,
+      "nameAr": "إلكترونيات الحالة الصلبة",
+      "source": {
+        "collectionLessonNumbers": [
+          30
+        ],
+        "foundationLessonNumbers": [],
+        "foundationBookStatus": "not_in_uploaded_foundation",
+        "summaryBookRole": "secondary_reference"
+      },
+      "proposedFree": false,
+      "status": "CANDIDATE_REVIEW_REQUIRED",
+      "subSkills": [
+        {
+          "id": "PHYS26-S24-01",
+          "order": 1,
+          "nameAr": "أشباه الموصلات والخصائص الكهربائية",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S24-02",
+          "order": 2,
+          "nameAr": "الوصلة الثنائية والصمام الثنائي",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S24-03",
+          "order": 3,
+          "nameAr": "الترانزستور والتطبيقات الإلكترونية",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        }
+      ]
+    },
+    {
+      "id": "PHYS26-M25",
+      "order": 25,
+      "nameAr": "الفيزياء النووية",
+      "source": {
+        "collectionLessonNumbers": [
+          31
+        ],
+        "foundationLessonNumbers": [],
+        "foundationBookStatus": "not_in_uploaded_foundation",
+        "summaryBookRole": "secondary_reference"
+      },
+      "proposedFree": false,
+      "status": "CANDIDATE_REVIEW_REQUIRED",
+      "subSkills": [
+        {
+          "id": "PHYS26-S25-01",
+          "order": 1,
+          "nameAr": "مكونات النواة والنظائر والكتلة النووية",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S25-02",
+          "order": 2,
+          "nameAr": "النشاط الإشعاعي والاضمحلال ونصف العمر",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S25-03",
+          "order": 3,
+          "nameAr": "الانشطار والاندماج والطاقة النووية",
+          "status": "CANDIDATE_REVIEW_REQUIRED"
+        }
+      ]
+    }
+  ]
+}
