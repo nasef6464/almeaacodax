@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN064",
+  "stage": "QA_LOCK",
+  "sourceKey": "MNSF26-AR-T060-Q10",
+  "sourceImageSha256": "28e28fa25f77f4d311494767a8caf8a6a09ff7cb781f95ae6ca49e24b6c43f2a",
+  "sourceCrop": "AR/AR-T060-Q10.webp",
+  "supersedes": "MNSF26_QUESTION_MASTERING_RUN051_AR_T60_V1.json",
+  "previousStatus": "MASTERED",
+  "previousAnswer": "12",
+  "qaStatus": "REVIEW",
+  "correctAnswer": null,
+  "mathVerified": "Positive clock numeral 12",
+  "sourceOptions": [
+    "12 مساءً",
+    "12 صباحًا"
+  ],
+  "reviewReason": "Two visible answer choices share numeral 12 and differ only by daypart; equation does not fix daypart. Same source image SHA appears at T057 Q10. Do not select a daypart by guess.",
+  "sameImageHashAs": "MNSF26-AR-T057-Q10",
+  "doNotCountAsNewMastering": true,
+  "noDedupeSuppressionUntilDedupeLock": true,
+  "productionImpact": "Exclude from import until resolved."
+}
