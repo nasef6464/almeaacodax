@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN058_GEO_T41_LIBRARY_RECONCILIATION",
+  "records": [
+    {
+      "sourceKey": "MNSF26-GEO-T041-Q03",
+      "sourceProvenance": {
+        "sourcePart": "الهندسة",
+        "bookCode": "GEO",
+        "testNumber": 41,
+        "pdfPage": 79,
+        "sourceSkillLabel": "مراجعة مسائل الهندسة من الكتاب",
+        "sourceTopic": "مسائل الهندسة المتنوعة",
+        "sourceLesson": "تمارين هندسة مرقمة حسب الاختبار",
+        "printedQuestionNumber": 3,
+        "cropFile": "MNSF26-GEO-T041-Q03.webp",
+        "cropSha256": "3aed50dc1503dac348be8d6581e0750594bfc3bfb462826106599d06ae7bbbc2",
+        "cropContract": "EMBEDDED_XOBJECT_OR_EXACT_COMPOSITE_SLICE"
+      },
+      "imageHash": "3aed50dc1503dac348be8d6581e0750594bfc3bfb462826106599d06ae7bbbc2",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T41_Q03",
+      "status": "MASTERED",
+      "questionText": "مستطيل12×6 اقتطع من طرفه الأيسر مثلث متساوي الساقين ضلعاه5؛ أوجد المساحة المتبقية.",
+      "canonicalMainSkill": "main_quant_24",
+      "canonicalSubskill": "sub_quant_24_3",
+      "correctAnswer": "60 (ب)",
+      "stepByStepSolution": "نصف قاعدة المثلث=3 وارتفاعه الأفقي√(5²−3²)=4؛ مساحته12؛ الباقي72−12=60.",
+      "educationalExplanation": "من الصورة: نصف قاعدة المثلث=3 وارتفاعه الأفقي√(5²−3²)=4؛ مساحته12؛ الباقي72−12=60.",
+      "difficulty": "Hard",
+      "difficultyReason": "تحتاج خطوات وعلاقات متعددة.",
+      "contentFingerprint": "4d0260fd5cc92d7766acbc2c6e4f92c1b5920c3610754111e9e45fcc97aefaaf",
+      "ideaFingerprint": "76236febd68aa4a65deb06fcc22d72aebf4f62cde04789224e4691290d4ac519"
+    }
+  ]
+}
