@@ -1,0 +1,120 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN068",
+  "stage": "QA_LOCK",
+  "source": "MNSF26_RUN068_INDEPENDENT_VISUAL_MATH_117_V2.json",
+  "sha256OriginalEvidence": "78500abc54b1de4a99c85c2a0e7bc02cd8cf8a154f19440447a830239aea246e",
+  "rows": [
+    {
+      "sourceKey": "MNSF26-GEO-T016-Q11",
+      "imageHash": "6a7850c7dce3078fb3f2646235c3ff7ecc57a2205ec0184520d225578b940400",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T16_V1.json",
+      "expectedAnswerFromIndependentMath": "منفرج الزاوية (ج)",
+      "independentMathematicalProof": "4²=16>2²+3²=13، فيكون المثلث منفرجًا.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T016-Q12",
+      "imageHash": "13b1ab488d7dacba1c5474e28cd2ac1dfd25f2e08c84c8ad0f8bfe920c5528db",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T16_V1.json",
+      "expectedAnswerFromIndependentMath": "متطابق الضلعين (ب)",
+      "independentMathematicalProof": "النسبة3:2:2 تتضمن زاويتين متساويتين، وبالتالي ضلعين متساويين.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T016-Q14",
+      "imageHash": "2255bdefa6eb52935abf79110c2df2de6d364ad428dc5e0edfe00dfae87d4d2c",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T16_V1.json",
+      "expectedAnswerFromIndependentMath": "منفرج الزاوية (ب)",
+      "independentMathematicalProof": "زاوية100° تجعل المثلث منفرجًا.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T016-Q15",
+      "imageHash": "05daecf8b6637bc0dbad9e990ee2acb7456e95f2465d5620fccaef5355047bde",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T16_V1.json",
+      "expectedAnswerFromIndependentMath": "المثلث متطابق الأضلاع (أ)",
+      "independentMathematicalProof": "المتساوي الأضلاع زواياه60° جميعها حادة.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T016-Q16",
+      "imageHash": "f7b6006ce2845ea58855c4b98b73bc22f3b49a78109edf1200270fee41b67b50",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T16_V1.json",
+      "expectedAnswerFromIndependentMath": "القيمة الثانية أكبر (ب)",
+      "independentMathematicalProof": "الضلع الثالث أكبر من11−7=4، لذا المقارن بالعدد4 أكبر.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T016-Q17",
+      "imageHash": "068ac532a42c11f9cfc8e50829cc3e9ba2cae27acd359384f7519066977d6d86",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T16_V1.json",
+      "expectedAnswerFromIndependentMath": "القيمة الثانية أكبر (ب)",
+      "independentMathematicalProof": "الوتر ب ج أكبر من الضلع القائم أ ب؛ إضافة أ ج للطرفين لا تغير الترتيب.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T016-Q19",
+      "imageHash": "e1298554942f821f521b65c4aca94538fd67c2383da3993b3e059fdc59943df9",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T16_V1.json",
+      "expectedAnswerFromIndependentMath": "5√3 (ب)",
+      "independentMathematicalProof": "القطر الأول√(6²+8²)=10، والضلع المجهول√(10²−5²)=5√3.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T016-Q20",
+      "imageHash": "dffdf6ab531fd2dccf9cfbdc8f458d99d259ba346c69c61657f5b1beb80b8384",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T16_V1.json",
+      "expectedAnswerFromIndependentMath": "48 (ج)",
+      "independentMathematicalProof": "المساحة=7×9/2+3×11/2=31.5+16.5=48.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T017-Q01",
+      "imageHash": "dc8d6e5fe526180c61ef263f0f6575aa7cf5d95caee924a8d9fe85ba3b4c2784",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T17_V1.json",
+      "expectedAnswerFromIndependentMath": "√125 (ج)",
+      "independentMathematicalProof": "الوتر√(10²+5²)=√125.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T017-Q02",
+      "imageHash": "630ee8d34a35867d9c26faf044153083ff3906d5da293289b3b9661e75fc0ea9",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T17_V1.json",
+      "expectedAnswerFromIndependentMath": "100 (ب)",
+      "independentMathematicalProof": "قطر المستطيل√(80²+60²)=100.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    }
+  ]
+}
