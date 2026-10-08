@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN060_AR_T12_RECOVERY",
+  "previouslyCounted": true,
+  "records": [
+    {
+      "id": "MNSF26-AR-T012-Q13",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T012",
+        "sourceLesson": "الأعداد الأولية - العوامل الأولى"
+      },
+      "canonicalMainSkill": "skill_quant_02",
+      "canonicalSubskill": "sub_quant_02_3",
+      "correctAnswer": "ج",
+      "answerValue": "21",
+      "stepByStepSolution": "الأعداد الأولية المتتالية التي أكبرها7 هي 2،3،5،7؛ حاصل ضربها 210، ثم 210÷10=21.",
+      "educationalExplanation": "نحدد الأعداد الأولية المتتالية أولًا ثم ننفذ الضرب والقسمة.",
+      "difficulty": "Easy",
+      "difficultyReason": "تسلسل أولي وحساب مباشر.",
+      "imageHash": "7f1a6d71bebb46e4c5304621f5b002b71096d12ac9a5ce3a5652eecec2b91aee",
+      "contentFingerprint": "caf3eda638bd99f1af6fa49df6599c1cf17f398eccbc3a7b2942142becf62082",
+      "ideaFingerprint": "14977b61517fc8fee59833ab0c7836ecd25188b0243fc058c1751991cef37c3a",
+      "status": "MASTERED"
+    }
+  ]
+}
