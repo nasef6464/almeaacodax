@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN061",
+  "source": "Run059 Library original",
+  "previouslyCounted": false,
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T015-Q04",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+        "testNumber": 15,
+        "pdfPage": 28,
+        "sourceSkillLabel": "جمع الأعداد - المتتابعات - ضرب الأعداد",
+        "sourceTopic": "عنوان المصدر للتوثيق فقط؛ التصنيف من رياضيات الصورة",
+        "sourceLesson": "الحساب والجبر اختبار015 سؤال04",
+        "printedQuestionNumber": 4,
+        "cropFile": "mnsf26_fullbook_crops/AR/AR-T015-Q04.webp",
+        "cropSha256": "4e1060975e00ff28a72619bf1c87c9311f5af168593f31f11fd9a6381e61a06d",
+        "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
+      },
+      "imageHash": "4e1060975e00ff28a72619bf1c87c9311f5af168593f31f11fd9a6381e61a06d",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN059_2026-10-08_T015_Q04",
+      "status": "REVIEW",
+      "questionText": "مثلثات: 5 مع3 و1 يعطي10؛ 8 مع11 و4 يعطي56؛ 3 مع5 و2 يعطي9؛ فكم يعطي10 مع9 و6؟",
+      "canonicalMainSkill": null,
+      "canonicalSubskill": null,
+      "correctAnswer": null,
+      "stepByStepSolution": null,
+      "educationalExplanation": "REVIEW fail-closed: نمط تصويري متعدد العمليات خارج تعريف المتتابعات الحسابية المباشر؛ يلزم اعتماد التصنيف.؛ الإجابة الرياضية المرشحة: 30 (ب)؛ الحل: قاعدة الشكل: الرقم العلوي مضروبًا في فرق الرقمين السفليين؛ 5(3−1)=10،8(11−4)=56،3(5−2)=9؛ 10(9−6)=30.",
+      "difficulty": null,
+      "difficultyReason": "نمط تصويري متعدد العمليات خارج تعريف المتتابعات الحسابية المباشر؛ يلزم اعتماد التصنيف.",
+      "contentFingerprint": "d3e725774a2bedacae3784c61e422c96ebc0f31d75e27f41fcc7e671226e39b4",
+      "ideaFingerprint": "6756a40875a0669e23123dcd12db959750f124559a3c068fb58a1dff43114b27",
+      "holdReason": "نمط تصويري متعدد العمليات خارج تعريف المتتابعات الحسابية المباشر؛ يلزم اعتماد التصنيف.",
+      "proposedCanonicalSubskill": "sub_quant_01_3"
+    }
+  ]
+}

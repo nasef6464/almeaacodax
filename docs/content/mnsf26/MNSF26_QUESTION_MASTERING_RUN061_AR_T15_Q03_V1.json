@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN061",
+  "source": "Run059 Library original",
+  "previouslyCounted": false,
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T015-Q03",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+        "testNumber": 15,
+        "pdfPage": 28,
+        "sourceSkillLabel": "جمع الأعداد - المتتابعات - ضرب الأعداد",
+        "sourceTopic": "عنوان المصدر للتوثيق فقط؛ التصنيف من رياضيات الصورة",
+        "sourceLesson": "الحساب والجبر اختبار015 سؤال03",
+        "printedQuestionNumber": 3,
+        "cropFile": "mnsf26_fullbook_crops/AR/AR-T015-Q03.webp",
+        "cropSha256": "ba9f391aed932dcec3ca5cc95daebe81617c36bc92fb0d7dc4e186443afa2011",
+        "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
+      },
+      "imageHash": "ba9f391aed932dcec3ca5cc95daebe81617c36bc92fb0d7dc4e186443afa2011",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN059_2026-10-08_T015_Q03",
+      "status": "REVIEW",
+      "questionText": "ثلاثة مثلثات: الأول رأسه1 وقاعدتاه6 و6 وداخله12؛ الثاني رأسه4 وقاعدتاه10 و10 وداخله5؛ الثالث رأسه7 وقاعدتاه7 و7؛ أوجد س.",
+      "canonicalMainSkill": null,
+      "canonicalSubskill": null,
+      "correctAnswer": null,
+      "stepByStepSolution": null,
+      "educationalExplanation": "REVIEW fail-closed: نمط تصويري متعدد العمليات وليس متتابعة حسابية صريحة؛ يحتاج تحكيم التصنيف.؛ الإجابة الرياضية المرشحة: 2 (أ)؛ الحل: قاعدة الشكل: مجموع العددين أسفل المثلث مقسومًا على العدد أعلى المثلث؛ (6+6)/1=12، (10+10)/4=5، (7+7)/7=2.",
+      "difficulty": null,
+      "difficultyReason": "نمط تصويري متعدد العمليات وليس متتابعة حسابية صريحة؛ يحتاج تحكيم التصنيف.",
+      "contentFingerprint": "4a16d5f30d96a7da1fe08d4c3ec5ed73dcc87477a856b22d74282502c061c6b5",
+      "ideaFingerprint": "9d9ffc0b6176ecabb1b307faf531a77c69cb75468865a3a02f4901d2ad74701b",
+      "holdReason": "نمط تصويري متعدد العمليات وليس متتابعة حسابية صريحة؛ يحتاج تحكيم التصنيف.",
+      "proposedCanonicalSubskill": "sub_quant_01_3"
+    }
+  ]
+}

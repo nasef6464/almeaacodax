@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN061",
+  "source": "Run059 Library original",
+  "previouslyCounted": false,
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T016-Q06",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+        "testNumber": 16,
+        "pdfPage": 30,
+        "sourceSkillLabel": "جمع الأعداد - المتتابعات - ضرب الأعداد",
+        "sourceTopic": "عنوان المصدر للتوثيق فقط؛ التصنيف من رياضيات الصورة",
+        "sourceLesson": "الحساب والجبر اختبار016 سؤال06",
+        "printedQuestionNumber": 6,
+        "cropFile": "mnsf26_fullbook_crops/AR/AR-T016-Q06.webp",
+        "cropSha256": "c4063b0dbaae0a49e7e953dc7d7f354f8cdb612440fbbd4ca54b0f84ee59d6b5",
+        "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
+      },
+      "imageHash": "c4063b0dbaae0a49e7e953dc7d7f354f8cdb612440fbbd4ca54b0f84ee59d6b5",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN059_2026-10-08_T016_Q06",
+      "status": "MASTERED",
+      "questionText": "إذا 6006÷6=1001، فكم6000006÷6؟",
+      "canonicalMainSkill": "main_quant_01",
+      "canonicalSubskill": "sub_quant_01_4",
+      "correctAnswer": "1000001 (أ)",
+      "stepByStepSolution": "6000006=6×1000001؛ إذن الناتج1000001.",
+      "educationalExplanation": "من الصورة: 6000006=6×1000001؛ إذن الناتج1000001.",
+      "difficulty": "Easy",
+      "difficultyReason": "تحتاج تطبيقًا مباشرًا.",
+      "contentFingerprint": "2ccf24f2a1eae60d27bacc44a4990bf1bfbda1bdb6a31f907a2f8c2266befb57",
+      "ideaFingerprint": "c732ba0b309c5a34ed3b038731f11d162f89e3c9d460b40065b750dc61431e2c"
+    }
+  ]
+}
