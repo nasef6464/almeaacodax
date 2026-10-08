@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN058_AR_T09_DIRECT_VISUAL",
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T009-Q09",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+        "testNumber": 9,
+        "pdfPage": 16,
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "sourceTopic": "تصنيف المصدر محفوظ؛ رياضيات السؤال هي معيار الربط",
+        "sourceLesson": "الحساب والجبر، الاختبار 009، السؤال 09",
+        "printedQuestionNumber": 9,
+        "cropFile": "mnsf26_fullbook_crops/AR/AR-T009-Q09.webp",
+        "cropSha256": "053dbcf7ce8a20adbd040027793189f3d4583bb849bf19db4e81c3c69ac86425",
+        "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
+      },
+      "imageHash": "053dbcf7ce8a20adbd040027793189f3d4583bb849bf19db4e81c3c69ac86425",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN058_2026-10-08_T009_Q09",
+      "status": "MASTERED",
+      "questionText": "جهاز ثمنه4500 ريال ولوحي2500 ريال؛ ما الفرق؟",
+      "canonicalMainSkill": "main_quant_01",
+      "canonicalSubskill": "sub_quant_01_4",
+      "correctAnswer": "2000 ريال (ب)",
+      "stepByStepSolution": "4500−2500=2000.",
+      "educationalExplanation": "نطبّق القاعدة الرياضية الواردة في نص السؤال: 4500−2500=2000.",
+      "difficulty": "Easy",
+      "difficultyReason": "يحتاج تطبيقًا مباشرًا لقاعدة حسابية.",
+      "contentFingerprint": "2f0725bb6a3853f8c36410b49da02f4bd596e86319db98cad09d675452da9052",
+      "ideaFingerprint": "a3ac5deaeef8fad591ea4083768516c87fd8425102621e57394282830418578c"
+    },
+    {
+      "sourceKey": "MNSF26-AR-T009-Q10",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+        "testNumber": 9,
+        "pdfPage": 16,
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "sourceTopic": "تصنيف المصدر محفوظ؛ رياضيات السؤال هي معيار الربط",
+        "sourceLesson": "الحساب والجبر، الاختبار 009، السؤال 10",
+        "printedQuestionNumber": 10,
+        "cropFile": "mnsf26_fullbook_crops/AR/AR-T009-Q10.webp",
+        "cropSha256": "774223da1b9ad5c38ece430cbbdf22ac3a7bdeffb26a105ce38bf725dadcbe13",
+        "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
+      },
+      "imageHash": "774223da1b9ad5c38ece430cbbdf22ac3a7bdeffb26a105ce38bf725dadcbe13",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN058_2026-10-08_T009_Q10",
+      "status": "MASTERED",
+      "questionText": "عدد قوائم البقر48، وعدد الحمام نصف عدد البقر؛ كم حمامة؟",
+      "canonicalMainSkill": "main_quant_01",
+      "canonicalSubskill": "sub_quant_01_4",
+      "correctAnswer": "6 (أ)",
+      "stepByStepSolution": "عدد البقر=48/4=12؛ نصفه6 حمامات.",
+      "educationalExplanation": "نطبّق القاعدة الرياضية الواردة في نص السؤال: عدد البقر=48/4=12؛ نصفه6 حمامات.",
+      "difficulty": "Medium",
+      "difficultyReason": "يحتاج عدة خطوات ومقارنة معطيات.",
+      "contentFingerprint": "d4d4dafe410ada34bec4aac3d7e32b42f238461394e80adbb08cb4fc51bd29db",
+      "ideaFingerprint": "758f7652e286d9924e8bf1df751e59815ef0b815ab02e2388b82da487502a9eb"
+    }
+  ]
+}
