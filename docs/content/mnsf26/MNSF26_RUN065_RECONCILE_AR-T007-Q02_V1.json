@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN065",
+  "stage": "QUESTION_MASTERING_GITHUB_SYNC",
+  "sourceArtifact": "RUN063_DIRECT_T007_VISUAL_MASTERING",
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T007-Q02",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+        "testNumber": 7,
+        "pdfPage": 12,
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "sourceTopic": "direct visual mathematical classification",
+        "sourceLesson": "AR T007 Q02",
+        "printedQuestionNumber": 2,
+        "cropFile": "AR/AR-T007-Q02.webp",
+        "cropSha256": "a18d46c455ad25a6e1675274fc57ea3f5be3044689fe0f2263251f255475fd9a"
+      },
+      "imageHash": "a18d46c455ad25a6e1675274fc57ea3f5be3044689fe0f2263251f255475fd9a",
+      "visualEvidence": "RUN063_DIRECT_RUN017_WEBP_VISUAL_INSPECTION",
+      "status": "MASTERED",
+      "questionText": "قارن حاصل ضرب 7×6×5×4×3×2×1 بحاصل ضرب 10×9×8×7.",
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_2",
+      "correctAnswer": "ج — القيمتان متساويتان",
+      "stepByStepSolution": "7×6×5×4×3×2×1=5040، و10×9×8×7=5040؛ القيمتان متساويتان.",
+      "educationalExplanation": "7×6×5×4×3×2×1=5040، و10×9×8×7=5040؛ القيمتان متساويتان.",
+      "difficulty": "Medium",
+      "difficultyReason": "يتطلب خطوتين رياضيتين وتحققًا من المصدر.",
+      "contentFingerprint": "3a7af749fb5b7c3c4a19bdc23c15359f7266ad92ffe81d53892626c27da95e60",
+      "ideaFingerprint": "f5622e73b1b4fd39bce54c5133053df6a483643875673c4df954399388576588"
+    }
+  ],
+  "persistence": "GITHUB_RECONCILED_FROM_LIBRARY"
+}
