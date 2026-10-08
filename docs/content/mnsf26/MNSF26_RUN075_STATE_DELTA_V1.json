@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN075",
+  "stage": "QA_LOCK",
+  "baseBranchHead": "7e9fa5a70ec891a99580dc2b9aed02d6690efd71",
+  "baseMainHead": "2867e5a48220e61a520fb45eb224dc4e5d5523e3",
+  "previousProvisionalQAReviewed": 1438,
+  "newSourceKeys": 99,
+  "distinctImageHashes": 79,
+  "mathPassTaxonomyPending": 62,
+  "holdPreserved": 33,
+  "reviewRequired": 4,
+  "reviewKeys": [
+    "MNSF26-AR-T055-Q08",
+    "MNSF26-AR-T056-Q16",
+    "MNSF26-AR-T057-Q10",
+    "MNSF26-AR-T060-Q10"
+  ],
+  "qaReviewedProvisionalAfter": 1537,
+  "qaRemainingProvisional": 592,
+  "totalActive": 2129,
+  "qaFullBookPass": false,
+  "canonicalTaxonomyFullBookPass": false,
+  "cropLocked": "2135/2135",
+  "duplicateImageCandidatePairs": 20,
+  "productionUntouched": true,
+  "evidence": "MNSF26_RUN075_INDEPENDENT_QA_T054_T060_99_V1.json SHA256 07159e270b2ebabddce878f008ba8cc8c9e7b373962aaee325301d40875c5d4f",
+  "reviewOverrides": "MNSF26_RUN075_REVIEW_OVERRIDES_V1.json",
+  "preserved": [
+    "P001/Q10 HOLD",
+    "P013/Q15 HOLD",
+    "P014/Q08 quarantine",
+    "5 suppressions",
+    "P011/Q19=B",
+    "arithmetic T33 source absent",
+    "geometry T24/Q18 source absent",
+    "130 legacy untouched"
+  ],
+  "next": "Complete 592 remaining QA and 25/95 taxonomy audit; no DEDUPE/R2/import/production before QA pass."
+}
