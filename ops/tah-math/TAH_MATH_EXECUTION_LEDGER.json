@@ -153,7 +153,7 @@
       2
     ]
   },
-  "lastCheckpoint": "2026-10-07-heavy-run7",
+  "lastCheckpoint": "2026-10-08-heavy-run12",
   "evidence": [
     "ops/tah-math/TAH_MATH_RUN1_BASELINE.json",
     "ops/tah-math/TAH_MATH_SOURCE_IDEA_MAP_PART01.json",
@@ -176,5 +176,14 @@
       "status": "ACTIVE_NOT_STOPPING",
       "detail": "All three banks are currently Medium-only. YLM26 has core explanation/hint/strategy/AI; COL26/COL26OLD lack hint and AI context in production. Full pedagogical review and enrichment is required before final closure."
     }
-  ]
+  ],
+  "latestRun": {
+    "sourceOptionRows": 214,
+    "sourceOptionSegments": 642,
+    "independentVisualMathRows": 19,
+    "sourceMathMatches": 19,
+    "sourceAnswerAuditCOL26": 1012,
+    "productionMutation": false,
+    "remaining": "All-option pedagogy, YLM26, COL26OLD, dedupe, coverage, trainings/tests, E2E"
+  }
 }
