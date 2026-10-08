@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN060_AR_T14_RECOVERY",
+  "previouslyCounted": true,
+  "records": [
+    {
+      "id": "MNSF26-AR-T014-Q12",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T014",
+        "sourceLesson": "الأعداد الأولية - العوامل الأولى"
+      },
+      "canonicalMainSkill": "skill_quant_02",
+      "canonicalSubskill": "sub_quant_02_2",
+      "correctAnswer": "د",
+      "answerValue": "4",
+      "stepByStepSolution": "إذا كان باقي قسمة س على10 هو9، فآخر رقم9، وبالتالي باقي قسمته على5 هو4.",
+      "educationalExplanation": "العدد 10ك+9 يساوي 5(2ك+1)+4.",
+      "difficulty": "Easy",
+      "difficultyReason": "تحويل باقي من10 إلى5.",
+      "imageHash": "73e881e7d8163b279ec5484c3324b9226a690b9844c08b7c3464d9c0e2bd1f8f",
+      "contentFingerprint": "ce37d7b73187e6e0f2d470103c57b3f61cd9e39386ef52d5064abbdf986faa50",
+      "ideaFingerprint": "758386352c142f7680f099745a7764da88af798e54076d466f1bcf9dd577a837",
+      "status": "MASTERED"
+    }
+  ]
+}
