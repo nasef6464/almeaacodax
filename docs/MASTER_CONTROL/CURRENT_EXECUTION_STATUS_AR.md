@@ -117,6 +117,7 @@ Git HEAD always overrides this historical baseline.
 **BIO26 must not be reopened unless a new source/content revision is explicitly requested.**
 
 ## Interactive teaching board V1 — 2026-10-08
+- PR #463 deployed a65412001bf0: Arabic/feedback returned valid plans; practice omission and incomplete English JSON still failed acceptance. Follow-up codex/teaching-board-structured-plans replaces prose-only layout generation with compact typed content and deterministic server assembly, within the existing cap. Production educational/audio certification remains PARTIAL.
 - PR #459 deployed as 1984efca1074, readiness/Vercel PASS. Owned-review validation still fell back safely despite elimination of thinking-token gap; follow-up branch codex/teaching-board-live-validation bounds the plan to two scenes and adds private structural diagnostics. Production correctness/audio status remains PARTIAL.
 - Real-provider continuation: Gemini connectivity PASS; 4 bounded live-chat samples were truncated. Focused board-only Flash generation repair is on PR #459; owned-review post-deploy audit remains required. See docs/audits/TEACHING_BOARD_REAL_PROVIDER_2026-10-08.md.
 - Owner-directed scope: current AI gateway integration and browser-side interactive board; baseline main@f40a785e, branch codex/smart-teacher-live-board.

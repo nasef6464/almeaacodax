@@ -36,6 +36,7 @@
 
 ## Interactive teacher changes
 - Teaching wire schema/validation: server/src/modules/ai/contracts/teachingStoryboard.ts.
+- Compact provider content/schema and server-owned scene/checkpoint assembly: server/src/modules/ai/application/compactTeachingPlan.ts. Public browser contract remains unchanged.
 - Planner instructions and cached JSON/text fallback: server/src/modules/ai/application/questionTeachingPlan.ts; review authorization stays in ai.routes.ts.
 - Board replay/actions: components/results/teaching/boardState.ts; timing/pause/resume: useTeachingPlayback.ts; voice backend: narrationEngine.ts; render: TeachingBoard.tsx.
 - Student dialogue/interruption/continue: components/results/InteractiveSmartTeacher.tsx. See docs/audits/INTERACTIVE_TEACHING_BOARD_V1_2026-10-08.md for current proof limits.

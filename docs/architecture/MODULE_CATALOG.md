@@ -29,4 +29,5 @@
 - `VERIFIED` تعني دليل رحلة مناسب، وليس مجرد وجود ملف أو نجاح فحص ثابت.
 
 ## AI teaching board V1 boundary — 2026-10-08
+CompactTeachingPlan in the existing AI application layer owns content schema and deterministic scene/checkpoint compilation; provider adapters apply its schema for board calls only. Browser storyboard_v1 remains the canonical rendering contract.
 Existing AI module retains question review authorization, trusted references, provider routing, usage/budget enforcement and scoped cache. A pure versioned teaching contract is shared with the frontend. Browser components/results/teaching owns board state/actions/playback/render and a replaceable narration adapter. No new service or educational authority. Local fixture proof is PARTIAL; live-provider and production certification remain open.

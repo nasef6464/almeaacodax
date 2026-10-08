@@ -12,6 +12,15 @@ Status: PARTIAL. PR #459; continuing from `8f64fee146d927d57517eb269edf4d9745fed
 
 ## Real observations before the repair
 
+### Structured content compiler follow-up
+
+- PR #463 head `e9af0a8a`: 18 SUCCESS, 3 SKIPPED, all required checks PASS; merge/deployment `a65412001bf0a2835cfa06910107580e57c548ae`, canonical API/readiness/Vercel/Post Deploy Smoke PASS.
+- Three owned-review requests: Arabic lesson valid in 5,572 ms / 410 output tokens; feedback valid in 3,432 ms / 106 output tokens; English fell back in 4,578 ms / 372 output tokens, diagnostics JSON incomplete. The Arabic model response had seven scenes and no checkpoint despite the two-scene prompt. Therefore valid JSON alone does not prove the practice behavior.
+- Next branch `codex/teaching-board-structured-plans` uses a compact content-only provider schema. Server code owns exactly two lesson scenes, stable element IDs, checkpoint before the solution, two hints and boxed result. Follow-ups compile to one scene. Public storyboard_v1 and legacy cached plans remain compatible; newly generated board responses must match the compact format/mode/language.
+- Gemini receives the supported JSON Schema, including required content fields and exactly two hints. Reference: https://ai.google.dev/gemini-api/docs/generate-content/structured-output?hl=en. This prevents relying on a prose instruction to define scene structure, and reduces JSON overhead without increasing the 450-token cap.
+- Formula delimiters are stripped before safe KaTeX validation/rendering. Compiler tests cover required practice, mode/language mismatch, unsafe formulas, stable IDs and result boxing; adapter tests cover scoped schema propagation.
+- The live auditor now requires all three complete responses, English, practice before solution, one-scene feedback and three actual bounded usage records. These structural checks still require manual educational/voice review.
+
 - Canonical `/api/ai/status` and authenticated status report Gemini 2.5 Flash configured, three Free pools, and paidAllowed=false.
 - One authenticated provider test succeeded on its first attempt in 8,158 ms.
 - Four bounded synthetic prompts carried this branch's planner instructions through the existing live `/ai/chat` gateway: Arabic math, English physics, Arabic chemistry, and incorrect-step feedback. All four used Gemini, none used fallback, but all returned truncated JSON; 0/4 passed the storyboard validator.

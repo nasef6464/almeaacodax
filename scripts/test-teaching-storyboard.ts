@@ -4,6 +4,7 @@ import { decodeQuestionTeachingPlan, inspectQuestionTeachingPlan, normalizeQuest
 import { boardAt, sceneDuration } from '../components/results/teaching/boardState';
 import { BrowserNarrationEngine } from '../components/results/teaching/narrationEngine';
 import { createAiProviderAdapters } from '../server/src/modules/ai/infrastructure/providers/aiProviderAdapters';
+import { compileCompactTeachingPlan, compactTeachingSchema, teachingRequestLanguage } from '../server/src/modules/ai/application/compactTeachingPlan';
 
 const example = {
   version: 1, language: 'ar-SA', scenes: [
@@ -13,6 +14,25 @@ const example = {
   ],
 };
 const plan = validateTeachingStoryboard(example)!;
+const compact = { format: 'compact_v1', mode: 'lesson', language: 'ar-SA', narration: 'نركز على آحاد الأعداد.', board: '$2 \\times 5 \\times 8$', kind: 'formula', prompt: 'ما الخطوة التالية؟', hints: ['اضرب الآحاد.', 'ابدأ بأول عددين.'], explanation: 'الناتج ينتهي بصفر.', solution: '$2 \\times 5=10 \\Rightarrow 0 \\times 8=0$', solutionKind: 'formula' };
+const compiled = compileCompactTeachingPlan(compact, { mode: 'lesson', language: 'ar-SA' })!;
+assert.equal(compiled.scenes.length, 2);
+assert.equal(compiled.scenes[0].checkpoint?.hints.length, 2);
+assert.equal(compiled.scenes[1].checkpoint, undefined);
+assert.equal(compiled.scenes[0].actions[0].type === 'write' && compiled.scenes[0].actions[0].content.startsWith('$'), false, 'strip math delimiters before KaTeX');
+assert.equal(boardAt(compiled, 1, sceneDuration(compiled, 1)).find(item => item.id === 'solution')?.emphasis, 'box');
+assert.equal(compileCompactTeachingPlan({ ...compact, hints: ['one'] }), null);
+assert.equal(compileCompactTeachingPlan({ ...compact, solution: '\\href{javascript:bad}{x}' }), null);
+assert.equal(compileCompactTeachingPlan(compact, { mode: 'reply' }), null);
+assert.equal(compileCompactTeachingPlan(compact, { mode: 'lesson', language: 'en-US' }), null);
+const compactReply = { format: 'compact_v1', mode: 'reply', language: 'en-US', narration: 'Multiply the units instead of adding.', board: '2 \\times 5', kind: 'formula' };
+assert.equal(compileCompactTeachingPlan(compactReply)?.scenes.length, 1);
+assert.equal(compileCompactTeachingPlan(compactReply)?.scenes[0].checkpoint, undefined);
+assert.equal(teachingRequestLanguage('Explain in English'), 'en-US');
+assert.equal(teachingRequestLanguage('اشرح بالإنجليزية'), 'en-US');
+assert.equal(teachingRequestLanguage('اشرح بالعربي'), 'ar-SA');
+assert.equal(normalizeQuestionTeachingPlan(JSON.stringify(compact), 'fallback', { mode: 'lesson' }), JSON.stringify(compiled));
+assert.equal(normalizeQuestionTeachingPlan(JSON.stringify(example), 'fallback', { mode: 'lesson' }), 'fallback', 'new generation must not bypass required practice via a legacy full plan');
 const practiceExample = { ...example, scenes: [{ ...example.scenes[0], checkpoint: { prompt: 'ما الخطوة التالية؟', hints: ['ابدأ بالفكرة.', 'طبق القانون.'], unexpected: 'stripped' } }, ...example.scenes.slice(1)] };
 assert.deepEqual(validateTeachingStoryboard(practiceExample)?.scenes[0].checkpoint, { prompt: 'ما الخطوة التالية؟', hints: ['ابدأ بالفكرة.', 'طبق القانون.'] });
 assert.equal(validateTeachingStoryboard({ ...practiceExample, scenes: practiceExample.scenes.map(scene => ({ ...scene, checkpoint: practiceExample.scenes[0].checkpoint })) }), null, 'practice must remain bounded to one checkpoint');
@@ -87,11 +107,14 @@ globalThis.fetch = async (_url, init) => {
 };
 try {
   const adapters = createAiProviderAdapters({ getProviderRuntime: () => ({ apiKey: 'fixture-key', model: providerModel }), defaultTimeoutMs: 1000, clientUrl: 'https://example.com', qwenBaseUrl: 'https://example.com', redactDiagnostic: () => 'redacted' });
-  await adapters.callProvider('gemini', 'trusted reference', 'application/json', undefined, { maxOutputTokens: 450, disableThinking: true });
+  const schema = compactTeachingSchema('lesson', 'en-US');
+  await adapters.callProvider('gemini', 'trusted reference', 'application/json', undefined, { maxOutputTokens: 450, disableThinking: true, jsonSchema: schema });
+  assert.deepEqual(requests.at(-1).generationConfig.responseJsonSchema, schema);
   assert.deepEqual(requests.at(-1).generationConfig.thinkingConfig, { thinkingBudget: 0 });
   assert.equal(requests.at(-1).generationConfig.maxOutputTokens, 450);
   await adapters.callProvider('gemini', 'normal chat');
   assert.equal(requests.at(-1).generationConfig.thinkingConfig, undefined, 'other capabilities retain their existing behavior');
+  assert.equal(requests.at(-1).generationConfig.responseJsonSchema, undefined);
   for (providerModel of ['gemini-2.5-pro', 'gemini-3.8-flash']) {
     await adapters.callProvider('gemini', 'trusted reference', 'application/json', undefined, { maxOutputTokens: 450, disableThinking: true });
     assert.equal(requests.at(-1).generationConfig.thinkingConfig, undefined, 'unsupported models must not receive a thinking-off parameter');
