@@ -1,0 +1,81 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN070",
+  "stage": "QA_LOCK",
+  "newIndependentReviewed": 6,
+  "newMathAnswerPass": 6,
+  "newReview": 0,
+  "source": "Run021 WEBP crop SHA verified in Run066 visual contact sheets",
+  "qaRows": [
+    {
+      "sourceKey": "MNSF26-GEO-T005-Q18",
+      "sourceCropSha256": "da27c2d0f691e804354bcaaa3a039a80be9e9d7cde9b84019217e415bc1b7fbf",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T05_V1.json",
+      "visualSource": "Run021 original geometry crop; Run066 contact_05.jpg verified against source hash",
+      "expectedAnswerFromIndependentMath": "القيمتان متساويتان (ج)",
+      "independentMathematicalProof": "القطعة المائلة تصنع زاوية حادة 30° مع المستقيم الأفقي الأعلى. المستقيمان الأفقيان متوازيان، والزاوية س في الأسفل هي المكملة للحادة المناظرة، أي 180−30=150°؛ فتساوي القيمة الثانية 150°.",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T005-Q19",
+      "sourceCropSha256": "befb6f42ec447cda78585033dee10eddbd175558fd2e7624c2c983674904cbf5",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T05_V1.json",
+      "visualSource": "Run021 original geometry crop; Run066 contact_05.jpg verified against source hash",
+      "expectedAnswerFromIndependentMath": "40° (ج)",
+      "independentMathematicalProof": "زاويتا قاعدة المثلث العلوي عند المستقيم الأفقي 60° و80° من الرسم، لذلك س=180−60−80=40°.",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T006-Q20",
+      "sourceCropSha256": "f0fc069f18a815fc5c877fb304baa77eac43c002693f1d70292fc89d7ed2a8ee",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T06_V1.json",
+      "visualSource": "Run021 original geometry crop; Run066 contact_06.jpg verified against source hash",
+      "expectedAnswerFromIndependentMath": "القيمة الثانية أكبر (ب)",
+      "independentMathematicalProof": "في الرباعي ذي القاعدتين المتوازيتين الزاويتان المتحالفتان متكاملتان؛ س=180−89=91°، وص=180−51=129°. بما أن 129>91 فالقيمة الثانية أكبر.",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T008-Q20",
+      "sourceCropSha256": "15d48d616770eb0116e899753a46b1f23447b6a0ab7256aa558eb2ca846aaa77",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T08_V1.json",
+      "visualSource": "Run021 original geometry crop; Run066 contact_08.jpg verified against source hash",
+      "expectedAnswerFromIndependentMath": "30° (د)",
+      "independentMathematicalProof": "الخط الأفقي المار بالرأس موازٍ للقاعدة. الزاوية ص الخارجية عند الرأس تساوي زاوية القاعدة اليسرى 2س بالتبادل، وزاوية الرأس الداخلية أيضًا ص كما هو موضح؛ إذن ص+ص+60=180 فص=60 ومنه 2س=60 وس=30°.",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T009-Q08",
+      "sourceCropSha256": "bb12de3ec6fba4a8d70cc14bd01662bd246718e762c17118118716ebdf5f5822",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T09_V1.json",
+      "visualSource": "Run021 original geometry crop; Run066 contact_08.jpg verified against source hash",
+      "expectedAnswerFromIndependentMath": "50° (أ)",
+      "independentMathematicalProof": "زاوية القاعدة اليسرى الداخلية مكملة للزاوية الخارجية 130°، فتعادل 50°. القطعة الأفقية داخل المثلث موازية للقاعدة، لذا الزاوية المناظرة س=50°.",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T009-Q10",
+      "sourceCropSha256": "ed7ccef8f3058f2693de1636d60aef1d6895a0dff2125730a4e853ee5a988db7",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T09_V1.json",
+      "visualSource": "Run021 original geometry crop; Run066 contact_08.jpg verified against source hash",
+      "expectedAnswerFromIndependentMath": "115° (ج)",
+      "independentMathematicalProof": "الزاوية بين الضلع الأيسر والمستقيم الأفقي الموازي للقاعدة 25°؛ إذن زاوية القاعدة اليسرى 25°. زاوية الرأس قائمة 90°، فالزاوية الداخلية اليمنى 65°، والخارجية المطلوبة س=180−65=115°.",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    }
+  ],
+  "fullBookQAPass": false,
+  "canonicalTaxonomyGate": "PENDING",
+  "productionServicesUntouched": true
+}
