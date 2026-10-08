@@ -77,6 +77,12 @@ Ruleset: `Protect main`
 
 Git HEAD always overrides this historical baseline.
 
+## Owner-directed smart teacher practice — 2026-10-08
+
+- PR #459 / branch `codex/smart-teacher-live-board`: optional practice checkpoint, two progressive local hints, contextual review of a student attempt and return to the saved board.
+- Status: PARTIAL, review implementation; production AI/audio quality remains unproven. Exact code/CI evidence is on PR #459 and `docs/audits/INTERACTIVE_TEACHING_BOARD_V1_2026-10-08.md`.
+- No changes to grades, mastery, auth, persisted data, provider budgets or production deployment. This owner-directed lane does not close PLAN 2 or start PLAN 3.
+
 ## BIO26 operational lane — CLOSED ✅ — 2026-10-07
 
 - Scope: الأحياء فقط، batch `TAH-BIO-BIO26-FULL-V1`.

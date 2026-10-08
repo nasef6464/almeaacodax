@@ -12,6 +12,13 @@ const example = {
   ],
 };
 const plan = validateTeachingStoryboard(example)!;
+const practiceExample = { ...example, scenes: [{ ...example.scenes[0], checkpoint: { prompt: 'ما الخطوة التالية؟', hints: ['ابدأ بالفكرة.', 'طبق القانون.'], unexpected: 'stripped' } }, ...example.scenes.slice(1)] };
+assert.deepEqual(validateTeachingStoryboard(practiceExample)?.scenes[0].checkpoint, { prompt: 'ما الخطوة التالية؟', hints: ['ابدأ بالفكرة.', 'طبق القانون.'] });
+assert.equal(validateTeachingStoryboard({ ...practiceExample, scenes: practiceExample.scenes.map(scene => ({ ...scene, checkpoint: practiceExample.scenes[0].checkpoint })) }), null, 'practice must remain bounded to one checkpoint');
+assert.equal(validateTeachingStoryboard({ ...practiceExample, scenes: [practiceExample.scenes[0]] }), null, 'a solution scene must follow the checkpoint');
+for (const checkpoint of [{ prompt: 'x', hints: ['one'] }, { prompt: '<script>x</script>', hints: ['one', 'two'] }, { prompt: 'x', hints: ['one', 'x'.repeat(241)] }]) {
+  assert.equal(validateTeachingStoryboard({ ...example, scenes: [{ ...example.scenes[0], checkpoint }] }), null);
+}
 assert.ok(plan);
 assert.equal(boardAt(plan, 0, 0)[0].progress, 0);
 assert.equal(boardAt(plan, 0, sceneDuration(plan, 0))[0].progress, 1);

@@ -3,12 +3,14 @@ import type { TeachingStoryboard } from '../../../server/src/modules/ai/contract
 import { boardAt, estimateNarrationMs, sceneDuration } from './boardState';
 import { BrowserNarrationEngine } from './narrationEngine';
 
-export function useTeachingPlayback(plan: TeachingStoryboard | null, voice: boolean, enabled: boolean) {
+export function useTeachingPlayback(plan: TeachingStoryboard | null, voice: boolean, enabled: boolean, practice = true) {
   const [position, setPosition] = React.useState({ scene: 0, elapsed: 0, revision: 0 });
   const [playing, setPlaying] = React.useState(false);
   const narrator = React.useMemo(() => new BrowserNarrationEngine(), []);
   const started = React.useRef(false);
   const finished = React.useRef(false);
+  const completed = React.useRef(new Set<string>());
+  const [checkpointScene, setCheckpointScene] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     narrator.cancel();
@@ -38,6 +40,10 @@ export function useTeachingPlayback(plan: TeachingStoryboard | null, voice: bool
         const visualDuration = sceneDuration(plan, current.scene);
         const minimum = voice ? visualDuration : Math.max(visualDuration, estimateNarrationMs(scene.narration));
         if (elapsed >= minimum && finished.current) {
+          if (practice && scene.checkpoint && !completed.current.has(scene.id)) {
+            queueMicrotask(() => { setCheckpointScene(scene.id); setPlaying(false); });
+            return { ...current, elapsed: Math.max(minimum, current.elapsed) };
+          }
           if (current.scene === plan.scenes.length - 1) {
             // Defer the other state update outside this updater.
             queueMicrotask(() => setPlaying(false));
@@ -49,9 +55,11 @@ export function useTeachingPlayback(plan: TeachingStoryboard | null, voice: bool
       });
     }, 50);
     return () => { clearInterval(timer); narrator.pause(); };
-  }, [plan, position.scene, position.revision, voice, enabled, playing, narrator]);
+  }, [plan, position.scene, position.revision, voice, enabled, playing, narrator, practice]);
 
   React.useEffect(() => {
+    completed.current.clear();
+    setCheckpointScene(null);
     setPlaying(Boolean(plan));
     setPosition({ scene: 0, elapsed: 0, revision: 0 });
   }, [plan]);
@@ -62,13 +70,21 @@ export function useTeachingPlayback(plan: TeachingStoryboard | null, voice: bool
   }, []);
 
   const seek = (scene: number) => {
+    setCheckpointScene(null);
     narrator.cancel();
     setPlaying(false);
     setPosition(current => ({ scene: Math.max(0, Math.min((plan?.scenes.length || 1) - 1, scene)), elapsed: 0, revision: current.revision + 1 }));
   };
   const pause = () => { narrator.pause(); setPlaying(false); };
-  const toggle = () => { if (playing) pause(); else setPlaying(true); };
+  const toggle = () => { if (playing) pause(); else if (!checkpointScene) setPlaying(true); };
+  const completeCheckpoint = (resume = false) => {
+    if (checkpointScene) completed.current.add(checkpointScene);
+    setCheckpointScene(null);
+    if (resume) setPlaying(true);
+  };
   return {
+    checkpoint: checkpointScene === plan?.scenes[position.scene]?.id ? plan.scenes[position.scene].checkpoint : undefined,
+    completeCheckpoint,
     sceneIndex: position.scene, elapsedMs: position.elapsed, playing, pause, toggle, seek,
     elements: plan ? boardAt(plan, position.scene, position.elapsed) : [],
     narration: plan?.scenes[position.scene]?.narration || '',

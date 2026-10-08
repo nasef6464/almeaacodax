@@ -19,7 +19,9 @@ Object.defineProperty(window,'speechSynthesis',{value:{speak:(u:any)=>(window as
 (window as any).testRequests.push(payload);
 await new Promise(resolve=>setTimeout(resolve,100));
 if ((window as any).testFallback) return {text:'الشرح المعتمد الحالي',storyboard:{version:99}};
+if ((window as any).testFailure && payload.boardContext) throw new Error('تعذر مراجعة المحاولة');
 const storyboard=(window as any).testEnglish ? {version:1,language:'en-US',scenes:[{id:'grammar',narration:'Focus on the verb.',actions:[{type:'write',id:'sentence',kind:'text',content:'She has been studying for two hours.'},{type:'highlight',target:'sentence'}]}]} : payload.boardContext ? followup : primary;
+if ((window as any).testPractice && storyboard === primary) return {text:'شرح مع تدريب',storyboard:{...primary,scenes:primary.scenes.map((scene,index)=>index===0 ? {...scene,checkpoint:{prompt:'كيف نكتب 27 كقوة للثلاثة؟',hints:['فكر في الضرب المتكرر.','احسب عدد مرات ضرب ثلاثة في نفسها.']}} : scene)}};
 return {text:storyboard.scenes.map(s=>s.narration).join('\n'),storyboard};
 };
 function Demo(){const [open,setOpen]=React.useState(true);return <><button onClick={()=>setOpen(true)}>فتح</button>{open&&<InteractiveSmartTeacher isOpen onClose={()=>setOpen(false)} questionId="test-question" context="result_review" resultId="test-result" tutorSessionId="test-session"/>}</>;}

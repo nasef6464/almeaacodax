@@ -6,6 +6,7 @@ import { validateTeachingStoryboard, type TeachingStoryboard } from '../../serve
 import { TeachingBoard } from './teaching/TeachingBoard';
 import { useTeachingPlayback } from './teaching/useTeachingPlayback';
 import { BrowserNarrationEngine } from './teaching/narrationEngine';
+import { PracticeCheckpoint } from './teaching/PracticeCheckpoint';
 
 type AssistantContext = 'result_review' | 'saved_review' | 'mistake_review' | 'mastery_review';
 type SpeechRecognitionLike = {
@@ -35,7 +36,7 @@ export const InteractiveSmartTeacher: React.FC<{
   const dialogRef = React.useRef<HTMLDivElement>(null);
   const legacyNarrator = React.useMemo(() => new BrowserNarrationEngine(), []);
   const main = useTeachingPlayback(lesson?.plan || null, autoVoice, isOpen && !reply && !pending && !listening);
-  const branch = useTeachingPlayback(reply?.plan || null, autoVoice, isOpen && !pending && !listening);
+  const branch = useTeachingPlayback(reply?.plan || null, autoVoice, isOpen && !pending && !listening, false);
   const active = reply ? branch : main;
   const activeLesson = reply || lesson;
 
@@ -74,11 +75,20 @@ export const InteractiveSmartTeacher: React.FC<{
       if (!lesson || replaceLesson) { setLesson(next); setReply(null); }
       else setReply(next);
       if (!next.plan && autoVoice) legacyNarrator.speak(text, 'ar-SA', () => {});
+      return true;
     } catch (requestError) {
       if (requestGeneration === generation.current) setError(requestError instanceof Error ? requestError.message : 'تعذر تشغيل المعلم الذكي الآن.');
+      return false;
     } finally {
       if (requestGeneration === generation.current) { requestRef.current = false; setPending(false); }
     }
+  };
+
+  const attemptStep = async (answer: string) => {
+    if (!main.checkpoint) return false;
+    const result = await ask(`راجع محاولتي لهذه الخطوة: ${main.checkpoint.prompt}\nإجابتي: ${answer.slice(0, 350)}\nوضح صحة الخطوة من المرجع؛ إن أخطأت أعطني تلميحاً موجهاً دون كشف الحل كله. لا تحسب درجة أو إتقاناً.`);
+    if (result) main.completeCheckpoint();
+    return result;
   };
 
   React.useEffect(() => {
@@ -127,7 +137,7 @@ export const InteractiveSmartTeacher: React.FC<{
     recognition.onresult = (event: any) => {
       const transcript = String(event?.results?.[0]?.[0]?.transcript || '').trim();
       recognitionRef.current = null; setListening(false);
-      if (transcript) void ask(transcript);
+      if (transcript) void (main.checkpoint && !reply ? attemptStep(transcript) : ask(transcript));
     };
     recognition.onerror = () => { recognitionRef.current = null; setListening(false); setError('لم ألتقط الكلام بوضوح. جرّب مرة أخرى أو اكتب سؤالك.'); };
     recognition.onend = () => { if (recognitionRef.current === recognition) { recognitionRef.current = null; setListening(false); } };
@@ -156,10 +166,12 @@ export const InteractiveSmartTeacher: React.FC<{
                 <div className="flex min-h-64 flex-col items-center justify-center gap-4 p-5 text-center"><Bot size={40} className="text-emerald-400" /><p>{pending ? 'المعلم يجهز الشرح…' : 'السبورة جاهزة'}</p>{!pending && <button type="button" className="rounded-xl bg-emerald-600 px-4 py-3" onClick={() => void ask('اشرح السؤال خطوة بخطوة.', 'steps', true)}>ابدأ الشرح</button>}</div>}
             </div>
             {pending && <p role="status" className="flex items-center gap-2 text-sm text-emerald-300"><Loader2 size={16} className="animate-spin" /> المعلم يفكر…</p>}
+            {main.checkpoint && !reply && <PracticeCheckpoint key={`${questionId}-${main.sceneIndex}`} checkpoint={main.checkpoint} pending={pending}
+              onAttempt={attemptStep} onSkip={() => main.completeCheckpoint(true)} />}
             {reply && <button type="button" disabled={pending} className="min-h-11 rounded-xl bg-emerald-600 px-4 font-bold disabled:opacity-50" onClick={() => { branch.pause(); legacyNarrator.cancel(); setReply(null); setChatOpen(false); main.toggle(); }}>نكمل الشرح من نفس النقطة</button>}
             {activeLesson?.plan && <div className="flex items-center justify-center gap-3">
               <button type="button" className="min-h-11 min-w-11 rounded-xl bg-slate-800 p-2 disabled:opacity-40" disabled={pending || listening || active.sceneIndex === 0} onClick={() => active.seek(active.sceneIndex - 1)} aria-label="الخطوة السابقة"><ChevronRight size={20} /></button>
-              <button type="button" className="flex min-h-11 items-center gap-2 rounded-xl bg-emerald-600 px-5 disabled:opacity-40" disabled={pending || listening} onClick={active.toggle}>{active.playing ? <Pause size={18} /> : <Play size={18} />}{active.playing ? 'إيقاف مؤقت' : 'تشغيل'}</button>
+              <button type="button" className="flex min-h-11 items-center gap-2 rounded-xl bg-emerald-600 px-5 disabled:opacity-40" disabled={pending || listening || Boolean(active.checkpoint)} onClick={active.toggle}>{active.playing ? <Pause size={18} /> : <Play size={18} />}{active.playing ? 'إيقاف مؤقت' : 'تشغيل'}</button>
               <span className="text-sm text-slate-300">{active.sceneIndex + 1}/{activeLesson.plan.scenes.length}</span>
               <button type="button" className="min-h-11 min-w-11 rounded-xl bg-slate-800 p-2 disabled:opacity-40" disabled={pending || listening || active.sceneIndex >= activeLesson.plan.scenes.length - 1} onClick={() => active.seek(active.sceneIndex + 1)} aria-label="الخطوة التالية"><ChevronLeft size={20} /></button>
               <button type="button" className="min-h-11 min-w-11 rounded-xl bg-slate-800 p-2" onClick={() => active.seek(0)} aria-label="إعادة تشغيل الشرح"><RotateCcw size={18} /></button>

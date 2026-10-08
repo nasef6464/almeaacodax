@@ -1599,7 +1599,7 @@ aiRouter.post(
       String(aiReadableText.length),
       String(visualDescription.length),
       String(payload.tutorSessionId || ""),
-      ...(payload.boardMode ? [payload.boardMode, payload.boardContext || ""] : []),
+      ...(payload.boardMode ? [payload.boardMode, "practice-checkpoint-v1", payload.boardContext || ""] : []),
     ].join("::");
     const cacheKey = buildQuestionAssistantCacheKey({
       userId,

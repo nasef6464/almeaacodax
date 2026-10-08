@@ -3,7 +3,8 @@ export type BoardAction =
   | { type: 'write'; id: string; kind: 'text' | 'formula'; content: string }
   | { type: 'transform'; target: string; content: string }
   | { type: 'highlight' | 'box' | 'erase'; target: string };
-export type TeachingScene = { id: string; narration: string; actions: BoardAction[] };
+export type TeachingCheckpoint = { prompt: string; hints: [string, string] };
+export type TeachingScene = { id: string; narration: string; actions: BoardAction[]; checkpoint?: TeachingCheckpoint };
 export type TeachingStoryboard = { version: 1; language: 'ar-SA' | 'en-US'; scenes: TeachingScene[] };
 
 const record = (value: unknown): value is Record<string, unknown> =>
@@ -25,6 +26,7 @@ export function validateTeachingStoryboard(value: unknown): TeachingStoryboard |
   const usedIds = new Set<string>();
   const scenes: TeachingScene[] = [];
   let actionCount = 0;
+  let checkpointCount = 0;
   for (const scene of value.scenes) {
     if (!record(scene) || !identifier(scene.id) || sceneIds.has(scene.id) ||
       !safeText(scene.narration, 600) || !Array.isArray(scene.actions) || scene.actions.length > 6) return null;
@@ -51,7 +53,15 @@ export function validateTeachingStoryboard(value: unknown): TeachingStoryboard |
         } else return null;
       }
     }
-    scenes.push({ id: scene.id, narration: scene.narration, actions });
+    let checkpoint: TeachingCheckpoint | undefined;
+    if (scene.checkpoint !== undefined) {
+      if (++checkpointCount > 1 || scene === value.scenes[value.scenes.length - 1]) return null;
+      const check = scene.checkpoint;
+      if (!record(check) || !safeText(check.prompt, 240) || !Array.isArray(check.hints) ||
+        check.hints.length !== 2 || !check.hints.every(hint => safeText(hint, 240))) return null;
+      checkpoint = { prompt: check.prompt, hints: [check.hints[0] as string, check.hints[1] as string] };
+    }
+    scenes.push({ id: scene.id, narration: scene.narration, actions, ...(checkpoint ? { checkpoint } : {}) });
   }
   return { version: 1, language: value.language as TeachingStoryboard['language'], scenes };
 }

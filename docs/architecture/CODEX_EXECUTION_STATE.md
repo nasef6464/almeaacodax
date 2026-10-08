@@ -1512,4 +1512,5 @@
 - Browser ownership: components/results/teaching/{boardState,narrationEngine,useTeachingPlayback,TeachingBoard}; InteractiveSmartTeacher orchestrates primary/follow-up boards.
 - Status PARTIAL: local tests and browser fixture evidence; no live AI/audio or production closure. Exact runtime SHA/CI are reported on the attached PR.
 - Evidence: docs/audits/INTERACTIVE_TEACHING_BOARD_V1_2026-10-08.md.
+- Owner-approved follow-up: optional next-step practice, two local progressive hints, contextual attempt feedback and retry/skip. Same PR #459; exact runtime SHA and CI are recorded there. No scoring or persisted data changes.
 - Next: exact-head CI followed by configured-provider review journey, valid-plan rate/latency/cost measurement and actual tablet voice testing.
