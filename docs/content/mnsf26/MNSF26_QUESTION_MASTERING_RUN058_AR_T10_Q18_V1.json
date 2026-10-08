@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN058_AR_T10_DIRECT_VISUAL",
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T010-Q18",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+        "testNumber": 10,
+        "pdfPage": 19,
+        "sourceSkillLabel": "ترتيب العمليات – قابلية القسمة",
+        "sourceTopic": "تصنيف المصدر محفوظ؛ رياضيات السؤال هي معيار الربط",
+        "sourceLesson": "الحساب والجبر، الاختبار 010، السؤال 18",
+        "printedQuestionNumber": 18,
+        "cropFile": "mnsf26_fullbook_crops/AR/AR-T010-Q18.webp",
+        "cropSha256": "252eed527bbebeed0de7270652d3d1d29d05ad38e29a7df83c9bda353a5108e5",
+        "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
+      },
+      "imageHash": "252eed527bbebeed0de7270652d3d1d29d05ad38e29a7df83c9bda353a5108e5",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN058_2026-10-08_T010_Q18",
+      "status": "MASTERED",
+      "questionText": "أي من1000−1 و1000−2 و1000−3 و1000−4 يقبل القسمة على6؟",
+      "canonicalMainSkill": "main_quant_02",
+      "canonicalSubskill": "sub_quant_02_1",
+      "correctAnswer": "1000−4=996 (د)",
+      "stepByStepSolution": "996 زوجي ومجموع أرقامه24 من مضاعفات3، إذن يقبل القسمة على6.",
+      "educationalExplanation": "نطبّق القاعدة الرياضية الواردة في نص السؤال: 996 زوجي ومجموع أرقامه24 من مضاعفات3، إذن يقبل القسمة على6.",
+      "difficulty": "Easy",
+      "difficultyReason": "يحتاج تطبيقًا مباشرًا لقاعدة حسابية.",
+      "contentFingerprint": "7ed1c0c6b9e00ab853620c132b93526009e2db22f0f8a3fff28c53eea5415334",
+      "ideaFingerprint": "44c9b861246348f7dd150ae224fbe72c7dc82ca13b21f90211e7b78a01353e5a"
+    }
+  ]
+}
