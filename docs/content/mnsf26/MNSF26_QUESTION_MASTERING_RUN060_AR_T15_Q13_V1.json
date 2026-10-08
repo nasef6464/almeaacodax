@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN060_AR_T15_RECOVERY",
+  "previouslyCounted": true,
+  "records": [
+    {
+      "id": "MNSF26-AR-T015-Q13",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T015",
+        "sourceLesson": "جمع الأعداد - المتتابعات - ضرب الأعداد"
+      },
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_3",
+      "correctAnswer": "ب",
+      "answerValue": "190",
+      "stepByStepSolution": "1+2+...+19=19×20÷2=190.",
+      "educationalExplanation": "نستخدم قانون مجموع أول ن عدد طبيعي.",
+      "difficulty": "Easy",
+      "difficultyReason": "قانون مجموع مباشر.",
+      "imageHash": "cb3c112af7d78493379dc0ef19504ef8b0b9b3c5290ea99f858af33a815e32fd",
+      "contentFingerprint": "6029ae7c4bc4570076ca9e8796969f95469ebd3e7bd2bb292d4a015b90902b57",
+      "ideaFingerprint": "4f3219d74daee2635fda92b642281966fe861ffadf0c6bfaa02c68fe9408f27a",
+      "status": "MASTERED"
+    }
+  ]
+}
