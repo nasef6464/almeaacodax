@@ -1,0 +1,24 @@
+name: CHEM26 Zubda Editorial Integrity
+on:
+  pull_request:
+    paths:
+      - "data/chem26-zubda/**"
+      - "scripts/smoke-chem26-zubda-content-contract.mjs"
+      - ".github/workflows/chem26-zubda-integrity.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  editorial-contract:
+    name: Zubda taxonomy and content contract
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout reviewed revision
+        uses: actions/checkout@v4
+      - name: Report Node.js runtime
+        run: node --version
+      - name: Validate immutable taxonomy references and lesson checks
+        run: node scripts/smoke-chem26-zubda-content-contract.mjs
