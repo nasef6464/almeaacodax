@@ -1,0 +1,34 @@
+{
+  "bank": "MNSF26",
+  "run": "RUN071",
+  "stage": "QA_LOCK",
+  "sourceHead": "507ac8960e6fb0f5670c6d367342c52bfe1daaae",
+  "qaFullBookPass": false,
+  "corrections": [
+    {
+      "sourceKey": "MNSF26-GEO-T007-Q17",
+      "previous": "أ",
+      "expected": "ب",
+      "reason": "Isosceles triangle apex 40 degrees gives base 70 degrees. The marked angle س is 70 degrees, less than 80."
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T008-Q14",
+      "previous": "أ",
+      "expected": "ب",
+      "reason": "The isosceles triangle base angle ص=60; the lower-right triangle gives س=30; sum 90, not 60."
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T010-Q12",
+      "previous": "ج",
+      "expected": "ب",
+      "reason": "The right isosceles triangle has 45-degree base angles; the marked square side forms 45 degrees with the rightward horizontal ray."
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T011-Q10",
+      "previous": "ب",
+      "expected": "ج",
+      "reason": "At the square's bottom vertex, exterior angles أ+ب=180-90=90; interior angle ج=90. Equal."
+    }
+  ],
+  "productionUntouched": true
+}
