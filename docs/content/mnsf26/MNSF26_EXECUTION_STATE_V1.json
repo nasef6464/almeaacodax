@@ -170,10 +170,10 @@
     "stage": "QUESTION_MASTERING",
     "strategy": "ONE_PASS_VISUAL_MATH",
     "priority": [
-      "SourceKey-level unique full-book reconciliation 2135 crops vs 1773 MASTERED + 359 HOLD/REVIEW; 8 recovered records make naive total 2140, do not increment until overlap resolved",
-      "Recover previously counted AR T17 Q08 Library payload through allowed GitHub path without modifying source",
-      "Reconcile five suppressions, AR T33 absent and GEO T24 Q18 absent, and historical 130 coverage",
-      "Only after exact unique coverage and required-field pass lock QUESTION_MASTERING then QA_LOCK"
+      "Reconcile 181 Library-missing sourceKeys with GitHub-only records and 130 legacy sourceKey mapping, without re-mastering",
+      "Resolve 17 sourceKey conflicts; preserve 6 GEO T23 HOLD supersessions and 2 AR T47 REVIEW",
+      "Persist Run062 GEO T23 Q11 correction by an approved write path and re-check taxonomy",
+      "Resolve historical counter overlap and 5 suppressions; stage lock only after unique 2135 coverage"
     ]
   },
   "antiLoopRules": [
@@ -436,6 +436,36 @@
     "holdReviewUnchangedPendingSourceKeyReconciliation": 359,
     "accountingWarning": "1773+359=2132; naive +8 = 2140 > 2135. Resolve historical overlaps and source absent before stage lock or count increment.",
     "sourceDelta": "MNSF26_RUN061_STATE_DELTA_V1.json",
+    "qaNotStarted": true,
+    "productionServicesUntouched": true
+  },
+  "reconciliationRun062": {
+    "date": "2026-10-08",
+    "stage": "QUESTION_MASTERING",
+    "source": "Library Run017 1204-crop inventory + Run021 931-crop manifest + 137 full Library master files",
+    "sourceCropsVerified": 2135,
+    "libraryRecordOccurrences": 2172,
+    "libraryUniqueSourceKeys": 1954,
+    "libraryMissingVsCropManifest": 181,
+    "duplicateSourceKeys": 188,
+    "duplicateExcessOccurrences": 218,
+    "statusOrAnswerConflicts": 17,
+    "imageHashMismatches": 0,
+    "incompleteMasterPayloads": 0,
+    "sourceKeyMissingBreakdown": {
+      "arithmeticEarlyT01ToT08": 134,
+      "arithmeticT12ToT14": 8,
+      "arithmeticT19": 20,
+      "geometryT22": 19
+    },
+    "directCropAdjudication": "GEO T23/Q11 image SHA 574e84e673d023bde62998ae8b13c3f57a6301ca20dfcac03ecf42fc57276b0d confirms choice أ=(3,2), coordinate skill sub_quant_25_3; earlier Run028 choice د incorrect. Adjudication write blocked; retain fail-closed pending persistence.",
+    "accountingOnly": true,
+    "officialMasteredUnchanged": 1773,
+    "officialHoldUnchanged": 359,
+    "blockers": [
+      "GitHub workflow and adjudication write safety checks",
+      "Library upload returned container_session_unavailable"
+    ],
     "qaNotStarted": true,
     "productionServicesUntouched": true
   }
