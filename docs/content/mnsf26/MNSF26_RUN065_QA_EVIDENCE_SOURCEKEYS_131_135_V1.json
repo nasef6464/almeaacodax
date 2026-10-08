@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN065",
+  "stage": "QA_LOCK",
+  "qaRows": [
+    {
+      "sourceKey": "MNSF26-AR-T031-Q10",
+      "imageHash": "56b1aadf5bdd43abda6d66fe384b20bf2a1f497b744ad14076a0cad2d959befe",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN048_AR_T31_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-AR-T031-Q11",
+      "imageHash": "47a2977f506d718bfa81c51473ed2407445bf125c54bb09e5432a71cf7a33042",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN048_AR_T31_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-AR-T031-Q12",
+      "imageHash": "8197d7f552923fddec2dd5d7a9ae6636968a69ddd20877d87b25669d7c294b01",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN048_AR_T31_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-AR-T031-Q13",
+      "imageHash": "2a25e7c2f32af8b7560345b4fab810ad6bc8a6cb0cf99e39458e1e38db2c417a",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN048_AR_T31_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-AR-T031-Q14",
+      "imageHash": "66f93d4fda677cc67a9200169c7cb394c7b51cf6bc5bf8a3d9f593579d81729a",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN048_AR_T31_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    }
+  ],
+  "sourceCropSHA256Verified": true,
+  "fullReportLibrary": "/MNSF26/Run065/MNSF26_RUN065_INDEPENDENT_QA_215_SOURCE_IMAGES_V1.json"
+}
