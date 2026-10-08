@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN059_AR_T16_DIRECT_VISUAL",
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T016-Q11",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+        "testNumber": 16,
+        "pdfPage": 30,
+        "sourceSkillLabel": "جمع الأعداد - المتتابعات - ضرب الأعداد",
+        "sourceTopic": "عنوان المصدر للتوثيق فقط؛ التصنيف من رياضيات الصورة",
+        "sourceLesson": "الحساب والجبر اختبار016 سؤال11",
+        "printedQuestionNumber": 11,
+        "cropFile": "mnsf26_fullbook_crops/AR/AR-T016-Q11.webp",
+        "cropSha256": "66fe299733cfe4f7cfb3162bfbc2679c306b1f3b9e91cb083b557f40a4f8a7f8",
+        "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
+      },
+      "imageHash": "66fe299733cfe4f7cfb3162bfbc2679c306b1f3b9e91cb083b557f40a4f8a7f8",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN059_2026-10-08_T016_Q11",
+      "status": "MASTERED",
+      "questionText": "ما الحد التالي في4،8،12،...؟",
+      "canonicalMainSkill": "main_quant_01",
+      "canonicalSubskill": "sub_quant_01_3",
+      "correctAnswer": "16 (ج)",
+      "stepByStepSolution": "الفرق ثابت4؛ الحد التالي12+4=16.",
+      "educationalExplanation": "من الصورة: الفرق ثابت4؛ الحد التالي12+4=16.",
+      "difficulty": "Easy",
+      "difficultyReason": "تحتاج تطبيقًا مباشرًا.",
+      "contentFingerprint": "8a134cc8150701326fad312203369ae3eb5c01a0089d23f601fa45830d0c2ac3",
+      "ideaFingerprint": "3cd628525b6cd9616fe434cc6004ed22335ec3ccb0c4aab44eb3b820921b4753"
+    }
+  ]
+}
