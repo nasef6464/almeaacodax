@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN056_AUDIT_RUN054_T23_OVERLAP_CORRECTION",
+  "date": "2026-10-08",
+  "finding": "Run054 GEO T23 17 records overlap earlier Run028 GEO T23 (15 MASTERED and 2 HOLD); not 17 new questions. Run054 402 visual inspections include 385 new T01-T21 and 17 previously processed T23.",
+  "sameImageHashForOverlapping15": true,
+  "priorSource": "/MNSF26/Run028/MNSF26_QUESTION_MASTERING_RUN028_GEO_T23_V1.json",
+  "newSource": "/MNSF26/Run054/MNSF26_QUESTION_MASTERING_RUN054_GEO_T23_V1.json",
+  "supersededToHold": [
+    "MNSF26-GEO-T023-Q06",
+    "MNSF26-GEO-T023-Q08",
+    "MNSF26-GEO-T023-Q12",
+    "MNSF26-GEO-T023-Q14",
+    "MNSF26-GEO-T023-Q16",
+    "MNSF26-GEO-T023-Q17"
+  ],
+  "preservedHold": [
+    "MNSF26-GEO-T023-Q01",
+    "MNSF26-GEO-T023-Q07"
+  ],
+  "run054ActualNew": {
+    "sourceUnique": 385,
+    "sourceMastered": 316,
+    "sourceHolds": 69,
+    "githubPersistedUnique": 383,
+    "githubMasteredAdded": 315,
+    "githubHoldsAdded": 68,
+    "libraryOnly": [
+      "MNSF26-GEO-T019-Q19",
+      "MNSF26-GEO-T019-Q20"
+    ]
+  },
+  "netReconciliation": {
+    "baseMastered": 1364,
+    "baseHold": 242,
+    "run054GithubMasteredAdded": 315,
+    "run054GithubHoldAdded": 68,
+    "run028MasteredReclassifiedToHold": 6,
+    "run055MasteredAdded": 15,
+    "run055HoldsAdded": 3,
+    "correctedOfficialMastered": 1688,
+    "correctedOfficialHold": 319
+  },
+  "stage": "QUESTION_MASTERING",
+  "cropLock": "2135/2135 PASS_LOCKED",
+  "productionServicesUntouched": true
+}
