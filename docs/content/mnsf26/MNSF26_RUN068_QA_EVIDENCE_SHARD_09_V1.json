@@ -1,0 +1,120 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN068",
+  "stage": "QA_LOCK",
+  "source": "MNSF26_RUN068_INDEPENDENT_VISUAL_MATH_117_V2.json",
+  "sha256OriginalEvidence": "78500abc54b1de4a99c85c2a0e7bc02cd8cf8a154f19440447a830239aea246e",
+  "rows": [
+    {
+      "sourceKey": "MNSF26-GEO-T021-Q04",
+      "imageHash": "ff296cf50fb34cac30b90a0d7d71fdbca148362fa76b7ea7cf83252bee44e5a1",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T21_V1.json",
+      "expectedAnswerFromIndependentMath": "القيمتان متساويتان (ج)",
+      "independentMathematicalProof": "إعادة ترتيب القطع المثلثية المتطابقة لا تغير مجموع مساحتها.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T021-Q06",
+      "imageHash": "348fb5ae0e0bb6b230c629ca2f75aef7aae919aca234396d82647ec746781ed9",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T21_V1.json",
+      "expectedAnswerFromIndependentMath": "28 (ج)",
+      "independentMathematicalProof": "الساقان المتساويتان10 لكل منهما والقاعدة8؛ المحيط28.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T021-Q07",
+      "imageHash": "247c9efc6e0a61b84b843eabd3ec1937c03bcd27315d922786d25943953c2cfc",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T21_V1.json",
+      "expectedAnswerFromIndependentMath": "4.2 (أ)",
+      "independentMathematicalProof": "نظرية منصف الزاوية:3/ص=5/7؛ ص=21/5=4.2.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T014-Q01",
+      "imageHash": "0191806d04d95c753eec6ec4aa30646149dd07caaddddae38491f5db43926e0e",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T14_V1.json",
+      "expectedAnswerFromIndependentMath": "45 (ب)",
+      "independentMathematicalProof": "قطر الدائرة يقسم القوس180° إلى قوسين متساويين90°؛ الزاوية المحيطية المقابلة45°.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T014-Q04",
+      "imageHash": "70b82c60f0aee4f5d710e41ea62ec53f8e6f8fbb1bde887a2801e1709cffcd9d",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T14_V1.json",
+      "expectedAnswerFromIndependentMath": "50 (ج)",
+      "independentMathematicalProof": "الزاوية المركزية منصفة بعلامتي التساوي؛ كل نصف50°.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T014-Q05",
+      "imageHash": "2445b5a2ab5ee22e63fc4b5e9a9c729cf32aae916ee701e9faddb305d8e521e3",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T14_V1.json",
+      "expectedAnswerFromIndependentMath": "50 (ج)",
+      "independentMathematicalProof": "منصف الزاوية المركزية يعطي زاويتين متناظرتين متساويتين50°.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T014-Q09",
+      "imageHash": "84776a1c6a3e29ee4eee7bc49a9cad77edf0fe51f10b2dfb655947ccd8838eb5",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T14_V1.json",
+      "expectedAnswerFromIndependentMath": "50 (أ)",
+      "independentMathematicalProof": "زاويتان بالمثلث70° و60°، فالثالثة50°؛ زاوية المماس والوتر تساوي المحيطية المقابلة.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T014-Q12",
+      "imageHash": "4f191be09040878afd70d98e5da5bbc5f9e51db0b68b94df91e97a81ea1f1ef8",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T14_V1.json",
+      "expectedAnswerFromIndependentMath": "القيمتان متساويتان (ج)",
+      "independentMathematicalProof": "نصفا القطر من المركز إلى طرفي الوتر متساويان؛ زاويتا القاعدة متساويتان.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T014-Q15",
+      "imageHash": "9b6f0d47fcb5bddb1d6a9c33da66845a4062b76eab83ee9ffba84a777575b5ef",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T14_V1.json",
+      "expectedAnswerFromIndependentMath": "45 (ب)",
+      "independentMathematicalProof": "المثلث في نصف دائرة زاوية رأسه90°، وهو متساوي الساقين؛ زاويتا القاعدة45°.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T014-Q17",
+      "imageHash": "23b8e4a3a4f84ddec89c3a63c9b8a42095aeab38c956d3799af594104dfeed22",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T14_V1.json",
+      "expectedAnswerFromIndependentMath": "120 (د)",
+      "independentMathematicalProof": "أ ب يوازي ج د، فالزاوية د أ ب=30°، وبما أن أ ب=ب د فإن الزاوية أ د ب=30°؛ الزاوية ب=120°.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    }
+  ]
+}
