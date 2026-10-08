@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN058_GEO_T19_LIBRARY_RECONCILIATION",
+  "records": [
+    {
+      "sourceKey": "MNSF26-GEO-T019-Q20",
+      "sourceProvenance": {
+        "sourcePart": "الهندسة",
+        "bookCode": "GEO",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس - الهندسة - معدل.pdf",
+        "testNumber": 19,
+        "pdfPage": 37,
+        "sourceSkillLabel": "عنوان مجموعة المصدر غير معتمد كتصنيف رياضي للسؤال",
+        "sourceTopic": "الهندسة / الاختبار المرقم من الكتاب الأصلي",
+        "sourceLesson": "اختبار الهندسة 019، سؤال 20",
+        "printedQuestionNumber": 20,
+        "cropFile": "MNSF26-GEO-T019-Q20.webp",
+        "cropSha256": "0f3b4eb493f6e5262db8158539b672096f69f2a155c8301cbb7cd6b43abacee4",
+        "cropContract": "EMBEDDED_XOBJECT_OR_EXACT_COMPOSITE_SLICE"
+      },
+      "imageHash": "0f3b4eb493f6e5262db8158539b672096f69f2a155c8301cbb7cd6b43abacee4",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T019_Q20",
+      "status": "MASTERED",
+      "questionText": "مثلث قائم وتره13 ومجموع ساقيه17؛ أوجد المساحة",
+      "canonicalMainSkill": "main_quant_20",
+      "canonicalSubskill": "sub_quant_20_4",
+      "correctAnswer": "30 (ج)",
+      "stepByStepSolution": "(أ+ب)²=289=169+2أب، إذن أب60، والمساحة30.",
+      "educationalExplanation": "(أ+ب)²=289=169+2أب، إذن أب60، والمساحة30.",
+      "difficulty": "Easy",
+      "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
+      "contentFingerprint": "aa4070fb75f90d9808a8763ace46c83e3a4bbf084ca0c090f5401a67aea93812",
+      "ideaFingerprint": "1ed3dbe71a4c09be504167a2d8ad0f9b533991870e9bcda4d1c91fa0d72eee3a"
+    }
+  ]
+}
