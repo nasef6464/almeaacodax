@@ -19,7 +19,7 @@ const Formula: React.FC<{ content: string }> = ({ content }) => {
 const BoardContent: React.FC<{ content: string; kind: 'text' | 'formula' }> = ({ content, kind }) => {
   const withoutTextCommands = content.replace(/\\(?:text|textbf|mathrm|operatorname)\{[^{}]*\}/g, '');
   const mixed = kind === 'text' || /[\u0600-\u06ff]|[A-Za-z]{3,}\s+[A-Za-z]{3,}|\bStep\b|\$/.test(withoutTextCommands);
-  if (!mixed) return <div className="text-center text-xl sm:text-2xl"><Formula content={content} /></div>;
+  if (!mixed) return <div className="space-y-2 text-center text-xl sm:text-2xl">{readableBoardText(content).split(/\r?\n/).filter(line => line.trim()).map((line, index) => <div key={index} data-testid="teaching-formula-line"><Formula content={line} /></div>)}</div>;
   const readable = readableBoardText(content).replace(/\\\\/g, '\n')
     .replace(/\\textbf\{([^{}]*)\}/g, '$1').replace(/(?<=[.!?])(?=Step\s*\d)/g, '\n');
   const parts = readable.split(/(\$\$[\s\S]+?\$\$|\$[^$\n]+\$|\\\([\s\S]+?\\\)|\d+(?:\s*(?:\\times|\\div|[+\-=×÷*/])\s*\d+)+)/g);
