@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN068",
+  "stage": "QA_LOCK",
+  "rows": [
+    {
+      "sourceKey": "MNSF26-GEO-T019-Q11",
+      "imageHash": "c833178fc96d4f72036d3c71a834861c8b818185fca6e7b7572e0dc6d83f2ad6",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T19_V1.json",
+      "expectedAnswerFromIndependentMath": "28 (ب)",
+      "independentMathematicalProof": "زاويتا القاعدة70° و20° تجعل الثالثة90°؛ المساحة4×14/2=28.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T019-Q13",
+      "imageHash": "4ba9a027eddef430d217512b2f62271ed6e5955782ebe084d2e0bfbd6a5e508e",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T19_V1.json",
+      "expectedAnswerFromIndependentMath": "القيمة الأولى أكبر (أ)",
+      "independentMathematicalProof": "المحيط10+5√2≈17.07 والمساحة25/2=12.5؛ الأول أكبر.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    }
+  ]
+}

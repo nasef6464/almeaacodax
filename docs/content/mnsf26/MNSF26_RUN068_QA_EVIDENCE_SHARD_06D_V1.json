@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN068",
+  "stage": "QA_LOCK",
+  "rows": [
+    {
+      "sourceKey": "MNSF26-GEO-T019-Q09",
+      "imageHash": "a40c7f66e71d7950dfa18c54616ad7dd00a09835f6ec0e01aa666869f51af11a",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T19_V1.json",
+      "expectedAnswerFromIndependentMath": "60 (ج)",
+      "independentMathematicalProof": "2س+8=3س+2، س=6، طول الضلع20 والمحيط60.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T019-Q10",
+      "imageHash": "f43ecf2438a672560150048c6bddcb2d6e69b648c677c55bde80a2169b92b8cc",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T19_V1.json",
+      "expectedAnswerFromIndependentMath": "القيمة الأولى أكبر (أ)",
+      "independentMathematicalProof": "5س−10=3س+5، س=7.5، ضلع المثلث27.5 ومحيطه82.5>24.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    }
+  ]
+}

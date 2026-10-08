@@ -1,0 +1,118 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN068",
+  "stage": "QA_LOCK",
+  "rows": [
+    {
+      "sourceKey": "MNSF26-GEO-T018-Q08",
+      "imageHash": "3c28e775ee3cd01fc64f80a8b3a8668cf5e169d9078e67da1e5bba0847136403",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T18_V1.json",
+      "expectedAnswerFromIndependentMath": "10 (ب)",
+      "independentMathematicalProof": "الضلعان المتعامدان في المثلث الأوسط كل منهما√(2²+4²)=√20، والمساحة20/2=10.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T018-Q11",
+      "imageHash": "af567232a62e7a030a2f6616e765185444014b02f1ec703f0686b18d9498573a",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T18_V1.json",
+      "expectedAnswerFromIndependentMath": "2√5/3 (ب)",
+      "independentMathematicalProof": "ضع ج=(0,0)، ب=(4,0)، د=(0,-4)، أ=(4,-2). تقاطع د ب وج أ عند هـ=(8/3,-4/3)، ومنه أ هـ=√((4/3)²+(2/3)²)=2√5/3.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T018-Q12",
+      "imageHash": "4dfb96431d804d83e0fa616224fed4af12e1ab7747a46552c31b1e5a7494c868",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T18_V1.json",
+      "expectedAnswerFromIndependentMath": "0.75 (ج)",
+      "independentMathematicalProof": "التشابه يجعل الأضلاع تتناسب مع المحيط؛ 3÷4=0.75.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T018-Q13",
+      "imageHash": "d0b70b5149a8bbf99ddbd8f6686ecd2e2bf01726b1ab9c1d9187f57b05c16b9b",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T18_V1.json",
+      "expectedAnswerFromIndependentMath": "1.8 (ج)",
+      "independentMathematicalProof": "س=9×2/(2+6+2)=1.8 بالتشابه.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T018-Q14",
+      "imageHash": "ee80883b8cd1c672bc64b4312c1db4ae13436cd4e6f16c030d8d148002b307d7",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T18_V1.json",
+      "expectedAnswerFromIndependentMath": "3 (ج)",
+      "independentMathematicalProof": "س=9×4/(4+6+2)=3 بالتشابه.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T018-Q16",
+      "imageHash": "a7fabf8d9da53e4b01a4d3262b6c0eb69828d1354de6712d3e47cabbcb21f3d9",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T18_V1.json",
+      "expectedAnswerFromIndependentMath": "10 (أ)",
+      "independentMathematicalProof": "خط المنتصف يجعل نسبة الأطوال1/2، ونسبة المساحات1/4؛ مساحة الصغير40/4=10.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T018-Q17",
+      "imageHash": "09baa9f49704851ef463ee0e1bce14d5f792bb0f411a1537b6040fd5b55bf77d",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T18_V1.json",
+      "expectedAnswerFromIndependentMath": "7 (ج)",
+      "independentMathematicalProof": "12(س−2)=5(2س−2)، ومنه2س=14 وس=7.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T018-Q19",
+      "imageHash": "5ceea24abbe2b02599949e047236b9afe0982b194ac3620657aa88bf1c580954",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T18_V1.json",
+      "expectedAnswerFromIndependentMath": "2 (ب)",
+      "independentMathematicalProof": "من التشابه2س/4=س/ص، فص=2.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T018-Q20",
+      "imageHash": "524123108271213e5d5c081a08a930f5787abe54ea6c9866741b56ff2a04ad88",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T18_V1.json",
+      "expectedAnswerFromIndependentMath": "6 (ج)",
+      "independentMathematicalProof": "الساقان المتساويتان والزاوية60° تجعل المثلثين متساويي الأضلاع؛ القاعدة6.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T019-Q01",
+      "imageHash": "c8eeeef3ed6aefb3095fdb34051ed3566626e4a2beecf9c074ca94dff9fa1d0b",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T19_V1.json",
+      "expectedAnswerFromIndependentMath": "9 (أ)",
+      "independentMathematicalProof": "من التشابه(2س−3)/(س+1)=12/8؛ ينتج س=9.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    }
+  ]
+}

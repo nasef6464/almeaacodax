@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN068",
+  "stage": "QA_LOCK",
+  "rows": [
+    {
+      "sourceKey": "MNSF26-GEO-T020-Q20",
+      "imageHash": "6ed0b03a5d50f7b55a05f71306ce5eb082e56fa1c83e48c368f5d1bfa43f991d",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T20_V1.json",
+      "expectedAnswerFromIndependentMath": "120 (د)",
+      "independentMathematicalProof": "منصفا زاويتي قاعدة المثلث المتساوي الأضلاع يعطيان زاويتين30°، فالزاوية المقابلة120°.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T021-Q01",
+      "imageHash": "baa62249a6b555ed27921c662f032177740eaf056fafd74b3465482e34a3e777",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T21_V1.json",
+      "expectedAnswerFromIndependentMath": "10 (ب)",
+      "independentMathematicalProof": "الوتر السفلي من ضلعين3 و4 يساوي5؛ وبعلامة التساوي ارتفاع المنطقة العليا5، ومساحتها4×5/2=10.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    }
+  ]
+}

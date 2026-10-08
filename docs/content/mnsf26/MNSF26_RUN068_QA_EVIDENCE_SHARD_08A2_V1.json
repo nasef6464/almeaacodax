@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN068",
+  "stage": "QA_LOCK",
+  "rows": [
+    {
+      "sourceKey": "MNSF26-GEO-T020-Q12",
+      "imageHash": "3e433b01d70f0950a9b919d15dad2fa814cf3f9a73783d2d9b5ba9e022489e47",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T20_V1.json",
+      "expectedAnswerFromIndependentMath": "القيمتان متساويتان (ج)",
+      "independentMathematicalProof": "قاعدتان متساويتان وارتفاع مشترك؛ المساحتان متساويتان.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    }
+  ]
+}

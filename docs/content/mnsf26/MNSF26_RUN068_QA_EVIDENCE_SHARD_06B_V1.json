@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN068",
+  "stage": "QA_LOCK",
+  "rows": [
+    {
+      "sourceKey": "MNSF26-GEO-T019-Q05",
+      "imageHash": "08c693083ada0d6bc725a6b92a9becfd1fdd1daa3f059c8bae5b135e53b1840f",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T19_V1.json",
+      "expectedAnswerFromIndependentMath": "6 (أ)",
+      "independentMathematicalProof": "عامل تكبير القاعدتين7.5/3=2.5؛ الضلع الكامل10 والامتداد10−4=6.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T019-Q06",
+      "imageHash": "89cf97ea0ecf1cc7d83073d685218a7b8f7b7896a109965af2f0f54e706ae672",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T19_V1.json",
+      "expectedAnswerFromIndependentMath": "12 (ب)",
+      "independentMathematicalProof": "من التوازي س/6=8/4؛ س=12.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN068",
+  "stage": "QA_LOCK",
+  "rows": [
+    {
+      "sourceKey": "MNSF26-GEO-T019-Q02",
+      "imageHash": "75514d42228d87ba00f5ea63e8a2538fe7640e48a9d37aacf72faceac60c6b82",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T19_V1.json",
+      "expectedAnswerFromIndependentMath": "3 (ج)",
+      "independentMathematicalProof": "س/9=4/12؛ س=3.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T019-Q03",
+      "imageHash": "3b9991c217709590ba3c50d70fd55cc20ac1c70f408c37e5379d22dfb1771e2e",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T19_V1.json",
+      "expectedAnswerFromIndependentMath": "40 (د)",
+      "independentMathematicalProof": "خط المنتصف يعطي تشابه1/2 ومساحة1/4؛ الكبير10×4=40.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    }
+  ]
+}

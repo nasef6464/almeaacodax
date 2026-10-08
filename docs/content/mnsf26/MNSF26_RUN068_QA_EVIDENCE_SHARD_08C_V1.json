@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN068",
+  "stage": "QA_LOCK",
+  "rows": [
+    {
+      "sourceKey": "MNSF26-GEO-T020-Q17",
+      "imageHash": "af97d18c3645328494383e2ada9a0d1a5ecfa13d26290cab7cc7de9641c8feb1",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T20_V1.json",
+      "expectedAnswerFromIndependentMath": "8 (ج)",
+      "independentMathematicalProof": "مساحة أ ب هـ=10×2/2=10 ومساحة أ هـ د=30؛ باستخدام هـ على د ب ينتج طول أ د=8.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T020-Q18",
+      "imageHash": "59bed88f872473d2b05821453664824dfb9ed5771c1da04a278d20b776691f8a",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T20_V1.json",
+      "expectedAnswerFromIndependentMath": "6 (ب)",
+      "independentMathematicalProof": "مساحة أ ب ج=10×2/2=10 وهي ثلث أ ب د؛ مساحة الكبير30=10×أ د/2، إذن أ د=6.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    }
+  ]
+}

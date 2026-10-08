@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN068",
+  "stage": "QA_LOCK",
+  "rows": [
+    {
+      "sourceKey": "MNSF26-GEO-T020-Q13",
+      "imageHash": "f633d20dbc85088f8064c99e453aae99608ff7e2b6ea2ec40ce6c2343bf5a8b9",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T20_V1.json",
+      "expectedAnswerFromIndependentMath": "القيمتان متساويتان (ج)",
+      "independentMathematicalProof": "قاعدتان رأسيّتان متساويتان وارتفاع أفقي مشترك؛ المساحتان متساويتان.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T020-Q16",
+      "imageHash": "4a2abed47ca72b0fa5a13dc390dfd8464847f3be5fed3f93189703bb1026a61d",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T20_V1.json",
+      "expectedAnswerFromIndependentMath": "24 (د)",
+      "independentMathematicalProof": "مساحة وجه واحد3×4/2=6؛ وجهان12، والتكلفة12×2=24.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    }
+  ]
+}

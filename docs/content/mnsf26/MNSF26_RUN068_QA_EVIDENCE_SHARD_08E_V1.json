@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN068",
+  "stage": "QA_LOCK",
+  "rows": [
+    {
+      "sourceKey": "MNSF26-GEO-T021-Q02",
+      "imageHash": "853d92ae9c8660f07a3db1a8f4ce74ec33c3a52ea2b14ffa447d91f15eba6caa",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T21_V1.json",
+      "expectedAnswerFromIndependentMath": "القيمة الأولى أكبر (أ)",
+      "independentMathematicalProof": "لو الوتر ج والمحيط24، فالساقان24−ج≤√2ج، ومنه ج≥24/(1+√2)>8.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T021-Q03",
+      "imageHash": "d8ec8f50736333edf6f17ae0f35e967fda502f4ee8dd2e472651e05a2e3dcb2e",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T21_V1.json",
+      "expectedAnswerFromIndependentMath": "القيمتان متساويتان (ج)",
+      "independentMathematicalProof": "المثلث9-12-15 قائم ومساحته54؛ القيمة الثانية0.9×60=54.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    }
+  ]
+}

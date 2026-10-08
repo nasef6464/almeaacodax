@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN068",
+  "stage": "QA_LOCK",
+  "rows": [
+    {
+      "sourceKey": "MNSF26-GEO-T019-Q07",
+      "imageHash": "7000abbb7e4e40dcbe0f5567bec5ec9fbe743efbfaa6e4a71532c50429de3d42",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T19_V1.json",
+      "expectedAnswerFromIndependentMath": "3.5 (ج)",
+      "independentMathematicalProof": "فرق المساحتين=7(3−2)/2=3.5.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T019-Q08",
+      "imageHash": "e425a9f8cae916e82eff343da250dcc1b26aa8ef3506001322ed0c60b7a8ade7",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T19_V1.json",
+      "expectedAnswerFromIndependentMath": "48 (ب)",
+      "independentMathematicalProof": "أربعة مثلثات متساوية الأضلاع قاعدتها الإجمالية16؛ كل قاعدة4، والمحيط الخارجي16+8×4=48.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    }
+  ]
+}
