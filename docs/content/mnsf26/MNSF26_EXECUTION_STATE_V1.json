@@ -23,10 +23,10 @@
     {
       "name": "mapping",
       "status": "IN_PROGRESS",
-      "done": 1056,
+      "done": 1078,
       "total": 2135,
       "rule": "QUESTION_MATH_REQUIRED; source label preserved; no group-title auto approval",
-      "reviewHold": 190,
+      "reviewHold": 198,
       "evidence": [
         "Ready130 audit candidate-pass 74",
         "Adjudication batch001 added 17 question-level approvals",
@@ -37,7 +37,7 @@
     {
       "name": "enrichment",
       "status": "IN_PROGRESS_LEGACY_SUBSET",
-      "done": 1056,
+      "done": 1078,
       "total": 2135,
       "rule": "answer+solution+educationalExplanation+difficulty+difficultyReason+fingerprints",
       "mappingApprovedWithinReady": 129
@@ -129,9 +129,10 @@
     "stage": "QUESTION_MASTERING",
     "strategy": "ONE_PASS_VISUAL_MATH",
     "priority": [
-      "geometry T31 onward",
-      "AR T53/Q17, Q20 and T62/Q09-Q12 remain Library-only; do not count before GitHub payload persistence",
-      "preserve all previous HOLD/quarantine/suppressions"
+      "geometry T31/Q11-Q20 Library-only pending GitHub safe persistence; 8 MASTERED 2 HOLD",
+      "geometry T33 onward; T32 fully persisted",
+      "AR T53/Q17,Q20 and T62/Q09-Q12 Library-only",
+      "preserve all prior fail-closed and PASS_LOCKED"
     ]
   },
   "antiLoopRules": [
@@ -145,20 +146,29 @@
     "A question is processed once into a complete master payload; QA validates it rather than recreating it"
   ],
   "lastCompletedBatch": {
-    "name": "RUN052_RECONCILE_RUN051_GITHUB",
-    "completeMasterRecords": 273,
-    "holds": 117,
-    "questionsProcessed": 390,
-    "effectiveMasteredComplete": 1056,
-    "source": "Run051 full master records (21 Library files), SHA256 checked against original Run017/Run021 crop archives, 390 unique sourceKeys persisted in GitHub",
-    "remainingLibraryOnly": 6
+    "name": "RUN052_GEO_T31_PART01_T32",
+    "completeMasterRecords": 22,
+    "holds": 8,
+    "questionsProcessed": 30,
+    "effectiveMasteredComplete": 1078,
+    "evidenceGitHubPaths": [
+      "docs/content/mnsf26/MNSF26_QUESTION_MASTERING_RUN052_GEO_T31_PART01_V1.json",
+      "docs/content/mnsf26/MNSF26_QUESTION_MASTERING_RUN052_GEO_T32_V1.json"
+    ],
+    "libraryOnly": {
+      "mastered": 8,
+      "hold": 2,
+      "paths": [
+        "/MNSF26/Run052/MNSF26_QUESTION_MASTERING_RUN052_GEO_T31_V1.json"
+      ]
+    }
   },
   "executionContract": "docs/content/mnsf26/MNSF26_LOCKED_PIPELINE_V1.json",
   "activeStage": {
     "order": 2,
     "name": "QUESTION_MASTERING",
     "status": "IN_PROGRESS",
-    "done": 1056,
+    "done": 1078,
     "total": 2135,
     "mode": "ONE_PASS_PER_QUESTION",
     "requiredPayload": [
@@ -175,7 +185,7 @@
       "ideaFingerprint"
     ],
     "gate": "No question advances without complete payload or explicit HOLD/REVIEW.",
-    "masteredComplete": 1056
+    "masteredComplete": 1078
   },
   "reconciliationRun049": {
     "source": "Library /MNSF26/Run048 full JSON records, validated unique sourceKeys and required fields, persisted to GitHub complete test files",
@@ -205,7 +215,14 @@
     "holdsAdded": 117,
     "shaVerified": 390,
     "libraryOnlyNotCounted": 6,
-    "blocker": "GitHub content safety check rejected T53/T62 missing records; no bypass",
-    "next": "GEO T31"
+    "blocker": "GitHub safety check rejected T31 full and part2; kept complete T31 in Library without counting missing 10",
+    "next": "GEO T33; reconcile T31 remaining only through safe authorized route",
+    "geometryT31T32InspectedNew": 40,
+    "geometryGitHubPersisted": 30,
+    "geometryMasteredAdded": 22,
+    "geometryHoldsAdded": 8,
+    "geometryLibraryOnly": 10,
+    "geometryLibraryOnlyMastered": 8,
+    "geometryLibraryOnlyHold": 2
   }
 }
