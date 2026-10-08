@@ -171,7 +171,7 @@
       2
     ]
   },
-  "lastCheckpoint": "2026-10-08-RUN24-209-SOURCE-ANSWER; details in TAH_MATH_EXECUTION_LEDGER_RUN24_ADDENDUM.json",
+  "lastCheckpoint": "2026-10-08-RUN27-200-SOURCE-50-MATH; see TAH_MATH_RUN27_CHECKPOINT.json",
   "evidence": [
     "ops/tah-math/TAH_MATH_RUN1_BASELINE.json",
     "ops/tah-math/TAH_MATH_SOURCE_IDEA_MAP_PART01.json",
@@ -188,7 +188,8 @@
     "ops/tah-math/TAH_MATH_YLM26_ANSWER_AUDIT_LESSONS_01_08.json",
     "ops/tah-math/TAH_MATH_YLM26_ANSWER_AUDIT_LESSONS_09_13.json",
     "ops/tah-math/TAH_MATH_RUN12_SOURCE_OPTIONS_233_CHECKPOINT.json",
-    "ops/tah-math/TAH_MATH_COL26_P132_6_SOURCE_REMAP_RUN12.json"
+    "ops/tah-math/TAH_MATH_COL26_P132_6_SOURCE_REMAP_RUN12.json",
+    "ops/tah-math/TAH_MATH_RUN27_CHECKPOINT.json"
   ],
   "blockers": [
     {
@@ -198,12 +199,16 @@
     }
   ],
   "latestRun": {
-    "sourceOptionRows": 214,
-    "sourceOptionSegments": 642,
-    "independentVisualMathRows": 19,
-    "sourceMathMatches": 19,
-    "sourceAnswerAuditCOL26": 1012,
+    "run": "RUN27",
+    "officialSourceImagesReviewed": 200,
+    "disjointVisual150AndMath50": true,
+    "independentMathAnswers": 50,
+    "liveMatches": 50,
+    "actualOptionValuesTranscribed": 200,
+    "localCropRepairs": 10,
+    "remainingCropFlags": 20,
+    "fullyPedagogicallyClosed": 0,
     "productionMutation": false,
-    "remaining": "All-option pedagogy, YLM26, COL26OLD, dedupe, coverage, trainings/tests, E2E"
+    "remaining": "YLM26 full pedagogy and 20 crop flags; then COL26/COL26OLD, dedupe, coverage, trainings/tests, E2E"
   }
 }
