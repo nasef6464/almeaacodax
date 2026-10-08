@@ -1,0 +1,120 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN068",
+  "stage": "QA_LOCK",
+  "source": "MNSF26_RUN068_INDEPENDENT_VISUAL_MATH_117_V2.json",
+  "sha256OriginalEvidence": "78500abc54b1de4a99c85c2a0e7bc02cd8cf8a154f19440447a830239aea246e",
+  "rows": [
+    {
+      "sourceKey": "MNSF26-GEO-T016-Q01",
+      "imageHash": "e37eccedf5612af6171e15df14c41c201ce0cb7a78c4c16a9d4bc8cdce78736f",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T16_V1.json",
+      "expectedAnswerFromIndependentMath": "1 و5 و3 (أ)",
+      "independentMathematicalProof": "1+3=4<5؛ تخالف متباينة المثلث.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T016-Q02",
+      "imageHash": "04f9968cb6d6a3421d8a8d3cc8f4265c9f81c879bf5fc682e5dd3c324e6e8d1b",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T16_V1.json",
+      "expectedAnswerFromIndependentMath": "8 و10 و18 (أ)",
+      "independentMathematicalProof": "8+10=18، فلا تتكوّن أضلاع مثلث غير منعدم.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T016-Q03",
+      "imageHash": "af423a5106d6ab49efa886e196ca8312c7344fa39eabcdfe290e3afb90cead37",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T16_V1.json",
+      "expectedAnswerFromIndependentMath": "مثلث (أ)",
+      "independentMathematicalProof": "ثلاثة مستقيمات غير متوازية تتقاطع زوجيًا في ثلاث نقاط؛ القطع بينها تحدد مثلثًا.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T016-Q04",
+      "imageHash": "84b98c4e25fd9f28aa63438b672399b4f1f23d395c0aa8514bea0a26d1a6ec08",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T16_V1.json",
+      "expectedAnswerFromIndependentMath": "أ (أ)",
+      "independentMathematicalProof": "أكبر ضلع هو 7؛ الزاوية المقابلة له عند أ هي الأكبر.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T016-Q05",
+      "imageHash": "8f26dad9bebc812419a7fb9548fc8863a288da269aae647b498760eb895cc952",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T16_V1.json",
+      "expectedAnswerFromIndependentMath": "القيمة الثانية أكبر (ب)",
+      "independentMathematicalProof": "من متباينة المثلث |س−ص|<ع، فينتج س−ص<ع.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T016-Q06",
+      "imageHash": "b29b9ffe833edf86e8b8d430f861a478855a10c5d0be2c626b52a78346720148",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T16_V1.json",
+      "expectedAnswerFromIndependentMath": "الزاوية 3 (ج)",
+      "independentMathematicalProof": "الضلع 5 هو الأطول؛ تقابله الزاوية 3.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T016-Q07",
+      "imageHash": "469931c19101d72d4e492891031e53ebdaf720a30fa2c1858a2370d28b12109b",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T16_V1.json",
+      "expectedAnswerFromIndependentMath": "أ ب (د)",
+      "independentMathematicalProof": "ج=3أ و2ج=3ب؛ أ:ب:ج=1:2:3، فيكون أ ب المقابل لج هو الأطول.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T016-Q08",
+      "imageHash": "739323566f0ee6b8e41fb390adf96c179fef82acb9b942bb9d76cd09887cdde1",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T16_V1.json",
+      "expectedAnswerFromIndependentMath": "2 (أ)",
+      "independentMathematicalProof": "محيط مثلث متساوي الأضلاع6، فيكون الضلع6÷3=2.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T016-Q09",
+      "imageHash": "332f7551acffd5e7bcd30b2699297dc591c350412370562f8b40f8b6818f2132",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T16_V1.json",
+      "expectedAnswerFromIndependentMath": "12 (د)",
+      "independentMathematicalProof": "الضلع الثالث أقل قطعًا من7+5=12، فالقيمة12 غير ممكنة.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T016-Q10",
+      "imageHash": "f14b9015aa8e74d799e8bf1028566892e35197bdcb8b2c516b0b71ec06193f39",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T16_V1.json",
+      "expectedAnswerFromIndependentMath": "أ ج (ب)",
+      "independentMathematicalProof": "الزاوية68° هي الأكبر، ويقابلها أ ج.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    }
+  ]
+}
