@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 2,
+  "bank": "MNSF26",
+  "run": "RUN064",
+  "date": "2026-10-08",
+  "supersedes": "MNSF26_RUN064_STATE_DELTA_V1.json",
+  "reason": "Correct independent QA sample classification; T003 Q13 and Q14 are HOLD from verified GitHub records, not PASS.",
+  "headsAtStart": {
+    "branch": "541e9ce4dc02dbdafec5d59dcb5d6934a8619276",
+    "main": "f40a785ee777a0be16e48f70727793e8f9ee0695"
+  },
+  "cropLock": "2135/2135 PASS_LOCKED",
+  "questionMastering": {
+    "stage": "PASS_LOCKED_IN_LIBRARY_DELTA_PENDING_GITHUB_SYNC",
+    "canonicalIndexSha256": "9aebe074865fedf4a63b9f89ae768012ca2f2f03d9977f1daf87aebfe1f67aac",
+    "active": 2129,
+    "masteredBeforeQAOverride": 1777,
+    "hold": 319,
+    "reviewBeforeQAOverride": 33,
+    "suppressions": 5,
+    "quarantine": 1,
+    "run063RecordsRecoveredToGithub": 76,
+    "run063LibraryOnly": 39,
+    "run062LibraryOnly": 3
+  },
+  "qa": {
+    "status": "IN_PROGRESS_NOT_PASS_LOCKED",
+    "independentSourceImageHashesVerified": 2135,
+    "independentVisualQAReviewed": 52,
+    "pass": 39,
+    "priorHoldReviewPreserved": 12,
+    "newReviewRequired": 1,
+    "semanticRemaining": 2077,
+    "qaOverride": {
+      "sourceKey": "MNSF26-AR-T057-Q10",
+      "status": "REVIEW",
+      "sourceImageHash": "28e28fa25f77f4d311494767a8caf8a6a09ff7cb781f95ae6ca49e24b6c43f2a",
+      "patch": "MNSF26_RUN064_QA_AR_T057_Q10_REVIEW_PATCH_V1.json"
+    },
+    "effectiveCountsPendingCanonicalReindex": {
+      "mastered": 1776,
+      "hold": 319,
+      "review": 34,
+      "excluded": 6
+    },
+    "summary": "MNSF26_RUN064_QA_SUMMARY_V1.json"
+  },
+  "blockers": [
+    "Execution State update rejected by connector safety check",
+    "39 Run063 payloads rejected by connector safety check",
+    "Library upload from container failed container_session_unavailable"
+  ],
+  "dedupe": "NOT_STARTED",
+  "r2": "NOT_STARTED",
+  "import": "NOT_STARTED",
+  "productionE2E": "NOT_STARTED",
+  "productionServicesUntouched": true
+}
