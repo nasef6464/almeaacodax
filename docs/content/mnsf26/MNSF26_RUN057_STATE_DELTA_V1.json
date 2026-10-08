@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN057_AR_T18",
+  "date": "2026-10-08",
+  "visualInspected": 20,
+  "shaVerified": 20,
+  "mastered": 15,
+  "hold": 5,
+  "githubPersisted": 18,
+  "githubMastered": 13,
+  "githubHold": 5,
+  "libraryOnly": [
+    "MNSF26-AR-T018-Q12",
+    "MNSF26-AR-T018-Q14"
+  ],
+  "source": "/MNSF26/Run057/MNSF26_QUESTION_MASTERING_RUN057_AR_T18_V1.json",
+  "baseMastered": 1688,
+  "baseHold": 319,
+  "newMastered": 1701,
+  "newHold": 324,
+  "activeStage": "QUESTION_MASTERING"
+}
