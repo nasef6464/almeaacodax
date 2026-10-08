@@ -42,7 +42,9 @@ export function compileCompactTeachingPlan(value: unknown, expected?: {
   const item = value as Record<string, unknown>;
   if (item.format !== 'compact_v1' || !['lesson', 'reply'].includes(String(item.mode)) ||
     (expected && (item.mode !== expected.mode || (expected.language && item.language !== expected.language)))) return null;
-  const first = { id: 'given', narration: item.narration,
+  const narration = item.mode === 'lesson' && typeof item.narration === 'string' && typeof item.prompt === 'string'
+    ? `${item.narration} ${item.prompt}` : item.narration;
+  const first = { id: 'given', narration,
     actions: [{ type: 'write', id: 'given', kind: item.kind, content: mathContent(item.board, item.kind) }],
     ...(item.mode === 'lesson' ? { checkpoint: { prompt: item.prompt, hints: item.hints } } : {}) };
   return validateTeachingStoryboard({ version: 1, language: item.language, scenes: [first,

@@ -17,6 +17,7 @@ const plan = validateTeachingStoryboard(example)!;
 const compact = { format: 'compact_v1', mode: 'lesson', language: 'ar-SA', narration: 'نركز على آحاد الأعداد.', board: '$2 \\times 5 \\times 8$', kind: 'formula', prompt: 'ما الخطوة التالية؟', hints: ['اضرب الآحاد.', 'ابدأ بأول عددين.'], explanation: 'الناتج ينتهي بصفر.', solution: '$2 \\times 5=10 \\Rightarrow 0 \\times 8=0$', solutionKind: 'formula' };
 const compiled = compileCompactTeachingPlan(compact, { mode: 'lesson', language: 'ar-SA' })!;
 assert.equal(compiled.scenes.length, 2);
+assert.ok(compiled.scenes[0].narration.includes(compact.prompt), 'the teacher asks the practice question aloud before pausing');
 assert.equal(compiled.scenes[0].checkpoint?.hints.length, 2);
 assert.equal(compiled.scenes[1].checkpoint, undefined);
 assert.equal(compiled.scenes[0].actions[0].type === 'write' && compiled.scenes[0].actions[0].content.startsWith('$'), false, 'strip math delimiters before KaTeX');
