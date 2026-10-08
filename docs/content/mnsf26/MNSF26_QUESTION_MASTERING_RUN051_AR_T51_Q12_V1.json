@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN051_AR_T51",
+  "directImageInspection": true,
+  "sourceCropArchive": "/MNSF26/Run017/mnsf26_arithmetic_crops_run017.zip",
+  "sourceInventory": "/MNSF26/Run017/MNSF26_FULLBOOK_CROP_INVENTORY_V1.json",
+  "masteredCount": 1,
+  "holdCount": 0,
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T051-Q12",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "testNumber": 51,
+        "pdfPage": 102,
+        "sourceSkillLabel": "الساعات",
+        "printedQuestionNumber": 12,
+        "cropFile": "AR/AR-T051-Q12.webp",
+        "cropSha256": "9d3d202b8a2df556d8d25e7565be78f8d6196d0d010a68050229c1bcace4cbf1",
+        "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
+      },
+      "imageHash": "9d3d202b8a2df556d8d25e7565be78f8d6196d0d010a68050229c1bcace4cbf1",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
+      "status": "MASTERED",
+      "questionText": "مؤشر خزان البنزين يصنع زاوية قائمة عند النصف؛ ما زاويته عند ثلثي الخزان بافتراض تدريج خطي؟",
+      "canonicalMainSkill": "main_quant_15",
+      "canonicalSubskill": "sub_quant_15_3",
+      "correctAnswer": "120 درجة",
+      "stepByStepSolution": "نصف التدريج=90 درجة؛ التدريج الكامل180؛ عند2/3 الزاوية120.",
+      "educationalExplanation": "المهارة: تدرج مؤشر قياس خطي إلى زاوية؛ نقرأ معطيات السؤال من الصورة ونطبّق العلاقة الحسابية ثم نراجع الناتج مع المطلوب.",
+      "difficulty": "Medium",
+      "difficultyReason": "تتطلب ربط أكثر من معطى أو تحويل وحدات في تدرج مؤشر قياس خطي إلى زاوية.",
+      "contentFingerprint": "f4bf2c0fe4c04d6b343a02fb9aae675a21a0cba8609034b3e53cb982c7357f21",
+      "ideaFingerprint": "7d1daa797b17fb8eb6704b3e217f218c3153d36556bb9c6db1b38efd707bdaaf"
+    }
+  ],
+  "part": "Q12"
+}
