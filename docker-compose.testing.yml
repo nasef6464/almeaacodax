@@ -1,0 +1,76 @@
+# Disposable local Windows testing stack. Never point this at Render, Atlas, or R2.
+name: almeaa-isolated-testing
+
+services:
+  mongo:
+    image: mongo:7.0
+    restart: "no"
+    tmpfs:
+      - /data/db:size=512m
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand({ ping: 1 }).ok"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--save", "", "--appendonly", "no"]
+    restart: "no"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.testing.backend
+    env_file:
+      - ./.env.almeaa-testing.local
+    environment:
+      NODE_ENV: test
+      PORT: "4000"
+      CLIENT_URL: http://localhost:8088
+      CORS_ALLOWED_ORIGINS: http://localhost:8088,http://127.0.0.1:8088
+      MONGODB_URI: mongodb://mongo:27017/almeaa_local_testing
+      REDIS_URL: redis://redis:6379
+      REDIS_KEY_PREFIX: almeaa_local_testing
+      RATE_LIMIT_REDIS_ENABLED: "true"
+      NOTIFICATION_QUEUE_ENABLED: "false"
+      GOOGLE_OAUTH_ENABLED: "false"
+      ADMIN_PASSWORD_SYNC_ON_BOOT: "false"
+      ADMIN_LOGIN_BYPASS_ENABLED: "false"
+      DEV_LOCAL_ADMIN_BYPASS: "false"
+      AI_PROVIDER: none
+      R2_UPLOAD_ENABLED: "false"
+      EMAIL_PROVIDER: console
+      WHATSAPP_PROVIDER: console
+      SENTRY_DSN: ""
+      ALMEAA_MCP_ENABLED: "false"
+    ports:
+      - "127.0.0.1:4000:4000"
+    depends_on:
+      mongo:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: "no"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:4000/api/health/ready >/dev/null"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 90s
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    ports:
+      - "127.0.0.1:8088:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: "no"
