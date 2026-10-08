@@ -1,0 +1,120 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN068",
+  "stage": "QA_LOCK",
+  "source": "MNSF26_RUN068_INDEPENDENT_VISUAL_MATH_117_V2.json",
+  "sha256OriginalEvidence": "78500abc54b1de4a99c85c2a0e7bc02cd8cf8a154f19440447a830239aea246e",
+  "rows": [
+    {
+      "sourceKey": "MNSF26-GEO-T017-Q17",
+      "imageHash": "ac207c9cb0508183754bf13a7494e54c5498a5b1b18867c2bd38a30ebd4e8e98",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T17_V1.json",
+      "expectedAnswerFromIndependentMath": "10 (ج)",
+      "independentMathematicalProof": "ارتفاع المثلث ذي المساحة48 والقاعدة12 يساوي8، والساق√(8²+6²)=10.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T017-Q18",
+      "imageHash": "e8fd6d669db060e26e9dff630cc3768f8472048e8f6d49e96e50dd707b96f42e",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T17_V1.json",
+      "expectedAnswerFromIndependentMath": "8 (ج)",
+      "independentMathematicalProof": "س+س=4²=16؛ س=8.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T017-Q19",
+      "imageHash": "eb770bfdcfbf89da823d6718d7a4f17333c7e265ba967b0c6660c84a1e6d4fb4",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T17_V1.json",
+      "expectedAnswerFromIndependentMath": "أ ب=2 (ج)",
+      "independentMathematicalProof": "في قائم متساوي الساقين، الوتر2√2، فالساق2.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T017-Q20",
+      "imageHash": "3d4d4df4298088b004c95939ce9a0f771deb6f5b1070799f37d53adc8349d7e1",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T17_V1.json",
+      "expectedAnswerFromIndependentMath": "4 (ب)",
+      "independentMathematicalProof": "الوتر4√2 لمثلث قائم متساوي الساقين؛ الساق4.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T018-Q01",
+      "imageHash": "e1726b896b5c4409fe0631577843e710de22448ed2393e2043a3d35d5eabc97a",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T18_V1.json",
+      "expectedAnswerFromIndependentMath": "2 (ب)",
+      "independentMathematicalProof": "2س=(√4)²=4؛ س=2.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T018-Q02",
+      "imageHash": "8129d83cdc424cf0dcc208187583c269da7104f9fee6d1d46eb2fae3e576f0d6",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T18_V1.json",
+      "expectedAnswerFromIndependentMath": "10 (أ)",
+      "independentMathematicalProof": "tan45°=1؛ الارتفاع يساوي القاعدة10.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T018-Q04",
+      "imageHash": "7728e998b284ca29595166e3c6ce1f6e49ddaa010ec6dc165277f4e6bc9ac87d",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T18_V1.json",
+      "expectedAnswerFromIndependentMath": "14√2 (د)",
+      "independentMathematicalProof": "قطر المربع4√2 عمودي على الضلع7؛ مساحة المثلث7×4√2÷2=14√2.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T018-Q05",
+      "imageHash": "76fe0d8690ea7b57a79235d4fb16a20844744aebd06438a89d105da8bd939709",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T18_V1.json",
+      "expectedAnswerFromIndependentMath": "القيمة الأولى أكبر (أ)",
+      "independentMathematicalProof": "الزاوية المتبقية180−35−31=114°، وهي أكبر من111°.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T018-Q06",
+      "imageHash": "fa49087a6980d907294cd968a89754e780e75eeb21733ebf6462d64290114186",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T18_V1.json",
+      "expectedAnswerFromIndependentMath": "القيمتان متساويتان (ج)",
+      "independentMathematicalProof": "علامات التماثل في الشكل تثبت تساوي الضلعين المقارنين.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T018-Q07",
+      "imageHash": "1b1c62aa9a9ba22dd8df4c21f5ecc354e7f593fb8a062528ddaac37d70ee312c",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T18_V1.json",
+      "expectedAnswerFromIndependentMath": "القيمتان متساويتان (ج)",
+      "independentMathematicalProof": "المثلثان متطابقان بعلامات الأضلاع الثلاثة، فالزاويتان المتناظرتان متساويتان.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    }
+  ]
+}
