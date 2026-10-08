@@ -10,6 +10,7 @@ import { SchoolMembershipModel } from "../models/SchoolMembership.js";
 import { TeachingAssignmentModel } from "../models/TeachingAssignment.js";
 import { UserModel } from "../models/User.js";
 import { createSocketServer } from "../sockets/index.js";
+import { closeRedisClients } from "../config/redis.js";
 import { signAccessToken } from "../utils/jwt.js";
 
 const RUN_ID = `active_auth_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 7)}`;
@@ -19,6 +20,7 @@ const supervisorEmail = `supervisor_${RUN_ID}@example.com`;
 const schoolId = new mongoose.Types.ObjectId().toString();
 const classId = new mongoose.Types.ObjectId().toString();
 let server: http.Server | null = null;
+let socketServer: ReturnType<typeof createSocketServer> | null = null;
 const sockets: Socket[] = [];
 let sessionId = "";
 
@@ -167,7 +169,7 @@ async function run() {
 
   const app = createApp();
   server = http.createServer(app);
-  createSocketServer(server);
+  socketServer = createSocketServer(server);
   await new Promise<void>((resolve) => server!.listen(0, "127.0.0.1", resolve));
   const port = (server.address() as any).port;
   const baseUrl = `http://127.0.0.1:${port}`;
@@ -344,6 +346,15 @@ run()
     } catch (error) {
       console.error("Active-auth E2E cleanup failed", error);
     }
-    if (server) await new Promise<void>((resolve) => server!.close(() => resolve()));
-    await mongoose.disconnect();
+    try {
+      if (socketServer) await new Promise<void>((resolve) => socketServer!.close(() => resolve()));
+      if (server?.listening) await new Promise<void>((resolve) => server!.close(() => resolve()));
+      await mongoose.disconnect();
+      await closeRedisClients();
+    } catch (error) {
+      console.error("Active-auth E2E teardown failed", error);
+      process.exitCode = 1;
+    } finally {
+      process.exit(process.exitCode || 0);
+    }
   });
