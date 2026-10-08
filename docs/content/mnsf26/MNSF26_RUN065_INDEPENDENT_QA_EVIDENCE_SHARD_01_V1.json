@@ -1,0 +1,424 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN065",
+  "stage": "QA_LOCK",
+  "status": "IN_PROGRESS",
+  "sourceCrops": "Run017 AR 1204 and Run021 GEO 931 from Library; no recropping",
+  "exactHeadsAtStart": {
+    "branch": "96dccb0cba2b636d01b90e950db76cb2beed2fa2",
+    "main": "f40a785ee777a0be16e48f70727793e8f9ee0695"
+  },
+  "priorQAReviewed": 100,
+  "newQAReviewedTotal": 215,
+  "shardSourceKeyCount": 45,
+  "sha256AllSourceCropsVerified": true,
+  "fullReportLibrary": "/MNSF26/Run065/MNSF26_RUN065_INDEPENDENT_QA_215_SOURCE_IMAGES_V1.json",
+  "qaRows": [
+    {
+      "sourceKey": "MNSF26-AR-T004-Q02",
+      "imageHash": "6ef57ed6009375c02dcc13c93764da0176de5d4a52bc4ac84b165dbfb79e2b4b",
+      "sourceMasterFile": "MNSF26_RUN063_AR_T004_DIRECT_MASTERED_16_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-AR-T004-Q03",
+      "imageHash": "346c48d32c4eba902ed0d8d0d24080d41db650d8eb073701f22b0d74a04ed4f8",
+      "sourceMasterFile": "MNSF26_RUN063_AR_T004_DIRECT_MASTERED_16_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-AR-T004-Q04",
+      "imageHash": "e6ca51453fe07d15ce2c4c2a256225a56adf02ac7d6e580710511ff192dd32f6",
+      "sourceMasterFile": "MNSF26_RUN063_AR_T004_DIRECT_MASTERED_16_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-AR-T004-Q05",
+      "imageHash": "3ce9647267eda04c5a1741eea92b6d8c68dccf5cd6b26ebebaa8664397eb4223",
+      "sourceMasterFile": "MNSF26_RUN063_AR_T004_DIRECT_MASTERED_16_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-AR-T004-Q08",
+      "imageHash": "3bcbeb875e8eef09003c209b43aa9f766e352f8e42ba686fb302571f9e7e41df",
+      "sourceMasterFile": "MNSF26_RUN063_AR_T004_DIRECT_MASTERED_16_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-AR-T004-Q09",
+      "imageHash": "bdc9da16689cbb205acae1629b28627e7658cbe0bba4fda1ed34bf29ba9f5dfc",
+      "sourceMasterFile": "MNSF26_RUN063_AR_T004_DIRECT_MASTERED_16_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-AR-T004-Q10",
+      "imageHash": "fb228efb38a26245eca19e5f2de7971db541762ca0244175b0305858549638f3",
+      "sourceMasterFile": "MNSF26_RUN063_AR_T004_DIRECT_MASTERED_16_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-AR-T004-Q11",
+      "imageHash": "e44292f72008c27bcaeeaec1c244e998062d889deaaa508231b129e0ab25be07",
+      "sourceMasterFile": "MNSF26_RUN063_AR_T004_DIRECT_MASTERED_16_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-AR-T004-Q12",
+      "imageHash": "6385e738327910f4c60ed7bed05944ed77b53296673557dc642f12197f00a31b",
+      "sourceMasterFile": "MNSF26_RUN063_AR_T004_DIRECT_MASTERED_16_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-AR-T004-Q15",
+      "imageHash": "a2985a225c597c743376419a6e2a0b5f8bf0939245e65bcf615812ab689a3a95",
+      "sourceMasterFile": "MNSF26_RUN063_AR_T004_DIRECT_MASTERED_16_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-AR-T004-Q16",
+      "imageHash": "2dbe0590df61e3b0f109e1ed2bb4cb82b126428715616d7442c10b2cccf91c69",
+      "sourceMasterFile": "MNSF26_RUN063_AR_T004_DIRECT_MASTERED_16_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-AR-T004-Q17",
+      "imageHash": "3d712dc629228f90d15fcab81799324cdcaea7b67d4aae7b33c6b21151654e50",
+      "sourceMasterFile": "MNSF26_RUN063_AR_T004_DIRECT_MASTERED_16_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-AR-T004-Q18",
+      "imageHash": "356c1eadaf55b34908cfa71c47abd04afd343125212361261616ad1c6d77b0ce",
+      "sourceMasterFile": "MNSF26_RUN063_AR_T004_DIRECT_MASTERED_16_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-AR-T004-Q19",
+      "imageHash": "b67ca1f87471e2fb1d8b0e09c702d9f7aaa2477fa31d1c9247f5a695b7645e97",
+      "sourceMasterFile": "MNSF26_RUN063_AR_T004_DIRECT_MASTERED_16_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-AR-T004-Q20",
+      "imageHash": "8807d8b2040947ff2613d630539cf4358583e92bb8264dd6ec14f550039a5416",
+      "sourceMasterFile": "MNSF26_RUN063_AR_T004_DIRECT_MASTERED_16_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-AR-T005-Q02",
+      "imageHash": "1d30503978119be0a385a4179d94a196822d624b213ec37236b728a01337368b",
+      "sourceMasterFile": "MNSF26_RUN063_AR_T005_DIRECT_MASTERED_16_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-AR-T005-Q07",
+      "imageHash": "6d3632aa2949e1ad8e2572a715a83b0da148809674ab4868476918f31ee072ea",
+      "sourceMasterFile": "MNSF26_RUN063_AR_T005_DIRECT_MASTERED_16_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-AR-T005-Q08",
+      "imageHash": "310f9bba6ef22138d5901f8ff5ed87c3cb7f49d29cfcc5624a0342c812f3a868",
+      "sourceMasterFile": "MNSF26_RUN063_AR_T005_DIRECT_MASTERED_16_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-AR-T005-Q09",
+      "imageHash": "1791e7489c37d144d09267359b5903d36c9f1229eff32fab90b05a66e34e8164",
+      "sourceMasterFile": "MNSF26_RUN063_AR_T005_DIRECT_MASTERED_16_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-AR-T005-Q10",
+      "imageHash": "ae6fbbd9645edb1a9a60bad52c45a023a3b35cb77e469c4a6ef8cae2fa68b77f",
+      "sourceMasterFile": "MNSF26_RUN063_AR_T005_DIRECT_MASTERED_16_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-AR-T005-Q11",
+      "imageHash": "e048ca8a1b18a44691a68c4b633d52f9dd2a4906b511fabea2b1a61214b3d483",
+      "sourceMasterFile": "MNSF26_RUN063_AR_T005_DIRECT_MASTERED_16_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-AR-T005-Q12",
+      "imageHash": "70aede60fe5eefe1bac66a55ca2bbe910da8a15ead746e5e3f354480392aab77",
+      "sourceMasterFile": "MNSF26_RUN063_AR_T005_DIRECT_MASTERED_16_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-AR-T005-Q13",
+      "imageHash": "5358ad0e3a8485cc92f36896d36dc366335ecb2d8283706e15c007057710c8fe",
+      "sourceMasterFile": "MNSF26_RUN063_AR_T005_DIRECT_MASTERED_16_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-AR-T005-Q14",
+      "imageHash": "1ebf10ccc0c78f312cdf46747a73a58ebe781af344aaf34617289a87a4220fb7",
+      "sourceMasterFile": "MNSF26_RUN063_AR_T005_DIRECT_MASTERED_16_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-AR-T005-Q15",
+      "imageHash": "30b3f47b1b37608c47efc36f1818a678ea9678452295e5a03bf403906024af2d",
+      "sourceMasterFile": "MNSF26_RUN063_AR_T005_DIRECT_MASTERED_16_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-AR-T005-Q16",
+      "imageHash": "1dd7292cf37cf6002c6adf11aaa23c121f3995bc321a3381243d47ccb9362a3e",
+      "sourceMasterFile": "MNSF26_RUN063_AR_T005_DIRECT_MASTERED_16_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-AR-T005-Q17",
+      "imageHash": "2bf1bcb54e6789180e127bec3fcb6e870340ff109bf79937f94dbba364a07b15",
+      "sourceMasterFile": "MNSF26_RUN063_AR_T005_DIRECT_MASTERED_16_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-AR-T005-Q18",
+      "imageHash": "013e51b28fad067ac3639214604d9661838a424b1c058b18e63ebb096c8e1f99",
+      "sourceMasterFile": "MNSF26_RUN063_AR_T005_DIRECT_MASTERED_16_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-AR-T005-Q19",
+      "imageHash": "c39fbd59f652a732acc5f68d11b618b82e4fed33176b880ab216d7b514f8e86f",
+      "sourceMasterFile": "MNSF26_RUN063_AR_T005_DIRECT_MASTERED_16_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-AR-T005-Q20",
+      "imageHash": "a955a7ea8b930b8411bbd75e4dd9d18a696bccf7d540003dbfe082e8d4c4c1d2",
+      "sourceMasterFile": "MNSF26_RUN063_AR_T005_DIRECT_MASTERED_16_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-AR-T006-Q02",
+      "imageHash": "87641de921fc7a082bd3b895aada49ef36c5e6041d6220e79638dba0b792089b",
+      "sourceMasterFile": "MNSF26_RUN063_AR_T006_DIRECT_MASTERED_20_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-AR-T006-Q03",
+      "imageHash": "8625dab27e19ad543291a394f50623863748205755fce9995972b4a0fa7e6898",
+      "sourceMasterFile": "MNSF26_RUN063_AR_T006_DIRECT_MASTERED_20_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-AR-T006-Q04",
+      "imageHash": "027b4f94e604ca0fba75a12980e0e95be66ffcc220036b9c92111a3ddc1c8880",
+      "sourceMasterFile": "MNSF26_RUN063_AR_T006_DIRECT_MASTERED_20_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-AR-T006-Q05",
+      "imageHash": "45ce9d91a5b0892cb24756f5fb8a2b035622b3bd5d0045b542945d89828c64d7",
+      "sourceMasterFile": "MNSF26_RUN063_AR_T006_DIRECT_MASTERED_20_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-AR-T006-Q06",
+      "imageHash": "8ba634fe6b769a361207d1e9ffb20afad4d9800b9b87191d96fd5d14b95d5115",
+      "sourceMasterFile": "MNSF26_RUN063_AR_T006_DIRECT_MASTERED_20_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-AR-T006-Q07",
+      "imageHash": "a6d33c9c8490b87a416c9b547e007fa3505eec8944da61f6f7bddff1affbc244",
+      "sourceMasterFile": "MNSF26_RUN063_AR_T006_DIRECT_MASTERED_20_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-AR-T006-Q08",
+      "imageHash": "f5aff236a551a97544bd2a7ac8b691c3c49acae8a9827a8d10d67e58926c2d18",
+      "sourceMasterFile": "MNSF26_RUN063_AR_T006_DIRECT_MASTERED_20_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-AR-T006-Q09",
+      "imageHash": "50d895e70aafeeca4fe380d44ca457d1b9acbd380966038989a3351b98001494",
+      "sourceMasterFile": "MNSF26_RUN063_AR_T006_DIRECT_MASTERED_20_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-AR-T006-Q10",
+      "imageHash": "a29300ce5999cdbc3425009931cdb5eeea9c5d67016b4a0dc8b15681d001ad5c",
+      "sourceMasterFile": "MNSF26_RUN063_AR_T006_DIRECT_MASTERED_20_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-AR-T006-Q11",
+      "imageHash": "e35dcbac849e6688a781a1070da66b73315a60cf05a973db778b0db9a8386b9b",
+      "sourceMasterFile": "MNSF26_RUN063_AR_T006_DIRECT_MASTERED_20_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-AR-T006-Q12",
+      "imageHash": "ff985e53a1fca502b7fa96f7039912e85ef892e0d09382fde054d547ffc074bd",
+      "sourceMasterFile": "MNSF26_RUN063_AR_T006_DIRECT_MASTERED_20_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-AR-T006-Q13",
+      "imageHash": "f539500590211285cdb4640a26c358570a58ce50fbd1f00b074e39be66a67a8c",
+      "sourceMasterFile": "MNSF26_RUN063_AR_T006_DIRECT_MASTERED_20_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-AR-T006-Q14",
+      "imageHash": "a9517e4c4004d3a812294bd576fcd6be1d56634f35b9ce1d7f7fe36f9b926d43",
+      "sourceMasterFile": "MNSF26_RUN063_AR_T006_DIRECT_MASTERED_20_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-AR-T006-Q15",
+      "imageHash": "dc12f037b03d4dbf42f9bcdb2093ba08c51cafff245358ce579ddbd76853231f",
+      "sourceMasterFile": "MNSF26_RUN063_AR_T006_DIRECT_MASTERED_20_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-AR-T006-Q16",
+      "imageHash": "790cd84b74bb186040fdc40de688486536de71cf369cc627d570c382e2d000e6",
+      "sourceMasterFile": "MNSF26_RUN063_AR_T006_DIRECT_MASTERED_20_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    }
+  ]
+}
