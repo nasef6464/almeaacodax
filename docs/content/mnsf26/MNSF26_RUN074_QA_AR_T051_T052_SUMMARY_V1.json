@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN074_QA_AR_T051_T052",
+  "stage": "QA_LOCK",
+  "branchHeadBefore": "114c1026ee8add5db66b74f65205e8160b5da049",
+  "priorProvisionalReviewed": 1401,
+  "newUniqueQA": 37,
+  "mathPassPendingTaxonomy": 22,
+  "reviewRequired": 6,
+  "priorHoldPreserved": 9,
+  "reviewKeys": [
+    "MNSF26-AR-T051-Q01",
+    "MNSF26-AR-T051-Q05",
+    "MNSF26-AR-T051-Q14",
+    "MNSF26-AR-T052-Q06",
+    "MNSF26-AR-T052-Q19",
+    "MNSF26-AR-T052-Q20"
+  ],
+  "reviewedProvisional": 1438,
+  "remaining": 691,
+  "totalActive": 2129,
+  "evidenceLibrary": "/MNSF26/Run074",
+  "evidenceSHA256": {
+    "T051": "c35fc9c816905eee7e10ab90d233fab86ed51d6c308b3f968aa4d5c1c2fe5248",
+    "T052": "4b27785856bda4613fbb836efa6d1506241b4ff513a2939a67257a73827ce7f4"
+  },
+  "cropDefectCandidate": [
+    "MNSF26-AR-T052-Q19",
+    "MNSF26-AR-T052-Q20"
+  ],
+  "fullBookQaPass": false,
+  "fullBookTaxonomyPass": false,
+  "productionUntouched": true,
+  "note": "37 new question images independently reviewed from SHA-manifest-linked contact sheets. Three T051 master answer conflicts, one T052 option mismatch, two T052 crop defects; nine existing HOLD preserved. No production writes."
+}

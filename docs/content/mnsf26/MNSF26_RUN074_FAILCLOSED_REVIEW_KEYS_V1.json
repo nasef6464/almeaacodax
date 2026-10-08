@@ -1,0 +1,16 @@
+{
+  "bank": "MNSF26",
+  "run": "RUN074",
+  "stage": "QA_LOCK",
+  "failClosedReviewKeys": [
+    "MNSF26-AR-T051-Q01",
+    "MNSF26-AR-T051-Q05",
+    "MNSF26-AR-T051-Q14",
+    "MNSF26-AR-T052-Q06",
+    "MNSF26-AR-T052-Q19",
+    "MNSF26-AR-T052-Q20"
+  ],
+  "evidenceLibrary": "/MNSF26/Run074",
+  "masterRecordsUnchanged": true,
+  "productionUntouched": true
+}
