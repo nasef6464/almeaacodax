@@ -166,15 +166,19 @@
     "MNSF26-GEO-T050-Q15 HOLD قاعدة المثلث غير معطاة، لذا لا يمكن تحديد حجمه بالنسبة للثانية؛ HOLD.",
     "MNSF26-GEO-T024-Q03 HOLD Run055 direct image",
     "MNSF26-GEO-T024-Q14 HOLD Run055 direct image",
-    "MNSF26-GEO-T024-Q16 HOLD Run055 direct image"
+    "MNSF26-GEO-T024-Q16 HOLD Run055 direct image",
+    "MNSF26-AR-T061-Q04 REVIEW correct answer 15 pages vs master 20",
+    "MNSF26-AR-T061-Q09 REVIEW correct answer 5 minutes vs master 2",
+    "MNSF26-AR-T062-Q02 HOLD source ratio 1/16 absent from options; master 1/8",
+    "MNSF26-AR-T063-Q19 REVIEW correct answer 50 pieces vs master 100"
   ],
   "nextCursor": {
     "stage": "QA_LOCK",
     "priority": [
-      "Remaining 213 unique active questions after RUN080, including arithmetic T015/T017 and remaining T023-T039/T051-T053",
-      "Apply and independently re-verify RUN080 eight critical math/solution conflicts",
-      "Resolve QA_REVIEW_MASTER_PAYLOAD_PENDING, then full canonical 25/95 taxonomy audit",
-      "After QA PASS_LOCKED only: DEDUPE_LOCK -> R2_UPLOAD_LOCK -> IMPORT_LOCK -> PRODUCTION_E2E_LOCK"
+      "Apply RUN085 four critical answer conflict patches fail-closed, independently verify source images and exact canonical skills",
+      "Reconcile RUN064/RUN066/RUN067 row-level sourceKeys before promoting provisional 2124 counter",
+      "Adjudicate RUN085 18 HOLD math candidates; no automatic promotion",
+      "Finish full-book semantic QA + 25/95 canonical taxonomy, then DEDUPE_LOCK -> R2_UPLOAD_LOCK -> IMPORT_LOCK -> PRODUCTION_E2E_LOCK"
     ]
   },
   "antiLoopRules": [
@@ -573,5 +577,22 @@
     "to": 1782,
     "evidence": "MNSF26_RUN079_QA_20_T013_DIRECT_IMAGE_V1.json",
     "qaFullBookPass": false
+  },
+  "reconciliationRun085": {
+    "stage": "QA_LOCK",
+    "sourceImageReviewed": 58,
+    "sourceImageSHA256Verified": 58,
+    "qaMathPassTaxonomyPending": 31,
+    "qaReviewAnswerConflicts": 4,
+    "qaHoldMathCandidatePendingMasterAndTaxonomy": 18,
+    "qaHoldPreserved": 5,
+    "sourceKeyUnionMaterializedLocalMinimum": 1766,
+    "localMissingEvidenceKeys": 363,
+    "localEvidenceIncomplete": true,
+    "priorLatestProvisionalReviewed": 2124,
+    "newCountIncrement": 0,
+    "fullBookQaPass": false,
+    "evidenceLibrary": "/MNSF26/Run085/MNSF26_RUN085_AR_T061_T063_DIRECT_IMAGE_QA_58_V1.json",
+    "stateDeltaLibrary": "/MNSF26/Run085/MNSF26_RUN085_STATE_DELTA_V1.json"
   }
 }
