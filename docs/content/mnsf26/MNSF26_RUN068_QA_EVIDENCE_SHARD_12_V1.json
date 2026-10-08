@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN068",
+  "stage": "QA_LOCK",
+  "source": "MNSF26_RUN068_INDEPENDENT_VISUAL_MATH_117_V2.json",
+  "sha256OriginalEvidence": "78500abc54b1de4a99c85c2a0e7bc02cd8cf8a154f19440447a830239aea246e",
+  "rows": [
+    {
+      "sourceKey": "MNSF26-GEO-T024-Q11",
+      "imageHash": "9823c6581f7c848f3334aa22f93e7de1b114090da9a9c3c4442e7cd504b2857e",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN055_GEO_T24_V1.json",
+      "expectedAnswerFromIndependentMath": "أ",
+      "independentMathematicalProof": "المساحة300×100=30000، ومساحة الورقة30×20=600؛ عدد الأوراق50 ويمكن ترتيبها10×5.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T024-Q12",
+      "imageHash": "ab5df175a8b51faa389424c1ab36749eacb479be49d6769d8968fa80d12a09c4",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN055_GEO_T24_V1.json",
+      "expectedAnswerFromIndependentMath": "ج",
+      "independentMathematicalProof": "للمستطيل غير المربع محور تماثل أفقي وآخر رأسي، أي محوران.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T024-Q13",
+      "imageHash": "7077b38c65ce7de545297dd9a61b39910e3c7afb826593d2943039cc68efd85d",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN055_GEO_T24_V1.json",
+      "expectedAnswerFromIndependentMath": "ب",
+      "independentMathematicalProof": "محيط المستطيل=2س+2ص.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T024-Q15",
+      "imageHash": "d21ffe433ecde30aa05753bdb791c80d0836433f8c937364efee4142d5b7ebe2",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN055_GEO_T24_V1.json",
+      "expectedAnswerFromIndependentMath": "ج",
+      "independentMathematicalProof": "مساحة شبه المنحرف=(4+6)×3/2=15.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T024-Q17",
+      "imageHash": "17d3419a576dd5036116f1cc1a1fe23249b30b9d05585c51f77f0dd5b9f738c5",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN055_GEO_T24_V1.json",
+      "expectedAnswerFromIndependentMath": "د",
+      "independentMathematicalProof": "شرط تساوي المساحة والمحيط عدديًا يتحقق عند3×6: كلاهما18؛ والقيم الأصغر من16 مستحيلة من المتباينة أب≥4√(أب).",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T024-Q19",
+      "imageHash": "d93b75406f98253da5e58c3f6a1eee07648267f48d565f935f8efbcdc212bbbb",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN055_GEO_T24_V1.json",
+      "expectedAnswerFromIndependentMath": "ج",
+      "independentMathematicalProof": "نصف المحيط68/2=34، والعرض34−28=6.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T017-Q15",
+      "imageHash": "8ff3bdd4b93a279f5caca585d312b691b027eae3c5a0a67b2b290b312766b8cb",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T17_V1.json",
+      "previousMasterAnswer": "150° (د)",
+      "independentImageDerivedAnswer": "120° (أ)",
+      "proof": "المثلث قائم والضلعان 5√3 و5. الزاوية الداخلية المقابلة للضلع 5√3 هي60°، وبالتالي الخارجية س=180°−60°=120°؛ جواب150° السابق مخالف للصورة.",
+      "verdict": "QA_REVIEW_REQUIRED",
+      "importEligible": false,
+      "failClosed": true
+    }
+  ]
+}
