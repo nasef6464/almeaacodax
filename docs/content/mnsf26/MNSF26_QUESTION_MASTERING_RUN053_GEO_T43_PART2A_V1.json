@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN053_GEO_T43_PART2A",
+  "directImageInspection": true,
+  "sourceCropArchive": "/MNSF26/Run021/mnsf26_geometry_crops_run021.zip",
+  "sourceInventory": "/MNSF26/Run021/MNSF26_GEOMETRY_CROP_MANIFEST_V1.json",
+  "masteredCount": 2,
+  "holdCount": 0,
+  "records": [
+    {
+      "sourceKey": "MNSF26-GEO-T043-Q06",
+      "sourceProvenance": {
+        "sourcePart": "الهندسة",
+        "bookCode": "GEO",
+        "testNumber": 43,
+        "pdfPage": 83,
+        "sourceSkillLabel": "مراجعة مسائل الهندسة من الكتاب",
+        "sourceTopic": "مسائل الهندسة المتنوعة",
+        "sourceLesson": "تمارين هندسة مرقمة حسب الاختبار",
+        "printedQuestionNumber": 6,
+        "cropFile": "MNSF26-GEO-T043-Q06.webp",
+        "cropSha256": "46596412c9ad09395eba38b840e34299ec2e00c199fb36a8ee8c9ede93597e3a",
+        "cropContract": "EMBEDDED_XOBJECT_OR_EXACT_COMPOSITE_SLICE"
+      },
+      "imageHash": "46596412c9ad09395eba38b840e34299ec2e00c199fb36a8ee8c9ede93597e3a",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T43_Q06",
+      "status": "MASTERED",
+      "questionText": "مستطيل مساحته أربعة أمثال مساحة مربع ضلعه3؛ أوجد مساحة المستطيل.",
+      "canonicalMainSkill": "main_quant_21",
+      "canonicalSubskill": "sub_quant_21_1",
+      "correctAnswer": "36 (د)",
+      "stepByStepSolution": "مساحة المربع9؛ المستطيل4×9=36.",
+      "educationalExplanation": "من الصورة: مساحة المربع9؛ المستطيل4×9=36.",
+      "difficulty": "Easy",
+      "difficultyReason": "قانون مباشر.",
+      "contentFingerprint": "14f475c0c9fbec6dd9d216327fb2346dc010b7a5c1f3d1d5fd9b23fbeff6796e",
+      "ideaFingerprint": "14cf566e70c1e81d20a1dae44c2c0d46b5ea3ea43b40b28178a22746f658cab7"
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T043-Q07",
+      "sourceProvenance": {
+        "sourcePart": "الهندسة",
+        "bookCode": "GEO",
+        "testNumber": 43,
+        "pdfPage": 83,
+        "sourceSkillLabel": "مراجعة مسائل الهندسة من الكتاب",
+        "sourceTopic": "مسائل الهندسة المتنوعة",
+        "sourceLesson": "تمارين هندسة مرقمة حسب الاختبار",
+        "printedQuestionNumber": 7,
+        "cropFile": "MNSF26-GEO-T043-Q07.webp",
+        "cropSha256": "36877293d78ca7909e29b50054d7d97766622fb136dc4a7a3340c96af364af73",
+        "cropContract": "EMBEDDED_XOBJECT_OR_EXACT_COMPOSITE_SLICE"
+      },
+      "imageHash": "36877293d78ca7909e29b50054d7d97766622fb136dc4a7a3340c96af364af73",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T43_Q07",
+      "status": "MASTERED",
+      "questionText": "دائرة مرسومة داخل مربع، نصف قطر الدائرة5؛ أوجد محيط المربع.",
+      "canonicalMainSkill": "main_quant_22",
+      "canonicalSubskill": "sub_quant_22_1",
+      "correctAnswer": "40 (ب)",
+      "stepByStepSolution": "ضلع المربع قطر الدائرة=10؛ المحيط40.",
+      "educationalExplanation": "من الصورة: ضلع المربع قطر الدائرة=10؛ المحيط40.",
+      "difficulty": "Easy",
+      "difficultyReason": "قانون مباشر.",
+      "contentFingerprint": "a3db22ec7f96e1a78b3887cfc2743803d752dfea71be116cbe87f88bb0770f7d",
+      "ideaFingerprint": "bd8820330e736a4a858f6a58cc0dd5bc0766363b0ca10b10635022b36cba71c0"
+    }
+  ]
+}
