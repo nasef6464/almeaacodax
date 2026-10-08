@@ -1,4 +1,5 @@
 import { validateTeachingStoryboard, type TeachingStoryboard } from '../contracts/teachingStoryboard.js';
+import { checkpointHints } from '../contracts/checkpointHints.js';
 
 export type CompactTeachingMode = 'lesson' | 'reply';
 export function teachingRequestLanguage(message: string): TeachingStoryboard['language'] | undefined {
@@ -21,7 +22,6 @@ export function compactTeachingSchema(mode: CompactTeachingMode, language?: Teac
   };
   if (mode === 'lesson') Object.assign(properties, {
     prompt: { ...text, description: 'Ask for the next step before giving the solution.' },
-    hints: { type: 'array', items: text, minItems: 2, maxItems: 2, description: 'Two progressive hints without the answer.' },
     explanation: { ...text, description: 'Short solution narration using the trusted reference.' },
     solution: { ...text, description: 'Solution steps and result as LaTeX or plain text.' },
     solutionKind: kind,
@@ -46,7 +46,7 @@ export function compileCompactTeachingPlan(value: unknown, expected?: {
     ? `${item.narration} ${item.prompt}` : item.narration;
   const first = { id: 'given', narration,
     actions: [{ type: 'write', id: 'given', kind: item.kind, content: mathContent(item.board, item.kind) }],
-    ...(item.mode === 'lesson' ? { checkpoint: { prompt: item.prompt, hints: item.hints } } : {}) };
+    ...(item.mode === 'lesson' ? { checkpoint: { prompt: item.prompt, hints: checkpointHints(String(item.prompt), String(item.language)) } } : {}) };
   return validateTeachingStoryboard({ version: 1, language: item.language, scenes: [first,
     ...(item.mode === 'lesson' ? [{ id: 'solution', narration: item.explanation, actions: [
       { type: 'write', id: 'solution', kind: item.solutionKind, content: mathContent(item.solution, item.solutionKind) },
@@ -57,9 +57,9 @@ export function compileCompactTeachingPlan(value: unknown, expected?: {
 
 export function compactTeachingInstruction(mode: CompactTeachingMode, language?: TeachingStoryboard['language']) {
   return `حوّل الشرح المرجعي إلى محتوى سبورة قصير؛ لا تعِد الحل من الصفر. أرجع JSON فقط بالشكل compact_v1، mode=${mode}.
-${language ? `كل النصوص المنطوقة والسؤال والتلميحات باللغة ${language}.` : 'اختر ar-SA أو en-US حسب طلب الطالب ولغة السؤال.'}
+${language ? `كل النصوص المنطوقة والسؤال باللغة ${language}.` : 'اختر ar-SA أو en-US حسب طلب الطالب ولغة السؤال.'}
 الحقول: format, mode, language, narration (فكرة قصيرة), board (المعطيات أو الرد), kind (formula أو text).
-${mode === 'lesson' ? 'أضف prompt لسؤال الخطوة التالية، hints تلميحين تدريجيين دون الإجابة، explanation لشرح الحل، solution لخطوات الحل والنتيجة، solutionKind.' : 'أجب عن الاستفسار الحالي فقط؛ عند الخطأ اذكر سببه وأعط تلميحاً موجهاً دون كشف الحل. لا تضف حقول التدريب أو الحل الكامل.'}
+${mode === 'lesson' ? 'أضف prompt لسؤال الخطوة التالية دون تضمين إجابته، explanation لشرح الحل، solution لخطوات الحل والنتيجة، solutionKind. لا تكتب hints؛ الكود يقدم توجيهين دون الإجابة. لا تكشف إجابة التدريب في narration أو board.' : 'أجب عن الاستفسار الحالي فقط؛ عند الخطأ اذكر سببه وأعط تلميحاً موجهاً دون كشف الحل. لا تضف حقول التدريب أو الحل الكامل.'}
 الكود يبني المشاهد والأفعال؛ لا تكتب scenes أو actions أو IDs. للمسائل الرياضية استخدم kind=formula وLaTeX بدون $، واهرب الشرطة المائلة وفق JSON.
-كل جملة منطوقة 8 كلمات كحد أقصى، السؤال 5 كلمات وكل تلميح 3 كلمات. لا تحيات ولا HTML ولا صور ولا تغيير درجات. استهدف أقل من 250 توكن كي تكتمل الاستجابة داخل حد 450.`;
+كل جملة منطوقة 8 كلمات كحد أقصى، السؤال 5 كلمات. استخدم فواصل أسطر JSON الصحيحة \\n عند الحاجة، ولا تكتب حرف n منفردًا كفاصل. لا تحيات ولا HTML ولا صور ولا تغيير درجات. استهدف أقل من 250 توكن كي تكتمل الاستجابة داخل حد 450.`;
 }

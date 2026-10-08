@@ -2,6 +2,7 @@
 import fs from 'node:fs';
 import { createRequire } from 'node:module';
 import { validateTeachingStoryboard } from '../server/src/modules/ai/contracts/teachingStoryboard';
+import { checkpointHints } from '../server/src/modules/ai/contracts/checkpointHints';
 const require = createRequire(new URL('../server/package.json', import.meta.url));
 const argument = (name: string) => process.argv.find(value => value.startsWith(`--${name}=`))?.slice(name.length + 3);
 const credentialPath = argument('credentials');
@@ -44,7 +45,10 @@ for (const [id, message] of [
   const start = Date.now();
   const response = await request('/ai/question-assistant', { method: 'POST', headers, body: JSON.stringify({ context, questionId: target.questionId, helpLevel: id === 'attempt-feedback' ? 'follow_up' : 'steps', message, tutorSessionId: `${run}:${id}`, boardMode: 'storyboard_v1', ...(id === 'attempt-feedback' ? { boardContext } : {}) }) });
   const plan = validateTeachingStoryboard(response.body.storyboard);
-  report.cases.push({ id, http: response.status, latencyMs: Date.now() - start, provider: response.body.provider, model: response.body.model, usedFallback: response.body.usedFallback, cached: response.body.cached, validPlan: !!plan, language: plan?.language, storyboard: plan, text: String(response.body.text || '').slice(0,4000) });
+  const rawCheckpoint = response.body.storyboard?.scenes?.[0]?.checkpoint;
+  const servedHintsSafe = id === 'attempt-feedback' || Boolean(rawCheckpoint &&
+    JSON.stringify(rawCheckpoint.hints) === JSON.stringify(checkpointHints(String(rawCheckpoint.prompt), String(response.body.storyboard?.language))));
+  report.cases.push({ id, http: response.status, latencyMs: Date.now() - start, provider: response.body.provider, model: response.body.model, usedFallback: response.body.usedFallback, cached: response.body.cached, validPlan: !!plan, servedHintsSafe, language: plan?.language, storyboard: plan, text: String(response.body.text || '').slice(0,4000) });
   console.log(JSON.stringify({ id, http: response.status, validPlan: !!plan, latencyMs: Date.now() - start, provider: response.body.provider, usedFallback: response.body.usedFallback }));
   if (response.status !== 200 || response.body.usedFallback || !plan) break;
   const scene = plan.scenes.find(value => value.checkpoint) || plan.scenes[0];
@@ -53,6 +57,7 @@ for (const [id, message] of [
 const usage = await request('/ai/interactions?limit=20', { headers });
 report.usage = (usage.body.items || []).filter((item: any) => String(item.metadata?.tutorSessionId || '').startsWith(run)).map((item: any) => ({ provider: item.provider, inputTokens: item.inputTokens, outputTokens: item.outputTokens, totalTokens: item.totalTokens, estimatedCostMicrosUsd: item.estimatedCostMicrosUsd, pricingKnown: item.pricingKnown, usageEstimated: item.usageEstimated, latencyMs: item.latencyMs, diagnostics: item.metadata?.teachingPlanDiagnostics }));
 report.acceptance = {
+  servedProceduralHints: report.cases.length === 3 && report.cases.every((item: any) => item.servedHintsSafe),
   threeCompleteResponses: report.cases.length === 3 && report.cases.every((item: any) => item.validPlan && !item.usedFallback),
   english: report.cases[2]?.language === 'en-US',
   practiceBeforeSolution: [report.cases[0], report.cases[2]].every(item => item?.storyboard?.scenes.length === 2 && item.storyboard.scenes[0].checkpoint?.hints.length === 2 && !item.storyboard.scenes[1].checkpoint),

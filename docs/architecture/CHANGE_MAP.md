@@ -35,6 +35,7 @@
 الأولوية بعد إغلاق checkpoint المدارس الحالي هي سد فجوة Product Gate، لا استخراج concern إضافي لمجرد تقليل حجم ملف. راجع `FINAL_MASTER_PLAN_V3_AR.md` قبل اختيار موضع التغيير.
 
 ## Interactive teacher changes
+- Checkpoint coaching policy: server/src/modules/ai/contracts/checkpointHints.ts, applied by shared validation and compact assembly. Prose separator recovery: components/results/teaching/boardText.ts; provider cache revision remains in ai.routes.ts.
 - Teaching wire schema/validation: server/src/modules/ai/contracts/teachingStoryboard.ts.
 - Compact provider content/schema and server-owned scene/checkpoint assembly: server/src/modules/ai/application/compactTeachingPlan.ts. Public browser contract remains unchanged.
 - Planner instructions and cached JSON/text fallback: server/src/modules/ai/application/questionTeachingPlan.ts; review authorization stays in ai.routes.ts.

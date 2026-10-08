@@ -29,6 +29,7 @@
 - `VERIFIED` تعني دليل رحلة مناسب، وليس مجرد وجود ملف أو نجاح فحص ثابت.
 
 ## AI teaching board V1 boundary — 2026-10-08
+Shared checkpointHints supplies two fixed procedural coaching prompts chosen by step type and language; no generated answer/value/option/formula is copied into hints, including legacy cached responses. Compact content generation omits hint fields. Browser boardText owns observed prose separator cleanup; math variables and LaTeX commands are preserved.
 Local spokenMath prepares supported notation in Arabic/English without computation, provider access or persisted changes; unknown/malformed notation explicitly refers to the visible expression. NarrationEngine prefers matching local voices when available and keeps browser fallback when voices have not loaded.
 CompactTeachingPlan in the existing AI application layer owns content schema and deterministic scene/checkpoint compilation; provider adapters apply its schema for board calls only. Browser storyboard_v1 remains the canonical rendering contract.
 Existing AI module retains question review authorization, trusted references, provider routing, usage/budget enforcement and scoped cache. A pure versioned teaching contract is shared with the frontend. Browser components/results/teaching owns board state/actions/playback/render and a replaceable narration adapter. No new service or educational authority. Local fixture proof is PARTIAL; live-provider and production certification remain open.
