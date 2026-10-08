@@ -1,0 +1,79 @@
+{
+  "project": "TAH-MATH",
+  "run": "heavy-run13",
+  "date": "2026-10-08",
+  "bank": "COL26",
+  "status": "SOURCE_PDF_275_FRESH_OPTION_REGIONS_PASS_PEDAGOGY_OPEN",
+  "sourceBook": "كتاب تجميعات يلو للرياضيات 26 - النسخة المعدلة.pdf",
+  "sourceBookSha256": "5c1ec2dc4f2ddd6036dbd3430f0fceaaa9b51e300b7e8442b446c3a21a4ecd51",
+  "actualSourcePdfReinspectedQuestions": 275,
+  "priorSourceOptionPartialRowsExcluded": 214,
+  "priorSourceBackedRemapRowsExcluded": 27,
+  "priorFullPedagogyRowsExcluded": 11,
+  "sourcePageRange": [
+    53,
+    101
+  ],
+  "sourceLessons": {
+    "12": 19,
+    "13": 21,
+    "14": 32,
+    "15": 13,
+    "16": 24,
+    "17": 34,
+    "18": 32,
+    "19": 6,
+    "20": 13,
+    "21": 43,
+    "22": 38
+  },
+  "uniqueSourceOptionLabelsABCD": 275,
+  "sourceCropRasterExtracted": 275,
+  "sourceOptionVisualRectangles": 1100,
+  "allFourRawPdfOptionTextRegionsNonempty": 261,
+  "rawPdfTextIncompleteRows": 14,
+  "sourceTextCrossExtractionTokenAgreement": "275/275 exact token-set agreement with previous source PDF extraction (not independent semantic answer verification)",
+  "sourceOriginalPdfPageLessonMapping": "275/275 source-index lessons resolved",
+  "liveAtlasLessonScopePreaudit": {
+    "sourcePage53to110Records": 361,
+    "validMainSkillChapter": 361,
+    "invalidSubskillForChapter": 27,
+    "previousKnownReviewedRemapCandidates": 27,
+    "currentBatchOverlapWithKnown27": 0,
+    "missingSourceId": 0,
+    "missingImageHash": 0,
+    "invalidAnswerIndex": 0
+  },
+  "evidence": {
+    "localManifest": "TAH_MATH_COL26_SOURCE_OPTION_REGIONS_RUN13.json",
+    "localManifestSha256": "e81b5de49f83a86fb52a6386be497cec1c2e5c1414a121aa0f9db280101a8c8a",
+    "localEvidenceZip": "TAH_MATH_RUN13_275_SOURCE_OPTIONS_EVIDENCE.zip",
+    "localEvidenceZipSha256": "58113055ed6bd8bba775f70b5536b18db6ee39595f69dc1fe69253423ba7ab8e",
+    "sampleSourceQuestionCodes": [
+      "TAH-MATH-COL26-P053-Q19",
+      "TAH-MATH-COL26-P057-Q07",
+      "TAH-MATH-COL26-P060-Q12",
+      "TAH-MATH-COL26-P066-Q04",
+      "TAH-MATH-COL26-P069-Q16",
+      "TAH-MATH-COL26-P073-Q17",
+      "TAH-MATH-COL26-P077-Q08",
+      "TAH-MATH-COL26-P082-Q01",
+      "TAH-MATH-COL26-P090-Q08",
+      "TAH-MATH-COL26-P092-Q34",
+      "TAH-MATH-COL26-P099-Q15"
+    ]
+  },
+  "certificationGates": {
+    "sourcePdfIdentity": "PASS",
+    "uniqueABCDSourceLabelGeometry": "PASS_275",
+    "sourceCropCoordinates": "PASS_275",
+    "allFourOptionTextReady": "PARTIAL_261_OF_275_RAW_NOT_FINAL",
+    "independentMathAnswerRecheck": "NOT_DONE_IN_THIS_BATCH",
+    "finalWhyOthersWrong": "NOT_DONE",
+    "finalDifficulty": "NOT_DONE",
+    "fullVisualQuestionCrop": "SAMPLED_NOT_FULL_CERTIFIED",
+    "productionMutation": "NONE"
+  },
+  "note": "This batch genuinely re-opened 275 distinct source PDF question crops and extracted four A/B/C/D label positions plus option visual rectangles; it did not finalize semantic correctness or pedagogical fields. The full 275-row source evidence ZIP remains a conversation artifact, not a GitHub file.",
+  "next": "Complete option visual transcription/whyOthersWrong and pending YLM26 full pedagogical gate, then source-verified COL26 enrichment and COL26OLD regression. Do not mutate production until rollback-safe manifest approved."
+}
