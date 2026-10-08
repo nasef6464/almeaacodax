@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN060_AR_T15_LIBRARY_PAYLOAD_RECOVERY",
+  "previouslyCounted": true,
+  "records": [
+    {
+      "id": "MNSF26-AR-T015-Q20",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T015",
+        "sourceLesson": "جمع الأعداد - المتتابعات - ضرب الأعداد"
+      },
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_1",
+      "correctAnswer": "أ",
+      "answerValue": "القيمة الأولى أكبر",
+      "stepByStepSolution": "نلغي العوامل المشتركة 31×32×33×34×35 من القيمتين؛ تبقى الأولى 30÷4=7.5 والثانية 36÷6=6، فالأولى أكبر.",
+      "educationalExplanation": "إلغاء العوامل المشتركة يمنع إجراء ضربات ضخمة غير لازمة.",
+      "difficulty": "Medium",
+      "difficultyReason": "اختصار حاصلَي ضرب كبيرين قبل المقارنة.",
+      "imageHash": "2c380089462111d0865d34cc5640c4ddd4ca8c2be7cfc1d4868b69e9fda5b232",
+      "contentFingerprint": "b16fb3ba0b0e2df80f6734ce192a3ffdb3779dc8ba6b10f1ae80cb397b4a1518",
+      "ideaFingerprint": "7c90f1f32c50de4b8bef02c20c8074e4bb015fd7846198a3f8831533f37c45fa",
+      "status": "MASTERED"
+    }
+  ]
+}
