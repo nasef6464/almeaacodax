@@ -38,10 +38,19 @@
     "sourceMappingPendingDetailedReview": true
   },
   "productionBaseline": {
-    "questions": "NOT_QUERIED",
-    "subject": "NOT_QUERIED",
-    "existingSkills": "NOT_QUERIED",
-    "existingLinks": "NOT_QUERIED"
+    "verifiedAt": "2026-10-08",
+    "database": "almeaa",
+    "readOnly": true,
+    "subjectId": "sub_1784980706034",
+    "subjectName": "الفيزياء",
+    "pathId": "p_1777779653351",
+    "questions": 0,
+    "genericSkillRows": 9,
+    "genericSubskillRows": 0,
+    "subjectQuizRows": 0,
+    "skillprogressRowsReferencingLegacySkillsOrSubject": 36,
+    "protectLegacySkillIds": true,
+    "reuseLegacyIdsForNewTaxonomy": false
   },
   "sourceLicensing": {
     "commercialReuseAuthorization": "NOT_VERIFIED",
