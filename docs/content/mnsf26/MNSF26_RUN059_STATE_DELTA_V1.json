@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN059_HEAVY",
+  "date": "2026-10-08",
+  "base": {
+    "mastered": 1701,
+    "hold": 324
+  },
+  "newDirectImageInspected": 93,
+  "newDirectImageGithubPersisted": {
+    "total": 85,
+    "mastered": 54,
+    "holdReview": 31
+  },
+  "priorLibraryOnlyGithubReconciled": {
+    "total": 22,
+    "mastered": 18,
+    "hold": 4
+  },
+  "newGithubPersisted": {
+    "total": 107,
+    "mastered": 72,
+    "holdReview": 35
+  },
+  "provisional": {
+    "mastered": 1773,
+    "hold": 359
+  },
+  "libraryOnlyNew": 8,
+  "accountingInvariant": "2132 counted numerically, 8 new Library-only records remain; reconcile unique source keys before any stage lock",
+  "stage": "QUESTION_MASTERING",
+  "cropLock": "2135/2135",
+  "qa": "BLOCKED",
+  "productionUntouched": true,
+  "source": "/MNSF26/Run058 and /MNSF26/Run059"
+}
