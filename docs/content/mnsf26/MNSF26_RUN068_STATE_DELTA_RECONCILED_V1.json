@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN068",
+  "stage": "QA_LOCK",
+  "source": "/MNSF26/Run068/MNSF26_RUN068_INDEPENDENT_VISUAL_MATH_117_V2.json",
+  "sourceSha256": "78500abc54b1de4a99c85c2a0e7bc02cd8cf8a154f19440447a830239aea246e",
+  "githubEvidenceShards": 21,
+  "newUniqueMathReviewed": 117,
+  "mathAnswerPass": 116,
+  "qaReviewRequired": 1,
+  "reviewKey": "MNSF26-GEO-T017-Q15",
+  "qaReviewedFrom": 546,
+  "qaReviewedTo": 663,
+  "fullBookTaxonomyApproved": false,
+  "qaLock": "OPEN",
+  "dedupeR2ImportProductionUntouched": true
+}
