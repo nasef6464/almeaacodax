@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN060_AR_T16_LIBRARY_PAYLOAD_RECOVERY",
+  "previouslyCounted": true,
+  "records": [
+    {
+      "id": "MNSF26-AR-T016-Q01",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T016",
+        "sourceLesson": "أنماط وأساسيات الأعداد"
+      },
+      "canonicalMainSkill": "skill_quant_02",
+      "canonicalSubskill": "sub_quant_02_3",
+      "correctAnswer": "د",
+      "answerValue": "11",
+      "stepByStepSolution": "77=1×7×11 ومع كون م،ن،ل أعدادًا طبيعية مختلفة فإن القيم هي 1 و7 و11، وأكبرها 11.",
+      "educationalExplanation": "تحليل 77 إلى عوامله الأولية يحسم القيم المختلفة.",
+      "difficulty": "Easy",
+      "difficultyReason": "تحليل عوامل أولية مباشر.",
+      "imageHash": "dcd1ffb4f0e5166b64386071e9427dc2a321a3918616899237d4413eb975ea04",
+      "contentFingerprint": "f12ec7ec94c25d8180a062b6d5b2f1278ca152eb2f026ed3353ba449ba6cb554",
+      "ideaFingerprint": "7e52addaa98819b347314fdf4aef247e71c8f1ac3889a83c824cf7063453a231",
+      "status": "MASTERED"
+    },
+    {
+      "id": "MNSF26-AR-T016-Q02",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T016",
+        "sourceLesson": "أنماط وأساسيات الأعداد"
+      },
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_5",
+      "correctAnswer": "أ",
+      "answerValue": "0",
+      "stepByStepSolution": "خانة الآحاد في حاصل الضرب تعتمد فقط على آحاد العوامل؛ وجود عامل آحاده 5 مع عامل زوجي يجعل آحاد الناتج 0.",
+      "educationalExplanation": "نكتفي بآحاد العوامل بدل إجراء الضرب الكامل.",
+      "difficulty": "Easy",
+      "difficultyReason": "تطبيق مباشر لخانة الآحاد.",
+      "imageHash": "623e456d0863af1cb9026a332df5bac2cb435401f76502f855e26e8deb869b6e",
+      "contentFingerprint": "fefc45803a9ff8580e3cef38acce18b01574c54c3fc97c267166bbc3528ab8fe",
+      "ideaFingerprint": "403d661c901290145baebf6d9d0a04c5674f5774cddcd48f9d3ddb4d65393d77",
+      "status": "MASTERED"
+    },
+    {
+      "id": "MNSF26-AR-T016-Q03",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T016",
+        "sourceLesson": "أنماط وأساسيات الأعداد"
+      },
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_4",
+      "correctAnswer": "ب",
+      "answerValue": "13300",
+      "stepByStepSolution": "نعيد التجميع: 25×133×4=(25×4)×133=100×133=13300.",
+      "educationalExplanation": "التجميع الذكي يقلل العملية إلى ضرب في 100.",
+      "difficulty": "Easy",
+      "difficultyReason": "تجميع عوامل مباشر.",
+      "imageHash": "dc698063b4a3eb650fc6cfcb9c2670c4ef2483e4b470b805ed165b780bfbe68b",
+      "contentFingerprint": "c2008d924c2a7caf3f8f65593f902cb59a5bfabf532808d560686061e609b423",
+      "ideaFingerprint": "e56bf7b0a493804b20c9750b2d0433d6286c79e87e36b2aff9b7211e13b4a51f",
+      "status": "MASTERED"
+    },
+    {
+      "id": "MNSF26-AR-T016-Q05",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T016",
+        "sourceLesson": "أنماط وأساسيات الأعداد"
+      },
+      "canonicalMainSkill": "skill_quant_04",
+      "canonicalSubskill": "sub_quant_04_2",
+      "correctAnswer": "ب",
+      "answerValue": "10.1 تقريبًا",
+      "stepByStepSolution": "999.99÷99 = 10.1009...، ومن الخيارات القيمة الموافقة 10.1.",
+      "educationalExplanation": "نقسم العدد العشري ونطابق الناتج مع الخيار الأقرب المعطى.",
+      "difficulty": "Medium",
+      "difficultyReason": "قسمة عشرية مع مطابقة خيار.",
+      "imageHash": "ff0cccd0212de49e49823c81a7fbabb5c33ce5a07aee8e56ea501767e9fd3fce",
+      "contentFingerprint": "78a8cc52214186c1fcd79cfab99ae4da8797e6161bdb153647171ef0d53e55a1",
+      "ideaFingerprint": "23cb044d486916d6781b22d252ccd943082e69ee17a5754e507dbd9e08bafffa",
+      "status": "MASTERED"
+    }
+  ]
+}
