@@ -1,0 +1,128 @@
+name: ALMEAA Local Docker Test Stack
+
+on:
+  push:
+    branches:
+      - test/almeaa-isolated-20261008
+    paths:
+      - docker-compose.testing.yml
+      - Dockerfile.testing.backend
+      - Dockerfile.frontend
+      - scripts/testing/**
+      - .github/workflows/almeaa-local-docker-validation.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  docker-local:
+    name: Validate loopback-only local testing environment
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - name: Checkout exact branch
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Create ephemeral synthetic-only credentials
+        shell: bash
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const { randomBytes } = require('node:crypto');
+          const secret = () => randomBytes(36).toString('base64url');
+          const admin=secret(), student=secret(), redeemed=secret(),
+                teacher=secret(), supervisor=secret(), school=secret(), parent=secret();
+          const settings = {
+            JWT_SECRET: secret(),
+            ADMIN_EMAIL: 'nasef64@gmail.com',
+            ADMIN_NAME: 'ALMEAA Testing Admin',
+            ADMIN_PASSWORD: admin,
+            ROLE_ADMIN_EMAIL: 'nasef64@gmail.com',
+            ROLE_ADMIN_PASSWORD: admin,
+            SMOKE_ADMIN_EMAIL: 'nasef64@gmail.com',
+            SMOKE_ADMIN_PASSWORD: admin,
+            ROLE_STUDENT_EMAIL: 'student.a@almeaa.local',
+            ROLE_STUDENT_PASSWORD: student,
+            SMOKE_STUDENT_EMAIL: 'student.a@almeaa.local',
+            SMOKE_STUDENT_PASSWORD: student,
+            SMOKE_STUDENT_REDEEMED_EMAIL: 'student.d@almeaa.local',
+            SMOKE_STUDENT_REDEEMED_PASSWORD: redeemed,
+            ROLE_TEACHER_EMAIL: 'teacher.quant@almeaa.local',
+            ROLE_TEACHER_PASSWORD: teacher,
+            SMOKE_TEACHER_EMAIL: 'teacher.quant@almeaa.local',
+            SMOKE_TEACHER_PASSWORD: teacher,
+            ROLE_SUPERVISOR_EMAIL: 'supervisor.group@almeaa.local',
+            ROLE_SUPERVISOR_PASSWORD: supervisor,
+            SMOKE_SUPERVISOR_EMAIL: 'supervisor.group@almeaa.local',
+            SMOKE_SUPERVISOR_PASSWORD: supervisor,
+            ROLE_SCHOOL_SUPERVISOR_EMAIL: 'supervisor.school@almeaa.local',
+            ROLE_SCHOOL_SUPERVISOR_PASSWORD: school,
+            ROLE_PARENT_EMAIL: 'parent.a@almeaa.local',
+            ROLE_PARENT_PASSWORD: parent,
+            SMOKE_PARENT_EMAIL: 'parent.a@almeaa.local',
+            SMOKE_PARENT_PASSWORD: parent,
+            SMOKE_ALLOW_PASSWORD_LOGIN: 'true'
+          };
+          for (const val of Object.values(settings)) console.log('::add-mask::'+val);
+          fs.writeFileSync('.env.almeaa-testing.local',
+            Object.entries(settings).map(([name,value]) => name+'='+value).join('\n')+'\n',
+            {mode: 0o600});
+          NODE
+
+      - name: Validate Docker stack configuration
+        run: |
+          docker compose --project-name almeaa-isolated-testing --file docker-compose.testing.yml --env-file .env.almeaa-testing.local config --quiet
+          node <<'NODE'
+          const fs = require('node:fs');
+          const file = fs.readFileSync('docker-compose.testing.yml','utf8');
+          for (const required of [
+            'mongodb://mongo:27017/almeaa_local_testing',
+            '127.0.0.1:8088:80',
+            '127.0.0.1:4000:4000',
+            'R2_UPLOAD_ENABLED: "false"',
+            'GOOGLE_OAUTH_ENABLED: "false"',
+            'AI_PROVIDER: none'
+          ]) if (!file.includes(required)) throw Error('Local-only safety requirement missing: '+required);
+          console.log('PASS local compose target controls.');
+          NODE
+
+      - name: Build and start disposable app (no external production access)
+        timeout-minutes: 22
+        run: |
+          docker compose --project-name almeaa-isolated-testing --file docker-compose.testing.yml --env-file .env.almeaa-testing.local up --build --detach
+          for i in $(seq 1 90); do
+            if curl --fail --silent http://127.0.0.1:8088/ -o /dev/null &&
+               curl --fail --silent http://127.0.0.1:4000/api/health/ready -o /tmp/almeaa-test-ready.json; then
+              echo 'PASS local testing frontend/backend and dedicated Mongo.'
+              exit 0
+            fi
+            sleep 2
+          done
+          echo 'Isolated local app did not become ready.'
+          docker compose --project-name almeaa-isolated-testing --file docker-compose.testing.yml --env-file .env.almeaa-testing.local ps
+          exit 1
+
+      - name: Validate that no cloud service secrets are consumed
+        run: |
+          node <<'NODE'
+          const ready = require('/tmp/almeaa-test-ready.json');
+          if (!ready.ready || ready.database?.status !== 'connected') {
+            throw Error('Local test backend is not ready with local MongoDB');
+          }
+          console.log('PASS: disposable Mongo and local frontend are serving.');
+          NODE
+
+      - name: Logs on failure (synthetic data only)
+        if: failure()
+        run: |
+          docker compose --project-name almeaa-isolated-testing --file docker-compose.testing.yml --env-file .env.almeaa-testing.local ps
+          docker compose --project-name almeaa-isolated-testing --file docker-compose.testing.yml --env-file .env.almeaa-testing.local logs --tail=100 backend frontend
+
+      - name: Remove test containers and local credentials
+        if: always()
+        run: |
+          docker compose --project-name almeaa-isolated-testing --file docker-compose.testing.yml --env-file .env.almeaa-testing.local down --remove-orphans || true
+          rm -f .env.almeaa-testing.local
