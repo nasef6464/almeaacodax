@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN066",
+  "stage": "QA_LOCK",
+  "qaPrevious": 315,
+  "sourceCropsVisuallyScreened": 420,
+  "newUniqueSourceCropsScreened": 403,
+  "newQAIndependentlyAdjudicated": 124,
+  "newQAPass": 50,
+  "newHoldsPreserved": 74,
+  "newScreenedAwaitingMathReview": 279,
+  "qaTotalIndependentlyAdjudicated": 439,
+  "qaRemaining": 1690,
+  "sourceCropHashMatches": 420,
+  "masterPayloadStructuralPass": 420,
+  "qaPassLocked": false,
+  "verdictsFile": "MNSF26_RUN066_GEO_SOURCEKEY_VERDICTS_V1.json",
+  "notes": "Original Run021 WEBP pixels; 17 prior reviewed keys excluded. Stage gate remains open."
+}
