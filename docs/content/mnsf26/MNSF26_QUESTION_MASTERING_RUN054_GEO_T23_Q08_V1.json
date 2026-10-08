@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN054_GEO_T23",
+  "records": [
+    {
+      "sourceKey": "MNSF26-GEO-T023-Q08",
+      "sourceProvenance": {
+        "sourcePart": "الهندسة",
+        "bookCode": "GEO",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس - الهندسة - معدل.pdf",
+        "testNumber": 23,
+        "pdfPage": 43,
+        "sourceSkillLabel": "عنوان مجموعة المصدر غير معتمد كتصنيف رياضي للسؤال",
+        "sourceTopic": "الهندسة / الاختبار المرقم من الكتاب الأصلي",
+        "sourceLesson": "اختبار الهندسة 023، سؤال 08",
+        "printedQuestionNumber": 8,
+        "cropFile": "MNSF26-GEO-T023-Q08.webp",
+        "cropSha256": "0d29a727627c5a93fa378edaba6160e155dd98ea94cdf90872424577c505ab34",
+        "cropContract": "EMBEDDED_XOBJECT_OR_EXACT_COMPOSITE_SLICE"
+      },
+      "imageHash": "0d29a727627c5a93fa378edaba6160e155dd98ea94cdf90872424577c505ab34",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T023_Q08",
+      "status": "HOLD",
+      "questionText": "م نقطة منتصف أ ب مع إحداثيات رمزية؛ قارن س وص",
+      "canonicalMainSkill": null,
+      "canonicalSubskill": null,
+      "correctAnswer": null,
+      "stepByStepSolution": null,
+      "educationalExplanation": "غير معتمد للنشر؛ سبب الحجز: الرموز المكتوبة عند النقاط لا تعطي قيمًا عددية أو علاقات كافية لتحديد ترتيب س وص.",
+      "difficulty": null,
+      "difficultyReason": "الرموز المكتوبة عند النقاط لا تعطي قيمًا عددية أو علاقات كافية لتحديد ترتيب س وص.",
+      "contentFingerprint": "d9a42dc14dca837fb67fd3c2e18e91552a2e86f3ce1ed1cd24650da0cb46bc4a",
+      "ideaFingerprint": "dc046d570446d32617a0c87c4fdc42ce4e974d4620314bc3b1453f7930ed3508",
+      "holdReason": "الرموز المكتوبة عند النقاط لا تعطي قيمًا عددية أو علاقات كافية لتحديد ترتيب س وص."
+    }
+  ]
+}

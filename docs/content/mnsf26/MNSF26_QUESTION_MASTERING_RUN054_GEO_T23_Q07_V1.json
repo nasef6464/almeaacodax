@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN054_GEO_T23",
+  "records": [
+    {
+      "sourceKey": "MNSF26-GEO-T023-Q07",
+      "sourceProvenance": {
+        "sourcePart": "الهندسة",
+        "bookCode": "GEO",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس - الهندسة - معدل.pdf",
+        "testNumber": 23,
+        "pdfPage": 43,
+        "sourceSkillLabel": "عنوان مجموعة المصدر غير معتمد كتصنيف رياضي للسؤال",
+        "sourceTopic": "الهندسة / الاختبار المرقم من الكتاب الأصلي",
+        "sourceLesson": "اختبار الهندسة 023، سؤال 07",
+        "printedQuestionNumber": 7,
+        "cropFile": "MNSF26-GEO-T023-Q07.webp",
+        "cropSha256": "203207ead8a0642810ef10afc0109c4666f217079379c7386b5c5254a837e1a4",
+        "cropContract": "EMBEDDED_XOBJECT_OR_EXACT_COMPOSITE_SLICE"
+      },
+      "imageHash": "203207ead8a0642810ef10afc0109c4666f217079379c7386b5c5254a837e1a4",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T023_Q07",
+      "status": "HOLD",
+      "questionText": "مستطيل على المحورين تقاطع قطريه عند نقطة إحداثية ومساحته48؛ أوجد رأس ب",
+      "canonicalMainSkill": null,
+      "canonicalSubskill": null,
+      "correctAnswer": null,
+      "stepByStepSolution": null,
+      "educationalExplanation": "غير معتمد للنشر؛ سبب الحجز: الإحداثي المكتوب قرب تقاطع القطرين لا يتسق مع المساحة48 عند حساب العرض والارتفاع، فيلزم تحكيم القراءة.",
+      "difficulty": null,
+      "difficultyReason": "الإحداثي المكتوب قرب تقاطع القطرين لا يتسق مع المساحة48 عند حساب العرض والارتفاع، فيلزم تحكيم القراءة.",
+      "contentFingerprint": "3f29b1906c58d07bb3295a0fb2bad23a018d16b93e76d004951211dde3b4372f",
+      "ideaFingerprint": "5140bb0f9584f30a7c22070d751f479a45a7505135ef8c59dc2507804ba1770a",
+      "holdReason": "الإحداثي المكتوب قرب تقاطع القطرين لا يتسق مع المساحة48 عند حساب العرض والارتفاع، فيلزم تحكيم القراءة."
+    }
+  ]
+}

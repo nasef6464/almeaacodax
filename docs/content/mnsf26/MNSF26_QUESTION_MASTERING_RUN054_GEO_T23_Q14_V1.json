@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN054_GEO_T23",
+  "records": [
+    {
+      "sourceKey": "MNSF26-GEO-T023-Q14",
+      "sourceProvenance": {
+        "sourcePart": "الهندسة",
+        "bookCode": "GEO",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس - الهندسة - معدل.pdf",
+        "testNumber": 23,
+        "pdfPage": 44,
+        "sourceSkillLabel": "عنوان مجموعة المصدر غير معتمد كتصنيف رياضي للسؤال",
+        "sourceTopic": "الهندسة / الاختبار المرقم من الكتاب الأصلي",
+        "sourceLesson": "اختبار الهندسة 023، سؤال 14",
+        "printedQuestionNumber": 14,
+        "cropFile": "MNSF26-GEO-T023-Q14.webp",
+        "cropSha256": "4131e244164f0e7fb44801c4e56a3012190a7fa93c6a049aa0b445a2f63334f9",
+        "cropContract": "EMBEDDED_XOBJECT_OR_EXACT_COMPOSITE_SLICE"
+      },
+      "imageHash": "4131e244164f0e7fb44801c4e56a3012190a7fa93c6a049aa0b445a2f63334f9",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T023_Q14",
+      "status": "HOLD",
+      "questionText": "مربع في الربع الأول ومركزه ن(س،ص)؛ قارن س وص",
+      "canonicalMainSkill": null,
+      "canonicalSubskill": null,
+      "correctAnswer": null,
+      "stepByStepSolution": null,
+      "educationalExplanation": "غير معتمد للنشر؛ سبب الحجز: وجود المركز في الربع الأول يثبت الإيجابية فقط، ولا يحدد أي الإحداثيين أكبر.",
+      "difficulty": null,
+      "difficultyReason": "وجود المركز في الربع الأول يثبت الإيجابية فقط، ولا يحدد أي الإحداثيين أكبر.",
+      "contentFingerprint": "a3a9130600a3fc75c39af50046aafb421abb4f28660648d66fd464c4cbce2ea2",
+      "ideaFingerprint": "19a5896ad4029e44327e840a7a1726fc2594c9ac418e675abd5398437e13372d",
+      "holdReason": "وجود المركز في الربع الأول يثبت الإيجابية فقط، ولا يحدد أي الإحداثيين أكبر."
+    }
+  ]
+}

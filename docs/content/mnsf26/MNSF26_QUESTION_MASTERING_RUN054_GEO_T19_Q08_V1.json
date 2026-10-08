@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN054_GEO_T19",
+  "records": [
+    {
+      "sourceKey": "MNSF26-GEO-T019-Q08",
+      "sourceProvenance": {
+        "sourcePart": "الهندسة",
+        "bookCode": "GEO",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس - الهندسة - معدل.pdf",
+        "testNumber": 19,
+        "pdfPage": 36,
+        "sourceSkillLabel": "عنوان مجموعة المصدر غير معتمد كتصنيف رياضي للسؤال",
+        "sourceTopic": "الهندسة / الاختبار المرقم من الكتاب الأصلي",
+        "sourceLesson": "اختبار الهندسة 019، سؤال 08",
+        "printedQuestionNumber": 8,
+        "cropFile": "MNSF26-GEO-T019-Q08.webp",
+        "cropSha256": "e425a9f8cae916e82eff343da250dcc1b26aa8ef3506001322ed0c60b7a8ade7",
+        "cropContract": "EMBEDDED_XOBJECT_OR_EXACT_COMPOSITE_SLICE"
+      },
+      "imageHash": "e425a9f8cae916e82eff343da250dcc1b26aa8ef3506001322ed0c60b7a8ade7",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T019_Q08",
+      "status": "MASTERED",
+      "questionText": "أربعة مثلثات متساوية الأضلاع متجاورة على مستقيم طوله16؛ أوجد محيط الشكل",
+      "canonicalMainSkill": "main_quant_20",
+      "canonicalSubskill": "sub_quant_20_1",
+      "correctAnswer": "48 (ب)",
+      "stepByStepSolution": "كل قاعدة4، وعدد الأضلاع الخارجية المائلة8، فالمحيط=16+8×4=48.",
+      "educationalExplanation": "كل قاعدة4، وعدد الأضلاع الخارجية المائلة8، فالمحيط=16+8×4=48.",
+      "difficulty": "Easy",
+      "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
+      "contentFingerprint": "8dc0ac96b1c3e570eb1b52bbf3ee4dcc1b89cfb2240a49bab99931a863197f66",
+      "ideaFingerprint": "63129a07bc501212ef0088146c5c502888f0941a4a8da9c40f018e05c85e4009"
+    }
+  ]
+}

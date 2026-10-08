@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN054_GEO_T15",
+  "records": [
+    {
+      "sourceKey": "MNSF26-GEO-T015-Q04",
+      "sourceProvenance": {
+        "sourcePart": "الهندسة",
+        "bookCode": "GEO",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس - الهندسة - معدل.pdf",
+        "testNumber": 15,
+        "pdfPage": 29,
+        "sourceSkillLabel": "عنوان مجموعة المصدر غير معتمد كتصنيف رياضي للسؤال",
+        "sourceTopic": "الهندسة / الاختبار المرقم من الكتاب الأصلي",
+        "sourceLesson": "اختبار الهندسة 015، سؤال 04",
+        "printedQuestionNumber": 4,
+        "cropFile": "MNSF26-GEO-T015-Q04.webp",
+        "cropSha256": "33da4f571551f7e7ec27a1d96ddef20396645b5269f2c21f72bd78a97735e9c6",
+        "cropContract": "EMBEDDED_XOBJECT_OR_EXACT_COMPOSITE_SLICE"
+      },
+      "imageHash": "33da4f571551f7e7ec27a1d96ddef20396645b5269f2c21f72bd78a97735e9c6",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T015_Q04",
+      "status": "MASTERED",
+      "questionText": "مثلث محيطي متطابق الضلعين قمة30 ونصفا قطر إلى القاعدة؛ أوجد س",
+      "canonicalMainSkill": "main_quant_24",
+      "canonicalSubskill": "sub_quant_24_2",
+      "correctAnswer": "15 (ب)",
+      "stepByStepSolution": "زاويتا القاعدة75، والمركزية للقوس المقابل60، وزاوية نصف القطر مع الوتر60، والفرق15.",
+      "educationalExplanation": "زاويتا القاعدة75، والمركزية للقوس المقابل60، وزاوية نصف القطر مع الوتر60، والفرق15.",
+      "difficulty": "Easy",
+      "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
+      "contentFingerprint": "bc785b62fbd962e88ca475b1e023dd77af82c2667132a6c93f6596a9403910e6",
+      "ideaFingerprint": "45b799e7c48857ad4d508ed75cac3e005fb9bd70b7f045838eff9cebbb980d61"
+    }
+  ]
+}

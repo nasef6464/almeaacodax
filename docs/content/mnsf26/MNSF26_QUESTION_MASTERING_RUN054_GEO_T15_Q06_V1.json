@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN054_GEO_T15",
+  "records": [
+    {
+      "sourceKey": "MNSF26-GEO-T015-Q06",
+      "sourceProvenance": {
+        "sourcePart": "الهندسة",
+        "bookCode": "GEO",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس - الهندسة - معدل.pdf",
+        "testNumber": 15,
+        "pdfPage": 29,
+        "sourceSkillLabel": "عنوان مجموعة المصدر غير معتمد كتصنيف رياضي للسؤال",
+        "sourceTopic": "الهندسة / الاختبار المرقم من الكتاب الأصلي",
+        "sourceLesson": "اختبار الهندسة 015، سؤال 06",
+        "printedQuestionNumber": 6,
+        "cropFile": "MNSF26-GEO-T015-Q06.webp",
+        "cropSha256": "62bd506703fecf239b1b81b20ec9693f6c65baecc21c96ac28a30c5440106544",
+        "cropContract": "EMBEDDED_XOBJECT_OR_EXACT_COMPOSITE_SLICE"
+      },
+      "imageHash": "62bd506703fecf239b1b81b20ec9693f6c65baecc21c96ac28a30c5440106544",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T015_Q06",
+      "status": "MASTERED",
+      "questionText": "زاوية محيطية40 وزاوية مركزية تقابل القوس نفسه؛ أوجد زاوية قاعدة المثلث المركزي",
+      "canonicalMainSkill": "main_quant_24",
+      "canonicalSubskill": "sub_quant_24_2",
+      "correctAnswer": "50 (ب)",
+      "stepByStepSolution": "المركزية80، والقاعدتان=(180−80)/2=50.",
+      "educationalExplanation": "المركزية80، والقاعدتان=(180−80)/2=50.",
+      "difficulty": "Easy",
+      "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
+      "contentFingerprint": "ad50ae3fcb3a2fc660323da0afd4c7ad2d0b01f687a40455a23bf46522ca7644",
+      "ideaFingerprint": "898c7c91d2adac23047a70853162fed290aaefadac1ffd702efd36cb377ea042"
+    }
+  ]
+}

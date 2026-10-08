@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN054_GEO_T19",
+  "records": [
+    {
+      "sourceKey": "MNSF26-GEO-T019-Q07",
+      "sourceProvenance": {
+        "sourcePart": "الهندسة",
+        "bookCode": "GEO",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس - الهندسة - معدل.pdf",
+        "testNumber": 19,
+        "pdfPage": 36,
+        "sourceSkillLabel": "عنوان مجموعة المصدر غير معتمد كتصنيف رياضي للسؤال",
+        "sourceTopic": "الهندسة / الاختبار المرقم من الكتاب الأصلي",
+        "sourceLesson": "اختبار الهندسة 019، سؤال 07",
+        "printedQuestionNumber": 7,
+        "cropFile": "MNSF26-GEO-T019-Q07.webp",
+        "cropSha256": "7000abbb7e4e40dcbe0f5567bec5ec9fbe743efbfaa6e4a71532c50429de3d42",
+        "cropContract": "EMBEDDED_XOBJECT_OR_EXACT_COMPOSITE_SLICE"
+      },
+      "imageHash": "7000abbb7e4e40dcbe0f5567bec5ec9fbe743efbfaa6e4a71532c50429de3d42",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T019_Q07",
+      "status": "MASTERED",
+      "questionText": "مثلثان قائمان قاعدتهما7 وارتفاعاهما2 و3؛ فرق المساحتين",
+      "canonicalMainSkill": "main_quant_20",
+      "canonicalSubskill": "sub_quant_20_4",
+      "correctAnswer": "3.5 (ج)",
+      "stepByStepSolution": "7×(3−2)/2=3.5.",
+      "educationalExplanation": "7×(3−2)/2=3.5.",
+      "difficulty": "Easy",
+      "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
+      "contentFingerprint": "564cd6bfb232e4992ba058606d33be469c852314866b8d1411340603bf0affae",
+      "ideaFingerprint": "5153bd749d394722166795c26f3402004686d3f148c5a3a517784fe951e4dcc6"
+    }
+  ]
+}

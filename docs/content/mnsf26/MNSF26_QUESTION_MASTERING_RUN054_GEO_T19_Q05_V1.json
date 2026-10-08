@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN054_GEO_T19",
+  "records": [
+    {
+      "sourceKey": "MNSF26-GEO-T019-Q05",
+      "sourceProvenance": {
+        "sourcePart": "الهندسة",
+        "bookCode": "GEO",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس - الهندسة - معدل.pdf",
+        "testNumber": 19,
+        "pdfPage": 36,
+        "sourceSkillLabel": "عنوان مجموعة المصدر غير معتمد كتصنيف رياضي للسؤال",
+        "sourceTopic": "الهندسة / الاختبار المرقم من الكتاب الأصلي",
+        "sourceLesson": "اختبار الهندسة 019، سؤال 05",
+        "printedQuestionNumber": 5,
+        "cropFile": "MNSF26-GEO-T019-Q05.webp",
+        "cropSha256": "08c693083ada0d6bc725a6b92a9becfd1fdd1daa3f059c8bae5b135e53b1840f",
+        "cropContract": "EMBEDDED_XOBJECT_OR_EXACT_COMPOSITE_SLICE"
+      },
+      "imageHash": "08c693083ada0d6bc725a6b92a9becfd1fdd1daa3f059c8bae5b135e53b1840f",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T019_Q05",
+      "status": "MASTERED",
+      "questionText": "مثلثان متشابهان قاعدتاهما3 و7.5، والضلع العلوي4؛ أوجد امتداده س",
+      "canonicalMainSkill": "main_quant_20",
+      "canonicalSubskill": "sub_quant_20_5",
+      "correctAnswer": "6 (أ)",
+      "stepByStepSolution": "عامل التكبير7.5/3=2.5، الضلع الكلي10، والامتداد10−4=6.",
+      "educationalExplanation": "عامل التكبير7.5/3=2.5، الضلع الكلي10، والامتداد10−4=6.",
+      "difficulty": "Easy",
+      "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
+      "contentFingerprint": "5fb04d296d02de3cb002203b02d6bb97ddfce89bd12b5738a67524f7b5418af9",
+      "ideaFingerprint": "c626aa9cb99bf290d558b94d8884da2486e88080b4df686aeb2c72b4ef95fa6f"
+    }
+  ]
+}

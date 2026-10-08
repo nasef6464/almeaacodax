@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN054_GEO_T23",
+  "records": [
+    {
+      "sourceKey": "MNSF26-GEO-T023-Q06",
+      "sourceProvenance": {
+        "sourcePart": "الهندسة",
+        "bookCode": "GEO",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس - الهندسة - معدل.pdf",
+        "testNumber": 23,
+        "pdfPage": 43,
+        "sourceSkillLabel": "عنوان مجموعة المصدر غير معتمد كتصنيف رياضي للسؤال",
+        "sourceTopic": "الهندسة / الاختبار المرقم من الكتاب الأصلي",
+        "sourceLesson": "اختبار الهندسة 023، سؤال 06",
+        "printedQuestionNumber": 6,
+        "cropFile": "MNSF26-GEO-T023-Q06.webp",
+        "cropSha256": "0c85759067f46c03c0f67a3f3f017dbdd08f21a824ec2ef4b43fa1a6c87b6148",
+        "cropContract": "EMBEDDED_XOBJECT_OR_EXACT_COMPOSITE_SLICE"
+      },
+      "imageHash": "0c85759067f46c03c0f67a3f3f017dbdd08f21a824ec2ef4b43fa1a6c87b6148",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T023_Q06",
+      "status": "HOLD",
+      "questionText": "خريطة إحداثيات لأربعة أماكن؛ أي مكان عند إحداثي مطبوع صغير",
+      "canonicalMainSkill": null,
+      "canonicalSubskill": null,
+      "correctAnswer": null,
+      "stepByStepSolution": null,
+      "educationalExplanation": "غير معتمد للنشر؛ سبب الحجز: دقة شبكة الرسم والتدريجات لا تكفي لقراءة الإحداثي المطلوب بصورة مؤكدة، فيلزم تكبير المصدر.",
+      "difficulty": null,
+      "difficultyReason": "دقة شبكة الرسم والتدريجات لا تكفي لقراءة الإحداثي المطلوب بصورة مؤكدة، فيلزم تكبير المصدر.",
+      "contentFingerprint": "205d4e7971a11b539ce95b6e33a5c03105fe3abfdf42f4f9e12bf2088b8716b8",
+      "ideaFingerprint": "38b46379acdefbdc73394930061cc181f79e7401e877cad4cf58edf08ba23593",
+      "holdReason": "دقة شبكة الرسم والتدريجات لا تكفي لقراءة الإحداثي المطلوب بصورة مؤكدة، فيلزم تكبير المصدر."
+    }
+  ]
+}

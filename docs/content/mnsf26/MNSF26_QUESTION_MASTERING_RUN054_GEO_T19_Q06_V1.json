@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN054_GEO_T19",
+  "records": [
+    {
+      "sourceKey": "MNSF26-GEO-T019-Q06",
+      "sourceProvenance": {
+        "sourcePart": "الهندسة",
+        "bookCode": "GEO",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس - الهندسة - معدل.pdf",
+        "testNumber": 19,
+        "pdfPage": 36,
+        "sourceSkillLabel": "عنوان مجموعة المصدر غير معتمد كتصنيف رياضي للسؤال",
+        "sourceTopic": "الهندسة / الاختبار المرقم من الكتاب الأصلي",
+        "sourceLesson": "اختبار الهندسة 019، سؤال 06",
+        "printedQuestionNumber": 6,
+        "cropFile": "MNSF26-GEO-T019-Q06.webp",
+        "cropSha256": "89cf97ea0ecf1cc7d83073d685218a7b8f7b7896a109965af2f0f54e706ae672",
+        "cropContract": "EMBEDDED_XOBJECT_OR_EXACT_COMPOSITE_SLICE"
+      },
+      "imageHash": "89cf97ea0ecf1cc7d83073d685218a7b8f7b7896a109965af2f0f54e706ae672",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T019_Q06",
+      "status": "MASTERED",
+      "questionText": "مثلث به قطعة موازية للقاعدة، الجانب الأيسر س و6 والأيمن8 و4",
+      "canonicalMainSkill": "main_quant_20",
+      "canonicalSubskill": "sub_quant_20_5",
+      "correctAnswer": "12 (ب)",
+      "stepByStepSolution": "س/6=8/4، إذن س12.",
+      "educationalExplanation": "س/6=8/4، إذن س12.",
+      "difficulty": "Easy",
+      "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
+      "contentFingerprint": "9e864221afbaadabf9973e2294db37feecf5708c28a7b1a65d4e1474e4e1222a",
+      "ideaFingerprint": "1b760360137c53fdbd2ed4582406b28b839824b827b01c511a34e41a62ed5519"
+    }
+  ]
+}

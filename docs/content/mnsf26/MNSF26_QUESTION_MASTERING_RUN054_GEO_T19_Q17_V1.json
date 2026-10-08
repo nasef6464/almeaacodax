@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN054_GEO_T19",
+  "records": [
+    {
+      "sourceKey": "MNSF26-GEO-T019-Q17",
+      "sourceProvenance": {
+        "sourcePart": "الهندسة",
+        "bookCode": "GEO",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس - الهندسة - معدل.pdf",
+        "testNumber": 19,
+        "pdfPage": 37,
+        "sourceSkillLabel": "عنوان مجموعة المصدر غير معتمد كتصنيف رياضي للسؤال",
+        "sourceTopic": "الهندسة / الاختبار المرقم من الكتاب الأصلي",
+        "sourceLesson": "اختبار الهندسة 019، سؤال 17",
+        "printedQuestionNumber": 17,
+        "cropFile": "MNSF26-GEO-T019-Q17.webp",
+        "cropSha256": "0d3909a48ca2c0bdfdfc666a00c795e41b642c7d11d9b0c6c3ae4bd2a2662b11",
+        "cropContract": "EMBEDDED_XOBJECT_OR_EXACT_COMPOSITE_SLICE"
+      },
+      "imageHash": "0d3909a48ca2c0bdfdfc666a00c795e41b642c7d11d9b0c6c3ae4bd2a2662b11",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T019_Q17",
+      "status": "HOLD",
+      "questionText": "مثلث قائم مقسم إلى مثلثين مساحة أحدهما ثلث الأخرى؛ أوجد طول أ د",
+      "canonicalMainSkill": null,
+      "canonicalSubskill": null,
+      "correctAnswer": null,
+      "stepByStepSolution": null,
+      "educationalExplanation": "غير معتمد للنشر؛ سبب الحجز: التعبير بين مساحتي المثلثين وموضع هـ وج في الرسم لا يثبتان نسبة القاعدتين المطلوبة دون تحكيم.",
+      "difficulty": null,
+      "difficultyReason": "التعبير بين مساحتي المثلثين وموضع هـ وج في الرسم لا يثبتان نسبة القاعدتين المطلوبة دون تحكيم.",
+      "contentFingerprint": "2089fad855f5aceb193a499b73630741518526b5408c3742e8782f37f4935bea",
+      "ideaFingerprint": "8858d97b6ce51c2988ae190ddff21daf31c0385d4837a1c8b2015d857537e746",
+      "holdReason": "التعبير بين مساحتي المثلثين وموضع هـ وج في الرسم لا يثبتان نسبة القاعدتين المطلوبة دون تحكيم."
+    }
+  ]
+}

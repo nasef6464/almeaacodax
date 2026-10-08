@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN054_GEO_T23",
+  "records": [
+    {
+      "sourceKey": "MNSF26-GEO-T023-Q05",
+      "sourceProvenance": {
+        "sourcePart": "الهندسة",
+        "bookCode": "GEO",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس - الهندسة - معدل.pdf",
+        "testNumber": 23,
+        "pdfPage": 43,
+        "sourceSkillLabel": "عنوان مجموعة المصدر غير معتمد كتصنيف رياضي للسؤال",
+        "sourceTopic": "الهندسة / الاختبار المرقم من الكتاب الأصلي",
+        "sourceLesson": "اختبار الهندسة 023، سؤال 05",
+        "printedQuestionNumber": 5,
+        "cropFile": "MNSF26-GEO-T023-Q05.webp",
+        "cropSha256": "f8d6f52f089a5284b9f345e4c730db56973508271dcf9e9121f0915b80d40164",
+        "cropContract": "EMBEDDED_XOBJECT_OR_EXACT_COMPOSITE_SLICE"
+      },
+      "imageHash": "f8d6f52f089a5284b9f345e4c730db56973508271dcf9e9121f0915b80d40164",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T023_Q05",
+      "status": "MASTERED",
+      "questionText": "نصف دائرة قطرها على محور س من (1،0) إلى (5،0)؛ أوجد مركزها",
+      "canonicalMainSkill": "main_quant_24",
+      "canonicalSubskill": "sub_quant_24_1",
+      "correctAnswer": "(3،0) (أ)",
+      "stepByStepSolution": "منتصف القطر ((1+5)/2،0)=(3،0).",
+      "educationalExplanation": "منتصف القطر ((1+5)/2،0)=(3،0).",
+      "difficulty": "Easy",
+      "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
+      "contentFingerprint": "f930e2cb2ce32e0d8df9ef1be03622bd569eca5c32fdb1cff7a3035de5d67684",
+      "ideaFingerprint": "b2ec14dee0871cb42d9f91f5a438d86a5830e2d86169d7facf01ff8edc758796"
+    }
+  ]
+}

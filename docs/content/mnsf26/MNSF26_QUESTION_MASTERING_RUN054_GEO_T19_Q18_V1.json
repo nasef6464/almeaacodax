@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN054_GEO_T19",
+  "records": [
+    {
+      "sourceKey": "MNSF26-GEO-T019-Q18",
+      "sourceProvenance": {
+        "sourcePart": "الهندسة",
+        "bookCode": "GEO",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس - الهندسة - معدل.pdf",
+        "testNumber": 19,
+        "pdfPage": 37,
+        "sourceSkillLabel": "عنوان مجموعة المصدر غير معتمد كتصنيف رياضي للسؤال",
+        "sourceTopic": "الهندسة / الاختبار المرقم من الكتاب الأصلي",
+        "sourceLesson": "اختبار الهندسة 019، سؤال 18",
+        "printedQuestionNumber": 18,
+        "cropFile": "MNSF26-GEO-T019-Q18.webp",
+        "cropSha256": "049b76ba962230488f2540ddce5d359e471c3307d4f980b113b0e9dad242eaf8",
+        "cropContract": "EMBEDDED_XOBJECT_OR_EXACT_COMPOSITE_SLICE"
+      },
+      "imageHash": "049b76ba962230488f2540ddce5d359e471c3307d4f980b113b0e9dad242eaf8",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T019_Q18",
+      "status": "MASTERED",
+      "questionText": "مثلث قائم قاعدته3 وارتفاع الجزء السفلي4، والجزء العلوي يساوي وتر المثلث السفلي",
+      "canonicalMainSkill": "main_quant_20",
+      "canonicalSubskill": "sub_quant_20_4",
+      "correctAnswer": "7.5 (ب)",
+      "stepByStepSolution": "وتر السفلي5، والارتفاع الكلي9؛ مساحة الجزء العلوي=3×5/2=7.5.",
+      "educationalExplanation": "وتر السفلي5، والارتفاع الكلي9؛ مساحة الجزء العلوي=3×5/2=7.5.",
+      "difficulty": "Easy",
+      "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
+      "contentFingerprint": "67cd9ccdbe3999d00cf1d533f06e15e8aa47d4f7a3187e027ec7543adcab15f2",
+      "ideaFingerprint": "549a3df08d16318fd27711dbc9502bdb876035683119a683741f5598fa09ae79"
+    }
+  ]
+}

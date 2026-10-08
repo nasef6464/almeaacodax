@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN054_GEO_T23",
+  "records": [
+    {
+      "sourceKey": "MNSF26-GEO-T023-Q16",
+      "sourceProvenance": {
+        "sourcePart": "الهندسة",
+        "bookCode": "GEO",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس - الهندسة - معدل.pdf",
+        "testNumber": 23,
+        "pdfPage": 44,
+        "sourceSkillLabel": "عنوان مجموعة المصدر غير معتمد كتصنيف رياضي للسؤال",
+        "sourceTopic": "الهندسة / الاختبار المرقم من الكتاب الأصلي",
+        "sourceLesson": "اختبار الهندسة 023، سؤال 16",
+        "printedQuestionNumber": 16,
+        "cropFile": "MNSF26-GEO-T023-Q16.webp",
+        "cropSha256": "7f9901e5c9cd2d551f9a54f4ffde2ceca1821ee57ac60657645808efb002fff7",
+        "cropContract": "EMBEDDED_XOBJECT_OR_EXACT_COMPOSITE_SLICE"
+      },
+      "imageHash": "7f9901e5c9cd2d551f9a54f4ffde2ceca1821ee57ac60657645808efb002fff7",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T023_Q16",
+      "status": "HOLD",
+      "questionText": "مثلث على شبكة إحداثيات عشرية؛ أوجد المساحة",
+      "canonicalMainSkill": null,
+      "canonicalSubskill": null,
+      "correctAnswer": null,
+      "stepByStepSolution": null,
+      "educationalExplanation": "غير معتمد للنشر؛ سبب الحجز: إحداثيات القاعدة والارتفاع في الرسم المصغر غير واضحة بما يميز 0.06 و0.09 و0.18، فلا يعتمد خيار.",
+      "difficulty": null,
+      "difficultyReason": "إحداثيات القاعدة والارتفاع في الرسم المصغر غير واضحة بما يميز 0.06 و0.09 و0.18، فلا يعتمد خيار.",
+      "contentFingerprint": "c353f0cc68d4c0a6f7258d3b532d85a2c7a71fba2d7cfc0e3c03e7fcf1eab63b",
+      "ideaFingerprint": "c11c508f29999862991504bb96903197e9b115c0c571e318c0867ea490d31fe0",
+      "holdReason": "إحداثيات القاعدة والارتفاع في الرسم المصغر غير واضحة بما يميز 0.06 و0.09 و0.18، فلا يعتمد خيار."
+    }
+  ]
+}

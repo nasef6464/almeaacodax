@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN054_GEO_T15",
+  "records": [
+    {
+      "sourceKey": "MNSF26-GEO-T015-Q05",
+      "sourceProvenance": {
+        "sourcePart": "الهندسة",
+        "bookCode": "GEO",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس - الهندسة - معدل.pdf",
+        "testNumber": 15,
+        "pdfPage": 29,
+        "sourceSkillLabel": "عنوان مجموعة المصدر غير معتمد كتصنيف رياضي للسؤال",
+        "sourceTopic": "الهندسة / الاختبار المرقم من الكتاب الأصلي",
+        "sourceLesson": "اختبار الهندسة 015، سؤال 05",
+        "printedQuestionNumber": 5,
+        "cropFile": "MNSF26-GEO-T015-Q05.webp",
+        "cropSha256": "95677ed9988d8a27e86189217cb6c65b0163c52a3842149697a6bab8ad57ba56",
+        "cropContract": "EMBEDDED_XOBJECT_OR_EXACT_COMPOSITE_SLICE"
+      },
+      "imageHash": "95677ed9988d8a27e86189217cb6c65b0163c52a3842149697a6bab8ad57ba56",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T015_Q05",
+      "status": "MASTERED",
+      "questionText": "مثلث متطابق الضلعين في نصف دائرة",
+      "canonicalMainSkill": "main_quant_24",
+      "canonicalSubskill": "sub_quant_24_2",
+      "correctAnswer": "45 (ب)",
+      "stepByStepSolution": "زاوية الرأس90، وزاويتا القاعدة45.",
+      "educationalExplanation": "زاوية الرأس90، وزاويتا القاعدة45.",
+      "difficulty": "Easy",
+      "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
+      "contentFingerprint": "fea2d73db91dbcac254f4e54390445a6a37ed42922dbceea1e4b25d9540ea602",
+      "ideaFingerprint": "53240439f4d839f6f6e0d1b4e2edf6d83d95aee5eafac342402713e4dbba1f60"
+    }
+  ]
+}
