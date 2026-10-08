@@ -22,52 +22,54 @@
     },
     {
       "name": "mapping",
-      "status": "IN_PROGRESS",
-      "done": 1773,
+      "status": "PASS_LOCKED_IN_LIBRARY_PENDING_GITHUB_PAYLOAD_SYNC",
+      "done": 2129,
       "total": 2135,
       "rule": "QUESTION_MATH_REQUIRED; source label preserved; no group-title auto approval",
-      "reviewHold": 359,
+      "reviewHold": 354,
       "evidence": [
         "Ready130 audit candidate-pass 74",
         "Adjudication batch001 added 17 question-level approvals",
         "Adjudication batch002 added 38 question-level approvals; only P001/Q12 remains fail-closed in ready130",
-        "Geometry T22-T23 Run024 visual audit: 6 explicit question-level examples persisted to geometry queue"
+        "Geometry T22-T23 Run024 visual audit: 6 explicit question-level examples persisted to geometry queue",
+        "Run063 canonical source-key index 2135/2135 (2129 active +6 excluded)",
+        "Run064 independent QA 100 images; 2 additional REVIEW overrides"
       ]
     },
     {
       "name": "enrichment",
-      "status": "IN_PROGRESS_LEGACY_SUBSET",
-      "done": 1773,
+      "status": "PASS_LOCKED_IN_LIBRARY_PENDING_GITHUB_PAYLOAD_SYNC",
+      "done": 2129,
       "total": 2135,
       "rule": "answer+solution+educationalExplanation+difficulty+difficultyReason+fingerprints",
       "mappingApprovedWithinReady": 129
     },
     {
       "name": "dedupe",
-      "status": "LEGACY_SUBSET_ONLY",
+      "status": "BLOCKED_BY_QA_LOCK",
       "done": 130,
       "total": 2135,
       "rule": "within MNSF26 then FND26 858 + COL2627 946"
     },
     {
       "name": "r2",
-      "status": "BLOCKED_BY_MAPPING_ENRICHMENT_DEDUPE"
+      "status": "BLOCKED_BY_QA_DEDUPE"
     },
     {
       "name": "dryRun",
-      "status": "BLOCKED"
+      "status": "BLOCKED_BY_QA_DEDUPE_R2"
     },
     {
       "name": "canary5",
-      "status": "BLOCKED"
+      "status": "BLOCKED_BY_QA_DEDUPE_R2"
     },
     {
       "name": "draftImport",
-      "status": "BLOCKED"
+      "status": "BLOCKED_BY_QA_DEDUPE_R2"
     },
     {
       "name": "productionE2E",
-      "status": "BLOCKED"
+      "status": "BLOCKED_BY_QA_DEDUPE_R2"
     }
   ],
   "failClosed": [
@@ -167,13 +169,12 @@
     "MNSF26-GEO-T024-Q16 HOLD Run055 direct image"
   ],
   "nextCursor": {
-    "stage": "QUESTION_MASTERING",
-    "strategy": "ONE_PASS_VISUAL_MATH",
+    "stage": "QA_LOCK",
+    "strategy": "INDEPENDENT_VISUAL_SEMANTIC_QA",
     "priority": [
-      "Reconcile 181 Library-missing sourceKeys with GitHub-only records and 130 legacy sourceKey mapping, without re-mastering",
-      "Resolve 17 sourceKey conflicts; preserve 6 GEO T23 HOLD supersessions and 2 AR T47 REVIEW",
-      "Persist Run062 GEO T23 Q11 correction by an approved write path and re-check taxonomy",
-      "Resolve historical counter overlap and 5 suppressions; stage lock only after unique 2135 coverage"
+      "Reconcile Run063 39 Library-only full records to GitHub by approved writes; no duplicate sourceKeys",
+      "Continue 2029 independent visual semantic checks from actual Run017/Run021 crops, preserving 2 Run064 REVIEW overrides",
+      "Only after QA PASS_LOCKED enter DEDUPE_LOCK; no R2 or production before gates"
     ]
   },
   "antiLoopRules": [
@@ -187,39 +188,28 @@
     "A question is processed once into a complete master payload; QA validates it rather than recreating it"
   ],
   "lastCompletedBatch": {
-    "name": "RUN058_RUN059_NEW_VISUAL_AND_LIBRARY_RECONCILIATION",
-    "visualInspectedNew": 93,
-    "githubPersistedNewVisual": 85,
-    "githubPersistedPreviouslyLibraryOnly": 22,
-    "masteredAdded": 72,
-    "holdReviewAdded": 35,
-    "officialMasteredProvisional": 1773,
-    "officialHoldReviewProvisional": 359,
-    "stage": "QUESTION_MASTERING"
+    "name": "RUN064_QA_INDEPENDENT_VISUAL_100",
+    "visualInspectedNew": 0,
+    "qaVisualReviewed": 100,
+    "qaPass": 86,
+    "qaHoldPreserved": 12,
+    "qaNewReview": 2,
+    "libraryMasteringActivePayloads": 2129,
+    "githubPendingSync": 39,
+    "stage": "QA_LOCK"
   },
   "executionContract": "docs/content/mnsf26/MNSF26_LOCKED_PIPELINE_V1.json",
   "activeStage": {
-    "order": 2,
-    "name": "QUESTION_MASTERING",
+    "order": 3,
+    "name": "QA_LOCK",
     "status": "IN_PROGRESS",
-    "done": 1773,
-    "total": 2135,
-    "mode": "ONE_PASS_PER_QUESTION",
-    "requiredPayload": [
-      "sourceProvenance",
-      "canonicalMainSkill",
-      "canonicalSubskill",
-      "correctAnswer",
-      "stepByStepSolution",
-      "educationalExplanation",
-      "difficulty",
-      "difficultyReason",
-      "imageHash",
-      "contentFingerprint",
-      "ideaFingerprint"
-    ],
-    "gate": "No question advances without complete payload or explicit HOLD/REVIEW.",
-    "masteredComplete": 1773
+    "reviewed": 100,
+    "totalActive": 2129,
+    "remaining": 2029,
+    "qaPass": 86,
+    "holdPreserved": 12,
+    "newReview": 2,
+    "gate": "Independent full-book semantic question↔answer↔solution↔skill QA before DEDUPE_LOCK"
   },
   "reconciliationRun049": {
     "source": "Library /MNSF26/Run048 full JSON records, validated unique sourceKeys and required fields, persisted to GitHub complete test files",
@@ -419,7 +409,7 @@
     "remainingPriorPayloadsLibraryOnly": 21
   },
   "lastExactHeadsVerified": {
-    "branch": "bd53caba10dee9fe1e4d4bbaa991498060b2229a",
+    "branch": "96dccb0cba2b636d01b90e950db76cb2beed2fa2",
     "main": "f40a785ee777a0be16e48f70727793e8f9ee0695"
   },
   "reconciliationRun061": {
@@ -493,5 +483,22 @@
     "sourceAuditLibrary": "/MNSF26/Run062/MNSF26_RUN062_LIBRARY_SOURCEKEY_AUDIT_V1.json",
     "adjudicationLibrary": "/MNSF26/Run062/MNSF26_RUN062_GEO_T23_Q11_ADJUDICATION_V1.json",
     "stateDeltaLibrary": "/MNSF26/Run062/MNSF26_RUN062_STATE_DELTA_V1.json"
+  },
+  "qaRun064": {
+    "date": "2026-10-08",
+    "source": "MNSF26_RUN064_QA_SUMMARY_V2.json",
+    "independentVisualReviewed": 100,
+    "qaPass": 86,
+    "priorHold": 12,
+    "newReview": 2,
+    "remaining": 2029,
+    "mastered": 1775,
+    "hold": 319,
+    "review": 35,
+    "excluded": 6,
+    "masteringLibraryLock": "MNSF26_RUN063_QUESTION_MASTERING_LOCK_V1.json",
+    "githubPendingRun063": 39,
+    "qaLock": "IN_PROGRESS",
+    "productionUntouched": true
   }
 }
