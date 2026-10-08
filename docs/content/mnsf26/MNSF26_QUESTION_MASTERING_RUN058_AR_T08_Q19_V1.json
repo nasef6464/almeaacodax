@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN058_AR_T08_DIRECT_VISUAL",
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T008-Q19",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+        "testNumber": 8,
+        "pdfPage": 15,
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "sourceTopic": "تصنيف المصدر محفوظ؛ رياضيات السؤال هي معيار الربط",
+        "sourceLesson": "الحساب والجبر، الاختبار 008، السؤال 19",
+        "printedQuestionNumber": 19,
+        "cropFile": "mnsf26_fullbook_crops/AR/AR-T008-Q19.webp",
+        "cropSha256": "2da8ad12c0a71bac8daab810ee75688341c805eb2a32d2bf4119034896e916a3",
+        "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
+      },
+      "imageHash": "2da8ad12c0a71bac8daab810ee75688341c805eb2a32d2bf4119034896e916a3",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN058_2026-10-08_T008_Q19",
+      "status": "REVIEW",
+      "questionText": "مجموع رقمي صفحتين متقابلتين61؛ أي رقم يمكن أن يكون لإحداهما؟",
+      "canonicalMainSkill": null,
+      "canonicalSubskill": null,
+      "correctAnswer": null,
+      "stepByStepSolution": null,
+      "educationalExplanation": "غير معتمد للنشر: قانون الصفحات 13_4 خارج مجموعة العمليات على الأعداد؛ يلزم اعتماد التصنيف.",
+      "difficulty": null,
+      "difficultyReason": "قانون الصفحات 13_4 خارج مجموعة العمليات على الأعداد؛ يلزم اعتماد التصنيف.",
+      "contentFingerprint": "3fa0ac5c758b1c62509779b08897d7a4435255422648edd0e798e4f1acee745a",
+      "ideaFingerprint": "a0ea1d16d7121532b0412e356854457b6e295d9768af3d8f7513b4be521db7ff",
+      "holdReason": "قانون الصفحات 13_4 خارج مجموعة العمليات على الأعداد؛ يلزم اعتماد التصنيف.",
+      "proposedCanonicalSubskill": "sub_quant_13_4"
+    }
+  ]
+}
