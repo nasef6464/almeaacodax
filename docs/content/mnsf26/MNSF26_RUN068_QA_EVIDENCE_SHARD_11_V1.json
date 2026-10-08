@@ -1,0 +1,120 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN068",
+  "stage": "QA_LOCK",
+  "source": "MNSF26_RUN068_INDEPENDENT_VISUAL_MATH_117_V2.json",
+  "sha256OriginalEvidence": "78500abc54b1de4a99c85c2a0e7bc02cd8cf8a154f19440447a830239aea246e",
+  "rows": [
+    {
+      "sourceKey": "MNSF26-GEO-T015-Q08",
+      "imageHash": "d0d5e33a9cb1189767de13bab4a6217720664af72df69338bf098e58ad3840c5",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T15_V1.json",
+      "expectedAnswerFromIndependentMath": "100 (ج)",
+      "independentMathematicalProof": "الساقان المعلّمتان متساويتان؛ زاويتا القاعدة50°، والزاوية الداخلية عند الرأس الآخر80°؛ الخارجية100°.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T015-Q09",
+      "imageHash": "61c3bdd5e669c3aad80d9965effd0afe4da4c2ef5792631904a098d17c4dc963",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T15_V1.json",
+      "expectedAnswerFromIndependentMath": "150 (د)",
+      "independentMathematicalProof": "المركزية بين نصفَي القطر إلى طرفَي الوتر120°، والزاوية القائمة90°؛ المتبقية360−120−90=150°.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T024-Q01",
+      "imageHash": "fcaa9030676d037b9a74e9fcb57250eb51ebfec94309cf6cb59642e84fe71db4",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN055_GEO_T24_V1.json",
+      "expectedAnswerFromIndependentMath": "ج",
+      "independentMathematicalProof": "المساحة الأصلية4×5=20؛ مقياس الطول19 يجعل المساحة20×19²=7220.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T024-Q04",
+      "imageHash": "c6f64ea2741bd63775147a4ef0fa044e884ee8642dde3b1e5d598a73e9d4e218",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN055_GEO_T24_V1.json",
+      "expectedAnswerFromIndependentMath": "ج",
+      "independentMathematicalProof": "المحيط=2(40+1/3+10+1/2)=101+2/3.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T024-Q05",
+      "imageHash": "e9761b561063818564e67286f4aeff9a1009b293b8cfcc296d3d218fe382aac8",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN055_GEO_T24_V1.json",
+      "expectedAnswerFromIndependentMath": "ج",
+      "independentMathematicalProof": "بعد مضاعفة البعدين يصبحان10 و14، فالمساحة140 وتساوي القيمة الثانية.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T024-Q06",
+      "imageHash": "ea3f4b97718d9d6cb97d549c427aea07f55a506a3516f9fe55d0f07d00ddcfd3",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN055_GEO_T24_V1.json",
+      "expectedAnswerFromIndependentMath": "ج",
+      "independentMathematicalProof": "المساحة=(5+1/3)(2+1/4)=(16/3)(9/4)=12.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T024-Q07",
+      "imageHash": "4df085acb7dd011e0a1c6300b9dd00923cd48a5006e127254e9d54268492b324",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN055_GEO_T24_V1.json",
+      "expectedAnswerFromIndependentMath": "ب",
+      "independentMathematicalProof": "2س²+11س+15=(2س+5)(س+3)؛ بقسمة المساحة على س+3 يكون العرض2س+5.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T024-Q08",
+      "imageHash": "2d60665914c6fc3edff67e119aef8b931bb0cb37d8c30140a251477982872c70",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN055_GEO_T24_V1.json",
+      "expectedAnswerFromIndependentMath": "ب",
+      "independentMathematicalProof": "الأبعاد4×س للمستطيل الكبير و1×س للصغير؛ التشابه بعد التدوير يعطي س²=4، س=2.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T024-Q09",
+      "imageHash": "e65c1c25a863fbf993a876b1cd5cf74d9e89a6763d01b15369f6bcb2b38e8f92",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN055_GEO_T24_V1.json",
+      "expectedAnswerFromIndependentMath": "ج",
+      "independentMathematicalProof": "نصف المحيط22+2/3، والعرض10+3/4؛ الطول11+11/12.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T024-Q10",
+      "imageHash": "87b2a97de54405de17eba880a3bf6aa661a9e7c4fee22d727c4a947387af998d",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN055_GEO_T24_V1.json",
+      "expectedAnswerFromIndependentMath": "ج",
+      "independentMathematicalProof": "عرض الكبير5س=2ص، وارتفاعه ص+س؛ المحيط17س=34 ⇒ س=2؛ المساحة10×7=70.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    }
+  ]
+}
