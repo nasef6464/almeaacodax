@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN084",
+  "stage": "QA_LOCK",
+  "exactHeadsAtStart": {
+    "branch": "6d1ff744b07b467724e70f5ad7d28d9a91af4657",
+    "main": "4729480734a198422105e988c32f656af6a1a8d8"
+  },
+  "source": "Library /MNSF26/Run048 twelve original master payload JSON files + Run063 canonical 2135 sourceKey index + Run083 six source-image contact sheet",
+  "auditedMasterPayloads": 238,
+  "masteredCanonicalMainAliasNormalizedInNonDestructiveCopies": 219,
+  "holdsPreserved": 19,
+  "hashMismatches": 0,
+  "missingRequiredMasterFields": 0,
+  "answerSolutionFingerprintChanges": 0,
+  "qaSourceImagesReinspected": 6,
+  "newUniqueQAIncrement": 0,
+  "additionalSemanticTaxonomyReviewKeys": [
+    "MNSF26-AR-T032-Q09",
+    "MNSF26-AR-T035-Q07",
+    "MNSF26-AR-T036-Q07"
+  ],
+  "normalizedArchiveSha256": "8a01b9722c88dd15442a59dbd91a654908aee6bdf8bea1378fb02f9e46e31492",
+  "evidenceBundleSha256": "6868ab2f7f3570a37664c6c22d45d0f257f14ac993b56fe058b4a1d093e9da07",
+  "qaReviewedProvisional": 2124,
+  "qaRemainingProvisional": 5,
+  "sourceKeyFullReindexRequired": true,
+  "qaFullBookPass": false,
+  "productionServicesUntouched": true
+}
