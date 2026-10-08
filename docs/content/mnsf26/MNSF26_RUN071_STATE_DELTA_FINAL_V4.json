@@ -1,0 +1,29 @@
+{
+  "bank": "MNSF26",
+  "run": "RUN071_FINAL_V4",
+  "stage": "QA_LOCK",
+  "officialAtStart": 682,
+  "run070": 6,
+  "run071ImagesInspected": 240,
+  "run071NewUnique": 239,
+  "run071NewPass": 188,
+  "run071HoldPreserved": 46,
+  "run071NewReview": 5,
+  "run071ReinspectionExcluded": 1,
+  "qaProvisionalReviewed": 927,
+  "qaProvisionalRemaining": 1202,
+  "totalActive": 2129,
+  "sourceHashMismatches": 0,
+  "reviewKeys": [
+    "MNSF26-GEO-T007-Q17",
+    "MNSF26-GEO-T008-Q14",
+    "MNSF26-GEO-T010-Q12",
+    "MNSF26-GEO-T011-Q10",
+    "MNSF26-GEO-T026-Q09"
+  ],
+  "libraryEvidenceFolder": "/MNSF26/Run071",
+  "libraryStateDelta": "MNSF26_RUN071_STATE_DELTA_FINAL_V4.json",
+  "fullBookQAPass": false,
+  "canonicalTaxonomyGate": "PENDING",
+  "productionUntouched": true
+}
