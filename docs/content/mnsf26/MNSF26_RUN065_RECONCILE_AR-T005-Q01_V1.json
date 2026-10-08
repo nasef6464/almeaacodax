@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN065",
+  "stage": "QUESTION_MASTERING_GITHUB_SYNC",
+  "sourceArtifact": "RUN063_VISUAL_CORRECTIONS",
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T005-Q01",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+        "testNumber": 5,
+        "pdfPage": 8,
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "sourceTopic": "question-specific direct image adjudication",
+        "sourceLesson": "AR test 005 question 01",
+        "printedQuestionNumber": 1,
+        "cropFile": "AR/AR-T005-Q01.webp",
+        "cropSha256": "3861dc25644eeb5f547daa903a2a2f441094731f31c161697128b2c9829d3b73"
+      },
+      "imageHash": "3861dc25644eeb5f547daa903a2a2f441094731f31c161697128b2c9829d3b73",
+      "visualEvidence": "RUN063_DIRECT_RUN017_WEBP_ZOOM_INSPECTION_2026-10-08",
+      "status": "MASTERED",
+      "questionText": "تقرأ هند 3 قصص في 6 ساعات؛ قارن مدة قراءة قصتين بثماني ساعات.",
+      "canonicalMainSkill": "skill_quant_08",
+      "canonicalSubskill": "sub_quant_08_2",
+      "correctAnswer": "ب — القيمة الثانية أكبر",
+      "stepByStepSolution": "زمن القصة الواحدة 6÷3=2 ساعة؛ زمن قصتين 2×2=4 ساعات؛ 4<8.",
+      "educationalExplanation": "زمن القصة الواحدة 6÷3=2 ساعة؛ زمن قصتين 2×2=4 ساعات؛ 4<8.",
+      "difficulty": "Easy",
+      "difficultyReason": "يتطلب قراءة الأرقام والخيارات من الصورة ومقارنة نتيجة الحساب بالمصدر، دون الاعتماد على التحليل القديم.",
+      "contentFingerprint": "c3d3e5c74528cd63a55efebe4c236879457d0f891fb81160a4364739a069bfc7",
+      "ideaFingerprint": "92b5697ba95477a91338f9f405876ed2aeba0f2f51202819a3dce8832aeb1c57",
+      "supersedesLegacyAnalysis": true
+    }
+  ],
+  "persistence": "GITHUB_RECONCILED_FROM_LIBRARY"
+}
