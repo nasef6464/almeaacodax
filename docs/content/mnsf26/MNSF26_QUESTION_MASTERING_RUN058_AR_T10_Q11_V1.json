@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN058_AR_T10_DIRECT_VISUAL",
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T010-Q11",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+        "testNumber": 10,
+        "pdfPage": 18,
+        "sourceSkillLabel": "ترتيب العمليات – قابلية القسمة",
+        "sourceTopic": "تصنيف المصدر محفوظ؛ رياضيات السؤال هي معيار الربط",
+        "sourceLesson": "الحساب والجبر، الاختبار 010، السؤال 11",
+        "printedQuestionNumber": 11,
+        "cropFile": "mnsf26_fullbook_crops/AR/AR-T010-Q11.webp",
+        "cropSha256": "798554fa39427af4c8058f2a0e668dc7364206082a46e33cfc5b4a0f085acd79",
+        "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
+      },
+      "imageHash": "798554fa39427af4c8058f2a0e668dc7364206082a46e33cfc5b4a0f085acd79",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN058_2026-10-08_T010_Q11",
+      "status": "MASTERED",
+      "questionText": "احسب5+6×8+5.",
+      "canonicalMainSkill": "main_quant_01",
+      "canonicalSubskill": "sub_quant_01_4",
+      "correctAnswer": "58 (ب)",
+      "stepByStepSolution": "6×8=48؛ 5+48+5=58.",
+      "educationalExplanation": "نطبّق القاعدة الرياضية الواردة في نص السؤال: 6×8=48؛ 5+48+5=58.",
+      "difficulty": "Easy",
+      "difficultyReason": "يحتاج تطبيقًا مباشرًا لقاعدة حسابية.",
+      "contentFingerprint": "4fd4ad04e218b39df8151c63d219e692b17b0d120c1d4b3523005f74756f7df7",
+      "ideaFingerprint": "5a3c202bd1c2449364e34bd1bf476182db0108623cd76957a2c38c54954a1b7e"
+    }
+  ]
+}
