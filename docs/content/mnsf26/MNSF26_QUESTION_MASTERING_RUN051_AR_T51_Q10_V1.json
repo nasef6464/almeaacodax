@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN051_AR_T51",
+  "directImageInspection": true,
+  "sourceCropArchive": "/MNSF26/Run017/mnsf26_arithmetic_crops_run017.zip",
+  "sourceInventory": "/MNSF26/Run017/MNSF26_FULLBOOK_CROP_INVENTORY_V1.json",
+  "masteredCount": 1,
+  "holdCount": 0,
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T051-Q10",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "testNumber": 51,
+        "pdfPage": 102,
+        "sourceSkillLabel": "الساعات",
+        "printedQuestionNumber": 10,
+        "cropFile": "AR/AR-T051-Q10.webp",
+        "cropSha256": "a13bea6d7167598d6803d71d336bf2d711561a01d5e49b7296d54d7ed24b63eb",
+        "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
+      },
+      "imageHash": "a13bea6d7167598d6803d71d336bf2d711561a01d5e49b7296d54d7ed24b63eb",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
+      "status": "MASTERED",
+      "questionText": "إذا كان العقربان عند 12 ثم مضت أربع ساعات؛ كم زاوية بينهما عند الرابعة؟",
+      "canonicalMainSkill": "main_quant_15",
+      "canonicalSubskill": "sub_quant_15_1",
+      "correctAnswer": "120 درجة",
+      "stepByStepSolution": "عقرب الساعة عند4=120 درجة والدقائق عند12=0؛ الفرق120.",
+      "educationalExplanation": "المهارة: زاوية عقربين عند ساعة صحيحة؛ نقرأ معطيات السؤال من الصورة ونطبّق العلاقة الحسابية ثم نراجع الناتج مع المطلوب.",
+      "difficulty": "Easy",
+      "difficultyReason": "خطوات مباشرة في زاوية عقربين عند ساعة صحيحة.",
+      "contentFingerprint": "72dbf2ccc366595ae3a35b603e31f55f8c79b41410d7d75be59d9044f844ba86",
+      "ideaFingerprint": "4ee82009a26e499a93e2fe769152663ca037cb1de9a7cd6523c608eea5650a84"
+    }
+  ],
+  "part": "Q10"
+}
