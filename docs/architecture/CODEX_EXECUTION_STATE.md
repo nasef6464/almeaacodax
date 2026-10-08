@@ -1514,4 +1514,5 @@
 - Evidence: docs/audits/INTERACTIVE_TEACHING_BOARD_V1_2026-10-08.md.
 - Owner-approved follow-up: optional next-step practice, two local progressive hints, contextual attempt feedback and retry/skip. Same PR #459; exact runtime SHA and CI are recorded there. No scoring or persisted data changes.
 - Real-provider continuation: configured Gemini probe PASS; four live-chat planner samples returned truncated JSON. Scoped Flash thinking-off/compact planner repair and post-deploy owned-review auditor added; evidence: docs/audits/TEACHING_BOARD_REAL_PROVIDER_2026-10-08.md. Production correctness/audio closure remains unproven.
+- PR #459 merged/deployed as 1984efca1074; readiness/Vercel/Post Deploy Smoke PASS. Actual owned-review board probe still used trusted fallback (435 visible output, no thinking gap). Follow-up `codex/teaching-board-live-validation` narrows to two scenes and adds private text-free diagnostics; exact head/CI on its attached PR.
 - Next: exact-head CI followed by configured-provider review journey, valid-plan rate/latency/cost measurement and actual tablet voice testing.

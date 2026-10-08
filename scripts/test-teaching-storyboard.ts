@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { validateTeachingStoryboard } from '../server/src/modules/ai/contracts/teachingStoryboard';
-import { decodeQuestionTeachingPlan, normalizeQuestionTeachingPlan } from '../server/src/modules/ai/application/questionTeachingPlan';
+import { decodeQuestionTeachingPlan, inspectQuestionTeachingPlan, normalizeQuestionTeachingPlan } from '../server/src/modules/ai/application/questionTeachingPlan';
 import { boardAt, sceneDuration } from '../components/results/teaching/boardState';
 import { BrowserNarrationEngine } from '../components/results/teaching/narrationEngine';
 import { createAiProviderAdapters } from '../server/src/modules/ai/infrastructure/providers/aiProviderAdapters';
@@ -46,6 +46,10 @@ assert.ok(decodeQuestionTeachingPlan(JSON.stringify(example)).storyboard);
 assert.equal(normalizeQuestionTeachingPlan('{"scenes":', 'شرح معتمد'), 'شرح معتمد');
 assert.equal(normalizeQuestionTeachingPlan(JSON.stringify({ ...example, version: 2 }), 'شرح معتمد'), 'شرح معتمد');
 assert.equal(decodeQuestionTeachingPlan('شرح قديم').text, 'شرح قديم');
+assert.equal(inspectQuestionTeachingPlan('{"scenes":').jsonComplete, false);
+assert.equal(inspectQuestionTeachingPlan(JSON.stringify(example)).valid, true);
+assert.equal(inspectQuestionTeachingPlan(JSON.stringify({ ...example, scenes: [{ id: 's', narration: 'PRIVATE_REFERENCE', actions: [{ type: 'highlight', target: 'unknown' }] }] })).issues?.missingTargets, 1);
+assert.equal(JSON.stringify(inspectQuestionTeachingPlan(JSON.stringify(example))).includes('معادلة'), false, 'diagnostics must not include question or narration text');
 
 // Two narration owners: a follow-up must not destroy the main lesson checkpoint.
 const spoken: any[] = [];
