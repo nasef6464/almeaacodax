@@ -1,0 +1,120 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN068",
+  "stage": "QA_LOCK",
+  "source": "MNSF26_RUN068_INDEPENDENT_VISUAL_MATH_117_V2.json",
+  "sha256OriginalEvidence": "78500abc54b1de4a99c85c2a0e7bc02cd8cf8a154f19440447a830239aea246e",
+  "rows": [
+    {
+      "sourceKey": "MNSF26-GEO-T014-Q18",
+      "imageHash": "57f8a77ffec72924f93d2286a8f780cbde426f414d835b7b321bda3680b11f32",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T14_V1.json",
+      "expectedAnswerFromIndependentMath": "120 (ب)",
+      "independentMathematicalProof": "نصفا القطر يصنعان مثلثًا متساوي الساقين زاويتا قاعدته30°؛ المركزية120°.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T014-Q19",
+      "imageHash": "6d0502e5df8ff217c3aa526f8d3eff60f9bdf5ccd455b070add0bf800bc3ec5d",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T14_V1.json",
+      "expectedAnswerFromIndependentMath": "100 (ب)",
+      "independentMathematicalProof": "الزاويتان المتقابلتان في رباعي دائري متكاملتان؛ س=180−80=100°.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T014-Q20",
+      "imageHash": "11963760b5387746b6ab271d93871b4102af69950d2020ee81752b192583e093",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T14_V1.json",
+      "expectedAnswerFromIndependentMath": "45 (ب)",
+      "independentMathematicalProof": "الزاوية المقابلة للقطر90°، ومع تساوي الساقين تكون كل زاوية قاعدة45°.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T015-Q01",
+      "imageHash": "93ac30ded90778b9412c94cdb5c8a4dd20574cae5f4b13d69a330df43c9a60b8",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T15_V1.json",
+      "expectedAnswerFromIndependentMath": "50 (ج)",
+      "independentMathematicalProof": "زاوية المماس والوتر50° تساوي الزاوية المحيطية المقابلة س.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T015-Q02",
+      "imageHash": "afcb259b26b68b85bd7b223b063113b7f964f533f8ffe75e73e1c70ecc7f2e1f",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T15_V1.json",
+      "expectedAnswerFromIndependentMath": "120 (أ)",
+      "independentMathematicalProof": "نصفا القطر السفليان متناظران حول القطر الرأسي، والزواية بين نصف القطر الأيسر والقطر السفلي60°؛ الزاوية المطلوبة بين القطر العلوي ونصف القطر الأيمن120°.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T015-Q03",
+      "imageHash": "11963760b5387746b6ab271d93871b4102af69950d2020ee81752b192583e093",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T15_V1.json",
+      "expectedAnswerFromIndependentMath": "45 (ب)",
+      "independentMathematicalProof": "المثلث في نصف دائرة زاوية رأسه90°، وساقاه متساويتان؛ زاويتا القاعدة45°.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T015-Q04",
+      "imageHash": "33da4f571551f7e7ec27a1d96ddef20396645b5269f2c21f72bd78a97735e9c6",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T15_V1.json",
+      "expectedAnswerFromIndependentMath": "15 (ب)",
+      "independentMathematicalProof": "المثلث المحيطي المتساوي الساقين رأسه30°؛ زاويتا القاعدة75°، والزاوية بين نصف القطر والوتر60°؛ الفرق15°.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T015-Q05",
+      "imageHash": "95677ed9988d8a27e86189217cb6c65b0163c52a3842149697a6bab8ad57ba56",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T15_V1.json",
+      "expectedAnswerFromIndependentMath": "45 (ب)",
+      "independentMathematicalProof": "زاوية القمة المحيطية المقابلة للقطر90°؛ زاويتا القاعدة المتساويتان45°.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T015-Q06",
+      "imageHash": "62bd506703fecf239b1b81b20ec9693f6c65baecc21c96ac28a30c5440106544",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T15_V1.json",
+      "expectedAnswerFromIndependentMath": "50 (ب)",
+      "independentMathematicalProof": "الزاوية المحيطية40° تقابل مركزية80°؛ زاويتا قاعدة المثلث المركزي(180−80)/2=50°.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T015-Q07",
+      "imageHash": "723bdb820fd76bc15107173f0b38cdd35c2f8c87e4141400a29e36a3a1846f9f",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T15_V1.json",
+      "expectedAnswerFromIndependentMath": "30 (أ)",
+      "independentMathematicalProof": "زاوية الرباعي الدائري المقابلة لـ80° تساوي100°؛ في المثلث السفلي س=180−100−50=30°.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    }
+  ]
+}
