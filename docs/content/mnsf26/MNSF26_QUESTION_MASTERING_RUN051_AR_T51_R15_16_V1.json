@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN051_AR_T51",
+  "directImageInspection": true,
+  "sourceCropArchive": "/MNSF26/Run017/mnsf26_arithmetic_crops_run017.zip",
+  "sourceInventory": "/MNSF26/Run017/MNSF26_FULLBOOK_CROP_INVENTORY_V1.json",
+  "masteredCount": 2,
+  "holdCount": 0,
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T051-Q15",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "testNumber": 51,
+        "pdfPage": 103,
+        "sourceSkillLabel": "الساعات",
+        "printedQuestionNumber": 15,
+        "cropFile": "AR/AR-T051-Q15.webp",
+        "cropSha256": "41abd5e372608e7e97a963b79ee0671d1447aafac1bac624075c02e09ea6af08",
+        "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
+      },
+      "imageHash": "41abd5e372608e7e97a963b79ee0671d1447aafac1bac624075c02e09ea6af08",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
+      "status": "MASTERED",
+      "questionText": "أحمد ينجز العمل في نصف ساعة ويونس في ثلث ساعة؛ كم دقيقة ينجزان معًا؟",
+      "canonicalMainSkill": "main_quant_13",
+      "canonicalSubskill": "sub_quant_13_1",
+      "correctAnswer": "12 دقيقة",
+      "stepByStepSolution": "المعدل1/30+1/20=5/60=1/12 عمل/دقيقة؛ الزمن12 دقيقة.",
+      "educationalExplanation": "المهارة: العمل المشترك بمعدلي إنجاز؛ نقرأ معطيات السؤال من الصورة ونطبّق العلاقة الحسابية ثم نراجع الناتج مع المطلوب.",
+      "difficulty": "Medium",
+      "difficultyReason": "تتطلب ربط أكثر من معطى أو تحويل وحدات في العمل المشترك بمعدلي إنجاز.",
+      "contentFingerprint": "6a579675741ecbe3604e04a7d2561159e8d1551a9960fddc0eed986e93bf80c9",
+      "ideaFingerprint": "9dd49c533d045a906b1f2ed77e4f135508d5e241236898a2ea0790772e8162bb"
+    },
+    {
+      "sourceKey": "MNSF26-AR-T051-Q16",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "testNumber": 51,
+        "pdfPage": 103,
+        "sourceSkillLabel": "الساعات",
+        "printedQuestionNumber": 16,
+        "cropFile": "AR/AR-T051-Q16.webp",
+        "cropSha256": "27808ef71b3ad1ea8a0fae5780fe61f0c0558fe4f8c84638a63ab326ba41c7d6",
+        "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
+      },
+      "imageHash": "27808ef71b3ad1ea8a0fae5780fe61f0c0558fe4f8c84638a63ab326ba41c7d6",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
+      "status": "MASTERED",
+      "questionText": "رحلة من الرياض إلى الجبيل 477 كم في أربع ساعات والعودة في خمس ساعات؛ ما السرعة المتوسطة للذهاب والعودة؟",
+      "canonicalMainSkill": "main_quant_12",
+      "canonicalSubskill": "sub_quant_12_1",
+      "correctAnswer": "106 كم/ساعة",
+      "stepByStepSolution": "المسافة الكلية954 كم والزمن9 ساعات؛ 954/9=106.",
+      "educationalExplanation": "المهارة: السرعة المتوسطة ذهابًا وإيابًا؛ نقرأ معطيات السؤال من الصورة ونطبّق العلاقة الحسابية ثم نراجع الناتج مع المطلوب.",
+      "difficulty": "Medium",
+      "difficultyReason": "تتطلب ربط أكثر من معطى أو تحويل وحدات في السرعة المتوسطة ذهابًا وإيابًا.",
+      "contentFingerprint": "8df65f9d91dfa4cde67925657604e2a4acce0e1a253a920babb93540ce9b8312",
+      "ideaFingerprint": "f820723127470e91bb6e167000f202faa912505e0f6a499949fd3e2710b3fe42"
+    }
+  ],
+  "part": "R15_16"
+}
