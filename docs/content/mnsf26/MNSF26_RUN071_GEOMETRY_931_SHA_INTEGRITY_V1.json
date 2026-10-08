@@ -1,0 +1,14 @@
+{
+  "bank": "MNSF26",
+  "run": "RUN071",
+  "stage": "QA_LOCK",
+  "geometryManifestRecords": 931,
+  "geometryArchiveEntries": 931,
+  "verifiedSha256": 931,
+  "mismatchCount": 0,
+  "extraFiles": 0,
+  "cropLockReopened": false,
+  "geometryCropIntegrityPass": true,
+  "source": "Run021 original geometry WEBP archive and geometry crop manifest",
+  "productionUntouched": true
+}
