@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN065",
+  "stage": "QUESTION_MASTERING_GITHUB_SYNC",
+  "sourceArtifact": "RUN063_VISUAL_CORRECTIONS",
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T007-Q14",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+        "testNumber": 7,
+        "pdfPage": 13,
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "sourceTopic": "question-specific direct image adjudication",
+        "sourceLesson": "AR test 007 question 14",
+        "printedQuestionNumber": 14,
+        "cropFile": "AR/AR-T007-Q14.webp",
+        "cropSha256": "4638fd9da293cc735b5d7be08cecbb2e63098d3ab4dd72234ee3236655ddac64"
+      },
+      "imageHash": "4638fd9da293cc735b5d7be08cecbb2e63098d3ab4dd72234ee3236655ddac64",
+      "visualEvidence": "RUN063_DIRECT_RUN017_WEBP_ZOOM_INSPECTION_2026-10-08",
+      "status": "MASTERED",
+      "questionText": "توفر أسماء 12 ريالًا يوميًا؛ قارن مدخراتها في 23 يومًا بـ276 ريالًا.",
+      "canonicalMainSkill": "skill_quant_10",
+      "canonicalSubskill": "sub_quant_10_3",
+      "correctAnswer": "ج — القيمتان متساويتان",
+      "stepByStepSolution": "12×23=276 ريالًا؛ القيمتان متساويتان.",
+      "educationalExplanation": "12×23=276 ريالًا؛ القيمتان متساويتان.",
+      "difficulty": "Medium",
+      "difficultyReason": "يتطلب قراءة الأرقام والخيارات من الصورة ومقارنة نتيجة الحساب بالمصدر، دون الاعتماد على التحليل القديم.",
+      "contentFingerprint": "49c4e50ca0667ed1dca226f88615181b4a326686cdcb9a4a6adfedcab9dd3bc3",
+      "ideaFingerprint": "bbd9acf29edba0543ea6afc043d2827d7c2ce9ce59f420971cf192edd65a8f64",
+      "supersedesLegacyAnalysis": true
+    }
+  ],
+  "persistence": "GITHUB_RECONCILED_FROM_LIBRARY"
+}
