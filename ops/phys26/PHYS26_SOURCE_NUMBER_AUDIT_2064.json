@@ -1,0 +1,243 @@
+{
+  "project": "PHYS26",
+  "status": "NUMBERED_SOURCE_INDEX_ONLY_NOT_QA_APPROVED",
+  "sourceFilename": "كتاب تجميعات يلو للفيزياء 26 - المعدل.pdf",
+  "sourceSha256": "5faa723e8485223dcae8b926e0e6c279915d8f6e3d8ece890263a62c04837616",
+  "totalPdfPages": 162,
+  "chapters": 31,
+  "actualSectionHeaders": 61,
+  "numberedQuestionOccurrences": 2064,
+  "firstSectionOccurrences": 1174,
+  "secondSectionOccurrences": 890,
+  "missingNumberLabelsAcross31Lessons": 0,
+  "verifiedAnswers": 0,
+  "verifiedQuestionContent": 0,
+  "approvedCrops": 0,
+  "rightsToRepublish": "UNVERIFIED",
+  "safeToImport": false,
+  "method": "Native PDF blue question-number geometry, every lesson has complete sequence 1..N; reading-order review detected and excluded year-marker false positive on page 22; no source text or pages copied.",
+  "notes": [
+    "Book contains 30 second-section headings and one single-section lesson (lesson 25).",
+    "Question labels are not answer verification. Some Arabic letters, formulas and symbols in PDF text extraction are corrupt; visual source checking still required.",
+    "This metadata contains no source questions, options or answer keys and must not be considered a licensed question bank."
+  ],
+  "lessons": [
+    {
+      "lesson": 1,
+      "pageStart": 5,
+      "pageEnd": 9,
+      "secondSectionPage": 8,
+      "numberedQuestionOccurrences": 75
+    },
+    {
+      "lesson": 2,
+      "pageStart": 10,
+      "pageEnd": 17,
+      "secondSectionPage": 16,
+      "numberedQuestionOccurrences": 81
+    },
+    {
+      "lesson": 3,
+      "pageStart": 18,
+      "pageEnd": 21,
+      "secondSectionPage": 21,
+      "numberedQuestionOccurrences": 52
+    },
+    {
+      "lesson": 4,
+      "pageStart": 22,
+      "pageEnd": 26,
+      "secondSectionPage": 25,
+      "numberedQuestionOccurrences": 71
+    },
+    {
+      "lesson": 5,
+      "pageStart": 27,
+      "pageEnd": 31,
+      "secondSectionPage": 30,
+      "numberedQuestionOccurrences": 48
+    },
+    {
+      "lesson": 6,
+      "pageStart": 32,
+      "pageEnd": 34,
+      "secondSectionPage": 33,
+      "numberedQuestionOccurrences": 29
+    },
+    {
+      "lesson": 7,
+      "pageStart": 35,
+      "pageEnd": 37,
+      "secondSectionPage": 37,
+      "numberedQuestionOccurrences": 34
+    },
+    {
+      "lesson": 8,
+      "pageStart": 38,
+      "pageEnd": 42,
+      "secondSectionPage": 41,
+      "numberedQuestionOccurrences": 71
+    },
+    {
+      "lesson": 9,
+      "pageStart": 43,
+      "pageEnd": 47,
+      "secondSectionPage": 46,
+      "numberedQuestionOccurrences": 67
+    },
+    {
+      "lesson": 10,
+      "pageStart": 48,
+      "pageEnd": 54,
+      "secondSectionPage": 52,
+      "numberedQuestionOccurrences": 103
+    },
+    {
+      "lesson": 11,
+      "pageStart": 55,
+      "pageEnd": 57,
+      "secondSectionPage": 57,
+      "numberedQuestionOccurrences": 46
+    },
+    {
+      "lesson": 12,
+      "pageStart": 58,
+      "pageEnd": 63,
+      "secondSectionPage": 61,
+      "numberedQuestionOccurrences": 71
+    },
+    {
+      "lesson": 13,
+      "pageStart": 64,
+      "pageEnd": 71,
+      "secondSectionPage": 69,
+      "numberedQuestionOccurrences": 112
+    },
+    {
+      "lesson": 14,
+      "pageStart": 72,
+      "pageEnd": 77,
+      "secondSectionPage": 75,
+      "numberedQuestionOccurrences": 97
+    },
+    {
+      "lesson": 15,
+      "pageStart": 78,
+      "pageEnd": 81,
+      "secondSectionPage": 80,
+      "numberedQuestionOccurrences": 32
+    },
+    {
+      "lesson": 16,
+      "pageStart": 82,
+      "pageEnd": 85,
+      "secondSectionPage": 84,
+      "numberedQuestionOccurrences": 57
+    },
+    {
+      "lesson": 17,
+      "pageStart": 86,
+      "pageEnd": 92,
+      "secondSectionPage": 90,
+      "numberedQuestionOccurrences": 93
+    },
+    {
+      "lesson": 18,
+      "pageStart": 93,
+      "pageEnd": 98,
+      "secondSectionPage": 96,
+      "numberedQuestionOccurrences": 68
+    },
+    {
+      "lesson": 19,
+      "pageStart": 99,
+      "pageEnd": 100,
+      "secondSectionPage": 100,
+      "numberedQuestionOccurrences": 24
+    },
+    {
+      "lesson": 20,
+      "pageStart": 101,
+      "pageEnd": 105,
+      "secondSectionPage": 104,
+      "numberedQuestionOccurrences": 59
+    },
+    {
+      "lesson": 21,
+      "pageStart": 106,
+      "pageEnd": 113,
+      "secondSectionPage": 110,
+      "numberedQuestionOccurrences": 101
+    },
+    {
+      "lesson": 22,
+      "pageStart": 114,
+      "pageEnd": 120,
+      "secondSectionPage": 118,
+      "numberedQuestionOccurrences": 102
+    },
+    {
+      "lesson": 23,
+      "pageStart": 121,
+      "pageEnd": 125,
+      "secondSectionPage": 124,
+      "numberedQuestionOccurrences": 56
+    },
+    {
+      "lesson": 24,
+      "pageStart": 126,
+      "pageEnd": 128,
+      "secondSectionPage": 127,
+      "numberedQuestionOccurrences": 43
+    },
+    {
+      "lesson": 25,
+      "pageStart": 129,
+      "pageEnd": 129,
+      "secondSectionPage": null,
+      "numberedQuestionOccurrences": 9
+    },
+    {
+      "lesson": 26,
+      "pageStart": 130,
+      "pageEnd": 133,
+      "secondSectionPage": 132,
+      "numberedQuestionOccurrences": 56
+    },
+    {
+      "lesson": 27,
+      "pageStart": 134,
+      "pageEnd": 138,
+      "secondSectionPage": 137,
+      "numberedQuestionOccurrences": 72
+    },
+    {
+      "lesson": 28,
+      "pageStart": 139,
+      "pageEnd": 144,
+      "secondSectionPage": 143,
+      "numberedQuestionOccurrences": 86
+    },
+    {
+      "lesson": 29,
+      "pageStart": 145,
+      "pageEnd": 150,
+      "secondSectionPage": 149,
+      "numberedQuestionOccurrences": 82
+    },
+    {
+      "lesson": 30,
+      "pageStart": 151,
+      "pageEnd": 154,
+      "secondSectionPage": 153,
+      "numberedQuestionOccurrences": 41
+    },
+    {
+      "lesson": 31,
+      "pageStart": 155,
+      "pageEnd": 161,
+      "secondSectionPage": 159,
+      "numberedQuestionOccurrences": 126
+    }
+  ]
+}
