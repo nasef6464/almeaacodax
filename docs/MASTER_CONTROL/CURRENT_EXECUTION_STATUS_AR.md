@@ -109,3 +109,9 @@ Git HEAD always overrides this historical baseline.
 - **BIO26 CLOSED ✅** — no remaining production-import, integrity, Live E2E, approval, or post-approval gate.
 
 **BIO26 must not be reopened unless a new source/content revision is explicitly requested.**
+
+## Interactive teaching board V1 — 2026-10-08
+- Owner-directed scope: current AI gateway integration and browser-side interactive board; baseline main@f40a785e, branch codex/smart-teacher-live-board.
+- Status: PARTIAL; no production closure or deployment. Existing Master Control plan exit gates remain as recorded.
+- Added validated versioned plans, local deterministic playback, narration adapter, contextual follow-up board and saved main-lesson resume. Existing authorization, budgets, scoring and image policy preserved.
+- Evidence and remaining live-provider/voice checks: docs/audits/INTERACTIVE_TEACHING_BOARD_V1_2026-10-08.md. Exact-head CI is tracked on the attached PR.

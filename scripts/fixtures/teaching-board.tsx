@@ -1,0 +1,27 @@
+// Isolated browser fixture: no real users, provider calls, or backend writes.
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import { InteractiveSmartTeacher } from '../../components/results/InteractiveSmartTeacher';
+import { api } from '../../services/api';
+import '../../styles/main.css';
+const primary = {version:1,language:'ar-SA',scenes:[
+{id:'q',narration:'عندنا معادلة أسية.',actions:[{type:'write',id:'eq',kind:'formula',content:'3^{2x-1}=27'}]},
+{id:'rewrite',narration:'نكتب سبعة وعشرين كقوة للثلاثة.',actions:[{type:'transform',target:'eq',content:'3^{2x-1}=3^3'},{type:'highlight',target:'eq'}]},
+{id:'answer',narration:'نساوي الأسس ثم نحل.',actions:[{type:'transform',target:'eq',content:'2x-1=3'},{type:'write',id:'result',kind:'formula',content:'x=2'},{type:'box',target:'result'}]}
+]};
+const followup = {version:1,language:'ar-SA',scenes:[{id:'why',narration:'لأن ثلاثة مضروبة في نفسها ثلاث مرات تساوي سبعة وعشرين.',actions:[{type:'write',id:'whyEq',kind:'formula',content:'3 \\times 3 \\times 3 = 27'}]}]};
+(window as any).testRequests=[];
+(window as any).testSpeak=[];
+class TestUtterance { text:string; onend:any; onerror:any; constructor(text:string){this.text=text;} }
+(window as any).SpeechSynthesisUtterance=TestUtterance;
+Object.defineProperty(window,'speechSynthesis',{value:{speak:(u:any)=>(window as any).testSpeak.push(u),pause:()=>{},resume:()=>{},cancel:()=>{}}, configurable:true});
+(api as any).aiQuestionAssistant = async (payload:any) => {
+(window as any).testRequests.push(payload);
+await new Promise(resolve=>setTimeout(resolve,100));
+if ((window as any).testFallback) return {text:'الشرح المعتمد الحالي',storyboard:{version:99}};
+const storyboard=(window as any).testEnglish ? {version:1,language:'en-US',scenes:[{id:'grammar',narration:'Focus on the verb.',actions:[{type:'write',id:'sentence',kind:'text',content:'She has been studying for two hours.'},{type:'highlight',target:'sentence'}]}]} : payload.boardContext ? followup : primary;
+return {text:storyboard.scenes.map(s=>s.narration).join('\n'),storyboard};
+};
+function Demo(){const [open,setOpen]=React.useState(true);return <><button onClick={()=>setOpen(true)}>فتح</button>{open&&<InteractiveSmartTeacher isOpen onClose={()=>setOpen(false)} questionId="test-question" context="result_review" resultId="test-result" tutorSessionId="test-session"/>}</>;}
+createRoot(document.getElementById('root')!).render(<Demo/>);
+

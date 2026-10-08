@@ -173,7 +173,7 @@ export const QuestionAssistantPanel: React.FC<{
       </div>
 
       {smartTeacherOpen ? (
-        <React.Suspense fallback={null}>
+        <React.Suspense fallback={<div role="status" className="fixed inset-0 z-[70] flex items-center justify-center bg-slate-950/90 text-white"><Loader2 className="ml-2 animate-spin" size={20} />جاري فتح السبورة…</div>}>
           <InteractiveSmartTeacher
             isOpen={smartTeacherOpen}
             onClose={() => setSmartTeacherOpen(false)}

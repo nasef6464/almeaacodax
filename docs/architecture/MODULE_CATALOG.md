@@ -27,3 +27,6 @@
 - compatibility facades تبقى حتى يثبت عدم وجود callers.
 - ترتيب العمل التجاري المعتمد موجود في `FINAL_MASTER_PLAN_V3_AR.md`: Assessment closure ثم Learning Space ثم School MVP ثم Reports ثم ProductConfig.
 - `VERIFIED` تعني دليل رحلة مناسب، وليس مجرد وجود ملف أو نجاح فحص ثابت.
+
+## AI teaching board V1 boundary — 2026-10-08
+Existing AI module retains question review authorization, trusted references, provider routing, usage/budget enforcement and scoped cache. A pure versioned teaching contract is shared with the frontend. Browser components/results/teaching owns board state/actions/playback/render and a replaceable narration adapter. No new service or educational authority. Local fixture proof is PARTIAL; live-provider and production certification remain open.

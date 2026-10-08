@@ -1505,3 +1505,11 @@
   - the active Render workspace is not selected in the connected Render tool, so direct service settings/log/metric inspection cannot be performed safely without owner workspace selection;
   - live backend must be redeployed from current `main` and Redis configured before scale-ready can become green.
 - Next exact action: open the Batch 12 PR, run exact-head CI/typecheck/build/security/integration/E2E gates, fix any root-cause failures, then verify the live post-deploy SHA/readiness evidence before marking Batch 12 DONE. Independent repository work continues even while Render configuration remains externally blocked.
+
+## Interactive teaching board V1 — 2026-10-08
+- Branch: codex/smart-teacher-live-board; baseline main@f40a785e. Owner's direct-start/parser/header changes were reused in an isolated managed worktree; source checkout preserved.
+- New pure contract: server/src/modules/ai/contracts/teachingStoryboard.ts; provider JSON normalization: application/questionTeachingPlan.ts.
+- Browser ownership: components/results/teaching/{boardState,narrationEngine,useTeachingPlayback,TeachingBoard}; InteractiveSmartTeacher orchestrates primary/follow-up boards.
+- Status PARTIAL: local tests and browser fixture evidence; no live AI/audio or production closure. Exact runtime SHA/CI are reported on the attached PR.
+- Evidence: docs/audits/INTERACTIVE_TEACHING_BOARD_V1_2026-10-08.md.
+- Next: exact-head CI followed by configured-provider review journey, valid-plan rate/latency/cost measurement and actual tablet voice testing.

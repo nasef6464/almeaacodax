@@ -33,3 +33,9 @@
 قبل أي نقل: اقرأ `CURRENT_DIRECTORY_AND_MODULE_MAP.md` و`DEEP_MODULARITY_AND_RESOURCE_AUDIT.md`، سجل callers وcanonical authority وAPI/route/state/smoke contracts، ثم انقل concern واحدًا مع facade واختبارات.
 
 الأولوية بعد إغلاق checkpoint المدارس الحالي هي سد فجوة Product Gate، لا استخراج concern إضافي لمجرد تقليل حجم ملف. راجع `FINAL_MASTER_PLAN_V3_AR.md` قبل اختيار موضع التغيير.
+
+## Interactive teacher changes
+- Teaching wire schema/validation: server/src/modules/ai/contracts/teachingStoryboard.ts.
+- Planner instructions and cached JSON/text fallback: server/src/modules/ai/application/questionTeachingPlan.ts; review authorization stays in ai.routes.ts.
+- Board replay/actions: components/results/teaching/boardState.ts; timing/pause/resume: useTeachingPlayback.ts; voice backend: narrationEngine.ts; render: TeachingBoard.tsx.
+- Student dialogue/interruption/continue: components/results/InteractiveSmartTeacher.tsx. See docs/audits/INTERACTIVE_TEACHING_BOARD_V1_2026-10-08.md for current proof limits.

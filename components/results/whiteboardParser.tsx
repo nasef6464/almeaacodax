@@ -7,6 +7,15 @@ export interface InteractiveWhiteboardCanvasProps {
   onAskAboutStep?: (stepPrompt: string) => void;
   onSpeakText?: (speechText: string) => void;
   isPending?: boolean;
+  viewMode?: 'video_steps' | 'full_chalkboard';
+  onViewModeChange?: (mode: 'video_steps' | 'full_chalkboard') => void;
+  boardTheme?: 'dark' | 'light';
+  onBoardThemeChange?: (theme: 'dark' | 'light') => void;
+  isPlaying?: boolean;
+  onTogglePlay?: () => void;
+  currentStepIdx?: number;
+  onStepChange?: (idx: number) => void;
+  showInternalControls?: boolean;
 }
 
 export interface ParsedStep {
@@ -61,35 +70,52 @@ export const parseChalkboardSteps = (rawText: string): ParsedStep[] => {
   }
 
   return chunks.map((chunk, idx) => {
-    let title = `الخطوة ${idx + 1}`;
+    // Check if chunk starts with an explicit step header
+    const headerMatch = chunk.match(/^(?:[*#\s]*)(الخطوة\s*[:\d][^\n]*|\d+[\.\)][^\n]*)/i);
+    let title = '';
+    let body = chunk;
+    if (headerMatch) {
+      title = headerMatch[1].replace(/[*#]/g, '').trim();
+      body = chunk.slice(headerMatch[0].length).trim();
+      if (!body) body = chunk;
+    }
+
     let type: ParsedStep['type'] = 'calc';
 
-    if (/قاعدة|مفهوم|الفكرة|سر|ذهبية|📌/i.test(chunk)) {
-      title = `الخطوة ${idx + 1}: السر الجبري والقاعدة الذهبية`;
-      type = 'concept';
-    } else if (/حساب|تعويض|ضرب|قسمة|أس|معادلة|🔢|📐/i.test(chunk)) {
-      title = `الخطوة ${idx + 1}: خطوات التطبيق والحل`;
-      type = 'calc';
-    } else if (/خيار|إجابة|نتيجة|أخيراً|💡|🎯|✅/i.test(chunk)) {
-      title = `الخطوة ${idx + 1}: النتيجة والخيار النهائي`;
-      type = 'result';
-    } else if (idx === 0) {
-      title = 'الخطوة 1: فكرة المسألة والمعطيات';
-      type = 'concept';
-    } else if (idx === chunks.length - 1) {
-      title = `الخطوة ${idx + 1}: الاستنتاج النهائي`;
-      type = 'result';
+    if (!title) {
+      if (/قاعدة|مفهوم|الفكرة|سر|ذهبية|📌/i.test(chunk)) {
+        title = `الخطوة ${idx + 1}: السر الجبري والقاعدة الذهبية`;
+        type = 'concept';
+      } else if (/حساب|تعويض|ضرب|قسمة|أس|معادلة|🔢|📐/i.test(chunk)) {
+        title = `الخطوة ${idx + 1}: خطوات التطبيق والحل`;
+        type = 'calc';
+      } else if (/خيار|إجابة|نتيجة|أخيراً|💡|🎯|✅/i.test(chunk)) {
+        title = `الخطوة ${idx + 1}: النتيجة والخيار النهائي`;
+        type = 'result';
+      } else if (idx === 0) {
+        title = 'الخطوة 1: فكرة المسألة والمعطيات';
+        type = 'concept';
+      } else if (idx === chunks.length - 1) {
+        title = `الخطوة ${idx + 1}: الاستنتاج النهائي`;
+        type = 'result';
+      } else {
+        title = `الخطوة ${idx + 1}`;
+      }
+    } else {
+      if (/قاعدة|مفهوم|الفكرة/i.test(title)) type = 'concept';
+      else if (/خيار|إجابة|نتيجة|استنتاج/i.test(title)) type = 'result';
+      else type = 'calc';
     }
 
     // Extract LaTeX equations ($$..$$ or $..$)
     const equations: string[] = [];
     const blockMathRegex = /\$\$([\s\S]+?)\$\$/g;
     let match: RegExpExecArray | null;
-    while ((match = blockMathRegex.exec(chunk)) !== null) {
+    while ((match = blockMathRegex.exec(body)) !== null) {
       if (match[1]) equations.push(match[1].trim());
     }
     const inlineMathRegex = /(?<!\$)\$([^\$\n]+?)\$(?!\$)/g;
-    while ((match = inlineMathRegex.exec(chunk)) !== null) {
+    while ((match = inlineMathRegex.exec(body)) !== null) {
       if (match[1] && !equations.includes(match[1].trim())) {
         equations.push(match[1].trim());
       }
@@ -100,7 +126,7 @@ export const parseChalkboardSteps = (rawText: string): ParsedStep[] => {
       index: idx + 1,
       title,
       type,
-      body: chunk,
+      body,
       equations,
     };
   });

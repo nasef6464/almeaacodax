@@ -168,3 +168,8 @@ No runtime product module was split merely for size in this checkpoint: inspecti
 ### Batch 13 final repository-side checkpoint
 
 Performance ownership now includes: isolated load profiles; profile-specific evidence; bootstrap cache counters; bounded authenticated queue/realtime scale metrics; decoded-vs-wire-byte read baseline evidence; and keyset-paged notification campaign audience resolution. No frontend/domain bulk move is part of Batch 13. Remaining certification evidence is deployment/infrastructure-owned and must not be replaced with speculative code refactors.
+
+## Interactive teaching board ownership — 2026-10-08
+- server/src/modules/ai/contracts/teachingStoryboard.ts is a pure browser/server wire contract and validator; it imports no database, provider or Node runtime. The frontend consumes this contract without bundling gateway code.
+- server/src/modules/ai/application/questionTeachingPlan.ts owns planner instructions and validated string-cache normalization; ai.routes.ts retains review authority, budgets and provider routing.
+- components/results/teaching/ owns deterministic board state, narration abstraction, local playback and rendering. InteractiveSmartTeacher owns conversation and main/follow-up lesson selection; whiteboardParser remains legacy fallback.
