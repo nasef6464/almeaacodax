@@ -3,7 +3,7 @@ import katex from 'katex';
 import 'katex/dist/katex.min.css';
 import type { BoardElement } from './boardState';
 import { spokenTeachingText } from './spokenMath';
-import { readableBoardText } from './boardText';
+import { readableBoardText, readableBoardProse } from './boardText';
 
 const Formula: React.FC<{ content: string }> = ({ content }) => {
   const html = React.useMemo(() => {
@@ -25,7 +25,7 @@ const BoardContent: React.FC<{ content: string; kind: 'text' | 'formula' }> = ({
   const parts = readable.split(/(\$\$[\s\S]+?\$\$|\$[^$\n]+\$|\\\([\s\S]+?\\\)|\d+(?:\s*(?:\\times|\\div|[+\-=×÷*/])\s*\d+)+)/g);
   return <p dir="auto" className="whitespace-pre-wrap break-words text-lg leading-8">{parts.map((part, index) => {
     const math = /^(?:\$|\\\(|\d+(?:\s*(?:\\times|\\div|[+\-=×÷*/])))/.test(part);
-    return math ? <Formula key={index} content={part.replace(/^\$\$|\$\$$|^\$|\$$|^\\\(|\\\)$/g, '')} /> : <React.Fragment key={index}>{part}</React.Fragment>;
+    return math ? <Formula key={index} content={part.replace(/^\$\$|\$\$$|^\$|\$$|^\\\(|\\\)$/g, '')} /> : <React.Fragment key={index}>{readableBoardProse(part)}</React.Fragment>;
   })}</p>;
 };
 

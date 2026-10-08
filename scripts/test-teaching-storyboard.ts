@@ -7,7 +7,10 @@ assert.ok(boardPrompt.includes('ممنوع تعديل الدرجة أو الإت
 assert.doesNotMatch(boardPrompt, /الخطوة 3: الاستنتاج|شاملاً للحل|اجعل الرد بالعربية|كاملاً ومرتباً|NotebookLM/, 'structured requests must not inherit conflicting long-form or Arabic-only output rules');
 assert.match(buildQuestionAssistantPrompt(promptInput), /الخطوة 3: الاستنتاج/, 'ordinary text/voice tutor keeps its existing format');
 import { checkpointHints } from '../server/src/modules/ai/contracts/checkpointHints';
-import { readableBoardText } from '../components/results/teaching/boardText';
+import { readableBoardText, readableBoardProse } from '../components/results/teaching/boardText';
+assert.equal(readableBoardProse('نبحث عن 4 \\times \\text{آحاد الخيار} = \\text{آحاد 0}.'), 'نبحث عن 4 × آحاد الخيار = آحاد 0.');
+assert.equal(readableBoardProse('\\implies \\text{الآحاد هي 0}'), '⇒ الآحاد هي 0');
+assert.equal(readableBoardProse('\\nu + n \\timescale'), '\\nu + n \\timescale', 'prose cleanup preserves unknown commands and variable n');
 assert.equal(readableBoardText('الخطوة 1: نص.nالخطوة 2: نص.nإذن النتيجة.'), 'الخطوة 1: نص.\nالخطوة 2: نص.\nإذن النتيجة.');
 assert.equal(readableBoardText('الخيارات:n1) 309705n2) 309704'), 'الخيارات:\n1) 309705\n2) 309704');
 assert.equal(readableBoardText('الخطوة 1: (0)n- الأول'), 'الخطوة 1: (0)\n- الأول');

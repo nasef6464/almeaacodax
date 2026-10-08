@@ -8,3 +8,10 @@ export function readableBoardText(content: string): string {
   }
   return result;
 }
+
+/** Prose fragments can contain known LaTeX text wrappers/operators outside an equation. */
+export function readableBoardProse(content: string): string {
+  const operators: Record<string, string> = { times: '×', div: '÷', implies: '⇒', rightarrow: '→', leftarrow: '←', neq: '≠', leq: '≤', geq: '≥', cdot: '·' };
+  return content.replace(/\\(?:text|textbf|mathrm|operatorname)\{([^{}]*)\}/g, '$1')
+    .replace(/\\(times|div|implies|rightarrow|leftarrow|neq|leq|geq|cdot)(?![A-Za-z])/g, (_match, name: string) => operators[name]);
+}
