@@ -23,10 +23,10 @@
     {
       "name": "mapping",
       "status": "IN_PROGRESS",
-      "done": 783,
+      "done": 1056,
       "total": 2135,
       "rule": "QUESTION_MATH_REQUIRED; source label preserved; no group-title auto approval",
-      "reviewHold": 73,
+      "reviewHold": 190,
       "evidence": [
         "Ready130 audit candidate-pass 74",
         "Adjudication batch001 added 17 question-level approvals",
@@ -37,7 +37,7 @@
     {
       "name": "enrichment",
       "status": "IN_PROGRESS_LEGACY_SUBSET",
-      "done": 783,
+      "done": 1056,
       "total": 2135,
       "rule": "answer+solution+educationalExplanation+difficulty+difficultyReason+fingerprints",
       "mappingApprovedWithinReady": 129
@@ -129,10 +129,9 @@
     "stage": "QUESTION_MASTERING",
     "strategy": "ONE_PASS_VISUAL_MATH",
     "priority": [
-      "arithmetic T49 onward",
-      "T48/Q12 HOLD source option mismatch",
-      "T47/Q04 and Q16 REVIEW cross-topic",
-      "preserve all earlier holds"
+      "geometry T31 onward",
+      "AR T53/Q17, Q20 and T62/Q09-Q12 remain Library-only; do not count before GitHub payload persistence",
+      "preserve all previous HOLD/quarantine/suppressions"
     ]
   },
   "antiLoopRules": [
@@ -146,25 +145,20 @@
     "A question is processed once into a complete master payload; QA validates it rather than recreating it"
   ],
   "lastCompletedBatch": {
-    "name": "RUN050_AR_T44_T48",
-    "completeMasterRecords": 94,
-    "holds": 6,
-    "questionsProcessed": 100,
-    "effectiveMasteredComplete": 783,
-    "evidenceGitHubPaths": [
-      "docs/content/mnsf26/MNSF26_QUESTION_MASTERING_RUN050_AR_T44_V1.json",
-      "docs/content/mnsf26/MNSF26_QUESTION_MASTERING_RUN050_AR_T45_V1.json",
-      "docs/content/mnsf26/MNSF26_QUESTION_MASTERING_RUN050_AR_T46_V1.json",
-      "docs/content/mnsf26/MNSF26_QUESTION_MASTERING_RUN050_AR_T47_V1.json",
-      "docs/content/mnsf26/MNSF26_QUESTION_MASTERING_RUN050_AR_T48_V1.json"
-    ]
+    "name": "RUN052_RECONCILE_RUN051_GITHUB",
+    "completeMasterRecords": 273,
+    "holds": 117,
+    "questionsProcessed": 390,
+    "effectiveMasteredComplete": 1056,
+    "source": "Run051 full master records (21 Library files), SHA256 checked against original Run017/Run021 crop archives, 390 unique sourceKeys persisted in GitHub",
+    "remainingLibraryOnly": 6
   },
   "executionContract": "docs/content/mnsf26/MNSF26_LOCKED_PIPELINE_V1.json",
   "activeStage": {
     "order": 2,
     "name": "QUESTION_MASTERING",
     "status": "IN_PROGRESS",
-    "done": 783,
+    "done": 1056,
     "total": 2135,
     "mode": "ONE_PASS_PER_QUESTION",
     "requiredPayload": [
@@ -181,7 +175,7 @@
       "ideaFingerprint"
     ],
     "gate": "No question advances without complete payload or explicit HOLD/REVIEW.",
-    "masteredComplete": 783
+    "masteredComplete": 1056
   },
   "reconciliationRun049": {
     "source": "Library /MNSF26/Run048 full JSON records, validated unique sourceKeys and required fields, persisted to GitHub complete test files",
@@ -202,5 +196,16 @@
       43
     ],
     "sourceAbsentTest33": true
+  },
+  "reconciliationRun052": {
+    "baseMastered": 783,
+    "baseHold": 73,
+    "githubPersistedUnique": 390,
+    "masteredAdded": 273,
+    "holdsAdded": 117,
+    "shaVerified": 390,
+    "libraryOnlyNotCounted": 6,
+    "blocker": "GitHub content safety check rejected T53/T62 missing records; no bypass",
+    "next": "GEO T31"
   }
 }
