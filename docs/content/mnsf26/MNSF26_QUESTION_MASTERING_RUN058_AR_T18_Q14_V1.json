@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN058_AR_T18_LIBRARY_RECONCILIATION",
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T018-Q14",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+        "testNumber": 18,
+        "pdfPage": 34,
+        "sourceSkillLabel": "جمع الأعداد - المتتابعات - ضرب الأعداد",
+        "sourceTopic": "متتابعات وأنماط أو قواعد القسمة حسب رياضيات السؤال",
+        "sourceLesson": "الحساب والجبر اختبار 018 سؤال 14",
+        "printedQuestionNumber": 14,
+        "cropFile": "mnsf26_fullbook_crops/AR/AR-T018-Q14.webp",
+        "cropSha256": "f7c58112078847ca2274784aa5be0a2f76a1022378d675bf878ce075f54b67cd",
+        "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
+      },
+      "imageHash": "f7c58112078847ca2274784aa5be0a2f76a1022378d675bf878ce075f54b67cd",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN057_2026-10-08_T18_Q14",
+      "status": "MASTERED",
+      "questionText": "ما مجموع الأعداد في الصف الأخير من هرم أعداد مجموع صفوفه 10 ثم20 ثم40؟",
+      "canonicalMainSkill": "main_quant_01",
+      "canonicalSubskill": "sub_quant_01_3",
+      "correctAnswer": "ج",
+      "answerValue": "80",
+      "stepByStepSolution": "مجموع الصف الأول 1+8+1=10، الثاني1+9+9+1=20، الثالث1+10+18+10+1=40؛ يتضاعف مجموع الصفوف، فالأخير80.",
+      "educationalExplanation": "نستخدم مجموع الصفوف بدل استنتاج كل خلية منفردة.",
+      "difficulty": "Medium",
+      "difficultyReason": "نمط مجموع صفوف متضاعف.",
+      "contentFingerprint": "d35b69e833c05a306e22db46f2a5d4123b557a2559a58209427cb6a3e50806ab",
+      "ideaFingerprint": "c2b5255ab5a41284eb14ad256d8d3c9eec8eb20ae11dcc79c65ef3325da7c04b"
+    }
+  ]
+}
