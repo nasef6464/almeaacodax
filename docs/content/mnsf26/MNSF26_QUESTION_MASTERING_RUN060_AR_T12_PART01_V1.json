@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN060_AR_T12_LIBRARY_PAYLOAD_RECOVERY",
+  "previouslyCounted": true,
+  "sourceLibrary": "/MNSF26/Run030/MNSF26_QUESTION_MASTERING_RUN030_AR_T12_V1.json",
+  "records": [
+    {
+      "id": "MNSF26-AR-T012-Q02",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T012",
+        "sourceLesson": "الأعداد الأولية - العوامل الأولى"
+      },
+      "canonicalMainSkill": "skill_quant_02",
+      "canonicalSubskill": "sub_quant_02_3",
+      "correctAnswer": "د",
+      "answerValue": "8",
+      "stepByStepSolution": "العدد 8 يقبل القسمة على 2 و4، لذلك ليس أوليًا.",
+      "educationalExplanation": "نختبر القواسم الصغيرة؛ وجود قاسم غير 1 والعدد نفسه يعني أن العدد غير أولي.",
+      "difficulty": "Easy",
+      "difficultyReason": "تمييز مباشر للعدد غير الأولي.",
+      "imageHash": "188f0a0dba00f105715c91dc270eda48b75382a040d457e9cb0f95d88e56d0c1",
+      "contentFingerprint": "a9c5350eecde973592d78b76579d82a4c27bc3b1da3e9940376e151f9c1f6191",
+      "ideaFingerprint": "4962f72e0e90f3345af9088ad87b078f3d1b3d670f64416c7e96114e96b1e9b7",
+      "status": "MASTERED"
+    },
+    {
+      "id": "MNSF26-AR-T012-Q03",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T012",
+        "sourceLesson": "الأعداد الأولية - العوامل الأولى"
+      },
+      "canonicalMainSkill": "skill_quant_02",
+      "canonicalSubskill": "sub_quant_02_3",
+      "correctAnswer": "د",
+      "answerValue": "30",
+      "stepByStepSolution": "60=2²×3×5، والعوامل الأولية المختلفة هي 2 و3 و5؛ حاصل ضربها=30.",
+      "educationalExplanation": "نفكك العدد إلى عوامله الأولية ثم نضرب العوامل الأولية المختلفة المطلوبة.",
+      "difficulty": "Easy",
+      "difficultyReason": "تحليل أولي مباشر.",
+      "imageHash": "efce70dadc15b4ac6a660771639a67726e41802e3de4c06e1f6b6119c908479a",
+      "contentFingerprint": "f85dbf0d7b7d8173cb346bc9db6a9b1dab21d47ada0b6f27648de89ef341b0ea",
+      "ideaFingerprint": "3f5215244450b2625832c82bf914dd7c298a5a0f7b8d66283112530b460f027e",
+      "status": "MASTERED"
+    },
+    {
+      "id": "MNSF26-AR-T012-Q04",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T012",
+        "sourceLesson": "الأعداد الأولية - العوامل الأولى"
+      },
+      "canonicalMainSkill": "skill_quant_02",
+      "canonicalSubskill": "sub_quant_02_3",
+      "correctAnswer": "ب",
+      "answerValue": "2",
+      "stepByStepSolution": "إذا كان العددان الأوليان كلاهما فرديين فمجموعهما زوجي أكبر من 2 وغير أولي؛ لذلك لا بد أن يكون أحدهما 2.",
+      "educationalExplanation": "العدد 2 هو العدد الأولي الزوجي الوحيد، وهو المفتاح في مسائل مجموع عددين أوليين.",
+      "difficulty": "Medium",
+      "difficultyReason": "استدلال بخاصية زوجية الأعداد الأولية.",
+      "imageHash": "588735cf76daf2f0ec9f9f13291b5663255d72c8e9aa37e030cb0e1fbcd2a7ce",
+      "contentFingerprint": "ea1b21bf631ba56ae3eb4aa875416f328583bc17020ef130764f3fa9315f2f86",
+      "ideaFingerprint": "843b82dd88df77ccd0815176b6d0e51ee1756c92cfde201d4e9d90c53dc82224",
+      "status": "MASTERED"
+    },
+    {
+      "id": "MNSF26-AR-T012-Q05",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T012",
+        "sourceLesson": "الأعداد الأولية - العوامل الأولى"
+      },
+      "canonicalMainSkill": "skill_quant_02",
+      "canonicalSubskill": "sub_quant_02_3",
+      "correctAnswer": "أ",
+      "answerValue": "القيمة الأولى أكبر",
+      "stepByStepSolution": "130=2×5×13، فأكبر عامل أولي=13، و13>12.",
+      "educationalExplanation": "نحلل 130 إلى عوامل أولية ثم نقارن أكبرها بالقيمة الثانية.",
+      "difficulty": "Easy",
+      "difficultyReason": "تحليل ومقارنة مباشران.",
+      "imageHash": "8f4edc5c67c3da40a5789a797462f478707d2af8de45cb5d7dd27222fdef30aa",
+      "contentFingerprint": "7c07c4922b4dd2a8edf1c8357fb0045ff69c18585d52a125cf9c8c8c21d2a9bb",
+      "ideaFingerprint": "06d9caffac68a097a2f023a8e518356b3147c4c2a697fea74321f689f5b28b2a",
+      "status": "MASTERED"
+    }
+  ]
+}
