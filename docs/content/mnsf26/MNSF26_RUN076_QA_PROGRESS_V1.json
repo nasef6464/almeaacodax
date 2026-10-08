@@ -1,0 +1,17 @@
+{
+  "bank": "MNSF26",
+  "run": "RUN076",
+  "stage": "QA_LOCK",
+  "baseReviewed": 1571,
+  "newReviewed": 118,
+  "reviewedProvisional": 1689,
+  "remainingProvisional": 440,
+  "totalActive": 2129,
+  "sourceImagesInspected": 405,
+  "sourceHashesVerified": 2135,
+  "qaPassMathTaxonomyPending": 96,
+  "reviewOrHold": 22,
+  "fullBookQA": false,
+  "sourceEvidence": "/MNSF26/Run076",
+  "productionUntouched": true
+}
