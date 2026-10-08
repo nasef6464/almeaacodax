@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN062_LEGACY_T01_VISUAL_MASTERING",
+  "stage": "QUESTION_MASTERING",
+  "sourceCropArchive": "Run017 arithmetic 1204/1204 PASS_LOCKED",
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T001-Q05",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+        "testNumber": 1,
+        "pdfPage": 1,
+        "sourceSkillLabel": "قراءة الأعداد والأعداد المحصورة",
+        "sourceTopic": "فحص رياضيات السؤال من الصورة لا عنوان المجموعة",
+        "sourceLesson": "الحساب والجبر، الاختبار 001، السؤال 05",
+        "printedQuestionNumber": 5,
+        "cropFile": "AR/AR-T001-Q05.webp",
+        "cropSha256": "1b7c9d3a345f9d23573009d19e36e67bcbbcef53dea65d229ec20273e0a2d962"
+      },
+      "imageHash": "1b7c9d3a345f9d23573009d19e36e67bcbbcef53dea65d229ec20273e0a2d962",
+      "visualEvidence": "DIRECT_RUN017_SOURCE_WEBP_INSPECTION_RUN062_2026-10-08",
+      "status": "MASTERED",
+      "questionText": "كم عددًا زوجيًا من 6 إلى 69؟",
+      "canonicalMainSkill": "skill_quant_13",
+      "canonicalSubskill": "sub_quant_13_4",
+      "correctAnswer": "د — 32",
+      "stepByStepSolution": "الأعداد الزوجية هي 6،8،…،68 بفارق 2؛ العدد=(68−6)÷2+1=32.",
+      "educationalExplanation": "في متتابعة شاملة للطرفين نستخدم (الأخير−الأول)÷الفارق+1.",
+      "difficulty": "Easy",
+      "difficultyReason": "تطبيق مباشر لصيغة عدد حدود متتابعة حسابية.",
+      "contentFingerprint": "82f9d1fad2d062cb15da47523b5a4cc7655a9069babbcec358286115868aa3b4",
+      "ideaFingerprint": "15b8f17b1a8cd2007f1de3591acc4da6dd089ed2fad263d81692b02717225692",
+      "legacyProvenance": "MNSF26_CONTENT_ENRICHMENT_V1.json; 130 legacy not reanalysed from scratch"
+    }
+  ]
+}
