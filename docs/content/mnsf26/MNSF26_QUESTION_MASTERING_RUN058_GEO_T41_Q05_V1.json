@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN058_GEO_T41_LIBRARY_RECONCILIATION",
+  "records": [
+    {
+      "sourceKey": "MNSF26-GEO-T041-Q05",
+      "sourceProvenance": {
+        "sourcePart": "الهندسة",
+        "bookCode": "GEO",
+        "testNumber": 41,
+        "pdfPage": 79,
+        "sourceSkillLabel": "مراجعة مسائل الهندسة من الكتاب",
+        "sourceTopic": "مسائل الهندسة المتنوعة",
+        "sourceLesson": "تمارين هندسة مرقمة حسب الاختبار",
+        "printedQuestionNumber": 5,
+        "cropFile": "MNSF26-GEO-T041-Q05.webp",
+        "cropSha256": "85759dfcad527a972300e184420521f1fea1af35079bacff7973fedcfaaac816",
+        "cropContract": "EMBEDDED_XOBJECT_OR_EXACT_COMPOSITE_SLICE"
+      },
+      "imageHash": "85759dfcad527a972300e184420521f1fea1af35079bacff7973fedcfaaac816",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T41_Q05",
+      "status": "MASTERED",
+      "questionText": "شكل بيت من مربع تعلوه أضلاع متساوية، قطر المربع √8؛ قارن 5√8 بمحيط الشكل.",
+      "canonicalMainSkill": "main_quant_22",
+      "canonicalSubskill": "sub_quant_22_2",
+      "correctAnswer": "القيمة الأولى أكبر (أ)",
+      "stepByStepSolution": "ضلع المربع√8/√2=2؛ المحيط الخارجي للبيت خمسة أضلاع طول كل منها2=10؛ 5√8≈14.14 أكبر.",
+      "educationalExplanation": "من الصورة: ضلع المربع√8/√2=2؛ المحيط الخارجي للبيت خمسة أضلاع طول كل منها2=10؛ 5√8≈14.14 أكبر.",
+      "difficulty": "Medium",
+      "difficultyReason": "تحتاج ربط معطيات هندسية.",
+      "contentFingerprint": "82931015bee570296512a346b3fb03ad3c60e9abe62da82e875c0d1a18b6e411",
+      "ideaFingerprint": "ea9e1428a355745784c016c9a7fa7f5843b701c85de6d203f6b5b7d911a96c5c"
+    }
+  ]
+}
