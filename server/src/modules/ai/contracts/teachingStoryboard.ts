@@ -10,7 +10,7 @@ const record = (value: unknown): value is Record<string, unknown> =>
   Boolean(value) && typeof value === 'object' && !Array.isArray(value);
 const safeText = (value: unknown, max: number): value is string =>
   typeof value === 'string' && value.trim().length > 0 && value.length <= max &&
-  !/[<>\u0000-\u0008]/.test(value);
+  !/(?:<[A-Za-z!/][^>]*>|[\u0000-\u0008])/.test(value);
 const identifier = (value: unknown): value is string =>
   typeof value === 'string' && /^[A-Za-z][A-Za-z0-9_-]{0,39}$/.test(value);
 const safeFormula = (value: string) =>

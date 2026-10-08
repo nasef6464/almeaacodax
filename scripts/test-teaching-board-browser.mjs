@@ -8,7 +8,8 @@ import { createServer } from 'vite';
 import react from '@vitejs/plugin-react';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
-const artifacts = process.env.TEACHING_BOARD_ARTIFACTS || await mkdtemp(path.join(tmpdir(), 'almeaa-board-'));
+const argument = name => process.argv.find(value => value.startsWith(`--${name}=`))?.split('=').slice(1).join('=');
+const artifacts = argument('artifacts') || await mkdtemp(path.join(tmpdir(), 'almeaa-board-'));
 const server = await createServer({
   configFile: false, root, plugins: [react()], define: { __APP_VERSION__: '"board-test"' },
   optimizeDeps: { entries: ['scripts/fixtures/teaching-board.html'] },
@@ -18,7 +19,7 @@ let browser;
 try {
   await server.listen();
   const address = server.httpServer.address();
-  browser = await chromium.launch({ ...(process.env.PLAYWRIGHT_CHANNEL ? { channel: process.env.PLAYWRIGHT_CHANNEL } : {}) });
+  browser = await chromium.launch({ ...(argument('channel') ? { channel: argument('channel') } : {}) });
   const page = await browser.newPage({ viewport: { width: 1366, height: 900 } });
   const errors = [];
   page.on('pageerror', error => errors.push(error.message));

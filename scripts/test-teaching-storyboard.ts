@@ -24,6 +24,7 @@ const final = boardAt(plan, 2, sceneDuration(plan, 2));
 assert.equal(final.find(item => item.id === 'result')?.emphasis, 'box');
 assert.equal(boardAt(plan, 0, sceneDuration(plan, 0))[0].content, '3^{2x-1}=27', 'seek must undo later transformations');
 const invalid = (actions: unknown[]) => validateTeachingStoryboard({ version: 1, language: 'ar-SA', scenes: [{ id: 's', narration: 'شرح', actions }] });
+assert.ok(invalid([{ type: 'write', id: 'comparison', kind: 'formula', content: 'x < 5' }]), 'comparison symbols must not be treated as HTML');
 assert.equal(invalid([{ type: 'highlight', target: 'missing' }]), null);
 assert.equal(invalid([{ type: 'fetch', target: 'url' }]), null);
 assert.equal(invalid([{ type: 'write', id: 'a', kind: 'formula', content: '\\href{javascript:bad}{x}' }]), null);
