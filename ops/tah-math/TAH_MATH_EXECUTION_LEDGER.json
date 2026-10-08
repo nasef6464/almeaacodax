@@ -71,7 +71,21 @@
         "run30SourceAnswerLiveMatches": 199,
         "run30SourceAnswerLiveMismatches": 1,
         "run30NewIndependentMath": 4,
-        "run30LocalCropRepairs": 4
+        "run30LocalCropRepairs": 4,
+        "run31SourceQuestionContentReviews": 150,
+        "run31IndependentSourceMathAnswers": 150,
+        "run31VerifiedSourceKeys": 148,
+        "run31SemanticReview": 2,
+        "run31PriorLiveMatches": 147,
+        "run31PriorLiveMismatches": 1,
+        "run31LocalCropRepairs": 6,
+        "run31SourcePixelExactAt2x": 150,
+        "run31DifficultyProvisional": {
+          "easy": 95,
+          "medium": 49,
+          "hard": 6
+        },
+        "run31ProductionMutation": false
       }
     },
     {
@@ -176,7 +190,7 @@
       2
     ]
   },
-  "lastCheckpoint": "2026-10-08-RUN30-200-SOURCE-199-LIVE-KEY-MATCHES; see TAH_MATH_RUN30_CHECKPOINT.json",
+  "lastCheckpoint": "2026-10-08-RUN31-150-INDEPENDENT-SOURCE-MATH-6-CROPS; see TAH_MATH_RUN31_CHECKPOINT.json",
   "evidence": [
     "ops/tah-math/TAH_MATH_RUN1_BASELINE.json",
     "ops/tah-math/TAH_MATH_SOURCE_IDEA_MAP_PART01.json",
@@ -195,7 +209,8 @@
     "ops/tah-math/TAH_MATH_RUN12_SOURCE_OPTIONS_233_CHECKPOINT.json",
     "ops/tah-math/TAH_MATH_COL26_P132_6_SOURCE_REMAP_RUN12.json",
     "ops/tah-math/TAH_MATH_RUN27_CHECKPOINT.json",
-    "ops/tah-math/TAH_MATH_RUN30_CHECKPOINT.json"
+    "ops/tah-math/TAH_MATH_RUN30_CHECKPOINT.json",
+    "ops/tah-math/TAH_MATH_RUN31_CHECKPOINT.json"
   ],
   "blockers": [
     {
@@ -205,21 +220,22 @@
     }
   ],
   "latestRun": {
-    "run": "RUN30",
-    "officialSourceQuestionsReviewed": 200,
-    "uniqueCanonicalAdded": 0,
-    "sourcePixelPASS": 200,
-    "visualOptionPASS": 200,
-    "sourceAnswersReconciled": 200,
-    "newIndependentMathAnswers": 4,
-    "liveAnswerMatches": 199,
-    "liveAnswerMismatches": 1,
+    "run": "RUN31",
+    "officialSourceQuestionsReviewed": 150,
+    "sourceMathematicsIndependentlyChecked": 150,
+    "sourcePixelPASS": 150,
+    "sourceAnswerVerified": 148,
+    "sourceSemanticReview": 2,
+    "priorLiveAnswerMatches": 147,
+    "priorLiveAnswerMismatches": 1,
     "liveWrongKeyCode": "TAH-MATH-YLM26-P021-Q04",
-    "localCropRepairs": 4,
-    "sourceGroundedPedagogyCandidates": 4,
+    "localCropRepairs": 6,
+    "sourceGroundedReasoningRows": 150,
     "fullyPedagogicallyClosed": 0,
     "productionImageParity": "NOT_TESTED",
     "productionMutation": false,
-    "remaining": "YLM26 326 real options and teaching fields, live image parity and reversible key fixes; then COL26, COL26OLD regression, dedupe, coverage, training/tests, E2E."
+    "uniqueYLM26SourceInventory": 326,
+    "documentedReviewEventsRUN21toRUN31": 1999,
+    "remaining": "YLM26 canonical options, full wrong-option pedagogy, foundation/fingerprint validation, 2 source ambiguities, R2 parity and reversible key correction; then COL26."
   }
 }
