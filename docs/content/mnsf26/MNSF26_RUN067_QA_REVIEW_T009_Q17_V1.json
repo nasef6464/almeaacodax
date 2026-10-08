@@ -1,0 +1,11 @@
+{
+  "bank": "MNSF26",
+  "run": "RUN067",
+  "sourceKey": "MNSF26-GEO-T009-Q17",
+  "status": "QA_REVIEW_REQUIRED",
+  "imageHash": "33cad9b41388230b68299a25fb68a420445f441d05881221883fe5991a80c3cb",
+  "masterAnswer": "A:90",
+  "imageDerivedAnswer": "C:270",
+  "proof": "Marked s and p are both exterior obtuse angles of a right triangle; their sum is 360-90=270.",
+  "importEligible": false
+}
