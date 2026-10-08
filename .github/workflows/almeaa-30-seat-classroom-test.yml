@@ -7,6 +7,8 @@ on:
     paths:
       - .github/workflows/almeaa-30-seat-classroom-test.yml
       - server/src/scripts/simulateSmartClassroomHardeningE2E.ts
+      - server/src/scripts/verifySmartClassroomRealtimeE2E.ts
+      - server/src/scripts/verifySmartClassroomActiveAuthE2E.ts
   workflow_dispatch:
 
 permissions:
