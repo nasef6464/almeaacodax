@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN060_AR_T13_RECOVERY",
+  "previouslyCounted": true,
+  "records": [
+    {
+      "id": "MNSF26-AR-T013-Q12",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T013",
+        "sourceLesson": "الأعداد الأولية - العوامل الأولى"
+      },
+      "canonicalMainSkill": "skill_quant_02",
+      "canonicalSubskill": "sub_quant_02_1",
+      "correctAnswer": "ج",
+      "answerValue": "16",
+      "stepByStepSolution": "إذا كان م.م.أ لعددين 16 وأصغرهما8، فالعدد الآخر الموافق للاختيارات هو16 لأن م.م.أ(8،16)=16.",
+      "educationalExplanation": "نختبر شرط المضاعف المشترك الأصغر.",
+      "difficulty": "Easy",
+      "difficultyReason": "م.م.أ مباشر.",
+      "imageHash": "57cde851b43094799d775d51079ec7cb232809a266e55043976d962b6e841bf8",
+      "contentFingerprint": "753f113a1684406c1916234707a59681a1344a4d7ab614eafc74c72a99771743",
+      "ideaFingerprint": "65851e5ea496b923dc7939887e41ce4a79835cb1490c7268c26e3c19df4d5896",
+      "status": "MASTERED"
+    }
+  ]
+}
