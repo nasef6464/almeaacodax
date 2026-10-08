@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN052_STAGE_DELTA",
+  "baseStateMastered": 1078,
+  "baseStateHold": 198,
+  "githubAddedMastered": 34,
+  "githubAddedHold": 6,
+  "newOfficialMastered": 1112,
+  "newOfficialHold": 204,
+  "activeStage": "QUESTION_MASTERING",
+  "nextCursor": "GEO T35",
+  "evidence": [
+    "MNSF26_QUESTION_MASTERING_RUN052_GEO_T33_V1.json",
+    "MNSF26_QUESTION_MASTERING_RUN052_GEO_T34_V1.json"
+  ],
+  "libraryOnly": "GEO T31/Q11-Q20; AR T53/T62 missing 6",
+  "stageOrderUnchanged": true
+}
