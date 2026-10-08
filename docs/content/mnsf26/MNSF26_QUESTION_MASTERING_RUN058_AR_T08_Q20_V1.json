@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN058_AR_T08_DIRECT_VISUAL",
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T008-Q20",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+        "testNumber": 8,
+        "pdfPage": 15,
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "sourceTopic": "تصنيف المصدر محفوظ؛ رياضيات السؤال هي معيار الربط",
+        "sourceLesson": "الحساب والجبر، الاختبار 008، السؤال 20",
+        "printedQuestionNumber": 20,
+        "cropFile": "mnsf26_fullbook_crops/AR/AR-T008-Q20.webp",
+        "cropSha256": "5f33fcea718ade68a91b95d01fb1907a1c062ed4d4c2d890bdc44f6d91cc2486",
+        "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
+      },
+      "imageHash": "5f33fcea718ade68a91b95d01fb1907a1c062ed4d4c2d890bdc44f6d91cc2486",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN058_2026-10-08_T008_Q20",
+      "status": "REVIEW",
+      "questionText": "هاتف ثمنه1600 ريال، دفع شخص مقدمًا وقسط الباقي100 ريال شهريًا لمدة12 شهرًا؛ كم الدفعة الأولى؟",
+      "canonicalMainSkill": null,
+      "canonicalSubskill": null,
+      "correctAnswer": null,
+      "stepByStepSolution": null,
+      "educationalExplanation": "غير معتمد للنشر: مسألة معادلة/تقسيط خارج عنوان المجموعة؛ اعتماد الربط07_2 مطلوب.",
+      "difficulty": null,
+      "difficultyReason": "مسألة معادلة/تقسيط خارج عنوان المجموعة؛ اعتماد الربط07_2 مطلوب.",
+      "contentFingerprint": "a5fc61da8b1f944d34a715b520a4aa060ae8939c2c31eb7611a209dc5052a5b8",
+      "ideaFingerprint": "5ab7f32a63da2012dfcaab6b364eae7c2b2fc45652e31e83972f9dba9aa44173",
+      "holdReason": "مسألة معادلة/تقسيط خارج عنوان المجموعة؛ اعتماد الربط07_2 مطلوب.",
+      "proposedCanonicalSubskill": "sub_quant_07_2"
+    }
+  ]
+}
