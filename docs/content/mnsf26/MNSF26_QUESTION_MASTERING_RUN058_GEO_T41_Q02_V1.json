@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN058_GEO_T41_LIBRARY_RECONCILIATION",
+  "records": [
+    {
+      "sourceKey": "MNSF26-GEO-T041-Q02",
+      "sourceProvenance": {
+        "sourcePart": "الهندسة",
+        "bookCode": "GEO",
+        "testNumber": 41,
+        "pdfPage": 79,
+        "sourceSkillLabel": "مراجعة مسائل الهندسة من الكتاب",
+        "sourceTopic": "مسائل الهندسة المتنوعة",
+        "sourceLesson": "تمارين هندسة مرقمة حسب الاختبار",
+        "printedQuestionNumber": 2,
+        "cropFile": "MNSF26-GEO-T041-Q02.webp",
+        "cropSha256": "607b94c0f17331135d21f8646a256d5a476607fbc856c5b03fb47aed7679726d",
+        "cropContract": "EMBEDDED_XOBJECT_OR_EXACT_COMPOSITE_SLICE"
+      },
+      "imageHash": "607b94c0f17331135d21f8646a256d5a476607fbc856c5b03fb47aed7679726d",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T41_Q02",
+      "status": "MASTERED",
+      "questionText": "مربع ضلعه4 ملاصق لمثلث قائم وتره8 وارتفاعه4؛ أوجد مساحة المثلث.",
+      "canonicalMainSkill": "main_quant_20",
+      "canonicalSubskill": "sub_quant_20_3",
+      "correctAnswer": "8√3 (ب)",
+      "stepByStepSolution": "قاعدة المثلث=√(8²−4²)=4√3؛ مساحته=4×4√3/2=8√3.",
+      "educationalExplanation": "من الصورة: قاعدة المثلث=√(8²−4²)=4√3؛ مساحته=4×4√3/2=8√3.",
+      "difficulty": "Medium",
+      "difficultyReason": "تحتاج ربط معطيات هندسية.",
+      "contentFingerprint": "77358548c4336107168ac669fa0b1d3882c630198e62b29a800976854d534353",
+      "ideaFingerprint": "5160f7fd47cb029d2bd95520ccecd30eed1d619074532372165a7a30d15cd903"
+    }
+  ]
+}
