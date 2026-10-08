@@ -31,10 +31,14 @@ contentPresentationRouter.get(
   "/homepage-settings",
   optionalAuth,
   asyncHandler(async (_req, res) => {
-    let settings = await HomepageSettingsModel.findOne({ key: "default" });
-    if (!settings) {
-      settings = await HomepageSettingsModel.create(defaultHomepageSettings);
-    }
+    // Single atomic upsert avoids duplicate-key 500s when public visitors
+    // request a freshly initialized homepage at the same time. $setOnInsert
+    // never overwrites administrator customizations already stored.
+    const settings = await HomepageSettingsModel.findOneAndUpdate(
+      { key: "default" },
+      { $setOnInsert: defaultHomepageSettings },
+      { upsert: true, new: true, setDefaultsOnInsert: true },
+    );
 
     return res.json(settings);
   }),
@@ -60,10 +64,12 @@ contentPresentationRouter.get(
   "/platform-font-settings",
   optionalAuth,
   asyncHandler(async (_req, res) => {
-    let settings = await PlatformFontSettingsModel.findOne({ key: "default" });
-    if (!settings) {
-      settings = await PlatformFontSettingsModel.create(defaultPlatformFontSettings);
-    }
+    // Fonts have the same first-read concurrency risk as homepage settings.
+    const settings = await PlatformFontSettingsModel.findOneAndUpdate(
+      { key: "default" },
+      { $setOnInsert: defaultPlatformFontSettings },
+      { upsert: true, new: true, setDefaultsOnInsert: true },
+    );
 
     return res.json(settings);
   }),
