@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN051_AR_T61",
+  "directImageInspection": true,
+  "sourceCropArchive": "/MNSF26/Run017/mnsf26_arithmetic_crops_run017.zip",
+  "sourceInventory": "/MNSF26/Run017/MNSF26_FULLBOOK_CROP_INVENTORY_V1.json",
+  "masteredCount": 1,
+  "holdCount": 1,
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T061-Q17",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "testNumber": 61,
+        "pdfPage": 123,
+        "sourceSkillLabel": "التحويلات والمعادلات",
+        "printedQuestionNumber": 17,
+        "cropFile": "AR/AR-T061-Q17.webp",
+        "cropSha256": "8f361e79b5f5978e0724608b08292c52e03ab7494e9e2ebddb562f45e296a40e",
+        "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
+      },
+      "imageHash": "8f361e79b5f5978e0724608b08292c52e03ab7494e9e2ebddb562f45e296a40e",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
+      "status": "HOLD",
+      "questionText": "صناديق صدقة بأوزان متعددة؛ كم وزنها جميعًا؟",
+      "holdReason": "أوزان صناديق الصدقة وعددها في الصورة لا يطابق الخيارات بعد الجمع الأولي؛ يحتاج تدقيق.",
+      "canonicalMainSkill": null,
+      "canonicalSubskill": null,
+      "correctAnswer": null,
+      "stepByStepSolution": null,
+      "educationalExplanation": null,
+      "difficulty": null,
+      "difficultyReason": null,
+      "contentFingerprint": "3eef62f37fe73360f255c5fcb5b3446107023987a9c77906ffa440fffe5f155d",
+      "ideaFingerprint": "598782b4a638fd1f52820121de98ca1cc05d2cf68c68dda0c0550877fb0ca938"
+    },
+    {
+      "sourceKey": "MNSF26-AR-T061-Q18",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "testNumber": 61,
+        "pdfPage": 123,
+        "sourceSkillLabel": "التحويلات والمعادلات",
+        "printedQuestionNumber": 18,
+        "cropFile": "AR/AR-T061-Q18.webp",
+        "cropSha256": "2545bbc137c6ef9f6400721c2a37af98115147534bbb4a81a15b5c3abb25f281",
+        "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
+      },
+      "imageHash": "2545bbc137c6ef9f6400721c2a37af98115147534bbb4a81a15b5c3abb25f281",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
+      "status": "MASTERED",
+      "questionText": "كتاب330 صفحة، يقرأ محمد30 صفحة يوم الدراسة و70 يوم الإجازة، وأيام الدراسة أكثر من الإجازة؛ كم يومًا استغرق؟",
+      "canonicalMainSkill": "main_quant_07",
+      "canonicalSubskill": "sub_quant_07_2",
+      "correctAnswer": "7 أيام",
+      "stepByStepSolution": "30س+70ص=330؛ 3س+7ص=33؛ الحل غير السالب مع س>ص هو س=4 وص=3؛ المجموع7.",
+      "educationalExplanation": "المهارة: معادلة أيام دراسة وإجازة بمعدلين؛ نقرأ معطيات السؤال من الصورة ونطبّق العلاقة الحسابية ثم نراجع الناتج مع المطلوب.",
+      "difficulty": "Medium",
+      "difficultyReason": "تتطلب ربط أكثر من معطى أو تحويل وحدات في معادلة أيام دراسة وإجازة بمعدلين.",
+      "contentFingerprint": "eb4f489a2ea1163fe7f69023a7ea6c32cbd9cc44a35929b2c35a4062f1c8b059",
+      "ideaFingerprint": "1758a889f548fe82ff2cfa15549d65409e3902d49b662f8e54b9e2fb206b7777"
+    }
+  ],
+  "part": 5
+}
