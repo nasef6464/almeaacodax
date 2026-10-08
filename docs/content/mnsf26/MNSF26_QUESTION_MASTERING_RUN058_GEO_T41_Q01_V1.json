@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN058_GEO_T41_LIBRARY_RECONCILIATION",
+  "records": [
+    {
+      "sourceKey": "MNSF26-GEO-T041-Q01",
+      "sourceProvenance": {
+        "sourcePart": "الهندسة",
+        "bookCode": "GEO",
+        "testNumber": 41,
+        "pdfPage": 79,
+        "sourceSkillLabel": "مراجعة مسائل الهندسة من الكتاب",
+        "sourceTopic": "مسائل الهندسة المتنوعة",
+        "sourceLesson": "تمارين هندسة مرقمة حسب الاختبار",
+        "printedQuestionNumber": 1,
+        "cropFile": "MNSF26-GEO-T041-Q01.webp",
+        "cropSha256": "4d3c27f8da72cc1e78667805f4490e6833aa9240d6853f39d55c51d32e7bacda",
+        "cropContract": "EMBEDDED_XOBJECT_OR_EXACT_COMPOSITE_SLICE"
+      },
+      "imageHash": "4d3c27f8da72cc1e78667805f4490e6833aa9240d6853f39d55c51d32e7bacda",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T41_Q01",
+      "status": "MASTERED",
+      "questionText": "مستطيل تقاطعت أقطاره إلى أربعة مثلثات، مساحة أصغر مثلث25؛ أوجد مساحة المستطيل.",
+      "canonicalMainSkill": "main_quant_21",
+      "canonicalSubskill": "sub_quant_21_2",
+      "correctAnswer": "100 (ج)",
+      "stepByStepSolution": "قطرا المستطيل ينصف كل منهما الآخر ويقسمانه إلى أربعة مثلثات متساوية المساحة؛ المساحة4×25=100.",
+      "educationalExplanation": "من الصورة: قطرا المستطيل ينصف كل منهما الآخر ويقسمانه إلى أربعة مثلثات متساوية المساحة؛ المساحة4×25=100.",
+      "difficulty": "Easy",
+      "difficultyReason": "قانون مباشر.",
+      "contentFingerprint": "5f03bac20d8747b73604bffecb9da58fdb1421dbc2d69edd2967ab9c5ed43948",
+      "ideaFingerprint": "2365ccbdd1908e9c69d48badef4948a44b1387cbd7be6368fee064f5e3b52e06"
+    }
+  ]
+}
