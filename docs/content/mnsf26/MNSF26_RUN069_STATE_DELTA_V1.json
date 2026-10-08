@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN069",
+  "stage": "QA_LOCK",
+  "reconciledRun067": {
+    "from": 439,
+    "to": 546,
+    "newIndependent": 107,
+    "pass": 103,
+    "review": 4
+  },
+  "reconciledRun068": {
+    "from": 546,
+    "to": 663,
+    "newIndependent": 117,
+    "pass": 116,
+    "review": 1,
+    "githubEvidenceShards": 21
+  },
+  "newVisualIndependentMathReviewed": 19,
+  "newMathAnswerPass": 19,
+  "newReview": 0,
+  "qaReviewedFrom": 663,
+  "qaReviewedTo": 682,
+  "qaRemaining": 1447,
+  "qaVisualScreenedPendingDeepMath": 36,
+  "qaTaxonomyGate": "PENDING",
+  "qaFullBookPass": false,
+  "source": "Run021 WEBP crops displayed in SHA-verified Run066 contact sheets; Run069 19 independent proofs",
+  "evidence": "MNSF26_RUN069_INDEPENDENT_GEOMETRY_MATH_19_V1.json",
+  "evidenceSha256": "194406b8f7ff98a270a8fc60965a13795d7e803ac7db7c41549a889b4753ee92",
+  "summaryCorrection": "MNSF26_RUN069_QA_SUMMARY_CORRECTION_V1.json",
+  "preservedFailClosed": [
+    "P001/Q10",
+    "P013/Q15",
+    "P014/Q08",
+    "5 suppressions",
+    "P011/Q19=B",
+    "arithmetic T33 source-absent",
+    "geometry T24/Q18 source-absent"
+  ],
+  "productionServicesUntouched": true
+}
