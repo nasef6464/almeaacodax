@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN065",
+  "stage": "QUESTION_MASTERING_GITHUB_SYNC",
+  "sourceArtifact": "RUN063_DIRECT_T007_VISUAL_MASTERING",
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T007-Q17",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+        "testNumber": 7,
+        "pdfPage": 13,
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "sourceTopic": "direct visual mathematical classification",
+        "sourceLesson": "AR T007 Q17",
+        "printedQuestionNumber": 17,
+        "cropFile": "AR/AR-T007-Q17.webp",
+        "cropSha256": "b6440e5670948431c9758cffc35312d759b1930ac718790057c245f0481bf6e5"
+      },
+      "imageHash": "b6440e5670948431c9758cffc35312d759b1930ac718790057c245f0481bf6e5",
+      "visualEvidence": "RUN063_DIRECT_RUN017_WEBP_VISUAL_INSPECTION",
+      "status": "MASTERED",
+      "questionText": "نمط مربعات: 4 أعلى 8، و2 أعلى مجهول؛ ما الرقم؟",
+      "canonicalMainSkill": "skill_quant_14",
+      "canonicalSubskill": "sub_quant_14_4",
+      "correctAnswer": "ج — 4",
+      "stepByStepSolution": "الانتقال رأسيًا بالضرب في2: 4→8، لذلك2→4.",
+      "educationalExplanation": "الانتقال رأسيًا بالضرب في2: 4→8، لذلك2→4.",
+      "difficulty": "Easy",
+      "difficultyReason": "يتطلب عملية مباشرة.",
+      "contentFingerprint": "3d685bb404a40584bc50010f11969e7da5d99952a05093a3c58f094e89ce8b44",
+      "ideaFingerprint": "ff2adf84dab51cbefe3399a2bec549a660fca898d3f81eba310cb9f4ee505e1a"
+    }
+  ],
+  "persistence": "GITHUB_RECONCILED_FROM_LIBRARY"
+}
