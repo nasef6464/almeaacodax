@@ -7,9 +7,9 @@
   "sourceQuestionCodesReviewed": "YLM26 previously untranscribed 176 codes: pages P005-P010, P048-P094; exact per-code crop evidence in RUN33 ZIP",
   "sourceOptionSetsManuallyTranscribedAndMathAdjudicated": 88,
   "sourceOptionValuesTranscribed": 352,
-  "sourceMathVerifiedAmong88": 85,
-  "sourceSemanticHoldsAmong88": 3,
-  "sourceCropAutoSegmentationPages": 48,
+  "sourceMathVerifiedAmong88": 86,
+  "sourceSemanticHoldsAmong88": 2,
+  "sourceCropAutoSegmentationPages": 49,
   "sourceQuestionCropImages": 176,
   "sourceContactSheetsManuallyInspected": 22,
   "sourceInventoryUnique": 326,
@@ -35,5 +35,15 @@
     "note": "log_4(x^4)=4 has x=+4 and x=-4; only +4 offered. Do not auto-approve without domain convention."
   },
   "status": "IN_PROGRESS_NOT_GREEN",
-  "next": "Publish source-reviewed RUN33 per-question evidence and correct RUN32 glyphs, reconcile YLM26 full options/pedagogy and images, then COL26; no production changes before rollback manifest."
+  "next": "Publish source-reviewed RUN33 per-question evidence and correct RUN32 glyphs, reconcile YLM26 full options/pedagogy and images, then COL26; no production changes before rollback manifest.",
+  "metadataIntegrity": {
+    "sourceItemIds": 176,
+    "imageHashes": 176,
+    "taxonomyPairs": 176,
+    "foundationSubskillMatches": 176,
+    "fingerprintsSourceConsistent": 176,
+    "aiContextSourceTitleWrong": 176
+  },
+  "newCropRepairsSourceOnly": 5,
+  "notes": "Original RUN33 checkpoint corrected: 86 of 88 source-answer proofs unambiguous; 2 semantic holds (P066-Q14 and P085-Q01)."
 }
