@@ -102,8 +102,11 @@
       "sourceVisualMath": {
         "page132Rows": 19,
         "independentMathMatches": 19,
-        "productionMutation": false
-      }
+        "productionMutation": false,
+        "remapCandidatesConfirmed": 6,
+        "remapManifest": "ops/tah-math/TAH_MATH_COL26_P132_6_SOURCE_REMAP_RUN12.json"
+      },
+      "sourceBackedRemapCandidates": 33
     },
     {
       "id": "P4",
@@ -183,7 +186,9 @@
     "ops/tah-math/TAH_MATH_RUN6_CHECKPOINT.json",
     "ops/tah-math/TAH_MATH_YLM26_ENRICHED_REVIEW_V2.json",
     "ops/tah-math/TAH_MATH_YLM26_ANSWER_AUDIT_LESSONS_01_08.json",
-    "ops/tah-math/TAH_MATH_YLM26_ANSWER_AUDIT_LESSONS_09_13.json"
+    "ops/tah-math/TAH_MATH_YLM26_ANSWER_AUDIT_LESSONS_09_13.json",
+    "ops/tah-math/TAH_MATH_RUN12_SOURCE_OPTIONS_233_CHECKPOINT.json",
+    "ops/tah-math/TAH_MATH_COL26_P132_6_SOURCE_REMAP_RUN12.json"
   ],
   "blockers": [
     {
