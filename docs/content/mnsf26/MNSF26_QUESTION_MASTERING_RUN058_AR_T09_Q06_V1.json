@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN058_AR_T09_DIRECT_VISUAL",
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T009-Q06",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+        "testNumber": 9,
+        "pdfPage": 16,
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "sourceTopic": "تصنيف المصدر محفوظ؛ رياضيات السؤال هي معيار الربط",
+        "sourceLesson": "الحساب والجبر، الاختبار 009، السؤال 06",
+        "printedQuestionNumber": 6,
+        "cropFile": "mnsf26_fullbook_crops/AR/AR-T009-Q06.webp",
+        "cropSha256": "bd51dfde9d40dc9a2d38657d479fa8a2be9d7072759e9456ef216474e2020cfb",
+        "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
+      },
+      "imageHash": "bd51dfde9d40dc9a2d38657d479fa8a2be9d7072759e9456ef216474e2020cfb",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN058_2026-10-08_T009_Q06",
+      "status": "MASTERED",
+      "questionText": "إذا99×3=297 و99×4=396 فكم99×8؟",
+      "canonicalMainSkill": "main_quant_01",
+      "canonicalSubskill": "sub_quant_01_2",
+      "correctAnswer": "792 (د)",
+      "stepByStepSolution": "99×8=(100−1)×8=800−8=792.",
+      "educationalExplanation": "نطبّق القاعدة الرياضية الواردة في نص السؤال: 99×8=(100−1)×8=800−8=792.",
+      "difficulty": "Easy",
+      "difficultyReason": "يحتاج تطبيقًا مباشرًا لقاعدة حسابية.",
+      "contentFingerprint": "98c221dd3c3ee4b590e7458744a5a5e50572bc822d833ee791372564e0c8524f",
+      "ideaFingerprint": "7d3731f69565094bf55ec648aa88fe475f43a93d40adb09b2b65b8e5a9e32a6d"
+    }
+  ]
+}
