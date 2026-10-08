@@ -1,0 +1,245 @@
+name: ALMEAA Isolated Testing (No Production)
+
+# An ephemeral, explicitly isolated environment. Never use GitHub/Render/Atlas
+# production secrets, external database URLs, or public production smoke targets.
+on:
+  push:
+    branches:
+      - test/almeaa-isolated-20261008
+    paths:
+      - .github/workflows/almeaa-isolated-testing.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: almeaa-isolated-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  isolated-test-environment:
+    name: Synthetic roles + school + classroom on local Mongo/Redis
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    services:
+      mongodb:
+        image: mongo:7.0
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "mongosh --quiet --eval 'db.adminCommand({ ping: 1 }).ok'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      CI: "true"
+      NODE_ENV: test
+      PORT: "4010"
+      CLIENT_URL: http://127.0.0.1:4173
+      CORS_ALLOWED_ORIGINS: http://127.0.0.1:4173
+      VITE_API_URL: http://127.0.0.1:4010/api
+      UI_AUDIT_BASE_URL: http://127.0.0.1:4173
+      UI_AUDIT_API_BASE_URL: http://127.0.0.1:4010/api
+      SEED_API_BASE_URL: http://127.0.0.1:4010/api
+      SMOKE_API_BASE_URL: http://127.0.0.1:4010/api
+      MONGODB_URI: mongodb://127.0.0.1:27017/almeaa_testing_${{ github.run_id }}
+      REDIS_URL: redis://127.0.0.1:6379
+      REDIS_KEY_PREFIX: almeaa_isolated_${{ github.run_id }}
+      RATE_LIMIT_REDIS_ENABLED: "true"
+      RATE_LIMIT_GLOBAL_LIMIT: "5000"
+      RATE_LIMIT_AUTH_LIMIT: "500"
+      RATE_LIMIT_SENSITIVE_LIMIT: "2000"
+      NOTIFICATION_QUEUE_ENABLED: "false"
+      GOOGLE_OAUTH_ENABLED: "false"
+      DEV_LOCAL_ADMIN_BYPASS: "false"
+      ADMIN_PASSWORD_SYNC_ON_BOOT: "false"
+      AI_PROVIDER: none
+      R2_UPLOAD_ENABLED: "false"
+      EMAIL_PROVIDER: console
+      WHATSAPP_PROVIDER: console
+      SENTRY_DSN: ""
+      SMOKE_ALLOW_PASSWORD_LOGIN: "true"
+      GIT_COMMIT_SHA: ${{ github.sha }}
+      ADMIN_NAME: ALMEAA Testing Admin
+      # This is a fixture-only account in a disposable Mongo container;
+      # existing seedOperationalScenario.ts currently expects this literal email.
+      ADMIN_EMAIL: nasef64@gmail.com
+      ROLE_ADMIN_EMAIL: nasef64@gmail.com
+      SMOKE_ADMIN_EMAIL: nasef64@gmail.com
+      ROLE_STUDENT_EMAIL: student.a@almeaa.local
+      SMOKE_STUDENT_EMAIL: student.a@almeaa.local
+      SMOKE_STUDENT_REDEEMED_EMAIL: student.d@almeaa.local
+      ROLE_TEACHER_EMAIL: teacher.quant@almeaa.local
+      SMOKE_TEACHER_EMAIL: teacher.quant@almeaa.local
+      ROLE_SUPERVISOR_EMAIL: supervisor.group@almeaa.local
+      SMOKE_SUPERVISOR_EMAIL: supervisor.group@almeaa.local
+      ROLE_SCHOOL_SUPERVISOR_EMAIL: supervisor.school@almeaa.local
+      ROLE_PARENT_EMAIL: parent.a@almeaa.local
+      SMOKE_PARENT_EMAIL: parent.a@almeaa.local
+
+    steps:
+      - name: Checkout isolated branch only
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+
+      - name: Reject non-isolated targets before any application work
+        shell: bash
+        run: |
+          set -euo pipefail
+          node <<'NODE'
+          const assert = require('node:assert/strict');
+          const mongo = new URL(process.env.MONGODB_URI);
+          const redis = new URL(process.env.REDIS_URL);
+          const api = new URL(process.env.UI_AUDIT_API_BASE_URL);
+          const ui = new URL(process.env.UI_AUDIT_BASE_URL);
+          assert.equal(process.env.NODE_ENV, 'test');
+          assert.equal(mongo.hostname, '127.0.0.1');
+          assert.equal(mongo.port, '27017');
+          assert.match(mongo.pathname, /^\/almeaa_testing_[0-9]+$/);
+          assert.equal(redis.hostname, '127.0.0.1');
+          assert.equal(api.hostname, '127.0.0.1');
+          assert.equal(ui.hostname, '127.0.0.1');
+          assert.equal(process.env.AI_PROVIDER, 'none');
+          assert.equal(process.env.R2_UPLOAD_ENABLED, 'false');
+          assert.equal(process.env.GOOGLE_OAUTH_ENABLED, 'false');
+          console.log('PASS: all stateful targets are restricted to disposable local services.');
+          NODE
+
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            server/package-lock.json
+
+      - name: Install both apps
+        timeout-minutes: 12
+        run: |
+          npm ci
+          npm --prefix server ci
+
+      - name: Generate per-run credentials without external secrets
+        shell: bash
+        run: |
+          node <<'NODE'
+          const {randomBytes} = require('node:crypto');
+          const fs = require('node:fs');
+          const secret = () => randomBytes(36).toString('base64url');
+          const admin = secret(), student = secret(), redeemed = secret();
+          const teacher = secret(), supervisor = secret(), school = secret(), parent = secret();
+          const values = {
+            JWT_SECRET: secret(),
+            ADMIN_PASSWORD: admin,
+            ROLE_ADMIN_PASSWORD: admin,
+            SMOKE_ADMIN_PASSWORD: admin,
+            ROLE_STUDENT_PASSWORD: student,
+            SMOKE_STUDENT_PASSWORD: student,
+            SMOKE_STUDENT_REDEEMED_PASSWORD: redeemed,
+            ROLE_TEACHER_PASSWORD: teacher,
+            SMOKE_TEACHER_PASSWORD: teacher,
+            ROLE_SUPERVISOR_PASSWORD: supervisor,
+            SMOKE_SUPERVISOR_PASSWORD: supervisor,
+            ROLE_SCHOOL_SUPERVISOR_PASSWORD: school,
+            ROLE_PARENT_PASSWORD: parent,
+            SMOKE_PARENT_PASSWORD: parent
+          };
+          for (const v of Object.values(values)) console.log('::add-mask::' + v);
+          fs.appendFileSync(process.env.GITHUB_ENV,
+            Object.entries(values).map(([k,v]) => k+'='+v).join('\n') + '\n');
+          NODE
+
+      - name: Typecheck and build
+        timeout-minutes: 12
+        run: |
+          npm run typecheck
+          npm --prefix server run check
+          npm --prefix server run build
+          npm run build
+
+      - name: Seed fictional users and school data in disposable Mongo
+        timeout-minutes: 6
+        run: |
+          npm --prefix server run seed:admin
+          npm --prefix server run seed:operational
+          cd server
+          npx tsx src/scripts/prepareDeepPreMergeUsers.ts
+
+      - name: Start disposable backend and browser frontend
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p audit-artifacts/almeaa-testing
+          npm --prefix server run start > audit-artifacts/almeaa-testing/api.log 2>&1 &
+          echo $! > /tmp/almeaa-test-api.pid
+          for attempt in $(seq 1 60); do
+            if curl --fail --silent http://127.0.0.1:4010/api/health/ready > audit-artifacts/almeaa-testing/ready.json; then break; fi
+            sleep 1
+          done
+          curl --fail --silent http://127.0.0.1:4010/api/health/ready > /dev/null
+          npm run preview -- --host 127.0.0.1 --port 4173 > audit-artifacts/almeaa-testing/frontend.log 2>&1 &
+          echo $! > /tmp/almeaa-test-ui.pid
+          for attempt in $(seq 1 40); do
+            if curl --fail --silent http://127.0.0.1:4173/ > /dev/null; then break; fi
+            sleep 1
+          done
+          curl --fail --silent http://127.0.0.1:4173/ > /dev/null
+
+      - name: Install browser for screenshots and role journeys
+        timeout-minutes: 10
+        run: npx playwright install --with-deps chromium
+
+      - name: Public desktop and mobile pages
+        timeout-minutes: 9
+        run: node scripts/live-public-ui-audit.mjs --base-url http://127.0.0.1:4173 --api-target http://127.0.0.1:4010/api --run-id almeaa-testing-public-${{ github.run_id }}
+
+      - name: Student teacher admin supervisor parent journeys
+        timeout-minutes: 10
+        env:
+          ROLE_PAGES_AUDIT_RUN_ID: almeaa-testing-roles-${{ github.run_id }}
+        run: node scripts/live-role-pages-audit.mjs
+
+      - name: School creation relationships and cleanup
+        timeout-minutes: 10
+        env:
+          SCHOOL_FROM_SCRATCH_RUN_ID: almeaa-testing-school-${{ github.run_id }}
+        run: node scripts/live-school-from-scratch-audit.mjs
+
+      - name: Smart classroom authorization and event contracts
+        timeout-minutes: 6
+        run: |
+          node scripts/smoke-smart-classroom-g2-contract.mjs
+          node scripts/smoke-smart-classroom-projector-reveal-contract.mjs
+
+      - name: Synthetic operational backend journeys
+        timeout-minutes: 8
+        run: npm --prefix server run smoke:operational:api
+
+      - name: Save isolated test evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: almeaa-isolated-testing-${{ github.run_id }}
+          path: audit-artifacts/
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: Stop disposable web services
+        if: always()
+        shell: bash
+        run: |
+          if [ -f /tmp/almeaa-test-ui.pid ]; then kill "$(cat /tmp/almeaa-test-ui.pid)" 2>/dev/null || true; fi
+          if [ -f /tmp/almeaa-test-api.pid ]; then kill "$(cat /tmp/almeaa-test-api.pid)" 2>/dev/null || true; fi
