@@ -350,7 +350,7 @@ export const ReviewSession: React.FC = () => {
                 onClick={() => void answer()}
                 className="w-full sm:w-auto rounded-xl bg-indigo-600 px-6 py-2.5 text-xs font-black text-white transition-colors hover:bg-indigo-700 disabled:opacity-40 shadow-xs"
               >
-                {saving ? "جاري التحقق..." : "تحقق وسجّل المراجعة 🚀"}
+                {saving ? "جاري التحقق..." : "تحقق وسجّل المراجعة"}
               </button>
             </div>
           ) : (
