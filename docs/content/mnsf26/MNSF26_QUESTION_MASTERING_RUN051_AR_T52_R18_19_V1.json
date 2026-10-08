@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN051_AR_T52",
+  "directImageInspection": true,
+  "sourceCropArchive": "/MNSF26/Run017/mnsf26_arithmetic_crops_run017.zip",
+  "sourceInventory": "/MNSF26/Run017/MNSF26_FULLBOOK_CROP_INVENTORY_V1.json",
+  "masteredCount": 2,
+  "holdCount": 0,
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T052-Q19",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "testNumber": 52,
+        "pdfPage": 105,
+        "sourceSkillLabel": "التحويلات والمعادلات",
+        "printedQuestionNumber": 19,
+        "cropFile": "AR/AR-T052-Q19.webp",
+        "cropSha256": "9c5fe10a65b04110b3faf31fd9d8c98a22922adcf847a46e3d26cd0d2819825e",
+        "cropContract": "embedded-source-pixels; composite-split-by-hidden-question-markers; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
+      },
+      "imageHash": "9c5fe10a65b04110b3faf31fd9d8c98a22922adcf847a46e3d26cd0d2819825e",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
+      "status": "MASTERED",
+      "questionText": "خمسة أمثال عدد ناقص عشرة يساوي 18+20+2؛ ما العدد؟",
+      "canonicalMainSkill": "main_quant_07",
+      "canonicalSubskill": "sub_quant_07_2",
+      "correctAnswer": "10",
+      "stepByStepSolution": "5س−10=40؛ 5س=50؛ س=10.",
+      "educationalExplanation": "المهارة: معادلة خطية بسيطة؛ نقرأ معطيات السؤال من الصورة ونطبّق العلاقة الحسابية ثم نراجع الناتج مع المطلوب.",
+      "difficulty": "Easy",
+      "difficultyReason": "خطوات مباشرة في معادلة خطية بسيطة.",
+      "contentFingerprint": "1c1bff4feaf9db0e0c2642cef7e71047d539d0807f825dbbcf01c386ad953933",
+      "ideaFingerprint": "dc38419796f22a55c89b8847b2a80292babb7213567868f4f8bb7d5145837bdf"
+    },
+    {
+      "sourceKey": "MNSF26-AR-T052-Q20",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "testNumber": 52,
+        "pdfPage": 105,
+        "sourceSkillLabel": "التحويلات والمعادلات",
+        "printedQuestionNumber": 20,
+        "cropFile": "AR/AR-T052-Q20.webp",
+        "cropSha256": "8840fc3f27dcffd19cec8bb2566f4da50c5cd1e60a108e552a5e9a9c36b2b77b",
+        "cropContract": "embedded-source-pixels; composite-split-by-hidden-question-markers; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
+      },
+      "imageHash": "8840fc3f27dcffd19cec8bb2566f4da50c5cd1e60a108e552a5e9a9c36b2b77b",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
+      "status": "MASTERED",
+      "questionText": "ربع عدد يساوي 6000؛ ما نصف ثلث هذا العدد؟",
+      "canonicalMainSkill": "main_quant_03",
+      "canonicalSubskill": "sub_quant_03_4",
+      "correctAnswer": "4000",
+      "stepByStepSolution": "العدد=4×6000=24000؛ نصف ثلثه=24000/6=4000.",
+      "educationalExplanation": "المهارة: استرجاع العدد من ربعه ثم أخذ جزء منه؛ نقرأ معطيات السؤال من الصورة ونطبّق العلاقة الحسابية ثم نراجع الناتج مع المطلوب.",
+      "difficulty": "Medium",
+      "difficultyReason": "تتطلب ربط أكثر من معطى أو تحويل وحدات في استرجاع العدد من ربعه ثم أخذ جزء منه.",
+      "contentFingerprint": "7340b4e21cb2f74be853326d48aa998145511267b8e704ef3e4f5a4ed493b07e",
+      "ideaFingerprint": "f69c4ad3d34d64c1e164c6724ffb7e2511af998350519624c7f1b94b4730288b"
+    }
+  ],
+  "part": "R18_19"
+}
