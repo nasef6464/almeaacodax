@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN070",
+  "stage": "QA_LOCK",
+  "newIndependentMathReviewed": 6,
+  "newMathAnswerPass": 6,
+  "newReview": 0,
+  "qaReviewedFrom": 682,
+  "qaReviewedTo": 688,
+  "qaRemaining": 1441,
+  "screenedPendingDeepMath": 30,
+  "priorLibraryRecordRecovered": "MNSF26-AR-T007-Q01",
+  "priorLibraryRecordStillBlocked": "MNSF26-AR-T007-Q05",
+  "priorLibraryRecordsDoubleCounted": 0,
+  "source": "Run021 original geometry crops and Run063 existing master records",
+  "evidence": "MNSF26_RUN070_QA_GEO_6_V1.json",
+  "evidenceSha256": "351f6631d98ea41df2fde292fa9299f798bfbf718ea2fb7f04bd6d0ca1615578",
+  "qaFullBookPass": false,
+  "canonicalTaxonomyGate": "PENDING",
+  "productionServicesUntouched": true
+}
