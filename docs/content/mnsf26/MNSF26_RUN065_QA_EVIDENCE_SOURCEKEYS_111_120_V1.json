@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN065",
+  "stage": "QA_LOCK",
+  "qaRows": [
+    {
+      "sourceKey": "MNSF26-AR-T014-Q13",
+      "imageHash": "6b237c93bf5e74ec522733b703c13908b4644db99ef6275264fa3ad0e8ce9c32",
+      "sourceMasterFile": "MNSF26_RUN063_REMAINING_29_DIRECT_MASTERING_V1.json",
+      "priorMasterStatus": "HOLD",
+      "verdict": "QA_HOLD_PRESERVED",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-AR-T014-Q20",
+      "imageHash": "aa0026330a9f11460465997e0af51004296aafa6199ba60920d049a78e31992d",
+      "sourceMasterFile": "MNSF26_RUN063_REMAINING_29_DIRECT_MASTERING_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-AR-T019-Q03",
+      "imageHash": "2c24d03db3bc027246a92d721e289c8d770691a5f9f009dd323cf993353763e9",
+      "sourceMasterFile": "MNSF26_RUN063_REMAINING_29_DIRECT_MASTERING_V1.json",
+      "priorMasterStatus": "HOLD",
+      "verdict": "QA_HOLD_PRESERVED",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-AR-T019-Q14",
+      "imageHash": "0eefc0c0a88779dd47e11691abdae31fa953f8cd90b83edcecf5d2db41a2819e",
+      "sourceMasterFile": "MNSF26_RUN063_REMAINING_29_DIRECT_MASTERING_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T022-Q02",
+      "imageHash": "71d7a2dc2c1ac8793f67c6218eb757d459be9dd98589bf6a425ec74b7e9033b8",
+      "sourceMasterFile": "MNSF26_RUN063_REMAINING_29_DIRECT_MASTERING_V1.json",
+      "priorMasterStatus": "HOLD",
+      "verdict": "QA_HOLD_PRESERVED",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T022-Q04",
+      "imageHash": "da5137b3f67aff082d19bbf98efad3bee306e53ca4c7be9247f3986516cc1897",
+      "sourceMasterFile": "MNSF26_RUN063_REMAINING_29_DIRECT_MASTERING_V1.json",
+      "priorMasterStatus": "HOLD",
+      "verdict": "QA_HOLD_PRESERVED",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T022-Q06",
+      "imageHash": "5b1eeb9cb601ed44a9221a794cdfe2354ce8a0b4d6ca470b293f6ba67eae7783",
+      "sourceMasterFile": "MNSF26_RUN063_REMAINING_29_DIRECT_MASTERING_V1.json",
+      "priorMasterStatus": "HOLD",
+      "verdict": "QA_HOLD_PRESERVED",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T022-Q08",
+      "imageHash": "93d2d2cde7d9222434e490c160d547b9a3a2b4c869abb726394498dd18d4b880",
+      "sourceMasterFile": "MNSF26_RUN063_REMAINING_29_DIRECT_MASTERING_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T022-Q11",
+      "imageHash": "dab0e00761226f813f20cc220ff12a9bc1e4cc57f992fbb720536e38ccf1c3f9",
+      "sourceMasterFile": "MNSF26_RUN063_REMAINING_29_DIRECT_MASTERING_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T022-Q16",
+      "imageHash": "8fd5d245827d7fcc9e43691d1f2b9d534b854189c6d3e48d3a0c838504b298ab",
+      "sourceMasterFile": "MNSF26_RUN063_REMAINING_29_DIRECT_MASTERING_V1.json",
+      "priorMasterStatus": "HOLD",
+      "verdict": "QA_HOLD_PRESERVED",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    }
+  ],
+  "sourceCropSHA256Verified": true,
+  "fullReportLibrary": "/MNSF26/Run065/MNSF26_RUN065_INDEPENDENT_QA_215_SOURCE_IMAGES_V1.json"
+}
