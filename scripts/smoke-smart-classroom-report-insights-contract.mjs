@@ -58,6 +58,16 @@ assert.ok(supervisorSignalsUi.includes('مقارنة الفصول'));
 assert.ok(supervisorSignalsUi.includes('الطلاب الأقل مشاركة'));
 assert.ok(supervisorSignalsUi.includes('الأكثر تحسنًا'));
 
+assert.ok(moduleSource.includes('classesComparison'));
+const teacherInsightsUi = fs.readFileSync(path.join(root, 'components/classroom/ClassroomReportInsightsPanel.tsx'), 'utf8');
+const batchCardUi = fs.readFileSync(path.join(root, 'components/classroom/ClassroomBatchSummaryCard.tsx'), 'utf8');
+const skillResolverSource = fs.readFileSync(path.join(root, 'utils/classroomSkillResolver.ts'), 'utf8');
+assert.ok(teacherInsightsUi.includes('مقارنة الفصول'));
+assert.ok(teacherInsightsUi.includes('resolveClassroomSkillName'));
+assert.ok(batchCardUi.includes('resolveClassroomSkillName'));
+assert.ok(skillResolverSource.includes('export function resolveClassroomSkillName'));
+
 assert.ok(routerSource.includes('registerClassroomInsightsRoutes(classroomRouter)'));
 
 console.log('Smart Classroom report insights contract: PASS');
+

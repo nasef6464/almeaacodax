@@ -1,4 +1,6 @@
 import React from 'react';
+import { useStore } from '../../store/useStore';
+import { resolveClassroomSkillName } from '../../utils/classroomSkillResolver';
 
 export type BatchMiniReport = {
   batchId: string;
@@ -26,6 +28,7 @@ export const ClassroomBatchSummaryCard: React.FC<ClassroomBatchSummaryCardProps>
   onSendNextPreset,
   onDismiss,
 }) => {
+  const { skills, nestedSkills, subjects } = useStore();
   return (
     <section className="mt-4 rounded-3xl border border-emerald-200 bg-emerald-50/90 p-5 shadow-sm dark:border-emerald-900/60 dark:bg-emerald-950/20">
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -75,11 +78,14 @@ export const ClassroomBatchSummaryCard: React.FC<ClassroomBatchSummaryCardProps>
       {report.skills && report.skills.length > 0 && (
         <div className="mt-3 flex flex-wrap items-center gap-2 pt-2 border-t border-emerald-200/60 dark:border-emerald-900/40 text-xs">
           <span className="font-black text-emerald-900 dark:text-emerald-300">المهارات المشمولة:</span>
-          {report.skills.map((s) => (
-            <span key={s.skillId} className="rounded-lg bg-emerald-100/80 px-2 py-0.5 font-bold text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200">
-              {s.skillId} (دقة {s.accuracy ?? '—'}%)
-            </span>
-          ))}
+          {report.skills.map((s) => {
+            const skillName = resolveClassroomSkillName(s.skillId, skills, nestedSkills, subjects);
+            return (
+              <span key={s.skillId} className="rounded-lg bg-emerald-100/80 px-2 py-0.5 font-bold text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200">
+                {skillName} (دقة {s.accuracy ?? '—'}%)
+              </span>
+            );
+          })}
         </div>
       )}
     </section>
