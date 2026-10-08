@@ -1,0 +1,45 @@
+{
+  "run": "RUN31",
+  "date": "2026-10-08",
+  "scope": "TAH-MATH/YLM26 only",
+  "sourceBook": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+  "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+  "sourceReviewedThisRun": 150,
+  "sourceMathematicsIndependentlyChecked": 150,
+  "sourcePixelExact2x": 150,
+  "sourceAnswerVerified": 148,
+  "sourceSemanticReview": 2,
+  "sourceLiveKeyPriorMatches": 147,
+  "sourceLiveKeyPriorMismatch": 1,
+  "liveKeyMismatchCode": "TAH-MATH-YLM26-P021-Q04",
+  "sourceSemanticReviewCodes": [
+    "TAH-MATH-YLM26-P036-Q09",
+    "TAH-MATH-YLM26-P036-Q15"
+  ],
+  "newCanonicalQuestions": 0,
+  "uniqueSourceInventoryCovered": 326,
+  "documentedReviewEventsRun21Through31": 1999,
+  "localCropRepairsVisuallyPassed": 6,
+  "localCropRepairCodes": [
+    "TAH-MATH-YLM26-P031-Q08",
+    "TAH-MATH-YLM26-P040-Q03",
+    "TAH-MATH-YLM26-P042-Q01",
+    "TAH-MATH-YLM26-P042-Q02",
+    "TAH-MATH-YLM26-P042-Q03",
+    "TAH-MATH-YLM26-P047-Q09"
+  ],
+  "difficultyProvisional": {
+    "Easy": 95,
+    "Medium": 49,
+    "Hard": 6
+  },
+  "productionImageParity": "NOT_TESTED",
+  "productionMutation": false,
+  "fullyPedagogicallyClosed": 0,
+  "sourceRasterCorrection": "RUN30 described crop raster as 2.8x, direct byte-for-byte pixel verification against official PDF establishes 2.0x",
+  "evidenceZip": "TAH_MATH_RUN31_150_INDEPENDENT_SOURCE_MATH_6_CROP_REPAIRS.zip",
+  "evidenceZipSha256": "72c221905369e97772f348cc73ec3ae2f175c45308fbe7b1f3130cd9a92ba10d",
+  "evidenceContents": "150 source image crops; 150 per-question mathematical answer explanations; 15 visual review sheets; 6 corrected crop images with old/new rectangles and SHA256",
+  "status": "IN_PROGRESS_NOT_GREEN",
+  "next": "Finish actual canonical option text and wrong-option pedagogy/foundation binding/fingerprints for YLM26, adjudicate 2 semantic source cases, verify production R2 images and reversible wrong-key corrections, then COL26."
+}
