@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN059_AR_T17_DIRECT_VISUAL",
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T017-Q14",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+        "testNumber": 17,
+        "pdfPage": 32,
+        "sourceSkillLabel": "جمع الأعداد - المتتابعات - ضرب الأعداد",
+        "sourceTopic": "عنوان المصدر للتوثيق فقط؛ التصنيف من رياضيات الصورة",
+        "sourceLesson": "الحساب والجبر اختبار017 سؤال14",
+        "printedQuestionNumber": 14,
+        "cropFile": "mnsf26_fullbook_crops/AR/AR-T017-Q14.webp",
+        "cropSha256": "20e8c86c969ad05b5cf814ad3ef08702221bde9fdbd2bb22d3792a7d4be5cfdf",
+        "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
+      },
+      "imageHash": "20e8c86c969ad05b5cf814ad3ef08702221bde9fdbd2bb22d3792a7d4be5cfdf",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN059_2026-10-08_T017_Q14",
+      "status": "REVIEW",
+      "questionText": "أوجد التالي في2،4،8،14،22،...",
+      "canonicalMainSkill": null,
+      "canonicalSubskill": null,
+      "correctAnswer": null,
+      "stepByStepSolution": null,
+      "educationalExplanation": "REVIEW fail-closed: متتابعة بفروق متزايدة وليست حسابية ثابتة؛ يحتاج اعتماد المهارة.؛ الإجابة الرياضية المرشحة: 32 (ب)؛ الحل: الفروق2،4،6،8؛ الفرق التالي10؛ 22+10=32.",
+      "difficulty": null,
+      "difficultyReason": "متتابعة بفروق متزايدة وليست حسابية ثابتة؛ يحتاج اعتماد المهارة.",
+      "contentFingerprint": "a8c0fc6d893f868f1598e70ca85a8b5f80ea851e3f945987d5ffbe180aea48ea",
+      "ideaFingerprint": "e853f6f9d123900f24491a7df79864cec087f0769e4137a0bb091aeba297c419",
+      "holdReason": "متتابعة بفروق متزايدة وليست حسابية ثابتة؛ يحتاج اعتماد المهارة.",
+      "proposedCanonicalSubskill": "sub_quant_01_3"
+    }
+  ]
+}
