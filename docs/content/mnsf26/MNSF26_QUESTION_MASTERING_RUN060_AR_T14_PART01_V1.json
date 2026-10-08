@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN060_AR_T14_LIBRARY_PAYLOAD_RECOVERY",
+  "previouslyCounted": true,
+  "records": [
+    {
+      "id": "MNSF26-AR-T014-Q01",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T014",
+        "sourceLesson": "الأعداد الأولية - العوامل الأولى"
+      },
+      "canonicalMainSkill": "skill_quant_02",
+      "canonicalSubskill": "sub_quant_02_1",
+      "correctAnswer": "ب",
+      "answerValue": "1",
+      "stepByStepSolution": "العددان 3 و5 كلاهما من مضاعفات 1.",
+      "educationalExplanation": "كل عدد صحيح هو من مضاعفات 1.",
+      "difficulty": "Easy",
+      "difficultyReason": "خاصية مباشرة للمضاعفات.",
+      "imageHash": "628a81e1bd6a7dad17543e0147dc0ddd9b820992c5173cf6c93d7838caacb376",
+      "contentFingerprint": "90805853c1d85e67972a96ab129cdd9e86dfcf107ad2e981921a64aa725f2bfc",
+      "ideaFingerprint": "009f1ada84b794933b42f9949cb67091573d3cdd03552d551b35beaee2dbf3a0",
+      "status": "MASTERED"
+    },
+    {
+      "id": "MNSF26-AR-T014-Q02",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T014",
+        "sourceLesson": "الأعداد الأولية - العوامل الأولى"
+      },
+      "canonicalMainSkill": "skill_quant_02",
+      "canonicalSubskill": "sub_quant_02_1",
+      "correctAnswer": "ج",
+      "answerValue": "6",
+      "stepByStepSolution": "س=14أ، ص=15ب؛ إذن س×ص/35=(14×15/35)أب=6أب، فهو من مضاعفات6.",
+      "educationalExplanation": "نكتب العددين كمضاعفين ثم نبسط العوامل.",
+      "difficulty": "Medium",
+      "difficultyReason": "تحليل عوامل وتبسيط.",
+      "imageHash": "1535f72a993d96e11f64abc17773ff5c93b886e363d254eae672e06d5e820327",
+      "contentFingerprint": "02133b400e7a837bbf70d2c6fe06aa70d0affdfa0ce8779693a3beaa05c6e8bb",
+      "ideaFingerprint": "bc02d5e25a0c649dc867888ded7944f61d0c6f4f0b0415cbb8826e34424b0a72",
+      "status": "MASTERED"
+    },
+    {
+      "id": "MNSF26-AR-T014-Q03",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T014",
+        "sourceLesson": "الأعداد الأولية - العوامل الأولى"
+      },
+      "canonicalMainSkill": "skill_quant_02",
+      "canonicalSubskill": "sub_quant_02_1",
+      "correctAnswer": "د",
+      "answerValue": "7",
+      "stepByStepSolution": "القافز بخطوة5 والآخر بخطوة3 يشتركان عند مضاعفات15. من الصفر وقبل100: 0،15،30،45،60،75،90؛ عددها7.",
+      "educationalExplanation": "الأعداد المشتركة تأتي كل م.م.أ(5،3)=15.",
+      "difficulty": "Medium",
+      "difficultyReason": "م.م.أ مع احتساب نقطة البداية.",
+      "imageHash": "74423658be000ac1acde86208e39c6dad5f356aa92a74e311a6fccd77cabd4d0",
+      "contentFingerprint": "660e8a52d2f79486ce0ed7f1f558bdde9e5a68e94dd73f98772b1d7ff348e814",
+      "ideaFingerprint": "f8dffb2b4c8257b7a673269ac9788cee3921c0bcb7bcb200d5803d4d2d5ac06e",
+      "status": "MASTERED"
+    },
+    {
+      "id": "MNSF26-AR-T014-Q04",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T014",
+        "sourceLesson": "الأعداد الأولية - العوامل الأولى"
+      },
+      "canonicalMainSkill": "skill_quant_02",
+      "canonicalSubskill": "sub_quant_02_2",
+      "correctAnswer": "ج",
+      "answerValue": "4",
+      "stepByStepSolution": "م≡2 (mod 6)، ن≡5 (mod 6)، إذن م×ن≡10≡4 (mod 6).",
+      "educationalExplanation": "في الضرب يمكن ضرب البواقي ثم أخذ باقي القسمة مرة أخرى.",
+      "difficulty": "Medium",
+      "difficultyReason": "حساب بواقي ضرب.",
+      "imageHash": "5d14eb713b3217863749c17053759bf9e49564ec74cdfcde1bee5ffee7cb7481",
+      "contentFingerprint": "5fa22ed2feb6163e456c854c2ad66a559217b73ee09482e3ebf29c4db1a52829",
+      "ideaFingerprint": "a2fa8e613b134960e16f15faa1da880f70dff80fd74311f81a0b1d17ef7e490e",
+      "status": "MASTERED"
+    }
+  ]
+}
