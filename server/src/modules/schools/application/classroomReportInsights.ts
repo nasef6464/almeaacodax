@@ -123,6 +123,20 @@ export const buildClassroomReportInsights = (
     }))
     .sort((left, right) => new Date(left.endedAt || 0).getTime() - new Date(right.endedAt || 0).getTime());
 
+  const classBuckets = new Map<string, FinalizedClassroomReport[]>();
+  for (const report of filtered) {
+    const cid = String(report.classId || "unknown");
+    const bucket = classBuckets.get(cid) || [];
+    bucket.push(report);
+    classBuckets.set(cid, bucket);
+  }
+
+  const classesComparison = Array.from(classBuckets.entries()).map(([cid, classReports]) => ({
+    classId: cid,
+    className: String(classReports.find((r) => r.className)?.className || cid),
+    summary: summarizeClassroomReports(classReports),
+  })).sort((left, right) => (right.summary.accuracy ?? -1) - (left.summary.accuracy ?? -1) || right.summary.sessions - left.summary.sessions);
+
   return {
     generatedAt: new Date().toISOString(),
     source: "finalized_report_snapshots",
@@ -133,6 +147,7 @@ export const buildClassroomReportInsights = (
     skills,
     weakSkills: skills.filter((skill) => skill.weak),
     strongSkills: [...skills].filter((skill) => !skill.weak).sort((left, right) => (right.accuracy ?? -1) - (left.accuracy ?? -1)).slice(0, 10),
+    classesComparison,
     trend,
   };
 };

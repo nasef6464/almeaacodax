@@ -12,6 +12,8 @@ import {
   X,
 } from 'lucide-react';
 import { api } from '../../services/api';
+import { useStore } from '../../store/useStore';
+import { resolveClassroomSkillName } from '../../utils/classroomSkillResolver';
 import { SmartClassroomSupervisorSignals } from './SmartClassroomSupervisorSignals';
 
 type PeriodFilter = 'today' | 'week' | 'month' | 'all' | 'custom';
@@ -72,6 +74,7 @@ const emptySummary: Summary = {
 };
 
 export const SmartClassroomReportsPanel: React.FC = () => {
+  const { skills, nestedSkills, subjects } = useStore();
   const [analytics, setAnalytics] = useState<SupervisorAnalytics | null>(null);
   const [selectedReport, setSelectedReport] = useState<any>(null);
   const [period, setPeriod] = useState<PeriodFilter>('month');
@@ -286,8 +289,10 @@ export const SmartClassroomReportsPanel: React.FC = () => {
                 {weakSkills.slice(0, 6).map((skill) => (
                   <div key={skill.skillId} className="rounded-xl bg-white p-3 text-xs">
                     <div className="flex items-center justify-between gap-2">
-                      <span className="font-black text-slate-800">{skill.skillId}</span>
-                      <span className="font-black text-rose-600">{percent(skill.accuracy)}</span>
+                      <span className="font-black text-slate-800 truncate" title={skill.skillId}>
+                        {resolveClassroomSkillName(skill.skillId, skills, nestedSkills, subjects)}
+                      </span>
+                      <span className="font-black text-rose-600 shrink-0">{percent(skill.accuracy)}</span>
                     </div>
                     <p className="mt-1 text-slate-500">{skill.answered} إجابة · {skill.sessions} حصص</p>
                   </div>
