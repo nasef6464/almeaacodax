@@ -25,6 +25,7 @@ if ((window as any).testMixed) return {text:'نراجع الناتج.',storyboar
   {type:'write',id:'english',kind:'formula',content:'Step 1: Multiply: 2 \\times 5 = 10.Step 2: Multiply: 0 \\times 8 = 0.'},
   {type:'write',id:'reply',kind:'text',content:'العملية هي \\textbf{ضرب}.\\nركز على الآحاد.'},
   {type:'write',id:'division',kind:'formula',content:'نبحث عن 4 \\times \\text{آحاد الخيار} = \\text{آحاد 0}.\n4 \\times 5 = 20 \\implies \\text{الآحاد هي 0، وهو المطابق للناتج 309705}'},
+  {type:'write',id:'pure_lines',kind:'formula',content:'\\text{Divisor units digit} = 4\n4 \\times 5 = 20\n\\text{Result} = 309705'},
 ] }]}};
 const storyboard=(window as any).testEnglish ? {version:1,language:'en-US',scenes:[{id:'grammar',narration:'Focus on the verb.',actions:[{type:'write',id:'sentence',kind:'text',content:'She has been studying for two hours.'},{type:'highlight',target:'sentence'}]}]} : payload.boardContext ? followup : primary;
 if ((window as any).testPractice && storyboard === primary) return {text:'شرح مع تدريب',storyboard:{...primary,scenes:primary.scenes.map((scene,index)=>index===0 ? {...scene,checkpoint:{prompt:'كيف نكتب 27 كقوة للثلاثة؟',hints:['الإجابة هي ثلاثة.','اكتب 3.']}} : scene)}};

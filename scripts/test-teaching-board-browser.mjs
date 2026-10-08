@@ -127,8 +127,14 @@ try {
   const board = page.getByTestId('teaching-board');
   await board.getByText('العملية هي ضرب.', { exact: false }).waitFor();
   await board.getByText('⇒ الآحاد هي 0، وهو المطابق للناتج 309705', { exact: false }).waitFor();
+  await board.getByTestId('teaching-formula-line').nth(2).waitFor();
   assert.equal(await board.locator('.katex-error').count(), 0);
-  assert.equal(await board.locator('.katex').count(), 4, 'real-provider mixed prose renders isolated equations');
+  assert.equal(await board.locator('.katex').count(), 7, 'mixed prose and separate formula lines retain equation boundaries');
+  const formulaLines = board.getByTestId('teaching-formula-line');
+  assert.equal(await formulaLines.count(), 3, 'newlines must not join adjacent numeric terms');
+  assert.ok((await formulaLines.nth(0).innerText()).includes('4'));
+  assert.ok(!(await formulaLines.nth(0).innerText()).includes('309705'));
+  assert.ok((await formulaLines.nth(2).innerText()).includes('309705'));
   const visible = await board.innerText();
   assert.match(visible, /الخطوة 1/);
   assert.match(visible, /الخطوة 2/);
