@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN063_CANONICAL_SKILL_REPAIR_GEO_T033_Q10",
+  "stage": "QUESTION_MASTERING",
+  "records": [
+    {
+      "sourceKey": "MNSF26-GEO-T033-Q10",
+      "sourceProvenance": {
+        "sourcePart": "الهندسة",
+        "bookCode": "GEO",
+        "testNumber": 33,
+        "pdfPage": 63,
+        "sourceSkillLabel": "المساحات المظللة",
+        "sourceTopic": "المساحات المظللة",
+        "sourceLesson": "الدرس الثامن: المساحات المظللة",
+        "printedQuestionNumber": 10,
+        "cropFile": "MNSF26-GEO-T033-Q10.webp",
+        "cropSha256": "52bff881d02bad905adbafcef435323b9d8bdeec72cb5526a8ef9629408fa51a",
+        "cropContract": "EMBEDDED_XOBJECT_OR_EXACT_COMPOSITE_SLICE"
+      },
+      "imageHash": "52bff881d02bad905adbafcef435323b9d8bdeec72cb5526a8ef9629408fa51a",
+      "visualEvidence": "RUN063_DIRECT_SOURCE_GEO_T033_Q10_ZOOM_CORRECTION",
+      "status": "MASTERED",
+      "questionText": "معين طول ضلعه5، نصف قطره الرأسي المرسوم من المركز إلى الرأس4؛ أوجد محيط المثلث المظلل في ربعه العلوي الأيمن.",
+      "canonicalMainSkill": "skill_quant_23",
+      "canonicalSubskill": "sub_quant_23_2",
+      "correctAnswer": "12",
+      "stepByStepSolution": "نصف القطر الرأسي4، والضلع المائل5؛ نصف القطر الأفقي=√(5²−4²)=3. محيط المثلث=3+4+5=12.",
+      "educationalExplanation": "تُحل المسألة بتحديد الأجزاء المظللة في الصورة، ثم نصف القطر الرأسي4، والضلع المائل5؛ نصف القطر الأفقي=√(5²−4²)=3. محيط المثلث=3+4+5=12.",
+      "difficulty": "Medium",
+      "difficultyReason": "يحتاج تطبيق فيثاغورس على ربع المعين ثم جمع أضلاع المثلث المظلل؛ التصنيف المعتمد المعين لا مساحة الدائرة.",
+      "contentFingerprint": "d065e5e2011d17ebaf86155ad552c80fdd974f9360898d3801b12e5a286b836f",
+      "ideaFingerprint": "6338477232c0a6612e24c1e514225cbd61abfda4d6e0fa5568bcf5afe18263d9",
+      "supersedes": "MNSF26_QUESTION_MASTERING_RUN052_GEO_T33_V1.json"
+    }
+  ],
+  "masteredCount": 1,
+  "note": "Corrects invalid main/sub mismatch without re-counting or changing the correct answer."
+}
