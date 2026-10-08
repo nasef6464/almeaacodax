@@ -47,18 +47,24 @@
     "drillsApproved": 0,
     "liveSubjectBaselineVerified": 1,
     "existingGenericPhysicsSkillsProtected": 9,
-    "historicalSkillProgressRowsProtected": 36
+    "historicalSkillProgressRowsProtected": 36,
+    "foundationMainTopicProposals": 25,
+    "foundationSubTopicProposals": 90,
+    "foundationMissingMainChapters": 15,
+    "foundationMissingSubSkillChapters": 51,
+    "initialFreeTopicProposals": 26
   },
   "currentRun": {
-    "result": "PHYS26_PDF_FINGERPRINT_AND_READONLY_ATLAS_BASELINE",
+    "result": "PHYS26_FOUNDATION_DESIGN_COMMITTED",
     "publishedToProduction": false,
-    "tests": "PENDING_GITHUB_VERIFIER",
+    "tests": "STRUCTURAL_IN_MEMORY_PASS",
     "notes": [
-      "Main and subskill counts structurally checked from attached candidate JSON",
-      "Third-secondary foundation contents absent from current foundation PDF",
-      "Actual question inventory not yet counted; commercial rights not verified",
-      "Verified physics subject sub_1784980706034: 0 questions, 9 generic old skills, 0 subject quizzes, 36 historical progress rows matching subject/old skill IDs. Non-destructive taxonomy required."
+      "115 draft topic links added to PHYS26 branch",
+      "Topic visibility remains disabled pending source review",
+      "Child topic skillIds use only the child subskill ID",
+      "15 main and 51 subskill topics need missing foundation source",
+      "Question count remains zero"
     ]
   },
-  "next": "Keep 9 legacy skill IDs untouched; finish source-question/lesson inventory and confirm main/subskill semantic mapping, then design isolated PHYS26 IDs and links"
+  "next": "Review source PDF pages, validate topic links, resolve section scope, run CI before import."
 }
