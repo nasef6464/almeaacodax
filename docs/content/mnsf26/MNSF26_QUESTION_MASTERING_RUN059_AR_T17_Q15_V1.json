@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN059_AR_T17_DIRECT_VISUAL",
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T017-Q15",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+        "testNumber": 17,
+        "pdfPage": 32,
+        "sourceSkillLabel": "جمع الأعداد - المتتابعات - ضرب الأعداد",
+        "sourceTopic": "عنوان المصدر للتوثيق فقط؛ التصنيف من رياضيات الصورة",
+        "sourceLesson": "الحساب والجبر اختبار017 سؤال15",
+        "printedQuestionNumber": 15,
+        "cropFile": "mnsf26_fullbook_crops/AR/AR-T017-Q15.webp",
+        "cropSha256": "e49002207433fc8d1435fbb0b785c5c30205ca6e64632b632f9020e9b0192828",
+        "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
+      },
+      "imageHash": "e49002207433fc8d1435fbb0b785c5c30205ca6e64632b632f9020e9b0192828",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN059_2026-10-08_T017_Q15",
+      "status": "MASTERED",
+      "questionText": "ما الحد النوني للمتتابعة −1،1،3،5،...؟",
+      "canonicalMainSkill": "main_quant_01",
+      "canonicalSubskill": "sub_quant_01_3",
+      "correctAnswer": "2ن−3 (ج)",
+      "stepByStepSolution": "الحد الأول−1 والفرق2؛ الحد النوني=−1+(ن−1)×2=2ن−3.",
+      "educationalExplanation": "من الصورة: الحد الأول−1 والفرق2؛ الحد النوني=−1+(ن−1)×2=2ن−3.",
+      "difficulty": "Medium",
+      "difficultyReason": "تحتاج تحليل عدة علاقات رياضية.",
+      "contentFingerprint": "5324256d6e2f357f374f92216b976486601ee839b464239ae9153160f74ff299",
+      "ideaFingerprint": "b9ef65ad588fdcaa5d39e75839c735830529c51fbce33b5a86e81847231f809c"
+    }
+  ]
+}
