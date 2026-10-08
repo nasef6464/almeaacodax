@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN058_AR_T11_DIRECT_VISUAL",
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T011-Q10",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+        "testNumber": 11,
+        "pdfPage": 20,
+        "sourceSkillLabel": "ترتيب العمليات – قابلية القسمة",
+        "sourceTopic": "تصنيف المصدر محفوظ؛ رياضيات السؤال هي معيار الربط",
+        "sourceLesson": "الحساب والجبر، الاختبار 011، السؤال 10",
+        "printedQuestionNumber": 10,
+        "cropFile": "mnsf26_fullbook_crops/AR/AR-T011-Q10.webp",
+        "cropSha256": "79236b84d51ed2aebbf5ac4b4f85e2450c93d557979b3c623dd69f9394c09610",
+        "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
+      },
+      "imageHash": "79236b84d51ed2aebbf5ac4b4f85e2450c93d557979b3c623dd69f9394c09610",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN058_2026-10-08_T011_Q10",
+      "status": "MASTERED",
+      "questionText": "احسب2+(2+5+3×5).",
+      "canonicalMainSkill": "main_quant_01",
+      "canonicalSubskill": "sub_quant_01_4",
+      "correctAnswer": "24 (ج)",
+      "stepByStepSolution": "3×5=15؛ داخل القوس2+5+15=22؛ ثم+2=24.",
+      "educationalExplanation": "نطبّق القاعدة الرياضية الواردة في نص السؤال: 3×5=15؛ داخل القوس2+5+15=22؛ ثم+2=24.",
+      "difficulty": "Easy",
+      "difficultyReason": "يحتاج تطبيقًا مباشرًا لقاعدة حسابية.",
+      "contentFingerprint": "f843a6448697cfeea4dff23d1d41902e592647da3057e89f59517513eb4f5d06",
+      "ideaFingerprint": "bf9e47ca7d4c7908210787067111c5b9ca3407e42624925e87734cf26ce4f061"
+    }
+  ]
+}
