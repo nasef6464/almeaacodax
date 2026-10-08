@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN060_AR_T13_RECOVERY",
+  "previouslyCounted": true,
+  "records": [
+    {
+      "id": "MNSF26-AR-T013-Q02",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T013",
+        "sourceLesson": "الأعداد الأولية - العوامل الأولى"
+      },
+      "canonicalMainSkill": "skill_quant_02",
+      "canonicalSubskill": "sub_quant_02_1",
+      "correctAnswer": "د",
+      "answerValue": "7",
+      "stepByStepSolution": "قواسم 21 هي 1،3،7،21؛ من الخيارات 7.",
+      "educationalExplanation": "نختبر القسمة أو نحلل 21=3×7.",
+      "difficulty": "Easy",
+      "difficultyReason": "قاسم مباشر.",
+      "imageHash": "f77f8ee94d1342fc5d24ae935b53c5a83ce813489267754012f37e50643dba61",
+      "contentFingerprint": "2079b74a81a9dbedb394d05e74e59b204d09c2c879bc2de89b522bca426697d0",
+      "ideaFingerprint": "9ea3347308bb2fd41e18f46e8f7e633228bcbfe411abb6ed53df93c69298b75f",
+      "status": "MASTERED"
+    }
+  ]
+}
