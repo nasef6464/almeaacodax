@@ -1,0 +1,26 @@
+{
+  "bank": "MNSF26",
+  "run": "RUN075_V3",
+  "stage": "QA_LOCK",
+  "reviewedProvisional": 1571,
+  "totalActive": 2129,
+  "remaining": 558,
+  "newQAUniqueKeys": 133,
+  "previouslyCountedExcluded": 4,
+  "excludedKeys": [
+    "AR-T054-Q12",
+    "AR-T056-Q12",
+    "AR-T057-Q10",
+    "AR-T060-Q10"
+  ],
+  "newReviewKeys": [
+    "AR-T055-Q08",
+    "AR-T056-Q16",
+    "AR-T059-Q09"
+  ],
+  "qaPass": false,
+  "taxonomyPass": false,
+  "productionUntouched": true,
+  "evidenceLibrary": "/MNSF26/Run075/MNSF26_RUN075_STATE_DELTA_FINAL_V3_RECONCILED.json",
+  "supersedes": "MNSF26_RUN075_STATE_DELTA_FINAL_V2.json"
+}
