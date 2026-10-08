@@ -1,0 +1,108 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN060_AR_T17_LIBRARY_PAYLOAD_RECOVERY",
+  "previouslyCounted": true,
+  "records": [
+    {
+      "id": "MNSF26-AR-T017-Q01",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T017",
+        "sourceLesson": "جمع الأعداد - المتتابعات - ضرب الأعداد"
+      },
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_3",
+      "correctAnswer": "د",
+      "answerValue": "35",
+      "stepByStepSolution": "إذا كان الحد الأول a والثاني 2a فالثالث 4a؛ مجموع الثلاثة=7a. الخيار الوحيد الموافق لمضاعف 7 هو 35، ومنه a=5.",
+      "educationalExplanation": "نحوّل عبارة مثلي الحد السابق إلى متتابعة هندسية 1،2،4 ثم نستخدم مجموع أول ثلاثة حدود.",
+      "difficulty": "Medium",
+      "difficultyReason": "صياغة لفظية ثم استنتاج معامل المجموع.",
+      "imageHash": "3d948e75b7779ed2b74981036140d7df5c4abf1a0ed2d29b47c7f64885b39d9a",
+      "contentFingerprint": "12754434b1c369c117166e431ce70136977a4ded411254631df680470e6a4177",
+      "ideaFingerprint": "38907d1337c947fad7287fcaba4ec9f8ac8cad8c60a015a9350330ee9d23bd47",
+      "status": "MASTERED"
+    },
+    {
+      "id": "MNSF26-AR-T017-Q02",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T017",
+        "sourceLesson": "جمع الأعداد - المتتابعات - ضرب الأعداد"
+      },
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_3",
+      "correctAnswer": "ج",
+      "answerValue": "34",
+      "stepByStepSolution": "الحد س=13 والفرق 3؛ الحدود الثلاثة السابقة هي 10،7،4. المجموع مع س=10+7+4+13=34.",
+      "educationalExplanation": "نرجع ثلاث خطوات في متتابعة حسابية بطرح الفرق ثم نجمع.",
+      "difficulty": "Easy",
+      "difficultyReason": "رجوع مباشر في متتابعة حسابية.",
+      "imageHash": "d10182801d4d9d04214b67642ba609cb6347ee6e16611cbe579e20922795163a",
+      "contentFingerprint": "53ae0bf3e16ea45596793c1899a825d0ac093d7a853789992ed98f2274d2ea1b",
+      "ideaFingerprint": "a35b16219792c61761271e6407fab33f9d47b2084f4ca00f441673e8b36057b9",
+      "status": "MASTERED"
+    },
+    {
+      "id": "MNSF26-AR-T017-Q03",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T017",
+        "sourceLesson": "جمع الأعداد - المتتابعات - ضرب الأعداد"
+      },
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_3",
+      "correctAnswer": "أ",
+      "answerValue": "11",
+      "stepByStepSolution": "نبدأ بـ-8؛ كل حد تالٍ = سالب السابق +3: -8،11،-8،11... الحدود الفردية -8 والزوجية 11؛ الحد العاشر=11.",
+      "educationalExplanation": "التحويل س→-س+3 يصنع دورة طولها 2، فنحدد قيمة الحد من زوجية رقمه.",
+      "difficulty": "Medium",
+      "difficultyReason": "يتطلب اكتشاف دورة ناتجة عن قاعدة تكرارية.",
+      "imageHash": "3aebaa043df9b6610c9f015778bd67d117b378356d12a852be714c4ef8a665e9",
+      "contentFingerprint": "cf9bad86eb3f61e06fa4775571fb65753d17c6f6d279acbdd0cc6d6e860789b1",
+      "ideaFingerprint": "a4f872dd36bafa1f54360bb8b8c7cd20a051f2e9a81042a8a7836d11ab7d5a2d",
+      "status": "MASTERED"
+    },
+    {
+      "id": "MNSF26-AR-T017-Q04",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T017",
+        "sourceLesson": "جمع الأعداد - المتتابعات - ضرب الأعداد"
+      },
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_3",
+      "correctAnswer": "ب",
+      "answerValue": "1000",
+      "stepByStepSolution": "112،334،556،778 فروقها ثابتة 222؛ التالي=778+222=1000.",
+      "educationalExplanation": "نحسب الفروق المتتالية فنجد متتابعة حسابية.",
+      "difficulty": "Easy",
+      "difficultyReason": "فرق ثابت مباشر.",
+      "imageHash": "99083693f2a9818ae0a043761da3bdeb74178f4444f3209c156aa6ab8383cae0",
+      "contentFingerprint": "1dd0ed4a728411454bce38f15e8f767409294011b8b7b7689ec2bc8329167851",
+      "ideaFingerprint": "b80f8756690157a901a1e409ebc03c002a7b3cf8db52f1f943e6940a1d4038ba",
+      "status": "MASTERED"
+    },
+    {
+      "id": "MNSF26-AR-T017-Q05",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T017",
+        "sourceLesson": "جمع الأعداد - المتتابعات - ضرب الأعداد"
+      },
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_3",
+      "correctAnswer": "ب",
+      "answerValue": "145",
+      "stepByStepSolution": "1،2،5،10 فروقها 1،3،5؛ تستمر الأعداد الفردية. من الحد الأول إلى الحد 13 نضيف أول 12 عددًا فرديًا ومجموعها 12²=144؛ إذن الحد13=145.",
+      "educationalExplanation": "مجموع أول n من الأعداد الفردية يساوي n²، فيختصر جمع الفروق.",
+      "difficulty": "Medium",
+      "difficultyReason": "اكتشاف فروق فردية ثم استخدام قاعدة مجموعها.",
+      "imageHash": "f6e799cb7141d577ed021949417aac41e5ddbbea2438b92bbff7a6f9c76cc28a",
+      "contentFingerprint": "b44e910beae5f65ce96a244c0ecf3a21cb0ab71f3ea7fd6ce548874b49901b76",
+      "ideaFingerprint": "a8e7ff8c6d04bcf8e191d5fc82fc963c551bcef685a1c51ba0e564cf6c90be0b",
+      "status": "MASTERED"
+    }
+  ]
+}
