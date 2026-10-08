@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN077",
+  "stage": "QA_LOCK",
+  "headAtStart": {
+    "branch": "c03186e934775798e895fcd94bc261857e6df705",
+    "main": "4729480734a198422105e988c32f656af6a1a8d8"
+  },
+  "baselineReviewed": 1689,
+  "visuallyAdjudicatedNew": 58,
+  "mathPassTaxonomyPending": 40,
+  "reviewRequired": 16,
+  "holdPreserved": 2,
+  "reviewedProvisional": 1747,
+  "remainingProvisional": 382,
+  "totalActive": 2129,
+  "criticalDefect": "MNSF26-AR-T009-Q10: existing answer 6 incorrect; image supports 24 (B). Keep REVIEW until corrected and verified.",
+  "evidence": "/MNSF26/Run077/MNSF26_RUN077_QA_58_T009_T011_DIRECT_IMAGE_V1.json",
+  "qaFullBookPass": false,
+  "taxonomyFullBookPass": false,
+  "dedupeLocked": false,
+  "productionUntouched": true
+}
