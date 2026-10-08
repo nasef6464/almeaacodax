@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN058_AR_T08_DIRECT_VISUAL",
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T008-Q18",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+        "testNumber": 8,
+        "pdfPage": 15,
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "sourceTopic": "تصنيف المصدر محفوظ؛ رياضيات السؤال هي معيار الربط",
+        "sourceLesson": "الحساب والجبر، الاختبار 008، السؤال 18",
+        "printedQuestionNumber": 18,
+        "cropFile": "mnsf26_fullbook_crops/AR/AR-T008-Q18.webp",
+        "cropSha256": "43f352164a8acb0bb6c9b8d2ab6a8d8d511dccaa66de4b2574f3129d0611ea12",
+        "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
+      },
+      "imageHash": "43f352164a8acb0bb6c9b8d2ab6a8d8d511dccaa66de4b2574f3129d0611ea12",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN058_2026-10-08_T008_Q18",
+      "status": "REVIEW",
+      "questionText": "مكتبة تبيع4 أقلام مع كل8 كتب؛ شخص اشترى60 قلمًا وكتابًا بالمجموع، كم قلمًا؟",
+      "canonicalMainSkill": null,
+      "canonicalSubskill": null,
+      "correctAnswer": null,
+      "stepByStepSolution": null,
+      "educationalExplanation": "غير معتمد للنشر: عبارة 60 قلمًا وكتابًا قد تعني إجمالي العناصر أو 60 قلمًا إضافة إلى كتب؛ يلزم اعتماد قراءة النص ونسبة التوزيع.",
+      "difficulty": null,
+      "difficultyReason": "عبارة 60 قلمًا وكتابًا قد تعني إجمالي العناصر أو 60 قلمًا إضافة إلى كتب؛ يلزم اعتماد قراءة النص ونسبة التوزيع.",
+      "contentFingerprint": "e0fd2927e3d943f56b611f8c73aa4c2d6bb16adbe11ef2611fc1a306e08b281f",
+      "ideaFingerprint": "81018531ebc63555428b5ff4e287436062a96983f0e15cd842605181eaf90ef2",
+      "holdReason": "عبارة 60 قلمًا وكتابًا قد تعني إجمالي العناصر أو 60 قلمًا إضافة إلى كتب؛ يلزم اعتماد قراءة النص ونسبة التوزيع.",
+      "proposedCanonicalSubskill": "sub_quant_08_1"
+    }
+  ]
+}
