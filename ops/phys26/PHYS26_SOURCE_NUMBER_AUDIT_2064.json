@@ -19,7 +19,8 @@
   "notes": [
     "Book contains 30 second-section headings and one single-section lesson (lesson 25).",
     "Question labels are not answer verification. Some Arabic letters, formulas and symbols in PDF text extraction are corrupt; visual source checking still required.",
-    "This metadata contains no source questions, options or answer keys and must not be considered a licensed question bank."
+    "This metadata contains no source questions, options or answer keys and must not be considered a licensed question bank.",
+    "Geometric footer matching identified 2,064/2,064 candidate A/B/C/D key positions, with 29 answer glyphs printed in Arabic; mapped glyph shape for candidate indexing only, no independent answer validation."
   ],
   "lessons": [
     {
@@ -239,5 +240,9 @@
       "secondSectionPage": 159,
       "numberedQuestionOccurrences": 126
     }
-  ]
+  ],
+  "footerAnswerKeyCandidateLabelsLocated": 2064,
+  "footerAnswerKeyUnmatchedNumberLabels": 0,
+  "footerAnswerKeyOriginalArabicGlyphs": 29,
+  "footerAnswerKeyVerifiedCorrectAnswers": 0
 }
