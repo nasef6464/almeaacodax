@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN059_AR_T16_DIRECT_VISUAL",
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T016-Q09",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+        "testNumber": 16,
+        "pdfPage": 30,
+        "sourceSkillLabel": "جمع الأعداد - المتتابعات - ضرب الأعداد",
+        "sourceTopic": "عنوان المصدر للتوثيق فقط؛ التصنيف من رياضيات الصورة",
+        "sourceLesson": "الحساب والجبر اختبار016 سؤال09",
+        "printedQuestionNumber": 9,
+        "cropFile": "mnsf26_fullbook_crops/AR/AR-T016-Q09.webp",
+        "cropSha256": "a47102050a1b63e610ef9aadf458097847d3ed763eadd8ce92271081ccbf394f",
+        "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
+      },
+      "imageHash": "a47102050a1b63e610ef9aadf458097847d3ed763eadd8ce92271081ccbf394f",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN059_2026-10-08_T016_Q09",
+      "status": "REVIEW",
+      "questionText": "أوجد الحد الناقص في المتتابعة1،3،27،...،59049.",
+      "canonicalMainSkill": null,
+      "canonicalSubskill": null,
+      "correctAnswer": null,
+      "stepByStepSolution": null,
+      "educationalExplanation": "REVIEW fail-closed: متتابعة هندسية بأسس مثلثية وليست متتابعة حسابية بسيطة؛ يلزم اعتماد مهارة النمط.؛ الإجابة الرياضية المرشحة: 729 (ج)؛ الحل: الحدود قوى3 بأسس0،1،3،6،10؛ فروق الأسس1،2،3،4؛ الحد الرابع3^6=729.",
+      "difficulty": null,
+      "difficultyReason": "متتابعة هندسية بأسس مثلثية وليست متتابعة حسابية بسيطة؛ يلزم اعتماد مهارة النمط.",
+      "contentFingerprint": "03a35fe9493d684dee80d450933e87c427270711db7454f8170843a8d73b9a59",
+      "ideaFingerprint": "d239f9fba722879da5bd78b36aefb61f95c5cb511d99b1d4ecb9799ec5940c69",
+      "holdReason": "متتابعة هندسية بأسس مثلثية وليست متتابعة حسابية بسيطة؛ يلزم اعتماد مهارة النمط.",
+      "proposedCanonicalSubskill": "sub_quant_01_3"
+    }
+  ]
+}
