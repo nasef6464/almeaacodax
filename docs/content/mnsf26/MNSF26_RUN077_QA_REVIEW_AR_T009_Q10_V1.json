@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN077",
+  "sourceKey": "MNSF26-AR-T009-Q10",
+  "stage": "QA_LOCK",
+  "status": "QA_REVIEW_REQUIRED",
+  "reason": "SOURCE_IMAGE_CONTRADICTS_MASTER",
+  "previousAnswer": "6 (أ)",
+  "verifiedFromSource": "24 (ب)",
+  "proof": "48 legs / 4 = 12 cows; pigeons twice cows = 24.",
+  "importEligible": false,
+  "canonicalTaxonomy": "PENDING",
+  "doNotAutoPatchMaster": true,
+  "evidence": "/MNSF26/Run077/MNSF26_RUN077_QA_58_T009_T011_DIRECT_IMAGE_V1.json"
+}
