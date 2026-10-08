@@ -1,0 +1,120 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN068",
+  "stage": "QA_LOCK",
+  "source": "MNSF26_RUN068_INDEPENDENT_VISUAL_MATH_117_V2.json",
+  "sha256OriginalEvidence": "78500abc54b1de4a99c85c2a0e7bc02cd8cf8a154f19440447a830239aea246e",
+  "rows": [
+    {
+      "sourceKey": "MNSF26-GEO-T019-Q14",
+      "imageHash": "df16c5c921399b561023d4438b991789093b8c95ce6a2b22c1cccc8d456fc78e",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T19_V1.json",
+      "expectedAnswerFromIndependentMath": "القيمة الثانية أكبر (ب)",
+      "independentMathematicalProof": "لمساحتين متساويتين الارتفاع عكسي مع القاعدة؛ قاعدة5 تعطي ارتفاعًا أكبر من قاعدة8.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T019-Q15",
+      "imageHash": "eff41d8418dc7ab977b3c9a5f7da63d2a731684a63779ac285914f4d3bb77eb5",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T19_V1.json",
+      "expectedAnswerFromIndependentMath": "6 (ج)",
+      "independentMathematicalProof": "المثلث3-4-5 قائم ومساحته3×4/2=6.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T019-Q18",
+      "imageHash": "049b76ba962230488f2540ddce5d359e471c3307d4f980b113b0e9dad242eaf8",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T19_V1.json",
+      "expectedAnswerFromIndependentMath": "7.5 (ب)",
+      "independentMathematicalProof": "الوتر السفلي√(3²+4²)=5؛ مساحة المنطقة العلوية3×5/2=7.5.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T019-Q20",
+      "imageHash": "0f3b4eb493f6e5262db8158539b672096f69f2a155c8301cbb7cd6b43abacee4",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T19_V1.json",
+      "expectedAnswerFromIndependentMath": "30 (ج)",
+      "independentMathematicalProof": "إذا كان الوتر13 ومجموع الساقين17، فإن الساقين5 و12؛ المساحة5×12/2=30.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T020-Q03",
+      "imageHash": "4658f68cfe3632dfdae6373e9addce9708ef8b6b5d779248b3ce56055ce40a28",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T20_V1.json",
+      "expectedAnswerFromIndependentMath": "60 (ب)",
+      "independentMathematicalProof": "الارتفاع12 ونصف القاعدة5؛ المساحة(2×5)×12/2=60.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T020-Q05",
+      "imageHash": "e1c272311f661513958f84bad50796260158f746a9b113c8c9f084ef7eeec669",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T20_V1.json",
+      "expectedAnswerFromIndependentMath": "25 (ب)",
+      "independentMathematicalProof": "مساحة القائم10×5/2=25.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T020-Q06",
+      "imageHash": "9fa45368aad0997976f95848ed6458ed67fb6d485659d4fe0a73fe13b6e21ef9",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T20_V1.json",
+      "expectedAnswerFromIndependentMath": "6 (ب)",
+      "independentMathematicalProof": "مجموع مساحات الثلاثة12؛ مساحة الكبير18؛ الرابع18−12=6.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T020-Q07",
+      "imageHash": "0aed4fd82621c7335baeaae95161ecd0c1defc2e097977338545685dad2f9397",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T20_V1.json",
+      "expectedAnswerFromIndependentMath": "1/4 (ج)",
+      "independentMathematicalProof": "نصف القاعدة ونصف الارتفاع في المثلث المشابه؛ نسبة المساحات1/4.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T020-Q08",
+      "imageHash": "42ceb1cb6663da0d443b2ada2bcf34895e96616461339381f8d4ff5bd50bd97b",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T20_V1.json",
+      "expectedAnswerFromIndependentMath": "القيمة الأولى أكبر (أ)",
+      "independentMathematicalProof": "ثلث مساحة الكبير أكبر من ربعها، وهي مساحة المثلث الصغير.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T020-Q09",
+      "imageHash": "1ea770e1424d7c53e02d517c720b69bc94590bca8341de01ef5c63ee5ae5a5b7",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T20_V1.json",
+      "expectedAnswerFromIndependentMath": "القيمة الثانية أكبر (ب)",
+      "independentMathematicalProof": "محيط الصغير نصف الكبير؛ نصف المحيط أكبر من ثلثه.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    }
+  ]
+}
