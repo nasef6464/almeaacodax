@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN061_GITHUB_LIBRARY_RECONCILIATION",
+  "date": "2026-10-08",
+  "headAtStart": "77efee50141facd4673ec8c8d4ca519513e66917",
+  "mainAtStart": "f40a785ee777a0be16e48f70727793e8f9ee0695",
+  "cropLock": "2135/2135 PASS_LOCKED",
+  "stage": "QUESTION_MASTERING",
+  "newDirectVisualInspectionThisRun": 0,
+  "newlyGithubPersistedPreviouslyInspected": 8,
+  "newlyGithubPersistedFromLibrary": {
+    "run058": 5,
+    "run059": 3,
+    "mastered": 6,
+    "review": 2,
+    "sourceKeys": [
+      "MNSF26-AR-T009-Q04",
+      "MNSF26-AR-T010-Q13",
+      "MNSF26-AR-T010-Q17",
+      "MNSF26-AR-T011-Q07",
+      "MNSF26-AR-T011-Q09",
+      "MNSF26-AR-T015-Q03",
+      "MNSF26-AR-T015-Q04",
+      "MNSF26-AR-T016-Q06"
+    ]
+  },
+  "previouslyCountedMasterRecordsRecoveredToGitHub": 20,
+  "previouslyCountedUnrecoverableGitHubWrite": [
+    "MNSF26-AR-T017-Q08"
+  ],
+  "officialMasteredUnchanged": 1773,
+  "officialHoldReviewUnchanged": 359,
+  "accountingConflict": "1773+359=2132; adding 8 Library-only records yields 2140 > 2135; must reconcile distinct sourceKeys, historical overlaps, suppressions and source-absent before changing totals or locking stage.",
+  "qa": "BLOCKED",
+  "r2": "BLOCKED",
+  "import": "BLOCKED",
+  "productionE2E": "BLOCKED",
+  "blockedWrites": "GitHub content safety check rejected full Run059 recovery and AR T17 Q08; full original remains in Library /MNSF26/Run034.",
+  "next": "Full sourceKey-level 2135-crop coverage and dedupe of accounting only (not DEDUPE_LOCK); resolve 5+ overlap, persist T17 Q08 via permitted route, then reconcile state and close QUESTION_MASTERING if all questions accounted."
+}

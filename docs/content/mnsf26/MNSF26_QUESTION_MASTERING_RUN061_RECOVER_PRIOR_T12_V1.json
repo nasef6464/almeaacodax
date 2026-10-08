@@ -1,0 +1,109 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN061_RECOVER_PREVIOUSLY_COUNTED",
+  "previouslyCounted": true,
+  "sourceLibrary": "/MNSF26/Run030/T12",
+  "records": [
+    {
+      "id": "MNSF26-AR-T012-Q09",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T012",
+        "sourceLesson": "الأعداد الأولية - العوامل الأولى"
+      },
+      "canonicalMainSkill": "skill_quant_02",
+      "canonicalSubskill": "sub_quant_02_3",
+      "correctAnswer": "ج",
+      "answerValue": "10",
+      "stepByStepSolution": "عند س=10 يكون س−7=3 وهو عدد أولي؛ بقية الاختيارات تعطي 0 أو1 أو4 وليست أولية.",
+      "educationalExplanation": "نعوض بالاختيارات ونختبر الناتج وفق تعريف العدد الأولي.",
+      "difficulty": "Easy",
+      "difficultyReason": "تعويض خيارات بسيط.",
+      "imageHash": "40f162ee8438777cafab8935bc5c229e3ea778d0e48cce4aaf9100e233fa989c",
+      "contentFingerprint": "c5e69d5bbdec36a5f89e45c274723616a97a19ce8e8c6cd517cd743874f42ddb",
+      "ideaFingerprint": "eabb54a7b2bb8a68e375ec5dc4b2a8e69d37c2de789f59a198f7d5dbd374bdc3",
+      "status": "MASTERED"
+    },
+    {
+      "id": "MNSF26-AR-T012-Q10",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T012",
+        "sourceLesson": "الأعداد الأولية - العوامل الأولى"
+      },
+      "canonicalMainSkill": "skill_quant_02",
+      "canonicalSubskill": "sub_quant_02_3",
+      "correctAnswer": "د",
+      "answerValue": "87",
+      "stepByStepSolution": "87 يقبل القسمة على 3 لأن 8+7=15، إذن هو غير أولي.",
+      "educationalExplanation": "قاعدة القسمة على 3 تكشف سريعًا أن 87 عدد مركب.",
+      "difficulty": "Easy",
+      "difficultyReason": "اختبار قسمة مباشر.",
+      "imageHash": "4df3bafb024ce3cf79c6e99f0da7f75d455239fa2359b50499eb24811adac041",
+      "contentFingerprint": "70fe9a5cfbab06c4f84cc46afb98b33850ef613e85c7b70b6237156827d2071a",
+      "ideaFingerprint": "712d4ebfb96fcabddb70ca9acb3846fa454da35ff351b795068988c7e74b5fc4",
+      "status": "MASTERED"
+    },
+    {
+      "id": "MNSF26-AR-T012-Q12",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T012",
+        "sourceLesson": "الأعداد الأولية - العوامل الأولى"
+      },
+      "canonicalMainSkill": "skill_quant_02",
+      "canonicalSubskill": "sub_quant_02_3",
+      "correctAnswer": "د",
+      "answerValue": "9",
+      "stepByStepSolution": "الأعداد الأقل من50 التي يكون العدد ومعكوس رقميه أوليين هي 2،3،5،7،11،13،17،31،37؛ وعددها 9.",
+      "educationalExplanation": "نختبر الأعداد الأولية الأقل من50 ثم نتحقق من أولية العدد بعد قلب أرقامه.",
+      "difficulty": "Medium",
+      "difficultyReason": "حصر عدة حالات مع اختبار أولية المعكوس.",
+      "imageHash": "01930748a42e5350c88009ae3b9a150a9a20694cce9e6fc4801d6b623ab6689e",
+      "contentFingerprint": "a34629082920b3a9b6bab0e3d586ad97c30898ae0c8c35985ec47387e6e6a918",
+      "ideaFingerprint": "830aebd6b5acd956fc757814b73f13bcafe6cfb58b34a9a6c66fa377cdae1855",
+      "status": "MASTERED"
+    },
+    {
+      "id": "MNSF26-AR-T012-Q15",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T012",
+        "sourceLesson": "الأعداد الأولية - العوامل الأولى"
+      },
+      "canonicalMainSkill": "skill_quant_02",
+      "canonicalSubskill": "sub_quant_02_3",
+      "correctAnswer": "ب",
+      "answerValue": "القيمة الثانية أكبر",
+      "stepByStepSolution": "أصغر عامل أولي للعدد 1280 هو2 لأنه زوجي؛ وبالمقارنة 3>2.",
+      "educationalExplanation": "أي عدد زوجي أكبر من2 أصغر عوامله الأولية هو2.",
+      "difficulty": "Easy",
+      "difficultyReason": "خاصية مباشرة للعدد الزوجي.",
+      "imageHash": "d1ebf47fd5d1b25e16a22293bcac53a0a62e898391eea2b33d2ada17a7b2148a",
+      "contentFingerprint": "77ddeb0325c0669352580ed184b0064eefcf2425586739654079524bb282549d",
+      "ideaFingerprint": "3806bcc7b6fc028d0a5f54568829724436bdcdc1ee0396c2909e9573ab39cdaf",
+      "status": "MASTERED"
+    },
+    {
+      "id": "MNSF26-AR-T012-Q16",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T012",
+        "sourceLesson": "الأعداد الأولية - العوامل الأولى"
+      },
+      "canonicalMainSkill": "skill_quant_02",
+      "canonicalSubskill": "sub_quant_02_3",
+      "correctAnswer": "ب",
+      "answerValue": "97",
+      "stepByStepSolution": "96 و98 زوجيان، و99 يقبل القسمة على3؛ إذن 97 هو العدد الأولي.",
+      "educationalExplanation": "نستبعد الأعداد المركبة بقواعد القسمة البسيطة.",
+      "difficulty": "Easy",
+      "difficultyReason": "تمييز أولي مباشر.",
+      "imageHash": "ca35b9122535d18a1ba912d564efb5490422e60653f34dfd65aa7050757f86e4",
+      "contentFingerprint": "414a2428fac78506b5f2cf2f80012f7f0c9f9bc665478ed9f06ef6bc74d02bff",
+      "ideaFingerprint": "a184bddc7fb7a833aeb7fce0ac55050356812e1a5c0fdb48fcaa71851ba885b2",
+      "status": "MASTERED"
+    }
+  ]
+}

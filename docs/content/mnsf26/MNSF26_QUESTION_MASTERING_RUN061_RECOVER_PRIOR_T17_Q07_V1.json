@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN061",
+  "previouslyCounted": true,
+  "records": [
+    {
+      "id": "MNSF26-AR-T017-Q07",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T017",
+        "sourceLesson": "جمع الأعداد - المتتابعات - ضرب الأعداد"
+      },
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_3",
+      "correctAnswer": "ج",
+      "answerValue": "12",
+      "stepByStepSolution": "5→9 زيادة4، ثم الزيادات تنقص واحدًا: +3,+2,+1. لذلك الحد المفقود=9+3=12، ثم 14،15.",
+      "educationalExplanation": "نستخرج نمط الفروق 4،3،2،1.",
+      "difficulty": "Easy",
+      "difficultyReason": "نمط فروق بسيط.",
+      "imageHash": "83a1160baf2af410d6f12147c142d2b304de8d7fb71f687164887eb34a7fc61b",
+      "contentFingerprint": "389204e4706299c291d82ce7fd2fdffe3f264774c3efc7fdc92f1507b099e771",
+      "ideaFingerprint": "df46fb8db920a77aeec8c2395b673a1983147653e637adf299a6fb73612de5b5",
+      "status": "MASTERED"
+    }
+  ]
+}

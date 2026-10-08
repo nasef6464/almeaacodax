@@ -1,0 +1,129 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN061_RECOVER_PREVIOUSLY_COUNTED",
+  "previouslyCounted": true,
+  "sourceLibrary": "/MNSF26/Run031/T14",
+  "records": [
+    {
+      "id": "MNSF26-AR-T014-Q10",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T014",
+        "sourceLesson": "الأعداد الأولية - العوامل الأولى"
+      },
+      "canonicalMainSkill": "skill_quant_02",
+      "canonicalSubskill": "sub_quant_02_1",
+      "correctAnswer": "ج",
+      "answerValue": "8",
+      "stepByStepSolution": "1620 يقبل القسمة على4 و6 و9، لكنه لا يقبل القسمة على8 لأن آخر ثلاث خانات 620 ليست من مضاعفات8.",
+      "educationalExplanation": "نطبق قواعد قابلية القسمة على كل اختيار.",
+      "difficulty": "Easy",
+      "difficultyReason": "اختبارات قابلية قسمة.",
+      "imageHash": "36aa979077390efc9dabc5eeabef3d9c3aa3960f061c87331db1f2571666b59c",
+      "contentFingerprint": "94b0f0c6733391d492d26de6f861622597dfd96a96843c79f39bda8d2c0e0593",
+      "ideaFingerprint": "822735df1dc3257d298e50089cb798f5aa2443978e566e19ffaf3ed658682c57",
+      "status": "MASTERED"
+    },
+    {
+      "id": "MNSF26-AR-T014-Q11",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T014",
+        "sourceLesson": "الأعداد الأولية - العوامل الأولى"
+      },
+      "canonicalMainSkill": "skill_quant_02",
+      "canonicalSubskill": "sub_quant_02_2",
+      "correctAnswer": "ج",
+      "answerValue": "2",
+      "stepByStepSolution": "5م من مضاعفات5، لذا 5م−3 عند القسمة على5 يعطي باقيًا يساوي −3≡2.",
+      "educationalExplanation": "نختزل التعبير بترديد5.",
+      "difficulty": "Medium",
+      "difficultyReason": "باقي تعبير جبري.",
+      "imageHash": "9ffe6921b1486cc6eefbfd07f4719c511c471423281c1d04f3d5bbb66ece8bc7",
+      "contentFingerprint": "88650a9ed1f70c6861e63efc800ec12162506aa97fb3e647e9d38e17c29a14fc",
+      "ideaFingerprint": "03efe064b768e5f17bc8c826bd7f8e87abd1b015deb48e77d3132997b0413b28",
+      "status": "MASTERED"
+    },
+    {
+      "id": "MNSF26-AR-T014-Q14",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T014",
+        "sourceLesson": "الأعداد الأولية - العوامل الأولى"
+      },
+      "canonicalMainSkill": "skill_quant_02",
+      "canonicalSubskill": "sub_quant_02_2",
+      "correctAnswer": "أ",
+      "answerValue": "القيمة الأولى أكبر",
+      "stepByStepSolution": "97833÷5 باقيه3 لأن آحاده3، و98737÷5 باقيه2 لأن آحاده7؛ إذن 3>2.",
+      "educationalExplanation": "باقي القسمة على5 يتحدد من رقم الآحاد.",
+      "difficulty": "Easy",
+      "difficultyReason": "مقارنة باقيين مباشرة.",
+      "imageHash": "bc52b7cb2b23e746438dc49ea366087a18dc26ba3db9a08590ea7f1f5cc976e1",
+      "contentFingerprint": "5e82068c4535fbeb90f4412958a52e08b34f332697a464086d6d0b7dd5c6220d",
+      "ideaFingerprint": "63d5a8784f0851695284f264bd05e8d566ebcb3ce461c8eba737b9ba7b6dae14",
+      "status": "MASTERED"
+    },
+    {
+      "id": "MNSF26-AR-T014-Q15",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T014",
+        "sourceLesson": "الأعداد الأولية - العوامل الأولى"
+      },
+      "canonicalMainSkill": "skill_quant_02",
+      "canonicalSubskill": "sub_quant_02_2",
+      "correctAnswer": "ب",
+      "answerValue": "2",
+      "stepByStepSolution": "10÷4=2 والباقي2؛ يتبقى شمعتان.",
+      "educationalExplanation": "نأخذ باقي القسمة بعد التوزيع بالتساوي.",
+      "difficulty": "Easy",
+      "difficultyReason": "باقي قسمة مباشر.",
+      "imageHash": "581ecdecf6855bb1b0e39430b4329d9e6b3e812cc05dcace2c1f18bde78ff3ea",
+      "contentFingerprint": "cb1e8af730be8dda25b4ab6f342c5ad0b86ed94800d9cfa6a25d1f2be624fafe",
+      "ideaFingerprint": "17bb4e9e26a54e1f7a201ebaa3f7f7eacdc7087a64dcad8734675d14f7c457b2",
+      "status": "MASTERED"
+    },
+    {
+      "id": "MNSF26-AR-T014-Q16",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T014",
+        "sourceLesson": "الأعداد الأولية - العوامل الأولى"
+      },
+      "canonicalMainSkill": "skill_quant_02",
+      "canonicalSubskill": "sub_quant_02_2",
+      "correctAnswer": "أ",
+      "answerValue": "4",
+      "stepByStepSolution": "17÷4=4 والباقي1؛ كل شخص يأخذ4 أقلام.",
+      "educationalExplanation": "خارج القسمة الصحيح هو نصيب كل شخص.",
+      "difficulty": "Easy",
+      "difficultyReason": "قسمة مع باقي.",
+      "imageHash": "5bb0ca596d4e5bc28be484ee32205337f77c16b2dfcb3558510e493e977ab6ad",
+      "contentFingerprint": "b0ae75e33e762d62c6750036377dda5299fc9f67e4d51e334850d55653f08062",
+      "ideaFingerprint": "aac07328d4c1c942b0d41686949f00e417dd54fa81172ff7a2dc097cf22401e5",
+      "status": "MASTERED"
+    },
+    {
+      "id": "MNSF26-AR-T014-Q17",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T014",
+        "sourceLesson": "الأعداد الأولية - العوامل الأولى"
+      },
+      "canonicalMainSkill": "skill_quant_02",
+      "canonicalSubskill": "sub_quant_02_2",
+      "correctAnswer": "أ",
+      "answerValue": "721",
+      "stepByStepSolution": "نختبر الاختيارات: 721−1=720 وهو يقبل القسمة على2،3،4،5،6، كما أن 721=7×103؛ إذن يحقق الشرطين.",
+      "educationalExplanation": "بدل حل جميع حلول التوافقات، نتحقق من الخيارات بشرطي البواقي والقسمة.",
+      "difficulty": "Hard",
+      "difficultyReason": "عدة شروط بواقي متزامنة.",
+      "imageHash": "23693a9c1f49e1adaa7f8ee0dd3082fccf9b9024b8324835fa5e3b2ba40fd322",
+      "contentFingerprint": "4c51f91ed3e923f9674c3892ed17890d0b4cc8a51402d5553798168ea89e08ff",
+      "ideaFingerprint": "1f3456db546e1736c0d7520f41559d44abb6e1e2fc18c4b595fce0d37aba0089",
+      "status": "MASTERED"
+    }
+  ]
+}

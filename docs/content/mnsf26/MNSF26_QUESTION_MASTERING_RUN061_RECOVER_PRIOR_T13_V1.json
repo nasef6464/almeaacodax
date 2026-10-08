@@ -1,0 +1,149 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN061_RECOVER_PREVIOUSLY_COUNTED",
+  "previouslyCounted": true,
+  "sourceLibrary": "/MNSF26/Run031/T13",
+  "records": [
+    {
+      "id": "MNSF26-AR-T013-Q01",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T013",
+        "sourceLesson": "الأعداد الأولية - العوامل الأولى"
+      },
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_5",
+      "correctAnswer": "أ",
+      "answerValue": "0",
+      "stepByStepSolution": "من بين أول 100 عدد أولي يوجد 2 و5؛ حاصل الضرب يحتوي العامل 10، لذلك رقم الآحاد 0.",
+      "educationalExplanation": "وجود العاملين 2 و5 في حاصل الضرب يجعل الناتج من مضاعفات 10.",
+      "difficulty": "Easy",
+      "difficultyReason": "ملاحظة سريعة للعاملين 2 و5.",
+      "imageHash": "7eb44d523e268e7ea35876d0ca84a02a1460bd16ed16facead87668fb315dd1a",
+      "contentFingerprint": "f72036275764d3b20d3dd122b69fb28edcb4d93e1d560b531d0b29b78e460e15",
+      "ideaFingerprint": "6ddec5ae59debd9289ee2e562c686ca14a58ea6b6ebf4c1a4530e3132be6b9f4",
+      "status": "MASTERED"
+    },
+    {
+      "id": "MNSF26-AR-T013-Q06",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T013",
+        "sourceLesson": "الأعداد الأولية - العوامل الأولى"
+      },
+      "canonicalMainSkill": "skill_quant_02",
+      "canonicalSubskill": "sub_quant_02_1",
+      "correctAnswer": "أ",
+      "answerValue": "4 أطباق",
+      "stepByStepSolution": "لكل طبق 6 تفاحات و9 برتقالات و8 موزات. المتاح 24 تفاحة→4 أطباق، 36 برتقالة→4، 48 موزة→6؛ المحدد هو4.",
+      "educationalExplanation": "نقسم كمية كل فاكهة على احتياج الطبق ونأخذ أصغر عدد كامل.",
+      "difficulty": "Medium",
+      "difficultyReason": "مقارنة ثلاثة حدود قسمة.",
+      "imageHash": "d3893ac17a97ba46a403f13179e79f86caf2adbf3cb5feaabdebebbc3ce90f3e",
+      "contentFingerprint": "4eedcd325a387ada386b2fda70d69b106b9ba7edadda1154f0ede18dac15eaa7",
+      "ideaFingerprint": "93ae8baba3a2d02c6932d58de46d6d21298eb8d9ac8f55325e50e0538ef76855",
+      "status": "MASTERED"
+    },
+    {
+      "id": "MNSF26-AR-T013-Q10",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T013",
+        "sourceLesson": "الأعداد الأولية - العوامل الأولى"
+      },
+      "canonicalMainSkill": "skill_quant_02",
+      "canonicalSubskill": "sub_quant_02_1",
+      "correctAnswer": "ب",
+      "answerValue": "8",
+      "stepByStepSolution": "ق.م.أ(24،16)=8، وهو أيضًا من مضاعفات2.",
+      "educationalExplanation": "نحسب القاسم المشترك الأكبر مباشرة.",
+      "difficulty": "Easy",
+      "difficultyReason": "ق.م.أ مباشر.",
+      "imageHash": "50baf787a32af8812e7266993d14e7b943de41448eba53f28201718507dd4bf0",
+      "contentFingerprint": "81cf56fc69eb2a8caad20202ac5826d08006dbb9901c0d9cbb2050906270ba0e",
+      "ideaFingerprint": "d80c1300f1a7c3d437aaab29b6badbf9540685bb962520716723c62d989facec",
+      "status": "MASTERED"
+    },
+    {
+      "id": "MNSF26-AR-T013-Q15",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T013",
+        "sourceLesson": "الأعداد الأولية - العوامل الأولى"
+      },
+      "canonicalMainSkill": "skill_quant_14",
+      "canonicalSubskill": "sub_quant_14_4",
+      "correctAnswer": "ج",
+      "answerValue": "5 مرات",
+      "stepByStepSolution": "الدورتان كل7 و5 دقائق فتتزامنان كل م.م.أ(7،5)=35 دقيقة. خلال180 دقيقة: 35،70،105،140،175؛ أي5 مرات بعد البداية.",
+      "educationalExplanation": "نحوّل التكرارين إلى دورة مشتركة باستخدام م.م.أ.",
+      "difficulty": "Medium",
+      "difficultyReason": "دورتان زمنيتان ثم عد التزامنات.",
+      "imageHash": "a9c02974bc771c0c8cd4c23b6d5ceca0456f885646595faefd562b1053bc238c",
+      "contentFingerprint": "e1b3e579061e3878079f06a9565c7840fa6c019f79992e490f01b01376d0d140",
+      "ideaFingerprint": "cdf76b56ff7144f917fd9f98e74d8c469084e7686174a2d333d97c14b680fb8c",
+      "status": "MASTERED"
+    },
+    {
+      "id": "MNSF26-AR-T013-Q16",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T013",
+        "sourceLesson": "الأعداد الأولية - العوامل الأولى"
+      },
+      "canonicalMainSkill": "skill_quant_14",
+      "canonicalSubskill": "sub_quant_14_1",
+      "correctAnswer": "أ",
+      "answerValue": "12",
+      "stepByStepSolution": "محمد يحضر أول4 أيام من الأسبوع وفهد آخر4 أيام؛ يوجد يوم تداخل واحد كل أسبوع، وخلال12 أسبوعًا يلتقيان12 مرة.",
+      "educationalExplanation": "نحدد تقاطع نمطي الحضور داخل أسبوع واحد ثم نكرر عبر الأسابيع.",
+      "difficulty": "Medium",
+      "difficultyReason": "فهم تداخل نمط أسبوعي.",
+      "imageHash": "525a0adf77f9059696c145f3f3f18cc2e5f6091e3d8922e39659d78494c6625a",
+      "contentFingerprint": "f329604f079c805ac809218384e58a890d0ea4a656ed2251f8a07240830c1221",
+      "ideaFingerprint": "330496b8abc3b3c54a613a84fc2ffb832dcbbb02b1744d238c1dc5c1396b995c",
+      "status": "MASTERED"
+    },
+    {
+      "id": "MNSF26-AR-T013-Q17",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T013",
+        "sourceLesson": "الأعداد الأولية - العوامل الأولى"
+      },
+      "canonicalMainSkill": "skill_quant_02",
+      "canonicalSubskill": "sub_quant_02_1",
+      "correctAnswer": "أ",
+      "answerValue": "القيمة الأولى أكبر",
+      "stepByStepSolution": "مع 0<س<ص<10، كل مضاعف لـص هو أندر من مضاعفات س؛ وعدد مضاعفات العدد الأصغر س تحت100 أكبر من عدد مضاعفات ص.",
+      "educationalExplanation": "كلما صغر المقسوم عليه الموجب زاد عدد مضاعفاته ضمن مدى ثابت.",
+      "difficulty": "Medium",
+      "difficultyReason": "مقارنة عامة دون قيم محددة.",
+      "imageHash": "9a7c95c8baa19b464301930988c3da691e5ea32118625a039320962f1d01a552",
+      "contentFingerprint": "8c6e664c49a797ee70dc2ba45aeb5987792687ca42323d78f15a47294d5af33a",
+      "ideaFingerprint": "04a18e89b5a1f2c0ee12c0b9777b33f6d861921751f61b21776dd9d44b7af1ac",
+      "status": "MASTERED"
+    },
+    {
+      "id": "MNSF26-AR-T013-Q19",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T013",
+        "sourceLesson": "الأعداد الأولية - العوامل الأولى"
+      },
+      "canonicalMainSkill": "skill_quant_02",
+      "canonicalSubskill": "sub_quant_02_1",
+      "correctAnswer": "د",
+      "answerValue": "15",
+      "stepByStepSolution": "العدد الذي يقبل القسمة على3 و5 معًا من الخيارات هو15.",
+      "educationalExplanation": "نبحث عن مضاعف مشترك لـ3 و5.",
+      "difficulty": "Easy",
+      "difficultyReason": "مضاعف مشترك مباشر.",
+      "imageHash": "b30e7e51ddf4c8f243a3f8e12b7c19f6d3a59f9f276c9089f4a747792ba9ceea",
+      "contentFingerprint": "968c088b1ef6d65c1bbac1beb34543ef38f9304ece4b4fe7a669d71b02885042",
+      "ideaFingerprint": "b20d08960f48f2aab8f8a69ced9c625b0f2f87012556cb3e7fc4ab5ea28d8b88",
+      "status": "MASTERED"
+    }
+  ]
+}

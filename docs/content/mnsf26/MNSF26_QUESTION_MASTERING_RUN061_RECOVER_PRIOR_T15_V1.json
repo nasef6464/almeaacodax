@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN061_RECOVER_PREVIOUSLY_COUNTED",
+  "previouslyCounted": true,
+  "sourceLibrary": "/MNSF26/Run031/T15",
+  "records": [
+    {
+      "id": "MNSF26-AR-T015-Q10",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T015",
+        "sourceLesson": "جمع الأعداد - المتتابعات - ضرب الأعداد"
+      },
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_3",
+      "correctAnswer": "أ",
+      "answerValue": "450",
+      "stepByStepSolution": "بما أن 1+2+...+9=45، فإن 10+20+...+90=10×45=450.",
+      "educationalExplanation": "نخرج العامل10 من جميع الحدود.",
+      "difficulty": "Easy",
+      "difficultyReason": "عامل مشترك في متتابعة.",
+      "imageHash": "b021784de8790e95d4ba746989fd02b32d11ceae3d94191848f3d4c3a310ba05",
+      "contentFingerprint": "cd1e63d2b6ef218c48e200169756716cce26a092541089e07854d445a90bee45",
+      "ideaFingerprint": "8448bed1db57523ba36a5e0d6c8e214c000ccb452dcc4c57911d6dd491899721",
+      "status": "MASTERED"
+    }
+  ]
+}
