@@ -16,5 +16,12 @@
   "masterPayloadStructuralPass": 420,
   "qaPassLocked": false,
   "verdictsFile": "MNSF26_RUN066_GEO_SOURCEKEY_VERDICTS_V1.json",
-  "notes": "Original Run021 WEBP pixels; 17 prior reviewed keys excluded. Stage gate remains open."
+  "notes": "Original Run021 WEBP pixels; 17 prior reviewed keys excluded. Stage gate remains open.",
+  "githubRun063Recovered": 5,
+  "githubRun063Remaining": 2,
+  "githubRun063RemainingKeys": [
+    "MNSF26-AR-T007-Q01",
+    "MNSF26-AR-T007-Q05"
+  ],
+  "mathProofsFile": "MNSF26_RUN066_QA_INDEPENDENT_50_MATH_PROOFS_V1.json"
 }
