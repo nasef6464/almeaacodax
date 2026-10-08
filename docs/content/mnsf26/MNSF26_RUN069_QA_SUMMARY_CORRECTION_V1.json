@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN069",
+  "stage": "QA_LOCK",
+  "sourceFile": "MNSF26_RUN069_INDEPENDENT_GEOMETRY_MATH_19_V1.json",
+  "correctedSummary": {
+    "newUniqueMathReviewed": 19,
+    "qaPassMathAnswer": 19,
+    "qaReviewRequired": 0
+  },
+  "reason": "All 19 qaRows have QA_PASS_INDEPENDENT_MATH_ANSWER; initial summary mistakenly said 17/2. Source row verdicts are authoritative.",
+  "sourceSha256": "194406b8f7ff98a270a8fc60965a13795d7e803ac7db7c41549a889b4753ee92",
+  "taxonomyGate": "PENDING",
+  "qaLock": "OPEN"
+}
