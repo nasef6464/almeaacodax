@@ -44,3 +44,10 @@ The three user-provided 2026 Yelo PDFs are recorded with page count, byte size a
 
 ## Evidence ledger
 Update `ops/phys26/PHYS26_EXECUTION_LEDGER.json` with each real run; enter exact counts, branch/head, source artifacts, QAs, blockers and next step. Never count generated placeholders or mere scan attempts as verified questions.
+
+## Foundation design preflight — 2026-10-08
+- Offline-only artifact: `ops/phys26/PHYS26_FOUNDATION_PLAN.json`, **25 main + 90 subtopic proposals**. All `showOnPlatform=false`, `importReady=false`, and `sectionId=null` pending read-only scope verification. No content was deployed.
+- Corrected subtopic linking contract: `skillId=child subskill`, `skillIds=[child subskill]`, `parentId=main topic`. **Never add main-skill ID into subtopic `skillIds`**: `validateFoundationSubtopicSkillLink` rejects IDs that are not embedded subskills. Existing CHEM/BIO legacy conventions cannot be copied blindly.
+- Coverage status: **10/25** main skills (39/90 subskills) have indexed first/second-secondary foundation chapters; **15/25** (51/90) lack corresponding foundation chapters. Indexed does not mean chapter-level explanation has been visually reviewed.
+- Initial editable access proposal: **26 free topics** (5 main + 21 child), 89 locked; all remain hidden until approved.
+- `node scripts/verify-phys26-foundation-plan.mjs` is the local static gate. Actual Node CI and source-page review are pending. No verified questions, crops, or drills have been added.
