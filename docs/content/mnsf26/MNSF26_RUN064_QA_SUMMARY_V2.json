@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 2,
+  "bank": "MNSF26",
+  "run": "RUN064",
+  "stage": "QA_LOCK",
+  "status": "IN_PROGRESS_NOT_PASS_LOCKED",
+  "supersedes": "MNSF26_RUN064_QA_SUMMARY_V1.json",
+  "independentFullBookStructural": {
+    "canonicalSourceKeys": 2135,
+    "activePayloads": 2129,
+    "excluded": 6,
+    "libraryFullPayloadKeys": 2091,
+    "githubOnlyFullPayloadKeys": 38,
+    "rawArchiveImagesShaVerified": 2135,
+    "hashMismatches": 0,
+    "missingRequiredMasterFields": 0
+  },
+  "independentSemanticVisual": {
+    "uniqueCropsReviewed": 100,
+    "qaPass": 86,
+    "priorHoldReviewPreserved": 12,
+    "newReviewRequired": 2,
+    "remainingActive": 2029,
+    "fullBookPass": false
+  },
+  "failClosedQAOverrides": [
+    {
+      "sourceKey": "MNSF26-AR-T057-Q10",
+      "patch": "MNSF26_RUN064_QA_AR_T057_Q10_REVIEW_PATCH_V1.json"
+    },
+    {
+      "sourceKey": "MNSF26-AR-T060-Q10",
+      "patch": "MNSF26_RUN064_QA_AR_T060_Q10_REVIEW_PATCH_V1.json"
+    }
+  ],
+  "sameSourceImageHashForBoth": "28e28fa25f77f4d311494767a8caf8a6a09ff7cb781f95ae6ca49e24b6c43f2a",
+  "sourceIssue": "The mathematical clock value 12 does not choose noon vs midnight in the visible options.",
+  "effectiveStatusCountsPendingReindex": {
+    "mastered": 1775,
+    "hold": 319,
+    "review": 35,
+    "excluded": 6
+  },
+  "gates": {
+    "dedupe": "BLOCKED_BY_QA",
+    "r2": "BLOCKED",
+    "import": "BLOCKED",
+    "productionE2E": "BLOCKED"
+  },
+  "productionServicesUntouched": true
+}
