@@ -11,11 +11,11 @@ function routeBetween(start, end) {
 }
 
 const createCode = routeBetween('"/access-codes",', '"/access-codes/:id",');
-assert.match(createCode, /B2BPackageModel\\.findOne/, "Code creation must resolve its package");
-assert.match(createCode, /linkedPackage\\.schoolId[\\s\\S]*payload\\.schoolId|payload\\.schoolId[\\s\\S]*linkedPackage\\.schoolId/, "Code creation must compare package and code schools");
+assert.match(createCode, /B2BPackageModel\.findOne/, "Code creation must resolve its package");
+assert.match(createCode, /linkedPackage\.schoolId[\s\S]*payload\.schoolId|payload\.schoolId[\s\S]*linkedPackage\.schoolId/, "Code creation must compare package and code schools");
 
 const updateCode = routeBetween('"/access-codes/:id",', 'contentSchoolCommercialRouter.delete(');
-assert.match(updateCode, /hasSchoolIdManagementScope[\\s\\S]*payload\\.schoolId|payload\\.schoolId[\\s\\S]*hasSchoolIdManagementScope/, "Code updates must validate the destination school");
-assert.match(updateCode, /B2BPackageModel\\.findOne/, "Code updates must validate destination package ownership");
+assert.match(updateCode, /hasSchoolIdManagementScope[\s\S]*payload\.schoolId|payload\.schoolId[\s\S]*hasSchoolIdManagementScope/, "Code updates must validate the destination school");
+assert.match(updateCode, /B2BPackageModel\.findOne/, "Code updates must validate destination package ownership");
 
 console.log("PASS: school commercial code boundaries");
