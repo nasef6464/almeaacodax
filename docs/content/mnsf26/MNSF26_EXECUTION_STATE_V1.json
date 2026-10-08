@@ -23,10 +23,10 @@
     {
       "name": "mapping",
       "status": "IN_PROGRESS",
-      "done": 1219,
+      "done": 1291,
       "total": 2135,
       "rule": "QUESTION_MATH_REQUIRED; source label preserved; no group-title auto approval",
-      "reviewHold": 213,
+      "reviewHold": 229,
       "evidence": [
         "Ready130 audit candidate-pass 74",
         "Adjudication batch001 added 17 question-level approvals",
@@ -37,7 +37,7 @@
     {
       "name": "enrichment",
       "status": "IN_PROGRESS_LEGACY_SUBSET",
-      "done": 1219,
+      "done": 1291,
       "total": 2135,
       "rule": "answer+solution+educationalExplanation+difficulty+difficultyReason+fingerprints",
       "mappingApprovedWithinReady": 129
@@ -132,14 +132,31 @@
     "MNSF26-GEO-T037-Q14 HOLD لا يوجد قياس زاوية مركزية أو نسبة قوس في الرسم، والاتجاه الظاهر لا يكفي لإثبات زاوية؛ HOLD.",
     "MNSF26-GEO-T039-Q10 HOLD أطوال الأجزاء الأفقية في الرسم غير معطاة، فلا يمكن تعيين و ن أو مقارنتها بـ10 سم دون افتراض مقياس الرسم.",
     "MNSF26-GEO-T040-Q14 HOLD علامات الارتفاع والموضع لا تكفي لتأكيد أن الأجزاء تشكل مثلثات متشابهة بمقياس واحد دون تحكيم الرسم، والناتج المباشر لا يوافق الخيارات؛ HOLD.",
-    "MNSF26-GEO-T040-Q15 HOLD القطعة المطلوبة غير محددة بوضوح في نص القص، وتعيين أبعاد المعين لا يتبع من المساحة وحدها؛ HOLD."
+    "MNSF26-GEO-T040-Q15 HOLD القطعة المطلوبة غير محددة بوضوح في نص القص، وتعيين أبعاد المعين لا يتبع من المساحة وحدها؛ HOLD.",
+    "MNSF26-GEO-T041-Q09 HOLD المساحة30−4−π/2≈24.43، ولا تظهر هذه القيمة في الخيارات؛ HOLD لمراجعة أبعاد النافذة والخيارات.",
+    "MNSF26-GEO-T041-Q10 HOLD عند جمع المقاطع الأفقية والرأسية الظاهرة ينتج 50+24س=130 ومنه س=10/3 غير موجود في الخيارات؛ HOLD لتدقيق العلامات.",
+    "MNSF26-GEO-T041-Q15 HOLD زاويتا س وص في الرسم عند تقاطع وتر وضلع دون بيانات إضافية كافية لتحديدهما مجموعًا بصورة مستقلة؛ HOLD.",
+    "MNSF26-GEO-T041-Q20 HOLD تحديد القوس المقابل لس من العلامات المتاحة غير قاطع؛ HOLD بدل افتراض زاوية مركزية غير معطاة.",
+    "MNSF26-GEO-T042-Q05 HOLD تظهر ارتفاعات المستطيل السفلي بالنسبة للمربعات دون قياس مثبت؛ النسبة الدقيقة بين أ+ب والكل لا تثبت من الرسم وحده؛ HOLD.",
+    "MNSF26-GEO-T042-Q06 HOLD قاعدة المثلث مجهولة؛ لا يمكن تعيين مساحته ولا المقارنة؛ HOLD.",
+    "MNSF26-GEO-T042-Q08 HOLD صياغة أصغر أبعاد المستطيل واتجاه شبكة100 مربع لا تحدد عدد صفوف الشبكة ولا قياس كل مربع؛ HOLD.",
+    "MNSF26-GEO-T042-Q15 HOLD الرسم لا يحدد قطري المعين بصورة كافية، والحساب المباشر من الأضلاع لا ينتج خيارًا موثقًا؛ HOLD.",
+    "MNSF26-GEO-T042-Q16 HOLD لا يمكن استنتاج القوسين المقارنين من العلامات دون تثبيت اتصال الرؤوس بالدائرة؛ HOLD.",
+    "MNSF26-GEO-T043-Q12 HOLD موضع رؤوس المثلثين لا يحدد طول قاعدتيهما بدقة من علامات الصورة؛ HOLD.",
+    "MNSF26-GEO-T043-Q13 HOLD الحدود الداخلية للمستطيل غير موضحة بعلامات تحدد عدد خلاياه؛ HOLD بدل فرض توزيع الخلايا.",
+    "MNSF26-GEO-T044-Q03 HOLD المحيط وحده لا يحدد قاعدة وارتفاع متوازي الأضلاع أو أبعاد المستطيل؛ HOLD.",
+    "MNSF26-GEO-T044-Q06 HOLD المراكز والمسافات بينهما في الرسم لا تحدد بصورة قاطعة جميع أطوال أضلاع المثلث من أنصاف الأقطار فقط؛ HOLD.",
+    "MNSF26-GEO-T044-Q11 HOLD زاوية المثلث60°، لكن الزاوية المختارة في رباعي غير معلوم النوع قد تكون أقل أو أكبر؛ HOLD.",
+    "MNSF26-GEO-T045-Q01 HOLD تحديد عرض المستطيل الكامل من الشكل دون رقم صريح لا يثبت محيطًا وحيدًا؛ HOLD.",
+    "MNSF26-GEO-T045-Q12 HOLD علامة8 في الرسم لا تثبت بوضوح أي ضلع من المثلث، وبالتالي لا تثبت مساحته؛ HOLD."
   ],
   "nextCursor": {
     "stage": "QUESTION_MASTERING",
     "strategy": "ONE_PASS_VISUAL_MATH",
     "priority": [
-      "geometry T41 onward (next new questions)",
-      "GEO T31/Q11-Q20 Library-only pending official GitHub write",
+      "geometry T46 onward",
+      "reconcile Run053 Library-only GEO T41 Q01-Q05 and T43 Q01-Q02,Q08-Q10,Q16-Q17 by authorized GitHub route",
+      "GEO T31/Q11-Q20 Library-only",
       "AR T53/Q17,Q20 and T62/Q09-Q12 Library-only"
     ]
   },
@@ -154,26 +171,21 @@
     "A question is processed once into a complete master payload; QA validates it rather than recreating it"
   ],
   "lastCompletedBatch": {
-    "name": "RUN053_GEO_T36_T40",
-    "completeMasterRecords": 87,
-    "holds": 9,
-    "questionsProcessed": 96,
-    "effectiveMasteredComplete": 1219,
-    "source": "Run021 exact crop archive SHA-256 verified, 96 unique sourceKeys, complete payloads persisted in five GitHub files",
-    "commitEvidence": [
-      "2724c1e7abdf40fd666f88cd211c31d34088af12",
-      "ffcaa569540681ec5b275450872dc25b045b6e18",
-      "e4888f781a6c4259dea5ba1afaa3a281ae17c2d4",
-      "ca4ec195a6489cd35240f7ebb2396ae192f49c0a",
-      "d1d038ca74505da2363bd03a58e56324c6d32b6b"
-    ]
+    "name": "RUN053_GEO_T36_T45_PARTIAL_GITHUB_PERSISTED",
+    "completeMasterRecords": 159,
+    "holds": 25,
+    "questionsProcessed": 184,
+    "effectiveMasteredComplete": 1291,
+    "visualInspected": 196,
+    "libraryOnly": 12,
+    "source": "Run021 exact embedded WEBP crop archive, SHA-256 verified; all 196 full records in /MNSF26/Run053 Library; 184 unique records persisted on GitHub"
   },
   "executionContract": "docs/content/mnsf26/MNSF26_LOCKED_PIPELINE_V1.json",
   "activeStage": {
     "order": 2,
     "name": "QUESTION_MASTERING",
     "status": "IN_PROGRESS",
-    "done": 1219,
+    "done": 1291,
     "total": 2135,
     "mode": "ONE_PASS_PER_QUESTION",
     "requiredPayload": [
@@ -190,7 +202,7 @@
       "ideaFingerprint"
     ],
     "gate": "No question advances without complete payload or explicit HOLD/REVIEW.",
-    "masteredComplete": 1219
+    "masteredComplete": 1291
   },
   "reconciliationRun049": {
     "source": "Library /MNSF26/Run048 full JSON records, validated unique sourceKeys and required fields, persisted to GitHub complete test files",
@@ -233,19 +245,29 @@
   "reconciliationRun053": {
     "baseMastered": 1132,
     "baseHold": 204,
-    "githubPersistedUnique": 96,
-    "masteredAdded": 87,
-    "holdsAdded": 9,
-    "newOfficialMastered": 1219,
-    "newOfficialHold": 213,
-    "shaVerified": 96,
+    "visualInspected": 196,
+    "githubPersistedUnique": 184,
+    "masteredAdded": 159,
+    "holdsAdded": 25,
+    "newOfficialMastered": 1291,
+    "newOfficialHold": 229,
+    "libraryOnly": 12,
+    "libraryOnlyMastered": 10,
+    "libraryOnlyHold": 2,
+    "shaVerified": 196,
     "tests": [
       36,
       37,
       38,
       39,
-      40
+      40,
+      41,
+      42,
+      43,
+      44,
+      45
     ],
+    "blocker": "GitHub connector safety checks reject a few valid payload writes even in 2-3 question shards; complete records preserved in Library; no forced write or invented counts",
     "stageOrderUnchanged": true,
     "productionServicesUntouched": true
   }
