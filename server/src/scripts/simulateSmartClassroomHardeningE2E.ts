@@ -5,6 +5,7 @@ import { io as connectSocket, type Socket } from "socket.io-client";
 import { createApp } from "../app.js";
 import { env } from "../config/env.js";
 import { createSocketServer } from "../sockets/index.js";
+import { closeRedisClients } from "../config/redis.js";
 import { signAccessToken } from "../utils/jwt.js";
 import { GroupModel } from "../models/Group.js";
 import { UserModel } from "../models/User.js";
@@ -24,6 +25,7 @@ const createdSchoolIds: string[] = [];
 const sockets: Socket[] = [];
 const requestMetrics: Array<{ durationMs: number; responseBytes: number }> = [];
 let server: http.Server | null = null;
+let socketServer: ReturnType<typeof createSocketServer> | null = null;
 let apiBaseUrl = "";
 let socketBaseUrl = "";
 let csrfToken = "";
@@ -152,7 +154,7 @@ async function run() {
 
   const app = createApp();
   server = http.createServer(app);
-  createSocketServer(server);
+  socketServer = createSocketServer(server);
   await new Promise<void>((resolve) => server!.listen(0, "127.0.0.1", resolve));
   const port = (server.address() as any).port;
   socketBaseUrl = `http://127.0.0.1:${port}`;
@@ -383,10 +385,26 @@ run()
     process.exitCode = 1;
   })
   .finally(async () => {
-    try { await cleanup(); } catch (error) { console.error("Smart Classroom E2E cleanup failed", error); }
-    if (server) {
-      server.closeAllConnections?.();
-      await new Promise<void>((resolve) => server!.close(() => resolve()));
+    try {
+      await cleanup();
+      // Closing the HTTP listener alone does not close Socket.IO websocket
+      // listeners and their Redis adapter connections. Terminate both.
+      if (socketServer) {
+        await new Promise<void>((resolve) => socketServer!.close(() => resolve()));
+      }
+      if (server?.listening) {
+        server.closeAllConnections?.();
+        await new Promise<void>((resolve) => server!.close(() => resolve()));
+      }
+      await mongoose.disconnect();
+      await closeRedisClients();
+    } catch (error) {
+      console.error("Smart Classroom E2E teardown failed", error);
+      process.exitCode = 1;
+    } finally {
+      // This is a dedicated, disposable E2E CLI only. Socket.IO's duplicated
+      // Redis subscriptions can outlive its listener and otherwise hold the
+      // Node process open after all assertions pass.
+      process.exit(process.exitCode || 0);
     }
-    await mongoose.disconnect();
   });
