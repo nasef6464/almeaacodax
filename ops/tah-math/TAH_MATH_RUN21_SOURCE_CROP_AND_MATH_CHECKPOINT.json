@@ -1,0 +1,33 @@
+{
+  "project": "TAH-MATH",
+  "run": "RUN21",
+  "date": "2026-10-08",
+  "branch": "content/tah-math-full-taxonomy-closure",
+  "bank": "YLM26",
+  "officialFoundationPdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+  "reviewedFromOfficialSourceThisRun": 200,
+  "uniqueSourceQuestionCodesReviewedThisRun": 200,
+  "sourceCropGeometryPass": 126,
+  "sourceCropReviewRequired": 74,
+  "oldCropsWithForeignQuestionAnchor": 49,
+  "newCropsWithForeignQuestionAnchor": 0,
+  "sourceOptionMarkersLocated": 200,
+  "additionalIndependentMathSolutions": 33,
+  "liveAtlasAnswerMatchesOnAdditionalMath": 33,
+  "apparentDiscrepanciesResolvedOnSourceRecheck": 4,
+  "liveYlm26ReadOnly": {
+    "total": 326,
+    "sourcePageAndQuestionMatches": 326,
+    "sourceImageHashUrlMatches": 326,
+    "placeholderOptions": 326,
+    "missingFoundationReference": 326,
+    "missingQuestionFingerprint": 326,
+    "missingTeachingFingerprint": 326,
+    "mediumOnly": 326
+  },
+  "fullPedagogyClosedThisRun": 0,
+  "productionMutation": false,
+  "sourceCropRepairAppliedToProduction": false,
+  "status": "IN_PROGRESS",
+  "next": "Resolve 74 crop-stem boundary reviews, transcribe all four options and finish option-by-option pedagogy for YLM26; approve reversible correction P090-Q10; then COL26."
+}
