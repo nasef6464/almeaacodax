@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN051_AR_T52",
+  "directImageInspection": true,
+  "sourceCropArchive": "/MNSF26/Run017/mnsf26_arithmetic_crops_run017.zip",
+  "sourceInventory": "/MNSF26/Run017/MNSF26_FULLBOOK_CROP_INVENTORY_V1.json",
+  "masteredCount": 0,
+  "holdCount": 1,
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T052-Q18",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "testNumber": 52,
+        "pdfPage": 105,
+        "sourceSkillLabel": "التحويلات والمعادلات",
+        "printedQuestionNumber": 18,
+        "cropFile": "AR/AR-T052-Q18.webp",
+        "cropSha256": "ad51c5eceaaff94d636f5e19a94cbc293e2a914ca5e7e4b76d94ecac16e3d191",
+        "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
+      },
+      "imageHash": "ad51c5eceaaff94d636f5e19a94cbc293e2a914ca5e7e4b76d94ecac16e3d191",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
+      "status": "HOLD",
+      "questionText": "اشترى شخص 100 سهم بمبلغ6000 ريال ونقصت قيمة السهم؛ ما نسبة الخسارة؟",
+      "holdReason": "قيمة نقصان السهم في الصورة قد تكون 20 أو200 ريال، والنتيجة تختلف جذريًا؛ يلزم تكبير.",
+      "canonicalMainSkill": null,
+      "canonicalSubskill": null,
+      "correctAnswer": null,
+      "stepByStepSolution": null,
+      "educationalExplanation": null,
+      "difficulty": null,
+      "difficultyReason": null,
+      "contentFingerprint": "aecaa73c57241f81713dbc580f3c6cc5c97ed39b59ef4c7f27db9edfde797fcf",
+      "ideaFingerprint": "358e9934c253623278dab7c10d3dace338be06a0ef937fd65f59d3239f73bbcf"
+    }
+  ],
+  "part": "Q18"
+}
