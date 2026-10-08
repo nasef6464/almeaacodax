@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN060_AR_T17_RECOVERY",
+  "previouslyCounted": true,
+  "records": [
+    {
+      "id": "MNSF26-AR-T017-Q06",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T017",
+        "sourceLesson": "جمع الأعداد - المتتابعات - ضرب الأعداد"
+      },
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_3",
+      "correctAnswer": "ب",
+      "answerValue": "80 ألف",
+      "stepByStepSolution": "الأعداد 10،20،40 ألف تتضاعف سنويًا؛ العدد التالي=40×2=80 ألف.",
+      "educationalExplanation": "نلاحظ نسبة ثابتة 2 بين كل حد والذي يليه.",
+      "difficulty": "Easy",
+      "difficultyReason": "تضاعف مباشر.",
+      "imageHash": "7cd689707270dffa6bc6bb4eb384047bcc5c0d241b98bf781cfa14c78bc65825",
+      "contentFingerprint": "8a08f714ea70dea6485eae328832afce518e257e1ff1da9076d661ecb94f37e9",
+      "ideaFingerprint": "05d7730cbe5aa8dea5f028ab5deafac88ada35b8d853a47c912de93eabaed99a",
+      "status": "MASTERED"
+    }
+  ]
+}
