@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN059_AR_T15_DIRECT_VISUAL",
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T015-Q01",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+        "testNumber": 15,
+        "pdfPage": 28,
+        "sourceSkillLabel": "جمع الأعداد - المتتابعات - ضرب الأعداد",
+        "sourceTopic": "عنوان المصدر للتوثيق فقط؛ التصنيف من رياضيات الصورة",
+        "sourceLesson": "الحساب والجبر اختبار015 سؤال01",
+        "printedQuestionNumber": 1,
+        "cropFile": "mnsf26_fullbook_crops/AR/AR-T015-Q01.webp",
+        "cropSha256": "1cec5130df577e8fcbf3645cdba8db2f4c709be432581febafc07298ef1cdb85",
+        "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
+      },
+      "imageHash": "1cec5130df577e8fcbf3645cdba8db2f4c709be432581febafc07298ef1cdb85",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN059_2026-10-08_T015_Q01",
+      "status": "REVIEW",
+      "questionText": "هرم أعداد: الصف الأعلى 15،9،3،3 ثم8،4،2 ثم4،2؛ أوجد الرقم الأخير.",
+      "canonicalMainSkill": null,
+      "canonicalSubskill": null,
+      "correctAnswer": null,
+      "stepByStepSolution": null,
+      "educationalExplanation": "REVIEW fail-closed: النمط غير حسابي بفارق ثابت؛ 01_3 مرشح يحتاج اعتماد تصنيف الأنماط المركبة.؛ الإجابة الرياضية المرشحة: 2 (أ)؛ الحل: كل دائرة أسفل دائرتين تساوي مجموعهما مقسومًا على3: (15+9)/3=8، (9+3)/3=4، (3+3)/3=2؛ ثم(8+4)/3=4، (4+2)/3=2؛ الأخير(4+2)/3=2.",
+      "difficulty": null,
+      "difficultyReason": "النمط غير حسابي بفارق ثابت؛ 01_3 مرشح يحتاج اعتماد تصنيف الأنماط المركبة.",
+      "contentFingerprint": "c78dcd38e4c09f622409700643d29b225a545d8e33399ab3a7be3041631653e0",
+      "ideaFingerprint": "3878af79682b10bb3b5a8c825c50404d09511a7d20a517a73140a50f35ed45cf",
+      "holdReason": "النمط غير حسابي بفارق ثابت؛ 01_3 مرشح يحتاج اعتماد تصنيف الأنماط المركبة.",
+      "proposedCanonicalSubskill": "sub_quant_01_3"
+    }
+  ]
+}
