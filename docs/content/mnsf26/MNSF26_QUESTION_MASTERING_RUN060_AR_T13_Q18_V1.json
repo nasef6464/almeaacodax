@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN060_AR_T13_RECOVERY",
+  "previouslyCounted": true,
+  "records": [
+    {
+      "id": "MNSF26-AR-T013-Q18",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T013",
+        "sourceLesson": "الأعداد الأولية - العوامل الأولى"
+      },
+      "canonicalMainSkill": "skill_quant_14",
+      "canonicalSubskill": "sub_quant_14_4",
+      "correctAnswer": "د",
+      "answerValue": "60 دقيقة",
+      "stepByStepSolution": "دورة فيصل15 دقيقة ودورة فارس20 دقيقة؛ أول تزامن بعد م.م.أ(15،20)=60 دقيقة.",
+      "educationalExplanation": "التقاء دورتين دوريتين يحدث عند المضاعف المشترك الأصغر.",
+      "difficulty": "Easy",
+      "difficultyReason": "م.م.أ زمني مباشر.",
+      "imageHash": "da1671810493b550be5fc39936ca23039c2e5f1bf90514f3fc8a8e9ac563c643",
+      "contentFingerprint": "21c43b4d3118d64d5afd50efbaf2dee9b83ab565856fc074b59b1433c7634918",
+      "ideaFingerprint": "151bc04ec894dedde450776d0bf355dc9b69d9e36553568de5bbdb8d2cd929b3",
+      "status": "MASTERED"
+    }
+  ]
+}
