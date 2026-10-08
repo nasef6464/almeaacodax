@@ -1,0 +1,23 @@
+{
+  "bank": "MNSF26",
+  "run": "RUN071",
+  "stage": "QA_LOCK",
+  "source": "Run021 original geometry images / Run066 SHA-verified contact sheets",
+  "rows": [
+    {
+      "key": "MNSF26-GEO-T005-Q20",
+      "imageHash": "4e19ee346c8fd0e58044201bd807f4a2b152694213df078dd4563ea77837df13",
+      "expected": "د",
+      "proof": "Lower triangle equilateral: ن=60; م=40; upper apex=180-2×40=100.",
+      "verdict": "QA_PASS"
+    },
+    {
+      "key": "MNSF26-GEO-T006-Q04",
+      "imageHash": "bdff95a53d73e71cb7d816159565390037d6e80f6d08238630db219f4844b967",
+      "expected": "د",
+      "proof": "Both triangles have a 45-degree base angle, so the other two angles in each total 135. Combined 270.",
+      "verdict": "QA_PASS"
+    }
+  ],
+  "qaFullBookPass": false
+}
