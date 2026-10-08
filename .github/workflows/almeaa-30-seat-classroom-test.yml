@@ -6,6 +6,7 @@ on:
       - test/almeaa-isolated-20261008
     paths:
       - .github/workflows/almeaa-30-seat-classroom-test.yml
+      - server/src/scripts/simulateSmartClassroomHardeningE2E.ts
   workflow_dispatch:
 
 permissions:
