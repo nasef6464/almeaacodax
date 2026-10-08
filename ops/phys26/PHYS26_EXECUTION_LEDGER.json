@@ -54,20 +54,26 @@
     "foundationMissingSubSkillChapters": 51,
     "initialFreeTopicProposals": 26,
     "physicsSectionProposals": 25,
-    "foundationTopicsLinkedToSectionProposals": 115
+    "foundationTopicsLinkedToSectionProposals": 115,
+    "sourceQuestionNumberLabelsIndexed": 2064,
+    "sourceLessonsFullyNumberIndexed": 31,
+    "sourceSectionsNumberIndexed": 61,
+    "firstSectionQuestionNumbersIndexed": 1174,
+    "secondSectionQuestionNumbersIndexed": 890,
+    "questionNumberSequenceMissing": 0
   },
   "currentRun": {
-    "result": "PHYS26_FOUNDATION_AND_SECTION_DESIGN_COMMITTED",
+    "result": "SOURCE_NUMBER_INDEX_2064_COMMITTED",
     "publishedToProduction": false,
-    "tests": "V8_POSTCOMMIT_DESIGN_PASS; NODE_CI_PENDING",
+    "tests": "SOURCE_SHA256_MATCH; PDF_NATIVE_TEXT_GEOMETRY_31_OF_31_SEQUENCES_COMPLETE; 61_SECTION_HEADERS_LOCATED; ONE_SPLIT_YEAR_MARKER_EXCLUDED; NO_LOCAL_IMPORT",
     "notes": [
-      "115 topic proposals, 25 section proposals committed on dedicated branch",
-      "90 child topic skillIds exclude parent skill IDs",
-      "All topics remain hidden; no question or explanation authored",
-      "10 main/39 subskill groups have indexed foundation references; 15 main/51 subskill groups lack foundation chapters",
-      "Legacy three physics sections and nine skills unchanged",
-      "Source PDF full-page extraction still unavailable in Files read"
+      "Freshly uploaded PDFs materialized and opened locally; prior HTTP 403 source access issue resolved for this run.",
+      "Book collection source: 162 PDF pages, 31 independently numbered lessons, 2064 numbered positions, 1174 in 31 first-sections and 890 in 30 second-sections; lesson 25 has no second section.",
+      "No missing integer in each lesson's 1..N question label range after excluding a split year label on PDF page 22.",
+      "Question wording, options, answer keys, image crops, per-question subskills and licensing NOT yet approved. New counts represent source label indexing ONLY.",
+      "Do not publish source page images or questions to GitHub without rights clearance; protect Atlas, existing nine physics skills and 36 historical progress rows.",
+      "Metadata audit: ops/phys26/PHYS26_SOURCE_NUMBER_AUDIT_2064.json; local full 2064-entry bounding-box index is not committed."
     ]
   },
-  "next": "Run Node source and foundation gates in CI, read PDFs to validate source questions, and build content-backed foundation context before import."
+  "next": "Use 2064 numbered source labels to generate and inspect crop candidates in isolated environment, verify actual A/B/C/D and answers from visual pages, map each record to PHYS26 main/subskill, and address rights before publication. Do not count labels as approved questions."
 }
