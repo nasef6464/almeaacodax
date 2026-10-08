@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN054_GEO_T23",
+  "directImageInspection": true,
+  "sourceCropArchive": "/MNSF26/Run021/mnsf26_geometry_crops_run021.zip",
+  "sourceInventory": "/MNSF26/Run021/MNSF26_GEOMETRY_CROP_MANIFEST_V1.json",
+  "records": [
+    {
+      "sourceKey": "MNSF26-GEO-T023-Q17",
+      "sourceProvenance": {
+        "sourcePart": "الهندسة",
+        "bookCode": "GEO",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس - الهندسة - معدل.pdf",
+        "testNumber": 23,
+        "pdfPage": 44,
+        "sourceSkillLabel": "عنوان مجموعة المصدر غير معتمد كتصنيف رياضي للسؤال",
+        "sourceTopic": "الهندسة / الاختبار المرقم من الكتاب الأصلي",
+        "sourceLesson": "اختبار الهندسة 023، سؤال 17",
+        "printedQuestionNumber": 17,
+        "cropFile": "MNSF26-GEO-T023-Q17.webp",
+        "cropSha256": "c9eacda65c3d513d68fdd83b45e8a6df596e0b40401c0855f6b95dd3b93fcf9a",
+        "cropContract": "EMBEDDED_XOBJECT_OR_EXACT_COMPOSITE_SLICE"
+      },
+      "imageHash": "c9eacda65c3d513d68fdd83b45e8a6df596e0b40401c0855f6b95dd3b93fcf9a",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T023_Q17",
+      "status": "HOLD",
+      "questionText": "شكل متماثل حول محور الصادات وزواياه 80 و40؛ قارن زاويتين معرفتين بثلاث نقاط",
+      "canonicalMainSkill": null,
+      "canonicalSubskill": null,
+      "correctAnswer": null,
+      "stepByStepSolution": null,
+      "educationalExplanation": "غير معتمد للنشر؛ سبب الحجز: تعيين رأس الزاوية الأولى والثانية من أسماء ن وس وص ود لا يتضح من الصورة بما يسمح بمقارنة آمنة.",
+      "difficulty": null,
+      "difficultyReason": "تعيين رأس الزاوية الأولى والثانية من أسماء ن وس وص ود لا يتضح من الصورة بما يسمح بمقارنة آمنة.",
+      "contentFingerprint": "2a60c8c76c33596bbe2ca6e604ca17157bad9aa0685d64097a1ebdce5f598292",
+      "ideaFingerprint": "efe22a056501a687dd7073ddfe1b37c2c2d6bfca8a9050ccfb16d0a18e433a06",
+      "holdReason": "تعيين رأس الزاوية الأولى والثانية من أسماء ن وس وص ود لا يتضح من الصورة بما يسمح بمقارنة آمنة."
+    }
+  ]
+}
