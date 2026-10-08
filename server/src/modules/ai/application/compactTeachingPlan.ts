@@ -16,14 +16,14 @@ export function compactTeachingSchema(mode: CompactTeachingMode, language?: Teac
     format: { type: 'string', enum: ['compact_v1'] },
     mode: { type: 'string', enum: [mode] },
     language: { type: 'string', enum: language ? [language] : ['ar-SA', 'en-US'] },
-    narration: { ...text, description: 'Short spoken explanation, in requested language.' },
-    board: { ...text, description: 'LaTeX formula without dollar delimiters, or plain text. No HTML.' },
+    narration: { ...text, description: 'One short spoken idea, at most 8 words, in requested language.' },
+    board: { ...text, description: 'Only the given expression or concise reply; no options or step headings. LaTeX without dollars or plain text. No HTML.' },
     kind,
   };
   if (mode === 'lesson') Object.assign(properties, {
     prompt: { ...text, description: 'Ask for the next step before giving the solution.' },
-    explanation: { ...text, description: 'Short solution narration using the trusted reference.' },
-    solution: { ...text, description: 'Solution steps and result as LaTeX or plain text.' },
+    explanation: { ...text, description: 'One short solution narration, at most 8 words, using the trusted reference.' },
+    solution: { type: 'array', items: { ...text, description: 'One compact operation or reasoning step, at most 160 characters; no options or headings.' }, minItems: 1, maxItems: 3, description: 'At most three compact steps including the result. Do not repeat the question or enumerate wrong options.' },
     solutionKind: kind,
   });
   return { type: 'object', properties, required: Object.keys(properties), additionalProperties: false };
@@ -44,12 +44,17 @@ export function compileCompactTeachingPlan(value: unknown, expected?: {
     (expected && (item.mode !== expected.mode || (expected.language && item.language !== expected.language)))) return null;
   const narration = item.mode === 'lesson' && typeof item.narration === 'string' && typeof item.prompt === 'string'
     ? `${item.narration} ${item.prompt}` : item.narration;
+  let solution = item.solution;
+  if (Array.isArray(solution)) {
+    if (solution.length < 1 || solution.length > 3 || !solution.every(step => typeof step === 'string' && step.trim() && step.length <= 160)) return null;
+    solution = solution.map(step => mathContent(step, item.solutionKind)).join('\n');
+  }
   const first = { id: 'given', narration,
     actions: [{ type: 'write', id: 'given', kind: item.kind, content: mathContent(item.board, item.kind) }],
     ...(item.mode === 'lesson' ? { checkpoint: { prompt: item.prompt, hints: checkpointHints(String(item.prompt), String(item.language)) } } : {}) };
   return validateTeachingStoryboard({ version: 1, language: item.language, scenes: [first,
     ...(item.mode === 'lesson' ? [{ id: 'solution', narration: item.explanation, actions: [
-      { type: 'write', id: 'solution', kind: item.solutionKind, content: mathContent(item.solution, item.solutionKind) },
+      { type: 'write', id: 'solution', kind: item.solutionKind, content: mathContent(solution, item.solutionKind) },
       { type: 'box', target: 'solution' },
     ] }] : []),
   ] });
@@ -59,7 +64,7 @@ export function compactTeachingInstruction(mode: CompactTeachingMode, language?:
   return `حوّل الشرح المرجعي إلى محتوى سبورة قصير؛ لا تعِد الحل من الصفر. أرجع JSON فقط بالشكل compact_v1، mode=${mode}.
 ${language ? `كل النصوص المنطوقة والسؤال باللغة ${language}.` : 'اختر ar-SA أو en-US حسب طلب الطالب ولغة السؤال.'}
 الحقول: format, mode, language, narration (فكرة قصيرة), board (المعطيات أو الرد), kind (formula أو text).
-${mode === 'lesson' ? 'أضف prompt لسؤال الخطوة التالية دون تضمين إجابته، explanation لشرح الحل، solution لخطوات الحل والنتيجة، solutionKind. لا تكتب hints؛ الكود يقدم توجيهين دون الإجابة. لا تكشف إجابة التدريب في narration أو board.' : 'أجب عن الاستفسار الحالي فقط؛ عند الخطأ اذكر سببه وأعط تلميحاً موجهاً دون كشف الحل. لا تضف حقول التدريب أو الحل الكامل.'}
+${mode === 'lesson' ? 'أضف prompt لسؤال الخطوة التالية دون إجابته، explanation جملة تفسير قصيرة، solution مصفوفة من 1 إلى 3 عمليات قصيرة تشمل النتيجة، solutionKind. كل عملية <=160 حرفًا. لا تكرر نص السؤال أو تختبر كل الخيارات الخاطئة؛ قدم الطريق المباشر من المرجع. لا تكتب hints؛ الكود يقدم توجيهين دون الإجابة. لا تكشف إجابة التدريب في narration أو board.' : 'أجب عن الاستفسار الحالي فقط؛ عند الخطأ اذكر سببه وأعط تلميحاً موجهاً دون كشف الحل. لا تضف حقول التدريب أو الحل الكامل.'}
 الكود يبني المشاهد والأفعال؛ لا تكتب scenes أو actions أو IDs. للمسائل الرياضية استخدم kind=formula وLaTeX بدون $، واهرب الشرطة المائلة وفق JSON.
 كل جملة منطوقة 8 كلمات كحد أقصى، السؤال 5 كلمات. استخدم فواصل أسطر JSON الصحيحة \\n عند الحاجة، ولا تكتب حرف n منفردًا كفاصل. لا تحيات ولا HTML ولا صور ولا تغيير درجات. استهدف أقل من 250 توكن كي تكتمل الاستجابة داخل حد 450.`;
 }

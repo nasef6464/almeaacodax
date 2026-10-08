@@ -1602,7 +1602,7 @@ aiRouter.post(
       String(aiReadableText.length),
       String(visualDescription.length),
       String(payload.tutorSessionId || ""),
-      ...(payload.boardMode ? [payload.boardMode, "compact-plan-v2-local-hints", payload.boardContext || ""] : []),
+      ...(payload.boardMode ? [payload.boardMode, "compact-plan-v3-bounded-prompt", payload.boardContext || ""] : []),
     ].join("::");
     const cacheKey = buildQuestionAssistantCacheKey({
       userId,
@@ -1752,6 +1752,7 @@ aiRouter.post(
     });
 
     const textPrompt = buildQuestionAssistantPrompt({
+      structuredBoard: Boolean(payload.boardMode),
       level: payload.helpLevel as QuestionHelpLevel,
       questionText,
       questionCode,

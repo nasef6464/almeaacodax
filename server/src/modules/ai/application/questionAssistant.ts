@@ -52,6 +52,7 @@ export const buildQuestionAssistantPrompt = (input: {
   studentMessage?: string;
   studentContextSummary?: string;
   hasImage: boolean;
+  structuredBoard?: boolean;
 }) => {
   const safeQuestionText = sanitizeQuestionAssistantText(input.questionText);
   const safeVisualDescription = sanitizeQuestionAssistantText(input.visualDescription || "");
@@ -70,9 +71,9 @@ export const buildQuestionAssistantPrompt = (input: {
   const prompt = [
     "أنت معلّم وشارح ذكي للسبورة التعليمية داخل منصة ALMEAA. هذا سياق مراجعة تعليمي مصرح به من الخادم، وليس اختبارًا نشطًا.",
     "ممنوع تعديل الدرجة أو الإتقان أو الادعاء بأنك صححت النتيجة؛ النتيجة محسوبة مسبقًا من الخادم.",
-    levelInstruction[input.level],
+    input.structuredBoard ? 'استخدم البيانات المرجعية التالية لإعداد محتوى مختصر حسب مخطط السبورة المحدد.' : levelInstruction[input.level],
     "ادخل في صلب الشرح والحل مباشرة. تجنب المقدمات الإنشائية المطولة وتجنب تكرار التحيات الرسمية (مثل: 'أهلاً بك يا بدر يسعدني...') في كل رد.",
-    "عند طلب الشرح أو الخطوات: لا تماطل ولا تكتفِ بطرح أسئلة مقابلة على الطالب، بل اكتب الشرح والحل العلمي/الرياضي كاملاً ومرتباً على السبورة فوراً.",
+    input.structuredBoard ? '' : "عند طلب الشرح أو الخطوات: لا تماطل ولا تكتفِ بطرح أسئلة مقابلة على الطالب، بل اكتب الشرح والحل العلمي/الرياضي كاملاً ومرتباً على السبورة فوراً.",
     safeStudentContext ? `سياق تعلم الطالب المحدود من المنصة:\n${safeStudentContext}` : "",
     input.hasImage
       ? "السؤال يحتوي صورة، لكن الصورة نفسها غير مرسلة لك. اعتمد على النص والشرح الموثوق، واذكر بوضوح إذا كان جزء بصري ضروري غير موصوف نصيًا."
@@ -86,6 +87,7 @@ export const buildQuestionAssistantPrompt = (input: {
     `الإجابة الصحيحة الموثوقة: ${correct}`,
     `الشرح الموثوق: ${safeExplanation || "لا يوجد شرح نصي موثوق متاح."}`,
     safeStudentMessage ? `سؤال الطالب الآن: ${safeStudentMessage}` : "",
+    ...(input.structuredBoard ? [] : [
     "قواعد الشرح للسبورة الذكية (أسلوب تفاعلي منظم مثل NotebookLM / Khan Academy):",
     "- في مسائل الرياضيات والقدرات الكمية: اكتب العمليات الرياضية والمعادلات بصيغتها الرياضية القياسية بالأرقام والرموز والـ LaTeX مثل ($2 \\times 9 - 3 = 18 - 3 = 15$)، وممنوع نهائيًا كتابة العمليات والأرقام كنصوص إنشائية (تجنب تماماً كتابة: 'سالب ثلاثة ضرب تسعة').",
     "- نظّم الشرح دائماً في شكل خطوات سبورة متسلسلة ومرقمة بوضوح تبدأ بـ 'الخطوة 1: ...' ثم 'الخطوة 2: ...' ثم 'الخطوة 3: ...':",
@@ -93,6 +95,7 @@ export const buildQuestionAssistantPrompt = (input: {
     "  الخطوة 2: خطوات الحساب والتعويض الرياضي خطوة بخطوة",
     "  الخطوة 3: الاستنتاج النهائي وتحديد الخيار الصحيح مع التعليل",
     "اجعل الرد بالعربية، عمليًا ومباشرًا وشاملاً للحل، مع إبراز النتيجة بوضوح.",
+    ]),
   ].filter(Boolean).join("\n");
 
   return prompt.slice(0, 8_000);

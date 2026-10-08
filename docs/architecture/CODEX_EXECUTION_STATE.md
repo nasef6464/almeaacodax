@@ -1,5 +1,10 @@
 # ALMEAA — Codex Execution State
 
+## Bounded structured prompt continuation — 2026-10-08
+- Baseline current main0a400e3a (#474):19SUCCESS3SKIPPED requiredCI PASS; production API/readiness/Vercel/PostDeploySmoke PASS; matching owned division replay confirms old hints replaced and observed prose separators cleaned,0 extra inference.
+- Fresh real division Arabic request fell back safely:5675ms,438 output, incomplete JSON. Root conflict: base text tutor demanded full verbose three-step prose while appended compact planner required short JSON. Branch codex/teaching-board-bounded-prompts isolates structured output instructions while preserving all sanitized trusted data, legacy text tutor and450 cap; solution schema max3 short items, compiler validates each<=160 chars and keeps legacy strings compatible.
+- Compiler/prompt isolation and existing teacher/phase9 tests PASS; servercheck/CI pending. Next required exact-head CI, deploy, raw hints + bounded real division Arabic/reply/English audit. Audible physical device and science review coverage remain NOT PROVEN.
+
 ## Checkpoint coaching and prose continuation — 2026-10-08
 - Current baseline main e35dd8af includes published #470 spoken-math merge138c037894b5 and unrelated verbal certification; original checkout preserved.
 - Branch codex/teaching-board-safe-hints: two fixed procedural hints selected by step/language and enforced by shared validator for legacy/cached plans; compact schema omits generated hints, board cache revision2. Browser recovers observed escaped/bare n prose separators only at clear headings/list boundaries, preserving mathematical n and LaTeX nu/neq.

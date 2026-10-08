@@ -1,4 +1,11 @@
 import assert from 'node:assert/strict';
+import { buildQuestionAssistantPrompt } from '../server/src/modules/ai/application/questionAssistant';
+const promptInput = { level: 'steps' as const, questionText: '2 times 5?', options: ['8', '10'], correctOptionIndex: 1, explanation: 'Trusted reference: 2 times 5 equals 10.', skillLabels: ['Multiplication'], studentMessage: 'Explain in English.', hasImage: false };
+const boardPrompt = buildQuestionAssistantPrompt({ ...promptInput, structuredBoard: true });
+assert.ok(boardPrompt.includes(promptInput.explanation) && boardPrompt.includes(promptInput.studentMessage));
+assert.ok(boardPrompt.includes('ممنوع تعديل الدرجة أو الإتقان') && boardPrompt.includes('الإجابة الصحيحة الموثوقة: 10'));
+assert.doesNotMatch(boardPrompt, /الخطوة 3: الاستنتاج|شاملاً للحل|اجعل الرد بالعربية|كاملاً ومرتباً|NotebookLM/, 'structured requests must not inherit conflicting long-form or Arabic-only output rules');
+assert.match(buildQuestionAssistantPrompt(promptInput), /الخطوة 3: الاستنتاج/, 'ordinary text/voice tutor keeps its existing format');
 import { checkpointHints } from '../server/src/modules/ai/contracts/checkpointHints';
 import { readableBoardText } from '../components/results/teaching/boardText';
 assert.equal(readableBoardText('الخطوة 1: نص.nالخطوة 2: نص.nإذن النتيجة.'), 'الخطوة 1: نص.\nالخطوة 2: نص.\nإذن النتيجة.');
@@ -53,6 +60,12 @@ assert.equal(boardAt(compiled, 1, sceneDuration(compiled, 1)).find(item => item.
 assert.deepEqual(compileCompactTeachingPlan({ ...compact, hints: ['Answer is 42'] })?.scenes[0].checkpoint?.hints, compiled.scenes[0].checkpoint?.hints, 'provider hint text is never used');
 const { hints: removedHints, ...withoutHints } = compact;
 assert.ok(compileCompactTeachingPlan(withoutHints), 'provider no longer needs to generate hint tokens');
+const compactSteps = { ...withoutHints, solution: ['$2 \\times 5 = 10$', '$10 \\times 8 = 80$', '0'] };
+assert.ok(compileCompactTeachingPlan(compactSteps));
+assert.equal(compileCompactTeachingPlan(compactSteps)?.scenes[1].actions[0].type === 'write' && compileCompactTeachingPlan(compactSteps)?.scenes[1].actions[0].content, '2 \\times 5 = 10\n10 \\times 8 = 80\n0');
+for (const solution of [[], ['1','2','3','4'], ['x'.repeat(161)], [3], ['']]) assert.equal(compileCompactTeachingPlan({ ...withoutHints, solution }), null);
+assert.equal(compactTeachingSchema('lesson').properties.solution.type, 'array');
+assert.equal(compactTeachingSchema('lesson').properties.solution.maxItems, 3);
 assert.equal('hints' in compactTeachingSchema('lesson').properties, false);
 assert.equal(compileCompactTeachingPlan({ ...compact, solution: '\\href{javascript:bad}{x}' }), null);
 assert.equal(compileCompactTeachingPlan(compact, { mode: 'reply' }), null);
