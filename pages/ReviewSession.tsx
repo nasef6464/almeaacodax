@@ -159,6 +159,17 @@ export const ReviewSession: React.FC = () => {
         },
       ]);
       setDoneCount((prev) => prev + 1);
+
+      if (index >= items.length - 1) {
+        setIndex((prev) => prev + 1);
+      } else {
+        setCurrentFeedback({
+          isCorrect: isCorrectAnswer,
+          selectedOptionIndex: selectedOptionIndex ?? -1,
+          correctOptionIndex: current.question.correctOptionIndex,
+          explanation: current.question.explanation,
+        });
+      }
     } catch (err) {
       console.error("Failed to answer review card", err);
       setError("تعذر حفظ نتيجة المراجعة. حاول مرة أخرى.");
@@ -236,7 +247,7 @@ export const ReviewSession: React.FC = () => {
           ) : current?.reviewType === "saved_review" ? (
             <span className="rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-black text-indigo-700">محفوظ للمراجعة</span>
           ) : (
-            <span className="rounded-full bg-amber-50 px-2.5 py-1 text-xs font-black text-amber-700">استعادة خطأ سابق</span>
+            <span className="rounded-full bg-amber-50 px-2.5 py-1 text-xs font-black text-amber-700">استعادة خطأ</span>
           )}
         </div>
 

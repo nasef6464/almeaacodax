@@ -45,11 +45,11 @@ export const PracticeExamSummary: React.FC<PracticeExamSummaryProps> = ({
             </div>
             <div>
               <h1 className="text-xl sm:text-2xl font-black text-emerald-950">
-                {totalAnswered > 0 ? "اكتمل الاختبار التدريبي بنجاح! 🎯" : "تمت المراجعة اليومية"}
+                تمت المراجعة اليومية
               </h1>
               <p className="mt-1 text-xs sm:text-sm font-bold text-emerald-800">
                 {totalAnswered > 0
-                  ? `أنهيت ${doneCount} سؤال في هذه الجلسة التدريبية.`
+                  ? `اكتمل الاختبار التدريبي بنجاح! 🎯 أنهيت ${doneCount} سؤال في هذه الجلسة التدريبية.`
                   : "لا توجد أسئلة مستحقة للمراجعة في هذا النطاق حالياً."}
               </p>
             </div>
