@@ -1,0 +1,39 @@
+name: ALMEAA Inline Quiz Data Integrity
+
+on:
+  push:
+    branches: [test/almeaa-isolated-20261008]
+    paths:
+      - server/src/modules/quizzes/application/quizInlineQuestions.ts
+      - server/src/scripts/verifyQuizInlineQuestionSchema.ts
+      - .github/workflows/almeaa-inline-quiz-integrity.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  persisted-question-contract:
+    name: Verify answer keys and model validation without database access
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout exact isolated commit
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: server/package-lock.json
+
+      - name: Install test dependencies and typecheck API
+        run: |
+          npm --prefix server ci
+          npm --prefix server run check
+
+      - name: Verify inline question schema and answer integrity
+        run: cd server && npx tsx src/scripts/verifyQuizInlineQuestionSchema.ts
