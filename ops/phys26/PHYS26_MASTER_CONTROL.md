@@ -60,3 +60,9 @@ Update `ops/phys26/PHYS26_EXECUTION_LEDGER.json` with each real run; enter exact
 - **IMPORTANT:** 2,064 is a source **numbered-occurrence inventory**, **not** 2,064 validated/unique/importable questions. Currently verified correct answers=0, verified full question content=0, approved crops=0, approved training records=0, and production writes=0.
 - User-provided PDF includes explicit redistribution restrictions. Production publication/redistribution must remain blocked until applicable rights are verified; no raw source pages/questions were committed to GitHub.
 - Next: create sample and batch crop candidates off-production; visually audit the real question, graphs, A/B/C/D and answer key; dedupe, assign canonical source and subskills and quarantine uncertain rows. Update counts only for genuinely source-reviewed questions.
+
+## Footer answer-key candidate indexing — 2026-10-08
+- Parsed 2,064 footer answer-letter **candidates** and paired each to its corresponding numbered source position, with zero missing/duplicate pair IDs in the geometric check. Of the original glyphs, 29 use Arabic option letters (أ/ب/ج/د) rather than Latin A/B/C/D; candidate normalization preserves this distinction locally.
+- No automatic candidate is treated as an independently verified correct answer, and no source answer text has been uploaded to the repository.
+- Offline validation: `node scripts/verify-phys26-number-audit.mjs` checks chapter continuity, sums, section count, zero unanswered label matches and fail-closed publication fields. CI workflow now invokes the validator. Its latest GitHub run must be checked before declaring CI green.
+- The full per-question position and raw footer-answer candidate index remain local to the source-audit environment; the public GitHub branch only stores aggregated non-copyrighted metadata. `canonicalQuestionsVerified` remains 0.
