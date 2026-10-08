@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN066",
+  "source": "Run063 Library verified prior master record",
+  "stage": "QUESTION_MASTERING_PAYLOAD_SYNC",
+  "sourceKey": "MNSF26-AR-T007-Q07",
+  "record": {
+    "sourceKey": "MNSF26-AR-T007-Q07",
+    "sourceProvenance": {
+      "sourcePart": "الحساب/الجبر",
+      "bookCode": "AR",
+      "sourceBook": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+      "testNumber": 7,
+      "pdfPage": 12,
+      "sourceSkillLabel": "العمليات على الاعداد",
+      "sourceTopic": "direct visual mathematical classification",
+      "sourceLesson": "AR T007 Q07",
+      "printedQuestionNumber": 7,
+      "cropFile": "AR/AR-T007-Q07.webp",
+      "cropSha256": "bacac048008db6148e50e397a201bf94d80a73b79feae981830ac5a2ff2ae83a"
+    },
+    "imageHash": "bacac048008db6148e50e397a201bf94d80a73b79feae981830ac5a2ff2ae83a",
+    "visualEvidence": "RUN063_DIRECT_RUN017_WEBP_VISUAL_INSPECTION",
+    "status": "MASTERED",
+    "questionText": "طول نبتة 10سم ويزداد طولها10سم كل شهر؛ كم سنتيمتر ستزداد في 3 أشهر؟",
+    "canonicalMainSkill": "skill_quant_14",
+    "canonicalSubskill": "sub_quant_14_4",
+    "correctAnswer": "ب — 30سم",
+    "stepByStepSolution": "الزيادة الشهرية10سم، ففي3 أشهر تزداد10×3=30سم. السؤال عن الزيادة لا الطول النهائي.",
+    "educationalExplanation": "الزيادة الشهرية10سم، ففي3 أشهر تزداد10×3=30سم. السؤال عن الزيادة لا الطول النهائي.",
+    "difficulty": "Easy",
+    "difficultyReason": "يتطلب عملية مباشرة.",
+    "contentFingerprint": "33e340d02d149ddfa79575c7bb661c16a3ce3d1b85c56e2493be52dadee09654",
+    "ideaFingerprint": "862250df649a0fcf5f1f4b8774d1f438fcb765eb2b0081e3622e4f98f33077ea"
+  }
+}

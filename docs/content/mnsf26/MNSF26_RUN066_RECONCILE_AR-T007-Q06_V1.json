@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN066",
+  "source": "Run063 Library verified prior master record",
+  "stage": "QUESTION_MASTERING_PAYLOAD_SYNC",
+  "sourceKey": "MNSF26-AR-T007-Q06",
+  "record": {
+    "sourceKey": "MNSF26-AR-T007-Q06",
+    "sourceProvenance": {
+      "sourcePart": "الحساب/الجبر",
+      "bookCode": "AR",
+      "sourceBook": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+      "testNumber": 7,
+      "pdfPage": 12,
+      "sourceSkillLabel": "العمليات على الاعداد",
+      "sourceTopic": "direct visual mathematical classification",
+      "sourceLesson": "AR T007 Q06",
+      "printedQuestionNumber": 6,
+      "cropFile": "AR/AR-T007-Q06.webp",
+      "cropSha256": "8e162edd8aed8a1c78366dbf187aacd8cb3b3012ec65de8ce111767d62cb25e9"
+    },
+    "imageHash": "8e162edd8aed8a1c78366dbf187aacd8cb3b3012ec65de8ce111767d62cb25e9",
+    "visualEvidence": "RUN063_DIRECT_RUN017_WEBP_VISUAL_INSPECTION",
+    "status": "MASTERED",
+    "questionText": "حاسب ثمنه 800 ريال وجوال أغلى منه بـ200 ريال؛ كم المجموع؟",
+    "canonicalMainSkill": "skill_quant_10",
+    "canonicalSubskill": "sub_quant_10_3",
+    "correctAnswer": "ج — 1800 ريال",
+    "stepByStepSolution": "ثمن الجوال800+200=1000؛ المجموع1000+800=1800.",
+    "educationalExplanation": "ثمن الجوال800+200=1000؛ المجموع1000+800=1800.",
+    "difficulty": "Easy",
+    "difficultyReason": "يتطلب عملية مباشرة.",
+    "contentFingerprint": "444cc5e0f498482b893bd351e86b5079b7d87ecc012b9a217c5ead96a5920dca",
+    "ideaFingerprint": "d2efee7d5f2d50c209add27892aa1e7092ef0b12e78fd4293c27877d0c10cfe4"
+  }
+}

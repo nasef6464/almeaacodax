@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN066",
+  "source": "Run063 Library verified prior master record",
+  "stage": "QUESTION_MASTERING_PAYLOAD_SYNC",
+  "sourceKey": "MNSF26-AR-T007-Q20",
+  "record": {
+    "sourceKey": "MNSF26-AR-T007-Q20",
+    "sourceProvenance": {
+      "sourcePart": "الحساب/الجبر",
+      "bookCode": "AR",
+      "sourceBook": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+      "testNumber": 7,
+      "pdfPage": 13,
+      "sourceSkillLabel": "العمليات على الاعداد",
+      "sourceTopic": "direct visual mathematical classification",
+      "sourceLesson": "AR T007 Q20",
+      "printedQuestionNumber": 20,
+      "cropFile": "AR/AR-T007-Q20.webp",
+      "cropSha256": "b4f8bef0f42c3ee87b387a1b4825a384c69e0aab1f9fe911ee0b28f5d4ec460c"
+    },
+    "imageHash": "b4f8bef0f42c3ee87b387a1b4825a384c69e0aab1f9fe911ee0b28f5d4ec460c",
+    "visualEvidence": "RUN063_DIRECT_RUN017_WEBP_VISUAL_INSPECTION",
+    "status": "MASTERED",
+    "questionText": "ذهب 115 شخصًا للتخييم، 5 أشخاص في كل خيمة؛ كم خيمة؟",
+    "canonicalMainSkill": "skill_quant_08",
+    "canonicalSubskill": "sub_quant_08_2",
+    "correctAnswer": "ج — 23 خيمة",
+    "stepByStepSolution": "115÷5=23 خيمة.",
+    "educationalExplanation": "115÷5=23 خيمة.",
+    "difficulty": "Easy",
+    "difficultyReason": "يتطلب عملية مباشرة.",
+    "contentFingerprint": "3c4f7c8764ac4fce6677b12176bdc35cf38b52d1a34c8193147f555e1d0fe9cf",
+    "ideaFingerprint": "be24b0c38605a3ab16239a9b8231de8d1df88455dc3acf4edcf37107f793be84"
+  }
+}
