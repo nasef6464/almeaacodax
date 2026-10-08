@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN065",
+  "stage": "QUESTION_MASTERING_GITHUB_SYNC",
+  "sourceArtifact": "RUN063_DIRECT_T007_VISUAL_MASTERING",
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T007-Q15",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+        "testNumber": 7,
+        "pdfPage": 13,
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "sourceTopic": "direct visual mathematical classification",
+        "sourceLesson": "AR T007 Q15",
+        "printedQuestionNumber": 15,
+        "cropFile": "AR/AR-T007-Q15.webp",
+        "cropSha256": "675442dec8d87399630afec4383ae2b309682ac8e5371b30a63e92657d08bfd0"
+      },
+      "imageHash": "675442dec8d87399630afec4383ae2b309682ac8e5371b30a63e92657d08bfd0",
+      "visualEvidence": "RUN063_DIRECT_RUN017_WEBP_VISUAL_INSPECTION",
+      "status": "HOLD",
+      "questionText": "إذا كان جمع رموز الأرقام في الشكل الرأسي 8ص + صص = 4س؛ أوجد قيمة س.",
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_5",
+      "correctAnswer": null,
+      "stepByStepSolution": null,
+      "educationalExplanation": "ترتيب الرموز ومواضع الآحاد والعشرات في المصدر غير محدد بما يكفي لإثبات ناتج وحيد مطابق للخيارات 13/14/15/16؛ يلزم تحكيم مستقل.",
+      "difficulty": "Medium",
+      "difficultyReason": "يتطلب خطوتين رياضيتين وتحققًا من المصدر.",
+      "contentFingerprint": "32da130f6739a152db405f949dd269f354b90d6f123a115218590f952afcabec",
+      "ideaFingerprint": "9a10b417c93fac03dc6f252536aa763f8b6553d78170a5409997e7b580a66411",
+      "holdReason": "SOURCE_DIGIT_ORDER_AMBIGUOUS"
+    }
+  ],
+  "persistence": "GITHUB_RECONCILED_FROM_LIBRARY"
+}
