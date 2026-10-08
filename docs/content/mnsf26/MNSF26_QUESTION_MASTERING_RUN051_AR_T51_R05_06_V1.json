@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN051_AR_T51",
+  "directImageInspection": true,
+  "sourceCropArchive": "/MNSF26/Run017/mnsf26_arithmetic_crops_run017.zip",
+  "sourceInventory": "/MNSF26/Run017/MNSF26_FULLBOOK_CROP_INVENTORY_V1.json",
+  "masteredCount": 2,
+  "holdCount": 0,
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T051-Q05",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "testNumber": 51,
+        "pdfPage": 102,
+        "sourceSkillLabel": "الساعات",
+        "printedQuestionNumber": 5,
+        "cropFile": "AR/AR-T051-Q05.webp",
+        "cropSha256": "26cb9aaf51ad86cec2a964c6944f26cf1f69975a0321cfbf29b9eaf0c2cc0c39",
+        "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
+      },
+      "imageHash": "26cb9aaf51ad86cec2a964c6944f26cf1f69975a0321cfbf29b9eaf0c2cc0c39",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
+      "status": "MASTERED",
+      "questionText": "قارن مدة سعد من 8:25 إلى10:15 ومدة فهد من9:20 إلى11:10.",
+      "canonicalMainSkill": "main_quant_14",
+      "canonicalSubskill": "sub_quant_14_2",
+      "correctAnswer": "القيمتان متساويتان",
+      "stepByStepSolution": "كل مدة ساعة و50 دقيقة.",
+      "educationalExplanation": "المهارة: مقارنة فترتين زمنيتين؛ نقرأ معطيات السؤال من الصورة ونطبّق العلاقة الحسابية ثم نراجع الناتج مع المطلوب.",
+      "difficulty": "Easy",
+      "difficultyReason": "خطوات مباشرة في مقارنة فترتين زمنيتين.",
+      "contentFingerprint": "ce20f87c7e9bdd0dc5842f575dfd560b0cb1f36a2df6d6bb262e7a8fbc456fec",
+      "ideaFingerprint": "6c1c3bc6a99d5452b1122125813a93a2e38e17390f770f74f2b672eb671d1112"
+    },
+    {
+      "sourceKey": "MNSF26-AR-T051-Q06",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "testNumber": 51,
+        "pdfPage": 102,
+        "sourceSkillLabel": "الساعات",
+        "printedQuestionNumber": 6,
+        "cropFile": "AR/AR-T051-Q06.webp",
+        "cropSha256": "4dff0927d51cf119a6c12fa4ce6baf44f4c7584d110c4b86e197a0e2dc49f62c",
+        "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
+      },
+      "imageHash": "4dff0927d51cf119a6c12fa4ce6baf44f4c7584d110c4b86e197a0e2dc49f62c",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
+      "status": "MASTERED",
+      "questionText": "من الساعة 8:15 إلى 8:45؛ كم ساعة مضت؟",
+      "canonicalMainSkill": "main_quant_14",
+      "canonicalSubskill": "sub_quant_14_2",
+      "correctAnswer": "1/2 ساعة",
+      "stepByStepSolution": "30 دقيقة من أصل60=1/2 ساعة.",
+      "educationalExplanation": "المهارة: تحويل 30 دقيقة إلى نصف ساعة؛ نقرأ معطيات السؤال من الصورة ونطبّق العلاقة الحسابية ثم نراجع الناتج مع المطلوب.",
+      "difficulty": "Easy",
+      "difficultyReason": "خطوات مباشرة في تحويل 30 دقيقة إلى نصف ساعة.",
+      "contentFingerprint": "28401f2e034865f8c4f87d407166f721c77e585406d461ee6253ae8600b91a8e",
+      "ideaFingerprint": "80f16e7ac14c48a1a1c8c5a5a9fe4014af5eb5fe72a5be87ea9dac307e3c95f2"
+    }
+  ],
+  "part": "R5_6"
+}
