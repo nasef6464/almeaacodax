@@ -1,3 +1,4 @@
+import fs from "node:fs";
 const API_BASE = process.env.SMOKE_API_BASE_URL || "https://almeaacodax.vercel.app/api";
 const ADMIN_EMAIL = process.env.SMOKE_ADMIN_EMAIL || "";
 const ADMIN_PASSWORD = process.env.SMOKE_ADMIN_PASSWORD || "";
@@ -107,20 +108,30 @@ try {
   assert(Number(coverage.subSkillCount) === 50, `question coverage used subskills mismatch: ${coverage.subSkillCount}/50`);
   assert(Object.keys(coverage.sectionQuestionCounts || {}).length === 22, "section question coverage does not include all 22 main skills");
 
+  const approvedBankPath = new URL("../server/data/verbal_approved_bank_v2.json", import.meta.url);
+  const approvedBank = JSON.parse(fs.readFileSync(approvedBankPath, "utf8"));
+  assert(Array.isArray(approvedBank) && approvedBank.length === 1050,
+    `approved canonical bank mismatch: ${Array.isArray(approvedBank) ? approvedBank.length : "<not-array>"}/1050`);
+  const expectedIds = approvedBank.map((q) => String(q?.canonicalId || "").trim()).filter(Boolean);
+  assert(new Set(expectedIds).size === 1050, `approved canonical IDs mismatch: ${new Set(expectedIds).size}/1050`);
+
   const canonicalInventory = [];
-  for (let page = 1; page <= 100; page += 1) {
-    const pageResponse = await req(`/quizzes/questions?${canonicalQuery}&limit=100&page=${page}&paginate=true`, { token: admin.token });
-    const pageItems = asArray(pageResponse.body);
+  for (let offset = 0; offset < expectedIds.length; offset += 100) {
+    const batch = expectedIds.slice(offset, offset + 100);
+    const batchResponse = await req(
+      `/quizzes/questions?subject=sub_1777779759038&source=imported&approvalStatus=approved&ids=${encodeURIComponent(batch.join(","))}&limit=100&page=1&paginate=true`,
+      { token: admin.token },
+    );
+    const pageItems = asArray(batchResponse.body);
+    assert(pageItems.length === batch.length,
+      `canonical batch size mismatch at offset ${offset}: ${pageItems.length}/${batch.length}`);
     canonicalInventory.push(...pageItems);
-    const pagination = pageResponse.body?.pagination || {};
-    if (pagination.hasNext === false || pageItems.length === 0) break;
   }
-  assert(canonicalInventory.length === 1050, `canonical inventory row count mismatch: ${canonicalInventory.length}/1050`);
-  const canonicalKeys = new Set(canonicalInventory.map((q) => {
-    const objectId = q?._id && typeof q._id === "object" ? JSON.stringify(q._id) : String(q?._id || "");
-    return String(q?.id || q?.questionCode || q?.canonicalId || q?.sourceMeta?.sourceItemId || objectId || "");
-  }).filter(Boolean));
-  assert(canonicalKeys.size === 1050, `canonical inventory stable-key mismatch: ${canonicalKeys.size}/1050`);
+  const returnedIds = canonicalInventory.map((q) => String(q?.id || q?.canonicalId || q?.sourceMeta?.sourceItemId || "").trim()).filter(Boolean);
+  const returnedSet = new Set(returnedIds);
+  assert(returnedSet.size === 1050, `production canonical exact-ID mismatch: ${returnedSet.size}/1050`);
+  const missingIds = expectedIds.filter((id) => !returnedSet.has(id));
+  assert(missingIds.length === 0, `production canonical IDs missing: ${missingIds.slice(0, 10).join(", ")}`);
   const sourceBookCounts = canonicalInventory.reduce((acc, q) => {
     const key = String(q?.sourceBook || "");
     acc[key] = Number(acc[key] || 0) + 1;
