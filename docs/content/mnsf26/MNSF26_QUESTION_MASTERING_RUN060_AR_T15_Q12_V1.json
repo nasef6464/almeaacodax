@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN060_AR_T15_RECOVERY",
+  "previouslyCounted": true,
+  "records": [
+    {
+      "id": "MNSF26-AR-T015-Q12",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T015",
+        "sourceLesson": "جمع الأعداد - المتتابعات - ضرب الأعداد"
+      },
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_3",
+      "correctAnswer": "أ",
+      "answerValue": "450",
+      "stepByStepSolution": "1+2+...+10=55، إذن 1+...+9=45؛ وبالتالي 10+20+...+90=10×45=450.",
+      "educationalExplanation": "نطرح الحد العاشر ثم نضرب المجموع في10.",
+      "difficulty": "Medium",
+      "difficultyReason": "استخدام مجموع معلوم لبناء مجموع آخر.",
+      "imageHash": "481460296d031ba5f5e2646de34ebbf8981ef98fd4ef223680fa29bbfd9040d7",
+      "contentFingerprint": "f08d8c3e4e12aede19ce0bf7c1844b51def69b3325d7ff34e1a3d547a4545e08",
+      "ideaFingerprint": "46e92871835200a392d137a3676d7021b315a012b26ddd46107a853c95a3179f",
+      "status": "MASTERED"
+    }
+  ]
+}
