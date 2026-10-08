@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN067",
+  "stage": "QA_LOCK",
+  "branch": "chatgpt/mnsf26-ingest",
+  "exactHeadAtRunStart": "bfff909eb2916805ccf7adc32c895646ddde5741",
+  "mainAtRunStart": "7f6fb2b51308ac397cba0dd65b9f05b9cfb7008b",
+  "qaPreviousReviewed": 439,
+  "qaNewIndependentReviewed": 70,
+  "qaPassNew": 66,
+  "qaReviewNew": 4,
+  "qaReviewedNow": 509,
+  "qaRemaining": 1620,
+  "screenedPendingDeepMath": 209,
+  "reviewKeys": [
+    "MNSF26-GEO-T005-Q11",
+    "MNSF26-GEO-T007-Q03",
+    "MNSF26-GEO-T009-Q17",
+    "MNSF26-GEO-T010-Q15"
+  ],
+  "proofShards": 13,
+  "source": "Run021 original geometry WEBP contact sheets; Run066 SHA verified; Run054 master records",
+  "stateUpdatePending": true,
+  "qaLock": "OPEN",
+  "dedupeR2ImportProductionUntouched": true
+}
