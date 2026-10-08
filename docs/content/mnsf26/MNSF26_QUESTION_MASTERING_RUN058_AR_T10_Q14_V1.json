@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN058_AR_T10_DIRECT_VISUAL",
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T010-Q14",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+        "testNumber": 10,
+        "pdfPage": 18,
+        "sourceSkillLabel": "ترتيب العمليات – قابلية القسمة",
+        "sourceTopic": "تصنيف المصدر محفوظ؛ رياضيات السؤال هي معيار الربط",
+        "sourceLesson": "الحساب والجبر، الاختبار 010، السؤال 14",
+        "printedQuestionNumber": 14,
+        "cropFile": "mnsf26_fullbook_crops/AR/AR-T010-Q14.webp",
+        "cropSha256": "237f309a029805d99292d9f2010cdc5d7af7c46505bafce2106e31606543bf55",
+        "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
+      },
+      "imageHash": "237f309a029805d99292d9f2010cdc5d7af7c46505bafce2106e31606543bf55",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN058_2026-10-08_T010_Q14",
+      "status": "MASTERED",
+      "questionText": "عدد طلاب يقبل القسمة على40، ويوزع على7 مجموعات بالتساوي، وعلى9 مجموعات يبقى واحد؛ كم العدد؟",
+      "canonicalMainSkill": "main_quant_02",
+      "canonicalSubskill": "sub_quant_02_2",
+      "correctAnswer": "280 (أ)",
+      "stepByStepSolution": "280 يقبل القسمة على40 و7، وباقي280÷9 يساوي1.",
+      "educationalExplanation": "نطبّق القاعدة الرياضية الواردة في نص السؤال: 280 يقبل القسمة على40 و7، وباقي280÷9 يساوي1.",
+      "difficulty": "Medium",
+      "difficultyReason": "يحتاج عدة خطوات ومقارنة معطيات.",
+      "contentFingerprint": "56d0cf1ac18e0455b97593622444286f7f050e615c8d1ccec37e84ecb255aaa4",
+      "ideaFingerprint": "fba06eb31d26b84321d907ccdcff507b2863745fab89f22a3d066f94c9df23ad"
+    }
+  ]
+}
