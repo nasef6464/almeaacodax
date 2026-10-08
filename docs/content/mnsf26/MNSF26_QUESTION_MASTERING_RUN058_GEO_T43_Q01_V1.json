@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN058_GEO_T43_LIBRARY_RECONCILIATION",
+  "records": [
+    {
+      "sourceKey": "MNSF26-GEO-T043-Q01",
+      "sourceProvenance": {
+        "sourcePart": "الهندسة",
+        "bookCode": "GEO",
+        "testNumber": 43,
+        "pdfPage": 83,
+        "sourceSkillLabel": "مراجعة مسائل الهندسة من الكتاب",
+        "sourceTopic": "مسائل الهندسة المتنوعة",
+        "sourceLesson": "تمارين هندسة مرقمة حسب الاختبار",
+        "printedQuestionNumber": 1,
+        "cropFile": "MNSF26-GEO-T043-Q01.webp",
+        "cropSha256": "4fccef78f454390de5c368deb975d5644f2a66fedd5b4d892b5d308b74c8665b",
+        "cropContract": "EMBEDDED_XOBJECT_OR_EXACT_COMPOSITE_SLICE"
+      },
+      "imageHash": "4fccef78f454390de5c368deb975d5644f2a66fedd5b4d892b5d308b74c8665b",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T43_Q01",
+      "status": "MASTERED",
+      "questionText": "مستطيل عرضه9 سم، خط من أعلى اليسار لأسفل اليمين وخط من أسفل اليسار لنقطة تبعد6 سم أعلى المستطيل؛ نسبة أ ب إلى ب ج.",
+      "canonicalMainSkill": "main_quant_20",
+      "canonicalSubskill": "sub_quant_20_5",
+      "correctAnswer": "2/3 (ج)",
+      "stepByStepSolution": "بتشابه المثلثات نسبة جزئي القطر المتقاطع =6/(9+6)=2/5 للجزء الأول و3/5 للثاني، فالنسبة2/3.",
+      "educationalExplanation": "من الصورة: بتشابه المثلثات نسبة جزئي القطر المتقاطع =6/(9+6)=2/5 للجزء الأول و3/5 للثاني، فالنسبة2/3.",
+      "difficulty": "Hard",
+      "difficultyReason": "تحتاج خطوات وعلاقات متعددة.",
+      "contentFingerprint": "b363062b6747a7166dcec8acbc8e49f160fd3f8e3373044b052508cb1f5acd71",
+      "ideaFingerprint": "29f0c7670b84290bf501e85f444b9a9031e7d62d3d0c9ae5355f4d1f505147a3"
+    }
+  ]
+}
