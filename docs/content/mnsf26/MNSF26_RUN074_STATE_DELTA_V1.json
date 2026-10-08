@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN074_SOURCEKEY_RECONCILIATION",
+  "stage": "QA_LOCK",
+  "baseHead": "78d94e05abf84d7f3cdca103458811495e71f674",
+  "mainHead": "2867e5a48220e61a520fb45eb224dc4e5d5523e3",
+  "officialAtBase": 682,
+  "run070New": 6,
+  "run071ClaimedNew": 239,
+  "run071CorrectedNew": 238,
+  "run072New": 264,
+  "run073New": 211,
+  "duplicateSourceKeyAcrossRun070AndRun071": "MNSF26-GEO-T009-Q10",
+  "duplicateCountCorrection": -1,
+  "conservativeReviewed": 1401,
+  "totalActive": 2129,
+  "remaining": 728,
+  "qaFullBookPass": false,
+  "canonicalTaxonomyFullBookPass": false,
+  "fullBookCrossBankDedupeNotStarted": true,
+  "provenCropRepairPending": [
+    "MNSF26-AR-T059-Q07",
+    "MNSF26-AR-T059-Q08"
+  ],
+  "productionUntouched": true,
+  "evidenceLocations": [
+    "/MNSF26/Run072",
+    "/MNSF26/Run073"
+  ],
+  "note": "No new image QA claimed in Run074. Run071-073 keys disjoint. Run070 overlaps Run071 in one sourceKey. Keep existing HOLD/REVIEW/quarantine/suppressions unchanged; no import or production writes."
+}
