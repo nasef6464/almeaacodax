@@ -8,7 +8,7 @@
 ## Source of truth
 The three user-provided 2026 Yelo PDFs are recorded with page count, byte size and SHA-256 in `ops/phys26/PHYS26_SOURCE_INVENTORY.json`. They are *not* checked into GitHub.
 
-**Important coverage distinction:** the foundation PDF contains 13 indexed lessons ending at thermal physics (first/second secondary); its third-secondary foundation section is explicitly absent. The question PDF contains 31 indexed lessons, both question sections. Supplemental summaries are references to laws, definitions and diagrams, not a third-secondary foundation substitute. Do not claim missing lessons are already complete. Rights clearance is required for any public reuse of protected source pages/questions.
+**Important coverage distinction:** the foundation PDF contains 13 indexed lessons ending at thermal physics (first/second secondary); its third-secondary foundation section is explicitly absent. The question PDF contains 31 indexed lessons; source inspection located 31 first sections and 30 second sections (lesson 25 has one section in the uploaded file). Supplemental summaries are references to laws, definitions and diagrams, not a third-secondary foundation substitute. Do not claim missing lessons are already complete. Rights clearance is required for any public reuse of protected source pages/questions.
 
 ## Read-only production physics baseline — verified 2026-10-08
 - Atlas `almeaa`, subject `sub_1784980706034` / **الفيزياء**, path `p_1777779653351`.
@@ -50,4 +50,13 @@ Update `ops/phys26/PHYS26_EXECUTION_LEDGER.json` with each real run; enter exact
 - Corrected subtopic linking contract: `skillId=child subskill`, `skillIds=[child subskill]`, `parentId=main topic`. **Never add main-skill ID into subtopic `skillIds`**: `validateFoundationSubtopicSkillLink` rejects IDs that are not embedded subskills. Existing CHEM/BIO legacy conventions cannot be copied blindly.
 - Coverage status: **10/25** main skills (39/90 subskills) have indexed first/second-secondary foundation chapters; **15/25** (51/90) lack corresponding foundation chapters. Indexed does not mean chapter-level explanation has been visually reviewed.
 - Initial editable access proposal: **26 free topics** (5 main + 21 child), 89 locked; all remain hidden until approved.
-- `node scripts/verify-phys26-foundation-plan.mjs` is the local static gate. Actual Node CI and source-page review are pending. No verified questions, crops, or drills have been added.
+- `node scripts/verify-phys26-foundation-plan.mjs` is the local static gate. Actual Node CI and full source-page QA are pending. No verified questions, crops, or drills have been added.
+
+## Local source access and full-book numbered occurrence index — 2026-10-08
+- Earlier file read/HTTP 403 blocker resolved: the two PDFs were materialized and opened locally, and source SHA-256 matched inventory records exactly. The supplemental 77-page PDF is also available locally.
+- Native text geometry and numbered labels were scanned through the 162-page collection PDF, yielding **31 consecutive lesson sequences with 2,064 numbered question positions** (no missing label in the numbered 1..N sequence of any lesson). Detailed lesson/page/section counts, but no copyrighted question text or images, are committed in `ops/phys26/PHYS26_SOURCE_NUMBER_AUDIT_2064.json`.
+- **31 first sections: 1,174 numbered occurrences; 30 second sections: 890 numbered occurrences**. Lesson 25 is a single-section group in this source edition; do not assume a nonexistent second section.
+- PDF page 22 splits year `2024` across text spans (`202`+`4`), which was excluded from question-number detection; this anomaly shows why geometric labels are not sufficient to approve questions. Source text extraction also visibly corrupts some Arabic text, formulas and units.
+- **IMPORTANT:** 2,064 is a source **numbered-occurrence inventory**, **not** 2,064 validated/unique/importable questions. Currently verified correct answers=0, verified full question content=0, approved crops=0, approved training records=0, and production writes=0.
+- User-provided PDF includes explicit redistribution restrictions. Production publication/redistribution must remain blocked until applicable rights are verified; no raw source pages/questions were committed to GitHub.
+- Next: create sample and batch crop candidates off-production; visually audit the real question, graphs, A/B/C/D and answer key; dedupe, assign canonical source and subskills and quarantine uncertain rows. Update counts only for genuinely source-reviewed questions.
