@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN051_AR_T51",
+  "directImageInspection": true,
+  "sourceCropArchive": "/MNSF26/Run017/mnsf26_arithmetic_crops_run017.zip",
+  "sourceInventory": "/MNSF26/Run017/MNSF26_FULLBOOK_CROP_INVENTORY_V1.json",
+  "masteredCount": 2,
+  "holdCount": 0,
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T051-Q07",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "testNumber": 51,
+        "pdfPage": 102,
+        "sourceSkillLabel": "الساعات",
+        "printedQuestionNumber": 7,
+        "cropFile": "AR/AR-T051-Q07.webp",
+        "cropSha256": "5e693072fa57cd85e55f4e34bb10698137232db18f3ed085332c8ee85122dc57",
+        "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
+      },
+      "imageHash": "5e693072fa57cd85e55f4e34bb10698137232db18f3ed085332c8ee85122dc57",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
+      "status": "MASTERED",
+      "questionText": "عند الساعة 4:25 ما الزاوية الصغرى بين العقربين؟",
+      "canonicalMainSkill": "main_quant_15",
+      "canonicalSubskill": "sub_quant_15_1",
+      "correctAnswer": "17.5 درجة",
+      "stepByStepSolution": "عقرب الساعة=4×30+25×0.5=132.5؛ الدقائق=25×6=150؛ الفرق17.5.",
+      "educationalExplanation": "المهارة: الزاوية الصغرى بين العقربين مع الدقائق؛ نقرأ معطيات السؤال من الصورة ونطبّق العلاقة الحسابية ثم نراجع الناتج مع المطلوب.",
+      "difficulty": "Medium",
+      "difficultyReason": "تتطلب ربط أكثر من معطى أو تحويل وحدات في الزاوية الصغرى بين العقربين مع الدقائق.",
+      "contentFingerprint": "a518454621e7b53712421542ee26bb3dfa65ee38513b55054456384b5b62c117",
+      "ideaFingerprint": "9e7cdc32563d329003777cab32ea1f6130d7d1c99b1f69262e1c2face503466c"
+    },
+    {
+      "sourceKey": "MNSF26-AR-T051-Q08",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "testNumber": 51,
+        "pdfPage": 102,
+        "sourceSkillLabel": "الساعات",
+        "printedQuestionNumber": 8,
+        "cropFile": "AR/AR-T051-Q08.webp",
+        "cropSha256": "9ad82a14c73749650151c969c182ef0488249bb573b6fe851e09f11b3342fb12",
+        "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
+      },
+      "imageHash": "9ad82a14c73749650151c969c182ef0488249bb573b6fe851e09f11b3342fb12",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
+      "status": "MASTERED",
+      "questionText": "عند الساعة 7:30 ما الزاوية الصغرى بين العقربين؟",
+      "canonicalMainSkill": "main_quant_15",
+      "canonicalSubskill": "sub_quant_15_1",
+      "correctAnswer": "45 درجة",
+      "stepByStepSolution": "عقرب الساعة225 درجة والدقائق180؛ الفرق45.",
+      "educationalExplanation": "المهارة: زاوية عقربي الساعة عند النصف؛ نقرأ معطيات السؤال من الصورة ونطبّق العلاقة الحسابية ثم نراجع الناتج مع المطلوب.",
+      "difficulty": "Easy",
+      "difficultyReason": "خطوات مباشرة في زاوية عقربي الساعة عند النصف.",
+      "contentFingerprint": "acfd8a0e53851f573ce0ba74bd65de5abbca8d4541c863865ef21aac504a3449",
+      "ideaFingerprint": "e564bf930b55046ba36dc18f605155be8786459175d3161bf6067ca10029a2d4"
+    }
+  ],
+  "part": "R7_8"
+}
