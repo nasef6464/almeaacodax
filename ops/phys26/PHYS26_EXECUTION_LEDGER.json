@@ -1,0 +1,60 @@
+{
+  "project": "PHYS26",
+  "updatedAt": "2026-10-08",
+  "branch": "content/phys26-full-closure",
+  "currentPhase": 1,
+  "phases": [
+    {
+      "phase": 1,
+      "name": "Source inventory and taxonomy",
+      "status": "IN_PROGRESS"
+    },
+    {
+      "phase": 2,
+      "name": "Foundation and AI context",
+      "status": "NOT_STARTED"
+    },
+    {
+      "phase": 3,
+      "name": "Question extraction and mastering",
+      "status": "NOT_STARTED"
+    },
+    {
+      "phase": 4,
+      "name": "QA and skill drills",
+      "status": "NOT_STARTED"
+    },
+    {
+      "phase": 5,
+      "name": "Local import package and UAT",
+      "status": "NOT_STARTED"
+    },
+    {
+      "phase": 6,
+      "name": "Controlled production closure",
+      "status": "NOT_STARTED"
+    }
+  ],
+  "cumulative": {
+    "sourcesFingerprintChecked": 3,
+    "proposedMainSkills": 25,
+    "proposedSubSkills": 90,
+    "coveredCollectionLessonsCandidate": 31,
+    "sourceOccurrencesReviewed": 0,
+    "canonicalQuestionsVerified": 0,
+    "imageCropsVerified": 0,
+    "importedQuestions": 0,
+    "drillsApproved": 0
+  },
+  "currentRun": {
+    "result": "SOURCE_BASELINE_VERIFIED_LOCALLY",
+    "publishedToProduction": false,
+    "tests": "PENDING_GITHUB_VERIFIER",
+    "notes": [
+      "Main and subskill counts structurally checked from attached candidate JSON",
+      "Third-secondary foundation contents absent from current foundation PDF",
+      "Actual question inventory not yet counted; commercial rights not verified"
+    ]
+  },
+  "next": "Freeze candidate taxonomy artifact in repo, check read-only current Physics subject/skills references, then build source-occurrence inventory for both sections"
+}
