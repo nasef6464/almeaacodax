@@ -10,6 +10,7 @@ const expected = argument('expected-sha');
 const base = (argument('api-base') || 'https://almeaacodax.vercel.app/api').replace(/\/$/, '');
 const out = argument('output') || 'scratch/teaching-board-live.json';
 const questionCode = argument('question-code');
+const expectedAnswer = argument('expected-answer');
 if (!credentialPath || !expected) throw new Error('--credentials and --expected-sha are required');
 if (!base.startsWith('https://') && !/^http:\/\/(127\.0\.0\.1|localhost)(:|\/)/.test(base)) throw new Error('Use HTTPS or a local API');
 const credentials = require('dotenv').parse(fs.readFileSync(credentialPath));
@@ -65,6 +66,13 @@ report.acceptance = {
   actualUsageBounded: report.usage.length === 3 && report.usage.every((item: any) => !item.usageEstimated && item.outputTokens > 0 && item.outputTokens <= 450),
 };
 report.passed = Object.values(report.acceptance).every(Boolean);
+if (expectedAnswer) {
+  report.acceptance.completeReferenceResult = [report.cases[0], report.cases[2]].every(item => {
+    const scene = item?.storyboard?.scenes.at(-1);
+    return scene?.narration.includes(expectedAnswer) && scene.actions.some((action: any) => action.type === 'write' && action.id === 'answer' && action.content.includes(expectedAnswer)) && scene.actions.some((action: any) => action.type === 'box' && action.target === 'answer');
+  });
+  report.passed = Object.values(report.acceptance).every(Boolean);
+}
 report.manualReviewRequired = ['Reference correctness and hint leakage', 'Audible phone/tablet voice and microphone quality'];
 fs.writeFileSync(out, JSON.stringify(report, null, 2));
 console.log(JSON.stringify({ passed: report.passed, report: out, usageRecords: report.usage.length }));

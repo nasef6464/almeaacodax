@@ -36,7 +36,7 @@ const mathContent = (value: unknown, kind: unknown) => {
 };
 
 export function compileCompactTeachingPlan(value: unknown, expected?: {
-  mode: CompactTeachingMode; language?: TeachingStoryboard['language'];
+  mode: CompactTeachingMode; language?: TeachingStoryboard['language']; trustedAnswer?: string;
 }): TeachingStoryboard | null {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
   const item = value as Record<string, unknown>;
@@ -49,13 +49,17 @@ export function compileCompactTeachingPlan(value: unknown, expected?: {
     if (solution.length < 1 || solution.length > 3 || !solution.every(step => typeof step === 'string' && step.trim() && step.length <= 160)) return null;
     solution = solution.map(step => mathContent(step, item.solutionKind)).join('\n');
   }
+  const answer = expected?.mode === 'lesson' && typeof expected.trustedAnswer === 'string' &&
+    expected.trustedAnswer.trim() && expected.trustedAnswer.length <= 240 &&
+    !/(?:<[A-Za-z!/][^>]*>|[\u0000-\u0008])/.test(expected.trustedAnswer) ? expected.trustedAnswer.trim() : '';
+  const answerText = answer ? `${item.language === 'en-US' ? 'Answer' : 'الإجابة'}: ${answer}` : '';
   const first = { id: 'given', narration,
     actions: [{ type: 'write', id: 'given', kind: item.kind, content: mathContent(item.board, item.kind) }],
     ...(item.mode === 'lesson' ? { checkpoint: { prompt: item.prompt, hints: checkpointHints(String(item.prompt), String(item.language)) } } : {}) };
   return validateTeachingStoryboard({ version: 1, language: item.language, scenes: [first,
-    ...(item.mode === 'lesson' ? [{ id: 'solution', narration: item.explanation, actions: [
+    ...(item.mode === 'lesson' ? [{ id: 'solution', narration: answerText && typeof item.explanation === 'string' ? `${item.explanation} ${answerText}` : item.explanation, actions: [
       { type: 'write', id: 'solution', kind: item.solutionKind, content: mathContent(solution, item.solutionKind) },
-      { type: 'box', target: 'solution' },
+      ...(answerText ? [{ type: 'write', id: 'answer', kind: 'text', content: answerText }, { type: 'box', target: 'answer' }] : [{ type: 'box', target: 'solution' }]),
     ] }] : []),
   ] });
 }

@@ -1,5 +1,10 @@
 # ALMEAA — Codex Execution State
 
+## Final reference result continuation — 2026-10-08
+- Current mainc4234fc6 (#475) deployed verified;18SUCCESS3SKIPPED, allrequired CI and production identity/readiness/Vercel/PostDeploySmoke PASS. Real division3/3 complete Arabic/reply/English, raw procedural hints safe, output204/95/191; teacher only stated unit digit, not full requested quotient.
+- Branch codex/teaching-board-reference-result: within existing owned-review steps authority, final scene writes/boxes/speaks trusted option text selected by existing result snapshot index (result review) or existing canonical owned question index (other authorized reviews). Original correctOptionIndex prompt behavior is unchanged; references never enter practice/reply. Cache includes reference index revision4. No grades/API shape/RBAC/data writes changed.
+- Unit reference-result placement/caption/boxing, reply isolation, unsafe markup and legacy tests PASS; servercheck/CI pending. Next raw hints + expected309705 audit and matching owned division UI replay after deployment. Physical device voice/mic and science reviews remainNOTPROVEN.
+
 ## Bounded structured prompt continuation — 2026-10-08
 - Baseline current main0a400e3a (#474):19SUCCESS3SKIPPED requiredCI PASS; production API/readiness/Vercel/PostDeploySmoke PASS; matching owned division replay confirms old hints replaced and observed prose separators cleaned,0 extra inference.
 - Fresh real division Arabic request fell back safely:5675ms,438 output, incomplete JSON. Root conflict: base text tutor demanded full verbose three-step prose while appended compact planner required short JSON. Branch codex/teaching-board-bounded-prompts isolates structured output instructions while preserving all sanitized trusted data, legacy text tutor and450 cap; solution schema max3 short items, compiler validates each<=160 chars and keeps legacy strings compatible.
