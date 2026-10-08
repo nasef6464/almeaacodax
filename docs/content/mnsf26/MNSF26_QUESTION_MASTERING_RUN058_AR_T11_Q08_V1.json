@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN058_AR_T11_DIRECT_VISUAL",
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T011-Q08",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+        "testNumber": 11,
+        "pdfPage": 20,
+        "sourceSkillLabel": "ترتيب العمليات – قابلية القسمة",
+        "sourceTopic": "تصنيف المصدر محفوظ؛ رياضيات السؤال هي معيار الربط",
+        "sourceLesson": "الحساب والجبر، الاختبار 011، السؤال 08",
+        "printedQuestionNumber": 8,
+        "cropFile": "mnsf26_fullbook_crops/AR/AR-T011-Q08.webp",
+        "cropSha256": "acf141672a7738badaa985ee2500665ffe2f8babfb967b9514d1e46063f717c1",
+        "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
+      },
+      "imageHash": "acf141672a7738badaa985ee2500665ffe2f8babfb967b9514d1e46063f717c1",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN058_2026-10-08_T011_Q08",
+      "status": "REVIEW",
+      "questionText": "احسب2×2+2÷2².",
+      "canonicalMainSkill": null,
+      "canonicalSubskill": null,
+      "correctAnswer": null,
+      "stepByStepSolution": null,
+      "educationalExplanation": "غير معتمد للنشر: الأسّ الصغير واتجاه الكتابة في الصورة يتطلبان اعتماد القراءة؛ المرشح4.5.",
+      "difficulty": null,
+      "difficultyReason": "الأسّ الصغير واتجاه الكتابة في الصورة يتطلبان اعتماد القراءة؛ المرشح4.5.",
+      "contentFingerprint": "36a3baa020b71a8bf6bfa831824031e36e46bdf3c7ae92d930c19479f1c01d35",
+      "ideaFingerprint": "5943cda96f241217e9e88c20ea283cfe2d252181d1ea8b98d6e062165fa6b277",
+      "holdReason": "الأسّ الصغير واتجاه الكتابة في الصورة يتطلبان اعتماد القراءة؛ المرشح4.5.",
+      "proposedCanonicalSubskill": "sub_quant_01_4"
+    }
+  ]
+}
