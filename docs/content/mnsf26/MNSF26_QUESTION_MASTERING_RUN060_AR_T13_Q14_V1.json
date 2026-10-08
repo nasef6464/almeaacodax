@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN060_AR_T13_RECOVERY",
+  "previouslyCounted": true,
+  "records": [
+    {
+      "id": "MNSF26-AR-T013-Q14",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T013",
+        "sourceLesson": "الأعداد الأولية - العوامل الأولى"
+      },
+      "canonicalMainSkill": "skill_quant_02",
+      "canonicalSubskill": "sub_quant_02_3",
+      "correctAnswer": "د",
+      "answerValue": "2",
+      "stepByStepSolution": "ثلاثة أعداد أولية مجموعها14؛ لا يمكن أن تكون كلها فردية لأن مجموع ثلاثة فردية فردي، لذا أحدها2، وبالفعل 2+5+7=14.",
+      "educationalExplanation": "العدد الأولي الزوجي الوحيد هو2.",
+      "difficulty": "Medium",
+      "difficultyReason": "استدلال بالزوجية.",
+      "imageHash": "dce3a229031eda2024831761c78a87375c1c0a7776db2e12904b11e7634c0593",
+      "contentFingerprint": "16e7fa7b3c0218469995e5757db820aa709f6e192a32578aa7f4d3099e2b6609",
+      "ideaFingerprint": "d4db83f11eac06621b79a793dd64dcec90e612d2c1bc5bbf1ac602cf3ebe0716",
+      "status": "MASTERED"
+    }
+  ]
+}
