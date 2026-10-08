@@ -467,6 +467,31 @@
       "Library upload returned container_session_unavailable"
     ],
     "qaNotStarted": true,
-    "productionServicesUntouched": true
+    "productionServicesUntouched": true,
+    "legacyBridge": {
+      "legacyRecords": 138,
+      "ready": 130,
+      "hold": 2,
+      "suppressions": 5,
+      "quarantine": 1,
+      "missingInLibraryEarlyT01ToT08": 134,
+      "legacyMatchesAll134": true,
+      "missingEarlyBreakdown": {
+        "ready": 126,
+        "hold": 2,
+        "suppressions": 5,
+        "quarantine": 1
+      },
+      "alreadyLibraryFromLegacy": 4,
+      "fullPayloadsOutsideLibrary": {
+        "arithmeticT19": 18,
+        "geometryT22": 10
+      },
+      "remainingMissingPayloadsRequireSourceKeyAudit": true,
+      "evidence": "MNSF26_CONTENT_ENRICHMENT_V1.json and Run017 crop inventory; sourceKey matched by test and printed question number"
+    },
+    "sourceAuditLibrary": "/MNSF26/Run062/MNSF26_RUN062_LIBRARY_SOURCEKEY_AUDIT_V1.json",
+    "adjudicationLibrary": "/MNSF26/Run062/MNSF26_RUN062_GEO_T23_Q11_ADJUDICATION_V1.json",
+    "stateDeltaLibrary": "/MNSF26/Run062/MNSF26_RUN062_STATE_DELTA_V1.json"
   }
 }
