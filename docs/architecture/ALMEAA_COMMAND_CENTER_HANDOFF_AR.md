@@ -1,5 +1,14 @@
 # ALMEAA Command Center — Handoff / Execution State
 
+> **AUTHORITATIVE POST-#430 CHECKPOINT — 2026-10-07**
+> - Command Center verified checkpoint: `3aee9949bebe5b62a593760e76e4e02a55f9e2d2`. Repository `main` may advance independently with unrelated work.
+> - Vercel Production deployment `dpl_3EKdDrCLX2CEvgFMjbLuST4mpdzJ` was READY on that verified Command Center SHA.
+> - Lightweight post-merge gates were Green: Secret Hygiene, PLAN7 no-inference, Post Deploy Smoke, Remote MCP fail-closed boundary, and paced low-load role auth (run `37543754793`, attempt 2).
+> - Production Render is light-only: release identity/health and small paced auth/API/MCP boundary checks. No inference, provider quota tests, PDF/OCR, bulk processing, rendering, wide browser audits, or load tests.
+> - Remote MCP remains intentionally disabled/fail-closed until a trusted Production OAuth 2.1 issuer and audience are configured. Do not invent issuer/audience/secrets.
+> - Issue #386 remains OPEN. CC-6 is the sole pending closure gate: trusted Production OAuth IdP + limited live MCP certification + real external ChatGPT MCP connection proof.
+> - Older checkpoints below are historical; where they conflict with this block, this block is authoritative.
+
 > **POST-MERGE CHECKPOINT — 2026-10-07**
 > - PR #429 merged into `main`: `79d96b2cd0b0834769f2e927c73f6552c2216f24`.
 > - Vercel Production: READY on the exact merge SHA.
