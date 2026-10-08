@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN054_GEO_T01_T21_T23_GITHUB_RECONCILIATION",
+  "date": "2026-10-08",
+  "baseOfficial": {
+    "mastered": 1364,
+    "hold": 242
+  },
+  "sourceLibrary": "/MNSF26/Run054/MNSF26_RUN054_STATE_DELTA_V2.json",
+  "sourceArchive": "/MNSF26/Run021/mnsf26_geometry_crops_run021.zip",
+  "sourceManifest": "/MNSF26/Run021/MNSF26_GEOMETRY_CROP_MANIFEST_V1.json",
+  "directImageInspectedAndShaVerified": {
+    "unique": 402,
+    "mastered": 325,
+    "hold": 77
+  },
+  "persistedGitHub": {
+    "unique": 398,
+    "mastered": 322,
+    "hold": 76
+  },
+  "newOfficial": {
+    "mastered": 1686,
+    "hold": 318
+  },
+  "libraryOnly": [
+    {
+      "sourceKey": "MNSF26-GEO-T019-Q19",
+      "status": "HOLD",
+      "imageHash": "78d604b9d9143bab9299a6d194e23b172624a257c97bea5dcc1dabf8017a0402"
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T019-Q20",
+      "status": "MASTERED",
+      "imageHash": "0f3b4eb493f6e5262db8158539b672096f69f2a155c8301cbb7cd6b43abacee4"
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T023-Q13",
+      "status": "MASTERED",
+      "imageHash": "c5c7912372ca62c8ac1d32fc33231e9f0e7271188d8483992c68a6254c967ce6"
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T023-Q15",
+      "status": "MASTERED",
+      "imageHash": "77dd39c192c329df77528ea52b70f56c62d7633654b206763e8d4649c18185cb"
+    }
+  ],
+  "blocker": "GitHub connector safety checks rejected four complete question payloads via both contents and Git data API; source records remain intact in Library, not counted in GitHub official mastered.",
+  "stage": "QUESTION_MASTERING",
+  "stageOrderUnchanged": true,
+  "cropLock": "2135/2135 PASS_LOCKED",
+  "productionServicesUntouched": true
+}
