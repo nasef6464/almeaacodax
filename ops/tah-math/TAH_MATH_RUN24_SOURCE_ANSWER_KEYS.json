@@ -1,0 +1,47 @@
+{
+  "run": "RUN24",
+  "date": "2026-10-08",
+  "bank": "YLM26",
+  "officialPdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+  "sourceQuestionsReviewedThisRun": 209,
+  "priorMathReviewOverlap": 31,
+  "newDistinctMathSourceAnswerCandidates": 178,
+  "cumulativeUniqueAnswerCandidates": 326,
+  "first176AnswerLettersBy12QuestionSourceContactSheet": [
+    "DDACDADCADCC",
+    "CDBDCADABBAB",
+    "BAABABAACACB",
+    "ACACBBBBCBAD",
+    "ABDADCAADCDD",
+    "BCBAADADBCCB",
+    "ACABBADAAAAD",
+    "CCBBDBCBDCCB",
+    "ABDDCCADCDBC",
+    "AADBAAACCAAA",
+    "BBAAACAADCAC",
+    "ADDBBBBBAAAB",
+    "DAAAAAABAACB",
+    "CDACBABCACBA",
+    "CCADBCBA"
+  ],
+  "last33ReviewedCodes": "P062-Q17 P065-Q07 P066-Q08 P067-Q17 P070-Q11 P074-Q09 P078-Q09 P079-Q11 P080-Q13 P081-Q01 P082-Q03 P083-Q05 P083-Q08 P084-Q09 P084-Q10 P084-Q12 P085-Q01 P085-Q02 P085-Q03 P085-Q04 P086-Q05 P086-Q06 P087-Q07 P087-Q08 P087-Q10 P087-Q11 P088-Q12 P089-Q01 P090-Q06 P091-Q11 P092-Q01 P093-Q07 P094-Q10",
+  "last33SourceAnswerLetters": "DAAABCAABADAAACAAABBDCABBBDDBDCBA",
+  "liveKeyMismatch": {
+    "code": "TAH-MATH-YLM26-P021-Q04",
+    "sourceAnswer": "B",
+    "liveAnswer": "C",
+    "sourceDiameter": 3,
+    "sourceArc": "π/2",
+    "liveExplanationCopiedDiameter": 12
+  },
+  "sourceAnswerLiveMatches": 208,
+  "sourceAnswerLiveMismatches": 1,
+  "explanationKeyContradictionsInLiveYLM26": 23,
+  "unresolvedSemanticCaveats": [
+    "P036-Q09",
+    "P050-Q04",
+    "P085-Q01"
+  ],
+  "productionMutation": false,
+  "fullPedagogyApproved": 0
+}
