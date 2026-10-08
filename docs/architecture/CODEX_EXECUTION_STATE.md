@@ -1,5 +1,11 @@
 # ALMEAA — Codex Execution State
 
+## School/classroom delivery and external runtime blocker — 2026-10-08
+- PR #481 merged as main@2867e5a48220; code head068303453298:20SUCCESS4SKIPPED, all required checks PASS. Isolated classroom and supervisor/student journeys PASS; assessment19 boolean-verified cases, supervisor desktop/mobile8/8. No production educational writes.
+- Vercel2867e5a48220 SUCCESS. Production API health/live and health/ready503; Post Deploy Smoke FAIL. Render known service suspended with billing suspender; platform event explicitly reports Monthly Quota Exceeded. Latest recorded backend deployment877940bda4b4, not the merged release.
+- Production delivery BLOCKED externally. Owner must resolve Render monthly quota and resume the known service; then verify latest main runtime identity/readiness and rerun failed production gates. No spending/plan changes were made. 20-browser production pressure certification NOT PROVEN.
+- Details: docs/audits/SCHOOL_ASSESSMENT_CLASSROOM_JOURNEY_2026-10-08.md. This is a docs-only checkpoint following exact-head runtime CI, not a new implementation or production closure.
+
 ## School assessment and classroom audit — 2026-10-08
 - Owner scope: supervisor/teacher/student assessment targeting, analytics and teacher-created classroom participation. Baseline main@877940bda4b4; branch codex/school-assignment-classroom-audit. Original checkout and PR #480 preserved.
 - Fixed frontend class-to-parent school widening in three supervisor surfaces with a shared scope helper matching the unchanged server. Added reminder loading/failure handling and restored isolated supervisor/student CI execution after its skipped legacy dependency.
