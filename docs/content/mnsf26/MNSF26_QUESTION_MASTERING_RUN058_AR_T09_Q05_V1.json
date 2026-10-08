@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN058_AR_T09_DIRECT_VISUAL",
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T009-Q05",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+        "testNumber": 9,
+        "pdfPage": 16,
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "sourceTopic": "تصنيف المصدر محفوظ؛ رياضيات السؤال هي معيار الربط",
+        "sourceLesson": "الحساب والجبر، الاختبار 009، السؤال 05",
+        "printedQuestionNumber": 5,
+        "cropFile": "mnsf26_fullbook_crops/AR/AR-T009-Q05.webp",
+        "cropSha256": "215f11c678f30df61bcbde38a330c3f08de34dd2a87bbb8e22e61f8f997dc9c6",
+        "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
+      },
+      "imageHash": "215f11c678f30df61bcbde38a330c3f08de34dd2a87bbb8e22e61f8f997dc9c6",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN058_2026-10-08_T009_Q05",
+      "status": "REVIEW",
+      "questionText": "أي قيمة ك تجعل (5+ك)/2 عددًا أوليًا، بين3 و7 و9 و11؟",
+      "canonicalMainSkill": null,
+      "canonicalSubskill": null,
+      "correctAnswer": null,
+      "stepByStepSolution": null,
+      "educationalExplanation": "غير معتمد للنشر: الأعداد الأولية02_3 خارج مجموعة العمليات؛ يلزم اعتماد التصنيف.",
+      "difficulty": null,
+      "difficultyReason": "الأعداد الأولية02_3 خارج مجموعة العمليات؛ يلزم اعتماد التصنيف.",
+      "contentFingerprint": "cab08808ca92d3a6b8e2ab9e898263685a03e1f0a0f20145de2e9bc1d8f556e0",
+      "ideaFingerprint": "452b07999bc861caad299035db616af10165a68e2818dab27b73b91c601467a6",
+      "holdReason": "الأعداد الأولية02_3 خارج مجموعة العمليات؛ يلزم اعتماد التصنيف.",
+      "proposedCanonicalSubskill": "sub_quant_02_3"
+    }
+  ]
+}
