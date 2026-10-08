@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN075_FINAL_V2",
+  "stage": "QA_LOCK",
+  "previousReconciledQA": 1438,
+  "newSourceKeys": 137,
+  "newDistinctImageHashes": 117,
+  "mathPassTaxonomyPending": 85,
+  "holdPreserved": 47,
+  "reviewRequired": 5,
+  "reviewKeys": [
+    "MNSF26-AR-T055-Q08",
+    "MNSF26-AR-T056-Q16",
+    "MNSF26-AR-T057-Q10",
+    "MNSF26-AR-T060-Q10",
+    "MNSF26-AR-T059-Q09"
+  ],
+  "qaReviewedProvisionalAfter": 1575,
+  "qaRemainingProvisional": 554,
+  "totalActive": 2129,
+  "qaFullBookPass": false,
+  "canonicalTaxonomyFullBookPass": false,
+  "cropLocked": 2135,
+  "productionUntouched": true,
+  "importEligible": false,
+  "duplicatePairsT057T060": 20,
+  "sourceKeyDoubleCountAvoided": [
+    "MNSF26-AR-T059-Q07",
+    "MNSF26-AR-T059-Q08"
+  ],
+  "evidenceLibrary": "/MNSF26/Run075",
+  "evidenceSHA256PartA": "07159e270b2ebabddce878f008ba8cc8c9e7b373962aaee325301d40875c5d4f",
+  "evidenceSHA256PartB": "939d7bd0ab39732e28ccc87e96f7004f6640aa371f5c701ae7fb212070061c4f",
+  "gate": "QA_LOCK remains open; 25/95 semantic taxonomy audit pending; no R2/import/production."
+}
