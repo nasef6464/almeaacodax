@@ -4,10 +4,27 @@ import 'katex/dist/katex.min.css';
 import type { BoardElement } from './boardState';
 
 const Formula: React.FC<{ content: string }> = ({ content }) => {
-  const html = React.useMemo(() => katex.renderToString(content, {
-    displayMode: true, throwOnError: false, trust: false, maxExpand: 100, maxSize: 10,
-  }), [content]);
-  return <div dir="ltr" className="overflow-x-auto text-center text-xl sm:text-2xl" dangerouslySetInnerHTML={{ __html: html }} />;
+  const html = React.useMemo(() => {
+    try { return katex.renderToString(content, {
+      displayMode: false, throwOnError: true, trust: false, maxExpand: 100, maxSize: 10,
+    }); } catch { return null; }
+  }, [content]);
+  return html ? <span dir="ltr" className="inline-block max-w-full overflow-x-auto align-middle" dangerouslySetInnerHTML={{ __html: html }} />
+    : <span className="whitespace-pre-wrap">{content}</span>;
+};
+
+/** Providers can label prose plus equations as formula. Keep prose readable and math isolated. */
+const BoardContent: React.FC<{ content: string; kind: 'text' | 'formula' }> = ({ content, kind }) => {
+  const withoutTextCommands = content.replace(/\\(?:text|textbf|mathrm|operatorname)\{[^{}]*\}/g, '');
+  const mixed = kind === 'text' || /[\u0600-\u06ff]|[A-Za-z]{3,}\s+[A-Za-z]{3,}|\bStep\b|\$/.test(withoutTextCommands);
+  if (!mixed) return <div className="text-center text-xl sm:text-2xl"><Formula content={content} /></div>;
+  const readable = content.replace(/\\n/g, '\n').replace(/\\\\/g, '\n')
+    .replace(/\\textbf\{([^{}]*)\}/g, '$1').replace(/(?<=[.!?])(?=Step\s*\d)/g, '\n');
+  const parts = readable.split(/(\$\$[\s\S]+?\$\$|\$[^$\n]+\$|\\\([\s\S]+?\\\)|\d+(?:\s*(?:\\times|\\div|[+\-=×÷*/])\s*\d+)+)/g);
+  return <p dir="auto" className="whitespace-pre-wrap break-words text-lg leading-8">{parts.map((part, index) => {
+    const math = /^(?:\$|\\\(|\d+(?:\s*(?:\\times|\\div|[+\-=×÷*/])))/.test(part);
+    return math ? <Formula key={index} content={part.replace(/^\$\$|\$\$$|^\$|\$$|^\\\(|\\\)$/g, '')} /> : <React.Fragment key={index}>{part}</React.Fragment>;
+  })}</p>;
 };
 
 export const TeachingBoard: React.FC<{ elements: BoardElement[]; narration: string; language: string }> = ({ elements, narration, language }) => (
@@ -19,7 +36,7 @@ export const TeachingBoard: React.FC<{ elements: BoardElement[]; narration: stri
           element.emphasis === 'highlight' ? 'bg-amber-400/15 text-amber-200' : 'text-slate-100'
         }`}>
           <div key={element.content} className={`teaching-writing ${element.kind === 'text' && language.startsWith('ar') ? 'teaching-writing-rtl' : ''}`} style={{ '--reveal': `${Math.round(element.progress * 100)}%` } as React.CSSProperties}>
-            {element.kind === 'formula' ? <Formula content={element.content} /> : <p className="whitespace-pre-wrap text-lg leading-8">{element.content}</p>}
+            <BoardContent content={element.content} kind={element.kind} />
           </div>
         </div>
       ))}
