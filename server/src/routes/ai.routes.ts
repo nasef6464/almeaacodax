@@ -777,6 +777,7 @@ const callAiWithMeta = async (
   const profile = capability ? runtimeAiConfig.routeProfiles[capability] : undefined;
   const allowPaid = capabilityPaidAllowed(runtimeAiConfig.paidAllowed, profile);
   const providerCallOptions: AiProviderCallOptions = {
+    ...(options.disableThinking ? { disableThinking: true } : {}),
     ...(options.timeoutMs ? { timeoutMs: options.timeoutMs } : {}),
     ...(options.maxOutputTokens || profile?.maxOutputTokens
       ? { maxOutputTokens: options.maxOutputTokens || profile?.maxOutputTokens }
@@ -1599,7 +1600,7 @@ aiRouter.post(
       String(aiReadableText.length),
       String(visualDescription.length),
       String(payload.tutorSessionId || ""),
-      ...(payload.boardMode ? [payload.boardMode, "practice-checkpoint-v1", payload.boardContext || ""] : []),
+      ...(payload.boardMode ? [payload.boardMode, "practice-checkpoint-v2", payload.boardContext || ""] : []),
     ].join("::");
     const cacheKey = buildQuestionAssistantCacheKey({
       userId,
@@ -1785,6 +1786,7 @@ aiRouter.post(
       const startedAt = Date.now();
       const resultCall = payload.boardMode
         ? await callAiWithMeta(prompt, "application/json", undefined, {
+          disableThinking: true,
           capability: "question_tutor",
           timeoutMs: env.AI_REQUEST_TIMEOUT_MS,
           maxOutputTokens: env.AI_QUESTION_ASSISTANT_MAX_OUTPUT_TOKENS,

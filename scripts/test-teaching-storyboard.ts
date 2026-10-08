@@ -3,6 +3,7 @@ import { validateTeachingStoryboard } from '../server/src/modules/ai/contracts/t
 import { decodeQuestionTeachingPlan, normalizeQuestionTeachingPlan } from '../server/src/modules/ai/application/questionTeachingPlan';
 import { boardAt, sceneDuration } from '../components/results/teaching/boardState';
 import { BrowserNarrationEngine } from '../components/results/teaching/narrationEngine';
+import { createAiProviderAdapters } from '../server/src/modules/ai/infrastructure/providers/aiProviderAdapters';
 
 const example = {
   version: 1, language: 'ar-SA', scenes: [
@@ -72,4 +73,24 @@ assert.ok(calls.pause > 0 && calls.resume > 0);
 main.cancel(); branch.cancel();
 delete (globalThis as any).window;
 delete (globalThis as any).SpeechSynthesisUtterance;
+// Bounded lesson generation reserves its unchanged output cap for visible JSON.
+const originalFetch = globalThis.fetch;
+const requests: any[] = [];
+let providerModel = 'gemini-2.5-flash';
+globalThis.fetch = async (_url, init) => {
+  requests.push(JSON.parse(String(init?.body)));
+  return new Response(JSON.stringify({ candidates: [{ content: { parts: [{ text: JSON.stringify(example) }] } }], usageMetadata: { promptTokenCount: 100, candidatesTokenCount: 80, totalTokenCount: 180 } }), { status: 200 });
+};
+try {
+  const adapters = createAiProviderAdapters({ getProviderRuntime: () => ({ apiKey: 'fixture-key', model: providerModel }), defaultTimeoutMs: 1000, clientUrl: 'https://example.com', qwenBaseUrl: 'https://example.com', redactDiagnostic: () => 'redacted' });
+  await adapters.callProvider('gemini', 'trusted reference', 'application/json', undefined, { maxOutputTokens: 450, disableThinking: true });
+  assert.deepEqual(requests.at(-1).generationConfig.thinkingConfig, { thinkingBudget: 0 });
+  assert.equal(requests.at(-1).generationConfig.maxOutputTokens, 450);
+  await adapters.callProvider('gemini', 'normal chat');
+  assert.equal(requests.at(-1).generationConfig.thinkingConfig, undefined, 'other capabilities retain their existing behavior');
+  for (providerModel of ['gemini-2.5-pro', 'gemini-3.8-flash']) {
+    await adapters.callProvider('gemini', 'trusted reference', 'application/json', undefined, { maxOutputTokens: 450, disableThinking: true });
+    assert.equal(requests.at(-1).generationConfig.thinkingConfig, undefined, 'unsupported models must not receive a thinking-off parameter');
+  }
+} finally { globalThis.fetch = originalFetch; }
 console.log('Teaching storyboard: validation, deterministic transforms/seek, invalid JSON fallback, narration interruption/resume PASS');

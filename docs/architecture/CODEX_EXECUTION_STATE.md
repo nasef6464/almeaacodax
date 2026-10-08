@@ -1513,4 +1513,5 @@
 - Status PARTIAL: local tests and browser fixture evidence; no live AI/audio or production closure. Exact runtime SHA/CI are reported on the attached PR.
 - Evidence: docs/audits/INTERACTIVE_TEACHING_BOARD_V1_2026-10-08.md.
 - Owner-approved follow-up: optional next-step practice, two local progressive hints, contextual attempt feedback and retry/skip. Same PR #459; exact runtime SHA and CI are recorded there. No scoring or persisted data changes.
+- Real-provider continuation: configured Gemini probe PASS; four live-chat planner samples returned truncated JSON. Scoped Flash thinking-off/compact planner repair and post-deploy owned-review auditor added; evidence: docs/audits/TEACHING_BOARD_REAL_PROVIDER_2026-10-08.md. Production correctness/audio closure remains unproven.
 - Next: exact-head CI followed by configured-provider review journey, valid-plan rate/latency/cost measurement and actual tablet voice testing.

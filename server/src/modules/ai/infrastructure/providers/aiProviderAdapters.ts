@@ -9,6 +9,7 @@ export type AiProviderRuntime = {
   quotaPools?: AiQuotaPoolRuntime[];
 };
 export type AiProviderCallOptions = {
+  disableThinking?: boolean;
   timeoutMs?: number;
   maxOutputTokens?: number;
   allowPaid?: boolean;
@@ -161,6 +162,8 @@ export const createAiProviderAdapters = (config: AdapterConfig) => {
                 generationConfig: {
                   ...(responseMimeType ? { responseMimeType } : {}),
                   ...(options.maxOutputTokens ? { maxOutputTokens: options.maxOutputTokens } : {}),
+                  ...(options.disableThinking && /^gemini-2\.5-flash(?:$|-)/.test(model)
+                    ? { thinkingConfig: { thinkingBudget: 0 } } : {}),
                 },
               }),
             },
