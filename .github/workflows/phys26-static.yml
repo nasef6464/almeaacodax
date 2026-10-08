@@ -24,6 +24,8 @@ jobs:
           node-version: "22"
       - name: PHYS26 source and taxonomy gate
         run: node scripts/verify-phys26-source-gates.mjs
+      - name: PHYS26 numbered source and answer-key candidate gate
+        run: node scripts/verify-phys26-number-audit.mjs
       - name: PHYS26 foundation and section gate
         run: node scripts/verify-phys26-foundation-plan.mjs
       - name: Check offline question-batch validator syntax
