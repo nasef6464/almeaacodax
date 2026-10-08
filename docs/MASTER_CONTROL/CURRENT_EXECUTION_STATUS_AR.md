@@ -129,3 +129,4 @@ Git HEAD always overrides this historical baseline.
 - Status: PARTIAL; no production closure or deployment. Existing Master Control plan exit gates remain as recorded.
 - Added validated versioned plans, local deterministic playback, narration adapter, contextual follow-up board and saved main-lesson resume. Existing authorization, budgets, scoring and image policy preserved.
 - Evidence and remaining live-provider/voice checks: docs/audits/INTERACTIVE_TEACHING_BOARD_V1_2026-10-08.md. Exact-head CI is tracked on the attached PR.
+- متابعة السبورة 2026-10-08: نشر #476 بالنسخة `3751d5fdbc08` وفحوص الإنتاج ناجحة بعد إعادة بناء Render؛ الشرح العربي يعرض وينطق 309705 كاملة، لكن التجربة الثلاثية فشلت بسبب رد مزود فارغ ثم JSON ناقص في إعادة واحدة. متابعة `codex/teaching-board-fallback-budget` تضبط تفكير النموذج البديل 3.8 بميزانية محدودة وتسجل اسمه الحقيقي؛ CI والتحقق المنشور لم يكتملَا. الحالة PARTIAL، ولا اعتماد للصوت الفعلي أو جميع المواد.

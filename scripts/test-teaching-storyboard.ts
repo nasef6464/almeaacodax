@@ -169,8 +169,10 @@ delete (globalThis as any).SpeechSynthesisUtterance;
 const originalFetch = globalThis.fetch;
 const requests: any[] = [];
 let providerModel = 'gemini-2.5-flash';
+let missingModel = false;
 globalThis.fetch = async (_url, init) => {
   requests.push(JSON.parse(String(init?.body)));
+  if (missingModel && String(_url).includes('/gemini-2.5-flash:')) return new Response('{}', { status: 404 });
   return new Response(JSON.stringify({ candidates: [{ content: { parts: [{ text: JSON.stringify(example) }] } }], usageMetadata: { promptTokenCount: 100, candidatesTokenCount: 80, totalTokenCount: 180 } }), { status: 200 });
 };
 try {
@@ -183,9 +185,24 @@ try {
   await adapters.callProvider('gemini', 'normal chat');
   assert.equal(requests.at(-1).generationConfig.thinkingConfig, undefined, 'other capabilities retain their existing behavior');
   assert.equal(requests.at(-1).generationConfig.responseJsonSchema, undefined);
-  for (providerModel of ['gemini-2.5-pro', 'gemini-3.8-flash']) {
+  for (providerModel of ['gemini-2.5-pro']) {
     await adapters.callProvider('gemini', 'trusted reference', 'application/json', undefined, { maxOutputTokens: 450, disableThinking: true });
     assert.equal(requests.at(-1).generationConfig.thinkingConfig, undefined, 'unsupported models must not receive a thinking-off parameter');
   }
+  providerModel = 'gemini-3.8-flash';
+  const direct = await adapters.callProvider('gemini', 'trusted reference', 'application/json', undefined, { maxOutputTokens: 450, disableThinking: true, jsonSchema: schema });
+  assert.deepEqual(requests.at(-1).generationConfig.thinkingConfig, { thinkingLevel: 'low' });
+  assert.equal(requests.at(-1).generationConfig.maxOutputTokens, 1024);
+  assert.equal(direct.model, 'gemini-3.8-flash');
+  await adapters.callProvider('gemini', 'normal chat', undefined, undefined, { maxOutputTokens: 450 });
+  assert.equal(requests.at(-1).generationConfig.thinkingConfig, undefined);
+  assert.equal(requests.at(-1).generationConfig.maxOutputTokens, 450, 'ordinary chat retains its budget');
+  providerModel = 'gemini-2.5-flash';
+  missingModel = true;
+  const fallback = await adapters.callProvider('gemini', 'trusted reference', 'application/json', undefined, { maxOutputTokens: 450, disableThinking: true, jsonSchema: schema });
+  assert.equal(fallback.model, 'gemini-3.8-flash', 'metadata records the model actually called after 404');
+  assert.deepEqual(requests.at(-1).generationConfig.thinkingConfig, { thinkingLevel: 'low' });
+  assert.equal(requests.at(-1).generationConfig.maxOutputTokens, 1024);
+  assert.deepEqual(requests.at(-1).generationConfig.responseJsonSchema, schema);
 } finally { globalThis.fetch = originalFetch; }
 console.log('Teaching storyboard: validation, deterministic transforms/seek, invalid JSON fallback, narration interruption/resume PASS');

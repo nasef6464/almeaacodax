@@ -56,7 +56,7 @@ for (const [id, message] of [
   boardContext = JSON.stringify({ scene: scene.id, narration: scene.narration, practice: scene.checkpoint?.prompt }).slice(0,1200);
 }
 const usage = await request('/ai/interactions?limit=20', { headers });
-report.usage = (usage.body.items || []).filter((item: any) => String(item.metadata?.tutorSessionId || '').startsWith(run)).map((item: any) => ({ provider: item.provider, inputTokens: item.inputTokens, outputTokens: item.outputTokens, totalTokens: item.totalTokens, estimatedCostMicrosUsd: item.estimatedCostMicrosUsd, pricingKnown: item.pricingKnown, usageEstimated: item.usageEstimated, latencyMs: item.latencyMs, diagnostics: item.metadata?.teachingPlanDiagnostics }));
+report.usage = (usage.body.items || []).filter((item: any) => String(item.metadata?.tutorSessionId || '').startsWith(run)).map((item: any) => ({ provider: item.provider, model: item.model, inputTokens: item.inputTokens, outputTokens: item.outputTokens, totalTokens: item.totalTokens, estimatedCostMicrosUsd: item.estimatedCostMicrosUsd, pricingKnown: item.pricingKnown, usageEstimated: item.usageEstimated, latencyMs: item.latencyMs, diagnostics: item.metadata?.teachingPlanDiagnostics }));
 report.acceptance = {
   servedProceduralHints: report.cases.length === 3 && report.cases.every((item: any) => item.servedHintsSafe),
   threeCompleteResponses: report.cases.length === 3 && report.cases.every((item: any) => item.validPlan && !item.usedFallback),
@@ -64,6 +64,7 @@ report.acceptance = {
   practiceBeforeSolution: [report.cases[0], report.cases[2]].every(item => item?.storyboard?.scenes.length === 2 && item.storyboard.scenes[0].checkpoint?.hints.length === 2 && !item.storyboard.scenes[1].checkpoint),
   feedbackWithoutNewPractice: report.cases[1]?.storyboard?.scenes.length === 1 && !report.cases[1].storyboard.scenes[0].checkpoint,
   actualUsageBounded: report.usage.length === 3 && report.usage.every((item: any) => !item.usageEstimated && item.outputTokens > 0 && item.outputTokens <= 450),
+  reasoningAndOutputBounded: report.usage.length === 3 && report.usage.every((item: any) => item.totalTokens - item.inputTokens <= (item.model === 'gemini-3.8-flash' ? 1024 : 450)),
 };
 report.passed = Object.values(report.acceptance).every(Boolean);
 if (expectedAnswer) {

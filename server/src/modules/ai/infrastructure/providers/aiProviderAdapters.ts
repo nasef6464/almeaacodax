@@ -27,6 +27,7 @@ export type AiProviderResponse = {
   text: string;
   usage: AiProviderUsage;
   quotaPoolId?: string;
+  model?: string;
 };
 type ExternalProvider = Exclude<AiProviderId, "none">;
 type OpenAiCompatibleProvider = Exclude<ExternalProvider, "gemini" | "ollama" | "lmstudio">;
@@ -163,17 +164,24 @@ export const createAiProviderAdapters = (config: AdapterConfig) => {
                 generationConfig: {
                   ...(responseMimeType ? { responseMimeType } : {}),
                   ...(responseMimeType && options.jsonSchema ? { responseJsonSchema: options.jsonSchema } : {}),
-                  ...(options.maxOutputTokens ? { maxOutputTokens: options.maxOutputTokens } : {}),
+                  // 3.8 cannot disable thinking: reserve a bounded combined budget for
+                  // reasoning plus the short board JSON instead of silently truncating it.
+                  ...(options.maxOutputTokens ? { maxOutputTokens: options.disableThinking && model === 'gemini-3.8-flash'
+                    ? 1024 : options.maxOutputTokens } : {}),
                   ...(options.disableThinking && /^gemini-2\.5-flash(?:$|-)/.test(model)
-                    ? { thinkingConfig: { thinkingBudget: 0 } } : {}),
+                    ? { thinkingConfig: { thinkingBudget: 0 } }
+                    : options.disableThinking && model === 'gemini-3.8-flash'
+                      ? { thinkingConfig: { thinkingLevel: 'low' } } : {}),
                 },
               }),
             },
             options.timeoutMs,
           );
-          let response = await requestGeminiModel(pool.model);
+          let actualModel = pool.model;
+          let response = await requestGeminiModel(actualModel);
           if (!response.ok && response.status === 404 && pool.model === "gemini-2.5-flash") {
-            response = await requestGeminiModel("gemini-3.8-flash");
+            actualModel = 'gemini-3.8-flash';
+            response = await requestGeminiModel(actualModel);
           }
           if (!response.ok) {
             const message = await responseFailureMessage("Gemini", response);
@@ -194,6 +202,7 @@ export const createAiProviderAdapters = (config: AdapterConfig) => {
             return {
               text,
               quotaPoolId: pool.id,
+              model: actualModel,
               usage: normalizeUsage({
                 inputTokens: payload.usageMetadata?.promptTokenCount,
                 outputTokens: payload.usageMetadata?.candidatesTokenCount,
