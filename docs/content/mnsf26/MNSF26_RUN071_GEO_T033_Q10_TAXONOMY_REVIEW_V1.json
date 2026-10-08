@@ -1,0 +1,1 @@
+{"bank":"MNSF26","run":"RUN071","key":"MNSF26-GEO-T033-Q10","imageHash":"52bff881d02bad905adbafcef435323b9d8bdeec72cb5526a8ef9629408fa51a","priorMain":"main_quant_24","priorSub":"sub_quant_23_2","mathQA":"PASS","taxonomyQA":"REVIEW_REQUIRED","importEligible":false,"reason":"Canonical main and subskill parent IDs disagree; resolve against approved 25/95 before import."}
