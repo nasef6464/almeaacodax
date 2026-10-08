@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN060_AR_T17_RECOVERY",
+  "previouslyCounted": true,
+  "records": [
+    {
+      "id": "MNSF26-AR-T017-Q09",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T017",
+        "sourceLesson": "جمع الأعداد - المتتابعات - ضرب الأعداد"
+      },
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_3",
+      "correctAnswer": "د",
+      "answerValue": "4ن-7",
+      "stepByStepSolution": "المتتابعة -3،1،5،9 فرقها 4. الحد العام=a1+(ن-1)d=-3+4(ن-1)=4ن-7.",
+      "educationalExplanation": "نستخدم قانون الحد العام للمتتابعة الحسابية.",
+      "difficulty": "Medium",
+      "difficultyReason": "يتطلب تحويل النمط إلى صيغة جبرية.",
+      "imageHash": "5250d606a539041d70447469ef74cfdc34a7356eb7ac54b81c29be44d4ce75a2",
+      "contentFingerprint": "bf77044fbbdc23367770f065f157b935913c5f002fc451cc7b25b74110f40206",
+      "ideaFingerprint": "fd5fcb5c137a04026ef956d10ab66d60d025445b3db08c13a455e322814f06cf",
+      "status": "MASTERED"
+    }
+  ]
+}
