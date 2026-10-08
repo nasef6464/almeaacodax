@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN065",
+  "stage": "QUESTION_MASTERING_GITHUB_SYNC",
+  "sourceArtifact": "RUN063_DIRECT_T007_VISUAL_MASTERING",
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T007-Q09",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+        "testNumber": 7,
+        "pdfPage": 12,
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "sourceTopic": "direct visual mathematical classification",
+        "sourceLesson": "AR T007 Q09",
+        "printedQuestionNumber": 9,
+        "cropFile": "AR/AR-T007-Q09.webp",
+        "cropSha256": "3553c44bc1d5eafc464e6a535ef1b165316d924339d62bf5ee0a42f7b67bfd81"
+      },
+      "imageHash": "3553c44bc1d5eafc464e6a535ef1b165316d924339d62bf5ee0a42f7b67bfd81",
+      "visualEvidence": "RUN063_DIRECT_RUN017_WEBP_VISUAL_INSPECTION",
+      "status": "MASTERED",
+      "questionText": "تقطيع خشبة إلى 3 قطع يستغرق 12 دقيقة؛ كم يلزم لتقطيعها إلى 4 قطع؟",
+      "canonicalMainSkill": "skill_quant_13",
+      "canonicalSubskill": "sub_quant_13_3",
+      "correctAnswer": "ب — 18 دقيقة",
+      "stepByStepSolution": "ثلاث قطع تحتاج قطعتين/قصتين؛ زمن القصة الواحدة12÷2=6؛ أربع قطع تحتاج3 قصات×6=18.",
+      "educationalExplanation": "ثلاث قطع تحتاج قطعتين/قصتين؛ زمن القصة الواحدة12÷2=6؛ أربع قطع تحتاج3 قصات×6=18.",
+      "difficulty": "Medium",
+      "difficultyReason": "يتطلب خطوتين رياضيتين وتحققًا من المصدر.",
+      "contentFingerprint": "d77dad78e819d6ed6efd64deb2a260189f2abc06e98c17339d674756072fad85",
+      "ideaFingerprint": "6655e7ecb5e61a381aafcda4c16e395789d80b7fdc2cabdfd0b1088a8613b9d8"
+    }
+  ],
+  "persistence": "GITHUB_RECONCILED_FROM_LIBRARY"
+}
