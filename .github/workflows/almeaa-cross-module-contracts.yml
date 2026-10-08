@@ -1,0 +1,35 @@
+name: ALMEAA Cross-Module Static Contracts
+on:
+  push:
+    branches: [test/almeaa-isolated-20261008]
+    paths: [.github/workflows/almeaa-cross-module-contracts.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  contracts:
+    name: Auth roles school quiz results lessons content hygiene
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Run source boundary contracts without cloud credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/smoke-auth-frontend-contract.mjs
+          node scripts/smoke-school-roster-contract.mjs
+          node scripts/smoke-smart-classroom-live-journey-contract.mjs
+          node scripts/smoke-quiz-access-contract.mjs
+          node scripts/smoke-results-contract.mjs
+          node scripts/smoke-unified-skill-mastery-contract.mjs
+          node scripts/smoke-mock-exam-contract.mjs
+          node scripts/smoke-student-session-booking-contract.mjs
+          node scripts/smoke-content-platform-presentation-schema-boundary-contract.mjs
+          node scripts/smoke-content-platform-presentation-defaults-boundary-contract.mjs
+          node scripts/smoke-tracked-secret-hygiene-contract.mjs
