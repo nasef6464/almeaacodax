@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN058_AR_T53_LIBRARY_RECONCILIATION",
+  "sourceLibrary": "/MNSF26/Run051/MNSF26_QUESTION_MASTERING_RUN051_AR_T53_V1.json",
+  "directImageInspection": true,
+  "sourceCropArchive": "/MNSF26/Run017/mnsf26_arithmetic_crops_run017.zip",
+  "sourceInventory": "/MNSF26/Run017/MNSF26_FULLBOOK_CROP_INVENTORY_V1.json",
+  "masteredCount": 1,
+  "holdCount": 1,
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T053-Q17",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "testNumber": 53,
+        "pdfPage": 107,
+        "sourceSkillLabel": "التحويلات والمعادلات",
+        "printedQuestionNumber": 17,
+        "cropFile": "AR/AR-T053-Q17.webp",
+        "cropSha256": "c53335c72814f28177a13b409193bfd390b6c0c31cd42dfa205ef4f9071b01b7",
+        "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
+      },
+      "imageHash": "c53335c72814f28177a13b409193bfd390b6c0c31cd42dfa205ef4f9071b01b7",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
+      "status": "MASTERED",
+      "questionText": "سعر جوال قبل الخصم 800 ريال وخصمه 20%؛ قارن السعر بعد الخصم مع 800 ريال.",
+      "canonicalMainSkill": "main_quant_09",
+      "canonicalSubskill": "sub_quant_09_3",
+      "correctAnswer": "القيمة الثانية أكبر",
+      "stepByStepSolution": "السعر بعد الخصم=800×0.8=640؛ 800>640.",
+      "educationalExplanation": "المهارة: سعر بعد خصم نسبي؛ نقرأ معطيات السؤال من الصورة ونطبّق العلاقة الحسابية ثم نراجع الناتج مع المطلوب.",
+      "difficulty": "Easy",
+      "difficultyReason": "خطوات مباشرة في سعر بعد خصم نسبي.",
+      "contentFingerprint": "1024af754952b1dccc5c90136616b5fb5f2aea7b801f403dd53fc131e0714f3a",
+      "ideaFingerprint": "920aacbb534057efb3a6f2f9e87ae1bcfa1607684e46690360a8fc23e1960286"
+    },
+    {
+      "sourceKey": "MNSF26-AR-T053-Q20",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "testNumber": 53,
+        "pdfPage": 107,
+        "sourceSkillLabel": "التحويلات والمعادلات",
+        "printedQuestionNumber": 20,
+        "cropFile": "AR/AR-T053-Q20.webp",
+        "cropSha256": "b481e40637c4a859500e1bc43db133b6c058b41b11ac71fc0736f7af09109746",
+        "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
+      },
+      "imageHash": "b481e40637c4a859500e1bc43db133b6c058b41b11ac71fc0736f7af09109746",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
+      "status": "HOLD",
+      "questionText": "مقارنة كميتين من سؤال التحويلات والمعادلات.",
+      "holdReason": "قص السؤال لم يحفظ ترتيب المقادير بصورة كافية لتثبيت إجابة رياضية.",
+      "canonicalMainSkill": null,
+      "canonicalSubskill": null,
+      "correctAnswer": null,
+      "stepByStepSolution": null,
+      "educationalExplanation": null,
+      "difficulty": null,
+      "difficultyReason": null,
+      "contentFingerprint": "ab902874ab7abd8f592349da0f06e657ca066e66bf3982d597db19d07090379d",
+      "ideaFingerprint": "1d2d8cd5d3f1d7eac1bcca2498119ff1eff7925d925298a12d63d1a94a15f7a7"
+    }
+  ]
+}
