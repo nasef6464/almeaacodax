@@ -1,0 +1,11 @@
+{
+  "bank": "MNSF26",
+  "run": "RUN067",
+  "sourceKey": "MNSF26-GEO-T010-Q15",
+  "status": "QA_REVIEW_REQUIRED",
+  "imageHash": "78c6a49f92fc25bde620571e13de011e16491afb214d9a82eb804ad6ce4fe97a",
+  "masterAnswer": "C",
+  "imageDerivedAnswer": "B",
+  "proof": "Two adjacent equal squares: p=45 degrees, s=atan(1/2) about 26.565 degrees. Question is angles, not areas; prior skill sub_quant_24_3 also wrong.",
+  "importEligible": false
+}
