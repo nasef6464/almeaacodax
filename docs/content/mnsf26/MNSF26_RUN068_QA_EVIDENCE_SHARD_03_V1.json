@@ -1,0 +1,120 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN068",
+  "stage": "QA_LOCK",
+  "source": "MNSF26_RUN068_INDEPENDENT_VISUAL_MATH_117_V2.json",
+  "sha256OriginalEvidence": "78500abc54b1de4a99c85c2a0e7bc02cd8cf8a154f19440447a830239aea246e",
+  "rows": [
+    {
+      "sourceKey": "MNSF26-GEO-T017-Q03",
+      "imageHash": "7223e21e0c57285b0c32243f3582c3f667d0b86f4c135f7766da269a8c6ad944",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T17_V1.json",
+      "expectedAnswerFromIndependentMath": "13 (ج)",
+      "independentMathematicalProof": "الوتر√(5²+12²)=13.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T017-Q05",
+      "imageHash": "16a477a4b51e6f78efbdf30300f9df65851bfeef89f38bf1611666d01acd0791",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T17_V1.json",
+      "expectedAnswerFromIndependentMath": "بين 7 و8 (ج)",
+      "independentMathematicalProof": "س²=(2√15)²−(√10)²=50؛ س=√50 بين7 و8.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T017-Q06",
+      "imageHash": "45ac0968e438ffec4cebde7ee0d334ae2efe2ceff179ce534641ed1501ec08ab",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T17_V1.json",
+      "expectedAnswerFromIndependentMath": "20 (ج)",
+      "independentMathematicalProof": "الإزاحة√(16²+12²)=20.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T017-Q07",
+      "imageHash": "f931491964c7efb5764859fd5a7f35b765a761e631cbeada99157b7353d809e6",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T17_V1.json",
+      "expectedAnswerFromIndependentMath": "21 (ج)",
+      "independentMathematicalProof": "الساق الأخرى√(15²−12²)=9، والمجموع9+12=21.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T017-Q08",
+      "imageHash": "aafb42d97bc5b5653a0eedca3c4ac0cef9979ea58db93a4c53777bf9cc5818d3",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T17_V1.json",
+      "expectedAnswerFromIndependentMath": "21 (ج)",
+      "independentMathematicalProof": "المسار المتعامد يعطي المسافة الأفقية9 والجنوبية12؛ المجموع21.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T017-Q09",
+      "imageHash": "f5e927a9d016a585469ce7b36c119d262034fb830dff785550c3db0e40ffc84f",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T17_V1.json",
+      "expectedAnswerFromIndependentMath": "5 (أ)",
+      "independentMathematicalProof": "المحصلة غرب3 وجنوب4؛ أقصر عودة√(3²+4²)=5.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T017-Q10",
+      "imageHash": "de86f9db86a9ff742ad4dfa7c8d5e604aaec081e597a5053d5f421123fd53ea4",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T17_V1.json",
+      "expectedAnswerFromIndependentMath": "2√3 (أ)",
+      "independentMathematicalProof": "الزاوية الداخلية60° لأن الخارجية120°، فيكون المثلث متساوي الأضلاع ضلع4؛ الارتفاع√(4²−2²)=2√3.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T017-Q11",
+      "imageHash": "6d4f4fc14048d43e2148fa4dd156b99c5ba0ac2b0d066b25124937a5213ea1d9",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T17_V1.json",
+      "expectedAnswerFromIndependentMath": "8 (ج)",
+      "independentMathematicalProof": "في مثلث30-60-90 الضلع المقابل لـ60 يساوي الوتر×√3/2؛ الوتر8.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T017-Q12",
+      "imageHash": "957b3cfd0fd0dec560f62e3f4b07639f0d687f94710c4bc71809fce90b085926",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T17_V1.json",
+      "expectedAnswerFromIndependentMath": "40 (ب)",
+      "independentMathematicalProof": "المقابل لزاوية30° يساوي نصف الوتر80، أي40.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T017-Q16",
+      "imageHash": "dae7aa4eee72f8db80f2a1f5cc5f9dd68762be03a3982f882ed1af9ad76a0d75",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T17_V1.json",
+      "expectedAnswerFromIndependentMath": "8 (ب)",
+      "independentMathematicalProof": "ارتفاع الشجرة=16sin30°=8.",
+      "visualSource": "Run021 original WEBP crop visible in Run066 SHA-verified contact sheet",
+      "verdict": "QA_PASS_INDEPENDENT_MATH_ANSWER",
+      "requiresFullBookTaxonomyGate": true,
+      "importEligible": false
+    }
+  ]
+}
