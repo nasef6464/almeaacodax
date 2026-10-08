@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 3,
+  "bank": "MNSF26",
+  "run": "RUN064",
+  "supersedes": "MNSF26_RUN064_STATE_DELTA_V2.json",
+  "date": "2026-10-08",
+  "cropLock": "2135/2135 PASS_LOCKED",
+  "mastering": "2135 source keys; 2129 active; 6 excluded; Library stage locked; GitHub sync pending 39 master records; Run062 missing 3 recovered",
+  "qa": {
+    "stage": "QA_LOCK",
+    "status": "IN_PROGRESS",
+    "independentImagesReviewed": 100,
+    "pass": 86,
+    "priorHold": 12,
+    "newReview": 2,
+    "remaining": 2029,
+    "reviewKeys": [
+      "MNSF26-AR-T057-Q10",
+      "MNSF26-AR-T060-Q10"
+    ],
+    "effectiveCountsPendingReindex": {
+      "mastered": 1775,
+      "hold": 319,
+      "review": 35,
+      "excluded": 6
+    },
+    "evidence": "MNSF26_RUN064_QA_SUMMARY_V2.json"
+  },
+  "officialExecutionStateUpdate": "BLOCKED_BY_SAFETY_CHECK",
+  "dedupe": "NOT_STARTED",
+  "r2": "NOT_STARTED",
+  "import": "NOT_STARTED",
+  "productionE2E": "NOT_STARTED"
+}
