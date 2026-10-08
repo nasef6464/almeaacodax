@@ -5,6 +5,7 @@ import { io as connectSocket, type Socket } from "socket.io-client";
 import { createApp } from "../app.js";
 import { env } from "../config/env.js";
 import { createSocketServer } from "../sockets/index.js";
+import { closeRedisClients } from "../config/redis.js";
 import { signAccessToken } from "../utils/jwt.js";
 import { GroupModel } from "../models/Group.js";
 import { UserModel } from "../models/User.js";
@@ -23,6 +24,7 @@ const userIds: string[] = [];
 const classIds: string[] = [];
 let schoolId = "";
 let server: http.Server | null = null;
+let socketServer: ReturnType<typeof createSocketServer> | null = null;
 let apiBaseUrl = "";
 let socketBaseUrl = "";
 let csrfToken = "";
@@ -160,7 +162,7 @@ async function run() {
 
   const app = createApp();
   server = http.createServer(app);
-  createSocketServer(server);
+  socketServer = createSocketServer(server);
   await new Promise<void>((resolve) => server!.listen(0, "127.0.0.1", resolve));
   const port = (server.address() as any).port;
   socketBaseUrl = `http://127.0.0.1:${port}`;
@@ -312,7 +314,17 @@ run()
     process.exitCode = 1;
   })
   .finally(async () => {
-    try { await cleanup(); } catch (error) { console.error("Realtime E2E cleanup failed", error); }
-    if (server) await new Promise<void>((resolve) => server!.close(() => resolve()));
-    await mongoose.disconnect();
+    try {
+      await cleanup();
+      if (socketServer) await new Promise<void>((resolve) => socketServer!.close(() => resolve()));
+      if (server?.listening) await new Promise<void>((resolve) => server!.close(() => resolve()));
+      await mongoose.disconnect();
+      await closeRedisClients();
+    } catch (error) {
+      console.error("Realtime E2E teardown failed", error);
+      process.exitCode = 1;
+    } finally {
+      // Redis-adapter duplicate subscribers may otherwise keep an E2E process open.
+      process.exit(process.exitCode || 0);
+    }
   });
