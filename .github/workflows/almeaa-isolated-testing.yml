@@ -9,6 +9,9 @@ on:
     paths:
       - .github/workflows/almeaa-isolated-testing.yml
       - scripts/live-role-pages-audit.mjs
+      - server/src/modules/content/http/contentPresentationRoutes.ts
+      - server/src/modules/quizzes/application/quizInlineQuestions.ts
+      - scripts/smoke-homepage-settings-concurrent.mjs
       - docs/testing/ALMEAA_ISOLATED_ENV_AR.md
   workflow_dispatch:
 
