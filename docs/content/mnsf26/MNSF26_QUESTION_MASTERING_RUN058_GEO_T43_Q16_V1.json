@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN058_GEO_T43_LIBRARY_RECONCILIATION",
+  "records": [
+    {
+      "sourceKey": "MNSF26-GEO-T043-Q16",
+      "sourceProvenance": {
+        "sourcePart": "الهندسة",
+        "bookCode": "GEO",
+        "testNumber": 43,
+        "pdfPage": 84,
+        "sourceSkillLabel": "مراجعة مسائل الهندسة من الكتاب",
+        "sourceTopic": "مسائل الهندسة المتنوعة",
+        "sourceLesson": "تمارين هندسة مرقمة حسب الاختبار",
+        "printedQuestionNumber": 16,
+        "cropFile": "MNSF26-GEO-T043-Q16.webp",
+        "cropSha256": "e001ab0f6de81f218684339e3dbfe50a03bed2a814b98892c4bfd14f323b1ef2",
+        "cropContract": "EMBEDDED_XOBJECT_OR_EXACT_COMPOSITE_SLICE"
+      },
+      "imageHash": "e001ab0f6de81f218684339e3dbfe50a03bed2a814b98892c4bfd14f323b1ef2",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T43_Q16",
+      "status": "MASTERED",
+      "questionText": "ثلاث دوائر متطابقة نصف قطرها2 موضوعة أفقيًا في مستطيل مماس؛ أوجد مساحة المستطيل.",
+      "canonicalMainSkill": "main_quant_21",
+      "canonicalSubskill": "sub_quant_21_1",
+      "correctAnswer": "48 (ج)",
+      "stepByStepSolution": "ارتفاع المستطيل قطر4، وعرضه3×4=12؛ المساحة48.",
+      "educationalExplanation": "من الصورة: ارتفاع المستطيل قطر4، وعرضه3×4=12؛ المساحة48.",
+      "difficulty": "Easy",
+      "difficultyReason": "قانون مباشر.",
+      "contentFingerprint": "9231ecab62452de84b922f461cf36a664584de883e1b08a404e679efb0999f4b",
+      "ideaFingerprint": "41d6e6351d5b8b5773fa1e90eb4d5aede4f05bef33e2570a99c99257c0aa1b6e"
+    }
+  ]
+}
