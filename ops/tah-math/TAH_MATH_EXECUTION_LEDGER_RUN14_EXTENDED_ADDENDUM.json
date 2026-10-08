@@ -1,0 +1,29 @@
+{
+  "project": "TAH-MATH",
+  "checkpoint": "2026-10-08-heavy-run14-extended",
+  "status": "IN_PROGRESS",
+  "newDistinctSourceOptionRegionReviews": 504,
+  "cumulativePartialSourceOptionRegions": 993,
+  "priorRasterVisualMathRows": 19,
+  "sourceOptionGeometryCoverage": 1012,
+  "sourceOptionSemantics": "NOT_CERTIFIED",
+  "independentMathReviewed": 12,
+  "fullOptionPedagogyProposals": 8,
+  "partialOptionPedagogyProposals": 4,
+  "newRemapCandidates": 48,
+  "priorRemapCandidates": 33,
+  "productionMutation": false,
+  "sourceCropBoundaryIssue": "TAH-MATH-COL26-P018-Q27",
+  "masterControlOriginalUpdated": false,
+  "executionLedgerOriginalUpdated": false,
+  "pr450CommentUpdated": false,
+  "remaining": [
+    "YLM26 full pedagogy",
+    "COL26 full pedagogy and remap approvals",
+    "COL26OLD regression",
+    "dedupe",
+    "coverage",
+    "training/tests",
+    "live student E2E"
+  ]
+}
