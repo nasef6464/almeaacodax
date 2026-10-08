@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN059_AR_T15_DIRECT_VISUAL",
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T015-Q15",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+        "testNumber": 15,
+        "pdfPage": 28,
+        "sourceSkillLabel": "جمع الأعداد - المتتابعات - ضرب الأعداد",
+        "sourceTopic": "عنوان المصدر للتوثيق فقط؛ التصنيف من رياضيات الصورة",
+        "sourceLesson": "الحساب والجبر اختبار015 سؤال15",
+        "printedQuestionNumber": 15,
+        "cropFile": "mnsf26_fullbook_crops/AR/AR-T015-Q15.webp",
+        "cropSha256": "88ddd14879b1742c1a7bf30a15e9ed00da88675337ec7b515fd03ba63c6040c7",
+        "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
+      },
+      "imageHash": "88ddd14879b1742c1a7bf30a15e9ed00da88675337ec7b515fd03ba63c6040c7",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN059_2026-10-08_T015_Q15",
+      "status": "MASTERED",
+      "questionText": "إذا كان 10+6+7=□+10+6 فما الرقم المفقود؟",
+      "canonicalMainSkill": "main_quant_01",
+      "canonicalSubskill": "sub_quant_01_1",
+      "correctAnswer": "7 (ب)",
+      "stepByStepSolution": "بحذف10 و6 من الطرفين يبقى المجهول=7.",
+      "educationalExplanation": "من الصورة: بحذف10 و6 من الطرفين يبقى المجهول=7.",
+      "difficulty": "Easy",
+      "difficultyReason": "تحتاج تطبيقًا مباشرًا.",
+      "contentFingerprint": "adca3473c04452648f866ba4c7d0390b069cb4b118aa6903936b80cbfd313b48",
+      "ideaFingerprint": "7bb7035fbec8b23ee7f324620d128a9288c0659e11991455a7bfd7cc44defb49"
+    }
+  ]
+}
