@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN058_AR_T10_DIRECT_VISUAL",
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T010-Q19",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+        "testNumber": 10,
+        "pdfPage": 19,
+        "sourceSkillLabel": "ترتيب العمليات – قابلية القسمة",
+        "sourceTopic": "تصنيف المصدر محفوظ؛ رياضيات السؤال هي معيار الربط",
+        "sourceLesson": "الحساب والجبر، الاختبار 010، السؤال 19",
+        "printedQuestionNumber": 19,
+        "cropFile": "mnsf26_fullbook_crops/AR/AR-T010-Q19.webp",
+        "cropSha256": "be0003ceaa61c53aba3fd9bcb8fb92ce0b0bbee88036a70fb85883f54fd7f637",
+        "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
+      },
+      "imageHash": "be0003ceaa61c53aba3fd9bcb8fb92ce0b0bbee88036a70fb85883f54fd7f637",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN058_2026-10-08_T010_Q19",
+      "status": "MASTERED",
+      "questionText": "قارن2(30+2) مع60.",
+      "canonicalMainSkill": "main_quant_01",
+      "canonicalSubskill": "sub_quant_01_4",
+      "correctAnswer": "القيمة الأولى أكبر (أ)",
+      "stepByStepSolution": "2×32=64، و64>60.",
+      "educationalExplanation": "نطبّق القاعدة الرياضية الواردة في نص السؤال: 2×32=64، و64>60.",
+      "difficulty": "Easy",
+      "difficultyReason": "يحتاج تطبيقًا مباشرًا لقاعدة حسابية.",
+      "contentFingerprint": "83a5f55d2e28ef0262c61faeaff60091fa819a5f25b8599532a6a79d3d9936bb",
+      "ideaFingerprint": "3b47cd44745bf45870df0a2db4cbc9e39e9d6fc11a75ba95c1d7a8f679ecc279"
+    },
+    {
+      "sourceKey": "MNSF26-AR-T010-Q20",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+        "testNumber": 10,
+        "pdfPage": 19,
+        "sourceSkillLabel": "ترتيب العمليات – قابلية القسمة",
+        "sourceTopic": "تصنيف المصدر محفوظ؛ رياضيات السؤال هي معيار الربط",
+        "sourceLesson": "الحساب والجبر، الاختبار 010، السؤال 20",
+        "printedQuestionNumber": 20,
+        "cropFile": "mnsf26_fullbook_crops/AR/AR-T010-Q20.webp",
+        "cropSha256": "26989fbd6dd80ae9af8781e41fed492b40b7ea133794c67fa4963e87baa73551",
+        "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
+      },
+      "imageHash": "26989fbd6dd80ae9af8781e41fed492b40b7ea133794c67fa4963e87baa73551",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN058_2026-10-08_T010_Q20",
+      "status": "MASTERED",
+      "questionText": "العدد15 يقبل القسمة على أي من3 و5؟",
+      "canonicalMainSkill": "main_quant_02",
+      "canonicalSubskill": "sub_quant_02_1",
+      "correctAnswer": "3 و5 (ب)",
+      "stepByStepSolution": "15÷3=5 و15÷5=3، وكلاهما صحيح.",
+      "educationalExplanation": "نطبّق القاعدة الرياضية الواردة في نص السؤال: 15÷3=5 و15÷5=3، وكلاهما صحيح.",
+      "difficulty": "Easy",
+      "difficultyReason": "يحتاج تطبيقًا مباشرًا لقاعدة حسابية.",
+      "contentFingerprint": "e09777a04bcbf2a9cf02ad4658ac1446001c9fd471d39319e8f45d1da6095ec9",
+      "ideaFingerprint": "a9ac1eaec6fdb64e4cfd817c1b367dc2ecfbd011df6580b32d60ca696d419f02"
+    }
+  ]
+}
