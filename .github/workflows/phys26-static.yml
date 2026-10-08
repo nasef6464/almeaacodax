@@ -1,0 +1,30 @@
+name: PHYS26 offline static gates
+on:
+  push:
+    branches: [content/phys26-full-closure]
+    paths:
+      - "ops/phys26/**"
+      - "scripts/verify-phys26-*.mjs"
+      - ".github/workflows/phys26-static.yml"
+  pull_request:
+    paths:
+      - "ops/phys26/**"
+      - "scripts/verify-phys26-*.mjs"
+      - ".github/workflows/phys26-static.yml"
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: PHYS26 source and taxonomy gate
+        run: node scripts/verify-phys26-source-gates.mjs
+      - name: PHYS26 foundation and section gate
+        run: node scripts/verify-phys26-foundation-plan.mjs
+      - name: Check offline question-batch validator syntax
+        run: node --check scripts/verify-phys26-question-batch.mjs
