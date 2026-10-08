@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN065",
+  "stage": "QUESTION_MASTERING_GITHUB_SYNC",
+  "sourceArtifact": "RUN063_DIRECT_T007_VISUAL_MASTERING",
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T007-Q16",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+        "testNumber": 7,
+        "pdfPage": 13,
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "sourceTopic": "direct visual mathematical classification",
+        "sourceLesson": "AR T007 Q16",
+        "printedQuestionNumber": 16,
+        "cropFile": "AR/AR-T007-Q16.webp",
+        "cropSha256": "8301d8641aa91f58bcaf820d26b7bc6ba469ff420dc22e7ce9fe15d96526f00a"
+      },
+      "imageHash": "8301d8641aa91f58bcaf820d26b7bc6ba469ff420dc22e7ce9fe15d96526f00a",
+      "visualEvidence": "RUN063_DIRECT_RUN017_WEBP_VISUAL_INSPECTION",
+      "status": "MASTERED",
+      "questionText": "شخص يمشي 16كم يوميًا؛ كم يمشي في 20 يومًا؟",
+      "canonicalMainSkill": "skill_quant_08",
+      "canonicalSubskill": "sub_quant_08_2",
+      "correctAnswer": "ج — 320كم",
+      "stepByStepSolution": "16×20=320كم.",
+      "educationalExplanation": "16×20=320كم.",
+      "difficulty": "Easy",
+      "difficultyReason": "يتطلب عملية مباشرة.",
+      "contentFingerprint": "765bda04da4e3a067b37549f66d9e15739e50baff8047f211ffa2a86a79014c3",
+      "ideaFingerprint": "9e79bb43c4c62cc68ddd04da26b73cda80fc4acbca9593648549226de77fa1a9"
+    }
+  ],
+  "persistence": "GITHUB_RECONCILED_FROM_LIBRARY"
+}
