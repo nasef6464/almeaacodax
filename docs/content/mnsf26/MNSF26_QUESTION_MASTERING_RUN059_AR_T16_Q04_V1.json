@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN059_AR_T16_DIRECT_VISUAL",
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T016-Q04",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+        "testNumber": 16,
+        "pdfPage": 30,
+        "sourceSkillLabel": "جمع الأعداد - المتتابعات - ضرب الأعداد",
+        "sourceTopic": "عنوان المصدر للتوثيق فقط؛ التصنيف من رياضيات الصورة",
+        "sourceLesson": "الحساب والجبر اختبار016 سؤال04",
+        "printedQuestionNumber": 4,
+        "cropFile": "mnsf26_fullbook_crops/AR/AR-T016-Q04.webp",
+        "cropSha256": "339da6b2f6d0ed5973f975c61736e1af79ca8f6fc3b7f4a231de0b853366857b",
+        "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
+      },
+      "imageHash": "339da6b2f6d0ed5973f975c61736e1af79ca8f6fc3b7f4a231de0b853366857b",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN059_2026-10-08_T016_Q04",
+      "status": "MASTERED",
+      "questionText": "قارن 23023÷23 مع1001.",
+      "canonicalMainSkill": "main_quant_01",
+      "canonicalSubskill": "sub_quant_01_4",
+      "correctAnswer": "القيمتان متساويتان (ج)",
+      "stepByStepSolution": "23×1001=23023؛ إذن23023÷23=1001.",
+      "educationalExplanation": "من الصورة: 23×1001=23023؛ إذن23023÷23=1001.",
+      "difficulty": "Easy",
+      "difficultyReason": "تحتاج تطبيقًا مباشرًا.",
+      "contentFingerprint": "fe473c3008f7d19fb9d52efde7576b2e22e2a8a47171e4faa893f8fc58776087",
+      "ideaFingerprint": "b3ec8f299061b16db39e52278f77ac2219f5f542a80cbf8ea793e0ca8738e30f"
+    }
+  ]
+}
