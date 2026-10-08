@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN065",
+  "stage": "QA_LOCK",
+  "qaRows": [
+    {
+      "sourceKey": "MNSF26-GEO-T022-Q18",
+      "imageHash": "cfabe17019e43a285325d1d6bd1a161d831fdeede6f6a624f88257a4b0b1a0c9",
+      "sourceMasterFile": "MNSF26_RUN063_REMAINING_29_DIRECT_MASTERING_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T022-Q20",
+      "imageHash": "abf4f0a8d04b2d69be35b19f4da4a05e2415cab5fbf02c48901d49d056ec4a84",
+      "sourceMasterFile": "MNSF26_RUN063_REMAINING_29_DIRECT_MASTERING_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-AR-T031-Q01",
+      "imageHash": "e8884a39c3584ab915ded5ca8f9a15d11bd36e93e199b015822530048b5f7948",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN048_AR_T31_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-AR-T031-Q02",
+      "imageHash": "f1880d9367661c15bfea14cb8c37c812f945fabc91e6246be793bfdc2e74f135",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN048_AR_T31_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-AR-T031-Q03",
+      "imageHash": "c5128c77645f0bfe194a4f74a276be37f0bfb417c20b3a7a8c064cc0faf544ee",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN048_AR_T31_V1.json",
+      "priorMasterStatus": "HOLD",
+      "verdict": "QA_HOLD_PRESERVED",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-AR-T031-Q04",
+      "imageHash": "75033dac092da66090a114e3cf34112fe9fadfd685f54a5f80b58d52abfd138f",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN048_AR_T31_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-AR-T031-Q06",
+      "imageHash": "28a83edc655f54d33dca26b510ae4ee66de8835cf8778bad093e58fdc54be067",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN048_AR_T31_V1.json",
+      "priorMasterStatus": "HOLD",
+      "verdict": "QA_HOLD_PRESERVED",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-AR-T031-Q07",
+      "imageHash": "e21747608f102113b4f250e1cbb9ce3a6d51e703084f5081140142e12b12d50c",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN048_AR_T31_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-AR-T031-Q08",
+      "imageHash": "9f7ef1400a4cf72d8c3461b4d06621827ed7c6737a0017d85cae7d326a97f917",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN048_AR_T31_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    },
+    {
+      "sourceKey": "MNSF26-AR-T031-Q09",
+      "imageHash": "4f7b0b350ea23de3583352ab682aa05dfa9205056980ae756a589c8b3c492954",
+      "sourceMasterFile": "MNSF26_QUESTION_MASTERING_RUN048_AR_T31_V1.json",
+      "priorMasterStatus": "MASTERED",
+      "verdict": "QA_PASS_INDEPENDENT",
+      "sourceVisualEvidence": "RUN065 contact sheets + zoom of ambiguous digits, original Run017/Run021 crops",
+      "finding": null
+    }
+  ],
+  "sourceCropSHA256Verified": true,
+  "fullReportLibrary": "/MNSF26/Run065/MNSF26_RUN065_INDEPENDENT_QA_215_SOURCE_IMAGES_V1.json"
+}
