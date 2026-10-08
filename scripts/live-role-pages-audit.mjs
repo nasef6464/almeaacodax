@@ -113,6 +113,15 @@ async function installApiBridge(context) {
 
     const apiPath = originalUrl.pathname.slice(apiIndex + 4);
     const targetUrl = `${API_BASE_URL}${apiPath}${originalUrl.search}`;
+
+    // EventSource is a long-lived streaming response. Buffering it with
+    // fetch(...).arrayBuffer() can never finish and generates false timeout
+    // failures. Let Chromium consume the real isolated API stream directly.
+    if (apiPath === "/notifications/stream" && request.method() === "GET") {
+      await route.continue({ url: targetUrl });
+      return;
+    }
+
     const headers = { ...request.headers() };
     delete headers.host;
     delete headers.origin;
