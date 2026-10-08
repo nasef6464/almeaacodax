@@ -1,0 +1,13 @@
+{
+  "bank": "MNSF26",
+  "run": "RUN075",
+  "stage": "QA_LOCK",
+  "reviewKeys": [
+    "MNSF26-AR-T055-Q08",
+    "MNSF26-AR-T056-Q16",
+    "MNSF26-AR-T057-Q10",
+    "MNSF26-AR-T060-Q10"
+  ],
+  "importEligible": false,
+  "fullEvidence": "Library /MNSF26/Run075/MNSF26_RUN075_REVIEW_OVERRIDES_V1.json"
+}
