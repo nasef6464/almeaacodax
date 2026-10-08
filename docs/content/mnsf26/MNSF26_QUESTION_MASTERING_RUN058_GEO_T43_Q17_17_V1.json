@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN058_GEO_T43_LIBRARY_RECONCILIATION",
+  "records": [
+    {
+      "sourceKey": "MNSF26-GEO-T043-Q17",
+      "sourceProvenance": {
+        "sourcePart": "الهندسة",
+        "bookCode": "GEO",
+        "testNumber": 43,
+        "pdfPage": 84,
+        "sourceSkillLabel": "مراجعة مسائل الهندسة من الكتاب",
+        "sourceTopic": "مسائل الهندسة المتنوعة",
+        "sourceLesson": "تمارين هندسة مرقمة حسب الاختبار",
+        "printedQuestionNumber": 17,
+        "cropFile": "MNSF26-GEO-T043-Q17.webp",
+        "cropSha256": "0a50215fce24e1e5c98d107d385de3beb8504009b65980f1a59056c76dd55c17",
+        "cropContract": "EMBEDDED_XOBJECT_OR_EXACT_COMPOSITE_SLICE"
+      },
+      "imageHash": "0a50215fce24e1e5c98d107d385de3beb8504009b65980f1a59056c76dd55c17",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T43_Q17",
+      "status": "HOLD",
+      "questionText": "مثلث أطوال أضلاعه ك+10، ك+8، 3ك+9 ومستطيل أبعاده3ك+7، ك+3؛ إذا تساوى المحيطان أوجد ك.",
+      "canonicalMainSkill": null,
+      "canonicalSubskill": null,
+      "correctAnswer": null,
+      "stepByStepSolution": null,
+      "educationalExplanation": null,
+      "difficulty": "Medium",
+      "difficultyReason": "تحتاج ربط معطيات هندسية.",
+      "contentFingerprint": "ab31ecda245cffd83904ec2ee7eaf19f3297fd889603682f484be645b4cd56e5",
+      "ideaFingerprint": "55eb6b2cd55b1c0c7496758de1a37fbd3e94b22537c038a342d8acb0c5513f5e",
+      "reviewReason": "المعادلة تعطي5ك+27=8ك+20 ومنه ك=7/3، وهي غير موجودة في الخيارات؛ HOLD لمراجعة قراءة الحدود."
+    }
+  ]
+}
