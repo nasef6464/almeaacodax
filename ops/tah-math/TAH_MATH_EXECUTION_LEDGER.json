@@ -66,7 +66,12 @@
         "whyOthersWrongFinal": {
           "complete": 0,
           "blocked": 326
-        }
+        },
+        "run30SourceImageReviews": 200,
+        "run30SourceAnswerLiveMatches": 199,
+        "run30SourceAnswerLiveMismatches": 1,
+        "run30NewIndependentMath": 4,
+        "run30LocalCropRepairs": 4
       }
     },
     {
@@ -171,7 +176,7 @@
       2
     ]
   },
-  "lastCheckpoint": "2026-10-08-RUN27-200-SOURCE-50-MATH; see TAH_MATH_RUN27_CHECKPOINT.json",
+  "lastCheckpoint": "2026-10-08-RUN30-200-SOURCE-199-LIVE-KEY-MATCHES; see TAH_MATH_RUN30_CHECKPOINT.json",
   "evidence": [
     "ops/tah-math/TAH_MATH_RUN1_BASELINE.json",
     "ops/tah-math/TAH_MATH_SOURCE_IDEA_MAP_PART01.json",
@@ -189,7 +194,8 @@
     "ops/tah-math/TAH_MATH_YLM26_ANSWER_AUDIT_LESSONS_09_13.json",
     "ops/tah-math/TAH_MATH_RUN12_SOURCE_OPTIONS_233_CHECKPOINT.json",
     "ops/tah-math/TAH_MATH_COL26_P132_6_SOURCE_REMAP_RUN12.json",
-    "ops/tah-math/TAH_MATH_RUN27_CHECKPOINT.json"
+    "ops/tah-math/TAH_MATH_RUN27_CHECKPOINT.json",
+    "ops/tah-math/TAH_MATH_RUN30_CHECKPOINT.json"
   ],
   "blockers": [
     {
@@ -199,16 +205,21 @@
     }
   ],
   "latestRun": {
-    "run": "RUN27",
-    "officialSourceImagesReviewed": 200,
-    "disjointVisual150AndMath50": true,
-    "independentMathAnswers": 50,
-    "liveMatches": 50,
-    "actualOptionValuesTranscribed": 200,
-    "localCropRepairs": 10,
-    "remainingCropFlags": 20,
+    "run": "RUN30",
+    "officialSourceQuestionsReviewed": 200,
+    "uniqueCanonicalAdded": 0,
+    "sourcePixelPASS": 200,
+    "visualOptionPASS": 200,
+    "sourceAnswersReconciled": 200,
+    "newIndependentMathAnswers": 4,
+    "liveAnswerMatches": 199,
+    "liveAnswerMismatches": 1,
+    "liveWrongKeyCode": "TAH-MATH-YLM26-P021-Q04",
+    "localCropRepairs": 4,
+    "sourceGroundedPedagogyCandidates": 4,
     "fullyPedagogicallyClosed": 0,
+    "productionImageParity": "NOT_TESTED",
     "productionMutation": false,
-    "remaining": "YLM26 full pedagogy and 20 crop flags; then COL26/COL26OLD, dedupe, coverage, trainings/tests, E2E"
+    "remaining": "YLM26 326 real options and teaching fields, live image parity and reversible key fixes; then COL26, COL26OLD regression, dedupe, coverage, training/tests, E2E."
   }
 }
