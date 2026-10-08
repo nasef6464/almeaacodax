@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN060_AR_T15_RECOVERY",
+  "previouslyCounted": true,
+  "records": [
+    {
+      "id": "MNSF26-AR-T015-Q11",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T015",
+        "sourceLesson": "جمع الأعداد - المتتابعات - ضرب الأعداد"
+      },
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_3",
+      "correctAnswer": "أ",
+      "answerValue": "4500",
+      "stepByStepSolution": "100+200+...+900=100(1+2+...+9)=100×45=4500.",
+      "educationalExplanation": "نخرج العامل100 ثم نستفيد من المجموع المعطى.",
+      "difficulty": "Easy",
+      "difficultyReason": "عامل مشترك في متتابعة.",
+      "imageHash": "ebde1b244a52f13c114f24124109369443ccdc00201f67b37b09a9720f4f711b",
+      "contentFingerprint": "a703e49ddd184f723f0bf47bf8bbbc882563608dd8558e5de4fb6c17a51c41eb",
+      "ideaFingerprint": "46e312fac5fc28f7759d2b05cbff5a2007c94ca782ae24ef11c31ece3c03be5f",
+      "status": "MASTERED"
+    }
+  ]
+}
