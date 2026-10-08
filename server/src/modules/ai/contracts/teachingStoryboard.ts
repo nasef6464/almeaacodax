@@ -1,4 +1,5 @@
 /** Pure, shared wire contract. No provider, database, or browser dependencies. */
+import { checkpointHints } from './checkpointHints.js';
 export type BoardAction =
   | { type: 'write'; id: string; kind: 'text' | 'formula'; content: string }
   | { type: 'transform'; target: string; content: string }
@@ -59,7 +60,7 @@ export function validateTeachingStoryboard(value: unknown): TeachingStoryboard |
       const check = scene.checkpoint;
       if (!record(check) || !safeText(check.prompt, 240) || !Array.isArray(check.hints) ||
         check.hints.length !== 2 || !check.hints.every(hint => safeText(hint, 240))) return null;
-      checkpoint = { prompt: check.prompt, hints: [check.hints[0] as string, check.hints[1] as string] };
+      checkpoint = { prompt: check.prompt, hints: checkpointHints(check.prompt, String(value.language)) };
     }
     scenes.push({ id: scene.id, narration: scene.narration, actions, ...(checkpoint ? { checkpoint } : {}) });
   }

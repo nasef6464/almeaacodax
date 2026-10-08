@@ -3,6 +3,7 @@ import katex from 'katex';
 import 'katex/dist/katex.min.css';
 import type { BoardElement } from './boardState';
 import { spokenTeachingText } from './spokenMath';
+import { readableBoardText } from './boardText';
 
 const Formula: React.FC<{ content: string }> = ({ content }) => {
   const html = React.useMemo(() => {
@@ -19,7 +20,7 @@ const BoardContent: React.FC<{ content: string; kind: 'text' | 'formula' }> = ({
   const withoutTextCommands = content.replace(/\\(?:text|textbf|mathrm|operatorname)\{[^{}]*\}/g, '');
   const mixed = kind === 'text' || /[\u0600-\u06ff]|[A-Za-z]{3,}\s+[A-Za-z]{3,}|\bStep\b|\$/.test(withoutTextCommands);
   if (!mixed) return <div className="text-center text-xl sm:text-2xl"><Formula content={content} /></div>;
-  const readable = content.replace(/\\n/g, '\n').replace(/\\\\/g, '\n')
+  const readable = readableBoardText(content).replace(/\\\\/g, '\n')
     .replace(/\\textbf\{([^{}]*)\}/g, '$1').replace(/(?<=[.!?])(?=Step\s*\d)/g, '\n');
   const parts = readable.split(/(\$\$[\s\S]+?\$\$|\$[^$\n]+\$|\\\([\s\S]+?\\\)|\d+(?:\s*(?:\\times|\\div|[+\-=×÷*/])\s*\d+)+)/g);
   return <p dir="auto" className="whitespace-pre-wrap break-words text-lg leading-8">{parts.map((part, index) => {

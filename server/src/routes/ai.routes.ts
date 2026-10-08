@@ -1602,7 +1602,7 @@ aiRouter.post(
       String(aiReadableText.length),
       String(visualDescription.length),
       String(payload.tutorSessionId || ""),
-      ...(payload.boardMode ? [payload.boardMode, "compact-plan-v1", payload.boardContext || ""] : []),
+      ...(payload.boardMode ? [payload.boardMode, "compact-plan-v2-local-hints", payload.boardContext || ""] : []),
     ].join("::");
     const cacheKey = buildQuestionAssistantCacheKey({
       userId,

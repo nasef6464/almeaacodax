@@ -94,7 +94,8 @@ try {
   await practice.getByText('تلميح 1: فكر في الضرب المتكرر.', { exact: true }).waitFor();
   assert.equal(await practice.getByText(/تلميح 2:/).count(), 0);
   await practice.getByRole('button', { name: 'تلميح أوضح', exact: true }).click();
-  await practice.getByText('تلميح 2: احسب عدد مرات ضرب ثلاثة في نفسها.', { exact: true }).waitFor();
+  await practice.getByText('تلميح 2: عد مرات ضرب الأساس في نفسه.', { exact: true }).waitFor();
+  assert.equal(await practice.getByText('الإجابة هي ثلاثة.', { exact: false }).count(), 0, 'a cached/provider hint must not disclose the checkpoint answer');
   assert.equal(await page.evaluate(() => window.testRequests.length), countBeforeHints);
   await page.evaluate(() => { window.testFailure = true; });
   await practice.getByRole('textbox', { name: 'إجابتك على الخطوة' }).fill('3^2');
@@ -129,6 +130,8 @@ try {
   assert.equal(await board.locator('.katex').count(), 3, 'real-provider mixed prose renders isolated equations');
   const visible = await board.innerText();
   assert.match(visible, /الخطوة 1/);
+  assert.match(visible, /الخطوة 2/);
+  assert.doesNotMatch(visible, /nالخطوة/);
   assert.match(visible, /Step 2/);
   assert.doesNotMatch(visible, /\\textbf|\\n|\\times|\$/);
   assert.equal(await page.evaluate(() => window.testSpeak.at(-1).text), 'نضرب 2 في 5 يساوي 10.');

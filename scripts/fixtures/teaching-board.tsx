@@ -21,12 +21,12 @@ await new Promise(resolve=>setTimeout(resolve,100));
 if ((window as any).testFallback) return {text:'الشرح المعتمد الحالي',storyboard:{version:99}};
 if ((window as any).testFailure && payload.boardContext) throw new Error('تعذر مراجعة المحاولة');
 if ((window as any).testMixed) return {text:'نراجع الناتج.',storyboard:{version:1,language:'ar-SA',scenes:[{id:'mixed',narration:'نضرب 2 \\times 5 = 10.',actions:[
-  {type:'write',id:'arabic',kind:'formula',content:'الخطوة 1: نضرب الآحاد.\\\\$2 \\times 5 = 10$\\\\آحاد الناتج هو صفر.'},
+  {type:'write',id:'arabic',kind:'formula',content:'الخطوة 1: نضرب الآحاد.nالخطوة 2: $2 \\times 5 = 10$\\\\آحاد الناتج هو صفر.'},
   {type:'write',id:'english',kind:'formula',content:'Step 1: Multiply: 2 \\times 5 = 10.Step 2: Multiply: 0 \\times 8 = 0.'},
   {type:'write',id:'reply',kind:'text',content:'العملية هي \\textbf{ضرب}.\\nركز على الآحاد.'},
 ] }]}};
 const storyboard=(window as any).testEnglish ? {version:1,language:'en-US',scenes:[{id:'grammar',narration:'Focus on the verb.',actions:[{type:'write',id:'sentence',kind:'text',content:'She has been studying for two hours.'},{type:'highlight',target:'sentence'}]}]} : payload.boardContext ? followup : primary;
-if ((window as any).testPractice && storyboard === primary) return {text:'شرح مع تدريب',storyboard:{...primary,scenes:primary.scenes.map((scene,index)=>index===0 ? {...scene,checkpoint:{prompt:'كيف نكتب 27 كقوة للثلاثة؟',hints:['فكر في الضرب المتكرر.','احسب عدد مرات ضرب ثلاثة في نفسها.']}} : scene)}};
+if ((window as any).testPractice && storyboard === primary) return {text:'شرح مع تدريب',storyboard:{...primary,scenes:primary.scenes.map((scene,index)=>index===0 ? {...scene,checkpoint:{prompt:'كيف نكتب 27 كقوة للثلاثة؟',hints:['الإجابة هي ثلاثة.','اكتب 3.']}} : scene)}};
 return {text:storyboard.scenes.map(s=>s.narration).join('\n'),storyboard};
 };
 function Demo(){const [open,setOpen]=React.useState(true);return <><button onClick={()=>setOpen(true)}>فتح</button>{open&&<InteractiveSmartTeacher isOpen onClose={()=>setOpen(false)} questionId="test-question" context="result_review" resultId="test-result" tutorSessionId="test-session"/>}</>;}

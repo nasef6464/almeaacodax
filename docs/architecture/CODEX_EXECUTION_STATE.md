@@ -1,5 +1,10 @@
 # ALMEAA — Codex Execution State
 
+## Checkpoint coaching and prose continuation — 2026-10-08
+- Current baseline main e35dd8af includes published #470 spoken-math merge138c037894b5 and unrelated verbal certification; original checkout preserved.
+- Branch codex/teaching-board-safe-hints: two fixed procedural hints selected by step/language and enforced by shared validator for legacy/cached plans; compact schema omits generated hints, board cache revision2. Browser recovers observed escaped/bare n prose separators only at clear headings/list boundaries, preserving mathematical n and LaTeX nu/neq.
+- Unit leak/cache/format checks and16 browser checks PASS; type checks/CI pending. Post-deploy audit explicitly checks raw served hints before shared validation, then owned division sample reference/content. Physics/chemistry real owned reviews and physical phone/tablet microphone/voice are still unavailable; no production educational records are created for coverage.
+
 ## Spoken math continuation — 2026-10-08
 - Baseline current main75d2d54ae533 (#466): production identity/readiness/Vercel/Post Deploy Smoke and captured-provider review UI replay PASS. Original checkout preserved.
 - Branch codex/teaching-board-spoken-math: local supported math speech in Arabic/English, bounded nested parsing and explicit fallback for unsupported notation; prefer available matching local voices, estimate playback from actual spoken text, keep the displayed equations unchanged. No inference/grade/API changes.

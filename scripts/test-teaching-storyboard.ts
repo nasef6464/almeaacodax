@@ -1,4 +1,17 @@
 import assert from 'node:assert/strict';
+import { checkpointHints } from '../server/src/modules/ai/contracts/checkpointHints';
+import { readableBoardText } from '../components/results/teaching/boardText';
+assert.equal(readableBoardText('الخطوة 1: نص.nالخطوة 2: نص.nإذن النتيجة.'), 'الخطوة 1: نص.\nالخطوة 2: نص.\nإذن النتيجة.');
+assert.equal(readableBoardText('الخيارات:n1) 309705n2) 309704'), 'الخيارات:\n1) 309705\n2) 309704');
+assert.equal(readableBoardText('الخطوة 1: (0)n- الأول'), 'الخطوة 1: (0)\n- الأول');
+assert.equal(readableBoardText('الخطوة 1: 2n-1'), 'الخطوة 1: 2n-1', 'mathematical n must not become a prose separator');
+assert.equal(readableBoardText('\\nu \\neq 2n \\n الخطوة 2'), '\\nu \\neq 2n \n الخطوة 2');
+assert.equal(readableBoardText('n(n-1) = 2n'), 'n(n-1) = 2n');
+for (const [prompt, language] of [['ما هي خانة الآحاد؟', 'ar-SA'], ['What is the unit digit?', 'en-US'], ['ما العلاقة بين الكميات؟', 'ar-SA'], ['Which formula applies?', 'en-US']] as const) {
+  const hints = checkpointHints(prompt, language);
+  assert.equal(hints.length, 2);
+  assert.equal(hints.some(hint => /\d|صفر|zero|309705|يساوي|equals|=/.test(hint)), false, 'procedural hints contain no generated answer or numerical value');
+}
 import { spokenTeachingText } from '../components/results/teaching/spokenMath';
 
 assert.equal(spokenTeachingText('نضرب $2 \\times 5 = 10$.', 'ar-SA'), 'نضرب 2 في 5 يساوي 10.');
@@ -37,7 +50,10 @@ assert.equal(compiled.scenes[0].checkpoint?.hints.length, 2);
 assert.equal(compiled.scenes[1].checkpoint, undefined);
 assert.equal(compiled.scenes[0].actions[0].type === 'write' && compiled.scenes[0].actions[0].content.startsWith('$'), false, 'strip math delimiters before KaTeX');
 assert.equal(boardAt(compiled, 1, sceneDuration(compiled, 1)).find(item => item.id === 'solution')?.emphasis, 'box');
-assert.equal(compileCompactTeachingPlan({ ...compact, hints: ['one'] }), null);
+assert.deepEqual(compileCompactTeachingPlan({ ...compact, hints: ['Answer is 42'] })?.scenes[0].checkpoint?.hints, compiled.scenes[0].checkpoint?.hints, 'provider hint text is never used');
+const { hints: removedHints, ...withoutHints } = compact;
+assert.ok(compileCompactTeachingPlan(withoutHints), 'provider no longer needs to generate hint tokens');
+assert.equal('hints' in compactTeachingSchema('lesson').properties, false);
 assert.equal(compileCompactTeachingPlan({ ...compact, solution: '\\href{javascript:bad}{x}' }), null);
 assert.equal(compileCompactTeachingPlan(compact, { mode: 'reply' }), null);
 assert.equal(compileCompactTeachingPlan(compact, { mode: 'lesson', language: 'en-US' }), null);
@@ -50,7 +66,9 @@ assert.equal(teachingRequestLanguage('اشرح بالعربي'), 'ar-SA');
 assert.equal(normalizeQuestionTeachingPlan(JSON.stringify(compact), 'fallback', { mode: 'lesson' }), JSON.stringify(compiled));
 assert.equal(normalizeQuestionTeachingPlan(JSON.stringify(example), 'fallback', { mode: 'lesson' }), 'fallback', 'new generation must not bypass required practice via a legacy full plan');
 const practiceExample = { ...example, scenes: [{ ...example.scenes[0], checkpoint: { prompt: 'ما الخطوة التالية؟', hints: ['ابدأ بالفكرة.', 'طبق القانون.'], unexpected: 'stripped' } }, ...example.scenes.slice(1)] };
-assert.deepEqual(validateTeachingStoryboard(practiceExample)?.scenes[0].checkpoint, { prompt: 'ما الخطوة التالية؟', hints: ['ابدأ بالفكرة.', 'طبق القانون.'] });
+assert.deepEqual(validateTeachingStoryboard(practiceExample)?.scenes[0].checkpoint, { prompt: 'ما الخطوة التالية؟', hints: checkpointHints('ما الخطوة التالية؟', 'ar-SA') });
+const cachedLeakingPractice = { ...practiceExample, scenes: [{ ...practiceExample.scenes[0], checkpoint: { prompt: 'ما هي خانة الآحاد؟', hints: ['الإجابة هي صفر.', 'صفر هو المطلوب.'] } }, ...practiceExample.scenes.slice(1)] };
+assert.deepEqual(validateTeachingStoryboard(cachedLeakingPractice)?.scenes[0].checkpoint?.hints, checkpointHints('ما هي خانة الآحاد؟', 'ar-SA'), 'old cached or received provider hints are replaced at validation in server and browser');
 assert.equal(validateTeachingStoryboard({ ...practiceExample, scenes: practiceExample.scenes.map(scene => ({ ...scene, checkpoint: practiceExample.scenes[0].checkpoint })) }), null, 'practice must remain bounded to one checkpoint');
 assert.equal(validateTeachingStoryboard({ ...practiceExample, scenes: [practiceExample.scenes[0]] }), null, 'a solution scene must follow the checkpoint');
 for (const checkpoint of [{ prompt: 'x', hints: ['one'] }, { prompt: '<script>x</script>', hints: ['one', 'two'] }, { prompt: 'x', hints: ['one', 'x'.repeat(241)] }]) {
