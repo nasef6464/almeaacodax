@@ -1,0 +1,29 @@
+{
+  "bank": "MNSF26",
+  "run": "RUN071_FINAL",
+  "stage": "QA_LOCK",
+  "baseOfficialReviewed": 682,
+  "run070": 6,
+  "run071NewUnique": 88,
+  "run071Inspected": 89,
+  "run071Pass": 66,
+  "run071HoldPreserved": 17,
+  "run071Review": 5,
+  "run071ReinspectedNotCounted": 1,
+  "qaProvisionalReviewed": 776,
+  "qaProvisionalRemaining": 1353,
+  "totalActive": 2129,
+  "sourceHashMismatches": 0,
+  "libraryEvidence": "/MNSF26/Run071/MNSF26_RUN071_QA_VISUAL_MATH_31_V1.json and MNSF26_RUN071_QA_GEO_T25_T27_58_V1.json",
+  "libraryDelta": "/MNSF26/Run071/MNSF26_RUN071_STATE_DELTA_FINAL_V2.json",
+  "newReviewKeys": [
+    "MNSF26-GEO-T007-Q17",
+    "MNSF26-GEO-T008-Q14",
+    "MNSF26-GEO-T010-Q12",
+    "MNSF26-GEO-T011-Q10",
+    "MNSF26-GEO-T026-Q09"
+  ],
+  "fullBookQAPass": false,
+  "canonicalTaxonomyGate": "PENDING",
+  "productionUntouched": true
+}
