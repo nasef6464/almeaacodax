@@ -2,6 +2,14 @@
 
 Status: PARTIAL. PR #459; continuing from `8f64fee146d927d57517eb269edf4d9745fed728`. Production baseline at inspection: `f40a785ee777`.
 
+## Post-merge runtime checkpoint
+
+- PR #459 runtime head `919bed2f`: 19 CI SUCCESS, 3 SKIPPED, all three required checks PASS; merged as `1984efca10740f726c32df325b87591b62806810`.
+- Canonical API confirmed exact merge identity and readiness, Vercel Production deployment status SUCCESS, Post Deploy Smoke SUCCESS.
+- One existing owned-review Arabic lesson probe returned the safe trusted explanation fallback. Visible output 435 tokens, input 1,440, total 1,875: the thinking-token gap disappeared, but the storyboard was invalid. Explanation correctness is not certified from this fallback.
+- Follow-up branch `codex/teaching-board-live-validation` starts from current main `7f6fb2b5` (unrelated verbal certification fix after #459). It constrains the planner to two compact scenes and adds text-free structural diagnostics only to admin-owned `board-audit-` requests. It also makes explicit English language requests authoritative in the planner.
+- Native desktop Chrome speech start/end events passed. This does not certify audible quality or native phone/tablet microphone capture.
+
 ## Real observations before the repair
 
 - Canonical `/api/ai/status` and authenticated status report Gemini 2.5 Flash configured, three Free pools, and paidAllowed=false.

@@ -49,7 +49,7 @@ for (const [id, message] of [
   boardContext = JSON.stringify({ scene: scene.id, narration: scene.narration, practice: scene.checkpoint?.prompt }).slice(0,1200);
 }
 const usage = await request('/ai/interactions?limit=20', { headers });
-report.usage = (usage.body.items || []).filter((item: any) => String(item.metadata?.tutorSessionId || '').startsWith(run)).map((item: any) => ({ provider: item.provider, inputTokens: item.inputTokens, outputTokens: item.outputTokens, totalTokens: item.totalTokens, estimatedCostMicrosUsd: item.estimatedCostMicrosUsd, pricingKnown: item.pricingKnown, usageEstimated: item.usageEstimated, latencyMs: item.latencyMs }));
+report.usage = (usage.body.items || []).filter((item: any) => String(item.metadata?.tutorSessionId || '').startsWith(run)).map((item: any) => ({ provider: item.provider, inputTokens: item.inputTokens, outputTokens: item.outputTokens, totalTokens: item.totalTokens, estimatedCostMicrosUsd: item.estimatedCostMicrosUsd, pricingKnown: item.pricingKnown, usageEstimated: item.usageEstimated, latencyMs: item.latencyMs, diagnostics: item.metadata?.teachingPlanDiagnostics }));
 report.passed = report.cases.length === 3 && report.cases.every((item: any) => item.validPlan && !item.usedFallback) && report.cases[2].language === 'en-US';
 fs.writeFileSync(out, JSON.stringify(report, null, 2));
 console.log(JSON.stringify({ passed: report.passed, report: out, usageRecords: report.usage.length }));

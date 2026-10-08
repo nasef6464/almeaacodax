@@ -13,7 +13,7 @@ import { UserModel } from "../models/User.js";
 import { QuizModel } from "../models/Quiz.js";
 import { QuestionModel } from "../models/Question.js";
 import { ReviewCardModel } from "../models/ReviewCard.js";
-import { decodeQuestionTeachingPlan, normalizeQuestionTeachingPlan, teachingPlanInstruction } from "../modules/ai/application/questionTeachingPlan.js";
+import { decodeQuestionTeachingPlan, inspectQuestionTeachingPlan, normalizeQuestionTeachingPlan, teachingPlanInstruction } from "../modules/ai/application/questionTeachingPlan.js";
 import { createOperationsAudit } from "../services/operationsAudit.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { decryptIntegrationSecretsForRuntime } from "../utils/integrationSecretsCrypto.js";
@@ -1600,7 +1600,7 @@ aiRouter.post(
       String(aiReadableText.length),
       String(visualDescription.length),
       String(payload.tutorSessionId || ""),
-      ...(payload.boardMode ? [payload.boardMode, "practice-checkpoint-v2", payload.boardContext || ""] : []),
+      ...(payload.boardMode ? [payload.boardMode, "practice-checkpoint-v3", payload.boardContext || ""] : []),
     ].join("::");
     const cacheKey = buildQuestionAssistantCacheKey({
       userId,
@@ -1852,6 +1852,8 @@ aiRouter.post(
           imageSentToProvider: false,
           promptChars: prompt.length,
           responseChars: responseText.length,
+          ...(payload.boardMode && req.authUser?.role === "admin" && payload.tutorSessionId?.startsWith("board-audit-")
+            ? { teachingPlanDiagnostics: inspectQuestionTeachingPlan(String(resultCall.text || "")) } : {}),
           tutorContextVersion: tutorContext?.contextVersion || "",
           tutorWeaknessCount: tutorContext?.weaknesses.length || 0,
           tutorRecentTurnCount: tutorContext?.recentTutorTurns.length || 0,
