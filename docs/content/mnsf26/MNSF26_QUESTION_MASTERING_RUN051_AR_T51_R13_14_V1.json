@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN051_AR_T51",
+  "directImageInspection": true,
+  "sourceCropArchive": "/MNSF26/Run017/mnsf26_arithmetic_crops_run017.zip",
+  "sourceInventory": "/MNSF26/Run017/MNSF26_FULLBOOK_CROP_INVENTORY_V1.json",
+  "masteredCount": 1,
+  "holdCount": 1,
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T051-Q13",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "testNumber": 51,
+        "pdfPage": 103,
+        "sourceSkillLabel": "الساعات",
+        "printedQuestionNumber": 13,
+        "cropFile": "AR/AR-T051-Q13.webp",
+        "cropSha256": "54266b927d8d77b44bde509daf0e203ad7418eac851f98141a6ac49a0f7b9b18",
+        "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
+      },
+      "imageHash": "54266b927d8d77b44bde509daf0e203ad7418eac851f98141a6ac49a0f7b9b18",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
+      "status": "HOLD",
+      "questionText": "شخص يقطع مسافة بين نقطتين خلال 3 ساعات؛ احسب الزمن لمسافة أخرى.",
+      "holdReason": "المسافة بين النقاط وسرعة السير في قص السؤال صغيرتان وتحتاجان تكبيرًا؛ النتيجة لا تثبت دون قراءة كامل المعطيات.",
+      "canonicalMainSkill": null,
+      "canonicalSubskill": null,
+      "correctAnswer": null,
+      "stepByStepSolution": null,
+      "educationalExplanation": null,
+      "difficulty": null,
+      "difficultyReason": null,
+      "contentFingerprint": "f6902529bb99eb735fccd4fb4f1999e53c9a53283ca14d200ff3cff76412e34d",
+      "ideaFingerprint": "3e4b6ac1c2f668e1cdd6253c1e01458ff7bec93d6efe3d8cec1a2ab275ac960d"
+    },
+    {
+      "sourceKey": "MNSF26-AR-T051-Q14",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "testNumber": 51,
+        "pdfPage": 103,
+        "sourceSkillLabel": "الساعات",
+        "printedQuestionNumber": 14,
+        "cropFile": "AR/AR-T051-Q14.webp",
+        "cropSha256": "525ae6e5888a2ea34b703dfbc8f9d93fcd160d66712222119a1fcaa00f751798",
+        "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
+      },
+      "imageHash": "525ae6e5888a2ea34b703dfbc8f9d93fcd160d66712222119a1fcaa00f751798",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
+      "status": "MASTERED",
+      "questionText": "سيارة تقطع 180 كم في ساعتين وباقي الرحلة 60 كم بسرعة 60 كم/ساعة؛ كم زمن الرحلة؟",
+      "canonicalMainSkill": "main_quant_12",
+      "canonicalSubskill": "sub_quant_12_1",
+      "correctAnswer": "3 ساعات",
+      "stepByStepSolution": "الجزء الأول ساعتان؛ الجزء الثاني60/60=ساعة؛ الإجمالي3.",
+      "educationalExplanation": "المهارة: جمع أزمنة مرحلتين لرحلة؛ نقرأ معطيات السؤال من الصورة ونطبّق العلاقة الحسابية ثم نراجع الناتج مع المطلوب.",
+      "difficulty": "Easy",
+      "difficultyReason": "خطوات مباشرة في جمع أزمنة مرحلتين لرحلة.",
+      "contentFingerprint": "571f1a942acb8c1d782c81279e496520cf1aee52bd9be011ca91dbdff7006c1a",
+      "ideaFingerprint": "f8233ed3e197920794be3567cdc0d69ff797d68524d5f1074b7141c234b91bde"
+    }
+  ],
+  "part": "R13_14"
+}
