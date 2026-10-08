@@ -1,0 +1,116 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN065",
+  "stage": "QA_LOCK",
+  "date": "2026-10-08",
+  "source": "Run017 actual WEBP crop pixels, verified SHA-256 against Run063 canonical index",
+  "supersessionRule": "These corrected complete master records override only same-sourceKey older records; do not add new source keys or change crop counts.",
+  "patches": [
+    {
+      "sourceKey": "MNSF26-AR-T032-Q14",
+      "priorRecordSource": "MNSF26_QUESTION_MASTERING_RUN048_AR_T32_V1.json",
+      "priorAnswer": "القيمة الأولى أكبر",
+      "priorImageHash": "4820b61d9c6e66e51ff7b2ea3661f370aae926d4f656eeba75dfbd02e0d09677",
+      "reason": "Source crop explicitly lists 5 apples, 3 oranges, 7 bananas; prior text reversed quantities and omitted bananas, causing wrong option.",
+      "record": {
+        "sourceKey": "MNSF26-AR-T032-Q14",
+        "sourceProvenance": {
+          "sourcePart": "الحساب/الجبر",
+          "bookCode": "AR",
+          "testNumber": 32,
+          "pdfPage": 64,
+          "sourceSkillLabel": "النسبة المئوية",
+          "printedQuestionNumber": 14,
+          "cropFile": "AR/AR-T032-Q14.webp",
+          "cropSha256": "4820b61d9c6e66e51ff7b2ea3661f370aae926d4f656eeba75dfbd02e0d09677",
+          "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
+        },
+        "imageHash": "4820b61d9c6e66e51ff7b2ea3661f370aae926d4f656eeba75dfbd02e0d09677",
+        "status": "MASTERED",
+        "questionText": "طبق فيه 5 تفاحات و3 برتقالات و7 موزات. قارن نسبة البرتقال إلى الكل بالقيمة 1/5.",
+        "visualEvidence": "RUN065_INDEPENDENT_DIRECT_SOURCE_CROP_ZOOM_SHA256_VERIFIED",
+        "canonicalMainSkill": "skill_quant_08",
+        "canonicalSubskill": "sub_quant_08_1",
+        "correctAnswer": "ج — القيمتان متساويتان",
+        "stepByStepSolution": "مجموع الفاكهة = 5+3+7=15. عدد البرتقالات=3. نسبة البرتقال إلى الكل=3/15=1/5، فتتساوى القيمتان.",
+        "educationalExplanation": "نسبة الجزء إلى الكل تُحسب بقسمة عدد البرتقالات على مجموع جميع الفواكه، وليس على التفاح وحده. النسبة 3 من 15 وتبسيطها 1/5.",
+        "difficulty": "Easy",
+        "difficultyReason": "تطبيق مباشر لقاعدة حسابية واحدة أو خطوتين واضحتين.؛ أعيد التحقق المستقل من نص الصورة والخيارات.",
+        "contentFingerprint": "a2d750eb13a99e9fc3b38c5710f961a23e68f121a89d8b69d5f1d994b86cce36",
+        "ideaFingerprint": "148df4057224f37ac0a5c6658b7433b45f72a7b398d870633804ae264add5855",
+        "fingerprintAlgorithm": "sha256 UTF-8 normalized declared input mnsf26-content-v1|questionText|correctAnswer and mnsf26-idea-v1|canonicalSubskill|semanticIdea"
+      }
+    },
+    {
+      "sourceKey": "MNSF26-AR-T034-Q03",
+      "priorRecordSource": "MNSF26_QUESTION_MASTERING_RUN048_AR_T34_V1.json",
+      "priorAnswer": "القيمة الأولى أكبر",
+      "priorImageHash": "70ad73229585dea35041b12dc7761fb53934c1f156c4c1aade3648d4ef977be5",
+      "reason": "Source crop explicitly compares 2% with 0.2%; prior master incorrectly transcribed 2% as 1%.",
+      "record": {
+        "sourceKey": "MNSF26-AR-T034-Q03",
+        "sourceProvenance": {
+          "sourcePart": "الحساب/الجبر",
+          "bookCode": "AR",
+          "testNumber": 34,
+          "pdfPage": 65,
+          "sourceSkillLabel": "النسبة المئوية",
+          "printedQuestionNumber": 3,
+          "cropFile": "AR/AR-T034-Q03.webp",
+          "cropSha256": "70ad73229585dea35041b12dc7761fb53934c1f156c4c1aade3648d4ef977be5",
+          "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
+        },
+        "imageHash": "70ad73229585dea35041b12dc7761fb53934c1f156c4c1aade3648d4ef977be5",
+        "status": "MASTERED",
+        "questionText": "قارن القيمة الأولى 2% من 5 بالقيمة الثانية 0.2% من 5.",
+        "visualEvidence": "RUN065_INDEPENDENT_DIRECT_SOURCE_CROP_ZOOM_SHA256_VERIFIED",
+        "canonicalMainSkill": "skill_quant_09",
+        "canonicalSubskill": "sub_quant_09_1",
+        "correctAnswer": "أ — القيمة الأولى أكبر",
+        "stepByStepSolution": "2% من 5 = 0.02×5=0.10؛ و0.2% من 5 = 0.002×5=0.01؛ إذن القيمة الأولى أكبر.",
+        "educationalExplanation": "نحوّل كل نسبة مئوية إلى عدد عشري بقسمتها على 100؛ 2% تساوي عشرة أمثال 0.2% عند المقارنة على الأساس نفسه.",
+        "difficulty": "Easy",
+        "difficultyReason": "تطبيق مباشر لقاعدة حسابية واحدة أو خطوتين واضحتين.؛ أعيد التحقق المستقل من نص الصورة والخيارات.",
+        "contentFingerprint": "e559d653850eea5e69c8d2d58040d0079acf2a73749d50afa00e3573b37ca0d8",
+        "ideaFingerprint": "1a4ca866a9100b9aa850708365c7473e263ff10864ee70085e94e95293d15f77",
+        "fingerprintAlgorithm": "sha256 UTF-8 normalized declared input mnsf26-content-v1|questionText|correctAnswer and mnsf26-idea-v1|canonicalSubskill|semanticIdea"
+      }
+    },
+    {
+      "sourceKey": "MNSF26-AR-T036-Q03",
+      "priorRecordSource": "MNSF26_QUESTION_MASTERING_RUN048_AR_T36_V1.json",
+      "priorAnswer": "القيمة الثانية أكبر",
+      "priorImageHash": "2b54d29735cd9d17e3bc004de46668d80dbf4cfa6a7665b431ba4d2d0becb15f",
+      "reason": "Source crop discounts 30% on each of two phones versus 60% on one of two; prior master used 20% figures and wrong choice.",
+      "record": {
+        "sourceKey": "MNSF26-AR-T036-Q03",
+        "sourceProvenance": {
+          "sourcePart": "الحساب/الجبر",
+          "bookCode": "AR",
+          "testNumber": 36,
+          "pdfPage": 70,
+          "sourceSkillLabel": "النسبة المئوية",
+          "printedQuestionNumber": 3,
+          "cropFile": "AR/AR-T036-Q03.webp",
+          "cropSha256": "2b54d29735cd9d17e3bc004de46668d80dbf4cfa6a7665b431ba4d2d0becb15f",
+          "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
+        },
+        "imageHash": "2b54d29735cd9d17e3bc004de46668d80dbf4cfa6a7665b431ba4d2d0becb15f",
+        "status": "MASTERED",
+        "questionText": "اشترى أحمد وماجد كلٌ منهما هاتفين من النوع نفسه. خصم أحمد 30% على كل هاتف، وخصم ماجد 60% على أحد الهاتفين والآخر بالسعر الأصلي. قارن المبلغين المدفوعين.",
+        "visualEvidence": "RUN065_INDEPENDENT_DIRECT_SOURCE_CROP_ZOOM_SHA256_VERIFIED",
+        "canonicalMainSkill": "skill_quant_09",
+        "canonicalSubskill": "sub_quant_09_3",
+        "correctAnswer": "ج — القيمتان متساويتان",
+        "stepByStepSolution": "إذا كان سعر الهاتف س، فإن أحمد دفع 2×(1−0.30)س=1.4س. وماجد دفع (1−0.60)س+س=0.4س+س=1.4س. إذن المبلغان متساويان.",
+        "educationalExplanation": "الخصم على هاتفين بنسبة 30% لكل واحد يعادل خصم 60% على هاتف واحد وشراء الثاني بسعره الكامل عندما تكون الأسعار الأصلية متساوية.",
+        "difficulty": "Medium",
+        "difficultyReason": "يتطلب تحويل المعطيات إلى علاقة صحيحة ثم إجراء حساب متسلسل.؛ أعيد التحقق المستقل من نص الصورة والخيارات.",
+        "contentFingerprint": "f31d819662c1c84e117cf87fc62b4f7eb90e1da23f67a4bf10681a0af432eca6",
+        "ideaFingerprint": "bb6322ae633056380fdbede6fa3049e7251699e49d93b73c37e4dc1120d9a717",
+        "fingerprintAlgorithm": "sha256 UTF-8 normalized declared input mnsf26-content-v1|questionText|correctAnswer and mnsf26-idea-v1|canonicalSubskill|semanticIdea"
+      }
+    }
+  ]
+}
