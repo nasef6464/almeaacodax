@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN060_AR_T16_LIBRARY_PAYLOAD_RECOVERY",
+  "previouslyCounted": true,
+  "records": [
+    {
+      "id": "MNSF26-AR-T016-Q13",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T016",
+        "sourceLesson": "أنماط وأساسيات الأعداد"
+      },
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_3",
+      "correctAnswer": "ب",
+      "answerValue": "33",
+      "stepByStepSolution": "الفروق 2،4،6،8؛ الفرق التالي 10، إذن 23+10=33.",
+      "educationalExplanation": "فروق الحدود أعداد زوجية متتالية.",
+      "difficulty": "Medium",
+      "difficultyReason": "نمط فروق منتظمة.",
+      "imageHash": "aa57d641665d5c7b730e3eee0b7d05f49a3b08473fc943ea7ce1055e7adca400",
+      "contentFingerprint": "cb47240c51167c8c043e8fe26b217041fb75ff9076bfad3abcbfbe4591076265",
+      "ideaFingerprint": "0e9d635f648a323fe6d039741b4487c5136ccda457c24b716e5d4ab1b459e32f",
+      "status": "MASTERED"
+    },
+    {
+      "id": "MNSF26-AR-T016-Q14",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T016",
+        "sourceLesson": "أنماط وأساسيات الأعداد"
+      },
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_3",
+      "correctAnswer": "ب",
+      "answerValue": "17",
+      "stepByStepSolution": "الفروق 2 ثم 4؛ تتضاعف الفروق، فالفرق التالي 8، ومنه 9+8=17.",
+      "educationalExplanation": "نلاحظ تضاعف الفرق بين الحدود.",
+      "difficulty": "Easy",
+      "difficultyReason": "نمط قصير واضح مع خيارات حاسمة.",
+      "imageHash": "d3ae0927c24495d396d9ad1763144fbc140cfffefad2ae862551e77cd136e329",
+      "contentFingerprint": "7a5f872aafc0191c731781ca5d72c3f11cdfcc167deea7fe10837d1a1afef94e",
+      "ideaFingerprint": "0a3f8950f5ab5720e046a1ec9aed6e6de3379b4a44bb7d89ce4cf8167de13b4d",
+      "status": "MASTERED"
+    },
+    {
+      "id": "MNSF26-AR-T016-Q15",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T016",
+        "sourceLesson": "أنماط وأساسيات الأعداد"
+      },
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_3",
+      "correctAnswer": "ب",
+      "answerValue": "17",
+      "stepByStepSolution": "المتتابعة 2،3،5،8،12 فروقها 1،2،3،4؛ الفرق التالي 5، إذن 17.",
+      "educationalExplanation": "نضيف أعدادًا صحيحة متتالية.",
+      "difficulty": "Easy",
+      "difficultyReason": "نمط فروق متتابعة مباشر.",
+      "imageHash": "75bd6352b3748fb1644db5abc238fd91619cd3e2248303c4e5b845c1284bd5ce",
+      "contentFingerprint": "d07b35fa2549f163bcc50d87dc3edb015bd2012a28e7c518643213250f37f83f",
+      "ideaFingerprint": "1df4bbac4ee16fc48568eb20554d04d3ac6851cb03d68345c2d0036d728b07a3",
+      "status": "MASTERED"
+    },
+    {
+      "id": "MNSF26-AR-T016-Q16",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T016",
+        "sourceLesson": "جمع الأعداد - المتتابعات - ضرب الأعداد"
+      },
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_3",
+      "correctAnswer": "ج",
+      "answerValue": "4",
+      "stepByStepSolution": "الحد الأول 1، وكل حد يزيد 3/4 عن السابق؛ الحد الخامس = 1 + 4×3/4 = 4.",
+      "educationalExplanation": "متتابعة حسابية فرقها ثابت 3/4؛ نستخدم صيغة الحد النوني أو الزيادة المتكررة.",
+      "difficulty": "Medium",
+      "difficultyReason": "يتطلب فهم صياغة العلاقة التكرارية ثم الوصول للحد الخامس.",
+      "imageHash": "d931445c136eed17568948b2324d172750583055bdebca35e2dd47d1b3a33610",
+      "contentFingerprint": "dd65ca7fdcedae5851a3cb8a5463f21746bd1356bc4d93c596be29e671242c47",
+      "ideaFingerprint": "32c0213b0161c4bf589fbb4abc184af25437016f925f572f53fd10b64a1b3079",
+      "status": "MASTERED"
+    }
+  ]
+}
