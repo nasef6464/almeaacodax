@@ -1,0 +1,46 @@
+name: ALMEAA Production Dependency Advisory Review
+on:
+  push:
+    branches: [test/almeaa-isolated-20261008]
+    paths: [.github/workflows/almeaa-dependency-advisory.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    name: Report production runtime dependency advisories
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Query npm advisories for production dependency trees only
+        shell: bash
+        run: |
+          mkdir -p audit-artifacts/dependencies
+          npm audit --json --omit=dev > audit-artifacts/dependencies/frontend.json || true
+          npm --prefix server audit --json --omit=dev > audit-artifacts/dependencies/backend.json || true
+          node <<'NODE'
+          const fs = require('node:fs');
+          const path = require('node:path');
+          for (const [label, file] of [['frontend','frontend.json'],['backend','backend.json']]) {
+            const text = fs.readFileSync(path.join('audit-artifacts/dependencies',file),'utf8');
+            const audit = JSON.parse(text);
+            const counts = audit.metadata?.vulnerabilities || {};
+            const offenders = Object.entries(audit.vulnerabilities || {}).map(([name,x]) => ({name,severity:x.severity,range:x.range})).filter(x=>x.severity==='high'||x.severity==='critical');
+            console.log(JSON.stringify({label,counts,highOrCritical:offenders},null,2));
+            if (audit.error) throw Error('Could not audit '+label+': '+audit.error.code);
+          }
+          NODE
+      - name: Keep advisory snapshots for review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: almeaa-dependency-advisories-${{ github.run_id }}
+          path: audit-artifacts/dependencies/
+          retention-days: 7
+          if-no-files-found: warn
