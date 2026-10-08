@@ -23,10 +23,10 @@
     {
       "name": "mapping",
       "status": "IN_PROGRESS",
-      "done": 1291,
+      "done": 1364,
       "total": 2135,
       "rule": "QUESTION_MATH_REQUIRED; source label preserved; no group-title auto approval",
-      "reviewHold": 229,
+      "reviewHold": 242,
       "evidence": [
         "Ready130 audit candidate-pass 74",
         "Adjudication batch001 added 17 question-level approvals",
@@ -37,7 +37,7 @@
     {
       "name": "enrichment",
       "status": "IN_PROGRESS_LEGACY_SUBSET",
-      "done": 1291,
+      "done": 1364,
       "total": 2135,
       "rule": "answer+solution+educationalExplanation+difficulty+difficultyReason+fingerprints",
       "mappingApprovedWithinReady": 129
@@ -148,14 +148,27 @@
     "MNSF26-GEO-T044-Q06 HOLD المراكز والمسافات بينهما في الرسم لا تحدد بصورة قاطعة جميع أطوال أضلاع المثلث من أنصاف الأقطار فقط؛ HOLD.",
     "MNSF26-GEO-T044-Q11 HOLD زاوية المثلث60°، لكن الزاوية المختارة في رباعي غير معلوم النوع قد تكون أقل أو أكبر؛ HOLD.",
     "MNSF26-GEO-T045-Q01 HOLD تحديد عرض المستطيل الكامل من الشكل دون رقم صريح لا يثبت محيطًا وحيدًا؛ HOLD.",
-    "MNSF26-GEO-T045-Q12 HOLD علامة8 في الرسم لا تثبت بوضوح أي ضلع من المثلث، وبالتالي لا تثبت مساحته؛ HOLD."
+    "MNSF26-GEO-T045-Q12 HOLD علامة8 في الرسم لا تثبت بوضوح أي ضلع من المثلث، وبالتالي لا تثبت مساحته؛ HOLD.",
+    "MNSF26-GEO-T046-Q01 HOLD طول ضلع20 أكبر من نصف المحيط9، فالمعطيات متناقضة؛ HOLD.",
+    "MNSF26-GEO-T046-Q15 HOLD طول قاعدة المثلث المحددة في الرسم غير مؤكد بالنسبة لمركز الدائرة؛ HOLD لتجنب مقارنة غير مبرهنة.",
+    "MNSF26-GEO-T046-Q16 HOLD الزاوية س تتوقف على تحديد القوس المقابل لها، ولا تثبت زاوية منفردة من علامات القص؛ HOLD.",
+    "MNSF26-GEO-T047-Q01 HOLD المساحة24−(1/2)π(1.5)²=24−1.125π، وهي غير موجودة في الخيارات؛ HOLD.",
+    "MNSF26-GEO-T048-Q06 HOLD الحجم الكلي15×5=75؛ الثلث25، لكن خيارات الصورة تتضمن75 و120 و150 و60 ولا تتضمن25؛ HOLD.",
+    "MNSF26-GEO-T048-Q08 HOLD الحجم الأكبر لا يستلزم مساحة سطح أكبر دون معرفة الأبعاد؛ HOLD.",
+    "MNSF26-GEO-T048-Q13 HOLD الحجم64 إلى8 يساوي8:1، لكن جميع الخيارات الظاهرة 1:2 و1:4 و1:8 و1:16؛ HOLD لاتجاه النسبة.",
+    "MNSF26-GEO-T048-Q14 HOLD قطر/نصف قطر المقطع الدائري غير معطى بوضوح؛ لا يمكن حساب حجم المجرى؛ HOLD.",
+    "MNSF26-GEO-T049-Q03 HOLD لم يوضح السؤال هل المساحة المقصودة مساحة وجه أم المساحة السطحية الكلية؛ HOLD.",
+    "MNSF26-GEO-T049-Q10 HOLD الحجم يتوقف على مساحة القاعدة أيضًا؛ لا تكفي معلومة الارتفاعين؛ HOLD.",
+    "MNSF26-GEO-T049-Q20 HOLD الحجم السائل190 مل لكن الخيارات الظاهرة لا تطابق الحجم الكلي أو السائل حسابيًا؛ HOLD.",
+    "MNSF26-GEO-T050-Q11 HOLD من دون تجربة طي الشبكات أو ترميز مواضع الأوجه المتقابلة بصورة مؤكدة لا يعتمد الخيار؛ HOLD.",
+    "MNSF26-GEO-T050-Q15 HOLD قاعدة المثلث غير معطاة، لذا لا يمكن تحديد حجمه بالنسبة للثانية؛ HOLD."
   ],
   "nextCursor": {
     "stage": "QUESTION_MASTERING",
     "strategy": "ONE_PASS_VISUAL_MATH",
     "priority": [
-      "geometry T46 onward",
-      "reconcile Run053 Library-only GEO T41 Q01-Q05 and T43 Q01-Q02,Q08-Q10,Q16-Q17 by authorized GitHub route",
+      "AR remaining unique source questions (verify Run017 manifest and existing master keys)",
+      "GEO T41/T43 Library-only 12 records",
       "GEO T31/Q11-Q20 Library-only",
       "AR T53/Q17,Q20 and T62/Q09-Q12 Library-only"
     ]
@@ -171,21 +184,21 @@
     "A question is processed once into a complete master payload; QA validates it rather than recreating it"
   ],
   "lastCompletedBatch": {
-    "name": "RUN053_GEO_T36_T45_PARTIAL_GITHUB_PERSISTED",
-    "completeMasterRecords": 159,
-    "holds": 25,
-    "questionsProcessed": 184,
-    "effectiveMasteredComplete": 1291,
-    "visualInspected": 196,
+    "name": "RUN053_GEO_T46_T50_RECONCILED",
+    "completeMasterRecords": 73,
+    "holds": 13,
+    "questionsProcessed": 86,
+    "effectiveMasteredComplete": 1364,
+    "visualInspected": 282,
     "libraryOnly": 12,
-    "source": "Run021 exact embedded WEBP crop archive, SHA-256 verified; all 196 full records in /MNSF26/Run053 Library; 184 unique records persisted on GitHub"
+    "source": "RUN053 five persisted GEO test files, exact unique sourceKey and all mastered required fields validated"
   },
   "executionContract": "docs/content/mnsf26/MNSF26_LOCKED_PIPELINE_V1.json",
   "activeStage": {
     "order": 2,
     "name": "QUESTION_MASTERING",
     "status": "IN_PROGRESS",
-    "done": 1291,
+    "done": 1364,
     "total": 2135,
     "mode": "ONE_PASS_PER_QUESTION",
     "requiredPayload": [
@@ -202,7 +215,7 @@
       "ideaFingerprint"
     ],
     "gate": "No question advances without complete payload or explicit HOLD/REVIEW.",
-    "masteredComplete": 1291
+    "masteredComplete": 1364
   },
   "reconciliationRun049": {
     "source": "Library /MNSF26/Run048 full JSON records, validated unique sourceKeys and required fields, persisted to GitHub complete test files",
@@ -269,6 +282,24 @@
     ],
     "blocker": "GitHub connector safety checks reject a few valid payload writes even in 2-3 question shards; complete records preserved in Library; no forced write or invented counts",
     "stageOrderUnchanged": true,
+    "productionServicesUntouched": true
+  },
+  "reconciliationRun053Continuation": {
+    "baseMastered": 1291,
+    "baseHold": 229,
+    "githubPersistedUnique": 86,
+    "masteredAdded": 73,
+    "holdsAdded": 13,
+    "newOfficialMastered": 1364,
+    "newOfficialHold": 242,
+    "sourceFiles": [
+      "MNSF26_QUESTION_MASTERING_RUN053_GEO_T46_V1.json",
+      "MNSF26_QUESTION_MASTERING_RUN053_GEO_T47_V1.json",
+      "MNSF26_QUESTION_MASTERING_RUN053_GEO_T48_V1.json",
+      "MNSF26_QUESTION_MASTERING_RUN053_GEO_T49_V1.json",
+      "MNSF26_QUESTION_MASTERING_RUN053_GEO_T50_V1.json"
+    ],
+    "sourceDelta": "MNSF26_RUN053_STATE_DELTA_V1.json",
     "productionServicesUntouched": true
   }
 }
