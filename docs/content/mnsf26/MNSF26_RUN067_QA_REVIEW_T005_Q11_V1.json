@@ -1,0 +1,11 @@
+{
+  "bank": "MNSF26",
+  "run": "RUN067",
+  "sourceKey": "MNSF26-GEO-T005-Q11",
+  "status": "QA_REVIEW_REQUIRED",
+  "imageHash": "8dd23e3018cd7b5a7d8fa51e9baa2c9ad0170f92679baf83294fd6e2ac1be4ea",
+  "masterAnswer": "B",
+  "imageDerivedAnswer": "A",
+  "proof": "Original printed 3s=6p as alternate exterior angles; s=2p. Prior master misread 6p as 2p.",
+  "importEligible": false
+}
