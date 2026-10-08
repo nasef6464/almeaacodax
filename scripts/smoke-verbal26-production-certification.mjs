@@ -115,8 +115,12 @@ try {
     const pagination = pageResponse.body?.pagination || {};
     if (pagination.hasNext === false || pageItems.length === 0) break;
   }
-  const canonicalIds = new Set(canonicalInventory.map((q) => String(q?.id || q?._id || q?.canonicalId || "")).filter(Boolean));
-  assert(canonicalIds.size === 1050, `canonical inventory unique IDs mismatch: ${canonicalIds.size}/1050`);
+  assert(canonicalInventory.length === 1050, `canonical inventory row count mismatch: ${canonicalInventory.length}/1050`);
+  const canonicalKeys = new Set(canonicalInventory.map((q) => {
+    const objectId = q?._id && typeof q._id === "object" ? JSON.stringify(q._id) : String(q?._id || "");
+    return String(q?.id || q?.questionCode || q?.canonicalId || q?.sourceMeta?.sourceItemId || objectId || "");
+  }).filter(Boolean));
+  assert(canonicalKeys.size === 1050, `canonical inventory stable-key mismatch: ${canonicalKeys.size}/1050`);
   const sourceBookCounts = canonicalInventory.reduce((acc, q) => {
     const key = String(q?.sourceBook || "");
     acc[key] = Number(acc[key] || 0) + 1;
@@ -196,7 +200,11 @@ try {
   }, null, 2));
 } finally {
   if (admin?.token) {
-    const cleanup = await req(`/quizzes/${QUIZ_ID}`, { method: "DELETE", token: admin.token, expected: 200 }).catch((error) => ({ cleanupError: String(error) }));
+    const cleanup = await req(`/quizzes/${QUIZ_ID}`, { method: "DELETE", token: admin.token }).catch((error) => {
+      const message = String(error);
+      if (message.includes("failed 404")) return { skippedMissingQuiz: true };
+      return { cleanupError: message };
+    });
     if (cleanup?.cleanupError) console.error(cleanup.cleanupError);
   }
 }
