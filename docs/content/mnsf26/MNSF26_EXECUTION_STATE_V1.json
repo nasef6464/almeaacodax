@@ -23,10 +23,10 @@
     {
       "name": "mapping",
       "status": "IN_PROGRESS",
-      "done": 1132,
+      "done": 1219,
       "total": 2135,
       "rule": "QUESTION_MATH_REQUIRED; source label preserved; no group-title auto approval",
-      "reviewHold": 204,
+      "reviewHold": 213,
       "evidence": [
         "Ready130 audit candidate-pass 74",
         "Adjudication batch001 added 17 question-level approvals",
@@ -37,7 +37,7 @@
     {
       "name": "enrichment",
       "status": "IN_PROGRESS_LEGACY_SUBSET",
-      "done": 1132,
+      "done": 1219,
       "total": 2135,
       "rule": "answer+solution+educationalExplanation+difficulty+difficultyReason+fingerprints",
       "mappingApprovedWithinReady": 129
@@ -123,13 +123,22 @@
     "MNSF26-AR-T047-Q16 REVIEW cross-topic work sharing",
     "MNSF26-AR-T047-Q12 HOLD inconsistent constant speed",
     "MNSF26-AR-T047-Q19 HOLD 160 km/h absent from options",
-    "MNSF26-AR-T048-Q12 HOLD (57 months absent from source options)"
+    "MNSF26-AR-T048-Q12 HOLD (57 months absent from source options)",
+    "MNSF26-GEO-T036-Q05 HOLD لا يمكن تثبيت تساوي قواعد جميع المثلثات/أطوالها من العلامات المرئية؛ لا يعتمد عدد القطاعات وحده لإثبات النسبة.",
+    "MNSF26-GEO-T036-Q15 HOLD تقسيم الجزء العلوي الأيمن إلى خلايا متفاوتة غير كافٍ لتأكيد نسبة الأحمر من علامات الصورة وحدها؛ يحتاج تحكيم مستقل.",
+    "MNSF26-GEO-T036-Q19 HOLD اتجاه القياس 135° وعلامات الأطوال لا تثبت ارتفاعات المثلثين المظللين في القص بصورة قاطعة؛ HOLD.",
+    "MNSF26-GEO-T036-Q20 HOLD لا تتضح نقاط التماس/امتدادات المثلثين بما يضمن قاعدة وارتفاعًا وحيدين من القص؛ HOLD.",
+    "MNSF26-GEO-T037-Q03 HOLD لا توجد زاوية أو ضلع إضافي مرقم يحدد الوتر أ ب من طول ب ج وحده؛ HOLD.",
+    "MNSF26-GEO-T037-Q14 HOLD لا يوجد قياس زاوية مركزية أو نسبة قوس في الرسم، والاتجاه الظاهر لا يكفي لإثبات زاوية؛ HOLD.",
+    "MNSF26-GEO-T039-Q10 HOLD أطوال الأجزاء الأفقية في الرسم غير معطاة، فلا يمكن تعيين و ن أو مقارنتها بـ10 سم دون افتراض مقياس الرسم.",
+    "MNSF26-GEO-T040-Q14 HOLD علامات الارتفاع والموضع لا تكفي لتأكيد أن الأجزاء تشكل مثلثات متشابهة بمقياس واحد دون تحكيم الرسم، والناتج المباشر لا يوافق الخيارات؛ HOLD.",
+    "MNSF26-GEO-T040-Q15 HOLD القطعة المطلوبة غير محددة بوضوح في نص القص، وتعيين أبعاد المعين لا يتبع من المساحة وحدها؛ HOLD."
   ],
   "nextCursor": {
     "stage": "QUESTION_MASTERING",
     "strategy": "ONE_PASS_VISUAL_MATH",
     "priority": [
-      "geometry T36 onward",
+      "geometry T41 onward (next new questions)",
       "GEO T31/Q11-Q20 Library-only pending official GitHub write",
       "AR T53/Q17,Q20 and T62/Q09-Q12 Library-only"
     ]
@@ -145,18 +154,26 @@
     "A question is processed once into a complete master payload; QA validates it rather than recreating it"
   ],
   "lastCompletedBatch": {
-    "name": "RUN052_GEO_T31_PART01_T32_T33_T34_T35",
-    "completeMasterRecords": 76,
-    "holds": 14,
-    "questionsProcessed": 90,
-    "effectiveMasteredComplete": 1132
+    "name": "RUN053_GEO_T36_T40",
+    "completeMasterRecords": 87,
+    "holds": 9,
+    "questionsProcessed": 96,
+    "effectiveMasteredComplete": 1219,
+    "source": "Run021 exact crop archive SHA-256 verified, 96 unique sourceKeys, complete payloads persisted in five GitHub files",
+    "commitEvidence": [
+      "2724c1e7abdf40fd666f88cd211c31d34088af12",
+      "ffcaa569540681ec5b275450872dc25b045b6e18",
+      "e4888f781a6c4259dea5ba1afaa3a281ae17c2d4",
+      "ca4ec195a6489cd35240f7ebb2396ae192f49c0a",
+      "d1d038ca74505da2363bd03a58e56324c6d32b6b"
+    ]
   },
   "executionContract": "docs/content/mnsf26/MNSF26_LOCKED_PIPELINE_V1.json",
   "activeStage": {
     "order": 2,
     "name": "QUESTION_MASTERING",
     "status": "IN_PROGRESS",
-    "done": 1132,
+    "done": 1219,
     "total": 2135,
     "mode": "ONE_PASS_PER_QUESTION",
     "requiredPayload": [
@@ -173,7 +190,7 @@
       "ideaFingerprint"
     ],
     "gate": "No question advances without complete payload or explicit HOLD/REVIEW.",
-    "masteredComplete": 1132
+    "masteredComplete": 1219
   },
   "reconciliationRun049": {
     "source": "Library /MNSF26/Run048 full JSON records, validated unique sourceKeys and required fields, persisted to GitHub complete test files",
@@ -212,5 +229,24 @@
     "geometryLibraryOnly": 10,
     "geometryLibraryOnlyMastered": 8,
     "geometryLibraryOnlyHold": 2
+  },
+  "reconciliationRun053": {
+    "baseMastered": 1132,
+    "baseHold": 204,
+    "githubPersistedUnique": 96,
+    "masteredAdded": 87,
+    "holdsAdded": 9,
+    "newOfficialMastered": 1219,
+    "newOfficialHold": 213,
+    "shaVerified": 96,
+    "tests": [
+      36,
+      37,
+      38,
+      39,
+      40
+    ],
+    "stageOrderUnchanged": true,
+    "productionServicesUntouched": true
   }
 }
