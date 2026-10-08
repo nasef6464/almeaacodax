@@ -1,0 +1,10 @@
+# Isolated *local-only* developer/test backend. Not for deployment.
+FROM node:22-alpine
+WORKDIR /app/server
+COPY server/package*.json ./
+RUN npm ci
+COPY server ./
+RUN npm run build
+EXPOSE 4000
+# Create fresh synthetic fixture accounts each time this disposable backend starts.
+CMD ["sh", "-ec", "npm run seed:admin && npm run seed:operational && npx tsx src/scripts/prepareDeepPreMergeUsers.ts && exec node dist/server.js"]
