@@ -60,20 +60,25 @@
     "sourceSectionsNumberIndexed": 61,
     "firstSectionQuestionNumbersIndexed": 1174,
     "secondSectionQuestionNumbersIndexed": 890,
-    "questionNumberSequenceMissing": 0
+    "questionNumberSequenceMissing": 0,
+    "answerKeyCandidateLabelsLocated": 2064,
+    "answerKeyCandidateArabicGlyphsNormalized": 29,
+    "answerKeyCandidatesUnmatched": 0
   },
   "currentRun": {
-    "result": "SOURCE_NUMBER_INDEX_2064_COMMITTED",
+    "result": "PHYS26_2064_NUMBER_AND_FOOTER_KEY_CANDIDATES_COMMITTED",
     "publishedToProduction": false,
-    "tests": "SOURCE_SHA256_MATCH; PDF_NATIVE_TEXT_GEOMETRY_31_OF_31_SEQUENCES_COMPLETE; 61_SECTION_HEADERS_LOCATED; ONE_SPLIT_YEAR_MARKER_EXCLUDED; NO_LOCAL_IMPORT",
+    "tests": "LOCAL_NUMBER_AUDIT_PASS; 31/31_SEQUENCES; 2064/2064_FOOTER_KEY_LABELS; 0_NUMBER_GAPS; CI_WORKFLOW_GATE_ADDED_BUT_RUN_RESULT_PENDING",
     "notes": [
       "Freshly uploaded PDFs materialized and opened locally; prior HTTP 403 source access issue resolved for this run.",
       "Book collection source: 162 PDF pages, 31 independently numbered lessons, 2064 numbered positions, 1174 in 31 first-sections and 890 in 30 second-sections; lesson 25 has no second section.",
       "No missing integer in each lesson's 1..N question label range after excluding a split year label on PDF page 22.",
       "Question wording, options, answer keys, image crops, per-question subskills and licensing NOT yet approved. New counts represent source label indexing ONLY.",
       "Do not publish source page images or questions to GitHub without rights clearance; protect Atlas, existing nine physics skills and 36 historical progress rows.",
-      "Metadata audit: ops/phys26/PHYS26_SOURCE_NUMBER_AUDIT_2064.json; local full 2064-entry bounding-box index is not committed."
+      "Metadata audit: ops/phys26/PHYS26_SOURCE_NUMBER_AUDIT_2064.json; local full 2064-entry bounding-box index is not committed.",
+      "Offline footer answer tables contain 2064 candidate answer letters paired to the 2064 question number labels, including 29 original Arabic A/B/C/D-equivalent glyphs. No independent answer correctness certification.",
+      "Added offline number-audit gate and its step in .github/workflows/phys26-static.yml; latest CI result not yet confirmed."
     ]
   },
-  "next": "Use 2064 numbered source labels to generate and inspect crop candidates in isolated environment, verify actual A/B/C/D and answers from visual pages, map each record to PHYS26 main/subskill, and address rights before publication. Do not count labels as approved questions."
+  "next": "Continue question-by-question visual crop/answer/math QA using fresh readable PDFs; retain original key glyph and source image evidence, quarantine ambiguous problems. No publication until rights clearance."
 }
