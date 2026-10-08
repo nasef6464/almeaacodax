@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN058_AR_T10_DIRECT_VISUAL",
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T010-Q15",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+        "testNumber": 10,
+        "pdfPage": 18,
+        "sourceSkillLabel": "ترتيب العمليات – قابلية القسمة",
+        "sourceTopic": "تصنيف المصدر محفوظ؛ رياضيات السؤال هي معيار الربط",
+        "sourceLesson": "الحساب والجبر، الاختبار 010، السؤال 15",
+        "printedQuestionNumber": 15,
+        "cropFile": "mnsf26_fullbook_crops/AR/AR-T010-Q15.webp",
+        "cropSha256": "325abcd8c8374c92aa966bc60018cb5009bb3db663444f25df9937c6d7b5ca61",
+        "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
+      },
+      "imageHash": "325abcd8c8374c92aa966bc60018cb5009bb3db663444f25df9937c6d7b5ca61",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN058_2026-10-08_T010_Q15",
+      "status": "MASTERED",
+      "questionText": "عدد أسهم أقل من2000 يقبل القسمة على9 و11 و13؛ كم مجموع الأسهم؟",
+      "canonicalMainSkill": "main_quant_02",
+      "canonicalSubskill": "sub_quant_02_1",
+      "correctAnswer": "1287 (أ)",
+      "stepByStepSolution": "9 و11 و13 أولية نسبيًا، وحاصل ضربها1287، وهو أقل من2000.",
+      "educationalExplanation": "نطبّق القاعدة الرياضية الواردة في نص السؤال: 9 و11 و13 أولية نسبيًا، وحاصل ضربها1287، وهو أقل من2000.",
+      "difficulty": "Medium",
+      "difficultyReason": "يحتاج عدة خطوات ومقارنة معطيات.",
+      "contentFingerprint": "d0bb41bb238e9a1c3cf5fcbd6c471c2aecacf8b36bc3170067707c0053ef1935",
+      "ideaFingerprint": "38cec5bb07c72d52a62fffd82a4204924dba795a728a317309d086d6a66e4346"
+    },
+    {
+      "sourceKey": "MNSF26-AR-T010-Q16",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+        "testNumber": 10,
+        "pdfPage": 19,
+        "sourceSkillLabel": "ترتيب العمليات – قابلية القسمة",
+        "sourceTopic": "تصنيف المصدر محفوظ؛ رياضيات السؤال هي معيار الربط",
+        "sourceLesson": "الحساب والجبر، الاختبار 010، السؤال 16",
+        "printedQuestionNumber": 16,
+        "cropFile": "mnsf26_fullbook_crops/AR/AR-T010-Q16.webp",
+        "cropSha256": "84f1dc07cc0457c75513020e6263629149f5431afdfe290963b1709347ed2e43",
+        "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
+      },
+      "imageHash": "84f1dc07cc0457c75513020e6263629149f5431afdfe290963b1709347ed2e43",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN058_2026-10-08_T010_Q16",
+      "status": "MASTERED",
+      "questionText": "عدد له قواسم1 و2 و3 و5؛ أي من2 و6 و15 و20 لا يلزم أن يقبل القسمة عليه؟",
+      "canonicalMainSkill": "main_quant_02",
+      "canonicalSubskill": "sub_quant_02_1",
+      "correctAnswer": "20 (د)",
+      "stepByStepSolution": "القسمة على2 و3 و5 تضمن القسمة على6 و15، ولا تضمن20 (مثال30).",
+      "educationalExplanation": "نطبّق القاعدة الرياضية الواردة في نص السؤال: القسمة على2 و3 و5 تضمن القسمة على6 و15، ولا تضمن20 (مثال30).",
+      "difficulty": "Medium",
+      "difficultyReason": "يحتاج عدة خطوات ومقارنة معطيات.",
+      "contentFingerprint": "f36f965a4027533c19f8fb3dbc02d8ea52568bc1823342831a85bd7bf7dfedbb",
+      "ideaFingerprint": "cd965f2b87ca78b10d8bf7d4b96c698df9c4d28ee1342a130b458379d5eab0cf"
+    }
+  ]
+}
