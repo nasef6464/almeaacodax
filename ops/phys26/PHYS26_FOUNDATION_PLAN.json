@@ -23,7 +23,8 @@
     "pathId": "p_1777779653351",
     "subjectId": "sub_1784980706034",
     "sectionId": null,
-    "sectionIdStatus": "UNRESOLVED_READONLY_CHECK_REQUIRED"
+    "sectionIdStatus": "25_NEW_SECTION_IDS_PROPOSED_NOT_CREATED",
+    "sectionPlan": "PHYS26_SECTION_PLAN.json"
   },
   "policy": {
     "doNotReuseLegacySkillIds": true,
@@ -90,7 +91,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_1"
     },
     {
       "id": "PHYS26-TS01-01",
@@ -134,7 +136,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_1"
     },
     {
       "id": "PHYS26-TS01-02",
@@ -178,7 +181,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_1"
     },
     {
       "id": "PHYS26-TS01-03",
@@ -222,7 +226,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_1"
     },
     {
       "id": "PHYS26-TS01-04",
@@ -266,7 +271,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_1"
     },
     {
       "id": "PHYS26-TM02",
@@ -310,7 +316,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_2"
     },
     {
       "id": "PHYS26-TS02-01",
@@ -355,7 +362,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_2"
     },
     {
       "id": "PHYS26-TS02-02",
@@ -400,7 +408,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_2"
     },
     {
       "id": "PHYS26-TS02-03",
@@ -445,7 +454,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_2"
     },
     {
       "id": "PHYS26-TS02-04",
@@ -490,7 +500,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_2"
     },
     {
       "id": "PHYS26-TS02-05",
@@ -535,7 +546,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_2"
     },
     {
       "id": "PHYS26-TM03",
@@ -577,7 +589,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_3"
     },
     {
       "id": "PHYS26-TS03-01",
@@ -620,7 +633,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_3"
     },
     {
       "id": "PHYS26-TS03-02",
@@ -663,7 +677,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_3"
     },
     {
       "id": "PHYS26-TS03-03",
@@ -706,7 +721,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_3"
     },
     {
       "id": "PHYS26-TS03-04",
@@ -749,7 +765,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_3"
     },
     {
       "id": "PHYS26-TM04",
@@ -791,7 +808,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_4"
     },
     {
       "id": "PHYS26-TS04-01",
@@ -834,7 +852,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_4"
     },
     {
       "id": "PHYS26-TS04-02",
@@ -877,7 +896,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_4"
     },
     {
       "id": "PHYS26-TS04-03",
@@ -920,7 +940,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_4"
     },
     {
       "id": "PHYS26-TS04-04",
@@ -963,7 +984,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_4"
     },
     {
       "id": "PHYS26-TM05",
@@ -1005,7 +1027,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_5"
     },
     {
       "id": "PHYS26-TS05-01",
@@ -1048,7 +1071,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_5"
     },
     {
       "id": "PHYS26-TS05-02",
@@ -1091,7 +1115,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_5"
     },
     {
       "id": "PHYS26-TS05-03",
@@ -1134,7 +1159,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_5"
     },
     {
       "id": "PHYS26-TS05-04",
@@ -1177,7 +1203,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_5"
     },
     {
       "id": "PHYS26-TM06",
@@ -1219,7 +1246,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_6"
     },
     {
       "id": "PHYS26-TS06-01",
@@ -1262,7 +1290,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_6"
     },
     {
       "id": "PHYS26-TS06-02",
@@ -1305,7 +1334,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_6"
     },
     {
       "id": "PHYS26-TS06-03",
@@ -1348,7 +1378,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_6"
     },
     {
       "id": "PHYS26-TM07",
@@ -1390,7 +1421,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_7"
     },
     {
       "id": "PHYS26-TS07-01",
@@ -1433,7 +1465,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_7"
     },
     {
       "id": "PHYS26-TS07-02",
@@ -1476,7 +1509,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_7"
     },
     {
       "id": "PHYS26-TS07-03",
@@ -1519,7 +1553,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_7"
     },
     {
       "id": "PHYS26-TM08",
@@ -1561,7 +1596,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_8"
     },
     {
       "id": "PHYS26-TS08-01",
@@ -1604,7 +1640,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_8"
     },
     {
       "id": "PHYS26-TS08-02",
@@ -1647,7 +1684,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_8"
     },
     {
       "id": "PHYS26-TS08-03",
@@ -1690,7 +1728,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_8"
     },
     {
       "id": "PHYS26-TS08-04",
@@ -1733,7 +1772,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_8"
     },
     {
       "id": "PHYS26-TM09",
@@ -1777,7 +1817,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_9"
     },
     {
       "id": "PHYS26-TS09-01",
@@ -1822,7 +1863,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_9"
     },
     {
       "id": "PHYS26-TS09-02",
@@ -1867,7 +1909,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_9"
     },
     {
       "id": "PHYS26-TS09-03",
@@ -1912,7 +1955,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_9"
     },
     {
       "id": "PHYS26-TS09-04",
@@ -1957,7 +2001,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_9"
     },
     {
       "id": "PHYS26-TM10",
@@ -1999,7 +2044,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_10"
     },
     {
       "id": "PHYS26-TS10-01",
@@ -2042,7 +2088,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_10"
     },
     {
       "id": "PHYS26-TS10-02",
@@ -2085,7 +2132,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_10"
     },
     {
       "id": "PHYS26-TS10-03",
@@ -2128,7 +2176,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_10"
     },
     {
       "id": "PHYS26-TS10-04",
@@ -2171,7 +2220,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_10"
     },
     {
       "id": "PHYS26-TM11",
@@ -2211,7 +2261,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_11"
     },
     {
       "id": "PHYS26-TS11-01",
@@ -2252,7 +2303,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_11"
     },
     {
       "id": "PHYS26-TS11-02",
@@ -2293,7 +2345,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_11"
     },
     {
       "id": "PHYS26-TS11-03",
@@ -2334,7 +2387,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_11"
     },
     {
       "id": "PHYS26-TS11-04",
@@ -2375,7 +2429,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_11"
     },
     {
       "id": "PHYS26-TM12",
@@ -2416,7 +2471,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_12"
     },
     {
       "id": "PHYS26-TS12-01",
@@ -2458,7 +2514,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_12"
     },
     {
       "id": "PHYS26-TS12-02",
@@ -2500,7 +2557,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_12"
     },
     {
       "id": "PHYS26-TS12-03",
@@ -2542,7 +2600,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_12"
     },
     {
       "id": "PHYS26-TS12-04",
@@ -2584,7 +2643,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_12"
     },
     {
       "id": "PHYS26-TM13",
@@ -2624,7 +2684,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_13"
     },
     {
       "id": "PHYS26-TS13-01",
@@ -2665,7 +2726,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_13"
     },
     {
       "id": "PHYS26-TS13-02",
@@ -2706,7 +2768,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_13"
     },
     {
       "id": "PHYS26-TS13-03",
@@ -2747,7 +2810,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_13"
     },
     {
       "id": "PHYS26-TM14",
@@ -2787,7 +2851,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_14"
     },
     {
       "id": "PHYS26-TS14-01",
@@ -2828,7 +2893,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_14"
     },
     {
       "id": "PHYS26-TS14-02",
@@ -2869,7 +2935,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_14"
     },
     {
       "id": "PHYS26-TS14-03",
@@ -2910,7 +2977,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_14"
     },
     {
       "id": "PHYS26-TM15",
@@ -2950,7 +3018,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_15"
     },
     {
       "id": "PHYS26-TS15-01",
@@ -2991,7 +3060,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_15"
     },
     {
       "id": "PHYS26-TS15-02",
@@ -3032,7 +3102,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_15"
     },
     {
       "id": "PHYS26-TS15-03",
@@ -3073,7 +3144,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_15"
     },
     {
       "id": "PHYS26-TS15-04",
@@ -3114,7 +3186,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_15"
     },
     {
       "id": "PHYS26-TM16",
@@ -3154,7 +3227,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_16"
     },
     {
       "id": "PHYS26-TS16-01",
@@ -3195,7 +3269,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_16"
     },
     {
       "id": "PHYS26-TS16-02",
@@ -3236,7 +3311,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_16"
     },
     {
       "id": "PHYS26-TS16-03",
@@ -3277,7 +3353,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_16"
     },
     {
       "id": "PHYS26-TM17",
@@ -3318,7 +3395,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_17"
     },
     {
       "id": "PHYS26-TS17-01",
@@ -3360,7 +3438,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_17"
     },
     {
       "id": "PHYS26-TS17-02",
@@ -3402,7 +3481,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_17"
     },
     {
       "id": "PHYS26-TS17-03",
@@ -3444,7 +3524,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_17"
     },
     {
       "id": "PHYS26-TS17-04",
@@ -3486,7 +3567,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_17"
     },
     {
       "id": "PHYS26-TM18",
@@ -3527,7 +3609,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_18"
     },
     {
       "id": "PHYS26-TS18-01",
@@ -3569,7 +3652,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_18"
     },
     {
       "id": "PHYS26-TS18-02",
@@ -3611,7 +3695,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_18"
     },
     {
       "id": "PHYS26-TS18-03",
@@ -3653,7 +3738,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_18"
     },
     {
       "id": "PHYS26-TS18-04",
@@ -3695,7 +3781,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_18"
     },
     {
       "id": "PHYS26-TM19",
@@ -3736,7 +3823,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_19"
     },
     {
       "id": "PHYS26-TS19-01",
@@ -3778,7 +3866,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_19"
     },
     {
       "id": "PHYS26-TS19-02",
@@ -3820,7 +3909,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_19"
     },
     {
       "id": "PHYS26-TS19-03",
@@ -3862,7 +3952,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_19"
     },
     {
       "id": "PHYS26-TS19-04",
@@ -3904,7 +3995,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_19"
     },
     {
       "id": "PHYS26-TM20",
@@ -3944,7 +4036,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_20"
     },
     {
       "id": "PHYS26-TS20-01",
@@ -3985,7 +4078,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_20"
     },
     {
       "id": "PHYS26-TS20-02",
@@ -4026,7 +4120,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_20"
     },
     {
       "id": "PHYS26-TS20-03",
@@ -4067,7 +4162,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_20"
     },
     {
       "id": "PHYS26-TM21",
@@ -4107,7 +4203,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_21"
     },
     {
       "id": "PHYS26-TS21-01",
@@ -4148,7 +4245,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_21"
     },
     {
       "id": "PHYS26-TS21-02",
@@ -4189,7 +4287,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_21"
     },
     {
       "id": "PHYS26-TS21-03",
@@ -4230,7 +4329,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_21"
     },
     {
       "id": "PHYS26-TM22",
@@ -4270,7 +4370,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_22"
     },
     {
       "id": "PHYS26-TS22-01",
@@ -4311,7 +4412,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_22"
     },
     {
       "id": "PHYS26-TS22-02",
@@ -4352,7 +4454,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_22"
     },
     {
       "id": "PHYS26-TS22-03",
@@ -4393,7 +4496,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_22"
     },
     {
       "id": "PHYS26-TM23",
@@ -4433,7 +4537,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_23"
     },
     {
       "id": "PHYS26-TS23-01",
@@ -4474,7 +4579,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_23"
     },
     {
       "id": "PHYS26-TS23-02",
@@ -4515,7 +4621,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_23"
     },
     {
       "id": "PHYS26-TS23-03",
@@ -4556,7 +4663,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_23"
     },
     {
       "id": "PHYS26-TM24",
@@ -4596,7 +4704,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_24"
     },
     {
       "id": "PHYS26-TS24-01",
@@ -4637,7 +4746,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_24"
     },
     {
       "id": "PHYS26-TS24-02",
@@ -4678,7 +4788,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_24"
     },
     {
       "id": "PHYS26-TS24-03",
@@ -4719,7 +4830,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_24"
     },
     {
       "id": "PHYS26-TM25",
@@ -4759,7 +4871,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_25"
     },
     {
       "id": "PHYS26-TS25-01",
@@ -4800,7 +4913,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_25"
     },
     {
       "id": "PHYS26-TS25-02",
@@ -4841,7 +4955,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_25"
     },
     {
       "id": "PHYS26-TS25-03",
@@ -4882,7 +4997,8 @@
           "source_page_reference"
         ],
         "sourceText": null
-      }
+      },
+      "plannedSectionId": "sec_sub_physics_25"
     }
   ]
 }
