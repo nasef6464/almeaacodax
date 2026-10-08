@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN066",
+  "source": "Run063 Library verified prior master record",
+  "stage": "QUESTION_MASTERING_PAYLOAD_SYNC",
+  "sourceKey": "MNSF26-AR-T007-Q18",
+  "record": {
+    "sourceKey": "MNSF26-AR-T007-Q18",
+    "sourceProvenance": {
+      "sourcePart": "الحساب/الجبر",
+      "bookCode": "AR",
+      "sourceBook": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+      "testNumber": 7,
+      "pdfPage": 13,
+      "sourceSkillLabel": "العمليات على الاعداد",
+      "sourceTopic": "direct visual mathematical classification",
+      "sourceLesson": "AR T007 Q18",
+      "printedQuestionNumber": 18,
+      "cropFile": "AR/AR-T007-Q18.webp",
+      "cropSha256": "980661db18f7b069d36f338ad20f7f6fa5803e5a2c5c1344a086be7869d1fba6"
+    },
+    "imageHash": "980661db18f7b069d36f338ad20f7f6fa5803e5a2c5c1344a086be7869d1fba6",
+    "visualEvidence": "RUN063_DIRECT_RUN017_WEBP_VISUAL_INSPECTION",
+    "status": "MASTERED",
+    "questionText": "أي عملية من الخيارات نتيجتها 7؟",
+    "canonicalMainSkill": "skill_quant_01",
+    "canonicalSubskill": "sub_quant_01_4",
+    "correctAnswer": "أ — 91÷13",
+    "stepByStepSolution": "91÷13=7، بينما بقية القيم لا تساوي7.",
+    "educationalExplanation": "91÷13=7، بينما بقية القيم لا تساوي7.",
+    "difficulty": "Easy",
+    "difficultyReason": "يتطلب عملية مباشرة.",
+    "contentFingerprint": "0f1f2223fa31c79ae240f99dd5aac703c5e986f940b5b692bc5c52480768e510",
+    "ideaFingerprint": "b1d0dc9e7e081ff2d0c6d6059d90bdffefc84bac39a87ca2e00b1d97777084ca"
+  }
+}
