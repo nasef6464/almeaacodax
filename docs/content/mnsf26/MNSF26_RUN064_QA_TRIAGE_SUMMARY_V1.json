@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN064",
+  "stage": "QA_LOCK",
+  "method": "Non-authoritative text-field triage; not independent source-image semantic PASS",
+  "masteredLibraryRecordsChecked": 1740,
+  "missingOptionalQuestionText": 287,
+  "solutionIdenticalToEducationalExplanation": 428,
+  "numericAnswerTextMismatchHeuristicCandidates": 134,
+  "invalidFingerprintFormat": 0,
+  "invalidDifficultyEnum": 0,
+  "interpretation": "Heuristic candidates are not confirmed errors; formatting and Arabic numeral boundaries produce false positives. Each flagged case still requires direct source-image review.",
+  "fullBookQAPass": false,
+  "productionUntouched": true
+}
