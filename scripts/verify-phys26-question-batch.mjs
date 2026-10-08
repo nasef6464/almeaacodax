@@ -48,9 +48,9 @@ for(const [index,q] of batch.items.entries()){
  check(q.visualQA?.verified===true&&q.visualQA?.oneQuestionOnly===true&&q.visualQA?.optionsVisible===true&&q.visualQA?.notCutOff===true&&String(q.visualQA?.reviewerNotes||"").trim().length>=12,"crop QA missing");
  const imageFile=String(q.imageFileName||"");
  const imageHash=String(meta.imageHash||"").toLowerCase();
- check(/^[\\w-]+\\.webp$/i.test(imageFile)&&path.basename(imageFile)===imageFile,"image filename invalid");
+ check(/^[\w-]+\.webp$/i.test(imageFile)&&path.basename(imageFile)===imageFile,"image filename invalid");
  check(/^[a-f0-9]{64}$/.test(imageHash),"image SHA256 missing");
- if(/^[\\w-]+\\.webp$/i.test(imageFile)){
+ if(/^[\w-]+\.webp$/i.test(imageFile)){
   const imagePath=path.join(path.dirname(path.resolve(input)),"images",imageFile);
   check(fs.existsSync(imagePath),"image file missing");
   if(fs.existsSync(imagePath))check(createHash("sha256").update(fs.readFileSync(imagePath)).digest("hex")===imageHash,"image bytes SHA mismatch");
