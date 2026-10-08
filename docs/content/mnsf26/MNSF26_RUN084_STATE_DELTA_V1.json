@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN084",
+  "stage": "QA_LOCK",
+  "officialStateReviewed": 1916,
+  "latestReconciledReviewedProvisional": 2124,
+  "totalActive": 2129,
+  "remainingProvisional": 5,
+  "newUniqueQA": 0,
+  "sourceImagesReinspected": 6,
+  "run048OriginalMasterFilesAudited": 12,
+  "masteredAliasNormalizedInSeparateCopies": 219,
+  "holdsUnchanged": 19,
+  "mathAnswerSolutionFingerprintsUnchanged": true,
+  "sourceImageHashMismatches": 0,
+  "newSemanticTaxonomyReviewKeys": [
+    "MNSF26-AR-T032-Q09",
+    "MNSF26-AR-T035-Q07",
+    "MNSF26-AR-T036-Q07"
+  ],
+  "normalizedArchiveSHA256": "8a01b9722c88dd15442a59dbd91a654908aee6bdf8bea1378fb02f9e46e31492",
+  "sourceKeyReindexRequired": true,
+  "qaFullBookPass": false,
+  "productionE2E": false,
+  "cropLock": "PASS_LOCKED_2135_2135",
+  "officialStateUpdate": "BLOCKED_BY_SAFETY_CHECKS",
+  "sourceSummary": "MNSF26_RUN084_QA_ALIAS_NORMALIZATION_SUMMARY_V1.json"
+}
