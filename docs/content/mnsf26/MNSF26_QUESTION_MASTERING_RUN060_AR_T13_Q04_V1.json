@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN060_AR_T13_RECOVERY",
+  "previouslyCounted": true,
+  "records": [
+    {
+      "id": "MNSF26-AR-T013-Q04",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T013",
+        "sourceLesson": "الأعداد الأولية - العوامل الأولى"
+      },
+      "canonicalMainSkill": "skill_quant_02",
+      "canonicalSubskill": "sub_quant_02_1",
+      "correctAnswer": "ب",
+      "answerValue": "24",
+      "stepByStepSolution": "أصغر عدد أقلام يساوي عدد الدفاتر يجب أن يكون مضاعفًا لـ12 و8؛ م.م.أ(12،8)=24.",
+      "educationalExplanation": "نستخدم المضاعف المشترك الأصغر لتوحيد عدد محتويات العلب.",
+      "difficulty": "Medium",
+      "difficultyReason": "تطبيق م.م.أ في مسألة لفظية.",
+      "imageHash": "92e0265cbadd7f23d057c26e25e60e59e9a831057e9a22390a45ab0c2408805d",
+      "contentFingerprint": "5fb39e0d6f30fc11acdd7340d9f8eba06eaf2119977ba7a4b2b6e00e27e9602e",
+      "ideaFingerprint": "d1b198b7c778856293f55805273c52b090d1dc84155c57e21902ae2e99ccd3d5",
+      "status": "MASTERED"
+    }
+  ]
+}
