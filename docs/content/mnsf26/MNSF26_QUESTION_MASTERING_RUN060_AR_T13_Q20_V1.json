@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN060_AR_T13_RECOVERY",
+  "previouslyCounted": true,
+  "records": [
+    {
+      "id": "MNSF26-AR-T013-Q20",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T013",
+        "sourceLesson": "الأعداد الأولية - العوامل الأولى"
+      },
+      "canonicalMainSkill": "skill_quant_08",
+      "canonicalSubskill": "sub_quant_08_1",
+      "correctAnswer": "ج",
+      "answerValue": "20",
+      "stepByStepSolution": "النسبة 5:3، فليكن العددان 5ك و3ك. م.م.أ لهما=15ك=60 ⇒ ك=4، فالعددان20 و12، والأكبر20.",
+      "educationalExplanation": "نمثل العددين بالنسبة ثم نستخدم شرط المضاعف المشترك الأصغر لإيجاد عامل القياس.",
+      "difficulty": "Hard",
+      "difficultyReason": "يجمع النسبة مع م.م.أ.",
+      "imageHash": "f00c7c44cf1ed14d50ba122f2af2c7ad5b147866fc61d8f189348f8291fed8ff",
+      "contentFingerprint": "a0503f60dde4612d58216e44f5d0f1d42dfdbd1d6434feaa7973ac899829447d",
+      "ideaFingerprint": "8bf71e28406f54ba9cc92832c54a6831d6d57ee34f874b00a11cbeb90cc502d3",
+      "status": "MASTERED"
+    }
+  ]
+}
