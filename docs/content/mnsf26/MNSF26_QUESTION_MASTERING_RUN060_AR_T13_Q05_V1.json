@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN060_AR_T13_RECOVERY",
+  "previouslyCounted": true,
+  "records": [
+    {
+      "id": "MNSF26-AR-T013-Q05",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T013",
+        "sourceLesson": "الأعداد الأولية - العوامل الأولى"
+      },
+      "canonicalMainSkill": "skill_quant_07",
+      "canonicalSubskill": "sub_quant_07_2",
+      "correctAnswer": "أ",
+      "answerValue": "48 طالبًا",
+      "stepByStepSolution": "إذا كان عدد الطاولات ط: عدد الطلاب=4(ط−3)، وبالجلوس 3 لكل طاولة يبقى 3 بلا مكان: العدد=3ط+3. بالمساواة ط=15 والطلاب=48.",
+      "educationalExplanation": "نحوّل الحالتين إلى معادلتين لنفس عدد الطلاب.",
+      "difficulty": "Hard",
+      "difficultyReason": "نمذجة حالتين لفظيتين بمعادلة.",
+      "imageHash": "ce0e633033def5563831ae6b5bb129d7f12348640c873531982b6f04b0da7aae",
+      "contentFingerprint": "60947a8439689e1e86b987b2d40377afb9c980cfe82ce08cc947d3abb66e0530",
+      "ideaFingerprint": "beb02f4609eba10b91ddd0c352c509c27a8636f87a4d9b76a88023e2729c1d1d",
+      "status": "MASTERED"
+    }
+  ]
+}
