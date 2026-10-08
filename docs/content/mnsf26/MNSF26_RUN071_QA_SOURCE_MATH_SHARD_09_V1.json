@@ -1,0 +1,1 @@
+{"bank":"MNSF26","run":"RUN071","rows":[{"key":"MNSF26-GEO-T020-Q19","imageHash":"7d9161065914208e580846ca9e1dae541b1a8c169cc10642479f5e5e118700bf","expected":"ب","proof":"For equilateral side L>altitude H and square side s, two side areas=s(L-s)/2 exceed top area=s(H-s)/2.","status":"PASS"}]}
