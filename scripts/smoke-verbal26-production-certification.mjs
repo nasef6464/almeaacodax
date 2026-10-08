@@ -108,9 +108,12 @@ try {
   assert(Object.keys(coverage.sectionQuestionCounts || {}).length === 22, "section question coverage does not include all 22 main skills");
 
   const canonicalInventory = [];
-  for (let page = 1; page <= 11; page += 1) {
+  for (let page = 1; page <= 100; page += 1) {
     const pageResponse = await req(`/quizzes/questions?${canonicalQuery}&limit=100&page=${page}&paginate=true`, { token: admin.token });
-    canonicalInventory.push(...asArray(pageResponse.body));
+    const pageItems = asArray(pageResponse.body);
+    canonicalInventory.push(...pageItems);
+    const pagination = pageResponse.body?.pagination || {};
+    if (pagination.hasNext === false || pageItems.length === 0) break;
   }
   const canonicalIds = new Set(canonicalInventory.map((q) => String(q?.id || q?._id || q?.canonicalId || "")).filter(Boolean));
   assert(canonicalIds.size === 1050, `canonical inventory unique IDs mismatch: ${canonicalIds.size}/1050`);
