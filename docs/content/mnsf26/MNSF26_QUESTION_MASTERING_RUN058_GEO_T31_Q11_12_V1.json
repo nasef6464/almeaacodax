@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN058_GEO_T31_LIBRARY_RECONCILIATION",
+  "records": [
+    {
+      "sourceKey": "MNSF26-GEO-T031-Q11",
+      "sourceProvenance": {
+        "sourcePart": "الهندسة",
+        "bookCode": "GEO",
+        "testNumber": 31,
+        "pdfPage": 60,
+        "sourceSkillLabel": "المساحات المظللة",
+        "sourceTopic": "المساحات المظللة",
+        "sourceLesson": "الدرس الثامن: المساحات المظللة",
+        "printedQuestionNumber": 11,
+        "cropFile": "MNSF26-GEO-T031-Q11.webp",
+        "cropSha256": "6f9a27537050d71cf929c5c42a096d1e92f75e1e20af4064ac1f2aed373b1e02",
+        "cropContract": "EMBEDDED_XOBJECT_OR_EXACT_COMPOSITE_SLICE"
+      },
+      "imageHash": "6f9a27537050d71cf929c5c42a096d1e92f75e1e20af4064ac1f2aed373b1e02",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN052_2026-10-08_T31_Q11",
+      "status": "MASTERED",
+      "questionText": "مستطيل فيه شبه منحرف مظلل قاعدتاه المتوازيتان 2 و4، ومساحة المظلل 12؛ وعرض المستطيل 8؛ احسب مساحة المستطيل.",
+      "canonicalMainSkill": "main_quant_24",
+      "canonicalSubskill": "sub_quant_24_3",
+      "correctAnswer": "32",
+      "stepByStepSolution": "مساحة شبه المنحرف=(2+4)×الارتفاع÷2=3h=12، إذن h=4. عرض المستطيل=4+4=8، فمساحته=8×4=32.",
+      "educationalExplanation": "تُحل المسألة بتحديد الأجزاء المظللة في الصورة، ثم مساحة شبه المنحرف=(2+4)×الارتفاع÷2=3h=12، إذن h=4. عرض المستطيل=4+4=8، فمساحته=8×4=32.",
+      "difficulty": "Hard",
+      "difficultyReason": "يتطلب استخراج ارتفاع مستطيل من مساحة شبه منحرف عبر استنتاجات هندسية متتابعة.",
+      "contentFingerprint": "1f9f1973f511b1b6c8e2d0b881bb31e9e044df8325893b093772c98e6713da94",
+      "ideaFingerprint": "f9ba812927a44d133610336aeebd061f58b77a94912d8ba10adf996031eb324d"
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T031-Q12",
+      "sourceProvenance": {
+        "sourcePart": "الهندسة",
+        "bookCode": "GEO",
+        "testNumber": 31,
+        "pdfPage": 60,
+        "sourceSkillLabel": "المساحات المظللة",
+        "sourceTopic": "المساحات المظللة",
+        "sourceLesson": "الدرس الثامن: المساحات المظللة",
+        "printedQuestionNumber": 12,
+        "cropFile": "MNSF26-GEO-T031-Q12.webp",
+        "cropSha256": "5542018ebf6a99ae2dabc1a6f054c59ff5c2bd837858af55c3f122b09d9e17eb",
+        "cropContract": "EMBEDDED_XOBJECT_OR_EXACT_COMPOSITE_SLICE"
+      },
+      "imageHash": "5542018ebf6a99ae2dabc1a6f054c59ff5c2bd837858af55c3f122b09d9e17eb",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN052_2026-10-08_T31_Q12",
+      "status": "HOLD",
+      "questionText": "أوجد زاوية الجزء المظلل من دائرة مقسمة إلى قطاعات.",
+      "canonicalMainSkill": null,
+      "canonicalSubskill": null,
+      "correctAnswer": null,
+      "stepByStepSolution": null,
+      "educationalExplanation": null,
+      "difficulty": null,
+      "difficultyReason": null,
+      "contentFingerprint": "b11f680671f09eef7b293b84349223f8fd967007f18c5baed9269ff8f8b5ecc0",
+      "ideaFingerprint": "9063c36ea0354363708c000b627c37b6d21761d970264229e3a3cf045908f9fc",
+      "holdReason": "عدد القطاعات وزوايا الحدود المظللة غير محدد نصيًا بما يكفي لتعيين أحد الخيارات بلا افتراض تساويها."
+    }
+  ]
+}
