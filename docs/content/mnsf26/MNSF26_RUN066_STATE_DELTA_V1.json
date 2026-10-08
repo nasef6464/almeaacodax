@@ -1,0 +1,12 @@
+{
+  "bank": "MNSF26",
+  "run": "RUN066",
+  "stage": "QA_LOCK",
+  "independentQAReviewed": 439,
+  "independentQARemaining": 1690,
+  "newVisualScreened": 403,
+  "newQAPass": 50,
+  "newHoldPreserved": 74,
+  "screenedPendingReview": 279,
+  "evidence": "MNSF26_RUN066_GEO_SOURCEKEY_VERDICTS_V1.json"
+}
