@@ -1,0 +1,60 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN088",
+  "stage": "QA_LOCK",
+  "exactBranchHeadAtStart": "d381d12bba9d9ec95f5fe8bb2117a13753c663e3",
+  "mainHeadAtStart": "7e3043346bd0ed0ea6c31aba7faa191405b32c69",
+  "headAfterVerifiedWrite": "06ec87d3e0bd7bedbf401c64a90a8cb9eae9214e",
+  "source": "RUN087 95 original-image QA + RUN054 original master JSON + RUN087 contact-sheet direct image recheck",
+  "imageReviewedKeys": [
+    "MNSF26-GEO-T009-Q17",
+    "MNSF26-GEO-T010-Q15",
+    "MNSF26-GEO-T012-Q14",
+    "MNSF26-GEO-T017-Q15"
+  ],
+  "imageReinspectionDistinctNewMastered": 0,
+  "correctedSourceMasterRecordsCommitted": 1,
+  "correctedKey": "MNSF26-GEO-T010-Q15",
+  "correctedAnswer": "القيمة الثانية أكبر (ب)",
+  "correctedStatus": "REVIEW",
+  "correctedSourceMasterCommit": "06ec87d3e0bd7bedbf401c64a90a8cb9eae9214e",
+  "aliasesNormalizedInCommittedMasterFile": 19,
+  "masterFileCountAfterCorrection": {
+    "mastered": 18,
+    "holdReview": 2,
+    "total": 20
+  },
+  "sourceConflictsAwaitingSafeWrite": [
+    "MNSF26-GEO-T009-Q17",
+    "MNSF26-GEO-T012-Q14",
+    "MNSF26-GEO-T017-Q15"
+  ],
+  "sourceConflictCorrectAnswers": {
+    "MNSF26-GEO-T009-Q17": "270 (ج)",
+    "MNSF26-GEO-T012-Q14": "90 (ج)",
+    "MNSF26-GEO-T017-Q15": "120 (أ)"
+  },
+  "blocker": "GitHub update_file safety checks rejected 3 independent master-file writes; no bypass; continue with safe state-delta",
+  "fingerprints": "Preserved existing source fingerprints in corrected REVIEW record; revalidation required before MASTERED",
+  "canonicalTaxonomy": "Alias normalized structurally for 19 records in T10; 25/95 semantic mapping still pending",
+  "qaFullBookPass": false,
+  "qaOfficialCounterIncrement": 0,
+  "qaProvisionalCounterIncrement": 0,
+  "cropLock": "PASS_LOCKED_2135/2135",
+  "dedupeLock": "BLOCKED_BY_QA",
+  "r2UploadLock": "BLOCKED",
+  "importLock": "BLOCKED",
+  "productionE2ELock": "BLOCKED",
+  "productionServicesUntouched": true,
+  "preserved": [
+    "P001/Q10 HOLD",
+    "P013/Q15 HOLD",
+    "P014/Q08 quarantine",
+    "5 suppressions",
+    "P011/Q19=B",
+    "AR test33 source absent",
+    "GEO T24/Q18 source absent",
+    "130 legacy not remastered"
+  ]
+}
