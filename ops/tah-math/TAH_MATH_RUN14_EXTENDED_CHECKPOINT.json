@@ -1,0 +1,17 @@
+{
+  "project": "TAH-MATH",
+  "run": "2026-10-08-heavy-run14-extended",
+  "status": "IN_PROGRESS",
+  "newSourceOptionGeometryRows": 504,
+  "cumulativeSourceOptionRegionRows": 993,
+  "priorRasterVisualRows": 19,
+  "sourceGeometryOrRasterCoverage": 1012,
+  "independentMathRows": 12,
+  "sourceRemapCandidates": 48,
+  "knownPriorAnomalies": 33,
+  "fullPedagogy": "OPEN",
+  "YLM26FullPedagogy": "OPEN",
+  "COL26OLD": "PENDING",
+  "productionMutation": false,
+  "evidenceZipSha256": "9d5c8968edd328990c86f870f77d174dd070367c64a7f6bb4a783066a4c01c0e"
+}
