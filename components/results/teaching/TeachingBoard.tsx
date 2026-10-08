@@ -2,6 +2,7 @@ import React from 'react';
 import katex from 'katex';
 import 'katex/dist/katex.min.css';
 import type { BoardElement } from './boardState';
+import { spokenTeachingText } from './spokenMath';
 
 const Formula: React.FC<{ content: string }> = ({ content }) => {
   const html = React.useMemo(() => {
@@ -41,7 +42,7 @@ export const TeachingBoard: React.FC<{ elements: BoardElement[]; narration: stri
         </div>
       ))}
     </div>
-    <p className="border-t border-slate-700 pt-4 text-base leading-8 text-slate-300" aria-live="polite" aria-atomic="true">{narration}</p>
+    <p className="border-t border-slate-700 pt-4 text-base leading-8 text-slate-300" aria-live="polite" aria-atomic="true">{spokenTeachingText(narration, language)}</p>
     <style>{`.teaching-writing{clip-path:inset(0 calc(100% - var(--reveal)) 0 0)}.teaching-writing-rtl{clip-path:inset(0 0 0 calc(100% - var(--reveal)))}@media(prefers-reduced-motion:reduce){.teaching-writing{clip-path:none}}`}</style>
   </div>
 );

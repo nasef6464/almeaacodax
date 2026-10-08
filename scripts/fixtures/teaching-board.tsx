@@ -20,7 +20,7 @@ Object.defineProperty(window,'speechSynthesis',{value:{speak:(u:any)=>(window as
 await new Promise(resolve=>setTimeout(resolve,100));
 if ((window as any).testFallback) return {text:'الشرح المعتمد الحالي',storyboard:{version:99}};
 if ((window as any).testFailure && payload.boardContext) throw new Error('تعذر مراجعة المحاولة');
-if ((window as any).testMixed) return {text:'نراجع الناتج.',storyboard:{version:1,language:'ar-SA',scenes:[{id:'mixed',narration:'نراجع الناتج.',actions:[
+if ((window as any).testMixed) return {text:'نراجع الناتج.',storyboard:{version:1,language:'ar-SA',scenes:[{id:'mixed',narration:'نضرب 2 \\times 5 = 10.',actions:[
   {type:'write',id:'arabic',kind:'formula',content:'الخطوة 1: نضرب الآحاد.\\\\$2 \\times 5 = 10$\\\\آحاد الناتج هو صفر.'},
   {type:'write',id:'english',kind:'formula',content:'Step 1: Multiply: 2 \\times 5 = 10.Step 2: Multiply: 0 \\times 8 = 0.'},
   {type:'write',id:'reply',kind:'text',content:'العملية هي \\textbf{ضرب}.\\nركز على الآحاد.'},

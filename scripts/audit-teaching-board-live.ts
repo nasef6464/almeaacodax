@@ -8,6 +8,7 @@ const credentialPath = argument('credentials');
 const expected = argument('expected-sha');
 const base = (argument('api-base') || 'https://almeaacodax.vercel.app/api').replace(/\/$/, '');
 const out = argument('output') || 'scratch/teaching-board-live.json';
+const questionCode = argument('question-code');
 if (!credentialPath || !expected) throw new Error('--credentials and --expected-sha are required');
 if (!base.startsWith('https://') && !/^http:\/\/(127\.0\.0\.1|localhost)(:|\/)/.test(base)) throw new Error('Use HTTPS or a local API');
 const credentials = require('dotenv').parse(fs.readFileSync(credentialPath));
@@ -29,6 +30,7 @@ if (login.status !== 200 || login.body.user?.role !== 'admin') throw new Error('
 const headers = { 'Content-Type': 'application/json', 'x-csrf-token': csrf.body.csrfToken, cookie: [csrf.cookie, login.cookie].join('; ') };
 const library = await request('/review/library?tab=all&limit=20', { headers });
 const target = library.body.items?.find((item: any) => (item.reasons?.saved || item.reasons?.mistake) &&
+  (!questionCode || item.question?.questionCode === questionCode) &&
   (item.question?.voiceExplanation?.text || item.question?.hint || item.question?.solvingStrategy || item.question?.explanation));
 if (library.status !== 200 || !target) throw new Error('No existing owned review with a trusted explanation; no production record was created');
 const context = target.reasons.saved ? 'saved_review' : 'mistake_review';
