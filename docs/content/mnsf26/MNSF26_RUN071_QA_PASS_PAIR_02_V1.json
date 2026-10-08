@@ -1,0 +1,23 @@
+{
+  "bank": "MNSF26",
+  "run": "RUN071",
+  "stage": "QA_LOCK",
+  "source": "Run021 original images; Run066 SHA-verified visual contact sheets",
+  "rows": [
+    {
+      "key": "MNSF26-GEO-T002-Q08",
+      "imageHash": "9ac908cf19e7e90787abd83ffde4e74eb555e0d5d481b83a482079a9bdc13c29",
+      "expected": "ج",
+      "proof": "58-29=29, equal distances.",
+      "verdict": "REINSPECTED_NOT_COUNTED"
+    },
+    {
+      "key": "MNSF26-GEO-T006-Q05",
+      "imageHash": "763287f1b411fac43d973189733bee47475c9249680895ff4b218cabc33f6a15",
+      "expected": "ب",
+      "proof": "Exterior angles total 180+50=230.",
+      "verdict": "QA_PASS"
+    }
+  ],
+  "qaFullBookPass": false
+}
