@@ -61,7 +61,14 @@ const Favorites: React.FC = () => {
         <Link to="/dashboard" className="text-gray-500 hover:text-gray-700"><ArrowRight /></Link>
         <div><h1 className="text-xl sm:text-2xl font-black text-emerald-700">أسئلتي للمراجعة</h1><p className="mt-1 text-xs sm:text-sm text-gray-500">المحفوظة والأخطاء في مكان واحد.</p></div>
       </div>
-      <Link to={`/review?mode=${activeTab}`} className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-2 text-sm font-black text-white hover:bg-emerald-700"><Sparkles size={16}/>تدرّب على هذه الأسئلة</Link>
+      <Link
+        to={`/review?mode=${activeTab}`}
+        className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-2 text-sm font-black text-white hover:bg-emerald-700 shadow-xs"
+        title="بدء جلسة تدريب حر غير مسجلة رسمياً"
+      >
+        <Sparkles size={16}/>
+        تدرّب على هذه الأسئلة (اختبار تدريبي 🎯)
+      </Link>
     </header>
     <div className="grid grid-cols-2 gap-2 rounded-2xl bg-gray-100 p-1">
       {(Object.keys(tabMeta) as ReviewTab[]).map(tab => <button key={tab} onClick={() => setActiveTab(tab)} className={`rounded-xl px-3 py-2 text-sm font-black transition ${activeTab===tab?'bg-white text-indigo-700 shadow-sm':'text-gray-500'}`}>{tabMeta[tab].label} <span className="mr-1 text-xs">({counts[tab]})</span></button>)}
