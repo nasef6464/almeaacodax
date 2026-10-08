@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN060_AR_T12_RECOVERY",
+  "previouslyCounted": true,
+  "records": [
+    {
+      "id": "MNSF26-AR-T012-Q06",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T012",
+        "sourceLesson": "الأعداد الأولية - العوامل الأولى"
+      },
+      "canonicalMainSkill": "skill_quant_02",
+      "canonicalSubskill": "sub_quant_02_3",
+      "correctAnswer": "ب",
+      "answerValue": "القيمة الثانية أكبر",
+      "stepByStepSolution": "الأعداد الأولية بين 50 و64 هي 53 و59 و61؛ الأكبر 61، و63>61.",
+      "educationalExplanation": "نحدد أكبر عدد أولي في المدى ثم نقارن.",
+      "difficulty": "Easy",
+      "difficultyReason": "فحص أعداد أولية ضمن مدى قصير.",
+      "imageHash": "1b4c46d353c39ddaa9b6363b7f4ce9336c5f2339a983f1eeca2b9beaf8d042e6",
+      "contentFingerprint": "c8db0fe046b2752f693a39e3ff64c2411067f8c23336ec727de6f9cd0f8b715e",
+      "ideaFingerprint": "c2a83e0daebad85e7f9ef67a2c4244c10147d90f63f59fa5ca7c03f110bc52e3",
+      "status": "MASTERED"
+    }
+  ]
+}
