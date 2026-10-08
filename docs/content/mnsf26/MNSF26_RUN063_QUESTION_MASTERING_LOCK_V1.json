@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN063",
+  "stage": "QUESTION_MASTERING",
+  "stageStatus": "PASS_LOCKED_IN_LIBRARY_DELTA",
+  "date": "2026-10-08",
+  "sourceKeyIndex": "MNSF26_RUN063_CANONICAL_SOURCEKEY_INDEX_V1.json",
+  "sourceKeyIndexSha256": "9aebe074865fedf4a63b9f89ae768012ca2f2f03d9977f1daf87aebfe1f67aac",
+  "exactHeads": {
+    "chatgpt/mnsf26-ingest": "541e9ce4dc02dbdafec5d59dcb5d6934a8619276",
+    "main": "f40a785ee777a0be16e48f70727793e8f9ee0695"
+  },
+  "cropLock": {
+    "status": "PASS_LOCKED",
+    "total": 2135,
+    "arithmetic": 1204,
+    "geometry": 931,
+    "knownDefects": [
+      "MNSF26-AR-T003-Q13",
+      "MNSF26-AR-T003-Q14",
+      "MNSF26-AR-T013-Q13"
+    ],
+    "defectHandling": "HOLD until source-crop repair approved; do not recrop unrelated questions"
+  },
+  "questionMastering": {
+    "expected": 2135,
+    "uniqueActiveFullPayload": 2129,
+    "mastered": 1777,
+    "hold": 319,
+    "review": 33,
+    "excludedSuppressions": 5,
+    "excludedQuarantine": 1,
+    "libraryPayloads": 2091,
+    "githubOnlyPayloads": 38,
+    "missingSourceKeys": 0,
+    "missingMasterRequiredFields": 0,
+    "sourceImageHashMismatches": 0,
+    "canonicalSkillMismatchesAfterApprovedAliasNormalization": 0,
+    "historicalConflictResolutions": 17,
+    "canonicalAliasRule": "main_quant_NN => skill_quant_NN only when existing sub_quant_NN_X belongs to same canonical 25/95 taxonomy",
+    "targetedSkillRepair": "MNSF26-GEO-T033-Q10: skill_quant_23/sub_quant_23_2"
+  },
+  "previousOfficialCounters": {
+    "mastered": 1773,
+    "holdReview": 359,
+    "totalApparent": 2132,
+    "notCanonical": true
+  },
+  "lockEvidence": [
+    "Run062 fullbook reconciliation",
+    "Run063 139 Library master files structural audit",
+    "Run063 115 new local full records",
+    "Run063 10 new Github full records",
+    "Run063 28 Github-only full records",
+    "Run063 17 conflict adjudications",
+    "Run063 6 source exclusions",
+    "Run063 canonical source-key index"
+  ],
+  "pendingGithubSync": true,
+  "noForceNoProtectionBypass": true,
+  "qaLock": "IN_PROGRESS",
+  "dedupeLock": "NOT_STARTED",
+  "r2UploadLock": "NOT_STARTED",
+  "importLock": "NOT_STARTED",
+  "productionE2ELock": "NOT_STARTED",
+  "productionServicesUntouched": true
+}
