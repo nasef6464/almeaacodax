@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN060_AR_T16_LIBRARY_PAYLOAD_RECOVERY",
+  "previouslyCounted": true,
+  "records": [
+    {
+      "id": "MNSF26-AR-T016-Q17",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T016",
+        "sourceLesson": "جمع الأعداد - المتتابعات - ضرب الأعداد"
+      },
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_3",
+      "correctAnswer": "أ",
+      "answerValue": "القيمة الأولى أكبر",
+      "stepByStepSolution": "الإيرادات 500،1000،1500 بفرق ثابت 500؛ اليوم الخامس = 2500، وهو أكبر من 2000.",
+      "educationalExplanation": "نمد المتتابعة الحسابية بنفس الفرق ثم نقارن القيمة المطلوبة.",
+      "difficulty": "Easy",
+      "difficultyReason": "فرق ثابت ظاهر ومقارنة مباشرة بعد التمديد.",
+      "imageHash": "b1589550417518e56704eb8e6c2a9bfa59992a4a7d82f93cd33c1d53090b0428",
+      "contentFingerprint": "b6ecead5acd8ecfebc0f2208d768181d54499c11e9357b4bd45e6e6baa4d9638",
+      "ideaFingerprint": "916c7d05c029e40a339a9d4ae4d52568e6bd2e1416de1fdf09dc65d81090f8cd",
+      "status": "MASTERED"
+    },
+    {
+      "id": "MNSF26-AR-T016-Q18",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T016",
+        "sourceLesson": "جمع الأعداد - المتتابعات - ضرب الأعداد"
+      },
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_3",
+      "correctAnswer": "د",
+      "answerValue": "16",
+      "stepByStepSolution": "لنفرض صفحات اليوم الأول = أ. خلال 6 أيام: أ+(أ+5)+...+(أ+25)=111، أي 6أ+75=111، ومنه أ=6. اليوم الثالث=16.",
+      "educationalExplanation": "عدد الصفحات اليومي متتابعة حسابية فرقها 5؛ نستخرج الحد الأول من مجموع ستة حدود ثم نحسب الثالث.",
+      "difficulty": "Medium",
+      "difficultyReason": "يتطلب بناء مجموع متتابعة ثم حل معادلة بسيطة.",
+      "imageHash": "a768f94655900b58371816784014671be6dbec9d3a9928b579e755cd339f1df4",
+      "contentFingerprint": "2ec4b54d916a48cd95ee59261e33023cb6cb9a67ca957d2b70eb0d45a93061a9",
+      "ideaFingerprint": "b324e193a4c8ccd346f109bd39ef51f945e23d7f7dd1ba6fbf70e4069b20d31f",
+      "status": "MASTERED"
+    },
+    {
+      "id": "MNSF26-AR-T016-Q19",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T016",
+        "sourceLesson": "جمع الأعداد - المتتابعات - ضرب الأعداد"
+      },
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_3",
+      "correctAnswer": "ب",
+      "answerValue": "33",
+      "stepByStepSolution": "من نفس المعطيات: اليوم الأول 6 صفحات، ثم 11، ثم 16؛ مجموع الأيام الثلاثة الأولى = 33.",
+      "educationalExplanation": "نستخرج الحد الأول من مجموع الأيام الستة ثم نجمع أول ثلاثة حدود.",
+      "difficulty": "Medium",
+      "difficultyReason": "يتطلب استنتاج الحد الأول قبل حساب مجموع جزئي.",
+      "imageHash": "f85359e47666f0d89a0161c96788275a430f3181934d6f18627a999540bbdb2d",
+      "contentFingerprint": "de8ca545997247e5ccd906c7624ecec7c771274fbc99d224c23c779a30c0ba9b",
+      "ideaFingerprint": "357f4a97a3153c1458e97d2ef8c059e5908be0b107ba3ed5ec8553f5e8beff06",
+      "status": "MASTERED"
+    },
+    {
+      "id": "MNSF26-AR-T016-Q20",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T016",
+        "sourceLesson": "جمع الأعداد - المتتابعات - ضرب الأعداد"
+      },
+      "canonicalMainSkill": "skill_quant_07",
+      "canonicalSubskill": "sub_quant_07_2",
+      "correctAnswer": "ب",
+      "answerValue": "4",
+      "stepByStepSolution": "إذا كان س عدد مجموعات الخمس وي عدد مجموعات السبع: 5س+7ي=63. بفحص القيم الصحيحة غير السالبة من الخيارات، ي=4 يعطي 63-28=35=5×7، إذن عدد مجموعات السبع 4.",
+      "educationalExplanation": "نحوّل توزيع الورود إلى معادلة خطية صحيحة ونختبر القيمة التي تجعل الباقي قابلًا للقسمة على 5.",
+      "difficulty": "Medium",
+      "difficultyReason": "مسألة لفظية تتطلب نمذجة بمعادلة صحيحة والتحقق من شرط القسمة.",
+      "imageHash": "3a7bf5450fe42dafc108cc79ad01051757fe533f626760b068dfde0dee246971",
+      "contentFingerprint": "c290b91ff6f78b293676559b66f227e6d87faf8fc165f851948268f6fe41a8b7",
+      "ideaFingerprint": "5e6a0521c0f79e37c5eef32fb5aed4a03d52cf71f0ea98c2c3626c158f15c762",
+      "status": "MASTERED"
+    }
+  ]
+}
