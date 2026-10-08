@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN060_AR_T14_LIBRARY_PAYLOAD_RECOVERY",
+  "previouslyCounted": true,
+  "records": [
+    {
+      "id": "MNSF26-AR-T014-Q05",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T014",
+        "sourceLesson": "الأعداد الأولية - العوامل الأولى"
+      },
+      "canonicalMainSkill": "skill_quant_02",
+      "canonicalSubskill": "sub_quant_02_2",
+      "correctAnswer": "د",
+      "answerValue": "5",
+      "stepByStepSolution": "س≡4 (mod 7)، ص≡3 (mod 7)، إذن س×ص≡12≡5 (mod 7).",
+      "educationalExplanation": "نضرب الباقيين ثم نأخذ باقي القسمة على7.",
+      "difficulty": "Medium",
+      "difficultyReason": "حساب بواقي ضرب.",
+      "imageHash": "8615fe46efc60045be9cbe513c84eb0c2a25d3c60cbf4526ebc436ed5e68b9cb",
+      "contentFingerprint": "3e2f2de78db64addcffc7bb5897bb701f568485eb65e26e6823157dc8f4eda94",
+      "ideaFingerprint": "135d5eeea65967b3666bacb98176d607e2dae356ef6801e5acb1fc41c3b53133",
+      "status": "MASTERED"
+    },
+    {
+      "id": "MNSF26-AR-T014-Q06",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T014",
+        "sourceLesson": "الأعداد الأولية - العوامل الأولى"
+      },
+      "canonicalMainSkill": "skill_quant_02",
+      "canonicalSubskill": "sub_quant_02_2",
+      "correctAnswer": "ج",
+      "answerValue": "25",
+      "stepByStepSolution": "إذا أعطت 89 و139 و189 نفس الباقي عند القسمة على ن، فإن ن يقسم الفروق 50؛ أكبر اختيار يقسم50 هو25.",
+      "educationalExplanation": "تساوي البواقي يعني أن المقسوم عليه يقسم فروق الأعداد.",
+      "difficulty": "Hard",
+      "difficultyReason": "استنتاج المقسوم عليه من فروق أعداد.",
+      "imageHash": "394690747c6cb6f9cccc59dac2e40f8e3f083f10c40b825f6838346f1419c2fb",
+      "contentFingerprint": "16672363b9641aab5f1a1c499cb5ef8b73737f333d0195b55275b78eb0424f36",
+      "ideaFingerprint": "239203475ca032dc51a4b0e46e833a5f31aea2314e5bd8feb2372499d11cafa5",
+      "status": "MASTERED"
+    },
+    {
+      "id": "MNSF26-AR-T014-Q07",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T014",
+        "sourceLesson": "الأعداد الأولية - العوامل الأولى"
+      },
+      "canonicalMainSkill": "skill_quant_02",
+      "canonicalSubskill": "sub_quant_02_2",
+      "correctAnswer": "ب",
+      "answerValue": "12",
+      "stepByStepSolution": "240÷19=12 والباقي12؛ إذن كل طبق يأخذ12 بيضة بالتساوي.",
+      "educationalExplanation": "نستخدم خارج القسمة الصحيح لتوزيع العناصر بالتساوي.",
+      "difficulty": "Easy",
+      "difficultyReason": "قسمة مع باقي.",
+      "imageHash": "cea7422f1459e221e6d6dac4136e3edf2c39ca17bf22796d7c5d9275dfaeff23",
+      "contentFingerprint": "f398f0f5f6a0b56c9a761c419f8da7c9a633f93d0756f740d3ea54136a83f402",
+      "ideaFingerprint": "2b25859fdf217aa07fdc7c0b40f511ceb2235ab69f87d2f553eb1e594be19f42",
+      "status": "MASTERED"
+    },
+    {
+      "id": "MNSF26-AR-T014-Q08",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T014",
+        "sourceLesson": "الأعداد الأولية - العوامل الأولى"
+      },
+      "canonicalMainSkill": "skill_quant_02",
+      "canonicalSubskill": "sub_quant_02_2",
+      "correctAnswer": "ب",
+      "answerValue": "1",
+      "stepByStepSolution": "31÷3=10 والباقي1، فيتبقى قلم واحد.",
+      "educationalExplanation": "الباقي هو ما لا يمكن توزيعه بالتساوي.",
+      "difficulty": "Easy",
+      "difficultyReason": "باقي قسمة مباشر.",
+      "imageHash": "f95cbe20f959aa03e7d6ecde5a450fb6304e97076d4caef33c80f99e56d7e8c9",
+      "contentFingerprint": "fbbf81459ea9317ca3d1b1dd1c3efc5c113d71e62b7124fe6e1af447bf720eb8",
+      "ideaFingerprint": "f490b7edcacd9d3a13793d7bcf941a5c60c373613a608f6f9da76f7185e4ec45",
+      "status": "MASTERED"
+    }
+  ]
+}
