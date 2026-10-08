@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN058_AR_T11_DIRECT_VISUAL",
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T011-Q06",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+        "testNumber": 11,
+        "pdfPage": 20,
+        "sourceSkillLabel": "ترتيب العمليات – قابلية القسمة",
+        "sourceTopic": "تصنيف المصدر محفوظ؛ رياضيات السؤال هي معيار الربط",
+        "sourceLesson": "الحساب والجبر، الاختبار 011، السؤال 06",
+        "printedQuestionNumber": 6,
+        "cropFile": "mnsf26_fullbook_crops/AR/AR-T011-Q06.webp",
+        "cropSha256": "1ca2b6701d35b75350394313d9da5a09758de4ed2535184a9b1695472e42ba69",
+        "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
+      },
+      "imageHash": "1ca2b6701d35b75350394313d9da5a09758de4ed2535184a9b1695472e42ba69",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN058_2026-10-08_T011_Q06",
+      "status": "MASTERED",
+      "questionText": "إذا كان العدد1ق ق3 يقبل القسمة على9، فما قيمة ق من5 و6 و7 و8؟",
+      "canonicalMainSkill": "main_quant_02",
+      "canonicalSubskill": "sub_quant_02_1",
+      "correctAnswer": "7 (ج)",
+      "stepByStepSolution": "مجموع الأرقام1+ق+ق+3=4+2ق؛ عند ق=7 يصبح18 من مضاعفات9.",
+      "educationalExplanation": "نطبّق القاعدة الرياضية الواردة في نص السؤال: مجموع الأرقام1+ق+ق+3=4+2ق؛ عند ق=7 يصبح18 من مضاعفات9.",
+      "difficulty": "Medium",
+      "difficultyReason": "يحتاج عدة خطوات ومقارنة معطيات.",
+      "contentFingerprint": "2b43de1e755acc7bd61884f8c75b00672c1392d5381bd54b13d5cd522641e296",
+      "ideaFingerprint": "89e664cfcb99d31ffb91a7447615c5e369b4f04ec843422643e7e48c96aa90ff"
+    }
+  ]
+}
