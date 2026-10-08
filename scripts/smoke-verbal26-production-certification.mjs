@@ -99,12 +99,30 @@ try {
   assert(String(expectedSubSkill.name || "").trim() === EXPECTED_SUBSKILL_NAME,
     `taxonomy subskill name mismatch: ${expectedSubSkill?.name || "<blank>"}`);
 
-  const coverageResponse = await req("/quizzes/questions?subject=sub_1777779759038&skillLinkStatus=linked&limit=1&page=1&summary=true&noTotal=true&includeCoverage=true&paginate=true", { token: admin.token });
+  const canonicalQuery = "subject=sub_1777779759038&source=imported&approvalStatus=approved&skillLinkStatus=linked";
+  const coverageResponse = await req(`/quizzes/questions?${canonicalQuery}&limit=1&page=1&summary=true&noTotal=true&includeCoverage=true&paginate=true`, { token: admin.token });
   const coverage = coverageResponse.body?.coverage || {};
   assert(Number(coverage.total) === 1050, `question coverage total mismatch: ${coverage.total}/1050`);
   assert(Number(coverage.mainSkillCount) === 22, `question coverage main skills mismatch: ${coverage.mainSkillCount}/22`);
   assert(Number(coverage.subSkillCount) === 50, `question coverage used subskills mismatch: ${coverage.subSkillCount}/50`);
   assert(Object.keys(coverage.sectionQuestionCounts || {}).length === 22, "section question coverage does not include all 22 main skills");
+
+  const canonicalInventory = [];
+  for (let page = 1; page <= 11; page += 1) {
+    const pageResponse = await req(`/quizzes/questions?${canonicalQuery}&limit=100&page=${page}&paginate=true`, { token: admin.token });
+    canonicalInventory.push(...asArray(pageResponse.body));
+  }
+  const canonicalIds = new Set(canonicalInventory.map((q) => String(q?.id || q?._id || q?.canonicalId || "")).filter(Boolean));
+  assert(canonicalIds.size === 1050, `canonical inventory unique IDs mismatch: ${canonicalIds.size}/1050`);
+  const sourceBookCounts = canonicalInventory.reduce((acc, q) => {
+    const key = String(q?.sourceBook || "");
+    acc[key] = Number(acc[key] || 0) + 1;
+    return acc;
+  }, {});
+  assert(Number(sourceBookCounts.abdelbaset) === 915 && Number(sourceBookCounts.anas) === 135,
+    `canonical sourceBook counts mismatch: ${JSON.stringify(sourceBookCounts)}`);
+  assert(Object.keys(sourceBookCounts).every((key) => ["abdelbaset", "anas"].includes(key)),
+    `unexpected canonical sourceBook values: ${JSON.stringify(sourceBookCounts)}`);
 
   const catalog = await req(`/quizzes/questions?ids=${encodeURIComponent(QUESTION_ID)}&limit=10&page=1`, { token: admin.token });
   const question = asArray(catalog.body).find((q) => String(q?.id || q?._id || q?.canonicalId) === QUESTION_ID);
@@ -170,6 +188,7 @@ try {
     subSkillId: EXPECTED_SUBSKILL_ID,
     subSkillName: EXPECTED_SUBSKILL_NAME,
     taxonomy: { mainSkills: 22, subSkills: 76, usedSubSkills: 50, questions: 1050 },
+    canonicalBySource: { abdelbaset: 915, anas: 135 },
     checks: ["taxonomy-ui-lineage","question-bank-coverage","question","answer","result","review","retry-guard","results-history","same-attempt-skill-analysis"],
   }, null, 2));
 } finally {
