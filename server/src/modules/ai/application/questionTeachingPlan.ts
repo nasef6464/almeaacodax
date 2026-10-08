@@ -42,7 +42,7 @@ export function decodeQuestionTeachingPlan(raw: string): { text: string; storybo
 }
 
 export function normalizeQuestionTeachingPlan(raw: string, fallback: string, expected?: {
-  mode: CompactTeachingMode; language?: TeachingStoryboard['language'];
+  mode: CompactTeachingMode; language?: TeachingStoryboard['language']; trustedAnswer?: string;
 }): string {
   if (expected) {
     try {
