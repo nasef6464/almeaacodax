@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN053_GEO_T46_T50_STATE_DELTA",
+  "baseStateCommit": "9cb8c67b3a0b3a8793d4e286f46af16acb80c260",
+  "baseMastered": 1291,
+  "baseHold": 229,
+  "addedMastered": 73,
+  "addedHold": 13,
+  "addedUnique": 86,
+  "newOfficialMastered": 1364,
+  "newOfficialHold": 242,
+  "run053VisualInspected": 282,
+  "run053GithubPersisted": 270,
+  "run053LibraryOnly": 12,
+  "nextCursor": "AR unprocessed source questions from Run017; reconcile GEO T41/T43 Library-only",
+  "stage": "QUESTION_MASTERING",
+  "stageOrderUnchanged": true,
+  "cropLock": {
+    "status": "PASS_LOCKED",
+    "done": 2135,
+    "total": 2135
+  },
+  "evidence": [
+    "MNSF26_QUESTION_MASTERING_RUN053_GEO_T46_V1.json",
+    "MNSF26_QUESTION_MASTERING_RUN053_GEO_T47_V1.json",
+    "MNSF26_QUESTION_MASTERING_RUN053_GEO_T48_V1.json",
+    "MNSF26_QUESTION_MASTERING_RUN053_GEO_T49_V1.json",
+    "MNSF26_QUESTION_MASTERING_RUN053_GEO_T50_V1.json"
+  ],
+  "blocker": "Execution State direct update rejected by connector safety check; delta is the authoritative newer checkpoint until safely reconciled",
+  "productionServicesUntouched": true
+}
