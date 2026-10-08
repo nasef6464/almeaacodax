@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import './smoke-supervisor-scope-parity.mjs';
 
 const root = process.cwd();
 const adminDashboardPath = path.join(root, "dashboards", "admin", "AdminDashboard.tsx");
@@ -33,7 +34,7 @@ const checks = [
     name: "supervisor scope supports school and multiple groups",
     ok:
       adminDashboard.includes("scopedSchoolIds") &&
-      adminDashboard.includes("directGroups") &&
+      adminDashboard.includes("resolveSupervisorSchoolScope(user, groups)") &&
       adminDashboard.includes("schoolCount: scopedSchoolIds.size"),
   },
   {
