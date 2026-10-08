@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN058_AR_T09_DIRECT_VISUAL",
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T009-Q03",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+        "testNumber": 9,
+        "pdfPage": 16,
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "sourceTopic": "تصنيف المصدر محفوظ؛ رياضيات السؤال هي معيار الربط",
+        "sourceLesson": "الحساب والجبر، الاختبار 009، السؤال 03",
+        "printedQuestionNumber": 3,
+        "cropFile": "mnsf26_fullbook_crops/AR/AR-T009-Q03.webp",
+        "cropSha256": "1629c9e80559bd01520441ba05b77a27544f33a2007aa1d275eb47d1d853b8f0",
+        "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
+      },
+      "imageHash": "1629c9e80559bd01520441ba05b77a27544f33a2007aa1d275eb47d1d853b8f0",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN058_2026-10-08_T009_Q03",
+      "status": "REVIEW",
+      "questionText": "قارن متوسط خمس قيم متساوية77 بعد توزيعها على7 مع77.",
+      "canonicalMainSkill": null,
+      "canonicalSubskill": null,
+      "correctAnswer": null,
+      "stepByStepSolution": null,
+      "educationalExplanation": "غير معتمد للنشر: القيمة الأولى تبدو مجموع خمسة أعداد77 مقسومًا على7؛ يلزم اعتماد قراءة البسط والتصنيف الإحصائي17_1 خارج المصدر.",
+      "difficulty": null,
+      "difficultyReason": "القيمة الأولى تبدو مجموع خمسة أعداد77 مقسومًا على7؛ يلزم اعتماد قراءة البسط والتصنيف الإحصائي17_1 خارج المصدر.",
+      "contentFingerprint": "f378321b5d9927c6f01e7e0389dff3093080e29c46d0ab8deea8e4482aaae994",
+      "ideaFingerprint": "7802a53d67ebe6c9dc96a3b64d099c817b36cf4ddc071de94c0968640a20f53a",
+      "holdReason": "القيمة الأولى تبدو مجموع خمسة أعداد77 مقسومًا على7؛ يلزم اعتماد قراءة البسط والتصنيف الإحصائي17_1 خارج المصدر.",
+      "proposedCanonicalSubskill": "sub_quant_17_1"
+    }
+  ]
+}
