@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN063_VISUAL_CORRECTIONS",
+  "stage": "QUESTION_MASTERING",
+  "sourceCropArchive": "Run017 1204/1204 PASS_LOCKED",
+  "directImageInspection": true,
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T007-Q03",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+        "testNumber": 7,
+        "pdfPage": 12,
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "sourceTopic": "question-specific direct image adjudication",
+        "sourceLesson": "AR test 007 question 03",
+        "printedQuestionNumber": 3,
+        "cropFile": "AR/AR-T007-Q03.webp",
+        "cropSha256": "42f007628fa490a4cbc05bc954cb963ef52504d2b1523c6fa4ef84fa176231f4"
+      },
+      "imageHash": "42f007628fa490a4cbc05bc954cb963ef52504d2b1523c6fa4ef84fa176231f4",
+      "visualEvidence": "RUN063_DIRECT_RUN017_WEBP_ZOOM_INSPECTION_2026-10-08",
+      "status": "MASTERED",
+      "questionText": "9+0=0+9؛ ما الخاصية المستخدمة؟",
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_1",
+      "correctAnswer": "أ — خاصية الإبدال",
+      "stepByStepSolution": "تبديل ترتيب الحدين من 9+0 إلى 0+9 لا يغير الناتج؛ الاختيار المطابق هو الإبدال.",
+      "educationalExplanation": "تبديل ترتيب الحدين من 9+0 إلى 0+9 لا يغير الناتج؛ الاختيار المطابق هو الإبدال.",
+      "difficulty": "Medium",
+      "difficultyReason": "يتطلب قراءة الأرقام والخيارات من الصورة ومقارنة نتيجة الحساب بالمصدر، دون الاعتماد على التحليل القديم.",
+      "contentFingerprint": "4ff0fe885d5d57db898218cbee9bb27c6098949657737dde267207014f97d1d5",
+      "ideaFingerprint": "38d376cc82c9e7536197b5e0c1f01f1ff89135196bbb89c4293162367de8afc7",
+      "supersedesLegacyAnalysis": true
+    },
+    {
+      "sourceKey": "MNSF26-AR-T007-Q04",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+        "testNumber": 7,
+        "pdfPage": 12,
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "sourceTopic": "question-specific direct image adjudication",
+        "sourceLesson": "AR test 007 question 04",
+        "printedQuestionNumber": 4,
+        "cropFile": "AR/AR-T007-Q04.webp",
+        "cropSha256": "7883e3f9ac6d9ca89af8151ea6b6a3bd2fb0ad6fbfbc919905f6920d0b598dac"
+      },
+      "imageHash": "7883e3f9ac6d9ca89af8151ea6b6a3bd2fb0ad6fbfbc919905f6920d0b598dac",
+      "visualEvidence": "RUN063_DIRECT_RUN017_WEBP_ZOOM_INSPECTION_2026-10-08",
+      "status": "MASTERED",
+      "questionText": "يجمع محمد 25 ريالًا كل خمسة أيام؛ في كم يوم يجمع 100 ريال؟",
+      "canonicalMainSkill": "skill_quant_10",
+      "canonicalSubskill": "sub_quant_10_3",
+      "correctAnswer": "ب — 20 يومًا",
+      "stepByStepSolution": "يحتاج 100÷25=4 فترات، طول كل فترة 5 أيام؛ إذن 4×5=20 يومًا.",
+      "educationalExplanation": "يحتاج 100÷25=4 فترات، طول كل فترة 5 أيام؛ إذن 4×5=20 يومًا.",
+      "difficulty": "Medium",
+      "difficultyReason": "يتطلب قراءة الأرقام والخيارات من الصورة ومقارنة نتيجة الحساب بالمصدر، دون الاعتماد على التحليل القديم.",
+      "contentFingerprint": "be54cb37378f4740c3b52767ce3fdefe052353fde360e9dc71c3d655f42d0337",
+      "ideaFingerprint": "6ed017fca098f794e8e3ebd27b5bbb220586937a8911659f499867905d754e70",
+      "supersedesLegacyAnalysis": true
+    }
+  ],
+  "masteredCount": 2,
+  "holdCount": 0,
+  "persistence": "GITHUB_RECONCILED_FROM_LIBRARY_RUN063"
+}
