@@ -1,0 +1,11 @@
+{
+  "bank": "MNSF26",
+  "run": "RUN067",
+  "sourceKey": "MNSF26-GEO-T007-Q03",
+  "status": "QA_REVIEW_REQUIRED",
+  "imageHash": "e06dca0367f96074c7e2b70205a218312cb6a4a4150e16bfd21eb6f940c981f6",
+  "masterAnswer": "A",
+  "imageDerivedAnswer": "C",
+  "proof": "Twice the sum of triangle interior angles is 360. Sum of one exterior angle at each vertex is also 360.",
+  "importEligible": false
+}
