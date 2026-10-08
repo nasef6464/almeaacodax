@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN062_LEGACY_T01_VISUAL_MASTERING",
+  "stage": "QUESTION_MASTERING",
+  "sourceCropArchive": "Run017 arithmetic 1204/1204 PASS_LOCKED",
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T001-Q08",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+        "testNumber": 1,
+        "pdfPage": 1,
+        "sourceSkillLabel": "قراءة الأعداد والأعداد المحصورة",
+        "sourceTopic": "فحص رياضيات السؤال من الصورة لا عنوان المجموعة",
+        "sourceLesson": "الحساب والجبر، الاختبار 001، السؤال 08",
+        "printedQuestionNumber": 8,
+        "cropFile": "AR/AR-T001-Q08.webp",
+        "cropSha256": "00a4340b11cc33ffc9f6bdf4e9ad9afc42f9527b72d5d174b5c65317b3700c87"
+      },
+      "imageHash": "00a4340b11cc33ffc9f6bdf4e9ad9afc42f9527b72d5d174b5c65317b3700c87",
+      "visualEvidence": "DIRECT_RUN017_SOURCE_WEBP_INSPECTION_RUN062_2026-10-08",
+      "status": "MASTERED",
+      "questionText": "طابور فيه 251 شخصًا؛ محمد ترتيبه 126 من الخلف وخالد 25 من الأمام. كم شخصًا بينهما؟",
+      "canonicalMainSkill": "skill_quant_13",
+      "canonicalSubskill": "sub_quant_13_4",
+      "correctAnswer": "ب — 100",
+      "stepByStepSolution": "محمد من الأمام=251−126+1=126. خالد من الأمام=25. بينهما 126−25−1=100.",
+      "educationalExplanation": "نوحّد اتجاه ترتيب الأشخاص قبل عد الواقفين بينهم.",
+      "difficulty": "Medium",
+      "difficultyReason": "تحويل ترتيب ثم حساب عدد بين شخصين.",
+      "contentFingerprint": "749d6f7d873a952e7ba730614df660478863b98955663f8796b6a2df95fdc7d6",
+      "ideaFingerprint": "65c0d6858c61120e71772e44c771762ddca5307f8bc13c9015774bdb952abb4d",
+      "legacyProvenance": "MNSF26_CONTENT_ENRICHMENT_V1.json; 130 legacy not reanalysed from scratch"
+    }
+  ]
+}
