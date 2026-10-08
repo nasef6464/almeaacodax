@@ -4,23 +4,26 @@ import path from 'node:path';
 
 const root = process.cwd();
 const reviewSessionSource = fs.readFileSync(path.join(root, 'pages/ReviewSession.tsx'), 'utf8');
+const practiceSummarySource = fs.readFileSync(path.join(root, 'components/review/PracticeExamSummary.tsx'), 'utf8');
+const practiceFeedbackSource = fs.readFileSync(path.join(root, 'components/review/PracticeQuestionFeedback.tsx'), 'utf8');
+const allReviewSources = `${reviewSessionSource}\n${practiceSummarySource}\n${practiceFeedbackSource}`;
 const favoritesSource = fs.readFileSync(path.join(root, 'pages/Favorites.tsx'), 'utf8');
 
 console.log('Testing ReviewSession Practice Exam runner contract...');
 
 // 1. Identity & unrecorded diagnostic nature
-assert.ok(reviewSessionSource.includes('اختبار تدريبي'), 'must be framed as a Practice Exam');
-assert.ok(reviewSessionSource.includes('تدريب حر غير مسجل رسمياً'), 'must state that it is unrecorded diagnostic practice');
+assert.ok(allReviewSources.includes('اختبار تدريبي'), 'must be framed as a Practice Exam');
+assert.ok(allReviewSources.includes('تدريب حر غير مسجل رسمياً'), 'must state that it is unrecorded diagnostic practice');
 
 // 2. Immediate feedback & answer evaluation
-assert.ok(reviewSessionSource.includes('currentFeedback'), 'must have feedback state for active learning');
-assert.ok(reviewSessionSource.includes('isCorrect'), 'must evaluate correctness');
-assert.ok(reviewSessionSource.includes('السؤال التالي'), 'must support stepping through questions');
+assert.ok(allReviewSources.includes('currentFeedback'), 'must have feedback state for active learning');
+assert.ok(allReviewSources.includes('isCorrect'), 'must evaluate correctness');
+assert.ok(allReviewSources.includes('السؤال التالي'), 'must support stepping through questions');
 
 // 3. Results celebration & review
-assert.ok(reviewSessionSource.includes('نسبة الإتقان'), 'must calculate and display mastery percentage');
-assert.ok(reviewSessionSource.includes('تفاصيل أسئلة الجلسة التدريبية'), 'must provide question-by-question breakdown');
-assert.ok(reviewSessionSource.includes('تدرّب على دفعة أخرى'), 'must allow starting another batch');
+assert.ok(allReviewSources.includes('نسبة الإتقان'), 'must calculate and display mastery percentage');
+assert.ok(allReviewSources.includes('تفاصيل أسئلة الجلسة التدريبية'), 'must provide question-by-question breakdown');
+assert.ok(allReviewSources.includes('تدرّب على دفعة أخرى'), 'must allow starting another batch');
 
 // 4. Governance & contract preservation
 assert.ok(reviewSessionSource.includes('useSearchParams'), 'contract: useSearchParams required');

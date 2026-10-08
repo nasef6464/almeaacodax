@@ -1,9 +1,11 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowLeft, ArrowRight, Award, Bookmark, CheckCircle2, HelpCircle, Lightbulb, RefreshCw, RotateCcw, Sparkles, XCircle } from "lucide-react";
+import { CheckCircle2, RefreshCw, Sparkles, XCircle } from "lucide-react";
 import { Link, useSearchParams } from "react-router-dom";
 import { api } from "../services/api";
 import { QuestionAssistantPanel } from "../components/results/QuestionAssistantPanel";
 import { QuestionVoiceExplanationPlayer } from "../components/results/QuestionVoiceExplanationPlayer";
+import { PracticeExamSummary, type AnswerOutcome } from "../components/review/PracticeExamSummary";
+import { PracticeQuestionFeedback } from "../components/review/PracticeQuestionFeedback";
 import type { QuestionVoiceExplanation } from "../types";
 import { getLearnerOptionLabel, usesImageEmbeddedOptions } from "../utils/quizPresentation";
 
@@ -26,21 +28,6 @@ type ReviewItem = {
     explanation?: string;
     correctOptionIndex?: number;
   };
-};
-
-type AnswerOutcome = {
-  cardId: string;
-  questionId: string;
-  questionText: string;
-  imageUrl?: string;
-  imageAlt?: string;
-  options: string[];
-  optionsEmbeddedInImage?: boolean;
-  selectedOptionIndex: number;
-  isCorrect: boolean;
-  correctOptionIndex?: number;
-  explanation?: string;
-  reviewType?: string;
 };
 
 const QUALITY_OPTIONS: Array<{ value: number; label: string; className: string }> = [
@@ -76,7 +63,6 @@ export const ReviewSession: React.FC = () => {
     explanation?: string;
   } | null>(null);
   const [history, setHistory] = useState<AnswerOutcome[]>([]);
-  const [reviewedQuestionDetail, setReviewedQuestionDetail] = useState<string | null>(null);
   const eventIdsRef = useRef<Record<string, string>>({});
 
   const loadItems = React.useCallback(() => {
@@ -198,148 +184,12 @@ export const ReviewSession: React.FC = () => {
   }
 
   if (isFinished) {
-    const correctCount = history.filter((h) => h.isCorrect).length;
-    const totalAnswered = history.length;
-    const accuracy = totalAnswered > 0 ? Math.round((correctCount / totalAnswered) * 100) : 0;
-
     return (
-      <div className="mx-auto max-w-3xl space-y-4 p-4 sm:p-6" dir="rtl">
-        <div className="rounded-3xl border border-emerald-200 bg-gradient-to-b from-emerald-50/80 to-white p-6 shadow-sm">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div className="flex items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-600 text-white shadow-sm">
-                <Award size={26} />
-              </div>
-              <div>
-                <h1 className="text-xl sm:text-2xl font-black text-emerald-950">
-                  {totalAnswered > 0 ? "اكتمل الاختبار التدريبي بنجاح! 🎯" : "تمت المراجعة اليومية"}
-                </h1>
-                <p className="mt-1 text-xs sm:text-sm font-bold text-emerald-800">
-                  {totalAnswered > 0
-                    ? `أنهيت ${doneCount} سؤال في هذه الجلسة التدريبية.`
-                    : "لا توجد أسئلة مستحقة للمراجعة في هذا النطاق حالياً."}
-                </p>
-              </div>
-            </div>
-            <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-black text-emerald-800">
-              تدريب حر غير مسجل رسمياً
-            </span>
-          </div>
-
-          {totalAnswered > 0 && (
-            <>
-              <div className="mt-6 grid grid-cols-3 gap-3 text-center">
-                <div className="rounded-2xl bg-white p-3.5 shadow-2xs border border-emerald-100">
-                  <div className="text-2xl font-black text-emerald-600">{accuracy}%</div>
-                  <div className="mt-1 text-xs font-bold text-slate-500">نسبة الإتقان</div>
-                </div>
-                <div className="rounded-2xl bg-white p-3.5 shadow-2xs border border-emerald-100">
-                  <div className="text-2xl font-black text-emerald-700">{correctCount}</div>
-                  <div className="mt-1 text-xs font-bold text-slate-500">إجابات صحيحة</div>
-                </div>
-                <div className="rounded-2xl bg-white p-3.5 shadow-2xs border border-emerald-100">
-                  <div className="text-2xl font-black text-rose-600">{totalAnswered - correctCount}</div>
-                  <div className="mt-1 text-xs font-bold text-slate-500">تحتاج مراجعة</div>
-                </div>
-              </div>
-
-              <div className="mt-4 rounded-2xl bg-emerald-100/60 p-4 text-xs font-bold text-emerald-900 leading-6">
-                {accuracy >= 80 ? (
-                  <span>🌟 رائع جداً! أظهرت فهماً متقدماً للمفاهيم التي راجعتها؛ تم تثبيت إتقانها في سجل تعلّمك.</span>
-                ) : accuracy >= 50 ? (
-                  <span>👍 بداية طيبة! التدريب الذاتي المستمر يصحح الأخطاء السابقة دون التأثير على معدلك العام.</span>
-                ) : (
-                  <span>💪 لا تقلق، هذا اختبار تدريبي حر غير مسجل! راجع الشروحات بالأسفل واستخدم السبورة الذكية لترسيخ المفاهيم.</span>
-                )}
-              </div>
-            </>
-          )}
-
-          <div className="mt-6 flex flex-wrap items-center gap-3">
-            <button
-              type="button"
-              onClick={loadItems}
-              className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 px-4 py-2.5 text-xs font-black text-white hover:bg-emerald-700 shadow-xs"
-            >
-              <RefreshCw size={14} /> تدرّب على دفعة أخرى
-            </button>
-            <Link
-              to="/dashboard?tab=favorites"
-              className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-black text-slate-700 hover:bg-slate-50"
-            >
-              <Bookmark size={14} /> العودة لأسئلتي للمراجعة
-            </Link>
-            <Link
-              to="/dashboard"
-              className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-black text-slate-700 hover:bg-slate-50"
-            >
-              لوحة الطالب
-            </Link>
-          </div>
-        </div>
-
-        {history.length > 0 && (
-          <div className="rounded-3xl border border-slate-100 bg-white p-5 shadow-xs">
-            <h3 className="text-sm font-black text-slate-900 mb-3">تفاصيل أسئلة الجلسة التدريبية:</h3>
-            <div className="space-y-2">
-              {history.map((record, i) => (
-                <div
-                  key={`${record.questionId}-${i}`}
-                  className={`rounded-2xl border p-4 transition-all ${
-                    record.isCorrect
-                      ? "border-emerald-100 bg-emerald-50/40"
-                      : "border-rose-100 bg-rose-50/40"
-                  }`}
-                >
-                  <div className="flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-2">
-                      {record.isCorrect ? (
-                        <CheckCircle2 size={18} className="text-emerald-600 shrink-0" />
-                      ) : (
-                        <XCircle size={18} className="text-rose-600 shrink-0" />
-                      )}
-                      <span className="text-xs font-black text-slate-900">السؤال {i + 1}</span>
-                    </div>
-                    <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-black ${
-                      record.isCorrect ? "bg-emerald-100 text-emerald-800" : "bg-rose-100 text-rose-800"
-                    }`}>
-                      {record.isCorrect ? "أتقنته بنجاح" : "أخطأت فيه"}
-                    </span>
-                  </div>
-                  <p className="mt-2 text-xs text-slate-700 font-bold line-clamp-2">{record.questionText}</p>
-
-                  <div className="mt-3 flex items-center justify-between border-t border-slate-100/80 pt-2">
-                    <button
-                      type="button"
-                      onClick={() => setReviewedQuestionDetail(reviewedQuestionDetail === record.questionId ? null : record.questionId)}
-                      className="text-[11px] font-black text-indigo-600 hover:text-indigo-800"
-                    >
-                      {reviewedQuestionDetail === record.questionId ? "إخفاء الشرح والمساعد" : "عرض الشرح والمساعد الذكي 💡"}
-                    </button>
-                  </div>
-
-                  {reviewedQuestionDetail === record.questionId && (
-                    <div className="mt-3 space-y-3 pt-3 border-t border-slate-200/60">
-                      {record.explanation && (
-                        <div className="rounded-xl bg-white p-3 text-xs font-bold text-slate-700 leading-6 border border-slate-100">
-                          <span className="font-black text-emerald-800">الشرح المعتمد: </span>
-                          {record.explanation}
-                        </div>
-                      )}
-                      <QuestionAssistantPanel
-                        key={`review-tutor-summary-${record.questionId}`}
-                        questionId={record.questionId}
-                        hasImage={Boolean(record.imageUrl)}
-                        context="mistake_review"
-                      />
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
+      <PracticeExamSummary
+        history={history}
+        doneCount={doneCount}
+        onRetry={loadItems}
+      />
     );
   }
 
@@ -442,52 +292,18 @@ export const ReviewSession: React.FC = () => {
       </div>
 
       {feedbackActive && (
-        <div className={`rounded-3xl border p-5 shadow-xs transition-all ${
-          currentFeedback.isCorrect
-            ? "border-emerald-200 bg-emerald-50/90 text-emerald-950"
-            : "border-rose-200 bg-rose-50/90 text-rose-950"
-        }`}>
-          <div className="flex items-center gap-2 font-black text-base">
-            {currentFeedback.isCorrect ? (
-              <>
-                <CheckCircle2 size={22} className="text-emerald-600" />
-                <span>إجابة صحيحة! أحسنت 🎯</span>
-              </>
-            ) : (
-              <>
-                <XCircle size={22} className="text-rose-600" />
-                <span>إجابة غير صحيحة</span>
-              </>
-            )}
-          </div>
-
-          {!currentFeedback.isCorrect && current.question.correctOptionIndex !== undefined && current.question.options?.[current.question.correctOptionIndex] && (
-            <p className="mt-2 text-xs font-bold text-rose-800">
-              الإجابة الصحيحة هي: <span className="underline">{getLearnerOptionLabel(current.question, current.question.options[current.question.correctOptionIndex], current.question.correctOptionIndex)}</span>
-            </p>
-          )}
-
-          {current.question.explanation && (
-            <div className="mt-3 rounded-2xl bg-white p-3.5 text-xs font-bold leading-6 text-slate-800 border border-slate-100">
-              <span className="font-black text-emerald-800">الشرح المعتمد: </span>
-              {current.question.explanation}
-            </div>
-          )}
-
-          <div className="mt-4 flex items-center justify-end">
-            <button
-              type="button"
-              onClick={nextQuestion}
-              className="flex items-center gap-1.5 rounded-xl bg-slate-900 px-5 py-2.5 text-xs font-black text-white hover:bg-slate-800 shadow-xs"
-            >
-              {index < items.length - 1 ? (
-                <>السؤال التالي <ArrowLeft size={14} /></>
-              ) : (
-                <>عرض ملخص الاختبار التدريبي 📊</>
-              )}
-            </button>
-          </div>
-        </div>
+        <PracticeQuestionFeedback
+          isCorrect={currentFeedback.isCorrect}
+          question={{
+            text: current?.question?.text || "",
+            options: current?.question?.options || [],
+            correctOptionIndex: current?.question?.correctOptionIndex,
+            explanation: current?.question?.explanation,
+            optionsEmbeddedInImage: current?.question?.optionsEmbeddedInImage,
+          }}
+          hasNext={index < items.length - 1}
+          onNext={nextQuestion}
+        />
       )}
 
       {current?.questionId ? (
