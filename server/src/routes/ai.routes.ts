@@ -802,7 +802,7 @@ const callAiWithMeta = async (
         return {
           text: providerResponse.text,
           provider,
-          model: descriptor.model,
+          model: providerResponse.model || descriptor.model,
           usedFallback: false,
           errors,
           usage: providerResponse.usage,

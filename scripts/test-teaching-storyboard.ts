@@ -7,7 +7,10 @@ assert.ok(boardPrompt.includes('ممنوع تعديل الدرجة أو الإت
 assert.doesNotMatch(boardPrompt, /الخطوة 3: الاستنتاج|شاملاً للحل|اجعل الرد بالعربية|كاملاً ومرتباً|NotebookLM/, 'structured requests must not inherit conflicting long-form or Arabic-only output rules');
 assert.match(buildQuestionAssistantPrompt(promptInput), /الخطوة 3: الاستنتاج/, 'ordinary text/voice tutor keeps its existing format');
 import { checkpointHints } from '../server/src/modules/ai/contracts/checkpointHints';
-import { readableBoardText } from '../components/results/teaching/boardText';
+import { readableBoardText, readableBoardProse } from '../components/results/teaching/boardText';
+assert.equal(readableBoardProse('نبحث عن 4 \\times \\text{آحاد الخيار} = \\text{آحاد 0}.'), 'نبحث عن 4 × آحاد الخيار = آحاد 0.');
+assert.equal(readableBoardProse('\\implies \\text{الآحاد هي 0}'), '⇒ الآحاد هي 0');
+assert.equal(readableBoardProse('\\nu + n \\timescale'), '\\nu + n \\timescale', 'prose cleanup preserves unknown commands and variable n');
 assert.equal(readableBoardText('الخطوة 1: نص.nالخطوة 2: نص.nإذن النتيجة.'), 'الخطوة 1: نص.\nالخطوة 2: نص.\nإذن النتيجة.');
 assert.equal(readableBoardText('الخيارات:n1) 309705n2) 309704'), 'الخيارات:\n1) 309705\n2) 309704');
 assert.equal(readableBoardText('الخطوة 1: (0)n- الأول'), 'الخطوة 1: (0)\n- الأول');
@@ -169,8 +172,10 @@ delete (globalThis as any).SpeechSynthesisUtterance;
 const originalFetch = globalThis.fetch;
 const requests: any[] = [];
 let providerModel = 'gemini-2.5-flash';
+let missingModel = false;
 globalThis.fetch = async (_url, init) => {
   requests.push(JSON.parse(String(init?.body)));
+  if (missingModel && String(_url).includes('/gemini-2.5-flash:')) return new Response('{}', { status: 404 });
   return new Response(JSON.stringify({ candidates: [{ content: { parts: [{ text: JSON.stringify(example) }] } }], usageMetadata: { promptTokenCount: 100, candidatesTokenCount: 80, totalTokenCount: 180 } }), { status: 200 });
 };
 try {
@@ -183,9 +188,24 @@ try {
   await adapters.callProvider('gemini', 'normal chat');
   assert.equal(requests.at(-1).generationConfig.thinkingConfig, undefined, 'other capabilities retain their existing behavior');
   assert.equal(requests.at(-1).generationConfig.responseJsonSchema, undefined);
-  for (providerModel of ['gemini-2.5-pro', 'gemini-3.8-flash']) {
+  for (providerModel of ['gemini-2.5-pro']) {
     await adapters.callProvider('gemini', 'trusted reference', 'application/json', undefined, { maxOutputTokens: 450, disableThinking: true });
     assert.equal(requests.at(-1).generationConfig.thinkingConfig, undefined, 'unsupported models must not receive a thinking-off parameter');
   }
+  providerModel = 'gemini-3.8-flash';
+  const direct = await adapters.callProvider('gemini', 'trusted reference', 'application/json', undefined, { maxOutputTokens: 450, disableThinking: true, jsonSchema: schema });
+  assert.deepEqual(requests.at(-1).generationConfig.thinkingConfig, { thinkingLevel: 'low' });
+  assert.equal(requests.at(-1).generationConfig.maxOutputTokens, 1024);
+  assert.equal(direct.model, 'gemini-3.8-flash');
+  await adapters.callProvider('gemini', 'normal chat', undefined, undefined, { maxOutputTokens: 450 });
+  assert.equal(requests.at(-1).generationConfig.thinkingConfig, undefined);
+  assert.equal(requests.at(-1).generationConfig.maxOutputTokens, 450, 'ordinary chat retains its budget');
+  providerModel = 'gemini-2.5-flash';
+  missingModel = true;
+  const fallback = await adapters.callProvider('gemini', 'trusted reference', 'application/json', undefined, { maxOutputTokens: 450, disableThinking: true, jsonSchema: schema });
+  assert.equal(fallback.model, 'gemini-3.8-flash', 'metadata records the model actually called after 404');
+  assert.deepEqual(requests.at(-1).generationConfig.thinkingConfig, { thinkingLevel: 'low' });
+  assert.equal(requests.at(-1).generationConfig.maxOutputTokens, 1024);
+  assert.deepEqual(requests.at(-1).generationConfig.responseJsonSchema, schema);
 } finally { globalThis.fetch = originalFetch; }
 console.log('Teaching storyboard: validation, deterministic transforms/seek, invalid JSON fallback, narration interruption/resume PASS');

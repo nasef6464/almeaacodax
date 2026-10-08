@@ -126,14 +126,15 @@ try {
   await page.getByRole('button', { name: 'فتح', exact: true }).click();
   const board = page.getByTestId('teaching-board');
   await board.getByText('العملية هي ضرب.', { exact: false }).waitFor();
+  await board.getByText('⇒ الآحاد هي 0، وهو المطابق للناتج 309705', { exact: false }).waitFor();
   assert.equal(await board.locator('.katex-error').count(), 0);
-  assert.equal(await board.locator('.katex').count(), 3, 'real-provider mixed prose renders isolated equations');
+  assert.equal(await board.locator('.katex').count(), 4, 'real-provider mixed prose renders isolated equations');
   const visible = await board.innerText();
   assert.match(visible, /الخطوة 1/);
   assert.match(visible, /الخطوة 2/);
   assert.doesNotMatch(visible, /nالخطوة/);
   assert.match(visible, /Step 2/);
-  assert.doesNotMatch(visible, /\\textbf|\\n|\\times|\$/);
+  assert.doesNotMatch(visible, /\\text|\\implies|\\n|\\times|\$/);
   assert.equal(await page.evaluate(() => window.testSpeak.at(-1).text), 'نضرب 2 في 5 يساوي 10.');
   assert.ok(await page.evaluate(() => document.documentElement.scrollWidth) <= 390);
   await page.screenshot({ path: path.join(artifacts, 'mixed-provider-mobile.png') });
