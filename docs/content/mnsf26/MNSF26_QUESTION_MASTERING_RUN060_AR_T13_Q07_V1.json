@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN060_AR_T13_RECOVERY",
+  "previouslyCounted": true,
+  "records": [
+    {
+      "id": "MNSF26-AR-T013-Q07",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T013",
+        "sourceLesson": "الأعداد الأولية - العوامل الأولى"
+      },
+      "canonicalMainSkill": "skill_quant_02",
+      "canonicalSubskill": "sub_quant_02_1",
+      "correctAnswer": "ج",
+      "answerValue": "24",
+      "stepByStepSolution": "أكبر عدد أشخاص متساوٍ في الغرفة يقسم 24 و48 هو ق.م.أ=24.",
+      "educationalExplanation": "عند التوزيع المتساوي بأكبر مجموعة نستخدم القاسم المشترك الأكبر.",
+      "difficulty": "Easy",
+      "difficultyReason": "ق.م.أ مباشر.",
+      "imageHash": "0b2a5c09d95e689ba89cf3a76e6d855e1d3805e57523b3e266c66fe363065a98",
+      "contentFingerprint": "a5a6b6c77741e5ac412bada17525238016d7c8b24e310a72d34db32218b0d863",
+      "ideaFingerprint": "65b509f244b26f391a198306fc0f9344532fb1610ae9d020f8da4bebc5f431da",
+      "status": "MASTERED"
+    }
+  ]
+}
