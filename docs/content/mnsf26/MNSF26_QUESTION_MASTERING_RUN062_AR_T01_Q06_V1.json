@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN062_LEGACY_T01_VISUAL_MASTERING",
+  "stage": "QUESTION_MASTERING",
+  "sourceCropArchive": "Run017 arithmetic 1204/1204 PASS_LOCKED",
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T001-Q06",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+        "testNumber": 1,
+        "pdfPage": 1,
+        "sourceSkillLabel": "قراءة الأعداد والأعداد المحصورة",
+        "sourceTopic": "فحص رياضيات السؤال من الصورة لا عنوان المجموعة",
+        "sourceLesson": "الحساب والجبر، الاختبار 001، السؤال 06",
+        "printedQuestionNumber": 6,
+        "cropFile": "AR/AR-T001-Q06.webp",
+        "cropSha256": "5aa59187600aff4b6fe51174d194354c3444eaa6e9d6532e78e799bdb8fa524f"
+      },
+      "imageHash": "5aa59187600aff4b6fe51174d194354c3444eaa6e9d6532e78e799bdb8fa524f",
+      "visualEvidence": "DIRECT_RUN017_SOURCE_WEBP_INSPECTION_RUN062_2026-10-08",
+      "status": "MASTERED",
+      "questionText": "طابور فيه 30 طالبًا، أمام أحمد 10 طلاب وخلف خالد 10 طلاب. كم طالبًا بينهما؟",
+      "canonicalMainSkill": "skill_quant_13",
+      "canonicalSubskill": "sub_quant_13_4",
+      "correctAnswer": "ج — 8",
+      "stepByStepSolution": "ترتيب أحمد من الأمام=11، وترتيب خالد من الأمام=30−10=20. بينهما 20−11−1=8.",
+      "educationalExplanation": "حدّد موقع كل طالب من الطرف نفسه قبل حساب من بينهما.",
+      "difficulty": "Easy",
+      "difficultyReason": "تحويل ترتيب بسيط وطرح الفاصل.",
+      "contentFingerprint": "e772e36f3028b12f138c676ec35f9beb1b1253ce2444de73d7b8303e8dac2e07",
+      "ideaFingerprint": "43c5a520ae0cf85603b8f572bfc6dd64a11d8b869ec92dcb58b3111bea3dac59",
+      "legacyProvenance": "MNSF26_CONTENT_ENRICHMENT_V1.json; 130 legacy not reanalysed from scratch"
+    }
+  ]
+}
