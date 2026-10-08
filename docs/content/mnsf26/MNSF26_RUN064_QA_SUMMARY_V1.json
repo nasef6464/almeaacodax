@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN064",
+  "stage": "QA_LOCK",
+  "status": "IN_PROGRESS",
+  "independentSourceImageHashAudit": {
+    "actualImagesVerified": 2135,
+    "manifestMismatches": 0,
+    "libraryPayloadKeys": 2091,
+    "githubOnlyPayloadKeys": 38,
+    "active": 2129,
+    "excluded": 6
+  },
+  "independentVisualQA": {
+    "sample": 52,
+    "pass": 39,
+    "priorHoldPreserved": 12,
+    "newReview": 1,
+    "remainingSemanticQA": 2077,
+    "fullBookPass": false
+  },
+  "newIssue": {
+    "sourceKey": "MNSF26-AR-T057-Q10",
+    "sourceImageHash": "28e28fa25f77f4d311494767a8caf8a6a09ff7cb781f95ae6ca49e24b6c43f2a",
+    "issue": "Numeric 12 matches two distinct noon/midnight answer choices",
+    "qaStatus": "REVIEW",
+    "patch": "MNSF26_RUN064_QA_AR_T057_Q10_REVIEW_PATCH_V1.json"
+  },
+  "evidence": "52 independent direct-crop visual comparisons; original arithmetic and geometry archives; Run063 canonical source-key index",
+  "noDedupeR2ImportProduction": true
+}
