@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN053_GEO_T44_PART1A",
+  "directImageInspection": true,
+  "sourceCropArchive": "/MNSF26/Run021/mnsf26_geometry_crops_run021.zip",
+  "sourceInventory": "/MNSF26/Run021/MNSF26_GEOMETRY_CROP_MANIFEST_V1.json",
+  "masteredCount": 2,
+  "holdCount": 0,
+  "records": [
+    {
+      "sourceKey": "MNSF26-GEO-T044-Q01",
+      "sourceProvenance": {
+        "sourcePart": "الهندسة",
+        "bookCode": "GEO",
+        "testNumber": 44,
+        "pdfPage": 85,
+        "sourceSkillLabel": "مراجعة مسائل الهندسة من الكتاب",
+        "sourceTopic": "مسائل الهندسة المتنوعة",
+        "sourceLesson": "تمارين هندسة مرقمة حسب الاختبار",
+        "printedQuestionNumber": 1,
+        "cropFile": "MNSF26-GEO-T044-Q01.webp",
+        "cropSha256": "b91b531dbd2e341eaab06ab7379dbc0d6eff665d2696f3d0bbbf0a7db60f75c1",
+        "cropContract": "EMBEDDED_XOBJECT_OR_EXACT_COMPOSITE_SLICE"
+      },
+      "imageHash": "b91b531dbd2e341eaab06ab7379dbc0d6eff665d2696f3d0bbbf0a7db60f75c1",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T44_Q01",
+      "status": "MASTERED",
+      "questionText": "مستطيل أبعاده ك+10 و2ك، مثلث أضلاعه9 و8 و15، المحيطان متساويان؛ أوجد ك.",
+      "canonicalMainSkill": "main_quant_21",
+      "canonicalSubskill": "sub_quant_21_1",
+      "correctAnswer": "2 (ب)",
+      "stepByStepSolution": "محيط المثلث32؛ المستطيل2[(ك+10)+2ك]=6ك+20؛ ك=2.",
+      "educationalExplanation": "من الصورة: محيط المثلث32؛ المستطيل2[(ك+10)+2ك]=6ك+20؛ ك=2.",
+      "difficulty": "Easy",
+      "difficultyReason": "قانون مباشر.",
+      "contentFingerprint": "625678b38680264fb4d00165eb255d99d9589bededca3a5bb8562a92745783e1",
+      "ideaFingerprint": "067d2ebec8ea8cce00843bebde78a9dd8ab4db6ca04802ff7a84d0d1c3c3b1c3"
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T044-Q02",
+      "sourceProvenance": {
+        "sourcePart": "الهندسة",
+        "bookCode": "GEO",
+        "testNumber": 44,
+        "pdfPage": 85,
+        "sourceSkillLabel": "مراجعة مسائل الهندسة من الكتاب",
+        "sourceTopic": "مسائل الهندسة المتنوعة",
+        "sourceLesson": "تمارين هندسة مرقمة حسب الاختبار",
+        "printedQuestionNumber": 2,
+        "cropFile": "MNSF26-GEO-T044-Q02.webp",
+        "cropSha256": "c9e2409a695f9f43013b26603ef2599bacd75177023940c734b13dc858045a93",
+        "cropContract": "EMBEDDED_XOBJECT_OR_EXACT_COMPOSITE_SLICE"
+      },
+      "imageHash": "c9e2409a695f9f43013b26603ef2599bacd75177023940c734b13dc858045a93",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T44_Q02",
+      "status": "MASTERED",
+      "questionText": "مربع قسم إلى مثلثين متطابقين؛ قارن مساحة7 مثلثات بمساحة3 مربعات.",
+      "canonicalMainSkill": "main_quant_22",
+      "canonicalSubskill": "sub_quant_22_1",
+      "correctAnswer": "القيمة الأولى أكبر (أ)",
+      "stepByStepSolution": "المثلث نصف مربع؛ 7 مثلثات=3.5 مربع، أكبر من3.",
+      "educationalExplanation": "من الصورة: المثلث نصف مربع؛ 7 مثلثات=3.5 مربع، أكبر من3.",
+      "difficulty": "Easy",
+      "difficultyReason": "قانون مباشر.",
+      "contentFingerprint": "9a9f765d02dcfa9e6fec0e30a86671696ad7c36cb60a92e4c8c5c6cc6096e9eb",
+      "ideaFingerprint": "486bb066b5d994137695278a1efc1136524f018fc1d44f3f22ca10fa0d3f10da"
+    }
+  ]
+}
