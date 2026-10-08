@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN060_AR_T13_RECOVERY",
+  "previouslyCounted": true,
+  "records": [
+    {
+      "id": "MNSF26-AR-T013-Q03",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T013",
+        "sourceLesson": "الأعداد الأولية - العوامل الأولى"
+      },
+      "canonicalMainSkill": "skill_quant_02",
+      "canonicalSubskill": "sub_quant_02_1",
+      "correctAnswer": "ج",
+      "answerValue": "5 و9",
+      "stepByStepSolution": "45 يقبل القسمة على5 وعلى9؛ كلاهما من قواسمه.",
+      "educationalExplanation": "نختبر القسمة: 45÷5=9 و45÷9=5.",
+      "difficulty": "Easy",
+      "difficultyReason": "اختبار قواسم مباشر.",
+      "imageHash": "bbd246b4f44bb346316035286d9c6144d690df44ba22866ef62879a42cccbd45",
+      "contentFingerprint": "221cb36c04c8057d25ed5111d11a97747a049a588fad39c82f6079b9c2b268e3",
+      "ideaFingerprint": "c47c0636bc12a69ee9ede63ddbc27a8e96bc2f1c22595d1a74c9594cccfa5b99",
+      "status": "MASTERED"
+    }
+  ]
+}
