@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN060_AR_T13_RECOVERY",
+  "previouslyCounted": true,
+  "records": [
+    {
+      "id": "MNSF26-AR-T013-Q11",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T013",
+        "sourceLesson": "الأعداد الأولية - العوامل الأولى"
+      },
+      "canonicalMainSkill": "skill_quant_02",
+      "canonicalSubskill": "sub_quant_02_1",
+      "correctAnswer": "ج",
+      "answerValue": "21",
+      "stepByStepSolution": "العدد المطلوب من مضاعفات3، ولكي يكون حاصل ضربه في15 قابلًا للقسمة على7 يجب أن يحتوي العدد العامل7؛ من الخيارات 21.",
+      "educationalExplanation": "لأن 15 لا يحتوي العامل7، يجب أن يأتي العامل7 من العدد نفسه.",
+      "difficulty": "Medium",
+      "difficultyReason": "ربط عوامل القسمة بالاختيارات.",
+      "imageHash": "6ec559192b8d5b2dffe24109cbc67174f7612ec9233cc0daa7053e14b4e653ef",
+      "contentFingerprint": "d4c9ffd9e9bd0165ae0c213c7b0a99993a635cf6b6b1081e003685aae0c228a0",
+      "ideaFingerprint": "fce998ba707739b287f6a337d590a5590e56b4a661c2e585883b18605cfab502",
+      "status": "MASTERED"
+    }
+  ]
+}
