@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN058_AR_T09_DIRECT_VISUAL",
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T009-Q01",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+        "testNumber": 9,
+        "pdfPage": 16,
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "sourceTopic": "تصنيف المصدر محفوظ؛ رياضيات السؤال هي معيار الربط",
+        "sourceLesson": "الحساب والجبر، الاختبار 009، السؤال 01",
+        "printedQuestionNumber": 1,
+        "cropFile": "mnsf26_fullbook_crops/AR/AR-T009-Q01.webp",
+        "cropSha256": "a3e3647bd9f31596ca94cea2be7b602bf8d05fd0f49055742ccb5da0aecee5a8",
+        "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
+      },
+      "imageHash": "a3e3647bd9f31596ca94cea2be7b602bf8d05fd0f49055742ccb5da0aecee5a8",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN058_2026-10-08_T009_Q01",
+      "status": "MASTERED",
+      "questionText": "هاتف ثمنه800 ريال وحاسب أغلى منه200 ريال؛ كم دفع للاثنين؟",
+      "canonicalMainSkill": "main_quant_01",
+      "canonicalSubskill": "sub_quant_01_4",
+      "correctAnswer": "1800 ريال (د)",
+      "stepByStepSolution": "ثمن الحاسب=800+200=1000؛ المجموع800+1000=1800.",
+      "educationalExplanation": "نطبّق القاعدة الرياضية الواردة في نص السؤال: ثمن الحاسب=800+200=1000؛ المجموع800+1000=1800.",
+      "difficulty": "Easy",
+      "difficultyReason": "يحتاج تطبيقًا مباشرًا لقاعدة حسابية.",
+      "contentFingerprint": "e3f30824812156bc02784509461f17c8f7308bd001c6a08735217f945b1b05b5",
+      "ideaFingerprint": "a5b36eefa5d1be028795fe48778c2df3fc53c4225627696861acc44c939ab60b"
+    },
+    {
+      "sourceKey": "MNSF26-AR-T009-Q02",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+        "testNumber": 9,
+        "pdfPage": 16,
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "sourceTopic": "تصنيف المصدر محفوظ؛ رياضيات السؤال هي معيار الربط",
+        "sourceLesson": "الحساب والجبر، الاختبار 009، السؤال 02",
+        "printedQuestionNumber": 2,
+        "cropFile": "mnsf26_fullbook_crops/AR/AR-T009-Q02.webp",
+        "cropSha256": "39256be2d834660258ac166e5ff55c9015277e681942457daed0c7fde0c7873b",
+        "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
+      },
+      "imageHash": "39256be2d834660258ac166e5ff55c9015277e681942457daed0c7fde0c7873b",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN058_2026-10-08_T009_Q02",
+      "status": "MASTERED",
+      "questionText": "ما العدد الذي يزيد عن مثلي1 بمقدار8؟",
+      "canonicalMainSkill": "main_quant_01",
+      "canonicalSubskill": "sub_quant_01_4",
+      "correctAnswer": "10 (ج)",
+      "stepByStepSolution": "مثلا1 يساوي2؛ العدد المطلوب2+8=10.",
+      "educationalExplanation": "نطبّق القاعدة الرياضية الواردة في نص السؤال: مثلا1 يساوي2؛ العدد المطلوب2+8=10.",
+      "difficulty": "Easy",
+      "difficultyReason": "يحتاج تطبيقًا مباشرًا لقاعدة حسابية.",
+      "contentFingerprint": "c9a73426c5e731bad24dc3b1fda412976b295fb0d3c63b64050968fd932e1a9f",
+      "ideaFingerprint": "fcf78fb0ef76a0ad05b763063945d75908a9e83ce37cfdfc8a4f49caf996143a"
+    }
+  ]
+}
