@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN065",
+  "stage": "QUESTION_MASTERING_GITHUB_SYNC",
+  "sourceArtifact": "RUN063_DIRECT_T007_VISUAL_MASTERING",
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T007-Q13",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+        "testNumber": 7,
+        "pdfPage": 12,
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "sourceTopic": "direct visual mathematical classification",
+        "sourceLesson": "AR T007 Q13",
+        "printedQuestionNumber": 13,
+        "cropFile": "AR/AR-T007-Q13.webp",
+        "cropSha256": "7ec93ac3c9d6a1c01e1d728eccca7c87396bb4e45330b0a86658ffb76d7d2013"
+      },
+      "imageHash": "7ec93ac3c9d6a1c01e1d728eccca7c87396bb4e45330b0a86658ffb76d7d2013",
+      "visualEvidence": "RUN063_DIRECT_RUN017_WEBP_VISUAL_INSPECTION",
+      "status": "MASTERED",
+      "questionText": "صفحتان متقابلتان في جريدة مرقمتان 40 و9؛ كم عدد صفحات الجريدة؟",
+      "canonicalMainSkill": "skill_quant_13",
+      "canonicalSubskill": "sub_quant_13_4",
+      "correctAnswer": "ب — 48 صفحة",
+      "stepByStepSolution": "في الجريدة المطوية مجموع رقمي الصفحتين المتقابلتين=عدد الصفحات+1؛ إذن العدد=40+9−1=48.",
+      "educationalExplanation": "في الجريدة المطوية مجموع رقمي الصفحتين المتقابلتين=عدد الصفحات+1؛ إذن العدد=40+9−1=48.",
+      "difficulty": "Medium",
+      "difficultyReason": "يتطلب خطوتين رياضيتين وتحققًا من المصدر.",
+      "contentFingerprint": "680a8ea80bca9a7f8442f1ec45a51ecac3fbead1f3ee73d2295879b451816591",
+      "ideaFingerprint": "0e624c78c7a8a861da2204253fa0cece1d815f299ae188b51eb5031b45088cb8"
+    }
+  ],
+  "persistence": "GITHUB_RECONCILED_FROM_LIBRARY"
+}
