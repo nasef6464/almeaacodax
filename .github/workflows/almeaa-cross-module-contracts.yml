@@ -2,7 +2,9 @@ name: ALMEAA Cross-Module Static Contracts
 on:
   push:
     branches: [test/almeaa-isolated-20261008]
-    paths: [.github/workflows/almeaa-cross-module-contracts.yml]
+    paths:
+      - .github/workflows/almeaa-cross-module-contracts.yml
+      - scripts/smoke-content-platform-presentation-defaults-boundary-contract.mjs
   workflow_dispatch:
 permissions:
   contents: read
