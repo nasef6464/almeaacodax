@@ -1,0 +1,39 @@
+{
+  "run": "RUN33",
+  "date": "2026-10-09",
+  "scope": "TAH-MATH YLM26",
+  "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+  "newActualOfficialSourceVisualReviews": 176,
+  "sourceQuestionCodesReviewed": "YLM26 previously untranscribed 176 codes: pages P005-P010, P048-P094; exact per-code crop evidence in RUN33 ZIP",
+  "sourceOptionSetsManuallyTranscribedAndMathAdjudicated": 88,
+  "sourceOptionValuesTranscribed": 352,
+  "sourceMathVerifiedAmong88": 85,
+  "sourceSemanticHoldsAmong88": 3,
+  "sourceCropAutoSegmentationPages": 48,
+  "sourceQuestionCropImages": 176,
+  "sourceContactSheetsManuallyInspected": 22,
+  "sourceInventoryUnique": 326,
+  "previousRUN21Through32ReviewEvents": 2149,
+  "reviewEventsThroughRUN33": 2325,
+  "fullyPedagogicallyClosed": 0,
+  "productionMutation": false,
+  "productionImageParity": "NOT_TESTED",
+  "publishedRUN32GlyphCorrectionsPending": [
+    {
+      "code": "TAH-MATH-YLM26-P028-Q07",
+      "option": "D",
+      "correct": "|4x|"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P034-Q01",
+      "option": "D",
+      "correct": "5n³m"
+    }
+  ],
+  "additionalSourceCaveat": {
+    "code": "TAH-MATH-YLM26-P066-Q14",
+    "note": "log_4(x^4)=4 has x=+4 and x=-4; only +4 offered. Do not auto-approve without domain convention."
+  },
+  "status": "IN_PROGRESS_NOT_GREEN",
+  "next": "Publish source-reviewed RUN33 per-question evidence and correct RUN32 glyphs, reconcile YLM26 full options/pedagogy and images, then COL26; no production changes before rollback manifest."
+}
