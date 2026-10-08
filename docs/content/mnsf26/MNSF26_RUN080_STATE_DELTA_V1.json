@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN080",
+  "stage": "QA_LOCK",
+  "headAtStart": {
+    "branch": "e71906bd8eaca6982fab9076bbadfd556f090798",
+    "main": "4729480734a198422105e988c32f656af6a1a8d8"
+  },
+  "reconciledPrior": {
+    "RUN076": 1689,
+    "RUN077": 1747,
+    "RUN078": 1763,
+    "RUN079": 1782
+  },
+  "newUniqueDirectImageInspected": 134,
+  "previousReviewed": 1782,
+  "reviewedProvisional": 1916,
+  "remainingProvisional": 213,
+  "totalActive": 2129,
+  "sourceImageSHA256Verified": 134,
+  "hashMismatches": 0,
+  "qaOutcomes": {
+    "QA_MATH_PASS_TAXONOMY_PENDING": 92,
+    "QA_REVIEW_MASTER_PAYLOAD_PENDING": 21,
+    "QA_REVIEW_REQUIRED": 13,
+    "QA_HOLD_REVIEW_PRESERVED": 8
+  },
+  "criticalReviewKeys": [
+    "MNSF26-AR-T014-Q06",
+    "MNSF26-AR-T016-Q05",
+    "MNSF26-AR-T016-Q10",
+    "MNSF26-AR-T016-Q17",
+    "MNSF26-AR-T019-Q04",
+    "MNSF26-AR-T019-Q06",
+    "MNSF26-AR-T021-Q08",
+    "MNSF26-AR-T021-Q16"
+  ],
+  "evidence": {
+    "library": "/MNSF26/Run080/MNSF26_RUN080_DIRECT_IMAGE_INDEPENDENT_QA_134_V1.json",
+    "sha256": "4c83f1f0976e56113538a961b4279c8f4df741857b8cf2cf47f2a02628831295",
+    "bundle": "/MNSF26/Run080/MNSF26_RUN080_EVIDENCE_BUNDLE.zip",
+    "bundleSha256": "5a564310e04381c266f5dbd72ddd463a5cc58cc745a71b02b9c261eaa618420f",
+    "source": "Run017 locked original WEBP crops + Run063 index"
+  },
+  "cropLock": "PASS_LOCKED_2135_2135",
+  "questionMastering": "PASS_LOCKED_RUN063_LIBRARY",
+  "qaFullBookPass": false,
+  "taxonomyFullBookPass": false,
+  "dedupeLock": false,
+  "r2UploadLock": false,
+  "importLock": false,
+  "productionE2E": false,
+  "productionServicesUntouched": true,
+  "notes": "Do not count prior Run065 reviewed T14 Q09/Q13/Q20 or T19 Q03/Q14 again; no full master payloads recreated. Master taxonomy requires independent semantic audit."
+}
