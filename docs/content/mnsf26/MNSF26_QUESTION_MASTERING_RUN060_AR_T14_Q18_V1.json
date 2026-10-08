@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN060_AR_T14_RECOVERY",
+  "previouslyCounted": true,
+  "records": [
+    {
+      "id": "MNSF26-AR-T014-Q18",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T014",
+        "sourceLesson": "الأعداد الأولية - العوامل الأولى"
+      },
+      "canonicalMainSkill": "skill_quant_02",
+      "canonicalSubskill": "sub_quant_02_2",
+      "correctAnswer": "د",
+      "answerValue": "7",
+      "stepByStepSolution": "المعنى أن 9 عند قسمته على س يعطي خارجًا ص وباقيًا2؛ إذن 9=س×ص+2، ومن الخيارات س=7 يعطي ص=1 وباقي2.",
+      "educationalExplanation": "نستخدم خوارزمية القسمة: المقسوم=المقسوم عليه×الخارج+الباقي.",
+      "difficulty": "Medium",
+      "difficultyReason": "استرجاع المقسوم عليه من الباقي.",
+      "imageHash": "877845ce70efc7c9979d4d10b938a52ef6c79ca05f44b5c59455dedd67f96ddc",
+      "contentFingerprint": "07548433678761812d077cf79ff419fcbe2b8dfe43462563793c8269ec1ba82f",
+      "ideaFingerprint": "dd160394b83506ef5e8e98b3cdbcdf310aaafab1adfd6c056c826af19269ca9f",
+      "status": "MASTERED"
+    }
+  ]
+}
