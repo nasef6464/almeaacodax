@@ -131,6 +131,7 @@ try {
   assert.match(visible, /الخطوة 1/);
   assert.match(visible, /Step 2/);
   assert.doesNotMatch(visible, /\\textbf|\\n|\\times|\$/);
+  assert.equal(await page.evaluate(() => window.testSpeak.at(-1).text), 'نضرب 2 في 5 يساوي 10.');
   assert.ok(await page.evaluate(() => document.documentElement.scrollWidth) <= 390);
   await page.screenshot({ path: path.join(artifacts, 'mixed-provider-mobile.png') });
   assert.deepEqual(errors, []);

@@ -1,4 +1,19 @@
 import assert from 'node:assert/strict';
+import { spokenTeachingText } from '../components/results/teaching/spokenMath';
+
+assert.equal(spokenTeachingText('نضرب $2 \\times 5 = 10$.', 'ar-SA'), 'نضرب 2 في 5 يساوي 10.');
+assert.equal(spokenTeachingText('Multiply 2 \\times 5 = 10.', 'en-US'), 'Multiply 2 times 5 equals 10.');
+assert.equal(spokenTeachingText('well-known method', 'en-US'), 'well-known method');
+assert.equal(spokenTeachingText('x \\neq -2', 'en-US'), 'x not equal to minus 2');
+assert.equal(spokenTeachingText('\\nu = 5', 'en-US'), 'nu equals 5', 'newline cleanup must not destroy Greek commands');
+assert.equal(spokenTeachingText('\\frac{1}{\\frac{2}{3}}', 'en-US'), 'fraction numerator 1 denominator fraction numerator 2 denominator 3 end fraction end fraction', 'nested fraction grouping must remain unambiguous');
+assert.equal(spokenTeachingText('x^{2-1}', 'ar-SA'), 'x أس 2 ناقص 1 نهاية المؤشر');
+assert.equal(spokenTeachingText('\\sqrt[3]{8}', 'en-US'), 'root of order 3 of 8 end root');
+assert.equal(spokenTeachingText('F = m \\times a', 'en-US'), 'F equals m times a');
+assert.equal(spokenTeachingText('2H_2 + O_2 \\rightarrow 2H_2O', 'en-US'), '2H subscript 2 end index plus O subscript 2 end index yields 2H subscript 2 end index O');
+assert.equal(spokenTeachingText('\\frac{1}{', 'en-US'), 'Refer to the expression shown on the board.');
+assert.equal(spokenTeachingText('\\unknown{x}', 'ar-SA'), 'راجع الصيغة المعروضة على السبورة.');
+assert.equal(spokenTeachingText('**شرح**\\n\\textbf{واضح}', 'ar-SA').includes('\\'), false);
 import { validateTeachingStoryboard } from '../server/src/modules/ai/contracts/teachingStoryboard';
 import { decodeQuestionTeachingPlan, inspectQuestionTeachingPlan, normalizeQuestionTeachingPlan } from '../server/src/modules/ai/application/questionTeachingPlan';
 import { boardAt, sceneDuration } from '../components/results/teaching/boardState';
@@ -96,6 +111,18 @@ spoken[2].onend();
 assert.equal(mainEnded, 1);
 assert.ok(calls.pause > 0 && calls.resume > 0);
 main.cancel(); branch.cancel();
+const remoteArabic = { lang: 'ar-SA', localService: false, name: 'remote' };
+const localArabic = { lang: 'ar-SA', localService: true, name: 'local' };
+const localEnglish = { lang: 'en-US', localService: true, name: 'English' };
+(globalThis as any).window.speechSynthesis.getVoices = () => [remoteArabic, localEnglish, localArabic];
+main.speak('2 \\times 5 = 10', 'ar-SA', () => {});
+assert.equal(spoken.at(-1).text, '2 في 5 يساوي 10');
+assert.equal(spoken.at(-1).voice, localArabic, 'prefer an available local voice in the requested language');
+main.cancel();
+main.speak('2 \\times 5 = 10', 'en-US', () => {});
+assert.equal(spoken.at(-1).text, '2 times 5 equals 10');
+assert.equal(spoken.at(-1).voice, localEnglish);
+main.cancel();
 delete (globalThis as any).window;
 delete (globalThis as any).SpeechSynthesisUtterance;
 // Bounded lesson generation reserves its unchanged output cap for visible JSON.

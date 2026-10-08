@@ -1,5 +1,10 @@
 # ALMEAA — Codex Execution State
 
+## Spoken math continuation — 2026-10-08
+- Baseline current main75d2d54ae533 (#466): production identity/readiness/Vercel/Post Deploy Smoke and captured-provider review UI replay PASS. Original checkout preserved.
+- Branch codex/teaching-board-spoken-math: local supported math speech in Arabic/English, bounded nested parsing and explicit fallback for unsupported notation; prefer available matching local voices, estimate playback from actual spoken text, keep the displayed equations unchanged. No inference/grade/API changes.
+- Additional division owned-review audit3/3 valid on deployed baseline; output435/116/323, correct reference result309705. Physics/chemistry symbolic speech tested locally only; available owned review samples quantitative. Real audible phone/tablet voice/microphone remains NOT PROVEN.
+
 ## Teaching board continuation — 2026-10-08
 - #465 deployed `50b0cd521148`; exact-head 18 SUCCESS/3 SKIPPED, required CI and production readiness/Vercel/Post Deploy Smoke PASS. Real Gemini Arabic/reply/English: 3/3 complete, correct reference result and no hint answer leakage in one owned question; 353/183/254 output tokens, pricing unknown.
 - Focused follow-up `codex/teaching-board-mixed-content`: actual provider mixed text/math rendered safely in existing TeachingBoard, no API or educational data changes. Browser regression 16 checks PASS before direction-only adjustment; final CI pending. Status PARTIAL: deploy renderer, then real phone/tablet voice/microphone and broader subject validation.

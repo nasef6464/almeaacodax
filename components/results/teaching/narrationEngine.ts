@@ -1,4 +1,5 @@
 import { estimateNarrationMs } from './boardState';
+import { spokenTeachingText } from './spokenMath';
 
 export interface NarrationEngine {
   speak(text: string, language: string, onEnd: () => void): void;
@@ -38,6 +39,11 @@ export class BrowserNarrationEngine implements NarrationEngine {
     BrowserNarrationEngine.owner = this;
     this.speech = new SpeechSynthesisUtterance(this.text);
     this.speech.lang = this.language;
+    const voices = window.speechSynthesis.getVoices?.() || [];
+    const matching = voices.filter(voice => voice.lang.toLowerCase().split('-')[0] === this.language.toLowerCase().split('-')[0]);
+    const voice = matching.find(voice => voice.localService && voice.lang.toLowerCase() === this.language.toLowerCase())
+      || matching.find(voice => voice.localService) || matching.find(voice => voice.lang.toLowerCase() === this.language.toLowerCase()) || matching[0];
+    if (voice) this.speech.voice = voice;
     this.speech.rate = 0.94;
     this.speech.onend = () => this.finish();
     this.speech.onerror = () => {
@@ -61,15 +67,15 @@ export class BrowserNarrationEngine implements NarrationEngine {
   speak(text: string, language: string, onEnd: () => void) {
     this.cancel();
     this.completion = onEnd;
-    this.text = text;
+    this.text = spokenTeachingText(text, language);
     this.language = language;
     this.interrupted = false;
-    this.remaining = estimateNarrationMs(text);
+    this.remaining = estimateNarrationMs(this.text);
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
       // Some devices never dispatch end/error. This is a content-sized watchdog.
       this.remaining = Math.min(180000, this.remaining * 3 + 5000);
       try { this.attachSpeech(); }
-      catch { this.releaseSpeech(); this.remaining = estimateNarrationMs(text); }
+      catch { this.releaseSpeech(); this.remaining = estimateNarrationMs(this.text); }
     }
     this.arm();
   }
