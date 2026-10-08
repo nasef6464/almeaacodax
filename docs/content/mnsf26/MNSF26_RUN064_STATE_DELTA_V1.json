@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN064",
+  "date": "2026-10-08",
+  "exactHeadsAtStart": {
+    "branch": "541e9ce4dc02dbdafec5d59dcb5d6934a8619276",
+    "main": "f40a785ee777a0be16e48f70727793e8f9ee0695"
+  },
+  "cropLock": {
+    "status": "PASS_LOCKED",
+    "total": 2135,
+    "arithmetic": 1204,
+    "geometry": 931,
+    "actualCropShaVerified": 2135,
+    "hashMismatches": 0
+  },
+  "questionMastering": {
+    "status": "PASS_LOCKED_IN_LIBRARY_DELTA_PENDING_GITHUB_SYNC",
+    "canonicalIndexSha256": "9aebe074865fedf4a63b9f89ae768012ca2f2f03d9977f1daf87aebfe1f67aac",
+    "uniqueSourceKeys": 2135,
+    "active": 2129,
+    "mastered": 1777,
+    "hold": 319,
+    "review": 33,
+    "suppressions": 5,
+    "quarantine": 1,
+    "fullPayloadsInLibrary": 2091,
+    "githubOnly": 38,
+    "missingSourceKeys": 0,
+    "missingRequiredFields": 0
+  },
+  "githubReconciliation": {
+    "newRun063MasterRecordsPersisted": 76,
+    "persistedFiles": [
+      "MNSF26_RUN063_AR_T004_DIRECT_MASTERED_16_V1.json",
+      "MNSF26_RUN063_AR_T006_DIRECT_MASTERED_20_V1.json",
+      "MNSF26_RUN063_AR_T008_DIRECT_MASTERED_11_V1.json",
+      "MNSF26_RUN063_REMAINING_29_DIRECT_MASTERING_V1.json"
+    ],
+    "run063LibraryOnlyRemaining": 39,
+    "run062LibraryOnlyRemaining": 3,
+    "blockedBySafety": [
+      "Run063 T005 16",
+      "Run063 T007 15",
+      "Run063 corrected 8",
+      "Execution State update"
+    ],
+    "masteringLockEvidencePersisted": true
+  },
+  "qa": {
+    "status": "IN_PROGRESS_NOT_PASS_LOCKED",
+    "independentFullBookStructuralCheck": 2135,
+    "sourceImageHashVerified": 2135,
+    "independentVisualImagesReviewed": 52,
+    "samplePass": 41,
+    "holdReviewPreserved": 10,
+    "newReviewRequired": 1,
+    "remainingIndependentSemantic": 2077,
+    "blockingFinding": "MNSF26-AR-T057-Q10: answer 12 does not distinguish 12 مساءً vs 12 صباحًا; REVIEW pending",
+    "report": "MNSF26_RUN064_INDEPENDENT_QA_VISUAL_52_AND_FULLBOOK_HASH_AUDIT_V1.json"
+  },
+  "gates": {
+    "dedupe": "NOT_STARTED",
+    "r2": "NOT_STARTED",
+    "import": "NOT_STARTED",
+    "productionE2E": "NOT_STARTED"
+  },
+  "officialStateUpdate": "BLOCKED_BY_CONNECTOR_SAFETY_CHECK; this delta is source of truth until reconciled",
+  "productionServicesUntouched": true
+}
