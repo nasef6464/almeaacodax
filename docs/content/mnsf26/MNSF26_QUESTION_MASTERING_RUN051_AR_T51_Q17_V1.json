@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN051_AR_T51",
+  "directImageInspection": true,
+  "sourceCropArchive": "/MNSF26/Run017/mnsf26_arithmetic_crops_run017.zip",
+  "sourceInventory": "/MNSF26/Run017/MNSF26_FULLBOOK_CROP_INVENTORY_V1.json",
+  "masteredCount": 1,
+  "holdCount": 0,
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T051-Q17",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "testNumber": 51,
+        "pdfPage": 103,
+        "sourceSkillLabel": "الساعات",
+        "printedQuestionNumber": 17,
+        "cropFile": "AR/AR-T051-Q17.webp",
+        "cropSha256": "9c78cb22ee351f5dd2b003bfae9bd9080d315d6a3bb076abe885a4a75341adb3",
+        "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
+      },
+      "imageHash": "9c78cb22ee351f5dd2b003bfae9bd9080d315d6a3bb076abe885a4a75341adb3",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
+      "status": "MASTERED",
+      "questionText": "سيارة انطلقت 1 مساء بسرعة40 كم/ساعة، وأخرى من النقطة نفسها 1:30 بسرعة50؛ متى تلحق بها؟",
+      "canonicalMainSkill": "main_quant_12",
+      "canonicalSubskill": "sub_quant_12_2",
+      "correctAnswer": "3:30 مساءً",
+      "stepByStepSolution": "تقدم الأولى20 كم؛ السرعة النسبية10 كم/ساعة؛ تحتاج الثانية ساعتين بعد1:30.",
+      "educationalExplanation": "المهارة: لحاق سيارتين مع فارق انطلاق؛ نقرأ معطيات السؤال من الصورة ونطبّق العلاقة الحسابية ثم نراجع الناتج مع المطلوب.",
+      "difficulty": "Medium",
+      "difficultyReason": "تتطلب ربط أكثر من معطى أو تحويل وحدات في لحاق سيارتين مع فارق انطلاق.",
+      "contentFingerprint": "e5fe97c584580577fb1fa11d985a18c1220c5673d1caef98aed52d45d3007f13",
+      "ideaFingerprint": "6844b7efa87fb103d03359a4d814966d56ce1efd157dcc2a50cdbbc8d39edd3e"
+    }
+  ],
+  "part": "Q17"
+}
