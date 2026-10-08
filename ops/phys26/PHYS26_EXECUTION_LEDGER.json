@@ -44,17 +44,21 @@
     "canonicalQuestionsVerified": 0,
     "imageCropsVerified": 0,
     "importedQuestions": 0,
-    "drillsApproved": 0
+    "drillsApproved": 0,
+    "liveSubjectBaselineVerified": 1,
+    "existingGenericPhysicsSkillsProtected": 9,
+    "historicalSkillProgressRowsProtected": 36
   },
   "currentRun": {
-    "result": "SOURCE_BASELINE_VERIFIED_LOCALLY",
+    "result": "PHYS26_PDF_FINGERPRINT_AND_READONLY_ATLAS_BASELINE",
     "publishedToProduction": false,
     "tests": "PENDING_GITHUB_VERIFIER",
     "notes": [
       "Main and subskill counts structurally checked from attached candidate JSON",
       "Third-secondary foundation contents absent from current foundation PDF",
-      "Actual question inventory not yet counted; commercial rights not verified"
+      "Actual question inventory not yet counted; commercial rights not verified",
+      "Verified physics subject sub_1784980706034: 0 questions, 9 generic old skills, 0 subject quizzes, 36 historical progress rows matching subject/old skill IDs. Non-destructive taxonomy required."
     ]
   },
-  "next": "Freeze candidate taxonomy artifact in repo, check read-only current Physics subject/skills references, then build source-occurrence inventory for both sections"
+  "next": "Keep 9 legacy skill IDs untouched; finish source-question/lesson inventory and confirm main/subskill semantic mapping, then design isolated PHYS26 IDs and links"
 }
