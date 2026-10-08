@@ -10,6 +10,13 @@ The three user-provided 2026 Yelo PDFs are recorded with page count, byte size a
 
 **Important coverage distinction:** the foundation PDF contains 13 indexed lessons ending at thermal physics (first/second secondary); its third-secondary foundation section is explicitly absent. The question PDF contains 31 indexed lessons, both question sections. Supplemental summaries are references to laws, definitions and diagrams, not a third-secondary foundation substitute. Do not claim missing lessons are already complete. Rights clearance is required for any public reuse of protected source pages/questions.
 
+## Read-only production physics baseline — verified 2026-10-08
+- Atlas `almeaa`, subject `sub_1784980706034` / **الفيزياء**, path `p_1777779653351`.
+- Physics question records: **0**; legacy generic Physics Skill rows: **9** (none with subskills); quizzes directly scoped to Physics: **0**.
+- Historical `skillprogresses` records matching Physics subject or any of its legacy skill IDs: **36**.
+- **Do not delete, rename or repurpose those nine legacy skill IDs**. Build new canonical PHYS26 IDs and preserve history. Any future reference migration needs independent integrity and rollback proof.
+- All checks above were read-only; no Atlas writes were performed.
+
 ## Target taxonomy (CANDIDATE ONLY)
 - Approximate aim: **25 main / 90 subskills**; verified structural totals from the prior candidate artifact, not yet per-question certified.
 - All **31 source lesson groups** have a proposed main-skill parent.
