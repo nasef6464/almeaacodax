@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN060_AR_T12_RECOVERY",
+  "previouslyCounted": true,
+  "records": [
+    {
+      "id": "MNSF26-AR-T012-Q11",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T012",
+        "sourceLesson": "الأعداد الأولية - العوامل الأولى"
+      },
+      "canonicalMainSkill": "skill_quant_02",
+      "canonicalSubskill": "sub_quant_02_3",
+      "correctAnswer": "أ",
+      "answerValue": "1999",
+      "stepByStepSolution": "1110 و110 زوجيان، و111 يقبل القسمة على3؛ يبقى 1999، ولا يقبل القسمة على أي عدد أولي حتى √1999، لذا هو أولي.",
+      "educationalExplanation": "نستبعد المركبات بقواعد القسمة ثم نتحقق من المرشح المتبقي.",
+      "difficulty": "Medium",
+      "difficultyReason": "يتطلب استبعادًا ثم تحققًا من الأولية.",
+      "imageHash": "cc99ca4ba34f7eca1a07fa0c664d3c478734b2068f2bcf3cd9326450402f89ae",
+      "contentFingerprint": "6518815ff0623ab2e201282bc13192e88a7288c45c00f20f317dbf82918e8aad",
+      "ideaFingerprint": "61fbc8696ff05ae863398dc23852fcb40d3cfda6635312b2750a8cc3778c0aa1",
+      "status": "MASTERED"
+    }
+  ]
+}
