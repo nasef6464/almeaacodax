@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN058_GEO_T41_LIBRARY_RECONCILIATION",
+  "records": [
+    {
+      "sourceKey": "MNSF26-GEO-T041-Q04",
+      "sourceProvenance": {
+        "sourcePart": "الهندسة",
+        "bookCode": "GEO",
+        "testNumber": 41,
+        "pdfPage": 79,
+        "sourceSkillLabel": "مراجعة مسائل الهندسة من الكتاب",
+        "sourceTopic": "مسائل الهندسة المتنوعة",
+        "sourceLesson": "تمارين هندسة مرقمة حسب الاختبار",
+        "printedQuestionNumber": 4,
+        "cropFile": "MNSF26-GEO-T041-Q04.webp",
+        "cropSha256": "6deb7f9cf2a32cecd34eebb73c9369fcfcaf10e99a5e4b83c1c893a8268b7437",
+        "cropContract": "EMBEDDED_XOBJECT_OR_EXACT_COMPOSITE_SLICE"
+      },
+      "imageHash": "6deb7f9cf2a32cecd34eebb73c9369fcfcaf10e99a5e4b83c1c893a8268b7437",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T41_Q04",
+      "status": "MASTERED",
+      "questionText": "مستطيل مساحته مساوية لمثلث قائم حاصل ضرب ضلعيه المتعامدين100؛ أوجد مساحة المستطيل.",
+      "canonicalMainSkill": "main_quant_20",
+      "canonicalSubskill": "sub_quant_20_4",
+      "correctAnswer": "50 (ج)",
+      "stepByStepSolution": "مساحة المثلث=100/2=50؛ مساحة المستطيل مساوية لها.",
+      "educationalExplanation": "من الصورة: مساحة المثلث=100/2=50؛ مساحة المستطيل مساوية لها.",
+      "difficulty": "Easy",
+      "difficultyReason": "قانون مباشر.",
+      "contentFingerprint": "f86b0f96e9f93039e2b3e78fddde34020d2198e996f0afe518eb11b715a650dd",
+      "ideaFingerprint": "1a039d800548e162bca00740d70b06c6417885a0747dafbdefd1463c9ff212a0"
+    }
+  ]
+}
