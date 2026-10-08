@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN051_AR_T51",
+  "directImageInspection": true,
+  "sourceCropArchive": "/MNSF26/Run017/mnsf26_arithmetic_crops_run017.zip",
+  "sourceInventory": "/MNSF26/Run017/MNSF26_FULLBOOK_CROP_INVENTORY_V1.json",
+  "masteredCount": 1,
+  "holdCount": 0,
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T051-Q11",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "testNumber": 51,
+        "pdfPage": 102,
+        "sourceSkillLabel": "الساعات",
+        "printedQuestionNumber": 11,
+        "cropFile": "AR/AR-T051-Q11.webp",
+        "cropSha256": "d69b0e512e59e1a477ee5acf74197c038854a8a95adbd041a0e738607e1e7437",
+        "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
+      },
+      "imageHash": "d69b0e512e59e1a477ee5acf74197c038854a8a95adbd041a0e738607e1e7437",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
+      "status": "MASTERED",
+      "questionText": "ساعة تتأخر ثلاث دقائق كل ساعة وضبطت ثم أعيد ضبطها بعد يومين؛ كم درجة دار عقرب الدقائق خلال دقائق التأخر؟",
+      "canonicalMainSkill": "main_quant_15",
+      "canonicalSubskill": "sub_quant_15_2",
+      "correctAnswer": "864 درجة",
+      "stepByStepSolution": "التأخر2×24×3=144 دقيقة؛ عقرب الدقائق يقطع6 درجات/دقيقة؛ 144×6=864.",
+      "educationalExplanation": "المهارة: زاوية دوران عقرب الدقائق عبر تأخر الساعة؛ نقرأ معطيات السؤال من الصورة ونطبّق العلاقة الحسابية ثم نراجع الناتج مع المطلوب.",
+      "difficulty": "Medium",
+      "difficultyReason": "تتطلب ربط أكثر من معطى أو تحويل وحدات في زاوية دوران عقرب الدقائق عبر تأخر الساعة.",
+      "contentFingerprint": "06f7c6f33f1e6f9aceba322e8fc20cfb87573cb1696472fae75aec936b24933a",
+      "ideaFingerprint": "960ee10279dd8a0b637a8648777a8acde62c802c20629d240b1a16dc3435a2e9"
+    }
+  ],
+  "part": "Q11"
+}
