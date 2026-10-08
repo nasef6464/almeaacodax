@@ -1,5 +1,9 @@
 # ALMEAA — Codex Execution State
 
+## Teaching board continuation — 2026-10-08
+- #465 deployed `50b0cd521148`; exact-head 18 SUCCESS/3 SKIPPED, required CI and production readiness/Vercel/Post Deploy Smoke PASS. Real Gemini Arabic/reply/English: 3/3 complete, correct reference result and no hint answer leakage in one owned question; 353/183/254 output tokens, pricing unknown.
+- Focused follow-up `codex/teaching-board-mixed-content`: actual provider mixed text/math rendered safely in existing TeachingBoard, no API or educational data changes. Browser regression 16 checks PASS before direction-only adjustment; final CI pending. Status PARTIAL: deploy renderer, then real phone/tablet voice/microphone and broader subject validation.
+
 ## Question Bank V2 — Live Production Bank Execution (295 Questions Ingested, 0 Unlinked — Book 1 100% COMPLETE)
 - Status: `LIVE / 100% VERIFIED & INGESTED IN MONGODB ATLAS` on 2026-09-26.
 - Database Bank Total: **295 Questions** (Zero unlinked, 100% taxonomy-mapped to Section, Main Skill, and Sub-Skill).

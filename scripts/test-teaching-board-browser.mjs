@@ -120,8 +120,21 @@ try {
   await practice.getByRole('button', { name: 'أكمل الشرح', exact: true }).click();
   await page.getByText('نكتب سبعة وعشرين كقوة للثلاثة.', { exact: true }).waitFor();
   assert.equal(await page.evaluate(() => window.testRequests.length), countBeforeSkip);
+  await page.getByRole('button', { name: 'إغلاق المعلم الذكي', exact: true }).click();
+  await page.evaluate(() => { window.testPractice = false; window.testMixed = true; });
+  await page.getByRole('button', { name: 'فتح', exact: true }).click();
+  const board = page.getByTestId('teaching-board');
+  await board.getByText('العملية هي ضرب.', { exact: false }).waitFor();
+  assert.equal(await board.locator('.katex-error').count(), 0);
+  assert.equal(await board.locator('.katex').count(), 3, 'real-provider mixed prose renders isolated equations');
+  const visible = await board.innerText();
+  assert.match(visible, /الخطوة 1/);
+  assert.match(visible, /Step 2/);
+  assert.doesNotMatch(visible, /\\textbf|\\n|\\times|\$/);
+  assert.ok(await page.evaluate(() => document.documentElement.scrollWidth) <= 390);
+  await page.screenshot({ path: path.join(artifacts, 'mixed-provider-mobile.png') });
   assert.deepEqual(errors, []);
-  console.log(JSON.stringify({ status: 'PASS', artifacts, checks: ['pause', 'contextual interruption', 'saved resume', 'speech-end advancement', 'no animation requests', 'tablet/mobile', 'English', 'reduced motion', 'invalid-plan fallback', 'stale reply', 'practice waits before solution', 'local progressive hints', 'failed attempt retry', 'contextual attempt and resume', 'skip without request and reset'] }));
+  console.log(JSON.stringify({ status: 'PASS', artifacts, checks: ['pause', 'contextual interruption', 'saved resume', 'speech-end advancement', 'no animation requests', 'tablet/mobile', 'English', 'reduced motion', 'invalid-plan fallback', 'stale reply', 'practice waits before solution', 'local progressive hints', 'failed attempt retry', 'contextual attempt and resume', 'skip without request and reset', 'real-provider mixed Arabic/English/math rendering'] }));
 } finally {
   await browser?.close();
   await server.close();

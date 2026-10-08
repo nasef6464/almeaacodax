@@ -4,6 +4,11 @@ Status: PARTIAL. PR #459; continuing from `8f64fee146d927d57517eb269edf4d9745fed
 
 ## Post-merge runtime checkpoint
 
+- PR #465 exact head `4427ed9151e9812ea7235c8ae89b53572e0a2de7`: 18 SUCCESS, 3 SKIPPED, all required checks PASS. Merge `50b0cd521148eb403ed9398eed1b124a7ee780de`: canonical API/readiness, Vercel production deployment 6930723700 and Post Deploy Smoke 37749436630 PASS.
+- Real owned-review audit: 3/3 complete Gemini 2.5 Flash responses, no fallback; Arabic 5,367 ms / 353 output tokens, incorrect-attempt feedback 3,871 ms / 183, English 4,150 ms / 254. Both lessons have two scenes, two local hints, checkpoint before solution; reply has one scene. Source: local `scratch/teaching-board-live-v3.json`. Ledger usage actual, pricing unknown; zero recorded cost does not establish billing cost.
+- Manual sample review: the trusted units-digit result is zero; both languages agree, hints do not expose the result, feedback identifies addition versus multiplication. This is one existing owned question, not multi-subject certification.
+- Actual responses combined prose and dollar math inside formula fields and emitted literal newline/formatting escapes. Frontend repair renders prose in its detected direction and isolated equations with bounded untrusted KaTeX; invalid equations fall back to escaped React text. No repair inference or additional server request. Browser fixture reproduces Arabic/English/feedback formatting, checks no KaTeX errors, readable math and 390px overflow; real phone/tablet audible voice and microphone remain unverified.
+
 - PR #459 runtime head `919bed2f`: 19 CI SUCCESS, 3 SKIPPED, all three required checks PASS; merged as `1984efca10740f726c32df325b87591b62806810`.
 - Canonical API confirmed exact merge identity and readiness, Vercel Production deployment status SUCCESS, Post Deploy Smoke SUCCESS.
 - One existing owned-review Arabic lesson probe returned the safe trusted explanation fallback. Visible output 435 tokens, input 1,440, total 1,875: the thinking-token gap disappeared, but the storyboard was invalid. Explanation correctness is not certified from this fallback.
