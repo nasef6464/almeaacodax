@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN067",
+  "stage": "QA_LOCK",
+  "status": "FAIL_CLOSED",
+  "sourceHead": "bfff909eb2916805ccf7adc32c895646ddde5741",
+  "sourceMainHead": "7f6fb2b51308ac397cba0dd65b9f05b9cfb7008b",
+  "newIndependentGeometryReviewed": 70,
+  "qaPass": 66,
+  "qaReviewRequired": 4,
+  "source": "Run021 original geometry crop contact sheets, independently compared to Run054 master answers and Run066 pending verdicts",
+  "reviewKeys": [
+    "MNSF26-GEO-T005-Q11",
+    "MNSF26-GEO-T007-Q03",
+    "MNSF26-GEO-T009-Q17",
+    "MNSF26-GEO-T010-Q15"
+  ],
+  "expectedAnswers": [
+    "A first larger",
+    "C equal",
+    "C 270",
+    "B second larger"
+  ],
+  "qaFullBookPass": false,
+  "dedupeR2ImportProductionUntouched": true
+}
