@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN060_AR_T12_LIBRARY_PAYLOAD_RECOVERY",
+  "previouslyCounted": true,
+  "sourceLibrary": "/MNSF26/Run030/MNSF26_QUESTION_MASTERING_RUN030_AR_T12_V1.json",
+  "records": [
+    {
+      "id": "MNSF26-AR-T012-Q17",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T012",
+        "sourceLesson": "الأعداد الأولية - العوامل الأولى"
+      },
+      "canonicalMainSkill": "skill_quant_02",
+      "canonicalSubskill": "sub_quant_02_3",
+      "correctAnswer": "د",
+      "answerValue": "2",
+      "stepByStepSolution": "مجموع ثلاثة أعداد أولية يساوي14. لو كانت الثلاثة فردية لكان المجموع فرديًا؛ لذا أحدها2، وبالفعل 2+5+7=14.",
+      "educationalExplanation": "نستخدم الزوجية: العدد الأولي الزوجي الوحيد هو2.",
+      "difficulty": "Medium",
+      "difficultyReason": "استدلال بالزوجية ثم تحقق.",
+      "imageHash": "dce3a229031eda2024831761c78a87375c1c0a7776db2e12904b11e7634c0593",
+      "contentFingerprint": "b9bf18f0ff9b5da206290ff1410d95f2d8002636bde3097a1294fbce9c5a97a5",
+      "ideaFingerprint": "e035bee805d5dc5dc846dc2839fb6637d061481d7e6808d5840452aedd5f8f51",
+      "status": "MASTERED"
+    },
+    {
+      "id": "MNSF26-AR-T012-Q18",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T012",
+        "sourceLesson": "الأعداد الأولية - العوامل الأولى"
+      },
+      "canonicalMainSkill": "skill_quant_02",
+      "canonicalSubskill": "sub_quant_02_3",
+      "correctAnswer": "د",
+      "answerValue": "8",
+      "stepByStepSolution": "العدد 8=2×4 وله قواسم غير1 ونفسه، لذلك هو غير أولي.",
+      "educationalExplanation": "نفحص الخيارات وفق تعريف العدد الأولي.",
+      "difficulty": "Easy",
+      "difficultyReason": "تمييز مباشر للعدد المركب.",
+      "imageHash": "188f0a0dba00f105715c91dc270eda48b75382a040d457e9cb0f95d88e56d0c1",
+      "contentFingerprint": "740fe4ec60e6c446b25ce205d23f5e9a09bf9ad2c3025b8c647efbf409d2361b",
+      "ideaFingerprint": "3aa585563cdb68458abbedb385dd1abcf677bc663decffe6e2996975d23aadff",
+      "status": "MASTERED"
+    },
+    {
+      "id": "MNSF26-AR-T012-Q19",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T012",
+        "sourceLesson": "الأعداد الأولية - العوامل الأولى"
+      },
+      "canonicalMainSkill": "skill_quant_02",
+      "canonicalSubskill": "sub_quant_02_3",
+      "correctAnswer": "ج",
+      "answerValue": "كسر",
+      "stepByStepSolution": "عند قسمة عدد أولي على عدد أولي آخر مختلف عنه لا يقسم أحدهما الآخر، فيكون الناتج كسرًا غير صحيح.",
+      "educationalExplanation": "الأعداد الأولية المختلفة لا تشترك في عامل يجعل القسمة عددًا صحيحًا.",
+      "difficulty": "Easy",
+      "difficultyReason": "تطبيق تعريف الأولية على القسمة.",
+      "imageHash": "e396bd06d55521470467697e24da8ffd9367e89588e2f71312cefa18bda9260d",
+      "contentFingerprint": "ecf2d2cb96f40639f3c3fd1dc0728d15c52338e0589b358906fecee2623d8e83",
+      "ideaFingerprint": "78bb0a4a1033dc88dcb6451e2df3a28fdc0bc7790574a33cad432d30405794c1",
+      "status": "MASTERED"
+    },
+    {
+      "id": "MNSF26-AR-T012-Q20",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T012",
+        "sourceLesson": "الأعداد الأولية - العوامل الأولى"
+      },
+      "canonicalMainSkill": "skill_quant_02",
+      "canonicalSubskill": "sub_quant_02_3",
+      "correctAnswer": "ب",
+      "answerValue": "6",
+      "stepByStepSolution": "الأعداد الأولية من10 إلى30 هي 11،13،17،19،23،29؛ عددها6.",
+      "educationalExplanation": "نحصر الأعداد في المدى ونستبعد ما له قاسم.",
+      "difficulty": "Easy",
+      "difficultyReason": "حصر أوليات في مدى قصير.",
+      "imageHash": "25a11ab428ad2547acbdd74c221a9e979e449ada5965c598423a0f2182897a9f",
+      "contentFingerprint": "3879d3e1f7c56985db19faa1b245f08aa27b190b80f98c9636aa05855e8555d5",
+      "ideaFingerprint": "0c668d1761344482bd5d596b41d54d4a0bd28724ec626b83c5af8c221ca55bf1",
+      "status": "MASTERED"
+    }
+  ]
+}
