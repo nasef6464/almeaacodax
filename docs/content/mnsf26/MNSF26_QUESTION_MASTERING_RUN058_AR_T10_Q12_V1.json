@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN058_AR_T10_DIRECT_VISUAL",
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T010-Q12",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+        "testNumber": 10,
+        "pdfPage": 18,
+        "sourceSkillLabel": "ترتيب العمليات – قابلية القسمة",
+        "sourceTopic": "تصنيف المصدر محفوظ؛ رياضيات السؤال هي معيار الربط",
+        "sourceLesson": "الحساب والجبر، الاختبار 010، السؤال 12",
+        "printedQuestionNumber": 12,
+        "cropFile": "mnsf26_fullbook_crops/AR/AR-T010-Q12.webp",
+        "cropSha256": "61e805c6134e299fb7435af1d7e00e1233508a02c2c9e875cb2b84bf7179542c",
+        "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
+      },
+      "imageHash": "61e805c6134e299fb7435af1d7e00e1233508a02c2c9e875cb2b84bf7179542c",
+      "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN058_2026-10-08_T010_Q12",
+      "status": "REVIEW",
+      "questionText": "قارن4×2×5 مع10−10×4.",
+      "canonicalMainSkill": null,
+      "canonicalSubskill": null,
+      "correctAnswer": null,
+      "stepByStepSolution": null,
+      "educationalExplanation": "غير معتمد للنشر: ترتيب التعبير الثاني في الصورة العربية قد يقرأ على نحو مختلف؛ يلزم تحكيم اتجاه الصيغة قبل الاعتماد.",
+      "difficulty": null,
+      "difficultyReason": "ترتيب التعبير الثاني في الصورة العربية قد يقرأ على نحو مختلف؛ يلزم تحكيم اتجاه الصيغة قبل الاعتماد.",
+      "contentFingerprint": "603b771bd36b661dc245a85c9d5e8545565484519bc516aa613dbe6fe74cdb6a",
+      "ideaFingerprint": "58c966ce29373c9446c2a1bb9bdb76ed1f97e2daa71d6e14ade3ee187f30a80d",
+      "holdReason": "ترتيب التعبير الثاني في الصورة العربية قد يقرأ على نحو مختلف؛ يلزم تحكيم اتجاه الصيغة قبل الاعتماد.",
+      "proposedCanonicalSubskill": "sub_quant_01_4"
+    }
+  ]
+}
