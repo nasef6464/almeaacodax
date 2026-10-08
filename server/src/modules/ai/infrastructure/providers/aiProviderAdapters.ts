@@ -10,6 +10,7 @@ export type AiProviderRuntime = {
 };
 export type AiProviderCallOptions = {
   disableThinking?: boolean;
+  jsonSchema?: Record<string, unknown>;
   timeoutMs?: number;
   maxOutputTokens?: number;
   allowPaid?: boolean;
@@ -161,6 +162,7 @@ export const createAiProviderAdapters = (config: AdapterConfig) => {
                 contents: [{ parts }],
                 generationConfig: {
                   ...(responseMimeType ? { responseMimeType } : {}),
+                  ...(responseMimeType && options.jsonSchema ? { responseJsonSchema: options.jsonSchema } : {}),
                   ...(options.maxOutputTokens ? { maxOutputTokens: options.maxOutputTokens } : {}),
                   ...(options.disableThinking && /^gemini-2\.5-flash(?:$|-)/.test(model)
                     ? { thinkingConfig: { thinkingBudget: 0 } } : {}),

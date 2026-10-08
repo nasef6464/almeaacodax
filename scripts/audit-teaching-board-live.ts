@@ -50,7 +50,15 @@ for (const [id, message] of [
 }
 const usage = await request('/ai/interactions?limit=20', { headers });
 report.usage = (usage.body.items || []).filter((item: any) => String(item.metadata?.tutorSessionId || '').startsWith(run)).map((item: any) => ({ provider: item.provider, inputTokens: item.inputTokens, outputTokens: item.outputTokens, totalTokens: item.totalTokens, estimatedCostMicrosUsd: item.estimatedCostMicrosUsd, pricingKnown: item.pricingKnown, usageEstimated: item.usageEstimated, latencyMs: item.latencyMs, diagnostics: item.metadata?.teachingPlanDiagnostics }));
-report.passed = report.cases.length === 3 && report.cases.every((item: any) => item.validPlan && !item.usedFallback) && report.cases[2].language === 'en-US';
+report.acceptance = {
+  threeCompleteResponses: report.cases.length === 3 && report.cases.every((item: any) => item.validPlan && !item.usedFallback),
+  english: report.cases[2]?.language === 'en-US',
+  practiceBeforeSolution: [report.cases[0], report.cases[2]].every(item => item?.storyboard?.scenes.length === 2 && item.storyboard.scenes[0].checkpoint?.hints.length === 2 && !item.storyboard.scenes[1].checkpoint),
+  feedbackWithoutNewPractice: report.cases[1]?.storyboard?.scenes.length === 1 && !report.cases[1].storyboard.scenes[0].checkpoint,
+  actualUsageBounded: report.usage.length === 3 && report.usage.every((item: any) => !item.usageEstimated && item.outputTokens > 0 && item.outputTokens <= 450),
+};
+report.passed = Object.values(report.acceptance).every(Boolean);
+report.manualReviewRequired = ['Reference correctness and hint leakage', 'Audible phone/tablet voice and microphone quality'];
 fs.writeFileSync(out, JSON.stringify(report, null, 2));
 console.log(JSON.stringify({ passed: report.passed, report: out, usageRecords: report.usage.length }));
 if (!report.passed) process.exitCode = 1;
