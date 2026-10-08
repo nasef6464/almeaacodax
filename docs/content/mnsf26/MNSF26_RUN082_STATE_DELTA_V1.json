@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN082",
+  "stage": "QA_LOCK",
+  "baseProvisional": 1956,
+  "newUniqueImageReviews": 168,
+  "reviewedProvisional": 2124,
+  "remainingProvisional": 5,
+  "totalActive": 2129,
+  "qaOutcomes": {
+    "QA_HOLD_REVIEW_PRESERVED": 20,
+    "QA_REVIEW_REQUIRED": 32,
+    "QA_REVIEW_MATH_SOLUTION_PENDING": 71,
+    "QA_REVIEW_MASTER_PAYLOAD_PENDING": 45
+  },
+  "evidenceSHA256": "d2b72435216173cda209d94de929d36b21615422c9e14556341e6871ea8b4998",
+  "evidenceLibrary": "/MNSF26/Run082/MNSF26_RUN082_DIRECT_IMAGE_FAILCLOSED_QA_168_V1.json",
+  "sourceKeyFullBookReindexRequired": true,
+  "qaFullBookPass": false,
+  "taxonomyFullBookPass": false,
+  "productionUntouched": true
+}
