@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN065",
+  "stage": "QUESTION_MASTERING_GITHUB_SYNC",
+  "sourceArtifact": "RUN063_DIRECT_T007_VISUAL_MASTERING",
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T007-Q08",
+      "sourceProvenance": {
+        "sourcePart": "الحساب/الجبر",
+        "bookCode": "AR",
+        "sourceBook": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+        "testNumber": 7,
+        "pdfPage": 12,
+        "sourceSkillLabel": "العمليات على الاعداد",
+        "sourceTopic": "direct visual mathematical classification",
+        "sourceLesson": "AR T007 Q08",
+        "printedQuestionNumber": 8,
+        "cropFile": "AR/AR-T007-Q08.webp",
+        "cropSha256": "9193924e525073fd7af1e3200194a642d2724155dbe389bc88f68d5c6bb9d4ed"
+      },
+      "imageHash": "9193924e525073fd7af1e3200194a642d2724155dbe389bc88f68d5c6bb9d4ed",
+      "visualEvidence": "RUN063_DIRECT_RUN017_WEBP_VISUAL_INSPECTION",
+      "status": "MASTERED",
+      "questionText": "إذا جلس 4 طلاب على كل طاولة بقيت 3 طاولات فارغة، وإذا جلس 3 طلاب بقي 3 بلا مقاعد؛ كم طالبًا؟",
+      "canonicalMainSkill": "skill_quant_07",
+      "canonicalSubskill": "sub_quant_07_2",
+      "correctAnswer": "ج — 48",
+      "stepByStepSolution": "عدد الطاولات ط: الطلاب=4(ط−3)=3ط+3، إذن ط=15؛ عدد الطلاب=4×12=48.",
+      "educationalExplanation": "عدد الطاولات ط: الطلاب=4(ط−3)=3ط+3، إذن ط=15؛ عدد الطلاب=4×12=48.",
+      "difficulty": "Hard",
+      "difficultyReason": "يتطلب بناء معادلة ذات قيود متعددة.",
+      "contentFingerprint": "30573915f5fc826fe086f8ad3bbca2349496d9583715674c856f6447be7c233c",
+      "ideaFingerprint": "b376f33d1108775264189c0bd7d95c9babaeb63e922b59f42066cf66bcefdc78"
+    }
+  ],
+  "persistence": "GITHUB_RECONCILED_FROM_LIBRARY"
+}
