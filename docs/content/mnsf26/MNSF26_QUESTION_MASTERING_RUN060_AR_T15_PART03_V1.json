@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN060_AR_T15_LIBRARY_PAYLOAD_RECOVERY",
+  "previouslyCounted": true,
+  "records": [
+    {
+      "id": "MNSF26-AR-T015-Q16",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T015",
+        "sourceLesson": "جمع الأعداد - المتتابعات - ضرب الأعداد"
+      },
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_3",
+      "correctAnswer": "د",
+      "answerValue": "1086",
+      "stepByStepSolution": "1+2+...+51=51×52÷2=1326. ومجموع 2+4+...+30=2(1+...+15)=240. الفرق=1326−240=1086.",
+      "educationalExplanation": "نحوّل كل سلسلة إلى صيغة مجموع قياسية ثم نطرح.",
+      "difficulty": "Medium",
+      "difficultyReason": "مجموعان مختلفان ثم طرح.",
+      "imageHash": "02ee79ac375b7ef6cc452217d7de168c5e8847c1b90092e721a37017a026e431",
+      "contentFingerprint": "d08b49c4bb57fb17f9582170250f19922fa7a78b5a6ef6a0d2231b7bea384627",
+      "ideaFingerprint": "abf9d778261e418fef7aad7e682226c7bfbcfb0be0439a4dac3ba31aa4adf939",
+      "status": "MASTERED"
+    },
+    {
+      "id": "MNSF26-AR-T015-Q17",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T015",
+        "sourceLesson": "جمع الأعداد - المتتابعات - ضرب الأعداد"
+      },
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_1",
+      "correctAnswer": "ب",
+      "answerValue": "3006003",
+      "stepByStepSolution": "3003×1001=3003×(1000+1)=3,003,000+3,003=3,006,003.",
+      "educationalExplanation": "نفك 1001 إلى1000+1 لتسهيل الضرب.",
+      "difficulty": "Easy",
+      "difficultyReason": "ضرب ذكي بالتوزيع.",
+      "imageHash": "808f69923fa901a24e369ab73408c25bf1226dbc9053b49c48d3856e3a54d481",
+      "contentFingerprint": "d95f1b26e56160f895facf7a97c28c189e2c2f83cb9dac132707189949f4849b",
+      "ideaFingerprint": "74bd03ca1829d60b6c8b563202a54c37059d5708304e452f3dc502a16a9c9e64",
+      "status": "MASTERED"
+    },
+    {
+      "id": "MNSF26-AR-T015-Q18",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T015",
+        "sourceLesson": "جمع الأعداد - المتتابعات - ضرب الأعداد"
+      },
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_1",
+      "correctAnswer": "أ",
+      "answerValue": "القيمة الأولى أكبر",
+      "stepByStepSolution": "52×200=10,400، بينما 53×19=53×(20−1)=1,007؛ إذن القيمة الأولى أكبر.",
+      "educationalExplanation": "نستخدم تفكيكًا سريعًا للضرب ثم نقارن.",
+      "difficulty": "Easy",
+      "difficultyReason": "مقارنة ضربين بحساب ذكي.",
+      "imageHash": "b6b06a2bd2a22addf5ea72389d2de16f1654c26ed151bef22f43db569131ac9c",
+      "contentFingerprint": "7501d3107f03352725caff50b7177bd350d857b27ac74820f7f5db4a9d34a2c1",
+      "ideaFingerprint": "23f6ccc7dd3ac24e4a7e686039368c009490f69e2ffce6225bf50ac8cc9904df",
+      "status": "MASTERED"
+    },
+    {
+      "id": "MNSF26-AR-T015-Q19",
+      "sourceProvenance": {
+        "book": "MNSF26 arithmetic/algebra",
+        "test": "T015",
+        "sourceLesson": "جمع الأعداد - المتتابعات - ضرب الأعداد"
+      },
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_1",
+      "correctAnswer": "أ",
+      "answerValue": "0",
+      "stepByStepSolution": "العامل الثاني يحتوي صفرًا، لذلك حاصل الضرب كله صفر، ورقم العشرات في صفر هو0.",
+      "educationalExplanation": "وجود عامل صفر يجعل حاصل الضرب صفرًا مباشرة.",
+      "difficulty": "Easy",
+      "difficultyReason": "خاصية الضرب في صفر.",
+      "imageHash": "9b9c64b0122776732fb858844aa58ffc66d7e0c9139a4e56180f9031fddf24dc",
+      "contentFingerprint": "b59ab1886ade302332bdd3b388130cdcceaf838d796812c24f364fd177f5a01b",
+      "ideaFingerprint": "ed3f6593ff8e6aedb04575fdd6fc9f993742c99b1b75181bbe38d475f105d2a9",
+      "status": "MASTERED"
+    }
+  ]
+}
