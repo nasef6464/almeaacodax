@@ -13,6 +13,9 @@ const homepageContractFile = 'scripts/smoke-homepage-hero-contract.mjs';
 const routeSource = fs.readFileSync(path.join(root, routeFile), 'utf8').replace(/\r\n/g, '\n');
 const presentationRouteSource = fs.readFileSync(path.join(root, presentationRouteFile), 'utf8').replace(/\r\n/g, '\n');
 const homepageContractSource = fs.readFileSync(path.join(root, homepageContractFile), 'utf8').replace(/\r\n/g, '\n');
+const groupRouteSource = fs.readFileSync(path.join(root, 'server/src/modules/content/http/contentGroupRoutes.ts'), 'utf8').replace(/\r\n/g, '\n');
+const schoolScopeSource = fs.readFileSync(path.join(root, 'server/src/modules/content/application/schoolOperationsScope.ts'), 'utf8').replace(/\r\n/g, '\n');
+const schoolCommercialSource = fs.readFileSync(path.join(root, 'server/src/modules/content/http/contentSchoolCommercialRoutes.ts'), 'utf8').replace(/\r\n/g, '\n');
 const defaultsExists = fs.existsSync(path.join(root, defaultsFile));
 const defaultsSource = defaultsExists ? fs.readFileSync(path.join(root, defaultsFile), 'utf8').replace(/\r\n/g, '\n') : '';
 const integrationRouteSource = fs.readFileSync(path.join(root, integrationRouteFile), 'utf8').replace(/\r\n/g, '\n');
@@ -129,10 +132,21 @@ check('integration defaults keep their own owner and never cross into presentati
 });
 
 check('security and runtime ownership stays outside the presentation-default batch', () => {
+  // School authorization moved to the bounded school operations module.
+  // Assert the actual canonical owner and its mounted call sites, not stale
+  // pre-refactor source text in the 34-line content composition router.
+  assert.ok(schoolScopeSource.includes('export const hasSchoolIdManagementScope = async ('),
+    'school operations module lost canonical management-scope authorization');
+  assert.ok(groupRouteSource.includes('const buildScopedGroupCreatePayload = async ('),
+    'group route lost school-scoped creation guard');
+  assert.ok(groupRouteSource.includes('buildScopedGroupCreatePayload(req.authUser!, payload)'),
+    'group creation no longer invokes school scope guard');
+  assert.ok(schoolCommercialSource.includes('hasSchoolIdManagementScope('),
+    'school commercial routes no longer invoke school authority policy');
   for (const fragment of [
-    'const hasSchoolIdManagementScope = async (',
-    'const buildScopedGroupCreatePayload = async (',
-  ]) assert.ok(routeSource.includes(fragment), `content route lost school security ownership: ${fragment}`);
+    'contentRouter.use(contentGroupRouter);',
+    'contentRouter.use(contentSchoolCommercialRouter);',
+  ]) assert.ok(routeSource.includes(fragment), `content router no longer mounts school authorization owner: ${fragment}`);
   for (const fragment of [
     'export const sanitizeAndValidateExternalPlatforms =',
     'const SENSITIVE_PROVIDER_FIELDS =',
