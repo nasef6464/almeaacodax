@@ -1,5 +1,11 @@
 # ALMEAA — Codex Execution State
 
+## School assessment and classroom audit — 2026-10-08
+- Owner scope: supervisor/teacher/student assessment targeting, analytics and teacher-created classroom participation. Baseline main@877940bda4b4; branch codex/school-assignment-classroom-audit. Original checkout and PR #480 preserved.
+- Fixed frontend class-to-parent school widening in three supervisor surfaces with a shared scope helper matching the unchanged server. Added reminder loading/failure handling and restored isolated supervisor/student CI execution after its skipped legacy dependency.
+- Local scope parity9/9, consumer wiring3/3, supervisor14/14, directed5/5, classroom journey58/58, hardening35/35, frontend typecheck/build PASS. Exact-head required CI and runtime delivery pending. Status PARTIAL; no production educational writes or 20-browser production certification.
+- Action/API/DB/RBAC evidence: docs/audits/SCHOOL_ASSESSMENT_CLASSROOM_JOURNEY_2026-10-08.md. Next: exact-head CI plus isolated journeys and delivery verification.
+
 ## Final reference result continuation — 2026-10-08
 - Current mainc4234fc6 (#475) deployed verified;18SUCCESS3SKIPPED, allrequired CI and production identity/readiness/Vercel/PostDeploySmoke PASS. Real division3/3 complete Arabic/reply/English, raw procedural hints safe, output204/95/191; teacher only stated unit digit, not full requested quotient.
 - Branch codex/teaching-board-reference-result: within existing owned-review steps authority, final scene writes/boxes/speaks trusted option text selected by existing result snapshot index (result review) or existing canonical owned question index (other authorized reviews). Original correctOptionIndex prompt behavior is unchanged; references never enter practice/reply. Cache includes reference index revision4. No grades/API shape/RBAC/data writes changed.
@@ -1543,3 +1549,5 @@
 - Next: exact-head CI followed by configured-provider review journey, valid-plan rate/latency/cost measurement and actual tablet voice testing.
 - Teaching board follow-up 2026-10-08: #476 merge 3751d5fdbc08 verified live after same-commit clear-cache Render rebuild; Vercel/Post Deploy Smoke PASS. Arabic canonical final result 309705 PASS, complete real-provider journey FAIL (empty feedback, then incomplete JSON on bounded retry). Current branch codex/teaching-board-fallback-budget adds board-only 3.8 low thinking/1024 combined budget and accurate actual-model metadata; exact-head CI/production acceptance pending. Do not claim full AI/audio/subject closure.
 - Teaching #478 merge 6e45e281f46e exact-head CI / release/readiness / Vercel / Post Deploy Smoke PASS; fresh owned-review real AI 3/3 valid on actual 3.8 Flash with complete 309705 in Arabic/English. Visual QA exposed pure formula line concatenation; current codex/teaching-board-formula-lines isolates each newline as a separate safe KaTeX block, fixture checks preserve numeric boundaries. Frontend-only follow-up, reuse captured provider responses; no further inference required. Full audible-device/science certification remains PARTIAL.
+
+- School audit PR #481: unchanged runtime c32a49b9 passed isolated backend integration and Smart Classroom Hardening (25 HTTP students, 83 requests, 4 sockets; not browser/production pressure). Admin source smoke updated to call the verified extracted helper and run behavioral parity; final-head CI tracked on https://github.com/nasef6464/almeaacodax/pull/481/checks. Production certification remains PARTIAL.

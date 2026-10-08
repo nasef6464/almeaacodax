@@ -1,3 +1,4 @@
+import { resolveSupervisorSchoolScope } from '../../utils/supervisorSchoolScope';
 // v2.2-utf8-cachebust-force-bundle-refresh
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
@@ -695,22 +696,7 @@ export const AdminDashboard: React.FC = () => {
     }, [aiStatus?.provider]);
 
     const supervisorScopeSummary = useMemo(() => {
-        const directGroupIds = new Set(user.groupIds || []);
-        const directGroups = groups.filter((group) => directGroupIds.has(group.id));
-        const scopedSchoolIds = new Set<string>();
-        if (user.schoolId) scopedSchoolIds.add(user.schoolId);
-        directGroups.forEach((group) => {
-            if (group.type === 'SCHOOL') scopedSchoolIds.add(group.id);
-            if (group.parentId) scopedSchoolIds.add(group.parentId);
-        });
-
-        const scopedGroupIds = new Set<string>(directGroupIds);
-        groups.forEach((group) => {
-            if (group.parentId && scopedSchoolIds.has(group.parentId)) {
-                scopedGroupIds.add(group.id);
-            }
-        });
-
+        const { schoolIds: scopedSchoolIds, groupIds: scopedGroupIds } = resolveSupervisorSchoolScope(user, groups);
         const scopedGroupList = groups.filter((group) => scopedGroupIds.has(group.id) || scopedSchoolIds.has(group.id));
         const scopedStudents = users.filter((item) => {
             if (item.role !== Role.STUDENT) {

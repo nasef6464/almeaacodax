@@ -1,3 +1,4 @@
+import { resolveSupervisorSchoolScope } from '../../../utils/supervisorSchoolScope';
 import { useMemo } from 'react';
 import { useStore } from '../../../store/useStore';
 import { Quiz, QuizResult } from '../../../types';
@@ -30,26 +31,7 @@ export const useSupervisorAssessmentScope = (tabFilter: SupervisorTestTabFilter)
   const { user, users, groups, quizzes, examResults } = useStore();
 
   const scopedGroupIds = useMemo(() => {
-    const directGroupIds = new Set(user.groupIds || []);
-    const directGroups = groups.filter(
-      (group) => directGroupIds.has(group.id) || group.supervisorIds?.includes(user.id),
-    );
-    const schoolIds = new Set<string>();
-    if (user.schoolId) schoolIds.add(user.schoolId);
-    directGroups.forEach((group) => {
-      if (group.type === 'SCHOOL') schoolIds.add(group.id);
-      if (group.parentId) schoolIds.add(group.parentId);
-    });
-
-    const resolved = new Set<string>([
-      ...Array.from(directGroupIds),
-      ...directGroups.map((group) => group.id),
-    ]);
-    groups.forEach((group) => {
-      if (group.parentId && schoolIds.has(group.parentId)) resolved.add(group.id);
-    });
-    if (user.schoolId) resolved.add(user.schoolId);
-    return resolved;
+    return resolveSupervisorSchoolScope(user, groups).groupIds;
   }, [groups, user.groupIds, user.id, user.schoolId]);
 
   const scopedStudentIds = useMemo(() => {
