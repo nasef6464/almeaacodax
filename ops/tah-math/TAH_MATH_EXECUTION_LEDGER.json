@@ -54,11 +54,10 @@
           "status": "TRIAGE_NOT_FINAL"
         },
         "answerAudit": {
-          "lessonsVerified": "1-13",
-          "reviewedQuestions": 110,
-          "exactMatches": 109,
-          "visualReviewCandidates": 1,
-          "candidate": "TAH-MATH-YLM26-P021-Q04"
+          "sourceQuestionsReviewed": 326,
+          "confirmedAnswerCorrectionCode": "TAH-MATH-YLM26-P090-Q10",
+          "status": "SOURCE_REVIEW_COMPLETE_FULL_VISUAL_PEDAGOGY_OPEN",
+          "productionMutation": false
         },
         "optionTextExtraction": {
           "complete": 0,
