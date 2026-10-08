@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN055_GEO_T24",
+  "date": "2026-10-08",
+  "sourceArchive": "/MNSF26/Run021/mnsf26_geometry_crops_run021.zip",
+  "sourceLibrary": "/MNSF26/Run055/MNSF26_QUESTION_MASTERING_RUN055_GEO_T24_V1.json",
+  "githubRecord": "MNSF26_QUESTION_MASTERING_RUN055_GEO_T24_V1.json",
+  "directImageInspected": 18,
+  "sha256Verified": 18,
+  "masteredAdded": 15,
+  "holdsAdded": 3,
+  "sourceAbsentPreserved": "MNSF26-GEO-T024-Q18",
+  "holdKeys": [
+    "MNSF26-GEO-T024-Q03",
+    "MNSF26-GEO-T024-Q14",
+    "MNSF26-GEO-T024-Q16"
+  ],
+  "baseOfficial": {
+    "mastered": 1686,
+    "hold": 318
+  },
+  "newOfficial": {
+    "mastered": 1701,
+    "hold": 321
+  },
+  "stage": "QUESTION_MASTERING",
+  "productionServicesUntouched": true
+}

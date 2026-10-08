@@ -23,10 +23,10 @@
     {
       "name": "mapping",
       "status": "IN_PROGRESS",
-      "done": 1686,
+      "done": 1701,
       "total": 2135,
       "rule": "QUESTION_MATH_REQUIRED; source label preserved; no group-title auto approval",
-      "reviewHold": 318,
+      "reviewHold": 321,
       "evidence": [
         "Ready130 audit candidate-pass 74",
         "Adjudication batch001 added 17 question-level approvals",
@@ -37,7 +37,7 @@
     {
       "name": "enrichment",
       "status": "IN_PROGRESS_LEGACY_SUBSET",
-      "done": 1686,
+      "done": 1701,
       "total": 2135,
       "rule": "answer+solution+educationalExplanation+difficulty+difficultyReason+fingerprints",
       "mappingApprovedWithinReady": 129
@@ -161,7 +161,10 @@
     "MNSF26-GEO-T049-Q10 HOLD الحجم يتوقف على مساحة القاعدة أيضًا؛ لا تكفي معلومة الارتفاعين؛ HOLD.",
     "MNSF26-GEO-T049-Q20 HOLD الحجم السائل190 مل لكن الخيارات الظاهرة لا تطابق الحجم الكلي أو السائل حسابيًا؛ HOLD.",
     "MNSF26-GEO-T050-Q11 HOLD من دون تجربة طي الشبكات أو ترميز مواضع الأوجه المتقابلة بصورة مؤكدة لا يعتمد الخيار؛ HOLD.",
-    "MNSF26-GEO-T050-Q15 HOLD قاعدة المثلث غير معطاة، لذا لا يمكن تحديد حجمه بالنسبة للثانية؛ HOLD."
+    "MNSF26-GEO-T050-Q15 HOLD قاعدة المثلث غير معطاة، لذا لا يمكن تحديد حجمه بالنسبة للثانية؛ HOLD.",
+    "MNSF26-GEO-T024-Q03 HOLD Run055 direct image",
+    "MNSF26-GEO-T024-Q14 HOLD Run055 direct image",
+    "MNSF26-GEO-T024-Q16 HOLD Run055 direct image"
   ],
   "nextCursor": {
     "stage": "QUESTION_MASTERING",
@@ -184,21 +187,20 @@
     "A question is processed once into a complete master payload; QA validates it rather than recreating it"
   ],
   "lastCompletedBatch": {
-    "name": "RUN054_GEO_T01_T21_T23_RECONCILED_GITHUB",
-    "completeMasterRecords": 322,
-    "holds": 76,
-    "questionsProcessed": 398,
-    "effectiveMasteredComplete": 1686,
-    "visualInspected": 402,
-    "libraryOnly": 4,
-    "source": "Run054 Library 402 verified images, 398 GitHub persisted, four Library-only"
+    "name": "RUN055_GEO_T24_18_DIRECT_IMAGE_RECORDS",
+    "completeMasterRecords": 15,
+    "holds": 3,
+    "questionsProcessed": 18,
+    "effectiveMasteredComplete": 1701,
+    "visualInspected": 18,
+    "source": "MNSF26_QUESTION_MASTERING_RUN055_GEO_T24_V1.json, Run021 exact WEBP images SHA-256 verified"
   },
   "executionContract": "docs/content/mnsf26/MNSF26_LOCKED_PIPELINE_V1.json",
   "activeStage": {
     "order": 2,
     "name": "QUESTION_MASTERING",
     "status": "IN_PROGRESS",
-    "done": 1686,
+    "done": 1701,
     "total": 2135,
     "mode": "ONE_PASS_PER_QUESTION",
     "requiredPayload": [
@@ -215,7 +217,7 @@
       "ideaFingerprint"
     ],
     "gate": "No question advances without complete payload or explicit HOLD/REVIEW.",
-    "masteredComplete": 1686
+    "masteredComplete": 1701
   },
   "reconciliationRun049": {
     "source": "Library /MNSF26/Run048 full JSON records, validated unique sourceKeys and required fields, persisted to GitHub complete test files",
@@ -319,6 +321,23 @@
       "MNSF26-GEO-T023-Q15"
     ],
     "delta": "MNSF26_RUN054_STATE_DELTA_V3.json",
+    "productionServicesUntouched": true
+  },
+  "reconciliationRun055": {
+    "baseMastered": 1686,
+    "baseHold": 318,
+    "masteredAdded": 15,
+    "holdsAdded": 3,
+    "newOfficialMastered": 1701,
+    "newOfficialHold": 321,
+    "sourceAbsentPreserved": "MNSF26-GEO-T024-Q18",
+    "holdKeys": [
+      "MNSF26-GEO-T024-Q03",
+      "MNSF26-GEO-T024-Q14",
+      "MNSF26-GEO-T024-Q16"
+    ],
+    "githubRecord": "MNSF26_QUESTION_MASTERING_RUN055_GEO_T24_V1.json",
+    "libraryCopy": "/MNSF26/Run055/MNSF26_QUESTION_MASTERING_RUN055_GEO_T24_V1.json",
     "productionServicesUntouched": true
   }
 }
