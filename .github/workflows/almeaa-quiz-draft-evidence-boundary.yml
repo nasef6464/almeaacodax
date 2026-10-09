@@ -1,0 +1,31 @@
+name: ALMEAA Quiz Draft Evidence Boundary (Isolated)
+on:
+  push:
+    branches:
+      - test/almeaa-isolated-20261008
+    paths:
+      - .github/workflows/almeaa-quiz-draft-evidence-boundary.yml
+      - scripts/verify-quiz-draft-attempt-boundary.mjs
+      - pages/QuizPage.tsx
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  isolated-quiz-draft-evidence:
+    name: Quiz answer-change / telemetry guard (source-handler execution only)
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Checkout isolated exact SHA
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Install Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check regression harness syntax
+        run: node --check scripts/verify-quiz-draft-attempt-boundary.mjs
+      - name: Reproduce known draft telemetry issue before product edit
+        run: node scripts/verify-quiz-draft-attempt-boundary.mjs --confirm-existing-risk
