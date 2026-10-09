@@ -5,7 +5,7 @@ import { Course, PackageContentType, Question, Quiz, QuizResult } from '../types
 import { Clock, AlertCircle, CheckCircle2, XCircle, ArrowRight, ArrowLeft, FileQuestion, Target, Star, Moon, Sun, PauseCircle, Save, Bookmark, Video, BookOpen, LayoutGrid, ZoomIn } from 'lucide-react';
 import { api } from '../services/api';
 import { adapter } from '../services/adapter';
-import { flattenMockExamQuestionIds, getMockExamSections, getMockExamTimeLimit } from '../utils/mockExam';
+import { flattenMockExamQuestionIds, getMockExamSections, getMockExamTimeLimit, orderMockExamQuestions } from '../utils/mockExam';
 import { formatQuestionHtmlForDisplay, normalizeQuestionHtml } from '../utils/questionHtml';
 import { getLearnerOptionLabel, getQuizDifficultyBadgeClass, getQuizDifficultyLabel, getQuizOptionButtonHeightClass, getQuizOptionGridClass, getQuizQuestionMapButtonClass, resolveQuestionFromBank, usesImageEmbeddedOptions } from '../utils/quizPresentation';
 import { isDevSessionUser } from '../utils/devSession';
@@ -559,11 +559,14 @@ export const QuizPage: React.FC = () => {
         : [];
 
     const canRestoreProgress = savedQuestionOrder.length === loadedQuestions.length && loadedQuestions.length > 0;
-    const nextQuestions = canRestoreProgress
-      ? savedQuestionOrder
-      : resolveQuizSettings(foundQuiz).randomizeQuestions === false
-        ? loadedQuestions
-        : shuffleQuestions(loadedQuestions);
+    const nextQuestions = foundQuiz.mockExam?.enabled
+      ? orderMockExamQuestions(foundQuiz, canRestoreProgress ? savedQuestionOrder : loadedQuestions,
+          !canRestoreProgress && resolveQuizSettings(foundQuiz).randomizeQuestions !== false)
+      : canRestoreProgress
+        ? savedQuestionOrder
+        : resolveQuizSettings(foundQuiz).randomizeQuestions === false
+          ? loadedQuestions
+          : shuffleQuestions(loadedQuestions);
 
     setQuizQuestions(nextQuestions);
     if (nextQuestions.length > 0) {
@@ -597,7 +600,11 @@ export const QuizPage: React.FC = () => {
         }),
       );
       setSelectedOptions(safeSelectedOptions);
-      setCurrentQuestionIndex(Math.min(Math.max(savedProgress.currentQuestionIndex || 0, 0), Math.max(nextQuestions.length - 1, 0)));
+      const savedCurrentQuestionId = savedQuestionOrder[savedProgress.currentQuestionIndex || 0]?.id;
+      const restoredQuestionIndex = nextQuestions.findIndex((question) => question.id === savedCurrentQuestionId);
+      setCurrentQuestionIndex(foundQuiz.mockExam?.enabled
+        ? Math.max(restoredQuestionIndex, 0)
+        : Math.min(Math.max(savedProgress.currentQuestionIndex || 0, 0), Math.max(nextQuestions.length - 1, 0)));
       if (Array.isArray(savedProgress.flaggedQuestionIds)) {
         setFlaggedQuestionIds(savedProgress.flaggedQuestionIds.filter((id) => allowedQuestionIds.has(id)));
       }

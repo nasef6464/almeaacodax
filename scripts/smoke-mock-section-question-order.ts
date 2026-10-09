@@ -1,0 +1,14 @@
+import assert from 'node:assert/strict';
+import { orderMockExamQuestions } from '../utils/mockExam.ts';
+const quiz:any={mockExam:{enabled:true,sections:[{id:'second',order:1,questionIds:['b1','b2']},{id:'first',order:0,questionIds:['a1','a2']}]}};
+const questions=[{id:'b1'},{id:'a1'},{id:'b2'},{id:'a2'}];
+const original=JSON.stringify(questions);
+assert.deepEqual(orderMockExamQuestions(quiz,questions,true,()=>0).map(x=>x.id),['a2','a1','b2','b1']);
+assert.deepEqual(orderMockExamQuestions(quiz,questions,false).map(x=>x.id),['a1','a2','b1','b2']);
+assert.equal(JSON.stringify(questions),original);
+const oldDraft=[questions[0],questions[1],questions[2],questions[3]];
+const restored=orderMockExamQuestions(quiz,oldDraft,false);
+assert.equal(restored.findIndex(x=>x.id===oldDraft[0].id),2);
+assert.equal(new Set(restored.map(x=>x.id)).size,4);
+assert.deepEqual(orderMockExamQuestions({mockExam:{sections:[]}} as any,questions),questions);
+console.log('PASS mock section order, per-section shuffle, stable resume identity, exact question preservation and input immutability');
