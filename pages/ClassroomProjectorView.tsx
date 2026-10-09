@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import {
   ArrowLeft,
@@ -19,6 +19,7 @@ import {
 import { api } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 import { useClassroomRealtime } from '../hooks/useClassroomRealtime';
+import { createCoalescedAsyncRefresh } from '../utils/coalescedAsyncRefresh';
 import { QuestionContentRenderer } from '../components/classroom/QuestionContentRenderer';
 
 const OPTION_LETTERS = ['أ', 'ب', 'ج', 'د', 'هـ'];
@@ -52,6 +53,7 @@ export const ClassroomProjectorView: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [data, setData] = useState<any>(null);
+  const responseRefreshRef = useRef<ReturnType<typeof createCoalescedAsyncRefresh> | null>(null);
   const [challengeState, setChallengeState] = useState<ChallengeState | null>(null);
   const [challengeSeconds, setChallengeSeconds] = useState<number | null>(null);
   const [selectedQuestionIdx, setSelectedQuestionIdx] = useState(0);
@@ -82,7 +84,17 @@ export const ClassroomProjectorView: React.FC = () => {
   }, [sessionId]);
 
   useEffect(() => { void load(); }, [load]);
-  useClassroomRealtime(sessionId, load);
+  useEffect(() => {
+    const refresh = createCoalescedAsyncRefresh(load);
+    responseRefreshRef.current = refresh;
+    return () => { refresh.dispose(); responseRefreshRef.current = null; };
+  }, [load]);
+  const applyRealtimeEvent = useCallback((event: string) => {
+    if (event !== 'response:updated' || !responseRefreshRef.current) return false;
+    responseRefreshRef.current.request();
+    return true;
+  }, []);
+  useClassroomRealtime(sessionId, load, undefined, applyRealtimeEvent);
 
   useEffect(() => {
     const syncTimer = () => setChallengeSeconds(secondsUntil(challengeState?.timerEndsAt));

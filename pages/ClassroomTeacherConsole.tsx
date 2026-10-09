@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { AlertCircle, Bookmark, CheckCircle2, Filter, Presentation, Zap } from 'lucide-react';
 import { api } from '../services/api';
 import { useClassroomRealtime } from '../hooks/useClassroomRealtime';
+import { createCoalescedAsyncRefresh } from '../utils/coalescedAsyncRefresh';
 import type { TeacherWorkspaceData } from '../components/teacher/TeacherWorkspaceContext';
 import { useAuth } from '../contexts/AuthContext';
 import { ClassroomQuestionFilterBar, ClassroomFilterState } from '../components/classroom/ClassroomQuestionFilterBar';
@@ -43,7 +44,7 @@ export const ClassroomTeacherConsole: React.FC = () => {
   const [creationTab, setCreationTab] = useState<'templates' | 'bank'>('templates');
   const [activeTemplateId, setActiveTemplateId] = useState<string>('');
   const [filters, setFilters] = useState<ClassroomFilterState>({ track: '', subject: '', difficulty: '', search: '' });
-  const liveRefreshTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const liveRefreshRef = useRef<ReturnType<typeof createCoalescedAsyncRefresh> | null>(null);
   const selectedSchool = useMemo(() => workspace?.schools.find((school) => school.schoolId === schoolId), [schoolId, workspace]);
 
   const load = useCallback(async () => {
@@ -53,19 +54,11 @@ export const ClassroomTeacherConsole: React.FC = () => {
   }, [sessionId]);
 
   useEffect(() => { void load(); }, [load]);
-  useEffect(() => () => {
-    if (liveRefreshTimerRef.current) clearTimeout(liveRefreshTimerRef.current);
-  }, []);
-
-  const applyRealtimeEvent = useCallback((event: string) => {
-    if (event !== 'response:updated' || !sessionId) return false;
-    if (liveRefreshTimerRef.current) return true;
-    // Coalesce answer storms into one small, active-question-only read. The
-    // full aggregate remains for initial load and teacher actions, not answers.
-    liveRefreshTimerRef.current = setTimeout(() => {
-      liveRefreshTimerRef.current = null;
-      api.get<any>(`/classroom/sessions/${encodeURIComponent(sessionId)}/aggregate?view=live`)
-        .then((live) => setData((current: any) => current ? {
+  useEffect(() => {
+    if (!sessionId) return;
+    const refresh = createCoalescedAsyncRefresh(async () => {
+      const live = await api.get<any>(`/classroom/sessions/${encodeURIComponent(sessionId)}/aggregate?view=live`);
+      setData((current: any) => current ? {
           ...current,
           status: live.status,
           activeQuestionIndex: live.activeQuestionIndex,
@@ -74,11 +67,17 @@ export const ClassroomTeacherConsole: React.FC = () => {
           correctCount: live.correctCount,
           distribution: live.distribution,
           joinedCount: live.joinedCount,
-        } : current))
-        .catch(() => setMessage('تعذر تحديث الحالة الحية للحصة.'));
-    }, 250);
-    return true;
+        } : current);
+    }, 250, () => setMessage('تعذر تحديث الحالة الحية للحصة.'));
+    liveRefreshRef.current = refresh;
+    return () => { refresh.dispose(); liveRefreshRef.current = null; };
   }, [sessionId]);
+
+  const applyRealtimeEvent = useCallback((event: string) => {
+    if (event !== 'response:updated' || !liveRefreshRef.current) return false;
+    liveRefreshRef.current.request();
+    return true;
+  }, []);
 
   useClassroomRealtime(sessionId, load, undefined, applyRealtimeEvent);
 
