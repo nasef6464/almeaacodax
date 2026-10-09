@@ -1,0 +1,19 @@
+{
+  "run": "RUN49",
+  "date": "2026-10-09",
+  "scope": "TAH-MATH/YLM26 only",
+  "sourceBook": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+  "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+  "actualQuestionsReadFromSource": 200,
+  "sourcePixelPass": 200,
+  "priorReviewEventsRUN21toRUN48": 4846,
+  "cumulativeConditionalReviewEvents": 5046,
+  "sourceCropPages": "P005–P057, non-contiguous",
+  "sourceQuestionCodes": "RUN42 200-row source manifest; original PDF re-rendered in RUN49",
+  "candidateDeepPedagogyReviewed": 40,
+  "canonicalApproved": 0,
+  "productionMutation": false,
+  "productionImageParity": "NOT_TESTED",
+  "status": "YLM26_IN_PROGRESS_NOT_GREEN",
+  "next": "Publish full source-backed 40-option pedagogy and resolve full 326 canonical fields; R2 image parity and rollback manifest."
+}
