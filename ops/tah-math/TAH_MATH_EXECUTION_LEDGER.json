@@ -250,6 +250,12 @@
     "canonicalApproved": 0,
     "productionMutation": false,
     "status": "YLM26_IN_PROGRESS_NOT_GREEN",
-    "next": "YLM26 canonical option/skills/pedagogy/foundation/fingerprints/R2 parity"
+    "next": "YLM26 canonical option/skills/pedagogy/foundation/fingerprints/R2 parity",
+    "symbolicMathChecks": {
+      "pass": 15,
+      "fail": 0
+    },
+    "sourcePagesCovered": 51,
+    "productionR2Parity": "NOT_TESTED"
   }
 }
