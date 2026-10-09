@@ -37,7 +37,9 @@ assert.ok(quiz.includes("run a shorter truthful measurement instead of contamina
 assert.ok(quiz.includes("startSelfQuiz({"));
 assert.ok(quiz.includes("pathId: pathId || ''"));
 assert.ok(quiz.includes("subjectId: subjectId || ''"));
-assert.ok(report.includes("String(skill.pathId || '')"));
-assert.ok(report.includes("String(skill.subjectId || '')"));
+// Preserve scoped mastery identities with canonical taxonomy fallback.
+assert.ok(report.includes("const resolvedPathId = skill.pathId || resolvedSkill?.pathId;"));
+assert.ok(report.includes("const resolvedSubjectId = skill.subjectId || resolvedSkill?.subjectId;"));
+assert.ok(report.includes("[String(pathId || ''), String(subjectId || ''), String(skillId || skillName || '')].join('::')"));
 assert.ok(questionSchema.includes('Published or review-ready image questions require a written explanation'));
 console.log(JSON.stringify({phase:'adaptive-phase4-treatment-recheck',status:'PASS'},null,2));
