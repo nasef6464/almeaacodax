@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN113",
+  "stage": "QA_LOCK",
+  "liveStartHeads": {
+    "branch": "cc8f5d3c1f7fef97c664642df8a9236b994241c8",
+    "main": "49868c327927ff8386d6195c84c40173b243a5de"
+  },
+  "cropLock": "2135/2135 PASS_LOCKED",
+  "questionMastering": "2129 active + 6 exclusions PASS_LOCKED per Run063",
+  "run112Reinspected": 18,
+  "run112VerifiedConflicts": 17,
+  "run112RetractedFalsePositive": "MNSF26-AR-T052-Q04",
+  "freshOriginalWebpInspected": 78,
+  "allOriginalWebpShaMatched": 96,
+  "masteredMathSourceMatchesTaxonomyPending": 39,
+  "holdsPreserved": 33,
+  "newSourceConflicts": 3,
+  "priorKnownConflictsReconfirmed": 3,
+  "masteredAdded": 0,
+  "masterWritesApplied": 0,
+  "officialQAIncrement": 0,
+  "qaFullBookPass": false,
+  "canonicalTaxonomyGate": "PENDING",
+  "dedupeLock": false,
+  "r2Lock": false,
+  "importLock": false,
+  "productionE2E": false,
+  "productionServicesUntouched": true,
+  "githubManifestFiles": [
+    "MNSF26_RUN113_REVALIDATED_SOURCE_CONFLICTS_V1.json",
+    "MNSF26_RUN113_T060_T063_SIX_SOURCE_CONFLICTS_V1.json"
+  ],
+  "blockers": [
+    "Original MASTER and verifier script writes rejected by safety checks; no bypass",
+    "Second authoritative execution state update rejected; this state-delta preserves later QA"
+  ],
+  "next": "Apply fail-closed transitions, wire 20 conflicts into verifier, finish QA and taxonomy, then DEDUPE and production gates"
+}
