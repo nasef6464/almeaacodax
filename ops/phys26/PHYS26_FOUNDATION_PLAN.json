@@ -4,7 +4,7 @@
   "status": "DESIGN_ONLY_NOT_IMPORTABLE",
   "importReady": false,
   "generatedOn": "2026-10-08",
-  "sourceTaxonomyVersion": "candidate-1.0",
+  "sourceTaxonomyVersion": "candidate-1.1",
   "sourceInventorySha256": [
     {
       "role": "foundation",
@@ -37,14 +37,14 @@
   },
   "counts": {
     "mainTopics": 25,
-    "subTopics": 90,
-    "totalTopics": 115,
+    "subTopics": 92,
+    "totalTopics": 117,
     "mainWithFoundationIndex": 10,
     "subWithFoundationIndex": 39,
     "mainMissingFoundation": 15,
-    "subMissingFoundation": 51,
+    "subMissingFoundation": 53,
     "initialFreeTopics": 26,
-    "initialLockedTopics": 89,
+    "initialLockedTopics": 91,
     "verifiedSourceQuestions": 0,
     "verifiedQuestionImages": 0,
     "approvedDrills": 0
@@ -2433,6 +2433,77 @@
       "plannedSectionId": "sec_sub_physics_11"
     },
     {
+      "id": "PHYS26-TS11-05",
+      "parentId": "PHYS26-TM11",
+      "title": "قوانين الغازات والعلاقات بين الضغط والحجم ودرجة الحرارة",
+      "skillId": "PHYS26-S11-05",
+      "skillIds": [
+        "PHYS26-S11-05"
+      ],
+      "parentSkillId": "PHYS26-M11",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 5,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          13
+        ]
+      },
+      "aiContext": {
+        "status": "LAW_RELATIONS_ONLY_NOT_FULL_FOUNDATION_CHAPTER",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null,
+        "candidateContextForReviewerOnly": {
+          "status": "LAW_RELATIONS_ONLY_NOT_FULL_FOUNDATION_CHAPTER",
+          "laws": [
+            {
+              "name": "Boyle",
+              "relation": "P1*V1=P2*V2",
+              "conditions": "T and n fixed"
+            },
+            {
+              "name": "Charles",
+              "relation": "V1/T1=V2/T2",
+              "conditions": "P and n fixed, T in K"
+            },
+            {
+              "name": "Constant-volume gas law",
+              "relation": "P1/T1=P2/T2",
+              "conditions": "V and n fixed, T in K"
+            }
+          ],
+          "units": [
+            "Pa",
+            "m^3",
+            "L",
+            "K"
+          ],
+          "sourceExplanationText": null,
+          "sourcePageReferenceRequiredBeforeApproval": true
+        }
+      },
+      "plannedSectionId": "sec_sub_physics_11",
+      "importReady": false
+    },
+    {
       "id": "PHYS26-TM12",
       "parentId": null,
       "title": "الاهتزازات والموجات ودوبلر والرنين",
@@ -3997,6 +4068,55 @@
         "sourceText": null
       },
       "plannedSectionId": "sec_sub_physics_19"
+    },
+    {
+      "id": "PHYS26-TS19-05",
+      "parentId": "PHYS26-TM19",
+      "title": "الجلفانومتر وأجهزة قياس التيار وتحويله إلى أميتر",
+      "skillId": "PHYS26-S19-05",
+      "skillIds": [
+        "PHYS26-S19-05"
+      ],
+      "parentSkillId": "PHYS26-M19",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 5,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          24
+        ]
+      },
+      "aiContext": {
+        "status": "CONCEPT_ONLY_NOT_FULL_FOUNDATION_CHAPTER",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null,
+        "candidateContextForReviewerOnly": {
+          "status": "CONCEPT_ONLY_NOT_FULL_FOUNDATION_CHAPTER",
+          "concept": "A parallel low-resistance shunt extends galvanometer current range as an ammeter.",
+          "sourceExplanationText": null,
+          "sourcePageReferenceRequiredBeforeApproval": true
+        }
+      },
+      "plannedSectionId": "sec_sub_physics_19",
+      "importReady": false
     },
     {
       "id": "PHYS26-TM20",
