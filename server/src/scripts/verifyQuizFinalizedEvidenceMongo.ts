@@ -51,6 +51,24 @@ try {
   assert.equal(await QuestionAttemptModel.countDocuments({ quizResultId: { $exists: false } }), 2);
   findings.legacyRowsPreserved = 2;
 
+  // Race on FIRST insertion, not only replay of pre-existing finalized rows.
+  // Use a fresh result key to ensure all workers compete for the same unique index entries.
+  const firstInsertOperations = buildFinalizedQuizQuestionAttemptOperations({
+    ...base, quizResultId: "fake-result-first-insert-race",
+  });
+  const firstInsertRace = await Promise.allSettled(
+    Array.from({ length: 4 }, () =>
+      QuestionAttemptModel.bulkWrite(firstInsertOperations, { ordered: false }),
+    ),
+  );
+  assert.equal(firstInsertRace.filter((outcome) => outcome.status === "rejected").length, 0,
+    "first-insert upserts must not fail when four writers race");
+  assert.equal(await QuestionAttemptModel.countDocuments({ quizResultId: "fake-result-first-insert-race" }), 2,
+    "four concurrent first-insert submissions must produce one row per final question");
+  assert.equal(await QuestionAttemptModel.countDocuments({ quizResultId: { $exists: false } }), 2,
+    "concurrent finalization must not modify historical evidence");
+  findings.concurrentFirstInsertWorkers = 4;
+
   await QuestionAttemptModel.bulkWrite(operations, { ordered: false });
   await QuestionAttemptModel.bulkWrite(operations, { ordered: false });
   assert.equal(await QuestionAttemptModel.countDocuments({ quizResultId: base.quizResultId }), 2);
@@ -90,7 +108,7 @@ try {
     buildFinalizedQuizQuestionAttemptOperations({ ...base, userId: "fake-student-b" }),
     { ordered: false },
   );
-  assert.equal(await QuestionAttemptModel.countDocuments({}), 8);
+  assert.equal(await QuestionAttemptModel.countDocuments({}), 10);
   findings.crossResultAndUserIsolation = "PASS";
 
   console.log(JSON.stringify({ status: "PASS", fixture: fixtureDatabase,
