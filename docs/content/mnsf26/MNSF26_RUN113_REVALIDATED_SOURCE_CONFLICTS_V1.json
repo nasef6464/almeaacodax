@@ -1,0 +1,163 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN113",
+  "stage": "QA_LOCK",
+  "basedOn": "RUN112 original WebP image QA reinspection",
+  "verifiedConflicts": [
+    {
+      "sourceKey": "MNSF26-AR-T049-Q16",
+      "originalMasterFile": "MNSF26_QUESTION_MASTERING_RUN051_AR_T49_V1.json",
+      "sourceCrop": "AR-T049-Q16.webp",
+      "imageHash": "24cc5caeecd995aad10daf0994b214554d3e33d7134655d9d8a11d74322f5e40",
+      "conflictType": "ANSWER",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T050-Q02",
+      "originalMasterFile": "MNSF26_QUESTION_MASTERING_RUN051_AR_T50_V1.json",
+      "sourceCrop": "AR-T050-Q02.webp",
+      "imageHash": "18670ca46428e9f5f15922427f54913d1eb82184510be4689f292429d64f9611",
+      "conflictType": "ANSWER",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T050-Q12",
+      "originalMasterFile": "MNSF26_QUESTION_MASTERING_RUN051_AR_T50_V1.json",
+      "sourceCrop": "AR-T050-Q12.webp",
+      "conflictType": "TRANSCRIPTION",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T051-Q01",
+      "originalMasterFile": "MNSF26_QUESTION_MASTERING_RUN051_AR_T51_V1.json",
+      "sourceCrop": "AR-T051-Q01.webp",
+      "imageHash": "827612d381b31406e1fb9edd23fd4669269d80e004e9339911eed0480529f0b0",
+      "conflictType": "ANSWER",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T051-Q05",
+      "originalMasterFile": "MNSF26_QUESTION_MASTERING_RUN051_AR_T51_V1.json",
+      "sourceCrop": "AR-T051-Q05.webp",
+      "imageHash": "26cb9aaf51ad86cec2a964c6944f26cf1f69975a0321cfbf29b9eaf0c2cc0c39",
+      "conflictType": "ANSWER",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T051-Q06",
+      "originalMasterFile": "MNSF26_QUESTION_MASTERING_RUN051_AR_T51_V1.json",
+      "sourceCrop": "AR-T051-Q06.webp",
+      "imageHash": "4dff0927d51cf119a6c12fa4ce6baf44f4c7584d110c4b86e197a0e2dc49f62c",
+      "conflictType": "ANSWER",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T051-Q12",
+      "originalMasterFile": "MNSF26_QUESTION_MASTERING_RUN051_AR_T51_V1.json",
+      "sourceCrop": "AR-T051-Q12.webp",
+      "imageHash": "9d3d202b8a2df556d8d25e7565be78f8d6196d0d010a68050229c1bcace4cbf1",
+      "conflictType": "ANSWER",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T051-Q14",
+      "originalMasterFile": "MNSF26_QUESTION_MASTERING_RUN051_AR_T51_V1.json",
+      "sourceCrop": "AR-T051-Q14.webp",
+      "imageHash": "525ae6e5888a2ea34b703dfbc8f9d93fcd160d66712222119a1fcaa00f751798",
+      "conflictType": "ANSWER",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T054-Q01",
+      "originalMasterFile": "MNSF26_QUESTION_MASTERING_RUN051_AR_T54_V1.json",
+      "sourceCrop": "AR-T054-Q01.webp",
+      "conflictType": "TRANSCRIPTION",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T054-Q05",
+      "originalMasterFile": "MNSF26_QUESTION_MASTERING_RUN051_AR_T54_V1.json",
+      "sourceCrop": "AR-T054-Q05.webp",
+      "conflictType": "TRANSCRIPTION",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T055-Q08",
+      "originalMasterFile": "MNSF26_QUESTION_MASTERING_RUN051_AR_T55_V1.json",
+      "sourceCrop": "AR-T055-Q08.webp",
+      "imageHash": "41dee0482ac902e2e2c452ac45141cf1581fda24e10caa666c1c0ff5f2e3aac7",
+      "conflictType": "ANSWER",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T057-Q02",
+      "originalMasterFile": "MNSF26_QUESTION_MASTERING_RUN051_AR_T57_V1.json",
+      "sourceCrop": "AR-T057-Q02.webp",
+      "conflictType": "TRANSCRIPTION",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T057-Q12",
+      "originalMasterFile": "MNSF26_QUESTION_MASTERING_RUN051_AR_T57_V1.json",
+      "sourceCrop": "AR-T057-Q12.webp",
+      "imageHash": "f2db1883c2e158a2ace9febce5aa4de7e677acf2c071e5203f1cbde869b57732",
+      "conflictType": "ANSWER",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T057-Q14",
+      "originalMasterFile": "MNSF26_QUESTION_MASTERING_RUN051_AR_T57_V1.json",
+      "sourceCrop": "AR-T057-Q14.webp",
+      "imageHash": "c96fef55a1d14e8b0fc817a180c5b136c35b09be8c3483e0234731209513696a",
+      "conflictType": "ANSWER",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T058-Q11",
+      "originalMasterFile": "MNSF26_QUESTION_MASTERING_RUN051_AR_T58_V1.json",
+      "sourceCrop": "AR-T058-Q11.webp",
+      "imageHash": "4b7b2856fd897d4d027aef4cc0157260bf988b9ddfa98235b64075a0c7a72cae",
+      "conflictType": "ANSWER",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T058-Q19",
+      "originalMasterFile": "MNSF26_QUESTION_MASTERING_RUN051_AR_T58_V1.json",
+      "sourceCrop": "AR-T058-Q19.webp",
+      "conflictType": "TRANSCRIPTION",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T059-Q09",
+      "originalMasterFile": "MNSF26_QUESTION_MASTERING_RUN051_AR_T59_V1.json",
+      "sourceCrop": "AR-T059-Q09.webp",
+      "imageHash": "7655a695ebdfcda88453badedadfd6f5de642d8c4de6e0d9b263ffd0b09f6fcf",
+      "conflictType": "ANSWER",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    }
+  ],
+  "excludedFalsePositive": {
+    "sourceKey": "MNSF26-AR-T052-Q04",
+    "reason": "Source visibly reads 24 km and 24 pieces; original MASTER has 24 km and 23 cuts, so prior RUN112 transcription claim (240) was erroneous."
+  },
+  "allApplied": false,
+  "productionImportAuthorized": false
+}
