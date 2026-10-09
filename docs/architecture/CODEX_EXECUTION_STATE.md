@@ -1,5 +1,11 @@
 # ALMEAA — Codex Execution State
 
+## Final classroom waiting/prepared-batch live delivery — 2026-10-09
+- Code PRs487/490/491 merged, final exact327e267a6ed29637d3d4fed388b812f856b42816:17SUCCESS3SKIPPED/all required PASS; live main58b3f5afada21696e489482156b018f7b7386b9e. Exact frontend/Render/readiness200/RedisPASS. MainRoleGate37933325509/AI37933325508/PostDeploySmoke37933325520PASS (unchanged-head rerun after frontend publication timing).
+- Matching teacher/student browser journey PASS: primary empty start, automatic join/wait, saved-list cached reopening,3×5 automatic publications/final submissions/teacher1/1, three waiting transitions, class end/student completion/teacher visible15/15 report. Saved6ac8e8a76e44b04cb8d5a46a:24rows/1joined/15answers/3batches/5correct; fresh-login equality and student403; pageerrors0,390px waiting no overflow.
+- Current API/auth/scoring/models and prior records retained. Shared socket uses normalized proxy path and direct path defaults; no new interval/service/dependency. Teacher373/active388/student257; extracted modules61/14.
+- StatusVERIFIED for this bounded owner-requested interaction.20contexts/physical-device/peak-capacity certification NOT PROVEN. No additional feature scope started. Full evidence docs/audits/CLASSROOM_WAITING_AND_PREPARED_BATCHES_2026-10-09.md.
+
 ## Classroom proxy path normalization — 2026-10-09
 - Baseline b9524ec1/#490, exact108a5c168a:16SUCCESS3SKIPPED/all required PASS. Canonical `/socket.io` now200/handshake but trailing-slash request404; direct Render inverse. Browser default trailing slash still blocks events. No new classroom writes during diagnosis.
 - Fresh codex/classroom-socket-proxy-path adjusts only existing client addTrailingSlash according to relative proxy versus direct API, retaining credentials/RBAC/rooms/reconnect/shared connection. Real proxy test now reproduces canonical slash404 and verifies both proxy/direct modes plus lifecycle/auth/cleanup; localPASS. Exact-head CI/deployment and3×5 production UI replay pending.

@@ -1,6 +1,6 @@
 # Waiting class and prepared assessment batches — 2026-10-09
 
-Status PARTIAL: core production API cycle PASS; final frontend/CI/deployment matching replay pending.
+Status VERIFIED for the bounded one-teacher/one-student deployed journey. Multi-device/physical classroom scale certification remains NOT PROVEN.
 Baseline main076f442d06fd (#486 merged/live), previous exact codea2f514c7:18SUCCESS3SKIPPED/allrequiredPASS. Redis/runtime/main post-deploy and paced role authentication PASS.
 
 ## Owner journey
@@ -31,3 +31,10 @@ Existing live empty sessions, templates, approved IDs, append/publication, final
 ## Proxy path normalization follow-up
 - #490 exact108a5c168a7451891528e835930017f709526774 passed16SUCCESS3SKIPPED/all required, merged b9524ec1f5b23d38151d210624875d2a97fbc966. Canonical transport now responds200/Engine.IO at `/socket.io` but Vercel returns404 at `/socket.io/`; direct Render requires `/socket.io/` and returns404 without it. This proves route delivery but not browser closure.
 - Existing client defaults to a trailing slash. Use `addTrailingSlash: !API_BASE_URL.startsWith('/')`: relative same-origin proxy uses normalized root path; direct/local API keeps Engine.IO default. Credentials, rooms, reconnection and shared connection remain unchanged. The proxy regression now rejects the trailing-slash root and checks both relative-proxy and direct-API connections with the real hook/client/server. PASS locally. No additional production classroom writes during diagnosis.
+
+## Final matching production browser evidence
+- #491 exact327e267a6ed29637d3d4fed388b812f856b42816:17SUCCESS3SKIPPED/all required PASS. Merged58b3f5afada21696e489482156b018f7b7386b9e. Frontend asset/Render live exact commit and canonical/direct readiness200 (database/Redis rate-limit/queuePASS). Main RoleGate37933325509/AI37933325508 PASS; PostDeploySmoke37933325520 initially ran before frontend identity was ready, failed expected-version timing, then unchanged-head failed-job rerun PASS. No gate weakened.
+- Matching production browser teacher and student contexts PASS: start via primary teacher button sends empty questionIds; student instantly joins and waits at390px with no horizontal overflow; open saved batches once/cache reopen; send existing labelled templates3×5; all three publications arrive automatically; each five-answer final submission appears1/1 to teacher; each batch end returns student to waiting; same session ends and student sees saved-participation screen.
+- Final ended session6ac8e8a76e44b04cb8d5a46a: report visible in teacher UI with15/15 answered and one completed pupil. Immutable API report24rows/1joined/15answers/3batches/5correct; shared skill answered15. Fresh-login report equality PASS and student report denial403. Browser pageerrors0. Teacher workspace observed1read; templates2total across preparation/start and active saved-list; active-list reopen adds0reads.
+- First matching retry successfully received questions but the harness matched both header/footer question labels; corrected only its selector to first(), then repeated the authorized journey. Owned failed test sessions were ended, retained and not rewritten. No original records deleted.
+- Relevant files remain modular373/388/257 lines; extracted saved-batch61 and waiting14 lines. Proxy correction retains original credentials, scoped rooms, shared socket and reconnection with no new polling interval/service/dependency. Actual20browser contexts/physical tablets and peak production capacity remain NOT PROVEN; this closes only the owner-requested bounded interaction delivery.
