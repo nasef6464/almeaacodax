@@ -175,9 +175,9 @@
   "nextCursor": {
     "stage": "QA_LOCK",
     "priority": [
-      "Fail-close and apply RUN095 three verified MASTER source conflicts through authorized writes; preserve evidence if blocked",
-      "Reconcile canonical main alias in 325 GitHub MASTERED rows only after exact subskill parent proof",
-      "Finish 25/95 semantic taxonomy and independent full-book math QA, then DEDUPE_LOCK and subsequent gates"
+      "Apply RUN113 17 source conflicts REVIEW/importEligible=false in original master files; 9 prior conflicts remain fail-closed",
+      "Verify canonical 25/95 and reconcile QA source keys; do not certify based on source-image SHA alone",
+      "Finish QA_LOCK then DEDUPE_LOCK, R2, import, Production/E2E"
     ]
   },
   "antiLoopRules": [
@@ -627,6 +627,20 @@
     "sourceImageHashDuplicateGroups": 43,
     "newMastered": 0,
     "masterWritesBlocked": true,
+    "productionServicesUntouched": true
+  },
+  "run113Reconciliation": {
+    "stage": "QA_LOCK",
+    "originalWebpReinspected": 18,
+    "verifiedNewSourceConflicts": 17,
+    "run112FalsePositiveRetracted": [
+      "MNSF26-AR-T052-Q04"
+    ],
+    "newMastered": 0,
+    "masterRecordWritesApplied": 0,
+    "manifest": "MNSF26_RUN113_REVALIDATED_SOURCE_CONFLICTS_V1.json",
+    "source": "RUN112 original WebP crops reinspection",
+    "qaFullBookPass": false,
     "productionServicesUntouched": true
   }
 }
