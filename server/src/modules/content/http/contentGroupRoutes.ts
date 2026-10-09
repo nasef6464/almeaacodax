@@ -128,6 +128,17 @@ contentGroupRouter.patch(
       return res.status(StatusCodes.FORBIDDEN).json({ message: "You cannot manage this group" });
     }
 
+    if (
+      req.authUser!.role === "supervisor" &&
+      ["ownerId", "supervisorIds", "type", "parentId"].some((field) =>
+        Object.prototype.hasOwnProperty.call(payload, field),
+      )
+    ) {
+      return res.status(StatusCodes.FORBIDDEN).json({
+        message: "Only admins can change group ownership, supervisors, type or parent",
+      });
+    }
+
     const updated = await GroupModel.findOneAndUpdate(buildDocumentQuery(String(existing._id)), payload, {
       new: true,
     });
