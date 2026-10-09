@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN108",
+  "date": "2026-10-09",
+  "stage": "QA_LOCK",
+  "exactHeadsAtStart": {
+    "branch": "ab47449af8dd5dc712e780c22400da315062f512",
+    "main": "71359ae319ed698d794867adbb5528e590d94e01"
+  },
+  "cropLock": {
+    "status": "PASS_LOCKED",
+    "done": 2135,
+    "total": 2135
+  },
+  "questionMastering": {
+    "run063Active": 2129,
+    "excluded": 6,
+    "newMastered": 0,
+    "notReopened": true
+  },
+  "writes": {
+    "t026Counters": {
+      "path": "MNSF26_QUESTION_MASTERING_RUN051_GEO_T26_V1.json",
+      "mastered": 10,
+      "hold": 6,
+      "review": 2,
+      "commit": "cf1f661c6cd8a48241c755433c179e7125e4c271",
+      "verified": true
+    },
+    "t018FailClosed": {
+      "sourceKeys": [
+        "MNSF26-GEO-T018-Q05",
+        "MNSF26-GEO-T018-Q07"
+      ],
+      "status": "REVIEW",
+      "importEligible": false,
+      "masteredCountAfter": 13,
+      "holdCountAfter": 5,
+      "reviewCountAfter": 2,
+      "commit": "d7a735638c86fd4d2e4385672102d8105746fff9",
+      "verified": true
+    },
+    "overrides": {
+      "path": "MNSF26_RUN108_FAILCLOSED_QA_OVERRIDES_V1.json",
+      "count": 9,
+      "appliedMaster": 2,
+      "pendingMaster": 7,
+      "commit": "8dc5fbb2fa81b3ae097a144ed126180558997c9c",
+      "verified": true
+    },
+    "remainingMasterBlocked": [
+      "MNSF26-GEO-T001-Q19",
+      "MNSF26-GEO-T003-Q20",
+      "MNSF26-GEO-T005-Q11",
+      "MNSF26-GEO-T006-Q18",
+      "MNSF26-GEO-T007-Q03",
+      "MNSF26-GEO-T007-Q17",
+      "MNSF26-GEO-T011-Q10"
+    ],
+    "stateDirectWriteBlocked": true,
+    "fullbookGateCodeWriteBlocked": true
+  },
+  "qa": {
+    "newSourceKeyMathReviewed": 0,
+    "qaCounterIncrement": 0,
+    "sourceOriginalWebpRehashed": 25,
+    "sourceHashMismatches": 0,
+    "shaRehashNote": "19 from Run105 plus 6 from Run107, all previously reviewed; no new unique questions",
+    "fullBookPass": false,
+    "canonical25_95SemanticPass": false
+  },
+  "downstream": {
+    "dedupeLock": false,
+    "r2Lock": false,
+    "importLock": false,
+    "productionE2E": false,
+    "productionServicesUntouched": true
+  },
+  "preservedExceptions": [
+    "P001/Q10 HOLD",
+    "P013/Q15 HOLD",
+    "P014/Q08 quarantine",
+    "5 suppressions",
+    "P011/Q19=B",
+    "arithmetic test33 source-absent",
+    "geometry T24/Q18 source-absent"
+  ],
+  "next": "Apply seven remaining MASTER REVIEW exclusions through authorized writes; merge fullbook gate and tests; complete independent QA and 25/95 semantic approval; only then DEDUPE, R2, import and Production E2E.",
+  "exactHeadsBeforeDeltaWrite": {
+    "branch": "8dc5fbb2fa81b3ae097a144ed126180558997c9c",
+    "main": "71359ae319ed698d794867adbb5528e590d94e01"
+  }
+}
