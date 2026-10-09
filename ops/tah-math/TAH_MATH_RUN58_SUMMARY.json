@@ -4,5 +4,14 @@
   "mathVerified": 20,
   "canonicalApproved": 0,
   "productionMutation": false,
-  "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c"
+  "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+  "fullPedagogyReviewed": 20,
+  "uniqueNewDeep": 16,
+  "priorDeepReReviewed": 4,
+  "sourceCropBoundaryHolds": 21,
+  "sourceRGBHistoricalMatches": 79,
+  "sourceRGBNotComparable": 71,
+  "deepCandidateCoverage": 271,
+  "deepCandidateRemaining": 55,
+  "conditionalReviewEventsCumulative": 6496
 }
