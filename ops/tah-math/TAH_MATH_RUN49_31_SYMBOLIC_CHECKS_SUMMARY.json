@@ -1,0 +1,12 @@
+{
+  "run": "RUN49",
+  "officialSource": "YLM26 96-page foundation PDF",
+  "sourceQuestionsVisualReviewed": 200,
+  "sourcePixelPass": 200,
+  "independentMathChecks": 31,
+  "independentMathPass": 31,
+  "fullOptionPedagogyRecords": 30,
+  "additionalSourceAnswerOnly": 10,
+  "productionMutation": false,
+  "canonicalApproved": 0
+}
