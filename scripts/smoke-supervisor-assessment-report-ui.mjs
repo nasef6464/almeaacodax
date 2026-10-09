@@ -48,11 +48,11 @@ try{
  const scoped=await browser.newPage();await scoped.goto('http://127.0.0.1:'+server.address().port);await scoped.evaluate(()=>{window.resultQueries=[];window.resultRequests=[]});await scoped.addScriptTag({content:hookBundle.outputFiles[0].text});
  await scoped.getByRole('status').waitFor();assert.equal(await scoped.evaluate(()=>window.resultQueries.length),1);
  await scoped.evaluate(()=>window.resultRequests[0].reject(Error('offline')));await scoped.getByRole('alert').waitFor();await scoped.getByRole('button',{name:'تحديث النتائج'}).click();
- await scoped.evaluate(()=>window.resultRequests[1].resolve({results:[{id:'r1'}],pagination:{hasNext:true},scope:{sampledStudentCount:2,studentCount:2}}));await scoped.getByText('التحليل للبيانات المحملة حاليًا؛ لم تكتمل تغطية جميع النتائج.').waitFor();
+ await scoped.evaluate(()=>window.resultRequests[1].resolve({results:[{id:'r1'}],pagination:{page:1,totalPages:2},scope:{sampledStudentCount:2,studentCount:2}}));await scoped.getByText('التحليل للبيانات المحملة حاليًا؛ لم تكتمل تغطية جميع النتائج.').waitFor();
  await scoped.getByRole('button',{name:'تحميل نتائج إضافية'}).click();assert.deepEqual(await scoped.evaluate(()=>window.resultQueries.map(q=>[q.page,q.limit,q.quizId,q.includeReview])),[[1,100,'q',true],[1,100,'q',true],[2,100,'q',true]]);
  await scoped.getByRole('button',{name:'Change actor'}).click();await scoped.getByRole('status').waitFor();assert.equal(await scoped.locator('pre').innerText(),'[]');
- await scoped.evaluate(()=>window.resultRequests[2].resolve({results:[{id:'stale'}],pagination:{hasNext:false}}));assert.equal(await scoped.locator('pre').innerText(),'[]');
- await scoped.evaluate(()=>window.resultRequests[3].resolve({results:[{id:'r2'}],pagination:{hasNext:false},scope:{sampledStudentCount:1,studentCount:1}}));await scoped.getByRole('button',{name:'تحديث النتائج'}).waitFor();assert.equal(await scoped.locator('pre').innerText(),'[{"id":"r2"}]');
+ await scoped.evaluate(()=>window.resultRequests[2].resolve({results:[{id:'stale'}],pagination:{page:2,totalPages:2}}));assert.equal(await scoped.locator('pre').innerText(),'[]');
+ await scoped.evaluate(()=>window.resultRequests[3].resolve({results:[{id:'r2'}],pagination:{page:1,totalPages:1},scope:{sampledStudentCount:1,studentCount:1}}));await scoped.getByRole('button',{name:'تحديث النتائج'}).waitFor();assert.equal(await scoped.locator('pre').innerText(),'[{"id":"r2"}]');
  const parent=fs.readFileSync('dashboards/admin/SupervisorDashboard.tsx','utf8');assert.ok(parent.includes('const examResults = resultEvidence.results;'));assert.ok(parent.includes('<SupervisorTestsManager resultEvidence={examResults}/>'));
  console.log('PASS scoped results hook: one initial bounded read, error/retry, opt-in pagination, review only by request, stale actor response discarded, supervisor parent wiring');
 }finally{await browser.close();server.close();}
