@@ -1,5 +1,11 @@
 # ALMEAA — Codex Execution State
 
+## Classroom same-origin transport recovery — 2026-10-09
+- #487 code d9356428609203f4cdee01b91bdeec6e70035050:18SUCCESS3SKIPPED/all required PASS; merge2a8db59b64c20 deployed frontend/Render/readiness200/PostDeploySmoke/RoleGatePASS.
+- Matching teacher/student UI starts idle and dispatches5, but student automatic publication fails because Vercel /socket.io is404 while Render handshake200. Owned test6ac8dab326397ed2055e74f2 ended safely; prior records retained.
+- Fresh codex/classroom-realtime-proxy forwards existing same-origin Socket.IO path to same Render host before SPA fallback, no-store. No auth/API/scoring/model/interval change. Real transport/hook browser test PASS for cookie forwarding, shared connection, lifecycle events, anonymous denial and final cleanup; required workflow includes it.
+- StatusPARTIAL. Next exact-head CI/PR -> matching deploy -> repeat authorized3×5 UI cycle and immutable report proof.20contexts/physical devices remain NOTPROVEN.
+
 ## Waiting-session prepared assessment batches — 2026-10-09
 - Owner clarified physical-board teaching with idle connected students and repeated prepared5-question skill batches; explicitly authorized an existing class test. Baseline076f442d/#486 deployed/readiness+PostDeploySmoke+RoleGatePASS. Fresh codex/classroom-waiting-prepared-batches.
 - Default start no publication; explicit immediate-send retained. Added modular lazy/cached personal saved-batch dispatch, quiet student waiting presentation and shared push lock. Existing IDs/templates/scores/RBAC/models unchanged.

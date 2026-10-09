@@ -5,6 +5,10 @@
       "destination": "https://almeaacodax-codex.onrender.com/api/:path*"
     },
     {
+      "source": "/socket.io/:path*",
+      "destination": "https://almeaacodax-codex.onrender.com/socket.io/:path*"
+    },
+    {
       "source": "/:path*",
       "destination": "/index.html"
     }
@@ -56,6 +60,15 @@
         {
           "key": "Cache-Control",
           "value": "no-cache, max-age=0, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/socket.io/:path*",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
         }
       ]
     }

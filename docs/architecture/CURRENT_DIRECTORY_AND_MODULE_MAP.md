@@ -191,3 +191,6 @@ Performance ownership now includes: isolated load profiles; profile-specific evi
 
 ## Classroom waiting and prepared batches — 2026-10-09
 `ClassroomSavedBatchesPanel` owns lazy scoped template reads and dispatch through the existing append API; the active panel shares its push lock and reload. `ClassroomStudentWaitingPanel` owns idle student presentation; student session/join/realtime/submission remain in `ClassroomStudentLive`. Existing persisted templates and batch/report models stay authoritative.
+
+### Classroom same-origin transport — 2026-10-09
+`hooks/useClassroomRealtime.ts` retains one credentialed shared transport. `vercel.json` forwards its existing `/socket.io/:path*` path to the same Render API host before SPA fallback, with no-store; server socket authority and classroom rooms remain in `server/src/sockets/`. Proxy delivery is verified by `scripts/smoke-classroom-proxy-realtime.mjs`.
