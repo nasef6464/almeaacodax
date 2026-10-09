@@ -27,8 +27,9 @@ export type SupervisorQuizWithStats = Quiz & {
 export const uniqueSupervisorStudentIds = (values: Array<string | undefined | null>) =>
   Array.from(new Set(values.filter((value): value is string => typeof value === 'string' && value.trim().length > 0)));
 
-export const useSupervisorAssessmentScope = (tabFilter: SupervisorTestTabFilter) => {
-  const { user, users, groups, quizzes, examResults } = useStore();
+export const useSupervisorAssessmentScope = (tabFilter: SupervisorTestTabFilter, resultEvidence?: QuizResult[]) => {
+  const { user, users, groups, quizzes, examResults: personalResults } = useStore();
+  const examResults = resultEvidence ?? personalResults;
 
   const scopedGroupIds = useMemo(() => {
     return resolveSupervisorSchoolScope(user, groups).groupIds;

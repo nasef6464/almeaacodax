@@ -12,6 +12,7 @@ export interface PaginationOptions {
 }
 
 export interface QuizResultsPaginationOptions extends PaginationOptions {
+  includeReview?: boolean;
   noTotal?: boolean;
   quizId?: string;
   studentId?: string;

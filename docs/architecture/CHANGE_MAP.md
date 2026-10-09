@@ -3,6 +3,8 @@
 | إذا أردت تغيير... | ابدأ من... | لا تبدأ من... |
 |---|---|---|
 | شاشة نتيجة الطالب | `pages/Results.tsx` و`components/results/` | quiz route مباشرة |
+| تحليل الاختبارات الموجهة للمشرف | `dashboards/admin/supervisorTests/assessmentReportEvidence.ts` و`useScopedAssessmentResults.ts` | توسيع store النتائج الشخصية |
+| ظهور اختبارات الطلاب لدى مدير المدرسة | `schoolDirectorWorkspace.ts` و`schoolAssessmentAudience.ts` | تغيير صلاحيات المدير أو نسخ Quiz |
 | شكل score/mastery | `components/results/resultScorePresentation.ts` | Database |
 | تصحيح الاختبار | assessment scoring backend | React state |
 | نسخة تعريف اختبار منشور | `server/src/modules/quizzes/application/assessmentDefinitionReadAdapter.ts` و`assessmentVersionRepository.ts` | تغيير وثيقة Quiz التاريخية |

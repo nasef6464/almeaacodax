@@ -612,6 +612,14 @@ async function runSchoolDirectorAcademicClosureJourney(csrf: CsrfContext) {
   expectStatus("director creates school assessment from approved bank", assessment, 201);
   const assessments = await jsonRequest(`/school-access/director/schools/${schoolId}/academic/assessments`, { token: tokens.get("schoolAdmin") });
   expectStatus("director lists school-bounded assessments", assessments, 200);
+  const audienceStudentId = userIds.get('student'); const audienceOutsiderId = scopeStudentIds.get('outsideSchool');
+  assert.ok(audienceStudentId && audienceOutsiderId, 'individual assessment audience fixtures missing');
+  const individualAssessment = await QuizModel.create({ _id: `director-individual-${RUN_MARKER}`, id: `director-individual-${RUN_MARKER}`, title: 'Individual school assessment', pathId: ASSESSMENT_PATH_ID, subjectId: ASSESSMENT_SUBJECT_ID, targetUserIds: [audienceStudentId], targetGroupIds: [], isPublished: true });
+  const foreignAssessment = await QuizModel.create({ _id: `director-foreign-${RUN_MARKER}`, id: `director-foreign-${RUN_MARKER}`, title: 'Foreign individual assessment', pathId: ASSESSMENT_PATH_ID, subjectId: ASSESSMENT_SUBJECT_ID, targetUserIds: [audienceOutsiderId], targetGroupIds: [], isPublished: true });
+  const individualList = await jsonRequest(`/school-access/director/schools/${schoolId}/academic/assessments`, { token: tokens.get("schoolAdmin") });
+  expectStatus("director sees individual school-targeted assessments", individualList, 200);
+  assert.equal(individualList.body?.assessments?.some((item: any) => item.id === individualAssessment.id), true, 'individual school assessment missing');
+  assert.equal(individualList.body?.assessments?.some((item: any) => item.id === foreignAssessment.id), false, 'foreign individual assessment leaked');
   assert.equal(assessments.body?.assessments?.some((item: any) => String(item.title) === "Director School Assessment"), true, "created school assessment missing");
   const smart = await jsonRequest(`/school-access/director/schools/${schoolId}/academic/smart-classrooms`, { token: tokens.get("schoolAdmin") });
   expectStatus("director views school smart classroom history", smart, 200);
