@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "stage": "QA_LOCK",
+  "run": "RUN096",
+  "sourceKey": "MNSF26-GEO-T006-Q18",
+  "sourceImageSha256": "88b6a125a2633a34c0e592b842c7a1380f136d54b5985e26bb6d730998f5bdba",
+  "status": "REVIEW",
+  "importEligible": false,
+  "reason": "Source 50 degrees is an exterior vertex angle, so interior 130 and equal base angles 25 degrees. Prior answer A incorrect.",
+  "correctAnswerCandidate": "القيمتان متساويتان (ج)",
+  "sourceMasterWrite": "BLOCKED",
+  "taxonomyApproval": false,
+  "fingerprintRevalidationRequired": true
+}
