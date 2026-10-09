@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN100",
+  "date": "2026-10-09",
+  "stage": "QA_LOCK",
+  "exactHeadsAtStart": {
+    "chatgpt/mnsf26-ingest": "fc9d7d64a61cdaf74b1150d92d8a35cc01855ddb",
+    "main": "37488e2fabbaf056a6bfd70165fa5a34f8c5b20d"
+  },
+  "cropLock": "PASS_LOCKED_2135_2135",
+  "questionMastering": {
+    "run063Status": "PASS_LOCKED_IN_LIBRARY_DELTA",
+    "active": 2129,
+    "excluded": 6,
+    "newMastered": 0
+  },
+  "newIndependentContactSheetMathQA": 100,
+  "sourceWebpRehashedThisRun": 0,
+  "verdictCounts": {
+    "MATH_PASS_TAXONOMY_PENDING": 68,
+    "REVIEW_PRIOR_SOURCE_CONFLICT_RECONFIRMED": 3,
+    "HOLD_PRESERVED": 21,
+    "REVIEW_PROOF_INCOMPLETE": 3,
+    "HOLD_MATH_CANDIDATE_FAIL_CLOSED": 3,
+    "REVIEW_PRESERVED": 2
+  },
+  "newHoldMathCandidates": [
+    "MNSF26-GEO-T007-Q12",
+    "MNSF26-GEO-T008-Q18",
+    "MNSF26-GEO-T011-Q07"
+  ],
+  "priorConflictsReconfirmed": [
+    "MNSF26-GEO-T007-Q03",
+    "MNSF26-GEO-T007-Q17",
+    "MNSF26-GEO-T011-Q10"
+  ],
+  "pendingMasterCorrections": [
+    "MNSF26-GEO-T018-Q05",
+    "MNSF26-GEO-T018-Q07"
+  ],
+  "masterWriteBlocked": true,
+  "canonical25_95SemanticPass": false,
+  "qaFullBookPass": false,
+  "dedupeLock": "BLOCKED_BY_QA",
+  "r2Lock": "BLOCKED",
+  "importLock": "BLOCKED",
+  "productionE2E": false,
+  "evidenceLedger": "MNSF26_RUN100_100_INDEPENDENT_VISUAL_MATH_QA_V1.json",
+  "evidenceLedgerSha256": "6d0bd91a5632b473df1f3968b529956f695d8b58377a2c288d60cb95e7b1e9b3",
+  "productionServicesUntouched": true
+}
