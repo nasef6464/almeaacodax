@@ -18,8 +18,8 @@ The three user-provided 2026 Yelo PDFs are recorded with page count, byte size a
 - All checks above were read-only; no Atlas writes were performed.
 
 ## Target taxonomy (CANDIDATE ONLY)
-- Approximate aim: **25 main / 90 subskills**; verified structural totals from the prior candidate artifact, not yet per-question certified.
-- All **31 source lesson groups** have a proposed main-skill parent.
+- **Current candidate (RUN012): 25 main / 92 subskills**, revised from the previous 25/90 after four independently SHA-matched textbook crop observations. Candidate only, not per-question or production certified.
+- All **31 source lesson groups** have a proposed main-skill parent. The corresponding hidden foundation plan now contains **117 topics** (25 main, 92 sub), all `showOnPlatform=false` and non-importable.
 - Proposed editable initial free setting: first 5 main skill learning topics and their related drills, including subordinate topics. No hardcoded permanent restriction.
 - No new or alternate PHYS26 taxonomy in production until a protected subject/reference baseline and mapping check passes.
 - Existing draft artifacts in this conversation: `PHYS26_TAXONOMY_CANDIDATE_25x90.json` and `PHYS26_TAXONOMY_25x90_AR.md`. Import/export verified contents into this branch before freezing IDs; do not invent a replacement silently.
@@ -75,3 +75,14 @@ Update `ops/phys26/PHYS26_EXECUTION_LEDGER.json` with each real run; enter exact
 - Added `scripts/test-phys26-question-validator.mjs` (1 synthetic positive, 5 synthetic negatives). Mandatory PHYS26 GitHub Actions workflow ran **SUCCESS** at exact code commit `c77066a4c054a2c3d8e2d970377a58dcd6ee0486` (run 37903937984). Changes to this Master/ledger after that commit require a new exact-head CI before merging.
 - Details: `ops/phys26/PHYS26_RUN005_EVIDENCE.md`. Counters: private crop candidates 400, geometry check pass 400, visually sampled 10, defect corrected 1, fully accepted questions 0, approved answers 0, published question/drill records 0.
 - Remain in Phase 1; Phase 2+ design remains an offline draft. Copyright/licensing clearance, full visual/question+answer QA, and local Mongo UAT are blocking production import.
+
+
+## RUN012 — evidence-backed taxonomy amendment and source quarantine verification (2026-10-09)
+- Reopened the uploaded original 37/162/77-page PDFs, verified all three PDF SHA-256 against inventory, and decoded/hash-checked all **2,064** private V5 WebP candidate crops; no new source extraction or approved questions counted.
+- Confirmed source concepts and crop SHA values for `L13-Q009/Q079/Q080` and `L24-Q037` to extend the **candidate taxonomy to 25 main / 92 subskills**; hidden draft foundation topics now **117** (26 initially free and 91 initially locked, all editable proposals; never published).
+- Reopened original pages **74, 79** for cropped-looking source diagrams. Artwork itself reaches printed-column edges. Keep `L14-Q039` and `L15-Q013` quarantined pending source completeness/technical editorial review; never invent missing figure detail.
+- **Publisher answer-key error proven from original page 135:** `L27-Q024` key prints A=1.56 while refractive index calculation `3×10^8 / 2.4×10^8 = 1.25` corresponds to B. Hold in quarantine; do not silently replace published source key.
+- **Publisher dimensional ambiguity proven from original page 117:** `L22-Q057` asks for kW power, while `72/0.18 = 400` kWh energy; printed key A refers to 400. Keep editorial quarantine.
+- RUN006–RUN011 local previously documented facts reconciled into ledger without counting old work as new; 823 boundary-risk candidates reviewed in earlier runs, but only a geometry/visual-boundary audit, not full question certification. 154 distinct provisional similarity-pair comparisons; 68 distinct provisional physics crosschecks; no approved content.
+- Source/foundation CI tests updated to validate **the actual candidate counts and safety invariants** instead of freezing the project to exactly 90 subskills. Exact PR head CI and unrelated required workflows still require confirmation after subsequent documentation commits.
+- See `ops/phys26/PHYS26_RUN012_EVIDENCE.md` for evidence, provenance, and exact boundaries. No production writes, approval, licensing clearance, full foundation explanation, or final question/drill acceptance.
