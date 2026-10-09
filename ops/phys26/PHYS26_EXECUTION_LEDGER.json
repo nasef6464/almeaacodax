@@ -1,6 +1,6 @@
 {
   "project": "PHYS26",
-  "updatedAt": "2026-10-08",
+  "updatedAt": "2026-10-09",
   "branch": "content/phys26-full-closure",
   "currentPhase": 1,
   "phases": [
@@ -63,22 +63,27 @@
     "questionNumberSequenceMissing": 0,
     "answerKeyCandidateLabelsLocated": 2064,
     "answerKeyCandidateArabicGlyphsNormalized": 29,
-    "answerKeyCandidatesUnmatched": 0
+    "answerKeyCandidatesUnmatched": 0,
+    "privateCropCandidatesGenerated": 400,
+    "privateCropGeometryChecksPassed": 400,
+    "privateCropVisualSamplesInspected": 10,
+    "privateCropDefectsCorrected": 1,
+    "offlineValidatorSyntheticCasesPassed": 6
   },
   "currentRun": {
-    "result": "PHYS26_2064_NUMBER_AND_FOOTER_KEY_CANDIDATES_COMMITTED",
+    "result": "PHYS26_PRIVATE_CROPS_400_GENERATED_AND_VALIDATOR_HARDENED",
     "publishedToProduction": false,
-    "tests": "LOCAL_NUMBER_AUDIT_PASS; 31/31_SEQUENCES; 2064/2064_FOOTER_KEY_LABELS; 0_NUMBER_GAPS; CI_WORKFLOW_GATE_ADDED_BUT_RUN_RESULT_PENDING",
+    "tests": "400/400_PRIVATE_GEOMETRY_PASS; VISUAL_SAMPLE_10; ONE_HEADING_OVERLAP_CORRECTED; SIX_BEHAVIOR_CASES_PASS; PHYS26_GITHUB_CI_SUCCESS_AT_c77066a4",
+    "evidence": "ops/phys26/PHYS26_RUN005_EVIDENCE.md",
+    "codeCIHead": "c77066a4c054a2c3d8e2d970377a58dcd6ee0486",
+    "codeCIWorkflowRunId": 37903937984,
     "notes": [
-      "Freshly uploaded PDFs materialized and opened locally; prior HTTP 403 source access issue resolved for this run.",
-      "Book collection source: 162 PDF pages, 31 independently numbered lessons, 2064 numbered positions, 1174 in 31 first-sections and 890 in 30 second-sections; lesson 25 has no second section.",
-      "No missing integer in each lesson's 1..N question label range after excluding a split year label on PDF page 22.",
-      "Question wording, options, answer keys, image crops, per-question subskills and licensing NOT yet approved. New counts represent source label indexing ONLY.",
-      "Do not publish source page images or questions to GitHub without rights clearance; protect Atlas, existing nine physics skills and 36 historical progress rows.",
-      "Metadata audit: ops/phys26/PHYS26_SOURCE_NUMBER_AUDIT_2064.json; local full 2064-entry bounding-box index is not committed.",
-      "Offline footer answer tables contain 2064 candidate answer letters paired to the 2064 question number labels, including 29 original Arabic A/B/C/D-equivalent glyphs. No independent answer correctness certification.",
-      "Added offline number-audit gate and its step in .github/workflows/phys26-static.yml; latest CI result not yet confirmed."
+      "Private local archive has 400 source-derived WebP crop candidates and image SHA256 manifest; not public and not verified question content.",
+      "10 candidates sampled visually; one chapter heading contamination found and cropped out. Remaining 390 not visually reviewed.",
+      "No answer/key/canonical question was approved by the source QA gate; no production writes.",
+      "Question validator now checks text+option duplicates, duplicate image hashes, RIFF WebP validity, per-lesson page and answer boundaries, key option mismatch.",
+      "Existing candidate taxonomy 25/90 and legacy physics skill-progress records unchanged."
     ]
   },
-  "next": "Continue question-by-question visual crop/answer/math QA using fresh readable PDFs; retain original key glyph and source image evidence, quarantine ambiguous problems. No publication until rights clearance."
+  "next": "Continue offline source visual QA for all 400 crop candidates (10 sampled only), quarantine incomplete question/answers, verify real key and subskill link; prepare next 400 crops after visual QA and rights gating. Do not claim approved questions from geometry."
 }
