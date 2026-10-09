@@ -37,7 +37,7 @@
   ],
   "taxonomyCandidate": {
     "mainSkills": 25,
-    "subSkills": 90,
+    "subSkills": 92,
     "collectionLessonCoverage": 31,
     "verifiedIdentityCountsOnly": true,
     "sourceMappingPendingDetailedReview": true
@@ -64,11 +64,14 @@
   "extraction": {
     "sourceOccurrences": 2064,
     "verifiedQuestions": 0,
-    "quarantined": 0,
+    "quarantined": 4,
     "privateCropCandidates": 2064,
     "privateCropStructuralRiskFlags": 576,
     "privateTrimProposals": 399,
-    "note": "576 conservative geometry risk candidates pending visual QA, not a certified question quarantine or imported question count"
+    "note": "576 conservative geometry risk candidates pending visual QA, not a certified question quarantine or imported question count",
+    "numberedSourcePositions": 2064,
+    "imageCandidateCount": 2064,
+    "quarantineInterpretation": "2 source-diagram original-page concerns and 2 source answer/wording anomalies; not certified question count"
   },
   "safety": "NO_PRODUCTION_WRITES"
 }
