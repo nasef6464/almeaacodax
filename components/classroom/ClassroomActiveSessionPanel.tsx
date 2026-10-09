@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AlertTriangle, CheckCircle2, Clock, Copy, Crown, ExternalLink, Flame, Presentation, Trophy } from 'lucide-react';
 import { ClassroomTeacherLiveRadar } from './ClassroomTeacherLiveRadar';
@@ -7,6 +7,7 @@ import { ClassroomPushQuestionsModal } from './ClassroomPushQuestionsModal';
 import { ClassroomTeacherMobileRemote } from './ClassroomTeacherMobileRemote';
 import { ClassroomBatchSummaryCard, type BatchMiniReport } from './ClassroomBatchSummaryCard';
 import { ClassroomEndSessionModal } from './ClassroomEndSessionModal';
+import { ClassroomStudentReportTable } from './ClassroomStudentReportTable';
 import { ClassroomSessionQuestionsList } from './ClassroomSessionQuestionsList';
 import { api } from '../../services/api';
 import { useStore } from '../../store/useStore';
@@ -64,13 +65,20 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
   const [bankQuestions, setBankQuestions] = useState<any[]>([]);
   const [loadingBank, setLoadingBank] = useState(false);
   const [bankError, setBankError] = useState('');
+  const bankLoadedSchoolRef = useRef('');
   const [sessionStorageMeta, setSessionStorageMeta] = useState<{ day?: string; period?: string; className?: string; subject?: string } | null>(null);
   const [showEndConfirmModal, setShowEndConfirmModal] = useState(false);
 
   const schoolId = data?.schoolId || data?.meta?.schoolId || '';
 
   useEffect(() => {
-    if (!schoolId) { setBankQuestions([]); setBankError(''); return; }
+    bankLoadedSchoolRef.current = '';
+    setBankQuestions([]);
+    setBankError('');
+  }, [schoolId]);
+
+  useEffect(() => {
+    if (!schoolId || !showPushModal || data?.status === 'ended' || bankLoadedSchoolRef.current === schoolId) return;
     let active = true;
     setLoadingBank(true);
     setBankQuestions([]);
@@ -85,12 +93,12 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
             if (Array.isArray(fallback?.questions) && fallback.questions.length > 0) list = [...list, ...fallback.questions];
           } catch {}
         }
-        if (active) setBankQuestions(list);
+        if (active) { setBankQuestions(list); bankLoadedSchoolRef.current = schoolId; }
       })
       .catch(() => { if (active) { setBankQuestions([]); setBankError('تعذر تحميل بنك الأسئلة المصرح لهذه المدرسة. لن يتم عرض أسئلة من مصدر محلي بديل.'); } })
       .finally(() => { if (active) setLoadingBank(false); });
-    return () => { active = false; };
-  }, [schoolId]);
+    return () => { active = false; setLoadingBank(false); };
+  }, [schoolId, showPushModal, data?.status]);
 
   const loadChallengeState = useCallback(async () => {
     if (!sessionId || data?.status === 'ended') { setChallengeState(null); return; }
@@ -317,6 +325,12 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
         pushMode={pushMode}
       />
 
+      {data?.status === 'live' && data?.activeBatchId && data?.submissionSummary && <section className="mt-4 rounded-2xl border border-indigo-200 p-4 dark:border-indigo-900" aria-live="polite">
+        <p className="text-sm font-black">تسليم أسئلة النشاط: {data.submissionSummary.submittedCount}/{data.submissionSummary.joinedCount} طالب</p>
+        <p className="mt-1 text-xs text-slate-500">بانتظار تسليم {Math.max(0, data.submissionSummary.joinedCount - data.submissionSummary.submittedCount)} طالب دخل الحصة.</p>
+        <details className="mt-2 text-xs"><summary className="cursor-pointer font-bold">من سلّم النشاط؟</summary><p className="mt-2">{data.submissionSummary.submitted?.map((student: any) => student.name).join('، ') || 'لم يصل تسليم بعد.'}</p></details>
+      </section>}
+      {data?.status === 'ended' && data?.report && <ClassroomStudentReportTable students={data.report.students} complete={data.report.studentEvidenceComplete} />}
       <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
         <button
           type="button"

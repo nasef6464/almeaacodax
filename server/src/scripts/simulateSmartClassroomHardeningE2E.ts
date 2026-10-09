@@ -329,6 +329,17 @@ async function run() {
   assert.equal(q3Stats.responseCount, 1);
   assert.equal(q3Stats.distribution["0"], 1);
   assert.equal(q2Stats.pathId, "path-two");
+  const finalizedAnswers = await request(`/classroom/sessions/${liveSessionId}/submit`, {
+    method: "POST", token: studentAToken,
+    body: { answers: [{ questionId: q2, selectedOptionIndex: 2 }, { questionId: q3, selectedOptionIndex: 0 }] },
+  });
+  assert.equal(finalizedAnswers.status, 200, JSON.stringify(finalizedAnswers.body));
+  const liveSubmission = await request(`/classroom/sessions/${liveSessionId}/aggregate?view=live`, { token: teacherToken });
+  assert.equal(liveSubmission.status, 200);
+  assert.equal(liveSubmission.body.submissionSummary.submittedCount, 1);
+  assert.equal(liveSubmission.body.submissionSummary.joinedCount, LOAD_STUDENT_COUNT + 2);
+  assert.equal(liveSubmission.body.submissionSummary.submitted[0].studentId, String(studentA._id));
+  assert.equal((await request(`/classroom/sessions/${liveSessionId}/aggregate?view=live`, { token: studentAToken })).status, 403);
 
   const template = await request("/classroom/templates", { method: "POST", token: teacherToken, body: { schoolId: schoolAId, title: `Template ${RUN_ID}`, questionIds: [q1, q2], challengeIds: [q2] } });
   assert.equal(template.status, 201, JSON.stringify(template.body));
@@ -353,6 +364,16 @@ async function run() {
   const endedAgain = await request(`/classroom/sessions/${liveSessionId}/end`, { method: "POST", token: teacherToken });
   assert.equal(endedAgain.status, 200, "Repeated end-session should be idempotent");
   assert.deepEqual(endedAgain.body.report, ended.body.report, "Repeated end-session must return the immutable stored snapshot");
+  assert.equal(ended.body.report.students.length, LOAD_STUDENT_COUNT + 2);
+  assert.ok(ended.body.report.students.every((student: any) => student.publishedQuestions === 3 && Array.isArray(student.skills)), "Earlier ended batches must remain in the student report");
+  assert.equal(ended.body.report.studentEvidenceComplete, true);
+  const savedReport = await request(`/classroom/sessions/${liveSessionId}/aggregate?view=report`, { token: teacherToken });
+  assert.equal(savedReport.status, 200);
+  assert.deepEqual(savedReport.body.report, ended.body.report);
+  assert.equal((await request(`/classroom/sessions/${liveSessionId}/aggregate?view=report`, { token: studentAToken })).status, 403);
+  const compactHistory = await request(`/classroom/teacher/history?schoolId=${schoolAId}&view=summary`, { token: teacherToken });
+  assert.equal(compactHistory.status, 200);
+  assert.ok(compactHistory.body.sessions.every((report: any) => report.students === undefined));
   assert.equal((await request(`/classroom/sessions/${liveSessionId}/instant-join`, { method: "POST", token: studentAToken })).status, 404);
 
   const supervisorMonth = await request("/classroom/supervisor/insights?period=month", { token: supervisorAToken });

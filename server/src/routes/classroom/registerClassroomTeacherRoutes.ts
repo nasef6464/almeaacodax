@@ -173,6 +173,8 @@ export function registerClassroomTeacherRoutes(classroomRouter: Router) {
         className: payload.className || "",
         publishedMode: payload.publishedMode || "single",
         publishedQuestionIds: initialPublished,
+        sentQuestionIds: initialPublished,
+        sentHistoryComplete: true,
         status: initialStatus,
         activeQuestionIndex: payload.autoStart && canonicalQuestionIds.length > 0 ? 0 : null,
         questionSnapshots: snapshots,
@@ -260,6 +262,7 @@ export function registerClassroomTeacherRoutes(classroomRouter: Router) {
       session.publishedMode = "single";
       session.publishedQuestionIds = [targetQuestion.questionId];
     }
+    session.sentQuestionIds = [...new Set([...(session.sentQuestionIds || []), ...session.publishedQuestionIds])];
     try { await session.save(); } catch (error) {
       if (isDuplicateLiveSessionError(error)) return res.status(StatusCodes.CONFLICT).json({ message: "يوجد بالفعل فصل ذكي مباشر لهذا الفصل الدراسي" });
       throw error;
@@ -346,6 +349,7 @@ export function registerClassroomTeacherRoutes(classroomRouter: Router) {
       session.activeQuestionIndex = session.questionSnapshots.findIndex((question: any) => String(question.questionId) === newQuestionIds[0]);
       session.publishedMode = "batch";
       session.publishedQuestionIds = newQuestionIds;
+      session.sentQuestionIds = [...new Set([...(session.sentQuestionIds || []), ...newQuestionIds])];
     }
     try { await session.save(); } catch (error) {
       if (isDuplicateLiveSessionError(error)) return res.status(StatusCodes.CONFLICT).json({ message: "يوجد بالفعل فصل ذكي مباشر لهذا الفصل الدراسي" });

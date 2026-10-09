@@ -110,6 +110,9 @@ async function run() {
   assert.equal(initial.roster.joined, 1);
   assert.equal(initial.totals.responses, 1);
   assert.equal(initial.totals.correct, 1);
+  assert.equal(initial.students.length, 1);
+  assert.equal(initial.students[0].answered, 1);
+  assert.equal(initial.students[0].skills[0].accuracy, 100);
 
   session.status = "ended";
   session.endedAt = new Date();
@@ -136,6 +139,7 @@ async function run() {
   assert.equal(historical.totals.responses, 1);
   assert.equal(historical.totals.correct, 1);
   assert.deepEqual(historical.questions, initial.questions);
+  assert.deepEqual(historical.students, initial.students, "historical student evidence changed after roster changes");
 
   console.log("Smart Classroom finalized report immutability: PASS");
 }

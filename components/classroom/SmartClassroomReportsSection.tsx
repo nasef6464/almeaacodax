@@ -11,6 +11,7 @@ import {
   Zap,
 } from 'lucide-react';
 import { api } from '../../services/api';
+import { ClassroomStudentReportTable } from './ClassroomStudentReportTable';
 import {
   buildClassroomSkillDiagnostics,
   formatClassroomDuration,
@@ -43,13 +44,26 @@ export const SmartClassroomReportsSection: React.FC<SmartClassroomReportsSection
   const [selectedSubjectFilter, setSelectedSubjectFilter] = useState('all');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [studentDetail, setStudentDetail] = useState<{ loading: boolean; error: string; students?: CanonicalClassroomReport['students']; complete?: boolean }>({ loading: false, error: '' });
+
+  useEffect(() => { setSelectedReport(null); setStudentDetail({ loading: false, error: '' }); }, [schoolId]);
+
+  useEffect(() => {
+    if (!selectedReport) return;
+    let active = true;
+    setStudentDetail({ loading: true, error: '' });
+    api.get<{ report: ClassroomSavedReport }>(`/classroom/sessions/${encodeURIComponent(selectedReport.sessionId)}/aggregate?view=report`)
+      .then(({ report }) => { if (active) setStudentDetail({ loading: false, error: '', students: report.students, complete: report.studentEvidenceComplete }); })
+      .catch(() => { if (active) setStudentDetail({ loading: false, error: 'تعذر تحميل تفاصيل الطلاب. أغلق التقرير وافتحه للمحاولة مجددًا.' }); });
+    return () => { active = false; };
+  }, [selectedReport?.sessionId]);
 
   const loadReports = async () => {
     if (!schoolId || !smartClassroomEnabled) return;
     setLoading(true);
     setError('');
     try {
-      const result = await api.getClassroomTeacherHistory(schoolId);
+      const result = await api.getClassroomTeacherHistory(schoolId, undefined, 'summary');
       const sessions = Array.isArray(result?.sessions) ? result.sessions : [];
       const finalizedReports = sessions
         .map((session) => normalizeClassroomReport(session as ClassroomSavedReport))
@@ -258,6 +272,7 @@ export const SmartClassroomReportsSection: React.FC<SmartClassroomReportsSection
               <div className="flex items-center gap-2"><button type="button" onClick={() => exportExcel(selectedReport)} className="inline-flex items-center gap-1 rounded-xl bg-emerald-600 px-3 py-2 text-xs font-black text-white"><Download size={14} /> Excel</button><button type="button" onClick={() => setSelectedReport(null)} className="rounded-xl p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"><X size={18} /></button></div>
             </div>
             <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4"><Kpi label="الحضور" value={`${selectedReport.roster.joined}/${selectedReport.roster.expected}`} /><Kpi label="الإجابات" value={selectedReport.totals.responses} /><Kpi label="الصحيح" value={selectedReport.totals.correct} /><Kpi label="مدة الحصة" value={selectedReport.durationMinutes === null ? '—' : `${selectedReport.durationMinutes} د`} /></div>
+            {studentDetail.loading ? <p className="mt-4 text-xs">جارٍ تحميل تقييم الطلاب…</p> : studentDetail.error ? <p className="mt-4 text-xs text-rose-600" role="alert">{studentDetail.error}</p> : <ClassroomStudentReportTable students={studentDetail.students} complete={studentDetail.complete} />}
             {selectedReport.batches.length > 0 && (
               <div className="mt-5 rounded-2xl border border-indigo-100 bg-indigo-50/40 p-4 dark:border-indigo-950/40 dark:bg-indigo-950/20">
                 <h4 className="text-sm font-black text-indigo-950 dark:text-indigo-200">تسلسل ونتائج دفعات الأسئلة</h4>

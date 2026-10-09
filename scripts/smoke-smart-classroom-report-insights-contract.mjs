@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import './smoke-smart-classroom-student-report.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 

@@ -88,7 +88,7 @@ export const ClassroomSessionQuestionsList: React.FC<ClassroomSessionQuestionsLi
           <button
             type="button"
             onClick={() => openPushModal('normal')}
-            disabled={isEnded || hasActiveBatch || loadingBank || Boolean(bankError)}
+            disabled={isEnded || hasActiveBatch || loadingBank}
             className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 px-3.5 py-2 text-xs font-black text-white disabled:opacity-50"
           >
             <PlusCircle size={14} /> تخصيص حزمة مهارة
@@ -107,7 +107,7 @@ export const ClassroomSessionQuestionsList: React.FC<ClassroomSessionQuestionsLi
           <button
             type="button"
             onClick={() => openPushModal('challenge')}
-            disabled={isEnded || hasActiveBatch || loadingBank || Boolean(bankError)}
+            disabled={isEnded || hasActiveBatch || loadingBank}
             className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-3.5 py-2 text-xs font-black text-white disabled:opacity-50"
           >
             <Zap size={14} /> إنشاء دفعة تحدي مستقلة
