@@ -33,6 +33,13 @@ export const ClassroomTeacherConsole: React.FC = () => {
   const [data, setData] = useState<any>(null);
   const [message, setMessage] = useState('');
   const [workspace, setWorkspace] = useState<TeacherWorkspaceData | null>(null);
+  const [workspaceLoading, setWorkspaceLoading] = useState(true);
+  const [workspaceError, setWorkspaceError] = useState(false);
+  const [workspaceRetry, setWorkspaceRetry] = useState(0);
+  const [creating, setCreating] = useState(false);
+  const createPending = useRef(false);
+  const requestedSchoolId = searchParams.get('schoolId') || '';
+  const requestedClassId = searchParams.get('classId') || '';
   const [schoolId, setSchoolId] = useState(searchParams.get('schoolId') || '');
   const [classId, setClassId] = useState(searchParams.get('classId') || '');
   const [questions, setQuestions] = useState<ClassroomQuestion[]>([]);
@@ -85,25 +92,28 @@ export const ClassroomTeacherConsole: React.FC = () => {
   useEffect(() => {
     if (sessionId) return;
     let active = true;
-
-    api.getTeacherActiveClassroomSession()
-      .then((res) => {
-        if (active && res.hasActiveSession && res.session?.sessionId) {
-          navigate(`/classroom/${res.session.sessionId}/teacher`, { replace: true });
-        }
-      })
-      .catch(() => {});
+    setWorkspaceLoading(true);
+    setWorkspaceError(false);
 
     api.getSchoolTeacherWorkspace().then((result) => {
       if (!active) return;
       setWorkspace(result);
-      const initialSchool = result.schools.find((school) => school.schoolId === schoolId) || result.schools[0];
+      const initialSchool = result.schools.find((school) => school.schoolId === requestedSchoolId) || result.schools[0];
       if (!initialSchool) return;
       setSchoolId(initialSchool.schoolId);
-      if (!initialSchool.assignments.some((assignment) => assignment.classId === classId)) setClassId(initialSchool.assignments[0]?.classId || '');
-    }).catch(() => setMessage('تعذر تحميل الفصول المسندة لك.'));
+      setClassId(initialSchool.assignments.some((assignment) => assignment.classId === requestedClassId) ? requestedClassId : initialSchool.assignments[0]?.classId || '');
+    }).catch(() => { if (active) setWorkspaceError(true); }).finally(() => { if (active) setWorkspaceLoading(false); });
     return () => { active = false; };
-  }, [classId, navigate, schoolId, sessionId]);
+  }, [navigate, requestedClassId, requestedSchoolId, sessionId, workspaceRetry]);
+
+  useEffect(() => {
+    if (sessionId || !selectedSchool?.schoolId) return;
+    let active = true;
+    api.getTeacherActiveClassroomSession(selectedSchool.schoolId).then((res) => {
+      if (active && res.hasActiveSession && res.session?.sessionId) navigate(`/classroom/${res.session.sessionId}/teacher`, { replace: true });
+    }).catch(() => {});
+    return () => { active = false; };
+  }, [navigate, selectedSchool?.schoolId, sessionId]);
 
   const filteredQuestions = useMemo(() => questions.filter((q: any) => {
     if (filters.track && q.examType !== filters.track && q.pathId !== filters.track) return false;
@@ -153,6 +163,9 @@ export const ClassroomTeacherConsole: React.FC = () => {
   };
 
   const create = async () => {
+    if (createPending.current) return;
+    createPending.current = true;
+    setCreating(true);
     try {
       const result = await api.createClassroomSession({
         schoolId,
@@ -169,6 +182,9 @@ export const ClassroomTeacherConsole: React.FC = () => {
       navigate(`/classroom/${result.sessionId}/teacher`);
     } catch {
       setMessage('تعذر بدء الحصة. تحقق من الفصل المسند وتفعيل الفصل الذكي في عقد المدرسة.');
+    } finally {
+      createPending.current = false;
+      setCreating(false);
     }
   };
 
@@ -201,6 +217,14 @@ export const ClassroomTeacherConsole: React.FC = () => {
         <h1 className="mt-4 text-3xl font-black">ابدأ فصلًا ذكيًا</h1>
         <p className="mt-2 text-slate-500">اختر الفصل ثم ابدأ مباشرة فارغًا، أو جهز أسئلة أولية وأرسل دفعات أخرى أثناء الشرح.</p>
 
+        {workspaceLoading && <p role="status" className="mt-6 text-sm font-bold text-indigo-700">جارٍ تحميل فصولك…</p>}
+        {workspaceError && (
+          <div role="alert" className="mt-6 rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800">
+            تعذر تحميل فصولك.
+            <button type="button" onClick={() => setWorkspaceRetry((value) => value + 1)} className="mr-3 rounded-lg bg-white px-3 py-2 font-bold">إعادة المحاولة</button>
+          </div>
+        )}
+
         {workspace?.schools.length === 0 && (
           <div className="mt-8 rounded-3xl border border-amber-200 bg-amber-50/80 p-8 text-center shadow-xs">
             <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-100 text-amber-700">
@@ -230,12 +254,12 @@ export const ClassroomTeacherConsole: React.FC = () => {
           <>
             <div className="mt-6 grid gap-3 sm:grid-cols-2">
               <label className="text-sm font-bold">المدرسة
-                <select value={schoolId} onChange={(e) => chooseSchool(e.target.value)} className="mt-2 block w-full rounded-xl border p-3">
+                <select value={schoolId} disabled={creating} onChange={(e) => chooseSchool(e.target.value)} className="mt-2 block w-full rounded-xl border p-3">
                   {workspace.schools.map((school) => <option key={school.schoolId} value={school.schoolId}>{school.schoolName}</option>)}
                 </select>
               </label>
               <label className="text-sm font-bold">الفصل
-                <select value={classId} onChange={(e) => setClassId(e.target.value)} className="mt-2 block w-full rounded-xl border p-3">
+                <select value={classId} disabled={creating} onChange={(e) => setClassId(e.target.value)} className="mt-2 block w-full rounded-xl border p-3">
                   {(selectedSchool?.assignments || []).map((assignment) => <option key={assignment.assignmentId} value={assignment.classId}>{assignment.className}{assignment.subjectId ? ` — ${assignment.subjectId}` : ''}</option>)}
                 </select>
               </label>
@@ -289,9 +313,9 @@ export const ClassroomTeacherConsole: React.FC = () => {
               </div>
             )}
 
-            <button type="button" onClick={() => void create()} disabled={!schoolId || !classId || !selectedSchool?.smartClassroomEnabled} className="mt-6 flex w-full items-center justify-center gap-2.5 rounded-2xl bg-gradient-to-r from-indigo-600 to-indigo-700 py-4 text-sm sm:text-base font-black text-white shadow-xl hover:from-indigo-700 hover:to-indigo-800 active:scale-95 disabled:opacity-40">
+            <button type="button" onClick={() => void create()} aria-busy={creating} disabled={creating || workspaceLoading || workspaceError || !schoolId || !classId || !selectedSchool?.smartClassroomEnabled} className="mt-6 flex w-full items-center justify-center gap-2.5 rounded-2xl bg-gradient-to-r from-indigo-600 to-indigo-700 py-4 text-sm sm:text-base font-black text-white shadow-xl hover:from-indigo-700 hover:to-indigo-800 active:scale-95 disabled:opacity-40">
               <Presentation size={18} />
-              {selectedIds.length > 0 ? `ابدأ الحصة الآن بـ ${selectedIds.length} أسئلة` : 'ابدأ الحصة فارغة الآن'}
+              {creating ? 'جارٍ بدء الحصة…' : selectedIds.length > 0 ? `ابدأ الحصة الآن بـ ${selectedIds.length} أسئلة` : 'ابدأ الحصة للشرح — أرسل الأسئلة لاحقًا'}
             </button>
           </>
         )}

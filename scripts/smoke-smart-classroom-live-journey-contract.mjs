@@ -40,7 +40,7 @@ const check = (name, condition) => {
 
 check('teacher can create an empty session', teacherRoutes.includes('optional().default([])') && teacherRoutes.includes('canonicalQuestionIds.length > 0 ? 0 : null'));
 check('scheduler exposes explicit empty-session mode', scheduler.includes("'empty'") && scheduler.includes('ابدأ الحصة فارغة'));
-check('direct teacher console also starts empty sessions live', teacherConsole.includes("autoStart: true") && teacherConsole.includes('ابدأ الحصة فارغة الآن') && !teacherConsole.includes('!selectedIds.length'));
+check('direct teacher console also starts empty sessions live', teacherConsole.includes("autoStart: true") && teacherConsole.includes('ابدأ الحصة للشرح — أرسل الأسئلة لاحقًا') && !teacherConsole.includes('!selectedIds.length'));
 check('direct teacher bank previews standalone images', teacherConsole.includes('question.imageUrl') && teacherConsole.includes('alt="صورة السؤال"'));
 check('rich question renderer uses structural allowlist sanitization', contentRenderer.includes('ALLOWED_TAGS') && contentRenderer.includes('DOMParser') && contentRenderer.includes('element.removeAttribute'));
 check('rich question renderer restricts executable and image urls', contentRenderer.includes('isSafeUrl') && contentRenderer.includes('SAFE_IMAGE_DATA_URL') && contentRenderer.includes("parsed.protocol === 'https:'"));
