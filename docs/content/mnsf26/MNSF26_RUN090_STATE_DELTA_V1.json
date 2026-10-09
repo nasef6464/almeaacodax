@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN090",
+  "stage": "QA_LOCK",
+  "sourceImagesInspected": 27,
+  "sourceSHAverified": 27,
+  "newUniqueQuestionMastering": 0,
+  "qaMathMatchesPendingTaxonomy": 16,
+  "qaHoldPreserved": 8,
+  "sourceAnswerConflict": "MNSF26-GEO-T022-Q12",
+  "correctedMasterCommit": "408c76f44e9f5a6311109286a04b5bf1ccc14555",
+  "pendingSourceMasterCorrections": 3,
+  "qaFullBookPass": false,
+  "cropLock": "2135/2135",
+  "productionE2E": false
+}
