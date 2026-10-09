@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN113",
+  "stage": "QA_LOCK",
+  "source": "Run017 original WebP independent visual inspection",
+  "sourceImagesInspected": 78,
+  "sourceImageShaMatched": 78,
+  "masteredMathSourceMatchesTaxonomyPending": 39,
+  "holdsPreserved": 33,
+  "sourceConflicts": [
+    {
+      "sourceKey": "MNSF26-AR-T060-Q02",
+      "originalMasterFile": "MNSF26_QUESTION_MASTERING_RUN051_AR_T60_V1.json",
+      "type": "TRANSCRIPTION",
+      "evidence": "75kg vs 73000g; MASTER 50kg vs 27000g; answer remains first greater",
+      "novelty": "NEW",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T060-Q12",
+      "originalMasterFile": "MNSF26_QUESTION_MASTERING_RUN051_AR_T60_V1.json",
+      "type": "ANSWER",
+      "evidence": "400mm=40cm <42cm, correct second greater B; MASTER first greater",
+      "novelty": "NEW",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T060-Q14",
+      "originalMasterFile": "MNSF26_QUESTION_MASTERING_RUN051_AR_T60_V1.json",
+      "type": "ANSWER",
+      "evidence": "1cm=10mm <15mm, correct second greater B; MASTER first greater",
+      "novelty": "NEW",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T061-Q09",
+      "originalMasterFile": "MNSF26_QUESTION_MASTERING_RUN051_AR_T61_V1.json",
+      "type": "ANSWER",
+      "evidence": "Salma five minutes before Hind, not two; prior documented",
+      "novelty": "PRIOR_DOCUMENTED",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T062-Q02",
+      "originalMasterFile": "MNSF26_QUESTION_MASTERING_RUN051_AR_T62_V1.json",
+      "type": "ANSWER",
+      "evidence": "Sunday500 Thursday8000 ratio 1/16 absent from options; MASTER 1/8; prior documented",
+      "novelty": "PRIOR_DOCUMENTED",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T063-Q19",
+      "originalMasterFile": "MNSF26_QUESTION_MASTERING_RUN051_AR_T63_V1.json",
+      "type": "ANSWER",
+      "evidence": "1kg/20g=50 pieces, MASTER changed to 2kg and 100; prior documented",
+      "novelty": "PRIOR_DOCUMENTED",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    }
+  ],
+  "newConflicts": 3,
+  "priorConflictsReconfirmed": 3,
+  "masterWritesApplied": 0,
+  "qaFullBookPass": false,
+  "productionImportAuthorized": false
+}
