@@ -16,6 +16,7 @@ const routes = [
 const projection = read("server/src/modules/schools/application/classroomQuestionProjection.ts");
 const teacher = read("pages/ClassroomTeacherConsole.tsx");
 const student = read("pages/ClassroomStudentLive.tsx");
+const waiting = read("components/classroom/ClassroomStudentWaitingPanel.tsx");
 const projector = read("pages/ClassroomProjectorView.tsx");
 const realtime = read("hooks/useClassroomRealtime.ts");
 const app = read("app/AppRouteTree.tsx");
@@ -28,7 +29,7 @@ check("responses use a single upsert identity", routes.includes('findOneAndUpdat
 check("student projection excludes correctOptionIndex", !projection.includes("correctOptionIndex"));
 check("teacher console creates a session from existing question bank", teacher.includes("createClassroomSession") && teacher.includes("getClassroomQuestions"));
 check("teacher console publishes a selected session question", teacher.includes("publishClassroomQuestion(sessionId, index)") && teacher.includes("onPublish={(index)"));
-check("student surface waits after joining until a question batch is published", student.includes("بانتظار المعلم لنشر الدفعة التالية"));
+check("student surface waits after joining until a question batch is published", student.includes("if (questions.length === 0) return <ClassroomStudentWaitingPanel") && waiting.includes("ستظهر دفعة الأسئلة هنا تلقائيًا عندما يرسلها المعلم") && waiting.includes("لا تحتاج إلى الانضمام مرة أخرى"));
 check("projector defaults to submission status and requires an explicit reveal", projector.includes("useState<RevealMode>('submissions')") && projector.includes("revealMode === 'responses'") && projector.includes("revealMode === 'solution'"));
 check("realtime joins only the current classroom workspace", realtime.includes('workspace:join') && realtime.includes('classroom:${sessionId}'));
 check("all three product surfaces have stable routes", app.includes('path="/classroom/teacher"') && app.includes('path="/classroom/:sessionId"') && app.includes('path="/classroom/:sessionId/projector"'));
