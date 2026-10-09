@@ -38,7 +38,7 @@
   "cumulative": {
     "sourcesFingerprintChecked": 3,
     "proposedMainSkills": 25,
-    "proposedSubSkills": 90,
+    "proposedSubSkills": 92,
     "coveredCollectionLessonsCandidate": 31,
     "sourceOccurrencesReviewed": 0,
     "canonicalQuestionsVerified": 0,
@@ -49,12 +49,12 @@
     "existingGenericPhysicsSkillsProtected": 9,
     "historicalSkillProgressRowsProtected": 36,
     "foundationMainTopicProposals": 25,
-    "foundationSubTopicProposals": 90,
+    "foundationSubTopicProposals": 92,
     "foundationMissingMainChapters": 15,
-    "foundationMissingSubSkillChapters": 51,
+    "foundationMissingSubSkillChapters": 53,
     "initialFreeTopicProposals": 26,
     "physicsSectionProposals": 25,
-    "foundationTopicsLinkedToSectionProposals": 115,
+    "foundationTopicsLinkedToSectionProposals": 117,
     "sourceQuestionNumberLabelsIndexed": 2064,
     "sourceLessonsFullyNumberIndexed": 31,
     "sourceSectionsNumberIndexed": 61,
@@ -64,26 +64,51 @@
     "answerKeyCandidateLabelsLocated": 2064,
     "answerKeyCandidateArabicGlyphsNormalized": 29,
     "answerKeyCandidatesUnmatched": 0,
-    "privateCropCandidatesGenerated": 400,
+    "privateCropCandidatesGenerated": 2064,
     "privateCropGeometryChecksPassed": 400,
     "privateCropVisualSamplesInspected": 10,
     "privateCropDefectsCorrected": 1,
-    "offlineValidatorSyntheticCasesPassed": 6
+    "offlineValidatorSyntheticCasesPassed": 6,
+    "privateCropTechnicalDecodePass": 2064,
+    "privateCropUniqueSha256": 2064,
+    "boundaryRiskQueueReviewedPriorRuns": 823,
+    "boundaryRiskQueueUnreviewed": 0,
+    "sourceOriginalDiagramConcerns": 2,
+    "preliminaryDistinctPhysicsChecks": 68,
+    "preliminarySourceAnswerKeyConflicts": 1,
+    "preliminarySourceWordingUnitAmbiguities": 1,
+    "priorUniqueSimilarityPairsVisuallyReviewed": 154,
+    "probableDuplicatePairsStillUncertified": 3,
+    "sourceConceptEvidenceCropsDoubleCheckedForTaxonomy": 4,
+    "sourcePagesVisuallyRecheckedForQuarantine": 4
   },
   "currentRun": {
-    "result": "PHYS26_PRIVATE_CROPS_400_GENERATED_AND_VALIDATOR_HARDENED",
+    "result": "PHYS26_TAXONOMY_25x92_AND_FOUNDATION_117_COMMITTED_SOURCE_ANOMALIES_CONFIRMED",
     "publishedToProduction": false,
-    "tests": "400/400_PRIVATE_GEOMETRY_PASS; VISUAL_SAMPLE_10; ONE_HEADING_OVERLAP_CORRECTED; SIX_BEHAVIOR_CASES_PASS; PHYS26_GITHUB_CI_SUCCESS_AT_c77066a4",
-    "evidence": "ops/phys26/PHYS26_RUN005_EVIDENCE.md",
-    "codeCIHead": "c77066a4c054a2c3d8e2d970377a58dcd6ee0486",
-    "codeCIWorkflowRunId": 37903937984,
+    "scope": "PHYS26_OFFLINE_GITHUB_BRANCH_ONLY",
+    "tests": "PDF_SHA_3_OF_3_PASS; PRIVATE_V5_ARCHIVE_2064_WEBP_DECODE_AND_SHA_UNIQUE_PASS; FOUR_TAXONOMY_CROP_SHA_MATCH; GITHUB_PHYS26_CI_PASS_ON_bf64b2ef; FINAL_HEAD_CI_RECHECK_PENDING",
+    "evidence": "ops/phys26/PHYS26_RUN012_EVIDENCE.md",
+    "newWork": [
+      "Repeated visual source checks for 4 crop evidence IDs and verified V5 crop SHA equality",
+      "Added 2 source-based subskills in canonical candidate and 2 hidden topics in foundation plan",
+      "Updated source and foundation tests to validate evidence-backed taxonomy size rather than falsely freeze 90",
+      "Reopened source PDF page 135 and confirmed Q24 key A despite independent n=1.25 -> B; source-key conflict remains quarantined",
+      "Reopened source PDF page 117: Q57 source reports kW for 400 kWh consumption; dimensional issue confirmed",
+      "Reopened original pages 74 and 79 for the two diagram quarantines; source-drawn artwork itself reaches column edge, no drawn reconstruction allowed"
+    ],
+    "priorWorkReconciledNotRepeated": [
+      "RUN006-011: 2064 private crop candidates",
+      "RUN007-009: prior 823 boundary-risk reviews, queue exhausted but two diagram concerns",
+      "RUN008-010: 68 distinct provisional physics checks with 1 conflict and 1 dimensional ambiguity",
+      "RUN010-011: 154 distinct pair image reviews; 3 apparent reprints not auto deduplicated"
+    ],
+    "rightsToRedistribute": "UNVERIFIED",
+    "noProductionWrites": true,
     "notes": [
-      "Private local archive has 400 source-derived WebP crop candidates and image SHA256 manifest; not public and not verified question content.",
-      "10 candidates sampled visually; one chapter heading contamination found and cropped out. Remaining 390 not visually reviewed.",
-      "No answer/key/canonical question was approved by the source QA gate; no production writes.",
-      "Question validator now checks text+option duplicates, duplicate image hashes, RIFF WebP validity, per-lesson page and answer boundaries, key option mismatch.",
-      "Existing candidate taxonomy 25/90 and legacy physics skill-progress records unchanged."
+      "All 117 topics are hidden; no source images/questions committed; candidate 25/92 NOT imported.",
+      "No verified canonical source question/answer/approved drill count is inflated.",
+      "Archive video/text third secondary foundation missing: 15 main and 53 sub topics without uploaded foundation support."
     ]
   },
-  "next": "Continue offline source visual QA for all 400 crop candidates (10 sampled only), quarantine incomplete question/answers, verify real key and subskill link; prepare next 400 crops after visual QA and rights gating. Do not claim approved questions from geometry."
+  "next": "Review all 2064 question contents/options and individual original keys with physics QA, finalize per-subskill mappings, resolve 4 quarantines with documented editorial decisions, secure redistribution rights, then isolated importer/UAT and gated PR exact-head validation."
 }
