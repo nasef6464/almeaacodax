@@ -13,6 +13,7 @@ import { matchesManagedContentScope } from "./quizManagedContentScope.js";
 import { resolveScopedStudents } from "./quizReportScope.js";
 import { resolveAuthUserByAuthId } from "./quizUserLookup.js";
 import { buildDocumentsByIdsQuery, uniqueStrings } from "../infrastructure/quizDocumentQuery.js";
+import { unassessedStudentSummaries } from "./quizStudentAssessmentEvidence.js";
 
 const idOf = (item: any) => String(item?.id || item?._id || "");
 
@@ -365,6 +366,7 @@ export const buildQuizAnalyticsOverview = async (
       },
     },
     weakestStudents,
+    unassessedStudents: unassessedStudentSummaries(scopedStudents, resultsByStudent, attemptsByStudent).slice(0, 12),
     weakestSkills,
     subjectSummaries,
     assignedFollowUps: assignedFollowUps.map((quiz) => ({

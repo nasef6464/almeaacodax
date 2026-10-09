@@ -1,5 +1,10 @@
 # ALMEAA — Current Execution Status
 
+## School assessment evidence and 24-client load — 2026-10-09
+- Branch `codex/school-assessment-management-quality` from published main74fc8652. 24 unique authorized API clients,3×5,24/24 each batch,360 saved answers/fresh report equality PASS. 544 runtime requests,89,671 compressed response-body bytes; excludes site/media/sockets/auth/HTTP overhead. p95 11.339s/max33.724s; comfortable latency and full browser/device gate NOT_PROVEN.
+- Bounded correction separates unassessed students from weakest ranking, uses taxonomy/weighted skill identity and shows class participation/average from existing loaded outcomes. No historical result/scoring rewrite/new polling. Exact-head CI and fresh production replay pending.
+- Individual school test aggregate context, opens-at schedule, selective retakes, teacher actions and complete multi-subject/progress certification remain open owner-approved scope. See `docs/audits/SCHOOL_ASSESSMENT_QUALITY_AND_CLASS_LOAD_2026-10-09.md`.
+
 إغلاق ظهور تكليفات المعلم — 2026-10-09: #494 مدمج ومنشور74fc8652؛ رأس الكودc6023402 نجح20فحصًا و3تخطيًا شرطيًا، وجميع3بوابات مطلوبةPASS.7حالات توجيه/عزلHTTP ناجحة. الدخول الفعلي والواجهة1280/390 أثبتا ظهور اختبار المشرف الفردي الموجود مرة واحدة داخل الفصل المسند، بلا تجاوز عرض أو أخطاء صفحة. جاهزية الموقع والخادم وRedis وفحوصmain الأربعSUCCESS. لا كتابة اختبار أو نتيجة جديدة. الحالةVERIFIED للمسار المحدود؛ ضغط المدرسة والأجهزة الفعليةغيرمثبت. الدليل `docs/audits/TEACHER_DIRECTED_ASSESSMENT_DISCOVERY_2026-10-09.md`.
 
 متابعة ظهور تكليفات المعلم — 2026-10-09: القراءة الفعلية أثبتت أن اختبار المشرف الفردي متاح للمعلم لكنه غائب عن قائمة تكليفاته. تعديل محدود يربط التوجيه الفردي والمدرسي بقائمة طلاب الفصول المسندة الحالية، ويبقي النشر/الملكية وعزل المدرسة والفصل، بحد100 وبدون polling أو قراءة أسئلة.7حالات جمهور ضمن اختبارHTTP الحقيقي. الحالةPARTIAL حتىCI والنشر وإعادة الواجهة. الدليل `docs/audits/TEACHER_DIRECTED_ASSESSMENT_DISCOVERY_2026-10-09.md`.
