@@ -13,6 +13,7 @@ const learningProgressSlice = read("store/slices/learningProgressSlice.ts");
 const api = read("services/api.ts");
 const authApi = read("services/apiGroups/authApi.ts");
 const authRoutes = read("server/src/routes/auth.routes.ts");
+const authSchemas = read("server/src/modules/auth/http/authSchemas.ts");
 
 add(
   "Learning topic progress is no longer a fixed demo zero",
@@ -38,7 +39,8 @@ add(
 );
 add(
   "Backend preferences endpoint persists completed lessons",
-  authRoutes.includes("completedLessons: z.array(z.string()).optional()") &&
+  authRoutes.includes("const payload = preferencesSchema.parse(req.body)") &&
+    authSchemas.includes("completedLessons: z.array(z.string()).max(DB_GROWTH_BUDGETS.legacyCompletedLessons).optional()") &&
     authRoutes.includes("update.completedLessons = Array.from(new Set(payload.completedLessons))"),
 );
 

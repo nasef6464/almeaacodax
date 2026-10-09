@@ -1,5 +1,11 @@
 # ALMEAA — Codex Execution State
 
+## تحقق رحلة الطالب والمحاكيات — 2026-10-10
+- فحص الإنتاج على main71359ae3:26فحصًا حيًا محدودًا ناجحًا. نتائج قديمة40 محفوظة؛ محاكي خاص3مواد/3أسئلة/هدف1 حفظ2إجابة صحيحة ونتيجة66.67 وأقسام100/0/100 وست مهارات رئيسية/فرعية؛ إعادة تحميل تحفظ المحاولة، والسجل والمشرف يعرضان النتيجة نفسها. إنجاز درس كمي واحد محفوظ بعد دخول جديد.
+- تصحيح أداة فحص حفظ الدروس لتتبع ملف التحقق الحالي؛5/5ناجح. فحص حجم Reports3025مقابل الحد2710 يبقىFAIL دون تخفيف البوابة. التدريب المرتبط بموضوع التأسيس المحدد غير منشور، والفيزياء لم ترجع مرشحًا معتمدًا لنطاق حساب الفحص؛ لا ادعاء رحلة تدريب كاملة أو مطابقة قياس.
+- الحالة PARTIAL؛ CI على رأس تصحيح الأداة، الخطة بعد الإنجاز، كامل التاريخ، القفل الصارم/الانتهاء، المحاكي الكامل والضغط الحقيقي لم تغلق. الدليل docs/audits/STUDENT_AND_SCHOOL_SYSTEM_VERIFICATION_2026-10-10.md.
+
+
 ## School report roster follow-up — 2026-10-09
 - #495 merged/published65a7b961; exactf2dacd02:21SUCCESS4skip/allrequiredPASS;main4gatesPASSafteradmin502same-headrerun. RealAPIoverview2weak/12unassessed/savedscore40PASS. Realbrowsercomparisonmissing/nameunknownPROVED:report readsglobalusersinsteadexistinglocalroster.
 - Newfresh `codex/school-assessment-report-roster` passesparentlocalroster throughsame list/report/scope; validatedclassroster IDsfallbackpreservespartialload. No newrequest/resultwrite/authchange. Emptyglobalstore actualUIregression added; CI/productionfinalpending. Otherauthorizedschoolscope remainsopen; seequality/load audit.
