@@ -1,0 +1,197 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN108",
+  "stage": "QA_LOCK",
+  "sourceTest": "GEO-T005",
+  "sourceBoard": "Run105 GEO_T005_SOURCE_QA_CONTACT.jpg",
+  "independentSourceBoardMathRechecks": 20,
+  "mathConsistentTaxonomyPending": 17,
+  "holdPreserved": 2,
+  "sourceConflictReconfirmed": 1,
+  "qaCounterIncrement": 0,
+  "qaNewUniqueSourceKeysClaimed": 0,
+  "sourceImageShaNew": 0,
+  "records": [
+    {
+      "sourceKey": "MNSF26-GEO-T005-Q01",
+      "verdict": "PASS",
+      "mathProof": "زاويتان متبادلتان داخليًا بين متوازيين؛ س=60°.",
+      "sourceEvidence": "Run105 GEO_T005_SOURCE_QA_CONTACT.jpg (derived from original source images)",
+      "originalWebpRehashedThisRun": false,
+      "canonicalSemanticApproved": false,
+      "questionMasteringNew": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T005-Q02",
+      "verdict": "PASS",
+      "mathProof": "الزاويتان المتكاملتان س+ص=180°؛ المقارنة متساوية.",
+      "sourceEvidence": "Run105 GEO_T005_SOURCE_QA_CONTACT.jpg (derived from original source images)",
+      "originalWebpRehashedThisRun": false,
+      "canonicalSemanticApproved": false,
+      "questionMasteringNew": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T005-Q03",
+      "verdict": "PASS",
+      "mathProof": "الزاوية الوسطى=360−110−120=130°؛ 13س=130 ⇒ س=10.",
+      "sourceEvidence": "Run105 GEO_T005_SOURCE_QA_CONTACT.jpg (derived from original source images)",
+      "originalWebpRehashedThisRun": false,
+      "canonicalSemanticApproved": false,
+      "questionMasteringNew": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T005-Q04",
+      "verdict": "PASS",
+      "mathProof": "الزاوية المكملة لـ55° هي125°.",
+      "sourceEvidence": "Run105 GEO_T005_SOURCE_QA_CONTACT.jpg (derived from original source images)",
+      "originalWebpRehashedThisRun": false,
+      "canonicalSemanticApproved": false,
+      "questionMasteringNew": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T005-Q05",
+      "verdict": "PASS",
+      "mathProof": "الزاويتان 1 و2 متناظرتان بين مستقيمين متوازيين.",
+      "sourceEvidence": "Run105 GEO_T005_SOURCE_QA_CONTACT.jpg (derived from original source images)",
+      "originalWebpRehashedThisRun": false,
+      "canonicalSemanticApproved": false,
+      "questionMasteringNew": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T005-Q06",
+      "verdict": "PASS",
+      "mathProof": "س+ص أكبر من70° من زوايا القاطع المتكاملة.",
+      "sourceEvidence": "Run105 GEO_T005_SOURCE_QA_CONTACT.jpg (derived from original source images)",
+      "originalWebpRehashedThisRun": false,
+      "canonicalSemanticApproved": false,
+      "questionMasteringNew": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T005-Q07",
+      "verdict": "PASS",
+      "mathProof": "الزاوية بين الخطين المائلين=50+(180−150)=80°.",
+      "sourceEvidence": "Run105 GEO_T005_SOURCE_QA_CONTACT.jpg (derived from original source images)",
+      "originalWebpRehashedThisRun": false,
+      "canonicalSemanticApproved": false,
+      "questionMasteringNew": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T005-Q08",
+      "verdict": "HOLD_PRESERVED",
+      "mathProof": "تعيين الزوايا الثلاث في الشكل غير مثبت بما يكفي لاعتماد مجموع وحيد.",
+      "sourceEvidence": "Run105 GEO_T005_SOURCE_QA_CONTACT.jpg (derived from original source images)",
+      "originalWebpRehashedThisRun": false,
+      "canonicalSemanticApproved": false,
+      "questionMasteringNew": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T005-Q09",
+      "verdict": "HOLD_PRESERVED",
+      "mathProof": "زاوية شبه المنحرف واتجاه المقارنة يحتاجان دليلًا مستقلًا.",
+      "sourceEvidence": "Run105 GEO_T005_SOURCE_QA_CONTACT.jpg (derived from original source images)",
+      "originalWebpRehashedThisRun": false,
+      "canonicalSemanticApproved": false,
+      "questionMasteringNew": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T005-Q10",
+      "verdict": "PASS",
+      "mathProof": "الحادتان 180−150=30 و180−130=50، وس=80°.",
+      "sourceEvidence": "Run105 GEO_T005_SOURCE_QA_CONTACT.jpg (derived from original source images)",
+      "originalWebpRehashedThisRun": false,
+      "canonicalSemanticApproved": false,
+      "questionMasteringNew": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T005-Q11",
+      "verdict": "CONFLICT_RECONFIRMED",
+      "mathProof": "المصدر يقرأ 3س=6ص، فينتج س=2ص، بينما MASTER يسجل 3س=2ص وإجابة معاكسة.",
+      "sourceEvidence": "Run105 GEO_T005_SOURCE_QA_CONTACT.jpg (derived from original source images)",
+      "originalWebpRehashedThisRun": false,
+      "canonicalSemanticApproved": false,
+      "questionMasteringNew": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T005-Q12",
+      "verdict": "PASS",
+      "mathProof": "زاويتا الانكسار30° و50°، فيكون س=80°.",
+      "sourceEvidence": "Run105 GEO_T005_SOURCE_QA_CONTACT.jpg (derived from original source images)",
+      "originalWebpRehashedThisRun": false,
+      "canonicalSemanticApproved": false,
+      "questionMasteringNew": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T005-Q13",
+      "verdict": "PASS",
+      "mathProof": "3س=6ص بين زاويتين متناظرتين، فالقيمة الأولى أكبر.",
+      "sourceEvidence": "Run105 GEO_T005_SOURCE_QA_CONTACT.jpg (derived from original source images)",
+      "originalWebpRehashedThisRun": false,
+      "canonicalSemanticApproved": false,
+      "questionMasteringNew": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T005-Q14",
+      "verdict": "PASS",
+      "mathProof": "زاويتا الخط المنكسر30° و50°، فيكون س=80°.",
+      "sourceEvidence": "Run105 GEO_T005_SOURCE_QA_CONTACT.jpg (derived from original source images)",
+      "originalWebpRehashedThisRun": false,
+      "canonicalSemanticApproved": false,
+      "questionMasteringNew": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T005-Q15",
+      "verdict": "PASS",
+      "mathProof": "الزاويتان المتناظرتان بين المتوازيين تعطيان س=40°.",
+      "sourceEvidence": "Run105 GEO_T005_SOURCE_QA_CONTACT.jpg (derived from original source images)",
+      "originalWebpRehashedThisRun": false,
+      "canonicalSemanticApproved": false,
+      "questionMasteringNew": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T005-Q16",
+      "verdict": "PASS",
+      "mathProof": "زاوية س تقابل زاوية26° بالرأس أو بالتناظر، فس=26°.",
+      "sourceEvidence": "Run105 GEO_T005_SOURCE_QA_CONTACT.jpg (derived from original source images)",
+      "originalWebpRehashedThisRun": false,
+      "canonicalSemanticApproved": false,
+      "questionMasteringNew": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T005-Q17",
+      "verdict": "PASS",
+      "mathProof": "الحادتان30° و50°، والزاوية المكملة لمجموعهما=100°.",
+      "sourceEvidence": "Run105 GEO_T005_SOURCE_QA_CONTACT.jpg (derived from original source images)",
+      "originalWebpRehashedThisRun": false,
+      "canonicalSemanticApproved": false,
+      "questionMasteringNew": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T005-Q18",
+      "verdict": "PASS",
+      "mathProof": "زاوية س المكملة لـ30° هي150°، فتتساوى القيمتان.",
+      "sourceEvidence": "Run105 GEO_T005_SOURCE_QA_CONTACT.jpg (derived from original source images)",
+      "originalWebpRehashedThisRun": false,
+      "canonicalSemanticApproved": false,
+      "questionMasteringNew": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T005-Q19",
+      "verdict": "PASS",
+      "mathProof": "مجموع زوايا المثلث180°؛ س=180−60−80=40°.",
+      "sourceEvidence": "Run105 GEO_T005_SOURCE_QA_CONTACT.jpg (derived from original source images)",
+      "originalWebpRehashedThisRun": false,
+      "canonicalSemanticApproved": false,
+      "questionMasteringNew": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T005-Q20",
+      "verdict": "PASS",
+      "mathProof": "المثلث السفلي متساوي الأضلاع ن=60°، م=40°، وس=180−80=100°.",
+      "sourceEvidence": "Run105 GEO_T005_SOURCE_QA_CONTACT.jpg (derived from original source images)",
+      "originalWebpRehashedThisRun": false,
+      "canonicalSemanticApproved": false,
+      "questionMasteringNew": false
+    }
+  ]
+}
