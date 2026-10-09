@@ -5,6 +5,7 @@ import { GroupModel } from "../../../models/Group.js";
 import { UserModel } from "../../../models/User.js";
 import { Types } from "mongoose";
 import { buildClassroomCompetitionStandings } from "./classroomCompetitionScoring.js";
+import { buildClassroomStudentReports } from "./classroomStudentReport.js";
 import { resolveSchoolContexts } from "./schoolContextResolver.js";
 import { resolveSchoolEntitlement } from "./schoolEntitlementResolver.js";
 
@@ -101,7 +102,8 @@ export const buildClassroomSessionReport = async (session: any) => {
     if (student._id) studentNameById.set(String(student._id), name);
   });
 
-  const missingStudentIds = Array.from(joinedStudentIds).filter((studentId) => !studentNameById.has(studentId));
+  const reportStudentIds = [...new Set([...expectedStudentIds, ...joinedStudentIds])];
+  const missingStudentIds = reportStudentIds.filter((studentId) => !studentNameById.has(studentId));
   if (missingStudentIds.length > 0) {
     const objectIds = missingStudentIds.filter((studentId) => Types.ObjectId.isValid(studentId));
     const fallbackUsers = await UserModel.find({
@@ -234,6 +236,15 @@ export const buildClassroomSessionReport = async (session: any) => {
       joined: joinedStudentIds.size,
       absentFromSession: Math.max(0, expectedStudentIds.size - joinedStudentIds.size),
     },
+    students: buildClassroomStudentReports({
+      studentIds: reportStudentIds, joinedStudentIds, names: studentNameById,
+      questions: session.questionSnapshots || [], publishedQuestionIds: [...new Set([
+        ...(session.sentQuestionIds || []), ...(session.publishedQuestionIds || []),
+        ...responses.map((response: any) => String(response.questionId)),
+      ])] as string[],
+      responses: responses as any,
+    }),
+    studentEvidenceComplete: session.sentHistoryComplete === true,
     batches,
     questions: questionReports,
     totals: {

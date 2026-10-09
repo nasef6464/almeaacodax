@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { verifyActivitySubmission, verifySavedStudentEvidence } from "./smartClassroomStudentReportEvidence.js";
 import http from "node:http";
 import mongoose from "mongoose";
 import { io as connectSocket, type Socket } from "socket.io-client";
@@ -329,6 +330,7 @@ async function run() {
   assert.equal(q3Stats.responseCount, 1);
   assert.equal(q3Stats.distribution["0"], 1);
   assert.equal(q2Stats.pathId, "path-two");
+  await verifyActivitySubmission(request, { sessionId: liveSessionId, teacherToken, studentToken: studentAToken, studentId: String(studentA._id), q2, q3, studentCount: LOAD_STUDENT_COUNT + 2 });
 
   const template = await request("/classroom/templates", { method: "POST", token: teacherToken, body: { schoolId: schoolAId, title: `Template ${RUN_ID}`, questionIds: [q1, q2], challengeIds: [q2] } });
   assert.equal(template.status, 201, JSON.stringify(template.body));
@@ -353,6 +355,7 @@ async function run() {
   const endedAgain = await request(`/classroom/sessions/${liveSessionId}/end`, { method: "POST", token: teacherToken });
   assert.equal(endedAgain.status, 200, "Repeated end-session should be idempotent");
   assert.deepEqual(endedAgain.body.report, ended.body.report, "Repeated end-session must return the immutable stored snapshot");
+  await verifySavedStudentEvidence(request, { report: ended.body.report, sessionId: liveSessionId, schoolId: schoolAId, teacherToken, studentToken: studentAToken, studentCount: LOAD_STUDENT_COUNT + 2 });
   assert.equal((await request(`/classroom/sessions/${liveSessionId}/instant-join`, { method: "POST", token: studentAToken })).status, 404);
 
   const supervisorMonth = await request("/classroom/supervisor/insights?period=month", { token: supervisorAToken });

@@ -49,7 +49,9 @@ export function registerClassroomSupervisorRoutes(classroomRouter: Router) {
       filter.schoolId = schoolId;
     } else if (requestedSchoolId) filter.schoolId = requestedSchoolId;
     const limit = z.coerce.number().int().min(1).max(100).catch(50).parse(req.query.limit);
-    const sessions = await ClassroomSessionModel.find(filter).sort({ endedAt: -1, createdAt: -1 }).limit(limit).lean();
+    const query = ClassroomSessionModel.find(filter).sort({ endedAt: -1, createdAt: -1 }).limit(limit);
+    if (req.query.view === "summary") query.select("-reportSnapshot.students");
+    const sessions = await query.lean();
     res.json({ sessions: await Promise.all(sessions.map(buildClassroomSessionReport)) });
   }));
 

@@ -19,6 +19,8 @@ on:
       - 'components/classroom/**'
       - 'pages/Classroom**'
       - 'hooks/useClassroomRealtime.ts'
+      - 'hooks/useClassroomQuestionBank.ts'
+      - 'server/src/scripts/smartClassroomStudentReportEvidence.ts'
       - 'utils/coalescedAsyncRefresh.ts'
       - 'scripts/smoke-classroom-refresh-budget.mjs'
       - 'services/api.ts'

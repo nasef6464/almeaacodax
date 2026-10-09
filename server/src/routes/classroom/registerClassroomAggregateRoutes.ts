@@ -31,6 +31,40 @@ interface StudentNameCacheEntry {
 }
 const studentNameCache = new Map<string, StudentNameCacheEntry>();
 
+const loadStudentNames = async (submittedStudentIds: string[]) => {
+  const now = Date.now();
+  const missingIds = submittedStudentIds.filter((studentId: string) => {
+    const entry = studentNameCache.get(studentId);
+    return !entry || entry.expiresAt <= now;
+  });
+
+  if (missingIds.length > 0) {
+    const missingObjectIds = missingIds.filter((studentId: string) => Types.ObjectId.isValid(studentId));
+    const newlyFetched = await UserModel.find({
+      $or: [
+        { id: { $in: missingIds } },
+        ...(missingObjectIds.length ? [{ _id: { $in: missingObjectIds } }] : []),
+      ],
+    }).select("id _id name displayName").lean() as any[];
+
+    if (studentNameCache.size > 2000) studentNameCache.clear();
+    newlyFetched.forEach((student: any) => {
+      const name = String(student.displayName || student.name || "طالب");
+      const entry = { name, expiresAt: now + 300_000 };
+      if (student.id) studentNameCache.set(String(student.id), entry);
+      if (student._id) studentNameCache.set(String(student._id), entry);
+    });
+  }
+
+  const nameByStudentId = new Map<string, string>();
+  submittedStudentIds.forEach((studentId: string) => {
+    const cached = studentNameCache.get(studentId);
+    nameByStudentId.set(studentId, cached ? cached.name : "طالب");
+  });
+
+  return nameByStudentId;
+};
+
 const resolveStaffAccessWithCache = async (authUser: any, session: any): Promise<boolean> => {
   if (authUser.role === "admin") return true;
 
@@ -98,19 +132,25 @@ export function registerClassroomAggregateRoutes(classroomRouter: Router) {
     if (!isStaff) return res.status(StatusCodes.FORBIDDEN).json({ message: "Classroom analytics are staff-only" });
 
     const sessionId = classroomSessionId(session);
+    if (req.query.view === "report") {
+      if (!["ended", "archived"].includes(session.status) || !session.reportSnapshot) {
+        return res.status(StatusCodes.CONFLICT).json({ message: "The finalized report is not available yet" });
+      }
+      return res.json({ report: session.reportSnapshot });
+    }
     if (req.query.view === "live") {
       const activeQuestion = typeof session.activeQuestionIndex === "number"
         ? session.questionSnapshots?.[session.activeQuestionIndex]
         : null;
       const questionId = activeQuestion ? String(activeQuestion.questionId) : "";
-      const [distributionRows, joinedCount] = await Promise.all([
+      const [distributionRows, liveParticipants] = await Promise.all([
         questionId
           ? ClassroomResponseModel.aggregate([
               { $match: { sessionId, questionId } },
               { $group: { _id: "$selectedOptionIndex", count: { $sum: 1 }, correct: { $sum: { $cond: ["$isCorrect", 1, 0] } } } },
             ])
           : Promise.resolve([]),
-        ClassroomParticipantModel.countDocuments({ sessionId }),
+        ClassroomParticipantModel.find({ sessionId }).select("studentId finalizedSubmissionKeys").lean(),
       ]);
       const distribution = (distributionRows as Array<{ _id: number; count: number }>).reduce((summary, row) => {
         summary[String(row._id)] = row.count;
@@ -118,6 +158,11 @@ export function registerClassroomAggregateRoutes(classroomRouter: Router) {
       }, {} as Record<string, number>);
       const responseCount = (distributionRows as Array<{ count: number }>).reduce((total, row) => total + row.count, 0);
       const correctCount = (distributionRows as Array<{ correct: number }>).reduce((total, row) => total + row.correct, 0);
+      const joinedCount = liveParticipants.length;
+      const submissionKey = submissionKeyForSession(session);
+      const finalizedIds = liveParticipants.filter((participant: any) => (participant.finalizedSubmissionKeys || []).includes(submissionKey)).map((participant: any) => String(participant.studentId));
+      const names = await loadStudentNames(finalizedIds);
+      const submissionSummary = { submissionKey, joinedCount, submittedCount: finalizedIds.length, submitted: finalizedIds.map(studentId => ({ studentId, name: names.get(studentId) || "طالب" })) };
       return res.json({
         sessionId,
         pin: session.pin || null,
@@ -129,6 +174,7 @@ export function registerClassroomAggregateRoutes(classroomRouter: Router) {
         correctCount,
         distribution,
         joinedCount,
+        submissionSummary,
       });
     }
     const [responses, participants] = await Promise.all([
@@ -201,35 +247,7 @@ export function registerClassroomAggregateRoutes(classroomRouter: Router) {
       (participant.finalizedSubmissionKeys || []).map(String).includes(submissionKey),
     );
     const submittedStudentIds = submittedParticipants.map((participant: any) => String(participant.studentId));
-    const now = Date.now();
-    const missingIds = submittedStudentIds.filter((studentId: string) => {
-      const entry = studentNameCache.get(studentId);
-      return !entry || entry.expiresAt <= now;
-    });
-
-    if (missingIds.length > 0) {
-      const missingObjectIds = missingIds.filter((studentId: string) => Types.ObjectId.isValid(studentId));
-      const newlyFetched = await UserModel.find({
-        $or: [
-          { id: { $in: missingIds } },
-          ...(missingObjectIds.length ? [{ _id: { $in: missingObjectIds } }] : []),
-        ],
-      }).select("id _id name displayName").lean() as any[];
-
-      if (studentNameCache.size > 2000) studentNameCache.clear();
-      newlyFetched.forEach((student: any) => {
-        const name = String(student.displayName || student.name || "طالب");
-        const entry = { name, expiresAt: now + 300_000 };
-        if (student.id) studentNameCache.set(String(student.id), entry);
-        if (student._id) studentNameCache.set(String(student._id), entry);
-      });
-    }
-
-    const nameByStudentId = new Map<string, string>();
-    submittedStudentIds.forEach((studentId: string) => {
-      const cached = studentNameCache.get(studentId);
-      nameByStudentId.set(studentId, cached ? cached.name : "طالب");
-    });
+    const nameByStudentId = await loadStudentNames(submittedStudentIds);
 
     const activeBatch = (session.questionBatches || []).find((batch: any) => String(batch.batchId) === String(session.activeBatchId || ""));
     const activeBatchQuestionIds = new Set((activeBatch?.questionIds || session.publishedQuestionIds || []).map(String));

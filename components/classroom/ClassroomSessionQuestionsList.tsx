@@ -8,6 +8,7 @@ interface ClassroomSessionQuestionsListProps {
   endingBatch: boolean;
   onEndBatch: () => void;
   availablePushQuestionsCount: number;
+  bankReady?: boolean;
   onDirectSendPreset: (count: number) => void;
   pushingQuestions: boolean;
   loadingBank: boolean;
@@ -29,6 +30,7 @@ export const ClassroomSessionQuestionsList: React.FC<ClassroomSessionQuestionsLi
   endingBatch,
   onEndBatch,
   availablePushQuestionsCount,
+  bankReady = true,
   onDirectSendPreset,
   pushingQuestions,
   loadingBank,
@@ -65,7 +67,7 @@ export const ClassroomSessionQuestionsList: React.FC<ClassroomSessionQuestionsLi
               {endingBatch ? 'جارٍ إنهاء الدفعة…' : 'إنهاء الدفعة وعرض ملخصها'}
             </button>
           )}
-          {!hasActiveBatch && availablePushQuestionsCount >= 5 && (
+          {!hasActiveBatch && (!bankReady || availablePushQuestionsCount >= 5) && (
             <button
               type="button"
               onClick={() => onDirectSendPreset(5)}
@@ -75,7 +77,7 @@ export const ClassroomSessionQuestionsList: React.FC<ClassroomSessionQuestionsLi
               ⚡ إرسال 5 أسئلة فوراً
             </button>
           )}
-          {!hasActiveBatch && availablePushQuestionsCount >= 10 && (
+          {!hasActiveBatch && (!bankReady || availablePushQuestionsCount >= 10) && (
             <button
               type="button"
               onClick={() => onDirectSendPreset(10)}
@@ -88,7 +90,7 @@ export const ClassroomSessionQuestionsList: React.FC<ClassroomSessionQuestionsLi
           <button
             type="button"
             onClick={() => openPushModal('normal')}
-            disabled={isEnded || hasActiveBatch || loadingBank || Boolean(bankError)}
+            disabled={isEnded || hasActiveBatch || loadingBank}
             className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 px-3.5 py-2 text-xs font-black text-white disabled:opacity-50"
           >
             <PlusCircle size={14} /> تخصيص حزمة مهارة
@@ -107,7 +109,7 @@ export const ClassroomSessionQuestionsList: React.FC<ClassroomSessionQuestionsLi
           <button
             type="button"
             onClick={() => openPushModal('challenge')}
-            disabled={isEnded || hasActiveBatch || loadingBank || Boolean(bankError)}
+            disabled={isEnded || hasActiveBatch || loadingBank}
             className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-3.5 py-2 text-xs font-black text-white disabled:opacity-50"
           >
             <Zap size={14} /> إنشاء دفعة تحدي مستقلة

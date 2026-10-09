@@ -1,4 +1,8 @@
+import type { ClassroomStudentEvidence } from './ClassroomStudentReportTable';
+
 export interface ClassroomSavedReport {
+  students?: ClassroomStudentEvidence[];
+  studentEvidenceComplete?: boolean;
   sessionId: string;
   schoolId: string;
   classId: string;
@@ -78,6 +82,8 @@ export type CanonicalBatchReport = {
 };
 
 export type CanonicalClassroomReport = {
+  students?: ClassroomStudentEvidence[];
+  studentEvidenceComplete?: boolean;
   sessionId: string;
   schoolId: string;
   classId: string;
@@ -184,6 +190,8 @@ export const normalizeClassroomReport = (raw: ClassroomSavedReport): CanonicalCl
   const period = raw.period === null || raw.period === undefined || raw.period === '' ? null : toNumber(raw.period, 0) || null;
   return {
     sessionId: raw.sessionId,
+    students: raw.students,
+    studentEvidenceComplete: raw.studentEvidenceComplete,
     schoolId: raw.schoolId,
     classId: raw.classId,
     className: raw.className || '',

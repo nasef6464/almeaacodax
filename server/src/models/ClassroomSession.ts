@@ -52,6 +52,8 @@ const classroomSessionSchema = new Schema(
     className: { type: String, default: "" },
     publishedMode: { type: String, enum: ["single", "batch"], default: "single" },
     publishedQuestionIds: { type: [String], default: [], validate: { validator: (value: string[]) => value.length <= DB_GROWTH_BUDGETS.classroomSessionQuestions, message: "publishedQuestionIds exceeds growth budget" } },
+    sentQuestionIds: { type: [String], default: undefined, validate: { validator: (value?: string[]) => !value || value.length <= DB_GROWTH_BUDGETS.classroomSessionQuestions, message: "sentQuestionIds exceeds growth budget" } },
+    sentHistoryComplete: { type: Boolean, default: false },
     questionSnapshots: { type: [questionSnapshotSchema], default: [], validate: { validator: (value: unknown[]) => value.length <= DB_GROWTH_BUDGETS.classroomSessionQuestions, message: "questionSnapshots exceeds growth budget" } },
     questionBatches: { type: [questionBatchSchema], default: [], validate: { validator: (value: unknown[]) => value.length <= DB_GROWTH_BUDGETS.classroomSessionBatches, message: "questionBatches exceeds growth budget" } },
     activeBatchId: { type: String, default: "" },

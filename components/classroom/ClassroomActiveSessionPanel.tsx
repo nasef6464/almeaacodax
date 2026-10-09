@@ -7,10 +7,12 @@ import { ClassroomPushQuestionsModal } from './ClassroomPushQuestionsModal';
 import { ClassroomTeacherMobileRemote } from './ClassroomTeacherMobileRemote';
 import { ClassroomBatchSummaryCard, type BatchMiniReport } from './ClassroomBatchSummaryCard';
 import { ClassroomEndSessionModal } from './ClassroomEndSessionModal';
+import { ClassroomStudentReportTable } from './ClassroomStudentReportTable';
 import { ClassroomSessionQuestionsList } from './ClassroomSessionQuestionsList';
 import { api } from '../../services/api';
 import { useStore } from '../../store/useStore';
 import { useClassroomRealtime } from '../../hooks/useClassroomRealtime';
+import { useClassroomQuestionBank } from '../../hooks/useClassroomQuestionBank';
 
 const OPTION_LETTERS = ['أ', 'ب', 'ج', 'د', 'هـ'];
 
@@ -61,36 +63,12 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
   const [pushFilterSkill, setPushFilterSkill] = useState('');
   const [selectedForPush, setSelectedForPush] = useState<string[]>([]);
   const [showInlineExplanation, setShowInlineExplanation] = useState(false);
-  const [bankQuestions, setBankQuestions] = useState<any[]>([]);
-  const [loadingBank, setLoadingBank] = useState(false);
-  const [bankError, setBankError] = useState('');
   const [sessionStorageMeta, setSessionStorageMeta] = useState<{ day?: string; period?: string; className?: string; subject?: string } | null>(null);
   const [showEndConfirmModal, setShowEndConfirmModal] = useState(false);
 
   const schoolId = data?.schoolId || data?.meta?.schoolId || '';
 
-  useEffect(() => {
-    if (!schoolId) { setBankQuestions([]); setBankError(''); return; }
-    let active = true;
-    setLoadingBank(true);
-    setBankQuestions([]);
-    setBankError('');
-    api.getClassroomQuestions(schoolId)
-      .then(async (res) => {
-        if (!active) return;
-        let list = Array.isArray(res?.questions) ? res.questions : [];
-        if (list.filter((q: any) => q.text && String(q.text).trim().length > 0).length < 10) {
-          try {
-            const fallback = await api.getClassroomQuestions(schoolId, { pathId: 'p_1777779639431' });
-            if (Array.isArray(fallback?.questions) && fallback.questions.length > 0) list = [...list, ...fallback.questions];
-          } catch {}
-        }
-        if (active) setBankQuestions(list);
-      })
-      .catch(() => { if (active) { setBankQuestions([]); setBankError('تعذر تحميل بنك الأسئلة المصرح لهذه المدرسة. لن يتم عرض أسئلة من مصدر محلي بديل.'); } })
-      .finally(() => { if (active) setLoadingBank(false); });
-    return () => { active = false; };
-  }, [schoolId]);
+  const { bankQuestions, loadingBank, bankError, bankReady, ensureBankQuestions } = useClassroomQuestionBank(schoolId, showPushModal, data?.status === 'ended');
 
   const loadChallengeState = useCallback(async () => {
     if (!sessionId || data?.status === 'ended') { setChallengeState(null); return; }
@@ -169,9 +147,9 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
     return { percentages, maxWrongOption: maxWrongIndex !== null && maxWrongPercent >= 20 ? { index: maxWrongIndex, letter: OPTION_LETTERS[maxWrongIndex] || `${maxWrongIndex + 1}`, percent: maxWrongPercent, count: maxWrongCount } : null };
   }, [currentQuestion, distribution, totalResponses]);
 
-  const availablePushQuestions = useMemo(() => {
+  const filterPushQuestions = useCallback((bank: any[]) => {
     const existingIds = new Set((data?.questions || []).map((question: any) => String(question.questionId)));
-    return bankQuestions.filter((question: any) => {
+    return bank.filter((question: any) => {
       const qId = String(question.questionId || question.id);
       if (existingIds.has(qId)) return false;
       if (!question.text || !String(question.text).trim()) return false;
@@ -181,7 +159,8 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
       if (pushFilterSkill && !(question.skillIds || []).includes(pushFilterSkill)) return false;
       return true;
     });
-  }, [bankQuestions, data?.questions, pushFilterSubject, pushFilterSection, pushFilterSkill]);
+  }, [data?.questions, pushFilterSubject, pushFilterSection, pushFilterSkill]);
+  const availablePushQuestions = useMemo(() => filterPushQuestions(bankQuestions), [bankQuestions, filterPushQuestions]);
 
   const openPushModal = (mode: PushMode) => { setPushMode(mode); setSelectedForPush([]); setShowPushModal(true); };
 
@@ -231,13 +210,15 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
 
   const handleDirectSendPreset = async (count: number) => {
     if (pushingQuestions || data?.status === 'ended') return;
-    const questionsToSend = availablePushQuestions.slice(0, count).map((q) => String(q.questionId || q.id));
-    if (questionsToSend.length === 0) { openPushModal('normal'); return; }
     setPushingQuestions(true);
     try {
+      const questions = bankReady ? availablePushQuestions : filterPushQuestions(await ensureBankQuestions());
+      const questionsToSend = questions.slice(0, count).map((q) => String(q.questionId || q.id));
+      if (questionsToSend.length < count) { openPushModal('normal'); return; }
       await api.post<any>(`/classroom/sessions/${encodeURIComponent(sessionId)}/append-questions`, { questionIds: questionsToSend, autoPublishFirst: true });
       onReload?.();
-    } finally { setPushingQuestions(false); }
+    } catch { openPushModal('normal'); }
+    finally { setPushingQuestions(false); }
   };
 
   const podium = competitionResult?.podium || competitionResult?.leaderboard?.slice(0, 3) || [];
@@ -302,6 +283,7 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
         endingBatch={endingBatch}
         onEndBatch={() => void handleEndBatch()}
         availablePushQuestionsCount={availablePushQuestions.length}
+        bankReady={bankReady}
         onDirectSendPreset={(count) => void handleDirectSendPreset(count)}
         pushingQuestions={pushingQuestions}
         loadingBank={loadingBank}
@@ -317,6 +299,12 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
         pushMode={pushMode}
       />
 
+      {data?.status === 'live' && data?.activeBatchId && data?.submissionSummary && <section className="mt-4 rounded-2xl border border-indigo-200 p-4 dark:border-indigo-900" aria-live="polite">
+        <p className="text-sm font-black">تسليم أسئلة النشاط: {data.submissionSummary.submittedCount}/{data.submissionSummary.joinedCount} طالب</p>
+        <p className="mt-1 text-xs text-slate-500">بانتظار تسليم {Math.max(0, data.submissionSummary.joinedCount - data.submissionSummary.submittedCount)} طالب دخل الحصة.</p>
+        <details className="mt-2 text-xs"><summary className="cursor-pointer font-bold">من سلّم النشاط؟</summary><p className="mt-2">{data.submissionSummary.submitted?.map((student: any) => student.name).join('، ') || 'لم يصل تسليم بعد.'}</p></details>
+      </section>}
+      {data?.status === 'ended' && data?.report && <ClassroomStudentReportTable students={data.report.students} complete={data.report.studentEvidenceComplete} />}
       <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
         <button
           type="button"

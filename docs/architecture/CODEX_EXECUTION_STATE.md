@@ -1,5 +1,12 @@
 # ALMEAA — Codex Execution State
 
+## Teacher-led laboratory assessment continuation — 2026-10-09
+- Owner specified teaching outside the app, five prepared tablet questions, centralized collection and per-student saved skill/participation reports. Baseline main7b0c085bcd12; #484 request efficiency merged after18SUCCESS3SKIPPED/allrequiredPASS on344d7eb975d6. Fresh branch codex/classroom-lab-evaluation.
+- Reused batches/templates/finalization and added cumulative sent IDs, optional student evidence in existing immutable snapshots, student/skill outcome tables, current finalized-submission counts/names, lazy bank load and opt-in compact history with detail on demand. Existing scores/RBAC/routes and historical snapshots retained; additive staff report query is protected by existing aggregate authority.
+- Pure student evidence, existing contracts, frontend/API typechecks, frontend build and controlled component replay1280/375 PASS; integration asserts privacy, cumulative batches, frozen student evidence and compact/detail behavior. Exact-head CI pending; production remainsBLOCKED by suspended Redis, not closed.
+- Evidence: docs/audits/CLASSROOM_LAB_EVALUATION_2026-10-09.md. Next: exact-head delivery and owned tablet journey after dependency recovery; no20-browser or physical-device claim.
+- Head6f72b743 classroom/full-stack isolated integration PASS, but three architecture gates rejected three new400-line hotspots. Extracted bank hook, batch lifecycle and report evidence tests; local architecture/boundary gates preserve83-runtime-hotspot budget and pass. Bank intent/cache/scope/retry replay PASS; final head CI must pass before merge.
+
 ## Classroom server efficiency and runtime recovery — 2026-10-09
 - Baseline main7e3043346bd0; focused branch codex/classroom-server-efficiency. Original unowned checkout preserved. School scope delivery #481 was merged; its local/isolated checks do not certify current production.
 - Coalesced teacher/projector answer refreshes with one in-flight read and a trailing reconciliation. Publication/lifecycle events, aggregate payloads, privacy and authority remain unchanged. Five refresh-budget scenarios, classroom58/58, projector privacy, frontend typecheck/build PASS; exact-head CI pending.

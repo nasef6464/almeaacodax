@@ -67,6 +67,7 @@ export const ClassroomTeacherConsole: React.FC = () => {
           correctCount: live.correctCount,
           distribution: live.distribution,
           joinedCount: live.joinedCount,
+          submissionSummary: live.submissionSummary,
         } : current);
     }, 250, () => setMessage('تعذر تحديث الحالة الحية للحصة.'));
     liveRefreshRef.current = refresh;
