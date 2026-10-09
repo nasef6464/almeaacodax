@@ -6,7 +6,7 @@ import path from "node:path";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const taxonomy = JSON.parse(readFileSync(path.join(root, "ops/chem26/CHEM26_TAXONOMY_FINAL.json"), "utf8"));
 const dir = path.join(root, "data/chem26-zubda/v1");
-const files = readdirSync(dir).filter((name) => /^[a-z][a-z0-9-]*-\\d{2}\\.json$/.test(name)).sort();
+const files = readdirSync(dir).filter((name) => /^[a-z][a-z0-9-]*-\d{2}\.json$/.test(name)).sort();
 assert.equal(taxonomy.status, "FROZEN", "Never mutate CHEM26 taxonomy");
 assert.equal(taxonomy.items.length, 27, "Canonical main skills count");
 assert.equal(taxonomy.items.reduce((n, x) => n + x.subSkills.length, 0), 99, "Canonical subskills count");
