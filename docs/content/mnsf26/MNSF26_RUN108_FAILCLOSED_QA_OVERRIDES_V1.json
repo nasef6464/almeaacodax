@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN108",
+  "purpose": "Fail-closed QA source conflict exclusions; evidence from Run107 original WebP/contact sheets. Not an import manifest.",
+  "status": "QA_LOCK_IN_PROGRESS",
+  "overrides": [
+    {
+      "sourceKey": "MNSF26-GEO-T001-Q19",
+      "status": "REVIEW",
+      "importEligible": false,
+      "masterPatched": false,
+      "reason": "SOURCE_PROVEN_MATH_OR_EXPLANATION_CONFLICT_PENDING_CORRECTION"
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T003-Q20",
+      "status": "REVIEW",
+      "importEligible": false,
+      "masterPatched": false,
+      "reason": "SOURCE_PROVEN_MATH_OR_EXPLANATION_CONFLICT_PENDING_CORRECTION"
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T005-Q11",
+      "status": "REVIEW",
+      "importEligible": false,
+      "masterPatched": false,
+      "reason": "SOURCE_PROVEN_MATH_OR_EXPLANATION_CONFLICT_PENDING_CORRECTION"
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T006-Q18",
+      "status": "REVIEW",
+      "importEligible": false,
+      "masterPatched": false,
+      "reason": "SOURCE_PROVEN_MATH_OR_EXPLANATION_CONFLICT_PENDING_CORRECTION"
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T007-Q03",
+      "status": "REVIEW",
+      "importEligible": false,
+      "masterPatched": false,
+      "reason": "SOURCE_PROVEN_MATH_OR_EXPLANATION_CONFLICT_PENDING_CORRECTION"
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T007-Q17",
+      "status": "REVIEW",
+      "importEligible": false,
+      "masterPatched": false,
+      "reason": "SOURCE_PROVEN_MATH_OR_EXPLANATION_CONFLICT_PENDING_CORRECTION"
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T011-Q10",
+      "status": "REVIEW",
+      "importEligible": false,
+      "masterPatched": false,
+      "reason": "SOURCE_PROVEN_MATH_OR_EXPLANATION_CONFLICT_PENDING_CORRECTION"
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T018-Q05",
+      "status": "REVIEW",
+      "importEligible": false,
+      "masterPatched": true,
+      "reason": "SOURCE_PROVEN_MATH_OR_EXPLANATION_CONFLICT_PENDING_CORRECTION"
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T018-Q07",
+      "status": "REVIEW",
+      "importEligible": false,
+      "masterPatched": true,
+      "reason": "SOURCE_PROVEN_MATH_OR_EXPLANATION_CONFLICT_PENDING_CORRECTION"
+    }
+  ],
+  "productionImportAuthorized": false
+}
