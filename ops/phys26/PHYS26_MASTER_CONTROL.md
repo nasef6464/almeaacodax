@@ -86,3 +86,7 @@ Update `ops/phys26/PHYS26_EXECUTION_LEDGER.json` with each real run; enter exact
 - RUN006–RUN011 local previously documented facts reconciled into ledger without counting old work as new; 823 boundary-risk candidates reviewed in earlier runs, but only a geometry/visual-boundary audit, not full question certification. 154 distinct provisional similarity-pair comparisons; 68 distinct provisional physics crosschecks; no approved content.
 - Source/foundation CI tests updated to validate **the actual candidate counts and safety invariants** instead of freezing the project to exactly 90 subskills. Exact PR head CI and unrelated required workflows still require confirmation after subsequent documentation commits.
 - See `ops/phys26/PHYS26_RUN012_EVIDENCE.md` for evidence, provenance, and exact boundaries. No production writes, approval, licensing clearance, full foundation explanation, or final question/drill acceptance.
+
+### RUN012 machine-enforced unresolved source quarantines
+- `ops/phys26/PHYS26_RUN012_QUARANTINE_REGISTER.json` records four unresolved original-source blockers: clipped/edge diagrams L14-Q039 and L15-Q013, verified publisher key conflict L27-Q024, dimensional/wording error L22-Q057.
+- `scripts/verify-phys26-quarantine-gate.mjs` is wired into `PHYS26 offline static gates`. It fails if any of the four disappears silently, moves outside its source-lesson page range, or is marked importable. These records are metadata only; they do not authorize redistribution, rewriting or auto-merging any question.
