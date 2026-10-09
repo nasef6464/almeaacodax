@@ -10,10 +10,24 @@
   "cumulativeConditionalReviewEvents": 5046,
   "sourceCropPages": "P005–P057, non-contiguous",
   "sourceQuestionCodes": "RUN42 200-row source manifest; original PDF re-rendered in RUN49",
-  "candidateDeepPedagogyReviewed": 40,
+  "candidateDeepPedagogyReviewed": 30,
   "canonicalApproved": 0,
   "productionMutation": false,
   "productionImageParity": "NOT_TESTED",
   "status": "YLM26_IN_PROGRESS_NOT_GREEN",
-  "next": "Publish full source-backed 40-option pedagogy and resolve full 326 canonical fields; R2 image parity and rollback manifest."
+  "next": "Publish full source-backed 40-option pedagogy and resolve full 326 canonical fields; R2 image parity and rollback manifest.",
+  "additionalSourceAnswerOnlyReviews": 10,
+  "sourceReviewCount": 200,
+  "fullPedagogyPublished": 30,
+  "fullPedagogyNotPublished": 10,
+  "sourceReviewProof": "200 fresh 2x official-PDF crops with 200/200 RGB exact parity to RUN42 and 25 manually inspected source sheets; full pixel manifest retained in local evidence bundle",
+  "knownSemanticHolds": [
+    "P036-Q09",
+    "P036-Q15",
+    "P050-Q04",
+    "P066-Q14",
+    "P094-Q11"
+  ],
+  "productionR2Parity": "NOT_TESTED",
+  "notes": "Previous checkpoint wrote 40 deep; corrected to 30 published full option pedagogy + 10 source-answer-only rows. 200 actual source visuals, not 200 final pedagogical approvals."
 }
