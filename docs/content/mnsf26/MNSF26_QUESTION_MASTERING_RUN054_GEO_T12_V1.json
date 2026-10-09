@@ -5,7 +5,7 @@
   "directImageInspection": true,
   "sourceCropArchive": "/MNSF26/Run021/mnsf26_geometry_crops_run021.zip",
   "sourceInventory": "/MNSF26/Run021/MNSF26_GEOMETRY_CROP_MANIFEST_V1.json",
-  "masteredCount": 18,
+  "masteredCount": 17,
   "holdCount": 2,
   "records": [
     {
@@ -417,17 +417,35 @@
       },
       "imageHash": "470e7b8beda90bfdbf308b6b9b6e91e8677d36a2ed58b1fa1352f2c05edfc8d5",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T012_Q14",
-      "status": "MASTERED",
-      "questionText": "مستطيل طوي أحد أركانه بزاوية45؛ أوجد زاوية الطي س",
-      "canonicalMainSkill": "main_quant_21",
-      "canonicalSubskill": "sub_quant_21_3",
-      "correctAnswer": "45 (د)",
-      "stepByStepSolution": "القطعة المائلة تصنع45 مع الأفق و45 مع العمود، س45.",
-      "educationalExplanation": "القطعة المائلة تصنع45 مع الأفق و45 مع العمود، س45.",
+      "status": "REVIEW",
+      "questionText": "ورقة مستطيلة طُوي طرفها؛ قياس الزاوية س بين القطعة الرأسية والقاعدة الأفقية كما يظهر في الشكل.",
+      "canonicalMainSkill": null,
+      "canonicalSubskill": null,
+      "correctAnswer": "90 (ج)",
+      "stepByStepSolution": "الزاوية س عند التقاء القطعة الرأسية بالقاعدة الأفقية للمستطيل. الضلع الرأسي عمودي على القاعدة الأفقية، لذا س=90°؛ الاختيار (ج). زاوية الطي المرسومة 45° ليست الزاوية س.",
+      "educationalExplanation": "تحديد رأس الزاوية وضلعيها من الرسم قبل الحساب يمنع الخلط بين زاوية الطي والزاوية المطلوبة. هنا س زاوية قائمة مقدارها 90°.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
-      "contentFingerprint": "fb254458e1852174230845011b8253283ad97b2c434a2984bd9e4f9721b95db9",
-      "ideaFingerprint": "ffbaaba3f343ce1df4915314c04fc9a23ded41b2c75a5a23b7821787b04c03da"
+      "contentFingerprint": null,
+      "ideaFingerprint": null,
+      "importEligible": false,
+      "fingerprintRevalidationRequired": true,
+      "canonical25_95SemanticReviewRequired": true,
+      "sourceVerifiedCorrection": {
+        "run": "RUN092",
+        "originalImageSha256": "470e7b8beda90bfdbf308b6b9b6e91e8677d36a2ed58b1fa1352f2c05edfc8d5",
+        "previous": {
+          "correctAnswer": "45 (د)",
+          "questionText": "مستطيل طوي أحد أركانه بزاوية45؛ أوجد زاوية الطي س",
+          "canonicalMainSkill": "main_quant_21",
+          "canonicalSubskill": "sub_quant_21_3",
+          "contentFingerprint": "fb254458e1852174230845011b8253283ad97b2c434a2984bd9e4f9721b95db9",
+          "ideaFingerprint": "ffbaaba3f343ce1df4915314c04fc9a23ded41b2c75a5a23b7821787b04c03da"
+        },
+        "reason": "Direct original WEBP shows س at right-angle intersection, option ج 90°; prior answer د 45° is wrong.",
+        "imageEvidence": "RUN091 source_images/GEO_T012_Q14.webp",
+        "independentlyRechecked": true
+      }
     },
     {
       "sourceKey": "MNSF26-GEO-T012-Q15",
@@ -610,5 +628,6 @@
       "contentFingerprint": "22d7bd84eb0df4b89a653bbef41a1faf1e5e231973f17bb3f6f930fe96d37317",
       "ideaFingerprint": "f586587242b2d44efebe56f11d2ff7707c38c4a939fb569de8d866d5a10d0cd9"
     }
-  ]
+  ],
+  "reviewCount": 1
 }
