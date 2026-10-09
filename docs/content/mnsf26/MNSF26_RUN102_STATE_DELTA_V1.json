@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN102",
+  "date": "2026-10-09",
+  "stage": "QA_LOCK",
+  "exactHeadsAtStart": {
+    "chatgpt/mnsf26-ingest": "7f40257bf4d7dccbbde2fc1ccb3cc3ca8cea1136",
+    "main": "b9524ec1f5b23d38151d210624875d2a97fbc966"
+  },
+  "questionMastering": {
+    "lockedActive": 2129,
+    "excluded": 6,
+    "newMastered": 0,
+    "notRecounted": true
+  },
+  "cropLock": "PASS_LOCKED_2135_2135",
+  "sourceVisualRecheck": [
+    "MNSF26-GEO-T018-Q05",
+    "MNSF26-GEO-T018-Q07",
+    "MNSF26-AR-T049-Q16",
+    "MNSF26-AR-T051-Q06",
+    "MNSF26-AR-T051-Q14",
+    "MNSF26-AR-T052-Q06"
+  ],
+  "arithmeticT52IndependentMathRevalidation": {
+    "sourceKeys": 19,
+    "alreadyAdjudicatedRun074": true,
+    "newQuestionMastering": 0,
+    "notCountedAsNewQA": true,
+    "sourceEvidence": "Run097 original WEBP-derived contact sheets",
+    "sourceWebpRehashed": 0,
+    "sourceChoiceConflict": "MNSF26-AR-T052-Q06: 8km=8000m absent from printed options",
+    "holdPreserved": 6
+  },
+  "directSourceWebpRehashed": {
+    "MNSF26-AR-T051-Q14": "525ae6e5888a2ea34b703dfbc8f9d93fcd160d66712222119a1fcaa00f751798"
+  },
+  "sourceMathConflictsReconfirmed": [
+    "MNSF26-GEO-T018-Q05",
+    "MNSF26-GEO-T018-Q07",
+    "MNSF26-AR-T049-Q16",
+    "MNSF26-AR-T051-Q06",
+    "MNSF26-AR-T051-Q14"
+  ],
+  "masterWrites": {
+    "attemptedFiles": 3,
+    "applied": 0,
+    "error": "BLOCKED_BY_OPENAI_SAFETY_CHECKS",
+    "failClosed": true
+  },
+  "qaFullBookPass": false,
+  "canonicalSemantic25_95Pass": false,
+  "dedupeLock": "BLOCKED_BY_QA",
+  "r2UploadLock": "BLOCKED",
+  "importLock": "BLOCKED",
+  "productionE2E": false,
+  "productionServicesUntouched": true,
+  "preservedExceptions": [
+    "P001/Q10 HOLD",
+    "P013/Q15 HOLD",
+    "P014/Q08 quarantine",
+    "5 suppressions",
+    "P011/Q19=B",
+    "arithmetic test33 source-absent unresolved",
+    "geometry T24/Q18 source-absent"
+  ],
+  "next": "Apply verified source corrections only via authorized safe writes; recompute content/idea fingerprints and independently approve 25/95 skills; continue full-book QA before dedupe/R2/import."
+}
