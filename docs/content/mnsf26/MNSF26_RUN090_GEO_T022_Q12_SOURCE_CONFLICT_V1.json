@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN090",
+  "sourceKey": "MNSF26-GEO-T022-Q12",
+  "originalImageSha256": "ddd4ac556e4bdcb8f4803bf78219190401002064f8155e625a6acc4afbb49221",
+  "source": "Run021 original WEBP, crosschecked with Run089/Run063 SHA",
+  "previousMaster": {
+    "answer": "ب",
+    "answerValue": "مستطيل"
+  },
+  "imageVerified": {
+    "answer": "أ",
+    "answerValue": "مربع",
+    "points": [
+      [
+        2,
+        2
+      ],
+      [
+        1,
+        1
+      ],
+      [
+        1,
+        2
+      ],
+      [
+        2,
+        1
+      ]
+    ],
+    "reason": "Coordinates form the four vertices of a unit square: x,y each 1 or 2."
+  },
+  "status": "REVIEW",
+  "importEligible": false,
+  "masterWrite": "BLOCKED_BY_SAFETY_CHECK",
+  "fingerprintRevalidationPending": true,
+  "canonicalSubskillSemanticApprovalPending": true
+}
