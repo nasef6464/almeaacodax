@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN109",
+  "stage": "QA_LOCK",
+  "source": "Run017 original arithmetic WebP crops",
+  "scope": [
+    "AR-T037: 19 actual crops; Q18 absent from locked archive",
+    "AR-T038: 20 crops",
+    "AR-T039: 20 crops"
+  ],
+  "uniqueImagesVisuallyInspected": 59,
+  "sha256RecomputedAndMatchedRun063": 59,
+  "qaVerdicts": {
+    "mathPassTaxonomyPending": 48,
+    "holdPreserved": 6,
+    "sourceConflicts": 5
+  },
+  "sourceConflicts": [
+    "MNSF26-AR-T037-Q14",
+    "MNSF26-AR-T038-Q04",
+    "MNSF26-AR-T038-Q09",
+    "MNSF26-AR-T038-Q10",
+    "MNSF26-AR-T039-Q03"
+  ],
+  "masterReviewTransitionsApplied": [
+    "MNSF26-AR-T038-Q04",
+    "MNSF26-AR-T038-Q09",
+    "MNSF26-AR-T038-Q10",
+    "MNSF26-GEO-T006-Q18"
+  ],
+  "masterReviewTransitionsBlocked": [
+    "MNSF26-AR-T037-Q14",
+    "MNSF26-AR-T039-Q03"
+  ],
+  "qaOfficialCounterIncrement": 0,
+  "reason": "No exhaustive cross-run sourceKey QA dedupe; avoid double counting.",
+  "questionMasteringRun063": {
+    "active": 2129,
+    "excluded": 6,
+    "newMastered": 0
+  },
+  "cropLock": "PASS_LOCKED_2135_OF_2135",
+  "canonicalTaxonomyGate": "PENDING",
+  "qaFullBookPass": false,
+  "dedupeLock": false,
+  "r2UploadLock": false,
+  "importLock": false,
+  "productionE2E": false,
+  "productionServicesUntouched": true,
+  "preserved": [
+    "P001/Q10 HOLD",
+    "P013/Q15 HOLD",
+    "P014/Q08 quarantine",
+    "5 suppressions",
+    "P011/Q19=B",
+    "arithmetic test33 source absent",
+    "geometry T24/Q18 source absent"
+  ],
+  "next": "Continue original-image QA; apply remaining source-proven REVIEW transitions; enforce full-book gate before any downstream work."
+}
