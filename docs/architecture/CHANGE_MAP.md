@@ -6,6 +6,10 @@
 | تحليل الاختبارات الموجهة للمشرف | `dashboards/admin/supervisorTests/assessmentReportEvidence.ts` و`useScopedAssessmentResults.ts` | توسيع store النتائج الشخصية |
 | ظهور اختبارات الطلاب لدى مدير المدرسة | `schoolDirectorWorkspace.ts` و`schoolAssessmentAudience.ts` | تغيير صلاحيات المدير أو نسخ Quiz |
 | ظهور تكليفات المشرف لدى المعلم | `schoolTeacherWorkspace.ts` و`teacherAssessmentClassIds.ts` | توسيع نطاق المعلم خارج فصوله المسندة |
+| تجميع مهارات تقرير الاختبار حسب المادة والهوية | `dashboards/admin/supervisorTests/assessmentSkillEvidence.ts` | الاسم المعروض وحده أو تغيير درجات محفوظة |
+| مقارنة الفصول مع المشاركة | `AssessmentClassComparison.tsx` و`TestAnalyticsReport.tsx` | اعتبار الطلاب غير المشاركين درجات صفر |
+| أسماء وعضوية الطلاب في تقرير المشرف | قائمة `SupervisorDashboard` المحلية ثم `SupervisorTestsManager` و`useSupervisorAssessmentScope` | تحميل القائمة مرة ثانية أو توسيع store الشخصي |
+| فصل الطلاب بلا قياس عن ترتيب النتائج | `quizStudentAssessmentEvidence.ts` و`quizAnalyticsWeakestStudents.ts` | منح الغائب درجة صفر أو تعديل تاريخ النتائج |
 | شكل score/mastery | `components/results/resultScorePresentation.ts` | Database |
 | تصحيح الاختبار | assessment scoring backend | React state |
 | نسخة تعريف اختبار منشور | `server/src/modules/quizzes/application/assessmentDefinitionReadAdapter.ts` و`assessmentVersionRepository.ts` | تغيير وثيقة Quiz التاريخية |

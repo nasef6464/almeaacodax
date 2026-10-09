@@ -1,5 +1,11 @@
 # ALMEAA — Codex Execution State
 
+## تصحيحات تقارير المدرسة مثبتة على الإنتاج — 2026-10-09
+- دُمج ونُشر #495/#496؛ main `71359ae319ed698d794867adbb5528e590d94e01`. آخر رأس كود `cb6733ccd883f553a149a6d14ce9ce23efcada5a`:19SUCCESS4skip، وجميع الفحوص الثلاثة المطلوبة ناجحة. فحوص main للأدوار والنشر والأسرار وAI الأربعة ناجحة، وRender/الواجهة/الجاهزية200 مطابقة.
+- فحص المشرف والمعلم200 يفصل الطلاب بلا قياس عن ترتيب النتائج. التقرير الفعلي القديم يعرض اسم الطالب والفصل والمشاركة1/2 والدرجة40 دون تغيير النتيجة؛1280/390 بلا تجاوز أفقي أو أخطاء صفحة. جرى إصلاح مصدر قائمة الطلاب المحلي بدل إعادة تحميلها.
+- اختبار24حسابًا عبرAPI وثلاث دفعات×5 حفظ360إجابة وتقريرًا مطابقًا بعد دخول جديد.89,671بايت أجسام استجابات مضغوطة فقط؛ لا تشمل الموقع/الوسائط/Socket/المصادقة/البروتوكول. p95=11.339ثانية؛ راحة الفصل و20متصفحًا/أجهزة فعلية والباندويث الكامل غير مثبتة.
+- المتبقي المعتمد: توقيت الفتح الدقيق، إعادة محاولة انتقائية مع حفظ التاريخ، إجراءات المعلم، سياق تجميع الاختبارات الفردية المدرسية، وإثبات التحليل متعدد المواد والتطور. منظومة المدارس ككل PARTIAL؛ لا إعادة للعمل المثبت. الأدلة: `docs/audits/SCHOOL_ASSESSMENT_QUALITY_AND_CLASS_LOAD_2026-10-09.md`.
+
 ## School report roster follow-up — 2026-10-09
 - #495 merged/published65a7b961; exactf2dacd02:21SUCCESS4skip/allrequiredPASS;main4gatesPASSafteradmin502same-headrerun. RealAPIoverview2weak/12unassessed/savedscore40PASS. Realbrowsercomparisonmissing/nameunknownPROVED:report readsglobalusersinsteadexistinglocalroster.
 - Newfresh `codex/school-assessment-report-roster` passesparentlocalroster throughsame list/report/scope; validatedclassroster IDsfallbackpreservespartialload. No newrequest/resultwrite/authchange. Emptyglobalstore actualUIregression added; CI/productionfinalpending. Otherauthorizedschoolscope remainsopen; seequality/load audit.
