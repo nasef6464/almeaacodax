@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN096",
+  "stage": "QA_LOCK",
+  "date": "2026-10-09",
+  "branchHeadStart": "765cc71aa58bd90bb412453fef078d617860271e",
+  "mainHeadStart": "7e3043346bd0ed0ea6c31aba7faa191405b32c69",
+  "sourceWEBPReinspected": 4,
+  "shaVerified": 4,
+  "masterCorrectionCommit": "a5445476ec30d400f6a3771ecb600b13e6be3057",
+  "corrected": [
+    "MNSF26-GEO-T004-Q03"
+  ],
+  "otherConflictWritesBlocked": [
+    "MNSF26-GEO-T001-Q19",
+    "MNSF26-GEO-T003-Q20",
+    "MNSF26-GEO-T006-Q18"
+  ],
+  "newMastered": 0,
+  "qaFullBookPass": false,
+  "productionE2E": false
+}
