@@ -1,0 +1,20 @@
+{
+  "run": "RUN56",
+  "date": "2026-10-09",
+  "scope": "YLM26",
+  "sourceReviewedDistinctThisRun": 200,
+  "sourcePagesCovered": 61,
+  "sourceRGBParityPASS": 199,
+  "sourceRGBParityException": 1,
+  "independentMathPASS": 65,
+  "printedKeyMATCH": 18,
+  "printedKeyBLANK": 47,
+  "fullPedagogyCandidates": 21,
+  "optionSpecificWrongReasons": 63,
+  "conditionalReviewEventsCumulativeRUN21toRUN56": 6196,
+  "uniqueYLM26Inventory": 326,
+  "canonicalApproved": 0,
+  "productionMutation": false,
+  "status": "YLM26_NOT_GREEN",
+  "next": "Resolve HOLDs, verify 326 canonical fields and R2; reversible manifest; then COL26."
+}
