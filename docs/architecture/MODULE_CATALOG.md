@@ -37,3 +37,4 @@ Existing AI module retains question review authorization, trusted references, pr
 ## Mock client policy and ordering ownership — 2026-10-10
 - services/mockExamNormalization.ts owns published mock policy conversion; services/adapter.ts delegates. Preserve strict/flexible flags, subject domains and optional legacy defaults.
 - utils/mockExam.ts owns section-respecting question order; QuizPage delegates and restores an older draft current question by canonical identity. Scoring, server session authority and persisted historical results remain unchanged.
+- utils/quizProgressDraft.ts owns optional strict-section deadline/closed-ID restore validation; QuizPage starts/counts down deadlines and saves them through the existing local draft. This is client resume behavior, not server timing enforcement.

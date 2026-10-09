@@ -12,7 +12,7 @@
 | انعكاس نتيجة جديدة للنموذج additive | `assessmentSubmissionMirror.ts` و`dualWriteAssessmentSubmission.ts` | إنشاء `QuizResult` مباشرة أو تغيير response للطالب |
 | فحص/إصلاح اختلاف mirror | `assessmentMirrorReconciliation.ts` | تعديل `QuizResult` أو scoring |
 | جرد backfill تاريخي | `assessmentLegacyBackfillInventory.ts` | تشغيل كتابة migration على بيانات تشغيلية |
-| Timer/Runner | `pages/QuizPage.tsx` وrunner components | Reports |
+| Timer/Runner | `pages/QuizPage.tsx` و`utils/quizProgressDraft.ts` لحفظ موعد انتهاء القسم الصارم وقفل الأقسام محليًا | Reports |
 | بنك الأسئلة/البحث العام | `QuestionBankManager` وquestions API | generic shared |
 | ربط أسئلة داخل فيديو/درس | `dashboards/admin/builders/VideoQuestionPicker.tsx` ثم `UnifiedLessonBuilder.tsx` | تحميل أول 100 سؤال أو تعديل Player |
 | snapshot تشغيل سؤال فيديو | `utils/videoQuestionSnapshot.ts` و`InteractiveQuestion.inlineQuestion` | global Question Bank عند تشغيل الطالب |

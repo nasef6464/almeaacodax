@@ -16,6 +16,8 @@ import { assessmentQuestionSource } from '../utils/exams/assessmentQuestionSourc
 import { buildSkillRecommendation } from './Reports/recommendationViewModel';
 import {
   readQuizProgressDraft,
+  restoreStrictSectionProgress,
+  getSectionDeadlineSeconds,
   removeQuizProgressDraft,
   type SavedQuizPageProgress,
   writeQuizProgressDraft,
@@ -217,6 +219,7 @@ export const QuizPage: React.FC = () => {
   const [questionTimeSpent, setQuestionTimeSpent] = useState<Record<string, number>>({});
   // Sections that have been locked (time expired or manually advanced)
   const [lockedSectionIds, setLockedSectionIds] = useState<Set<string>>(new Set());
+  const [strictSectionDeadlines, setStrictSectionDeadlines] = useState<Record<string, number>>({});
   const [showSectionConfirmModal, setShowSectionConfirmModal] = useState(false);
   const [passageFontSize, setPassageFontSize] = useState<'sm' | 'base' | 'lg'>('base');
   const activeQuizLoadKeyRef = useRef('');
@@ -544,6 +547,7 @@ export const QuizPage: React.FC = () => {
     setSectionTimeLeft(null);
     setQuestionTimeSpent({});
     setLockedSectionIds(new Set());
+    setStrictSectionDeadlines({});
     autoSubmitTriggeredRef.current = false;
 
     const effectiveTimeLimit = foundQuiz.mockExam?.enabled ? getMockExamTimeLimit(foundQuiz) : (resolveQuizSettings(foundQuiz).timeLimit || 0);
@@ -592,6 +596,12 @@ export const QuizPage: React.FC = () => {
     setDraftRestored(canRestoreProgress);
 
     if (canRestoreProgress && savedProgress) {
+      if (foundQuiz.mockExam?.enabled && foundQuiz.mockExam.presentationMode !== 'flexible' && foundQuiz.mockExam.isStrictSectionLock !== false &&
+          (foundQuiz.mockExam.presentationMode === 'qiyas_strict' || foundQuiz.mockExam.isStrictSectionLock === true)) {
+        const sectionProgress = restoreStrictSectionProgress(savedProgress, getMockExamSections(foundQuiz));
+        setStrictSectionDeadlines(sectionProgress.deadlines);
+        setLockedSectionIds(sectionProgress.lockedIds);
+      }
       const allowedQuestionIds = new Set(nextQuestions.map((question) => question.id));
       const safeSelectedOptions = Object.fromEntries(
         Object.entries(savedProgress.selectedOptions || {}).filter(([questionId, optionIndex]) => {
@@ -635,10 +645,12 @@ export const QuizPage: React.FC = () => {
       timeLeft: typeof timeLeft === 'number' && timeLeft > 0 ? timeLeft : null,
       savedAt: new Date().toISOString(),
       flaggedQuestionIds,
+      strictSectionDeadlines,
+      lockedSectionIds: Array.from(lockedSectionIds),
     };
 
     writeQuizProgressDraft(draft);
-  }, [quiz, quizQuestions, selectedOptions, currentQuestionIndex, timeLeft, flaggedQuestionIds, isFinished, isSubmittingResult]);
+  }, [quiz, quizQuestions, selectedOptions, currentQuestionIndex, timeLeft, flaggedQuestionIds, strictSectionDeadlines, lockedSectionIds, isFinished, isSubmittingResult]);
 
   useEffect(() => {
     if (quizQuestions.length > 0) {
@@ -718,16 +730,28 @@ export const QuizPage: React.FC = () => {
     if (!sectionTimeLimitMinutes || sectionTimeLimitMinutes <= 0) { setSectionTimeLeft(null); return; }
     // Only reset if we moved to a NEW section that hasn't been locked yet
     if (lockedSectionIds.has(currentMockExamSection.id)) { setSectionTimeLeft(0); return; }
+    if (isStrictQiyasMode) {
+      const sectionId = currentMockExamSection.id;
+      const deadline = strictSectionDeadlines[sectionId] ?? Date.now() + sectionTimeLimitMinutes * 60_000;
+      if (strictSectionDeadlines[sectionId] === undefined) {
+        setStrictSectionDeadlines((current) => ({ ...current, [sectionId]: deadline }));
+      }
+      setSectionTimeLeft(getSectionDeadlineSeconds(deadline));
+      return;
+    }
     setSectionTimeLeft(sectionTimeLimitMinutes * 60);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentMockExamSection?.id]);
+  }, [currentMockExamSection?.id, isStrictQiyasMode, strictSectionDeadlines, lockedSectionIds]);
 
   // ── Per-section countdown ─────────────────────────────────────────────────
   useEffect(() => {
     if (sectionTimeLeft === null || sectionTimeLeft <= 0 || isFinished || isSubmittingResult) return;
-    const timerId = window.setTimeout(() => setSectionTimeLeft((t) => (t !== null && t > 0 ? t - 1 : t)), 1000);
+    const timerId = window.setTimeout(() => setSectionTimeLeft((t) => {
+      const deadline = currentMockExamSection && strictSectionDeadlines[currentMockExamSection.id];
+      return isStrictQiyasMode && deadline ? getSectionDeadlineSeconds(deadline) : (t !== null && t > 0 ? t - 1 : t);
+    }), 1000);
     return () => window.clearTimeout(timerId);
-  }, [sectionTimeLeft, isFinished, isSubmittingResult]);
+  }, [sectionTimeLeft, isFinished, isSubmittingResult, currentMockExamSection?.id, isStrictQiyasMode, strictSectionDeadlines]);
 
   // ── Per-question time tracking ────────────────────────────────────────────
   useEffect(() => {

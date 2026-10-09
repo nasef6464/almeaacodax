@@ -175,3 +175,7 @@ Git HEAD always overrides this historical baseline.
 - مراجعة المدرسة والحصة 2026-10-08: فرع `codex/school-assignment-classroom-audit` من `main@877940bda4b4`؛ إصلاح توسعة نطاق مشرف الفصل في ثلاث واجهات وحالات التذكير، واستعادة تشغيل رحلة المشرف والطالب المعزولة في CI. الفحوص المحلية ناجحة؛ exact-head CI والنشر قيد التحقق. الحالة PARTIAL، ولا بيانات تعليمية إنتاجية منشأة. الدليل: `docs/audits/SCHOOL_ASSESSMENT_CLASSROOM_JOURNEY_2026-10-08.md`.
 
 - School audit PR #481: unchanged runtime c32a49b9 passed isolated backend integration and Smart Classroom Hardening (25 HTTP students, 83 requests, 4 sockets; not browser/production pressure). Admin source smoke updated to call the verified extracted helper and run behavioral parity; final-head CI tracked on https://github.com/nasef6464/almeaacodax/pull/481/checks. Production certification remains PARTIAL.
+
+## Current strict runner follow-up — 2026-10-10
+29 bounded production checks PASS. Exact local build proved a third defect: section time172 to180 and lost closed-state after reload. Optional local strict deadlines/locks now preserve time173 to165 and closed state in actual UI; typecheck/build/mock regressions PASS. Final exact-head CI and published replay pending. Full system remains PARTIAL.
+

@@ -1634,3 +1634,7 @@
 - Teaching #478 merge 6e45e281f46e exact-head CI / release/readiness / Vercel / Post Deploy Smoke PASS; fresh owned-review real AI 3/3 valid on actual 3.8 Flash with complete 309705 in Arabic/English. Visual QA exposed pure formula line concatenation; current codex/teaching-board-formula-lines isolates each newline as a separate safe KaTeX block, fixture checks preserve numeric boundaries. Frontend-only follow-up, reuse captured provider responses; no further inference required. Full audible-device/science certification remains PARTIAL.
 
 - School audit PR #481: unchanged runtime c32a49b9 passed isolated backend integration and Smart Classroom Hardening (25 HTTP students, 83 requests, 4 sockets; not browser/production pressure). Admin source smoke updated to call the verified extracted helper and run behavioral parity; final-head CI tracked on https://github.com/nasef6464/almeaacodax/pull/481/checks. Production certification remains PARTIAL.
+
+## Current strict runner follow-up — 2026-10-10
+29 bounded production checks PASS. Exact local build proved a third defect: section time172 to180 and lost closed-state after reload. Optional local strict deadlines/locks now preserve time173 to165 and closed state in actual UI; typecheck/build/mock regressions PASS. Final exact-head CI and published replay pending. Full system remains PARTIAL.
+
