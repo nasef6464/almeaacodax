@@ -49,9 +49,27 @@ for(const [index,q] of batch.items.entries()){
  check(!ids.has(meta.sourceItemId),"duplicate source identity");ids.add(meta.sourceItemId);
  check(!codes.has(code),"duplicate question code");codes.add(code);
  check(String(q.questionText||"").trim().length>=12,"question text missing");
- check(Array.isArray(q.options)&&q.options.length===4&&q.options.every(v=>String(v||"").trim().length>1),"actual four options missing");
+ // A printed choice can genuinely be a one-digit number or a diagram label.
+ // Diagram-letter values are accepted only with source-image-bound human evidence.
+ const options=Array.isArray(q.options)?q.options.map(v=>String(v??"").trim()):[];
  const optionLabels=new Set(["A","B","C","D","أ","ب","ج","د"]);
- check(Array.isArray(q.options)&&q.options.every(v=>!optionLabels.has(String(v).trim())),"placeholder option label detected");
+ const allDiagramLabels=options.length===4&&options.every(v=>optionLabels.has(v));
+ const letterProof=q.aiContext?.literalLetterChoiceEvidence;
+ const imageHashForLetterProof=String(meta.imageHash||"").toLowerCase();
+ const diagramLabels=Array.isArray(letterProof?.diagramLabels)?letterProof.diagramLabels.map(v=>String(v).trim()):[];
+ const diagramLetterEvidenceValid=allDiagramLabels&&
+   q.visualQA?.verified===true&&q.visualQA?.oneQuestionOnly===true&&
+   q.visualQA?.literalLetterValuesVerified===true&&q.aiContext?.optionTextsVerified===true&&
+   letterProof?.method==="SOURCE_DIAGRAM_LETTER_LABELS"&&
+   /^[a-f0-9]{64}$/.test(imageHashForLetterProof)&&
+   String(letterProof?.sourceImageSha256||"").toLowerCase()===imageHashForLetterProof&&
+   String(letterProof?.reviewerNotes||"").trim().length>=20&&
+   options.every(v=>diagramLabels.includes(v))&&new Set(options).size===4;
+ check(options.length===4&&options.every(v=>v.length>0),"actual four options missing");
+ check(options.every(v=>!optionLabels.has(v))||diagramLetterEvidenceValid,
+   "unverified literal diagram letter options / placeholder option label detected");
+ check(!options.some(v=>optionLabels.has(v))||allDiagramLabels,
+   "mixed diagram letters and ordinary choices require source-specific review");
  if(Array.isArray(q.options)){
    const optionTexts=q.options.map(norm);
    check(new Set(optionTexts).size===4,"duplicate option text");
