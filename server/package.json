@@ -62,12 +62,13 @@
     "verify:mnsf26:crop-queue": "tsx src/scripts/verifyMnsf26CropQueue.ts",
     "verify:mnsf26:geometry-index": "tsx src/scripts/verifyMnsf26GeometrySourceIndex.ts",
     "verify:mnsf26:arithmetic-index": "tsx src/scripts/verifyMnsf26ArithmeticSourceIndex.ts",
-    "verify:mnsf26:all": "npm run verify:mnsf26:content-manifest && npm run verify:mnsf26:crop-queue && npm run verify:mnsf26:geometry-index && npm run verify:mnsf26:geometry-fullbook && npm run verify:mnsf26:geometry-work-queue && npm run verify:mnsf26:arithmetic-index && npm run verify:mnsf26:source-skills && npm run verify:mnsf26:dedupe && npm run verify:mnsf26:fullbook-gate && npm run verify:mnsf26:preimport",
+    "verify:mnsf26:all": "npm run verify:mnsf26:content-manifest && npm run verify:mnsf26:crop-queue && npm run verify:mnsf26:geometry-index && npm run verify:mnsf26:geometry-fullbook && npm run verify:mnsf26:geometry-work-queue && npm run verify:mnsf26:arithmetic-index && npm run verify:mnsf26:source-skills && npm run verify:mnsf26:dedupe && npm run verify:mnsf26:fullbook-gate && npm run verify:mnsf26:row-integrity && npm run verify:mnsf26:preimport",
     "verify:mnsf26:dedupe": "tsx src/scripts/verifyMnsf26CrossBankDedupe.ts",
     "verify:mnsf26:source-skills": "tsx src/scripts/verifyMnsf26SourceSkillIndex.ts",
     "verify:mnsf26:geometry-fullbook": "tsx src/scripts/verifyMnsf26GeometryFullbookCoverage.ts",
     "verify:mnsf26:geometry-work-queue": "tsx src/scripts/verifyMnsf26GeometryQuestionWorkQueue.ts",
-    "verify:mnsf26:fullbook-gate": "tsx src/scripts/verifyMnsf26FullbookGate.ts"
+    "verify:mnsf26:fullbook-gate": "tsx src/scripts/verifyMnsf26FullbookGate.ts",
+    "verify:mnsf26:row-integrity": "node ../scripts/verifyMnsf26CurrentFullbookRows.mjs"
   },
   "dependencies": {
     "@sentry/node": "^9.18.0",
