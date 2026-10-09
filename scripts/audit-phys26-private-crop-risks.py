@@ -103,7 +103,7 @@ def main():
                     first = min(s["bbox"][1] for s in group)
                     if len(group) >= 4 and first > d_bottom + 10:
                         suggestions.append((reason, first - offset))
-            if clip.y1 >= 710 and d_bottom < 680:
+            if clip.y1 >= 710 and d_bottom < 680 and not any(item[0].startswith("FOOTER") for item in suggestions):
                 suggestions.append(("PAGE_FOOTER_PROXIMITY_AFTER_OPTIONS", 700.0))
         valid = [
             (reason, y) for reason, y in suggestions
