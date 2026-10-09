@@ -5,7 +5,7 @@
   "directImageInspection": true,
   "sourceCropArchive": "/MNSF26/Run021/mnsf26_geometry_crops_run021.zip",
   "sourceInventory": "/MNSF26/Run021/MNSF26_GEOMETRY_CROP_MANIFEST_V1.json",
-  "masteredCount": 12,
+  "masteredCount": 10,
   "holdCount": 6,
   "records": [
     {
@@ -508,5 +508,6 @@
       "contentFingerprint": "2fcc1830d838504646bdedce4b8736c0507d386469b6265146f36ddbdef63fda",
       "ideaFingerprint": "e0d3a22c1f88980b0b4371f9887e916333d9326d738ff162c0e21a34589182e1"
     }
-  ]
+  ],
+  "reviewCount": 2
 }
