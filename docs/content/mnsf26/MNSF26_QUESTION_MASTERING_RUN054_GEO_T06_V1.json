@@ -5,7 +5,7 @@
   "directImageInspection": true,
   "sourceCropArchive": "/MNSF26/Run021/mnsf26_geometry_crops_run021.zip",
   "sourceInventory": "/MNSF26/Run021/MNSF26_GEOMETRY_CROP_MANIFEST_V1.json",
-  "masteredCount": 16,
+  "masteredCount": 15,
   "holdCount": 4,
   "records": [
     {
@@ -540,7 +540,7 @@
       },
       "imageHash": "88b6a125a2633a34c0e592b842c7a1380f136d54b5985e26bb6d730998f5bdba",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T006_Q18",
-      "status": "MASTERED",
+      "status": "REVIEW",
       "questionText": "مثلث متطابق الضلعين زاوية بين الضلعين المتساويين50؛ قارن زاوية قاعدة ص و25",
       "canonicalMainSkill": "main_quant_20",
       "canonicalSubskill": "sub_quant_20_5",
@@ -550,7 +550,11 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "ddf4214b57567f190782db9f8c7ef979fca5c263953df7461095a2ed7f8a52c6",
-      "ideaFingerprint": "c9caa88c459cdf3b1c8f6057731d8621a525fc2c04f1d9a85582e168f253229c"
+      "ideaFingerprint": "c9caa88c459cdf3b1c8f6057731d8621a525fc2c04f1d9a85582e168f253229c",
+      "importEligible": false,
+      "qaDisposition": "SOURCE_PROVEN_CONFLICT_PENDING_INDEPENDENT_ADJUDICATION",
+      "reviewReason": "Run107 source-image adjudication conflicts with the original MASTER question/answer/solution; original text preserved for audit, not eligible for import.",
+      "reviewEvidence": "Run107 original WebP/contact-sheet proof; Run108 override manifest; Run109 safe status transition"
     },
     {
       "sourceKey": "MNSF26-GEO-T006-Q19",
@@ -612,5 +616,6 @@
       "contentFingerprint": "21dff4fc5bd69576ce9c14202755a3053df25f9bf76c91ade0e6cd2ce9bf85cf",
       "ideaFingerprint": "781fe0d77f333c620f206aff91a7e2df551a45e80a13be1bed25d64730a8dab1"
     }
-  ]
+  ],
+  "reviewCount": 1
 }
