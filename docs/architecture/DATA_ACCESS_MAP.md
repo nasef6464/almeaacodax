@@ -2,6 +2,8 @@
 
 هذه خريطة تصميم وتشغيل، وليست تصريحًا بأن كل أحجام التوسع مثبتة.
 
+Teacher directed discovery (2026-10-09): existing school-scoped assigned roster resolves before the assessment query. It selects only metadata plus audience IDs, caps100 and matches school/class/student explicit audiences. Response derives assigned class intersections only; no question bodies, polling or extra database query. Published/own-draft visibility retained; scale remains unproven.
+
 | البيانات | النمو المتوقع | القراءات الساخنة | السياسة الحالية/المطلوبة | الحالة |
 |---|---|---|---|---|
 | Questions + image references | 80k–500k+ | filters/skill/type/search؛ Video Question Picker | server pagination، projection، indexes، media خارج Mongo؛ picker يرسل scope الدرس والبحث/الفلاتر ويخزن snapshot تشغيل متوافقًا داخل lesson بدل قراءة global Question Bank أثناء playback | PARTIAL |
@@ -16,6 +18,10 @@
 | ProductConfig | سجل صغير لكل deployment | bootstrap/branding/features/providers | config validated ومحدود؛ لا أسرار provider داخل payload frontend؛ cache مع invalidation واضح | NOT PROVEN |
 
 ## أسلوب مراجعة أي Query
+
+### الاختبارات الموجهة وربط المدرسة — 2026-10-09
+- المشرف يستخدم `/quizzes/results/scoped` الحالي في حالة موظفين مستقلة عن store النتائج الشخصية. الفلتر هو نطاق الخادم مع `quizId` اختياري، والترتيب `date` تنازلي، والإسقاط ملخصات دون `questionReview`، والحد 100 لكل صفحة مع حساب الإجمالي الفعلي. الصفحات الإضافية والتحديث بطلب المستخدم، دون polling جديد أو cache عام. عند فتح تقرير اختبار يرسل `includeReview=true` لنفس قارئ النطاق. تظهر رسالة تغطية جزئية إن بقيت صفحات أو كانت حدود نطاق الخادم تسمح بعينة طلاب فقط. هذا الدليل لا يثبت أحجامًا بملايين النتائج.
+- قارئا مدير المدرسة overview/academic يستخدمان `schoolStudentFilter` القائم للحصول على `id/_id` فقط، ثم يجمع `schoolAssessmentAudience` أهداف المدرسة الصريحة والفصول والطلاب الموجودين بالنطاق بعلاقة OR. ترتيب القائمة `createdAt` تنازلي، وإسقاطها تعريف مختصر بحد 100؛ overview يعد المنشور فقط. لا تغيير للعضوية أو الصلاحية، ولا نسخ محتوى أو نتائج. القراءة تحمل معرفات طلاب المدرسة فقط؛ قياس الفهارس وأحجام المدارس الكبيرة لم يثبت. الاختبار المعزول يثبت التوجيه الفردي داخل المدرسة ويستبعد طالب مدرسة أخرى؛ الرحلة الفعلية تثبت 83 طالبًا في النطاق واختبارًا واحدًا.
 
 لكل Query جديدة أو معدلة يجب تسجيل: filter، sort، projection، limit/cursor، index المتوقع، cardinality، cache key/TTL/invalidation إن وجد، وسلوكها عند ملايين السجلات.
 

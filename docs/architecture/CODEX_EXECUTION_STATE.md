@@ -1,5 +1,17 @@
 # ALMEAA — Codex Execution State
 
+## Teacher directed assessment discovery — 2026-10-09
+- Fresh branch `codex/teacher-directed-assessment-discovery` from maincb4c49d5; #493 final evidence carried as documentation only.
+- Production defect proved: teacher quiz200/workspace200 but existing individual quiz absent. Resolve existing assigned roster before projected100 assessment read; published/owner/creator visibility retained. Pure teacherAssessmentClassIds maps only validated teacher classes for individual, school and class targets.
+- Seven actual HTTP audience/isolation regressions added to backend gate; no production quiz/result writes. PARTIAL until exact code CI and production replay; don't reopen supervisor result/scoring work.
+
+## Directed assessment delivery VERIFIED — 2026-10-09
+- #493 merged/livecb4c49d5b46e4ca7a9b6fc4afdda8bfe31fc5841; exact code25852c1606647e55ddf9ca6ff9f9bba979a1e487:22SUCCESS4SKIPPED/all3requiredPASS. Backend37942817068, supervisor/student37942817194, full-stack37942817335 allSUCCESS.
+- Matching actual production UI/API:5questions2audit targets1submitted, supervisor list/report1/2=50% andscore40, student saved review, one absent-audit recipient notification, other-student result403 and student staff school-skills403. One summary read and one opt-in review read. Mobile student/supervisor390px nooverflow;0pageerrors.
+- Owner-authorized trial school_admin persists active same-school membership and scoped capabilities. Fresh API/browser login, director same-school teacher/class match and individual assessment visibility/countPASS; another school and self-grant403. Private credentials only in untracked local scratch. Actual school metadata83students/3classes/3teachers/2supervisors, not concurrency.
+- Renderlive/frontendexact/readiness200PASS. Squash inherited skip-ci from prior documentation message, so main push gates did not start. Manually dispatched PostDeploy37945024212 and LiveRole37945030233 on main bothSUCCESS. Secret gate has no dispatch: exact-code CI PASS plus matching-main local545-file hygienePASS. Initial director read502; unchanged read/UI replayPASS with no second result/test write.
+- Final audit updated on codex/supervisor-directed-final-evidence from published main; docs-only evidence may skip CI. No further feature scope opened. Production-scale/multi-device classroom certification remains NOT_PROVEN, not required for this bounded journey.
+
 ## Directed assessment results and school staff linkage — 2026-10-09
 - Baseline58b3f5af; owner continues supervisor/student assessments and explicitly adds director/teacher school relations. New codex/supervisor-directed-results-verification; prior final classroom evidence cherry-picked as documentation only.
 - Production5-question private quiz targets2audit users; student catalog/submit/saved review/API staff result match and cross-student403 proved. Old supervisor UI0/2 despite persisted result proves missing scoped result source; preserve personal store isolation and use local staff evidence.

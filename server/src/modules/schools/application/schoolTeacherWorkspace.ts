@@ -5,6 +5,7 @@ import { TeachingAssignmentModel } from "../../../models/TeachingAssignment.js";
 import { UserModel } from "../../../models/User.js";
 import { resolveSchoolContexts, type LegacySchoolUser } from "./schoolContextResolver.js";
 import { resolveSchoolEntitlement } from "./schoolEntitlementResolver.js";
+import { teacherAssessmentClassIds } from "./teacherAssessmentClassIds.js";
 
 const unique = (values: string[]) => [...new Set(values.filter(Boolean))];
 
@@ -74,23 +75,8 @@ export const buildSchoolTeacherWorkspace = async (actor: LegacySchoolUser): Prom
       return (classroom?.studentIds || []).map(String);
     }),
   );
-  const [assessments, rosterStudents] = await Promise.all([
-    validClassIds.length
-      ? QuizModel.find({
-          targetGroupIds: { $in: validClassIds },
-          $or: [
-            { isPublished: true },
-            { ownerId: actor.id },
-            { createdBy: actor.id },
-          ],
-        })
-          .select("id title subjectId targetGroupIds dueDate quizKind approvalStatus isPublished ownerId createdBy")
-          .sort({ dueDate: 1, updatedAt: -1 })
-          .limit(100)
-          .lean()
-      : [],
-    validClassIds.length
-      ? UserModel.find({
+  const rosterStudents = validClassIds.length
+      ? await UserModel.find({
           role: "student",
           schoolId: { $in: schoolIds },
           $or: [
@@ -100,8 +86,28 @@ export const buildSchoolTeacherWorkspace = async (actor: LegacySchoolUser): Prom
         })
           .select("name isActive schoolId groupIds")
           .lean()
-      : [],
-  ]);
+      : [];
+  const assignedSchoolIds = unique(validAssignments.map((assignment) => String(assignment.schoolId)));
+  const assignedStudentIds = rosterStudents.map((student) => String(student._id));
+  const assessments = validClassIds.length
+    ? await QuizModel.find({
+        $and: [
+          { $or: [
+            { targetGroupIds: { $in: [...assignedSchoolIds, ...validClassIds] } },
+            { targetUserIds: { $in: assignedStudentIds } },
+          ] },
+          { $or: [
+            { isPublished: true },
+            { ownerId: actor.id },
+            { createdBy: actor.id },
+          ] },
+        ],
+      })
+        .select("id title subjectId targetGroupIds targetUserIds dueDate quizKind approvalStatus isPublished ownerId createdBy")
+        .sort({ dueDate: 1, updatedAt: -1 })
+        .limit(100)
+        .lean()
+    : [];
 
   const schoolRows: Array<WorkspaceSchool | null> = await Promise.all(schoolIds.map(async (schoolId): Promise<WorkspaceSchool | null> => {
     const school: any = schoolById.get(schoolId);
@@ -133,7 +139,6 @@ export const buildSchoolTeacherWorkspace = async (actor: LegacySchoolUser): Prom
         };
       });
     if (schoolAssignments.length === 0) return null;
-    const classIds = new Set(schoolAssignments.map((assignment) => assignment.classId));
     const smartClassroom = await resolveSchoolEntitlement(schoolId, "SMART_CLASSROOM");
     return {
       schoolId,
@@ -142,12 +147,12 @@ export const buildSchoolTeacherWorkspace = async (actor: LegacySchoolUser): Prom
       smartClassroomEnabled: smartClassroom.allowed,
       assignments: schoolAssignments,
       assessments: assessments
-        .filter((assessment: any) => (assessment.targetGroupIds || []).some((id: unknown) => classIds.has(String(id))))
+        .filter((assessment: any) => teacherAssessmentClassIds(assessment, schoolId, schoolAssignments).length > 0)
         .map((assessment: any) => ({
           assessmentId: String(assessment.id || assessment._id),
           title: String(assessment.title || ""),
           subjectId: String(assessment.subjectId || ""),
-          classIds: (assessment.targetGroupIds || []).map(String).filter((id: string) => classIds.has(id)),
+          classIds: teacherAssessmentClassIds(assessment, schoolId, schoolAssignments),
           dueDate: assessment.dueDate || null,
           quizKind: assessment.quizKind || "test",
           approvalStatus: assessment.approvalStatus || undefined,

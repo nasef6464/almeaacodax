@@ -686,6 +686,27 @@ async function runSmartClassroomJourney(csrf: CsrfContext) {
   assert.equal(teacherWorkspace.body?.schools?.[0]?.assignments?.[0]?.studentCount, 1, "teacher workspace omitted the assigned class roster count");
   assert.deepEqual(teacherWorkspace.body?.schools?.[0]?.assignments?.[0]?.students?.map((student: any) => student.studentId), [studentId], "teacher workspace roster leaked or omitted students outside the assigned class");
   assert.equal(teacherWorkspace.body?.schools?.[0]?.assessments?.[0]?.assessmentId, workspaceAssessmentId, "teacher workspace omitted assigned school assessment");
+  const audienceCases = [
+    { name: "individual-assigned", targetUserIds: [studentId], visible: true },
+    { name: "school-wide", targetGroupIds: [schoolId], visible: true },
+    { name: "sibling-class-student", targetUserIds: [scopeStudentIds.get("sibling")!], visible: false },
+    { name: "outside-school-student", targetUserIds: [scopeStudentIds.get("outsideSchool")!], visible: false },
+    { name: "outside-school", targetGroupIds: [outsideSchoolId], visible: false },
+    { name: "unpublished-other-owner", targetUserIds: [studentId], isPublished: false, visible: false },
+    { name: "own-individual-draft", targetUserIds: [studentId], isPublished: false, ownerId: teacherId, visible: true },
+  ];
+  for (const fixture of audienceCases) {
+    const { name, visible, ...audience } = fixture;
+    const id = `${workspaceAssessmentId}-${name}`;
+    await QuizModel.create({ _id: id, id, title: name, pathId: ASSESSMENT_PATH_ID, subjectId: ASSESSMENT_SUBJECT_ID, isPublished: true, ...audience });
+  }
+  const directedWorkspace = await jsonRequest("/school-access/teacher-workspace", { token: tokens.get("teacher") });
+  expectStatus("teacher discovers explicit assessment audience in assigned roster", directedWorkspace, 200);
+  for (const fixture of audienceCases) {
+    const row = directedWorkspace.body?.schools?.[0]?.assessments?.find((item: any) => item.assessmentId === `${workspaceAssessmentId}-${fixture.name}`);
+    assert.equal(Boolean(row), fixture.visible, `teacher assessment audience isolation failed: ${fixture.name}`);
+    if (row) assert.deepEqual(row.classIds, [classId], "teacher assessment mapped beyond assigned classes");
+  }
   const crossSchoolClass = await jsonRequest("/classroom/sessions", { method: "POST", token: tokens.get("teacher"), csrf, body: { schoolId: outsideSchoolId, classId, questionIds: [questionId] } });
   expectStatus("school teacher cannot pair another school with assigned class", crossSchoolClass, 400);
 
