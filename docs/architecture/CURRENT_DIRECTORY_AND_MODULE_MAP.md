@@ -58,6 +58,7 @@ school/application authority such as `TeachingAssignment`.
 This is the preferred incremental pattern for other large routes.
 
 Teacher-led laboratory evidence (2026-10-09): `modules/schools/application/classroomStudentReport.ts` owns pure per-student/skill derivation from cumulative sent-question evidence. Existing session snapshots retain the result; existing staff aggregate/history registrars serve detail and opt-in compact history. `components/classroom/ClassroomStudentReportTable.tsx` is the shared teacher/archive display. Authority remains in existing school/classroom guards.
+The teacher panel delegates school-scoped lazy bank loading to `hooks/useClassroomQuestionBank.ts`; pure batch activation/closure lives in the existing school `classroomLifecycle.ts`. Isolated student report assertions live in `server/src/scripts/smartClassroomStudentReportEvidence.ts`. These extractions preserve the existing runtime hotspot budget.
 
 ### Backend hotspots requiring domain-owned decomposition
 - `content.routes.ts`: ~2,640 lines, 43 imports, broad content/school/bootstrap responsibilities.

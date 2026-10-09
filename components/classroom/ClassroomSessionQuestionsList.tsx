@@ -8,6 +8,7 @@ interface ClassroomSessionQuestionsListProps {
   endingBatch: boolean;
   onEndBatch: () => void;
   availablePushQuestionsCount: number;
+  bankReady?: boolean;
   onDirectSendPreset: (count: number) => void;
   pushingQuestions: boolean;
   loadingBank: boolean;
@@ -29,6 +30,7 @@ export const ClassroomSessionQuestionsList: React.FC<ClassroomSessionQuestionsLi
   endingBatch,
   onEndBatch,
   availablePushQuestionsCount,
+  bankReady = true,
   onDirectSendPreset,
   pushingQuestions,
   loadingBank,
@@ -65,7 +67,7 @@ export const ClassroomSessionQuestionsList: React.FC<ClassroomSessionQuestionsLi
               {endingBatch ? 'جارٍ إنهاء الدفعة…' : 'إنهاء الدفعة وعرض ملخصها'}
             </button>
           )}
-          {!hasActiveBatch && availablePushQuestionsCount >= 5 && (
+          {!hasActiveBatch && (!bankReady || availablePushQuestionsCount >= 5) && (
             <button
               type="button"
               onClick={() => onDirectSendPreset(5)}
@@ -75,7 +77,7 @@ export const ClassroomSessionQuestionsList: React.FC<ClassroomSessionQuestionsLi
               ⚡ إرسال 5 أسئلة فوراً
             </button>
           )}
-          {!hasActiveBatch && availablePushQuestionsCount >= 10 && (
+          {!hasActiveBatch && (!bankReady || availablePushQuestionsCount >= 10) && (
             <button
               type="button"
               onClick={() => onDirectSendPreset(10)}

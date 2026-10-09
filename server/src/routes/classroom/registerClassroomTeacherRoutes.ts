@@ -11,7 +11,7 @@ import { TeachingAssignmentModel } from "../../models/TeachingAssignment.js";
 import { resolveSchoolEntitlement } from "../../modules/schools/application/schoolEntitlementResolver.js";
 import { DB_GROWTH_BUDGETS } from "../../modules/database/dbGrowthBudgets.js";
 import { classroomQuestionVisibilityFilter, normalizeQuestionIds } from "../../modules/schools/application/classroomQuestionAccess.js";
-import { canMutateClassroomQuestions, canPublishClassroom, isDuplicateLiveSessionError, type ClassroomSessionStatus } from "../../modules/schools/application/classroomLifecycle.js";
+import { batchForQuestion, activateBatchForQuestion, canMutateClassroomQuestions, canPublishClassroom, isDuplicateLiveSessionError, type ClassroomSessionStatus } from "../../modules/schools/application/classroomLifecycle.js";
 import { emitClassroomEvent, emitClassroomEventToClass } from "../../sockets/classroomEvents.js";
 import { asyncHandler } from "../../utils/asyncHandler.js";
 import {
@@ -43,26 +43,6 @@ const appendQuestionsSchema = z.object({
   message: "Timed challenge batches must be published immediately",
   path: ["autoPublishFirst"],
 });
-
-const closeActiveBatch = (session: any, endedAt = new Date()) => {
-  if (!session.activeBatchId) return;
-  const activeBatch = session.questionBatches?.find((batch: any) => String(batch.batchId) === String(session.activeBatchId));
-  if (activeBatch && !activeBatch.endedAt) activeBatch.endedAt = endedAt;
-};
-
-const batchForQuestion = (session: any, questionId: string) =>
-  session.questionBatches?.find((batch: any) => (batch.questionIds || []).map(String).includes(String(questionId))) || null;
-
-const activateBatchForQuestion = (session: any, questionId: string, startedAt = new Date()) => {
-  const targetBatch = batchForQuestion(session, questionId);
-  if (!targetBatch) return null;
-  if (targetBatch.endedAt && String(session.activeBatchId || "") !== String(targetBatch.batchId)) return null;
-  if (session.activeBatchId && String(session.activeBatchId) !== String(targetBatch.batchId)) closeActiveBatch(session, startedAt);
-  if (!targetBatch.startedAt) targetBatch.startedAt = startedAt;
-  targetBatch.endedAt = null;
-  session.activeBatchId = targetBatch.batchId;
-  return targetBatch;
-};
 
 const smartClassroomEnabled = async (schoolId: string) =>
   (await resolveSchoolEntitlement(schoolId, "SMART_CLASSROOM")).allowed;

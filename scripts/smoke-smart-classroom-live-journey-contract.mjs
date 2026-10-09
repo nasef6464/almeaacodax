@@ -7,6 +7,7 @@ const root = process.cwd();
 const read = (file) => fs.readFileSync(path.join(root, file), 'utf8');
 
 const teacherRoutes = read('server/src/routes/classroom/registerClassroomTeacherRoutes.ts');
+const classroomLifecycle = read('server/src/modules/schools/application/classroomLifecycle.ts');
 const studentRoutes = read('server/src/routes/classroom/registerClassroomStudentRoutes.ts');
 const aggregateRoutes = read('server/src/routes/classroom/registerClassroomAggregateRoutes.ts');
 const competitionRoutes = read('server/src/routes/classroom/registerClassroomCompetitionRoutes.ts');
@@ -46,7 +47,7 @@ check('rich question renderer restricts executable and image urls', contentRende
 check('teacher can append and auto-publish a new batch', teacherRoutes.includes('/append-questions') && teacherRoutes.includes('publishedQuestionIds = newQuestionIds'));
 check('question batches are persisted on the session', sessionModel.includes('questionBatches') && sessionModel.includes('activeBatchId'));
 check('new pushed questions create a numbered batch', teacherRoutes.includes('newBatchId = randomUUID()') && teacherRoutes.includes('`الدفعة ${session.questionBatches.length + 1}`'));
-check('switching batches closes the previous active batch', teacherRoutes.includes('closeActiveBatch(session') && teacherRoutes.includes('activateBatchForQuestion'));
+check('switching batches closes the previous active batch', classroomLifecycle.includes('closeActiveBatch(session') && teacherRoutes.includes('activateBatchForQuestion(session, targetQuestion.questionId, publishAt)'));
 check('ending the session closes the active batch', routeSupport.includes('activeBatch.endedAt = endedAt') && routeSupport.includes('session.activeBatchId = ""'));
 check('canonical report includes per-batch totals', reportBuilder.includes('durationSeconds') && reportBuilder.includes('accuracy: answered > 0 ? Math.round((correct / answered) * 100) : null'));
 check('canonical batch report carries skill ids', reportBuilder.includes('skillIds = Array.from(new Set(batchQuestions.flatMap'));
