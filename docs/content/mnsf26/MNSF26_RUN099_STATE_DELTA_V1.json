@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN099",
+  "date": "2026-10-09",
+  "stage": "QA_LOCK",
+  "exactHeadsAtStart": {
+    "chatgpt/mnsf26-ingest": "b4162d8b78c5e13f493d0a8558bda63b9b6832c0",
+    "main": "7b0c085bcd12a05531923a7acfededcbbf80cd7a"
+  },
+  "cropLock": "PASS_LOCKED_2135_2135",
+  "questionMasteringRun063": {
+    "active": 2129,
+    "excluded": 6,
+    "newMastered": 0
+  },
+  "independentMathQAFromPriorOriginalImageContactSheets": 40,
+  "sourceWebpIndependentlyRehashedThisRun": 0,
+  "qaMathPass": 24,
+  "qaMathPassSolutionEnrichment": 1,
+  "qaHoldPreserved": 10,
+  "qaHoldMathCandidate": 1,
+  "qaReviewSolutionMismatch": 1,
+  "qaReviewAnswerMismatch": 1,
+  "qaReviewProofIncomplete": 2,
+  "newConflictKeys": [
+    "MNSF26-GEO-T018-Q05",
+    "MNSF26-GEO-T018-Q07"
+  ],
+  "holdMathCandidate": "MNSF26-GEO-T020-Q10",
+  "masterWritesBlocked": true,
+  "qaFullBookPass": false,
+  "canonical25_95Pass": false,
+  "dedupeLock": "BLOCKED_BY_QA",
+  "r2Lock": "BLOCKED",
+  "importLock": "BLOCKED",
+  "productionE2E": false,
+  "productionServicesUntouched": true,
+  "evidenceBundle": "/MNSF26/Run099/MNSF26_RUN099_40_IMAGE_MATH_QA_EVIDENCE.zip"
+}
