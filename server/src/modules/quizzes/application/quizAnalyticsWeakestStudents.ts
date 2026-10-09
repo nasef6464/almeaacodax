@@ -1,5 +1,6 @@
 import { buildQuizReportAttemptGaps } from "./quizReportAttemptGaps.js";
 import { matchesManagedContentScope } from "./quizManagedContentScope.js";
+import { studentHasAssessmentEvidence } from "./quizStudentAssessmentEvidence.js";
 
 export const MIN_ANALYTICS_SKILL_EVIDENCE_COUNT = 3;
 
@@ -35,6 +36,7 @@ export const buildWeakestStudentSummaries = ({
   sectionNameById: Map<string, string>;
 }) =>
   scopedStudents
+    .filter((student) => studentHasAssessmentEvidence(student, resultsByStudent, attemptsByStudent))
     .map((student) => {
       const studentId = idOf(student);
       const results = resultsByStudent.get(studentId) || [];

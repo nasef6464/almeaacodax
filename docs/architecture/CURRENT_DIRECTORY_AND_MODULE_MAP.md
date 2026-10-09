@@ -198,3 +198,8 @@ Performance ownership now includes: isolated load profiles; profile-specific evi
 
 ### Classroom same-origin transport — 2026-10-09
 `hooks/useClassroomRealtime.ts` retains one credentialed shared transport. `vercel.json` forwards its existing `/socket.io/:path*` path to the same Render API host before SPA fallback, with no-store; server socket authority and classroom rooms remain in `server/src/sockets/`. Proxy delivery is verified by `scripts/smoke-classroom-proxy-realtime.mjs`.
+
+## School assessment evidence refinement — 2026-10-09
+- `quizStudentAssessmentEvidence.ts` owns answered/result vs unassessed classification in existing scoped overview; no new database query.
+- `supervisorTests/assessmentSkillEvidence.ts` owns taxonomy-aware question-weighted report grouping; `AssessmentClassComparison.tsx` renders loaded-target/latest-result comparisons with participation and no unassessed-zero scoring. No new polling, service or personal-store mutation.
+- Classroom24-client API persistence passed; p95 latency11.339s and fullbrowser measurement remain unresolved. Audit: `docs/audits/SCHOOL_ASSESSMENT_QUALITY_AND_CLASS_LOAD_2026-10-09.md`.

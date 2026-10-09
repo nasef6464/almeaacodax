@@ -1,5 +1,15 @@
 # ALMEAA — Codex Execution State
 
+## School assessment evidence and 24-client load — 2026-10-09
+- Branch `codex/school-assessment-management-quality` from published main74fc8652. 24 unique authorized API clients,3×5,24/24 each batch,360 saved answers/fresh report equality PASS. 544 runtime requests,89,671 compressed response-body bytes; excludes site/media/sockets/auth/HTTP overhead. p95 11.339s/max33.724s; comfortable latency and full browser/device gate NOT_PROVEN.
+- Bounded correction separates unassessed students from weakest ranking, uses taxonomy/weighted skill identity and shows class participation/average from existing loaded outcomes. No historical result/scoring rewrite/new polling. Exact-head CI and fresh production replay pending.
+- Individual school test aggregate context, opens-at schedule, selective retakes, teacher actions and complete multi-subject/progress certification remain open owner-approved scope. See `docs/audits/SCHOOL_ASSESSMENT_QUALITY_AND_CLASS_LOAD_2026-10-09.md`.
+
+## Teacher directed discovery VERIFIED — 2026-10-09
+- #494 merged/publishedmain74fc8652206bb47e9d3fc104b86393ae80481bf9. Exact code c602340298b29efefbde37100952f76ead161c7a:20SUCCESS3conditionalSKIPPED/all3requiredPASS; actual HTTP7audience cases PASS.
+- Fresh production teacher reads workspace/quiz200 with existing individual quiz now once and exactly assigned class. Actual UI1280/390PASS, no overflow,0pageerrors; no new production writes/deletes. Render/HTML exact and canonical/direct ready200 includingRedisPASS. Main role/postdeploy/hygiene/AI4SUCCESS.
+- Final documentation branch from published main preserves evidence. This bounded discovery slice has no remaining known defect; do not extend actions/reports or claim school-load/20device certification without new approved scope and evidence.
+
 ## Teacher directed assessment discovery — 2026-10-09
 - Fresh branch `codex/teacher-directed-assessment-discovery` from maincb4c49d5; #493 final evidence carried as documentation only.
 - Production defect proved: teacher quiz200/workspace200 but existing individual quiz absent. Resolve existing assigned roster before projected100 assessment read; published/owner/creator visibility retained. Pure teacherAssessmentClassIds maps only validated teacher classes for individual, school and class targets.

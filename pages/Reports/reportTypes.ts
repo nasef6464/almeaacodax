@@ -10,6 +10,7 @@ export interface ScopedAnalyticsOverview {
         selectedPathId?: string;
         selectedSubjectId?: string;
     };
+    unassessedStudents?: Array<{ id: string; name: string; groupIds: string[] }>;
     weakestStudents: Array<{
         id: string;
         name: string;

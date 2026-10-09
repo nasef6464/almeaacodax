@@ -434,3 +434,8 @@ This is a responsibility-boundary correction in performance tooling, not a produ
 ### Batch 13 campaign audience memory boundary
 
 The notification campaign application keeps the existing hard ceiling of 10,000 recipients but no longer materializes that entire audience in one MongoDB query. Audience IDs are resolved in deterministic 500-row keyset pages (`_id > afterId`) and then passed through the existing bounded delivery batches. The preflight `countDocuments` still rejects audiences above the hard campaign ceiling before any delivery creation. This reduces peak query/materialization pressure without changing campaign semantics or provider delivery compatibility.
+
+## School assessment evidence refinement — 2026-10-09
+- `quizStudentAssessmentEvidence.ts` owns answered/result vs unassessed classification in existing scoped overview; no new database query.
+- `supervisorTests/assessmentSkillEvidence.ts` owns taxonomy-aware question-weighted report grouping; `AssessmentClassComparison.tsx` renders loaded-target/latest-result comparisons with participation and no unassessed-zero scoring. No new polling, service or personal-store mutation.
+- Classroom24-client API persistence passed; p95 latency11.339s and fullbrowser measurement remain unresolved. Audit: `docs/audits/SCHOOL_ASSESSMENT_QUALITY_AND_CLASS_LOAD_2026-10-09.md`.

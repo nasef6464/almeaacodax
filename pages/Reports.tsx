@@ -1717,6 +1717,14 @@ const Reports: React.FC = () => {
                                     <div className="text-xl font-black text-purple-700">{scopedAnalytics.scope.questionAttempts || 0}</div>
                                 </div>
                             </div>
+                            {scopedAnalytics.unassessedStudents?.length ? (
+                                <div className="rounded-2xl border border-amber-100 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+                                    <div className="font-bold">طلاب يحتاجون إلى قياس أولي</div>
+                                    <p>لا توجد نتائج أو إجابات لهم في البيانات المحملة؛ لا يُصنّفون كطلاب ضعاف.</p>
+                                    <p>{scopedAnalytics.unassessedStudents.map(student => student.name).join('، ')}</p>
+                                    <p className="text-xs">تظهر أول 12 حالة داخل النطاق المحدد.</p>
+                                </div>
+                            ) : null}
                             <div className="rounded-2xl border border-slate-100 bg-slate-50 px-4 py-3 text-xs font-bold leading-6 text-slate-600">
                                 يتم عرض المهارات الضعيفة المؤكدة فقط بعد {scopedAnalytics.scope.minSkillEvidence || MIN_SKILL_EVIDENCE_COUNT} محاولات أو أكثر.
                                 {scopedAnalytics.scope.earlyWeakSkillSignalCount ? ` توجد ${scopedAnalytics.scope.earlyWeakSkillSignalCount} إشارة أولية تحتاج قياسًا إضافيًا قبل الحكم.` : ''}

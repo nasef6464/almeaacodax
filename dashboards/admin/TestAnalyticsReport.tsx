@@ -4,10 +4,12 @@ import { useStore } from '../../store/useStore';
 import { Quiz, QuizResult, SkillGap, QuizQuestionReview } from '../../types';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { api } from '../../services/api';
+import { assessmentSkillSummaries } from './supervisorTests/assessmentSkillEvidence';
+import { AssessmentClassComparison } from './supervisorTests/AssessmentClassComparison';
 import { assessmentReportStudentIds, latestAssessmentResults, studentBelongsToReportGroup } from './supervisorTests/assessmentReportEvidence';
 
 export const TestAnalyticsReport: React.FC<{ quiz?: Quiz; quizzes?: Quiz[]; studentIds: string[]; resultEvidence?: QuizResult[] }> = ({ quiz, quizzes, studentIds, resultEvidence }) => {
-  const { examResults: personalResults, users, groups } = useStore();
+  const { examResults: personalResults, users, groups, subjects } = useStore();
   const examResults = resultEvidence ?? personalResults;
   const [selectedGroupId, setSelectedGroupId] = useState<string>('all');
   const [inspectedStudentId, setInspectedStudentId] = useState<string | null>(null);
@@ -65,27 +67,11 @@ export const TestAnalyticsReport: React.FC<{ quiz?: Quiz; quizzes?: Quiz[]; stud
   const minScore = results.length > 0 ? Math.min(...results.map(r => r.score)) : 0;
 
   // 3. Compute Skills Analysis
-  const skillStats = useMemo(() => {
-    const skillsMap: Record<string, { totalScore: number; count: number }> = {};
-    
-    results.forEach(result => {
-      if (result.skillsAnalysis) {
-        result.skillsAnalysis.forEach(skill => {
-          if (!skillsMap[skill.skill]) {
-            skillsMap[skill.skill] = { totalScore: 0, count: 0 };
-          }
-          skillsMap[skill.skill].totalScore += skill.mastery;
-          skillsMap[skill.skill].count += 1;
-        });
-      }
-    });
-
-    return Object.entries(skillsMap).map(([skill, data]) => ({
-      skill,
-      mastery: Math.round(data.totalScore / data.count),
-      isWeak: Math.round(data.totalScore / data.count) < WEAKNESS_THRESHOLD,
-    })).sort((a, b) => a.mastery - b.mastery); // lowest mastery first
-  }, [results]);
+  const skillStats = useMemo(() => assessmentSkillSummaries(results, WEAKNESS_THRESHOLD).map(row => ({
+    ...row,
+    skill: [subjects?.find(subject => subject.id === row.subjectId)?.name, row.skill,
+      row.level === 'main' ? 'مهارة رئيسية' : row.level === 'sub' ? 'مهارة فرعية' : ''].filter(Boolean).join(' — '),
+  })), [results, subjects]);
 
   // 4. Compute Student Breakdown (Average if multiple results per student)
   const studentBreakdown = useMemo(() => {
@@ -345,6 +331,7 @@ export const TestAnalyticsReport: React.FC<{ quiz?: Quiz; quizzes?: Quiz[]; stud
             </div>
           )}
 
+          <AssessmentClassComparison groups={relevantGroups} students={studentsDetails} targetIds={filteredStudentIds} results={results} />
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
             {/* Skills Chart */}
             <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
@@ -375,7 +362,7 @@ export const TestAnalyticsReport: React.FC<{ quiz?: Quiz; quizzes?: Quiz[]; stud
                   <h4 className="font-bold text-rose-800 mb-2 text-sm flex items-center gap-1"><AlertTriangle size={16} /> مهارات تحتاج لتعزيز</h4>
                   <ul className="list-disc list-inside text-rose-700 text-sm space-y-1">
                     {skillStats.filter(s => s.isWeak).map(s => (
-                      <li key={s.skill}>{s.skill} ({s.mastery}%)</li>
+                      <li key={s.key}>{s.skill} ({s.mastery}%)</li>
                     ))}
                   </ul>
                 </div>
