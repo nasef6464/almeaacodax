@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN110",
+  "stage": "QA_LOCK",
+  "cropLock": "2135/2135",
+  "questionMastering": "2129 active + 6 excluded",
+  "newMastered": 0,
+  "sourceImageSHA256Verified": 2135,
+  "sourceImageSHAMismatches": 0,
+  "originalImageVisualQA": 80,
+  "mathPassTaxonomyPending": 75,
+  "holdPreserved": 4,
+  "newSourceConflict": "MNSF26-AR-T040-Q13",
+  "unpatchedSourceConflicts": 9,
+  "officialQACounterIncrement": 0,
+  "qaFullBookPass": false,
+  "dedupeLock": false,
+  "r2Lock": false,
+  "importLock": false,
+  "productionE2E": false,
+  "gateCommits": [
+    "32ac3c41546df3a5d14fd7dfcc3b51420acc9140",
+    "eda9ef32ce6b1b7fd18828dfd9cacc5e3da9ff0c"
+  ],
+  "productionServicesUntouched": true
+}
