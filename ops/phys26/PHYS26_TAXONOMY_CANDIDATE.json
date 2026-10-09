@@ -1,7 +1,7 @@
 {
   "project": "ALMEAA",
   "track": "PHYS26",
-  "version": "candidate-1.0",
+  "version": "candidate-1.1",
   "status": "PROPOSED_NOT_IMPORTED",
   "derivedFrom": [
     "كتاب تأسيس يلو للفيزياء 26.pdf",
@@ -10,11 +10,11 @@
   ],
   "targets": {
     "mainSkills": 25,
-    "subSkills": 90
+    "subSkills": 92
   },
   "actual": {
     "mainSkills": 25,
-    "subSkills": 90,
+    "subSkills": 92,
     "collectionLessonCoverage": 31
   },
   "policies": {
@@ -498,6 +498,23 @@
           "order": 4,
           "nameAr": "الاستمرارية ومبدأ برنولي وتدفق الموائع",
           "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S11-05",
+          "order": 5,
+          "nameAr": "قوانين الغازات والعلاقات بين الضغط والحجم ودرجة الحرارة",
+          "status": "CANDIDATE_REVIEW_REQUIRED",
+          "evidence": {
+            "collectionLessonNumber": 13,
+            "privateSourceOccurrenceIds": [
+              "PHYS26-COL26-L13-Q009",
+              "PHYS26-COL26-L13-Q079",
+              "PHYS26-COL26-L13-Q080"
+            ],
+            "sourceContentVerifiedForConceptOnly": true,
+            "answerKeysApproved": false,
+            "foundationChapterAvailable": false
+          }
         }
       ]
     },
@@ -812,6 +829,21 @@
           "order": 4,
           "nameAr": "قواعد اليد اليمنى واتجاه المجال والقوة",
           "status": "CANDIDATE_REVIEW_REQUIRED"
+        },
+        {
+          "id": "PHYS26-S19-05",
+          "order": 5,
+          "nameAr": "الجلفانومتر وأجهزة قياس التيار وتحويله إلى أميتر",
+          "status": "CANDIDATE_REVIEW_REQUIRED",
+          "evidence": {
+            "collectionLessonNumber": 24,
+            "privateSourceOccurrenceIds": [
+              "PHYS26-COL26-L24-Q037"
+            ],
+            "sourceContentVerifiedForConceptOnly": true,
+            "answerKeysApproved": false,
+            "foundationChapterAvailable": false
+          }
         }
       ]
     },
