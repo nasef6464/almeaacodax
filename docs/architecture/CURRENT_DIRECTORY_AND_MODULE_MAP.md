@@ -51,6 +51,8 @@ Important: the planned frontend `src/app`, `src/core`, `src/features`, and `src/
 
 ### Backend model to emulate
 
+Teacher directed discovery (2026-10-09): `modules/schools/application/teacherAssessmentClassIds.ts` maps explicit school/class/student audiences onto validated assigned class rosters in the existing teacher workspace. Query and published/owner visibility remain in that reader; route authority remains unchanged.
+
 Directed assessment linkage (2026-10-09): existing director readers delegate explicit school/class/student audience matching to `modules/schools/application/schoolAssessmentAudience.ts`. Frontend supervisor results live separately from the personal store in `dashboards/admin/supervisorTests/useScopedAssessmentResults.ts`; `assessmentReportEvidence.ts` owns target/latest-attempt report derivation. Existing APIs and role guards retain authority; bounded paging/manual refresh and opt-in question review retain the resource boundary.
 Smart Classroom already uses thin roots plus role/capability registrars:
 `classroom.routes.ts` / `classroomRoot.routes.ts` →

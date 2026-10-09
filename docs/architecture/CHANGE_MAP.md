@@ -5,6 +5,7 @@
 | شاشة نتيجة الطالب | `pages/Results.tsx` و`components/results/` | quiz route مباشرة |
 | تحليل الاختبارات الموجهة للمشرف | `dashboards/admin/supervisorTests/assessmentReportEvidence.ts` و`useScopedAssessmentResults.ts` | توسيع store النتائج الشخصية |
 | ظهور اختبارات الطلاب لدى مدير المدرسة | `schoolDirectorWorkspace.ts` و`schoolAssessmentAudience.ts` | تغيير صلاحيات المدير أو نسخ Quiz |
+| ظهور تكليفات المشرف لدى المعلم | `schoolTeacherWorkspace.ts` و`teacherAssessmentClassIds.ts` | توسيع نطاق المعلم خارج فصوله المسندة |
 | شكل score/mastery | `components/results/resultScorePresentation.ts` | Database |
 | تصحيح الاختبار | assessment scoring backend | React state |
 | نسخة تعريف اختبار منشور | `server/src/modules/quizzes/application/assessmentDefinitionReadAdapter.ts` و`assessmentVersionRepository.ts` | تغيير وثيقة Quiz التاريخية |

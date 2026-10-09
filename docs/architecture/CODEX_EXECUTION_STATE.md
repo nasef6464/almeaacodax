@@ -1,5 +1,10 @@
 # ALMEAA — Codex Execution State
 
+## Teacher directed assessment discovery — 2026-10-09
+- Fresh branch `codex/teacher-directed-assessment-discovery` from maincb4c49d5; #493 final evidence carried as documentation only.
+- Production defect proved: teacher quiz200/workspace200 but existing individual quiz absent. Resolve existing assigned roster before projected100 assessment read; published/owner/creator visibility retained. Pure teacherAssessmentClassIds maps only validated teacher classes for individual, school and class targets.
+- Seven actual HTTP audience/isolation regressions added to backend gate; no production quiz/result writes. PARTIAL until exact code CI and production replay; don't reopen supervisor result/scoring work.
+
 ## Directed assessment delivery VERIFIED — 2026-10-09
 - #493 merged/livecb4c49d5b46e4ca7a9b6fc4afdda8bfe31fc5841; exact code25852c1606647e55ddf9ca6ff9f9bba979a1e487:22SUCCESS4SKIPPED/all3requiredPASS. Backend37942817068, supervisor/student37942817194, full-stack37942817335 allSUCCESS.
 - Matching actual production UI/API:5questions2audit targets1submitted, supervisor list/report1/2=50% andscore40, student saved review, one absent-audit recipient notification, other-student result403 and student staff school-skills403. One summary read and one opt-in review read. Mobile student/supervisor390px nooverflow;0pageerrors.

@@ -2,6 +2,8 @@
 
 هذه خريطة تصميم وتشغيل، وليست تصريحًا بأن كل أحجام التوسع مثبتة.
 
+Teacher directed discovery (2026-10-09): existing school-scoped assigned roster resolves before the assessment query. It selects only metadata plus audience IDs, caps100 and matches school/class/student explicit audiences. Response derives assigned class intersections only; no question bodies, polling or extra database query. Published/own-draft visibility retained; scale remains unproven.
+
 | البيانات | النمو المتوقع | القراءات الساخنة | السياسة الحالية/المطلوبة | الحالة |
 |---|---|---|---|---|
 | Questions + image references | 80k–500k+ | filters/skill/type/search؛ Video Question Picker | server pagination، projection، indexes، media خارج Mongo؛ picker يرسل scope الدرس والبحث/الفلاتر ويخزن snapshot تشغيل متوافقًا داخل lesson بدل قراءة global Question Bank أثناء playback | PARTIAL |
