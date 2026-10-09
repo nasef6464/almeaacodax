@@ -41,6 +41,8 @@ import { Role } from '../../types';
 import { LiveSessionsManager } from './LiveSessionsManager';
 
 import { SupervisorTestsManager } from './SupervisorTestsManager';
+import { useScopedAssessmentResults } from './supervisorTests/useScopedAssessmentResults';
+import { ScopedAssessmentResultsStatus } from './supervisorTests/ScopedAssessmentResultsStatus';
 import { StudentIntelligenceProfile } from './StudentIntelligenceProfile';
 import { ClassSkillsMapPanel } from './ClassSkillsMapPanel';
 import { ClassReportPanel } from './ClassReportPanel';
@@ -134,7 +136,9 @@ const getRequestedSupervisorTab = (): SupervisorTab | null => {
 };
 
 export const SupervisorDashboard: React.FC = () => {
-  const { user, groups, users, examResults, quizzes, paths, subjects, updateQuiz, assignStudentToGroupAsync, removeStudentFromGroupAsync } = useStore();
+  const { user, groups, users, quizzes, paths, subjects, updateQuiz, assignStudentToGroupAsync, removeStudentFromGroupAsync } = useStore();
+  const resultEvidence = useScopedAssessmentResults(user.id);
+  const examResults = resultEvidence.results;
   const [scopedStudentUsers, setScopedStudentUsers] = useState<any[]>([]);
   const [scopedStudentUsersLoaded, setScopedStudentUsersLoaded] = useState(false);
   const [activeTab, setActiveTabState] = useState<SupervisorTab>(() => getRequestedSupervisorTab() || 'overview');
@@ -653,11 +657,13 @@ export const SupervisorDashboard: React.FC = () => {
           </div>
         </div>
 
+        <ScopedAssessmentResultsStatus {...resultEvidence}/>
+
         {/* ===== LIVE SESSIONS TAB ===== */}
         {activeTab === 'live-sessions' && <LiveSessionsManager />}
 
         {/* ===== TESTS TAB ===== */}
-        {activeTab === 'tests' && <SupervisorTestsManager />}
+        {activeTab === 'tests' && <SupervisorTestsManager resultEvidence={examResults}/>}
 
         {/* ===== LIVE MONITORING TAB ===== */}
         {activeTab === 'live-monitoring' && (

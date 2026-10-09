@@ -50,6 +50,8 @@ Important: the planned frontend `src/app`, `src/core`, `src/features`, and `src/
 - `middleware/`, `config/`, `sockets/`, `queues/`, `observability/` — cross-cutting runtime infrastructure.
 
 ### Backend model to emulate
+
+Directed assessment linkage (2026-10-09): existing director readers delegate explicit school/class/student audience matching to `modules/schools/application/schoolAssessmentAudience.ts`. Frontend supervisor results live separately from the personal store in `dashboards/admin/supervisorTests/useScopedAssessmentResults.ts`; `assessmentReportEvidence.ts` owns target/latest-attempt report derivation. Existing APIs and role guards retain authority; bounded paging/manual refresh and opt-in question review retain the resource boundary.
 Smart Classroom already uses thin roots plus role/capability registrars:
 `classroom.routes.ts` / `classroomRoot.routes.ts` →
 teacher/student/supervisor/batch/template/competition/insights registrars →

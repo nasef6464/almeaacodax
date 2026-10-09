@@ -13,6 +13,9 @@ import { QuizAssignWidget } from './QuizAssignWidget';
 import { AssignedTestDetailPanel } from './AssignedTestDetailPanel';
 import { api } from '../../services/api';
 import { isTrueMockExam } from '../../utils/quizPlacement';
+import type { QuizResult } from '../../types';
+import { useScopedAssessmentResults } from './supervisorTests/useScopedAssessmentResults';
+import { ScopedAssessmentResultsStatus } from './supervisorTests/ScopedAssessmentResultsStatus';
 import {
   SupervisorTestTabFilter,
   uniqueSupervisorStudentIds,
@@ -21,7 +24,12 @@ import {
 
 type ViewMode = 'list' | 'create' | 'create_normal' | 'create_mock' | 'analytics' | 'compare';
 
-export const SupervisorTestsManager: React.FC = () => {
+const DirectedAssessmentReport: React.FC<{quiz: any; studentIds: string[]; actorId: string}> = ({quiz,studentIds,actorId}) => {
+  const evidence = useScopedAssessmentResults(actorId, quiz.id, true);
+  return <><ScopedAssessmentResultsStatus {...evidence}/>{!evidence.loading && !evidence.error && <TestAnalyticsReport quiz={quiz} studentIds={studentIds} resultEvidence={evidence.results}/>}</>;
+};
+
+export const SupervisorTestsManager: React.FC<{ resultEvidence?: QuizResult[] }> = ({resultEvidence}) => {
   const { updateQuiz } = useStore();
   const [viewMode, setViewMode] = useState<ViewMode>('list');
   const [selectedQuizId, setSelectedQuizId] = useState<string | null>(null);
@@ -36,7 +44,7 @@ export const SupervisorTestsManager: React.FC = () => {
   const {
     user, groups, quizzes, scopedGroupIds, scopedStudentIds, scopedStudents,
     quizzesWithStats, filteredQuizzes, summaryStats,
-  } = useSupervisorAssessmentScope(tabFilter);
+  } = useSupervisorAssessmentScope(tabFilter, resultEvidence);
 
   const sendScopedAlert = async (studentIds: string[], title: string, body: string) => {
     const recipients = uniqueSupervisorStudentIds(studentIds).filter((id) => scopedStudentIds.includes(id));
@@ -95,12 +103,12 @@ export const SupervisorTestsManager: React.FC = () => {
   if (viewMode === 'analytics' && selectedQuizId) {
     const quiz = quizzes.find((item) => item.id === selectedQuizId);
     if (!quiz) return null;
-    return <div className="space-y-5"><button onClick={() => setViewMode('list')} className="flex items-center gap-2 font-bold text-gray-500 hover:text-indigo-600"><ArrowRight size={18}/> العودة</button><TestAnalyticsReport quiz={quiz} studentIds={scopedStudentIds}/></div>;
+    return <div className="space-y-5"><button onClick={() => setViewMode('list')} className="flex items-center gap-2 font-bold text-gray-500 hover:text-indigo-600"><ArrowRight size={18}/> العودة</button><DirectedAssessmentReport quiz={quiz} studentIds={scopedStudentIds} actorId={user.id}/></div>;
   }
 
   if (viewMode === 'compare') {
     const comparison = quizzes.filter((quiz) => selectedQuizzes.includes(quiz.id));
-    return <div className="space-y-5"><button onClick={() => setViewMode('list')} className="flex items-center gap-2 font-bold text-gray-500 hover:text-indigo-600"><ArrowRight size={18}/> العودة</button><TestAnalyticsReport quizzes={comparison} studentIds={scopedStudentIds}/></div>;
+    return <div className="space-y-5"><button onClick={() => setViewMode('list')} className="flex items-center gap-2 font-bold text-gray-500 hover:text-indigo-600"><ArrowRight size={18}/> العودة</button><TestAnalyticsReport quizzes={comparison} studentIds={scopedStudentIds} resultEvidence={resultEvidence}/></div>;
   }
 
   const detailQuiz = quizzesWithStats.find((quiz) => quiz.id === detailQuizId);

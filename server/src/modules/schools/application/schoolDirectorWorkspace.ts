@@ -12,6 +12,7 @@ import { TeachingAssignmentModel } from "../../../models/TeachingAssignment.js";
 import { UserModel } from "../../../models/User.js";
 import { buildClassroomSchoolIntelligence } from "./classroomSchoolIntelligence.js";
 import { buildClassroomSkillEvidence } from "./classroomSchoolIntelligence.js";
+import { schoolAssessmentAudience } from './schoolAssessmentAudience.js';
 
 const idOf = (value: any) => String(value?.id || value?._id || value || "");
 const uniqueStrings = (values: unknown[]) => Array.from(new Set(values.map((value) => String(value || "").trim()).filter(Boolean)));
@@ -58,10 +59,11 @@ export const buildSchoolDirectorOverview = async (schoolId: string) => {
   const scope = await loadSchoolScope(schoolId);
   const classIds = scope.classes.map(idOf);
   const supervisorIds = uniqueStrings([...(scope.school.supervisorIds || []), ...scope.classes.flatMap((classroom) => classroom.supervisorIds || [])]);
+  const studentIds = (await UserModel.find(schoolStudentFilter(scope.school, scope.schoolId, scope.classes)).select('id _id').lean()).map(idOf);
   const [studentCount, teacherIds, assessmentCount, completedSmartClasses] = await Promise.all([
     UserModel.countDocuments(schoolStudentFilter(scope.school, scope.schoolId, scope.classes)),
     TeachingAssignmentModel.distinct("teacherId", { schoolId: scope.schoolId, classId: { $in: classIds }, status: "active" }),
-    classIds.length ? QuizModel.countDocuments({ targetGroupIds: { $in: classIds }, isPublished: true }) : 0,
+    QuizModel.countDocuments({ ...schoolAssessmentAudience(scope.schoolId, classIds, studentIds), isPublished: true }),
     ClassroomSessionModel.countDocuments({ schoolId: scope.schoolId, status: "ended" }),
   ]);
   return {
@@ -230,8 +232,11 @@ export const buildSchoolDirectorStudentExport = async (schoolId: string) => {
 export const buildSchoolDirectorAcademicWorkspace = async (schoolId: string, include: { assessments?: boolean; sessions?: boolean; interventions?: boolean }) => {
   const scope = await loadSchoolScope(schoolId);
   const classIds = scope.classes.map(idOf);
+  const studentIds = include.assessments
+    ? (await UserModel.find(schoolStudentFilter(scope.school, scope.schoolId, scope.classes)).select('id _id').lean()).map(idOf)
+    : [];
   const [assessments, sessions, interventions] = await Promise.all([
-    include.assessments && classIds.length ? QuizModel.find({ targetGroupIds: { $in: classIds } }).select("id title subjectId targetGroupIds isPublished dueDate").sort({ createdAt: -1 }).limit(100).lean() : [],
+    include.assessments ? QuizModel.find(schoolAssessmentAudience(scope.schoolId, classIds, studentIds)).select("id title subjectId targetGroupIds isPublished dueDate").sort({ createdAt: -1 }).limit(100).lean() : [],
     include.sessions ? ClassroomSessionModel.find({ schoolId: scope.schoolId }).select("_id schoolId classId teacherId status createdAt endedAt").sort({ createdAt: -1 }).limit(100).lean() : [],
     include.interventions ? SchoolInterventionModel.find({ schoolId: scope.schoolId }).select("_id classId skillId targetStudentIds actionRef status baseline outcomeSnapshot createdAt").sort({ createdAt: -1 }).limit(100).lean() : [],
   ]);

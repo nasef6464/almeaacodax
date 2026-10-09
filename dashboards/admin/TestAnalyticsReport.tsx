@@ -4,13 +4,16 @@ import { useStore } from '../../store/useStore';
 import { Quiz, QuizResult, SkillGap, QuizQuestionReview } from '../../types';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { api } from '../../services/api';
+import { assessmentReportStudentIds, latestAssessmentResults, studentBelongsToReportGroup } from './supervisorTests/assessmentReportEvidence';
 
-export const TestAnalyticsReport: React.FC<{ quiz?: Quiz; quizzes?: Quiz[]; studentIds: string[] }> = ({ quiz, quizzes, studentIds }) => {
-  const { examResults, users, groups } = useStore();
+export const TestAnalyticsReport: React.FC<{ quiz?: Quiz; quizzes?: Quiz[]; studentIds: string[]; resultEvidence?: QuizResult[] }> = ({ quiz, quizzes, studentIds, resultEvidence }) => {
+  const { examResults: personalResults, users, groups } = useStore();
+  const examResults = resultEvidence ?? personalResults;
   const [selectedGroupId, setSelectedGroupId] = useState<string>('all');
   const [inspectedStudentId, setInspectedStudentId] = useState<string | null>(null);
   const [showInterventionReport, setShowInterventionReport] = useState(false);
   const [actionFeedback, setActionFeedback] = useState<string | null>(null);
+  const [isNotifying, setIsNotifying] = useState(false);
 
   const activeQuizzes = useMemo(() => {
     if (quizzes && quizzes.length > 0) return quizzes;
@@ -22,22 +25,28 @@ export const TestAnalyticsReport: React.FC<{ quiz?: Quiz; quizzes?: Quiz[]; stud
 
   const WEAKNESS_THRESHOLD = 60; // 60% as per user requirement
 
+  const targetStudentIds = useMemo(() => assessmentReportStudentIds(activeQuizzes, studentIds, groups, users),
+    [activeQuizzes, studentIds, groups, users]);
+
   // Groups that contain any of the relevant students
   const relevantGroups = useMemo(() => {
-    return groups.filter(g => g.studentIds.some(id => studentIds.includes(id)));
-  }, [groups, studentIds]);
+    return groups.filter(g => users.some(student => targetStudentIds.includes(student.id) && studentBelongsToReportGroup(student, g)));
+  }, [groups, users, targetStudentIds]);
 
   // 1. Filter Results Based on Selected Group
   const filteredStudentIds = useMemo(() => {
-    if (selectedGroupId === 'all') return studentIds;
+    if (selectedGroupId === 'all') return targetStudentIds;
     const group = groups.find(g => g.id === selectedGroupId);
-    if (!group) return studentIds;
-    return studentIds.filter(id => group.studentIds.includes(id));
-  }, [selectedGroupId, studentIds, groups]);
+    if (!group) return targetStudentIds;
+    return targetStudentIds.filter(id => {
+      const student = users.find(candidate => candidate.id === id);
+      return student ? studentBelongsToReportGroup(student, group) : (group.studentIds || []).includes(id);
+    });
+  }, [selectedGroupId, targetStudentIds, groups, users]);
 
   const results = useMemo(() => {
     const quizIds = activeQuizzes.map(q => q.id);
-    return examResults.filter(r => quizIds.includes(r.quizId) && filteredStudentIds.includes(r.userId || ''));
+    return latestAssessmentResults(examResults.filter(r => quizIds.includes(r.quizId) && filteredStudentIds.includes(r.userId || '')));
   }, [examResults, activeQuizzes, filteredStudentIds]);
 
   const studentsDetails = useMemo(() => {
@@ -186,25 +195,25 @@ export const TestAnalyticsReport: React.FC<{ quiz?: Quiz; quizzes?: Quiz[]; stud
   };
 
   const handleNotifyNonParticipants = async () => {
+    if (isNotifying) return;
     if (nonParticipantIds.length === 0) {
       setActionFeedback("جميع الطلاب شاركوا بالفعل.");
       setTimeout(() => setActionFeedback(null), 3000);
       return;
     }
+    setIsNotifying(true);
     try {
-      const token = localStorage.getItem('token') || '';
-      await api.sendNotifications({
+      await api.sendStudentAlert({
         title: "تذكير بالاختبار",
         body: `يرجى إجراء الاختبار: ${quizTitle} في أقرب وقت.`,
         channels: ['in_app'],
-        userIds: nonParticipantIds,
-        variables: {
-          link: `/dashboard?tab=quizzes` // Send them to the Quizzes tab where the directed test sits at the top
-        }
-      }, token);
+        studentIds: nonParticipantIds,
+      });
       setActionFeedback("تم إرسال التنبيهات بنجاح!");
     } catch (error) {
       setActionFeedback("حدث خطأ أثناء إرسال التنبيهات.");
+    } finally {
+      setIsNotifying(false);
     }
     setTimeout(() => setActionFeedback(null), 3000);
   };
@@ -223,6 +232,7 @@ export const TestAnalyticsReport: React.FC<{ quiz?: Quiz; quizzes?: Quiz[]; stud
         <div>
           <h2 className="text-2xl font-black text-gray-900">{quizTitle}</h2>
           <p className="text-sm text-gray-500 mt-1">تحليل مفصل لنتائج الطلاب في هذا الاختبار</p>
+          <p className="text-xs text-gray-500 mt-1">المشاركة للطلاب المستهدفين فقط، والتحليل يعتمد أحدث محاولة لكل طالب في كل اختبار.</p>
         </div>
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
           <div className="relative">
@@ -259,7 +269,7 @@ export const TestAnalyticsReport: React.FC<{ quiz?: Quiz; quizzes?: Quiz[]; stud
         <h2 className="text-2xl font-bold text-indigo-800 mb-4">{quizTitle}</h2>
         <div className="flex justify-center gap-8 text-sm font-bold text-gray-600 bg-gray-50 px-6 py-3 rounded-2xl">
           <span>تاريخ التقرير: {new Date().toLocaleDateString('ar-SA')}</span>
-          <span>إجمالي المختبرين: {results.length} من {filteredStudentIds.length}</span>
+          <span>إجمالي المختبرين: {participantIds.length} من {filteredStudentIds.length}</span>
           {selectedGroupId !== 'all' && (
             <span>الفصل/المجموعة: {groups.find(g => g.id === selectedGroupId)?.name}</span>
           )}
@@ -293,7 +303,7 @@ export const TestAnalyticsReport: React.FC<{ quiz?: Quiz; quizzes?: Quiz[]; stud
                 <span className="font-bold">نسبة المشاركة</span>
               </div>
               <p className="text-3xl font-black text-gray-900">{participationRate}%</p>
-              <p className="text-xs text-gray-500 mt-1">{results.length} من أصل {filteredStudentIds.length} طالب</p>
+              <p className="text-xs text-gray-500 mt-1">{participantIds.length} من أصل {filteredStudentIds.length} طالب</p>
             </div>
             <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
               <div className="flex items-center gap-3 text-amber-600 mb-2">
@@ -594,10 +604,12 @@ export const TestAnalyticsReport: React.FC<{ quiz?: Quiz; quizzes?: Quiz[]; stud
         <div className="flex flex-wrap gap-4">
           <button 
             onClick={handleNotifyNonParticipants}
+            disabled={isNotifying || nonParticipantIds.length === 0}
+            aria-busy={isNotifying}
             className="flex items-center gap-2 bg-indigo-600 text-white px-5 py-2.5 rounded-xl font-bold hover:bg-indigo-700 transition-colors shadow-sm"
           >
             <Bell size={18} />
-            تنبيه غير المشاركين
+            {isNotifying ? 'جارٍ إرسال التنبيه…' : 'تنبيه غير المشاركين'}
           </button>
           <button 
             onClick={() => setShowInterventionReport(true)}
