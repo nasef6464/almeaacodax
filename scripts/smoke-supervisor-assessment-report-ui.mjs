@@ -46,13 +46,13 @@ const result=(quizId,userId,score,date)=>({quizId,userId,score,date,skillsAnalys
 const rows=[result('q','a',20,'2026-01-01'),result('q','a',80,'2026-01-02'),result('other','a',50,'2026-01-01'),result('q','c',10,'2026-01-02')];
 assert.deepEqual(latestAssessmentResults(rows).map(r=>r.score),[80,50,10]);
 assert.deepEqual(latestAssessmentResults([...rows].reverse()).map(r=>r.score).sort(),[10,50,80]);
-const fixture={users,groups,examResults:rows};
+const fixture={users:[],roster:users,groups,examResults:rows};
 const fixtures={
  '../../store/useStore':`export const useStore=()=>window.reportFixture;`,
  '../../services/api':`export const api={sendStudentAlert:body=>{window.alertBodies.push(body);return new Promise((resolve,reject)=>{window.alertResolve=resolve;window.alertReject=reject})}};`,
  '../../../services/api':`export const api={getScopedQuizResults:query=>{window.resultQueries.push(query);return new Promise((resolve,reject)=>window.resultRequests.push({resolve,reject}))}};`,
 };
-const bundle=await build({stdin:{contents:`import React from'react';import{createRoot}from'react-dom/client';import{TestAnalyticsReport}from'./dashboards/admin/TestAnalyticsReport';createRoot(document.getElementById('root')).render(<TestAnalyticsReport quiz={{id:'q',title:'اختبار موجّه',targetGroupIds:['class']}} studentIds={['a','b','c']}/>);`,resolveDir:process.cwd(),loader:'tsx'},bundle:true,write:false,plugins:[{name:'fixtures',setup(b){b.onResolve({filter:/.*/},a=>fixtures[a.path]?{path:a.path,namespace:'fixture'}:undefined);b.onLoad({filter:/.*/,namespace:'fixture'},a=>({contents:fixtures[a.path],loader:'tsx',resolveDir:process.cwd()}));}}]});
+const bundle=await build({stdin:{contents:`import React from'react';import{createRoot}from'react-dom/client';import{TestAnalyticsReport}from'./dashboards/admin/TestAnalyticsReport';createRoot(document.getElementById('root')).render(<TestAnalyticsReport quiz={{id:'q',title:'اختبار موجّه',targetGroupIds:['class']}} studentIds={['a','b','c']} studentEvidence={window.reportFixture.roster}/>);`,resolveDir:process.cwd(),loader:'tsx'},bundle:true,write:false,plugins:[{name:'fixtures',setup(b){b.onResolve({filter:/.*/},a=>fixtures[a.path]?{path:a.path,namespace:'fixture'}:undefined);b.onLoad({filter:/.*/,namespace:'fixture'},a=>({contents:fixtures[a.path],loader:'tsx',resolveDir:process.cwd()}));}}]});
 const server=createServer((req,res)=>res.end('<div id="root"></div>'));
 await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));const browser=await chromium.launch({headless:true});
 try{
@@ -62,7 +62,7 @@ try{
  assert.equal(await page.getByText('1 من أصل 2 طالب',{exact:true}).count(),1);
  assert.match(await page.getByText('نسبة المشاركة',{exact:true}).locator('../..').innerText(),/50%/);
  assert.match(await page.getByText('متوسط الدرجات',{exact:true}).locator('../..').innerText(),/80%/);
- assert.equal(await page.getByText('غير مستهدف',{exact:true}).count(),0);
+ assert.equal(await page.getByText('غير مستهدف',{exact:true}).count(),0);assert.equal(await page.getByText('طالب غير معروف',{exact:true}).count(),0);assert.ok(await page.getByText('مشارك',{exact:true}).count()>0);
  assert.equal(await page.getByText('20%',{exact:true}).count(),0);
  await page.getByRole('heading',{name:'مقارنة الفصول في الاختبارات المحددة'}).waitFor();
  assert.match(await page.getByRole('row').filter({hasText:'الفصل الأول'}).innerText(),/1 \/ 2.*80%/s);
@@ -83,6 +83,6 @@ try{
  await scoped.getByRole('button',{name:'Change actor'}).click();await scoped.getByRole('status').waitFor();assert.equal(await scoped.locator('pre').innerText(),'[]');
  await scoped.evaluate(()=>window.resultRequests[2].resolve({results:[{id:'stale'}],pagination:{page:2,totalPages:2}}));assert.equal(await scoped.locator('pre').innerText(),'[]');
  await scoped.evaluate(()=>window.resultRequests[3].resolve({results:[{id:'r2'}],pagination:{page:1,totalPages:1},scope:{sampledStudentCount:1,studentCount:1}}));await scoped.getByRole('button',{name:'تحديث النتائج'}).waitFor();assert.equal(await scoped.locator('pre').innerText(),'[{"id":"r2"}]');
- const parent=fs.readFileSync('dashboards/admin/SupervisorDashboard.tsx','utf8');assert.ok(parent.includes('const examResults = resultEvidence.results;'));assert.ok(parent.includes('<SupervisorTestsManager resultEvidence={examResults}/>'));
+ const parent=fs.readFileSync('dashboards/admin/SupervisorDashboard.tsx','utf8');assert.ok(parent.includes('const examResults = resultEvidence.results;'));assert.ok(parent.includes('<SupervisorTestsManager resultEvidence={examResults} studentEvidence={scopedStudentUsersLoaded ? scopedStudentUsers : undefined}/>'));const manager=fs.readFileSync('dashboards/admin/SupervisorTestsManager.tsx','utf8');assert.ok(manager.includes('useSupervisorAssessmentScope(tabFilter, resultEvidence, studentEvidence)'));assert.ok(manager.includes('resultEvidence={evidence.results} studentEvidence={studentEvidence}'));assert.ok(manager.includes('quizzes={comparison} studentIds={scopedStudentIds} resultEvidence={resultEvidence} studentEvidence={studentEvidence}'));
  console.log('PASS scoped results hook: one initial bounded read, error/retry, opt-in pagination, review only by request, stale actor response discarded, supervisor parent wiring');
 }finally{await browser.close();server.close();}

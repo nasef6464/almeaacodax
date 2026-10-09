@@ -439,3 +439,6 @@ The notification campaign application keeps the existing hard ceiling of 10,000 
 - `quizStudentAssessmentEvidence.ts` owns answered/result vs unassessed classification in existing scoped overview; no new database query.
 - `supervisorTests/assessmentSkillEvidence.ts` owns taxonomy-aware question-weighted report grouping; `AssessmentClassComparison.tsx` renders loaded-target/latest-result comparisons with participation and no unassessed-zero scoring. No new polling, service or personal-store mutation.
 - Classroom24-client API persistence passed; p95 latency11.339s and fullbrowser measurement remain unresolved. Audit: `docs/audits/SCHOOL_ASSESSMENT_QUALITY_AND_CLASS_LOAD_2026-10-09.md`.
+
+### Report roster consistency — 2026-10-09
+Production proved globaluserspartial while localSupervisorDashboardrosterwasloaded. Propagate existinglocalroster to childassessmentreport rather thanfetchagain ormutateglobalstore. Test usesemptyglobalstore withvalidlocalroster; target IDs remain scoped. No new polling/request.

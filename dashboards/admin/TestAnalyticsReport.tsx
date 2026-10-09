@@ -1,15 +1,16 @@
 import React, { useMemo, useState } from 'react';
 import { Target, Users, AlertTriangle, TrendingUp, Printer, Eye, Bell, FileText, X, ChevronDown, HelpCircle, CheckCircle, XCircle, ClipboardList, Send, BarChart3 } from 'lucide-react';
 import { useStore } from '../../store/useStore';
-import { Quiz, QuizResult, SkillGap, QuizQuestionReview } from '../../types';
+import { Quiz, QuizResult, SkillGap, QuizQuestionReview, User } from '../../types';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { api } from '../../services/api';
 import { assessmentSkillSummaries } from './supervisorTests/assessmentSkillEvidence';
 import { AssessmentClassComparison } from './supervisorTests/AssessmentClassComparison';
 import { assessmentReportStudentIds, latestAssessmentResults, studentBelongsToReportGroup } from './supervisorTests/assessmentReportEvidence';
 
-export const TestAnalyticsReport: React.FC<{ quiz?: Quiz; quizzes?: Quiz[]; studentIds: string[]; resultEvidence?: QuizResult[] }> = ({ quiz, quizzes, studentIds, resultEvidence }) => {
-  const { examResults: personalResults, users, groups, subjects } = useStore();
+export const TestAnalyticsReport: React.FC<{ quiz?: Quiz; quizzes?: Quiz[]; studentIds: string[]; resultEvidence?: QuizResult[]; studentEvidence?: User[] }> = ({ quiz, quizzes, studentIds, resultEvidence, studentEvidence }) => {
+  const { examResults: personalResults, users: storeUsers, groups, subjects } = useStore();
+  const users = studentEvidence ?? storeUsers;
   const examResults = resultEvidence ?? personalResults;
   const [selectedGroupId, setSelectedGroupId] = useState<string>('all');
   const [inspectedStudentId, setInspectedStudentId] = useState<string | null>(null);
@@ -32,7 +33,7 @@ export const TestAnalyticsReport: React.FC<{ quiz?: Quiz; quizzes?: Quiz[]; stud
 
   // Groups that contain any of the relevant students
   const relevantGroups = useMemo(() => {
-    return groups.filter(g => users.some(student => targetStudentIds.includes(student.id) && studentBelongsToReportGroup(student, g)));
+    return groups.filter(g => (g.studentIds || []).some(id => targetStudentIds.includes(id)) || users.some(student => targetStudentIds.includes(student.id) && studentBelongsToReportGroup(student, g)));
   }, [groups, users, targetStudentIds]);
 
   // 1. Filter Results Based on Selected Group
