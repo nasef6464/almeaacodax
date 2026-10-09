@@ -190,7 +190,7 @@
       2
     ]
   },
-  "lastCheckpoint": "2026-10-09-RUN47-200-FRESH-OFFICIAL-PDF-VISUAL-24-SPECIFIC-DISTRACTOR-PEDAGOGY",
+  "lastCheckpoint": "2026-10-09-RUN51-150-OFFICIAL-SOURCE-VISUAL-40-DEEP-PEDAGOGY",
   "evidence": [
     "ops/tah-math/TAH_MATH_RUN1_BASELINE.json",
     "ops/tah-math/TAH_MATH_SOURCE_IDEA_MAP_PART01.json",
@@ -220,23 +220,19 @@
     }
   ],
   "latestRun": {
-    "run": "RUN31",
+    "run": "RUN51",
     "officialSourceQuestionsReviewed": 150,
-    "sourceMathematicsIndependentlyChecked": 150,
-    "sourcePixelPASS": 150,
-    "sourceAnswerVerified": 148,
-    "sourceSemanticReview": 2,
-    "priorLiveAnswerMatches": 147,
-    "priorLiveAnswerMismatches": 1,
-    "liveWrongKeyCode": "TAH-MATH-YLM26-P021-Q04",
-    "localCropRepairs": 6,
-    "sourceGroundedReasoningRows": 150,
-    "fullyPedagogicallyClosed": 0,
-    "productionImageParity": "NOT_TESTED",
+    "sourcePagesVisuallyInspected": 45,
+    "sourceCropPixelPASS": 24,
+    "fullPedagogyCandidates": 40,
+    "answerPASS": 34,
+    "semanticHOLD": 6,
+    "remapCandidates": 3,
+    "symbolicPASS": 35,
     "productionMutation": false,
     "uniqueYLM26SourceInventory": 326,
-    "documentedReviewEventsRUN21toRUN31": 1999,
-    "remaining": "YLM26 canonical options, full wrong-option pedagogy, foundation/fingerprint validation, 2 source ambiguities, R2 parity and reversible key correction; then COL26."
+    "conditionalReviewEventsRUN21toRUN51": 5346,
+    "remaining": "YLM26 source semantic holds, canonical fields, live foundation IDs, R2 parity, rollback manifest; then COL26"
   },
   "run47": {
     "date": "2026-10-09",
@@ -257,5 +253,25 @@
     },
     "sourcePagesCovered": 51,
     "productionR2Parity": "NOT_TESTED"
+  },
+  "run51": {
+    "date": "2026-10-09",
+    "actualDistinctSourceQuestionsReviewed": 150,
+    "officialSourcePagesInspected": 45,
+    "sourceCropExactRGBPass": 24,
+    "fullSourceGroundedPedagogy": 40,
+    "sourceMathAnswerPASS": 34,
+    "semanticHOLD": 6,
+    "symbolicPASS": 35,
+    "sourceBackedRemapCandidates": 3,
+    "localRecropsQA": 4,
+    "cumulativeConditionalReviewEvents": 5346,
+    "uniqueYLM26SourceInventory": 326,
+    "canonicalApproved": 0,
+    "productionMutation": false,
+    "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+    "productionR2Parity": "NOT_TESTED",
+    "status": "YLM26_IN_PROGRESS_NOT_GREEN",
+    "next": "Resolve holds and approve 326 canonical rows, R2 parity and reversible manifest; then COL26 1012"
   }
 }
