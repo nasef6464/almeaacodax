@@ -28,5 +28,7 @@ jobs:
         run: node scripts/verify-phys26-number-audit.mjs
       - name: PHYS26 foundation and section gate
         run: node scripts/verify-phys26-foundation-plan.mjs
+      - name: PHYS26 question validator behavior (6 synthetic cases)
+        run: node scripts/test-phys26-question-validator.mjs
       - name: Check offline question-batch validator syntax
         run: node --check scripts/verify-phys26-question-batch.mjs
