@@ -612,8 +612,10 @@ async function runSchoolDirectorAcademicClosureJourney(csrf: CsrfContext) {
   expectStatus("director creates school assessment from approved bank", assessment, 201);
   const assessments = await jsonRequest(`/school-access/director/schools/${schoolId}/academic/assessments`, { token: tokens.get("schoolAdmin") });
   expectStatus("director lists school-bounded assessments", assessments, 200);
-  const individualAssessment = await QuizModel.create({ id: `director-individual-${RUN_MARKER}`, title: 'Individual school assessment', pathId: ASSESSMENT_PATH_ID, subjectId: ASSESSMENT_SUBJECT_ID, targetUserIds: [studentId], targetGroupIds: [], isPublished: true });
-  const foreignAssessment = await QuizModel.create({ id: `director-foreign-${RUN_MARKER}`, title: 'Foreign individual assessment', pathId: ASSESSMENT_PATH_ID, subjectId: ASSESSMENT_SUBJECT_ID, targetUserIds: [outsideStudentId], targetGroupIds: [], isPublished: true });
+  const audienceStudentId = userIds.get('student'); const audienceOutsiderId = userIds.get('outsider');
+  assert.ok(audienceStudentId && audienceOutsiderId, 'individual assessment audience fixtures missing');
+  const individualAssessment = await QuizModel.create({ id: `director-individual-${RUN_MARKER}`, title: 'Individual school assessment', pathId: ASSESSMENT_PATH_ID, subjectId: ASSESSMENT_SUBJECT_ID, targetUserIds: [audienceStudentId], targetGroupIds: [], isPublished: true });
+  const foreignAssessment = await QuizModel.create({ id: `director-foreign-${RUN_MARKER}`, title: 'Foreign individual assessment', pathId: ASSESSMENT_PATH_ID, subjectId: ASSESSMENT_SUBJECT_ID, targetUserIds: [audienceOutsiderId], targetGroupIds: [], isPublished: true });
   const individualList = await jsonRequest(`/school-access/director/schools/${schoolId}/academic/assessments`, { token: tokens.get("schoolAdmin") });
   expectStatus("director sees individual school-targeted assessments", individualList, 200);
   assert.equal(individualList.body?.assessments?.some((item: any) => item.id === individualAssessment.id), true, 'individual school assessment missing');
