@@ -7,10 +7,15 @@ const p=read(root+'PHYS26_FOUNDATION_PLAN.json');
 const s=read(root+'PHYS26_SECTION_PLAN.json');
 assert.equal(p.importReady,false);
 assert.equal(t.mainSkills.length,25);
-assert.equal(p.topics.length,115);
+const subskillCount=t.mainSkills.reduce((n,m)=>n+m.subSkills.length,0);
+assert.equal(p.topics.length,25+subskillCount);
+assert.equal(p.counts.subTopics,subskillCount);
+assert.equal(p.counts.totalTopics,25+subskillCount);
+assert.equal(p.counts.mainTopics,25);
+assert.equal(p.sourceTaxonomyVersion,t.version);
 assert.equal(s.sections.length,25);
 const byId=new Map(p.topics.map(x=>[x.id,x]));
-assert.equal(byId.size,115);
+assert.equal(byId.size,p.topics.length);
 let sub=0;
 for(const main of t.mainSkills){
  const parent=byId.get('PHYS26-TM'+String(main.order).padStart(2,'0'));
@@ -26,6 +31,12 @@ for(const main of t.mainSkills){
   sub++;
  }
 }
-assert.equal(sub,90);
+assert.equal(sub,subskillCount);
+const mainTopics=p.topics.filter(x=>x.parentId===null);
+assert.equal(mainTopics.length,25);
+assert.equal(p.topics.filter(x=>x.isLocked===false).length,26);
+assert.equal(p.topics.filter(x=>x.isLocked===true).length,p.counts.initialLockedTopics);
+assert.equal(p.counts.subMissingFoundation,p.topics.filter(x=>x.parentId!==null&&x.sourceStatus==="MISSING_FOUNDATION_CHAPTER").length);
+assert.ok(p.topics.every(x=>x.importReady!==true&&x.status==="PROPOSAL_NOT_IMPORTED"&&x.lessonIds.length===0&&x.quizIds.length===0),"hidden proposals only; no created lessons/drills");
 assert.ok(p.topics.every(x=>!x.showOnPlatform&&x.sectionId===null));
 console.log('PHYS26_FOUNDATION_DESIGN_PASS');
