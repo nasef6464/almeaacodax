@@ -30,3 +30,10 @@ Fetched exact remote Master Control, ledger, taxonomy and branch comparison, and
 
 ## Remaining gates
 The candidate taxonomy and topic structure are not an approved foundation course. Uploaded foundation has no full third-secondary chapters (15 main / 53 sub candidate groups without indexed foundation). All 2,064 questions still require complete, source-faithful independent question/options/answer/diagram/skill QA and appropriate rights before import. Keep PR draft; do not claim FINAL CLOSED or turn on production.
+
+## Follow-on adjudication of three RUN011 suspect duplicate pairs
+With the private V5 source-crop archive reopened, inspected **3 previously flagged** pairs side by side (these three are NOT new distinct pair discoveries):
+- `L15-Q004 / L15-Q005`, original PDF page 78: same visible wavelength-shift wording and four options, differing printed year label. **Visible reprint candidate**, still two source occurrences with distinct provenances.
+- `L31-Q021 / L31-Q024`, page 156: same isotopes stem but changed B option (protons vs electrons). **Different option-set variant, not an exact duplicate**. Do not erase one automatically.
+- `L15-Q017 / L15-Q022`, page 80: question about approaching sound source versus light source; **false-positive similarity**, not interchangeable questions.
+A metadata-only adjudication is committed as `ops/phys26/PHYS26_RUN012_DUPLICATE_ADJUDICATION.json`. No copyrighted prompt/options/images are in GitHub, no canonical question was merged, and no original-answer verification has been credited.
