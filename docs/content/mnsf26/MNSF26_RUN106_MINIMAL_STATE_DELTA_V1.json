@@ -1,0 +1,9 @@
+{
+  "bank": "MNSF26",
+  "run": "RUN106",
+  "stage": "QA_LOCK",
+  "sourceImageConflictReview": 8,
+  "masterWritesBlocked": true,
+  "qaFullBookPass": false,
+  "productionE2E": false
+}
