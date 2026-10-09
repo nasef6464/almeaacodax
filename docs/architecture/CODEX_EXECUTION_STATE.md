@@ -1,5 +1,12 @@
 # ALMEAA — Codex Execution State
 
+## Redis recovery and classroom start ease — 2026-10-09
+- Baseline main37488e2fabbaf (#485 merged/live), code16689e346155:19SUCCESS3SKIPPED/all3requiredPASS. Redis available/free, canonical scale-ready200 and teacher/student/supervisor login3/3PASS. Fresh branch codex/classroom-ease-certification.
+- Production read-only teacher UI proves a blank workspace-loading interval; active-session request lacks requiredschool and returns400, scopedread200. Added visible load/retry, workspace request stabilization, scoped active-session restore and single pending create with target locking/retry. No API/auth/scoring/schema changes.
+- Controlled real-component interaction and classroom58/58/hardening35/35PASS; final typecheck/build/CI pending. Added component regression to existing required full-stack workflow.
+- Full classroom writes pending owner clarification: accounts belong to real class103/24 roster, not proved synthetic;20-browser/physical tablet/new saved-report certification NOTPROVEN. History summary observed1,453,176bytes; payload optimization deferred pending caller-compatible design.
+- Evidence docs/audits/CLASSROOM_RECOVERY_AND_START_EASE_2026-10-09.md; next exact-head delivery and approved test-class journey.
+
 ## Teacher-led laboratory assessment continuation — 2026-10-09
 - Owner specified teaching outside the app, five prepared tablet questions, centralized collection and per-student saved skill/participation reports. Baseline main7b0c085bcd12; #484 request efficiency merged after18SUCCESS3SKIPPED/allrequiredPASS on344d7eb975d6. Fresh branch codex/classroom-lab-evaluation.
 - Reused batches/templates/finalization and added cumulative sent IDs, optional student evidence in existing immutable snapshots, student/skill outcome tables, current finalized-submission counts/names, lazy bank load and opt-in compact history with detail on demand. Existing scores/RBAC/routes and historical snapshots retained; additive staff report query is protected by existing aggregate authority.
