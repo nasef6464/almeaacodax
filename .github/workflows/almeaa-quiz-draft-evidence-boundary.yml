@@ -7,6 +7,8 @@ on:
       - .github/workflows/almeaa-quiz-draft-evidence-boundary.yml
       - scripts/verify-quiz-draft-attempt-boundary.mjs
       - scripts/smoke-adaptive-phase4-treatment-recheck-contract.mjs
+      - scripts/smoke-quiz-submission-schema-boundary-contract.mjs
+      - scripts/smoke-assessment-question-attempt-document-contract.mjs
       - scripts/test-quiz-finalized-question-attempt-operations.mjs
       - pages/QuizPage.tsx
       - server/src/models/QuestionAttempt.ts
