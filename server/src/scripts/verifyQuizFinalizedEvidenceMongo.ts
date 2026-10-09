@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import mongoose from "mongoose";
 import { QuestionAttemptModel } from "../models/QuestionAttempt.js";
+import { SkillProgressModel } from "../models/SkillProgress.js";
+import { updateSkillProgressFromResult } from "../modules/quizzes/application/quizSubmissionSkillProgress.js";
 import { buildFinalizedQuizQuestionAttemptOperations } from "../modules/quizzes/application/quizFinalizedQuestionAttemptOperations.js";
 
 // Intentionally hard-coded to a disposable loopback DB. No environment-supplied URI,
@@ -110,6 +112,40 @@ try {
   );
   assert.equal(await QuestionAttemptModel.countDocuments({}), 10);
   findings.crossResultAndUserIsolation = "PASS";
+
+  // Exercise the real result-to-skill persistence path, not only question ledger upserts.
+  await SkillProgressModel.createIndexes();
+  const skillResult = {
+    _id: "fake-skill-result-1", submissionKey: "fake-submission-once",
+    quizId: "fake-quiz", quizTitle: "Fixture", date: base.date,
+    skillsAnalysis: [{ skillId: "fake-skill", pathId: "fake-path",
+      subjectId: "fake-subject", mastery: 75, questionCount: 2, correctCount: 1 }],
+  };
+  await updateSkillProgressFromResult(skillResult, base.userId);
+  const initialSkill = await SkillProgressModel.findOne({ userId: base.userId,
+    skillId: "fake-skill", pathId: "fake-path", subjectId: "fake-subject" }).lean();
+  assert.equal(initialSkill?.attempts, 1);
+  assert.equal(initialSkill?.evidenceCount, 2);
+  await updateSkillProgressFromResult(skillResult, base.userId);
+  const replayedSkill = await SkillProgressModel.findOne({ userId: base.userId,
+    skillId: "fake-skill", pathId: "fake-path", subjectId: "fake-subject" }).lean();
+  assert.equal(replayedSkill?.attempts, 1, "sequential replay must not double-count skill attempts");
+  assert.equal(replayedSkill?.evidenceCount, 2, "sequential replay must not double-count evidence");
+  findings.skillProgressSequentialReplay = "PASS";
+
+  // Separate learner + fresh submission to detect a read/modify/write concurrency race.
+  const concurrentUser = "fake-student-concurrent";
+  const skillRace = await Promise.allSettled(Array.from({ length: 4 }, () =>
+    updateSkillProgressFromResult(skillResult, concurrentUser)));
+  assert.equal(skillRace.filter((outcome) => outcome.status === "rejected").length, 0,
+    "concurrent skill progress writes should not reject");
+  const racedSkill = await SkillProgressModel.findOne({ userId: concurrentUser,
+    skillId: "fake-skill", pathId: "fake-path", subjectId: "fake-subject" }).lean();
+  assert.equal(racedSkill?.attempts, 1,
+    "four concurrent replays of one submission must count as one skill attempt");
+  assert.equal(racedSkill?.evidenceCount, 2,
+    "four concurrent replays of one submission must count evidence once");
+  findings.skillProgressConcurrentReplayWorkers = 4;
 
   console.log(JSON.stringify({ status: "PASS", fixture: fixtureDatabase,
     noExternalServices: true, findings }, null, 2));
