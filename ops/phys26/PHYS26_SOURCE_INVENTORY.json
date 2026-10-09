@@ -19,7 +19,12 @@
       "sha256": "5faa723e8485223dcae8b926e0e6c279915d8f6e3d8ece890263a62c04837616",
       "role": "question_bank",
       "indexedLessons": 31,
-      "sectionsPerLesson": 2
+      "sectionsPerLesson": "1_or_2_actual",
+      "actualFirstSections": 31,
+      "actualSecondSections": 30,
+      "singleSectionLessonNumbers": [
+        25
+      ]
     },
     {
       "filename": "ملخصات متنوعة للفيزياء - يلو 26.pdf",
@@ -57,9 +62,13 @@
     "publicationRestrictedUntilAuthorized": true
   },
   "extraction": {
-    "sourceOccurrences": "NOT_COUNTED",
+    "sourceOccurrences": 2064,
     "verifiedQuestions": 0,
-    "quarantined": 0
+    "quarantined": 0,
+    "privateCropCandidates": 2064,
+    "privateCropStructuralRiskFlags": 576,
+    "privateTrimProposals": 399,
+    "note": "576 conservative geometry risk candidates pending visual QA, not a certified question quarantine or imported question count"
   },
   "safety": "NO_PRODUCTION_WRITES"
 }
