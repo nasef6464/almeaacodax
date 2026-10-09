@@ -1,0 +1,33 @@
+name: ALMEAA Isolated Group Supervisor Security Contract
+on:
+  push:
+    branches:
+      - test/almeaa-isolated-20261008
+    paths:
+      - .github/workflows/almeaa-group-supervisor-security.yml
+      - scripts/verify-group-supervisor-mutation-boundaries.mjs
+      - server/src/modules/content/http/contentGroupRoutes.ts
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  group-supervisor-boundary:
+    name: Verify supervisor group mutation boundaries (source-only)
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Checkout exact isolated commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Check regression script syntax
+        run: node --check scripts/verify-group-supervisor-mutation-boundaries.mjs
+      - name: Validate scoped mutation source contract
+        run: node scripts/verify-group-supervisor-mutation-boundaries.mjs
