@@ -1,0 +1,84 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN108",
+  "revision": 2,
+  "date": "2026-10-09",
+  "stage": "QA_LOCK",
+  "exactHeadsAtStart": {
+    "branch": "ab47449af8dd5dc712e780c22400da315062f512",
+    "main": "71359ae319ed698d794867adbb5528e590d94e01"
+  },
+  "exactHeadsBeforeDeltaV2": {
+    "branch": "a395b3feaaf07a701f4c6d7c2c8f6e2fb5658308",
+    "main": "71359ae319ed698d794867adbb5528e590d94e01"
+  },
+  "cropLock": "PASS_LOCKED_2135_OF_2135",
+  "questionMastering": {
+    "run063LockedActive": 2129,
+    "excluded": 6,
+    "newMastered": 0
+  },
+  "qa": {
+    "sourceBoardIndependentMathRechecks": 20,
+    "mathPassPendingTaxonomy": 17,
+    "holdPreserved": 2,
+    "sourceConflictReconfirmed": 1,
+    "sourceKeyQAReviewedCounterIncrement": 0,
+    "previousOriginalWebpSHARehashed": 25,
+    "shaMismatches": 0,
+    "qaFullBookPass": false,
+    "canonicalSemantic25_95Pass": false,
+    "evidence": "MNSF26_RUN108_GEO_T005_20_SOURCE_BOARD_MATH_QA_V1.json"
+  },
+  "writes": {
+    "t026CountersReconciled": {
+      "mastered": 10,
+      "hold": 6,
+      "review": 2,
+      "commit": "cf1f661c6cd8a48241c755433c179e7125e4c271"
+    },
+    "t018MasterReviewApplied": [
+      "MNSF26-GEO-T018-Q05",
+      "MNSF26-GEO-T018-Q07"
+    ],
+    "t018Commit": "d7a735638c86fd4d2e4385672102d8105746fff9",
+    "overrideManifest": "MNSF26_RUN108_FAILCLOSED_QA_OVERRIDES_V1.json",
+    "overrideCommit": "8dc5fbb2fa81b3ae097a144ed126180558997c9c",
+    "qaEvidenceCommit": "a395b3feaaf07a701f4c6d7c2c8f6e2fb5658308",
+    "remainingMasterReviewBlocked": [
+      "MNSF26-GEO-T001-Q19",
+      "MNSF26-GEO-T003-Q20",
+      "MNSF26-GEO-T005-Q11",
+      "MNSF26-GEO-T006-Q18",
+      "MNSF26-GEO-T007-Q03",
+      "MNSF26-GEO-T007-Q17",
+      "MNSF26-GEO-T011-Q10"
+    ],
+    "directExecutionStateUpdateBlocked": true,
+    "fullBookGateScriptCreateBlocked": true
+  },
+  "fullBookGate": {
+    "offlineSyntheticTests": 8,
+    "passed": 8,
+    "appliedToGitHub": false,
+    "legacyRun022And130OnlyNotCurrentBankCertification": true
+  },
+  "downstream": {
+    "dedupeLock": false,
+    "r2UploadLock": false,
+    "importLock": false,
+    "productionE2E": false,
+    "productionServicesUntouched": true
+  },
+  "preserved": [
+    "P001/Q10 HOLD",
+    "P013/Q15 HOLD",
+    "P014/Q08 quarantine",
+    "5 suppressions",
+    "P011/Q19=B",
+    "arithmetic test33 source-absent",
+    "geometry T24/Q18 source-absent"
+  ],
+  "next": "Apply seven remaining source-proven MASTER REVIEW transitions via authorized writes; merge current full-book gate; complete 2129 QA semantic/math 25/95; DEDUPE then R2 then import then Production E2E."
+}
