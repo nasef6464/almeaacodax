@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN100",
+  "stage": "QA_LOCK",
+  "source": "Run097 original-image contact sheets, re-adjudicated Run100; original WebP SHA from Run097 (not independently rehashed Run100)",
+  "status": "HOLD_CANDIDATE_ONLY_NOT_IMPORT_ELIGIBLE",
+  "cases": [
+    {
+      "sourceKey": "MNSF26-GEO-T007-Q12",
+      "imageHash": "6438d0cf4fe6b03a4e8677da428b78b417b18d1c934e301cfab2f54898bb508b",
+      "correctAnswerCandidate": "240 (ب)",
+      "stepByStepSolutionCandidate": "زاوية التقاطع الجانبية120°، وزاويتا المثلثين المتقابلتين عند التقاطع60° لكل منهما. مجموع الزوايا الأربع الأخرى=2×(180−60)=240°."
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T008-Q18",
+      "imageHash": "99c2ec031646d92c08536a88be6271f5295efb9df9ede4d76df1f9fe11bcd673",
+      "correctAnswerCandidate": "62 (ب)",
+      "stepByStepSolutionCandidate": "في المثلث الكبير (5)=180−60−62=58°. من (2)=(5)، تصبح (2)=58°، ثم (3)=180−60−58=62°."
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T011-Q07",
+      "imageHash": "f297795faef7c9444d7755822ccd404902985a5872c2b7fab106a070d075477e",
+      "correctAnswerCandidate": "125 (د)",
+      "stepByStepSolutionCandidate": "في المثلث المتساوي الساقين زاوية الرأس70°، فتكون زاويتا القاعدة55°. زاوية متوازي الأضلاع اليسرى العليا مكملة55°، أي س=125°."
+    }
+  ],
+  "canonicalMainSubskill": "UNRESOLVED",
+  "fingerprintRevalidationRequired": true,
+  "promotionAllowed": false,
+  "importEligible": false,
+  "productionServicesUntouched": true
+}
