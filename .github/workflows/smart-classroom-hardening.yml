@@ -19,6 +19,8 @@ on:
       - 'components/classroom/**'
       - 'pages/Classroom**'
       - 'hooks/useClassroomRealtime.ts'
+      - 'utils/coalescedAsyncRefresh.ts'
+      - 'scripts/smoke-classroom-refresh-budget.mjs'
       - 'services/api.ts'
       - 'scripts/smoke-smart-classroom**'
       - 'scripts/smoke-auth-frontend-contract.mjs'

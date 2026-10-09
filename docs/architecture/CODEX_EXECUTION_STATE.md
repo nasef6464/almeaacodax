@@ -1,5 +1,11 @@
 # ALMEAA — Codex Execution State
 
+## Classroom server efficiency and runtime recovery — 2026-10-09
+- Baseline main7e3043346bd0; focused branch codex/classroom-server-efficiency. Original unowned checkout preserved. School scope delivery #481 was merged; its local/isolated checks do not certify current production.
+- Coalesced teacher/projector answer refreshes with one in-flight read and a trailing reconciliation. Publication/lifecycle events, aggregate payloads, privacy and authority remain unchanged. Five refresh-budget scenarios, classroom58/58, projector privacy, frontend typecheck/build PASS; exact-head CI pending.
+- Web service resumed on Free; CPU short sample3–6%, memory140–150MiB/512MiB. Existing Redis remains suspended; documented resume API returned500 twice. Scale readiness503 and all three owned role logins time out. Production journeys BLOCKED; no educational writes or billing changes.
+- Evidence and safe local-file ordering: docs/audits/CLASSROOM_SERVER_EFFICIENCY_2026-10-09.md. Next: exact-head CI and existing Redis restoration, followed by owned production journeys. No production closure or20-browser claim.
+
 ## School assessment and classroom audit — 2026-10-08
 - Owner scope: supervisor/teacher/student assessment targeting, analytics and teacher-created classroom participation. Baseline main@877940bda4b4; branch codex/school-assignment-classroom-audit. Original checkout and PR #480 preserved.
 - Fixed frontend class-to-parent school widening in three supervisor surfaces with a shared scope helper matching the unchanged server. Added reminder loading/failure handling and restored isolated supervisor/student CI execution after its skipped legacy dependency.
