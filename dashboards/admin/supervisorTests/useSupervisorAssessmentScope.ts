@@ -1,7 +1,7 @@
 import { resolveSupervisorSchoolScope } from '../../../utils/supervisorSchoolScope';
 import { useMemo } from 'react';
 import { useStore } from '../../../store/useStore';
-import { Quiz, QuizResult } from '../../../types';
+import { Quiz, QuizResult, User } from '../../../types';
 import { isTrueMockExam } from '../../../utils/quizPlacement';
 
 export type SupervisorTestTabFilter = 'all' | 'drill' | 'test' | 'mock';
@@ -27,8 +27,9 @@ export type SupervisorQuizWithStats = Quiz & {
 export const uniqueSupervisorStudentIds = (values: Array<string | undefined | null>) =>
   Array.from(new Set(values.filter((value): value is string => typeof value === 'string' && value.trim().length > 0)));
 
-export const useSupervisorAssessmentScope = (tabFilter: SupervisorTestTabFilter, resultEvidence?: QuizResult[]) => {
-  const { user, users, groups, quizzes, examResults: personalResults } = useStore();
+export const useSupervisorAssessmentScope = (tabFilter: SupervisorTestTabFilter, resultEvidence?: QuizResult[], studentEvidence?: User[]) => {
+  const { user, users: storeUsers, groups, quizzes, examResults: personalResults } = useStore();
+  const users = studentEvidence ?? storeUsers;
   const examResults = resultEvidence ?? personalResults;
 
   const scopedGroupIds = useMemo(() => {

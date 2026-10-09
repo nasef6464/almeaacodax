@@ -203,3 +203,6 @@ Performance ownership now includes: isolated load profiles; profile-specific evi
 - `quizStudentAssessmentEvidence.ts` owns answered/result vs unassessed classification in existing scoped overview; no new database query.
 - `supervisorTests/assessmentSkillEvidence.ts` owns taxonomy-aware question-weighted report grouping; `AssessmentClassComparison.tsx` renders loaded-target/latest-result comparisons with participation and no unassessed-zero scoring. No new polling, service or personal-store mutation.
 - Classroom24-client API persistence passed; p95 latency11.339s and fullbrowser measurement remain unresolved. Audit: `docs/audits/SCHOOL_ASSESSMENT_QUALITY_AND_CLASS_LOAD_2026-10-09.md`.
+
+### School report roster propagation
+SupervisorDashboard local scopedStudentUsers is passed to SupervisorTestsManager/useSupervisorAssessmentScope/TestAnalyticsReport (direct and comparison). Personal/global users and results remainisolated; existing paged roster query is reused. AssessmentClassComparison also intersects loaded groupstudentIds with reporttargets; no additional dataquery.

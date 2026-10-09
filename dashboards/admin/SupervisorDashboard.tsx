@@ -663,7 +663,7 @@ export const SupervisorDashboard: React.FC = () => {
         {activeTab === 'live-sessions' && <LiveSessionsManager />}
 
         {/* ===== TESTS TAB ===== */}
-        {activeTab === 'tests' && <SupervisorTestsManager resultEvidence={examResults}/>}
+        {activeTab === 'tests' && <SupervisorTestsManager resultEvidence={examResults} studentEvidence={scopedStudentUsersLoaded ? scopedStudentUsers : undefined}/>}
 
         {/* ===== LIVE MONITORING TAB ===== */}
         {activeTab === 'live-monitoring' && (

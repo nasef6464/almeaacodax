@@ -1,5 +1,9 @@
 # ALMEAA — Current Execution Status
 
+## School report roster follow-up — 2026-10-09
+- #495 merged/published65a7b961; exactf2dacd02:21SUCCESS4skip/allrequiredPASS;main4gatesPASSafteradmin502same-headrerun. RealAPIoverview2weak/12unassessed/savedscore40PASS. Realbrowsercomparisonmissing/nameunknownPROVED:report readsglobalusersinsteadexistinglocalroster.
+- Newfresh `codex/school-assessment-report-roster` passesparentlocalroster throughsame list/report/scope; validatedclassroster IDsfallbackpreservespartialload. No newrequest/resultwrite/authchange. Emptyglobalstore actualUIregression added; CI/productionfinalpending. Otherauthorizedschoolscope remainsopen; seequality/load audit.
+
 ## School assessment evidence and 24-client load — 2026-10-09
 - Branch `codex/school-assessment-management-quality` from published main74fc8652. 24 unique authorized API clients,3×5,24/24 each batch,360 saved answers/fresh report equality PASS. 544 runtime requests,89,671 compressed response-body bytes; excludes site/media/sockets/auth/HTTP overhead. p95 11.339s/max33.724s; comfortable latency and full browser/device gate NOT_PROVEN.
 - Bounded correction separates unassessed students from weakest ranking, uses taxonomy/weighted skill identity and shows class participation/average from existing loaded outcomes. No historical result/scoring rewrite/new polling. Exact-head CI and fresh production replay pending.

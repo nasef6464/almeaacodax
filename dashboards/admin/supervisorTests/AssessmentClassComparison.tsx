@@ -4,7 +4,10 @@ import { studentBelongsToReportGroup } from './assessmentReportEvidence';
 
 export const assessmentClassSummaries = (groups: Group[], students: User[], targetIds: string[], results: QuizResult[]) =>
   groups.filter(group => group.type === 'CLASS').map(group => {
-    const ids = new Set(students.filter(student => targetIds.includes(student.id) && studentBelongsToReportGroup(student, group)).map(student => student.id));
+    const ids = new Set([
+      ...(group.studentIds || []).filter(id => targetIds.includes(id)),
+      ...students.filter(student => targetIds.includes(student.id) && studentBelongsToReportGroup(student, group)).map(student => student.id),
+    ]);
     const evidence = results.filter(result => result.userId && ids.has(result.userId));
     const participants = new Set(evidence.map(result => result.userId)).size;
     return { id: group.id, name: group.name, targeted: ids.size, participants,
