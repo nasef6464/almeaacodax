@@ -1,4 +1,6 @@
 import { ReviewCardModel } from "../../../models/ReviewCard.js";
+import { QuestionAttemptModel } from "../../../models/QuestionAttempt.js";
+import { buildFinalizedQuizQuestionAttemptOperations } from "./quizFinalizedQuestionAttemptOperations.js";
 import { createNotificationDeliveries } from "../../../services/notificationService.js";
 import { sm2 } from "../../../services/spacedRepetition.js";
 import { updateSchoolSkillReadModelFromResult } from "./schoolSkillReadModel.js";
@@ -129,6 +131,19 @@ export async function runQuizSubmissionSideEffects(args: {
   questionReview: Array<{ questionId: string; selectedOptionIndex?: number; isCorrect?: boolean }>;
   questionById: Map<string, any>;
 }) {
+  const finalAnswerOperations = buildFinalizedQuizQuestionAttemptOperations({
+    userId: args.userId,
+    quizResultId: String(args.result?._id || args.result?.id || ""),
+    questionReview: args.questionReview,
+    questionById: args.questionById,
+    source: String(args.result?.source || ""),
+    date: String(args.result?.date || ""),
+  });
+  const saveFinalAnswers = async () => {
+    if (finalAnswerOperations.length > 0) {
+      await QuestionAttemptModel.bulkWrite(finalAnswerOperations, { ordered: false });
+    }
+  };
   const score = Number(args.result?.score ?? 0);
   const quizTitle = String(args.result?.quizTitle || "الاختبار");
   const scoreEmoji = score >= 80 ? "🎉" : score >= 60 ? "👍" : "💪";
@@ -136,6 +151,7 @@ export async function runQuizSubmissionSideEffects(args: {
     updateSkillProgressFromResult(args.result, args.userId),
     upsertReviewCardsFromQuestionReview({ ...args, result: args.result }),
     updateSchoolSkillReadModelFromResult(args.result, args.userId),
+    saveFinalAnswers(),
     createNotificationDeliveries({
       title: `${scoreEmoji} نتيجة ${quizTitle}`,
       body: `حصلت على ${score}% في هذا الاختبار. ${score >= 80 ? "أداء رائع!" : score >= 60 ? "جيد جداً، استمر!" : "لا تيأس، راجع الأخطاء وأعد المحاولة."}`,
@@ -147,7 +163,7 @@ export async function runQuizSubmissionSideEffects(args: {
 
   outcomes.forEach((outcome, index) => {
     if (outcome.status === "fulfilled") return;
-    const sideEffect = index === 0 ? "skill-progress" : index === 1 ? "review-cards" : index === 2 ? "school-skill-read-model" : "notification";
+    const sideEffect = ["skill-progress", "review-cards", "school-skill-read-model", "finalized-question-attempts", "notification"][index] || "unknown";
     const reason = outcome.reason instanceof Error ? outcome.reason.message : String(outcome.reason || "unknown");
     console.warn("[quiz-submit] non-critical side effect failed", {
       requestId: args.requestId || "",
