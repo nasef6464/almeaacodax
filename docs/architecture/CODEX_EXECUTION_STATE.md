@@ -1,5 +1,10 @@
 # ALMEAA — Codex Execution State
 
+## Teacher directed discovery VERIFIED — 2026-10-09
+- #494 merged/publishedmain74fc8652206bb47e9d3fc104b86393ae80481bf9. Exact code c602340298b29efefbde37100952f76ead161c7a:20SUCCESS3conditionalSKIPPED/all3requiredPASS; actual HTTP7audience cases PASS.
+- Fresh production teacher reads workspace/quiz200 with existing individual quiz now once and exactly assigned class. Actual UI1280/390PASS, no overflow,0pageerrors; no new production writes/deletes. Render/HTML exact and canonical/direct ready200 includingRedisPASS. Main role/postdeploy/hygiene/AI4SUCCESS.
+- Final documentation branch from published main preserves evidence. This bounded discovery slice has no remaining known defect; do not extend actions/reports or claim school-load/20device certification without new approved scope and evidence.
+
 ## Teacher directed assessment discovery — 2026-10-09
 - Fresh branch `codex/teacher-directed-assessment-discovery` from maincb4c49d5; #493 final evidence carried as documentation only.
 - Production defect proved: teacher quiz200/workspace200 but existing individual quiz absent. Resolve existing assigned roster before projected100 assessment read; published/owner/creator visibility retained. Pure teacherAssessmentClassIds maps only validated teacher classes for individual, school and class targets.
