@@ -14,7 +14,8 @@ type FinalizedQuestionAttemptInput = {
 const canonicalIds = (values: unknown[]) =>
   [...new Set(values.map((value) => String(value || "").trim()).filter(Boolean))];
 
-const acceptedEvidenceTypes = new Set(["assessment", "remediation", "recheck", "mastery_review"]);
+type EvidenceType = "assessment" | "remediation" | "recheck" | "mastery_review";
+const acceptedEvidenceTypes: ReadonlySet<string> = new Set(["assessment", "remediation", "recheck", "mastery_review"]);
 
 export function buildFinalizedQuizQuestionAttemptOperations(args: FinalizedQuestionAttemptInput) {
   const userId = String(args.userId || "").trim();
@@ -22,7 +23,7 @@ export function buildFinalizedQuizQuestionAttemptOperations(args: FinalizedQuest
   if (!userId || !quizResultId) return [];
   const seen = new Set<string>();
   const source = String(args.source || "").trim();
-  const evidenceType = acceptedEvidenceTypes.has(source) ? source : "assessment";
+  const evidenceType: EvidenceType = acceptedEvidenceTypes.has(source) ? (source as EvidenceType) : "assessment";
   const date = String(args.date || "").trim() || new Date().toISOString();
 
   return (args.questionReview || []).flatMap((item) => {
