@@ -1,0 +1,1 @@
+{"bank":"MNSF26","run":"RUN104","stage":"QA_LOCK","date":"2026-10-09","audit":{"files":41,"records":779,"mastered":637,"hold":137,"review":5,"nonCanonicalMainAlias":619,"shortSolutions":105,"knownConflictsStillMastered":9},"qaFullBookPass":false,"productionE2E":false}
