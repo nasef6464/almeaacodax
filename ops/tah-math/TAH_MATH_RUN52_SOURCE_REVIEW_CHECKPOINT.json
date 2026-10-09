@@ -1,0 +1,175 @@
+{
+  "run": "RUN52",
+  "date": "2026-10-09",
+  "scope": "TAH-MATH/YLM26 only",
+  "pr": 450,
+  "branch": "content/tah-math-full-taxonomy-closure",
+  "source": "Yellow 2026 foundation modified edition; 150 actual visual inspections of source-derived crops from RUN42/RUN49; raw official PDF inaccessible this run",
+  "sourceVisualActuallyReviewed": 150,
+  "sourceCropIndependentRGBParityPASS": 150,
+  "manualMathAnswerCandidates": 145,
+  "semanticOrRTLReviewHOLD": 5,
+  "fullPedagogyCandidates": 32,
+  "fullPedagogyAnswerPASS": 30,
+  "fullPedagogyHOLD": 2,
+  "independentSymbolicPASS": 69,
+  "independentSymbolicFAIL": 0,
+  "proposedExistingTaxonomyRemaps": [
+    "P008-Q05 02_02→02_01",
+    "P008-Q06 02_02→02_01",
+    "P056-Q03 16_01→16_02"
+  ],
+  "newSourceIssue": "P005-Q03: q false can be B (3 even) or C (5 not odd), so two choices satisfy the question; fail closed",
+  "otherHolds": [
+    "P006-Q04 RTL implication direction",
+    "P033-Q06 discriminant coefficient domain unspecified",
+    "P036-Q09 five distinct graph zeros omitted from choices",
+    "P036-Q15 real polynomial coefficients not explicitly stated"
+  ],
+  "sourceCropQA": "P040-Q03 prior-question bleed",
+  "RUN42EvidenceCorrection": "P008-Q05 RUN42 B wrong; C=50 degrees confirmed (known since RUN43)",
+  "newCanonicalApproved": 0,
+  "productionMutation": false,
+  "sourcePDFRawByteAccess": "DENIED; inherited official PDF SHA from prior artifacts not rehashed",
+  "R2Parity": "NOT_TESTED",
+  "conditionalReviewEventsCumulative": 5496,
+  "uniqueYLM26Inventory": 326,
+  "status": "YLM26_IN_PROGRESS_NOT_GREEN",
+  "fullEvidencePackageSHA256": "bbb031511abca59459e9a3c36d6131c12551ab58ef9b97caf13579ef1d2083d8",
+  "evidenceHashes": {
+    "deep32": "d27d5858a2f28c9bca1dccef5a5c1d4f9b1507b73fb392758cc2300b9c778651",
+    "source150": "502312672893d04fac8d0a6d2c89ea21de81c4b1ed3e705ddf85dda178cb60be",
+    "symbolic69": "729ba91440f0c8f208b639daf07a486836f97f15a800defc34f65a1d272e8440"
+  },
+  "deepReviewCodes": [
+    {
+      "code": "TAH-MATH-YLM26-P005-Q01",
+      "answer": "A"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P005-Q02",
+      "answer": "A"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P005-Q03",
+      "answer": "HOLD"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P006-Q04",
+      "answer": "RTL_REVIEW"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P006-Q05",
+      "answer": "D"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P006-Q06",
+      "answer": "C"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P007-Q01",
+      "answer": "B"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P007-Q02",
+      "answer": "C"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P007-Q04",
+      "answer": "A"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P008-Q05",
+      "answer": "C"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P008-Q06",
+      "answer": "C"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P008-Q07",
+      "answer": "A"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P009-Q01",
+      "answer": "A"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P009-Q02",
+      "answer": "A"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P009-Q03",
+      "answer": "D"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P010-Q05",
+      "answer": "D"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P010-Q06",
+      "answer": "A"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P010-Q07",
+      "answer": "A"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P010-Q08",
+      "answer": "C"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P010-Q09",
+      "answer": "D"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P051-Q06",
+      "answer": "B"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P052-Q11",
+      "answer": "C"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P053-Q12",
+      "answer": "B"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P053-Q13",
+      "answer": "A"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P053-Q14",
+      "answer": "C"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P055-Q01",
+      "answer": "C"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P055-Q02",
+      "answer": "A"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P056-Q03",
+      "answer": "D"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P056-Q04",
+      "answer": "B"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P056-Q05",
+      "answer": "C"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P056-Q06",
+      "answer": "B"
+    },
+    {
+      "code": "TAH-MATH-YLM26-P057-Q07",
+      "answer": "A"
+    }
+  ],
+  "next": "Resolve source holds; 326 canonical complete fields, R2 parity and reversible manifest; then COL26 1012"
+}
