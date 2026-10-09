@@ -1,6 +1,7 @@
 // MNSF26 full-book gate: fail closed until QA, DEDUPE and remote SHA are certified.
 // Never use legacy 130-question verification as production authorization.
 import fs from 'node:fs';
+import { spawnSync } from 'node:child_process';
 const root='docs/content/mnsf26/';
 const read=(name)=>{try{return JSON.parse(fs.readFileSync(root+name,'utf8'));}catch{return null;}};
 const state=read('MNSF26_EXECUTION_STATE_V1.json');
@@ -8,7 +9,9 @@ const qa=read('MNSF26_QA_LOCK_CERTIFICATION_V1.json');
 const dedupe=read('MNSF26_DEDUPE_LOCK_CERTIFICATION_V1.json');
 const r2=read('MNSF26_R2_REMOTE_SHA_CERTIFICATION_V1.json');
 const manifest=read('MNSF26_IMPORT_MANIFEST_READY_V1.json');
+const conflictGuard=spawnSync(process.execPath,['scripts/verifyMnsf26SourceConflictsFailClosed.mjs'],{encoding:'utf8'});
 const checks={
+  sourceConflicts:conflictGuard.status===0,
   mastering:state?.questionMasteringLockRun063?.active===2129&&state?.questionMasteringLockRun063?.excluded===6,
   qa:state?.activeStage?.qaFullBookPass===true&&state?.activeStage?.remaining===0&&qa?.status==='PASS_LOCKED'&&qa?.sourceKeys?.length===2129,
   taxonomy:state?.activeStage?.canonicalTaxonomyGate==='PASS_LOCKED'&&qa?.semanticTaxonomyApproved===true,
