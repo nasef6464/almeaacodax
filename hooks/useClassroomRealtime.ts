@@ -51,6 +51,8 @@ const ensureSocket = () => {
   if (socket) return socket;
   socket = io(socketUrl() || undefined, {
     withCredentials: true,
+    // Same-origin rewrites normalize the root path; direct Engine.IO expects its slash.
+    addTrailingSlash: !API_BASE_URL.startsWith('/'),
     reconnection: true,
     reconnectionAttempts: Infinity,
     reconnectionDelay: 1000,

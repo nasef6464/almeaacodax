@@ -1,5 +1,9 @@
 # ALMEAA — Codex Execution State
 
+## Classroom proxy path normalization — 2026-10-09
+- Baseline b9524ec1/#490, exact108a5c168a:16SUCCESS3SKIPPED/all required PASS. Canonical `/socket.io` now200/handshake but trailing-slash request404; direct Render inverse. Browser default trailing slash still blocks events. No new classroom writes during diagnosis.
+- Fresh codex/classroom-socket-proxy-path adjusts only existing client addTrailingSlash according to relative proxy versus direct API, retaining credentials/RBAC/rooms/reconnect/shared connection. Real proxy test now reproduces canonical slash404 and verifies both proxy/direct modes plus lifecycle/auth/cleanup; localPASS. Exact-head CI/deployment and3×5 production UI replay pending.
+
 ## Classroom same-origin transport recovery — 2026-10-09
 - #487 code d9356428609203f4cdee01b91bdeec6e70035050:18SUCCESS3SKIPPED/all required PASS; merge2a8db59b64c20 deployed frontend/Render/readiness200/PostDeploySmoke/RoleGatePASS.
 - Matching teacher/student UI starts idle and dispatches5, but student automatic publication fails because Vercel /socket.io is404 while Render handshake200. Owned test6ac8dab326397ed2055e74f2 ended safely; prior records retained.
