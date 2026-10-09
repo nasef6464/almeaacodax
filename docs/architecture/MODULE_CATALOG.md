@@ -33,3 +33,7 @@ Shared checkpointHints supplies two fixed procedural coaching prompts chosen by 
 Local spokenMath prepares supported notation in Arabic/English without computation, provider access or persisted changes; unknown/malformed notation explicitly refers to the visible expression. NarrationEngine prefers matching local voices when available and keeps browser fallback when voices have not loaded.
 CompactTeachingPlan in the existing AI application layer owns content schema and deterministic scene/checkpoint compilation; provider adapters apply its schema for board calls only. Browser storyboard_v1 remains the canonical rendering contract.
 Existing AI module retains question review authorization, trusted references, provider routing, usage/budget enforcement and scoped cache. A pure versioned teaching contract is shared with the frontend. Browser components/results/teaching owns board state/actions/playback/render and a replaceable narration adapter. No new service or educational authority. Local fixture proof is PARTIAL; live-provider and production certification remain open.
+
+## Mock client policy and ordering ownership — 2026-10-10
+- services/mockExamNormalization.ts owns published mock policy conversion; services/adapter.ts delegates. Preserve strict/flexible flags, subject domains and optional legacy defaults.
+- utils/mockExam.ts owns section-respecting question order; QuizPage delegates and restores an older draft current question by canonical identity. Scoring, server session authority and persisted historical results remain unchanged.

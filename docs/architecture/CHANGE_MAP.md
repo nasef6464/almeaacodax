@@ -49,3 +49,7 @@
 
 ## Classroom assessment waiting UI — 2026-10-09
 Student waiting presentation moved from `ClassroomStudentLive` into `ClassroomStudentWaitingPanel`, removing rotating tip timers. Existing template dispatch presentation is composed in `ClassroomSavedBatchesPanel` from the active classroom panel. No public route/API, auth, scoring or stored model ownership changes.
+
+## Mock client policy and ordering ownership — 2026-10-10
+- services/mockExamNormalization.ts owns published mock policy conversion; services/adapter.ts delegates. Preserve strict/flexible flags, subject domains and optional legacy defaults.
+- utils/mockExam.ts owns section-respecting question order; QuizPage delegates and restores an older draft current question by canonical identity. Scoring, server session authority and persisted historical results remain unchanged.
