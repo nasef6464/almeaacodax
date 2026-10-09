@@ -510,17 +510,33 @@
       },
       "imageHash": "33cad9b41388230b68299a25fb68a420445f441d05881221883fe5991a80c3cb",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T009_Q17",
-      "status": "MASTERED",
-      "questionText": "مثلث قائم عند القاعدة اليسرى وخط داخلي يصل العمود بالقاعدة؛ أوجد س+ص",
-      "canonicalMainSkill": "main_quant_20",
+      "status": "REVIEW",
+      "questionText": "مثلث قائم الزاوية عند الركن الأيسر السفلي، ورسم مستقيم مائل داخله؛ أوجد مجموع الزاويتين الخارجيتين س+ص عند طرفي المستقيم الداخلي.",
+      "canonicalMainSkill": "skill_quant_20",
       "canonicalSubskill": "sub_quant_20_1",
-      "correctAnswer": "90 (أ)",
-      "stepByStepSolution": "زاويتان حادتان في مثلث قائم مجموعهما90.",
-      "educationalExplanation": "زاويتان حادتان في مثلث قائم مجموعهما90.",
+      "correctAnswer": "270 (ج)",
+      "stepByStepSolution": "لتكن الزاويتان الحادتان داخل المثلث الصغير α وβ. لأن المثلث قائم، α+β=90°. الزاويتان س وص المرسومتان خارجيتان ومكملتان لهما؛ لذلك س+ص=(180°−α)+(180°−β)=360°−90°=270°، الاختيار (ج).",
+      "educationalExplanation": "المطلوب زاويتان خارجيتان لا الزاويتان الحادتان الداخليتان؛ الزاوية الخارجية تكمل الداخلية إلى 180°. مجموع الخارجيتين هنا 270°.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "a6ac20bdc6e822817c43d6964d0a233c9de5b07fbf44b353d7119e35265bfb08",
-      "ideaFingerprint": "1499d9ac37fcc77de52dbe2987cf433a16d524e4230d24bed072b921d54bcde9"
+      "ideaFingerprint": "1499d9ac37fcc77de52dbe2987cf433a16d524e4230d24bed072b921d54bcde9",
+      "importEligible": false,
+      "reviewReason": "RUN090_DIRECT_ORIGINAL_IMAGE_VERIFIED_ANSWER_CORRECTION; CANONICAL_SUBSKILL_SEMANTIC_AND_FINGERPRINT_REVALIDATION_PENDING",
+      "qaReview": {
+        "run": "RUN090",
+        "sourceImageSHA256": "33cad9b41388230b68299a25fb68a420445f441d05881221883fe5991a80c3cb",
+        "previousMaster": {
+          "correctAnswer": "90 (أ)",
+          "stepByStepSolution": "زاويتان حادتان في مثلث قائم مجموعهما90.",
+          "questionText": "مثلث قائم عند القاعدة اليسرى وخط داخلي يصل العمود بالقاعدة؛ أوجد س+ص",
+          "canonicalMainSkill": "main_quant_20"
+        },
+        "visualSource": "RUN089 original GEO_T009_Q17.webp reinspected RUN090",
+        "fingerprintsPreservedFromOriginal": true,
+        "fingerprintRevalidationPending": true,
+        "canonicalSubskillSemanticApprovalPending": true
+      }
     },
     {
       "sourceKey": "MNSF26-GEO-T009-Q18",
