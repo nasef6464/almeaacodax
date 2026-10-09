@@ -215,7 +215,7 @@
       },
       "imageHash": "dc8f77943173fa185505bd0adbac6c53f18e7a05f1861abdc7a62b1381184abc",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
-      "status": "MASTERED",
+      "status": "REVIEW",
       "questionText": "غرفة أبعادها6م و4.8م يراد تبليطها ببلاط مستطيل دون قص؛ أي أبعاد بلاطة مناسبة؟",
       "canonicalMainSkill": "main_quant_21",
       "canonicalSubskill": "sub_quant_21_2",
@@ -225,7 +225,11 @@
       "difficulty": "Medium",
       "difficultyReason": "يتطلب أكثر من خطوة أو علاقة هندسية في تبليط مستطيل بمقاسات تقسم البعدين.",
       "contentFingerprint": "0e7fcc898970ce0baabf2b6f20eb43e20531d78e82fed5b52f1b0dd0e4ac6b4a",
-      "ideaFingerprint": "2fcddd5cb3d8848aa33cc6a61dc427b240ed71783f50be3478b2764ad13080e2"
+      "ideaFingerprint": "2fcddd5cb3d8848aa33cc6a61dc427b240ed71783f50be3478b2764ad13080e2",
+      "importEligible": false,
+      "reviewReason": "Direct source crop has at least two valid uncut tiling options: A (1.2m×0.6m) and C (1.6m×0.4m, rotated). Not a single-answer MCQ.",
+      "qaSourceVerifiedSha256": "dc8f77943173fa185505bd0adbac6c53f18e7a05f1861abdc7a62b1381184abc",
+      "qaCorrectionPending": true
     },
     {
       "sourceKey": "MNSF26-GEO-T026-Q09",
@@ -242,7 +246,7 @@
       },
       "imageHash": "1b531fd943083a0659786e833dd4d651183d7a0279c17cb001ee500b7455c4ff",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
-      "status": "MASTERED",
+      "status": "REVIEW",
       "questionText": "مستطيلان متجاوران لهما الارتفاع نفسه ومساحتاهما20 و25 سم²؛ أي مجموع عرضين ممكن؟",
       "canonicalMainSkill": "main_quant_21",
       "canonicalSubskill": "sub_quant_21_2",
@@ -252,7 +256,11 @@
       "difficulty": "Medium",
       "difficultyReason": "يتطلب أكثر من خطوة أو علاقة هندسية في علاقة مساحة مستطيلين متجاورين بارتفاع مشترك.",
       "contentFingerprint": "7cba67e39965689b11a5de9cc14f9a0bd92c4895fa201de1d63d0f44647f371c",
-      "ideaFingerprint": "7802dfb0902bed658c56d47487e6c4cd810d0c6cf5e521ac282279f89fc6ab2d"
+      "ideaFingerprint": "7802dfb0902bed658c56d47487e6c4cd810d0c6cf5e521ac282279f89fc6ab2d",
+      "importEligible": false,
+      "reviewReason": "Two adjacent rectangles have areas 20 and 25 cm² but shared height is unspecified. Total width 45/h can equal multiple offered choices; 9 cm is an assumed example, not a unique answer.",
+      "qaSourceVerifiedSha256": "1b531fd943083a0659786e833dd4d651183d7a0279c17cb001ee500b7455c4ff",
+      "qaCorrectionPending": true
     },
     {
       "sourceKey": "MNSF26-GEO-T026-Q10",
