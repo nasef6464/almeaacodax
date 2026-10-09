@@ -190,7 +190,7 @@
       2
     ]
   },
-  "lastCheckpoint": "2026-10-08-RUN31-150-INDEPENDENT-SOURCE-MATH-6-CROPS; see TAH_MATH_RUN31_CHECKPOINT.json",
+  "lastCheckpoint": "2026-10-09-RUN47-200-FRESH-OFFICIAL-PDF-VISUAL-24-SPECIFIC-DISTRACTOR-PEDAGOGY",
   "evidence": [
     "ops/tah-math/TAH_MATH_RUN1_BASELINE.json",
     "ops/tah-math/TAH_MATH_SOURCE_IDEA_MAP_PART01.json",
@@ -237,5 +237,19 @@
     "uniqueYLM26SourceInventory": 326,
     "documentedReviewEventsRUN21toRUN31": 1999,
     "remaining": "YLM26 canonical options, full wrong-option pedagogy, foundation/fingerprint validation, 2 source ambiguities, R2 parity and reversible key correction; then COL26."
+  },
+  "run47": {
+    "date": "2026-10-09",
+    "actualSourceVisualReviewed": 200,
+    "sourceRgbPixelPass": 200,
+    "fullOptionPedagogyRefined": 24,
+    "wrongOptionReasonsRefined": 72,
+    "evidenceCorrection": "P008-Q05 RUN42 B incorrect; source C=50°",
+    "conditionalReviewEventsCumulative": 4696,
+    "uniqueYLM26Questions": 326,
+    "canonicalApproved": 0,
+    "productionMutation": false,
+    "status": "YLM26_IN_PROGRESS_NOT_GREEN",
+    "next": "YLM26 canonical option/skills/pedagogy/foundation/fingerprints/R2 parity"
   }
 }
