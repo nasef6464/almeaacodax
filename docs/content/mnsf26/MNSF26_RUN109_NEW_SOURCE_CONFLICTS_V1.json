@@ -1,0 +1,39 @@
+{
+  "bank": "MNSF26",
+  "run": "RUN109",
+  "stage": "QA_LOCK",
+  "productionImportAuthorized": false,
+  "source": "Run017 original WebP visually checked; SHA256 matches Run063",
+  "sourceConflicts": [
+    {
+      "sourceKey": "MNSF26-AR-T037-Q14",
+      "status": "REVIEW",
+      "importEligible": false,
+      "masterPatched": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T038-Q04",
+      "status": "REVIEW",
+      "importEligible": false,
+      "masterPatched": true
+    },
+    {
+      "sourceKey": "MNSF26-AR-T038-Q09",
+      "status": "REVIEW",
+      "importEligible": false,
+      "masterPatched": true
+    },
+    {
+      "sourceKey": "MNSF26-AR-T038-Q10",
+      "status": "REVIEW",
+      "importEligible": false,
+      "masterPatched": true
+    },
+    {
+      "sourceKey": "MNSF26-AR-T039-Q03",
+      "status": "REVIEW",
+      "importEligible": false,
+      "masterPatched": false
+    }
+  ]
+}
