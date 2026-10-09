@@ -203,6 +203,7 @@ jobs:
         run: |
           node scripts/smoke-classroom-teacher-start-ui.mjs
           node scripts/smoke-classroom-saved-batches-ui.mjs
+          node scripts/smoke-classroom-proxy-realtime.mjs
 
       - name: Start exact branch frontend
         id: start_frontend
