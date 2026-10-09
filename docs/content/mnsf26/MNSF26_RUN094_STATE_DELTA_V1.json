@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN094",
+  "stage": "QA_LOCK",
+  "exactBranchHeadAtStart": "b19dc579d4eb8d6642e1f39c578c309fea742742",
+  "exactMainHeadAtStart": "7e3043346bd0ed0ea6c31aba7faa191405b32c69",
+  "sourceMasterRowsAudited": 402,
+  "sourceImageSHA256Verified": 402,
+  "masteredPayloadFieldsComplete": 325,
+  "holdPreserved": 77,
+  "confirmedSourceConflicts": [
+    "MNSF26-GEO-T003-Q20",
+    "MNSF26-GEO-T001-Q19"
+  ],
+  "newMastered": 0,
+  "qaFullBookPass": false,
+  "sourceMasterAndStateWriteBlocked": true,
+  "cropLock": "2135/2135",
+  "productionE2E": false,
+  "evidence": "/MNSF26/Run094/MNSF26_RUN094_402_IMAGE_PAYLOAD_PREFLIGHT_AND_CONFLICT_EVIDENCE.zip"
+}
