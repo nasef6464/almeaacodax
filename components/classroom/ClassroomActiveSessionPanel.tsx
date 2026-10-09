@@ -9,6 +9,7 @@ import { ClassroomBatchSummaryCard, type BatchMiniReport } from './ClassroomBatc
 import { ClassroomEndSessionModal } from './ClassroomEndSessionModal';
 import { ClassroomStudentReportTable } from './ClassroomStudentReportTable';
 import { ClassroomSessionQuestionsList } from './ClassroomSessionQuestionsList';
+import { ClassroomSavedBatchesPanel } from './ClassroomSavedBatchesPanel';
 import { api } from '../../services/api';
 import { useStore } from '../../store/useStore';
 import { useClassroomRealtime } from '../../hooks/useClassroomRealtime';
@@ -40,7 +41,7 @@ interface ClassroomActiveSessionPanelProps {
   onToggleChallenge: (questionId: string) => void;
   onPublish: (index: number) => void;
   onEnd: () => void;
-  onReload?: () => void;
+  onReload?: () => void | Promise<void>;
   message: string;
   isTeacher: boolean;
 }
@@ -243,6 +244,9 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
           <Link to={`/classroom/${sessionId}/projector`} target="_blank" className="flex items-center gap-1.5 rounded-2xl bg-indigo-600 px-4 py-2.5 text-xs font-black text-white hover:bg-indigo-700 shadow-md transition-all active:scale-95"><Presentation size={16} /> شاشة السبورة التفاعلية <ExternalLink size={14} /></Link>
         </div>
       </div>
+
+      {data?.status === 'live' && !data?.activeBatchId && <p role="status" className="mt-4 rounded-xl bg-indigo-50 p-4 font-bold text-indigo-800">الحصة مفتوحة والطلاب في الانتظار. تابع شرحك على السبورة، ثم أرسل دفعة لتقويم المهارة.</p>}
+      {data?.status === 'live' && <ClassroomSavedBatchesPanel sessionId={sessionId} schoolId={schoolId} questions={data?.questions || []} activeBatch={Boolean(data?.activeBatchId)} busy={pushingQuestions || endingBatch} onBusyChange={setPushingQuestions} onReload={onReload} />}
 
       {challengeState?.competitionEnabled && timerSeconds !== null && (
         <div className={`mt-4 flex flex-col gap-3 rounded-2xl p-4 text-white shadow-lg sm:flex-row sm:items-center sm:justify-between ${challengeEnded ? 'bg-slate-800' : 'bg-gradient-to-r from-amber-500 to-orange-600'}`}>

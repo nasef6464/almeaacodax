@@ -6,12 +6,12 @@ const fixtures = {
     '../services/api': `window.calls={workspace:0,active:0,create:0,activeSchools:[]};export const api={getTeacherActiveClassroomSession:async schoolId=>{window.calls.active++;window.calls.activeSchools.push(schoolId);return window.resumeExisting?{hasActiveSession:true,session:{sessionId:"existing"}}:{hasActiveSession:false}},getSchoolTeacherWorkspace:()=>{window.calls.workspace++;return new Promise((resolve,reject)=>{window.workspaceResolve=resolve;window.workspaceReject=reject})},createClassroomSession:body=>{window.calls.create++;window.createBody=body;return new Promise((resolve,reject)=>{window.createResolve=resolve;window.createReject=reject})}};`,
     '../contexts/AuthContext': `export const useAuth=()=>({user:{role:'teacher'}});`,
     '../hooks/useClassroomRealtime': `export const useClassroomRealtime=()=>{};`,
-    '../components/classroom/ClassroomPreparedTemplatesManager': `export const ClassroomPreparedTemplatesManager=()=>null;`,
+    '../components/classroom/ClassroomPreparedTemplatesManager': `import React from'react';export const ClassroomPreparedTemplatesManager=({onApplyTemplate})=><button onClick={()=>onApplyTemplate({id:'saved',title:'Prepared',questionIds:['q1','q2','q3','q4','q5'],challengeIds:[]})}>Apply prepared</button>;`,
     '../components/classroom/ClassroomActiveSessionPanel': `export const ClassroomActiveSessionPanel=()=>null;`,
     '../components/classroom/ClassroomQuestionFilterBar': `export const ClassroomQuestionFilterBar=()=>null;`,
     '../components/classroom/QuestionContentRenderer': `export const QuestionContentRenderer=()=>null;`
 };
-const bundle = await build({ stdin: { contents: `import React from'react';import{createRoot}from'react-dom/client';import{MemoryRouter,Routes,Route}from'react-router-dom';import{ClassroomTeacherConsole}from'./pages/ClassroomTeacherConsole';createRoot(document.getElementById('root')).render(<MemoryRouter initialEntries={['/classroom/teacher?schoolId=s2&classId=c3']}><Routes><Route path='/classroom/teacher' element={<ClassroomTeacherConsole/>}/><Route path='/classroom/:sessionId/teacher' element={<div>Session started</div>}/></Routes></MemoryRouter>);`, resolveDir: process.cwd(), loader: 'tsx' }, bundle: true, write: false, plugins: [{ name: 'fixtures', setup(b) { b.onResolve({ filter: /.*/ }, args => fixtures[args.path] ? { path: args.path, namespace: 'fixture' } : undefined); b.onLoad({ filter: /.*/, namespace: 'fixture' }, args => ({ contents: fixtures[args.path], loader: 'tsx' })); } }] });
+const bundle = await build({ stdin: { contents: `import React from'react';import{createRoot}from'react-dom/client';import{MemoryRouter,Routes,Route}from'react-router-dom';import{ClassroomTeacherConsole}from'./pages/ClassroomTeacherConsole';createRoot(document.getElementById('root')).render(<MemoryRouter initialEntries={['/classroom/teacher?schoolId=s2&classId=c3']}><Routes><Route path='/classroom/teacher' element={<ClassroomTeacherConsole/>}/><Route path='/classroom/:sessionId/teacher' element={<div>Session started</div>}/></Routes></MemoryRouter>);`, resolveDir: process.cwd(), loader: 'tsx' }, bundle: true, write: false, plugins: [{ name: 'fixtures', setup(b) { b.onResolve({ filter: /.*/ }, args => fixtures[args.path] ? { path: args.path, namespace: 'fixture' } : undefined); b.onLoad({ filter: /.*/, namespace: 'fixture' }, args => ({ contents: fixtures[args.path], loader: 'tsx', resolveDir: process.cwd() })); } }] });
 const workspace = { schools: [{ schoolId: 's1', schoolName: 'School1', smartClassroomEnabled: true, assignments: [{ assignmentId: 'a1', classId: 'c1', className: 'Class1' }] }, { schoolId: 's2', schoolName: 'School2', smartClassroomEnabled: true, assignments: [{ assignmentId: 'a2', classId: 'c2', className: 'Class2' }, { assignmentId: 'a3', classId: 'c3', className: 'Class3' }] }] };
 const server = createServer((req, res) => { res.setHeader('Content-Type', 'text/html'); res.end('<div id="root"></div>'); });
 await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
@@ -39,7 +39,9 @@ try {
     assert.equal(await page.evaluate(() => window.calls.workspace), 2);
     assert.equal(await page.evaluate(() => window.calls.active), 2);
     assert.deepEqual(await page.evaluate(() => window.calls.activeSchools), ['s2', 's1']);
-    const start = page.getByRole('button', { name: 'ابدأ الحصة للشرح — أرسل الأسئلة لاحقًا' });
+    await page.getByRole('button', { name: 'Apply prepared' }).click();
+    assert.equal(await page.getByRole('button', { name: 'ابدأ وأرسل التحديد الآن (5 أسئلة)' }).count(), 1);
+    const start = page.getByRole('button', { name: 'ابدأ الحصة — الطلاب في الانتظار' });
     await start.click();
     await page.getByRole('button', { name: 'جارٍ بدء الحصة…' }).waitFor();
     assert.equal(await page.evaluate(() => window.calls.create), 1);

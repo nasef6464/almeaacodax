@@ -42,3 +42,7 @@
 - Board replay/actions: components/results/teaching/boardState.ts; timing/pause/resume: useTeachingPlayback.ts; voice backend: narrationEngine.ts; render: TeachingBoard.tsx.
 - Spoken notation and safe unsupported-expression fallback: components/results/teaching/spokenMath.ts; matching/local browser voice selection remains in narrationEngine.ts. No new inference or server authority.
 - Student dialogue/interruption/continue: components/results/InteractiveSmartTeacher.tsx. See docs/audits/INTERACTIVE_TEACHING_BOARD_V1_2026-10-08.md for current proof limits.
+
+
+## Classroom assessment waiting UI — 2026-10-09
+Student waiting presentation moved from `ClassroomStudentLive` into `ClassroomStudentWaitingPanel`, removing rotating tip timers. Existing template dispatch presentation is composed in `ClassroomSavedBatchesPanel` from the active classroom panel. No public route/API, auth, scoring or stored model ownership changes.
