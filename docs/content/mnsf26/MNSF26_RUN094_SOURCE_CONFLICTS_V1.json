@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN094",
+  "stage": "QA_LOCK",
+  "originalImageSHA256Verified": true,
+  "masterWritesBlockedBySafetyChecks": true,
+  "conflicts": [
+    {
+      "sourceKey": "MNSF26-GEO-T003-Q20",
+      "imageHash": "",
+      "sourceProof": "First angle S=180-45-45=90 degrees; second P=180-60-60=60 degrees. Correct comparison: first larger (A). MASTER incorrectly says equal (C).",
+      "currentMasterStatus": "MASTERED",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T001-Q19",
+      "sourceProof": "Source text says BOTH diagonals of rectangle; MASTER says ONE diagonal and answer 2. Four triangular regions result from two diagonals; total count of all formed triangles can be eight. Source convention must be adjudicated.",
+      "currentMasterStatus": "MASTERED",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    }
+  ],
+  "cropLock": "2135/2135",
+  "qaFullBookPass": false
+}
