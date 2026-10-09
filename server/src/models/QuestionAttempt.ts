@@ -4,6 +4,8 @@ const questionAttemptSchema = new Schema(
   {
     userId: { type: String, required: true, index: true },
     questionId: { type: String, required: true, index: true },
+    // Present only for finalized quiz answers; legacy/practice attempts remain untouched.
+    quizResultId: { type: String, default: undefined },
     selectedOptionIndex: { type: Number, default: -1 },
     isCorrect: { type: Boolean, default: false, index: true },
     timeSpentSeconds: { type: Number, default: 0 },
@@ -20,6 +22,11 @@ const questionAttemptSchema = new Schema(
 );
 
 questionAttemptSchema.index({ userId: 1, questionId: 1, createdAt: -1 });
+// One finalized evidence row per question/result. Excludes existing legacy attempts.
+questionAttemptSchema.index(
+  { userId: 1, quizResultId: 1, questionId: 1 },
+  { unique: true, partialFilterExpression: { quizResultId: { $type: "string" } } },
+);
 questionAttemptSchema.index({ userId: 1, createdAt: -1 });
 questionAttemptSchema.index({ userId: 1, skillIds: 1, createdAt: -1 });
 questionAttemptSchema.index({ pathId: 1, subjectId: 1, sectionId: 1, createdAt: -1 });
