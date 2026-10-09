@@ -187,3 +187,7 @@ Performance ownership now includes: isolated load profiles; profile-specific evi
 
 ### Supervisor frontend scope repair — 2026-10-08
 `utils/supervisorSchoolScope.ts` owns frontend resolution of explicit school versus assigned class/private-group scope for `AdminDashboard`, `SupervisorDashboard` and `supervisorTests/useSupervisorAssessmentScope`. Backend authority remains `quizSupervisorScope.ts` and its repository; no API, role or persistence ownership changed. Behavioral parity is executed by `scripts/smoke-supervisor-scope-parity.mjs`, included in the supervisor smoke.
+
+
+## Classroom waiting and prepared batches — 2026-10-09
+`ClassroomSavedBatchesPanel` owns lazy scoped template reads and dispatch through the existing append API; the active panel shares its push lock and reload. `ClassroomStudentWaitingPanel` owns idle student presentation; student session/join/realtime/submission remain in `ClassroomStudentLive`. Existing persisted templates and batch/report models stay authoritative.

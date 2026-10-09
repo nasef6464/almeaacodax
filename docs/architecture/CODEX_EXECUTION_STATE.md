@@ -1,5 +1,12 @@
 # ALMEAA — Codex Execution State
 
+## Waiting-session prepared assessment batches — 2026-10-09
+- Owner clarified physical-board teaching with idle connected students and repeated prepared5-question skill batches; explicitly authorized an existing class test. Baseline076f442d/#486 deployed/readiness+PostDeploySmoke+RoleGatePASS. Fresh codex/classroom-waiting-prepared-batches.
+- Default start no publication; explicit immediate-send retained. Added modular lazy/cached personal saved-batch dispatch, quiet student waiting presentation and shared push lock. Existing IDs/templates/scores/RBAC/models unchanged.
+- Controlled teacher/saved-batch regressions PASS; classroom58/58, hardening35/35, report contractsPASS. Final CI/build/deployment pending.
+- Live API one student/teacher3×5 shared-skill batches, all three waiting transitions, submit1/1, student403, ended immutable report24rows/1joined/15answers/3batches/5correct/fresh-login equalityPASS. Labelled test templates/session retained; no old data deletion.
+- Evidence docs/audits/CLASSROOM_WAITING_AND_PREPARED_BATCHES_2026-10-09.md. Next exact-head delivery and matching browser teacher/student replay;20contexts/physical-tabletsNOTPROVEN.
+
 ## Redis recovery and classroom start ease — 2026-10-09
 - Baseline main37488e2fabbaf (#485 merged/live), code16689e346155:19SUCCESS3SKIPPED/all3requiredPASS. Redis available/free, canonical scale-ready200 and teacher/student/supervisor login3/3PASS. Fresh branch codex/classroom-ease-certification.
 - Production read-only teacher UI proves a blank workspace-loading interval; active-session request lacks requiredschool and returns400, scopedread200. Added visible load/retry, workspace request stabilization, scoped active-session restore and single pending create with target locking/retry. No API/auth/scoring/schema changes.

@@ -162,7 +162,7 @@ export const ClassroomTeacherConsole: React.FC = () => {
     setChallengeIds((prev) => prev.includes(id) ? prev.filter((entry) => entry !== id) : [...prev, id]);
   };
 
-  const create = async () => {
+  const create = async (sendInitialQuestions = false) => {
     if (createPending.current) return;
     createPending.current = true;
     setCreating(true);
@@ -170,11 +170,11 @@ export const ClassroomTeacherConsole: React.FC = () => {
       const result = await api.createClassroomSession({
         schoolId,
         classId,
-        questionIds: selectedIds,
+        questionIds: sendInitialQuestions ? selectedIds : [],
         publishedMode: 'batch',
         autoStart: true,
       });
-      setMessage(selectedIds.length > 0
+      setMessage(sendInitialQuestions && selectedIds.length > 0
         ? `تم بدء الحصة مباشرة بـ ${selectedIds.length} أسئلة. رمز الانضمام: ${result.pin}`
         : `تم بدء الحصة فارغة. رمز الانضمام: ${result.pin}`);
       sessionStorage.setItem(`classroom_pin_${result.sessionId}`, result.pin);
@@ -214,8 +214,8 @@ export const ClassroomTeacherConsole: React.FC = () => {
     return (
       <main className="mx-auto max-w-4xl p-4 sm:p-6" dir="rtl">
         {user?.role === 'teacher' && <Link to="/school-teacher-dashboard" className="text-sm font-black text-indigo-700">← العودة إلى لوحة معلم المدرسة</Link>}
-        <h1 className="mt-4 text-3xl font-black">ابدأ فصلًا ذكيًا</h1>
-        <p className="mt-2 text-slate-500">اختر الفصل ثم ابدأ مباشرة فارغًا، أو جهز أسئلة أولية وأرسل دفعات أخرى أثناء الشرح.</p>
+        <h1 className="mt-4 text-3xl font-black">ابدأ حصة</h1>
+        <p className="mt-2 text-slate-500">ابدأ الحصة ليَنضم الطلاب وينتظروا. بعد شرح كل فكرة على السبورة الفعلية، أرسل دفعة لتقويم المهارة ثم تابع الشرح.</p>
 
         {workspaceLoading && <p role="status" className="mt-6 text-sm font-bold text-indigo-700">جارٍ تحميل فصولك…</p>}
         {workspaceError && (
@@ -315,8 +315,9 @@ export const ClassroomTeacherConsole: React.FC = () => {
 
             <button type="button" onClick={() => void create()} aria-busy={creating} disabled={creating || workspaceLoading || workspaceError || !schoolId || !classId || !selectedSchool?.smartClassroomEnabled} className="mt-6 flex w-full items-center justify-center gap-2.5 rounded-2xl bg-gradient-to-r from-indigo-600 to-indigo-700 py-4 text-sm sm:text-base font-black text-white shadow-xl hover:from-indigo-700 hover:to-indigo-800 active:scale-95 disabled:opacity-40">
               <Presentation size={18} />
-              {creating ? 'جارٍ بدء الحصة…' : selectedIds.length > 0 ? `ابدأ الحصة الآن بـ ${selectedIds.length} أسئلة` : 'ابدأ الحصة للشرح — أرسل الأسئلة لاحقًا'}
+              {creating ? 'جارٍ بدء الحصة…' : 'ابدأ الحصة — الطلاب في الانتظار'}
             </button>
+            {selectedIds.length > 0 && <div className="mt-3 text-sm text-slate-600"><p>لإرسال التحديد لاحقًا، احفظه كحزمة قبل بدء الحصة.</p><button type="button" onClick={() => void create(true)} disabled={creating || workspaceLoading || workspaceError || !selectedSchool?.smartClassroomEnabled} className="mt-2 rounded-xl border border-indigo-200 px-4 py-3 font-bold disabled:opacity-40">ابدأ وأرسل التحديد الآن ({selectedIds.length} أسئلة)</button></div>}
           </>
         )}
         {message && (
@@ -364,7 +365,7 @@ export const ClassroomTeacherConsole: React.FC = () => {
       onToggleChallenge={toggleChallenge}
       onPublish={(index) => { void publish(index); }}
       onEnd={() => void end()}
-      onReload={() => void load()}
+      onReload={load}
       message={message}
       isTeacher={user?.role === 'teacher'}
     />

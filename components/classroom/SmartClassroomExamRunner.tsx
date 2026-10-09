@@ -165,7 +165,7 @@ export const SmartClassroomExamRunner: React.FC<SmartClassroomExamRunnerProps> =
                 <CheckCircle2 size={56} className="mx-auto text-emerald-400 mb-4 animate-bounce" />
                 <h3 className="text-2xl font-black text-white">تم تسليم جميع إجاباتك بنجاح للمعلم!</h3>
                 <p className="mt-2 text-sm text-slate-300">تم تسجيل إجابة <span className="font-bold text-emerald-400">{answeredCount}</span> من أصل <span className="font-bold text-white">{totalQuestions}</span> أسئلة على رادار الحصة المباشر.</p>
-                <div className="mt-6 inline-flex items-center gap-2 rounded-2xl bg-emerald-950/60 border border-emerald-500/40 px-5 py-2.5 text-sm font-bold text-emerald-300"><span>انتظر المعلم لمناقشة النتائج على السبورة التفاعلية</span></div>
+                <div className="mt-6 inline-flex items-center gap-2 rounded-2xl bg-emerald-950/60 border border-emerald-500/40 px-5 py-2.5 text-sm font-bold text-emerald-300"><span>تم تسليم الدفعة. تابع شرح المعلم وانتظر الدفعة التالية.</span></div>
               </div>
             </div>
           ) : !currentQ ? (
