@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN090B",
+  "stage": "QA_LOCK",
+  "cumulativeRun090SourceImagesInspected": 83,
+  "cumulativeRun090OriginalSHA256Verified": 83,
+  "run090BImages": 56,
+  "run090BVisualScreeningMathPending": 36,
+  "run090BHoldPreserved": 18,
+  "run090BNewSourceConflicts": [
+    "MNSF26-GEO-T026-Q08",
+    "MNSF26-GEO-T026-Q09"
+  ],
+  "cumulativeRun090NewSourceConflicts": 3,
+  "sourceMasterCorrectionCommitted": "MNSF26-GEO-T009-Q17",
+  "pendingMasterCorrections": 5,
+  "newUniqueQuestionMastering": 0,
+  "qaFullBookPass": false,
+  "cropLock": "2135/2135",
+  "dedupeLock": "BLOCKED_BY_QA",
+  "productionE2E": false
+}
