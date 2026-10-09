@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN096B",
+  "stage": "QA_LOCK",
+  "date": "2026-10-09",
+  "directSourceImagesReinspected": 3,
+  "sourceHashesVerified": 3,
+  "sourceKeys": [
+    "MNSF26-GEO-T022-Q12",
+    "MNSF26-GEO-T026-Q08",
+    "MNSF26-GEO-T026-Q09"
+  ],
+  "verdict": "REVIEW_PENDING_SAFE_MASTER_WRITE",
+  "masterWritesBlocked": true,
+  "newMastered": 0,
+  "qaFullBookPass": false,
+  "productionServicesUntouched": true,
+  "priorRun096StateDelta": "MNSF26_RUN096_STATE_DELTA_V1.json"
+}
