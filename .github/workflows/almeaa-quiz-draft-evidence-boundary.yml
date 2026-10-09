@@ -1,4 +1,4 @@
-name: ALMEAA Quiz Draft Evidence Boundary (Isolated)
+name: ALMEAA Quiz Final-Answer Evidence (Isolated)
 on:
   push:
     branches:
@@ -6,15 +6,19 @@ on:
     paths:
       - .github/workflows/almeaa-quiz-draft-evidence-boundary.yml
       - scripts/verify-quiz-draft-attempt-boundary.mjs
+      - scripts/test-quiz-finalized-question-attempt-operations.mjs
       - pages/QuizPage.tsx
+      - server/src/models/QuestionAttempt.ts
+      - server/src/modules/quizzes/application/quizSubmissionSideEffects.ts
+      - server/src/modules/quizzes/application/quizFinalizedQuestionAttemptOperations.ts
   workflow_dispatch:
 permissions:
   contents: read
 jobs:
-  isolated-quiz-draft-evidence:
-    name: Quiz answer-change / telemetry guard (source-handler execution only)
+  isolated-quiz-final-answer-evidence:
+    name: Exact-SHA quiz draft and final evidence proof (no production)
     runs-on: ubuntu-latest
-    timeout-minutes: 3
+    timeout-minutes: 12
     steps:
       - name: Checkout isolated exact SHA
         uses: actions/checkout@v4
@@ -25,7 +29,26 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Check regression harness syntax
-        run: node --check scripts/verify-quiz-draft-attempt-boundary.mjs
-      - name: Reproduce known draft telemetry issue before product edit
-        run: node scripts/verify-quiz-draft-attempt-boundary.mjs --confirm-existing-risk
+      - name: Install project dependencies only (no production connections)
+        run: |
+          npm ci --ignore-scripts
+          npm --prefix server ci --ignore-scripts
+      - name: Verify draft choices never persist mastery evidence before submit
+        run: |
+          node --check scripts/verify-quiz-draft-attempt-boundary.mjs
+          node scripts/verify-quiz-draft-attempt-boundary.mjs
+      - name: Verify canonical finalized question attempts and replay behavior
+        run: |
+          node --check scripts/test-quiz-finalized-question-attempt-operations.mjs
+          ./server/node_modules/.bin/tsx scripts/test-quiz-finalized-question-attempt-operations.mjs
+      - name: Typecheck frontend and backend
+        run: |
+          npm run typecheck
+          npm --prefix server run check
+      - name: Run related pre-existing source contracts
+        run: |
+          node scripts/smoke-quiz-client-security-contract.mjs
+          node scripts/smoke-adaptive-phase4-treatment-recheck-contract.mjs
+          node scripts/smoke-quiz-submission-schema-boundary-contract.mjs
+          node scripts/smoke-assessment-question-attempt-document-contract.mjs
+          node scripts/smoke-exam-question-source-contract.mjs
