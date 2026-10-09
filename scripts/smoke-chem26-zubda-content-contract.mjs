@@ -30,6 +30,8 @@ for (const file of files) {
   assert.equal(module.quality?.deployment, "No automatic production import", file + ": no production importer");
   assert.equal(module.taxonomyRef, "ops/chem26/CHEM26_TAXONOMY_FINAL.json");
   assert.ok(Array.isArray(module.provenance?.referencePdfPages) && module.provenance.referencePdfPages.length, file + ": cited pages");
+  assert.ok(module.provenance.referencePdfPages.every((p) => Number.isInteger(p) && p > 0), file + ": positive page numbers");
+  assert.ok(typeof module.provenance.sourceVerification === "string" && module.provenance.sourceVerification.length >= 50, file + ": explicit source verification status");
   const canonical = taxonomy.items.find((item) => item.id === module.mainSkillId);
   assert.ok(canonical, file + ": main skill identity");
   assert.ok(!seenMain.has(module.mainSkillId), file + ": duplicate main skill");
@@ -44,6 +46,7 @@ for (const file of files) {
     assert.ok(sub.goal?.length > 35 && sub.essence?.length > 35, sub.code + ": goal and essence");
     assert.ok(sub.explanation?.length >= 3 && sub.explanation.every((s) => s.length > 35), sub.code + ": explanation");
     assert.ok(sub.highYield?.length >= 4 && sub.pitfalls?.length >= 2, sub.code + ": pedagogical notes");
+    assert.ok(Array.isArray(sub.editorialExtensions) && sub.editorialExtensions.length >= 1, sub.code + ": editorial extensions are tagged");
     assert.ok(sub.workedExample?.prompt && sub.workedExample?.steps?.length >= 2 && sub.workedExample?.answer, sub.code + ": original example");
     assert.ok(Array.isArray(sub.referencePdfPages) && sub.referencePdfPages.every((p) => module.provenance.referencePdfPages.includes(p)), sub.code + ": page provenance");
     checkMap(sub.map, sub.code);
