@@ -176,7 +176,6 @@ export const QuizPage: React.FC = () => {
     saveExamResult,
     hydrateExamResults,
     examResults,
-    recordQuestionAttempt,
     courses,
     enrolledCourses,
     skills,
@@ -912,13 +911,6 @@ export const QuizPage: React.FC = () => {
         answers: next,
       }).catch((err: any) => console.warn('Failed to update live exam progress:', err));
       return next;
-    });
-    recordQuestionAttempt({
-      questionId: currentQuestion.id.toString(),
-      selectedOptionIndex: originalIndex,
-      isCorrect: originalIndex === currentQuestion.correctOptionIndex,
-      timeSpentSeconds: 0,
-      date: new Date().toISOString(),
     });
   };
 
