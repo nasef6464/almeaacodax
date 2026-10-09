@@ -175,10 +175,9 @@
   "nextCursor": {
     "stage": "QA_LOCK",
     "priority": [
-      "Apply RUN085 four critical answer conflict patches fail-closed, independently verify source images and exact canonical skills",
-      "Reconcile RUN064/RUN066/RUN067 row-level sourceKeys before promoting provisional 2124 counter",
-      "Adjudicate RUN085 18 HOLD math candidates; no automatic promotion",
-      "Finish full-book semantic QA + 25/95 canonical taxonomy, then DEDUPE_LOCK -> R2_UPLOAD_LOCK -> IMPORT_LOCK -> PRODUCTION_E2E_LOCK"
+      "Fail-close and apply RUN095 three verified MASTER source conflicts through authorized writes; preserve evidence if blocked",
+      "Reconcile canonical main alias in 325 GitHub MASTERED rows only after exact subskill parent proof",
+      "Finish 25/95 semantic taxonomy and independent full-book math QA, then DEDUPE_LOCK and subsequent gates"
     ]
   },
   "antiLoopRules": [
@@ -418,8 +417,8 @@
     "remainingPriorPayloadsLibraryOnly": 21
   },
   "lastExactHeadsVerified": {
-    "branch": "96dccb0cba2b636d01b90e950db76cb2beed2fa2",
-    "main": "f40a785ee777a0be16e48f70727793e8f9ee0695"
+    "branch": "732547372e67e17f33811fea3c29e274b9d8c942",
+    "main": "7e3043346bd0ed0ea6c31aba7faa191405b32c69"
   },
   "reconciliationRun061": {
     "date": "2026-10-08",
@@ -594,5 +593,40 @@
     "fullBookQaPass": false,
     "evidenceLibrary": "/MNSF26/Run085/MNSF26_RUN085_AR_T061_T063_DIRECT_IMAGE_QA_58_V1.json",
     "stateDeltaLibrary": "/MNSF26/Run085/MNSF26_RUN085_STATE_DELTA_V1.json"
+  },
+  "questionMasteringLockRun063": {
+    "status": "PASS_LOCKED_IN_LIBRARY_DELTA",
+    "sourceKeyTotal": 2135,
+    "active": 2129,
+    "mastered": 1777,
+    "hold": 319,
+    "review": 33,
+    "excluded": 6,
+    "canonicalSourceKeyIndex": "MNSF26_RUN063_CANONICAL_SOURCEKEY_INDEX_V1.json",
+    "noNewMasteringCounted": true
+  },
+  "qaRun095": {
+    "stage": "QA_LOCK",
+    "sourceImageSHA256VerifiedIndependent": 2135,
+    "run094RowIndexReconciled": 402,
+    "run094CanonicalAliasOnly": 325,
+    "sourceImageVisualReviewed": 69,
+    "sourceImageVisualNewReviewedNotYetDeduped": 69,
+    "mathOrSourceConflicts": 3,
+    "conflictKeys": [
+      "MNSF26-GEO-T001-Q19",
+      "MNSF26-GEO-T003-Q20",
+      "MNSF26-GEO-T004-Q03"
+    ],
+    "priorHoldCandidateMath": [
+      "MNSF26-GEO-T001-Q07",
+      "MNSF26-GEO-T002-Q09"
+    ],
+    "qaFullBookPass": false,
+    "canonicalTaxonomyGate": "PENDING",
+    "sourceImageHashDuplicateGroups": 43,
+    "newMastered": 0,
+    "masterWritesBlocked": true,
+    "productionServicesUntouched": true
   }
 }
