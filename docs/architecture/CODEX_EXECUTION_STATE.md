@@ -1,5 +1,13 @@
 # ALMEAA — Codex Execution State
 
+- متابعة الفحص: عطل فعلي مثبت في بدء المحاكي الصارم عند خلط الأسئلة؛ ثلاث جلسات بدأت1/0/0 بدل القسم0. تصحيح محدود يحافظ على ترتيب الأقسام ويخلط داخلها ويحفظ السؤال المستعاد بمعرفه؛ الفحوص المحلية ناجحة، CI والنشر والإعادة الفعلية قيد التسليم. استعادة CI من حد Docker Hub باستخدام صورة Mongo الرسمية المثبتة من مرآة ECR؛ لا تغيير لقاعدة الإنتاج أو بوابات النجاح.
+
+## تحقق رحلة الطالب والمحاكيات — 2026-10-10
+- فحص الإنتاج على main71359ae3:26فحصًا حيًا محدودًا ناجحًا. نتائج قديمة40 محفوظة؛ محاكي خاص3مواد/3أسئلة/هدف1 حفظ2إجابة صحيحة ونتيجة67 وأقسام100/0/100 وست مهارات رئيسية/فرعية؛ إعادة تحميل تحفظ المحاولة، والسجل والمشرف يعرضان النتيجة نفسها. إنجاز درس كمي واحد محفوظ بعد دخول جديد.
+- تصحيح أداة فحص حفظ الدروس لتتبع ملف التحقق الحالي؛5/5ناجح. فحص حجم Reports3025مقابل الحد2710 يبقىFAIL دون تخفيف البوابة. التدريب المرتبط بموضوع التأسيس المحدد غير منشور، والفيزياء لم ترجع مرشحًا معتمدًا لنطاق حساب الفحص؛ لا ادعاء رحلة تدريب كاملة أو مطابقة قياس.
+- الحالة PARTIAL؛ CI على رأس تصحيح الأداة، الخطة بعد الإنجاز، كامل التاريخ، القفل الصارم/الانتهاء، المحاكي الكامل والضغط الحقيقي لم تغلق. الدليل docs/audits/STUDENT_AND_SCHOOL_SYSTEM_VERIFICATION_2026-10-10.md.
+
+
 ## School report roster follow-up — 2026-10-09
 - #495 merged/published65a7b961; exactf2dacd02:21SUCCESS4skip/allrequiredPASS;main4gatesPASSafteradmin502same-headrerun. RealAPIoverview2weak/12unassessed/savedscore40PASS. Realbrowsercomparisonmissing/nameunknownPROVED:report readsglobalusersinsteadexistinglocalroster.
 - Newfresh `codex/school-assessment-report-roster` passesparentlocalroster throughsame list/report/scope; validatedclassroster IDsfallbackpreservespartialload. No newrequest/resultwrite/authchange. Emptyglobalstore actualUIregression added; CI/productionfinalpending. Otherauthorizedschoolscope remainsopen; seequality/load audit.
@@ -1626,3 +1634,6 @@
 - Teaching #478 merge 6e45e281f46e exact-head CI / release/readiness / Vercel / Post Deploy Smoke PASS; fresh owned-review real AI 3/3 valid on actual 3.8 Flash with complete 309705 in Arabic/English. Visual QA exposed pure formula line concatenation; current codex/teaching-board-formula-lines isolates each newline as a separate safe KaTeX block, fixture checks preserve numeric boundaries. Frontend-only follow-up, reuse captured provider responses; no further inference required. Full audible-device/science certification remains PARTIAL.
 
 - School audit PR #481: unchanged runtime c32a49b9 passed isolated backend integration and Smart Classroom Hardening (25 HTTP students, 83 requests, 4 sockets; not browser/production pressure). Admin source smoke updated to call the verified extracted helper and run behavioral parity; final-head CI tracked on https://github.com/nasef6464/almeaacodax/pull/481/checks. Production certification remains PARTIAL.
+
+## Current strict runner follow-up — 2026-10-10
+29 bounded production checks PASS. Exact local build proved a third defect: section time172 to180 and lost closed-state after reload. Optional local strict deadlines/locks now preserve time173 to165 and closed state in actual UI; typecheck/build/mock regressions PASS. Final exact-head CI and published replay pending. Full system remains PARTIAL.

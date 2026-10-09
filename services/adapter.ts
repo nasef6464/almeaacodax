@@ -1,4 +1,5 @@
 import { api } from "./api";
+import { normalizeMockExam } from "./mockExamNormalization";
 import { AccessCode, AnnouncementAd, B2BPackage, CategoryLevel, CategoryPath, CategorySection, CategorySubject, Course, Group, Lesson, LibraryItem, Module, Question, Quiz, Skill, StudyPlan, Topic } from "../types";
 import { sanitizeArabicText } from "../utils/sanitizeMojibakeArabic";
 
@@ -376,22 +377,7 @@ const normalizeQuiz = (quiz: any): Quiz => ({
   showInTraining: typeof quiz?.showInTraining === "boolean" ? quiz.showInTraining : undefined,
   showInMock: typeof quiz?.showInMock === "boolean" ? quiz.showInMock : undefined,
   learningPlacements: normalizeQuizLearningPlacements(quiz?.learningPlacements),
-  mockExam: quiz?.mockExam
-    ? {
-        enabled: quiz.mockExam.enabled === true,
-        pathId: String(quiz.mockExam.pathId || ""),
-        sections: Array.isArray(quiz.mockExam.sections)
-          ? quiz.mockExam.sections.map((section: any) => ({
-              id: String(section?.id || ""),
-              title: cleanText(section?.title),
-              subjectId: section?.subjectId ? String(section.subjectId) : undefined,
-              questionIds: Array.isArray(section?.questionIds) ? section.questionIds.map(String) : [],
-              timeLimit: typeof section?.timeLimit === "number" ? section.timeLimit : undefined,
-              order: typeof section?.order === "number" ? section.order : 0,
-            }))
-          : [],
-      }
-    : undefined,
+  mockExam: normalizeMockExam(quiz?.mockExam, cleanText),
   mode: quiz?.mode || "regular",
   settings: {
     showExplanations: Boolean(quiz?.settings?.showExplanations),

@@ -1,4 +1,4 @@
-import { Quiz } from '../types';
+import type { Quiz } from '../types';
 
 export const isPathMockExam = (quiz: Quiz, pathId?: string) => {
   const enabled = quiz.mockExam?.enabled === true;
@@ -43,3 +43,29 @@ export function getAllQuizQuestionIds(quiz: Quiz): string[] {
   const fromSections = (quiz.mockExam?.sections || []).flatMap(s => s.questionIds || []);
   return [...new Set([...root, ...fromSections])];
 }
+
+/** Keep section order while randomizing only the questions within each section. */
+export const orderMockExamQuestions = <T extends { id: string }>(
+  quiz: Quiz,
+  questions: T[],
+  randomize = false,
+  random: () => number = Math.random,
+): T[] => {
+  const sections = getMockExamSections(quiz);
+  if (!sections.length) return [...questions];
+  const used = new Set<string>();
+  const ordered = sections.flatMap((section) => {
+    const ids = new Set(section.questionIds || []);
+    const group = questions.filter((question) => ids.has(question.id) && !used.has(question.id));
+    group.forEach((question) => used.add(question.id));
+    if (randomize) {
+      for (let index = group.length - 1; index > 0; index -= 1) {
+        const target = Math.floor(random() * (index + 1));
+        [group[index], group[target]] = [group[target], group[index]];
+      }
+    }
+    return group;
+  });
+  // Keep already-resolved legacy references; never supplement from a bank.
+  return [...ordered, ...questions.filter((question) => !used.has(question.id))];
+};
