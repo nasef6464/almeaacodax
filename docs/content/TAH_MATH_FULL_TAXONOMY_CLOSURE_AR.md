@@ -231,3 +231,11 @@ Next heavy gate:
 - المرشحات السابقة للإجابات 158/160، والحالتان `P036-Q09` و`P036-Q15` بقيتا HOLD؛ لا اعتماد بالافتراض. التراكمي المشروط لأحداث مراجعة المصدر RUN21–RUN46 = **4496** مع التكرار، والجرد الفريد 326.
 - الحقول التعليمية والبصمات وروابط موضوعات التأسيس وصور R2 لم تُعتمد إنتاجيًا؛ الاعتماد canonical الجديد صفر، ولا توجد production mutation. مرحلة YLM26 **IN PROGRESS / NOT GREEN**.
 - الدليل المنشور: `ops/tah-math/TAH_MATH_RUN46_160_FRESH_SOURCE_PIXEL_24_PEDAGOGY_CHECKPOINT.json`. الخطوة التالية: حسم الاستثناءات واعتماد كامل 326 مع manifest قابل للرجوع، ثم COL26 1012.
+
+## RUN51 — 2026-10-09
+
+- Reviewed 150 distinct official YLM26 source questions: 24 exact RGB-matched crops plus 126 questions from 35 rendered original PDF pages; 45 source pages inspected.
+- Completed 40 new source-grounded pedagogical candidate reviews: 34 source answer PASS, 6 semantic HOLD; 35 symbolic PASS; 4 local crop repairs.
+- Three mapping candidates: P023-Q14 07_03 to 06_01; P047-Q07 14_02 to 14_04; P047-Q09 14_03 to 14_04. No production mutation.
+- New hold P064-Q04: exponent question yields an answer absent from listed options. Existing holds remain.
+- Conditional cumulative review events 5346 (repeats included), unique YLM26 inventory 326, final canonical approvals 0. Status YLM26 NOT GREEN. Next: adjudicate holds, canonical fields, R2 parity, rollback manifest, then COL26.
