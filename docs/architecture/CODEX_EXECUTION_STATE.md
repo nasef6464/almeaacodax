@@ -1637,4 +1637,3 @@
 
 ## Current strict runner follow-up — 2026-10-10
 29 bounded production checks PASS. Exact local build proved a third defect: section time172 to180 and lost closed-state after reload. Optional local strict deadlines/locks now preserve time173 to165 and closed state in actual UI; typecheck/build/mock regressions PASS. Final exact-head CI and published replay pending. Full system remains PARTIAL.
-
