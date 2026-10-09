@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN099B",
+  "stage": "QA_LOCK",
+  "date": "2026-10-09",
+  "priorRun099Commit": "f4513ae79f4a5c2e98a39d7bbb1a3e26c0a1be14",
+  "additionalIndependentMathQA": 7,
+  "sourceKeys": [
+    "MNSF26-GEO-T021-Q01",
+    "MNSF26-GEO-T021-Q02",
+    "MNSF26-GEO-T021-Q03",
+    "MNSF26-GEO-T021-Q04",
+    "MNSF26-GEO-T021-Q05",
+    "MNSF26-GEO-T021-Q06",
+    "MNSF26-GEO-T021-Q07"
+  ],
+  "mathPass": 6,
+  "holdPreserved": 1,
+  "combinedRun099UniqueIndependentMathQA": 47,
+  "sourceEvidence": "Run097 original-image-derived contact sheets; original WEBP SHA from Run097; no independent rehash this run",
+  "newMastered": 0,
+  "qaFullBookPass": false,
+  "canonicalSemantic25_95Pass": false,
+  "masterWritesBlocked": true,
+  "productionServicesUntouched": true,
+  "productionE2E": false
+}
