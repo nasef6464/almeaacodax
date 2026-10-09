@@ -6,6 +6,7 @@ on:
     paths:
       - .github/workflows/almeaa-quiz-draft-evidence-boundary.yml
       - scripts/verify-quiz-draft-attempt-boundary.mjs
+      - scripts/smoke-adaptive-phase4-treatment-recheck-contract.mjs
       - scripts/test-quiz-finalized-question-attempt-operations.mjs
       - pages/QuizPage.tsx
       - server/src/models/QuestionAttempt.ts
