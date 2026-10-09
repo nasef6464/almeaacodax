@@ -43,3 +43,6 @@ Baseline runtime/main: 71359ae319ed698d794867adbb5528e590d94e01. Branch: codex/s
 
 ## Private evidence locations
 scratch/student-system-current-audit.json; student-multi-subject-live.json; student-post-mock-progress.json; student-lesson-completion-live.json. First failures retained separately. Production test fixture/result remain scoped to audit accounts, with canonical IDs and history intact.
+
+## Required CI infrastructure recovery
+Both required Mongo suites failed twice before checkout due Docker Hub anonymous pull rate limits. The isolated suites now use the official Docker Mongo7.0 image from its ECR Public mirror, pinned to verified Linux amd64 manifest sha256:494b956596706b19ba44908cb9d03648b585214600987b86cd2a34249358e572. ECR manifest read200; no production database or test health/suite gate changed. All three affected Mongo service workflows share the pin. Exact-head CI remains the proof of container startup and suite execution. [Official mirror provenance](https://aws.amazon.com/blogs/containers/docker-official-images-now-available-on-amazon-elastic-container-registry-public/).

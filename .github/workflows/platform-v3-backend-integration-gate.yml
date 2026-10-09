@@ -26,7 +26,9 @@ jobs:
     timeout-minutes: 30
     services:
       mongodb:
-        image: mongo:7.0
+        # Official Docker Mongo 7.0 image, pinned from its ECR Public mirror.
+        # Avoid Docker Hub anonymous shared-runner pull limits.
+        image: public.ecr.aws/docker/library/mongo@sha256:494b956596706b19ba44908cb9d03648b585214600987b86cd2a34249358e572
         ports:
           - 27017:27017
         options: >-
