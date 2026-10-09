@@ -5,7 +5,7 @@
   "directImageInspection": true,
   "sourceCropArchive": "/MNSF26/Run021/mnsf26_geometry_crops_run021.zip",
   "sourceInventory": "/MNSF26/Run021/MNSF26_GEOMETRY_CROP_MANIFEST_V1.json",
-  "masteredCount": 15,
+  "masteredCount": 13,
   "holdCount": 5,
   "records": [
     {
@@ -147,7 +147,7 @@
       },
       "imageHash": "76fe0d8690ea7b57a79235d4fb16a20844744aebd06438a89d105da8bd939709",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T018_Q05",
-      "status": "MASTERED",
+      "status": "REVIEW",
       "questionText": "مثلثان متطابقان بعلامات الأضلاع وزوايا35 و31؛ قارن س ب111",
       "canonicalMainSkill": "main_quant_20",
       "canonicalSubskill": "sub_quant_20_5",
@@ -157,7 +157,11 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "2ca699c8efd7956b8268988a709fccdae1d99cc14b284dcd6583220290d19634",
-      "ideaFingerprint": "9dca054763e3dac9b07f50bef2804463b9016fee9e829032307d9efad57a1b42"
+      "ideaFingerprint": "9dca054763e3dac9b07f50bef2804463b9016fee9e829032307d9efad57a1b42",
+      "importEligible": false,
+      "qaDisposition": "SOURCE_PROVEN_CONFLICT_PENDING_INDEPENDENT_ADJUDICATION",
+      "reviewReason": "الحل القديم يستخدم114° بدل113°، ويحتاج تصحيحًا.",
+      "reviewEvidence": "Run107 original-source proof; Run108 fail-closed safety transition"
     },
     {
       "sourceKey": "MNSF26-GEO-T018-Q06",
@@ -207,7 +211,7 @@
       },
       "imageHash": "1b1c62aa9a9ba22dd8df4c21f5ecc354e7f593fb8a062528ddaac37d70ee312c",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T018_Q07",
-      "status": "MASTERED",
+      "status": "REVIEW",
       "questionText": "مثلثان متطابقان بعلامات ثلاثة أضلاع وزاوية في الأول111؛ قارن نظيرتها في الثاني",
       "canonicalMainSkill": "main_quant_20",
       "canonicalSubskill": "sub_quant_20_5",
@@ -217,7 +221,11 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "878d36bb1e0ba7a03e85859e349e50dc9b3cfa02c61c7ac4cf2d6ef517a75573",
-      "ideaFingerprint": "cab4d02c7ecbb43484610e32e18602ad31dc48476ec9794d9b8753eeb249bbba"
+      "ideaFingerprint": "cab4d02c7ecbb43484610e32e18602ad31dc48476ec9794d9b8753eeb249bbba",
+      "importEligible": false,
+      "qaDisposition": "SOURCE_PROVEN_CONFLICT_PENDING_INDEPENDENT_ADJUDICATION",
+      "reviewReason": "الزاوية113° أكبر من111° وليست مساوية.",
+      "reviewEvidence": "Run107 original-source proof; Run108 fail-closed safety transition"
     },
     {
       "sourceKey": "MNSF26-GEO-T018-Q08",
@@ -613,5 +621,6 @@
       "contentFingerprint": "268d39a07c925fb982f5fa4c29ffba9ef3ba00cd6bbc312b0072b146e2412a97",
       "ideaFingerprint": "9ad49ee7b03b11dba2ee60a74925baea5ecbddb6803daabbc966954fd14258ff"
     }
-  ]
+  ],
+  "reviewCount": 2
 }
