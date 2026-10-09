@@ -5,7 +5,7 @@
   "directImageInspection": true,
   "sourceCropArchive": "/MNSF26/Run017/mnsf26_arithmetic_crops_run017.zip",
   "sourceInventory": "/MNSF26/Run017/MNSF26_FULLBOOK_CROP_INVENTORY_V1.json",
-  "masteredCount": 19,
+  "masteredCount": 16,
   "holdCount": 1,
   "records": [
     {
@@ -103,7 +103,7 @@
         "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
       },
       "imageHash": "6e8c5b1297039f9a5ce77282834a32c2613f4edc11b776057ca3e85fd740e4f4",
-      "status": "MASTERED",
+      "status": "REVIEW",
       "questionText": "سعر4 سجاجيد1000 للواحدة خصم50%؛ قارن مع سجادتين250 للواحدة",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
       "canonicalMainSkill": "main_quant_09",
@@ -114,7 +114,11 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق مباشر لقاعدة حسابية واحدة أو خطوتين واضحتين.",
       "contentFingerprint": "75b35cf7447b38ccf3167187594c02a6cb9ae6b69f1454d25cb9669b21980379",
-      "ideaFingerprint": "9a90137a8649032401bf4b3352c56c708b40e05da487c135b235ea1c61991964"
+      "ideaFingerprint": "9a90137a8649032401bf4b3352c56c708b40e05da487c135b235ea1c61991964",
+      "importEligible": false,
+      "qaDisposition": "SOURCE_IMAGE_MATH_OR_TRANSCRIPTION_CONFLICT",
+      "reviewReason": "SOURCE_IMAGE: one rug 1000 SAR discounted 50% = 500 SAR; two rugs 250 each = 500 SAR. MASTER incorrectly states four rugs and chooses first greater. Correct relation equal (ج).",
+      "reviewEvidence": "Run109 direct inspection of original Run017 WebP; SHA256 matches Run063 canonical index"
     },
     {
       "sourceKey": "MNSF26-AR-T038-Q05",
@@ -238,7 +242,7 @@
         "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
       },
       "imageHash": "72062e2d2fbd39068504e0cd7ea7cd4b6c795e061954b8822231a2f9ad2c2ba3",
-      "status": "MASTERED",
+      "status": "REVIEW",
       "questionText": "قارن جذر27 بالمئة من20 مع20% من جذر27",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
       "canonicalMainSkill": "main_quant_09",
@@ -249,7 +253,11 @@
       "difficulty": "Medium",
       "difficultyReason": "يتطلب تحويل المعطيات إلى علاقة صحيحة ثم إجراء حساب متسلسل.",
       "contentFingerprint": "55e94cbd0582fce898a57049b583d85fc3d79fc6ba49f11af3f17c7380bb84b7",
-      "ideaFingerprint": "34f98ceff3ea860e3d7152e6639b3e4d334a2a851e2a2f62300fb300679fe1a8"
+      "ideaFingerprint": "34f98ceff3ea860e3d7152e6639b3e4d334a2a851e2a2f62300fb300679fe1a8",
+      "importEligible": false,
+      "qaDisposition": "SOURCE_IMAGE_MATH_OR_TRANSCRIPTION_CONFLICT",
+      "reviewReason": "SOURCE_IMAGE: printed radical is square-root of 2, not square-root of 27 in MASTER. Comparison remains equal but source transcription is wrong.",
+      "reviewEvidence": "Run109 direct inspection of original Run017 WebP; SHA256 matches Run063 canonical index"
     },
     {
       "sourceKey": "MNSF26-AR-T038-Q10",
@@ -265,7 +273,7 @@
         "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
       },
       "imageHash": "1e205e575adecad972c8eddb3e4cc1e31e677bd6cc65203030a6266fead8b68d",
-      "status": "MASTERED",
+      "status": "REVIEW",
       "questionText": "قارن50% من1/6 مع75% من1/3",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
       "canonicalMainSkill": "main_quant_09",
@@ -276,7 +284,11 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق مباشر لقاعدة حسابية واحدة أو خطوتين واضحتين.",
       "contentFingerprint": "94d9c8355ef064c65f609fbed5f9ed2192fac83ea60cf33d79b07febff3594e7",
-      "ideaFingerprint": "468713b7421cba9e8451c81ec0d77b1e379fdc4ec9c9bb564b049e4b95879b2c"
+      "ideaFingerprint": "468713b7421cba9e8451c81ec0d77b1e379fdc4ec9c9bb564b049e4b95879b2c",
+      "importEligible": false,
+      "qaDisposition": "SOURCE_IMAGE_MATH_OR_TRANSCRIPTION_CONFLICT",
+      "reviewReason": "SOURCE_IMAGE: first 50% of 1/2 = 1/4, second 75% of 1/3 = 1/4. MASTER incorrectly transcribes 1/6 and chooses second greater. Correct relation equal (ج).",
+      "reviewEvidence": "Run109 direct inspection of original Run017 WebP; SHA256 matches Run063 canonical index"
     },
     {
       "sourceKey": "MNSF26-AR-T038-Q11",
@@ -543,5 +555,6 @@
       "contentFingerprint": "c4d00ddece1392d7fa913dbc05200aa7ac757c91673fa6b38571183df920e5a3",
       "ideaFingerprint": "c7641c6fae4800570fd89c0183a2fa149ba5ed3a91e49a7b1ea3b82d392e71da"
     }
-  ]
+  ],
+  "reviewCount": 3
 }
