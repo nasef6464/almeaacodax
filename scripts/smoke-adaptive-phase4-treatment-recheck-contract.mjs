@@ -14,9 +14,13 @@ for (const evidenceType of ['assessment','remediation','recheck','mastery_review
   assert.ok(model.includes(evidenceType), `model missing ${evidenceType}`);
   assert.ok(schema.includes(evidenceType), `schema missing ${evidenceType}`);
 }
-assert.ok(links.includes("evidenceType: 'remediation'"));
-assert.ok(links.includes("evidenceType: 'recheck'"));
-assert.ok(links.includes("evidenceType: 'mastery_review'"));
+// The three actions now delegate to one typed builder. Check the actual
+// evidence-type wiring rather than obsolete per-link object-literal strings.
+assert.ok(links.includes("evidenceType: 'remediation' | 'recheck' | 'mastery_review'"));
+assert.ok(links.includes("    evidenceType,"));
+assert.ok(links.includes("buildScopedSelfQuizActionLink(context, 'remediation', questionCount, 15)"));
+assert.ok(links.includes("buildScopedSelfQuizActionLink(context, 'recheck', questionCount, 10)"));
+assert.ok(links.includes("buildScopedSelfQuizActionLink(context, 'mastery_review', questionCount, 10)"));
 assert.ok(policy.includes("state: 'measure'"));
 assert.ok(policy.includes("state: 'mastered'"));
 assert.ok(policy.includes("state: 'weak'"));
