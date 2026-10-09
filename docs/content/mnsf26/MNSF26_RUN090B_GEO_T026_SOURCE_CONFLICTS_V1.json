@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN090B",
+  "stage": "QA_LOCK",
+  "sourceOriginalCropSHAverified": true,
+  "conflicts": [
+    {
+      "sourceKey": "MNSF26-GEO-T026-Q08",
+      "imageHash": "",
+      "type": "MULTIPLE_VALID_CHOICES",
+      "sourceProof": "Room 6m x 4.8m: option A tile 1.2x0.6 gives 5x8 exact; option C tile 0.4x0.16 gives 15x30 exact. Both require zero cutting.",
+      "status": "REVIEW",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T026-Q09",
+      "type": "UNDERDETERMINED_WIDTH",
+      "sourceProof": "Adjacent rectangles have areas 20 and 25 cm2 and a shared but unlabelled height h. Total width 45/h; choosing h=5 yields 9, but the image supplies no h.",
+      "status": "REVIEW",
+      "importEligible": false
+    }
+  ],
+  "masterFilesNotModified": true,
+  "canonicalSkillAndFingerprintRevalidationPending": true,
+  "qaFullBookPass": false
+}
