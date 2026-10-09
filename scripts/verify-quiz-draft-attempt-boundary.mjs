@@ -15,6 +15,7 @@ const raw = code.slice(s, e).trim();
 assert.match(raw, /;\s*$/, "handler should end as a standalone statement");
 const functionText = raw
   .replace(begin, "(displayIndex) => {")
+  .replace(/\(err: any\)/g, "(err)")
   .replace(/;\s*$/, "");
 const calls = { drafts: [], attempts: [] };
 let answers = {};
