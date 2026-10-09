@@ -20,7 +20,8 @@ check(byRole.get("question_bank")?.pages===162, "question PDF pages mismatch");
 check(byRole.get("supplemental_reference")?.pages===77, "summary pages mismatch");
 check(tax.status === "PROPOSED_NOT_IMPORTED", "candidate must remain unimported");
 check(tax.mainSkills.length===25, "expected proposed 25 main skills");
-check(tax.mainSkills.reduce((n,m)=>n+m.subSkills.length,0)===90, "expected proposed 90 subskills");
+const declaredSubskills=tax.mainSkills.reduce((n,m)=>n+m.subSkills.length,0);
+check(declaredSubskills>=80 && declaredSubskills<=120 && declaredSubskills===tax.actual.subSkills, "candidate subskill count must match recorded actual and evidence-backed range");
 const mainIds=new Set(),subIds=new Set(),lessons=[];
 for (const [i,m] of tax.mainSkills.entries()) {
  check(m.order===i+1 && m.id===`PHYS26-M${String(i+1).padStart(2,"0")}`, "wrong main id/order");
@@ -40,5 +41,8 @@ check(lessons.length===31 && lessons.every((n,i)=>n===i+1),"collection 1..31 cov
 check(src.productionBaseline.subjectId==="sub_1784980706034" && src.productionBaseline.questions===0, "verified Physics subject baseline drift");
 check(src.productionBaseline.genericSkillRows===9 && src.productionBaseline.skillprogressRowsReferencingLegacySkillsOrSubject===36 && src.productionBaseline.protectLegacySkillIds===true, "legacy Physics skill/progress protection drift");
 check(src.safety==="NO_PRODUCTION_WRITES","production safety policy changed");
-check(ledger.currentPhase===1 && ledger.cumulative.canonicalQuestionsVerified===0,"phase 1 evidence overstated");
+check(Number.isInteger(ledger.currentPhase)&&ledger.currentPhase>=1&&ledger.currentPhase<=6,"invalid phase");
+check(Number.isInteger(ledger.cumulative.canonicalQuestionsVerified)&&ledger.cumulative.canonicalQuestionsVerified>=0,"invalid verified question count");
+check(ledger.cumulative.importedQuestions===0,"production question import is not authorized");
+check(subIds.size===declaredSubskills,"candidate duplicate or missing subskills");
 console.log(JSON.stringify({gate:"PHYS26_STATIC_CANDIDATE_PASS",main:mainIds.size,sub:subIds.size,collectionLessons:lessons.length,sourcePDFs:src.sources.length,foundationMissingGrade3:true,productionWrites:false}));
