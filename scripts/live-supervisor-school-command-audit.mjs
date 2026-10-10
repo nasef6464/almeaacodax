@@ -61,7 +61,7 @@ const ROUTES = [
     minBodyLength: 1200,
     minControlCount: 12,
     expectedTextGroups: [
-      ["لوحة الإشراف", "متابعة الطلاب", "تقارير الأداء"],
+      ["لوحة الإشراف"],
       ["المدرسة:", "نطاق الصلاحية:"],
       ["مجموع الطلاب", "بحاجة لمتابعة", "متوسط الدرجات"],
       ["لوحة اتخاذ القرار", "أعلى فصل", "الفصل الأكثر احتياجاً"],
@@ -173,6 +173,21 @@ async function inspectRoute(page, viewport, routeSpec) {
   // Use document readiness and the explicit assertions below instead.
   await page.goto(`${BASE_URL}${routeSpec.path}`, { waitUntil: "domcontentloaded", timeout: 60000 });
   await page.waitForTimeout(1200);
+  // Navigation is now in the mobile drawer, rather than duplicated in the page.
+  // Prove every permitted section remains reachable before checking page content.
+  let navigationFailure = "";
+  let navigationLabels = [];
+  if (routeSpec.path.startsWith('/supervisor-dashboard')) {
+    const mobile = viewport.name === 'mobile';
+    if (mobile) await page.getByRole('button', { name: 'فتح أقسام لوحة التحكم', exact: true }).click();
+    const navigation = page.locator('nav[aria-label="أقسام اللوحة"]:visible');
+    navigationLabels = await navigation.getByRole('button').allTextContents();
+    const expected = ['الملخص العام', 'متابعة الطلاب', 'الحصص المباشرة', 'الاختبارات والتحليل', 'المراقبة الحية', 'خريطة المهارات', 'تقارير الأداء'];
+    const missing = expected.filter(label => !navigationLabels.some(text => text.includes(label)));
+    const activeCount = await navigation.locator('button[aria-current="page"]').count();
+    if (missing.length || activeCount !== 1) navigationFailure = `missing navigation: ${missing.join(',')}; active=${activeCount}`;
+    if (mobile) await page.getByRole('button', { name: 'إغلاق القائمة', exact: true }).click();
+  }
   page.off("console", onConsole);
   page.off("response", onResponse);
 
@@ -242,6 +257,7 @@ async function inspectRoute(page, viewport, routeSpec) {
     !layoutFailure &&
     !scopeCardFailure &&
     !roleContractFailure &&
+    !navigationFailure &&
     network5xx.length === 0;
   const pass =
     scopeNoticeOk ||
@@ -254,6 +270,7 @@ async function inspectRoute(page, viewport, routeSpec) {
       !layoutFailure &&
       !scopeCardFailure &&
       !roleContractFailure &&
+      !navigationFailure &&
       network5xx.length === 0);
   const actionPass = !routeSpec.clickSelector || actionResult?.status === "PASS";
 
@@ -269,6 +286,8 @@ async function inspectRoute(page, viewport, routeSpec) {
     layoutFailure,
     scopeCardFailure,
     roleContractFailure,
+    navigationFailure,
+    navigationLabels,
     actionResult,
     ...state,
   };

@@ -27,6 +27,7 @@ No API/routes/auth/RBAC/scoring/payment/data changes, new requests, polling, AI 
 - Existing staff panel smoke PASS: four staff roles, student/parent visibility, parent selector, nine callbacks, pending/error/success and empty exports.
 - Focused school roster9, account workspace10, reports role20, student journey14, quizzes10, performance/Plan3 footprint contracts PASS during implementation.
 - Final exact-head typecheck/build/CI and published evidence pending. Full project remains PARTIAL; no production-scale or complete business-flow claim from this presentation fixture.
+- Initial CI 9858d432 found one stale presentation assertion: mobile overview expected the reports navigation label in page body after duplicate horizontal navigation removal; controls19/actions8, no overflow/5xx, scope/role contracts passed. Updated the audit to open the actual mobile drawer and prove all seven section buttons plus exactly one active section, then close it and retain the page, scope, actions, overflow and network assertions. No feature or protection was removed to pass the test. Final CI must run on the follow-up exact head.
 
 ## Continuation
 
