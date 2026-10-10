@@ -1,3 +1,4 @@
+import { ClassroomOptionalPulse } from './ClassroomOptionalPulse';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AlertTriangle, CheckCircle2, Clock, Copy, Crown, ExternalLink, Flame, Presentation, Trophy } from 'lucide-react';
@@ -257,6 +258,7 @@ export const ClassroomActiveSessionPanel: React.FC<ClassroomActiveSessionPanelPr
 
       {podium.length > 0 && <div className="mt-4 rounded-2xl border border-amber-200 bg-amber-50 p-4 dark:border-amber-900/60 dark:bg-amber-950/20"><div className="flex items-center gap-2"><Trophy size={20} className="text-amber-600" /><h3 className="text-sm font-black text-amber-950 dark:text-amber-200">نتيجة التحدي — أفضل 3</h3></div><div className="mt-3 grid gap-2 sm:grid-cols-3">{podium.map((entry) => <div key={entry.studentId} className="rounded-xl border border-amber-200 bg-white p-3 dark:border-amber-900/50 dark:bg-slate-900"><div className="flex items-center justify-between gap-2"><span className="text-xs font-black text-slate-900 dark:text-white">{entry.name}</span><span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-black text-amber-800"><Crown size={11} /> #{entry.rank}</span></div><div className="mt-2 text-[11px] text-slate-500">{entry.score} نقطة · {entry.correct} صحيحة · دقة {entry.accuracy}%</div></div>)}</div></div>}
 
+      {isTeacher && <ClassroomOptionalPulse canPrepareSupport={data?.status === 'live'} sessionId={sessionId} questions={data?.questions || []} batches={data?.batches || []} skillNames={Object.fromEntries(skills.map(skill => [skill.id, skill.name]))} onPrepareSupport={skillId => { setPushFilterSkill(skillId); const skill = skills.find(item => item.id === skillId); setPushFilterSubject(skill?.subjectId || ''); setPushFilterSection(skill?.sectionId || ''); openPushModal('normal'); }} />}
       {batchMiniReport && (
         <ClassroomBatchSummaryCard
           report={batchMiniReport}

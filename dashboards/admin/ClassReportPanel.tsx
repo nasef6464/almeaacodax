@@ -83,7 +83,7 @@ export const ClassReportPanel: React.FC<ClassReportPanelProps> = ({
   }, [filteredStudents]);
 
   const classNames = Array.from(new Set(students.map((s) => s.className))).filter(Boolean);
-  const urgentStudents = filteredStudents.filter((s) => s.status === 'danger' || (s.attempts > 0 && s.average < 50));
+  const urgentStudents = filteredStudents.filter((s) => s.attempts > 0 && (s.status === 'danger' || s.average < 50));
   const topStudents = [...filteredStudents].filter((s) => s.attempts > 0).sort((a, b) => b.average - a.average).slice(0, 5);
 
   return (

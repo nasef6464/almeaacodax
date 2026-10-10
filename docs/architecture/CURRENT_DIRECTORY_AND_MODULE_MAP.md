@@ -6,6 +6,8 @@ Rule: this file describes what exists now. Target architecture is documented sep
 
 ## 1. Repository shape
 
+Optional school insights (2026-10-10): utils/classSkillMatrix.ts owns read-only composite skill aggregation; SupervisorFollowUpPriorities and SchoolExecutiveSummary render existing bounded data. ClassroomOptionalPulse owns opt-in closed-batch presentation only; ClassroomActiveSessionPanel keeps live data and reviewed support-batch preparation. Existing API/RBAC/scoring/data-access ownership stays unchanged.
+
 Role dashboard presentation (2026-10-10): components/DashboardSectionNav.tsx owns grouping of caller-permitted entries; components/DisplayListControls.tsx owns screen-only incremental rows and complete beforeprint/afterprint restoration. School teacher, supervisor, parent, director and platform-teacher callers keep routing, scope, aggregation and API ownership.
 
 Student tests presentation (2026-10-10): components/SchoolTestsPanel.tsx owns directed-test status/search/cards; components/StudentListPager.tsx bounds rendered rows only. Quizzes and MockExamStudentHub keep loading, access and result ownership. Reports keeps full printable skill rows while bounding student screen rows. No API/data-access ownership change.
