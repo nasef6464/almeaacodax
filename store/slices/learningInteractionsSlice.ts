@@ -56,6 +56,11 @@ export const createLearningInteractionsSlice = <TState extends LearningInteracti
                 sectionId: String(attempt?.sectionId || ''),
                 skillIds: Array.isArray(attempt?.skillIds) ? attempt.skillIds.map(String) : [],
                 evidenceType: attempt?.evidenceType || 'assessment',
+                activityType: attempt?.activityType,
+                quizId: attempt?.quizId,
+                learningContext: attempt?.learningContext,
+                schoolId: attempt?.schoolId,
+                classId: attempt?.classId,
             }))
             .filter((attempt) => attempt.questionId),
     }) as Partial<TState>),
@@ -64,7 +69,15 @@ export const createLearningInteractionsSlice = <TState extends LearningInteracti
         const state = get();
         if (shouldSyncUserToApi(state.user)) {
             const { isCorrect: _localOnly, ...serverAttempt } = attempt;
-            api.createQuestionAttempt(serverAttempt).catch(console.error);
+            const actorId = state.user.id;
+            api.createQuestionAttempt(serverAttempt).then((saved: any) => {
+                // Source comes from the server; ignore an old actor's response.
+                if (get().user.id !== actorId || !saved?.questionId) return;
+                set((current) => ({ questionAttempts: current.questionAttempts.map(row => row === attempt
+                    ? { ...row, activityType: saved.activityType, quizId: saved.quizId,
+                        learningContext: saved.learningContext, schoolId: saved.schoolId, classId: saved.classId }
+                    : row) }) as Partial<TState>);
+            }).catch(console.error);
         }
         set((state) => ({
             questionAttempts: [...state.questionAttempts, attempt].slice(-500),

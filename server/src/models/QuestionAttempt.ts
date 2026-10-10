@@ -13,6 +13,11 @@ const questionAttemptSchema = new Schema(
     sectionId: { type: String, default: "", index: true },
     skillIds: { type: [String], default: [], index: true },
     evidenceType: { type: String, enum: ["assessment", "remediation", "recheck", "mastery_review"], default: "assessment" },
+    activityType: { type: String, enum: ['practice', 'review', 'quiz', 'legacy_unknown'], default: undefined },
+    quizId: { type: String, default: undefined },
+    learningContext: { type: String, enum: ['platform_self_study', 'school_assessment', 'legacy_unknown'], default: undefined },
+    schoolId: { type: String, default: undefined },
+    classId: { type: String, default: undefined },
   },
   {
     timestamps: true,

@@ -950,6 +950,9 @@ export const QuizPage: React.FC = () => {
       isCorrect: originalIndex === currentQuestion.correctOptionIndex,
       timeSpentSeconds: 0,
       date: new Date().toISOString(),
+      activityType: 'quiz',
+      quizId: String(quiz?.id || ''),
+      source: sourceParam,
     });
   };
 

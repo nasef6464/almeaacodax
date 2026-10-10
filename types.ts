@@ -667,6 +667,12 @@ export interface QuestionAttempt {
     sectionId?: string;
     skillIds?: string[];
     evidenceType?: SkillEvidenceType;
+    activityType?: 'practice' | 'review' | 'quiz' | 'legacy_unknown';
+    quizId?: string;
+    learningContext?: 'platform_self_study' | 'school_assessment' | 'legacy_unknown';
+    schoolId?: string;
+    classId?: string;
+    source?: string;
 }
 
 export interface Activity {

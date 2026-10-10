@@ -11,6 +11,7 @@ import { buildQuestionAttemptDocument } from "../application/questionAttemptDocu
 import { updateSkillProgressFromQuestionAttempt, upsertReviewCardFromQuestionAttempt } from "../application/quizSubmissionSideEffects.js";
 import { buildDocumentQuery } from "../infrastructure/quizDocumentQuery.js";
 import { projectSkillProgressRows } from "../application/skillMasteryProjection.js";
+import { resolveQuestionActivityProvenance } from '../application/questionActivityProvenance.js';
 
 export const adaptiveTelemetryRouter = Router();
 
@@ -75,11 +76,14 @@ adaptiveTelemetryRouter.post(
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Question not found" });
     }
 
+    const provenance = await resolveQuestionActivityProvenance(payload, req.authUser!.id, question);
+    if (!provenance.ok) return res.status(provenance.status).json({ message: provenance.message });
+
     const selectedOptionIndex = Number(payload.selectedOptionIndex);
     const isCorrect =
       selectedOptionIndex >= 0 && selectedOptionIndex === Number(question.correctOptionIndex ?? 0);
     const created = await QuestionAttemptModel.create(buildQuestionAttemptDocument({
-      payload,
+      payload: { ...payload, ...provenance.metadata },
       selectedOptionIndex,
       isCorrect,
       userId: req.authUser!.id,
