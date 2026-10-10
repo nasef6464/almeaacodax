@@ -6,6 +6,8 @@ Rule: this file describes what exists now. Target architecture is documented sep
 
 ## 1. Repository shape
 
+Student plan completion (2026-10-10): `pages/Plan.tsx` composes the page; `utils/studentPlanSchedule.ts` owns the existing scheduler, `utils/studentPlanCompletion.ts` owns completion/reference exclusion and pending action selection, and `store/slices/studyPlansSlice.ts` commits only acknowledged own-user API rows. No new data-access endpoints or migration. Bounded evidence: `docs/audits/STUDENT_PLAN_COMPLETION_2026-10-10.md`.
+
 Current branch tree contains 1,466 files.
 
 | Root | Files | Runtime meaning |
