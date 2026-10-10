@@ -1,5 +1,7 @@
 # ALMEAA Current Directory & Module Map
 
+Classroom report read recovery (2026-10-10): `hooks/useClassroomTeacherReports.ts` owns mounted-view summary history loading, pending deduplication, request lifecycle/school isolation and explicit retry for SmartClassroomReportsSection and ClassSkillGapsRadar. Callers retain diagnostics/filter/detail ownership; existing server APIs/authorization unchanged.
+
 Shared-network login (2026-10-10): `server/src/middleware/loginProtection.ts` owns login-only guards; `server/src/modules/auth/application/loginFailureBudget.ts` owns expiring source failure counters with bounded memory/atomic Redis adapters. Existing rateLimiters factory and Redis connection reused; auth route/password authority retained. No new production service.
 
 Password recovery email preparation and scoped dispatch belong to `server/src/modules/auth/application/sendPasswordRecovery.ts`; the auth route retains reset-token creation/verification and user mutation. This bounded extraction retains the existing65,000-character auth-route ownership gate; no raised budget.

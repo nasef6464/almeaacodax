@@ -4,6 +4,7 @@ import {build} from 'esbuild';
 import {chromium} from 'playwright';
 import fs from 'node:fs';
 import ts from 'typescript';
+await import('./smoke-classroom-report-loading-ui.mjs');
 const loadPure = async file => {
  const output=ts.transpileModule(fs.readFileSync(file,'utf8'),{compilerOptions:{module:ts.ModuleKind.ESNext,target:ts.ScriptTarget.ES2022}}).outputText;
  return import('data:text/javascript;base64,'+Buffer.from(output).toString('base64'));
