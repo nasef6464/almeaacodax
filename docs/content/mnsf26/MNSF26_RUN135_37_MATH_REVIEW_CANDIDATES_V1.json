@@ -1,0 +1,350 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN135",
+  "date": "2026-10-11",
+  "evidence": "Run017 and Run021 original source WebP images, each image SHA matched to 37-item Run132 manifest; full visual/math report in local Run135 evidence package",
+  "accounting": {
+    "imagesInspected": 37,
+    "mathCandidates": 36,
+    "ambiguousHolds": 1,
+    "originalMasterModified": 0,
+    "newMastered": 0
+  },
+  "warning": "Independent review candidates only; original MASTER remains unsafe. These rows MUST NOT be used to import until source MASTER is quarantined and independently reapproved.",
+  "rows": [
+    {
+      "sourceKey": "MNSF26-GEO-T001-Q19",
+      "suggestedAnswer": "4",
+      "suggestedOption": "ج",
+      "subskillCandidate": "sub_quant_21_2",
+      "mathEvidence": "Two rectangle diagonals create four small triangles",
+      "status": "REVIEW_CANDIDATE",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T003-Q20",
+      "suggestedAnswer": "first greater",
+      "suggestedOption": "أ",
+      "subskillCandidate": "sub_quant_19_1",
+      "mathEvidence": "s=90 vs sad=60",
+      "status": "REVIEW_CANDIDATE",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T005-Q11",
+      "suggestedAnswer": "first greater",
+      "suggestedOption": "أ",
+      "subskillCandidate": "sub_quant_19_2",
+      "mathEvidence": "3s=6sad so s=2sad",
+      "status": "REVIEW_CANDIDATE",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T007-Q03",
+      "suggestedAnswer": "equal",
+      "suggestedOption": "ج",
+      "subskillCandidate": "sub_quant_20_1",
+      "mathEvidence": "twice internal angle sum=360 equals exterior angle sum=360",
+      "status": "REVIEW_CANDIDATE",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T007-Q17",
+      "suggestedAnswer": "second greater",
+      "suggestedOption": "ب",
+      "subskillCandidate": "sub_quant_20_1",
+      "mathEvidence": "isosceles base angle70 less than80",
+      "status": "REVIEW_CANDIDATE",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T011-Q10",
+      "suggestedAnswer": "equal",
+      "suggestedOption": "ج",
+      "subskillCandidate": "sub_quant_22_1",
+      "mathEvidence": "square angle90 and A+B=90",
+      "status": "REVIEW_CANDIDATE",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T037-Q14",
+      "suggestedAnswer": "second greater",
+      "suggestedOption": "ب",
+      "subskillCandidate": "sub_quant_04_1",
+      "mathEvidence": "0.06+0.006=0.066 less than0.60",
+      "status": "REVIEW_CANDIDATE",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T039-Q03",
+      "suggestedAnswer": "first greater",
+      "suggestedOption": "أ",
+      "subskillCandidate": "sub_quant_09_2",
+      "mathEvidence": "discount1600=20percent of8000 so paid6400 less than6500",
+      "status": "REVIEW_CANDIDATE",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T040-Q13",
+      "suggestedAnswer": "675",
+      "suggestedOption": "ج",
+      "subskillCandidate": "sub_quant_10_1",
+      "mathEvidence": "3600 minus900 expenses leaves2700; remaining quarter675",
+      "status": "REVIEW_CANDIDATE",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T049-Q16",
+      "suggestedAnswer": "1900",
+      "suggestedOption": "د",
+      "subskillCandidate": "sub_quant_07_2",
+      "mathEvidence": "2100-500+300=1900",
+      "status": "REVIEW_CANDIDATE",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T051-Q01",
+      "suggestedAnswer": "4pm",
+      "suggestedOption": "ج",
+      "subskillCandidate": "sub_quant_14_2",
+      "mathEvidence": "8am every4h and10am every6h coincide at16h",
+      "status": "REVIEW_CANDIDATE",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T051-Q05",
+      "suggestedAnswer": "first greater",
+      "suggestedOption": "أ",
+      "subskillCandidate": "sub_quant_14_2",
+      "mathEvidence": "13h40m vs13h35m",
+      "status": "REVIEW_CANDIDATE",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T051-Q06",
+      "suggestedAnswer": "1/3 hour",
+      "suggestedOption": "ب",
+      "subskillCandidate": "sub_quant_14_2",
+      "mathEvidence": "20min divided by60",
+      "status": "REVIEW_CANDIDATE",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T051-Q12",
+      "suggestedAnswer": "120 degrees",
+      "suggestedOption": "ب",
+      "subskillCandidate": "sub_quant_19_1",
+      "mathEvidence": "90degrees at half full scales to120degrees at two-thirds; cross-topic taxonomy review",
+      "status": "REVIEW_CANDIDATE",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T051-Q14",
+      "suggestedAnswer": "2h",
+      "suggestedOption": "ب",
+      "subskillCandidate": "sub_quant_12_1",
+      "mathEvidence": "120km/120kmh plus60km/60kmh",
+      "status": "REVIEW_CANDIDATE",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T055-Q08",
+      "suggestedAnswer": "second greater",
+      "suggestedOption": "ب",
+      "subskillCandidate": "sub_quant_08_1",
+      "mathEvidence": "10large*10+5small*5=125 less than150",
+      "status": "REVIEW_CANDIDATE",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T057-Q12",
+      "suggestedAnswer": "second greater",
+      "suggestedOption": "ب",
+      "subskillCandidate": "sub_quant_04_3",
+      "mathEvidence": "400mm=40cm less than42cm; taxonomy review",
+      "status": "REVIEW_CANDIDATE",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T057-Q14",
+      "suggestedAnswer": "second greater",
+      "suggestedOption": "ب",
+      "subskillCandidate": "sub_quant_04_3",
+      "mathEvidence": "1cm=10mm less than15mm; taxonomy review",
+      "status": "REVIEW_CANDIDATE",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T058-Q11",
+      "suggestedAnswer": "second greater",
+      "suggestedOption": "ب",
+      "subskillCandidate": "sub_quant_01_2",
+      "mathEvidence": "2*2000=4000 less than5000",
+      "status": "REVIEW_CANDIDATE",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T059-Q09",
+      "suggestedAnswer": "80",
+      "suggestedOption": "ب",
+      "subskillCandidate": "sub_quant_07_2",
+      "mathEvidence": "7200-4000=3200; 20paint+20profit per board; 3200/40=80",
+      "status": "REVIEW_CANDIDATE",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T054-Q01",
+      "suggestedAnswer": "first greater",
+      "suggestedOption": "أ",
+      "subskillCandidate": "sub_quant_04_3",
+      "mathEvidence": "80kg=80000g more than75000g; taxonomy review",
+      "status": "REVIEW_CANDIDATE",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T054-Q05",
+      "suggestedAnswer": "first greater",
+      "suggestedOption": "أ",
+      "subskillCandidate": "sub_quant_01_1",
+      "mathEvidence": "3*20+2*10+3*2=86 vs2*20+4*10+2*2=84",
+      "status": "REVIEW_CANDIDATE",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T057-Q02",
+      "suggestedAnswer": "first greater",
+      "suggestedOption": "أ",
+      "subskillCandidate": "sub_quant_04_3",
+      "mathEvidence": "75kg=75000g more than73000g; taxonomy review",
+      "status": "REVIEW_CANDIDATE",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T058-Q19",
+      "suggestedAnswer": "second greater",
+      "suggestedOption": "ب",
+      "subskillCandidate": "sub_quant_07_2",
+      "mathEvidence": "5pens=2notebooks so3pens less than2notebooks",
+      "status": "REVIEW_CANDIDATE",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T063-Q19",
+      "suggestedAnswer": "150",
+      "suggestedOption": "ج",
+      "subskillCandidate": "sub_quant_04_3",
+      "mathEvidence": "3000g/20g=150; taxonomy review",
+      "status": "REVIEW_CANDIDATE",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T048-Q20",
+      "suggestedAnswer": "second greater",
+      "suggestedOption": "ب",
+      "subskillCandidate": "sub_quant_25_1",
+      "mathEvidence": "2*3cm3=6cm3 less than400mL=400cm3; taxonomy review",
+      "status": "REVIEW_CANDIDATE",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T050-Q03",
+      "suggestedAnswer": "HOLD",
+      "suggestedOption": "none",
+      "subskillCandidate": "sub_quant_25_1",
+      "mathEvidence": "surface area wording could mean total or one face; do not approve",
+      "status": "HOLD",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T035-Q07",
+      "suggestedAnswer": "4pi",
+      "suggestedOption": "ج",
+      "subskillCandidate": "sub_quant_24_3",
+      "mathEvidence": "large radius3; shaded area9pi-1pi-4pi=4pi",
+      "status": "REVIEW_CANDIDATE",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T014-Q01",
+      "suggestedAnswer": "30degrees",
+      "suggestedOption": "أ",
+      "subskillCandidate": "sub_quant_24_2",
+      "mathEvidence": "chord equal radius subtends60 central and30 inscribed",
+      "status": "REVIEW_CANDIDATE",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T020-Q05",
+      "suggestedAnswer": "25",
+      "suggestedOption": "ب",
+      "subskillCandidate": "sub_quant_20_4",
+      "mathEvidence": "AB=sqrt(3sq+4sq)=5; area=10*5/2",
+      "status": "REVIEW_CANDIDATE",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T039-Q04",
+      "suggestedAnswer": "equal",
+      "suggestedOption": "ج",
+      "subskillCandidate": "sub_quant_03_3",
+      "mathEvidence": "half apple split three ways is1/6",
+      "status": "REVIEW_CANDIDATE",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T026-Q17",
+      "suggestedAnswer": "6(width)",
+      "suggestedOption": "د",
+      "subskillCandidate": "sub_quant_21_1",
+      "mathEvidence": "length twice width; perimeter6width",
+      "status": "REVIEW_CANDIDATE",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T027-Q02",
+      "suggestedAnswer": "first greater",
+      "suggestedOption": "أ",
+      "subskillCandidate": "sub_quant_22_1",
+      "mathEvidence": "first area9 vs half second area8",
+      "status": "REVIEW_CANDIDATE",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T010-Q19",
+      "suggestedAnswer": "360degrees",
+      "suggestedOption": "د",
+      "subskillCandidate": "sub_quant_19_1",
+      "mathEvidence": "two straight angle pairs each180",
+      "status": "REVIEW_CANDIDATE",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T010-Q09",
+      "suggestedAnswer": "40degrees",
+      "suggestedOption": "أ",
+      "subskillCandidate": "sub_quant_20_1",
+      "mathEvidence": "isosceles apex100 leaves40 at base",
+      "status": "REVIEW_CANDIDATE",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T027-Q13",
+      "suggestedAnswer": "first greater",
+      "suggestedOption": "أ",
+      "subskillCandidate": "sub_quant_22_1",
+      "mathEvidence": "four times first perimeter32 vs second perimeter28",
+      "status": "REVIEW_CANDIDATE",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T008-Q14",
+      "suggestedAnswer": "90degrees",
+      "suggestedOption": "ب",
+      "subskillCandidate": "sub_quant_20_1",
+      "mathEvidence": "angles from quadrilateral and marked equal sides give s+sad=90",
+      "status": "REVIEW_CANDIDATE",
+      "importEligible": false
+    }
+  ]
+}
