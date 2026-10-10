@@ -5,7 +5,7 @@
   "directImageInspection": true,
   "sourceCropArchive": "/MNSF26/Run021/mnsf26_geometry_crops_run021.zip",
   "sourceInventory": "/MNSF26/Run021/MNSF26_GEOMETRY_CROP_MANIFEST_V1.json",
-  "masteredCount": 15,
+  "masteredCount": 14,
   "holdCount": 5,
   "records": [
     {
@@ -571,7 +571,7 @@
       },
       "imageHash": "7d89dd52f6a5a3dc5252a00e062b73efe4c7572c228787fdded545387bf9fa9c",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T001_Q19",
-      "status": "MASTERED",
+      "status": "REVIEW",
       "questionText": "مستطيل رُسم أحد قطريه، كم مثلثًا نتج",
       "canonicalMainSkill": "main_quant_21",
       "canonicalSubskill": "sub_quant_21_2",
@@ -581,7 +581,13 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "f44a43b377e93a8051d5e461ed18741dffc683e903e6ae9a2aa8969ea0f70ad4",
-      "ideaFingerprint": "fb2fc6a4ec23675e71fda1ccaca5766bf9dd108944830b9744a26a5a6d627c9a"
+      "ideaFingerprint": "fb2fc6a4ec23675e71fda1ccaca5766bf9dd108944830b9744a26a5a6d627c9a",
+      "importEligible": false,
+      "reviewReason": "RUN135/RUN136 original-image math conflict: source depicts both rectangle diagonals and four triangles; stored two-triangle answer/solution is unsafe. Independent approval required.",
+      "qaEvidence": [
+        "MNSF26_RUN135_37_MATH_REVIEW_CANDIDATES_V1.json",
+        "MNSF26_RUN132_37_REVIEW_PATCH_MANIFEST_V1.json"
+      ]
     },
     {
       "sourceKey": "MNSF26-GEO-T001-Q20",
@@ -613,5 +619,6 @@
       "contentFingerprint": "7a7cfe25d792d39642b208e7f0191e20d98634914b6bf211f18a394c4d9d8a7f",
       "ideaFingerprint": "2669316310313a74fca4ce10edaa7120f54432a44a48a00d63be6cacab200731"
     }
-  ]
+  ],
+  "reviewCount": 1
 }
