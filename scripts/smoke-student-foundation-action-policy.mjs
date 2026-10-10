@@ -53,7 +53,7 @@ required(selected, ['موضوع التأسيس غير مرتبط بعد', 'تد�
 required(recommendations, ['quizLink: recommendedTopic ? foundationTrainingLink : undefined'], 'shared recommendation');
 absent(recommendations, ['const subskillFallbackQuiz =', 'quizLink: foundationTrainingLink ||'], 'no direct quiz fallback');
 
-required(report, ['compactStudentSkillRows.slice(0, 12)', 'showAllReportSkills', 'عرض جميع المهارات', 'const studentPrintableSkillRows = compactStudentSkillRows', 'buildRecordedSkillAttemptChanges(studentPeriodExamResults)'], 'all-skill UI');
+required(report, ['useState(12)', 'compactStudentSkillRows.slice(0, reportSkillLimit)', 'value + 12 : 12', 'setReportSkillLimit(12)', 'عرض مهارات أخرى', 'عرض أول 12 مهارة', 'const studentPrintableSkillRows = compactStudentSkillRows', 'buildRecordedSkillAttemptChanges(studentPeriodExamResults)'], 'all-skill UI');
 required(adaptive, [
   'const topicId = skill.topicId || undefined;',
   "buildFoundationActionLink(scope, usePractice ? 'quizzes' : 'lessons')",

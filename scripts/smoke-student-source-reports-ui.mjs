@@ -43,7 +43,7 @@ import {StudentJourneySourcesPanel} from './pages/Reports/StudentJourneySourcesP
 import {StudentResultHistoryControls} from './components/StudentResultHistoryControls';
 import {useStudentResultHistory} from './hooks/useStudentResultHistory';
 import {useStudentResultDetail} from './hooks/useStudentResultDetail';
-import Quizzes from './pages/Quizzes';
+import Quizzes, {SchoolTestsPanel, AttemptGroupCard, QuizSection, LockedQuizSection} from './pages/Quizzes';
 const root=createRoot(document.getElementById('root'));
 window.requests=[]; window.pending=[]; window.detailRequests=[]; window.detailPending=[]; window.actor='enrolled';
 const result=(id,context,score,kind='test')=>({id,userId:window.actor,quizId:id,quizTitle:id,score,date:'2026-10-10T12:00:00Z',learningContext:context,source:id==='school-regular'?'mock-exam':'tests',quizSnapshot:{quizKind:kind},totalQuestions:5,skillsAnalysis:[{skill:'التناسب',skillId:'ratio',pathId:'quant',subjectId:'math',mastery:score,questionCount:5,correctCount:score/20}]});
@@ -62,7 +62,7 @@ function Harness({mode='panel',actor='enrolled',requested='abcdef1234567890abcde
  {selectedOptionIndex:0,activityType:'quiz',learningContext:'school_assessment'},
  {selectedOptionIndex:-1,activityType:'practice'}]} completedLessons={['lesson','lesson','second']} periodLabel="كل الوقت"/>
  :mode==='hook'?<><StudentResultHistoryControls context={context} onContextChange={setContext} history={history}/><pre data-testid="rows">{history.results.map(r=>r.id).join(',')}</pre></>
- :mode==='detail'?<><pre data-testid="detail">{detail.result?.score ?? ''}</pre>{detail.error?<button onClick={detail.retry}>إعادة فتح النتيجة</button>:null}</>:<Quizzes view="attempts"/>}</main></MemoryRouter>;
+ :mode==='locked'?<LockedQuizSection items={Array.from({length:22},(_,i)=>({id:'locked-'+i,title:'باقة '+i,questionIds:['q'],createdAt:1,subjectId:'math',access:{price:1}}))} subjects={[]} onOpenPayment={()=>{}}/>:mode==='catalog'?<QuizSection title='اختبارات متاحة' emptyMessage='لا يوجد' items={Array.from({length:22},(_,i)=>({id:'available-'+i,title:'متاح '+i,questionIds:['q'],createdAt:1,subjectId:'math'}))} subjects={[]} paths={[]} badgeClassName='' badgeLabel='اختياري'/>:mode==='school'?<SchoolTestsPanel quizzes={Array.from({length:22},(_,i)=>({id:'school-'+i,title:'واجب '+i,questionIds:['q'],pathId:'quant'}))} examResults={Array.from({length:2},(_,i)=>result('school-'+i,'school_assessment',80))} getPathName={()=>'القدرات'} formatQuizDate={date=>String(date)}/>:mode==='detail'?<><pre data-testid="detail">{detail.result?.score ?? ''}</pre>{detail.error?<button onClick={detail.retry}>إعادة فتح النتيجة</button>:null}</>:<Quizzes view="attempts"/>}</main></MemoryRouter>;
 }
 window.renderFixture=props=>root.render(<Harness {...props}/>);
 window.renderFixture({});
@@ -170,6 +170,51 @@ try {
  await page.getByTestId('detail').getByText('40',{exact:true}).waitFor();
  await page.evaluate(()=>window.detailPending[2].resolve({result:{score:99}}));
  assert.equal(await page.getByTestId('detail').innerText(),'40','Old actor response is discarded');
+ await render({mode:'locked',actor:'independent'});
+ assert.equal(await page.getByRole('button',{name:'افتح الباقة المناسبة'}).count(),4);
+ await page.getByRole('button',{name:'عرض المزيد',exact:true}).click();
+ assert.equal(await page.getByRole('button',{name:'افتح الباقة المناسبة'}).count(),8);
+ await page.getByRole('button',{name:'عرض أقل',exact:true}).click();
+ assert.equal(await page.getByRole('button',{name:'افتح الباقة المناسبة'}).count(),4);
+ await render({mode:'catalog',actor:'independent'});
+ assert.equal(await page.getByRole('link',{name:'دخول الاختبار',exact:true}).count(),4);
+ await page.getByRole('button',{name:'عرض المزيد',exact:true}).click();
+ assert.equal(await page.getByRole('link',{name:'دخول الاختبار',exact:true}).count(),8);
+ await page.getByRole('button',{name:'عرض أقل',exact:true}).click();
+ assert.equal(await page.getByRole('link',{name:'دخول الاختبار',exact:true}).count(),4);
+ await render({mode:'school',actor:'enrolled'});
+ assert.equal(await page.locator('article').count(),4,'School list is bounded initially');
+ assert.equal(await page.getByRole('heading',{name:'واجب 0',exact:true}).count(),0,'Completed work is excluded from pending');
+ await page.getByRole('button',{name:'عرض المزيد',exact:true}).click();
+ assert.equal(await page.locator('article').count(),8);
+ await page.getByRole('button',{name:/تم حلها/}).click();
+ assert.equal(await page.locator('article').count(),2);
+ assert.equal(await page.getByRole('heading',{name:'واجب 0',exact:true}).count(),1);
+ assert.equal(await page.getByRole('link',{name:/عرض التقرير الكامل/}).count(),2,'Saved reports remain linked');
+ assert.equal(await page.getByRole('link',{name:'كل نتائج المدرسة السابقة'}).getAttribute('href'),'/my-quizzes?context=school_assessment');
+ await page.getByRole('button',{name:/المطلوب مني/}).click();
+ assert.equal(await page.locator('article').count(),4,'Switching status resets visible count');
+ await page.getByRole('textbox',{name:'ابحث عن اختبار'}).fill('واجب 21');
+ assert.equal(await page.locator('article').count(),1);
+ await page.getByRole('textbox',{name:'ابحث عن اختبار'}).fill('لا يوجد');
+ await page.getByRole('heading',{name:'لا يوجد اختبار بهذا الاسم'}).waitFor();
+ assert.equal(await page.locator('article').count(),0);
+ await page.getByRole('textbox',{name:'ابحث عن اختبار'}).fill('');
+ for(const width of [1280,390]){await page.setViewportSize({width,height:900});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);}
+ await page.screenshot({path:'scratch/student-tests-school-fixture-after.png',fullPage:true});
+ await render({mode:'quizzes',actor:'independent'});
+ const pendingIndex=await page.evaluate(()=>window.pending.length-1);
+ await page.evaluate(index=>window.pending[index].resolve({data:Array.from({length:22},(_,i)=>window.result('platform-'+i,'platform_self_study',80)),pagination:{total:22,totalPages:1,page:1,limit:50}}),pendingIndex);
+ await page.getByRole('heading',{name:'platform-0',exact:true}).waitFor();
+ assert.equal(await page.locator('article').count(),4,'Growing independent result list is bounded');
+ await page.getByRole('button',{name:'عرض المزيد',exact:true}).click();
+ assert.equal(await page.locator('article').count(),8);
+ await page.getByRole('button',{name:'عرض أقل',exact:true}).click();
+ assert.equal(await page.locator('article').count(),4);
+ await page.getByText('ملخص تقدمي',{exact:true}).click();
+ assert.ok(await page.getByText('أعلى درجة',{exact:true}).isVisible());
+ await page.getByText('ملخص تقدمي',{exact:true}).click();
+ assert.equal(await page.getByText('أعلى درجة',{exact:true}).isVisible(),false);
  assert.deepEqual(errors,[]);
  console.log('PASS enrolled/independent reports: source scores and skills, activity and plan links; bounded history, retry, pagination, stale actor/context isolation; real attempts page empty tabs and frozen mock; 1280/390 CSS.');
 } finally { await browser.close(); server.close(); }

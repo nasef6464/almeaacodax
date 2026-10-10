@@ -15,7 +15,7 @@ export const StudentResultHistoryControls = ({ context, onContextChange, history
           className={`rounded-xl px-3 py-2 text-sm font-bold ${context === value ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700'}`}>{label}</button>
       ))}
     </div>
-    <p className="text-xs leading-6 text-slate-600">درجات وتحليل المحاولات أدناه تخص المصدر المحدد فقط. نوع الاختبار العادي أو المحاكي مستقل عن الجهة التي أرسلته.</p>
+    <p className="text-xs leading-6 text-slate-600">اختر نتائج اختبارات المنصة أو اختبارات المدرسة. افتح النتيجة للاطلاع على التفاصيل.</p>
     {history.loading ? <p role="status" className="text-sm">جارٍ تحميل السجل…</p> : null}
     {history.error ? <div role="alert" className="text-sm text-rose-700">{history.error} <button type="button" onClick={() => void history.retry()} className="font-bold underline">إعادة المحاولة</button></div> : null}
     {!history.loading && !history.error ? <p className="text-xs text-slate-500">عرض {history.results.length} من {history.total} محاولة. ملخص الدرجات للمحاولات المحملة.</p> : null}

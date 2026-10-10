@@ -830,44 +830,10 @@ const MyCoursesTab = () => {
 
 /** Student assessment hub: attempts, mock exams, and school-directed work. */
 const ExamsHubTab: React.FC<{ initialView?: 'attempts' | 'mock' | 'school' }> = ({ initialView = 'attempts' }) => {
-    const [view, setView] = React.useState<'attempts' | 'mock' | 'school'>(initialView);
-    const navigate = useNavigate();
-    const location = useLocation();
-
-    React.useEffect(() => {
-        setView(initialView);
-    }, [initialView]);
-
-    const handleViewChange = (newView: 'attempts' | 'mock' | 'school') => {
-        setView(newView);
-        const tabName = newView === 'mock' ? 'mock-exams' : newView === 'school' ? 'school-tests' : 'quizzes';
-        const targetUrl = `/dashboard?tab=${tabName}`;
-        if (location.pathname + location.search !== targetUrl) {
-            navigate(targetUrl);
-        }
-    };
-
-    const examViews = [
-        { id: 'attempts' as const, label: 'اختباراتي', icon: <FileText size={16} />, iconColor: 'text-amber-500' },
-        { id: 'mock' as const, label: 'الاختبارات المحاكية', icon: <Star size={16} />, iconColor: 'text-purple-600' },
-        { id: 'school' as const, label: 'اختبارات المدرسة', icon: <Zap size={16} />, iconColor: 'text-sky-600' },
-    ];
+    const view = initialView;
     return (
         <div className="space-y-4">
-            <div className="flex flex-wrap gap-2 rounded-2xl border border-slate-200/80 bg-slate-100/90 p-1.5 shadow-xs w-fit">
-                {examViews.map(v => (
-                    <button key={v.id} onClick={() => handleViewChange(v.id)}
-                        className={`inline-flex items-center gap-1.5 rounded-xl px-4 py-2 text-sm font-black transition-all ${
-                            view === v.id
-                                ? 'bg-amber-500 text-white shadow-md shadow-amber-200'
-                                : 'bg-white text-slate-700 hover:bg-slate-50 border border-slate-200 shadow-2xs'
-                        }`}
-                    >
-                        <span className={view === v.id ? 'text-white' : v.iconColor}>{v.icon}</span>
-                        <span>{v.label}</span>
-                    </button>
-                ))}
-            </div>
+            {view === 'attempts' ? <Link to="/quizzes" className="inline-flex rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-bold text-emerald-700">اختبارات متاحة للتدرب — اختياري</Link> : null}
             <Suspense fallback={<TabLoading />}>
                 {view === 'attempts' && <Quizzes view="attempts" />}
                 {view === 'mock'     && <MockExamStudentHub />}
@@ -971,9 +937,9 @@ const Dashboard: React.FC = () => {
         { id: 'my-courses',   label: 'دوراتي',               icon: <BookOpen size={20} /> },
         { id: 'smart-path',   label: 'المسار الذكي',        icon: <Brain size={20} /> },
         { id: 'sessions',     label: 'جلساتي',               icon: <Calendar size={20} /> },
-        { id: 'quizzes',      label: 'الاختبارات السابقة',  icon: <FileText size={20} /> },
-        { id: 'school-tests', label: 'الاختبارات المدرسية', icon: <Target size={20} /> },
-        { id: 'mock-exams',   label: 'الاختبارات المحاكية', icon: <Star size={20} /> },
+        { id: 'quizzes',      label: 'الاختبارات السابقة',  icon: <FileText size={20} />, description: 'نتائجك ومحاولاتك التي أنجزتها' },
+        { id: 'school-tests', label: 'الاختبارات المدرسية', icon: <Target size={20} />, description: 'ما تطلبه منك مدرستك' },
+        { id: 'mock-exams',   label: 'الاختبارات المحاكية', icon: <Star size={20} />, description: 'نماذج للتدرب على الاختبار' },
         { id: 'exams',        label: 'الاختبارات',          icon: <Zap size={20} /> },
         { id: 'reports',      label: 'تقاريري',              icon: <MapIcon size={20} /> },
         { id: 'plan',         label: 'خططي',                 icon: <PieChart size={20} /> },
@@ -1110,7 +1076,7 @@ const Dashboard: React.FC = () => {
         }
     };
 
-    const renderStudentMenuItem = (item: { id: string; label: string; icon: React.ReactNode }) => {
+    const renderStudentMenuItem = (item: { id: string; label: string; icon: React.ReactNode; description?: string }) => {
         const isItemActive = item.id === 'quizzes'
             ? ['quizzes', 'exams', 'saher'].includes(activeTab)
             : activeTab === item.id;
@@ -1126,6 +1092,7 @@ const Dashboard: React.FC = () => {
         return (
             <button
                 key={item.id}
+                aria-current={isItemActive ? 'page' : undefined}
                 type="button"
                 onClick={() => { setActiveTab(item.id as any); setIsSidebarOpen(false); }}
                 className={`w-full flex items-center justify-between text-sm transition-all border ${
@@ -1136,7 +1103,7 @@ const Dashboard: React.FC = () => {
                         : `rounded-2xl px-3 py-2 ${
                             isItemActive
                                 ? `${style.activeBg} ${style.activeText} font-black ${style.activeBorder} shadow-xs`
-                                : 'border-transparent text-gray-800 font-bold hover:bg-white/80 hover:text-gray-950'
+                                : item.description ? 'border-slate-200 bg-white text-gray-800 font-bold hover:border-indigo-200 hover:bg-slate-50' : 'border-transparent text-gray-800 font-bold hover:bg-white/80 hover:text-gray-950'
                         }`
                 }`}
             >
@@ -1150,7 +1117,7 @@ const Dashboard: React.FC = () => {
                     }`}>
                         {item.icon}
                     </span>
-                    <span className="whitespace-nowrap">{item.label}</span>
+                    <span className="text-right"><span className="block whitespace-nowrap">{item.label}</span>{item.description ? <span className="mt-1 block text-[10px] font-medium leading-relaxed text-slate-500">{item.description}</span> : null}</span>
                 </div>
                 {isOverview && (
                     <ChevronLeft

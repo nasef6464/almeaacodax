@@ -1,3 +1,4 @@
+import { StudentListPager } from '../components/StudentListPager';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
@@ -148,7 +149,6 @@ const AttemptRow: React.FC<{ result: MockAttemptResult; index: number }> = ({ re
               </div>
             </div>
           )}
-
           {/* Actions */}
           <div className="flex flex-wrap gap-2 pt-1">
             <Link
@@ -438,6 +438,12 @@ const MockExamStudentHub: React.FC = () => {
   const [activeHubTab, setActiveHubTab] = useState<'available' | 'history'>('available');
   const [catalogFilter, setCatalogFilter] = useState<'all' | 'directed' | 'platform'>('all');
   const [historyScoreFilter, setHistoryScoreFilter] = useState<'all' | 'good' | 'review'>('all');
+  const [catalogLimit, setCatalogLimit] = useState(4);
+  const [historyLimit, setHistoryLimit] = useState(4);
+  const [selectedResultLimit, setSelectedResultLimit] = useState(4);
+  useEffect(() => setCatalogLimit(4), [catalogFilter, activeHubTab]);
+  useEffect(() => setHistoryLimit(4), [historyScoreFilter, activeHubTab]);
+  useEffect(() => setSelectedResultLimit(4), [selectedExamId]);
   const [openAttemptGroupKey, setOpenAttemptGroupKey] = useState<string | null>(null);
 
   const getPathName = (pathId?: string) => (paths || []).find((path) => path.id === pathId)?.name || 'القدرات العامة';
@@ -645,7 +651,7 @@ const MockExamStudentHub: React.FC = () => {
             </div>
           ) : (
             <div className="grid gap-4 sm:grid-cols-2">
-              {displayedExams.map((exam) => {
+              {displayedExams.slice(0, catalogLimit).map((exam) => {
                 const isDirected = Array.isArray(exam.targetGroupIds) && exam.targetGroupIds.length > 0;
                 const isStaffViewer = ['admin', 'teacher', 'supervisor'].includes(user?.role || '');
                 const hasPackageAccess = isStaffViewer || hasScopedPackageAccess('mockExams', exam.pathId, exam.subjectId);
@@ -666,6 +672,7 @@ const MockExamStudentHub: React.FC = () => {
           )}
 
           {/* Expanded Selected Exam History (if clicked) */}
+          <StudentListPager shown={catalogLimit} total={displayedExams.length} onMore={() => setCatalogLimit(n => n + 4)} onLess={() => setCatalogLimit(4)} />
           {selectedExam && selectedResults.length > 0 && (
             <section className="rounded-3xl border-2 border-indigo-200 bg-indigo-50/50 p-5 shadow-sm">
               <div className="mb-4 flex items-center justify-between">
@@ -714,9 +721,10 @@ const MockExamStudentHub: React.FC = () => {
               </div>
 
               <div className="space-y-2">
-                {selectedResults.map((result, i) => (
+                {selectedResults.slice(0, selectedResultLimit).map((result, i) => (
                   <AttemptRow key={result.id || result.date || i} result={result} index={i} />
                 ))}
+                <StudentListPager shown={selectedResultLimit} total={selectedResults.length} onMore={() => setSelectedResultLimit(n => n + 4)} onLess={() => setSelectedResultLimit(4)} />
               </div>
             </section>
           )}
@@ -828,7 +836,7 @@ const MockExamStudentHub: React.FC = () => {
           {/* Attempts List with EXACT Same Card from Image */}
           {!isLoading && filteredMockAttemptGroups.length > 0 && (
             <div className="space-y-3">
-              {filteredMockAttemptGroups.map((group) => (
+              {filteredMockAttemptGroups.slice(0, historyLimit).map((group) => (
                 <AttemptGroupCard
                   key={group.key}
                   group={group}
@@ -839,6 +847,7 @@ const MockExamStudentHub: React.FC = () => {
                   getPathName={getPathName}
                 />
               ))}
+              <StudentListPager shown={historyLimit} total={filteredMockAttemptGroups.length} onMore={() => setHistoryLimit(n => n + 4)} onLess={() => setHistoryLimit(4)} />
             </div>
           )}
         </div>
