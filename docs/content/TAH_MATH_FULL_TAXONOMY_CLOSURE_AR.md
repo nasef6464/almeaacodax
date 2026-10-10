@@ -271,3 +271,16 @@ Next heavy gate:
 - بقي HOLDان مصدريان fail-closed: P050-Q04 وP066-Q14. لم يحدث production mutation. R2 parity وlive topicId parity ما زالا PENDING.
 - manifest SHA-256: 0649da0e3fea7332e938b38ffd9749a04cecd094a1290585d4522897cd4bf13a.
 - الحالة: YLM26 NOT GREEN. التالي: إغلاق الـ26 المتبقية، ثم R2/topicId parity والـreversible manifest، ثم COL26 فور تحقق Green.
+
+
+## RUN79B — 2026-10-10
+
+- أُغلقت بوابة محتوى YLM26 بالكامل: **326/326 adjudicated** = **321 FINAL_REVIEWED_CONTENT + 5 SOURCE_HOLD fail-closed**.
+- في هذه الدفعة أُنجزت الـ26 المتبقية فعليًا من المصدر الرسمي: 21 صفًا نهائيًا و5 HOLDs مصدرية فقط: P050-Q04، P051-Q05، P066-Q14، P085-Q01، P094-Q11.
+- أمثلة الحسم المصدرية في هذه الدفعة: P026-Q08=D=6، P052-Q11=C=30√2، P074-Q09=C، P077-Q02=A=S60°W، P081-Q01=B، P085-Q02=A، P086-Q05=D≈4، P089-Q01=D، P090-Q06=B=3−√7.
+- فحص Atlas حي read-only حسم خلاف التصنيف: **22 مهارة رئيسية / 70 مهارة فرعية** حاليًا، لا 67. وكل 326 سؤال YLM26 لديه main/subSkill صالح parent-child.
+- صور الإنتاج: 326/326 لها sourceMeta.imageHash وimageUrl؛ اسم ملف R2 يطابق imageHash في 326/326 ومسار v2 في 326/326، كما تطابق production مع backup المجمد 326/326 في sourceItemId/imageHash/imageUrl. تعذر HTTP fetch المباشر من بيئة التنفيذ بسبب DNS/عدم دعم web للـR2، فلا يُعد ذلك فشل R2 إنتاجي.
+- **topicId مفقود في 326/326** من أسئلة YLM26 الحية، لكن كل subSkillId يحل إلى Topic واحد بالضبط 326/326؛ إذن هدف الربط deterministic وجاهز للـreversible manifest.
+- الإنتاج ما زال يطابق backup قبل الاعتماد 326/326 في الإجابة والمهارات، أي أن تصحيحات المراجعة لم تُطبّق بعد. لا production mutation في RUN79B.
+- بوابة المحتوى PASS، لكن YLM26 كمرحلة كلية **NOT GREEN** حتى بناء manifest رجوعي كامل، تطبيق التصحيحات المراجعة وtopicId بأمان، ثم re-audit وR2 live fetch evidence.
+- Manifest محلي RUN79B SHA-256: 436ec050716a0d5184b4f5e4fcd200e0dbf39752ae4b71f686e218ab2963d662.
