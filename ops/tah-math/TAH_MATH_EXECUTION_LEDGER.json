@@ -26,7 +26,7 @@
     {
       "id": "P2",
       "name": "ylm26_full_review",
-      "status": "IN_PROGRESS",
+      "status": "CONTENT_GATE_PASS_GLOBAL_GATES_PENDING",
       "expectedBaseline": 326,
       "currentProgress": {
         "deterministicManifestRows": 326,
@@ -85,7 +85,36 @@
           "medium": 49,
           "hard": 6
         },
-        "run31ProductionMutation": false
+        "run31ProductionMutation": false,
+        "contentAdjudicated": 326,
+        "finalReviewedContent": 321,
+        "sourceHolds": 5,
+        "sourceHoldCodes": [
+          "P050-Q04",
+          "P051-Q05",
+          "P066-Q14",
+          "P085-Q01",
+          "P094-Q11"
+        ],
+        "liveTaxonomy": {
+          "mainSkills": 22,
+          "subSkills": 70,
+          "status": "PASS"
+        },
+        "liveTopicId": {
+          "present": 0,
+          "missing": 326,
+          "deterministicUniqueTopicTarget": 326,
+          "status": "FAIL_MISSING"
+        },
+        "liveR2Metadata": {
+          "imageHashPresent": 326,
+          "imageUrlPresent": 326,
+          "hashPathMatch": 326,
+          "v2PathMatch": 326,
+          "backupParity": 326,
+          "status": "PASS_METADATA_HTTP_PENDING"
+        }
       }
     },
     {
@@ -190,7 +219,7 @@
       2
     ]
   },
-  "lastCheckpoint": "2026-10-10-RUN79-300-OF-326-FINAL-REVIEWED-CONTENT",
+  "lastCheckpoint": "2026-10-10-RUN79B-YLM26-CONTENT-GATE-326-OF-326",
   "evidence": [
     "ops/tah-math/TAH_MATH_RUN1_BASELINE.json",
     "ops/tah-math/TAH_MATH_SOURCE_IDEA_MAP_PART01.json",
@@ -212,7 +241,8 @@
     "ops/tah-math/TAH_MATH_RUN30_CHECKPOINT.json",
     "ops/tah-math/TAH_MATH_RUN31_CHECKPOINT.json",
     "ops/tah-math/TAH_MATH_RUN74_200_VISUAL_104_MATH_SOURCE_AUDIT.json",
-    "ops/tah-math/TAH_MATH_RUN79_150_FINAL_REVIEWED_CONTENT_CHECKPOINT.json"
+    "ops/tah-math/TAH_MATH_RUN79_150_FINAL_REVIEWED_CONTENT_CHECKPOINT.json",
+    "ops/tah-math/TAH_MATH_RUN79B_YLM26_CONTENT_GATE_326_OF_326.json"
   ],
   "blockers": [
     {
@@ -222,38 +252,46 @@
     }
   ],
   "latestRun": {
-    "run": "RUN79",
+    "run": "RUN79B",
     "date": "2026-10-10",
     "stage": "P2_YLM26_FULL_REVIEW",
-    "finalReviewedContentRowsThisRun": 150,
-    "uniqueFinalReviewedContentRows": 300,
-    "remainingYLM26ContentRows": 26,
-    "difficulty": {
-      "easy": 84,
-      "medium": 56,
-      "hard": 10
-    },
-    "sourceBackedMappingCorrections": [
-      "P013-Q09",
-      "P023-Q14",
-      "P047-Q07",
-      "P047-Q09"
-    ],
-    "sourceAnswerCorrections": [
-      "P006-Q07=B",
-      "P007-Q01=B",
-      "P076-Q14=B"
-    ],
-    "unresolvedHolds": [
+    "finalReviewedContentThisRun": 21,
+    "sourceHoldsThisRun": 5,
+    "cumulativeContentAdjudicated": 326,
+    "cumulativeFinalReviewedContent": 321,
+    "cumulativeSourceHolds": 5,
+    "sourceHoldCodes": [
       "P050-Q04",
-      "P066-Q14"
+      "P051-Q05",
+      "P066-Q14",
+      "P085-Q01",
+      "P094-Q11"
     ],
-    "localManifestSha256": "0649da0e3fea7332e938b38ffd9749a04cecd094a1290585d4522897cd4bf13a",
+    "liveTaxonomy": {
+      "mainSkills": 22,
+      "subSkills": 70
+    },
+    "liveTopicId": {
+      "missing": 326,
+      "uniqueDeterministicTargets": 326
+    },
+    "r2MetadataParity": {
+      "pass": 326,
+      "total": 326,
+      "httpFetch": "ENVIRONMENT_BLOCKED"
+    },
+    "productionVsFrozenBackup": {
+      "sourceItemId": 326,
+      "imageHash": 326,
+      "imageUrl": 326,
+      "answer": 326,
+      "skill": 326,
+      "subSkill": 326
+    },
+    "localManifestSha256": "436ec050716a0d5184b4f5e4fcd200e0dbf39752ae4b71f686e218ab2963d662",
     "productionMutation": false,
-    "liveR2Parity": "PENDING",
-    "liveTopicIdParity": "PENDING",
-    "status": "YLM26_IN_PROGRESS_NOT_GREEN",
-    "next": "Finish remaining 26 content rows fail-closed; then R2/topicId parity + reversible manifest; COL26 immediately after YLM26 GREEN."
+    "status": "YLM26_CONTENT_GATE_PASS_GLOBAL_NOT_GREEN",
+    "next": "Build/apply only a deterministic reversible YLM26 correction+topicId manifest, re-audit, obtain R2 HTTP evidence through allowed path; then start COL26."
   },
   "run47": {
     "date": "2026-10-09",
@@ -374,5 +412,47 @@
     "liveTopicIdParity": "PENDING",
     "status": "YLM26_IN_PROGRESS_NOT_GREEN",
     "next": "Finish remaining 26 content rows fail-closed; then R2/topicId parity + reversible manifest; COL26 immediately after YLM26 GREEN."
+  },
+  "run79b": {
+    "run": "RUN79B",
+    "date": "2026-10-10",
+    "stage": "P2_YLM26_FULL_REVIEW",
+    "finalReviewedContentThisRun": 21,
+    "sourceHoldsThisRun": 5,
+    "cumulativeContentAdjudicated": 326,
+    "cumulativeFinalReviewedContent": 321,
+    "cumulativeSourceHolds": 5,
+    "sourceHoldCodes": [
+      "P050-Q04",
+      "P051-Q05",
+      "P066-Q14",
+      "P085-Q01",
+      "P094-Q11"
+    ],
+    "liveTaxonomy": {
+      "mainSkills": 22,
+      "subSkills": 70
+    },
+    "liveTopicId": {
+      "missing": 326,
+      "uniqueDeterministicTargets": 326
+    },
+    "r2MetadataParity": {
+      "pass": 326,
+      "total": 326,
+      "httpFetch": "ENVIRONMENT_BLOCKED"
+    },
+    "productionVsFrozenBackup": {
+      "sourceItemId": 326,
+      "imageHash": 326,
+      "imageUrl": 326,
+      "answer": 326,
+      "skill": 326,
+      "subSkill": 326
+    },
+    "localManifestSha256": "436ec050716a0d5184b4f5e4fcd200e0dbf39752ae4b71f686e218ab2963d662",
+    "productionMutation": false,
+    "status": "YLM26_CONTENT_GATE_PASS_GLOBAL_NOT_GREEN",
+    "next": "Build/apply only a deterministic reversible YLM26 correction+topicId manifest, re-audit, obtain R2 HTTP evidence through allowed path; then start COL26."
   }
 }
