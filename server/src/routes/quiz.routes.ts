@@ -277,7 +277,10 @@ quizRouter.get(
 
     const assessmentId = String(legacyQuiz.id || legacyQuiz._id || "");
     const version = assessmentId ? await findLatestPublishedAssessmentVersion(assessmentId) : null;
-    const [quiz] = await applyQuizViewerPolicy([resolveAssessmentDefinitionRead(legacyQuiz, version)], req.authUser);
+    const [quiz] = await applyQuizViewerPolicy([{
+      ...resolveAssessmentDefinitionRead(legacyQuiz, version),
+      ...(req.authUser?.role === 'student' && hasDirectedQuizTargets(legacyQuiz) ? { viewerAudienceVerified: true } : {}),
+    }], req.authUser);
     if (!isStaffRole(req.authUser?.role) && getQuizAvailability(quiz) !== "available") {
       return res.json({ ...quiz, questions: [] });
     }
