@@ -239,3 +239,12 @@ Next heavy gate:
 - Three mapping candidates: P023-Q14 07_03 to 06_01; P047-Q07 14_02 to 14_04; P047-Q09 14_03 to 14_04. No production mutation.
 - New hold P064-Q04: exponent question yields an answer absent from listed options. Existing holds remain.
 - Conditional cumulative review events 5346 (repeats included), unique YLM26 inventory 326, final canonical approvals 0. Status YLM26 NOT GREEN. Next: adjudicate holds, canonical fields, R2 parity, rollback manifest, then COL26.
+
+## RUN77 — 2026-10-10
+
+- فُحصت بصريًا 150 صورة سؤال مختلفة من قصاصات المصدر الموثقة في RUN76 عبر 15 لوحة؛ لم يُفتح PDF الأصلي مجددًا. ليست 150 اعتمادًا canonical.
+- 122 مراجعة إجابة من الصور، منها 120 غير ملتبسة و2 HOLD (P050-Q04 وP066-Q14). تطابقت 60/60 حالة مع براهين RUN74؛ صُحح خطآ قراءة أوليان قبل الحفظ.
+- نُشرت تعديلات تعليمية فعلية لسبعة أسئلة داخل Enriched V2: نصوص مصدرية وخيارات وأسباب البدائل وتلميحات وحلول، دون افتراضات إضافية.
+- whyOthersWrong محددة المصدر: 7/326، والمتبقي 319. مطابقة R2 وtopicId غير مكتملة. الاعتمادات canonical الجديدة صفر ولا production mutation.
+- التراكمي المشروط لأحداث مراجعة المصدر (مع التكرارات) = 9953. الدليل: ops/tah-math/TAH_MATH_RUN77_150_SOURCE_VISUAL_122_ANSWER_CROSSCHECK.json.
+- الحالة YLM26 NOT GREEN. التالي إغلاق 319 شرح بديل وحسم عيبَي المصدر ثم R2/topic parity وmanifest قابل للرجوع وCOL26.
