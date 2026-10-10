@@ -1,0 +1,37 @@
+{
+  "run": "RUN78",
+  "sourceBook": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+  "status": "SOURCE_ADJUDICATED_LOCAL_PDF_NOT_PRODUCTION",
+  "corrections": [
+    {
+      "questionCode": "TAH-MATH-YLM26-P006-Q07",
+      "printedPage": 6,
+      "answerLetter": "B",
+      "proof": "Computer ∩ Science = 9 (triple intersection) + 3 (computer-science only) = 12; B=12.",
+      "reject": "A=9 omits the triple-intersection contribution or misreads the Venn region."
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P007-Q01",
+      "printedPage": 7,
+      "answerLetter": "B",
+      "proof": "Exactly one plane contains two distinct parallel lines; B=1.",
+      "reject": "A=0 is incompatible with the parallel-lines plane postulate."
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P016-Q11",
+      "printedPage": 16,
+      "answerLetter": "A",
+      "proof": "Top-right point of congruent-legged trapezoid M has coordinates (a+b,c), option A.",
+      "reject": "C incorrectly subtracts the horizontal offset."
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P019-Q03",
+      "printedPage": 19,
+      "answerLetter": "A",
+      "proof": "Origin reflection sends (-1,3) to (1,-3), option A.",
+      "reject": "D changes only the y-sign and keeps the x-sign negative."
+    }
+  ],
+  "productionMutation": false,
+  "canonicalApprovedNew": 0
+}
