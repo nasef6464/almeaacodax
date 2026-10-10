@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN117",
+  "stage": "QA_LOCK",
+  "startHeads": {
+    "branch": "ade285fada33e3cc845c378df762b1f18205b084",
+    "main": "2584b2cd63badf1bb8143b475798ab3744d76f48"
+  },
+  "sourceImageDirectlyReinspected": 2,
+  "sourceImageShaMatched": 2,
+  "previousConflictsLiveMastered": 28,
+  "newConflictsLiveMastered": 2,
+  "totalUnpatched": 30,
+  "githubConflictManifestCommit": "2b1224116ab190f4e8e5d458c98e9b5ec17b4429",
+  "masterWritesApplied": 0,
+  "qaLock": false,
+  "dedupeLock": false,
+  "productionE2E": false,
+  "next": "Original MASTER fail-closed edits and full-book QA/taxonomy before dedupe."
+}
