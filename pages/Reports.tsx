@@ -39,6 +39,10 @@ import {
     buildStudentSkillReadinessSummary,
 } from './Reports/studentAnalyticsViewModel';
 import { buildStudentWeeklyPlan } from './Reports/studentWeeklyPlanViewModel';
+import { StaffDecisionPanel } from './Reports/StaffDecisionPanel';
+import { DirectedAssessmentReportPanel } from './Reports/DirectedAssessmentReportPanel';
+import { StaffRemediationPanel } from './Reports/StaffRemediationPanel';
+import { ScopedRecentAttemptsPanel } from './Reports/ScopedRecentAttemptsPanel';
 import { StudentWeeklyPlanPanel } from './Reports/StudentWeeklyPlanPanel';
 import { StudentSmartRemediationPanel } from './Reports/StudentSmartRemediationPanel';
 import { StudentSelectedSkillPanel } from './Reports/StudentSelectedSkillPanel';
@@ -1741,286 +1745,41 @@ const Reports: React.FC = () => {
                                 />
                             ) : null}
 
-                            {user.role === Role.SUPERVISOR || user.role === Role.ADMIN || user.role === Role.TEACHER || user.role === Role.SCHOOL_ADMIN ? (
-                                <div className="rounded-3xl border border-slate-100 bg-white p-4 shadow-sm">
-                                    <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-                                        <div>
-                                            <div className="inline-flex rounded-full bg-slate-100 px-3 py-1 text-xs font-black text-slate-700">
-                                                مركز قرار المشرف
-                                            </div>
-                                            <h3 className="mt-2 text-lg font-black text-gray-900">ابدأ من فصل، طالب، مهارة</h3>
-                                            <p className="mt-1 text-xs font-bold leading-6 text-gray-500">
-                                                ملخص تنفيذي من نفس نتائج الاختبارات، ثم تدخل علاجي وقياس متابعة.
-                                            </p>
-                                        </div>
-                                        <div className="print-hide flex flex-wrap gap-2">
-                                            <button
-                                                type="button"
-                                                data-testid="staff-intervention-create"
-                                                onClick={buildScopedSmartRemediation}
-                                                disabled={scopedSmartRemediationLoading || !scopedAnalytics.weakestSkills.length}
-                                                className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-indigo-600 px-3 py-2 text-xs font-black text-white shadow-sm hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50"
-                                            >
-                                                {scopedSmartRemediationLoading ? <Loader2 size={14} className="animate-spin" /> : <Sparkles size={14} />}
-                                                أنشئ تدخل علاجي
-                                            </button>
-                                            <button
-                                                type="button"
-                                                data-testid="staff-management-export"
-                                                onClick={downloadPerformanceWorkbook}
-                                                className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-emerald-50 px-3 py-2 text-xs font-black text-emerald-700 shadow-sm hover:bg-emerald-100"
-                                            >
-                                                <Download size={14} />
-                                                تصدير الإدارة
-                                            </button>
-                                        </div>
-                                    </div>
-                                    {scopedInterventionPlanCreated || scopedInterventionPlanError ? (
-                                        <div
-                                            role="status"
-                                            className={`mt-3 rounded-2xl border px-3 py-2 text-xs font-bold leading-6 ${
-                                                scopedInterventionPlanCreated
-                                                    ? 'border-emerald-100 bg-emerald-50 text-emerald-700'
-                                                    : 'border-rose-100 bg-rose-50 text-rose-700'
-                                            }`}
-                                        >
-                                            {scopedInterventionPlanCreated
-                                                ? 'تم إنشاء خطة علاج داخل حساب الطالب المحدد، ويمكنه فتحها من صفحة خطتي.'
-                                                : displayText(scopedInterventionPlanError)}
-                                        </div>
-                                    ) : null}
-                                    <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-                                        <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-3">
-                                            <div className="text-xs font-black text-emerald-700">أفضل فصل</div>
-                                            <div className="mt-2 text-base font-black leading-6 text-gray-900">
-                                                {displayText(strongestScopedGroup?.groupName) || 'بانتظار نتائج الفصول'}
-                                            </div>
-                                            <div className="mt-1 text-xs font-bold text-emerald-700">
-                                                {strongestScopedGroup ? `${strongestScopedGroup.averageScore}% - ${strongestScopedGroup.attempts} محاولة` : 'لا توجد محاولات كافية'}
-                                            </div>
-                                        </div>
-                                        <div className="rounded-2xl border border-rose-100 bg-rose-50 p-3">
-                                            <div className="text-xs font-black text-rose-700">أضعف فصل</div>
-                                            <div className="mt-2 text-base font-black leading-6 text-gray-900">
-                                                {displayText(weakestScopedGroup?.groupName) || 'بانتظار نتائج الفصول'}
-                                            </div>
-                                            <div className="mt-1 text-xs font-bold text-rose-700">
-                                                {weakestScopedGroup ? `${weakestScopedGroup.weakStudentCount} طلاب متعثرون - ${weakestScopedGroup.averageScore}%` : 'لا توجد إشارة واضحة'}
-                                            </div>
-                                        </div>
-                                        <div className="rounded-2xl border border-amber-100 bg-amber-50 p-3">
-                                            <div className="text-xs font-black text-amber-700">طالب متعثر</div>
-                                            <div className="mt-2 text-base font-black leading-6 text-gray-900">
-                                                {displayText(scopedLeadStudent?.name) || 'لا يوجد طالب محدد'}
-                                            </div>
-                                            <div className="mt-1 text-xs font-bold text-amber-700">
-                                                {scopedLeadStudent ? `${scopedLeadStudent.averageScore}% - ${scopedLeadStudent.weakSkillCount} مهارات` : 'المؤشرات مطمئنة حاليًا'}
-                                            </div>
-                                        </div>
-                                        <div className="rounded-2xl border border-indigo-100 bg-indigo-50 p-3">
-                                            <div className="text-xs font-black text-indigo-700">مهارة مشتركة ضعيفة</div>
-                                            <div className="mt-2 text-base font-black leading-6 text-gray-900">
-                                                {displayText(scopedLeadSkill?.skill) || 'بانتظار بيانات المهارات'}
-                                            </div>
-                                            <div className="mt-1 text-xs font-bold text-indigo-700">
-                                                {scopedLeadSkill ? `${scopedLeadSkill.affectedStudents} طلاب - ${scopedLeadSkill.mastery}%` : 'اربط الاختبارات بالمهارات أولًا'}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="mt-3 rounded-2xl bg-slate-50 px-3 py-2 text-xs font-bold leading-6 text-slate-600">
-                                        القرار المقترح: {scopedLeadSkill
-                                            ? `تدخل قصير على ${displayText(scopedLeadSkill.skill)} ثم اختبار متابعة.`
-                                            : scopedLeadStudent
-                                                ? `ابدأ بمتابعة ${displayText(scopedLeadStudent.name)} ثم قياس قصير.`
-                                                : 'وجّه اختبارًا تشخيصيًا قصيرًا حتى تظهر الأولويات.'}
-                                    </div>
-                                </div>
-                            ) : null}
+                            <StaffDecisionPanel
+                                user={user}
+                                scopedAnalytics={scopedAnalytics}
+                                scopedLeadSkill={scopedLeadSkill}
+                                scopedLeadStudent={scopedLeadStudent}
+                                weakestScopedGroup={weakestScopedGroup}
+                                strongestScopedGroup={strongestScopedGroup}
+                                institutionalReportHub={institutionalReportHub}
+                                scopedStudentFocusCards={scopedStudentFocusCards}
+                                scopedInterventionPlanCreated={scopedInterventionPlanCreated}
+                                scopedInterventionPlanError={scopedInterventionPlanError}
+                                scopedSmartRemediationLoading={scopedSmartRemediationLoading}
+                                copiedInstitutionalAlert={copiedInstitutionalAlert}
+                                canSendInterventionAlert={canSendInterventionAlert}
+                                interventionAlertSending={interventionAlertSending}
+                                interventionAlertSent={interventionAlertSent}
+                                interventionAlertError={interventionAlertError}
+                                buildScopedSmartRemediation={buildScopedSmartRemediation}
+                                downloadPerformanceWorkbook={downloadPerformanceWorkbook}
+                                downloadScopedStudentsWorkbook={downloadScopedStudentsWorkbook}
+                                copyInstitutionalAlert={copyInstitutionalAlert}
+                                sendInterventionAlert={sendInterventionAlert}
+                            />
 
-                            {institutionalReportHub ? (
-                                <div className="rounded-3xl border border-indigo-100 bg-indigo-50/60 p-4">
-                                    <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
-                                        <div className="min-w-0">
-                                            <div className="inline-flex rounded-full bg-white px-3 py-1 text-xs font-black text-indigo-700">
-                                                مركز متابعة مؤسسي
-                                            </div>
-                                            <h3 className="mt-2 text-lg font-black leading-7 text-gray-900">
-                                                {institutionalReportHub.roleLabel}: خطوة تشغيل واضحة
-                                            </h3>
-                                            <p className="mt-1 text-sm font-bold leading-7 text-gray-600">
-                                                {institutionalReportHub.nextAction}
-                                            </p>
-                                        </div>
-                                        <div className="print-hide grid gap-2 sm:grid-cols-2 xl:min-w-[520px]">
-                                            <Link
-                                                to={institutionalReportHub.followUpLink}
-                                                className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-indigo-600 px-3 py-2 text-xs font-black text-white shadow-sm hover:bg-indigo-700"
-                                            >
-                                                <Target size={14} />
-                                                توجيه اختبار
-                                            </Link>
-                                            <button
-                                                type="button"
-                                                onClick={copyInstitutionalAlert}
-                                                className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-white px-3 py-2 text-xs font-black text-emerald-700 shadow-sm hover:bg-emerald-50"
-                                            >
-                                                {copiedInstitutionalAlert ? <CheckCircle size={14} /> : <Copy size={14} />}
-                                                {copiedInstitutionalAlert ? 'تم النسخ' : 'نسخ تنبيه'}
-                                            </button>
-                                            <button
-                                                type="button"
-                                                data-testid="staff-intervention-alert-send"
-                                                onClick={() => void sendInterventionAlert()}
-                                                disabled={!canSendInterventionAlert || interventionAlertSending}
-                                                className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-white px-3 py-2 text-xs font-black text-amber-700 shadow-sm hover:bg-amber-50 disabled:cursor-not-allowed disabled:opacity-50"
-                                            >
-                                                {interventionAlertSending ? <Loader2 size={14} className="animate-spin" /> : interventionAlertSent ? <CheckCircle size={14} /> : <Bell size={14} />}
-                                                {interventionAlertSending ? 'إرسال' : interventionAlertSent ? 'تم الإرسال' : 'إرسال تنبيه'}
-                                            </button>
-                                            <Link
-                                                to={institutionalReportHub.studentsLink}
-                                                className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-white px-3 py-2 text-xs font-black text-slate-700 shadow-sm hover:bg-slate-50"
-                                            >
-                                                <FileText size={14} />
-                                                إدارة النطاق
-                                            </Link>
-                                            <button
-                                                type="button"
-                                                data-testid="staff-students-export"
-                                                onClick={downloadScopedStudentsWorkbook}
-                                                disabled={!scopedStudentFocusCards.length}
-                                                className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-white px-3 py-2 text-xs font-black text-rose-700 shadow-sm hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-50"
-                                            >
-                                                <Download size={14} />
-                                                تصدير الطلاب
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div className="mt-3 grid gap-2 md:grid-cols-3">
-                                        <div className="rounded-2xl bg-white/80 px-3 py-2 text-xs font-bold leading-6 text-slate-600">
-                                            النطاق: {roleScopeTitle[user.role] || 'النطاق الحالي'}
-                                        </div>
-                                        <div className="rounded-2xl bg-white/80 px-3 py-2 text-xs font-bold leading-6 text-slate-600">
-                                            الهدف: {institutionalReportHub.targetLine}
-                                        </div>
-                                        {interventionAlertError ? (
-                                            <div role="alert" className="rounded-2xl border border-rose-100 bg-rose-50 px-3 py-2 text-xs font-bold leading-6 text-rose-700">
-                                                {displayText(interventionAlertError)}
-                                            </div>
-                                        ) : null}
-                                        <Link
-                                            to={institutionalReportHub.alertLink}
-                                            className="print-hide rounded-2xl bg-white/80 px-3 py-2 text-xs font-black leading-6 text-indigo-700 hover:bg-white"
-                                        >
-                                            فتح مركز التنبيهات
-                                        </Link>
-                                    </div>
-                                </div>
-                            ) : null}
-
-                            {user.role === Role.SUPERVISOR || user.role === Role.ADMIN || user.role === Role.TEACHER || user.role === Role.SCHOOL_ADMIN ? (
-                                <div className="rounded-3xl border border-emerald-100 bg-white p-4 shadow-sm">
-                                    <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
-                                        <div>
-                                            <div className="inline-flex rounded-full bg-emerald-50 px-3 py-1 text-xs font-black text-emerald-700">
-                                                تحليل اختبار موجه
-                                            </div>
-                                            <h3 className="mt-2 text-lg font-black text-gray-900">نتائج الطلاب والمهارات لنفس الاختبار</h3>
-                                            <p className="mt-1 max-w-2xl text-xs font-bold leading-6 text-gray-500">
-                                                مناسب عندما يوجه المشرف أو المدير اختبارًا لمجموعة طلاب ويريد تقريرًا سريعًا: متوسط الأداء، أضعف المهارات، والطلاب الذين يحتاجون متابعة.
-                                            </p>
-                                        </div>
-                                        <div className="print-hide flex flex-wrap items-center gap-2">
-                                            <select
-                                                value={selectedFollowUpQuizId}
-                                                onChange={(event) => setSelectedFollowUpQuizId(event.target.value)}
-                                                className="max-w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-black text-slate-700 focus:border-emerald-400 focus:outline-none"
-                                            >
-                                                <option value="all">كل الاختبارات الموجهة</option>
-                                                {directedFollowUpOptions.map((quiz) => (
-                                                    <option key={quiz.id} value={quiz.id}>{displayText(quiz.title)}</option>
-                                                ))}
-                                            </select>
-                                            <button
-                                                type="button"
-                                                data-testid="directed-quiz-analysis-export"
-                                                onClick={downloadDirectedQuizAnalysisWorkbook}
-                                                disabled={!directedQuizAnalysisResults.length}
-                                                className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 px-3 py-2 text-xs font-black text-white shadow-sm hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50"
-                                            >
-                                                <Download size={14} />
-                                                تصدير تحليل الاختبار
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                    <div className="mt-4 grid gap-3 md:grid-cols-4">
-                                        <div className="rounded-2xl bg-slate-50 p-3">
-                                            <div className="text-xs font-bold text-slate-500">الاختبار</div>
-                                            <div className="mt-2 text-sm font-black leading-6 text-slate-900">{directedQuizSummary.title}</div>
-                                        </div>
-                                        <div className="rounded-2xl bg-emerald-50 p-3">
-                                            <div className="text-xs font-bold text-emerald-700">محاولات</div>
-                                            <div className="mt-2 text-2xl font-black text-emerald-700">{directedQuizSummary.attempts}</div>
-                                        </div>
-                                        <div className="rounded-2xl bg-indigo-50 p-3">
-                                            <div className="text-xs font-bold text-indigo-700">متوسط الأداء</div>
-                                            <div className="mt-2 text-2xl font-black text-indigo-700">{directedQuizSummary.averageScore}%</div>
-                                        </div>
-                                        <div className="rounded-2xl bg-rose-50 p-3">
-                                            <div className="text-xs font-bold text-rose-700">يحتاجون متابعة</div>
-                                            <div className="mt-2 text-2xl font-black text-rose-700">{directedQuizSummary.needsFollowUp}</div>
-                                        </div>
-                                    </div>
-
-                                    {directedQuizAnalysisResults.length > 0 ? (
-                                        <div className="mt-4 grid gap-4 xl:grid-cols-[1fr_1fr]">
-                                            <div className="rounded-2xl border border-slate-100 bg-slate-50 p-3">
-                                                <div className="mb-3 text-sm font-black text-gray-900">أضعف المهارات في الاختبار</div>
-                                                <div className="space-y-2">
-                                                    {directedQuizSkillAnalysis.slice(0, 5).map((skill) => (
-                                                        <div key={skill.skill} className="rounded-xl bg-white p-3">
-                                                            <div className="flex items-center justify-between gap-3">
-                                                                <div className="min-w-0 text-sm font-black text-gray-900">{displayText(skill.skill)}</div>
-                                                                <div className={`rounded-full px-2.5 py-1 text-xs font-black ${skill.mastery < 50 ? 'bg-rose-50 text-rose-700' : 'bg-amber-50 text-amber-700'}`}>
-                                                                    {skill.mastery}%
-                                                                </div>
-                                                            </div>
-                                                            <div className="mt-2 text-xs font-bold text-gray-500">
-                                                                {skill.affectedStudents} طالب متأثر - {skill.attempts} دليل من الإجابات
-                                                            </div>
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                            <div className="rounded-2xl border border-slate-100 bg-slate-50 p-3">
-                                                <div className="mb-3 text-sm font-black text-gray-900">أول الطلاب للمتابعة</div>
-                                                <div className="space-y-2">
-                                                    {directedQuizStudentAnalysis.slice(0, 5).map(({ result, studentName, score, weakSkills }) => (
-                                                        <div key={result.id || result._id || `${result.userId}-${result.date}`} className="rounded-xl bg-white p-3">
-                                                            <div className="flex items-center justify-between gap-3">
-                                                                <div className="min-w-0 text-sm font-black text-gray-900">{studentName}</div>
-                                                                <div className={`rounded-full px-2.5 py-1 text-xs font-black ${score >= 75 ? 'bg-emerald-50 text-emerald-700' : score >= 50 ? 'bg-amber-50 text-amber-700' : 'bg-rose-50 text-rose-700'}`}>
-                                                                    {score}%
-                                                                </div>
-                                                            </div>
-                                                            <div className="mt-2 text-xs font-bold leading-5 text-gray-500">
-                                                                {weakSkills.length
-                                                                    ? `متابعة: ${weakSkills.map((skill) => `${displayText(skill.skill)} ${Number(skill.mastery || 0)}%`).join('، ')}`
-                                                                    : 'لا توجد مهارة ضعيفة واضحة في هذه المحاولة.'}
-                                                            </div>
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    ) : (
-                                        <div className="mt-4 rounded-2xl border border-dashed border-slate-200 bg-slate-50 p-4 text-sm font-bold leading-7 text-slate-500">
-                                            لا توجد محاولات مسجلة لهذا الاختبار الموجه داخل الفلتر الحالي بعد.
-                                        </div>
-                                    )}
-                                </div>
-                            ) : null}
+                            <DirectedAssessmentReportPanel
+                                user={user}
+                                directedFollowUpOptions={directedFollowUpOptions}
+                                selectedFollowUpQuizId={selectedFollowUpQuizId}
+                                setSelectedFollowUpQuizId={setSelectedFollowUpQuizId}
+                                directedQuizAnalysisResults={directedQuizAnalysisResults}
+                                directedQuizSkillAnalysis={directedQuizSkillAnalysis}
+                                directedQuizStudentAnalysis={directedQuizStudentAnalysis}
+                                directedQuizSummary={directedQuizSummary}
+                                downloadDirectedQuizAnalysisWorkbook={downloadDirectedQuizAnalysisWorkbook}
+                            />
 
                             <div className={`grid gap-4 ${showScopedAggregatedSections && showScopedIndividualSections ? 'xl:grid-cols-[1.25fr_0.95fr]' : 'xl:grid-cols-1'}`}>
                                 {showScopedAggregatedSections ? (
@@ -2234,239 +1993,25 @@ const Reports: React.FC = () => {
                                 </div>
                             ) : null}
 
-                            <div className="rounded-3xl border border-gray-100 bg-slate-50/70 p-4">
-                                <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between mb-3">
-                                    <div>
-                                        <div className="text-lg font-black text-gray-900">خطة تدخل مختصرة</div>
-                                        <p className="text-sm leading-6 text-gray-500">تشخيص، تدخل، ثم قياس.</p>
-                                    </div>
-                                    <div className="flex flex-wrap gap-2">
-                                        <button
-                                            onClick={copyScopedSummary}
-                                            className="print-hide inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-xs font-black text-indigo-700 hover:bg-indigo-50"
-                                        >
-                                            {copiedScopedSummary ? <CheckCircle size={13} /> : <Copy size={13} />}
-                                            {copiedScopedSummary ? 'تم' : 'نسخ'}
-                                        </button>
-                                        <button
-                                            onClick={shareScopedSummary}
-                                            className="print-hide inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-xs font-black text-emerald-700 hover:bg-emerald-50"
-                                        >
-                                            {sharedScopedSummary ? <CheckCircle size={13} /> : <Share2 size={13} />}
-                                            {sharedScopedSummary ? 'تم' : 'مشاركة'}
-                                        </button>
-                                        <button
-                                            onClick={buildScopedSmartRemediation}
-                                            disabled={scopedSmartRemediationLoading || !scopedAnalytics.weakestSkills.length}
-                                            className="print-hide inline-flex items-center gap-1.5 rounded-full bg-amber-100 px-3 py-1 text-xs font-black text-amber-800 hover:bg-amber-200 disabled:cursor-not-allowed disabled:opacity-60"
-                                        >
-                                            {scopedSmartRemediationLoading ? <Loader2 size={13} className="animate-spin" /> : <Sparkles size={13} />}
-                                            {scopedSmartRemediationLoading ? 'تجهيز' : 'اقتراح'}
-                                        </button>
-                                    </div>
-                                </div>
-                                {scopedFollowUpSummary ? (
-                                    <div className="mb-3 rounded-2xl border border-white bg-white/70 p-3 text-xs font-bold leading-6 text-slate-600">
-                                        {scopedFollowUpSummary}
-                                    </div>
-                                ) : null}
-                                <div className="mb-3 grid gap-3 lg:grid-cols-3">
-                                    <div className="rounded-2xl border border-rose-100 bg-white p-3">
-                                        <div className="text-xs font-black text-rose-600">أولوية الطالب</div>
-                                        <div className="mt-2 text-base font-black leading-6 text-gray-900">
-                                            {displayText(scopedLeadStudent?.name) || 'بانتظار ظهور طالب يحتاج متابعة'}
-                                        </div>
-                                        <p className="mt-2 text-xs font-bold leading-6 text-gray-600">
-                                            {scopedLeadStudent
-                                                ? `${scopedLeadStudent.averageScore}% - ${scopedLeadStudent.weakSkillCount} مهارات`
-                                                : 'تظهر بعد توفر بيانات كافية.'}
-                                        </p>
-                                        {scopedLeadStudent ? (
-                                            <div className="print-hide mt-2 flex flex-wrap gap-2">
-                                                <button
-                                                    onClick={() => navigator.clipboard.writeText(scopedLeadStudentSummary).catch(() => undefined)}
-                                                    className="rounded-full bg-rose-50 px-3 py-1.5 text-xs font-black text-rose-700 hover:bg-rose-100"
-                                                >
-                                                    نسخ
-                                                </button>
-                                                <Link to="/dashboard?tab=reports" className="rounded-full bg-gray-100 px-3 py-1.5 text-xs font-black text-gray-700 hover:bg-gray-200">
-                                                    تقرير
-                                                </Link>
-                                            </div>
-                                        ) : null}
-                                    </div>
-                                    <div className="rounded-2xl border border-amber-100 bg-white p-3">
-                                        <div className="text-xs font-black text-amber-600">أولوية المهارة</div>
-                                        <div className="mt-2 text-base font-black leading-6 text-gray-900">
-                                            {displayText(scopedLeadSkill?.skill) || 'بانتظار بيانات المهارات'}
-                                        </div>
-                                        <p className="mt-2 text-xs font-bold leading-6 text-gray-600">
-                                            {scopedLeadSkill
-                                                ? `${scopedLeadSkill.affectedStudents} طلاب - ${scopedLeadSkill.mastery}%`
-                                                : 'تظهر بعد تراكم النتائج.'}
-                                        </p>
-                                        {scopedLeadSkill ? (
-                                            <div className="print-hide mt-2 flex flex-wrap gap-2">
-                                                <Link to="/quiz" className="rounded-full bg-amber-50 px-3 py-1.5 text-xs font-black text-amber-700 hover:bg-amber-100">
-                                                    اختبار
-                                                </Link>
-                                                <Link to={buildSkillSessionLink({ skill: scopedLeadSkill.skill, skillId: scopedLeadSkill.skillId, sectionName: scopedLeadSkill.section })} className="rounded-full bg-gray-100 px-3 py-1.5 text-xs font-black text-gray-700 hover:bg-gray-200">
-                                                    شرح
-                                                </Link>
-                                            </div>
-                                        ) : null}
-                                    </div>
-                                    <div className="rounded-2xl border border-indigo-100 bg-white p-3">
-                                        <div className="text-xs font-black text-indigo-600">أولوية المادة</div>
-                                        <div className="mt-2 text-base font-black leading-6 text-gray-900">
-                                            {displayText(scopedLeadSubject?.subjectName) || 'بانتظار توزيع المواد'}
-                                        </div>
-                                        <p className="mt-2 text-xs font-bold leading-6 text-gray-600">
-                                            {scopedLeadSubject
-                                                ? `${scopedLeadSubject.weakStudents} طلاب - ${scopedLeadSubject.mastery}%`
-                                                : 'تظهر عند وجود فرق واضح.'}
-                                        </p>
-                                        {scopedLeadSubject ? (
-                                            <div className="mt-2 rounded-xl bg-indigo-50 px-3 py-2 text-xs font-bold leading-6 text-indigo-700">
-                                                تدريب قصير ثم قياس.
-                                            </div>
-                                        ) : null}
-                                    </div>
-                                </div>
-                                <div className="grid gap-3 lg:grid-cols-3">
-                                    {scopedInterventionPlan.map((item) => (
-                                        <div key={item.title} className={`rounded-2xl border p-3 ${item.className}`}>
-                                            <div className="text-xs font-black opacity-70">{item.title}</div>
-                                            <div className="mt-2 text-sm font-black leading-6">{item.label}</div>
-                                            <p className="mt-1 text-xs font-bold leading-6">{item.body}</p>
-                                        </div>
-                                    ))}
-                                </div>
-                                {scopedSmartRemediation ? (
-                                    <div className="mt-4 rounded-3xl border border-amber-100 bg-white/80 p-4">
-                                        <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-                                            <div>
-                                                <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-amber-50 px-3 py-1 text-xs font-black text-amber-700">
-                                                    <Sparkles size={14} />
-                                                    خطة ذكية قابلة للتنفيذ
-                                                </div>
-                                                <div className="text-base font-black text-gray-900">{displayText(scopedSmartRemediation.title) || 'خطة تدخل للنطاق الحالي'}</div>
-                                                <p className="mt-2 text-xs font-bold leading-6 text-gray-600">
-                                                    {displayText(scopedSmartRemediation.summary) || 'ابدأ بالمهارة الأكثر ضعفًا، ثم أنشئ متابعة قصيرة وقابلة للقياس.'}
-                                                </p>
-                                            </div>
-                                            <Link to="/quiz" className="self-start rounded-xl bg-slate-900 px-3 py-2 text-xs font-black text-white hover:bg-slate-800">
-                                                اختبار متابعة
-                                            </Link>
-                                        </div>
-                                        <div className="mt-3 grid gap-3 lg:grid-cols-3">
-                                            {(scopedSmartRemediation.steps || []).slice(0, 3).map((step, index) => (
-                                                <div key={`${step.day || index}-${step.skill || index}`} className="rounded-2xl border border-gray-100 bg-slate-50 p-3">
-                                                    <div className="rounded-full bg-white px-3 py-1 text-xs font-black text-indigo-700 inline-flex">
-                                                        {displayText(step.day) || `خطوة ${index + 1}`}
-                                                    </div>
-                                                    <div className="mt-2 font-black leading-6 text-gray-900">{displayText(step.skill) || 'مهارة تحتاج متابعة'}</div>
-                                                    <p className="mt-1 text-xs font-bold leading-6 text-gray-600">{displayText(step.action) || 'وجّه نشاطًا علاجيًا قصيرًا.'}</p>
-                                                    <div className="mt-2 text-xs font-bold leading-6 text-gray-500">
-                                                        قياس: {displayText(step.check) || 'اختبار قصير.'}
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                        {scopedSmartRemediation.parentNote ? (
-                                            <div className="mt-3 rounded-2xl bg-emerald-50 px-4 py-3 text-xs font-bold leading-6 text-emerald-800">
-                                                متابعة: {displayText(scopedSmartRemediation.parentNote)}
-                                            </div>
-                                        ) : null}
-                                    </div>
-                                ) : null}
-                            </div>
+                            <StaffRemediationPanel
+                                scopedAnalytics={scopedAnalytics}
+                                scopedFollowUpSummary={scopedFollowUpSummary}
+                                scopedLeadStudent={scopedLeadStudent}
+                                scopedLeadSkill={scopedLeadSkill}
+                                scopedLeadSubject={scopedLeadSubject}
+                                scopedInterventionPlan={scopedInterventionPlan}
+                                scopedSmartRemediation={scopedSmartRemediation}
+                                scopedSmartRemediationLoading={scopedSmartRemediationLoading}
+                                copiedScopedSummary={copiedScopedSummary}
+                                sharedScopedSummary={sharedScopedSummary}
+                                copyScopedSummary={copyScopedSummary}
+                                shareScopedSummary={shareScopedSummary}
+                                copyLeadStudentSummary={() => navigator.clipboard.writeText(scopedLeadStudentSummary || '').catch(() => undefined)}
+                                buildScopedSmartRemediation={buildScopedSmartRemediation}
+                            />
 
                             {showScopedIndividualSections ? (
-                            <div className="rounded-3xl border border-gray-100 bg-white p-4">
-                                <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-                                    <div>
-                                        <div className="text-lg font-black text-gray-900">محاولات حديثة</div>
-                                    </div>
-                                    <span className="self-start rounded-full bg-slate-100 px-3 py-1 text-xs font-black text-slate-700">
-                                        {scopedLatestResults.length} محاولة حديثة
-                                    </span>
-                                </div>
-                                {scopedLatestResults.length > 0 ? (
-                                    <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-                                        {scopedLatestResults.map((result, index) => {
-                                            const resultId = String(result.id || result._id || `${result.userId || 'student'}-${index}`);
-                                            const weakSkills = (result.skillsAnalysis || [])
-                                                .filter((skill) => Number(skill.mastery ?? 100) < 75)
-                                                .slice(0, 2);
-                                            const primaryWeakSkill = weakSkills[0];
-                                            const resolvedAttemptSkill = primaryWeakSkill?.skill
-                                                ? skills.find((skill) => displayText(skill.name) === displayText(primaryWeakSkill.skill))
-                                                : undefined;
-                                            const attemptStudent = result.userId
-                                                ? scopedAnalytics.weakestStudents.find((student) => student.id === result.userId)
-                                                : undefined;
-                                            const attemptFollowUpLink = buildDirectedQuizManagerLink({
-                                                pathId: resolvedAttemptSkill?.pathId,
-                                                subjectId: resolvedAttemptSkill?.subjectId,
-                                                sectionId: resolvedAttemptSkill?.sectionId,
-                                                skillId: resolvedAttemptSkill?.id,
-                                                targetUserId: result.userId || attemptStudent?.id,
-                                                targetGroupId: attemptStudent?.groupIds?.[0],
-                                            });
-                                            const resultDate = result.date || result.createdAt;
-
-                                            return (
-                                                <div key={resultId} className="rounded-2xl border border-gray-100 bg-slate-50 p-3">
-                                                    <div className="flex items-start justify-between gap-3">
-                                                        <div className="min-w-0">
-                                                            <div className="text-xs font-bold text-gray-500">{displayText(result.studentName) || 'طالب'}</div>
-                                                            <div className="mt-1 font-black leading-6 text-gray-900">{displayText(result.quizTitle) || 'اختبار'}</div>
-                                                        </div>
-                                                        <div className={`rounded-full px-3 py-1 text-sm font-black ${Number(result.score || 0) >= 75 ? 'bg-emerald-50 text-emerald-700' : Number(result.score || 0) >= 50 ? 'bg-amber-50 text-amber-700' : 'bg-rose-50 text-rose-700'}`}>
-                                                            {Number(result.score || 0)}%
-                                                        </div>
-                                                    </div>
-                                                    <div className="mt-2 grid grid-cols-2 gap-2 text-xs">
-                                                        <div className="rounded-xl bg-white px-3 py-1.5">
-                                                            <div className="font-bold text-gray-500">صحيح</div>
-                                                            <div className="mt-1 font-black text-gray-900">{Number(result.correctAnswers || 0)}</div>
-                                                        </div>
-                                                        <div className="rounded-xl bg-white px-3 py-1.5">
-                                                            <div className="font-bold text-gray-500">الأسئلة</div>
-                                                            <div className="mt-1 font-black text-gray-900">{Number(result.totalQuestions || 0)}</div>
-                                                        </div>
-                                                    </div>
-                                                    {weakSkills.length ? (
-                                                        <>
-                                                            <div className="mt-2 text-xs font-bold leading-6 text-rose-700">
-                                                                متابعة: {weakSkills.map((skill) => `${displayText(skill.skill) || 'مهارة'} (${Number(skill.mastery || 0)}%)`).join('، ')}
-                                                            </div>
-                                                            <Link
-                                                                to={attemptFollowUpLink}
-                                                                className="print-hide mt-2 inline-flex rounded-full bg-indigo-600 px-3 py-1.5 text-xs font-black text-white hover:bg-indigo-700"
-                                                            >
-                                                                اختبار متابعة
-                                                            </Link>
-                                                        </>
-                                                    ) : (
-                                                        <div className="mt-2 text-xs font-bold leading-6 text-emerald-700">لا توجد أولوية واضحة.</div>
-                                                    )}
-                                                    {resultDate ? (
-                                                        <div className="mt-2 text-[11px] font-bold text-gray-400">
-                                                            {new Date(resultDate).toLocaleDateString('ar-SA')}
-                                                        </div>
-                                                    ) : null}
-                                                </div>
-                                            );
-                                        })}
-                                    </div>
-                                ) : (
-                                    <div className="rounded-2xl border border-dashed border-gray-200 bg-slate-50 p-4 text-sm leading-7 text-gray-500">
-                                        لا توجد محاولات حديثة داخل هذا النطاق بعد. بعد أول اختبار للطالب ستظهر المحاولة هنا مباشرة للمشرف أو ولي الأمر المرتبط.
-                                    </div>
-                                )}
-                            </div>
+                                <ScopedRecentAttemptsPanel scopedLatestResults={scopedLatestResults} skills={skills} scopedAnalytics={scopedAnalytics} />
                             ) : null}
 
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
