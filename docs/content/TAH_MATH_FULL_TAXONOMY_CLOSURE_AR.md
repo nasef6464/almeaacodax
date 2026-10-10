@@ -248,3 +248,14 @@ Next heavy gate:
 - whyOthersWrong محددة المصدر: 7/326، والمتبقي 319. مطابقة R2 وtopicId غير مكتملة. الاعتمادات canonical الجديدة صفر ولا production mutation.
 - التراكمي المشروط لأحداث مراجعة المصدر (مع التكرارات) = 9953. الدليل: ops/tah-math/TAH_MATH_RUN77_150_SOURCE_VISUAL_122_ANSWER_CROSSCHECK.json.
 - الحالة YLM26 NOT GREEN. التالي إغلاق 319 شرح بديل وحسم عيبَي المصدر ثم R2/topic parity وmanifest قابل للرجوع وCOL26.
+
+
+## RUN78B — 2026-10-10
+
+- أُغلق محتوى 150 سؤال YLM26 كـ FINAL_REVIEWED_CONTENT من أدلة مصدرية مباشرة سابقة، دون احتساب إعادة المشاهدة كإنجاز.
+- جميع الـ150 تحمل: source identity/imageHash، الإجابة، main/subskill، difficulty، explanation، whyCorrect، option-specific whyOthersWrong، hint، solvingStrategy، commonMistakes، AI Context، foundationReference، questionFingerprint، teachingFingerprint.
+- توزيع الصعوبة: 86 Easy / 60 Medium / 4 Hard.
+- تم استبعاد 19 سؤالًا ظهر لها تعارض بين أدلة إجابة تاريخية بدل تخمينها، وبقي HOLDان مصدران: P050-Q04 وP066-Q14.
+- لا production mutation. R2 parity وlive topicId parity ما زالا PENDING.
+- SHA-256 للـmanifest المحلي الكامل: a63e46cc0e6a7e61ec9a5234b5d5dce6d4dd2a99766a2d6032905585f8a05fad.
+- الحالة: YLM26 NOT GREEN. التالي: حسم التعارضات والـHOLDs وإغلاق بقية 176 صفًا ثم R2/topic parity والـreversible manifest.
