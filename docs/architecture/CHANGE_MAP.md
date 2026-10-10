@@ -2,6 +2,8 @@
 
 | إذا أردت تغيير... | ابدأ من... | لا تبدأ من... |
 |---|---|---|
+| مجموعات قوائم اللوحات المصرح بها | components/DashboardSectionNav.tsx | تغيير الصلاحيات أو المسارات |
+| عرض قوائم الأدوار تدريجيًا مع طباعة كاملة | components/DisplayListControls.tsx | حذف النتائج أو تقليل مصدر التصدير |
 | عرض تكليفات الطالب المطلوبة والمنجزة | components/SchoolTestsPanel.tsx | تغيير مصدر النتائج أو صلاحياتها |
 | المزيد/أقل لقوائم الطالب | components/StudentListPager.tsx | تغيير حد API أو حذف التاريخ |
 | إنجاز خطة الطالب والخطوة التالية | `utils/studentPlanCompletion.ts` و`pages/Plan.tsx` | تغيير درجات الاختبارات |

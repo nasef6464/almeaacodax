@@ -1,3 +1,4 @@
+import { DashboardSectionNav } from '../components/DashboardSectionNav';
 
 import React, { useEffect, useMemo, useState, Suspense } from 'react';
 import { 
@@ -1176,54 +1177,11 @@ const Dashboard: React.FC = () => {
                     <nav className="space-y-1">
                         {isParentDashboard ? (
                             <>
-                                {/* Group: المتابعة */}
-                                <p className="px-2 pb-1 pt-3 text-[10px] font-black uppercase tracking-widest text-gray-400">المتابعة</p>
-                                {menuItems.filter(i => ['overview','parent-results','parent-skills','reports'].includes(i.id)).map(item => (
-                                    <button
-                                        key={item.id}
-                                        onClick={() => { setActiveTab(item.id as any); setIsSidebarOpen(false); }}
-                                        className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-bold transition-all ${
-                                            activeTab === item.id
-                                            ? 'bg-emerald-50 text-emerald-700 shadow-sm'
-                                            : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                                        }`}
-                                    >
-                                        <div className="flex items-center gap-3">{item.icon}{item.label}</div>
-                                        {activeTab === item.id && <ChevronLeft size={16} />}
-                                    </button>
-                                ))}
-                                {/* Group: إدارة الحساب */}
-                                <p className="px-2 pb-1 pt-3 text-[10px] font-black uppercase tracking-widest text-gray-400">إدارة الحساب</p>
-                                {menuItems.filter(i => ['parent-link','requests'].includes(i.id)).map(item => (
-                                    <button
-                                        key={item.id}
-                                        onClick={() => { setActiveTab(item.id as any); setIsSidebarOpen(false); }}
-                                        className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-bold transition-all ${
-                                            activeTab === item.id
-                                            ? 'bg-emerald-50 text-emerald-700 shadow-sm'
-                                            : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                                        }`}
-                                    >
-                                        <div className="flex items-center gap-3">{item.icon}{item.label}</div>
-                                        {activeTab === item.id && <ChevronLeft size={16} />}
-                                    </button>
-                                ))}
-                                {/* Group: الدعم */}
-                                <p className="px-2 pb-1 pt-3 text-[10px] font-black uppercase tracking-widest text-gray-400">الدعم</p>
-                                {menuItems.filter(i => ['qa'].includes(i.id)).map(item => (
-                                    <button
-                                        key={item.id}
-                                        onClick={() => { setActiveTab(item.id as any); setIsSidebarOpen(false); }}
-                                        className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-bold transition-all ${
-                                            activeTab === item.id
-                                            ? 'bg-emerald-50 text-emerald-700 shadow-sm'
-                                            : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-                                        }`}
-                                    >
-                                        <div className="flex items-center gap-3">{item.icon}{item.label}</div>
-                                        {activeTab === item.id && <ChevronLeft size={16} />}
-                                    </button>
-                                ))}
+                                <DashboardSectionNav items={parentMenuItems} activeId={activeTab} onSelect={id => { setActiveTab(id as DashboardTab); setIsSidebarOpen(false); }} groups={[
+                                    { label: 'متابعة الأبناء', ids: ['overview', 'parent-results', 'parent-skills', 'reports'] },
+                                    { label: 'الحساب والطلبات', ids: ['parent-link', 'requests'] },
+                                    { label: 'المساعدة', ids: ['qa'] },
+                                ]} />
                             </>
                         ) : (
                             <>

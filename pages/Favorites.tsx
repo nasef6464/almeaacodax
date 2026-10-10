@@ -75,7 +75,7 @@ const Favorites: React.FC = () => {
     </div>
     {loading ? <Card className="p-10 text-center text-gray-500">جاري تحميل المراجعة...</Card> : null}
     {!loading && error ? <Card className="p-6 text-center text-rose-600">{error}</Card> : null}
-    {!loading && !error && items.length===0 ? <Card className="p-10 text-center border-dashed border-2 border-gray-200"><BookOpen size={46} className="mx-auto mb-3 text-gray-300"/><h2 className="font-black text-gray-800">{tabMeta[activeTab].empty}</h2><p className="mt-2 text-sm text-gray-500">السؤال لا يُنسخ هنا؛ يتم استدعاؤه من بنك الأسئلة بنفس الكود والصورة.</p></Card> : null}
+    {!loading && !error && items.length===0 ? <Card className="p-10 text-center border-dashed border-2 border-gray-200"><BookOpen size={46} className="mx-auto mb-3 text-gray-300"/><h2 className="font-black text-gray-800">{tabMeta[activeTab].empty}</h2><p className="mt-2 text-sm text-gray-500">احفظ سؤالًا أثناء التدريب، أو راجع الأسئلة التي أخطأت فيها من قسم «أخطائي».</p></Card> : null}
     {currentQuestion ? <>
       <div className="flex items-center justify-between rounded-xl bg-slate-50 px-3 py-2 text-xs font-bold text-slate-500">
         <span>إجمالي هذا القسم: {total}</span>

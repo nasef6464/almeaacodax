@@ -1,3 +1,4 @@
+import { DisplayListControls, useDisplayLimit } from '../../components/DisplayListControls';
 import React, { useMemo, useState } from 'react';
 import {
   AlertTriangle, Award, BarChart3, CheckCircle2,
@@ -31,6 +32,7 @@ interface ClassReportPanelProps {
   onSelectStudent: (id: string) => void;
   onExportCSV: () => void;
   onPrint: () => void;
+  showActions?: boolean;
 }
 
 // ── Grade Band ─────────────────────────────────────────────────────────────────
@@ -45,9 +47,11 @@ const BANDS: Band[] = [
 
 // ── Main Component ─────────────────────────────────────────────────────────────
 export const ClassReportPanel: React.FC<ClassReportPanelProps> = ({
-  students, groupSnapshots, overallAverage, onSelectStudent, onExportCSV, onPrint,
+  students, groupSnapshots, overallAverage, onSelectStudent, onExportCSV, onPrint, showActions = true,
 }) => {
   const [selectedClass, setSelectedClass] = useState<string>('all');
+  const urgentRows = useDisplayLimit(12, selectedClass);
+  const groupRows = useDisplayLimit(8, selectedClass);
 
   const filteredStudents = useMemo(() =>
     selectedClass === 'all' ? students : students.filter((s) => s.className === selectedClass),
@@ -98,14 +102,14 @@ export const ClassReportPanel: React.FC<ClassReportPanelProps> = ({
             <option value="all">كل الفصول</option>
             {classNames.map((c) => <option key={c} value={c}>{c}</option>)}
           </select>
-          <button onClick={onExportCSV}
+          {showActions ? <><button onClick={onExportCSV}
             className="flex items-center gap-1.5 rounded-xl border border-gray-200 bg-white px-3 py-1.5 text-xs font-bold text-gray-700 hover:bg-gray-50">
             <Download size={13} /> تصدير
           </button>
           <button onClick={onPrint}
             className="flex items-center gap-1.5 rounded-xl border border-indigo-200 bg-indigo-50 px-3 py-1.5 text-xs font-bold text-indigo-700 hover:bg-indigo-100">
             <Printer size={13} /> طباعة
-          </button>
+          </button></> : null}
         </div>
       </div>
 
@@ -216,7 +220,7 @@ export const ClassReportPanel: React.FC<ClassReportPanelProps> = ({
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50">
-                {urgentStudents.map((s) => (
+                {urgentStudents.slice(0, urgentRows.limit).map((s) => (
                   <tr key={s.id} className="hover:bg-rose-50/30">
                     <td className="py-2 font-bold text-gray-900 truncate max-w-[120px]">{s.name}</td>
                     <td className="py-2 text-center text-gray-500">{s.className}</td>
@@ -235,6 +239,7 @@ export const ClassReportPanel: React.FC<ClassReportPanelProps> = ({
               </tbody>
             </table>
           </div>
+          <DisplayListControls {...urgentRows} total={urgentStudents.length} label="قائمة التدخل العاجل" />
         </div>
       )}
 
@@ -245,7 +250,7 @@ export const ClassReportPanel: React.FC<ClassReportPanelProps> = ({
             <Users size={15} className="text-indigo-500" /> مقارنة الفصول
           </h4>
           <div className="space-y-3">
-            {[...groupSnapshots].sort((a, b) => b.average - a.average).map((g, i) => {
+            {[...groupSnapshots].sort((a, b) => b.average - a.average).slice(0, groupRows.limit).map((g, i) => {
               const isTop = i === 0;
               return (
                 <div key={g.id} className={`flex items-center gap-3 rounded-xl p-3 ${isTop ? 'bg-emerald-50 border border-emerald-200' : 'bg-gray-50'}`}>
@@ -263,6 +268,7 @@ export const ClassReportPanel: React.FC<ClassReportPanelProps> = ({
                 </div>
               );
             })}
+            <DisplayListControls {...groupRows} total={groupSnapshots.length} label="مقارنة الفصول" />
           </div>
         </div>
       )}

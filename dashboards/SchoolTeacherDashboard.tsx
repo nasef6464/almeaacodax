@@ -1,3 +1,4 @@
+import { DashboardSectionNav } from '../components/DashboardSectionNav';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Award, BarChart3, BookOpenCheck, LayoutDashboard, Presentation, School, Target, Trophy } from 'lucide-react';
@@ -200,32 +201,12 @@ export const SchoolTeacherDashboard: React.FC = () => {
         )}
         <div className="mt-3"><TeacherWorkspaceSwitcher /></div>
       </div>
-      <nav className="space-y-0.5 px-3">
-        {SCHOOL_TEACHER_NAV_ITEMS.map((item) => {
-          const isActive = activeTab === item.id;
-          return (
-            <button
-              key={item.id}
-              type="button"
-              onClick={() => handleTabChange(item.id)}
-              className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-right transition-colors text-xs font-bold ${isActive ? 'bg-indigo-50 text-indigo-700 font-black border-r-4 border-indigo-600 dark:bg-indigo-950/40 dark:text-indigo-300' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-slate-800'}`}
-            >
-              <div className={isActive ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-400'}>{item.icon}</div>
-              <span>{item.label}</span>
-            </button>
-          );
-        })}
-      </nav>
-      <div className="mt-8 px-4">
-        <button
-          type="button"
-          onClick={() => openScheduler()}
-          disabled={!selectedSchool.smartClassroomEnabled}
-          className="w-full flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-indigo-600 to-indigo-700 p-3 text-xs font-black text-white shadow-md hover:from-indigo-700 hover:to-indigo-800 active:scale-95 disabled:opacity-40 transition-all"
-        >
-          <Presentation size={15} /> بدء حصة ذكية فورية 🚀
-        </button>
-      </div>
+      <DashboardSectionNav items={SCHOOL_TEACHER_NAV_ITEMS} activeId={activeTab} onSelect={id => handleTabChange(id as SchoolTeacherTab)} groups={[
+        { label: 'البداية', ids: ['overview'] },
+        { label: 'التحضير والتدريس', ids: ['smart-classroom', 'prepared-questions', 'assessments'] },
+        { label: 'المتابعة والتحفيز', ids: ['reports', 'skills-radar', 'certificates'] },
+      ]} />
+
     </div>
   );
 
