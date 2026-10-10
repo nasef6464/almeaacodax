@@ -171,6 +171,7 @@ export const dashboardAnalyticsQuerySchema = z.object({
 });
 
 export const quizResultsListQuerySchema = z.object({
+  learningContext: z.enum(['platform_self_study', 'school_assessment', 'legacy_unknown']).optional(),
   page: z.coerce.number().int().min(1).default(1),
   limit: z.coerce.number().int().min(1).max(100).default(50),
   noTotal: z.coerce.boolean().default(false),

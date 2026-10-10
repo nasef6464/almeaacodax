@@ -15,6 +15,7 @@ import { buildDocumentQuery } from "../infrastructure/quizDocumentQuery.js";
 import { getCachedQuizResults, setCachedQuizResults } from "../infrastructure/quizResultsCache.js";
 import { quizResultsListQuerySchema } from "./questionQuerySchemas.js";
 import { buildQuizResultsCacheKey, escapeRegex, parseDateFilter } from "./queryUtilities.js";
+import { buildQuizResultLearningContextFilter } from '../application/quizResultLearningContextFilter.js';
 
 const idOf = (item: any) => String(item?.id || item?._id || "");
 const DIRECT_RESULT_DISABLED_MESSAGE =
@@ -68,7 +69,10 @@ quizResultsRouter.get(
       res.setHeader("X-Quiz-Results-Cache", "miss");
     }
     const pagination = resolvePagination(query, { page: query.page, limit: query.limit });
-    const filter: Record<string, unknown> = { userId: req.authUser!.id, ...buildResultTaxonomyScopeFilter(query) };
+    const filter: Record<string, unknown> = {
+      userId: req.authUser!.id,
+      $and: [buildResultTaxonomyScopeFilter(query), buildQuizResultLearningContextFilter(query.learningContext)],
+    };
     if (query.quizId) {
       filter.quizId = query.quizId;
     }
@@ -97,7 +101,7 @@ quizResultsRouter.get(
     }
     const projection = includeReview
       ? null
-      : "id userId quizId quizTitle score passed attemptNumber source totalQuestions correctAnswers wrongAnswers unanswered timeSpentSeconds timeSpent date skillsAnalysis sectionResults createdAt updatedAt";
+      : "id userId quizId quizTitle score passed attemptNumber source learningContext schoolId classId quizSnapshot.title quizSnapshot.mode quizSnapshot.quizKind quizSnapshot.pathId quizSnapshot.subjectId totalQuestions correctAnswers wrongAnswers unanswered timeSpentSeconds timeSpent date skillsAnalysis sectionResults createdAt updatedAt";
     const resultsQuery = QuizResultModel.find(filter)
       .sort(sort)
       .skip(pagination.skip)
@@ -136,14 +140,16 @@ quizResultsRouter.get(
     const includeReview = String(req.query.includeReview || "").toLowerCase() === "true";
     const projection = includeReview
       ? null
-      : "id userId quizId quizTitle score passed attemptNumber source totalQuestions correctAnswers wrongAnswers unanswered timeSpentSeconds timeSpent date skillsAnalysis sectionResults createdAt updatedAt pathId subjectId sectionId";
+      : "id userId quizId quizTitle score passed attemptNumber source learningContext schoolId classId quizSnapshot.title quizSnapshot.mode quizSnapshot.quizKind quizSnapshot.pathId quizSnapshot.subjectId totalQuestions correctAnswers wrongAnswers unanswered timeSpentSeconds timeSpent date skillsAnalysis sectionResults createdAt updatedAt pathId subjectId sectionId";
     const { students, totalStudents, managedPathIds, managedSubjectIds } = await resolveScopedStudents(authUser, {
       limit: Math.max(pagination.limit, 200),
     });
     const studentIds = students.map((student) => idOf(student));
     const studentById = new Map(students.map((student) => [idOf(student), student]));
 
-    const scopedFilter: Record<string, unknown> = { ...buildResultTaxonomyScopeFilter(query) };
+    const scopedFilter: Record<string, unknown> = {
+      $and: [buildResultTaxonomyScopeFilter(query), buildQuizResultLearningContextFilter(query.learningContext)],
+    };
     if (query.quizId) {
       scopedFilter.quizId = query.quizId;
     }

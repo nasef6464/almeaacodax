@@ -13,6 +13,10 @@ export const resolveAssessmentResultRead = (
     _id: legacyResult._id,
     id: legacyResult.id ?? legacyResult._id,
     userId: legacyResult.userId,
+    // List filters use the persisted origin, never a stale compatibility copy.
+    learningContext: legacyResult.learningContext ?? 'legacy_unknown',
+    schoolId: legacyResult.schoolId,
+    classId: legacyResult.classId,
   };
 };
 

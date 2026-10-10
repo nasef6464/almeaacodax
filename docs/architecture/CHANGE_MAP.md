@@ -54,3 +54,7 @@ Student waiting presentation moved from `ClassroomStudentLive` into `ClassroomSt
 ## Mock client policy and ordering ownership — 2026-10-10
 - services/mockExamNormalization.ts owns published mock policy conversion; services/adapter.ts delegates. Preserve strict/flexible flags, subject domains and optional legacy defaults.
 - utils/mockExam.ts owns section-respecting question order; QuizPage delegates and restores an older draft current question by canonical identity. Scoring, server session authority and persisted historical results remain unchanged.
+
+
+## Student platform/school context reports — 2026-10-10
+Student report/history source separation reuses persisted learningContext and canonical scores. New UI/hook boundaries plus existing result-list projections/filter helper and submission relation resolver; no model migration, AI call, scoring/auth change or new polling. Evidence: docs/audits/STUDENT_PLATFORM_SCHOOL_CONTEXT_REPORTS_2026-10-10.md.
