@@ -454,6 +454,8 @@ async function main() {
     if (!reviewAnswerResponse.ok()) throw new Error(`Review practice answer failed (${reviewAnswerResponse.status()})`);
     const reviewAnswerPayload = await reviewAnswerResponse.json().catch(() => ({}));
     if (reviewAnswerPayload?.isCorrect !== true) throw new Error(`Review practice did not record a correct remediation attempt: ${JSON.stringify(reviewAnswerPayload)}`);
+    await freshStudent.page.getByText("إجابة صحيحة! أحسنت 🎯", { exact: true }).waitFor({ timeout: 30000 });
+    await freshStudent.page.getByRole("button", { name: "عرض ملخص الاختبار التدريبي 📊", exact: true }).click();
     await freshStudent.page.getByRole("heading", { name: "تمت المراجعة اليومية" }).waitFor({ timeout: 30000 });
     const dueAfterPractice = await api(freshStudent.page, "/review/due?limit=20");
     const dueAfterPracticeIds = listOf(dueAfterPractice.payload, "items").map((item) => String(item.questionId || ""));
