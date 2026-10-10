@@ -41,6 +41,10 @@ export const verifyQuizAvailabilityJourney = async ({ request, csrf, adminToken,
   assert.equal(detail.body.viewerRetakeGranted, true);
   assert.equal(detail.body.settings.maxAttempts, 2);
   assert.equal(detail.body.questions.length, 1);
+  const metadata = await request(`/quizzes/${quizId}?includeQuestions=false`, { token: studentToken });
+  assert.equal(metadata.body.questions.length, 0);
+  assert.equal(metadata.body.viewerRetakeGranted, true);
+  assert.equal(metadata.body.settings.maxAttempts, 2);
   assert.equal((await request(`/quizzes/${quizId}`, { token: outsiderToken })).status, 403);
   assert.equal((await start()).status, 200);
   assert.equal((await submit()).status, 201);

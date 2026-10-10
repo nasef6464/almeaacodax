@@ -284,7 +284,7 @@ quizRouter.get(
 
     const questionIds = getQuizQuestionIds(quiz);
     let questions: any[] = [];
-    if (questionIds.length > 0) {
+    if (questionIds.length > 0 && req.query.includeQuestions !== "false") {
       const rawQuestions = await QuestionModel.find(buildDocumentsByIdsQuery(questionIds)).lean();
       const hydratedQuestions = await hydrateQuestionPassages(rawQuestions as Array<Record<string, any>>);
       const isLearner = req.authUser?.role === "student" || !req.authUser;

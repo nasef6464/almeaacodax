@@ -202,6 +202,8 @@ export const QuizPage: React.FC = () => {
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
   const [hasAccess, setHasAccess] = useState<boolean | null>(null);
   const [accessMessage, setAccessMessage] = useState('هذا الاختبار غير متاح لك حاليًا.');
+  const [quizPolicyError, setQuizPolicyError] = useState(false);
+  const [policyReloadKey, setPolicyReloadKey] = useState(0);
   const [isSubmittingResult, setIsSubmittingResult] = useState(false);
   const [showFinishDialog, setShowFinishDialog] = useState(false);
   const [qaDraft, setQaDraft] = useState('');
@@ -355,25 +357,28 @@ export const QuizPage: React.FC = () => {
 
   useEffect(() => {
     if (!quizId) return;
-    const exists = quizzes.some((item) => item.id === quizId) || (quiz?.id === quizId);
-    if (exists) return;
+    const existing = useStore.getState().quizzes.find(item => item.id === quizId);
+    const directedStudent = user.role === 'student' && !isDevSessionUser(user) && !!existing && (existing.mode === 'central' || !!existing.targetGroupIds?.length || !!existing.targetUserIds?.length);
+    if (existing && !directedStudent) { setIsFetchingQuiz(false); setQuizPolicyError(false); return; }
 
     let cancelled = false;
     setIsFetchingQuiz(true);
+    setQuizPolicyError(false);
 
-    adapter.getQuiz(quizId).then((fetchedQuiz) => {
-      if (cancelled || !fetchedQuiz) {
+    adapter.getQuiz(quizId, user.role === 'student' ? { includeQuestions: false } : undefined).then((fetchedQuiz) => {
+      if (cancelled) return;
+      if (!fetchedQuiz) {
+        if (directedStudent) setQuizPolicyError(true);
         setIsFetchingQuiz(false);
         return;
       }
       const current = useStore.getState().quizzes;
-      if (!current.some((q) => q.id === fetchedQuiz.id)) {
-        useStore.getState().hydrateQuizzes([...current, fetchedQuiz]);
-      }
+      useStore.getState().hydrateQuizzes([...current.filter(q => q.id !== fetchedQuiz.id), fetchedQuiz]);
       setIsFetchingQuiz(false);
     }).catch((err) => {
       console.warn('Unable to fetch quiz by id:', err);
       if (!cancelled) {
+        if (directedStudent) setQuizPolicyError(true);
         setIsFetchingQuiz(false);
       }
     });
@@ -381,7 +386,7 @@ export const QuizPage: React.FC = () => {
     return () => {
       cancelled = true;
     };
-  }, [quizId, quizzes, quiz?.id]);
+  }, [quizId, user.id, user.role, policyReloadKey]);
 
   useEffect(() => {
     const foundQuiz = quizzes.find((item) => item.id === quizId) || (quiz?.id === quizId ? quiz : null);
@@ -452,6 +457,11 @@ export const QuizPage: React.FC = () => {
     setAccessMessage('هذا الاختبار غير متاح لك حاليًا.');
     setQuizStatusMessage(null);
     const isStaffViewer = ['admin', 'teacher', 'supervisor'].includes(user.role);
+    if (quizPolicyError) {
+      setHasAccess(false);
+      setAccessMessage('تعذر تحديث إتاحة الاختبار. أعد المحاولة.');
+      return;
+    }
 
     const targetUserIds = foundQuiz.targetUserIds || [];
     const targetGroupIds = foundQuiz.targetGroupIds || [];
@@ -634,7 +644,7 @@ export const QuizPage: React.FC = () => {
       setTimeLeft(defaultTimeLeft);
       setFlaggedQuestionIds([]);
     }
-  }, [quizId, quizzes, questions, quizScopedQuestions, user, checkAccess, hasScopedPackageAccess, isResolvingScopedQuestions, isFetchingQuiz, sourceParam, sourceCourse, courseHasAccess, quiz?.id, availabilityNow]);
+  }, [quizId, quizzes, questions, quizScopedQuestions, user, checkAccess, hasScopedPackageAccess, isResolvingScopedQuestions, isFetchingQuiz, sourceParam, sourceCourse, courseHasAccess, quiz?.id, availabilityNow, quizPolicyError]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -1373,6 +1383,7 @@ export const QuizPage: React.FC = () => {
           </div>
           <h2 className="text-2xl font-bold text-gray-800 mb-2">عذرًا، لا يمكنك الوصول</h2>
           <p className="text-gray-500 mb-6">{accessMessage}</p>
+          {quizPolicyError && <button onClick={() => setPolicyReloadKey(n => n + 1)} className="mb-3 w-full rounded-xl border border-indigo-200 p-2 font-bold text-indigo-700">إعادة المحاولة</button>}
           <button onClick={handleReturnToPreviousPlace} className="bg-indigo-600 text-white px-6 py-2 rounded-xl font-bold hover:bg-indigo-700 transition-colors w-full">
             {safeReturnTo ? 'العودة للمكان السابق' : 'العودة للرئيسية'}
           </button>

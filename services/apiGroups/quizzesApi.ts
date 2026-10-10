@@ -33,8 +33,8 @@ export const createQuizzesApi = (request: ApiRequest) => ({
   getQuizzes: async (pagination: PaginationOptions = {}) =>
     extractList(await request<unknown>(withQuery("/quizzes", { limit: 200, noTotal: true, ...pagination })), "quizzes"),
 
-  getQuiz: (id: string) =>
-    request<any>(`/quizzes/${encodeURIComponent(id)}`),
+  getQuiz: (id: string, options: { includeQuestions?: boolean } = {}) =>
+    request<any>(withQuery(`/quizzes/${encodeURIComponent(id)}`, options)),
 
   getQuizAnalyticsOverview: (pagination: PaginationOptions = {}) =>
     request<unknown>(withQuery("/quizzes/analytics/overview", { studentLimit: 500, resultLimit: 2000, attemptLimit: 3000, ...pagination })),

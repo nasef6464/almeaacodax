@@ -569,13 +569,13 @@ export const adapter = {
     }
   },
 
-  async getQuiz(id: string): Promise<Quiz | null> {
+  async getQuiz(id: string, options?: { includeQuestions?: boolean }): Promise<Quiz | null> {
     if (!USE_REAL_API || !id) {
       return null;
     }
 
     try {
-      const data = await api.getQuiz(id);
+      const data = await api.getQuiz(id, options);
       if (!data) return null;
       const normalized = normalizeQuiz(data);
       return normalized.id && normalized.title ? normalized : null;
