@@ -30,6 +30,8 @@ jobs:
         run: node scripts/verify-phys26-quarantine-gate.mjs
       - name: PHYS26 foundation and section gate
         run: node scripts/verify-phys26-foundation-plan.mjs
+      - name: Check syntax of private PHYS26 crop edge auditor
+        run: python -m py_compile scripts/audit-phys26-private-crop-edges.py
       - name: Check syntax of private PHYS26 crop generator
         run: python -m py_compile scripts/build-phys26-private-crop-candidates.py
       - name: PHYS26 question validator behavior (6 synthetic cases)
