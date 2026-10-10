@@ -5,7 +5,7 @@
   "directImageInspection": true,
   "sourceCropArchive": "/MNSF26/Run017/mnsf26_arithmetic_crops_run017.zip",
   "sourceInventory": "/MNSF26/Run017/MNSF26_FULLBOOK_CROP_INVENTORY_V1.json",
-  "masteredCount": 15,
+  "masteredCount": 13,
   "holdCount": 4,
   "records": [
     {
@@ -50,7 +50,7 @@
       },
       "imageHash": "18670ca46428e9f5f15922427f54913d1eb82184510be4689f292429d64f9611",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
-      "status": "MASTERED",
+      "status": "REVIEW",
       "questionText": "قارن ساعة و17 دقيقة مع 7 دقائق و60 ثانية.",
       "canonicalMainSkill": "main_quant_14",
       "canonicalSubskill": "sub_quant_14_2",
@@ -60,7 +60,10 @@
       "difficulty": "Easy",
       "difficultyReason": "خطوات مباشرة في تحويل دقائق وثوان ومقارنة الأزمنة.",
       "contentFingerprint": "7b5da45b71b2f8926c183a1570a69d4b2aa355df4b1a42ea24b68113cb0a61c9",
-      "ideaFingerprint": "3139c375d698d9ff1a986a8b067aecfc861e9804b4756bf9a468b9210275c538"
+      "ideaFingerprint": "3139c375d698d9ff1a986a8b067aecfc861e9804b4756bf9a468b9210275c538",
+      "importEligible": false,
+      "qaReviewReason": "Source image: 1h17m = 1h7m+600s = 77m; MASTER incorrectly says first greater.",
+      "qaEvidence": "RUN114 independent visual reinspection of RUN112/RUN113 source WebP; import blocked pending re-mastering"
     },
     {
       "sourceKey": "MNSF26-AR-T050-Q03",
@@ -322,7 +325,7 @@
       },
       "imageHash": "deeb978ee496b3abebf85002f845c9264f0e065778379ea908fbf85ff891ea01",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
-      "status": "MASTERED",
+      "status": "REVIEW",
       "questionText": "قارن المدة من 8:59 مساء إلى 9:03 مساء اليوم التالي مع 1450 دقيقة.",
       "canonicalMainSkill": "main_quant_14",
       "canonicalSubskill": "sub_quant_14_2",
@@ -332,7 +335,10 @@
       "difficulty": "Medium",
       "difficultyReason": "تتطلب ربط أكثر من معطى أو تحويل وحدات في مدة عبر يومين ومقارنتها بالدقائق.",
       "contentFingerprint": "e8ada66501b2b55beaaee98f92c7242336ae714ef2796fbdb0cb4e4e7183bee0",
-      "ideaFingerprint": "0a14cede6643ea0ecd81d1f4954a0795c4e04b541e2cf5dd60ee465fcb05e71c"
+      "ideaFingerprint": "0a14cede6643ea0ecd81d1f4954a0795c4e04b541e2cf5dd60ee465fcb05e71c",
+      "importEligible": false,
+      "qaReviewReason": "Source image: 9:12pm to 9:02pm next day =1430min, compared to1490min; MASTER changed times to 8:59/9:03 and 1450min.",
+      "qaEvidence": "RUN114 independent visual reinspection of RUN112/RUN113 source WebP; import blocked pending re-mastering"
     },
     {
       "sourceKey": "MNSF26-AR-T050-Q13",
@@ -525,5 +531,6 @@
       "contentFingerprint": "4c3ba8ebb4e48c3e437953b374563e8c857931997734cd15a9075c46a029ed8b",
       "ideaFingerprint": "d95fa68fe06a24fcb0774c8fe54b71c50c101cf23e0586cbd118cd08c9b18007"
     }
-  ]
+  ],
+  "reviewCount": 2
 }
