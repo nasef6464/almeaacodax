@@ -47,7 +47,7 @@ try {
   await report.waitForFunction(() => window.detailRequests.length === 2);
   assert.equal(await report.evaluate(() => window.historyRequests.length), 1, 'detail retry must not reload history');
   await report.evaluate(() => window.detailRequests[1].resolve({ report: { studentEvidenceComplete: true, students: [] } }));
-  await report.waitForFunction(() => !document.querySelector('[role="status"]'));
+  await report.getByRole('heading', { name: 'تقييم الطلاب في الحصة كاملة', exact: true }).waitFor();
   assert.equal(await report.getByRole('button', { name: 'إعادة تحميل تفاصيل الطلاب' }).count(), 0);
   assert.equal(await report.evaluate(() => window.detailRequests.every(r => r.path.endsWith('/aggregate?view=report'))), true);
   await report.close();
