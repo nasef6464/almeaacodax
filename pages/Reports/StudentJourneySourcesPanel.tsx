@@ -10,6 +10,9 @@ export const StudentJourneySourcesPanel = ({ results, attempts, completedLessons
   const [context, setContext] = useState<StudentLearningContext>('platform_self_study');
   const rows = useMemo(() => selectStudentContextResults(results, context), [context, results]);
   const answered = attempts.filter(attempt => attempt.selectedOptionIndex >= 0);
+  // QuizPage also records assessment answers here; they are not standalone training.
+  const reviews = answered.filter(attempt => ['remediation', 'recheck', 'mastery_review'].includes(attempt.evidenceType || ''));
+  const unclassifiedActivityCount = answered.length - reviews.length;
   const skillRows = useMemo(() => buildStudentAggregatedSkills({ examResults: rows, questionAttempts: [], questions: [], skills: [], subjects: [], sections: [], minSkillEvidence: 3 }), [rows]);
   const average = rows.length ? Math.round(rows.reduce((sum, row) => sum + row.score, 0) / rows.length) : null;
   return (
@@ -19,8 +22,9 @@ export const StudentJourneySourcesPanel = ({ results, attempts, completedLessons
         <h3 className="font-bold text-emerald-900">شغلي على المنصة</h3>
         <div className="mt-3 grid grid-cols-2 gap-3 text-sm">
           <p>دروس أنجزتها: <strong>{new Set(completedLessons).size}</strong><span className="block text-xs text-slate-500">إجمالي إنجاز الدروس المسجل</span></p>
-          <p>إجابات التدريب والمراجعة: <strong>{answered.length}</strong><span className="block text-xs text-slate-500">{periodLabel} — من المحاولات المحملة، دون الأسئلة المتروكة</span></p>
+          <p data-testid="student-review-activity">أنشطة المراجعة والعلاج: <strong>{reviews.length}</strong><span className="block text-xs text-slate-500">{periodLabel} — إجابات المراجعة والعلاج وإعادة القياس المسجلة، دون الأسئلة المتروكة</span></p>
         </div>
+        {unclassifiedActivityCount > 0 ? <p data-testid="student-unclassified-question-activity" className="mt-3 text-xs leading-6 text-slate-600">{unclassifiedActivityCount} إجابة سؤال محملة قد تكون من التدريب أو الاختبارات؛ نوع نشاطها لم يُسجل منفصلًا. لا تُحتسب كمراجعات هنا، وتبقى ضمن أدلة التقدم العام.</p> : null}
         <div className="mt-3 flex flex-wrap gap-3 text-sm font-bold text-emerald-800"><Link to="/courses">متابعة التعلم</Link><Link to="/review">تدريبي ومراجعتي</Link><Link to="/plan">خطتي</Link></div>
       </div>
       <div className="flex flex-wrap gap-2" aria-label="تقارير حسب مصدر الاختبار">
