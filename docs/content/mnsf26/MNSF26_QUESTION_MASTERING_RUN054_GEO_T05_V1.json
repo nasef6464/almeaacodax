@@ -5,7 +5,7 @@
   "directImageInspection": true,
   "sourceCropArchive": "/MNSF26/Run021/mnsf26_geometry_crops_run021.zip",
   "sourceInventory": "/MNSF26/Run021/MNSF26_GEOMETRY_CROP_MANIFEST_V1.json",
-  "masteredCount": 18,
+  "masteredCount": 17,
   "holdCount": 2,
   "records": [
     {
@@ -328,7 +328,7 @@
       },
       "imageHash": "8dd23e3018cd7b5a7d8fa51e9baa2c9ad0170f92679baf83294fd6e2ac1be4ea",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T005_Q11",
-      "status": "MASTERED",
+      "status": "REVIEW",
       "questionText": "زاويتان خارجيتان على متوازيين 3س و2ص متساويتان",
       "canonicalMainSkill": "main_quant_19",
       "canonicalSubskill": "sub_quant_19_2",
@@ -338,7 +338,14 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "79fdad1ca8bdd31e018da8ff9d6e6968901fba3a8b6e576a2e6730181a53be1c",
-      "ideaFingerprint": "f4f5ef78a0ef304b25de154a5a8f1f9fd182c1a59bd6d0657cfa8dcc104a52b6"
+      "ideaFingerprint": "f4f5ef78a0ef304b25de154a5a8f1f9fd182c1a59bd6d0657cfa8dcc104a52b6",
+      "importEligible": false,
+      "reviewReason": "RUN132/135/136 original-image source-answer/solution/taxonomy conflict; do not import until independently reapproved.",
+      "qaEvidence": [
+        "MNSF26_RUN135_37_MATH_REVIEW_CANDIDATES_V1.json",
+        "MNSF26_RUN136_SOURCE_QA_NOTE.md",
+        "MNSF26_RUN132_37_REVIEW_PATCH_MANIFEST_V1.json"
+      ]
     },
     {
       "sourceKey": "MNSF26-GEO-T005-Q12",
@@ -610,5 +617,6 @@
       "contentFingerprint": "bbc787cade79d05e542bbfbe968125f34ef727181e09c160aa22cf9c400b7af9",
       "ideaFingerprint": "c4db03e4e9317fe7531c6fd06524b403197e9cbd1c9df6b662136a561cbcd2ae"
     }
-  ]
+  ],
+  "reviewCount": 1
 }
