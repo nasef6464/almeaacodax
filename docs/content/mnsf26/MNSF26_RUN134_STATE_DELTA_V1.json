@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN134",
+  "date": "2026-10-10",
+  "stage": "QA_LOCK",
+  "startHeads": {
+    "branch": "30818be828ce267fc354a24ed0da12b5e6edd727",
+    "main": "77b9f8620110c1cf29145fc1d43ffc465068b396"
+  },
+  "cropLock": "PASS_LOCKED_2135",
+  "questionMastering": "PASS_LOCKED_ACCORDING_TO_RUN063",
+  "qa": {
+    "uniqueARSourceRowsAudited": 405,
+    "originalImageSHAverified": 405,
+    "shaMismatch": 0,
+    "historicalMasteredCanonicalPairsValid": 325,
+    "independentOriginalImageMathAdjudications": 6,
+    "taxonomyReviewCandidates": 2,
+    "fullBookCertified": false
+  },
+  "sourceConflicts": {
+    "unsafeStillMastered": 37,
+    "originalFilesVerified": 25,
+    "quarantinesApplied": 0
+  },
+  "githubWrites": {
+    "master": "BLOCKED_BY_SAFETY",
+    "verifierIntegration": "BLOCKED_BY_SAFETY"
+  },
+  "dedupe": "OPEN",
+  "r2": "NOT_STARTED",
+  "import": "NOT_STARTED",
+  "productionE2E": "NOT_STARTED",
+  "productionTouched": false
+}
