@@ -1,10 +1,11 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { CheckCircle2, RefreshCw, Sparkles, XCircle } from "lucide-react";
+import { CheckCircle2, RefreshCw, XCircle } from "lucide-react";
 import { Link, useSearchParams } from "react-router-dom";
 import { api } from "../services/api";
 import { QuestionAssistantPanel } from "../components/results/QuestionAssistantPanel";
 import { QuestionVoiceExplanationPlayer } from "../components/results/QuestionVoiceExplanationPlayer";
 import { PracticeExamSummary, type AnswerOutcome } from "../components/review/PracticeExamSummary";
+import { PracticeSessionHeader } from "../components/review/PracticeSessionHeader";
 import { PracticeQuestionFeedback } from "../components/review/PracticeQuestionFeedback";
 import { normalizeQuestionHtml } from "../utils/questionHtml";
 import type { QuestionVoiceExplanation } from "../types";
@@ -226,36 +227,7 @@ export const ReviewSession: React.FC = () => {
 
   return (
     <div className="mx-auto max-w-3xl space-y-4 p-3 sm:p-5" dir="rtl">
-      <div className="rounded-3xl border border-indigo-100 bg-gradient-to-r from-indigo-50/80 via-white to-white p-4 shadow-xs">
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <div className="flex items-center gap-2">
-            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-indigo-600 text-white shadow-xs">
-              <Sparkles size={16} />
-            </span>
-            <div>
-              <h2 className="text-sm font-black text-indigo-950">
-                {mode === "mistakes" ? "اختبار تدريبي: تصحيح الأخطاء السابقة" : mode === "saved" ? "اختبار تدريبي: الأسئلة المحفوظة" : "جلسة تدريب حر وتثبيت إتقان"}
-              </h2>
-              <p className="text-[11px] font-bold text-indigo-700/80">اختبار تدريبي غير مسجل رسمياً — لا يؤثر على معدلك التراكمي.</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="rounded-full bg-indigo-100 px-3 py-1 text-xs font-black text-indigo-800">
-              السؤال {index + 1} من {items.length}
-            </span>
-            <Link to="/dashboard?tab=favorites" className="rounded-xl border border-slate-200 bg-white px-2.5 py-1 text-xs font-bold text-slate-500 hover:bg-slate-50">
-              خروج
-            </Link>
-          </div>
-        </div>
-
-        <div className="mt-3 h-2 overflow-hidden rounded-full bg-indigo-100/60">
-          <div
-            className="h-full rounded-full bg-indigo-600 transition-all duration-300"
-            style={{ width: `${Math.round(((index + 1) / items.length) * 100)}%` }}
-          />
-        </div>
-      </div>
+      <PracticeSessionHeader mode={mode} index={index} total={items.length} />
 
       <div className="rounded-3xl border border-gray-100 bg-white p-4 sm:p-6 shadow-xs">
         <div className="mb-3 flex flex-wrap items-center justify-between gap-2 text-xs font-bold text-gray-500">

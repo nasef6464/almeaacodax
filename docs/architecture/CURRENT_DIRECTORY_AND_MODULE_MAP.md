@@ -1,5 +1,8 @@
 # ALMEAA Current Directory & Module Map
 
+Review practice (2026-10-10): `pages/ReviewSession.tsx` retains private card loading, canonical answers, event idempotency, session lifecycle and local batch retry. `components/review/PracticeSessionHeader.tsx` owns only the mode/progress/exit presentation alongside existing feedback/summary components. Favorites owns current-tab/page entry and ignores stale tab loads. No server/API/data authority moved.
+
+
 Assessment windows/retakes (2026-10-10, pending delivery): `quizzes/application/quizAvailability.ts` owns validation and runtime window policy; `quizViewerPolicy.ts` overlays only the requesting student's grant. `http/quizRetakeRoutes.ts` reuses definition-management/audience authority and writes additive `QuizRetake` records. `QuizRetakeDialog` owns selected recipients; `useQuizWindowClock` owns a local boundary timer. Legacy definition, attempt/result and scoring ownership remain intact.
 
 Classroom report read recovery (2026-10-10): `hooks/useClassroomTeacherReports.ts` owns mounted-view summary history loading, pending deduplication, request lifecycle/school isolation and explicit retry for SmartClassroomReportsSection and ClassSkillGapsRadar. Callers retain diagnostics/filter/detail ownership; existing server APIs/authorization unchanged.
