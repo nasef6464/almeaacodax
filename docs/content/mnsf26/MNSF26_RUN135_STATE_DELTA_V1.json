@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN135",
+  "date": "2026-10-11",
+  "startHeads": {
+    "branch": "c39a932be4078c50bb6c46b87b5ca0fae0089c44",
+    "main": "77b9f8620110c1cf29145fc1d43ffc465068b396"
+  },
+  "stage": "QA_LOCK",
+  "cropLock": "PASS_LOCKED_2135_2135",
+  "questionMastering": "PASS_LOCKED_PER_RUN063_2129_ACTIVE_6_EXCLUDED",
+  "qa": {
+    "knownUnsafeSourceRecordsDirectOriginalImageMathReviewed": 37,
+    "sourceImageSha256Verified": 37,
+    "mathReviewCandidates": 36,
+    "ambiguousHold": 1,
+    "masterRecordsCorrected": 0,
+    "masteredNew": 0,
+    "fullBookQAPass": false
+  },
+  "conflictGate": {
+    "knownUnsafe": 37,
+    "originalMasterQuarantinesApplied": 0,
+    "importEligibleOverrideEffective": false
+  },
+  "dedupe": "OPEN",
+  "r2": "NOT_STARTED",
+  "import": "NOT_STARTED",
+  "productionE2E": "NOT_STARTED",
+  "productionTouched": false,
+  "blockers": [
+    "GitHub update_file safety check blocked direct source MASTER quarantine GEO-T001-Q19; did not bypass"
+  ],
+  "evidence": "/MNSF26/Run135/MNSF26_RUN135_37_DIRECT_IMAGE_MATH_ADJUDICATIONS_V1.json",
+  "next": "Apply 37 fail-closed REVIEW/importEligible=false changes via authorized original MASTER writes; verify; independent taxonomy QA; cross-bank DEDUPE; R2/import/E2E."
+}
