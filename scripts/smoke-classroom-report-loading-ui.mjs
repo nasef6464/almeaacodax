@@ -33,7 +33,7 @@ try {
   await hook.getByRole('alert').filter({ hasText: 'تعذر تحميل' }).waitFor();
   await hook.getByRole('button', { name: 'Reload', exact: true }).click();
   await hook.waitForFunction(() => window.historyRequests.length === 3);
-  await hook.evaluate(fixture => window.historyRequests[2].resolve({ sessions: [fixture] }), fixture);
+  await hook.evaluate(fixture => window.historyRequests[2].resolve({ sessions: [fixture, { ...fixture, sessionId: 'active-session', status: 'live', endedAt: null }] }), fixture);
   await hook.waitForFunction(() => document.querySelector('pre').textContent === '["saved-session"]');
   assert.equal(await hook.getByRole('alert').innerText(), '');
   await hook.close();
