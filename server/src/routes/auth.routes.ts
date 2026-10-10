@@ -17,7 +17,8 @@ import { signAccessToken } from "../utils/jwt.js";
 import { clearAuthCookie, setAuthCookie } from "../utils/authCookie.js";
 import { grantAccessToUser } from "../services/accessGrantService.js";
 import { recordAdminAuditLog } from "../services/adminAuditLog.js";
-import { createNotificationDeliveries, processNotificationDeliveryById } from "../services/notificationService.js";
+import { createNotificationDeliveries } from "../services/notificationService.js";
+import { sendPasswordRecovery } from "../modules/auth/application/sendPasswordRecovery.js";
 import { sendExternalNotification } from "../services/notificationProviders.js";
 import { buildPaginatedResponse, resolvePagination } from "../utils/pagination.js";
 import { env } from "../config/env.js";
@@ -526,17 +527,7 @@ authRouter.post(
       user.passwordResetUsedAt = null;
       await user.save();
 
-      const recoveryDelivery = await createNotificationDeliveries({
-        channels: ["email"],
-        userIds: [String(user.id || user._id)],
-        title: "استعادة كلمة المرور",
-        subject: "استعادة كلمة المرور",
-        body: `لاستعادة كلمة المرور افتح الرابط خلال 60 دقيقة: ${env.CLIENT_URL.replace(/\/+$/, "")}/reset-password?token=${encodeURIComponent(token)}`,
-        createdBy: "system",
-      });
-      // Recovery must dispatch its own email now; merely storing a pending
-      // delivery would require an unrelated manual admin processing action.
-      for (const deliveryId of recoveryDelivery.deliveryIds || []) await processNotificationDeliveryById(deliveryId);
+      await sendPasswordRecovery(String(user.id || user._id), token);
     }
 
     return res.json({

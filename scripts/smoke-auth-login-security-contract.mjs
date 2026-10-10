@@ -7,6 +7,7 @@ const files = {
   reset: await readFile(new URL("../pages/ResetPassword.tsx", import.meta.url), "utf8"),
   env: await readFile(new URL("../server/src/config/env.ts", import.meta.url), "utf8"),
   loginProtection: await readFile(new URL("../server/src/middleware/loginProtection.ts", import.meta.url), "utf8"),
+  recovery: await readFile(new URL("../server/src/modules/auth/application/sendPasswordRecovery.ts", import.meta.url), "utf8"),
 };
 
 const checks = [];
@@ -57,8 +58,9 @@ check("secure recovery releases only verified account and source before password
   if (rejected < 0 || release < rejected || mutation < release) throw new Error("Verify reset ownership before releasing protection and mutating the password");
   assertIncludes(files.loginProtection, "loginAccountLimiter.resetKey(digest(identity))");
   assertIncludes(files.loginProtection, "store.clear(sourceKey(req))");
-  assertIncludes(files.auth, "/reset-password?token=${encodeURIComponent(token)}");
-  assertIncludes(files.auth, "processNotificationDeliveryById(deliveryId)");
+  assertIncludes(files.auth, "await sendPasswordRecovery(String(user.id || user._id), token)");
+  assertIncludes(files.recovery, "/reset-password?token=${encodeURIComponent(token)}");
+  assertIncludes(files.recovery, "processNotificationDeliveryById(deliveryId)");
 });
 
 check("successful login and password reset clear failed login state", () => {

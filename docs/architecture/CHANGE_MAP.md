@@ -2,6 +2,7 @@
 
 | إذا أردت تغيير... | ابدأ من... | لا تبدأ من... |
 |---|---|---|
+| حدود دخول الفصل واستعادة الحساب | middleware/loginProtection.ts ثم modules/auth/application/loginFailureBudget.ts؛ إرسال رابط الاستعادة في sendPasswordRecovery.ts | رفع حدود المصادقة الأخرى أو تعديل RBAC/النتائج |
 | هوية وتجميع خلايا مصفوفة المهارات | utils/classSkillMatrix.ts ثم ClassSkillsMapPanel.tsx | تجميع أسماء المهارات عبر المواد أو تعديل النتائج |
 | نبض المعلم الاختياري | components/classroom/ClassroomOptionalPulse.tsx | إضافة polling أو إرسال دفعة تلقائيًا |
 | أولويات المشرف وملخص المدير | SupervisorFollowUpPriorities.tsx وSchoolExecutiveSummary.tsx | توسيع نطاق المستخدم أو تغيير مصادر النتائج |
