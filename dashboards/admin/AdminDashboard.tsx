@@ -1,3 +1,4 @@
+import { DashboardSectionNav } from '../../components/DashboardSectionNav';
 import { resolveSupervisorSchoolScope } from '../../utils/supervisorSchoolScope';
 // v2.2-utf8-cachebust-force-bundle-refresh
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
@@ -982,7 +983,11 @@ export const AdminDashboard: React.FC = () => {
                 </p>
                 {user.role === Role.TEACHER && <TeacherWorkspaceSwitcher />}
             </div>
-            {enhancedMenuItems.map((item) => (
+            {user.role === Role.TEACHER ? <DashboardSectionNav items={enhancedMenuItems} activeId={activeTab} onSelect={setActiveAdminTab} groups={[
+                { label: 'البداية', ids: ['overview'] },
+                { label: 'المحتوى والتحضير', ids: ['courses', 'lessons', 'library', 'questions', 'skills'] },
+                { label: 'التدريس والتقويم', ids: ['live-sessions', 'quizzes', 'barcode-tests'] },
+            ]} /> : (<>            {enhancedMenuItems.map((item) => (
                 <button
                     key={item.id}
                     onClick={() => setActiveAdminTab(item.id)}
@@ -995,7 +1000,7 @@ export const AdminDashboard: React.FC = () => {
                     <div className={activeTab === item.id ? 'text-amber-500' : 'text-gray-400'}>{item.icon}</div>
                     <span className="text-sm">{item.label}</span>
                 </button>
-            ))}
+            ))}</>)}
         </div>
     );
 

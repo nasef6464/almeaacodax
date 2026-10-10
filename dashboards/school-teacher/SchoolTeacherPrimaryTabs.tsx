@@ -31,14 +31,7 @@ export const SchoolTeacherOverview: React.FC<PrimaryTabsProps> = ({
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2.5">
-          <button
-            type="button"
-            onClick={onOpenScheduler}
-            disabled={!selectedSchool.smartClassroomEnabled}
-            className="flex items-center gap-1.5 rounded-2xl bg-indigo-500 hover:bg-indigo-600 px-4 py-3 text-xs font-black text-white shadow-md active:scale-95 disabled:opacity-40 transition-all"
-          >
-            <Presentation size={16} /> بدء حصة ذكية
-          </button>
+
           <button
             type="button"
             onClick={onOpenCertificate}
@@ -164,11 +157,11 @@ export const SchoolTeacherOverview: React.FC<PrimaryTabsProps> = ({
       </div>
     </div>
 
-    <div className="rounded-3xl border border-slate-100 bg-white p-6 shadow-xs">
-      <div className="mb-4">
+    <details className="rounded-3xl border border-slate-100 bg-white p-6 shadow-xs">
+      <summary className="cursor-pointer">
         <h2 className="text-base font-black text-slate-900">طلاب فصولي المسندة</h2>
         <p className="mt-1 text-xs text-slate-500">هذه القائمة تقرأ من إسنادك المدرسي فقط؛ لا تظهر طلاب أي فصل أو مدرسة أخرى.</p>
-      </div>
+      </summary>
       <div className="grid gap-4 md:grid-cols-2">
         {selectedSchool.assignments.map((assignment: any) => (
           <section key={`${assignment.assignmentId}-roster`} className="rounded-2xl border border-slate-100 bg-slate-50/50 p-4">
@@ -189,7 +182,7 @@ export const SchoolTeacherOverview: React.FC<PrimaryTabsProps> = ({
           </section>
         ))}
       </div>
-    </div>
+    </details>
   </div>
 );
 
