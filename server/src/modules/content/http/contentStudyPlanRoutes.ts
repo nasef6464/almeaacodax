@@ -10,6 +10,17 @@ import { interventionStudyPlanSchema, studyPlanSchema } from "./studyPlanSchemas
 
 export const contentStudyPlanRouter = Router();
 
+contentStudyPlanRouter.get(
+  "/study-plans",
+  requireAuth,
+  asyncHandler(async (req, res) => {
+    const studyPlans = await StudyPlanModel.find({ userId: req.authUser!.id })
+      .sort({ status: 1, updatedAt: -1 }).limit(200).lean();
+    res.setHeader("Cache-Control", "private, no-store");
+    return res.json({ studyPlans, limit: 200 });
+  }),
+);
+
 contentStudyPlanRouter.post(
   "/study-plans/intervention",
   requireAuth,

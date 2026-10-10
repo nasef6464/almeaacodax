@@ -531,7 +531,8 @@ const App: React.FC = () => {
               b2bPackages: contentResult.b2bPackages as any[],
               accessCodes: contentResult.accessCodes as any[],
               announcementAds: contentResult.announcementAds as any[],
-              studyPlans: contentResult.studyPlans as any[],
+              studyPlans: profile.contentScope === 'full' && ['admin', 'teacher', 'supervisor'].includes(user?.role || '')
+                ? contentResult.studyPlans as any[] : undefined,
             });
           }
         }).catch((error) => console.warn('Content bootstrap unavailable:', error));

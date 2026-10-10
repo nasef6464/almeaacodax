@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 import { io as connectSocket } from "socket.io-client";
 import { env } from "../config/env.js";
 import { UserModel } from "../models/User.js";
+import { StudyPlanModel } from "../models/StudyPlan.js";
 import { CourseModel } from "../models/Course.js";
 import { CertificateModel } from "../models/Certificate.js";
 import { PathModel } from "../models/Path.js";
@@ -2386,6 +2387,37 @@ async function main() {
 
     const certificateCount = await CertificateModel.countDocuments({ courseId: COURSE_ID });
     assert.equal(certificateCount, 1, "isolated certificate idempotency failed at database level");
+
+    const planIds = ["student", "outsider"].map(role => `plan-read-${role}-${RUN_MARKER}`);
+    try {
+      for (const [index, role] of (["student", "outsider"] as const).entries()) {
+        const created = await jsonRequest("/content/study-plans", { method: "POST", token: tokens.get(role), csrf, body: {
+          id: planIds[index], userId: "forged-owner", name: `Isolated ${role} plan`, pathId: ASSESSMENT_PATH_ID,
+          subjectIds: [ASSESSMENT_SUBJECT_ID], courseIds: [], startDate: "2026-10-10", endDate: "2026-10-17",
+          offDays: [], dailyMinutes: 60, skipCompletedQuizzes: true, status: "active", createdAt: Date.now(), updatedAt: Date.now(),
+        } });
+        expectStatus(`${role} plan create`, created, 201);
+      }
+      expectStatus("anonymous plans are private", await jsonRequest("/content/study-plans"), 401);
+      for (const [index, role] of (["student", "outsider"] as const).entries()) {
+        const own = await jsonRequest(`/content/study-plans?userId=${userIds.get("student")}`, { token: tokens.get(role) });
+        expectStatus(`${role} plans reload`, own, 200);
+        assert.ok(own.body.studyPlans.some((plan: any) => plan.id === planIds[index]));
+        assert.ok(own.body.studyPlans.every((plan: any) => plan.userId === userIds.get(role)), "plan reader leaked another actor");
+        assert.equal(own.body.limit, 200);
+        const shared = await jsonRequest("/content/bootstrap?scope=learning&phase=full", { token: tokens.get(role) });
+        expectStatus("shared learning cache unchanged", shared, 200);
+        assert.deepEqual(shared.body.studyPlans, [], "private plans entered the shared cache");
+      }
+      const privateResponse = await fetch(`${API_BASE}/content/study-plans`, { headers: { authorization: `Bearer ${tokens.get("student")}` } });
+      assert.equal(privateResponse.headers.get("cache-control"), "private, no-store");
+      const updated = await jsonRequest(`/content/study-plans/${planIds[0]}`, { method: "PATCH", token: tokens.get("student"), csrf, body: { name: "Updated persisted plan" } });
+      expectStatus("own plan update", updated, 200);
+      const freshPlans = await jsonRequest("/content/study-plans", { token: tokens.get("student") });
+      assert.equal(freshPlans.body.studyPlans.find((plan: any) => plan.id === planIds[0])?.name, "Updated persisted plan");
+      expectStatus("outsider cannot update plan", await jsonRequest(`/content/study-plans/${planIds[0]}`, { method: "PATCH", token: tokens.get("outsider"), csrf, body: { name: "forged" } }), 404);
+      console.log("Own study plan read, fresh persistence, isolation and shared-cache preservation PASS");
+    } finally { await StudyPlanModel.deleteMany({ id: { $in: planIds } }); }
 
     await runAdminUserManagementJourney(csrf);
 

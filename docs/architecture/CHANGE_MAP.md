@@ -5,6 +5,7 @@
 | إنجاز خطة الطالب والخطوة التالية | `utils/studentPlanCompletion.ts` و`pages/Plan.tsx` | تغيير درجات الاختبارات |
 | توزيع مهام الخطة الزمنية | `utils/studentPlanSchedule.ts` | إعادة بناء الدورات |
 | تأكيد حفظ خطة الطالب | `store/slices/studyPlansSlice.ts` | نجاح محلي قبل استجابة API |
+| استعادة خطط الطالب بعد الدخول | `hooks/useStudentStudyPlans.ts` و`contentStudyPlanRoutes.ts` | إدخال الخطط الخاصة إلىكاش المحتوى المشترك |
 | شاشة نتيجة الطالب | `pages/Results.tsx` و`components/results/` | quiz route مباشرة |
 | تحليل الاختبارات الموجهة للمشرف | `dashboards/admin/supervisorTests/assessmentReportEvidence.ts` و`useScopedAssessmentResults.ts` | توسيع store النتائج الشخصية |
 | ظهور اختبارات الطلاب لدى مدير المدرسة | `schoolDirectorWorkspace.ts` و`schoolAssessmentAudience.ts` | تغيير صلاحيات المدير أو نسخ Quiz |
