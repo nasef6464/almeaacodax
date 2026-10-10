@@ -1,0 +1,30 @@
+{
+  "run": "RUN67",
+  "date": "2026-10-10",
+  "bank": "YLM26",
+  "officialSourceSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+  "distinctSourceReviewed": 151,
+  "sourceCrops3x": 150,
+  "sourceRGBExactPASS": 150,
+  "independentMathRechecks": 143,
+  "priorRUN65Matches": 142,
+  "knownRUN66CorrectionReconfirmed": "P086-Q06 A->C",
+  "semanticHolds": [
+    "P036-Q09",
+    "P036-Q15",
+    "P050-Q04",
+    "P066-Q14",
+    "P073-Q03",
+    "P081-Q01",
+    "P085-Q01",
+    "P094-Q11"
+  ],
+  "cumulativeConditionalReviewEvents": 8007,
+  "uniqueYLM26Inventory": 326,
+  "metadataLabelCorrectionCandidateRows": 326,
+  "whyOthersWrongBlockedRows": 326,
+  "canonicalApproved": 0,
+  "productionMutation": false,
+  "status": "NOT_GREEN",
+  "next": "Resolve 8 HOLDs and 326 options/whyOthersWrong; R2 imageHash/topicId parity and rollback manifest before COL26 1012."
+}
