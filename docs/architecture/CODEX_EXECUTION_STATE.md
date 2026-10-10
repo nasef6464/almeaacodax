@@ -1,12 +1,11 @@
 # ALMEAA — Codex Execution State
 
-## New question activity provenance — 2026-10-10
-Owner confirms all existing results are trial data with no real students. Historical source repair is removed from the real-user launch blocker list; no trial records were deleted or reclassified. Baseline main09b21c4c; branch codex/student-activity-provenance.
-
-Additive activity metadata separates standalone practice, review, and quiz question activity. Quiz origin uses existing verified definition/access/assignment policies and canonical drill/bank type, not school membership, navigation source, or posted schoolId. Quiz-question membership is validated. Missing older-client metadata remains unknown. Existing scoring/mastery side effects, grades and histories are unchanged.
-
-Student reports count answered practice/review/platform-quiz/school-quiz separately; unanswered events excluded. The existing question-attempt response updates only the matching optimistic row and is ignored after actor change; hydration preserves verified provenance. No extra client request, polling, AI or new bank. Quiz activity adds bounded definition/user/scope reads on the existing write; no measured resource-saving claim.
-- التنفيذ PARTIAL: الفحوص النهائية/CI/النشر والتحقق الحي قيد التنفيذ. الدليل docs/audits/STUDENT_QUESTION_ACTIVITY_PROVENANCE_2026-10-10.md.
+## تسجيل مصدر نشاط الطالب الجديد — 2026-10-10
+- توضيح المالك: النتائج السابقة كلها تجارب بلا طلاب حقيقيين؛ تصحيح تصنيفها التاريخي ليس عائقًا لإطلاق الطلاب. لا حذف أو تصفير أو إعادة تصنيف لها.
+- #504 رأسfbcdf051:20SUCCESS/4تخطيات شرطية وجميع3بوابات مطلوبةPASS؛ مدمج ومنشور94e81ddf. الواجهة/Render/الجاهزيةcanonical/direct تطابقه،DB/RedisPASS وفحوصmain الأربعةSUCCESS.
+- VERIFIED للفصل الجديد: التدريب والمراجعات ونشاط اختبار المنصة واختبار المدرسة، مع مصدر مدرسي يتحقق منه الخادم ورفض السؤال غير المنتمي/الطالب غير المستهدف وتجاهل المصدر المدرسي المزيف؛ يحفظ المصدر في القراءة وحالة الطالب دون طلب عميل إضافي أو polling/AI أو تغيير التصحيح والإتقان.
+-5فحوص حية محدودةPASS:3إجابات فعلية جديدة للتجربة (اختبار مستقل، تدريب قائم على تعريف معتمد، تكليف مدرسي)، وقراءة وتقارير1280/390 لحسابين بلا تجاوز أو أخطاءJS؛ مراجعتان مسجلتان عبرAPI. مستقل1تدريب/1مراجعة/1نشاط اختبار منصة/0مدرسة/40تجربة قديمة غير مصنفة؛ ملتحق0/1/0/1/30. لم تُعد الاختبارات المحفوظة ولم تتغير درجاتها، ولا بنك جديد. معاينة الجوال ناجحة.
+- المنظومة الكاملةPARTIAL: كامل التدريب/إنجاز الخطة/قياس/توقيت الخادم/ضغط الفصل الفعلي خارج هذا الفصل. لا ادعاء توفير موارد مقاس؛ قراءات التعريف والنطاق محدودة داخل طلب الحفظ الموجود. الدليل docs/audits/STUDENT_QUESTION_ACTIVITY_PROVENANCE_2026-10-10.md.
 
 ## رحلة الطالب وفصل مصادر التقارير — 2026-10-10
 - #501 رأس9a8d71ed:25SUCCESS/4تخطي شرطي وجميع3بوابات مطلوبةPASS؛ نشر2584b2cd أثبت6فحوص حية محدودة: مستقل بلا مدرسة، اختبار قائم40سؤالًا بدرجة23 و66صف دليل مهارة؛ تكليف مدرسي فردي1سؤال بدرجة0 منفصل عن سجل المنصة؛ تقارير/سجل1280/390، ونتيجة خارج ذاكرةbootstrap عبر API المحمي، بلا أخطاءJS.
