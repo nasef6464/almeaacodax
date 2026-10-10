@@ -57,7 +57,7 @@ const store = redis
   ? redisLoginFailureStore((script, keys, ...args) => redis.eval(script, keys, ...args), "login-failures:", env.RATE_LIMIT_AUTH_WINDOW_MS)
   : memoryLoginFailureStore(env.RATE_LIMIT_AUTH_WINDOW_MS);
 const message = { message: "Too many authentication attempts, please try again later" };
-const loginAccountLimiter = createRateLimiter({ keyPrefix: "login-account", windowMs: env.RATE_LIMIT_AUTH_WINDOW_MS, limit: env.RATE_LIMIT_LOGIN_ACCOUNT_LIMIT, message, keyGenerator: loginAccountKey, skipSuccessfulRequests: true, passOnStoreError: false, skip: isAdminLoginBypassRequest });
+const loginAccountLimiter = createRateLimiter({ keyPrefix: "login-account", windowMs: env.RATE_LIMIT_AUTH_WINDOW_MS, limit: env.RATE_LIMIT_LOGIN_ACCOUNT_LIMIT, message: { message: "Too many login attempts. Try again later." }, keyGenerator: loginAccountKey, skipSuccessfulRequests: true, passOnStoreError: false, skip: isAdminLoginBypassRequest });
 
 // Only call after a valid, unexpired reset token proves ownership. Clear that
 // account's identifiers and this recovery source, never all accounts/sources.
