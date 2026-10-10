@@ -1,0 +1,67 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN134",
+  "rows": [
+    {
+      "sourceKey": "MNSF26-AR-T003-Q08",
+      "answerLetter": "أ",
+      "answerValue": "1000001",
+      "qaVerdict": "REVIEW_TAXONOMY",
+      "mathAndTaxonomyEvidence": "sub_quant_01_5 stored but question tests place-value division, not unit digits",
+      "source": "Run017 original WebP visually inspected",
+      "originalMasterModified": false,
+      "importEligibleApproved": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T003-Q09",
+      "answerLetter": "ب",
+      "answerValue": "30",
+      "qaVerdict": "MATH_PASS_TAXONOMY_CANDIDATE",
+      "mathAndTaxonomyEvidence": "x-6+4=28 -> x=30; sub_quant_07_2",
+      "source": "Run017 original WebP visually inspected",
+      "originalMasterModified": false,
+      "importEligibleApproved": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T006-Q01",
+      "answerLetter": "ج",
+      "answerValue": "30",
+      "qaVerdict": "MATH_PASS_TAXONOMY_CANDIDATE",
+      "mathAndTaxonomyEvidence": "2/3*150=100, remaining50=2*(5x/6), x=30; sub_quant_08_1",
+      "source": "Run017 original WebP visually inspected",
+      "originalMasterModified": false,
+      "importEligibleApproved": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T008-Q11",
+      "answerLetter": "أ",
+      "answerValue": "15",
+      "qaVerdict": "MATH_PASS_TAXONOMY_CANDIDATE",
+      "mathAndTaxonomyEvidence": "2x=60 -> x=30; x/2=15; sub_quant_11_2",
+      "source": "Run017 original WebP visually inspected",
+      "originalMasterModified": false,
+      "importEligibleApproved": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T016-Q18",
+      "answerLetter": "د",
+      "answerValue": "16",
+      "qaVerdict": "MATH_PASS_TAXONOMY_CANDIDATE",
+      "mathAndTaxonomyEvidence": "6x+5*(0+1+2+3+4+5)=111 -> x=6, third day16; sub_quant_01_3",
+      "source": "Run017 original WebP visually inspected",
+      "originalMasterModified": false,
+      "importEligibleApproved": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T030-Q20",
+      "answerLetter": "ج",
+      "answerValue": "54",
+      "qaVerdict": "REVIEW_TAXONOMY",
+      "mathAndTaxonomyEvidence": "a/8=b/6 -> 3a=4b; 54 works; stored sub_quant_02_2 is remainders; divisibility sub_quant_02_1 candidate",
+      "source": "Run017 original WebP visually inspected",
+      "originalMasterModified": false,
+      "importEligibleApproved": false
+    }
+  ]
+}
