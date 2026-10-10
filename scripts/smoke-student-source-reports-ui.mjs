@@ -38,7 +38,7 @@ function Harness({mode='panel',actor='enrolled',requested='abcdef1234567890abcde
  const detail=useStudentResultDetail(undefined,'',mode==='detail'?requested:null,actor);
  return <MemoryRouter><main dir="rtl">{mode==='panel'?<StudentJourneySourcesPanel
  results={[result('منصة 80','platform_self_study',80),result('مدرسة 20','school_assessment',20),result('قديم 40',undefined,40)]}
- attempts={[{selectedOptionIndex:-1},{selectedOptionIndex:0},{selectedOptionIndex:1}]} completedLessons={['lesson','lesson','second']} periodLabel="كل الوقت"/>
+ attempts={[{selectedOptionIndex:-1,evidenceType:'mastery_review'},{selectedOptionIndex:0,evidenceType:'remediation'},{selectedOptionIndex:1,evidenceType:'mastery_review'},{selectedOptionIndex:0,evidenceType:'assessment'},{selectedOptionIndex:1}]} completedLessons={['lesson','lesson','second']} periodLabel="كل الوقت"/>
  :mode==='hook'?<><StudentResultHistoryControls context={context} onContextChange={setContext} history={history}/><pre data-testid="rows">{history.results.map(r=>r.id).join(',')}</pre></>
  :mode==='detail'?<><pre data-testid="detail">{detail.result?.score ?? ''}</pre>{detail.error?<button onClick={detail.retry}>إعادة فتح النتيجة</button>:null}</>:<Quizzes view="attempts"/>}</main></MemoryRouter>;
 }
@@ -80,7 +80,8 @@ try {
   assert.match(await summary.innerText(),/قديم 40/);
   assert.match(await summary.innerText(),/مصدرها لم يُسجل/);
   assert.match(await page.getByText(/دروس أنجزتها:/).innerText(),/2/);
-  assert.match(await page.getByText(/إجابات التدريب والمراجعة:/).innerText(),/2/);
+  assert.match(await page.getByTestId('student-review-activity').innerText(),/2/);
+  assert.match(await page.getByTestId('student-unclassified-question-activity').innerText(),/^2 إجابة سؤال/);
   await page.getByRole('button',{name:'اختبارات المنصة',exact:true}).click();
   for(const width of [1280,390]) {
    await page.setViewportSize({width,height:900});
