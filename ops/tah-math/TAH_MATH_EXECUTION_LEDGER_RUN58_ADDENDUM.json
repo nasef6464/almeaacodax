@@ -1,0 +1,14 @@
+{
+  "run": "RUN58",
+  "reviewedDistinct": 150,
+  "cumulativeReviewEvents": 6496,
+  "fullPedagogyReviewed": 20,
+  "newDeepPedagogyUnique": 16,
+  "priorDeepPedagogyImproved": 4,
+  "deepCoverageAcrossRUN19_RUN28_RUN47toRUN58": 271,
+  "remainingWithoutDeep": 55,
+  "mathChecksPassed": 20,
+  "cropBoundaryHolds": 21,
+  "canonicalApproved": 0,
+  "productionMutation": false
+}

@@ -1,0 +1,11 @@
+{
+  "run": "RUN60",
+  "status": "YLM26_IN_PROGRESS_NOT_GREEN",
+  "actualDistinctSourceQuestionsReviewed": 150,
+  "mathVerifiedPedagogy": 40,
+  "sourceRecropQA": 44,
+  "cumulativeReviewEvents": 6796,
+  "canonicalApproved": 0,
+  "productionMutation": false,
+  "next": "YLM26 source holds and live parity, then COL26"
+}

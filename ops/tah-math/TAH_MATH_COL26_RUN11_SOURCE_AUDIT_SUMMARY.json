@@ -1,0 +1,16 @@
+{
+  "project": "TAH-MATH",
+  "run": "2026-10-08-heavy-run11",
+  "bank": "COL26",
+  "sourceBookSha256": "5c1ec2dc4f2ddd6036dbd3430f0fceaaa9b51e300b7e8442b446c3a21a4ecd51",
+  "newSourceKeyReviewed": 706,
+  "previouslyReviewed": 306,
+  "totalSourceKeysCompared": 1012,
+  "totalAnswerKeyMatches": 1012,
+  "mismatches": 0,
+  "sourceQuestionTextExtracted": 993,
+  "sourceRasterOnlyQuestionCount": 19,
+  "sourceBackedSubskillRemapCandidates": 27,
+  "productionMutation": false,
+  "remaining": "Full pedagogy/visual crop/option-by-option/difficulty/AI context/hints still pending."
+}

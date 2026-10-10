@@ -1,0 +1,19 @@
+{
+  "project": "TAH-MATH",
+  "run": "RUN67",
+  "date": "2026-10-10",
+  "officialSourcePdfSHA256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+  "sourceQuestionsReviewedThisRun": 151,
+  "sourcePixelExact3xPASS": 150,
+  "independentAnswerRechecks": 143,
+  "priorCandidateMatches": 142,
+  "knownPriorCorrectionReconfirmed": "P086-Q06 C",
+  "semanticHolds": 8,
+  "conditionalReviewEventsCumulative": 8007,
+  "uniqueYLM26Inventory": 326,
+  "canonicalApproved": 0,
+  "productionMutation": false,
+  "stage": "YLM26_NOT_GREEN",
+  "masterLedgerUpdateBlockedBySafety": true,
+  "next": "Resolve eight semantic holds; complete 326 option-specific explanations and live R2/topicId binding; reversible manifest before COL26."
+}

@@ -1,0 +1,546 @@
+{
+  "project": "TAH-MATH",
+  "run": "RUN78",
+  "part": 6,
+  "source": "source-reviewed RUN19/RUN28/RUN49 existing evidence",
+  "canonicalApprovedNew": 0,
+  "productionMutation": false,
+  "records": [
+    {
+      "questionCode": "TAH-MATH-YLM26-P042-Q02",
+      "sourceItemId": "YLM26-PDF041-P042-N02",
+      "imageHash": "2f4ec573d6e314385b6adcc6ced666182af2ff84c84961997c72103f2984d74e",
+      "mapping": {
+        "skillId": "skill_tah_math_13",
+        "skillName": "المتتابعات والمتسلسلات",
+        "subSkillId": "sub_tah_math_13_01",
+        "subSkillName": "المتتابعات والمتسلسلات الحسابية"
+      },
+      "foundationReference": {
+        "lessonNumber": 18,
+        "lessonTitle": "المتتابعات والمتسلسلات",
+        "subSkillId": "sub_tah_math_13_01",
+        "subSkillName": "المتتابعات والمتسلسلات الحسابية"
+      },
+      "questionText": "متتابعة حسابية أساسها d=6 وa₅=19، فما قيمة a₂؟",
+      "options": {
+        "A": "−5",
+        "B": "1",
+        "C": "5",
+        "D": "7"
+      },
+      "answerLetter": "B",
+      "correctOptionIndex": 1,
+      "explanation": "a2=19−3×6=1.",
+      "whyCorrect": "a2=19−3×6=1.",
+      "whyOthersWrong": {
+        "A": "−5 هو الحد الأول.",
+        "C": "5 يخلط رقم الحد بقيمته.",
+        "D": "7 لا يحقق a5=19."
+      },
+      "hint": "استخدم الفرق بين رتبة الحد الخامس والثاني وهو 3.",
+      "solvingStrategy": "إيجاد حد سابق في متتابعة حسابية.",
+      "commonMistakes": [
+        "−5 هو الحد الأول.",
+        "5 يخلط رقم الحد بقيمته.",
+        "7 لا يحقق a5=19."
+      ],
+      "difficulty": "easy",
+      "aiContext": {
+        "readableText": "متتابعة حسابية أساسها d=6 وa₅=19، فما قيمة a₂؟",
+        "speechText": "متتابعة حسابية أساسها d=6 وa₅=19، فما قيمة a₂؟",
+        "visualDescription": "معطى أساس متتابعة حسابية والحد الخامس ومطلوب الحد الثاني.",
+        "concepts": [
+          "إيجاد حد سابق في متتابعة حسابية."
+        ],
+        "requiredData": [
+          "متتابعة حسابية أساسها d=6 وa₅=19، فما قيمة a₂؟",
+          "A: −5",
+          "B: 1",
+          "C: 5",
+          "D: 7",
+          "كتاب تأسيس يلو للرياضيات 26"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf"
+      },
+      "questionFingerprint": "YLM26|YLM26-PDF041-P042-N02|2f4ec573d6e314385b6adcc6ced666182af2ff84c84961997c72103f2984d74e",
+      "teachingFingerprint": "sub_tah_math_13_01|إيجاد حد سابق في متتابعة حسابية.",
+      "sourceEvidence": "ops/tah-math/TAH_MATH_RUN49_5_OPTION_PEDAGOGY_PART2A.json",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "sourcePedagogyReviewed": true,
+      "liveR2Parity": "NOT_TESTED",
+      "liveTopicIdParity": "NOT_TESTED",
+      "stage": "SOURCE_GROUNDED_PEDAGOGY_STAGED_NOT_FINAL",
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P042-Q03",
+      "sourceItemId": "YLM26-PDF041-P042-N03",
+      "imageHash": "2d7b2f82b5712f4c9ce57e59457907a1538c2cfde9b2e9385d821a2cd9e5ba96",
+      "mapping": {
+        "skillId": "skill_tah_math_13",
+        "skillName": "المتتابعات والمتسلسلات",
+        "subSkillId": "sub_tah_math_13_01",
+        "subSkillName": "المتتابعات والمتسلسلات الحسابية"
+      },
+      "foundationReference": {
+        "lessonNumber": 18,
+        "lessonTitle": "المتتابعات والمتسلسلات",
+        "subSkillId": "sub_tah_math_13_01",
+        "subSkillName": "المتتابعات والمتسلسلات الحسابية"
+      },
+      "questionText": "ما الحد النوني للمتتابعة 3، 7، 11، 15، ...؟",
+      "options": {
+        "A": "5n−2",
+        "B": "4n−1",
+        "C": "2n+1",
+        "D": "3n+1"
+      },
+      "answerLetter": "B",
+      "correctOptionIndex": 1,
+      "explanation": "a_n=3+4(n−1)=4n−1.",
+      "whyCorrect": "a_n=3+4(n−1)=4n−1.",
+      "whyOthersWrong": {
+        "A": "فرقها 5 لا 4.",
+        "C": "فرقها 2 لا 4.",
+        "D": "حدها الأول 4 لا 3."
+      },
+      "hint": "حدّد الفرق المشترك ثم استخدم قانون الحد النوني للمتتابعة الحسابية.",
+      "solvingStrategy": "استخراج صيغة الحد النوني لمتتابعة حسابية.",
+      "commonMistakes": [
+        "فرقها 5 لا 4.",
+        "فرقها 2 لا 4.",
+        "حدها الأول 4 لا 3."
+      ],
+      "difficulty": "easy",
+      "aiContext": {
+        "readableText": "ما الحد النوني للمتتابعة 3، 7، 11، 15، ...؟",
+        "speechText": "ما الحد النوني للمتتابعة 3، 7، 11، 15، ...؟",
+        "visualDescription": "متتابعة حسابية حدها الأول 3 والفرق المشترك 4.",
+        "concepts": [
+          "استخراج صيغة الحد النوني لمتتابعة حسابية."
+        ],
+        "requiredData": [
+          "ما الحد النوني للمتتابعة 3، 7، 11، 15، ...؟",
+          "A: 5n−2",
+          "B: 4n−1",
+          "C: 2n+1",
+          "D: 3n+1",
+          "كتاب تأسيس يلو للرياضيات 26"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf"
+      },
+      "questionFingerprint": "YLM26|YLM26-PDF041-P042-N03|2d7b2f82b5712f4c9ce57e59457907a1538c2cfde9b2e9385d821a2cd9e5ba96",
+      "teachingFingerprint": "sub_tah_math_13_01|استخراج صيغة الحد النوني لمتتابعة حسابية.",
+      "sourceEvidence": "ops/tah-math/TAH_MATH_RUN49_5_OPTION_PEDAGOGY_PART2B.json",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "sourcePedagogyReviewed": true,
+      "liveR2Parity": "NOT_TESTED",
+      "liveTopicIdParity": "NOT_TESTED",
+      "stage": "SOURCE_GROUNDED_PEDAGOGY_STAGED_NOT_FINAL",
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P042-Q04",
+      "sourceItemId": "YLM26-PDF041-P042-N04",
+      "imageHash": "eaa8970cf6065e5a097537217eed0251bc9deb0920c7a2009140de3060d9d2e6",
+      "mapping": {
+        "skillId": "skill_tah_math_13",
+        "skillName": "المتتابعات والمتسلسلات",
+        "subSkillId": "sub_tah_math_13_01",
+        "subSkillName": "المتتابعات والمتسلسلات الحسابية"
+      },
+      "foundationReference": {
+        "lessonNumber": 18,
+        "lessonTitle": "المتتابعات والمتسلسلات",
+        "subSkillId": "sub_tah_math_13_01",
+        "subSkillName": "المتتابعات والمتسلسلات الحسابية"
+      },
+      "questionText": "احسب الوسطين الحسابيين بين العددين 3 و24.",
+      "options": {
+        "A": "10 و17",
+        "B": "11 و19",
+        "C": "12 و19",
+        "D": "7 و17"
+      },
+      "answerLetter": "A",
+      "correctOptionIndex": 0,
+      "explanation": "d=(24−3)/3=7، الوسطان 10 و17.",
+      "whyCorrect": "d=(24−3)/3=7، الوسطان 10 و17.",
+      "whyOthersWrong": {
+        "B": "فروقها ليست ثابتة.",
+        "C": "فروقها 9 و7 و5.",
+        "D": "فروقها 4 و10 و7."
+      },
+      "hint": "قسّم الفرق بين الطرفين على عدد الفواصل الثلاثة.",
+      "solvingStrategy": "إيجاد أوساط حسابية بين عددين.",
+      "commonMistakes": [
+        "فروقها ليست ثابتة.",
+        "فروقها 9 و7 و5.",
+        "فروقها 4 و10 و7."
+      ],
+      "difficulty": "easy",
+      "aiContext": {
+        "readableText": "احسب الوسطين الحسابيين بين العددين 3 و24.",
+        "speechText": "احسب الوسطين الحسابيين بين العددين 3 و24.",
+        "visualDescription": "سؤال عن إدراج وسطين حسابيين بين 3 و24.",
+        "concepts": [
+          "إيجاد أوساط حسابية بين عددين."
+        ],
+        "requiredData": [
+          "احسب الوسطين الحسابيين بين العددين 3 و24.",
+          "A: 10 و17",
+          "B: 11 و19",
+          "C: 12 و19",
+          "D: 7 و17",
+          "كتاب تأسيس يلو للرياضيات 26"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf"
+      },
+      "questionFingerprint": "YLM26|YLM26-PDF041-P042-N04|eaa8970cf6065e5a097537217eed0251bc9deb0920c7a2009140de3060d9d2e6",
+      "teachingFingerprint": "sub_tah_math_13_01|إيجاد أوساط حسابية بين عددين.",
+      "sourceEvidence": "ops/tah-math/TAH_MATH_RUN49_5_OPTION_PEDAGOGY_PART2B.json",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "sourcePedagogyReviewed": true,
+      "liveR2Parity": "NOT_TESTED",
+      "liveTopicIdParity": "NOT_TESTED",
+      "stage": "SOURCE_GROUNDED_PEDAGOGY_STAGED_NOT_FINAL",
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P042-Q05",
+      "sourceItemId": "YLM26-PDF041-P042-N05",
+      "imageHash": "ca5c2ac791c19b8a8a24fde4bc98f749a80a5c142e97c8446be75b3dae63f51d",
+      "mapping": {
+        "skillId": "skill_tah_math_13",
+        "skillName": "المتتابعات والمتسلسلات",
+        "subSkillId": "sub_tah_math_13_01",
+        "subSkillName": "المتتابعات والمتسلسلات الحسابية"
+      },
+      "foundationReference": {
+        "lessonNumber": 18,
+        "lessonTitle": "المتتابعات والمتسلسلات",
+        "subSkillId": "sub_tah_math_13_01",
+        "subSkillName": "المتتابعات والمتسلسلات الحسابية"
+      },
+      "questionText": "زوايا مضلع رباعي في متتابعة حسابية، وأصغر زاوية 30°. فما أكبر زاوية؟",
+      "options": {
+        "A": "150°",
+        "B": "140°",
+        "C": "110°",
+        "D": "120°"
+      },
+      "answerLetter": "A",
+      "correctOptionIndex": 0,
+      "explanation": "الزوايا 30،70،110،150، ومجموعها 360°.",
+      "whyCorrect": "الزوايا 30،70،110،150، ومجموعها 360°.",
+      "whyOthersWrong": {
+        "B": "ليست الزاوية الرابعة بعد حساب d=40.",
+        "C": "110° الزاوية الثالثة.",
+        "D": "120° لا تحقق مجموع الزوايا مع أساس 40."
+      },
+      "hint": "مجموع زوايا الشكل الرباعي 360°.",
+      "solvingStrategy": "نمذجة زوايا رباعي بمتتابعة حسابية.",
+      "commonMistakes": [
+        "ليست الزاوية الرابعة بعد حساب d=40.",
+        "110° الزاوية الثالثة.",
+        "120° لا تحقق مجموع الزوايا مع أساس 40."
+      ],
+      "difficulty": "easy",
+      "aiContext": {
+        "readableText": "زوايا مضلع رباعي في متتابعة حسابية، وأصغر زاوية 30°. فما أكبر زاوية؟",
+        "speechText": "زوايا مضلع رباعي في متتابعة حسابية، وأصغر زاوية 30°. فما أكبر زاوية؟",
+        "visualDescription": "مسألة لفظية عن أربع زوايا في متتابعة حسابية وأصغرها 30°.",
+        "concepts": [
+          "نمذجة زوايا رباعي بمتتابعة حسابية."
+        ],
+        "requiredData": [
+          "زوايا مضلع رباعي في متتابعة حسابية، وأصغر زاوية 30°. فما أكبر زاوية؟",
+          "A: 150°",
+          "B: 140°",
+          "C: 110°",
+          "D: 120°",
+          "كتاب تأسيس يلو للرياضيات 26"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf"
+      },
+      "questionFingerprint": "YLM26|YLM26-PDF041-P042-N05|ca5c2ac791c19b8a8a24fde4bc98f749a80a5c142e97c8446be75b3dae63f51d",
+      "teachingFingerprint": "sub_tah_math_13_01|نمذجة زوايا رباعي بمتتابعة حسابية.",
+      "sourceEvidence": "ops/tah-math/TAH_MATH_RUN49_5_OPTION_PEDAGOGY_PART2B.json",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "sourcePedagogyReviewed": true,
+      "liveR2Parity": "NOT_TESTED",
+      "liveTopicIdParity": "NOT_TESTED",
+      "stage": "SOURCE_GROUNDED_PEDAGOGY_STAGED_NOT_FINAL",
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P042-Q06",
+      "sourceItemId": "YLM26-PDF041-P042-N06",
+      "imageHash": "47bd56cadba2f7e560db6473c66cc45e478e836f763978be272fb69df32b7149",
+      "mapping": {
+        "skillId": "skill_tah_math_13",
+        "skillName": "المتتابعات والمتسلسلات",
+        "subSkillId": "sub_tah_math_13_01",
+        "subSkillName": "المتتابعات والمتسلسلات الحسابية"
+      },
+      "foundationReference": {
+        "lessonNumber": 18,
+        "lessonTitle": "المتتابعات والمتسلسلات",
+        "subSkillId": "sub_tah_math_13_01",
+        "subSkillName": "المتتابعات والمتسلسلات الحسابية"
+      },
+      "questionText": "متتابعة حسابية حدها الأول −7 وأساسها 4 وعدد حدودها 15. ما مجموعها؟",
+      "options": {
+        "A": "315",
+        "B": "220",
+        "C": "340",
+        "D": "280"
+      },
+      "answerLetter": "A",
+      "correctOptionIndex": 0,
+      "explanation": "S15=15/2[−14+14×4]=315.",
+      "whyCorrect": "S15=15/2[−14+14×4]=315.",
+      "whyOthersWrong": {
+        "B": "ينقص عن المجموع الصحيح.",
+        "C": "ينتج من حساب خاطئ للحد الأخير.",
+        "D": "ينتج من خطأ في عدد الحدود."
+      },
+      "hint": "استخدم قانون مجموع أول n حدًا في المتتابعة الحسابية.",
+      "solvingStrategy": "تطبيق قانون مجموع المتتابعة الحسابية مباشرة.",
+      "commonMistakes": [
+        "ينقص عن المجموع الصحيح.",
+        "ينتج من حساب خاطئ للحد الأخير.",
+        "ينتج من خطأ في عدد الحدود."
+      ],
+      "difficulty": "easy",
+      "aiContext": {
+        "readableText": "متتابعة حسابية حدها الأول −7 وأساسها 4 وعدد حدودها 15. ما مجموعها؟",
+        "speechText": "متتابعة حسابية حدها الأول −7 وأساسها 4 وعدد حدودها 15. ما مجموعها؟",
+        "visualDescription": "سؤال نصي عن مجموع 15 حدًا لمتتابعة حسابية تبدأ بـ−7 وفرقها 4.",
+        "concepts": [
+          "تطبيق قانون مجموع المتتابعة الحسابية مباشرة."
+        ],
+        "requiredData": [
+          "متتابعة حسابية حدها الأول −7 وأساسها 4 وعدد حدودها 15. ما مجموعها؟",
+          "A: 315",
+          "B: 220",
+          "C: 340",
+          "D: 280",
+          "كتاب تأسيس يلو للرياضيات 26"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf"
+      },
+      "questionFingerprint": "YLM26|YLM26-PDF041-P042-N06|47bd56cadba2f7e560db6473c66cc45e478e836f763978be272fb69df32b7149",
+      "teachingFingerprint": "sub_tah_math_13_01|تطبيق قانون مجموع المتتابعة الحسابية مباشرة.",
+      "sourceEvidence": "ops/tah-math/TAH_MATH_RUN49_5_OPTION_PEDAGOGY_PART2B.json",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "sourcePedagogyReviewed": true,
+      "liveR2Parity": "NOT_TESTED",
+      "liveTopicIdParity": "NOT_TESTED",
+      "stage": "SOURCE_GROUNDED_PEDAGOGY_STAGED_NOT_FINAL",
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P043-Q07",
+      "sourceItemId": "YLM26-PDF042-P043-N07",
+      "imageHash": "3d52413755a17dc05d1bbf07e4d1c7e9af1c2ea268819e31f1a3b180c18ea9d6",
+      "mapping": {
+        "skillId": "skill_tah_math_13",
+        "skillName": "المتتابعات والمتسلسلات",
+        "subSkillId": "sub_tah_math_13_01",
+        "subSkillName": "المتتابعات والمتسلسلات الحسابية"
+      },
+      "foundationReference": {
+        "lessonNumber": 18,
+        "lessonTitle": "المتتابعات والمتسلسلات",
+        "subSkillId": "sub_tah_math_13_01",
+        "subSkillName": "المتتابعات والمتسلسلات الحسابية"
+      },
+      "questionText": "أوجد قيمة مجموع المتسلسلة Σ(2n-1) عندما n من 3 إلى 17.",
+      "options": {
+        "A": "323",
+        "B": "311",
+        "C": "285",
+        "D": "215"
+      },
+      "answerLetter": "C",
+      "correctOptionIndex": 2,
+      "explanation": "15 حدًا من 5 إلى 33، مجموعها 15×19=285.",
+      "whyCorrect": "15 حدًا من 5 إلى 33، مجموعها 15×19=285.",
+      "whyOthersWrong": {
+        "A": "يزيد عن مجموع 15 حدًا.",
+        "B": "لا يساوي 15×متوسط 5 و33.",
+        "D": "ينقص عن المجموع الصحيح."
+      },
+      "hint": "حوّل صيغة سيغما إلى متسلسلة حسابية وحدد أول حد وآخر حد وعدد الحدود.",
+      "solvingStrategy": "حساب مجموع متسلسلة حسابية معطاة برمز سيغما.",
+      "commonMistakes": [
+        "يزيد عن مجموع 15 حدًا.",
+        "لا يساوي 15×متوسط 5 و33.",
+        "ينقص عن المجموع الصحيح."
+      ],
+      "difficulty": "easy",
+      "aiContext": {
+        "readableText": "أوجد قيمة مجموع المتسلسلة Σ(2n-1) عندما n من 3 إلى 17.",
+        "speechText": "أوجد قيمة مجموع المتسلسلة Σ(2n-1) عندما n من 3 إلى 17.",
+        "visualDescription": "رمز سيغما لمجموع 2n-1 من n=3 إلى n=17.",
+        "concepts": [
+          "حساب مجموع متسلسلة حسابية معطاة برمز سيغما."
+        ],
+        "requiredData": [
+          "أوجد قيمة مجموع المتسلسلة Σ(2n-1) عندما n من 3 إلى 17.",
+          "A: 323",
+          "B: 311",
+          "C: 285",
+          "D: 215",
+          "كتاب تأسيس يلو للرياضيات 26"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf"
+      },
+      "questionFingerprint": "YLM26|YLM26-PDF042-P043-N07|3d52413755a17dc05d1bbf07e4d1c7e9af1c2ea268819e31f1a3b180c18ea9d6",
+      "teachingFingerprint": "sub_tah_math_13_01|حساب مجموع متسلسلة حسابية معطاة برمز سيغما.",
+      "sourceEvidence": "ops/tah-math/TAH_MATH_RUN49_5_OPTION_PEDAGOGY_PART2B.json",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "sourcePedagogyReviewed": true,
+      "liveR2Parity": "NOT_TESTED",
+      "liveTopicIdParity": "NOT_TESTED",
+      "stage": "SOURCE_GROUNDED_PEDAGOGY_STAGED_NOT_FINAL",
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P046-Q01",
+      "sourceItemId": "YLM26-PDF045-P046-N01",
+      "imageHash": "0250af0cec720fc1200959b3463f03a5433f560a7b8030c77eec537dab27f418",
+      "mapping": {
+        "skillId": "skill_tah_math_14",
+        "skillName": "الاحتمالات ونظرية ذات الحدين",
+        "subSkillId": "sub_tah_math_14_02",
+        "subSkillName": "مبدأ العد والتباديل"
+      },
+      "foundationReference": {
+        "lessonNumber": 20,
+        "lessonTitle": "الاحتمالات",
+        "subSkillId": "sub_tah_math_14_02",
+        "subSkillName": "مبدأ العد والتباديل"
+      },
+      "questionText": "إذا كان لدينا m قلمًا وسحبنا قلمين على التوالي دون إرجاع، فما عدد النواتج الممكنة؟",
+      "options": {
+        "A": "m²",
+        "B": "m(m−1)",
+        "C": "m",
+        "D": "m−1"
+      },
+      "answerLetter": "B",
+      "correctOptionIndex": 1,
+      "explanation": "السحب الأول m اختيارًا والثاني m−1؛ النواتج m(m−1).",
+      "whyCorrect": "السحب الأول m اختيارًا والثاني m−1؛ النواتج m(m−1).",
+      "whyOthersWrong": {
+        "A": "m² يفترض الإرجاع في السحب الثاني.",
+        "C": "m يحسب السحب الأول فقط.",
+        "D": "m−1 يحسب السحب الثاني فقط."
+      },
+      "hint": "استخدم مبدأ العد الأساسي مع عدم الإرجاع.",
+      "solvingStrategy": "تطبيق مبدأ العد الأساسي في تجربتين متتاليتين.",
+      "commonMistakes": [
+        "m² يفترض الإرجاع في السحب الثاني.",
+        "m يحسب السحب الأول فقط.",
+        "m−1 يحسب السحب الثاني فقط."
+      ],
+      "difficulty": "easy",
+      "aiContext": {
+        "readableText": "إذا كان لدينا m قلمًا وسحبنا قلمين على التوالي دون إرجاع، فما عدد النواتج الممكنة؟",
+        "speechText": "إذا كان لدينا m قلمًا وسحبنا قلمين على التوالي دون إرجاع، فما عدد النواتج الممكنة؟",
+        "visualDescription": "مسألة عد عن سحب قلمين من m قلم دون إرجاع.",
+        "concepts": [
+          "تطبيق مبدأ العد الأساسي في تجربتين متتاليتين."
+        ],
+        "requiredData": [
+          "إذا كان لدينا m قلمًا وسحبنا قلمين على التوالي دون إرجاع، فما عدد النواتج الممكنة؟",
+          "A: m²",
+          "B: m(m−1)",
+          "C: m",
+          "D: m−1",
+          "كتاب تأسيس يلو للرياضيات 26"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf"
+      },
+      "questionFingerprint": "YLM26|YLM26-PDF045-P046-N01|0250af0cec720fc1200959b3463f03a5433f560a7b8030c77eec537dab27f418",
+      "teachingFingerprint": "sub_tah_math_14_02|تطبيق مبدأ العد الأساسي في تجربتين متتاليتين.",
+      "sourceEvidence": "ops/tah-math/TAH_MATH_RUN49_5_OPTION_PEDAGOGY_PART4A.json",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "sourcePedagogyReviewed": true,
+      "liveR2Parity": "NOT_TESTED",
+      "liveTopicIdParity": "NOT_TESTED",
+      "stage": "SOURCE_GROUNDED_PEDAGOGY_STAGED_NOT_FINAL",
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P046-Q02",
+      "sourceItemId": "YLM26-PDF045-P046-N02",
+      "imageHash": "0ef2593ad5e75bef4b230f35c1f0ea560a618746bf37ac71243f8be765bc9331",
+      "mapping": {
+        "skillId": "skill_tah_math_14",
+        "skillName": "الاحتمالات ونظرية ذات الحدين",
+        "subSkillId": "sub_tah_math_14_04",
+        "subSkillName": "الاحتمال البسيط والمركب والشرطي والهندسي"
+      },
+      "foundationReference": {
+        "lessonNumber": 20,
+        "lessonTitle": "الاحتمالات",
+        "subSkillId": "sub_tah_math_14_04",
+        "subSkillName": "الاحتمال البسيط والمركب والشرطي والهندسي"
+      },
+      "questionText": "فندق فيه خياران للدور T أو F، وخياران لنوع الغرفة S أو B. ما فضاء العينة؟",
+      "options": {
+        "A": "TS-TB-FT-SB",
+        "B": "TS-TB-FS-FB",
+        "C": "TF-FT-SB-BS",
+        "D": "TF-TB-FS-SB"
+      },
+      "answerLetter": "B",
+      "correctOptionIndex": 1,
+      "explanation": "الدور T/F ونوع الغرفة S/B؛ فضاء العينة {TS,TB,FS,FB}.",
+      "whyCorrect": "الدور T/F ونوع الغرفة S/B؛ فضاء العينة {TS,TB,FS,FB}.",
+      "whyOthersWrong": {
+        "A": "يحتوي FT وSB غير الموافقين لترميز الدور ثم نوع الغرفة.",
+        "C": "يخلط ترتيب الرموز وينقص التركيبات الصحيحة.",
+        "D": "يستبعد TS ويستعمل SB بترتيب غير مطلوب."
+      },
+      "hint": "كوّن جميع الأزواج الممكنة من اختيار الدور واختيار نوع الغرفة.",
+      "solvingStrategy": "بناء فضاء عينة لتجربة مركبة من مرحلتين.",
+      "commonMistakes": [
+        "يحتوي FT وSB غير الموافقين لترميز الدور ثم نوع الغرفة.",
+        "يخلط ترتيب الرموز وينقص التركيبات الصحيحة.",
+        "يستبعد TS ويستعمل SB بترتيب غير مطلوب."
+      ],
+      "difficulty": "easy",
+      "aiContext": {
+        "readableText": "فندق فيه خياران للدور T أو F، وخياران لنوع الغرفة S أو B. ما فضاء العينة؟",
+        "speechText": "فندق فيه خياران للدور T أو F، وخياران لنوع الغرفة S أو B. ما فضاء العينة؟",
+        "visualDescription": "اختيار بين دورين T وF ونوعين من الغرف S وB.",
+        "concepts": [
+          "بناء فضاء عينة لتجربة مركبة من مرحلتين."
+        ],
+        "requiredData": [
+          "فندق فيه خياران للدور T أو F، وخياران لنوع الغرفة S أو B. ما فضاء العينة؟",
+          "A: TS-TB-FT-SB",
+          "B: TS-TB-FS-FB",
+          "C: TF-FT-SB-BS",
+          "D: TF-TB-FS-SB",
+          "كتاب تأسيس يلو للرياضيات 26"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf"
+      },
+      "questionFingerprint": "YLM26|YLM26-PDF045-P046-N02|0ef2593ad5e75bef4b230f35c1f0ea560a618746bf37ac71243f8be765bc9331",
+      "teachingFingerprint": "sub_tah_math_14_04|بناء فضاء عينة لتجربة مركبة من مرحلتين.",
+      "sourceEvidence": "ops/tah-math/TAH_MATH_RUN49_5_OPTION_PEDAGOGY_PART4A.json",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "sourcePedagogyReviewed": true,
+      "liveR2Parity": "NOT_TESTED",
+      "liveTopicIdParity": "NOT_TESTED",
+      "stage": "SOURCE_GROUNDED_PEDAGOGY_STAGED_NOT_FINAL",
+      "canonicalApproved": false
+    }
+  ]
+}

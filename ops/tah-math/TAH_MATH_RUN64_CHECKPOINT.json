@@ -1,0 +1,31 @@
+{
+  "run": "RUN64",
+  "date": "2026-10-10",
+  "bank": "YLM26",
+  "sourcePdf": "official foundation book, prior RUN63 render",
+  "visuallyInspected": 200,
+  "sourceQuestionsRead": 160,
+  "independentMathAnswers": 150,
+  "symbolicPASS": 41,
+  "sourceRGBPass": 30,
+  "sourceRecropsPending": 40,
+  "semanticHolds": 8,
+  "priorCandidateCorrections": [
+    {
+      "code": "P016-Q11",
+      "from": "C",
+      "to": "A"
+    },
+    {
+      "code": "P019-Q03",
+      "from": "D",
+      "to": "A"
+    }
+  ],
+  "cumulativeConditionalReviewEvents": 7456,
+  "uniqueInventory": 326,
+  "canonicalApproved": 0,
+  "productionMutation": false,
+  "status": "NOT_GREEN",
+  "next": "Finish YLM26 canonical fields and R2/topic verification before COL26"
+}

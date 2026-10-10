@@ -1,0 +1,52 @@
+{
+  "run": "RUN28",
+  "bank": "YLM26",
+  "officialPdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+  "sourceFlaggedReviewed": 20,
+  "manualCropCorrections": [
+    {
+      "code": "P031-Q08",
+      "pdfPage": 31,
+      "rectPt": [
+        0,
+        687,
+        300,
+        734
+      ]
+    },
+    {
+      "code": "P033-Q08",
+      "pdfPage": 33,
+      "rectPt": [
+        0,
+        418,
+        300,
+        485
+      ]
+    }
+  ],
+  "tightOriginalSourceBoundsReused": [
+    "P076-Q12",
+    "P078-Q09",
+    "P079-Q10",
+    "P079-Q11",
+    "P082-Q02",
+    "P082-Q03",
+    "P083-Q05",
+    "P083-Q07",
+    "P083-Q08",
+    "P084-Q10",
+    "P084-Q12",
+    "P085-Q01",
+    "P085-Q02",
+    "P085-Q03",
+    "P085-Q04",
+    "P086-Q05",
+    "P087-Q08",
+    "P087-Q10"
+  ],
+  "localCandidateVisualGate": "PASS_20_20",
+  "productionPixelParity": "PENDING",
+  "productionMutation": false,
+  "note": "Full original and candidate crop coordinates, SHA-256 values, and 20 source PNGs are preserved in the RUN28 evidence archive. Reverting to the original tight PDF rectangles removes the expanded neighboring examples."
+}

@@ -1,0 +1,38 @@
+{
+  "run": "RUN49",
+  "status": "SOURCE_REVIEW_CANDIDATES",
+  "rows": [
+    {
+      "questionCode": "TAH-MATH-YLM26-P044-Q13",
+      "answerLetter": "C",
+      "answer": "3",
+      "reason": "sum=1/(1−2/3)"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P044-Q14",
+      "answerLetter": "A",
+      "answer": "5",
+      "reason": "sum=4/(1−1/5)"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P044-Q15",
+      "answerLetter": "D",
+      "answer": "1/9",
+      "reason": "0.111...=1/9"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P045-Q01",
+      "answerLetter": "D",
+      "answer": "−7x^10",
+      "reason": "C(8,3)(x²)^5(−1/2)^3"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P045-Q02",
+      "answerLetter": "B",
+      "answer": "x^10",
+      "reason": "first term in (x+1)^10"
+    }
+  ],
+  "productionMutation": false,
+  "canonicalApproved": false
+}

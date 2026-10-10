@@ -1,0 +1,39 @@
+{
+  "project": "TAH-MATH",
+  "run": "2026-10-08-heavy-run14",
+  "status": "IN_PROGRESS",
+  "branch": "content/tah-math-full-taxonomy-closure",
+  "sourceBookSha256": "5c1ec2dc4f2ddd6036dbd3430f0fceaaa9b51e300b7e8442b446c3a21a4ecd51",
+  "newDistinctCOL26SourceQuestionCrops": 234,
+  "sourceOptionLabelGeometryPass": 234,
+  "rawOptionTextNonemptyNotSemanticallyCertified": 234,
+  "independentMathPass": 12,
+  "fullOptionPedagogyProposals": 8,
+  "mathOnlyProposals": 4,
+  "sourceBackedSubskillRemapCandidates": 48,
+  "priorDistinctPartialOptionReviews": 489,
+  "cumulativeDistinctPartialOptionReviews": 723,
+  "remainingUnreviewedOptionRegions": 270,
+  "liveReadOnlyAtlasIntegrity": {
+    "rows": 234,
+    "mainLessonMatch": 234,
+    "subskillWithinLesson": 234,
+    "sourceIds": 234,
+    "imageHashes": 234,
+    "validAnswerIndices": 234,
+    "missingHint": 234,
+    "missingAiReadableText": 234,
+    "mediumOnly": 234
+  },
+  "productionMutation": false,
+  "sourceEvidenceZipSha256": "7cc7e829b8e0569c915d7e2e60d7170712bc974e10458230dc4cc22617a4fe03",
+  "gates": {
+    "fullPedagogy": "FAIL",
+    "YLM26Full": "FAIL",
+    "COL26OLD": "PENDING",
+    "dedupe": "PENDING",
+    "coverage": "PENDING",
+    "training": "PENDING",
+    "liveE2E": "PENDING"
+  }
+}

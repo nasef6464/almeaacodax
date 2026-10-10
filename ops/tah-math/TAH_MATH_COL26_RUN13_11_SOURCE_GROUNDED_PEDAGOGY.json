@@ -1,0 +1,660 @@
+{
+  "project": "TAH-MATH",
+  "run": "heavy-run13",
+  "bank": "COL26",
+  "status": "11_SOURCE_VISUAL_MATH_PEDAGOGY_PROPOSALS_REVIEWED_NOT_APPLIED",
+  "count": 11,
+  "sourceBookSha256": "5c1ec2dc4f2ddd6036dbd3430f0fceaaa9b51e300b7e8442b446c3a21a4ecd51",
+  "productionMutation": false,
+  "rows": [
+    {
+      "questionCode": "TAH-MATH-COL26-P053-Q19",
+      "sourceBank": "COL26",
+      "sourceBookSha256": "5c1ec2dc4f2ddd6036dbd3430f0fceaaa9b51e300b7e8442b446c3a21a4ecd51",
+      "sourceLesson": 12,
+      "sourceLessonTitle": "المصفوفات",
+      "sourcePage": 53,
+      "sourceItemId": "COL26-PDF052-P053-N19",
+      "imageHash": "d409cfd6202ba9b26aaefeae376acd2ce1f1e792724a11a4eb140dbac8aa13cb",
+      "primarySkillId": "skill_tah_math_09",
+      "primarySubSkillId": "sub_tah_math_09_01",
+      "sourceAnswerKey": "D",
+      "correctOptionIndex": 3,
+      "answerMathIndependentlyVerified": true,
+      "optionTexts": {
+        "A": "جميع المصفوفات مربعة",
+        "B": "للمصفوفتين نفس الرتبة",
+        "C": "A = B⁻¹",
+        "D": "|A| = |B| = 0"
+      },
+      "difficulty": "medium",
+      "whyCorrect": "إذا AB=BA=I فإن A وB قابلتان للعكس، وبالتالي محدد كل منهما غير صفري؛ إذن العبارة D غير صحيحة.",
+      "whyOthersWrong": {
+        "A": "صحيحة لأن المصفوفة القابلة للعكس مربعة.",
+        "B": "صحيحة لأن AB=I يقتضي تطابق الرتبتين.",
+        "C": "صحيحة لأن B معكوس A."
+      },
+      "hint": "ماذا تعني مساواة حاصل ضرب المصفوفتين لمصفوفة الوحدة بالنسبة للقابلية للعكس؟",
+      "solvingStrategy": "استنتج قابلية العكس من AB=I ثم استخدم خاصية المحدد.",
+      "commonMistakes": [
+        "الخلط بين محدد المصفوفة الصفرية ومحدد مصفوفة الوحدة"
+      ],
+      "aiContext": {
+        "readableText": "إذا AB=BA=I فإن A وB قابلتان للعكس، وبالتالي محدد كل منهما غير صفري؛ إذن العبارة D غير صحيحة.",
+        "speechText": "ماذا تعني مساواة حاصل ضرب المصفوفتين لمصفوفة الوحدة بالنسبة للقابلية للعكس؟",
+        "visualDescription": "الاختيارات الأربعة ومحتوى المسألة كما يظهران في قصاصة السؤال الأصلية.",
+        "concepts": [
+          "معكوس المصفوفة",
+          "المحدد غير الصفري"
+        ],
+        "requiredData": [
+          "جميع المصفوفات مربعة",
+          "للمصفوفتين نفس الرتبة",
+          "A = B⁻¹",
+          "|A| = |B| = 0"
+        ],
+        "mathExpressions": []
+      },
+      "foundationReference": {
+        "lessonNumber": 12,
+        "lessonTitle": "المصفوفات",
+        "mainSkillId": "skill_tah_math_09",
+        "subSkillId": "sub_tah_math_09_01"
+      },
+      "questionFingerprint": "COL26:TAH-MATH-COL26-P053-Q19:d409cfd6202ba9b2",
+      "teachingFingerprint": "TAH-MATH:12:معكوس المصفوفة+المحدد غير الصفري",
+      "sourceVisualStatus": "SOURCE_CROP_VISUALLY_CHECKED",
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-COL26-P057-Q01",
+      "sourceBank": "COL26",
+      "sourceBookSha256": "5c1ec2dc4f2ddd6036dbd3430f0fceaaa9b51e300b7e8442b446c3a21a4ecd51",
+      "sourceLesson": 13,
+      "sourceLessonTitle": "الأعداد المركبة والمعادلة التربيعية",
+      "sourcePage": 57,
+      "sourceItemId": "COL26-PDF056-P057-N01",
+      "imageHash": "f1ca1578506456199a1dc21642a2cde3a157e8af372f804ce6b00fb2545cd0c3",
+      "primarySkillId": "skill_tah_math_10",
+      "primarySubSkillId": "sub_tah_math_10_01",
+      "sourceAnswerKey": "D",
+      "correctOptionIndex": 3,
+      "answerMathIndependentlyVerified": true,
+      "optionTexts": {
+        "A": "−i",
+        "B": "i",
+        "C": "1",
+        "D": "−1"
+      },
+      "difficulty": "easy",
+      "whyCorrect": "i³⁰=(i⁴)⁷×i²=−1؛ إذن D.",
+      "whyOthersWrong": {
+        "A": "−i ينتج عن أس فردي مختلف.",
+        "B": "i ينتج عن باقي 1 عند القسمة على 4.",
+        "C": "1 ينتج عن أس من مضاعفات 4."
+      },
+      "hint": "دورة قوى i تتكرر كل أربعة أسس.",
+      "solvingStrategy": "اقسم الأس 30 على 4 واستعمل الباقي 2.",
+      "commonMistakes": [
+        "نسيان أن i²=−1"
+      ],
+      "aiContext": {
+        "readableText": "i³⁰=(i⁴)⁷×i²=−1؛ إذن D.",
+        "speechText": "دورة قوى i تتكرر كل أربعة أسس.",
+        "visualDescription": "الاختيارات الأربعة ومحتوى المسألة كما يظهران في قصاصة السؤال الأصلية.",
+        "concepts": [
+          "قوى الوحدة التخيلية"
+        ],
+        "requiredData": [
+          "−i",
+          "i",
+          "1",
+          "−1"
+        ],
+        "mathExpressions": []
+      },
+      "foundationReference": {
+        "lessonNumber": 13,
+        "lessonTitle": "الأعداد المركبة والمعادلة التربيعية",
+        "mainSkillId": "skill_tah_math_10",
+        "subSkillId": "sub_tah_math_10_01"
+      },
+      "questionFingerprint": "COL26:TAH-MATH-COL26-P057-Q01:f1ca157850645619",
+      "teachingFingerprint": "TAH-MATH:13:قوى الوحدة التخيلية",
+      "sourceVisualStatus": "SOURCE_CROP_VISUALLY_CHECKED",
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-COL26-P057-Q11",
+      "sourceBank": "COL26",
+      "sourceBookSha256": "5c1ec2dc4f2ddd6036dbd3430f0fceaaa9b51e300b7e8442b446c3a21a4ecd51",
+      "sourceLesson": 13,
+      "sourceLessonTitle": "الأعداد المركبة والمعادلة التربيعية",
+      "sourcePage": 57,
+      "sourceItemId": "COL26-PDF056-P057-N11",
+      "imageHash": "334c6002aedac960aacf7a786d2ebbde4c78c23ebc7f0ce4b793c16b14636c0b",
+      "primarySkillId": "skill_tah_math_10",
+      "primarySubSkillId": "sub_tah_math_10_01",
+      "sourceAnswerKey": "A",
+      "correctOptionIndex": 0,
+      "answerMathIndependentlyVerified": true,
+      "optionTexts": {
+        "A": "625",
+        "B": "5",
+        "C": "25",
+        "D": "125"
+      },
+      "difficulty": "easy",
+      "whyCorrect": "(1−2i)(1+2i)=1−(2i)²=5، ومنه 5⁴=625؛ الإجابة A.",
+      "whyOthersWrong": {
+        "B": "5 نتيجة ضرب المرافقين قبل رفع الناتج للقوة الرابعة.",
+        "C": "25 هو 5² وليس 5⁴.",
+        "D": "125 هو 5³ وليس 5⁴."
+      },
+      "hint": "ابدأ بضرب العدد المركب في مرافقه.",
+      "solvingStrategy": "استخدم فرق مربعين ثم احسب القوة الرابعة.",
+      "commonMistakes": [
+        "حساب i²=1",
+        "نسيان الأس الخارجي 4"
+      ],
+      "aiContext": {
+        "readableText": "(1−2i)(1+2i)=1−(2i)²=5، ومنه 5⁴=625؛ الإجابة A.",
+        "speechText": "ابدأ بضرب العدد المركب في مرافقه.",
+        "visualDescription": "الاختيارات الأربعة ومحتوى المسألة كما يظهران في قصاصة السؤال الأصلية.",
+        "concepts": [
+          "مرافق العدد المركب",
+          "قوى الأعداد"
+        ],
+        "requiredData": [
+          "625",
+          "5",
+          "25",
+          "125"
+        ],
+        "mathExpressions": []
+      },
+      "foundationReference": {
+        "lessonNumber": 13,
+        "lessonTitle": "الأعداد المركبة والمعادلة التربيعية",
+        "mainSkillId": "skill_tah_math_10",
+        "subSkillId": "sub_tah_math_10_01"
+      },
+      "questionFingerprint": "COL26:TAH-MATH-COL26-P057-Q11:334c6002aedac960",
+      "teachingFingerprint": "TAH-MATH:13:مرافق العدد المركب+قوى الأعداد",
+      "sourceVisualStatus": "SOURCE_CROP_VISUALLY_CHECKED",
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-COL26-P060-Q01",
+      "sourceBank": "COL26",
+      "sourceBookSha256": "5c1ec2dc4f2ddd6036dbd3430f0fceaaa9b51e300b7e8442b446c3a21a4ecd51",
+      "sourceLesson": 14,
+      "sourceLessonTitle": "كثيرات الحدود",
+      "sourcePage": 60,
+      "sourceItemId": "COL26-PDF059-P060-N01",
+      "imageHash": "0a3e5685039687f485f524554c633d6cd9e5c1cbe51d1a344fbc98e0eb0fcc98",
+      "primarySkillId": "skill_tah_math_10",
+      "primarySubSkillId": "sub_tah_math_10_03",
+      "sourceAnswerKey": "D",
+      "correctOptionIndex": 3,
+      "answerMathIndependentlyVerified": true,
+      "optionTexts": {
+        "A": "6ad−11ad",
+        "B": "7a−15d",
+        "C": "−7a²+3d²",
+        "D": "3a+3d"
+      },
+      "difficulty": "easy",
+      "whyCorrect": "−2a+5a=3a و9d−6d=3d، فيكون 3a+3d؛ الإجابة D.",
+      "whyOthersWrong": {
+        "A": "يضرب المتغيرات بدل جمع الحدود المتشابهة.",
+        "B": "يجمع المعاملات بإشارات خاطئة.",
+        "C": "يُدخل أسسًا غير موجودة في التعبير."
+      },
+      "hint": "اجمع معاملات a معًا ومعاملات d معًا.",
+      "solvingStrategy": "رتّب الحدود المتشابهة ثم اجمع المعاملات مع إشاراتها.",
+      "commonMistakes": [
+        "إهمال الإشارات السالبة",
+        "جمع متغيرات مختلفة كحد واحد"
+      ],
+      "aiContext": {
+        "readableText": "−2a+5a=3a و9d−6d=3d، فيكون 3a+3d؛ الإجابة D.",
+        "speechText": "اجمع معاملات a معًا ومعاملات d معًا.",
+        "visualDescription": "الاختيارات الأربعة ومحتوى المسألة كما يظهران في قصاصة السؤال الأصلية.",
+        "concepts": [
+          "تبسيط كثيرات الحدود",
+          "الحدود المتشابهة"
+        ],
+        "requiredData": [
+          "6ad−11ad",
+          "7a−15d",
+          "−7a²+3d²",
+          "3a+3d"
+        ],
+        "mathExpressions": []
+      },
+      "foundationReference": {
+        "lessonNumber": 14,
+        "lessonTitle": "كثيرات الحدود",
+        "mainSkillId": "skill_tah_math_10",
+        "subSkillId": "sub_tah_math_10_03"
+      },
+      "questionFingerprint": "COL26:TAH-MATH-COL26-P060-Q01:0a3e5685039687f4",
+      "teachingFingerprint": "TAH-MATH:14:تبسيط كثيرات الحدود+الحدود المتشابهة",
+      "sourceVisualStatus": "SOURCE_CROP_VISUALLY_CHECKED",
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-COL26-P069-Q13",
+      "sourceBank": "COL26",
+      "sourceBookSha256": "5c1ec2dc4f2ddd6036dbd3430f0fceaaa9b51e300b7e8442b446c3a21a4ecd51",
+      "sourceLesson": 16,
+      "sourceLessonTitle": "الدالة الجذرية",
+      "sourcePage": 69,
+      "sourceItemId": "COL26-PDF068-P069-N13",
+      "imageHash": "bf2e76b410f03e643e22fd6400373000a805fbede0e53e6798408bddc5588e33",
+      "primarySkillId": "skill_tah_math_11",
+      "primarySubSkillId": "sub_tah_math_11_03",
+      "sourceAnswerKey": "A",
+      "correctOptionIndex": 0,
+      "answerMathIndependentlyVerified": true,
+      "optionTexts": {
+        "A": "3/2",
+        "B": "2/3",
+        "C": "9/4",
+        "D": "4/9"
+      },
+      "difficulty": "easy",
+      "whyCorrect": "√63/√28=√(63/28)=√(9/4)=3/2؛ الإجابة A.",
+      "whyOthersWrong": {
+        "B": "مقلوب الناتج الصحيح.",
+        "C": "9/4 هي قيمة الكسر تحت الجذر قبل استخراج الجذر.",
+        "D": "مقلوب الكسر قبل استخراج الجذر."
+      },
+      "hint": "اجمع الجذرين في جذر كسر واحد ثم اختزل.",
+      "solvingStrategy": "بسّط النسبة داخل الجذر أولًا ثم استخرج الجذر التربيعي.",
+      "commonMistakes": [
+        "نسيان أخذ جذر البسط والمقام"
+      ],
+      "aiContext": {
+        "readableText": "√63/√28=√(63/28)=√(9/4)=3/2؛ الإجابة A.",
+        "speechText": "اجمع الجذرين في جذر كسر واحد ثم اختزل.",
+        "visualDescription": "الاختيارات الأربعة ومحتوى المسألة كما يظهران في قصاصة السؤال الأصلية.",
+        "concepts": [
+          "تبسيط الجذور",
+          "جذر الكسر"
+        ],
+        "requiredData": [
+          "3/2",
+          "2/3",
+          "9/4",
+          "4/9"
+        ],
+        "mathExpressions": []
+      },
+      "foundationReference": {
+        "lessonNumber": 16,
+        "lessonTitle": "الدالة الجذرية",
+        "mainSkillId": "skill_tah_math_11",
+        "subSkillId": "sub_tah_math_11_03"
+      },
+      "questionFingerprint": "COL26:TAH-MATH-COL26-P069-Q13:bf2e76b410f03e64",
+      "teachingFingerprint": "TAH-MATH:16:تبسيط الجذور+جذر الكسر",
+      "sourceVisualStatus": "SOURCE_CROP_VISUALLY_CHECKED",
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-COL26-P077-Q01",
+      "sourceBank": "COL26",
+      "sourceBookSha256": "5c1ec2dc4f2ddd6036dbd3430f0fceaaa9b51e300b7e8442b446c3a21a4ecd51",
+      "sourceLesson": 18,
+      "sourceLessonTitle": "المتتابعات والمتسلسلات",
+      "sourcePage": 77,
+      "sourceItemId": "COL26-PDF076-P077-N01",
+      "imageHash": "40b8b3bd3f2f5e0ef0540c6cc0973ae1f547ff826dbd04794ad3cae330552449",
+      "primarySkillId": "skill_tah_math_13",
+      "primarySubSkillId": "sub_tah_math_13_01",
+      "sourceAnswerKey": "B",
+      "correctOptionIndex": 1,
+      "answerMathIndependentlyVerified": true,
+      "optionTexts": {
+        "A": "1, 2, 3, 5, …",
+        "B": "39, 33, 27, 21, …",
+        "C": "2, 4, 8, 16, …",
+        "D": "−24, 28, 12, 4, …"
+      },
+      "difficulty": "easy",
+      "whyCorrect": "الفروق في B تساوي −6 باستمرار، ولذلك هي متتابعة حسابية.",
+      "whyOthersWrong": {
+        "A": "الفروق 1،1،2 ليست ثابتة.",
+        "C": "النسبة 2 ثابتة، فهي هندسية وليست حسابية.",
+        "D": "الفروق ليست ثابتة."
+      },
+      "hint": "احسب الفرق بين كل حد والذي يليه.",
+      "solvingStrategy": "اختبر ثبات الفرق المشترك لكل خيار.",
+      "commonMistakes": [
+        "الخلط بين ثبات الفرق وثبات النسبة"
+      ],
+      "aiContext": {
+        "readableText": "الفروق في B تساوي −6 باستمرار، ولذلك هي متتابعة حسابية.",
+        "speechText": "احسب الفرق بين كل حد والذي يليه.",
+        "visualDescription": "الاختيارات الأربعة ومحتوى المسألة كما يظهران في قصاصة السؤال الأصلية.",
+        "concepts": [
+          "المتتابعة الحسابية",
+          "الفرق المشترك"
+        ],
+        "requiredData": [
+          "1, 2, 3, 5, …",
+          "39, 33, 27, 21, …",
+          "2, 4, 8, 16, …",
+          "−24, 28, 12, 4, …"
+        ],
+        "mathExpressions": []
+      },
+      "foundationReference": {
+        "lessonNumber": 18,
+        "lessonTitle": "المتتابعات والمتسلسلات",
+        "mainSkillId": "skill_tah_math_13",
+        "subSkillId": "sub_tah_math_13_01"
+      },
+      "questionFingerprint": "COL26:TAH-MATH-COL26-P077-Q01:40b8b3bd3f2f5e0e",
+      "teachingFingerprint": "TAH-MATH:18:المتتابعة الحسابية+الفرق المشترك",
+      "sourceVisualStatus": "SOURCE_CROP_VISUALLY_CHECKED",
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-COL26-P082-Q01",
+      "sourceBank": "COL26",
+      "sourceBookSha256": "5c1ec2dc4f2ddd6036dbd3430f0fceaaa9b51e300b7e8442b446c3a21a4ecd51",
+      "sourceLesson": 19,
+      "sourceLessonTitle": "نظرية ذات الحدين",
+      "sourcePage": 82,
+      "sourceItemId": "COL26-PDF081-P082-N01",
+      "imageHash": "4f561c22acabc646a2f9cc3e200dbc29705eaa5b865653bd7b560e2bd2d69e17",
+      "primarySkillId": "skill_tah_math_14",
+      "primarySubSkillId": "sub_tah_math_14_01",
+      "sourceAnswerKey": "B",
+      "correctOptionIndex": 1,
+      "answerMathIndependentlyVerified": true,
+      "optionTexts": {
+        "A": "6",
+        "B": "7",
+        "C": "8",
+        "D": "9"
+      },
+      "difficulty": "easy",
+      "whyCorrect": "مفكوك (a+b)⁶ يحتوي الحدود من k=0 حتى k=6، أي 7 حدود؛ الإجابة B.",
+      "whyOthersWrong": {
+        "A": "يساوي الأس دون إضافة الحد الابتدائي.",
+        "C": "يزيد حدًا على العدد الصحيح.",
+        "D": "يزيد حدين على العدد الصحيح."
+      },
+      "hint": "عدد حدود مفكوك ذي الحدين للأس الصحيح n يساوي n+1.",
+      "solvingStrategy": "طبّق قاعدة عدد حدود مفكوك ذات الحدين.",
+      "commonMistakes": [
+        "اعتبار عدد الحدود مساويًا للأس n"
+      ],
+      "aiContext": {
+        "readableText": "مفكوك (a+b)⁶ يحتوي الحدود من k=0 حتى k=6، أي 7 حدود؛ الإجابة B.",
+        "speechText": "عدد حدود مفكوك ذي الحدين للأس الصحيح n يساوي n+1.",
+        "visualDescription": "الاختيارات الأربعة ومحتوى المسألة كما يظهران في قصاصة السؤال الأصلية.",
+        "concepts": [
+          "نظرية ذات الحدين",
+          "عدد الحدود"
+        ],
+        "requiredData": [
+          "6",
+          "7",
+          "8",
+          "9"
+        ],
+        "mathExpressions": []
+      },
+      "foundationReference": {
+        "lessonNumber": 19,
+        "lessonTitle": "نظرية ذات الحدين",
+        "mainSkillId": "skill_tah_math_14",
+        "subSkillId": "sub_tah_math_14_01"
+      },
+      "questionFingerprint": "COL26:TAH-MATH-COL26-P082-Q01:4f561c22acabc646",
+      "teachingFingerprint": "TAH-MATH:19:نظرية ذات الحدين+عدد الحدود",
+      "sourceVisualStatus": "SOURCE_CROP_VISUALLY_CHECKED",
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-COL26-P084-Q11",
+      "sourceBank": "COL26",
+      "sourceBookSha256": "5c1ec2dc4f2ddd6036dbd3430f0fceaaa9b51e300b7e8442b446c3a21a4ecd51",
+      "sourceLesson": 20,
+      "sourceLessonTitle": "الاحتمالات",
+      "sourcePage": 84,
+      "sourceItemId": "COL26-PDF083-P084-N11",
+      "imageHash": "3536ee7fe6b31070fe83dba90ed1be14128975c1a9e151dbe12693e709cf7e60",
+      "primarySkillId": "skill_tah_math_14",
+      "primarySubSkillId": "sub_tah_math_14_02",
+      "sourceAnswerKey": "B",
+      "correctOptionIndex": 1,
+      "answerMathIndependentlyVerified": true,
+      "optionTexts": {
+        "A": "1",
+        "B": "6",
+        "C": "15",
+        "D": "20"
+      },
+      "difficulty": "easy",
+      "whyCorrect": "³P₃=3!/(3−3)!=3!=6؛ الإجابة B.",
+      "whyOthersWrong": {
+        "A": "يتجاهل عدد الترتيبات المختلفة.",
+        "C": "لا يساوي عدد تبديلات ثلاثة عناصر.",
+        "D": "لا يساوي 3!."
+      },
+      "hint": "استخدم قانون التباديل nPr=n!/(n−r)!.",
+      "solvingStrategy": "عوّض n=r=3 ثم احسب المضروب.",
+      "commonMistakes": [
+        "الخلط بين التباديل والتوافيق"
+      ],
+      "aiContext": {
+        "readableText": "³P₃=3!/(3−3)!=3!=6؛ الإجابة B.",
+        "speechText": "استخدم قانون التباديل nPr=n!/(n−r)!.",
+        "visualDescription": "الاختيارات الأربعة ومحتوى المسألة كما يظهران في قصاصة السؤال الأصلية.",
+        "concepts": [
+          "التباديل",
+          "المضروب"
+        ],
+        "requiredData": [
+          "1",
+          "6",
+          "15",
+          "20"
+        ],
+        "mathExpressions": []
+      },
+      "foundationReference": {
+        "lessonNumber": 20,
+        "lessonTitle": "الاحتمالات",
+        "mainSkillId": "skill_tah_math_14",
+        "subSkillId": "sub_tah_math_14_02"
+      },
+      "questionFingerprint": "COL26:TAH-MATH-COL26-P084-Q11:3536ee7fe6b31070",
+      "teachingFingerprint": "TAH-MATH:20:التباديل+المضروب",
+      "sourceVisualStatus": "SOURCE_CROP_VISUALLY_CHECKED",
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-COL26-P090-Q01",
+      "sourceBank": "COL26",
+      "sourceBookSha256": "5c1ec2dc4f2ddd6036dbd3430f0fceaaa9b51e300b7e8442b446c3a21a4ecd51",
+      "sourceLesson": 21,
+      "sourceLessonTitle": "حسابات المثلثات",
+      "sourcePage": 90,
+      "sourceItemId": "COL26-PDF089-P090-N01",
+      "imageHash": "fbf8a2a9a42d0d4e507a802b12699fdc84ec760fc1742216fd7a3c4e19d11b58",
+      "primarySkillId": "skill_tah_math_15",
+      "primarySubSkillId": "sub_tah_math_15_01",
+      "sourceAnswerKey": "A",
+      "correctOptionIndex": 0,
+      "answerMathIndependentlyVerified": true,
+      "optionTexts": {
+        "A": "540°",
+        "B": "720°",
+        "C": "180°",
+        "D": "360°"
+      },
+      "difficulty": "easy",
+      "whyCorrect": "3π راديان ×180°/π=540°؛ الإجابة A.",
+      "whyOthersWrong": {
+        "B": "يمثل 4π وليس 3π.",
+        "C": "يمثل π فقط.",
+        "D": "يمثل 2π فقط."
+      },
+      "hint": "كل π راديان يساوي 180 درجة.",
+      "solvingStrategy": "اضرب الراديان في 180/π.",
+      "commonMistakes": [
+        "استخدام 360 بدل 180 لكل π"
+      ],
+      "aiContext": {
+        "readableText": "3π راديان ×180°/π=540°؛ الإجابة A.",
+        "speechText": "كل π راديان يساوي 180 درجة.",
+        "visualDescription": "الاختيارات الأربعة ومحتوى المسألة كما يظهران في قصاصة السؤال الأصلية.",
+        "concepts": [
+          "التحويل بين الراديان والدرجات"
+        ],
+        "requiredData": [
+          "540°",
+          "720°",
+          "180°",
+          "360°"
+        ],
+        "mathExpressions": []
+      },
+      "foundationReference": {
+        "lessonNumber": 21,
+        "lessonTitle": "حسابات المثلثات",
+        "mainSkillId": "skill_tah_math_15",
+        "subSkillId": "sub_tah_math_15_01"
+      },
+      "questionFingerprint": "COL26:TAH-MATH-COL26-P090-Q01:fbf8a2a9a42d0d4e",
+      "teachingFingerprint": "TAH-MATH:21:التحويل بين الراديان والدرجات",
+      "sourceVisualStatus": "SOURCE_CROP_VISUALLY_CHECKED",
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-COL26-P098-Q04",
+      "sourceBank": "COL26",
+      "sourceBookSha256": "5c1ec2dc4f2ddd6036dbd3430f0fceaaa9b51e300b7e8442b446c3a21a4ecd51",
+      "sourceLesson": 22,
+      "sourceLessonTitle": "تحليل الدوال",
+      "sourcePage": 98,
+      "sourceItemId": "COL26-PDF097-P098-N04",
+      "imageHash": "bec6f9fffd488e15af94d8aa38cf4a35bc56f14bfd5078709005c812638063fd",
+      "primarySkillId": "skill_tah_math_16",
+      "primarySubSkillId": "sub_tah_math_16_01",
+      "sourceAnswerKey": "B",
+      "correctOptionIndex": 1,
+      "answerMathIndependentlyVerified": true,
+      "optionTexts": {
+        "A": "(5,∞)",
+        "B": "(−∞,5]",
+        "C": "[0,0]",
+        "D": "(0,5)"
+      },
+      "difficulty": "medium",
+      "whyCorrect": "الرسم يبلغ قيمة عظمى مقدارها 5 ويتجه إلى أسفل بلا حد في الطرفين، فمدى الدالة (−∞,5]؛ الإجابة B.",
+      "whyOthersWrong": {
+        "A": "يفترض قيمًا أعلى من القيمة العظمى 5.",
+        "C": "يحصر المدى في قيمة واحدة.",
+        "D": "يحذف القيم السالبة ويستبعد الحد الأعلى."
+      },
+      "hint": "اقرأ أعلى قيمة y يصل إليها الرسم ثم اتجاه طرفيه.",
+      "solvingStrategy": "حدد الحد الأعلى المشمول واتجاه الرسم نحو −∞.",
+      "commonMistakes": [
+        "الخلط بين المجال والمدى",
+        "نسيان شمول القيمة العظمى"
+      ],
+      "aiContext": {
+        "readableText": "الرسم يبلغ قيمة عظمى مقدارها 5 ويتجه إلى أسفل بلا حد في الطرفين، فمدى الدالة (−∞,5]؛ الإجابة B.",
+        "speechText": "اقرأ أعلى قيمة y يصل إليها الرسم ثم اتجاه طرفيه.",
+        "visualDescription": "منحنى يصل إلى أعلى قيمة 5 ثم يتجه إلى أسفل في الطرفين.",
+        "concepts": [
+          "مدى الدالة",
+          "قراءة الرسم البياني"
+        ],
+        "requiredData": [
+          "(5,∞)",
+          "(−∞,5]",
+          "[0,0]",
+          "(0,5)"
+        ],
+        "mathExpressions": []
+      },
+      "foundationReference": {
+        "lessonNumber": 22,
+        "lessonTitle": "تحليل الدوال",
+        "mainSkillId": "skill_tah_math_16",
+        "subSkillId": "sub_tah_math_16_01"
+      },
+      "questionFingerprint": "COL26:TAH-MATH-COL26-P098-Q04:bec6f9fffd488e15",
+      "teachingFingerprint": "TAH-MATH:22:مدى الدالة+قراءة الرسم البياني",
+      "sourceVisualStatus": "SOURCE_CROP_VISUALLY_CHECKED",
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-COL26-P099-Q21",
+      "sourceBank": "COL26",
+      "sourceBookSha256": "5c1ec2dc4f2ddd6036dbd3430f0fceaaa9b51e300b7e8442b446c3a21a4ecd51",
+      "sourceLesson": 22,
+      "sourceLessonTitle": "تحليل الدوال",
+      "sourcePage": 99,
+      "sourceItemId": "COL26-PDF098-P099-N21",
+      "imageHash": "f1005ad1f480f6c8871698e906ee6ed02c0e9797934b1916fa80857e491805a6",
+      "primarySkillId": "skill_tah_math_16",
+      "primarySubSkillId": "sub_tah_math_16_01",
+      "sourceAnswerKey": "D",
+      "correctOptionIndex": 3,
+      "answerMathIndependentlyVerified": true,
+      "optionTexts": {
+        "A": "فردية وزوجية معًا",
+        "B": "ليست فردية أو زوجية",
+        "C": "زوجية",
+        "D": "فردية"
+      },
+      "difficulty": "easy",
+      "whyCorrect": "f(−x)=−x⁵+3x³−x=−f(x)، إذن الدالة فردية؛ الإجابة D.",
+      "whyOthersWrong": {
+        "A": "الدالة غير الصفرية هنا ليست زوجية.",
+        "B": "شرط الفردية متحقق.",
+        "C": "f(−x) لا يساوي f(x) عمومًا."
+      },
+      "hint": "عوّض −x مكان x وقارن النتيجة بـf(x) و−f(x).",
+      "solvingStrategy": "استخدم تعريف الدالة الفردية f(−x)=−f(x).",
+      "commonMistakes": [
+        "الخلط بين الدالة الفردية والأسس الفردية دون اختبار التعبير كاملًا"
+      ],
+      "aiContext": {
+        "readableText": "f(−x)=−x⁵+3x³−x=−f(x)، إذن الدالة فردية؛ الإجابة D.",
+        "speechText": "عوّض −x مكان x وقارن النتيجة بـf(x) و−f(x).",
+        "visualDescription": "الاختيارات الأربعة ومحتوى المسألة كما يظهران في قصاصة السؤال الأصلية.",
+        "concepts": [
+          "الدوال الفردية والزوجية"
+        ],
+        "requiredData": [
+          "فردية وزوجية معًا",
+          "ليست فردية أو زوجية",
+          "زوجية",
+          "فردية"
+        ],
+        "mathExpressions": []
+      },
+      "foundationReference": {
+        "lessonNumber": 22,
+        "lessonTitle": "تحليل الدوال",
+        "mainSkillId": "skill_tah_math_16",
+        "subSkillId": "sub_tah_math_16_01"
+      },
+      "questionFingerprint": "COL26:TAH-MATH-COL26-P099-Q21:f1005ad1f480f6c8",
+      "teachingFingerprint": "TAH-MATH:22:الدوال الفردية والزوجية",
+      "sourceVisualStatus": "SOURCE_CROP_VISUALLY_CHECKED",
+      "productionMutation": false
+    }
+  ]
+}

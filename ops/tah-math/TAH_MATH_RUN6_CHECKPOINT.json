@@ -1,0 +1,34 @@
+{
+  "project": "TAH-MATH",
+  "checkpoint": "heavy-run6",
+  "ylm26": {
+    "enrichedRows": 326,
+    "foundationReferences": 326,
+    "whyCorrectGrounded": 326,
+    "commonMistakesDrafted": 326,
+    "fingerprintsPrepared": 326,
+    "difficultyTriage": {
+      "easy": 201,
+      "medium": 110,
+      "hard": 15,
+      "status": "TRIAGE_NOT_FINAL"
+    },
+    "answerAudit": {
+      "lessons": "1-8",
+      "reviewed": 75,
+      "exactMatches": 74,
+      "reviewCandidates": 1,
+      "candidate": "TAH-MATH-YLM26-P021-Q04"
+    },
+    "remainingGate": {
+      "optionTextExtraction": 326,
+      "whyOthersWrongFinal": 326,
+      "visualReview": true
+    }
+  },
+  "writes": [
+    "TAH_MATH_YLM26_ENRICHED_REVIEW_V2.json",
+    "TAH_MATH_YLM26_ANSWER_AUDIT_LESSONS_01_08.json"
+  ],
+  "next": "Continue answer/visual audit lessons 9-31 and resolve the single answer-key candidate before final YLM26 manifest."
+}

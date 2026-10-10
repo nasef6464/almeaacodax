@@ -1,0 +1,11 @@
+{
+  "run": "RUN78",
+  "date": "2026-10-10",
+  "branch": "content/tah-math-full-taxonomy-closure",
+  "newMastered": 0,
+  "stagedOptionPedagogy": 29,
+  "sourceAnswerConflictsResolved": 4,
+  "productionMutation": false,
+  "status": "YLM26_NOT_GREEN",
+  "next": "Validate overlays and live R2/topicId parity before final approval."
+}

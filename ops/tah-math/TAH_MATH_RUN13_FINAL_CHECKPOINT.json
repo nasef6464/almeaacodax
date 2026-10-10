@@ -1,0 +1,68 @@
+{
+  "project": "TAH-MATH",
+  "run": "2026-10-08-heavy-run13",
+  "status": "IN_PROGRESS",
+  "source": "كتاب تجميعات يلو للرياضيات 26 - النسخة المعدلة.pdf",
+  "sourceBookSha256": "5c1ec2dc4f2ddd6036dbd3430f0fceaaa9b51e300b7e8442b446c3a21a4ecd51",
+  "executed": {
+    "newDistinctCOL26QuestionSourceCrops": 275,
+    "newDistinctOptionGeometryReviews": 275,
+    "newABCDOptionVisualRegions": 1100,
+    "rawPdfFourOptionTextRegionsNonempty": 261,
+    "rawTextNeedsImageTranscription": 14,
+    "independentMathAndPedagogyFullyReviewedSubset": 11,
+    "subsetCodes": [
+      "TAH-MATH-COL26-P053-Q19",
+      "TAH-MATH-COL26-P057-Q01",
+      "TAH-MATH-COL26-P057-Q11",
+      "TAH-MATH-COL26-P060-Q01",
+      "TAH-MATH-COL26-P069-Q13",
+      "TAH-MATH-COL26-P077-Q01",
+      "TAH-MATH-COL26-P082-Q01",
+      "TAH-MATH-COL26-P084-Q11",
+      "TAH-MATH-COL26-P090-Q01",
+      "TAH-MATH-COL26-P098-Q04",
+      "TAH-MATH-COL26-P099-Q21"
+    ],
+    "sourceAnswerAuditCOL26PreviouslyComplete": 1012,
+    "distinctPartialOptionRowsCumulative": 489,
+    "independentVisualMathPedagogyProposalsCumulativeAtLeast": 41,
+    "liveAtlasReadOnlySourceRange53to110": {
+      "records": 361,
+      "validMainSkillChapter": 361,
+      "knownPreviouslyReviewedSubskillAnomalies": 27,
+      "missingSourceId": 0,
+      "missingImageHash": 0,
+      "invalidAnswerIndex": 0
+    }
+  },
+  "evidence": {
+    "repositoryCheckpoint": "ops/tah-math/TAH_MATH_RUN13_275_SOURCE_OPTION_CHECKPOINT.json",
+    "repositoryMathPedagogy": "ops/tah-math/TAH_MATH_COL26_RUN13_11_SOURCE_GROUNDED_PEDAGOGY.json",
+    "localManifestSha256": "e81b5de49f83a86fb52a6386be497cec1c2e5c1414a121aa0f9db280101a8c8a",
+    "localZipSha256": "58113055ed6bd8bba775f70b5536b18db6ee39595f69dc1fe69253423ba7ab8e"
+  },
+  "gates": {
+    "sourcePdfAndQuestionCrop": "PASS_275",
+    "optionLabelGeometry": "PASS_275",
+    "rawOptionText": "PARTIAL_261_275",
+    "independentlySolvedPedagogy": "PASS_11_OF_275",
+    "finalCOL26Pedagogy": "FAIL_NOT_COMPLETE",
+    "YLM26FullPedagogy": "FAIL_NOT_COMPLETE",
+    "COL26OLDRegression": "PENDING",
+    "dedupe": "PENDING",
+    "coverage": "PENDING",
+    "trainingAndTests": "PENDING",
+    "liveStudentE2E": "PENDING",
+    "productionMutation": "NONE"
+  },
+  "repositoryWrites": {
+    "checkpointCommit": "3e98ac82845112b8a657dcf045a40145b0ab6f67",
+    "ledgerAddendumCommit": "dfb79c94d6fba58878289b44a450f197f7dae009",
+    "pedagogyCommit": "6a8eda180f1e08e0fbf7dcdeeb82ddd4d1ffe700",
+    "originalMasterControlUpdate": "BLOCKED_BY_CONNECTOR_SAFETY",
+    "originalExecutionLedgerUpdate": "BLOCKED_BY_CONNECTOR_SAFETY",
+    "pr450Comment": "BLOCKED_BY_CONNECTOR_SAFETY"
+  },
+  "next": "YLM26 full option/whyOthersWrong/answer correction manifest closure, COL26 971+ pending independent pedagogy reviews, COL26OLD regression, dedupe, coverage, training/tests, live E2E."
+}

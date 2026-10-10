@@ -1,0 +1,28 @@
+{
+  "run": "RUN69",
+  "date": "2026-10-10",
+  "bank": "YLM26",
+  "source": "official YLM26 PDF 3x crops archived from RUN67; source PDF not reopened this run",
+  "sourceVisualReviewed": 200,
+  "RGBArchivedSourceParityPASS": 200,
+  "mathCandidateSupported": 193,
+  "semanticHolds": 7,
+  "fullPedagogyCandidateRows": 20,
+  "optionSpecificWrongReasons": 60,
+  "genericWhyCorrectRowsInPriorEnrichedV2": 44,
+  "rootCauses": [
+    "P078-Q04 original crop omitted A=5; full-page source confirms A=5 B=6 R=sqrt(61)",
+    "P090-Q07 whyCorrect in enriched V2 explains adjacent question P090-Q08, not h-limit question",
+    "P073-Q03 enriched V2 says focus but source says vertex",
+    "P050-Q04 AI context adds unsupported acute-angle assumption"
+  ],
+  "conditionalReviewEventsPrior": 8206,
+  "conditionalReviewEventsCumulative": 8406,
+  "uniqueYLM26Inventory": 326,
+  "canonicalApproved": 0,
+  "productionMutation": false,
+  "liveR2Parity": false,
+  "liveTopicParity": false,
+  "status": "YLM26_NOT_GREEN",
+  "next": "Resolve 7 holds and remaining 28 generic explanations; complete 326 option/whyOthersWrong fields and live R2/topic parity, reversible manifest, then COL26 1012."
+}

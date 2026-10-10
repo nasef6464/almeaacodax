@@ -1,0 +1,54 @@
+{
+  "project": "TAH-MATH",
+  "checkpoint": "2026-10-07-heavy-run5",
+  "productionReadOnly": true,
+  "banks": {
+    "YLM26": {
+      "count": 326,
+      "approved": 326,
+      "skillMissing": 0,
+      "explanationMissing": 0,
+      "hintMissing": 0,
+      "strategyMissing": 0,
+      "aiContextMissing": 0,
+      "difficulty": {
+        "easy": 0,
+        "medium": 326,
+        "hard": 0
+      }
+    },
+    "COL26": {
+      "count": 1012,
+      "approved": 1012,
+      "skillMissing": 0,
+      "explanationMissing": 0,
+      "hintMissing": 1012,
+      "strategyMissing": 0,
+      "aiContextMissing": 1012,
+      "difficulty": {
+        "easy": 0,
+        "medium": 1012,
+        "hard": 0
+      }
+    },
+    "COL26OLD": {
+      "count": 1257,
+      "approved": 1257,
+      "sourceInventory": 1258,
+      "protectedAliasCount": 1,
+      "skillMissing": 0,
+      "explanationMissing": 0,
+      "hintMissing": 1257,
+      "strategyMissing": 0,
+      "aiContextMissing": 1257,
+      "difficulty": {
+        "easy": 0,
+        "medium": 1257,
+        "hard": 0
+      },
+      "mappedSubSkills": 67
+    }
+  },
+  "exactCrossBankImageHashDuplicates": 0,
+  "noProductionMutation": true
+}

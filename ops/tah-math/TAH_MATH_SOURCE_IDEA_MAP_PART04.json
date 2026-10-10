@@ -1,0 +1,88 @@
+{
+  "project": "TAH-MATH",
+  "status": "SOURCE_EXTRACTED_PENDING_TAXONOMY_BINDING",
+  "source": "Yellow Mathematics Collections 26 modified edition",
+  "lessons": [
+    {
+      "lessonNumber": 25,
+      "title": "القطوع",
+      "collectionsStartPage": 124,
+      "sourceIdeas": [
+        "القطع المكافئ",
+        "القطع الناقص",
+        "القطع الزائد",
+        "تصنيف القطوع"
+      ],
+      "taxonomyBindingStatus": "BOUND_EXACT_RUNTIME_TAXONOMY"
+    },
+    {
+      "lessonNumber": 26,
+      "title": "المتجهات",
+      "collectionsStartPage": 131,
+      "sourceIdeas": [
+        "المتجهات في المستوى الإحداثي",
+        "العمليات على المتجهات",
+        "طول المتجه ومركباته",
+        "الضرب الداخلي والاتجاهي"
+      ],
+      "taxonomyBindingStatus": "BOUND_EXACT_RUNTIME_TAXONOMY"
+    },
+    {
+      "lessonNumber": 27,
+      "title": "الإحداثيات القطبية والديكارتية",
+      "collectionsStartPage": 138,
+      "sourceIdeas": [
+        "المستوى القطبي",
+        "الإحداثيات القطبية",
+        "التحويل بين الإحداثيات القطبية والديكارتية",
+        "تمثيل المتجهات والإحداثيات"
+      ],
+      "taxonomyBindingStatus": "BOUND_EXACT_RUNTIME_TAXONOMY"
+    },
+    {
+      "lessonNumber": 28,
+      "title": "الإحصاء",
+      "collectionsStartPage": 143,
+      "sourceIdeas": [
+        "أنواع الدراسات وجمع البيانات",
+        "مقاييس النزعة المركزية",
+        "مقاييس التشتت",
+        "قراءة وتحليل البيانات"
+      ],
+      "taxonomyBindingStatus": "BOUND_EXACT_RUNTIME_TAXONOMY"
+    },
+    {
+      "lessonNumber": 29,
+      "title": "النهايات",
+      "collectionsStartPage": 148,
+      "sourceIdeas": [
+        "تقدير النهايات",
+        "إيجاد النهايات جبريًا",
+        "النهايات والصيغ غير المحددة",
+        "الاتصال وعلاقته بالنهايات"
+      ],
+      "taxonomyBindingStatus": "BOUND_EXACT_RUNTIME_TAXONOMY"
+    },
+    {
+      "lessonNumber": 30,
+      "title": "الاشتقاق والتكامل",
+      "collectionsStartPage": 153,
+      "sourceIdeas": [
+        "المشتقة وقواعد الاشتقاق",
+        "المشتقات العليا",
+        "تطبيقات المشتقة",
+        "الدوال الأصلية والتكامل غير المحدد"
+      ],
+      "taxonomyBindingStatus": "BOUND_EXACT_RUNTIME_TAXONOMY"
+    },
+    {
+      "lessonNumber": 31,
+      "title": "إثراء",
+      "collectionsStartPage": null,
+      "sourceIdeas": [],
+      "note": "Foundation-only enrichment; no collection mapping is fabricated.",
+      "taxonomyBindingStatus": "NO_BINDING_FOUNDATION_ENRICHMENT"
+    }
+  ],
+  "runtimeTaxonomyBinding": "BOUND_EXACT_22_MAIN_67_SUBSKILLS"
+}

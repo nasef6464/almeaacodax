@@ -1,0 +1,18 @@
+{
+  "run": "RUN49",
+  "date": "2026-10-09",
+  "sourceBook": "YLM26 foundation official 96-page PDF",
+  "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+  "actualSourceQuestionsReviewed": 200,
+  "sourceRgbPixelPass": 200,
+  "sourceContactSheetsRead": 25,
+  "fullOptionPedagogyPublished": 30,
+  "answerOnlyReviewsPublished": 10,
+  "conditionalReviewEventsCumulative": 5046,
+  "uniqueInventory": 326,
+  "canonicalApproved": 0,
+  "productionMutation": false,
+  "R2ImageParity": "NOT_TESTED",
+  "status": "YLM26_IN_PROGRESS_NOT_GREEN",
+  "next": "Approve full 326 pedagogical fields; resolve holds; R2 parity; rollback manifest; then COL26 1012"
+}

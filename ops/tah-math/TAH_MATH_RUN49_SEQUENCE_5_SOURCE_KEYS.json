@@ -1,0 +1,38 @@
+{
+  "run": "RUN49",
+  "status": "SOURCE_REVIEW_CANDIDATES",
+  "rows": [
+    {
+      "questionCode": "TAH-MATH-YLM26-P043-Q08",
+      "answerLetter": "A",
+      "answer": "160",
+      "reason": "10×2⁴=160"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P043-Q09",
+      "answerLetter": "A",
+      "answer": "81/32",
+      "reason": "(27/8)×(3/4)"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P043-Q10",
+      "answerLetter": "D",
+      "answer": "3,9",
+      "reason": "r³=27"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P044-Q11",
+      "answerLetter": "C",
+      "answer": "190",
+      "reason": "40+60+90"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P044-Q12",
+      "answerLetter": "A",
+      "answer": "4^11−1",
+      "reason": "geometric sum 3(4^11−1)/3"
+    }
+  ],
+  "productionMutation": false,
+  "canonicalApproved": false
+}

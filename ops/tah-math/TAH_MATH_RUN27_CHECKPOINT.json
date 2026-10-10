@@ -1,0 +1,26 @@
+{
+  "run": "RUN27",
+  "date": "2026-10-08",
+  "bank": "YLM26",
+  "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+  "distinctOfficialSourceQuestionImagesReviewedThisRun": 200,
+  "sourceVisualReview": 150,
+  "additionalDisjointMathAndActualOptionReview": 50,
+  "independentMathDerivations": 50,
+  "realOptionValuesTranscribed": 200,
+  "liveReadOnlyKeyMatches": 50,
+  "liveKeyMismatches": 0,
+  "sourceCropDefectsFlaggedIn150": 29,
+  "localSourceCropRepairs": 10,
+  "remainingFlaggedCropIssues": 20,
+  "semanticCaveats": [
+    "P036-Q09 five distinct graph x-intercepts vs six roots counting multiplicity",
+    "P036-Q15 real-coefficient assumption implicit"
+  ],
+  "criticalLostDataRecovered": "P044-Q11 tight crop omitted initial 40 participants; official PDF recovered; 40+60+90=190=C",
+  "productionMutation": false,
+  "fullyPedagogicallyClosed": 0,
+  "previousYLM26UniqueSourceCoverage": "326/326",
+  "notes": "This run reexamined 200 previously inventoried questions; do not add 200 to cumulative unique counts. Fifty independently rederived math answers and 200 actual option values were reviewed, not applied.",
+  "next": "Resolve 20 residual source-crop issues, complete 326 real option texts/whyOthersWrong/foundation and fingerprints, apply only approved reversible key corrections, then COL26."
+}
