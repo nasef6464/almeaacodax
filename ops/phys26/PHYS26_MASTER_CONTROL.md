@@ -90,3 +90,10 @@ Update `ops/phys26/PHYS26_EXECUTION_LEDGER.json` with each real run; enter exact
 ### RUN012 machine-enforced unresolved source quarantines
 - `ops/phys26/PHYS26_RUN012_QUARANTINE_REGISTER.json` records four unresolved original-source blockers: clipped/edge diagrams L14-Q039 and L15-Q013, verified publisher key conflict L27-Q024, dimensional/wording error L22-Q057.
 - `scripts/verify-phys26-quarantine-gate.mjs` is wired into `PHYS26 offline static gates`. It fails if any of the four disappears silently, moves outside its source-lesson page range, or is marked importable. These records are metadata only; they do not authorize redistribution, rewriting or auto-merging any question.
+
+## RUN013 — two source-aligned crop corrections (2026-10-10)
+- Reopened the original 162-page PDF and existing private V5 ZIP. Inspected **31 newly sampled image previews, one per lesson**. SHA/decode checked 2,064 candidate WebP images, which does not certify full educational content.
+- A bottom-edge pixel heuristic surfaced two actual defects missed by earlier checks: L10-Q050 (PDF page 51: neighboring heading leaked into image) and L27-Q023 (PDF page 135: choice D clipped). Both were re-cropped directly from the original page and their four choices visually re-inspected.
+- New PRIVATE V6 archive: PHYS26_PRIVATE_RUN013_CROPS_V6.zip, SHA-256 cf867461bc45dfc7bfdae554c7d13bf29bfc745897b0586d24e422fafe22946e. All 2,064 WebP members matched SHA and decoded; 0 lower-edge heuristic alerts after correction. Heuristic is limited and cannot prove every crop correct.
+- Added scripts/audit-phys26-private-crop-edges.py to perform offline source-private SHA/ZIP/edge checking; CI verifies Python syntax. Report at ops/phys26/PHYS26_RUN013_EVIDENCE.md.
+- No question text/option correctness, original answer keys, diagrams or subskills have full independent certification. Four original-source quarantines and copyright licensing gap still block import. FINAL CLOSED remains false.
