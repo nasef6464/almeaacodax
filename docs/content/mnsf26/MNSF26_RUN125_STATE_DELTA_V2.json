@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 2,
+  "bank": "MNSF26",
+  "run": "RUN125",
+  "stage": "QA_LOCK",
+  "startHeads": {
+    "branch": "4f8921a23c42743ca0929935ceb7ba6038b88538",
+    "main": "238da73c2ba9ffd632262806e918984c8605cfa1"
+  },
+  "priorCheckpoint": "docs/content/mnsf26/MNSF26_RUN125_STATE_DELTA_V1.json",
+  "cropLock": "PASS_LOCKED_2135_2135",
+  "questionMastering": "PASS_LOCKED_RUN063_2129_ACTIVE_6_EXCEPTIONS",
+  "independentOriginalImageAudit": {
+    "imagesDecoded": 401,
+    "sourceKeys": 401,
+    "sha256Matches": 401,
+    "shaMismatches": 0,
+    "newMastered": 0,
+    "semanticMathQaCertified": false
+  },
+  "liveMasterSample": {
+    "filesRead": 20,
+    "recordAppearances": 374,
+    "masteredAppearances": 291,
+    "holdAppearances": 75,
+    "reviewAppearances": 8,
+    "missingRequiredFieldsAmongMastered": 0,
+    "canonicalParentMismatchAmongMastered": 0,
+    "counterMismatchFiles": [
+      "RUN054_GEO_T09",
+      "RUN054_GEO_T10",
+      "RUN054_GEO_T17"
+    ],
+    "indexedPaths404": [
+      "MNSF26_QUESTION_MASTERING_RUN054_GEO_T15_V1.json",
+      "MNSF26_QUESTION_MASTERING_RUN054_GEO_T19_V1.json",
+      "MNSF26_QUESTION_MASTERING_RUN029_GEO_T22_C_V1.json",
+      "MNSF26_QUESTION_MASTERING_RUN054_GEO_T23_V1.json"
+    ],
+    "indexedPath404DoesNotProveQuestionAbsent": true
+  },
+  "sourceConflicts": {
+    "manifest": "docs/content/mnsf26/MNSF26_RUN125_35_SOURCE_CONFLICTS_GATE_V1.json",
+    "keys": 35,
+    "originalFilesRead": 24,
+    "recordsExactlyOnce": 35,
+    "stillMastered": 35,
+    "reviewImportEligibleFalse": 0,
+    "quarantineApplied": 0,
+    "importAuthorized": false
+  },
+  "sourceOnlyMathCandidates": 6,
+  "approvedNewMastered": 0,
+  "localGuardTestsPassed": 8,
+  "githubCommits": [
+    "cd6d2e9dce6bbaf6c9cf63d8ffe20cb86842f2e9",
+    "2094be5fa06afc4aa2be30302846d12aa61466b2"
+  ],
+  "blockedWrites": [
+    "original MASTER update",
+    "execution state update",
+    "new guard script create",
+    "math candidates create"
+  ],
+  "qaLock": "OPEN_FAIL_CLOSED",
+  "dedupeLock": "NOT_LOCKED",
+  "r2Upload": "NOT_STARTED",
+  "import": "NOT_STARTED",
+  "productionE2E": "NOT_COMPLETED",
+  "productionTouched": false
+}
