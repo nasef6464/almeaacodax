@@ -1160,7 +1160,7 @@ const Dashboard: React.FC = () => {
 
             {/* Sidebar Navigation */}
             <aside className={`
-                fixed lg:sticky top-20 right-0 bottom-0 w-72 max-w-[calc(100vw-1rem)] bg-white border-l border-gray-200 z-40 transition-transform duration-300 overflow-y-auto h-[calc(100vh-5rem)]
+                fixed lg:static top-20 right-0 bottom-0 w-72 max-w-[calc(100vw-1rem)] bg-white border-l border-gray-200 z-40 transition-transform duration-300 overflow-y-auto lg:overflow-visible h-[calc(100vh-5rem)] lg:h-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden
                 ${isSidebarOpen ? 'translate-x-0 visible pointer-events-auto' : 'translate-x-full lg:translate-x-0 invisible lg:visible pointer-events-none lg:pointer-events-auto'}
             `}>
                 <div className="p-6">
