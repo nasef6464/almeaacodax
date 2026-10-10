@@ -190,7 +190,7 @@
       2
     ]
   },
-  "lastCheckpoint": "2026-10-10-RUN78B-150-FINAL-REVIEWED-CONTENT",
+  "lastCheckpoint": "2026-10-10-RUN79-300-OF-326-FINAL-REVIEWED-CONTENT",
   "evidence": [
     "ops/tah-math/TAH_MATH_RUN1_BASELINE.json",
     "ops/tah-math/TAH_MATH_SOURCE_IDEA_MAP_PART01.json",
@@ -211,7 +211,8 @@
     "ops/tah-math/TAH_MATH_RUN27_CHECKPOINT.json",
     "ops/tah-math/TAH_MATH_RUN30_CHECKPOINT.json",
     "ops/tah-math/TAH_MATH_RUN31_CHECKPOINT.json",
-    "ops/tah-math/TAH_MATH_RUN74_200_VISUAL_104_MATH_SOURCE_AUDIT.json"
+    "ops/tah-math/TAH_MATH_RUN74_200_VISUAL_104_MATH_SOURCE_AUDIT.json",
+    "ops/tah-math/TAH_MATH_RUN79_150_FINAL_REVIEWED_CONTENT_CHECKPOINT.json"
   ],
   "blockers": [
     {
@@ -221,27 +222,38 @@
     }
   ],
   "latestRun": {
-    "run": "RUN78B",
+    "run": "RUN79",
     "date": "2026-10-10",
     "stage": "P2_YLM26_FULL_REVIEW",
     "finalReviewedContentRowsThisRun": 150,
-    "uniqueFinalReviewedContentRows": 150,
+    "uniqueFinalReviewedContentRows": 300,
+    "remainingYLM26ContentRows": 26,
     "difficulty": {
-      "easy": 86,
-      "medium": 60,
-      "hard": 4
+      "easy": 84,
+      "medium": 56,
+      "hard": 10
     },
+    "sourceBackedMappingCorrections": [
+      "P013-Q09",
+      "P023-Q14",
+      "P047-Q07",
+      "P047-Q09"
+    ],
+    "sourceAnswerCorrections": [
+      "P006-Q07=B",
+      "P007-Q01=B",
+      "P076-Q14=B"
+    ],
     "unresolvedHolds": [
       "P050-Q04",
       "P066-Q14"
     ],
-    "excludedConflictingAnswerEvidence": 19,
-    "localManifestSha256": "a63e46cc0e6a7e61ec9a5234b5d5dce6d4dd2a99766a2d6032905585f8a05fad",
+    "localManifestSha256": "0649da0e3fea7332e938b38ffd9749a04cecd094a1290585d4522897cd4bf13a",
     "productionMutation": false,
     "liveR2Parity": "PENDING",
     "liveTopicIdParity": "PENDING",
     "status": "YLM26_IN_PROGRESS_NOT_GREEN",
-    "next": "Resolve 19 answer-evidence conflicts + 2 source HOLDs; finalize remaining 176 rows; then R2/topic parity and reversible manifest."
+    "next": "Finish remaining 26 content rows fail-closed; then R2/topicId parity + reversible manifest; COL26 immediately after YLM26 GREEN."
   },
   "run47": {
     "date": "2026-10-09",
@@ -328,5 +340,39 @@
     "liveTopicIdParity": "PENDING",
     "status": "YLM26_IN_PROGRESS_NOT_GREEN",
     "next": "Resolve 19 answer-evidence conflicts + 2 source HOLDs; finalize remaining 176 rows; then R2/topic parity and reversible manifest."
+  },
+  "run79": {
+    "run": "RUN79",
+    "date": "2026-10-10",
+    "stage": "P2_YLM26_FULL_REVIEW",
+    "finalReviewedContentRowsThisRun": 150,
+    "uniqueFinalReviewedContentRows": 300,
+    "remainingYLM26ContentRows": 26,
+    "difficulty": {
+      "easy": 84,
+      "medium": 56,
+      "hard": 10
+    },
+    "sourceBackedMappingCorrections": [
+      "P013-Q09",
+      "P023-Q14",
+      "P047-Q07",
+      "P047-Q09"
+    ],
+    "sourceAnswerCorrections": [
+      "P006-Q07=B",
+      "P007-Q01=B",
+      "P076-Q14=B"
+    ],
+    "unresolvedHolds": [
+      "P050-Q04",
+      "P066-Q14"
+    ],
+    "localManifestSha256": "0649da0e3fea7332e938b38ffd9749a04cecd094a1290585d4522897cd4bf13a",
+    "productionMutation": false,
+    "liveR2Parity": "PENDING",
+    "liveTopicIdParity": "PENDING",
+    "status": "YLM26_IN_PROGRESS_NOT_GREEN",
+    "next": "Finish remaining 26 content rows fail-closed; then R2/topicId parity + reversible manifest; COL26 immediately after YLM26 GREEN."
   }
 }
