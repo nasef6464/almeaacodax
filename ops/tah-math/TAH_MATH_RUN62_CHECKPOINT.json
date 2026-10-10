@@ -1,0 +1,12 @@
+{
+  "run": "RUN62",
+  "stage": "YLM26",
+  "sourceDerivedVisualQuestionReviews": 150,
+  "independentMathCandidates": 75,
+  "optionTranscriptionsAndPedagogyCandidates": 47,
+  "sourcePdfReopenedThisRun": false,
+  "cumulativeReviewEventsIncludingRepeats": 7096,
+  "canonicalApproved": 0,
+  "productionMutation": false,
+  "status": "NOT_GREEN"
+}
