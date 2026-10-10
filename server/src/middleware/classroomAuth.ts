@@ -1,6 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import { Types } from "mongoose";
+import { classroomRequestReads } from "./classroomRequestReads.js";
 import { ClassroomSessionModel } from "../models/ClassroomSession.js";
 import { ClassroomTemplateModel } from "../models/ClassroomTemplate.js";
 import { TeachingAssignmentModel } from "../models/TeachingAssignment.js";
@@ -30,13 +31,14 @@ export async function requireActiveClassroomSchoolContext(req: Request, res: Res
     if (actor.role === "student") {
       const schoolId = String(actor.schoolId || "").trim();
       if (!schoolId) return next();
-      const allowed = await hasActiveSchoolRole(actor, schoolId, "student");
+      const contexts = await classroomRequestReads.contexts(req, actor);
+      const allowed = contexts.some((context) => context.schoolId === schoolId && context.role === "student");
       if (!allowed) {
         return res.status(StatusCodes.FORBIDDEN).json({
           message: "School classroom access is inactive",
         });
       }
-      if (!(await smartClassroomEnabled(schoolId))) return rejectDisabledModule(res);
+      if (!(await classroomRequestReads.enabled(req, schoolId))) return rejectDisabledModule(res);
       return next();
     }
 
