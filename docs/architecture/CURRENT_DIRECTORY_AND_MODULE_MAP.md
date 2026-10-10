@@ -209,3 +209,9 @@ SupervisorDashboard local scopedStudentUsers is passed to SupervisorTestsManager
 
 ## Staff report presentation — 2026-10-10
 `pages/Reports/StaffDecisionPanel.tsx`, `DirectedAssessmentReportPanel.tsx`, `StaffRemediationPanel.tsx`, and `ScopedRecentAttemptsPanel.tsx` own existing staff JSX. Reports retains data reads, state, scoping and actions. No additional requests, store, timer, API or result persistence ownership.
+
+
+## Student platform/school context reports — 2026-10-10
+StudentJourneySourcesPanel owns context-specific loaded reports; StudentResultHistoryControls owns history selection/coverage; useStudentResultHistory owns bounded personal paging and stale response suppression; studentLearningContext owns labels and explicit origin selection. Existing Quizzes/Reports compose them. Overall mastery/plan authority remains unchanged.
+
+- Older attempt detail: useStudentResultDetail owns a single on-demand existing protected /quiz-results/:id read with actor/request identity isolation; Results composes it. Quizzes and the source report panel link by persisted result ID. No global result hydration or history traversal.

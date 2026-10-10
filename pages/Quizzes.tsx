@@ -25,6 +25,9 @@ import { isTrueMockExam } from "../utils/quizPlacement";
 import { buildQuizRouteWithContext, isSafeInternalRoute } from '../utils/quizLinks';
 import { isStandaloneMockExam } from '../utils/mockExam';
 import { api } from '../services/api';
+import { useStudentResultHistory } from '../hooks/useStudentResultHistory';
+import { StudentResultHistoryControls } from '../components/StudentResultHistoryControls';
+import type { StudentLearningContext } from '../utils/studentLearningContext';
 
 interface QuizzesProps {
   view?: 'catalog' | 'attempts' | 'school';
@@ -81,7 +84,7 @@ const formatCreatedDate = (date?: number) => {
 };
 
 const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
-  const { examResults, quizzes, subjects, paths, lessons, libraryItems, user, checkAccess, hasScopedPackageAccess, getMatchingPackage, hydrateQuizzes } = useStore();
+  const { examResults: storedExamResults, quizzes, subjects, paths, lessons, libraryItems, user, checkAccess, hasScopedPackageAccess, getMatchingPackage, hydrateQuizzes } = useStore();
   const [activeFilter, setActiveFilter] = useState<string>('all');
   const [activePathFilter, setActivePathFilter] = useState<string>('all');
   const [activeAttemptCategory, setActiveAttemptCategory] = useState<AttemptCategory>('regular');
@@ -92,6 +95,12 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
   const [assignedBarcodeTestsLoading, setAssignedBarcodeTestsLoading] = useState(false);
   const isAttemptsView = view === 'attempts';
   const isSchoolView = view === 'school';
+  const [activeLearningContext, setActiveLearningContext] = useState<StudentLearningContext>(() => {
+    const value = new URLSearchParams(window.location.search).get('context');
+    return value === 'school_assessment' || value === 'legacy_unknown' ? value : 'platform_self_study';
+  });
+  const resultHistory = useStudentResultHistory(user.id, isAttemptsView, activeLearningContext);
+  const examResults = isAttemptsView ? resultHistory.results : storedExamResults;
 
   // A supervisor can assign an assessment while the student already has an open
   // session. Refresh this small, server-authoritative catalogue on entry so the
@@ -213,7 +222,9 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
     const grouped = new Map<string, QuizAttemptGroup>();
     examResults.forEach((result) => {
       const quiz = quizLookup.get(result.quizId);
-      const category: AttemptCategory = result.source === 'mock-exam' || (quiz && isStandaloneMockExam(quiz)) ? 'mock' : 'regular';
+      const category: AttemptCategory = result.quizSnapshot?.quizKind
+        ? (result.quizSnapshot.quizKind === 'mock' ? 'mock' : 'regular')
+        : (result.source === 'mock-exam' || (quiz && isStandaloneMockExam(quiz)) ? 'mock' : 'regular');
       const key = result.quizId || result.quizTitle || result.date;
       const existing = grouped.get(key);
       if (existing) existing.attempts.push(result);
@@ -275,7 +286,7 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
       setActiveAttemptScoreFilter('all');
       setOpenAttemptGroupKey(null);
     }
-  }, [activeAttemptCategory, isAttemptsView]);
+  }, [activeAttemptCategory, activeLearningContext, isAttemptsView]);
 
   const directedQuizzes = useMemo(
     () => quizzes
@@ -406,7 +417,7 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
   }, [pathFilteredPreparedQuizzes, examResults, subjects, lessons, libraryItems]);
 
   const getAttemptResultLink = (result: QuizResult, viewMode?: 'review' | 'analysis') => {
-    const params = new URLSearchParams({ attempt: result.date });
+    const params = new URLSearchParams({ attempt: String(result._id || result.id || result.date) });
     if (viewMode) params.set('view', viewMode);
     return `/results?${params.toString()}`;
   };
@@ -483,29 +494,6 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
     [pathFilteredPreparedQuizzes, directedQuizzes, saherQuizzes, subjects],
   );
 
-  if (isAttemptsView && totalQuizzes === 0) {
-    return (
-      <div className="mx-auto max-w-2xl space-y-4 pb-16">
-        <header className="flex flex-col gap-2 rounded-3xl border border-gray-100 bg-white p-5 shadow-sm">
-          <div className="flex flex-wrap items-center gap-2 text-xs font-black">
-            <span className="rounded-full bg-indigo-50 px-3 py-1.5 text-indigo-700">اختباراتي</span>
-            <Link to="/dashboard?tab=saher" className="rounded-full border border-gray-200 bg-white px-3 py-1.5 text-gray-700 hover:bg-gray-50">مركز الاختبارات</Link>
-          </div>
-          <h1 className="text-xl font-black leading-tight text-gray-900">لا توجد محاولات بعد</h1>
-          <p className="text-sm font-bold leading-7 text-gray-500">بعد أول اختبار ستظهر هنا محاولاتك ومراجعة الحلول والتقرير المختصر.</p>
-        </header>
-        <EmptyState
-          eyebrow="اختبار واحد يكفي للبداية"
-          title="ابدأ من اختبار واحد"
-          description="اختر مركز الاختبارات أو أنشئ اختبار ساهر، وبعد الحل ستظهر المحاولات والتقرير المختصر هنا."
-          icon={<FileText size={22} />}
-          primaryAction={{ label: 'مركز الاختبارات', href: '/dashboard?tab=saher', icon: <Zap size={15} /> }}
-          secondaryAction={{ label: 'تقريري', href: '/reports', icon: <TrendingUp size={15} /> }}
-          tone="indigo"
-        />
-      </div>
-    );
-  }
 
   if (isAttemptsView) {
     return (
@@ -531,6 +519,8 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
             ) : null}
           </div>
         </header>
+
+        <StudentResultHistoryControls context={activeLearningContext} onContextChange={setActiveLearningContext} history={resultHistory} />
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           <StatCard icon={<Sparkles size={22} />} value={`${maxScore}%`} label="أعلى درجة" color="purple" />
@@ -618,7 +608,17 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
               ))}
             </div>
           ) : (
-            <div className="p-10 text-center text-gray-500">لا توجد محاولات هنا بعد.<div className="mt-5"><Link to="/dashboard?tab=saher" className="inline-flex items-center justify-center gap-2 rounded-xl bg-amber-500 px-5 py-3 text-sm font-bold text-white hover:bg-amber-600"><Zap size={16} /> ابدأ اختبار ساهر</Link></div></div>
+            resultHistory.loading || resultHistory.error ? null : <EmptyState
+              eyebrow={activeLearningContext === 'platform_self_study' ? 'اختبار واحد يكفي للبداية' : 'سجل هذا القسم'}
+              title="لا توجد محاولات هنا بعد"
+              description={activeLearningContext === 'school_assessment' ? 'بعد تسليم اختبار موجه من مدرستك ستظهر نتيجته هنا.' : 'بعد الحل ستظهر المحاولات ومراجعة الحلول والتقرير المختصر في قسمها.'}
+              icon={<FileText size={22} />}
+              primaryAction={activeLearningContext === 'school_assessment'
+                ? { label: 'اختبارات مدرستي', href: '/dashboard?tab=school-tests', icon: <FileText size={15} /> }
+                : { label: 'مركز الاختبارات', href: '/dashboard?tab=saher', icon: <Zap size={15} /> }}
+              secondaryAction={{ label: 'تقريري', href: '/reports', icon: <TrendingUp size={15} /> }}
+              tone="indigo"
+            />
           )}
         </div>
       </div>

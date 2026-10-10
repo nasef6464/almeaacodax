@@ -296,6 +296,7 @@ jobs:
           REPORT_ACTIONS_AUDIT_RUN_ID: deep-premerge-report-actions-${{ github.run_id }}
         run: |
           npm run smoke:reports-staff-panels
+          npm run smoke:student-source-reports
           node scripts/live-report-actions-audit.mjs
 
       - name: Learning Space manager placement journey

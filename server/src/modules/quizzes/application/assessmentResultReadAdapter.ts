@@ -1,5 +1,15 @@
 type ResultRecord = Record<string, unknown>;
 
+/** Re-apply the lightweight list boundary after compatibility overlays. */
+export const projectQuizResultHistory = (result: ResultRecord): ResultRecord => {
+  const { questionReview: _review, quizSnapshot, ...light } = result;
+  if (!quizSnapshot || typeof quizSnapshot !== 'object' || Array.isArray(quizSnapshot)) return light;
+  const snapshot = quizSnapshot as ResultRecord;
+  return { ...light, quizSnapshot: Object.fromEntries(
+    ['title', 'mode', 'quizKind', 'pathId', 'subjectId'].filter(key => key in snapshot).map(key => [key, snapshot[key]]),
+  ) };
+};
+
 export const resolveAssessmentResultRead = (
   legacyResult: ResultRecord,
   assessmentResult?: { compatibilityProjection?: unknown } | null,
@@ -13,6 +23,10 @@ export const resolveAssessmentResultRead = (
     _id: legacyResult._id,
     id: legacyResult.id ?? legacyResult._id,
     userId: legacyResult.userId,
+    // List filters use the persisted origin, never a stale compatibility copy.
+    learningContext: legacyResult.learningContext ?? 'legacy_unknown',
+    schoolId: legacyResult.schoolId,
+    classId: legacyResult.classId,
   };
 };
 

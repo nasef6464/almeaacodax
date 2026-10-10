@@ -40,6 +40,7 @@ import {
 } from './Reports/studentAnalyticsViewModel';
 import { buildStudentWeeklyPlan } from './Reports/studentWeeklyPlanViewModel';
 import { StaffDecisionPanel } from './Reports/StaffDecisionPanel';
+import { StudentJourneySourcesPanel } from './Reports/StudentJourneySourcesPanel';
 import { DirectedAssessmentReportPanel } from './Reports/DirectedAssessmentReportPanel';
 import { StaffRemediationPanel } from './Reports/StaffRemediationPanel';
 import { ScopedRecentAttemptsPanel } from './Reports/ScopedRecentAttemptsPanel';
@@ -104,7 +105,7 @@ const studentLearningActionIcons: Record<StudentLearningActionIconKey, LucideIco
 const studentReadinessIcons: Record<StudentReadinessIconKey, LucideIcon> = { target: Target, checkCircle: CheckCircle, fileText: FileText, bookOpen: BookOpen };
 
 const Reports: React.FC = () => {
-    const { examResults, questionAttempts, skills, lessons, quizzes, libraryItems, questions, topics, subjects, sections, paths, groups, users, enrolledPaths, user, hydrateContentBootstrap, hydrateQuestions } = useStore();
+    const { examResults, questionAttempts, completedLessons, skills, lessons, quizzes, libraryItems, questions, topics, subjects, sections, paths, groups, users, enrolledPaths, user, hydrateContentBootstrap, hydrateQuestions } = useStore();
     const [scopedAnalyticsRaw, setScopedAnalytics] = useState<ScopedAnalyticsOverview | null>(null);
     const [staffSkillAggregates, setStaffSkillAggregates] = useState<Array<{
         skillId: string;
@@ -1501,6 +1502,8 @@ const Reports: React.FC = () => {
                     ) : null}
                 </div>
             </header>
+
+            {isStudentView ? <StudentJourneySourcesPanel results={studentPeriodExamResults} attempts={studentPeriodQuestionAttempts} completedLessons={completedLessons} periodLabel={studentPeriodLabel} /> : null}
 
             {studentReportNextAction && isStudentView ? (
                 <div className="sr-only absolute -z-50 h-px w-px overflow-hidden opacity-0 pointer-events-none" aria-hidden="true">

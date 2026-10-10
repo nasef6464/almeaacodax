@@ -40,3 +40,9 @@ Teacher directed discovery (2026-10-09): existing school-scoped assigned roster 
 - مرحلة Assessment Commercial Closure التالية تبدأ بإثبات الرحلات والـfailure/retry/resume، لا بتوسيع cutover أو تشغيل migration.
 - School MVP يجب أن يثبت العلاقات والـscope بقراءات paginated/bounded؛ لا يُعتبر نجاح واجهة واحدة دليلًا على persistence أو RBAC.
 - Reports تبقى قراءة تاريخية مستقلة عن result write path، وأي cache/preaggregation يحتاج benchmark وrollback/invalidation contract.
+
+
+## Student platform/school context reports — 2026-10-10
+Existing /quiz-results/my, /quizzes/results and /quizzes/results/scoped accept validated learningContext. Context predicate composes with taxonomy and existing actor scope; list projections retain origin and minimal frozen quiz metadata, without question reviews/target rosters. Personal history page size50, older pages opt-in; initial global bootstrap stays100. New individual school origin resolves verified sender school/class; no historical backfill.
+
+- Older attempt detail: useStudentResultDetail owns a single on-demand existing protected /quiz-results/:id read with actor/request identity isolation; Results composes it. Quizzes and the source report panel link by persisted result ID. No global result hydration or history traversal.

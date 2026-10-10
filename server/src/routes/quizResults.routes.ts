@@ -6,12 +6,14 @@ import { analyzeWeakSkillsFromQuizResult } from "../services/weakSkillsAnalysis.
 import { requireAuth, requireRole } from "../middleware/auth.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { serializeQuizResultForLearner, serializeQuizResultsForLearner } from "../utils/quizResultSerialization.js";
-import { resolveAssessmentResultRead, resolveAssessmentResultReads } from "../modules/quizzes/application/assessmentResultReadAdapter.js";
+import { resolveAssessmentResultRead, resolveAssessmentResultReads, projectQuizResultHistory } from "../modules/quizzes/application/assessmentResultReadAdapter.js";
 import { findAssessmentResultByLegacyId, findAssessmentResultsByLegacyIds } from "../modules/quizzes/infrastructure/assessmentResultRepository.js";
 import { shouldReadAssessmentCompatibilityProjection } from "../modules/quizzes/application/assessmentResultReaderPolicy.js";
 import { findAssessmentResultReaderMode, findAssessmentResultReaderModes } from "../modules/quizzes/infrastructure/assessmentResultReaderRepository.js";
+import { buildQuizResultLearningContextFilter } from '../modules/quizzes/application/quizResultLearningContextFilter.js';
 
 const quizResultsQuerySchema = z.object({
+  learningContext: z.enum(['platform_self_study', 'school_assessment', 'legacy_unknown']).optional(),
   page: z.coerce.number().int().min(1).default(1),
   limit: z.coerce.number().int().min(1).default(20).transform((value) => Math.min(value, 100)),
   search: z.string().trim().max(120).optional(),
@@ -47,10 +49,10 @@ const buildPaginationPayload = (page: number, limit: number, total: number) => {
 };
 
 const buildResultProjection =
-  "id userId quizId quizTitle score passed attemptNumber source totalQuestions correctAnswers wrongAnswers unanswered timeSpentSeconds timeSpent date skillsAnalysis sectionResults createdAt updatedAt";
+  "id userId quizId quizTitle score passed attemptNumber source learningContext schoolId classId quizSnapshot.title quizSnapshot.mode quizSnapshot.quizKind quizSnapshot.pathId quizSnapshot.subjectId totalQuestions correctAnswers wrongAnswers unanswered timeSpentSeconds timeSpent date skillsAnalysis sectionResults createdAt updatedAt";
 
 const buildFilter = (query: z.infer<typeof quizResultsQuerySchema>, userId?: string) => {
-  const filter: Record<string, unknown> = {};
+  const filter: Record<string, unknown> = { ...buildQuizResultLearningContextFilter(query.learningContext) };
   if (userId) {
     filter.userId = userId;
   }
@@ -97,7 +99,7 @@ const resolveResultListReads = async (results: Record<string, unknown>[]) => {
     findAssessmentResultsByLegacyIds(legacyIds),
     findAssessmentResultReaderModes(quizIds),
   ]);
-  return resolveAssessmentResultReads(results, assessmentResultsByLegacyId, readerModesByQuizId);
+  return resolveAssessmentResultReads(results, assessmentResultsByLegacyId, readerModesByQuizId).map(projectQuizResultHistory);
 };
 
 export const quizResultsRouter = Router();

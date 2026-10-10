@@ -12,6 +12,7 @@ export interface PaginationOptions {
 }
 
 export interface QuizResultsPaginationOptions extends PaginationOptions {
+  learningContext?: 'platform_self_study' | 'school_assessment' | 'legacy_unknown';
   includeReview?: boolean;
   noTotal?: boolean;
   quizId?: string;

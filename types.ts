@@ -403,6 +403,9 @@ export interface QuizSnapshot {
 }
 
 export interface QuizResult {
+    learningContext?: 'platform_self_study' | 'school_assessment' | 'legacy_unknown';
+    schoolId?: string;
+    classId?: string;
     id?: string;
     _id?: string;
     userId?: string;

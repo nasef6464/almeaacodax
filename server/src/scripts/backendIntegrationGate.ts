@@ -11,6 +11,7 @@ import { PathModel } from "../models/Path.js";
 import { GroupModel } from "../models/Group.js";
 import { QuizModel } from "../models/Quiz.js";
 import { QuizResultModel } from "../models/QuizResult.js";
+import { resolveQuizSubmissionLearningContext } from '../modules/quizzes/application/quizSubmissionLearningContext.js';
 import { QuestionModel } from "../models/Question.js";
 import { SkillModel } from "../models/Skill.js";
 import { SchoolContractModel } from "../models/SchoolContract.js";
@@ -2026,6 +2027,50 @@ async function runSchoolIntelligenceJourney(csrf: CsrfContext) {
   ]);
   assert.equal(platformResult?.learningContext, "platform_self_study", "personal platform result was not classified at write time");
   assert.equal(schoolAssessmentResult?.learningContext, "school_assessment", "class-targeted school result was not classified at write time");
+  const individualQuizId = `individual-school-context-${RUN_MARKER}`;
+  expectStatus('supervisor assigns an individual school assessment', await jsonRequest('/quizzes', {
+    method: 'POST', token: tokens.get('supervisor'), csrf,
+    body: { id: individualQuizId, title: 'Individual school assessment', pathId: ASSESSMENT_PATH_ID, subjectId: ASSESSMENT_SUBJECT_ID,
+      questionIds: [ASSESSMENT_QUESTION_ID], targetUserIds: [studentId], targetGroupIds: [], isPublished: true, showOnPlatform: false, access: { type: 'free' } },
+  }), 201);
+  expectStatus('student submits the individually directed school assessment', await jsonRequest(`/quizzes/${individualQuizId}/submit`, {
+    method: 'POST', token: tokens.get('student'), csrf,
+    body: { answers: { [ASSESSMENT_QUESTION_ID]: 1 }, timeSpentSeconds: 1, source: 'mock-exam' },
+  }), 201);
+  const individualResult = await QuizResultModel.findOne({ userId: studentId, quizId: individualQuizId }).lean();
+  assert.equal(individualResult?.learningContext, 'school_assessment', 'navigation source overrode individual school ownership');
+  assert.equal(individualResult?.schoolId, groupIds.get('school'), 'individual school result lost its school');
+  for (const context of ['platform_self_study', 'school_assessment', 'legacy_unknown']) {
+    const own = await jsonRequest(`/quiz-results/my?learningContext=${context}&limit=1`, { token: tokens.get('student') });
+    expectStatus(`student reads ${context} history`, own, 200);
+    assert.ok(own.body.data.every((row: any) => row.userId === studentId), 'history leaked another student');
+    assert.ok(own.body.data.every((row: any) => (row.learningContext || 'legacy_unknown') === context), 'history mixed learning contexts');
+    assert.ok(own.body.data.every((row: any) => !row.questionReview), 'history loaded heavy question reviews');
+    const expected = await QuizResultModel.countDocuments({ userId: studentId, ...(context === 'legacy_unknown' ? { $or: [{ learningContext: context }, { learningContext: { $exists: false } }, { learningContext: null }] } : { learningContext: context }) });
+    assert.equal(own.body.pagination.total, expected, 'context pagination count does not match persistence');
+    const bootstrap = await jsonRequest(`/quizzes/results?learningContext=${context}&limit=100`, { token: tokens.get('student') });
+    expectStatus(`student bootstrap retains ${context} origin`, bootstrap, 200);
+    assert.ok(bootstrap.body.results.every((row: any) => (row.learningContext || 'legacy_unknown') === context), 'bootstrap lost origin metadata');
+  }
+  const forged = await jsonRequest(`/quiz-results/my?learningContext=school_assessment&studentId=${outsideSchoolStudentId}`, { token: tokens.get('student') });
+  expectStatus('context selector cannot bypass personal result ownership', forged, 403);
+  expectStatus('invalid result context rejected', await jsonRequest('/quiz-results/my?learningContext=forged', { token: tokens.get('student') }), 400);
+  const scopedSchool = await jsonRequest('/quizzes/results/scoped?learningContext=school_assessment&limit=100', { token: tokens.get('supervisor') });
+  expectStatus('supervisor filters scoped school evidence', scopedSchool, 200);
+  assert.ok(scopedSchool.body.results.some((row: any) => row.quizId === individualQuizId), 'individual school result missing from scoped report');
+  assert.ok(scopedSchool.body.results.every((row: any) => row.learningContext === 'school_assessment'), 'scoped report mixed platform evidence');
+  const schoolId = groupIds.get('school');
+  const directed = await resolveQuizSubmissionLearningContext({ quiz: { createdBy: userIds.get('supervisor'), targetUserIds: [studentId] }, learnerId: studentId, learnerSchoolId: schoolId });
+  assert.equal(directed.learningContext, 'school_assessment', 'individual school-staff assignment was classified as personal study');
+  const personal = await resolveQuizSubmissionLearningContext({ quiz: { createdBy: userIds.get('admin'), targetUserIds: [studentId] }, learnerId: studentId, learnerSchoolId: schoolId });
+  assert.equal(personal.learningContext, 'platform_self_study', 'school membership incorrectly promoted a platform assignment');
+  const independentId = userIds.get('outsider')!;
+  assert.ok(!(await UserModel.findById(independentId).lean())?.schoolId, 'independent learner fixture is school-enrolled');
+  await QuizResultModel.create({ userId: independentId, quizId: `independent-context-${RUN_MARKER}`, quizTitle: 'Independent platform result', score: 80, totalQuestions: 1, learningContext: 'platform_self_study' });
+  const independent = await jsonRequest('/quiz-results/my?learningContext=platform_self_study', { token: tokens.get('outsider') });
+  expectStatus('independent student reads own platform history', independent, 200);
+  assert.ok(independent.body.data.some((row: any) => row.score === 80), 'independent persisted result missing');
+  assert.ok(independent.body.data.every((row: any) => row.userId === independentId), 'independent result ownership leaked');
 
   await QuizResultModel.create({
     userId: outsideSchoolStudentId,
