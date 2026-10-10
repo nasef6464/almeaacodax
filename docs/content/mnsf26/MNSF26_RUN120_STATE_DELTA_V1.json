@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 2,
+  "bank": "MNSF26",
+  "run": "RUN120",
+  "stage": "QA_LOCK",
+  "startHeads": {
+    "branch": "4d646c447586a142d3d7611345e64fe5174c8236",
+    "main": "9626c640b44887e796ce4d7232d26704e5bb1b6b"
+  },
+  "reconciledFrom": [
+    "MNSF26_RUN117_STATE_DELTA_V2.json",
+    "RUN118 local state-delta",
+    "RUN119 Library state-delta"
+  ],
+  "questionMastering": "PASS_LOCKED_RUN063_2129_ACTIVE_6_EXCEPTIONS",
+  "cropLock": "PASS_LOCKED_2135_2135",
+  "liveMasterAudit": {
+    "originalMasterFilesRead": 21,
+    "recordOccurrencesInspected": 416,
+    "masteredRecordsInspected": 334,
+    "requiredFieldMissing": 0,
+    "imageHashVsProvenanceMismatch": 0,
+    "canonicalMainSubAliasParentMismatch": 0,
+    "invalidDifficulty": 0,
+    "sourceConflictsStillMastered": 30,
+    "sourceConflictsExcluded": 0,
+    "filesNeedingQuarantine": 21
+  },
+  "qaLock": "BLOCKED_BY_30_SOURCE_CONFLICTS_AND_INCOMPLETE_FULLBOOK_SEMANTIC_QA",
+  "dedupeLock": "BLOCKED",
+  "r2": "NOT_STARTED",
+  "productionE2E": "NOT_COMPLETED",
+  "productionTouched": false,
+  "writeSafety": "original MASTER update_file rejected by OpenAI safety checks; no bypass attempted",
+  "next": "Apply authorized 30-record REVIEW importEligible=false quarantine and verify 25/95; continue fullbook math QA, dedupe, then production gates",
+  "preserved": [
+    "P001/Q10 HOLD",
+    "P013/Q15 HOLD",
+    "P014/Q08 quarantine",
+    "5 suppressions",
+    "P011/Q19=B",
+    "AR T033 source-absent unresolved",
+    "GEO T024/Q18 source-absent"
+  ]
+}
