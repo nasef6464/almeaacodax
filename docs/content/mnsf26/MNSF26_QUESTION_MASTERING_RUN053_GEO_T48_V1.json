@@ -5,7 +5,7 @@
   "directImageInspection": true,
   "sourceCropArchive": "/MNSF26/Run021/mnsf26_geometry_crops_run021.zip",
   "sourceInventory": "/MNSF26/Run021/MNSF26_GEOMETRY_CROP_MANIFEST_V1.json",
-  "masteredCount": 16,
+  "masteredCount": 15,
   "holdCount": 4,
   "records": [
     {
@@ -580,7 +580,7 @@
       },
       "imageHash": "2ed86f2f33e283783b291b7f3c633bae33542930da5ff5ce5bdd1b88e8c4c1ae",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T48_Q20",
-      "status": "MASTERED",
+      "status": "REVIEW",
       "questionText": "قارن42م³ بـ400 ملليلتر.",
       "canonicalMainSkill": "main_quant_25",
       "canonicalSubskill": "sub_quant_25_1",
@@ -590,7 +590,14 @@
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر.",
       "contentFingerprint": "bd6a1a34321913d3673631c927deb5e82fbe92ace5d295fea881641a4c4eee09",
-      "ideaFingerprint": "db268e31ebc30a08b3a25dbf1f7a0fefebb679f0218ac3d1739c1e986afbab91"
+      "ideaFingerprint": "db268e31ebc30a08b3a25dbf1f7a0fefebb679f0218ac3d1739c1e986afbab91",
+      "importEligible": false,
+      "reviewReason": "RUN132/135/136 original-source-image answer/solution conflict; requires independent reapproval.",
+      "qaEvidence": [
+        "MNSF26_RUN135_37_MATH_REVIEW_CANDIDATES_V1.json",
+        "MNSF26_RUN136_SOURCE_QA_NOTE.md"
+      ]
     }
-  ]
+  ],
+  "reviewCount": 1
 }
