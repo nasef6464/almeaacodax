@@ -1837,6 +1837,8 @@ export const SupervisorDashboard: React.FC = () => {
                           assignToStudentId,
                         ],
                         dueDate: config.dueDate,
+                        opensAt: config.opensAt,
+                        closesAt: config.closesAt,
                         supervisorMessage: config.message || null,
                         settings: { ...pickedQuiz.settings, maxAttempts: config.maxAttempts ?? pickedQuiz.settings?.maxAttempts ?? 1 },
                       });

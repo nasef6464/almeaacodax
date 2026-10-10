@@ -5,6 +5,7 @@ import path from 'node:path';
 const root = process.cwd();
 const routeSource = fs.readFileSync(path.join(root, 'server/src/routes/quiz.routes.ts'), 'utf8').replace(/\r\n/g, '\n');
 const moduleSource = fs.readFileSync(path.join(root, 'server/src/modules/quizzes/application/quizSubmissionWindow.ts'), 'utf8').replace(/\r\n/g, '\n');
+const availabilitySource = fs.readFileSync(path.join(root, 'server/src/modules/quizzes/application/quizAvailability.ts'), 'utf8');
 const checks = [];
 const check = (name, assertion) => {
   try { assertion(); checks.push({ name, status: 'PASS' }); }
@@ -20,7 +21,9 @@ check('submission window policy is delegated and response mapping stays in the r
 });
 
 check('deadline and time-limit semantics remain explicit', () => {
-  for (const fragment of ['quiz?.dueDate', 'now > dueDateMs', 'Quiz submission deadline has passed', 'quiz?.settings?.timeLimit ?? 0', 'Math.ceil(timeLimitMinutes * 60) + 60', 'Quiz time limit exceeded']) {
+  assert.ok(availabilitySource.includes('quiz?.closesAt || quiz?.dueDate'));
+  assert.ok(availabilitySource.includes('now > closes'));
+  for (const fragment of ['getQuizAvailability(quiz, now)', 'Quiz submission deadline has passed', 'quiz?.settings?.timeLimit ?? 0', 'Math.ceil(timeLimitMinutes * 60) + 60', 'Quiz time limit exceeded']) {
     assert.ok(moduleSource.includes(fragment), `submission window missing ${fragment}`);
   }
 });

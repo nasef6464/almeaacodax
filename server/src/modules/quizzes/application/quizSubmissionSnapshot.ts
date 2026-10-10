@@ -20,6 +20,8 @@ export const buildQuizSubmissionSnapshot = ({
   targetGroupIds: uniqueStrings(quiz.targetGroupIds || []),
   targetUserIds: uniqueStrings(quiz.targetUserIds || []),
   dueDate: String(quiz.dueDate || "") || null,
+  opensAt: String(quiz.opensAt || "") || null,
+  closesAt: String(quiz.closesAt || "") || null,
   pathId: String(quiz.pathId || ""),
   subjectId: String(quiz.subjectId || ""),
   totalQuestions,

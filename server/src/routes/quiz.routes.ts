@@ -21,6 +21,9 @@ import { buildPaginatedResponse, resolvePagination } from "../utils/pagination.j
 import { serializeQuizResultForLearner } from "../utils/quizResultSerialization.js";
 import { getActivePathIds, isStaffRole, withLearnerVisiblePaths } from "../services/visibility.js";
 import { quizSchema } from "../modules/quizzes/http/quizDefinitionSchema.js";
+import { validateQuizWindow, getQuizAvailability } from "../modules/quizzes/application/quizAvailability.js";
+import { applyQuizViewerPolicy } from "../modules/quizzes/application/quizViewerPolicy.js";
+import { quizRetakeRouter } from "../modules/quizzes/http/quizRetakeRoutes.js";
 import { quizSubmitSchema } from "../modules/quizzes/http/submissionSchemas.js";
 import { sanitizeQuestionForLearner } from "../modules/quizzes/presentation/questionPresentation.js";
 import { hydrateQuestionPassages } from "../modules/quizzes/application/questionPassageHydration.js";
@@ -97,6 +100,7 @@ quizRouter.use(quizAnalyticsRouter);
 quizRouter.use(quizResultsRouter);
 quizRouter.use(adaptiveTelemetryRouter);
 quizRouter.use(adaptiveMasteryRouter);
+quizRouter.use(quizRetakeRouter);
 
 quizRouter.get(
   "/",
@@ -234,7 +238,7 @@ quizRouter.get(
     }
 
     const payload = {
-      quizzes: safeItems,
+      quizzes: await applyQuizViewerPolicy(safeItems, req.authUser),
       pagination: buildPaginatedResponse([], pagination, total),
     };
     res.setHeader("X-Has-More", String(hasMore));
@@ -273,11 +277,17 @@ quizRouter.get(
 
     const assessmentId = String(legacyQuiz.id || legacyQuiz._id || "");
     const version = assessmentId ? await findLatestPublishedAssessmentVersion(assessmentId) : null;
-    const quiz = resolveAssessmentDefinitionRead(legacyQuiz, version);
+    const [quiz] = await applyQuizViewerPolicy([{
+      ...resolveAssessmentDefinitionRead(legacyQuiz, version),
+      ...(req.authUser?.role === 'student' && hasDirectedQuizTargets(legacyQuiz) ? { viewerAudienceVerified: true } : {}),
+    }], req.authUser);
+    if (!isStaffRole(req.authUser?.role) && getQuizAvailability(quiz) !== "available") {
+      return res.json({ ...quiz, questions: [] });
+    }
 
     const questionIds = getQuizQuestionIds(quiz);
     let questions: any[] = [];
-    if (questionIds.length > 0) {
+    if (questionIds.length > 0 && req.query.includeQuestions !== "false") {
       const rawQuestions = await QuestionModel.find(buildDocumentsByIdsQuery(questionIds)).lean();
       const hydratedQuestions = await hydrateQuestionPassages(rawQuestions as Array<Record<string, any>>);
       const isLearner = req.authUser?.role === "student" || !req.authUser;
@@ -300,6 +310,7 @@ quizRouter.post(
   requireRole(["admin", "teacher", "supervisor"]),
   asyncHandler(async (req, res) => {
     let payload = normalizeQuizPlacementPayload(quizSchema.parse(req.body));
+    validateQuizWindow(payload);
     
     // Auto-fill supervisor defaults if needed
     if (req.authUser?.role === "supervisor") {
@@ -391,6 +402,7 @@ const handleQuizUpdate = asyncHandler(async (req, res) => {
     ...existing.toObject(),
     ...payload,
   };
+  validateQuizWindow(proposedState);
   const isTeacherDirectedAssessment =
     req.authUser?.role === "teacher" && hasDirectedQuizTargets(proposedState);
 
@@ -546,8 +558,9 @@ quizRouter.post(
       return res.status(StatusCodes.FORBIDDEN).json({ message: "You cannot submit this quiz" });
     }
 
+    const [viewerQuiz] = await applyQuizViewerPolicy([quiz.toObject()], req.authUser);
     const quizWindow = assertQuizSubmissionWindow({
-      quiz,
+      quiz: viewerQuiz,
       timeSpentSeconds: payload.timeSpentSeconds,
     });
     if (quizWindow.ok === false) {
@@ -555,7 +568,7 @@ quizRouter.post(
     }
 
     const quizId = String(quiz.id || quiz._id);
-    const maxAttempts = getQuizMaxAttempts(quiz);
+    const maxAttempts = getQuizMaxAttempts(viewerQuiz);
     const previousAttempts = await QuizResultModel.countDocuments({
       userId: req.authUser!.id,
       quizId,
@@ -651,7 +664,7 @@ quizRouter.post(
 
     // ── بناء لقطة الاختبار ─────────────────────────────────────────────────
     // تُحفظ مع كل نتيجة لحماية بيانات التقارير إذا عُدِّل الاختبار لاحقاً
-    const quizSnapshot = buildQuizSubmissionSnapshot({ quiz, passingScore, totalQuestions });
+    const quizSnapshot = buildQuizSubmissionSnapshot({ quiz: viewerQuiz, passingScore, totalQuestions });
 
     let result;
     try {

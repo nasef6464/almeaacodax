@@ -403,6 +403,9 @@ const normalizeQuiz = (quiz: any): Quiz => ({
   isPublished: Boolean(quiz?.isPublished),
   showOnPlatform: quiz?.showOnPlatform !== false,
   viewerAudienceVerified: quiz?.viewerAudienceVerified === true,
+  viewerRetakeGranted: quiz?.viewerRetakeGranted === true,
+  opensAt: quiz?.opensAt || null,
+  closesAt: quiz?.closesAt || null,
   skillIds: Array.isArray(quiz?.skillIds) ? quiz.skillIds.map(String) : [],
   targetGroupIds: Array.isArray(quiz?.targetGroupIds) ? quiz.targetGroupIds.map(String) : [],
   targetUserIds: Array.isArray(quiz?.targetUserIds) ? quiz.targetUserIds.map(String) : [],
@@ -566,13 +569,13 @@ export const adapter = {
     }
   },
 
-  async getQuiz(id: string): Promise<Quiz | null> {
+  async getQuiz(id: string, options?: { includeQuestions?: boolean }): Promise<Quiz | null> {
     if (!USE_REAL_API || !id) {
       return null;
     }
 
     try {
-      const data = await api.getQuiz(id);
+      const data = await api.getQuiz(id, options);
       if (!data) return null;
       const normalized = normalizeQuiz(data);
       return normalized.id && normalized.title ? normalized : null;

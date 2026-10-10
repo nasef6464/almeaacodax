@@ -12,6 +12,7 @@ import { PathModel } from "../models/Path.js";
 import { GroupModel } from "../models/Group.js";
 import { QuizModel } from "../models/Quiz.js";
 import { QuizResultModel } from "../models/QuizResult.js";
+import { verifyQuizAvailabilityJourney } from './verifyQuizAvailabilityJourney.js';
 import { resolveQuizSubmissionLearningContext } from '../modules/quizzes/application/quizSubmissionLearningContext.js';
 import { QuestionModel } from "../models/Question.js";
 import { SkillModel } from "../models/Skill.js";
@@ -2245,6 +2246,7 @@ async function main() {
     await runSchoolDirectorDelegatedOperationsJourney(csrf);
     await runSchoolDirectorAcademicClosureJourney(csrf);
     await runAssessmentJourney(csrf);
+    await verifyQuizAvailabilityJourney({ request: jsonRequest, csrf, adminToken: tokens.get('admin'), studentToken: tokens.get('student'), outsiderToken: tokens.get('outsider'), studentId: userIds.get('student'), outsiderId: userIds.get('outsider'), classId: groupIds.get('class'), pathId: ASSESSMENT_PATH_ID, subjectId: ASSESSMENT_SUBJECT_ID, questionId: ASSESSMENT_QUESTION_ID, quizId: `availability-${RUN_MARKER}` });
     await runAssessmentDualWritePrimitiveJourney();
     await runHistoricalResultJourney(csrf);
     await runMockAssessmentJourney(csrf);

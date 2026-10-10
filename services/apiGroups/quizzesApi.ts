@@ -33,8 +33,8 @@ export const createQuizzesApi = (request: ApiRequest) => ({
   getQuizzes: async (pagination: PaginationOptions = {}) =>
     extractList(await request<unknown>(withQuery("/quizzes", { limit: 200, noTotal: true, ...pagination })), "quizzes"),
 
-  getQuiz: (id: string) =>
-    request<any>(`/quizzes/${encodeURIComponent(id)}`),
+  getQuiz: (id: string, options: { includeQuestions?: boolean } = {}) =>
+    request<any>(withQuery(`/quizzes/${encodeURIComponent(id)}`, options)),
 
   getQuizAnalyticsOverview: (pagination: PaginationOptions = {}) =>
     request<unknown>(withQuery("/quizzes/analytics/overview", { studentLimit: 500, resultLimit: 2000, attemptLimit: 3000, ...pagination })),
@@ -140,6 +140,8 @@ export const createQuizzesApi = (request: ApiRequest) => ({
     request<unknown>(withQuery("/quizzes/results/scoped", { limit: 100, noTotal: true, ...pagination })),
 
   getLatestQuizResult: () => request<unknown>("/quizzes/results/latest"),
+  grantQuizRetakes: (quizId: string, payload: { studentIds: string[]; opensAt: string; closesAt: string }) =>
+    request<{ grantedStudentIds: string[] }>(`/quizzes/${encodeURIComponent(quizId)}/retakes`, { method: "POST", body: payload }),
 
   getMasteryGoals: (scope: { userId?: string; pathId?: string; subjectId?: string; status?: string } = {}) =>
     request<{ goals: Array<{

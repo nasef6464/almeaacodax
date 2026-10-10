@@ -1,4 +1,5 @@
 import { StatusCodes } from "http-status-codes";
+import { getQuizAvailability } from "./quizAvailability.js";
 
 type QuizSubmissionWindowInput = {
   quiz: any;
@@ -11,16 +12,10 @@ export const assertQuizSubmissionWindow = ({
   timeSpentSeconds,
   now = Date.now(),
 }: QuizSubmissionWindowInput): { ok: true } | { ok: false; status: number; message: string } => {
-  const dueDateRaw = String(quiz?.dueDate || "").trim();
-  if (dueDateRaw) {
-    const dueDateMs = Date.parse(dueDateRaw);
-    if (Number.isFinite(dueDateMs) && now > dueDateMs) {
-      return {
-        ok: false,
-        status: StatusCodes.FORBIDDEN,
-        message: "Quiz submission deadline has passed",
-      };
-    }
+  const availability = getQuizAvailability(quiz, now);
+  if (availability !== "available") {
+    return { ok: false, status: StatusCodes.FORBIDDEN, message: availability === "upcoming"
+      ? "Quiz has not opened yet" : "Quiz submission deadline has passed" };
   }
 
   const timeLimitMinutes = Number(quiz?.settings?.timeLimit ?? 0);

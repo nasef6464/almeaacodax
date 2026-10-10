@@ -15,6 +15,7 @@ const [
   attemptContext,
   scoreSummary,
   answerReview,
+  availabilityPolicy,
 ] = await Promise.all([
   read("server/src/routes/quiz.routes.ts"),
   read("server/src/modules/quizzes/http/quizResultsRoutes.ts"),
@@ -28,6 +29,7 @@ const [
   read("server/src/modules/quizzes/application/quizAttemptContext.ts"),
   read("server/src/modules/quizzes/application/quizSubmissionScoreSummary.ts"),
   read("server/src/modules/quizzes/application/quizSubmissionAnswerReview.ts"),
+  read("server/src/modules/quizzes/application/quizAvailability.ts"),
 ]);
 
 const checks = [];
@@ -65,10 +67,13 @@ check("direct result creation remains blocked and audited", () => {
 check("quiz submit enforces server-side window, attempt limits, and duplicate protection", () => {
   assertIncludes(quizRoutes, 'import { assertQuizSubmissionWindow } from "../modules/quizzes/application/quizSubmissionWindow.js";');
   assertIncludes(quizRoutes, "const quizWindow = assertQuizSubmissionWindow({");
-  assertIncludes(submissionWindow, "now > dueDateMs");
+  assertIncludes(submissionWindow, "getQuizAvailability(quiz, now)");
+  assertIncludes(availabilityPolicy, "now > closes");
+  assertIncludes(availabilityPolicy, "quiz?.closesAt || quiz?.dueDate");
   assertIncludes(submissionWindow, "Quiz submission deadline has passed");
   assertIncludes(quizRoutes, 'import { buildQuizSubmissionAttemptState, getQuizMaxAttempts, getQuizPassingScore } from "../modules/quizzes/application/quizAttemptContext.js";');
-  assertIncludes(quizRoutes, "const maxAttempts = getQuizMaxAttempts(quiz)");
+  assertIncludes(quizRoutes, "const maxAttempts = getQuizMaxAttempts(viewerQuiz)");
+  assertIncludes(quizRoutes, "await applyQuizViewerPolicy([quiz.toObject()], req.authUser)");
   assertIncludes(quizRoutes, "const attemptState = buildQuizSubmissionAttemptState({");
   assertIncludes(attemptContext, "previousAttempts >= maxAttempts");
   assertIncludes(attemptContext, "submissionKey: buildSubmissionKey(userId, quizId, attemptNumber)");

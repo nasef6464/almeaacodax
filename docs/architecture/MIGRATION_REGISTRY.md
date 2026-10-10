@@ -1,5 +1,7 @@
 # ALMEAA — Migration Registry
 
+ASSESSMENT-WINDOW-RETAKE (2026-10-10): authorized additive optional Quiz window fields, optional new-outcome snapshot fields and new `QuizRetake` records. Legacy dueDate fallback retained; no historical backfill, score rewrite, assignment reader cutover or production mutation performed. No data migration required for unconfigured old quizzes. Delivery remains PARTIAL pending required CI/publication/runtime proof.
+
 هذا السجل يميّز بوضوح بين كود migration القابل للاختبار وبين أي تشغيل فعلي على
 بيانات تشغيلية. لا يمثل وجود نموذج أو inventory تصريحًا لتشغيل backfill.
 

@@ -51,6 +51,8 @@ const quizResultSchema = new Schema(
           targetGroupIds: { type: [String], default: [] },
           targetUserIds:  { type: [String], default: [] },
           dueDate:        { type: String, default: null },
+          opensAt:        { type: String, default: undefined },
+          closesAt:       { type: String, default: undefined },
           pathId:         { type: String, default: "" },
           subjectId:      { type: String, default: "" },
           totalQuestions: { type: Number, default: 0 },

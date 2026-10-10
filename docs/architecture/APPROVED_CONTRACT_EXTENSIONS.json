@@ -10,6 +10,7 @@
     "/school-teacher-dashboard"
   ],
   "backendRouteSignatures": [
+    "quizRetakeRouter|POST|/:id/retakes",
     "contentStudyPlanRouter|GET|/study-plans",
     "adaptiveMasteryRouter|GET|/mastery-goals",
     "adaptiveMasteryRouter|GET|/mastery-readiness",

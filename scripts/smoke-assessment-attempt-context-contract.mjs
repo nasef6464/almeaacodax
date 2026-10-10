@@ -31,7 +31,8 @@ check('attempt limits, passing score, and idempotency key semantics remain expli
 });
 
 check('submission route retains attempt-limit and idempotency orchestration', () => {
-  for (const fragment of ['const maxAttempts = getQuizMaxAttempts(quiz)', 'const attemptState = buildQuizSubmissionAttemptState({', 'if (attemptState.isLimitReached)', 'const { attemptNumber, submissionKey } = attemptState;', 'const passingScore = getQuizPassingScore(quiz)']) {
+  assert.ok(routeSource.includes('await applyQuizViewerPolicy([quiz.toObject()], req.authUser)'));
+  for (const fragment of ['const maxAttempts = getQuizMaxAttempts(viewerQuiz)', 'const attemptState = buildQuizSubmissionAttemptState({', 'if (attemptState.isLimitReached)', 'const { attemptNumber, submissionKey } = attemptState;', 'const passingScore = getQuizPassingScore(quiz)']) {
     assert.ok(routeSource.includes(fragment), `submission route lost ${fragment}`);
   }
 });

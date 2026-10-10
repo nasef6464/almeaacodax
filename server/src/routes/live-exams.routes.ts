@@ -5,6 +5,11 @@ import { LiveExamSessionModel } from "../models/LiveExamSession.js";
 import { GroupModel } from "../models/Group.js";
 import { QuizModel } from "../models/Quiz.js";
 import { UserModel } from "../models/User.js";
+import { QuizResultModel } from "../models/QuizResult.js";
+import { applyQuizViewerPolicy } from "../modules/quizzes/application/quizViewerPolicy.js";
+import { getQuizAvailability } from "../modules/quizzes/application/quizAvailability.js";
+import { getQuizMaxAttempts } from "../modules/quizzes/application/quizAttemptContext.js";
+import { buildDocumentQuery } from "../modules/quizzes/infrastructure/quizDocumentQuery.js";
 import { isStaffRole } from "../services/visibility.js";
 import { AssessmentVersionModel } from "../modules/quizzes/infrastructure/assessmentVersionModel.js";
 import { AssessmentAssignmentModel } from "../modules/quizzes/infrastructure/assessmentAssignmentModel.js";
@@ -66,6 +71,17 @@ const saveAssessmentResponse = async (attemptId: string, studentId: string, ques
   }
 };
 
+// Resuming or saving an old session must obey the current assignment window.
+const getLiveWindowError = async (quizId: string, authUser: { id: string; role: string }) => {
+  const quiz = await QuizModel.findOne(buildDocumentQuery(quizId)).lean();
+  if (quiz && !isStaffRole(authUser.role)) {
+    if (!(await canStartDirectedQuiz(quiz, authUser))) return "Not authorized to access this assessment";
+    const [viewerQuiz] = await applyQuizViewerPolicy([quiz], authUser);
+    if (getQuizAvailability(viewerQuiz) !== "available") return "Assessment is outside its availability window";
+  }
+  return null;
+};
+
 /**
  * STUDENT ENDPOINTS
  */
@@ -83,6 +99,15 @@ router.post("/start", requireAuth, async (req, res) => {
       if (!(await canStartDirectedQuiz(quiz, { id: String(userId), role: String(req.authUser!.role || "") }))) {
         return res.status(403).json({ error: "Not authorized to start this assessment" });
       }
+      const [viewerQuiz] = await applyQuizViewerPolicy([quiz], req.authUser);
+      if (!isStaffRole(req.authUser!.role) && getQuizAvailability(viewerQuiz) !== "available") {
+        return res.status(403).json({ error: "Assessment is outside its availability window" });
+      }
+      const maxAttempts = getQuizMaxAttempts(viewerQuiz);
+      const savedAttempts = await QuizResultModel.countDocuments({ quizId: String(quiz.id || quiz._id), userId: String(userId) });
+      if (!isStaffRole(req.authUser!.role) && savedAttempts >= maxAttempts) {
+        return res.status(409).json({ error: "Assessment attempt limit reached", maxAttempts, attemptsUsed: savedAttempts });
+      }
       const version = await AssessmentVersionModel.findOneAndUpdate(
         { assessmentId: String(quiz.id || quiz._id), version: 1 },
         { $setOnInsert: { definition: quiz, publishedBy: String(quiz.createdBy || "system"), status: "published" } },
@@ -93,15 +118,20 @@ router.post("/start", requireAuth, async (req, res) => {
         { $setOnInsert: { audience: { groupIds: quiz.targetGroupIds || [], userIds: quiz.targetUserIds || [] }, maxAttempts: Number(quiz.settings?.maxAttempts || 1), createdBy: String(quiz.createdBy || "system") } },
         { new: true, upsert: true },
       );
-      const existingAttempt = await AssessmentAttemptModel.findOne({ assignmentId: String(assignment._id), studentId: String(userId), status: "in_progress" }).sort({ attemptNumber: -1 });
+      let existingAttempt = await AssessmentAttemptModel.findOne({ assignmentId: String(assignment._id), studentId: String(userId), status: "in_progress" }).sort({ attemptNumber: -1 });
+      if (existingAttempt?.expiresAt && existingAttempt.expiresAt.getTime() <= Date.now()) {
+        await AssessmentAttemptModel.updateOne({ _id: existingAttempt._id, status: "in_progress" }, { status: "expired", submittedAt: new Date() });
+        await LiveExamSessionModel.updateMany({ studentId: userId, quizId, status: "active" }, { status: "completed" });
+        existingAttempt = null;
+      }
       if (!existingAttempt) {
         const attemptsUsed = await AssessmentAttemptModel.countDocuments({
           assignmentId: String(assignment._id),
           studentId: String(userId),
           status: { $in: ["submitted", "expired"] },
         });
-        if (attemptsUsed >= Number(assignment.maxAttempts || 1)) {
-          return res.status(409).json({ error: "Assessment attempt limit reached", maxAttempts: assignment.maxAttempts, attemptsUsed });
+        if (!viewerQuiz.viewerRetakeGranted && attemptsUsed >= maxAttempts) {
+          return res.status(409).json({ error: "Assessment attempt limit reached", maxAttempts, attemptsUsed });
         }
       }
       const attempt = existingAttempt || await AssessmentAttemptModel.create({
@@ -135,6 +165,8 @@ router.get("/session/:quizId", requireAuth, async (req, res) => {
   try {
     const userId = String(req.authUser!.id);
     const quizId = String(req.params.quizId);
+    const windowError = await getLiveWindowError(quizId, req.authUser!);
+    if (windowError) return res.status(403).json({ error: windowError });
     const session = await LiveExamSessionModel.findOne({ studentId: userId, quizId, status: "active" }).lean();
     if (!session) return res.json({ session: null, answers: {} });
     const responses = session.assessmentAttemptId
@@ -153,6 +185,8 @@ router.post("/progress", requireAuth, async (req, res) => {
   try {
     const { quizId, answeredQuestions, totalQuestions, answers } = req.body;
     const userId = req.authUser!.id;
+    const windowError = await getLiveWindowError(String(quizId || ""), req.authUser!);
+    if (windowError) return res.status(403).json({ error: windowError });
 
     const progress = totalQuestions > 0 ? Math.round((answeredQuestions / totalQuestions) * 100) : 0;
 

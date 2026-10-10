@@ -396,6 +396,8 @@ export interface QuizSnapshot {
     targetGroupIds: string[];
     targetUserIds: string[];
     dueDate?: string | null;
+    opensAt?: string | null;
+    closesAt?: string | null;
     pathId: string;
     subjectId: string;
     totalQuestions: number;
@@ -557,6 +559,9 @@ export interface Quiz extends ContentWorkflow {
     showOnPlatform?: boolean;
     /** Server-issued only for a directed assessment after audience verification. */
     viewerAudienceVerified?: boolean;
+    viewerRetakeGranted?: boolean;
+    opensAt?: string | null;
+    closesAt?: string | null;
     skillIds?: string[];
     targetGroupIds?: string[];
     targetUserIds?: string[];

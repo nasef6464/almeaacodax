@@ -104,6 +104,8 @@ const quizSchema = new Schema(
     targetGroupIds: { type: [String], default: [] },
     targetUserIds: { type: [String], default: [] },
     dueDate: { type: String, default: null },
+    opensAt: { type: String, default: null },
+    closesAt: { type: String, default: null },
     supervisorMessage: { type: String, default: null },
     isPublished: { type: Boolean, default: false },
     showOnPlatform: { type: Boolean, default: true },
