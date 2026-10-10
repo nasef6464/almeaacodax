@@ -18,6 +18,7 @@ const mediaService = read("server/src/modules/media/application/questionImageUpl
 const checks = [
   ["coverage aggregation exists", coverage.includes("getQuestionBankCoverage") && coverage.includes("$setUnion")],
   ["coverage is based on full filtered query", route.includes("getQuestionBankCoverage(filter)") && route.includes("includeCoverage")],
+  ["stable pagination tie-breaker", route.includes(".sort({ createdAt: -1, _id: -1 })")],
   ["skill-link filter is server-side", querySchema.includes('skillLinkStatus: z.enum(["linked", "unlinked"])') && route.includes('scopeFilter["skillIds.0"]')],
   ["video status filter is server-side", querySchema.includes('videoStatus: z.enum(["with", "without"])') && route.includes('query.videoStatus === "without"')],
   ["explanation completeness filter is server-side", querySchema.includes('explanationStatus: z.enum(["with", "without"])') && route.includes('query.explanationStatus === "without"')],

@@ -150,7 +150,7 @@ questionBankRouter.get(
     );
     const skip = (query.page - 1) * query.limit;
     const queryBuilder = QuestionModel.find(filter)
-      .sort({ createdAt: -1 })
+      .sort({ createdAt: -1, _id: -1 })
       .skip(skip)
       .limit(query.noTotal ? query.limit + 1 : query.limit)
       .lean();
