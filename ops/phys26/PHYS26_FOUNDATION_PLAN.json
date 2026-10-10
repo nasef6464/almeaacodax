@@ -1,0 +1,5124 @@
+{
+  "project": "PHYS26",
+  "schemaVersion": 1,
+  "status": "DESIGN_ONLY_NOT_IMPORTABLE",
+  "importReady": false,
+  "generatedOn": "2026-10-08",
+  "sourceTaxonomyVersion": "candidate-1.1",
+  "sourceInventorySha256": [
+    {
+      "role": "foundation",
+      "sha256": "15f5756d3b24ebe9dfff50425b97d85881c8275a111f69c4c995dae6a7afd626"
+    },
+    {
+      "role": "question_bank",
+      "sha256": "5faa723e8485223dcae8b926e0e6c279915d8f6e3d8ece890263a62c04837616"
+    },
+    {
+      "role": "supplemental_reference",
+      "sha256": "22c71dd6c646a91e27a1862f41641b091f15fc741b4e2bf9cc4fe389d9dfc54d"
+    }
+  ],
+  "scope": {
+    "pathId": "p_1777779653351",
+    "subjectId": "sub_1784980706034",
+    "sectionId": null,
+    "sectionIdStatus": "25_NEW_SECTION_IDS_PROPOSED_NOT_CREATED",
+    "sectionPlan": "PHYS26_SECTION_PLAN.json"
+  },
+  "policy": {
+    "doNotReuseLegacySkillIds": true,
+    "protectHistoricalSkillProgress": true,
+    "topicsHiddenUntilApproved": true,
+    "freeFirstFiveIsInitialEditableProposal": true,
+    "missingFoundationCannotBeClaimedComplete": true,
+    "rightsClearanceRequiredBeforePublishing": true,
+    "questionAndDrillIdsNotYetAvailable": true
+  },
+  "counts": {
+    "mainTopics": 25,
+    "subTopics": 92,
+    "totalTopics": 117,
+    "mainWithFoundationIndex": 10,
+    "subWithFoundationIndex": 39,
+    "mainMissingFoundation": 15,
+    "subMissingFoundation": 53,
+    "initialFreeTopics": 26,
+    "initialLockedTopics": 91,
+    "verifiedSourceQuestions": 0,
+    "verifiedQuestionImages": 0,
+    "approvedDrills": 0
+  },
+  "topics": [
+    {
+      "id": "PHYS26-TM01",
+      "parentId": null,
+      "title": "أساسيات الفيزياء والقياس والطريقة العلمية",
+      "skillId": "PHYS26-M01",
+      "skillIds": [
+        "PHYS26-M01"
+      ],
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 1,
+      "showOnPlatform": false,
+      "isLocked": false,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "INDEXED_FOUNDATION_PENDING_PAGE_REVIEW",
+      "sourceLessonNumbers": {
+        "foundation": [
+          1,
+          2
+        ],
+        "collection": [
+          1
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_1"
+    },
+    {
+      "id": "PHYS26-TS01-01",
+      "parentId": "PHYS26-TM01",
+      "title": "العمليات الرياضية والصيغة العلمية والتناسب الفيزيائي",
+      "skillId": "PHYS26-S01-01",
+      "skillIds": [
+        "PHYS26-S01-01"
+      ],
+      "parentSkillId": "PHYS26-M01",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 1,
+      "showOnPlatform": false,
+      "isLocked": false,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "INDEXED_FOUNDATION_PENDING_PAGE_REVIEW",
+      "sourceLessonNumbers": {
+        "foundation": [
+          1,
+          2
+        ],
+        "collection": [
+          1
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_1"
+    },
+    {
+      "id": "PHYS26-TS01-02",
+      "parentId": "PHYS26-TM01",
+      "title": "الطريقة العلمية والفرضيات والنظريات والقوانين",
+      "skillId": "PHYS26-S01-02",
+      "skillIds": [
+        "PHYS26-S01-02"
+      ],
+      "parentSkillId": "PHYS26-M01",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 2,
+      "showOnPlatform": false,
+      "isLocked": false,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "INDEXED_FOUNDATION_PENDING_PAGE_REVIEW",
+      "sourceLessonNumbers": {
+        "foundation": [
+          1,
+          2
+        ],
+        "collection": [
+          1
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_1"
+    },
+    {
+      "id": "PHYS26-TS01-03",
+      "parentId": "PHYS26-TM01",
+      "title": "القياس والدقة والضبط والأجهزة",
+      "skillId": "PHYS26-S01-03",
+      "skillIds": [
+        "PHYS26-S01-03"
+      ],
+      "parentSkillId": "PHYS26-M01",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 3,
+      "showOnPlatform": false,
+      "isLocked": false,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "INDEXED_FOUNDATION_PENDING_PAGE_REVIEW",
+      "sourceLessonNumbers": {
+        "foundation": [
+          1,
+          2
+        ],
+        "collection": [
+          1
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_1"
+    },
+    {
+      "id": "PHYS26-TS01-04",
+      "parentId": "PHYS26-TM01",
+      "title": "الكميات الفيزيائية والنظام الدولي والبادئات",
+      "skillId": "PHYS26-S01-04",
+      "skillIds": [
+        "PHYS26-S01-04"
+      ],
+      "parentSkillId": "PHYS26-M01",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 4,
+      "showOnPlatform": false,
+      "isLocked": false,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "INDEXED_FOUNDATION_PENDING_PAGE_REVIEW",
+      "sourceLessonNumbers": {
+        "foundation": [
+          1,
+          2
+        ],
+        "collection": [
+          1
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_1"
+    },
+    {
+      "id": "PHYS26-TM02",
+      "parentId": null,
+      "title": "الحركة الخطية والتسارع والسقوط الحر",
+      "skillId": "PHYS26-M02",
+      "skillIds": [
+        "PHYS26-M02"
+      ],
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 2,
+      "showOnPlatform": false,
+      "isLocked": false,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "INDEXED_FOUNDATION_PENDING_PAGE_REVIEW",
+      "sourceLessonNumbers": {
+        "foundation": [
+          3,
+          4
+        ],
+        "collection": [
+          2,
+          3
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_2"
+    },
+    {
+      "id": "PHYS26-TS02-01",
+      "parentId": "PHYS26-TM02",
+      "title": "المسافة والإزاحة والتمثيل الحركي",
+      "skillId": "PHYS26-S02-01",
+      "skillIds": [
+        "PHYS26-S02-01"
+      ],
+      "parentSkillId": "PHYS26-M02",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 1,
+      "showOnPlatform": false,
+      "isLocked": false,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "INDEXED_FOUNDATION_PENDING_PAGE_REVIEW",
+      "sourceLessonNumbers": {
+        "foundation": [
+          3,
+          4
+        ],
+        "collection": [
+          2,
+          3
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_2"
+    },
+    {
+      "id": "PHYS26-TS02-02",
+      "parentId": "PHYS26-TM02",
+      "title": "السرعة المتوسطة والمتجهة واللحظية",
+      "skillId": "PHYS26-S02-02",
+      "skillIds": [
+        "PHYS26-S02-02"
+      ],
+      "parentSkillId": "PHYS26-M02",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 2,
+      "showOnPlatform": false,
+      "isLocked": false,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "INDEXED_FOUNDATION_PENDING_PAGE_REVIEW",
+      "sourceLessonNumbers": {
+        "foundation": [
+          3,
+          4
+        ],
+        "collection": [
+          2,
+          3
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_2"
+    },
+    {
+      "id": "PHYS26-TS02-03",
+      "parentId": "PHYS26-TM02",
+      "title": "منحنيات الموقع والزمن والسرعة والزمن",
+      "skillId": "PHYS26-S02-03",
+      "skillIds": [
+        "PHYS26-S02-03"
+      ],
+      "parentSkillId": "PHYS26-M02",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 3,
+      "showOnPlatform": false,
+      "isLocked": false,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "INDEXED_FOUNDATION_PENDING_PAGE_REVIEW",
+      "sourceLessonNumbers": {
+        "foundation": [
+          3,
+          4
+        ],
+        "collection": [
+          2,
+          3
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_2"
+    },
+    {
+      "id": "PHYS26-TS02-04",
+      "parentId": "PHYS26-TM02",
+      "title": "التسارع ومعادلات الحركة بتسارع ثابت",
+      "skillId": "PHYS26-S02-04",
+      "skillIds": [
+        "PHYS26-S02-04"
+      ],
+      "parentSkillId": "PHYS26-M02",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 4,
+      "showOnPlatform": false,
+      "isLocked": false,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "INDEXED_FOUNDATION_PENDING_PAGE_REVIEW",
+      "sourceLessonNumbers": {
+        "foundation": [
+          3,
+          4
+        ],
+        "collection": [
+          2,
+          3
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_2"
+    },
+    {
+      "id": "PHYS26-TS02-05",
+      "parentId": "PHYS26-TM02",
+      "title": "السقوط الحر والحركة الرأسية",
+      "skillId": "PHYS26-S02-05",
+      "skillIds": [
+        "PHYS26-S02-05"
+      ],
+      "parentSkillId": "PHYS26-M02",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 5,
+      "showOnPlatform": false,
+      "isLocked": false,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "INDEXED_FOUNDATION_PENDING_PAGE_REVIEW",
+      "sourceLessonNumbers": {
+        "foundation": [
+          3,
+          4
+        ],
+        "collection": [
+          2,
+          3
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_2"
+    },
+    {
+      "id": "PHYS26-TM03",
+      "parentId": null,
+      "title": "القوى والوزن وقوانين نيوتن",
+      "skillId": "PHYS26-M03",
+      "skillIds": [
+        "PHYS26-M03"
+      ],
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 3,
+      "showOnPlatform": false,
+      "isLocked": false,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "INDEXED_FOUNDATION_PENDING_PAGE_REVIEW",
+      "sourceLessonNumbers": {
+        "foundation": [
+          5
+        ],
+        "collection": [
+          4
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_3"
+    },
+    {
+      "id": "PHYS26-TS03-01",
+      "parentId": "PHYS26-TM03",
+      "title": "مفهوم القوة وتمثيل القوى المؤثرة",
+      "skillId": "PHYS26-S03-01",
+      "skillIds": [
+        "PHYS26-S03-01"
+      ],
+      "parentSkillId": "PHYS26-M03",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 1,
+      "showOnPlatform": false,
+      "isLocked": false,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "INDEXED_FOUNDATION_PENDING_PAGE_REVIEW",
+      "sourceLessonNumbers": {
+        "foundation": [
+          5
+        ],
+        "collection": [
+          4
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_3"
+    },
+    {
+      "id": "PHYS26-TS03-02",
+      "parentId": "PHYS26-TM03",
+      "title": "قوانين نيوتن الثلاثة وتطبيقاتها",
+      "skillId": "PHYS26-S03-02",
+      "skillIds": [
+        "PHYS26-S03-02"
+      ],
+      "parentSkillId": "PHYS26-M03",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 2,
+      "showOnPlatform": false,
+      "isLocked": false,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "INDEXED_FOUNDATION_PENDING_PAGE_REVIEW",
+      "sourceLessonNumbers": {
+        "foundation": [
+          5
+        ],
+        "collection": [
+          4
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_3"
+    },
+    {
+      "id": "PHYS26-TS03-03",
+      "parentId": "PHYS26-TM03",
+      "title": "الوزن والقوة العمودية",
+      "skillId": "PHYS26-S03-03",
+      "skillIds": [
+        "PHYS26-S03-03"
+      ],
+      "parentSkillId": "PHYS26-M03",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 3,
+      "showOnPlatform": false,
+      "isLocked": false,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "INDEXED_FOUNDATION_PENDING_PAGE_REVIEW",
+      "sourceLessonNumbers": {
+        "foundation": [
+          5
+        ],
+        "collection": [
+          4
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_3"
+    },
+    {
+      "id": "PHYS26-TS03-04",
+      "parentId": "PHYS26-TM03",
+      "title": "الوزن الظاهري وحالات المصعد",
+      "skillId": "PHYS26-S03-04",
+      "skillIds": [
+        "PHYS26-S03-04"
+      ],
+      "parentSkillId": "PHYS26-M03",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 4,
+      "showOnPlatform": false,
+      "isLocked": false,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "INDEXED_FOUNDATION_PENDING_PAGE_REVIEW",
+      "sourceLessonNumbers": {
+        "foundation": [
+          5
+        ],
+        "collection": [
+          4
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_3"
+    },
+    {
+      "id": "PHYS26-TM04",
+      "parentId": null,
+      "title": "المتجهات والاحتكاك والحركة على مستوى مائل",
+      "skillId": "PHYS26-M04",
+      "skillIds": [
+        "PHYS26-M04"
+      ],
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 4,
+      "showOnPlatform": false,
+      "isLocked": false,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "INDEXED_FOUNDATION_PENDING_PAGE_REVIEW",
+      "sourceLessonNumbers": {
+        "foundation": [
+          6
+        ],
+        "collection": [
+          5
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_4"
+    },
+    {
+      "id": "PHYS26-TS04-01",
+      "parentId": "PHYS26-TM04",
+      "title": "جمع المتجهات وطرحها",
+      "skillId": "PHYS26-S04-01",
+      "skillIds": [
+        "PHYS26-S04-01"
+      ],
+      "parentSkillId": "PHYS26-M04",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 1,
+      "showOnPlatform": false,
+      "isLocked": false,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "INDEXED_FOUNDATION_PENDING_PAGE_REVIEW",
+      "sourceLessonNumbers": {
+        "foundation": [
+          6
+        ],
+        "collection": [
+          5
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_4"
+    },
+    {
+      "id": "PHYS26-TS04-02",
+      "parentId": "PHYS26-TM04",
+      "title": "تحليل المتجهات إلى مركبات وحساب المحصلة",
+      "skillId": "PHYS26-S04-02",
+      "skillIds": [
+        "PHYS26-S04-02"
+      ],
+      "parentSkillId": "PHYS26-M04",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 2,
+      "showOnPlatform": false,
+      "isLocked": false,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "INDEXED_FOUNDATION_PENDING_PAGE_REVIEW",
+      "sourceLessonNumbers": {
+        "foundation": [
+          6
+        ],
+        "collection": [
+          5
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_4"
+    },
+    {
+      "id": "PHYS26-TS04-03",
+      "parentId": "PHYS26-TM04",
+      "title": "الاحتكاك السكوني والحركي",
+      "skillId": "PHYS26-S04-03",
+      "skillIds": [
+        "PHYS26-S04-03"
+      ],
+      "parentSkillId": "PHYS26-M04",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 3,
+      "showOnPlatform": false,
+      "isLocked": false,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "INDEXED_FOUNDATION_PENDING_PAGE_REVIEW",
+      "sourceLessonNumbers": {
+        "foundation": [
+          6
+        ],
+        "collection": [
+          5
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_4"
+    },
+    {
+      "id": "PHYS26-TS04-04",
+      "parentId": "PHYS26-TM04",
+      "title": "القوى والحركة على المستوى المائل",
+      "skillId": "PHYS26-S04-04",
+      "skillIds": [
+        "PHYS26-S04-04"
+      ],
+      "parentSkillId": "PHYS26-M04",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 4,
+      "showOnPlatform": false,
+      "isLocked": false,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "INDEXED_FOUNDATION_PENDING_PAGE_REVIEW",
+      "sourceLessonNumbers": {
+        "foundation": [
+          6
+        ],
+        "collection": [
+          5
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_4"
+    },
+    {
+      "id": "PHYS26-TM05",
+      "parentId": null,
+      "title": "المقذوفات والحركة الدائرية",
+      "skillId": "PHYS26-M05",
+      "skillIds": [
+        "PHYS26-M05"
+      ],
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 5,
+      "showOnPlatform": false,
+      "isLocked": false,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "INDEXED_FOUNDATION_PENDING_PAGE_REVIEW",
+      "sourceLessonNumbers": {
+        "foundation": [
+          7
+        ],
+        "collection": [
+          6
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_5"
+    },
+    {
+      "id": "PHYS26-TS05-01",
+      "parentId": "PHYS26-TM05",
+      "title": "المقذوفات الأفقية والمائلة ومركبات الحركة",
+      "skillId": "PHYS26-S05-01",
+      "skillIds": [
+        "PHYS26-S05-01"
+      ],
+      "parentSkillId": "PHYS26-M05",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 1,
+      "showOnPlatform": false,
+      "isLocked": false,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "INDEXED_FOUNDATION_PENDING_PAGE_REVIEW",
+      "sourceLessonNumbers": {
+        "foundation": [
+          7
+        ],
+        "collection": [
+          6
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_5"
+    },
+    {
+      "id": "PHYS26-TS05-02",
+      "parentId": "PHYS26-TM05",
+      "title": "زمن التحليق والمدى الأفقي وأقصى ارتفاع",
+      "skillId": "PHYS26-S05-02",
+      "skillIds": [
+        "PHYS26-S05-02"
+      ],
+      "parentSkillId": "PHYS26-M05",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 2,
+      "showOnPlatform": false,
+      "isLocked": false,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "INDEXED_FOUNDATION_PENDING_PAGE_REVIEW",
+      "sourceLessonNumbers": {
+        "foundation": [
+          7
+        ],
+        "collection": [
+          6
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_5"
+    },
+    {
+      "id": "PHYS26-TS05-03",
+      "parentId": "PHYS26-TM05",
+      "title": "السرعة الخطية والزاوية في الحركة الدائرية",
+      "skillId": "PHYS26-S05-03",
+      "skillIds": [
+        "PHYS26-S05-03"
+      ],
+      "parentSkillId": "PHYS26-M05",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 3,
+      "showOnPlatform": false,
+      "isLocked": false,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "INDEXED_FOUNDATION_PENDING_PAGE_REVIEW",
+      "sourceLessonNumbers": {
+        "foundation": [
+          7
+        ],
+        "collection": [
+          6
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_5"
+    },
+    {
+      "id": "PHYS26-TS05-04",
+      "parentId": "PHYS26-TM05",
+      "title": "التسارع والقوة المركزية",
+      "skillId": "PHYS26-S05-04",
+      "skillIds": [
+        "PHYS26-S05-04"
+      ],
+      "parentSkillId": "PHYS26-M05",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 4,
+      "showOnPlatform": false,
+      "isLocked": false,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "INDEXED_FOUNDATION_PENDING_PAGE_REVIEW",
+      "sourceLessonNumbers": {
+        "foundation": [
+          7
+        ],
+        "collection": [
+          6
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_5"
+    },
+    {
+      "id": "PHYS26-TM06",
+      "parentId": null,
+      "title": "الجاذبية والحركة المدارية",
+      "skillId": "PHYS26-M06",
+      "skillIds": [
+        "PHYS26-M06"
+      ],
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 6,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "INDEXED_FOUNDATION_PENDING_PAGE_REVIEW",
+      "sourceLessonNumbers": {
+        "foundation": [
+          8
+        ],
+        "collection": [
+          7
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_6"
+    },
+    {
+      "id": "PHYS26-TS06-01",
+      "parentId": "PHYS26-TM06",
+      "title": "قانون الجذب الكوني والقوة بين الكتل",
+      "skillId": "PHYS26-S06-01",
+      "skillIds": [
+        "PHYS26-S06-01"
+      ],
+      "parentSkillId": "PHYS26-M06",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 1,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "INDEXED_FOUNDATION_PENDING_PAGE_REVIEW",
+      "sourceLessonNumbers": {
+        "foundation": [
+          8
+        ],
+        "collection": [
+          7
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_6"
+    },
+    {
+      "id": "PHYS26-TS06-02",
+      "parentId": "PHYS26-TM06",
+      "title": "تسارع الجاذبية وتغيره مع البعد",
+      "skillId": "PHYS26-S06-02",
+      "skillIds": [
+        "PHYS26-S06-02"
+      ],
+      "parentSkillId": "PHYS26-M06",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 2,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "INDEXED_FOUNDATION_PENDING_PAGE_REVIEW",
+      "sourceLessonNumbers": {
+        "foundation": [
+          8
+        ],
+        "collection": [
+          7
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_6"
+    },
+    {
+      "id": "PHYS26-TS06-03",
+      "parentId": "PHYS26-TM06",
+      "title": "قوانين كبلر والأقمار الصناعية",
+      "skillId": "PHYS26-S06-03",
+      "skillIds": [
+        "PHYS26-S06-03"
+      ],
+      "parentSkillId": "PHYS26-M06",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 3,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "INDEXED_FOUNDATION_PENDING_PAGE_REVIEW",
+      "sourceLessonNumbers": {
+        "foundation": [
+          8
+        ],
+        "collection": [
+          7
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_6"
+    },
+    {
+      "id": "PHYS26-TM07",
+      "parentId": null,
+      "title": "الحركة الدورانية والعزم",
+      "skillId": "PHYS26-M07",
+      "skillIds": [
+        "PHYS26-M07"
+      ],
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 7,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "INDEXED_FOUNDATION_PENDING_PAGE_REVIEW",
+      "sourceLessonNumbers": {
+        "foundation": [
+          9
+        ],
+        "collection": [
+          8
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_7"
+    },
+    {
+      "id": "PHYS26-TS07-01",
+      "parentId": "PHYS26-TM07",
+      "title": "الإزاحة والسرعة والتسارع الزاوي",
+      "skillId": "PHYS26-S07-01",
+      "skillIds": [
+        "PHYS26-S07-01"
+      ],
+      "parentSkillId": "PHYS26-M07",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 1,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "INDEXED_FOUNDATION_PENDING_PAGE_REVIEW",
+      "sourceLessonNumbers": {
+        "foundation": [
+          9
+        ],
+        "collection": [
+          8
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_7"
+    },
+    {
+      "id": "PHYS26-TS07-02",
+      "parentId": "PHYS26-TM07",
+      "title": "العلاقات بين الكميات الخطية والزاوية",
+      "skillId": "PHYS26-S07-02",
+      "skillIds": [
+        "PHYS26-S07-02"
+      ],
+      "parentSkillId": "PHYS26-M07",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 2,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "INDEXED_FOUNDATION_PENDING_PAGE_REVIEW",
+      "sourceLessonNumbers": {
+        "foundation": [
+          9
+        ],
+        "collection": [
+          8
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_7"
+    },
+    {
+      "id": "PHYS26-TS07-03",
+      "parentId": "PHYS26-TM07",
+      "title": "عزم القوة والمفاهيم الدورانية",
+      "skillId": "PHYS26-S07-03",
+      "skillIds": [
+        "PHYS26-S07-03"
+      ],
+      "parentSkillId": "PHYS26-M07",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 3,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "INDEXED_FOUNDATION_PENDING_PAGE_REVIEW",
+      "sourceLessonNumbers": {
+        "foundation": [
+          9
+        ],
+        "collection": [
+          8
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_7"
+    },
+    {
+      "id": "PHYS26-TM08",
+      "parentId": null,
+      "title": "الاتزان والدفع والزخم",
+      "skillId": "PHYS26-M08",
+      "skillIds": [
+        "PHYS26-M08"
+      ],
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 8,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "INDEXED_FOUNDATION_PENDING_PAGE_REVIEW",
+      "sourceLessonNumbers": {
+        "foundation": [
+          10
+        ],
+        "collection": [
+          9
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_8"
+    },
+    {
+      "id": "PHYS26-TS08-01",
+      "parentId": "PHYS26-TM08",
+      "title": "الاتزان الانتقالي والدوراني ومركز الكتلة",
+      "skillId": "PHYS26-S08-01",
+      "skillIds": [
+        "PHYS26-S08-01"
+      ],
+      "parentSkillId": "PHYS26-M08",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 1,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "INDEXED_FOUNDATION_PENDING_PAGE_REVIEW",
+      "sourceLessonNumbers": {
+        "foundation": [
+          10
+        ],
+        "collection": [
+          9
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_8"
+    },
+    {
+      "id": "PHYS26-TS08-02",
+      "parentId": "PHYS26-TM08",
+      "title": "الدفع وعلاقته بتغير الزخم",
+      "skillId": "PHYS26-S08-02",
+      "skillIds": [
+        "PHYS26-S08-02"
+      ],
+      "parentSkillId": "PHYS26-M08",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 2,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "INDEXED_FOUNDATION_PENDING_PAGE_REVIEW",
+      "sourceLessonNumbers": {
+        "foundation": [
+          10
+        ],
+        "collection": [
+          9
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_8"
+    },
+    {
+      "id": "PHYS26-TS08-03",
+      "parentId": "PHYS26-TM08",
+      "title": "الزخم الخطي وقانون حفظه",
+      "skillId": "PHYS26-S08-03",
+      "skillIds": [
+        "PHYS26-S08-03"
+      ],
+      "parentSkillId": "PHYS26-M08",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 3,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "INDEXED_FOUNDATION_PENDING_PAGE_REVIEW",
+      "sourceLessonNumbers": {
+        "foundation": [
+          10
+        ],
+        "collection": [
+          9
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_8"
+    },
+    {
+      "id": "PHYS26-TS08-04",
+      "parentId": "PHYS26-TM08",
+      "title": "التصادمات وتطبيقات حفظ الزخم",
+      "skillId": "PHYS26-S08-04",
+      "skillIds": [
+        "PHYS26-S08-04"
+      ],
+      "parentSkillId": "PHYS26-M08",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 4,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "INDEXED_FOUNDATION_PENDING_PAGE_REVIEW",
+      "sourceLessonNumbers": {
+        "foundation": [
+          10
+        ],
+        "collection": [
+          9
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_8"
+    },
+    {
+      "id": "PHYS26-TM09",
+      "parentId": null,
+      "title": "الشغل والطاقة والقدرة والآلات",
+      "skillId": "PHYS26-M09",
+      "skillIds": [
+        "PHYS26-M09"
+      ],
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 9,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "INDEXED_FOUNDATION_PENDING_PAGE_REVIEW",
+      "sourceLessonNumbers": {
+        "foundation": [
+          11,
+          12
+        ],
+        "collection": [
+          10,
+          11
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_9"
+    },
+    {
+      "id": "PHYS26-TS09-01",
+      "parentId": "PHYS26-TM09",
+      "title": "الشغل والقوة والإزاحة",
+      "skillId": "PHYS26-S09-01",
+      "skillIds": [
+        "PHYS26-S09-01"
+      ],
+      "parentSkillId": "PHYS26-M09",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 1,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "INDEXED_FOUNDATION_PENDING_PAGE_REVIEW",
+      "sourceLessonNumbers": {
+        "foundation": [
+          11,
+          12
+        ],
+        "collection": [
+          10,
+          11
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_9"
+    },
+    {
+      "id": "PHYS26-TS09-02",
+      "parentId": "PHYS26-TM09",
+      "title": "الطاقة الحركية وطاقة الوضع",
+      "skillId": "PHYS26-S09-02",
+      "skillIds": [
+        "PHYS26-S09-02"
+      ],
+      "parentSkillId": "PHYS26-M09",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 2,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "INDEXED_FOUNDATION_PENDING_PAGE_REVIEW",
+      "sourceLessonNumbers": {
+        "foundation": [
+          11,
+          12
+        ],
+        "collection": [
+          10,
+          11
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_9"
+    },
+    {
+      "id": "PHYS26-TS09-03",
+      "parentId": "PHYS26-TM09",
+      "title": "نظرية الشغل والطاقة وحفظ الطاقة الميكانيكية",
+      "skillId": "PHYS26-S09-03",
+      "skillIds": [
+        "PHYS26-S09-03"
+      ],
+      "parentSkillId": "PHYS26-M09",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 3,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "INDEXED_FOUNDATION_PENDING_PAGE_REVIEW",
+      "sourceLessonNumbers": {
+        "foundation": [
+          11,
+          12
+        ],
+        "collection": [
+          10,
+          11
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_9"
+    },
+    {
+      "id": "PHYS26-TS09-04",
+      "parentId": "PHYS26-TM09",
+      "title": "القدرة والآلات والفائدة الميكانيكية والكفاءة",
+      "skillId": "PHYS26-S09-04",
+      "skillIds": [
+        "PHYS26-S09-04"
+      ],
+      "parentSkillId": "PHYS26-M09",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 4,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "INDEXED_FOUNDATION_PENDING_PAGE_REVIEW",
+      "sourceLessonNumbers": {
+        "foundation": [
+          11,
+          12
+        ],
+        "collection": [
+          10,
+          11
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_9"
+    },
+    {
+      "id": "PHYS26-TM10",
+      "parentId": null,
+      "title": "الحرارة والديناميكا الحرارية",
+      "skillId": "PHYS26-M10",
+      "skillIds": [
+        "PHYS26-M10"
+      ],
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 10,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "INDEXED_FOUNDATION_PENDING_PAGE_REVIEW",
+      "sourceLessonNumbers": {
+        "foundation": [
+          13
+        ],
+        "collection": [
+          12
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_10"
+    },
+    {
+      "id": "PHYS26-TS10-01",
+      "parentId": "PHYS26-TM10",
+      "title": "درجة الحرارة والاتزان الحراري والحرارة النوعية",
+      "skillId": "PHYS26-S10-01",
+      "skillIds": [
+        "PHYS26-S10-01"
+      ],
+      "parentSkillId": "PHYS26-M10",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 1,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "INDEXED_FOUNDATION_PENDING_PAGE_REVIEW",
+      "sourceLessonNumbers": {
+        "foundation": [
+          13
+        ],
+        "collection": [
+          12
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_10"
+    },
+    {
+      "id": "PHYS26-TS10-02",
+      "parentId": "PHYS26-TM10",
+      "title": "انتقال الحرارة والتمدد الحراري",
+      "skillId": "PHYS26-S10-02",
+      "skillIds": [
+        "PHYS26-S10-02"
+      ],
+      "parentSkillId": "PHYS26-M10",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 2,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "INDEXED_FOUNDATION_PENDING_PAGE_REVIEW",
+      "sourceLessonNumbers": {
+        "foundation": [
+          13
+        ],
+        "collection": [
+          12
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_10"
+    },
+    {
+      "id": "PHYS26-TS10-03",
+      "parentId": "PHYS26-TM10",
+      "title": "تغيرات الحالة والحرارة الكامنة",
+      "skillId": "PHYS26-S10-03",
+      "skillIds": [
+        "PHYS26-S10-03"
+      ],
+      "parentSkillId": "PHYS26-M10",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 3,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "INDEXED_FOUNDATION_PENDING_PAGE_REVIEW",
+      "sourceLessonNumbers": {
+        "foundation": [
+          13
+        ],
+        "collection": [
+          12
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_10"
+    },
+    {
+      "id": "PHYS26-TS10-04",
+      "parentId": "PHYS26-TM10",
+      "title": "القانونان الأول والثاني للديناميكا الحرارية والإنتروبي",
+      "skillId": "PHYS26-S10-04",
+      "skillIds": [
+        "PHYS26-S10-04"
+      ],
+      "parentSkillId": "PHYS26-M10",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 4,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "INDEXED_FOUNDATION_PENDING_PAGE_REVIEW",
+      "sourceLessonNumbers": {
+        "foundation": [
+          13
+        ],
+        "collection": [
+          12
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_10"
+    },
+    {
+      "id": "PHYS26-TM11",
+      "parentId": null,
+      "title": "مبادئ وخصائص الموائع",
+      "skillId": "PHYS26-M11",
+      "skillIds": [
+        "PHYS26-M11"
+      ],
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 11,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          13
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_11"
+    },
+    {
+      "id": "PHYS26-TS11-01",
+      "parentId": "PHYS26-TM11",
+      "title": "الكثافة والضغط وخصائص الموائع",
+      "skillId": "PHYS26-S11-01",
+      "skillIds": [
+        "PHYS26-S11-01"
+      ],
+      "parentSkillId": "PHYS26-M11",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 1,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          13
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_11"
+    },
+    {
+      "id": "PHYS26-TS11-02",
+      "parentId": "PHYS26-TM11",
+      "title": "ضغط الموائع ومبدأ باسكال",
+      "skillId": "PHYS26-S11-02",
+      "skillIds": [
+        "PHYS26-S11-02"
+      ],
+      "parentSkillId": "PHYS26-M11",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 2,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          13
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_11"
+    },
+    {
+      "id": "PHYS26-TS11-03",
+      "parentId": "PHYS26-TM11",
+      "title": "الطفو ومبدأ أرخميدس",
+      "skillId": "PHYS26-S11-03",
+      "skillIds": [
+        "PHYS26-S11-03"
+      ],
+      "parentSkillId": "PHYS26-M11",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 3,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          13
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_11"
+    },
+    {
+      "id": "PHYS26-TS11-04",
+      "parentId": "PHYS26-TM11",
+      "title": "الاستمرارية ومبدأ برنولي وتدفق الموائع",
+      "skillId": "PHYS26-S11-04",
+      "skillIds": [
+        "PHYS26-S11-04"
+      ],
+      "parentSkillId": "PHYS26-M11",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 4,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          13
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_11"
+    },
+    {
+      "id": "PHYS26-TS11-05",
+      "parentId": "PHYS26-TM11",
+      "title": "قوانين الغازات والعلاقات بين الضغط والحجم ودرجة الحرارة",
+      "skillId": "PHYS26-S11-05",
+      "skillIds": [
+        "PHYS26-S11-05"
+      ],
+      "parentSkillId": "PHYS26-M11",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 5,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          13
+        ]
+      },
+      "aiContext": {
+        "status": "LAW_RELATIONS_ONLY_NOT_FULL_FOUNDATION_CHAPTER",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null,
+        "candidateContextForReviewerOnly": {
+          "status": "LAW_RELATIONS_ONLY_NOT_FULL_FOUNDATION_CHAPTER",
+          "laws": [
+            {
+              "name": "Boyle",
+              "relation": "P1*V1=P2*V2",
+              "conditions": "T and n fixed"
+            },
+            {
+              "name": "Charles",
+              "relation": "V1/T1=V2/T2",
+              "conditions": "P and n fixed, T in K"
+            },
+            {
+              "name": "Constant-volume gas law",
+              "relation": "P1/T1=P2/T2",
+              "conditions": "V and n fixed, T in K"
+            }
+          ],
+          "units": [
+            "Pa",
+            "m^3",
+            "L",
+            "K"
+          ],
+          "sourceExplanationText": null,
+          "sourcePageReferenceRequiredBeforeApproval": true
+        }
+      },
+      "plannedSectionId": "sec_sub_physics_11",
+      "importReady": false
+    },
+    {
+      "id": "PHYS26-TM12",
+      "parentId": null,
+      "title": "الاهتزازات والموجات ودوبلر والرنين",
+      "skillId": "PHYS26-M12",
+      "skillIds": [
+        "PHYS26-M12"
+      ],
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 12,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          14,
+          15
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_12"
+    },
+    {
+      "id": "PHYS26-TS12-01",
+      "parentId": "PHYS26-TM12",
+      "title": "الحركة الاهتزازية والتوافقية البسيطة",
+      "skillId": "PHYS26-S12-01",
+      "skillIds": [
+        "PHYS26-S12-01"
+      ],
+      "parentSkillId": "PHYS26-M12",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 1,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          14,
+          15
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_12"
+    },
+    {
+      "id": "PHYS26-TS12-02",
+      "parentId": "PHYS26-TM12",
+      "title": "خصائص الموجات والتردد والطول الموجي",
+      "skillId": "PHYS26-S12-02",
+      "skillIds": [
+        "PHYS26-S12-02"
+      ],
+      "parentSkillId": "PHYS26-M12",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 2,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          14,
+          15
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_12"
+    },
+    {
+      "id": "PHYS26-TS12-03",
+      "parentId": "PHYS26-TM12",
+      "title": "الصوت وتأثير دوبلر",
+      "skillId": "PHYS26-S12-03",
+      "skillIds": [
+        "PHYS26-S12-03"
+      ],
+      "parentSkillId": "PHYS26-M12",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 3,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          14,
+          15
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_12"
+    },
+    {
+      "id": "PHYS26-TS12-04",
+      "parentId": "PHYS26-TM12",
+      "title": "الموجات الواقفة والرنين في الأعمدة الهوائية",
+      "skillId": "PHYS26-S12-04",
+      "skillIds": [
+        "PHYS26-S12-04"
+      ],
+      "parentSkillId": "PHYS26-M12",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 4,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          14,
+          15
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_12"
+    },
+    {
+      "id": "PHYS26-TM13",
+      "parentId": null,
+      "title": "الضوء والألوان",
+      "skillId": "PHYS26-M13",
+      "skillIds": [
+        "PHYS26-M13"
+      ],
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 13,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          16
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_13"
+    },
+    {
+      "id": "PHYS26-TS13-01",
+      "parentId": "PHYS26-TM13",
+      "title": "خصائص الضوء وانتشاره وطبيعته الموجية",
+      "skillId": "PHYS26-S13-01",
+      "skillIds": [
+        "PHYS26-S13-01"
+      ],
+      "parentSkillId": "PHYS26-M13",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 1,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          16
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_13"
+    },
+    {
+      "id": "PHYS26-TS13-02",
+      "parentId": "PHYS26-TM13",
+      "title": "الألوان والضوء المرئي والمرشحات",
+      "skillId": "PHYS26-S13-02",
+      "skillIds": [
+        "PHYS26-S13-02"
+      ],
+      "parentSkillId": "PHYS26-M13",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 2,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          16
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_13"
+    },
+    {
+      "id": "PHYS26-TS13-03",
+      "parentId": "PHYS26-TM13",
+      "title": "استقطاب الضوء وقانون مالوس",
+      "skillId": "PHYS26-S13-03",
+      "skillIds": [
+        "PHYS26-S13-03"
+      ],
+      "parentSkillId": "PHYS26-M13",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 3,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          16
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_13"
+    },
+    {
+      "id": "PHYS26-TM14",
+      "parentId": null,
+      "title": "الانعكاس والمرايا",
+      "skillId": "PHYS26-M14",
+      "skillIds": [
+        "PHYS26-M14"
+      ],
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 14,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          17
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_14"
+    },
+    {
+      "id": "PHYS26-TS14-01",
+      "parentId": "PHYS26-TM14",
+      "title": "قانون الانعكاس والمرايا المستوية",
+      "skillId": "PHYS26-S14-01",
+      "skillIds": [
+        "PHYS26-S14-01"
+      ],
+      "parentSkillId": "PHYS26-M14",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 1,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          17
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_14"
+    },
+    {
+      "id": "PHYS26-TS14-02",
+      "parentId": "PHYS26-TM14",
+      "title": "المرايا الكروية وتكوين الصور",
+      "skillId": "PHYS26-S14-02",
+      "skillIds": [
+        "PHYS26-S14-02"
+      ],
+      "parentSkillId": "PHYS26-M14",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 2,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          17
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_14"
+    },
+    {
+      "id": "PHYS26-TS14-03",
+      "parentId": "PHYS26-TM14",
+      "title": "معادلة المرايا والتكبير",
+      "skillId": "PHYS26-S14-03",
+      "skillIds": [
+        "PHYS26-S14-03"
+      ],
+      "parentSkillId": "PHYS26-M14",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 3,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          17
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_14"
+    },
+    {
+      "id": "PHYS26-TM15",
+      "parentId": null,
+      "title": "الانكسار والعدسات",
+      "skillId": "PHYS26-M15",
+      "skillIds": [
+        "PHYS26-M15"
+      ],
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 15,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          18
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_15"
+    },
+    {
+      "id": "PHYS26-TS15-01",
+      "parentId": "PHYS26-TM15",
+      "title": "الانكسار ومعامل الانكسار وقانون سنل",
+      "skillId": "PHYS26-S15-01",
+      "skillIds": [
+        "PHYS26-S15-01"
+      ],
+      "parentSkillId": "PHYS26-M15",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 1,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          18
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_15"
+    },
+    {
+      "id": "PHYS26-TS15-02",
+      "parentId": "PHYS26-TM15",
+      "title": "الزاوية الحرجة والانعكاس الداخلي الكلي",
+      "skillId": "PHYS26-S15-02",
+      "skillIds": [
+        "PHYS26-S15-02"
+      ],
+      "parentSkillId": "PHYS26-M15",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 2,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          18
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_15"
+    },
+    {
+      "id": "PHYS26-TS15-03",
+      "parentId": "PHYS26-TM15",
+      "title": "العدسات المحدبة والمقعرة وتكوين الصور",
+      "skillId": "PHYS26-S15-03",
+      "skillIds": [
+        "PHYS26-S15-03"
+      ],
+      "parentSkillId": "PHYS26-M15",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 3,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          18
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_15"
+    },
+    {
+      "id": "PHYS26-TS15-04",
+      "parentId": "PHYS26-TM15",
+      "title": "معادلة العدسة والتكبير والتطبيقات البصرية",
+      "skillId": "PHYS26-S15-04",
+      "skillIds": [
+        "PHYS26-S15-04"
+      ],
+      "parentSkillId": "PHYS26-M15",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 4,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          18
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_15"
+    },
+    {
+      "id": "PHYS26-TM16",
+      "parentId": null,
+      "title": "التداخل والحيود",
+      "skillId": "PHYS26-M16",
+      "skillIds": [
+        "PHYS26-M16"
+      ],
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 16,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          19
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_16"
+    },
+    {
+      "id": "PHYS26-TS16-01",
+      "parentId": "PHYS26-TM16",
+      "title": "التداخل البناء والهدام",
+      "skillId": "PHYS26-S16-01",
+      "skillIds": [
+        "PHYS26-S16-01"
+      ],
+      "parentSkillId": "PHYS26-M16",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 1,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          19
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_16"
+    },
+    {
+      "id": "PHYS26-TS16-02",
+      "parentId": "PHYS26-TM16",
+      "title": "تجربة يونج وهدب التداخل",
+      "skillId": "PHYS26-S16-02",
+      "skillIds": [
+        "PHYS26-S16-02"
+      ],
+      "parentSkillId": "PHYS26-M16",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 2,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          19
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_16"
+    },
+    {
+      "id": "PHYS26-TS16-03",
+      "parentId": "PHYS26-TM16",
+      "title": "الحيود ومحزوز الحيود",
+      "skillId": "PHYS26-S16-03",
+      "skillIds": [
+        "PHYS26-S16-03"
+      ],
+      "parentSkillId": "PHYS26-M16",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 3,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          19
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_16"
+    },
+    {
+      "id": "PHYS26-TM17",
+      "parentId": null,
+      "title": "الكهرباء والمجالات الكهربائية",
+      "skillId": "PHYS26-M17",
+      "skillIds": [
+        "PHYS26-M17"
+      ],
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 17,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          20,
+          21
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_17"
+    },
+    {
+      "id": "PHYS26-TS17-01",
+      "parentId": "PHYS26-TM17",
+      "title": "الشحنات الكهربائية وطرق التكهرب",
+      "skillId": "PHYS26-S17-01",
+      "skillIds": [
+        "PHYS26-S17-01"
+      ],
+      "parentSkillId": "PHYS26-M17",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 1,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          20,
+          21
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_17"
+    },
+    {
+      "id": "PHYS26-TS17-02",
+      "parentId": "PHYS26-TM17",
+      "title": "قانون كولوم والقوى الكهربائية",
+      "skillId": "PHYS26-S17-02",
+      "skillIds": [
+        "PHYS26-S17-02"
+      ],
+      "parentSkillId": "PHYS26-M17",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 2,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          20,
+          21
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_17"
+    },
+    {
+      "id": "PHYS26-TS17-03",
+      "parentId": "PHYS26-TM17",
+      "title": "المجال الكهربائي وخطوط المجال",
+      "skillId": "PHYS26-S17-03",
+      "skillIds": [
+        "PHYS26-S17-03"
+      ],
+      "parentSkillId": "PHYS26-M17",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 3,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          20,
+          21
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_17"
+    },
+    {
+      "id": "PHYS26-TS17-04",
+      "parentId": "PHYS26-TM17",
+      "title": "الجهد والطاقة الكهربائية والمكثفات",
+      "skillId": "PHYS26-S17-04",
+      "skillIds": [
+        "PHYS26-S17-04"
+      ],
+      "parentSkillId": "PHYS26-M17",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 4,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          20,
+          21
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_17"
+    },
+    {
+      "id": "PHYS26-TM18",
+      "parentId": null,
+      "title": "الكهرباء التيارية والدوائر الكهربائية",
+      "skillId": "PHYS26-M18",
+      "skillIds": [
+        "PHYS26-M18"
+      ],
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 18,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          22,
+          23
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_18"
+    },
+    {
+      "id": "PHYS26-TS18-01",
+      "parentId": "PHYS26-TM18",
+      "title": "التيار الكهربائي وفرق الجهد والمقاومة",
+      "skillId": "PHYS26-S18-01",
+      "skillIds": [
+        "PHYS26-S18-01"
+      ],
+      "parentSkillId": "PHYS26-M18",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 1,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          22,
+          23
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_18"
+    },
+    {
+      "id": "PHYS26-TS18-02",
+      "parentId": "PHYS26-TM18",
+      "title": "قانون أوم والمقاومية الكهربائية",
+      "skillId": "PHYS26-S18-02",
+      "skillIds": [
+        "PHYS26-S18-02"
+      ],
+      "parentSkillId": "PHYS26-M18",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 2,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          22,
+          23
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_18"
+    },
+    {
+      "id": "PHYS26-TS18-03",
+      "parentId": "PHYS26-TM18",
+      "title": "توصيل المقاومات وتحليل الدوائر",
+      "skillId": "PHYS26-S18-03",
+      "skillIds": [
+        "PHYS26-S18-03"
+      ],
+      "parentSkillId": "PHYS26-M18",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 3,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          22,
+          23
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_18"
+    },
+    {
+      "id": "PHYS26-TS18-04",
+      "parentId": "PHYS26-TM18",
+      "title": "القدرة والطاقة الكهربائية وأجهزة القياس",
+      "skillId": "PHYS26-S18-04",
+      "skillIds": [
+        "PHYS26-S18-04"
+      ],
+      "parentSkillId": "PHYS26-M18",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 4,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          22,
+          23
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_18"
+    },
+    {
+      "id": "PHYS26-TM19",
+      "parentId": null,
+      "title": "المجالات والقوى المغناطيسية وقواعد اليد اليمنى",
+      "skillId": "PHYS26-M19",
+      "skillIds": [
+        "PHYS26-M19"
+      ],
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 19,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          24,
+          25
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_19"
+    },
+    {
+      "id": "PHYS26-TS19-01",
+      "parentId": "PHYS26-TM19",
+      "title": "المجال المغناطيسي ومصادره",
+      "skillId": "PHYS26-S19-01",
+      "skillIds": [
+        "PHYS26-S19-01"
+      ],
+      "parentSkillId": "PHYS26-M19",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 1,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          24,
+          25
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_19"
+    },
+    {
+      "id": "PHYS26-TS19-02",
+      "parentId": "PHYS26-TM19",
+      "title": "القوة المغناطيسية على الشحنة والسلك",
+      "skillId": "PHYS26-S19-02",
+      "skillIds": [
+        "PHYS26-S19-02"
+      ],
+      "parentSkillId": "PHYS26-M19",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 2,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          24,
+          25
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_19"
+    },
+    {
+      "id": "PHYS26-TS19-03",
+      "parentId": "PHYS26-TM19",
+      "title": "حركة الجسيمات المشحونة في مجال مغناطيسي",
+      "skillId": "PHYS26-S19-03",
+      "skillIds": [
+        "PHYS26-S19-03"
+      ],
+      "parentSkillId": "PHYS26-M19",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 3,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          24,
+          25
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_19"
+    },
+    {
+      "id": "PHYS26-TS19-04",
+      "parentId": "PHYS26-TM19",
+      "title": "قواعد اليد اليمنى واتجاه المجال والقوة",
+      "skillId": "PHYS26-S19-04",
+      "skillIds": [
+        "PHYS26-S19-04"
+      ],
+      "parentSkillId": "PHYS26-M19",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 4,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          24,
+          25
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_19"
+    },
+    {
+      "id": "PHYS26-TS19-05",
+      "parentId": "PHYS26-TM19",
+      "title": "الجلفانومتر وأجهزة قياس التيار وتحويله إلى أميتر",
+      "skillId": "PHYS26-S19-05",
+      "skillIds": [
+        "PHYS26-S19-05"
+      ],
+      "parentSkillId": "PHYS26-M19",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 5,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          24
+        ]
+      },
+      "aiContext": {
+        "status": "CONCEPT_ONLY_NOT_FULL_FOUNDATION_CHAPTER",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null,
+        "candidateContextForReviewerOnly": {
+          "status": "CONCEPT_ONLY_NOT_FULL_FOUNDATION_CHAPTER",
+          "concept": "A parallel low-resistance shunt extends galvanometer current range as an ammeter.",
+          "sourceExplanationText": null,
+          "sourcePageReferenceRequiredBeforeApproval": true
+        }
+      },
+      "plannedSectionId": "sec_sub_physics_19",
+      "importReady": false
+    },
+    {
+      "id": "PHYS26-TM20",
+      "parentId": null,
+      "title": "الحث الكهرومغناطيسي",
+      "skillId": "PHYS26-M20",
+      "skillIds": [
+        "PHYS26-M20"
+      ],
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 20,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          26
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_20"
+    },
+    {
+      "id": "PHYS26-TS20-01",
+      "parentId": "PHYS26-TM20",
+      "title": "الفيض المغناطيسي والقوة الدافعة المستحثة",
+      "skillId": "PHYS26-S20-01",
+      "skillIds": [
+        "PHYS26-S20-01"
+      ],
+      "parentSkillId": "PHYS26-M20",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 1,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          26
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_20"
+    },
+    {
+      "id": "PHYS26-TS20-02",
+      "parentId": "PHYS26-TM20",
+      "title": "قانونا فاراداي ولنـز",
+      "skillId": "PHYS26-S20-02",
+      "skillIds": [
+        "PHYS26-S20-02"
+      ],
+      "parentSkillId": "PHYS26-M20",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 2,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          26
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_20"
+    },
+    {
+      "id": "PHYS26-TS20-03",
+      "parentId": "PHYS26-TM20",
+      "title": "المولدات والمحولات وتطبيقات الحث",
+      "skillId": "PHYS26-S20-03",
+      "skillIds": [
+        "PHYS26-S20-03"
+      ],
+      "parentSkillId": "PHYS26-M20",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 3,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          26
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_20"
+    },
+    {
+      "id": "PHYS26-TM21",
+      "parentId": null,
+      "title": "الكهرومغناطيسية",
+      "skillId": "PHYS26-M21",
+      "skillIds": [
+        "PHYS26-M21"
+      ],
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 21,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          27
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_21"
+    },
+    {
+      "id": "PHYS26-TS21-01",
+      "parentId": "PHYS26-TM21",
+      "title": "ترابط المجالين الكهربائي والمغناطيسي",
+      "skillId": "PHYS26-S21-01",
+      "skillIds": [
+        "PHYS26-S21-01"
+      ],
+      "parentSkillId": "PHYS26-M21",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 1,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          27
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_21"
+    },
+    {
+      "id": "PHYS26-TS21-02",
+      "parentId": "PHYS26-TM21",
+      "title": "الموجات الكهرومغناطيسية وانتشارها",
+      "skillId": "PHYS26-S21-02",
+      "skillIds": [
+        "PHYS26-S21-02"
+      ],
+      "parentSkillId": "PHYS26-M21",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 2,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          27
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_21"
+    },
+    {
+      "id": "PHYS26-TS21-03",
+      "parentId": "PHYS26-TM21",
+      "title": "الطيف الكهرومغناطيسي وتطبيقاته",
+      "skillId": "PHYS26-S21-03",
+      "skillIds": [
+        "PHYS26-S21-03"
+      ],
+      "parentSkillId": "PHYS26-M21",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 3,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          27
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_21"
+    },
+    {
+      "id": "PHYS26-TM22",
+      "parentId": null,
+      "title": "نظرية الكم",
+      "skillId": "PHYS26-M22",
+      "skillIds": [
+        "PHYS26-M22"
+      ],
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 22,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          28
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_22"
+    },
+    {
+      "id": "PHYS26-TS22-01",
+      "parentId": "PHYS26-TM22",
+      "title": "تكميم الطاقة وإشعاع الجسم الأسود",
+      "skillId": "PHYS26-S22-01",
+      "skillIds": [
+        "PHYS26-S22-01"
+      ],
+      "parentSkillId": "PHYS26-M22",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 1,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          28
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_22"
+    },
+    {
+      "id": "PHYS26-TS22-02",
+      "parentId": "PHYS26-TM22",
+      "title": "التأثير الكهروضوئي والفوتونات",
+      "skillId": "PHYS26-S22-02",
+      "skillIds": [
+        "PHYS26-S22-02"
+      ],
+      "parentSkillId": "PHYS26-M22",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 2,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          28
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_22"
+    },
+    {
+      "id": "PHYS26-TS22-03",
+      "parentId": "PHYS26-TM22",
+      "title": "الطبيعة الموجية للجسيمات ومبادئ الكم",
+      "skillId": "PHYS26-S22-03",
+      "skillIds": [
+        "PHYS26-S22-03"
+      ],
+      "parentSkillId": "PHYS26-M22",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 3,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          28
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_22"
+    },
+    {
+      "id": "PHYS26-TM23",
+      "parentId": null,
+      "title": "الذرة والنماذج الذرية",
+      "skillId": "PHYS26-M23",
+      "skillIds": [
+        "PHYS26-M23"
+      ],
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 23,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          29
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_23"
+    },
+    {
+      "id": "PHYS26-TS23-01",
+      "parentId": "PHYS26-TM23",
+      "title": "النماذج الذرية والتجارب المؤسسة لها",
+      "skillId": "PHYS26-S23-01",
+      "skillIds": [
+        "PHYS26-S23-01"
+      ],
+      "parentSkillId": "PHYS26-M23",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 1,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          29
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_23"
+    },
+    {
+      "id": "PHYS26-TS23-02",
+      "parentId": "PHYS26-TM23",
+      "title": "نموذج بور ومستويات الطاقة",
+      "skillId": "PHYS26-S23-02",
+      "skillIds": [
+        "PHYS26-S23-02"
+      ],
+      "parentSkillId": "PHYS26-M23",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 2,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          29
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_23"
+    },
+    {
+      "id": "PHYS26-TS23-03",
+      "parentId": "PHYS26-TM23",
+      "title": "الأطياف الذرية والانبعاث والامتصاص",
+      "skillId": "PHYS26-S23-03",
+      "skillIds": [
+        "PHYS26-S23-03"
+      ],
+      "parentSkillId": "PHYS26-M23",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 3,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          29
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_23"
+    },
+    {
+      "id": "PHYS26-TM24",
+      "parentId": null,
+      "title": "إلكترونيات الحالة الصلبة",
+      "skillId": "PHYS26-M24",
+      "skillIds": [
+        "PHYS26-M24"
+      ],
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 24,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          30
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_24"
+    },
+    {
+      "id": "PHYS26-TS24-01",
+      "parentId": "PHYS26-TM24",
+      "title": "أشباه الموصلات والخصائص الكهربائية",
+      "skillId": "PHYS26-S24-01",
+      "skillIds": [
+        "PHYS26-S24-01"
+      ],
+      "parentSkillId": "PHYS26-M24",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 1,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          30
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_24"
+    },
+    {
+      "id": "PHYS26-TS24-02",
+      "parentId": "PHYS26-TM24",
+      "title": "الوصلة الثنائية والصمام الثنائي",
+      "skillId": "PHYS26-S24-02",
+      "skillIds": [
+        "PHYS26-S24-02"
+      ],
+      "parentSkillId": "PHYS26-M24",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 2,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          30
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_24"
+    },
+    {
+      "id": "PHYS26-TS24-03",
+      "parentId": "PHYS26-TM24",
+      "title": "الترانزستور والتطبيقات الإلكترونية",
+      "skillId": "PHYS26-S24-03",
+      "skillIds": [
+        "PHYS26-S24-03"
+      ],
+      "parentSkillId": "PHYS26-M24",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 3,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          30
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_24"
+    },
+    {
+      "id": "PHYS26-TM25",
+      "parentId": null,
+      "title": "الفيزياء النووية",
+      "skillId": "PHYS26-M25",
+      "skillIds": [
+        "PHYS26-M25"
+      ],
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 25,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          31
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_25"
+    },
+    {
+      "id": "PHYS26-TS25-01",
+      "parentId": "PHYS26-TM25",
+      "title": "مكونات النواة والنظائر والكتلة النووية",
+      "skillId": "PHYS26-S25-01",
+      "skillIds": [
+        "PHYS26-S25-01"
+      ],
+      "parentSkillId": "PHYS26-M25",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 1,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          31
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_25"
+    },
+    {
+      "id": "PHYS26-TS25-02",
+      "parentId": "PHYS26-TM25",
+      "title": "النشاط الإشعاعي والاضمحلال ونصف العمر",
+      "skillId": "PHYS26-S25-02",
+      "skillIds": [
+        "PHYS26-S25-02"
+      ],
+      "parentSkillId": "PHYS26-M25",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 2,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          31
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_25"
+    },
+    {
+      "id": "PHYS26-TS25-03",
+      "parentId": "PHYS26-TM25",
+      "title": "الانشطار والاندماج والطاقة النووية",
+      "skillId": "PHYS26-S25-03",
+      "skillIds": [
+        "PHYS26-S25-03"
+      ],
+      "parentSkillId": "PHYS26-M25",
+      "pathId": "p_1777779653351",
+      "subjectId": "sub_1784980706034",
+      "sectionId": null,
+      "order": 3,
+      "showOnPlatform": false,
+      "isLocked": true,
+      "lessonIds": [],
+      "quizIds": [],
+      "libraryItemIds": [],
+      "status": "PROPOSAL_NOT_IMPORTED",
+      "sourceStatus": "MISSING_FOUNDATION_CHAPTER",
+      "sourceLessonNumbers": {
+        "foundation": [],
+        "collection": [
+          31
+        ]
+      },
+      "aiContext": {
+        "status": "NOT_AUTHORED",
+        "requiredChecks": [
+          "definition_from_source",
+          "law_or_relation_from_source",
+          "units_and_conversion_from_source",
+          "validity_conditions_from_source",
+          "graphs_diagrams_and_direction_if_applicable",
+          "worked_example_from_source",
+          "common_errors_from_source",
+          "source_page_reference"
+        ],
+        "sourceText": null
+      },
+      "plannedSectionId": "sec_sub_physics_25"
+    }
+  ]
+}

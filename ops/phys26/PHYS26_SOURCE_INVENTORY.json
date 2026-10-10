@@ -1,0 +1,77 @@
+{
+  "project": "PHYS26",
+  "status": "BASELINE_SOURCE_ONLY",
+  "checkedOn": "2026-10-08",
+  "sources": [
+    {
+      "filename": "كتاب تأسيس يلو للفيزياء 26.pdf",
+      "pages": 37,
+      "bytes": 14480159,
+      "sha256": "15f5756d3b24ebe9dfff50425b97d85881c8275a111f69c4c995dae6a7afd626",
+      "role": "foundation",
+      "indexedLessons": 13,
+      "coverage": "first/second secondary through thermodynamics; third-secondary content explicitly missing"
+    },
+    {
+      "filename": "كتاب تجميعات يلو للفيزياء 26 - المعدل.pdf",
+      "pages": 162,
+      "bytes": 14615731,
+      "sha256": "5faa723e8485223dcae8b926e0e6c279915d8f6e3d8ece890263a62c04837616",
+      "role": "question_bank",
+      "indexedLessons": 31,
+      "sectionsPerLesson": "1_or_2_actual",
+      "actualFirstSections": 31,
+      "actualSecondSections": 30,
+      "singleSectionLessonNumbers": [
+        25
+      ]
+    },
+    {
+      "filename": "ملخصات متنوعة للفيزياء - يلو 26.pdf",
+      "pages": 77,
+      "bytes": 15979454,
+      "sha256": "22c71dd6c646a91e27a1862f41641b091f15fc741b4e2bf9cc4fe389d9dfc54d",
+      "role": "supplemental_reference",
+      "note": "laws, units, definitions, devices, constants; does not substitute missing full foundation"
+    }
+  ],
+  "taxonomyCandidate": {
+    "mainSkills": 25,
+    "subSkills": 92,
+    "collectionLessonCoverage": 31,
+    "verifiedIdentityCountsOnly": true,
+    "sourceMappingPendingDetailedReview": true
+  },
+  "productionBaseline": {
+    "verifiedAt": "2026-10-08",
+    "database": "almeaa",
+    "readOnly": true,
+    "subjectId": "sub_1784980706034",
+    "subjectName": "الفيزياء",
+    "pathId": "p_1777779653351",
+    "questions": 0,
+    "genericSkillRows": 9,
+    "genericSubskillRows": 0,
+    "subjectQuizRows": 0,
+    "skillprogressRowsReferencingLegacySkillsOrSubject": 36,
+    "protectLegacySkillIds": true,
+    "reuseLegacyIdsForNewTaxonomy": false
+  },
+  "sourceLicensing": {
+    "commercialReuseAuthorization": "NOT_VERIFIED",
+    "publicationRestrictedUntilAuthorized": true
+  },
+  "extraction": {
+    "sourceOccurrences": 2064,
+    "verifiedQuestions": 0,
+    "quarantined": 4,
+    "privateCropCandidates": 2064,
+    "privateCropStructuralRiskFlags": 576,
+    "privateTrimProposals": 399,
+    "note": "576 conservative geometry risk candidates pending visual QA, not a certified question quarantine or imported question count",
+    "numberedSourcePositions": 2064,
+    "imageCandidateCount": 2064,
+    "quarantineInterpretation": "2 source-diagram original-page concerns and 2 source answer/wording anomalies; not certified question count"
+  },
+  "safety": "NO_PRODUCTION_WRITES"
+}

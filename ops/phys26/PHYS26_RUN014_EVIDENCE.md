@@ -1,0 +1,13 @@
+# PHYS26 RUN014 — offline ambiguous-choice visual triage (2026-10-09)
+
+Branch head inspected: e510830cd4a4491d93927597807c003d39533ed4. Main: 74fc8652206bb47e9d3fc104b86393ae80481bf9. PR #462 remains draft/blocked, 60 ahead / 44 behind; no merge or production writes.
+
+Private RUN013 400-crop archive SHA-256: `0b3d45ea2d94530c1e8e3e6833a219e5c19c3908917a0cd073b27dc6e5bbe591`. Reverified 400/400 crop SHA-256 matches and archive integrity offline. Reexamined all 32 images whose native option segmentation was unsafe: all 32 visibly show A/B/C/D at contact-sheet scale, but native segmentation remains unsafe and none is a verified option transcription. Nine were already visual samples in RUN013; **23 newly inspected source images** are counted, not 32. Independent provisional physics reasoning agreed with unverified key candidates for 28/32, **20 new distinct** beyond RUN013's visual sample. Neither printed footer keys nor full option text were newly certified. Zero canonical mastered questions, approved drills, imports, or production writes.
+
+Two NEW source-review holds (provisional, not editorially adjudicated):
+- `PHYS26-COL26-L02-Q074` (PDF p17): At the graph intersection both objects share location/time, so an option asserting one is ahead is false; a separate option asserts a collision, which is not entailed by the graph without an additional same-path assumption. Candidate key B requires independent original-footer check. Hold for editorial interpretation, not a publisher-error verdict.
+- `PHYS26-COL26-L06-Q004` (PDF p32): The graph shows half-maximum height at t=3 s on ascent, but a 12 s total flight would give 75% of maximum height at t=3 s. For half height, the implied total flight is about 20.49 s, absent from options. Original graph labels/units and footer require independent editorial verification. Do not silently fix.
+
+RUN013 identified 3 earlier holds locally (`L07-Q011`, `L19-Q005`, `L16-Q009`) that remain absent from remote register due to a prior protected write block. Together with four original RUN012 holds and these two new holds, **9 unique items require hold if reconciled**, but only four are machine-enforced in the current remote CI until the new register/gate is safely merged. Rights to redistribute remain unverified; private source question text and images are NOT committed.
+
+This is a metadata-only review checkpoint. Next: reconcile all nine quarantines into a fail-closed gate; reopen source footer evidence; correct option segmentation by image-aware human proofreading; assign exact subskills, second-review, and obtain licensing before any release. All source books remain out of GitHub.
