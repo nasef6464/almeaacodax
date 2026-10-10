@@ -2,6 +2,9 @@
 
 | إذا أردت تغيير... | ابدأ من... | لا تبدأ من... |
 |---|---|---|
+| هوية وتجميع خلايا مصفوفة المهارات | utils/classSkillMatrix.ts ثم ClassSkillsMapPanel.tsx | تجميع أسماء المهارات عبر المواد أو تعديل النتائج |
+| نبض المعلم الاختياري | components/classroom/ClassroomOptionalPulse.tsx | إضافة polling أو إرسال دفعة تلقائيًا |
+| أولويات المشرف وملخص المدير | SupervisorFollowUpPriorities.tsx وSchoolExecutiveSummary.tsx | توسيع نطاق المستخدم أو تغيير مصادر النتائج |
 | مجموعات قوائم اللوحات المصرح بها | components/DashboardSectionNav.tsx | تغيير الصلاحيات أو المسارات |
 | عرض قوائم الأدوار تدريجيًا مع طباعة كاملة | components/DisplayListControls.tsx | حذف النتائج أو تقليل مصدر التصدير |
 | عرض تكليفات الطالب المطلوبة والمنجزة | components/SchoolTestsPanel.tsx | تغيير مصدر النتائج أو صلاحياتها |

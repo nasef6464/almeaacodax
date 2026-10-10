@@ -1,6 +1,6 @@
 # Optional classroom pulse and school insights — 2026-10-10
 
-Status: PARTIAL. Local scoped behavior verified; exact-head CI, publication and published checks pending.
+Status: VERIFIED for bounded teacher/supervisor behavior; PARTIAL for director positive published summary pending an authorized detailed-report persona. Full project remains PARTIAL.
 
 Base main59ce32620341dd9ba81eeb54223116233cab9b6d. Owner requested continuing the school improvements and explicitly made classroom pulse optional. Prior #512/#513 presentation closure reused without repeating50views.
 
@@ -15,10 +15,18 @@ Base main59ce32620341dd9ba81eeb54223116233cab9b6d. Owner requested continuing th
 
 Actual React/esbuild/Playwright fixture PASS:15skills, same-name cross-subject separation, exact20/50/100known values, path/subject/class filters and caller wiring, allcolumns reachable, selection callbacks, unmeasured exclusion, default-closed pulse, lastclosed-only/noactive leaks, session reset, live-only support action, separate director sources and realzero average.1280/390 no horizontal overflow, zero page errors.
 
-Existing staff-panel and role-dashboard presentation fixtures PASS; reports role20, supervisor14checks plus9scope behaviors/3consumers, skill analysis3, classroom intervention27, classroom G2contract12 PASS. Typecheck/build status recorded at final gate. No new dependencies.
+Existing staff-panel and role-dashboard presentation fixtures PASS; reports role20, supervisor14checks plus9scope behaviors/3consumers, skill analysis3, classroom intervention27, classroom G2contract12 PASS. Final local typecheck and production build PASS. No new dependencies.
 
 ## Pending and limits
 
-Exact-head CI, protected merge, matching deployment and bounded real published checks pending. This fixture does not certify a20student classroom, production scale, causal improvement or complete project readiness. No API/routes/auth/RBAC/scoring/payment/migration/persisted semantics changes; no business writes, new polling/AI or paid services. No measured bandwidth saving claimed.
+Exact-head CI on21bc3512e4a28856d11d045371cdc754a48b3b08:26SUCCESS/4conditional skips/all3requiredPASS. Protected #514 squash merged d92e42d3d2a0ef21775e48ff1174cd9e0d86f199; frontend/Render/canonical/direct matched,DB/RedisPASS and all4main workflowsSUCCESS. This fixture does not certify a20student classroom, production scale, causal improvement or complete project readiness. No API/routes/auth/RBAC/scoring/payment/migration/persisted semantics changes; no business writes, new polling/AI or paid services. No measured bandwidth saving claimed.
 
 Unique participation rate, director per-class growth and causal intervention tracking are not exposed by the current bounded report and remain DEFERRED; do not fabricate them from attempts or daily accuracy. Skill matrix collision pagination has deterministic fixture evidence; published data may not contain the same synthetic collision.
+
+## Published evidence and remaining authorization
+
+Six unique1280/390 display views across teacher pulse, settled supervisor priorities and subject-filtered skills: zero JS errors/overflow/business writes. Early supervisor loading snapshots were replaced after settled3measured/104unmeasured; not counted twice. Unmeasured navigation PASS and subject-filtered matrix3columnsPASS. Teacher last ended batch120answers/25% matches persisted aggregate, defaultclosed and ended-session supporthidden; opening/closing added0aggregate requests. Mobile visual review PASS. Synthetic cross-subject collision/15column pagination remain fixture evidence, not the live dataset. No full20student certification or measured bandwidth saving claimed.
+
+Trial director has aggregate-report permission but lacksSCHOOL_REPORTS_DETAILED_VIEW. Published detailed-report API403 and hidden button/summaryPASS; positive published director summaryNOT_EXERCISED. Do not change permissions implicitly. Owner approval question for enabling only this permission on the existing trial school director is pending; elapsed time is not approval. The actual director caller's isolated fixture verifies zero automatic reads, manual authorized read, error then retry, bounded source-separated summary, truezero and1280/390.
+
+Original harness expected the detailed button before checking the actual grant and timed out; inspection showed the missing grant. No protection was weakened. Existing completed teacher/supervisor checks reused. Existing role UI and staff fixtures reused; retries are not new checks.
