@@ -58,6 +58,7 @@ check("secure recovery releases only verified account and source before password
   assertIncludes(files.loginProtection, "loginAccountLimiter.resetKey(digest(identity))");
   assertIncludes(files.loginProtection, "store.clear(sourceKey(req))");
   assertIncludes(files.auth, "/reset-password?token=${encodeURIComponent(token)}");
+  assertIncludes(files.auth, "processNotificationDeliveryById(deliveryId)");
 });
 
 check("successful login and password reset clear failed login state", () => {

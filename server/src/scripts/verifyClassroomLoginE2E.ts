@@ -3,10 +3,12 @@ import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import bcrypt from "bcryptjs";
 import mongoose from "mongoose";
+import http from "node:http";
 import type { AddressInfo } from "node:net";
 import { createApp } from "../app.js";
 import { env } from "../config/env.js";
 import { UserModel } from "../models/User.js";
+import { NotificationDeliveryModel } from "../models/NotificationDelivery.js";
 import { closeRedisClients, createRedisClient } from "../config/redis.js";
 import { ipKeyGenerator } from "express-rate-limit";
 
@@ -22,6 +24,17 @@ await mongoose.connect(env.MONGODB_URI);
 const server = createApp().listen(0, "127.0.0.1");
 await new Promise<void>((resolve) => server.once("listening", resolve));
 const base = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
+const mailbox: any[] = [];
+const mailServer = http.createServer(async (req, res) => {
+  const chunks: Buffer[] = [];
+  for await (const chunk of req) chunks.push(Buffer.from(chunk));
+  mailbox.push(JSON.parse(Buffer.concat(chunks).toString()));
+  res.setHeader("content-type", "application/json"); res.end(JSON.stringify({ id: "isolated-mail-delivery" }));
+}).listen(0, "127.0.0.1");
+await new Promise<void>((resolve) => mailServer.once("listening", resolve));
+process.env.EMAIL_PROVIDER = "http";
+process.env.EMAIL_WEBHOOK_URL = `http://127.0.0.1:${(mailServer.address() as AddressInfo).port}`;
+process.env.EMAIL_WEBHOOK_TOKEN = "";
 try {
   const passwordHash = await bcrypt.hash(password, 10);
   await UserModel.insertMany(emails.map((email, i) => ({ email, name: `CI classroom ${i}`, passwordHash, role: "student", isActive: true })));
@@ -55,10 +68,20 @@ try {
     assert((await redis.pttl(key)) > 0, "distributed failure keys expire");
   }
   assert.equal((await login(emails[1], password, "198.51.100.5")).status, 200);
-  const recoveryToken = createHash("sha256").update(`${run}-isolated-reset`).digest("hex");
-  await UserModel.updateOne({ email: emails[0] }, { $set: { passwordResetTokenHash: createHash("sha256").update(recoveryToken).digest("hex"), passwordResetExpiresAt: Date.now() + 60000, passwordResetUsedAt: null } });
+  const forgot = await fetch(`${base}/api/auth/forgot-password`, { method: "POST", headers: { "content-type": "application/json", "x-forwarded-for": "198.51.100.2", "x-csrf-token": csrfToken, cookie: `almeaa_csrf_token=${csrfToken}` }, body: JSON.stringify({ email: emails[0] }) });
+  assert.equal(forgot.status, 200); assert.equal(mailbox.length, 1, "forgot-password must actually dispatch its own email");
+  assert.equal(mailbox[0].recipientEmail, emails[0]);
+  const recoveryUrl = new URL(String(mailbox[0].body).match(/https?:\/\/\S+/)![0]);
+  assert.equal(recoveryUrl.origin, new URL(env.CLIENT_URL).origin);
+  assert.equal(recoveryUrl.pathname, "/reset-password");
+  const recoveryToken = recoveryUrl.searchParams.get("token")!;
+  assert(recoveryToken.length >= 32);
+  assert.equal((await NotificationDeliveryModel.findOne({ recipientEmail: emails[0], channel: "email" }).lean())?.status, "sent");
   const reset = (token: string) => fetch(`${base}/api/auth/reset-password`, { method: "POST", headers: { "content-type": "application/json", "x-forwarded-for": "198.51.100.2", "x-csrf-token": csrfToken, cookie: `almeaa_csrf_token=${csrfToken}` }, body: JSON.stringify({ token, password: "Recovered-classroom-password-43!" }) });
   assert.equal((await reset("x".repeat(64))).status, 400, "invalid reset cannot release login protection");
+  await UserModel.updateOne({ email: emails[0] }, { $set: { passwordResetExpiresAt: Date.now() - 1 } });
+  assert.equal((await reset(recoveryToken)).status, 400, "expired reset cannot release login protection");
+  await UserModel.updateOne({ email: emails[0] }, { $set: { passwordResetExpiresAt: Date.now() + 60000 } });
   assert.equal((await login(emails[0], password, "198.51.100.2")).status, 429);
   assert.equal((await reset(recoveryToken)).status, 200);
   assert.equal((await login(emails[0], "Recovered-classroom-password-43!", "198.51.100.2")).status, 200, "secure recovery releases account and recovery source immediately");
@@ -71,6 +94,8 @@ try {
   console.log("PASS: actual 40 concurrent Mongo/Redis/bcrypt/cookie/CSRF student logins; 10/10 budgets; secure single-use recovery; source isolation; disabled account and CSRF rejection");
 } finally {
   await new Promise<void>((resolve, reject) => server.close((error) => error ? reject(error) : resolve()));
+  await new Promise<void>((resolve, reject) => mailServer.close((error) => error ? reject(error) : resolve()));
+  await NotificationDeliveryModel.deleteMany({ recipientEmail: { $in: emails } });
   await UserModel.deleteMany({ email: { $in: emails } });
   await mongoose.disconnect(); await closeRedisClients();
 }
