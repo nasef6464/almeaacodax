@@ -259,3 +259,15 @@ Next heavy gate:
 - لا production mutation. R2 parity وlive topicId parity ما زالا PENDING.
 - SHA-256 للـmanifest المحلي الكامل: a63e46cc0e6a7e61ec9a5234b5d5dce6d4dd2a99766a2d6032905585f8a05fad.
 - الحالة: YLM26 NOT GREEN. التالي: حسم التعارضات والـHOLDs وإغلاق بقية 176 صفًا ثم R2/topic parity والـreversible manifest.
+
+
+## RUN79 — 2026-10-10
+
+- أُغلق محتوى **150 سؤال YLM26 جديدًا** كـ FINAL_REVIEWED_CONTENT، دون احتساب أي إعادة مشاهدة أو review-event مكرر. التراكمي الفريد أصبح **300/326**، والمتبقي **26**.
+- الحقول المكتملة لكل صف: source/image identity، answer، main/subskill، difficulty، explanation، whyCorrect، option-specific whyOthersWrong، hint، solvingStrategy، commonMistakes، AI Context، foundationReference، questionFingerprint، teachingFingerprint.
+- توزيع صعوبة الدفعة: **84 Easy / 56 Medium / 10 Hard**.
+- 13 صفًا أعيد حسمها مباشرة من قصاصات المصدر في RUN79، و137 صفًا جُمعت فقط من أدلة مراجعة مباشرة سابقة للكتاب الرسمي دون إعادة عدّها كمشاهدات جديدة.
+- تصحيحات تصنيف مصدرية مثبتة في المراجعة: P013-Q09 -> 03_01، P023-Q14 -> 06_01، P047-Q07 -> 14_04، P047-Q09 -> 14_04. كما ثُبتت إجابات P006-Q07=B وP007-Q01=B وP076-Q14=B في أدلة المراجعة.
+- بقي HOLDان مصدريان fail-closed: P050-Q04 وP066-Q14. لم يحدث production mutation. R2 parity وlive topicId parity ما زالا PENDING.
+- manifest SHA-256: 0649da0e3fea7332e938b38ffd9749a04cecd094a1290585d4522897cd4bf13a.
+- الحالة: YLM26 NOT GREEN. التالي: إغلاق الـ26 المتبقية، ثم R2/topicId parity والـreversible manifest، ثم COL26 فور تحقق Green.
