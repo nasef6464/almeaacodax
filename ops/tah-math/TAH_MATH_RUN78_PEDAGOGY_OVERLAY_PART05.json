@@ -1,0 +1,553 @@
+{
+  "project": "TAH-MATH",
+  "run": "RUN78",
+  "part": 5,
+  "source": "source-reviewed RUN19/RUN28/RUN49 existing evidence",
+  "canonicalApprovedNew": 0,
+  "productionMutation": false,
+  "records": [
+    {
+      "questionCode": "TAH-MATH-YLM26-P023-Q10",
+      "sourceItemId": "YLM26-PDF022-P023-N10",
+      "imageHash": "0ae700f6377dea453cc1ca42531b30aac526c7ea9be0ac0cc194d244bbc139dd",
+      "mapping": {
+        "skillId": "skill_tah_math_07",
+        "skillName": "الدائرة",
+        "subSkillId": "sub_tah_math_07_02",
+        "subSkillName": "الأوتار والمماسات والقواطع والقوى في الدائرة"
+      },
+      "foundationReference": {
+        "lessonNumber": 8,
+        "lessonTitle": "الدائرة",
+        "subSkillId": "sub_tah_math_07_02",
+        "subSkillName": "الأوتار والمماسات والقواطع والقوى في الدائرة"
+      },
+      "questionText": "في الشكل، ما قياس الزاوية A؟",
+      "options": {
+        "A": "30°",
+        "B": "60°",
+        "C": "90°",
+        "D": "120°"
+      },
+      "answerLetter": "A",
+      "correctOptionIndex": 0,
+      "explanation": "الزاوية الخارجية=(90°−30°)/2=30°.",
+      "whyCorrect": "الزاوية الخارجية=(90°−30°)/2=30°.",
+      "whyOthersWrong": {
+        "B": "60° هو فرق القوسين دون تنصيف.",
+        "C": "90° القوس الأكبر لا الزاوية.",
+        "D": "120° مجموع القوسين وليس نصف الفرق."
+      },
+      "hint": "طبق نصف فرق القوسين.",
+      "solvingStrategy": "تطبيق قواعد الأوتار والمماسات والقواطع والقوى في الدائرة",
+      "commonMistakes": [
+        "60° هو فرق القوسين دون تنصيف.",
+        "90° القوس الأكبر لا الزاوية.",
+        "120° مجموع القوسين وليس نصف الفرق."
+      ],
+      "difficulty": "medium",
+      "aiContext": {
+        "readableText": "في الشكل، ما قياس الزاوية A؟",
+        "speechText": "في الشكل، ما قياس الزاوية A؟",
+        "visualDescription": "سؤال تحصيلي رياضيات مع 4 خيارات مصورة داخل الصورة.",
+        "concepts": [
+          "الدائرة",
+          "الأوتار والمماسات والقواطع والقوى في الدائرة"
+        ],
+        "requiredData": [
+          "في الشكل، ما قياس الزاوية A؟",
+          "A: 30°",
+          "B: 60°",
+          "C: 90°",
+          "D: 120°",
+          "كتاب تأسيس يلو للرياضيات 26"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf"
+      },
+      "questionFingerprint": "YLM26|YLM26-PDF022-P023-N10|0ae700f6377dea453cc1ca42531b30aac526c7ea9be0ac0cc194d244bbc139dd",
+      "teachingFingerprint": "sub_tah_math_07_02|تطبيق قواعد الأوتار والمماسات والقواطع والقوى في الدائرة",
+      "sourceEvidence": "ops/tah-math/TAH_MATH_RUN49_10_OPTION_PEDAGOGY_PART1.json",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "sourcePedagogyReviewed": true,
+      "liveR2Parity": "NOT_TESTED",
+      "liveTopicIdParity": "NOT_TESTED",
+      "stage": "SOURCE_GROUNDED_PEDAGOGY_STAGED_NOT_FINAL",
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P023-Q11",
+      "sourceItemId": "YLM26-PDF022-P023-N11",
+      "imageHash": "9c23ac74b6a150431da7fc4ea1c40e409a347775c6bbdc800eaf7b98a73a71b4",
+      "mapping": {
+        "skillId": "skill_tah_math_07",
+        "skillName": "الدائرة",
+        "subSkillId": "sub_tah_math_07_02",
+        "subSkillName": "الأوتار والمماسات والقواطع والقوى في الدائرة"
+      },
+      "foundationReference": {
+        "lessonNumber": 8,
+        "lessonTitle": "الدائرة",
+        "subSkillId": "sub_tah_math_07_02",
+        "subSkillName": "الأوتار والمماسات والقواطع والقوى في الدائرة"
+      },
+      "questionText": "في الشكل، إذا كان AB مماسًا وm∠ABD=125°، فما قياس القوس BCD؟",
+      "options": {
+        "A": "62.5°",
+        "B": "125°",
+        "C": "150°",
+        "D": "250°"
+      },
+      "answerLetter": "D",
+      "correctOptionIndex": 3,
+      "explanation": "القوس المقابل لزاوية المماس والوتر=2×125°=250°.",
+      "whyCorrect": "القوس المقابل لزاوية المماس والوتر=2×125°=250°.",
+      "whyOthersWrong": {
+        "A": "62.5° نصف زاوية المماس خطأ.",
+        "B": "125° قياس الزاوية لا القوس.",
+        "C": "150° لا يساوي ضعف 125°."
+      },
+      "hint": "تذكر أن زاوية المماس والوتر نصف القوس المقابل.",
+      "solvingStrategy": "تطبيق قواعد الأوتار والمماسات والقواطع والقوى في الدائرة",
+      "commonMistakes": [
+        "62.5° نصف زاوية المماس خطأ.",
+        "125° قياس الزاوية لا القوس.",
+        "150° لا يساوي ضعف 125°."
+      ],
+      "difficulty": "medium",
+      "aiContext": {
+        "readableText": "في الشكل، إذا كان AB مماسًا وm∠ABD=125°، فما قياس القوس BCD؟",
+        "speechText": "في الشكل، إذا كان AB مماسًا وm∠ABD=125°، فما قياس القوس BCD؟",
+        "visualDescription": "سؤال تحصيلي رياضيات مع 4 خيارات مصورة داخل الصورة.",
+        "concepts": [
+          "الدائرة",
+          "الأوتار والمماسات والقواطع والقوى في الدائرة"
+        ],
+        "requiredData": [
+          "في الشكل، إذا كان AB مماسًا وm∠ABD=125°، فما قياس القوس BCD؟",
+          "A: 62.5°",
+          "B: 125°",
+          "C: 150°",
+          "D: 250°",
+          "كتاب تأسيس يلو للرياضيات 26"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf"
+      },
+      "questionFingerprint": "YLM26|YLM26-PDF022-P023-N11|9c23ac74b6a150431da7fc4ea1c40e409a347775c6bbdc800eaf7b98a73a71b4",
+      "teachingFingerprint": "sub_tah_math_07_02|تطبيق قواعد الأوتار والمماسات والقواطع والقوى في الدائرة",
+      "sourceEvidence": "ops/tah-math/TAH_MATH_RUN49_10_OPTION_PEDAGOGY_PART1.json",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "sourcePedagogyReviewed": true,
+      "liveR2Parity": "NOT_TESTED",
+      "liveTopicIdParity": "NOT_TESTED",
+      "stage": "SOURCE_GROUNDED_PEDAGOGY_STAGED_NOT_FINAL",
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P023-Q12",
+      "sourceItemId": "YLM26-PDF022-P023-N12",
+      "imageHash": "a72aaf10565da4893fe2c187046d7f682e11c7e18e038b9125032a674d2f1a92",
+      "mapping": {
+        "skillId": "skill_tah_math_07",
+        "skillName": "الدائرة",
+        "subSkillId": "sub_tah_math_07_02",
+        "subSkillName": "الأوتار والمماسات والقواطع والقوى في الدائرة"
+      },
+      "foundationReference": {
+        "lessonNumber": 8,
+        "lessonTitle": "الدائرة",
+        "subSkillId": "sub_tah_math_07_02",
+        "subSkillName": "الأوتار والمماسات والقواطع والقوى في الدائرة"
+      },
+      "questionText": "في الشكل الذي يحوي وترين متقاطعين داخل الدائرة، ما قيمة x؟",
+      "options": {
+        "A": "2",
+        "B": "3",
+        "C": "6",
+        "D": "9"
+      },
+      "answerLetter": "A",
+      "correctOptionIndex": 0,
+      "explanation": "9x=3×6، لذا x=2.",
+      "whyCorrect": "9x=3×6، لذا x=2.",
+      "whyOthersWrong": {
+        "B": "3 جزء معلوم من الوتر لا x.",
+        "C": "6 جزء معلوم من الوتر الثاني لا x.",
+        "D": "9 هو عامل الضرب بجانب x وليس قيمته."
+      },
+      "hint": "ساوِ حاصل ضرب جزأي الوترين المتقاطعين.",
+      "solvingStrategy": "تطبيق قواعد الأوتار والمماسات والقواطع والقوى في الدائرة",
+      "commonMistakes": [
+        "3 جزء معلوم من الوتر لا x.",
+        "6 جزء معلوم من الوتر الثاني لا x.",
+        "9 هو عامل الضرب بجانب x وليس قيمته."
+      ],
+      "difficulty": "medium",
+      "aiContext": {
+        "readableText": "في الشكل الذي يحوي وترين متقاطعين داخل الدائرة، ما قيمة x؟",
+        "speechText": "في الشكل الذي يحوي وترين متقاطعين داخل الدائرة، ما قيمة x؟",
+        "visualDescription": "سؤال تحصيلي رياضيات مع 4 خيارات مصورة داخل الصورة.",
+        "concepts": [
+          "الدائرة",
+          "الأوتار والمماسات والقواطع والقوى في الدائرة"
+        ],
+        "requiredData": [
+          "في الشكل الذي يحوي وترين متقاطعين داخل الدائرة، ما قيمة x؟",
+          "A: 2",
+          "B: 3",
+          "C: 6",
+          "D: 9",
+          "كتاب تأسيس يلو للرياضيات 26"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf"
+      },
+      "questionFingerprint": "YLM26|YLM26-PDF022-P023-N12|a72aaf10565da4893fe2c187046d7f682e11c7e18e038b9125032a674d2f1a92",
+      "teachingFingerprint": "sub_tah_math_07_02|تطبيق قواعد الأوتار والمماسات والقواطع والقوى في الدائرة",
+      "sourceEvidence": "ops/tah-math/TAH_MATH_RUN49_10_OPTION_PEDAGOGY_PART1.json",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "sourcePedagogyReviewed": true,
+      "liveR2Parity": "NOT_TESTED",
+      "liveTopicIdParity": "NOT_TESTED",
+      "stage": "SOURCE_GROUNDED_PEDAGOGY_STAGED_NOT_FINAL",
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P025-Q01",
+      "sourceItemId": "YLM26-PDF024-P025-N01",
+      "imageHash": "6843ceea84dc85597f18311ddb7d80b0dbfaf2e325cf5796d88a9f39834f60c7",
+      "mapping": {
+        "skillId": "skill_tah_math_08",
+        "skillName": "الأعداد الحقيقية والدوال والمتباينات",
+        "subSkillId": "sub_tah_math_08_01",
+        "subSkillName": "مجموعات الأعداد الحقيقية وخصائصها والعلاقات والدوال"
+      },
+      "foundationReference": {
+        "lessonNumber": 9,
+        "lessonTitle": "الأعداد الحقيقية والدوال",
+        "subSkillId": "sub_tah_math_08_01",
+        "subSkillName": "مجموعات الأعداد الحقيقية وخصائصها والعلاقات والدوال"
+      },
+      "questionText": "ما العدد الذي ينتمي إلى مجموعة الأعداد غير النسبية؟",
+      "options": {
+        "A": "√7",
+        "B": "22/7",
+        "C": "2",
+        "D": "0.\\overline{45}"
+      },
+      "answerLetter": "A",
+      "correctOptionIndex": 0,
+      "explanation": "√7 غير نسبي؛ الخيارات الأخرى نسبية.",
+      "whyCorrect": "√7 غير نسبي؛ الخيارات الأخرى نسبية.",
+      "whyOthersWrong": {
+        "B": "22/7 عدد نسبي لأنه نسبة عددين صحيحين.",
+        "C": "2 عدد صحيح وبالتالي نسبي.",
+        "D": "العدد العشري الدوري نسبي."
+      },
+      "hint": "العدد الدوري كسر نسبي، والجذر غير التام غير نسبي.",
+      "solvingStrategy": "تمييز العدد غير النسبي من خصائص التمثيل الكسري والعشري والجذور.",
+      "commonMistakes": [
+        "22/7 عدد نسبي لأنه نسبة عددين صحيحين.",
+        "2 عدد صحيح وبالتالي نسبي.",
+        "العدد العشري الدوري نسبي."
+      ],
+      "difficulty": "easy",
+      "aiContext": {
+        "readableText": "ما العدد الذي ينتمي إلى مجموعة الأعداد غير النسبية؟",
+        "speechText": "ما العدد الذي ينتمي إلى مجموعة الأعداد غير النسبية؟",
+        "visualDescription": "خيارات تتضمن √7 و22/7 و2 وعددًا عشريًا دوريًا.",
+        "concepts": [
+          "تمييز العدد غير النسبي من خصائص التمثيل الكسري والعشري والجذور."
+        ],
+        "requiredData": [
+          "ما العدد الذي ينتمي إلى مجموعة الأعداد غير النسبية؟",
+          "A: √7",
+          "B: 22/7",
+          "C: 2",
+          "D: 0.\\overline{45}",
+          "كتاب تأسيس يلو للرياضيات 26"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf"
+      },
+      "questionFingerprint": "YLM26|YLM26-PDF024-P025-N01|6843ceea84dc85597f18311ddb7d80b0dbfaf2e325cf5796d88a9f39834f60c7",
+      "teachingFingerprint": "sub_tah_math_08_01|تمييز العدد غير النسبي من خصائص التمثيل الكسري والعشري والجذور.",
+      "sourceEvidence": "ops/tah-math/TAH_MATH_RUN49_10_OPTION_PEDAGOGY_PART1.json",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "sourcePedagogyReviewed": true,
+      "liveR2Parity": "NOT_TESTED",
+      "liveTopicIdParity": "NOT_TESTED",
+      "stage": "SOURCE_GROUNDED_PEDAGOGY_STAGED_NOT_FINAL",
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P025-Q02",
+      "sourceItemId": "YLM26-PDF024-P025-N02",
+      "imageHash": "48e3655b5cf064962dd4be4a1ac21ce67f4642fff23b38b765f4416e34231f62",
+      "mapping": {
+        "skillId": "skill_tah_math_08",
+        "skillName": "الأعداد الحقيقية والدوال والمتباينات",
+        "subSkillId": "sub_tah_math_08_01",
+        "subSkillName": "مجموعات الأعداد الحقيقية وخصائصها والعلاقات والدوال"
+      },
+      "foundationReference": {
+        "lessonNumber": 9,
+        "lessonTitle": "الأعداد الحقيقية والدوال",
+        "subSkillId": "sub_tah_math_08_01",
+        "subSkillName": "مجموعات الأعداد الحقيقية وخصائصها والعلاقات والدوال"
+      },
+      "questionText": "إذا كان a = √3 وb = √2 وx = √(a² + b²)، فإلى أي مجموعة أعداد ينتمي x؟",
+      "options": {
+        "A": "N",
+        "B": "Q",
+        "C": "Z",
+        "D": "I"
+      },
+      "answerLetter": "D",
+      "correctOptionIndex": 3,
+      "explanation": "√(3+2)=√5 غير نسبي.",
+      "whyCorrect": "√(3+2)=√5 غير نسبي.",
+      "whyOthersWrong": {
+        "A": "√5 ليس طبيعيًا.",
+        "B": "√5 ليس نسبيًا.",
+        "C": "√5 ليس صحيحًا."
+      },
+      "hint": "عوّض عن a² وb² ثم حدّد نوع العدد الناتج.",
+      "solvingStrategy": "تبسيط جذر ثم تصنيف الناتج ضمن مجموعات الأعداد الحقيقية.",
+      "commonMistakes": [
+        "√5 ليس طبيعيًا.",
+        "√5 ليس نسبيًا.",
+        "√5 ليس صحيحًا."
+      ],
+      "difficulty": "easy",
+      "aiContext": {
+        "readableText": "إذا كان a = √3 وb = √2 وx = √(a² + b²)، فإلى أي مجموعة أعداد ينتمي x؟",
+        "speechText": "إذا كان a = √3 وb = √2 وx = √(a² + b²)، فإلى أي مجموعة أعداد ينتمي x؟",
+        "visualDescription": "سؤال جبري عن a = √3 وb = √2 وx = √(a²+b²) وتصنيف x.",
+        "concepts": [
+          "الأعداد الحقيقية والدوال",
+          "تبسيط جذر ثم تصنيف الناتج ضمن مجموعات الأعداد الحقيقية."
+        ],
+        "requiredData": [
+          "إذا كان a = √3 وb = √2 وx = √(a² + b²)، فإلى أي مجموعة أعداد ينتمي x؟",
+          "A: N",
+          "B: Q",
+          "C: Z",
+          "D: I",
+          "كتاب تأسيس يلو للرياضيات 26"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf"
+      },
+      "questionFingerprint": "YLM26|YLM26-PDF024-P025-N02|48e3655b5cf064962dd4be4a1ac21ce67f4642fff23b38b765f4416e34231f62",
+      "teachingFingerprint": "sub_tah_math_08_01|تبسيط جذر ثم تصنيف الناتج ضمن مجموعات الأعداد الحقيقية.",
+      "sourceEvidence": "ops/tah-math/TAH_MATH_RUN49_5_OPTION_PEDAGOGY_PART2A.json",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "sourcePedagogyReviewed": true,
+      "liveR2Parity": "NOT_TESTED",
+      "liveTopicIdParity": "NOT_TESTED",
+      "stage": "SOURCE_GROUNDED_PEDAGOGY_STAGED_NOT_FINAL",
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P025-Q03",
+      "sourceItemId": "YLM26-PDF024-P025-N03",
+      "imageHash": "3dd595898808842f005d36e93827fd928b9f6045617de0d75f896ef17068c39f",
+      "mapping": {
+        "skillId": "skill_tah_math_08",
+        "skillName": "الأعداد الحقيقية والدوال والمتباينات",
+        "subSkillId": "sub_tah_math_08_01",
+        "subSkillName": "مجموعات الأعداد الحقيقية وخصائصها والعلاقات والدوال"
+      },
+      "foundationReference": {
+        "lessonNumber": 9,
+        "lessonTitle": "الأعداد الحقيقية والدوال",
+        "subSkillId": "sub_tah_math_08_01",
+        "subSkillName": "مجموعات الأعداد الحقيقية وخصائصها والعلاقات والدوال"
+      },
+      "questionText": "ما الخاصية المستخدمة في العبارة a(b + c) = ab + ac؟",
+      "options": {
+        "A": "الضرب",
+        "B": "الإبدال",
+        "C": "التوزيع",
+        "D": "الجمع"
+      },
+      "answerLetter": "C",
+      "correctOptionIndex": 2,
+      "explanation": "a(b+c)=ab+ac خاصية التوزيع.",
+      "whyCorrect": "a(b+c)=ab+ac خاصية التوزيع.",
+      "whyOthersWrong": {
+        "A": "الضرب عملية لا اسم خاصية فك الأقواس.",
+        "B": "الإبدال لا يوزع على حدين.",
+        "D": "الجمع لا يفسر ضرب a في الحدين."
+      },
+      "hint": "لاحظ أن العامل خارج القوس ضُرب في كل حد داخل القوس.",
+      "solvingStrategy": "تمييز خاصية التوزيع في الأعداد الحقيقية.",
+      "commonMistakes": [
+        "الضرب عملية لا اسم خاصية فك الأقواس.",
+        "الإبدال لا يوزع على حدين.",
+        "الجمع لا يفسر ضرب a في الحدين."
+      ],
+      "difficulty": "easy",
+      "aiContext": {
+        "readableText": "ما الخاصية المستخدمة في العبارة a(b + c) = ab + ac؟",
+        "speechText": "ما الخاصية المستخدمة في العبارة a(b + c) = ab + ac؟",
+        "visualDescription": "عبارة جبرية على صورة a مضروبة في مجموع b وc.",
+        "concepts": [
+          "الأعداد الحقيقية والدوال",
+          "تمييز خاصية التوزيع في الأعداد الحقيقية."
+        ],
+        "requiredData": [
+          "ما الخاصية المستخدمة في العبارة a(b + c) = ab + ac؟",
+          "A: الضرب",
+          "B: الإبدال",
+          "C: التوزيع",
+          "D: الجمع",
+          "كتاب تأسيس يلو للرياضيات 26"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf"
+      },
+      "questionFingerprint": "YLM26|YLM26-PDF024-P025-N03|3dd595898808842f005d36e93827fd928b9f6045617de0d75f896ef17068c39f",
+      "teachingFingerprint": "sub_tah_math_08_01|تمييز خاصية التوزيع في الأعداد الحقيقية.",
+      "sourceEvidence": "ops/tah-math/TAH_MATH_RUN49_5_OPTION_PEDAGOGY_PART2A.json",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "sourcePedagogyReviewed": true,
+      "liveR2Parity": "NOT_TESTED",
+      "liveTopicIdParity": "NOT_TESTED",
+      "stage": "SOURCE_GROUNDED_PEDAGOGY_STAGED_NOT_FINAL",
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P026-Q04",
+      "sourceItemId": "YLM26-PDF025-P026-N04",
+      "imageHash": "9fb360ff25a2bb9fac5d5f01b9441e8f06986a6c3d1eb31c960c71c170c5c6a0",
+      "mapping": {
+        "skillId": "skill_tah_math_08",
+        "skillName": "الأعداد الحقيقية والدوال والمتباينات",
+        "subSkillId": "sub_tah_math_08_01",
+        "subSkillName": "مجموعات الأعداد الحقيقية وخصائصها والعلاقات والدوال"
+      },
+      "foundationReference": {
+        "lessonNumber": 9,
+        "lessonTitle": "الأعداد الحقيقية والدوال",
+        "subSkillId": "sub_tah_math_08_01",
+        "subSkillName": "مجموعات الأعداد الحقيقية وخصائصها والعلاقات والدوال"
+      },
+      "questionText": "ما مجال العلاقة {(1,2),(3,4),(4,5)}؟",
+      "options": {
+        "A": "{1,3,4}",
+        "B": "{6,2}",
+        "C": "{1,4,5}",
+        "D": "{1,3}"
+      },
+      "answerLetter": "A",
+      "correctOptionIndex": 0,
+      "explanation": "المجال هو الإحداثيات الأولى: {1,3,4}.",
+      "whyCorrect": "المجال هو الإحداثيات الأولى: {1,3,4}.",
+      "whyOthersWrong": {
+        "B": "{6,2} ليست مجموعة المدخلات.",
+        "C": "{1,4,5} أدرجت مخرجًا بدل مدخل.",
+        "D": "{1,3} تسقط المدخل 4."
+      },
+      "hint": "خذ العنصر الأول من كل زوج مرتب.",
+      "solvingStrategy": "استخراج مجال علاقة من أزواج مرتبة.",
+      "commonMistakes": [
+        "{6,2} ليست مجموعة المدخلات.",
+        "{1,4,5} أدرجت مخرجًا بدل مدخل.",
+        "{1,3} تسقط المدخل 4."
+      ],
+      "difficulty": "easy",
+      "aiContext": {
+        "readableText": "ما مجال العلاقة {(1,2),(3,4),(4,5)}؟",
+        "speechText": "ما مجال العلاقة {(1,2),(3,4),(4,5)}؟",
+        "visualDescription": "علاقة مكوّنة من ثلاثة أزواج مرتبة: (1,2)، (3,4)، (4,5).",
+        "concepts": [
+          "الأعداد الحقيقية والدوال",
+          "استخراج مجال علاقة من أزواج مرتبة."
+        ],
+        "requiredData": [
+          "ما مجال العلاقة {(1,2),(3,4),(4,5)}؟",
+          "A: {1,3,4}",
+          "B: {6,2}",
+          "C: {1,4,5}",
+          "D: {1,3}",
+          "كتاب تأسيس يلو للرياضيات 26"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf"
+      },
+      "questionFingerprint": "YLM26|YLM26-PDF025-P026-N04|9fb360ff25a2bb9fac5d5f01b9441e8f06986a6c3d1eb31c960c71c170c5c6a0",
+      "teachingFingerprint": "sub_tah_math_08_01|استخراج مجال علاقة من أزواج مرتبة.",
+      "sourceEvidence": "ops/tah-math/TAH_MATH_RUN49_5_OPTION_PEDAGOGY_PART2A.json",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "sourcePedagogyReviewed": true,
+      "liveR2Parity": "NOT_TESTED",
+      "liveTopicIdParity": "NOT_TESTED",
+      "stage": "SOURCE_GROUNDED_PEDAGOGY_STAGED_NOT_FINAL",
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P026-Q05",
+      "sourceItemId": "YLM26-PDF025-P026-N05",
+      "imageHash": "115106f3f52ef6315b12c1fbd95f25ecb08186e3bf27bb46c2863bb9fcd8df5b",
+      "mapping": {
+        "skillId": "skill_tah_math_08",
+        "skillName": "الأعداد الحقيقية والدوال والمتباينات",
+        "subSkillId": "sub_tah_math_08_01",
+        "subSkillName": "مجموعات الأعداد الحقيقية وخصائصها والعلاقات والدوال"
+      },
+      "foundationReference": {
+        "lessonNumber": 9,
+        "lessonTitle": "الأعداد الحقيقية والدوال",
+        "subSkillId": "sub_tah_math_08_01",
+        "subSkillName": "مجموعات الأعداد الحقيقية وخصائصها والعلاقات والدوال"
+      },
+      "questionText": "أي المعادلات الآتية لا تمثل دالة؟",
+      "options": {
+        "A": "x−2=0",
+        "B": "y−7=0",
+        "C": "y−2=x",
+        "D": "y=x+2"
+      },
+      "answerLetter": "A",
+      "correctOptionIndex": 0,
+      "explanation": "x=2 مستقيم رأسي يفشل اختبار الدالة.",
+      "whyCorrect": "x=2 مستقيم رأسي يفشل اختبار الدالة.",
+      "whyOthersWrong": {
+        "B": "y=7 دالة ثابتة.",
+        "C": "y=x+2 دالة خطية.",
+        "D": "y=x+2 دالة خطية."
+      },
+      "hint": "حوّل كل معادلة إلى تمثيل هندسي أو استخدم اختبار الخط الرأسي.",
+      "solvingStrategy": "تمييز الدالة من غير الدالة باستخدام اختبار الخط الرأسي.",
+      "commonMistakes": [
+        "y=7 دالة ثابتة.",
+        "y=x+2 دالة خطية.",
+        "y=x+2 دالة خطية."
+      ],
+      "difficulty": "easy",
+      "aiContext": {
+        "readableText": "أي المعادلات الآتية لا تمثل دالة؟",
+        "speechText": "أي المعادلات الآتية لا تمثل دالة؟",
+        "visualDescription": "أربع معادلات خطية، إحداها x = 2 وهي مستقيم رأسي.",
+        "concepts": [
+          "الأعداد الحقيقية والدوال",
+          "تمييز الدالة من غير الدالة باستخدام اختبار الخط الرأسي."
+        ],
+        "requiredData": [
+          "أي المعادلات الآتية لا تمثل دالة؟",
+          "A: x−2=0",
+          "B: y−7=0",
+          "C: y−2=x",
+          "D: y=x+2",
+          "كتاب تأسيس يلو للرياضيات 26"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf"
+      },
+      "questionFingerprint": "YLM26|YLM26-PDF025-P026-N05|115106f3f52ef6315b12c1fbd95f25ecb08186e3bf27bb46c2863bb9fcd8df5b",
+      "teachingFingerprint": "sub_tah_math_08_01|تمييز الدالة من غير الدالة باستخدام اختبار الخط الرأسي.",
+      "sourceEvidence": "ops/tah-math/TAH_MATH_RUN49_5_OPTION_PEDAGOGY_PART2A.json",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "sourcePedagogyReviewed": true,
+      "liveR2Parity": "NOT_TESTED",
+      "liveTopicIdParity": "NOT_TESTED",
+      "stage": "SOURCE_GROUNDED_PEDAGOGY_STAGED_NOT_FINAL",
+      "canonicalApproved": false
+    }
+  ]
+}
