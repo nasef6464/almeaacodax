@@ -1,5 +1,13 @@
 # ALMEAA — Codex Execution State
 
+## New question activity provenance — 2026-10-10
+Owner confirms all existing results are trial data with no real students. Historical source repair is removed from the real-user launch blocker list; no trial records were deleted or reclassified. Baseline main09b21c4c; branch codex/student-activity-provenance.
+
+Additive activity metadata separates standalone practice, review, and quiz question activity. Quiz origin uses existing verified definition/access/assignment policies and canonical drill/bank type, not school membership, navigation source, or posted schoolId. Quiz-question membership is validated. Missing older-client metadata remains unknown. Existing scoring/mastery side effects, grades and histories are unchanged.
+
+Student reports count answered practice/review/platform-quiz/school-quiz separately; unanswered events excluded. The existing question-attempt response updates only the matching optimistic row and is ignored after actor change; hydration preserves verified provenance. No extra client request, polling, AI or new bank. Quiz activity adds bounded definition/user/scope reads on the existing write; no measured resource-saving claim.
+- التنفيذ PARTIAL: الفحوص النهائية/CI/النشر والتحقق الحي قيد التنفيذ. الدليل docs/audits/STUDENT_QUESTION_ACTIVITY_PROVENANCE_2026-10-10.md.
+
 ## رحلة الطالب وفصل مصادر التقارير — 2026-10-10
 - #501 رأس9a8d71ed:25SUCCESS/4تخطي شرطي وجميع3بوابات مطلوبةPASS؛ نشر2584b2cd أثبت6فحوص حية محدودة: مستقل بلا مدرسة، اختبار قائم40سؤالًا بدرجة23 و66صف دليل مهارة؛ تكليف مدرسي فردي1سؤال بدرجة0 منفصل عن سجل المنصة؛ تقارير/سجل1280/390، ونتيجة خارج ذاكرةbootstrap عبر API المحمي، بلا أخطاءJS.
 - #502 رأسb4299d90:17SUCCESS/3تخطي شرطي وجميع3بوابات مطلوبةPASS؛ مدمج ومنشور65f4d055. الواجهة وRender والجاهزيةcanonical/direct تطابقه،DB/RedisPASS وفحوصmain الأربعةPASS. فحصا عداد النشاط قراءةً فقطPASS: مستقل40إجابة/0مراجعة/40غيرمصنفة، وملتحق30/0/30؛ عرض1280/390 بلا تجاوز أو أخطاءJS، والمعاينة البصرية ناجحة.

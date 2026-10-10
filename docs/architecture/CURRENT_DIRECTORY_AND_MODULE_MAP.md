@@ -215,3 +215,7 @@ SupervisorDashboard local scopedStudentUsers is passed to SupervisorTestsManager
 StudentJourneySourcesPanel owns context-specific loaded reports; StudentResultHistoryControls owns history selection/coverage; useStudentResultHistory owns bounded personal paging and stale response suppression; studentLearningContext owns labels and explicit origin selection. Existing Quizzes/Reports compose them. Overall mastery/plan authority remains unchanged.
 
 - Older attempt detail: useStudentResultDetail owns a single on-demand existing protected /quiz-results/:id read with actor/request identity isolation; Results composes it. Quizzes and the source report panel link by persisted result ID. No global result hydration or history traversal.
+
+
+## New question activity provenance — 2026-10-10
+Question activity provenance: application/questionActivityProvenance owns canonical quiz type, existing access/target guards and question membership before metadata writes; adaptiveTelemetryRoutes composes it. utils/studentQuestionActivity owns disjoint answered-activity counts; existing store slice retains server metadata.

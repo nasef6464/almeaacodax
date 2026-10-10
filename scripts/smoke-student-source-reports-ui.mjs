@@ -4,6 +4,24 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { build } from 'esbuild';
 import { chromium } from 'playwright';
 
+const sliceBundle = await build({entryPoints:['store/slices/learningInteractionsSlice.ts'],bundle:true,write:false,platform:'node',format:'esm'});
+const {createLearningInteractionsSlice} = await import('data:text/javascript;base64,'+Buffer.from(sliceBundle.outputFiles[0].text).toString('base64'));
+let sliceState={user:{id:'learner'},questionAttempts:[],favorites:[],reviewLater:[]};
+let completeSave; const payloads=[];
+const slice = createLearningInteractionsSlice(change=>{sliceState={...sliceState,...(typeof change==='function'?change(sliceState):change)};},()=>sliceState,
+ {createQuestionAttempt:payload=>{payloads.push(payload);return new Promise(resolve=>completeSave=resolve);},updateMyPreferences:async()=>{}},
+ {shouldSyncUserToApi:()=>true});
+slice.recordQuestionAttempt({questionId:'q',selectedOptionIndex:1,isCorrect:true,date:'now',timeSpentSeconds:0,activityType:'quiz',quizId:'directed'});
+assert.equal(payloads[0].isCorrect,undefined);
+completeSave({questionId:'q',activityType:'quiz',quizId:'directed',learningContext:'school_assessment',schoolId:'school'}); await Promise.resolve();
+assert.equal(sliceState.questionAttempts[0].learningContext,'school_assessment');
+slice.hydrateQuestionAttempts([{questionId:'q',selectedOptionIndex:1,activityType:'quiz',quizId:'directed',learningContext:'school_assessment',schoolId:'school',classId:'class'}]);
+assert.equal(sliceState.questionAttempts[0].schoolId,'school'); assert.equal(sliceState.questionAttempts[0].classId,'class');
+slice.recordQuestionAttempt({questionId:'q',selectedOptionIndex:0,isCorrect:false,date:'later',timeSpentSeconds:0,activityType:'quiz',quizId:'other'});
+sliceState={...sliceState,user:{id:'independent'},questionAttempts:[]};
+completeSave({questionId:'q',activityType:'quiz',learningContext:'school_assessment',schoolId:'school'}); await Promise.resolve();
+assert.deepEqual(sliceState.questionAttempts,[], 'old actor activity response is ignored');
+
 const adapterBundle=await build({entryPoints:['server/src/modules/quizzes/application/assessmentResultReadAdapter.ts'],bundle:true,write:false,platform:'node',format:'esm'});
 const {resolveAssessmentResultRead,projectQuizResultHistory}=await import('data:text/javascript;base64,'+Buffer.from(adapterBundle.outputFiles[0].text).toString('base64'));
 const projection={userId:'other',learningContext:'platform_self_study',schoolId:'other-school',classId:'other-class',score:67};
@@ -38,7 +56,11 @@ function Harness({mode='panel',actor='enrolled',requested='abcdef1234567890abcde
  const detail=useStudentResultDetail(undefined,'',mode==='detail'?requested:null,actor);
  return <MemoryRouter><main dir="rtl">{mode==='panel'?<StudentJourneySourcesPanel
  results={[result('منصة 80','platform_self_study',80),result('مدرسة 20','school_assessment',20),result('قديم 40',undefined,40)]}
- attempts={[{selectedOptionIndex:-1,evidenceType:'mastery_review'},{selectedOptionIndex:0,evidenceType:'remediation'},{selectedOptionIndex:1,evidenceType:'mastery_review'},{selectedOptionIndex:0,evidenceType:'assessment'},{selectedOptionIndex:1}]} completedLessons={['lesson','lesson','second']} periodLabel="كل الوقت"/>
+ attempts={[{selectedOptionIndex:-1,evidenceType:'mastery_review'},{selectedOptionIndex:0,evidenceType:'remediation'},{selectedOptionIndex:1,evidenceType:'mastery_review'},{selectedOptionIndex:0,evidenceType:'assessment'},{selectedOptionIndex:1},
+ {selectedOptionIndex:0,activityType:'practice',learningContext:'platform_self_study'},
+ {selectedOptionIndex:1,activityType:'quiz',learningContext:'platform_self_study',evidenceType:'remediation'},
+ {selectedOptionIndex:0,activityType:'quiz',learningContext:'school_assessment'},
+ {selectedOptionIndex:-1,activityType:'practice'}]} completedLessons={['lesson','lesson','second']} periodLabel="كل الوقت"/>
  :mode==='hook'?<><StudentResultHistoryControls context={context} onContextChange={setContext} history={history}/><pre data-testid="rows">{history.results.map(r=>r.id).join(',')}</pre></>
  :mode==='detail'?<><pre data-testid="detail">{detail.result?.score ?? ''}</pre>{detail.error?<button onClick={detail.retry}>إعادة فتح النتيجة</button>:null}</>:<Quizzes view="attempts"/>}</main></MemoryRouter>;
 }
@@ -62,7 +84,10 @@ try {
  for(const file of readdirSync('dist/assets').filter(file=>file.endsWith('.css'))) await page.addStyleTag({content:readFileSync(`dist/assets/${file}`,'utf8')});
  await page.addScriptTag({content:bundle.outputFiles[0].text});
  const render=async props=>{await page.evaluate(props=>window.renderFixture(props),props);await page.waitForTimeout(100);};
- const resolve=async (index,ids,total=ids.length,hasNext=false,context='platform_self_study')=>page.evaluate(({index,ids,total,hasNext,context})=>window.pending[index].resolve({data:ids.map(id=>window.result(id,context,80,id.includes('mock')?'mock':'test')),pagination:{total,hasNext}}),{index,ids,total,hasNext,context});
+ const resolve=async (index,ids,total=ids.length,hasNext=false,context='platform_self_study')=>{
+  await page.waitForFunction(index=>Boolean(window.pending[index]),index);
+  return page.evaluate(({index,ids,total,hasNext,context})=>window.pending[index].resolve({data:ids.map(id=>window.result(id,context,80,id.includes('mock')?'mock':'test')),pagination:{total,hasNext}}),{index,ids,total,hasNext,context});
+ };
  for(const actor of ['enrolled','independent']) {
   await render({mode:'panel',actor});
   const summary=page.getByTestId('student-source-summary');
@@ -81,6 +106,8 @@ try {
   assert.match(await summary.innerText(),/مصدرها لم يُسجل/);
   assert.match(await page.getByText(/دروس أنجزتها:/).innerText(),/2/);
   assert.match(await page.getByTestId('student-review-activity').innerText(),/2/);
+  assert.match(await page.getByTestId('student-practice-activity').innerText(),/إجابات التدريب: 1/);
+  assert.match(await page.getByTestId('student-quiz-question-activity').innerText(),/المنصة 1، المدرسة 1/);
   assert.match(await page.getByTestId('student-unclassified-question-activity').innerText(),/^2 إجابة سؤال/);
   await page.getByRole('button',{name:'اختبارات المنصة',exact:true}).click();
   for(const width of [1280,390]) {
@@ -110,6 +137,7 @@ try {
  await resolve(3,['stale-platform']);
  assert.equal(await page.getByTestId('rows').innerText(),'school','Discard stale source page');
  await page.getByRole('button',{name:'اختبارات المنصة',exact:true}).click();
+ await page.waitForFunction(()=>Boolean(window.pending[5]));
  await render({mode:'hook',actor:'independent'});
  assert.equal(await page.getByTestId('rows').innerText(),'','Discard actor data immediately');
  await resolve(6,['independent']); await page.getByTestId('rows').getByText('independent',{exact:true}).waitFor();

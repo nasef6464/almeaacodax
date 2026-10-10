@@ -12,3 +12,7 @@
 | ASSESSMENT-5E | historical result-only backfill | VERIFIED (isolated) | `QuizResult` cursor + compatibility projection | dry-run default؛ idempotent upsert؛ legacy لا يكتب | لا Attempt/Response/Version تاريخية؛ لم يُشغّل على production |
 | ASSESSMENT-5F | feature-flagged direct result reads | VERIFIED (isolated) | `QuizResult` وper-assessment `resultReaderMode` | `legacy` default/explicit rollback | detail وstudent/admin/legacy/scoped lists تستخدم batch lookup بلا N+1؛ aggregates تبقى legacy |
 | ASSESSMENT-5G | direct-result surface ledger | VERIFIED (isolated) | `QuizResult` remains the authority; compatible projection is an opt-in read overlay | set `resultReaderMode=legacy` or remove the projection | the direct surfaces are `/quiz-results/:id`, `/quiz-results/my`, `/admin/quiz-results`, `/quizzes/results`, `/quizzes/results/scoped`, and `/quizzes/results/latest`; exact-HEAD HTTP `33437577025` and deep E2E `33437577018` pass; aggregate/report/AI/notification consumers intentionally remain legacy until a separately measured read-model migration |
+
+
+## New question activity provenance — 2026-10-10
+QUESTION-ACTIVITY-2026: additive optional QuestionAttempt provenance for new writes, no historical backfill/deletion or index change. Older records/clients remain unknown; rollback stops new-field writes/read presentation without touching grades. Owner treats existing results as trials; runtime certification pending.

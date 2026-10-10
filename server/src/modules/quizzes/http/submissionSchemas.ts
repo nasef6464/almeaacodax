@@ -6,7 +6,11 @@ export const questionAttemptSchema = z.object({
   timeSpentSeconds: z.number().default(0),
   date: z.string().optional(),
   evidenceType: z.enum(["assessment", "remediation", "recheck", "mastery_review"]).default("assessment"),
-});
+  activityType: z.enum(['practice', 'review', 'quiz']).optional(),
+  quizId: z.string().min(1).max(200).optional(),
+  source: z.string().max(100).optional(),
+}).refine(payload => payload.activityType === 'quiz' ? Boolean(payload.quizId) : !payload.quizId,
+  { message: 'Quiz activity requires a quizId; standalone activity must not carry one' });
 
 export const quizSubmitSchema = z.object({
   answers: z.record(z.coerce.number()).default({}),

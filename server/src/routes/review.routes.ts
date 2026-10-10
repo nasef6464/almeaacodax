@@ -252,6 +252,8 @@ reviewRouter.post(
           sectionId: String(card.sectionId || question.sectionId || ""),
           skillIds: Array.isArray(question.skillIds) ? question.skillIds.map(String) : [],
           evidenceType: String(card.reviewType || "") === "mastery_review" ? "mastery_review" : "remediation",
+          activityType: 'review',
+          learningContext: 'platform_self_study',
         });
         await updateSkillProgressFromQuestionAttempt(attempt, userId);
       } catch (error) {

@@ -2040,6 +2040,52 @@ async function runSchoolIntelligenceJourney(csrf: CsrfContext) {
   const individualResult = await QuizResultModel.findOne({ userId: studentId, quizId: individualQuizId }).lean();
   assert.equal(individualResult?.learningContext, 'school_assessment', 'navigation source overrode individual school ownership');
   assert.equal(individualResult?.schoolId, groupIds.get('school'), 'individual school result lost its school');
+  const activityPost = (body: any, role: Role = 'student') => jsonRequest('/quizzes/question-attempts', {
+    method: 'POST', token: tokens.get(role), csrf, body: { questionId: ASSESSMENT_QUESTION_ID, selectedOptionIndex: 1, ...body },
+  });
+  const schoolActivity = await activityPost({ activityType: 'quiz', quizId: individualQuizId,
+    learningContext: 'platform_self_study', schoolId: 'forged', source: 'training' });
+  expectStatus('school question activity derives verified assignment origin', schoolActivity, 201);
+  assert.equal(schoolActivity.body.activityType, 'quiz');
+  assert.equal(schoolActivity.body.learningContext, 'school_assessment');
+  assert.equal(schoolActivity.body.schoolId, groupIds.get('school'));
+  expectStatus('independent student cannot claim school quiz activity', await activityPost({ activityType: 'quiz', quizId: individualQuizId }, 'outsider'), 403);
+  expectStatus('quiz activity requires its definition', await activityPost({ activityType: 'quiz' }), 400);
+  expectStatus('standalone activity cannot attach a school quiz', await activityPost({ activityType: 'practice', quizId: individualQuizId }), 400);
+  expectStatus('quiz activity requires question membership', await activityPost({ activityType: 'quiz', quizId: individualQuizId, questionId: TEACHER_QUESTION_ID }), 400);
+  for (const kind of ['test', 'drill']) {
+    const quizId = `activity-${kind}-${RUN_MARKER}`;
+    expectStatus(`admin defines isolated ${kind} activity`, await jsonRequest('/quizzes', {
+      method: 'POST', token: tokens.get('admin'), csrf,
+      body: { id: quizId, title: `Activity ${kind}`, pathId: ASSESSMENT_PATH_ID, subjectId: ASSESSMENT_SUBJECT_ID,
+        questionIds: [ASSESSMENT_QUESTION_ID], quizKind: kind, isPublished: true, showOnPlatform: true, access: { type: 'free' } },
+    }), 201);
+    for (const role of ['student', 'outsider'] as Role[]) {
+      const activity = await activityPost({ activityType: 'quiz', quizId, source: kind === 'test' ? 'training' : 'tests', learningContext: 'school_assessment' }, role);
+      expectStatus(`${role} uses canonical ${kind} activity type`, activity, 201);
+      assert.equal(activity.body.activityType, kind === 'test' ? 'quiz' : 'practice');
+      assert.equal(activity.body.learningContext, 'platform_self_study');
+      assert.equal(activity.body.schoolId, undefined);
+    }
+  }
+  for (const role of ['student', 'outsider'] as Role[]) {
+    const practice = await activityPost({ activityType: 'practice', learningContext: 'school_assessment', schoolId: 'forged' }, role);
+    expectStatus(`${role} standalone practice origin`, practice, 201);
+    assert.equal(practice.body.activityType, 'practice');
+    assert.equal(practice.body.learningContext, 'platform_self_study');
+    assert.equal(practice.body.schoolId, undefined);
+    const review = await activityPost({ activityType: 'review', evidenceType: 'remediation' }, role);
+    expectStatus(`${role} review origin`, review, 201);
+    assert.equal(review.body.activityType, 'review');
+    const legacy = await activityPost({}, role);
+    expectStatus(`${role} older client compatibility`, legacy, 201);
+    assert.equal(legacy.body.activityType, 'legacy_unknown');
+    assert.equal(legacy.body.learningContext, undefined);
+    const loaded = await jsonRequest('/quizzes/question-attempts?limit=100', { token: tokens.get(role) });
+    expectStatus(`${role} persists and reads activity provenance`, loaded, 200);
+    assert.ok(loaded.body.questionAttempts.every((row: any) => row.userId === userIds.get(role)));
+    assert.ok(loaded.body.questionAttempts.some((row: any) => row.activityType === 'practice' && row.learningContext === 'platform_self_study'));
+  }
   for (const context of ['platform_self_study', 'school_assessment', 'legacy_unknown']) {
     const own = await jsonRequest(`/quiz-results/my?learningContext=${context}&limit=1`, { token: tokens.get('student') });
     expectStatus(`student reads ${context} history`, own, 200);

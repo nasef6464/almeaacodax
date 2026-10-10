@@ -48,3 +48,7 @@ Existing /quiz-results/my, /quizzes/results and /quizzes/results/scoped accept v
 - Older attempt detail: useStudentResultDetail owns a single on-demand existing protected /quiz-results/:id read with actor/request identity isolation; Results composes it. Quizzes and the source report panel link by persisted result ID. No global result hydration or history traversal.
 
 - QuestionAttempt assessment events cannot be presumed standalone training: QuizPage records them too. StudentJourneySourcesPanel review activity uses explicit remediation/recheck/mastery_review; other loaded answered events remain visibly unclassified. No query/model/scoring change.
+
+
+## New question activity provenance — 2026-10-10
+QuestionAttempt additive activityType/quizId/learningContext/schoolId/classId fields: canonical quiz origin reuses verified access/assignment reads with a bounded definition projection. Existing own-user100-row reader unchanged; no new polling/history expansion.

@@ -828,6 +828,8 @@ const Quiz: React.FC = () => {
         timeSpentSeconds: 0,
         date: resultDate,
         evidenceType,
+        activityType: evidenceType === 'assessment' ? 'practice' : 'review',
+        learningContext: 'platform_self_study',
       });
     });
 
