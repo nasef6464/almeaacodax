@@ -1,11 +1,13 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { CheckCircle2, RefreshCw, Sparkles, XCircle } from "lucide-react";
+import { CheckCircle2, RefreshCw, XCircle } from "lucide-react";
 import { Link, useSearchParams } from "react-router-dom";
 import { api } from "../services/api";
 import { QuestionAssistantPanel } from "../components/results/QuestionAssistantPanel";
 import { QuestionVoiceExplanationPlayer } from "../components/results/QuestionVoiceExplanationPlayer";
 import { PracticeExamSummary, type AnswerOutcome } from "../components/review/PracticeExamSummary";
+import { PracticeSessionHeader } from "../components/review/PracticeSessionHeader";
 import { PracticeQuestionFeedback } from "../components/review/PracticeQuestionFeedback";
+import { normalizeQuestionHtml } from "../utils/questionHtml";
 import type { QuestionVoiceExplanation } from "../types";
 import { getLearnerOptionLabel, usesImageEmbeddedOptions } from "../utils/quizPresentation";
 
@@ -49,6 +51,8 @@ export const ReviewSession: React.FC = () => {
   const pathId = String(searchParams.get("pathId") || "").trim();
   const subjectId = String(searchParams.get("subjectId") || "").trim();
   const mode = String(searchParams.get("mode") || "").trim();
+  const requestedPage = Number(searchParams.get("page"));
+  const page = Number.isSafeInteger(requestedPage) && requestedPage > 0 ? requestedPage : 1;
   const [items, setItems] = useState<ReviewItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -65,13 +69,27 @@ export const ReviewSession: React.FC = () => {
   const [history, setHistory] = useState<AnswerOutcome[]>([]);
   const eventIdsRef = useRef<Record<string, string>>({});
 
+  const loadSequenceRef = useRef(0);
+  const restartPractice = React.useCallback(() => {
+    setIndex(0);
+    setSaving(false);
+    setDoneCount(0);
+    setSelectedOptionIndex(null);
+    setCurrentFeedback(null);
+    setHistory([]);
+    setError(null);
+    eventIdsRef.current = {};
+  }, []);
+
   const loadItems = React.useCallback(() => {
+    const sequence = ++loadSequenceRef.current;
     setLoading(true);
     setError(null);
     const sourcePromise = mode === "saved" || mode === "mistakes"
       ? api.getStudentReviewLibrary({
           tab: mode,
           limit: 20,
+          page,
           ...(pathId ? { pathId } : {}),
           ...(subjectId ? { subjectId } : {}),
         })
@@ -82,28 +100,27 @@ export const ReviewSession: React.FC = () => {
         });
     sourcePromise
       .then((payload) => {
+        if (sequence !== loadSequenceRef.current) return;
         setItems(Array.isArray(payload.items) ? payload.items.map((item: any) => ({
           ...item,
           reviewType: item.reviewType || (item.reasons?.mistake ? "error_recovery" : "saved_review"),
         })) : []);
-        setIndex(0);
-        setDoneCount(0);
-        setSelectedOptionIndex(null);
-        setCurrentFeedback(null);
-        setHistory([]);
-        eventIdsRef.current = {};
+        restartPractice();
       })
       .catch((err) => {
+        if (sequence !== loadSequenceRef.current) return;
+        setItems([]);
         console.error("Failed to load review due cards", err);
         setError("تعذر تحميل أسئلة المراجعة الآن.");
       })
       .finally(() => {
-        setLoading(false);
+        if (sequence === loadSequenceRef.current) setLoading(false);
       });
-  }, [mode, pathId, subjectId]);
+  }, [mode, page, pathId, subjectId, restartPractice]);
 
   useEffect(() => {
     loadItems();
+    return () => { loadSequenceRef.current++; };
   }, [loadItems]);
 
   const current = useMemo(() => items[index] || null, [items, index]);
@@ -117,6 +134,7 @@ export const ReviewSession: React.FC = () => {
       return;
     }
 
+    const sequence = loadSequenceRef.current;
     const existingEventId = eventIdsRef.current[current.cardId];
     const eventId = existingEventId || createEventId(current.cardId);
     eventIdsRef.current[current.cardId] = eventId;
@@ -130,6 +148,7 @@ export const ReviewSession: React.FC = () => {
           ? { selectedOptionIndex: selectedOptionIndex ?? -1, eventId }
           : { quality: quality ?? 3, eventId },
       );
+      if (sequence !== loadSequenceRef.current) return;
       delete eventIdsRef.current[current.cardId];
 
       const isCorrectAnswer = Boolean(response?.isCorrect ?? (selectedOptionIndex !== null && current.question.correctOptionIndex !== undefined && selectedOptionIndex === current.question.correctOptionIndex));
@@ -159,22 +178,12 @@ export const ReviewSession: React.FC = () => {
         },
       ]);
       setDoneCount((prev) => prev + 1);
-
-      if (index >= items.length - 1) {
-        setIndex((prev) => prev + 1);
-      } else {
-        setCurrentFeedback({
-          isCorrect: isCorrectAnswer,
-          selectedOptionIndex: selectedOptionIndex ?? -1,
-          correctOptionIndex: current.question.correctOptionIndex,
-          explanation: current.question.explanation,
-        });
-      }
     } catch (err) {
+      if (sequence !== loadSequenceRef.current) return;
       console.error("Failed to answer review card", err);
       setError("تعذر حفظ نتيجة المراجعة. حاول مرة أخرى.");
     } finally {
-      setSaving(false);
+      if (sequence === loadSequenceRef.current) setSaving(false);
     }
   };
 
@@ -194,12 +203,22 @@ export const ReviewSession: React.FC = () => {
     );
   }
 
+  if (!items.length && error) {
+    return (
+      <div className="mx-auto max-w-3xl space-y-4 p-5 text-center" dir="rtl">
+        <p role="alert" className="font-bold text-rose-700">{error}</p>
+        <button type="button" onClick={loadItems} className="rounded-xl bg-indigo-600 px-5 py-2.5 font-bold text-white">إعادة المحاولة</button>
+      </div>
+    );
+  }
+
   if (isFinished) {
     return (
       <PracticeExamSummary
         history={history}
         doneCount={doneCount}
-        onRetry={loadItems}
+        onRetry={items.length ? restartPractice : loadItems}
+        retryLabel={items.length ? "أعد التدريب على نفس الأسئلة" : "إعادة تحميل الأسئلة"}
       />
     );
   }
@@ -208,36 +227,7 @@ export const ReviewSession: React.FC = () => {
 
   return (
     <div className="mx-auto max-w-3xl space-y-4 p-3 sm:p-5" dir="rtl">
-      <div className="rounded-3xl border border-indigo-100 bg-gradient-to-r from-indigo-50/80 via-white to-white p-4 shadow-xs">
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <div className="flex items-center gap-2">
-            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-indigo-600 text-white shadow-xs">
-              <Sparkles size={16} />
-            </span>
-            <div>
-              <h2 className="text-sm font-black text-indigo-950">
-                {mode === "mistakes" ? "اختبار تدريبي: تصحيح الأخطاء السابقة" : mode === "saved" ? "اختبار تدريبي: الأسئلة المحفوظة" : "جلسة تدريب حر وتثبيت إتقان"}
-              </h2>
-              <p className="text-[11px] font-bold text-indigo-700/80">اختبار تدريبي غير مسجل رسمياً — لا يؤثر على معدلك التراكمي.</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="rounded-full bg-indigo-100 px-3 py-1 text-xs font-black text-indigo-800">
-              السؤال {index + 1} من {items.length}
-            </span>
-            <Link to="/dashboard?tab=favorites" className="rounded-xl border border-slate-200 bg-white px-2.5 py-1 text-xs font-bold text-slate-500 hover:bg-slate-50">
-              خروج
-            </Link>
-          </div>
-        </div>
-
-        <div className="mt-3 h-2 overflow-hidden rounded-full bg-indigo-100/60">
-          <div
-            className="h-full rounded-full bg-indigo-600 transition-all duration-300"
-            style={{ width: `${Math.round(((index + 1) / items.length) * 100)}%` }}
-          />
-        </div>
-      </div>
+      <PracticeSessionHeader mode={mode} index={index} total={items.length} />
 
       <div className="rounded-3xl border border-gray-100 bg-white p-4 sm:p-6 shadow-xs">
         <div className="mb-3 flex flex-wrap items-center justify-between gap-2 text-xs font-bold text-gray-500">
@@ -251,7 +241,7 @@ export const ReviewSession: React.FC = () => {
           )}
         </div>
 
-        {!imageQuestion ? <h1 className="text-base sm:text-lg font-black text-gray-900 leading-relaxed">{current?.question?.text || "سؤال مراجعة"}</h1> : null}
+        {!imageQuestion ? <h1 className="text-base sm:text-lg font-black text-gray-900 leading-relaxed" dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(current?.question?.text || "سؤال مراجعة") }} /> : null}
 
         {current?.question?.imageUrl ? (
           <img
@@ -291,7 +281,7 @@ export const ReviewSession: React.FC = () => {
                   className={`relative w-full rounded-2xl border p-3.5 transition-all text-right ${imageQuestion ? "text-center text-lg font-black" : "text-sm"} ${style}`}
                 >
                   <div className="flex items-center justify-between gap-2">
-                    <span>{getLearnerOptionLabel(current.question, option, i)}</span>
+                    <span dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(getLearnerOptionLabel(current.question, option, i)) }} />
                     {feedbackActive && isCorrectOpt && <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />}
                     {feedbackActive && isWrongSelected && <XCircle size={16} className="text-rose-600 shrink-0" />}
                   </div>
@@ -311,6 +301,7 @@ export const ReviewSession: React.FC = () => {
             correctOptionIndex: current?.question?.correctOptionIndex,
             explanation: current?.question?.explanation,
             optionsEmbeddedInImage: current?.question?.optionsEmbeddedInImage,
+            imageUrl: current?.question?.imageUrl,
           }}
           hasNext={index < items.length - 1}
           onNext={nextQuestion}

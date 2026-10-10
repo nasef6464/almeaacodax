@@ -27,10 +27,13 @@ const Favorites: React.FC = () => {
   const [hasMore, setHasMore] = React.useState(false);
   const [total, setTotal] = React.useState(0);
 
+  const loadSequenceRef = React.useRef(0);
   const load = React.useCallback(async (tab: ReviewTab, nextPage = 1) => {
+    const sequence = ++loadSequenceRef.current;
     setLoading(true); setError('');
     try {
       const payload = await api.getStudentReviewLibrary({ tab, limit: 20, page: nextPage });
+      if (sequence !== loadSequenceRef.current) return;
       setItems(Array.isArray(payload.items) ? payload.items as ReviewItem[] : []);
       setCounts(payload.counts || { saved: 0, mistakes: 0 });
       setPage(payload.page || nextPage);
@@ -38,11 +41,15 @@ const Favorites: React.FC = () => {
       setTotal(Number(payload.total || 0));
       setCurrentIndex(0); setShowAnswer(false);
     } catch (err) {
+      if (sequence !== loadSequenceRef.current) return;
       setItems([]); setError(err instanceof Error ? err.message : 'تعذر تحميل أسئلة المراجعة الآن.');
-    } finally { setLoading(false); }
+    } finally { if (sequence === loadSequenceRef.current) setLoading(false); }
   }, []);
 
-  React.useEffect(() => { void load(activeTab, 1); }, [activeTab, load]);
+  React.useEffect(() => {
+    void load(activeTab, 1);
+    return () => { loadSequenceRef.current++; };
+  }, [activeTab, load]);
   const current = items[currentIndex];
   const currentQuestion = current?.question;
   const assistantContext = current?.reasons?.mistake ? 'mistake_review' : 'saved_review';
@@ -50,7 +57,9 @@ const Favorites: React.FC = () => {
 
   const removeSaved = async () => {
     if (!currentQuestion || !current?.reasons.saved) return;
+    const sequence = loadSequenceRef.current;
     await api.removeQuestionFromReview(currentQuestion.id);
+    if (sequence !== loadSequenceRef.current) return;
     const nextPage = page > 1 && items.length === 1 ? page - 1 : page;
     await load(activeTab, nextPage);
   };
@@ -61,14 +70,14 @@ const Favorites: React.FC = () => {
         <Link to="/dashboard" className="text-gray-500 hover:text-gray-700"><ArrowRight /></Link>
         <div><h1 className="text-xl sm:text-2xl font-black text-emerald-700">أسئلتي للمراجعة</h1><p className="mt-1 text-xs sm:text-sm text-gray-500">المحفوظة والأخطاء في مكان واحد.</p></div>
       </div>
-      <Link
-        to={`/review?mode=${activeTab}`}
+      {!loading && !error && items.length > 0 && <Link
+        to={`/review?mode=${activeTab}&page=${page}`}
         className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-2 text-sm font-black text-white hover:bg-emerald-700 shadow-xs"
         title="بدء جلسة تدريب حر غير مسجلة رسمياً"
       >
         <Sparkles size={16}/>
         تدرّب على هذه الأسئلة (اختبار تدريبي 🎯)
-      </Link>
+      </Link>}
     </header>
     <div className="grid grid-cols-2 gap-2 rounded-2xl bg-gray-100 p-1">
       {(Object.keys(tabMeta) as ReviewTab[]).map(tab => <button key={tab} onClick={() => setActiveTab(tab)} className={`rounded-xl px-3 py-2 text-sm font-black transition ${activeTab===tab?'bg-white text-indigo-700 shadow-sm':'text-gray-500'}`}>{tabMeta[tab].label} <span className="mr-1 text-xs">({counts[tab]})</span></button>)}
