@@ -142,7 +142,7 @@ const Reports: React.FC = () => {
     const [scopedInterventionPlanCreated, setScopedInterventionPlanCreated] = useState(false);
     const [scopedInterventionPlanError, setScopedInterventionPlanError] = useState('');
     const [studentReportDepth, setStudentReportDepth] = useState<'simple' | 'full'>('simple');
-    const [showAllReportSkills, setShowAllReportSkills] = useState(false);
+    const [reportSkillLimit, setReportSkillLimit] = useState(12);
     const [studentReportPeriod, setStudentReportPeriod] = useState<StudentReportPeriod>('month');
     const [selectedStudentPathId, setSelectedStudentPathId] = useState<string>('all');
     const [selectedStudentSubjectId, setSelectedStudentSubjectId] = useState<string>('all');
@@ -591,11 +591,9 @@ const Reports: React.FC = () => {
     );
     const studentPrintableSkillRows = compactStudentSkillRows;
     // Keep every measured skill available for export, while making long reports easier to browse.
-    const visibleStudentSkillRows = showAllReportSkills
-        ? compactStudentSkillRows
-        : compactStudentSkillRows.slice(0, 12);
+    const visibleStudentSkillRows = compactStudentSkillRows.slice(0, reportSkillLimit);
     useEffect(() => {
-        setShowAllReportSkills(false);
+        setReportSkillLimit(12);
     }, [studentReportPeriod, selectedStudentPathId, selectedStudentSubjectId]);
 
     const studentAdaptiveLearningBridge = useMemo(
@@ -2434,8 +2432,8 @@ const Reports: React.FC = () => {
                         )}
                     </div>
                     {compactStudentSkillRows.length > 12 ? (
-                        <button type="button" onClick={() => setShowAllReportSkills((value) => !value)} className="print-hide mt-3 rounded-xl border border-indigo-100 bg-indigo-50 px-4 py-2 text-sm font-black text-indigo-700 hover:bg-indigo-100">
-                            {showAllReportSkills ? 'عرض أول 12 مهارة' : `عرض جميع المهارات (${compactStudentSkillRows.length})`}
+                        <button type="button" onClick={() => setReportSkillLimit(value => value < compactStudentSkillRows.length ? value + 12 : 12)} className="print-hide mt-3 rounded-xl border border-indigo-100 bg-indigo-50 px-4 py-2 text-sm font-black text-indigo-700 hover:bg-indigo-100">
+                            {reportSkillLimit >= compactStudentSkillRows.length ? 'عرض أول 12 مهارة' : `عرض مهارات أخرى (${Math.min(reportSkillLimit, compactStudentSkillRows.length)} من ${compactStudentSkillRows.length})`}
                         </button>
                     ) : null}
 
@@ -2547,8 +2545,8 @@ const Reports: React.FC = () => {
                     })}
                 </div>
                 {compactStudentSkillRows.length > 12 ? (
-                    <button type="button" onClick={() => setShowAllReportSkills((value) => !value)} className="print-hide mt-4 rounded-xl border border-indigo-100 bg-indigo-50 px-4 py-2 text-sm font-black text-indigo-700 hover:bg-indigo-100">
-                        {showAllReportSkills ? 'عرض أول 12 مهارة' : `عرض جميع المهارات (${compactStudentSkillRows.length})`}
+                    <button type="button" onClick={() => setReportSkillLimit(value => value < compactStudentSkillRows.length ? value + 12 : 12)} className="print-hide mt-4 rounded-xl border border-indigo-100 bg-indigo-50 px-4 py-2 text-sm font-black text-indigo-700 hover:bg-indigo-100">
+                        {reportSkillLimit >= compactStudentSkillRows.length ? 'عرض أول 12 مهارة' : `عرض مهارات أخرى (${Math.min(reportSkillLimit, compactStudentSkillRows.length)} من ${compactStudentSkillRows.length})`}
                     </button>
                 ) : null}
 

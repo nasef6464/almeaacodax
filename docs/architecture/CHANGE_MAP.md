@@ -2,6 +2,8 @@
 
 | إذا أردت تغيير... | ابدأ من... | لا تبدأ من... |
 |---|---|---|
+| عرض تكليفات الطالب المطلوبة والمنجزة | components/SchoolTestsPanel.tsx | تغيير مصدر النتائج أو صلاحياتها |
+| المزيد/أقل لقوائم الطالب | components/StudentListPager.tsx | تغيير حد API أو حذف التاريخ |
 | إنجاز خطة الطالب والخطوة التالية | `utils/studentPlanCompletion.ts` و`pages/Plan.tsx` | تغيير درجات الاختبارات |
 | توزيع مهام الخطة الزمنية | `utils/studentPlanSchedule.ts` | إعادة بناء الدورات |
 | تأكيد حفظ خطة الطالب | `store/slices/studyPlansSlice.ts` | نجاح محلي قبل استجابة API |

@@ -1,3 +1,6 @@
+import { SchoolTestsPanel } from '../components/SchoolTestsPanel';
+export { SchoolTestsPanel } from '../components/SchoolTestsPanel';
+import { StudentListPager } from '../components/StudentListPager';
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   ArrowRight,
@@ -85,6 +88,7 @@ const formatCreatedDate = (date?: number) => {
 
 const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
   const { examResults: storedExamResults, quizzes, subjects, paths, lessons, libraryItems, user, checkAccess, hasScopedPackageAccess, getMatchingPackage, hydrateQuizzes } = useStore();
+  const [attemptLimit, setAttemptLimit] = useState(4);
   const [activeFilter, setActiveFilter] = useState<string>('all');
   const [activePathFilter, setActivePathFilter] = useState<string>('all');
   const [activeAttemptCategory, setActiveAttemptCategory] = useState<AttemptCategory>('regular');
@@ -99,6 +103,7 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
     const value = new URLSearchParams(window.location.search).get('context');
     return value === 'school_assessment' || value === 'legacy_unknown' ? value : 'platform_self_study';
   });
+  useEffect(() => { setAttemptLimit(4); setOpenAttemptGroupKey(null); }, [activeFilter, activePathFilter, activeAttemptCategory, activeAttemptScoreFilter, activeLearningContext]);
   const resultHistory = useStudentResultHistory(user.id, isAttemptsView, activeLearningContext);
   const examResults = isAttemptsView ? resultHistory.results : storedExamResults;
 
@@ -506,10 +511,10 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <h1 className="text-xl sm:text-2xl font-black text-gray-900 leading-tight">اختباراتي</h1>
+                  <h1 className="text-xl sm:text-2xl font-black text-gray-900 leading-tight">نتائجي السابقة</h1>
                   <span className="rounded-full bg-indigo-100 px-2.5 py-0.5 text-xs font-black text-indigo-700">سجل الإنجاز</span>
                 </div>
-                <p className="text-xs sm:text-sm text-gray-500 font-bold mt-1">سجل المحاولات السابقة والتقدم في الاختبارات التدريبية والمحاكية</p>
+                <p className="text-xs sm:text-sm text-gray-500 font-bold mt-1">اختبارات حللتها من قبل. افتح النتيجة لمراجعة إجاباتك.</p>
               </div>
             </div>
             {weakestTrackedSkill ? (
@@ -522,12 +527,13 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
 
         <StudentResultHistoryControls context={activeLearningContext} onContextChange={setActiveLearningContext} history={resultHistory} />
 
+        <details className="rounded-2xl border border-slate-100 bg-white p-3"><summary className="cursor-pointer text-sm font-bold text-slate-700">ملخص تقدمي</summary>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
           <StatCard icon={<Sparkles size={22} />} value={`${maxScore}%`} label="أعلى درجة" color="purple" />
           <StatCard icon={<TrendingUp size={22} />} value={`${avgImprovement}%`} label="التحسن" color="amber" />
           <StatCard icon={<CheckCircle size={22} />} value={passedQuizzes} label="اختبارات ناجحة" color="blue" />
           <StatCard icon={<FileText size={22} />} value={totalQuizzes} label="محاولات مسجلة" color="emerald" />
-        </div>
+        </div></details>
 
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
           <div className="flex flex-wrap items-center gap-2 border-b border-gray-100 bg-slate-50/60 p-2.5">
@@ -603,9 +609,10 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
 
           {visibleAttemptGroups.length > 0 ? (
             <div className="space-y-3 p-4">
-              {visibleAttemptGroups.map((group) => (
+              {visibleAttemptGroups.slice(0, attemptLimit).map((group) => (
                 <AttemptGroupCard key={group.key} group={group} isOpen={openAttemptGroupKey === group.key} onToggle={() => setOpenAttemptGroupKey((current) => (current === group.key ? null : group.key))} getAttemptResultLink={getAttemptResultLink} getAttemptRetryLink={getAttemptRetryLink} getPathName={getPathName} />
               ))}
+              <StudentListPager shown={attemptLimit} total={visibleAttemptGroups.length} onMore={() => setAttemptLimit(n => n + 4)} onLess={() => setAttemptLimit(4)} />
             </div>
           ) : (
             resultHistory.loading || resultHistory.error ? null : <EmptyState
@@ -631,6 +638,7 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
         quizzes={directedQuizzes}
         examResults={examResults}
         getPathName={getPathName}
+        formatQuizDate={formatQuizDate}
       />
     );
   }
@@ -790,7 +798,7 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
   );
 };
 
-const QuizSection = ({ title, emptyMessage, items, subjects, paths, badgeClassName, badgeLabel }: {
+export const QuizSection = ({ title, emptyMessage, items, subjects, paths, badgeClassName, badgeLabel }: {
   title: string;
   emptyMessage: string;
   items: Array<{ id: string; title: string; pathId?: string; subjectId: string; questionIds: string[]; createdAt: number; dueDate?: string; access?: { type?: string } }>;
@@ -798,12 +806,15 @@ const QuizSection = ({ title, emptyMessage, items, subjects, paths, badgeClassNa
   paths: ReturnType<typeof useStore.getState>['paths'];
   badgeClassName: string;
   badgeLabel: string;
-}) => (
+}) => {
+  const [limit, setLimit] = useState(4);
+  useEffect(() => setLimit(4), [items]);
+  return (
   <div className="space-y-3">
     <div className="flex items-center justify-between"><h3 className="font-bold text-gray-800">{title}</h3><span className={`px-3 py-1 rounded-full text-xs font-bold ${badgeClassName}`}>{badgeLabel}</span></div>
     {items.length > 0 ? (
       <div className="space-y-3">
-        {items.map((quiz) => (
+        {items.slice(0, limit).map((quiz) => (
           <div key={quiz.id} className="border border-slate-200/90 rounded-2xl p-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4 hover:border-indigo-300 hover:shadow-xs transition-all bg-white">
             <div className="space-y-1.5">
               <div className="flex flex-wrap items-center gap-2">
@@ -822,12 +833,14 @@ const QuizSection = ({ title, emptyMessage, items, subjects, paths, badgeClassNa
             </Link>
           </div>
         ))}
+        <StudentListPager shown={limit} total={items.length} onMore={() => setLimit(n => n + 4)} onLess={() => setLimit(4)} />
       </div>
     ) : (
       <EmptyState eyebrow={badgeLabel} title="لا يوجد محتوى هنا الآن" description={emptyMessage} icon={<FileText size={20} />} primaryAction={{ label: 'اختبار ساهر', href: '/quiz', icon: <Target size={14} /> }} secondaryAction={{ label: 'تقريري', href: '/reports', icon: <TrendingUp size={14} /> }} tone="slate" className="rounded-2xl p-4 shadow-none" />
     )}
   </div>
-);
+  );
+};
 
 export type AttemptGroupCardProps = {
   group: QuizAttemptGroup;
@@ -839,6 +852,8 @@ export type AttemptGroupCardProps = {
 };
 
 export const AttemptGroupCard: React.FC<AttemptGroupCardProps> = ({ group, isOpen, onToggle, getAttemptResultLink, getAttemptRetryLink, getPathName }) => {
+  const [attemptLimit, setAttemptLimit] = useState(4);
+  useEffect(() => setAttemptLimit(4), [group.key, isOpen]);
   const latest = group.latestAttempt || group.attempts?.[0] || ({} as QuizResult);
   const best = group.bestAttempt || latest;
   const pathLabel = getPathName(group.quiz?.pathId || latest.skillsAnalysis?.[0]?.pathId);
@@ -902,7 +917,7 @@ export const AttemptGroupCard: React.FC<AttemptGroupCardProps> = ({ group, isOpe
       {isOpen ? (
         <div className="mt-3 overflow-hidden rounded-xl border border-slate-100">
           <div className="divide-y divide-gray-100">
-            {(group.attempts || []).map((attempt, index) => {
+            {(group.attempts || []).slice(0, attemptLimit).map((attempt, index) => {
               const attemptDate = attempt.date || (attempt as any)?.submittedAt || (attempt as any)?.createdAt;
               const attemptDateFormatted = attemptDate ? new Date(attemptDate).toLocaleString('ar-SA') : 'مؤخرًا';
               const attemptScore = typeof attempt.score === 'number' ? attempt.score : 0;
@@ -925,6 +940,7 @@ export const AttemptGroupCard: React.FC<AttemptGroupCardProps> = ({ group, isOpe
               );
             })}
           </div>
+          <StudentListPager shown={attemptLimit} total={(group.attempts || []).length} onMore={() => setAttemptLimit(n => n + 4)} onLess={() => setAttemptLimit(4)} />
         </div>
       ) : null}
     </article>
@@ -950,13 +966,15 @@ const ActionCard = ({ icon, title, to, buttonLabel, tone, disabled = false }: {
   return <Link to={disabled ? '#' : to} className={`flex items-center justify-between rounded-xl border p-4 transition-all shadow-sm ${disabled ? 'opacity-50 cursor-not-allowed pointer-events-none' : toneClasses}`}><div className="flex items-center gap-3"><div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white shadow-sm">{icon}</div><h3 className="text-sm font-black">{title}</h3></div><div className="text-xs font-bold px-3 py-1.5 rounded-lg bg-white/50">{buttonLabel}</div></Link>;
 };
 
-const LockedQuizSection = ({ items, subjects, onOpenPayment }: {
+export const LockedQuizSection = ({ items, subjects, onOpenPayment }: {
   items: Array<{ id: string; title: string; subjectId: string; questionIds: string[]; createdAt: number; access: { price?: number } }>;
   subjects: ReturnType<typeof useStore.getState>['subjects'];
   onOpenPayment: (quiz: any) => void;
 }) => {
+  const [limit, setLimit] = useState(4);
+  useEffect(() => setLimit(4), [items]);
   if (items.length === 0) return null;
-  return <div className="space-y-3"><div className="flex items-center justify-between"><h3 className="font-bold text-gray-800">اختبارات منصة تحتاج باقة</h3><span className="px-3 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-700">مدفوع</span></div><div className="space-y-3">{items.map((quiz) => <div key={quiz.id} className="border border-rose-100 rounded-xl p-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-rose-50/30"><div className="space-y-1"><div className="font-bold text-gray-900">{quiz.title}</div><div className="text-sm text-gray-500">{subjects.find((subject) => subject.id === quiz.subjectId)?.name || 'بدون مادة'} - {quiz.questionIds.length} سؤال</div><div className="text-xs text-gray-400 flex items-center gap-2"><Clock size={14} /><span>{formatCreatedDate(quiz.createdAt)}</span></div></div><button onClick={() => onOpenPayment(quiz)} className="bg-rose-600 text-white px-5 py-2 rounded-lg font-bold text-sm hover:bg-rose-700">افتح الباقة المناسبة</button></div>)}</div></div>;
+  return <div className="space-y-3"><div className="flex items-center justify-between"><h3 className="font-bold text-gray-800">اختبارات منصة تحتاج باقة</h3><span className="px-3 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-700">مدفوع</span></div><div className="space-y-3">{items.slice(0, limit).map((quiz) => <div key={quiz.id} className="border border-rose-100 rounded-xl p-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4 bg-rose-50/30"><div className="space-y-1"><div className="font-bold text-gray-900">{quiz.title}</div><div className="text-sm text-gray-500">{subjects.find((subject) => subject.id === quiz.subjectId)?.name || 'بدون مادة'} - {quiz.questionIds.length} سؤال</div><div className="text-xs text-gray-400 flex items-center gap-2"><Clock size={14} /><span>{formatCreatedDate(quiz.createdAt)}</span></div></div><button onClick={() => onOpenPayment(quiz)} className="bg-rose-600 text-white px-5 py-2 rounded-lg font-bold text-sm hover:bg-rose-700">افتح الباقة المناسبة</button></div>)}</div><StudentListPager shown={limit} total={items.length} onMore={() => setLimit(n => n + 4)} onLess={() => setLimit(4)} /></div>;
 };
 
 const StatCard = ({ icon, value, label, color }: { icon: React.ReactNode; value: string | number; label: string; color: 'purple' | 'amber' | 'blue' | 'emerald' }) => {
@@ -964,162 +982,5 @@ const StatCard = ({ icon, value, label, color }: { icon: React.ReactNode; value:
   return <div className="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm flex items-center justify-between gap-3"><div className={`w-12 h-12 rounded-full flex items-center justify-center ${colorClasses[color]}`}>{icon}</div><div className="text-right"><div className="font-bold text-2xl text-gray-800">{value}</div><div className="text-xs text-gray-500 font-medium">{label}</div></div></div>;
 };
 
-const SchoolTestsPanel: React.FC<{
-  quizzes: Quiz[];
-  examResults: QuizResult[];
-  getPathName: (pathId?: string) => string;
-}> = ({ quizzes, examResults, getPathName }) => {
-  const safeQuizzes = quizzes || [];
-  const safeResults = examResults || [];
-  const completedCount = safeQuizzes.filter((quiz) => safeResults.some((result) => result?.quizId === (quiz?.id || (quiz as any)?._id))).length;
-  const pendingCount = safeQuizzes.length - completedCount;
-
-  return (
-    <div className="mx-auto max-w-5xl space-y-6 pb-20">
-      <header className="rounded-3xl border border-indigo-100 bg-gradient-to-br from-indigo-50/80 via-white to-blue-50/50 p-6 shadow-sm">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-4">
-            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-indigo-600 text-white shadow-md">
-              <Target size={28} />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-xl sm:text-2xl font-black text-gray-900 leading-tight">اختبارات المدرسة</h1>
-                <span className="rounded-full bg-indigo-100 px-3 py-0.5 text-xs font-black text-indigo-700">توجيه مباشر</span>
-              </div>
-              <p className="mt-1 text-xs sm:text-sm font-bold text-gray-500">الاختبارات التي يوجهها لك المشرف أو المدرسة أو خطة علاجية مخصصة</p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <div className="rounded-2xl border border-indigo-100 bg-white px-4 py-2.5 text-center shadow-xs">
-              <div className="text-lg font-black text-indigo-600">{safeQuizzes.length}</div>
-              <div className="text-[10px] font-bold text-gray-400">إجمالي الموجه</div>
-            </div>
-            <div className="rounded-2xl border border-emerald-100 bg-emerald-50/60 px-4 py-2.5 text-center shadow-xs">
-              <div className="text-lg font-black text-emerald-700">{completedCount}</div>
-              <div className="text-[10px] font-bold text-emerald-600">تم حلها</div>
-            </div>
-            {pendingCount > 0 && (
-              <div className="rounded-2xl border border-amber-100 bg-amber-50/60 px-4 py-2.5 text-center shadow-xs">
-                <div className="text-lg font-black text-amber-700">{pendingCount}</div>
-                <div className="text-[10px] font-bold text-amber-600">بانتظارك</div>
-              </div>
-            )}
-          </div>
-        </div>
-      </header>
-
-      <section data-testid="student-directed-tests" className="rounded-3xl border border-indigo-200 bg-gradient-to-br from-indigo-50 via-white to-blue-50 p-6 shadow-sm">
-        <div className="mb-5 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
-            <h2 className="text-base font-black text-gray-900">المطلوب منك الآن</h2>
-            {pendingCount > 0 ? (
-              <span className="rounded-full bg-rose-100 px-2.5 py-0.5 text-[11px] font-black text-rose-700 animate-pulse">
-                {pendingCount} في انتظار الحل
-              </span>
-            ) : null}
-          </div>
-          <span className="rounded-full border border-indigo-100 bg-white px-3.5 py-1 text-xs font-black text-indigo-700 shadow-2xs">
-            {safeQuizzes.length} اختبار مدرسي
-          </span>
-        </div>
-
-        {safeQuizzes.length > 0 ? (
-          <div className="grid gap-4 md:grid-cols-2">
-            {safeQuizzes.map((quiz, index) => {
-              if (!quiz) return null;
-              const quizId = quiz.id || (quiz as any)._id || `school-quiz-${index}`;
-              const completedResult = safeResults.find((result) => result?.quizId === quizId);
-              const route = buildQuizRouteWithContext(quizId, { returnTo: '/dashboard?tab=school-tests', source: 'tests' });
-              const questionCount = quiz.quizKind === 'mock'
-                ? (quiz.mockExam?.sections?.reduce((sum, section) => sum + (section.questionIds?.length || 0), 0) || (quiz.questionIds || []).length)
-                : (quiz.questionIds || []).length;
-              return (
-                <article
-                  key={quizId}
-                  data-testid={`student-directed-test-${quizId}`}
-                  className="flex flex-col rounded-2xl border border-indigo-100 bg-white p-5 shadow-sm transition-all hover:border-indigo-300 hover:shadow-md"
-                >
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="min-w-0">
-                      <h3 className="text-base font-black text-gray-900 leading-tight">
-                        <span className="inline-block px-3 py-0.5 rounded-xl bg-indigo-50/90 dark:bg-indigo-950/40 border border-indigo-200/80 dark:border-indigo-800/60 text-indigo-950 dark:text-indigo-100 font-extrabold shadow-2xs">
-                          {quiz.title}
-                        </span>
-                      </h3>
-                      <p className="mt-1.5 inline-block rounded-full bg-indigo-50 px-2.5 py-0.5 text-[11px] font-black text-indigo-700">
-                        {getPathName(quiz.pathId)}
-                      </p>
-                    </div>
-                    <span
-                      className={`shrink-0 rounded-full px-3 py-1 text-xs font-black ${
-                        completedResult
-                          ? 'bg-emerald-100 text-emerald-700 border border-emerald-200'
-                          : 'bg-indigo-100 text-indigo-700 border border-indigo-200'
-                      }`}
-                    >
-                      {completedResult ? (completedResult.score != null ? `تم الحل (${completedResult.score}%)` : 'تم الحل') : 'مدرسي'}
-                    </span>
-                  </div>
-
-                  <div className="mt-3.5 flex-1 rounded-xl bg-gray-50/80 p-3 text-xs font-bold leading-relaxed text-gray-600 border border-gray-100">
-                    <span className="text-indigo-600 font-black ml-1">💬 رسالة المشرف:</span>
-                    {typeof quiz.supervisorMessage === 'string' && quiz.supervisorMessage
-                      ? quiz.supervisorMessage
-                      : typeof quiz.description === 'string' && quiz.description
-                        ? quiz.description
-                        : 'اختبار موجه من المدرسة للمتابعة والقياس.'}
-                  </div>
-
-                  <div className="mt-4 flex flex-wrap gap-2 text-[11px] font-bold text-gray-500">
-                    <span className="flex items-center gap-1 rounded-lg bg-gray-100 px-2.5 py-1">
-                      <ListChecks size={13} /> {questionCount} سؤال
-                    </span>
-                    {quiz.dueDate ? (
-                      <span className="flex items-center gap-1 rounded-lg bg-amber-50 px-2.5 py-1 text-amber-700 border border-amber-100">
-                        <Clock size={13} /> حتى {formatQuizDate(quiz.dueDate)}
-                      </span>
-                    ) : null}
-                  </div>
-
-                  <div className="mt-4 flex items-center justify-between border-t border-gray-100 pt-3.5">
-                    {completedResult ? (
-                      <Link
-                        to={`/results?attempt=${encodeURIComponent(completedResult.date || '')}`}
-                        className="text-xs font-black text-emerald-700 hover:underline"
-                      >
-                        عرض التقرير الكامل {completedResult.score != null ? `(${completedResult.score}%)` : ''}
-                      </Link>
-                    ) : (
-                      <span className="text-xs font-bold text-gray-400">لم يؤدَ بعد</span>
-                    )}
-
-                    <Link
-                      to={route}
-                      className={`inline-flex items-center gap-1.5 rounded-xl px-4 py-2 text-xs font-black text-white transition-colors ${
-                        completedResult ? 'bg-indigo-600 hover:bg-indigo-700' : 'bg-emerald-600 hover:bg-emerald-700 shadow-sm'
-                      }`}
-                    >
-                      {completedResult ? 'مراجعة الاختبار' : 'دخول الاختبار الآن'} <ArrowRight size={14} />
-                    </Link>
-                  </div>
-                </article>
-              );
-            })}
-          </div>
-        ) : (
-          <div className="rounded-3xl border border-dashed border-indigo-200 bg-white/90 px-6 py-12 text-center shadow-xs">
-            <CheckCircle size={36} className="mx-auto text-emerald-500 mb-2" />
-            <h2 className="mt-2 text-lg font-black text-gray-900">لا توجد اختبارات مدرسية مطلوبة منك الآن</h2>
-            <p className="mx-auto mt-1 max-w-md text-xs sm:text-sm font-bold text-gray-500 leading-relaxed">
-              عمل رائع! كل الاختبارات والواجبات التي يوجهها لك المشرف أو المدرسة ستظهر هنا فور إسنادها.
-            </p>
-          </div>
-        )}
-      </section>
-    </div>
-  );
-};
 
 export default Quizzes;

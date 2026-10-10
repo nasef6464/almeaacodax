@@ -41,6 +41,9 @@ check('student dashboard keeps one assessments entry with attempts, mock, and sc
   assertIncludes(dashboardSource, "{view === 'attempts' && <Quizzes view=\"attempts\" />}");
   assertIncludes(dashboardSource, "{view === 'school'   && <Quizzes view=\"school\" />}");
   assertIncludes(dashboardSource, "label: 'الاختبارات'");
+  assertIncludes(dashboardSource, "const view = initialView;");
+  if (dashboardSource.includes('const examViews =')) throw new Error('Duplicate exam navigation inside the dashboard');
+  assertIncludes(dashboardSource, "description: 'ما تطلبه منك مدرستك'");
   assertIncludes(dashboardSource, "const aliasMap: Record<string, string> = { saher: 'exams', quizzes: 'exams', 'mock-exams': 'exams', 'school-tests': 'exams' };");
   assertIncludes(dashboardSource, "case 'quizzes':");
   assertIncludes(dashboardSource, "return <ExamsHubTab initialView={activeTab === 'mock-exams' ? 'mock' : activeTab === 'school-tests' ? 'school' : 'attempts'} />;");
