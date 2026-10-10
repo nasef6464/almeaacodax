@@ -2,7 +2,7 @@
   "project": "TAH-MATH",
   "bank": "YLM26",
   "version": 2,
-  "status": "HEAVY_ENRICHMENT_PASS_COMPLETE_VISUAL_GATE_OPEN",
+  "status": "SOURCE_FIDELITY_CORRECTIONS_RUN77_7_OPTION_PEDAGOGY_319_PENDING",
   "total": 326,
   "difficultyDistribution": {
     "easy": 201,
@@ -10,13 +10,14 @@
     "hard": 15
   },
   "foundationMissing": 0,
-  "optionByOptionWhyOthersWrongBlocked": 326,
+  "optionByOptionWhyOthersWrongBlocked": 319,
   "productionMutation": false,
   "notes": [
     "whyCorrect is grounded in the existing reviewed explanation.",
     "foundationReference is derived from the frozen source-to-taxonomy binding.",
     "whyOthersWrong is not fabricated when option text is unavailable; those rows remain blocked for visual option extraction.",
-    "Difficulty is a deterministic pedagogical triage and remains subject to visual/source calibration before production mutation."
+    "Difficulty is a deterministic pedagogical triage and remains subject to visual/source calibration before production mutation.",
+    "RUN77: seven verified source-option pedagogical corrections applied; P050-Q04 and P066-Q14 remain explicit semantic HOLDS; no production or R2/topic parity approval."
   ],
   "rows": [
     {
@@ -3491,16 +3492,16 @@
         "subSkillName": "الدائرة والمحيط والمساحة والأقواس والزوايا"
       },
       "difficulty": "easy",
-      "whyCorrect": "نصف القطر يساوي 6. طول القوس = (60/360) × 2 × π × 6 = 2π، لذلك الإجابة C.",
-      "whyOthersWrong": "BLOCKED_OPTION_TEXT_NOT_EXTRACTED",
-      "hint": "حوّل القطر إلى نصف قطر ثم استخدم قانون طول القوس.",
-      "solvingStrategy": "حساب طول القوس من الزاوية المركزية ونصف القطر.",
+      "whyCorrect": "نصف القطر 3/2؛ طول القوس = (60/360)×2π×(3/2)=π/2، فالاختيار B. العدد 12 والحل 2π في الشرح المجاور لا يخصان السؤال.",
+      "whyOthersWrong": "A: π يفترض طول قوس مضاعفًا للمعطى؛ قطر الدائرة 3 لا 6. | C: 2π ناتجة من مثال مجاور يستخدم نصف قطر 6 ولا تتفق مع قطر 3. | D: π/3 ناتجة عن التعامل مع الزاوية أو القطر دون حساب طول القوس الصحيح.",
+      "hint": "احسب نصف القطر من القطر 3، ثم طول القوس بضرب محيط الدائرة في 60/360.",
+      "solvingStrategy": "نصف القطر r=d/2 ثم s=(θ/360)2πr.",
       "commonMistakes": [
-        "الخلط بين قاعدة الدائرة والمحيط والمساحة والأقواس والزوايا وقاعدة قريبة منها، أو تطبيق الإجراء الصحيح على معطيات غير مناسبة دون التحقق من الشروط."
+        "إهمال أحد المعطيات أو تطبيق قاعدة من مثال مجاور بدل السؤال الأصلي."
       ],
       "aiContext": {
-        "readableText": "أوجد طول القوس في دائرة قطرها 12 إذا كانت الزاوية المركزية المقابلة للقوس تساوي 60°.",
-        "speechText": "أوجد طول القوس في دائرة قطرها 12 إذا كانت الزاوية المركزية المقابلة للقوس تساوي 60°.",
+        "readableText": "أوجد طول القوس إذا كان طول قطر دائرة يساوي 3 والزاوية المركزية المقابلة للقوس تساوي 60°.",
+        "speechText": "أوجد طول القوس إذا كان طول قطر دائرة يساوي 3 والزاوية المركزية المقابلة للقوس تساوي 60°.",
         "visualDescription": "سؤال تحصيلي رياضيات مع 4 خيارات مصورة داخل الصورة.",
         "concepts": [
           "الدائرة",
@@ -3518,9 +3519,24 @@
         "mapping": true,
         "foundation": true,
         "whyCorrect": true,
-        "whyOthersWrong": false,
+        "whyOthersWrong": true,
         "visual": false
-      }
+      },
+      "sourceOptionTexts": {
+        "A": "π",
+        "B": "π/2",
+        "C": "2π",
+        "D": "π/3"
+      },
+      "sourceAnswerLetterCandidate": "B",
+      "whyOthersWrongByOption": {
+        "A": "π يفترض طول قوس مضاعفًا للمعطى؛ قطر الدائرة 3 لا 6.",
+        "C": "2π ناتجة من مثال مجاور يستخدم نصف قطر 6 ولا تتفق مع قطر 3.",
+        "D": "π/3 ناتجة عن التعامل مع الزاوية أو القطر دون حساب طول القوس الصحيح."
+      },
+      "sourceTextFidelity": "RESTORED_EXACT_SOURCE_MEANING_FROM_VERIFIED_CROP",
+      "pedagogicalReviewStatus": "SOURCE_OPTION_PEDAGOGY_REVIEWED_PRODUCTION_PARITY_PENDING",
+      "canonicalApproved": false
     },
     {
       "questionCode": "TAH-MATH-YLM26-P022-Q05",
@@ -4030,16 +4046,16 @@
         "subSkillName": "معادلة الدائرة في المستوى الإحداثي"
       },
       "difficulty": "medium",
-      "whyCorrect": "مركز الدائرة الأصلية هو (3,-1). بالانعكاس حول y=x تتبدل الإحداثيات فيصبح المركز (-1,3). ثم بالدوران 90° عكس عقارب الساعة تتحول (x,y) إلى (-y,x)، فيصبح المركز (-3,-1)، فالاختيار الصحيح D.",
-      "whyOthersWrong": "BLOCKED_OPTION_TEXT_NOT_EXTRACTED",
-      "hint": "استخرج مركز الدائرة أولًا، ثم طبّق الانعكاس حول y=x وبعده قاعدة دوران 90° عكس عقارب الساعة.",
-      "solvingStrategy": "استخراج مركز الدائرة من معادلتها ثم تطبيق تحويلين هندسيين على المركز.",
+      "whyCorrect": "المركز (3,-1)؛ الانعكاس حول y=x يعطي (-1,3)، ثم دوران 90° عكس عقارب الساعة يعطي (-3,-1)، وهو D.",
+      "whyOthersWrong": "A: (-1,-3) لا ينتج من تطبيق الانعكاس ثم الدوران المحددين. | B: (1,-3) لا يحقق ترتيب التحويلين المطلوب. | C: (-1,3) ناتج الانعكاس فقط دون الدوران اللاحق.",
+      "hint": "لا تتوقف عند الانعكاس؛ نفذ الدوران بعده.",
+      "solvingStrategy": "(x,y)→(y,x) ثم (u,v)→(-v,u).",
       "commonMistakes": [
-        "الخلط بين قاعدة معادلة الدائرة في المستوى الإحداثي وقاعدة قريبة منها، أو تطبيق الإجراء الصحيح على معطيات غير مناسبة دون التحقق من الشروط."
+        "إهمال أحد المعطيات أو تطبيق قاعدة من مثال مجاور بدل السؤال الأصلي."
       ],
       "aiContext": {
-        "readableText": "حدث انعكاس لمركز الدائرة (x - 3)² + (y + 1)² = 4 حول المستقيم y = x، ثم دوران بزاوية 90° عكس عقارب الساعة حول نقطة الأصل. فما مركز الدائرة بعد الدوران؟",
-        "speechText": "مركز دائرة معادلتها: إكس ناقص ثلاثة تربيع، زائد واي زائد واحد تربيع، يساوي أربعة. انعكس المركز حول المستقيم واي يساوي إكس، ثم دار تسعين درجة عكس عقارب الساعة حول الأصل. فما المركز النهائي؟",
+        "readableText": "إذا حدث انعكاس لمركز الدائرة (x−3)²+(y+1)²=4 حول المستقيم y=x ثم دوران بزاوية 90° عكس عقارب الساعة، فما مركزها بعد الدوران؟",
+        "speechText": "إذا حدث انعكاس لمركز الدائرة (x−3)²+(y+1)²=4 حول المستقيم y=x ثم دوران بزاوية 90° عكس عقارب الساعة، فما مركزها بعد الدوران؟",
         "visualDescription": "سؤال عن معادلة دائرة ومركزها، ثم انعكاس حول y=x ودوران 90° عكس عقارب الساعة.",
         "concepts": [
           "معادلة الدائرة في المستوى الإحداثي",
@@ -4057,9 +4073,24 @@
         "mapping": true,
         "foundation": true,
         "whyCorrect": true,
-        "whyOthersWrong": false,
+        "whyOthersWrong": true,
         "visual": false
-      }
+      },
+      "sourceOptionTexts": {
+        "A": "(-1,-3)",
+        "B": "(1,-3)",
+        "C": "(-1,3)",
+        "D": "(-3,-1)"
+      },
+      "sourceAnswerLetterCandidate": "D",
+      "whyOthersWrongByOption": {
+        "A": "(-1,-3) لا ينتج من تطبيق الانعكاس ثم الدوران المحددين.",
+        "B": "(1,-3) لا يحقق ترتيب التحويلين المطلوب.",
+        "C": "(-1,3) ناتج الانعكاس فقط دون الدوران اللاحق."
+      },
+      "sourceTextFidelity": "RESTORED_EXACT_SOURCE_MEANING_FROM_VERIFIED_CROP",
+      "pedagogicalReviewStatus": "SOURCE_OPTION_PEDAGOGY_REVIEWED_PRODUCTION_PARITY_PENDING",
+      "canonicalApproved": false
     },
     {
       "questionCode": "TAH-MATH-YLM26-P025-Q01",
@@ -5217,12 +5248,12 @@
         "subSkillName": "العمليات على المصفوفات"
       },
       "difficulty": "easy",
-      "whyCorrect": "الضرب بعدد ثابت والطرح لا يغيران رتبة المصفوفة، لذا 3A−2B تبقى 2×2، أي A.",
-      "whyOthersWrong": "BLOCKED_OPTION_TEXT_NOT_EXTRACTED",
-      "hint": "العمليات الخطية على مصفوفتين من الرتبة نفسها تحافظ على الرتبة.",
-      "solvingStrategy": "تحديد رتبة ناتج العمليات الخطية على المصفوفات دون حساب العناصر.",
+      "whyCorrect": "3A و2B لهما أبعاد 2×2؛ طرحهما عنصرًا بعنصر يبقي النتيجة 2×2، والاختيار A. لا توجد عملية ضرب مصفوفتين في نص المصدر.",
+      "whyOthersWrong": "B: 3×2 يغيّر عدد الصفوف خطأً بسبب المعامل 3، وهو ضرب عددي لا عدد صفوف. | C: 3×3 يخلط بين المعامل العددي 3 وأبعاد المصفوفة. | D: 4×4 يفترض جمع الأبعاد بدل طرح عناصر المصفوفتين.",
+      "hint": "المعاملات 3 و2 تضرب العناصر ولا تغيّر عدد الصفوف والأعمدة.",
+      "solvingStrategy": "افحص الأبعاد قبل العمليات؛ الجمع والطرح بين مصفوفتين متساويتَي الأبعاد يحافظ على الأبعاد.",
       "commonMistakes": [
-        "الخلط بين قاعدة العمليات على المصفوفات وقاعدة قريبة منها، أو تطبيق الإجراء الصحيح على معطيات غير مناسبة دون التحقق من الشروط."
+        "إهمال أحد المعطيات أو تطبيق قاعدة من مثال مجاور بدل السؤال الأصلي."
       ],
       "aiContext": {
         "readableText": "إذا كانت المصفوفتان A وB من الرتبة 2×2، فما رتبة المصفوفة الناتجة من 3A−2B؟",
@@ -5243,9 +5274,25 @@
         "mapping": true,
         "foundation": true,
         "whyCorrect": true,
-        "whyOthersWrong": false,
+        "whyOthersWrong": true,
         "visual": false
-      }
+      },
+      "sourceOptionTexts": {
+        "A": "2×2",
+        "B": "3×2",
+        "C": "3×3",
+        "D": "4×4"
+      },
+      "sourceAnswerLetterCandidate": "A",
+      "whyOthersWrongByOption": {
+        "A": null,
+        "B": "3×2 يغيّر عدد الصفوف خطأً بسبب المعامل 3، وهو ضرب عددي لا عدد صفوف.",
+        "C": "3×3 يخلط بين المعامل العددي 3 وأبعاد المصفوفة.",
+        "D": "4×4 يفترض جمع الأبعاد بدل طرح عناصر المصفوفتين."
+      },
+      "sourceTextFidelity": "RESTORED_EXACT_SOURCE_MEANING_FROM_VERIFIED_CROP",
+      "pedagogicalReviewStatus": "SOURCE_OPTION_PEDAGOGY_REVIEWED_PRODUCTION_PARITY_PENDING",
+      "canonicalApproved": false
     },
     {
       "questionCode": "TAH-MATH-YLM26-P031-Q04",
@@ -9807,17 +9854,17 @@
         "subSkillName": "النسب المثلثية والزوايا المرجعية والدوال العكسية"
       },
       "difficulty": "easy",
-      "whyCorrect": "cscθ=2 يعني sinθ=1/2، ولأن θ حادة فهي 30°. إذن tan30°=√3/3، فالاختيار الصحيح A.",
-      "whyOthersWrong": "BLOCKED_OPTION_TEXT_NOT_EXTRACTED",
-      "hint": "حوّل csc إلى sin ثم استخدم قيم الزوايا الخاصة.",
-      "solvingStrategy": "استخدام مقلوب الجيب لتحديد زاوية خاصة ثم إيجاد الظل.",
+      "whyCorrect": "من cscθ=2 نحصل على sinθ=1/2، ولذلك cosθ=±√3/2 وtanθ=±√3/3. الاختيار A يطابق فرع الزاوية الحادة، لكن النص الأصلي لا ينص على كون θ حادة؛ لا يجوز عرض A بوصفه جوابًا وحيدًا دون هذا القيد.",
+      "whyOthersWrong": "B: √3 يوافق tan60° لكن sin60°=√3/2 وليس 1/2. | C: 1 يوافق tan45° لكن sin45°=√2/2 وليس 1/2. | D: √2/2 لا يحقق tanθ=±√3/3 المستنتجة من المعطى.",
+      "hint": "sinθ=1/2؛ احسب cosθ مع مراعاة إشارة جيب التمام حسب الربع.",
+      "solvingStrategy": "استخدم sin²θ+cos²θ=1، ثم tanθ=sinθ/cosθ، وافصل بين الحل الرياضي ومفتاح الخيار المشروط.",
       "commonMistakes": [
-        "الخلط بين قاعدة النسب المثلثية والزوايا المرجعية والدوال العكسية وقاعدة قريبة منها، أو تطبيق الإجراء الصحيح على معطيات غير مناسبة دون التحقق من الشروط."
+        "اعتبار الإجابة الموجودة في الخيارات حلًا رياضيًا وحيدًا رغم وجود حل آخر أو شرط غير مذكور."
       ],
       "aiContext": {
-        "readableText": "إذا كان csc θ = 2 وكانت θ زاوية حادة، فما قيمة tan θ؟",
-        "speechText": "إذا كان csc θ = 2 وكانت θ زاوية حادة، فما قيمة tan θ؟",
-        "visualDescription": "معطى csc لزاوية حادة ومطلوب tan للزاوية.",
+        "readableText": "إذا كان csc θ = 2، فإن tan θ تساوي ...",
+        "speechText": "إذا كان csc θ = 2، فإن tan θ تساوي ...",
+        "visualDescription": "السؤال الأصلي لا يحدد ربع الزاوية؛ A صحيح فقط مع شرط إضافي مثل θ حادة.",
         "concepts": [
           "استخدام مقلوب الجيب لتحديد زاوية خاصة ثم إيجاد الظل."
         ],
@@ -9829,13 +9876,28 @@
       "teachingFingerprint": "sub_tah_math_15_02|استخدام مقلوب الجيب لتحديد زاوية خاصة ثم إيجاد الظل.",
       "gates": {
         "source": true,
-        "answer": true,
+        "answer": false,
         "mapping": true,
         "foundation": true,
         "whyCorrect": true,
-        "whyOthersWrong": false,
+        "whyOthersWrong": true,
         "visual": false
-      }
+      },
+      "sourceOptionTexts": {
+        "A": "√3/3",
+        "B": "√3",
+        "C": "1",
+        "D": "√2/2"
+      },
+      "sourceAnswerLetterCandidate": "A",
+      "whyOthersWrongByOption": {
+        "B": "√3 يوافق tan60° لكن sin60°=√3/2 وليس 1/2.",
+        "C": "1 يوافق tan45° لكن sin45°=√2/2 وليس 1/2.",
+        "D": "√2/2 لا يحقق tanθ=±√3/3 المستنتجة من المعطى."
+      },
+      "sourceTextFidelity": "RESTORED_EXACT_SOURCE_MEANING_FROM_VERIFIED_CROP",
+      "pedagogicalReviewStatus": "HOLD_SOURCE_AMBIGUITY",
+      "canonicalApproved": false
     },
     {
       "questionCode": "TAH-MATH-YLM26-P051-Q05",
@@ -12207,17 +12269,17 @@
         "subSkillName": "اللوغاريتم وخصائصه والمعادلات اللوغاريتمية"
       },
       "difficulty": "hard",
-      "whyCorrect": "المعادلة تعطي x^4=4^4، أي |x|=4. ومن الخيارات المعطاة تظهر القيمة 4، لذلك مفتاح المصدر B. ملاحظة: -4 يحقق المعادلة أيضًا إذا لم يُفرض شرط x>0.",
-      "whyOthersWrong": "BLOCKED_OPTION_TEXT_NOT_EXTRACTED",
-      "hint": "حوّل اللوغاريتم إلى معادلة أسية ثم انتبه لأن القوة الرابعة تعطي قيمتين حقيقيتين متعاكستين.",
-      "solvingStrategy": "تحويل معادلة لوغاريتمية إلى أسية مع فحص دقة صياغة السؤال.",
+      "whyCorrect": "x⁴=4⁴=256 ومنه x=+4 أو x=−4 في الأعداد الحقيقية. الخيار B (4) أحد الحلين، لكن نص المصدر لم يشترط x>0؛ لا يجوز وصفه بالحل الوحيد.",
+      "whyOthersWrong": "A: 16 يعطي x⁴=65536 لا 256. | C: 2 يعطي x⁴=16 لا 256. | D: 1 يعطي x⁴=1 لا 256.",
+      "hint": "حوّل اللوغاريتم إلى أسّي ثم تذكر أن القوة الزوجية تعطي جذرين حقيقيين متعاكسين.",
+      "solvingStrategy": "log₄(x⁴)=4 ⇒ x⁴=256 ⇒ x=±4؛ راجع دقة صياغة السؤال قبل الاعتماد.",
       "commonMistakes": [
-        "الخلط بين قاعدة اللوغاريتم وخصائصه والمعادلات اللوغاريتمية وقاعدة قريبة منها، أو تطبيق الإجراء الصحيح على معطيات غير مناسبة دون التحقق من الشروط."
+        "اعتبار الإجابة الموجودة في الخيارات حلًا رياضيًا وحيدًا رغم وجود حل آخر أو شرط غير مذكور."
       ],
       "aiContext": {
-        "readableText": "إذا كانت log₄(x^4)=4، فما قيمة x وفق الخيارات المعطاة؟",
-        "speechText": "إذا كانت log₄(x^4)=4، فما قيمة x وفق الخيارات المعطاة؟",
-        "visualDescription": "معادلة log₄(x^4)=4 وخيارات عددية موجبة.",
+        "readableText": "إذا كانت log₄(x⁴)=4، فإن x تساوي ...",
+        "speechText": "إذا كانت log₄(x⁴)=4، فإن x تساوي ...",
+        "visualDescription": "المعادلة x⁴=256 تعطي ±4، والخيارات تعرض 4 فقط.",
         "concepts": [
           "الدوال الأسية واللوغاريتمية",
           "تحويل معادلة لوغاريتمية إلى أسية مع فحص دقة صياغة السؤال."
@@ -12230,13 +12292,28 @@
       "teachingFingerprint": "sub_tah_math_17_02|تحويل معادلة لوغاريتمية إلى أسية مع فحص دقة صياغة السؤال.",
       "gates": {
         "source": true,
-        "answer": true,
+        "answer": false,
         "mapping": true,
         "foundation": true,
         "whyCorrect": true,
-        "whyOthersWrong": false,
+        "whyOthersWrong": true,
         "visual": false
-      }
+      },
+      "sourceOptionTexts": {
+        "A": "16",
+        "B": "4",
+        "C": "2",
+        "D": "1"
+      },
+      "sourceAnswerLetterCandidate": "B",
+      "whyOthersWrongByOption": {
+        "A": "16 يعطي x⁴=65536 لا 256.",
+        "C": "2 يعطي x⁴=16 لا 256.",
+        "D": "1 يعطي x⁴=1 لا 256."
+      },
+      "sourceTextFidelity": "RESTORED_EXACT_SOURCE_MEANING_FROM_VERIFIED_CROP",
+      "pedagogicalReviewStatus": "HOLD_SOURCE_AMBIGUITY",
+      "canonicalApproved": false
     },
     {
       "questionCode": "TAH-MATH-YLM26-P066-Q15",
@@ -14795,20 +14872,20 @@
         "subSkillName": "الإحداثيات القطبية والتحويل بين القطبي والديكارتي"
       },
       "difficulty": "hard",
-      "whyCorrect": "للنقطة (1,√3): r=√(1²+(√3)²)=2، وtanθ=√3/1 في الربع الأول، لذا θ=60°=π/3. الإحداثيان القطبيان هما (2,π/3).",
-      "whyOthersWrong": "BLOCKED_OPTION_TEXT_NOT_EXTRACTED",
-      "hint": "احسب r=√(x²+y²)، ثم حدّد θ من tanθ=y/x والربع.",
-      "solvingStrategy": "تطبيق قواعد الضرب الداخلي والزاوية والإسقاط والمتجهات في الفضاء",
+      "whyCorrect": "إذا فسّر الزوج (1,√3) بوصفه إحداثيين ديكارتيين، فـr=2 وθ=π/3=60°، والنقطة n في الرسم تقع عند هذا الموضع؛ مفتاح الإجابات المطبوع في ص84 يؤكد B. النص المصدر لا يذكر كلمة «ديكارتية» صراحة.",
+      "whyOthersWrong": "A: النقطة t ليست عند نصف القطر 2 والزاوية 60° في الرسم. | C: النقطة x لا تمثل موضع (r=2,θ=60°). | D: النقطة f تقع عند زاوية مختلفة عن 60°.",
+      "hint": "احسب r=√(1²+(√3)²) وحدد الزاوية من tanθ=√3، ثم اقرأ اسم النقطة من الرسم.",
+      "solvingStrategy": "تفسير الزوج ديكارتيًا كما يؤكد الرسم والمفتاح: r=√(x²+y²)، θ=atan2(y,x).",
       "commonMistakes": [
-        "الخلط بين قاعدة الإحداثيات القطبية والتحويل بين القطبي والديكارتي وقاعدة قريبة منها، أو تطبيق الإجراء الصحيح على معطيات غير مناسبة دون التحقق من الشروط."
+        "إهمال أحد المعطيات أو تطبيق قاعدة من مثال مجاور بدل السؤال الأصلي."
       ],
       "aiContext": {
-        "readableText": "ما النقطة التي إحداثياتها الديكارتية (1,√3) على المستوى القطبي في الشكل؟",
-        "speechText": "ما النقطة التي إحداثياتها الديكارتية (1,√3) على المستوى القطبي في الشكل؟",
+        "readableText": "ما النقطة التي إحداثياتها (1,√3) على المستوى القطبي؟",
+        "speechText": "ما النقطة التي إحداثياتها (1,√3) على المستوى القطبي؟",
         "visualDescription": "سؤال تحصيلي رياضيات مع 4 خيارات مصورة داخل الصورة.",
         "concepts": [
-          "المتجهات والإحداثيات القطبية والديكارتية",
-          "الضرب الداخلي والزاوية والإسقاط والمتجهات في الفضاء"
+          "الإحداثيات القطبية",
+          "التحويل بين الإحداثيات الديكارتية والقطبية"
         ],
         "requiredData": [
           "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
@@ -14822,9 +14899,24 @@
         "mapping": true,
         "foundation": true,
         "whyCorrect": true,
-        "whyOthersWrong": false,
+        "whyOthersWrong": true,
         "visual": false
-      }
+      },
+      "sourceOptionTexts": {
+        "A": "t",
+        "B": "n",
+        "C": "x",
+        "D": "f"
+      },
+      "sourceAnswerLetterCandidate": "B",
+      "whyOthersWrongByOption": {
+        "A": "النقطة t ليست عند نصف القطر 2 والزاوية 60° في الرسم.",
+        "C": "النقطة x لا تمثل موضع (r=2,θ=60°).",
+        "D": "النقطة f تقع عند زاوية مختلفة عن 60°."
+      },
+      "sourceTextFidelity": "RESTORED_EXACT_SOURCE_MEANING_FROM_VERIFIED_CROP",
+      "pedagogicalReviewStatus": "SOURCE_OPTION_PEDAGOGY_REVIEWED_PRODUCTION_PARITY_PENDING",
+      "canonicalApproved": false
     },
     {
       "questionCode": "TAH-MATH-YLM26-P082-Q02",
@@ -16626,12 +16718,12 @@
         "subSkillName": "حساب النهايات جبريًا والنهايات عند اللانهاية وحالات عدم التعيين"
       },
       "difficulty": "medium",
-      "whyCorrect": "الإجابة الصحيحة هي الاختيار (A).",
-      "whyOthersWrong": "BLOCKED_OPTION_TEXT_NOT_EXTRACTED",
-      "hint": "تطبيق قواعد مفهوم النهاية والنهايات الجانبية من الرسم والجدول للوصول للناتج.",
-      "solvingStrategy": "تطبيق قواعد مفهوم النهاية والنهايات الجانبية من الرسم والجدول",
+      "whyCorrect": "x²−7x+6=(x−1)(x−6). بعد الاختزال لغير x=1 تصبح النهاية 1/(1−6)=−1/5، وهي A.",
+      "whyOthersWrong": "B: 1/5 يهمل الإشارة السالبة في 1−6=−5. | C: 0 ينتج من تعويض البسط صفرًا مع تجاهل أن المقام صفر أيضًا. | D: كون التعويض المباشر 0/0 لا يعني عدم وجود النهاية؛ يجب التحليل والاختزال.",
+      "hint": "حلل المقام ثم اختزل العامل المشترك قبل التعويض.",
+      "solvingStrategy": "تحليل المقام إلى (x−1)(x−6)، الاختزال على جوار 1، ثم التعويض.",
       "commonMistakes": [
-        "الخلط بين قاعدة حساب النهايات جبريًا والنهايات عند اللانهاية وحالات عدم التعيين وقاعدة قريبة منها، أو تطبيق الإجراء الصحيح على معطيات غير مناسبة دون التحقق من الشروط."
+        "إهمال أحد المعطيات أو تطبيق قاعدة من مثال مجاور بدل السؤال الأصلي."
       ],
       "aiContext": {
         "readableText": "ما قيمة النهاية عندما x تقترب من 1 للتعبير (x−1)/(x²−7x+6)؟",
@@ -16653,9 +16745,24 @@
         "mapping": true,
         "foundation": true,
         "whyCorrect": true,
-        "whyOthersWrong": false,
+        "whyOthersWrong": true,
         "visual": false
-      }
+      },
+      "sourceOptionTexts": {
+        "A": "−1/5",
+        "B": "1/5",
+        "C": "0",
+        "D": "غير معروف"
+      },
+      "sourceAnswerLetterCandidate": "A",
+      "whyOthersWrongByOption": {
+        "B": "1/5 يهمل الإشارة السالبة في 1−6=−5.",
+        "C": "0 ينتج من تعويض البسط صفرًا مع تجاهل أن المقام صفر أيضًا.",
+        "D": "كون التعويض المباشر 0/0 لا يعني عدم وجود النهاية؛ يجب التحليل والاختزال."
+      },
+      "sourceTextFidelity": "RESTORED_EXACT_SOURCE_MEANING_FROM_VERIFIED_CROP",
+      "pedagogicalReviewStatus": "SOURCE_OPTION_PEDAGOGY_REVIEWED_PRODUCTION_PARITY_PENDING",
+      "canonicalApproved": false
     },
     {
       "questionCode": "TAH-MATH-YLM26-P091-Q11",
