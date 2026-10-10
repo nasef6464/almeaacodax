@@ -15,4 +15,4 @@
 
 
 ## New question activity provenance — 2026-10-10
-QUESTION-ACTIVITY-2026: additive optional QuestionAttempt provenance for new writes, no historical backfill/deletion or index change. Older records/clients remain unknown; rollback stops new-field writes/read presentation without touching grades. Owner treats existing results as trials; runtime certification pending.
+QUESTION-ACTIVITY-2026: additive optional QuestionAttempt provenance for new writes, no historical backfill/deletion or index change. Older records/clients remain unknown; rollback stops new-field writes/read presentation without touching grades. Owner treats existing results as trials; bounded new-write/read/report certification VERIFIED on94e81ddf through#504;5published checksPASS; no full-platform certification.
