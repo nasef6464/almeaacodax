@@ -242,7 +242,8 @@
     "ops/tah-math/TAH_MATH_RUN31_CHECKPOINT.json",
     "ops/tah-math/TAH_MATH_RUN74_200_VISUAL_104_MATH_SOURCE_AUDIT.json",
     "ops/tah-math/TAH_MATH_RUN79_150_FINAL_REVIEWED_CONTENT_CHECKPOINT.json",
-    "ops/tah-math/TAH_MATH_RUN79B_YLM26_CONTENT_GATE_326_OF_326.json"
+    "ops/tah-math/TAH_MATH_RUN79B_YLM26_CONTENT_GATE_326_OF_326.json",
+    "ops/tah-math/TAH_MATH_YLM26_TOPICID_REVERSIBLE_MANIFEST_V1.json"
   ],
   "blockers": [
     {
@@ -291,7 +292,14 @@
     "localManifestSha256": "436ec050716a0d5184b4f5e4fcd200e0dbf39752ae4b71f686e218ab2963d662",
     "productionMutation": false,
     "status": "YLM26_CONTENT_GATE_PASS_GLOBAL_NOT_GREEN",
-    "next": "Build/apply only a deterministic reversible YLM26 correction+topicId manifest, re-audit, obtain R2 HTTP evidence through allowed path; then start COL26."
+    "next": "Complete reviewed answer/mapping/pedagogy reversible mutation manifest and obtain direct R2 HTTP evidence; then guarded YLM26 apply + re-audit before COL26.",
+    "topicIdReversibleManifest": {
+      "path": "ops/tah-math/TAH_MATH_YLM26_TOPICID_REVERSIBLE_MANIFEST_V1.json",
+      "rows": 326,
+      "preconditionsPass": true,
+      "productionMutationApplied": false,
+      "commit": "11345bdc13f22d3004eacb2ed83c1bf6bc01e6c5"
+    }
   },
   "run47": {
     "date": "2026-10-09",
@@ -453,6 +461,13 @@
     "localManifestSha256": "436ec050716a0d5184b4f5e4fcd200e0dbf39752ae4b71f686e218ab2963d662",
     "productionMutation": false,
     "status": "YLM26_CONTENT_GATE_PASS_GLOBAL_NOT_GREEN",
-    "next": "Build/apply only a deterministic reversible YLM26 correction+topicId manifest, re-audit, obtain R2 HTTP evidence through allowed path; then start COL26."
+    "next": "Complete reviewed answer/mapping/pedagogy reversible mutation manifest and obtain direct R2 HTTP evidence; then guarded YLM26 apply + re-audit before COL26.",
+    "topicIdReversibleManifest": {
+      "path": "ops/tah-math/TAH_MATH_YLM26_TOPICID_REVERSIBLE_MANIFEST_V1.json",
+      "rows": 326,
+      "preconditionsPass": true,
+      "productionMutationApplied": false,
+      "commit": "11345bdc13f22d3004eacb2ed83c1bf6bc01e6c5"
+    }
   }
 }
