@@ -15,36 +15,7 @@
     "P066-Q14"
   ],
   "previousRUN74IndependentProofOverlap": 60,
-  "previousRUN74ConflictsAfterReinspection": [
-    {
-      "code": "P057-Q08",
-      "prior": "A"
-    },
-    {
-      "code": "P058-Q10",
-      "prior": "B"
-    },
-    {
-      "code": "P059-Q11",
-      "prior": "C"
-    },
-    {
-      "code": "P062-Q16",
-      "prior": "D"
-    },
-    {
-      "code": "P064-Q04",
-      "prior": "C"
-    },
-    {
-      "code": "P065-Q07",
-      "prior": "A"
-    },
-    {
-      "code": "P067-Q17",
-      "prior": "A"
-    }
-  ],
+  "previousRUN74ConflictsAfterReinspection": [],
   "initialReadErrorsCaughtBeforePublication": [
     "P068-Q04: A=sinθ (not C); tanθ·sin(π/2−θ)=sinθ",
     "P069-Q05: A=cos x is even (not C=tan x)"
@@ -4017,5 +3988,7 @@
     }
   ],
   "status": "VISUAL_150_PASS_120_UNAMBIGUOUS_MATH_CHECKS_2_HOLDS_7_OPTION_REVIEWED_NOT_CANONICAL",
-  "next": "Complete 319 option-specific pedagogical records; fix two source-ambiguous holds without invented conditions; verify R2 and topicId, approve reversible manifest, then COL26."
+  "next": "Complete 319 option-specific pedagogical records; fix two source-ambiguous holds without invented conditions; verify R2 and topicId, approve reversible manifest, then COL26.",
+  "previousRUN74Aligned": 60,
+  "auditCorrection": "The seven originally listed discrepancies were unreviewed rows with no RUN77 answer; 60 comparable answers agree. No actual discrepancy."
 }
