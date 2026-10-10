@@ -5,7 +5,7 @@
   "directImageInspection": true,
   "sourceCropArchive": "/MNSF26/Run017/mnsf26_arithmetic_crops_run017.zip",
   "sourceInventory": "/MNSF26/Run017/MNSF26_FULLBOOK_CROP_INVENTORY_V1.json",
-  "masteredCount": 10,
+  "masteredCount": 7,
   "holdCount": 10,
   "records": [
     {
@@ -51,7 +51,7 @@
       },
       "imageHash": "6ae8395503db89046fb348f1df45aeba06fb3dec66c54b1d67165c56fb5bf992",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
-      "status": "MASTERED",
+      "status": "REVIEW",
       "questionText": "قارن وزن ماجد 50 كيلوجرامًا ووزن مشاري 27000 جرام.",
       "canonicalMainSkill": "main_quant_04",
       "canonicalSubskill": "sub_quant_04_3",
@@ -61,7 +61,10 @@
       "difficulty": "Easy",
       "difficultyReason": "خطوات مباشرة في مقارنة كيلوجرام وجرام.",
       "contentFingerprint": "96499c78a81285326e2c4483be14c0bca59a95ca32d7dd16919a538f7ea6264d",
-      "ideaFingerprint": "0249ed685fc35000e805313432ea60b60208897395d65fa719044bdf92afc547"
+      "ideaFingerprint": "0249ed685fc35000e805313432ea60b60208897395d65fa719044bdf92afc547",
+      "importEligible": false,
+      "qaReviewReason": "Source WebP shows 75 kg versus 73000 g, but MASTER questionText says 50 kg versus 27000 g; preserve source comparison outcome, re-transcribe and independently reapprove before import.",
+      "qaEvidence": "RUN114 original source WebP visual reinspection + SHA256 match; RUN113 conflict manifest"
     },
     {
       "sourceKey": "MNSF26-AR-T060-Q03",
@@ -326,7 +329,7 @@
       },
       "imageHash": "f2db1883c2e158a2ace9febce5aa4de7e677acf2c071e5203f1cbde869b57732",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
-      "status": "MASTERED",
+      "status": "REVIEW",
       "questionText": "قارن 400 مليمتر مع 4 سنتيمترات.",
       "canonicalMainSkill": "main_quant_04",
       "canonicalSubskill": "sub_quant_04_3",
@@ -336,7 +339,10 @@
       "difficulty": "Easy",
       "difficultyReason": "خطوات مباشرة في تحويل مليمتر إلى سنتيمتر.",
       "contentFingerprint": "99a8fe0496b7568db362f85fd258952317609b8ef6f13ec44bbe4d8574542562",
-      "ideaFingerprint": "ee131bba7beefb7db348f1f19905e65a05fc2b84f5a07281b1838180f4792785"
+      "ideaFingerprint": "ee131bba7beefb7db348f1f19905e65a05fc2b84f5a07281b1838180f4792785",
+      "importEligible": false,
+      "qaReviewReason": "Source WebP shows 400 mm = 40 cm, which is LESS than 42 cm (option B); MASTER incorrectly says first greater.",
+      "qaEvidence": "RUN114 original source WebP visual reinspection + SHA256 match; RUN113 conflict manifest"
     },
     {
       "sourceKey": "MNSF26-AR-T060-Q13",
@@ -380,7 +386,7 @@
       },
       "imageHash": "c96fef55a1d14e8b0fc817a180c5b136c35b09be8c3483e0234731209513696a",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
-      "status": "MASTERED",
+      "status": "REVIEW",
       "questionText": "قارن 10 سنتيمترات مع 15 مليمترًا.",
       "canonicalMainSkill": "main_quant_04",
       "canonicalSubskill": "sub_quant_04_3",
@@ -390,7 +396,10 @@
       "difficulty": "Easy",
       "difficultyReason": "خطوات مباشرة في مقارنة سم وملم.",
       "contentFingerprint": "627f95eabcea8bf8c4772d78a8f37c6debd9bbd1f474cf3b04d738c6e614f1b0",
-      "ideaFingerprint": "8a3bc4c5f4446223780a5d1c160f825634d3373b8c04733885985ccf81e69d09"
+      "ideaFingerprint": "8a3bc4c5f4446223780a5d1c160f825634d3373b8c04733885985ccf81e69d09",
+      "importEligible": false,
+      "qaReviewReason": "Source WebP shows 1 cm = 10 mm, which is LESS than 15 mm (option B); MASTER incorrectly says first greater.",
+      "qaEvidence": "RUN114 original source WebP visual reinspection + SHA256 match; RUN113 conflict manifest"
     },
     {
       "sourceKey": "MNSF26-AR-T060-Q15",
@@ -558,5 +567,6 @@
       "contentFingerprint": "95bf65c585b1ffb1d0452817f8206cf7589c029bde0cc889e676f94add413a5b",
       "ideaFingerprint": "e50ea3630ba1802c72e49c81160e816dc26a81660450dfde7e8e2bce987c7aca"
     }
-  ]
+  ],
+  "reviewCount": 3
 }
