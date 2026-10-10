@@ -284,3 +284,5 @@ Next heavy gate:
 - الإنتاج ما زال يطابق backup قبل الاعتماد 326/326 في الإجابة والمهارات، أي أن تصحيحات المراجعة لم تُطبّق بعد. لا production mutation في RUN79B.
 - بوابة المحتوى PASS، لكن YLM26 كمرحلة كلية **NOT GREEN** حتى بناء manifest رجوعي كامل، تطبيق التصحيحات المراجعة وtopicId بأمان، ثم re-audit وR2 live fetch evidence.
 - Manifest محلي RUN79B SHA-256: 436ec050716a0d5184b4f5e4fcd200e0dbf39752ae4b71f686e218ab2963d662.
+
+- تم بناء manifest رجوعي deterministic كامل لـtopicId: `ops/tah-math/TAH_MATH_YLM26_TOPICID_REVERSIBLE_MANIFEST_V1.json` لعدد **326/326** سؤالًا. كل صف مثبت بـquestionCode + sourceItemId + imageHash + skillId + subSkillId، وbefore.topicId=null، وafter.topicId هو الـTopic الحي الوحيد المطابق للـsubSkill. لم يُطبق mutation.
