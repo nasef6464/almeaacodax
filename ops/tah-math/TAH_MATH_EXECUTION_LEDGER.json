@@ -190,7 +190,7 @@
       2
     ]
   },
-  "lastCheckpoint": "2026-10-09-RUN53-200-SOURCE-VISUAL-38-DEEP",
+  "lastCheckpoint": "2026-10-10-RUN74-200-VISUAL-104-MATH-3-HOLDS",
   "evidence": [
     "ops/tah-math/TAH_MATH_RUN1_BASELINE.json",
     "ops/tah-math/TAH_MATH_SOURCE_IDEA_MAP_PART01.json",
@@ -210,7 +210,8 @@
     "ops/tah-math/TAH_MATH_COL26_P132_6_SOURCE_REMAP_RUN12.json",
     "ops/tah-math/TAH_MATH_RUN27_CHECKPOINT.json",
     "ops/tah-math/TAH_MATH_RUN30_CHECKPOINT.json",
-    "ops/tah-math/TAH_MATH_RUN31_CHECKPOINT.json"
+    "ops/tah-math/TAH_MATH_RUN31_CHECKPOINT.json",
+    "ops/tah-math/TAH_MATH_RUN74_200_VISUAL_104_MATH_SOURCE_AUDIT.json"
   ],
   "blockers": [
     {
@@ -220,21 +221,27 @@
     }
   ],
   "latestRun": {
-    "run": "RUN53",
+    "run": "RUN74",
+    "date": "2026-10-10",
     "actualDistinctSourceQuestionsReviewed": 200,
-    "individualCropPixelPASS": 74,
-    "fullPageQuestionSourceParityPASS": 126,
-    "newDeepPedagogyCandidates": 38,
-    "optionSpecificWhyOthersWrong": 114,
-    "independentSymbolicPASS": 38,
-    "printedSourceKeyMATCH": 29,
-    "printedSourceKeyBLANK": 9,
-    "conditionalReviewEventsRUN21toRUN53": 5696,
+    "sourceVisualReviewBasis": "200 inspected source-derived question crops across 20 boards; five prior recrops plus full-stem P078-Q04 inspected",
+    "sourceMathIndependentProofs": 104,
+    "sourceMathProofsVsPrior": "103 aligned, 1 known corrected P023-Q14 D",
+    "semanticHolds": [
+      "P050-Q04",
+      "P066-Q14",
+      "P081-Q01"
+    ],
+    "sourceRecropsRead": 6,
+    "cumulativeConditionalReviewEvents": 9453,
     "uniqueYLM26SourceInventory": 326,
     "canonicalApproved": 0,
     "productionMutation": false,
+    "sourceEvidence": "ops/tah-math/TAH_MATH_RUN74_200_VISUAL_104_MATH_SOURCE_AUDIT.json",
+    "liveR2Parity": "NOT_TESTED",
+    "liveTopicIdParity": "NOT_TESTED",
     "status": "YLM26_IN_PROGRESS_NOT_GREEN",
-    "next": "Resolve source holds, canonical fields, live taxonomy/foundation, R2 parity, reversible manifest, then COL26 1012"
+    "next": "Resolve 3 semantic holds and full 326 option-specific pedagogy, live R2/topic parity, reversible manifest, then COL26 1012"
   },
   "run47": {
     "date": "2026-10-09",
@@ -275,5 +282,28 @@
     "productionR2Parity": "NOT_TESTED",
     "status": "YLM26_IN_PROGRESS_NOT_GREEN",
     "next": "Resolve holds and approve 326 canonical rows, R2 parity and reversible manifest; then COL26 1012"
+  },
+  "run74": {
+    "run": "RUN74",
+    "date": "2026-10-10",
+    "actualDistinctSourceQuestionsReviewed": 200,
+    "sourceVisualReviewBasis": "200 inspected source-derived question crops across 20 boards; five prior recrops plus full-stem P078-Q04 inspected",
+    "sourceMathIndependentProofs": 104,
+    "sourceMathProofsVsPrior": "103 aligned, 1 known corrected P023-Q14 D",
+    "semanticHolds": [
+      "P050-Q04",
+      "P066-Q14",
+      "P081-Q01"
+    ],
+    "sourceRecropsRead": 6,
+    "cumulativeConditionalReviewEvents": 9453,
+    "uniqueYLM26SourceInventory": 326,
+    "canonicalApproved": 0,
+    "productionMutation": false,
+    "sourceEvidence": "ops/tah-math/TAH_MATH_RUN74_200_VISUAL_104_MATH_SOURCE_AUDIT.json",
+    "liveR2Parity": "NOT_TESTED",
+    "liveTopicIdParity": "NOT_TESTED",
+    "status": "YLM26_IN_PROGRESS_NOT_GREEN",
+    "next": "Resolve 3 semantic holds and full 326 option-specific pedagogy, live R2/topic parity, reversible manifest, then COL26 1012"
   }
 }
