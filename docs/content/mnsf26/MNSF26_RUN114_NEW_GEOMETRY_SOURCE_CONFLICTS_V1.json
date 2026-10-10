@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN114",
+  "stage": "QA_LOCK",
+  "source": "Run021 original geometry WebP + independent RUN114 direct visual QA",
+  "sourceImagesInspected": 66,
+  "sha256Verified": 66,
+  "officialQAIncrement": 0,
+  "sourceConflicts": [
+    {
+      "sourceKey": "MNSF26-GEO-T048-Q20",
+      "originalMasterFile": "MNSF26_QUESTION_MASTERING_RUN053_GEO_T48_V1.json",
+      "imageHash": "2ed86f2f33e283783b291b7f3c633bae33542930da5ff5ce5bdd1b88e8c4c1ae",
+      "conflictType": "ANSWER_AND_TRANSCRIPTION",
+      "sourceMath": "42 cm³ < 400 mL = 400 cm³; correct answer B",
+      "masterError": "MASTER says 42 m³ and answer A",
+      "requiredStatus": "REVIEW",
+      "importEligible": false,
+      "applied": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T050-Q03",
+      "originalMasterFile": "MNSF26_QUESTION_MASTERING_RUN053_GEO_T50_V1.json",
+      "imageHash": "8dee0294270e044598471100dd3738ff32cca5ef119c143a19ec35ee1ad4da9d",
+      "conflictType": "TRANSCRIPTION",
+      "sourceMath": "Source first value is 40 cm; MASTER says 4 metres; numerical answer A remains valid",
+      "requiredStatus": "REVIEW",
+      "importEligible": false,
+      "applied": false
+    }
+  ],
+  "holdCandidate": {
+    "sourceKey": "MNSF26-GEO-T048-Q06",
+    "imageHash": "f39d5e040c88b74e7338d030d43a1002b2fef9f5d137579ff1cd250b614dd2ca",
+    "sourceMath": "15 m² × 15 m × (1/3) = 75 m³ (B)",
+    "masterError": "MASTER HOLD text transcribed height as 5 m",
+    "status": "HOLD",
+    "importEligible": false,
+    "promoteToMastered": false
+  },
+  "productionImportAuthorized": false
+}
