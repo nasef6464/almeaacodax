@@ -178,4 +178,3 @@ export const SchoolTestsPanel: React.FC<{
     </div>
   );
 };
-
