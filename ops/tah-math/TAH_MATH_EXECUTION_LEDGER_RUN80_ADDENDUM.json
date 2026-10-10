@@ -1,0 +1,24 @@
+{
+  "project": "TAH-MATH",
+  "run": "RUN80",
+  "date": "2026-10-10",
+  "stage": "P2_YLM26_GLOBAL_GATE",
+  "newMastered": 0,
+  "newFinalReviewedContent": 0,
+  "newSourceHolds": 0,
+  "cumulativeUniqueFinalReviewedContent": 321,
+  "cumulativeSourceHolds": 5,
+  "contentAdjudicated": 326,
+  "topicIdMissing": 326,
+  "topicIdLeasePass": 326,
+  "liveTaxonomy": {
+    "main": 22,
+    "sub": 70
+  },
+  "sourceReviewedRemapsPending": 4,
+  "r2Http": "ENVIRONMENT_BLOCKED",
+  "fullReviewedPayloadInRepo": false,
+  "productionMutation": false,
+  "finalClosed": false,
+  "next": "Recover 321 full payload, verify R2, regenerate remap-safe manifest, guarded apply and re-audit, then COL26"
+}
