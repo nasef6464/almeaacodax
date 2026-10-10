@@ -5,7 +5,7 @@
   "directImageInspection": true,
   "sourceCropArchive": "/MNSF26/Run017/mnsf26_arithmetic_crops_run017.zip",
   "sourceInventory": "/MNSF26/Run017/MNSF26_FULLBOOK_CROP_INVENTORY_V1.json",
-  "masteredCount": 20,
+  "masteredCount": 19,
   "holdCount": 0,
   "records": [
     {
@@ -346,7 +346,7 @@
         "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
       },
       "imageHash": "7048e5056d3665271cc2acc407650f817c836e1735b5434a522542f8b3f76ab4",
-      "status": "MASTERED",
+      "status": "REVIEW",
       "questionText": "مقصف مبيعاته اليومية3600؛ ربعها مصروفات وثلاثة أرباعها إيجار؛ صافي الربح",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
       "canonicalMainSkill": "main_quant_10",
@@ -357,7 +357,14 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق مباشر لقاعدة حسابية واحدة أو خطوتين واضحتين.",
       "contentFingerprint": "e36bdc36585aa78b0a973f292cc8bfa3630522b2dff1ba61df6da4ecdebb996d",
-      "ideaFingerprint": "10c2464d2f8a1be66a79f0a99488f1de0868199a211830efc26a2228d3b1bae2"
+      "ideaFingerprint": "10c2464d2f8a1be66a79f0a99488f1de0868199a211830efc26a2228d3b1bae2",
+      "importEligible": false,
+      "reviewReason": "RUN132/135/136 original-image source-answer/solution/taxonomy conflict; do not import until independently reapproved.",
+      "qaEvidence": [
+        "MNSF26_RUN135_37_MATH_REVIEW_CANDIDATES_V1.json",
+        "MNSF26_RUN136_SOURCE_QA_NOTE.md",
+        "MNSF26_RUN132_37_REVIEW_PATCH_MANIFEST_V1.json"
+      ]
     },
     {
       "sourceKey": "MNSF26-AR-T040-Q14",
@@ -548,5 +555,6 @@
       "contentFingerprint": "1745a6437fbb2f29674223ca69f2d7caf92d5cf066d6c081571414be1472516c",
       "ideaFingerprint": "617a38121703490476bc5e2752347bbaf74e859baaf7cd416880834dcfda788a"
     }
-  ]
+  ],
+  "reviewCount": 1
 }
