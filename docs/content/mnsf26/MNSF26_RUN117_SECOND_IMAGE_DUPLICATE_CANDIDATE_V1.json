@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN117",
+  "stage": "QA_LOCK",
+  "type": "DEDUPE_CANDIDATE_ONLY",
+  "sourceKeys": [
+    "MNSF26-GEO-T034-Q11",
+    "MNSF26-GEO-T034-Q12"
+  ],
+  "sharedImageHash": "0ff3a279ff721a58f2a2ae8b713280d776964c5b2fd00d94e4ebddd7492fef48",
+  "contentFingerprints": [
+    "61e4fa1ea1c3af8fb4d37648d06bf853e138c428ff6fd4b501b51e395b7f5e63",
+    "a195b1833e6d32fc0977fb1d8923462c20698beeb580e7464838021dac30e1c6"
+  ],
+  "ideaFingerprints": [
+    "fd5faa8fd7bec6deb2f47cfbd5712c69abcdc0d7f2448044edbc9719a1ddc3ad",
+    "4551ee75ccd221f47590736e504dbb348d370705e84a474cd2a833e8e3c43fad"
+  ],
+  "bothMastered": true,
+  "decision": "PENDING_ORIGINAL_PAGE_AND_SEMANTIC_DEDUPE_REVIEW",
+  "autoSuppressed": false,
+  "cropDefectProven": false
+}
