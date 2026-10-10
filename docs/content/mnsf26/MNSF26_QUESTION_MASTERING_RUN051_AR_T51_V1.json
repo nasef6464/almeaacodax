@@ -5,7 +5,7 @@
   "directImageInspection": true,
   "sourceCropArchive": "/MNSF26/Run017/mnsf26_arithmetic_crops_run017.zip",
   "sourceInventory": "/MNSF26/Run017/MNSF26_FULLBOOK_CROP_INVENTORY_V1.json",
-  "masteredCount": 15,
+  "masteredCount": 10,
   "holdCount": 3,
   "records": [
     {
@@ -23,7 +23,7 @@
       },
       "imageHash": "827612d381b31406e1fb9edd23fd4669269d80e004e9339911eed0480529f0b0",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
-      "status": "MASTERED",
+      "status": "REVIEW",
       "questionText": "برنامج تلفزيوني يبدأ الثامنة صباحًا ويدوم سبع ساعات، وآخر يبدأ العاشرة صباحًا ويدوم خمس ساعات؛ متى ينتهيان معًا؟",
       "canonicalMainSkill": "main_quant_14",
       "canonicalSubskill": "sub_quant_14_2",
@@ -33,7 +33,12 @@
       "difficulty": "Easy",
       "difficultyReason": "خطوات مباشرة في تزامن نهاية برنامجين مختلفي البداية.",
       "contentFingerprint": "6ff8a4a6f13fdcf79da5e93de3112369fa6f5d10be49b13dfcd9fa7031adf0f4",
-      "ideaFingerprint": "92691107c08762e9e88b28646145026290aa0fccf87b7e1b43ba165926b4849a"
+      "ideaFingerprint": "92691107c08762e9e88b28646145026290aa0fccf87b7e1b43ba165926b4849a",
+      "importEligible": false,
+      "reviewReason": "RUN132/135 original-source-image answer/solution conflict; requires independent reapproval.",
+      "qaEvidence": [
+        "MNSF26_RUN135_37_MATH_REVIEW_CANDIDATES_V1.json"
+      ]
     },
     {
       "sourceKey": "MNSF26-AR-T051-Q02",
@@ -133,7 +138,7 @@
       },
       "imageHash": "26cb9aaf51ad86cec2a964c6944f26cf1f69975a0321cfbf29b9eaf0c2cc0c39",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
-      "status": "MASTERED",
+      "status": "REVIEW",
       "questionText": "قارن مدة سعد من 8:25 إلى10:15 ومدة فهد من9:20 إلى11:10.",
       "canonicalMainSkill": "main_quant_14",
       "canonicalSubskill": "sub_quant_14_2",
@@ -143,7 +148,12 @@
       "difficulty": "Easy",
       "difficultyReason": "خطوات مباشرة في مقارنة فترتين زمنيتين.",
       "contentFingerprint": "ce20f87c7e9bdd0dc5842f575dfd560b0cb1f36a2df6d6bb262e7a8fbc456fec",
-      "ideaFingerprint": "6c1c3bc6a99d5452b1122125813a93a2e38e17390f770f74f2b672eb671d1112"
+      "ideaFingerprint": "6c1c3bc6a99d5452b1122125813a93a2e38e17390f770f74f2b672eb671d1112",
+      "importEligible": false,
+      "reviewReason": "RUN132/135 original-source-image answer/solution conflict; requires independent reapproval.",
+      "qaEvidence": [
+        "MNSF26_RUN135_37_MATH_REVIEW_CANDIDATES_V1.json"
+      ]
     },
     {
       "sourceKey": "MNSF26-AR-T051-Q06",
@@ -160,7 +170,7 @@
       },
       "imageHash": "4dff0927d51cf119a6c12fa4ce6baf44f4c7584d110c4b86e197a0e2dc49f62c",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
-      "status": "MASTERED",
+      "status": "REVIEW",
       "questionText": "من الساعة 8:15 إلى 8:45؛ كم ساعة مضت؟",
       "canonicalMainSkill": "main_quant_14",
       "canonicalSubskill": "sub_quant_14_2",
@@ -170,7 +180,12 @@
       "difficulty": "Easy",
       "difficultyReason": "خطوات مباشرة في تحويل 30 دقيقة إلى نصف ساعة.",
       "contentFingerprint": "28401f2e034865f8c4f87d407166f721c77e585406d461ee6253ae8600b91a8e",
-      "ideaFingerprint": "80f16e7ac14c48a1a1c8c5a5a9fe4014af5eb5fe72a5be87ea9dac307e3c95f2"
+      "ideaFingerprint": "80f16e7ac14c48a1a1c8c5a5a9fe4014af5eb5fe72a5be87ea9dac307e3c95f2",
+      "importEligible": false,
+      "reviewReason": "RUN132/135 original-source-image answer/solution conflict; requires independent reapproval.",
+      "qaEvidence": [
+        "MNSF26_RUN135_37_MATH_REVIEW_CANDIDATES_V1.json"
+      ]
     },
     {
       "sourceKey": "MNSF26-AR-T051-Q07",
@@ -322,7 +337,7 @@
       },
       "imageHash": "9d3d202b8a2df556d8d25e7565be78f8d6196d0d010a68050229c1bcace4cbf1",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
-      "status": "MASTERED",
+      "status": "REVIEW",
       "questionText": "مؤشر خزان البنزين يصنع زاوية قائمة عند النصف؛ ما زاويته عند ثلثي الخزان بافتراض تدريج خطي؟",
       "canonicalMainSkill": "main_quant_15",
       "canonicalSubskill": "sub_quant_15_3",
@@ -332,7 +347,12 @@
       "difficulty": "Medium",
       "difficultyReason": "تتطلب ربط أكثر من معطى أو تحويل وحدات في تدرج مؤشر قياس خطي إلى زاوية.",
       "contentFingerprint": "f4bf2c0fe4c04d6b343a02fb9aae675a21a0cba8609034b3e53cb982c7357f21",
-      "ideaFingerprint": "7d1daa797b17fb8eb6704b3e217f218c3153d36556bb9c6db1b38efd707bdaaf"
+      "ideaFingerprint": "7d1daa797b17fb8eb6704b3e217f218c3153d36556bb9c6db1b38efd707bdaaf",
+      "importEligible": false,
+      "reviewReason": "RUN132/135 original-source-image answer/solution conflict; requires independent reapproval.",
+      "qaEvidence": [
+        "MNSF26_RUN135_37_MATH_REVIEW_CANDIDATES_V1.json"
+      ]
     },
     {
       "sourceKey": "MNSF26-AR-T051-Q13",
@@ -377,7 +397,7 @@
       },
       "imageHash": "525ae6e5888a2ea34b703dfbc8f9d93fcd160d66712222119a1fcaa00f751798",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
-      "status": "MASTERED",
+      "status": "REVIEW",
       "questionText": "سيارة تقطع 180 كم في ساعتين وباقي الرحلة 60 كم بسرعة 60 كم/ساعة؛ كم زمن الرحلة؟",
       "canonicalMainSkill": "main_quant_12",
       "canonicalSubskill": "sub_quant_12_1",
@@ -387,7 +407,12 @@
       "difficulty": "Easy",
       "difficultyReason": "خطوات مباشرة في جمع أزمنة مرحلتين لرحلة.",
       "contentFingerprint": "571f1a942acb8c1d782c81279e496520cf1aee52bd9be011ca91dbdff7006c1a",
-      "ideaFingerprint": "f8233ed3e197920794be3567cdc0d69ff797d68524d5f1074b7141c234b91bde"
+      "ideaFingerprint": "f8233ed3e197920794be3567cdc0d69ff797d68524d5f1074b7141c234b91bde",
+      "importEligible": false,
+      "reviewReason": "RUN132/135 original-source-image answer/solution conflict; requires independent reapproval.",
+      "qaEvidence": [
+        "MNSF26_RUN135_37_MATH_REVIEW_CANDIDATES_V1.json"
+      ]
     },
     {
       "sourceKey": "MNSF26-AR-T051-Q15",
@@ -497,5 +522,6 @@
       "contentFingerprint": "2e6f08fba20e8be77158e9d7dadd5e7e40b969347e905cda29f8c5ff0923c050",
       "ideaFingerprint": "ae2b501d809b5bf31ea1de1eb7e2d461947c7f1e3f02e8c835455e13557ec20d"
     }
-  ]
+  ],
+  "reviewCount": 5
 }
