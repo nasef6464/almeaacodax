@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 2,
+  "bank": "MNSF26",
+  "run": "RUN125",
+  "stage": "QA_LOCK",
+  "startHeads": {
+    "branch": "4f8921a23c42743ca0929935ceb7ba6038b88538",
+    "main": "238da73c2ba9ffd632262806e918984c8605cfa1"
+  },
+  "cropLock": "PASS_LOCKED_2135_2135",
+  "questionMastering": "PASS_LOCKED_RUN063_2129_ACTIVE_6_EXCEPTIONS",
+  "sourceIntegrity": {
+    "originalWebpIndependentlyDecoded": 401,
+    "sha256Matched": 401,
+    "uniqueSourceKeys": 401,
+    "newMastered": 0,
+    "fullMathQACertified": false
+  },
+  "liveMasterStructuralAudit": {
+    "originalFilesRead": 20,
+    "recordAppearances": 374,
+    "masteredAppearances": 291,
+    "holdAppearances": 75,
+    "reviewAppearances": 8,
+    "counterMismatchFiles": 3,
+    "sourceIndexReferencedPathsNotFound": 4,
+    "missingSourceKeysNotYetEstablished": true
+  },
+  "sourceConflicts": {
+    "minimum": 35,
+    "originalMasterQuarantinesApplied": 0,
+    "manifest": "docs/content/mnsf26/MNSF26_RUN125_35_SOURCE_CONFLICTS_GATE_V1.json",
+    "importAuthorized": false
+  },
+  "localGuardTestsPassed": 8,
+  "localImageDerivedMathCandidates": 6,
+  "githubSuccessfulWrites": [
+    "cd6d2e9dce6bbaf6c9cf63d8ffe20cb86842f2e9"
+  ],
+  "githubBlockedWrites": [
+    "original MASTER quarantine",
+    "execution state update",
+    "guard script creation",
+    "six math candidates"
+  ],
+  "qaLock": "OPEN_FAIL_CLOSED",
+  "dedupeLock": "NOT_LOCKED",
+  "r2Upload": "NOT_STARTED",
+  "import": "NOT_STARTED",
+  "productionE2E": "NOT_COMPLETED",
+  "productionTouched": false
+}
