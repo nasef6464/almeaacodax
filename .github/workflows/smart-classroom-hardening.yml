@@ -10,6 +10,7 @@ on:
       - 'server/src/routes/index.ts'
       - 'server/src/middleware/auth.ts'
       - 'server/src/middleware/classroomAuth.ts'
+      - 'server/src/middleware/classroomRequestReads.ts'
       - 'server/src/models/Classroom**'
       - 'server/src/modules/schools/**'
       - 'server/src/sockets/**'
@@ -108,6 +109,9 @@ jobs:
 
       - name: Smart Classroom isolated E2E
         run: npm --prefix server run simulate:smart-classroom-hardening
+
+      - name: Smart Classroom request read isolation
+        run: npm --prefix server run verify:smart-classroom-request-reads
 
       - name: Smart Classroom active-account revocation
         run: npm --prefix server run verify:smart-classroom-active-auth

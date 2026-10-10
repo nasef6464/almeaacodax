@@ -1,5 +1,7 @@
 # ALMEAA Current Directory & Module Map
 
+Request-read boundary (2026-10-10): `server/src/middleware/classroomRequestReads.ts` owns per-HTTP-request read reuse for student classroom guards/routes. Existing auth middleware and school resolvers retain authority; no cross-request cache, transport/API/model or persisted-data change.
+
 Status: CANONICAL CURRENT-STATE MAP  
 Audit branch: `fix/parent-authority-b9`  
 Rule: this file describes what exists now. Target architecture is documented separately and must not be mistaken for completed migration.

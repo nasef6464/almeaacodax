@@ -9,6 +9,7 @@ const read = (file) => fs.readFileSync(path.join(root, file), 'utf8');
 const teacherRoutes = read('server/src/routes/classroom/registerClassroomTeacherRoutes.ts');
 const classroomLifecycle = read('server/src/modules/schools/application/classroomLifecycle.ts');
 const studentRoutes = read('server/src/routes/classroom/registerClassroomStudentRoutes.ts');
+const requestReads = read('server/src/middleware/classroomRequestReads.ts');
 const aggregateRoutes = read('server/src/routes/classroom/registerClassroomAggregateRoutes.ts');
 const competitionRoutes = read('server/src/routes/classroom/registerClassroomCompetitionRoutes.ts');
 const competitionScoring = read('server/src/modules/schools/application/classroomCompetitionScoring.ts');
@@ -59,7 +60,7 @@ check('student final submission is persisted server-side', participantModel.incl
 check('finalized submission blocks later answer mutation', studentRoutes.includes('تم التسليم النهائي لهذه الدفعة ولا يمكن تعديل الإجابات'));
 check('current question read restores submitted state after refresh', studentRoutes.includes('submissionKey, submitted') && floatingWidget.includes('const serverSubmitted = Boolean(result?.submitted)'));
 check('floating widget submits the published set atomically through the final endpoint', floatingWidget.includes('/submit') && floatingWidget.includes('finalAnswers'));
-check('student school access uses authoritative school contexts', studentRoutes.includes('resolveSchoolContexts') && studentRoutes.includes('hasSchoolContext'));
+check('student school access uses authoritative school contexts', studentRoutes.includes('classroomRequestReads.contexts(req,') && requestReads.includes('contexts: resolveSchoolContexts') && studentRoutes.includes('hasSchoolContext'));
 check('student active-session discovery only searches entitled active school contexts', studentRoutes.includes('entitledSchoolIds') && studentRoutes.includes('schoolId: { $in: entitledSchoolIds }'));
 check('student live routes recheck Smart Classroom entitlement', studentRoutes.includes('smartClassroomEnabled') && studentRoutes.match(/Smart Classroom is not enabled for this school/g)?.length >= 4);
 check('teacher question/publish/append routes recheck Smart Classroom entitlement', teacherRoutes.includes('smartClassroomEnabled') && teacherRoutes.match(/Smart Classroom is not enabled for this school/g)?.length >= 4);

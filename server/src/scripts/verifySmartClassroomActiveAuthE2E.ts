@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import { io as connectSocket, type Socket } from "socket.io-client";
 import { createApp } from "../app.js";
 import { env } from "../config/env.js";
+import { ClassroomParticipantModel } from "../models/ClassroomParticipant.js";
 import { ClassroomSessionModel } from "../models/ClassroomSession.js";
 import { SchoolContractModel } from "../models/SchoolContract.js";
 import { SchoolMembershipModel } from "../models/SchoolMembership.js";
@@ -176,7 +177,25 @@ async function run() {
   const teacherHistoryEndpoint = `${baseUrl}/api/classroom/teacher/history`;
   const scopedTeacherHistoryEndpoint = `${teacherHistoryEndpoint}?schoolId=${encodeURIComponent(schoolId)}`;
 
-  assert.equal((await get(studentEndpoint, studentToken)).status, 200, "active student should reach Smart Classroom HTTP routes");
+  await ClassroomParticipantModel.create({ sessionId, studentId });
+  const oldDebug = mongoose.get("debug");
+  const queryCounts = { student: 0, membership: 0, contract: 0 };
+  mongoose.set("debug", (collection: string, method: string, query: any) => {
+    if (!method.startsWith("find")) return;
+    if (collection === UserModel.collection.name && String(query?._id) === studentId) queryCounts.student++;
+    if (collection === SchoolMembershipModel.collection.name && query?.userId === studentId) queryCounts.membership++;
+    if (collection === SchoolContractModel.collection.name && query?.schoolId === schoolId) queryCounts.contract++;
+  });
+  try {
+    for (const endpoint of [studentEndpoint, `${baseUrl}/api/classroom/sessions/${sessionId}/current`]) {
+      queryCounts.student = queryCounts.membership = queryCounts.contract = 0;
+      const response = await get(endpoint, studentToken);
+      assert.equal(response.status, 200, "active student reaches discovery/current routes");
+      await response.json();
+      assert.deepEqual(queryCounts, { student: 1, membership: 1, contract: 1 }, "one fresh read per access input on each HTTP request");
+    }
+  } finally { mongoose.set("debug", oldDebug); }
+
   assert.equal((await get(teacherEndpoint, teacherToken)).status, 200, "active assigned session owner should reach its classroom HTTP route");
   assert.equal((await get(teacherEndpoint, supervisorToken)).status, 200, "active entitled supervisor should reach scoped classroom aggregate data");
   assert.equal((await get(teacherHistoryEndpoint, teacherToken)).status, 400, "teacher history must require an explicit school scope");
@@ -334,7 +353,10 @@ run()
   .finally(async () => {
     sockets.splice(0).forEach((socket) => socket.disconnect());
     try {
-      if (sessionId) await ClassroomSessionModel.deleteOne({ _id: sessionId });
+      if (sessionId) {
+        await ClassroomParticipantModel.deleteMany({ sessionId });
+        await ClassroomSessionModel.deleteOne({ _id: sessionId });
+      }
       const users = await UserModel.find({ email: { $in: [studentEmail, teacherEmail, supervisorEmail] } }).select("_id").lean();
       const userIds = users.map((user: any) => String(user._id));
       if (userIds.length) await SchoolMembershipModel.deleteMany({ userId: { $in: userIds }, schoolId });
