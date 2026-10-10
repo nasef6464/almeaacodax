@@ -5,7 +5,7 @@
   "directImageInspection": true,
   "sourceCropArchive": "/MNSF26/Run017/mnsf26_arithmetic_crops_run017.zip",
   "sourceInventory": "/MNSF26/Run017/MNSF26_FULLBOOK_CROP_INVENTORY_V1.json",
-  "masteredCount": 10,
+  "masteredCount": 9,
   "holdCount": 8,
   "records": [
     {
@@ -243,7 +243,7 @@
       },
       "imageHash": "1545ad337d0be2477d9237fe69b2a0d14b55b7d7fa9b6a7dc4049c88732336f3",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
-      "status": "MASTERED",
+      "status": "REVIEW",
       "questionText": "أمل سلمت ورقة الاختبار بعد هند بدقيقتين، وعبير قبل هند بثلاث دقائق، وسلمى قبل أمل بسبع دقائق؛ كم الفرق بين سلمى وعبير؟",
       "canonicalMainSkill": "main_quant_14",
       "canonicalSubskill": "sub_quant_14_2",
@@ -253,7 +253,10 @@
       "difficulty": "Medium",
       "difficultyReason": "تتطلب ربط أكثر من معطى أو تحويل وحدات في مقارنة توقيتات نسبية لأشخاص.",
       "contentFingerprint": "06eb037a67014519740d36ca1f754b68873785a863cdd7639e9f818b258bba49",
-      "ideaFingerprint": "94fe5ad88eb96e59c23fc593bdc9b8649ce48e0c43e0798963f260d5e01d8d1c"
+      "ideaFingerprint": "94fe5ad88eb96e59c23fc593bdc9b8649ce48e0c43e0798963f260d5e01d8d1c",
+      "importEligible": false,
+      "qaReviewReason": "Source/prior RUN113 QA: Salma is five minutes before Hind, not two; MASTER says two.",
+      "qaEvidence": "RUN114 independent visual reinspection of RUN112/RUN113 source WebP; import blocked pending re-mastering"
     },
     {
       "sourceKey": "MNSF26-AR-T061-Q10",
@@ -502,5 +505,6 @@
       "contentFingerprint": "eb4f489a2ea1163fe7f69023a7ea6c32cbd9cc44a35929b2c35a4062f1c8b059",
       "ideaFingerprint": "1758a889f548fe82ff2cfa15549d65409e3902d49b662f8e54b9e2fb206b7777"
     }
-  ]
+  ],
+  "reviewCount": 1
 }
