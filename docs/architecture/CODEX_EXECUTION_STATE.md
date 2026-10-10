@@ -1,5 +1,14 @@
 # ALMEAA — Codex Execution State
 
+## Classroom report read recovery — 2026-10-10
+- IN_PROGRESS, baseline535192ed, branchcodex/classroom-report-read-recovery. Mounted-view summary hook owns history reads/pending deduplication/prior-school response rejection; callers retain filters/diagnostics/details. Explicit retry only, no polling/global cache/server/API/RBAC/result mutation.
+- Read-only50session comparison:339974→221492JSON,35972→33903compressed response-body bytes; diagnostics equal. Actual React/supervisor UI/insights/typecheck/buildPASS; finalCI/publication/read-only browser acceptance pending. Upstream502cause/devices/totalbandwidthNOT_PROVEN. Email setup owner-deferred; #518login proof retained. Evidence docs/audits/CLASSROOM_REPORT_READ_RECOVERY_2026-10-10.md.
+
+## Published login checkpoint — 2026-10-10
+- #518 merged/published `535192eda1044e129b7cf561c02873e76709ce37`; code head `245eced250292de62e2762ce31edde994a717dce`:20SUCCESS/3conditional skips/all3requiredPASS;5main workflows SUCCESS. Frontend/Render/canonical/direct match; DB/Redis PASS.
+-24fresh legitimate trial student logins and24identity checks PASS, four concurrent, no bypass or production wrong-password/reset-mail tests.40concurrent-account acceptance belongs to isolated Mongo/Redis tests, not production capacity.
+-Recovery remains PARTIAL/BLOCKED on a real mail provider. Owner supplied Gmail address, not delivery credentials. No provider configured and no real email sent. Next: free provider account activation/integration and real recovery inbox proof. Current evidence additions await the next focused delivery; do not rerun verified #518 login or #516 classroom flow.
+
 ## Latest checkpoint — shared-network classroom login — 2026-10-10
 - Owner final policy:10wrong attempts per account and source. Actual isolated loopback-email recovery journeyPASS (dispatch/link/expired+invalid rejection/immediate recovered login/token reuse rejection/other-source isolation). Forgot-password now dispatches only its own email instead of leaving a pending record. Read-only Render54-variable proof:email provider none/no sender/credential/webhook; real inbox delivery BLOCKED on configuration. No production email or password-reset experiment performed.
 - Owner authorized this bounded authentication-policy fix. Branch `codex/classroom-shared-network-login`, baseline published0b3c469a. Local HTTP protection and actual isolated Mongo/Redis/bcrypt/CSRF/cookie acceptance PASS for40concurrent distinct-account students; source/account/alias budgets, persisted password lock, disabled account, CSRF and outage/TTL safety checked. Exact-head CI/publication/24fresh legitimate live logins pending; not CLOSED.

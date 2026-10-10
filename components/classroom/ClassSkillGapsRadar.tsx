@@ -1,12 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { AlertTriangle, ChevronLeft, Target, Zap } from 'lucide-react';
+import { AlertTriangle, ChevronLeft, RefreshCw, Target, Zap } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { api } from '../../services/api';
+import { useClassroomTeacherReports } from '../../hooks/useClassroomTeacherReports';
 import {
   buildClassroomSkillDiagnostics,
-  normalizeClassroomReport,
-  type CanonicalClassroomReport,
-  type ClassroomSavedReport,
 } from './classroomReportViewModel';
 
 interface ClassSkillGapsRadarProps {
@@ -34,33 +31,7 @@ export const ClassSkillGapsRadar: React.FC<ClassSkillGapsRadarProps> = ({
   const [selectedClassId, setSelectedClassId] = useState(assignments[0]?.classId || '');
   const [selectedPathId, setSelectedPathId] = useState('all');
   const [selectedSubjectId, setSelectedSubjectId] = useState('all');
-  const [reports, setReports] = useState<CanonicalClassroomReport[]>([]);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    if (!schoolId) return;
-    let cancelled = false;
-    setLoading(true);
-    api.getClassroomTeacherHistory(schoolId)
-      .then((result) => {
-        if (cancelled) return;
-        const sessions = Array.isArray(result?.sessions) ? result.sessions : [];
-        setReports(
-          sessions
-            .map((session) => normalizeClassroomReport(session as ClassroomSavedReport))
-            .filter((report) => report.status === 'ended' || report.status === 'archived' || Boolean(report.endedAt)),
-        );
-      })
-      .catch(() => {
-        if (!cancelled) setReports([]);
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [schoolId]);
+  const { reports, loading, error, reload } = useClassroomTeacherReports(schoolId);
 
   const selectedClass = assignments.find((assignment) => assignment.classId === selectedClassId) || assignments[0];
 
@@ -132,7 +103,7 @@ export const ClassSkillGapsRadar: React.FC<ClassSkillGapsRadarProps> = ({
             <h2 className="text-xl font-black text-slate-900 dark:text-white">رادار فجوات الفصل المهارية</h2>
           </div>
           <p className="mt-1 text-xs text-slate-500">
-            بيانات فعلية من الحصص المسجلة، مع عزل المسار والمادة قبل تجميع المهارات.
+            تحليل ما يصل إلى 50 حصة حديثة، مع عزل المسار والمادة قبل تجميع المهارات.
           </p>
         </div>
 
@@ -185,6 +156,8 @@ export const ClassSkillGapsRadar: React.FC<ClassSkillGapsRadarProps> = ({
         <div className="mt-6 rounded-2xl border border-dashed border-slate-200 p-8 text-center text-sm font-bold text-slate-500">
           جارٍ تحميل بيانات المهارات الفعلية…
         </div>
+      ) : error ? (
+        <div className="mt-6 rounded-2xl border border-rose-200 p-5 text-center"><p className="text-sm text-rose-600" role="alert">{error}</p><button type="button" onClick={() => void reload()} className="mt-3 inline-flex items-center gap-2 rounded-xl border border-slate-200 px-3 py-2 text-xs font-bold"><RefreshCw size={14} /> إعادة تحميل المهارات</button></div>
       ) : skills.length === 0 ? (
         <div className="mt-6 rounded-2xl border border-dashed border-slate-200 p-8 text-center text-sm font-bold text-slate-500">
           لا توجد أدلة مهارية مطابقة للنطاق المحدد حتى الآن.

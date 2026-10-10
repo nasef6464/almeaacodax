@@ -1,5 +1,7 @@
 # ALMEAA — Module Catalog
 
+Classroom history read lifecycle: `hooks/useClassroomTeacherReports.ts` owns summary loading/error/retry and stale response isolation for report list and skill radar. Presentation/diagnostics/detail actions remain in their existing classroom components.
+
 | Domain | يملك | لا يملك | المداخل الحالية | الحالة |
 |---|---|---|---|---|
 | auth | identity/login/account/session/admin-user lifecycle; bounded login failure budgets and scoped password-recovery dispatch | تقارير أو scoring | `server/src/routes/auth.routes.ts`, `server/src/modules/auth/`, `server/src/middleware/loginProtection.ts` | HIGH DEBT — route facade retained; recovery dispatch extracted to `application/sendPasswordRecovery.ts`, owner-authorized10/10login policy, unchanged65kownership budget |

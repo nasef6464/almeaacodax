@@ -1,5 +1,7 @@
 # ALMEAA — Change Map
 
+Classroom history loading/error/retry: start at `hooks/useClassroomTeacherReports.ts`; selected-session student details remain `components/classroom/SmartClassroomReportsSection.tsx`. Do not add a global authority cache or student-detail load to the radar.
+
 | إذا أردت تغيير... | ابدأ من... | لا تبدأ من... |
 |---|---|---|
 | حدود دخول الفصل واستعادة الحساب | middleware/loginProtection.ts ثم modules/auth/application/loginFailureBudget.ts؛ إرسال رابط الاستعادة في sendPasswordRecovery.ts | رفع حدود المصادقة الأخرى أو تعديل RBAC/النتائج |

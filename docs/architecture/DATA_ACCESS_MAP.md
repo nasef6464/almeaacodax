@@ -1,5 +1,7 @@
 # ALMEAA — Data Access Map
 
+Classroom report recovery (2026-10-10): shared mounted-view `useClassroomTeacherReports` reads existing teacher-history view=summary (default50), excluding student arrays for radar/list. Student details remain selected-session aggregate?view=report; explicit detail retry adds no history read. No global cache, polling or server/RBAC/query changes. Old-school/unmounted replies ignored.
+
 Shared-network login (2026-10-10, owner authorized): `middleware/loginProtection.ts` owns login-only burst/account/completed-failure guards; `modules/auth/application/loginFailureBudget.ts` owns bounded memory and expiring atomic Redis source counters on the existing rate-limit connection. Hashed source/identity keys; no User schema/migration or result writes. Existing auth routes retain password locks, disabled-user, CSRF/cookie/token authority. Production verification pending; evidence `docs/audits/CLASSROOM_SHARED_NETWORK_LOGIN_2026-10-10.md`.
 
 Owner-selected account/source limits are10/10. Valid reset-token ownership permits releasing only recovered account identifier counters and the recovery source; invalid/expired/used tokens cannot release protection. Forgot-password persists then processes only its own delivery through the existing notification provider; no general pending-notification scan, polling or new service. Real mail provider is unconfigured; isolated mailbox delivery is evidence of the route, not external inbox certification.
