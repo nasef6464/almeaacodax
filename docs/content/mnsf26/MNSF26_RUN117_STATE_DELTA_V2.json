@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 2,
+  "bank": "MNSF26",
+  "run": "RUN117",
+  "stage": "QA_LOCK",
+  "startHeads": {
+    "branch": "ade285fada33e3cc845c378df762b1f18205b084",
+    "main": "2584b2cd63badf1bb8143b475798ab3744d76f48"
+  },
+  "reconciledUniqueSourceImages": 481,
+  "sha256Matched": 481,
+  "sourceImageOverlap": 0,
+  "liveMasterConflictsUnpatched": 30,
+  "confirmedExactImageDuplicatePairs": 2,
+  "masterWritesApplied": 0,
+  "githubDocsCommits": 4,
+  "qaLock": false,
+  "dedupeLock": false,
+  "productionE2E": false,
+  "notes": "Full-book math/taxonomy QA remains open; all 30 conflicts fail-closed in evidence but not original MASTER; no production calls."
+}
