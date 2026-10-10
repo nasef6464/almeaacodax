@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN122",
+  "stage": "QA_LOCK",
+  "branchHeadAtStart": "d76f1493d2b670fb68100b48a0dc7ff27d04adc5",
+  "mainHeadAtStart": "9c2dfd98f120ba43f13ef0b7550cb633f64d42ae",
+  "cropLock": "PASS_LOCKED_2135",
+  "masteringLock": "RUN063_2129_ACTIVE_6_EXCLUDED",
+  "sourceConflictCountMinimum": 31,
+  "newConflict": "MNSF26-AR-T039-Q04",
+  "originalMasterRecordsQuarantinedThisRun": 0,
+  "sourceConflictGate": "FAIL_CLOSED",
+  "qaLock": "OPEN",
+  "productionTouched": false,
+  "notes": "RUN121 independently inspected 13 source duplicate pairs, 26 source images. Preserve previous 5 suppressions; no new suppression until full content/idea QA."
+}
