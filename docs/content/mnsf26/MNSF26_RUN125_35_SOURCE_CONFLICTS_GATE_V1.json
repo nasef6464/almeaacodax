@@ -1,0 +1,231 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN125",
+  "stage": "QA_LOCK",
+  "baseHead": "4f8921a23c42743ca0929935ceb7ba6038b88538",
+  "source": "RUN122 31 conflict gate + RUN123 three image-confirmed + RUN124 one image-confirmed",
+  "expectedConflictCount": 35,
+  "originalMasterQuarantinesApplied": 0,
+  "requiredStatus": "REVIEW",
+  "requiredImportEligible": false,
+  "importAuthorized": false,
+  "productionTouched": false,
+  "failClosed": true,
+  "conflicts": [
+    {
+      "sourceKey": "MNSF26-GEO-T001-Q19",
+      "masterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T01_V1.json",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T003-Q20",
+      "masterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T03_V1.json",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T005-Q11",
+      "masterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T05_V1.json",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T007-Q03",
+      "masterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T07_V1.json",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T007-Q17",
+      "masterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T07_V1.json",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T011-Q10",
+      "masterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T11_V1.json",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T037-Q14",
+      "masterFile": "MNSF26_QUESTION_MASTERING_RUN049_AR_T37_RECONCILED_V1.json",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T039-Q03",
+      "masterFile": "MNSF26_QUESTION_MASTERING_RUN049_AR_T39_RECONCILED_V1.json",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T039-Q04",
+      "masterFile": "MNSF26_QUESTION_MASTERING_RUN049_AR_T39_RECONCILED_V1.json",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T040-Q13",
+      "masterFile": "MNSF26_QUESTION_MASTERING_RUN049_AR_T40_RECONCILED_V1.json",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T049-Q16",
+      "masterFile": "MNSF26_QUESTION_MASTERING_RUN051_AR_T49_V1.json",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T051-Q01",
+      "masterFile": "MNSF26_QUESTION_MASTERING_RUN051_AR_T51_V1.json",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T051-Q05",
+      "masterFile": "MNSF26_QUESTION_MASTERING_RUN051_AR_T51_V1.json",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T051-Q06",
+      "masterFile": "MNSF26_QUESTION_MASTERING_RUN051_AR_T51_V1.json",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T051-Q12",
+      "masterFile": "MNSF26_QUESTION_MASTERING_RUN051_AR_T51_V1.json",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T051-Q14",
+      "masterFile": "MNSF26_QUESTION_MASTERING_RUN051_AR_T51_V1.json",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T055-Q08",
+      "masterFile": "MNSF26_QUESTION_MASTERING_RUN051_AR_T55_V1.json",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T057-Q12",
+      "masterFile": "MNSF26_QUESTION_MASTERING_RUN051_AR_T57_V1.json",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T057-Q14",
+      "masterFile": "MNSF26_QUESTION_MASTERING_RUN051_AR_T57_V1.json",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T058-Q11",
+      "masterFile": "MNSF26_QUESTION_MASTERING_RUN051_AR_T58_V1.json",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T059-Q09",
+      "masterFile": "MNSF26_QUESTION_MASTERING_RUN051_AR_T59_V1.json",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T054-Q01",
+      "masterFile": "MNSF26_QUESTION_MASTERING_RUN051_AR_T54_V1.json",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T054-Q05",
+      "masterFile": "MNSF26_QUESTION_MASTERING_RUN051_AR_T54_V1.json",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T057-Q02",
+      "masterFile": "MNSF26_QUESTION_MASTERING_RUN051_AR_T57_V1.json",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T058-Q19",
+      "masterFile": "MNSF26_QUESTION_MASTERING_RUN051_AR_T58_V1.json",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-AR-T063-Q19",
+      "masterFile": "MNSF26_QUESTION_MASTERING_RUN051_AR_T63_V1.json",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T048-Q20",
+      "masterFile": "MNSF26_QUESTION_MASTERING_RUN053_GEO_T48_V1.json",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T050-Q03",
+      "masterFile": "MNSF26_QUESTION_MASTERING_RUN053_GEO_T50_V1.json",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T035-Q07",
+      "masterFile": "MNSF26_QUESTION_MASTERING_RUN052_GEO_T35_V1.json",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T014-Q01",
+      "masterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T14_V1.json",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T020-Q05",
+      "masterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T20_V1.json",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T026-Q17",
+      "masterFile": "MNSF26_QUESTION_MASTERING_RUN051_GEO_T26_V1.json",
+      "imageHash": "70bc4aed26db93933d9302acbffc0ccd78f21f9af3ee0bc27184929e15877737",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T027-Q02",
+      "masterFile": "MNSF26_QUESTION_MASTERING_RUN051_GEO_T27_V1.json",
+      "imageHash": "bff03f465f3030368a3f15a96b439225ac6750e632b981bbeff71ae1789137de",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T010-Q19",
+      "masterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T10_V1.json",
+      "imageHash": "432f270f6b5b0f11a4a4178165a62c939cef2d1dad13501424657b3679593f25",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T010-Q09",
+      "masterFile": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T10_V1.json",
+      "imageHash": "52927e2b961240e30eddcd10060803d1d74cb4d2ccd6fe2c5fc1b838fb4ab167",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    }
+  ]
+}
