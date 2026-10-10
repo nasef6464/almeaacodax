@@ -21,6 +21,7 @@ import { createNotificationDeliveries } from "../services/notificationService.js
 import { sendExternalNotification } from "../services/notificationProviders.js";
 import { buildPaginatedResponse, resolvePagination } from "../utils/pagination.js";
 import { env } from "../config/env.js";
+import { clearRecoveredLoginProtection } from "../middleware/loginProtection.js";
 import { csrfGuard, issueCsrfToken } from "../middleware/csrf.js";
 import { isPackageSeatAvailable } from "../services/packageSeatCapacity.js";
 import { SchoolMembershipModel } from "../models/SchoolMembership.js";
@@ -110,7 +111,7 @@ const hashOtpCode = (phone: string, code: string) => hashToken(`${phone}:${code}
 const generateOtpCode = () => String(Math.floor(100000 + Math.random() * 900000));
 const EMAIL_VERIFICATION_TTL_MS = 24 * 60 * 60 * 1000;
 const PASSWORD_RESET_TTL_MS = 60 * 60 * 1000;
-const MAX_FAILED_LOGIN_ATTEMPTS = 5;
+const MAX_FAILED_LOGIN_ATTEMPTS = env.RATE_LIMIT_LOGIN_ACCOUNT_LIMIT;
 const LOGIN_LOCK_MS = 15 * 60 * 1000;
 const WHATSAPP_OTP_TTL_MS = 10 * 60 * 1000;
 const WHATSAPP_OTP_MAX_ATTEMPTS = 5;
@@ -528,9 +529,9 @@ authRouter.post(
       await createNotificationDeliveries({
         channels: ["email"],
         userIds: [String(user.id || user._id)],
-        title: "Reset your password",
-        subject: "Reset your password",
-        body: `Use this password reset token within 60 minutes: ${token}`,
+        title: "استعادة كلمة المرور",
+        subject: "استعادة كلمة المرور",
+        body: `لاستعادة كلمة المرور افتح الرابط خلال 60 دقيقة: ${env.CLIENT_URL.replace(/\/+$/, "")}/reset-password?token=${encodeURIComponent(token)}`,
         createdBy: "system",
       });
     }
@@ -558,6 +559,9 @@ authRouter.post(
       });
     }
 
+    // Reset-token ownership was verified above; do not mutate the password if
+    // the protection store cannot safely release the recovered login.
+    await clearRecoveredLoginProtection(req, user);
     user.passwordHash = await bcrypt.hash(payload.password, 10);
     user.passwordResetUsedAt = Date.now();
     user.passwordResetTokenHash = "";

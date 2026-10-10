@@ -1,5 +1,10 @@
 # ALMEAA — Codex Execution State
 
+## Latest checkpoint — shared-network classroom login — 2026-10-10
+- Owner authorized this bounded authentication-policy fix. Branch `codex/classroom-shared-network-login`, baseline published0b3c469a. Local HTTP protection and actual isolated Mongo/Redis/bcrypt/CSRF/cookie acceptance PASS for40concurrent distinct-account students; source/account/alias budgets, persisted password lock, disabled account, CSRF and outage/TTL safety checked. Exact-head CI/publication/24fresh legitimate live logins pending; not CLOSED.
+- Prior request-read change #516 exact794ca03d/all3requiredPASS/live0b3c469a. Primary24-student/3batch/360answer/184request flowPASS,p95=4318ms. Same-protocol544responsesFAILwithoneVercelHTML502onreportGET; all360answerssaved/sessionended, read-only report recoveryPASS. Keep failed evidence; devices/total bandwidth/whole-project scale NOT_PROVEN. The IN_PROGRESS entry below is historical startup, superseded by these audit results.
+- Evidence: `docs/audits/CLASSROOM_SHARED_NETWORK_LOGIN_2026-10-10.md` and `docs/audits/CLASSROOM_REQUEST_READ_EFFICIENCY_2026-10-10.md`. Next: protected PR/exactCI/publication/positive real trial-account entry; do not repeat #514director permission grant or #516read optimization.
+
 ## كفاءة قراءات طلب الحصة — 2026-10-10
 - IN_PROGRESS: فرع `codex/classroom-request-read-efficiency` من main `33af5768`. تحسين محدود لقراءات الطالب/العضوية/عقد المدرسة داخل الطلب الواحد؛ لا كاش صلاحيات بين الطلبات ولا تغيير API أو التصحيح أو النتائج أو الخدمات المجانية.
 - القياس السابق 24طالبًا/3دفعات/360إجابة محفوظ: 544طلبًا،89,671بايت أجسام استجابة مضغوطة،p95=11,339ms؛ لا يمثل باندويث المتصفح أو الفاتورة. تقليل القراءات لا يثبت وحده تحسن زمن الاستجابة؛ يلزم قياس منشور جديد.

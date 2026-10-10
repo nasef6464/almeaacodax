@@ -1,5 +1,8 @@
 # ALMEAA — Issues & Decisions Register
 
+## Classroom shared-network login — 2026-10-10
+Owner authorized separating legitimate class login from shared-source wrong-password protection after deployed20/15minlimit rejected trial setup. Preserve existing owner-selected ten-failure account lock; separate short source burst, normalized account limit and completed-failure source budget. Existing Redis connection/free infrastructure reused. Local40-account Mongo/Redis/cookie/CSRF testPASS; CI/live publication pending. Gatewayreport502remains an independent NOT_PROVEN cause; do not close whole-school stability from this login change. Details in `docs/audits/CLASSROOM_SHARED_NETWORK_LOGIN_2026-10-10.md`.
+
 ## D-001 — One canonical execution plan
 **قرار:** Master Control هو الخطة التنفيذية الوحيدة.  
 **سبب:** تعدد FINAL/MASTER/CURRENT/HANDOFF تسبب في تضارب الحالة وإعادة شغل مغلق.  

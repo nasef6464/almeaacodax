@@ -25,6 +25,15 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     services:
+      redis:
+        image: public.ecr.aws/docker/library/redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
       mongodb:
         # Official Docker Mongo 7.0 image, pinned from its ECR Public mirror.
         # Avoid Docker Hub anonymous shared-runner pull limits.
@@ -85,6 +94,20 @@ jobs:
 
       - name: API production build
         run: npm --prefix server run build
+
+      - name: Shared-network classroom login and protection contract
+        run: npm --prefix server run verify:classroom-login-protection
+
+      - name: Forty real student logins from a shared classroom network
+        env:
+          REDIS_URL: "redis://127.0.0.1:6379"
+          REDIS_KEY_PREFIX: "classroom-login-ci-${{ github.run_id }}"
+          RATE_LIMIT_REDIS_ENABLED: "true"
+          RATE_LIMIT_AUTH_LIMIT: "20"
+          RATE_LIMIT_LOGIN_ACCOUNT_LIMIT: "10"
+          RATE_LIMIT_LOGIN_SOURCE_FAILURE_LIMIT: "10"
+          RATE_LIMIT_LOGIN_BURST_LIMIT: "60"
+        run: npm --prefix server run verify:classroom-login-e2e
 
       - name: Integration harness typecheck
         run: cd server && npx tsc --noEmit --target ES2022 --module NodeNext --moduleResolution NodeNext --strict --esModuleInterop --skipLibCheck --types node src/scripts/backendIntegrationGate.ts src/scripts/courseCommercialJourneyGate.ts src/scripts/freeCourseContentEntitlementGate.ts src/scripts/learnerQuizCatalogPaginationGate.ts src/scripts/learnerReferenceRepairGate.ts src/scripts/db5ConsistencyRaceGate.ts src/scripts/db6ScaleCertificationGate.ts ../.github/scripts/courseSalePricePaymentGate.ts

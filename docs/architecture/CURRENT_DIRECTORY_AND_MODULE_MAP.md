@@ -1,5 +1,7 @@
 # ALMEAA Current Directory & Module Map
 
+Shared-network login (2026-10-10): `server/src/middleware/loginProtection.ts` owns login-only guards; `server/src/modules/auth/application/loginFailureBudget.ts` owns expiring source failure counters with bounded memory/atomic Redis adapters. Existing rateLimiters factory and Redis connection reused; auth route/password authority retained. No new production service.
+
 Request-read boundary (2026-10-10): `server/src/middleware/classroomRequestReads.ts` owns per-HTTP-request read reuse for student classroom guards/routes. Existing auth middleware and school resolvers retain authority; no cross-request cache, transport/API/model or persisted-data change.
 
 Status: CANONICAL CURRENT-STATE MAP  

@@ -12,6 +12,7 @@ import { errorHandler, notFoundHandler } from "./middleware/errorHandler.js";
 import { rejectUnsafeMongoKeys } from "./middleware/mongoSanitize.js";
 import { requestLogger } from "./middleware/requestLogger.js";
 import { authRateLimiter, globalRateLimiter, sensitiveActionRateLimiter } from "./middleware/rateLimiters.js";
+import { loginProtection } from "./middleware/loginProtection.js";
 import { requireActiveAuth, requireAuth } from "./middleware/auth.js";
 import { aiStudentTargetGuard } from "./middleware/aiStudentTargetGuard.js";
 import { initSentry } from "./observability/sentry.js";
@@ -83,13 +84,12 @@ export function createApp() {
     next();
   });
   app.use(globalRateLimiter);
+  app.use(["/api/auth/login", "/auth/login"], loginProtection);
   app.use(
     [
-      "/api/auth/login",
       "/api/auth/register",
       "/api/auth/forgot-password",
       "/api/auth/reset-password",
-      "/auth/login",
       "/auth/register",
       "/auth/forgot-password",
       "/auth/reset-password",
