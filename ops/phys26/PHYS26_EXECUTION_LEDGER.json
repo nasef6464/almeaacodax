@@ -1,6 +1,6 @@
 {
   "project": "PHYS26",
-  "updatedAt": "2026-10-09",
+  "updatedAt": "2026-10-10",
   "branch": "content/phys26-full-closure",
   "currentPhase": 1,
   "phases": [
@@ -86,40 +86,43 @@
     "similarStemsChangedOptionsPairs": 1,
     "similarityFalsePositivesClarified": 1,
     "confirmedCanonicalDeduplications": 0,
-    "originalSourceQuarantinesNotImportReady": 4
+    "originalSourceQuarantinesNotImportReady": 4,
+    "run013NewStratifiedVisualCropSamples": 31,
+    "run013EdgeHeuristicDefectsFoundAndCorrected": 2,
+    "run013PrivateWebpArchiveShaVerified": 2064,
+    "run013EdgeHeuristicFlagsPostFix": 0
   },
   "currentRun": {
-    "result": "PHYS26_TAXONOMY_25x92_AND_FOUNDATION_117_COMMITTED_SOURCE_ANOMALIES_CONFIRMED",
+    "result": "RUN013_PRIVATE_V6_CROP_2_SOURCE_ALIGNED_FIXES_PLUS_31_STRATIFIED_SAMPLES",
     "publishedToProduction": false,
-    "scope": "PHYS26_OFFLINE_GITHUB_BRANCH_ONLY",
-    "tests": "PDF_SHA_3_OF_3_PASS; PRIVATE_V5_ARCHIVE_2064_WEBP_DECODE_AND_SHA_UNIQUE_PASS; FOUR_TAXONOMY_CROP_SHA_MATCH; GITHUB_PHYS26_CI_PASS_ON_bf64b2ef; FINAL_HEAD_CI_RECHECK_PENDING",
-    "evidence": "ops/phys26/PHYS26_RUN012_EVIDENCE.md",
+    "scope": "PHYS26_ONLY_NO_PRODUCTION_WRITES",
     "newWork": [
-      "Repeated visual source checks for 4 crop evidence IDs and verified V5 crop SHA equality",
-      "Added 2 source-based subskills in canonical candidate and 2 hidden topics in foundation plan",
-      "Updated source and foundation tests to validate evidence-backed taxonomy size rather than falsely freeze 90",
-      "Reopened source PDF page 135 and confirmed Q24 key A despite independent n=1.25 -> B; source-key conflict remains quarantined",
-      "Reopened source PDF page 117: Q57 source reports kW for 400 kWh consumption; dimensional issue confirmed",
-      "Reopened original pages 74 and 79 for the two diagram quarantines; source-drawn artwork itself reaches column edge, no drawn reconstruction allowed",
-      "Visually re-adjudicated 3 previously suspected duplicate pairs: 1 reprint stem/options with different year badge (L15 Q004/Q005), 1 shared stem but changed B option (L31 Q021/Q024), and 1 sound-versus-light false positive (L15 Q017/Q022). No records merged.",
-      "Committed metadata-only ops/phys26/PHYS26_RUN012_DUPLICATE_ADJUDICATION.json; original images remain private.",
-      "Added four unresolved original-PDF source anomalies to a machine-readable quarantine register and wired a fail-closed CI gate; no item is importable."
+      "Checked current main/PHYS26 PR/ledger/source taxonomy before proceeding; branch ahead 63 behind 77 at first check, PR still draft.",
+      "Read private V5 archive 2064 WebP and source PDF 162 pages; 2064 matching image SHA, 0 decode failures.",
+      "Reviewed stratified 31 crops across 31 lessons as contact sheets, visual preview only (not complete review).",
+      "Bottom-edge pixel heuristic flagged 2 existing cropped images; exact PDF page review confirmed Q L10-Q050 included next question heading, L27-Q023 lost bottom of option D.",
+      "Regenerated two source-aligned crops and re-packaged V6 privately, all 2064 SHA and WebP decode checks passed, no bottom edge heuristic flags after fixes.",
+      "Created new offline reusable edge/SHA audit script and CI syntax check on PHYS26 branch; run result pending."
     ],
-    "priorWorkReconciledNotRepeated": [
-      "RUN006-011: 2064 private crop candidates",
-      "RUN007-009: prior 823 boundary-risk reviews, queue exhausted but two diagram concerns",
-      "RUN008-010: 68 distinct provisional physics checks with 1 conflict and 1 dimensional ambiguity",
-      "RUN010-011: 154 distinct pair image reviews; 3 apparent reprints not auto deduplicated"
-    ],
-    "rightsToRedistribute": "UNVERIFIED",
-    "noProductionWrites": true,
+    "artifacts": {
+      "privateArchive": "PHYS26_PRIVATE_RUN013_CROPS_V6.zip",
+      "privateArchiveSha256": "cf867461bc45dfc7bfdae554c7d13bf29bfc745897b0586d24e422fafe22946e",
+      "localQualityEvidence": "PHYS26_RUN013_CROP_QUALITY_AUDIT.json",
+      "repoEvidence": "ops/phys26/PHYS26_RUN013_EVIDENCE.md"
+    },
+    "safety": {
+      "sourcePublicationAuthorized": false,
+      "sourceQuestionTextAndOptionsApproved": 0,
+      "sourceIllustrationsApproved": 0,
+      "sourceOriginalQuarantinesRemain": 4,
+      "studentHistoryMutations": 0,
+      "deployments": 0
+    },
     "notes": [
-      "All 117 topics are hidden; no source images/questions committed; candidate 25/92 NOT imported.",
-      "No verified canonical source question/answer/approved drill count is inflated.",
-      "Archive video/text third secondary foundation missing: 15 main and 53 sub topics without uploaded foundation support."
-    ],
-    "quarantineRegister": "ops/phys26/PHYS26_RUN012_QUARANTINE_REGISTER.json",
-    "numberOfSourceQuarantines": 4
+      "Visual preview of 31 is not a full source/options/diagram review of all 2064.",
+      "Both corrections remain private: no copyrighted PDF or crop uploaded to GitHub.",
+      "Existing four source-original quarantines are distinct and remain unresolved."
+    ]
   },
-  "next": "Review all 2064 question contents/options and individual original keys with physics QA, finalize per-subskill mappings, resolve 4 quarantines with documented editorial decisions, secure redistribution rights, then isolated importer/UAT and gated PR exact-head validation."
+  "next": "Complete visual and educational QA per actual source question/options/diagram, correct all crop-specific issues and source-original quarantines, verify answers and link 25/92 skills. No publication without rights and UAT."
 }
