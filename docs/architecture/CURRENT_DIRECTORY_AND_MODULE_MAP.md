@@ -206,3 +206,6 @@ Performance ownership now includes: isolated load profiles; profile-specific evi
 
 ### School report roster propagation
 SupervisorDashboard local scopedStudentUsers is passed to SupervisorTestsManager/useSupervisorAssessmentScope/TestAnalyticsReport (direct and comparison). Personal/global users and results remainisolated; existing paged roster query is reused. AssessmentClassComparison also intersects loaded groupstudentIds with reporttargets; no additional dataquery.
+
+## Staff report presentation — 2026-10-10
+`pages/Reports/StaffDecisionPanel.tsx`, `DirectedAssessmentReportPanel.tsx`, `StaffRemediationPanel.tsx`, and `ScopedRecentAttemptsPanel.tsx` own existing staff JSX. Reports retains data reads, state, scoping and actions. No additional requests, store, timer, API or result persistence ownership.

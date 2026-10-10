@@ -294,7 +294,9 @@ jobs:
         timeout-minutes: 10
         env:
           REPORT_ACTIONS_AUDIT_RUN_ID: deep-premerge-report-actions-${{ github.run_id }}
-        run: node scripts/live-report-actions-audit.mjs
+        run: |
+          npm run smoke:reports-staff-panels
+          node scripts/live-report-actions-audit.mjs
 
       - name: Learning Space manager placement journey
         id: learning_manager

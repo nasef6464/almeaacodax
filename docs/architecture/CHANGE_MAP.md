@@ -24,6 +24,7 @@
 | Subject Learning Space composition | `pages/GenericPathPage.tsx`, `components/LearningSection.tsx`, `utils/learningSpaceTabs.ts` | نقل Course أو Assessment ownership |
 | إدارة placement داخل المادة | `dashboards/admin/PathsManager.tsx` و`live-learning-manager-deep-audit.mjs` | بناء content graph أو microservice |
 | التقارير | Reports/Results view-models وreports backend | result write path |
+| عرض قرارات المشرف وتحليل الاختبار والتدخل والمحاولات الحديثة | `pages/Reports/StaffDecisionPanel.tsx`, `DirectedAssessmentReportPanel.tsx`, `StaffRemediationPanel.tsx`, `ScopedRecentAttemptsPanel.tsx`؛ البيانات والإجراءات تبقى في `Reports.tsx` | إضافة طلبات أو مخزن أو مؤقت داخل مكونات العرض |
 | الإشعارات والبث | `modules/notifications` + audience/campaign application services + SSE/Redis/BullMQ | إضافة polling جديد أو صلاحية audience داخل route |
 | الدفع والوصول | payments routes/services/policies | UI unlock فقط |
 | اسم/ألوان/شعار العميل | ProductConfig/branding | Search/Replace شامل |
