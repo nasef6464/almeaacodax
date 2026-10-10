@@ -263,7 +263,7 @@ export const useStore = create<AppState>()(
                 user: { ...state.user, role }
             })),
 
-            ...createStudyPlansSlice<AppState>(set, api),
+            ...createStudyPlansSlice<AppState>(set, api, get),
 
             addUser: (user) => set((state) => ({
                 users: [...state.users, user]

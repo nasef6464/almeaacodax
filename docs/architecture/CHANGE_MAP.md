@@ -2,6 +2,9 @@
 
 | إذا أردت تغيير... | ابدأ من... | لا تبدأ من... |
 |---|---|---|
+| إنجاز خطة الطالب والخطوة التالية | `utils/studentPlanCompletion.ts` و`pages/Plan.tsx` | تغيير درجات الاختبارات |
+| توزيع مهام الخطة الزمنية | `utils/studentPlanSchedule.ts` | إعادة بناء الدورات |
+| تأكيد حفظ خطة الطالب | `store/slices/studyPlansSlice.ts` | نجاح محلي قبل استجابة API |
 | شاشة نتيجة الطالب | `pages/Results.tsx` و`components/results/` | quiz route مباشرة |
 | تحليل الاختبارات الموجهة للمشرف | `dashboards/admin/supervisorTests/assessmentReportEvidence.ts` و`useScopedAssessmentResults.ts` | توسيع store النتائج الشخصية |
 | ظهور اختبارات الطلاب لدى مدير المدرسة | `schoolDirectorWorkspace.ts` و`schoolAssessmentAudience.ts` | تغيير صلاحيات المدير أو نسخ Quiz |

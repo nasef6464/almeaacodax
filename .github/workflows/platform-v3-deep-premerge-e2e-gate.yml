@@ -297,6 +297,7 @@ jobs:
         run: |
           npm run smoke:reports-staff-panels
           npm run smoke:student-source-reports
+          npm run smoke:student-plan-completion
           node scripts/live-report-actions-audit.mjs
 
       - name: Learning Space manager placement journey

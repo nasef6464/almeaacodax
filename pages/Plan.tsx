@@ -26,26 +26,9 @@ import { StudyPlan, StudyPlanDay } from '../types';
 import { sanitizeArabicText } from '../utils/sanitizeMojibakeArabic';
 import { shareTextSummary } from '../utils/shareText';
 import { printElementAsPdf } from '../utils/printPdf';
+import { getPlanQuizCompletion, getPlanProgress, getNextPlanTask } from '../utils/studentPlanCompletion';
 
-type QuizKind = 'drill' | 'test' | 'mock';
-
-type GeneratedTask = {
-  id: string;
-  title: string;
-  type: 'lesson' | 'quiz' | 'resource';
-  quizKind?: QuizKind;
-  phase: 'foundation' | 'practice' | 'review';
-  phaseLabel: string;
-  durationMinutes: number;
-  durationLabel: string;
-  link?: string;
-  external?: boolean;
-  scheduledDate: string;
-  scheduledTime: string;
-  scheduledEndTime: string;
-  subjectId?: string;
-  completed: boolean;
-};
+import { scheduleStudentPlanTasks, type GeneratedTask, type QuizKind } from '../utils/studentPlanSchedule';
 
 type WeeklyGoal = {
   id: string;
@@ -55,7 +38,7 @@ type WeeklyGoal = {
   completed: number;
 };
 
-type PlannedTaskTemplate = Omit<GeneratedTask, 'scheduledDate' | 'scheduledTime' | 'scheduledEndTime'>;
+
 
 type PlanPhaseSummary = {
   id: 'foundation' | 'practice' | 'review';
@@ -288,6 +271,8 @@ const Plan: React.FC = () => {
   const [draft, setDraft] = useState(createDefaultDraft());
   const [formError, setFormError] = useState('');
   const [formSuccess, setFormSuccess] = useState('');
+  const [planSaving, setPlanSaving] = useState(false);
+  useEffect(() => { setFormSuccess(''); setFormError(''); }, [activePathId]);
   const [copiedSmartPlan, setCopiedSmartPlan] = useState(false);
   const [sharedSmartPlan, setSharedSmartPlan] = useState(false);
 
@@ -327,14 +312,12 @@ const Plan: React.FC = () => {
         preferredStartTime: activePlan.preferredStartTime || '17:00',
       });
       setFormError('');
-      setFormSuccess('');
       return;
     }
 
     setEditingPlanId(null);
     setDraft(createDefaultDraft(activePathId));
     setFormError('');
-    setFormSuccess('');
   }, [activePathId, activePlan]);
 
   const selectedPath = useMemo(
@@ -593,7 +576,8 @@ const Plan: React.FC = () => {
 
     const selectedSubjectIds = new Set(currentPlan.subjectIds);
     const selectedCourseIds = new Set(currentPlan.courseIds);
-    const completedQuizIds = new Set(examResults.map((result) => result.quizId));
+    const quizCompletion = getPlanQuizCompletion(currentPlan, examResults);
+    const completedQuizIds = quizCompletion.completed;
 
     const coursePool = courses.filter((course) => {
       const matchesPath = (course.pathId || course.category) === currentPlan.pathId;
@@ -616,7 +600,7 @@ const Plan: React.FC = () => {
           phaseLabel: 'مرحلة التأسيس',
           durationMinutes: parseDurationToMinutes(lesson.duration),
           durationLabel: lesson.duration || '20 دقيقة',
-          link: `/course/${course.id}`,
+          link: `/course/${course.id}?learn=1&lesson=${encodeURIComponent(lesson.id)}`,
           subjectId: lesson.subjectId || course.subjectId,
           completed: completedLessons.includes(lesson.id),
         })),
@@ -627,7 +611,7 @@ const Plan: React.FC = () => {
       .filter((quiz) => {
         const matchesPath = quiz.pathId === currentPlan.pathId;
         const matchesSubject = !selectedSubjectIds.size || selectedSubjectIds.has(quiz.subjectId);
-        const shouldSkip = currentPlan.skipCompletedQuizzes && completedQuizIds.has(quiz.id);
+        const shouldSkip = quizCompletion.shouldSkip(quiz.id);
         return matchesPath && matchesSubject && canUseQuizInStudentPlan(quiz) && !shouldSkip;
       })
       .map((quiz) => ({
@@ -666,151 +650,7 @@ const Plan: React.FC = () => {
         completed: false,
       }));
 
-    const subjectPriority = new Map(
-      weakSubjectFocus.map((item, index) => [item.subjectId, index]),
-    );
-
-    const rankedSubjectIds = Array.from(
-      new Set<string>(
-        currentPlan.subjectIds
-          .map(String)
-          .sort(
-            (a, b) =>
-              (subjectPriority.get(a) ?? Number.MAX_SAFE_INTEGER) -
-              (subjectPriority.get(b) ?? Number.MAX_SAFE_INTEGER),
-          ),
-      ),
-    );
-
-    const taskPools = new Map<
-      string,
-      {
-        lesson: PlannedTaskTemplate[];
-        quiz: PlannedTaskTemplate[];
-        resource: PlannedTaskTemplate[];
-      }
-    >();
-
-    [...lessonTasks, ...quizTasks, ...resourceTasks]
-      .sort((a, b) => {
-        if (a.completed !== b.completed) {
-          return a.completed ? 1 : -1;
-        }
-
-        const priorityA = subjectPriority.get(a.subjectId || '') ?? Number.MAX_SAFE_INTEGER;
-        const priorityB = subjectPriority.get(b.subjectId || '') ?? Number.MAX_SAFE_INTEGER;
-        return priorityA - priorityB;
-      })
-      .forEach((task) => {
-        const subjectKey = task.subjectId || '__general__';
-        if (!taskPools.has(subjectKey)) {
-          taskPools.set(subjectKey, { lesson: [], quiz: [], resource: [] });
-        }
-        taskPools.get(subjectKey)![task.type].push(task);
-      });
-
-    const subjectOrder: string[] = [
-      ...rankedSubjectIds,
-      ...Array.from(taskPools.keys()).filter((key) => key === '__general__' || !rankedSubjectIds.includes(key)),
-    ];
-
-    const hasRemainingTasks = () =>
-      Array.from(taskPools.values()).some(
-        (bucket) => bucket.lesson.length || bucket.quiz.length || bucket.resource.length,
-      );
-
-    const takeNextTask = (phase: GeneratedTask['phase']) => {
-      const phasePreferences: Record<GeneratedTask['phase'], GeneratedTask['type'][]> = {
-        foundation: ['lesson', 'resource', 'quiz'],
-        practice: ['quiz', 'lesson', 'resource'],
-        review: ['quiz', 'resource', 'lesson'],
-      };
-
-      for (const type of phasePreferences[phase]) {
-        for (const subjectId of subjectOrder) {
-          const bucket = taskPools.get(subjectId);
-          if (bucket && bucket[type].length) {
-            return bucket[type].shift() || null;
-          }
-        }
-      }
-
-      for (const subjectId of subjectOrder) {
-        const bucket = taskPools.get(subjectId);
-        if (!bucket) continue;
-        for (const type of ['lesson', 'quiz', 'resource'] as const) {
-          if (bucket[type].length) {
-            return bucket[type].shift() || null;
-          }
-        }
-      }
-
-      return null;
-    };
-
-    const scheduledTasks: GeneratedTask[] = [];
-
-    eligibleDates.forEach((date, dayIndex) => {
-      const dayPhase = getPhaseForDayIndex(dayIndex, eligibleDates.length);
-      let consumedMinutes = 0;
-      let safety = 0;
-
-      while (hasRemainingTasks() && safety < 50) {
-        const nextTask = takeNextTask(dayPhase);
-        if (!nextTask) break;
-        safety += 1;
-
-        const effectiveDuration = Math.max(nextTask.durationMinutes, 10);
-        if (consumedMinutes > 0 && consumedMinutes + effectiveDuration > currentPlan.dailyMinutes) {
-          const subjectKey = nextTask.subjectId || '__general__';
-          if (!taskPools.has(subjectKey)) {
-            taskPools.set(subjectKey, { lesson: [], quiz: [], resource: [] });
-          }
-          taskPools.get(subjectKey)![nextTask.type].unshift(nextTask);
-          break;
-        }
-
-        const phaseMeta = getPlanPhaseMeta(dayPhase);
-        scheduledTasks.push({
-          ...nextTask,
-          phase: dayPhase,
-          phaseLabel: phaseMeta.label,
-          scheduledDate: date,
-          scheduledTime: addMinutesToTime(currentPlan.preferredStartTime || '17:00', consumedMinutes),
-          scheduledEndTime: addMinutesToTime(
-            currentPlan.preferredStartTime || '17:00',
-            consumedMinutes + effectiveDuration,
-          ),
-        });
-        consumedMinutes += effectiveDuration;
-      }
-    });
-
-    if (hasRemainingTasks()) {
-      const lastDate = eligibleDates[eligibleDates.length - 1];
-      const lastDayTasks = scheduledTasks.filter((task) => task.scheduledDate === lastDate);
-      let consumedMinutes = lastDayTasks.reduce((sum, task) => sum + Math.max(task.durationMinutes, 10), 0);
-
-      while (hasRemainingTasks()) {
-        const nextTask = takeNextTask('review');
-        if (!nextTask) break;
-        const phaseMeta = getPlanPhaseMeta('review');
-        scheduledTasks.push({
-          ...nextTask,
-          phase: 'review',
-          phaseLabel: phaseMeta.label,
-          scheduledDate: lastDate,
-          scheduledTime: addMinutesToTime(currentPlan.preferredStartTime || '17:00', consumedMinutes),
-          scheduledEndTime: addMinutesToTime(
-            currentPlan.preferredStartTime || '17:00',
-            consumedMinutes + Math.max(nextTask.durationMinutes, 10),
-          ),
-        });
-        consumedMinutes += Math.max(nextTask.durationMinutes, 10);
-      }
-    }
-
-    return scheduledTasks;
+    return scheduleStudentPlanTasks([...lessonTasks, ...quizTasks, ...resourceTasks], currentPlan, eligibleDates, weakSubjectFocus, getPhaseForDayIndex, getPlanPhaseMeta, addMinutesToTime);
   }, [
     accessibleCourseIds,
     completedLessons,
@@ -843,13 +683,12 @@ const Plan: React.FC = () => {
       .map((subjectId) => {
         const subject = subjects.find((item) => item.id === subjectId);
         const subjectTasks = generatedTasks.filter((task) => task.subjectId === subjectId);
-        const completed = subjectTasks.filter((task) => task.completed).length;
-        const total = subjectTasks.length || 1;
+        const { completed, total, percent } = getPlanProgress(subjectTasks);
 
         return {
           id: subjectId,
           title: subject?.name || 'مادة',
-          progress: Math.round((completed / total) * 100),
+          progress: percent,
           total,
           completed,
         };
@@ -859,7 +698,7 @@ const Plan: React.FC = () => {
 
   const overallProgress = useMemo(() => {
     if (!generatedTasks.length) return 0;
-    return Math.round((generatedTasks.filter((task) => task.completed).length / generatedTasks.length) * 100);
+    return getPlanProgress(generatedTasks).percent;
   }, [generatedTasks]);
 
   const selectedDaySummary = useMemo(() => {
@@ -878,18 +717,29 @@ const Plan: React.FC = () => {
       endTime: selectedDayTasks[selectedDayTasks.length - 1].scheduledEndTime,
     };
   }, [draft.preferredStartTime, selectedDayTasks]);
-  const firstInternalPlanTask = selectedDayTasks.find((task) => task.link && !task.external);
-  const planTodayNextAction = currentPlan && selectedDayTasks.length > 0
+  const firstInternalPlanTask = getNextPlanTask(generatedTasks, todayKey);
+  const planTodayNextAction = currentPlan && firstInternalPlanTask
     ? {
-        title: `جلسة اليوم: ${selectedDayTasks[0].title}`,
-        description: `${selectedDayTasks.length} مهام، من ${selectedDaySummary.startTime} إلى ${selectedDaySummary.endTime}. ابدأ بالمهمة الأولى فقط.`,
-        primaryLabel: selectedDayTasks[0].type === 'quiz' ? 'ابدأ التدريب' : 'ابدأ الآن',
+        title: `جلسة اليوم: ${firstInternalPlanTask.title}`,
+        description: 'هذه مهمتك التالية غير المنجزة. أكملها، ثم ارجع لمتابعة تقدم خطتك.',
+        primaryLabel: firstInternalPlanTask.type === 'quiz' ? 'ابدأ التدريب' : 'ابدأ الآن',
         primaryHref: firstInternalPlanTask?.link || '/reports',
         secondaryLabel: 'افتح التقرير',
         secondaryHref: '/reports',
         tone: 'emerald' as const,
         icon: <TimerReset size={18} className="text-emerald-600" />,
       }
+    : currentPlan && getPlanProgress(generatedTasks).total > 0 && overallProgress === 100
+      ? {
+          title: 'أنجزت الدروس والاختبارات المتاحة في خطتك',
+          description: 'راجع تقرير مهاراتك لتحديد الخطوة التالية.',
+          primaryLabel: 'تقرير مهاراتي',
+          primaryHref: '/reports',
+          secondaryLabel: 'اختباراتي السابقة',
+          secondaryHref: '/my-quizzes',
+          tone: 'emerald' as const,
+          icon: <CheckCircle size={18} className="text-emerald-600" />,
+        }
     : primarySmartSkill
       ? {
           title: `ابدأ بمهارة: ${primarySmartSkill.skillName}`,
@@ -969,7 +819,7 @@ const Plan: React.FC = () => {
     setFormSuccess('');
   };
 
-  const handleDeleteEditingPlan = () => {
+  const handleDeleteEditingPlan = async () => {
     if (!editingPlanId) return;
 
     const planName = currentPlan?.name || draft.name || 'الخطة الدراسية';
@@ -977,8 +827,12 @@ const Plan: React.FC = () => {
 
     if (!confirmed) return;
 
-    deleteStudyPlan(editingPlanId);
-    resetDraft();
+    if (planSaving) return;
+    setPlanSaving(true);
+    const success = await deleteStudyPlan(editingPlanId);
+    setPlanSaving(false);
+    if (success) resetDraft();
+    else setFormError('تعذر حذف الخطة. خطتك ما زالت محفوظة.');
   };
 
   const applySmartPlanDraft = () => {
@@ -1058,7 +912,9 @@ const Plan: React.FC = () => {
     });
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    if (planSaving) return;
+    setFormSuccess('');
     if (!draft.pathId) {
       setFormError('اختر المسار أولًا.');
       return;
@@ -1102,16 +958,14 @@ const Plan: React.FC = () => {
       updatedAt: Date.now(),
     };
 
-    if (editingPlanId) {
-      updateStudyPlan(editingPlanId, payload);
-      setFormSuccess('تم تحديث الخطة الدراسية الوقتية بنجاح.');
-    } else {
-      createStudyPlan(payload);
+    setPlanSaving(true);
+    try {
+      const success = editingPlanId ? await updateStudyPlan(editingPlanId, payload) : await createStudyPlan(payload);
+      if (!success) { setFormError('تعذر حفظ الخطة. لم تُغيّر خطتك؛ حاول مرة أخرى.'); return; }
       setEditingPlanId(payload.id);
-      setFormSuccess('تم إنشاء الخطة الدراسية الوقتية بنجاح.');
-    }
-
-    setFormError('');
+      setFormSuccess(editingPlanId ? 'تم تحديث الخطة الدراسية الوقتية بنجاح.' : 'تم إنشاء الخطة الدراسية الوقتية بنجاح.');
+      setFormError('');
+    } finally { setPlanSaving(false); }
   };
 
   return (
@@ -1366,9 +1220,9 @@ const Plan: React.FC = () => {
                 className="mt-1 h-4 w-4 rounded border-gray-300 text-emerald-500"
               />
               <div>
-                <div className="font-bold text-gray-800">تخطي الاختبارات المنجزة</div>
+                <div className="font-bold text-gray-800">تخطي الاختبارات المنجزة قبل إنشاء الخطة</div>
                 <p className="text-sm text-gray-500">
-                  إذا كان عندك اختبارات أنهيتها سابقًا، فلن تدخل ضمن الخطة الجديدة.
+                  الاختبارات السابقة لا تدخل ضمن الخطة؛ ما تنجزه أثناء الخطة يبقى محسوبًا في تقدمك.
                 </p>
               </div>
             </label>
@@ -1415,13 +1269,15 @@ const Plan: React.FC = () => {
 
           <div className="flex flex-col gap-3 sm:flex-row">
             <button
+              disabled={planSaving}
               onClick={handleSubmit}
               className="inline-flex items-center justify-center gap-2 rounded-2xl bg-emerald-500 px-6 py-4 font-bold text-white transition hover:bg-emerald-600"
             >
               <BookOpen size={18} />
-              {editingPlanId ? 'تحديث الخطة الدراسية' : 'إنشاء الخطة الدراسية'}
+              {planSaving ? 'جارٍ حفظ الخطة...' : editingPlanId ? 'تحديث الخطة الدراسية' : 'إنشاء الخطة الدراسية'}
             </button>
             <button
+              disabled={planSaving}
               onClick={resetDraft}
               className="inline-flex items-center justify-center gap-2 rounded-2xl bg-gray-100 px-6 py-4 font-bold text-gray-700 transition hover:bg-gray-200"
             >
@@ -1431,13 +1287,15 @@ const Plan: React.FC = () => {
             {editingPlanId && (
               <>
                 <button
-                  onClick={() => archiveStudyPlan(editingPlanId)}
+                  disabled={planSaving}
+                  onClick={async () => { setPlanSaving(true); const ok = await archiveStudyPlan(editingPlanId); setPlanSaving(false); if (!ok) setFormError('تعذر أرشفة الخطة. حاول مرة أخرى.'); }}
                   className="inline-flex items-center justify-center gap-2 rounded-2xl bg-amber-50 px-6 py-4 font-bold text-amber-700 transition hover:bg-amber-100"
                 >
                   <Archive size={18} />
                   أرشفة الخطة
                 </button>
                 <button
+                  disabled={planSaving}
                   data-testid="student-plan-delete"
                   onClick={handleDeleteEditingPlan}
                   className="inline-flex items-center justify-center gap-2 rounded-2xl bg-red-50 px-6 py-4 font-bold text-red-700 transition hover:bg-red-100"
@@ -1453,6 +1311,7 @@ const Plan: React.FC = () => {
 
       {currentPlan && (
         <div id="study-plan-print-area" className="space-y-6">
+          <p className="text-xs text-slate-500">الإنجاز مبني على الدروس المسجلة والمحاولات المحملة؛ ملفات المراجعة مراجع مساعدة خارج نسبة الإنجاز. الاختبارات المنجزة أثناء الخطة تبقى محسوبة.</p>
           <Card className="border-0 bg-gradient-to-r from-indigo-500 to-purple-600 p-6 text-white shadow-xl relative overflow-hidden">
             <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full blur-3xl -mr-20 -mt-20"></div>
             <div className="absolute bottom-0 left-0 w-40 h-40 bg-indigo-300 opacity-20 rounded-full blur-2xl -ml-10 -mb-10"></div>
@@ -1471,8 +1330,8 @@ const Plan: React.FC = () => {
 
               <div className="flex flex-col items-end gap-3 min-w-[200px]">
                 <div className="flex items-end gap-2 w-full justify-between md:justify-end">
-                  <span className="text-indigo-100 font-bold mb-1">نسبة الإنجاز</span>
-                  <span className="text-4xl font-black">{overallProgress}%</span>
+                  <span className="text-indigo-100 font-bold mb-1">نسبة إنجاز الدروس والاختبارات</span>
+                  <span data-testid="student-plan-progress" className="text-4xl font-black">{overallProgress}%</span>
                 </div>
                 <div className="h-2.5 w-full rounded-full bg-black/20 overflow-hidden">
                   <div className="h-full rounded-full bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.5)] transition-all duration-1000" style={{ width: `${overallProgress}%` }} />
@@ -1516,8 +1375,7 @@ const Plan: React.FC = () => {
               {/* ── Today's progress strip ── */}
               {(() => {
                 const todayAll = generatedTasks.filter(t => t.scheduledDate === todayKey);
-                const todayDone = todayAll.filter(t => t.completed).length;
-                const todayTotal = todayAll.length;
+                const { completed: todayDone, total: todayTotal } = getPlanProgress(todayAll);
                 if (todayTotal === 0) {
                   return scheduleView === 'today' ? (
                     <div className="mb-4 rounded-2xl border border-dashed border-gray-200 bg-gray-50 p-4 text-center text-sm font-bold text-gray-400">
@@ -1566,9 +1424,8 @@ const Plan: React.FC = () => {
                     return true;
                   })
                   .map(([date, tasks]) => {
-                    const isLate = date < todayKey && tasks.some(t => !t.completed);
-                    const doneCount = tasks.filter(t => t.completed).length;
-                    const totalCount = tasks.length;
+                    const isLate = date < todayKey && tasks.some(t => t.type !== 'resource' && !t.completed);
+                    const { completed: doneCount, total: totalCount } = getPlanProgress(tasks);
                     return (
                       <div key={date} className={`relative pt-2 ${isLate ? 'opacity-90' : ''}`}>
                         <div className={`sticky top-0 z-10 mb-3 flex items-center justify-between rounded-xl px-4 py-2 font-bold shadow-sm border ${
@@ -1581,7 +1438,7 @@ const Plan: React.FC = () => {
                               doneCount === totalCount
                                 ? 'bg-emerald-500/20 text-emerald-200'
                                 : date === todayKey ? 'bg-white/20 text-white' : 'bg-gray-200 text-gray-600'
-                            }`}>{doneCount}/{totalCount} ✓</span>
+                            }`}>{totalCount ? `${doneCount}/${totalCount} ✓` : 'مراجع مساعدة'}</span>
                             {isLate && <span className="text-xs bg-red-200 text-red-800 px-2 py-1 rounded-md">متأخر ⚠️</span>}
                           </div>
                         </div>

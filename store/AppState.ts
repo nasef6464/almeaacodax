@@ -82,10 +82,10 @@ export interface AppState {
     hasScopedPackageAccess: (contentType: PackageContentType, pathId?: string, subjectId?: string) => boolean;
     getMatchingPackage: (contentType: PackageContentType, pathId?: string, subjectId?: string) => B2BPackage | null;
     changeRole: (role: Role) => void;
-    createStudyPlan: (plan: StudyPlan) => void;
-    updateStudyPlan: (planId: string, data: Partial<StudyPlan>) => void;
-    deleteStudyPlan: (planId: string) => void;
-    archiveStudyPlan: (planId: string) => void;
+    createStudyPlan: (plan: StudyPlan) => Promise<boolean>;
+    updateStudyPlan: (planId: string, data: Partial<StudyPlan>) => Promise<boolean>;
+    deleteStudyPlan: (planId: string) => Promise<boolean>;
+    archiveStudyPlan: (planId: string) => Promise<boolean>;
 
     // Admin Actions
     addUser: (user: User) => void;
