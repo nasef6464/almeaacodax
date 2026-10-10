@@ -5,7 +5,7 @@
   "directImageInspection": true,
   "sourceCropArchive": "/MNSF26/Run017/mnsf26_arithmetic_crops_run017.zip",
   "sourceInventory": "/MNSF26/Run017/MNSF26_FULLBOOK_CROP_INVENTORY_V1.json",
-  "masteredCount": 9,
+  "masteredCount": 7,
   "holdCount": 11,
   "records": [
     {
@@ -300,7 +300,7 @@
       },
       "imageHash": "4b7b2856fd897d4d027aef4cc0157260bf988b9ddfa98235b64075a0c7a72cae",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
-      "status": "MASTERED",
+      "status": "REVIEW",
       "questionText": "اشترك أصدقاء في مشروع وقسموا الأرباح بالتساوي وكان نصيب أحدهم1000 ريال؛ قارن مجموع أرباح المشروع مع1000 ريال.",
       "canonicalMainSkill": "main_quant_10",
       "canonicalSubskill": "sub_quant_10_1",
@@ -310,7 +310,12 @@
       "difficulty": "Easy",
       "difficultyReason": "خطوات مباشرة في مقارنة الربح الإجمالي بنصيب شريك.",
       "contentFingerprint": "b017c767731c2f0e4c698eaefc3ac6d76a1a2fab5149a6a4964cfbe6cd7bd99c",
-      "ideaFingerprint": "24b8b8937e798946e34558abf21689f4aff30f48b650b0e7745eb2e0a4bbdfc0"
+      "ideaFingerprint": "24b8b8937e798946e34558abf21689f4aff30f48b650b0e7745eb2e0a4bbdfc0",
+      "importEligible": false,
+      "reviewReason": "RUN132/135 original-source-image answer/solution conflict; requires independent reapproval.",
+      "qaEvidence": [
+        "MNSF26_RUN135_37_MATH_REVIEW_CANDIDATES_V1.json"
+      ]
     },
     {
       "sourceKey": "MNSF26-AR-T058-Q12",
@@ -519,7 +524,7 @@
       },
       "imageHash": "72d737c61d6b48708b7b9e6301ea5f7db51b188732a8b7e60ab83291628241ea",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
-      "status": "MASTERED",
+      "status": "REVIEW",
       "questionText": "سعر دفتر يساوي خمسة أمثال سعر قلم؛ قارن سعر ثلاثة أقلام بسعر دفتر.",
       "canonicalMainSkill": "main_quant_08",
       "canonicalSubskill": "sub_quant_08_1",
@@ -529,7 +534,12 @@
       "difficulty": "Easy",
       "difficultyReason": "خطوات مباشرة في مقارنة مضاعفات الأسعار.",
       "contentFingerprint": "68128e2fc1135e0719a8d9fd24f15cda000b58698b2d20fab3fdcc3883e35fb7",
-      "ideaFingerprint": "da06ec29e7cd532ddd85ae483e1ec911a7485402e451e9c25aaf569a2676f47a"
+      "ideaFingerprint": "da06ec29e7cd532ddd85ae483e1ec911a7485402e451e9c25aaf569a2676f47a",
+      "importEligible": false,
+      "reviewReason": "RUN132/135 original-source-image answer/solution conflict; requires independent reapproval.",
+      "qaEvidence": [
+        "MNSF26_RUN135_37_MATH_REVIEW_CANDIDATES_V1.json"
+      ]
     },
     {
       "sourceKey": "MNSF26-AR-T058-Q20",
@@ -559,5 +569,6 @@
       "contentFingerprint": "d4113bfab185db7422b62dd111c2f2c4dc7e5fc030709c356f4846a943dab7b7",
       "ideaFingerprint": "9c72f06f1a87cb76a6acb186a65da8b74c5a3f1894d8dbafd0c809523b9c69a8"
     }
-  ]
+  ],
+  "reviewCount": 2
 }
