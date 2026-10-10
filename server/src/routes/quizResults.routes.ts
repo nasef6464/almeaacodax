@@ -6,7 +6,7 @@ import { analyzeWeakSkillsFromQuizResult } from "../services/weakSkillsAnalysis.
 import { requireAuth, requireRole } from "../middleware/auth.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { serializeQuizResultForLearner, serializeQuizResultsForLearner } from "../utils/quizResultSerialization.js";
-import { resolveAssessmentResultRead, resolveAssessmentResultReads } from "../modules/quizzes/application/assessmentResultReadAdapter.js";
+import { resolveAssessmentResultRead, resolveAssessmentResultReads, projectQuizResultHistory } from "../modules/quizzes/application/assessmentResultReadAdapter.js";
 import { findAssessmentResultByLegacyId, findAssessmentResultsByLegacyIds } from "../modules/quizzes/infrastructure/assessmentResultRepository.js";
 import { shouldReadAssessmentCompatibilityProjection } from "../modules/quizzes/application/assessmentResultReaderPolicy.js";
 import { findAssessmentResultReaderMode, findAssessmentResultReaderModes } from "../modules/quizzes/infrastructure/assessmentResultReaderRepository.js";
@@ -99,7 +99,7 @@ const resolveResultListReads = async (results: Record<string, unknown>[]) => {
     findAssessmentResultsByLegacyIds(legacyIds),
     findAssessmentResultReaderModes(quizIds),
   ]);
-  return resolveAssessmentResultReads(results, assessmentResultsByLegacyId, readerModesByQuizId);
+  return resolveAssessmentResultReads(results, assessmentResultsByLegacyId, readerModesByQuizId).map(projectQuizResultHistory);
 };
 
 export const quizResultsRouter = Router();

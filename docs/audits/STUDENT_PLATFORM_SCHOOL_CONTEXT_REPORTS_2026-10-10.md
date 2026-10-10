@@ -19,7 +19,8 @@ Owner request: continue enrolled/independent learner journey and separate platfo
 - Performance/runtime footprint guards: PASS; my-quizzes existing contracts: 10/10 PASS.
 - Real React reports/history/attempts component regression: enrolled and independent fixtures; separated scores/skills; activity skip exclusion and unique lesson counts; plan/history links; one bounded initial read; manual pagination and deduplication; failure/retry; stale context/actor suppression; empty-source controls; frozen mock classification; production CSS at 1280/390 without horizontal overflow or JavaScript errors: PASS locally.
 - Required isolated Mongo HTTP gate now checks persisted individual school submission through real creation/submission, both personal context lists, totals and ownership, invalid context rejection, scoped supervisor filtering, and independent student's own result. Production data is not used by this gate.
-- Exact-head CI, protected merge and published enrolled/independent journey: pending. Status PARTIAL until those pass.
+- First-head CI caught missing compact empty-state guidance and compatibility overlays reintroducing heavy question reviews into light lists. Both root causes corrected: source controls remain accessible, empty guidance is scoped, and list projection is re-applied after compatibility reads. Actual UI and compatibility regression PASS; existing global learner journey 14/14 PASS. No gate weakened.
+- Exact final-head CI, protected merge and published enrolled/independent journey: pending. Status PARTIAL until those pass.
 
 ## Boundaries and remaining work
 

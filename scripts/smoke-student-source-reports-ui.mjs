@@ -5,13 +5,16 @@ import { build } from 'esbuild';
 import { chromium } from 'playwright';
 
 const adapterBundle=await build({entryPoints:['server/src/modules/quizzes/application/assessmentResultReadAdapter.ts'],bundle:true,write:false,platform:'node',format:'esm'});
-const {resolveAssessmentResultRead}=await import('data:text/javascript;base64,'+Buffer.from(adapterBundle.outputFiles[0].text).toString('base64'));
+const {resolveAssessmentResultRead,projectQuizResultHistory}=await import('data:text/javascript;base64,'+Buffer.from(adapterBundle.outputFiles[0].text).toString('base64'));
 const projection={userId:'other',learningContext:'platform_self_study',schoolId:'other-school',classId:'other-class',score:67};
 const resolved=resolveAssessmentResultRead({_id:'saved',userId:'learner',learningContext:'school_assessment',schoolId:'school',classId:'class'}, {compatibilityProjection:projection});
 assert.equal(resolved.userId,'learner'); assert.equal(resolved.learningContext,'school_assessment');
 assert.equal(resolved.schoolId,'school'); assert.equal(resolved.classId,'class'); assert.equal(resolved.score,67);
 const unknown=resolveAssessmentResultRead({_id:'old',userId:'learner'}, {compatibilityProjection:projection});
 assert.equal(unknown.learningContext,'legacy_unknown'); assert.equal(unknown.schoolId,undefined);
+const light=projectQuizResultHistory({...resolved,questionReview:[{questionText:'heavy'}],quizSnapshot:{title:'saved',quizKind:'mock',targetUserIds:['other-student'],targetGroupIds:['roster']}});
+assert.equal(light.questionReview,undefined); assert.equal(light.quizSnapshot.targetUserIds,undefined);
+assert.equal(light.quizSnapshot.quizKind,'mock'); assert.equal(light.score,67);
 
 // Real reports, history hook, controls and attempts page; only transport/store are fixtures.
 const bundle = await build({ stdin: { resolveDir: process.cwd(), loader: 'tsx', contents: `
@@ -24,7 +27,7 @@ import {useStudentResultHistory} from './hooks/useStudentResultHistory';
 import Quizzes from './pages/Quizzes';
 const root=createRoot(document.getElementById('root'));
 window.requests=[]; window.pending=[]; window.actor='enrolled';
-const result=(id,context,score,kind='test')=>({id,userId:window.actor,quizId:id,quizTitle:id,score,date:'2026-10-10T12:00:00Z',learningContext:context,source:'tests',quizSnapshot:{quizKind:kind},totalQuestions:5,skillsAnalysis:[{skill:'التناسب',skillId:'ratio',pathId:'quant',subjectId:'math',mastery:score,questionCount:5,correctCount:score/20}]});
+const result=(id,context,score,kind='test')=>({id,userId:window.actor,quizId:id,quizTitle:id,score,date:'2026-10-10T12:00:00Z',learningContext:context,source:id==='school-regular'?'mock-exam':'tests',quizSnapshot:{quizKind:kind},totalQuestions:5,skillsAnalysis:[{skill:'التناسب',skillId:'ratio',pathId:'quant',subjectId:'math',mastery:score,questionCount:5,correctCount:score/20}]});
 window.result=result;
 window.fixture={user:{id:'enrolled',role:'student',schoolId:'school'},examResults:[],quizzes:[],subjects:[],paths:[],lessons:[],libraryItems:[],checkAccess:()=>true,hasScopedPackageAccess:()=>true,getMatchingPackage:()=>null,hydrateQuizzes:()=>{}};
 function Harness({mode='panel',actor='enrolled'}) {

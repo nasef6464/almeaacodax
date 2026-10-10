@@ -222,7 +222,9 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
     const grouped = new Map<string, QuizAttemptGroup>();
     examResults.forEach((result) => {
       const quiz = quizLookup.get(result.quizId);
-      const category: AttemptCategory = result.source === 'mock-exam' || result.quizSnapshot?.quizKind === 'mock' || (quiz && isStandaloneMockExam(quiz)) ? 'mock' : 'regular';
+      const category: AttemptCategory = result.quizSnapshot?.quizKind
+        ? (result.quizSnapshot.quizKind === 'mock' ? 'mock' : 'regular')
+        : (result.source === 'mock-exam' || (quiz && isStandaloneMockExam(quiz)) ? 'mock' : 'regular');
       const key = result.quizId || result.quizTitle || result.date;
       const existing = grouped.get(key);
       if (existing) existing.attempts.push(result);
@@ -606,7 +608,17 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
               ))}
             </div>
           ) : (
-            <div className="p-10 text-center text-gray-500">لا توجد محاولات هنا بعد.<div className="mt-5"><Link to="/dashboard?tab=saher" className="inline-flex items-center justify-center gap-2 rounded-xl bg-amber-500 px-5 py-3 text-sm font-bold text-white hover:bg-amber-600"><Zap size={16} /> ابدأ اختبار ساهر</Link></div></div>
+            resultHistory.loading || resultHistory.error ? null : <EmptyState
+              eyebrow={activeLearningContext === 'platform_self_study' ? 'اختبار واحد يكفي للبداية' : 'سجل هذا القسم'}
+              title="لا توجد محاولات هنا بعد"
+              description={activeLearningContext === 'school_assessment' ? 'بعد تسليم اختبار موجه من مدرستك ستظهر نتيجته هنا.' : 'بعد الحل ستظهر المحاولات ومراجعة الحلول والتقرير المختصر في قسمها.'}
+              icon={<FileText size={22} />}
+              primaryAction={activeLearningContext === 'school_assessment'
+                ? { label: 'اختبارات مدرستي', href: '/dashboard?tab=school-tests', icon: <FileText size={15} /> }
+                : { label: 'مركز الاختبارات', href: '/dashboard?tab=saher', icon: <Zap size={15} /> }}
+              secondaryAction={{ label: 'تقريري', href: '/reports', icon: <TrendingUp size={15} /> }}
+              tone="indigo"
+            />
           )}
         </div>
       </div>

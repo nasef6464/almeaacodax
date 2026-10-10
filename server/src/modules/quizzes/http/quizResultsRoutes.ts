@@ -16,6 +16,7 @@ import { getCachedQuizResults, setCachedQuizResults } from "../infrastructure/qu
 import { quizResultsListQuerySchema } from "./questionQuerySchemas.js";
 import { buildQuizResultsCacheKey, escapeRegex, parseDateFilter } from "./queryUtilities.js";
 import { buildQuizResultLearningContextFilter } from '../application/quizResultLearningContextFilter.js';
+import { projectQuizResultHistory } from '../application/assessmentResultReadAdapter.js';
 
 const idOf = (item: any) => String(item?.id || item?._id || "");
 const DIRECT_RESULT_DISABLED_MESSAGE =
@@ -109,7 +110,8 @@ quizResultsRouter.get(
     if (projection) {
       resultsQuery.select(projection);
     }
-    const items = serializeQuizResultsForLearner(await resolveCompatibleQuizResultList(await resultsQuery.lean() as Record<string, unknown>[]));
+    const compatible = await resolveCompatibleQuizResultList(await resultsQuery.lean() as Record<string, unknown>[]);
+    const items = serializeQuizResultsForLearner(includeReview ? compatible : compatible.map(projectQuizResultHistory));
     const total = query.noTotal
       ? pagination.skip + items.length + (items.length === pagination.limit ? 1 : 0)
       : await QuizResultModel.countDocuments(filter);
@@ -193,7 +195,8 @@ quizResultsRouter.get(
       if (projection) {
         scopedResultsQuery.select(projection);
       }
-      results = serializeQuizResultsForLearner(await resolveCompatibleQuizResultList(await scopedResultsQuery.lean() as Record<string, unknown>[]));
+      const compatible = await resolveCompatibleQuizResultList(await scopedResultsQuery.lean() as Record<string, unknown>[]);
+      results = serializeQuizResultsForLearner(includeReview ? compatible : compatible.map(projectQuizResultHistory));
     }
     const total = selectedStudentIds.length
       ? (query.noTotal
