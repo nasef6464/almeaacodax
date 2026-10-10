@@ -1,5 +1,7 @@
 # ALMEAA — Data Access Map
 
+Student plans (2026-10-10): protected `GET /content/study-plans` reads only `req.authUser.id`, active-first/latest order, limit200, private/no-store. `hooks/useStudentStudyPlans.ts` loads this lightweight data only for the Plan page and rejects stale actors; learner content bootstrap remains shared and never hydrates an empty plan list over private state. No additional requests per answer, polling, scoring or data migration. Runtime/published closure evidence: `docs/audits/STUDENT_PLAN_COMPLETION_2026-10-10.md`.
+
 هذه خريطة تصميم وتشغيل، وليست تصريحًا بأن كل أحجام التوسع مثبتة.
 
 Teacher directed discovery (2026-10-09): existing school-scoped assigned roster resolves before the assessment query. It selects only metadata plus audience IDs, caps100 and matches school/class/student explicit audiences. Response derives assigned class intersections only; no question bodies, polling or extra database query. Published/own-draft visibility retained; scale remains unproven.

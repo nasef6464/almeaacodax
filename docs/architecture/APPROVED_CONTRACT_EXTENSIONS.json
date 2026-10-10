@@ -10,6 +10,7 @@
     "/school-teacher-dashboard"
   ],
   "backendRouteSignatures": [
+    "contentStudyPlanRouter|GET|/study-plans",
     "adaptiveMasteryRouter|GET|/mastery-goals",
     "adaptiveMasteryRouter|GET|/mastery-readiness",
     "adaptiveMasteryRouter|GET|/next-best-action",

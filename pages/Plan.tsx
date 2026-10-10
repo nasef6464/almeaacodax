@@ -27,6 +27,7 @@ import { sanitizeArabicText } from '../utils/sanitizeMojibakeArabic';
 import { shareTextSummary } from '../utils/shareText';
 import { printElementAsPdf } from '../utils/printPdf';
 import { getPlanQuizCompletion, getPlanProgress, getNextPlanTask } from '../utils/studentPlanCompletion';
+import { useStudentStudyPlans } from '../hooks/useStudentStudyPlans';
 
 import { scheduleStudentPlanTasks, type GeneratedTask, type QuizKind } from '../utils/studentPlanSchedule';
 
@@ -231,6 +232,7 @@ const Plan: React.FC = () => {
     deleteStudyPlan,
     archiveStudyPlan,
   } = useStore();
+  const savedPlans = useStudentStudyPlans(user?.id);
 
   const accessibleCourseIds = useMemo(
     () =>
@@ -820,7 +822,7 @@ const Plan: React.FC = () => {
   };
 
   const handleDeleteEditingPlan = async () => {
-    if (!editingPlanId) return;
+    if (!editingPlanId || savedPlans.loading || savedPlans.error) return;
 
     const planName = currentPlan?.name || draft.name || 'الخطة الدراسية';
     const confirmed = window.confirm(`هل تريد حذف "${planName}"؟ لا يمكن التراجع عن حذف الخطة.`);
@@ -913,7 +915,7 @@ const Plan: React.FC = () => {
   };
 
   const handleSubmit = async () => {
-    if (planSaving) return;
+    if (planSaving || savedPlans.loading || savedPlans.error) return;
     setFormSuccess('');
     if (!draft.pathId) {
       setFormError('اختر المسار أولًا.');
@@ -954,7 +956,7 @@ const Plan: React.FC = () => {
       dailyMinutes: draft.dailyMinutes,
       preferredStartTime: draft.preferredStartTime,
       status: 'active',
-      createdAt: currentPlan?.createdAt || Date.now(),
+      createdAt: editingPlanId ? currentPlan?.createdAt || Date.now() : Date.now(),
       updatedAt: Date.now(),
     };
 
@@ -981,7 +983,9 @@ const Plan: React.FC = () => {
       </header>
 
       {/* Simplified Plan Action Strip */}
-      <StudentNextActionStrip {...planTodayNextAction} />
+      {!savedPlans.loading && !savedPlans.error && <StudentNextActionStrip {...planTodayNextAction} />}
+      {savedPlans.loading ? <p role="status" className="text-sm text-gray-500">جارٍ تحميل خططك المحفوظة...</p> : null}
+      {savedPlans.error ? <Card className="p-4 text-red-700"><p role="alert">{savedPlans.error}</p><button onClick={savedPlans.retry} className="mt-2 font-bold">إعادة تحميل الخطط</button></Card> : null}
 
       {/* Path Selector - Master Switch */}
       <div className="mb-6">
@@ -1269,7 +1273,7 @@ const Plan: React.FC = () => {
 
           <div className="flex flex-col gap-3 sm:flex-row">
             <button
-              disabled={planSaving}
+              disabled={planSaving || savedPlans.loading || Boolean(savedPlans.error)}
               onClick={handleSubmit}
               className="inline-flex items-center justify-center gap-2 rounded-2xl bg-emerald-500 px-6 py-4 font-bold text-white transition hover:bg-emerald-600"
             >
@@ -1277,7 +1281,7 @@ const Plan: React.FC = () => {
               {planSaving ? 'جارٍ حفظ الخطة...' : editingPlanId ? 'تحديث الخطة الدراسية' : 'إنشاء الخطة الدراسية'}
             </button>
             <button
-              disabled={planSaving}
+              disabled={planSaving || savedPlans.loading}
               onClick={resetDraft}
               className="inline-flex items-center justify-center gap-2 rounded-2xl bg-gray-100 px-6 py-4 font-bold text-gray-700 transition hover:bg-gray-200"
             >
@@ -1287,7 +1291,7 @@ const Plan: React.FC = () => {
             {editingPlanId && (
               <>
                 <button
-                  disabled={planSaving}
+                  disabled={planSaving || savedPlans.loading || Boolean(savedPlans.error)}
                   onClick={async () => { setPlanSaving(true); const ok = await archiveStudyPlan(editingPlanId); setPlanSaving(false); if (!ok) setFormError('تعذر أرشفة الخطة. حاول مرة أخرى.'); }}
                   className="inline-flex items-center justify-center gap-2 rounded-2xl bg-amber-50 px-6 py-4 font-bold text-amber-700 transition hover:bg-amber-100"
                 >
@@ -1295,7 +1299,7 @@ const Plan: React.FC = () => {
                   أرشفة الخطة
                 </button>
                 <button
-                  disabled={planSaving}
+                  disabled={planSaving || savedPlans.loading || Boolean(savedPlans.error)}
                   data-testid="student-plan-delete"
                   onClick={handleDeleteEditingPlan}
                   className="inline-flex items-center justify-center gap-2 rounded-2xl bg-red-50 px-6 py-4 font-bold text-red-700 transition hover:bg-red-100"

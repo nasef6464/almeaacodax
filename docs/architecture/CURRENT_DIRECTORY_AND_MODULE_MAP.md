@@ -6,7 +6,9 @@ Rule: this file describes what exists now. Target architecture is documented sep
 
 ## 1. Repository shape
 
-Student plan completion (2026-10-10): `pages/Plan.tsx` composes the page; `utils/studentPlanSchedule.ts` owns the existing scheduler, `utils/studentPlanCompletion.ts` owns completion/reference exclusion and pending action selection, and `store/slices/studyPlansSlice.ts` commits only acknowledged own-user API rows. No new data-access endpoints or migration. Bounded evidence: `docs/audits/STUDENT_PLAN_COMPLETION_2026-10-10.md`.
+Student plan completion (2026-10-10): `pages/Plan.tsx` composes the page; `utils/studentPlanSchedule.ts` owns the existing scheduler, `utils/studentPlanCompletion.ts` owns completion/reference exclusion and pending action selection, and `store/slices/studyPlansSlice.ts` commits only acknowledged own-user API rows. Initial #506 introduced no new endpoints or migration. Bounded evidence: `docs/audits/STUDENT_PLAN_COMPLETION_2026-10-10.md`.
+
+Published verification follow-up: `hooks/useStudentStudyPlans.ts` and `services/apiGroups/studyPlansApi.ts` own a private page-entry read through protected `contentStudyPlanRoutes.ts` (own userId, limit200, no-store). The shared learning bootstrap continues excluding personal plans; App does not overwrite them with the shared empty list. No data migration or per-answer request.
 
 Current branch tree contains 1,466 files.
 

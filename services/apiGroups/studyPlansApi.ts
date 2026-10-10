@@ -1,3 +1,5 @@
+import type { StudyPlan } from '../../types';
+
 type ApiRequest = <T>(path: string, options?: {
   method?: "GET" | "POST" | "PATCH" | "DELETE";
   body?: unknown;
@@ -18,6 +20,7 @@ export interface InterventionStudyPlanPayload {
 }
 
 export const createStudyPlansApi = (request: ApiRequest) => ({
+  getMyStudyPlans: () => request<{ studyPlans: StudyPlan[]; limit: number }>("/content/study-plans", { cache: "no-store" }),
   createStudyPlan: (payload: unknown, token?: string | null) =>
     request<unknown>("/content/study-plans", {
       method: "POST",
