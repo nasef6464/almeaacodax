@@ -208,6 +208,7 @@ jobs:
           node scripts/smoke-classroom-proxy-realtime.mjs
           node scripts/smoke-supervisor-assessment-report-ui.mjs
           node scripts/smoke-quiz-availability-ui.mjs
+          node scripts/smoke-review-existing-practice-ui.mjs
 
       - name: Start exact branch frontend
         id: start_frontend

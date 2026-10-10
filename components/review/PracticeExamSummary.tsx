@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Award, Bookmark, CheckCircle2, RefreshCw, XCircle } from "lucide-react";
 import { Link } from "react-router-dom";
+import { normalizeQuestionHtml } from "../../utils/questionHtml";
 import { QuestionAssistantPanel } from "../results/QuestionAssistantPanel";
 
 export type AnswerOutcome = {
@@ -22,12 +23,14 @@ interface PracticeExamSummaryProps {
   history: AnswerOutcome[];
   doneCount: number;
   onRetry: () => void;
+  retryLabel?: string;
 }
 
 export const PracticeExamSummary: React.FC<PracticeExamSummaryProps> = ({
   history,
   doneCount,
   onRetry,
+  retryLabel = "تدرّب على دفعة أخرى",
 }) => {
   const [reviewedQuestionDetail, setReviewedQuestionDetail] = useState<string | null>(null);
 
@@ -94,7 +97,7 @@ export const PracticeExamSummary: React.FC<PracticeExamSummaryProps> = ({
             onClick={onRetry}
             className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 px-4 py-2.5 text-xs font-black text-white hover:bg-emerald-700 shadow-xs"
           >
-            <RefreshCw size={14} /> تدرّب على دفعة أخرى
+            <RefreshCw size={14} /> {retryLabel}
           </button>
           <Link
             to="/dashboard?tab=favorites"
@@ -139,7 +142,7 @@ export const PracticeExamSummary: React.FC<PracticeExamSummaryProps> = ({
                     {record.isCorrect ? "أتقنته بنجاح" : "أخطأت فيه"}
                   </span>
                 </div>
-                <p className="mt-2 text-xs text-slate-700 font-bold line-clamp-2">{record.questionText}</p>
+                <div className="mt-2 text-xs text-slate-700 font-bold line-clamp-2" dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(record.questionText) }} />
 
                 <div className="mt-3 flex items-center justify-between border-t border-slate-100/80 pt-2">
                   <button
@@ -156,7 +159,7 @@ export const PracticeExamSummary: React.FC<PracticeExamSummaryProps> = ({
                     {record.explanation && (
                       <div className="rounded-xl bg-white p-3 text-xs font-bold text-slate-700 leading-6 border border-slate-100">
                         <span className="font-black text-emerald-800">الشرح المعتمد: </span>
-                        {record.explanation}
+                        <div dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(record.explanation) }} />
                       </div>
                     )}
                     <QuestionAssistantPanel

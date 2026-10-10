@@ -1,5 +1,6 @@
 import React from "react";
 import { ArrowLeft, CheckCircle2, XCircle } from "lucide-react";
+import { normalizeQuestionHtml } from "../../utils/questionHtml";
 import { getLearnerOptionLabel } from "../../utils/quizPresentation";
 
 interface PracticeQuestionFeedbackProps {
@@ -10,6 +11,7 @@ interface PracticeQuestionFeedbackProps {
     correctOptionIndex?: number;
     explanation?: string;
     optionsEmbeddedInImage?: boolean;
+    imageUrl?: string;
   };
   hasNext: boolean;
   onNext: () => void;
@@ -48,20 +50,16 @@ export const PracticeQuestionFeedback: React.FC<PracticeQuestionFeedbackProps> =
         question.options?.[question.correctOptionIndex] && (
           <p className="mt-2 text-xs font-bold text-rose-800">
             الإجابة الصحيحة هي:{" "}
-            <span className="underline">
-              {getLearnerOptionLabel(
-                question,
-                question.options[question.correctOptionIndex],
-                question.correctOptionIndex,
-              )}
-            </span>
+            <span className="underline" dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(getLearnerOptionLabel(
+              question, question.options[question.correctOptionIndex], question.correctOptionIndex,
+            )) }} />
           </p>
         )}
 
       {question.explanation && (
         <div className="mt-3 rounded-2xl bg-white p-3.5 text-xs font-bold leading-6 text-slate-800 border border-slate-100">
           <span className="font-black text-emerald-800">الشرح المعتمد: </span>
-          {question.explanation}
+          <div dangerouslySetInnerHTML={{ __html: normalizeQuestionHtml(question.explanation) }} />
         </div>
       )}
 

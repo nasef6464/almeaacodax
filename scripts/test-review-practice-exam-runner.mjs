@@ -36,7 +36,7 @@ assert.ok(reviewSessionSource.includes('QuestionVoiceExplanationPlayer'), 'contr
 assert.ok(reviewSessionSource.includes('QuestionAssistantPanel'), 'contract: assistant panel component required');
 
 // 5. Favorites entry point
-assert.ok(favoritesSource.includes('to={`/review?mode=${activeTab}`}'), 'favorites must link to review with activeTab');
+assert.ok(favoritesSource.includes('to={`/review?mode=${activeTab}&page=${page}`}'), 'favorites must link to review with activeTab');
 assert.ok(favoritesSource.includes('اختبار تدريبي'), 'favorites button must clarify practice test mode');
 
 console.log('Review Practice Exam runner contract: ALL PASS ✅');
