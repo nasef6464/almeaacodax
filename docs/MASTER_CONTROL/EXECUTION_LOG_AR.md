@@ -173,3 +173,6 @@ The same run automatically restores:
 then records representative Mongo counts, exact media key/object-count parity and measured restore RTO.
 
 Remaining external input: five production source secrets only.
+
+## 2026-10-10 — Reports presentation closure
+#499 merged/published55909979; exact96896605 all3requiredPASS (24SUCCESS/3conditionalSKIP), main4gatesSUCCESS, frontend/Render/readinessexact. Reports3025→2570/4typed presentation owners/no extra requests or scoring/RBAC/data change. Actual published supervisor/student1280/390 and zeroJSerrors:3bounded presentation checksPASS. Preserve earlier34systemchecks; six baseline stale contracts and whole-system gaps remainPARTIAL. Evidence: docs/audits/REPORTS_STAFF_PRESENTATION_BOUNDARIES_2026-10-10.md.
