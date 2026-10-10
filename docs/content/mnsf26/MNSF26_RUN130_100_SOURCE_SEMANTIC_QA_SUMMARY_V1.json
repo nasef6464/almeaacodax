@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN130",
+  "stage": "QA_LOCK",
+  "startHeads": {
+    "branch": "42e83d61a52f4b0b863b710346c08b0b91827ebd",
+    "main": "535192eda1044e129b7cf561c02873e76709ce37"
+  },
+  "source": "100 original GEO T009–T013 WebP images from RUN129 archive; independent direct math review against live original MASTER rows",
+  "imageSHA256Verified": 100,
+  "independentMathProvisionalPass": 83,
+  "knownSourceMasterConflictsStillMASTERED": [
+    "MNSF26-GEO-T010-Q09",
+    "MNSF26-GEO-T010-Q19"
+  ],
+  "originalMasterHoldPreserved": 12,
+  "originalMasterReviewPreserved": [
+    "MNSF26-GEO-T009-Q17",
+    "MNSF26-GEO-T010-Q15",
+    "MNSF26-GEO-T012-Q14"
+  ],
+  "priorRUN129StatusLedgerCorrections": 3,
+  "newMasteredPersisted": 0,
+  "sourceConflictQuarantinesApplied": 0,
+  "knownSourceConflictsMinimum": 37,
+  "qaFullBookCertified": false,
+  "dedupeLocked": false,
+  "importAuthorized": false,
+  "productionTouched": false,
+  "followUp": "Apply 37 source-conflict REVIEW/importEligible=false quarantines through authorized writes; reconcile 100-source-key QA ledger and full-book gates before dedupe and production."
+}
