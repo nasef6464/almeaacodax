@@ -34,7 +34,7 @@ export const StudentJourneySourcesPanel = ({ results, attempts, completedLessons
         <p className="text-xs leading-6 text-slate-500">{rows.length} محاولة محملة؛ {average === null ? 'لا توجد درجة بعد' : `متوسط درجاتها ${average}%`}. هذا الملخص لا يخلط نتائج المصادر المختلفة.</p>
         {context === 'legacy_unknown' ? <p className="text-xs text-amber-800">هذه النتائج محفوظة، لكن مصدرها لم يُسجل. لا ننسبها إلى المدرسة أو المنصة بالتخمين.</p> : null}
         {rows.length ? <div className="space-y-2">{rows.slice(0, 3).map(row => (
-          <Link key={String(row.id || row._id || `${row.quizId}:${row.date}`)} to={`/results?attempt=${encodeURIComponent(row.date)}`}
+          <Link key={String(row.id || row._id || `${row.quizId}:${row.date}`)} to={`/results?attempt=${encodeURIComponent(String(row._id || row.id || row.date))}`}
             className="flex items-center justify-between gap-3 rounded-xl bg-slate-50 p-3 text-sm"><span className="min-w-0 break-words">{row.quizTitle}</span><strong className="shrink-0">{row.score}%</strong></Link>
         ))}</div> : <p className="text-sm text-slate-500">لا توجد محاولات محملة في هذا القسم بعد.</p>}
         {skillRows.length ? <div className="space-y-2"><h3 className="text-sm font-bold">المهارات المقاسة في هذه المحاولات</h3>{skillRows.slice(0, 5).map(skill => (

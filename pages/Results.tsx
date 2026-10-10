@@ -29,6 +29,7 @@ import { ShareScorecard } from '../components/ShareScorecard';
 import { QuestionImageZoomModal } from '../components/QuestionImageZoomModal';
 import { useStore } from '../store/useStore';
 import { api } from '../services/api';
+import { useStudentResultDetail } from '../hooks/useStudentResultDetail';
 import { Question, QuizQuestionReview, QuizResult } from '../types';
 import { sanitizeArabicText } from '../utils/sanitizeMojibakeArabic';
 import { printElementAsPdf } from '../utils/printPdf';
@@ -199,7 +200,7 @@ const SimpleResultStat = ({
 };
 
 const Results: React.FC = () => {
-  const { examResults, skills, lessons, quizzes, libraryItems, questions, topics, subjects, sections } = useStore();
+  const { user, examResults, skills, lessons, quizzes, libraryItems, questions, topics, subjects, sections } = useStore();
   const [searchParams] = useSearchParams();
   const [viewMode, setViewMode] = React.useState<'summary' | 'review' | 'history' | 'analysis'>('summary');
   const [isAnalysisOpen, setIsAnalysisOpen] = React.useState(false);
@@ -207,7 +208,6 @@ const Results: React.FC = () => {
   const [copiedSummary, setCopiedSummary] = React.useState(false);
   const [sharedSummary, setSharedSummary] = React.useState(false);
   const [resultDepth, setResultDepth] = React.useState<'simple' | 'full'>('simple');
-  const [loadedResultDetail, setLoadedResultDetail] = React.useState<QuizResult | null>(null);
 
   const requestedAttempt = searchParams.get('attempt');
   const requestedView = searchParams.get('view');
@@ -226,31 +226,8 @@ const Results: React.FC = () => {
     || (listedResult as (QuizResult & { id?: string; _id?: string }) | undefined)?._id
     || '');
 
-  React.useEffect(() => {
-    let active = true;
-    setLoadedResultDetail(null);
-
-    if (!listedResultId || (listedResult?.questionReview?.length || 0) > 0) {
-      return () => { active = false; };
-    }
-
-    api.getQuizResultDetails(listedResultId)
-      .then((response) => {
-        if (!active || !response?.result) return;
-        setLoadedResultDetail(response.result as QuizResult);
-      })
-      .catch(() => {
-        // Historical rows can intentionally lack review data. Keep the list
-        // result usable rather than turning the whole result screen into an error.
-      });
-
-    return () => { active = false; };
-  }, [listedResult?.questionReview?.length, listedResultId]);
-
-  const latestResult = React.useMemo(() => {
-    if (!listedResult) return undefined;
-    return loadedResultDetail ? { ...listedResult, ...loadedResultDetail } : listedResult;
-  }, [listedResult, loadedResultDetail]);
+  const resultDetail = useStudentResultDetail(listedResult, listedResultId, requestedAttempt, user.id);
+  const latestResult = resultDetail.result;
 
   React.useEffect(() => {
     if (requestedView === 'review' || requestedView === 'history' || requestedView === 'analysis') {
@@ -641,6 +618,9 @@ const Results: React.FC = () => {
     { name: 'Fail', value: 100 - (latestResult?.score || 0) },
   ];
   const donutColors = ['#10b981', '#dc2626'];
+
+  if (!latestResult && resultDetail.loading) return <p role="status" className="p-6 text-center">جارٍ فتح النتيجة المحفوظة…</p>;
+  if (!latestResult && resultDetail.error) return <div role="alert" className="p-6 text-center">{resultDetail.error} <button type="button" onClick={resultDetail.retry} className="font-bold underline">إعادة المحاولة</button></div>;
 
   if (!latestResult) {
     return (

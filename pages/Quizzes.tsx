@@ -417,7 +417,7 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
   }, [pathFilteredPreparedQuizzes, examResults, subjects, lessons, libraryItems]);
 
   const getAttemptResultLink = (result: QuizResult, viewMode?: 'review' | 'analysis') => {
-    const params = new URLSearchParams({ attempt: result.date });
+    const params = new URLSearchParams({ attempt: String(result._id || result.id || result.date) });
     if (viewMode) params.set('view', viewMode);
     return `/results?${params.toString()}`;
   };

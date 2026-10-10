@@ -58,3 +58,5 @@ Student waiting presentation moved from `ClassroomStudentLive` into `ClassroomSt
 
 ## Student platform/school context reports — 2026-10-10
 Student report/history source separation reuses persisted learningContext and canonical scores. New UI/hook boundaries plus existing result-list projections/filter helper and submission relation resolver; no model migration, AI call, scoring/auth change or new polling. Evidence: docs/audits/STUDENT_PLATFORM_SCHOOL_CONTEXT_REPORTS_2026-10-10.md.
+
+- Older attempt detail: useStudentResultDetail owns a single on-demand existing protected /quiz-results/:id read with actor/request identity isolation; Results composes it. Quizzes and the source report panel link by persisted result ID. No global result hydration or history traversal.

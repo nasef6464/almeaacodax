@@ -24,21 +24,23 @@ import {MemoryRouter} from 'react-router-dom';
 import {StudentJourneySourcesPanel} from './pages/Reports/StudentJourneySourcesPanel';
 import {StudentResultHistoryControls} from './components/StudentResultHistoryControls';
 import {useStudentResultHistory} from './hooks/useStudentResultHistory';
+import {useStudentResultDetail} from './hooks/useStudentResultDetail';
 import Quizzes from './pages/Quizzes';
 const root=createRoot(document.getElementById('root'));
-window.requests=[]; window.pending=[]; window.actor='enrolled';
+window.requests=[]; window.pending=[]; window.detailRequests=[]; window.detailPending=[]; window.actor='enrolled';
 const result=(id,context,score,kind='test')=>({id,userId:window.actor,quizId:id,quizTitle:id,score,date:'2026-10-10T12:00:00Z',learningContext:context,source:id==='school-regular'?'mock-exam':'tests',quizSnapshot:{quizKind:kind},totalQuestions:5,skillsAnalysis:[{skill:'التناسب',skillId:'ratio',pathId:'quant',subjectId:'math',mastery:score,questionCount:5,correctCount:score/20}]});
 window.result=result;
 window.fixture={user:{id:'enrolled',role:'student',schoolId:'school'},examResults:[],quizzes:[],subjects:[],paths:[],lessons:[],libraryItems:[],checkAccess:()=>true,hasScopedPackageAccess:()=>true,getMatchingPackage:()=>null,hydrateQuizzes:()=>{}};
-function Harness({mode='panel',actor='enrolled'}) {
+function Harness({mode='panel',actor='enrolled',requested='abcdef1234567890abcdef12'}) {
  window.actor=actor; window.fixture.user={id:actor,role:'student',...(actor==='enrolled'?{schoolId:'school'}:{})};
  const [context,setContext]=React.useState('platform_self_study');
  const history=useStudentResultHistory(actor,mode==='hook',context);
+ const detail=useStudentResultDetail(undefined,'',mode==='detail'?requested:null,actor);
  return <MemoryRouter><main dir="rtl">{mode==='panel'?<StudentJourneySourcesPanel
  results={[result('منصة 80','platform_self_study',80),result('مدرسة 20','school_assessment',20),result('قديم 40',undefined,40)]}
  attempts={[{selectedOptionIndex:-1},{selectedOptionIndex:0},{selectedOptionIndex:1}]} completedLessons={['lesson','lesson','second']} periodLabel="كل الوقت"/>
  :mode==='hook'?<><StudentResultHistoryControls context={context} onContextChange={setContext} history={history}/><pre data-testid="rows">{history.results.map(r=>r.id).join(',')}</pre></>
- :<Quizzes view="attempts"/>}</main></MemoryRouter>;
+ :mode==='detail'?<><pre data-testid="detail">{detail.result?.score ?? ''}</pre>{detail.error?<button onClick={detail.retry}>إعادة فتح النتيجة</button>:null}</>:<Quizzes view="attempts"/>}</main></MemoryRouter>;
 }
 window.renderFixture=props=>root.render(<Harness {...props}/>);
 window.renderFixture({});
@@ -47,7 +49,7 @@ window.renderFixture({});
   build.onResolve({ filter: /store\/useStore$/ }, () => ({ path: 'store', namespace: 'fixture' }));
   build.onResolve({ filter: /components\/(PaymentModal|StudentNextActionStrip)$/ }, () => ({ path: 'ui', namespace: 'fixture' }));
   build.onLoad({ filter: /.*/, namespace: 'fixture' }, ({path}) => ({ contents: path==='api'
-    ? `export const api={getQuizzes:async()=>[],getMyQuizResultsPage:options=>{window.requests.push({actor:window.actor,...options});return new Promise((resolve,reject)=>window.pending.push({resolve,reject}))}};`
+    ? `export const api={getQuizzes:async()=>[],getQuizResultDetails:id=>{window.detailRequests.push({id,actor:window.actor});return new Promise((resolve,reject)=>window.detailPending.push({resolve,reject}))},getMyQuizResultsPage:options=>{window.requests.push({actor:window.actor,...options});return new Promise((resolve,reject)=>window.pending.push({resolve,reject}))}};`
     : path==='store' ? 'export const useStore=()=>window.fixture;' : 'export const PaymentModal=()=>null; export const StudentNextActionStrip=()=>null;', loader: 'js' }));
 } }] });
 const server=createServer((_req,res)=>res.end('<html><body><div id="root"></div></body></html>'));
@@ -126,6 +128,19 @@ try {
   await page.setViewportSize({width,height:900});
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,`history overflow ${width}`);
  }
+ await render({mode:'detail',actor:'enrolled'});
+ assert.equal(await page.evaluate(()=>window.detailRequests.length),1,'Uncached older attempt gets one direct detail request');
+ await page.evaluate(()=>window.detailPending[0].reject(new Error('offline')));
+ await page.getByRole('button',{name:'إعادة فتح النتيجة'}).click();
+ await page.evaluate(()=>window.detailPending[1].resolve({result:{score:67}}));
+ await page.getByTestId('detail').getByText('67',{exact:true}).waitFor();
+ await render({mode:'detail',actor:'enrolled',requested:'bbbbbbbbbbbbbbbbbbbbbbbb'});
+ await render({mode:'detail',actor:'independent',requested:'bbbbbbbbbbbbbbbbbbbbbbbb'});
+ assert.equal(await page.getByTestId('detail').innerText(),'','Old actor detail is not rendered');
+ await page.evaluate(()=>window.detailPending[3].resolve({result:{score:40}}));
+ await page.getByTestId('detail').getByText('40',{exact:true}).waitFor();
+ await page.evaluate(()=>window.detailPending[2].resolve({result:{score:99}}));
+ assert.equal(await page.getByTestId('detail').innerText(),'40','Old actor response is discarded');
  assert.deepEqual(errors,[]);
  console.log('PASS enrolled/independent reports: source scores and skills, activity and plan links; bounded history, retry, pagination, stale actor/context isolation; real attempts page empty tabs and frozen mock; 1280/390 CSS.');
 } finally { await browser.close(); server.close(); }
