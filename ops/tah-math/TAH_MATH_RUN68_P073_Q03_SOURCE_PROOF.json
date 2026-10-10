@@ -1,0 +1,21 @@
+{
+  "run": "RUN68",
+  "date": "2026-10-10",
+  "bank": "YLM26",
+  "questionCode": "TAH-MATH-YLM26-P073-Q03",
+  "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+  "printedPage": 73,
+  "sourceStem": "قطع مكافئ بؤرته (0,5) ويمر بالنقطتين (±5,8) ما اتجاهه؟",
+  "note": "DO NOT APPLY: source says vertex (رأسه), not focus (بؤرته); canonical proof below uses vertex.",
+  "correctedSourceStem": "قطع مكافئ رأسه (0,5) ويمر بالنقطتين (±5,8) ما اتجاهه؟",
+  "sourceOptions": {
+    "A": "أعلى",
+    "B": "أسفل",
+    "C": "يمين",
+    "D": "يسار"
+  },
+  "mathematicalProof": "Vertex (0,5), points (5,8) and (-5,8). Standard vertical parabola y=a*x^2+5; 8=25a+5 -> a=3/25>0, so it opens upward. Horizontal parabola x=a*(y-5)^2 cannot pass through two distinct x values at the same y=8.",
+  "sourceAnswerCandidate": "A",
+  "status": "SOURCE_BACKED_HOLD_RESOLVED_CANDIDATE; NOT_CANONICAL_APPROVAL",
+  "productionMutation": false
+}
