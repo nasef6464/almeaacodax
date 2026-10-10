@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { QuizResultModel } from '../models/QuizResult.js';
 import { QuizRetakeModel } from '../modules/quizzes/infrastructure/quizRetakeModel.js';
 
-export const verifyQuizAvailabilityJourney = async ({ request, csrf, adminToken, studentToken, outsiderToken, studentId, outsiderId, pathId, subjectId, questionId, quizId }: any) => {
+export const verifyQuizAvailabilityJourney = async ({ request, csrf, adminToken, studentToken, outsiderToken, studentId, outsiderId, classId, pathId, subjectId, questionId, quizId }: any) => {
   assert.equal(process.env.NODE_ENV, 'test');
   assert.match(process.env.MONGODB_URI || '', /^mongodb:\/\/(127\.0\.0\.1|localhost):27017\/almeaa_platform_v3_ci_/);
   const iso = (delta: number) => new Date(Date.now() + delta).toISOString();
@@ -52,5 +52,12 @@ export const verifyQuizAvailabilityJourney = async ({ request, csrf, adminToken,
   assert.equal((await submit()).status, 409);
   assert.equal(await QuizResultModel.countDocuments({ quizId, userId: studentId }), 2);
   assert.equal(JSON.stringify(await QuizResultModel.findById(oldResult._id).lean()), before);
+  const groupQuizId = `${quizId}-group`;
+  assert.equal((await write('/quizzes', { id: groupQuizId, title: 'Fresh group retake authority', pathId, subjectId, questionIds: [questionId], targetGroupIds: [classId], isPublished: true, access: { type: 'free' } })).status, 201);
+  const groupGrant = (ids: string[]) => write(`/quizzes/${groupQuizId}/retakes`, { studentIds: ids, opensAt: iso(-1000), closesAt: iso(86400000) });
+  assert.equal((await groupGrant([studentId, outsiderId])).status, 403);
+  assert.equal(await QuizRetakeModel.countDocuments({ quizId: groupQuizId }), 0);
+  assert.equal((await groupGrant([studentId])).status, 200);
+  assert.equal((await request(`/quizzes/${groupQuizId}?includeQuestions=false`, { token: studentToken })).body.viewerAudienceVerified, true);
   console.log('Assessment windows + selective retakes + immutable prior outcome: PASS');
 };

@@ -2246,7 +2246,7 @@ async function main() {
     await runSchoolDirectorDelegatedOperationsJourney(csrf);
     await runSchoolDirectorAcademicClosureJourney(csrf);
     await runAssessmentJourney(csrf);
-    await verifyQuizAvailabilityJourney({ request: jsonRequest, csrf, adminToken: tokens.get('admin'), studentToken: tokens.get('student'), outsiderToken: tokens.get('outsider'), studentId: userIds.get('student'), outsiderId: userIds.get('outsider'), pathId: ASSESSMENT_PATH_ID, subjectId: ASSESSMENT_SUBJECT_ID, questionId: ASSESSMENT_QUESTION_ID, quizId: `availability-${RUN_MARKER}` });
+    await verifyQuizAvailabilityJourney({ request: jsonRequest, csrf, adminToken: tokens.get('admin'), studentToken: tokens.get('student'), outsiderToken: tokens.get('outsider'), studentId: userIds.get('student'), outsiderId: userIds.get('outsider'), classId: groupIds.get('class'), pathId: ASSESSMENT_PATH_ID, subjectId: ASSESSMENT_SUBJECT_ID, questionId: ASSESSMENT_QUESTION_ID, quizId: `availability-${RUN_MARKER}` });
     await runAssessmentDualWritePrimitiveJourney();
     await runHistoricalResultJourney(csrf);
     await runMockAssessmentJourney(csrf);

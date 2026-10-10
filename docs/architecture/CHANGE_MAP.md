@@ -4,6 +4,7 @@ Classroom history loading/error/retry: start at `hooks/useClassroomTeacherReport
 
 | إذا أردت تغيير... | ابدأ من... | لا تبدأ من... |
 |---|---|---|
+| مواعيد الاختبار وإعادته لطلاب محددين | quizAvailability.ts ثم quizViewerPolicy.ts وquizRetakeRoutes.ts؛ العرض SchoolTestsPanel.tsx وQuizRetakeDialog.tsx | تعديل النتائج القديمة أو توسيع الجمهور والصلاحيات |
 | حدود دخول الفصل واستعادة الحساب | middleware/loginProtection.ts ثم modules/auth/application/loginFailureBudget.ts؛ إرسال رابط الاستعادة في sendPasswordRecovery.ts | رفع حدود المصادقة الأخرى أو تعديل RBAC/النتائج |
 | هوية وتجميع خلايا مصفوفة المهارات | utils/classSkillMatrix.ts ثم ClassSkillsMapPanel.tsx | تجميع أسماء المهارات عبر المواد أو تعديل النتائج |
 | نبض المعلم الاختياري | components/classroom/ClassroomOptionalPulse.tsx | إضافة polling أو إرسال دفعة تلقائيًا |

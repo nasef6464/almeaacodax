@@ -5,9 +5,10 @@ import { asyncHandler } from "../../../utils/asyncHandler.js";
 import { QuizModel } from "../../../models/Quiz.js";
 import { QuizResultModel } from "../../../models/QuizResult.js";
 import { UserModel } from "../../../models/User.js";
+import { GroupModel } from "../../../models/Group.js";
 import { QuizRetakeModel, quizRetakeId } from "../infrastructure/quizRetakeModel.js";
 import { buildOwnedDocumentQuery, buildDocumentsByIdsQuery } from "../infrastructure/quizDocumentQuery.js";
-import { assertSupervisorDirectedQuizScope, assertTeacherDirectedQuizScope, resolveDirectedQuizReadAccess } from "../application/quizAccessPolicy.js";
+import { assertSupervisorDirectedQuizScope, assertTeacherDirectedQuizScope } from "../application/quizAccessPolicy.js";
 import { assertManagedContentScope } from "../../../services/managedContentScope.js";
 import { getQuizMaxAttempts } from "../application/quizAttemptContext.js";
 import { validateQuizWindow } from "../application/quizAvailability.js";
@@ -33,9 +34,17 @@ quizRetakeRouter.post("/:id/retakes", requireAuth, requireRole(["admin", "teache
   const studentIds = [...new Set(payload.studentIds)];
   const students = await UserModel.find(buildDocumentsByIdsQuery(studentIds)).select("id _id role isActive").lean();
   const byId = new Map(students.map((s: any) => [String(s.id || s._id), s]));
+  const eligible = new Set((quiz.targetUserIds || []).map(String));
+  if (studentIds.some(id => !eligible.has(id)) && quiz.targetGroupIds?.length) {
+    const groups = await GroupModel.aggregate<{ studentIds: string[] }>([
+      { $match: { $and: [buildDocumentsByIdsQuery(quiz.targetGroupIds.map(String)), { studentIds: { $in: studentIds } }] } },
+      { $project: { _id: 0, studentIds: { $setIntersection: [{ $ifNull: ['$studentIds', []] }, { $literal: studentIds }] } } },
+    ]);
+    groups.forEach(group => group.studentIds.forEach(id => eligible.add(id)));
+  }
   for (const studentId of studentIds) {
     const student = byId.get(studentId);
-    if (!student || student.role !== "student" || student.isActive === false || !(await resolveDirectedQuizReadAccess(quiz, { id: studentId, role: "student" })).allowed) {
+    if (!student || student.role !== "student" || student.isActive === false || !eligible.has(studentId)) {
       return res.status(403).json({ message: "Retake recipients must be active assigned students" });
     }
   }

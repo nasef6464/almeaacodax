@@ -1,4 +1,5 @@
 import { QuizRetakeModel, quizRetakeId } from "../infrastructure/quizRetakeModel.js";
+import { getQuizMaxAttempts } from './quizAttemptContext.js';
 
 // One bounded query for the current viewer, never all students' grants.
 export const applyQuizViewerPolicy = async (quizzes: any[], user?: { id: string; role: string }) => {
@@ -13,7 +14,7 @@ export const applyQuizViewerPolicy = async (quizzes: any[], user?: { id: string;
     return grant ? {
       ...quiz, opensAt: grant.opensAt, closesAt: grant.closesAt,
       viewerRetakeGranted: true,
-      settings: { ...quiz.settings, maxAttempts: Math.max(Number(quiz.settings?.maxAttempts || 1), grant.maxAttempts) },
+      settings: { ...quiz.settings, maxAttempts: Math.max(getQuizMaxAttempts(quiz), grant.maxAttempts) },
     } : quiz;
   });
 };

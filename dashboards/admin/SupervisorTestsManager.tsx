@@ -48,6 +48,13 @@ export const SupervisorTestsManager: React.FC<{ resultEvidence?: QuizResult[]; s
     quizzesWithStats, filteredQuizzes, summaryStats,
   } = useSupervisorAssessmentScope(tabFilter, resultEvidence, studentEvidence);
 
+  const canManageQuiz = (quiz: (typeof quizzesWithStats)[number]) => !!user && (
+    user.role === 'admin' || quiz.ownerId === user.id || quiz.createdBy === user.id ||
+    quiz.assignedTeacherId === user.id || (!!user.schoolId && (
+      quiz.ownerId === user.schoolId || quiz.createdBy === user.schoolId
+    ))
+  );
+
   const sendScopedAlert = async (studentIds: string[], title: string, body: string) => {
     const recipients = uniqueSupervisorStudentIds(studentIds).filter((id) => scopedStudentIds.includes(id));
     if (!recipients.length) return;
@@ -168,8 +175,8 @@ export const SupervisorTestsManager: React.FC<{ resultEvidence?: QuizResult[]; s
             </div>
             <div className="mt-5 grid grid-cols-2 gap-2">
               <button onClick={() => setDetailQuizId(quiz.id)} className="flex items-center justify-center gap-1.5 rounded-xl border border-violet-200 bg-violet-50 px-3 py-2 text-xs font-black text-violet-700"><BarChart size={14}/> متابعة الطلاب</button>
-              <button onClick={() => setAssignQuizId(quiz.id)} className="flex items-center justify-center gap-1.5 rounded-xl border border-indigo-200 bg-indigo-50 px-3 py-2 text-xs font-black text-indigo-700"><RefreshCw size={14}/> الجمهور والمواعيد</button>
-              <button onClick={() => setRetakeQuizId(quiz.id)} className="col-span-2 rounded-xl border border-indigo-200 px-3 py-2 text-xs font-black text-indigo-700">إعادة إتاحة لطلاب محددين</button>
+              {canManageQuiz(quiz) && <button onClick={() => setAssignQuizId(quiz.id)} className="flex items-center justify-center gap-1.5 rounded-xl border border-indigo-200 bg-indigo-50 px-3 py-2 text-xs font-black text-indigo-700"><RefreshCw size={14}/> الجمهور والمواعيد</button>}
+              {canManageQuiz(quiz) && <button onClick={() => setRetakeQuizId(quiz.id)} className="col-span-2 rounded-xl border border-indigo-200 px-3 py-2 text-xs font-black text-indigo-700">إعادة إتاحة لطلاب محددين</button>}
               {quiz.stats.participationRate < 100 && quiz.stats.totalTargetStudents > 0 && <button disabled={!!remindingQuizId} aria-busy={remindingQuizId === quiz.id} onClick={() => void remindAbsent(quiz)} className={`col-span-2 flex items-center justify-center gap-1.5 rounded-xl border px-3 py-2 text-xs font-black ${notifiedQuizId === quiz.id ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-amber-200 bg-amber-50 text-amber-700'}`}>{remindingQuizId === quiz.id ? 'جارٍ إرسال التذكير…' : notifiedQuizId === quiz.id ? <><CheckCircle size={14}/> تم التذكير</> : <><Bell size={14}/> تذكير من لم يؤدوا</>}</button>}
             </div>
             <button onClick={() => { setSelectedQuizId(quiz.id); setViewMode('analytics'); }} className="mt-3 flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-3 py-2.5 text-sm font-black text-white"><BarChart size={16}/> التحليل الكامل</button>
