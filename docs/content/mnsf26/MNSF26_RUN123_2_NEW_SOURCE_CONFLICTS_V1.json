@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN123",
+  "stage": "QA_LOCK",
+  "baseHead": "e3c18e73a6299bcba7da3d64f0beee364b0c676b",
+  "source": "Run116 original WebP source archive; Run123 direct original-image reinspection and live MASTER comparison",
+  "previousUnquarantinedConflicts": 31,
+  "additionalConflicts": 2,
+  "minimumUnquarantinedConflicts": 33,
+  "importAuthorized": false,
+  "quarantineApplied": false,
+  "conflicts": [
+    {
+      "sourceKey": "MNSF26-GEO-T026-Q17",
+      "originalMasterFile": "MNSF26_QUESTION_MASTERING_RUN051_GEO_T26_V1.json",
+      "imageHash": "70bc4aed26db93933d9302acbffc0ccd78f21f9af3ee0bc27184929e15877737",
+      "sourceFact": "Arabic original explicitly says rectangle length is HALF its width (وطوله نصف عرضه). Width = (س²+5س+7).",
+      "masterError": "MASTER rewrites length as TWICE width (طوله ضعف عرضه) and answers 6×width.",
+      "correctSourceMath": "Perimeter = 2(width + width/2)=3(width), option ب.",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T027-Q02",
+      "originalMasterFile": "MNSF26_QUESTION_MASTERING_RUN051_GEO_T27_V1.json",
+      "imageHash": "bff03f465f3030368a3f15a96b439225ac6750e632b981bbeff71ae1789137de",
+      "sourceFact": "First square perimeter=12 cm; HALF the second square's perimeter=8 cm, hence second perimeter=16 cm.",
+      "masterError": "MASTER says the second square perimeter is half the first (6 cm), corrupting the givens and reasoning despite the same final comparison.",
+      "correctSourceMath": "First area 3²=9; second area 4²=16, half=8; 9>8, option أ.",
+      "requiredStatus": "REVIEW",
+      "importEligible": false
+    }
+  ],
+  "preserved": "No suppressions or existing HOLD/quarantine changed",
+  "productionTouched": false
+}
