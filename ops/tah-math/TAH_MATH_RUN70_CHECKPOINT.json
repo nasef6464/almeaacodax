@@ -1,0 +1,28 @@
+{
+  "run": "RUN70",
+  "date": "2026-10-10",
+  "bank": "YLM26",
+  "officialSourceSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+  "officialPdfPages": 96,
+  "sourceVisualReviewedDistinct": 205,
+  "archivedSourceCropsReviewed": 200,
+  "newlyReopenedFullPageItems": 5,
+  "independentPdf3xPixelParityPass": 150,
+  "independentPdf3xPixelParityFail": 0,
+  "sourceAnswerCorrections": [
+    {
+      "questionCode": "TAH-MATH-YLM26-P031-Q03",
+      "old": "A",
+      "correct": "B",
+      "reason": "(2x2)*(2x3) has shape 2x3"
+    }
+  ],
+  "genericPedagogyRowsRechecked": 30,
+  "semanticHold": "TAH-MATH-YLM26-P085-Q01",
+  "conditionalReviewEventsPrior": 8406,
+  "conditionalReviewEventsCumulative": 8611,
+  "canonicalApproved": 0,
+  "productionMutation": false,
+  "status": "YLM26_NOT_GREEN",
+  "next": "Publish source-specific option explanations, resolve source ambiguities, verify R2/topicId and reversible manifest."
+}
