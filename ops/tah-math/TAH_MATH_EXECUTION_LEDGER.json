@@ -190,7 +190,7 @@
       2
     ]
   },
-  "lastCheckpoint": "2026-10-10-RUN74-200-VISUAL-104-MATH-3-HOLDS",
+  "lastCheckpoint": "2026-10-10-RUN78B-150-FINAL-REVIEWED-CONTENT",
   "evidence": [
     "ops/tah-math/TAH_MATH_RUN1_BASELINE.json",
     "ops/tah-math/TAH_MATH_SOURCE_IDEA_MAP_PART01.json",
@@ -221,27 +221,27 @@
     }
   ],
   "latestRun": {
-    "run": "RUN74",
+    "run": "RUN78B",
     "date": "2026-10-10",
-    "actualDistinctSourceQuestionsReviewed": 200,
-    "sourceVisualReviewBasis": "200 inspected source-derived question crops across 20 boards; five prior recrops plus full-stem P078-Q04 inspected",
-    "sourceMathIndependentProofs": 104,
-    "sourceMathProofsVsPrior": "103 aligned, 1 known corrected P023-Q14 D",
-    "semanticHolds": [
+    "stage": "P2_YLM26_FULL_REVIEW",
+    "finalReviewedContentRowsThisRun": 150,
+    "uniqueFinalReviewedContentRows": 150,
+    "difficulty": {
+      "easy": 86,
+      "medium": 60,
+      "hard": 4
+    },
+    "unresolvedHolds": [
       "P050-Q04",
-      "P066-Q14",
-      "P081-Q01"
+      "P066-Q14"
     ],
-    "sourceRecropsRead": 6,
-    "cumulativeConditionalReviewEvents": 9453,
-    "uniqueYLM26SourceInventory": 326,
-    "canonicalApproved": 0,
+    "excludedConflictingAnswerEvidence": 19,
+    "localManifestSha256": "a63e46cc0e6a7e61ec9a5234b5d5dce6d4dd2a99766a2d6032905585f8a05fad",
     "productionMutation": false,
-    "sourceEvidence": "ops/tah-math/TAH_MATH_RUN74_200_VISUAL_104_MATH_SOURCE_AUDIT.json",
-    "liveR2Parity": "NOT_TESTED",
-    "liveTopicIdParity": "NOT_TESTED",
+    "liveR2Parity": "PENDING",
+    "liveTopicIdParity": "PENDING",
     "status": "YLM26_IN_PROGRESS_NOT_GREEN",
-    "next": "Resolve 3 semantic holds and full 326 option-specific pedagogy, live R2/topic parity, reversible manifest, then COL26 1012"
+    "next": "Resolve 19 answer-evidence conflicts + 2 source HOLDs; finalize remaining 176 rows; then R2/topic parity and reversible manifest."
   },
   "run47": {
     "date": "2026-10-09",
@@ -305,5 +305,28 @@
     "liveTopicIdParity": "NOT_TESTED",
     "status": "YLM26_IN_PROGRESS_NOT_GREEN",
     "next": "Resolve 3 semantic holds and full 326 option-specific pedagogy, live R2/topic parity, reversible manifest, then COL26 1012"
+  },
+  "run78b": {
+    "run": "RUN78B",
+    "date": "2026-10-10",
+    "stage": "P2_YLM26_FULL_REVIEW",
+    "finalReviewedContentRowsThisRun": 150,
+    "uniqueFinalReviewedContentRows": 150,
+    "difficulty": {
+      "easy": 86,
+      "medium": 60,
+      "hard": 4
+    },
+    "unresolvedHolds": [
+      "P050-Q04",
+      "P066-Q14"
+    ],
+    "excludedConflictingAnswerEvidence": 19,
+    "localManifestSha256": "a63e46cc0e6a7e61ec9a5234b5d5dce6d4dd2a99766a2d6032905585f8a05fad",
+    "productionMutation": false,
+    "liveR2Parity": "PENDING",
+    "liveTopicIdParity": "PENDING",
+    "status": "YLM26_IN_PROGRESS_NOT_GREEN",
+    "next": "Resolve 19 answer-evidence conflicts + 2 source HOLDs; finalize remaining 176 rows; then R2/topic parity and reversible manifest."
   }
 }
