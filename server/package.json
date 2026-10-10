@@ -8,6 +8,8 @@
     "build": "tsc -p tsconfig.json",
     "start": "node dist/server.js",
     "check": "tsc --noEmit -p tsconfig.json",
+    "verify:classroom-login-protection": "tsx src/scripts/verifyClassroomLoginProtection.ts",
+    "verify:classroom-login-e2e": "tsx src/scripts/verifyClassroomLoginE2E.ts",
     "verify:product-config": "tsx src/scripts/verifyProductConfigVariants.ts",
     "verify:customer-bootstrap": "tsx src/scripts/verifyCustomerBootstrapDryRun.ts",
     "verify:customer-packaging": "tsx src/scripts/verifyCustomerInstancePackaging.ts",

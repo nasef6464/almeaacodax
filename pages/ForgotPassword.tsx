@@ -16,8 +16,8 @@ const ForgotPassword: React.FC = () => {
     setIsSubmitting(true);
 
     try {
-      const response = await api.forgotPassword(email.trim());
-      setMessage(response.message || 'تم إرسال تعليمات الاستعادة إذا كان البريد مسجلا لدينا.');
+      await api.forgotPassword(email.trim());
+      setMessage('إذا كان البريد مسجلًا، ستصلك تعليمات الاستعادة. تحقق من البريد الوارد والرسائل غير المرغوب فيها.');
     } catch (requestError) {
       setError(requestError instanceof Error ? requestError.message : 'تعذر إرسال طلب الاستعادة الآن.');
     } finally {

@@ -47,6 +47,9 @@ const envSchema = z.object({
   RATE_LIMIT_GLOBAL_LIMIT: z.coerce.number().int().min(50).max(5000).default(600),
   RATE_LIMIT_AUTH_WINDOW_MS: z.coerce.number().int().min(30 * 1000).max(24 * 60 * 60 * 1000).default(15 * 60 * 1000),
   RATE_LIMIT_AUTH_LIMIT: z.coerce.number().int().min(3).max(500).default(20),
+  RATE_LIMIT_LOGIN_BURST_LIMIT: z.coerce.number().int().min(40).max(500).default(60),
+  RATE_LIMIT_LOGIN_ACCOUNT_LIMIT: z.coerce.number().int().min(3).max(20).default(10),
+  RATE_LIMIT_LOGIN_SOURCE_FAILURE_LIMIT: z.coerce.number().int().min(3).max(500).default(10),
   RATE_LIMIT_SENSITIVE_WINDOW_MS: z.coerce.number().int().min(1000).max(60 * 60 * 1000).default(60 * 1000),
   RATE_LIMIT_SENSITIVE_LIMIT: z.coerce.number().int().min(10).max(2000).default(60),
   NOTIFICATION_QUEUE_ENABLED: z.preprocess((value) => {

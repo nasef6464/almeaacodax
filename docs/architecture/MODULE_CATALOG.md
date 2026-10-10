@@ -2,7 +2,7 @@
 
 | Domain | يملك | لا يملك | المداخل الحالية | الحالة |
 |---|---|---|---|---|
-| auth | identity/login/account/session/admin-user lifecycle | تقارير أو scoring | `server/src/routes/auth.routes.ts`, `server/src/modules/auth/` | HIGH DEBT — ~1.9k route facade; split by owning use-cases while preserving auth contracts |
+| auth | identity/login/account/session/admin-user lifecycle; bounded login failure budgets and scoped password-recovery dispatch | تقارير أو scoring | `server/src/routes/auth.routes.ts`, `server/src/modules/auth/`, `server/src/middleware/loginProtection.ts` | HIGH DEBT — route facade retained; recovery dispatch extracted to `application/sendPasswordRecovery.ts`, owner-authorized10/10login policy, unchanged65kownership budget |
 | schools | schools/classes/staff/parents/scope | platform content | `SchoolsManager`, `SchoolsManager/` action/hooks/services, `SupervisorDashboard`, school routes | VERIFIED — Sellable School MVP Admin setup/access and Supervisor scoped follow-up vertical slice closed; advanced reporting/UX scalability deferred |
 | curriculum | Path/Level/Subject/Section/Skill | attempt scoring | taxonomy routes, PathsManager | Subject Learning Space boundary VERIFIED; School MVP remains |
 | questions | bank/authoring/types/import/search | report presentation | QuestionBankManager, question routes | Boundary pending |

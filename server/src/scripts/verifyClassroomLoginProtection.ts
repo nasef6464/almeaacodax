@@ -1,0 +1,72 @@
+/// <reference path="../types/express.d.ts" />
+import assert from "node:assert/strict";
+import express from "express";
+import type { AddressInfo } from "node:net";
+import { memoryLoginFailureStore, redisLoginFailureStore } from "../modules/auth/application/loginFailureBudget.js";
+
+// This suite never connects to a database or a live Redis instance.
+process.env.NODE_ENV = "test";
+process.env.MONGODB_URI = "mongodb://127.0.0.1:27017/login_guard_test";
+process.env.JWT_SECRET = "isolated-login-guard-test-secret";
+process.env.REDIS_URL = "";
+process.env.RATE_LIMIT_REDIS_ENABLED = "false";
+process.env.ADMIN_LOGIN_BYPASS_ENABLED = "false";
+process.env.RATE_LIMIT_AUTH_LIMIT = "20";
+process.env.RATE_LIMIT_LOGIN_ACCOUNT_LIMIT = "10";
+process.env.RATE_LIMIT_LOGIN_SOURCE_FAILURE_LIMIT = "10";
+process.env.RATE_LIMIT_LOGIN_BURST_LIMIT = "60";
+const { createLoginFailureGuard, loginProtection, loginAccountKey } = await import("../middleware/loginProtection.js");
+const app = express();
+app.set("trust proxy", 1);
+app.use(express.json());
+app.use(["/api/auth/login", "/auth/login"], loginProtection);
+app.post(["/api/auth/login", "/auth/login", "/api/auth/login/national-id", "/auth/login/phone-password"], async (req, res) => {
+  await new Promise((resolve) => setTimeout(resolve, 30));
+  res.status(req.body.fail ? 401 : req.body.invalid ? 400 : 200).json({ ok: !req.body.fail });
+});
+app.post("/read-unavailable", createLoginFailureGuard({ read: async () => { throw new Error("offline"); }, increment: async () => {}, clear: async () => {} }, 10), (_req, res) => res.json({ ok: true }));
+app.post("/write-unavailable", createLoginFailureGuard({ read: async () => ({ count: 0, retryAfterMs: 0 }), increment: async () => { throw new Error("offline"); }, clear: async () => {} }, 10), (_req, res) => res.status(401).json({ message: "invalid" }));
+const server = app.listen(0, "127.0.0.1");
+await new Promise<void>((resolve) => server.once("listening", resolve));
+const base = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
+const post = (body: unknown, source = "192.0.2.1", path = "/api/auth/login") => fetch(base + path, { method: "POST", headers: { "content-type": "application/json", "x-forwarded-for": source }, body: JSON.stringify(body) });
+try {
+  const classroom = await Promise.all(Array.from({ length: 40 }, (_, i) => post({ email: `student-${i}@example.invalid` })));
+  assert(classroom.every((response) => response.status === 200), "40 pending distinct-account logins from one source must succeed");
+  for (let i = 0; i < 10; i++) assert.equal((await post({ email: `missing-${i}@example.invalid`, fail: true }, "192.0.2.2")).status, 401);
+  const sourceBlocked = await post({ email: "valid@example.invalid" }, "192.0.2.2");
+  assert.equal(sourceBlocked.status, 429);
+  assert(Number(sourceBlocked.headers.get("retry-after")) > 0);
+  assert.equal((await post({ email: "valid@example.invalid" }, "192.0.2.3")).status, 200);
+  for (let i = 0; i < 10; i++) assert.equal((await post({ email: "target@example.invalid", fail: true }, "192.0.2.4")).status, 401);
+  assert.equal((await post({ email: " TARGET@example.invalid " }, "192.0.2.5", "/auth/login")).status, 429, "account budget survives source and route alias changes");
+  for (let i = 0; i < 10; i++) assert.equal((await post({ nationalId: "1234567890", fail: true }, "192.0.2.6", "/api/auth/login/national-id")).status, 401);
+  assert.equal((await post({ email: "1234567890" }, "192.0.2.7")).status, 429, "national ID cannot bypass through email alias");
+  for (let i = 0; i < 10; i++) assert.equal((await post({ phone: "+966 500 000 000", fail: true }, "192.0.2.8", "/auth/login/phone-password")).status, 401);
+  assert.equal((await post({ phone: "966500000000" }, "192.0.2.9", "/auth/login/phone-password")).status, 429);
+  for (let i = 0; i < 10; i++) assert.equal((await post({ email: `invalid-${i}@example.invalid`, invalid: true }, "192.0.2.10")).status, 400);
+  assert.equal((await post({ email: "valid@example.invalid" }, "192.0.2.10")).status, 429);
+  const burst = await Promise.all(Array.from({ length: 61 }, (_, i) => post({ email: `burst-${i}@example.invalid` }, "192.0.2.11")));
+  assert.equal(burst.filter((response) => response.status === 200).length, 60);
+  assert.equal(burst.filter((response) => response.status === 429).length, 1);
+  assert.equal((await post({}, "192.0.2.12", "/read-unavailable")).status, 503);
+  assert.equal((await post({}, "192.0.2.12", "/write-unavailable")).status, 503);
+  let now = 1000;
+  const memory = memoryLoginFailureStore(100, () => now, 1);
+  await memory.increment("a"); await memory.increment("a");
+  assert.deepEqual(await memory.read("a"), { count: 2, retryAfterMs: 100 });
+  await assert.rejects(memory.increment("b"), /capacity/);
+  now += 101; await memory.increment("b");
+  assert.equal((await memory.read("a")).count, 0);
+  await memory.clear("b"); assert.equal((await memory.read("b")).count, 0);
+  const calls: unknown[][] = [];
+  const redis = redisLoginFailureStore(async (...args) => { calls.push(args); return [2, 42]; }, "namespace:", 100);
+  assert.deepEqual(await redis.read("hash"), { count: 2, retryAfterMs: 42 });
+  await redis.increment("hash");
+  assert.equal(calls[0][2], "namespace:hash"); assert.equal(calls[1][3], "100");
+  assert.match(String(calls[1][0]), /INCR.*PEXPIRE/);
+  const corrupt = redisLoginFailureStore(async () => [10, -1], "namespace:", 100);
+  await assert.rejects(corrupt.read("hash"), /invalid_login_failure_budget/);
+  assert(!loginAccountKey({ body: { email: "child@example.invalid" }, originalUrl: "/auth/login", ip: "192.0.2.1" } as any).includes("child"));
+  console.log("PASS: 40 concurrent classmates; source/account/alias/phone/burst protection; read/write outage; bounded TTL store; Redis atomic contract");
+} finally { await new Promise<void>((resolve, reject) => server.close((error) => error ? reject(error) : resolve())); }

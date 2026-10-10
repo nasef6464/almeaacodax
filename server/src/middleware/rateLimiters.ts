@@ -8,6 +8,8 @@ type RateLimitOptions = Pick<Options, "windowMs" | "limit" | "message"> & {
   keyPrefix: string;
   skip?: NonNullable<Options["skip"]>;
   passOnStoreError?: boolean;
+  keyGenerator?: Options["keyGenerator"];
+  skipSuccessfulRequests?: boolean;
 };
 
 const resolveRequestKey = (req: Request) => {
@@ -33,7 +35,7 @@ const parseAdminBypassIps = () =>
       .filter(Boolean),
   );
 
-const isAdminLoginBypassRequest = (req: Request) => {
+export const isAdminLoginBypassRequest = (req: Request) => {
   if (!env.ADMIN_LOGIN_BYPASS_ENABLED) return false;
 
   const bypassEmail = String(env.ADMIN_LOGIN_BYPASS_EMAIL || "").trim().toLowerCase();
@@ -71,7 +73,8 @@ export function createRateLimiter(options: RateLimitOptions) {
     limit: options.limit,
     standardHeaders: true,
     legacyHeaders: false,
-    keyGenerator: resolveRequestKey,
+    keyGenerator: options.keyGenerator ?? resolveRequestKey,
+    skipSuccessfulRequests: options.skipSuccessfulRequests ?? false,
     // Global traffic may fail open for availability, but auth/sensitive actions
     // fail closed when the distributed Redis limiter is configured and unavailable.
     passOnStoreError: options.passOnStoreError ?? true,

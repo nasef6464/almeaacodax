@@ -1,5 +1,9 @@
 # ALMEAA — Data Access Map
 
+Shared-network login (2026-10-10, owner authorized): `middleware/loginProtection.ts` owns login-only burst/account/completed-failure guards; `modules/auth/application/loginFailureBudget.ts` owns bounded memory and expiring atomic Redis source counters on the existing rate-limit connection. Hashed source/identity keys; no User schema/migration or result writes. Existing auth routes retain password locks, disabled-user, CSRF/cookie/token authority. Production verification pending; evidence `docs/audits/CLASSROOM_SHARED_NETWORK_LOGIN_2026-10-10.md`.
+
+Owner-selected account/source limits are10/10. Valid reset-token ownership permits releasing only recovered account identifier counters and the recovery source; invalid/expired/used tokens cannot release protection. Forgot-password persists then processes only its own delivery through the existing notification provider; no general pending-notification scan, polling or new service. Real mail provider is unconfigured; isolated mailbox delivery is evidence of the route, not external inbox certification.
+
 Student plans (2026-10-10): protected `GET /content/study-plans` reads only `req.authUser.id`, active-first/latest order, limit200, private/no-store. `hooks/useStudentStudyPlans.ts` loads this lightweight data only for the Plan page and rejects stale actors; learner content bootstrap remains shared and never hydrates an empty plan list over private state. No additional requests per answer, polling, scoring or data migration. Runtime/published closure evidence: `docs/audits/STUDENT_PLAN_COMPLETION_2026-10-10.md`.
 
 هذه خريطة تصميم وتشغيل، وليست تصريحًا بأن كل أحجام التوسع مثبتة.
