@@ -44,7 +44,7 @@
         "smoke:my-quizzes": "node scripts/smoke-my-quizzes-contract.mjs",
         "smoke:quiz-access": "node scripts/smoke-quiz-access-contract.mjs",
         "smoke:reports-role": "node scripts/smoke-reports-role-contract.mjs",
-        "smoke:reports-staff-panels": "node scripts/smoke-reports-staff-panels-ui.mjs && node scripts/smoke-role-dashboard-presentation-ui.mjs",
+        "smoke:reports-staff-panels": "node scripts/smoke-reports-staff-panels-ui.mjs && node scripts/smoke-role-dashboard-presentation-ui.mjs && node scripts/smoke-school-optional-insights-ui.mjs",
         "smoke:student-source-reports": "node scripts/smoke-student-source-reports-ui.mjs",
         "smoke:student-plan-completion": "node scripts/smoke-student-plan-completion-ui.mjs",
         "smoke:barcode-public-tests": "node scripts/smoke-barcode-public-tests-contract.mjs",

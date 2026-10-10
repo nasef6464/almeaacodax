@@ -1,16 +1,16 @@
-﻿import React, { useMemo, useState } from 'react';
+import { buildClassSkillMatrix, type MatrixSkill } from '../../utils/classSkillMatrix';
+import React, { useEffect, useMemo, useState } from 'react';
 import { AlertTriangle, CheckCircle2, ChevronLeft, ChevronRight, Filter, Target } from 'lucide-react';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
-interface SkillEntry {
-  skill: string;
-  mastery: number;
-}
+type SkillEntry = MatrixSkill;
 
 interface StudentRow {
   id: string;
   name: string;
   className: string;
+  classId?: string;
+  schoolName?: string;
   average: number;
   status: string;
   resultsList: Array<{ skillsAnalysis?: SkillEntry[] }>;
@@ -27,6 +27,9 @@ interface ClassSkillsMapPanelProps {
   students: StudentRow[];
   groupSnapshots: GroupSnapshot[];
   onSelectStudent: (id: string) => void;
+  pathId?: string;
+  subjectId?: string;
+  scopeLabels?: Record<string, string>;
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -50,63 +53,37 @@ const PAGE_SIZE = 10;
 
 // ── Main Component ─────────────────────────────────────────────────────────────
 export const ClassSkillsMapPanel: React.FC<ClassSkillsMapPanelProps> = ({
-  students, groupSnapshots, onSelectStudent,
+  students, groupSnapshots, onSelectStudent, pathId, subjectId, scopeLabels = {},
 }) => {
   const [classFilter, setClassFilter] = useState('all');
   const [page, setPage] = useState(0);
+  const [skillPage, setSkillPage] = useState(0);
+  useEffect(() => { setPage(0); setSkillPage(0); }, [classFilter, pathId, subjectId]);
 
   // فلترة الطلاب حسب الفصل
   const filteredStudents = useMemo(() => {
     if (classFilter === 'all') return students;
-    return students.filter((s) => s.className === classFilter);
+    return students.filter((s) => (s.classId || s.className) === classFilter);
   }, [students, classFilter]);
 
   // بناء مصفوفة المهارات من كل نتائج الطلاب
-  const { skillColumns, studentSkillMap } = useMemo(() => {
-    const skillSet = new Map<string, { total: number; count: number }>();
-    const studentMap = new Map<string, Map<string, { total: number; count: number }>>();
-
-    filteredStudents.forEach((student) => {
-      const sMap = new Map<string, { total: number; count: number }>();
-      student.resultsList.forEach((r) => {
-        (r.skillsAnalysis || []).forEach((sk) => {
-          const name = String(sk.skill || '').trim();
-          if (!name) return;
-          // global skill set
-          const cur = skillSet.get(name) || { total: 0, count: 0 };
-          cur.total += Number(sk.mastery || 0);
-          cur.count += 1;
-          skillSet.set(name, cur);
-          // per-student
-          const sCur = sMap.get(name) || { total: 0, count: 0 };
-          sCur.total += Number(sk.mastery || 0);
-          sCur.count += 1;
-          sMap.set(name, sCur);
-        });
-      });
-      studentMap.set(student.id, sMap);
-    });
-
-    // ترتيب المهارات من الأضعف للأقوى
-    const skillColumns = Array.from(skillSet.entries())
-      .map(([skill, { total, count }]) => ({ skill, avg: count ? Math.round(total / count) : 0 }))
-      .sort((a, b) => a.avg - b.avg)
-      .slice(0, 12); // حد أقصى 12 مهارة للعرض
-
-    return { skillColumns, studentSkillMap: studentMap };
-  }, [filteredStudents]);
+  const { skillColumns: allSkillColumns, studentSkillMap } = useMemo(() => buildClassSkillMatrix(filteredStudents, { pathId, subjectId }), [filteredStudents, pathId, subjectId]);
+  const lastSkillPage = Math.max(0, Math.ceil(allSkillColumns.length / 12) - 1);
+  const visibleSkillPage = Math.min(skillPage, lastSkillPage);
+  const skillColumns = allSkillColumns.slice(visibleSkillPage * 12, (visibleSkillPage + 1) * 12);
 
   // تقسيم الطلاب إلى صفحات
-  const paged = filteredStudents.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
+  const visiblePage = Math.min(page, Math.max(0, Math.ceil(filteredStudents.length / PAGE_SIZE) - 1));
+  const paged = filteredStudents.slice(visiblePage * PAGE_SIZE, (visiblePage + 1) * PAGE_SIZE);
   const totalPages = Math.ceil(filteredStudents.length / PAGE_SIZE);
-  const classNames = Array.from(new Set(students.map((s) => s.className))).filter(Boolean);
+  const classOptions = [...new Map(students.filter(s => s.className).map(s => [s.classId || s.className, { value: s.classId || s.className, label: [s.schoolName, s.className].filter(Boolean).join(' — ') }])).values()];
 
-  if (skillColumns.length === 0) {
+  if (allSkillColumns.length === 0) {
     return (
       <div className="rounded-2xl border border-gray-100 bg-gray-50 p-10 text-center">
         <Target size={36} className="mx-auto text-gray-300 mb-3" />
         <p className="text-gray-500 font-bold">لا توجد بيانات مهارات كافية بعد.</p>
-        <p className="text-xs text-gray-400 mt-1">ستظهر المصفوفة بعد أداء الطلاب لاختبارات.</p>
+        <p className="text-xs text-gray-400 mt-1">ستظهر المصفوفة بعد أداء الطلاب لاختبارات ضمن المسار والمادة المختارين.</p>{classFilter !== "all" && <button className="mt-3 text-sm font-bold text-violet-700" onClick={() => setClassFilter("all")}>العودة لكل الفصول</button>}
       </div>
     );
   }
@@ -134,21 +111,22 @@ export const ClassSkillsMapPanel: React.FC<ClassSkillsMapPanelProps> = ({
             className="rounded-xl border border-gray-200 bg-white px-3 py-1.5 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-violet-400"
           >
             <option value="all">كل الفصول ({students.length} طالب)</option>
-            {classNames.map((c) => (
-              <option key={c} value={c}>{c}</option>
+            {classOptions.map((c) => (
+              <option key={c.value} value={c.value}>{c.label}</option>
             ))}
           </select>
         </div>
       </div>
 
       {/* ── التحذير من المهارات الحرجة ── */}
-      {skillColumns.filter((s) => s.avg < 50).length > 0 && (
+      {allSkillColumns.filter((s) => s.avg < 50).length > 0 && (
         <div className="flex items-center gap-2 rounded-xl border border-rose-200 bg-rose-50 px-4 py-2.5 text-xs font-bold text-rose-800">
           <AlertTriangle size={14} />
-          {skillColumns.filter((s) => s.avg < 50).length} مهارة دون 50% — تحتاج إعادة شرح للفصل
+          {allSkillColumns.filter((s) => s.avg < 50).length} مهارة دون 50% — تحتاج إعادة شرح للفصل
         </div>
       )}
 
+      {allSkillColumns.length > 12 && <div role="group" aria-label="صفحات مهارات الفصل" className="flex flex-wrap items-center gap-3 text-xs font-bold"><button disabled={visibleSkillPage === 0} onClick={() => setSkillPage(visibleSkillPage - 1)}>المهارات السابقة</button><span>المهارات {visibleSkillPage * 12 + 1}–{Math.min((visibleSkillPage + 1) * 12, allSkillColumns.length)} من {allSkillColumns.length}</span><button disabled={visibleSkillPage === lastSkillPage} onClick={() => setSkillPage(visibleSkillPage + 1)}>المهارات التالية</button></div>}
       {/* ── الجدول ── */}
       <div className="overflow-x-auto rounded-2xl border border-gray-100 bg-white shadow-sm">
         <table className="min-w-full text-xs">
@@ -158,12 +136,14 @@ export const ClassSkillsMapPanel: React.FC<ClassSkillsMapPanelProps> = ({
                 الطالب
               </th>
               <th className="px-3 py-3 text-center font-black text-gray-700 whitespace-nowrap">
-                المتوسط
+                المتوسط العام
               </th>
               {skillColumns.map((sk) => (
-                <th key={sk.skill} className="px-2 py-3 text-center font-bold text-gray-600 max-w-[80px]">
+                <th key={sk.key} className="px-2 py-3 text-center font-bold text-gray-600 max-w-[80px]">
                   <div className="truncate max-w-[72px] mx-auto" title={sk.skill}>{sk.skill}</div>
+                  <div className="text-[10px] text-slate-500">{scopeLabels[sk.subjectId || ''] || 'مادة غير مصنفة'}{scopeLabels[`path:${sk.pathId}`] ? ` • ${scopeLabels[`path:${sk.pathId}`]}` : ''}</div>
                   <div className={`mt-1 text-[10px] font-black rounded px-1 ${getCellColor(sk.avg)}`}>{sk.avg}%</div>
+                  <span className="text-[10px] text-slate-500">{sk.measuredStudents} طالب • {sk.count} قياس</span>
                 </th>
               ))}
             </tr>
@@ -187,13 +167,13 @@ export const ClassSkillsMapPanel: React.FC<ClassSkillsMapPanelProps> = ({
                     </div>
                   </td>
                   <td className="px-3 py-2.5 text-center">
-                    <span className={`font-black text-sm ${avgColor}`}>{student.average}%</span>
+                    <span className={`font-black text-sm ${avgColor}`}>{student.resultsList.length ? `${student.average}%` : "لم يُقَس"}</span>
                   </td>
                   {skillColumns.map((sk) => {
-                    const entry = sMap?.get(sk.skill);
+                    const entry = sMap?.get(sk.key);
                     const mastery = entry ? Math.round(entry.total / entry.count) : null;
                     return (
-                      <td key={sk.skill} className="px-2 py-2.5 text-center">
+                      <td key={sk.key} className="px-2 py-2.5 text-center">
                         {mastery !== null ? (
                           <span className={`inline-block rounded-lg px-2 py-1 text-[11px] font-black ${getCellColor(mastery)}`}>
                             {mastery}%
@@ -214,12 +194,12 @@ export const ClassSkillsMapPanel: React.FC<ClassSkillsMapPanelProps> = ({
       {/* ── ترقيم الصفحات ── */}
       {totalPages > 1 && (
         <div className="flex items-center justify-between text-xs font-bold text-gray-500">
-          <button onClick={() => setPage((p) => Math.max(0, p - 1))} disabled={page === 0}
+          <button onClick={() => setPage(Math.max(0, visiblePage - 1))} disabled={visiblePage === 0}
             className="flex items-center gap-1 rounded-lg px-3 py-1.5 border border-gray-200 hover:bg-gray-50 disabled:opacity-40">
             <ChevronRight size={14} /> السابق
           </button>
-          <span>صفحة {page + 1} من {totalPages} • {filteredStudents.length} طالب</span>
-          <button onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))} disabled={page === totalPages - 1}
+          <span>صفحة {visiblePage + 1} من {totalPages} • {filteredStudents.length} طالب</span>
+          <button onClick={() => setPage(Math.min(totalPages - 1, visiblePage + 1))} disabled={visiblePage === totalPages - 1}
             className="flex items-center gap-1 rounded-lg px-3 py-1.5 border border-gray-200 hover:bg-gray-50 disabled:opacity-40">
             التالي <ChevronLeft size={14} />
           </button>

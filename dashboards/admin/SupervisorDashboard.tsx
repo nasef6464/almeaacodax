@@ -1,3 +1,4 @@
+import { SupervisorFollowUpPriorities } from './SupervisorFollowUpPriorities';
 import { DashboardSectionNav } from '../../components/DashboardSectionNav';
 import { DisplayListControls, useDisplayLimit } from '../../components/DisplayListControls';
 import { resolveSupervisorSchoolScope } from '../../utils/supervisorSchoolScope';
@@ -54,7 +55,7 @@ import { SmartClassroomIntelligencePanel } from './SmartClassroomIntelligencePan
 import { SmartClassroomInterventionPanel } from './SmartClassroomInterventionPanel';
 
 type SupervisorTab = 'overview' | 'students' | 'skills' | 'reports' | 'live-sessions' | 'tests' | 'live-monitoring';
-type StudentSubTab = 'all' | 'critical' | 'watch' | 'outstanding';
+type StudentSubTab = 'all' | 'unmeasured' | 'critical' | 'watch' | 'outstanding';
 
 const KpiCard: React.FC<{
   title: string;
@@ -383,7 +384,7 @@ export const SupervisorDashboard: React.FC = () => {
         studentCount: classStudents.length || g.studentIds?.length || 0,
         average: gAvg,
         attempts: gResults.length,
-        weakStudents: studentsNeedingFollowUp.filter((s) => classStudentIds.has(s.id)).length
+        weakStudents: studentsNeedingFollowUp.filter((s) => s.attempts > 0 && classStudentIds.has(s.id)).length
       };
     });
     const withResults = groupSnapshots.filter((g) => g.attempts > 0);
@@ -404,7 +405,7 @@ export const SupervisorDashboard: React.FC = () => {
     return {
       schoolCount: scopedSchoolIds.size, groupCount: scopedGroupList.length, studentCount: scopedStudents.length,
       followUpCount: assignedFollowUps.length, resultCount: scopedResults.length, averageScore,
-      weakStudentsCount: studentsNeedingFollowUp.length, inactiveCount: studentsNeedingFollowUp.filter((s) => s.attempts === 0).length,
+      weakStudentsCount: studentsNeedingFollowUp.filter(s => s.attempts > 0).length, inactiveCount: studentsNeedingFollowUp.filter((s) => s.attempts === 0).length,
       improvedStudentsCount, declinedCount, weakestSkills, studentsNeedingFollowUp, allStudentsList,
       groupSnapshots, bestClass, weakestClass, pendingFollowUpCount, scopedStudentIdSet, scopedResults,
       primarySchoolName, scopeTypeName,
@@ -421,7 +422,8 @@ export const SupervisorDashboard: React.FC = () => {
     const q = searchQuery.trim().toLowerCase();
     return supervisorScopeSummary.allStudentsList.filter((s) => {
       // Tab filter
-      if (studentTab === 'critical' && s.status !== 'danger') return false;
+      if (studentTab === 'unmeasured' && s.attempts > 0) return false;
+      if (studentTab === 'critical' && (s.attempts === 0 || s.status !== 'danger')) return false;
       if (studentTab === 'watch' && s.status !== 'watch') return false;
       if (studentTab === 'outstanding' && s.average < 85) return false;
 
@@ -435,7 +437,7 @@ export const SupervisorDashboard: React.FC = () => {
       // Status filter dropdown
       if (statusFilter === 'inactive' && s.attempts > 0) return false;
       if (statusFilter === 'low' && (s.attempts === 0 || s.average >= 70)) return false;
-      if (statusFilter === 'urgent' && s.status !== 'danger') return false;
+      if (statusFilter === 'urgent' && (s.attempts === 0 || s.status !== 'danger')) return false;
 
       return true;
     });
@@ -848,7 +850,7 @@ export const SupervisorDashboard: React.FC = () => {
                     {supervisorScopeSummary.weakestClass ? (
                       <>
                         <h4 className="text-sm sm:text-base font-black text-rose-900 truncate">{supervisorScopeSummary.weakestClass.name}</h4>
-                        <p className="text-[11px] text-rose-500 mt-0.5">{supervisorScopeSummary.weakestClass.studentCount} طلاب متعثرون • متوسط {supervisorScopeSummary.weakestClass.average}%</p>
+                        <p className="text-[11px] text-rose-500 mt-0.5">{supervisorScopeSummary.weakestClass.weakStudents} طلاب يحتاجون متابعة • متوسط {supervisorScopeSummary.weakestClass.average}%</p>
                       </>
                     ) : (
                       <p className="text-xs text-gray-400">لا تتوفر فصول تحتاج تدخل حالياً</p>
@@ -869,6 +871,7 @@ export const SupervisorDashboard: React.FC = () => {
               </div>
             </div>
 
+            <SupervisorFollowUpPriorities students={supervisorScopeSummary.allStudentsList} scopeLabels={Object.fromEntries([...subjects.map(subject => [subject.id, subject.name]), ...paths.map(path => [`path:${path.id}`, path.name])])} onOpenSkill={(path, subject) => { setSkillPathFilter(path || 'all'); setSkillSubjectFilter(subject || 'all'); setActiveTab('skills'); }} onOpenUnmeasured={() => { setStudentTab('unmeasured'); setSearchQuery(''); setSchoolFilter('all'); setClassFilter('all'); setStatusFilter('all'); setActiveTab('students'); }} onOpenTests={() => setActiveTab('tests')} />
             {/* Quick stats and action board */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
               {/* Weakest skills preview */}
@@ -969,7 +972,8 @@ export const SupervisorDashboard: React.FC = () => {
               <div className="flex flex-wrap gap-2 border-b border-gray-100 pb-3">
                 {[
                   { id: 'all' as const, label: 'كل الطلاب', count: supervisorScopeSummary.allStudentsList.length, color: 'text-gray-700 bg-gray-50 border-gray-200' },
-                  { id: 'critical' as const, label: 'تدخل عاجل (<60%)', count: supervisorScopeSummary.allStudentsList.filter((s) => s.status === 'danger').length, color: 'text-rose-700 bg-rose-50 border-rose-100' },
+                  { id: 'unmeasured' as const, label: 'لم يبدأ القياس', count: supervisorScopeSummary.inactiveCount, color: 'text-slate-700 bg-slate-50 border-slate-200' },
+                  { id: 'critical' as const, label: 'تدخل عاجل (<60%)', count: supervisorScopeSummary.allStudentsList.filter((s) => s.attempts > 0 && s.status === 'danger').length, color: 'text-rose-700 bg-rose-50 border-rose-100' },
                   { id: 'watch' as const, label: 'تحت المراقبة (60-75%)', count: supervisorScopeSummary.allStudentsList.filter((s) => s.status === 'watch').length, color: 'text-amber-700 bg-amber-50 border-amber-100' },
                   { id: 'outstanding' as const, label: 'المتميزون (>85%)', count: supervisorScopeSummary.allStudentsList.filter((s) => s.average >= 85).length, color: 'text-emerald-700 bg-emerald-50 border-emerald-100' },
                 ].map((item) => (
@@ -1208,6 +1212,9 @@ export const SupervisorDashboard: React.FC = () => {
 
             {/* مصفوفة طالب × مهارة */}
             <ClassSkillsMapPanel
+              pathId={skillPathFilter}
+              subjectId={skillSubjectFilter}
+              scopeLabels={Object.fromEntries([...subjects.map(subject => [subject.id, subject.name]), ...paths.map(path => [`path:${path.id}`, path.name])])}
               students={supervisorScopeSummary.allStudentsList}
               groupSnapshots={supervisorScopeSummary.groupSnapshots}
               onSelectStudent={(id) => setSelectedStudentId(id)}
