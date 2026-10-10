@@ -5,7 +5,7 @@
   "directImageInspection": true,
   "sourceCropArchive": "/MNSF26/Run021/mnsf26_geometry_crops_run021.zip",
   "sourceInventory": "/MNSF26/Run021/MNSF26_GEOMETRY_CROP_MANIFEST_V1.json",
-  "masteredCount": 18,
+  "masteredCount": 17,
   "holdCount": 2,
   "records": [
     {
@@ -598,7 +598,7 @@
       },
       "imageHash": "6305cfd04a3a2d083a21f283a8fe9a9688f544f91f3aed843f4d162e71b6a06d",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T003_Q20",
-      "status": "MASTERED",
+      "status": "REVIEW",
       "questionText": "قارن س+ص و100° من زاويتين متقابلتين بالرأس مع زاوية 130",
       "canonicalMainSkill": "main_quant_19",
       "canonicalSubskill": "sub_quant_19_1",
@@ -608,7 +608,13 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "8b8cf9545070921c6481ac90d88299db7fedc75a2ea0deb4b29600c523b06e88",
-      "ideaFingerprint": "5d84a61dd011c59ec366a8fb9f20df2a2feb4be55a361bed8a8b50fbeb931d1c"
+      "ideaFingerprint": "5d84a61dd011c59ec366a8fb9f20df2a2feb4be55a361bed8a8b50fbeb931d1c",
+      "importEligible": false,
+      "reviewReason": "RUN132/135 original-source-image answer/solution conflict; requires independent reapproval.",
+      "qaEvidence": [
+        "MNSF26_RUN135_37_MATH_REVIEW_CANDIDATES_V1.json"
+      ]
     }
-  ]
+  ],
+  "reviewCount": 1
 }
