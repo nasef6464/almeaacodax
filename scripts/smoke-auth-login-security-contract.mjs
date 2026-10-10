@@ -5,6 +5,8 @@ const files = {
   user: await readFile(new URL("../server/src/models/User.ts", import.meta.url), "utf8"),
   header: await readFile(new URL("../components/Header.tsx", import.meta.url), "utf8"),
   reset: await readFile(new URL("../pages/ResetPassword.tsx", import.meta.url), "utf8"),
+  env: await readFile(new URL("../server/src/config/env.ts", import.meta.url), "utf8"),
+  loginProtection: await readFile(new URL("../server/src/middleware/loginProtection.ts", import.meta.url), "utf8"),
 };
 
 const checks = [];
@@ -38,10 +40,24 @@ check("auth routes enforce password strength", () => {
 });
 
 check("auth routes lock repeated failed login attempts", () => {
-  assertIncludes(files.auth, "MAX_FAILED_LOGIN_ATTEMPTS = 5");
+  assertIncludes(files.auth, "MAX_FAILED_LOGIN_ATTEMPTS = env.RATE_LIMIT_LOGIN_ACCOUNT_LIMIT");
+  for (const name of ["RATE_LIMIT_LOGIN_ACCOUNT_LIMIT", "RATE_LIMIT_LOGIN_SOURCE_FAILURE_LIMIT"]) {
+    if (!new RegExp(`${name}:[^\\n]+default\\(10\\)`).test(files.env)) throw new Error(`${name} must retain the owner-authorized default of ten`);
+  }
   assertIncludes(files.auth, "LOGIN_LOCK_MS = 15 * 60 * 1000");
   assertIncludes(files.auth, "recordFailedLogin(user)");
   assertIncludes(files.auth, "Too many login attempts. Try again later.");
+});
+
+check("secure recovery releases only verified account and source before password mutation", () => {
+  const reset = files.auth.slice(files.auth.indexOf('"/reset-password"'));
+  const rejected = reset.indexOf("Invalid or expired reset token");
+  const release = reset.indexOf("await clearRecoveredLoginProtection(req, user)");
+  const mutation = reset.indexOf("user.passwordHash = await bcrypt.hash");
+  if (rejected < 0 || release < rejected || mutation < release) throw new Error("Verify reset ownership before releasing protection and mutating the password");
+  assertIncludes(files.loginProtection, "loginAccountLimiter.resetKey(digest(identity))");
+  assertIncludes(files.loginProtection, "store.clear(sourceKey(req))");
+  assertIncludes(files.auth, "/reset-password?token=${encodeURIComponent(token)}");
 });
 
 check("successful login and password reset clear failed login state", () => {
