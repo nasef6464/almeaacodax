@@ -3,11 +3,14 @@ import {
   Send, Users, Calendar, MessageSquare, X, CheckCircle2,
   ChevronDown, ChevronUp, Lock, Unlock, AlertCircle, Loader2, User,
 } from "lucide-react";
+import { toLocalDateTimeInput, fromLocalDateTimeInput } from '../../utils/quizAvailability';
 
 export interface AssignConfig {
   targetGroupIds: string[];
   targetUserIds: string[];
   dueDate?: string;
+  opensAt?: string | null;
+  closesAt?: string | null;
   message?: string;
   maxAttempts?: number;
   accessType: "free" | "restricted";
@@ -40,7 +43,8 @@ export const QuizAssignWidget: React.FC<QuizAssignWidgetProps> = ({
 }) => {
   const [targetGroupIds, setTargetGroupIds] = useState<string[]>(existingConfig?.targetGroupIds ?? []);
   const [targetUserIds, setTargetUserIds] = useState<string[]>(existingConfig?.targetUserIds ?? []);
-  const [dueDate, setDueDate] = useState(existingConfig?.dueDate ?? "");
+  const [opensAt, setOpensAt] = useState(toLocalDateTimeInput(existingConfig?.opensAt));
+  const [dueDate, setDueDate] = useState(toLocalDateTimeInput(existingConfig?.closesAt || existingConfig?.dueDate));
   const [message, setMessage] = useState(existingConfig?.message ?? "");
   const [maxAttempts, setMaxAttempts] = useState(existingConfig?.maxAttempts ?? 1);
   const [accessType, setAccessType] = useState<"free" | "restricted">(existingConfig?.accessType ?? "restricted");
@@ -80,7 +84,8 @@ export const QuizAssignWidget: React.FC<QuizAssignWidgetProps> = ({
     setError("");
     setLoading(true);
     try {
-      await onAssign({ targetGroupIds, targetUserIds, dueDate: dueDate || undefined, message: message || undefined, maxAttempts, accessType });
+      if (opensAt && dueDate && new Date(opensAt) >= new Date(dueDate)) throw new Error('وقت الانتهاء يجب أن يكون بعد البداية');
+      await onAssign({ targetGroupIds, targetUserIds, opensAt: fromLocalDateTimeInput(opensAt), closesAt: fromLocalDateTimeInput(dueDate), dueDate: dueDate ? fromLocalDateTimeInput(dueDate)! : '', message: message || undefined, maxAttempts, accessType });
       setDone(true);
     } catch (err) {
       setError(err instanceof Error ? err.message : "تعذر التوجيه، حاول مجدداً");
@@ -185,13 +190,17 @@ export const QuizAssignWidget: React.FC<QuizAssignWidgetProps> = ({
         <p className="text-[10px] text-gray-400 text-left">{message.length}/200</p>
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
+      <p className="text-xs text-gray-500">مواعيد البداية والنهاية حسب توقيت جهازك. تركهما فارغين يزيل التقييد الزمني.</p>
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <div className="space-y-1.5">
+          <label className="text-xs font-black text-gray-700">بداية الإتاحة (اختياري)</label>
+          <input aria-label="بداية الإتاحة" type="datetime-local" value={opensAt} onChange={e => setOpensAt(e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm" />
+        </div>
         <div className="space-y-1.5">
           <label className="text-xs font-black text-gray-700 flex items-center gap-1.5">
-            <Calendar size={13} className="text-indigo-500"/> تاريخ الانتهاء
+            <Calendar size={13} className="text-indigo-500"/> نهاية الإتاحة (اختياري)
           </label>
-          <input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)}
-            min={new Date().toISOString().split("T")[0]}
+          <input aria-label="نهاية الإتاحة" type="datetime-local" value={dueDate} onChange={(e) => setDueDate(e.target.value)}
             className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-indigo-400 bg-white"/>
         </div>
         <div className="space-y-1.5">

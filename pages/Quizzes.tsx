@@ -1,6 +1,7 @@
 import { SchoolTestsPanel } from '../components/SchoolTestsPanel';
 export { SchoolTestsPanel } from '../components/SchoolTestsPanel';
 import { StudentListPager } from '../components/StudentListPager';
+import { getQuizAvailability } from '../utils/quizAvailability';
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   ArrowRight,
@@ -166,15 +167,8 @@ const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
       if (quiz.approvalStatus && quiz.approvalStatus !== 'approved' && !canSeeHiddenPaths) return false;
       if (!canSeeHiddenPaths && quiz.pathId && !visiblePathIds.has(quiz.pathId)) return false;
 
-      if (quiz.dueDate) {
-        try {
-          const rawDate = typeof quiz.dueDate === 'string' ? quiz.dueDate.trim().replace(/\//g, '-') : quiz.dueDate;
-          const deadline = new Date(typeof rawDate === 'string' && !rawDate.includes('T') ? `${rawDate}T23:59:59` : rawDate);
-          if (!Number.isNaN(deadline.getTime()) && Date.now() > deadline.getTime()) return false;
-        } catch {
-          // Keep accessible if date parsing fails
-        }
-      }
+      const isDirected = quiz.mode === 'central' || !!quiz.targetUserIds?.length || !!quiz.targetGroupIds?.length || quiz.viewerAudienceVerified;
+      if (!isDirected && !canSeeHiddenPaths && getQuizAvailability(quiz) !== 'available') return false;
 
       const targetUserIds = quiz.targetUserIds || [];
       const targetGroupIds = quiz.targetGroupIds || [];

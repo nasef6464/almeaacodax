@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { quizWindowFields } from "../application/quizAvailability.js";
 
 export const quizSchema = z.object({
   id: z.string().optional(),
@@ -60,6 +61,7 @@ export const quizSchema = z.object({
   targetGroupIds: z.array(z.string()).default([]),
   targetUserIds: z.array(z.string()).default([]),
   dueDate: z.string().nullable().optional(),
+  ...quizWindowFields,
   supervisorMessage: z.string().nullable().optional(),
   isPublished: z.boolean().default(false),
   showOnPlatform: z.boolean().default(true),

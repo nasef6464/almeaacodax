@@ -140,6 +140,8 @@ export const createQuizzesApi = (request: ApiRequest) => ({
     request<unknown>(withQuery("/quizzes/results/scoped", { limit: 100, noTotal: true, ...pagination })),
 
   getLatestQuizResult: () => request<unknown>("/quizzes/results/latest"),
+  grantQuizRetakes: (quizId: string, payload: { studentIds: string[]; opensAt: string; closesAt: string }) =>
+    request<{ grantedStudentIds: string[] }>(`/quizzes/${encodeURIComponent(quizId)}/retakes`, { method: "POST", body: payload }),
 
   getMasteryGoals: (scope: { userId?: string; pathId?: string; subjectId?: string; status?: string } = {}) =>
     request<{ goals: Array<{

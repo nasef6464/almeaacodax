@@ -4,6 +4,8 @@ import { ArrowRight, CheckCircle, Clock, ListChecks, Target } from 'lucide-react
 import type { Quiz, QuizResult } from '../types';
 import { buildQuizRouteWithContext } from '../utils/quizLinks';
 import { StudentListPager } from './StudentListPager';
+import { getQuizAvailability } from '../utils/quizAvailability';
+import { useQuizWindowClock } from '../hooks/useQuizWindowClock';
 
 export const SchoolTestsPanel: React.FC<{
   quizzes: Quiz[];
@@ -11,17 +13,26 @@ export const SchoolTestsPanel: React.FC<{
   getPathName: (pathId?: string) => string;
   formatQuizDate: (date?: string | number) => string;
 }> = ({ quizzes, examResults, getPathName, formatQuizDate }) => {
-  const [status, setStatus] = useState<'pending' | 'completed'>('pending');
+  const [status, setStatus] = useState<'pending' | 'upcoming' | 'closed' | 'completed'>('pending');
   const [query, setQuery] = useState('');
   const [limit, setLimit] = useState(4);
   useEffect(() => setLimit(4), [status, query]);
   const safeQuizzes = quizzes || [];
   const safeResults = examResults || [];
-  const completedCount = safeQuizzes.filter((quiz) => safeResults.some((result) => result?.quizId === (quiz?.id || (quiz as any)?._id))).length;
-  const pendingCount = safeQuizzes.length - completedCount;
+  const now = useQuizWindowClock(safeQuizzes);
+  const isCompleted = (quiz: Quiz) => {
+    const attempts = safeResults.filter(result => result?.quizId === (quiz.id || (quiz as any)._id)).length;
+    const hasRetake = quiz.viewerRetakeGranted && getQuizAvailability(quiz, now) !== 'closed' && attempts < (quiz.settings?.maxAttempts ?? 1);
+    return attempts > 0 && !hasRetake;
+  };
+  const completedCount = safeQuizzes.filter(isCompleted).length;
+  const getStatus = (quiz: Quiz) => isCompleted(quiz) ? 'completed' : getQuizAvailability(quiz, now) === 'available' ? 'pending' : getQuizAvailability(quiz, now);
+  const pendingCount = safeQuizzes.filter(q => getStatus(q) === 'pending').length;
+  const upcomingCount = safeQuizzes.filter(q => getStatus(q) === 'upcoming').length;
+  const closedCount = safeQuizzes.filter(q => getStatus(q) === 'closed').length;
+  useEffect(() => { if (status === 'upcoming' && upcomingCount === 0) setStatus('pending'); }, [status, upcomingCount]);
   const filteredQuizzes = safeQuizzes.filter(quiz => {
-    const completed = safeResults.some(result => result?.quizId === (quiz?.id || (quiz as any)?._id));
-    return completed === (status === 'completed') && (quiz.title || '').includes(query.trim());
+    return getStatus(quiz) === status && (quiz.title || '').includes(query.trim());
   });
 
   return (
@@ -63,13 +74,15 @@ export const SchoolTestsPanel: React.FC<{
       <div className="flex flex-wrap gap-2" aria-label="حالة اختبارات المدرسة">
         <button type="button" aria-pressed={status === 'pending'} onClick={() => setStatus('pending')} className={'rounded-xl px-4 py-2 text-sm font-bold ' + (status === 'pending' ? 'bg-indigo-600 text-white' : 'bg-white text-slate-700 border')}>المطلوب مني ({pendingCount})</button>
         <button type="button" aria-pressed={status === 'completed'} onClick={() => setStatus('completed')} className={'rounded-xl px-4 py-2 text-sm font-bold ' + (status === 'completed' ? 'bg-indigo-600 text-white' : 'bg-white text-slate-700 border')}>تم حلها ({completedCount})</button>
+        {upcomingCount > 0 && <button type="button" aria-pressed={status === 'upcoming'} onClick={() => setStatus('upcoming')} className={'rounded-xl px-4 py-2 text-sm font-bold ' + (status === 'upcoming' ? 'bg-indigo-600 text-white' : 'bg-white text-slate-700 border')}>قادمة ({upcomingCount})</button>}
+        {closedCount > 0 && <button type="button" aria-pressed={status === 'closed'} onClick={() => setStatus('closed')} className={'rounded-xl px-4 py-2 text-sm font-bold ' + (status === 'closed' ? 'bg-indigo-600 text-white' : 'bg-white text-slate-700 border')}>انتهت إتاحتها ({closedCount})</button>}
       </div>
       {status === 'completed' ? <Link to="/my-quizzes?context=school_assessment" className="inline-block text-sm font-bold text-indigo-700 underline">كل نتائج المدرسة السابقة</Link> : null}
       {safeQuizzes.length > 4 ? <label className="block text-sm font-bold text-slate-600">ابحث عن اختبار<input value={query} onChange={e => setQuery(e.target.value)} className="mt-1 w-full rounded-xl border border-slate-200 bg-white p-3" /></label> : null}
       <section data-testid="student-directed-tests" className="rounded-3xl border border-indigo-200 bg-gradient-to-br from-indigo-50 via-white to-blue-50 p-6 shadow-sm">
         <div className="mb-5 flex items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <h2 className="text-base font-black text-gray-900">{status === 'pending' ? 'المطلوب منك الآن' : 'اختبارات حللتها'}</h2>
+            <h2 className="text-base font-black text-gray-900">{status === 'pending' ? 'المطلوب منك الآن' : status === 'completed' ? 'اختبارات حللتها' : status === 'upcoming' ? 'اختبارات قادمة' : 'اختبارات انتهت إتاحتها'}</h2>
             {status === 'pending' && pendingCount > 0 ? (
               <span className="rounded-full bg-rose-100 px-2.5 py-0.5 text-[11px] font-black text-rose-700 animate-pulse">
                 {pendingCount} في انتظار الحل
@@ -87,6 +100,9 @@ export const SchoolTestsPanel: React.FC<{
               if (!quiz) return null;
               const quizId = quiz.id || (quiz as any)._id || `school-quiz-${index}`;
               const completedResult = safeResults.find((result) => result?.quizId === quizId);
+              const availability = getQuizAvailability(quiz, now);
+              const attemptsUsed = safeResults.filter(result => result?.quizId === quizId).length;
+              const canStart = availability === 'available' && attemptsUsed < (quiz.settings?.maxAttempts ?? 1);
               const route = buildQuizRouteWithContext(quizId, { returnTo: '/dashboard?tab=school-tests', source: 'tests' });
               const questionCount = quiz.quizKind === 'mock'
                 ? (quiz.mockExam?.sections?.reduce((sum, section) => sum + (section.questionIds?.length || 0), 0) || (quiz.questionIds || []).length)
@@ -115,7 +131,7 @@ export const SchoolTestsPanel: React.FC<{
                           : 'bg-indigo-100 text-indigo-700 border border-indigo-200'
                       }`}
                     >
-                      {completedResult ? (completedResult.score != null ? `تم الحل (${completedResult.score}%)` : 'تم الحل') : 'مدرسي'}
+                      {quiz.viewerRetakeGranted && attemptsUsed < (quiz.settings?.maxAttempts ?? 1) ? (availability === 'upcoming' ? 'إعادة قادمة' : availability === 'closed' ? 'انتهت إتاحة الإعادة' : 'إعادة متاحة') : completedResult ? (completedResult.score != null ? `تم الحل (${completedResult.score}%)` : 'تم الحل') : availability === 'upcoming' ? 'قادم' : availability === 'closed' ? 'انتهت الإتاحة' : 'متاح الآن'}
                     </span>
                   </div>
 
@@ -132,9 +148,10 @@ export const SchoolTestsPanel: React.FC<{
                     <span className="flex items-center gap-1 rounded-lg bg-gray-100 px-2.5 py-1">
                       <ListChecks size={13} /> {questionCount} سؤال
                     </span>
-                    {quiz.dueDate ? (
+                    {quiz.opensAt ? <span className="rounded-lg bg-indigo-50 px-2.5 py-1">يبدأ {new Date(quiz.opensAt).toLocaleString('ar-SA')}</span> : null}
+                    {quiz.closesAt || quiz.dueDate ? (
                       <span className="flex items-center gap-1 rounded-lg bg-amber-50 px-2.5 py-1 text-amber-700 border border-amber-100">
-                        <Clock size={13} /> حتى {formatQuizDate(quiz.dueDate)}
+                        <Clock size={13} /> حتى {quiz.closesAt ? new Date(quiz.closesAt).toLocaleString('ar-SA') : formatQuizDate(quiz.dueDate)}
                       </span>
                     ) : null}
                   </div>
@@ -151,14 +168,14 @@ export const SchoolTestsPanel: React.FC<{
                       <span className="text-xs font-bold text-gray-400">لم يؤدَ بعد</span>
                     )}
 
-                    <Link
+                    {canStart ? <Link
                       to={route}
                       className={`inline-flex items-center gap-1.5 rounded-xl px-4 py-2 text-xs font-black text-white transition-colors ${
                         completedResult ? 'bg-indigo-600 hover:bg-indigo-700' : 'bg-emerald-600 hover:bg-emerald-700 shadow-sm'
                       }`}
                     >
-                      {completedResult ? 'مراجعة الاختبار' : 'دخول الاختبار الآن'} <ArrowRight size={14} />
-                    </Link>
+                      {completedResult ? 'محاولة أخرى' : 'دخول الاختبار الآن'} <ArrowRight size={14} />
+                    </Link> : <span className="text-xs font-bold text-gray-500">{availability === 'upcoming' ? 'يفتح في موعده' : availability === 'closed' ? 'انتهت الإتاحة' : 'تم التسليم'}</span>}
                   </div>
                 </article>
               );

@@ -4,6 +4,8 @@ import { useStore } from '../store/useStore';
 import { Course, PackageContentType, Question, Quiz, QuizResult } from '../types';
 import { Clock, AlertCircle, CheckCircle2, XCircle, ArrowRight, ArrowLeft, FileQuestion, Target, Star, Moon, Sun, PauseCircle, Save, Bookmark, Video, BookOpen, LayoutGrid, ZoomIn } from 'lucide-react';
 import { api } from '../services/api';
+import { getQuizAvailability } from '../utils/quizAvailability';
+import { useQuizWindowClock } from '../hooks/useQuizWindowClock';
 import { adapter } from '../services/adapter';
 import { flattenMockExamQuestionIds, getMockExamSections, getMockExamTimeLimit, orderMockExamQuestions } from '../utils/mockExam';
 import { formatQuestionHtmlForDisplay, normalizeQuestionHtml } from '../utils/questionHtml';
@@ -190,6 +192,7 @@ export const QuizPage: React.FC = () => {
   } = useStore();
 
   const [quiz, setQuiz] = useState<Quiz | null>(null);
+  const availabilityNow = useQuizWindowClock(quiz ? [quiz] : quizzes);
   const [quizQuestions, setQuizQuestions] = useState<Question[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedOptions, setSelectedOptions] = useState<Record<string, number>>({});
@@ -466,10 +469,10 @@ export const QuizPage: React.FC = () => {
       return;
     }
 
-    const isExpired = !!foundQuiz.dueDate && Date.now() > new Date(`${foundQuiz.dueDate}T23:59:59`).getTime();
-    if (isExpired) {
+    const availability = getQuizAvailability(foundQuiz, availabilityNow);
+    if (!isStaffViewer && availability !== 'available') {
       setHasAccess(false);
-      setAccessMessage('انتهت صلاحية هذا الاختبار.');
+      setAccessMessage(availability === 'upcoming' ? 'هذا الاختبار قادم. يمكنك الدخول عند بداية الإتاحة.' : 'انتهت إتاحة هذا الاختبار. نتائجك السابقة محفوظة.');
       return;
     }
 
@@ -631,7 +634,7 @@ export const QuizPage: React.FC = () => {
       setTimeLeft(defaultTimeLeft);
       setFlaggedQuestionIds([]);
     }
-  }, [quizId, quizzes, questions, quizScopedQuestions, user, checkAccess, hasScopedPackageAccess, isResolvingScopedQuestions, isFetchingQuiz, sourceParam, sourceCourse, courseHasAccess, quiz?.id]);
+  }, [quizId, quizzes, questions, quizScopedQuestions, user, checkAccess, hasScopedPackageAccess, isResolvingScopedQuestions, isFetchingQuiz, sourceParam, sourceCourse, courseHasAccess, quiz?.id, availabilityNow]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;

@@ -1,5 +1,7 @@
 # ALMEAA — Data Access Map
 
+Assessment windows/retakes (2026-10-10, pending production): current viewer only, directed quiz only, one indexed `_id` batch grant lookup; no permission cache or per-student catalog loop. Retake HTTP authorization checks owned definition, existing supervisor/teaching scope and fresh recipient audience before a bounded100-recipient write. Attempt allowance uses grouped saved-result counts and absolute `$max`, leaving all existing result documents unchanged. Live start/resume/progress and final submit read the same viewer overlay.
+
 Classroom report recovery (2026-10-10): shared mounted-view `useClassroomTeacherReports` reads existing teacher-history view=summary (default50), excluding student arrays for radar/list. Student details remain selected-session aggregate?view=report; explicit detail retry adds no history read. No global cache, polling or server/RBAC/query changes. Old-school/unmounted replies ignored.
 
 Shared-network login (2026-10-10, owner authorized): `middleware/loginProtection.ts` owns login-only burst/account/completed-failure guards; `modules/auth/application/loginFailureBudget.ts` owns bounded memory and expiring atomic Redis source counters on the existing rate-limit connection. Hashed source/identity keys; no User schema/migration or result writes. Existing auth routes retain password locks, disabled-user, CSRF/cookie/token authority. Production verification pending; evidence `docs/audits/CLASSROOM_SHARED_NETWORK_LOGIN_2026-10-10.md`.

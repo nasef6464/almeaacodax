@@ -10,6 +10,7 @@ import { TestAnalyticsReport } from './TestAnalyticsReport';
 import { UnifiedQuizBuilder } from './UnifiedQuizBuilder';
 import { MockExamManager } from './MockExamManager';
 import { QuizAssignWidget } from './QuizAssignWidget';
+import { QuizRetakeDialog } from './QuizRetakeDialog';
 import { AssignedTestDetailPanel } from './AssignedTestDetailPanel';
 import { api } from '../../services/api';
 import { isTrueMockExam } from '../../utils/quizPlacement';
@@ -32,6 +33,7 @@ const DirectedAssessmentReport: React.FC<{quiz: any; studentIds: string[]; actor
 export const SupervisorTestsManager: React.FC<{ resultEvidence?: QuizResult[]; studentEvidence?: User[] }> = ({resultEvidence,studentEvidence}) => {
   const { updateQuiz } = useStore();
   const [viewMode, setViewMode] = useState<ViewMode>('list');
+  const [retakeQuizId, setRetakeQuizId] = useState<string | null>(null);
   const [selectedQuizId, setSelectedQuizId] = useState<string | null>(null);
   const [selectedQuizzes, setSelectedQuizzes] = useState<string[]>([]);
   const [tabFilter, setTabFilter] = useState<SupervisorTestTabFilter>('all');
@@ -149,6 +151,10 @@ export const SupervisorTestsManager: React.FC<{ resultEvidence?: QuizResult[]; s
       </div>
 
       <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+        {retakeQuizId && (() => {
+          const quiz = quizzesWithStats.find(q => q.id === retakeQuizId);
+          return quiz ? <QuizRetakeDialog quizId={quiz.id} title={quiz.title} students={scopedStudents.filter(s => quiz.stats.targetStudentIds.includes(s.id)).map(s => ({ id: s.id, name: s.name }))} onClose={() => setRetakeQuizId(null)} /> : null;
+        })()}
         {filteredQuizzes.map((quiz) => (
           <div key={quiz.id} className="flex flex-col rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
             <div className="flex items-start justify-between gap-3">
@@ -162,7 +168,8 @@ export const SupervisorTestsManager: React.FC<{ resultEvidence?: QuizResult[]; s
             </div>
             <div className="mt-5 grid grid-cols-2 gap-2">
               <button onClick={() => setDetailQuizId(quiz.id)} className="flex items-center justify-center gap-1.5 rounded-xl border border-violet-200 bg-violet-50 px-3 py-2 text-xs font-black text-violet-700"><BarChart size={14}/> متابعة الطلاب</button>
-              <button onClick={() => setAssignQuizId(quiz.id)} className="flex items-center justify-center gap-1.5 rounded-xl border border-indigo-200 bg-indigo-50 px-3 py-2 text-xs font-black text-indigo-700"><RefreshCw size={14}/> توجيه/إعادة توجيه</button>
+              <button onClick={() => setAssignQuizId(quiz.id)} className="flex items-center justify-center gap-1.5 rounded-xl border border-indigo-200 bg-indigo-50 px-3 py-2 text-xs font-black text-indigo-700"><RefreshCw size={14}/> الجمهور والمواعيد</button>
+              <button onClick={() => setRetakeQuizId(quiz.id)} className="col-span-2 rounded-xl border border-indigo-200 px-3 py-2 text-xs font-black text-indigo-700">إعادة إتاحة لطلاب محددين</button>
               {quiz.stats.participationRate < 100 && quiz.stats.totalTargetStudents > 0 && <button disabled={!!remindingQuizId} aria-busy={remindingQuizId === quiz.id} onClick={() => void remindAbsent(quiz)} className={`col-span-2 flex items-center justify-center gap-1.5 rounded-xl border px-3 py-2 text-xs font-black ${notifiedQuizId === quiz.id ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-amber-200 bg-amber-50 text-amber-700'}`}>{remindingQuizId === quiz.id ? 'جارٍ إرسال التذكير…' : notifiedQuizId === quiz.id ? <><CheckCircle size={14}/> تم التذكير</> : <><Bell size={14}/> تذكير من لم يؤدوا</>}</button>}
             </div>
             <button onClick={() => { setSelectedQuizId(quiz.id); setViewMode('analytics'); }} className="mt-3 flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-3 py-2.5 text-sm font-black text-white"><BarChart size={16}/> التحليل الكامل</button>
@@ -171,7 +178,7 @@ export const SupervisorTestsManager: React.FC<{ resultEvidence?: QuizResult[]; s
         {!filteredQuizzes.length && <div className="col-span-full rounded-2xl border border-dashed border-gray-300 bg-gray-50 py-14 text-center text-sm font-bold text-gray-500">لا توجد عناصر في هذا القسم.</div>}
       </div>
 
-      {assignQuiz && <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm"><div className="w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-2xl"><div className="flex items-center justify-between bg-indigo-600 px-5 py-4 text-white"><div><p className="text-xs opacity-75">توجيه تدخل</p><h3 className="font-black">{assignQuiz.title}</h3></div><button onClick={() => setAssignQuizId(null)}><X size={18}/></button></div><div className="max-h-[80vh] overflow-y-auto p-5"><QuizAssignWidget quizId={assignQuiz.id} quizTitle={assignQuiz.title} quizKind={assignQuiz.quizKind} scopedGroups={groups.filter((g) => scopedGroupIds.has(g.id)).map((g) => ({id:g.id,name:g.name,studentIds:g.studentIds}))} scopedStudents={scopedStudents.map((s) => ({id:s.id,name:s.name,groupId:s.groupId}))} existingConfig={{targetGroupIds:assignQuiz.targetGroupIds || [],targetUserIds:assignQuiz.targetUserIds || [],dueDate:assignQuiz.dueDate,maxAttempts:assignQuiz.settings?.maxAttempts}} hideAccessType confirmLabel="حفظ التوجيه" onCancel={() => setAssignQuizId(null)} onAssign={async (config) => { const selectedGroupIds = new Set(config.targetGroupIds); const ids = uniqueSupervisorStudentIds([...config.targetUserIds,...groups.filter((g) => selectedGroupIds.has(g.id)).flatMap((g) => g.studentIds || []),...scopedStudents.filter((s) => s.groupId && selectedGroupIds.has(s.groupId)).map((s) => s.id)]).filter((id) => scopedStudentIds.includes(id)); await updateQuiz(assignQuiz.id,{targetGroupIds:config.targetGroupIds,targetUserIds:config.targetUserIds,dueDate:config.dueDate,supervisorMessage:config.message || null,settings:{...assignQuiz.settings,maxAttempts:config.maxAttempts ?? assignQuiz.settings?.maxAttempts ?? 1}}); await sendScopedAlert(ids,'اختبار موجّه من المشرف',config.message || `تم توجيه اختبار لك: ${assignQuiz.title}`); }}/></div></div></div>}
+      {assignQuiz && <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm"><div className="w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-2xl"><div className="flex items-center justify-between bg-indigo-600 px-5 py-4 text-white"><div><p className="text-xs opacity-75">توجيه تدخل</p><h3 className="font-black">{assignQuiz.title}</h3></div><button onClick={() => setAssignQuizId(null)}><X size={18}/></button></div><div className="max-h-[80vh] overflow-y-auto p-5"><QuizAssignWidget quizId={assignQuiz.id} quizTitle={assignQuiz.title} quizKind={assignQuiz.quizKind} scopedGroups={groups.filter((g) => scopedGroupIds.has(g.id)).map((g) => ({id:g.id,name:g.name,studentIds:g.studentIds}))} scopedStudents={scopedStudents.map((s) => ({id:s.id,name:s.name,groupId:s.groupId}))} existingConfig={{targetGroupIds:assignQuiz.targetGroupIds || [],targetUserIds:assignQuiz.targetUserIds || [],dueDate:assignQuiz.dueDate,opensAt:assignQuiz.opensAt,closesAt:assignQuiz.closesAt,maxAttempts:assignQuiz.settings?.maxAttempts}} hideAccessType confirmLabel="حفظ التوجيه" onCancel={() => setAssignQuizId(null)} onAssign={async (config) => { const selectedGroupIds = new Set(config.targetGroupIds); const ids = uniqueSupervisorStudentIds([...config.targetUserIds,...groups.filter((g) => selectedGroupIds.has(g.id)).flatMap((g) => g.studentIds || []),...scopedStudents.filter((s) => s.groupId && selectedGroupIds.has(s.groupId)).map((s) => s.id)]).filter((id) => scopedStudentIds.includes(id)); await updateQuiz(assignQuiz.id,{targetGroupIds:config.targetGroupIds,targetUserIds:config.targetUserIds,dueDate:config.dueDate,opensAt:config.opensAt,closesAt:config.closesAt,supervisorMessage:config.message || null,settings:{...assignQuiz.settings,maxAttempts:config.maxAttempts ?? assignQuiz.settings?.maxAttempts ?? 1}}); await sendScopedAlert(ids,'اختبار موجّه من المشرف',config.message || `تم توجيه اختبار لك: ${assignQuiz.title}`); }}/></div></div></div>}
 
       {detailQuiz && <AssignedTestDetailPanel quizId={detailQuiz.id} quizTitle={detailQuiz.title} quizKind={detailQuiz.quizKind} totalQuestions={detailQuiz.questionIds?.length ?? 0} passingScore={detailQuiz.settings?.passingScore ?? 60} dueDate={detailQuiz.dueDate} targetStudents={detailQuiz.stats.targetStudentIds.map((id) => { const s = scopedStudents.find((student) => student.id === id); return {id,name:s?.name || id,groupName:s?.groupName}; })} results={detailQuiz.stats.results} onClose={() => setDetailQuizId(null)} onRemindAbsent={(ids) => sendScopedAlert(ids,'تذكير بأداء الاختبار',`نذكرك بضرورة أداء الاختبار: ${detailQuiz.title}`)} onAssignToStudent={async (studentId) => { await updateQuiz(detailQuiz.id,{targetUserIds:uniqueSupervisorStudentIds([...(detailQuiz.targetUserIds || []),studentId])}); await sendScopedAlert([studentId],'إعادة توجيه اختبار',`تم إعادة توجيه الاختبار لك للمتابعة: ${detailQuiz.title}`); }}/>} 
     </div>
