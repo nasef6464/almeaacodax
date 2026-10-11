@@ -28,15 +28,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T021_Q01",
       "status": "MASTERED",
       "questionText": "مثلث قائم قاعدته4 والجزء السفلي من ارتفاعه3، والجزء العلوي يساوي الوتر الداخلي؛ أوجد مساحة س",
-      "canonicalMainSkill": "main_quant_20",
-      "canonicalSubskill": "sub_quant_20_4",
+      "canonicalMainSkill": "skill_quant_22",
+      "canonicalSubskill": "sub_quant_22_1",
       "correctAnswer": "10 (ب)",
       "stepByStepSolution": "الوتر الداخلي√(3²+4²)=5، ومساحة المثلث العلوي=4×5/2=10.",
       "educationalExplanation": "الوتر الداخلي√(3²+4²)=5، ومساحة المثلث العلوي=4×5/2=10.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "63adf2960f71428ba65f7ef0c8b7c52166ff18e428a780684d15ae7028f1ef66",
-      "ideaFingerprint": "7ff112c82383b36d94679c68a3d20db313bb81192bfef3084e337b150ac6f362"
+      "ideaFingerprint": "7ff112c82383b36d94679c68a3d20db313bb81192bfef3084e337b150ac6f362",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T021-Q02",
@@ -58,15 +60,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T021_Q02",
       "status": "MASTERED",
       "questionText": "مثلث قائم محيطه24؛ قارن الوتر ب8",
-      "canonicalMainSkill": "main_quant_20",
-      "canonicalSubskill": "sub_quant_20_3",
+      "canonicalMainSkill": "skill_quant_22",
+      "canonicalSubskill": "sub_quant_22_1",
       "correctAnswer": "القيمة الأولى أكبر (أ)",
       "stepByStepSolution": "مجموع الساقين≤√2×الوتر، لذا24≤(1+√2)×الوتر، فيكون الوتر≥9.94>8.",
       "educationalExplanation": "مجموع الساقين≤√2×الوتر، لذا24≤(1+√2)×الوتر، فيكون الوتر≥9.94>8.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "0b5f3a10cede2c14709366e9a2d67b305cb212dea9d3be287d8a7cf48f91ab48",
-      "ideaFingerprint": "9c5bb9da95ecc41c8222806eda5b21dded11ed37ee78d7f0265af36c6a46ec42"
+      "ideaFingerprint": "9c5bb9da95ecc41c8222806eda5b21dded11ed37ee78d7f0265af36c6a46ec42",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T021-Q03",
@@ -88,15 +92,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T021_Q03",
       "status": "MASTERED",
       "questionText": "مثلث أضلاعه9 و12 و15، قارن مساحته ب0.9×60",
-      "canonicalMainSkill": "main_quant_20",
-      "canonicalSubskill": "sub_quant_20_4",
+      "canonicalMainSkill": "skill_quant_22",
+      "canonicalSubskill": "sub_quant_22_1",
       "correctAnswer": "القيمتان متساويتان (ج)",
       "stepByStepSolution": "مثلث قائم9-12-15 مساحته54، والقيمة الثانية54؛ القيمتان متساويتان (ج).",
       "educationalExplanation": "مثلث قائم9-12-15 مساحته54، والقيمة الثانية54؛ القيمتان متساويتان (ج).",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "d8491b63da097c51c4d31d444593ce2ff458ead55229366735a346f3388531f3",
-      "ideaFingerprint": "2e666eb95620d98ecad572f8483600e2c5943ca62c60a54dc63870b98670c554"
+      "ideaFingerprint": "2e666eb95620d98ecad572f8483600e2c5943ca62c60a54dc63870b98670c554",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T021-Q04",
@@ -118,15 +124,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T021_Q04",
       "status": "MASTERED",
       "questionText": "مثلثات متطابقة رُتبت في شكلين مختلفين؛ قارن مساحة الشكلين",
-      "canonicalMainSkill": "main_quant_20",
-      "canonicalSubskill": "sub_quant_20_4",
+      "canonicalMainSkill": "skill_quant_22",
+      "canonicalSubskill": "sub_quant_22_1",
       "correctAnswer": "القيمتان متساويتان (ج)",
       "stepByStepSolution": "إعادة ترتيب القطع المتطابقة دون تداخل أو فقد تحفظ المساحة.",
       "educationalExplanation": "إعادة ترتيب القطع المتطابقة دون تداخل أو فقد تحفظ المساحة.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "d50755e33e044ae7781e4c6d3e4538b3a1ba469df5fe026d852c800f4a62638d",
-      "ideaFingerprint": "fd4ae299503034b2b3baeb2c3b81f7179a5cc9a6cc6dbf74db59845ba869e18f"
+      "ideaFingerprint": "fd4ae299503034b2b3baeb2c3b81f7179a5cc9a6cc6dbf74db59845ba869e18f",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T021-Q05",
@@ -146,18 +154,20 @@
       },
       "imageHash": "779e2a47bc53562489831d028009fd625d1a3741731afdaa801375cb9710271b",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T021_Q05",
-      "status": "HOLD",
+      "status": "REVIEW",
       "questionText": "عد المثلثات في شبكة مربعة كثيرة الأقطار والخطوط المتقاطعة",
-      "canonicalMainSkill": null,
-      "canonicalSubskill": null,
+      "canonicalMainSkill": "skill_quant_22",
+      "canonicalSubskill": "sub_quant_22_1",
       "correctAnswer": null,
-      "stepByStepSolution": null,
+      "stepByStepSolution": "حل السؤال الرياضي بالتطبيق المباشر لقوانين الهندسة.",
       "educationalExplanation": "غير معتمد للنشر؛ سبب الحجز: عدد المثلثات المركبة كبير ويستلزم تعدادًا آليًا/هندسيًا دقيقًا قبل اعتماد أحد الخيارات36 أو48 أو52 أو56.",
       "difficulty": null,
       "difficultyReason": "عدد المثلثات المركبة كبير ويستلزم تعدادًا آليًا/هندسيًا دقيقًا قبل اعتماد أحد الخيارات36 أو48 أو52 أو56.",
       "contentFingerprint": "8fd581511cc5f5540e7671a29247543285609ff9123f71d2e5a81b65162f7a79",
       "ideaFingerprint": "26071b7d0d1b3e71ddc3cc00200b7e08f3aa8140b80145a41e603539e0b94501",
-      "holdReason": "عدد المثلثات المركبة كبير ويستلزم تعدادًا آليًا/هندسيًا دقيقًا قبل اعتماد أحد الخيارات36 أو48 أو52 أو56."
+      "holdReason": "عدد المثلثات المركبة كبير ويستلزم تعدادًا آليًا/هندسيًا دقيقًا قبل اعتماد أحد الخيارات36 أو48 أو52 أو56.",
+      "importEligible": false,
+      "reviewReason": "INCOMPLETE_MASTER_DATA_REQUIRES_IMAGE_CONFIRMATION"
     },
     {
       "sourceKey": "MNSF26-GEO-T021-Q06",
@@ -179,15 +189,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T021_Q06",
       "status": "MASTERED",
       "questionText": "مثلث متطابق الضلعين، ضلعاه5س و10 وقاعدته8؛ أوجد المحيط",
-      "canonicalMainSkill": "main_quant_20",
-      "canonicalSubskill": "sub_quant_20_5",
+      "canonicalMainSkill": "skill_quant_22",
+      "canonicalSubskill": "sub_quant_22_1",
       "correctAnswer": "28 (ج)",
       "stepByStepSolution": "5س=10 فيكون كل ساق10، والمحيط10+10+8=28.",
       "educationalExplanation": "5س=10 فيكون كل ساق10، والمحيط10+10+8=28.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "d4cffcc0ac3e7008a8ce656608e6c76bb94c750c4e5b278f3b58e2698b18bd2d",
-      "ideaFingerprint": "b215220170518ead1380010951a28515432ca86fb32117420ea96b1dd149b496"
+      "ideaFingerprint": "b215220170518ead1380010951a28515432ca86fb32117420ea96b1dd149b496",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T021-Q07",
@@ -209,15 +221,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T021_Q07",
       "status": "MASTERED",
       "questionText": "مثلث ضلعاه5 و7 ومنصف زاوية الرأس يقسم القاعدة إلى3 وص؛ أوجد ص",
-      "canonicalMainSkill": "main_quant_20",
-      "canonicalSubskill": "sub_quant_20_5",
+      "canonicalMainSkill": "skill_quant_22",
+      "canonicalSubskill": "sub_quant_22_1",
       "correctAnswer": "4.2 (أ)",
       "stepByStepSolution": "بنظرية منصف الزاوية3/ص=5/7، ومنه ص=21/5=4.2.",
       "educationalExplanation": "بنظرية منصف الزاوية3/ص=5/7، ومنه ص=21/5=4.2.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "37d1b4b5d89a6bab937e50089bb7642451c7b87aaa508c9c3bb84b562ca9da6e",
-      "ideaFingerprint": "96bdc5b7b006d0ff2fa1ec0772d657b9eb36f39b080104ff009b74b792db6f72"
+      "ideaFingerprint": "96bdc5b7b006d0ff2fa1ec0772d657b9eb36f39b080104ff009b74b792db6f72",
+      "importEligible": true,
+      "reviewReason": null
     }
   ]
 }

@@ -25,15 +25,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
       "status": "MASTERED",
       "questionText": "عمر الأب يساوي ثلاثة أضعاف عمر أحمد ويزيد ثلاث سنوات، وأحمد عمره 15 سنة؛ أوجد عمر الأب.",
-      "canonicalMainSkill": "main_quant_16",
-      "canonicalSubskill": "sub_quant_16_2",
+      "canonicalMainSkill": "skill_quant_16",
+      "canonicalSubskill": "sub_quant_16_1",
       "correctAnswer": "48 سنة",
       "stepByStepSolution": "3×15=45 ثم نضيف 3 فنحصل على 48.",
       "educationalExplanation": "المهارة: علاقة العمر بثلاثة أمثال وزيادة ثابتة؛ نقرأ معطيات السؤال من الصورة ونطبّق العلاقة الحسابية ثم نراجع الناتج مع المطلوب.",
       "difficulty": "Easy",
       "difficultyReason": "خطوات مباشرة في علاقة العمر بثلاثة أمثال وزيادة ثابتة.",
       "contentFingerprint": "bf90255aaa4cd022a46beccaa04abc47513530e34e6d4dfec3b8eda3c53762bc",
-      "ideaFingerprint": "f7ebe05bd2afc8b34bbc37f6f930daf23731a0804b6d5e043314a7e2c177abf4"
+      "ideaFingerprint": "f7ebe05bd2afc8b34bbc37f6f930daf23731a0804b6d5e043314a7e2c177abf4",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T049-Q02",
@@ -52,15 +54,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
       "status": "MASTERED",
       "questionText": "ولد نواف بعد مولد محمد بأربع سنوات وعمر نواف يساوي 7/8 عمر محمد؛ أوجد عمر نواف.",
-      "canonicalMainSkill": "main_quant_16",
-      "canonicalSubskill": "sub_quant_16_2",
+      "canonicalMainSkill": "skill_quant_16",
+      "canonicalSubskill": "sub_quant_16_1",
       "correctAnswer": "28 سنة",
       "stepByStepSolution": "إذا كان عمر محمد س فعمر نواف س−4؛ س−4=7س/8؛ س=32؛ نواف28.",
       "educationalExplanation": "المهارة: علاقة نسب عمرين مع فرق السنوات؛ نقرأ معطيات السؤال من الصورة ونطبّق العلاقة الحسابية ثم نراجع الناتج مع المطلوب.",
       "difficulty": "Medium",
       "difficultyReason": "تتطلب ربط أكثر من معطى أو تحويل وحدات في علاقة نسب عمرين مع فرق السنوات.",
       "contentFingerprint": "0737d8a4e16987f350b67a10760e80cb3df1fbc2bb5f2c903a7c5497b0fc9d27",
-      "ideaFingerprint": "f87df134fd3cd71f6f1599c5f0287f55b9a20ff346a57cd1db1edf20a63f2428"
+      "ideaFingerprint": "f87df134fd3cd71f6f1599c5f0287f55b9a20ff346a57cd1db1edf20a63f2428",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T049-Q03",
@@ -79,15 +83,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
       "status": "MASTERED",
       "questionText": "ثلاثة أمثال عمر محمد أقل من عمر والده بثلاث سنوات، ومحمد عمره 15؛ كم عمر الأب؟",
-      "canonicalMainSkill": "main_quant_16",
-      "canonicalSubskill": "sub_quant_16_2",
+      "canonicalMainSkill": "skill_quant_16",
+      "canonicalSubskill": "sub_quant_16_1",
       "correctAnswer": "48 سنة",
       "stepByStepSolution": "ثلاثة أمثال عمر محمد=45؛ عمر الأب يزيد 3 فيساوي48.",
       "educationalExplanation": "المهارة: فرق العمر وثلاثة أمثال؛ نقرأ معطيات السؤال من الصورة ونطبّق العلاقة الحسابية ثم نراجع الناتج مع المطلوب.",
       "difficulty": "Easy",
       "difficultyReason": "خطوات مباشرة في فرق العمر وثلاثة أمثال.",
       "contentFingerprint": "d28c6af95f6693e6fe4062f3688eadf94174a2032b60ab53bc778e6b56b72393",
-      "ideaFingerprint": "5aefb2de3abff1ba25820bd721034cfa90fb5a40f7bff7a750c73c26ff0390cc"
+      "ideaFingerprint": "5aefb2de3abff1ba25820bd721034cfa90fb5a40f7bff7a750c73c26ff0390cc",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T049-Q04",
@@ -106,15 +112,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
       "status": "MASTERED",
       "questionText": "مجموع أعمار سعد وأولاده الثلاثة بعد سبع سنوات 92؛ ما مجموع أعمارهم بعد أربع سنوات؟",
-      "canonicalMainSkill": "main_quant_16",
-      "canonicalSubskill": "sub_quant_16_3",
+      "canonicalMainSkill": "skill_quant_16",
+      "canonicalSubskill": "sub_quant_16_1",
       "correctAnswer": "80 سنة",
       "stepByStepSolution": "عدد الأشخاص أربعة؛ الفارق بين التاريخين3 سنوات؛ ينقص المجموع 4×3=12؛ 92−12=80.",
       "educationalExplanation": "المهارة: تغير مجموع أعمار مجموعة ثابتة عبر الزمن؛ نقرأ معطيات السؤال من الصورة ونطبّق العلاقة الحسابية ثم نراجع الناتج مع المطلوب.",
       "difficulty": "Medium",
       "difficultyReason": "تتطلب ربط أكثر من معطى أو تحويل وحدات في تغير مجموع أعمار مجموعة ثابتة عبر الزمن.",
       "contentFingerprint": "9592f4a7973e16b1c8856db4bea746ffa6f04bd94c803b55330cbfadcdd05d2e",
-      "ideaFingerprint": "978c55a1e59f26cc042d08b3bbcee2d878986cccd7c126970bd357497c9b40d5"
+      "ideaFingerprint": "978c55a1e59f26cc042d08b3bbcee2d878986cccd7c126970bd357497c9b40d5",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T049-Q05",
@@ -133,15 +141,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
       "status": "MASTERED",
       "questionText": "محمد وأحمد وسعد فروق أعمارهم سنتان بالترتيب وعمر أحمد 10؛ أوجد مجموع أعمارهم.",
-      "canonicalMainSkill": "main_quant_16",
-      "canonicalSubskill": "sub_quant_16_3",
+      "canonicalMainSkill": "skill_quant_16",
+      "canonicalSubskill": "sub_quant_16_1",
       "correctAnswer": "30 سنة",
       "stepByStepSolution": "الأعمار8 و10 و12؛ مجموعها30.",
       "educationalExplanation": "المهارة: مجموع ثلاثة أعمار متتابعة بفارق ثابت؛ نقرأ معطيات السؤال من الصورة ونطبّق العلاقة الحسابية ثم نراجع الناتج مع المطلوب.",
       "difficulty": "Easy",
       "difficultyReason": "خطوات مباشرة في مجموع ثلاثة أعمار متتابعة بفارق ثابت.",
       "contentFingerprint": "78f7ca52035d5489751eaa48dee7151e0fbf6fd095199c8c4cafccacd780a20a",
-      "ideaFingerprint": "3958e0caf70ebf36f0e3ea46605e1bf39c373ba94b9c9b27f0c080d5527a9ca2"
+      "ideaFingerprint": "3958e0caf70ebf36f0e3ea46605e1bf39c373ba94b9c9b27f0c080d5527a9ca2",
+      "importEligible": true,
+      "reviewReason": null
     }
   ]
 }

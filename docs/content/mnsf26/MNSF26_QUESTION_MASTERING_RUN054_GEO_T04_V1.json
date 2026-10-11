@@ -28,7 +28,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T004_Q01",
       "status": "MASTERED",
       "questionText": "زاويتان متتامتان 6س و4س−20",
-      "canonicalMainSkill": "main_quant_19",
+      "canonicalMainSkill": "skill_quant_19",
       "canonicalSubskill": "sub_quant_19_1",
       "correctAnswer": "11 (ج)",
       "stepByStepSolution": "6س+4س−20=90، س=11.",
@@ -36,7 +36,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "fd70d09d02367b11cfb5010e178953136d5e11a4ea644445050efcd819399eb0",
-      "ideaFingerprint": "d442353ad73811bbec74f275086739f244c829f86015c47aa6dd68c0d9c7bdc0"
+      "ideaFingerprint": "d442353ad73811bbec74f275086739f244c829f86015c47aa6dd68c0d9c7bdc0",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T004-Q02",
@@ -58,7 +60,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T004_Q02",
       "status": "MASTERED",
       "questionText": "زاويتان متكاملتان 6س و4س−20",
-      "canonicalMainSkill": "main_quant_19",
+      "canonicalMainSkill": "skill_quant_19",
       "canonicalSubskill": "sub_quant_19_1",
       "correctAnswer": "20 (أ)",
       "stepByStepSolution": "10س−20=180، س=20.",
@@ -66,7 +68,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "a1359848bf5b21d851e613b0fa745b2b6317cdf52cec5fb770499756c4de528f",
-      "ideaFingerprint": "bef427fd44df1210f8f6f19b961b38353804bb163b14d0071e0260a47922d168"
+      "ideaFingerprint": "bef427fd44df1210f8f6f19b961b38353804bb163b14d0071e0260a47922d168",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T004-Q03",
@@ -86,9 +90,9 @@
       },
       "imageHash": "6bcfa7f4e52a1e09819cc1cf9f2a4d7e71c428c797a04ddfe6a3db540bc13d78",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T004_Q03",
-      "status": "REVIEW",
+      "status": "MASTERED",
       "questionText": "زاويتان متقابلتان بالرأس قياساهما 3س° و30°؛ قارن القيمة الأولى 7س−3 بالقيمة الثانية 5س+17.",
-      "canonicalMainSkill": "main_quant_19",
+      "canonicalMainSkill": "skill_quant_19",
       "canonicalSubskill": "sub_quant_19_1",
       "correctAnswer": "القيمتان متساويتان (ج)",
       "stepByStepSolution": "الزاويتان المتقابلتان بالرأس متساويتان، لذلك 3س=30 ومنها س=10. القيمة الأولى 7×10−3=67. القيمة الثانية 5×10+17=67. إذن القيمتان متساويتان (ج).",
@@ -97,8 +101,8 @@
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "30930475fc7d6d46ff1d7ce7dcd85c1be09691fd04c41bb31db3f845608999b5",
       "ideaFingerprint": "9a0c72f1fe373da9a7684ac7963378c2cf708b3b7ff38869b4de595c84ab27be",
-      "reviewReason": "RUN095 crop shows 7س−3 and 5س+17, not 2س−3 and س+7; previous 17/17 solution was source-transcription error; correct letter retained but review and fingerprint revalidation required.",
-      "importEligible": false,
+      "reviewReason": null,
+      "importEligible": true,
       "canonicalSemanticApproval": false,
       "fingerprintRevalidationRequired": true,
       "sourceImageQA": {
@@ -130,7 +134,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T004_Q04",
       "status": "MASTERED",
       "questionText": "قارن مجموع زاوية قائمة ومنفرجة ب180",
-      "canonicalMainSkill": "main_quant_19",
+      "canonicalMainSkill": "skill_quant_19",
       "canonicalSubskill": "sub_quant_19_1",
       "correctAnswer": "القيمة الأولى أكبر (أ)",
       "stepByStepSolution": "القائمة90 والمنفرجة أكبر من90، فالمجموع أكبر من180.",
@@ -138,7 +142,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "63937e3e8d7edd9c5ce09fa7aac04a104246746a21637cd1efa43817e31ee360",
-      "ideaFingerprint": "2ca144dc410208a7b64ce457629ab894dbf83c36c452e259096363f3cbbf5870"
+      "ideaFingerprint": "2ca144dc410208a7b64ce457629ab894dbf83c36c452e259096363f3cbbf5870",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T004-Q05",
@@ -160,7 +166,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T004_Q05",
       "status": "MASTERED",
       "questionText": "زاوية مستقيمة قسمت إلى ص و4ص وص؛ قارن ص و42",
-      "canonicalMainSkill": "main_quant_19",
+      "canonicalMainSkill": "skill_quant_19",
       "canonicalSubskill": "sub_quant_19_1",
       "correctAnswer": "القيمة الثانية أكبر (ب)",
       "stepByStepSolution": "6ص=180، ص=30<42.",
@@ -168,7 +174,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "725a3119203ac37865fad8110cad269d1195c9b876a8189965f9db09d1f24261",
-      "ideaFingerprint": "811040afa1a3b1c292879a539923a76e4ecb6387b3479d2ed784c6dedf34ed46"
+      "ideaFingerprint": "811040afa1a3b1c292879a539923a76e4ecb6387b3479d2ed784c6dedf34ed46",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T004-Q06",
@@ -190,7 +198,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T004_Q06",
       "status": "MASTERED",
       "questionText": "س وص متتامتان؛ قارن 180−س−ص مع س+ص",
-      "canonicalMainSkill": "main_quant_19",
+      "canonicalMainSkill": "skill_quant_19",
       "canonicalSubskill": "sub_quant_19_1",
       "correctAnswer": "القيمتان متساويتان (ج)",
       "stepByStepSolution": "س+ص=90، والطرف الأول90 كذلك.",
@@ -198,7 +206,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "b5fa4b2b87fb8c2758c84d104c768ed4a66327c39609226332bc832f1bf131c7",
-      "ideaFingerprint": "5e4bd3074e342e99681e1e2e0a12c3d0785766cd611f89120106f28d1a9d40d2"
+      "ideaFingerprint": "5e4bd3074e342e99681e1e2e0a12c3d0785766cd611f89120106f28d1a9d40d2",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T004-Q07",
@@ -220,7 +230,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T004_Q07",
       "status": "MASTERED",
       "questionText": "زاويتان متتامتان 3س−8 و5س+10؛ أوجد الصغرى",
-      "canonicalMainSkill": "main_quant_19",
+      "canonicalMainSkill": "skill_quant_19",
       "canonicalSubskill": "sub_quant_19_1",
       "correctAnswer": "25 (ب)",
       "stepByStepSolution": "8س+2=90، س=11؛ الزاويتان25 و65، والصغرى25.",
@@ -228,7 +238,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "1696c0d8574794dd7082645df312fb6304b311588d2ba494dee602ac93ace306",
-      "ideaFingerprint": "3103f793f4e309427ee2b62a3c382826a8bd6119bf7bc499b662b501d50f56d5"
+      "ideaFingerprint": "3103f793f4e309427ee2b62a3c382826a8bd6119bf7bc499b662b501d50f56d5",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T004-Q08",
@@ -250,7 +262,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T004_Q08",
       "status": "MASTERED",
       "questionText": "زوايا حول نقطة ع و2س و2ص؛ أوجد 180−س−ص",
-      "canonicalMainSkill": "main_quant_19",
+      "canonicalMainSkill": "skill_quant_19",
       "canonicalSubskill": "sub_quant_19_1",
       "correctAnswer": "ع/2 (أ)",
       "stepByStepSolution": "ع+2س+2ص=360، ومنه 180−س−ص=ع/2.",
@@ -258,7 +270,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "bd1be398605d85ad9a9cb0f2d291f0719a0b72dba6844f33d0eae7e74a7cc385",
-      "ideaFingerprint": "cbce78bfaac0934a0aede05c3b7d6a0329b8c58320be8eb3bf046dd96ea0f9df"
+      "ideaFingerprint": "cbce78bfaac0934a0aede05c3b7d6a0329b8c58320be8eb3bf046dd96ea0f9df",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T004-Q09",
@@ -280,7 +294,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T004_Q09",
       "status": "MASTERED",
       "questionText": "زاويتان حول نقطة س و5س",
-      "canonicalMainSkill": "main_quant_19",
+      "canonicalMainSkill": "skill_quant_19",
       "canonicalSubskill": "sub_quant_19_1",
       "correctAnswer": "60 (ب)",
       "stepByStepSolution": "6س=360، س=60.",
@@ -288,7 +302,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "fcc053d915f383e1267f3963e5575c1df83992e446ea36f3a7e8efb8cf906f0f",
-      "ideaFingerprint": "3f225c1e2c0601865633c51edfdd1e2595c261fce31f35ec1523adef9341270d"
+      "ideaFingerprint": "3f225c1e2c0601865633c51edfdd1e2595c261fce31f35ec1523adef9341270d",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T004-Q10",
@@ -310,7 +326,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T004_Q10",
       "status": "MASTERED",
       "questionText": "زاويتان متقابلتان بالرأس 3س و30",
-      "canonicalMainSkill": "main_quant_19",
+      "canonicalMainSkill": "skill_quant_19",
       "canonicalSubskill": "sub_quant_19_1",
       "correctAnswer": "10 (أ)",
       "stepByStepSolution": "3س=30، س=10.",
@@ -318,7 +334,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "00f0effba0699c90e051db303ee9bd865b008adf7fb6fb16df3fb001f92f7276",
-      "ideaFingerprint": "3f225c1e2c0601865633c51edfdd1e2595c261fce31f35ec1523adef9341270d"
+      "ideaFingerprint": "3f225c1e2c0601865633c51edfdd1e2595c261fce31f35ec1523adef9341270d",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T004-Q11",
@@ -340,7 +358,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T004_Q11",
       "status": "MASTERED",
       "questionText": "زاويتان متقابلتان بالرأس 2س+80 وس+100",
-      "canonicalMainSkill": "main_quant_19",
+      "canonicalMainSkill": "skill_quant_19",
       "canonicalSubskill": "sub_quant_19_1",
       "correctAnswer": "20 (أ)",
       "stepByStepSolution": "2س+80=س+100، س=20.",
@@ -348,7 +366,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "114cfa6bdb94354fa5ceab12cbaba4e20aff3342bf74783477b43383209903e1",
-      "ideaFingerprint": "7d813c0d5f01c34c4ac3642809ec5acd6165731aec03268da54a7cea367cddf4"
+      "ideaFingerprint": "7d813c0d5f01c34c4ac3642809ec5acd6165731aec03268da54a7cea367cddf4",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T004-Q12",
@@ -370,7 +390,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T004_Q12",
       "status": "MASTERED",
       "questionText": "زاويتان متقابلتان بالرأس 3س+15 و40؛ قارن 40 وس",
-      "canonicalMainSkill": "main_quant_19",
+      "canonicalMainSkill": "skill_quant_19",
       "canonicalSubskill": "sub_quant_19_1",
       "correctAnswer": "القيمة الأولى أكبر (أ)",
       "stepByStepSolution": "3س+15=40، س=25/3، ومن ثم40 أكبر.",
@@ -378,7 +398,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "5ff6c84f912917dc9c1f86fccb3f718299b552b62b3e31aec462e1b4b8c03559",
-      "ideaFingerprint": "12b4cadcef268404f66e6a59645d2c96995f2ebbbffa2e6da2761e2c3080257d"
+      "ideaFingerprint": "12b4cadcef268404f66e6a59645d2c96995f2ebbbffa2e6da2761e2c3080257d",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T004-Q13",
@@ -400,7 +422,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T004_Q13",
       "status": "MASTERED",
       "questionText": "منصفان متتاليان لزاوية مقدارها60؛ أوجد زاوية بين الضلع الأول والمنصف الثاني",
-      "canonicalMainSkill": "main_quant_19",
+      "canonicalMainSkill": "skill_quant_19",
       "canonicalSubskill": "sub_quant_19_1",
       "correctAnswer": "45 (أ)",
       "stepByStepSolution": "المنصف الأول يعطي30، ومنصف النصف يعطي15، المجموع45.",
@@ -408,7 +430,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "d67951794fd1674e59014afaf60069183d242d7aecd862dc3d5153396fe9b9f0",
-      "ideaFingerprint": "304ced111c3da958d4b94e1982272d55d6e7be999406d921d845f8717be6333d"
+      "ideaFingerprint": "304ced111c3da958d4b94e1982272d55d6e7be999406d921d845f8717be6333d",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T004-Q14",
@@ -430,7 +454,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T004_Q14",
       "status": "MASTERED",
       "questionText": "زاوية رأسية 118 وزاوية مجاورة41 وس",
-      "canonicalMainSkill": "main_quant_19",
+      "canonicalMainSkill": "skill_quant_19",
       "canonicalSubskill": "sub_quant_19_1",
       "correctAnswer": "77 (ج)",
       "stepByStepSolution": "الزاوية المقابلة118 تساوي41+س، س=77.",
@@ -438,7 +462,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "34b56e4608ce3c27c36ecbedbc3f9b4779ef6e23a1b45ebcc5927a8b10db7bdf",
-      "ideaFingerprint": "f91e06a0106e8e46e668ba537b394e0e529365fa425d7f6fda306011c9b6400a"
+      "ideaFingerprint": "f91e06a0106e8e46e668ba537b394e0e529365fa425d7f6fda306011c9b6400a",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T004-Q15",
@@ -458,18 +484,20 @@
       },
       "imageHash": "b90b281e9d34d8720755b383aa3267cae329c3bceb1432e849f0b4acdbf2cf76",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T004_Q15",
-      "status": "HOLD",
+      "status": "REVIEW",
       "questionText": "زاويتان س وص في تقاطع مستقيمين مع مستقيمين متوازيين",
-      "canonicalMainSkill": null,
-      "canonicalSubskill": null,
+      "canonicalMainSkill": "skill_quant_19",
+      "canonicalSubskill": "sub_quant_19_2",
       "correctAnswer": null,
-      "stepByStepSolution": null,
+      "stepByStepSolution": "حل السؤال الرياضي بالتطبيق المباشر لقوانين الهندسة.",
       "educationalExplanation": "غير معتمد للنشر؛ سبب الحجز: القطاعات المرسومة للزاويتين غير مثبتة بوضوح بالنسبة للقاطع الموازي، فلا يعتمد مجموع س+ص من الرسم وحده.",
       "difficulty": null,
       "difficultyReason": "القطاعات المرسومة للزاويتين غير مثبتة بوضوح بالنسبة للقاطع الموازي، فلا يعتمد مجموع س+ص من الرسم وحده.",
       "contentFingerprint": "790fa4dbdb32e963ee69a68a2a64f4bde9551b28dc0cffb232a8e85cf952219a",
       "ideaFingerprint": "ec86b76c70e63f53b0e0f2af733c5b95f39b086a89dcd5f440f451f76ed3e896",
-      "holdReason": "القطاعات المرسومة للزاويتين غير مثبتة بوضوح بالنسبة للقاطع الموازي، فلا يعتمد مجموع س+ص من الرسم وحده."
+      "holdReason": "القطاعات المرسومة للزاويتين غير مثبتة بوضوح بالنسبة للقاطع الموازي، فلا يعتمد مجموع س+ص من الرسم وحده.",
+      "importEligible": false,
+      "reviewReason": "INCOMPLETE_MASTER_DATA_REQUIRES_IMAGE_CONFIRMATION"
     },
     {
       "sourceKey": "MNSF26-GEO-T004-Q16",
@@ -491,7 +519,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T004_Q16",
       "status": "MASTERED",
       "questionText": "قارن 4س و6ص لمستقيمين متوازيين وقاطع حيث س وص متناظرتان",
-      "canonicalMainSkill": "main_quant_19",
+      "canonicalMainSkill": "skill_quant_19",
       "canonicalSubskill": "sub_quant_19_2",
       "correctAnswer": "القيمة الثانية أكبر (ب)",
       "stepByStepSolution": "س=ص، لذا6ص>4س.",
@@ -499,7 +527,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "871f2e8014fd376c946a983ef105f74574c127a044f20f253eb63f340343764f",
-      "ideaFingerprint": "82c2aea20ba8d398c4fd80c2cd92fa42de7171c76f07d01880a91f403fcb1e4e"
+      "ideaFingerprint": "82c2aea20ba8d398c4fd80c2cd92fa42de7171c76f07d01880a91f403fcb1e4e",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T004-Q17",
@@ -521,7 +551,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T004_Q17",
       "status": "MASTERED",
       "questionText": "زاويتان داخليتان على جهة واحدة من قاطع متوازيين إحداهما ق+50",
-      "canonicalMainSkill": "main_quant_19",
+      "canonicalMainSkill": "skill_quant_19",
       "canonicalSubskill": "sub_quant_19_2",
       "correctAnswer": "130−ق (د)",
       "stepByStepSolution": "ع=180−(ق+50)=130−ق.",
@@ -529,7 +559,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "35f5ed524186bf21675f08fa03a6e5319bc45197e53fca98ba238012b42f63ac",
-      "ideaFingerprint": "4445d3eb8f8aafa8fd87f39369909a898b192cd564e2902b258f77d4287a0435"
+      "ideaFingerprint": "4445d3eb8f8aafa8fd87f39369909a898b192cd564e2902b258f77d4287a0435",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T004-Q18",
@@ -551,7 +583,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T004_Q18",
       "status": "MASTERED",
       "questionText": "زاويتان خارجيتان 112 و150 مع مستقيمين متوازيين؛ أوجد الزاوية بين القاطعين",
-      "canonicalMainSkill": "main_quant_19",
+      "canonicalMainSkill": "skill_quant_19",
       "canonicalSubskill": "sub_quant_19_2",
       "correctAnswer": "82 (ب)",
       "stepByStepSolution": "الزاويتان الحادتان المكملتان68 و30، والزاوية بين الشعاعين82.",
@@ -559,7 +591,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "01d4d8f51621178ec1d6a5f1149d6e6109d09bd88de9f49316a211a34f759366",
-      "ideaFingerprint": "f3a8607e12916365c44d875f11033c9ed7ed952463eb0f9969c24d1832b74816"
+      "ideaFingerprint": "f3a8607e12916365c44d875f11033c9ed7ed952463eb0f9969c24d1832b74816",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T004-Q19",
@@ -581,7 +615,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T004_Q19",
       "status": "MASTERED",
       "questionText": "زاوية 60 مع قاطع لخطوط أفقية متوازية؛ أوجد المناظرة",
-      "canonicalMainSkill": "main_quant_19",
+      "canonicalMainSkill": "skill_quant_19",
       "canonicalSubskill": "sub_quant_19_2",
       "correctAnswer": "60 (ج)",
       "stepByStepSolution": "الزوايا المتناظرة متساوية فتكون60.",
@@ -589,7 +623,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "84b0ccdfef8490a114f4f8a83302085fbefdcbda39075f563a6e474ffa91d141",
-      "ideaFingerprint": "a504f474df14627a3da296b96e83fe0e5fd4a8603c7ebed9b42329e9d7dd69cc"
+      "ideaFingerprint": "a504f474df14627a3da296b96e83fe0e5fd4a8603c7ebed9b42329e9d7dd69cc",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T004-Q20",
@@ -611,15 +647,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T004_Q20",
       "status": "MASTERED",
       "questionText": "مثلث بين مستقيمين متوازيين وزاوية خارجية110 وقمة30؛ أوجد الخارج عند القاعدة",
-      "canonicalMainSkill": "main_quant_19",
-      "canonicalSubskill": "sub_quant_19_2",
+      "canonicalMainSkill": "skill_quant_20",
+      "canonicalSubskill": "sub_quant_20_1",
       "correctAnswer": "100 (ب)",
       "stepByStepSolution": "الزاوية اليسرى70، واليمنى الداخلية80، والخارج100.",
       "educationalExplanation": "الزاوية اليسرى70، واليمنى الداخلية80، والخارج100.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "edb5c94aa777b9b4210d0f7aa228ac7b8c1ed09cbaa467d035a0b0a2a9277374",
-      "ideaFingerprint": "3becfd2aacad0c8213dbdb5fccf05e501257603824654f79c1dd72fdd2e3ee12"
+      "ideaFingerprint": "3becfd2aacad0c8213dbdb5fccf05e501257603824654f79c1dd72fdd2e3ee12",
+      "importEligible": true,
+      "reviewReason": null
     }
   ]
 }

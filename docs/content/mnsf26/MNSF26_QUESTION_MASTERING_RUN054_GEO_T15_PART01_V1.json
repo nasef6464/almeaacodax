@@ -26,15 +26,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T015_Q01",
       "status": "MASTERED",
       "questionText": "مثلث محيطي ضلعان منه متساويان وزاوية قاعدته50؛ أوجد س",
-      "canonicalMainSkill": "main_quant_24",
-      "canonicalSubskill": "sub_quant_24_2",
+      "canonicalMainSkill": "skill_quant_20",
+      "canonicalSubskill": "sub_quant_20_1",
       "correctAnswer": "50 (ج)",
       "stepByStepSolution": "زاويتا القاعدة المقابلتان للضلعين المتساويين متساويتان، س50.",
       "educationalExplanation": "زاويتا القاعدة المقابلتان للضلعين المتساويين متساويتان، س50.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "4a23bfbb9bdf6e4589412f71e924b5d9a30c5455d0f4618c6465a61253b1616e",
-      "ideaFingerprint": "289efcc04bd5ab60a9bac3fe203b90b3caca5081378378026852f12bbd544803"
+      "ideaFingerprint": "289efcc04bd5ab60a9bac3fe203b90b3caca5081378378026852f12bbd544803",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T015-Q02",
@@ -56,15 +58,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T015_Q02",
       "status": "MASTERED",
       "questionText": "دائرة لها زاوية مركزية على القاعدة وقوسان متناظران حول القطر؛ أوجد س",
-      "canonicalMainSkill": "main_quant_24",
-      "canonicalSubskill": "sub_quant_24_2",
+      "canonicalMainSkill": "skill_quant_24",
+      "canonicalSubskill": "sub_quant_24_1",
       "correctAnswer": "120 (أ)",
       "stepByStepSolution": "الزاوية المركزية الكلية حول الجزء السفلي120.",
       "educationalExplanation": "الزاوية المركزية الكلية حول الجزء السفلي120.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "beb39aecbf565768acb51d97687a1f9cb20cb75ea533bbff28713458f9cff8de",
-      "ideaFingerprint": "22ac98b204a13100bacd1ab06f4941998dc44643973d6df8ef6686b0d7e3e8ec"
+      "ideaFingerprint": "22ac98b204a13100bacd1ab06f4941998dc44643973d6df8ef6686b0d7e3e8ec",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T015-Q03",
@@ -86,15 +90,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T015_Q03",
       "status": "MASTERED",
       "questionText": "مثلث متطابق الضلعين في نصف دائرة",
-      "canonicalMainSkill": "main_quant_24",
-      "canonicalSubskill": "sub_quant_24_2",
+      "canonicalMainSkill": "skill_quant_24",
+      "canonicalSubskill": "sub_quant_24_1",
       "correctAnswer": "45 (ب)",
       "stepByStepSolution": "الرأس90، وزاويتا القاعدة45.",
       "educationalExplanation": "الرأس90، وزاويتا القاعدة45.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "fea2d73db91dbcac254f4e54390445a6a37ed42922dbceea1e4b25d9540ea602",
-      "ideaFingerprint": "d205c269b72954080bfa64c1af5f57c3f91bef17ef08daa37acb5dd44c0ad644"
+      "ideaFingerprint": "d205c269b72954080bfa64c1af5f57c3f91bef17ef08daa37acb5dd44c0ad644",
+      "importEligible": true,
+      "reviewReason": null
     }
   ]
 }

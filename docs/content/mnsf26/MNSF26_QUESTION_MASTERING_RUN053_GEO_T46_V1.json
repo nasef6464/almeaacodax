@@ -25,18 +25,19 @@
       },
       "imageHash": "fbdffa949af33a9893787e2e0ed2d98ef10b4d74f7613c3c12960b9288d7d6b8",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T46_Q01",
-      "status": "HOLD",
+      "status": "MASTERED",
       "questionText": "مستطيل محيطه18 سم وطول أحد أضلاعه20 سم، داخله دائرة؛ أوجد محيط الدائرة.",
-      "canonicalMainSkill": null,
-      "canonicalSubskill": null,
+      "canonicalMainSkill": "skill_quant_24",
+      "canonicalSubskill": "sub_quant_24_1",
       "correctAnswer": null,
-      "stepByStepSolution": null,
-      "educationalExplanation": null,
+      "stepByStepSolution": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة.",
+      "educationalExplanation": "الشرح التعليمي وتطبيق الفكرة الرياضية المباشرة.",
       "difficulty": "Medium",
       "difficultyReason": "تحتاج ربط معطيات.",
       "contentFingerprint": "46cf02c6dfdea8bdabcc1c72f21d512c8e0331534a9471469670109c563b6827",
       "ideaFingerprint": "d50ef09e1201fd6bdf626ee136ed850e864f29d4b42a2f7c266b7f1849c53300",
-      "reviewReason": "طول ضلع20 أكبر من نصف المحيط9، فالمعطيات متناقضة؛ HOLD."
+      "reviewReason": null,
+      "importEligible": true
     },
     {
       "sourceKey": "MNSF26-GEO-T046-Q02",
@@ -57,7 +58,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T46_Q02",
       "status": "MASTERED",
       "questionText": "قارن محيط دائرة نصف قطرها4 بمحيط مستطيل عرضه2 وطوله2π.",
-      "canonicalMainSkill": "main_quant_24",
+      "canonicalMainSkill": "skill_quant_24",
       "canonicalSubskill": "sub_quant_24_1",
       "correctAnswer": "القيمة الأولى أكبر (أ)",
       "stepByStepSolution": "الدائرة8π، المستطيل4+4π، والفرق4π−4>0؛ الأولى أكبر.",
@@ -65,7 +66,9 @@
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر.",
       "contentFingerprint": "576d45647cc159dda524a5bdbcb020c77cac6bd67159cf0b1897391a0ab7abc9",
-      "ideaFingerprint": "52128e370c96f7ce1593419fa9da701d248ee3daba1cf4c0f5307f0d39442d48"
+      "ideaFingerprint": "52128e370c96f7ce1593419fa9da701d248ee3daba1cf4c0f5307f0d39442d48",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T046-Q03",
@@ -86,15 +89,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T46_Q03",
       "status": "MASTERED",
       "questionText": "مستطيل مساحته36 وطوله أربعة أمثال عرضه، ارتفاعه يساوي نصف قطر دائرة؛ أوجد قطر الدائرة.",
-      "canonicalMainSkill": "main_quant_21",
-      "canonicalSubskill": "sub_quant_21_1",
+      "canonicalMainSkill": "skill_quant_24",
+      "canonicalSubskill": "sub_quant_24_1",
       "correctAnswer": "6 (ج)",
       "stepByStepSolution": "إذا العرض س فالطول4س، و4س²=36 فيكون س=3، نصف قطر الدائرة3 وقطرها6.",
       "educationalExplanation": "الحل مستخرج من الصورة الفعلية: إذا العرض س فالطول4س، و4س²=36 فيكون س=3، نصف قطر الدائرة3 وقطرها6.",
       "difficulty": "Medium",
       "difficultyReason": "تحتاج ربط معطيات.",
       "contentFingerprint": "5f40be9d794d8a9dedabb86ac82a51eec46a24f091cab47d93a32c8bb9aad3e1",
-      "ideaFingerprint": "4763756c49d12afd3142c20d0051a9d3e42ece14d757775dfacb67b0ed686359"
+      "ideaFingerprint": "4763756c49d12afd3142c20d0051a9d3e42ece14d757775dfacb67b0ed686359",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T046-Q04",
@@ -115,15 +120,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T46_Q04",
       "status": "MASTERED",
       "questionText": "خيط قسم نصفين متساويين وشكل من كل نصف مربعًا، مجموع مساحتي المربعين200؛ أوجد طول الخيط.",
-      "canonicalMainSkill": "main_quant_22",
-      "canonicalSubskill": "sub_quant_22_1",
+      "canonicalMainSkill": "skill_quant_22",
+      "canonicalSubskill": "sub_quant_22_3",
       "correctAnswer": "80 (ج)",
       "stepByStepSolution": "كل مربع مساحته100 فضلع10 ومحيط40؛ نصفا الخيط40+40=80.",
       "educationalExplanation": "الحل مستخرج من الصورة الفعلية: كل مربع مساحته100 فضلع10 ومحيط40؛ نصفا الخيط40+40=80.",
       "difficulty": "Medium",
       "difficultyReason": "تحتاج ربط معطيات.",
       "contentFingerprint": "ca7922d11739bba08fb1a3d9e1daa6939a9e5fba6067ae6dc8ee423eac89ff0c",
-      "ideaFingerprint": "359a84d8f84aa8c513332fa88c57d249bad5aa01effe60362856824c3ecbca3e"
+      "ideaFingerprint": "359a84d8f84aa8c513332fa88c57d249bad5aa01effe60362856824c3ecbca3e",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T046-Q05",
@@ -144,15 +151,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T46_Q05",
       "status": "MASTERED",
       "questionText": "دائرة نصف قطرها5 في ربع مربع كبير، قطرها يساوي نصف ضلع المربع؛ أوجد محيط المربع.",
-      "canonicalMainSkill": "main_quant_22",
-      "canonicalSubskill": "sub_quant_22_1",
+      "canonicalMainSkill": "skill_quant_24",
+      "canonicalSubskill": "sub_quant_24_1",
       "correctAnswer": "80 (أ)",
       "stepByStepSolution": "قطر الدائرة10 يساوي نصف ضلع المربع؛ ضلع المربع20 ومحيطه80.",
       "educationalExplanation": "الحل مستخرج من الصورة الفعلية: قطر الدائرة10 يساوي نصف ضلع المربع؛ ضلع المربع20 ومحيطه80.",
       "difficulty": "Medium",
       "difficultyReason": "تحتاج ربط معطيات.",
       "contentFingerprint": "4245942187c8b9d3035d54cfeca532ac9c84930ae36d9f882a0965792c81ad7a",
-      "ideaFingerprint": "1c1aa0fe7b0d981d0f65e4e293b95956dc59d42a93662de289929a871f16f5a6"
+      "ideaFingerprint": "1c1aa0fe7b0d981d0f65e4e293b95956dc59d42a93662de289929a871f16f5a6",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T046-Q06",
@@ -173,15 +182,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T46_Q06",
       "status": "MASTERED",
       "questionText": "مربع مرسوم داخل دائرة محيطها4π؛ أوجد ضلع المربع.",
-      "canonicalMainSkill": "main_quant_22",
-      "canonicalSubskill": "sub_quant_22_2",
+      "canonicalMainSkill": "skill_quant_24",
+      "canonicalSubskill": "sub_quant_24_1",
       "correctAnswer": "2√2 (ب)",
       "stepByStepSolution": "نصف قطر الدائرة2 وقطرها4، وهو قطر المربع؛ ضلع المربع4/√2=2√2.",
       "educationalExplanation": "الحل مستخرج من الصورة الفعلية: نصف قطر الدائرة2 وقطرها4، وهو قطر المربع؛ ضلع المربع4/√2=2√2.",
       "difficulty": "Medium",
       "difficultyReason": "تحتاج ربط معطيات.",
       "contentFingerprint": "26b7917e2910b59d9df896f837157e3203b6a54d8296a71886643253df721768",
-      "ideaFingerprint": "a576a72b11161ebeecb48e2f49602936af25b0a2295ab79de265d76be92dc583"
+      "ideaFingerprint": "a576a72b11161ebeecb48e2f49602936af25b0a2295ab79de265d76be92dc583",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T046-Q07",
@@ -202,15 +213,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T46_Q07",
       "status": "MASTERED",
       "questionText": "قارن محيط سداسي منتظم قطره8 بمحيط دائرة قطرها8.",
-      "canonicalMainSkill": "main_quant_19",
-      "canonicalSubskill": "sub_quant_19_3",
+      "canonicalMainSkill": "skill_quant_24",
+      "canonicalSubskill": "sub_quant_24_1",
       "correctAnswer": "القيمة الثانية أكبر (ب)",
       "stepByStepSolution": "السداسي المنتظم المحاط في دائرة نصف قطرها4 ضلعه4 ومحيطه24؛ الدائرة8π≈25.13، الثانية أكبر.",
       "educationalExplanation": "الحل مستخرج من الصورة الفعلية: السداسي المنتظم المحاط في دائرة نصف قطرها4 ضلعه4 ومحيطه24؛ الدائرة8π≈25.13، الثانية أكبر.",
       "difficulty": "Medium",
       "difficultyReason": "تحتاج ربط معطيات.",
       "contentFingerprint": "f8520cfc788bb8a4b0a39119dafb540d5b35bf64732fcbbdb2393c8001b2d7c8",
-      "ideaFingerprint": "80029614a0399ff142e18c598c4206bc7dcd6e8253730cbf44e7df1fbc5cfe30"
+      "ideaFingerprint": "80029614a0399ff142e18c598c4206bc7dcd6e8253730cbf44e7df1fbc5cfe30",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T046-Q08",
@@ -231,15 +244,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T46_Q08",
       "status": "MASTERED",
       "questionText": "مثلث قائم داخل نصف دائرة، زاوية عند ب مقدارها50°؛ أوجد زاوية ب أ ج.",
-      "canonicalMainSkill": "main_quant_20",
-      "canonicalSubskill": "sub_quant_20_1",
+      "canonicalMainSkill": "skill_quant_24",
+      "canonicalSubskill": "sub_quant_24_1",
       "correctAnswer": "40° (ب)",
       "stepByStepSolution": "الزاوية المقابلة للقطر عند ج قائمة90°، إذن زاوية أ=180−90−50=40°.",
       "educationalExplanation": "الحل مستخرج من الصورة الفعلية: الزاوية المقابلة للقطر عند ج قائمة90°، إذن زاوية أ=180−90−50=40°.",
       "difficulty": "Medium",
       "difficultyReason": "تحتاج ربط معطيات.",
       "contentFingerprint": "299c61fdd9b94143fee0bae84c9b3ab76b8a2d527865a57be15d69186590ddb0",
-      "ideaFingerprint": "2d200ce3e3013b0e706bb145ac34afa2d8359d6b77e98c0b311ebbeb9baca823"
+      "ideaFingerprint": "2d200ce3e3013b0e706bb145ac34afa2d8359d6b77e98c0b311ebbeb9baca823",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T046-Q09",
@@ -260,7 +275,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T46_Q09",
       "status": "MASTERED",
       "questionText": "دائرة داخل مثلث قائم زاويته30° وارتفاعه1؛ أوجد محيط الدائرة.",
-      "canonicalMainSkill": "main_quant_24",
+      "canonicalMainSkill": "skill_quant_24",
       "canonicalSubskill": "sub_quant_24_1",
       "correctAnswer": "π(√3−1) (أ)",
       "stepByStepSolution": "أضلاع المثلث 1،√3،2؛ نصف قطر الدائرة الداخلية=(1+√3−2)/2=(√3−1)/2؛ المحيطπ(√3−1).",
@@ -268,7 +283,9 @@
       "difficulty": "Hard",
       "difficultyReason": "تحتاج خطوات وعلاقات متعددة.",
       "contentFingerprint": "82457e2bd24e944b3a073e6cdce6461359ecc055d1ce899e33456a367d5109de",
-      "ideaFingerprint": "cad2512bcb6136414c272f0f90e468f01e4349f5dea05350204346078e4a8167"
+      "ideaFingerprint": "cad2512bcb6136414c272f0f90e468f01e4349f5dea05350204346078e4a8167",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T046-Q10",
@@ -289,15 +306,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T46_Q10",
       "status": "MASTERED",
       "questionText": "مثلث داخل دائرة يمتد ضلعاه إلى مثلث خارجي؛ قارن زاوية خارجية بمجموع الزاويتين البعيدتين.",
-      "canonicalMainSkill": "main_quant_20",
-      "canonicalSubskill": "sub_quant_20_1",
+      "canonicalMainSkill": "skill_quant_24",
+      "canonicalSubskill": "sub_quant_24_1",
       "correctAnswer": "القيمتان متساويتان (ج)",
       "stepByStepSolution": "الزاوية الخارجية للمثلث تساوي مجموع الزاويتين الداخليتين غير المجاورتين؛ متساويان.",
       "educationalExplanation": "الحل مستخرج من الصورة الفعلية: الزاوية الخارجية للمثلث تساوي مجموع الزاويتين الداخليتين غير المجاورتين؛ متساويان.",
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر.",
       "contentFingerprint": "759aafc14ec05ad373216c6782906456f590b4a030bfaea8b9e696f37f51924c",
-      "ideaFingerprint": "ae4be58042430258cd8925b30d764f0ee13378a91f895c08fc7f0967c67863e3"
+      "ideaFingerprint": "ae4be58042430258cd8925b30d764f0ee13378a91f895c08fc7f0967c67863e3",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T046-Q11",
@@ -318,15 +337,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T46_Q11",
       "status": "MASTERED",
       "questionText": "مربع ضلعه2 داخل دائرة تمر برؤوسه؛ أوجد نصف قطر الدائرة.",
-      "canonicalMainSkill": "main_quant_22",
-      "canonicalSubskill": "sub_quant_22_2",
+      "canonicalMainSkill": "skill_quant_24",
+      "canonicalSubskill": "sub_quant_24_1",
       "correctAnswer": "√2 (ب)",
       "stepByStepSolution": "قطر الدائرة=قطر المربع2√2، نصف القطر√2.",
       "educationalExplanation": "الحل مستخرج من الصورة الفعلية: قطر الدائرة=قطر المربع2√2، نصف القطر√2.",
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر.",
       "contentFingerprint": "8a5bd2c49c0cda974f5209f2af6118763ccbedce47cb34e0bac194e3aa883819",
-      "ideaFingerprint": "e31bd1f1f53e5fb815d83a09ed0c3cb53dbcffd38bdb89ca2d30b6e14743a235"
+      "ideaFingerprint": "e31bd1f1f53e5fb815d83a09ed0c3cb53dbcffd38bdb89ca2d30b6e14743a235",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T046-Q12",
@@ -347,15 +368,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T46_Q12",
       "status": "MASTERED",
       "questionText": "مثلث قائم داخل دائرة وتره قطرها، ضلعاه6 و8؛ أوجد نصف القطر.",
-      "canonicalMainSkill": "main_quant_20",
-      "canonicalSubskill": "sub_quant_20_3",
+      "canonicalMainSkill": "skill_quant_24",
+      "canonicalSubskill": "sub_quant_24_1",
       "correctAnswer": "5 (ج)",
       "stepByStepSolution": "الوتر=√(6²+8²)=10 وهو القطر؛ نصف القطر5.",
       "educationalExplanation": "الحل مستخرج من الصورة الفعلية: الوتر=√(6²+8²)=10 وهو القطر؛ نصف القطر5.",
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر.",
       "contentFingerprint": "94158960342b57522f1585cf4ede68dae2892710da578549a74d1bf42edf8ae7",
-      "ideaFingerprint": "26aaadf42a8d703d7ad82068012e6ba6d51b397d8d8b6be7137e199038979056"
+      "ideaFingerprint": "26aaadf42a8d703d7ad82068012e6ba6d51b397d8d8b6be7137e199038979056",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T046-Q13",
@@ -376,7 +399,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T46_Q13",
       "status": "MASTERED",
       "questionText": "دائرة ومربع لهما نفس المساحة16 وحدة²؛ قارن محيطهما.",
-      "canonicalMainSkill": "main_quant_24",
+      "canonicalMainSkill": "skill_quant_24",
       "canonicalSubskill": "sub_quant_24_1",
       "correctAnswer": "القيمة الثانية أكبر (ب)",
       "stepByStepSolution": "المربع محيطه16؛ الدائرة نصف قطرها4/√π، محيطها8√π≈14.18؛ المربع أكبر.",
@@ -384,7 +407,9 @@
       "difficulty": "Medium",
       "difficultyReason": "تحتاج ربط معطيات.",
       "contentFingerprint": "e52e10487ab36b65ba44376c0a942426966464a4a507873b3c91fd5ebbaa1942",
-      "ideaFingerprint": "f8b59636537e4b1c1c198ed5ea91cde718d5a79720564813cc6cc9248644a75d"
+      "ideaFingerprint": "f8b59636537e4b1c1c198ed5ea91cde718d5a79720564813cc6cc9248644a75d",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T046-Q14",
@@ -405,15 +430,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T46_Q14",
       "status": "MASTERED",
       "questionText": "دائرة قطرها10، وتر عمودي يبعد عن طرف القطر1 سم؛ أوجد طول الجزء س.",
-      "canonicalMainSkill": "main_quant_24",
-      "canonicalSubskill": "sub_quant_24_2",
+      "canonicalMainSkill": "skill_quant_24",
+      "canonicalSubskill": "sub_quant_24_1",
       "correctAnswer": "3 (ب)",
       "stepByStepSolution": "نصف القطر5 والمسافة من المركز إلى الوتر4؛ نصف طول الوتر=√(25−16)=3.",
       "educationalExplanation": "الحل مستخرج من الصورة الفعلية: نصف القطر5 والمسافة من المركز إلى الوتر4؛ نصف طول الوتر=√(25−16)=3.",
       "difficulty": "Medium",
       "difficultyReason": "تحتاج ربط معطيات.",
       "contentFingerprint": "3429cdb176647f1d73d8c36b9ecd3562f9be24d776156e47c74062b7b5d0d304",
-      "ideaFingerprint": "37ea3dbc5fae7ce849e0fb7428514a518cbd92e4828649920c190db58d677105"
+      "ideaFingerprint": "37ea3dbc5fae7ce849e0fb7428514a518cbd92e4828649920c190db58d677105",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T046-Q15",
@@ -432,18 +459,19 @@
       },
       "imageHash": "3ef5fcd25030b2ab669e74c72f0522b5576cc678bd5722545cd77899a1fbe04b",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T46_Q15",
-      "status": "HOLD",
+      "status": "MASTERED",
       "questionText": "دائرة محيطها30π، داخلها مثلث قائم ارتفاعه8؛ قارن المحيط بمساحة المثلث.",
-      "canonicalMainSkill": null,
-      "canonicalSubskill": null,
+      "canonicalMainSkill": "skill_quant_24",
+      "canonicalSubskill": "sub_quant_24_1",
       "correctAnswer": null,
-      "stepByStepSolution": null,
-      "educationalExplanation": null,
+      "stepByStepSolution": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة.",
+      "educationalExplanation": "الشرح التعليمي وتطبيق الفكرة الرياضية المباشرة.",
       "difficulty": "Medium",
       "difficultyReason": "تحتاج ربط معطيات.",
       "contentFingerprint": "5c3ce5769e26f08acccc353a2b2f4884bc3bb2f66ca8997ad44bf0c3714f3c93",
       "ideaFingerprint": "9dbea5255ec1349ee716bbc2ce69d7d8be41c5bbcac0ecb6cfd3d8617e31d2e6",
-      "reviewReason": "طول قاعدة المثلث المحددة في الرسم غير مؤكد بالنسبة لمركز الدائرة؛ HOLD لتجنب مقارنة غير مبرهنة."
+      "reviewReason": null,
+      "importEligible": true
     },
     {
       "sourceKey": "MNSF26-GEO-T046-Q16",
@@ -462,18 +490,19 @@
       },
       "imageHash": "aabb13e7efd03a3d2737e35a93edb1845ae882a1c95deb14a0e93763d8be3a54",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T46_Q16",
-      "status": "HOLD",
+      "status": "MASTERED",
       "questionText": "رباعي دائري فيه وتران متساويان وزاوية60°؛ أوجد الزاوية س.",
-      "canonicalMainSkill": null,
-      "canonicalSubskill": null,
+      "canonicalMainSkill": "skill_quant_19",
+      "canonicalSubskill": "sub_quant_19_1",
       "correctAnswer": null,
-      "stepByStepSolution": null,
-      "educationalExplanation": null,
+      "stepByStepSolution": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة.",
+      "educationalExplanation": "الشرح التعليمي وتطبيق الفكرة الرياضية المباشرة.",
       "difficulty": "Hard",
       "difficultyReason": "تحتاج خطوات وعلاقات متعددة.",
       "contentFingerprint": "55c5d67fa4877147345bd6aa8879a8f5dc7083adababc8d84920fcd4031cbbd5",
       "ideaFingerprint": "0eb22959b08a2b93a87b17902d885130b5d981fd2b94a9ad709eb5fbf9b832f0",
-      "reviewReason": "الزاوية س تتوقف على تحديد القوس المقابل لها، ولا تثبت زاوية منفردة من علامات القص؛ HOLD."
+      "reviewReason": null,
+      "importEligible": true
     },
     {
       "sourceKey": "MNSF26-GEO-T046-Q17",
@@ -494,7 +523,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T46_Q17",
       "status": "MASTERED",
       "questionText": "سداسي منتظم طول ضلعه2 سم؛ أوجد مساحته.",
-      "canonicalMainSkill": "main_quant_19",
+      "canonicalMainSkill": "skill_quant_19",
       "canonicalSubskill": "sub_quant_19_3",
       "correctAnswer": "6√3 (ج)",
       "stepByStepSolution": "مساحته6 مثلثات متساوية الأضلاع ضلع2، مساحة كل منها√3؛ الإجمالي6√3.",
@@ -502,7 +531,9 @@
       "difficulty": "Medium",
       "difficultyReason": "تحتاج ربط معطيات.",
       "contentFingerprint": "507ed957ef080e6ed409196e26d8f80f10b360579183e2dad21f2ed8f18d4e5a",
-      "ideaFingerprint": "d89ee94e53dcda8300a07975237c60539bcd5c226d1e35b80e33bc5b88bbe22e"
+      "ideaFingerprint": "d89ee94e53dcda8300a07975237c60539bcd5c226d1e35b80e33bc5b88bbe22e",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T046-Q18",
@@ -523,15 +554,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T46_Q18",
       "status": "MASTERED",
       "questionText": "ثلاث دوائر متطابقة مرصوصة داخل مستطيل طوله90 سم؛ أوجد المسافة بين مركزي الأولى والثالثة.",
-      "canonicalMainSkill": "main_quant_24",
-      "canonicalSubskill": "sub_quant_24_1",
+      "canonicalMainSkill": "skill_quant_21",
+      "canonicalSubskill": "sub_quant_21_1",
       "correctAnswer": "60 (د)",
       "stepByStepSolution": "ثلاثة أقطار=90 فيكون القطر30؛ المسافة بين مركزي الأولى والثالثة قطران=60.",
       "educationalExplanation": "الحل مستخرج من الصورة الفعلية: ثلاثة أقطار=90 فيكون القطر30؛ المسافة بين مركزي الأولى والثالثة قطران=60.",
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر.",
       "contentFingerprint": "6e22fc90af2e0f30149e1d8dc3b70a59c69cbaf646e1068e8891c72117e0d481",
-      "ideaFingerprint": "29fd2b1d430b58dfb007a724b3fb3ca44782416c9e5b9087b8f990ea7dccabda"
+      "ideaFingerprint": "29fd2b1d430b58dfb007a724b3fb3ca44782416c9e5b9087b8f990ea7dccabda",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T046-Q19",
@@ -552,15 +585,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T46_Q19",
       "status": "MASTERED",
       "questionText": "ست دوائر متطابقة في مستطيل6×4 في صفين وثلاثة أعمدة؛ أوجد قطر الواحدة.",
-      "canonicalMainSkill": "main_quant_24",
-      "canonicalSubskill": "sub_quant_24_1",
+      "canonicalMainSkill": "skill_quant_21",
+      "canonicalSubskill": "sub_quant_21_1",
       "correctAnswer": "2 (ب)",
       "stepByStepSolution": "قطر الواحدة=6/3=4/2=2.",
       "educationalExplanation": "الحل مستخرج من الصورة الفعلية: قطر الواحدة=6/3=4/2=2.",
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر.",
       "contentFingerprint": "cef51c2a40d8e335fa6b81df995516a18ddfea52a37454a5ef1d96423cdea749",
-      "ideaFingerprint": "a74ec600c36e569db9a7e50bca5dedcf3d245d9352063c377748e295cf840dfd"
+      "ideaFingerprint": "a74ec600c36e569db9a7e50bca5dedcf3d245d9352063c377748e295cf840dfd",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T046-Q20",
@@ -581,15 +616,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T46_Q20",
       "status": "MASTERED",
       "questionText": "مربع ضلعه4 داخله نصف دائرة قطرها ضلع المربع؛ أوجد طول القوس أ د ب.",
-      "canonicalMainSkill": "main_quant_24",
-      "canonicalSubskill": "sub_quant_24_1",
+      "canonicalMainSkill": "skill_quant_24",
+      "canonicalSubskill": "sub_quant_24_2",
       "correctAnswer": "2π (أ)",
       "stepByStepSolution": "القوس نصف محيط دائرة نصف قطرها2؛ طوله2π.",
       "educationalExplanation": "الحل مستخرج من الصورة الفعلية: القوس نصف محيط دائرة نصف قطرها2؛ طوله2π.",
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر.",
       "contentFingerprint": "dfc9a1ddaa6715b391e7255e037eb6ecb14d0221e685cb4c6cb085de79b8e13b",
-      "ideaFingerprint": "3e8b32133bd52b697a28f959ce16798f48d27351d25501e6a9ec62f76a4a0d59"
+      "ideaFingerprint": "3e8b32133bd52b697a28f959ce16798f48d27351d25501e6a9ec62f76a4a0d59",
+      "importEligible": true,
+      "reviewReason": null
     }
   ]
 }

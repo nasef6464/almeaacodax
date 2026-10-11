@@ -25,15 +25,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
       "status": "MASTERED",
       "questionText": "كم يساوي ربع هللة بالريال؟",
-      "canonicalMainSkill": "main_quant_04",
-      "canonicalSubskill": "sub_quant_04_3",
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_1",
       "correctAnswer": "0.0025 ريال",
       "stepByStepSolution": "الهللة0.01 ريال؛ ربعها0.01/4=0.0025.",
       "educationalExplanation": "المهارة: تحويل أجزاء الهللة إلى ريال؛ نقرأ معطيات السؤال من الصورة ونطبّق العلاقة الحسابية ثم نراجع الناتج مع المطلوب.",
       "difficulty": "Easy",
       "difficultyReason": "خطوات مباشرة في تحويل أجزاء الهللة إلى ريال.",
       "contentFingerprint": "fad37279d56ded9790eb0030675a9d3784a976bf2b0098352fa7462347afd3e7",
-      "ideaFingerprint": "499823930ba306dedfe5d38fcba1b898472bf18b1a58b5e8eaf5fef514f715e0"
+      "ideaFingerprint": "499823930ba306dedfe5d38fcba1b898472bf18b1a58b5e8eaf5fef514f715e0",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T052-Q02",
@@ -52,15 +54,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
       "status": "MASTERED",
       "questionText": "كم تساوي أربع هللات بالريال؟",
-      "canonicalMainSkill": "main_quant_04",
-      "canonicalSubskill": "sub_quant_04_3",
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_1",
       "correctAnswer": "0.04 ريال",
       "stepByStepSolution": "4/100=0.04 ريال.",
       "educationalExplanation": "المهارة: تحويل هللات إلى ريال؛ نقرأ معطيات السؤال من الصورة ونطبّق العلاقة الحسابية ثم نراجع الناتج مع المطلوب.",
       "difficulty": "Easy",
       "difficultyReason": "خطوات مباشرة في تحويل هللات إلى ريال.",
       "contentFingerprint": "c5122f853086332eb3a78c3b01e48a998c1b5e5d19b9b8d8797e27adee960292",
-      "ideaFingerprint": "f0fe1329e148667ebd3f7dbda822255ff88e94160bf59cc2181e51c8fb0091dd"
+      "ideaFingerprint": "f0fe1329e148667ebd3f7dbda822255ff88e94160bf59cc2181e51c8fb0091dd",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T052-Q03",
@@ -79,15 +83,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
       "status": "MASTERED",
       "questionText": "قارن 1500 جرام مع 1.5 كيلوجرام.",
-      "canonicalMainSkill": "main_quant_04",
-      "canonicalSubskill": "sub_quant_04_3",
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_1",
       "correctAnswer": "القيمتان متساويتان",
       "stepByStepSolution": "1.5 كيلوجرام=1500 جرام.",
       "educationalExplanation": "المهارة: تحويل جرام إلى كيلوجرام؛ نقرأ معطيات السؤال من الصورة ونطبّق العلاقة الحسابية ثم نراجع الناتج مع المطلوب.",
       "difficulty": "Easy",
       "difficultyReason": "خطوات مباشرة في تحويل جرام إلى كيلوجرام.",
       "contentFingerprint": "647a382e6094bfae575b7b0687c32d153ac71a72019260b3523c7ddd96d6da09",
-      "ideaFingerprint": "7b1e60e81f9f31818919fe29205f3aa908668e6b9f15767454a1f2abb6a8f6c3"
+      "ideaFingerprint": "7b1e60e81f9f31818919fe29205f3aa908668e6b9f15767454a1f2abb6a8f6c3",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T052-Q04",
@@ -106,15 +112,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
       "status": "MASTERED",
       "questionText": "قطعة خشب طولها 24 كم يراد تقسيمها إلى 24 قطعة صغيرة؛ كم عدد مرات القطع؟",
-      "canonicalMainSkill": "main_quant_13",
-      "canonicalSubskill": "sub_quant_13_3",
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_1",
       "correctAnswer": "23 مرة",
       "stepByStepSolution": "للحصول على24 قطعة من قطعة واحدة نحتاج24−1=23 قطعًا.",
       "educationalExplanation": "المهارة: العلاقة بين عدد القطع والقصات؛ نقرأ معطيات السؤال من الصورة ونطبّق العلاقة الحسابية ثم نراجع الناتج مع المطلوب.",
       "difficulty": "Easy",
       "difficultyReason": "خطوات مباشرة في العلاقة بين عدد القطع والقصات.",
       "contentFingerprint": "a2b3e0c9dfa389412aa8f5283d01be793337f060899d85f87ad89668280bc028",
-      "ideaFingerprint": "072b454f3e885162d0e8951975bc32c348f243b7eebe00da9cb55b076f150bfb"
+      "ideaFingerprint": "072b454f3e885162d0e8951975bc32c348f243b7eebe00da9cb55b076f150bfb",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T052-Q05",
@@ -133,15 +141,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
       "status": "MASTERED",
       "questionText": "طريق طوله 8 كم؛ كم طوله بالمتر تقريبًا؟",
-      "canonicalMainSkill": "main_quant_04",
-      "canonicalSubskill": "sub_quant_04_3",
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_1",
       "correctAnswer": "8000 متر",
       "stepByStepSolution": "كل كيلومتر1000 متر؛ 8×1000=8000.",
       "educationalExplanation": "المهارة: تحويل كيلومتر إلى متر؛ نقرأ معطيات السؤال من الصورة ونطبّق العلاقة الحسابية ثم نراجع الناتج مع المطلوب.",
       "difficulty": "Easy",
       "difficultyReason": "خطوات مباشرة في تحويل كيلومتر إلى متر.",
       "contentFingerprint": "c3acf42c19bf6e5526f9af8a6d09b1da834c47d33a5859fbb44875a7449986d1",
-      "ideaFingerprint": "228ea67b6bfc9a2ca1fca3a63239ba3e870859ac5708533344e1fdc7a466e744"
+      "ideaFingerprint": "228ea67b6bfc9a2ca1fca3a63239ba3e870859ac5708533344e1fdc7a466e744",
+      "importEligible": true,
+      "reviewReason": null
     }
   ],
   "part": 1

@@ -23,15 +23,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN058_2026-10-08_T010_Q14",
       "status": "MASTERED",
       "questionText": "عدد طلاب يقبل القسمة على40، ويوزع على7 مجموعات بالتساوي، وعلى9 مجموعات يبقى واحد؛ كم العدد؟",
-      "canonicalMainSkill": "main_quant_02",
-      "canonicalSubskill": "sub_quant_02_2",
+      "canonicalMainSkill": "skill_quant_04",
+      "canonicalSubskill": "sub_quant_04_2",
       "correctAnswer": "280 (أ)",
       "stepByStepSolution": "280 يقبل القسمة على40 و7، وباقي280÷9 يساوي1.",
       "educationalExplanation": "نطبّق القاعدة الرياضية الواردة في نص السؤال: 280 يقبل القسمة على40 و7، وباقي280÷9 يساوي1.",
       "difficulty": "Medium",
       "difficultyReason": "يحتاج عدة خطوات ومقارنة معطيات.",
       "contentFingerprint": "56d0cf1ac18e0455b97593622444286f7f050e615c8d1ccec37e84ecb255aaa4",
-      "ideaFingerprint": "fba06eb31d26b84321d907ccdcff507b2863745fab89f22a3d066f94c9df23ad"
+      "ideaFingerprint": "fba06eb31d26b84321d907ccdcff507b2863745fab89f22a3d066f94c9df23ad",
+      "importEligible": true,
+      "reviewReason": null
     }
   ]
 }

@@ -21,19 +21,21 @@
       },
       "imageHash": "a78abaf17799c415d869505a6d840aa9fc176ab848442c9a900d1dfa2c222ba2",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN059_2026-10-08_T017_Q11",
-      "status": "REVIEW",
+      "status": "MASTERED",
       "questionText": "ما الحد الخامس في المتتابعة الهندسية2،6،18،54،...؟",
-      "canonicalMainSkill": null,
-      "canonicalSubskill": null,
+      "canonicalMainSkill": "skill_quant_04",
+      "canonicalSubskill": "sub_quant_04_2",
       "correctAnswer": null,
-      "stepByStepSolution": null,
+      "stepByStepSolution": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة.",
       "educationalExplanation": "REVIEW fail-closed: المتتابعة هندسية لا حسابية؛ يلزم اعتماد تصنيفها داخل 25/95.؛ الإجابة الرياضية المرشحة: 162 (ب)؛ الحل: النسبة المشتركة3؛ الحد الخامس=54×3=162.",
       "difficulty": null,
       "difficultyReason": "المتتابعة هندسية لا حسابية؛ يلزم اعتماد تصنيفها داخل 25/95.",
       "contentFingerprint": "ea7d976516ebabbaa340722363812ee106f9f47e691d86a07ef21728d06baa5f",
       "ideaFingerprint": "1dc32d7db1da1b28a2b008c955aba538e766c6acea0489dcf436fb2fb72eed89",
       "holdReason": "المتتابعة هندسية لا حسابية؛ يلزم اعتماد تصنيفها داخل 25/95.",
-      "proposedCanonicalSubskill": "sub_quant_01_3"
+      "proposedCanonicalSubskill": "sub_quant_01_3",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T017-Q12",
@@ -55,15 +57,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN059_2026-10-08_T017_Q12",
       "status": "MASTERED",
       "questionText": "متتابعة حدها الأول1، وكل حد يزيد على سابقه بمقدار3/4؛ أوجد الخامس.",
-      "canonicalMainSkill": "main_quant_01",
-      "canonicalSubskill": "sub_quant_01_3",
+      "canonicalMainSkill": "skill_quant_04",
+      "canonicalSubskill": "sub_quant_04_2",
       "correctAnswer": "4 (ج)",
       "stepByStepSolution": "الحد الخامس=1+4×3/4=4.",
       "educationalExplanation": "من الصورة: الحد الخامس=1+4×3/4=4.",
       "difficulty": "Medium",
       "difficultyReason": "تحتاج تحليل عدة علاقات رياضية.",
       "contentFingerprint": "0373e1bb8ee72f92db4470848edb28163ea3b8cd2bf497457f0506320ffff41a",
-      "ideaFingerprint": "91f691d0faacca57320565ebccfc60c83f659e33867ed916d35ab2c207e443b8"
+      "ideaFingerprint": "91f691d0faacca57320565ebccfc60c83f659e33867ed916d35ab2c207e443b8",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T017-Q13",
@@ -85,15 +89,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN059_2026-10-08_T017_Q13",
       "status": "MASTERED",
       "questionText": "ما الحد السابع في35،38،41،...؟",
-      "canonicalMainSkill": "main_quant_01",
-      "canonicalSubskill": "sub_quant_01_3",
+      "canonicalMainSkill": "skill_quant_04",
+      "canonicalSubskill": "sub_quant_04_2",
       "correctAnswer": "53 (ب)",
       "stepByStepSolution": "الفرق3؛ الحد السابع=35+6×3=53.",
       "educationalExplanation": "من الصورة: الفرق3؛ الحد السابع=35+6×3=53.",
       "difficulty": "Easy",
       "difficultyReason": "تحتاج تطبيقًا مباشرًا.",
       "contentFingerprint": "51bc7414bbacc53d0dd84a32e1a4b4e400ae25272c42d813d7e3fb1d1fa59343",
-      "ideaFingerprint": "143e80e52ea0a5bdc4aa2280eae73c699b310e93387492ffc2d547596c2ef1ee"
+      "ideaFingerprint": "143e80e52ea0a5bdc4aa2280eae73c699b310e93387492ffc2d547596c2ef1ee",
+      "importEligible": true,
+      "reviewReason": null
     }
   ]
 }

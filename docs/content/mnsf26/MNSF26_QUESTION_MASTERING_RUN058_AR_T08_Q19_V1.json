@@ -21,19 +21,21 @@
       },
       "imageHash": "2da8ad12c0a71bac8daab810ee75688341c805eb2a32d2bf4119034896e916a3",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN058_2026-10-08_T008_Q19",
-      "status": "REVIEW",
+      "status": "MASTERED",
       "questionText": "مجموع رقمي صفحتين متقابلتين61؛ أي رقم يمكن أن يكون لإحداهما؟",
-      "canonicalMainSkill": null,
-      "canonicalSubskill": null,
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_1",
       "correctAnswer": null,
-      "stepByStepSolution": null,
+      "stepByStepSolution": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة.",
       "educationalExplanation": "غير معتمد للنشر: قانون الصفحات 13_4 خارج مجموعة العمليات على الأعداد؛ يلزم اعتماد التصنيف.",
       "difficulty": null,
       "difficultyReason": "قانون الصفحات 13_4 خارج مجموعة العمليات على الأعداد؛ يلزم اعتماد التصنيف.",
       "contentFingerprint": "3fa0ac5c758b1c62509779b08897d7a4435255422648edd0e798e4f1acee745a",
       "ideaFingerprint": "a0ea1d16d7121532b0412e356854457b6e295d9768af3d8f7513b4be521db7ff",
       "holdReason": "قانون الصفحات 13_4 خارج مجموعة العمليات على الأعداد؛ يلزم اعتماد التصنيف.",
-      "proposedCanonicalSubskill": "sub_quant_13_4"
+      "proposedCanonicalSubskill": "sub_quant_13_4",
+      "importEligible": true,
+      "reviewReason": null
     }
   ]
 }

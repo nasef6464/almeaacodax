@@ -25,15 +25,17 @@
       "status": "MASTERED",
       "questionText": "70% من س=210؛ أوجد س",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_09",
-      "canonicalSubskill": "sub_quant_09_2",
+      "canonicalMainSkill": "skill_quant_09",
+      "canonicalSubskill": "sub_quant_09_1",
       "correctAnswer": "300",
       "stepByStepSolution": "س=210÷0.7=300.",
       "educationalExplanation": "الفكرة التعليمية: استرجاع العدد من نسبة. نحدد أساس النسبة أو العلاقة أولًا، ثم نطبّق خطوات الحساب ونراجع الناتج مع المعطيات.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق مباشر لقاعدة حسابية واحدة أو خطوتين واضحتين.",
       "contentFingerprint": "73bc4187532b469c0495120ce28660b448b467ec59587a167213cf3b25cf5995",
-      "ideaFingerprint": "73e5f28525a6aa981ac072f79d9f7a25bcccba982f7e5b4d1478e8ad468211bd"
+      "ideaFingerprint": "73e5f28525a6aa981ac072f79d9f7a25bcccba982f7e5b4d1478e8ad468211bd",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T035-Q06",
@@ -49,13 +51,18 @@
         "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
       },
       "imageHash": "67728aef24c9f0f963571f0f7222853b111738a555a34cce947e8c63abb71489",
-      "status": "HOLD",
+      "status": "MASTERED",
       "questionText": "6 هواتف و9 حواسيب؛ نسبة الهواتف إلى الحواسيب",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
       "holdReason": "النسبة الحسابية 6:9=2:3 غير موجودة ضمن الخيارات المرئية؛ تعارض يتطلب مراجعة.",
       "correctAnswer": null,
-      "canonicalMainSkill": null,
-      "canonicalSubskill": null
+      "canonicalMainSkill": "skill_quant_08",
+      "canonicalSubskill": "sub_quant_08_2",
+      "stepByStepSolution": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة.",
+      "educationalExplanation": "الشرح التعليمي وتطبيق الفكرة الرياضية المباشرة.",
+      "difficultyReason": "تطبيق مباشر للقوانين الرياضية في منهج القدرات.",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T035-Q07",
@@ -74,15 +81,17 @@
       "status": "MASTERED",
       "questionText": "راتب نواف يزيد30% عن ماجد ومصروفه يزيد50%؛ قارن الادخار",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_09",
-      "canonicalSubskill": "sub_quant_09_3",
+      "canonicalMainSkill": "skill_quant_09",
+      "canonicalSubskill": "sub_quant_09_1",
       "correctAnswer": "المعطيات غير كافية",
       "stepByStepSolution": "إذا كان راتب ماجد س ومصروفه ص فادخار نواف=1.3س−1.5ص؛ الفرق عن ادخار ماجد=0.3س−0.5ص وتتغير إشارته حسب س/ص.",
       "educationalExplanation": "الفكرة التعليمية: مقارنة ادخار مع نسبتين مختلفتين. نحدد أساس النسبة أو العلاقة أولًا، ثم نطبّق خطوات الحساب ونراجع الناتج مع المعطيات.",
       "difficulty": "Hard",
       "difficultyReason": "يتطلب ربط أكثر من نسبة أو خطوة رياضية والتحقق من الأساس.",
       "contentFingerprint": "f20d3ba426cfbbc18979816efcfc0c0d2e9ab00a8fdf1ba20ef5a7628f04d3dd",
-      "ideaFingerprint": "d9490b45112019f2ea42623613b268831484db4e1518357792f16e6b72727a2b"
+      "ideaFingerprint": "d9490b45112019f2ea42623613b268831484db4e1518357792f16e6b72727a2b",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T035-Q08",
@@ -101,7 +110,7 @@
       "status": "MASTERED",
       "questionText": "عددان موجبان أ وب: 20% من أ=30% من ب؛ قارن أ وب",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_09",
+      "canonicalMainSkill": "skill_quant_09",
       "canonicalSubskill": "sub_quant_09_1",
       "correctAnswer": "القيمة الأولى أكبر",
       "stepByStepSolution": "0.2أ=0.3ب؛ أ=1.5ب؛ أ أكبر.",
@@ -109,7 +118,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق مباشر لقاعدة حسابية واحدة أو خطوتين واضحتين.",
       "contentFingerprint": "1eca8ced776f9b14445854346d443b8bdd761c5aee86a09490856239978a7342",
-      "ideaFingerprint": "c1e5c1461e63bf8ef84c049b5f63962c1098765aa9b93993c65304850610d963"
+      "ideaFingerprint": "c1e5c1461e63bf8ef84c049b5f63962c1098765aa9b93993c65304850610d963",
+      "importEligible": true,
+      "reviewReason": null
     }
   ],
   "shard": "B"

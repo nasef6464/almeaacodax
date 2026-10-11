@@ -25,7 +25,7 @@
       "status": "MASTERED",
       "questionText": "قارن جذر27 بالمئة من20 مع20% من جذر27",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_09",
+      "canonicalMainSkill": "skill_quant_09",
       "canonicalSubskill": "sub_quant_09_1",
       "correctAnswer": "القيمتان متساويتان",
       "stepByStepSolution": "(√27/100)×20=0.2√27؛ وكذلك0.2×√27؛ متساويتان.",
@@ -33,7 +33,9 @@
       "difficulty": "Medium",
       "difficultyReason": "يتطلب تحويل المعطيات إلى علاقة صحيحة ثم إجراء حساب متسلسل.",
       "contentFingerprint": "55e94cbd0582fce898a57049b583d85fc3d79fc6ba49f11af3f17c7380bb84b7",
-      "ideaFingerprint": "34f98ceff3ea860e3d7152e6639b3e4d334a2a851e2a2f62300fb300679fe1a8"
+      "ideaFingerprint": "34f98ceff3ea860e3d7152e6639b3e4d334a2a851e2a2f62300fb300679fe1a8",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T038-Q10",
@@ -52,7 +54,7 @@
       "status": "MASTERED",
       "questionText": "قارن50% من1/6 مع75% من1/3",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_09",
+      "canonicalMainSkill": "skill_quant_09",
       "canonicalSubskill": "sub_quant_09_1",
       "correctAnswer": "القيمة الثانية أكبر",
       "stepByStepSolution": "الأولى1/12≈0.0833؛ الثانية1/4=0.25؛ الثانية أكبر.",
@@ -60,7 +62,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق مباشر لقاعدة حسابية واحدة أو خطوتين واضحتين.",
       "contentFingerprint": "94d9c8355ef064c65f609fbed5f9ed2192fac83ea60cf33d79b07febff3594e7",
-      "ideaFingerprint": "468713b7421cba9e8451c81ec0d77b1e379fdc4ec9c9bb564b049e4b95879b2c"
+      "ideaFingerprint": "468713b7421cba9e8451c81ec0d77b1e379fdc4ec9c9bb564b049e4b95879b2c",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T038-Q11",
@@ -79,7 +83,7 @@
       "status": "MASTERED",
       "questionText": "صف به50 طالبًا اختبر90% منهم ونجح الثلثان؛ عدد الناجحين",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_09",
+      "canonicalMainSkill": "skill_quant_09",
       "canonicalSubskill": "sub_quant_09_1",
       "correctAnswer": "30 طالبًا",
       "stepByStepSolution": "المختبرون45؛ الناجحون=45×2/3=30.",
@@ -87,7 +91,9 @@
       "difficulty": "Medium",
       "difficultyReason": "يتطلب تحويل المعطيات إلى علاقة صحيحة ثم إجراء حساب متسلسل.",
       "contentFingerprint": "9c263857c771e46a460f134ed5469abbf551dad4b3b827ab9aef85a9cb3f7e37",
-      "ideaFingerprint": "82a781dbe093f2c4f62a93188683a059d0620b7951d18f09ac82b8bed63992b5"
+      "ideaFingerprint": "82a781dbe093f2c4f62a93188683a059d0620b7951d18f09ac82b8bed63992b5",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T038-Q12",
@@ -106,15 +112,17 @@
       "status": "MASTERED",
       "questionText": "علبة شامبو أضيف لها20 ملليلترًا مع ثبات السعر فانخفض سعر الوحدة10%؛ السعة الأصلية",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_09",
-      "canonicalSubskill": "sub_quant_09_2",
+      "canonicalMainSkill": "skill_quant_09",
+      "canonicalSubskill": "sub_quant_09_1",
       "correctAnswer": "180 ملليلترًا",
       "stepByStepSolution": "السعر لكل لتر عكسي مع الحجم؛ س/(س+20)=0.9؛ س=180.",
       "educationalExplanation": "الفكرة التعليمية: استعادة الحجم من تغير السعر للوحدة. نحدد أساس النسبة أو العلاقة أولًا، ثم نطبّق خطوات الحساب ونراجع الناتج مع المعطيات.",
       "difficulty": "Hard",
       "difficultyReason": "يتطلب ربط أكثر من نسبة أو خطوة رياضية والتحقق من الأساس.",
       "contentFingerprint": "ff23e0fb37343f8cae13eb886473bf4d4c1ea33499b2d00ec4858eef7fda6e91",
-      "ideaFingerprint": "6d2ca5e3fe87a47a5504119dbc8b2b75f4eea5efa075e2acf23718d0c2a1d68b"
+      "ideaFingerprint": "6d2ca5e3fe87a47a5504119dbc8b2b75f4eea5efa075e2acf23718d0c2a1d68b",
+      "importEligible": true,
+      "reviewReason": null
     }
   ],
   "shard": "C"

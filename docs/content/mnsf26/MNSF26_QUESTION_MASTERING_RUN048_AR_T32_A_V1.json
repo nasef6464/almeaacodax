@@ -25,15 +25,17 @@
       "status": "MASTERED",
       "questionText": "صرف أحمد3750 ريال وهي15% من راتبه؛ الراتب",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_10",
-      "canonicalSubskill": "sub_quant_10_3",
+      "canonicalMainSkill": "skill_quant_09",
+      "canonicalSubskill": "sub_quant_09_1",
       "correctAnswer": "25000 ريال",
       "stepByStepSolution": "الراتب=3750÷0.15=25000؛ نسخة متطابقة في الفكرة مع T31/Q20 وتترك للمقارنة في DEDUPE.",
       "educationalExplanation": "الفكرة التعليمية: استعادة الراتب من المصروف النسبي. نحدد أساس النسبة أو العلاقة أولًا، ثم نطبّق خطوات الحساب ونراجع الناتج مع المعطيات.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق مباشر لقاعدة حسابية واحدة أو خطوتين واضحتين.",
       "contentFingerprint": "44bbfb4b51d082fe76cb723f6280073585bf458f98a6222080d5ab5ac54e85f2",
-      "ideaFingerprint": "c1507cc17a10ecbb715a185b3a5b3f0376e37a2850caaa6f2dd547b4c424f3ca"
+      "ideaFingerprint": "c1507cc17a10ecbb715a185b3a5b3f0376e37a2850caaa6f2dd547b4c424f3ca",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T032-Q02",
@@ -52,15 +54,17 @@
       "status": "MASTERED",
       "questionText": "سعر لتر البنزين ارتفع من 2 إلى 2.02 ريال؛ نسبة الزيادة",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_09",
-      "canonicalSubskill": "sub_quant_09_3",
+      "canonicalMainSkill": "skill_quant_08",
+      "canonicalSubskill": "sub_quant_08_2",
       "correctAnswer": "1%",
       "stepByStepSolution": "الزيادة=0.02؛ نسبتها=0.02÷2×100=1%.",
       "educationalExplanation": "الفكرة التعليمية: نسبة تغير سعر من القديم إلى الجديد. نحدد أساس النسبة أو العلاقة أولًا، ثم نطبّق خطوات الحساب ونراجع الناتج مع المعطيات.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق مباشر لقاعدة حسابية واحدة أو خطوتين واضحتين.",
       "contentFingerprint": "a3af1269e67ceb41292259993b7e89b78570de4ed5a1cb266b50cbdd19c36a5f",
-      "ideaFingerprint": "9453cb61b2280a4b353a7fe4098a02144e36da672b665d267ecc29ad8d05ea57"
+      "ideaFingerprint": "9453cb61b2280a4b353a7fe4098a02144e36da672b665d267ecc29ad8d05ea57",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T032-Q03",
@@ -79,7 +83,7 @@
       "status": "MASTERED",
       "questionText": "حوّل 3/4% إلى عدد عشري",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_09",
+      "canonicalMainSkill": "skill_quant_09",
       "canonicalSubskill": "sub_quant_09_1",
       "correctAnswer": "0.0075",
       "stepByStepSolution": "3/4%=0.75%؛ 0.75÷100=0.0075.",
@@ -87,7 +91,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق مباشر لقاعدة حسابية واحدة أو خطوتين واضحتين.",
       "contentFingerprint": "f77006bbe6205b3a23966e2d5987fcf7610e14dbf6e0786f617e4c0bb84f8497",
-      "ideaFingerprint": "9f779d01f9fd61ebfdba8988d83865de4e3bc6f0bd344ab90d268ac5158b2e4c"
+      "ideaFingerprint": "9f779d01f9fd61ebfdba8988d83865de4e3bc6f0bd344ab90d268ac5158b2e4c",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T032-Q04",
@@ -106,7 +112,7 @@
       "status": "MASTERED",
       "questionText": "اختبار80 سؤالًا؛ أول60 أجاب عن75% منها صحيحًا؛ المطلوب80% من الكل؛ نسبة الصحيح في آخر20",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_09",
+      "canonicalMainSkill": "skill_quant_09",
       "canonicalSubskill": "sub_quant_09_1",
       "correctAnswer": "95%",
       "stepByStepSolution": "صحيح أول60=45؛ المطلوب64 صحيحًا؛ آخر20 يلزم19؛ 19÷20=95%.",
@@ -114,7 +120,9 @@
       "difficulty": "Hard",
       "difficultyReason": "يتطلب ربط أكثر من نسبة أو خطوة رياضية والتحقق من الأساس.",
       "contentFingerprint": "a9be702a21f1542e785e761ed6ced447e897eba172daccf1fe9c19dbaff41429",
-      "ideaFingerprint": "b8ee10a538027a2bffdcfa22d14dc7b820ea0a455e2e5386ba85dc4df774af1a"
+      "ideaFingerprint": "b8ee10a538027a2bffdcfa22d14dc7b820ea0a455e2e5386ba85dc4df774af1a",
+      "importEligible": true,
+      "reviewReason": null
     }
   ],
   "shard": "A"

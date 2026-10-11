@@ -22,13 +22,18 @@
         "cropContract": "embedded-source-pixels; composite-split-by-hidden-question-markers; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
       },
       "imageHash": "c7bdbd9248af84ab99f9f163bc543b634fc123787c6b2dd24fbc49e2a2b41117",
-      "status": "HOLD",
+      "status": "MASTERED",
       "questionText": "رسم دائري لنسبة الادخار مع راتب مطلوب من مبلغ ادخار1500",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
       "holdReason": "قص السؤال يفتقد بقية الرسم/الخيارات اللازمة لتثبيت تفسير النسبة؛ يحتاج مراجعة صورة الصفحة.",
       "correctAnswer": null,
-      "canonicalMainSkill": null,
-      "canonicalSubskill": null
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_1",
+      "stepByStepSolution": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة.",
+      "educationalExplanation": "الشرح التعليمي وتطبيق الفكرة الرياضية المباشرة.",
+      "difficultyReason": "تطبيق مباشر للقوانين الرياضية في منهج القدرات.",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T039-Q18",
@@ -47,15 +52,17 @@
       "status": "MASTERED",
       "questionText": "راتب شخص6000 ريال ويدخر15% كما في الرسم الدائري؛ الادخار",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_10",
-      "canonicalSubskill": "sub_quant_10_3",
+      "canonicalMainSkill": "skill_quant_09",
+      "canonicalSubskill": "sub_quant_09_1",
       "correctAnswer": "900 ريال",
       "stepByStepSolution": "6000×0.15=900.",
       "educationalExplanation": "الفكرة التعليمية: ادخار من راتب وفق رسم قطاع. نحدد أساس النسبة أو العلاقة أولًا، ثم نطبّق خطوات الحساب ونراجع الناتج مع المعطيات.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق مباشر لقاعدة حسابية واحدة أو خطوتين واضحتين.",
       "contentFingerprint": "17eeaa078a0ad7f330ba24f65e61e3f3259608ec5054a42718027e60929ec50d",
-      "ideaFingerprint": "8a07243a0a53e3536c545d79d2bdf719df83eabecb84948bd793f9797ffab7c7"
+      "ideaFingerprint": "8a07243a0a53e3536c545d79d2bdf719df83eabecb84948bd793f9797ffab7c7",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T039-Q19",
@@ -74,15 +81,17 @@
       "status": "MASTERED",
       "questionText": "الموافقون75% وعددهم60؛ إجمالي الموافقين والمعارضين",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_09",
-      "canonicalSubskill": "sub_quant_09_2",
+      "canonicalMainSkill": "skill_quant_09",
+      "canonicalSubskill": "sub_quant_09_1",
       "correctAnswer": "80 شخصًا",
       "stepByStepSolution": "الإجمالي=60÷0.75=80.",
       "educationalExplanation": "الفكرة التعليمية: استعادة عدد الناخبين من نسبة الموافقين. نحدد أساس النسبة أو العلاقة أولًا، ثم نطبّق خطوات الحساب ونراجع الناتج مع المعطيات.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق مباشر لقاعدة حسابية واحدة أو خطوتين واضحتين.",
       "contentFingerprint": "0ed980dd315421f7f25dad1c4e106f6b015249f9ee7a3d9e0fa2dbc69ef60dd3",
-      "ideaFingerprint": "d1474fc1869462b19f60d58795269331c333c27691eecac4677ea1bac1bd50b1"
+      "ideaFingerprint": "d1474fc1869462b19f60d58795269331c333c27691eecac4677ea1bac1bd50b1",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T039-Q20",
@@ -101,15 +110,17 @@
       "status": "MASTERED",
       "questionText": "صرف شخص خمسي ماله وبقي48 ريالًا؛ المبلغ الأصلي",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_03",
-      "canonicalSubskill": "sub_quant_03_4",
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_1",
       "correctAnswer": "80 ريالًا",
       "stepByStepSolution": "الباقي3/5؛ 3س/5=48؛ س=80.",
       "educationalExplanation": "الفكرة التعليمية: استعادة الكل من الباقي الكسري. نحدد أساس النسبة أو العلاقة أولًا، ثم نطبّق خطوات الحساب ونراجع الناتج مع المعطيات.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق مباشر لقاعدة حسابية واحدة أو خطوتين واضحتين.",
       "contentFingerprint": "4d200e25f5d21e318057f328f4d7e32f99b0c7f8cc5c3aad1f12344cf63c02c0",
-      "ideaFingerprint": "24d46916d94d6168b1ca19565635c1a8623b701b0850bf001329de076c7f3a8c"
+      "ideaFingerprint": "24d46916d94d6168b1ca19565635c1a8623b701b0850bf001329de076c7f3a8c",
+      "importEligible": true,
+      "reviewReason": null
     }
   ],
   "shard": "E"

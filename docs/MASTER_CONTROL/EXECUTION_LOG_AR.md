@@ -173,3 +173,20 @@ The same run automatically restores:
 then records representative Mongo counts, exact media key/object-count parity and measured restore RTO.
 
 Remaining external input: five production source secrets only.
+
+## 2026-10-11 — PLAN 8 — MNSF26 Question Bank Mastering & Offline Gates Pass-Locked
+
+- **Scope:** بنك المنصف 26 (الكمي — الحساب/الجبر + الهندسة).
+- **الجرد والكروبس:** إجمالي 2,135 كروبس أصلية (1,204 حساب + 931 هندسة)؛ الأسئلة النشطة: 2,129 (+6 مستبعدات موثقة).
+- **المراجعة الرياضية والتصنيف (Run131):** إتمام 5 دفعات (Batches 001–005) تغطي 2,073 سؤالًا مستقلًا مع تحكيم رياضي وإعادة تصنيف قسري على التصنيف المعتمد (25 مهارة رئيسية / 95 مهارة فرعية) من `server/src/scripts/deployQuantTaxonomy25.ts`.
+- **عزل التعارضات (37 Source Conflicts):** عزل قسري كامل لـ 37 تعارض مصدري موثق وتحويل حالتها إلى `status: REVIEW` و `importEligible: false`. فحص `verify-mnsf26-37-source-conflicts.mjs` يعطي PASS بنسبة 100%.
+- **دمج وتحديث الملفات:** تحديث 2,316 سجلاً عبر 345 ملف ماستر أصلي في `docs/content/mnsf26/` مع الحفاظ على أسماء الملفات وتحديث عدادات الملفات.
+- **حزم الإفراج المعتمدة:**
+  - `MNSF26_CERTIFIED_UPDATE_PACKAGE_V1.json` (3.24 MB).
+  - `MNSF26_IMPORT_MANIFEST_READY_V1.json` (104,328 سطر، 4.55 MB؛ 1,989 مؤهل للاستيراد / 140 معزول للمراجعة).
+  - أقفال الاعتماد: `MNSF26_QA_LOCK_CERTIFICATION_V1.json`، `MNSF26_DEDUPE_LOCK_CERTIFICATION_V1.json`، و `MNSF26_R2_REMOTE_SHA_CERTIFICATION_V1.json`.
+- **بوابات التحقق المستقلة:**
+  - `node scripts/verifyMnsf26CurrentFullbookGate.mjs` -> PASS (0 failures).
+  - `node scripts/verifyMnsf26CurrentFullbookRows.mjs` -> PASS (2,129 rows, 1,989 importable, 0 failures).
+  - `node scripts/verify-mnsf26-37-source-conflicts.mjs` -> PASS (37 checked, 0 failures).
+- **الخلاصة:** اكتملت المرحلة بالكامل وأُغلقت جميع البوابات غير المتصلة (Offline QA Locked). البنك جاهز للمرحلة 6 (Stage 6: Draft Import) بمجرد تشغيل بيئة قاعدة البيانات.

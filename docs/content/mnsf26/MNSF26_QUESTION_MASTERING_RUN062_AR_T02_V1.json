@@ -40,7 +40,9 @@
       "difficultyReason": "عد صفحات مرقمة ومقارنة تكلفة.",
       "contentFingerprint": "26ccb757910f6fe7ebac74f9c373421277bcf1bf5a9e13aefc1b55a2c844291d",
       "ideaFingerprint": "b95aa4f11c2b974cdc3ab02f9faec6240205c84271ca629e7076d041fa84a184",
-      "legacyProvenance": "MNSF26_CONTENT_ENRICHMENT_V1.json; previously reviewed source answer retained and image-verified"
+      "legacyProvenance": "MNSF26_CONTENT_ENRICHMENT_V1.json; previously reviewed source answer retained and image-verified",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T002-Q02",
@@ -62,7 +64,7 @@
       "status": "MASTERED",
       "questionText": "ثلاثة أعداد فردية متتالية مجموعها63؛ فما العدد الأكبر؟",
       "canonicalMainSkill": "skill_quant_01",
-      "canonicalSubskill": "sub_quant_01_3",
+      "canonicalSubskill": "sub_quant_01_1",
       "correctAnswer": "ج — 23",
       "stepByStepSolution": "المتوسط=63÷3=21، فتكون الأعداد 19،21،23، والأكبر23.",
       "educationalExplanation": "في ثلاثة أعداد متتالية بفارق ثابت، العدد الأوسط يساوي المتوسط.",
@@ -70,7 +72,9 @@
       "difficultyReason": "متوسط ثلاثة أعداد فردية متتالية.",
       "contentFingerprint": "5cb7e0cb0670021c26473e80fe4c510c642a42ed4759ab634118812ac9a685b2",
       "ideaFingerprint": "daa8c82adfda5a66b8c6d24d6838936dbaffb60b5f40e65b622083f13eec28ab",
-      "legacyProvenance": "MNSF26_CONTENT_ENRICHMENT_V1.json; previously reviewed source answer retained and image-verified"
+      "legacyProvenance": "MNSF26_CONTENT_ENRICHMENT_V1.json; previously reviewed source answer retained and image-verified",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T002-Q03",
@@ -91,8 +95,8 @@
       "visualEvidence": "DIRECT_RUN017_SOURCE_WEBP_INSPECTION_RUN062_2026-10-08",
       "status": "MASTERED",
       "questionText": "إذا كان نصف مجموع عددين زوجيين متتاليين يساوي7، فما ضعف العدد الأصغر؟",
-      "canonicalMainSkill": "skill_quant_01",
-      "canonicalSubskill": "sub_quant_01_3",
+      "canonicalMainSkill": "skill_quant_04",
+      "canonicalSubskill": "sub_quant_04_2",
       "correctAnswer": "ج — 12",
       "stepByStepSolution": "المجموع=14. العددان الزوجيان المتتاليان هما6 و8، ونصف مجموعهما7؛ ضعف الأصغر=2×6=12.",
       "educationalExplanation": "العددان الزوجيان المتتاليان يختلفان بمقدار2.",
@@ -100,7 +104,9 @@
       "difficultyReason": "إيجاد عددين زوجيين من متوسطهما.",
       "contentFingerprint": "632cfffde01cb0ac9e96e68e3a17bb31278c4c8d7c5b4f1f5e40d33508b0716f",
       "ideaFingerprint": "6123bb79a5c306469fef3e8488ee9ced0aea010c5fca678520cc1eb5788e5ec6",
-      "legacyProvenance": "MNSF26_CONTENT_ENRICHMENT_V1.json; previously reviewed source answer retained and image-verified"
+      "legacyProvenance": "MNSF26_CONTENT_ENRICHMENT_V1.json; previously reviewed source answer retained and image-verified",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T002-Q04",
@@ -122,7 +128,7 @@
       "status": "MASTERED",
       "questionText": "ما الفرق بين أصغر عدد فردي مكون من ثلاث أرقام وأكبر عدد زوجي مكون من رقمين؟",
       "canonicalMainSkill": "skill_quant_01",
-      "canonicalSubskill": "sub_quant_01_3",
+      "canonicalSubskill": "sub_quant_01_1",
       "correctAnswer": "ب — 3",
       "stepByStepSolution": "أصغر عدد فردي ثلاثي=101، وأكبر عدد زوجي ثنائي=98، والفرق101−98=3.",
       "educationalExplanation": "نحدد الحدود وفق عدد الخانات والزوجية قبل الطرح.",
@@ -130,7 +136,9 @@
       "difficultyReason": "تمييز حدود أعداد زوجية وفردية.",
       "contentFingerprint": "7bc30e365a54de313a55fbb76fa5caaa6bbd75c8cfc4c0d8ffcb5bd7c0d356ec",
       "ideaFingerprint": "ac4e4c72be9a23f88ebd086bf6b9f61a04736d891b4be88c015e132d91875422",
-      "legacyProvenance": "MNSF26_CONTENT_ENRICHMENT_V1.json; previously reviewed source answer retained and image-verified"
+      "legacyProvenance": "MNSF26_CONTENT_ENRICHMENT_V1.json; previously reviewed source answer retained and image-verified",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T002-Q05",
@@ -152,7 +160,7 @@
       "status": "MASTERED",
       "questionText": "ثلاثة أعداد زوجية متتالية مجموعها156؛ ما مجموع أول عددين؟",
       "canonicalMainSkill": "skill_quant_01",
-      "canonicalSubskill": "sub_quant_01_3",
+      "canonicalSubskill": "sub_quant_01_1",
       "correctAnswer": "ب — 102",
       "stepByStepSolution": "الأوسط=156÷3=52، فتكون الأعداد50 و52 و54؛ أول عددين مجموعهما102.",
       "educationalExplanation": "الأوسط هو المتوسط في ثلاثة أعداد زوجية متتالية.",
@@ -160,7 +168,9 @@
       "difficultyReason": "استخدام المتوسط لاستخراج عددين من متتابعة.",
       "contentFingerprint": "6a05a46039fa4dcd9d2a204ed479f0106e5ab6de88a68869b178a434b1834204",
       "ideaFingerprint": "c8351dde789aebb9e67ba63e833c26d7a85f53e5b8a05be4145d86869113a13b",
-      "legacyProvenance": "MNSF26_CONTENT_ENRICHMENT_V1.json; previously reviewed source answer retained and image-verified"
+      "legacyProvenance": "MNSF26_CONTENT_ENRICHMENT_V1.json; previously reviewed source answer retained and image-verified",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T002-Q06",
@@ -181,8 +191,8 @@
       "visualEvidence": "DIRECT_RUN017_SOURCE_WEBP_INSPECTION_RUN062_2026-10-08",
       "status": "MASTERED",
       "questionText": "كم عددًا فرديًا بين 1/13 و65/3؟",
-      "canonicalMainSkill": "skill_quant_01",
-      "canonicalSubskill": "sub_quant_01_3",
+      "canonicalMainSkill": "skill_quant_03",
+      "canonicalSubskill": "sub_quant_03_1",
       "correctAnswer": "د — 11",
       "stepByStepSolution": "1/13≈0.077 و65/3≈21.67. الأعداد الفردية الصحيحة هي1،3،5،7،9،11،13،15،17،19،21؛ عددها11.",
       "educationalExplanation": "نحدد الحدود العددية ثم نعد الأعداد الفردية الصحيحة الواقعة بينها.",
@@ -190,7 +200,9 @@
       "difficultyReason": "مقارنة كسور بحدود أعداد صحيحة ثم عد الفرديات.",
       "contentFingerprint": "b9ee970d545f48ed97371fb219f14516a81cd586e9307e2c46da432db5dd4526",
       "ideaFingerprint": "9c7af23d9ae371d45e2b9d42470cece9975f5a3c7771ad329be3c298be833a3e",
-      "legacyProvenance": "MNSF26_CONTENT_ENRICHMENT_V1.json; previously reviewed source answer retained and image-verified"
+      "legacyProvenance": "MNSF26_CONTENT_ENRICHMENT_V1.json; previously reviewed source answer retained and image-verified",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T002-Q07",
@@ -211,8 +223,8 @@
       "visualEvidence": "DIRECT_RUN017_SOURCE_WEBP_INSPECTION_RUN062_2026-10-08",
       "status": "MASTERED",
       "questionText": "إذا كانت ن وم ول أعدادًا فردية، فأي التعابير الآتية ليس زوجيًا؟",
-      "canonicalMainSkill": "skill_quant_01",
-      "canonicalSubskill": "sub_quant_01_3",
+      "canonicalMainSkill": "skill_quant_04",
+      "canonicalSubskill": "sub_quant_04_2",
       "correctAnswer": "ج — ن + م + 1",
       "stepByStepSolution": "مجموع عددين فرديين زوجي، وإضافة1 تجعله فرديًا. بقية التعابير الظاهرة زوجية.",
       "educationalExplanation": "قواعد الزوجية: فردي+فردي=زوجي؛ زوجي+فردي=فردي.",
@@ -220,7 +232,9 @@
       "difficultyReason": "فحص زوجية تعابير رمزية متعددة.",
       "contentFingerprint": "bc35befb48fb70cb94de46fd65fc0acc536222cdb1db43a9a895027c1eeb2794",
       "ideaFingerprint": "93075bf38c01664904e608ba64c8d8b530cd04d3e2a74724dce6aa0c00c58bc7",
-      "legacyProvenance": "MNSF26_CONTENT_ENRICHMENT_V1.json; previously reviewed source answer retained and image-verified"
+      "legacyProvenance": "MNSF26_CONTENT_ENRICHMENT_V1.json; previously reviewed source answer retained and image-verified",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T002-Q08",
@@ -242,7 +256,7 @@
       "status": "MASTERED",
       "questionText": "ما مجموع الأعداد الفردية بين 3 و11؟",
       "canonicalMainSkill": "skill_quant_01",
-      "canonicalSubskill": "sub_quant_01_3",
+      "canonicalSubskill": "sub_quant_01_1",
       "correctAnswer": "ب — 21",
       "stepByStepSolution": "الأعداد الفردية بين الطرفين دون شملهما: 5،7،9؛ مجموعها=21.",
       "educationalExplanation": "كلمة بين دون الطرفين تستبعد3 و11.",
@@ -250,7 +264,9 @@
       "difficultyReason": "عد ثلاثة أعداد فردية وجمعها.",
       "contentFingerprint": "b68565387ed4ede070aae5d09b8d9774bacae971858151cfbe2fa919a7e45a58",
       "ideaFingerprint": "190aee1705809f908bf98a3b39b199ec47438d74e2b9593e12ed44c7882f5831",
-      "legacyProvenance": "MNSF26_CONTENT_ENRICHMENT_V1.json; previously reviewed source answer retained and image-verified"
+      "legacyProvenance": "MNSF26_CONTENT_ENRICHMENT_V1.json; previously reviewed source answer retained and image-verified",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T002-Q11",
@@ -271,8 +287,8 @@
       "visualEvidence": "DIRECT_RUN017_SOURCE_WEBP_INSPECTION_RUN062_2026-10-08",
       "status": "MASTERED",
       "questionText": "إذا كان س عددًا فرديًا، فأي الآتي فردي؟",
-      "canonicalMainSkill": "skill_quant_01",
-      "canonicalSubskill": "sub_quant_01_3",
+      "canonicalMainSkill": "skill_quant_04",
+      "canonicalSubskill": "sub_quant_04_2",
       "correctAnswer": "ب — 3س + 2",
       "stepByStepSolution": "3س فردي لأن حاصل ضرب فرديين فردي؛ إضافة2 الزوجي تبقي الناتج فرديًا.",
       "educationalExplanation": "نطبق قواعد الزوجية على الضرب والجمع قبل اختيار التعبير.",
@@ -280,7 +296,9 @@
       "difficultyReason": "تحديد فردية تعبير جبري.",
       "contentFingerprint": "047ac536b0772a98f6fa8cbcf69d9f8fb951414d4fd0c83723081966f23ee6f6",
       "ideaFingerprint": "b906c118b1fb7fe727070b663ab7811249accc33b7fb0237d609822ff844f610",
-      "legacyProvenance": "MNSF26_CONTENT_ENRICHMENT_V1.json; previously reviewed source answer retained and image-verified"
+      "legacyProvenance": "MNSF26_CONTENT_ENRICHMENT_V1.json; previously reviewed source answer retained and image-verified",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T002-Q12",
@@ -302,7 +320,7 @@
       "status": "MASTERED",
       "questionText": "كم عددًا فرديًا بين 3 و14؟",
       "canonicalMainSkill": "skill_quant_01",
-      "canonicalSubskill": "sub_quant_01_3",
+      "canonicalSubskill": "sub_quant_01_1",
       "correctAnswer": "ج — 5",
       "stepByStepSolution": "الأعداد الفردية دون الطرفين هي5،7،9،11،13، وعددها5.",
       "educationalExplanation": "نحدد الأعداد الفردية الواقعة داخل المجال دون الحدين.",
@@ -310,7 +328,9 @@
       "difficultyReason": "عد أعداد فردية داخل مجال قصير.",
       "contentFingerprint": "e7f0b3dcfe9832137a0499ec7b28beb9d5d3e2a761335f29f914e5f725cbd07e",
       "ideaFingerprint": "96f88713a59dde48c29f842972942a34e35cd7b307ed418bb50af5c67de26215",
-      "legacyProvenance": "MNSF26_CONTENT_ENRICHMENT_V1.json; previously reviewed source answer retained and image-verified"
+      "legacyProvenance": "MNSF26_CONTENT_ENRICHMENT_V1.json; previously reviewed source answer retained and image-verified",
+      "importEligible": true,
+      "reviewReason": null
     }
   ]
 }

@@ -27,7 +27,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T41_Q06",
       "status": "MASTERED",
       "questionText": "مربع ضلعه6 سم، امتد الضلع الرأسي المجاور حتى صار أ ج=14 سم؛ أوجد أ هـ.",
-      "canonicalMainSkill": "main_quant_22",
+      "canonicalMainSkill": "skill_quant_22",
       "canonicalSubskill": "sub_quant_22_1",
       "correctAnswer": "8 (ب)",
       "stepByStepSolution": "القطعة من ب إلى ج تساوي ضلع المربع6، لذلك أ هـ=14−6=8.",
@@ -35,7 +35,9 @@
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر.",
       "contentFingerprint": "d3cd8f1cb90c094c72eb3cc2fc511829d54270365a3a6cb8005a6bf146e8655b",
-      "ideaFingerprint": "debd881457f22d96d14e7f1cba1139f97eda4e26d0deaceb2da800edf095fb83"
+      "ideaFingerprint": "debd881457f22d96d14e7f1cba1139f97eda4e26d0deaceb2da800edf095fb83",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T041-Q07",
@@ -56,15 +58,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T41_Q07",
       "status": "MASTERED",
       "questionText": "مربعان مساحتهما16 و9 على ضلعي زاوية قائمة لمثلث؛ أوجد مساحة المثلث.",
-      "canonicalMainSkill": "main_quant_20",
-      "canonicalSubskill": "sub_quant_20_4",
+      "canonicalMainSkill": "skill_quant_22",
+      "canonicalSubskill": "sub_quant_22_1",
       "correctAnswer": "6 (ب)",
       "stepByStepSolution": "طولا الضلعين4 و3؛ مساحة المثلث=4×3/2=6.",
       "educationalExplanation": "من الصورة: طولا الضلعين4 و3؛ مساحة المثلث=4×3/2=6.",
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر.",
       "contentFingerprint": "5635c583a449cac3869d6af9cd07b8c67c4633a3e889656cdbecca08b44660f8",
-      "ideaFingerprint": "a33002e8a192032b0d099eb876e2005157a6bada22b60d2a582f506ddf968d8c"
+      "ideaFingerprint": "a33002e8a192032b0d099eb876e2005157a6bada22b60d2a582f506ddf968d8c",
+      "importEligible": true,
+      "reviewReason": null
     }
   ]
 }

@@ -24,8 +24,8 @@
       "visualEvidence": "DIRECT_RUN017_SOURCE_WEBP_INSPECTION_RUN062_2026-10-08",
       "status": "MASTERED",
       "questionText": "طابور فيه 30 طالبًا، أمام أحمد 10 طلاب وخلف خالد 10 طلاب. كم طالبًا بينهما؟",
-      "canonicalMainSkill": "skill_quant_13",
-      "canonicalSubskill": "sub_quant_13_4",
+      "canonicalMainSkill": "skill_quant_04",
+      "canonicalSubskill": "sub_quant_04_2",
       "correctAnswer": "ج — 8",
       "stepByStepSolution": "ترتيب أحمد من الأمام=11، وترتيب خالد من الأمام=30−10=20. بينهما 20−11−1=8.",
       "educationalExplanation": "حدّد موقع كل طالب من الطرف نفسه قبل حساب من بينهما.",
@@ -33,7 +33,9 @@
       "difficultyReason": "تحويل ترتيب بسيط وطرح الفاصل.",
       "contentFingerprint": "e772e36f3028b12f138c676ec35f9beb1b1253ce2444de73d7b8303e8dac2e07",
       "ideaFingerprint": "43c5a520ae0cf85603b8f572bfc6dd64a11d8b869ec92dcb58b3111bea3dac59",
-      "legacyProvenance": "MNSF26_CONTENT_ENRICHMENT_V1.json; 130 legacy not reanalysed from scratch"
+      "legacyProvenance": "MNSF26_CONTENT_ENRICHMENT_V1.json; 130 legacy not reanalysed from scratch",
+      "importEligible": true,
+      "reviewReason": null
     }
   ]
 }

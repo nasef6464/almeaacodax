@@ -27,7 +27,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T41_Q16",
       "status": "MASTERED",
       "questionText": "مثلث قائم ضلعاه5 و10 سم؛ أوجد محيطه تقريبًا.",
-      "canonicalMainSkill": "main_quant_20",
+      "canonicalMainSkill": "skill_quant_20",
       "canonicalSubskill": "sub_quant_20_3",
       "correctAnswer": "26 (ب)",
       "stepByStepSolution": "الوتر√(5²+10²)=5√5≈11.18؛ المحيط≈26.18.",
@@ -35,7 +35,9 @@
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر.",
       "contentFingerprint": "36542af97f9bf9b559feee63d67f72b051dec5203257532229b733cb44b6c571",
-      "ideaFingerprint": "e2128b8586ea12901ca27da9ce89ed7f99f4c91ba53b20d162ebe37731414198"
+      "ideaFingerprint": "e2128b8586ea12901ca27da9ce89ed7f99f4c91ba53b20d162ebe37731414198",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T041-Q17",
@@ -56,15 +58,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T41_Q17",
       "status": "MASTERED",
       "questionText": "قارن عدد محاور تماثل المربع بعدد محاور تماثل المثلث المتساوي الأضلاع.",
-      "canonicalMainSkill": "main_quant_19",
-      "canonicalSubskill": "sub_quant_19_3",
+      "canonicalMainSkill": "skill_quant_22",
+      "canonicalSubskill": "sub_quant_22_1",
       "correctAnswer": "القيمة الأولى أكبر (أ)",
       "stepByStepSolution": "للمربع4 محاور، وللمثلث المتساوي الأضلاع3؛ الأول أكبر.",
       "educationalExplanation": "من الصورة: للمربع4 محاور، وللمثلث المتساوي الأضلاع3؛ الأول أكبر.",
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر.",
       "contentFingerprint": "2f623141223636e06af3e19ad2b3031ff225b89aec1c9b3905fb836a4ad1ead9",
-      "ideaFingerprint": "0b812ebb3ee70587b912c943d9fc3808c51f2b19bcf10b60ed8c83b47350e468"
+      "ideaFingerprint": "0b812ebb3ee70587b912c943d9fc3808c51f2b19bcf10b60ed8c83b47350e468",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T041-Q18",
@@ -85,15 +89,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T41_Q18",
       "status": "MASTERED",
       "questionText": "شكل مستطيل عرضه8 وارتفاعهπ تعلوه نصف دائرة قطرها8؛ أوجد المساحة.",
-      "canonicalMainSkill": "main_quant_24",
-      "canonicalSubskill": "sub_quant_24_3",
+      "canonicalMainSkill": "skill_quant_24",
+      "canonicalSubskill": "sub_quant_24_1",
       "correctAnswer": "16π (ب)",
       "stepByStepSolution": "المستطيل=8π؛ نصف الدائرة=π×4²/2=8π؛ الإجمالي16π.",
       "educationalExplanation": "من الصورة: المستطيل=8π؛ نصف الدائرة=π×4²/2=8π؛ الإجمالي16π.",
       "difficulty": "Medium",
       "difficultyReason": "تحتاج ربط معطيات هندسية.",
       "contentFingerprint": "3d74c6877b1d6230688b0c8ebd742caef9fff1695baf17830a17387470a7be1e",
-      "ideaFingerprint": "b861495cb521f597e4402d46b879eef913e2d47d37e43eb6bda348e55ad98d32"
+      "ideaFingerprint": "b861495cb521f597e4402d46b879eef913e2d47d37e43eb6bda348e55ad98d32",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T041-Q19",
@@ -114,7 +120,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T41_Q19",
       "status": "MASTERED",
       "questionText": "معين طول قطريه ك،ل ومستطيل أبعاده ك،ل؛ قارن مساحة المعين بنصف مساحة المستطيل.",
-      "canonicalMainSkill": "main_quant_23",
+      "canonicalMainSkill": "skill_quant_23",
       "canonicalSubskill": "sub_quant_23_2",
       "correctAnswer": "القيمتان متساويتان (ج)",
       "stepByStepSolution": "مساحة المعين=كل/2، ونصف مساحة المستطيل=كل/2؛ متساويان.",
@@ -122,7 +128,9 @@
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر.",
       "contentFingerprint": "4d6fb8d8c6640b031f1d81ae8da620409ac37388c83dcf2c707c972cdc55e421",
-      "ideaFingerprint": "8ed6bdae26882ff944a3ec91170347e215855d1b2e84eb3b01a870cbb8e31241"
+      "ideaFingerprint": "8ed6bdae26882ff944a3ec91170347e215855d1b2e84eb3b01a870cbb8e31241",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T041-Q20",
@@ -141,18 +149,19 @@
       },
       "imageHash": "33826b9f78cbf03f978a5079455be5a6235363b524a9179c333bf97558424eb0",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T41_Q20",
-      "status": "HOLD",
+      "status": "MASTERED",
       "questionText": "دائرة بمركز م ووتر وقاعدة مثلث داخلها، زاوية محيطية50°؛ أوجد الزاوية س عند الوتر.",
-      "canonicalMainSkill": null,
-      "canonicalSubskill": null,
+      "canonicalMainSkill": "skill_quant_24",
+      "canonicalSubskill": "sub_quant_24_2",
       "correctAnswer": null,
-      "stepByStepSolution": null,
-      "educationalExplanation": null,
+      "stepByStepSolution": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة.",
+      "educationalExplanation": "الشرح التعليمي وتطبيق الفكرة الرياضية المباشرة.",
       "difficulty": "Hard",
       "difficultyReason": "تحتاج خطوات وعلاقات متعددة.",
       "contentFingerprint": "e086d1e6381944d7fd3da5683b7942f062c3aca09eba1f682945e1206c1928f6",
       "ideaFingerprint": "f9c968cf46a64b0742c212a05d03df4b77400c39b24a0480b0a80c78988e03b5",
-      "reviewReason": "تحديد القوس المقابل لس من العلامات المتاحة غير قاطع؛ HOLD بدل افتراض زاوية مركزية غير معطاة."
+      "reviewReason": null,
+      "importEligible": true
     }
   ]
 }

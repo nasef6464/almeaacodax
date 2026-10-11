@@ -1,0 +1,254 @@
+{
+  "batchId": "BATCH_003",
+  "bank": "MNSF26",
+  "reviewQuestionsCount": 4,
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T001-Q10",
+      "questionCode": "QDR-QNT-MNSF26-AR-T001-Q10",
+      "sourceDocument": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+      "sourcePart": "الحساب/الجبر",
+      "sourceTestNumber": 1,
+      "sourceQuestionNumber": 10,
+      "sourcePage": 1,
+      "sourceSkillLabel": "قراءة الأعداد والأعداد المحصورة",
+      "imageReference": "AR/AR-T001-Q10.webp",
+      "imageHash": "574e84e673d023bde62998ae8b13c3f57a6301ca20dfcac03ecf42fc57276b0d",
+      "questionText": "عدد من خانتين وتقريبه إلى أقرب 10 يساوي 100",
+      "options": [
+        {
+          "text": "أ",
+          "isCorrect": false
+        },
+        {
+          "text": "ب",
+          "isCorrect": false
+        },
+        {
+          "text": "ج",
+          "isCorrect": false
+        },
+        {
+          "text": "د",
+          "isCorrect": false
+        }
+      ],
+      "correctAnswer": "أ",
+      "correctOptionIndex": 3,
+      "stepByStepSolution": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة.",
+      "educationalExplanation": "الشرح التعليمي وتطبيق الفكرة الرياضية المباشرة.",
+      "solvingStrategy": "التحليل الرياضي المباشر وتطبيق استراتيجيات الحل المناسبة للقدرات.",
+      "difficulty": "Medium",
+      "difficultyReason": "تطبيق مباشر للقوانين الرياضية في منهج القدرات.",
+      "primaryMainSkillId": "skill_quant_01",
+      "primarySubSkillId": "sub_quant_01_1",
+      "primarySkillName": "أساسيات الأعداد والعمليات الحسابية — قواعد الإشارات والتجميع الذكي (مكملات 10 و 100 و 1000)",
+      "secondarySubSkillIds": [],
+      "classificationReason": "أساسيات الأعداد والعمليات الحسابية والتجميع الذكي",
+      "classificationEvidence": "عمليات حسابية مباشرة أو ترتيب العمليات",
+      "classificationConfidence": "HIGH",
+      "alternativeCandidateSkills": [
+        "sub_quant_01_3",
+        "sub_quant_02_3",
+        "sub_quant_13_4"
+      ],
+      "previousSubSkill": null,
+      "isReclassified": null,
+      "contentFingerprint": "عدد من خانتين وتقريبه إلى أقرب 10 يساوي 100 | source-hold/source-hold",
+      "ideaFingerprint": "حدد نمط السؤال (عدد من خانتين وتقريبه إلى أقرب 10 يساوي 100 | source-hold/source-hold) ثم طبّق القاعدة المرتبطة بالمهارة وراجع النتيجة النهائية.",
+      "qaStatus": "HOLD",
+      "reviewReason": "EXPLICIT_SOURCE_HOLD_PRESERVED",
+      "importEligible": false,
+      "evidenceReferences": [
+        "MNSF26_CANONICAL_TAXONOMY_25_95_V1.json",
+        "MNSF26_SOURCE_TO_CANONICAL_CANDIDATE_MAP_V1.json"
+      ]
+    },
+    {
+      "sourceKey": "MNSF26-AR-T013-Q15",
+      "questionCode": "QDR-QNT-MNSF26-AR-T013-Q15",
+      "sourceDocument": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+      "sourcePart": "الحساب/الجبر",
+      "sourceTestNumber": 13,
+      "sourceQuestionNumber": 15,
+      "sourcePage": 13,
+      "sourceSkillLabel": "الأعداد الأولية - العوامل الأولى",
+      "imageReference": "AR/AR-T013-Q15.webp",
+      "imageHash": "a9c02974bc771c0c8cd4c23b6d5ceca0456f885646595faefd562b1053bc238c",
+      "questionText": "SOURCE MATH TRANSCRIPTION HOLD",
+      "options": [
+        {
+          "text": "أ",
+          "isCorrect": false
+        },
+        {
+          "text": "ب",
+          "isCorrect": false
+        },
+        {
+          "text": "ج",
+          "isCorrect": true
+        },
+        {
+          "text": "د",
+          "isCorrect": false
+        }
+      ],
+      "correctAnswer": "ج",
+      "correctOptionIndex": 2,
+      "stepByStepSolution": "الدورتان كل7 و5 دقائق فتتزامنان كل م.م.أ(7،5)=35 دقيقة. خلال180 دقيقة: 35،70،105،140،175؛ أي5 مرات بعد البداية.",
+      "educationalExplanation": "نحوّل التكرارين إلى دورة مشتركة باستخدام م.م.أ.",
+      "solvingStrategy": "التحليل الرياضي المباشر وتطبيق استراتيجيات الحل المناسبة للقدرات.",
+      "difficulty": "Medium",
+      "difficultyReason": "دورتان زمنيتان ثم عد التزامنات.",
+      "primaryMainSkillId": "skill_quant_01",
+      "primarySubSkillId": "sub_quant_01_1",
+      "primarySkillName": "أساسيات الأعداد والعمليات الحسابية — قواعد الإشارات والتجميع الذكي (مكملات 10 و 100 و 1000)",
+      "secondarySubSkillIds": [],
+      "classificationReason": "أساسيات الأعداد والعمليات الحسابية والتجميع الذكي",
+      "classificationEvidence": "عمليات حسابية مباشرة أو ترتيب العمليات",
+      "classificationConfidence": "HIGH",
+      "alternativeCandidateSkills": [
+        "sub_quant_02_1",
+        "sub_quant_02_3",
+        "sub_quant_01_3",
+        "sub_quant_13_2",
+        "sub_quant_11_1"
+      ],
+      "previousSubSkill": "sub_quant_14_4",
+      "isReclassified": true,
+      "contentFingerprint": "e1b3e579061e3878079f06a9565c7840fa6c019f79992e490f01b01376d0d140",
+      "ideaFingerprint": "cdf76b56ff7144f917fd9f98e74d8c469084e7686174a2d333d97c14b680fb8c",
+      "qaStatus": "HOLD",
+      "reviewReason": "EXPLICIT_SOURCE_HOLD_PRESERVED",
+      "importEligible": false,
+      "evidenceReferences": [
+        "MNSF26_CANONICAL_TAXONOMY_25_95_V1.json",
+        "MNSF26_SOURCE_TO_CANONICAL_CANDIDATE_MAP_V1.json"
+      ]
+    },
+    {
+      "sourceKey": "MNSF26-AR-T014-Q08",
+      "questionCode": "QDR-QNT-MNSF26-AR-T014-Q08",
+      "sourceDocument": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+      "sourcePart": "الحساب/الجبر",
+      "sourceTestNumber": 14,
+      "sourceQuestionNumber": 8,
+      "sourcePage": 14,
+      "sourceSkillLabel": "الأعداد الأولية - العوامل الأولى",
+      "imageReference": "AR/AR-T014-Q08.webp",
+      "imageHash": "f95cbe20f959aa03e7d6ecde5a450fb6304e97076d4caef33c80f99e56d7e8c9",
+      "questionText": "SOURCE LOGIC HOLD",
+      "options": [
+        {
+          "text": "أ",
+          "isCorrect": false
+        },
+        {
+          "text": "ب",
+          "isCorrect": true
+        },
+        {
+          "text": "ج",
+          "isCorrect": false
+        },
+        {
+          "text": "د",
+          "isCorrect": false
+        }
+      ],
+      "correctAnswer": "ب",
+      "correctOptionIndex": 1,
+      "stepByStepSolution": "31÷3=10 والباقي1، فيتبقى قلم واحد.",
+      "educationalExplanation": "الباقي هو ما لا يمكن توزيعه بالتساوي.",
+      "solvingStrategy": "التحليل الرياضي المباشر وتطبيق استراتيجيات الحل المناسبة للقدرات.",
+      "difficulty": "Easy",
+      "difficultyReason": "باقي قسمة مباشر.",
+      "primaryMainSkillId": "skill_quant_01",
+      "primarySubSkillId": "sub_quant_01_1",
+      "primarySkillName": "أساسيات الأعداد والعمليات الحسابية — قواعد الإشارات والتجميع الذكي (مكملات 10 و 100 و 1000)",
+      "secondarySubSkillIds": [],
+      "classificationReason": "أساسيات الأعداد والعمليات الحسابية والتجميع الذكي",
+      "classificationEvidence": "عمليات حسابية مباشرة أو ترتيب العمليات",
+      "classificationConfidence": "HIGH",
+      "alternativeCandidateSkills": [
+        "sub_quant_02_1",
+        "sub_quant_02_3",
+        "sub_quant_01_3",
+        "sub_quant_13_2",
+        "sub_quant_11_1"
+      ],
+      "previousSubSkill": "sub_quant_02_2",
+      "isReclassified": true,
+      "contentFingerprint": "fbbf81459ea9317ca3d1b1dd1c3efc5c113d71e62b7124fe6e1af447bf720eb8",
+      "ideaFingerprint": "f490b7edcacd9d3a13793d7bcf941a5c60c373613a608f6f9da76f7185e4ec45",
+      "qaStatus": "HOLD",
+      "reviewReason": "INTENTIONALLY_EXCLUDED_SOURCE_ABSENT",
+      "importEligible": false,
+      "evidenceReferences": [
+        "MNSF26_CANONICAL_TAXONOMY_25_95_V1.json",
+        "MNSF26_SOURCE_TO_CANONICAL_CANDIDATE_MAP_V1.json"
+      ]
+    },
+    {
+      "sourceKey": "MNSF26-AR-T018-Q20",
+      "questionCode": "QDR-QNT-MNSF26-AR-T018-Q20",
+      "sourceDocument": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+      "sourcePart": "الحساب/الجبر",
+      "sourceTestNumber": 18,
+      "sourceQuestionNumber": 20,
+      "sourcePage": 35,
+      "sourceSkillLabel": "جمع الأعداد - المتتابعات - ضرب الأعداد",
+      "imageReference": "AR/AR-T018-Q20.webp",
+      "imageHash": "2563d920db1b9433666d0bb1979ec4549e103cc6898f62f7db01399a9d21903f",
+      "questionText": "إذا كان حاصل ضرب الأعداد 7 و9 و2 وس يقبل القسمة على10، فما القيمة المحتملة لس؟",
+      "options": [
+        {
+          "text": "أ",
+          "isCorrect": false
+        },
+        {
+          "text": "ب",
+          "isCorrect": false
+        },
+        {
+          "text": "ج",
+          "isCorrect": false
+        },
+        {
+          "text": "د",
+          "isCorrect": true
+        }
+      ],
+      "correctAnswer": "د",
+      "correctOptionIndex": 3,
+      "stepByStepSolution": "حاصل ضرب7×9×2 يحوي العامل2 لكنه لا يحوي العامل5؛ حتى يقبل القسمة على10=2×5 يجب أن يكون س من مضاعفات5، ومن الخيارات س=5.",
+      "educationalExplanation": "شرط القسمة على10 وجود العاملين2 و5.",
+      "solvingStrategy": "التحليل الرياضي المباشر وتطبيق استراتيجيات الحل المناسبة للقدرات.",
+      "difficulty": "Easy",
+      "difficultyReason": "قابلية القسمة على10 بالتحليل إلى عوامل.",
+      "primaryMainSkillId": "skill_quant_04",
+      "primarySubSkillId": "sub_quant_04_2",
+      "primarySkillName": "الأعداد العشرية — ضرب وقسمة الأعداد العشرية وقوى 10",
+      "secondarySubSkillIds": [],
+      "classificationReason": "ضرب وقسمة الأعداد العشرية وتحريك الفاصلة العشرية",
+      "classificationEvidence": "عمليات حسابية على أعداد تحتوي فواصل عشرية",
+      "classificationConfidence": "HIGH",
+      "alternativeCandidateSkills": [
+        "sub_quant_01_2",
+        "sub_quant_01_3"
+      ],
+      "previousSubSkill": "sub_quant_02_2",
+      "isReclassified": true,
+      "contentFingerprint": "9d42255bc6c1058e5dd0f182c9977bef11ce61d81d6cc4b5cc43fa73b9a47ebe",
+      "ideaFingerprint": "efcee4fa22b3726ad245dc7719346810ca4d9617014230fdb5c2ae2825c83850",
+      "qaStatus": "HOLD",
+      "reviewReason": "INTENTIONALLY_EXCLUDED_SOURCE_ABSENT",
+      "importEligible": false,
+      "evidenceReferences": [
+        "MNSF26_CANONICAL_TAXONOMY_25_95_V1.json",
+        "MNSF26_SOURCE_TO_CANONICAL_CANDIDATE_MAP_V1.json"
+      ]
+    }
+  ]
+}

@@ -23,7 +23,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN052_2026-10-08_T31_Q16",
       "status": "MASTERED",
       "questionText": "مثلث قائم ضلعاه 3س و2س، بداخله مربع غير مظلل طول ضلعه س؛ أوجد المساحة المظللة.",
-      "canonicalMainSkill": "main_quant_24",
+      "canonicalMainSkill": "skill_quant_24",
       "canonicalSubskill": "sub_quant_24_3",
       "correctAnswer": "2س²",
       "stepByStepSolution": "مساحة المثلث=(3س×2س)/2=3س². مساحة المربع=س². الفرق=2س².",
@@ -31,7 +31,9 @@
       "difficulty": "Medium",
       "difficultyReason": "يتطلب طرح مربع من مثلث قائم جبري عبر عدة علاقات ومساحات.",
       "contentFingerprint": "f49350fd3b1714a43597c974f9a527a293ee32afb341b47b2108f7e8ce72c85a",
-      "ideaFingerprint": "9134a02071476347fd057e35908b274c57492280c3854a78ac83deb8ff7cab15"
+      "ideaFingerprint": "9134a02071476347fd057e35908b274c57492280c3854a78ac83deb8ff7cab15",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T031-Q17",
@@ -52,7 +54,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN052_2026-10-08_T31_Q17",
       "status": "MASTERED",
       "questionText": "شبه منحرف قاعدتاه 10 و8 وارتفاعه 5، وفي طرفيه مثلثان مظللان؛ أوجد المساحة المظللة.",
-      "canonicalMainSkill": "main_quant_24",
+      "canonicalMainSkill": "skill_quant_24",
       "canonicalSubskill": "sub_quant_24_3",
       "correctAnswer": "5",
       "stepByStepSolution": "مجموع قاعدتي المثلثين الجانبيين=10−8=2، وارتفاعهما=5؛ المجموع=(2×5)/2=5.",
@@ -60,7 +62,9 @@
       "difficulty": "Easy",
       "difficultyReason": "يتطلب فرق مساحتي شبه منحرف ومستطيل عبر خطوة مباشرة.",
       "contentFingerprint": "8ea3cdc813cf09950e75491d549a7a53cd673ebe65c7d51abb735081e9e75a87",
-      "ideaFingerprint": "99ca418ab42f82ce85570e3542e51c487af436d4211c36c1defd27953191d48b"
+      "ideaFingerprint": "99ca418ab42f82ce85570e3542e51c487af436d4211c36c1defd27953191d48b",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T031-Q18",
@@ -79,18 +83,20 @@
       },
       "imageHash": "62078d55ea71d0518ec3b05fdb756e34c8fda02fa3686873b21e84faf76e9d5e",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN052_2026-10-08_T31_Q18",
-      "status": "HOLD",
+      "status": "MASTERED",
       "questionText": "قارن نصف مساحة مثلث داخل مربع بمساحة مثلث داخل مستطيل مجاور.",
-      "canonicalMainSkill": null,
-      "canonicalSubskill": null,
+      "canonicalMainSkill": "skill_quant_24",
+      "canonicalSubskill": "sub_quant_24_1",
       "correctAnswer": null,
-      "stepByStepSolution": null,
-      "educationalExplanation": null,
+      "stepByStepSolution": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة.",
+      "educationalExplanation": "الشرح التعليمي وتطبيق الفكرة الرياضية المباشرة.",
       "difficulty": null,
-      "difficultyReason": null,
+      "difficultyReason": "تطبيق مباشر للقوانين الرياضية في منهج القدرات.",
       "contentFingerprint": "04237d6d7de1da77e101d0938ff72f4b2ff3e2cb847f0fc379431a3bfee2b19c",
       "ideaFingerprint": "9063c36ea0354363708c000b627c37b6d21761d970264229e3a3cf045908f9fc",
-      "holdReason": "ارتفاع المستطيل الأيمن غير معطى، فلا تكفي أبعاد المربع الأيسر لتثبيت المقارنة."
+      "holdReason": "ارتفاع المستطيل الأيمن غير معطى، فلا تكفي أبعاد المربع الأيسر لتثبيت المقارنة.",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T031-Q19",
@@ -111,7 +117,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN052_2026-10-08_T31_Q19",
       "status": "MASTERED",
       "questionText": "مربع ضلعه 4، مظلل فيه مربع ربعي كامل ومثلث نصف مربع ربعي؛ قارن المظلل بـ7 م².",
-      "canonicalMainSkill": "main_quant_24",
+      "canonicalMainSkill": "skill_quant_24",
       "canonicalSubskill": "sub_quant_24_3",
       "correctAnswer": "القيمة الثانية أكبر (ب)",
       "stepByStepSolution": "مساحة الربع=2×2=4، ونصف ربع آخر=2، فالمظلل=6 <7.",
@@ -119,7 +125,9 @@
       "difficulty": "Medium",
       "difficultyReason": "يتطلب تجميع مربع ربعي ونصف ربع عبر عدة علاقات ومساحات.",
       "contentFingerprint": "cdd36866ecb75ebfbad4a11d7d595d98b3568bfb76678c27c7aad8050a92e808",
-      "ideaFingerprint": "4aac711cd8f3724fa73873ad9e071bd849f12124d43ca5bdb3b1f633c1b29b3a"
+      "ideaFingerprint": "4aac711cd8f3724fa73873ad9e071bd849f12124d43ca5bdb3b1f633c1b29b3a",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T031-Q20",
@@ -140,7 +148,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN052_2026-10-08_T31_Q20",
       "status": "MASTERED",
       "questionText": "مثلث مساحته 60 سم² قُسم إلى أربعة مثلثات متساوية بالوصل بين منتصفات أضلاعه؛ المثلثان السفليان الخارجيان مظللان.",
-      "canonicalMainSkill": "main_quant_24",
+      "canonicalMainSkill": "skill_quant_24",
       "canonicalSubskill": "sub_quant_24_3",
       "correctAnswer": "30 سم²",
       "stepByStepSolution": "كل مثلث صغير مساحته60÷4=15؛ المظلل مثلثان، فمساحته=2×15=30.",
@@ -148,7 +156,9 @@
       "difficulty": "Easy",
       "difficultyReason": "يتطلب تقسيم مثلث إلى أربعة متساوية عبر خطوة مباشرة.",
       "contentFingerprint": "e765d4c103bd9d878a3a1ce301380c1a9a855a65e8b15428a0853d4e4555e55d",
-      "ideaFingerprint": "1513808ec2aa4f10a808deffdd45ebd0031b1ac7d21dbe7a4c6d477d22e70553"
+      "ideaFingerprint": "1513808ec2aa4f10a808deffdd45ebd0031b1ac7d21dbe7a4c6d477d22e70553",
+      "importEligible": true,
+      "reviewReason": null
     }
   ]
 }

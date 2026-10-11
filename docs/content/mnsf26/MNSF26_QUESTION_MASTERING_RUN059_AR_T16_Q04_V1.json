@@ -23,15 +23,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN059_2026-10-08_T016_Q04",
       "status": "MASTERED",
       "questionText": "قارن 23023÷23 مع1001.",
-      "canonicalMainSkill": "main_quant_01",
-      "canonicalSubskill": "sub_quant_01_4",
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_1",
       "correctAnswer": "القيمتان متساويتان (ج)",
       "stepByStepSolution": "23×1001=23023؛ إذن23023÷23=1001.",
       "educationalExplanation": "من الصورة: 23×1001=23023؛ إذن23023÷23=1001.",
       "difficulty": "Easy",
       "difficultyReason": "تحتاج تطبيقًا مباشرًا.",
       "contentFingerprint": "fe473c3008f7d19fb9d52efde7576b2e22e2a8a47171e4faa893f8fc58776087",
-      "ideaFingerprint": "b3ec8f299061b16db39e52278f77ac2219f5f542a80cbf8ea793e0ca8738e30f"
+      "ideaFingerprint": "b3ec8f299061b16db39e52278f77ac2219f5f542a80cbf8ea793e0ca8738e30f",
+      "importEligible": true,
+      "reviewReason": null
     }
   ]
 }

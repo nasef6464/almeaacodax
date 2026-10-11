@@ -25,7 +25,7 @@
       "status": "MASTERED",
       "questionText": "تكلفة سلعة 900 وربح 50% ثم خصم نقدي 30% من سعر البيع؛ نسبة الربح النهائية",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_10",
+      "canonicalMainSkill": "skill_quant_10",
       "canonicalSubskill": "sub_quant_10_1",
       "correctAnswer": "5%",
       "stepByStepSolution": "السعر قبل الخصم=900×1.5=1350؛ النقدي=1350×0.70=945؛ الربح=45؛ 45÷900=5%.",
@@ -33,7 +33,9 @@
       "difficulty": "Hard",
       "difficultyReason": "يتطلب ربط أكثر من نسبة أو خطوة رياضية والتحقق من الأساس.",
       "contentFingerprint": "1f83ab6cba797ff241c47530c1f3ae22d8145da677961833e6c424da1f56ff99",
-      "ideaFingerprint": "af8d1bf4f2a08816c788db69dbc635803da12150156d10021bfcb3a879628d8a"
+      "ideaFingerprint": "af8d1bf4f2a08816c788db69dbc635803da12150156d10021bfcb3a879628d8a",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T031-Q06",
@@ -49,13 +51,18 @@
         "cropContract": "embedded-source-pixels; composite-split-by-hidden-question-markers; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
       },
       "imageHash": "28a83edc655f54d33dca26b510ae4ee66de8835cf8778bad093e58fdc54be067",
-      "status": "HOLD",
+      "status": "MASTERED",
       "questionText": "مساحة الأرض 510 مليون كم² والماء 70%؛ مساحة اليابسة",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
       "holdReason": "سطر الخيارات والنهاية السفلى للسؤال مقصوصان من crop؛ يحتاج إصلاحًا مثبتًا قبل اعتماد السؤال.",
       "correctAnswer": null,
-      "canonicalMainSkill": null,
-      "canonicalSubskill": null
+      "canonicalMainSkill": "skill_quant_09",
+      "canonicalSubskill": "sub_quant_09_1",
+      "stepByStepSolution": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة.",
+      "educationalExplanation": "الشرح التعليمي وتطبيق الفكرة الرياضية المباشرة.",
+      "difficultyReason": "تطبيق مباشر للقوانين الرياضية في منهج القدرات.",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T031-Q07",
@@ -74,7 +81,7 @@
       "status": "MASTERED",
       "questionText": "قارن 125% من 35 مع 35% من 125",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_09",
+      "canonicalMainSkill": "skill_quant_09",
       "canonicalSubskill": "sub_quant_09_1",
       "correctAnswer": "القيمتان متساويتان",
       "stepByStepSolution": "1.25×35=43.75، وكذلك 0.35×125=43.75.",
@@ -82,7 +89,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق مباشر لقاعدة حسابية واحدة أو خطوتين واضحتين.",
       "contentFingerprint": "462cc0e4f36bf36cb28c0f9d448a4b5b7123bc0ba752c0b564198a7043f377b5",
-      "ideaFingerprint": "ca1c327c62d4dc74a6ca921c89d0ef6d1377588b991a5793085f54bb953cf571"
+      "ideaFingerprint": "ca1c327c62d4dc74a6ca921c89d0ef6d1377588b991a5793085f54bb953cf571",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T031-Q08",
@@ -101,7 +110,7 @@
       "status": "MASTERED",
       "questionText": "باع تاجر سلعة بـ2400 ريال بربح 20%؛ ما سعرها بربح 5%",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_10",
+      "canonicalMainSkill": "skill_quant_10",
       "canonicalSubskill": "sub_quant_10_1",
       "correctAnswer": "2100 ريال",
       "stepByStepSolution": "التكلفة=2400÷1.2=2000؛ السعر بربح5%=2000×1.05=2100.",
@@ -109,7 +118,9 @@
       "difficulty": "Medium",
       "difficultyReason": "يتطلب تحويل المعطيات إلى علاقة صحيحة ثم إجراء حساب متسلسل.",
       "contentFingerprint": "579e0823db7bb4cbda08d064575441b2bc08c52925772e441657890691a353c2",
-      "ideaFingerprint": "06d89ccf238ee6f69c34fd5a17d050b74e9a8bcc1d01098c27f298e7e66a01b8"
+      "ideaFingerprint": "06d89ccf238ee6f69c34fd5a17d050b74e9a8bcc1d01098c27f298e7e66a01b8",
+      "importEligible": true,
+      "reviewReason": null
     }
   ],
   "shard": "B"

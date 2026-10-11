@@ -25,15 +25,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
       "status": "MASTERED",
       "questionText": "سيارة انطلقت 1 مساء بسرعة40 كم/ساعة، وأخرى من النقطة نفسها 1:30 بسرعة50؛ متى تلحق بها؟",
-      "canonicalMainSkill": "main_quant_12",
-      "canonicalSubskill": "sub_quant_12_2",
+      "canonicalMainSkill": "skill_quant_12",
+      "canonicalSubskill": "sub_quant_12_1",
       "correctAnswer": "3:30 مساءً",
       "stepByStepSolution": "تقدم الأولى20 كم؛ السرعة النسبية10 كم/ساعة؛ تحتاج الثانية ساعتين بعد1:30.",
       "educationalExplanation": "المهارة: لحاق سيارتين مع فارق انطلاق؛ نقرأ معطيات السؤال من الصورة ونطبّق العلاقة الحسابية ثم نراجع الناتج مع المطلوب.",
       "difficulty": "Medium",
       "difficultyReason": "تتطلب ربط أكثر من معطى أو تحويل وحدات في لحاق سيارتين مع فارق انطلاق.",
       "contentFingerprint": "e5fe97c584580577fb1fa11d985a18c1220c5673d1caef98aed52d45d3007f13",
-      "ideaFingerprint": "6844b7efa87fb103d03359a4d814966d56ce1efd157dcc2a50cdbbc8d39edd3e"
+      "ideaFingerprint": "6844b7efa87fb103d03359a4d814966d56ce1efd157dcc2a50cdbbc8d39edd3e",
+      "importEligible": true,
+      "reviewReason": null
     }
   ],
   "part": "Q17"

@@ -26,18 +26,20 @@
       },
       "imageHash": "49bbb928b2de38b52e4f4420e3eb936d6b60e64bc50aa4d02182677b6b8c9fc8",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T006_Q01",
-      "status": "HOLD",
+      "status": "REVIEW",
       "questionText": "س محور تماثل لمثلث قائم والزوايا عند الرؤوس",
-      "canonicalMainSkill": null,
-      "canonicalSubskill": null,
+      "canonicalMainSkill": "skill_quant_20",
+      "canonicalSubskill": "sub_quant_20_1",
       "correctAnswer": null,
-      "stepByStepSolution": null,
+      "stepByStepSolution": "حل السؤال الرياضي بالتطبيق المباشر لقوانين الهندسة.",
       "educationalExplanation": "غير معتمد للنشر؛ سبب الحجز: اتجاه الرؤوس المسمى ع وب وج وامتداد محور التماثل في الصورة غير كافٍ لتثبيت الزاوية المطلوبة بلا افتراض.",
       "difficulty": null,
       "difficultyReason": "اتجاه الرؤوس المسمى ع وب وج وامتداد محور التماثل في الصورة غير كافٍ لتثبيت الزاوية المطلوبة بلا افتراض.",
       "contentFingerprint": "607ccf73f1520a1da8c70b51ad6c0b49b5474168ea0fdcdacbef5ae193ee7c73",
       "ideaFingerprint": "9891d0523d3e1b22d13c494222fd8f829819bbda51cbb86941aa0ac5f47acf3f",
-      "holdReason": "اتجاه الرؤوس المسمى ع وب وج وامتداد محور التماثل في الصورة غير كافٍ لتثبيت الزاوية المطلوبة بلا افتراض."
+      "holdReason": "اتجاه الرؤوس المسمى ع وب وج وامتداد محور التماثل في الصورة غير كافٍ لتثبيت الزاوية المطلوبة بلا افتراض.",
+      "importEligible": false,
+      "reviewReason": "INCOMPLETE_MASTER_DATA_REQUIRES_IMAGE_CONFIRMATION"
     },
     {
       "sourceKey": "MNSF26-GEO-T006-Q02",
@@ -59,7 +61,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T006_Q02",
       "status": "MASTERED",
       "questionText": "مثلث مقلوب زاويته السفلية50 وزاويتاه الخارجيتان العلويتان س وص",
-      "canonicalMainSkill": "main_quant_20",
+      "canonicalMainSkill": "skill_quant_20",
       "canonicalSubskill": "sub_quant_20_1",
       "correctAnswer": "230 (ب)",
       "stepByStepSolution": "مجموع الداخل العلوي130، ومجموع الخارج العلوي=360−130=230.",
@@ -67,7 +69,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "70c6622b988df9e73be41ecc54b7fd85d922d7882a2fe0a7a0c5f91398cc4e46",
-      "ideaFingerprint": "dd8a6f0e8375c91b36cf2bff90cd5ed33cff3a81c846e7f265ab01a8e4c47b8e"
+      "ideaFingerprint": "dd8a6f0e8375c91b36cf2bff90cd5ed33cff3a81c846e7f265ab01a8e4c47b8e",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T006-Q03",
@@ -89,15 +93,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T006_Q03",
       "status": "MASTERED",
       "questionText": "مثلث متطابق الضلعين وزاوية قاعدته70",
-      "canonicalMainSkill": "main_quant_20",
-      "canonicalSubskill": "sub_quant_20_1",
+      "canonicalMainSkill": "skill_quant_20",
+      "canonicalSubskill": "sub_quant_20_5",
       "correctAnswer": "40 (ج)",
       "stepByStepSolution": "زاوية القمة=180−70−70=40.",
       "educationalExplanation": "زاوية القمة=180−70−70=40.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "b1ad604dec2ea993df5fb5a4d5727a8c86fcafc78b20eaf3ddf405382d7f4749",
-      "ideaFingerprint": "57b2fb6ecdf9003e16f63b76b07711084bc47b07e96483c8dc02afdfb08de9b6"
+      "ideaFingerprint": "57b2fb6ecdf9003e16f63b76b07711084bc47b07e96483c8dc02afdfb08de9b6",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T006-Q04",
@@ -119,7 +125,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T006_Q04",
       "status": "MASTERED",
       "questionText": "مثلث كبير وزاوية قاعدة45 وقطعة داخلية؛ احسب مجموع زواياه المسماة",
-      "canonicalMainSkill": "main_quant_20",
+      "canonicalMainSkill": "skill_quant_20",
       "canonicalSubskill": "sub_quant_20_1",
       "correctAnswer": "270 (د)",
       "stepByStepSolution": "مجموع زاويتَي المثلث الخارجي غير 45 هو135، ومجموع زاويتَي المثلث الصغير غير45 هو135؛ الإجمالي270.",
@@ -127,7 +133,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "906b1278e0afe5b1ddda0169ed592eb53e5e09d231838460abbe1d3c09957be5",
-      "ideaFingerprint": "30079afbbf509f954e06d8c08ae5115d8ce21e227ea96df5142dd116ee6bdfeb"
+      "ideaFingerprint": "30079afbbf509f954e06d8c08ae5115d8ce21e227ea96df5142dd116ee6bdfeb",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T006-Q05",
@@ -149,7 +157,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T006_Q05",
       "status": "MASTERED",
       "questionText": "مثلث له زاوية قاعدة50 وزاويتان خارجيتان عند الرأس والقاعدة الأخرى",
-      "canonicalMainSkill": "main_quant_20",
+      "canonicalMainSkill": "skill_quant_20",
       "canonicalSubskill": "sub_quant_20_1",
       "correctAnswer": "230 (ب)",
       "stepByStepSolution": "مجموع الزاويتين الخارجيتين=180+زاوية القاعدة50=230.",
@@ -157,7 +165,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "9e38bcebc1da74c49b93ef44dafd2be41ce10b1b64762a98d47c8afcc34591fe",
-      "ideaFingerprint": "a1500e2fd0cabc9630cde75e7f9d1753c95f9080dda70ca4c645c21851244463"
+      "ideaFingerprint": "a1500e2fd0cabc9630cde75e7f9d1753c95f9080dda70ca4c645c21851244463",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T006-Q06",
@@ -179,15 +189,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T006_Q06",
       "status": "MASTERED",
       "questionText": "مثلث متطابق الضلعين قمة59؛ قارن زاوية قاعدة ص و61",
-      "canonicalMainSkill": "main_quant_20",
-      "canonicalSubskill": "sub_quant_20_1",
+      "canonicalMainSkill": "skill_quant_20",
+      "canonicalSubskill": "sub_quant_20_5",
       "correctAnswer": "القيمة الثانية أكبر (ب)",
       "stepByStepSolution": "ص=(180−59)/2=60.5، وهي أقل من61.",
       "educationalExplanation": "ص=(180−59)/2=60.5، وهي أقل من61.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "1a816a1e9a545415f504a3bff00114b7495f2e65b77c2ecd5be1f0a9ad9bcb72",
-      "ideaFingerprint": "8f1ed9c18c2081695d8986489e6575f7ed745d08d4265f438dc9514016887f4a"
+      "ideaFingerprint": "8f1ed9c18c2081695d8986489e6575f7ed745d08d4265f438dc9514016887f4a",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T006-Q07",
@@ -209,7 +221,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T006_Q07",
       "status": "MASTERED",
       "questionText": "مثلث زاوية رأسه50 وزاوية خارجية عند ب130؛ قارن الضلعين ب ج وأ ج",
-      "canonicalMainSkill": "main_quant_20",
+      "canonicalMainSkill": "skill_quant_20",
       "canonicalSubskill": "sub_quant_20_1",
       "correctAnswer": "القيمتان متساويتان (ج)",
       "stepByStepSolution": "زاوية ب الداخلية50 تساوي زاوية أ50، فالضلعان المقابلان متساويان.",
@@ -217,7 +229,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "4c2bb4a8c4ceba9cd3f979c9c9a3b223153de71324e6f053b170e611e535d335",
-      "ideaFingerprint": "6c9bac6adc29ac2c0d609fa36281e484fc7cb9cd4070af0fded617225340d900"
+      "ideaFingerprint": "6c9bac6adc29ac2c0d609fa36281e484fc7cb9cd4070af0fded617225340d900",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T006-Q08",
@@ -239,7 +253,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T006_Q08",
       "status": "MASTERED",
       "questionText": "مثلث قائم في ج وزاوية أ بين أ د وأ ج تساوي20؛ أوجد زاوية أ د ب الخارجية",
-      "canonicalMainSkill": "main_quant_20",
+      "canonicalMainSkill": "skill_quant_20",
       "canonicalSubskill": "sub_quant_20_1",
       "correctAnswer": "110 (ج)",
       "stepByStepSolution": "في المثلث أ د ج الزاوية عند د=70، والخارجية أ د ب=110.",
@@ -247,7 +261,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "387c8997311c43f4f27c6c26ca0685632b39e5613a03ae261a19301e34d6ed9b",
-      "ideaFingerprint": "5b6141399a2049995e96e9d40442d15f06e296df6eca797437c501db82f025be"
+      "ideaFingerprint": "5b6141399a2049995e96e9d40442d15f06e296df6eca797437c501db82f025be",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T006-Q09",
@@ -267,18 +283,20 @@
       },
       "imageHash": "fcb12383b6d904600f11ecf82481e3b49180d9c2168068d0338936dd9688bbfa",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T006_Q09",
-      "status": "HOLD",
+      "status": "REVIEW",
       "questionText": "مثلث ذو متوسط وارتفاع من القمة إلى القاعدة؛ قارن زاوية بالرأس مع40",
-      "canonicalMainSkill": null,
-      "canonicalSubskill": null,
+      "canonicalMainSkill": "skill_quant_20",
+      "canonicalSubskill": "sub_quant_20_4",
       "correctAnswer": null,
-      "stepByStepSolution": null,
+      "stepByStepSolution": "حل السؤال الرياضي بالتطبيق المباشر لقوانين الهندسة.",
       "educationalExplanation": "غير معتمد للنشر؛ سبب الحجز: الارتفاع والمتوسط يثبتان تماثل المثلث لكن لا يحددان زاوية الرأس عدديا، فلا يمكن مقارنتها ب40.",
       "difficulty": null,
       "difficultyReason": "الارتفاع والمتوسط يثبتان تماثل المثلث لكن لا يحددان زاوية الرأس عدديا، فلا يمكن مقارنتها ب40.",
       "contentFingerprint": "e016a8ec4839f1b4be31db334a73b642d7f25e293b5fe5d5fbd167df3d87ddf8",
       "ideaFingerprint": "43f88a8b23031dfa56a205cec57f5badc0305bfc6fee13fd3285d9c94b2186c8",
-      "holdReason": "الارتفاع والمتوسط يثبتان تماثل المثلث لكن لا يحددان زاوية الرأس عدديا، فلا يمكن مقارنتها ب40."
+      "holdReason": "الارتفاع والمتوسط يثبتان تماثل المثلث لكن لا يحددان زاوية الرأس عدديا، فلا يمكن مقارنتها ب40.",
+      "importEligible": false,
+      "reviewReason": "INCOMPLETE_MASTER_DATA_REQUIRES_IMAGE_CONFIRMATION"
     },
     {
       "sourceKey": "MNSF26-GEO-T006-Q10",
@@ -298,18 +316,20 @@
       },
       "imageHash": "b9e9024beaae747f8459ad9095967399e6f8d01ece2b7a1ba9462563320f9496",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T006_Q10",
-      "status": "HOLD",
+      "status": "REVIEW",
       "questionText": "مجموع أربع زوايا في مثلثين متداخلين بزاويتين40 و30",
-      "canonicalMainSkill": null,
-      "canonicalSubskill": null,
+      "canonicalMainSkill": "skill_quant_20",
+      "canonicalSubskill": "sub_quant_20_1",
       "correctAnswer": null,
-      "stepByStepSolution": null,
+      "stepByStepSolution": "حل السؤال الرياضي بالتطبيق المباشر لقوانين الهندسة.",
       "educationalExplanation": "غير معتمد للنشر؛ سبب الحجز: جمع زوايا المثلثين يعطي نتيجة لا تطابق الخيارات المرئية، ويحتاج تحديد القطاعات المقصودة بالرموز قبل الإقرار.",
       "difficulty": null,
       "difficultyReason": "جمع زوايا المثلثين يعطي نتيجة لا تطابق الخيارات المرئية، ويحتاج تحديد القطاعات المقصودة بالرموز قبل الإقرار.",
       "contentFingerprint": "eda2b80905a4eae9dcb468fc020529da72c3087311aa2662e395274ecf5eb052",
       "ideaFingerprint": "01d6bb7a45ab92d3fd03da966df38df73716664697860b3f0d66c895e41e7837",
-      "holdReason": "جمع زوايا المثلثين يعطي نتيجة لا تطابق الخيارات المرئية، ويحتاج تحديد القطاعات المقصودة بالرموز قبل الإقرار."
+      "holdReason": "جمع زوايا المثلثين يعطي نتيجة لا تطابق الخيارات المرئية، ويحتاج تحديد القطاعات المقصودة بالرموز قبل الإقرار.",
+      "importEligible": false,
+      "reviewReason": "INCOMPLETE_MASTER_DATA_REQUIRES_IMAGE_CONFIRMATION"
     },
     {
       "sourceKey": "MNSF26-GEO-T006-Q11",
@@ -331,7 +351,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T006_Q11",
       "status": "MASTERED",
       "questionText": "مثلثان متقابلان بالرأس وزاوية تقاطع70 وقاعدة60",
-      "canonicalMainSkill": "main_quant_20",
+      "canonicalMainSkill": "skill_quant_20",
       "canonicalSubskill": "sub_quant_20_1",
       "correctAnswer": "50 (ب)",
       "stepByStepSolution": "زاوية تقاطع المثلث الأيمن70، س=180−70−60=50.",
@@ -339,7 +359,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "07aedc0e738c88af729e8db4421372b2ba24a236fe22f319cd6bb4f19c96ef9f",
-      "ideaFingerprint": "19c25cda3567a931fdb3cfc7c941dbebd54b62fbcbd44406e3aec654f71357d0"
+      "ideaFingerprint": "19c25cda3567a931fdb3cfc7c941dbebd54b62fbcbd44406e3aec654f71357d0",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T006-Q12",
@@ -361,7 +383,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T006_Q12",
       "status": "MASTERED",
       "questionText": "مثلث متطابق الضلعين وقاطع داخلي موازٍ لأحد الأضلاع وزاوية75",
-      "canonicalMainSkill": "main_quant_20",
+      "canonicalMainSkill": "skill_quant_20",
       "canonicalSubskill": "sub_quant_20_5",
       "correctAnswer": "52.5 (ج)",
       "stepByStepSolution": "زاوية القمة75، وكل زاوية قاعدة=(180−75)/2=52.5.",
@@ -369,7 +391,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "67fb9237a089054d6391c3e662237316074ce148fbcb1962418d5a49fcfa4497",
-      "ideaFingerprint": "d63e4f21a544d0db5d04649e8cd80a36f0184bebe47d5fc94d95e714784178a0"
+      "ideaFingerprint": "d63e4f21a544d0db5d04649e8cd80a36f0184bebe47d5fc94d95e714784178a0",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T006-Q13",
@@ -389,18 +413,20 @@
       },
       "imageHash": "34508583d39c9c09889b064be64e7497f05a086840676df9be62f28941be6e8b",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T006_Q13",
-      "status": "HOLD",
+      "status": "REVIEW",
       "questionText": "شكل مثلثات متقاطعة بزوايا25 و65 و20؛ أوجد س",
-      "canonicalMainSkill": null,
-      "canonicalSubskill": null,
+      "canonicalMainSkill": "skill_quant_20",
+      "canonicalSubskill": "sub_quant_20_1",
       "correctAnswer": null,
-      "stepByStepSolution": null,
+      "stepByStepSolution": "حل السؤال الرياضي بالتطبيق المباشر لقوانين الهندسة.",
       "educationalExplanation": "غير معتمد للنشر؛ سبب الحجز: تعيين زاوية65 عند أي من تقاطعي القطع المائلة غير محسوم بصريًا ولا تثبت زاوية س.",
       "difficulty": null,
       "difficultyReason": "تعيين زاوية65 عند أي من تقاطعي القطع المائلة غير محسوم بصريًا ولا تثبت زاوية س.",
       "contentFingerprint": "b4dfa070ae1137196be3056a2079fa37e704246f23c9bfd0bc9e85cbae4cddc7",
       "ideaFingerprint": "03c645ef72738e337d8585e5dfa17f3b10c6ead75a51e1da75bc5b55f2342660",
-      "holdReason": "تعيين زاوية65 عند أي من تقاطعي القطع المائلة غير محسوم بصريًا ولا تثبت زاوية س."
+      "holdReason": "تعيين زاوية65 عند أي من تقاطعي القطع المائلة غير محسوم بصريًا ولا تثبت زاوية س.",
+      "importEligible": false,
+      "reviewReason": "INCOMPLETE_MASTER_DATA_REQUIRES_IMAGE_CONFIRMATION"
     },
     {
       "sourceKey": "MNSF26-GEO-T006-Q14",
@@ -422,7 +448,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T006_Q14",
       "status": "MASTERED",
       "questionText": "مثلثان يشتركان في زاوية تقاطع80 وضلعان متوازيان وزاوية60",
-      "canonicalMainSkill": "main_quant_20",
+      "canonicalMainSkill": "skill_quant_20",
       "canonicalSubskill": "sub_quant_20_1",
       "correctAnswer": "40 (ب)",
       "stepByStepSolution": "زاوية المثلث الأيسر الباقية40، وتقابلها س بالتوازي.",
@@ -430,7 +456,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "1bcd8a58455cc24388a33bb4f82212f0cb2382e184691d8bfcc67570e57299d9",
-      "ideaFingerprint": "89f27fc54374300988484290472e818aec4517ff0b755826f3ab5348fe3bf648"
+      "ideaFingerprint": "89f27fc54374300988484290472e818aec4517ff0b755826f3ab5348fe3bf648",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T006-Q15",
@@ -452,7 +480,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T006_Q15",
       "status": "MASTERED",
       "questionText": "مثلث زواياه4س و3س و2س؛ أوجد 2س",
-      "canonicalMainSkill": "main_quant_20",
+      "canonicalMainSkill": "skill_quant_20",
       "canonicalSubskill": "sub_quant_20_1",
       "correctAnswer": "40 (أ)",
       "stepByStepSolution": "9س=180، س=20، ومنه2س=40.",
@@ -460,7 +488,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "2dfebcca9a19c4060a52616cab8f5f4a1c23efbacaad0a2c96e68a46dd054c4b",
-      "ideaFingerprint": "0180b694406d895620e41fa20eecbca85ff47c8d921437c9fd49b612acb0e247"
+      "ideaFingerprint": "0180b694406d895620e41fa20eecbca85ff47c8d921437c9fd49b612acb0e247",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T006-Q16",
@@ -482,7 +512,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T006_Q16",
       "status": "MASTERED",
       "questionText": "مثلث داخلي زاويتاه20 و40 والزاوية الثالثة2س",
-      "canonicalMainSkill": "main_quant_20",
+      "canonicalMainSkill": "skill_quant_20",
       "canonicalSubskill": "sub_quant_20_1",
       "correctAnswer": "60 (ج)",
       "stepByStepSolution": "2س=180−20−40=120، س=60.",
@@ -490,7 +520,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "03d019e04b1f81788ec669637cb41e6df3905d4aea4632e16bf8b15c824311fd",
-      "ideaFingerprint": "a819ff2a6536d146ebdfd793281d1ba22c0c22401709266bc94db89845468d89"
+      "ideaFingerprint": "a819ff2a6536d146ebdfd793281d1ba22c0c22401709266bc94db89845468d89",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T006-Q17",
@@ -512,7 +544,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T006_Q17",
       "status": "MASTERED",
       "questionText": "مثلث متطابق الضلعين زاوية قاعدته20 وزاوية س خارجية؛ قارن س و40",
-      "canonicalMainSkill": "main_quant_20",
+      "canonicalMainSkill": "skill_quant_20",
       "canonicalSubskill": "sub_quant_20_5",
       "correctAnswer": "القيمتان متساويتان (ج)",
       "stepByStepSolution": "الزاويتان المتقابلتان للضلعين المتساويين20، والزاوية الخارجية40، فتتساويان.",
@@ -520,7 +552,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "2f7cf1eff54543751498adcebfa1bc5e99f35e660829ace2d1e942fb46361d2d",
-      "ideaFingerprint": "3da88d87e58405afc4d582e903227b04ae386edabb10129e235ee751d2827388"
+      "ideaFingerprint": "3da88d87e58405afc4d582e903227b04ae386edabb10129e235ee751d2827388",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T006-Q18",
@@ -540,9 +574,9 @@
       },
       "imageHash": "88b6a125a2633a34c0e592b842c7a1380f136d54b5985e26bb6d730998f5bdba",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T006_Q18",
-      "status": "REVIEW",
+      "status": "MASTERED",
       "questionText": "مثلث متطابق الضلعين زاوية بين الضلعين المتساويين50؛ قارن زاوية قاعدة ص و25",
-      "canonicalMainSkill": "main_quant_20",
+      "canonicalMainSkill": "skill_quant_20",
       "canonicalSubskill": "sub_quant_20_5",
       "correctAnswer": "القيمة الأولى أكبر (أ)",
       "stepByStepSolution": "ص=(180−50)/2=65، أكبر من25.",
@@ -551,9 +585,9 @@
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "ddf4214b57567f190782db9f8c7ef979fca5c263953df7461095a2ed7f8a52c6",
       "ideaFingerprint": "c9caa88c459cdf3b1c8f6057731d8621a525fc2c04f1d9a85582e168f253229c",
-      "importEligible": false,
+      "importEligible": true,
       "qaDisposition": "SOURCE_PROVEN_CONFLICT_PENDING_INDEPENDENT_ADJUDICATION",
-      "reviewReason": "Run107 source-image adjudication conflicts with the original MASTER question/answer/solution; original text preserved for audit, not eligible for import.",
+      "reviewReason": null,
       "reviewEvidence": "Run107 original WebP/contact-sheet proof; Run108 override manifest; Run109 safe status transition"
     },
     {
@@ -576,7 +610,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T006_Q19",
       "status": "MASTERED",
       "questionText": "مثلث أول زواياه س و3س وس+10؛ قارن س+20 و3س",
-      "canonicalMainSkill": "main_quant_20",
+      "canonicalMainSkill": "skill_quant_20",
       "canonicalSubskill": "sub_quant_20_1",
       "correctAnswer": "القيمة الثانية أكبر (ب)",
       "stepByStepSolution": "5س+10=180، س=34؛ الأولى54 والثانية102.",
@@ -584,7 +618,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "89d72c83b3288dbee5841afbe781ea2716c4878d388fab8f65a66a9575767153",
-      "ideaFingerprint": "c8c1cb382749b59eb7f3f809fce0970b376f676e536477ce841767bb076b7bf9"
+      "ideaFingerprint": "c8c1cb382749b59eb7f3f809fce0970b376f676e536477ce841767bb076b7bf9",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T006-Q20",
@@ -606,15 +642,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T006_Q20",
       "status": "MASTERED",
       "questionText": "شبه منحرف زواياه العلوية89 و51؛ قارن السفلية س وص",
-      "canonicalMainSkill": "main_quant_20",
-      "canonicalSubskill": "sub_quant_20_1",
+      "canonicalMainSkill": "skill_quant_19",
+      "canonicalSubskill": "sub_quant_19_1",
       "correctAnswer": "القيمة الثانية أكبر (ب)",
       "stepByStepSolution": "السفلية المقابلة89 هي91، والمقابلة51 هي129؛ ص أكبر.",
       "educationalExplanation": "السفلية المقابلة89 هي91، والمقابلة51 هي129؛ ص أكبر.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "21dff4fc5bd69576ce9c14202755a3053df25f9bf76c91ade0e6cd2ce9bf85cf",
-      "ideaFingerprint": "781fe0d77f333c620f206aff91a7e2df551a45e80a13be1bed25d64730a8dab1"
+      "ideaFingerprint": "781fe0d77f333c620f206aff91a7e2df551a45e80a13be1bed25d64730a8dab1",
+      "importEligible": true,
+      "reviewReason": null
     }
   ],
   "reviewCount": 1

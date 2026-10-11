@@ -23,15 +23,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN058_2026-10-08_T010_Q11",
       "status": "MASTERED",
       "questionText": "احسب5+6×8+5.",
-      "canonicalMainSkill": "main_quant_01",
-      "canonicalSubskill": "sub_quant_01_4",
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_1",
       "correctAnswer": "58 (ب)",
       "stepByStepSolution": "6×8=48؛ 5+48+5=58.",
       "educationalExplanation": "نطبّق القاعدة الرياضية الواردة في نص السؤال: 6×8=48؛ 5+48+5=58.",
       "difficulty": "Easy",
       "difficultyReason": "يحتاج تطبيقًا مباشرًا لقاعدة حسابية.",
       "contentFingerprint": "4fd4ad04e218b39df8151c63d219e692b17b0d120c1d4b3523005f74756f7df7",
-      "ideaFingerprint": "5a3c202bd1c2449364e34bd1bf476182db0108623cd76957a2c38c54954a1b7e"
+      "ideaFingerprint": "5a3c202bd1c2449364e34bd1bf476182db0108623cd76957a2c38c54954a1b7e",
+      "importEligible": true,
+      "reviewReason": null
     }
   ]
 }

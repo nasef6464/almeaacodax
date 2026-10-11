@@ -23,15 +23,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN059_2026-10-08_T017_Q15",
       "status": "MASTERED",
       "questionText": "ما الحد النوني للمتتابعة −1،1،3،5،...؟",
-      "canonicalMainSkill": "main_quant_01",
-      "canonicalSubskill": "sub_quant_01_3",
+      "canonicalMainSkill": "skill_quant_04",
+      "canonicalSubskill": "sub_quant_04_2",
       "correctAnswer": "2ن−3 (ج)",
       "stepByStepSolution": "الحد الأول−1 والفرق2؛ الحد النوني=−1+(ن−1)×2=2ن−3.",
       "educationalExplanation": "من الصورة: الحد الأول−1 والفرق2؛ الحد النوني=−1+(ن−1)×2=2ن−3.",
       "difficulty": "Medium",
       "difficultyReason": "تحتاج تحليل عدة علاقات رياضية.",
       "contentFingerprint": "5324256d6e2f357f374f92216b976486601ee839b464239ae9153160f74ff299",
-      "ideaFingerprint": "b9ef65ad588fdcaa5d39e75839c735830529c51fbce33b5a86e81847231f809c"
+      "ideaFingerprint": "b9ef65ad588fdcaa5d39e75839c735830529c51fbce33b5a86e81847231f809c",
+      "importEligible": true,
+      "reviewReason": null
     }
   ]
 }

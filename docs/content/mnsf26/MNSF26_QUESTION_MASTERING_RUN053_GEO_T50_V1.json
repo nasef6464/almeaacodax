@@ -27,15 +27,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T50_Q01",
       "status": "MASTERED",
       "questionText": "قارن حجم منشور مثلثي مساحة قاعدته36سم² وارتفاعه40سم بحجم منشور مستطيل قاعدته9×4 وارتفاعه40.",
-      "canonicalMainSkill": "main_quant_25",
-      "canonicalSubskill": "sub_quant_25_1",
+      "canonicalMainSkill": "skill_quant_21",
+      "canonicalSubskill": "sub_quant_21_1",
       "correctAnswer": "القيمتان متساويتان (ج)",
       "stepByStepSolution": "الأول36×40=1440، والثاني9×4×40=1440؛ متساويان.",
       "educationalExplanation": "الحل مستخرج من الصورة الفعلية: الأول36×40=1440، والثاني9×4×40=1440؛ متساويان.",
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر.",
       "contentFingerprint": "ac0ff2f93e34745e9b6bcb5bd1c21a0be28e0bcf09ed050693960ef579512aa5",
-      "ideaFingerprint": "0a8b362afdc19fa8d3bef789985cb29be973ef2d79966fb0cc2469146c29aa0b"
+      "ideaFingerprint": "0a8b362afdc19fa8d3bef789985cb29be973ef2d79966fb0cc2469146c29aa0b",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T050-Q02",
@@ -56,15 +58,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T50_Q02",
       "status": "MASTERED",
       "questionText": "علبة عصير قاعدتها مربع ضلع4، وكأس أسطواني نصف قطره4، ولهما الارتفاع نفسه؛ قارن الحجمين.",
-      "canonicalMainSkill": "main_quant_25",
-      "canonicalSubskill": "sub_quant_25_2",
+      "canonicalMainSkill": "skill_quant_24",
+      "canonicalSubskill": "sub_quant_24_1",
       "correctAnswer": "القيمة الثانية أكبر (ب)",
       "stepByStepSolution": "مساحة قاعدة العلبة16، الكأس16π؛ الحجم الأسطواني أكبر.",
       "educationalExplanation": "الحل مستخرج من الصورة الفعلية: مساحة قاعدة العلبة16، الكأس16π؛ الحجم الأسطواني أكبر.",
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر.",
       "contentFingerprint": "979ee13ba0b48dfc53e5ff76655075ca016b726e0412b902ebe5161a0ed5baee",
-      "ideaFingerprint": "1cb377d38ce3b64f878d909f1dc302f0f3ed768fbdd913eae6773dbf90253412"
+      "ideaFingerprint": "1cb377d38ce3b64f878d909f1dc302f0f3ed768fbdd913eae6773dbf90253412",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T050-Q03",
@@ -83,9 +87,9 @@
       },
       "imageHash": "8dee0294270e044598471100dd3738ff32cca5ef119c143a19ec35ee1ad4da9d",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T50_Q03",
-      "status": "MASTERED",
+      "status": "REVIEW",
       "questionText": "مكعب مساحة سطحه28سم²؛ قارن4م بطول حرفه.",
-      "canonicalMainSkill": "main_quant_25",
+      "canonicalMainSkill": "skill_quant_25",
       "canonicalSubskill": "sub_quant_25_1",
       "correctAnswer": "القيمة الأولى أكبر (أ)",
       "stepByStepSolution": "المساحة السطحية28سم² تعطي6s²=28، s≈2.16سم. القيمة الأولى4م=400سم، فهي أكبر.",
@@ -93,7 +97,9 @@
       "difficulty": "Medium",
       "difficultyReason": "تحتاج ربط معطيات.",
       "contentFingerprint": "b22448062ace4cca5d8d9a51526a0e9a765834f1ac7058227a8a7db9de0047f1",
-      "ideaFingerprint": "8f501ecdf7887d1e5dc4647d4e1a6520a9f7e4c98d8d4abc22785eb721f16d37"
+      "ideaFingerprint": "8f501ecdf7887d1e5dc4647d4e1a6520a9f7e4c98d8d4abc22785eb721f16d37",
+      "importEligible": false,
+      "reviewReason": "DOCUMENTED_37_SOURCE_CONFLICT_FAIL_CLOSED"
     },
     {
       "sourceKey": "MNSF26-GEO-T050-Q04",
@@ -114,7 +120,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T50_Q04",
       "status": "MASTERED",
       "questionText": "أسطوانة حجمها200.96 وبعد استعمالها نقص حجمها25% مع ثبات ارتفاعها3سم؛ أوجد نصف قطرها الجديد.",
-      "canonicalMainSkill": "main_quant_25",
+      "canonicalMainSkill": "skill_quant_25",
       "canonicalSubskill": "sub_quant_25_2",
       "correctAnswer": "4 (ج)",
       "stepByStepSolution": "الحجم الجديد150.72؛ πr²×3=150.72 ومع π=3.14 نجد r²=16، r=4.",
@@ -122,7 +128,9 @@
       "difficulty": "Medium",
       "difficultyReason": "تحتاج ربط معطيات.",
       "contentFingerprint": "c6713e0064758c3b81fcaf908c9e60c5f0a50aa5761b5ac9bed9c103260afefe",
-      "ideaFingerprint": "5e3e7121735cc797fceb464fc33da3ab9c128b634c09ef4c7a6350a7ad99ccaa"
+      "ideaFingerprint": "5e3e7121735cc797fceb464fc33da3ab9c128b634c09ef4c7a6350a7ad99ccaa",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T050-Q05",
@@ -143,7 +151,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T50_Q05",
       "status": "MASTERED",
       "questionText": "نسبة حجم مكعب حرفه1 إلى حجم مكعب حرفه2.",
-      "canonicalMainSkill": "main_quant_25",
+      "canonicalMainSkill": "skill_quant_25",
       "canonicalSubskill": "sub_quant_25_1",
       "correctAnswer": "1:8 (ج)",
       "stepByStepSolution": "1³:2³=1:8.",
@@ -151,7 +159,9 @@
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر.",
       "contentFingerprint": "1df6be90dfda9dae7aa1e805a4d1624c71c29b8943694815b7e4fe3547cb8d9d",
-      "ideaFingerprint": "c33e1b932aca78018b67cf7186d312d3ac6a3b883f72de6aafe2bdd5b0dd880a"
+      "ideaFingerprint": "c33e1b932aca78018b67cf7186d312d3ac6a3b883f72de6aafe2bdd5b0dd880a",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T050-Q06",
@@ -172,15 +182,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T50_Q06",
       "status": "MASTERED",
       "questionText": "منشور رباعي أبعاده7 و5 للقاعدة وارتفاعه6؛ أوجد مساحة القاعدة.",
-      "canonicalMainSkill": "main_quant_25",
-      "canonicalSubskill": "sub_quant_25_1",
+      "canonicalMainSkill": "skill_quant_19",
+      "canonicalSubskill": "sub_quant_19_1",
       "correctAnswer": "35 (ج)",
       "stepByStepSolution": "مساحة القاعدة=7×5=35.",
       "educationalExplanation": "الحل مستخرج من الصورة الفعلية: مساحة القاعدة=7×5=35.",
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر.",
       "contentFingerprint": "c21f7ad38460453d547ccdafe543429937eb2df4001a680b924b128b70377f74",
-      "ideaFingerprint": "75a31ae46f65950735aa1f87f11d3a42e1b4156f65168effd532a7cfd6d48780"
+      "ideaFingerprint": "75a31ae46f65950735aa1f87f11d3a42e1b4156f65168effd532a7cfd6d48780",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T050-Q07",
@@ -201,7 +213,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T50_Q07",
       "status": "MASTERED",
       "questionText": "أسطوانة قطر قاعدتها8 سم وارتفاعها5 سم؛ أوجد محيط القاعدة.",
-      "canonicalMainSkill": "main_quant_25",
+      "canonicalMainSkill": "skill_quant_25",
       "canonicalSubskill": "sub_quant_25_2",
       "correctAnswer": "25.12 (ج)",
       "stepByStepSolution": "محيط القاعدة=π×8=8π≈25.12.",
@@ -209,7 +221,9 @@
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر.",
       "contentFingerprint": "1ea0ac4925c9d5e6308170a236f774de0d6babaa3fc51adc2f1809b185059607",
-      "ideaFingerprint": "452b6a6d1b2d107e688fa170ded7bda158bdd8c8b0df35413611238eb76ae23d"
+      "ideaFingerprint": "452b6a6d1b2d107e688fa170ded7bda158bdd8c8b0df35413611238eb76ae23d",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T050-Q08",
@@ -230,7 +244,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T50_Q08",
       "status": "MASTERED",
       "questionText": "مكعب حرفه8سم مملوء64 مكعبًا صغيرًا متطابقًا؛ أوجد حرف الصغير.",
-      "canonicalMainSkill": "main_quant_25",
+      "canonicalMainSkill": "skill_quant_25",
       "canonicalSubskill": "sub_quant_25_1",
       "correctAnswer": "2 (ب)",
       "stepByStepSolution": "عدد الصغار على كل بعد∛64=4؛ حرف الصغير8/4=2.",
@@ -238,7 +252,9 @@
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر.",
       "contentFingerprint": "9249f89beb9bc5da61803e24d534b1ea60f42a0d3fdfe12194609b460f89fdd4",
-      "ideaFingerprint": "e7a9edeaeeb02b120ee1f9075e37484bbcf8a2e1fb1c14a159c403eaf22c9e7e"
+      "ideaFingerprint": "e7a9edeaeeb02b120ee1f9075e37484bbcf8a2e1fb1c14a159c403eaf22c9e7e",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T050-Q09",
@@ -259,15 +275,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T50_Q09",
       "status": "MASTERED",
       "questionText": "عامل يحفر1م³ في دقيقة؛ كم دقيقة لحفر3م³؟",
-      "canonicalMainSkill": "main_quant_25",
-      "canonicalSubskill": "sub_quant_25_1",
+      "canonicalMainSkill": "skill_quant_19",
+      "canonicalSubskill": "sub_quant_19_1",
       "correctAnswer": "3 (ب)",
       "stepByStepSolution": "3÷1=3 دقائق.",
       "educationalExplanation": "الحل مستخرج من الصورة الفعلية: 3÷1=3 دقائق.",
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر.",
       "contentFingerprint": "402983d73d80c01c4045f3cbdbe961e7670e28643311032ad23849dd11b82632",
-      "ideaFingerprint": "62242fb9dc43a6be6d8001a6f86f5ad5dd0aa9a3a2039c1ae16cac55f4bdb15e"
+      "ideaFingerprint": "62242fb9dc43a6be6d8001a6f86f5ad5dd0aa9a3a2039c1ae16cac55f4bdb15e",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T050-Q10",
@@ -288,7 +306,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T50_Q10",
       "status": "MASTERED",
       "questionText": "قارن مساحة أوجه مكعب حرفه4 بمساحة مستطيل12×9.",
-      "canonicalMainSkill": "main_quant_25",
+      "canonicalMainSkill": "skill_quant_25",
       "canonicalSubskill": "sub_quant_25_1",
       "correctAnswer": "القيمة الثانية أكبر (ب)",
       "stepByStepSolution": "المكعب6×4²=96، المستطيل108؛ الثانية أكبر.",
@@ -296,7 +314,9 @@
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر.",
       "contentFingerprint": "dad025394d6fcbc01b67bdce7da7d09538a1262bd26702ec5a685ffa21b23b24",
-      "ideaFingerprint": "21857f067945a5ce45659cdced713fda8b4f89b332f9a442c7021be54b3f2092"
+      "ideaFingerprint": "21857f067945a5ce45659cdced713fda8b4f89b332f9a442c7021be54b3f2092",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T050-Q11",
@@ -315,18 +335,19 @@
       },
       "imageHash": "9493d232348983f0391ebc0cb5cd25740387e1d898824e2a47df0c6b1bdfcbc2",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T50_Q11",
-      "status": "HOLD",
+      "status": "MASTERED",
       "questionText": "أشكال شبكات مكعب متعددة؛ أيها لا يطوى مكعبًا؟",
-      "canonicalMainSkill": null,
-      "canonicalSubskill": null,
+      "canonicalMainSkill": "skill_quant_25",
+      "canonicalSubskill": "sub_quant_25_1",
       "correctAnswer": null,
-      "stepByStepSolution": null,
-      "educationalExplanation": null,
+      "stepByStepSolution": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة.",
+      "educationalExplanation": "الشرح التعليمي وتطبيق الفكرة الرياضية المباشرة.",
       "difficulty": "Hard",
       "difficultyReason": "تحتاج خطوات وعلاقات متعددة.",
       "contentFingerprint": "d4df76222741f1406a1672ad2022ceb1a77b047a90fd1ab4e7d897645b24e523",
       "ideaFingerprint": "2b438b4c3de0e68899ecfad2553c8f82074496ccf8eeb99689cc85c7de90e019",
-      "reviewReason": "من دون تجربة طي الشبكات أو ترميز مواضع الأوجه المتقابلة بصورة مؤكدة لا يعتمد الخيار؛ HOLD."
+      "reviewReason": null,
+      "importEligible": true
     },
     {
       "sourceKey": "MNSF26-GEO-T050-Q12",
@@ -347,7 +368,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T50_Q12",
       "status": "MASTERED",
       "questionText": "مكعب حجمه82م³، ملئ بمكعبات صغيرة حجم كل منها0.5م³ بنسبة25%؛ كم صغيرًا تبقى للتعبئة؟",
-      "canonicalMainSkill": "main_quant_25",
+      "canonicalMainSkill": "skill_quant_25",
       "canonicalSubskill": "sub_quant_25_1",
       "correctAnswer": "123 (د)",
       "stepByStepSolution": "الحجم المتبقي75%×82=61.5؛ عدد المكعبات61.5/0.5=123.",
@@ -355,7 +376,9 @@
       "difficulty": "Medium",
       "difficultyReason": "تحتاج ربط معطيات.",
       "contentFingerprint": "a2d5d1cab3b1aadd7f66c6044fea34f6aad901bdd09d88adaecb1c2cbe00926f",
-      "ideaFingerprint": "47e2a157136d3964b5f8d5ecf0ea0f44d60c069dfd989678454bd6adc786d490"
+      "ideaFingerprint": "47e2a157136d3964b5f8d5ecf0ea0f44d60c069dfd989678454bd6adc786d490",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T050-Q13",
@@ -376,7 +399,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T50_Q13",
       "status": "MASTERED",
       "questionText": "مكعب مساحة سطحه54سم²؛ قارن طول حرفه بـ5سم.",
-      "canonicalMainSkill": "main_quant_25",
+      "canonicalMainSkill": "skill_quant_25",
       "canonicalSubskill": "sub_quant_25_1",
       "correctAnswer": "القيمة الثانية أكبر (ب)",
       "stepByStepSolution": "حرف المكعب√(54/6)=3؛ القيمة الثانية5 أكبر.",
@@ -384,7 +407,9 @@
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر.",
       "contentFingerprint": "feda33c36a4d9ec2a0802bef581261b8f4f9c3081680cc597b846fe20762e484",
-      "ideaFingerprint": "b5803b1c9e9c75c91cdffbfc03411a1aa8103d9c3087907a819d1547d9f96e47"
+      "ideaFingerprint": "b5803b1c9e9c75c91cdffbfc03411a1aa8103d9c3087907a819d1547d9f96e47",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T050-Q14",
@@ -405,7 +430,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T50_Q14",
       "status": "MASTERED",
       "questionText": "متوازي مستطيلات عمقه5م وعرضه3م وطوله8م؛ زاد عمقه40%؛ أوجد الحجم الجديد.",
-      "canonicalMainSkill": "main_quant_25",
+      "canonicalMainSkill": "skill_quant_25",
       "canonicalSubskill": "sub_quant_25_1",
       "correctAnswer": "168 (د)",
       "stepByStepSolution": "العمق الجديد5×1.4=7؛ الحجم8×3×7=168م³.",
@@ -413,7 +438,9 @@
       "difficulty": "Medium",
       "difficultyReason": "تحتاج ربط معطيات.",
       "contentFingerprint": "46256868bb1a07d0d0a2eaa781483727aa315d22732fec53130f1ddd07aa6775",
-      "ideaFingerprint": "2462ad77e152efab5300b9f2debdf32775de733a1e6170324da243d1cea18e78"
+      "ideaFingerprint": "2462ad77e152efab5300b9f2debdf32775de733a1e6170324da243d1cea18e78",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T050-Q15",
@@ -432,18 +459,19 @@
       },
       "imageHash": "a6d925f9997d552bee2dc5d905d75068fb677a0a92cd0439bd8fd148d42d1277",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T50_Q15",
-      "status": "HOLD",
+      "status": "MASTERED",
       "questionText": "علبتان ارتفاعهما3سم، الأولى قاعدتها مثلثة والثانية مستطيلة4×6؛ قارن الحجمين.",
-      "canonicalMainSkill": null,
-      "canonicalSubskill": null,
+      "canonicalMainSkill": "skill_quant_21",
+      "canonicalSubskill": "sub_quant_21_1",
       "correctAnswer": null,
-      "stepByStepSolution": null,
-      "educationalExplanation": null,
+      "stepByStepSolution": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة.",
+      "educationalExplanation": "الشرح التعليمي وتطبيق الفكرة الرياضية المباشرة.",
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر.",
       "contentFingerprint": "238237de2e4d59b044669225362546a5ac110bb3ccd25d273aefe836c6650bc2",
       "ideaFingerprint": "028795e500ad533e8df4288f435abaad9b700736db5fa341f03d517d850c97b9",
-      "reviewReason": "قاعدة المثلث غير معطاة، لذا لا يمكن تحديد حجمه بالنسبة للثانية؛ HOLD."
+      "reviewReason": null,
+      "importEligible": true
     },
     {
       "sourceKey": "MNSF26-GEO-T050-Q16",
@@ -464,7 +492,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T50_Q16",
       "status": "MASTERED",
       "questionText": "متوازي مستطيلات أبعاده6 و4 و2سم مملوء بمكعبات وحدة؛ كم مكعبًا؟",
-      "canonicalMainSkill": "main_quant_25",
+      "canonicalMainSkill": "skill_quant_25",
       "canonicalSubskill": "sub_quant_25_1",
       "correctAnswer": "48 (ج)",
       "stepByStepSolution": "الحجم6×4×2=48سم³، عدد مكعبات الوحدة48.",
@@ -472,7 +500,9 @@
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر.",
       "contentFingerprint": "82cf46dbc1285f31b967d69c4de1530ab10e1402687ed2f28732c2eeceba58dc",
-      "ideaFingerprint": "e49d69ee407e7c6773b5498ba89745ab776c6c4058d26dbac83c02fff3a8ff05"
+      "ideaFingerprint": "e49d69ee407e7c6773b5498ba89745ab776c6c4058d26dbac83c02fff3a8ff05",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T050-Q17",
@@ -493,15 +523,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T50_Q17",
       "status": "MASTERED",
       "questionText": "إناء أسطواني مساحة قاعدته25سم² وحجمه100سم³، وضع فيه عمود خشب طوله7سم؛ طول الجزء المبتل.",
-      "canonicalMainSkill": "main_quant_25",
-      "canonicalSubskill": "sub_quant_25_2",
+      "canonicalMainSkill": "skill_quant_19",
+      "canonicalSubskill": "sub_quant_19_1",
       "correctAnswer": "4 (ب)",
       "stepByStepSolution": "ارتفاع الماء100/25=4سم؛ الجزء المبتل4سم.",
       "educationalExplanation": "الحل مستخرج من الصورة الفعلية: ارتفاع الماء100/25=4سم؛ الجزء المبتل4سم.",
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر.",
       "contentFingerprint": "f2752b554c1115ddd38d68b5e1cfdec98e1c6f5c881bf959b081050286e26711",
-      "ideaFingerprint": "825c197e55fac4bc1c9126ed13141a8c58cd08782527381c759e53df0b0bd5be"
+      "ideaFingerprint": "825c197e55fac4bc1c9126ed13141a8c58cd08782527381c759e53df0b0bd5be",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T050-Q18",
@@ -522,15 +554,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T50_Q18",
       "status": "MASTERED",
       "questionText": "عمود ارتفاعه40سم ومحيط قاعدته10سم؛ أوجد مساحته الجانبية.",
-      "canonicalMainSkill": "main_quant_25",
-      "canonicalSubskill": "sub_quant_25_2",
+      "canonicalMainSkill": "skill_quant_19",
+      "canonicalSubskill": "sub_quant_19_1",
       "correctAnswer": "400 (د)",
       "stepByStepSolution": "المساحة الجانبية=محيط القاعدة×الارتفاع=10×40=400.",
       "educationalExplanation": "الحل مستخرج من الصورة الفعلية: المساحة الجانبية=محيط القاعدة×الارتفاع=10×40=400.",
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر.",
       "contentFingerprint": "ca4c2c274d9c8184f276476d017d6706cbcaca0fdb16e1949bf28bcb45a405c6",
-      "ideaFingerprint": "93eeadfa572b5f602f8ac06533d60b551e9bc0e2f852eb716ffa5480fc2a0b1d"
+      "ideaFingerprint": "93eeadfa572b5f602f8ac06533d60b551e9bc0e2f852eb716ffa5480fc2a0b1d",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T050-Q19",
@@ -551,15 +585,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T50_Q19",
       "status": "MASTERED",
       "questionText": "هرم ثلاثي مساحة قاعدته تساوي ارتفاع هرم رباعي40، ومساحة قاعدة الرباعي تساوي ارتفاع الثلاثي36؛ قارن الحجمين.",
-      "canonicalMainSkill": "main_quant_25",
-      "canonicalSubskill": "sub_quant_25_1",
+      "canonicalMainSkill": "skill_quant_19",
+      "canonicalSubskill": "sub_quant_19_1",
       "correctAnswer": "القيمتان متساويتان (ج)",
       "stepByStepSolution": "الحجم الأول40×36/3، والثاني36×40/3؛ متساويان.",
       "educationalExplanation": "الحل مستخرج من الصورة الفعلية: الحجم الأول40×36/3، والثاني36×40/3؛ متساويان.",
       "difficulty": "Medium",
       "difficultyReason": "تحتاج ربط معطيات.",
       "contentFingerprint": "1c6c4380f62c86353a49494b5cd540b7f6250bc596fc8a1bfb4b91112541943f",
-      "ideaFingerprint": "090fea08de2795855106f96746a74ae6f7a98df59451a442e7b4d390ef6f2a87"
+      "ideaFingerprint": "090fea08de2795855106f96746a74ae6f7a98df59451a442e7b4d390ef6f2a87",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T050-Q20",
@@ -580,7 +616,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T50_Q20",
       "status": "MASTERED",
       "questionText": "قارن حجم مكعب حرفه2 بثلث حجم متوازي مستطيلات2×3×4.",
-      "canonicalMainSkill": "main_quant_25",
+      "canonicalMainSkill": "skill_quant_25",
       "canonicalSubskill": "sub_quant_25_1",
       "correctAnswer": "القيمتان متساويتان (ج)",
       "stepByStepSolution": "المكعب8؛ المتوازي24 وثلثه8؛ متساويان.",
@@ -588,7 +624,9 @@
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر.",
       "contentFingerprint": "c8144fd4f5de8bdd6647018f90f6beca03bc204ef4a67feaf171d3faa9361d43",
-      "ideaFingerprint": "a3fd9dd043ee9131f3001444014fe7ebc4d755e0d851acb03879ca332e5b9238"
+      "ideaFingerprint": "a3fd9dd043ee9131f3001444014fe7ebc4d755e0d851acb03879ca332e5b9238",
+      "importEligible": true,
+      "reviewReason": null
     }
   ]
 }

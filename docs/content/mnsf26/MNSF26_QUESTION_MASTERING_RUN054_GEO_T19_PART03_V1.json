@@ -26,15 +26,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T019_Q09",
       "status": "MASTERED",
       "questionText": "مثلث متطابق الأضلاع ضلعه2س+8 وآخر3س+2؛ أوجد المحيط",
-      "canonicalMainSkill": "main_quant_20",
-      "canonicalSubskill": "sub_quant_20_1",
+      "canonicalMainSkill": "skill_quant_21",
+      "canonicalSubskill": "sub_quant_21_1",
       "correctAnswer": "60 (ج)",
       "stepByStepSolution": "2س+8=3س+2 فيكون س6 والضلع20 والمحيط60.",
       "educationalExplanation": "2س+8=3س+2 فيكون س6 والضلع20 والمحيط60.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "babf10e03c71e195b0034d43d1e34cd2288d65635891ad1f79b29763d1ba6c39",
-      "ideaFingerprint": "b199121e48debcdb62b4e7d6e394ea408e4432a966939041d73397f38b5a9389"
+      "ideaFingerprint": "b199121e48debcdb62b4e7d6e394ea408e4432a966939041d73397f38b5a9389",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T019-Q10",
@@ -56,15 +58,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T019_Q10",
       "status": "MASTERED",
       "questionText": "مثلث متطابق الأضلاع ضلعه5س−10 وآخر3س+5؛ قارن محيطه ب24",
-      "canonicalMainSkill": "main_quant_20",
-      "canonicalSubskill": "sub_quant_20_1",
+      "canonicalMainSkill": "skill_quant_21",
+      "canonicalSubskill": "sub_quant_21_1",
       "correctAnswer": "القيمة الأولى أكبر (أ)",
       "stepByStepSolution": "5س−10=3س+5، س7.5، الضلع27.5، والمحيط82.5>24.",
       "educationalExplanation": "5س−10=3س+5، س7.5، الضلع27.5، والمحيط82.5>24.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "1a9dc902099d26abf939feac85d49bc05bafd02995ba87a37806f951054884fe",
-      "ideaFingerprint": "905b518c179d0a7a697e73e81812413e232f3907d7bbb0628b9147aa6658eacb"
+      "ideaFingerprint": "905b518c179d0a7a697e73e81812413e232f3907d7bbb0628b9147aa6658eacb",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T019-Q11",
@@ -86,15 +90,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T019_Q11",
       "status": "MASTERED",
       "questionText": "مثلث ضلعاه4 و14 وزاويتا قاعدته70 و20؛ أوجد المساحة",
-      "canonicalMainSkill": "main_quant_20",
-      "canonicalSubskill": "sub_quant_20_4",
+      "canonicalMainSkill": "skill_quant_21",
+      "canonicalSubskill": "sub_quant_21_1",
       "correctAnswer": "28 (ب)",
       "stepByStepSolution": "الزاوية الثالثة90، والمساحة4×14/2=28.",
       "educationalExplanation": "الزاوية الثالثة90، والمساحة4×14/2=28.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "1a0e660af015bd680ad4cd0e179e2d6b3c897f532fef144181fc8618e11a26f5",
-      "ideaFingerprint": "18e06ba03301dfcacf2bdcecaf5811a632ae15b11adf9151f8574c5ddd97d687"
+      "ideaFingerprint": "18e06ba03301dfcacf2bdcecaf5811a632ae15b11adf9151f8574c5ddd97d687",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T019-Q12",
@@ -114,18 +120,20 @@
       },
       "imageHash": "2f90e532a59e599cba56b54d1530816d0adf36dd57d7366825759ae6c77589bb",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T019_Q12",
-      "status": "HOLD",
+      "status": "REVIEW",
       "questionText": "فرق مساحتي مثلثين في شكل ذي ارتفاعين5 و3 وقاعدتين3 و7",
-      "canonicalMainSkill": null,
-      "canonicalSubskill": null,
+      "canonicalMainSkill": "skill_quant_21",
+      "canonicalSubskill": "sub_quant_21_1",
       "correctAnswer": null,
-      "stepByStepSolution": null,
+      "stepByStepSolution": "حل السؤال الرياضي بالتطبيق المباشر لقوانين الهندسة.",
       "educationalExplanation": "غير معتمد للنشر؛ سبب الحجز: الحساب المباشر يعطي فرقًا لا يظهر بين الخيارات، ما يرجح لبسًا في تحديد المثلثين أ ب ج ود هـ ج.",
       "difficulty": null,
       "difficultyReason": "الحساب المباشر يعطي فرقًا لا يظهر بين الخيارات، ما يرجح لبسًا في تحديد المثلثين أ ب ج ود هـ ج.",
       "contentFingerprint": "83a702e503baf9adc056354d8c2a008b4464cb99d168fb6d9f2dab2bcdc47111",
       "ideaFingerprint": "bfa09ecd1255341c0183808e640c2e6e97ecde393f6b9a3c275987abc2cf4082",
-      "holdReason": "الحساب المباشر يعطي فرقًا لا يظهر بين الخيارات، ما يرجح لبسًا في تحديد المثلثين أ ب ج ود هـ ج."
+      "holdReason": "الحساب المباشر يعطي فرقًا لا يظهر بين الخيارات، ما يرجح لبسًا في تحديد المثلثين أ ب ج ود هـ ج.",
+      "importEligible": false,
+      "reviewReason": "INCOMPLETE_MASTER_DATA_REQUIRES_IMAGE_CONFIRMATION"
     }
   ]
 }

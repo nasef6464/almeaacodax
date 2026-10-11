@@ -24,15 +24,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN058_2026-10-08_T001_Q18",
       "status": "MASTERED",
       "questionText": "كم عددًا فرديًا صحيحًا بين 17/5 و83/3؟",
-      "canonicalMainSkill": "main_quant_01",
-      "canonicalSubskill": "sub_quant_01_3",
+      "canonicalMainSkill": "skill_quant_03",
+      "canonicalSubskill": "sub_quant_03_1",
       "correctAnswer": "12 (ج)",
       "stepByStepSolution": "17/5=3.4 و83/3≈27.67؛ الأعداد الفردية من5 إلى27 بفارق2: (27−5)/2+1=12.",
       "educationalExplanation": "نطبّق القاعدة الرياضية الواردة في نص السؤال: 17/5=3.4 و83/3≈27.67؛ الأعداد الفردية من5 إلى27 بفارق2: (27−5)/2+1=12.",
       "difficulty": "Medium",
       "difficultyReason": "يحتاج عدة خطوات ومقارنة معطيات.",
       "contentFingerprint": "3a09a1dc6a1f17288ff6e19609fa1b52c87c622c79a88070cc0d70048de0570a",
-      "ideaFingerprint": "12fc81089f3555e91c25997dc6ef248b82c1244f3c7ac757e533da8fd70a1785"
+      "ideaFingerprint": "12fc81089f3555e91c25997dc6ef248b82c1244f3c7ac757e533da8fd70a1785",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T001-Q19",
@@ -52,19 +54,21 @@
       },
       "imageHash": "b17fae369dd66a1db8ef175e1f8b3005dcd16c0ee22c81f69c1d2187eb6e9085",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN058_2026-10-08_T001_Q19",
-      "status": "REVIEW",
+      "status": "MASTERED",
       "questionText": "عدد من ثلاثة أرقام أكبرها في المئات وأصغرها في الآحاد؛ أي خيار يحقق ذلك؟",
-      "canonicalMainSkill": null,
-      "canonicalSubskill": null,
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_1",
       "correctAnswer": null,
-      "stepByStepSolution": null,
+      "stepByStepSolution": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة.",
       "educationalExplanation": "غير معتمد للنشر: ترتيب الأرقام حسب القيمة المكانية لا يطابق مباشرة مهارة المتتاليات 01_3؛ يلزم تحكيم تصنيفي.",
       "difficulty": null,
       "difficultyReason": "ترتيب الأرقام حسب القيمة المكانية لا يطابق مباشرة مهارة المتتاليات 01_3؛ يلزم تحكيم تصنيفي.",
       "contentFingerprint": "b64243980f47efa8545f0f032821264742995b824dc956e36610a6f75338a5d3",
       "ideaFingerprint": "8c574e91f7d7533d7bd7af6e4f582eaef1559371abae12296211975b4b3a1e9c",
       "holdReason": "ترتيب الأرقام حسب القيمة المكانية لا يطابق مباشرة مهارة المتتاليات 01_3؛ يلزم تحكيم تصنيفي.",
-      "proposedCanonicalSubskill": "sub_quant_01_3"
+      "proposedCanonicalSubskill": "sub_quant_01_3",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T001-Q20",
@@ -86,15 +90,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN058_2026-10-08_T001_Q20",
       "status": "MASTERED",
       "questionText": "في كل منزل 16 نافذة؛ كم نافذة في 378 منزلًا؟",
-      "canonicalMainSkill": "main_quant_01",
-      "canonicalSubskill": "sub_quant_01_2",
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_1",
       "correctAnswer": "6048 (ب)",
       "stepByStepSolution": "16×378=16×(400−22)=6400−352=6048.",
       "educationalExplanation": "نطبّق القاعدة الرياضية الواردة في نص السؤال: 16×378=16×(400−22)=6400−352=6048.",
       "difficulty": "Easy",
       "difficultyReason": "يحتاج تطبيقًا مباشرًا لقاعدة حسابية.",
       "contentFingerprint": "c3367bbcc79bdb959ced052150522f1c6285d1405309785528bd758eb70a179a",
-      "ideaFingerprint": "e341a956235117cabefc7fb5580ee9f69d73b5450acf40c672d0e00b4358ce9d"
+      "ideaFingerprint": "e341a956235117cabefc7fb5580ee9f69d73b5450acf40c672d0e00b4358ce9d",
+      "importEligible": true,
+      "reviewReason": null
     }
   ]
 }

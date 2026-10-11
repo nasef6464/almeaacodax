@@ -25,15 +25,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
       "status": "MASTERED",
       "questionText": "مساحتا مربعين بنسبة4:7 ومساحة الكبير أكبر من الصغير90 سم²؛ ما مساحة الصغير؟",
-      "canonicalMainSkill": "main_quant_08",
-      "canonicalSubskill": "sub_quant_08_1",
+      "canonicalMainSkill": "skill_quant_24",
+      "canonicalSubskill": "sub_quant_24_1",
       "correctAnswer": "120 سم²",
       "stepByStepSolution": "الفرق3 أجزاء=90؛ الجزء30؛ الصغير4×30=120.",
       "educationalExplanation": "المهارة: نسبة مساحتي مربعين مع فرق معلوم؛ نحدد العلاقات الهندسية من الشكل الفعلي ونحسب المطلوب ونتحقق من الوحدة والاختيارات.",
       "difficulty": "Easy",
       "difficultyReason": "حساب هندسي مباشر في نسبة مساحتي مربعين مع فرق معلوم.",
       "contentFingerprint": "0bf6af2cda0a4905e9bdcc085448c96b2ec4c8e074ab0fb08142f36474fa5f2c",
-      "ideaFingerprint": "83cde6e2650f6caecfa0d0449136dff08c2347635a1a6c0b4e24e0b3bc3ab5da"
+      "ideaFingerprint": "83cde6e2650f6caecfa0d0449136dff08c2347635a1a6c0b4e24e0b3bc3ab5da",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T029-Q06",
@@ -52,15 +54,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
       "status": "MASTERED",
       "questionText": "جلس36 طالبًا في صفوف وأعمدة على شكل مربع؛ كم عدد الصفوف؟",
-      "canonicalMainSkill": "main_quant_22",
-      "canonicalSubskill": "sub_quant_22_1",
+      "canonicalMainSkill": "skill_quant_24",
+      "canonicalSubskill": "sub_quant_24_1",
       "correctAnswer": "6 صفوف",
       "stepByStepSolution": "6×6=36.",
       "educationalExplanation": "المهارة: عدد الصفوف المربعة من عدد الطلاب؛ نحدد العلاقات الهندسية من الشكل الفعلي ونحسب المطلوب ونتحقق من الوحدة والاختيارات.",
       "difficulty": "Easy",
       "difficultyReason": "حساب هندسي مباشر في عدد الصفوف المربعة من عدد الطلاب.",
       "contentFingerprint": "b67c1639ab66ba9e0b76f8d281357208d1290868c3e7b7cf0b5822987c0ae9bf",
-      "ideaFingerprint": "d1d3e159f8dfb2934af248a7e4be77b90179cc1c81e29cd0582ae4d247e8d040"
+      "ideaFingerprint": "d1d3e159f8dfb2934af248a7e4be77b90179cc1c81e29cd0582ae4d247e8d040",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T029-Q07",
@@ -79,15 +83,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
       "status": "MASTERED",
       "questionText": "مربعان متساويان في المساحة ومجموع مساحتيهما1250م²؛ ما ضلع الواحد؟",
-      "canonicalMainSkill": "main_quant_22",
-      "canonicalSubskill": "sub_quant_22_1",
+      "canonicalMainSkill": "skill_quant_24",
+      "canonicalSubskill": "sub_quant_24_1",
       "correctAnswer": "25 مترًا",
       "stepByStepSolution": "مساحة الواحد625؛ ضلعه√625=25.",
       "educationalExplanation": "المهارة: ضلع مربع من مجموع مساحتين؛ نحدد العلاقات الهندسية من الشكل الفعلي ونحسب المطلوب ونتحقق من الوحدة والاختيارات.",
       "difficulty": "Easy",
       "difficultyReason": "حساب هندسي مباشر في ضلع مربع من مجموع مساحتين.",
       "contentFingerprint": "984925776f8ea6b20bfc1d251f1e1c1a97a8c0ffa2ac90de5d16f818f16251d8",
-      "ideaFingerprint": "e4d4f5d83d0e9a4ac481a670614e3c6f6a86e9f7f03cf7fe906f5f33032b89f9"
+      "ideaFingerprint": "e4d4f5d83d0e9a4ac481a670614e3c6f6a86e9f7f03cf7fe906f5f33032b89f9",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T029-Q08",
@@ -106,15 +112,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
       "status": "MASTERED",
       "questionText": "قارن3 سم مع قطر مربع ضلعه2 سم.",
-      "canonicalMainSkill": "main_quant_22",
-      "canonicalSubskill": "sub_quant_22_2",
+      "canonicalMainSkill": "skill_quant_24",
+      "canonicalSubskill": "sub_quant_24_1",
       "correctAnswer": "القيمة الأولى أكبر",
       "stepByStepSolution": "القطر2√2≈2.83؛ 3 أكبر.",
       "educationalExplanation": "المهارة: قطر مربع من الضلع والمقارنة؛ نحدد العلاقات الهندسية من الشكل الفعلي ونحسب المطلوب ونتحقق من الوحدة والاختيارات.",
       "difficulty": "Easy",
       "difficultyReason": "حساب هندسي مباشر في قطر مربع من الضلع والمقارنة.",
       "contentFingerprint": "3f95d0b3736bf92c51ed07985fe1452a880f0486cf242b263c542ee31c9b20ac",
-      "ideaFingerprint": "56adff5bfdd342a7cdd65a0fb662be4deba135200c56639be5c91da65280595f"
+      "ideaFingerprint": "56adff5bfdd342a7cdd65a0fb662be4deba135200c56639be5c91da65280595f",
+      "importEligible": true,
+      "reviewReason": null
     }
   ],
   "part": 2

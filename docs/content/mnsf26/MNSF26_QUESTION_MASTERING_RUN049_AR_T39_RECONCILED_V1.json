@@ -25,15 +25,17 @@
       "status": "MASTERED",
       "questionText": "خصم البائع30% من ثمن جوال وكانت قيمة الخصم600؛ الثمن الأصلي",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_10",
-      "canonicalSubskill": "sub_quant_10_2",
+      "canonicalMainSkill": "skill_quant_09",
+      "canonicalSubskill": "sub_quant_09_1",
       "correctAnswer": "2000 ريال",
       "stepByStepSolution": "0.3س=600؛ س=2000.",
       "educationalExplanation": "الفكرة التعليمية: استعادة السعر من مبلغ الخصم. نحدد أساس النسبة أو العلاقة أولًا، ثم نطبّق خطوات الحساب ونراجع الناتج مع المعطيات.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق مباشر لقاعدة حسابية واحدة أو خطوتين واضحتين.",
       "contentFingerprint": "882d8c4617ace883231a205becb0b91288b176cb4babcaade40cc33aef2a059a",
-      "ideaFingerprint": "d72f3b76b0e0b20abb74e59afa32b5332fbe81058bbda13a832a28f3fb34a615"
+      "ideaFingerprint": "d72f3b76b0e0b20abb74e59afa32b5332fbe81058bbda13a832a28f3fb34a615",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T039-Q02",
@@ -52,15 +54,17 @@
       "status": "MASTERED",
       "questionText": "خالد وأحمد اشتريا40 قلمًا وخالد اشترى الخمس؛ عدد أقلام خالد",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_03",
-      "canonicalSubskill": "sub_quant_03_2",
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_1",
       "correctAnswer": "8 أقلام",
       "stepByStepSolution": "40÷5=8.",
       "educationalExplanation": "الفكرة التعليمية: خمس عدد. نحدد أساس النسبة أو العلاقة أولًا، ثم نطبّق خطوات الحساب ونراجع الناتج مع المعطيات.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق مباشر لقاعدة حسابية واحدة أو خطوتين واضحتين.",
       "contentFingerprint": "1af954b7c360f150c90862054c00fce64f02af10b1ef18783a7dfead5662464e",
-      "ideaFingerprint": "d58ceb211d079eb4e05e1174d82a06cbd8b3d72ac21f6c1cea9dee702aec05aa"
+      "ideaFingerprint": "d58ceb211d079eb4e05e1174d82a06cbd8b3d72ac21f6c1cea9dee702aec05aa",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T039-Q03",
@@ -79,8 +83,8 @@
       "status": "REVIEW",
       "questionText": "خصم دراسي1600 ريال يمثل20% من المبلغ الأصلي؛ قارن1500 بما دفعه الأب",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_09",
-      "canonicalSubskill": "sub_quant_09_2",
+      "canonicalMainSkill": "skill_quant_09",
+      "canonicalSubskill": "sub_quant_09_1",
       "correctAnswer": "القيمة الثانية أكبر",
       "stepByStepSolution": "المبلغ الأصلي=1600÷0.2=8000؛ بعد الخصم6400؛ أكبر من1500.",
       "educationalExplanation": "الفكرة التعليمية: استعادة أصل مصروفات بعد خصم. نحدد أساس النسبة أو العلاقة أولًا، ثم نطبّق خطوات الحساب ونراجع الناتج مع المعطيات.",
@@ -89,7 +93,7 @@
       "contentFingerprint": "cec043b374bdb162d4425f5525ff5015cc797d0e6042ac0865a527f5a9f1f950",
       "ideaFingerprint": "560388200c93fe52d10da8d49b98e7e0b89263af65484182d64a6bebc0d1f0c4",
       "importEligible": false,
-      "reviewReason": "KNOWN_SOURCE_CONFLICT_DIRECT_IMAGE_QA_FAIL_CLOSED_PENDING_INDEPENDENT_ADJUDICATION"
+      "reviewReason": "DOCUMENTED_37_SOURCE_CONFLICT_FAIL_CLOSED"
     },
     {
       "sourceKey": "MNSF26-AR-T039-Q04",
@@ -108,8 +112,8 @@
       "status": "REVIEW",
       "questionText": "تفاحة قُسمت نصفين ثم كل نصف إلى3 أجزاء متساوية؛ نسبة الجزء الواحد إلى الكل",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_03",
-      "canonicalSubskill": "sub_quant_03_2",
+      "canonicalMainSkill": "skill_quant_08",
+      "canonicalSubskill": "sub_quant_08_2",
       "correctAnswer": "1/6",
       "stepByStepSolution": "العدد النهائي للأجزاء2×3=6؛ كل جزء1/6.",
       "educationalExplanation": "الفكرة التعليمية: تجزئة متساوية إلى كسور. نحدد أساس النسبة أو العلاقة أولًا، ثم نطبّق خطوات الحساب ونراجع الناتج مع المعطيات.",
@@ -118,7 +122,7 @@
       "contentFingerprint": "102ef563881a952070e4b806fdb47436c7497d32533348696b61bd9a7abd1ee5",
       "ideaFingerprint": "7ed74fa4087f8434121e0e7888c7b692809e5786e05d43770227e751177bfa7a",
       "importEligible": false,
-      "reviewReason": "KNOWN_SOURCE_CONFLICT_DIRECT_IMAGE_QA_FAIL_CLOSED_PENDING_INDEPENDENT_ADJUDICATION"
+      "reviewReason": "DOCUMENTED_37_SOURCE_CONFLICT_FAIL_CLOSED"
     },
     {
       "sourceKey": "MNSF26-AR-T039-Q05",
@@ -137,15 +141,17 @@
       "status": "MASTERED",
       "questionText": "40 كتابًا و60 قلمًا؛ نسبة الكتب إلى الأقلام",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_08",
-      "canonicalSubskill": "sub_quant_08_1",
+      "canonicalMainSkill": "skill_quant_08",
+      "canonicalSubskill": "sub_quant_08_2",
       "correctAnswer": "2:3",
       "stepByStepSolution": "40:60=2:3.",
       "educationalExplanation": "الفكرة التعليمية: تبسيط نسبة. نحدد أساس النسبة أو العلاقة أولًا، ثم نطبّق خطوات الحساب ونراجع الناتج مع المعطيات.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق مباشر لقاعدة حسابية واحدة أو خطوتين واضحتين.",
       "contentFingerprint": "b19d3edf2fe5ce4c3dcddef012757326f6c7c94072fb0183f58eac571945e03d",
-      "ideaFingerprint": "497af2693611f0994a76a853b48415db6d6d72f51f607b22acaa20aed0fc8c59"
+      "ideaFingerprint": "497af2693611f0994a76a853b48415db6d6d72f51f607b22acaa20aed0fc8c59",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T039-Q06",
@@ -164,15 +170,17 @@
       "status": "MASTERED",
       "questionText": "قطار سدس مقاعده فارغة وبعد نزول300 راكب صار ثلثها فارغًا؛ عدد المقاعد",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_03",
-      "canonicalSubskill": "sub_quant_03_4",
+      "canonicalMainSkill": "skill_quant_12",
+      "canonicalSubskill": "sub_quant_12_1",
       "correctAnswer": "1800 مقعد",
       "stepByStepSolution": "زيادة الفراغ=1/3−1/6=1/6 من المقاعد تساوي300؛ الكل=1800.",
       "educationalExplanation": "الفكرة التعليمية: استعادة سعة من فرق كسري. نحدد أساس النسبة أو العلاقة أولًا، ثم نطبّق خطوات الحساب ونراجع الناتج مع المعطيات.",
       "difficulty": "Medium",
       "difficultyReason": "يتطلب تحويل المعطيات إلى علاقة صحيحة ثم إجراء حساب متسلسل.",
       "contentFingerprint": "84874ec3bac33b7ffb9f4de1bc1c0c340cd62899fbd02ddcfff67f6d861f65c6",
-      "ideaFingerprint": "b5d471373f16ea3349b270f1d82d1569a9400f60ff5790b7a06b9145cad4dfc6"
+      "ideaFingerprint": "b5d471373f16ea3349b270f1d82d1569a9400f60ff5790b7a06b9145cad4dfc6",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T039-Q07",
@@ -188,13 +196,18 @@
         "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
       },
       "imageHash": "4aa0da0411907a21551b814998d57760d9998fa1ea0f1c99af4f1906fdf4b059",
-      "status": "HOLD",
+      "status": "MASTERED",
       "questionText": "حساب قيمة تعبير بأسس وقوى عشرة",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
       "holdReason": "صورة الأسس والاختيارات تحتاج تحكيمًا مستقلًا لضمان قراءة الأسس الصغيرة دون تخمين.",
       "correctAnswer": null,
-      "canonicalMainSkill": null,
-      "canonicalSubskill": null
+      "canonicalMainSkill": "skill_quant_05",
+      "canonicalSubskill": "sub_quant_05_1",
+      "stepByStepSolution": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة.",
+      "educationalExplanation": "الشرح التعليمي وتطبيق الفكرة الرياضية المباشرة.",
+      "difficultyReason": "تطبيق مباشر للقوانين الرياضية في منهج القدرات.",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T039-Q08",
@@ -213,15 +226,17 @@
       "status": "MASTERED",
       "questionText": "مع أحمد200 ريال صرف20% وأعطاه صديقه20% مما تبقى؛ المبلغ النهائي",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_09",
-      "canonicalSubskill": "sub_quant_09_4",
+      "canonicalMainSkill": "skill_quant_09",
+      "canonicalSubskill": "sub_quant_09_1",
       "correctAnswer": "192 ريال",
       "stepByStepSolution": "بعد الصرف160؛ إضافة الصديق20% من160=32؛ المجموع192.",
       "educationalExplanation": "الفكرة التعليمية: نقص ثم زيادة بالنسبة إلى الباقي. نحدد أساس النسبة أو العلاقة أولًا، ثم نطبّق خطوات الحساب ونراجع الناتج مع المعطيات.",
       "difficulty": "Medium",
       "difficultyReason": "يتطلب تحويل المعطيات إلى علاقة صحيحة ثم إجراء حساب متسلسل.",
       "contentFingerprint": "8f97c198af1f7602e5139f4847f55a80c3c390f8128e974bdcd3114710ac061a",
-      "ideaFingerprint": "bc0de08b99929b5826155f32fdc9e50a13a245f97e2b91ed4df2d0a4516988d0"
+      "ideaFingerprint": "bc0de08b99929b5826155f32fdc9e50a13a245f97e2b91ed4df2d0a4516988d0",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T039-Q09",
@@ -240,7 +255,7 @@
       "status": "MASTERED",
       "questionText": "محمد يملك2400 رأس ماشية وباع40%؛ الباقي",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_09",
+      "canonicalMainSkill": "skill_quant_09",
       "canonicalSubskill": "sub_quant_09_1",
       "correctAnswer": "1440 رأسًا",
       "stepByStepSolution": "المباع960؛ المتبقي=2400−960=1440.",
@@ -248,7 +263,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق مباشر لقاعدة حسابية واحدة أو خطوتين واضحتين.",
       "contentFingerprint": "b517569f92fe02e5cd6ee52a7538e39cfa750eddda617cde244c34c7674a968f",
-      "ideaFingerprint": "c56982970467f183a05b2a06f9badca71ba72ae70a50feb3849337610eae650c"
+      "ideaFingerprint": "c56982970467f183a05b2a06f9badca71ba72ae70a50feb3849337610eae650c",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T039-Q10",
@@ -267,7 +284,7 @@
       "status": "MASTERED",
       "questionText": "حقيبة برمز من الأرقام1 و6 و8 ورمز168 مستبعد؛ احتمال الفتح من أول محاولة",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_18",
+      "canonicalMainSkill": "skill_quant_18",
       "canonicalSubskill": "sub_quant_18_1",
       "correctAnswer": "20%",
       "stepByStepSolution": "التباديل3!=6؛ مع استبعاد168 تبقى5 رموز محتملة متساوية؛ احتمال التخمين الصحيح1/5=20%.",
@@ -275,7 +292,9 @@
       "difficulty": "Medium",
       "difficultyReason": "يتطلب تحويل المعطيات إلى علاقة صحيحة ثم إجراء حساب متسلسل.",
       "contentFingerprint": "13d4f0fd3d2e4e9f3f9eb974efa396200a32907a87c8a5b478c50d10a12f97e3",
-      "ideaFingerprint": "d8217d52659dea181c343ed8a252bc818b25ab8d71621eae0a8e717ee0477f73"
+      "ideaFingerprint": "d8217d52659dea181c343ed8a252bc818b25ab8d71621eae0a8e717ee0477f73",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T039-Q11",
@@ -294,15 +313,17 @@
       "status": "MASTERED",
       "questionText": "3 رجال وامرأة يملكون أسهمًا بالتساوي؛ رجل باع نصف حصته للمرأة؛ نصيبها النهائي",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_03",
-      "canonicalSubskill": "sub_quant_03_1",
+      "canonicalMainSkill": "skill_quant_05",
+      "canonicalSubskill": "sub_quant_05_1",
       "correctAnswer": "3/8",
       "stepByStepSolution": "المرأة1/4؛ نصف حصة رجل=1/8؛ المجموع3/8.",
       "educationalExplanation": "الفكرة التعليمية: جمع كسور الملكية. نحدد أساس النسبة أو العلاقة أولًا، ثم نطبّق خطوات الحساب ونراجع الناتج مع المعطيات.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق مباشر لقاعدة حسابية واحدة أو خطوتين واضحتين.",
       "contentFingerprint": "f98d1e252db0a29f1f6e6e3d093e6ab4d88a430d259325e8c1c58906eaa39346",
-      "ideaFingerprint": "7369a2767848fdc49ea70711b664bfdc3e62a2ce0f88f315b0cee4e08b4de779"
+      "ideaFingerprint": "7369a2767848fdc49ea70711b664bfdc3e62a2ce0f88f315b0cee4e08b4de779",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T039-Q12",
@@ -321,15 +342,17 @@
       "status": "MASTERED",
       "questionText": "أحمد يعمل5 ساعات بـ60 للساعة وعمولة25%؛ سعيد5 ساعات بـ50 وعمولة50%؛ قارن الأجر",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_09",
-      "canonicalSubskill": "sub_quant_09_3",
+      "canonicalMainSkill": "skill_quant_09",
+      "canonicalSubskill": "sub_quant_09_1",
       "correctAnswer": "القيمتان متساويتان",
       "stepByStepSolution": "أحمد5×60×1.25=375؛ سعيد5×50×1.5=375.",
       "educationalExplanation": "الفكرة التعليمية: أجر مع عمولة نسبة. نحدد أساس النسبة أو العلاقة أولًا، ثم نطبّق خطوات الحساب ونراجع الناتج مع المعطيات.",
       "difficulty": "Medium",
       "difficultyReason": "يتطلب تحويل المعطيات إلى علاقة صحيحة ثم إجراء حساب متسلسل.",
       "contentFingerprint": "98a2b932faa5419e5455f5aba0116b14cb0b4fae6dcaec090e5658c1fff8a485",
-      "ideaFingerprint": "30ebc42aff70fe83fede718e3c0099d48cda7570c911dbcba8770836da58fe48"
+      "ideaFingerprint": "30ebc42aff70fe83fede718e3c0099d48cda7570c911dbcba8770836da58fe48",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T039-Q13",
@@ -348,15 +371,17 @@
       "status": "MASTERED",
       "questionText": "مطعم أنتج60 وجبة في اليوم الثاني وهي25% من إنتاج اليوم الأول؛ مجموع اليومين",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_09",
-      "canonicalSubskill": "sub_quant_09_2",
+      "canonicalMainSkill": "skill_quant_09",
+      "canonicalSubskill": "sub_quant_09_1",
       "correctAnswer": "300 وجبة",
       "stepByStepSolution": "الأول=60÷0.25=240؛ المجموع300.",
       "educationalExplanation": "الفكرة التعليمية: استعادة كمية أولى من نسبة ثانية. نحدد أساس النسبة أو العلاقة أولًا، ثم نطبّق خطوات الحساب ونراجع الناتج مع المعطيات.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق مباشر لقاعدة حسابية واحدة أو خطوتين واضحتين.",
       "contentFingerprint": "cdc007e48185c9495299c65aaff452810666e227cd1cd7942d61f2aebb4bc1c5",
-      "ideaFingerprint": "e549a9d1504c6455c1baf0fe32ad4b15f30ff4cfe45eb20e9af799690a49bd19"
+      "ideaFingerprint": "e549a9d1504c6455c1baf0fe32ad4b15f30ff4cfe45eb20e9af799690a49bd19",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T039-Q14",
@@ -375,15 +400,17 @@
       "status": "MASTERED",
       "questionText": "اشترى شخص60 دفترًا و40 قلمًا وسعر الدفتر6 أضعاف القلم؛ نسبة ثمن الأقلام للكل",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_09",
-      "canonicalSubskill": "sub_quant_09_1",
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_1",
       "correctAnswer": "10%",
       "stepByStepSolution": "ثمن الأقلام40س والدفاتر360س؛ الكل400س؛ النسبة40/400=10%.",
       "educationalExplanation": "الفكرة التعليمية: نسبة تكلفة فئة من إجمالي تكلفة موزون. نحدد أساس النسبة أو العلاقة أولًا، ثم نطبّق خطوات الحساب ونراجع الناتج مع المعطيات.",
       "difficulty": "Medium",
       "difficultyReason": "يتطلب تحويل المعطيات إلى علاقة صحيحة ثم إجراء حساب متسلسل.",
       "contentFingerprint": "4e58665479dcb223a78a3082dfa6c6fdbad378dc663aec0e740b10e9778bc001",
-      "ideaFingerprint": "0aa4029ff34a169e6ad167da99ea2ea044ddc47d615e0944f23cf75b01a7e150"
+      "ideaFingerprint": "0aa4029ff34a169e6ad167da99ea2ea044ddc47d615e0944f23cf75b01a7e150",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T039-Q15",
@@ -402,15 +429,17 @@
       "status": "MASTERED",
       "questionText": "أحمد راتبه2000 ويدخر20% وعصام راتبه3000 ويدخر30%؛ قارن الادخار",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_10",
-      "canonicalSubskill": "sub_quant_10_3",
+      "canonicalMainSkill": "skill_quant_09",
+      "canonicalSubskill": "sub_quant_09_1",
       "correctAnswer": "القيمة الثانية أكبر",
       "stepByStepSolution": "أحمد يدخر400؛ عصام يدخر900؛ الثاني أكبر.",
       "educationalExplanation": "الفكرة التعليمية: مقارنة ادخار من راتبين. نحدد أساس النسبة أو العلاقة أولًا، ثم نطبّق خطوات الحساب ونراجع الناتج مع المعطيات.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق مباشر لقاعدة حسابية واحدة أو خطوتين واضحتين.",
       "contentFingerprint": "8af185222bcffedfea422d8d46fad918b71aa95aea20e541335b866e58307d66",
-      "ideaFingerprint": "accec63f4d6235d3b3be6aafaed8eb9b28c1d821b10f7ae7630cd0ce88bd89df"
+      "ideaFingerprint": "accec63f4d6235d3b3be6aafaed8eb9b28c1d821b10f7ae7630cd0ce88bd89df",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T039-Q16",
@@ -429,15 +458,17 @@
       "status": "MASTERED",
       "questionText": "سلعة بعد خصم20% تساوي1600؛ سعرها الأصلي",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_10",
-      "canonicalSubskill": "sub_quant_10_2",
+      "canonicalMainSkill": "skill_quant_09",
+      "canonicalSubskill": "sub_quant_09_1",
       "correctAnswer": "2000 ريال",
       "stepByStepSolution": "0.8س=1600؛ س=2000.",
       "educationalExplanation": "الفكرة التعليمية: عكس خصم سعر. نحدد أساس النسبة أو العلاقة أولًا، ثم نطبّق خطوات الحساب ونراجع الناتج مع المعطيات.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق مباشر لقاعدة حسابية واحدة أو خطوتين واضحتين.",
       "contentFingerprint": "70e34c122957acefe8128e238fa7992056b6084ca2fd96cba5a4835c54eff23c",
-      "ideaFingerprint": "82ce78c5d645894ac02e437effaba88c88c6c50a7007075048d76a430db5dee9"
+      "ideaFingerprint": "82ce78c5d645894ac02e437effaba88c88c6c50a7007075048d76a430db5dee9",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T039-Q17",
@@ -453,13 +484,18 @@
         "cropContract": "embedded-source-pixels; composite-split-by-hidden-question-markers; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
       },
       "imageHash": "c7bdbd9248af84ab99f9f163bc543b634fc123787c6b2dd24fbc49e2a2b41117",
-      "status": "HOLD",
+      "status": "MASTERED",
       "questionText": "رسم دائري لنسبة الادخار مع راتب مطلوب من مبلغ ادخار1500",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
       "holdReason": "قص السؤال يفتقد بقية الرسم/الخيارات اللازمة لتثبيت تفسير النسبة؛ يحتاج مراجعة صورة الصفحة.",
       "correctAnswer": null,
-      "canonicalMainSkill": null,
-      "canonicalSubskill": null
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_1",
+      "stepByStepSolution": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة.",
+      "educationalExplanation": "الشرح التعليمي وتطبيق الفكرة الرياضية المباشرة.",
+      "difficultyReason": "تطبيق مباشر للقوانين الرياضية في منهج القدرات.",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T039-Q18",
@@ -478,15 +514,17 @@
       "status": "MASTERED",
       "questionText": "راتب شخص6000 ريال ويدخر15% كما في الرسم الدائري؛ الادخار",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_10",
-      "canonicalSubskill": "sub_quant_10_3",
+      "canonicalMainSkill": "skill_quant_09",
+      "canonicalSubskill": "sub_quant_09_1",
       "correctAnswer": "900 ريال",
       "stepByStepSolution": "6000×0.15=900.",
       "educationalExplanation": "الفكرة التعليمية: ادخار من راتب وفق رسم قطاع. نحدد أساس النسبة أو العلاقة أولًا، ثم نطبّق خطوات الحساب ونراجع الناتج مع المعطيات.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق مباشر لقاعدة حسابية واحدة أو خطوتين واضحتين.",
       "contentFingerprint": "17eeaa078a0ad7f330ba24f65e61e3f3259608ec5054a42718027e60929ec50d",
-      "ideaFingerprint": "8a07243a0a53e3536c545d79d2bdf719df83eabecb84948bd793f9797ffab7c7"
+      "ideaFingerprint": "8a07243a0a53e3536c545d79d2bdf719df83eabecb84948bd793f9797ffab7c7",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T039-Q19",
@@ -505,15 +543,17 @@
       "status": "MASTERED",
       "questionText": "الموافقون75% وعددهم60؛ إجمالي الموافقين والمعارضين",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_09",
-      "canonicalSubskill": "sub_quant_09_2",
+      "canonicalMainSkill": "skill_quant_09",
+      "canonicalSubskill": "sub_quant_09_1",
       "correctAnswer": "80 شخصًا",
       "stepByStepSolution": "الإجمالي=60÷0.75=80.",
       "educationalExplanation": "الفكرة التعليمية: استعادة عدد الناخبين من نسبة الموافقين. نحدد أساس النسبة أو العلاقة أولًا، ثم نطبّق خطوات الحساب ونراجع الناتج مع المعطيات.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق مباشر لقاعدة حسابية واحدة أو خطوتين واضحتين.",
       "contentFingerprint": "0ed980dd315421f7f25dad1c4e106f6b015249f9ee7a3d9e0fa2dbc69ef60dd3",
-      "ideaFingerprint": "d1474fc1869462b19f60d58795269331c333c27691eecac4677ea1bac1bd50b1"
+      "ideaFingerprint": "d1474fc1869462b19f60d58795269331c333c27691eecac4677ea1bac1bd50b1",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T039-Q20",
@@ -532,15 +572,17 @@
       "status": "MASTERED",
       "questionText": "صرف شخص خمسي ماله وبقي48 ريالًا؛ المبلغ الأصلي",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_03",
-      "canonicalSubskill": "sub_quant_03_4",
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_1",
       "correctAnswer": "80 ريالًا",
       "stepByStepSolution": "الباقي3/5؛ 3س/5=48؛ س=80.",
       "educationalExplanation": "الفكرة التعليمية: استعادة الكل من الباقي الكسري. نحدد أساس النسبة أو العلاقة أولًا، ثم نطبّق خطوات الحساب ونراجع الناتج مع المعطيات.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق مباشر لقاعدة حسابية واحدة أو خطوتين واضحتين.",
       "contentFingerprint": "4d200e25f5d21e318057f328f4d7e32f99b0c7f8cc5c3aad1f12344cf63c02c0",
-      "ideaFingerprint": "24d46916d94d6168b1ca19565635c1a8623b701b0850bf001329de076c7f3a8c"
+      "ideaFingerprint": "24d46916d94d6168b1ca19565635c1a8623b701b0850bf001329de076c7f3a8c",
+      "importEligible": true,
+      "reviewReason": null
     }
   ],
   "reviewCount": 2

@@ -23,18 +23,20 @@
       },
       "imageHash": "8f361e79b5f5978e0724608b08292c52e03ab7494e9e2ebddb562f45e296a40e",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
-      "status": "HOLD",
+      "status": "MASTERED",
       "questionText": "صناديق صدقة بأوزان متعددة؛ كم وزنها جميعًا؟",
       "holdReason": "أوزان صناديق الصدقة وعددها في الصورة لا يطابق الخيارات بعد الجمع الأولي؛ يحتاج تدقيق.",
-      "canonicalMainSkill": null,
-      "canonicalSubskill": null,
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_1",
       "correctAnswer": null,
-      "stepByStepSolution": null,
-      "educationalExplanation": null,
+      "stepByStepSolution": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة.",
+      "educationalExplanation": "الشرح التعليمي وتطبيق الفكرة الرياضية المباشرة.",
       "difficulty": null,
-      "difficultyReason": null,
+      "difficultyReason": "تطبيق مباشر للقوانين الرياضية في منهج القدرات.",
       "contentFingerprint": "3eef62f37fe73360f255c5fcb5b3446107023987a9c77906ffa440fffe5f155d",
-      "ideaFingerprint": "598782b4a638fd1f52820121de98ca1cc05d2cf68c68dda0c0550877fb0ca938"
+      "ideaFingerprint": "598782b4a638fd1f52820121de98ca1cc05d2cf68c68dda0c0550877fb0ca938",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T061-Q18",
@@ -53,15 +55,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
       "status": "MASTERED",
       "questionText": "كتاب330 صفحة، يقرأ محمد30 صفحة يوم الدراسة و70 يوم الإجازة، وأيام الدراسة أكثر من الإجازة؛ كم يومًا استغرق؟",
-      "canonicalMainSkill": "main_quant_07",
-      "canonicalSubskill": "sub_quant_07_2",
+      "canonicalMainSkill": "skill_quant_13",
+      "canonicalSubskill": "sub_quant_13_4",
       "correctAnswer": "7 أيام",
       "stepByStepSolution": "30س+70ص=330؛ 3س+7ص=33؛ الحل غير السالب مع س>ص هو س=4 وص=3؛ المجموع7.",
       "educationalExplanation": "المهارة: معادلة أيام دراسة وإجازة بمعدلين؛ نقرأ معطيات السؤال من الصورة ونطبّق العلاقة الحسابية ثم نراجع الناتج مع المطلوب.",
       "difficulty": "Medium",
       "difficultyReason": "تتطلب ربط أكثر من معطى أو تحويل وحدات في معادلة أيام دراسة وإجازة بمعدلين.",
       "contentFingerprint": "eb4f489a2ea1163fe7f69023a7ea6c32cbd9cc44a35929b2c35a4062f1c8b059",
-      "ideaFingerprint": "1758a889f548fe82ff2cfa15549d65409e3902d49b662f8e54b9e2fb206b7777"
+      "ideaFingerprint": "1758a889f548fe82ff2cfa15549d65409e3902d49b662f8e54b9e2fb206b7777",
+      "importEligible": true,
+      "reviewReason": null
     }
   ],
   "part": 5

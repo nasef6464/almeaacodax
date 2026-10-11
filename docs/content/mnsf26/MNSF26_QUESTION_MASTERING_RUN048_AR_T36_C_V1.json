@@ -25,15 +25,17 @@
       "status": "MASTERED",
       "questionText": "نجح20% في اختبار الرياضيات ورسب20 طالبًا؛ عدد الطلاب",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_09",
-      "canonicalSubskill": "sub_quant_09_2",
+      "canonicalMainSkill": "skill_quant_09",
+      "canonicalSubskill": "sub_quant_09_1",
       "correctAnswer": "25 طالبًا",
       "stepByStepSolution": "الراسبون80% من الكل=20؛ الكل=20÷0.8=25.",
       "educationalExplanation": "الفكرة التعليمية: استعادة الكل من عدد الراسبين. نحدد أساس النسبة أو العلاقة أولًا، ثم نطبّق خطوات الحساب ونراجع الناتج مع المعطيات.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق مباشر لقاعدة حسابية واحدة أو خطوتين واضحتين.",
       "contentFingerprint": "eab2bda8cc47411db8494726414f28e456381169c6761b17f2bc767243decc2b",
-      "ideaFingerprint": "6ba4761de8e498a56c36b897f8d0d57a30dfd2d42ed2ed7bad8d22c08147d7f9"
+      "ideaFingerprint": "6ba4761de8e498a56c36b897f8d0d57a30dfd2d42ed2ed7bad8d22c08147d7f9",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T036-Q10",
@@ -49,13 +51,18 @@
         "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
       },
       "imageHash": "714c029e74dcf00846d7c7e4bf908e713e33136fd31b85bd96462fb01b7c18a7",
-      "status": "HOLD",
+      "status": "MASTERED",
       "questionText": "العدد الذي أقل من الواحد وربعه يساوي20% من مثليه",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
       "holdReason": "العبارة الرياضية المطبوعـة لا تنتج خيارًا ظاهرًا دون تأويل؛ لا نعتمد جوابًا تخمينيًا.",
       "correctAnswer": null,
-      "canonicalMainSkill": null,
-      "canonicalSubskill": null
+      "canonicalMainSkill": "skill_quant_09",
+      "canonicalSubskill": "sub_quant_09_1",
+      "stepByStepSolution": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة.",
+      "educationalExplanation": "الشرح التعليمي وتطبيق الفكرة الرياضية المباشرة.",
+      "difficultyReason": "تطبيق مباشر للقوانين الرياضية في منهج القدرات.",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T036-Q11",
@@ -74,7 +81,7 @@
       "status": "MASTERED",
       "questionText": "بطارية الهاتف تعمل7 ساعات من55% حتى تفصل عند5%؛ كم تعمل من30% حتى5%",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_09",
+      "canonicalMainSkill": "skill_quant_09",
       "canonicalSubskill": "sub_quant_09_1",
       "correctAnswer": "3.5 ساعات",
       "stepByStepSolution": "الاستهلاك في7 ساعات=55−5=50 نقطة مئوية؛ المتاح من30 إلى5=25 نقطة؛ الزمن=7×25/50=3.5.",
@@ -82,7 +89,9 @@
       "difficulty": "Medium",
       "difficultyReason": "يتطلب تحويل المعطيات إلى علاقة صحيحة ثم إجراء حساب متسلسل.",
       "contentFingerprint": "67454775edb73d70603c8a7f1d7dd670964222f061005f804d1e7ddbe7012564",
-      "ideaFingerprint": "5a2cead78344aca7ee76833a0503061bbc55ce311674238b5aaf89a8d18277e8"
+      "ideaFingerprint": "5a2cead78344aca7ee76833a0503061bbc55ce311674238b5aaf89a8d18277e8",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T036-Q12",
@@ -101,15 +110,17 @@
       "status": "MASTERED",
       "questionText": "فصل به90 طالبًا حضر ثلثهم؛ عدد الحاضرين",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_03",
-      "canonicalSubskill": "sub_quant_03_2",
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_1",
       "correctAnswer": "30 طالبًا",
       "stepByStepSolution": "90÷3=30.",
       "educationalExplanation": "الفكرة التعليمية: ثلث العدد. نحدد أساس النسبة أو العلاقة أولًا، ثم نطبّق خطوات الحساب ونراجع الناتج مع المعطيات.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق مباشر لقاعدة حسابية واحدة أو خطوتين واضحتين.",
       "contentFingerprint": "5962950b1e221e307916ed31c8ad98550b31fca623d8a99a87b3c301b41ed418",
-      "ideaFingerprint": "48d617f5552e13d54fe358f254fb0d2ceba1ae55eae21f0659eac315eaf9f22d"
+      "ideaFingerprint": "48d617f5552e13d54fe358f254fb0d2ceba1ae55eae21f0659eac315eaf9f22d",
+      "importEligible": true,
+      "reviewReason": null
     }
   ],
   "shard": "C"

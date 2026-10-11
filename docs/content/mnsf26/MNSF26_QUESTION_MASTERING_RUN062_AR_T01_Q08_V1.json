@@ -24,8 +24,8 @@
       "visualEvidence": "DIRECT_RUN017_SOURCE_WEBP_INSPECTION_RUN062_2026-10-08",
       "status": "MASTERED",
       "questionText": "طابور فيه 251 شخصًا؛ محمد ترتيبه 126 من الخلف وخالد 25 من الأمام. كم شخصًا بينهما؟",
-      "canonicalMainSkill": "skill_quant_13",
-      "canonicalSubskill": "sub_quant_13_4",
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_1",
       "correctAnswer": "ب — 100",
       "stepByStepSolution": "محمد من الأمام=251−126+1=126. خالد من الأمام=25. بينهما 126−25−1=100.",
       "educationalExplanation": "نوحّد اتجاه ترتيب الأشخاص قبل عد الواقفين بينهم.",
@@ -33,7 +33,9 @@
       "difficultyReason": "تحويل ترتيب ثم حساب عدد بين شخصين.",
       "contentFingerprint": "749d6f7d873a952e7ba730614df660478863b98955663f8796b6a2df95fdc7d6",
       "ideaFingerprint": "65c0d6858c61120e71772e44c771762ddca5307f8bc13c9015774bdb952abb4d",
-      "legacyProvenance": "MNSF26_CONTENT_ENRICHMENT_V1.json; 130 legacy not reanalysed from scratch"
+      "legacyProvenance": "MNSF26_CONTENT_ENRICHMENT_V1.json; 130 legacy not reanalysed from scratch",
+      "importEligible": true,
+      "reviewReason": null
     }
   ]
 }

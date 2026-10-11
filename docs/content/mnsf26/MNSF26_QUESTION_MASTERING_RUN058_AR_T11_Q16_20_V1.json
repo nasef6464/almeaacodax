@@ -23,15 +23,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN058_2026-10-08_T011_Q16",
       "status": "MASTERED",
       "questionText": "أي قسمة تعطي الناتج7 بين91÷13 و90÷14 و91÷7 و91÷14؟",
-      "canonicalMainSkill": "main_quant_01",
-      "canonicalSubskill": "sub_quant_01_4",
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_1",
       "correctAnswer": "91÷13=7 (أ)",
       "stepByStepSolution": "13×7=91.",
       "educationalExplanation": "نطبّق القاعدة الرياضية الواردة في نص السؤال: 13×7=91.",
       "difficulty": "Easy",
       "difficultyReason": "يحتاج تطبيقًا مباشرًا لقاعدة حسابية.",
       "contentFingerprint": "36ee2d91efadb2623e8663076e397afabdfc3af948e9ff320edae0d7e9837041",
-      "ideaFingerprint": "84fd4e2c9cd1c78a252be0949e0a1272ec3fb7ea307569c799873eb9d49c9e8c"
+      "ideaFingerprint": "84fd4e2c9cd1c78a252be0949e0a1272ec3fb7ea307569c799873eb9d49c9e8c",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T011-Q17",
@@ -53,15 +55,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN058_2026-10-08_T011_Q17",
       "status": "MASTERED",
       "questionText": "قارن(7×8)+2 مع7(4+4)÷2.",
-      "canonicalMainSkill": "main_quant_01",
-      "canonicalSubskill": "sub_quant_01_4",
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_1",
       "correctAnswer": "القيمة الأولى أكبر (أ)",
       "stepByStepSolution": "الأولى56+2=58؛ الثانية7×8÷2=28.",
       "educationalExplanation": "نطبّق القاعدة الرياضية الواردة في نص السؤال: الأولى56+2=58؛ الثانية7×8÷2=28.",
       "difficulty": "Easy",
       "difficultyReason": "يحتاج تطبيقًا مباشرًا لقاعدة حسابية.",
       "contentFingerprint": "d6482d6125991cefb9a4351966cf4ce738efd41637cfa8114f4c6638bf0477a1",
-      "ideaFingerprint": "976067ce441cde8f775437e6171beb0b1030d08108f770268f6c94d63770f368"
+      "ideaFingerprint": "976067ce441cde8f775437e6171beb0b1030d08108f770268f6c94d63770f368",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T011-Q18",
@@ -83,7 +87,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN058_2026-10-08_T011_Q18",
       "status": "MASTERED",
       "questionText": "أي من2310 و2301 و2031 و2013 يقبل القسمة على6؟",
-      "canonicalMainSkill": "main_quant_02",
+      "canonicalMainSkill": "skill_quant_02",
       "canonicalSubskill": "sub_quant_02_1",
       "correctAnswer": "2310 (أ)",
       "stepByStepSolution": "2310 زوجي ومجموع أرقامه6، إذن يقبل القسمة على6.",
@@ -91,7 +95,9 @@
       "difficulty": "Easy",
       "difficultyReason": "يحتاج تطبيقًا مباشرًا لقاعدة حسابية.",
       "contentFingerprint": "1aacde28a114290205593d64bad9674ed893486be8658b35029513e069fa8551",
-      "ideaFingerprint": "fd9a8c3380eecdc465f95bc6aad6094e36094794128784cfc09766cb7320e8e9"
+      "ideaFingerprint": "fd9a8c3380eecdc465f95bc6aad6094e36094794128784cfc09766cb7320e8e9",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T011-Q19",
@@ -113,7 +119,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN058_2026-10-08_T011_Q19",
       "status": "MASTERED",
       "questionText": "احسب1+6×(−2).",
-      "canonicalMainSkill": "main_quant_01",
+      "canonicalMainSkill": "skill_quant_01",
       "canonicalSubskill": "sub_quant_01_1",
       "correctAnswer": "−11 (أ)",
       "stepByStepSolution": "6×(−2)=−12؛ 1−12=−11.",
@@ -121,7 +127,9 @@
       "difficulty": "Easy",
       "difficultyReason": "يحتاج تطبيقًا مباشرًا لقاعدة حسابية.",
       "contentFingerprint": "3fa03c928e4878c7b4a199c7d52b2854ceb013e1f8b75fbabd8f96163459123a",
-      "ideaFingerprint": "13e52a1014b10ab83e6f7850c00ff893c65cd7f026565fa243029af7bc4e70e0"
+      "ideaFingerprint": "13e52a1014b10ab83e6f7850c00ff893c65cd7f026565fa243029af7bc4e70e0",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T011-Q20",
@@ -143,15 +151,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN058_2026-10-08_T011_Q20",
       "status": "MASTERED",
       "questionText": "قارن7(8−4)÷2 مع7(4+4)÷2.",
-      "canonicalMainSkill": "main_quant_01",
-      "canonicalSubskill": "sub_quant_01_4",
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_1",
       "correctAnswer": "القيمة الثانية أكبر (ب)",
       "stepByStepSolution": "الأولى14 والثانية28.",
       "educationalExplanation": "نطبّق القاعدة الرياضية الواردة في نص السؤال: الأولى14 والثانية28.",
       "difficulty": "Easy",
       "difficultyReason": "يحتاج تطبيقًا مباشرًا لقاعدة حسابية.",
       "contentFingerprint": "3b92c8a7150344c260190bec7e8f5fd9633ca204b3019eb4384f72584918107d",
-      "ideaFingerprint": "7a119b2c8ce3f30b782101b08cae7130327ab303be474b3f4774e30fca966bda"
+      "ideaFingerprint": "7a119b2c8ce3f30b782101b08cae7130327ab303be474b3f4774e30fca966bda",
+      "importEligible": true,
+      "reviewReason": null
     }
   ]
 }

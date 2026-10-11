@@ -23,15 +23,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T019_Q06",
       "status": "MASTERED",
       "questionText": "مثلث به قطعة موازية للقاعدة، الجانب الأيسر س و6 والأيمن8 و4",
-      "canonicalMainSkill": "main_quant_20",
-      "canonicalSubskill": "sub_quant_20_5",
+      "canonicalMainSkill": "skill_quant_21",
+      "canonicalSubskill": "sub_quant_21_1",
       "correctAnswer": "12 (ب)",
       "stepByStepSolution": "س/6=8/4، إذن س12.",
       "educationalExplanation": "س/6=8/4، إذن س12.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "9e864221afbaadabf9973e2294db37feecf5708c28a7b1a65d4e1474e4e1222a",
-      "ideaFingerprint": "1b760360137c53fdbd2ed4582406b28b839824b827b01c511a34e41a62ed5519"
+      "ideaFingerprint": "1b760360137c53fdbd2ed4582406b28b839824b827b01c511a34e41a62ed5519",
+      "importEligible": true,
+      "reviewReason": null
     }
   ]
 }

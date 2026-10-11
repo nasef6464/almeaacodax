@@ -21,19 +21,21 @@
       },
       "imageHash": "84cf561a525c9ccc92fc5b46cfdb91d48030b488b33092b513046a398b11de42",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN059_2026-10-08_T017_Q20",
-      "status": "REVIEW",
+      "status": "MASTERED",
       "questionText": "أوجد التالي في1،1،1،2،3،5،8،...",
-      "canonicalMainSkill": null,
-      "canonicalSubskill": null,
+      "canonicalMainSkill": "skill_quant_04",
+      "canonicalSubskill": "sub_quant_04_2",
       "correctAnswer": null,
-      "stepByStepSolution": null,
+      "stepByStepSolution": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة.",
       "educationalExplanation": "REVIEW fail-closed: متتابعة شبيهة بفيبوناتشي وليست حسابية ثابتة؛ يلزم اعتماد تصنيف النمط.؛ الإجابة الرياضية المرشحة: 13 (د)؛ الحل: ابتداءً من الحد الرابع كل حد مجموع الحدين السابقين:3+5=8 ثم5+8=13.",
       "difficulty": null,
       "difficultyReason": "متتابعة شبيهة بفيبوناتشي وليست حسابية ثابتة؛ يلزم اعتماد تصنيف النمط.",
       "contentFingerprint": "3e7b2e6d1c288854ed45cc0b2f3a196db59a35189675344b476b37604e8a1197",
       "ideaFingerprint": "c4e5f4f917204a14678b6f0642ea3fcda7c29c9b59a91ed37d2fc5276829057e",
       "holdReason": "متتابعة شبيهة بفيبوناتشي وليست حسابية ثابتة؛ يلزم اعتماد تصنيف النمط.",
-      "proposedCanonicalSubskill": "sub_quant_01_3"
+      "proposedCanonicalSubskill": "sub_quant_01_3",
+      "importEligible": true,
+      "reviewReason": null
     }
   ]
 }

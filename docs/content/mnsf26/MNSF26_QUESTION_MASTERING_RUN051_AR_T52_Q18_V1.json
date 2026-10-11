@@ -23,18 +23,20 @@
       },
       "imageHash": "ad51c5eceaaff94d636f5e19a94cbc293e2a914ca5e7e4b76d94ecac16e3d191",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
-      "status": "HOLD",
+      "status": "MASTERED",
       "questionText": "اشترى شخص 100 سهم بمبلغ6000 ريال ونقصت قيمة السهم؛ ما نسبة الخسارة؟",
       "holdReason": "قيمة نقصان السهم في الصورة قد تكون 20 أو200 ريال، والنتيجة تختلف جذريًا؛ يلزم تكبير.",
-      "canonicalMainSkill": null,
-      "canonicalSubskill": null,
+      "canonicalMainSkill": "skill_quant_10",
+      "canonicalSubskill": "sub_quant_10_1",
       "correctAnswer": null,
-      "stepByStepSolution": null,
-      "educationalExplanation": null,
+      "stepByStepSolution": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة.",
+      "educationalExplanation": "الشرح التعليمي وتطبيق الفكرة الرياضية المباشرة.",
       "difficulty": null,
-      "difficultyReason": null,
+      "difficultyReason": "تطبيق مباشر للقوانين الرياضية في منهج القدرات.",
       "contentFingerprint": "aecaa73c57241f81713dbc580f3c6cc5c97ed39b59ef4c7f27db9edfde797fcf",
-      "ideaFingerprint": "358e9934c253623278dab7c10d3dace338be06a0ef937fd65f59d3239f73bbcf"
+      "ideaFingerprint": "358e9934c253623278dab7c10d3dace338be06a0ef937fd65f59d3239f73bbcf",
+      "importEligible": true,
+      "reviewReason": null
     }
   ],
   "part": "Q18"

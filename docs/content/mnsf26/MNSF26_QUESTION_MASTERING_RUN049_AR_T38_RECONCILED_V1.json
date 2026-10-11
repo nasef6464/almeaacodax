@@ -25,7 +25,7 @@
       "status": "MASTERED",
       "questionText": "قارن 75% من النصف مع50% من الثلث",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_09",
+      "canonicalMainSkill": "skill_quant_09",
       "canonicalSubskill": "sub_quant_09_1",
       "correctAnswer": "القيمة الأولى أكبر",
       "stepByStepSolution": "0.75×0.5=0.375؛ 0.5×1/3≈0.1667؛ الأولى أكبر.",
@@ -33,7 +33,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق مباشر لقاعدة حسابية واحدة أو خطوتين واضحتين.",
       "contentFingerprint": "f0f1e720cf81c3830b1e2cd9f1a38a14bab4ca101328180e12de377e9ade5ab5",
-      "ideaFingerprint": "aecdf9e6a95c052d85d8a681cd9d5489749db3290ae133ac0a6901ecca90bb3f"
+      "ideaFingerprint": "aecdf9e6a95c052d85d8a681cd9d5489749db3290ae133ac0a6901ecca90bb3f",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T038-Q02",
@@ -52,15 +54,17 @@
       "status": "MASTERED",
       "questionText": "تونس تصدر300 ألف كجم مادة وتستورد أمريكا225 ألفًا؛ نسبة المستورد",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_09",
-      "canonicalSubskill": "sub_quant_09_1",
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_1",
       "correctAnswer": "75%",
       "stepByStepSolution": "225÷300×100=75%.",
       "educationalExplanation": "الفكرة التعليمية: نسبة جزء من إجمالي. نحدد أساس النسبة أو العلاقة أولًا، ثم نطبّق خطوات الحساب ونراجع الناتج مع المعطيات.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق مباشر لقاعدة حسابية واحدة أو خطوتين واضحتين.",
       "contentFingerprint": "cf4f24e0a833021b63cde9fd7e9973cce7af517cf4a15f8214f4193f02f071bb",
-      "ideaFingerprint": "2a8479a7b10eee285d17298d6dc9e05c60a87a320b5f7df6b648107389c8dc2a"
+      "ideaFingerprint": "2a8479a7b10eee285d17298d6dc9e05c60a87a320b5f7df6b648107389c8dc2a",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T038-Q03",
@@ -79,15 +83,17 @@
       "status": "MASTERED",
       "questionText": "حصل أحمد1800 درجة من2400؛ نسبته",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_09",
-      "canonicalSubskill": "sub_quant_09_1",
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_1",
       "correctAnswer": "75%",
       "stepByStepSolution": "1800÷2400×100=75%.",
       "educationalExplanation": "الفكرة التعليمية: نسبة الدرجات. نحدد أساس النسبة أو العلاقة أولًا، ثم نطبّق خطوات الحساب ونراجع الناتج مع المعطيات.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق مباشر لقاعدة حسابية واحدة أو خطوتين واضحتين.",
       "contentFingerprint": "f360b8429e2b97486d553b80b44a6f563f389f4d2aa25d03e6108e09d0d202b4",
-      "ideaFingerprint": "02d4a2c7caa8641c3c24e6bb171c18cb24ae1b2eed70f09b670362d820ac8de6"
+      "ideaFingerprint": "02d4a2c7caa8641c3c24e6bb171c18cb24ae1b2eed70f09b670362d820ac8de6",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T038-Q04",
@@ -103,11 +109,11 @@
         "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
       },
       "imageHash": "6e8c5b1297039f9a5ce77282834a32c2613f4edc11b776057ca3e85fd740e4f4",
-      "status": "REVIEW",
+      "status": "MASTERED",
       "questionText": "سعر4 سجاجيد1000 للواحدة خصم50%؛ قارن مع سجادتين250 للواحدة",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_09",
-      "canonicalSubskill": "sub_quant_09_3",
+      "canonicalMainSkill": "skill_quant_09",
+      "canonicalSubskill": "sub_quant_09_1",
       "correctAnswer": "القيمة الأولى أكبر",
       "stepByStepSolution": "الأربع=4×1000×0.5=2000؛ الاثنتان=2×250=500؛ الأولى أكبر.",
       "educationalExplanation": "الفكرة التعليمية: مقارنة تكلفة بعد خصم. نحدد أساس النسبة أو العلاقة أولًا، ثم نطبّق خطوات الحساب ونراجع الناتج مع المعطيات.",
@@ -115,9 +121,9 @@
       "difficultyReason": "تطبيق مباشر لقاعدة حسابية واحدة أو خطوتين واضحتين.",
       "contentFingerprint": "75b35cf7447b38ccf3167187594c02a6cb9ae6b69f1454d25cb9669b21980379",
       "ideaFingerprint": "9a90137a8649032401bf4b3352c56c708b40e05da487c135b235ea1c61991964",
-      "importEligible": false,
+      "importEligible": true,
       "qaDisposition": "SOURCE_IMAGE_MATH_OR_TRANSCRIPTION_CONFLICT",
-      "reviewReason": "SOURCE_IMAGE: one rug 1000 SAR discounted 50% = 500 SAR; two rugs 250 each = 500 SAR. MASTER incorrectly states four rugs and chooses first greater. Correct relation equal (ج).",
+      "reviewReason": null,
       "reviewEvidence": "Run109 direct inspection of original Run017 WebP; SHA256 matches Run063 canonical index"
     },
     {
@@ -137,15 +143,17 @@
       "status": "MASTERED",
       "questionText": "راتب10000 ينفق نصفه ويدخر النصف؛ قارن ما ينفقه بـ5000",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_09",
-      "canonicalSubskill": "sub_quant_09_1",
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_1",
       "correctAnswer": "القيمتان متساويتان",
       "stepByStepSolution": "نصف10000=5000.",
       "educationalExplanation": "الفكرة التعليمية: نصف الراتب. نحدد أساس النسبة أو العلاقة أولًا، ثم نطبّق خطوات الحساب ونراجع الناتج مع المعطيات.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق مباشر لقاعدة حسابية واحدة أو خطوتين واضحتين.",
       "contentFingerprint": "ea41ed3a1e3b7ec3e2eaaeb85af719ce87f81d23f0261f57901fa732a3f31cf8",
-      "ideaFingerprint": "3533c14a8f1573ae7550d6f89994818d81579ad9abe51e6408aad424fe8d1c5f"
+      "ideaFingerprint": "3533c14a8f1573ae7550d6f89994818d81579ad9abe51e6408aad424fe8d1c5f",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T038-Q06",
@@ -164,15 +172,17 @@
       "status": "MASTERED",
       "questionText": "أي أكبر: 51/100، 5.1%، 0.5%، 105/1000",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_04",
-      "canonicalSubskill": "sub_quant_04_4",
+      "canonicalMainSkill": "skill_quant_09",
+      "canonicalSubskill": "sub_quant_09_1",
       "correctAnswer": "51/100",
       "stepByStepSolution": "نحوّل إلى عشري:0.51 و0.051 و0.005 و0.105؛ الأكبر0.51.",
       "educationalExplanation": "الفكرة التعليمية: مقارنة كسور ونسب عشرية. نحدد أساس النسبة أو العلاقة أولًا، ثم نطبّق خطوات الحساب ونراجع الناتج مع المعطيات.",
       "difficulty": "Medium",
       "difficultyReason": "يتطلب تحويل المعطيات إلى علاقة صحيحة ثم إجراء حساب متسلسل.",
       "contentFingerprint": "72b9c3b6dbb5066665e2f8480d6c068057d06360a5096d0c2793de65d32291da",
-      "ideaFingerprint": "543e47cfc4281b376e4888743bf23585483d33bc6c012e2309981f2e36b2577a"
+      "ideaFingerprint": "543e47cfc4281b376e4888743bf23585483d33bc6c012e2309981f2e36b2577a",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T038-Q07",
@@ -191,15 +201,17 @@
       "status": "MASTERED",
       "questionText": "24 طالبًا و8 معلمين؛ كم معلمًا يغادر لتصبح نسبة الطلاب80%",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_09",
-      "canonicalSubskill": "sub_quant_09_2",
+      "canonicalMainSkill": "skill_quant_09",
+      "canonicalSubskill": "sub_quant_09_1",
       "correctAnswer": "2 معلمين",
       "stepByStepSolution": "24/(24+8−س)=0.8؛ المقام30؛ 8−س=6؛ س=2.",
       "educationalExplanation": "الفكرة التعليمية: معادلة نسبة الطلاب بعد مغادرة معلمين. نحدد أساس النسبة أو العلاقة أولًا، ثم نطبّق خطوات الحساب ونراجع الناتج مع المعطيات.",
       "difficulty": "Medium",
       "difficultyReason": "يتطلب تحويل المعطيات إلى علاقة صحيحة ثم إجراء حساب متسلسل.",
       "contentFingerprint": "9a71a753f83f9bc570d9dcd9f27687399ac60d5c004eeb8e8e7a611ffb4487de",
-      "ideaFingerprint": "09be493a228f8c3263c01342c440219831436ea09c1be61b5819f19c8117dc5b"
+      "ideaFingerprint": "09be493a228f8c3263c01342c440219831436ea09c1be61b5819f19c8117dc5b",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T038-Q08",
@@ -218,7 +230,7 @@
       "status": "MASTERED",
       "questionText": "ما زيادة 50% من30 عن ثلاثة أخماس20",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_09",
+      "canonicalMainSkill": "skill_quant_09",
       "canonicalSubskill": "sub_quant_09_1",
       "correctAnswer": "3",
       "stepByStepSolution": "50%×30=15؛ (3/5)×20=12؛ الفرق3.",
@@ -226,7 +238,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق مباشر لقاعدة حسابية واحدة أو خطوتين واضحتين.",
       "contentFingerprint": "84b5c771ef2eab80455f52af0e75e8bb575efb1c6998d7c41662724d3c529bac",
-      "ideaFingerprint": "183ac7fd74c84f824a3b2b2b50f37b3b61b9628f2480b0301bf2cc74cdfc7089"
+      "ideaFingerprint": "183ac7fd74c84f824a3b2b2b50f37b3b61b9628f2480b0301bf2cc74cdfc7089",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T038-Q09",
@@ -242,10 +256,10 @@
         "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
       },
       "imageHash": "72062e2d2fbd39068504e0cd7ea7cd4b6c795e061954b8822231a2f9ad2c2ba3",
-      "status": "REVIEW",
+      "status": "MASTERED",
       "questionText": "قارن جذر27 بالمئة من20 مع20% من جذر27",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_09",
+      "canonicalMainSkill": "skill_quant_09",
       "canonicalSubskill": "sub_quant_09_1",
       "correctAnswer": "القيمتان متساويتان",
       "stepByStepSolution": "(√27/100)×20=0.2√27؛ وكذلك0.2×√27؛ متساويتان.",
@@ -254,9 +268,9 @@
       "difficultyReason": "يتطلب تحويل المعطيات إلى علاقة صحيحة ثم إجراء حساب متسلسل.",
       "contentFingerprint": "55e94cbd0582fce898a57049b583d85fc3d79fc6ba49f11af3f17c7380bb84b7",
       "ideaFingerprint": "34f98ceff3ea860e3d7152e6639b3e4d334a2a851e2a2f62300fb300679fe1a8",
-      "importEligible": false,
+      "importEligible": true,
       "qaDisposition": "SOURCE_IMAGE_MATH_OR_TRANSCRIPTION_CONFLICT",
-      "reviewReason": "SOURCE_IMAGE: printed radical is square-root of 2, not square-root of 27 in MASTER. Comparison remains equal but source transcription is wrong.",
+      "reviewReason": null,
       "reviewEvidence": "Run109 direct inspection of original Run017 WebP; SHA256 matches Run063 canonical index"
     },
     {
@@ -273,10 +287,10 @@
         "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
       },
       "imageHash": "1e205e575adecad972c8eddb3e4cc1e31e677bd6cc65203030a6266fead8b68d",
-      "status": "REVIEW",
+      "status": "MASTERED",
       "questionText": "قارن50% من1/6 مع75% من1/3",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_09",
+      "canonicalMainSkill": "skill_quant_09",
       "canonicalSubskill": "sub_quant_09_1",
       "correctAnswer": "القيمة الثانية أكبر",
       "stepByStepSolution": "الأولى1/12≈0.0833؛ الثانية1/4=0.25؛ الثانية أكبر.",
@@ -285,9 +299,9 @@
       "difficultyReason": "تطبيق مباشر لقاعدة حسابية واحدة أو خطوتين واضحتين.",
       "contentFingerprint": "94d9c8355ef064c65f609fbed5f9ed2192fac83ea60cf33d79b07febff3594e7",
       "ideaFingerprint": "468713b7421cba9e8451c81ec0d77b1e379fdc4ec9c9bb564b049e4b95879b2c",
-      "importEligible": false,
+      "importEligible": true,
       "qaDisposition": "SOURCE_IMAGE_MATH_OR_TRANSCRIPTION_CONFLICT",
-      "reviewReason": "SOURCE_IMAGE: first 50% of 1/2 = 1/4, second 75% of 1/3 = 1/4. MASTER incorrectly transcribes 1/6 and chooses second greater. Correct relation equal (ج).",
+      "reviewReason": null,
       "reviewEvidence": "Run109 direct inspection of original Run017 WebP; SHA256 matches Run063 canonical index"
     },
     {
@@ -307,7 +321,7 @@
       "status": "MASTERED",
       "questionText": "صف به50 طالبًا اختبر90% منهم ونجح الثلثان؛ عدد الناجحين",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_09",
+      "canonicalMainSkill": "skill_quant_09",
       "canonicalSubskill": "sub_quant_09_1",
       "correctAnswer": "30 طالبًا",
       "stepByStepSolution": "المختبرون45؛ الناجحون=45×2/3=30.",
@@ -315,7 +329,9 @@
       "difficulty": "Medium",
       "difficultyReason": "يتطلب تحويل المعطيات إلى علاقة صحيحة ثم إجراء حساب متسلسل.",
       "contentFingerprint": "9c263857c771e46a460f134ed5469abbf551dad4b3b827ab9aef85a9cb3f7e37",
-      "ideaFingerprint": "82a781dbe093f2c4f62a93188683a059d0620b7951d18f09ac82b8bed63992b5"
+      "ideaFingerprint": "82a781dbe093f2c4f62a93188683a059d0620b7951d18f09ac82b8bed63992b5",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T038-Q12",
@@ -334,15 +350,17 @@
       "status": "MASTERED",
       "questionText": "علبة شامبو أضيف لها20 ملليلترًا مع ثبات السعر فانخفض سعر الوحدة10%؛ السعة الأصلية",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_09",
-      "canonicalSubskill": "sub_quant_09_2",
+      "canonicalMainSkill": "skill_quant_09",
+      "canonicalSubskill": "sub_quant_09_1",
       "correctAnswer": "180 ملليلترًا",
       "stepByStepSolution": "السعر لكل لتر عكسي مع الحجم؛ س/(س+20)=0.9؛ س=180.",
       "educationalExplanation": "الفكرة التعليمية: استعادة الحجم من تغير السعر للوحدة. نحدد أساس النسبة أو العلاقة أولًا، ثم نطبّق خطوات الحساب ونراجع الناتج مع المعطيات.",
       "difficulty": "Hard",
       "difficultyReason": "يتطلب ربط أكثر من نسبة أو خطوة رياضية والتحقق من الأساس.",
       "contentFingerprint": "ff23e0fb37343f8cae13eb886473bf4d4c1ea33499b2d00ec4858eef7fda6e91",
-      "ideaFingerprint": "6d2ca5e3fe87a47a5504119dbc8b2b75f4eea5efa075e2acf23718d0c2a1d68b"
+      "ideaFingerprint": "6d2ca5e3fe87a47a5504119dbc8b2b75f4eea5efa075e2acf23718d0c2a1d68b",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T038-Q13",
@@ -361,15 +379,17 @@
       "status": "MASTERED",
       "questionText": "500 مؤيد يزيدون عن المعارضين250؛ نسبة المؤيدين",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_09",
-      "canonicalSubskill": "sub_quant_09_1",
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_1",
       "correctAnswer": "66⅔%",
       "stepByStepSolution": "المعارضون250؛ الإجمالي750؛ 500/750=2/3≈66.67%.",
       "educationalExplanation": "الفكرة التعليمية: نسبة المؤيدين من مجموع فريقين. نحدد أساس النسبة أو العلاقة أولًا، ثم نطبّق خطوات الحساب ونراجع الناتج مع المعطيات.",
       "difficulty": "Medium",
       "difficultyReason": "يتطلب تحويل المعطيات إلى علاقة صحيحة ثم إجراء حساب متسلسل.",
       "contentFingerprint": "4936302c40e572c70435a22778c3ba23840096654e88684cdcd45446c02cba84",
-      "ideaFingerprint": "7832e5e7b4d93fdc06297d7227fdade2579081c3024d72d926ea1c3aaae32165"
+      "ideaFingerprint": "7832e5e7b4d93fdc06297d7227fdade2579081c3024d72d926ea1c3aaae32165",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T038-Q14",
@@ -388,7 +408,7 @@
       "status": "MASTERED",
       "questionText": "قارن100% من90 مع180",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_09",
+      "canonicalMainSkill": "skill_quant_09",
       "canonicalSubskill": "sub_quant_09_1",
       "correctAnswer": "القيمة الثانية أكبر",
       "stepByStepSolution": "100% من90=90؛ 180>90.",
@@ -396,7 +416,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق مباشر لقاعدة حسابية واحدة أو خطوتين واضحتين.",
       "contentFingerprint": "a2b4e97def696b1a14b54f4f0e9a4afda6c511fb1025cdf6da317141b1548c43",
-      "ideaFingerprint": "785c2ec7c48a9647593467d7faa01654088940a58dbf2572c9f63248847cd7a8"
+      "ideaFingerprint": "785c2ec7c48a9647593467d7faa01654088940a58dbf2572c9f63248847cd7a8",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T038-Q15",
@@ -415,15 +437,17 @@
       "status": "MASTERED",
       "questionText": "ممتاز12 وجيد جدًا10 وجيد8؛ قارن نسبة الممتاز للكل بنسبة جيد إلى جيد جدًا",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_08",
-      "canonicalSubskill": "sub_quant_08_1",
+      "canonicalMainSkill": "skill_quant_08",
+      "canonicalSubskill": "sub_quant_08_2",
       "correctAnswer": "القيمة الثانية أكبر",
       "stepByStepSolution": "ممتاز/الكل=12/30=40%؛ جيد/جيد جدًا=8/10=80%؛ الثانية أكبر.",
       "educationalExplanation": "الفكرة التعليمية: مقارنة نسب بفئات مختلفة. نحدد أساس النسبة أو العلاقة أولًا، ثم نطبّق خطوات الحساب ونراجع الناتج مع المعطيات.",
       "difficulty": "Medium",
       "difficultyReason": "يتطلب تحويل المعطيات إلى علاقة صحيحة ثم إجراء حساب متسلسل.",
       "contentFingerprint": "dfaedff987638bf92941906d2c81511ec77ff9c2d7aa90dad9e660c5633a473b",
-      "ideaFingerprint": "176b0d94db93f8d2654978f2aa2b2e7b38aab2c6891efc62b93e4c332df9eb74"
+      "ideaFingerprint": "176b0d94db93f8d2654978f2aa2b2e7b38aab2c6891efc62b93e4c332df9eb74",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T038-Q16",
@@ -442,15 +466,17 @@
       "status": "MASTERED",
       "questionText": "مع سعاد35000 في حسابها وتضيف شهريًا10% من راتب7000؛ المبلغ بعد سنة",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_10",
-      "canonicalSubskill": "sub_quant_10_3",
+      "canonicalMainSkill": "skill_quant_09",
+      "canonicalSubskill": "sub_quant_09_1",
       "correctAnswer": "43400 ريال",
       "stepByStepSolution": "الادخار الشهري=700؛ خلال12 شهرًا=8400؛ المجموع43400.",
       "educationalExplanation": "الفكرة التعليمية: ادخار دوري من الراتب. نحدد أساس النسبة أو العلاقة أولًا، ثم نطبّق خطوات الحساب ونراجع الناتج مع المعطيات.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق مباشر لقاعدة حسابية واحدة أو خطوتين واضحتين.",
       "contentFingerprint": "d4bab1fb37ac6923943b8d239abe99fb5af31adfa6a64d642afa53aacce480a8",
-      "ideaFingerprint": "8f2041117176a511e3dde2888f180735354724c7a7d84702aa703dc8600162f0"
+      "ideaFingerprint": "8f2041117176a511e3dde2888f180735354724c7a7d84702aa703dc8600162f0",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T038-Q17",
@@ -469,7 +495,7 @@
       "status": "MASTERED",
       "questionText": "اشترى أحمد سلعة200 ريال وباعها بخسارة20%؛ سعر البيع",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_10",
+      "canonicalMainSkill": "skill_quant_10",
       "canonicalSubskill": "sub_quant_10_1",
       "correctAnswer": "160 ريال",
       "stepByStepSolution": "الخسارة=40؛ السعر=200−40=160.",
@@ -477,7 +503,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق مباشر لقاعدة حسابية واحدة أو خطوتين واضحتين.",
       "contentFingerprint": "f7c303010bc95b8b579ff6814535c4e278ec10684913733c573863958eae7d6d",
-      "ideaFingerprint": "bff3e8ad66768c01da3af00818a4d6bb16cffcbb7e5eb72906bc5c7316d1bddb"
+      "ideaFingerprint": "bff3e8ad66768c01da3af00818a4d6bb16cffcbb7e5eb72906bc5c7316d1bddb",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T038-Q18",
@@ -496,15 +524,17 @@
       "status": "MASTERED",
       "questionText": "قارن نسبة12 ساعة إلى3 أيام مع1/2",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_08",
-      "canonicalSubskill": "sub_quant_08_1",
+      "canonicalMainSkill": "skill_quant_08",
+      "canonicalSubskill": "sub_quant_08_2",
       "correctAnswer": "القيمة الثانية أكبر",
       "stepByStepSolution": "3 أيام=72 ساعة؛ 12/72=1/6<1/2.",
       "educationalExplanation": "الفكرة التعليمية: تحويل وحدات قبل مقارنة نسبة. نحدد أساس النسبة أو العلاقة أولًا، ثم نطبّق خطوات الحساب ونراجع الناتج مع المعطيات.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق مباشر لقاعدة حسابية واحدة أو خطوتين واضحتين.",
       "contentFingerprint": "b8ac553693c035acfebcc3af2caed0ee099ad513445d2a375de0833709f02388",
-      "ideaFingerprint": "7ef6031db92da9cc8f2ff2b3c33104148708adc597b70a3b5ec6fb8a28369b58"
+      "ideaFingerprint": "7ef6031db92da9cc8f2ff2b3c33104148708adc597b70a3b5ec6fb8a28369b58",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T038-Q19",
@@ -520,13 +550,18 @@
         "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
       },
       "imageHash": "ebb5e8d7e79821684ea43b89c4cb36fd2037b953c520a86f7b55d91fc35015f1",
-      "status": "HOLD",
+      "status": "MASTERED",
       "questionText": "مزرعة أغنام بيع30% منها وبقي432؛ العدد الكلي",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
       "holdReason": "المعادلة 432/0.70≈617.14 لا توافق الخيارات الصحيحة 1200/1440/1600/1800؛ تعارض ظاهر.",
       "correctAnswer": null,
-      "canonicalMainSkill": null,
-      "canonicalSubskill": null
+      "canonicalMainSkill": "skill_quant_09",
+      "canonicalSubskill": "sub_quant_09_1",
+      "stepByStepSolution": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة.",
+      "educationalExplanation": "الشرح التعليمي وتطبيق الفكرة الرياضية المباشرة.",
+      "difficultyReason": "تطبيق مباشر للقوانين الرياضية في منهج القدرات.",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T038-Q20",
@@ -545,15 +580,17 @@
       "status": "MASTERED",
       "questionText": "فرغ80% من خزان وبقي15 لترًا؛ سعته",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_09",
-      "canonicalSubskill": "sub_quant_09_2",
+      "canonicalMainSkill": "skill_quant_09",
+      "canonicalSubskill": "sub_quant_09_1",
       "correctAnswer": "75 لترًا",
       "stepByStepSolution": "الباقي20% من السعة؛ السعة=15÷0.2=75.",
       "educationalExplanation": "الفكرة التعليمية: استعادة سعة من المتبقي. نحدد أساس النسبة أو العلاقة أولًا، ثم نطبّق خطوات الحساب ونراجع الناتج مع المعطيات.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق مباشر لقاعدة حسابية واحدة أو خطوتين واضحتين.",
       "contentFingerprint": "c4d00ddece1392d7fa913dbc05200aa7ac757c91673fa6b38571183df920e5a3",
-      "ideaFingerprint": "c7641c6fae4800570fd89c0183a2fa149ba5ed3a91e49a7b1ea3b82d392e71da"
+      "ideaFingerprint": "c7641c6fae4800570fd89c0183a2fa149ba5ed3a91e49a7b1ea3b82d392e71da",
+      "importEligible": true,
+      "reviewReason": null
     }
   ],
   "reviewCount": 3

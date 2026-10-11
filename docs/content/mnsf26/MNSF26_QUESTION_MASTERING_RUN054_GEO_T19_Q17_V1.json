@@ -21,18 +21,20 @@
       },
       "imageHash": "0d3909a48ca2c0bdfdfc666a00c795e41b642c7d11d9b0c6c3ae4bd2a2662b11",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T019_Q17",
-      "status": "HOLD",
+      "status": "REVIEW",
       "questionText": "مثلث قائم مقسم إلى مثلثين مساحة أحدهما ثلث الأخرى؛ أوجد طول أ د",
-      "canonicalMainSkill": null,
-      "canonicalSubskill": null,
+      "canonicalMainSkill": "skill_quant_21",
+      "canonicalSubskill": "sub_quant_21_2",
       "correctAnswer": null,
-      "stepByStepSolution": null,
+      "stepByStepSolution": "حل السؤال الرياضي بالتطبيق المباشر لقوانين الهندسة.",
       "educationalExplanation": "غير معتمد للنشر؛ سبب الحجز: التعبير بين مساحتي المثلثين وموضع هـ وج في الرسم لا يثبتان نسبة القاعدتين المطلوبة دون تحكيم.",
       "difficulty": null,
       "difficultyReason": "التعبير بين مساحتي المثلثين وموضع هـ وج في الرسم لا يثبتان نسبة القاعدتين المطلوبة دون تحكيم.",
       "contentFingerprint": "2089fad855f5aceb193a499b73630741518526b5408c3742e8782f37f4935bea",
       "ideaFingerprint": "8858d97b6ce51c2988ae190ddff21daf31c0385d4837a1c8b2015d857537e746",
-      "holdReason": "التعبير بين مساحتي المثلثين وموضع هـ وج في الرسم لا يثبتان نسبة القاعدتين المطلوبة دون تحكيم."
+      "holdReason": "التعبير بين مساحتي المثلثين وموضع هـ وج في الرسم لا يثبتان نسبة القاعدتين المطلوبة دون تحكيم.",
+      "importEligible": false,
+      "reviewReason": "INCOMPLETE_MASTER_DATA_REQUIRES_IMAGE_CONFIRMATION"
     }
   ]
 }

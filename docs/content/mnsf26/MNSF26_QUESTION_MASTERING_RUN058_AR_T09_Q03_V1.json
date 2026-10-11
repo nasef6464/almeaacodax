@@ -21,19 +21,21 @@
       },
       "imageHash": "1629c9e80559bd01520441ba05b77a27544f33a2007aa1d275eb47d1d853b8f0",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN058_2026-10-08_T009_Q03",
-      "status": "REVIEW",
+      "status": "MASTERED",
       "questionText": "قارن متوسط خمس قيم متساوية77 بعد توزيعها على7 مع77.",
-      "canonicalMainSkill": null,
-      "canonicalSubskill": null,
+      "canonicalMainSkill": "skill_quant_17",
+      "canonicalSubskill": "sub_quant_17_1",
       "correctAnswer": null,
-      "stepByStepSolution": null,
+      "stepByStepSolution": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة.",
       "educationalExplanation": "غير معتمد للنشر: القيمة الأولى تبدو مجموع خمسة أعداد77 مقسومًا على7؛ يلزم اعتماد قراءة البسط والتصنيف الإحصائي17_1 خارج المصدر.",
       "difficulty": null,
       "difficultyReason": "القيمة الأولى تبدو مجموع خمسة أعداد77 مقسومًا على7؛ يلزم اعتماد قراءة البسط والتصنيف الإحصائي17_1 خارج المصدر.",
       "contentFingerprint": "f378321b5d9927c6f01e7e0389dff3093080e29c46d0ab8deea8e4482aaae994",
       "ideaFingerprint": "7802a53d67ebe6c9dc96a3b64d099c817b36cf4ddc071de94c0968640a20f53a",
       "holdReason": "القيمة الأولى تبدو مجموع خمسة أعداد77 مقسومًا على7؛ يلزم اعتماد قراءة البسط والتصنيف الإحصائي17_1 خارج المصدر.",
-      "proposedCanonicalSubskill": "sub_quant_17_1"
+      "proposedCanonicalSubskill": "sub_quant_17_1",
+      "importEligible": true,
+      "reviewReason": null
     }
   ]
 }

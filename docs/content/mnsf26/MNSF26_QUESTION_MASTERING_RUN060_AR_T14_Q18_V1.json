@@ -11,8 +11,8 @@
         "test": "T014",
         "sourceLesson": "الأعداد الأولية - العوامل الأولى"
       },
-      "canonicalMainSkill": "skill_quant_02",
-      "canonicalSubskill": "sub_quant_02_2",
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_1",
       "correctAnswer": "د",
       "answerValue": "7",
       "stepByStepSolution": "المعنى أن 9 عند قسمته على س يعطي خارجًا ص وباقيًا2؛ إذن 9=س×ص+2، ومن الخيارات س=7 يعطي ص=1 وباقي2.",
@@ -22,7 +22,9 @@
       "imageHash": "877845ce70efc7c9979d4d10b938a52ef6c79ca05f44b5c59455dedd67f96ddc",
       "contentFingerprint": "07548433678761812d077cf79ff419fcbe2b8dfe43462563793c8269ec1ba82f",
       "ideaFingerprint": "dd160394b83506ef5e8e98b3cdbcdf310aaafab1adfd6c056c826af19269ca9f",
-      "status": "MASTERED"
+      "status": "MASTERED",
+      "importEligible": true,
+      "reviewReason": null
     }
   ]
 }

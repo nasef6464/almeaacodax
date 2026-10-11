@@ -23,8 +23,8 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN057_2026-10-08_T18_Q14",
       "status": "MASTERED",
       "questionText": "ما مجموع الأعداد في الصف الأخير من هرم أعداد مجموع صفوفه 10 ثم20 ثم40؟",
-      "canonicalMainSkill": "main_quant_01",
-      "canonicalSubskill": "sub_quant_01_3",
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_1",
       "correctAnswer": "ج",
       "answerValue": "80",
       "stepByStepSolution": "مجموع الصف الأول 1+8+1=10، الثاني1+9+9+1=20، الثالث1+10+18+10+1=40؛ يتضاعف مجموع الصفوف، فالأخير80.",
@@ -32,7 +32,9 @@
       "difficulty": "Medium",
       "difficultyReason": "نمط مجموع صفوف متضاعف.",
       "contentFingerprint": "d35b69e833c05a306e22db46f2a5d4123b557a2559a58209427cb6a3e50806ab",
-      "ideaFingerprint": "c2b5255ab5a41284eb14ad256d8d3c9eec8eb20ae11dcc79c65ef3325da7c04b"
+      "ideaFingerprint": "c2b5255ab5a41284eb14ad256d8d3c9eec8eb20ae11dcc79c65ef3325da7c04b",
+      "importEligible": true,
+      "reviewReason": null
     }
   ]
 }

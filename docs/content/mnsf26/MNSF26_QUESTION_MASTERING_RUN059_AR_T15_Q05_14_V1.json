@@ -23,15 +23,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN059_2026-10-08_T015_Q05",
       "status": "MASTERED",
       "questionText": "احسب 7+60+500+4000+50000.",
-      "canonicalMainSkill": "main_quant_01",
-      "canonicalSubskill": "sub_quant_01_1",
+      "canonicalMainSkill": "skill_quant_04",
+      "canonicalSubskill": "sub_quant_04_2",
       "correctAnswer": "54567 (ب)",
       "stepByStepSolution": "نجمع مراتب الأعداد: 50000+4000+500+60+7=54567.",
       "educationalExplanation": "من الصورة: نجمع مراتب الأعداد: 50000+4000+500+60+7=54567.",
       "difficulty": "Easy",
       "difficultyReason": "تحتاج تطبيقًا مباشرًا.",
       "contentFingerprint": "b0236a64580bfdb9f2311265c6480fa4ca5512bab9b442d08ab50d113564a4a9",
-      "ideaFingerprint": "3854607e8b195c55ec45eeaeaa978f525fe80cd3e299db209191c728de0c110c"
+      "ideaFingerprint": "3854607e8b195c55ec45eeaeaa978f525fe80cd3e299db209191c728de0c110c",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T015-Q07",
@@ -53,15 +55,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN059_2026-10-08_T015_Q07",
       "status": "MASTERED",
       "questionText": "احسب 1+10+100+1000+10000−100.",
-      "canonicalMainSkill": "main_quant_01",
-      "canonicalSubskill": "sub_quant_01_4",
+      "canonicalMainSkill": "skill_quant_04",
+      "canonicalSubskill": "sub_quant_04_2",
       "correctAnswer": "11011 (أ)",
       "stepByStepSolution": "المجموع قبل الطرح11111؛ نطرح100 فيصبح11011.",
       "educationalExplanation": "من الصورة: المجموع قبل الطرح11111؛ نطرح100 فيصبح11011.",
       "difficulty": "Easy",
       "difficultyReason": "تحتاج تطبيقًا مباشرًا.",
       "contentFingerprint": "38138c25d655a4b4d75e69a24a5833c822fee33586a2e4da46180ae1ee9755be",
-      "ideaFingerprint": "e25bc969d76e13f1e5d76005193aa93703865adac7f3d2965216b96883d6b052"
+      "ideaFingerprint": "e25bc969d76e13f1e5d76005193aa93703865adac7f3d2965216b96883d6b052",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T015-Q14",
@@ -83,15 +87,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN059_2026-10-08_T015_Q14",
       "status": "MASTERED",
       "questionText": "احسب (1+3+5+...+33)−(2+4+6+...+32).",
-      "canonicalMainSkill": "main_quant_01",
-      "canonicalSubskill": "sub_quant_01_3",
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_1",
       "correctAnswer": "17 (ب)",
       "stepByStepSolution": "الأعداد الفردية من1 إلى33 عددها17، والزوجية من2 إلى32 عددها16؛ نجمع (3−2)+(5−4)+...+(33−32) مع العدد1؛ المجموع17.",
       "educationalExplanation": "من الصورة: الأعداد الفردية من1 إلى33 عددها17، والزوجية من2 إلى32 عددها16؛ نجمع (3−2)+(5−4)+...+(33−32) مع العدد1؛ المجموع17.",
       "difficulty": "Medium",
       "difficultyReason": "تحتاج تحليل عدة علاقات رياضية.",
       "contentFingerprint": "4f37de67b72a203d3283bb1890c55d98d08e54380266cc56fd9d15240eefc22e",
-      "ideaFingerprint": "bbfd16793b4ca4ff1f1fba5879659cd7379d5666967510e8c2fb264af0279b3b"
+      "ideaFingerprint": "bbfd16793b4ca4ff1f1fba5879659cd7379d5666967510e8c2fb264af0279b3b",
+      "importEligible": true,
+      "reviewReason": null
     }
   ]
 }

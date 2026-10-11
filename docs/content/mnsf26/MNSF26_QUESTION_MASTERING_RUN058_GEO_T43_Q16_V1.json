@@ -22,15 +22,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T43_Q16",
       "status": "MASTERED",
       "questionText": "ثلاث دوائر متطابقة نصف قطرها2 موضوعة أفقيًا في مستطيل مماس؛ أوجد مساحة المستطيل.",
-      "canonicalMainSkill": "main_quant_21",
-      "canonicalSubskill": "sub_quant_21_1",
+      "canonicalMainSkill": "skill_quant_24",
+      "canonicalSubskill": "sub_quant_24_1",
       "correctAnswer": "48 (ج)",
       "stepByStepSolution": "ارتفاع المستطيل قطر4، وعرضه3×4=12؛ المساحة48.",
       "educationalExplanation": "من الصورة: ارتفاع المستطيل قطر4، وعرضه3×4=12؛ المساحة48.",
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر.",
       "contentFingerprint": "9231ecab62452de84b922f461cf36a664584de883e1b08a404e679efb0999f4b",
-      "ideaFingerprint": "41d6e6351d5b8b5773fa1e90eb4d5aede4f05bef33e2570a99c99257c0aa1b6e"
+      "ideaFingerprint": "41d6e6351d5b8b5773fa1e90eb4d5aede4f05bef33e2570a99c99257c0aa1b6e",
+      "importEligible": true,
+      "reviewReason": null
     }
   ]
 }

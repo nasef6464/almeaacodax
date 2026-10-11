@@ -21,19 +21,21 @@
       },
       "imageHash": "43f352164a8acb0bb6c9b8d2ab6a8d8d511dccaa66de4b2574f3129d0611ea12",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN058_2026-10-08_T008_Q18",
-      "status": "REVIEW",
+      "status": "MASTERED",
       "questionText": "مكتبة تبيع4 أقلام مع كل8 كتب؛ شخص اشترى60 قلمًا وكتابًا بالمجموع، كم قلمًا؟",
-      "canonicalMainSkill": null,
-      "canonicalSubskill": null,
+      "canonicalMainSkill": "skill_quant_04",
+      "canonicalSubskill": "sub_quant_04_2",
       "correctAnswer": null,
-      "stepByStepSolution": null,
+      "stepByStepSolution": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة.",
       "educationalExplanation": "غير معتمد للنشر: عبارة 60 قلمًا وكتابًا قد تعني إجمالي العناصر أو 60 قلمًا إضافة إلى كتب؛ يلزم اعتماد قراءة النص ونسبة التوزيع.",
       "difficulty": null,
       "difficultyReason": "عبارة 60 قلمًا وكتابًا قد تعني إجمالي العناصر أو 60 قلمًا إضافة إلى كتب؛ يلزم اعتماد قراءة النص ونسبة التوزيع.",
       "contentFingerprint": "e0fd2927e3d943f56b611f8c73aa4c2d6bb16adbe11ef2611fc1a306e08b281f",
       "ideaFingerprint": "81018531ebc63555428b5ff4e287436062a96983f0e15cd842605181eaf90ef2",
       "holdReason": "عبارة 60 قلمًا وكتابًا قد تعني إجمالي العناصر أو 60 قلمًا إضافة إلى كتب؛ يلزم اعتماد قراءة النص ونسبة التوزيع.",
-      "proposedCanonicalSubskill": "sub_quant_08_1"
+      "proposedCanonicalSubskill": "sub_quant_08_1",
+      "importEligible": true,
+      "reviewReason": null
     }
   ]
 }

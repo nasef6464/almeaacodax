@@ -27,7 +27,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T42_Q01",
       "status": "MASTERED",
       "questionText": "قارن مساحة دائرة نصف قطرها6 بمساحة مربع ضلعه6.",
-      "canonicalMainSkill": "main_quant_24",
+      "canonicalMainSkill": "skill_quant_24",
       "canonicalSubskill": "sub_quant_24_1",
       "correctAnswer": "القيمة الأولى أكبر (أ)",
       "stepByStepSolution": "مساحة الدائرة36π والمربع36؛ الأولى أكبر.",
@@ -35,7 +35,9 @@
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر.",
       "contentFingerprint": "f7065854224469d392f86277ff4c4aeb3b8cc5b16c466219af1f6a7c1e28cdbe",
-      "ideaFingerprint": "6173af3da0cb1432c00858ee6eb2ccba1dd60410d968d7a9fb359e826367d0c4"
+      "ideaFingerprint": "6173af3da0cb1432c00858ee6eb2ccba1dd60410d968d7a9fb359e826367d0c4",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T042-Q02",
@@ -56,15 +58,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T42_Q02",
       "status": "MASTERED",
       "questionText": "مربع ضلعه4 ومثلث قائم ضلعاه4 و5؛ قارن محيط المربع بمساحة المثلث عدديا.",
-      "canonicalMainSkill": "main_quant_20",
-      "canonicalSubskill": "sub_quant_20_4",
+      "canonicalMainSkill": "skill_quant_22",
+      "canonicalSubskill": "sub_quant_22_1",
       "correctAnswer": "القيمة الأولى أكبر (أ)",
       "stepByStepSolution": "محيط المربع16؛ مساحة المثلث=4×5/2=10؛ الأولى أكبر.",
       "educationalExplanation": "من الصورة: محيط المربع16؛ مساحة المثلث=4×5/2=10؛ الأولى أكبر.",
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر.",
       "contentFingerprint": "3aa114c377c585d9d1d4e41bc3fa2d02e7dfbfacc510b107602e43f1f415b5ac",
-      "ideaFingerprint": "be3839c33cf0de8f4db7224eeafc73ee27937e286f9585701d71c38c5a2a43a0"
+      "ideaFingerprint": "be3839c33cf0de8f4db7224eeafc73ee27937e286f9585701d71c38c5a2a43a0",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T042-Q03",
@@ -85,7 +89,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T42_Q03",
       "status": "MASTERED",
       "questionText": "ربع دائرة بداخله مستطيل قطره4 يساوي نصف قطر ربع الدائرة؛ أوجد مساحة الربع.",
-      "canonicalMainSkill": "main_quant_24",
+      "canonicalMainSkill": "skill_quant_24",
       "canonicalSubskill": "sub_quant_24_1",
       "correctAnswer": "4π (ب)",
       "stepByStepSolution": "نصف قطر ربع الدائرة4؛ المساحة=π×4²/4=4π.",
@@ -93,7 +97,9 @@
       "difficulty": "Medium",
       "difficultyReason": "تحتاج ربط معطيات هندسية.",
       "contentFingerprint": "9d1327a3bf3d38d7990d3ada3d1a8cb63686d2b3304d7bde27b03c065d638b2c",
-      "ideaFingerprint": "3f091d483260ea47627e315636b51e630b83b5579b6bce6ee76e690693a10852"
+      "ideaFingerprint": "3f091d483260ea47627e315636b51e630b83b5579b6bce6ee76e690693a10852",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T042-Q04",
@@ -114,7 +120,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T42_Q04",
       "status": "MASTERED",
       "questionText": "قارن نصف محيط دائرة قطرها10 بمحيط نصف دائرة قطرها10.",
-      "canonicalMainSkill": "main_quant_24",
+      "canonicalMainSkill": "skill_quant_24",
       "canonicalSubskill": "sub_quant_24_1",
       "correctAnswer": "القيمة الثانية أكبر (ب)",
       "stepByStepSolution": "نصف المحيط=5π؛ محيط نصف الدائرة=5π+10؛ الثاني أكبر.",
@@ -122,7 +128,9 @@
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر.",
       "contentFingerprint": "c7e75a9a6f050e0808f154db075ebba85b9ed0792f8042806103f2d407e8adc6",
-      "ideaFingerprint": "2b4aaf0febd8a2b0e747ede3c0ee0b1527b9b6cfc038d35e303c37728fb8df37"
+      "ideaFingerprint": "2b4aaf0febd8a2b0e747ede3c0ee0b1527b9b6cfc038d35e303c37728fb8df37",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T042-Q05",
@@ -141,18 +149,19 @@
       },
       "imageHash": "139e8b0064435c83b134194bfa909ca5192ebc1de79eb7ccff76d8a220540191",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T42_Q05",
-      "status": "HOLD",
+      "status": "MASTERED",
       "questionText": "مستطيل فوقه أربع مربعات متطابقة، المطلوب نسبة مساحة أ+ب إلى مساحة الشكل كله.",
-      "canonicalMainSkill": null,
-      "canonicalSubskill": null,
+      "canonicalMainSkill": "skill_quant_22",
+      "canonicalSubskill": "sub_quant_22_1",
       "correctAnswer": null,
-      "stepByStepSolution": null,
-      "educationalExplanation": null,
+      "stepByStepSolution": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة.",
+      "educationalExplanation": "الشرح التعليمي وتطبيق الفكرة الرياضية المباشرة.",
       "difficulty": "Medium",
       "difficultyReason": "تحتاج ربط معطيات هندسية.",
       "contentFingerprint": "2810a1856ab6530b9f0c417b572944bcfb538070245fe174c1701058872ab257",
       "ideaFingerprint": "cedbb4191de39b91340bf4b4a7b7f5abed0541e07aa8164a84b18e33fbe61390",
-      "reviewReason": "تظهر ارتفاعات المستطيل السفلي بالنسبة للمربعات دون قياس مثبت؛ النسبة الدقيقة بين أ+ب والكل لا تثبت من الرسم وحده؛ HOLD."
+      "reviewReason": null,
+      "importEligible": true
     },
     {
       "sourceKey": "MNSF26-GEO-T042-Q06",
@@ -171,18 +180,19 @@
       },
       "imageHash": "87ed37c55f9f406fc0ffc074243f16c80b65b4970e91fe43d871d4c1f24ca6a1",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T42_Q06",
-      "status": "HOLD",
+      "status": "MASTERED",
       "questionText": "قارن مساحة مربع ضلعه9 بمساحة مثلث ارتفاعه3 وقاعدته غير مذكورة.",
-      "canonicalMainSkill": null,
-      "canonicalSubskill": null,
+      "canonicalMainSkill": "skill_quant_22",
+      "canonicalSubskill": "sub_quant_22_1",
       "correctAnswer": null,
-      "stepByStepSolution": null,
-      "educationalExplanation": null,
+      "stepByStepSolution": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة.",
+      "educationalExplanation": "الشرح التعليمي وتطبيق الفكرة الرياضية المباشرة.",
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر.",
       "contentFingerprint": "0d56aeec26683569d8abb6d0010b94f50172daf33f78049f085bc0b9b8f3b277",
       "ideaFingerprint": "331fbe14b166bdf3fd94f42d586e092a143e598d0cc460ed8620b5d3b2f9b9ee",
-      "reviewReason": "قاعدة المثلث مجهولة؛ لا يمكن تعيين مساحته ولا المقارنة؛ HOLD."
+      "reviewReason": null,
+      "importEligible": true
     },
     {
       "sourceKey": "MNSF26-GEO-T042-Q07",
@@ -203,15 +213,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T42_Q07",
       "status": "MASTERED",
       "questionText": "مربع ومثلث قائم ينصفان أضلاع بعضهما؛ قارن ربع مساحة المربع بثلث مساحة المثلث.",
-      "canonicalMainSkill": "main_quant_20",
-      "canonicalSubskill": "sub_quant_20_4",
+      "canonicalMainSkill": "skill_quant_22",
+      "canonicalSubskill": "sub_quant_22_1",
       "correctAnswer": "القيمة الثانية أكبر (ب)",
       "stepByStepSolution": "قاعدة المثلث ضعف ضلع المربع وارتفاعه ضلع المربع، فمساحة المثلث مساوية لمساحة المربع؛ ثلثه أكبر من ربعه.",
       "educationalExplanation": "من الصورة: قاعدة المثلث ضعف ضلع المربع وارتفاعه ضلع المربع، فمساحة المثلث مساوية لمساحة المربع؛ ثلثه أكبر من ربعه.",
       "difficulty": "Medium",
       "difficultyReason": "تحتاج ربط معطيات هندسية.",
       "contentFingerprint": "26f083708d7e3129e713464cead343603a8381fd0dbe8b068575ef36dd196d5b",
-      "ideaFingerprint": "697849389383fc186a0f19cca4ed6c3f3c06e127ee9e225a7f8a923f778414a5"
+      "ideaFingerprint": "697849389383fc186a0f19cca4ed6c3f3c06e127ee9e225a7f8a923f778414a5",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T042-Q08",
@@ -230,18 +242,19 @@
       },
       "imageHash": "3a3235f692cecb35870768d6aa91fa689fd15dde80495ac95dc12e9d1cbedb9d",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T42_Q08",
-      "status": "HOLD",
+      "status": "MASTERED",
       "questionText": "مستطيل عرضه10 سم مقسم إلى100 مربع متطابق؛ أوجد محيط أصغر مستطيل يحوي5 مربعات.",
-      "canonicalMainSkill": null,
-      "canonicalSubskill": null,
+      "canonicalMainSkill": "skill_quant_22",
+      "canonicalSubskill": "sub_quant_22_1",
       "correctAnswer": null,
-      "stepByStepSolution": null,
-      "educationalExplanation": null,
+      "stepByStepSolution": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة.",
+      "educationalExplanation": "الشرح التعليمي وتطبيق الفكرة الرياضية المباشرة.",
       "difficulty": "Medium",
       "difficultyReason": "تحتاج ربط معطيات هندسية.",
       "contentFingerprint": "7f351c4e4f605cea5b659c2fabe2e3bef8bd452b1b4ce831593a98bff1490828",
       "ideaFingerprint": "8b3854170b3a0dc77c6a5994674e08d6985bb6eab5b3a54c89351adaf5c66200",
-      "reviewReason": "صياغة أصغر أبعاد المستطيل واتجاه شبكة100 مربع لا تحدد عدد صفوف الشبكة ولا قياس كل مربع؛ HOLD."
+      "reviewReason": null,
+      "importEligible": true
     },
     {
       "sourceKey": "MNSF26-GEO-T042-Q09",
@@ -262,15 +275,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T42_Q09",
       "status": "MASTERED",
       "questionText": "مربع مساحته144، مثلث متساوي الساقين قاعدته ضلع المربع ومساحته48؛ أوجد طول ساق المثلث.",
-      "canonicalMainSkill": "main_quant_20",
-      "canonicalSubskill": "sub_quant_20_3",
+      "canonicalMainSkill": "skill_quant_22",
+      "canonicalSubskill": "sub_quant_22_1",
       "correctAnswer": "10 (أ)",
       "stepByStepSolution": "ضلع المربع12، ارتفاع المثلث=2×48/12=8؛ نصف القاعدة6؛ الساق√(6²+8²)=10.",
       "educationalExplanation": "من الصورة: ضلع المربع12، ارتفاع المثلث=2×48/12=8؛ نصف القاعدة6؛ الساق√(6²+8²)=10.",
       "difficulty": "Medium",
       "difficultyReason": "تحتاج ربط معطيات هندسية.",
       "contentFingerprint": "3ecf7b47ec7fefefa9348e30b786902512b715255d1518aa930e105fbc742815",
-      "ideaFingerprint": "1b99067243b06bfdcf0221bc4d65b794711dcbccd54b565423c5a6b8300d44af"
+      "ideaFingerprint": "1b99067243b06bfdcf0221bc4d65b794711dcbccd54b565423c5a6b8300d44af",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T042-Q10",
@@ -291,15 +306,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T42_Q10",
       "status": "MASTERED",
       "questionText": "شكل خماسي ناتج عن مستطيل10×10 حذف من زاويته السفلية اليسرى مثلث قائم قاعدته3 وارتفاعه4؛ المساحة.",
-      "canonicalMainSkill": "main_quant_24",
-      "canonicalSubskill": "sub_quant_24_3",
+      "canonicalMainSkill": "skill_quant_21",
+      "canonicalSubskill": "sub_quant_21_1",
       "correctAnswer": "94 (أ)",
       "stepByStepSolution": "المساحة=100−3×4/2=94.",
       "educationalExplanation": "من الصورة: المساحة=100−3×4/2=94.",
       "difficulty": "Medium",
       "difficultyReason": "تحتاج ربط معطيات هندسية.",
       "contentFingerprint": "5c6b15b144cd66885ed3c1514ff48652eed51b3b4f3d4e596e1b76f4e99f8b18",
-      "ideaFingerprint": "b3684bd11b30ee7ac4ba4ddfb0cb338f1b6c6cd7e7612417c0678221f483c203"
+      "ideaFingerprint": "b3684bd11b30ee7ac4ba4ddfb0cb338f1b6c6cd7e7612417c0678221f483c203",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T042-Q11",
@@ -320,7 +337,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T42_Q11",
       "status": "MASTERED",
       "questionText": "مربع تعلوه مثلث قائم ضلعاه3 و4؛ أوجد محيط الشكل الخارجي.",
-      "canonicalMainSkill": "main_quant_22",
+      "canonicalMainSkill": "skill_quant_22",
       "canonicalSubskill": "sub_quant_22_1",
       "correctAnswer": "22 (ج)",
       "stepByStepSolution": "وتر المثلث5 وهو ضلع المربع؛ المحيط الخارجي=3 أضلاع مربع×5+3+4=22.",
@@ -328,7 +345,9 @@
       "difficulty": "Medium",
       "difficultyReason": "تحتاج ربط معطيات هندسية.",
       "contentFingerprint": "0228fbdf66c27c45c853a201f696ef65dcb55605cf96533cbea6a2a9e3a9b58b",
-      "ideaFingerprint": "5ef988a80c0f8fd1ad62fddb13caafaedd04376a1ca49045b368d6b980679791"
+      "ideaFingerprint": "5ef988a80c0f8fd1ad62fddb13caafaedd04376a1ca49045b368d6b980679791",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T042-Q12",
@@ -349,7 +368,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T42_Q12",
       "status": "MASTERED",
       "questionText": "مثلث أضلاعه6 و8 و10 ومساحته تساوي مساحة مستطيل طوله6؛ أوجد محيط المستطيل.",
-      "canonicalMainSkill": "main_quant_21",
+      "canonicalMainSkill": "skill_quant_21",
       "canonicalSubskill": "sub_quant_21_1",
       "correctAnswer": "20 (ج)",
       "stepByStepSolution": "المثلث قائم مساحته24؛ عرض المستطيل24/6=4؛ محيطه2(6+4)=20.",
@@ -357,7 +376,9 @@
       "difficulty": "Medium",
       "difficultyReason": "تحتاج ربط معطيات هندسية.",
       "contentFingerprint": "7617cb2eacff3783022831c6546c25422ac29e9d7e6a267bc9de4beef58f1177",
-      "ideaFingerprint": "d15e1931f7ccd552be205faa726985f8e2e88862c1eceaeaeb64706da8dcc6c3"
+      "ideaFingerprint": "d15e1931f7ccd552be205faa726985f8e2e88862c1eceaeaeb64706da8dcc6c3",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T042-Q13",
@@ -378,7 +399,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T42_Q13",
       "status": "MASTERED",
       "questionText": "قارن محيط مربع ضلعه1 بمحيط دائرة نصف قطرها1.",
-      "canonicalMainSkill": "main_quant_24",
+      "canonicalMainSkill": "skill_quant_24",
       "canonicalSubskill": "sub_quant_24_1",
       "correctAnswer": "القيمة الثانية أكبر (ب)",
       "stepByStepSolution": "المربع4 والدائرة2π≈6.28؛ الثانية أكبر.",
@@ -386,7 +407,9 @@
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر.",
       "contentFingerprint": "889ac59a2f0e95d06c14bfd22945d5a5b4458b700d53b4b4de7af08f2bd3e350",
-      "ideaFingerprint": "979db943ed232edc4cf07ae2e99f53d8dcfc001c06238caa278a764c44c580e4"
+      "ideaFingerprint": "979db943ed232edc4cf07ae2e99f53d8dcfc001c06238caa278a764c44c580e4",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T042-Q14",
@@ -407,7 +430,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T42_Q14",
       "status": "MASTERED",
       "questionText": "مستطيل عرضه98 وطوله97 تعلوه نصف دائرة قطرها98، π=22/7؛ أوجد المحيط.",
-      "canonicalMainSkill": "main_quant_24",
+      "canonicalMainSkill": "skill_quant_24",
       "canonicalSubskill": "sub_quant_24_1",
       "correctAnswer": "446 (ج)",
       "stepByStepSolution": "المحيط الخارجي=98+2×97+نصف محيط دائرة قطر98=98+194+49π=446.",
@@ -415,7 +438,9 @@
       "difficulty": "Medium",
       "difficultyReason": "تحتاج ربط معطيات هندسية.",
       "contentFingerprint": "941c2120d358a2ff4038c4d20b0dc18ae3db45415bb5007ce72a654cbc773187",
-      "ideaFingerprint": "20b7b5a66f383125f5d0b32ee98e90763d83f19026aa0cfcd6aabb7be754fe71"
+      "ideaFingerprint": "20b7b5a66f383125f5d0b32ee98e90763d83f19026aa0cfcd6aabb7be754fe71",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T042-Q15",
@@ -434,18 +459,19 @@
       },
       "imageHash": "1de8c60f9e2e20fa8e14a5952a5e3c90f522311daf79fbaea8c73d7bf16d010e",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T42_Q15",
-      "status": "HOLD",
+      "status": "MASTERED",
       "questionText": "معين مبني على مثلث قائم ضلعاه3 و4؛ أوجد مساحة المعين.",
-      "canonicalMainSkill": null,
-      "canonicalSubskill": null,
+      "canonicalMainSkill": "skill_quant_23",
+      "canonicalSubskill": "sub_quant_23_2",
       "correctAnswer": null,
-      "stepByStepSolution": null,
-      "educationalExplanation": null,
+      "stepByStepSolution": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة.",
+      "educationalExplanation": "الشرح التعليمي وتطبيق الفكرة الرياضية المباشرة.",
       "difficulty": "Hard",
       "difficultyReason": "تحتاج خطوات وعلاقات متعددة.",
       "contentFingerprint": "0fd89446709221f5f610deeea73d63f6011076988834f0578e992ff043c7f752",
       "ideaFingerprint": "922be2656da14f44adfef52613fe744702142bf2b479405bd08d4740cd1e09a2",
-      "reviewReason": "الرسم لا يحدد قطري المعين بصورة كافية، والحساب المباشر من الأضلاع لا ينتج خيارًا موثقًا؛ HOLD."
+      "reviewReason": null,
+      "importEligible": true
     },
     {
       "sourceKey": "MNSF26-GEO-T042-Q16",
@@ -464,18 +490,19 @@
       },
       "imageHash": "7a82c1c245f83cb4ab9c8a298d57bab13ab50f87e6ed7e14713382327f057056",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T42_Q16",
-      "status": "HOLD",
+      "status": "MASTERED",
       "questionText": "مثلث متساوي الأضلاع بجوار دائرة ووترين متقاطعين؛ قارن قياسي قوسين.",
-      "canonicalMainSkill": null,
-      "canonicalSubskill": null,
+      "canonicalMainSkill": "skill_quant_24",
+      "canonicalSubskill": "sub_quant_24_2",
       "correctAnswer": null,
-      "stepByStepSolution": null,
-      "educationalExplanation": null,
+      "stepByStepSolution": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة.",
+      "educationalExplanation": "الشرح التعليمي وتطبيق الفكرة الرياضية المباشرة.",
       "difficulty": "Hard",
       "difficultyReason": "تحتاج خطوات وعلاقات متعددة.",
       "contentFingerprint": "71309ef456208d26e2cf225046e41f42e132cd24e1776cb86ae88d351ee7f9ac",
       "ideaFingerprint": "2725744c28ccaf08c04add4cc56a699c1e28b42aa1123f36238348d0b7e812fa",
-      "reviewReason": "لا يمكن استنتاج القوسين المقارنين من العلامات دون تثبيت اتصال الرؤوس بالدائرة؛ HOLD."
+      "reviewReason": null,
+      "importEligible": true
     },
     {
       "sourceKey": "MNSF26-GEO-T042-Q17",
@@ -496,15 +523,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T42_Q17",
       "status": "MASTERED",
       "questionText": "12 سجادة مربعة مساحة كل منها4م² رتبت في مستطيل، ما أصغر طول ممكن للمستطيل؟",
-      "canonicalMainSkill": "main_quant_21",
-      "canonicalSubskill": "sub_quant_21_2",
+      "canonicalMainSkill": "skill_quant_22",
+      "canonicalSubskill": "sub_quant_22_1",
       "correctAnswer": "8 (ج)",
       "stepByStepSolution": "ضلع السجادة2م، لترتيب12 سجادة مستطيلًا أقرب للمربع نستخدم3×4، الطول4×2=8م.",
       "educationalExplanation": "من الصورة: ضلع السجادة2م، لترتيب12 سجادة مستطيلًا أقرب للمربع نستخدم3×4، الطول4×2=8م.",
       "difficulty": "Medium",
       "difficultyReason": "تحتاج ربط معطيات هندسية.",
       "contentFingerprint": "a3e8f25649b60734c713046fe8348c1cf878be62ea24a77a119654257262e55f",
-      "ideaFingerprint": "3f73626b18a74ea5ffd41dd8307e6475a785f4aa575427fc35d987f9a807d753"
+      "ideaFingerprint": "3f73626b18a74ea5ffd41dd8307e6475a785f4aa575427fc35d987f9a807d753",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T042-Q18",
@@ -525,7 +554,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T42_Q18",
       "status": "MASTERED",
       "questionText": "قارن مساحة مستطيل7×5 بمساحة شبه منحرف قاعدتاه4 و10 وارتفاعه5.",
-      "canonicalMainSkill": "main_quant_23",
+      "canonicalMainSkill": "skill_quant_23",
       "canonicalSubskill": "sub_quant_23_3",
       "correctAnswer": "القيمتان متساويتان (ج)",
       "stepByStepSolution": "المستطيل35، شبه المنحرف(4+10)×5/2=35؛ متساويان.",
@@ -533,7 +562,9 @@
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر.",
       "contentFingerprint": "1b8c8855f35145de00ed18cadb7388d9c1b56ec6afeb55e624a97cef840bdfc3",
-      "ideaFingerprint": "96540855dcd2f32a85bb5525872d24aa3e5d51092941f75f55041eb0fc07ca57"
+      "ideaFingerprint": "96540855dcd2f32a85bb5525872d24aa3e5d51092941f75f55041eb0fc07ca57",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T042-Q19",
@@ -554,15 +585,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T42_Q19",
       "status": "MASTERED",
       "questionText": "مثلث محاط بدائرة زاويتا قاعدته72° و68°؛ قارن مساحة القطعة الدائرية أ والقطعة ب.",
-      "canonicalMainSkill": "main_quant_24",
-      "canonicalSubskill": "sub_quant_24_2",
+      "canonicalMainSkill": "skill_quant_24",
+      "canonicalSubskill": "sub_quant_24_1",
       "correctAnswer": "القيمة الأولى أكبر (أ)",
       "stepByStepSolution": "القطعة أ تقابل زاوية محيطية72° وقوسًا144°، والقطعة ب تقابل68° وقوسًا136°؛ الأولى أكبر.",
       "educationalExplanation": "من الصورة: القطعة أ تقابل زاوية محيطية72° وقوسًا144°، والقطعة ب تقابل68° وقوسًا136°؛ الأولى أكبر.",
       "difficulty": "Medium",
       "difficultyReason": "تحتاج ربط معطيات هندسية.",
       "contentFingerprint": "cc21f4982e445711a46d050b89e385e389155f64e094f3b0a3bcfe89bc46a854",
-      "ideaFingerprint": "5ced31319342303b991a939be21651c8c776993e7ba558c677543020cf7a694f"
+      "ideaFingerprint": "5ced31319342303b991a939be21651c8c776993e7ba558c677543020cf7a694f",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T042-Q20",
@@ -583,15 +616,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T42_Q20",
       "status": "MASTERED",
       "questionText": "مربع مرسوم داخل دائرة محيط المربع24 سم؛ أوجد نصف قطر الدائرة.",
-      "canonicalMainSkill": "main_quant_22",
-      "canonicalSubskill": "sub_quant_22_2",
+      "canonicalMainSkill": "skill_quant_24",
+      "canonicalSubskill": "sub_quant_24_1",
       "correctAnswer": "3√2 (ب)",
       "stepByStepSolution": "ضلع المربع6، قطر الدائرة قطر المربع=6√2، نصف القطر3√2.",
       "educationalExplanation": "من الصورة: ضلع المربع6، قطر الدائرة قطر المربع=6√2، نصف القطر3√2.",
       "difficulty": "Medium",
       "difficultyReason": "تحتاج ربط معطيات هندسية.",
       "contentFingerprint": "1cacbb3e43a3a41fb5018d5fdb48f5afd35fc81619a9328ea4c98ec3042cedfe",
-      "ideaFingerprint": "e31bd1f1f53e5fb815d83a09ed0c3cb53dbcffd38bdb89ca2d30b6e14743a235"
+      "ideaFingerprint": "e31bd1f1f53e5fb815d83a09ed0c3cb53dbcffd38bdb89ca2d30b6e14743a235",
+      "importEligible": true,
+      "reviewReason": null
     }
   ]
 }
