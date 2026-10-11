@@ -9,18 +9,75 @@ dns.setServers(["8.8.8.8", "8.8.4.4", "1.1.1.1"]);
 import fs from "node:fs";
 import path from "node:path";
 import mongoose from "mongoose";
-import { QUANT_TAXONOMY } from "./deployQuantTaxonomy25.js";
 
 const SUBJECT_ID = "sub_1777779748206";
 const PATH_ID = "p_1777779653351";
 const SECTION_ID = "sec_sub_1777779748206_1";
-const NUM_EXAMS = 5;
-const QUESTIONS_PER_EXAM = 60;
+const QUESTIONS_PER_EXAM = 50;
+
+const EXAM_TITLES = [
+  "الاختبار الأول",
+  "الاختبار الثاني",
+  "الاختبار الثالث",
+  "الاختبار الرابع",
+  "الاختبار الخامس",
+  "الاختبار السادس",
+  "الاختبار السابع",
+  "الاختبار الثامن",
+  "الاختبار التاسع",
+  "الاختبار العاشر",
+];
+
+// Mathematical domains for standardized 50-question quantitative distribution
+const DOMAIN_MAP = {
+  // المجال الأول: الحساب والأعداد والعمليات والكسور والعشري والأسس (15 سؤالاً)
+  d1_arithmetic: [
+    "skill_quant_01",
+    "skill_quant_02",
+    "skill_quant_03",
+    "skill_quant_04",
+    "skill_quant_05",
+  ],
+  // المجال الثاني: الجبر والتناسب والنسبة والمعادلات والأعمار والسرعة (12 سؤالاً)
+  d2_algebra: [
+    "skill_quant_07",
+    "skill_quant_08",
+    "skill_quant_09",
+    "skill_quant_10",
+    "skill_quant_12",
+    "skill_quant_13",
+    "skill_quant_14",
+  ],
+  // المجال الثالث: الإحصاء والاحتمالات وتفسير البيانات والمنطق (5 أسئلة)
+  d3_stats_logic: [
+    "skill_quant_15",
+    "skill_quant_16",
+    "skill_quant_17",
+    "skill_quant_18",
+  ],
+  // المجال الرابع: الهندسة والزوايا والمثلثات والأشكال الرباعية والدائرة والمجسمات (18 سؤالاً)
+  d4_geometry: [
+    "skill_quant_19",
+    "skill_quant_20",
+    "skill_quant_21",
+    "skill_quant_22",
+    "skill_quant_23",
+    "skill_quant_24",
+    "skill_quant_25",
+  ],
+};
+
+const DOMAIN_TARGETS = {
+  d1_arithmetic: 15,
+  d2_algebra: 12,
+  d3_stats_logic: 5,
+  d4_geometry: 18,
+};
 
 export async function deployMnsf26MockExams() {
   const isApply = process.argv.includes("--apply");
   console.log("==================================================================");
-  console.log(`MNSF26 EXCLUSIVE MOCK EXAMS GENERATOR (${isApply ? "LIVE APPLY" : "DRY RUN"})`);
+  console.log(`MNSF26 BALANCED 50-QUESTION EXAMS GENERATOR (${isApply ? "LIVE APPLY" : "DRY RUN"})`);
   console.log("==================================================================\n");
 
   // 1. Load manifest and filter strictly MNSF26 approved questions
@@ -51,81 +108,70 @@ export async function deployMnsf26MockExams() {
   const toDbId = (r: { sourceKey: string }) =>
     `q_qdr_qnt_mnsf26_${r.sourceKey.toLowerCase().replace(/[^a-z0-9_]/g, "_")}`;
 
-  // Group questions by main skill
-  const skillToQuestions = new Map<string, string[]>();
-  for (const s of QUANT_TAXONOMY) {
-    skillToQuestions.set(s.id, []);
-  }
+  // Partition questions into the 4 mathematical domains
+  const domainPools: Record<string, typeof mnsfEligible> = {
+    d1_arithmetic: [],
+    d2_algebra: [],
+    d3_stats_logic: [],
+    d4_geometry: [],
+  };
 
   for (const r of mnsfEligible) {
-    const list = skillToQuestions.get(r.canonicalMainSkill) || [];
-    list.push(toDbId(r));
-    skillToQuestions.set(r.canonicalMainSkill, list);
+    for (const [dom, skills] of Object.entries(DOMAIN_MAP)) {
+      if (skills.includes(r.canonicalMainSkill)) {
+        domainPools[dom].push(r);
+        break;
+      }
+    }
   }
 
-  // 2. Build 5 balanced mock exams strictly from MNSF26 questions
-  console.log(`\n[2] Building ${NUM_EXAMS} balanced mock exams (60 questions each) strictly from MNSF26:`);
+  console.log("    Available question pool by domain:");
+  console.log(`      - الحساب والأعداد (d1):   ${domainPools.d1_arithmetic.length} سؤالاً`);
+  console.log(`      - الجبر والمسائل (d2):    ${domainPools.d2_algebra.length} سؤالاً`);
+  console.log(`      - الإحصاء والمنطق (d3):    ${domainPools.d3_stats_logic.length} سؤالاً`);
+  console.log(`      - الهندسة والقياس (d4):   ${domainPools.d4_geometry.length} سؤالاً`);
+
+  // 2. Build 10 balanced exams of 50 questions each
+  console.log(`\n[2] Building ${EXAM_TITLES.length} balanced exams (50 questions each) distributed across all skills:`);
   const exams: any[] = [];
-  const usedAcrossAllExams = new Set<string>();
+  const usedQuestionKeys = new Set<string>();
 
-  for (let e = 1; e <= NUM_EXAMS; e++) {
+  for (let e = 1; e <= EXAM_TITLES.length; e++) {
+    const examTitle = EXAM_TITLES[e - 1];
     const examId = `exam_mnsf26_mock_${String(e).padStart(2, "0")}`;
-    const examQuestions: string[] = [];
+    const examQuestionIds: string[] = [];
 
-    // Step A: Pick 2 questions from each available main skill to ensure broad coverage
-    for (const item of QUANT_TAXONOMY) {
-      const pool = skillToQuestions.get(item.id) || [];
-      if (pool.length === 0) continue;
-      // Offset slice so each exam gets fresh questions
-      const offset = ((e - 1) * 2) % Math.max(1, pool.length);
-      const candidates = pool.slice(offset, offset + 2);
-      for (const qId of candidates) {
-        if (!examQuestions.includes(qId)) {
-          examQuestions.push(qId);
+    for (const [dom, targetCount] of Object.entries(DOMAIN_TARGETS)) {
+      let picked = 0;
+      for (const r of domainPools[dom]) {
+        if (!usedQuestionKeys.has(r.sourceKey)) {
+          examQuestionIds.push(toDbId(r));
+          usedQuestionKeys.add(r.sourceKey);
+          picked++;
+          if (picked === targetCount) break;
         }
+      }
+      if (picked < targetCount) {
+        throw new Error(`Shortage in domain ${dom} for ${examTitle}: picked ${picked}, expected ${targetCount}`);
       }
     }
 
-    // Step B: Fill remaining slots up to 60 using unused MNSF26 questions
-    if (examQuestions.length < QUESTIONS_PER_EXAM) {
-      for (const r of mnsfEligible) {
-        const qId = toDbId(r);
-        if (!examQuestions.includes(qId) && !usedAcrossAllExams.has(qId)) {
-          examQuestions.push(qId);
-          if (examQuestions.length >= QUESTIONS_PER_EXAM) break;
-        }
-      }
+    if (examQuestionIds.length !== QUESTIONS_PER_EXAM) {
+      throw new Error(`${examTitle} has ${examQuestionIds.length} questions, expected ${QUESTIONS_PER_EXAM}`);
     }
 
-    // Step C: If still under 60 (wrap-around fallback), pick from any eligible MNSF26
-    if (examQuestions.length < QUESTIONS_PER_EXAM) {
-      for (const r of mnsfEligible) {
-        const qId = toDbId(r);
-        if (!examQuestions.includes(qId)) {
-          examQuestions.push(qId);
-          if (examQuestions.length >= QUESTIONS_PER_EXAM) break;
-        }
-      }
-    }
-
-    const final60 = examQuestions.slice(0, QUESTIONS_PER_EXAM);
-    final60.forEach((id) => usedAcrossAllExams.add(id));
-
-    console.log(`    - Exam ${e} (${examId}): ${final60.length} questions (100% MNSF26)`);
-    if (final60.length !== QUESTIONS_PER_EXAM) {
-      throw new Error(`Exam ${examId} has ${final60.length} questions, expected ${QUESTIONS_PER_EXAM}`);
-    }
+    console.log(`    ✓ ${examTitle} (${examId}): 50 سؤالاً متوازنة (15 حساب + 12 جبر + 5 إحصاء + 18 هندسة)`);
 
     exams.push({
       id: examId,
-      title: `اختبار المنصف التجريبي (${e}) — القسم الكمي`,
-      description: `اختبار محاكاة معياري متوازن (60 سؤالاً) مخصص للقسم الكمي من بنك كتاب المنصف 26 حصرياً، يغطي المهارات الـ 25 بنسب قياسية دقيقة.`,
+      title: examTitle,
+      description: `اختبار محاكاة معياري متوازن (50 سؤالاً) للقسم الكمي من كتاب المنصف 26، موزع بدقة على كافة المهارات الرياضية (حساب، جبر، إحصاء، هندسة).`,
       pathId: PATH_ID,
       subjectId: SUBJECT_ID,
       sectionId: SECTION_ID,
       type: "quiz",
       quizKind: "mock",
-      questionIds: final60,
+      questionIds: examQuestionIds,
       learningPlacements: [
         {
           pathId: PATH_ID,
@@ -133,7 +179,7 @@ export async function deployMnsf26MockExams() {
           slot: "tests",
           accessType: "free",
           isVisible: true,
-          order: 100 + e, // Non-conflicting order to preserve existing exams
+          order: 200 + e, // Non-conflicting order to preserve all existing quizzes
           createdAt: Date.now(),
           updatedAt: Date.now(),
         },
@@ -142,7 +188,7 @@ export async function deployMnsf26MockExams() {
         showExplanations: true,
         showAnswers: true,
         showResultsReport: true,
-        timeLimit: 60,
+        timeLimit: 50, // 50 minutes for 50 questions
         maxAttempts: 3,
         passingScore: 65,
         randomizeQuestions: true,
@@ -155,9 +201,11 @@ export async function deployMnsf26MockExams() {
     });
   }
 
+  console.log(`\n    إجمالي الأسئلة المستقلة المستخدمة في الـ 10 اختبارات: ${usedQuestionKeys.size} سؤالاً بدون أي تكرار بين الاختبارات.`);
+
   if (!isApply) {
     console.log("\n==================================================================");
-    console.log("DRY RUN COMPLETED: All 5 MNSF26 exams validated successfully.");
+    console.log("DRY RUN COMPLETED: All 10 exams (50 questions each) validated successfully.");
     console.log("Existing quizzes and exams are 100% PRESERVED (no deletion).");
     console.log("To apply to live database, run with: --apply");
     console.log("==================================================================");
@@ -176,7 +224,7 @@ export async function deployMnsf26MockExams() {
   if (!db) throw new Error("Database handle is null.");
   const quizzesCol = db.collection("quizzes");
 
-  console.log("\n[4] Upserting 5 MNSF26 mock exams into database (WITHOUT deleting existing quizzes)...");
+  console.log("\n[4] Upserting 10 MNSF26 mock exams into database (PRESERVING existing quizzes)...");
   for (const exam of exams) {
     await quizzesCol.updateOne(
       { id: exam.id },
@@ -197,8 +245,8 @@ export async function deployMnsf26MockExams() {
 
   await mongoose.disconnect();
   console.log("\n==================================================================");
-  console.log("MNSF26 EXCLUSIVE MOCK EXAMS DEPLOYED SUCCESSFULLY!");
-  console.log("Existing exams were preserved completely.");
+  console.log("ALL 10 MNSF26 EXAMS DEPLOYED SUCCESSFULLY!");
+  console.log("Existing quizzes and exams were preserved completely.");
   console.log("==================================================================");
 }
 
