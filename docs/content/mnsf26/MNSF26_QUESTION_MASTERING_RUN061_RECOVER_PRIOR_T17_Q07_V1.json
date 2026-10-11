@@ -12,7 +12,7 @@
         "sourceLesson": "جمع الأعداد - المتتابعات - ضرب الأعداد"
       },
       "canonicalMainSkill": "skill_quant_01",
-      "canonicalSubskill": "sub_quant_01_3",
+      "canonicalSubskill": "sub_quant_01_1",
       "correctAnswer": "ج",
       "answerValue": "12",
       "stepByStepSolution": "5→9 زيادة4، ثم الزيادات تنقص واحدًا: +3,+2,+1. لذلك الحد المفقود=9+3=12، ثم 14،15.",
@@ -22,7 +22,9 @@
       "imageHash": "83a1160baf2af410d6f12147c142d2b304de8d7fb71f687164887eb34a7fc61b",
       "contentFingerprint": "389204e4706299c291d82ce7fd2fdffe3f264774c3efc7fdc92f1507b099e771",
       "ideaFingerprint": "df46fb8db920a77aeec8c2395b673a1983147653e637adf299a6fb73612de5b5",
-      "status": "MASTERED"
+      "status": "MASTERED",
+      "importEligible": true,
+      "reviewReason": null
     }
   ]
 }

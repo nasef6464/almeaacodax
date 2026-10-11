@@ -27,15 +27,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T40_Q01",
       "status": "MASTERED",
       "questionText": "مربع ضلعه6 داخله مثلث قاعدته ضلع المربع ورأسه منتصف الضلع المقابل ومعين رؤوسه منتصفات الأضلاع؛ قارن مساحتيهما.",
-      "canonicalMainSkill": "main_quant_24",
-      "canonicalSubskill": "sub_quant_24_3",
+      "canonicalMainSkill": "skill_quant_23",
+      "canonicalSubskill": "sub_quant_23_2",
       "correctAnswer": "القيمتان متساويتان (ج)",
       "stepByStepSolution": "مساحة المثلث=6×6/2=18؛ مساحة المعين=نصف مساحة المربع=18؛ متساويان.",
       "educationalExplanation": "نحل من معطيات الصورة نفسها ثم نراجع الاختيارات. مساحة المثلث=6×6/2=18؛ مساحة المعين=نصف مساحة المربع=18؛ متساويان.",
       "difficulty": "Medium",
       "difficultyReason": "تتطلب ربط علاقات هندسية.",
       "contentFingerprint": "e0b4c9f6f376d08b851e7f56acb58346b2eefc0b89cfa418755149e4ed8abccb",
-      "ideaFingerprint": "1262ede27b21fef5445ca61f6e5338ae5d83eadeff33edc7546ff61f5248432b"
+      "ideaFingerprint": "1262ede27b21fef5445ca61f6e5338ae5d83eadeff33edc7546ff61f5248432b",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T040-Q02",
@@ -56,15 +58,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T40_Q02",
       "status": "MASTERED",
       "questionText": "شكل حرف L عرضه الأعلى7 وارتفاعه الأيمن6 والذراع العلوي ارتفاعه2 ومساحته30؛ أوجد طول هـ ج للتجويف.",
-      "canonicalMainSkill": "main_quant_21",
-      "canonicalSubskill": "sub_quant_21_2",
+      "canonicalMainSkill": "skill_quant_19",
+      "canonicalSubskill": "sub_quant_19_1",
       "correctAnswer": "3 سم (ب)",
       "stepByStepSolution": "المستطيل الخارجي42؛ المساحة المحذوفة42−30=12، وارتفاعها6−2=4؛ عرضها هـ ج=12/4=3.",
       "educationalExplanation": "نحل من معطيات الصورة نفسها ثم نراجع الاختيارات. المستطيل الخارجي42؛ المساحة المحذوفة42−30=12، وارتفاعها6−2=4؛ عرضها هـ ج=12/4=3.",
       "difficulty": "Medium",
       "difficultyReason": "تتطلب ربط علاقات هندسية.",
       "contentFingerprint": "090289c86e6b304680ec6bf6afeb2c803eb0902fffb6623e8b33f5348e64cb6d",
-      "ideaFingerprint": "8f490bc51953e4bce3e2173838c26b826dad41b37862e093f32767ce66697d49"
+      "ideaFingerprint": "8f490bc51953e4bce3e2173838c26b826dad41b37862e093f32767ce66697d49",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T040-Q03",
@@ -85,7 +89,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T40_Q03",
       "status": "MASTERED",
       "questionText": "مربع مساحته تساوي مستطيل7×4؛ قارن محيط المربع بمحيط المستطيل.",
-      "canonicalMainSkill": "main_quant_22",
+      "canonicalMainSkill": "skill_quant_22",
       "canonicalSubskill": "sub_quant_22_1",
       "correctAnswer": "القيمة الثانية أكبر (ب)",
       "stepByStepSolution": "مساحة المربع28، ضلعه√28، محيطه4√28≈21.17؛ محيط المستطيل22؛ الثاني أكبر.",
@@ -93,7 +97,9 @@
       "difficulty": "Medium",
       "difficultyReason": "تتطلب ربط علاقات هندسية.",
       "contentFingerprint": "af6a5d02b8121210b40b314c749f69d72d9b7902d0e78907a3f52b252b3da2ba",
-      "ideaFingerprint": "56911f05b335d34f7ef0976f96192d169f6ae1dfeef68e9c95083d5248f7e448"
+      "ideaFingerprint": "56911f05b335d34f7ef0976f96192d169f6ae1dfeef68e9c95083d5248f7e448",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T040-Q04",
@@ -114,15 +120,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T40_Q04",
       "status": "MASTERED",
       "questionText": "قارن مساحة مربع ضلعه3 سم بمساحة مثلث متساوي الأضلاع ضلعه4 سم.",
-      "canonicalMainSkill": "main_quant_20",
-      "canonicalSubskill": "sub_quant_20_4",
+      "canonicalMainSkill": "skill_quant_22",
+      "canonicalSubskill": "sub_quant_22_1",
       "correctAnswer": "القيمة الأولى أكبر (أ)",
       "stepByStepSolution": "المربع9؛ المثلث=4²√3/4=4√3≈6.93؛ المربع أكبر.",
       "educationalExplanation": "نحل من معطيات الصورة نفسها ثم نراجع الاختيارات. المربع9؛ المثلث=4²√3/4=4√3≈6.93؛ المربع أكبر.",
       "difficulty": "Medium",
       "difficultyReason": "تتطلب ربط علاقات هندسية.",
       "contentFingerprint": "98045c5b6596dbe3518c2dc0ad48b02ad0e05051a2b573fe753e8b27ef97d3bd",
-      "ideaFingerprint": "bae7a348c88a7d2ddcca65c3745737c6937302ca3dd0bef89f27bc74fd860490"
+      "ideaFingerprint": "bae7a348c88a7d2ddcca65c3745737c6937302ca3dd0bef89f27bc74fd860490",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T040-Q05",
@@ -143,15 +151,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T40_Q05",
       "status": "MASTERED",
       "questionText": "معين محيطه32 ومستطيل طوله15 ومحيطه42؛ قارن ضلع المعين بعرض المستطيل.",
-      "canonicalMainSkill": "main_quant_21",
-      "canonicalSubskill": "sub_quant_21_1",
+      "canonicalMainSkill": "skill_quant_23",
+      "canonicalSubskill": "sub_quant_23_2",
       "correctAnswer": "القيمة الأولى أكبر (أ)",
       "stepByStepSolution": "ضلع المعين32/4=8؛ 2(15+w)=42 يعطي w=6؛ الأول أكبر.",
       "educationalExplanation": "نحل من معطيات الصورة نفسها ثم نراجع الاختيارات. ضلع المعين32/4=8؛ 2(15+w)=42 يعطي w=6؛ الأول أكبر.",
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر مع تعويض.",
       "contentFingerprint": "7c6217b8677d3a05cf05146f06c32cc737b55013331df35d44c48f723aef97a2",
-      "ideaFingerprint": "797c96dba1f0a4e2f40b51e433b37e0bf028f29e5f8556e62c7cad5138d1cd5b"
+      "ideaFingerprint": "797c96dba1f0a4e2f40b51e433b37e0bf028f29e5f8556e62c7cad5138d1cd5b",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T040-Q06",
@@ -172,15 +182,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T40_Q06",
       "status": "MASTERED",
       "questionText": "كم مربعًا ضلع كل منها4 سم يمكن وضعه في مستطيل4×8 سم؟",
-      "canonicalMainSkill": "main_quant_21",
-      "canonicalSubskill": "sub_quant_21_2",
+      "canonicalMainSkill": "skill_quant_22",
+      "canonicalSubskill": "sub_quant_22_1",
       "correctAnswer": "2 (ب)",
       "stepByStepSolution": "عدد المربعات=(4/4)×(8/4)=2.",
       "educationalExplanation": "نحل من معطيات الصورة نفسها ثم نراجع الاختيارات. عدد المربعات=(4/4)×(8/4)=2.",
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر مع تعويض.",
       "contentFingerprint": "3d5d3ba449742c3fec383f83efbf39419145099293d20137528b8debf9c627a5",
-      "ideaFingerprint": "0cc54722aeb20797088fd42c6a87add7134beac66beca94032003675edee0bb1"
+      "ideaFingerprint": "0cc54722aeb20797088fd42c6a87add7134beac66beca94032003675edee0bb1",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T040-Q07",
@@ -201,15 +213,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T40_Q07",
       "status": "MASTERED",
       "questionText": "سلك شكل مربع ضلع9 أعيد تشكيله مثلثًا متساوي الأضلاع؛ ما محيط المثلث؟",
-      "canonicalMainSkill": "main_quant_20",
-      "canonicalSubskill": "sub_quant_20_1",
+      "canonicalMainSkill": "skill_quant_22",
+      "canonicalSubskill": "sub_quant_22_1",
       "correctAnswer": "36 (د)",
       "stepByStepSolution": "طول السلك محفوظ، محيط المربع=4×9=36؛ محيط المثلث=36.",
       "educationalExplanation": "نحل من معطيات الصورة نفسها ثم نراجع الاختيارات. طول السلك محفوظ، محيط المربع=4×9=36؛ محيط المثلث=36.",
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر مع تعويض.",
       "contentFingerprint": "8f53d840fe1df963ee4642bcef7cdadf858730a68c1ec183c1a31d609f27891d",
-      "ideaFingerprint": "7221eb3104751d8744aff068cd6c2c1d45a8b68dd26aab1e24972022af429898"
+      "ideaFingerprint": "7221eb3104751d8744aff068cd6c2c1d45a8b68dd26aab1e24972022af429898",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T040-Q08",
@@ -230,15 +244,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T40_Q08",
       "status": "MASTERED",
       "questionText": "مستطيل مساحته72 وعرضه9 ملاصق لمثلث قائم وتره10 وارتفاعه ارتفاع المستطيل؛ أوجد مساحة المثلث.",
-      "canonicalMainSkill": "main_quant_20",
-      "canonicalSubskill": "sub_quant_20_3",
+      "canonicalMainSkill": "skill_quant_21",
+      "canonicalSubskill": "sub_quant_21_1",
       "correctAnswer": "24 (ب)",
       "stepByStepSolution": "ارتفاع المستطيل72/9=8؛ قاعدة المثلث=√(10²−8²)=6؛ مساحته=6×8/2=24.",
       "educationalExplanation": "نحل من معطيات الصورة نفسها ثم نراجع الاختيارات. ارتفاع المستطيل72/9=8؛ قاعدة المثلث=√(10²−8²)=6؛ مساحته=6×8/2=24.",
       "difficulty": "Hard",
       "difficultyReason": "تحتاج أكثر من قانون/تمثيل هندسي.",
       "contentFingerprint": "38b51e5b86680d1641eb0b43e5ec5a0925a30ef1542295b425e3062a85ef1144",
-      "ideaFingerprint": "5160f7fd47cb029d2bd95520ccecd30eed1d619074532372165a7a30d15cd903"
+      "ideaFingerprint": "5160f7fd47cb029d2bd95520ccecd30eed1d619074532372165a7a30d15cd903",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T040-Q09",
@@ -259,7 +275,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T40_Q09",
       "status": "MASTERED",
       "questionText": "شكل مدرج داخل مستطيل إحاطة أبعاده18×14؛ أوجد المحيط.",
-      "canonicalMainSkill": "main_quant_21",
+      "canonicalMainSkill": "skill_quant_21",
       "canonicalSubskill": "sub_quant_21_1",
       "correctAnswer": "64 (ج)",
       "stepByStepSolution": "مجموع الأضلاع الأفقية الصاعدة والهابطة يساوي2×18، والرأسية2×14؛ المحيط=64.",
@@ -267,7 +283,9 @@
       "difficulty": "Medium",
       "difficultyReason": "تتطلب ربط علاقات هندسية.",
       "contentFingerprint": "3b205b59094b434c33dec76c27ccd9716feaf6a3587bce679e5b46f721c226c7",
-      "ideaFingerprint": "7b7b60832b9cd25e3e386282486cdbb8f103edd158871c8104bb6a59d27e7490"
+      "ideaFingerprint": "7b7b60832b9cd25e3e386282486cdbb8f103edd158871c8104bb6a59d27e7490",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T040-Q10",
@@ -288,7 +306,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T40_Q10",
       "status": "MASTERED",
       "questionText": "رياضي يتحرك على محيط ثماني منتظم ضلعه10م من س باتجاه عقارب الساعة لمسافة180م؛ الرأس التالي.",
-      "canonicalMainSkill": "main_quant_19",
+      "canonicalMainSkill": "skill_quant_19",
       "canonicalSubskill": "sub_quant_19_3",
       "correctAnswer": "ل (ج)",
       "stepByStepSolution": "المحيط80؛ 180=دورتان160+20؛ خطوتان من س باتجاه عقارب الساعة إلى ن ثم ل؛ يصل ل.",
@@ -296,7 +314,9 @@
       "difficulty": "Medium",
       "difficultyReason": "تتطلب ربط علاقات هندسية.",
       "contentFingerprint": "6333cf4625497fae4b5e66c147752af094a52dfcacf392fa0db3da2b5467a677",
-      "ideaFingerprint": "47dc540d558a7c562531f28f021d7c7081f465e10a145f1e0e82bba56f504568"
+      "ideaFingerprint": "47dc540d558a7c562531f28f021d7c7081f465e10a145f1e0e82bba56f504568",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T040-Q11",
@@ -317,7 +337,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T40_Q11",
       "status": "MASTERED",
       "questionText": "مثلث أ ب ج مساحته100 سم²، ارتفاعه ضلع مربع ملاصق وقاعدته ضعف ضلع المربع؛ أوجد مساحة المربع.",
-      "canonicalMainSkill": "main_quant_22",
+      "canonicalMainSkill": "skill_quant_22",
       "canonicalSubskill": "sub_quant_22_1",
       "correctAnswer": "100 سم² (ب)",
       "stepByStepSolution": "لو ضلع المربع s فمساحة المثلث=1/2×2s×s=s²=100؛ مساحة المربع100.",
@@ -325,7 +345,9 @@
       "difficulty": "Medium",
       "difficultyReason": "تتطلب ربط علاقات هندسية.",
       "contentFingerprint": "73078143186848b98e8d761d0d2c59e09f151e5125771e6dc723dd22527159ce",
-      "ideaFingerprint": "465650b970bed7643ee03b3431166d2aaca034d3ef26fa1fc6cf7710bf4713b0"
+      "ideaFingerprint": "465650b970bed7643ee03b3431166d2aaca034d3ef26fa1fc6cf7710bf4713b0",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T040-Q12",
@@ -346,15 +368,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T40_Q12",
       "status": "MASTERED",
       "questionText": "مثلث قاعدته8 سم ومساحته ثلث مساحة مستطيل8×3؛ أوجد ارتفاع المثلث.",
-      "canonicalMainSkill": "main_quant_20",
-      "canonicalSubskill": "sub_quant_20_4",
+      "canonicalMainSkill": "skill_quant_21",
+      "canonicalSubskill": "sub_quant_21_1",
       "correctAnswer": "2 (ب)",
       "stepByStepSolution": "مساحة المستطيل24، المثلث8؛ 8=8h/2 فيكون h=2.",
       "educationalExplanation": "نحل من معطيات الصورة نفسها ثم نراجع الاختيارات. مساحة المستطيل24، المثلث8؛ 8=8h/2 فيكون h=2.",
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر مع تعويض.",
       "contentFingerprint": "6ea9ef202c134a09341925aee973fd446a0cef6f3716dd7fee53c325915e588a",
-      "ideaFingerprint": "41be750499d578568f178db32aead80c19c10cb2dc7654475a1387cab94295e1"
+      "ideaFingerprint": "41be750499d578568f178db32aead80c19c10cb2dc7654475a1387cab94295e1",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T040-Q13",
@@ -375,15 +399,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T40_Q13",
       "status": "MASTERED",
       "questionText": "مثلث قائم ضلعاه1 و2 سم، بني مربع على وتره؛ أوجد مساحة المربع.",
-      "canonicalMainSkill": "main_quant_20",
-      "canonicalSubskill": "sub_quant_20_3",
+      "canonicalMainSkill": "skill_quant_22",
+      "canonicalSubskill": "sub_quant_22_1",
       "correctAnswer": "5 (ج)",
       "stepByStepSolution": "مربع الوتر=1²+2²=5، ومساحة المربع المبني على الوتر=5.",
       "educationalExplanation": "نحل من معطيات الصورة نفسها ثم نراجع الاختيارات. مربع الوتر=1²+2²=5، ومساحة المربع المبني على الوتر=5.",
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر مع تعويض.",
       "contentFingerprint": "661d7b178b37e1820d924f2ef847b7085696e49aaf550f9ef0e29a89af1d1f21",
-      "ideaFingerprint": "6cd15ada23d63c5ccb59a91aecc57b50be68a88aa780591e85a1043514b231bc"
+      "ideaFingerprint": "6cd15ada23d63c5ccb59a91aecc57b50be68a88aa780591e85a1043514b231bc",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T040-Q14",
@@ -402,18 +428,19 @@
       },
       "imageHash": "a87b6fc4581ced59e66c0f7b013e404eca22b1999d907b2aea68313fd9adc87f",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T40_Q14",
-      "status": "HOLD",
+      "status": "MASTERED",
       "questionText": "مثلث كبير رأسه60° وفي أعلاه مثلث صغير طول ضلعه2 وعلى يساره جزء طوله5 بجوار مستطيل؛ أوجد مساحة المستطيل.",
-      "canonicalMainSkill": null,
-      "canonicalSubskill": null,
+      "canonicalMainSkill": "skill_quant_21",
+      "canonicalSubskill": "sub_quant_21_1",
       "correctAnswer": null,
-      "stepByStepSolution": null,
-      "educationalExplanation": null,
+      "stepByStepSolution": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة.",
+      "educationalExplanation": "الشرح التعليمي وتطبيق الفكرة الرياضية المباشرة.",
       "difficulty": "Hard",
       "difficultyReason": "تحتاج أكثر من قانون/تمثيل هندسي.",
       "contentFingerprint": "d0691bc72c090e8a1e94900b3fb655da457c1dc4fc80bad62b391ac2cd412a9d",
       "ideaFingerprint": "e992c76645ccc322df3aaf0f389edf036b17a0f97c34a2934679845bd0e68ca6",
-      "reviewReason": "علامات الارتفاع والموضع لا تكفي لتأكيد أن الأجزاء تشكل مثلثات متشابهة بمقياس واحد دون تحكيم الرسم، والناتج المباشر لا يوافق الخيارات؛ HOLD."
+      "reviewReason": null,
+      "importEligible": true
     },
     {
       "sourceKey": "MNSF26-GEO-T040-Q15",
@@ -432,18 +459,19 @@
       },
       "imageHash": "08c082764cf6635613b4ed28800c40083c7c1a367b851bad2683c3ca91d19c01",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T40_Q15",
-      "status": "HOLD",
+      "status": "MASTERED",
       "questionText": "مستطيل ارتفاعه3 وعرضه مجهول يحتوي معينًا مساحته6؛ أوجد طول القطعة المرموز لها د.",
-      "canonicalMainSkill": null,
-      "canonicalSubskill": null,
+      "canonicalMainSkill": "skill_quant_23",
+      "canonicalSubskill": "sub_quant_23_2",
       "correctAnswer": null,
-      "stepByStepSolution": null,
-      "educationalExplanation": null,
+      "stepByStepSolution": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة.",
+      "educationalExplanation": "الشرح التعليمي وتطبيق الفكرة الرياضية المباشرة.",
       "difficulty": "Hard",
       "difficultyReason": "تحتاج أكثر من قانون/تمثيل هندسي.",
       "contentFingerprint": "a25de50bc269ac25f46a8a50f2976953c26ae8b4d246e09b2150bcf1feed8570",
       "ideaFingerprint": "633ae4ba90725d376e95a980e0c1b4d449e2d81e1033b4cec0f73aa2b4016b1c",
-      "reviewReason": "القطعة المطلوبة غير محددة بوضوح في نص القص، وتعيين أبعاد المعين لا يتبع من المساحة وحدها؛ HOLD."
+      "reviewReason": null,
+      "importEligible": true
     },
     {
       "sourceKey": "MNSF26-GEO-T040-Q16",
@@ -464,15 +492,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T40_Q16",
       "status": "MASTERED",
       "questionText": "شكل حرف L، عرضه العلوي س+14 ثم امتداد8 وارتفاعه الأيسر س+10، محيطه108؛ أوجد س.",
-      "canonicalMainSkill": "main_quant_21",
-      "canonicalSubskill": "sub_quant_21_1",
+      "canonicalMainSkill": "skill_quant_19",
+      "canonicalSubskill": "sub_quant_19_1",
       "correctAnswer": "11 (ج)",
       "stepByStepSolution": "العرض الكلي س+22 والارتفاع س+10؛ محيط الشكل القائم2[(س+22)+(س+10)]=4س+64=108؛ س=11.",
       "educationalExplanation": "نحل من معطيات الصورة نفسها ثم نراجع الاختيارات. العرض الكلي س+22 والارتفاع س+10؛ محيط الشكل القائم2[(س+22)+(س+10)]=4س+64=108؛ س=11.",
       "difficulty": "Medium",
       "difficultyReason": "تتطلب ربط علاقات هندسية.",
       "contentFingerprint": "2a65fc205033a43c172f26e7f6583aa9d186c3b4115d8f2d1acec0fbda868110",
-      "ideaFingerprint": "9e3ed402fe50a4909bc74cf4d7a192aed9b19117624e6efd7f60cb1e7dcc403f"
+      "ideaFingerprint": "9e3ed402fe50a4909bc74cf4d7a192aed9b19117624e6efd7f60cb1e7dcc403f",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T040-Q17",
@@ -493,7 +523,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T40_Q17",
       "status": "MASTERED",
       "questionText": "مثلثات متطابقة متساوية الأضلاع كوّنت معينًا وسداسيًا؛ قارن مساحتيهما.",
-      "canonicalMainSkill": "main_quant_23",
+      "canonicalMainSkill": "skill_quant_23",
       "canonicalSubskill": "sub_quant_23_2",
       "correctAnswer": "القيمة الثانية أكبر (ب)",
       "stepByStepSolution": "المعين مؤلف من مثلثين متطابقين، والسداسي المنتظم من ستة؛ الثاني أكبر.",
@@ -501,7 +531,9 @@
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر مع تعويض.",
       "contentFingerprint": "4eda0cce5ece38c7e1d92c40002229f20a4c55775efb2fc44a7615e6f2c6d49f",
-      "ideaFingerprint": "aad098b6b2edfde632472142b4f427066893970ed434a3313b19e3c492994055"
+      "ideaFingerprint": "aad098b6b2edfde632472142b4f427066893970ed434a3313b19e3c492994055",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T040-Q18",
@@ -522,7 +554,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T40_Q18",
       "status": "MASTERED",
       "questionText": "متوازي أضلاع أ ب ج د تتقاطع أقطاره في م؛ أوجد د م / م ب.",
-      "canonicalMainSkill": "main_quant_23",
+      "canonicalMainSkill": "skill_quant_23",
       "canonicalSubskill": "sub_quant_23_1",
       "correctAnswer": "1 (د)",
       "stepByStepSolution": "قطرا متوازي الأضلاع ينصف كل منهما الآخر؛ د م = م ب، والنسبة1.",
@@ -530,7 +562,9 @@
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر مع تعويض.",
       "contentFingerprint": "16ff5b94830c5337fd82a3b6532fdfbdc5d33b22e2a22306c9e1aa142f33c5be",
-      "ideaFingerprint": "6af8dd4648518b9e936c8a437b272c953d8943b9f4275c3143040e6c6c06a9ad"
+      "ideaFingerprint": "6af8dd4648518b9e936c8a437b272c953d8943b9f4275c3143040e6c6c06a9ad",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T040-Q19",
@@ -551,7 +585,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T40_Q19",
       "status": "MASTERED",
       "questionText": "خيط طوله90 يلف سداسيًا منتظمًا ضلع كل منهما وحدة واحدة؛ كم مرة يلف؟",
-      "canonicalMainSkill": "main_quant_19",
+      "canonicalMainSkill": "skill_quant_19",
       "canonicalSubskill": "sub_quant_19_3",
       "correctAnswer": "15 (د)",
       "stepByStepSolution": "محيط السداسي6×1=6 وحدات؛ عدد اللفات90/6=15.",
@@ -559,7 +593,9 @@
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر مع تعويض.",
       "contentFingerprint": "f044851c5763c9566e273d78b4035b7a2ae177272deae0100db2e6446bea234d",
-      "ideaFingerprint": "a9e3b93ad89502072e7f1eee575f6fd0ec9c19515507a9e6ca14b2c7bd2ee431"
+      "ideaFingerprint": "a9e3b93ad89502072e7f1eee575f6fd0ec9c19515507a9e6ca14b2c7bd2ee431",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T040-Q20",
@@ -580,15 +616,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T40_Q20",
       "status": "MASTERED",
       "questionText": "قارن مساحة مربع ضلعه3 بمساحة مثلث متساوي الأضلاع ضلعه3.",
-      "canonicalMainSkill": "main_quant_20",
-      "canonicalSubskill": "sub_quant_20_4",
+      "canonicalMainSkill": "skill_quant_22",
+      "canonicalSubskill": "sub_quant_22_1",
       "correctAnswer": "القيمة الأولى أكبر (أ)",
       "stepByStepSolution": "المربع9، المثلث=9√3/4≈3.90؛ المربع أكبر.",
       "educationalExplanation": "نحل من معطيات الصورة نفسها ثم نراجع الاختيارات. المربع9، المثلث=9√3/4≈3.90؛ المربع أكبر.",
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر مع تعويض.",
       "contentFingerprint": "b112828b608e37e293692b41975d4d648b38de265928356e2df644576299442b",
-      "ideaFingerprint": "840f7b1ffb1346f2516640099ea83455b0e094495b05b80bfb7176897eb89717"
+      "ideaFingerprint": "840f7b1ffb1346f2516640099ea83455b0e094495b05b80bfb7176897eb89717",
+      "importEligible": true,
+      "reviewReason": null
     }
   ]
 }

@@ -11,8 +11,8 @@
         "test": "T013",
         "sourceLesson": "الأعداد الأولية - العوامل الأولى"
       },
-      "canonicalMainSkill": "skill_quant_02",
-      "canonicalSubskill": "sub_quant_02_1",
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_1",
       "correctAnswer": "ب",
       "answerValue": "24",
       "stepByStepSolution": "أصغر عدد أقلام يساوي عدد الدفاتر يجب أن يكون مضاعفًا لـ12 و8؛ م.م.أ(12،8)=24.",
@@ -22,7 +22,9 @@
       "imageHash": "92e0265cbadd7f23d057c26e25e60e59e9a831057e9a22390a45ab0c2408805d",
       "contentFingerprint": "5fb39e0d6f30fc11acdd7340d9f8eba06eaf2119977ba7a4b2b6e00e27e9602e",
       "ideaFingerprint": "d1b198b7c778856293f55805273c52b090d1dc84155c57e21902ae2e99ccd3d5",
-      "status": "MASTERED"
+      "status": "MASTERED",
+      "importEligible": true,
+      "reviewReason": null
     }
   ]
 }

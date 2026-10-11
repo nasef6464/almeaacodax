@@ -25,7 +25,7 @@
       "status": "MASTERED",
       "questionText": "عمر هدى بعد 9 سنوات يساوي مثلي عمرها بعد 3 سنوات؛ كم عمرها الآن؟",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN050_2026-10-08",
-      "canonicalMainSkill": "main_quant_16",
+      "canonicalMainSkill": "skill_quant_16",
       "canonicalSubskill": "sub_quant_16_1",
       "correctAnswer": "3 سنوات",
       "stepByStepSolution": "س+9=2(س+3)؛ س+9=2س+6؛ س=3.",
@@ -33,7 +33,9 @@
       "difficulty": "Easy",
       "difficultyReason": "معادلة خطية بسيطة.",
       "contentFingerprint": "5b7404dd692d1c0db291d34e63aee8a495d48a9d73dd20d020320ce555f32629",
-      "ideaFingerprint": "bc32a8adc0ea7b1e5ced35168982ecedcc3ba09ec9ddfc7eee8598ed8674a8f3"
+      "ideaFingerprint": "bc32a8adc0ea7b1e5ced35168982ecedcc3ba09ec9ddfc7eee8598ed8674a8f3",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T048-Q02",
@@ -52,15 +54,17 @@
       "status": "MASTERED",
       "questionText": "نسبة عمر الابن إلى عمر أبيه الآن 1:4، وبعد 10 سنوات تصبح 2:5؛ ما عمر الأب الآن؟",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN050_2026-10-08",
-      "canonicalMainSkill": "main_quant_16",
-      "canonicalSubskill": "sub_quant_16_2",
+      "canonicalMainSkill": "skill_quant_16",
+      "canonicalSubskill": "sub_quant_16_1",
       "correctAnswer": "40 سنة",
       "stepByStepSolution": "الابن س والأب4س؛ بعد10 سنوات (س+10)/(4س+10)=2/5؛ 5س+50=8س+20؛ س=10؛ الأب الآن4×10=40.",
       "educationalExplanation": "الفكرة التعليمية: نسبة عمرين بعد مرور زمن؛ نكتب علاقة عمرية أو مالية مطابقة لمعطيات الصورة ثم نراجع النتيجة.",
       "difficulty": "Medium",
       "difficultyReason": "معادلة نسب عمرين ثم ضرب.",
       "contentFingerprint": "07c94c2a24a3253b5ed596c2aeefc50d6ca7ff6de0d479bd99bc102b8afe0aa6",
-      "ideaFingerprint": "698995548e52c611851ab13006b9503fc6fc3d9f83dc2ac2c105def3fc58c408"
+      "ideaFingerprint": "698995548e52c611851ab13006b9503fc6fc3d9f83dc2ac2c105def3fc58c408",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T048-Q03",
@@ -79,15 +83,17 @@
       "status": "MASTERED",
       "questionText": "عمر سعد الآن مضافًا إليه نصف عمره وثلث عمره و9 سنوات يساوي 75 سنة؛ كم عمره بعد 5 سنوات؟",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN050_2026-10-08",
-      "canonicalMainSkill": "main_quant_16",
-      "canonicalSubskill": "sub_quant_16_2",
+      "canonicalMainSkill": "skill_quant_16",
+      "canonicalSubskill": "sub_quant_16_1",
       "correctAnswer": "41 سنة",
       "stepByStepSolution": "س+س/2+س/3+9=75؛ (11/6)س=66؛ س=36؛ بعد5=41.",
       "educationalExplanation": "الفكرة التعليمية: معادلة عمر بأجزاء كسرية؛ نكتب علاقة عمرية أو مالية مطابقة لمعطيات الصورة ثم نراجع النتيجة.",
       "difficulty": "Medium",
       "difficultyReason": "جمع كسور العمر وحل معادلة.",
       "contentFingerprint": "49440ff500888b00a666428f5835b99a0f7fa164d7d67d75c03cb7643d28e377",
-      "ideaFingerprint": "5acc0df587901c911a565e0bcd1b69a38e454dee1d270c3a9f3d1e2864b1bc3f"
+      "ideaFingerprint": "5acc0df587901c911a565e0bcd1b69a38e454dee1d270c3a9f3d1e2864b1bc3f",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T048-Q04",
@@ -106,15 +112,17 @@
       "status": "MASTERED",
       "questionText": "الفرق بين عمر خالد وأحمد 18 عامًا، وعمر خالد أربعة أمثال عمر أحمد؛ كم عمر خالد؟",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN050_2026-10-08",
-      "canonicalMainSkill": "main_quant_16",
-      "canonicalSubskill": "sub_quant_16_2",
+      "canonicalMainSkill": "skill_quant_16",
+      "canonicalSubskill": "sub_quant_16_1",
       "correctAnswer": "24 عامًا",
       "stepByStepSolution": "خالد=4أحمد، والفرق3أحمد=18؛ أحمد6، خالد24.",
       "educationalExplanation": "الفكرة التعليمية: علاقة أربعة أمثال مع فرق معلوم؛ نكتب علاقة عمرية أو مالية مطابقة لمعطيات الصورة ثم نراجع النتيجة.",
       "difficulty": "Easy",
       "difficultyReason": "فرق المضاعفات.",
       "contentFingerprint": "4fb5dddc5177843eaf586b22109513dfb1bcf06bcb21857155e8798be55d4ac3",
-      "ideaFingerprint": "d9cbc8aa2da8e116916f9c83abe84003eb27b9277d29d5239e1ef1b2cebb12d1"
+      "ideaFingerprint": "d9cbc8aa2da8e116916f9c83abe84003eb27b9277d29d5239e1ef1b2cebb12d1",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T048-Q05",
@@ -133,15 +141,17 @@
       "status": "MASTERED",
       "questionText": "عمر أحمد أكبر من خالد بأربع سنوات وعمر خالد 7/8 عمر أحمد؛ ما عمر خالد؟",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN050_2026-10-08",
-      "canonicalMainSkill": "main_quant_16",
-      "canonicalSubskill": "sub_quant_16_2",
+      "canonicalMainSkill": "skill_quant_16",
+      "canonicalSubskill": "sub_quant_16_1",
       "correctAnswer": "28 سنة",
       "stepByStepSolution": "أحمد=س؛ خالد7س/8؛ الفرق س/8=4؛ س=32؛ خالد28.",
       "educationalExplanation": "الفكرة التعليمية: نسبة عمرين وفرق ثابت؛ نكتب علاقة عمرية أو مالية مطابقة لمعطيات الصورة ثم نراجع النتيجة.",
       "difficulty": "Medium",
       "difficultyReason": "حل معادلة كسرية.",
       "contentFingerprint": "7246c7b3253e6f1877642e32c570520dbad44857bf32675f7c6379af1d57be4a",
-      "ideaFingerprint": "91952247c0ad7d58e74f0edfdef7e26bb9ab44fe2494edd862e97ca068c12e74"
+      "ideaFingerprint": "91952247c0ad7d58e74f0edfdef7e26bb9ab44fe2494edd862e97ca068c12e74",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T048-Q06",
@@ -160,7 +170,7 @@
       "status": "MASTERED",
       "questionText": "قبل ميلاد محمد بثلاث سنوات كان عمر أبيه 19 عامًا؛ ما مجموع عمريهما بعد 10 سنوات من ميلاد محمد؟",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN050_2026-10-08",
-      "canonicalMainSkill": "main_quant_16",
+      "canonicalMainSkill": "skill_quant_16",
       "canonicalSubskill": "sub_quant_16_1",
       "correctAnswer": "42 عامًا",
       "stepByStepSolution": "الأب عند ميلاد محمد=19+3=22؛ بعد10 يصبح32؛ محمد10؛ المجموع42.",
@@ -168,7 +178,9 @@
       "difficulty": "Medium",
       "difficultyReason": "تحويل بين نقطتين زمنيتين.",
       "contentFingerprint": "9bf70b2a699b6ea8d9525c3f5aff1d8162f18c2a32205c57fe6ac42ab5ed9a87",
-      "ideaFingerprint": "6415379c71fb91a58daf92621e904e1b26fcd56146578256cd9d1ed6f890b016"
+      "ideaFingerprint": "6415379c71fb91a58daf92621e904e1b26fcd56146578256cd9d1ed6f890b016",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T048-Q07",
@@ -187,7 +199,7 @@
       "status": "MASTERED",
       "questionText": "عمر شخص بعد 10 سنوات يساوي مثلي عمره قبل 20 سنة؛ كم عمره الآن؟",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN050_2026-10-08",
-      "canonicalMainSkill": "main_quant_16",
+      "canonicalMainSkill": "skill_quant_16",
       "canonicalSubskill": "sub_quant_16_1",
       "correctAnswer": "50 سنة",
       "stepByStepSolution": "س+10=2(س−20)؛ س+10=2س−40؛ س=50.",
@@ -195,7 +207,9 @@
       "difficulty": "Easy",
       "difficultyReason": "معادلة عمر.",
       "contentFingerprint": "6069202cb7799689e1f5e78d2371e1e3a39053f96283c86fcb92348b266363e7",
-      "ideaFingerprint": "dff62654fa52cc91535b6c3f52cc913d6bffb2617346f4210f1fe5f7e3cd18fe"
+      "ideaFingerprint": "dff62654fa52cc91535b6c3f52cc913d6bffb2617346f4210f1fe5f7e3cd18fe",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T048-Q08",
@@ -214,15 +228,17 @@
       "status": "MASTERED",
       "questionText": "رجل قال لابنه: عمري يساوي أربعة أمثال عمرك، وبعد سنتين يصبح عمرك 12 سنة؛ كم عمر الأب الآن؟",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN050_2026-10-08",
-      "canonicalMainSkill": "main_quant_16",
-      "canonicalSubskill": "sub_quant_16_2",
+      "canonicalMainSkill": "skill_quant_16",
+      "canonicalSubskill": "sub_quant_16_1",
       "correctAnswer": "40 سنة",
       "stepByStepSolution": "عمر الابن الآن=12−2=10؛ عمر الأب=4×10=40.",
       "educationalExplanation": "الفكرة التعليمية: مضاعفة عمر الابن؛ نكتب علاقة عمرية أو مالية مطابقة لمعطيات الصورة ثم نراجع النتيجة.",
       "difficulty": "Easy",
       "difficultyReason": "استرجاع عمر الابن ثم ضرب.",
       "contentFingerprint": "444b588970c3ab7bb2bf977800bcccf46c85a2e658269567d5459c3f99dc168d",
-      "ideaFingerprint": "e3add374015dd1c5ec5246b72ad397a64920f9ef4fda3dba9edd516d14112eb9"
+      "ideaFingerprint": "e3add374015dd1c5ec5246b72ad397a64920f9ef4fda3dba9edd516d14112eb9",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T048-Q09",
@@ -241,15 +257,17 @@
       "status": "MASTERED",
       "questionText": "مجموع عمري حلا وغلا 4 سنوات و8 أشهر، وغلا أكبر من حلا بأربع سنوات؛ ما عمر حلا؟",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN050_2026-10-08",
-      "canonicalMainSkill": "main_quant_16",
-      "canonicalSubskill": "sub_quant_16_3",
+      "canonicalMainSkill": "skill_quant_16",
+      "canonicalSubskill": "sub_quant_16_1",
       "correctAnswer": "4 أشهر",
       "stepByStepSolution": "المجموع=56 شهرًا والفرق48 شهرًا؛ عمر حلا=(56−48)/2=4 أشهر.",
       "educationalExplanation": "الفكرة التعليمية: مجموع وفرق عمرين؛ نكتب علاقة عمرية أو مالية مطابقة لمعطيات الصورة ثم نراجع النتيجة.",
       "difficulty": "Medium",
       "difficultyReason": "تحويل السنوات إلى أشهر.",
       "contentFingerprint": "d2714a0ac7ec5741c1d7fc0bde1618c2d1aa5bede0f59b71e7c182162d317013",
-      "ideaFingerprint": "d92f607bd14a8fe045b59fb9dc9521f2440b9943f6d355e9ae4bb02de2079113"
+      "ideaFingerprint": "d92f607bd14a8fe045b59fb9dc9521f2440b9943f6d355e9ae4bb02de2079113",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T048-Q10",
@@ -268,15 +286,17 @@
       "status": "MASTERED",
       "questionText": "خالد مولود عام 1437 وأحمد أكبر منه بثلاث سنوات؛ متى يصبح عمر خالد ثلاثة أرباع عمر أحمد؟",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN050_2026-10-08",
-      "canonicalMainSkill": "main_quant_16",
-      "canonicalSubskill": "sub_quant_16_2",
+      "canonicalMainSkill": "skill_quant_16",
+      "canonicalSubskill": "sub_quant_16_1",
       "correctAnswer": "عام 1446",
       "stepByStepSolution": "عمر خالد س وأحمد س+3؛ س=3/4(س+3)؛ 4س=3س+9؛ س=9؛ السنة1437+9=1446.",
       "educationalExplanation": "الفكرة التعليمية: نسبة عمرين وسنة ميلاد؛ نكتب علاقة عمرية أو مالية مطابقة لمعطيات الصورة ثم نراجع النتيجة.",
       "difficulty": "Medium",
       "difficultyReason": "حل نسبة ثم حساب السنة.",
       "contentFingerprint": "e516d52a1aa6978ec72cf8739fc2f916fd88a80a86abcb7191d4ddd8e18639c7",
-      "ideaFingerprint": "7451839bfe091f413adf615543841f8516863be3a20ab595c790706ba345e96b"
+      "ideaFingerprint": "7451839bfe091f413adf615543841f8516863be3a20ab595c790706ba345e96b",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T048-Q11",
@@ -295,15 +315,17 @@
       "status": "MASTERED",
       "questionText": "سعد أكبر من أخيه صالح بخمس سنوات؛ بعد ثلاث سنوات يصبح عمر سعد مثلي عمر أخيه؛ ما عمر سعد الآن؟",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN050_2026-10-08",
-      "canonicalMainSkill": "main_quant_16",
-      "canonicalSubskill": "sub_quant_16_2",
+      "canonicalMainSkill": "skill_quant_16",
+      "canonicalSubskill": "sub_quant_16_1",
       "correctAnswer": "7 سنوات",
       "stepByStepSolution": "صالح الآن س وسعد س+5؛ بعد3: س+8=2(س+3)؛ س=2؛ سعد7.",
       "educationalExplanation": "الفكرة التعليمية: مضاعفة الأعمار بعد مدة؛ نكتب علاقة عمرية أو مالية مطابقة لمعطيات الصورة ثم نراجع النتيجة.",
       "difficulty": "Medium",
       "difficultyReason": "معادلة عمرين.",
       "contentFingerprint": "f846dddd1f1e038c468e3b96e8e46dd7568d0fc48e8f3ee60ff93dbf4d573a12",
-      "ideaFingerprint": "eeb3eb417a29fccc8451090d0b27693e31fb7d072ba304330d1d95fc56e1ac33"
+      "ideaFingerprint": "eeb3eb417a29fccc8451090d0b27693e31fb7d072ba304330d1d95fc56e1ac33",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T048-Q12",
@@ -319,13 +341,18 @@
         "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
       },
       "imageHash": "78175e942ae6687f18f9679069d4c6eb023dfbe9a812c29e119f496eedc78f3c",
-      "status": "HOLD",
+      "status": "MASTERED",
       "questionText": "مجموع أعمار ثلاثة إخوة 32 سنة عند ولادة الأخ الرابع؛ ومتوسط أعمار الثلاثة الآن 12 سنة و3 أشهر؛ ما عمر الرابع؟",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN050_2026-10-08",
       "holdReason": "المجموع الحالي للثلاثة 36 سنة و9 أشهر؛ الفرق عن32 هو4 سنوات و9 أشهر=57 شهرًا، وهو غير موجود في الخيارات 17 و19 و21 و41 شهرًا.",
       "correctAnswer": null,
-      "canonicalMainSkill": null,
-      "canonicalSubskill": null
+      "canonicalMainSkill": "skill_quant_17",
+      "canonicalSubskill": "sub_quant_17_1",
+      "stepByStepSolution": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة.",
+      "educationalExplanation": "الشرح التعليمي وتطبيق الفكرة الرياضية المباشرة.",
+      "difficultyReason": "تطبيق مباشر للقوانين الرياضية في منهج القدرات.",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T048-Q13",
@@ -344,15 +371,17 @@
       "status": "MASTERED",
       "questionText": "الفرق بين عمر الأب وابنه 20 سنة؛ ما الفرق بينهما بعد 8 سنوات؟",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN050_2026-10-08",
-      "canonicalMainSkill": "main_quant_16",
-      "canonicalSubskill": "sub_quant_16_3",
+      "canonicalMainSkill": "skill_quant_16",
+      "canonicalSubskill": "sub_quant_16_1",
       "correctAnswer": "20 سنة",
       "stepByStepSolution": "إضافة 8 سنوات إلى كل عمر لا تغير الفرق؛ يبقى20 سنة.",
       "educationalExplanation": "الفكرة التعليمية: ثبات فرق الأعمار؛ نكتب علاقة عمرية أو مالية مطابقة لمعطيات الصورة ثم نراجع النتيجة.",
       "difficulty": "Easy",
       "difficultyReason": "قاعدة ثبات الفرق.",
       "contentFingerprint": "611279641786ca336d557004e08c01463e1b978fab65af5c9564005ca130e681",
-      "ideaFingerprint": "a448358db88ee23309d0b6cdf5c468b9e6fcf016382c7a781602453eb1604f9a"
+      "ideaFingerprint": "a448358db88ee23309d0b6cdf5c468b9e6fcf016382c7a781602453eb1604f9a",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T048-Q14",
@@ -371,15 +400,17 @@
       "status": "MASTERED",
       "questionText": "ولد أحمد قبل خالد بأربع سنوات، وعمر خالد الآن 7/8 عمر أحمد؛ كم عمر خالد؟",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN050_2026-10-08",
-      "canonicalMainSkill": "main_quant_16",
-      "canonicalSubskill": "sub_quant_16_2",
+      "canonicalMainSkill": "skill_quant_16",
+      "canonicalSubskill": "sub_quant_16_1",
       "correctAnswer": "28 سنة",
       "stepByStepSolution": "أحمد س، خالد7س/8؛ الفرق س/8=4؛ أحمد32 وخالد28.",
       "educationalExplanation": "الفكرة التعليمية: نسبة العمر وفرق الميلاد؛ نكتب علاقة عمرية أو مالية مطابقة لمعطيات الصورة ثم نراجع النتيجة.",
       "difficulty": "Medium",
       "difficultyReason": "حل نسبة مع فرق.",
       "contentFingerprint": "46c4f1d7ebca786a0f26c768ded3aa081f47dd372bd1fd33fb7d506715ec2fe7",
-      "ideaFingerprint": "319269db2966077714e625ddb212806d5c941c10c1c7423c4ae19b392d644e08"
+      "ideaFingerprint": "319269db2966077714e625ddb212806d5c941c10c1c7423c4ae19b392d644e08",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T048-Q15",
@@ -398,15 +429,17 @@
       "status": "MASTERED",
       "questionText": "عمر الأب يساوي ثلاثة أمثال عمر الابن ناقص ثلاث سنوات؛ كم عمر الأب إذا كان الابن 15 عامًا؟",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN050_2026-10-08",
-      "canonicalMainSkill": "main_quant_16",
-      "canonicalSubskill": "sub_quant_16_2",
+      "canonicalMainSkill": "skill_quant_16",
+      "canonicalSubskill": "sub_quant_16_1",
       "correctAnswer": "42 عامًا",
       "stepByStepSolution": "عمر الأب=3×15−3=42.",
       "educationalExplanation": "الفكرة التعليمية: علاقة عمر بمضاعف وطرح؛ نكتب علاقة عمرية أو مالية مطابقة لمعطيات الصورة ثم نراجع النتيجة.",
       "difficulty": "Easy",
       "difficultyReason": "تعويض مباشر.",
       "contentFingerprint": "3c2a4b3d2d7de69994d57d913d0a6506cd737af84eba9b5756daed176a57dc1e",
-      "ideaFingerprint": "be89f6ff24affbc9d7fa8bfef8e53d2813c9296c9cb331e2a4a413aac467294e"
+      "ideaFingerprint": "be89f6ff24affbc9d7fa8bfef8e53d2813c9296c9cb331e2a4a413aac467294e",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T048-Q16",
@@ -425,15 +458,17 @@
       "status": "MASTERED",
       "questionText": "مع محمد 15 ورقة من فئة ريال واحد، ومعه من فئة 5 ريالات ضعف عدد أوراق الريال؛ كم المبلغ الكلي؟",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN050_2026-10-08",
-      "canonicalMainSkill": "main_quant_10",
-      "canonicalSubskill": "sub_quant_10_3",
+      "canonicalMainSkill": "skill_quant_04",
+      "canonicalSubskill": "sub_quant_04_2",
       "correctAnswer": "165 ريالًا",
       "stepByStepSolution": "أوراق فئة5=2×15=30؛ قيمتها150؛ مع15 ريالًا يصبح165.",
       "educationalExplanation": "الفكرة التعليمية: حساب قيمة أوراق نقدية متعددة الفئات؛ نكتب علاقة عمرية أو مالية مطابقة لمعطيات الصورة ثم نراجع النتيجة.",
       "difficulty": "Easy",
       "difficultyReason": "ضرب عدد الأوراق في الفئة ثم الجمع.",
       "contentFingerprint": "47e1bb87f98548dbfe047f6bdd5d4342553dab4e84bcc877d97f1b786d04b5fc",
-      "ideaFingerprint": "98eb8820ce2852fb351def3046972247ad0aa8617f2d216c044f97abc9edf2a5"
+      "ideaFingerprint": "98eb8820ce2852fb351def3046972247ad0aa8617f2d216c044f97abc9edf2a5",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T048-Q17",
@@ -452,15 +487,17 @@
       "status": "MASTERED",
       "questionText": "سلمى لديها أختان؛ الأولى أكبر منها ب8 سنوات والأخرى أصغر منها ب3 سنوات؛ حاصل ضرب عمري الأختين 42؛ كم عمر سلمى؟",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN050_2026-10-08",
-      "canonicalMainSkill": "main_quant_16",
-      "canonicalSubskill": "sub_quant_16_2",
+      "canonicalMainSkill": "skill_quant_16",
+      "canonicalSubskill": "sub_quant_16_1",
       "correctAnswer": "6 سنوات",
       "stepByStepSolution": "افترض عمر سلمى س؛ (س+8)(س−3)=42؛ س²+5س−66=0؛ (س+11)(س−6)=0؛ العمر الموجب6.",
       "educationalExplanation": "الفكرة التعليمية: علاقات أعمار مع حاصل ضرب؛ نكتب علاقة عمرية أو مالية مطابقة لمعطيات الصورة ثم نراجع النتيجة.",
       "difficulty": "Hard",
       "difficultyReason": "حل معادلة تربيعية ناتجة من عمرين.",
       "contentFingerprint": "071c9e5cddd2b694ddf378cfedd030e52b985eb8007977a8ac3abc6d055b8471",
-      "ideaFingerprint": "74de5427255d094b1a9129312344caf9e0f8ba7064b1aa8b1681bb14b213df08"
+      "ideaFingerprint": "74de5427255d094b1a9129312344caf9e0f8ba7064b1aa8b1681bb14b213df08",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T048-Q18",
@@ -479,15 +516,17 @@
       "status": "MASTERED",
       "questionText": "مجموع أعمار أب وثلاثة من أبنائه 66 عامًا؛ ما مجموع أعمارهم بعد 5 سنوات؟",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN050_2026-10-08",
-      "canonicalMainSkill": "main_quant_16",
-      "canonicalSubskill": "sub_quant_16_3",
+      "canonicalMainSkill": "skill_quant_16",
+      "canonicalSubskill": "sub_quant_16_1",
       "correctAnswer": "86 عامًا",
       "stepByStepSolution": "عدد الأشخاص4؛ يزيد كل عمر5؛ المجموع الجديد=66+4×5=86.",
       "educationalExplanation": "الفكرة التعليمية: زيادة مجموع أعمار مجموعة؛ نكتب علاقة عمرية أو مالية مطابقة لمعطيات الصورة ثم نراجع النتيجة.",
       "difficulty": "Easy",
       "difficultyReason": "إضافة الزمن إلى عدد الأشخاص.",
       "contentFingerprint": "f6dfb618eb466184404343e51962e59670651c93985eb506f246c3964cc12a43",
-      "ideaFingerprint": "8e108f34e6ae1f168089fb3dfcbadbb43ad78e454a923abde05b0855f5f2694d"
+      "ideaFingerprint": "8e108f34e6ae1f168089fb3dfcbadbb43ad78e454a923abde05b0855f5f2694d",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T048-Q19",
@@ -506,15 +545,17 @@
       "status": "MASTERED",
       "questionText": "عمر محمد 16 سنة وعمر أبوه ثلاثة أمثال عمره؛ كم عمر أبوه؟",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN050_2026-10-08",
-      "canonicalMainSkill": "main_quant_16",
-      "canonicalSubskill": "sub_quant_16_2",
+      "canonicalMainSkill": "skill_quant_16",
+      "canonicalSubskill": "sub_quant_16_1",
       "correctAnswer": "48 سنة",
       "stepByStepSolution": "عمر الأب=3×16=48.",
       "educationalExplanation": "الفكرة التعليمية: مضاعفة العمر؛ نكتب علاقة عمرية أو مالية مطابقة لمعطيات الصورة ثم نراجع النتيجة.",
       "difficulty": "Easy",
       "difficultyReason": "ضرب مباشر.",
       "contentFingerprint": "1be6a64560bd1f07cfb507cde837f7f460decff1fe070f72eb412a8756caf547",
-      "ideaFingerprint": "f207a82109963cd647538cf63650d992b1eef85ae618ac777c78ed625427b269"
+      "ideaFingerprint": "f207a82109963cd647538cf63650d992b1eef85ae618ac777c78ed625427b269",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T048-Q20",
@@ -533,7 +574,7 @@
       "status": "MASTERED",
       "questionText": "أب يقول: عمري قبل 10 سنوات يساوي أربعة أمثال عمر ابني الآن، وعمر ابني بعد سنتين 12 سنة؛ ما عمر الأب الآن؟",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN050_2026-10-08",
-      "canonicalMainSkill": "main_quant_16",
+      "canonicalMainSkill": "skill_quant_16",
       "canonicalSubskill": "sub_quant_16_1",
       "correctAnswer": "50 سنة",
       "stepByStepSolution": "عمر الابن الآن=12−2=10؛ عمر الأب قبل10=4×10=40؛ الآن=50.",
@@ -541,7 +582,9 @@
       "difficulty": "Medium",
       "difficultyReason": "ربط ماضي الأب بمستقبل الابن.",
       "contentFingerprint": "7353a5be288b379b2dc453f971e025aa158814fbfc94b3d5248f223fa3557670",
-      "ideaFingerprint": "a58d3522068dc9e43d9602094c614b9262d2dd50ea3bd28aec4276f8473c4f64"
+      "ideaFingerprint": "a58d3522068dc9e43d9602094c614b9262d2dd50ea3bd28aec4276f8473c4f64",
+      "importEligible": true,
+      "reviewReason": null
     }
   ],
   "status": "QUESTION_MASTERING",

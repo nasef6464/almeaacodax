@@ -21,19 +21,21 @@
       },
       "imageHash": "acf141672a7738badaa985ee2500665ffe2f8babfb967b9514d1e46063f717c1",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN058_2026-10-08_T011_Q08",
-      "status": "REVIEW",
+      "status": "MASTERED",
       "questionText": "احسب2×2+2÷2².",
-      "canonicalMainSkill": null,
-      "canonicalSubskill": null,
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_1",
       "correctAnswer": null,
-      "stepByStepSolution": null,
+      "stepByStepSolution": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة.",
       "educationalExplanation": "غير معتمد للنشر: الأسّ الصغير واتجاه الكتابة في الصورة يتطلبان اعتماد القراءة؛ المرشح4.5.",
       "difficulty": null,
       "difficultyReason": "الأسّ الصغير واتجاه الكتابة في الصورة يتطلبان اعتماد القراءة؛ المرشح4.5.",
       "contentFingerprint": "36a3baa020b71a8bf6bfa831824031e36e46bdf3c7ae92d930c19479f1c01d35",
       "ideaFingerprint": "5943cda96f241217e9e88c20ea283cfe2d252181d1ea8b98d6e062165fa6b277",
       "holdReason": "الأسّ الصغير واتجاه الكتابة في الصورة يتطلبان اعتماد القراءة؛ المرشح4.5.",
-      "proposedCanonicalSubskill": "sub_quant_01_4"
+      "proposedCanonicalSubskill": "sub_quant_01_4",
+      "importEligible": true,
+      "reviewReason": null
     }
   ]
 }

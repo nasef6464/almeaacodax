@@ -23,15 +23,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN058_2026-10-08_T011_Q06",
       "status": "MASTERED",
       "questionText": "إذا كان العدد1ق ق3 يقبل القسمة على9، فما قيمة ق من5 و6 و7 و8؟",
-      "canonicalMainSkill": "main_quant_02",
-      "canonicalSubskill": "sub_quant_02_1",
+      "canonicalMainSkill": "skill_quant_04",
+      "canonicalSubskill": "sub_quant_04_2",
       "correctAnswer": "7 (ج)",
       "stepByStepSolution": "مجموع الأرقام1+ق+ق+3=4+2ق؛ عند ق=7 يصبح18 من مضاعفات9.",
       "educationalExplanation": "نطبّق القاعدة الرياضية الواردة في نص السؤال: مجموع الأرقام1+ق+ق+3=4+2ق؛ عند ق=7 يصبح18 من مضاعفات9.",
       "difficulty": "Medium",
       "difficultyReason": "يحتاج عدة خطوات ومقارنة معطيات.",
       "contentFingerprint": "2b43de1e755acc7bd61884f8c75b00672c1392d5381bd54b13d5cd522641e296",
-      "ideaFingerprint": "89e664cfcb99d31ffb91a7447615c5e369b4f04ec843422643e7e48c96aa90ff"
+      "ideaFingerprint": "89e664cfcb99d31ffb91a7447615c5e369b4f04ec843422643e7e48c96aa90ff",
+      "importEligible": true,
+      "reviewReason": null
     }
   ]
 }

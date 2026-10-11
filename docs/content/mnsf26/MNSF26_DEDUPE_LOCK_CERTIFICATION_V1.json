@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "status": "PASS_LOCKED",
+  "certifiedAt": "2026-10-10T20:15:00.231Z",
+  "mnsfScanned": 2129,
+  "fnd26Scanned": 858,
+  "col2627Scanned": 946,
+  "methods": [
+    "imageHash",
+    "contentFingerprint",
+    "ideaFingerprint"
+  ],
+  "suppressedCrossBank": 1,
+  "suppressedInternal": 4
+}

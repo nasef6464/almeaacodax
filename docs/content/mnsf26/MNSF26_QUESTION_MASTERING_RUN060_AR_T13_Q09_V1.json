@@ -11,8 +11,8 @@
         "test": "T013",
         "sourceLesson": "الأعداد الأولية - العوامل الأولى"
       },
-      "canonicalMainSkill": "skill_quant_02",
-      "canonicalSubskill": "sub_quant_02_1",
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_1",
       "correctAnswer": "ج",
       "answerValue": "3",
       "stepByStepSolution": "قواسم 4 هي 1،2،4؛ عددها3.",
@@ -22,7 +22,9 @@
       "imageHash": "5fa39a39561b3f1a11dc03bb57c7483568834d672ccf05dc19ef68e65e4c31b2",
       "contentFingerprint": "bdcc80870eee70ed6ded010cd64161d722467b181a3d75883736f9183b03a343",
       "ideaFingerprint": "2a763a5578ca7bacfac0eeef48abd5c8bc12ee7fc1ca22133478e49674c37f3e",
-      "status": "MASTERED"
+      "status": "MASTERED",
+      "importEligible": true,
+      "reviewReason": null
     }
   ]
 }

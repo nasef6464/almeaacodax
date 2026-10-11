@@ -11,8 +11,8 @@
         "test": "T013",
         "sourceLesson": "الأعداد الأولية - العوامل الأولى"
       },
-      "canonicalMainSkill": "skill_quant_02",
-      "canonicalSubskill": "sub_quant_02_3",
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_1",
       "correctAnswer": "د",
       "answerValue": "2",
       "stepByStepSolution": "ثلاثة أعداد أولية مجموعها14؛ لا يمكن أن تكون كلها فردية لأن مجموع ثلاثة فردية فردي، لذا أحدها2، وبالفعل 2+5+7=14.",
@@ -22,7 +22,9 @@
       "imageHash": "dce3a229031eda2024831761c78a87375c1c0a7776db2e12904b11e7634c0593",
       "contentFingerprint": "16e7fa7b3c0218469995e5757db820aa709f6e192a32578aa7f4d3099e2b6609",
       "ideaFingerprint": "d4db83f11eac06621b79a793dd64dcec90e612d2c1bc5bbf1ac602cf3ebe0716",
-      "status": "MASTERED"
+      "status": "MASTERED",
+      "importEligible": true,
+      "reviewReason": null
     }
   ]
 }

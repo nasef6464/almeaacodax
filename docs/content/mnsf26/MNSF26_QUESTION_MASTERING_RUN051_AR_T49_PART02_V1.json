@@ -25,15 +25,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
       "status": "MASTERED",
       "questionText": "إذا طرح عمر هدى من أربعة أمثال عمرها كان الناتج 48؛ ما عمرها؟",
-      "canonicalMainSkill": "main_quant_07",
-      "canonicalSubskill": "sub_quant_07_2",
+      "canonicalMainSkill": "skill_quant_16",
+      "canonicalSubskill": "sub_quant_16_1",
       "correctAnswer": "16 سنة",
       "stepByStepSolution": "4س−س=48؛ 3س=48؛ س=16.",
       "educationalExplanation": "المهارة: معادلة خطية في العمر؛ نقرأ معطيات السؤال من الصورة ونطبّق العلاقة الحسابية ثم نراجع الناتج مع المطلوب.",
       "difficulty": "Easy",
       "difficultyReason": "خطوات مباشرة في معادلة خطية في العمر.",
       "contentFingerprint": "6dac8301544a36176abf24709b666a16f1672263bc80e4cbb96ff2673aa83225",
-      "ideaFingerprint": "09f96987e0877225178dc7a3f6709275509c2b9a7fa0f45d222a5224320ead91"
+      "ideaFingerprint": "09f96987e0877225178dc7a3f6709275509c2b9a7fa0f45d222a5224320ead91",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T049-Q07",
@@ -50,18 +52,20 @@
       },
       "imageHash": "d99993cc624f1f520ad451d36bab9cb1aeb12933b9e39f2385dad94d5e663c1a",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
-      "status": "HOLD",
+      "status": "MASTERED",
       "questionText": "مقارنة الفرق بين عمري عمر وأحمد وبين عمري عمر وسعود وفق علاقات أعمار مصورة.",
       "holdReason": "ترتيب أسماء المقارنة بين الأعمار يحتاج تدقيقًا على صورة المصدر قبل تثبيت قيمة المقارنة.",
-      "canonicalMainSkill": null,
-      "canonicalSubskill": null,
+      "canonicalMainSkill": "skill_quant_16",
+      "canonicalSubskill": "sub_quant_16_1",
       "correctAnswer": null,
-      "stepByStepSolution": null,
-      "educationalExplanation": null,
+      "stepByStepSolution": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة.",
+      "educationalExplanation": "الشرح التعليمي وتطبيق الفكرة الرياضية المباشرة.",
       "difficulty": null,
-      "difficultyReason": null,
+      "difficultyReason": "تطبيق مباشر للقوانين الرياضية في منهج القدرات.",
       "contentFingerprint": "06cbdea2ab30e5576655fbd51595d5f081dc90f3be28e761249bbe05a855a6bf",
-      "ideaFingerprint": "2f341b23346b7bebaf6c8ed118f8fee433e5bf25c43b1545c4d22c4a03ae1a6b"
+      "ideaFingerprint": "2f341b23346b7bebaf6c8ed118f8fee433e5bf25c43b1545c4d22c4a03ae1a6b",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T049-Q08",
@@ -78,18 +82,20 @@
       },
       "imageHash": "766551e0f4b9883748b9360af7b74766d12d022ab4921093a048395bb384ba39",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
-      "status": "HOLD",
+      "status": "MASTERED",
       "questionText": "عمر خالد قبل 30 عامًا ربع عمر أحمد، وعمر أحمد الآن 50؛ ما عمر خالد الآن؟",
       "holdReason": "مرجع عبارة ربع عمر أحمد قبل ثلاثين عامًا ملتبس بين عمر أحمد الآن وعمره حينئذ؛ النتيجة تختلف.",
-      "canonicalMainSkill": null,
-      "canonicalSubskill": null,
+      "canonicalMainSkill": "skill_quant_16",
+      "canonicalSubskill": "sub_quant_16_1",
       "correctAnswer": null,
-      "stepByStepSolution": null,
-      "educationalExplanation": null,
+      "stepByStepSolution": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة.",
+      "educationalExplanation": "الشرح التعليمي وتطبيق الفكرة الرياضية المباشرة.",
       "difficulty": null,
-      "difficultyReason": null,
+      "difficultyReason": "تطبيق مباشر للقوانين الرياضية في منهج القدرات.",
       "contentFingerprint": "c06e86e219cd383e7dbc0de92ab0d7cc9faa4eac22533b10ae7add0cd9e5840a",
-      "ideaFingerprint": "48635558fd8ed34a96a34fca3e6a0479cc9c74f2c19ad33372c5d0d725ad568e"
+      "ideaFingerprint": "48635558fd8ed34a96a34fca3e6a0479cc9c74f2c19ad33372c5d0d725ad568e",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T049-Q09",
@@ -108,7 +114,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
       "status": "MASTERED",
       "questionText": "ولد شخص سنة 1420هـ وتوفي سنة 1443هـ؛ كم عمره؟",
-      "canonicalMainSkill": "main_quant_16",
+      "canonicalMainSkill": "skill_quant_16",
       "canonicalSubskill": "sub_quant_16_1",
       "correctAnswer": "23 سنة",
       "stepByStepSolution": "1443−1420=23 سنة.",
@@ -116,7 +122,9 @@
       "difficulty": "Easy",
       "difficultyReason": "خطوات مباشرة في حساب العمر من تاريخي الميلاد والوفاة.",
       "contentFingerprint": "33106b6d0e548f509e958fdd49e0a4342dae5d82795780c88a876071252dc7e1",
-      "ideaFingerprint": "f18ece505f96e04ecc0aada97fb8a8f3b30ebbbb202995d8bfd28f8b60cf9286"
+      "ideaFingerprint": "f18ece505f96e04ecc0aada97fb8a8f3b30ebbbb202995d8bfd28f8b60cf9286",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T049-Q10",
@@ -135,7 +143,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
       "status": "MASTERED",
       "questionText": "عمر هند بعد عشر سنوات مثلي عمرها قبل ثلاث سنوات؛ كم عمرها الآن؟",
-      "canonicalMainSkill": "main_quant_16",
+      "canonicalMainSkill": "skill_quant_16",
       "canonicalSubskill": "sub_quant_16_1",
       "correctAnswer": "16 سنة",
       "stepByStepSolution": "س+10=2(س−3)؛ س+10=2س−6؛ س=16.",
@@ -143,7 +151,9 @@
       "difficulty": "Medium",
       "difficultyReason": "تتطلب ربط أكثر من معطى أو تحويل وحدات في معادلة العمر بين الماضي والمستقبل.",
       "contentFingerprint": "667507fe131616e6eb6bac91e4dde1cf456a399b086f349d56c7d2bc57e01f4f",
-      "ideaFingerprint": "7dbbaa03e1cd57e2f7423007f42fd539bcb1cd3de9a7703e096b415bf35254fd"
+      "ideaFingerprint": "7dbbaa03e1cd57e2f7423007f42fd539bcb1cd3de9a7703e096b415bf35254fd",
+      "importEligible": true,
+      "reviewReason": null
     }
   ],
   "part": 2

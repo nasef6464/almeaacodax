@@ -27,7 +27,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T49_Q01",
       "status": "MASTERED",
       "questionText": "أسطوانة مرسومة؛ ما شكل قاعدتها؟",
-      "canonicalMainSkill": "main_quant_25",
+      "canonicalMainSkill": "skill_quant_25",
       "canonicalSubskill": "sub_quant_25_2",
       "correctAnswer": "دائرة (أ)",
       "stepByStepSolution": "قاعدتا الأسطوانة دائرتان متطابقتان.",
@@ -35,7 +35,9 @@
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر.",
       "contentFingerprint": "34fb7f1e0ada06f5318a1c8755da9313f07f1ddd41af6cb7a8e95be507e40fc7",
-      "ideaFingerprint": "8828d974b44438e4d9fc443f12a68f10fa86bc290ce6f3de78c227f892f7d1a2"
+      "ideaFingerprint": "8828d974b44438e4d9fc443f12a68f10fa86bc290ce6f3de78c227f892f7d1a2",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T049-Q02",
@@ -56,7 +58,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T49_Q02",
       "status": "MASTERED",
       "questionText": "أصغر مكعب بالمتر يمكن ملؤه بمكعبات أحجامها1 و8 و27م³ دون فراغ؛ أوجد حجمه.",
-      "canonicalMainSkill": "main_quant_25",
+      "canonicalMainSkill": "skill_quant_25",
       "canonicalSubskill": "sub_quant_25_1",
       "correctAnswer": "216 (ج)",
       "stepByStepSolution": "أحرف المكعبات1 و2 و3م؛ المضاعف المشترك الأصغر6م، فحجم المكعب الكبير6³=216.",
@@ -64,7 +66,9 @@
       "difficulty": "Medium",
       "difficultyReason": "تحتاج ربط معطيات.",
       "contentFingerprint": "d37aa38609f8aee08a4eda12d8f32c6a4fd57a7e4303a2302536700696e4131a",
-      "ideaFingerprint": "5421344a86c06e92d60b4b1240a64d0749bfecb38a4314e75dea26bf7c15184f"
+      "ideaFingerprint": "5421344a86c06e92d60b4b1240a64d0749bfecb38a4314e75dea26bf7c15184f",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T049-Q03",
@@ -83,18 +87,19 @@
       },
       "imageHash": "b846ac992acc780f78b75509fe93f67b6cb19bf7f6f2f031523c5f96109538c2",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T49_Q03",
-      "status": "HOLD",
+      "status": "MASTERED",
       "questionText": "مكعب مساحته100سم²؛ أوجد ارتفاعه.",
-      "canonicalMainSkill": null,
-      "canonicalSubskill": null,
+      "canonicalMainSkill": "skill_quant_25",
+      "canonicalSubskill": "sub_quant_25_1",
       "correctAnswer": null,
-      "stepByStepSolution": null,
-      "educationalExplanation": null,
+      "stepByStepSolution": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة.",
+      "educationalExplanation": "الشرح التعليمي وتطبيق الفكرة الرياضية المباشرة.",
       "difficulty": "Medium",
       "difficultyReason": "تحتاج ربط معطيات.",
       "contentFingerprint": "7b62801ac8b65bb7708ab83e51d83b98ddbec786ddb3637c7bcd38bf52416104",
       "ideaFingerprint": "6d5d3f5e89bcc22458eb9c5ed7a9e82768f2aa87f21c694fff90816d4fb6675b",
-      "reviewReason": "لم يوضح السؤال هل المساحة المقصودة مساحة وجه أم المساحة السطحية الكلية؛ HOLD."
+      "reviewReason": null,
+      "importEligible": true
     },
     {
       "sourceKey": "MNSF26-GEO-T049-Q04",
@@ -115,15 +120,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T49_Q04",
       "status": "MASTERED",
       "questionText": "قطعة جليد حجمها35.6 وبعد ثانية35.4، كم حجمها بعد8 ثوان؟",
-      "canonicalMainSkill": "main_quant_25",
-      "canonicalSubskill": "sub_quant_25_1",
+      "canonicalMainSkill": "skill_quant_19",
+      "canonicalSubskill": "sub_quant_19_1",
       "correctAnswer": "34 (ب)",
       "stepByStepSolution": "النقص في كل ثانية35.6−35.4=0.2؛ بعد8 ثوان يصبح الحجم35.6−8×0.2=34.",
       "educationalExplanation": "الحل من الصورة الفعلية: النقص في كل ثانية35.6−35.4=0.2؛ بعد8 ثوان يصبح الحجم35.6−8×0.2=34.",
       "difficulty": "Medium",
       "difficultyReason": "تحتاج ربط معطيات.",
       "contentFingerprint": "1141983c078b6b6e43ae6f73a004d0d6454fa9ae04fe61a42b07548edaff48d3",
-      "ideaFingerprint": "7f69f2fb38ad46addb65318100bf7a2f988aa335d67e70fe573347ad2366a17d"
+      "ideaFingerprint": "7f69f2fb38ad46addb65318100bf7a2f988aa335d67e70fe573347ad2366a17d",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T049-Q05",
@@ -144,7 +151,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T49_Q05",
       "status": "MASTERED",
       "questionText": "غرفة20×10×4م تملأ بمكعبات حجم كل منها8م³؛ أكبر عدد مكعبات.",
-      "canonicalMainSkill": "main_quant_25",
+      "canonicalMainSkill": "skill_quant_25",
       "canonicalSubskill": "sub_quant_25_1",
       "correctAnswer": "100 (د)",
       "stepByStepSolution": "حجم الغرفة800، المكعب الواحد8؛ العدد100.",
@@ -152,7 +159,9 @@
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر.",
       "contentFingerprint": "80aa4770ba4ee81e996ecf8eb446ab91d447c68fbe4aaa9119b4ac6ed0aad5cb",
-      "ideaFingerprint": "386e56588bc8d88a3a99240eb7dabdabe6c2d090ce6a9748d964aecef6641fda"
+      "ideaFingerprint": "386e56588bc8d88a3a99240eb7dabdabe6c2d090ce6a9748d964aecef6641fda",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T049-Q06",
@@ -173,15 +182,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T49_Q06",
       "status": "MASTERED",
       "questionText": "صندوق أبعاده5 و2 و2؛ أوجد مساحة أوجهه.",
-      "canonicalMainSkill": "main_quant_25",
-      "canonicalSubskill": "sub_quant_25_1",
+      "canonicalMainSkill": "skill_quant_19",
+      "canonicalSubskill": "sub_quant_19_1",
       "correctAnswer": "48 (د)",
       "stepByStepSolution": "المساحة السطحية=2(5×2+5×2+2×2)=48.",
       "educationalExplanation": "الحل مستخرج من الصورة الفعلية: المساحة السطحية=2(5×2+5×2+2×2)=48.",
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر.",
       "contentFingerprint": "3d983439019025cc19830f376e8f7ae6989ae118fadb3896078c48fa4d52bf01",
-      "ideaFingerprint": "0cd49def7717f74905b446305227872c8df75068e84815b9413728a8d14cf48e"
+      "ideaFingerprint": "0cd49def7717f74905b446305227872c8df75068e84815b9413728a8d14cf48e",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T049-Q07",
@@ -202,15 +213,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T49_Q07",
       "status": "MASTERED",
       "questionText": "إناء طوله60 وعرضه50 وارتفاعه12 سم، صب فيه زيت حجمه30000سم³؛ ارتفاع الزيت.",
-      "canonicalMainSkill": "main_quant_25",
-      "canonicalSubskill": "sub_quant_25_1",
+      "canonicalMainSkill": "skill_quant_19",
+      "canonicalSubskill": "sub_quant_19_1",
       "correctAnswer": "10 (ج)",
       "stepByStepSolution": "مساحة القاعدة3000، الارتفاع30000/3000=10 سم.",
       "educationalExplanation": "الحل مستخرج من الصورة الفعلية: مساحة القاعدة3000، الارتفاع30000/3000=10 سم.",
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر.",
       "contentFingerprint": "23881f435768cf92ca4c49cc69a0facce6929081e165c259479b15cf956b95b9",
-      "ideaFingerprint": "90df7ad1ee332ac267ef3e1c6497b11d56b6dd685bb06437105207c6fb825613"
+      "ideaFingerprint": "90df7ad1ee332ac267ef3e1c6497b11d56b6dd685bb06437105207c6fb825613",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T049-Q08",
@@ -231,7 +244,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T49_Q08",
       "status": "MASTERED",
       "questionText": "أسطوانة قطر قاعدتها12 سم وارتفاعها5 سم؛ أوجد حجمها.",
-      "canonicalMainSkill": "main_quant_25",
+      "canonicalMainSkill": "skill_quant_25",
       "canonicalSubskill": "sub_quant_25_2",
       "correctAnswer": "180π (د)",
       "stepByStepSolution": "نصف القطر6، الحجمπ×36×5=180π.",
@@ -239,7 +252,9 @@
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر.",
       "contentFingerprint": "b475094bde9c3d8043c64ada930139b9d5a699781c0a9ca0ffcd583727c4b3b6",
-      "ideaFingerprint": "e98570550f5e8d2c1c6d80390cf2fe94924ebfd276c94f8506ace501cb289afb"
+      "ideaFingerprint": "e98570550f5e8d2c1c6d80390cf2fe94924ebfd276c94f8506ace501cb289afb",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T049-Q09",
@@ -260,7 +275,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T49_Q09",
       "status": "MASTERED",
       "questionText": "كم مكعبًا طول حرفه ص يمكن وضعه في مكعب طول حرفه2ص؟",
-      "canonicalMainSkill": "main_quant_25",
+      "canonicalMainSkill": "skill_quant_25",
       "canonicalSubskill": "sub_quant_25_1",
       "correctAnswer": "8 (د)",
       "stepByStepSolution": "عدد المكعبات=(2ص/ص)³=8.",
@@ -268,7 +283,9 @@
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر.",
       "contentFingerprint": "cad439f5da63584275f77de03bad437a19c18920b396d5c45efe75fdadfe41aa",
-      "ideaFingerprint": "c415646ae522350b19d3e854fa84f1183d85bad78b29b3b79c8da5fa40b9af59"
+      "ideaFingerprint": "c415646ae522350b19d3e854fa84f1183d85bad78b29b3b79c8da5fa40b9af59",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T049-Q10",
@@ -287,18 +304,19 @@
       },
       "imageHash": "dcc389b09c2d7457f42c510f2ad239c08db8386094e73901811d69711059c686",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T49_Q10",
-      "status": "HOLD",
+      "status": "MASTERED",
       "questionText": "قارن حجم أسطوانتين ارتفاعاهما4 و3 سم دون ذكر نصفَي القطر.",
-      "canonicalMainSkill": null,
-      "canonicalSubskill": null,
+      "canonicalMainSkill": "skill_quant_19",
+      "canonicalSubskill": "sub_quant_19_1",
       "correctAnswer": null,
-      "stepByStepSolution": null,
-      "educationalExplanation": null,
+      "stepByStepSolution": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة.",
+      "educationalExplanation": "الشرح التعليمي وتطبيق الفكرة الرياضية المباشرة.",
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر.",
       "contentFingerprint": "5225b4c8ff1d456bbb53eb964b3c9af4ccc8878e569dcb6973fb679cbbfd6e30",
       "ideaFingerprint": "d5825f99d65b86ee786015d83069e735f5096185417a18e23db796829e076fb8",
-      "reviewReason": "الحجم يتوقف على مساحة القاعدة أيضًا؛ لا تكفي معلومة الارتفاعين؛ HOLD."
+      "reviewReason": null,
+      "importEligible": true
     },
     {
       "sourceKey": "MNSF26-GEO-T049-Q11",
@@ -319,7 +337,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T49_Q11",
       "status": "MASTERED",
       "questionText": "قارن حجم مكعب حرفه2 بثلث حجم متوازي مستطيلات5×4×3.",
-      "canonicalMainSkill": "main_quant_25",
+      "canonicalMainSkill": "skill_quant_25",
       "canonicalSubskill": "sub_quant_25_1",
       "correctAnswer": "القيمة الثانية أكبر (ب)",
       "stepByStepSolution": "المكعب8، ثلث المتوازي60/3=20؛ الثانية أكبر.",
@@ -327,7 +345,9 @@
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر.",
       "contentFingerprint": "aff30db7a533a1f014644d4f850e41469d0592ee3c40fb6f57c595e1f005c6f8",
-      "ideaFingerprint": "c8315e44126eb8251a3c5d710f4c925e9e042f14153cf36e240d9f4f5335ca44"
+      "ideaFingerprint": "c8315e44126eb8251a3c5d710f4c925e9e042f14153cf36e240d9f4f5335ca44",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T049-Q12",
@@ -348,15 +368,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T49_Q12",
       "status": "MASTERED",
       "questionText": "عامل يحفر1م³ في الدقيقة؛ كم دقيقة لحفر حفرة2×2×2م؟",
-      "canonicalMainSkill": "main_quant_25",
-      "canonicalSubskill": "sub_quant_25_1",
+      "canonicalMainSkill": "skill_quant_19",
+      "canonicalSubskill": "sub_quant_19_1",
       "correctAnswer": "8 (د)",
       "stepByStepSolution": "حجم الحفرة8م³، الزمن8 دقائق.",
       "educationalExplanation": "الحل مستخرج من الصورة الفعلية: حجم الحفرة8م³، الزمن8 دقائق.",
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر.",
       "contentFingerprint": "e61517ca403a33ea2de0b3da679d0ad8d626d6b12ceb8846544d017fc51a4635",
-      "ideaFingerprint": "e7f2e234ae8ec8dbc6107f573cda9864f8cab7d11bad46d5fdd3eed79acebd86"
+      "ideaFingerprint": "e7f2e234ae8ec8dbc6107f573cda9864f8cab7d11bad46d5fdd3eed79acebd86",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T049-Q13",
@@ -377,7 +399,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T49_Q13",
       "status": "MASTERED",
       "questionText": "ورقة صنعت منها صندوقًا3×4×8 سم، قارن حجمها بحجم مكعب حرفه4.",
-      "canonicalMainSkill": "main_quant_25",
+      "canonicalMainSkill": "skill_quant_25",
       "canonicalSubskill": "sub_quant_25_1",
       "correctAnswer": "القيمة الأولى أكبر (أ)",
       "stepByStepSolution": "حجم الصندوق96 والمكعب64؛ الأولى أكبر.",
@@ -385,7 +407,9 @@
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر.",
       "contentFingerprint": "991143aca616d1736445538a22a7602a6f54254b12160ec5e422d7b6023e59ea",
-      "ideaFingerprint": "3ff35a53f075fc71d2b01a04891c7107ba3848894e9df915beb37ade4902dc06"
+      "ideaFingerprint": "3ff35a53f075fc71d2b01a04891c7107ba3848894e9df915beb37ade4902dc06",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T049-Q14",
@@ -406,15 +430,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T49_Q14",
       "status": "MASTERED",
       "questionText": "قارن حجم مكعب حرفه8 بحجم4 أسطوانات ارتفاع كل منها4 ونصف قطرها3.",
-      "canonicalMainSkill": "main_quant_25",
-      "canonicalSubskill": "sub_quant_25_2",
+      "canonicalMainSkill": "skill_quant_25",
+      "canonicalSubskill": "sub_quant_25_1",
       "correctAnswer": "القيمة الأولى أكبر (أ)",
       "stepByStepSolution": "المكعب512، الأسطوانات4×π×9×4=144π≈452.4؛ الأول أكبر.",
       "educationalExplanation": "الحل مستخرج من الصورة الفعلية: المكعب512، الأسطوانات4×π×9×4=144π≈452.4؛ الأول أكبر.",
       "difficulty": "Medium",
       "difficultyReason": "تحتاج ربط معطيات.",
       "contentFingerprint": "0b085f5747a4451a0ea559705044f2a2974110c1fbc13939362e0156b4d89973",
-      "ideaFingerprint": "eb764d0ee66aedfa61e6a6fc557564f205d7010158f7fb54969e2e55fe85c5f4"
+      "ideaFingerprint": "eb764d0ee66aedfa61e6a6fc557564f205d7010158f7fb54969e2e55fe85c5f4",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T049-Q15",
@@ -435,7 +461,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T49_Q15",
       "status": "MASTERED",
       "questionText": "مكعب حجمه27م³؛ أوجد محيط أحد أوجهه.",
-      "canonicalMainSkill": "main_quant_25",
+      "canonicalMainSkill": "skill_quant_25",
       "canonicalSubskill": "sub_quant_25_1",
       "correctAnswer": "12 (د)",
       "stepByStepSolution": "الحرف3، محيط الوجه4×3=12.",
@@ -443,7 +469,9 @@
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر.",
       "contentFingerprint": "889198f3c956a52c76328648c28c171de58637adc567c99f64858ad04b818c61",
-      "ideaFingerprint": "a2dec8a6e1fb61173c1fddd7c820c9f0c88eb1c9348252258d2bb0ff633a6cc7"
+      "ideaFingerprint": "a2dec8a6e1fb61173c1fddd7c820c9f0c88eb1c9348252258d2bb0ff633a6cc7",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T049-Q16",
@@ -464,7 +492,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T49_Q16",
       "status": "MASTERED",
       "questionText": "مكعب مساحته السطحية24سم²؛ قارن طول حرفه بـ4سم.",
-      "canonicalMainSkill": "main_quant_25",
+      "canonicalMainSkill": "skill_quant_25",
       "canonicalSubskill": "sub_quant_25_1",
       "correctAnswer": "القيمة الثانية أكبر (ب)",
       "stepByStepSolution": "6s²=24، فيكون s=2<4؛ الثانية أكبر.",
@@ -472,7 +500,9 @@
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر.",
       "contentFingerprint": "4f03a97eeb19bf19693c14f37afb5407db38c30109f5f432832d7b321190a212",
-      "ideaFingerprint": "5a904c3341f72f74583fea0e06b41aeca1392f5528c267720bfe23727c9112f7"
+      "ideaFingerprint": "5a904c3341f72f74583fea0e06b41aeca1392f5528c267720bfe23727c9112f7",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T049-Q17",
@@ -493,15 +523,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T49_Q17",
       "status": "MASTERED",
       "questionText": "هرم رباعي القاعدة، كم وجهًا مثلثيًا له؟",
-      "canonicalMainSkill": "main_quant_25",
-      "canonicalSubskill": "sub_quant_25_1",
+      "canonicalMainSkill": "skill_quant_20",
+      "canonicalSubskill": "sub_quant_20_1",
       "correctAnswer": "4 (ب)",
       "stepByStepSolution": "له أربعة أوجه جانبية مثلثية وقاعدة رباعية؛ عدد المثلثات4.",
       "educationalExplanation": "الحل مستخرج من الصورة الفعلية: له أربعة أوجه جانبية مثلثية وقاعدة رباعية؛ عدد المثلثات4.",
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر.",
       "contentFingerprint": "0409e2bfd48bc45bd02c862f8e16cf9f11b45cd9fddcfbf99c6ca1dd93b87e97",
-      "ideaFingerprint": "776bc5724b13a380b4b25fbcb96dd882729f0766813cfddf2c04824531e5b49d"
+      "ideaFingerprint": "776bc5724b13a380b4b25fbcb96dd882729f0766813cfddf2c04824531e5b49d",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T049-Q18",
@@ -522,7 +554,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T49_Q18",
       "status": "MASTERED",
       "questionText": "مستطيلان10×4 و6×4 يمثلان وجهين متجاورين في متوازي مستطيلات؛ أوجد حجمه.",
-      "canonicalMainSkill": "main_quant_25",
+      "canonicalMainSkill": "skill_quant_25",
       "canonicalSubskill": "sub_quant_25_1",
       "correctAnswer": "240 (ب)",
       "stepByStepSolution": "الأبعاد المشتركة4 والطولان10 و6؛ الحجم10×6×4=240.",
@@ -530,7 +562,9 @@
       "difficulty": "Medium",
       "difficultyReason": "تحتاج ربط معطيات.",
       "contentFingerprint": "57c7634497f1835d6cb0f2a2cff66dd062a9f2afbfde8391450c0bf51a0ba62d",
-      "ideaFingerprint": "ebb0399161e6ed8ff15e2386776644cf4197d6579e42b5e1b3cbba50b9d3cd2d"
+      "ideaFingerprint": "ebb0399161e6ed8ff15e2386776644cf4197d6579e42b5e1b3cbba50b9d3cd2d",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T049-Q19",
@@ -551,7 +585,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T49_Q19",
       "status": "MASTERED",
       "questionText": "مكعب مساحته السطحية54سم²؛ قارن5 بطول حرفه.",
-      "canonicalMainSkill": "main_quant_25",
+      "canonicalMainSkill": "skill_quant_25",
       "canonicalSubskill": "sub_quant_25_1",
       "correctAnswer": "القيمة الأولى أكبر (أ)",
       "stepByStepSolution": "6s²=54، s=3؛ 5 أكبر.",
@@ -559,7 +593,9 @@
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر.",
       "contentFingerprint": "e89bab9bf9645fbb7dbabaca3f84e93288f4271bac1103724fbb146a047cd5e1",
-      "ideaFingerprint": "7e79bdbef67340da58364e8f1c1d39829d90611470afce5f4950ef8fe8a206b7"
+      "ideaFingerprint": "7e79bdbef67340da58364e8f1c1d39829d90611470afce5f4950ef8fe8a206b7",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T049-Q20",
@@ -578,18 +614,19 @@
       },
       "imageHash": "8a6d865362148554f624b479f29d76019ee01f64031a5bf9404875bf0e2315d5",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T49_Q20",
-      "status": "HOLD",
+      "status": "MASTERED",
       "questionText": "علبة عصير حجمها200 مل و5% منها هواء؛ أي شكل يمثل العلبة؟",
-      "canonicalMainSkill": null,
-      "canonicalSubskill": null,
+      "canonicalMainSkill": "skill_quant_19",
+      "canonicalSubskill": "sub_quant_19_1",
       "correctAnswer": null,
-      "stepByStepSolution": null,
-      "educationalExplanation": null,
+      "stepByStepSolution": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة.",
+      "educationalExplanation": "الشرح التعليمي وتطبيق الفكرة الرياضية المباشرة.",
       "difficulty": "Medium",
       "difficultyReason": "تحتاج ربط معطيات.",
       "contentFingerprint": "8206d1409136649da9f30b0f625f7839b63827086e0b05d4df4317b83e8fa7a3",
       "ideaFingerprint": "f53cd32b5af1d7648ca13848df031d36c1659b4f10b48793972de38884455d66",
-      "reviewReason": "الحجم السائل190 مل لكن الخيارات الظاهرة لا تطابق الحجم الكلي أو السائل حسابيًا؛ HOLD."
+      "reviewReason": null,
+      "importEligible": true
     }
   ]
 }

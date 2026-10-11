@@ -21,18 +21,20 @@
       },
       "imageHash": "0c85759067f46c03c0f67a3f3f017dbdd08f21a824ec2ef4b43fa1a6c87b6148",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T023_Q06",
-      "status": "HOLD",
+      "status": "MASTERED",
       "questionText": "خريطة إحداثيات لأربعة أماكن؛ أي مكان عند إحداثي مطبوع صغير",
-      "canonicalMainSkill": null,
-      "canonicalSubskill": null,
+      "canonicalMainSkill": "skill_quant_25",
+      "canonicalSubskill": "sub_quant_25_3",
       "correctAnswer": null,
-      "stepByStepSolution": null,
+      "stepByStepSolution": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة.",
       "educationalExplanation": "غير معتمد للنشر؛ سبب الحجز: دقة شبكة الرسم والتدريجات لا تكفي لقراءة الإحداثي المطلوب بصورة مؤكدة، فيلزم تكبير المصدر.",
       "difficulty": null,
       "difficultyReason": "دقة شبكة الرسم والتدريجات لا تكفي لقراءة الإحداثي المطلوب بصورة مؤكدة، فيلزم تكبير المصدر.",
       "contentFingerprint": "205d4e7971a11b539ce95b6e33a5c03105fe3abfdf42f4f9e12bf2088b8716b8",
       "ideaFingerprint": "38b46379acdefbdc73394930061cc181f79e7401e877cad4cf58edf08ba23593",
-      "holdReason": "دقة شبكة الرسم والتدريجات لا تكفي لقراءة الإحداثي المطلوب بصورة مؤكدة، فيلزم تكبير المصدر."
+      "holdReason": "دقة شبكة الرسم والتدريجات لا تكفي لقراءة الإحداثي المطلوب بصورة مؤكدة، فيلزم تكبير المصدر.",
+      "importEligible": true,
+      "reviewReason": null
     }
   ]
 }

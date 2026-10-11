@@ -22,15 +22,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T41_Q01",
       "status": "MASTERED",
       "questionText": "مستطيل تقاطعت أقطاره إلى أربعة مثلثات، مساحة أصغر مثلث25؛ أوجد مساحة المستطيل.",
-      "canonicalMainSkill": "main_quant_21",
-      "canonicalSubskill": "sub_quant_21_2",
+      "canonicalMainSkill": "skill_quant_21",
+      "canonicalSubskill": "sub_quant_21_1",
       "correctAnswer": "100 (ج)",
       "stepByStepSolution": "قطرا المستطيل ينصف كل منهما الآخر ويقسمانه إلى أربعة مثلثات متساوية المساحة؛ المساحة4×25=100.",
       "educationalExplanation": "من الصورة: قطرا المستطيل ينصف كل منهما الآخر ويقسمانه إلى أربعة مثلثات متساوية المساحة؛ المساحة4×25=100.",
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر.",
       "contentFingerprint": "5f03bac20d8747b73604bffecb9da58fdb1421dbc2d69edd2967ab9c5ed43948",
-      "ideaFingerprint": "2365ccbdd1908e9c69d48badef4948a44b1387cbd7be6368fee064f5e3b52e06"
+      "ideaFingerprint": "2365ccbdd1908e9c69d48badef4948a44b1387cbd7be6368fee064f5e3b52e06",
+      "importEligible": true,
+      "reviewReason": null
     }
   ]
 }

@@ -23,15 +23,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN059_2026-10-08_T016_Q11",
       "status": "MASTERED",
       "questionText": "ما الحد التالي في4،8،12،...؟",
-      "canonicalMainSkill": "main_quant_01",
-      "canonicalSubskill": "sub_quant_01_3",
+      "canonicalMainSkill": "skill_quant_04",
+      "canonicalSubskill": "sub_quant_04_2",
       "correctAnswer": "16 (ج)",
       "stepByStepSolution": "الفرق ثابت4؛ الحد التالي12+4=16.",
       "educationalExplanation": "من الصورة: الفرق ثابت4؛ الحد التالي12+4=16.",
       "difficulty": "Easy",
       "difficultyReason": "تحتاج تطبيقًا مباشرًا.",
       "contentFingerprint": "8a134cc8150701326fad312203369ae3eb5c01a0089d23f601fa45830d0c2ac3",
-      "ideaFingerprint": "3cd628525b6cd9616fe434cc6004ed22335ec3ccb0c4aab44eb3b820921b4753"
+      "ideaFingerprint": "3cd628525b6cd9616fe434cc6004ed22335ec3ccb0c4aab44eb3b820921b4753",
+      "importEligible": true,
+      "reviewReason": null
     }
   ]
 }

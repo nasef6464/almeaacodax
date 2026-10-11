@@ -23,15 +23,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T019_Q18",
       "status": "MASTERED",
       "questionText": "مثلث قائم قاعدته3 وارتفاع الجزء السفلي4، والجزء العلوي يساوي وتر المثلث السفلي",
-      "canonicalMainSkill": "main_quant_20",
-      "canonicalSubskill": "sub_quant_20_4",
+      "canonicalMainSkill": "skill_quant_21",
+      "canonicalSubskill": "sub_quant_21_1",
       "correctAnswer": "7.5 (ب)",
       "stepByStepSolution": "وتر السفلي5، والارتفاع الكلي9؛ مساحة الجزء العلوي=3×5/2=7.5.",
       "educationalExplanation": "وتر السفلي5، والارتفاع الكلي9؛ مساحة الجزء العلوي=3×5/2=7.5.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "67cd9ccdbe3999d00cf1d533f06e15e8aa47d4f7a3187e027ec7543adcab15f2",
-      "ideaFingerprint": "549a3df08d16318fd27711dbc9502bdb876035683119a683741f5598fa09ae79"
+      "ideaFingerprint": "549a3df08d16318fd27711dbc9502bdb876035683119a683741f5598fa09ae79",
+      "importEligible": true,
+      "reviewReason": null
     }
   ]
 }

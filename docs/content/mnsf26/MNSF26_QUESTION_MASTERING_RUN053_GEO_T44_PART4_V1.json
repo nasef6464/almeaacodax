@@ -27,7 +27,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T44_Q16",
       "status": "MASTERED",
       "questionText": "سلك قسم نصفين متساويين، أحدهما مستطيل والآخر دائرة؛ قارن المحيطين.",
-      "canonicalMainSkill": "main_quant_24",
+      "canonicalMainSkill": "skill_quant_24",
       "canonicalSubskill": "sub_quant_24_1",
       "correctAnswer": "القيمتان متساويتان (ج)",
       "stepByStepSolution": "كل نصف سلك يشكل محيط شكل، وطولا النصفين متساويان؛ المحيطان متساويان.",
@@ -35,7 +35,9 @@
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر.",
       "contentFingerprint": "03359989e52207b516ac299018dc6a3e2e2176a54d050077950de55832733997",
-      "ideaFingerprint": "8103927873c7a0a6e110a0e2aba3d46ad7cfbe7e05a10f94b8c8ede70ce334d0"
+      "ideaFingerprint": "8103927873c7a0a6e110a0e2aba3d46ad7cfbe7e05a10f94b8c8ede70ce334d0",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T044-Q17",
@@ -56,15 +58,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T44_Q17",
       "status": "MASTERED",
       "questionText": "شكل كبسولة من مستطيل طوله6 وعرضه2 مع نصفي دائرة على طرفيه؛ أوجد المساحة.",
-      "canonicalMainSkill": "main_quant_24",
-      "canonicalSubskill": "sub_quant_24_3",
+      "canonicalMainSkill": "skill_quant_24",
+      "canonicalSubskill": "sub_quant_24_1",
       "correctAnswer": "12+π (أ)",
       "stepByStepSolution": "المستطيل12، نصفي الدائرة يشكلان دائرة نصف قطرها1 ومساحتهاπ؛ المجموع12+π.",
       "educationalExplanation": "من الصورة: المستطيل12، نصفي الدائرة يشكلان دائرة نصف قطرها1 ومساحتهاπ؛ المجموع12+π.",
       "difficulty": "Medium",
       "difficultyReason": "تحتاج ربط معطيات هندسية.",
       "contentFingerprint": "2360cdb4507f8dd1079a6ec97d165c50fe2a90c8cf64910953f3a34517b27f25",
-      "ideaFingerprint": "6c3c953f8befcdb8118fba32956af55fbc5156c66fc61770bc1bf914b8f81d6a"
+      "ideaFingerprint": "6c3c953f8befcdb8118fba32956af55fbc5156c66fc61770bc1bf914b8f81d6a",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T044-Q18",
@@ -85,15 +89,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T44_Q18",
       "status": "MASTERED",
       "questionText": "دائرة تمر برؤوس مربع ضلعه4؛ أوجد نصف قطر الدائرة.",
-      "canonicalMainSkill": "main_quant_22",
-      "canonicalSubskill": "sub_quant_22_2",
+      "canonicalMainSkill": "skill_quant_24",
+      "canonicalSubskill": "sub_quant_24_1",
       "correctAnswer": "2√2 (ج)",
       "stepByStepSolution": "قطر الدائرة=قطر المربع=4√2؛ نصف القطر2√2.",
       "educationalExplanation": "من الصورة: قطر الدائرة=قطر المربع=4√2؛ نصف القطر2√2.",
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر.",
       "contentFingerprint": "d34664a9dfe786e5202c17114bb5ef6b86db490fee4b6241528493b7263d6611",
-      "ideaFingerprint": "bd7866240ae2d31cd39e57f8aa02c704d07932403b1a01fbe02562fc96f0f74f"
+      "ideaFingerprint": "bd7866240ae2d31cd39e57f8aa02c704d07932403b1a01fbe02562fc96f0f74f",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T044-Q19",
@@ -114,7 +120,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T44_Q19",
       "status": "MASTERED",
       "questionText": "مربع ضلعه2√2 داخل دائرة تمس أضلاعه؛ أوجد مساحة الدائرة.",
-      "canonicalMainSkill": "main_quant_24",
+      "canonicalMainSkill": "skill_quant_24",
       "canonicalSubskill": "sub_quant_24_1",
       "correctAnswer": "2π (ب)",
       "stepByStepSolution": "نصف قطر الدائرة=نصف ضلع المربع=√2؛ المساحة=2π.",
@@ -122,7 +128,9 @@
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر.",
       "contentFingerprint": "74395872421b18ed3330bd8df6956ad7be4170c0c545799a8d54cb9de4fd7201",
-      "ideaFingerprint": "d5fba270fc047edaeba313452fca4ed9c4a9d81fabdd31608e36b8eea3ce8ad1"
+      "ideaFingerprint": "d5fba270fc047edaeba313452fca4ed9c4a9d81fabdd31608e36b8eea3ce8ad1",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T044-Q20",
@@ -143,7 +151,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T44_Q20",
       "status": "MASTERED",
       "questionText": "دائرة ومربع متساويان في المحيط؛ قارن المساحتين.",
-      "canonicalMainSkill": "main_quant_24",
+      "canonicalMainSkill": "skill_quant_24",
       "canonicalSubskill": "sub_quant_24_1",
       "correctAnswer": "القيمة الأولى أكبر (أ)",
       "stepByStepSolution": "الدائرة أكبر الأشكال مساحة عند محيط ثابت؛ مساحتها أكبر من المربع.",
@@ -151,7 +159,9 @@
       "difficulty": "Medium",
       "difficultyReason": "تحتاج ربط معطيات هندسية.",
       "contentFingerprint": "63bf8e8bbd2380536d3b7751da878438adc9d315e20a58be7e87a34f69a4f19b",
-      "ideaFingerprint": "d71816f39a68471feeafbfe3f1f7069bc887125ee9d9e19d8e5ac630505d2c56"
+      "ideaFingerprint": "d71816f39a68471feeafbfe3f1f7069bc887125ee9d9e19d8e5ac630505d2c56",
+      "importEligible": true,
+      "reviewReason": null
     }
   ]
 }

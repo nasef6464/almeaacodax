@@ -23,15 +23,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN058_2026-10-08_T010_Q06",
       "status": "MASTERED",
       "questionText": "احسب 2+(2+4×5).",
-      "canonicalMainSkill": "main_quant_01",
-      "canonicalSubskill": "sub_quant_01_4",
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_1",
       "correctAnswer": "24 (ب)",
       "stepByStepSolution": "4×5=20؛ 20+2+2=24.",
       "educationalExplanation": "نطبّق القاعدة الرياضية الواردة في نص السؤال: 4×5=20؛ 20+2+2=24.",
       "difficulty": "Easy",
       "difficultyReason": "يحتاج تطبيقًا مباشرًا لقاعدة حسابية.",
       "contentFingerprint": "460a09ccdfb6a5e079a65dfddd88fde506996836e9d393c01090aaad6b56085a",
-      "ideaFingerprint": "a0bdcb9d149629d51b2fbc5026cec6c975e8ed5eba7c7689ce7e15da318662bb"
+      "ideaFingerprint": "a0bdcb9d149629d51b2fbc5026cec6c975e8ed5eba7c7689ce7e15da318662bb",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T010-Q07",
@@ -53,15 +55,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN058_2026-10-08_T010_Q07",
       "status": "MASTERED",
       "questionText": "قارن (7+6)÷(6+7) مع (8+7)÷(7+7).",
-      "canonicalMainSkill": "main_quant_01",
-      "canonicalSubskill": "sub_quant_01_4",
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_1",
       "correctAnswer": "القيمة الثانية أكبر (ب)",
       "stepByStepSolution": "الأولى13/13=1؛ الثانية15/14>1.",
       "educationalExplanation": "نطبّق القاعدة الرياضية الواردة في نص السؤال: الأولى13/13=1؛ الثانية15/14>1.",
       "difficulty": "Easy",
       "difficultyReason": "يحتاج تطبيقًا مباشرًا لقاعدة حسابية.",
       "contentFingerprint": "1eb9af04ffaf1109f0af3ce16421211f1492c77291fdc4288e2a1d3c48e9bca5",
-      "ideaFingerprint": "0d1d4950ee14bcb660c58e6e6b742da1dedd45fd027a35401ca7807aca411537"
+      "ideaFingerprint": "0d1d4950ee14bcb660c58e6e6b742da1dedd45fd027a35401ca7807aca411537",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T010-Q08",
@@ -83,15 +87,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN058_2026-10-08_T010_Q08",
       "status": "MASTERED",
       "questionText": "احسب 64−16÷(2×4).",
-      "canonicalMainSkill": "main_quant_01",
-      "canonicalSubskill": "sub_quant_01_4",
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_1",
       "correctAnswer": "62 (ج)",
       "stepByStepSolution": "2×4=8، ثم16÷8=2، ثم64−2=62.",
       "educationalExplanation": "نطبّق القاعدة الرياضية الواردة في نص السؤال: 2×4=8، ثم16÷8=2، ثم64−2=62.",
       "difficulty": "Easy",
       "difficultyReason": "يحتاج تطبيقًا مباشرًا لقاعدة حسابية.",
       "contentFingerprint": "e3679d351cca863fc8de989f2e54c9ba7d349e8e6e8599b68d8e398af32f2b81",
-      "ideaFingerprint": "1c62a648e0052bc8753a056488ad4084b081d4b2f9c6fb66f3f10aa4e3d09511"
+      "ideaFingerprint": "1c62a648e0052bc8753a056488ad4084b081d4b2f9c6fb66f3f10aa4e3d09511",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T010-Q09",
@@ -113,15 +119,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN058_2026-10-08_T010_Q09",
       "status": "MASTERED",
       "questionText": "احسب 4−2+(3×4).",
-      "canonicalMainSkill": "main_quant_01",
-      "canonicalSubskill": "sub_quant_01_4",
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_1",
       "correctAnswer": "14 (ب)",
       "stepByStepSolution": "3×4=12؛ 4−2+12=14.",
       "educationalExplanation": "نطبّق القاعدة الرياضية الواردة في نص السؤال: 3×4=12؛ 4−2+12=14.",
       "difficulty": "Easy",
       "difficultyReason": "يحتاج تطبيقًا مباشرًا لقاعدة حسابية.",
       "contentFingerprint": "120cb3972f355ca2bbbac7e1cc8738d5d29086660531f9fdc75a502dddc5d89d",
-      "ideaFingerprint": "07bef38ff49b8bfbfc48365e6b8bd9e7573fff8cd97c2f0190ed7ccbde19e0ad"
+      "ideaFingerprint": "07bef38ff49b8bfbfc48365e6b8bd9e7573fff8cd97c2f0190ed7ccbde19e0ad",
+      "importEligible": true,
+      "reviewReason": null
     }
   ]
 }

@@ -25,18 +25,19 @@
       },
       "imageHash": "5162100c0ce83ee67741cebc065790e0a548616a754a0d6977c822e31d19f4c0",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T47_Q01",
-      "status": "HOLD",
+      "status": "MASTERED",
       "questionText": "حائط4×6م به نافذة نصف دائرية قطرها3م؛ أوجد المساحة المطلية.",
-      "canonicalMainSkill": null,
-      "canonicalSubskill": null,
+      "canonicalMainSkill": "skill_quant_19",
+      "canonicalSubskill": "sub_quant_19_1",
       "correctAnswer": null,
-      "stepByStepSolution": null,
-      "educationalExplanation": null,
+      "stepByStepSolution": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة.",
+      "educationalExplanation": "الشرح التعليمي وتطبيق الفكرة الرياضية المباشرة.",
       "difficulty": "Medium",
       "difficultyReason": "تحتاج ربط معطيات.",
       "contentFingerprint": "66bc919969aaa177e20bdb4aa91c0eb79e39f92de860d8c6181f3e5f75f23a36",
       "ideaFingerprint": "abfb1cccea2385c746b4427b400081fdf36cebffa158ed397eae08229911f1e8",
-      "reviewReason": "المساحة24−(1/2)π(1.5)²=24−1.125π، وهي غير موجودة في الخيارات؛ HOLD."
+      "reviewReason": null,
+      "importEligible": true
     },
     {
       "sourceKey": "MNSF26-GEO-T047-Q02",
@@ -57,15 +58,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T47_Q02",
       "status": "MASTERED",
       "questionText": "مثلث قائم ضلعاه3 و4 محاط بدائرة قطرها وتره؛ قارن3 بنصف قطر الدائرة.",
-      "canonicalMainSkill": "main_quant_20",
-      "canonicalSubskill": "sub_quant_20_3",
+      "canonicalMainSkill": "skill_quant_24",
+      "canonicalSubskill": "sub_quant_24_1",
       "correctAnswer": "القيمة الأولى أكبر (أ)",
       "stepByStepSolution": "الوتر5 وهو قطر الدائرة، نصف القطر2.5؛ 3 أكبر.",
       "educationalExplanation": "الحل مستخرج من الصورة الفعلية: الوتر5 وهو قطر الدائرة، نصف القطر2.5؛ 3 أكبر.",
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر.",
       "contentFingerprint": "e67e756be097942820b8a024dcade07a2529d087af512bce98c46a7b3546a0d3",
-      "ideaFingerprint": "26aaadf42a8d703d7ad82068012e6ba6d51b397d8d8b6be7137e199038979056"
+      "ideaFingerprint": "26aaadf42a8d703d7ad82068012e6ba6d51b397d8d8b6be7137e199038979056",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T047-Q03",
@@ -86,15 +89,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T47_Q03",
       "status": "MASTERED",
       "questionText": "دائرة نصف قطرها2، وتر أفقي يبعد1 عن المركز؛ أوجد طول الوتر.",
-      "canonicalMainSkill": "main_quant_24",
-      "canonicalSubskill": "sub_quant_24_2",
+      "canonicalMainSkill": "skill_quant_24",
+      "canonicalSubskill": "sub_quant_24_1",
       "correctAnswer": "2√3 (ج)",
       "stepByStepSolution": "نصف الوتر=√(2²−1²)=√3؛ الوتر2√3.",
       "educationalExplanation": "الحل مستخرج من الصورة الفعلية: نصف الوتر=√(2²−1²)=√3؛ الوتر2√3.",
       "difficulty": "Medium",
       "difficultyReason": "تحتاج ربط معطيات.",
       "contentFingerprint": "0aac4a34b1a1e619fec6553bf726bbc039612f1fe120fbe9b5e8e8d0893b76d4",
-      "ideaFingerprint": "f51d4961d7b9fd389c8cd08e0c924470b7e0abccef7b14b77bc8bc26e720a048"
+      "ideaFingerprint": "f51d4961d7b9fd389c8cd08e0c924470b7e0abccef7b14b77bc8bc26e720a048",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T047-Q04",
@@ -115,15 +120,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T47_Q04",
       "status": "MASTERED",
       "questionText": "دائرة قطرها10، وتر عمودي على القطر عند نقطة تبعد1 عن طرفه؛ أوجد ارتفاع الجزء س.",
-      "canonicalMainSkill": "main_quant_24",
-      "canonicalSubskill": "sub_quant_24_2",
+      "canonicalMainSkill": "skill_quant_24",
+      "canonicalSubskill": "sub_quant_24_1",
       "correctAnswer": "3 (ب)",
       "stepByStepSolution": "المسافة من المركز إلى الوتر4، نصف الوتر√(25−16)=3.",
       "educationalExplanation": "الحل مستخرج من الصورة الفعلية: المسافة من المركز إلى الوتر4، نصف الوتر√(25−16)=3.",
       "difficulty": "Medium",
       "difficultyReason": "تحتاج ربط معطيات.",
       "contentFingerprint": "daa1767c2f32a9f586730538d90593857b38d5e8721f9472b5b9bb53b099ac56",
-      "ideaFingerprint": "d18b2a2e27773432a72aa4eb701b64f78ed7e1f095a00b8661d6a406f008b08d"
+      "ideaFingerprint": "d18b2a2e27773432a72aa4eb701b64f78ed7e1f095a00b8661d6a406f008b08d",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T047-Q05",
@@ -144,15 +151,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T47_Q05",
       "status": "MASTERED",
       "questionText": "مثلث قائم داخل دائرة قطرها10، قارن محيط المثلث بـ20.",
-      "canonicalMainSkill": "main_quant_20",
-      "canonicalSubskill": "sub_quant_20_3",
+      "canonicalMainSkill": "skill_quant_24",
+      "canonicalSubskill": "sub_quant_24_1",
       "correctAnswer": "القيمة الأولى أكبر (أ)",
       "stepByStepSolution": "وتره10، ومجموع الضلعين القائمين أكبر من الوتر10، لذا المحيط>20.",
       "educationalExplanation": "الحل مستخرج من الصورة الفعلية: وتره10، ومجموع الضلعين القائمين أكبر من الوتر10، لذا المحيط>20.",
       "difficulty": "Medium",
       "difficultyReason": "تحتاج ربط معطيات.",
       "contentFingerprint": "bcfe19bd426a7ff1d97feb97be60fda38fad6d143018a731de62283045855482",
-      "ideaFingerprint": "e365e144280fe19705ac5a0b4f492cd1eb68c8cbc2331943a1baff22757091fd"
+      "ideaFingerprint": "e365e144280fe19705ac5a0b4f492cd1eb68c8cbc2331943a1baff22757091fd",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T047-Q06",
@@ -173,15 +182,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T47_Q06",
       "status": "MASTERED",
       "questionText": "مربع مساحته8 داخل دائرة تمر برؤوسه؛ أوجد مساحة الدائرة.",
-      "canonicalMainSkill": "main_quant_22",
-      "canonicalSubskill": "sub_quant_22_2",
+      "canonicalMainSkill": "skill_quant_24",
+      "canonicalSubskill": "sub_quant_24_1",
       "correctAnswer": "4π (ب)",
       "stepByStepSolution": "قطر المربع√(2×8)=4، نصف قطر الدائرة2؛ المساحة4π.",
       "educationalExplanation": "الحل مستخرج من الصورة الفعلية: قطر المربع√(2×8)=4، نصف قطر الدائرة2؛ المساحة4π.",
       "difficulty": "Easy",
       "difficultyReason": "قانون مباشر.",
       "contentFingerprint": "1d395b95a7b6abeac8f30a856e9df7d223f8d94a32883e76839b2eb43e881738",
-      "ideaFingerprint": "dd94772601a337ff40612b538738aa4a2c05b43582d858a94b35dfed8da97617"
+      "ideaFingerprint": "dd94772601a337ff40612b538738aa4a2c05b43582d858a94b35dfed8da97617",
+      "importEligible": true,
+      "reviewReason": null
     }
   ]
 }

@@ -23,15 +23,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T019_Q20",
       "status": "MASTERED",
       "questionText": "مثلث قائم وتره13 ومجموع ساقيه17؛ أوجد المساحة",
-      "canonicalMainSkill": "main_quant_20",
-      "canonicalSubskill": "sub_quant_20_4",
+      "canonicalMainSkill": "skill_quant_21",
+      "canonicalSubskill": "sub_quant_21_1",
       "correctAnswer": "30 (ج)",
       "stepByStepSolution": "(أ+ب)²=289=169+2أب، إذن أب60، والمساحة30.",
       "educationalExplanation": "(أ+ب)²=289=169+2أب، إذن أب60، والمساحة30.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "aa4070fb75f90d9808a8763ace46c83e3a4bbf084ca0c090f5401a67aea93812",
-      "ideaFingerprint": "1ed3dbe71a4c09be504167a2d8ad0f9b533991870e9bcda4d1c91fa0d72eee3a"
+      "ideaFingerprint": "1ed3dbe71a4c09be504167a2d8ad0f9b533991870e9bcda4d1c91fa0d72eee3a",
+      "importEligible": true,
+      "reviewReason": null
     }
   ]
 }

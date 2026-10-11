@@ -25,15 +25,17 @@
       "status": "MASTERED",
       "questionText": "سهم هبط3% يعادل3 ريال؛ قارن 30 ريال بسعر السهم بعد الهبوط",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_09",
-      "canonicalSubskill": "sub_quant_09_3",
+      "canonicalMainSkill": "skill_quant_09",
+      "canonicalSubskill": "sub_quant_09_1",
       "correctAnswer": "القيمة الثانية أكبر",
       "stepByStepSolution": "السعر الأصلي=3÷0.03=100؛ بعد الهبوط=97؛ 97>30.",
       "educationalExplanation": "الفكرة التعليمية: استعادة السعر قبل هبوط ومقارنته. نحدد أساس النسبة أو العلاقة أولًا، ثم نطبّق خطوات الحساب ونراجع الناتج مع المعطيات.",
       "difficulty": "Medium",
       "difficultyReason": "يتطلب تحويل المعطيات إلى علاقة صحيحة ثم إجراء حساب متسلسل.",
       "contentFingerprint": "5623ad1dc8e0ceb34c7c75a4e2e6dc8d8c657390c6e4782385a09b7f07dade90",
-      "ideaFingerprint": "6bacbd8225a328098c23535cd7c49c43bb5c8006d482fbd3106b1d4362f92fec"
+      "ideaFingerprint": "6bacbd8225a328098c23535cd7c49c43bb5c8006d482fbd3106b1d4362f92fec",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T032-Q19",
@@ -52,15 +54,17 @@
       "status": "MASTERED",
       "questionText": "اشترت عائلة سيارة38000 وباعوها بربح10%؛ سعر البيع",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_10",
-      "canonicalSubskill": "sub_quant_10_1",
+      "canonicalMainSkill": "skill_quant_12",
+      "canonicalSubskill": "sub_quant_12_1",
       "correctAnswer": "41800 ريال",
       "stepByStepSolution": "الربح=38000×0.10=3800؛ البيع=41800.",
       "educationalExplanation": "الفكرة التعليمية: زيادة سعر البيع بنسبة ربح. نحدد أساس النسبة أو العلاقة أولًا، ثم نطبّق خطوات الحساب ونراجع الناتج مع المعطيات.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق مباشر لقاعدة حسابية واحدة أو خطوتين واضحتين.",
       "contentFingerprint": "767c73d57fddec7014f424f22b57bfa86ae04ff32fa9ed2cb2432946b5ca00c6",
-      "ideaFingerprint": "2133d2ba1985f90b0e7fe5b456acac247b5fa9ad2ba452773f36160115f40486"
+      "ideaFingerprint": "2133d2ba1985f90b0e7fe5b456acac247b5fa9ad2ba452773f36160115f40486",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T032-Q20",
@@ -79,15 +83,17 @@
       "status": "MASTERED",
       "questionText": "سعر علبة الحليب40 ريال وخصم15% عند شراء20 فأكثر؛ الفرق بين تكلفة15 و20 علبة",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_09",
-      "canonicalSubskill": "sub_quant_09_4",
+      "canonicalMainSkill": "skill_quant_10",
+      "canonicalSubskill": "sub_quant_10_1",
       "correctAnswer": "80 ريال",
       "stepByStepSolution": "15 علبة=600؛ 20 بعد الخصم=20×40×0.85=680؛ الفرق80.",
       "educationalExplanation": "الفكرة التعليمية: مقارنة شراء كمية بخصم حدّي. نحدد أساس النسبة أو العلاقة أولًا، ثم نطبّق خطوات الحساب ونراجع الناتج مع المعطيات.",
       "difficulty": "Medium",
       "difficultyReason": "يتطلب تحويل المعطيات إلى علاقة صحيحة ثم إجراء حساب متسلسل.",
       "contentFingerprint": "c210c3ec78126e7331b4e701480c1715cd810f3a58747eec39d604f4062eb70f",
-      "ideaFingerprint": "228b9a25cd4f07aea09fb4cdb6ad50e29c78e99d629677e773f1232a1406062f"
+      "ideaFingerprint": "228b9a25cd4f07aea09fb4cdb6ad50e29c78e99d629677e773f1232a1406062f",
+      "importEligible": true,
+      "reviewReason": null
     }
   ],
   "shard": "E"

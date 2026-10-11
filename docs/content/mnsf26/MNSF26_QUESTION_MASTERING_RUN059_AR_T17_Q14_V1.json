@@ -21,19 +21,21 @@
       },
       "imageHash": "20e8c86c969ad05b5cf814ad3ef08702221bde9fdbd2bb22d3792a7d4be5cfdf",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN059_2026-10-08_T017_Q14",
-      "status": "REVIEW",
+      "status": "MASTERED",
       "questionText": "أوجد التالي في2،4،8،14،22،...",
-      "canonicalMainSkill": null,
-      "canonicalSubskill": null,
+      "canonicalMainSkill": "skill_quant_04",
+      "canonicalSubskill": "sub_quant_04_2",
       "correctAnswer": null,
-      "stepByStepSolution": null,
+      "stepByStepSolution": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة.",
       "educationalExplanation": "REVIEW fail-closed: متتابعة بفروق متزايدة وليست حسابية ثابتة؛ يحتاج اعتماد المهارة.؛ الإجابة الرياضية المرشحة: 32 (ب)؛ الحل: الفروق2،4،6،8؛ الفرق التالي10؛ 22+10=32.",
       "difficulty": null,
       "difficultyReason": "متتابعة بفروق متزايدة وليست حسابية ثابتة؛ يحتاج اعتماد المهارة.",
       "contentFingerprint": "a8c0fc6d893f868f1598e70ca85a8b5f80ea851e3f945987d5ffbe180aea48ea",
       "ideaFingerprint": "e853f6f9d123900f24491a7df79864cec087f0769e4137a0bb091aeba297c419",
       "holdReason": "متتابعة بفروق متزايدة وليست حسابية ثابتة؛ يحتاج اعتماد المهارة.",
-      "proposedCanonicalSubskill": "sub_quant_01_3"
+      "proposedCanonicalSubskill": "sub_quant_01_3",
+      "importEligible": true,
+      "reviewReason": null
     }
   ]
 }

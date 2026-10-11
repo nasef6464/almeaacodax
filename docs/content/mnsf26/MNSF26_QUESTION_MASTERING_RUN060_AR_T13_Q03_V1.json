@@ -11,8 +11,8 @@
         "test": "T013",
         "sourceLesson": "الأعداد الأولية - العوامل الأولى"
       },
-      "canonicalMainSkill": "skill_quant_02",
-      "canonicalSubskill": "sub_quant_02_1",
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_1",
       "correctAnswer": "ج",
       "answerValue": "5 و9",
       "stepByStepSolution": "45 يقبل القسمة على5 وعلى9؛ كلاهما من قواسمه.",
@@ -22,7 +22,9 @@
       "imageHash": "bbd246b4f44bb346316035286d9c6144d690df44ba22866ef62879a42cccbd45",
       "contentFingerprint": "221cb36c04c8057d25ed5111d11a97747a049a588fad39c82f6079b9c2b268e3",
       "ideaFingerprint": "c47c0636bc12a69ee9ede63ddbc27a8e96bc2f1c22595d1a74c9594cccfa5b99",
-      "status": "MASTERED"
+      "status": "MASTERED",
+      "importEligible": true,
+      "reviewReason": null
     }
   ]
 }

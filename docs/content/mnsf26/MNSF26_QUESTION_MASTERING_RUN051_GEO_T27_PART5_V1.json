@@ -25,15 +25,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
       "status": "MASTERED",
       "questionText": "غرفة قاعدتها مربعة محيطها16م؛ ما طولها؟",
-      "canonicalMainSkill": "main_quant_22",
-      "canonicalSubskill": "sub_quant_22_1",
+      "canonicalMainSkill": "skill_quant_23",
+      "canonicalSubskill": "sub_quant_23_1",
       "correctAnswer": "4 أمتار",
       "stepByStepSolution": "الضلع16/4=4.",
       "educationalExplanation": "المهارة: ضلع مربع من المحيط؛ نحدد العلاقات الهندسية من الشكل الفعلي ونحسب المطلوب ونتحقق من الوحدة والاختيارات.",
       "difficulty": "Easy",
       "difficultyReason": "حساب هندسي مباشر في ضلع مربع من المحيط.",
       "contentFingerprint": "42ca8e6a6270be435d69d5fadcea31db9b8ce1f085e81c655a2c914d095250b3",
-      "ideaFingerprint": "3f3fb9453d10310075b4d83bd2f559861d7a5aec8b51c53f60d428483bd10821"
+      "ideaFingerprint": "3f3fb9453d10310075b4d83bd2f559861d7a5aec8b51c53f60d428483bd10821",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T027-Q18",
@@ -52,15 +54,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
       "status": "MASTERED",
       "questionText": "مربع صغير مرسوم بوصل منتصفات أضلاع مربع أكبر؛ قارن مساحة الصغير مع نصف مساحة الكبير.",
-      "canonicalMainSkill": "main_quant_22",
-      "canonicalSubskill": "sub_quant_22_3",
+      "canonicalMainSkill": "skill_quant_23",
+      "canonicalSubskill": "sub_quant_23_1",
       "correctAnswer": "القيمتان متساويتان",
       "stepByStepSolution": "المربع الداخلي الناتج عن وصل المنتصفات مساحته نصف الخارجي.",
       "educationalExplanation": "المهارة: مربع المنتصفات ونصف المساحة؛ نحدد العلاقات الهندسية من الشكل الفعلي ونحسب المطلوب ونتحقق من الوحدة والاختيارات.",
       "difficulty": "Medium",
       "difficultyReason": "يتطلب أكثر من خطوة أو علاقة هندسية في مربع المنتصفات ونصف المساحة.",
       "contentFingerprint": "b53b1e6bbde565ce4c02088ba5115e69435c651cf373fafa69faf47c102f2157",
-      "ideaFingerprint": "6dc9303121c88ccf74b6bad1dd947589444f872c751ec47fda5dc76f1b915693"
+      "ideaFingerprint": "6dc9303121c88ccf74b6bad1dd947589444f872c751ec47fda5dc76f1b915693",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T027-Q19",
@@ -79,15 +83,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
       "status": "MASTERED",
       "questionText": "مربع صغير داخل مربع كبير بحيث رؤوسه منتصفات أضلاع الكبير، وطول ضلع الصغير1 سم؛ ما طول ضلع الكبير؟",
-      "canonicalMainSkill": "main_quant_22",
-      "canonicalSubskill": "sub_quant_22_3",
+      "canonicalMainSkill": "skill_quant_23",
+      "canonicalSubskill": "sub_quant_23_1",
       "correctAnswer": "√2 سم",
       "stepByStepSolution": "قطر المربع الصغير=√2، ويساوي ضلع المربع الكبير.",
       "educationalExplanation": "المهارة: مربع مائل داخل مربع منتصفات؛ نحدد العلاقات الهندسية من الشكل الفعلي ونحسب المطلوب ونتحقق من الوحدة والاختيارات.",
       "difficulty": "Medium",
       "difficultyReason": "يتطلب أكثر من خطوة أو علاقة هندسية في مربع مائل داخل مربع منتصفات.",
       "contentFingerprint": "9111808fb371414f95f5d5d352b0bebc2d87da9346913b51503df5a892131b01",
-      "ideaFingerprint": "f17d2c89878fce33051709eca2beeea300d5c47a1640ab34406a9ef9e49203fb"
+      "ideaFingerprint": "f17d2c89878fce33051709eca2beeea300d5c47a1640ab34406a9ef9e49203fb",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T027-Q20",
@@ -106,15 +112,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
       "status": "MASTERED",
       "questionText": "نصف قطر المربع أي نصف قطره القطري4 سم؛ ما مساحة المربع؟",
-      "canonicalMainSkill": "main_quant_22",
-      "canonicalSubskill": "sub_quant_22_2",
+      "canonicalMainSkill": "skill_quant_24",
+      "canonicalSubskill": "sub_quant_24_1",
       "correctAnswer": "32 سم²",
       "stepByStepSolution": "القطر الكامل8؛ مساحة المربع=القطر²/2=64/2=32.",
       "educationalExplanation": "المهارة: مساحة مربع من نصف قطره؛ نحدد العلاقات الهندسية من الشكل الفعلي ونحسب المطلوب ونتحقق من الوحدة والاختيارات.",
       "difficulty": "Easy",
       "difficultyReason": "حساب هندسي مباشر في مساحة مربع من نصف قطره.",
       "contentFingerprint": "4ad341e83be2944e56293afc79f81dcf097e71af4c23ba991acd7bda504a7c26",
-      "ideaFingerprint": "f53c477115cb9f152280de7f6cab50c58f3cda191fad84aa56b11b19f95114ad"
+      "ideaFingerprint": "f53c477115cb9f152280de7f6cab50c58f3cda191fad84aa56b11b19f95114ad",
+      "importEligible": true,
+      "reviewReason": null
     }
   ],
   "part": 5

@@ -23,15 +23,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T019_Q08",
       "status": "MASTERED",
       "questionText": "أربعة مثلثات متساوية الأضلاع متجاورة على مستقيم طوله16؛ أوجد محيط الشكل",
-      "canonicalMainSkill": "main_quant_20",
-      "canonicalSubskill": "sub_quant_20_1",
+      "canonicalMainSkill": "skill_quant_21",
+      "canonicalSubskill": "sub_quant_21_1",
       "correctAnswer": "48 (ب)",
       "stepByStepSolution": "كل قاعدة4، وعدد الأضلاع الخارجية المائلة8، فالمحيط=16+8×4=48.",
       "educationalExplanation": "كل قاعدة4، وعدد الأضلاع الخارجية المائلة8، فالمحيط=16+8×4=48.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "8dc0ac96b1c3e570eb1b52bbf3ee4dcc1b89cfb2240a49bab99931a863197f66",
-      "ideaFingerprint": "63129a07bc501212ef0088146c5c502888f0941a4a8da9c40f018e05c85e4009"
+      "ideaFingerprint": "63129a07bc501212ef0088146c5c502888f0941a4a8da9c40f018e05c85e4009",
+      "importEligible": true,
+      "reviewReason": null
     }
   ]
 }

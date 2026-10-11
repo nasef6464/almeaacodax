@@ -1,0 +1,989 @@
+{
+  "batchId": "BATCH_005",
+  "bank": "MNSF26",
+  "reviewQuestionsCount": 16,
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T049-Q16",
+      "questionCode": "QDR-QNT-MNSF26-AR-T049-Q16",
+      "sourceDocument": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+      "sourcePart": "الحساب/الجبر",
+      "sourceTestNumber": 49,
+      "sourceQuestionNumber": 16,
+      "sourcePage": 98,
+      "sourceSkillLabel": "الأعمار والمعادلات",
+      "imageReference": "AR/AR-T049-Q16.webp",
+      "imageHash": "24cc5caeecd995aad10daf0994b214554d3e33d7134655d9d8a11d74322f5e40",
+      "questionText": "يوسف يملك مبلغًا يزيد عن منصور 300 ريال، ومنصور يزيد عن سعود 500 ريال، وسعود معه 1000؛ كم يملك يوسف؟",
+      "options": [
+        {
+          "text": "أ",
+          "isCorrect": false
+        },
+        {
+          "text": "ب",
+          "isCorrect": false
+        },
+        {
+          "text": "ج",
+          "isCorrect": false
+        },
+        {
+          "text": "د",
+          "isCorrect": false
+        }
+      ],
+      "correctAnswer": "1800 ريال",
+      "correctOptionIndex": 3,
+      "stepByStepSolution": "منصور=1000+500=1500؛ يوسف=1500+300=1800.",
+      "educationalExplanation": "المهارة: سلسلة فروق مبالغ مالية؛ نقرأ معطيات السؤال من الصورة ونطبّق العلاقة الحسابية ثم نراجع الناتج مع المطلوب.",
+      "solvingStrategy": "التحليل الرياضي المباشر وتطبيق استراتيجيات الحل المناسبة للقدرات.",
+      "difficulty": "Easy",
+      "difficultyReason": "خطوات مباشرة في سلسلة فروق مبالغ مالية.",
+      "primaryMainSkillId": "skill_quant_04",
+      "primarySubSkillId": "sub_quant_04_2",
+      "primarySkillName": "الأعداد العشرية — ضرب وقسمة الأعداد العشرية وقوى 10",
+      "secondarySubSkillIds": [],
+      "classificationReason": "ضرب وقسمة الأعداد العشرية وتحريك الفاصلة العشرية",
+      "classificationEvidence": "عمليات حسابية على أعداد تحتوي فواصل عشرية",
+      "classificationConfidence": "HIGH",
+      "alternativeCandidateSkills": [
+        "sub_quant_16_1",
+        "sub_quant_16_2",
+        "sub_quant_16_3",
+        "sub_quant_07_2"
+      ],
+      "previousSubSkill": "sub_quant_10_3",
+      "isReclassified": true,
+      "contentFingerprint": "d58e7554142ed4f348e68a2c161d0e541e31544081e96be628183fee11cda039",
+      "ideaFingerprint": "6a32904c676a917b2a3ccc2baa083b0bdcdfe9118a616f1a1fc66b2b4254df4d",
+      "qaStatus": "REVIEW",
+      "reviewReason": "DOCUMENTED_37_SOURCE_CONFLICT_FAIL_CLOSED",
+      "importEligible": false,
+      "evidenceReferences": [
+        "MNSF26_CANONICAL_TAXONOMY_25_95_V1.json",
+        "MNSF26_SOURCE_TO_CANONICAL_CANDIDATE_MAP_V1.json"
+      ]
+    },
+    {
+      "sourceKey": "MNSF26-AR-T051-Q01",
+      "questionCode": "QDR-QNT-MNSF26-AR-T051-Q01",
+      "sourceDocument": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+      "sourcePart": "الحساب/الجبر",
+      "sourceTestNumber": 51,
+      "sourceQuestionNumber": 1,
+      "sourcePage": 102,
+      "sourceSkillLabel": "الساعات",
+      "imageReference": "AR/AR-T051-Q01.webp",
+      "imageHash": "827612d381b31406e1fb9edd23fd4669269d80e004e9339911eed0480529f0b0",
+      "questionText": "برنامج تلفزيوني يبدأ الثامنة صباحًا ويدوم سبع ساعات، وآخر يبدأ العاشرة صباحًا ويدوم خمس ساعات؛ متى ينتهيان معًا؟",
+      "options": [
+        {
+          "text": "أ",
+          "isCorrect": false
+        },
+        {
+          "text": "ب",
+          "isCorrect": false
+        },
+        {
+          "text": "ج",
+          "isCorrect": false
+        },
+        {
+          "text": "د",
+          "isCorrect": false
+        }
+      ],
+      "correctAnswer": "3 مساءً",
+      "correctOptionIndex": 3,
+      "stepByStepSolution": "الأول8+7=15؛ الثاني10+5=15؛ كلاهما ينتهي الثالثة مساء.",
+      "educationalExplanation": "المهارة: تزامن نهاية برنامجين مختلفي البداية؛ نقرأ معطيات السؤال من الصورة ونطبّق العلاقة الحسابية ثم نراجع الناتج مع المطلوب.",
+      "solvingStrategy": "التحليل الرياضي المباشر وتطبيق استراتيجيات الحل المناسبة للقدرات.",
+      "difficulty": "Easy",
+      "difficultyReason": "خطوات مباشرة في تزامن نهاية برنامجين مختلفي البداية.",
+      "primaryMainSkillId": "skill_quant_04",
+      "primarySubSkillId": "sub_quant_04_2",
+      "primarySkillName": "الأعداد العشرية — ضرب وقسمة الأعداد العشرية وقوى 10",
+      "secondarySubSkillIds": [],
+      "classificationReason": "ضرب وقسمة الأعداد العشرية وتحريك الفاصلة العشرية",
+      "classificationEvidence": "عمليات حسابية على أعداد تحتوي فواصل عشرية",
+      "classificationConfidence": "HIGH",
+      "alternativeCandidateSkills": [
+        "sub_quant_15_1",
+        "sub_quant_15_2",
+        "sub_quant_15_3",
+        "sub_quant_14_2"
+      ],
+      "previousSubSkill": "sub_quant_14_2",
+      "isReclassified": true,
+      "contentFingerprint": "6ff8a4a6f13fdcf79da5e93de3112369fa6f5d10be49b13dfcd9fa7031adf0f4",
+      "ideaFingerprint": "92691107c08762e9e88b28646145026290aa0fccf87b7e1b43ba165926b4849a",
+      "qaStatus": "REVIEW",
+      "reviewReason": "DOCUMENTED_37_SOURCE_CONFLICT_FAIL_CLOSED",
+      "importEligible": false,
+      "evidenceReferences": [
+        "MNSF26_CANONICAL_TAXONOMY_25_95_V1.json",
+        "MNSF26_SOURCE_TO_CANONICAL_CANDIDATE_MAP_V1.json"
+      ]
+    },
+    {
+      "sourceKey": "MNSF26-AR-T051-Q05",
+      "questionCode": "QDR-QNT-MNSF26-AR-T051-Q05",
+      "sourceDocument": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+      "sourcePart": "الحساب/الجبر",
+      "sourceTestNumber": 51,
+      "sourceQuestionNumber": 5,
+      "sourcePage": 102,
+      "sourceSkillLabel": "الساعات",
+      "imageReference": "AR/AR-T051-Q05.webp",
+      "imageHash": "26cb9aaf51ad86cec2a964c6944f26cf1f69975a0321cfbf29b9eaf0c2cc0c39",
+      "questionText": "قارن مدة سعد من 8:25 إلى10:15 ومدة فهد من9:20 إلى11:10.",
+      "options": [
+        {
+          "text": "أ",
+          "isCorrect": false
+        },
+        {
+          "text": "ب",
+          "isCorrect": false
+        },
+        {
+          "text": "ج",
+          "isCorrect": false
+        },
+        {
+          "text": "د",
+          "isCorrect": false
+        }
+      ],
+      "correctAnswer": "القيمتان متساويتان",
+      "correctOptionIndex": 3,
+      "stepByStepSolution": "كل مدة ساعة و50 دقيقة.",
+      "educationalExplanation": "المهارة: مقارنة فترتين زمنيتين؛ نقرأ معطيات السؤال من الصورة ونطبّق العلاقة الحسابية ثم نراجع الناتج مع المطلوب.",
+      "solvingStrategy": "التحليل الرياضي المباشر وتطبيق استراتيجيات الحل المناسبة للقدرات.",
+      "difficulty": "Easy",
+      "difficultyReason": "خطوات مباشرة في مقارنة فترتين زمنيتين.",
+      "primaryMainSkillId": "skill_quant_04",
+      "primarySubSkillId": "sub_quant_04_2",
+      "primarySkillName": "الأعداد العشرية — ضرب وقسمة الأعداد العشرية وقوى 10",
+      "secondarySubSkillIds": [],
+      "classificationReason": "ضرب وقسمة الأعداد العشرية وتحريك الفاصلة العشرية",
+      "classificationEvidence": "عمليات حسابية على أعداد تحتوي فواصل عشرية",
+      "classificationConfidence": "HIGH",
+      "alternativeCandidateSkills": [
+        "sub_quant_15_1",
+        "sub_quant_15_2",
+        "sub_quant_15_3",
+        "sub_quant_14_2"
+      ],
+      "previousSubSkill": "sub_quant_14_2",
+      "isReclassified": true,
+      "contentFingerprint": "ce20f87c7e9bdd0dc5842f575dfd560b0cb1f36a2df6d6bb262e7a8fbc456fec",
+      "ideaFingerprint": "6c1c3bc6a99d5452b1122125813a93a2e38e17390f770f74f2b672eb671d1112",
+      "qaStatus": "REVIEW",
+      "reviewReason": "DOCUMENTED_37_SOURCE_CONFLICT_FAIL_CLOSED",
+      "importEligible": false,
+      "evidenceReferences": [
+        "MNSF26_CANONICAL_TAXONOMY_25_95_V1.json",
+        "MNSF26_SOURCE_TO_CANONICAL_CANDIDATE_MAP_V1.json"
+      ]
+    },
+    {
+      "sourceKey": "MNSF26-AR-T051-Q06",
+      "questionCode": "QDR-QNT-MNSF26-AR-T051-Q06",
+      "sourceDocument": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+      "sourcePart": "الحساب/الجبر",
+      "sourceTestNumber": 51,
+      "sourceQuestionNumber": 6,
+      "sourcePage": 102,
+      "sourceSkillLabel": "الساعات",
+      "imageReference": "AR/AR-T051-Q06.webp",
+      "imageHash": "4dff0927d51cf119a6c12fa4ce6baf44f4c7584d110c4b86e197a0e2dc49f62c",
+      "questionText": "من الساعة 8:15 إلى 8:45؛ كم ساعة مضت؟",
+      "options": [
+        {
+          "text": "أ",
+          "isCorrect": false
+        },
+        {
+          "text": "ب",
+          "isCorrect": false
+        },
+        {
+          "text": "ج",
+          "isCorrect": false
+        },
+        {
+          "text": "د",
+          "isCorrect": false
+        }
+      ],
+      "correctAnswer": "1/2 ساعة",
+      "correctOptionIndex": 3,
+      "stepByStepSolution": "30 دقيقة من أصل60=1/2 ساعة.",
+      "educationalExplanation": "المهارة: تحويل 30 دقيقة إلى نصف ساعة؛ نقرأ معطيات السؤال من الصورة ونطبّق العلاقة الحسابية ثم نراجع الناتج مع المطلوب.",
+      "solvingStrategy": "التحليل الرياضي المباشر وتطبيق استراتيجيات الحل المناسبة للقدرات.",
+      "difficulty": "Easy",
+      "difficultyReason": "خطوات مباشرة في تحويل 30 دقيقة إلى نصف ساعة.",
+      "primaryMainSkillId": "skill_quant_01",
+      "primarySubSkillId": "sub_quant_01_1",
+      "primarySkillName": "أساسيات الأعداد والعمليات الحسابية — قواعد الإشارات والتجميع الذكي (مكملات 10 و 100 و 1000)",
+      "secondarySubSkillIds": [],
+      "classificationReason": "أساسيات الأعداد والعمليات الحسابية والتجميع الذكي",
+      "classificationEvidence": "عمليات حسابية مباشرة أو ترتيب العمليات",
+      "classificationConfidence": "HIGH",
+      "alternativeCandidateSkills": [
+        "sub_quant_15_1",
+        "sub_quant_15_2",
+        "sub_quant_15_3",
+        "sub_quant_14_2"
+      ],
+      "previousSubSkill": "sub_quant_14_2",
+      "isReclassified": true,
+      "contentFingerprint": "28401f2e034865f8c4f87d407166f721c77e585406d461ee6253ae8600b91a8e",
+      "ideaFingerprint": "80f16e7ac14c48a1a1c8c5a5a9fe4014af5eb5fe72a5be87ea9dac307e3c95f2",
+      "qaStatus": "REVIEW",
+      "reviewReason": "DOCUMENTED_37_SOURCE_CONFLICT_FAIL_CLOSED",
+      "importEligible": false,
+      "evidenceReferences": [
+        "MNSF26_CANONICAL_TAXONOMY_25_95_V1.json",
+        "MNSF26_SOURCE_TO_CANONICAL_CANDIDATE_MAP_V1.json"
+      ]
+    },
+    {
+      "sourceKey": "MNSF26-AR-T051-Q12",
+      "questionCode": "QDR-QNT-MNSF26-AR-T051-Q12",
+      "sourceDocument": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+      "sourcePart": "الحساب/الجبر",
+      "sourceTestNumber": 51,
+      "sourceQuestionNumber": 12,
+      "sourcePage": 102,
+      "sourceSkillLabel": "الساعات",
+      "imageReference": "AR/AR-T051-Q12.webp",
+      "imageHash": "9d3d202b8a2df556d8d25e7565be78f8d6196d0d010a68050229c1bcace4cbf1",
+      "questionText": "مؤشر خزان البنزين يصنع زاوية قائمة عند النصف؛ ما زاويته عند ثلثي الخزان بافتراض تدريج خطي؟",
+      "options": [
+        {
+          "text": "أ",
+          "isCorrect": false
+        },
+        {
+          "text": "ب",
+          "isCorrect": false
+        },
+        {
+          "text": "ج",
+          "isCorrect": true
+        },
+        {
+          "text": "د",
+          "isCorrect": true
+        }
+      ],
+      "correctAnswer": "120 درجة",
+      "correctOptionIndex": 2,
+      "stepByStepSolution": "نصف التدريج=90 درجة؛ التدريج الكامل180؛ عند2/3 الزاوية120.",
+      "educationalExplanation": "المهارة: تدرج مؤشر قياس خطي إلى زاوية؛ نقرأ معطيات السؤال من الصورة ونطبّق العلاقة الحسابية ثم نراجع الناتج مع المطلوب.",
+      "solvingStrategy": "التحليل الرياضي المباشر وتطبيق استراتيجيات الحل المناسبة للقدرات.",
+      "difficulty": "Medium",
+      "difficultyReason": "تتطلب ربط أكثر من معطى أو تحويل وحدات في تدرج مؤشر قياس خطي إلى زاوية.",
+      "primaryMainSkillId": "skill_quant_01",
+      "primarySubSkillId": "sub_quant_01_1",
+      "primarySkillName": "أساسيات الأعداد والعمليات الحسابية — قواعد الإشارات والتجميع الذكي (مكملات 10 و 100 و 1000)",
+      "secondarySubSkillIds": [],
+      "classificationReason": "أساسيات الأعداد والعمليات الحسابية والتجميع الذكي",
+      "classificationEvidence": "عمليات حسابية مباشرة أو ترتيب العمليات",
+      "classificationConfidence": "HIGH",
+      "alternativeCandidateSkills": [
+        "sub_quant_15_1",
+        "sub_quant_15_2",
+        "sub_quant_15_3",
+        "sub_quant_14_2"
+      ],
+      "previousSubSkill": "sub_quant_15_3",
+      "isReclassified": true,
+      "contentFingerprint": "f4bf2c0fe4c04d6b343a02fb9aae675a21a0cba8609034b3e53cb982c7357f21",
+      "ideaFingerprint": "7d1daa797b17fb8eb6704b3e217f218c3153d36556bb9c6db1b38efd707bdaaf",
+      "qaStatus": "REVIEW",
+      "reviewReason": "DOCUMENTED_37_SOURCE_CONFLICT_FAIL_CLOSED",
+      "importEligible": false,
+      "evidenceReferences": [
+        "MNSF26_CANONICAL_TAXONOMY_25_95_V1.json",
+        "MNSF26_SOURCE_TO_CANONICAL_CANDIDATE_MAP_V1.json"
+      ]
+    },
+    {
+      "sourceKey": "MNSF26-AR-T051-Q14",
+      "questionCode": "QDR-QNT-MNSF26-AR-T051-Q14",
+      "sourceDocument": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+      "sourcePart": "الحساب/الجبر",
+      "sourceTestNumber": 51,
+      "sourceQuestionNumber": 14,
+      "sourcePage": 103,
+      "sourceSkillLabel": "الساعات",
+      "imageReference": "AR/AR-T051-Q14.webp",
+      "imageHash": "525ae6e5888a2ea34b703dfbc8f9d93fcd160d66712222119a1fcaa00f751798",
+      "questionText": "سيارة تقطع 180 كم في ساعتين وباقي الرحلة 60 كم بسرعة 60 كم/ساعة؛ كم زمن الرحلة؟",
+      "options": [
+        {
+          "text": "أ",
+          "isCorrect": false
+        },
+        {
+          "text": "ب",
+          "isCorrect": false
+        },
+        {
+          "text": "ج",
+          "isCorrect": false
+        },
+        {
+          "text": "د",
+          "isCorrect": false
+        }
+      ],
+      "correctAnswer": "3 ساعات",
+      "correctOptionIndex": 3,
+      "stepByStepSolution": "الجزء الأول ساعتان؛ الجزء الثاني60/60=ساعة؛ الإجمالي3.",
+      "educationalExplanation": "المهارة: جمع أزمنة مرحلتين لرحلة؛ نقرأ معطيات السؤال من الصورة ونطبّق العلاقة الحسابية ثم نراجع الناتج مع المطلوب.",
+      "solvingStrategy": "التحليل الرياضي المباشر وتطبيق استراتيجيات الحل المناسبة للقدرات.",
+      "difficulty": "Easy",
+      "difficultyReason": "خطوات مباشرة في جمع أزمنة مرحلتين لرحلة.",
+      "primaryMainSkillId": "skill_quant_12",
+      "primarySubSkillId": "sub_quant_12_1",
+      "primarySkillName": "مسائل الحركة والسرعات — قانون السرعة الأساسي والسرعة المتوسطة",
+      "secondarySubSkillIds": [],
+      "classificationReason": "قوانين السرعة الخطية البسيطة والسرعة المتوسطة",
+      "classificationEvidence": "قانون السرعة الأساسي (المسافة = السرعة × الزمن)",
+      "classificationConfidence": "HIGH",
+      "alternativeCandidateSkills": [
+        "sub_quant_15_1",
+        "sub_quant_15_2",
+        "sub_quant_15_3",
+        "sub_quant_14_2"
+      ],
+      "previousSubSkill": "sub_quant_12_1",
+      "isReclassified": false,
+      "contentFingerprint": "571f1a942acb8c1d782c81279e496520cf1aee52bd9be011ca91dbdff7006c1a",
+      "ideaFingerprint": "f8233ed3e197920794be3567cdc0d69ff797d68524d5f1074b7141c234b91bde",
+      "qaStatus": "REVIEW",
+      "reviewReason": "DOCUMENTED_37_SOURCE_CONFLICT_FAIL_CLOSED",
+      "importEligible": false,
+      "evidenceReferences": [
+        "MNSF26_CANONICAL_TAXONOMY_25_95_V1.json",
+        "MNSF26_SOURCE_TO_CANONICAL_CANDIDATE_MAP_V1.json"
+      ]
+    },
+    {
+      "sourceKey": "MNSF26-AR-T054-Q01",
+      "questionCode": "QDR-QNT-MNSF26-AR-T054-Q01",
+      "sourceDocument": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+      "sourcePart": "الحساب/الجبر",
+      "sourceTestNumber": 54,
+      "sourceQuestionNumber": 1,
+      "sourcePage": 108,
+      "sourceSkillLabel": "التحويلات والمعادلات",
+      "imageReference": "AR/AR-T054-Q01.webp",
+      "imageHash": "4c558858efc25344878cd54f81d950a5deb535daa0df4d4f84bb4bea959fc3cf",
+      "questionText": "قارن 8000 جرام و7500 جرام.",
+      "options": [
+        {
+          "text": "أ",
+          "isCorrect": true
+        },
+        {
+          "text": "ب",
+          "isCorrect": true
+        },
+        {
+          "text": "ج",
+          "isCorrect": false
+        },
+        {
+          "text": "د",
+          "isCorrect": false
+        }
+      ],
+      "correctAnswer": "القيمة الأولى أكبر",
+      "correctOptionIndex": 0,
+      "stepByStepSolution": "8000>7500 جرام.",
+      "educationalExplanation": "المهارة: مقارنة كتل بالجرام؛ نقرأ معطيات السؤال من الصورة ونطبّق العلاقة الحسابية ثم نراجع الناتج مع المطلوب.",
+      "solvingStrategy": "التحليل الرياضي المباشر وتطبيق استراتيجيات الحل المناسبة للقدرات.",
+      "difficulty": "Easy",
+      "difficultyReason": "خطوات مباشرة في مقارنة كتل بالجرام.",
+      "primaryMainSkillId": "skill_quant_01",
+      "primarySubSkillId": "sub_quant_01_1",
+      "primarySkillName": "أساسيات الأعداد والعمليات الحسابية — قواعد الإشارات والتجميع الذكي (مكملات 10 و 100 و 1000)",
+      "secondarySubSkillIds": [],
+      "classificationReason": "أساسيات الأعداد والعمليات الحسابية والتجميع الذكي",
+      "classificationEvidence": "عمليات حسابية مباشرة أو ترتيب العمليات",
+      "classificationConfidence": "HIGH",
+      "alternativeCandidateSkills": [
+        "sub_quant_07_2",
+        "sub_quant_07_3",
+        "sub_quant_04_3"
+      ],
+      "previousSubSkill": "sub_quant_04_4",
+      "isReclassified": true,
+      "contentFingerprint": "23cbab8411acc6a4e239598db527d03792675c7d3f95907305228b32b64d9ba6",
+      "ideaFingerprint": "a5cc92c54dd5253fcc86ab5b216de48cfff89740849557f769d72eeb77e43e76",
+      "qaStatus": "REVIEW",
+      "reviewReason": "DOCUMENTED_37_SOURCE_CONFLICT_FAIL_CLOSED",
+      "importEligible": false,
+      "evidenceReferences": [
+        "MNSF26_CANONICAL_TAXONOMY_25_95_V1.json",
+        "MNSF26_SOURCE_TO_CANONICAL_CANDIDATE_MAP_V1.json"
+      ]
+    },
+    {
+      "sourceKey": "MNSF26-AR-T054-Q05",
+      "questionCode": "QDR-QNT-MNSF26-AR-T054-Q05",
+      "sourceDocument": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+      "sourcePart": "الحساب/الجبر",
+      "sourceTestNumber": 54,
+      "sourceQuestionNumber": 5,
+      "sourcePage": 108,
+      "sourceSkillLabel": "التحويلات والمعادلات",
+      "imageReference": "AR/AR-T054-Q05.webp",
+      "imageHash": "e2a6c8883890c9c98b8f08086087c66cb331dbb8cd0712ff4fee80b26a203ed1",
+      "questionText": "الكتاب20 ريالًا والقلم10 والمسطرة2؛ قارن ثمن ثلاثة كتب وقلمين وثلاث مساطر بثمن كتابين وثلاثة أقلام ومسطرتين.",
+      "options": [
+        {
+          "text": "أ",
+          "isCorrect": true
+        },
+        {
+          "text": "ب",
+          "isCorrect": true
+        },
+        {
+          "text": "ج",
+          "isCorrect": false
+        },
+        {
+          "text": "د",
+          "isCorrect": false
+        }
+      ],
+      "correctAnswer": "القيمة الأولى أكبر",
+      "correctOptionIndex": 0,
+      "stepByStepSolution": "الأولى3×20+2×10+3×2=86؛ الثانية2×20+3×10+2×2=74؛ الأولى أكبر.",
+      "educationalExplanation": "المهارة: مقارنة قيم سلتين من السلع؛ نقرأ معطيات السؤال من الصورة ونطبّق العلاقة الحسابية ثم نراجع الناتج مع المطلوب.",
+      "solvingStrategy": "التحليل الرياضي المباشر وتطبيق استراتيجيات الحل المناسبة للقدرات.",
+      "difficulty": "Medium",
+      "difficultyReason": "تتطلب ربط أكثر من معطى أو تحويل وحدات في مقارنة قيم سلتين من السلع.",
+      "primaryMainSkillId": "skill_quant_01",
+      "primarySubSkillId": "sub_quant_01_1",
+      "primarySkillName": "أساسيات الأعداد والعمليات الحسابية — قواعد الإشارات والتجميع الذكي (مكملات 10 و 100 و 1000)",
+      "secondarySubSkillIds": [],
+      "classificationReason": "أساسيات الأعداد والعمليات الحسابية والتجميع الذكي",
+      "classificationEvidence": "عمليات حسابية مباشرة أو ترتيب العمليات",
+      "classificationConfidence": "HIGH",
+      "alternativeCandidateSkills": [
+        "sub_quant_07_2",
+        "sub_quant_07_3",
+        "sub_quant_04_3"
+      ],
+      "previousSubSkill": "sub_quant_10_1",
+      "isReclassified": true,
+      "contentFingerprint": "da6b8432d1b15373ccc7baf7352e25a118fb27657fe1b58c4aa7291ce29680d3",
+      "ideaFingerprint": "549b968eca8f81787a31a6dd62a4c46be3ba5615d3eca844f6d00a1876cced76",
+      "qaStatus": "REVIEW",
+      "reviewReason": "DOCUMENTED_37_SOURCE_CONFLICT_FAIL_CLOSED",
+      "importEligible": false,
+      "evidenceReferences": [
+        "MNSF26_CANONICAL_TAXONOMY_25_95_V1.json",
+        "MNSF26_SOURCE_TO_CANONICAL_CANDIDATE_MAP_V1.json"
+      ]
+    },
+    {
+      "sourceKey": "MNSF26-AR-T055-Q08",
+      "questionCode": "QDR-QNT-MNSF26-AR-T055-Q08",
+      "sourceDocument": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+      "sourcePart": "الحساب/الجبر",
+      "sourceTestNumber": 55,
+      "sourceQuestionNumber": 8,
+      "sourcePage": 110,
+      "sourceSkillLabel": "التحويلات والمعادلات",
+      "imageReference": "AR/AR-T055-Q08.webp",
+      "imageHash": "41dee0482ac902e2e2c452ac45141cf1581fda24e10caa666c1c0ff5f2e3aac7",
+      "questionText": "ثمن الكتاب الكبير ضعف الصغير ومجموع ثمنهما10 ريالات؛ قارن ثمن كتابين كبيرين وخمسة صغيرة مع15 ريالًا.",
+      "options": [
+        {
+          "text": "أ",
+          "isCorrect": true
+        },
+        {
+          "text": "ب",
+          "isCorrect": true
+        },
+        {
+          "text": "ج",
+          "isCorrect": false
+        },
+        {
+          "text": "د",
+          "isCorrect": false
+        }
+      ],
+      "correctAnswer": "القيمة الأولى أكبر",
+      "correctOptionIndex": 0,
+      "stepByStepSolution": "إذا الصغير10/3 فالكبير20/3؛ ثمن2 كبير+5 صغير=90/3=30؛ 30>15.",
+      "educationalExplanation": "المهارة: تقسيم ثمن بنسبة ومقارنة مشتريات؛ نقرأ معطيات السؤال من الصورة ونطبّق العلاقة الحسابية ثم نراجع الناتج مع المطلوب.",
+      "solvingStrategy": "التحليل الرياضي المباشر وتطبيق استراتيجيات الحل المناسبة للقدرات.",
+      "difficulty": "Medium",
+      "difficultyReason": "تتطلب ربط أكثر من معطى أو تحويل وحدات في تقسيم ثمن بنسبة ومقارنة مشتريات.",
+      "primaryMainSkillId": "skill_quant_01",
+      "primarySubSkillId": "sub_quant_01_1",
+      "primarySkillName": "أساسيات الأعداد والعمليات الحسابية — قواعد الإشارات والتجميع الذكي (مكملات 10 و 100 و 1000)",
+      "secondarySubSkillIds": [],
+      "classificationReason": "أساسيات الأعداد والعمليات الحسابية والتجميع الذكي",
+      "classificationEvidence": "عمليات حسابية مباشرة أو ترتيب العمليات",
+      "classificationConfidence": "HIGH",
+      "alternativeCandidateSkills": [
+        "sub_quant_07_2",
+        "sub_quant_07_3",
+        "sub_quant_04_3"
+      ],
+      "previousSubSkill": "sub_quant_08_1",
+      "isReclassified": true,
+      "contentFingerprint": "4f0d87033f4f2016b97c6aa38cf60b9c3b6217f3aa2a23574e390b962bd72ff0",
+      "ideaFingerprint": "94d8be26a59f371e970e78d3f209f1ea2da280bac597b592fed05db540d33678",
+      "qaStatus": "REVIEW",
+      "reviewReason": "DOCUMENTED_37_SOURCE_CONFLICT_FAIL_CLOSED",
+      "importEligible": false,
+      "evidenceReferences": [
+        "MNSF26_CANONICAL_TAXONOMY_25_95_V1.json",
+        "MNSF26_SOURCE_TO_CANONICAL_CANDIDATE_MAP_V1.json"
+      ]
+    },
+    {
+      "sourceKey": "MNSF26-AR-T057-Q02",
+      "questionCode": "QDR-QNT-MNSF26-AR-T057-Q02",
+      "sourceDocument": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+      "sourcePart": "الحساب/الجبر",
+      "sourceTestNumber": 57,
+      "sourceQuestionNumber": 2,
+      "sourcePage": 114,
+      "sourceSkillLabel": "التحويلات والمعادلات",
+      "imageReference": "AR/AR-T057-Q02.webp",
+      "imageHash": "6ae8395503db89046fb348f1df45aeba06fb3dec66c54b1d67165c56fb5bf992",
+      "questionText": "قارن وزن ماجد 50 كيلوجرامًا ووزن مشاري 27000 جرام.",
+      "options": [
+        {
+          "text": "أ",
+          "isCorrect": true
+        },
+        {
+          "text": "ب",
+          "isCorrect": true
+        },
+        {
+          "text": "ج",
+          "isCorrect": false
+        },
+        {
+          "text": "د",
+          "isCorrect": false
+        }
+      ],
+      "correctAnswer": "القيمة الأولى أكبر",
+      "correctOptionIndex": 0,
+      "stepByStepSolution": "وزن مشاري27 كيلوجرامًا؛ 50>27.",
+      "educationalExplanation": "المهارة: مقارنة كيلوجرام وجرام؛ نقرأ معطيات السؤال من الصورة ونطبّق العلاقة الحسابية ثم نراجع الناتج مع المطلوب.",
+      "solvingStrategy": "التحليل الرياضي المباشر وتطبيق استراتيجيات الحل المناسبة للقدرات.",
+      "difficulty": "Easy",
+      "difficultyReason": "خطوات مباشرة في مقارنة كيلوجرام وجرام.",
+      "primaryMainSkillId": "skill_quant_01",
+      "primarySubSkillId": "sub_quant_01_1",
+      "primarySkillName": "أساسيات الأعداد والعمليات الحسابية — قواعد الإشارات والتجميع الذكي (مكملات 10 و 100 و 1000)",
+      "secondarySubSkillIds": [],
+      "classificationReason": "أساسيات الأعداد والعمليات الحسابية والتجميع الذكي",
+      "classificationEvidence": "عمليات حسابية مباشرة أو ترتيب العمليات",
+      "classificationConfidence": "HIGH",
+      "alternativeCandidateSkills": [
+        "sub_quant_07_2",
+        "sub_quant_07_3",
+        "sub_quant_04_3"
+      ],
+      "previousSubSkill": "sub_quant_04_3",
+      "isReclassified": true,
+      "contentFingerprint": "96499c78a81285326e2c4483be14c0bca59a95ca32d7dd16919a538f7ea6264d",
+      "ideaFingerprint": "0249ed685fc35000e805313432ea60b60208897395d65fa719044bdf92afc547",
+      "qaStatus": "REVIEW",
+      "reviewReason": "DOCUMENTED_37_SOURCE_CONFLICT_FAIL_CLOSED",
+      "importEligible": false,
+      "evidenceReferences": [
+        "MNSF26_CANONICAL_TAXONOMY_25_95_V1.json",
+        "MNSF26_SOURCE_TO_CANONICAL_CANDIDATE_MAP_V1.json"
+      ]
+    },
+    {
+      "sourceKey": "MNSF26-AR-T057-Q12",
+      "questionCode": "QDR-QNT-MNSF26-AR-T057-Q12",
+      "sourceDocument": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+      "sourcePart": "الحساب/الجبر",
+      "sourceTestNumber": 57,
+      "sourceQuestionNumber": 12,
+      "sourcePage": 115,
+      "sourceSkillLabel": "التحويلات والمعادلات",
+      "imageReference": "AR/AR-T057-Q12.webp",
+      "imageHash": "f2db1883c2e158a2ace9febce5aa4de7e677acf2c071e5203f1cbde869b57732",
+      "questionText": "قارن 400 مليمتر مع 4 سنتيمترات.",
+      "options": [
+        {
+          "text": "أ",
+          "isCorrect": true
+        },
+        {
+          "text": "ب",
+          "isCorrect": true
+        },
+        {
+          "text": "ج",
+          "isCorrect": false
+        },
+        {
+          "text": "د",
+          "isCorrect": false
+        }
+      ],
+      "correctAnswer": "القيمة الأولى أكبر",
+      "correctOptionIndex": 0,
+      "stepByStepSolution": "400 مم=40 سم؛ 40>4.",
+      "educationalExplanation": "المهارة: تحويل مليمتر إلى سنتيمتر؛ نقرأ معطيات السؤال من الصورة ونطبّق العلاقة الحسابية ثم نراجع الناتج مع المطلوب.",
+      "solvingStrategy": "التحليل الرياضي المباشر وتطبيق استراتيجيات الحل المناسبة للقدرات.",
+      "difficulty": "Easy",
+      "difficultyReason": "خطوات مباشرة في تحويل مليمتر إلى سنتيمتر.",
+      "primaryMainSkillId": "skill_quant_01",
+      "primarySubSkillId": "sub_quant_01_1",
+      "primarySkillName": "أساسيات الأعداد والعمليات الحسابية — قواعد الإشارات والتجميع الذكي (مكملات 10 و 100 و 1000)",
+      "secondarySubSkillIds": [],
+      "classificationReason": "أساسيات الأعداد والعمليات الحسابية والتجميع الذكي",
+      "classificationEvidence": "عمليات حسابية مباشرة أو ترتيب العمليات",
+      "classificationConfidence": "HIGH",
+      "alternativeCandidateSkills": [
+        "sub_quant_07_2",
+        "sub_quant_07_3",
+        "sub_quant_04_3"
+      ],
+      "previousSubSkill": "sub_quant_04_3",
+      "isReclassified": true,
+      "contentFingerprint": "99a8fe0496b7568db362f85fd258952317609b8ef6f13ec44bbe4d8574542562",
+      "ideaFingerprint": "ee131bba7beefb7db348f1f19905e65a05fc2b84f5a07281b1838180f4792785",
+      "qaStatus": "REVIEW",
+      "reviewReason": "DOCUMENTED_37_SOURCE_CONFLICT_FAIL_CLOSED",
+      "importEligible": false,
+      "evidenceReferences": [
+        "MNSF26_CANONICAL_TAXONOMY_25_95_V1.json",
+        "MNSF26_SOURCE_TO_CANONICAL_CANDIDATE_MAP_V1.json"
+      ]
+    },
+    {
+      "sourceKey": "MNSF26-AR-T057-Q14",
+      "questionCode": "QDR-QNT-MNSF26-AR-T057-Q14",
+      "sourceDocument": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+      "sourcePart": "الحساب/الجبر",
+      "sourceTestNumber": 57,
+      "sourceQuestionNumber": 14,
+      "sourcePage": 115,
+      "sourceSkillLabel": "التحويلات والمعادلات",
+      "imageReference": "AR/AR-T057-Q14.webp",
+      "imageHash": "c96fef55a1d14e8b0fc817a180c5b136c35b09be8c3483e0234731209513696a",
+      "questionText": "قارن 10 سنتيمترات مع 15 مليمترًا.",
+      "options": [
+        {
+          "text": "أ",
+          "isCorrect": true
+        },
+        {
+          "text": "ب",
+          "isCorrect": true
+        },
+        {
+          "text": "ج",
+          "isCorrect": false
+        },
+        {
+          "text": "د",
+          "isCorrect": false
+        }
+      ],
+      "correctAnswer": "القيمة الأولى أكبر",
+      "correctOptionIndex": 0,
+      "stepByStepSolution": "10 سم=100 مم؛ 100>15.",
+      "educationalExplanation": "المهارة: مقارنة سم وملم؛ نقرأ معطيات السؤال من الصورة ونطبّق العلاقة الحسابية ثم نراجع الناتج مع المطلوب.",
+      "solvingStrategy": "التحليل الرياضي المباشر وتطبيق استراتيجيات الحل المناسبة للقدرات.",
+      "difficulty": "Easy",
+      "difficultyReason": "خطوات مباشرة في مقارنة سم وملم.",
+      "primaryMainSkillId": "skill_quant_01",
+      "primarySubSkillId": "sub_quant_01_1",
+      "primarySkillName": "أساسيات الأعداد والعمليات الحسابية — قواعد الإشارات والتجميع الذكي (مكملات 10 و 100 و 1000)",
+      "secondarySubSkillIds": [],
+      "classificationReason": "أساسيات الأعداد والعمليات الحسابية والتجميع الذكي",
+      "classificationEvidence": "عمليات حسابية مباشرة أو ترتيب العمليات",
+      "classificationConfidence": "HIGH",
+      "alternativeCandidateSkills": [
+        "sub_quant_07_2",
+        "sub_quant_07_3",
+        "sub_quant_04_3"
+      ],
+      "previousSubSkill": "sub_quant_04_3",
+      "isReclassified": true,
+      "contentFingerprint": "627f95eabcea8bf8c4772d78a8f37c6debd9bbd1f474cf3b04d738c6e614f1b0",
+      "ideaFingerprint": "8a3bc4c5f4446223780a5d1c160f825634d3373b8c04733885985ccf81e69d09",
+      "qaStatus": "REVIEW",
+      "reviewReason": "DOCUMENTED_37_SOURCE_CONFLICT_FAIL_CLOSED",
+      "importEligible": false,
+      "evidenceReferences": [
+        "MNSF26_CANONICAL_TAXONOMY_25_95_V1.json",
+        "MNSF26_SOURCE_TO_CANONICAL_CANDIDATE_MAP_V1.json"
+      ]
+    },
+    {
+      "sourceKey": "MNSF26-AR-T058-Q11",
+      "questionCode": "QDR-QNT-MNSF26-AR-T058-Q11",
+      "sourceDocument": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+      "sourcePart": "الحساب/الجبر",
+      "sourceTestNumber": 58,
+      "sourceQuestionNumber": 11,
+      "sourcePage": 117,
+      "sourceSkillLabel": "التحويلات والمعادلات",
+      "imageReference": "AR/AR-T058-Q11.webp",
+      "imageHash": "4b7b2856fd897d4d027aef4cc0157260bf988b9ddfa98235b64075a0c7a72cae",
+      "questionText": "اشترك أصدقاء في مشروع وقسموا الأرباح بالتساوي وكان نصيب أحدهم1000 ريال؛ قارن مجموع أرباح المشروع مع1000 ريال.",
+      "options": [
+        {
+          "text": "أ",
+          "isCorrect": true
+        },
+        {
+          "text": "ب",
+          "isCorrect": true
+        },
+        {
+          "text": "ج",
+          "isCorrect": false
+        },
+        {
+          "text": "د",
+          "isCorrect": false
+        }
+      ],
+      "correctAnswer": "القيمة الأولى أكبر",
+      "correctOptionIndex": 0,
+      "stepByStepSolution": "وجود أكثر من شريك يعني الربح الإجمالي=عدد الشركاء×1000، وهو أكبر من1000.",
+      "educationalExplanation": "المهارة: مقارنة الربح الإجمالي بنصيب شريك؛ نقرأ معطيات السؤال من الصورة ونطبّق العلاقة الحسابية ثم نراجع الناتج مع المطلوب.",
+      "solvingStrategy": "التحليل الرياضي المباشر وتطبيق استراتيجيات الحل المناسبة للقدرات.",
+      "difficulty": "Easy",
+      "difficultyReason": "خطوات مباشرة في مقارنة الربح الإجمالي بنصيب شريك.",
+      "primaryMainSkillId": "skill_quant_01",
+      "primarySubSkillId": "sub_quant_01_1",
+      "primarySkillName": "أساسيات الأعداد والعمليات الحسابية — قواعد الإشارات والتجميع الذكي (مكملات 10 و 100 و 1000)",
+      "secondarySubSkillIds": [],
+      "classificationReason": "أساسيات الأعداد والعمليات الحسابية والتجميع الذكي",
+      "classificationEvidence": "عمليات حسابية مباشرة أو ترتيب العمليات",
+      "classificationConfidence": "HIGH",
+      "alternativeCandidateSkills": [
+        "sub_quant_07_2",
+        "sub_quant_07_3",
+        "sub_quant_04_3"
+      ],
+      "previousSubSkill": "sub_quant_10_1",
+      "isReclassified": true,
+      "contentFingerprint": "b017c767731c2f0e4c698eaefc3ac6d76a1a2fab5149a6a4964cfbe6cd7bd99c",
+      "ideaFingerprint": "24b8b8937e798946e34558abf21689f4aff30f48b650b0e7745eb2e0a4bbdfc0",
+      "qaStatus": "REVIEW",
+      "reviewReason": "DOCUMENTED_37_SOURCE_CONFLICT_FAIL_CLOSED",
+      "importEligible": false,
+      "evidenceReferences": [
+        "MNSF26_CANONICAL_TAXONOMY_25_95_V1.json",
+        "MNSF26_SOURCE_TO_CANONICAL_CANDIDATE_MAP_V1.json"
+      ]
+    },
+    {
+      "sourceKey": "MNSF26-AR-T058-Q19",
+      "questionCode": "QDR-QNT-MNSF26-AR-T058-Q19",
+      "sourceDocument": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+      "sourcePart": "الحساب/الجبر",
+      "sourceTestNumber": 58,
+      "sourceQuestionNumber": 19,
+      "sourcePage": 117,
+      "sourceSkillLabel": "التحويلات والمعادلات",
+      "imageReference": "AR/AR-T058-Q19.webp",
+      "imageHash": "72d737c61d6b48708b7b9e6301ea5f7db51b188732a8b7e60ab83291628241ea",
+      "questionText": "سعر دفتر يساوي خمسة أمثال سعر قلم؛ قارن سعر ثلاثة أقلام بسعر دفتر.",
+      "options": [
+        {
+          "text": "أ",
+          "isCorrect": true
+        },
+        {
+          "text": "ب",
+          "isCorrect": true
+        },
+        {
+          "text": "ج",
+          "isCorrect": false
+        },
+        {
+          "text": "د",
+          "isCorrect": false
+        }
+      ],
+      "correctAnswer": "القيمة الثانية أكبر",
+      "correctOptionIndex": 0,
+      "stepByStepSolution": "الدفتر5س وثلاثة أقلام3س؛ 5س>3س للسعر الموجب.",
+      "educationalExplanation": "المهارة: مقارنة مضاعفات الأسعار؛ نقرأ معطيات السؤال من الصورة ونطبّق العلاقة الحسابية ثم نراجع الناتج مع المطلوب.",
+      "solvingStrategy": "التحليل الرياضي المباشر وتطبيق استراتيجيات الحل المناسبة للقدرات.",
+      "difficulty": "Easy",
+      "difficultyReason": "خطوات مباشرة في مقارنة مضاعفات الأسعار.",
+      "primaryMainSkillId": "skill_quant_01",
+      "primarySubSkillId": "sub_quant_01_1",
+      "primarySkillName": "أساسيات الأعداد والعمليات الحسابية — قواعد الإشارات والتجميع الذكي (مكملات 10 و 100 و 1000)",
+      "secondarySubSkillIds": [],
+      "classificationReason": "أساسيات الأعداد والعمليات الحسابية والتجميع الذكي",
+      "classificationEvidence": "عمليات حسابية مباشرة أو ترتيب العمليات",
+      "classificationConfidence": "HIGH",
+      "alternativeCandidateSkills": [
+        "sub_quant_07_2",
+        "sub_quant_07_3",
+        "sub_quant_04_3"
+      ],
+      "previousSubSkill": "sub_quant_08_1",
+      "isReclassified": true,
+      "contentFingerprint": "68128e2fc1135e0719a8d9fd24f15cda000b58698b2d20fab3fdcc3883e35fb7",
+      "ideaFingerprint": "da06ec29e7cd532ddd85ae483e1ec911a7485402e451e9c25aaf569a2676f47a",
+      "qaStatus": "REVIEW",
+      "reviewReason": "DOCUMENTED_37_SOURCE_CONFLICT_FAIL_CLOSED",
+      "importEligible": false,
+      "evidenceReferences": [
+        "MNSF26_CANONICAL_TAXONOMY_25_95_V1.json",
+        "MNSF26_SOURCE_TO_CANONICAL_CANDIDATE_MAP_V1.json"
+      ]
+    },
+    {
+      "sourceKey": "MNSF26-AR-T059-Q09",
+      "questionCode": "QDR-QNT-MNSF26-AR-T059-Q09",
+      "sourceDocument": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+      "sourcePart": "الحساب/الجبر",
+      "sourceTestNumber": 59,
+      "sourceQuestionNumber": 9,
+      "sourcePage": 118,
+      "sourceSkillLabel": "التحويلات والمعادلات",
+      "imageReference": "AR/AR-T059-Q09.webp",
+      "imageHash": "7655a695ebdfcda88453badedadfd6f5de642d8c4de6e0d9b263ffd0b09f6fcf",
+      "questionText": "اشترى شخص لوحات بـ4000 ريال وصرف20 ريالًا على طلاء كل لوحة، ثم باعها جميعًا بـ7000 بربح30 ريالًا لكل لوحة؛ كم لوحة؟",
+      "options": [
+        {
+          "text": "أ",
+          "isCorrect": false
+        },
+        {
+          "text": "ب",
+          "isCorrect": false
+        },
+        {
+          "text": "ج",
+          "isCorrect": false
+        },
+        {
+          "text": "د",
+          "isCorrect": false
+        }
+      ],
+      "correctAnswer": "60 لوحة",
+      "correctOptionIndex": 3,
+      "stepByStepSolution": "الفرق3000؛ يغطي الطلاء20 والربح30 لكل لوحة؛ 3000/50=60.",
+      "educationalExplanation": "المهارة: معادلة الربح بعد تكلفة متغيرة؛ نقرأ معطيات السؤال من الصورة ونطبّق العلاقة الحسابية ثم نراجع الناتج مع المطلوب.",
+      "solvingStrategy": "التحليل الرياضي المباشر وتطبيق استراتيجيات الحل المناسبة للقدرات.",
+      "difficulty": "Medium",
+      "difficultyReason": "تتطلب ربط أكثر من معطى أو تحويل وحدات في معادلة الربح بعد تكلفة متغيرة.",
+      "primaryMainSkillId": "skill_quant_10",
+      "primarySubSkillId": "sub_quant_10_1",
+      "primarySkillName": "الربح والخسارة والحسابات المالية — حساب سعر البيع والشراء ونسبة الربح والخسارة",
+      "secondarySubSkillIds": [],
+      "classificationReason": "حسابات الربح والخسارة وسعر التكلفة وسعر البيع",
+      "classificationEvidence": "مسألة مالية تتضمن هامش ربح أو خسارة تجارية",
+      "classificationConfidence": "HIGH",
+      "alternativeCandidateSkills": [
+        "sub_quant_07_2",
+        "sub_quant_07_3",
+        "sub_quant_04_3"
+      ],
+      "previousSubSkill": "sub_quant_07_2",
+      "isReclassified": true,
+      "contentFingerprint": "da144465ddf68dfb75c1fecfec4ec83c1a33b15d5f0b8ec70088be5272b74f6f",
+      "ideaFingerprint": "b64933aae75835ccbd4192062f9df03d755ec549ba7adb7a36a4ddb5aea70b5d",
+      "qaStatus": "REVIEW",
+      "reviewReason": "DOCUMENTED_37_SOURCE_CONFLICT_FAIL_CLOSED",
+      "importEligible": false,
+      "evidenceReferences": [
+        "MNSF26_CANONICAL_TAXONOMY_25_95_V1.json",
+        "MNSF26_SOURCE_TO_CANONICAL_CANDIDATE_MAP_V1.json"
+      ]
+    },
+    {
+      "sourceKey": "MNSF26-AR-T063-Q19",
+      "questionCode": "QDR-QNT-MNSF26-AR-T063-Q19",
+      "sourceDocument": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+      "sourcePart": "الحساب/الجبر",
+      "sourceTestNumber": 63,
+      "sourceQuestionNumber": 19,
+      "sourcePage": 128,
+      "sourceSkillLabel": "التحويلات والمعادلات",
+      "imageReference": "AR/AR-T063-Q19.webp",
+      "imageHash": "b75947109d078f951ea43f1618fd4aa55e5b45a4ccc33ee673035ce853cfe986",
+      "questionText": "علبة شوكولاتة وزنها2 كيلوجرام ووزن القطعة20 جرامًا؛ كم قطعة؟",
+      "options": [
+        {
+          "text": "أ",
+          "isCorrect": false
+        },
+        {
+          "text": "ب",
+          "isCorrect": false
+        },
+        {
+          "text": "ج",
+          "isCorrect": false
+        },
+        {
+          "text": "د",
+          "isCorrect": false
+        }
+      ],
+      "correctAnswer": "100 قطعة",
+      "correctOptionIndex": 3,
+      "stepByStepSolution": "2كجم=2000جم؛ 2000/20=100.",
+      "educationalExplanation": "المهارة: عدد قطع من كتلة إجمالية؛ نقرأ معطيات السؤال من الصورة ونطبّق العلاقة الحسابية ثم نراجع الناتج مع المطلوب.",
+      "solvingStrategy": "التحليل الرياضي المباشر وتطبيق استراتيجيات الحل المناسبة للقدرات.",
+      "difficulty": "Easy",
+      "difficultyReason": "خطوات مباشرة في عدد قطع من كتلة إجمالية.",
+      "primaryMainSkillId": "skill_quant_01",
+      "primarySubSkillId": "sub_quant_01_1",
+      "primarySkillName": "أساسيات الأعداد والعمليات الحسابية — قواعد الإشارات والتجميع الذكي (مكملات 10 و 100 و 1000)",
+      "secondarySubSkillIds": [],
+      "classificationReason": "أساسيات الأعداد والعمليات الحسابية والتجميع الذكي",
+      "classificationEvidence": "عمليات حسابية مباشرة أو ترتيب العمليات",
+      "classificationConfidence": "HIGH",
+      "alternativeCandidateSkills": [
+        "sub_quant_07_2",
+        "sub_quant_07_3",
+        "sub_quant_04_3"
+      ],
+      "previousSubSkill": "sub_quant_04_3",
+      "isReclassified": true,
+      "contentFingerprint": "11f452d293a3effa0058aa7b8c98d232e7de950b419526c6506e63630a1aa1f0",
+      "ideaFingerprint": "babdc024f3ac8744cecba67ffe2c89e7e650d1143e16d94360b16b378f1144d5",
+      "qaStatus": "REVIEW",
+      "reviewReason": "DOCUMENTED_37_SOURCE_CONFLICT_FAIL_CLOSED",
+      "importEligible": false,
+      "evidenceReferences": [
+        "MNSF26_CANONICAL_TAXONOMY_25_95_V1.json",
+        "MNSF26_SOURCE_TO_CANONICAL_CANDIDATE_MAP_V1.json"
+      ]
+    }
+  ]
+}

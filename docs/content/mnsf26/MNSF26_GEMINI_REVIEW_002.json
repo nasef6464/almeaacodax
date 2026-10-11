@@ -1,0 +1,799 @@
+{
+  "batchId": "BATCH_002",
+  "bank": "MNSF26",
+  "reviewQuestionsCount": 12,
+  "records": [
+    {
+      "sourceKey": "MNSF26-GEO-T023-Q13",
+      "questionCode": "QDR-QNT-MNSF26-GEO-T023-Q13",
+      "sourceDocument": "نماذج المنصف مرتبة حسب الدروس - الهندسة.pdf",
+      "sourcePart": "الهندسة",
+      "sourceTestNumber": 23,
+      "sourceQuestionNumber": 13,
+      "sourcePage": 43,
+      "sourceSkillLabel": "الهندسة الإحداثية",
+      "imageReference": "GEO/GEO-T023-Q13.webp",
+      "imageHash": "574e84e673d023bde62998ae8b13c3f57a6301ca20dfcac03ecf42fc57276b0d",
+      "questionText": "سؤال الهندسة الاختبار 23 رقم 13 من كتاب المنصف 26",
+      "options": [
+        {
+          "text": "أ",
+          "isCorrect": false
+        },
+        {
+          "text": "ب",
+          "isCorrect": false
+        },
+        {
+          "text": "ج",
+          "isCorrect": false
+        },
+        {
+          "text": "د",
+          "isCorrect": false
+        }
+      ],
+      "correctAnswer": "أ",
+      "correctOptionIndex": 3,
+      "stepByStepSolution": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة.",
+      "educationalExplanation": "الشرح التعليمي وتطبيق الفكرة الرياضية المباشرة.",
+      "solvingStrategy": "التحليل الرياضي المباشر وتطبيق استراتيجيات الحل المناسبة للقدرات.",
+      "difficulty": "Medium",
+      "difficultyReason": "تطبيق مباشر للقوانين الرياضية في منهج القدرات.",
+      "primaryMainSkillId": "skill_quant_25",
+      "primarySubSkillId": "sub_quant_25_3",
+      "primarySkillName": "المجسمات والحجوم وهندسة الإحداثيات — هندسة الإحداثيات (تحديد النقاط، المسافة، ونقطة المنتصف)",
+      "secondarySubSkillIds": [],
+      "classificationReason": "هندسة الإحداثيات (تحديد النقاط، المسافة، ونقطة المنتصف والميل)",
+      "classificationEvidence": "مسألة مستوى إحداثي تتضمن أزواجًا مرتبة أو نقطة المنتصف",
+      "classificationConfidence": "HIGH",
+      "alternativeCandidateSkills": [
+        "sub_quant_19_3",
+        "sub_quant_20_4",
+        "sub_quant_24_1",
+        "sub_quant_04_4",
+        "sub_quant_08_1",
+        "sub_quant_08_2",
+        "sub_quant_09_1"
+      ],
+      "previousSubSkill": null,
+      "isReclassified": null,
+      "contentFingerprint": "bbac94e5f75dcb6ed56ac2ed098d81f77808730df49cef1ef78c330465e6faa6",
+      "ideaFingerprint": "0afb680dfd39498aafe65ecf7b63846a44eb1c8745e3c94577184872cceb3092",
+      "qaStatus": "REVIEW",
+      "reviewReason": "INCOMPLETE_MASTER_DATA_REQUIRES_IMAGE_CONFIRMATION",
+      "importEligible": false,
+      "evidenceReferences": [
+        "MNSF26_CANONICAL_TAXONOMY_25_95_V1.json",
+        "MNSF26_SOURCE_TO_CANONICAL_CANDIDATE_MAP_V1.json"
+      ]
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T023-Q15",
+      "questionCode": "QDR-QNT-MNSF26-GEO-T023-Q15",
+      "sourceDocument": "نماذج المنصف مرتبة حسب الدروس - الهندسة.pdf",
+      "sourcePart": "الهندسة",
+      "sourceTestNumber": 23,
+      "sourceQuestionNumber": 15,
+      "sourcePage": 43,
+      "sourceSkillLabel": "الهندسة الإحداثية",
+      "imageReference": "GEO/GEO-T023-Q15.webp",
+      "imageHash": "574e84e673d023bde62998ae8b13c3f57a6301ca20dfcac03ecf42fc57276b0d",
+      "questionText": "سؤال الهندسة الاختبار 23 رقم 15 من كتاب المنصف 26",
+      "options": [
+        {
+          "text": "أ",
+          "isCorrect": false
+        },
+        {
+          "text": "ب",
+          "isCorrect": false
+        },
+        {
+          "text": "ج",
+          "isCorrect": false
+        },
+        {
+          "text": "د",
+          "isCorrect": false
+        }
+      ],
+      "correctAnswer": "أ",
+      "correctOptionIndex": 3,
+      "stepByStepSolution": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة.",
+      "educationalExplanation": "الشرح التعليمي وتطبيق الفكرة الرياضية المباشرة.",
+      "solvingStrategy": "التحليل الرياضي المباشر وتطبيق استراتيجيات الحل المناسبة للقدرات.",
+      "difficulty": "Medium",
+      "difficultyReason": "تطبيق مباشر للقوانين الرياضية في منهج القدرات.",
+      "primaryMainSkillId": "skill_quant_25",
+      "primarySubSkillId": "sub_quant_25_3",
+      "primarySkillName": "المجسمات والحجوم وهندسة الإحداثيات — هندسة الإحداثيات (تحديد النقاط، المسافة، ونقطة المنتصف)",
+      "secondarySubSkillIds": [],
+      "classificationReason": "هندسة الإحداثيات (تحديد النقاط، المسافة، ونقطة المنتصف والميل)",
+      "classificationEvidence": "مسألة مستوى إحداثي تتضمن أزواجًا مرتبة أو نقطة المنتصف",
+      "classificationConfidence": "HIGH",
+      "alternativeCandidateSkills": [
+        "sub_quant_19_3",
+        "sub_quant_20_4",
+        "sub_quant_24_1",
+        "sub_quant_04_4",
+        "sub_quant_08_1",
+        "sub_quant_08_2",
+        "sub_quant_09_1"
+      ],
+      "previousSubSkill": null,
+      "isReclassified": null,
+      "contentFingerprint": "73e7acfe71cf649e9943bbf3c8859e465ac23e6be91c2faa45f0cfd2af2d1244",
+      "ideaFingerprint": "0afb680dfd39498aafe65ecf7b63846a44eb1c8745e3c94577184872cceb3092",
+      "qaStatus": "REVIEW",
+      "reviewReason": "INCOMPLETE_MASTER_DATA_REQUIRES_IMAGE_CONFIRMATION",
+      "importEligible": false,
+      "evidenceReferences": [
+        "MNSF26_CANONICAL_TAXONOMY_25_95_V1.json",
+        "MNSF26_SOURCE_TO_CANONICAL_CANDIDATE_MAP_V1.json"
+      ]
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T026-Q17",
+      "questionCode": "QDR-QNT-MNSF26-GEO-T026-Q17",
+      "sourceDocument": "نماذج المنصف مرتبة حسب الدروس - الهندسة.pdf",
+      "sourcePart": "الهندسة",
+      "sourceTestNumber": 26,
+      "sourceQuestionNumber": 17,
+      "sourcePage": 49,
+      "sourceSkillLabel": "المستطيل",
+      "imageReference": "GEO/GEO-T026-Q17.webp",
+      "imageHash": "70bc4aed26db93933d9302acbffc0ccd78f21f9af3ee0bc27184929e15877737",
+      "questionText": "مستطيل عرضه س²+5س+7 وطوله ضعف عرضه؛ ما محيطه؟",
+      "options": [
+        {
+          "text": "أ",
+          "isCorrect": false
+        },
+        {
+          "text": "ب",
+          "isCorrect": false
+        },
+        {
+          "text": "ج",
+          "isCorrect": false
+        },
+        {
+          "text": "د",
+          "isCorrect": false
+        }
+      ],
+      "correctAnswer": "6(س²+5س+7)",
+      "correctOptionIndex": 3,
+      "stepByStepSolution": "المحيط2(الطول+العرض)=2(2ع+ع)=6ع.",
+      "educationalExplanation": "المهارة: محيط مستطيل بأبعاد جبرية؛ نحدد العلاقات الهندسية من الشكل الفعلي ونحسب المطلوب ونتحقق من الوحدة والاختيارات.",
+      "solvingStrategy": "التحليل الرياضي المباشر وتطبيق استراتيجيات الحل المناسبة للقدرات.",
+      "difficulty": "Medium",
+      "difficultyReason": "يتطلب أكثر من خطوة أو علاقة هندسية في محيط مستطيل بأبعاد جبرية.",
+      "primaryMainSkillId": "skill_quant_23",
+      "primarySubSkillId": "sub_quant_23_1",
+      "primarySkillName": "المعين ومتوازي الأضلاع وشبه المنحرف — مساحة ومحيط متوازي الأضلاع",
+      "secondarySubSkillIds": [],
+      "classificationReason": "مساحة ومحيط متوازي الأضلاع وخصائص الزوايا المتحالفة والمتقابلة",
+      "classificationEvidence": "خواص أضلاع وزوايا متوازي الأضلاع ومساحته (القاعدة × الارتفاع)",
+      "classificationConfidence": "HIGH",
+      "alternativeCandidateSkills": [
+        "sub_quant_21_1",
+        "sub_quant_21_2",
+        "sub_quant_21_3"
+      ],
+      "previousSubSkill": "sub_quant_21_1",
+      "isReclassified": true,
+      "contentFingerprint": "fcd9caabcb6195e9d7ea4350c3f80ed7962e59355ae7ad0ab6ffacdb3e2bca3f",
+      "ideaFingerprint": "abfc0429df8d990f65df5ce54f61127290a95ba42cd623a6d6af02b86f0bbf53",
+      "qaStatus": "REVIEW",
+      "reviewReason": "DOCUMENTED_37_SOURCE_CONFLICT_FAIL_CLOSED",
+      "importEligible": false,
+      "evidenceReferences": [
+        "MNSF26_CANONICAL_TAXONOMY_25_95_V1.json",
+        "MNSF26_SOURCE_TO_CANONICAL_CANDIDATE_MAP_V1.json"
+      ]
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T027-Q02",
+      "questionCode": "QDR-QNT-MNSF26-GEO-T027-Q02",
+      "sourceDocument": "نماذج المنصف مرتبة حسب الدروس - الهندسة.pdf",
+      "sourcePart": "الهندسة",
+      "sourceTestNumber": 27,
+      "sourceQuestionNumber": 2,
+      "sourcePage": 51,
+      "sourceSkillLabel": "المربع",
+      "imageReference": "GEO/GEO-T027-Q02.webp",
+      "imageHash": "bff03f465f3030368a3f15a96b439225ac6750e632b981bbeff71ae1789137de",
+      "questionText": "مربع محيطه12 سم، ومحيط مربع ثان يساوي نصف محيط الأول؛ قارن مساحة الأول بنصف مساحة الثاني.",
+      "options": [
+        {
+          "text": "أ",
+          "isCorrect": true
+        },
+        {
+          "text": "ب",
+          "isCorrect": true
+        },
+        {
+          "text": "ج",
+          "isCorrect": false
+        },
+        {
+          "text": "د",
+          "isCorrect": false
+        }
+      ],
+      "correctAnswer": "القيمة الأولى أكبر",
+      "correctOptionIndex": 0,
+      "stepByStepSolution": "ضلع الأول3 ومساحته9؛ محيط الثاني6 فضلعُه1.5 ومساحته2.25 ونصفها1.125؛ الأول أكبر.",
+      "educationalExplanation": "المهارة: مقارنة مساحتي مربعين بنسبة محيطين؛ نحدد العلاقات الهندسية من الشكل الفعلي ونحسب المطلوب ونتحقق من الوحدة والاختيارات.",
+      "solvingStrategy": "التحليل الرياضي المباشر وتطبيق استراتيجيات الحل المناسبة للقدرات.",
+      "difficulty": "Medium",
+      "difficultyReason": "يتطلب أكثر من خطوة أو علاقة هندسية في مقارنة مساحتي مربعين بنسبة محيطين.",
+      "primaryMainSkillId": "skill_quant_23",
+      "primarySubSkillId": "sub_quant_23_1",
+      "primarySkillName": "المعين ومتوازي الأضلاع وشبه المنحرف — مساحة ومحيط متوازي الأضلاع",
+      "secondarySubSkillIds": [],
+      "classificationReason": "مساحة ومحيط متوازي الأضلاع وخصائص الزوايا المتحالفة والمتقابلة",
+      "classificationEvidence": "خواص أضلاع وزوايا متوازي الأضلاع ومساحته (القاعدة × الارتفاع)",
+      "classificationConfidence": "HIGH",
+      "alternativeCandidateSkills": [
+        "sub_quant_22_1",
+        "sub_quant_22_2",
+        "sub_quant_22_3"
+      ],
+      "previousSubSkill": "sub_quant_22_1",
+      "isReclassified": true,
+      "contentFingerprint": "580786e53b5bd1b6a65ba5992d1f0dd79a762f0d9a9caac969e46949e8b1fc25",
+      "ideaFingerprint": "6a901835f93f73e2209a9c849933856dd1044fefcb46eed6cff974cf5989948a",
+      "qaStatus": "REVIEW",
+      "reviewReason": "DOCUMENTED_37_SOURCE_CONFLICT_FAIL_CLOSED",
+      "importEligible": false,
+      "evidenceReferences": [
+        "MNSF26_CANONICAL_TAXONOMY_25_95_V1.json",
+        "MNSF26_SOURCE_TO_CANONICAL_CANDIDATE_MAP_V1.json"
+      ]
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T027-Q13",
+      "questionCode": "QDR-QNT-MNSF26-GEO-T027-Q13",
+      "sourceDocument": "نماذج المنصف مرتبة حسب الدروس - الهندسة.pdf",
+      "sourcePart": "الهندسة",
+      "sourceTestNumber": 27,
+      "sourceQuestionNumber": 13,
+      "sourcePage": 51,
+      "sourceSkillLabel": "المربع",
+      "imageReference": "GEO/GEO-T027-Q13.webp",
+      "imageHash": "94ad63b8cb550d000deef3a781099ab26456b9d58e44af12efda0deda3b7114b",
+      "questionText": "مربع أول ضلعه3 سم وثان ضلعه7 سم؛ قارن أربعة أمثال محيط الأول بمحيط الثاني.",
+      "options": [
+        {
+          "text": "أ",
+          "isCorrect": true
+        },
+        {
+          "text": "ب",
+          "isCorrect": true
+        },
+        {
+          "text": "ج",
+          "isCorrect": false
+        },
+        {
+          "text": "د",
+          "isCorrect": false
+        }
+      ],
+      "correctAnswer": "القيمة الأولى أكبر",
+      "correctOptionIndex": 0,
+      "stepByStepSolution": "4×محيط الأول=4×12=48؛ محيط الثاني28؛ الأولى أكبر.",
+      "educationalExplanation": "المهارة: مقارنة محيطات مربعات؛ نحدد العلاقات الهندسية من الشكل الفعلي ونحسب المطلوب ونتحقق من الوحدة والاختيارات.",
+      "solvingStrategy": "التحليل الرياضي المباشر وتطبيق استراتيجيات الحل المناسبة للقدرات.",
+      "difficulty": "Easy",
+      "difficultyReason": "حساب هندسي مباشر في مقارنة محيطات مربعات.",
+      "primaryMainSkillId": "skill_quant_23",
+      "primarySubSkillId": "sub_quant_23_1",
+      "primarySkillName": "المعين ومتوازي الأضلاع وشبه المنحرف — مساحة ومحيط متوازي الأضلاع",
+      "secondarySubSkillIds": [],
+      "classificationReason": "مساحة ومحيط متوازي الأضلاع وخصائص الزوايا المتحالفة والمتقابلة",
+      "classificationEvidence": "خواص أضلاع وزوايا متوازي الأضلاع ومساحته (القاعدة × الارتفاع)",
+      "classificationConfidence": "HIGH",
+      "alternativeCandidateSkills": [
+        "sub_quant_22_1",
+        "sub_quant_22_2",
+        "sub_quant_22_3"
+      ],
+      "previousSubSkill": "sub_quant_22_1",
+      "isReclassified": true,
+      "contentFingerprint": "571ade3f75ad5bf7b988a489d195fe5ccd0cd461dc5c623a2cf17412e9c163a2",
+      "ideaFingerprint": "10ce8ec12c178a12e44cd83f5ef8961a7223850a09d26e7bd10b2d588ae2c1d4",
+      "qaStatus": "REVIEW",
+      "reviewReason": "DOCUMENTED_37_SOURCE_CONFLICT_FAIL_CLOSED",
+      "importEligible": false,
+      "evidenceReferences": [
+        "MNSF26_CANONICAL_TAXONOMY_25_95_V1.json",
+        "MNSF26_SOURCE_TO_CANONICAL_CANDIDATE_MAP_V1.json"
+      ]
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T035-Q07",
+      "questionCode": "QDR-QNT-MNSF26-GEO-T035-Q07",
+      "sourceDocument": "نماذج المنصف مرتبة حسب الدروس - الهندسة.pdf",
+      "sourcePart": "الهندسة",
+      "sourceTestNumber": 35,
+      "sourceQuestionNumber": 7,
+      "sourcePage": 67,
+      "sourceSkillLabel": "المساحات المظللة",
+      "imageReference": "GEO/GEO-T035-Q07.webp",
+      "imageHash": "d41508e7d8721efccd47763ffb5a78a23f7411e5f1a21b6ed46389c68db4056b",
+      "questionText": "دائرة كبيرة بداخلها دائرتان صغيرتان متساويتان نصف قطر كل منهما1 سم على قطرها؛ أوجد الأحمر خارج الدائرتين.",
+      "options": [
+        {
+          "text": "أ",
+          "isCorrect": false
+        },
+        {
+          "text": "ب",
+          "isCorrect": false
+        },
+        {
+          "text": "ج",
+          "isCorrect": false
+        },
+        {
+          "text": "د",
+          "isCorrect": false
+        }
+      ],
+      "correctAnswer": "2π سم²",
+      "correctOptionIndex": 3,
+      "stepByStepSolution": "نصف قطر الكبيرة=2، مساحتها4π. مجموع مساحة الصغيرتين=2×π×1²=2π. الفرق2π.",
+      "educationalExplanation": "تُحل المسألة بتحديد الأجزاء المظللة في الصورة، ثم نصف قطر الكبيرة=2، مساحتها4π. مجموع مساحة الصغيرتين=2×π×1²=2π. الفرق2π.",
+      "solvingStrategy": "التحليل الرياضي المباشر وتطبيق استراتيجيات الحل المناسبة للقدرات.",
+      "difficulty": "Medium",
+      "difficultyReason": "يتطلب دائرة كبيرة ناقص دائرتين داخليتين عبر عدة علاقات ومساحات.",
+      "primaryMainSkillId": "skill_quant_24",
+      "primarySubSkillId": "sub_quant_24_1",
+      "primarySkillName": "الدائرة والمساحات المظللة — محيط ومساحة الدائرة ونصف القطر",
+      "secondarySubSkillIds": [],
+      "classificationReason": "محيط ومساحة الدائرة ونصف القطر وعلاقة القطر",
+      "classificationEvidence": "المطلوب نصف القطر أو المحيط (2 ط نق) أو المساحة (ط نق²)",
+      "classificationConfidence": "HIGH",
+      "alternativeCandidateSkills": [
+        "sub_quant_24_3",
+        "sub_quant_24_4"
+      ],
+      "previousSubSkill": "sub_quant_24_4",
+      "isReclassified": true,
+      "contentFingerprint": "5b4e381b34a8717658ea93dd33936653f1592d361a8e40adb09062085b09a26c",
+      "ideaFingerprint": "bcc6aa4d6e09ebb460c2df0ee322c0a0894de19e7797faefc123cef8ef6c6d55",
+      "qaStatus": "REVIEW",
+      "reviewReason": "DOCUMENTED_37_SOURCE_CONFLICT_FAIL_CLOSED",
+      "importEligible": false,
+      "evidenceReferences": [
+        "MNSF26_CANONICAL_TAXONOMY_25_95_V1.json",
+        "MNSF26_SOURCE_TO_CANONICAL_CANDIDATE_MAP_V1.json"
+      ]
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T043-Q02",
+      "questionCode": "QDR-QNT-MNSF26-GEO-T043-Q02",
+      "sourceDocument": "نماذج المنصف مرتبة حسب الدروس - الهندسة.pdf",
+      "sourcePart": "الهندسة",
+      "sourceTestNumber": 43,
+      "sourceQuestionNumber": 2,
+      "sourcePage": 83,
+      "sourceSkillLabel": "مسائل الأشكال المختلفة",
+      "imageReference": "GEO/GEO-T043-Q02.webp",
+      "imageHash": "574e84e673d023bde62998ae8b13c3f57a6301ca20dfcac03ecf42fc57276b0d",
+      "questionText": "سؤال الهندسة الاختبار 43 رقم 2 من كتاب المنصف 26",
+      "options": [
+        {
+          "text": "أ",
+          "isCorrect": false
+        },
+        {
+          "text": "ب",
+          "isCorrect": false
+        },
+        {
+          "text": "ج",
+          "isCorrect": false
+        },
+        {
+          "text": "د",
+          "isCorrect": false
+        }
+      ],
+      "correctAnswer": "أ",
+      "correctOptionIndex": 3,
+      "stepByStepSolution": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة.",
+      "educationalExplanation": "الشرح التعليمي وتطبيق الفكرة الرياضية المباشرة.",
+      "solvingStrategy": "التحليل الرياضي المباشر وتطبيق استراتيجيات الحل المناسبة للقدرات.",
+      "difficulty": "Medium",
+      "difficultyReason": "تطبيق مباشر للقوانين الرياضية في منهج القدرات.",
+      "primaryMainSkillId": "skill_quant_19",
+      "primarySubSkillId": "sub_quant_19_1",
+      "primarySkillName": "الزوايا والمستقيمات — الزوايا المتجاورة والمتقابلة بالرأس والمتجمعة حول نقطة",
+      "secondarySubSkillIds": [],
+      "classificationReason": "الزوايا المتجاورة والمتقابلة بالرأس والمتجمعة حول نقطة",
+      "classificationEvidence": "مستقيمات متقاطعة وزوايا متجاورة على خط مستقيم",
+      "classificationConfidence": "HIGH",
+      "alternativeCandidateSkills": [
+        "sub_quant_19_2",
+        "sub_quant_19_3",
+        "sub_quant_20_1",
+        "sub_quant_20_3",
+        "sub_quant_20_4",
+        "sub_quant_20_5",
+        "sub_quant_21_1",
+        "sub_quant_21_2",
+        "sub_quant_22_1",
+        "sub_quant_22_2",
+        "sub_quant_23_1",
+        "sub_quant_23_2",
+        "sub_quant_23_3",
+        "sub_quant_24_1",
+        "sub_quant_24_2",
+        "sub_quant_24_3",
+        "sub_quant_24_4"
+      ],
+      "previousSubSkill": null,
+      "isReclassified": null,
+      "contentFingerprint": "6943df5111413e4f652c3c431c65c56ab7dc391d5e3099d513a1b0caba28db79",
+      "ideaFingerprint": "c0d69cb2391207b226f8c26715baf8d5219ce3fb38a2e0f8f328a26b199f91e4",
+      "qaStatus": "REVIEW",
+      "reviewReason": "INCOMPLETE_MASTER_DATA_REQUIRES_IMAGE_CONFIRMATION",
+      "importEligible": false,
+      "evidenceReferences": [
+        "MNSF26_CANONICAL_TAXONOMY_25_95_V1.json",
+        "MNSF26_SOURCE_TO_CANONICAL_CANDIDATE_MAP_V1.json"
+      ]
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T043-Q08",
+      "questionCode": "QDR-QNT-MNSF26-GEO-T043-Q08",
+      "sourceDocument": "نماذج المنصف مرتبة حسب الدروس - الهندسة.pdf",
+      "sourcePart": "الهندسة",
+      "sourceTestNumber": 43,
+      "sourceQuestionNumber": 8,
+      "sourcePage": 83,
+      "sourceSkillLabel": "مسائل الأشكال المختلفة",
+      "imageReference": "GEO/GEO-T043-Q08.webp",
+      "imageHash": "574e84e673d023bde62998ae8b13c3f57a6301ca20dfcac03ecf42fc57276b0d",
+      "questionText": "سؤال الهندسة الاختبار 43 رقم 8 من كتاب المنصف 26",
+      "options": [
+        {
+          "text": "أ",
+          "isCorrect": false
+        },
+        {
+          "text": "ب",
+          "isCorrect": false
+        },
+        {
+          "text": "ج",
+          "isCorrect": false
+        },
+        {
+          "text": "د",
+          "isCorrect": false
+        }
+      ],
+      "correctAnswer": "أ",
+      "correctOptionIndex": 3,
+      "stepByStepSolution": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة.",
+      "educationalExplanation": "الشرح التعليمي وتطبيق الفكرة الرياضية المباشرة.",
+      "solvingStrategy": "التحليل الرياضي المباشر وتطبيق استراتيجيات الحل المناسبة للقدرات.",
+      "difficulty": "Medium",
+      "difficultyReason": "تطبيق مباشر للقوانين الرياضية في منهج القدرات.",
+      "primaryMainSkillId": "skill_quant_19",
+      "primarySubSkillId": "sub_quant_19_1",
+      "primarySkillName": "الزوايا والمستقيمات — الزوايا المتجاورة والمتقابلة بالرأس والمتجمعة حول نقطة",
+      "secondarySubSkillIds": [],
+      "classificationReason": "الزوايا المتجاورة والمتقابلة بالرأس والمتجمعة حول نقطة",
+      "classificationEvidence": "مستقيمات متقاطعة وزوايا متجاورة على خط مستقيم",
+      "classificationConfidence": "HIGH",
+      "alternativeCandidateSkills": [
+        "sub_quant_19_2",
+        "sub_quant_19_3",
+        "sub_quant_20_1",
+        "sub_quant_20_3",
+        "sub_quant_20_4",
+        "sub_quant_20_5",
+        "sub_quant_21_1",
+        "sub_quant_21_2",
+        "sub_quant_22_1",
+        "sub_quant_22_2",
+        "sub_quant_23_1",
+        "sub_quant_23_2",
+        "sub_quant_23_3",
+        "sub_quant_24_1",
+        "sub_quant_24_2",
+        "sub_quant_24_3",
+        "sub_quant_24_4"
+      ],
+      "previousSubSkill": null,
+      "isReclassified": null,
+      "contentFingerprint": "02e770c6e5fbd068c4e91fd42595a57a9ee76546e008c8c91f2284002d7d5c5d",
+      "ideaFingerprint": "c0d69cb2391207b226f8c26715baf8d5219ce3fb38a2e0f8f328a26b199f91e4",
+      "qaStatus": "REVIEW",
+      "reviewReason": "INCOMPLETE_MASTER_DATA_REQUIRES_IMAGE_CONFIRMATION",
+      "importEligible": false,
+      "evidenceReferences": [
+        "MNSF26_CANONICAL_TAXONOMY_25_95_V1.json",
+        "MNSF26_SOURCE_TO_CANONICAL_CANDIDATE_MAP_V1.json"
+      ]
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T043-Q09",
+      "questionCode": "QDR-QNT-MNSF26-GEO-T043-Q09",
+      "sourceDocument": "نماذج المنصف مرتبة حسب الدروس - الهندسة.pdf",
+      "sourcePart": "الهندسة",
+      "sourceTestNumber": 43,
+      "sourceQuestionNumber": 9,
+      "sourcePage": 83,
+      "sourceSkillLabel": "مسائل الأشكال المختلفة",
+      "imageReference": "GEO/GEO-T043-Q09.webp",
+      "imageHash": "574e84e673d023bde62998ae8b13c3f57a6301ca20dfcac03ecf42fc57276b0d",
+      "questionText": "سؤال الهندسة الاختبار 43 رقم 9 من كتاب المنصف 26",
+      "options": [
+        {
+          "text": "أ",
+          "isCorrect": false
+        },
+        {
+          "text": "ب",
+          "isCorrect": false
+        },
+        {
+          "text": "ج",
+          "isCorrect": false
+        },
+        {
+          "text": "د",
+          "isCorrect": false
+        }
+      ],
+      "correctAnswer": "أ",
+      "correctOptionIndex": 3,
+      "stepByStepSolution": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة.",
+      "educationalExplanation": "الشرح التعليمي وتطبيق الفكرة الرياضية المباشرة.",
+      "solvingStrategy": "التحليل الرياضي المباشر وتطبيق استراتيجيات الحل المناسبة للقدرات.",
+      "difficulty": "Medium",
+      "difficultyReason": "تطبيق مباشر للقوانين الرياضية في منهج القدرات.",
+      "primaryMainSkillId": "skill_quant_19",
+      "primarySubSkillId": "sub_quant_19_1",
+      "primarySkillName": "الزوايا والمستقيمات — الزوايا المتجاورة والمتقابلة بالرأس والمتجمعة حول نقطة",
+      "secondarySubSkillIds": [],
+      "classificationReason": "الزوايا المتجاورة والمتقابلة بالرأس والمتجمعة حول نقطة",
+      "classificationEvidence": "مستقيمات متقاطعة وزوايا متجاورة على خط مستقيم",
+      "classificationConfidence": "HIGH",
+      "alternativeCandidateSkills": [
+        "sub_quant_19_2",
+        "sub_quant_19_3",
+        "sub_quant_20_1",
+        "sub_quant_20_3",
+        "sub_quant_20_4",
+        "sub_quant_20_5",
+        "sub_quant_21_1",
+        "sub_quant_21_2",
+        "sub_quant_22_1",
+        "sub_quant_22_2",
+        "sub_quant_23_1",
+        "sub_quant_23_2",
+        "sub_quant_23_3",
+        "sub_quant_24_1",
+        "sub_quant_24_2",
+        "sub_quant_24_3",
+        "sub_quant_24_4"
+      ],
+      "previousSubSkill": null,
+      "isReclassified": null,
+      "contentFingerprint": "d103e28519b8d7d2fc42101a44c738ef45950aacc67c61cba8a0be1c206430a0",
+      "ideaFingerprint": "c0d69cb2391207b226f8c26715baf8d5219ce3fb38a2e0f8f328a26b199f91e4",
+      "qaStatus": "REVIEW",
+      "reviewReason": "INCOMPLETE_MASTER_DATA_REQUIRES_IMAGE_CONFIRMATION",
+      "importEligible": false,
+      "evidenceReferences": [
+        "MNSF26_CANONICAL_TAXONOMY_25_95_V1.json",
+        "MNSF26_SOURCE_TO_CANONICAL_CANDIDATE_MAP_V1.json"
+      ]
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T043-Q10",
+      "questionCode": "QDR-QNT-MNSF26-GEO-T043-Q10",
+      "sourceDocument": "نماذج المنصف مرتبة حسب الدروس - الهندسة.pdf",
+      "sourcePart": "الهندسة",
+      "sourceTestNumber": 43,
+      "sourceQuestionNumber": 10,
+      "sourcePage": 83,
+      "sourceSkillLabel": "مسائل الأشكال المختلفة",
+      "imageReference": "GEO/GEO-T043-Q10.webp",
+      "imageHash": "574e84e673d023bde62998ae8b13c3f57a6301ca20dfcac03ecf42fc57276b0d",
+      "questionText": "سؤال الهندسة الاختبار 43 رقم 10 من كتاب المنصف 26",
+      "options": [
+        {
+          "text": "أ",
+          "isCorrect": false
+        },
+        {
+          "text": "ب",
+          "isCorrect": false
+        },
+        {
+          "text": "ج",
+          "isCorrect": false
+        },
+        {
+          "text": "د",
+          "isCorrect": false
+        }
+      ],
+      "correctAnswer": "أ",
+      "correctOptionIndex": 3,
+      "stepByStepSolution": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة.",
+      "educationalExplanation": "الشرح التعليمي وتطبيق الفكرة الرياضية المباشرة.",
+      "solvingStrategy": "التحليل الرياضي المباشر وتطبيق استراتيجيات الحل المناسبة للقدرات.",
+      "difficulty": "Medium",
+      "difficultyReason": "تطبيق مباشر للقوانين الرياضية في منهج القدرات.",
+      "primaryMainSkillId": "skill_quant_19",
+      "primarySubSkillId": "sub_quant_19_1",
+      "primarySkillName": "الزوايا والمستقيمات — الزوايا المتجاورة والمتقابلة بالرأس والمتجمعة حول نقطة",
+      "secondarySubSkillIds": [],
+      "classificationReason": "الزوايا المتجاورة والمتقابلة بالرأس والمتجمعة حول نقطة",
+      "classificationEvidence": "مستقيمات متقاطعة وزوايا متجاورة على خط مستقيم",
+      "classificationConfidence": "HIGH",
+      "alternativeCandidateSkills": [
+        "sub_quant_19_2",
+        "sub_quant_19_3",
+        "sub_quant_20_1",
+        "sub_quant_20_3",
+        "sub_quant_20_4",
+        "sub_quant_20_5",
+        "sub_quant_21_1",
+        "sub_quant_21_2",
+        "sub_quant_22_1",
+        "sub_quant_22_2",
+        "sub_quant_23_1",
+        "sub_quant_23_2",
+        "sub_quant_23_3",
+        "sub_quant_24_1",
+        "sub_quant_24_2",
+        "sub_quant_24_3",
+        "sub_quant_24_4"
+      ],
+      "previousSubSkill": null,
+      "isReclassified": null,
+      "contentFingerprint": "81c554b0dacf09a0515d02dd45e3233f702be9616f266ff5797a8053a29b379c",
+      "ideaFingerprint": "c0d69cb2391207b226f8c26715baf8d5219ce3fb38a2e0f8f328a26b199f91e4",
+      "qaStatus": "REVIEW",
+      "reviewReason": "INCOMPLETE_MASTER_DATA_REQUIRES_IMAGE_CONFIRMATION",
+      "importEligible": false,
+      "evidenceReferences": [
+        "MNSF26_CANONICAL_TAXONOMY_25_95_V1.json",
+        "MNSF26_SOURCE_TO_CANONICAL_CANDIDATE_MAP_V1.json"
+      ]
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T048-Q20",
+      "questionCode": "QDR-QNT-MNSF26-GEO-T048-Q20",
+      "sourceDocument": "نماذج المنصف مرتبة حسب الدروس - الهندسة.pdf",
+      "sourcePart": "الهندسة",
+      "sourceTestNumber": 48,
+      "sourceQuestionNumber": 20,
+      "sourcePage": 92,
+      "sourceSkillLabel": "المجسمات",
+      "imageReference": "GEO/GEO-T048-Q20.webp",
+      "imageHash": "2ed86f2f33e283783b291b7f3c633bae33542930da5ff5ce5bdd1b88e8c4c1ae",
+      "questionText": "قارن42م³ بـ400 ملليلتر.",
+      "options": [
+        {
+          "text": "أ",
+          "isCorrect": true
+        },
+        {
+          "text": "ب",
+          "isCorrect": true
+        },
+        {
+          "text": "ج",
+          "isCorrect": false
+        },
+        {
+          "text": "د",
+          "isCorrect": false
+        }
+      ],
+      "correctAnswer": "القيمة الأولى أكبر (أ)",
+      "correctOptionIndex": 0,
+      "stepByStepSolution": "400مل=0.0004م³، فـ42م³ أكبر.",
+      "educationalExplanation": "الحل مستخرج من الصورة الفعلية: 400مل=0.0004م³، فـ42م³ أكبر.",
+      "solvingStrategy": "التحليل الرياضي المباشر وتطبيق استراتيجيات الحل المناسبة للقدرات.",
+      "difficulty": "Easy",
+      "difficultyReason": "قانون مباشر.",
+      "primaryMainSkillId": "skill_quant_19",
+      "primarySubSkillId": "sub_quant_19_1",
+      "primarySkillName": "الزوايا والمستقيمات — الزوايا المتجاورة والمتقابلة بالرأس والمتجمعة حول نقطة",
+      "secondarySubSkillIds": [],
+      "classificationReason": "الزوايا المتجاورة والمتقابلة بالرأس والمتجمعة حول نقطة",
+      "classificationEvidence": "مستقيمات متقاطعة وزوايا متجاورة على خط مستقيم",
+      "classificationConfidence": "HIGH",
+      "alternativeCandidateSkills": [
+        "sub_quant_25_1",
+        "sub_quant_25_2"
+      ],
+      "previousSubSkill": "sub_quant_25_1",
+      "isReclassified": true,
+      "contentFingerprint": "bd6a1a34321913d3673631c927deb5e82fbe92ace5d295fea881641a4c4eee09",
+      "ideaFingerprint": "db268e31ebc30a08b3a25dbf1f7a0fefebb679f0218ac3d1739c1e986afbab91",
+      "qaStatus": "REVIEW",
+      "reviewReason": "DOCUMENTED_37_SOURCE_CONFLICT_FAIL_CLOSED",
+      "importEligible": false,
+      "evidenceReferences": [
+        "MNSF26_CANONICAL_TAXONOMY_25_95_V1.json",
+        "MNSF26_SOURCE_TO_CANONICAL_CANDIDATE_MAP_V1.json"
+      ]
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T050-Q03",
+      "questionCode": "QDR-QNT-MNSF26-GEO-T050-Q03",
+      "sourceDocument": "نماذج المنصف مرتبة حسب الدروس - الهندسة.pdf",
+      "sourcePart": "الهندسة",
+      "sourceTestNumber": 50,
+      "sourceQuestionNumber": 3,
+      "sourcePage": 96,
+      "sourceSkillLabel": "المجسمات",
+      "imageReference": "GEO/GEO-T050-Q03.webp",
+      "imageHash": "8dee0294270e044598471100dd3738ff32cca5ef119c143a19ec35ee1ad4da9d",
+      "questionText": "مكعب مساحة سطحه28سم²؛ قارن4م بطول حرفه.",
+      "options": [
+        {
+          "text": "أ",
+          "isCorrect": true
+        },
+        {
+          "text": "ب",
+          "isCorrect": true
+        },
+        {
+          "text": "ج",
+          "isCorrect": false
+        },
+        {
+          "text": "د",
+          "isCorrect": false
+        }
+      ],
+      "correctAnswer": "القيمة الأولى أكبر (أ)",
+      "correctOptionIndex": 0,
+      "stepByStepSolution": "المساحة السطحية28سم² تعطي6s²=28، s≈2.16سم. القيمة الأولى4م=400سم، فهي أكبر.",
+      "educationalExplanation": "الحل من الصورة الفعلية: المساحة السطحية28سم² تعطي6s²=28، s≈2.16سم. القيمة الأولى4م=400سم، فهي أكبر.",
+      "solvingStrategy": "التحليل الرياضي المباشر وتطبيق استراتيجيات الحل المناسبة للقدرات.",
+      "difficulty": "Medium",
+      "difficultyReason": "تحتاج ربط معطيات.",
+      "primaryMainSkillId": "skill_quant_25",
+      "primarySubSkillId": "sub_quant_25_1",
+      "primarySkillName": "المجسمات والحجوم وهندسة الإحداثيات — حجم والمساحة السطحية للمكعب ومتوازي المستطيلات",
+      "secondarySubSkillIds": [],
+      "classificationReason": "حجم والمساحة السطحية للمكعب ومتوازي المستطيلات",
+      "classificationEvidence": "مسألة مجسمات وحجوم تحسب أبعاد أو حجم المكعب ومتوازي المستطيلات",
+      "classificationConfidence": "HIGH",
+      "alternativeCandidateSkills": [
+        "sub_quant_25_2"
+      ],
+      "previousSubSkill": "sub_quant_25_1",
+      "isReclassified": false,
+      "contentFingerprint": "b22448062ace4cca5d8d9a51526a0e9a765834f1ac7058227a8a7db9de0047f1",
+      "ideaFingerprint": "8f501ecdf7887d1e5dc4647d4e1a6520a9f7e4c98d8d4abc22785eb721f16d37",
+      "qaStatus": "REVIEW",
+      "reviewReason": "DOCUMENTED_37_SOURCE_CONFLICT_FAIL_CLOSED",
+      "importEligible": false,
+      "evidenceReferences": [
+        "MNSF26_CANONICAL_TAXONOMY_25_95_V1.json",
+        "MNSF26_SOURCE_TO_CANONICAL_CANDIDATE_MAP_V1.json"
+      ]
+    }
+  ]
+}

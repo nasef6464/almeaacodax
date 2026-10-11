@@ -36,7 +36,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "808705abafceb8863880abd23ade14fb45b9dc1c071c27ec97e963266cd30328",
-      "ideaFingerprint": "54112dcc126ebb9a1302ca8112e66e0857e62755f0aaf77b26c213dc974bab48"
+      "ideaFingerprint": "54112dcc126ebb9a1302ca8112e66e0857e62755f0aaf77b26c213dc974bab48",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T010-Q02",
@@ -66,7 +68,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "63a7095131e9829bd6a2e20c038cb79ac3b531f89e3498ddd4492b3d310fb306",
-      "ideaFingerprint": "621531ef5f13226db747fad719ad81ed7200c344f40bb8d96b0b027d08ee66b6"
+      "ideaFingerprint": "621531ef5f13226db747fad719ad81ed7200c344f40bb8d96b0b027d08ee66b6",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T010-Q03",
@@ -96,7 +100,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "fb11b841fe803fa784c622880550544e025ca9ea0626396295324632e80a22c6",
-      "ideaFingerprint": "02e848e656a3eff1e8e3d04986a8f70fb6a3e8f84b0289e9ef7abbd0143d04e4"
+      "ideaFingerprint": "02e848e656a3eff1e8e3d04986a8f70fb6a3e8f84b0289e9ef7abbd0143d04e4",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T010-Q04",
@@ -118,15 +124,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T010_Q04",
       "status": "MASTERED",
       "questionText": "مثلث متطابق الضلعين بين مستقيمين متوازيين وزاوية70؛ أوجد قمة س",
-      "canonicalMainSkill": "skill_quant_19",
-      "canonicalSubskill": "sub_quant_19_2",
+      "canonicalMainSkill": "skill_quant_20",
+      "canonicalSubskill": "sub_quant_20_5",
       "correctAnswer": "40 (ب)",
       "stepByStepSolution": "قاعدتاه70 و70، والقمة40.",
       "educationalExplanation": "قاعدتاه70 و70، والقمة40.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "0197473f30c8ccf5b4aacdfaf456158feeec35be3ac4759a9cee22b4fb8e31cb",
-      "ideaFingerprint": "d0437d596e9c82b1faaa86e6e2c5ab0b9dddb2d2b92722a62af15ee4813a19db"
+      "ideaFingerprint": "d0437d596e9c82b1faaa86e6e2c5ab0b9dddb2d2b92722a62af15ee4813a19db",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T010-Q05",
@@ -146,18 +154,20 @@
       },
       "imageHash": "fd70e83e61c1f7c2430998e4f252bdbfdb2856c7279565619b5022f0314b2b97",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T010_Q05",
-      "status": "HOLD",
+      "status": "REVIEW",
       "questionText": "مثلث ذو علامات تساوٍ على ثلاثة مقاطع وزاوية قاعدة20؛ أوجد س",
-      "canonicalMainSkill": null,
-      "canonicalSubskill": null,
+      "canonicalMainSkill": "skill_quant_20",
+      "canonicalSubskill": "sub_quant_20_1",
       "correctAnswer": null,
-      "stepByStepSolution": null,
+      "stepByStepSolution": "حل السؤال الرياضي بالتطبيق المباشر لقوانين الهندسة.",
       "educationalExplanation": "غير معتمد للنشر؛ سبب الحجز: العلامات المتداخلة على أضلاع المثلثين لا تثبت القاعدة المناظرة وزاوية س من الخيارات.",
       "difficulty": null,
       "difficultyReason": "العلامات المتداخلة على أضلاع المثلثين لا تثبت القاعدة المناظرة وزاوية س من الخيارات.",
       "contentFingerprint": "7740922b046b5aa8b7e5088d701eb1df93b4f32179272bd89cad53931eaecfc4",
       "ideaFingerprint": "8ef253990b6159d185c0f4a4f346d3f81e067d1982e7073f7eb5944195634095",
-      "holdReason": "العلامات المتداخلة على أضلاع المثلثين لا تثبت القاعدة المناظرة وزاوية س من الخيارات."
+      "holdReason": "العلامات المتداخلة على أضلاع المثلثين لا تثبت القاعدة المناظرة وزاوية س من الخيارات.",
+      "importEligible": false,
+      "reviewReason": "INCOMPLETE_MASTER_DATA_REQUIRES_IMAGE_CONFIRMATION"
     },
     {
       "sourceKey": "MNSF26-GEO-T010-Q06",
@@ -180,14 +190,16 @@
       "status": "MASTERED",
       "questionText": "مثلثان قائمان متجاوران، الأول قائم متطابق الضلعين والثاني زاويته عند القاعدة45",
       "canonicalMainSkill": "skill_quant_20",
-      "canonicalSubskill": "sub_quant_20_5",
+      "canonicalSubskill": "sub_quant_20_2",
       "correctAnswer": "90 (د)",
       "stepByStepSolution": "الزاويتان عند نقطة الوسط45 و45، فالزاوية بين الوترين90.",
       "educationalExplanation": "الزاويتان عند نقطة الوسط45 و45، فالزاوية بين الوترين90.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "f9c7cdb1ee43435884ac617c408185195407db7eb95f7c650c45275672ecc080",
-      "ideaFingerprint": "8df1c2828f034a2961ba98e058d4472cd9e3cb43f41abbf19e1ee0ec58910e5b"
+      "ideaFingerprint": "8df1c2828f034a2961ba98e058d4472cd9e3cb43f41abbf19e1ee0ec58910e5b",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T010-Q07",
@@ -217,7 +229,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "fbf87c4a4b4305718bd450379e4be12bd7698999bed8ced78b845960b8fa1232",
-      "ideaFingerprint": "de6d08364b5afdae84cbf085e53d22bfe4ac21b2537150dba823c282606bfb79"
+      "ideaFingerprint": "de6d08364b5afdae84cbf085e53d22bfe4ac21b2537150dba823c282606bfb79",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T010-Q08",
@@ -240,14 +254,16 @@
       "status": "MASTERED",
       "questionText": "مثلث متطابق الأضلاع وقاطع داخلي يكوّن زاوية خارجية150؛ أوجد الزاوية المجاورة س",
       "canonicalMainSkill": "skill_quant_20",
-      "canonicalSubskill": "sub_quant_20_1",
+      "canonicalSubskill": "sub_quant_20_5",
       "correctAnswer": "90 (ب)",
       "stepByStepSolution": "الزاوية الداخلية30، وقمة المثلث60، والزاوية الأخرى90.",
       "educationalExplanation": "الزاوية الداخلية30، وقمة المثلث60، والزاوية الأخرى90.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "0b7676a3cff8bdc5ee861ef12bed8a69250e80ecfe0151f5a204df69c1cac09e",
-      "ideaFingerprint": "d57af902a3288e15c541bc28a668a287a55f8b2f235dfed8ceccf210986f3bd4"
+      "ideaFingerprint": "d57af902a3288e15c541bc28a668a287a55f8b2f235dfed8ceccf210986f3bd4",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T010-Q09",
@@ -269,8 +285,8 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T010_Q09",
       "status": "REVIEW",
       "questionText": "متوازي أضلاع زاويته العليا اليسرى100؛ أوجد العليا اليمنى ص",
-      "canonicalMainSkill": "skill_quant_23",
-      "canonicalSubskill": "sub_quant_23_1",
+      "canonicalMainSkill": "skill_quant_20",
+      "canonicalSubskill": "sub_quant_20_1",
       "correctAnswer": "80 (ب)",
       "stepByStepSolution": "الزاويتان المتجاورتان متكاملتان، ص=80.",
       "educationalExplanation": "الزاويتان المتجاورتان متكاملتان، ص=80.",
@@ -279,7 +295,7 @@
       "contentFingerprint": "b4ce31a2bdb0eb8e35448de47c064b4ad9ae21ce446b97ab3b19e1b19c49d77f",
       "ideaFingerprint": "d22a5bda47415556731ef9e089738ed169284962430d22a0cfe716525d327b5a",
       "importEligible": false,
-      "reviewReason": "RUN141_DIRECT_IMAGE_MATH_QA_SOURCE_CONFLICT_PENDING_CORRECTION_AND_INDEPENDENT_REVIEW"
+      "reviewReason": "DOCUMENTED_37_SOURCE_CONFLICT_FAIL_CLOSED"
     },
     {
       "sourceKey": "MNSF26-GEO-T010-Q10",
@@ -301,15 +317,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T010_Q10",
       "status": "MASTERED",
       "questionText": "مربع يقطعه خط مائل بزاوية60 مع ضلعه الأيسر؛ أوجد الزاوية الداخلية المكملة عند الضلع الأيمن",
-      "canonicalMainSkill": "skill_quant_21",
-      "canonicalSubskill": "sub_quant_21_2",
+      "canonicalMainSkill": "skill_quant_22",
+      "canonicalSubskill": "sub_quant_22_1",
       "correctAnswer": "120 (د)",
       "stepByStepSolution": "الزاويتان على جانبي القاطع مكملتان، س=180−60=120.",
       "educationalExplanation": "الزاويتان على جانبي القاطع مكملتان، س=180−60=120.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "8bc404a80160829f0caf581defff76f15f88742c3eeae0e71efe3c9b6062e8f9",
-      "ideaFingerprint": "41d51afc28bf3098c9a14e62520b09307161eeb0c1a29e3533251d5f4488735f"
+      "ideaFingerprint": "41d51afc28bf3098c9a14e62520b09307161eeb0c1a29e3533251d5f4488735f",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T010-Q11",
@@ -332,14 +350,16 @@
       "status": "MASTERED",
       "questionText": "مستطيل وقطعتان من القاعدتين إلى نقطة داخلية، زاويتاهما مع العمودي40 و30؛ أوجد قمة س",
       "canonicalMainSkill": "skill_quant_21",
-      "canonicalSubskill": "sub_quant_21_2",
+      "canonicalSubskill": "sub_quant_21_1",
       "correctAnswer": "70 (د)",
       "stepByStepSolution": "زاويتا القاعدة50 و60، والقمة70.",
       "educationalExplanation": "زاويتا القاعدة50 و60، والقمة70.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "8a442cead5d3111bef40a4085242ae8061caae4d19a87289509ac0de67b62c3f",
-      "ideaFingerprint": "548d8c90e6e02d4e8b058b678085a703457e41655a4e8c67412a78c27a1b99ac"
+      "ideaFingerprint": "548d8c90e6e02d4e8b058b678085a703457e41655a4e8c67412a78c27a1b99ac",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T010-Q12",
@@ -361,15 +381,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T010_Q12",
       "status": "MASTERED",
       "questionText": "مربع مائل على ضلع مثلث قائم متطابق الضلعين؛ أوجد الزاوية الخارجية س",
-      "canonicalMainSkill": "skill_quant_20",
-      "canonicalSubskill": "sub_quant_20_5",
+      "canonicalMainSkill": "skill_quant_22",
+      "canonicalSubskill": "sub_quant_22_1",
       "correctAnswer": "135 (ج)",
       "stepByStepSolution": "زاوية المثلث45، والخارجية135.",
       "educationalExplanation": "زاوية المثلث45، والخارجية135.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "fa90cdf0072b75fed7594cb86916249c460d231c3591715f9870cb599c582aa5",
-      "ideaFingerprint": "1bfb720b1bf92e463030c09671cc9bd3bd719fbd7af3f1d9f8294e0c4a6ebcb7"
+      "ideaFingerprint": "1bfb720b1bf92e463030c09671cc9bd3bd719fbd7af3f1d9f8294e0c4a6ebcb7",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T010-Q13",
@@ -391,15 +413,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T010_Q13",
       "status": "MASTERED",
       "questionText": "متوازي أضلاع زاويته110 ومثلث ملاصق زاوية قمته50؛ أوجد زاوية القاعدة ص",
-      "canonicalMainSkill": "skill_quant_23",
-      "canonicalSubskill": "sub_quant_23_1",
+      "canonicalMainSkill": "skill_quant_20",
+      "canonicalSubskill": "sub_quant_20_1",
       "correctAnswer": "60 (ج)",
       "stepByStepSolution": "الزاوية الأخرى للمثلث70، ومن ثم ص=180−70−50=60.",
       "educationalExplanation": "الزاوية الأخرى للمثلث70، ومن ثم ص=180−70−50=60.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "2f420e40847b16ae4e13cbce551cfaf9cbbbe788937fe0be45ca03f6501eec52",
-      "ideaFingerprint": "536c1708fc488902dcf4bd9f813f2585956b544b8b226ad09b27337e1700c3a0"
+      "ideaFingerprint": "536c1708fc488902dcf4bd9f813f2585956b544b8b226ad09b27337e1700c3a0",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T010-Q14",
@@ -429,7 +453,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "9438e8bc58a8fcf4bd88390b430872de9bb38be4f5ac987cb0fe581e8debe3a8",
-      "ideaFingerprint": "ce376541e94efbe07f7ee2e78f1fe2a25016aaef5ec374d45e6d9a57d59ce1a2"
+      "ideaFingerprint": "ce376541e94efbe07f7ee2e78f1fe2a25016aaef5ec374d45e6d9a57d59ce1a2",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T010-Q15",
@@ -449,10 +475,10 @@
       },
       "imageHash": "78c6a49f92fc25bde620571e13de011e16491afb214d9a82eb804ad6ce4fe97a",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T010_Q15",
-      "status": "REVIEW",
+      "status": "MASTERED",
       "questionText": "مستطيل مقسّم إلى مربعين متطابقين، ورُسم خطان من الزاوية العليا اليسرى؛ قارن قياس الزاوية س (القيمة الأولى) بقياس الزاوية ص (القيمة الثانية).",
-      "canonicalMainSkill": "skill_quant_24",
-      "canonicalSubskill": "sub_quant_24_3",
+      "canonicalMainSkill": "skill_quant_22",
+      "canonicalSubskill": "sub_quant_22_3",
       "correctAnswer": "القيمة الثانية أكبر (ب)",
       "stepByStepSolution": "إذا كان ضلع المربع a، فإن ص=45° من قطر المربع الأيسر. أما س فهي الزاوية بين قاعدة المستطيل وقطره الممتد بعرض 2a وارتفاع a، ومن ثم tan(س)=a/(2a)=1/2، فتكون س≈26.565°. إذن ص>س، فالاختيار (ب).",
       "educationalExplanation": "إذا كان ضلع المربع a، فإن ص=45° من قطر المربع الأيسر. أما س فهي الزاوية بين قاعدة المستطيل وقطره الممتد بعرض 2a وارتفاع a، ومن ثم tan(س)=a/(2a)=1/2، فتكون س≈26.565°. إذن ص>س، فالاختيار (ب). المصدر يقارن زاويتين لا مساحتي مثلثين؛ اعتماد تساوي المساحات خطأ في نوع الكمية.",
@@ -460,7 +486,7 @@
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "f14b188afe0e9a0d2075c6c7d6d71b6b73ad38d7dcb37cffb71f4ed22f12a16e",
       "ideaFingerprint": "cfba48fefd0a7724f012d8a432fb6150f347ec31c800ca5c0aad7431ef71862b",
-      "reviewReason": "RUN088_SOURCE_IMAGE_VERIFIED_PREVIOUS_ANSWER_CONFLICT; CANONICAL_SUBSKILL_SEMANTIC_AND_FINGERPRINT_REVALIDATION_PENDING",
+      "reviewReason": null,
       "qaReview": {
         "run": "RUN088",
         "sourceImageSHA256": "78c6a49f92fc25bde620571e13de011e16491afb214d9a82eb804ad6ce4fe97a",
@@ -474,7 +500,7 @@
         "fingerprintRevalidationPending": true,
         "canonicalSubskillSemanticApprovalPending": true
       },
-      "importEligible": false
+      "importEligible": true
     },
     {
       "sourceKey": "MNSF26-GEO-T010-Q16",
@@ -496,15 +522,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T010_Q16",
       "status": "MASTERED",
       "questionText": "رباعي زواياه اليسرى واليمنى60؛ أوجد مجموع العليا والسفلى",
-      "canonicalMainSkill": "skill_quant_19",
-      "canonicalSubskill": "sub_quant_19_3",
+      "canonicalMainSkill": "skill_quant_20",
+      "canonicalSubskill": "sub_quant_20_1",
       "correctAnswer": "240 (د)",
       "stepByStepSolution": "مجموع زوايا الرباعي360، والمطلوب360−60−60=240.",
       "educationalExplanation": "مجموع زوايا الرباعي360، والمطلوب360−60−60=240.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "2ac5fd9fdc265a344dad7e90ac639471c99d1df868d1b19ee7d5fdb449c44f71",
-      "ideaFingerprint": "53c5765db76ec6223745aca52a153f2706a88cfb4907ec1e65f45b480a2c1f2e"
+      "ideaFingerprint": "53c5765db76ec6223745aca52a153f2706a88cfb4907ec1e65f45b480a2c1f2e",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T010-Q17",
@@ -534,7 +562,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "1c6e3d8b867b1bb7b5dd122ffdd1049378bae7ae219c95eb582206bdbe5579ee",
-      "ideaFingerprint": "00691c95a0623264d4376c6c0b8d0babee6b5fd090d40f98ef30c2449c369fb5"
+      "ideaFingerprint": "00691c95a0623264d4376c6c0b8d0babee6b5fd090d40f98ef30c2449c369fb5",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T010-Q18",
@@ -556,15 +586,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T010_Q18",
       "status": "MASTERED",
       "questionText": "رباعي له زاويتان قائمتان وزاوية ثالثة2س حيث س30؛ أوجد الرابعة",
-      "canonicalMainSkill": "skill_quant_19",
-      "canonicalSubskill": "sub_quant_19_3",
+      "canonicalMainSkill": "skill_quant_20",
+      "canonicalSubskill": "sub_quant_20_1",
       "correctAnswer": "120 (د)",
       "stepByStepSolution": "الثالثة60، والرابعة360−90−90−60=120.",
       "educationalExplanation": "الثالثة60، والرابعة360−90−90−60=120.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "71f55edf55f7280ba49f12328022a7a515d2f1209770655fe4d0f2e33d2f1bfa",
-      "ideaFingerprint": "e61d3592ca0e5319247071b6e077ca9e86c8754b095805cf28b25d7a0aedb49b"
+      "ideaFingerprint": "e61d3592ca0e5319247071b6e077ca9e86c8754b095805cf28b25d7a0aedb49b",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T010-Q19",
@@ -586,8 +618,8 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T010_Q19",
       "status": "REVIEW",
       "questionText": "مستطيل بداخله مثلث يصل رأسًا من الأعلى بالقاعدة؛ مجموع أربع زوايا خارج المثلث",
-      "canonicalMainSkill": "skill_quant_19",
-      "canonicalSubskill": "sub_quant_19_3",
+      "canonicalMainSkill": "skill_quant_21",
+      "canonicalSubskill": "sub_quant_21_1",
       "correctAnswer": "360 (د)",
       "stepByStepSolution": "الزوايا الأربع تكمل مجموع زوايا المستطيل، وهو360.",
       "educationalExplanation": "الزوايا الأربع تكمل مجموع زوايا المستطيل، وهو360.",
@@ -596,7 +628,7 @@
       "contentFingerprint": "ec999531560e1673e848571b0a11b6e34a76dba040cd14baf3b903e622abbba7",
       "ideaFingerprint": "707cc6898e70ea71baa81611e9407b3a6903a1c4cdb2dbe38a591e26c2639f8b",
       "importEligible": false,
-      "reviewReason": "RUN141_DIRECT_IMAGE_MATH_QA_SOURCE_CONFLICT_PENDING_CORRECTION_AND_INDEPENDENT_REVIEW"
+      "reviewReason": "DOCUMENTED_37_SOURCE_CONFLICT_FAIL_CLOSED"
     },
     {
       "sourceKey": "MNSF26-GEO-T010-Q20",
@@ -626,8 +658,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "31806a59251f951fcd334a28607445d35d3e5520ecad83721e40621b809de29c",
-      "ideaFingerprint": "ce376541e94efbe07f7ee2e78f1fe2a25016aaef5ec374d45e6d9a57d59ce1a2"
+      "ideaFingerprint": "ce376541e94efbe07f7ee2e78f1fe2a25016aaef5ec374d45e6d9a57d59ce1a2",
+      "importEligible": true,
+      "reviewReason": null
     }
-  ],
-  "reviewCount": 3
+  ]
 }

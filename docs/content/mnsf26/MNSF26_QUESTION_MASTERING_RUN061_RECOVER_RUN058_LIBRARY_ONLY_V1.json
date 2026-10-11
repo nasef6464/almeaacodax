@@ -27,15 +27,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN058_2026-10-08_T009_Q04",
       "status": "MASTERED",
       "questionText": "450 مريضًا يراجعون المستشفى يوميًا؛ كم خلال40 يومًا؟",
-      "canonicalMainSkill": "main_quant_01",
-      "canonicalSubskill": "sub_quant_01_2",
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_1",
       "correctAnswer": "18000 (ج)",
       "stepByStepSolution": "450×40=18000.",
       "educationalExplanation": "نطبّق القاعدة الرياضية الواردة في نص السؤال: 450×40=18000.",
       "difficulty": "Easy",
       "difficultyReason": "يحتاج تطبيقًا مباشرًا لقاعدة حسابية.",
       "contentFingerprint": "312ca8a980fa21aa001eeff49d67bce1fea30deab73b60ddf45b6178f8636a8b",
-      "ideaFingerprint": "b4cc74e74ffe874bd193efd70dc921b818ced5f5d6c2e5b2e21f68a753cd1231"
+      "ideaFingerprint": "b4cc74e74ffe874bd193efd70dc921b818ced5f5d6c2e5b2e21f68a753cd1231",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T010-Q13",
@@ -57,7 +59,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN058_2026-10-08_T010_Q13",
       "status": "MASTERED",
       "questionText": "أي من120 و240 و300 و450 يقبل القسمة على2 و5 و6 و9؟",
-      "canonicalMainSkill": "main_quant_02",
+      "canonicalMainSkill": "skill_quant_02",
       "canonicalSubskill": "sub_quant_02_1",
       "correctAnswer": "450 (د)",
       "stepByStepSolution": "المضاعف المشترك الأصغر لهذه الأعداد90؛ 450÷90=5 صحيح.",
@@ -65,7 +67,9 @@
       "difficulty": "Medium",
       "difficultyReason": "يحتاج عدة خطوات ومقارنة معطيات.",
       "contentFingerprint": "3977091063d47ad3aef77f229f268065ac338219326c7e5eaeff43c305f72e49",
-      "ideaFingerprint": "6d0534e746f5ffbf2828dda77f3a6f30da1f06b461a5dc44cf32ad1dbe17869d"
+      "ideaFingerprint": "6d0534e746f5ffbf2828dda77f3a6f30da1f06b461a5dc44cf32ad1dbe17869d",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T010-Q17",
@@ -87,15 +91,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN058_2026-10-08_T010_Q17",
       "status": "MASTERED",
       "questionText": "اختر عمليتين في3 □ 4 □ 3=15.",
-      "canonicalMainSkill": "main_quant_01",
-      "canonicalSubskill": "sub_quant_01_4",
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_1",
       "correctAnswer": "× ثم + (أ)",
       "stepByStepSolution": "3×4+3=12+3=15.",
       "educationalExplanation": "نطبّق القاعدة الرياضية الواردة في نص السؤال: 3×4+3=12+3=15.",
       "difficulty": "Easy",
       "difficultyReason": "يحتاج تطبيقًا مباشرًا لقاعدة حسابية.",
       "contentFingerprint": "97cade9fb3c6c32c3d44ff21767233727918b6e7c88d353516d95364173a0d9e",
-      "ideaFingerprint": "c6ea07134e769dec264ef6c38f8d4bd9c75df380b82ddfc95651566e27a6cf1c"
+      "ideaFingerprint": "c6ea07134e769dec264ef6c38f8d4bd9c75df380b82ddfc95651566e27a6cf1c",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T011-Q07",
@@ -117,15 +123,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN058_2026-10-08_T011_Q07",
       "status": "MASTERED",
       "questionText": "قارن3×4+2 مع3+4×2.",
-      "canonicalMainSkill": "main_quant_01",
-      "canonicalSubskill": "sub_quant_01_4",
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_1",
       "correctAnswer": "القيمة الأولى أكبر (أ)",
       "stepByStepSolution": "الأولى14 والثانية11.",
       "educationalExplanation": "نطبّق القاعدة الرياضية الواردة في نص السؤال: الأولى14 والثانية11.",
       "difficulty": "Easy",
       "difficultyReason": "يحتاج تطبيقًا مباشرًا لقاعدة حسابية.",
       "contentFingerprint": "cfa5bc9f92b6c4cc7fe67d12d07ffa8c23571b069595695d661b23ed462fe2b3",
-      "ideaFingerprint": "fced5615034babc2ff10a0c06d197d267f1ecd2ee020431d3ec8ef56218a60d7"
+      "ideaFingerprint": "fced5615034babc2ff10a0c06d197d267f1ecd2ee020431d3ec8ef56218a60d7",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T011-Q09",
@@ -147,15 +155,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN058_2026-10-08_T011_Q09",
       "status": "MASTERED",
       "questionText": "إذا س=5(6+5)، وص=5(8+7)، قارن س وص.",
-      "canonicalMainSkill": "main_quant_01",
-      "canonicalSubskill": "sub_quant_01_4",
+      "canonicalMainSkill": "skill_quant_04",
+      "canonicalSubskill": "sub_quant_04_2",
       "correctAnswer": "القيمة الثانية أكبر (ب)",
       "stepByStepSolution": "س=55 وص=75؛ الثانية أكبر.",
       "educationalExplanation": "نطبّق القاعدة الرياضية الواردة في نص السؤال: س=55 وص=75؛ الثانية أكبر.",
       "difficulty": "Easy",
       "difficultyReason": "يحتاج تطبيقًا مباشرًا لقاعدة حسابية.",
       "contentFingerprint": "4121fb050b10bcdec98ebc31855af3fd57a104f37dc7b9f6d323be99f39ccd18",
-      "ideaFingerprint": "f30711983f55a0add0a9744d6deccebf4f2c92ac269bc340608265e8cd1546c3"
+      "ideaFingerprint": "f30711983f55a0add0a9744d6deccebf4f2c92ac269bc340608265e8cd1546c3",
+      "importEligible": true,
+      "reviewReason": null
     }
   ]
 }

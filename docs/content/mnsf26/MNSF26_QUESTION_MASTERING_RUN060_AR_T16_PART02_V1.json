@@ -12,7 +12,7 @@
         "sourceLesson": "أنماط وأساسيات الأعداد"
       },
       "canonicalMainSkill": "skill_quant_01",
-      "canonicalSubskill": "sub_quant_01_3",
+      "canonicalSubskill": "sub_quant_01_1",
       "correctAnswer": "أ",
       "answerValue": "56",
       "stepByStepSolution": "الفروق بين الحدود 1،4،9،16 وهي مربعات 1،2،3،4؛ الفرق التالي 25، إذن 31+25=56.",
@@ -22,7 +22,9 @@
       "imageHash": "9ff5a6fae9d6d83b356a9585f4c3ad0d4451fdd1281e47d544b59cfa9b209eab",
       "contentFingerprint": "8fac3a82827bb7ce804c63ec38acf0feb2de88c51d8b213cba5194176c41a871",
       "ideaFingerprint": "2c523e7d6477c2510c0ba824adc675f1a372f87be7c8901b28c1e082fae2f4fe",
-      "status": "MASTERED"
+      "status": "MASTERED",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "id": "MNSF26-AR-T016-Q08",
@@ -31,8 +33,8 @@
         "test": "T016",
         "sourceLesson": "أنماط وأساسيات الأعداد"
       },
-      "canonicalMainSkill": "skill_quant_05",
-      "canonicalSubskill": "sub_quant_05_2",
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_1",
       "correctAnswer": "ج",
       "answerValue": "256",
       "stepByStepSolution": "الحدود 1،4،27،س،3125 تساوي 1^1،2^2،3^3،4^4،5^5؛ لذلك س=4^4=256.",
@@ -42,7 +44,9 @@
       "imageHash": "091ef30d9b16f2112ba191513ad612adef091e5211a0ebca1a6150822399b42e",
       "contentFingerprint": "609e718b49acc5fae73c355733fb4d1c76f69a4b8d7f6e0b195fe2589087763d",
       "ideaFingerprint": "68bebf080fb80abc57c89fbf1380d8000c94e0bb57990878a2421345f477f10a",
-      "status": "MASTERED"
+      "status": "MASTERED",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "id": "MNSF26-AR-T016-Q10",
@@ -52,7 +56,7 @@
         "sourceLesson": "أنماط وأساسيات الأعداد"
       },
       "canonicalMainSkill": "skill_quant_01",
-      "canonicalSubskill": "sub_quant_01_3",
+      "canonicalSubskill": "sub_quant_01_1",
       "correctAnswer": "ب",
       "answerValue": "1023",
       "stepByStepSolution": "المتتابعة 1،3،7،15،31... تحقق a_n=2^n-1؛ الحد العاشر=2^10-1=1023.",
@@ -62,7 +66,9 @@
       "imageHash": "34dcaef69fc9a8a4454e6b916370cba9d9cec49df468363ec04ece462fda5646",
       "contentFingerprint": "143263309631f00da85e42a478ae0d1e7e81e4f990f1ad87cd0412c4d2bd07b6",
       "ideaFingerprint": "06acbecdf41d3190450cebd3eade4f1d5a538dbbc3e40cd52215898a2a7e827a",
-      "status": "MASTERED"
+      "status": "MASTERED",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "id": "MNSF26-AR-T016-Q12",
@@ -72,7 +78,7 @@
         "sourceLesson": "أنماط وأساسيات الأعداد"
       },
       "canonicalMainSkill": "skill_quant_01",
-      "canonicalSubskill": "sub_quant_01_3",
+      "canonicalSubskill": "sub_quant_01_1",
       "correctAnswer": "ج",
       "answerValue": "37",
       "stepByStepSolution": "المتتابعة 7،13،19،25،31 حسابية فرقها 6؛ الحد التالي 37.",
@@ -82,7 +88,9 @@
       "imageHash": "c4390a8599ca6815fedcb8815d1cf4ab277c02046aa37786364858ff25db4fe9",
       "contentFingerprint": "c38a27dc9bba02918fd2c3a141db66cfabdfd82c9288e3731b85fc87fbb40ae6",
       "ideaFingerprint": "9b26fe7febe7f03f0cab164478f248257c92c443841acabcc3fdbd3bac1cacff",
-      "status": "MASTERED"
+      "status": "MASTERED",
+      "importEligible": true,
+      "reviewReason": null
     }
   ]
 }

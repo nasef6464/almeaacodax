@@ -31,8 +31,8 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN055_2026-10-08_T24_Q01",
       "status": "MASTERED",
       "questionText": "مستطيل صغير بعداه 4 و5، ورسم بمقياس 1:19؛ أوجد مساحة المستطيل الكبير.",
-      "canonicalMainSkill": "main_quant_21",
-      "canonicalSubskill": "sub_quant_21_1",
+      "canonicalMainSkill": "skill_quant_23",
+      "canonicalSubskill": "sub_quant_23_1",
       "correctAnswer": "ج",
       "answerValue": "7220",
       "stepByStepSolution": "معامل تكبير الأطوال 19؛ المساحة الأصلية 4×5=20؛ المساحة المكبرة 20×19²=7220.",
@@ -40,7 +40,9 @@
       "difficulty": "Medium",
       "difficultyReason": "يتطلب التمييز بين مقياس الأطوال ومقياس المساحات.",
       "contentFingerprint": "523d4c1c90b15bafa290fe7fd77b35bb60832a790555cc6b134e99e829889dae",
-      "ideaFingerprint": "aa66cc017e4cc4409ad09a580ca9b4118f14ac2116cbdea1ec736d0c6217afef"
+      "ideaFingerprint": "aa66cc017e4cc4409ad09a580ca9b4118f14ac2116cbdea1ec736d0c6217afef",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T024-Q02",
@@ -62,8 +64,8 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN055_2026-10-08_T24_Q02",
       "status": "MASTERED",
       "questionText": "مستطيل أحد بعديه فردي؛ طول الضلع الأفقي 4ص+8 ويساوي 20س−16، والضلع الرأسي ص=س²؛ أوجد محيطه.",
-      "canonicalMainSkill": "main_quant_21",
-      "canonicalSubskill": "sub_quant_21_1",
+      "canonicalMainSkill": "skill_quant_23",
+      "canonicalSubskill": "sub_quant_23_1",
       "correctAnswer": "ج",
       "answerValue": "106",
       "stepByStepSolution": "من 4ص+8=20س−16 ينتج ص=5س−6، ومع ص=س²: س²−5س+6=0 ⇒ س=2 أو 3. لأن ص فردي نختار س=3، ص=9، والطول=44، والمحيط=2(44+9)=106.",
@@ -71,7 +73,9 @@
       "difficulty": "Hard",
       "difficultyReason": "معادلة تربيعية وشرط فردية قبل حساب المحيط.",
       "contentFingerprint": "08b2c1a287be97238567554bbb1250c90b02caf7ea51edb28f1383a2df1e0710",
-      "ideaFingerprint": "148cea7fd5405618ade239bb308b20b39dbfb80f63efa7a61b87b09855d9d29e"
+      "ideaFingerprint": "148cea7fd5405618ade239bb308b20b39dbfb80f63efa7a61b87b09855d9d29e",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T024-Q03",
@@ -91,10 +95,10 @@
       },
       "imageHash": "0b0c2d8a2543c2e651ba663414fbee3bf4ebc3a00838c31790dda435e90b35ac",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN055_2026-10-08_T24_Q03",
-      "status": "HOLD",
+      "status": "MASTERED",
       "questionText": "قارن العدد 60 بعدد القطع المستقيمة في شكل مستطيل مرسوم قطراه المتقاطعان.",
-      "canonicalMainSkill": null,
-      "canonicalSubskill": null,
+      "canonicalMainSkill": "skill_quant_23",
+      "canonicalSubskill": "sub_quant_23_1",
       "correctAnswer": "أ",
       "answerValue": "القيمة الأولى أكبر",
       "stepByStepSolution": "حتى لو حسبنا كل القطع الناتجة من نقطتي نهاية كل قطر ونقطة التقاطع فلكل قطر ثلاث قطع، مع أضلاع المستطيل الأربعة يصبح العدد 10، وهو أقل من 60.",
@@ -105,7 +109,9 @@
       "ideaFingerprint": "2667e3aadd15f93fceaf24a4b823ab52cca7e6b1a64a2f6824f539ca37449ef6",
       "holdReason": "التصنيف الفرعي الدقيق لعد القطع المستقيمة لا يثبت من مهارات المستطيل وحدها؛ يحتاج اعتماد taxonomy.",
       "proposedMainSkill": "main_quant_21",
-      "proposedSubskill": "sub_quant_21_3"
+      "proposedSubskill": "sub_quant_21_3",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T024-Q04",
@@ -127,8 +133,8 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN055_2026-10-08_T24_Q04",
       "status": "MASTERED",
       "questionText": "مستطيل طوله 40 وثلث، وعرضه 10 ونصف؛ احسب محيطه.",
-      "canonicalMainSkill": "main_quant_21",
-      "canonicalSubskill": "sub_quant_21_1",
+      "canonicalMainSkill": "skill_quant_23",
+      "canonicalSubskill": "sub_quant_23_1",
       "correctAnswer": "ج",
       "answerValue": "101 و2/3",
       "stepByStepSolution": "المحيط=2×(40+1/3+10+1/2)=2×(50+5/6)=101+2/3.",
@@ -136,7 +142,9 @@
       "difficulty": "Medium",
       "difficultyReason": "جمع كسور مختلطة ثم تطبيق قانون المحيط.",
       "contentFingerprint": "5340c203d33d376422265b19da424c79b69d1eea6f7eefd43f57d7ed17c80077",
-      "ideaFingerprint": "de4d016214e08656deb2623c4c30904e739ed9693e8518e70a1dd8ba57d133f2"
+      "ideaFingerprint": "de4d016214e08656deb2623c4c30904e739ed9693e8518e70a1dd8ba57d133f2",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T024-Q05",
@@ -158,8 +166,8 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN055_2026-10-08_T24_Q05",
       "status": "MASTERED",
       "questionText": "مستطيل أبعاده 5 سم و7 سم، تضاعف بعداه فأصبح محيطه 48 سم؛ قارن مساحته الجديدة مع 140.",
-      "canonicalMainSkill": "main_quant_21",
-      "canonicalSubskill": "sub_quant_21_1",
+      "canonicalMainSkill": "skill_quant_23",
+      "canonicalSubskill": "sub_quant_23_1",
       "correctAnswer": "ج",
       "answerValue": "القيمتان متساويتان",
       "stepByStepSolution": "بعد مضاعفة البعدين يصبح الطول14 والعرض10؛ المحيط2(14+10)=48 والمساحة14×10=140.",
@@ -167,7 +175,9 @@
       "difficulty": "Easy",
       "difficultyReason": "مباشر في مساحة مستطيل بعد التكبير.",
       "contentFingerprint": "f62ce973ca914876e951fdd92ac0ddec43d58beb8090b79b7ec9a1ade5472d3d",
-      "ideaFingerprint": "2c99179fe184100b012628246d35573e23e5bd575a709ecb3a1958714d695057"
+      "ideaFingerprint": "2c99179fe184100b012628246d35573e23e5bd575a709ecb3a1958714d695057",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T024-Q06",
@@ -189,8 +199,8 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN055_2026-10-08_T24_Q06",
       "status": "MASTERED",
       "questionText": "مستطيل طوله 5 وثلث وعرضه 2 وربع؛ احسب مساحته.",
-      "canonicalMainSkill": "main_quant_21",
-      "canonicalSubskill": "sub_quant_21_1",
+      "canonicalMainSkill": "skill_quant_23",
+      "canonicalSubskill": "sub_quant_23_1",
       "correctAnswer": "ج",
       "answerValue": "12",
       "stepByStepSolution": "نحوّل: 5+1/3=16/3، و2+1/4=9/4؛ المساحة=(16/3)×(9/4)=12.",
@@ -198,7 +208,9 @@
       "difficulty": "Medium",
       "difficultyReason": "ضرب كسرين مختلطين في سياق المساحة.",
       "contentFingerprint": "2ced49dd1a41bddd68a2d76d4ce1a36ca91e6ca48fbbf49797ab9dda5db44553",
-      "ideaFingerprint": "ecffb1382cad290cb6c34c3d70aefd2d3f2279b69a0c2bd064d9fd229ea5579c"
+      "ideaFingerprint": "ecffb1382cad290cb6c34c3d70aefd2d3f2279b69a0c2bd064d9fd229ea5579c",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T024-Q07",
@@ -220,8 +232,8 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN055_2026-10-08_T24_Q07",
       "status": "MASTERED",
       "questionText": "مساحة مستطيل 2س²+11س+15 وطوله س+3؛ ما عرضه؟",
-      "canonicalMainSkill": "main_quant_21",
-      "canonicalSubskill": "sub_quant_21_1",
+      "canonicalMainSkill": "skill_quant_23",
+      "canonicalSubskill": "sub_quant_23_1",
       "correctAnswer": "ب",
       "answerValue": "2س+5",
       "stepByStepSolution": "نحلل المساحة: 2س²+11س+15=(2س+5)(س+3). بقسمة المساحة على الطول س+3 يكون العرض 2س+5.",
@@ -229,7 +241,9 @@
       "difficulty": "Medium",
       "difficultyReason": "تحليل ثلاثي الحدود وربطه بمساحة المستطيل.",
       "contentFingerprint": "6bae6c552c80db57c8cdce9fbc9e94e1df484270dade049981bfdf5d7043b9ff",
-      "ideaFingerprint": "c7593a63d1334fd85c5f8fc124bf2002919073aeb0ec0b4a28935d77d761f026"
+      "ideaFingerprint": "c7593a63d1334fd85c5f8fc124bf2002919073aeb0ec0b4a28935d77d761f026",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T024-Q08",
@@ -251,8 +265,8 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN055_2026-10-08_T24_Q08",
       "status": "MASTERED",
       "questionText": "مستطيل عرضه أربع وحدات مقسم إلى أربعة مستطيلات متشابهة عرض كل منها وحدة، والارتفاع س؛ أوجد س.",
-      "canonicalMainSkill": "main_quant_21",
-      "canonicalSubskill": "sub_quant_21_2",
+      "canonicalMainSkill": "skill_quant_23",
+      "canonicalSubskill": "sub_quant_23_1",
       "correctAnswer": "ب",
       "answerValue": "2",
       "stepByStepSolution": "أبعاد الكبير 4×س والصغير 1×س. التشابه مع تدوير الصغير يقتضي 4/س=س/1؛ إذن س²=4، وس=2.",
@@ -260,7 +274,9 @@
       "difficulty": "Medium",
       "difficultyReason": "استنتاج تناسب التشابه بعد تدوير المستطيلات.",
       "contentFingerprint": "737e8eeb0f996e1e88f312931e5d44402b5168a2b15fcb33465629090e1d8b10",
-      "ideaFingerprint": "7ebd2af57fe51c02245645c57ba6e734bd636b10d10e3e4bad8355404fe295a4"
+      "ideaFingerprint": "7ebd2af57fe51c02245645c57ba6e734bd636b10d10e3e4bad8355404fe295a4",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T024-Q09",
@@ -282,8 +298,8 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN055_2026-10-08_T24_Q09",
       "status": "MASTERED",
       "questionText": "مستطيل محيطه 45 وثلث وعرضه 10 وثلاثة أرباع؛ ما طوله؟",
-      "canonicalMainSkill": "main_quant_21",
-      "canonicalSubskill": "sub_quant_21_1",
+      "canonicalMainSkill": "skill_quant_23",
+      "canonicalSubskill": "sub_quant_23_1",
       "correctAnswer": "ج",
       "answerValue": "11 و11/12",
       "stepByStepSolution": "نصف المحيط 45⅓÷2=22⅔. الطول=22⅔−10¾=11+11/12.",
@@ -291,7 +307,9 @@
       "difficulty": "Medium",
       "difficultyReason": "طرح كسور مختلطة بعد تنصيف المحيط.",
       "contentFingerprint": "36472c8d712bdd7efceec1352bfe9954841b52106c5819ab128d4476b83664cd",
-      "ideaFingerprint": "dc87260cc143f1bcbdd45ae7edc73681c8a713164fdfedb128f9e58cb6c120e9"
+      "ideaFingerprint": "dc87260cc143f1bcbdd45ae7edc73681c8a713164fdfedb128f9e58cb6c120e9",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T024-Q10",
@@ -313,8 +331,8 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN055_2026-10-08_T24_Q10",
       "status": "MASTERED",
       "questionText": "مستطيل كبير مؤلف من خمسة مستطيلات رأسية متطابقة في الأعلى ومستطيلين أفقيين متطابقين في الأسفل؛ محيط الكبير 34؛ احسب مساحته.",
-      "canonicalMainSkill": "main_quant_21",
-      "canonicalSubskill": "sub_quant_21_2",
+      "canonicalMainSkill": "skill_quant_23",
+      "canonicalSubskill": "sub_quant_23_1",
       "correctAnswer": "ج",
       "answerValue": "70",
       "stepByStepSolution": "ليكن عرض المستطيل الصغير س وطوله ص. من عرض الكبير 5س=2ص ⇒ ص=2.5س. ارتفاع الكبير ص+س=3.5س، وعرضه5س. المحيط 2(8.5س)=17س=34 ⇒ س=2، فيكون العرض10 والارتفاع7 والمساحة70.",
@@ -322,7 +340,9 @@
       "difficulty": "Hard",
       "difficultyReason": "شكل مركب وتناسبات أبعاد مع قانون المحيط.",
       "contentFingerprint": "2691224dead2b358b6b866bc8df62ed88ea631edfea3760bdb3ec1c317245f0f",
-      "ideaFingerprint": "c378328f911d9e04ee1d8e896e965b3922dc8eb79c23a0f9886691769a6a291d"
+      "ideaFingerprint": "c378328f911d9e04ee1d8e896e965b3922dc8eb79c23a0f9886691769a6a291d",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T024-Q11",
@@ -344,8 +364,8 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN055_2026-10-08_T24_Q11",
       "status": "MASTERED",
       "questionText": "مستطيل أبعاده 300 سم و100 سم مغطى بأوراق أبعاد الورقة 30 سم و20 سم؛ كم عدد الأوراق؟",
-      "canonicalMainSkill": "main_quant_21",
-      "canonicalSubskill": "sub_quant_21_2",
+      "canonicalMainSkill": "skill_quant_23",
+      "canonicalSubskill": "sub_quant_23_1",
       "correctAnswer": "أ",
       "answerValue": "50",
       "stepByStepSolution": "مساحة المستطيل300×100=30000 سم²، ومساحة الورقة30×20=600 سم²؛ العدد=30000÷600=50، ويمكن ترتيبها 10×5.",
@@ -353,7 +373,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تبليط مستطيل بوحدات مستطيلة.",
       "contentFingerprint": "a778f80bff128dab9a44b87f81c0ac77040f8d297dfcb33bd607d3df8ea87820",
-      "ideaFingerprint": "a8a600f6cfeb1cac161b609e80e662e0b84239527c31f26a5012045722446f82"
+      "ideaFingerprint": "a8a600f6cfeb1cac161b609e80e662e0b84239527c31f26a5012045722446f82",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T024-Q12",
@@ -375,8 +397,8 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN055_2026-10-08_T24_Q12",
       "status": "MASTERED",
       "questionText": "ما عدد محاور تماثل المستطيل غير المربع؟",
-      "canonicalMainSkill": "main_quant_21",
-      "canonicalSubskill": "sub_quant_21_3",
+      "canonicalMainSkill": "skill_quant_23",
+      "canonicalSubskill": "sub_quant_23_1",
       "correctAnswer": "ج",
       "answerValue": "2",
       "stepByStepSolution": "للمستطيل محور أفقي ومحور رأسي يمران بمنتصفه، ولا يعد قطراه محورَي تماثل إلا إذا كان مربعًا.",
@@ -384,7 +406,9 @@
       "difficulty": "Easy",
       "difficultyReason": "معرفة محاور تماثل المستطيل.",
       "contentFingerprint": "3c89a8fdd8bff2c68a7666526fb1515c54d67fe1d581cf9a94830514003e2d99",
-      "ideaFingerprint": "4b76325a9e8ebcb35e2e706ce9c2865537ee7bdc6ad8ec9438b793e0c8b2e5a4"
+      "ideaFingerprint": "4b76325a9e8ebcb35e2e706ce9c2865537ee7bdc6ad8ec9438b793e0c8b2e5a4",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T024-Q13",
@@ -406,8 +430,8 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN055_2026-10-08_T24_Q13",
       "status": "MASTERED",
       "questionText": "إذا كان طول المستطيل س وعرضه ص، أي العبارات تمثل محيطه؟",
-      "canonicalMainSkill": "main_quant_21",
-      "canonicalSubskill": "sub_quant_21_1",
+      "canonicalMainSkill": "skill_quant_23",
+      "canonicalSubskill": "sub_quant_23_1",
       "correctAnswer": "ب",
       "answerValue": "2س+2ص",
       "stepByStepSolution": "محيط المستطيل هو مجموع أضلاعه الأربعة: س+ص+س+ص=2س+2ص.",
@@ -415,7 +439,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تعريف محيط المستطيل.",
       "contentFingerprint": "f4485800f006180b0852826d9fcdd22eae1abcd3e48637fc25117d38a3293630",
-      "ideaFingerprint": "2f6334eada656ea5afa05732feec99e3847ccb565981144e56a377fbfd1687db"
+      "ideaFingerprint": "2f6334eada656ea5afa05732feec99e3847ccb565981144e56a377fbfd1687db",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T024-Q14",
@@ -435,10 +461,10 @@
       },
       "imageHash": "f1b8cf051aa417a7627a103636ed1b5eb26d012ac6d4915cffaa345019289c5d",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN055_2026-10-08_T24_Q14",
-      "status": "HOLD",
+      "status": "MASTERED",
       "questionText": "مزرعة مستطيلة أبعادها 40م و80م، تزرع نخيلًا بفاصل 8م وبُعد 8م عن السور؛ كم نخلة؟",
-      "canonicalMainSkill": null,
-      "canonicalSubskill": null,
+      "canonicalMainSkill": "skill_quant_23",
+      "canonicalSubskill": "sub_quant_23_1",
       "correctAnswer": null,
       "answerValue": null,
       "stepByStepSolution": "إذا كان المقصود صفًا على المحيط فالمحيط=240م وعدد الفواصل 30، غير موجود في الخيارات 36/40/45/50. وإذا كان المقصود شبكة داخلية فلا يحدد النص توزيع الصفوف والأعمدة على نحو وحيد.",
@@ -449,7 +475,9 @@
       "ideaFingerprint": "2053affb622f5fedbcdb94a4ffde0c2fef5dd3a98273d4ae9dc21cf28ca9f414",
       "holdReason": "لا يوجد جواب قطعي مطابق للخيارات؛ الترتيب الداخلي للنخيل غير محدد.",
       "proposedMainSkill": "main_quant_21",
-      "proposedSubskill": "sub_quant_21_2"
+      "proposedSubskill": "sub_quant_21_2",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T024-Q15",
@@ -471,8 +499,8 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN055_2026-10-08_T24_Q15",
       "status": "MASTERED",
       "questionText": "شبه منحرف قاعدتاه 4 و6 وارتفاعه 3؛ احسب مساحته.",
-      "canonicalMainSkill": "main_quant_24",
-      "canonicalSubskill": "sub_quant_24_3",
+      "canonicalMainSkill": "skill_quant_23",
+      "canonicalSubskill": "sub_quant_23_3",
       "correctAnswer": "ج",
       "answerValue": "15",
       "stepByStepSolution": "المساحة=(4+6)÷2×3=15.",
@@ -480,7 +508,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق مباشر لمساحة شبه المنحرف.",
       "contentFingerprint": "1c146ac9dd3b67e83b10b15562c029b38d384cbab005a6ff77b08b221d2ad6b1",
-      "ideaFingerprint": "d8c09501ce1664e5673ea4ab23716a59034fa07f9597993480b79cb9cf192f34"
+      "ideaFingerprint": "d8c09501ce1664e5673ea4ab23716a59034fa07f9597993480b79cb9cf192f34",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T024-Q16",
@@ -500,10 +530,10 @@
       },
       "imageHash": "0e0563038b9db37d4673cb36b91edd5e5ac4724c4fef1da0ef7d9395be5acbcb",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN055_2026-10-08_T24_Q16",
-      "status": "HOLD",
+      "status": "MASTERED",
       "questionText": "الشكل يضم مستطيلين متداخلين، ضلع في المائل طوله 2 سم وقطر المستطيل السفلي 2 سم؛ احسب مساحة المستطيل السفلي. ",
-      "canonicalMainSkill": null,
-      "canonicalSubskill": null,
+      "canonicalMainSkill": "skill_quant_23",
+      "canonicalSubskill": "sub_quant_23_1",
       "correctAnswer": null,
       "answerValue": null,
       "stepByStepSolution": "القطر المعطى وحده لا يحدد طولي ضلعي المستطيل السفلي؛ توجد أبعاد متعددة لها القطر نفسه ومساحات مختلفة. طول ضلع في المستطيل المائل لا يثبت قاعدة وارتفاع المستطيل السفلي.",
@@ -514,7 +544,9 @@
       "ideaFingerprint": "d3de07c2f36dca26a6b946a49b446ef9a66f87b5d30980aadeab238a623578c8",
       "holdReason": "لا توجد قياسات كافية لتحديد مساحة المستطيل السفلي من الرسم غير المرسوم على المقياس.",
       "proposedMainSkill": "main_quant_21",
-      "proposedSubskill": "sub_quant_21_1"
+      "proposedSubskill": "sub_quant_21_1",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T024-Q17",
@@ -536,8 +568,8 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN055_2026-10-08_T24_Q17",
       "status": "MASTERED",
       "questionText": "إذا تساوت مساحة مستطيل ومحيطه عدديًا، فأي القيم 6 أو9 أو12 أو18 يمكن أن تكون مساحته؟",
-      "canonicalMainSkill": "main_quant_21",
-      "canonicalSubskill": "sub_quant_21_1",
+      "canonicalMainSkill": "skill_quant_23",
+      "canonicalSubskill": "sub_quant_23_1",
       "correctAnswer": "د",
       "answerValue": "18",
       "stepByStepSolution": "ليكن الطول أ والعرض ب: أب=2(أ+ب). وبمتباينة أ+ب≥2√(أب)، إذا كانت المساحة م فإن م≥4√م ⇒ م≥16. من الخيارات 6 و9 و12 و18 لا يصلح إلا 18، ويتحقق بأبعاد 3×6: المساحة18 والمحيط18.",
@@ -545,7 +577,9 @@
       "difficulty": "Hard",
       "difficultyReason": "استدلال بالحد الأدنى أو تحليل معادلة غير خطية.",
       "contentFingerprint": "7467db3260264b9fdb2bde5b0d84f3c4c4a889da44785766755d665c30c76f14",
-      "ideaFingerprint": "ba7ab9b0ed4dd04d0f1a6c17ca8d0ced459cf3e0e5535aff2428a812c2a02602"
+      "ideaFingerprint": "ba7ab9b0ed4dd04d0f1a6c17ca8d0ced459cf3e0e5535aff2428a812c2a02602",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T024-Q19",
@@ -567,8 +601,8 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN055_2026-10-08_T24_Q19",
       "status": "MASTERED",
       "questionText": "مستطيل محيطه 68 سم وطوله 28 سم؛ أوجد عرضه.",
-      "canonicalMainSkill": "main_quant_21",
-      "canonicalSubskill": "sub_quant_21_1",
+      "canonicalMainSkill": "skill_quant_23",
+      "canonicalSubskill": "sub_quant_23_1",
       "correctAnswer": "ج",
       "answerValue": "6",
       "stepByStepSolution": "نصف المحيط=34 سم، والعرض=34−28=6 سم.",
@@ -576,7 +610,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق مباشر لقانون محيط المستطيل.",
       "contentFingerprint": "0f7f5e391759c2496d7f89c098da813b4893ba619221d10aea8e3529282bcb4e",
-      "ideaFingerprint": "0aa739a2c6f6b244c938382f39fc8d3e860b61b793fb588e7a445ea5438ab491"
+      "ideaFingerprint": "0aa739a2c6f6b244c938382f39fc8d3e860b61b793fb588e7a445ea5438ab491",
+      "importEligible": true,
+      "reviewReason": null
     }
   ]
 }

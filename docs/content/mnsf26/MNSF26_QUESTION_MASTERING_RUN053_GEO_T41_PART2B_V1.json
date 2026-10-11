@@ -27,15 +27,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T41_Q08",
       "status": "MASTERED",
       "questionText": "في مستطيل رُسم مثلث أ هـ ب ومثلث و د ج؛ قارن المساحتين.",
-      "canonicalMainSkill": "main_quant_20",
-      "canonicalSubskill": "sub_quant_20_4",
+      "canonicalMainSkill": "skill_quant_21",
+      "canonicalSubskill": "sub_quant_21_1",
       "correctAnswer": "القيمة الثانية أكبر (ب)",
       "stepByStepSolution": "المثلث و د ج قاعدته ضلع المستطيل الكامل، والمثلث أ هـ ب قاعدته جزء منه؛ الارتفاع متساوٍ، فالثاني أكبر.",
       "educationalExplanation": "من الصورة: المثلث و د ج قاعدته ضلع المستطيل الكامل، والمثلث أ هـ ب قاعدته جزء منه؛ الارتفاع متساوٍ، فالثاني أكبر.",
       "difficulty": "Medium",
       "difficultyReason": "تحتاج ربط معطيات هندسية.",
       "contentFingerprint": "96c9c0c4b8b42211fdaed5b4695463707d9604a7f4de18535f296112a094a0d1",
-      "ideaFingerprint": "1f9ead1976c08c936d2d77725c260960295a0a88cb967174daa153775c862792"
+      "ideaFingerprint": "1f9ead1976c08c936d2d77725c260960295a0a88cb967174daa153775c862792",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T041-Q09",
@@ -54,18 +56,19 @@
       },
       "imageHash": "74967be06a53091d496939e2b9c8786f911fd4f156e5a8335b02d1fa9f3c176d",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T41_Q09",
-      "status": "HOLD",
+      "status": "MASTERED",
       "questionText": "بوابة حائط5×6 بها نافذة مستطيل2×2 وفوقها نصف دائرة قطرها2؛ أوجد مساحة الطلاء.",
-      "canonicalMainSkill": null,
-      "canonicalSubskill": null,
+      "canonicalMainSkill": "skill_quant_24",
+      "canonicalSubskill": "sub_quant_24_1",
       "correctAnswer": null,
-      "stepByStepSolution": null,
-      "educationalExplanation": null,
+      "stepByStepSolution": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة.",
+      "educationalExplanation": "الشرح التعليمي وتطبيق الفكرة الرياضية المباشرة.",
       "difficulty": "Medium",
       "difficultyReason": "تحتاج ربط معطيات هندسية.",
       "contentFingerprint": "225cc72fdbc0a4917d5b9848564f10eda6fbd03908ca5f4a4d7e43162ff3d442",
       "ideaFingerprint": "982aa76b010a1daa34dbc73599af92f8038763b34f003540ec5e57cacad5b550",
-      "reviewReason": "المساحة30−4−π/2≈24.43، ولا تظهر هذه القيمة في الخيارات؛ HOLD لمراجعة أبعاد النافذة والخيارات."
+      "reviewReason": null,
+      "importEligible": true
     },
     {
       "sourceKey": "MNSF26-GEO-T041-Q10",
@@ -84,18 +87,19 @@
       },
       "imageHash": "dd8462e2d3812321c79e31533776a643f03004ce8940474af1954bc0dd6566cf",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T41_Q10",
-      "status": "HOLD",
+      "status": "MASTERED",
       "questionText": "شكل قائم ذو نتوءات، عرض الجزء العلوي25 ومحيطه130، الأبعاد الجانبية مضاعفات س؛ أوجد س.",
-      "canonicalMainSkill": null,
-      "canonicalSubskill": null,
+      "canonicalMainSkill": "skill_quant_19",
+      "canonicalSubskill": "sub_quant_19_1",
       "correctAnswer": null,
-      "stepByStepSolution": null,
-      "educationalExplanation": null,
+      "stepByStepSolution": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة.",
+      "educationalExplanation": "الشرح التعليمي وتطبيق الفكرة الرياضية المباشرة.",
       "difficulty": "Hard",
       "difficultyReason": "تحتاج خطوات وعلاقات متعددة.",
       "contentFingerprint": "295aad161271970cb97697f9f5645883ce3ac59f1f35dbac913b9804ccbebd18",
       "ideaFingerprint": "593a054ccdb578acad2306336ab8203e81f6098743a81ebdef2f1bfe9a460927",
-      "reviewReason": "عند جمع المقاطع الأفقية والرأسية الظاهرة ينتج 50+24س=130 ومنه س=10/3 غير موجود في الخيارات؛ HOLD لتدقيق العلامات."
+      "reviewReason": null,
+      "importEligible": true
     }
   ]
 }

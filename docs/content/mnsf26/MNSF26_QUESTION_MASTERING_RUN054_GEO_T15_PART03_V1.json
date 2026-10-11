@@ -26,15 +26,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T015_Q07",
       "status": "MASTERED",
       "questionText": "رباعي دائري زاويته العليا80 وزاوية قاعدته السفلى50؛ أوجد الزاوية الأخرى س",
-      "canonicalMainSkill": "main_quant_24",
-      "canonicalSubskill": "sub_quant_24_2",
+      "canonicalMainSkill": "skill_quant_20",
+      "canonicalSubskill": "sub_quant_20_1",
       "correctAnswer": "30 (أ)",
       "stepByStepSolution": "السفلى المقابلة100، ومثلث القاعدة السفلي يعطي س=180−100−50=30.",
       "educationalExplanation": "السفلى المقابلة100، ومثلث القاعدة السفلي يعطي س=180−100−50=30.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "cbe9127a30c4331820090f5979c87ccc4d1d2cac8b680e1540fd70efead315f3",
-      "ideaFingerprint": "423183707746aed92c5d7766e583fd648cd4b7e7eda0351bbd4e91b7fb10716c"
+      "ideaFingerprint": "423183707746aed92c5d7766e583fd648cd4b7e7eda0351bbd4e91b7fb10716c",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T015-Q08",
@@ -56,15 +58,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T015_Q08",
       "status": "MASTERED",
       "questionText": "مثلث محيطي له ضلعان متساويان وزاوية رأس50، أوجد الخارجية س عند القاعدة",
-      "canonicalMainSkill": "main_quant_24",
-      "canonicalSubskill": "sub_quant_24_2",
+      "canonicalMainSkill": "skill_quant_20",
+      "canonicalSubskill": "sub_quant_20_1",
       "correctAnswer": "100 (ج)",
       "stepByStepSolution": "الزاويتان المتساويتان50، والثالثة80، والخارجية عندها100.",
       "educationalExplanation": "الزاويتان المتساويتان50، والثالثة80، والخارجية عندها100.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "266283a548b659c8803c0c558ce083485af6a64f4ba840be8d53a64030c58a58",
-      "ideaFingerprint": "eb2b6dddd5e0e89111979582ac205538a05b1478d9e37394b13ed99fcacfde38"
+      "ideaFingerprint": "eb2b6dddd5e0e89111979582ac205538a05b1478d9e37394b13ed99fcacfde38",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T015-Q09",
@@ -86,15 +90,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T015_Q09",
       "status": "MASTERED",
       "questionText": "دائرة زاوية قائمة بين نصفَي قطر، وزاوية أخرى30 في مثلث نصفَي قطر؛ أوجد المركزية المتبقية",
-      "canonicalMainSkill": "main_quant_24",
-      "canonicalSubskill": "sub_quant_24_2",
+      "canonicalMainSkill": "skill_quant_24",
+      "canonicalSubskill": "sub_quant_24_1",
       "correctAnswer": "150 (د)",
       "stepByStepSolution": "الزاوية المركزية المطلوبة=360−90−120=150.",
       "educationalExplanation": "الزاوية المركزية المطلوبة=360−90−120=150.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "1c574ad86d5c7dddba206e9b40254db28fecc286d8514bf7f6d8fd61c21093dd",
-      "ideaFingerprint": "cdd6f944de3189b1bec4c54c2d56efaa0c972f6a3b0c0c18e19e96689a0d503c"
+      "ideaFingerprint": "cdd6f944de3189b1bec4c54c2d56efaa0c972f6a3b0c0c18e19e96689a0d503c",
+      "importEligible": true,
+      "reviewReason": null
     }
   ]
 }

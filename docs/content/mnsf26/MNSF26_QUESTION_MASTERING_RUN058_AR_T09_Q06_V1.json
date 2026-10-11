@@ -23,15 +23,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN058_2026-10-08_T009_Q06",
       "status": "MASTERED",
       "questionText": "إذا99×3=297 و99×4=396 فكم99×8؟",
-      "canonicalMainSkill": "main_quant_01",
-      "canonicalSubskill": "sub_quant_01_2",
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_1",
       "correctAnswer": "792 (د)",
       "stepByStepSolution": "99×8=(100−1)×8=800−8=792.",
       "educationalExplanation": "نطبّق القاعدة الرياضية الواردة في نص السؤال: 99×8=(100−1)×8=800−8=792.",
       "difficulty": "Easy",
       "difficultyReason": "يحتاج تطبيقًا مباشرًا لقاعدة حسابية.",
       "contentFingerprint": "98c221dd3c3ee4b590e7458744a5a5e50572bc822d833ee791372564e0c8524f",
-      "ideaFingerprint": "7d3731f69565094bf55ec648aa88fe475f43a93d40adb09b2b65b8e5a9e32a6d"
+      "ideaFingerprint": "7d3731f69565094bf55ec648aa88fe475f43a93d40adb09b2b65b8e5a9e32a6d",
+      "importEligible": true,
+      "reviewReason": null
     }
   ]
 }

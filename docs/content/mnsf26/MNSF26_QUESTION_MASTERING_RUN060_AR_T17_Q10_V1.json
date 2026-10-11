@@ -12,7 +12,7 @@
         "sourceLesson": "جمع الأعداد - المتتابعات - ضرب الأعداد"
       },
       "canonicalMainSkill": "skill_quant_01",
-      "canonicalSubskill": "sub_quant_01_3",
+      "canonicalSubskill": "sub_quant_01_1",
       "correctAnswer": "ج",
       "answerValue": "198",
       "stepByStepSolution": "6→18 بالضرب×3، 18→21 بإضافة3، 21→63 ×3، 63→66 +3؛ التالي=66×3=198.",
@@ -22,7 +22,9 @@
       "imageHash": "25bdfe3c60d31d7a80a277cf9856f6d7fa4b0feac0726cb3bafa5f04ae642c0b",
       "contentFingerprint": "8dd1e793c9cfe16ebbcc4f6a3a42842ba3b2883ac6ac2088aae304f0637ecc6c",
       "ideaFingerprint": "0d8b2a021ef81c4589593b948bd2c714ab13a00a8fa7eb45ac4c385c3b90be18",
-      "status": "MASTERED"
+      "status": "MASTERED",
+      "importEligible": true,
+      "reviewReason": null
     }
   ]
 }

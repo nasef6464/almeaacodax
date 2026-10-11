@@ -1,0 +1,264 @@
+{
+  "batchId": "BATCH_004",
+  "bank": "MNSF26",
+  "reviewQuestionsCount": 4,
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T037-Q14",
+      "questionCode": "QDR-QNT-MNSF26-AR-T037-Q14",
+      "sourceDocument": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+      "sourcePart": "الحساب/الجبر",
+      "sourceTestNumber": 37,
+      "sourceQuestionNumber": 14,
+      "sourcePage": 72,
+      "sourceSkillLabel": "النسبة المئوية",
+      "imageReference": "AR/AR-T037-Q14.webp",
+      "imageHash": "78a2a39022cf65a3b236dc5416d011fc7bf3cbf021557cb9a99299feb9d0c80c",
+      "questionText": "قارن 0.06+0.006 مع6%",
+      "options": [
+        {
+          "text": "أ",
+          "isCorrect": true
+        },
+        {
+          "text": "ب",
+          "isCorrect": true
+        },
+        {
+          "text": "ج",
+          "isCorrect": false
+        },
+        {
+          "text": "د",
+          "isCorrect": false
+        }
+      ],
+      "correctAnswer": "القيمة الأولى أكبر",
+      "correctOptionIndex": 0,
+      "stepByStepSolution": "0.066>0.06.",
+      "educationalExplanation": "الفكرة التعليمية: جمع كسور عشرية ومقارنة بنسبة. نحدد أساس النسبة أو العلاقة أولًا، ثم نطبّق خطوات الحساب ونراجع الناتج مع المعطيات.",
+      "solvingStrategy": "التحليل الرياضي المباشر وتطبيق استراتيجيات الحل المناسبة للقدرات.",
+      "difficulty": "Easy",
+      "difficultyReason": "تطبيق مباشر لقاعدة حسابية واحدة أو خطوتين واضحتين.",
+      "primaryMainSkillId": "skill_quant_09",
+      "primarySubSkillId": "sub_quant_09_1",
+      "primarySkillName": "النسبة المئوية — حساب النسبة المئوية من عدد والنسب المشهورة",
+      "secondarySubSkillIds": [],
+      "classificationReason": "حساب النسبة المئوية من عدد ونسبة الجزء إلى الكل",
+      "classificationEvidence": "حساب مقدار الزيادة أو الخصم المئوي",
+      "classificationConfidence": "HIGH",
+      "alternativeCandidateSkills": [
+        "sub_quant_09_2",
+        "sub_quant_09_3",
+        "sub_quant_09_4",
+        "sub_quant_10_1",
+        "sub_quant_10_2",
+        "sub_quant_10_4"
+      ],
+      "previousSubSkill": "sub_quant_04_1",
+      "isReclassified": true,
+      "contentFingerprint": "4c0bb93b06ed601eec61b9aa9d5e9647a43fc3ee923b276d698c7aaea973c577",
+      "ideaFingerprint": "aca6fb2a1fa85cfb247ed37f4639db5bca4430f63ce5632a0de84226444de260",
+      "qaStatus": "REVIEW",
+      "reviewReason": "DOCUMENTED_37_SOURCE_CONFLICT_FAIL_CLOSED",
+      "importEligible": false,
+      "evidenceReferences": [
+        "MNSF26_CANONICAL_TAXONOMY_25_95_V1.json",
+        "MNSF26_SOURCE_TO_CANONICAL_CANDIDATE_MAP_V1.json"
+      ]
+    },
+    {
+      "sourceKey": "MNSF26-AR-T039-Q03",
+      "questionCode": "QDR-QNT-MNSF26-AR-T039-Q03",
+      "sourceDocument": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+      "sourcePart": "الحساب/الجبر",
+      "sourceTestNumber": 39,
+      "sourceQuestionNumber": 3,
+      "sourcePage": 76,
+      "sourceSkillLabel": "النسبة المئوية",
+      "imageReference": "AR/AR-T039-Q03.webp",
+      "imageHash": "df26c4a0a2f0ad03aa521ce1f47d43f8c64de30f8efe3de1eac2950c21f708af",
+      "questionText": "خصم دراسي1600 ريال يمثل20% من المبلغ الأصلي؛ قارن1500 بما دفعه الأب",
+      "options": [
+        {
+          "text": "أ",
+          "isCorrect": true
+        },
+        {
+          "text": "ب",
+          "isCorrect": true
+        },
+        {
+          "text": "ج",
+          "isCorrect": false
+        },
+        {
+          "text": "د",
+          "isCorrect": false
+        }
+      ],
+      "correctAnswer": "القيمة الثانية أكبر",
+      "correctOptionIndex": 0,
+      "stepByStepSolution": "المبلغ الأصلي=1600÷0.2=8000؛ بعد الخصم6400؛ أكبر من1500.",
+      "educationalExplanation": "الفكرة التعليمية: استعادة أصل مصروفات بعد خصم. نحدد أساس النسبة أو العلاقة أولًا، ثم نطبّق خطوات الحساب ونراجع الناتج مع المعطيات.",
+      "solvingStrategy": "التحليل الرياضي المباشر وتطبيق استراتيجيات الحل المناسبة للقدرات.",
+      "difficulty": "Medium",
+      "difficultyReason": "يتطلب تحويل المعطيات إلى علاقة صحيحة ثم إجراء حساب متسلسل.",
+      "primaryMainSkillId": "skill_quant_09",
+      "primarySubSkillId": "sub_quant_09_1",
+      "primarySkillName": "النسبة المئوية — حساب النسبة المئوية من عدد والنسب المشهورة",
+      "secondarySubSkillIds": [],
+      "classificationReason": "حساب النسبة المئوية من عدد ونسبة الجزء إلى الكل",
+      "classificationEvidence": "حساب مقدار الزيادة أو الخصم المئوي",
+      "classificationConfidence": "HIGH",
+      "alternativeCandidateSkills": [
+        "sub_quant_09_2",
+        "sub_quant_09_3",
+        "sub_quant_09_4",
+        "sub_quant_10_1",
+        "sub_quant_10_2",
+        "sub_quant_10_4"
+      ],
+      "previousSubSkill": "sub_quant_09_2",
+      "isReclassified": true,
+      "contentFingerprint": "cec043b374bdb162d4425f5525ff5015cc797d0e6042ac0865a527f5a9f1f950",
+      "ideaFingerprint": "560388200c93fe52d10da8d49b98e7e0b89263af65484182d64a6bebc0d1f0c4",
+      "qaStatus": "REVIEW",
+      "reviewReason": "DOCUMENTED_37_SOURCE_CONFLICT_FAIL_CLOSED",
+      "importEligible": false,
+      "evidenceReferences": [
+        "MNSF26_CANONICAL_TAXONOMY_25_95_V1.json",
+        "MNSF26_SOURCE_TO_CANONICAL_CANDIDATE_MAP_V1.json"
+      ]
+    },
+    {
+      "sourceKey": "MNSF26-AR-T039-Q04",
+      "questionCode": "QDR-QNT-MNSF26-AR-T039-Q04",
+      "sourceDocument": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+      "sourcePart": "الحساب/الجبر",
+      "sourceTestNumber": 39,
+      "sourceQuestionNumber": 4,
+      "sourcePage": 76,
+      "sourceSkillLabel": "النسبة المئوية",
+      "imageReference": "AR/AR-T039-Q04.webp",
+      "imageHash": "0b242e4d1d2d009094c410c512d0a4b20ecabf3187ec824dd276efd054469488",
+      "questionText": "تفاحة قُسمت نصفين ثم كل نصف إلى3 أجزاء متساوية؛ نسبة الجزء الواحد إلى الكل",
+      "options": [
+        {
+          "text": "أ",
+          "isCorrect": false
+        },
+        {
+          "text": "ب",
+          "isCorrect": false
+        },
+        {
+          "text": "ج",
+          "isCorrect": false
+        },
+        {
+          "text": "د",
+          "isCorrect": false
+        }
+      ],
+      "correctAnswer": "1/6",
+      "correctOptionIndex": 3,
+      "stepByStepSolution": "العدد النهائي للأجزاء2×3=6؛ كل جزء1/6.",
+      "educationalExplanation": "الفكرة التعليمية: تجزئة متساوية إلى كسور. نحدد أساس النسبة أو العلاقة أولًا، ثم نطبّق خطوات الحساب ونراجع الناتج مع المعطيات.",
+      "solvingStrategy": "التحليل الرياضي المباشر وتطبيق استراتيجيات الحل المناسبة للقدرات.",
+      "difficulty": "Easy",
+      "difficultyReason": "تطبيق مباشر لقاعدة حسابية واحدة أو خطوتين واضحتين.",
+      "primaryMainSkillId": "skill_quant_08",
+      "primarySubSkillId": "sub_quant_08_2",
+      "primarySkillName": "النسبة والتناسب — التناسب الطردي وحاصل الضرب التبادلي (المقص)",
+      "secondarySubSkillIds": [],
+      "classificationReason": "التناسب الطردي والعكسي والضرب التبادلي ومسائل العمال",
+      "classificationEvidence": "علاقة تناسبية بين كميتين أو ضرب تبادلي",
+      "classificationConfidence": "HIGH",
+      "alternativeCandidateSkills": [
+        "sub_quant_09_1",
+        "sub_quant_09_2",
+        "sub_quant_09_3",
+        "sub_quant_09_4",
+        "sub_quant_10_1",
+        "sub_quant_10_2",
+        "sub_quant_10_4"
+      ],
+      "previousSubSkill": "sub_quant_03_2",
+      "isReclassified": true,
+      "contentFingerprint": "102ef563881a952070e4b806fdb47436c7497d32533348696b61bd9a7abd1ee5",
+      "ideaFingerprint": "7ed74fa4087f8434121e0e7888c7b692809e5786e05d43770227e751177bfa7a",
+      "qaStatus": "REVIEW",
+      "reviewReason": "DOCUMENTED_37_SOURCE_CONFLICT_FAIL_CLOSED",
+      "importEligible": false,
+      "evidenceReferences": [
+        "MNSF26_CANONICAL_TAXONOMY_25_95_V1.json",
+        "MNSF26_SOURCE_TO_CANONICAL_CANDIDATE_MAP_V1.json"
+      ]
+    },
+    {
+      "sourceKey": "MNSF26-AR-T040-Q13",
+      "questionCode": "QDR-QNT-MNSF26-AR-T040-Q13",
+      "sourceDocument": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+      "sourcePart": "الحساب/الجبر",
+      "sourceTestNumber": 40,
+      "sourceQuestionNumber": 13,
+      "sourcePage": 79,
+      "sourceSkillLabel": "النسبة المئوية",
+      "imageReference": "AR/AR-T040-Q13.webp",
+      "imageHash": "7048e5056d3665271cc2acc407650f817c836e1735b5434a522542f8b3f76ab4",
+      "questionText": "مقصف مبيعاته اليومية3600؛ ربعها مصروفات وثلاثة أرباعها إيجار؛ صافي الربح",
+      "options": [
+        {
+          "text": "أ",
+          "isCorrect": false
+        },
+        {
+          "text": "ب",
+          "isCorrect": false
+        },
+        {
+          "text": "ج",
+          "isCorrect": false
+        },
+        {
+          "text": "د",
+          "isCorrect": false
+        }
+      ],
+      "correctAnswer": "صفر",
+      "correctOptionIndex": 3,
+      "stepByStepSolution": "المصروفات900 والإيجار2700؛ المجموع3600؛ الصافي0.",
+      "educationalExplanation": "الفكرة التعليمية: صافي الإيراد بعد المصروفات. نحدد أساس النسبة أو العلاقة أولًا، ثم نطبّق خطوات الحساب ونراجع الناتج مع المعطيات.",
+      "solvingStrategy": "التحليل الرياضي المباشر وتطبيق استراتيجيات الحل المناسبة للقدرات.",
+      "difficulty": "Easy",
+      "difficultyReason": "تطبيق مباشر لقاعدة حسابية واحدة أو خطوتين واضحتين.",
+      "primaryMainSkillId": "skill_quant_10",
+      "primarySubSkillId": "sub_quant_10_1",
+      "primarySkillName": "الربح والخسارة والحسابات المالية — حساب سعر البيع والشراء ونسبة الربح والخسارة",
+      "secondarySubSkillIds": [],
+      "classificationReason": "حسابات الربح والخسارة وسعر التكلفة وسعر البيع",
+      "classificationEvidence": "مسألة مالية تتضمن هامش ربح أو خسارة تجارية",
+      "classificationConfidence": "HIGH",
+      "alternativeCandidateSkills": [
+        "sub_quant_09_1",
+        "sub_quant_09_2",
+        "sub_quant_09_3",
+        "sub_quant_09_4",
+        "sub_quant_10_2",
+        "sub_quant_10_4"
+      ],
+      "previousSubSkill": "sub_quant_10_1",
+      "isReclassified": false,
+      "contentFingerprint": "e36bdc36585aa78b0a973f292cc8bfa3630522b2dff1ba61df6da4ecdebb996d",
+      "ideaFingerprint": "10c2464d2f8a1be66a79f0a99488f1de0868199a211830efc26a2228d3b1bae2",
+      "qaStatus": "REVIEW",
+      "reviewReason": "DOCUMENTED_37_SOURCE_CONFLICT_FAIL_CLOSED",
+      "importEligible": false,
+      "evidenceReferences": [
+        "MNSF26_CANONICAL_TAXONOMY_25_95_V1.json",
+        "MNSF26_SOURCE_TO_CANONICAL_CANDIDATE_MAP_V1.json"
+      ]
+    }
+  ]
+}

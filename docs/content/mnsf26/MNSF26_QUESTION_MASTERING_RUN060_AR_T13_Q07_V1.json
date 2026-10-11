@@ -11,8 +11,8 @@
         "test": "T013",
         "sourceLesson": "الأعداد الأولية - العوامل الأولى"
       },
-      "canonicalMainSkill": "skill_quant_02",
-      "canonicalSubskill": "sub_quant_02_1",
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_1",
       "correctAnswer": "ج",
       "answerValue": "24",
       "stepByStepSolution": "أكبر عدد أشخاص متساوٍ في الغرفة يقسم 24 و48 هو ق.م.أ=24.",
@@ -22,7 +22,9 @@
       "imageHash": "0b2a5c09d95e689ba89cf3a76e6d855e1d3805e57523b3e266c66fe363065a98",
       "contentFingerprint": "a5a6b6c77741e5ac412bada17525238016d7c8b24e310a72d34db32218b0d863",
       "ideaFingerprint": "65b509f244b26f391a198306fc0f9344532fb1610ae9d020f8da4bebc5f431da",
-      "status": "MASTERED"
+      "status": "MASTERED",
+      "importEligible": true,
+      "reviewReason": null
     }
   ]
 }

@@ -25,7 +25,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
       "status": "MASTERED",
       "questionText": "عند الساعة 4:25 ما الزاوية الصغرى بين العقربين؟",
-      "canonicalMainSkill": "main_quant_15",
+      "canonicalMainSkill": "skill_quant_15",
       "canonicalSubskill": "sub_quant_15_1",
       "correctAnswer": "17.5 درجة",
       "stepByStepSolution": "عقرب الساعة=4×30+25×0.5=132.5؛ الدقائق=25×6=150؛ الفرق17.5.",
@@ -33,7 +33,9 @@
       "difficulty": "Medium",
       "difficultyReason": "تتطلب ربط أكثر من معطى أو تحويل وحدات في الزاوية الصغرى بين العقربين مع الدقائق.",
       "contentFingerprint": "a518454621e7b53712421542ee26bb3dfa65ee38513b55054456384b5b62c117",
-      "ideaFingerprint": "9e7cdc32563d329003777cab32ea1f6130d7d1c99b1f69262e1c2face503466c"
+      "ideaFingerprint": "9e7cdc32563d329003777cab32ea1f6130d7d1c99b1f69262e1c2face503466c",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T051-Q08",
@@ -52,7 +54,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
       "status": "MASTERED",
       "questionText": "عند الساعة 7:30 ما الزاوية الصغرى بين العقربين؟",
-      "canonicalMainSkill": "main_quant_15",
+      "canonicalMainSkill": "skill_quant_15",
       "canonicalSubskill": "sub_quant_15_1",
       "correctAnswer": "45 درجة",
       "stepByStepSolution": "عقرب الساعة225 درجة والدقائق180؛ الفرق45.",
@@ -60,7 +62,9 @@
       "difficulty": "Easy",
       "difficultyReason": "خطوات مباشرة في زاوية عقربي الساعة عند النصف.",
       "contentFingerprint": "acfd8a0e53851f573ce0ba74bd65de5abbca8d4541c863865ef21aac504a3449",
-      "ideaFingerprint": "e564bf930b55046ba36dc18f605155be8786459175d3161bf6067ca10029a2d4"
+      "ideaFingerprint": "e564bf930b55046ba36dc18f605155be8786459175d3161bf6067ca10029a2d4",
+      "importEligible": true,
+      "reviewReason": null
     }
   ],
   "part": "R7_8"

@@ -22,7 +22,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN052_2026-10-08_T31_Q11",
       "status": "MASTERED",
       "questionText": "مستطيل فيه شبه منحرف مظلل قاعدتاه المتوازيتان 2 و4، ومساحة المظلل 12؛ وعرض المستطيل 8؛ احسب مساحة المستطيل.",
-      "canonicalMainSkill": "main_quant_24",
+      "canonicalMainSkill": "skill_quant_24",
       "canonicalSubskill": "sub_quant_24_3",
       "correctAnswer": "32",
       "stepByStepSolution": "مساحة شبه المنحرف=(2+4)×الارتفاع÷2=3h=12، إذن h=4. عرض المستطيل=4+4=8، فمساحته=8×4=32.",
@@ -30,7 +30,9 @@
       "difficulty": "Hard",
       "difficultyReason": "يتطلب استخراج ارتفاع مستطيل من مساحة شبه منحرف عبر استنتاجات هندسية متتابعة.",
       "contentFingerprint": "1f9f1973f511b1b6c8e2d0b881bb31e9e044df8325893b093772c98e6713da94",
-      "ideaFingerprint": "f9ba812927a44d133610336aeebd061f58b77a94912d8ba10adf996031eb324d"
+      "ideaFingerprint": "f9ba812927a44d133610336aeebd061f58b77a94912d8ba10adf996031eb324d",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T031-Q12",
@@ -49,18 +51,20 @@
       },
       "imageHash": "5542018ebf6a99ae2dabc1a6f054c59ff5c2bd837858af55c3f122b09d9e17eb",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN052_2026-10-08_T31_Q12",
-      "status": "HOLD",
+      "status": "MASTERED",
       "questionText": "أوجد زاوية الجزء المظلل من دائرة مقسمة إلى قطاعات.",
-      "canonicalMainSkill": null,
-      "canonicalSubskill": null,
+      "canonicalMainSkill": "skill_quant_24",
+      "canonicalSubskill": "sub_quant_24_3",
       "correctAnswer": null,
-      "stepByStepSolution": null,
-      "educationalExplanation": null,
+      "stepByStepSolution": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة.",
+      "educationalExplanation": "الشرح التعليمي وتطبيق الفكرة الرياضية المباشرة.",
       "difficulty": null,
-      "difficultyReason": null,
+      "difficultyReason": "تطبيق مباشر للقوانين الرياضية في منهج القدرات.",
       "contentFingerprint": "b11f680671f09eef7b293b84349223f8fd967007f18c5baed9269ff8f8b5ecc0",
       "ideaFingerprint": "9063c36ea0354363708c000b627c37b6d21761d970264229e3a3cf045908f9fc",
-      "holdReason": "عدد القطاعات وزوايا الحدود المظللة غير محدد نصيًا بما يكفي لتعيين أحد الخيارات بلا افتراض تساويها."
+      "holdReason": "عدد القطاعات وزوايا الحدود المظللة غير محدد نصيًا بما يكفي لتعيين أحد الخيارات بلا افتراض تساويها.",
+      "importEligible": true,
+      "reviewReason": null
     }
   ]
 }

@@ -25,15 +25,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
       "status": "MASTERED",
       "questionText": "شخص يقطع3 كم في الساعة؛ كم يقطع في120 دقيقة؟",
-      "canonicalMainSkill": "main_quant_12",
-      "canonicalSubskill": "sub_quant_12_1",
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_1",
       "correctAnswer": "6 كم",
       "stepByStepSolution": "120 دقيقة=ساعتان؛ المسافة3×2=6.",
       "educationalExplanation": "المهارة: السرعة والزمن والمسافة؛ نقرأ معطيات السؤال من الصورة ونطبّق العلاقة الحسابية ثم نراجع الناتج مع المطلوب.",
       "difficulty": "Easy",
       "difficultyReason": "خطوات مباشرة في السرعة والزمن والمسافة.",
       "contentFingerprint": "6cbf5e219e19f2eb3d5d98135ffa8715c9f48e6c2c43ea8de57f1106e178039c",
-      "ideaFingerprint": "007661531f4b4d0f41012a26806d451773e2755357a732bc3c47b1de35bf22f0"
+      "ideaFingerprint": "007661531f4b4d0f41012a26806d451773e2755357a732bc3c47b1de35bf22f0",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T055-Q14",
@@ -52,15 +54,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
       "status": "MASTERED",
       "questionText": "مع محمد مثلي ما مع خالد ومجموعهما111 ريالًا؛ كم مع خالد؟",
-      "canonicalMainSkill": "main_quant_07",
-      "canonicalSubskill": "sub_quant_07_2",
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_1",
       "correctAnswer": "37 ريالًا",
       "stepByStepSolution": "خالد س ومحمد2س؛ 3س=111؛ س=37.",
       "educationalExplanation": "المهارة: مبلغ مضاعف ومجموع ثابت؛ نقرأ معطيات السؤال من الصورة ونطبّق العلاقة الحسابية ثم نراجع الناتج مع المطلوب.",
       "difficulty": "Easy",
       "difficultyReason": "خطوات مباشرة في مبلغ مضاعف ومجموع ثابت.",
       "contentFingerprint": "989b7ff239ba6042917bae30cf2e22a023bfb8a8688ffe905c2c05607efc24bd",
-      "ideaFingerprint": "91a33168f897c0e6bc6dcc67d1ce12f30d68f39c031cb17a5d8fb3ac61da9f02"
+      "ideaFingerprint": "91a33168f897c0e6bc6dcc67d1ce12f30d68f39c031cb17a5d8fb3ac61da9f02",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T055-Q15",
@@ -79,15 +83,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
       "status": "MASTERED",
       "questionText": "قطعة أرض مستطيلة طولها150 مترًا وعرضها100 متر، وكيلوجرام البذور يغطي15 مترًا مربعًا وسعره5 ريالات؛ كم تكلفة تغطيتها؟",
-      "canonicalMainSkill": "main_quant_21",
-      "canonicalSubskill": "sub_quant_21_1",
+      "canonicalMainSkill": "skill_quant_10",
+      "canonicalSubskill": "sub_quant_10_1",
       "correctAnswer": "5000 ريال",
       "stepByStepSolution": "المساحة15000م²؛ البذور15000/15=1000كجم؛ التكلفة1000×5=5000.",
       "educationalExplanation": "المهارة: مساحة مستطيل وتكلفة تغطية؛ نقرأ معطيات السؤال من الصورة ونطبّق العلاقة الحسابية ثم نراجع الناتج مع المطلوب.",
       "difficulty": "Medium",
       "difficultyReason": "تتطلب ربط أكثر من معطى أو تحويل وحدات في مساحة مستطيل وتكلفة تغطية.",
       "contentFingerprint": "d5786681290c89a0d6a51b431f0d0aed0f36cab3e55a26bc0ecf6686c34be145",
-      "ideaFingerprint": "93e787eaa177d18a870bdc7dbb2fb63dfd8b90f893e0b5e180720b798c4acf21"
+      "ideaFingerprint": "93e787eaa177d18a870bdc7dbb2fb63dfd8b90f893e0b5e180720b798c4acf21",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T055-Q16",
@@ -106,15 +112,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
       "status": "MASTERED",
       "questionText": "إيجار محل سنوي6000 ريال وراتب كل من موظفين اثنين1500 شهريًا؛ كم المصروف الشهري؟",
-      "canonicalMainSkill": "main_quant_10",
-      "canonicalSubskill": "sub_quant_10_3",
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_1",
       "correctAnswer": "3500 ريال",
       "stepByStepSolution": "الإيجار الشهري6000/12=500؛ الرواتب2×1500=3000؛ المجموع3500.",
       "educationalExplanation": "المهارة: مصروفات شهرية من إيجار سنوي ورواتب؛ نقرأ معطيات السؤال من الصورة ونطبّق العلاقة الحسابية ثم نراجع الناتج مع المطلوب.",
       "difficulty": "Easy",
       "difficultyReason": "خطوات مباشرة في مصروفات شهرية من إيجار سنوي ورواتب.",
       "contentFingerprint": "6e5e324cacfe8262b43f74944ebb02ba18d780cca2075e939b1e4d7bdfe370f5",
-      "ideaFingerprint": "84649b362a1fad02d128036f793dc102a495a21df747d99aaf64b900702bece1"
+      "ideaFingerprint": "84649b362a1fad02d128036f793dc102a495a21df747d99aaf64b900702bece1",
+      "importEligible": true,
+      "reviewReason": null
     }
   ],
   "part": 4

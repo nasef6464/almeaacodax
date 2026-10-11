@@ -23,15 +23,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN058_2026-10-08_T010_Q15",
       "status": "MASTERED",
       "questionText": "عدد أسهم أقل من2000 يقبل القسمة على9 و11 و13؛ كم مجموع الأسهم؟",
-      "canonicalMainSkill": "main_quant_02",
-      "canonicalSubskill": "sub_quant_02_1",
+      "canonicalMainSkill": "skill_quant_05",
+      "canonicalSubskill": "sub_quant_05_1",
       "correctAnswer": "1287 (أ)",
       "stepByStepSolution": "9 و11 و13 أولية نسبيًا، وحاصل ضربها1287، وهو أقل من2000.",
       "educationalExplanation": "نطبّق القاعدة الرياضية الواردة في نص السؤال: 9 و11 و13 أولية نسبيًا، وحاصل ضربها1287، وهو أقل من2000.",
       "difficulty": "Medium",
       "difficultyReason": "يحتاج عدة خطوات ومقارنة معطيات.",
       "contentFingerprint": "d0bb41bb238e9a1c3cf5fcbd6c471c2aecacf8b36bc3170067707c0053ef1935",
-      "ideaFingerprint": "38cec5bb07c72d52a62fffd82a4204924dba795a728a317309d086d6a66e4346"
+      "ideaFingerprint": "38cec5bb07c72d52a62fffd82a4204924dba795a728a317309d086d6a66e4346",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T010-Q16",
@@ -53,7 +55,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN058_2026-10-08_T010_Q16",
       "status": "MASTERED",
       "questionText": "عدد له قواسم1 و2 و3 و5؛ أي من2 و6 و15 و20 لا يلزم أن يقبل القسمة عليه؟",
-      "canonicalMainSkill": "main_quant_02",
+      "canonicalMainSkill": "skill_quant_02",
       "canonicalSubskill": "sub_quant_02_1",
       "correctAnswer": "20 (د)",
       "stepByStepSolution": "القسمة على2 و3 و5 تضمن القسمة على6 و15، ولا تضمن20 (مثال30).",
@@ -61,7 +63,9 @@
       "difficulty": "Medium",
       "difficultyReason": "يحتاج عدة خطوات ومقارنة معطيات.",
       "contentFingerprint": "f36f965a4027533c19f8fb3dbc02d8ea52568bc1823342831a85bd7bf7dfedbb",
-      "ideaFingerprint": "cd965f2b87ca78b10d8bf7d4b96c698df9c4d28ee1342a130b458379d5eab0cf"
+      "ideaFingerprint": "cd965f2b87ca78b10d8bf7d4b96c698df9c4d28ee1342a130b458379d5eab0cf",
+      "importEligible": true,
+      "reviewReason": null
     }
   ]
 }

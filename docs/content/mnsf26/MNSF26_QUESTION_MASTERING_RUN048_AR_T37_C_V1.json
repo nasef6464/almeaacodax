@@ -25,15 +25,17 @@
       "status": "MASTERED",
       "questionText": "حضر95% من العمال وغاب17؛ إجمالي العمال",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_09",
-      "canonicalSubskill": "sub_quant_09_2",
+      "canonicalMainSkill": "skill_quant_09",
+      "canonicalSubskill": "sub_quant_09_1",
       "correctAnswer": "340 عاملًا",
       "stepByStepSolution": "الغائبون5%؛ الكل=17÷0.05=340.",
       "educationalExplanation": "الفكرة التعليمية: استعادة الكل من نسبة الغياب. نحدد أساس النسبة أو العلاقة أولًا، ثم نطبّق خطوات الحساب ونراجع الناتج مع المعطيات.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق مباشر لقاعدة حسابية واحدة أو خطوتين واضحتين.",
       "contentFingerprint": "ea090002d79d31b0b81737af7652f0dbab845be9db19e1341e3b5a313bca0dca",
-      "ideaFingerprint": "44d0f9c7c463e9650af3f6074667af7d8ea44128e2b8d2c5cf683029b218140e"
+      "ideaFingerprint": "44d0f9c7c463e9650af3f6074667af7d8ea44128e2b8d2c5cf683029b218140e",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T037-Q10",
@@ -52,15 +54,17 @@
       "status": "MASTERED",
       "questionText": "دخل متجر انخفض من3800 إلى2850؛ نسبة النقص",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_09",
-      "canonicalSubskill": "sub_quant_09_3",
+      "canonicalMainSkill": "skill_quant_08",
+      "canonicalSubskill": "sub_quant_08_2",
       "correctAnswer": "25%",
       "stepByStepSolution": "الانخفاض=950؛ 950/3800=25%.",
       "educationalExplanation": "الفكرة التعليمية: نسبة نقصان الدخل. نحدد أساس النسبة أو العلاقة أولًا، ثم نطبّق خطوات الحساب ونراجع الناتج مع المعطيات.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق مباشر لقاعدة حسابية واحدة أو خطوتين واضحتين.",
       "contentFingerprint": "7ac7724485dfc98fb81ec402ed867b6aea96a036b9c5cf1312d80f0b6352dd26",
-      "ideaFingerprint": "e45b144b4ccf11178cdd12f126631b62e29a0119224a2382c717e610bcb8c2f1"
+      "ideaFingerprint": "e45b144b4ccf11178cdd12f126631b62e29a0119224a2382c717e610bcb8c2f1",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T037-Q11",
@@ -79,15 +83,17 @@
       "status": "MASTERED",
       "questionText": "سيدة اشترت فستانًا25% من الراتب وشنطة35% وبقي4400؛ الراتب",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_09",
-      "canonicalSubskill": "sub_quant_09_2",
+      "canonicalMainSkill": "skill_quant_09",
+      "canonicalSubskill": "sub_quant_09_1",
       "correctAnswer": "11000 ريال",
       "stepByStepSolution": "المصروف60%؛ الباقي40%=4400؛ الراتب11000.",
       "educationalExplanation": "الفكرة التعليمية: استعادة الراتب من المتبقي. نحدد أساس النسبة أو العلاقة أولًا، ثم نطبّق خطوات الحساب ونراجع الناتج مع المعطيات.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق مباشر لقاعدة حسابية واحدة أو خطوتين واضحتين.",
       "contentFingerprint": "af6de017e7bd6121256cae75924688cdf7146500c708f679ef360a07c4aebffb",
-      "ideaFingerprint": "7f257e775edcd5f394b6513bc06fef6e52b641714393552d029baefbc4bb9a40"
+      "ideaFingerprint": "7f257e775edcd5f394b6513bc06fef6e52b641714393552d029baefbc4bb9a40",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T037-Q12",
@@ -106,15 +112,17 @@
       "status": "MASTERED",
       "questionText": "ساعة30 ريال بخصم10%؛ السعر النهائي",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_09",
-      "canonicalSubskill": "sub_quant_09_3",
+      "canonicalMainSkill": "skill_quant_09",
+      "canonicalSubskill": "sub_quant_09_1",
       "correctAnswer": "27 ريال",
       "stepByStepSolution": "30×0.9=27.",
       "educationalExplanation": "الفكرة التعليمية: سعر بعد خصم. نحدد أساس النسبة أو العلاقة أولًا، ثم نطبّق خطوات الحساب ونراجع الناتج مع المعطيات.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق مباشر لقاعدة حسابية واحدة أو خطوتين واضحتين.",
       "contentFingerprint": "8ad04065b3f5e9c78be4f5ac9e19a9063ce2215c235cbf81ae74b050facb7d0b",
-      "ideaFingerprint": "1a8b8f9f56016f02ca2a5fa6928f7f07008a6a4184c9e3a579c5368cb55583b0"
+      "ideaFingerprint": "1a8b8f9f56016f02ca2a5fa6928f7f07008a6a4184c9e3a579c5368cb55583b0",
+      "importEligible": true,
+      "reviewReason": null
     }
   ],
   "shard": "C"

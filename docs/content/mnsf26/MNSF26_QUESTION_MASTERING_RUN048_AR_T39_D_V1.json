@@ -25,15 +25,17 @@
       "status": "MASTERED",
       "questionText": "مطعم أنتج60 وجبة في اليوم الثاني وهي25% من إنتاج اليوم الأول؛ مجموع اليومين",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_09",
-      "canonicalSubskill": "sub_quant_09_2",
+      "canonicalMainSkill": "skill_quant_09",
+      "canonicalSubskill": "sub_quant_09_1",
       "correctAnswer": "300 وجبة",
       "stepByStepSolution": "الأول=60÷0.25=240؛ المجموع300.",
       "educationalExplanation": "الفكرة التعليمية: استعادة كمية أولى من نسبة ثانية. نحدد أساس النسبة أو العلاقة أولًا، ثم نطبّق خطوات الحساب ونراجع الناتج مع المعطيات.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق مباشر لقاعدة حسابية واحدة أو خطوتين واضحتين.",
       "contentFingerprint": "cdc007e48185c9495299c65aaff452810666e227cd1cd7942d61f2aebb4bc1c5",
-      "ideaFingerprint": "e549a9d1504c6455c1baf0fe32ad4b15f30ff4cfe45eb20e9af799690a49bd19"
+      "ideaFingerprint": "e549a9d1504c6455c1baf0fe32ad4b15f30ff4cfe45eb20e9af799690a49bd19",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T039-Q14",
@@ -52,15 +54,17 @@
       "status": "MASTERED",
       "questionText": "اشترى شخص60 دفترًا و40 قلمًا وسعر الدفتر6 أضعاف القلم؛ نسبة ثمن الأقلام للكل",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_09",
-      "canonicalSubskill": "sub_quant_09_1",
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_1",
       "correctAnswer": "10%",
       "stepByStepSolution": "ثمن الأقلام40س والدفاتر360س؛ الكل400س؛ النسبة40/400=10%.",
       "educationalExplanation": "الفكرة التعليمية: نسبة تكلفة فئة من إجمالي تكلفة موزون. نحدد أساس النسبة أو العلاقة أولًا، ثم نطبّق خطوات الحساب ونراجع الناتج مع المعطيات.",
       "difficulty": "Medium",
       "difficultyReason": "يتطلب تحويل المعطيات إلى علاقة صحيحة ثم إجراء حساب متسلسل.",
       "contentFingerprint": "4e58665479dcb223a78a3082dfa6c6fdbad378dc663aec0e740b10e9778bc001",
-      "ideaFingerprint": "0aa4029ff34a169e6ad167da99ea2ea044ddc47d615e0944f23cf75b01a7e150"
+      "ideaFingerprint": "0aa4029ff34a169e6ad167da99ea2ea044ddc47d615e0944f23cf75b01a7e150",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T039-Q15",
@@ -79,15 +83,17 @@
       "status": "MASTERED",
       "questionText": "أحمد راتبه2000 ويدخر20% وعصام راتبه3000 ويدخر30%؛ قارن الادخار",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_10",
-      "canonicalSubskill": "sub_quant_10_3",
+      "canonicalMainSkill": "skill_quant_09",
+      "canonicalSubskill": "sub_quant_09_1",
       "correctAnswer": "القيمة الثانية أكبر",
       "stepByStepSolution": "أحمد يدخر400؛ عصام يدخر900؛ الثاني أكبر.",
       "educationalExplanation": "الفكرة التعليمية: مقارنة ادخار من راتبين. نحدد أساس النسبة أو العلاقة أولًا، ثم نطبّق خطوات الحساب ونراجع الناتج مع المعطيات.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق مباشر لقاعدة حسابية واحدة أو خطوتين واضحتين.",
       "contentFingerprint": "8af185222bcffedfea422d8d46fad918b71aa95aea20e541335b866e58307d66",
-      "ideaFingerprint": "accec63f4d6235d3b3be6aafaed8eb9b28c1d821b10f7ae7630cd0ce88bd89df"
+      "ideaFingerprint": "accec63f4d6235d3b3be6aafaed8eb9b28c1d821b10f7ae7630cd0ce88bd89df",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-AR-T039-Q16",
@@ -106,15 +112,17 @@
       "status": "MASTERED",
       "questionText": "سلعة بعد خصم20% تساوي1600؛ سعرها الأصلي",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
-      "canonicalMainSkill": "main_quant_10",
-      "canonicalSubskill": "sub_quant_10_2",
+      "canonicalMainSkill": "skill_quant_09",
+      "canonicalSubskill": "sub_quant_09_1",
       "correctAnswer": "2000 ريال",
       "stepByStepSolution": "0.8س=1600؛ س=2000.",
       "educationalExplanation": "الفكرة التعليمية: عكس خصم سعر. نحدد أساس النسبة أو العلاقة أولًا، ثم نطبّق خطوات الحساب ونراجع الناتج مع المعطيات.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق مباشر لقاعدة حسابية واحدة أو خطوتين واضحتين.",
       "contentFingerprint": "70e34c122957acefe8128e238fa7992056b6084ca2fd96cba5a4835c54eff23c",
-      "ideaFingerprint": "82ce78c5d645894ac02e437effaba88c88c6c50a7007075048d76a430db5dee9"
+      "ideaFingerprint": "82ce78c5d645894ac02e437effaba88c88c6c50a7007075048d76a430db5dee9",
+      "importEligible": true,
+      "reviewReason": null
     }
   ],
   "shard": "D"

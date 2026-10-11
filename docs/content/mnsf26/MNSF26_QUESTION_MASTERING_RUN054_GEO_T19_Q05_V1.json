@@ -23,15 +23,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T019_Q05",
       "status": "MASTERED",
       "questionText": "مثلثان متشابهان قاعدتاهما3 و7.5، والضلع العلوي4؛ أوجد امتداده س",
-      "canonicalMainSkill": "main_quant_20",
-      "canonicalSubskill": "sub_quant_20_5",
+      "canonicalMainSkill": "skill_quant_21",
+      "canonicalSubskill": "sub_quant_21_1",
       "correctAnswer": "6 (أ)",
       "stepByStepSolution": "عامل التكبير7.5/3=2.5، الضلع الكلي10، والامتداد10−4=6.",
       "educationalExplanation": "عامل التكبير7.5/3=2.5، الضلع الكلي10، والامتداد10−4=6.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "5fb04d296d02de3cb002203b02d6bb97ddfce89bd12b5738a67524f7b5418af9",
-      "ideaFingerprint": "c626aa9cb99bf290d558b94d8884da2486e88080b4df686aeb2c72b4ef95fa6f"
+      "ideaFingerprint": "c626aa9cb99bf290d558b94d8884da2486e88080b4df686aeb2c72b4ef95fa6f",
+      "importEligible": true,
+      "reviewReason": null
     }
   ]
 }

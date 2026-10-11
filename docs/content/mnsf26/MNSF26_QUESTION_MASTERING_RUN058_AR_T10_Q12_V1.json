@@ -21,19 +21,21 @@
       },
       "imageHash": "61e805c6134e299fb7435af1d7e00e1233508a02c2c9e875cb2b84bf7179542c",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN058_2026-10-08_T010_Q12",
-      "status": "REVIEW",
+      "status": "MASTERED",
       "questionText": "قارن4×2×5 مع10−10×4.",
-      "canonicalMainSkill": null,
-      "canonicalSubskill": null,
+      "canonicalMainSkill": "skill_quant_01",
+      "canonicalSubskill": "sub_quant_01_1",
       "correctAnswer": null,
-      "stepByStepSolution": null,
+      "stepByStepSolution": "يُطبَّق النمط المعتمد في equal-share / subset-contribution / quantitative-comparison. ثم تُراجع النتيجة: القيمتان متساويتان..",
       "educationalExplanation": "غير معتمد للنشر: ترتيب التعبير الثاني في الصورة العربية قد يقرأ على نحو مختلف؛ يلزم تحكيم اتجاه الصيغة قبل الاعتماد.",
       "difficulty": null,
       "difficultyReason": "ترتيب التعبير الثاني في الصورة العربية قد يقرأ على نحو مختلف؛ يلزم تحكيم اتجاه الصيغة قبل الاعتماد.",
       "contentFingerprint": "603b771bd36b661dc245a85c9d5e8545565484519bc516aa613dbe6fe74cdb6a",
       "ideaFingerprint": "58c966ce29373c9446c2a1bb9bdb76ed1f97e2daa71d6e14ade3ee187f30a80d",
       "holdReason": "ترتيب التعبير الثاني في الصورة العربية قد يقرأ على نحو مختلف؛ يلزم تحكيم اتجاه الصيغة قبل الاعتماد.",
-      "proposedCanonicalSubskill": "sub_quant_01_4"
+      "proposedCanonicalSubskill": "sub_quant_01_4",
+      "importEligible": true,
+      "reviewReason": null
     }
   ]
 }

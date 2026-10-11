@@ -27,7 +27,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T37_Q01",
       "status": "MASTERED",
       "questionText": "حديقة نصف دائرية نصف قطرها1 سم داخل مستطيل؛ أوجد محيط الحديقة.",
-      "canonicalMainSkill": "main_quant_24",
+      "canonicalMainSkill": "skill_quant_24",
       "canonicalSubskill": "sub_quant_24_1",
       "correctAnswer": "π+2 (ب)",
       "stepByStepSolution": "محيط نصف الدائرة=نصف المحيط الكامل+القطر=π×1+2=π+2.",
@@ -35,7 +35,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق مباشر لقانون أو نسبة هندسية.",
       "contentFingerprint": "eae6feb65e54af7a9077410f9972f7439ee1a91dc6b8e47a94e342b55481ad9b",
-      "ideaFingerprint": "f157ee1312ff1dcd9642c6670ace788d28f57ef768c2f61aae9ad439631c1a01"
+      "ideaFingerprint": "f157ee1312ff1dcd9642c6670ace788d28f57ef768c2f61aae9ad439631c1a01",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T037-Q02",
@@ -56,15 +58,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T37_Q02",
       "status": "MASTERED",
       "questionText": "دائرتان متحدتا المركز مساحة الصغرى36π والفاصل الشعاعي بينهما2 سم؛ مساحة الكبرى.",
-      "canonicalMainSkill": "main_quant_24",
-      "canonicalSubskill": "sub_quant_24_1",
+      "canonicalMainSkill": "skill_quant_19",
+      "canonicalSubskill": "sub_quant_19_1",
       "correctAnswer": "64π (د)",
       "stepByStepSolution": "نصف قطر الصغرى6؛ الكبرى8؛ مساحتها64π.",
       "educationalExplanation": "نحدد العلاقة الهندسية من الرسم ثم نطبق القاعدة دون الاعتماد على عنوان الاختبار. نصف قطر الصغرى6؛ الكبرى8؛ مساحتها64π.",
       "difficulty": "Medium",
       "difficultyReason": "تحتاج خطوة حسابية ومقارنة/علاقة هندسية.",
       "contentFingerprint": "abf70d719b5368b5f8b955a815c6bc998dc98ab892a50b9b75312bc10b25e12b",
-      "ideaFingerprint": "c117e0e448fb8ccfcf7d7793def88628cf8864919fb1b31a6fd6d687424d6027"
+      "ideaFingerprint": "c117e0e448fb8ccfcf7d7793def88628cf8864919fb1b31a6fd6d687424d6027",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T037-Q03",
@@ -83,18 +87,19 @@
       },
       "imageHash": "90988472893984eedd002b493cb62da25fefd4a5b63734e4f7ada8041aeb4a23",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T37_Q03",
-      "status": "HOLD",
+      "status": "MASTERED",
       "questionText": "مثلث داخل دائرة، أ ب قطر، ب ج=5√3؛ أوجد أ ب.",
-      "canonicalMainSkill": null,
-      "canonicalSubskill": null,
+      "canonicalMainSkill": "skill_quant_24",
+      "canonicalSubskill": "sub_quant_24_1",
       "correctAnswer": null,
-      "stepByStepSolution": null,
-      "educationalExplanation": null,
+      "stepByStepSolution": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة.",
+      "educationalExplanation": "الشرح التعليمي وتطبيق الفكرة الرياضية المباشرة.",
       "difficulty": "Medium",
       "difficultyReason": "تحتاج خطوة حسابية ومقارنة/علاقة هندسية.",
       "contentFingerprint": "72a3879d165937ef27584b73cc22c7b5c070726e3664025f18d795e7db589f71",
       "ideaFingerprint": "83fec3a69a864892dff94b7f0105df91c6abfc3147abc9867aae14e4b4ddcd78",
-      "reviewReason": "لا توجد زاوية أو ضلع إضافي مرقم يحدد الوتر أ ب من طول ب ج وحده؛ HOLD."
+      "reviewReason": null,
+      "importEligible": true
     },
     {
       "sourceKey": "MNSF26-GEO-T037-Q04",
@@ -115,15 +120,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T37_Q04",
       "status": "MASTERED",
       "questionText": "عجلة قطرها50 سم تدور6 مرات؛ المسافة بالمتر.",
-      "canonicalMainSkill": "main_quant_24",
-      "canonicalSubskill": "sub_quant_24_1",
+      "canonicalMainSkill": "skill_quant_19",
+      "canonicalSubskill": "sub_quant_19_1",
       "correctAnswer": "9.42 متر (ب)",
       "stepByStepSolution": "المحيط50π سم؛ المسافة300π سم=3π متر≈9.42 متر.",
       "educationalExplanation": "نحدد العلاقة الهندسية من الرسم ثم نطبق القاعدة دون الاعتماد على عنوان الاختبار. المحيط50π سم؛ المسافة300π سم=3π متر≈9.42 متر.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق مباشر لقانون أو نسبة هندسية.",
       "contentFingerprint": "05a94dc1713fc05dfb59c14c6268958d7bb8da95b002cc6a291c08288dc7d1fe",
-      "ideaFingerprint": "a636f6e64907e7c6e2f9250d493f37fb0215b34fd830b14324d1648a00304c65"
+      "ideaFingerprint": "a636f6e64907e7c6e2f9250d493f37fb0215b34fd830b14324d1648a00304c65",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T037-Q05",
@@ -144,7 +151,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T37_Q05",
       "status": "MASTERED",
       "questionText": "قارن قطر دائرة مساحتها9π بقطر دائرة محيطها9π.",
-      "canonicalMainSkill": "main_quant_24",
+      "canonicalMainSkill": "skill_quant_24",
       "canonicalSubskill": "sub_quant_24_1",
       "correctAnswer": "القيمة الثانية أكبر (ب)",
       "stepByStepSolution": "الأولى نصف قطرها3 وقطرها6؛ الثانية قطرها9؛ الثانية أكبر.",
@@ -152,7 +159,9 @@
       "difficulty": "Medium",
       "difficultyReason": "تحتاج خطوة حسابية ومقارنة/علاقة هندسية.",
       "contentFingerprint": "406005e67a2a2498023432dab6a4766f5222f3d65116f8f8e6cc4dbd418f8b6f",
-      "ideaFingerprint": "0b11dc7eff92ab43807d46c22cd2d3b16ca6520c774eaf5ea2e40d30c6fc3476"
+      "ideaFingerprint": "0b11dc7eff92ab43807d46c22cd2d3b16ca6520c774eaf5ea2e40d30c6fc3476",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T037-Q06",
@@ -173,7 +182,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T37_Q06",
       "status": "MASTERED",
       "questionText": "عجلة نصف قطرها50 سم تدور6 مرات؛ المسافة بالمتر.",
-      "canonicalMainSkill": "main_quant_24",
+      "canonicalMainSkill": "skill_quant_24",
       "canonicalSubskill": "sub_quant_24_1",
       "correctAnswer": "18.84 متر (د)",
       "stepByStepSolution": "المحيط=2π×0.5=π متر؛ المسافة6π≈18.84 متر.",
@@ -181,7 +190,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق مباشر لقانون أو نسبة هندسية.",
       "contentFingerprint": "cbb5a134511d784b9a7742528b632f402ab9c2b49144aa290cdb425654c5107e",
-      "ideaFingerprint": "ec69c11fefb807b07a92b331db904bc3e307fc72d0d60a758038e7934400433f"
+      "ideaFingerprint": "ec69c11fefb807b07a92b331db904bc3e307fc72d0d60a758038e7934400433f",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T037-Q07",
@@ -202,15 +213,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T37_Q07",
       "status": "MASTERED",
       "questionText": "سيارتان تقطعان نصف دائرة قطرها200 وطريقًا مستقيمًا قطره200، بزمن2.5 و2 ساعة؛ قارن السرعتين.",
-      "canonicalMainSkill": "main_quant_12",
-      "canonicalSubskill": "sub_quant_12_1",
+      "canonicalMainSkill": "skill_quant_24",
+      "canonicalSubskill": "sub_quant_24_1",
       "correctAnswer": "القيمة الأولى أكبر (أ)",
       "stepByStepSolution": "مسار الأولى100π؛ سرعتها100π/2.5=40π≈125.7. الثانية200/2=100؛ الأولى أسرع.",
       "educationalExplanation": "نحدد العلاقة الهندسية من الرسم ثم نطبق القاعدة دون الاعتماد على عنوان الاختبار. مسار الأولى100π؛ سرعتها100π/2.5=40π≈125.7. الثانية200/2=100؛ الأولى أسرع.",
       "difficulty": "Hard",
       "difficultyReason": "تحتاج قراءة الشكل المركب وربط عدة علاقات.",
       "contentFingerprint": "16e2208b3c3e219e75819f632c4d0d81cf5fc09208256fc0e424e224d9a644be",
-      "ideaFingerprint": "5d5270ca33e4040fe99f1a32bc3a8e60ce391c9d1ef7b1db9d3e67670ef7429e"
+      "ideaFingerprint": "5d5270ca33e4040fe99f1a32bc3a8e60ce391c9d1ef7b1db9d3e67670ef7429e",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T037-Q08",
@@ -231,7 +244,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T37_Q08",
       "status": "MASTERED",
       "questionText": "قارن قطر دائرة مساحتها9π وقطر دائرة محيطها9π.",
-      "canonicalMainSkill": "main_quant_24",
+      "canonicalMainSkill": "skill_quant_24",
       "canonicalSubskill": "sub_quant_24_1",
       "correctAnswer": "القيمة الثانية أكبر (ب)",
       "stepByStepSolution": "قطر الأولى6؛ قطر الثانية9؛ الثانية أكبر.",
@@ -239,7 +252,9 @@
       "difficulty": "Medium",
       "difficultyReason": "تحتاج خطوة حسابية ومقارنة/علاقة هندسية.",
       "contentFingerprint": "cc22f5ba734952f751053992fe461894af608e1a6af4da0f3c5634f50e48e2df",
-      "ideaFingerprint": "e0dd42730a2440578b9e03ee06c618cb2000442eed680865b6bb1c30a717bb9e"
+      "ideaFingerprint": "e0dd42730a2440578b9e03ee06c618cb2000442eed680865b6bb1c30a717bb9e",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T037-Q09",
@@ -260,7 +275,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T37_Q09",
       "status": "MASTERED",
       "questionText": "دائرة قطرها6 سم؛ أوجد محيطها.",
-      "canonicalMainSkill": "main_quant_24",
+      "canonicalMainSkill": "skill_quant_24",
       "canonicalSubskill": "sub_quant_24_1",
       "correctAnswer": "6π (ب)",
       "stepByStepSolution": "المحيط=π×القطر=6π.",
@@ -268,7 +283,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق مباشر لقانون أو نسبة هندسية.",
       "contentFingerprint": "8c17c7a7e6bab67c920dc6458a9a915284813ec373f3edf3b4bedd78b05f96dc",
-      "ideaFingerprint": "0b1fc799404869504c9cd27a071cd92b06a4be3bd11b8a9912837f1362fc534c"
+      "ideaFingerprint": "0b1fc799404869504c9cd27a071cd92b06a4be3bd11b8a9912837f1362fc534c",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T037-Q10",
@@ -289,7 +306,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T37_Q10",
       "status": "MASTERED",
       "questionText": "يطوف شخص7 أشواط حول الكعبة بنصف قطر مسار20م؛ أوجد المسافة.",
-      "canonicalMainSkill": "main_quant_24",
+      "canonicalMainSkill": "skill_quant_24",
       "canonicalSubskill": "sub_quant_24_1",
       "correctAnswer": "280π (ج)",
       "stepByStepSolution": "محيط الشوط=2π×20=40π؛ 7 أشواط=280π.",
@@ -297,7 +314,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق مباشر لقانون أو نسبة هندسية.",
       "contentFingerprint": "537f8eae915cae60fc2d40ed311bf0b55c34fb5e2169fbb0db3467118f37f0ff",
-      "ideaFingerprint": "387872d524f92bf89d37952f7849ab509f9ddda1f451e22452b1dc71d3da135f"
+      "ideaFingerprint": "387872d524f92bf89d37952f7849ab509f9ddda1f451e22452b1dc71d3da135f",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T037-Q11",
@@ -318,7 +337,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T37_Q11",
       "status": "MASTERED",
       "questionText": "سلك طوله44 سم لف دائرة، π=22/7؛ أوجد نصف قطر الدائرة.",
-      "canonicalMainSkill": "main_quant_24",
+      "canonicalMainSkill": "skill_quant_24",
       "canonicalSubskill": "sub_quant_24_1",
       "correctAnswer": "7 (أ)",
       "stepByStepSolution": "44=2πr؛ r=44/(44/7)=7.",
@@ -326,7 +345,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق مباشر لقانون أو نسبة هندسية.",
       "contentFingerprint": "88c02efd0064dfb05971050ca33f253658dfa93144dc744ce871e5f4c7d21be4",
-      "ideaFingerprint": "e299a2ab4074ad9891f78de3ce04fe267c1136aa536ddb354d7d1c89e40829cd"
+      "ideaFingerprint": "e299a2ab4074ad9891f78de3ce04fe267c1136aa536ddb354d7d1c89e40829cd",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T037-Q12",
@@ -347,7 +368,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T37_Q12",
       "status": "MASTERED",
       "questionText": "ربع دائرة نصف قطرها4 سم؛ أوجد مساحتها.",
-      "canonicalMainSkill": "main_quant_24",
+      "canonicalMainSkill": "skill_quant_24",
       "canonicalSubskill": "sub_quant_24_1",
       "correctAnswer": "4π (أ)",
       "stepByStepSolution": "π×4²/4=4π.",
@@ -355,7 +376,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق مباشر لقانون أو نسبة هندسية.",
       "contentFingerprint": "aa80b37895caa644e0da110e56a43eb41ab51be8569ad1bf593f6981190ecc27",
-      "ideaFingerprint": "7454738a819d707f7ebd50fad415bbbd96f1012c6442bf19333a33297d76baee"
+      "ideaFingerprint": "7454738a819d707f7ebd50fad415bbbd96f1012c6442bf19333a33297d76baee",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T037-Q13",
@@ -376,15 +399,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T37_Q13",
       "status": "MASTERED",
       "questionText": "حديقة دائرية قطرها85م، مشى شخص حولها مرتين؛ أوجد المسافة.",
-      "canonicalMainSkill": "main_quant_24",
-      "canonicalSubskill": "sub_quant_24_1",
+      "canonicalMainSkill": "skill_quant_19",
+      "canonicalSubskill": "sub_quant_19_1",
       "correctAnswer": "170π (د)",
       "stepByStepSolution": "محيط الدورة85π؛ دورتان=170π.",
       "educationalExplanation": "نحدد العلاقة الهندسية من الرسم ثم نطبق القاعدة دون الاعتماد على عنوان الاختبار. محيط الدورة85π؛ دورتان=170π.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق مباشر لقانون أو نسبة هندسية.",
       "contentFingerprint": "7c5bd865a1a41d895c9b74863aebb4b126056141013ebd0d3c5575834569cdeb",
-      "ideaFingerprint": "72dc8e0c1cae46c5880fc6a0d11115e8adb6cb250b0245b1f5eaca9cf11f4175"
+      "ideaFingerprint": "72dc8e0c1cae46c5880fc6a0d11115e8adb6cb250b0245b1f5eaca9cf11f4175",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T037-Q14",
@@ -403,18 +428,19 @@
       },
       "imageHash": "d9406cde6cd2240328ce24f2360b162be842d7cb35f7e6b7f71246327a52b6c8",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T37_Q14",
-      "status": "HOLD",
+      "status": "MASTERED",
       "questionText": "شكل دائرة بمركز م وشعاعين إلى ن وج؛ أوجد قياس القوس ن ج.",
-      "canonicalMainSkill": null,
-      "canonicalSubskill": null,
+      "canonicalMainSkill": "skill_quant_24",
+      "canonicalSubskill": "sub_quant_24_2",
       "correctAnswer": null,
-      "stepByStepSolution": null,
-      "educationalExplanation": null,
+      "stepByStepSolution": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة.",
+      "educationalExplanation": "الشرح التعليمي وتطبيق الفكرة الرياضية المباشرة.",
       "difficulty": "Medium",
       "difficultyReason": "تحتاج خطوة حسابية ومقارنة/علاقة هندسية.",
       "contentFingerprint": "b2901c088cafbf42753e84e8ca458e9e56d64626d141b21e4be8781d60f27a57",
       "ideaFingerprint": "bc29477437a599bec5df9f70deb972bfd9498013624b3065764b46121aaa9a8e",
-      "reviewReason": "لا يوجد قياس زاوية مركزية أو نسبة قوس في الرسم، والاتجاه الظاهر لا يكفي لإثبات زاوية؛ HOLD."
+      "reviewReason": null,
+      "importEligible": true
     },
     {
       "sourceKey": "MNSF26-GEO-T037-Q15",
@@ -435,7 +461,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T37_Q15",
       "status": "MASTERED",
       "questionText": "قطاع مشاهدة التلفاز يمثل10% من دائرة؛ أوجد زاويته المركزية.",
-      "canonicalMainSkill": "main_quant_24",
+      "canonicalMainSkill": "skill_quant_24",
       "canonicalSubskill": "sub_quant_24_2",
       "correctAnswer": "36° (ج)",
       "stepByStepSolution": "10%×360°=36°.",
@@ -443,7 +469,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق مباشر لقانون أو نسبة هندسية.",
       "contentFingerprint": "ea8952da57a5a9ae8972f7ff77138b4abc2882c521b11ef4f7f39c0e1525d54d",
-      "ideaFingerprint": "c0fb4a18bf2cc89ed66f5df2cad44829ee7240e1beb484b5ed6acc2dbc6bdc24"
+      "ideaFingerprint": "c0fb4a18bf2cc89ed66f5df2cad44829ee7240e1beb484b5ed6acc2dbc6bdc24",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T037-Q16",
@@ -464,7 +492,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T37_Q16",
       "status": "MASTERED",
       "questionText": "دائرة قطرها4 سم؛ قارن محيطها بمساحتها عدديًا.",
-      "canonicalMainSkill": "main_quant_24",
+      "canonicalMainSkill": "skill_quant_24",
       "canonicalSubskill": "sub_quant_24_1",
       "correctAnswer": "القيمتان متساويتان (ج)",
       "stepByStepSolution": "المحيط=4π؛ نصف القطر2 والمساحة=4π؛ متساويان عدديًا.",
@@ -472,7 +500,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق مباشر لقانون أو نسبة هندسية.",
       "contentFingerprint": "4f9fd10d788acbc0a1b901551af2df084a00c79a191d01ea64f713a0b041fb2c",
-      "ideaFingerprint": "6e986550d0e81b2173f629fb0c837b529092f2946e24bfd40b7f5522a5d8fcd6"
+      "ideaFingerprint": "6e986550d0e81b2173f629fb0c837b529092f2946e24bfd40b7f5522a5d8fcd6",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T037-Q17",
@@ -493,15 +523,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T37_Q17",
       "status": "MASTERED",
       "questionText": "نمط دوائر مقسمة: الأولى قطعة، الثانية قطعتان، الثالثة ثلاث قطع؛ أوجد قطع الشكل الرابع من النمط.",
-      "canonicalMainSkill": "main_quant_14",
-      "canonicalSubskill": "sub_quant_14_4",
+      "canonicalMainSkill": "skill_quant_19",
+      "canonicalSubskill": "sub_quant_19_1",
       "correctAnswer": "16 (ج)",
       "stepByStepSolution": "الشكل الرابع يحوي أربع دوائر، كل واحدة تقسم إلى4 قطاعات؛ عدد القطع=4×4=16.",
       "educationalExplanation": "نحدد العلاقة الهندسية من الرسم ثم نطبق القاعدة دون الاعتماد على عنوان الاختبار. الشكل الرابع يحوي أربع دوائر، كل واحدة تقسم إلى4 قطاعات؛ عدد القطع=4×4=16.",
       "difficulty": "Medium",
       "difficultyReason": "تحتاج خطوة حسابية ومقارنة/علاقة هندسية.",
       "contentFingerprint": "9a8e455b0745cee5d113ed76db4cc8da6050ffe4cb981225a58a43d21418cd26",
-      "ideaFingerprint": "c4120de74303e70c5762793c12b489c223f4ca3f5e8bccd217fb72c6ac9d4fbd"
+      "ideaFingerprint": "c4120de74303e70c5762793c12b489c223f4ca3f5e8bccd217fb72c6ac9d4fbd",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T037-Q18",
@@ -522,15 +554,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T37_Q18",
       "status": "MASTERED",
       "questionText": "شكل مكون من أربعة أنصاف دوائر قطر كل منها8 سم وحافتين مستقيمتين طول كل منهما9 سم؛ محيطه.",
-      "canonicalMainSkill": "main_quant_24",
-      "canonicalSubskill": "sub_quant_24_1",
+      "canonicalMainSkill": "skill_quant_19",
+      "canonicalSubskill": "sub_quant_19_1",
       "correctAnswer": "18+16π (د)",
       "stepByStepSolution": "أطوال الأقواس الأربعة=4×(π×4)=16π؛ الحافتان=18؛ المحيط=18+16π.",
       "educationalExplanation": "نحدد العلاقة الهندسية من الرسم ثم نطبق القاعدة دون الاعتماد على عنوان الاختبار. أطوال الأقواس الأربعة=4×(π×4)=16π؛ الحافتان=18؛ المحيط=18+16π.",
       "difficulty": "Hard",
       "difficultyReason": "تحتاج قراءة الشكل المركب وربط عدة علاقات.",
       "contentFingerprint": "0ece046da5619d1e967f241a8a6e856a7d6b1f491c8814560fa1d6d0dde2e776",
-      "ideaFingerprint": "ff20de92fc9096cb26cb341efa9672f9e56971abbe97dca30556a40f1f6743d1"
+      "ideaFingerprint": "ff20de92fc9096cb26cb341efa9672f9e56971abbe97dca30556a40f1f6743d1",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T037-Q19",
@@ -551,7 +585,7 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T37_Q19",
       "status": "MASTERED",
       "questionText": "سلك طوله50 مترًا يسوّر حديقة دائرية؛ أوجد نصف قطرها.",
-      "canonicalMainSkill": "main_quant_24",
+      "canonicalMainSkill": "skill_quant_24",
       "canonicalSubskill": "sub_quant_24_1",
       "correctAnswer": "25/π (ب)",
       "stepByStepSolution": "50=2πr؛ r=25/π.",
@@ -559,7 +593,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق مباشر لقانون أو نسبة هندسية.",
       "contentFingerprint": "41b81ea4e30b6fb19c35d648141bb2ecfa62d440d49c2e7920ae3305186fa925",
-      "ideaFingerprint": "cdeed87d13e67a56489e981069bd26a8787985612104a8f48c148a8742327894"
+      "ideaFingerprint": "cdeed87d13e67a56489e981069bd26a8787985612104a8f48c148a8742327894",
+      "importEligible": true,
+      "reviewReason": null
     },
     {
       "sourceKey": "MNSF26-GEO-T037-Q20",
@@ -580,15 +616,17 @@
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN053_2026-10-08_T37_Q20",
       "status": "MASTERED",
       "questionText": "مضمار دائري يبعد الرياضي عن مركزه100م؛ أوجد طول المضمار.",
-      "canonicalMainSkill": "main_quant_24",
-      "canonicalSubskill": "sub_quant_24_1",
+      "canonicalMainSkill": "skill_quant_19",
+      "canonicalSubskill": "sub_quant_19_1",
       "correctAnswer": "628 متر (أ)",
       "stepByStepSolution": "نصف القطر100؛ المحيط=2π×100=200π≈628م.",
       "educationalExplanation": "نحدد العلاقة الهندسية من الرسم ثم نطبق القاعدة دون الاعتماد على عنوان الاختبار. نصف القطر100؛ المحيط=2π×100=200π≈628م.",
       "difficulty": "Easy",
       "difficultyReason": "تطبيق مباشر لقانون أو نسبة هندسية.",
       "contentFingerprint": "21624794550b0a24c7d632a6f879f6f3d04c51b3ec912f766f2a3950904b0269",
-      "ideaFingerprint": "c29e25a820a4c38d22fce6c22756c94e88903281fc6ff310a0fff48fa710b638"
+      "ideaFingerprint": "c29e25a820a4c38d22fce6c22756c94e88903281fc6ff310a0fff48fa710b638",
+      "importEligible": true,
+      "reviewReason": null
     }
   ]
 }
