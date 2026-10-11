@@ -1,0 +1,25 @@
+{
+  "status": "PASS",
+  "checkedAt": "2026-10-11T09:51:52.429Z",
+  "sourceHashesVerified": 7,
+  "reports": [
+    {
+      "source": "classroom-published-join-capacity",
+      "students": 24,
+      "answers": 360,
+      "batches": 3,
+      "httpStatus": 200
+    },
+    {
+      "source": "classroom-24-submit-burst",
+      "students": 24,
+      "answers": 120,
+      "batches": 1,
+      "httpStatus": 200
+    }
+  ],
+  "activeSession": false,
+  "healthStatus": 200,
+  "commit": "39d0eba24110",
+  "mutatingClassroomRequests": 0
+}
