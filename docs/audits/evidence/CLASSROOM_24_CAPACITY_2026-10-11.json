@@ -1,0 +1,134 @@
+{
+  "schemaVersion": 1,
+  "publishedCommit": "55bb8214d34bd9ead2b3d07a8a1da25d4a8502aa",
+  "status": "PARTIAL",
+  "transportAndApi": {
+    "status": "PASS",
+    "startedAt": "2026-10-11T04:04:33.675Z",
+    "endedAt": "2026-10-11T04:07:40.973Z",
+    "distinctAuthenticatedStudents": 24,
+    "joins": [
+      5,
+      10,
+      15,
+      20,
+      24
+    ],
+    "batches": [
+      {
+        "questions": 5,
+        "submitted": 24,
+        "eventArrivalMinMs": 2025,
+        "eventArrivalMaxMs": 2148
+      },
+      {
+        "questions": 5,
+        "submitted": 24,
+        "eventArrivalMinMs": 2035,
+        "eventArrivalMaxMs": 2159
+      },
+      {
+        "questions": 5,
+        "submitted": 24,
+        "eventArrivalMinMs": 1898,
+        "eventArrivalMaxMs": 2460
+      }
+    ],
+    "report": {
+      "students": 24,
+      "answers": 360,
+      "batches": 3,
+      "persistedMatch": true
+    },
+    "connections": 24,
+    "reconnections": 0,
+    "connectionErrors": 0,
+    "businessWrites": 104,
+    "httpResponses": 189,
+    "decodedJsonBytes": 338323,
+    "responseMs": {
+      "median": 1495,
+      "p95": 2112,
+      "max": 10020
+    },
+    "byteLimit": "Decoded JSON response bytes only: excludes compressed wire, request headers, socket polling, frontend/CDN/images and billing."
+  },
+  "server": {
+    "resolutionSeconds": 30,
+    "samplesInRun": 7,
+    "cpuPeakCores": 0.0454504,
+    "cpuLimitCores": 0.15,
+    "cpuPeakPercent": 30.30026666666667,
+    "memoryPeakBytes": 186003460,
+    "memoryLimitBytes": 536870900,
+    "memoryPeakPercent": 34.64584502531242,
+    "attribution": "Service-wide sampled metrics; not test-exclusive or instantaneous peak.",
+    "bandwidthBuckets": [
+      {
+        "timestamp": "2026-10-11T04:00:00Z",
+        "value": 0.85000324
+      }
+    ],
+    "bandwidthLimit": "Provider bucket overlaps other traffic and test boundaries; not total class or billed egress.",
+    "httpRequestsMetricAvailable": false
+  },
+  "browser": {
+    "status": "NOT_PROVEN",
+    "independentStudentContextsJoined": 24,
+    "firstAttempt": {
+      "status": "FAIL",
+      "startedAt": "2026-10-11T03:20:26.682Z",
+      "endedAt": "2026-10-11T03:32:31.244Z",
+      "completedRequestTraffic": {
+        "frontendCdn": {
+          "completedRequests": 282,
+          "receivedEncodedBytes": 6193779,
+          "requestBodyBytes": 0
+        },
+        "other": {
+          "completedRequests": 175,
+          "receivedEncodedBytes": 1483339,
+          "requestBodyBytes": 0
+        },
+        "applicationApi": {
+          "completedRequests": 1167,
+          "receivedEncodedBytes": 553668,
+          "requestBodyBytes": 2199
+        },
+        "questionImages": {
+          "completedRequests": 24,
+          "receivedEncodedBytes": 232320,
+          "requestBodyBytes": 0
+        }
+      },
+      "trafficLimit": "Partial failed run; completed CDP encoded received bytes only, open streams and later activity excluded.",
+      "idle30SecondsCompletedSocketRequests": 68
+    },
+    "secondAttempt": {
+      "status": "ABORTED_LOCAL_RESOURCE",
+      "hostFreeMemoryKiB": 577788,
+      "hostTotalMemoryKiB": 12452936,
+      "ownedProcessesStopped": 42
+    },
+    "previousArchivedTrialAnswers": [
+      {
+        "students": 24,
+        "answers": 0,
+        "batches": 1
+      },
+      {
+        "students": 24,
+        "answers": 105,
+        "batches": 1
+      }
+    ],
+    "bothOwnedTrialsEnded": true,
+    "physicalTabletClassCertified": false
+  },
+  "sourceSha256": {
+    "scratch/classroom-24-realtime-capacity.json": "8c32b42dc90b4a30f342d12fce361b58e65317734a6e45d891c815a12ac7f8ec",
+    "scratch/classroom-24-realtime-render.json": "a2412e19a9b8587f30f0411b2e12bbcf131f93c7507cbd63fed4969f14f7ff4a",
+    "scratch/classroom-browser-bandwidth-first-failure-2026-10-11.json": "d83a75efdf7b03a4c182c9eaa00b46216ed67ff6a012aad755cca4907691748a",
+    "scratch/classroom-browser-bandwidth-2026-10-11.json": "30fd34e933b49bf828964d12c9af6658198777212668fec7d1239f558fb936c3"
+  }
+}
