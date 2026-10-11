@@ -5,7 +5,7 @@
   "directImageInspection": true,
   "sourceCropArchive": "/MNSF26/Run017/mnsf26_arithmetic_crops_run017.zip",
   "sourceInventory": "/MNSF26/Run017/MNSF26_FULLBOOK_CROP_INVENTORY_V1.json",
-  "masteredCount": 16,
+  "masteredCount": 15,
   "holdCount": 4,
   "records": [
     {
@@ -513,7 +513,7 @@
       },
       "imageHash": "b75947109d078f951ea43f1618fd4aa55e5b45a4ccc33ee673035ce853cfe986",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
-      "status": "MASTERED",
+      "status": "REVIEW",
       "questionText": "علبة شوكولاتة وزنها2 كيلوجرام ووزن القطعة20 جرامًا؛ كم قطعة؟",
       "canonicalMainSkill": "main_quant_04",
       "canonicalSubskill": "sub_quant_04_3",
@@ -523,7 +523,9 @@
       "difficulty": "Easy",
       "difficultyReason": "خطوات مباشرة في عدد قطع من كتلة إجمالية.",
       "contentFingerprint": "11f452d293a3effa0058aa7b8c98d232e7de950b419526c6506e63630a1aa1f0",
-      "ideaFingerprint": "babdc024f3ac8744cecba67ffe2c89e7e650d1143e16d94360b16b378f1144d5"
+      "ideaFingerprint": "babdc024f3ac8744cecba67ffe2c89e7e650d1143e16d94360b16b378f1144d5",
+      "importEligible": false,
+      "reviewReason": "KNOWN_SOURCE_CONFLICT_DIRECT_IMAGE_QA_FAIL_CLOSED_PENDING_INDEPENDENT_ADJUDICATION"
     },
     {
       "sourceKey": "MNSF26-AR-T063-Q20",
@@ -552,5 +554,6 @@
       "contentFingerprint": "c589161c9c3fd6b3ed905e96400447ebd0a53259338fd134d960c2600171914a",
       "ideaFingerprint": "a76c581c28c59b6ba4707a343b4a3f16afcfb60759badbde4fab930064e8294d"
     }
-  ]
+  ],
+  "reviewCount": 1
 }
