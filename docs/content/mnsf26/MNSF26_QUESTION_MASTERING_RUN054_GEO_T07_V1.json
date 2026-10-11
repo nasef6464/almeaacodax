@@ -5,7 +5,7 @@
   "directImageInspection": true,
   "sourceCropArchive": "/MNSF26/Run021/mnsf26_geometry_crops_run021.zip",
   "sourceInventory": "/MNSF26/Run021/MNSF26_GEOMETRY_CROP_MANIFEST_V1.json",
-  "masteredCount": 12,
+  "masteredCount": 10,
   "holdCount": 8,
   "records": [
     {
@@ -86,7 +86,7 @@
       },
       "imageHash": "e06dca0367f96074c7e2b70205a218312cb6a4a4150e16bfd21eb6f940c981f6",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T007_Q03",
-      "status": "MASTERED",
+      "status": "REVIEW",
       "questionText": "قارن ضعفي مجموع زوايا المثلث مع مجموع زواياه الداخلية والخارجية المعلَّمة",
       "canonicalMainSkill": "main_quant_20",
       "canonicalSubskill": "sub_quant_20_1",
@@ -96,7 +96,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "66d360e83f2159b24c68a7175ee5e3f08dd3c996a6b541943c8d5c052fb6d170",
-      "ideaFingerprint": "b103600b6edd3e89ff3b96cf107d86160e5e9c979c986e565d7030b6b7e85676"
+      "ideaFingerprint": "b103600b6edd3e89ff3b96cf107d86160e5e9c979c986e565d7030b6b7e85676",
+      "importEligible": false,
+      "reviewReason": "RUN141_DIRECT_IMAGE_MATH_QA_SOURCE_CONFLICT_PENDING_CORRECTION_AND_INDEPENDENT_REVIEW"
     },
     {
       "sourceKey": "MNSF26-GEO-T007-Q04",
@@ -513,7 +515,7 @@
       },
       "imageHash": "8c401697c6c6279e40171d13d2b7725e641e63eafc8c2cba5ed964b0058634fb",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T007_Q17",
-      "status": "MASTERED",
+      "status": "REVIEW",
       "questionText": "مثلث متطابق الضلعين زاوية قمته40 بين متوازيين؛ قارن س و80",
       "canonicalMainSkill": "main_quant_19",
       "canonicalSubskill": "sub_quant_19_2",
@@ -523,7 +525,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "689bb8ef80c8fe165e8451da04f150598e5bc2728ec3362980008fbc26e0e15f",
-      "ideaFingerprint": "e75dc3d07fdd15992de0cb4d612f1b906c38ecaf6d50a1298cc1064a69eaedd1"
+      "ideaFingerprint": "e75dc3d07fdd15992de0cb4d612f1b906c38ecaf6d50a1298cc1064a69eaedd1",
+      "importEligible": false,
+      "reviewReason": "RUN141_DIRECT_IMAGE_MATH_QA_SOURCE_CONFLICT_PENDING_CORRECTION_AND_INDEPENDENT_REVIEW"
     },
     {
       "sourceKey": "MNSF26-GEO-T007-Q18",
@@ -616,5 +620,6 @@
       "ideaFingerprint": "c14fc9a6013eada45020bc1dd94bf09c94d25d01a72304d2e3bb33bb9b2a9b63",
       "holdReason": "الرؤوس الثلاثة المطلوبة تظهر على استقامة واحدة في القص بينما الخيارات تستبعد180؛ يلزم مراجعة تسمية النقاط."
     }
-  ]
+  ],
+  "reviewCount": 2
 }
