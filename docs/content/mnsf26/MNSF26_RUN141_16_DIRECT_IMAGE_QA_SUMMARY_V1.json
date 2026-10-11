@@ -1,0 +1,117 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN141",
+  "date": "2026-10-11",
+  "stage": "QA_LOCK",
+  "baseHead": "ad9ccec929a437468e50240e125a3ea70e02e5da",
+  "mathReviewedFromOriginalImages": 16,
+  "sha256Verified": 16,
+  "masterRecordsChanged": 0,
+  "newMastered": 0,
+  "knownSourceConflicts": 37,
+  "previouslyQuarantined": 21,
+  "stillUnsafe": 16,
+  "observations": "11 proposed answer corrections, 2 solution-only corrections, 1 skill-only correction, 1 taxonomy gap, 1 ambiguous-source HOLD; these are proposals and require original MASTER edits before any import",
+  "originalMasterWrite": "BLOCKED_BY_SAFETY",
+  "geoT010CounterWrite": "BLOCKED_BY_SAFETY",
+  "cases": [
+    {
+      "sourceKey": "MNSF26-GEO-T007-Q03",
+      "proposedOption": "ج",
+      "proposedSubskill": "sub_quant_20_1",
+      "decision": "REVIEW_UNTIL_MASTER_CORRECTED"
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T007-Q17",
+      "proposedOption": "ب",
+      "proposedSubskill": "sub_quant_20_1",
+      "decision": "REVIEW_UNTIL_MASTER_CORRECTED"
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T011-Q10",
+      "proposedOption": "ج",
+      "proposedSubskill": "sub_quant_19_1",
+      "decision": "REVIEW_UNTIL_MASTER_CORRECTED"
+    },
+    {
+      "sourceKey": "MNSF26-AR-T037-Q14",
+      "proposedOption": "ب",
+      "proposedSubskill": "sub_quant_04_4",
+      "decision": "REVIEW_UNTIL_MASTER_CORRECTED"
+    },
+    {
+      "sourceKey": "MNSF26-AR-T049-Q16",
+      "proposedOption": "د",
+      "proposedSubskill": "sub_quant_07_2",
+      "decision": "REVIEW_UNTIL_MASTER_CORRECTED"
+    },
+    {
+      "sourceKey": "MNSF26-AR-T055-Q08",
+      "proposedOption": "ب",
+      "proposedSubskill": "sub_quant_10_3",
+      "decision": "REVIEW_UNTIL_MASTER_CORRECTED"
+    },
+    {
+      "sourceKey": "MNSF26-AR-T059-Q09",
+      "proposedOption": "ب",
+      "proposedSubskill": "sub_quant_10_1",
+      "decision": "REVIEW_UNTIL_MASTER_CORRECTED"
+    },
+    {
+      "sourceKey": "MNSF26-AR-T054-Q01",
+      "proposedOption": "أ",
+      "proposedSubskill": null,
+      "decision": "REVIEW_TAXONOMY"
+    },
+    {
+      "sourceKey": "MNSF26-AR-T054-Q05",
+      "proposedOption": "أ",
+      "proposedSubskill": "sub_quant_10_3",
+      "decision": "REVIEW_UNTIL_MASTER_CORRECTED"
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T050-Q03",
+      "proposedOption": null,
+      "proposedSubskill": "sub_quant_25_1",
+      "decision": "HOLD"
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T035-Q07",
+      "proposedOption": "ج",
+      "proposedSubskill": "sub_quant_24_3",
+      "decision": "REVIEW_UNTIL_MASTER_CORRECTED"
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T014-Q01",
+      "proposedOption": "أ",
+      "proposedSubskill": "sub_quant_24_2",
+      "decision": "REVIEW_UNTIL_MASTER_CORRECTED"
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T020-Q05",
+      "proposedOption": "ب",
+      "proposedSubskill": "sub_quant_20_4",
+      "decision": "REVIEW_UNTIL_MASTER_CORRECTED"
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T010-Q19",
+      "proposedOption": "د",
+      "proposedSubskill": "sub_quant_19_2",
+      "decision": "REVIEW_UNTIL_MASTER_CORRECTED"
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T010-Q09",
+      "proposedOption": "أ",
+      "proposedSubskill": "sub_quant_20_1",
+      "decision": "REVIEW_UNTIL_MASTER_CORRECTED"
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T008-Q14",
+      "proposedOption": "ب",
+      "proposedSubskill": "sub_quant_20_1",
+      "decision": "REVIEW_UNTIL_MASTER_CORRECTED"
+    }
+  ],
+  "gate": "QA_LOCK_OPEN_NO_PRODUCTION"
+}
