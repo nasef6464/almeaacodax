@@ -644,19 +644,35 @@
     "productionServicesUntouched": true
   },
   "latestReconciliation": {
-    "run": "RUN137",
+    "run": "RUN142_GITHUB_RECONCILIATION",
     "date": "2026-10-11",
     "stage": "QA_LOCK",
+    "headVerified": "8dd490add0150b1975337e94c24553c670078133",
+    "mainVerified": "39d0eba241100e95426d4eaaad1124b7e92d5296",
     "cropLock": "PASS_LOCKED_2135_2135",
-    "questionMastering": "PASS_LOCKED_PER_RUN063_2129_ACTIVE_6_EXCLUDED",
+    "questionMastering": "PASS_LOCKED_RUN063_2129_ACTIVE_6_EXCLUDED",
     "sourceConflictsKnown": 37,
-    "sourceConflictsQuarantinedAndVerified": 12,
-    "sourceConflictsStillUnsafe": 25,
-    "masteredNew": 0,
-    "productionTouched": false,
+    "sourceConflictsQuarantinedAndVerifiedByRun142": 27,
+    "sourceConflictsStillUnsafeByRun142": 10,
+    "newMasteredCounted": 0,
     "qaPass": false,
     "dedupePass": false,
-    "provenance": "RUN132 manifest + RUN135 math QA + RUN136 corrections; seven original MASTER files patched through GitHub contents API",
-    "next": "Finish remaining 25 original MASTER REVIEW/importEligible=false quarantines via authorized writes; integrate 37-conflict verifier in verify:mnsf26:all; complete full-book semantic QA, dedupe, then R2/import/E2E."
+    "r2Uploaded": false,
+    "importDone": false,
+    "productionE2E": false,
+    "productionTouched": false,
+    "remainingConflictKeys": [
+      "MNSF26-AR-T037-Q14",
+      "MNSF26-AR-T049-Q16",
+      "MNSF26-AR-T055-Q08",
+      "MNSF26-GEO-T050-Q03",
+      "MNSF26-GEO-T035-Q07",
+      "MNSF26-GEO-T014-Q01",
+      "MNSF26-GEO-T020-Q05",
+      "MNSF26-GEO-T010-Q19",
+      "MNSF26-GEO-T010-Q09",
+      "MNSF26-GEO-T008-Q14"
+    ],
+    "note": "Reconciled from GitHub-confirmed RUN142 four guarded master commit sequence, prior RUN141 delta and RUN142 reported post-write check. Count requires subsequent live full MASTER reindex. Old locked pipeline is superseded only as a stage-status snapshot; its immutable gates remain."
   }
 }
