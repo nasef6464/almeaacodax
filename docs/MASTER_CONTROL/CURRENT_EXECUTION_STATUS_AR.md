@@ -1,6 +1,8 @@
 # ALMEAA — Current Execution Status
 
 ## استقرار اتصال الحصة والإشعارات — 2026-10-11
+- #522 مدمج ومنشور263e16e58، رأسcb0c2ca5:19SUCCESS/3تخطيات،all3requiredPASS؛ تطابقالواجهة/Render/canonical/direct وDB/RedisPASS. وصلتأحداثالبدء/السؤال/نهايةالدفعة/الحصة،SSEconnected/countبلاstreamerror. الرحلةالأولىFAILبسببقراءةcurrent404بعدنهايةالحصة؛ليسفشلنقلالأحداث.5كتاباتتجربة(4معلم+انضمامطالب)،0إجابات. لاmainCIجديدمرجوع،ولاادعاءصفرconsole.
+- متابعةمحدودةعلى `codex/realtime-session-end-cleanup`: endcallbackالطالب يستهلكحدثالنهايةبدونقراءةالسؤال،ومشتركالمعلمبلاcallbackيحتفظبالتحديث. الاختباريفحصالاثنين؛CIوالنشرورحلةتأكيدبلا404قيدالتنفيذ. لاAPI/RBAC/بياناتأوخدمةجديدة؛البريدمؤجل.
 - IN_PROGRESS من main المنشور77b9f862 على `codex/realtime-connection-stability`. النقل عبر rewrite النسبي يبقى cookie-first وHTTP long polling دون محاولةWebSocket400 المرصودة؛ الاتصال المباشر يحتفظ بالترقية. لا تغييرAPI/RBAC/بيانات أو خدمة جديدة.
 - دورةSSE محلية لكلeffect تلغي المؤقت والاتصال القديم، وتتجاهل callbacks القديمة؛ تتوقفoffline وتستعيدonline مع سقف10محاولات الحالي. اختباراتReact/Socket.IO الفعلية المحلية وتوافقcookiePASS؛ لا إثبات بعد لسببHTTP2PING التاريخي أو إنتاج كامل. CIوالنشر والرحلة الحية المحدودة قيد التنفيذ؛ البريد مؤجل. الدليل `docs/audits/REALTIME_CONNECTION_STABILITY_2026-10-11.md`.
 

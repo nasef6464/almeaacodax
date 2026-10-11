@@ -1,6 +1,8 @@
 # ALMEAA — Codex Execution State
 
 ## Realtime connection stability — 2026-10-11
+- #522 published263e16e58 after exactcb0c2ca5:19SUCCESS/3skips/all3requiredPASS; matching frontend/Render/canonical/direct/DB/RedisPASS. Native discovery/question/batch-end/session-end delivered, one polling handshake, SSEconnected/count/errors0. Overall initial live journey FAIL from redundant current-question404 after session-end; five trial business writes/zero answers. Main workflow list returned none; no fresh mainCI claim. Failure retained.
+- Fresh `codex/realtime-session-end-cleanup` consumes ended event for explicit end-handler consumers, preserves no-handler teacher refresh, and extends actual shared-hook fixture. Follow-upCI/publication/live evidence pending; no auth/data/API changes or ownership relocation. Historical transport observations are not erased.
 - IN_PROGRESS on fresh `codex/realtime-connection-stability` from published77b9f862. Only missing #521 publication documentation was reused. Relative proxy Socket.IO stays authenticated HTTP long polling without failing WS upgrade; direct deployments retain upgrade. Notification effect owns cancellation/timer/source and ignores stale callbacks; offline stops/online resumes with existing ten retry cap. No API/auth/RBAC/result/data/service changes or ownership relocation.
 - Actual shared hook/proxy reconnect + direct WS fixture and notification React lifecycle fixture PASS; existing cookie-session contract PASS. Exact-head CI/publication/native transport evidence pending. Historical HTTP2 ping root cause and total tablet/bandwidth certification not established; mail deferred. See docs/audits/REALTIME_CONNECTION_STABILITY_2026-10-11.md.
 

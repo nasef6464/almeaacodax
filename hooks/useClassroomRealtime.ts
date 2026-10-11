@@ -19,7 +19,10 @@ const socketUrl = () => API_BASE_URL.endsWith('/api') ? API_BASE_URL.slice(0, -4
 
 const notifySession = (sessionId: string, event: ClassroomRealtimeEvent | 'connected', payload: ClassroomEventPayload = {}) => {
   sessionSubscribers.get(sessionId)?.forEach((subscriber) => {
-    if (event === 'session:ended') subscriber.onSessionEnded?.();
+    if (event === 'session:ended' && subscriber.onSessionEnded) {
+      subscriber.onSessionEnded();
+      return;
+    }
     const handled = event !== 'connected' && subscriber.onEvent?.(event, payload) === true;
     if (!handled) subscriber.onChange();
   });
@@ -133,10 +136,10 @@ export const useClassroomRealtime = (
     if (!sessionId) return;
     return subscribeSession(sessionId, {
       onChange: () => latest.current.onChange(),
-      onSessionEnded: () => latest.current.onSessionEnded?.(),
+      onSessionEnded: onSessionEnded ? () => latest.current.onSessionEnded?.() : undefined,
       onEvent: (event, payload) => latest.current.onEvent?.(event, payload),
     });
-  }, [sessionId]);
+  }, [sessionId, Boolean(onSessionEnded)]);
 };
 
 /** Subscribe to the student's authorized class rooms for live-session discovery. */
