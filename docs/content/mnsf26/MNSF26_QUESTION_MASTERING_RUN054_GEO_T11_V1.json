@@ -5,7 +5,7 @@
   "directImageInspection": true,
   "sourceCropArchive": "/MNSF26/Run021/mnsf26_geometry_crops_run021.zip",
   "sourceInventory": "/MNSF26/Run021/MNSF26_GEOMETRY_CROP_MANIFEST_V1.json",
-  "masteredCount": 17,
+  "masteredCount": 16,
   "holdCount": 3,
   "records": [
     {
@@ -298,7 +298,7 @@
       },
       "imageHash": "7ef37e65495c8f883509125d26867850cdfe7c221956ea121342548ccdc97cca",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T011_Q10",
-      "status": "MASTERED",
+      "status": "REVIEW",
       "questionText": "مربع فوق مستقيم، قارن زاويته90 بمجموع زاويتين خارجيتين عند رأس",
       "canonicalMainSkill": "main_quant_22",
       "canonicalSubskill": "sub_quant_22_1",
@@ -308,7 +308,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "d0e4d10fa4f2332db60fd49a11539279d38cf02a3e2d1637d0faf19377959ed0",
-      "ideaFingerprint": "a7dc29aac7f7a289d37b585bb6933555617c6f885ab76ddb0c07cfc5779a5fcc"
+      "ideaFingerprint": "a7dc29aac7f7a289d37b585bb6933555617c6f885ab76ddb0c07cfc5779a5fcc",
+      "importEligible": false,
+      "reviewReason": "RUN141_DIRECT_IMAGE_MATH_QA_SOURCE_CONFLICT_PENDING_CORRECTION_AND_INDEPENDENT_REVIEW"
     },
     {
       "sourceKey": "MNSF26-GEO-T011-Q11",
@@ -611,5 +613,6 @@
       "contentFingerprint": "76e5f87c12beca20d4fa40f1dadd297a0462349b894c9aae71e4f588703642ca",
       "ideaFingerprint": "566eab427669b9ed8402afde930ce5e30a92413b9a6c7e507f41089f37f8d1c0"
     }
-  ]
+  ],
+  "reviewCount": 1
 }
