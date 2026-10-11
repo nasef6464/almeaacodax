@@ -1,17 +1,16 @@
 import dotenv from "dotenv";
+dotenv.config({ path: ".env.codex.local" });
+dotenv.config({ path: "../.env.codex.local" });
 dotenv.config({ path: "./.env" });
 dotenv.config({ path: "./server/.env" });
 dotenv.config({ path: "../.env" });
-
-import dns from "node:dns";
-dns.setServers(["8.8.8.8", "8.8.4.4", "1.1.1.1"]);
 
 import fs from "node:fs";
 import path from "node:path";
 import mongoose from "mongoose";
 
 const SUBJECT_ID = "sub_1777779748206";
-const PATH_ID = "p_1777779653351";
+const PATH_ID = "p_1777779639431";
 const SECTION_ID = "sec_sub_1777779748206_1";
 const QUESTIONS_PER_EXAM = 50;
 const NUM_EXAMS = 40;
@@ -159,6 +158,19 @@ export async function deployMnsf26MockExams() {
     })
   );
 
+  const qDomainMap = new Map<string, string>();
+  const qSubskillMap = new Map<string, string>();
+  for (const q of mnsfEligible) {
+    const id = toDbId(q);
+    qDomainMap.set(id, getDomain(q.canonicalMainSkill));
+    qSubskillMap.set(id, q.canonicalSubskill);
+  }
+
+  const examDomainCounts: Array<Record<string, number>> = Array.from(
+    { length: NUM_EXAMS },
+    () => ({ arithmetic: 0, algebra: 0, stats: 0, geometry: 0 })
+  );
+
   // Distribute all 1,989 questions across the 40 exams
   for (const dom of ["arithmetic", "algebra", "stats", "geometry"]) {
     const subMap = subskillsByDomain[dom];
@@ -170,10 +182,7 @@ export async function deployMnsf26MockExams() {
         let bestExam = 0;
         let minDomCount = Infinity;
         for (let e = 0; e < NUM_EXAMS; e++) {
-          const domCount = exams[e].questions.filter((qId) => {
-            const q = mnsfEligible.find((item) => toDbId(item) === qId);
-            return q && getDomain(q.canonicalMainSkill) === dom;
-          }).length;
+          const domCount = examDomainCounts[e][dom];
 
           if (
             domCount < minDomCount ||
@@ -183,7 +192,9 @@ export async function deployMnsf26MockExams() {
             bestExam = e;
           }
         }
-        exams[bestExam].questions.push(toDbId(pool[i]));
+        const qId = toDbId(pool[i]);
+        exams[bestExam].questions.push(qId);
+        examDomainCounts[bestExam][dom]++;
       }
     }
   }
@@ -212,8 +223,8 @@ export async function deployMnsf26MockExams() {
     // Inspect subskills in this exam
     const examSubskills = new Set<string>();
     for (const qId of ex.questions) {
-      const matched = mnsfEligible.find((item) => toDbId(item) === qId);
-      if (matched) examSubskills.add(matched.canonicalSubskill);
+      const sub = qSubskillMap.get(qId);
+      if (sub) examSubskills.add(sub);
     }
 
     if (idx < 5 || idx >= 35) {
@@ -310,9 +321,7 @@ export async function deployMnsf26MockExams() {
   console.log("==================================================================");
 }
 
-if (process.argv[1] && process.argv[1].includes("deployMnsf26MockExams")) {
-  deployMnsf26MockExams().catch((err) => {
-    console.error("Exam generation failed:", err);
-    process.exit(1);
-  });
-}
+deployMnsf26MockExams().catch((err) => {
+  console.error("Exam generation failed:", err);
+  process.exit(1);
+});

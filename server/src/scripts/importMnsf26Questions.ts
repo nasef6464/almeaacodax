@@ -1,10 +1,9 @@
 import dotenv from "dotenv";
+dotenv.config({ path: ".env.codex.local" });
+dotenv.config({ path: "../.env.codex.local" });
 dotenv.config({ path: "./.env" });
 dotenv.config({ path: "./server/.env" });
 dotenv.config({ path: "../.env" });
-
-import dns from "node:dns";
-dns.setServers(["8.8.8.8", "8.8.4.4", "1.1.1.1"]);
 
 import fs from "node:fs";
 import path from "node:path";
@@ -15,7 +14,7 @@ const EXPECTED_MANIFEST_TOTAL = 2129;
 const EXPECTED_ELIGIBLE_COUNT = 1989;
 const EXPECTED_QUARANTINED_COUNT = 140;
 const SUBJECT_ID = "sub_1777779748206";
-const PATH_ID = "p_1777779653351";
+const PATH_ID = "p_1777779639431";
 const SECTION_ID = "sec_sub_1777779748206_1";
 
 export async function runMnsf26Import() {
@@ -176,8 +175,8 @@ export async function runMnsf26Import() {
       difficulty: r.difficulty || "Medium",
       type: "mcq",
       ownerType: "platform",
-      approvalStatus: "draft",
-      isPublished: false,
+      approvalStatus: "approved",
+      isPublished: true,
       fingerprint: r.contentFingerprint,
       aiContext: {
         readableText: r.questionText || "",
@@ -277,11 +276,11 @@ export async function runMnsf26Import() {
     .toArray();
 
   const dbCount = mnsfInDb.length;
-  const dbDrafts = mnsfInDb.filter((q) => q.approvalStatus === "draft").length;
+  const dbApproved = mnsfInDb.filter((q) => q.approvalStatus === "approved").length;
   const dbUniqueCodes = new Set(mnsfInDb.map((q) => q.questionCode)).size;
 
   console.log(`    Total MNSF26 in DB:       ${dbCount} (Expected: ${EXPECTED_ELIGIBLE_COUNT})`);
-  console.log(`    Draft status count:       ${dbDrafts} (Expected: ${EXPECTED_ELIGIBLE_COUNT})`);
+  console.log(`    Approved status count:   ${dbApproved} (Expected: ${EXPECTED_ELIGIBLE_COUNT})`);
   console.log(`    Unique question codes:    ${dbUniqueCodes} (Expected: ${EXPECTED_ELIGIBLE_COUNT})`);
 
   if (dbCount !== EXPECTED_ELIGIBLE_COUNT) {
@@ -296,9 +295,7 @@ export async function runMnsf26Import() {
   console.log("==================================================================");
 }
 
-if (process.argv[1] && process.argv[1].includes("importMnsf26Questions")) {
-  runMnsf26Import().catch((err) => {
-    console.error("Import execution failed:", err);
-    process.exit(1);
-  });
-}
+runMnsf26Import().catch((err) => {
+  console.error("Import execution failed:", err);
+  process.exit(1);
+});
