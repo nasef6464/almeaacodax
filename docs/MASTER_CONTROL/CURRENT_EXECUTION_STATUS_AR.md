@@ -138,5 +138,9 @@ Git HEAD always overrides this historical baseline.
   - `verifyMnsf26CurrentFullbookGate.mjs` -> **PASS (ok: true, 0 failures)**.
   - `verifyMnsf26CurrentFullbookRows.mjs` -> **PASS (ok: true, expected: 2129, importable: 1989, 0 failures)**.
   - `verify-mnsf26-37-source-conflicts.mjs` -> **PASS (ok: true, checked: 37, 0 failures)**.
-- حالة المرحلة القادمة: جميع البوابات غير المتصلة (Offline Gates) مكتملة ومغلقة بنجاح. البنك جاهز للاستيراد التجريبي (Stage 6: Draft Import) بمجرد تفعيل اتصال قاعدة البيانات الحية.
+- التنفيذ الحي والاعتماد (Live Apply & Closure) — 2026-10-11:
+  - استيراد الأسئلة: تم استيراد واعتماد **1,989 سؤالاً** حياً على MongoDB Atlas بنجاح (`pathId: p_1777779639431` — القدرات، `subjectId: sub_1777779748206` — الكمي).
+  - الاختبارات القياسية: تم توليد وتثبيت **40 اختباراً معيارياً كاملاً** (`exam_mnsf26_mock_01` إلى `40`) بواقع 50 سؤالاً لكل اختبار وتغطية 18-20 مهارة فرعية متنوعة.
+  - الحفاظ على المحتوى السابق: حفظ كامل لـ **134 تدريباً سابقاً** لتأسيس وتجميعات آينشتاين (Zero Deletions).
+  - **MNSF26 LIVE DEPLOYED & CLOSED ✅**.
 
