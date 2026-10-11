@@ -13,11 +13,11 @@
 **Files:** `scripts/classroom-distributed/{client,traffic,worker}.mjs`, existing `.github/workflows/platform-v3-live-role-gate.yml`; local controller and private fixtures remain scratch artifacts. Documentation/evidence enters main through exact-head CI and focused PR.
 
 ## Tasks
-- [ ] Guard credentials, session input and captured traffic against sensitive data; verify failing guards before implementation.
-- [ ] Adapt existing successful browser journey and CDP capture for six contexts per worker. Preserve normal cache behavior and open-stream accounting.
-- [ ] Add dispatch-only four-runner matrix; regular PR/push role gates remain unchanged.
-- [ ] Prepare the existing trial roster securely, dispatch branch workers and run bounded local teacher orchestration.
-- [ ] Archive the owned session; validate all four artifacts, all 24 actors, all three batches, source hashes and fresh report. Remove temporary secrets even on failure.
+- [x] Guard credentials, session input and captured traffic against sensitive data; verify failing guards before implementation.
+- [x] Adapt existing successful browser journey and CDP capture for six contexts per worker. Preserve normal cache behavior and open-stream accounting.
+- [x] Add dispatch-only four-runner matrix; regular PR/push role gates remain unchanged.
+- [x] Prepare the existing trial roster securely, dispatch branch workers and run bounded local teacher orchestration.
+- [x] Archive the owned session; validate all four artifacts, all 24 actors, all three batches, source hashes and fresh report. Remove temporary secrets even on failure.
 - [ ] Record measured counts and limits, run exact-head checks and merge focused tooling/evidence PR.
 
 ## Review focus

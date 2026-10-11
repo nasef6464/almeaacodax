@@ -1,0 +1,930 @@
+{
+  "status": "VERIFIED_DISTRIBUTED_BROWSER_MEASUREMENT",
+  "physicalTabletAndBillingStatus": "NOT_PROVEN",
+  "runId": 38131962534,
+  "producerCommit": "66b9f89a25e6fb94f4eff1e59d76594ab1713079",
+  "publishedCommit": "beecb87ea03076708ffa96a11b5cfc3805811159",
+  "groups": [
+    {
+      "group": 0,
+      "runner": "GitHub Actions 1000041220",
+      "startedAt": "2026-10-11T10:27:12.987Z",
+      "endedAt": "2026-10-11T10:30:07.995Z",
+      "independentContexts": 6,
+      "passedAssertions": 30,
+      "requiredAssertions": 30,
+      "memory": {
+        "totalBytes": 16766414848,
+        "freeBeforeBytes": 15036256256,
+        "freeAfterBytes": 15150854144
+      }
+    },
+    {
+      "group": 1,
+      "runner": "GitHub Actions 1000041221",
+      "startedAt": "2026-10-11T10:27:30.779Z",
+      "endedAt": "2026-10-11T10:30:07.895Z",
+      "independentContexts": 6,
+      "passedAssertions": 30,
+      "requiredAssertions": 30,
+      "memory": {
+        "totalBytes": 16766414848,
+        "freeBeforeBytes": 15237931008,
+        "freeAfterBytes": 15147118592
+      }
+    },
+    {
+      "group": 2,
+      "runner": "GitHub Actions 1000041222",
+      "startedAt": "2026-10-11T10:27:27.037Z",
+      "endedAt": "2026-10-11T10:30:08.058Z",
+      "independentContexts": 6,
+      "passedAssertions": 30,
+      "requiredAssertions": 30,
+      "memory": {
+        "totalBytes": 16766418944,
+        "freeBeforeBytes": 15241981952,
+        "freeAfterBytes": 15157125120
+      }
+    },
+    {
+      "group": 3,
+      "runner": "GitHub Actions 1000041219",
+      "startedAt": "2026-10-11T10:27:26.318Z",
+      "endedAt": "2026-10-11T10:30:07.786Z",
+      "independentContexts": 6,
+      "passedAssertions": 30,
+      "requiredAssertions": 30,
+      "memory": {
+        "totalBytes": 16765378560,
+        "freeBeforeBytes": 15302479872,
+        "freeAfterBytes": 15115096064
+      }
+    }
+  ],
+  "actors": [
+    {
+      "actor": "student-01",
+      "index": 0,
+      "batches": [
+        {
+          "number": 1,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 48115
+        },
+        {
+          "number": 2,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 15879
+        },
+        {
+          "number": 3,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 13364
+        }
+      ],
+      "joinPosts": 1,
+      "submitPosts": 3,
+      "completedRequests": 85,
+      "encodedReceivedBytes": 501587
+    },
+    {
+      "actor": "student-02",
+      "index": 1,
+      "batches": [
+        {
+          "number": 1,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 47103
+        },
+        {
+          "number": 2,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 12857
+        },
+        {
+          "number": 3,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 13365
+        }
+      ],
+      "joinPosts": 1,
+      "submitPosts": 3,
+      "completedRequests": 85,
+      "encodedReceivedBytes": 501766
+    },
+    {
+      "actor": "student-03",
+      "index": 2,
+      "batches": [
+        {
+          "number": 1,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 47117
+        },
+        {
+          "number": 2,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 16383
+        },
+        {
+          "number": 3,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 13364
+        }
+      ],
+      "joinPosts": 1,
+      "submitPosts": 3,
+      "completedRequests": 85,
+      "encodedReceivedBytes": 502611
+    },
+    {
+      "actor": "student-04",
+      "index": 3,
+      "batches": [
+        {
+          "number": 1,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 47106
+        },
+        {
+          "number": 2,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 16382
+        },
+        {
+          "number": 3,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 13364
+        }
+      ],
+      "joinPosts": 1,
+      "submitPosts": 3,
+      "completedRequests": 85,
+      "encodedReceivedBytes": 501920
+    },
+    {
+      "actor": "student-05",
+      "index": 4,
+      "batches": [
+        {
+          "number": 1,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 47623
+        },
+        {
+          "number": 2,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 16383
+        },
+        {
+          "number": 3,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 13365
+        }
+      ],
+      "joinPosts": 1,
+      "submitPosts": 3,
+      "completedRequests": 84,
+      "encodedReceivedBytes": 500965
+    },
+    {
+      "actor": "student-06",
+      "index": 5,
+      "batches": [
+        {
+          "number": 1,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 48108
+        },
+        {
+          "number": 2,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 15880
+        },
+        {
+          "number": 3,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 13365
+        }
+      ],
+      "joinPosts": 1,
+      "submitPosts": 3,
+      "completedRequests": 83,
+      "encodedReceivedBytes": 501441
+    },
+    {
+      "actor": "student-07",
+      "index": 6,
+      "batches": [
+        {
+          "number": 1,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 28013
+        },
+        {
+          "number": 2,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 11885
+        },
+        {
+          "number": 3,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 13381
+        }
+      ],
+      "joinPosts": 1,
+      "submitPosts": 3,
+      "completedRequests": 82,
+      "encodedReceivedBytes": 500290
+    },
+    {
+      "actor": "student-08",
+      "index": 7,
+      "batches": [
+        {
+          "number": 1,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 29008
+        },
+        {
+          "number": 2,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 13899
+        },
+        {
+          "number": 3,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 13887
+        }
+      ],
+      "joinPosts": 1,
+      "submitPosts": 3,
+      "completedRequests": 82,
+      "encodedReceivedBytes": 500218
+    },
+    {
+      "actor": "student-09",
+      "index": 8,
+      "batches": [
+        {
+          "number": 1,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 27994
+        },
+        {
+          "number": 2,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 16911
+        },
+        {
+          "number": 3,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 13885
+        }
+      ],
+      "joinPosts": 1,
+      "submitPosts": 3,
+      "completedRequests": 82,
+      "encodedReceivedBytes": 500528
+    },
+    {
+      "actor": "student-10",
+      "index": 9,
+      "batches": [
+        {
+          "number": 1,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 28532
+        },
+        {
+          "number": 2,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 11880
+        },
+        {
+          "number": 3,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 13367
+        }
+      ],
+      "joinPosts": 1,
+      "submitPosts": 3,
+      "completedRequests": 82,
+      "encodedReceivedBytes": 500362
+    },
+    {
+      "actor": "student-11",
+      "index": 10,
+      "batches": [
+        {
+          "number": 1,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 29021
+        },
+        {
+          "number": 2,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 16410
+        },
+        {
+          "number": 3,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 13886
+        }
+      ],
+      "joinPosts": 1,
+      "submitPosts": 3,
+      "completedRequests": 82,
+      "encodedReceivedBytes": 499673
+    },
+    {
+      "actor": "student-12",
+      "index": 11,
+      "batches": [
+        {
+          "number": 1,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 28009
+        },
+        {
+          "number": 2,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 12892
+        },
+        {
+          "number": 3,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 13381
+        }
+      ],
+      "joinPosts": 1,
+      "submitPosts": 3,
+      "completedRequests": 82,
+      "encodedReceivedBytes": 500110
+    },
+    {
+      "actor": "student-13",
+      "index": 12,
+      "batches": [
+        {
+          "number": 1,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 28511
+        },
+        {
+          "number": 2,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 17396
+        },
+        {
+          "number": 3,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 13378
+        }
+      ],
+      "joinPosts": 1,
+      "submitPosts": 3,
+      "completedRequests": 85,
+      "encodedReceivedBytes": 499826
+    },
+    {
+      "actor": "student-14",
+      "index": 13,
+      "batches": [
+        {
+          "number": 1,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 28520
+        },
+        {
+          "number": 2,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 17894
+        },
+        {
+          "number": 3,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 13377
+        }
+      ],
+      "joinPosts": 1,
+      "submitPosts": 3,
+      "completedRequests": 83,
+      "encodedReceivedBytes": 500877
+    },
+    {
+      "actor": "student-15",
+      "index": 14,
+      "batches": [
+        {
+          "number": 1,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 28522
+        },
+        {
+          "number": 2,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 17391
+        },
+        {
+          "number": 3,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 13379
+        }
+      ],
+      "joinPosts": 1,
+      "submitPosts": 3,
+      "completedRequests": 83,
+      "encodedReceivedBytes": 502340
+    },
+    {
+      "actor": "student-16",
+      "index": 15,
+      "batches": [
+        {
+          "number": 1,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 28008
+        },
+        {
+          "number": 2,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 17898
+        },
+        {
+          "number": 3,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 13376
+        }
+      ],
+      "joinPosts": 1,
+      "submitPosts": 3,
+      "completedRequests": 82,
+      "encodedReceivedBytes": 498482
+    },
+    {
+      "actor": "student-17",
+      "index": 16,
+      "batches": [
+        {
+          "number": 1,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 29520
+        },
+        {
+          "number": 2,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 15379
+        },
+        {
+          "number": 3,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 13377
+        }
+      ],
+      "joinPosts": 1,
+      "submitPosts": 3,
+      "completedRequests": 83,
+      "encodedReceivedBytes": 499455
+    },
+    {
+      "actor": "student-18",
+      "index": 17,
+      "batches": [
+        {
+          "number": 1,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 29026
+        },
+        {
+          "number": 2,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 12863
+        },
+        {
+          "number": 3,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 13380
+        }
+      ],
+      "joinPosts": 1,
+      "submitPosts": 3,
+      "completedRequests": 83,
+      "encodedReceivedBytes": 500104
+    },
+    {
+      "actor": "student-19",
+      "index": 18,
+      "batches": [
+        {
+          "number": 1,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 31058
+        },
+        {
+          "number": 2,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 16927
+        },
+        {
+          "number": 3,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 12896
+        }
+      ],
+      "joinPosts": 1,
+      "submitPosts": 3,
+      "completedRequests": 82,
+      "encodedReceivedBytes": 501381
+    },
+    {
+      "actor": "student-20",
+      "index": 19,
+      "batches": [
+        {
+          "number": 1,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 32060
+        },
+        {
+          "number": 2,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 12896
+        },
+        {
+          "number": 3,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 12896
+        }
+      ],
+      "joinPosts": 1,
+      "submitPosts": 3,
+      "completedRequests": 82,
+      "encodedReceivedBytes": 502006
+    },
+    {
+      "actor": "student-21",
+      "index": 20,
+      "batches": [
+        {
+          "number": 1,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 31557
+        },
+        {
+          "number": 2,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 16423
+        },
+        {
+          "number": 3,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 12897
+        }
+      ],
+      "joinPosts": 1,
+      "submitPosts": 3,
+      "completedRequests": 82,
+      "encodedReceivedBytes": 500810
+    },
+    {
+      "actor": "student-22",
+      "index": 21,
+      "batches": [
+        {
+          "number": 1,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 30546
+        },
+        {
+          "number": 2,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 17431
+        },
+        {
+          "number": 3,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 12897
+        }
+      ],
+      "joinPosts": 1,
+      "submitPosts": 3,
+      "completedRequests": 82,
+      "encodedReceivedBytes": 501089
+    },
+    {
+      "actor": "student-23",
+      "index": 22,
+      "batches": [
+        {
+          "number": 1,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 31051
+        },
+        {
+          "number": 2,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 11888
+        },
+        {
+          "number": 3,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 12892
+        }
+      ],
+      "joinPosts": 1,
+      "submitPosts": 3,
+      "completedRequests": 82,
+      "encodedReceivedBytes": 500970
+    },
+    {
+      "actor": "student-24",
+      "index": 23,
+      "batches": [
+        {
+          "number": 1,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 32062
+        },
+        {
+          "number": 2,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 16425
+        },
+        {
+          "number": 3,
+          "answers": 5,
+          "submissionStatus": 200,
+          "returnedToWaiting": true,
+          "appearanceWaitMs": 12894
+        }
+      ],
+      "joinPosts": 1,
+      "submitPosts": 3,
+      "completedRequests": 82,
+      "encodedReceivedBytes": 501560
+    }
+  ],
+  "report": {
+    "students": 24,
+    "answers": 360,
+    "batches": 3,
+    "persistedMatch": true,
+    "studentEvidenceComplete": true
+  },
+  "batches": [
+    {
+      "number": 1,
+      "questions": 5,
+      "submitted": 24,
+      "publishThroughBatchEndMs": 17980
+    },
+    {
+      "number": 2,
+      "questions": 5,
+      "submitted": 24,
+      "publishThroughBatchEndMs": 24645
+    },
+    {
+      "number": 3,
+      "questions": 5,
+      "submitted": 24,
+      "publishThroughBatchEndMs": 18050
+    }
+  ],
+  "browserMeasurement": {
+    "completedRequests": 1990,
+    "encodedReceivedBytes": 12020371,
+    "decimalMB": 12.020371,
+    "mebibytes": 11.463519096374512,
+    "perBrowserMinBytes": 498482,
+    "perBrowserMaxBytes": 502611,
+    "byKind": {
+      "frontend": {
+        "completedRequests": 264,
+        "encodedReceivedBytes": 5902943,
+        "uploadBodyBytes": 0
+      },
+      "other": {
+        "completedRequests": 168,
+        "encodedReceivedBytes": 1423748,
+        "uploadBodyBytes": 0
+      },
+      "api": {
+        "completedRequests": 648,
+        "encodedReceivedBytes": 575193,
+        "uploadBodyBytes": 25416
+      },
+      "transport": {
+        "completedRequests": 550,
+        "encodedReceivedBytes": 120639,
+        "uploadBodyBytes": 2203
+      },
+      "questionImages": {
+        "completedRequests": 360,
+        "encodedReceivedBytes": 3997848,
+        "uploadBodyBytes": 0
+      }
+    },
+    "pendingRequests": 48,
+    "pendingEncodedDataBytes": 0,
+    "pendingDecodedDataBytes": 0,
+    "pendingStatuses": [
+      0
+    ],
+    "webSocketPayloadBytes": 0
+  },
+  "trialWrites": {
+    "studentJoinPosts": 24,
+    "studentSubmitPosts": 72,
+    "teacherPosts": 8,
+    "totalBusinessPosts": 104,
+    "newAnswers": 360
+  },
+  "errors": {
+    "javascriptOrConsole": 0,
+    "httpFailures": 0
+  },
+  "temporaryAuditSecretsRemoved": true,
+  "limits": [
+    "24 independent virtual Chromium contexts on four distinct GitHub runners; not physical tablets or full A-S human certification",
+    "Normal browser caching retained; instrumentation does not route or replace requests",
+    "CDP completed encoded received bytes only; excludes 48 pending transport requests with no observed response bytes, API-login setup, teacher controller, TLS/TCP overhead and billing",
+    "Open request counters and zero WebSocket payloads are observed values, not a claim of zero transport overhead",
+    "Publication-through-batch-end timings include UI solving, server requests and controller polling; not per-question delivery latency",
+    "Existing trial roster/questions reused; new 360 answers preserved; no historical result cleanup"
+  ],
+  "sourceSha256": {
+    "scratch/classroom-distributed-run-38131962534/classroom-distributed-38131962534-group-0/group-0.json": "c3eb300fe28f95dc0bb5441fe61708c18229a05493ef8a3958cf13d4eaa089ab",
+    "scratch/classroom-distributed-run-38131962534/classroom-distributed-38131962534-group-1/group-1.json": "dfa2423339ad76b313a411f396bd11f058eae80dcf8295283ad88577057b1ad2",
+    "scratch/classroom-distributed-run-38131962534/classroom-distributed-38131962534-group-2/group-2.json": "2b3b9539d20fa0c53a2375cee50e48b35fa9b678529df949bf3b527a8c1b95f5",
+    "scratch/classroom-distributed-run-38131962534/classroom-distributed-38131962534-group-3/group-3.json": "14aada8df64ddb1cfc9b102668f708e9b139d68e93fc61b1b6e0b1a717dcf73d",
+    "scratch/classroom-distributed-controller-2026-10-11.json": "9128ff949f56bbc31d3328b8b35ba1126bec6b403363a9e42d5e2153005f7c9f",
+    "scratch/classroom-distributed-secret-cleanup-2026-10-11.json": "a5338d955b09046ec0b16f3a9625b7955c763aae07dc722e474e6078745f932f",
+    "scratch/classroom-distributed-render-2026-10-11.json": "248bcef154baf22eaec1e93c9e95a57aa99274522ebc9828fcd430e230e0016e"
+  },
+  "resources": {
+    "sampleIntervalSeconds": 30,
+    "windowStart": "2026-10-11T10:27:12.987Z",
+    "windowEnd": "2026-10-11T10:30:08.058Z",
+    "instances": [
+      {
+        "instance": "srv-dalrk9oae00c73cd74t0-mxhxz",
+        "cpuSamples": 6,
+        "cpuPeakCores": 0.09304343,
+        "cpuLimitCores": 0.15,
+        "cpuPeakPercent": 62.028953333333334,
+        "memorySamples": 6,
+        "memoryPeakBytes": 169152510,
+        "memoryLimitBytes": 536870900,
+        "memoryPeakPercent": 31.507110927412903
+      }
+    ],
+    "providerBandwidthSamples": 0,
+    "providerHttpSeries": 0,
+    "limit": "Service-wide thirty-second samples during browser window; not instantaneous, test-exclusive or multi-class certification. Provider bandwidth/request series returned no usage samples."
+  }
+}
