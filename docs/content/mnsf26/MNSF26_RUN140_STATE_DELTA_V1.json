@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN140",
+  "date": "2026-10-11",
+  "stage": "QA_LOCK",
+  "baseBranchHead": "12fefc4ef17d138109a969e4c4e2db909c92d4ae",
+  "mainHead": "77b9f8620110c1cf29145fc1d43ffc465068b396",
+  "sourceImagesDirectlyReviewed": 22,
+  "sourceImageSHA256Matched": 22,
+  "mathPassNotMastered": 15,
+  "review": 6,
+  "hold": 1,
+  "newMastered": 0,
+  "originalMasterWrites": 0,
+  "productionTouched": false,
+  "qaLock": "OPEN",
+  "dedupeLock": "OPEN",
+  "next": "Independent image QA continues; source conflicts remain fail-closed; no import while QA or dedupe open."
+}
