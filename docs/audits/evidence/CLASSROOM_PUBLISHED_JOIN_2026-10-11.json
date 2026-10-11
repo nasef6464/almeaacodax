@@ -1,0 +1,146 @@
+{
+  "status": "PARTIAL",
+  "boundedJoinFix": "VERIFIED",
+  "publishedCommit": "39d0eba241100e95426d4eaaad1124b7e92d5296",
+  "codeCommit": "67688c791df0ecdd10f4e27c7f787e33d1263c90",
+  "pr": 525,
+  "ci": {
+    "success": 18,
+    "conditionalSkips": 3,
+    "requiredPassed": 3,
+    "mainPassed": 4
+  },
+  "nativeMixed": {
+    "startedAt": "2026-10-11T05:37:44.769Z",
+    "endedAt": "2026-10-11T05:41:48.883Z",
+    "nativeBrowserStudents": 1,
+    "transportApiStudents": 23,
+    "submissionParallelismLimit": 4,
+    "clientJoinDelayMs": 1000,
+    "batches": [
+      {
+        "uiArrivalMs": 4191,
+        "questions": 5,
+        "submitted": 24,
+        "eventArrivalMinMs": 2033,
+        "eventArrivalMaxMs": 2482
+      },
+      {
+        "uiArrivalMs": 4055,
+        "questions": 5,
+        "submitted": 24,
+        "eventArrivalMinMs": 2015,
+        "eventArrivalMaxMs": 2244
+      },
+      {
+        "uiArrivalMs": 4684,
+        "questions": 5,
+        "submitted": 24,
+        "eventArrivalMinMs": 2072,
+        "eventArrivalMaxMs": 2557
+      }
+    ],
+    "report": {
+      "students": 24,
+      "answers": 360,
+      "batches": 3,
+      "persistedMatch": true
+    },
+    "businessWrites": 104,
+    "browserHandshakes": 1,
+    "browserErrors": [],
+    "nodeReconnects": 0,
+    "browserApiCountsBefore": {
+      "instant-join": 2,
+      "current": 9,
+      "challenge-state": 9
+    },
+    "browserApiCountsAfter": {
+      "instant-join": 1,
+      "current": 8,
+      "challenge-state": 8
+    },
+    "browserTraffic": {
+      "frontend": {
+        "completedRequests": 11,
+        "encodedReceivedBytes": 245986
+      },
+      "other": {
+        "completedRequests": 7,
+        "encodedReceivedBytes": 59343
+      },
+      "api": {
+        "completedRequests": 27,
+        "encodedReceivedBytes": 23203
+      },
+      "transport": {
+        "completedRequests": 30,
+        "encodedReceivedBytes": 6101
+      },
+      "questionImages": {
+        "completedRequests": 15,
+        "encodedReceivedBytes": 166577
+      }
+    },
+    "byteLimit": "One browser completed CDP encoded received bytes only; excludes23API clients/headers/overhead/billing. Routing for deterministic delayed join disables HTTP cache, so total bytes are not comparable as bandwidth savings."
+  },
+  "submitBurst": {
+    "startedAt": "2026-10-11T05:42:17.848Z",
+    "endedAt": "2026-10-11T05:44:37.118Z",
+    "measurement": "24 independent authenticated transport/API students; no browser/tablet certification",
+    "clients": 24,
+    "maxClientRequestsInFlight": 24,
+    "startSpreadMs": 8.757400000002235,
+    "allCompletedMs": 10439.228200000012,
+    "report": {
+      "students": 24,
+      "answers": 120,
+      "batches": 1,
+      "persistedMatch": true
+    },
+    "businessWrites": 52,
+    "reconnections": 0,
+    "connectionErrors": 0
+  },
+  "resources": {
+    "sampleIntervalSeconds": 30,
+    "limit": "Service-wide sampled per-instance peaks, not instantaneous or test-exclusive; no multi-class capacity claim.",
+    "nativeMixed": [
+      {
+        "instance": "srv-dalrk9oae00c73cd74t0-sdjz2",
+        "cpuSamples": 9,
+        "cpuPeakCores": 0.044187065,
+        "cpuLimitCores": 0.15,
+        "cpuPeakPercent": 29.458043333333332,
+        "memoryPeakBytes": 163487740,
+        "memoryLimitBytes": 536870900,
+        "memoryPeakPercent": 30.451965267627656
+      }
+    ],
+    "submitBurst": [
+      {
+        "instance": "srv-dalrk9oae00c73cd74t0-sdjz2",
+        "cpuSamples": 5,
+        "cpuPeakCores": 0.0228206,
+        "cpuLimitCores": 0.15,
+        "cpuPeakPercent": 15.213733333333334,
+        "memoryPeakBytes": 159571970,
+        "memoryLimitBytes": 536870900,
+        "memoryPeakPercent": 29.722596251724575
+      }
+    ]
+  },
+  "remaining": [
+    "24 distributed browser/tablet journeys",
+    "Full class assets/streams and billed egress measurement"
+  ],
+  "sourceSha256": {
+    "scratch/classroom-published-join-capacity.json": "4d8349a188ca09fdcf79505a3857d856a0059a85fb086a635dbc1a3daa2a62f9",
+    "scratch/classroom-24-submit-burst.json": "81a09e3140c0d960f3931da8db96c7fb47ba20dfd8ec0fc669534bb76efb3022",
+    "scratch/classroom-published-join-deploy-proof.json": "6cc2050d9d53831199e533bc47327d4fa2a3f9165a4b297d840f24c7cf7ffe3c",
+    "scratch/classroom-published-join-render.json": "87402099459b2f17637a2b6d5b3a724d5120bd6f0921b72f4bb7271231219b9b",
+    "scratch/classroom-24-submit-burst-render.json": "4a8999a7297629a8e326b96acb05c0803a9d3d39254ccd7a98bbf108251735d0",
+    "scratch/classroom-join-ci-final.json": "cd8a46e94529baaf71e54112c4cc136a9ca6d4400f47fec100212ba0758fbf18",
+    "scratch/classroom-join-main-ci.json": "65a0eda1d4f47b3f37e91c65c5f2b3609285badc96756e0bc0fc04c8e6cb3fa8"
+  }
+}
