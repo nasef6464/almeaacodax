@@ -1,0 +1,15 @@
+{
+  "project": "TAH-MATH",
+  "run": "RUN84",
+  "sourceHead": "01ce53058cf5387f3cec3aa4648eef207060c84c",
+  "stage": "YLM26_RECONCILIATION",
+  "newMastered": 0,
+  "newFinalReviewed": 0,
+  "newHolds": 0,
+  "priorUniqueFinalReviewedContent": 321,
+  "priorSourceHolds": 5,
+  "productionMutation": false,
+  "requiredNext": "Recover complete reviewed pedagogical payload, verify hashes, topicId and R2 before any production mutation",
+  "status": "NOT_FINAL_CLOSED",
+  "note": "Write-path recovery only; no question counted without full saved source-backed final record."
+}
