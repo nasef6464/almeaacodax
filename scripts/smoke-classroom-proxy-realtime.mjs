@@ -25,7 +25,7 @@ const proxy = createServer((req, res) => {
 });
 proxy.on('upgrade', (_req, socket) => { upgrades++; socket.destroy(); });
 await new Promise(r => proxy.listen(0, '127.0.0.1', r));
-const makeBundle = apiBase => build({ stdin: { contents: `import React from'react';import{createRoot}from'react-dom/client';import{useClassroomRealtime}from'./hooks/useClassroomRealtime';window.changes=[0,0];function Subscriber({index}){useClassroomRealtime('session',()=>{window.changes[index]++});return null}const root=createRoot(document.getElementById('root'));window.dispose=()=>root.unmount();root.render(<><Subscriber index={0}/><Subscriber index={1}/></>);`, resolveDir: process.cwd(), loader: 'tsx' }, bundle: true, write: false, plugins: [{ name: 'relative-api', setup(b) { b.onResolve({ filter: /services\/api$/ }, () => ({ path: 'fixture', namespace: 'fixture' })); b.onLoad({ filter: /.*/, namespace: 'fixture' }, () => ({ contents: `export const API_BASE_URL=${JSON.stringify(apiBase)};`, loader: 'js' })); } }] });
+const makeBundle = apiBase => build({ stdin: { contents: `import React from'react';import{createRoot}from'react-dom/client';import{useClassroomRealtime}from'./hooks/useClassroomRealtime';window.changes=[0,0];window.ended=0;function Subscriber({index}){useClassroomRealtime('session',()=>{window.changes[index]++},index===0?()=>{window.ended++}:undefined);return null}const root=createRoot(document.getElementById('root'));window.dispose=()=>root.unmount();root.render(<><Subscriber index={0}/><Subscriber index={1}/></>);`, resolveDir: process.cwd(), loader: 'tsx' }, bundle: true, write: false, plugins: [{ name: 'relative-api', setup(b) { b.onResolve({ filter: /services\/api$/ }, () => ({ path: 'fixture', namespace: 'fixture' })); b.onLoad({ filter: /.*/, namespace: 'fixture' }, () => ({ contents: `export const API_BASE_URL=${JSON.stringify(apiBase)};`, loader: 'js' })); } }] });
 const bundle = await makeBundle('/api');
 const browser = await chromium.launch({ headless: true });
 try {
@@ -39,11 +39,15 @@ try {
   await page.goto(origin); await page.addScriptTag({ content: bundle.outputFiles[0].text });
   await page.waitForFunction(() => window.changes.every(n => n > 0));
   assert.equal(accepted, 1, 'Two subscribers share one authenticated transport');
-  for (const event of ['question:published', 'batch:ended', 'session:ended']) {
+  for (const event of ['question:published', 'batch:ended']) {
     const before = await page.evaluate(() => window.changes);
     io.to('classroom:session').emit(event, { sessionId: 'session' });
     await page.waitForFunction(before => window.changes.every((n, i) => n > before[i]), before);
   }
+  const beforeEnd = await page.evaluate(() => window.changes);
+  io.to('classroom:session').emit('session:ended', { sessionId: 'session' });
+  await page.waitForFunction(before => window.ended === 1 && window.changes[1] > before[1], beforeEnd);
+  assert.equal(await page.evaluate(() => window.changes[0]), beforeEnd[0], 'Student end handler does not request a question from the closed session');
   const beforeReconnect = await page.evaluate(() => window.changes);
   for (const client of Object.values(io.engine.clients)) client.close();
   await page.waitForFunction(before => window.changes.every((n, i) => n > before[i]), beforeReconnect);
