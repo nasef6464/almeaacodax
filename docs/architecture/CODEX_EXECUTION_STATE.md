@@ -1,5 +1,10 @@
 # ALMEAA — Codex Execution State
 
+## Mixed native UI and duplicate join — 2026-10-11
+- #524 merged/published773197618; exact06b85c33514SUCCESS/3conditional skips/all3requiredPASS,frontend/Render/canonical/direct match,DBRedisPASS,4main checksSUCCESS. Full24-tablet/bandwidth status remains PARTIAL.
+- Native1student390x844 +23independent authenticated transport/API students PASS:3x5 questions,360answers,24-student fresh archived report match;UIwaiting/submission/end,0JS/console,1browser handshake.481280 completed encoded CDP bytes belong only to1browser,not24devices or billed egress.105trial writes(100API+5UI),including duplicate instant-join;session ended,answers retained.
+- Proven cause: automatic page effect races manual join. Local in-flight Promise keyed bysessionId shares request and releases on success/failure;joined effect remains initial question reader. Real-page fixtureFAIL2requests→PASS1with failed retry/storage/waiting/1initial read;typecheck/architecture/modulePASS. Initial architecture gate used stale snapshot; regeneration inCI order fixed evidence,owned generated changes restored without changing baseline. ExactheadCI/publication/live dedupe pending oncodex/classroom-mixed-ui-bandwidth. NoAPI/RBAC/results/data/ownership/service changes. Evidence docs/audits/CLASSROOM_JOIN_AND_MIXED_UI_2026-10-11.md; next published confirmation then distributed24-browser/tablet measurement,mail deferred.
+
 ## 24-student transport/resource checkpoint — 2026-10-11
 - Overall PARTIAL; bounded transport/API PASS on published55bb8214d.24 distinct authenticated existing trial clients,joins5/10/15/20/24,3x5 questions,360 answers,24-student archived report matches fresh read;24 connections/0reconnections/0connection errors.104 business writes preserved; no new accounts/questions/runtime/RBAC/data semantics/services.
 - Seven30s service samples during test:CPU peak30.30%,memory34.65% of limits.338323 decoded JSON bytes are not wire/billed bandwidth; provider bucket overlaps other traffic and HTTP-request metric unavailable. No multi-class capacity certification or paid upgrade justified by this sample.
