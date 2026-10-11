@@ -206,6 +206,7 @@ jobs:
           node scripts/smoke-classroom-teacher-start-ui.mjs
           node scripts/smoke-classroom-saved-batches-ui.mjs
           node scripts/smoke-classroom-proxy-realtime.mjs
+          node scripts/smoke-classroom-instant-join-ui.mjs
           node scripts/smoke-notification-stream-lifecycle.mjs
           node scripts/smoke-supervisor-assessment-report-ui.mjs
           node scripts/smoke-quiz-availability-ui.mjs
