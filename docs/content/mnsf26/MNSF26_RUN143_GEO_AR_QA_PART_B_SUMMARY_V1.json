@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN143",
+  "part": "B",
+  "date": "2026-10-11",
+  "stage": "QA_LOCK",
+  "scope": "GEO T46-T50 and AR T44-T50, 12 original MASTER files",
+  "headBefore": "c49217256d72290d674999476b027a6488ab3c35",
+  "recordsRead": 225,
+  "statusCounts": {
+    "MASTERED": 196,
+    "HOLD": 24,
+    "REVIEW": 5
+  },
+  "structuralChecks": {
+    "missingMandatoryFields": 0,
+    "badTaxonomyPair": 0,
+    "badImageHashMetadata": 0,
+    "duplicateSourceKeys": 0,
+    "exactImageHashCollisionPairs": 0,
+    "exactContentFingerprintCollisionPairs": 0,
+    "ideaFingerprintCandidatePairs": 4
+  },
+  "counterMismatch": {
+    "file": "MNSF26_QUESTION_MASTERING_RUN050_AR_T47_V1.json",
+    "stored": {
+      "MASTERED": 16,
+      "HOLD": 4,
+      "REVIEW": 0
+    },
+    "observed": {
+      "MASTERED": 16,
+      "HOLD": 2,
+      "REVIEW": 2
+    },
+    "fix": "BLOCKED_BY_SAFETY"
+  },
+  "mathQaCertified": false,
+  "newMastered": 0,
+  "productionTouched": false
+}
