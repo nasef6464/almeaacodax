@@ -2,6 +2,19 @@ name: Platform V3 Live Role Gate
 
 on:
   workflow_dispatch:
+    inputs:
+      classroom_audit:
+        description: Run four distributed workers against an owner-authorized trial session
+        type: boolean
+        default: false
+      classroom_session:
+        description: Existing owned trial session id (24 hexadecimal characters)
+        type: string
+        default: ''
+      classroom_release:
+        description: Expected published main SHA (40 hexadecimal characters)
+        type: string
+        default: ''
   pull_request:
     branches:
       - main
@@ -19,7 +32,7 @@ concurrency:
 
 jobs:
   role-pages-live:
-    if: github.event_name == 'workflow_dispatch' || github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository)
+    if: (github.event_name == 'workflow_dispatch' && !inputs.classroom_audit) || github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository)
     name: All authenticated roles — desktop + mobile
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -95,3 +108,43 @@ jobs:
       - name: Production role auth smoke — paced and low-load
         if: github.event_name != 'pull_request'
         run: node scripts/smoke-production-role-auth-light.mjs
+
+  classroom-distributed-browser:
+    if: github.event_name == 'workflow_dispatch' && inputs.classroom_audit
+    name: Classroom browser group ${{ matrix.group }} (6 independent contexts)
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        group: [0, 1, 2, 3]
+    env:
+      CLASSROOM_AUDIT_GROUP: ${{ matrix.group }}
+      CLASSROOM_AUDIT_SESSION: ${{ inputs.classroom_session }}
+      CLASSROOM_AUDIT_RELEASE: ${{ inputs.classroom_release }}
+      CLASSROOM_AUDIT_FIXTURE: ${{ secrets[format('ALMEAA_CLASSROOM_AUDIT_GROUP_{0}', matrix.group)] }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install existing audit dependencies
+        run: npm ci
+      - name: Verify fail-closed fixture and sanitized traffic contracts
+        run: node --test scripts/classroom-distributed/guards.test.mjs
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Six production browser journeys on the owned trial only
+        run: node scripts/classroom-distributed/worker.mjs
+      - name: Upload sanitized measurement receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: classroom-distributed-${{ github.run_id }}-group-${{ matrix.group }}
+          path: output/classroom-distributed/
+          if-no-files-found: error
+          retention-days: 7
