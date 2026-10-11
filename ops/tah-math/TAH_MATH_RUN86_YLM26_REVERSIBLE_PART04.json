@@ -1,0 +1,2830 @@
+{
+  "project": "TAH-MATH",
+  "bank": "YLM26",
+  "run": "RUN86",
+  "date": "2026-10-11",
+  "source": "fresh read-only Atlas preimage + GitHub reviewed remaps",
+  "status": "STAGED_NOT_APPLY_READY",
+  "productionMutation": false,
+  "summary": {
+    "rows": 326,
+    "liveTopicTargets": 70,
+    "remaps": 7,
+    "missingTopicId": 326,
+    "sourceTitleCorrections": 326,
+    "urlFolderCodeDifferences": 223,
+    "newMastered": 0,
+    "newFinalReviewed": 0,
+    "newHolds": 0
+  },
+  "gates": {
+    "pedagogy": "FAIL_INCOMPLETE_FULL_RECORDS",
+    "r2Http": "NOT_VERIFIED",
+    "guardedDryRun": "NOT_RUN",
+    "liveStudentE2E": "NOT_RUN"
+  },
+  "rows": [
+    {
+      "questionCode": "TAH-MATH-YLM26-P073-Q01",
+      "identity": {
+        "sourceItemId": "YLM26-PDF072-P073-N01",
+        "imageHash": "d85fd420d42fad94cc8a30ef8a2135d3b1dd48222ad928ac9fa9c12bb62e6e52",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P073-Q01/d85fd420d42fad94cc8a30ef8a2135d3b1dd48222ad928ac9fa9c12bb62e6e52.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 72,
+          "printedPageNumber": 73,
+          "printedQuestionNumber": 1,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_01",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 2
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_01",
+        "topicId": "top_tah_math_sub_19_01",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_01",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P073-Q02",
+      "identity": {
+        "sourceItemId": "YLM26-PDF072-P073-N02",
+        "imageHash": "cabb7a427f4b94841538b3d22154cf401946b74eea3696b62925f345d4faf96c",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P073-Q02/cabb7a427f4b94841538b3d22154cf401946b74eea3696b62925f345d4faf96c.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 72,
+          "printedPageNumber": 73,
+          "printedQuestionNumber": 2,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_01",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 0
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_01",
+        "topicId": "top_tah_math_sub_19_01",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_01",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P073-Q03",
+      "identity": {
+        "sourceItemId": "YLM26-PDF072-P073-N03",
+        "imageHash": "b6a0dc7b31780a6522aebf18591bff9f9504d2574f23fbc79d02878a1f77e7b9",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P073-Q03/b6a0dc7b31780a6522aebf18591bff9f9504d2574f23fbc79d02878a1f77e7b9.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 72,
+          "printedPageNumber": 73,
+          "printedQuestionNumber": 3,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_01",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 0
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_01",
+        "topicId": "top_tah_math_sub_19_01",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_01",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P073-Q04",
+      "identity": {
+        "sourceItemId": "YLM26-PDF072-P073-N04",
+        "imageHash": "8f3611320380cd0e7ef007efae69449aa405a0abbff5f27189569261bb579829",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P073-Q04/8f3611320380cd0e7ef007efae69449aa405a0abbff5f27189569261bb579829.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 72,
+          "printedPageNumber": 73,
+          "printedQuestionNumber": 4,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_01",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 3
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_01",
+        "topicId": "top_tah_math_sub_19_01",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_01",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P073-Q05",
+      "identity": {
+        "sourceItemId": "YLM26-PDF072-P073-N05",
+        "imageHash": "5164a0f457ee3cf786af54defd3bf5d8333542bf570a5ce2dde7f76398b9bd3e",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P073-Q05/5164a0f457ee3cf786af54defd3bf5d8333542bf570a5ce2dde7f76398b9bd3e.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 72,
+          "printedPageNumber": 73,
+          "printedQuestionNumber": 5,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_01",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 1
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_01",
+        "topicId": "top_tah_math_sub_19_01",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_01",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P074-Q06",
+      "identity": {
+        "sourceItemId": "YLM26-PDF073-P074-N06",
+        "imageHash": "0487003ff4e720dd5f0685a38e25a3ae8a420cfa2a0b48b1152797680a51de91",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P074-Q01/0487003ff4e720dd5f0685a38e25a3ae8a420cfa2a0b48b1152797680a51de91.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 73,
+          "printedPageNumber": 74,
+          "printedQuestionNumber": 6,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 1
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_02",
+        "topicId": "top_tah_math_sub_19_02",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P074-Q07",
+      "identity": {
+        "sourceItemId": "YLM26-PDF073-P074-N07",
+        "imageHash": "9b58a04ff559d390b7ca50bf17b5761455bdaa3a6937d32f9c5d535413fa4a6b",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P074-Q02/9b58a04ff559d390b7ca50bf17b5761455bdaa3a6937d32f9c5d535413fa4a6b.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 73,
+          "printedPageNumber": 74,
+          "printedQuestionNumber": 7,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 1
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_02",
+        "topicId": "top_tah_math_sub_19_02",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P074-Q08",
+      "identity": {
+        "sourceItemId": "YLM26-PDF073-P074-N08",
+        "imageHash": "dd5c6cc957c16c00fd98aa884b1e4e8fb1b5b4310d4a4e0c98ef1e6720d428c2",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P074-Q03/dd5c6cc957c16c00fd98aa884b1e4e8fb1b5b4310d4a4e0c98ef1e6720d428c2.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 73,
+          "printedPageNumber": 74,
+          "printedQuestionNumber": 8,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 1
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_02",
+        "topicId": "top_tah_math_sub_19_02",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P074-Q09",
+      "identity": {
+        "sourceItemId": "YLM26-PDF073-P074-N09",
+        "imageHash": "b8eafcd497616d50d99703b039b01b664d18ab17127de84c8c0eae5ffea57ba8",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P074-Q04/b8eafcd497616d50d99703b039b01b664d18ab17127de84c8c0eae5ffea57ba8.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 73,
+          "printedPageNumber": 74,
+          "printedQuestionNumber": 9,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 2
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_02",
+        "topicId": "top_tah_math_sub_19_02",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P075-Q10",
+      "identity": {
+        "sourceItemId": "YLM26-PDF074-P075-N10",
+        "imageHash": "9bada8189a509676fd582077ad308aba6c4ca6d6819f249ecefba74e0eb9595a",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P075-Q01/9bada8189a509676fd582077ad308aba6c4ca6d6819f249ecefba74e0eb9595a.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 74,
+          "printedPageNumber": 75,
+          "printedQuestionNumber": 10,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_03",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 2
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_03",
+        "topicId": "top_tah_math_sub_19_03",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_03",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P075-Q11",
+      "identity": {
+        "sourceItemId": "YLM26-PDF074-P075-N11",
+        "imageHash": "88cffedcc32635ae7ffb99c7e29c61054f9b97de02b93288fd6c2c76f530c56c",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P075-Q02/88cffedcc32635ae7ffb99c7e29c61054f9b97de02b93288fd6c2c76f530c56c.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 74,
+          "printedPageNumber": 75,
+          "printedQuestionNumber": 11,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_03",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 0
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_03",
+        "topicId": "top_tah_math_sub_19_03",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_03",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P076-Q12",
+      "identity": {
+        "sourceItemId": "YLM26-PDF075-P076-N12",
+        "imageHash": "6d2e0e884e060234cf7e9266cc83315fb8b0232258e405a5d91aa0721af6637c",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P076-Q01/6d2e0e884e060234cf7e9266cc83315fb8b0232258e405a5d91aa0721af6637c.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 75,
+          "printedPageNumber": 76,
+          "printedQuestionNumber": 12,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_04",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 0
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_04",
+        "topicId": "top_tah_math_sub_19_04",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_04",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P076-Q13",
+      "identity": {
+        "sourceItemId": "YLM26-PDF075-P076-N13",
+        "imageHash": "54188eee89042e0c02239f8d7efbcb6a84b6afdc3272846e354398f722b648b2",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P076-Q02/54188eee89042e0c02239f8d7efbcb6a84b6afdc3272846e354398f722b648b2.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 75,
+          "printedPageNumber": 76,
+          "printedQuestionNumber": 13,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_04",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 2
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_04",
+        "topicId": "top_tah_math_sub_19_04",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_04",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P076-Q14",
+      "identity": {
+        "sourceItemId": "YLM26-PDF075-P076-N14",
+        "imageHash": "28d25d715c51a7b926580bb07b495ad7ed45e60d203902139b4c12a22a44f923",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P076-Q03/28d25d715c51a7b926580bb07b495ad7ed45e60d203902139b4c12a22a44f923.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 75,
+          "printedPageNumber": 76,
+          "printedQuestionNumber": 14,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_04",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 1
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_04",
+        "topicId": "top_tah_math_sub_19_04",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_04",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P077-Q01",
+      "identity": {
+        "sourceItemId": "YLM26-PDF076-P077-N01",
+        "imageHash": "068e4e55098948f69be55ca5eb84e53cdc4ddff042c5e9b7bd99aba5b1196406",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P077-Q01/068e4e55098948f69be55ca5eb84e53cdc4ddff042c5e9b7bd99aba5b1196406.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 76,
+          "printedPageNumber": 77,
+          "printedQuestionNumber": 1,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_01",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 3
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_01",
+        "topicId": "top_tah_math_sub_20_01",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_01",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P077-Q02",
+      "identity": {
+        "sourceItemId": "YLM26-PDF076-P077-N02",
+        "imageHash": "eafe101511ff630e0724068ced1fde55d7eaa068bdcc4119885cd220a4a38dad",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P077-Q02/eafe101511ff630e0724068ced1fde55d7eaa068bdcc4119885cd220a4a38dad.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 76,
+          "printedPageNumber": 77,
+          "printedQuestionNumber": 2,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_01",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 0
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_01",
+        "topicId": "top_tah_math_sub_20_01",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_01",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P077-Q03",
+      "identity": {
+        "sourceItemId": "YLM26-PDF076-P077-N03",
+        "imageHash": "ac88494f1073f3916cda0365759083d881f7c7c375aab4a0038e2ecabdaf73e7",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P077-Q03/ac88494f1073f3916cda0365759083d881f7c7c375aab4a0038e2ecabdaf73e7.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 76,
+          "printedPageNumber": 77,
+          "printedQuestionNumber": 3,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_01",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 0
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_01",
+        "topicId": "top_tah_math_sub_20_01",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_01",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P078-Q04",
+      "identity": {
+        "sourceItemId": "YLM26-PDF077-P078-N04",
+        "imageHash": "6abd6f1667df0b6499ef94e9010ab55f03ca47a135092aad406e81f4be1ba9a4",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P078-Q01/6abd6f1667df0b6499ef94e9010ab55f03ca47a135092aad406e81f4be1ba9a4.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 77,
+          "printedPageNumber": 78,
+          "printedQuestionNumber": 4,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_01",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 0
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_01",
+        "topicId": "top_tah_math_sub_20_01",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_01",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P078-Q05",
+      "identity": {
+        "sourceItemId": "YLM26-PDF077-P078-N05",
+        "imageHash": "f9a1ca9ad7caa967ee85de0d787999b61819174e84237f20679c807c61314b5f",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P078-Q02/f9a1ca9ad7caa967ee85de0d787999b61819174e84237f20679c807c61314b5f.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 77,
+          "printedPageNumber": 78,
+          "printedQuestionNumber": 5,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_01",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 2
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_01",
+        "topicId": "top_tah_math_sub_20_01",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_01",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P078-Q06",
+      "identity": {
+        "sourceItemId": "YLM26-PDF077-P078-N06",
+        "imageHash": "7448e95849d8cbd1f430b1fbc5f766caf4c354f0d8529712168817d6e266b231",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P078-Q03/7448e95849d8cbd1f430b1fbc5f766caf4c354f0d8529712168817d6e266b231.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 77,
+          "printedPageNumber": 78,
+          "printedQuestionNumber": 6,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_01",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 0
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_01",
+        "topicId": "top_tah_math_sub_20_01",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_01",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P078-Q07",
+      "identity": {
+        "sourceItemId": "YLM26-PDF077-P078-N07",
+        "imageHash": "0749ef9e4bca1b7eb97b51eaabbdcc28fc87c9f5e0a90e92ad399086205dfd7a",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P078-Q04/0749ef9e4bca1b7eb97b51eaabbdcc28fc87c9f5e0a90e92ad399086205dfd7a.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 77,
+          "printedPageNumber": 78,
+          "printedQuestionNumber": 7,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_01",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 0
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_01",
+        "topicId": "top_tah_math_sub_20_01",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_01",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P078-Q08",
+      "identity": {
+        "sourceItemId": "YLM26-PDF077-P078-N08",
+        "imageHash": "1effa8e1b5d67e88661f6692bf49707f5573b78e2f939cb81ec151ae157494af",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P078-Q05/1effa8e1b5d67e88661f6692bf49707f5573b78e2f939cb81ec151ae157494af.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 77,
+          "printedPageNumber": 78,
+          "printedQuestionNumber": 8,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_01",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 0
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_01",
+        "topicId": "top_tah_math_sub_20_01",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_01",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P078-Q09",
+      "identity": {
+        "sourceItemId": "YLM26-PDF077-P078-N09",
+        "imageHash": "f977abae3df3a8395b0d63f5b2566865910a65f2e858cd754cac67c50a5f5521",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P078-Q06/f977abae3df3a8395b0d63f5b2566865910a65f2e858cd754cac67c50a5f5521.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 77,
+          "printedPageNumber": 78,
+          "printedQuestionNumber": 9,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_01",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 0
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_01",
+        "topicId": "top_tah_math_sub_20_01",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_01",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P079-Q10",
+      "identity": {
+        "sourceItemId": "YLM26-PDF078-P079-N10",
+        "imageHash": "2290af23e794304006ba128109519f65c9fa7695bf7bbb6c8afc66de31354032",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P079-Q01/2290af23e794304006ba128109519f65c9fa7695bf7bbb6c8afc66de31354032.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 78,
+          "printedPageNumber": 79,
+          "printedQuestionNumber": 10,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 0
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_02",
+        "topicId": "top_tah_math_sub_20_02",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P079-Q11",
+      "identity": {
+        "sourceItemId": "YLM26-PDF078-P079-N11",
+        "imageHash": "75db0ca157dfc086de6a839337c1e54a6c66969566274426b8ce46f9af2049bf",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P079-Q02/75db0ca157dfc086de6a839337c1e54a6c66969566274426b8ce46f9af2049bf.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 78,
+          "printedPageNumber": 79,
+          "printedQuestionNumber": 11,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 1
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_02",
+        "topicId": "top_tah_math_sub_20_02",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P079-Q12",
+      "identity": {
+        "sourceItemId": "YLM26-PDF078-P079-N12",
+        "imageHash": "dbdc483b60e0028d4da04e999cad134e27e5b2f3dd2746e820cf022a6727e6ad",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P079-Q03/dbdc483b60e0028d4da04e999cad134e27e5b2f3dd2746e820cf022a6727e6ad.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 78,
+          "printedPageNumber": 79,
+          "printedQuestionNumber": 12,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 1
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_02",
+        "topicId": "top_tah_math_sub_20_02",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P080-Q13",
+      "identity": {
+        "sourceItemId": "YLM26-PDF079-P080-N13",
+        "imageHash": "39f0bff3627ea641c2e16dc623a58d7928d4dbd12a7b42678b246928d3f7c61e",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P080-Q01/39f0bff3627ea641c2e16dc623a58d7928d4dbd12a7b42678b246928d3f7c61e.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 79,
+          "printedPageNumber": 80,
+          "printedQuestionNumber": 13,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 0
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_02",
+        "topicId": "top_tah_math_sub_20_02",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P080-Q14",
+      "identity": {
+        "sourceItemId": "YLM26-PDF079-P080-N14",
+        "imageHash": "b3ede6f010d198c82f36444d7e439c1172b21e069edecc0e9bfc36b21f629209",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P080-Q02/b3ede6f010d198c82f36444d7e439c1172b21e069edecc0e9bfc36b21f629209.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 79,
+          "printedPageNumber": 80,
+          "printedQuestionNumber": 14,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 1
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_02",
+        "topicId": "top_tah_math_sub_20_02",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P080-Q15",
+      "identity": {
+        "sourceItemId": "YLM26-PDF079-P080-N15",
+        "imageHash": "f4c97c85f59bfaf6e4aa44271cd8c42658f17c6ef6124ce3bf43fc07b693cc07",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P080-Q03/f4c97c85f59bfaf6e4aa44271cd8c42658f17c6ef6124ce3bf43fc07b693cc07.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 79,
+          "printedPageNumber": 80,
+          "printedQuestionNumber": 15,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 2
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_02",
+        "topicId": "top_tah_math_sub_20_02",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P081-Q01",
+      "identity": {
+        "sourceItemId": "YLM26-PDF080-P081-N01",
+        "imageHash": "e2a48d470d3ebc70d7608f6539b42cffd5853f4cca3c96907a3d1221284db97d",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P081-Q01/e2a48d470d3ebc70d7608f6539b42cffd5853f4cca3c96907a3d1221284db97d.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 80,
+          "printedPageNumber": 81,
+          "printedQuestionNumber": 1,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_03",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 1
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_03",
+        "topicId": "top_tah_math_sub_20_03",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_03",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P082-Q02",
+      "identity": {
+        "sourceItemId": "YLM26-PDF081-P082-N02",
+        "imageHash": "cf3383193507b2920cfb30fc0c3d8a3763552e6bded10a035030fbbb1112009f",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P082-Q01/cf3383193507b2920cfb30fc0c3d8a3763552e6bded10a035030fbbb1112009f.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 81,
+          "printedPageNumber": 82,
+          "printedQuestionNumber": 2,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_03",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 2
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_03",
+        "topicId": "top_tah_math_sub_20_03",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_03",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P082-Q03",
+      "identity": {
+        "sourceItemId": "YLM26-PDF081-P082-N03",
+        "imageHash": "c07819f1fc73773493cdad49943c69ec4ac89d8a6276137a1d9658e3d50096e6",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P082-Q02/c07819f1fc73773493cdad49943c69ec4ac89d8a6276137a1d9658e3d50096e6.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 81,
+          "printedPageNumber": 82,
+          "printedQuestionNumber": 3,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_03",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 0
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_03",
+        "topicId": "top_tah_math_sub_20_03",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_03",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P082-Q04",
+      "identity": {
+        "sourceItemId": "YLM26-PDF081-P082-N04",
+        "imageHash": "0bb9865643818e7235098c02a7bdadd8ceb1023b0ae489fff8bfae53991c7627",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P082-Q03/0bb9865643818e7235098c02a7bdadd8ceb1023b0ae489fff8bfae53991c7627.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 81,
+          "printedPageNumber": 82,
+          "printedQuestionNumber": 4,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_03",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 1
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_03",
+        "topicId": "top_tah_math_sub_20_03",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_03",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P083-Q05",
+      "identity": {
+        "sourceItemId": "YLM26-PDF082-P083-N05",
+        "imageHash": "c092270cd31e9abf818ddfc29b43bed76dd829597898f12c57dc4d92a0e6f7de",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P083-Q01/c092270cd31e9abf818ddfc29b43bed76dd829597898f12c57dc4d92a0e6f7de.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 82,
+          "printedPageNumber": 83,
+          "printedQuestionNumber": 5,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_04",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 3
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_04",
+        "topicId": "top_tah_math_sub_20_04",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_04",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P083-Q06",
+      "identity": {
+        "sourceItemId": "YLM26-PDF082-P083-N06",
+        "imageHash": "87b34fd7d988b2c5332fc19d99a4de5572aa77b984b2eab462b9305add9e6a0a",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P083-Q02/87b34fd7d988b2c5332fc19d99a4de5572aa77b984b2eab462b9305add9e6a0a.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 82,
+          "printedPageNumber": 83,
+          "printedQuestionNumber": 6,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_04",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 0
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_04",
+        "topicId": "top_tah_math_sub_20_04",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_04",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P083-Q07",
+      "identity": {
+        "sourceItemId": "YLM26-PDF082-P083-N07",
+        "imageHash": "d825167f9ff83f770fae12f7820072873b11925faa429254b894893c60757baa",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P083-Q03/d825167f9ff83f770fae12f7820072873b11925faa429254b894893c60757baa.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 82,
+          "printedPageNumber": 83,
+          "printedQuestionNumber": 7,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_04",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 1
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_04",
+        "topicId": "top_tah_math_sub_20_04",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_04",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P083-Q08",
+      "identity": {
+        "sourceItemId": "YLM26-PDF082-P083-N08",
+        "imageHash": "caca2ac6d51559db2c732975df81782ea31ab0652bc48be612456db13807b294",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P083-Q04/caca2ac6d51559db2c732975df81782ea31ab0652bc48be612456db13807b294.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 82,
+          "printedPageNumber": 83,
+          "printedQuestionNumber": 8,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_04",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 0
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_04",
+        "topicId": "top_tah_math_sub_20_04",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_04",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P084-Q09",
+      "identity": {
+        "sourceItemId": "YLM26-PDF083-P084-N09",
+        "imageHash": "459a844e9fb9f2decf6429f7ee331cf5716ffb63677f0b8b772b2872a9294545",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P084-Q01/459a844e9fb9f2decf6429f7ee331cf5716ffb63677f0b8b772b2872a9294545.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 83,
+          "printedPageNumber": 84,
+          "printedQuestionNumber": 9,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_04",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 0
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_04",
+        "topicId": "top_tah_math_sub_20_04",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_04",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P084-Q10",
+      "identity": {
+        "sourceItemId": "YLM26-PDF083-P084-N10",
+        "imageHash": "b2699fc7f8e5db0393ed0785caa0b11070af6d197ca4fd3227c1005fae1c88cf",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P084-Q02/b2699fc7f8e5db0393ed0785caa0b11070af6d197ca4fd3227c1005fae1c88cf.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 83,
+          "printedPageNumber": 84,
+          "printedQuestionNumber": 10,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_04",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 2
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_04",
+        "topicId": "top_tah_math_sub_20_04",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_04",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P084-Q11",
+      "identity": {
+        "sourceItemId": "YLM26-PDF083-P084-N11",
+        "imageHash": "57810adbdea9043daf445809c811287869f49f9452ccbf83013b60d4381940a7",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P084-Q03/57810adbdea9043daf445809c811287869f49f9452ccbf83013b60d4381940a7.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 83,
+          "printedPageNumber": 84,
+          "printedQuestionNumber": 11,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_04",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 1
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_04",
+        "topicId": "top_tah_math_sub_20_04",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_04",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P084-Q12",
+      "identity": {
+        "sourceItemId": "YLM26-PDF083-P084-N12",
+        "imageHash": "4b01ecf3d3061e55c52f39f7660b622e902a410fec9187cdb8931c1b72f2de6f",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P084-Q04/4b01ecf3d3061e55c52f39f7660b622e902a410fec9187cdb8931c1b72f2de6f.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 83,
+          "printedPageNumber": 84,
+          "printedQuestionNumber": 12,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_04",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 0
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_04",
+        "topicId": "top_tah_math_sub_20_04",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_04",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P085-Q01",
+      "identity": {
+        "sourceItemId": "YLM26-PDF084-P085-N01",
+        "imageHash": "3704e6c6c48ecbcaf7ec0b5d7c49fe615e8e9a71b5f3f46d8234b941a4009e03",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P085-Q01/3704e6c6c48ecbcaf7ec0b5d7c49fe615e8e9a71b5f3f46d8234b941a4009e03.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 84,
+          "printedPageNumber": 85,
+          "printedQuestionNumber": 1,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_21",
+        "subSkillId": "sub_tah_math_21_01",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 0
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_21",
+        "subSkillId": "sub_tah_math_21_01",
+        "topicId": "top_tah_math_sub_21_01",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_21",
+        "subSkillId": "sub_tah_math_21_01",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P085-Q02",
+      "identity": {
+        "sourceItemId": "YLM26-PDF084-P085-N02",
+        "imageHash": "7f28ade955001d1719b5e642f5faf09a9e535ab0e0c334d7ae97aeb7f1dd3414",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P085-Q02/7f28ade955001d1719b5e642f5faf09a9e535ab0e0c334d7ae97aeb7f1dd3414.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 84,
+          "printedPageNumber": 85,
+          "printedQuestionNumber": 2,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_21",
+        "subSkillId": "sub_tah_math_21_01",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 0
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_21",
+        "subSkillId": "sub_tah_math_21_01",
+        "topicId": "top_tah_math_sub_21_01",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_21",
+        "subSkillId": "sub_tah_math_21_01",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P085-Q03",
+      "identity": {
+        "sourceItemId": "YLM26-PDF084-P085-N03",
+        "imageHash": "d252f1a438bd21369f563c8cdaa1fa2394251d3752197d06a8712d9655e830cd",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P085-Q03/d252f1a438bd21369f563c8cdaa1fa2394251d3752197d06a8712d9655e830cd.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 84,
+          "printedPageNumber": 85,
+          "printedQuestionNumber": 3,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_21",
+        "subSkillId": "sub_tah_math_21_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 1
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_21",
+        "subSkillId": "sub_tah_math_21_02",
+        "topicId": "top_tah_math_sub_21_02",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_21",
+        "subSkillId": "sub_tah_math_21_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P085-Q04",
+      "identity": {
+        "sourceItemId": "YLM26-PDF084-P085-N04",
+        "imageHash": "27ef5306793321366d68096ee706c9131f83fcfddf699b3e9d07965a91d4d3d7",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P085-Q04/27ef5306793321366d68096ee706c9131f83fcfddf699b3e9d07965a91d4d3d7.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 84,
+          "printedPageNumber": 85,
+          "printedQuestionNumber": 4,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_21",
+        "subSkillId": "sub_tah_math_21_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 1
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_21",
+        "subSkillId": "sub_tah_math_21_02",
+        "topicId": "top_tah_math_sub_21_02",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_21",
+        "subSkillId": "sub_tah_math_21_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P086-Q05",
+      "identity": {
+        "sourceItemId": "YLM26-PDF085-P086-N05",
+        "imageHash": "fc9b31c2d6a0965f362017672fb035db241c1aaa50a6d335e6bbbc23fc6cdb50",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P086-Q01/fc9b31c2d6a0965f362017672fb035db241c1aaa50a6d335e6bbbc23fc6cdb50.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 85,
+          "printedPageNumber": 86,
+          "printedQuestionNumber": 5,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_21",
+        "subSkillId": "sub_tah_math_21_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 3
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_21",
+        "subSkillId": "sub_tah_math_21_02",
+        "topicId": "top_tah_math_sub_21_02",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_21",
+        "subSkillId": "sub_tah_math_21_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P086-Q06",
+      "identity": {
+        "sourceItemId": "YLM26-PDF085-P086-N06",
+        "imageHash": "fd40d8e0b057ca07fdbee1f383fce911dbe3de6b0c8b4cecedc470dcdb48976a",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P086-Q02/fd40d8e0b057ca07fdbee1f383fce911dbe3de6b0c8b4cecedc470dcdb48976a.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 85,
+          "printedPageNumber": 86,
+          "printedQuestionNumber": 6,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_14",
+        "subSkillId": "sub_tah_math_14_04",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 2
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_14",
+        "subSkillId": "sub_tah_math_14_04",
+        "topicId": "top_tah_math_sub_14_04",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_14",
+        "subSkillId": "sub_tah_math_14_04",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P087-Q07",
+      "identity": {
+        "sourceItemId": "YLM26-PDF086-P087-N07",
+        "imageHash": "587f93cef0e0fb688e65d6996f5952b99c00c06a283a4e27273da8f15305ddf9",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P087-Q01/587f93cef0e0fb688e65d6996f5952b99c00c06a283a4e27273da8f15305ddf9.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 86,
+          "printedPageNumber": 87,
+          "printedQuestionNumber": 7,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_21",
+        "subSkillId": "sub_tah_math_21_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 0
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_21",
+        "subSkillId": "sub_tah_math_21_02",
+        "topicId": "top_tah_math_sub_21_02",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_21",
+        "subSkillId": "sub_tah_math_21_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P087-Q08",
+      "identity": {
+        "sourceItemId": "YLM26-PDF086-P087-N08",
+        "imageHash": "6e25efdbae25fd1ce944f259fe222c538507186e9a191af1d51432941445e2f8",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P087-Q02/6e25efdbae25fd1ce944f259fe222c538507186e9a191af1d51432941445e2f8.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 86,
+          "printedPageNumber": 87,
+          "printedQuestionNumber": 8,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_21",
+        "subSkillId": "sub_tah_math_21_03",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 1
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_21",
+        "subSkillId": "sub_tah_math_21_03",
+        "topicId": "top_tah_math_sub_21_03",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_21",
+        "subSkillId": "sub_tah_math_21_03",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P087-Q09",
+      "identity": {
+        "sourceItemId": "YLM26-PDF086-P087-N09",
+        "imageHash": "c54493396b4532522360216bcf58c402e2e58f246a380a7a7657f78e603530da",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P087-Q03/c54493396b4532522360216bcf58c402e2e58f246a380a7a7657f78e603530da.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 86,
+          "printedPageNumber": 87,
+          "printedQuestionNumber": 9,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_21",
+        "subSkillId": "sub_tah_math_21_03",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 0
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_21",
+        "subSkillId": "sub_tah_math_21_03",
+        "topicId": "top_tah_math_sub_21_03",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_21",
+        "subSkillId": "sub_tah_math_21_03",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P087-Q10",
+      "identity": {
+        "sourceItemId": "YLM26-PDF086-P087-N10",
+        "imageHash": "fc1c579b2f8a3f54a8a1ef994d16adae088f5c04ed4167fd85c3465cc425dd58",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P087-Q04/fc1c579b2f8a3f54a8a1ef994d16adae088f5c04ed4167fd85c3465cc425dd58.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 86,
+          "printedPageNumber": 87,
+          "printedQuestionNumber": 10,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_21",
+        "subSkillId": "sub_tah_math_21_03",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 1
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_21",
+        "subSkillId": "sub_tah_math_21_03",
+        "topicId": "top_tah_math_sub_21_03",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_21",
+        "subSkillId": "sub_tah_math_21_03",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P087-Q11",
+      "identity": {
+        "sourceItemId": "YLM26-PDF086-P087-N11",
+        "imageHash": "5eebcbfa2e7434cbf216c0f2d47fa6943d34d78be672f6c0d4f938061cc2de3f",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P087-Q05/5eebcbfa2e7434cbf216c0f2d47fa6943d34d78be672f6c0d4f938061cc2de3f.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 86,
+          "printedPageNumber": 87,
+          "printedQuestionNumber": 11,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_21",
+        "subSkillId": "sub_tah_math_21_03",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 1
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_21",
+        "subSkillId": "sub_tah_math_21_03",
+        "topicId": "top_tah_math_sub_21_03",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_21",
+        "subSkillId": "sub_tah_math_21_03",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P088-Q12",
+      "identity": {
+        "sourceItemId": "YLM26-PDF087-P088-N12",
+        "imageHash": "74dd23daca9235166c148ab1e1458b387f5f568c847b4af33beedcfbc71109fc",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P088-Q01/74dd23daca9235166c148ab1e1458b387f5f568c847b4af33beedcfbc71109fc.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 87,
+          "printedPageNumber": 88,
+          "printedQuestionNumber": 12,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_21",
+        "subSkillId": "sub_tah_math_21_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 3
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_21",
+        "subSkillId": "sub_tah_math_21_02",
+        "topicId": "top_tah_math_sub_21_02",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_21",
+        "subSkillId": "sub_tah_math_21_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P088-Q13",
+      "identity": {
+        "sourceItemId": "YLM26-PDF087-P088-N13",
+        "imageHash": "866ce94679cfa72ba93b081ba0a8da0a73540bf7f31e85a9b708a0a5c540f412",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P088-Q02/866ce94679cfa72ba93b081ba0a8da0a73540bf7f31e85a9b708a0a5c540f412.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 87,
+          "printedPageNumber": 88,
+          "printedQuestionNumber": 13,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_21",
+        "subSkillId": "sub_tah_math_21_04",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 3
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_21",
+        "subSkillId": "sub_tah_math_21_04",
+        "topicId": "top_tah_math_sub_21_04",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_21",
+        "subSkillId": "sub_tah_math_21_04",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P089-Q01",
+      "identity": {
+        "sourceItemId": "YLM26-PDF088-P089-N01",
+        "imageHash": "3a10efc3c9d5449fec9d9ea5bb03056481bf23746e144936ef051052020755e7",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P089-Q01/3a10efc3c9d5449fec9d9ea5bb03056481bf23746e144936ef051052020755e7.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 88,
+          "printedPageNumber": 89,
+          "printedQuestionNumber": 1,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_01",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 3
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_01",
+        "topicId": "top_tah_math_sub_22_01",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_01",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P090-Q02",
+      "identity": {
+        "sourceItemId": "YLM26-PDF089-P090-N02",
+        "imageHash": "073040654222ec7095810e91fbbc4d94649a9f3acba90c590c8fdc3296eb3aeb",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P090-Q01/073040654222ec7095810e91fbbc4d94649a9f3acba90c590c8fdc3296eb3aeb.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 89,
+          "printedPageNumber": 90,
+          "printedQuestionNumber": 2,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 0
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_02",
+        "topicId": "top_tah_math_sub_22_02",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P090-Q03",
+      "identity": {
+        "sourceItemId": "YLM26-PDF089-P090-N03",
+        "imageHash": "7a3314bbcbf5088b5ba14dc13b421460bb09c38043d3474148362eb79f00aa78",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P090-Q02/7a3314bbcbf5088b5ba14dc13b421460bb09c38043d3474148362eb79f00aa78.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 89,
+          "printedPageNumber": 90,
+          "printedQuestionNumber": 3,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 2
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_02",
+        "topicId": "top_tah_math_sub_22_02",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P090-Q04",
+      "identity": {
+        "sourceItemId": "YLM26-PDF089-P090-N04",
+        "imageHash": "f023ac90b61fe923e6d7272f087a9355905f6bc3b86902c2116f12c1720228f6",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P090-Q03/f023ac90b61fe923e6d7272f087a9355905f6bc3b86902c2116f12c1720228f6.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 89,
+          "printedPageNumber": 90,
+          "printedQuestionNumber": 4,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 1
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_02",
+        "topicId": "top_tah_math_sub_22_02",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P090-Q05",
+      "identity": {
+        "sourceItemId": "YLM26-PDF089-P090-N05",
+        "imageHash": "c13d78c6e277398f9049575120cd00571e24f86f782c78c74ba987fa30f803f1",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P090-Q04/c13d78c6e277398f9049575120cd00571e24f86f782c78c74ba987fa30f803f1.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 89,
+          "printedPageNumber": 90,
+          "printedQuestionNumber": 5,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 0
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_02",
+        "topicId": "top_tah_math_sub_22_02",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P090-Q06",
+      "identity": {
+        "sourceItemId": "YLM26-PDF089-P090-N06",
+        "imageHash": "52ee0c96fd439e08d459fc8c3d91f5d50e56dc6fc09d588b0aef7c76220b37b5",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P090-Q05/52ee0c96fd439e08d459fc8c3d91f5d50e56dc6fc09d588b0aef7c76220b37b5.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 89,
+          "printedPageNumber": 90,
+          "printedQuestionNumber": 6,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 1
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_02",
+        "topicId": "top_tah_math_sub_22_02",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P090-Q07",
+      "identity": {
+        "sourceItemId": "YLM26-PDF089-P090-N07",
+        "imageHash": "82a668270881655166555b69b2114dda437bd27abd22a6e667f3698e0119174d",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P090-Q06/82a668270881655166555b69b2114dda437bd27abd22a6e667f3698e0119174d.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 89,
+          "printedPageNumber": 90,
+          "printedQuestionNumber": 7,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 2
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_02",
+        "topicId": "top_tah_math_sub_22_02",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P090-Q08",
+      "identity": {
+        "sourceItemId": "YLM26-PDF089-P090-N08",
+        "imageHash": "640d9a55d5f6ea73fb719d760b837bd2781963300adb6f400bc0cfc2b9a8a321",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P090-Q07/640d9a55d5f6ea73fb719d760b837bd2781963300adb6f400bc0cfc2b9a8a321.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 89,
+          "printedPageNumber": 90,
+          "printedQuestionNumber": 8,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 2
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_02",
+        "topicId": "top_tah_math_sub_22_02",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P090-Q09",
+      "identity": {
+        "sourceItemId": "YLM26-PDF089-P090-N09",
+        "imageHash": "ca7132cfa374029f6f3cad01c3b3b1bbf9135eaca7d7c44eb80331cc69457c6a",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P090-Q08/ca7132cfa374029f6f3cad01c3b3b1bbf9135eaca7d7c44eb80331cc69457c6a.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 89,
+          "printedPageNumber": 90,
+          "printedQuestionNumber": 9,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 2
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_02",
+        "topicId": "top_tah_math_sub_22_02",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P090-Q10",
+      "identity": {
+        "sourceItemId": "YLM26-PDF089-P090-N10",
+        "imageHash": "f001c743e1ff74e85c55cefae04f6090ecafe093382bdfb38eb4b0b7c8f91b8d",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P090-Q09/f001c743e1ff74e85c55cefae04f6090ecafe093382bdfb38eb4b0b7c8f91b8d.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 89,
+          "printedPageNumber": 90,
+          "printedQuestionNumber": 10,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 1
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_02",
+        "topicId": "top_tah_math_sub_22_02",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P091-Q11",
+      "identity": {
+        "sourceItemId": "YLM26-PDF090-P091-N11",
+        "imageHash": "350ca1b92f022b66f451c4baf7017c996b5467b7071bd59f6412155ba5133034",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P091-Q01/350ca1b92f022b66f451c4baf7017c996b5467b7071bd59f6412155ba5133034.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 90,
+          "printedPageNumber": 91,
+          "printedQuestionNumber": 11,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 3
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_02",
+        "topicId": "top_tah_math_sub_22_02",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P091-Q12",
+      "identity": {
+        "sourceItemId": "YLM26-PDF090-P091-N12",
+        "imageHash": "20f03bbcf3ff1a1fef868a2e6d8c17a6a88033b48e788a900b2a42f290604713",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P091-Q02/20f03bbcf3ff1a1fef868a2e6d8c17a6a88033b48e788a900b2a42f290604713.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 90,
+          "printedPageNumber": 91,
+          "printedQuestionNumber": 12,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 2
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_02",
+        "topicId": "top_tah_math_sub_22_02",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P091-Q13",
+      "identity": {
+        "sourceItemId": "YLM26-PDF090-P091-N13",
+        "imageHash": "943d671c9db99d0175f2947a36db1be01544c1f90740caafa08113e097bc524f",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P091-Q03/943d671c9db99d0175f2947a36db1be01544c1f90740caafa08113e097bc524f.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 90,
+          "printedPageNumber": 91,
+          "printedQuestionNumber": 13,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 3
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_02",
+        "topicId": "top_tah_math_sub_22_02",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P091-Q14",
+      "identity": {
+        "sourceItemId": "YLM26-PDF090-P091-N14",
+        "imageHash": "d42714844c2e6e26bc00171993ee2632a4cf9161114bdab9184a67d8ec4aa196",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P091-Q04/d42714844c2e6e26bc00171993ee2632a4cf9161114bdab9184a67d8ec4aa196.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 90,
+          "printedPageNumber": 91,
+          "printedQuestionNumber": 14,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 0
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_02",
+        "topicId": "top_tah_math_sub_22_02",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P092-Q01",
+      "identity": {
+        "sourceItemId": "YLM26-PDF091-P092-N01",
+        "imageHash": "610c1a79666c99ed889535df073079a98d1b947ef176a07d5129179697761b9d",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P092-Q01/610c1a79666c99ed889535df073079a98d1b947ef176a07d5129179697761b9d.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 91,
+          "printedPageNumber": 92,
+          "printedQuestionNumber": 1,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_03",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 2
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_03",
+        "topicId": "top_tah_math_sub_22_03",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_03",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P092-Q02",
+      "identity": {
+        "sourceItemId": "YLM26-PDF091-P092-N02",
+        "imageHash": "a77782e3a2c6aae37c5c885f1aed2f2b13c0e43beb0cd82e97ff64a696fd5928",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P092-Q02/a77782e3a2c6aae37c5c885f1aed2f2b13c0e43beb0cd82e97ff64a696fd5928.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 91,
+          "printedPageNumber": 92,
+          "printedQuestionNumber": 2,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_03",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 2
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_03",
+        "topicId": "top_tah_math_sub_22_03",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_03",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P092-Q03",
+      "identity": {
+        "sourceItemId": "YLM26-PDF091-P092-N03",
+        "imageHash": "c8a10578782466b0c6162586b37be0ca430855dc4f66100800dc0ad37dca8ef9",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P092-Q03/c8a10578782466b0c6162586b37be0ca430855dc4f66100800dc0ad37dca8ef9.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 91,
+          "printedPageNumber": 92,
+          "printedQuestionNumber": 3,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_03",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 1
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_03",
+        "topicId": "top_tah_math_sub_22_03",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_03",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P092-Q04",
+      "identity": {
+        "sourceItemId": "YLM26-PDF091-P092-N04",
+        "imageHash": "e70b6a8f333e3ec21992fcd4e6ee49e6457905e6a5b13488e16c69fa2f627367",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P092-Q04/e70b6a8f333e3ec21992fcd4e6ee49e6457905e6a5b13488e16c69fa2f627367.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 91,
+          "printedPageNumber": 92,
+          "printedQuestionNumber": 4,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_03",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 0
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_03",
+        "topicId": "top_tah_math_sub_22_03",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_03",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P093-Q05",
+      "identity": {
+        "sourceItemId": "YLM26-PDF092-P093-N05",
+        "imageHash": "3a5da21ad1f65f71a0b2d0302f2f83b15b97c42b552d34258d9d6c90e33ffdf0",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P093-Q01/3a5da21ad1f65f71a0b2d0302f2f83b15b97c42b552d34258d9d6c90e33ffdf0.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 92,
+          "printedPageNumber": 93,
+          "printedQuestionNumber": 5,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_04",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 1
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_04",
+        "topicId": "top_tah_math_sub_22_04",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_04",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P093-Q06",
+      "identity": {
+        "sourceItemId": "YLM26-PDF092-P093-N06",
+        "imageHash": "73a9f4029c8d062ecffe55f97ff68b575882b59cf8c4fff76c51d05927a83ddf",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P093-Q02/73a9f4029c8d062ecffe55f97ff68b575882b59cf8c4fff76c51d05927a83ddf.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 92,
+          "printedPageNumber": 93,
+          "printedQuestionNumber": 6,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_04",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 1
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_04",
+        "topicId": "top_tah_math_sub_22_04",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_04",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P093-Q07",
+      "identity": {
+        "sourceItemId": "YLM26-PDF092-P093-N07",
+        "imageHash": "68780207a3344a36d61f9568c3e6868656eb213e0aa1512849f14d3419d5bebc",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P093-Q03/68780207a3344a36d61f9568c3e6868656eb213e0aa1512849f14d3419d5bebc.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 92,
+          "printedPageNumber": 93,
+          "printedQuestionNumber": 7,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_04",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 1
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_04",
+        "topicId": "top_tah_math_sub_22_04",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_04",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P093-Q08",
+      "identity": {
+        "sourceItemId": "YLM26-PDF092-P093-N08",
+        "imageHash": "ec340cf0d16cfeb995a60376d4c2ff899bfdaccc959f62aa9ccd9f7a250ba048",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P093-Q04/ec340cf0d16cfeb995a60376d4c2ff899bfdaccc959f62aa9ccd9f7a250ba048.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 92,
+          "printedPageNumber": 93,
+          "printedQuestionNumber": 8,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_04",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 1
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_04",
+        "topicId": "top_tah_math_sub_22_04",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_04",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P094-Q09",
+      "identity": {
+        "sourceItemId": "YLM26-PDF093-P094-N09",
+        "imageHash": "a71d786b0d9f639516d5f91563b53f848d6d55dde6b17c708642274d9269a8fb",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P094-Q01/a71d786b0d9f639516d5f91563b53f848d6d55dde6b17c708642274d9269a8fb.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 93,
+          "printedPageNumber": 94,
+          "printedQuestionNumber": 9,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_05",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 0
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_05",
+        "topicId": "top_tah_math_sub_22_05",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_05",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P094-Q10",
+      "identity": {
+        "sourceItemId": "YLM26-PDF093-P094-N10",
+        "imageHash": "527c466de39324fc1011533025fc9fd66432a679e560e0cea71df4bb67de8c2e",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P094-Q02/527c466de39324fc1011533025fc9fd66432a679e560e0cea71df4bb67de8c2e.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 93,
+          "printedPageNumber": 94,
+          "printedQuestionNumber": 10,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_05",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 0
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_05",
+        "topicId": "top_tah_math_sub_22_05",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_05",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P094-Q11",
+      "identity": {
+        "sourceItemId": "YLM26-PDF093-P094-N11",
+        "imageHash": "17864bed26b8cf1cbe9c24131322ad70d3d3884fe349d4d867c7f796fe0b661e",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P094-Q03/17864bed26b8cf1cbe9c24131322ad70d3d3884fe349d4d867c7f796fe0b661e.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 93,
+          "printedPageNumber": 94,
+          "printedQuestionNumber": 11,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_05",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 1
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_05",
+        "topicId": "top_tah_math_sub_22_05",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_05",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P094-Q12",
+      "identity": {
+        "sourceItemId": "YLM26-PDF093-P094-N12",
+        "imageHash": "9414dace850edfcdc8731c98ea6485de3052bed58ad24b98ad04e8fe535afd8d",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P094-Q04/9414dace850edfcdc8731c98ea6485de3052bed58ad24b98ad04e8fe535afd8d.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 93,
+          "printedPageNumber": 94,
+          "printedQuestionNumber": 12,
+          "imageVersion": 2
+        }
+      },
+      "expectedBefore": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_05",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 0
+      },
+      "proposedAfter": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_05",
+        "topicId": "top_tah_math_sub_22_05",
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_22",
+        "subSkillId": "sub_tah_math_22_05",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "correctionEvidence": null
+    }
+  ],
+  "part": 4,
+  "partCount": 4
+}
