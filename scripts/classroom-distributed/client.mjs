@@ -1,5 +1,14 @@
 import assert from 'node:assert/strict';
 export const origin='https://almeaacodax.vercel.app';
+export function parseWorkerArgs(args) {
+ const value=name=>{const index=args.indexOf(name);return index>=0?args[index+1]||'':'';};
+ const rawGroup=value('--group');assert.match(rawGroup,/^[0-3]$/,'Audit group required');
+ const sessionId=value('--session');assert.match(sessionId,/^[a-f\d]{24}$/,'Audit session required');
+ const expected=value('--release');assert.match(expected,/^[a-f\d]{40}$/,'Audit release required');
+ const runId=value('--run-id');assert.match(runId,/^\d+$/,'Audit run id required');
+ const runner=value('--runner');assert.ok(runner,'Audit runner required');
+ return {group:Number(rawGroup),sessionId,expected,runId,runner};
+}
 export function parseFixture(raw,group) {
  assert.ok(raw,'Trial fixture required');let value;
  try {value=JSON.parse(raw);}catch{throw Error('Invalid trial fixture');}

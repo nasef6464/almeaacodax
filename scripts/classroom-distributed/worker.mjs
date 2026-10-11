@@ -2,17 +2,16 @@ import fs from 'node:fs';
 import os from 'node:os';
 import assert from 'node:assert/strict';
 import {chromium} from 'playwright';
-import {parseFixture,loginClient,origin} from './client.mjs';
+import {parseFixture,parseWorkerArgs,loginClient,origin} from './client.mjs';
 import {instrument} from './traffic.mjs';
-const group=Number(process.env.CLASSROOM_AUDIT_GROUP);
-const sessionId=process.env.CLASSROOM_AUDIT_SESSION;
-const expected=process.env.CLASSROOM_AUDIT_RELEASE;
-assert.match(sessionId||'',/^[a-f\d]{24}$/,'Audit session required');
-assert.match(expected||'',/^[a-f\d]{40}$/,'Audit release required');
-const fixture=parseFixture(process.env.CLASSROOM_AUDIT_FIXTURE,group);
-delete process.env.CLASSROOM_AUDIT_FIXTURE;
+const {group,sessionId,expected,runId,runner}=parseWorkerArgs(process.argv.slice(2));
+// The workflow sources credentials from its temporary secret environment and
+// passes them through an anonymous pipe, never CLI arguments or fixture files.
+let fixtureInput='';for await(const chunk of process.stdin){fixtureInput+=chunk;assert.ok(Buffer.byteLength(fixtureInput)<65536,'Oversized trial fixture');}
+const fixture=parseFixture(fixtureInput,group);fixtureInput='';
+if(process.argv.includes('--validate-only')){console.log(JSON.stringify({validated:true,group,students:fixture.students.length,productionTraffic:0}));process.exit(0);}
 const directory='output/classroom-distributed';fs.mkdirSync(directory,{recursive:true});
-const evidence={status:'RUNNING',group,runId:process.env.GITHUB_RUN_ID,runner:process.env.RUNNER_NAME||os.hostname(),expectedPublished:expected,startedAt:new Date().toISOString(),independentContexts:0,actors:[],errors:[],traffic:[],pending:[],socketFrames:[],memory:{totalBytes:os.totalmem(),freeBeforeBytes:os.freemem()}};
+const evidence={status:'RUNNING',group,runId,runner,expectedPublished:expected,startedAt:new Date().toISOString(),independentContexts:0,actors:[],errors:[],traffic:[],pending:[],socketFrames:[],memory:{totalBytes:os.totalmem(),freeBeforeBytes:os.freemem()}};
 const save=()=>fs.writeFileSync(directory+'/group-'+group+'.json',JSON.stringify(evidence,null,2));
 const pages=[];let browser;
 try {
