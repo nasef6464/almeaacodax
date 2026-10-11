@@ -644,35 +644,32 @@
     "productionServicesUntouched": true
   },
   "latestReconciliation": {
-    "run": "RUN142_GITHUB_RECONCILIATION",
+    "run": "RUN144",
     "date": "2026-10-11",
     "stage": "QA_LOCK",
-    "headVerified": "8dd490add0150b1975337e94c24553c670078133",
-    "mainVerified": "39d0eba241100e95426d4eaaad1124b7e92d5296",
+    "headAtStart": "2e2e957716e8f53a26c269b54e3d87b7bc760765",
+    "mainAtStart": "39d0eba241100e95426d4eaaad1124b7e92d5296",
     "cropLock": "PASS_LOCKED_2135_2135",
-    "questionMastering": "PASS_LOCKED_RUN063_2129_ACTIVE_6_EXCLUDED",
+    "questionMastering": "PASS_LOCKED_RUN063",
     "sourceConflictsKnown": 37,
-    "sourceConflictsQuarantinedAndVerifiedByRun142": 27,
-    "sourceConflictsStillUnsafeByRun142": 10,
-    "newMasteredCounted": 0,
+    "sourceConflictsFullyQuarantined": 30,
+    "sourceConflictsPartiallyQuarantined": 1,
+    "sourceConflictsStillUnsafe": 7,
+    "newMastered": 0,
+    "originalMasterFilesChanged": 3,
+    "originalMasterOccurrencesQuarantined": 4,
+    "verifiedPatchCommits": [
+      "7c0c3e38bc243581f0728658dd008ffe10bb09c3",
+      "60d834043f765433726e9e7f24ffe6664a4da08a",
+      "3352c1e79c7f7c30728b35a777a6deccf2fff7a0"
+    ],
     "qaPass": false,
     "dedupePass": false,
     "r2Uploaded": false,
     "importDone": false,
     "productionE2E": false,
     "productionTouched": false,
-    "remainingConflictKeys": [
-      "MNSF26-AR-T037-Q14",
-      "MNSF26-AR-T049-Q16",
-      "MNSF26-AR-T055-Q08",
-      "MNSF26-GEO-T050-Q03",
-      "MNSF26-GEO-T035-Q07",
-      "MNSF26-GEO-T014-Q01",
-      "MNSF26-GEO-T020-Q05",
-      "MNSF26-GEO-T010-Q19",
-      "MNSF26-GEO-T010-Q09",
-      "MNSF26-GEO-T008-Q14"
-    ],
-    "note": "Reconciled from GitHub-confirmed RUN142 four guarded master commit sequence, prior RUN141 delta and RUN142 reported post-write check. Count requires subsequent live full MASTER reindex. Old locked pipeline is superseded only as a stage-status snapshot; its immutable gates remain."
+    "blocker": "Remaining 7 source conflicts still have at least one MASTERED original record; 37-source verifier assumes exactly one source record, but some are duplicated across sharded and consolidated files; writes blocked by safety.",
+    "next": "Quarantine every occurrence of 7 remaining conflicts, fix source-conflict verifier to fail closed across all copies, repair GEO33 taxonomy, GEO34 identical-image duplicate and AR47 counters; complete semantic QA and dedupe before import."
   }
 }
