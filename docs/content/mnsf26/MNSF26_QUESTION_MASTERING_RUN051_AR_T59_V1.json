@@ -5,7 +5,7 @@
   "directImageInspection": true,
   "sourceCropArchive": "/MNSF26/Run017/mnsf26_arithmetic_crops_run017.zip",
   "sourceInventory": "/MNSF26/Run017/MNSF26_FULLBOOK_CROP_INVENTORY_V1.json",
-  "masteredCount": 17,
+  "masteredCount": 16,
   "holdCount": 3,
   "records": [
     {
@@ -239,7 +239,7 @@
       },
       "imageHash": "7655a695ebdfcda88453badedadfd6f5de642d8c4de6e0d9b263ffd0b09f6fcf",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
-      "status": "MASTERED",
+      "status": "REVIEW",
       "questionText": "اشترى شخص لوحات بـ4000 ريال وصرف20 ريالًا على طلاء كل لوحة، ثم باعها جميعًا بـ7000 بربح30 ريالًا لكل لوحة؛ كم لوحة؟",
       "canonicalMainSkill": "main_quant_07",
       "canonicalSubskill": "sub_quant_07_2",
@@ -249,7 +249,9 @@
       "difficulty": "Medium",
       "difficultyReason": "تتطلب ربط أكثر من معطى أو تحويل وحدات في معادلة الربح بعد تكلفة متغيرة.",
       "contentFingerprint": "da144465ddf68dfb75c1fecfec4ec83c1a33b15d5f0b8ec70088be5272b74f6f",
-      "ideaFingerprint": "b64933aae75835ccbd4192062f9df03d755ec549ba7adb7a36a4ddb5aea70b5d"
+      "ideaFingerprint": "b64933aae75835ccbd4192062f9df03d755ec549ba7adb7a36a4ddb5aea70b5d",
+      "importEligible": false,
+      "reviewReason": "RUN141_DIRECT_IMAGE_MATH_QA_SOURCE_CONFLICT_PENDING_CORRECTION_AND_INDEPENDENT_REVIEW"
     },
     {
       "sourceKey": "MNSF26-AR-T059-Q10",
@@ -551,5 +553,6 @@
       "contentFingerprint": "4b2d57fe7ade0f8eb367fd8e58b5520537169ed55272a54b84e1158c61f8a31d",
       "ideaFingerprint": "400635dc2244f7e4c958b69ffcf766c2e601135bd1e6feb3616ce8953cb6538e"
     }
-  ]
+  ],
+  "reviewCount": 1
 }
