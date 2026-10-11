@@ -1,3 +1,4 @@
+import { getEffectivePurchaseIds, hasActivePremium, hasCourseEntitlementFromState, loadEntitlementState } from "../../../services/entitlementPolicy.js";
 import { StatusCodes } from "http-status-codes";
 import { AccessGrantModel } from "../../../models/AccessGrant.js";
 import { B2BPackageModel } from "../../../models/B2BPackage.js";
@@ -239,14 +240,23 @@ export const canSubmitQuiz = async (quiz: any, user: any, source?: string) => {
   const hasTarget = (quiz.targetUserIds || []).length > 0 || (quiz.targetGroupIds || []).length > 0;
   const placement = placementAccessType(quiz, source);
   const accessType = placement !== "inherit" ? placement : quiz.access?.type || "free";
-  if (accessType === "free" || user.subscription?.plan === "premium") return true;
+  if (accessType === "free" || hasActivePremium(user)) return true;
   if (accessType === "private") {
     const allowed = new Set((quiz.access?.allowedGroupIds || []).map(String));
     return hasTarget || allowed.size === 0 || userGroupIds.some((id: string) => allowed.has(id));
   }
 
   const subjectId = String(quiz.subjectId || "");
-  const purchased = (user.subscription?.purchasedPackages || []).map(String);
+  const state = await loadEntitlementState(String(user.id || user._id || ""));
+  const purchased = getEffectivePurchaseIds(user, state.grants).purchasedPackages;
+  if (accessType === "course_only") {
+    const quizIds = [String(quiz.id || ""), String(quiz._id || "")].filter(Boolean);
+    const courses = await CourseModel.find({
+      isPublished: true, showOnPlatform: { $ne: false },
+      $or: [{ "modules.lessons.quizId": { $in: quizIds } }, { "assessments.quizId": { $in: quizIds } }],
+    }).lean();
+    if (courses.some(course => hasCourseEntitlementFromState(user, course, state.grants))) return true;
+  }
   const types = accessType === "course_only" ? ["courses"] : paidContentTypes(quiz, source);
   for (const type of types) {
     if ((await hasPurchasedPackageAccess(purchased, type, pathId, subjectId))

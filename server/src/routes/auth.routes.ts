@@ -1,3 +1,4 @@
+import { projectEffectiveUserAccess } from "../services/entitlementPolicy.js";
 import { Router } from "express";
 import bcrypt from "bcryptjs";
 import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
@@ -268,7 +269,7 @@ authRouter.post(
 
     return res.status(StatusCodes.CREATED).json({
       ...(shouldExposeTokenInAuthResponse ? { token } : {}),
-      user: serializeUser(user),
+      user: await projectEffectiveUserAccess(serializeUser(user)),
     });
   }),
 );
@@ -329,7 +330,7 @@ authRouter.post(
 
     return res.json({
       ...(shouldExposeTokenInAuthResponse ? { token } : {}),
-      user: serializeUser(user),
+      user: await projectEffectiveUserAccess(serializeUser(user)),
     });
   }),
 );
@@ -600,7 +601,7 @@ authRouter.post(
     await user.save();
 
     return res.json({
-      user: serializeUser(user),
+      user: await projectEffectiveUserAccess(serializeUser(user)),
       message: "Email has been verified.",
     });
   }),
@@ -620,7 +621,7 @@ authRouter.post(
 
     if (user.emailVerified) {
       return res.json({
-        user: serializeUser(user),
+        user: await projectEffectiveUserAccess(serializeUser(user)),
         message: "Email is already verified.",
       });
     }
@@ -701,7 +702,7 @@ authRouter.post(
     });
 
     return res.status(StatusCodes.CREATED).json({
-      user: serializeUser(user),
+      user: await projectEffectiveUserAccess(serializeUser(user)),
     });
   }),
 );
@@ -1140,7 +1141,7 @@ authRouter.get(
       });
     }
 
-    const serialized = serializeUser(user) as any;
+    const serialized = await projectEffectiveUserAccess(serializeUser(user)) as any;
     const normalizedProgress = await LessonProgressModel.find({ userId: String(user._id) }).lean();
     if (normalizedProgress.length > 0) {
       serialized.completedLessons = normalizedProgress
@@ -1196,7 +1197,7 @@ authRouter.patch(
     }
 
     return res.json({
-      user: serializeUser(user),
+      user: await projectEffectiveUserAccess(serializeUser(user)),
     });
   }),
 );
@@ -1365,7 +1366,7 @@ authRouter.post(
 
     return res.json({
       ...(shouldExposeTokenInAuthResponse ? { token } : {}),
-      user: serializeUser(user),
+      user: await projectEffectiveUserAccess(serializeUser(user)),
     });
   }),
 );
@@ -1441,7 +1442,7 @@ authRouter.patch(
     }
 
     return res.json({
-      user: serializeUser(user),
+      user: await projectEffectiveUserAccess(serializeUser(user)),
     });
   }),
 );
@@ -1591,7 +1592,7 @@ authRouter.post(
     }
 
     return res.json({
-      user: serializeUser(resolvedUser),
+      user: await projectEffectiveUserAccess(serializeUser(resolvedUser)),
       accessCode: reservedAccessCode,
       package: linkedPackage,
       accessGrant: grantResult.grant,
@@ -1632,7 +1633,7 @@ authRouter.post(
     setAuthCookie(res, token);
     return res.json({
       ...(shouldExposeTokenInAuthResponse ? { token } : {}),
-      user: serializeUser(user),
+      user: await projectEffectiveUserAccess(serializeUser(user)),
     });
   }),
 );
@@ -1664,7 +1665,7 @@ authRouter.patch(
     }
 
     const user = await UserModel.findByIdAndUpdate(req.user._id, { $set: update }, { new: true });
-    return res.json({ user: serializeUser(user) });
+    return res.json({ user: await projectEffectiveUserAccess(serializeUser(user)) });
   }),
 );
 
@@ -1781,7 +1782,7 @@ authRouter.post(
     setAuthCookie(res, token);
     return res.json({
       ...(shouldExposeTokenInAuthResponse ? { token } : {}),
-      user: serializeUser(user),
+      user: await projectEffectiveUserAccess(serializeUser(user)),
     });
   }),
 );

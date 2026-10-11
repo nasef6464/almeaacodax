@@ -16,6 +16,7 @@ import {
 import { asyncHandler } from "../../../utils/asyncHandler.js";
 import { resolveContentBootstrapRequest } from "../application/contentBootstrapRequest.js";
 import { buildContentBootstrapVisibilityFilters } from "../application/contentBootstrapVisibility.js";
+import { projectBootstrapLearningAccess } from "../application/contentPayloadAccess.js";
 import { buildContentBootstrapPayload } from "../application/contentBootstrapPayload.js";
 import { resolveContentBootstrapCache } from "../application/contentBootstrapCache.js";
 import {
@@ -91,7 +92,7 @@ const sendSharedBootstrapPayload = (
   }
 
   res.setHeader("Content-Type", "application/json; charset=utf-8");
-  res.setHeader("Vary", "Accept-Encoding");
+  res.setHeader("Vary", "Authorization, Cookie, Accept-Encoding");
 
   const acceptsGzip = /(?:^|,)\s*gzip(?:\s*;|\s*,|\s*$)/i.test(String(req.headers["accept-encoding"] || ""));
   if (acceptsGzip) {
@@ -230,10 +231,11 @@ contentBootstrapRouter.get(
           : Promise.resolve([]),
       ]);
 
+      const accessible = canSeeAllContent ? { lessons, libraryItems } : await projectBootstrapLearningAccess(lessons, libraryItems, req.authUser?.id);
       return buildContentBootstrapPayload({
         topics,
-        lessons,
-        libraryItems,
+        lessons: accessible.lessons,
+        libraryItems: accessible.libraryItems,
         operationalData,
         studyPlans,
       });
@@ -258,6 +260,8 @@ contentBootstrapRouter.get(
       res.setHeader("X-Content-Cache", cacheStatus);
     }
 
+    if (req.authUser && !canUseSharedCache) res.setHeader("Cache-Control", "private, no-store");
+    res.setHeader("Vary", "Authorization, Cookie, Accept-Encoding");
     res.setHeader("X-Content-Scope", scope);
     res.setHeader("X-Content-Phase", phase);
     res.setHeader("X-Content-Path", requestedPathId || "all");
