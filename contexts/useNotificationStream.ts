@@ -12,7 +12,7 @@
  * Usage:
  *   const { unreadCount, latestNotification } = useNotificationStream(token);
  */
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { API_BASE_URL } from '../services/api';
 
 export interface InAppNotification {
@@ -49,73 +49,78 @@ export const useNotificationStream = ({
   const [latestNotification, setLatestNotification] = useState<InAppNotification | null>(null);
   const [isConnected, setIsConnected] = useState(false);
 
-  const esRef = useRef<EventSource | null>(null);
-  const reconnectAttempts = useRef(0);
-  const reconnectTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const isMounted = useRef(true);
-
-  const connect = useCallback(() => {
-    if (!enabled || !isMounted.current) return;
-
-    // أغلق الاتصال القديم إن وُجد
-    if (esRef.current) {
-      esRef.current.close();
-      esRef.current = null;
-    }
-
-    const url = `${resolveNotificationApiBase(apiBase)}/notifications/stream`;
-    const es = new EventSource(url, { withCredentials: true });
-    esRef.current = es;
-
-    es.addEventListener('connected', () => {
-      if (!isMounted.current) return;
-      setIsConnected(true);
-      reconnectAttempts.current = 0;
-    });
-
-    es.addEventListener('notification', (e: MessageEvent) => {
-      if (!isMounted.current) return;
-      try {
-        const notif: InAppNotification = JSON.parse(e.data);
-        setLatestNotification(notif);
-      } catch { /* ignore parse errors */ }
-    });
-
-    es.addEventListener('unread_count', (e: MessageEvent) => {
-      if (!isMounted.current) return;
-      try {
-        const { count } = JSON.parse(e.data);
-        setUnreadCount(Number(count) || 0);
-      } catch { /* ignore */ }
-    });
-
-    es.onerror = () => {
-      if (!isMounted.current) return;
-      setIsConnected(false);
-      es.close();
-      esRef.current = null;
-
-      // إعادة الاتصال تلقائياً بـ exponential backoff
-      if (reconnectAttempts.current < MAX_RECONNECT_ATTEMPTS) {
-        reconnectAttempts.current += 1;
-        const delay = Math.min(RECONNECT_DELAY_MS * reconnectAttempts.current, 60_000);
-        reconnectTimer.current = setTimeout(() => {
-          if (isMounted.current) connect();
-        }, delay);
-      }
-    };
-  }, [enabled, apiBase]);
-
   useEffect(() => {
-    isMounted.current = true;
+    let disposed = false;
+    let stream: EventSource | null = null;
+    let attempts = 0;
+    let timer: ReturnType<typeof setTimeout> | null = null;
+    const stop = () => {
+      if (timer !== null) clearTimeout(timer);
+      timer = null;
+      const previous = stream;
+      stream = null;
+      previous?.close();
+    };
+    const connect = () => {
+      if (disposed || !enabled || navigator.onLine === false || stream) return;
+
+      const url = `${resolveNotificationApiBase(apiBase)}/notifications/stream`;
+      const es = new EventSource(url, { withCredentials: true });
+      stream = es;
+      const isCurrent = () => !disposed && stream === es;
+
+      es.addEventListener('connected', () => {
+        if (!isCurrent()) return;
+        setIsConnected(true);
+        attempts = 0;
+      });
+
+      es.addEventListener('notification', (e: MessageEvent) => {
+        if (!isCurrent()) return;
+        try {
+          const notif: InAppNotification = JSON.parse(e.data);
+          setLatestNotification(notif);
+        } catch { /* ignore parse errors */ }
+      });
+
+      es.addEventListener('unread_count', (e: MessageEvent) => {
+        if (!isCurrent()) return;
+        try {
+          const { count } = JSON.parse(e.data);
+          setUnreadCount(Number(count) || 0);
+        } catch { /* ignore */ }
+      });
+
+      es.onerror = () => {
+        if (!isCurrent()) return;
+        setIsConnected(false);
+        stop();
+
+        // إعادة الاتصال بتأخير متزايد ومحدود
+        if (navigator.onLine !== false && attempts < MAX_RECONNECT_ATTEMPTS) {
+          attempts += 1;
+          const delay = Math.min(RECONNECT_DELAY_MS * attempts, 60_000);
+          timer = setTimeout(() => {
+            timer = null;
+            connect();
+          }, delay);
+        }
+      };
+    };
+    const offline = () => { stop(); setIsConnected(false); };
+    const online = () => { if (stream) return; stop(); attempts = 0; connect(); };
+    setIsConnected(false);
+    window.addEventListener('offline', offline);
+    window.addEventListener('online', online);
     connect();
 
     return () => {
-      isMounted.current = false;
-      if (reconnectTimer.current) clearTimeout(reconnectTimer.current);
-      if (esRef.current) { esRef.current.close(); esRef.current = null; }
+      disposed = true;
+      stop();
+      window.removeEventListener('offline', offline);
+      window.removeEventListener('online', online);
     };
-  }, [connect]);
+  }, [enabled, apiBase]);
 
   return { unreadCount, latestNotification, isConnected };
 };
