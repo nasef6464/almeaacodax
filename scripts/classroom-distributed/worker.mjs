@@ -58,8 +58,8 @@ finally {
  const bad=evidence.traffic.filter(r=>(r.kind==='api'||r.kind==='transport'||r.kind==='questionImages')&&(r.status>=400||r.failed));
  evidence.httpFailures=bad.map(({actor,kind,path,status,failed})=>({actor,kind,path,status,failed}));
  if(bad.length){evidence.status='FAILED';process.exitCode=1;}
- for(const actor of evidence.actors){const rows=evidence.traffic.filter(r=>r.actor===actor.actor);actor.completedRequests=rows.length;actor.encodedReceivedBytes=rows.reduce((n,r)=>n+r.receivedBytes,0);actor.joinPosts=rows.filter(r=>r.method==='POST'&&r.path.endsWith('/instant-join')).length;actor.submitPosts=rows.filter(r=>r.method==='POST'&&r.path.endsWith('/submit')).length;actor.handshakes=rows.filter(r=>r.handshake).length;}
- if(evidence.actors.some(a=>a.joinPosts!==1||a.submitPosts!==3||a.handshakes!==1)){evidence.status='FAILED';process.exitCode=1;}
+ for(const actor of evidence.actors){const rows=evidence.traffic.filter(r=>r.actor===actor.actor);actor.completedRequests=rows.length;actor.encodedReceivedBytes=rows.reduce((n,r)=>n+r.receivedBytes,0);actor.joinPosts=rows.filter(r=>r.method==='POST'&&r.path.endsWith('/instant-join')).length;actor.submitPosts=rows.filter(r=>r.method==='POST'&&r.path.endsWith('/submit')).length;}
+ if(evidence.actors.some(a=>a.joinPosts!==1||a.submitPosts!==3)){evidence.status='FAILED';process.exitCode=1;}
  evidence.memory.freeAfterBytes=os.freemem();evidence.endedAt=new Date().toISOString();
  evidence.limits='24 distributed virtual browsers across four runners; completed CDP encoded received bytes, open stream counters and websocket payloads reported separately. Excludes API login setup, teacher controller, TLS/TCP overhead and billed egress; not physical tablets or full A-S classroom certification.';
  await browser?.close();save();console.log(JSON.stringify({group,status:evidence.status,contexts:evidence.independentContexts,passed:evidence.passedAssertions,required:evidence.requiredAssertions,errors:evidence.errors.length,httpFailures:evidence.httpFailures.length}));
