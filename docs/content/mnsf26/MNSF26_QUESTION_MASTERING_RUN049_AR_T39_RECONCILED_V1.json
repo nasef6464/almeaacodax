@@ -5,7 +5,7 @@
   "directImageInspection": true,
   "sourceCropArchive": "/MNSF26/Run017/mnsf26_arithmetic_crops_run017.zip",
   "sourceInventory": "/MNSF26/Run017/MNSF26_FULLBOOK_CROP_INVENTORY_V1.json",
-  "masteredCount": 18,
+  "masteredCount": 16,
   "holdCount": 2,
   "records": [
     {
@@ -76,7 +76,7 @@
         "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
       },
       "imageHash": "df26c4a0a2f0ad03aa521ce1f47d43f8c64de30f8efe3de1eac2950c21f708af",
-      "status": "MASTERED",
+      "status": "REVIEW",
       "questionText": "خصم دراسي1600 ريال يمثل20% من المبلغ الأصلي؛ قارن1500 بما دفعه الأب",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
       "canonicalMainSkill": "main_quant_09",
@@ -87,7 +87,9 @@
       "difficulty": "Medium",
       "difficultyReason": "يتطلب تحويل المعطيات إلى علاقة صحيحة ثم إجراء حساب متسلسل.",
       "contentFingerprint": "cec043b374bdb162d4425f5525ff5015cc797d0e6042ac0865a527f5a9f1f950",
-      "ideaFingerprint": "560388200c93fe52d10da8d49b98e7e0b89263af65484182d64a6bebc0d1f0c4"
+      "ideaFingerprint": "560388200c93fe52d10da8d49b98e7e0b89263af65484182d64a6bebc0d1f0c4",
+      "importEligible": false,
+      "reviewReason": "KNOWN_SOURCE_CONFLICT_DIRECT_IMAGE_QA_FAIL_CLOSED_PENDING_INDEPENDENT_ADJUDICATION"
     },
     {
       "sourceKey": "MNSF26-AR-T039-Q04",
@@ -103,7 +105,7 @@
         "cropContract": "embedded-source-pixels; one-question-per-image; blank-blue-triangle; trim-whitespace; preserve-math-options; lossless-webp"
       },
       "imageHash": "0b242e4d1d2d009094c410c512d0a4b20ecabf3187ec824dd276efd054469488",
-      "status": "MASTERED",
+      "status": "REVIEW",
       "questionText": "تفاحة قُسمت نصفين ثم كل نصف إلى3 أجزاء متساوية؛ نسبة الجزء الواحد إلى الكل",
       "visualEvidence": "DIRECT_WEBP_CROP_INSPECTION_RUN048_2026-10-08",
       "canonicalMainSkill": "main_quant_03",
@@ -114,7 +116,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق مباشر لقاعدة حسابية واحدة أو خطوتين واضحتين.",
       "contentFingerprint": "102ef563881a952070e4b806fdb47436c7497d32533348696b61bd9a7abd1ee5",
-      "ideaFingerprint": "7ed74fa4087f8434121e0e7888c7b692809e5786e05d43770227e751177bfa7a"
+      "ideaFingerprint": "7ed74fa4087f8434121e0e7888c7b692809e5786e05d43770227e751177bfa7a",
+      "importEligible": false,
+      "reviewReason": "KNOWN_SOURCE_CONFLICT_DIRECT_IMAGE_QA_FAIL_CLOSED_PENDING_INDEPENDENT_ADJUDICATION"
     },
     {
       "sourceKey": "MNSF26-AR-T039-Q05",
@@ -538,5 +542,6 @@
       "contentFingerprint": "4d200e25f5d21e318057f328f4d7e32f99b0c7f8cc5c3aad1f12344cf63c02c0",
       "ideaFingerprint": "24d46916d94d6168b1ca19565635c1a8623b701b0850bf001329de076c7f3a8c"
     }
-  ]
+  ],
+  "reviewCount": 2
 }
