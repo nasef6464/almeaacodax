@@ -670,6 +670,29 @@
     "productionE2E": false,
     "productionTouched": false,
     "blocker": "Remaining 7 source conflicts still have at least one MASTERED original record; 37-source verifier assumes exactly one source record, but some are duplicated across sharded and consolidated files; writes blocked by safety.",
-    "next": "Quarantine every occurrence of 7 remaining conflicts, fix source-conflict verifier to fail closed across all copies, repair GEO33 taxonomy, GEO34 identical-image duplicate and AR47 counters; complete semantic QA and dedupe before import."
+    "next": "Finish 7 unsafe conflict keys across all 9 remaining original MASTER occurrences, fix alias-aware 37-source verifier, QA taxonomy/counters/dedupe, then R2/import/E2E.",
+    "additionalStructuralAudit": {
+      "files": 23,
+      "records": 422,
+      "statuses": {
+        "MASTERED": 341,
+        "HOLD": 65,
+        "REVIEW": 16
+      },
+      "legacySeparateHolds": 2,
+      "mathQaCertified": false,
+      "geoCounterMismatches": 3,
+      "sourceHashMetadataAbsentInLegacyAR19": 18,
+      "exactImageCollisionCandidatePairs": 1,
+      "exactContentCollisionCandidatePairs": 1,
+      "ideaFingerprintCandidatePairsWithinGeoBatches": 15
+    },
+    "otherOpenQa": [
+      "GEO T033 Q10 main/subskill mismatch",
+      "GEO T034 Q11/Q12 identical source-image duplicate candidate",
+      "AR T047 counter mismatch",
+      "GEO T04/T09/T17 counter mismatches",
+      "37-source verifier requires unique sourceKey despite consolidated and shard copies"
+    ]
   }
 }
