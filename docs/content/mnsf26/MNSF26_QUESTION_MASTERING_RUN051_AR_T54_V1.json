@@ -5,7 +5,7 @@
   "directImageInspection": true,
   "sourceCropArchive": "/MNSF26/Run017/mnsf26_arithmetic_crops_run017.zip",
   "sourceInventory": "/MNSF26/Run017/MNSF26_FULLBOOK_CROP_INVENTORY_V1.json",
-  "masteredCount": 14,
+  "masteredCount": 12,
   "holdCount": 6,
   "records": [
     {
@@ -23,7 +23,7 @@
       },
       "imageHash": "4c558858efc25344878cd54f81d950a5deb535daa0df4d4f84bb4bea959fc3cf",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
-      "status": "MASTERED",
+      "status": "REVIEW",
       "questionText": "قارن 8000 جرام و7500 جرام.",
       "canonicalMainSkill": "main_quant_04",
       "canonicalSubskill": "sub_quant_04_4",
@@ -33,7 +33,9 @@
       "difficulty": "Easy",
       "difficultyReason": "خطوات مباشرة في مقارنة كتل بالجرام.",
       "contentFingerprint": "23cbab8411acc6a4e239598db527d03792675c7d3f95907305228b32b64d9ba6",
-      "ideaFingerprint": "a5cc92c54dd5253fcc86ab5b216de48cfff89740849557f769d72eeb77e43e76"
+      "ideaFingerprint": "a5cc92c54dd5253fcc86ab5b216de48cfff89740849557f769d72eeb77e43e76",
+      "importEligible": false,
+      "reviewReason": "RUN141_DIRECT_IMAGE_MATH_QA_SOURCE_CONFLICT_PENDING_INDEPENDENT_CORRECTION"
     },
     {
       "sourceKey": "MNSF26-AR-T054-Q02",
@@ -132,7 +134,7 @@
       },
       "imageHash": "e2a6c8883890c9c98b8f08086087c66cb331dbb8cd0712ff4fee80b26a203ed1",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
-      "status": "MASTERED",
+      "status": "REVIEW",
       "questionText": "الكتاب20 ريالًا والقلم10 والمسطرة2؛ قارن ثمن ثلاثة كتب وقلمين وثلاث مساطر بثمن كتابين وثلاثة أقلام ومسطرتين.",
       "canonicalMainSkill": "main_quant_10",
       "canonicalSubskill": "sub_quant_10_1",
@@ -142,7 +144,9 @@
       "difficulty": "Medium",
       "difficultyReason": "تتطلب ربط أكثر من معطى أو تحويل وحدات في مقارنة قيم سلتين من السلع.",
       "contentFingerprint": "da6b8432d1b15373ccc7baf7352e25a118fb27657fe1b58c4aa7291ce29680d3",
-      "ideaFingerprint": "549b968eca8f81787a31a6dd62a4c46be3ba5615d3eca844f6d00a1876cced76"
+      "ideaFingerprint": "549b968eca8f81787a31a6dd62a4c46be3ba5615d3eca844f6d00a1876cced76",
+      "importEligible": false,
+      "reviewReason": "RUN141_DIRECT_IMAGE_MATH_QA_SOURCE_CONFLICT_PENDING_INDEPENDENT_CORRECTION"
     },
     {
       "sourceKey": "MNSF26-AR-T054-Q06",
@@ -554,5 +558,6 @@
       "contentFingerprint": "3e69857f924b9531bc1f5cd8e448758eb14656e6accae2e9431d723beca440ca",
       "ideaFingerprint": "fa1e16cf222ca890f344b69dbf318641c263d3995022e9c4714a3acce4ca144a"
     }
-  ]
+  ],
+  "reviewCount": 2
 }
