@@ -5,8 +5,8 @@
   "directImageInspection": true,
   "sourceCropArchive": "/MNSF26/Run021/mnsf26_geometry_crops_run021.zip",
   "sourceInventory": "/MNSF26/Run021/MNSF26_GEOMETRY_CROP_MANIFEST_V1.json",
-  "masteredCount": 18,
-  "holdCount": 2,
+  "masteredCount": 16,
+  "holdCount": 1,
   "records": [
     {
       "sourceKey": "MNSF26-GEO-T010-Q01",
@@ -267,7 +267,7 @@
       },
       "imageHash": "52927e2b961240e30eddcd10060803d1d74cb4d2ccd6fe2c5fc1b838fb4ab167",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T010_Q09",
-      "status": "MASTERED",
+      "status": "REVIEW",
       "questionText": "متوازي أضلاع زاويته العليا اليسرى100؛ أوجد العليا اليمنى ص",
       "canonicalMainSkill": "skill_quant_23",
       "canonicalSubskill": "sub_quant_23_1",
@@ -277,7 +277,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "b4ce31a2bdb0eb8e35448de47c064b4ad9ae21ce446b97ab3b19e1b19c49d77f",
-      "ideaFingerprint": "d22a5bda47415556731ef9e089738ed169284962430d22a0cfe716525d327b5a"
+      "ideaFingerprint": "d22a5bda47415556731ef9e089738ed169284962430d22a0cfe716525d327b5a",
+      "importEligible": false,
+      "reviewReason": "RUN141_DIRECT_IMAGE_MATH_QA_SOURCE_CONFLICT_PENDING_CORRECTION_AND_INDEPENDENT_REVIEW"
     },
     {
       "sourceKey": "MNSF26-GEO-T010-Q10",
@@ -582,7 +584,7 @@
       },
       "imageHash": "432f270f6b5b0f11a4a4178165a62c939cef2d1dad13501424657b3679593f25",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T010_Q19",
-      "status": "MASTERED",
+      "status": "REVIEW",
       "questionText": "مستطيل بداخله مثلث يصل رأسًا من الأعلى بالقاعدة؛ مجموع أربع زوايا خارج المثلث",
       "canonicalMainSkill": "skill_quant_19",
       "canonicalSubskill": "sub_quant_19_3",
@@ -592,7 +594,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "ec999531560e1673e848571b0a11b6e34a76dba040cd14baf3b903e622abbba7",
-      "ideaFingerprint": "707cc6898e70ea71baa81611e9407b3a6903a1c4cdb2dbe38a591e26c2639f8b"
+      "ideaFingerprint": "707cc6898e70ea71baa81611e9407b3a6903a1c4cdb2dbe38a591e26c2639f8b",
+      "importEligible": false,
+      "reviewReason": "RUN141_DIRECT_IMAGE_MATH_QA_SOURCE_CONFLICT_PENDING_CORRECTION_AND_INDEPENDENT_REVIEW"
     },
     {
       "sourceKey": "MNSF26-GEO-T010-Q20",
@@ -624,5 +628,6 @@
       "contentFingerprint": "31806a59251f951fcd334a28607445d35d3e5520ecad83721e40621b809de29c",
       "ideaFingerprint": "ce376541e94efbe07f7ee2e78f1fe2a25016aaef5ec374d45e6d9a57d59ce1a2"
     }
-  ]
+  ],
+  "reviewCount": 3
 }
