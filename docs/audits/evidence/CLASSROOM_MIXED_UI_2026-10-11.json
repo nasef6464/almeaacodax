@@ -1,0 +1,86 @@
+{
+  "status": "PARTIAL",
+  "publishedCommit": "7731976183282896eea4d9fc8a08dc6adef9c86b",
+  "startedAt": "2026-10-11T05:04:59.096Z",
+  "endedAt": "2026-10-11T05:08:48.721Z",
+  "nativeBrowserStudents": 1,
+  "independentTransportApiStudents": 23,
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "joins": [
+    5,
+    10,
+    15,
+    20,
+    24
+  ],
+  "batches": [
+    {
+      "uiArrivalMs": 4262,
+      "questions": 5,
+      "submitted": 24,
+      "eventArrivalMinMs": 2059,
+      "eventArrivalMaxMs": 2214
+    },
+    {
+      "uiArrivalMs": 4069,
+      "questions": 5,
+      "submitted": 24,
+      "eventArrivalMinMs": 2115,
+      "eventArrivalMaxMs": 2325
+    },
+    {
+      "uiArrivalMs": 4041,
+      "questions": 5,
+      "submitted": 24,
+      "eventArrivalMinMs": 2039,
+      "eventArrivalMaxMs": 2326
+    }
+  ],
+  "report": {
+    "students": 24,
+    "answers": 360,
+    "batches": 3,
+    "persistedMatch": true
+  },
+  "browserHandshakes": 1,
+  "nodeReconnects": 0,
+  "browserErrors": [],
+  "apiBusinessWrites": 100,
+  "browserBusinessWrites": 5,
+  "totalBusinessWrites": 105,
+  "browserInstantJoinPosts": 2,
+  "completedBrowserTraffic": {
+    "frontend": {
+      "completedRequests": 11,
+      "encodedReceivedBytes": 245881,
+      "requestBodyBytes": 0
+    },
+    "other": {
+      "completedRequests": 7,
+      "encodedReceivedBytes": 59343,
+      "requestBodyBytes": 0
+    },
+    "api": {
+      "completedRequests": 30,
+      "encodedReceivedBytes": 23287,
+      "requestBodyBytes": 1059
+    },
+    "transport": {
+      "completedRequests": 30,
+      "encodedReceivedBytes": 5959,
+      "requestBodyBytes": 128
+    },
+    "questionImages": {
+      "completedRequests": 15,
+      "encodedReceivedBytes": 146810,
+      "requestBodyBytes": 0
+    }
+  },
+  "openRequestsAtMeasurement": 0,
+  "measurementLimit": "One browser only; completed CDP encoded received bytes and request body bytes exclude headers, total wire overhead and23 API clients traffic. Not24-browser/tablet/billed-bandwidth certification.",
+  "baselineFinding": "Automatic join and explicit click each posted instant-join; real page regression reproduced2 versus1. This run precedes the deduplication fix.",
+  "originalEvidenceSha256": "c01c12ea7b2f5a43afe6144589d5a25cb4a09f14a806c5cdb36248603c5701a2"
+}

@@ -32,6 +32,18 @@ export const ClassroomStudentLive: React.FC = () => {
   const [sessionEnded, setSessionEnded] = useState(false);
   const [challengeState, setChallengeState] = useState<ChallengeState | null>(null);
   const publishedSignatureRef = useRef('');
+  const instantJoinRequestRef = useRef<{ sessionId: string; promise: ReturnType<typeof api.instantJoinClassroomSession> } | null>(null);
+  const requestInstantJoin = useCallback(() => {
+    const pending = instantJoinRequestRef.current;
+    if (pending?.sessionId === sessionId) return pending.promise;
+    const request = { sessionId, promise: api.instantJoinClassroomSession(sessionId) };
+    instantJoinRequestRef.current = request;
+    const release = () => {
+      if (instantJoinRequestRef.current === request) instantJoinRequestRef.current = null;
+    };
+    void request.promise.then(release, release);
+    return request.promise;
+  }, [sessionId]);
 
   const clearLocalClassroomState = useCallback(() => {
     sessionStorage.removeItem('classroom_joined');
@@ -91,12 +103,11 @@ export const ClassroomStudentLive: React.FC = () => {
     let mounted = true;
     const attemptInstant = async () => {
       try {
-        const res = await api.instantJoinClassroomSession(sessionId);
+        const res = await requestInstantJoin();
         if (mounted && res.joined) {
           setJoined(true);
           sessionStorage.setItem('classroom_session_id', sessionId);
           sessionStorage.setItem('classroom_joined', 'true');
-          await loadCurrent();
         }
       } catch {
         // Keep the explicit PIN fallback available for an authorized student.
@@ -104,13 +115,13 @@ export const ClassroomStudentLive: React.FC = () => {
     };
     void attemptInstant();
     return () => { mounted = false; };
-  }, [sessionId, user, joined, loadCurrent, sessionEnded]);
+  }, [sessionId, user, joined, requestInstantJoin, sessionEnded]);
 
   const instantJoin = async () => {
     setJoiningInstant(true);
     setMessage('جارٍ الانضمام للحصة…');
     try {
-      const res = await api.instantJoinClassroomSession(sessionId);
+      const res = await requestInstantJoin();
       if (!res?.joined) throw new Error('تعذر الانضمام للحصة.');
       setSessionEnded(false);
       setJoined(true);
@@ -119,7 +130,6 @@ export const ClassroomStudentLive: React.FC = () => {
       publishedSignatureRef.current = '';
       sessionStorage.setItem('classroom_session_id', sessionId);
       sessionStorage.setItem('classroom_joined', 'true');
-      await loadCurrent();
       setMessage('تم الانضمام بنجاح.');
     } catch (err: any) {
       sessionStorage.removeItem('classroom_joined');
