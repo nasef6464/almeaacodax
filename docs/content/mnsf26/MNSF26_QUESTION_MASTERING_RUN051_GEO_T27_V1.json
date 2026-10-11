@@ -5,7 +5,7 @@
   "directImageInspection": true,
   "sourceCropArchive": "/MNSF26/Run021/mnsf26_geometry_crops_run021.zip",
   "sourceInventory": "/MNSF26/Run021/MNSF26_GEOMETRY_CROP_MANIFEST_V1.json",
-  "masteredCount": 18,
+  "masteredCount": 16,
   "holdCount": 2,
   "records": [
     {
@@ -51,7 +51,7 @@
       },
       "imageHash": "bff03f465f3030368a3f15a96b439225ac6750e632b981bbeff71ae1789137de",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
-      "status": "MASTERED",
+      "status": "REVIEW",
       "questionText": "مربع محيطه12 سم، ومحيط مربع ثان يساوي نصف محيط الأول؛ قارن مساحة الأول بنصف مساحة الثاني.",
       "canonicalMainSkill": "main_quant_22",
       "canonicalSubskill": "sub_quant_22_1",
@@ -61,7 +61,9 @@
       "difficulty": "Medium",
       "difficultyReason": "يتطلب أكثر من خطوة أو علاقة هندسية في مقارنة مساحتي مربعين بنسبة محيطين.",
       "contentFingerprint": "580786e53b5bd1b6a65ba5992d1f0dd79a762f0d9a9caac969e46949e8b1fc25",
-      "ideaFingerprint": "6a901835f93f73e2209a9c849933856dd1044fefcb46eed6cff974cf5989948a"
+      "ideaFingerprint": "6a901835f93f73e2209a9c849933856dd1044fefcb46eed6cff974cf5989948a",
+      "importEligible": false,
+      "reviewReason": "KNOWN_SOURCE_CONFLICT_DIRECT_IMAGE_QA_FAIL_CLOSED_PENDING_INDEPENDENT_ADJUDICATION"
     },
     {
       "sourceKey": "MNSF26-GEO-T027-Q03",
@@ -349,7 +351,7 @@
       },
       "imageHash": "94ad63b8cb550d000deef3a781099ab26456b9d58e44af12efda0deda3b7114b",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
-      "status": "MASTERED",
+      "status": "REVIEW",
       "questionText": "مربع أول ضلعه3 سم وثان ضلعه7 سم؛ قارن أربعة أمثال محيط الأول بمحيط الثاني.",
       "canonicalMainSkill": "main_quant_22",
       "canonicalSubskill": "sub_quant_22_1",
@@ -359,7 +361,9 @@
       "difficulty": "Easy",
       "difficultyReason": "حساب هندسي مباشر في مقارنة محيطات مربعات.",
       "contentFingerprint": "571ade3f75ad5bf7b988a489d195fe5ccd0cd461dc5c623a2cf17412e9c163a2",
-      "ideaFingerprint": "10ce8ec12c178a12e44cd83f5ef8961a7223850a09d26e7bd10b2d588ae2c1d4"
+      "ideaFingerprint": "10ce8ec12c178a12e44cd83f5ef8961a7223850a09d26e7bd10b2d588ae2c1d4",
+      "importEligible": false,
+      "reviewReason": "KNOWN_SOURCE_CONFLICT_DIRECT_IMAGE_QA_FAIL_CLOSED_PENDING_INDEPENDENT_ADJUDICATION"
     },
     {
       "sourceKey": "MNSF26-GEO-T027-Q14",
@@ -550,5 +554,6 @@
       "contentFingerprint": "4ad341e83be2944e56293afc79f81dcf097e71af4c23ba991acd7bda504a7c26",
       "ideaFingerprint": "f53c477115cb9f152280de7f6cab50c58f3cda191fad84aa56b11b19f95114ad"
     }
-  ]
+  ],
+  "reviewCount": 2
 }
