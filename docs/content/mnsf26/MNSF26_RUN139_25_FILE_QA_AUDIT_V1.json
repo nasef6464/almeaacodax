@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN139",
+  "date": "2026-10-11",
+  "stage": "QA_LOCK",
+  "headsAtStart": {
+    "branch": "ad3a809b5f97ecec7ffbf8774a94f464b0666bac",
+    "main": "77b9f8620110c1cf29145fc1d43ffc465068b396"
+  },
+  "originalMasterFilesRead": 25,
+  "recordsRead": 494,
+  "statusCounts": {
+    "MASTERED": 381,
+    "HOLD": 98,
+    "REVIEW": 15
+  },
+  "sourceConflicts": {
+    "known": 37,
+    "alreadyFailClosed": 12,
+    "stillUnsafe": 25,
+    "newlyPatched": 0
+  },
+  "sourceCounterMismatch": {
+    "file": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T10_V1.json",
+    "stored": {
+      "masteredCount": 18,
+      "holdCount": 2,
+      "reviewCount": null
+    },
+    "actual": {
+      "MASTERED": 18,
+      "HOLD": 1,
+      "REVIEW": 1
+    }
+  },
+  "writeBlockers": [
+    "Seven grouped attempts to update pending original MASTER files were rejected by OpenAI safety checks",
+    "Isolated attempt to reconcile GEO T010 counters rejected by OpenAI safety checks"
+  ],
+  "cropLock": "PASS_LOCKED_2135",
+  "questionMastering": "PASS_LOCKED_PER_RUN063_2129_ACTIVE_6_EXCLUDED",
+  "newMastered": 0,
+  "qaLock": "OPEN",
+  "dedupeLock": "OPEN",
+  "r2Upload": "NOT_STARTED",
+  "import": "NOT_STARTED",
+  "productionE2E": "NOT_STARTED",
+  "productionTouched": false,
+  "next": "Preserve 25 known unsafe records as not import eligible; authorized writes to original MASTER then independent full-book math QA and cross-bank dedupe; no production calls until gates pass."
+}
