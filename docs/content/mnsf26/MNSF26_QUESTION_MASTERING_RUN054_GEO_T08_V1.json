@@ -5,7 +5,7 @@
   "directImageInspection": true,
   "sourceCropArchive": "/MNSF26/Run021/mnsf26_geometry_crops_run021.zip",
   "sourceInventory": "/MNSF26/Run021/MNSF26_GEOMETRY_CROP_MANIFEST_V1.json",
-  "masteredCount": 13,
+  "masteredCount": 12,
   "holdCount": 7,
   "records": [
     {
@@ -421,7 +421,7 @@
       },
       "imageHash": "92cb58157eb4912e94a09c3d5e85df7e17038fc4479a6a917f36ae2559b3a202",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN054_2026-10-08_T008_Q14",
-      "status": "MASTERED",
+      "status": "REVIEW",
       "questionText": "شكل رباعي فيه مثلث داخلي متطابق الضلعين وزوايا120 و50 و100؛ أوجد س+ص",
       "canonicalMainSkill": "main_quant_20",
       "canonicalSubskill": "sub_quant_20_1",
@@ -431,7 +431,9 @@
       "difficulty": "Easy",
       "difficultyReason": "تطبيق قاعدة مباشرة من معطيات السؤال المرئية.",
       "contentFingerprint": "db0fda785527b1b0e0df720adabe9ac2089c900c28618616703cbd046bfe58cb",
-      "ideaFingerprint": "cf0df5aa7e10ea24daae1fba4c0d3d7d04513eec8b84afad62a48c7780fec712"
+      "ideaFingerprint": "cf0df5aa7e10ea24daae1fba4c0d3d7d04513eec8b84afad62a48c7780fec712",
+      "importEligible": false,
+      "reviewReason": "RUN141_DIRECT_IMAGE_MATH_QA_SOURCE_CONFLICT_PENDING_CORRECTION_AND_INDEPENDENT_REVIEW"
     },
     {
       "sourceKey": "MNSF26-GEO-T008-Q15",
@@ -615,5 +617,6 @@
       "contentFingerprint": "a6ac5317981b3a32f1bf4b0882281831c389cf5857371174c76eecbff2c9f001",
       "ideaFingerprint": "873cfad6aff23a6ff3711a2a647105705fea9865ca49d33d70bcba4f867e07c7"
     }
-  ]
+  ],
+  "reviewCount": 1
 }
