@@ -1,6 +1,6 @@
 # Classroom transport and notification lifecycle — 2026-10-11
 
-Status: PARTIAL. PR #522 merged and published; live transport delivery passed, but the final UI assertion caught a separate post-end current-question HTTP404. A focused follow-up fixes that redundant read before final closure.
+Status: VERIFIED for the bounded classroom proxy/notification lifecycle slice. #522 fixed transport policy and stale SSE lifecycle; #523 fixed the post-end current-question read found during native publication verification. This is not whole-platform, whole-class bandwidth, or real notification campaign delivery certification.
 
 ## Reused checkpoint and scope
 
@@ -24,7 +24,13 @@ No public API, auth/RBAC, scoring, result, persisted data, production service or
 
 The shared hook invoked both `onSessionEnded` and `onChange` for student consumers. End state updates do not immediately replace the current callback closure, so `onChange` requested the question from an already closed session (HTTP404). An explicit end callback now consumes that event; subscribers without an end callback retain their normal end refresh (teacher/projector). The React proxy fixture tests both consumers together. API behavior and ended-session access guards stay unchanged.
 
-Follow-up exact-head CI, publication and repeated bounded live journey remain pending. Preserve first-failure console/request evidence in `.playwright-cli/console-2026-10-11T02-32-11-739Z.log` and `scratch/realtime-live-{first-transport-failure,end-state}.txt`; matched publication `scratch/realtime-deploy-proof.json`, exact CI `scratch/realtime-ci-final.json`.
+Follow-up #523 exact code `6cf273197a3955fb133461c18b4e35f1c44b1d1d`:17SUCCESS/3conditional skips, all three required checks PASS. Protected merge/publication `55bb8214d34bd9ead2b3d07a8a1da25d4a8502aa`; matching frontend/Render/canonical/direct and database/Redis checks PASS. All four main workflows SUCCESS on that merge. Typecheck, architecture and module-boundary gates PASS. No auth, API, data or ownership change.
+
+Second native trial PASS: one authenticated handshake shared by discovery/session, zero WebSocket attempts, zero failed transport responses, zero console errors/JS exceptions, all four start/question/batch-end/session-end events reflected in UI, SSE connected/unread count with zero stream errors. Five business writes in each trial (ten total): create/join/append/batch-end/session-end; zero answer/result writes. Both owned sessions ended. One student browser only. SSE instrumentation was installed in both CLI runs and duplicated its callbacks in the second run; `connected:2`/two count callbacks must not be interpreted as two transport connections. No outgoing notification campaign was sent.
+
+Preserve first-failure evidence in `.playwright-cli/console-2026-10-11T02-32-11-739Z.log` and `scratch/realtime-live-{first-transport-failure,end-state}.txt`. Final proof `scratch/realtime-live-proof.json`, `scratch/realtime-live-final-ui-result.txt`, `scratch/realtime-end-{ci-final,deploy-proof,main-ci}.json`. CLI structured result was parsed and verified; echoed private teacher request headers were redacted in its output receipt. Owned CLI browser closed after verification.
+
+The first main merge did not create push workflows because its automatically generated squash message carried the reused docs commit's `[skip ci]` marker. The second merge uses an explicit clean subject/body; main's four workflows ran and passed. No required PR check was bypassed.
 
 Official option reference: [Socket.IO client transports and upgrade](https://socket.io/docs/v4/client-options). Hosting arrangement: [Vercel external rewrites](https://vercel.com/docs/routing/rewrites). The specific HTTP400 upgrade is project runtime evidence; no general assertion about all Vercel WebSocket offerings is made.
 
