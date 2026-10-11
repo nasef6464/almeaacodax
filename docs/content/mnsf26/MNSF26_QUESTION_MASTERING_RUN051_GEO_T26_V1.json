@@ -5,7 +5,7 @@
   "directImageInspection": true,
   "sourceCropArchive": "/MNSF26/Run021/mnsf26_geometry_crops_run021.zip",
   "sourceInventory": "/MNSF26/Run021/MNSF26_GEOMETRY_CROP_MANIFEST_V1.json",
-  "masteredCount": 10,
+  "masteredCount": 9,
   "holdCount": 6,
   "records": [
     {
@@ -469,7 +469,7 @@
       },
       "imageHash": "70bc4aed26db93933d9302acbffc0ccd78f21f9af3ee0bc27184929e15877737",
       "visualEvidence": "DIRECT_SOURCE_WEBP_INSPECTION_RUN051_2026-10-08",
-      "status": "MASTERED",
+      "status": "REVIEW",
       "questionText": "مستطيل عرضه س²+5س+7 وطوله ضعف عرضه؛ ما محيطه؟",
       "canonicalMainSkill": "main_quant_21",
       "canonicalSubskill": "sub_quant_21_1",
@@ -479,7 +479,9 @@
       "difficulty": "Medium",
       "difficultyReason": "يتطلب أكثر من خطوة أو علاقة هندسية في محيط مستطيل بأبعاد جبرية.",
       "contentFingerprint": "fcd9caabcb6195e9d7ea4350c3f80ed7962e59355ae7ad0ab6ffacdb3e2bca3f",
-      "ideaFingerprint": "abfc0429df8d990f65df5ce54f61127290a95ba42cd623a6d6af02b86f0bbf53"
+      "ideaFingerprint": "abfc0429df8d990f65df5ce54f61127290a95ba42cd623a6d6af02b86f0bbf53",
+      "importEligible": false,
+      "reviewReason": "SOURCE_IMAGE_ANSWER_OR_SKILL_CONFLICT_CONFIRMED_IN_PRIOR_DIRECT_IMAGE_QA; FAIL_CLOSED_PENDING_ADJUDICATION"
     },
     {
       "sourceKey": "MNSF26-GEO-T026-Q18",
@@ -509,5 +511,5 @@
       "ideaFingerprint": "e0d3a22c1f88980b0b4371f9887e916333d9326d738ff162c0e21a34589182e1"
     }
   ],
-  "reviewCount": 2
+  "reviewCount": 3
 }
