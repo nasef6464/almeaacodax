@@ -1,0 +1,25 @@
+# Classroom transport and notification lifecycle — 2026-10-11
+
+Status: PARTIAL; exact-head CI, protected merge, matched publication and a bounded live transport journey remain required.
+
+## Reused checkpoint and scope
+
+Started from published main `77b9f8620110c1cf29145fc1d43ffc465068b396` (#521). Carried only its missing publication receipt. Previous review/assessment journeys are not repeated. Published evidence already recorded a classroom WebSocket upgrade returning HTTP400, plus older polling400/notification HTTP2 ping failures; these are distinct observations, not proof that every event failed.
+
+`hooks/useClassroomRealtime.ts` keeps its single shared authenticated Socket.IO connection and authorized rooms. Relative API rewrites use HTTP long polling without WebSocket upgrade attempts; direct API configurations keep normal upgrades. Cookie forwarding, path slash normalization, events, authorization and unsubscribe remain unchanged. This removes the proven failing upgrade path without moving authentication across origins. Long polling waits for transport events; no recurring question/report database reads or new service was added.
+
+`contexts/useNotificationStream.ts` owns each effect's EventSource, reconnect timer and cancellation flag. Old endpoint/disabled/unmounted callbacks cannot schedule a connection or overwrite current state. Offline closes the stream and cancels pending work; online resumes once. Existing credentialed SSE endpoint, event shape, initial unread count and ten retry limit remain. This fixes local lifecycle races; it does not establish the upstream cause of the historical HTTP2 ping failure or guarantee that network transport errors never recur.
+
+No public API, auth/RBAC, scoring, result, persisted data, production service or paid tier change. No ownership relocation or schema migration; architecture/data maps need no ownership update. Email setup remains owner-deferred.
+
+## Verification
+
+- Actual React hook + real Socket.IO server through an HTTP-only proxy: shared connection for two subscribers, question/batch/end delivery, forced connection loss and room rejoin, zero attempted proxy WebSocket upgrades/browser errors, anonymous denial, disconnect cleanup, and direct API WebSocket upgrade.
+- Actual React notification hook + controllable EventSource/Chromium clock: credentialed endpoint, connected/count/notification delivery, stale callback/timer rejection across endpoint changes, disable/offline cleanup, online recovery, ten retry exhaustion and unmount cleanup. This is client lifecycle evidence, not a real notification SSE delivery claim.
+- Existing cookie-session contract retains protected SSE route, credentials and no URL bearer token.
+- Typecheck, build and architecture gates: pending final results.
+- Exact-head CI and production transport/event/notification evidence: pending.
+
+Official option reference: [Socket.IO client transports and upgrade](https://socket.io/docs/v4/client-options). Hosting arrangement: [Vercel external rewrites](https://vercel.com/docs/routing/rewrites). The specific HTTP400 upgrade is project runtime evidence; no general assertion about all Vercel WebSocket offerings is made.
+
+Limits: no whole-class tablet/bandwidth certification, broad platform closure, AI live certification or mail-delivery closure from this slice.

@@ -1,5 +1,9 @@
 # ALMEAA — Codex Execution State
 
+## Realtime connection stability — 2026-10-11
+- IN_PROGRESS on fresh `codex/realtime-connection-stability` from published77b9f862. Only missing #521 publication documentation was reused. Relative proxy Socket.IO stays authenticated HTTP long polling without failing WS upgrade; direct deployments retain upgrade. Notification effect owns cancellation/timer/source and ignores stale callbacks; offline stops/online resumes with existing ten retry cap. No API/auth/RBAC/result/data/service changes or ownership relocation.
+- Actual shared hook/proxy reconnect + direct WS fixture and notification React lifecycle fixture PASS; existing cookie-session contract PASS. Exact-head CI/publication/native transport evidence pending. Historical HTTP2 ping root cause and total tablet/bandwidth certification not established; mail deferred. See docs/audits/REALTIME_CONNECTION_STABILITY_2026-10-11.md.
+
 ## Published existing-question review practice — 2026-10-10
 - Bounded slice VERIFIED: PR521 code790112c78d452bb56c4cd4f78587cd51fd5756ea,18SUCCESS/4conditional skips/all3requiredPASS; protected merge/publication77b9f8620110c1cf29145fc1d43ffc465068b396. Frontend/Render/canonical/direct match,DB/RedisPASS,all4main checksSUCCESS.
 - Native published trial: original saved question, wrong answer/approved explanation, same-batch restart with0library reads, correct answer/100%summary;4views1280/390,0overflow/JSexceptions. Mobile visual reviewPASS. Official result payload unchanged.2UI answer writes plus2harness review writes; failed old-event-replay expectation retained, immediate current-event retry ignored idempotently. Server only deduplicates its current card event; no historical-ledger claim or data migration.

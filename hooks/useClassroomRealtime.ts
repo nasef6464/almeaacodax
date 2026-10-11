@@ -53,6 +53,9 @@ const ensureSocket = () => {
     withCredentials: true,
     // Same-origin rewrites normalize the root path; direct Engine.IO expects its slash.
     addTrailingSlash: !API_BASE_URL.startsWith('/'),
+    // The hosted HTTP rewrite carries cookies but rejects WebSocket upgrades.
+    // Long polling remains event driven; direct API deployments may still upgrade.
+    ...(API_BASE_URL.startsWith('/') ? { transports: ['polling'], upgrade: false } : {}),
     reconnection: true,
     reconnectionAttempts: Infinity,
     reconnectionDelay: 1000,
