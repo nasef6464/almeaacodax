@@ -12,7 +12,7 @@ export async function instrument(page,actor,phase,errors) {
  cdp.on('Network.requestWillBeSent',event=>{
   const url=new URL(event.request.url);if(!/^https?:$/.test(url.protocol))return;
   const kind=url.hostname==='almeaacodax.vercel.app'?(url.pathname.startsWith('/socket.io')?'transport':url.pathname.startsWith('/api/')?'api':'frontend'):url.hostname.endsWith('.r2.dev')?'questionImages':'other';
-  ledger.start(event.requestId,{actor,phase:phase(),kind,path:safePath(url.href),method:event.request.method,uploadBodyBytes:Buffer.byteLength(event.request.postData||'')});
+  ledger.start(event.requestId,{actor,phase:phase(),kind,path:safePath(url.href),method:event.request.method,handshake:kind==='transport'&&event.request.method==='GET'&&!url.searchParams.has('sid'),uploadBodyBytes:Buffer.byteLength(event.request.postData||'')});
  });
  cdp.on('Network.responseReceived',event=>{const row=ledger.pending.get(event.requestId);if(row){row.status=event.response.status;row.cache=Boolean(event.response.fromDiskCache||event.response.fromServiceWorker);row.protocol=event.response.protocol;}});
  cdp.on('Network.dataReceived',event=>ledger.data(event.requestId,event.encodedDataLength,event.dataLength));
