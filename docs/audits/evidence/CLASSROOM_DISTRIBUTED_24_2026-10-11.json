@@ -892,7 +892,7 @@
   "limits": [
     "24 independent virtual Chromium contexts on four distinct GitHub runners; not physical tablets or full A-S human certification",
     "Normal browser caching retained; instrumentation does not route or replace requests",
-    "CDP completed encoded received bytes only; excludes 48 pending transport requests with no observed response bytes, API-login setup, teacher controller, TLS/TCP overhead and billing",
+    "Page-target CDP completed encoded received bytes only; background service-worker/precache targets are not instrumented and their bytes are not proven; excludes 48 pending transport requests with no observed response bytes, API-login setup, teacher controller, TLS/TCP overhead and billing",
     "Open request counters and zero WebSocket payloads are observed values, not a claim of zero transport overhead",
     "Publication-through-batch-end timings include UI solving, server requests and controller polling; not per-question delivery latency",
     "Existing trial roster/questions reused; new 360 answers preserved; no historical result cleanup"
