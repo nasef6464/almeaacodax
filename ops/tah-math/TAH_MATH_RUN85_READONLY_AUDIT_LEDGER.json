@@ -1,0 +1,23 @@
+{
+  "project": "TAH-MATH",
+  "run": "RUN85",
+  "date": "2026-10-11",
+  "stage": "YLM26_RECONCILIATION",
+  "newMastered": 0,
+  "newFinalReviewed": 0,
+  "newHolds": 0,
+  "priorUniqueFinalReviewedContent": 321,
+  "priorSourceHolds": 5,
+  "readOnlyAudit": {
+    "ylm26": 326,
+    "identityParity": 326,
+    "liveSubtopics": 70,
+    "missingTopicId": 326,
+    "mislabelledSourceTitles": 326,
+    "sourceBackedRemapsPending": 7
+  },
+  "productionMutation": false,
+  "gitWriteStatus": "ATTEMPTED_BLOCKED_BY_SAFETY_CHECKS",
+  "r2HttpStatus": "NOT_VERIFIED",
+  "status": "NOT_FINAL_CLOSED"
+}
