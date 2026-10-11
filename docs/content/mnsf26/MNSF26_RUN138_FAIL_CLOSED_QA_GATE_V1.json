@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN138",
+  "date": "2026-10-11",
+  "stage": "QA_LOCK",
+  "sourceHead": "de0369b0b5aa927db27ab404172f0cb80aa7809d",
+  "mainHead": "77b9f8620110c1cf29145fc1d43ffc465068b396",
+  "questionMastering": "PASS_LOCKED_PER_RUN063",
+  "cropLock": "PASS_LOCKED_2135_2135",
+  "knownSourceConflicts": 37,
+  "quarantinedVerifiedPreviousRun": 12,
+  "remainingUnsafe": 25,
+  "sourceConflictsThisRunPatched": 0,
+  "reviewedOriginalMasterFiles": 18,
+  "structuralRecordsAudited": 356,
+  "masteredStructurallyComplete": 282,
+  "hold": 71,
+  "review": 3,
+  "mainSubMismatch": 0,
+  "missingMandatoryMasterFields": 0,
+  "imageHashDuplicatesWithinAuditedSubset": 0,
+  "ideaFingerprintCollisionsWithinSubset": 9,
+  "counterMismatch": {
+    "file": "MNSF26_QUESTION_MASTERING_RUN054_GEO_T10_V1.json",
+    "stored": {
+      "masteredCount": 18,
+      "holdCount": 2,
+      "reviewCount": null
+    },
+    "observed": {
+      "masteredCount": 18,
+      "holdCount": 1,
+      "reviewCount": 1
+    }
+  },
+  "writeBlocker": "Original MASTER updates rejected by safety checks; no override, no force update",
+  "failClosed": true,
+  "qaLock": "OPEN",
+  "dedupeLock": "OPEN",
+  "r2": "NOT_STARTED",
+  "productionE2E": "NOT_STARTED",
+  "next": "Authorized corrections of 25 conflicts and T010 counters; independent math QA, full-bank dedupe, then R2/import/E2E."
+}
