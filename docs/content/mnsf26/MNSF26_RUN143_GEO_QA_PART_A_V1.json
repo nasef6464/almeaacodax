@@ -1,0 +1,229 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "run": "RUN143",
+  "part": "A",
+  "date": "2026-10-11",
+  "stage": "QA_LOCK",
+  "exactHeadAtStart": {
+    "branch": "8dd490add0150b1975337e94c24553c670078133",
+    "main": "39d0eba241100e95426d4eaaad1124b7e92d5296"
+  },
+  "auditType": "ORIGINAL_MASTER_STRUCTURAL_ONLY_NOT_MATH_QA",
+  "stats": {
+    "files": [
+      {
+        "path": "docs/content/mnsf26/MNSF26_QUESTION_MASTERING_RUN051_GEO_T30_V1.json",
+        "blobSha": "9b8b7e696f02e58b56568e61a524c5678ea95ebc",
+        "records": 19,
+        "counts": {
+          "MASTERED": 13,
+          "HOLD": 6,
+          "REVIEW": 0
+        }
+      },
+      {
+        "path": "docs/content/mnsf26/MNSF26_QUESTION_MASTERING_RUN052_GEO_T32_V1.json",
+        "blobSha": "e6307a063f0bef51099597a6b84ad85c160e5db5",
+        "records": 20,
+        "counts": {
+          "MASTERED": 14,
+          "HOLD": 6,
+          "REVIEW": 0
+        }
+      },
+      {
+        "path": "docs/content/mnsf26/MNSF26_QUESTION_MASTERING_RUN052_GEO_T33_V1.json",
+        "blobSha": "49dd93a709076603d1d68f92f4da2e37f8163ddd",
+        "records": 20,
+        "counts": {
+          "MASTERED": 15,
+          "HOLD": 5,
+          "REVIEW": 0
+        }
+      },
+      {
+        "path": "docs/content/mnsf26/MNSF26_QUESTION_MASTERING_RUN052_GEO_T34_V1.json",
+        "blobSha": "56f8bcd84cc076012dc860aadb416a7b7ab7cbf2",
+        "records": 20,
+        "counts": {
+          "MASTERED": 19,
+          "HOLD": 1,
+          "REVIEW": 0
+        }
+      },
+      {
+        "path": "docs/content/mnsf26/MNSF26_QUESTION_MASTERING_RUN052_GEO_T35_V1.json",
+        "blobSha": "f057a403aa4098b144597b678e414af1a79387c7",
+        "records": 20,
+        "counts": {
+          "MASTERED": 20,
+          "HOLD": 0,
+          "REVIEW": 0
+        }
+      },
+      {
+        "path": "docs/content/mnsf26/MNSF26_QUESTION_MASTERING_RUN053_GEO_T36_V1.json",
+        "blobSha": "1f76361f036a00df854d97db5a2c260ba0f0dd64",
+        "records": 20,
+        "counts": {
+          "MASTERED": 16,
+          "HOLD": 4,
+          "REVIEW": 0
+        }
+      },
+      {
+        "path": "docs/content/mnsf26/MNSF26_QUESTION_MASTERING_RUN053_GEO_T37_V1.json",
+        "blobSha": "8957328bfb44d92eb9613d4f9c806b82c3a079a2",
+        "records": 20,
+        "counts": {
+          "MASTERED": 18,
+          "HOLD": 2,
+          "REVIEW": 0
+        }
+      },
+      {
+        "path": "docs/content/mnsf26/MNSF26_QUESTION_MASTERING_RUN053_GEO_T38_V1.json",
+        "blobSha": "11a074e39d178db1c3398ad7c33440a61f48a591",
+        "records": 16,
+        "counts": {
+          "MASTERED": 16,
+          "HOLD": 0,
+          "REVIEW": 0
+        }
+      },
+      {
+        "path": "docs/content/mnsf26/MNSF26_QUESTION_MASTERING_RUN053_GEO_T39_V1.json",
+        "blobSha": "8e908d213de997825738e7d7788bef8382d31eee",
+        "records": 20,
+        "counts": {
+          "MASTERED": 19,
+          "HOLD": 1,
+          "REVIEW": 0
+        }
+      },
+      {
+        "path": "docs/content/mnsf26/MNSF26_QUESTION_MASTERING_RUN053_GEO_T40_V1.json",
+        "blobSha": "0a4f969cdf123a788314ae93d97c35f0b2189c40",
+        "records": 20,
+        "counts": {
+          "MASTERED": 18,
+          "HOLD": 2,
+          "REVIEW": 0
+        }
+      },
+      {
+        "path": "docs/content/mnsf26/MNSF26_QUESTION_MASTERING_RUN053_GEO_T42_V1.json",
+        "blobSha": "e63293f68bb943e5c8c52827003723da2f507ad4",
+        "records": 20,
+        "counts": {
+          "MASTERED": 15,
+          "HOLD": 5,
+          "REVIEW": 0
+        }
+      },
+      {
+        "path": "docs/content/mnsf26/MNSF26_QUESTION_MASTERING_RUN053_GEO_T45_V1.json",
+        "blobSha": "1ebc1e2007c5f00031c2408dd0abb7725cf397f3",
+        "records": 20,
+        "counts": {
+          "MASTERED": 18,
+          "HOLD": 2,
+          "REVIEW": 0
+        }
+      }
+    ],
+    "total": 235,
+    "status": {
+      "MASTERED": 201,
+      "HOLD": 34
+    },
+    "missingFields": [],
+    "badCounters": [],
+    "badTaxonomy": [
+      {
+        "key": "MNSF26-GEO-T033-Q10",
+        "main": "main_quant_24",
+        "sub": "sub_quant_23_2"
+      }
+    ],
+    "badHash": [],
+    "duplicateKeys": [],
+    "sameImage": [
+      {
+        "a": "MNSF26-GEO-T034-Q11",
+        "b": "MNSF26-GEO-T034-Q12",
+        "fingerprint": "0ff3a279ff721a58f2a2ae8b713280d776964c5b2fd00d94e4ebddd7492fef48"
+      }
+    ],
+    "sameContent": [],
+    "sameIdea": [
+      {
+        "a": "MNSF26-GEO-T032-Q08",
+        "b": "MNSF26-GEO-T032-Q12",
+        "fingerprint": "9063c36ea0354363708c000b627c37b6d21761d970264229e3a3cf045908f9fc"
+      },
+      {
+        "a": "MNSF26-GEO-T032-Q08",
+        "b": "MNSF26-GEO-T032-Q13",
+        "fingerprint": "9063c36ea0354363708c000b627c37b6d21761d970264229e3a3cf045908f9fc"
+      },
+      {
+        "a": "MNSF26-GEO-T032-Q08",
+        "b": "MNSF26-GEO-T032-Q18",
+        "fingerprint": "9063c36ea0354363708c000b627c37b6d21761d970264229e3a3cf045908f9fc"
+      },
+      {
+        "a": "MNSF26-GEO-T032-Q08",
+        "b": "MNSF26-GEO-T032-Q19",
+        "fingerprint": "9063c36ea0354363708c000b627c37b6d21761d970264229e3a3cf045908f9fc"
+      },
+      {
+        "a": "MNSF26-GEO-T032-Q08",
+        "b": "MNSF26-GEO-T032-Q20",
+        "fingerprint": "9063c36ea0354363708c000b627c37b6d21761d970264229e3a3cf045908f9fc"
+      },
+      {
+        "a": "MNSF26-GEO-T032-Q08",
+        "b": "MNSF26-GEO-T033-Q01",
+        "fingerprint": "9063c36ea0354363708c000b627c37b6d21761d970264229e3a3cf045908f9fc"
+      },
+      {
+        "a": "MNSF26-GEO-T032-Q08",
+        "b": "MNSF26-GEO-T033-Q02",
+        "fingerprint": "9063c36ea0354363708c000b627c37b6d21761d970264229e3a3cf045908f9fc"
+      },
+      {
+        "a": "MNSF26-GEO-T032-Q08",
+        "b": "MNSF26-GEO-T033-Q05",
+        "fingerprint": "9063c36ea0354363708c000b627c37b6d21761d970264229e3a3cf045908f9fc"
+      },
+      {
+        "a": "MNSF26-GEO-T032-Q08",
+        "b": "MNSF26-GEO-T033-Q11",
+        "fingerprint": "9063c36ea0354363708c000b627c37b6d21761d970264229e3a3cf045908f9fc"
+      },
+      {
+        "a": "MNSF26-GEO-T032-Q08",
+        "b": "MNSF26-GEO-T033-Q20",
+        "fingerprint": "9063c36ea0354363708c000b627c37b6d21761d970264229e3a3cf045908f9fc"
+      },
+      {
+        "a": "MNSF26-GEO-T032-Q08",
+        "b": "MNSF26-GEO-T034-Q18",
+        "fingerprint": "9063c36ea0354363708c000b627c37b6d21761d970264229e3a3cf045908f9fc"
+      },
+      {
+        "a": "MNSF26-GEO-T033-Q16",
+        "b": "MNSF26-GEO-T035-Q01",
+        "fingerprint": "764d14b38aad8216c46f8b5a1564f5982d98f08f468be7c42b2f8365cc1a51fe"
+      }
+    ]
+  },
+  "guards": [
+    "No new MASTERED",
+    "No image-based math certification",
+    "No dedupe suppression",
+    "No production touched"
+  ]
+}
