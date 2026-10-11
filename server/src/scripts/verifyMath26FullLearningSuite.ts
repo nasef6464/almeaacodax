@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 import dotenv from "dotenv";
 dotenv.config({ path: ".env.codex.local" });
 dotenv.config({ path: "../.env.codex.local" });
@@ -6,10 +5,7 @@ dotenv.config({ path: "./.env" });
 dotenv.config({ path: "./server/.env" });
 dotenv.config({ path: "../.env" });
 
-import { QuizModel } from "../models/Quiz.js";
-import { TopicModel } from "../models/Topic.js";
-import { SkillModel } from "../models/Skill.js";
-import { QuestionModel } from "../models/Question.js";
+import mongoose from "mongoose";
 
 const PATH_ID = "p_1777779653351";
 const SUBJECT_ID = "sub_1777784609152";
@@ -29,16 +25,27 @@ async function main() {
   const mongoUri = process.env.MONGODB_URI || process.env.MONGO_URI || "";
   if (!mongoUri) fail("No MONGODB_URI");
 
+  console.log("[1] Connecting to MongoDB...");
   await mongoose.connect(mongoUri, { serverSelectionTimeoutMS: 15000 });
+  const db = mongoose.connection.db;
+  if (!db) fail("No DB handle");
+  console.log("[2] Connected to MongoDB.");
+
   try {
+    const questionsCol = db.collection("questions");
+    const skillsCol = db.collection("skills");
+    const topicsCol = db.collection("topics");
+    const quizzesCol = db.collection("quizzes");
+
+    console.log("[3] Fetching questions, skills, topics, quizzes...");
     const [questionsCount, skills, topics, quizzes] = await Promise.all([
-      QuestionModel.countDocuments({
+      questionsCol.countDocuments({
         $or: [{ subjectId: SUBJECT_ID }, { subject: SUBJECT_ID }],
         approvalStatus: "approved",
       }),
-      SkillModel.find({ subjectId: SUBJECT_ID }).lean() as any[],
-      TopicModel.find({ subjectId: SUBJECT_ID }).lean() as any[],
-      QuizModel.find({ subjectId: SUBJECT_ID }).lean() as any[],
+      skillsCol.find({ subjectId: SUBJECT_ID }).toArray(),
+      topicsCol.find({ subjectId: SUBJECT_ID }).toArray(),
+      quizzesCol.find({ subjectId: SUBJECT_ID }).toArray(),
     ]);
 
     if (questionsCount !== EXPECTED_QUESTIONS) {
@@ -48,7 +55,7 @@ async function main() {
       fail(`Skills count mismatch: expected ${EXPECTED_MAIN_SKILLS}, got ${skills.length}`);
     }
     const subCount = skills.reduce(
-      (acc, s) => acc + (Array.isArray(s.subSkills) ? s.subSkills.length : 0),
+      (acc: number, s: any) => acc + (Array.isArray(s.subSkills) ? s.subSkills.length : 0),
       0,
     );
     if (subCount !== EXPECTED_SUB_SKILLS) {
@@ -57,17 +64,17 @@ async function main() {
 
     // Categorize quizzes
     const foundationQuizzes = quizzes.filter(
-      (q) =>
+      (q: any) =>
         q.quizKind === "drill" &&
         q.learningPlacements?.some((p: any) => p.slot === "foundation"),
     );
     const trainingQuizzes = quizzes.filter(
-      (q) =>
+      (q: any) =>
         q.quizKind === "drill" &&
         q.learningPlacements?.some((p: any) => p.slot === "training"),
     );
     const standardTests = quizzes.filter(
-      (q) =>
+      (q: any) =>
         q.quizKind === "test" &&
         q.learningPlacements?.some((p: any) => p.slot === "tests"),
     );
@@ -100,7 +107,7 @@ async function main() {
       }
     }
 
-    const testQuestionRefs = standardTests.flatMap((t) => t.questionIds);
+    const testQuestionRefs = standardTests.flatMap((t: any) => t.questionIds);
     if (testQuestionRefs.length !== EXPECTED_BANK3_QUESTIONS) {
       fail(
         `Standard tests total question refs: expected ${EXPECTED_BANK3_QUESTIONS}, got ${testQuestionRefs.length}`,
@@ -112,8 +119,10 @@ async function main() {
     }
 
     // Verify topic linking & locking
-    const parentTopics = topics.filter((t) => !t.parentId && t.id.startsWith("top_tah_math_main_"));
-    const childTopics = topics.filter((t) => Boolean(t.parentId));
+    const parentTopics = topics.filter(
+      (t: any) => !t.parentId && String(t.id || t._id).startsWith("top_tah_math_main_"),
+    );
+    const childTopics = topics.filter((t: any) => Boolean(t.parentId));
 
     if (parentTopics.length !== EXPECTED_MAIN_SKILLS) {
       fail(`Parent topics mismatch: expected ${EXPECTED_MAIN_SKILLS}, got ${parentTopics.length}`);
@@ -123,29 +132,29 @@ async function main() {
     }
 
     const unlinkedChildTopics = childTopics.filter(
-      (t) => !Array.isArray(t.quizIds) || t.quizIds.length === 0,
+      (t: any) => !Array.isArray(t.quizIds) || t.quizIds.length === 0,
     );
     if (unlinkedChildTopics.length > 0) {
       fail(`Found ${unlinkedChildTopics.length} child topics without foundation quizIds`);
     }
 
     const unlinkedParentTopics = parentTopics.filter(
-      (t) => !Array.isArray(t.quizIds) || t.quizIds.length === 0,
+      (t: any) => !Array.isArray(t.quizIds) || t.quizIds.length === 0,
     );
     if (unlinkedParentTopics.length > 0) {
       fail(`Found ${unlinkedParentTopics.length} parent topics without training quizIds`);
     }
 
-    const freeParents = parentTopics.filter((t) => t.isLocked === false).length;
-    const lockedParents = parentTopics.filter((t) => t.isLocked === true).length;
+    const freeParents = parentTopics.filter((t: any) => t.isLocked === false).length;
+    const lockedParents = parentTopics.filter((t: any) => t.isLocked === true).length;
     if (freeParents !== 5 || lockedParents !== 17) {
       fail(
         `Parent topic locking mismatch: expected 5 free / 17 locked, got ${freeParents}/${lockedParents}`,
       );
     }
 
-    const freeTests = standardTests.filter((t) => t.access?.type === "free").length;
-    const paidTests = standardTests.filter((t) => t.access?.type === "paid").length;
+    const freeTests = standardTests.filter((t: any) => t.access?.type === "free").length;
+    const paidTests = standardTests.filter((t: any) => t.access?.type === "paid").length;
     if (freeTests !== 5 || paidTests !== 21) {
       fail(`Standard tests access mismatch: expected 5 free / 21 paid, got ${freeTests}/${paidTests}`);
     }
