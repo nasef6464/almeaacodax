@@ -5,7 +5,7 @@ import {spawnSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 import {parseFixture,parseWorkerArgs} from './client.mjs';
 import {safePath,TrafficLedger} from './traffic.mjs';
-const fixture=()=>({group:0,students:Array.from({length:6},(_,i)=>({index:i,userId:randomBytes(12).toString('hex'),email:randomBytes(8).toString('hex'),password:randomBytes(20).toString('hex')}))});
+const fixture=()=>({group:0,sessionId:randomBytes(12).toString('hex'),students:Array.from({length:6},(_,i)=>({index:i,userId:randomBytes(12).toString('hex'),email:randomBytes(8).toString('hex'),password:randomBytes(20).toString('hex')}))});
 test('worker settings require explicit bounded CLI values',()=>{
  assert.throws(()=>parseWorkerArgs([]),/group/i);
  const args=['--group','0','--session',randomBytes(12).toString('hex'),'--release',randomBytes(20).toString('hex'),'--run-id','1','--runner','test-runner'];
@@ -14,22 +14,35 @@ test('worker settings require explicit bounded CLI values',()=>{
  args[3]=randomBytes(12).toString('hex');args[1]='4';assert.throws(()=>parseWorkerArgs(args),/group/i);
 });
 test('workflow pipe and CLI adapter validates without production traffic',()=>{
- const raw=JSON.stringify(fixture());const args=['--group','0','--session',randomBytes(12).toString('hex'),'--release',randomBytes(20).toString('hex'),'--run-id','1','--runner','test-runner','--validate-only'];
+ const f=fixture();const raw=JSON.stringify(f);const args=['--group','0','--session',f.sessionId,'--release',randomBytes(20).toString('hex'),'--run-id','1','--runner','test-runner','--validate-only'];
  const result=spawnSync(process.execPath,[fileURLToPath(new URL('./worker.mjs',import.meta.url)),...args],{input:raw,encoding:'utf8',timeout:60000});
  assert.equal(result.status,0,result.stderr);assert.equal(JSON.parse(result.stdout).productionTraffic,0);assert.equal(JSON.parse(result.stdout).students,6);
  for(const row of JSON.parse(raw).students){assert.ok(!result.stdout.includes(row.email));assert.ok(!result.stdout.includes(row.password));}
 });
 test('fixture fails closed without six distinct credentials or with wrong group',()=>{
  assert.throws(()=>parseFixture('',0),/fixture/i);
- const f=fixture();assert.equal(parseFixture(JSON.stringify(f),0).students.length,6);
+ const f=fixture();assert.equal(parseFixture(JSON.stringify(f),0,f.sessionId).students.length,6);
  assert.throws(()=>parseFixture(JSON.stringify(f),1),/group/i);
- f.students[0].password='';assert.throws(()=>parseFixture(JSON.stringify(f),0),/credential/i);
+ f.students[0].password='';assert.throws(()=>parseFixture(JSON.stringify(f),0,f.sessionId),/credential/i);
  f.students[0].password=randomBytes(20).toString('hex');f.students[1].userId=f.students[0].userId;
- assert.throws(()=>parseFixture(JSON.stringify(f),0),/distinct/i);
+ assert.throws(()=>parseFixture(JSON.stringify(f),0,f.sessionId),/distinct/i);
 });
 test('captured path drops queries and masks record ids',()=>{
  const id=randomBytes(12).toString('hex');const value=randomBytes(20).toString('hex');
  assert.equal(safePath('https://example.invalid/api/classroom/'+id+'?token='+value),'/api/classroom/:id');
+});
+test('fixture binds the prepared owned session before any production traffic',()=>{
+ const f=fixture();const raw=JSON.stringify(f);
+ assert.equal(parseFixture(raw,0,f.sessionId).sessionId,f.sessionId);
+ assert.throws(()=>parseFixture(raw,0,randomBytes(12).toString('hex')),/session/i);
+ assert.throws(()=>parseFixture(raw,0),/session/i);
+ delete f.sessionId;assert.throws(()=>parseFixture(JSON.stringify(f),0,randomBytes(12).toString('hex')),/session/i);
+ for(const row of [fixture(),f]) {
+  const args=['--group','0','--session',randomBytes(12).toString('hex'),'--release',randomBytes(20).toString('hex'),'--run-id','1','--runner','test-runner','--validate-only'];
+  const result=spawnSync(process.execPath,[fileURLToPath(new URL('./worker.mjs',import.meta.url)),...args],{input:JSON.stringify(row),encoding:'utf8',timeout:60000});
+  assert.equal(result.status,1);assert.match(result.stderr,/Fixture owned session/);assert.equal(result.stdout,'');
+  for(const s of row.students){assert.ok(!result.stderr.includes(s.email));assert.ok(!result.stderr.includes(s.password));}
+ }
 });
 test('pending stream counters are removed on completion without double counting',()=>{
  const ledger=new TrafficLedger();ledger.start('a',{actor:'student-01',kind:'transport',path:'/socket.io',method:'GET'});

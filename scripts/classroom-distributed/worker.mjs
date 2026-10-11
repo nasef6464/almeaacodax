@@ -8,7 +8,7 @@ const {group,sessionId,expected,runId,runner}=parseWorkerArgs(process.argv.slice
 // The workflow sources credentials from its temporary secret environment and
 // passes them through an anonymous pipe, never CLI arguments or fixture files.
 let fixtureInput='';for await(const chunk of process.stdin){fixtureInput+=chunk;assert.ok(Buffer.byteLength(fixtureInput)<65536,'Oversized trial fixture');}
-const fixture=parseFixture(fixtureInput,group);fixtureInput='';
+const fixture=parseFixture(fixtureInput,group,sessionId);fixtureInput='';
 if(process.argv.includes('--validate-only')){console.log(JSON.stringify({validated:true,group,students:fixture.students.length,productionTraffic:0}));process.exit(0);}
 const directory='output/classroom-distributed';fs.mkdirSync(directory,{recursive:true});
 const evidence={status:'RUNNING',group,runId,runner,expectedPublished:expected,startedAt:new Date().toISOString(),independentContexts:0,actors:[],errors:[],traffic:[],pending:[],socketFrames:[],memory:{totalBytes:os.totalmem(),freeBeforeBytes:os.freemem()}};

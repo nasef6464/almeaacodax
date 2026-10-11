@@ -9,11 +9,14 @@ export function parseWorkerArgs(args) {
  const runner=value('--runner');assert.ok(runner,'Audit runner required');
  return {group:Number(rawGroup),sessionId,expected,runId,runner};
 }
-export function parseFixture(raw,group) {
+export function parseFixture(raw,group,sessionId) {
  assert.ok(raw,'Trial fixture required');let value;
  try {value=JSON.parse(raw);}catch{throw Error('Invalid trial fixture');}
  assert.equal(value.group,group,'Fixture group mismatch');
  assert.ok(Number.isInteger(group)&&group>=0&&group<4,'Invalid group');
+ assert.match(sessionId||'',/^[a-f\d]{24}$/,'Expected owned session required');
+ assert.match(value.sessionId||'',/^[a-f\d]{24}$/,'Fixture owned session required');
+ assert.equal(value.sessionId,sessionId,'Fixture owned session mismatch');
  assert.equal(value.students?.length,6,'Six trial students required');
  for(const [offset,s] of value.students.entries()) {
   assert.equal(s.index,group*6+offset,'Fixture index mismatch');
