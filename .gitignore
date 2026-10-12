@@ -64,3 +64,4 @@ migrated_prompt_history/
 
 # Local asset ingestion and crop pipeline
 .local-imports/
+ops/**/crops/

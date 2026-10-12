@@ -188,8 +188,9 @@ Git HEAD always overrides this historical baseline.
     - تشغيل فحص البنك الكامل: `PHYS26_FULL_LEARNING_SUITE_VERIFICATION_PASS` بنجاح تام (2064 سؤالاً، 149 تدريباً، 43 اختباراً معيارياً بدون أي تكرار).
 - القدرات (أينشتاين والمنصف):
   - تأسيس وتجميعات أينشتاين (`COL2627` & `FND26`): تعمل بانتظام تام بصورة نظيفة و4 أزرار `[ أ ] [ ب ] [ ج ] [ د ]`.
-  - اختبارات المنصف (`MNSF26`): تم حل مشكلة تكرار الحروف (`أ أ` و `ب ب` أصبحت خيارات مفردة `[ أ ] [ ب ] [ ج ] [ د ]`) في صف أفقي بـ 4 أعمدة (`grid-cols-4`)، مع إخفاء إطار الصورة التالفة تلقائياً عبر `onError`.
+  - اختبارات المنصف (`MNSF26`): مغلقة بنجاح تام (CLOSED ✅) — تم استعادة كافة الصور المقصوصة (2,135 صورة WebP)، رفعها إلى Cloudflare R2 الحقيقي (`pub-335cc83968b2426d915cacd8e6dc085d.r2.dev`) بنسبة نجاح 100% ومطابقة SHA-256، وتحديث 1,928 سؤالاً معتمداً في MongoDB مع `optionsEmbeddedInImage: true`، واكتمال الفحص بالمتصفح الحي لـ 40 اختبار محاكاة مع ظهور الصور النظيفة في المنتصف و 4 أزرار `[ أ ] [ ب ] [ ج ] [ د ]` دون أي تكرار.
 - بوابات التحقق المستقلة:
+  - `docs/MASTER_CONTROL/MNSF26_IMAGE_RECOVERY_AND_PRODUCTION_CLOSURE_AR.md` -> **PASS (MNSF26_CLOSURE_VERIFIED)**
   - `verifyPhys26FullLearningSuite.ts` -> **PASS (PHYS26_FULL_LEARNING_SUITE_VERIFICATION_PASS)**
   - `smoke:quiz-progress-draft` -> **PASS (7/7 checks)**
   - `test:tahsili-import-identity` -> **PASS (100%)**
