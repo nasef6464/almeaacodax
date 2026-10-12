@@ -1,3 +1,5 @@
+Course tests (2026-10-12): direct CourseOverview tests tab reads only deduplicated linked quiz IDs via adapter.getQuiz(id, { includeQuestions: false }); inactive tab reads none. Local response state is course/actor-keyed and obsolete responses ignored. No global question-bank bootstrap, polling, persistence, or authorization bypass.
+
 # ALMEAA — Data Access Map
 
 Payment recovery (2026-10-12, local isolated proof): PaymentRequest pending→approved CAS stores versioned immutable intent; DiscountCode atomically increments counter with order marker, User subscription atomically extends expiry with order marker, existing AccessGrant unique identity supports insert/mirror retry. Historical grant reads validate exact scope/status; ambiguous historical dates/counters require reconciliation. No transactions, bulk backfill or production writes; no production-scale claim.
