@@ -18,12 +18,26 @@ export const normalizeQuestionOptions = (question: {
   options?: unknown[];
   optionsEmbeddedInImage?: boolean;
   examType?: string;
+  pathId?: string;
+  subjectId?: string;
+  questionCode?: string;
+  imageUrl?: string;
 }) => {
   const options = Array.isArray(question?.options) ? question.options : [];
-  const isLatin = question?.examType === "tahsili" ||
-    options.some((opt) => typeof opt === "string" && /^[A-D]$/i.test(opt.trim()));
+  const isTahsili = question?.examType === "tahsili" ||
+    question?.pathId === "p_1777779653351" ||
+    question?.pathId === "p_tahsili" ||
+    String(question?.questionCode || "").toUpperCase().startsWith("TAH-") ||
+    String(question?.questionCode || "").toUpperCase().includes("PHYS") ||
+    String(question?.questionCode || "").toUpperCase().includes("CHEM") ||
+    String(question?.questionCode || "").toUpperCase().includes("BIO") ||
+    String(question?.questionCode || "").toUpperCase().includes("MATH");
 
-  if (Boolean(question?.optionsEmbeddedInImage)) {
+  const isLatin = isTahsili || options.some((opt) => typeof opt === "string" && /^[A-D]$/i.test(opt.trim()));
+
+  const isImageQuestion = Boolean(question?.optionsEmbeddedInImage) || Boolean(question?.imageUrl && String(question.imageUrl).trim());
+
+  if (isImageQuestion) {
     if (isLatin) {
       return options.map((opt, index) => {
         if (typeof opt === "string" && /^[A-D]$/i.test(opt.trim())) return opt.trim().toUpperCase();

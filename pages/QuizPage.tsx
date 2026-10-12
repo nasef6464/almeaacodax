@@ -6,7 +6,7 @@ import { Clock, AlertCircle, CheckCircle2, XCircle, ArrowRight, ArrowLeft, FileQ
 import { api } from '../services/api';
 import { flattenMockExamQuestionIds, getMockExamSections, getMockExamTimeLimit } from '../utils/mockExam';
 import { formatQuestionHtmlForDisplay, normalizeQuestionHtml } from '../utils/questionHtml';
-import { getLearnerOptionLabel, getQuizDifficultyBadgeClass, getQuizDifficultyLabel, getQuizOptionButtonHeightClass, getQuizOptionGridClass, getQuizQuestionMapButtonClass, resolveQuestionFromBank, usesImageEmbeddedOptions } from '../utils/quizPresentation';
+import { getLearnerOptionLabel, getQuizDifficultyBadgeClass, getQuizDifficultyLabel, getQuizOptionButtonHeightClass, getQuizOptionGridClass, getQuizQuestionMapButtonClass, isTahsiliQuestion, resolveQuestionFromBank, stripQuestionHtml, usesImageEmbeddedOptions } from '../utils/quizPresentation';
 import { isDevSessionUser } from '../utils/devSession';
 import { resolveQuizLearningAccessType } from '../utils/quizLearningPlacement';
 import { resolveAssessmentSettings } from '../utils/assessmentSettings';
@@ -745,9 +745,11 @@ export const QuizPage: React.FC = () => {
   const quizTimeLimit = quiz ? (quiz.mockExam?.enabled ? getMockExamTimeLimit(quiz) : (quizSettings.timeLimit || 0)) : 0;
   const isPassed = isFinished && quiz ? finalScore >= passingScore : false;
   const activeOptionLayout = quizSettings.optionLayout ?? 'horizontal';
+  const isTahsili = isTahsiliQuestion(currentQuestion, quiz);
   const imageQuestion = usesImageEmbeddedOptions(currentQuestion);
-  const optionGridClass = imageQuestion ? 'grid-cols-4' : getQuizOptionGridClass(currentQuestion?.options || [], activeOptionLayout);
-  const optionButtonHeightClass = imageQuestion ? 'min-h-[46px]' : getQuizOptionButtonHeightClass(currentQuestion?.options || [], activeOptionLayout);
+  const isLetterOnlyOptions = Boolean(currentQuestion?.options?.length && currentQuestion.options.every((o: string) => /^[أ-يA-Za-z]$/.test(stripQuestionHtml(o))));
+  const optionGridClass = imageQuestion ? 'grid-cols-4' : (isLetterOnlyOptions ? 'grid-cols-4' : getQuizOptionGridClass(currentQuestion?.options || [], activeOptionLayout));
+  const optionButtonHeightClass = imageQuestion ? 'min-h-[46px]' : (isLetterOnlyOptions ? 'min-h-[46px]' : getQuizOptionButtonHeightClass(currentQuestion?.options || [], activeOptionLayout));
 
   // ── G2: خلط خيارات الإجابة (randomizeOptions) ────────────────────────────
   // يُبنى مرة واحدة عند تحميل الأسئلة فقط (يعتمد على quizQuestions كـkey).
@@ -1674,6 +1676,12 @@ export const QuizPage: React.FC = () => {
                             alt="صورة السؤال"
                             className="mx-auto max-h-[320px] sm:max-h-[380px] w-full object-contain transition-transform duration-200 group-hover:scale-[1.01]"
                             referrerPolicy="no-referrer"
+                            onError={(e) => {
+                              const parent = e.currentTarget.closest('.space-y-2');
+                              if (parent instanceof HTMLElement) {
+                                parent.style.display = 'none';
+                              }
+                            }}
                           />
                         </button>
                         <div className="hidden items-center justify-center sm:flex">
@@ -1697,9 +1705,11 @@ export const QuizPage: React.FC = () => {
                     <div className={`grid ${optionGridClass} gap-2 pt-2 sm:gap-3`}>
                       {currentDisplayOptions.map((displayOption, displayIndex) => {
                         const isSelected = selectedOptions[currentQuestion.id] === displayOption.originalIndex;
-                        const optionLetters = ['أ', 'ب', 'ج', 'د', 'هـ', 'و'];
+                        const optionLetters = isTahsili ? ['A', 'B', 'C', 'D', 'E', 'F'] : ['أ', 'ب', 'ج', 'د', 'هـ', 'و'];
                         const fallbackLetter = optionLetters[displayIndex] || String(displayIndex + 1);
-                        const hasText = Boolean(displayOption.text && displayOption.text.trim().length > 0);
+                        const cleanOptionText = displayOption.text ? displayOption.text.trim() : '';
+                        const isLetterMatch = cleanOptionText === fallbackLetter || /^[أ-يA-Za-z]$/.test(cleanOptionText);
+                        const hasText = Boolean(cleanOptionText.length > 0 && !isLetterMatch);
                         const learnerLabel = getLearnerOptionLabel(currentQuestion, displayOption.text, displayOption.originalIndex);
 
                         return (
@@ -1708,20 +1718,28 @@ export const QuizPage: React.FC = () => {
                             data-testid={`quiz-answer-option-${displayIndex}`}
                             onClick={() => handleOptionSelect(displayIndex)}
                             className={`${optionButtonHeightClass} group w-full rounded-xl border-2 transition-all flex items-center gap-2 shadow-xs hover:shadow-sm ${
-                              imageQuestion ? 'justify-center px-1.5 py-1.5 text-center' : 'justify-start px-3.5 sm:px-4 py-3 text-right'
+                              imageQuestion || isTahsili || isLetterMatch ? 'justify-center px-1.5 py-1.5 text-center' : 'justify-start px-3.5 sm:px-4 py-3 text-right'
                             } ${
                               isSelected
                                 ? (isNightMode ? 'border-indigo-500 bg-indigo-950/90 shadow-indigo-950/40 ring-1 ring-indigo-500/50' : 'border-indigo-600 bg-indigo-50/85 shadow-indigo-100 ring-2 ring-indigo-100')
                                 : (isNightMode ? 'border-slate-800 bg-slate-950/80 hover:border-slate-700 hover:bg-slate-800/60' : 'border-gray-200 hover:border-indigo-200 hover:bg-gray-50/90 bg-white')
                             }`}
                           >
-                            {imageQuestion ? (
+                            {imageQuestion || isTahsili ? (
                               <span className={`text-lg sm:text-xl font-black leading-relaxed text-center ${
                                 isSelected
                                   ? (isNightMode ? 'text-white' : 'text-indigo-950')
                                   : (isNightMode ? 'text-slate-200' : 'text-gray-900')
                               }`}>
                                 {learnerLabel}
+                              </span>
+                            ) : isLetterMatch || !hasText ? (
+                              <span className={`w-full text-lg sm:text-xl font-black leading-relaxed text-center ${
+                                isSelected
+                                  ? (isNightMode ? 'text-white' : 'text-indigo-950')
+                                  : (isNightMode ? 'text-slate-200' : 'text-gray-900')
+                              }`}>
+                                {fallbackLetter}
                               </span>
                             ) : (
                               <>
@@ -1743,7 +1761,7 @@ export const QuizPage: React.FC = () => {
                                       ? (isNightMode ? 'text-white' : 'text-indigo-950')
                                       : (isNightMode ? 'text-slate-100 group-hover:text-white' : 'text-gray-900 group-hover:text-indigo-950')
                                   }`}
-                                  dangerouslySetInnerHTML={{ __html: hasText ? formatQuestionHtmlForDisplay(displayOption.text) : '&nbsp;' }}
+                                  dangerouslySetInnerHTML={{ __html: formatQuestionHtmlForDisplay(displayOption.text) }}
                                 />
                               </>
                             )}

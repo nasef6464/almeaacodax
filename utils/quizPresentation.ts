@@ -31,32 +31,132 @@ export const LATIN_OPTION_LABELS = ['A', 'B', 'C', 'D'] as const;
 export const getQuizOptionLabel = (index: number) =>
   QUIZ_OPTION_LABELS[index] || String(index + 1);
 
+export const isTahsiliQuestion = (
+  question?: {
+    examType?: string;
+    pathId?: string;
+    subjectId?: string;
+    subject?: string;
+    questionCode?: string;
+  } | null,
+  quiz?: {
+    examType?: string;
+    pathId?: string;
+    subjectId?: string;
+    subject?: string;
+  } | null,
+) => {
+  if (question?.examType === 'tahsili' || quiz?.examType === 'tahsili') return true;
+  if (question?.pathId === 'p_1777779653351' || question?.pathId === 'p_tahsili') return true;
+  if (quiz?.pathId === 'p_1777779653351' || quiz?.pathId === 'p_tahsili') return true;
+
+  const tahsiliSubjectIds = [
+    'sub_1784980706034', // Physics
+    'sub_1784980728386', // Chemistry
+    'sub_1777784609152', // Math
+    'sub_tah_biology_bio26', // Biology
+    'sub_physics',
+    'sub_chemistry',
+    'sub_math',
+    'sub_biology',
+  ];
+  if (question?.subjectId && tahsiliSubjectIds.includes(question.subjectId)) return true;
+  if (quiz?.subjectId && tahsiliSubjectIds.includes(quiz.subjectId)) return true;
+
+  const subjectStr = String(question?.subject || quiz?.subject || '').toLowerCase();
+  if (
+    subjectStr.includes('tahsili') ||
+    subjectStr.includes('phys') ||
+    subjectStr.includes('chem') ||
+    subjectStr.includes('bio') ||
+    subjectStr.includes('math')
+  ) return true;
+
+  const codeStr = String(question?.questionCode || '').toUpperCase();
+  if (
+    codeStr.startsWith('TAH-') ||
+    codeStr.includes('PHYS') ||
+    codeStr.includes('CHEM') ||
+    codeStr.includes('BIO') ||
+    codeStr.includes('MATH')
+  ) return true;
+
+  return false;
+};
+
 export const usesImageEmbeddedOptions = (question?: {
   imageUrl?: string;
   optionsEmbeddedInImage?: boolean;
-} | null) => Boolean(question?.imageUrl && question?.optionsEmbeddedInImage);
+  options?: unknown[];
+  examType?: string;
+  pathId?: string;
+  subjectId?: string;
+  subject?: string;
+  questionCode?: string;
+} | null) => {
+  if (!question?.imageUrl || !String(question.imageUrl).trim()) return false;
+  if (question.optionsEmbeddedInImage === true) return true;
+
+  // In all Tahsili subjects, questions with images embed the question stem and options
+  if (isTahsiliQuestion(question)) return true;
+
+  const opts = Array.isArray(question.options) ? question.options : [];
+  if (opts.length === 0) return true;
+
+  const isAllLettersOrEmpty = opts.every((opt) => {
+    if (typeof opt === 'string') {
+      const clean = stripQuestionHtml(opt);
+      return clean === '' || /^[أ-يA-Za-z]$/.test(clean);
+    }
+    return false;
+  });
+  if (isAllLettersOrEmpty) return true;
+
+  return question.optionsEmbeddedInImage !== false;
+};
 
 export const getLearnerOptionLabel = (
-  question: { imageUrl?: string; optionsEmbeddedInImage?: boolean; examType?: string; options?: unknown[] },
+  question: {
+    imageUrl?: string;
+    optionsEmbeddedInImage?: boolean;
+    examType?: string;
+    pathId?: string;
+    subjectId?: string;
+    subject?: string;
+    questionCode?: string;
+    options?: unknown[];
+  },
   option: unknown,
   index: number,
+  quiz?: {
+    examType?: string;
+    pathId?: string;
+    subjectId?: string;
+    subject?: string;
+  } | null,
 ) => {
+  // All Tahsili subjects strictly use Latin A, B, C, D
+  const isLatin = isTahsiliQuestion(question, quiz) ||
+    (Array.isArray(question?.options) && question.options.some((opt) => typeof opt === 'string' && /^[A-D]$/i.test(opt.trim())));
+
+  if (isLatin) {
+    return LATIN_OPTION_LABELS[index] || String.fromCharCode(65 + index);
+  }
+
   if (typeof option === 'string' && /^[A-D]$/i.test(option.trim())) {
     return option.trim().toUpperCase();
   }
-  const isLatin = question?.examType === 'tahsili' ||
-    (Array.isArray(question?.options) && question.options.some(opt => typeof opt === 'string' && /^[A-D]$/i.test(opt.trim())));
 
   if (usesImageEmbeddedOptions(question)) {
-    return isLatin ? (LATIN_OPTION_LABELS[index] || String.fromCharCode(65 + index)) : getQuizOptionLabel(index);
+    return getQuizOptionLabel(index);
   }
   if (typeof option === 'string') {
     const normalized = stripQuestionHtml(option);
     return normalized && normalized !== '[object Object]'
       ? normalized
-      : (isLatin ? (LATIN_OPTION_LABELS[index] || String(index + 1)) : getQuizOptionLabel(index));
+      : getQuizOptionLabel(index);
   }
-  return isLatin ? (LATIN_OPTION_LABELS[index] || String(index + 1)) : getQuizOptionLabel(index);
+  return getQuizOptionLabel(index);
 };
 
 export const getQuizOptionGridClass = (

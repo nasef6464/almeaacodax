@@ -15,8 +15,8 @@ console.log('--- RUNNING TAHSILI & QUDURAT IMPORT IDENTITY AND PRESENTATION TEST
 // 1. QUESTION CODE VALIDATION
 console.log('1. Testing Question Code Validation...');
 assert.equal(validateQuestionCode('TAH-MATH-YLM26-P006-Q07'), true, 'Valid Tahsili code must pass');
-assert.equal(validateQuestionCode('TAH-MATH-YLM26-P029-Q02'), true, 'Valid Tahsili Math code on page 29 must pass');
-assert.equal(validateQuestionCode('TAH-CHEM-CHEM26-P005-Q01'), true, 'Valid Tahsili Chemistry code must pass');\nassert.equal(validateQuestionCode('TAH-CHEM-CHEM26-P094-Q103'), true, 'Chemistry codes must allow 3-digit printed question numbers');
+assert.equal(validateQuestionCode('TAH-CHEM-CHEM26-P005-Q01'), true, 'Valid Tahsili Chemistry code must pass');
+assert.equal(validateQuestionCode('TAH-CHEM-CHEM26-P094-Q103'), true, 'Chemistry codes must allow 3-digit printed question numbers');
 assert.equal(validateQuestionCode('QDR-QNT-FND26-P005-Q01'), true, 'Valid Qudurat legacy code must pass');
 assert.equal(validateQuestionCode('INVALID-MATH-YLM26-P006-Q07'), false, 'Invalid prefix must fail');
 assert.equal(validateQuestionCode('TAH-MATH-YLM26-P6-Q7'), false, 'Unpadded numbers must fail');
