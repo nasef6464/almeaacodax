@@ -2,7 +2,7 @@ import { Router } from "express";
 import { StatusCodes } from "http-status-codes";
 import mongoose from "mongoose";
 import { z } from "zod";
-import { AccessGrantModel } from "../models/AccessGrant.js";
+import { hasCourseEntitlement } from "../services/entitlementPolicy.js";
 import { CourseModel } from "../models/Course.js";
 import { LessonModel } from "../models/Lesson.js";
 import { QuizModel } from "../models/Quiz.js";
@@ -282,55 +282,6 @@ const assertAssignedTrainerCanOwnCourse = async (course: {
   if (!matchesManagedContentScope(scope, course)) {
     throw badRequest("لا يمكن تعيين هذا المدرب لأن الدورة خارج المسارات أو المواد المسندة إليه.");
   }
-};
-
-const normalizeStringList = (value: unknown) =>
-  Array.isArray(value) ? value.map((item) => String(item || "").trim()).filter(Boolean) : [];
-
-const grantAllowsCourse = (grant: any, course: any) => {
-  if (!grant || grant.status !== "active") return false;
-  const expiresAt = Number(grant.expiresAt || 0);
-  if (expiresAt > 0 && expiresAt <= Date.now()) return false;
-
-  const courseId = String(course.id || course._id || "").trim();
-  const coursePathId = String(course.pathId || course.category || "").trim();
-  const courseSubjectId = String(course.subjectId || course.subject || "").trim();
-  const courseIds = normalizeStringList(grant.courseIds);
-  if (courseIds.length > 0) return courseIds.includes(courseId);
-
-  const contentTypes = normalizeStringList(grant.contentTypes);
-  if (!contentTypes.includes("all") && !contentTypes.includes("courses")) return false;
-
-  const pathIds = normalizeStringList(grant.pathIds);
-  const subjectIds = normalizeStringList(grant.subjectIds);
-  const matchesPath = pathIds.length === 0 || (!!coursePathId && pathIds.includes(coursePathId));
-  const matchesSubject = subjectIds.length === 0 || (!!courseSubjectId && subjectIds.includes(courseSubjectId));
-  return matchesPath && matchesSubject;
-};
-
-const hasCourseEntitlement = async (userId: string, course: any) => {
-  const [user, activeGrants] = await Promise.all([
-    UserModel.findById(userId).select("enrolledCourses subscription").lean(),
-    AccessGrantModel.find({ userId, status: "active" })
-      .select("courseIds contentTypes pathIds subjectIds status expiresAt")
-      .lean(),
-  ]);
-  if (!user) return false;
-
-  const courseId = String(course.id || course._id || "").trim();
-  const enrolledCourseIds = new Set([
-    ...normalizeStringList((user as any).enrolledCourses),
-    ...normalizeStringList((user as any).subscription?.purchasedCourses),
-  ]);
-  const purchasedPackages = new Set(normalizeStringList((user as any).subscription?.purchasedPackages));
-  const isPremiumSubscription = String((user as any).subscription?.plan || "free") === "premium";
-
-  return (
-    isPremiumSubscription ||
-    enrolledCourseIds.has(courseId) ||
-    purchasedPackages.has(courseId) ||
-    activeGrants.some((grant) => grantAllowsCourse(grant, course))
-  );
 };
 
 const redactRestrictedLessonPayload = (lesson: any) => {

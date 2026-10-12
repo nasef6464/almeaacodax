@@ -1,50 +1,12 @@
-import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { advanceAuthSession, captureAuthActor, isCurrentAuthActor } from '../utils/authSessionLifetime';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { api } from '../services/api';
-import { Role } from '../types';
+import { resetStoreUser, syncStoreUser } from './authStoreSync';
 import { useStore } from '../store/useStore';
 import { DEFAULT_AVATAR } from '../utils/defaultAvatar';
 
-type BackendRole = 'student' | 'teacher' | 'admin' | 'supervisor' | 'school_admin' | 'parent';
-
-interface BackendAuthUser {
-  _id?: string;
-  id?: string;
-  name: string;
-  email: string;
-  avatar?: string;
-  role: BackendRole;
-  points?: number;
-  badges?: string[];
-  isActive?: boolean;
-  schoolId?: string | null;
-  groupIds?: string[];
-  linkedStudentIds?: string[];
-  managedPathIds?: string[];
-  managedSubjectIds?: string[];
-  favorites?: string[];
-  reviewLater?: string[];
-  enrolledCourses?: string[];
-  enrolledPaths?: string[];
-  completedLessons?: string[];
-  interactiveVideoProgress?: Array<{ courseId: string; lessonId: string; positionSeconds: number; answeredQuestionIds: string[]; updatedAt: number }>;
-  subscription?: {
-    plan?: 'free' | 'premium';
-    expiresAt?: string;
-    purchasedCourses?: string[] | string;
-    purchasedPackages?: string[] | string;
-  };
-}
-
-interface SessionUser {
-  id: string;
-  email: string;
-  displayName: string;
-  photoURL: string;
-  role: BackendRole;
-  groupIds?: string[];
-  schoolId?: string | null;
-  token?: string;
-}
+import type { BackendRole, BackendAuthUser, SessionUser } from './authTypes';
+export type { BackendRole, BackendAuthUser, SessionUser } from './authTypes';
 
 interface AuthContextType {
   user: SessionUser | null;
@@ -73,15 +35,6 @@ const AUTH_BOOTSTRAP_PRIVATE_PREFIXES = [
   '/profile',
   '/favorites',
 ];
-
-const roleMap: Record<BackendRole, Role> = {
-  admin: Role.ADMIN,
-  teacher: Role.TEACHER,
-  student: Role.STUDENT,
-  supervisor: Role.SUPERVISOR,
-  school_admin: Role.SCHOOL_ADMIN,
-  parent: Role.PARENT,
-};
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -122,14 +75,6 @@ const buildDevBackendUser = (role: BackendRole): BackendAuthUser => ({
   },
 });
 
-const toArray = (value?: string[] | string): string[] => {
-  if (Array.isArray(value)) return value;
-  if (typeof value === 'string' && value.trim().length > 0) {
-    return value.split(',').map((item) => item.trim()).filter(Boolean);
-  }
-  return [];
-};
-
 const buildSessionUser = (user: BackendAuthUser): SessionUser => ({
   id: String(user.id || user._id || user.email),
   email: user.email,
@@ -139,72 +84,6 @@ const buildSessionUser = (user: BackendAuthUser): SessionUser => ({
   groupIds: Array.isArray(user.groupIds) ? user.groupIds.map(String) : [],
   schoolId: user.schoolId ?? null,
 });
-
-const syncStoreUser = (sessionUser: SessionUser | null, backendUser?: BackendAuthUser | null) => {
-  if (!sessionUser) return;
-  const existing = useStore.getState().user;
-  useStore.setState({
-    user: {
-      ...existing,
-      id: sessionUser.id,
-      name: sessionUser.displayName,
-      email: sessionUser.email,
-      avatar: sessionUser.photoURL,
-      role: roleMap[sessionUser.role],
-      points: backendUser?.points ?? existing.points,
-      badges: backendUser?.badges ?? existing.badges,
-      isActive: backendUser?.isActive ?? existing.isActive,
-      schoolId: backendUser?.schoolId ?? sessionUser.schoolId ?? existing.schoolId,
-      groupIds: backendUser?.groupIds ?? sessionUser.groupIds ?? existing.groupIds,
-      linkedStudentIds: backendUser?.linkedStudentIds ?? existing.linkedStudentIds,
-      managedPathIds: backendUser?.managedPathIds ?? existing.managedPathIds,
-      managedSubjectIds: backendUser?.managedSubjectIds ?? existing.managedSubjectIds,
-      interactiveVideoProgress: backendUser?.interactiveVideoProgress ?? existing.interactiveVideoProgress,
-      subscription: {
-        ...existing?.subscription,
-        plan: backendUser?.subscription?.plan ?? existing?.subscription?.plan ?? 'free',
-        expiresAt: backendUser?.subscription?.expiresAt ?? existing?.subscription?.expiresAt,
-        purchasedCourses: backendUser
-          ? toArray(backendUser?.subscription?.purchasedCourses)
-          : (existing?.subscription?.purchasedCourses || []),
-        purchasedPackages: backendUser
-          ? toArray(backendUser?.subscription?.purchasedPackages)
-          : (existing?.subscription?.purchasedPackages || []),
-      },
-    },
-    favorites: backendUser ? (backendUser.favorites ?? useStore.getState().favorites) : useStore.getState().favorites,
-    reviewLater: backendUser ? (backendUser.reviewLater ?? useStore.getState().reviewLater) : useStore.getState().reviewLater,
-    enrolledCourses: backendUser ? (backendUser.enrolledCourses ?? useStore.getState().enrolledCourses) : useStore.getState().enrolledCourses,
-    enrolledPaths: backendUser ? (backendUser.enrolledPaths ?? useStore.getState().enrolledPaths) : useStore.getState().enrolledPaths,
-    completedLessons: backendUser ? (backendUser.completedLessons ?? useStore.getState().completedLessons) : useStore.getState().completedLessons,
-  });
-};
-
-const resetStoreUser = () => {
-  const existing = useStore.getState().user;
-  useStore.setState({
-    user: {
-      ...existing,
-      id: 'guest',
-      name: 'Guest User',
-      email: undefined,
-      avatar: DEFAULT_AVATAR,
-      role: Role.STUDENT,
-      points: 0,
-      badges: [],
-      subscription: { plan: 'free', expiresAt: undefined, purchasedCourses: [], purchasedPackages: [] },
-    },
-    examResults: [],
-    questionAttempts: [],
-    favorites: [],
-    reviewLater: [],
-    recentActivity: [],
-    enrolledCourses: [],
-    enrolledPaths: [],
-    completedLessons: [],
-    cartItems: [],
-  });
-};
 
 const restoreInitialSession = (): SessionUser | null => {
   try {
@@ -234,6 +113,7 @@ const restoreInitialSession = (): SessionUser | null => {
       delete parsed.token;
       sessionStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(parsed));
     }
+    advanceAuthSession();
     syncStoreUser(parsed);
     return parsed;
   } catch (error) {
@@ -258,6 +138,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const initialPath = useMemo(() => getCurrentRoutePath(), []);
   const shouldBootstrapInitialAuth = !initialUser && shouldBootstrapAuthForPath(initialPath);
   const [user, setUser] = useState<SessionUser | null>(initialUser);
+  const logoutStartedRef = useRef(false);
   const [loading, setLoading] = useState(shouldBootstrapInitialAuth);
 
   useEffect(() => {
@@ -270,6 +151,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return;
     }
 
+    if (logoutStartedRef.current) { setLoading(false); return; }
     const currentPath = getCurrentRoutePath();
     const hasPendingOauthBootstrap = sessionStorage.getItem(OAUTH_BOOTSTRAP_FLAG_KEY) === '1';
     if (!shouldBootstrapAuthForPath(currentPath) && !hasPendingOauthBootstrap) {
@@ -278,12 +160,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
 
     let cancelled = false;
+    const actor = captureAuthActor(useStore.getState().user);
     setLoading(true);
     api.getCurrentUser()
       .then((response) => {
-        if (cancelled) return;
+        if (cancelled || !isCurrentAuthActor(actor, useStore.getState().user)) return;
         const backendUser = (response as { user?: BackendAuthUser })?.user;
         if (backendUser?.email && backendUser?.role) {
+          advanceAuthSession();
           const sessionUser = buildSessionUser(backendUser);
           sessionStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(sessionUser));
           setUser(sessionUser);
@@ -311,6 +195,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
 
     let cancelled = false;
+    const actor = captureAuthActor(useStore.getState().user);
+    const isCurrent = () => !cancelled && isCurrentAuthActor(actor, useStore.getState().user);
     let idleHandle: number | undefined;
     let timer: number | undefined;
 
@@ -320,22 +206,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         api.getQuestionAttempts({ page: 1, limit: 100 }),
       ])
         .then(([resultsPage, questionAttempts]) => {
-          if (cancelled) return;
+          if (!isCurrent()) return;
           useStore.getState().hydrateExamResults((resultsPage as { data?: unknown[] })?.data as any[] || []);
           useStore.getState().hydrateQuestionAttempts(questionAttempts as any[]);
         })
-        .catch((error) => console.warn('Failed to hydrate non-critical session data:', error));
+        .catch((error) => { if (isCurrent()) console.warn('Failed to hydrate non-critical session data:', error); });
     };
 
     api.getCurrentUser()
       .then((currentUserResponse) => {
-        if (cancelled) return;
+        if (!isCurrent()) return;
         syncStoreUser(user, (currentUserResponse as { user?: BackendAuthUser })?.user || null);
         const requestIdle = window.requestIdleCallback?.bind(window);
         if (requestIdle) idleHandle = requestIdle(hydrateNonCriticalSessionData, { timeout: 2500 });
         else timer = window.setTimeout(hydrateNonCriticalSessionData, 900);
       })
       .catch((error) => {
+        if (!isCurrent()) return;
         console.warn('Failed to hydrate session data:', error);
         if (isAuthSessionError(error)) {
           sessionStorage.removeItem(SESSION_STORAGE_KEY);
@@ -352,6 +239,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [user]);
 
   function persistSession(sessionUser: SessionUser, backendUser: BackendAuthUser) {
+    logoutStartedRef.current = false;
+    advanceAuthSession();
     sessionStorage.setItem(SESSION_STORAGE_KEY, JSON.stringify(sessionUser));
     setUser(sessionUser);
     setLoading(false);
@@ -389,11 +278,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const logout = async () => {
-    try { await api.logout(); } catch (error) { console.warn('Failed to clear server session cookie:', error); }
+    logoutStartedRef.current = true;
     sessionStorage.removeItem(SESSION_STORAGE_KEY);
     setUser(null);
     setLoading(false);
     resetStoreUser();
+    try { await api.logout(); } catch (error) { console.warn('Failed to clear server session cookie:', error); }
   };
 
   const devSwitchRole = (role: BackendRole) => {
@@ -404,8 +294,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const refreshProfile = useCallback(async () => {
+    const actor = captureAuthActor(useStore.getState().user);
+    if (!actor.actorId || actor.actorId === 'guest') return;
     try {
       const response = await api.getCurrentUser();
+      if (!isCurrentAuthActor(actor, useStore.getState().user)) return;
       const backendUser = (response as { user?: BackendAuthUser })?.user;
       if (backendUser && backendUser.email && backendUser.role) {
         const sessionUser = buildSessionUser(backendUser);
@@ -414,7 +307,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         syncStoreUser(sessionUser, backendUser);
       }
     } catch (error) {
-      console.warn('Failed to refresh profile in background:', error);
+      if (isCurrentAuthActor(actor, useStore.getState().user)) console.warn('Failed to refresh profile in background:', error);
     }
   }, []);
 

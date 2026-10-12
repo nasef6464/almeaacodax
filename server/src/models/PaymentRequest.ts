@@ -37,6 +37,17 @@ const paymentRequestSchema = new Schema(
     reviewedBy: { type: String, default: "" },
     reviewedAt: { type: Number, default: null },
     reviewerNotes: { type: String, default: "" },
+    fulfillment: {
+      type: new Schema({
+        version: { type: Number },
+        state: { type: String, enum: ["pending", "completed", "failed", "reconciliation_required"], required: true },
+        acceptedAt: { type: Number },
+        completedAt: { type: Number },
+        error: { type: String },
+        scope: { type: Schema.Types.Mixed },
+      }, { _id: false }),
+      default: undefined,
+    },
   },
   {
     timestamps: true,

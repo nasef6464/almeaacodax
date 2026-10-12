@@ -756,6 +756,13 @@ export interface PaymentRequest {
     currency: string;
     paymentMethod: PaymentMethodKey;
     status: PaymentRequestStatus;
+    fulfillment?: {
+        version?: 1;
+        state: 'pending' | 'completed' | 'failed' | 'reconciliation_required';
+        acceptedAt?: number;
+        completedAt?: number;
+        error?: string;
+    };
     transferReference?: string;
     walletNumber?: string;
     receiptUrl?: string;

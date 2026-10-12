@@ -21,7 +21,7 @@ export const resolveContentBootstrapRequest = ({
   const includeOperationalData = scope !== "learning";
   const includeStudyPlans = !isOperationsOnly && scope !== "learning" && phase === "full";
   const isNonStaffAuthedLearning = isAuthenticated && !canUseFullScope && scope === "learning";
-  const canUseSharedCache = !isAuthenticated || isNonStaffAuthedLearning;
+  const canUseSharedCache = !isAuthenticated || (isNonStaffAuthedLearning && isLearningCore);
 
   return {
     scope,

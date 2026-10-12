@@ -10,7 +10,8 @@ import { DiscountCodeModel } from "../models/DiscountCode.js";
 import { PaymentRequestModel } from "../models/PaymentRequest.js";
 import { PaymentSettingsModel } from "../models/PaymentSettings.js";
 import { UserModel } from "../models/User.js";
-import { grantAccessToUser } from "../services/accessGrantService.js";
+import { acceptAndFulfillPayment } from "../services/paymentFulfillment.js";
+import { verifyTapChargeSignature, tapChargeBindingError, paymentMinorUnits } from "../services/tapWebhook.js";
 import { PaymentGatewayEventGuardModel } from "../models/PaymentGatewayEventGuard.js";
 import { recordAdminAuditLog } from "../services/adminAuditLog.js";
 import { buildPaginatedResponse, resolvePagination } from "../utils/pagination.js";
@@ -376,24 +377,6 @@ const resolveTapAuthToken = () => {
   return apiKey || secretKey;
 };
 
-const buildTapSignaturePayload = (payload: unknown) => JSON.stringify(payload);
-
-const verifyTapWebhookSignature = (payload: unknown, signatureHeader?: string | string[]) => {
-  const { webhookSecret } = getTapApiConfig();
-  if (!webhookSecret) return false;
-  const provided = String(Array.isArray(signatureHeader) ? signatureHeader[0] : signatureHeader || "")
-    .replace(/^sha256=/i, "")
-    .trim();
-  if (!provided) return false;
-  const computed = crypto
-    .createHmac("sha256", webhookSecret)
-    .update(buildTapSignaturePayload(payload))
-    .digest("hex");
-  const expected = Buffer.from(computed);
-  const actual = Buffer.from(provided);
-  return expected.length === actual.length && crypto.timingSafeEqual(expected, actual);
-};
-
 const extractTapTransactionUrl = (tapResponse: any) =>
   String(
     tapResponse?.transaction?.url ||
@@ -632,151 +615,11 @@ const reservePaymentGatewayEvent = async (payload: {
   }
 };
 
-const releasePaymentGatewayEvent = async (key: string) => {
-  await PaymentGatewayEventGuardModel.deleteOne({ key });
-};
-
 const calculateDiscountAmount = (discountCode: any, amount: number) => {
   if (discountCode.type === "fixed") {
     return Math.min(amount, Math.max(0, discountCode.value));
   }
   return Math.min(amount, Math.round((amount * Math.min(Math.max(discountCode.value, 0), 100)) / 100));
-};
-
-const reserveDiscountRedemptionForRequest = async (requestDoc: any) => {
-  if (!requestDoc.discountCode || !requestDoc.discountCodeId) return true;
-
-  const redemption = await DiscountCodeModel.findOneAndUpdate(
-    {
-      _id: requestDoc.discountCodeId,
-      status: "active",
-      $or: [{ maxRedemptions: 0 }, { $expr: { $lt: ["$currentRedemptions", "$maxRedemptions"] } }],
-    },
-    { $inc: { currentRedemptions: 1 } },
-    { new: true },
-  );
-
-  return Boolean(redemption);
-};
-
-const completeApprovedPaymentRequest = async (
-  requestDoc: any,
-  review: {
-    reviewedBy: string;
-    reviewerNotes?: string;
-    approvalEvidence: string;
-    gatewayProvider?: string;
-    gatewayTransactionId?: string;
-    gatewayEventId?: string;
-    gatewayPaidAt?: number;
-  },
-) => {
-  const updatedRequest = await PaymentRequestModel.findOneAndUpdate(
-    { _id: requestDoc._id, status: "pending" },
-    {
-      $set: {
-        status: "approved",
-        reviewerNotes: review.reviewerNotes || "",
-        approvalEvidence: review.approvalEvidence,
-        reviewedBy: review.reviewedBy,
-        reviewedAt: Date.now(),
-        gatewayProvider: review.gatewayProvider || requestDoc.gatewayProvider || "",
-        gatewayTransactionId: review.gatewayTransactionId || requestDoc.gatewayTransactionId || "",
-        gatewayEventId: review.gatewayEventId || requestDoc.gatewayEventId || "",
-        gatewayPaidAt: review.gatewayPaidAt || requestDoc.gatewayPaidAt || null,
-      },
-    },
-    { new: true },
-  );
-
-  if (!updatedRequest) {
-    return {
-      request: null,
-      duplicate: true,
-    };
-  }
-
-  return {
-    request: updatedRequest,
-    duplicate: false,
-  };
-};
-
-const grantApprovedPaymentAccess = async (updatedRequest: any, review: {
-  reviewedBy: string;
-  gatewayEventId?: string;
-  gatewayProvider?: string;
-  gatewayTransactionId?: string;
-}) => {
-  if (updatedRequest.itemType === "subscription") {
-    const plan = String(updatedRequest.itemId || "").replace(/^subscription_/, "") as z.infer<typeof subscriptionPlanSchema>;
-    const selectedPlan = SUBSCRIPTION_PLANS[plan];
-    if (!selectedPlan) {
-      const user = await UserModel.findById(updatedRequest.userId).lean();
-      return { user, grant: null };
-    }
-    const existingUser = await UserModel.findById(updatedRequest.userId).select("subscription.expiresAt").lean();
-    const now = Date.now();
-    const currentExpiry = Number(new Date((existingUser as any)?.subscription?.expiresAt || 0).getTime()) || 0;
-    const base = currentExpiry > now ? currentExpiry : now;
-    const expiresAt = new Date(base + selectedPlan.durationDays * 24 * 60 * 60 * 1000);
-    const user = await UserModel.findByIdAndUpdate(
-      updatedRequest.userId,
-      {
-        $set: {
-          "subscription.plan": selectedPlan.userPlan,
-          "subscription.expiresAt": expiresAt,
-        },
-      },
-      { new: true },
-    ).lean();
-    return { user, grant: null };
-  }
-
-  const packageId = updatedRequest.packageId || (updatedRequest.itemType === "package" ? updatedRequest.itemId : undefined);
-  const derivedIncludedCourseIds =
-    updatedRequest.itemType === "package" && Array.isArray(updatedRequest.includedCourseIds)
-      ? [
-          ...(Array.isArray(updatedRequest.includedCourseIds) ? updatedRequest.includedCourseIds.map(String) : []),
-        ]
-      : [];
-  const courseIds = [
-    ...(updatedRequest.itemType === "course" ? [updatedRequest.itemId] : []),
-    ...derivedIncludedCourseIds,
-  ];
-  const grantResult = await grantAccessToUser({
-    userId: updatedRequest.userId,
-    sourceType: review.gatewayEventId ? "payment_webhook" : "payment_request",
-    sourceId: review.gatewayEventId
-      ? `${String(updatedRequest.id || updatedRequest._id)}:${review.gatewayEventId}`
-      : String(updatedRequest.id || updatedRequest._id),
-    packageId,
-    courseIds,
-    contentTypes: Array.isArray(updatedRequest.contentTypes) ? updatedRequest.contentTypes.map(String) : [],
-    pathIds: Array.isArray(updatedRequest.pathIds) ? updatedRequest.pathIds.map(String) : [],
-    subjectIds: Array.isArray(updatedRequest.subjectIds) ? updatedRequest.subjectIds.map(String) : [],
-    grantedBy: review.reviewedBy,
-    idempotencyKey: review.gatewayEventId
-      ? `payment_webhook:${String(updatedRequest.id || updatedRequest._id)}:${review.gatewayEventId}`
-      : `payment_request:${String(updatedRequest.id || updatedRequest._id)}`,
-    metadata: {
-      paymentRequestId: String(updatedRequest.id || updatedRequest._id),
-      itemType: updatedRequest.itemType,
-      itemId: updatedRequest.itemId,
-      amount: updatedRequest.amount,
-      currency: updatedRequest.currency,
-      paymentProviderCode: updatedRequest.paymentProviderCode || "",
-      paymentGatewayMode: updatedRequest.paymentGatewayMode || "",
-      paymentCountry: updatedRequest.paymentCountry || "",
-      gatewayProvider: review.gatewayProvider || "",
-      gatewayTransactionId: review.gatewayTransactionId || "",
-    },
-  });
-
-  return {
-    user: grantResult.user,
-    grant: grantResult.grant,
-  };
 };
 
 export const paymentRouter = Router();
@@ -1083,93 +926,35 @@ paymentRouter.post(
   "/webhooks/tap",
   asyncHandler(async (req, res) => {
     const payload = req.body || {};
-    const signatureHeader = req.headers["x-signature"] || req.headers["x-tap-signature"];
-    const signatureOk = verifyTapWebhookSignature(payload, signatureHeader);
-    if (!signatureOk) {
+    if (!verifyTapChargeSignature(payload, req.headers.hashstring, resolveTapAuthToken())) {
       return res.status(StatusCodes.UNAUTHORIZED).json({ message: "Invalid Tap webhook signature" });
     }
-
-    const eventType = String(payload?.object || payload?.event || "").toUpperCase();
-    const chargeId = String(payload?.id || payload?.data?.id || "").trim();
-    const chargeStatus = String(payload?.status || payload?.data?.status || "").toUpperCase();
-    const transactionRef = String(payload?.reference?.transaction || payload?.reference?.order || "").trim();
-    const requestLookupId = transactionRef || chargeId;
-
-    if (!requestLookupId) {
-      return res.status(StatusCodes.BAD_REQUEST).json({ message: "Missing payment request reference" });
+    // Only the SIGNED charge identity can locate an order. References are unsigned.
+    const requestDoc = await PaymentRequestModel.findOne({ gatewayProvider: "tap", gatewayTransactionId: payload.id });
+    if (!requestDoc) return res.status(StatusCodes.CONFLICT).json({ message: "Tap charge binding is not ready" });
+    const bindingError = tapChargeBindingError(requestDoc, payload);
+    if (bindingError) return res.status(StatusCodes.BAD_REQUEST).json({ message: bindingError });
+    if (payload.status !== "CAPTURED") {
+      // Tap Charges reference lists these as final failures. Unknown and
+      // intermediate states are intentionally left for a subsequent callback.
+      const terminal = ["FAILED", "DECLINED", "CANCELLED", "ABANDONED", "TIMEDOUT", "RESTRICTED", "VOID"].includes(payload.status);
+      if (terminal) {
+        await PaymentRequestModel.findOneAndUpdate({ _id: requestDoc._id, status: "pending" }, { $set: {
+          status: payload.status === "CANCELLED" ? "cancelled" : "rejected",
+          reviewerNotes: `tap_${payload.status}`, reviewedBy: "webhook:tap", reviewedAt: Date.now(),
+        } });
+      }
+      const current = await PaymentRequestModel.findById(requestDoc._id);
+      return res.json({ ok: true, status: current?.status, request: current });
     }
-
-    const requestDoc = await PaymentRequestModel.findOne({
-      $or: [
-        ...buildPaymentRequestLookup(requestLookupId).$or,
-        { gatewayTransactionId: chargeId },
-      ],
+    const result = await acceptAndFulfillPayment(requestDoc, {
+      reviewedBy: "webhook:tap", reviewerNotes: "tap charge captured", approvalEvidence: `tap:${payload.id}`,
+      gatewayProvider: "tap", gatewayTransactionId: payload.id, gatewayEventId: payload.id, gatewayPaidAt: Date.now(),
     });
-
-    if (!requestDoc) {
-      return res.status(StatusCodes.NOT_FOUND).json({ message: "Payment request not found" });
-    }
-
-    if (requestDoc.status === "approved") {
-      return res.json({ ok: true, duplicate: true, requestId: String(requestDoc.id || requestDoc._id) });
-    }
-
-    const isCaptured = eventType.includes("CHARGE") && chargeStatus === "CAPTURED";
-    if (!isCaptured) {
-      const failStatus = chargeStatus === "CANCELLED" ? "cancelled" : "rejected";
-      await PaymentRequestModel.findByIdAndUpdate(requestDoc._id, {
-        $set: {
-          status: failStatus,
-          reviewerNotes: `tap_${chargeStatus || "FAILED"}`,
-          gatewayProvider: "tap",
-          gatewayTransactionId: chargeId || requestDoc.gatewayTransactionId || "",
-          gatewayEventId: String(payload?.id || requestDoc.gatewayEventId || ""),
-          reviewedBy: "webhook:tap",
-          reviewedAt: Date.now(),
-        },
-      });
-      return res.json({ ok: true, status: failStatus });
-    }
-
-    const approved = await completeApprovedPaymentRequest(requestDoc, {
-      reviewedBy: "webhook:tap",
-      reviewerNotes: "tap charge captured",
-      approvalEvidence: `tap:${chargeId}`,
-      gatewayProvider: "tap",
-      gatewayTransactionId: chargeId,
-      gatewayEventId: String(payload?.id || ""),
-      gatewayPaidAt: Date.now(),
-    });
-
-    if (approved.duplicate || !approved.request) {
-      return res.status(StatusCodes.CONFLICT).json({ message: "Payment request is not pending" });
-    }
-
-    const discountReserved = await reserveDiscountRedemptionForRequest(approved.request);
-    if (!discountReserved) {
-      await PaymentRequestModel.findByIdAndUpdate(approved.request._id, {
-        $set: {
-          status: "pending",
-          reviewerNotes: PAYMENT_ERRORS.discountNoLongerAvailableForApproval,
-          approvalEvidence: "",
-          reviewedBy: "",
-          reviewedAt: null,
-        },
-      });
-      return res.status(StatusCodes.CONFLICT).json({ message: PAYMENT_ERRORS.discountApprovalFailedDuringReview });
-    }
-
-    await grantApprovedPaymentAccess(approved.request, {
-      reviewedBy: "webhook:tap",
-      gatewayProvider: "tap",
-      gatewayTransactionId: chargeId,
-      gatewayEventId: String(payload?.id || ""),
-    });
-
-    return res.json({ ok: true, status: "approved", requestId: String(approved.request.id || approved.request._id) });
+    return res.status(result.statusCode).json({ ...result, ok: result.statusCode === 200, status: result.request?.status,
+      requestId: result.request?.id, message: result.error, accessGrant: result.grant });
   }),
 );
-
 paymentRouter.get(
   "/settings",
   optionalAuth,
@@ -1734,239 +1519,71 @@ paymentRouter.post(
   asyncHandler(async (req, res) => {
     const payload = paymentWebhookSchema.parse(req.body);
     const settings = await getOrCreateSettings();
-    const webhookSecret = getPaymentWebhookSecret(settings);
-
-    if (!settings.webhookEnabled && !process.env.PAYMENT_WEBHOOK_SECRET) {
+    if (!settings.webhookEnabled && !process.env.PAYMENT_WEBHOOK_SECRET)
       return res.status(StatusCodes.SERVICE_UNAVAILABLE).json({ message: "Payment webhook is disabled" });
-    }
-
-    if (!verifyPaymentWebhookSignature(webhookSecret, req.body, req.headers["x-payment-signature"])) {
-      await recordAdminAuditLog(req, {
-        action: "payment.webhook.rejected",
-        resourceType: "payment-request",
-        resourceId: payload.paymentRequestId,
-        status: "blocked",
-        metadata: { provider: payload.provider, eventId: payload.eventId, reason: "invalid-signature" },
-      });
+    if (!verifyPaymentWebhookSignature(getPaymentWebhookSecret(settings), req.body, req.headers["x-payment-signature"])) {
+      await recordAdminAuditLog(req, { action: "payment.webhook.rejected", resourceType: "payment-request",
+        resourceId: payload.paymentRequestId, status: "blocked",
+        metadata: { provider: payload.provider, eventId: payload.eventId, reason: "invalid-signature" } });
       return res.status(StatusCodes.UNAUTHORIZED).json({ message: "Invalid payment webhook signature" });
     }
-
     const requestDoc = await PaymentRequestModel.findOne(buildPaymentRequestLookup(payload.paymentRequestId));
-    if (!requestDoc) {
-      return res.status(StatusCodes.NOT_FOUND).json({ message: "Payment request not found" });
+    if (!requestDoc) return res.status(StatusCodes.NOT_FOUND).json({ message: "Payment request not found" });
+    // Validate money before claiming the provider event, even on completed replay.
+    if (payload.status === "paid") {
+      if (payload.currency !== requestDoc.currency || paymentMinorUnits(payload.paidAmount, payload.currency) === null
+          || paymentMinorUnits(payload.paidAmount, payload.currency) !== paymentMinorUnits(requestDoc.amount, requestDoc.currency))
+        return res.status(StatusCodes.BAD_REQUEST).json({ message: "Payment amount or currency mismatch" });
     }
-
-    if (requestDoc.gatewayEventId === payload.eventId || requestDoc.status === "approved") {
-      return res.json({ ok: true, duplicate: true, request: requestDoc });
-    }
-
-    const eventReservation = await reservePaymentGatewayEvent({
-      paymentRequestId: String(requestDoc.id || requestDoc._id),
-      provider: payload.provider,
-      eventId: payload.eventId,
-      transactionId: payload.transactionId,
-    });
-
-    if (!eventReservation.reserved) {
-      if (eventReservation.sameRequest) {
-        return res.json({ ok: true, duplicate: true, request: requestDoc });
-      }
+    const reservation = await reservePaymentGatewayEvent({ paymentRequestId: requestDoc.id,
+      provider: payload.provider, eventId: payload.eventId, transactionId: payload.transactionId });
+    if (!reservation.reserved && !reservation.sameRequest)
       return res.status(StatusCodes.CONFLICT).json({ message: "Payment gateway event was already used" });
-    }
-
-    if (requestDoc.status !== "pending") {
-      await releasePaymentGatewayEvent(eventReservation.key);
-      return res.status(StatusCodes.CONFLICT).json({ message: "Payment request is not pending" });
-    }
-
+    // A same-order event claim proves ownership, never fulfillment completion.
     if (payload.status !== "paid") {
-      const rejectedRequest = await PaymentRequestModel.findOneAndUpdate(
-        { _id: requestDoc._id, status: "pending" },
-        {
-          $set: {
-            status: payload.status === "cancelled" ? "cancelled" : "rejected",
-            reviewerNotes: `تحديث حالة الدفع: ${payload.status}`,
-            reviewedBy: `webhook:${payload.provider}`,
-            reviewedAt: Date.now(),
-            gatewayProvider: payload.provider,
-            gatewayTransactionId: payload.transactionId || "",
-            gatewayEventId: payload.eventId,
-          },
-        },
-        { new: true },
-      );
-      return res.json({ ok: true, request: rejectedRequest || requestDoc });
+      await PaymentRequestModel.findOneAndUpdate({ _id: requestDoc._id, status: "pending" }, { $set: {
+        status: payload.status === "cancelled" ? "cancelled" : "rejected",
+        reviewerNotes: `Payment status: ${payload.status}`, reviewedBy: `webhook:${payload.provider}`, reviewedAt: Date.now(),
+      } });
+      return res.json({ ok: true, request: await PaymentRequestModel.findById(requestDoc._id) });
     }
-
-    if (payload.currency && payload.currency !== requestDoc.currency) {
-      await releasePaymentGatewayEvent(eventReservation.key);
-      return res.status(StatusCodes.BAD_REQUEST).json({ message: "Payment currency mismatch" });
+    const result = await acceptAndFulfillPayment(requestDoc, { reviewedBy: `webhook:${payload.provider}`,
+      reviewerNotes: "Payment webhook accepted", approvalEvidence: `webhook:${payload.provider}:${payload.transactionId || payload.eventId}`,
+      gatewayProvider: payload.provider, gatewayTransactionId: payload.transactionId || requestDoc.gatewayTransactionId,
+      gatewayEventId: payload.eventId, gatewayPaidAt: payload.occurredAt || Date.now() });
+    if (result.statusCode === 200 && !result.duplicate) {
+      await recordAdminAuditLog(req, { action: "payment.webhook.approved", resourceType: "payment-request", resourceId: requestDoc.id,
+        metadata: { provider: payload.provider, eventId: payload.eventId, transactionId: payload.transactionId || "",
+          amount: payload.paidAmount, userId: requestDoc.userId } });
     }
-
-    if (typeof payload.paidAmount === "number" && payload.paidAmount < requestDoc.amount) {
-      await releasePaymentGatewayEvent(eventReservation.key);
-      return res.status(StatusCodes.BAD_REQUEST).json({ message: "Paid amount is lower than request amount" });
-    }
-
-    const approved = await completeApprovedPaymentRequest(requestDoc, {
-      reviewedBy: `webhook:${payload.provider}`,
-      reviewerNotes: "تم اعتماد الدفع عبر webhook",
-      approvalEvidence: `webhook:${payload.provider}:${payload.transactionId || payload.eventId}`,
-      gatewayProvider: payload.provider,
-      gatewayTransactionId: payload.transactionId || "",
-      gatewayEventId: payload.eventId,
-      gatewayPaidAt: payload.occurredAt || Date.now(),
-    });
-
-    if (approved.duplicate || !approved.request) {
-      await releasePaymentGatewayEvent(eventReservation.key);
-      return res.status(StatusCodes.CONFLICT).json({ message: "Payment request is not pending" });
-    }
-
-    const discountReserved = await reserveDiscountRedemptionForRequest(approved.request);
-    if (!discountReserved) {
-      await PaymentRequestModel.findByIdAndUpdate(approved.request._id, {
-        $set: {
-          status: "pending",
-          reviewerNotes: PAYMENT_ERRORS.discountNoLongerAvailableForApproval,
-          reviewedBy: "",
-          reviewedAt: null,
-          gatewayEventId: "",
-          gatewayPaidAt: null,
-        },
-      });
-      await releasePaymentGatewayEvent(eventReservation.key);
-      return res.status(StatusCodes.CONFLICT).json({ message: "لا يمكن اعتماد طلب غير معلق" });
-    }
-
-    const access = await grantApprovedPaymentAccess(approved.request, {
-      reviewedBy: `webhook:${payload.provider}`,
-      gatewayProvider: payload.provider,
-      gatewayTransactionId: payload.transactionId || "",
-      gatewayEventId: payload.eventId,
-    });
-
-    await recordAdminAuditLog(req, {
-      action: "payment.webhook.approved",
-      resourceType: "payment-request",
-      resourceId: String(approved.request.id || approved.request._id),
-      metadata: {
-        provider: payload.provider,
-        eventId: payload.eventId,
-        transactionId: payload.transactionId || "",
-        amount: payload.paidAmount ?? approved.request.amount,
-        userId: approved.request.userId,
-      },
-    });
-
-    return res.json({ ok: true, request: approved.request, user: access.user, accessGrant: access.grant });
+    return res.status(result.statusCode).json({ ...result, ok: result.statusCode === 200, message: result.error, accessGrant: result.grant });
   }),
 );
 
 paymentRouter.patch(
-  "/requests/:id/review",
-  requireAuth,
-  requireRole(["admin"]),
+  "/requests/:id/review", requireAuth, requireRole(["admin"]),
   asyncHandler(async (req, res) => {
     const payload = paymentRequestReviewSchema.parse(req.body);
     const requestDoc = await PaymentRequestModel.findOne(buildPaymentRequestLookup(req.params.id));
-
-    if (!requestDoc) {
-      return res.status(StatusCodes.NOT_FOUND).json({ message: "Payment request not found" });
-    }
-
-    if (requestDoc.status === "approved" && payload.status === "approved") {
-      return res.status(StatusCodes.CONFLICT).json({
-        message: "تم اعتماد هذا الطلب مسبقًا",
-        request: requestDoc,
-      });
-    }
-
+    if (!requestDoc) return res.status(StatusCodes.NOT_FOUND).json({ message: "Payment request not found" });
     if (payload.status === "approved") {
-      const purchaseUser = await UserModel.findById(requestDoc.userId).select("_id");
-      if (!purchaseUser) {
+      if (requestDoc.status === "pending" && !await UserModel.exists({ _id: requestDoc.userId }))
         return res.status(StatusCodes.NOT_FOUND).json({ message: PAYMENT_ERRORS.missingPurchaseUserForApproval });
-      }
-
-      if (!hasManualPaymentEvidence(requestDoc, payload.approvalEvidence)) {
-        return res.status(StatusCodes.BAD_REQUEST).json({
-          message: "لا يمكن الاعتماد بدون إثبات تحويل/محفظة/إيصال صالح",
-        });
-      }
-
+      if (requestDoc.status === "pending" && !hasManualPaymentEvidence(requestDoc, payload.approvalEvidence))
+        return res.status(StatusCodes.BAD_REQUEST).json({ message: "لا يمكن الاعتماد بدون إثبات تحويل/محفظة/إيصال صالح" });
+      const result = await acceptAndFulfillPayment(requestDoc, { reviewedBy: req.authUser?.id || "",
+        reviewerNotes: payload.reviewerNotes || "", approvalEvidence: buildPaymentEvidenceSummary(requestDoc, payload.approvalEvidence) });
+      await recordAdminAuditLog(req, { action: "payment.request.review", resourceType: "payment-request", resourceId: requestDoc.id,
+        metadata: { status: result.request?.status, fulfillment: result.request?.fulfillment?.state, userId: requestDoc.userId } });
+      return res.status(result.statusCode).json({ ...result, message: result.error, accessGrant: result.grant });
     }
-
-    let approved: Awaited<ReturnType<typeof completeApprovedPaymentRequest>> | null = null;
-    if (payload.status === "approved") {
-      approved = await completeApprovedPaymentRequest(requestDoc, {
-        reviewedBy: req.authUser?.id || "",
-        reviewerNotes: payload.reviewerNotes || "",
-        approvalEvidence: buildPaymentEvidenceSummary(requestDoc, payload.approvalEvidence),
-      });
-
-      if (approved.duplicate || !approved.request) {
-        return res.status(StatusCodes.CONFLICT).json({
-          message: "تمت معالجة الطلب مسبقًا بواسطة عملية أخرى",
-          request: await PaymentRequestModel.findById(requestDoc._id),
-        });
-      }
-
-      const discountReserved = await reserveDiscountRedemptionForRequest(approved.request);
-      if (!discountReserved) {
-        await PaymentRequestModel.findByIdAndUpdate(approved.request._id, {
-          $set: {
-            status: "pending",
-            reviewerNotes: PAYMENT_ERRORS.discountNoLongerAvailableForApproval,
-            approvalEvidence: "",
-            reviewedBy: "",
-            reviewedAt: null,
-          },
-        });
-        return res.status(StatusCodes.CONFLICT).json({ message: PAYMENT_ERRORS.discountApprovalFailedDuringReview });
-      }
-
-      const access = await grantApprovedPaymentAccess(approved.request, {
-        reviewedBy: req.authUser?.id || "",
-      });
-      (approved as any).user = access.user;
-      (approved as any).grant = access.grant;
-    } else {
-      await PaymentRequestModel.findOneAndUpdate(
-        { _id: requestDoc._id, status: { $ne: "approved" } },
-        {
-          $set: {
-            status: payload.status,
-            reviewerNotes: payload.reviewerNotes || "",
-            approvalEvidence: "",
-            reviewedBy: req.authUser?.id || "",
-            reviewedAt: Date.now(),
-          },
-        },
-        { new: true },
-      );
-    }
-
-    await recordAdminAuditLog(req, {
-      action: "payment.request.review",
-      resourceType: "payment-request",
-      resourceId: String(requestDoc.id || requestDoc._id),
-      metadata: {
-        status: payload.status,
-        itemType: requestDoc.itemType,
-        itemId: requestDoc.itemId,
-        userId: requestDoc.userId,
-        discountCode: requestDoc.discountCode || "",
-        discountAmount: requestDoc.discountAmount || 0,
-        approvalEvidence: requestDoc.approvalEvidence || "",
-      },
-    });
-
-    return res.json({
-      request: approved?.request || (await PaymentRequestModel.findById(requestDoc._id)),
-      user: (approved as any)?.user || null,
-      accessGrant: (approved as any)?.grant || null,
-    });
+    const updated = await PaymentRequestModel.findOneAndUpdate({ _id: requestDoc._id, status: "pending" }, { $set: {
+      status: payload.status, reviewerNotes: payload.reviewerNotes || "", approvalEvidence: "",
+      reviewedBy: req.authUser?.id || "", reviewedAt: Date.now(),
+    } }, { new: true });
+    if (!updated) return res.status(StatusCodes.CONFLICT).json({ message: "Payment request is not pending", request: await PaymentRequestModel.findById(requestDoc._id) });
+    await recordAdminAuditLog(req, { action: "payment.request.review", resourceType: "payment-request", resourceId: requestDoc.id,
+      metadata: { status: updated.status, userId: requestDoc.userId } });
+    return res.json({ request: updated, user: null, accessGrant: null });
   }),
 );
-
-

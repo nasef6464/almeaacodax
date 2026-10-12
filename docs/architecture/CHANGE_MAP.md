@@ -1,4 +1,13 @@
-# ALMEAA — Change Map
+#Auth DTO projection (2026-10-12): server/src/modules/auth/presentation/serializeAuthUser.ts owns the existing unchanged sensitive-field exclusions. The auth route retains learner access projection, administrative history and authorization; extraction keeps the existing 65,000-character ownership gate without changing its limit.
+
+ ALMEAA — Change Map
+
+Payment recovery (2026-10-12, delivery pending): payment route's duplicated approval/grant mutation moved into paymentFulfillment, with durable activation state; Tap verification moved into tapWebhook using the official signed-field contract. Existing endpoint/manual evidence/financial audit owners remain in payment.routes. New optional markers preserve historical records without backfill.
+
+Frontend repair (2026-10-12, verification pending): AuthContext store sync moves to authStoreSync; existing async callers use actor/session snapshots, CourseView/Player share exact courseCompletion and stable URL changes, and MyRequests/FinancialManager use paymentRequestPresentation for activation state. Pricing removes inferred offer selection while retaining published actual package cards. Server persistence/auth/RBAC/scoring ownership unchanged.
+
+Courses access repair (2026-10-12, delivery pending): duplicated course/certificate/discussion access readers now consume entitlementPolicy; quiz submission adds attached-course verification. Auth single learner responses project effective historical mirror IDs; admin views keep original history. Protected bootstrap content projection moves into contentPayloadAccess; payload shape/managed visibility stay with existing owners.
+
 
 Classroom history loading/error/retry: start at `hooks/useClassroomTeacherReports.ts`; selected-session student details remain `components/classroom/SmartClassroomReportsSection.tsx`. Do not add a global authority cache or student-detail load to the radar.
 

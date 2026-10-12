@@ -1,3 +1,5 @@
+import { paymentActivationLabel } from '../utils/paymentRequestPresentation';
+import { captureAuthActor, isCurrentAuthActor } from '../utils/authSessionLifetime';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Card } from '../components/ui/Card';
 import { CheckCircle, Clock, XCircle, FileText, Calendar } from 'lucide-react';
@@ -7,7 +9,7 @@ import { Activity, PaymentRequest } from '../types';
 import { sanitizeArabicText } from '../utils/sanitizeMojibakeArabic';
 import { useAuth } from '../contexts/AuthContext';
 
-type RequestStatus = 'completed' | 'pending' | 'cancelled';
+type RequestStatus = 'completed' | 'approved' | 'pending' | 'cancelled';
 
 interface RequestRow {
   id: string;
@@ -45,9 +47,12 @@ export const MyRequests: React.FC = () => {
   const { user, courses, enrolledCourses, b2bPackages, recentActivity, hasScopedPackageAccess } = useStore();
   const { refreshProfile } = useAuth();
   const [paymentRequests, setPaymentRequests] = useState<PaymentRequest[]>([]);
+  const [requestsActorKey, setRequestsActorKey] = useState('');
+  const [activitiesActorKey, setActivitiesActorKey] = useState('');
   const [serverActivities, setServerActivities] = useState<Activity[]>([]);
   const [updatingRequestId, setUpdatingRequestId] = useState<string>('');
   const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+  const actorKey = `${captureAuthActor(user).revision}:${user?.id || 'guest'}`;
   const isRegisteredUser = Boolean(user?.id && user.id !== 'guest' && user.email);
 
   useEffect(() => {
@@ -57,6 +62,7 @@ export const MyRequests: React.FC = () => {
   }, [feedback]);
 
   const loadRequests = async () => {
+    const actor = captureAuthActor(user);
     if (!isRegisteredUser) {
       setPaymentRequests([]);
       return;
@@ -65,6 +71,8 @@ export const MyRequests: React.FC = () => {
       api.getPaymentRequests(),
       refreshProfile ? refreshProfile().catch(() => null) : Promise.resolve(),
     ]);
+    if (!isCurrentAuthActor(actor, useStore.getState().user)) return;
+    setRequestsActorKey(actorKey);
     setPaymentRequests(((response as { requests?: PaymentRequest[] })?.requests || []).map((request) => ({
       ...request,
       id: String(request.id),
@@ -72,26 +80,33 @@ export const MyRequests: React.FC = () => {
   };
 
   useEffect(() => {
+    setPaymentRequests([]);
+    setFeedback(null);
+    setUpdatingRequestId('');
     if (!isRegisteredUser) {
       setPaymentRequests([]);
       return;
     }
 
     let cancelled = false;
+    const actor = captureAuthActor(user);
+    const isCurrent = () => !cancelled && isCurrentAuthActor(actor, useStore.getState().user);
     const run = async () => {
       try {
         const [response] = await Promise.all([
           api.getPaymentRequests(),
           refreshProfile ? refreshProfile().catch(() => null) : Promise.resolve(),
         ]);
-        if (!cancelled) {
+        if (isCurrent()) {
+          setRequestsActorKey(actorKey);
           setPaymentRequests(((response as { requests?: PaymentRequest[] })?.requests || []).map((request) => ({
             ...request,
             id: String(request.id),
           })));
         }
       } catch {
-        if (!cancelled) {
+        if (isCurrent()) {
+          setRequestsActorKey(actorKey);
           setPaymentRequests([]);
         }
       }
@@ -101,26 +116,31 @@ export const MyRequests: React.FC = () => {
     return () => {
       cancelled = true;
     };
-  }, [isRegisteredUser]);
+  }, [isRegisteredUser, actorKey]);
 
   useEffect(() => {
+    setServerActivities([]);
     if (!isRegisteredUser) {
       setServerActivities([]);
       return;
     }
 
     let cancelled = false;
+    const actor = captureAuthActor(user);
+    const isCurrent = () => !cancelled && isCurrentAuthActor(actor, useStore.getState().user);
     const run = async () => {
       try {
         const response = await api.getMyActivities({ limit: 50 });
-        if (!cancelled) {
+        if (isCurrent()) {
+          setActivitiesActorKey(actorKey);
           setServerActivities(((response.activities || []) as Activity[]).map((activity) => ({
             ...activity,
             id: String(activity.id),
           })));
         }
       } catch {
-        if (!cancelled) {
+        if (isCurrent()) {
+          setActivitiesActorKey(actorKey);
           setServerActivities([]);
         }
       }
@@ -130,9 +150,10 @@ export const MyRequests: React.FC = () => {
     return () => {
       cancelled = true;
     };
-  }, [isRegisteredUser]);
+  }, [isRegisteredUser, actorKey]);
 
   const handleEditPendingRequest = async (request: PaymentRequest) => {
+    const actor = captureAuthActor(user);
     const transferReference = window.prompt('مرجع التحويل (اختياري)', request.transferReference || '') ?? '';
     const receiptUrl = window.prompt('رابط الإيصال (اختياري)', request.receiptUrl || '') ?? '';
     const notes = window.prompt('ملاحظات إضافية (اختياري)', request.notes || '') ?? '';
@@ -144,15 +165,18 @@ export const MyRequests: React.FC = () => {
         receiptUrl,
         notes,
       });
+      if (!isCurrentAuthActor(actor, useStore.getState().user)) return;
       await loadRequests();
+      if (!isCurrentAuthActor(actor, useStore.getState().user)) return;
       setFeedback({ type: 'success', message: 'تم تحديث الطلب بنجاح.' });
     } catch (error) {
+      if (!isCurrentAuthActor(actor, useStore.getState().user)) return;
       setFeedback({
         type: 'error',
         message: error instanceof Error ? error.message : 'تعذر تحديث الطلب الآن.',
       });
     } finally {
-      setUpdatingRequestId('');
+      if (isCurrentAuthActor(actor, useStore.getState().user)) setUpdatingRequestId('');
     }
   };
 
@@ -176,7 +200,7 @@ export const MyRequests: React.FC = () => {
     const todayIso = today.toISOString();
 
     const mergedActivities = Array.from(
-      new Map([...serverActivities, ...recentActivity].map((activity) => [String(activity.id), activity])).values(),
+      new Map([...(activitiesActorKey === actorKey ? serverActivities : []), ...recentActivity].map((activity) => [String(activity.id), activity])).values(),
     );
 
     const sessionRows = mergedActivities
@@ -245,13 +269,13 @@ export const MyRequests: React.FC = () => {
       };
     });
 
-    const paymentRows = paymentRequests.map((request) => ({
+    const paymentRows = (requestsActorKey === actorKey ? paymentRequests : []).map((request) => ({
       id: `payreq_${request.id}`,
       requestNumber: String(request.id || ''),
       itemName: request.itemName,
       status:
         request.status === 'approved'
-          ? 'completed'
+          ? request.fulfillment?.state === 'completed' ? 'completed' : 'approved'
           : request.status === 'pending'
             ? 'pending'
             : 'cancelled' as RequestStatus,
@@ -281,6 +305,9 @@ export const MyRequests: React.FC = () => {
     recentActivity,
     serverActivities,
     paymentRequests,
+    actorKey,
+    requestsActorKey,
+    activitiesActorKey,
   ]);
 
   return (
@@ -346,7 +373,7 @@ export const MyRequests: React.FC = () => {
                     {req.status === 'completed' && <CheckCircle size={10} />}
                     {req.status === 'pending' && <Clock size={10} />}
                     {req.status === 'cancelled' && <XCircle size={10} />}
-                    {req.status === 'completed' ? 'مكتمل' : req.status === 'pending' ? 'قيد التنفيذ' : 'ملغي'}
+                    {req.paymentRequest?.status === 'approved' ? paymentActivationLabel(req.paymentRequest) : req.status === 'completed' ? 'مكتمل' : req.status === 'pending' ? 'قيد التنفيذ' : 'ملغي'}
                   </span>
                 </div>
                 <p className="text-sm text-gray-500 mb-1">{req.paymentMethod}</p>
@@ -366,7 +393,7 @@ export const MyRequests: React.FC = () => {
               <div className="text-right md:text-right self-start md:self-auto">
                 <div className="text-xs text-gray-400 mb-1">القيمة</div>
                 <div className="text-lg font-black text-gray-800">
-                  {req.price === 0 ? 'تم التفعيل' : `${req.price} ر.س`}
+                  {req.price === 0 ? req.status === 'completed' ? 'تم التفعيل' : '0 ر.س' : `${req.price} ر.س`}
                 </div>
                 {req.paymentRequest && req.paymentRequest.status === 'pending' ? (
                   <button

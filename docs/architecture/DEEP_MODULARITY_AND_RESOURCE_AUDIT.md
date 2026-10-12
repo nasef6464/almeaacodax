@@ -1,5 +1,8 @@
 # ALMEAA Deep Modularity, Authority & Resource Audit
 
+Courses access repair (2026-10-12, delivery pending): shared read-time policy and protected payload projection extracted as small domain helpers while preserving the modular monolith and immutable budgets. No broad folder rewrite, new service, ownership migration or historical cleanup. All historical grant provenance is needed for finite mirror correctness; user-indexed reads and ID-bounded free-enrollment fallback are documented, with no production-scale claim.
+
+
 ## Review practice bounded extraction — 2026-10-10
 The initial review fix crossed the immutable >=400-line hotspot count (84 versus83). The gate was retained and the mode/progress/exit header moved to `components/review/PracticeSessionHeader.tsx`, keeping ReviewSession below400 lines. Existing card-answer authority remains in the page/API. Same-batch restart remains local and the library read bounded to20; no new provider, polling or question duplication.
 

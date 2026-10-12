@@ -1,3 +1,5 @@
+import { useActivePremium } from '../utils/useActivePremium';
+import { hasActivePremium } from '../server/src/utils/premiumAccess';
 import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { CalendarDays, CheckCircle2, Copy, ExternalLink, PlayCircle, Video } from 'lucide-react';
@@ -34,7 +36,7 @@ const canAccessLesson = (lesson: any, user: any, hasScopedFoundationAccess: bool
         return (lesson.allowedGroupIds || []).some((groupId: string) => userGroups.includes(groupId));
     }
 
-    return user.role !== 'student' || user.subscription?.plan === 'premium' || hasScopedFoundationAccess;
+    return user.role !== 'student' || hasActivePremium(user) || hasScopedFoundationAccess;
 };
 
 const formatMeetingDate = (meetingDate?: string) =>
@@ -50,6 +52,7 @@ const formatMeetingDate = (meetingDate?: string) =>
 
 const LiveSessions: React.FC = () => {
     const { lessons, user, paths, subjects, hasScopedPackageAccess } = useStore();
+    const activePremium = useActivePremium(user);
     const [copyMessage, setCopyMessage] = useState('');
 
     const canSeeHiddenPaths = ['admin', 'teacher', 'supervisor'].includes(String(user.role));
@@ -75,7 +78,7 @@ const LiveSessions: React.FC = () => {
                     const bDate = b.meetingDate ? new Date(b.meetingDate).getTime() : Number.MAX_SAFE_INTEGER;
                     return aDate - bDate;
                 }),
-        [canSeeHiddenPaths, hasScopedPackageAccess, lessons, user, visiblePathIds],
+        [activePremium, canSeeHiddenPaths, hasScopedPackageAccess, lessons, user, visiblePathIds],
     );
 
     const upcomingSessions = sessions.filter((lesson) => lesson.meetingDate && new Date(lesson.meetingDate).getTime() >= Date.now());

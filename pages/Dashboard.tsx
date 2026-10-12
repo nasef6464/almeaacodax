@@ -1,3 +1,5 @@
+import { useActivePremium } from '../utils/useActivePremium';
+import { hasActivePremium } from '../server/src/utils/premiumAccess';
 import { DashboardSectionNav } from '../components/DashboardSectionNav';
 
 import React, { useEffect, useMemo, useState, Suspense } from 'react';
@@ -78,6 +80,7 @@ const buildSmartPathSkillsFromProgress = (
 
 const useStudentSkillProgress = (scope: { pathId?: string; subjectId?: string } = {}) => {
     const { user } = useStore();
+
     const [rows, setRows] = useState<SkillProgress[]>([]);
 
     useEffect(() => {
@@ -606,6 +609,7 @@ const SmartPathTab = () => {
 
 const SessionsTab = () => {
     const { recentActivity, lessons, user } = useStore();
+    useActivePremium(user);
     const [serverActivities, setServerActivities] = useState<Activity[]>([]);
     const [isLoadingRequests, setIsLoadingRequests] = useState(false);
     const isRegisteredUser = Boolean(user?.id && user.id !== 'guest' && user.email);
@@ -660,7 +664,7 @@ const SessionsTab = () => {
                 const userGroups = user.groupIds || [];
                 return (lesson.allowedGroupIds || []).some((groupId: string) => userGroups.includes(groupId));
             }
-            return user.role !== 'student' || user.subscription?.plan === 'premium' || (user.subscription?.purchasedPackages || []).length > 0;
+            return user.role !== 'student' || hasActivePremium(user) || (user.subscription?.purchasedPackages || []).length > 0;
         })
         .sort((a, b) => {
             const aDate = a.meetingDate ? new Date(a.meetingDate).getTime() : Number.MAX_SAFE_INTEGER;

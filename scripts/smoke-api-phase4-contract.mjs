@@ -5,6 +5,7 @@ const files = {
   applyPurchaseToUser: await readFile(new URL("../server/src/services/applyPurchaseToUser.ts", import.meta.url), "utf8"),
   authRoutes: await readFile(new URL("../server/src/routes/auth.routes.ts", import.meta.url), "utf8"),
   paymentRoutes: await readFile(new URL("../server/src/routes/payment.routes.ts", import.meta.url), "utf8"),
+  paymentFulfillment: await readFile(new URL("../server/src/services/paymentFulfillment.ts", import.meta.url), "utf8"),
   quizRoutes: await readFile(new URL("../server/src/routes/quiz.routes.ts", import.meta.url), "utf8"),
   courseRoutes: await readFile(new URL("../server/src/routes/course.routes.ts", import.meta.url), "utf8"),
   contentRoutes: await readFile(new URL("../server/src/routes/content.routes.ts", import.meta.url), "utf8"),
@@ -47,8 +48,10 @@ check("access-code redemption creates AccessGrant and reserves use atomically", 
 check("payment approval and webhook use atomic status transition before grant", () => {
   assertIncludes(files.paymentRoutes, "PaymentRequestModel.findOneAndUpdate");
   assertIncludes(files.paymentRoutes, '{ _id: requestDoc._id, status: "pending" }');
-  assertIncludes(files.paymentRoutes, "grantApprovedPaymentAccess");
-  assertIncludes(files.paymentRoutes, 'sourceType: review.gatewayEventId ? "payment_webhook" : "payment_request"');
+  assertIncludes(files.paymentRoutes, "acceptAndFulfillPayment(requestDoc");
+  assertIncludes(files.paymentFulfillment, "PaymentRequestModel.findOneAndUpdate");
+  assertIncludes(files.paymentFulfillment, "sourceType: 'payment_request', sourceId: p.id");
+  assertIncludes(files.paymentFulfillment, "fulfillment: { version: 1, state: 'pending', acceptedAt, scope }");
 });
 
 check("large list endpoints expose pagination metadata", () => {

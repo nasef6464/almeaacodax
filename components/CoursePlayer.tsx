@@ -1,3 +1,5 @@
+import { useActivePremium } from '../utils/useActivePremium';
+import { getCourseCompletion } from '../utils/courseCompletion';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Course, InteractiveVideoProgress, Lesson } from '../types';
 import {
@@ -68,6 +70,7 @@ interface CoursePlayerProps {
 export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, initialLessonId, onLessonChange }) => {
   const navigate = useNavigate();
   const { completedLessons, markLessonComplete, questions, user, enrolledCourses, hasScopedPackageAccess } = useStore();
+  useActivePremium(user);
   const [interactiveVideoProgress, setInteractiveVideoProgress] = useState<InteractiveVideoProgress[]>(() => user.interactiveVideoProgress || []);
   const videoProgressSaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const interactiveVideoProgressRef = useRef<InteractiveVideoProgress[]>(user.interactiveVideoProgress || []);
@@ -130,9 +133,7 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, init
 
   const flattenedLessons = useMemo(() => course.modules?.flatMap((module) => module.lessons) || [], [course.modules]);
   const unlockedLessons = useMemo(() => flattenedLessons.filter((lesson) => !lesson.isLocked), [flattenedLessons]);
-  const totalLessons = flattenedLessons.length || 1;
-  const completedCount = flattenedLessons.filter((lesson) => completedLessons.includes(lesson.id)).length;
-  const progress = Math.round((completedCount / totalLessons) * 100);
+  const { completed: completedCount, total: totalLessons, roundedPercent: progress } = getCourseCompletion(course, completedLessons);
   const isGuestUser = !user?.email || user.id === 'guest';
   const isStaffViewer = !isGuestUser && ['admin', 'teacher', 'supervisor'].includes(user.role);
   const canUsePaidCourseFiles =
@@ -232,24 +233,28 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, init
     );
   };
 
+  const lessonInputs = flattenedLessons.map(lesson => `${lesson.id}:${!!lesson.isLocked}`).join('|');
+  const incomingSelectionRef = useRef<{ courseId: string; requested?: string } | null>(null);
+  const skipObsoleteNotificationRef = useRef(false);
   useEffect(() => {
-    const initialLesson =
-      (initialLessonId ? flattenedLessons.find((lesson) => lesson.id === initialLessonId && !lesson.isLocked) : null) ||
-      unlockedLessons[0] ||
-      null;
-    const firstModuleWithLessons = course.modules?.find((module) =>
-      module.lessons.some((lesson) => lesson.id === initialLesson?.id),
-    ) || course.modules?.find((module) => module.lessons.length > 0);
-
-    setActiveLesson(initialLesson);
-    setExpandedModules(firstModuleWithLessons ? [firstModuleWithLessons.id] : []);
-  }, [course, flattenedLessons, initialLessonId, unlockedLessons]);
-
-  useEffect(() => {
-    if (activeLesson?.id) {
-      onLessonChange?.(activeLesson.id);
+    const previous = incomingSelectionRef.current;
+    const inputChanged = previous?.courseId !== course.id || previous?.requested !== initialLessonId;
+    incomingSelectionRef.current = { courseId: course.id, requested: initialLessonId };
+    const current = flattenedLessons.find(lesson => lesson.id === activeLesson?.id && !lesson.isLocked);
+    const selected = (!inputChanged && current) ||
+      (initialLessonId ? flattenedLessons.find(lesson => lesson.id === initialLessonId && !lesson.isLocked) : null) || unlockedLessons[0] || null;
+    skipObsoleteNotificationRef.current = inputChanged && selected?.id !== activeLesson?.id;
+    if (selected !== activeLesson) setActiveLesson(selected);
+    if (inputChanged) {
+      const module = course.modules?.find(module => module.lessons.some(lesson => lesson.id === selected?.id));
+      setExpandedModules(module ? [module.id] : []);
     }
-  }, [activeLesson?.id, onLessonChange]);
+  }, [course.id, lessonInputs, initialLessonId]);
+
+  useEffect(() => {
+    if (skipObsoleteNotificationRef.current) { skipObsoleteNotificationRef.current = false; return; }
+    if (activeLesson?.id) onLessonChange?.(activeLesson.id);
+  }, [activeLesson?.id, onLessonChange, initialLessonId]);
 
   useEffect(() => {
     setActiveTab('description');

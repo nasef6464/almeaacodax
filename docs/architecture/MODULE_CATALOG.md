@@ -1,5 +1,12 @@
 # ALMEAA — Module Catalog
 
+Payment recovery (2026-10-12, locally verified; delivery pending): paymentFulfillment owns approval intent, idempotent effects and activation outcome; tapWebhook owns Tap signature/charge binding. Financial approval and verified activation have separate optional fulfillment state; existing commerce routes, prices and AccessGrant authority remain.
+
+Learning/commerce frontend repair (2026-10-12, verification pending): authSessionLifetime and authStoreSync guard/synchronize the existing account lifecycle; courseCompletion governs exact lesson completion; paymentRequestPresentation separates approved finances from activation and limits recovery to existing authorized manual orders. Pricing keeps canonical published records; unavailable tier cells make no synthetic purchase promises.
+
+Courses/commerce access repair (2026-10-12, implementation pending delivery): shared read authorization is centralized in server/src/services/entitlementPolicy.ts and protected bootstrap projection in content/application/contentPayloadAccess.ts. Existing domain routes retain course definitions, quiz relationship, staff scope and certificate issuance; discussion alone preserves explicit scoped foundation entitlement. Commerce fulfillment remains payment-owned. No new service or storage authority.
+
+
 Classroom history read lifecycle: `hooks/useClassroomTeacherReports.ts` owns summary loading/error/retry and stale response isolation for report list and skill radar. Presentation/diagnostics/detail actions remain in their existing classroom components.
 
 | Domain | يملك | لا يملك | المداخل الحالية | الحالة |

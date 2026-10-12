@@ -20,6 +20,7 @@ const userSchema = new Schema(
       expiresAt: { type: Date },
       purchasedCourses: { type: [String], default: [] },
       purchasedPackages: { type: [String], default: [] },
+      appliedPaymentRequestIds: { type: [String], default: [] },
     },
     isActive: { type: Boolean, default: true },
     emailVerified: { type: Boolean, default: false, index: true },

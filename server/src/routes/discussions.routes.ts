@@ -9,7 +9,7 @@ import { DiscussionThreadModel } from "../models/DiscussionThread.js";
 import { DiscussionReplyModel } from "../models/DiscussionReply.js";
 import { CourseModel } from "../models/Course.js";
 import { UserModel } from "../models/User.js";
-import { AccessGrantModel } from "../models/AccessGrant.js";
+import { grantMatchesContent, hasCourseEntitlementFromState, isActiveGrant, loadEntitlementState } from "../services/entitlementPolicy.js";
 
 export const discussionRouter = Router();
 
@@ -29,8 +29,6 @@ const uniqueStrings = (values: unknown[]) =>
 
 const getCourseIdentityValues = (course: any) => uniqueStrings([course?._id, course?.id]);
 
-const grantContentTypesThatCoverCourse = new Set(["all", "courses", "foundation"]);
-
 function isPublishedFreeCourse(course: any) {
   const approvalStatus = String(course?.approvalStatus || "approved");
   const price = Number(course?.price || 0);
@@ -40,38 +38,6 @@ function isPublishedFreeCourse(course: any) {
     (approvalStatus === "approved" || approvalStatus === "") &&
     (course?.access === "free_preview" || price <= 0)
   );
-}
-
-async function hasCourseAccessGrant(userId: string, course: any) {
-  const courseIds = getCourseIdentityValues(course);
-  const coursePathId = String(course?.pathId || "");
-  const courseSubjectId = String(course?.subjectId || "");
-  const now = Date.now();
-
-  const directCourseGrant = courseIds.length
-    ? await AccessGrantModel.exists({
-        userId,
-        status: "active",
-        $or: [{ expiresAt: null }, { expiresAt: { $exists: false } }, { expiresAt: { $gt: now } }],
-        courseIds: { $in: courseIds },
-      })
-    : null;
-  if (directCourseGrant) return true;
-
-  const scopedGrant = await AccessGrantModel.findOne({
-    userId,
-    status: "active",
-    $or: [{ expiresAt: null }, { expiresAt: { $exists: false } }, { expiresAt: { $gt: now } }],
-    contentTypes: { $in: Array.from(grantContentTypesThatCoverCourse) },
-    $and: [
-      coursePathId ? { $or: [{ pathIds: coursePathId }, { pathIds: { $size: 0 } }] } : {},
-      courseSubjectId ? { $or: [{ subjectIds: courseSubjectId }, { subjectIds: { $size: 0 } }] } : {},
-    ],
-  })
-    .select("_id")
-    .lean();
-
-  return Boolean(scopedGrant);
 }
 
 const findCoursesForDiscussionEntity = async (entityType: string, entityId: string) => {
@@ -144,17 +110,17 @@ async function assertCanAccessEntity(userId: string, entityType: string, entityI
 
   if (effectiveRole !== "student") return false;
 
-  const enrolledSet = new Set((user.enrolledCourses || []).map(String));
-  if (enrolledSet.size && courses.some((course) => getCourseIdentityValues(course).some((id) => enrolledSet.has(id)))) {
-    return true;
-  }
-
   if (courses.some((course) => isPublishedFreeCourse(course))) {
     return true;
   }
 
+  const state = await loadEntitlementState(userId);
   for (const course of courses) {
-    if (await hasCourseAccessGrant(userId, course)) return true;
+    if (hasCourseEntitlementFromState(state.user, course, state.grants)) return true;
+    // Foundation scope historically covers matching discussions only; it must
+    // never promote the same grant into paid course-payload entitlement.
+    if (state.grants.some(grant => isActiveGrant(grant)
+      && grantMatchesContent(grant, "foundation", String(course.pathId || ""), String(course.subjectId || "")))) return true;
   }
 
   return false;

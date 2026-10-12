@@ -33,6 +33,7 @@ const [
 ]);
 
 const checks = [];
+const paymentFulfillment = await read("server/src/services/paymentFulfillment.ts");
 
 function check(name, assertion) {
   try {
@@ -122,7 +123,9 @@ check("subscriptions and access still flow through AccessGrant and atomic approv
   assertIncludes(accessGrantService, "grantAccessToUser");
   assertIncludes(accessGrantService, "$addToSet");
   assertIncludes(paymentRoutes, "PaymentRequestModel.findOneAndUpdate");
-  assertIncludes(paymentRoutes, "grantApprovedPaymentAccess");
+  assertIncludes(paymentRoutes, "acceptAndFulfillPayment(requestDoc");
+  assertIncludes(paymentFulfillment, "grantAccessToUser");
+  assertIncludes(paymentFulfillment, "PaymentRequestModel.findOneAndUpdate");
   assertIncludes(authRoutes, "AccessCodeModel.findOneAndUpdate");
   assertIncludes(authRoutes, 'sourceType: "access_code"');
 });

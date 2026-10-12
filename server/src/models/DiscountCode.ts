@@ -10,6 +10,7 @@ const discountCodeSchema = new Schema(
     minAmount: { type: Number, default: 0 },
     maxRedemptions: { type: Number, default: 0 },
     currentRedemptions: { type: Number, default: 0 },
+    redemptionRequestIds: { type: [String], default: [] },
     startsAt: { type: Number, default: null },
     expiresAt: { type: Number, default: null },
     packageIds: { type: [String], default: [] },

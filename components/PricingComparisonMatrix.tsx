@@ -25,7 +25,11 @@ interface PricingComparisonMatrixProps {
 export const PricingComparisonMatrix: React.FC<PricingComparisonMatrixProps> = ({ onSelectTier }) => {
   const [activeStage, setActiveStage] = useState<EducationalStageKey>('high');
   const { user } = useStore();
-  const currentStageData = comparisonDataByStage[activeStage];
+  const source = comparisonDataByStage[activeStage];
+  const unavailableTier = { title: 'عضوية مدفوعة', price: 'غير متاحة حاليًا', subtitle: '', badge: '' };
+  const currentStageData = { ...source, targetAudience: '', decisionMakerNote: 'العضويات المتاحة للشراء تظهر في البطاقات المنشورة أعلاه.', tagline: '',
+    tiers: { free: { title: 'عضوية مجانية', price: '0 ر.س', subtitle: 'الوصول للمحتوى المجاني' }, standard: unavailableTier, pro: unavailableTier },
+    features: [] as FeatureComparisonRow[] };
   const isRegistered = Boolean(user?.id && user.id !== 'guest');
 
   const groupedFeatures = currentStageData.features.reduce<Record<string, FeatureComparisonRow[]>>(
@@ -68,10 +72,10 @@ export const PricingComparisonMatrix: React.FC<PricingComparisonMatrixProps> = (
           <span>مقارنة المزايا حسب الفئة العمرية والمرحلة الدراسية</span>
         </div>
         <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 leading-tight">
-          اختر الباقة الأنسب لمرحلتك واحتياجك
+          العضويات حسب المرحلة الدراسية
         </h2>
         <p className="mt-3 text-sm sm:text-base text-slate-600 leading-relaxed">
-          تختلف أهداف التعلم بين الابتدائي، المتوسط، والثانوي. حدد مرحلتك لمعاينة الباقات المصممة خصيصاً لمستواك الدراسي.
+          العضويات المدفوعة المتاحة للشراء تظهر في البطاقات المنشورة أعلاه.
         </p>
       </div>
 
@@ -163,10 +167,10 @@ export const PricingComparisonMatrix: React.FC<PricingComparisonMatrixProps> = (
                 <div className="text-xs text-slate-500 mt-1 line-clamp-2">{currentStageData.tiers.standard.subtitle}</div>
                 <button
                   type="button"
-                  onClick={() => onSelectTier?.('standard', activeStage)}
+                  disabled
                   className="mt-4 inline-flex w-full items-center justify-center rounded-xl bg-indigo-600 py-2 text-xs font-black text-white shadow-xs hover:bg-indigo-700 transition-colors"
                 >
-                  اختر الباقة
+                  غير متاحة حاليًا
                 </button>
               </th>
               {/* Pro Tier (Highlighted) */}
@@ -184,11 +188,11 @@ export const PricingComparisonMatrix: React.FC<PricingComparisonMatrixProps> = (
                 <div className="text-xs text-indigo-900/70 mt-1 line-clamp-2">{currentStageData.tiers.pro.subtitle}</div>
                 <button
                   type="button"
-                  onClick={() => onSelectTier?.('pro', activeStage)}
+                  disabled
                   className="mt-4 inline-flex w-full items-center justify-center gap-1 rounded-xl bg-indigo-600 py-2 text-xs font-black text-white shadow-sm hover:bg-indigo-700 transition-colors"
                 >
                   <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-                  الاشتراك الشامل
+                  غير متاحة حاليًا
                 </button>
               </th>
             </tr>
@@ -228,7 +232,7 @@ export const PricingComparisonMatrix: React.FC<PricingComparisonMatrixProps> = (
           <tfoot>
             <tr className="border-t border-slate-200 bg-slate-50/50">
               <td className="p-4 sm:p-6 text-xs text-slate-500 font-bold">
-                * جميع الأسعار تشمل ضريبة القيمة المضافة، ويمكن تفعيل الوصول عبر أكواد المدارس أو الكوبونات.
+                خيارات المرحلة المدفوعة غير متاحة حاليًا.
               </td>
               <td className="p-4 sm:p-6 text-center border-r border-slate-200/70">
                 <Link
@@ -241,19 +245,19 @@ export const PricingComparisonMatrix: React.FC<PricingComparisonMatrixProps> = (
               <td className="p-4 sm:p-6 text-center border-r border-slate-200/70">
                 <button
                   type="button"
-                  onClick={() => onSelectTier?.('standard', activeStage)}
+                  disabled
                   className="inline-flex w-full items-center justify-center rounded-xl bg-indigo-600 py-2 text-xs font-black text-white shadow-xs hover:bg-indigo-700 transition-colors"
                 >
-                  اشترك الآن
+                  غير متاحة حاليًا
                 </button>
               </td>
               <td className="p-4 sm:p-6 text-center border-r border-indigo-200 bg-indigo-50/50">
                 <button
                   type="button"
-                  onClick={() => onSelectTier?.('pro', activeStage)}
+                  disabled
                   className="inline-flex w-full items-center justify-center rounded-xl bg-indigo-600 py-2 text-xs font-black text-white shadow-xs hover:bg-indigo-700 transition-colors"
                 >
-                  الاشتراك الشامل
+                  غير متاحة حاليًا
                 </button>
               </td>
             </tr>
@@ -261,30 +265,7 @@ export const PricingComparisonMatrix: React.FC<PricingComparisonMatrixProps> = (
         </table>
       </div>
 
-      {/* Decision-making Guarantee Callout */}
-      <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 flex flex-col md:flex-row items-center justify-between gap-4 shadow-2xs">
-        <div className="flex items-center gap-3 text-right">
-          <div className="w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-200/80 text-emerald-600 flex items-center justify-center shrink-0">
-            <ShieldCheck className="w-6 h-6" />
-          </div>
-          <div>
-            <div className="font-black text-slate-900 text-sm sm:text-base">ضمان الجودة ومرونة الترقية</div>
-            <div className="text-xs sm:text-sm text-slate-600 mt-0.5">
-              يمكنك الترقية بين الباقات في أي وقت وسداد الفارق فقط، مع حفظ كامل تقدمك وإحصائياتك السابقة.
-            </div>
-          </div>
-        </div>
-        <div className="flex items-center gap-2 shrink-0">
-          <a
-            href="/contact"
-            className="px-4 py-2 rounded-xl text-xs font-black text-slate-700 border border-slate-200 hover:bg-slate-50 transition-colors"
-          >
-            تواصل مع المستشار التعليمي
-          </a>
-        </div>
-      </div>
     </div>
   );
 };
-
 export default PricingComparisonMatrix;

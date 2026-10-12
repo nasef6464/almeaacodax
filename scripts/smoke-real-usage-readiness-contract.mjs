@@ -45,7 +45,8 @@ check('single-course approval cannot unlock package course bundle', () => {
   includes('server/src/routes/payment.routes.ts', 'packageContentTypes.includes("courses")');
   includes('server/src/routes/payment.routes.ts', 'payload.itemType === "package" &&');
   includes('server/src/routes/payment.routes.ts', 'packageIncludesCourses &&');
-  includes('server/src/routes/payment.routes.ts', 'updatedRequest.itemType === "package" && Array.isArray(updatedRequest.includedCourseIds)');
+  includes('server/src/routes/payment.routes.ts', 'acceptAndFulfillPayment(requestDoc');
+  includes('server/src/services/paymentFulfillment.ts', "courseIds: ids(p.itemType === 'course' ? [p.itemId] : p.includedCourseIds)");
 });
 
 check('payment request amount must be positive', () => {

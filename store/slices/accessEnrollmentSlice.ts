@@ -1,3 +1,5 @@
+import { hasActivePremium } from '../../server/src/utils/premiumAccess';
+import { captureAuthActor, isCurrentAuthActor } from '../../utils/authSessionLifetime';
 import { B2BPackage, Course, Group, PackageContentType, User } from '../../types';
 
 export interface AccessEnrollmentSliceState {
@@ -71,9 +73,12 @@ export const createAccessEnrollmentSlice = <TState extends AccessEnrollmentSlice
     return ({
     enrollCourse: (courseId) => {
         const normalizedCourseId = String(courseId || '').trim();
-        if (!normalizedCourseId || get().enrolledCourses.includes(normalizedCourseId) || pendingCourseEnrollments.has(normalizedCourseId)) return;
+        if (!normalizedCourseId || get().enrolledCourses.includes(normalizedCourseId)) return;
 
         const currentUser = get().user;
+        const actor = captureAuthActor(currentUser);
+        const pendingKey = `${actor.revision}:${actor.actorId}:${normalizedCourseId}`;
+        if (pendingCourseEnrollments.has(pendingKey)) return;
         if (!isRegisteredUser(currentUser)) {
             return;
         }
@@ -84,34 +89,39 @@ export const createAccessEnrollmentSlice = <TState extends AccessEnrollmentSlice
             return;
         }
 
-        pendingCourseEnrollments.add(normalizedCourseId);
+        pendingCourseEnrollments.add(pendingKey);
         void api.enrollCourse(normalizedCourseId)
             .then((response) => {
+                if (!isCurrentAuthActor(actor, get().user)) return;
                 if (response?.enrolled === false) {
                     throw new Error('Course enrollment was not confirmed by server');
                 }
 
                 const persistedCourseId = String(response?.courseId || normalizedCourseId).trim() || normalizedCourseId;
-                set((state) => ({
+                set((state) => !isCurrentAuthActor(actor, state.user) ? state : ({
                     enrolledCourses: Array.from(new Set([...state.enrolledCourses, persistedCourseId])),
                 }) as Partial<TState>);
             })
             .catch((error) => {
-                console.error('Failed to persist course enrollment:', error);
+                if (isCurrentAuthActor(actor, get().user)) console.error('Failed to persist course enrollment:', error);
             })
             .finally(() => {
-                pendingCourseEnrollments.delete(normalizedCourseId);
+                pendingCourseEnrollments.delete(pendingKey);
             });
     },
 
     redeemAccessCode: async (code) => {
-        const response = await api.redeemAccessCode({ code });
+        const actor = captureAuthActor(get().user);
+        let response: Awaited<ReturnType<AccessEnrollmentApi['redeemAccessCode']>>;
+        try { response = await api.redeemAccessCode({ code }); }
+        catch (error) { if (!isCurrentAuthActor(actor, get().user)) return; throw error; }
+        if (!isCurrentAuthActor(actor, get().user)) return;
         const backendUser = response?.user;
         if (!backendUser) {
             return;
         }
 
-        set((state) => ({
+        set((state) => !isCurrentAuthActor(actor, state.user) ? state : ({
             user: {
                 ...state.user,
                 subscription: {
@@ -165,7 +175,7 @@ export const createAccessEnrollmentSlice = <TState extends AccessEnrollmentSlice
         const state = get();
         if (!isPremiumContent) return true;
         if (!isRegisteredUser(state.user)) return false;
-        if (state.user.subscription.plan === 'premium') return true;
+        if (hasActivePremium(state.user)) return true;
         if (state.enrolledCourses.includes(contentId)) return true;
         if (state.user.subscription.purchasedCourses.includes(contentId)) return true;
         return false;
@@ -174,7 +184,7 @@ export const createAccessEnrollmentSlice = <TState extends AccessEnrollmentSlice
     hasScopedPackageAccess: (contentType, pathId, subjectId) => {
         const state = get();
         if (!isRegisteredUser(state.user)) return false;
-        if (state.user.subscription.plan === 'premium') return true;
+        if (hasActivePremium(state.user)) return true;
 
         const purchasedPackageIds = new Set(state.user.subscription?.purchasedPackages || []);
         const hasDirectPackage = state.b2bPackages.some((pkg) =>
