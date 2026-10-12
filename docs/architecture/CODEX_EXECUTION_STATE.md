@@ -1,12 +1,11 @@
 # ALMEAA — Codex Execution State
 
-## Courses/packages repair continuation — 2026-10-12
+## Courses/packages repair delivery — 2026-10-12
 
-- Active owner-authorized repair only, branch `codex/courses-packages-repair`, baseline `main@4e1bd10b`; existing linked worktree reused. Prior chat recovered from saved task reports and ledger. Do not redo classroom/student-plan trials or the full audit.
-- Access locally verified: `8b72deb0` + `81453e8b`, original32 + focused6 behavioral cases PASS, independent review approved. Effective authorization is a read projection; historical arrays/dates remain intact.
-- Payment locally verified: `110555e3`, final33 behavioral cases PASS, API typecheck PASS, independent spec PASS/quality approved; exact files include new paymentFulfillment and tapWebhook helpers. Isolated signed fixtures are not live Tap certification.
-- Integration `5611e4f4`: new behavioral gates wired to existing required backend CI; static contract checks follow extracted owners. Strict harness compilation additionally required an explicit existing Express declaration input and fixture date assertion, and then PASS; no gate weakened or completed38 cases repeated.
-- Frontend behavioral implementation locally verified: 48 named groups PASS and independent scoped re-review/integration approved. Local typecheck/build and architecture gates PASS; exact-head CI and published proof pending. Shared pure premium predicate is `server/src/utils/premiumAccess.ts`, re-exported by entitlementPolicy for existing server callers. Next: finish frontend behavioral regressions and independent review, final exact-head CI/PR and bounded published read-only proof. Product closure remains pending.
+- DELIVERED current scope through PR #530, production frontend/backend `9a3be923a1153fa7d39a54f986a45518e24720ec`; all applicable and three required checks PASS on runtime head `e5252181`. Independent reviews approved.
+- Reuse existing evidence: access32 + compatibility6, payment33, frontend48 named groups. Published read-only pricing/mobile/public lesson preview PASS, zero JS page errors and zero writing requests; canonical health/ready HTTP200 with Mongo/Redis ready. Do not repeat the audit, classroom or student-plan trials.
+- Owner explicitly reports no payment gateway currently. Electronic gateway/Tap live certification is DEFERRED_OWNER, outside current manual-order/review delivery. No real monetary transfer or whole commerce certification claimed. No provider/settings/data/price changes authorized or performed.
+- Evidence: docs/audits/COURSES_PACKAGES_REPAIR_2026-10-11.md and COURSES_PACKAGES_PUBLISHED_2026-10-12.json. Next: no automatic new scope or reopening #530; gateway work needs a specific provider/setup request.
 
 ## Distributed 24-browser measurement — 2026-10-11
 - VERIFIED for browser journey and completed traffic: GitHub run `38131962534`, four distinct hosted runners with six independent Chromium contexts each (390x844); all 24 students completed three five-question batches and waiting/end states. 120 core assertions PASS; zero observed JS/console/HTTP errors. One join and three submissions per actor. Fresh teacher login reads the exact 24-student / 360-answer / 3-batch persisted report; owned session ended, active-session false.
