@@ -1,13 +1,14 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useStore } from '../store/useStore';
 import { Course, PackageContentType, Question, Quiz, QuizResult } from '../types';
-import { Clock, AlertCircle, CheckCircle2, XCircle, ArrowRight, ArrowLeft, FileQuestion, Target, Star, Moon, Sun, PauseCircle, Save, Bookmark, Video, BookOpen, LayoutGrid, ZoomIn } from 'lucide-react';
+import { Clock, AlertCircle, CheckCircle2, XCircle, ArrowRight, ArrowLeft, FileQuestion, Target, Star, Moon, Sun, PauseCircle, Save, Bookmark, Video, BookOpen, LayoutGrid, ZoomIn, Lock, LogIn, UserPlus, Sparkles, Award } from 'lucide-react';
 import { api } from '../services/api';
 import { flattenMockExamQuestionIds, getMockExamSections, getMockExamTimeLimit } from '../utils/mockExam';
 import { formatQuestionHtmlForDisplay, normalizeQuestionHtml } from '../utils/questionHtml';
 import { getLearnerOptionLabel, getQuizDifficultyBadgeClass, getQuizDifficultyLabel, getQuizOptionButtonHeightClass, getQuizOptionGridClass, getQuizQuestionMapButtonClass, isTahsiliQuestion, resolveQuestionFromBank, stripQuestionHtml, usesImageEmbeddedOptions } from '../utils/quizPresentation';
 import { isDevSessionUser } from '../utils/devSession';
+import { isRegisteredUser } from '../store/storeDomainHelpers';
 import { resolveQuizLearningAccessType } from '../utils/quizLearningPlacement';
 import { resolveAssessmentSettings } from '../utils/assessmentSettings';
 import { getDefaultQuizSettings } from '../utils/quizSettings';
@@ -160,6 +161,7 @@ const extractPassage = (question?: Question | null): { passageText: string | nul
 export const QuizPage: React.FC = () => {
   const { quizId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const [searchParams] = useSearchParams();
   const {
     quizzes,
@@ -190,6 +192,7 @@ export const QuizPage: React.FC = () => {
   const [submittedSkillsAnalysis, setSubmittedSkillsAnalysis] = useState<NonNullable<QuizResult['skillsAnalysis']>>([]);
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
   const [hasAccess, setHasAccess] = useState<boolean | null>(null);
+  const [isGuestAuthGate, setIsGuestAuthGate] = useState(false);
   const [accessMessage, setAccessMessage] = useState('هذا الاختبار غير متاح لك حاليًا.');
   const [isSubmittingResult, setIsSubmittingResult] = useState(false);
   const [showFinishDialog, setShowFinishDialog] = useState(false);
@@ -407,6 +410,8 @@ export const QuizPage: React.FC = () => {
     setAccessMessage('هذا الاختبار غير متاح لك حاليًا.');
     setQuizStatusMessage(null);
     const isStaffViewer = ['admin', 'teacher', 'supervisor'].includes(user.role);
+    const isDevUser = isDevSessionUser(user);
+    const isRegistered = isRegisteredUser(user);
 
     const targetUserIds = foundQuiz.targetUserIds || [];
     const targetGroupIds = foundQuiz.targetGroupIds || [];
@@ -419,6 +424,7 @@ export const QuizPage: React.FC = () => {
         (foundQuiz.showOnPlatform === false && !isServerVerifiedDirectedAudience) ||
         (!!foundQuiz.approvalStatus && foundQuiz.approvalStatus !== 'approved'))
     ) {
+      setIsGuestAuthGate(false);
       setHasAccess(false);
       setAccessMessage('هذا الاختبار غير منشور للطلاب حاليًا.');
       return;
@@ -426,10 +432,20 @@ export const QuizPage: React.FC = () => {
 
     const isExpired = !!foundQuiz.dueDate && Date.now() > new Date(`${foundQuiz.dueDate}T23:59:59`).getTime();
     if (isExpired) {
+      setIsGuestAuthGate(false);
       setHasAccess(false);
       setAccessMessage('انتهت صلاحية هذا الاختبار.');
       return;
     }
+
+    // Guest Auth Gate: Anonymous unauthenticated users must sign up/log in before starting any test
+    if (!isStaffViewer && !isDevUser && !isRegistered) {
+      setIsGuestAuthGate(true);
+      setHasAccess(false);
+      setAccessMessage('يتطلب هذا الاختبار تسجيل الدخول أو إنشاء حساب مجاني لحفظ تقدمك ونتائجك.');
+      return;
+    }
+    setIsGuestAuthGate(false);
 
     if (!isStaffViewer && ((foundQuiz.mode || 'regular') === 'central' || hasExplicitTargets)) {
       const userGroups = Array.from(new Set([...(user.groupIds || []), ...(user.schoolId ? [user.schoolId] : [])]));
@@ -1291,6 +1307,99 @@ export const QuizPage: React.FC = () => {
   }
 
   if (!hasAccess || !quiz) {
+    if (isGuestAuthGate && quiz) {
+      const returnUrl = encodeURIComponent(location.pathname + location.search);
+      const isPaidQuiz = quiz.access?.type === 'paid';
+      const questionCount = Array.isArray(quiz.questionIds) ? quiz.questionIds.length : 0;
+      const durationMin = quiz.settings?.timeLimit || (quiz.mockExam?.enabled ? getMockExamTimeLimit(quiz) : 0);
+
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 via-indigo-50/30 to-amber-50/20 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 p-4" dir="rtl">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-xl border border-indigo-100/80 dark:border-slate-800 text-center max-w-lg w-full p-6 sm:p-8 relative overflow-hidden">
+            <div className="absolute top-0 inset-x-0 h-2 bg-gradient-to-r from-amber-500 via-indigo-600 to-amber-400" />
+
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black mb-4 bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-800">
+              <Sparkles size={14} className="text-amber-500" />
+              <span>{isPaidQuiz ? 'اختبار متاح للمشتركين 🎓' : 'اختبار متاح مجاناً للطلاب 🎁'}</span>
+            </div>
+
+            <div className="w-20 h-20 bg-gradient-to-tr from-indigo-50 to-indigo-100 dark:from-indigo-950/60 dark:to-indigo-900/40 text-indigo-600 dark:text-indigo-400 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-inner ring-4 ring-indigo-50 dark:ring-indigo-950/30">
+              <Lock size={36} className="text-indigo-600 dark:text-indigo-400" />
+            </div>
+
+            <h1 className="text-xl sm:text-2xl font-black text-gray-900 dark:text-white mb-2 leading-snug">
+              {quiz.title || 'الاختبار التدريبي'}
+            </h1>
+            <p className="text-sm text-gray-600 dark:text-gray-300 mb-5 leading-relaxed">
+              سجّل دخولك أو أنشئ حسابك المجاني في ثوانٍ للبدء في الاختبار، وحفظ إجاباتك، ومتابعة تطورك!
+            </p>
+
+            <div className="flex items-center justify-center gap-3 sm:gap-4 mb-6 text-xs text-gray-600 dark:text-gray-300 flex-wrap">
+              {questionCount > 0 && (
+                <div className="flex items-center gap-1.5 bg-gray-50 dark:bg-slate-800/80 px-3 py-1.5 rounded-xl border border-gray-100 dark:border-slate-700">
+                  <FileQuestion size={15} className="text-indigo-500" />
+                  <span className="font-bold">{questionCount} سؤال</span>
+                </div>
+              )}
+              {durationMin > 0 && (
+                <div className="flex items-center gap-1.5 bg-gray-50 dark:bg-slate-800/80 px-3 py-1.5 rounded-xl border border-gray-100 dark:border-slate-700">
+                  <Clock size={15} className="text-amber-500" />
+                  <span className="font-bold">{durationMin} دقيقة</span>
+                </div>
+              )}
+              <div className="flex items-center gap-1.5 bg-gray-50 dark:bg-slate-800/80 px-3 py-1.5 rounded-xl border border-gray-100 dark:border-slate-700">
+                <Award size={15} className="text-emerald-500" />
+                <span className="font-bold">تصحيح فوري</span>
+              </div>
+            </div>
+
+            <div className="bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-4 mb-6 text-right border border-slate-100 dark:border-slate-800 space-y-2 text-xs sm:text-sm text-gray-600 dark:text-gray-300">
+              <div className="flex items-center gap-2">
+                <CheckCircle2 size={16} className="text-emerald-500 shrink-0" />
+                <span>حفظ نتائجك وإحصائياتك في حسابك بدقة</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle2 size={16} className="text-emerald-500 shrink-0" />
+                <span>تحليل فوري لنقاط القوة والضعف في المهارات</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle2 size={16} className="text-emerald-500 shrink-0" />
+                <span>مراجعة الحلول النموذجية والشروحات التوضيحية</span>
+              </div>
+            </div>
+
+            <div className="space-y-2.5">
+              <button
+                type="button"
+                onClick={() => navigate(`/?auth=login&returnTo=${returnUrl}`)}
+                className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white font-black py-3.5 px-4 rounded-xl shadow-md shadow-indigo-600/20 transition-all text-sm sm:text-base cursor-pointer"
+              >
+                <LogIn size={18} />
+                <span>تسجيل الدخول والبدء مباشرة</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => navigate(`/?auth=signup&returnTo=${returnUrl}`)}
+                className="w-full flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-600 text-white font-black py-3 px-4 rounded-xl shadow-sm transition-all text-sm cursor-pointer"
+              >
+                <UserPlus size={18} />
+                <span>إنشاء حساب جديد مجاناً (في ثوانٍ)</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={handleReturnToPreviousPlace}
+                className="w-full text-xs font-bold text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 py-2 transition-colors cursor-pointer"
+              >
+                {safeReturnTo ? 'العودة للمكان السابق' : 'تصفح باقي المواد والاختبارات'}
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 text-center max-w-md w-full mx-4">

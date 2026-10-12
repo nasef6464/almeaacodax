@@ -405,7 +405,8 @@ export const Header: React.FC = () => {
         ? await signUpWithEmail(normalizedEmail, normalizedPassword, signupName.trim())
         : await signInWithEmail(normalizedEmail, normalizedPassword);
 
-      const nextPath = getDashboardPathForRole(sessionUser.role);
+      const returnTo = new URLSearchParams(location.search).get('returnTo');
+      const nextPath = returnTo || getDashboardPathForRole(sessionUser.role);
 
       setIsUserMenuOpen(false);
       setActiveDropdown(null);
@@ -446,7 +447,12 @@ export const Header: React.FC = () => {
       } else if (smartInputType === 'phone') {
         // الدخول بالجوال + كلمة المرور مباشرة
         await api.post('/auth/login/phone-password', { phone: digits || asciiV, password: asciiPw });
-        window.location.reload();
+        const returnTo = new URLSearchParams(location.search).get('returnTo');
+        if (returnTo) {
+          window.location.href = returnTo;
+        } else {
+          window.location.reload();
+        }
         return;
       } else {
         setAuthError('أدخل بريد إلكتروني أو رقم جوال أو رقم الهوية');
@@ -458,7 +464,9 @@ export const Header: React.FC = () => {
         setSmartInput('');
         setSmartPassword('');
         setShowPassword(false);
-        navigate(getDashboardPathForRole(sessionUser.role));
+        const returnTo = new URLSearchParams(location.search).get('returnTo');
+        const nextPath = returnTo || getDashboardPathForRole(sessionUser.role);
+        navigate(nextPath);
       }
     } catch (error) {
       const message = error instanceof Error ? error.message : text.authFallbackError;
@@ -1018,7 +1026,8 @@ export const Header: React.FC = () => {
                 id="login-google-btn"
                 onClick={async () => {
                   try {
-                    await signInWithGoogle();
+                    const returnTo = new URLSearchParams(location.search).get('returnTo');
+                    await signInWithGoogle(returnTo || undefined);
                     setIsLoginModalOpen(false);
                   } catch (error) {
                     const message = error instanceof Error ? error.message : text.authFallbackError;
@@ -1213,7 +1222,12 @@ export const Header: React.FC = () => {
                               setSmartLoginLoading(true);
                               try {
                                 await api.whatsappVerifyLogin(smartInput.trim(), otpCode.trim());
-                                window.location.reload();
+                                const returnTo = new URLSearchParams(location.search).get('returnTo');
+                                if (returnTo) {
+                                  window.location.href = returnTo;
+                                } else {
+                                  window.location.reload();
+                                }
                               } catch (err) {
                                 setAuthError(err instanceof Error ? err.message : 'رمز التحقق غير صحيح');
                                 setSmartLoginLoading(false);

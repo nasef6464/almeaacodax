@@ -49,7 +49,7 @@ interface SessionUser {
 interface AuthContextType {
   user: SessionUser | null;
   loading: boolean;
-  signInWithGoogle: () => Promise<void>;
+  signInWithGoogle: (customReturnTo?: string) => Promise<void>;
   signInWithEmail: (email: string, password: string) => Promise<SessionUser>;
   signInWithNationalId: (nationalId: string, password: string) => Promise<SessionUser>;
   signUpWithEmail: (email: string, password: string, name?: string) => Promise<SessionUser>;
@@ -380,8 +380,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return sessionUser;
   };
 
-  const signInWithGoogle = async () => {
-    const returnTo = window.location.hash.replace(/^#/, '') || '/';
+  const signInWithGoogle = async (customReturnTo?: string) => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const returnToParam = customReturnTo || searchParams.get('returnTo');
+    const returnTo = returnToParam || window.location.hash.replace(/^#/, '') || window.location.pathname || '/';
     const oauthApiBase =
       import.meta.env.VITE_GOOGLE_OAUTH_API_BASE?.replace(/\/$/, '') ||
       (import.meta.env.PROD ? 'https://almeaacodax-codex.onrender.com/api' : (api.baseUrl.endsWith('/api') ? api.baseUrl : `${api.baseUrl.replace(/\/$/, '')}/api`));

@@ -190,3 +190,30 @@ Git HEAD always overrides this historical baseline.
   - `smoke:assessment-answer-review` -> **PASS**
 - Commit: `5ac7a842` على فرع `chatgpt/mnsf26-ingest`.
 
+## QUIZ ACCESS AUTH GATE — FREE BEHIND REGISTRATION — CLOSED ✅ — 2026-10-12
+
+- Scope: ضبط سياسة الوصول للاختبارات — "العضوية المجانية شرط بدء أي اختبار" (Free Behind Registration Gate).
+- المشكلة السابقة: كان بإمكان الزائر غير المسجل (`guest`) الدخول إلى الاختبارات والبدء بالحل دون حساب، مما يؤدي إلى عدم حفظ نتائجه، وتعذر تسجيل الإحصائيات، وضياع إجاباته عند التسليم (حيث يتطلب الخادم توثيق الحساب `requireAuth` عند الإرسال)، بالإضافة إلى تفويت فرصة تسجيل الطلاب بالمنصة.
+- الحل المنفذ والمعتمد:
+  1. **بوابة الدخول الذكية (Auth Gate Card):**
+     - تم منع الحسابات غير المسجلة (`user.id === 'guest'` أو `!isRegisteredUser(user)`) من استعراض أسئلة الاختبار عشوائياً.
+     - استبدال رسالة الخطأ التقليدية ببطاقة ترحيبية تسويقية ذكية ومحفّزة توضح:
+       - عنوان الاختبار وعدد الأسئلة والمدة الزمنية والتصحيح الفوري.
+       - مميزات التسجيل: حفظ النتائج في السجل التعليمي، التحليل الفوري للمهارات ونقاط الضعف، مراجعة الشروحات النموذجية.
+       - أزرار مباشرة عالية التحويل: "تسجيل الدخول والبدء مباشرة" و "إنشاء حساب جديد مجاناً (في ثوانٍ)".
+  2. **انسيابية العودة التلقائية (Smooth returnTo Navigation):**
+     - دعم كامل لبارامتر `returnTo` عبر كافة طرق التوثيق في `Header.tsx` و `AuthContext.tsx`:
+       - الدخول والتسجيل بالبريد وكلمة المرور (`handleEmailAuth`).
+       - الدخول الذكي برقم الهوية أو الجوال (`handleSmartLogin`).
+       - الدخول السريع عبر Google (`signInWithGoogle`).
+       - الدخول برمز التحقق عبر واتساب (`whatsappVerifyLogin`).
+     - فور اكتمال تسجيل الدخول أو إنشاء الحساب، تتم إعادة الطالب مباشرة وفورياً إلى رابط الاختبار المحدد لتبدأ تجربته دون انقطاع.
+  3. **حماية صلاحيات الإدارة والتطوير:**
+     - الحسابات الإدارية (`admin`, `teacher`, `supervisor`) وجلسات التطوير (`isDevSessionUser`) تحتفظ بصلاحية المعاينة المباشرة للاختبارات دون أي عوائق.
+- بوابات التحقق المستقلة:
+  - `smoke:quiz-progress-draft` -> **PASS (7/7 checks)**
+  - `smoke:quiz-access` -> **PASS (19/19 checks)**
+  - `test:tahsili-import-identity` -> **PASS (100%)**
+  - `smoke:learning-quiz-journey` -> **PASS (7/7 checks on live Render)**
+  - `smoke:adaptive-phase7-mastery-review` -> **PASS**
+  - `smoke:assessment-answer-review` -> **PASS**
