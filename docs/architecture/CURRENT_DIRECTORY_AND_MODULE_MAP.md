@@ -1,4 +1,6 @@
-# ALMEAA Current Directory & Module Map
+#Auth DTO projection (2026-10-12): server/src/modules/auth/presentation/serializeAuthUser.ts owns the existing unchanged sensitive-field exclusions. The auth route retains learner access projection, administrative history and authorization; extraction keeps the existing 65,000-character ownership gate without changing its limit.
+
+ ALMEAA Current Directory & Module Map
 
 Payment recovery repair (2026-10-12, local verification; delivery pending): server/src/services/paymentFulfillment.ts owns durable approval intent and resumable document-atomic fulfillment. server/src/services/tapWebhook.ts owns provider hash/precision/canonical charge binding. payment.routes retains existing endpoints, provider/manual evidence and audit boundaries. No new service, queue or production data repair.
 

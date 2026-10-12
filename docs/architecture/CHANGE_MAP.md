@@ -1,4 +1,6 @@
-# ALMEAA — Change Map
+#Auth DTO projection (2026-10-12): server/src/modules/auth/presentation/serializeAuthUser.ts owns the existing unchanged sensitive-field exclusions. The auth route retains learner access projection, administrative history and authorization; extraction keeps the existing 65,000-character ownership gate without changing its limit.
+
+ ALMEAA — Change Map
 
 Payment recovery (2026-10-12, delivery pending): payment route's duplicated approval/grant mutation moved into paymentFulfillment, with durable activation state; Tap verification moved into tapWebhook using the official signed-field contract. Existing endpoint/manual evidence/financial audit owners remain in payment.routes. New optional markers preserve historical records without backfill.
 

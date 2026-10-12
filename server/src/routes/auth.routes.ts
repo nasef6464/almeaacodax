@@ -1,4 +1,5 @@
 import { projectEffectiveUserAccess } from "../services/entitlementPolicy.js";
+import { serializeUser } from "../modules/auth/presentation/serializeAuthUser.js";
 import { Router } from "express";
 import bcrypt from "bcryptjs";
 import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
@@ -61,21 +62,6 @@ import {
   whatsappStartSchema,
   whatsappVerifySchema,
 } from "../modules/auth/http/authSchemas.js";
-
-const serializeUser = (user: any) => {
-  const plain = typeof user?.toJSON === "function" ? user.toJSON() : user?.toObject?.() || user;
-  const {
-    passwordHash,
-    failedLoginAttempts,
-    lastFailedLoginAt,
-    loginLockedUntil,
-    emailVerificationTokenHash,
-    passwordResetTokenHash,
-    __v,
-    ...safeUser
-  } = plain;
-  return safeUser;
-};
 
 const escapeRegExp = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 const buildDocumentQuery = (value: string) => {
