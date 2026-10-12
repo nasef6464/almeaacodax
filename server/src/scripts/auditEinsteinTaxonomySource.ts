@@ -14,7 +14,10 @@ import { env } from "../config/env.js";
 
 const PATH_ID = "p_1777779639431";
 const SUBJECT_ID = "sub_1777779748206";
-const manifestPath = path.resolve(process.cwd(), "../ops/einstein-taxonomy/source_first_chapter_crosswalk_20261012.json");
+const manifestPaths = [
+  "source_first_chapter_crosswalk_20261012.json",
+  "source_second_chapter_crosswalk_20261012.json",
+].map((name) => path.resolve(process.cwd(), "../ops/einstein-taxonomy", name));
 const sourceBanks = ["FND26", "COL2627"] as const;
 const chapterBands: Record<string, Array<[number, number, number]>> = {
   FND26: [[5,9,1],[10,14,2],[15,22,3],[23,27,4],[28,37,5],[38,46,6],[47,53,7],[54,60,8],[61,64,9],[65,69,10],[70,75,11],[76,80,12],[81,85,13],[94,98,17],[99,102,18],[103,106,19],[107,118,20],[119,122,21],[123,126,22],[127,130,23],[131,141,24],[142,145,25]],
@@ -26,8 +29,9 @@ const pageFromCode = (code: string) => Number(/-P(\d+)-Q\d+$/.exec(code)?.[1] ||
 
 async function main() {
   const reportPath = path.resolve(process.argv[2] || path.join("/tmp", "einstein-taxonomy-source-audit.json"));
-  const manifest = JSON.parse(await fs.readFile(manifestPath, "utf8"));
-  const requiredCodes = new Map<string, any>((manifest.questions as any[]).map((q) => [q.questionCode, q]));
+  const manifests = await Promise.all(manifestPaths.map(async (file) => JSON.parse(await fs.readFile(file, "utf8"))));
+  const requiredCodes = new Map<string, any>(manifests.flatMap((m) => m.questions as any[]).map((q) => [q.questionCode, q]));
+  if (requiredCodes.size !== manifests.reduce((n, m) => n + m.questions.length, 0)) throw new Error("Duplicate questionCode across source manifests");
   await mongoose.connect(env.MONGODB_URI, { serverSelectionTimeoutMS: 10_000 });
   const db = mongoose.connection.db;
   if (!db) throw new Error("Missing database handle");
@@ -71,31 +75,31 @@ async function main() {
           note:"Review SOURCE QUESTION CONCEPT visually before any move. Many are correct cross-topic exceptions."});
       }
     }
-    const sourceVerifiedFirstChapter: any[] = [];
+    const sourceMappedQuestions: any[] = [];
     for (const [code, expected] of requiredCodes) {
       const live: any = byCode.get(code);
-      sourceVerifiedFirstChapter.push({
+      sourceMappedQuestions.push({
         code, sourceRule: expected.sourceRule,
         state: !live ? "CODE_MISSING" : live.subSkillId !== expected.proposedSubskillId ? "LIVE_MAPPING_CHANGED"
-            : expected.auditState === "PEDAGOGY_REVIEW" ? "PEDAGOGY_REVIEW" : "SOURCE_RULE_ALIGNED_PENDING_INDIVIDUAL_IMAGE_CHECK",
+            : (expected.auditState === "PEDAGOGY_REVIEW" || expected.status === "PEDAGOGY_REVIEW") ? "PEDAGOGY_REVIEW" : "SOURCE_RULE_ALIGNED_PENDING_INDIVIDUAL_IMAGE_CHECK",
         expectedSubskill: expected.proposedSubskillId,
         currentSubskill: live?.subSkillId ?? null,
       });
     }
-    const missingSourceCandidates = (manifest.missingSourceCandidates as any[]).map((x) => ({
+    const missingSourceCandidates = manifests.flatMap((m) => m.missingSourceCandidates || []).map((x: any) => ({
       expectedCode:x.expectedQuestionCode, existsInLive:byCode.has(x.expectedQuestionCode),
       state:"VERIFY_SOURCE_QUESTION_OCCURRENCE_AND_LEGACY_ALIAS_BEFORE_IMPORT",
     }));
     const summary = {
       checkedAt:new Date().toISOString(), readonly:true, total:questions.length,
       banks:bankCounts, canonicalMain:taxonomy.length, canonicalSubskills:subs.size,
-      firstChapterSourceRows:sourceVerifiedFirstChapter.length,
+      sourceMappedQuestionRows:sourceMappedQuestions.length,
       flaggedCrossChapter:chapterCrossovers.length, structuralIssues:issues.length,
       note:"Chapter crossovers are TRIAGE ONLY: never auto-remap by chapter/page proximity.",
     };
     await fs.mkdir(path.dirname(reportPath), { recursive:true });
     await fs.writeFile(reportPath, JSON.stringify({
-      summary, issues, chapterCrossovers, sourceVerifiedFirstChapter, missingSourceCandidates,
+      summary, issues, chapterCrossovers, sourceMappedQuestions, missingSourceCandidates,
     }, null, 2) + "\n");
     console.log(JSON.stringify({summary,output:reportPath},null,2));
     if (issues.length || subs.size !== 95 || taxonomy.length !== 25) process.exitCode = 2;
