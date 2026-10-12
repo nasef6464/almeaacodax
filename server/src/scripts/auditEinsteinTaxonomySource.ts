@@ -78,11 +78,12 @@ async function main() {
     const sourceMappedQuestions: any[] = [];
     for (const [code, expected] of requiredCodes) {
       const live: any = byCode.get(code);
+      const targetSubskill = expected.proposedSubskillId || expected.recommendedSubskillId;
       sourceMappedQuestions.push({
-        code, sourceRule: expected.sourceRule,
-        state: !live ? "CODE_MISSING" : live.subSkillId !== expected.proposedSubskillId ? "LIVE_MAPPING_CHANGED"
+        code, sourceRule: expected.sourceRule || expected.bookConcept,
+        state: !live ? "CODE_MISSING" : live.subSkillId !== targetSubskill ? "LIVE_MAPPING_CHANGED"
             : (expected.auditState === "PEDAGOGY_REVIEW" || expected.status === "PEDAGOGY_REVIEW") ? "PEDAGOGY_REVIEW" : "SOURCE_RULE_ALIGNED_PENDING_INDIVIDUAL_IMAGE_CHECK",
-        expectedSubskill: expected.proposedSubskillId,
+        expectedSubskill: targetSubskill,
         currentSubskill: live?.subSkillId ?? null,
       });
     }
