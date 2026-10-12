@@ -1,5 +1,10 @@
 # ALMEAA — Change Map
 
+Payment recovery (2026-10-12, delivery pending): payment route's duplicated approval/grant mutation moved into paymentFulfillment, with durable activation state; Tap verification moved into tapWebhook using the official signed-field contract. Existing endpoint/manual evidence/financial audit owners remain in payment.routes. New optional markers preserve historical records without backfill.
+
+Courses access repair (2026-10-12, delivery pending): duplicated course/certificate/discussion access readers now consume entitlementPolicy; quiz submission adds attached-course verification. Auth single learner responses project effective historical mirror IDs; admin views keep original history. Protected bootstrap content projection moves into contentPayloadAccess; payload shape/managed visibility stay with existing owners.
+
+
 Classroom history loading/error/retry: start at `hooks/useClassroomTeacherReports.ts`; selected-session student details remain `components/classroom/SmartClassroomReportsSection.tsx`. Do not add a global authority cache or student-detail load to the radar.
 
 | إذا أردت تغيير... | ابدأ من... | لا تبدأ من... |

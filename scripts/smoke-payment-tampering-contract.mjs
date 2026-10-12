@@ -3,6 +3,7 @@
 const root = process.cwd();
 const routeFile = "server/src/routes/payment.routes.ts";
 const source = fs.readFileSync(`${root}/${routeFile}`, "utf8");
+const fulfillment = fs.readFileSync(`${root}/server/src/services/paymentFulfillment.ts`, "utf8");
 
 const findPostRouteBlocks = () => {
   const postRoutes = [];
@@ -138,16 +139,16 @@ add("preview endpoint derives original amount from trusted target", () => {
 });
 
 add("approval flow grants access from stored server-verified request only", () => {
-  if (!source.includes("const access = await grantApprovedPaymentAccess(approved.request")) {
-    throw new Error("Approval flow should grant access using approved.request");
+  if (!source.includes("acceptAndFulfillPayment(requestDoc") || !fulfillment.includes("PaymentRequestModel.findById(input._id)")) {
+    throw new Error("Approval flow must reload and fulfill the stored request");
   }
-  if (!source.includes("const packageId = updatedRequest.packageId")) {
+  if (!fulfillment.includes("packageId: p.packageId || (p.itemType === 'package' ? p.itemId : '')")) {
     throw new Error("Access grant should derive packageId from stored approved request");
   }
-  if (!source.includes("...(updatedRequest.itemType === \"course\" ? [updatedRequest.itemId] : [])")) {
+  if (!fulfillment.includes("courseIds: ids(p.itemType === 'course' ? [p.itemId] : p.includedCourseIds)")) {
     throw new Error("Access grant should derive course target from stored approved request");
   }
-  if (!source.includes("...(Array.isArray(updatedRequest.includedCourseIds) ? updatedRequest.includedCourseIds.map(String) : [])")) {
+  if (!fulfillment.includes("packageId: scope.packageId, courseIds: scope.courseIds") || !fulfillment.includes("const scope = snapshot(p); validateSnapshot(scope)")) {
     throw new Error("Access grant should derive includedCourseIds from stored approved request");
   }
 });

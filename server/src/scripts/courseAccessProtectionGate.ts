@@ -107,6 +107,7 @@ async function main() {
       const result = await request("/auth/me", premiumExpired);
       assert.equal(result.status, 200);
       assert.equal(result.body.user.subscription.plan, "free");
+      assert.ok(premiumExpired.subscription?.expiresAt);
       assert.equal(result.body.user.subscription.expiresAt, premiumExpired.subscription.expiresAt.toISOString());
       assert.equal((await UserModel.findById(premiumExpired._id).lean())?.subscription?.plan, "premium");
     });

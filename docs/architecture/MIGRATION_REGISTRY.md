@@ -1,5 +1,9 @@
 # ALMEAA — Migration Registry
 
+## Payment recovery markers — 2026-10-12 (delivery pending)
+
+Optional PaymentRequest.fulfillment stores new approval intent and activation state; DiscountCode.redemptionRequestIds and User.subscription.appliedPaymentRequestIds make new effects atomic/idempotent. Existing records require no backfill or new index. Legacy absent markers preserve financial approval without asserting activation; ambiguous date/counter replay requires reconciliation. Rollback disables new writes/presentation while retaining existing history and markers. No production migration or bulk repair performed.
+
 ASSESSMENT-WINDOW-RETAKE (2026-10-10): authorized additive optional Quiz window fields, optional new-outcome snapshot fields and new `QuizRetake` records. Legacy dueDate fallback retained; no historical backfill, score rewrite, assignment reader cutover or production mutation performed. No data migration required for unconfigured old quizzes. Delivery remains PARTIAL pending required CI/publication/runtime proof.
 
 هذا السجل يميّز بوضوح بين كود migration القابل للاختبار وبين أي تشغيل فعلي على

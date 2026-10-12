@@ -10,6 +10,7 @@ const learningSectionSource = read('components/LearningSection.tsx');
 const pathPageSource = read('pages/GenericPathPage.tsx');
 const paymentModelSource = read('server/src/models/PaymentRequest.ts');
 const paymentRoutesSource = read('server/src/routes/payment.routes.ts');
+const fulfillmentSource = read('server/src/services/paymentFulfillment.ts');
 const courseModelSource = read('server/src/models/Course.ts');
 const courseRoutesSource = read('server/src/routes/course.routes.ts');
 const typesSource = read('types.ts');
@@ -40,20 +41,22 @@ check('payment requests preserve discount data and calculate final amount server
   assertIncludes(paymentRoutesSource, 'لا يمكن اعتماد طلب دفع لمستخدم غير موجود');
   assertIncludes(paymentRoutesSource, 'كود الخصم لم يعد متاحًا للاعتماد');
   assertIncludes(paymentRoutesSource, 'PaymentRequestModel.findOneAndUpdate');
-  assertIncludes(paymentRoutesSource, 'grantApprovedPaymentAccess');
+  assertIncludes(paymentRoutesSource, 'acceptAndFulfillPayment(requestDoc');
+  assertIncludes(fulfillmentSource, 'grantAccessToUser');
   assertIncludes(paymentModalSource, 'discountCode: discountCode.trim().toUpperCase()');
   assertIncludes(paymentModalSource, 'api.previewDiscountCode');
   assertIncludes(apiSource, 'previewDiscountCode');
 });
 
 check('discount approval is guarded before access is granted', () => {
-  const redemptionIndex = paymentRoutesSource.indexOf('const redemption = await DiscountCodeModel.findOneAndUpdate');
-  const grantIndex = paymentRoutesSource.indexOf('grantApprovedPaymentAccess', redemptionIndex);
+  const redemptionIndex = fulfillmentSource.indexOf('await reserveDiscount(p, scope)');
+  const grantIndex = fulfillmentSource.indexOf('await deliverGrant(p, scope', redemptionIndex);
   if (redemptionIndex === -1 || grantIndex === -1 || redemptionIndex > grantIndex) {
     throw new Error('Discount redemption must be reserved before granting access.');
   }
   assertIncludes(paymentRoutesSource, 'status: "pending"');
-  assertIncludes(paymentRoutesSource, 'تعذر اعتماد كود الخصم أثناء المراجعة');
+  assertIncludes(fulfillmentSource, 'redemptionRequestIds: { $ne: key }');
+  assertIncludes(fulfillmentSource, '$addToSet: { redemptionRequestIds: key }');
 });
 
 check('manual payment approval requires review evidence before unlocking access', () => {
@@ -82,13 +85,13 @@ check('verified payment webhook can approve requests without trusting the browse
   assertIncludes(paymentRoutesSource, 'x-payment-signature');
   assertIncludes(paymentRoutesSource, 'crypto.timingSafeEqual');
   assertIncludes(paymentRoutesSource, 'PAYMENT_WEBHOOK_SECRET');
-  assertIncludes(paymentRoutesSource, 'requestDoc.gatewayEventId === payload.eventId');
+  assertIncludes(paymentRoutesSource, '!reservation.reserved && !reservation.sameRequest');
   assertIncludes(paymentRoutesSource, 'reservePaymentGatewayEvent');
   assertIncludes(paymentRoutesSource, 'PaymentGatewayEventGuardModel.create');
   assertIncludes(paymentRoutesSource, 'Payment gateway event was already used');
   assertIncludes(paymentRoutesSource, 'Payment request is not pending');
-  assertIncludes(paymentRoutesSource, 'Payment currency mismatch');
-  assertIncludes(paymentRoutesSource, 'Paid amount is lower than request amount');
+  assertIncludes(paymentRoutesSource, 'Payment amount or currency mismatch');
+  assertIncludes(paymentRoutesSource, 'paymentMinorUnits(payload.paidAmount, payload.currency) !== paymentMinorUnits(requestDoc.amount, requestDoc.currency)');
   assertIncludes(paymentRoutesSource, 'reviewedBy: `webhook:${payload.provider}`');
   assertIncludes(paymentRoutesSource, 'payment.webhook.approved');
 });

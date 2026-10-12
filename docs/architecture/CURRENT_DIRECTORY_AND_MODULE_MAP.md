@@ -1,5 +1,10 @@
 # ALMEAA Current Directory & Module Map
 
+Payment recovery repair (2026-10-12, local verification; delivery pending): server/src/services/paymentFulfillment.ts owns durable approval intent and resumable document-atomic fulfillment. server/src/services/tapWebhook.ts owns provider hash/precision/canonical charge binding. payment.routes retains existing endpoints, provider/manual evidence and audit boundaries. No new service, queue or production data repair.
+
+Courses access repair (2026-10-12, local implementation; delivery pending): server/src/services/entitlementPolicy.ts owns shared active Premium, grant provenance, effective ownership and sanitized learner response projection. Course/quiz/certificate/discussion/auth callers retain HTTP/role/entity ownership; discussion preserves its foundation-specific scope. modules/content/application/contentPayloadAccess.ts owns protected bootstrap payload projection; existing managed visibility and metadata builder remain. No persisted history rewrite or route change.
+
+
 Review practice (2026-10-10): `pages/ReviewSession.tsx` retains private card loading, canonical answers, event idempotency, session lifecycle and local batch retry. `components/review/PracticeSessionHeader.tsx` owns only the mode/progress/exit presentation alongside existing feedback/summary components. Favorites owns current-tab/page entry and ignores stale tab loads. No server/API/data authority moved.
 
 
