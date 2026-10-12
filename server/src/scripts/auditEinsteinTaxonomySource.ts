@@ -21,6 +21,8 @@ const manifestPaths = [
   "source_fourth_chapter_decimals_crosswalk_20261012.json",
   "source_fifth_foundation_exponents_20261012.json",
   "source_sixth_exponents_roots_20261012.json",
+  "source_seventh_algebra_book_alignment_20261012.json",
+  "source_eighth_ratio_percent_finance_20261012.json",
 ].map((name) => path.resolve(process.cwd(), "../ops/einstein-taxonomy", name));
 const sourceBanks = ["FND26", "COL2627"] as const;
 const chapterBands: Record<string, Array<[number, number, number]>> = {
@@ -37,7 +39,8 @@ async function main() {
   const rows = manifests.flatMap((m) => m.questions as any[]).map((q: any) => ({
     ...q,
     questionCode: q.questionCode || q.code,
-    proposedSubskillId: q.proposedSubskillId || q.recommendedSubskillId || q.targetSubskillId,
+    proposedSubskillId: q.proposedSubskillId || q.recommendedSubskillId || q.targetSubskillId || q.currentSubSkillId || q.currentSubskillId,
+    originalClassificationIsNotAnApproval: !(q.proposedSubskillId || q.recommendedSubskillId || q.targetSubskillId),
   }));
   const requiredCodes = new Map<string, any>(rows.map((q: any) => [q.questionCode, q]));
   if (requiredCodes.size !== rows.length) throw new Error("Duplicate questionCode across source manifests");
@@ -90,10 +93,13 @@ async function main() {
       const targetSubskill = expected.proposedSubskillId;
       if (!targetSubskill) throw new Error(`Manifest row missing target subskill: ${code}`);
       sourceMappedQuestions.push({
-        code, sourceRule: expected.sourceRule || expected.bookConcept || expected.bookRule || expected.sourceRuleOnPage || expected.sourceRuleBannerOnPage || expected.sourceRuleEvidence,
+        code, sourceRule: expected.sourceRule || expected.bookConcept || expected.bookRule || expected.sourceRuleOnPage || expected.sourceRuleBannerOnPage || expected.sourceRuleEvidence || expected.printedRuleHeadingVisibleOnPage || expected.sourceBookSectionEvidence,
         state: !live ? "CODE_MISSING" : live.subSkillId !== targetSubskill ? "LIVE_MAPPING_CHANGED"
-            : /REVIEW|BOUNDARY|UNVERIFIED/.test([expected.status, expected.state, expected.auditState].filter(Boolean).join(" ")) ? "REVIEW_REQUIRED" : "SOURCE_GROUP_MAPPED_PENDING_INDIVIDUAL_SOURCE_IMAGE_CHECK",
+            : String(expected.status).startsWith("ORIGINAL_PDF_IMAGE_RULE_5_AND_ATLAS_TEXT_VERIFIED") ? "SOURCE_BOOK_RULE_AND_ATLAS_TEXT_VERIFIED_LIVE_CROP_PENDING"
+            : /REVIEW|BOUNDARY|UNVERIFIED|PENDING|NOT_CONFIRMED/.test([expected.status, expected.state, expected.auditState, expected.evidenceStatus].filter(Boolean).join(" ")) ? "REVIEW_REQUIRED"
+            : "SOURCE_GROUP_MAPPED_PENDING_INDIVIDUAL_SOURCE_IMAGE_CHECK",
         expectedSubskill: targetSubskill,
+        classificationIsFromOldLiveValue: expected.originalClassificationIsNotAnApproval,
         currentSubskill: live?.subSkillId ?? null,
       });
     }
