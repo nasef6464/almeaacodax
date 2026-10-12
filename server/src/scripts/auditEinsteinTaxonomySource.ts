@@ -22,11 +22,7 @@ const chapterBands: Record<string, Array<[number, number, number]>> = {
 };
 
 const str = (s: unknown) => String(s ?? "").trim();
-const mainFromSub = (s: string) => {
-  const m = /^sub_quant_(\\d{2})_\\d+$/.exec(s);
-  return m ? `skill_quant_${m[1]}` : "";
-};
-const pageFromCode = (code: string) => Number(/-P(\\d+)-Q\\d+$/.exec(code)?.[1] || 0);
+const pageFromCode = (code: string) => Number(/-P(\d+)-Q\d+$/.exec(code)?.[1] || 0);
 
 async function main() {
   const reportPath = path.resolve(process.argv[2] || path.join("/tmp", "einstein-taxonomy-source-audit.json"));
@@ -100,7 +96,7 @@ async function main() {
     await fs.mkdir(path.dirname(reportPath), { recursive:true });
     await fs.writeFile(reportPath, JSON.stringify({
       summary, issues, chapterCrossovers, sourceVerifiedFirstChapter, missingSourceCandidates,
-    }, null, 2) + "\\n");
+    }, null, 2) + "\n");
     console.log(JSON.stringify({summary,output:reportPath},null,2));
     if (issues.length || subs.size !== 95 || taxonomy.length !== 25) process.exitCode = 2;
   } finally {
