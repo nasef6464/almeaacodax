@@ -29,11 +29,13 @@
     "mappedLiveQuestionRecords": 48
   },
   "requirements": [
+    "Use the rule heading printed in original Einstein FND/COL PDF as primary ground truth; never override with inferred conceptual labels.",
     "Verify question text, actual image, choices and book-rule label before any live skill mutation.",
     "Never replace a canonical questionCode.",
-    "Never touch quizzes, student attempts or historical versions without preserving old identity.",
     "For ambiguous items do not auto-reclassify; record review decision.",
-    "After real skill changes, reconcile drill questionIds and show student/teacher skill reports."
+    "After real skill changes, reconcile drill questionIds and show student/teacher skill reports.",
+    "Historical student scores and assessment attempts are test-only data; do not use them to veto correcting question-to-skill mapping.",
+    "Map source book rule(s) into stable 25/95 skill IDs via an explicit reviewed crosswalk; do not invent or silently alter book rule numbers."
   ],
   "missingSourceCandidates": [
     {
@@ -300,11 +302,11 @@
       "questionCode": "QDR-QNT-COL2627-P005-Q07",
       "bank": "COL2627",
       "sourcePage": 5,
-      "sourceRule": "قاعدة 1: الإشارات والتجميع الذكي",
+      "sourceRule": "كتاب تجميعات أينشتاين — العمليات على الأعداد — قاعدة 1 (صفحة 5)",
       "currentSubskillId": "sub_quant_01_1",
       "proposedSubskillId": "sub_quant_01_1",
-      "auditState": "PEDAGOGY_REVIEW",
-      "notes": "مجموع مربعات؛ يلزم قرار تعليمي هل يبقى مع تجميع الأعداد أم يُنقل إلى مجاميع المتتاليات؛ لا تغيير تلقائي ولا كسر للتدريب الحالي."
+      "auditState": "SOURCE_RULE_MATCH_PENDING_VISUAL_OPTION_AUDIT",
+      "notes": "Keep in printed Einstein Rule 1 group; no AI reinterpretation to another subskill based on 'sum of squares'. Verify picture/option identity before final certification."
     },
     {
       "questionCode": "QDR-QNT-COL2627-P005-Q08",
@@ -513,5 +515,7 @@
       "proposedSubskillId": "sub_quant_01_4",
       "auditState": "SOURCE_RULE_AND_TAXONOMY_ALIGNED_PENDING_FULL_VISUAL"
     }
-  ]
+  ],
+  "sourceAuthority": "EINSTEIN_BOOK_FIRST_PRINTED_RULE_OR_SECTION; NO_AI_INFERRED_RULES",
+  "studentResults": "ALL_TEST_DATA_NOT_A_MIGRATION_CONSTRAINT"
 }
