@@ -1,0 +1,83 @@
+{
+  "version": "einstein_book_rule_audit_checkpoint_v2",
+  "asOf": "2026-10-12T19:30:00Z",
+  "repository": "nasef6464/almeaacodax",
+  "branch": "audit/einstein-fnd-col-source-taxonomy-20261012",
+  "pr": 529,
+  "sourceBooks": [
+    "تاسيس انشتين معدل .pdf",
+    "تجميع انشيتن معدل(1).pdf"
+  ],
+  "authority": "Printed lesson + numbered rule + original book question; classification uses existing 25/95 canonical skills, no model-invented rules",
+  "students": "all student performance data are experimental; no results blocking review",
+  "inventory": {
+    "FND26": 858,
+    "COL2627": 946,
+    "total": 1804
+  },
+  "sourceGrouped": {
+    "FND26": 401,
+    "COL2627": 517,
+    "total": 918,
+    "manifests": 8,
+    "remainingWithoutMappedSourceGrouping": {
+      "FND26": 457,
+      "COL2627": 429,
+      "total": 886
+    }
+  },
+  "verification": {
+    "sourceGroupedQuestionCodesUnique": 918,
+    "atlasExactCodeFound": 918,
+    "atlasExistingSkillFieldDrift": 0,
+    "atlasDocumentCodeMismatch": 0,
+    "liveImageCropVerified": 0,
+    "individualPrintedRuleAndAtlasQuestionTextVerified": 5,
+    "bookRuleVerifiedExample": {
+      "foundation": [
+        "QDR-QNT-FND26-P057-Q25",
+        "QDR-QNT-FND26-P057-Q26"
+      ],
+      "compilation": [
+        "QDR-QNT-COL2627-P037-Q18",
+        "QDR-QNT-COL2627-P037-Q19",
+        "QDR-QNT-COL2627-P037-Q20"
+      ],
+      "bookRule": "قاعدة 5: الزكاة الشرعية",
+      "canonicalSubskill": "sub_quant_10_4"
+    }
+  },
+  "quizzes": {
+    "subskillDrills": {
+      "count": 95,
+      "questionReferences": 1200,
+      "missing": 0,
+      "storedSubskillMismatch": 0,
+      "rejected": 0
+    },
+    "mainSkillBanks": {
+      "count": 39,
+      "questionReferences": 1358,
+      "missing": 0,
+      "storedMainSkillMismatch": 0,
+      "rejected": 0,
+      "oneSmallBank": "bank_skill_quant_15_g01 has 29 items"
+    }
+  },
+  "confirmedLiveSkillReassignments": 0,
+  "databaseWritesByThisAudit": 0,
+  "notCertified": "The 918 mapped rows are page/chapter-linked and most do not have individual book-rule image verification. Neither 918/1804 nor 1200 linked drill refs is final pedagogical QA.",
+  "openCases": [
+    "Two COL2627 p33 q47–48 exponent assignments within equations source page remain rule-boundary review, not confirmed incorrect.",
+    "38 unresolved cross-chapter-page cases in ratios, percentages and finances after clearing five true book-rule-5 zakat items.",
+    "FND26 source printed items 14–19 near opening chapter need identity/alias recheck before claiming genuinely missing.",
+    "Index page images/read results beyond FND26 p69 and COL2627 p43 temporarily unavailable, and raw PDF materialization of Project backed files denied; avoid inventing exact rules."
+  ],
+  "next": [
+    "Recover original page images for next PDF spans or authoritative connected source bytes.",
+    "Verify printed rule boundaries and original question image per code in existing 918, prioritize 38 open cross-chapter flags.",
+    "Continue sourcing unmapped 886 source questions with exact printed rule and page.",
+    "Create guarded migration only for proven incorrect skill assignments and reconcile quizzes after corrections.",
+    "Only after FND26 & COL2627 completion begin MNSF26."
+  ]
+}
