@@ -16,8 +16,8 @@ const checks = [
   ["certificate grant scope checks course/path/subject", policy.includes('courseIds.some(id => identities.includes(id))') && policy.includes('grantMatchesContent(grant, "courses"')],
   ["certificate requires entitlement", source.includes('if (!hasCourseEntitlement)') && source.includes('Course access is required before issuing a certificate')],
   ["certificate requires exact lesson completion before rounding can authorize", source.includes('if (completedInCourse !== totalLessons)')],
-  ["course certificate CTA reads confirmed learner lesson completion", courseViewSource.includes('const { user, enrolledCourses, completedLessons, hasScopedPackageAccess, courses } = useStore()') && courseViewSource.includes('const courseCompletionProgress = courseLessons.length > 0')],
-  ["course certificate CTA does not trust catalog progress", courseViewSource.includes('course.certificateEnabled && courseCompletionProgress >= 100') && !courseViewSource.includes('course.certificateEnabled && Number(course.progress || 0) >= 100')],
+  ["course certificate CTA reads confirmed learner lesson completion", courseViewSource.includes('getCourseCompletion(course, completedLessons)')],
+  ["course certificate CTA requires exact completion", courseViewSource.includes('course.certificateEnabled && courseCompletion.isComplete') && !courseViewSource.includes('course.certificateEnabled && courseCompletionProgress >= 100')],
 ];
 
 const failed = checks.filter(([, pass]) => !pass);

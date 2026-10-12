@@ -47,42 +47,8 @@ const Pricing: React.FC = () => {
       return;
     }
 
-    const stageTitles: Record<EducationalStageKey, string> = {
-      high: 'المرحلة الثانوية',
-      middle: 'المرحلة المتوسطة',
-      primary: 'المرحلة الابتدائية',
-    };
-
-    const tierTitles = {
-      standard: 'باقة التأسيس والتدريب',
-      pro: 'الباقة الشاملة والتميز',
-    };
-
-    const prices: Record<EducationalStageKey, { standard: number; pro: number }> = {
-      high: { standard: 99, pro: 189 },
-      middle: { standard: 79, pro: 149 },
-      primary: { standard: 69, pro: 129 },
-    };
-
-    const selectedPrice = prices[stageKey][tierKey];
-    const title = `${tierTitles[tierKey]} - ${stageTitles[stageKey]}`;
-
-    const matchingCourse = courses.find(
-      (c) => c.isPackage && (c.title?.includes(stageTitles[stageKey]) || c.description?.includes(stageTitles[stageKey])),
-    ) || courses.find((c) => c.isPackage);
-
-    setSelectedMembership({
-      id: matchingCourse?.id || `package_${stageKey}_${tierKey}`,
-      packageId: matchingCourse?.id || `package_${stageKey}_${tierKey}`,
-      title,
-      price: selectedPrice,
-      currency: 'SAR',
-      purchaseType: 'package',
-      isPackage: true,
-      contentTypes: tierKey === 'pro' ? ['all'] : ['courses', 'foundation', 'banks'],
-      packageContentTypes: tierKey === 'pro' ? ['all'] : ['courses', 'foundation', 'banks'],
-      accessContext: `اشتراك ${title}`,
-    });
+    // Paid stage offers need an explicit canonical mapping before purchase.
+    return;
   };
 
   return (
@@ -147,8 +113,7 @@ const Pricing: React.FC = () => {
                   packageId: membership.id,
                   purchaseType: 'package',
                   isPackage: true,
-                  contentTypes: membership.packageContentTypes?.length ? membership.packageContentTypes : ['all'],
-                  packageContentTypes: membership.packageContentTypes?.length ? membership.packageContentTypes : ['all'],
+                  contentTypes: membership.packageContentTypes,
                   accessContext: 'هذه عضوية عامة على مستوى المنصة وليست باقة مسار محددة.',
                 })}
                 className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-amber-500 px-4 py-2 text-sm font-black text-white hover:bg-amber-600"
@@ -162,7 +127,7 @@ const Pricing: React.FC = () => {
 
         {memberships.length === 0 ? (
           <div className="mt-8 rounded-2xl border border-amber-100 bg-amber-50 p-4 text-sm leading-7 text-amber-800">
-            تستطيع استخدام العضوية المجانية أو اختيار الباقة المناسبة لمرحلتك من جدول المقارنة أدناه.
+            العضوية المجانية متاحة. ستظهر العضويات المدفوعة هنا عند نشرها.
           </div>
         ) : null}
 

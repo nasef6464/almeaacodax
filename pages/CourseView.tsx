@@ -1,4 +1,6 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useActivePremium } from '../utils/useActivePremium';
+import { getCourseCompletion } from '../utils/courseCompletion';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { Course } from '../types';
 import { CoursePlayer } from '../components/CoursePlayer';
@@ -26,13 +28,19 @@ const withCourseAccessLocks = (course: Course, hasAccess: boolean): Course => {
 const CourseView: React.FC = () => {
     const { courseId } = useParams<{ courseId: string }>();
     const [searchParams, setSearchParams] = useSearchParams();
+    const setSearchParamsRef = useRef(setSearchParams);
+    setSearchParamsRef.current = setSearchParams;
+    const searchParamsRef = useRef(searchParams);
+    searchParamsRef.current = searchParams;
     const [course, setCourse] = useState<Course | null>(null);
+    const [loadedRouteId, setLoadedRouteId] = useState<string | undefined>();
     const [loading, setLoading] = useState(true);
     const [loadError, setLoadError] = useState('');
     const [isPlaying, setIsPlaying] = useState(() => searchParams.get('learn') === '1');
     const requestedTab = searchParams.get('tab');
     const [certificateCode, setCertificateCode] = useState('');
     const { user, enrolledCourses, completedLessons, hasScopedPackageAccess, courses } = useStore();
+    useActivePremium(user);
     const isGuestUser = !user?.email || user.id === 'guest';
     const isStaffViewer = !isGuestUser && ['admin', 'teacher', 'supervisor'].includes(user.role);
 
@@ -48,7 +56,7 @@ const CourseView: React.FC = () => {
     };
 
     const updateLearningUrlState = useCallback((nextPlaying: boolean, lessonId?: string) => {
-        const nextParams = new URLSearchParams(searchParams);
+        const nextParams = new URLSearchParams(searchParamsRef.current);
         if (nextPlaying) {
             nextParams.set('learn', '1');
             if (lessonId) {
@@ -58,8 +66,11 @@ const CourseView: React.FC = () => {
             nextParams.delete('learn');
             nextParams.delete('lesson');
         }
-        setSearchParams(nextParams, { replace: true });
-    }, [searchParams, setSearchParams]);
+        if (nextParams.toString() === searchParamsRef.current.toString()) return;
+        searchParamsRef.current = nextParams;
+        setSearchParamsRef.current(nextParams, { replace: true });
+    }, []);
+    const handleLessonChange = useCallback((lessonId: string) => updateLearningUrlState(true, lessonId), [updateLearningUrlState]);
 
     useEffect(() => {
         let mounted = true;
@@ -76,6 +87,7 @@ const CourseView: React.FC = () => {
                 const foundCourse = await adapter.getCourseById(courseId);
                 if (mounted) {
                     setCourse(foundCourse);
+                    setLoadedRouteId(courseId);
                 }
             } catch (error) {
                 console.warn('Unable to load course', error);
@@ -84,6 +96,7 @@ const CourseView: React.FC = () => {
                         courses.find((item: any) => String(item.id || item._id || '') === String(courseId || '')) || null;
                     if (localCourse) {
                         setCourse(localCourse);
+                        setLoadedRouteId(courseId);
                         setLoadError('');
                     } else {
                         setCourse(null);
@@ -104,7 +117,10 @@ const CourseView: React.FC = () => {
         };
     }, [courseId, courses, enrolledCourses]);
 
-    if (loading) {
+    // A route transition must unmount the previous course player before its
+    // lesson effects can write into the incoming course URL.
+    const courseMatchesRoute = !course || loadedRouteId === courseId;
+    if (loading || !courseMatchesRoute) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
                 <Loader2 className="w-12 h-12 animate-spin text-indigo-600" />
@@ -159,12 +175,7 @@ const CourseView: React.FC = () => {
         (user.subscription?.purchasedCourses || []).includes(course.id) ||
         hasPackageAccess;
     const courseForCurrentAccess = withCourseAccessLocks(course, isEnrolled || isStaffViewer);
-    const courseLessons = course.modules?.flatMap((module) => module.lessons || []) || [];
-    const completedLessonIds = new Set(completedLessons.map(String));
-    const completedCourseLessons = courseLessons.filter((lesson: any) => completedLessonIds.has(String(lesson.id || lesson._id))).length;
-    const courseCompletionProgress = courseLessons.length > 0
-        ? Math.round((completedCourseLessons / courseLessons.length) * 100)
-        : 0;
+    const courseCompletion = getCourseCompletion(course, completedLessons);
     const hasPlayablePreviewLesson = courseForCurrentAccess.modules?.some((module) =>
         module.lessons.some((lesson) => !lesson.isLocked),
     ) === true;
@@ -196,7 +207,7 @@ const CourseView: React.FC = () => {
             <CoursePlayer
                 course={courseForCurrentAccess}
                 initialLessonId={searchParams.get('lesson') || undefined}
-                onLessonChange={(lessonId) => updateLearningUrlState(true, lessonId)}
+                onLessonChange={handleLessonChange}
                 onBack={() => {
                     setIsPlaying(false);
                     updateLearningUrlState(false);
@@ -209,7 +220,7 @@ const CourseView: React.FC = () => {
         return (
             <div>
                 {courseNextAction}
-                {course.certificateEnabled && courseCompletionProgress >= 100 ? (
+                {course.certificateEnabled && courseCompletion.isComplete ? (
                     <div className="mx-auto mb-4 mt-4 w-full max-w-5xl px-4">
                         <button
                             onClick={async () => {
@@ -236,12 +247,14 @@ const CourseView: React.FC = () => {
                     course={courseForCurrentAccess}
                     initialTab={resolveOverviewTab(requestedTab)}
                     onTabChange={(tab) => {
-                        const nextParams = new URLSearchParams(searchParams);
+                        const nextParams = new URLSearchParams(searchParamsRef.current);
                         if (tab === 'syllabus') {
                             nextParams.delete('tab');
                         } else {
                             nextParams.set('tab', tab);
                         }
+                        if (nextParams.toString() === searchParamsRef.current.toString()) return;
+                        searchParamsRef.current = nextParams;
                         setSearchParams(nextParams, { replace: true });
                     }}
                     onContinue={(lessonId?: string) => {
@@ -260,12 +273,14 @@ const CourseView: React.FC = () => {
                 course={courseForCurrentAccess}
                 initialTab={resolveOverviewTab(requestedTab)}
                 onTabChange={(tab) => {
-                    const nextParams = new URLSearchParams(searchParams);
+                    const nextParams = new URLSearchParams(searchParamsRef.current);
                     if (tab === 'syllabus') {
                         nextParams.delete('tab');
                     } else {
                         nextParams.set('tab', tab);
                     }
+                    if (nextParams.toString() === searchParamsRef.current.toString()) return;
+                    searchParamsRef.current = nextParams;
                     setSearchParams(nextParams, { replace: true });
                 }}
                 onContinue={(lessonId?: string) => {

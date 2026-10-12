@@ -1,3 +1,5 @@
+import { usePremiumExpiryClock } from '../../utils/useActivePremium';
+import { hasActivePremium } from '../../server/src/utils/premiumAccess';
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   AlertTriangle,
@@ -46,6 +48,7 @@ const defaultMembership = () => ({
 
 export const MembershipsManager: React.FC = () => {
   const { courses, users, paths, addCourse, updateCourse } = useStore();
+  const premiumClock = usePremiumExpiryClock(users);
   const [paymentRequests, setPaymentRequests] = useState<PaymentRequest[]>([]);
   const [loadingRequests, setLoadingRequests] = useState(false);
   const [busyId, setBusyId] = useState<string | null>(null);
@@ -78,10 +81,10 @@ export const MembershipsManager: React.FC = () => {
     () =>
       users.filter((item) => {
         if (item.role !== Role.STUDENT) return false;
-        if (item.subscription?.plan === 'premium') return true;
+        if (hasActivePremium(item)) return true;
         return (item.subscription?.purchasedPackages || []).some((packageId) => membershipIds.has(packageId));
       }),
-    [membershipIds, users],
+    [membershipIds, users, premiumClock],
   );
 
   const loadPaymentRequests = async () => {

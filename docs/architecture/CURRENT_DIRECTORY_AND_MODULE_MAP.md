@@ -2,6 +2,10 @@
 
 Payment recovery repair (2026-10-12, local verification; delivery pending): server/src/services/paymentFulfillment.ts owns durable approval intent and resumable document-atomic fulfillment. server/src/services/tapWebhook.ts owns provider hash/precision/canonical charge binding. payment.routes retains existing endpoints, provider/manual evidence and audit boundaries. No new service, queue or production data repair.
 
+Premium read policy (2026-10-12): pure server/src/utils/premiumAccess.ts owns missing/invalid/exact-expiry decisions shared by frontend and entitlementPolicy's existing re-export. The browser imports only this pure file, without Mongo or server configuration. Subscription persistence remains commerce-owned.
+
+Courses/packages frontend repair (2026-10-12, locally verified; delivery pending): utils/authSessionLifetime.ts owns ephemeral actor/session generation, contexts/authStoreSync.ts owns existing store synchronization extracted from AuthContext; contexts/authTypes.ts owns the existing compatible re-exported authentication types, utils/courseCompletion.ts owns canonical lesson completion, and utils/paymentRequestPresentation.ts owns financial/activation wording and retry eligibility. Existing pages and course player retain navigation/rendering; enrollment slice retains API dispatch. No new persisted session data or endpoint.
+
 Courses access repair (2026-10-12, local implementation; delivery pending): server/src/services/entitlementPolicy.ts owns shared active Premium, grant provenance, effective ownership and sanitized learner response projection. Course/quiz/certificate/discussion/auth callers retain HTTP/role/entity ownership; discussion preserves its foundation-specific scope. modules/content/application/contentPayloadAccess.ts owns protected bootstrap payload projection; existing managed visibility and metadata builder remain. No persisted history rewrite or route change.
 
 

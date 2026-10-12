@@ -1,3 +1,6 @@
+import { usePremiumExpiryClock } from '../../utils/useActivePremium';
+import { canRetryFulfillment, paymentActivationLabel } from '../../utils/paymentRequestPresentation';
+import { hasActivePremium } from '../../server/src/utils/premiumAccess';
 import React, { useEffect, useMemo, useState } from 'react';
 import { AlertTriangle, ArrowDownRight, ArrowUpRight, CheckCircle, CreditCard, DollarSign, Download, ExternalLink, Eye, EyeOff, Landmark, LockKeyhole, Save, Search, TrendingUp, Unlock, Users, Wallet } from 'lucide-react';
 import { useStore } from '../../store/useStore';
@@ -82,6 +85,7 @@ const downloadCsv = (fileName: string, rows: Array<Array<string | number>>) => {
 
 export const FinancialManager: React.FC = () => {
     const { users, groups, b2bPackages, accessCodes, courses, paths, subjects, lessons, quizzes, libraryItems, updateCourse, updateB2BPackage } = useStore();
+    const premiumClock = usePremiumExpiryClock(users);
     const [activeTab, setActiveTab] = useState<'overview' | 'requests' | 'settings' | 'discounts' | 'b2b' | 'b2c' | 'transactions' | 'revenue'>('overview');
     const [paymentRequests, setPaymentRequests] = useState<PaymentRequest[]>([]);
     const [discountCodes, setDiscountCodes] = useState<DiscountCode[]>([]);
@@ -204,8 +208,8 @@ export const FinancialManager: React.FC = () => {
         const purchasedPackages = user.subscription?.purchasedPackages || [];
         const hasPublicPackage = purchasedPackages.some((packageId) => publicPackageIds.has(packageId));
         const hasOnlySchoolPackages = purchasedPackages.length > 0 && purchasedPackages.every((packageId) => schoolPackageIds.has(packageId));
-        return hasPublicPackage || (user.subscription?.plan === 'premium' && !hasOnlySchoolPackages);
-    }), [publicPackageIds, schoolPackageIds, users]);
+        return hasPublicPackage || (hasActivePremium(user) && !hasOnlySchoolPackages);
+    }), [publicPackageIds, schoolPackageIds, users, premiumClock]);
 
     const premiumRows = useMemo(() => {
         return b2cPremiumUsers.map((user) => ({
@@ -417,16 +421,22 @@ export const FinancialManager: React.FC = () => {
     const reviewRequest = async (request: PaymentRequest, status: 'approved' | 'rejected') => {
         setRequestActionLoading(request.id);
         try {
-            const approvalEvidence = status === 'approved' ? buildApprovalEvidence(request) : undefined;
-            await api.reviewPaymentRequest(request.id, {
+            const approvalEvidence = status === 'approved' ? request.approvalEvidence || buildApprovalEvidence(request) : undefined;
+            const response = await api.reviewPaymentRequest(request.id, {
                 status,
-                reviewerNotes: '',
+                reviewerNotes: request.reviewerNotes || '',
                 ...(approvalEvidence ? { approvalEvidence } : {}),
             });
-            setFeedback(`تم ${status === 'approved' ? 'اعتماد' : 'رفض'} الطلب بنجاح`);
-            setPaymentRequests(prev => prev.map(r => r.id === request.id ? { ...r, status } : r));
+            const canonical = response.request as PaymentRequest;
+            if (!canonical?.id) throw new Error('تعذر تأكيد حالة الطلب. أعد تحميل الطلبات.');
+            setPaymentRequests(prev => prev.map(r => r.id === request.id ? { ...canonical, id: String(canonical.id) } : r));
+            setFeedback(status === 'approved' ? paymentActivationLabel(canonical) : 'تم رفض الطلب');
         } catch (err: any) {
             setError(err.message || 'حدث خطأ أثناء مراجعة الطلب');
+            try {
+                const response = await api.getPaymentRequests(undefined, { page: requestsPage, limit: 50, status: requestStatusFilter });
+                setPaymentRequests((response.requests as PaymentRequest[] || []).map(row => ({ ...row, id: String(row.id) })));
+            } catch { /* Keep the last confirmed financial state; the error remains visible. */ }
         } finally {
             setRequestActionLoading(null);
             setTimeout(() => setFeedback(null), 3000);
@@ -1133,7 +1143,8 @@ export const FinancialManager: React.FC = () => {
                             <tbody className="divide-y divide-gray-100">
                                 {visiblePaymentRequests.map((request) => {
                                     const riskNotes = requestRiskNotes(request);
-                                    const canApprove = request.status === 'pending';
+                                    const retryActivation = canRetryFulfillment(request);
+                                    const canApprove = request.status === 'pending' || retryActivation;
                                     return (
                                     <tr key={request.id} className="hover:bg-gray-50 transition-colors align-top">
                                         <td className="p-4">
@@ -1173,6 +1184,7 @@ export const FinancialManager: React.FC = () => {
                                             <span className={`px-2 py-1 rounded-full text-xs font-bold ${requestStatusClasses(request.status)}`}>
                                                 {requestStatusLabel(request.status)}
                                             </span>
+                                            {request.status === 'approved' && <div className="mt-2 text-xs text-gray-600">{paymentActivationLabel(request)}</div>}
                                             {request.reviewedAt && (
                                                 <div className="mt-1 text-[11px] text-gray-400">تمت المراجعة: {requestDateLabel(request.reviewedAt)}</div>
                                             )}
@@ -1202,7 +1214,7 @@ export const FinancialManager: React.FC = () => {
                                                     title={riskNotes.length > 0 ? `تنبيه قبل الاعتماد: ${riskNotes.join('، ')}` : undefined}
                                                     className="px-3 py-2 rounded-xl bg-emerald-600 text-white text-xs font-bold hover:bg-emerald-700 disabled:opacity-50"
                                                 >
-                                                    اعتماد
+                                                    {retryActivation ? 'استكمال تفعيل الوصول' : 'اعتماد'}
                                                 </button>
                                                 <button
                                                     onClick={() => void reviewRequest(request, 'rejected')}

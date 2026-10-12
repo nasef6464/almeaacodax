@@ -1,17 +1,12 @@
 import { AccessGrantModel } from "../models/AccessGrant.js";
 import { UserModel } from "../models/User.js";
 import { CourseModel } from "../models/Course.js";
+import { hasActivePremium } from "../utils/premiumAccess.js";
+export { hasActivePremium } from "../utils/premiumAccess.js";
 
 const ids = (value: unknown): string[] => Array.isArray(value) ? value.map(String).filter(Boolean) : [];
 export const isActiveGrant = (grant: any, now = Date.now()) =>
   grant?.status === "active" && (grant.expiresAt == null || Number(grant.expiresAt) > now);
-
-export const hasActivePremium = (user: any, now = Date.now()) => {
-  if (user?.subscription?.plan !== "premium") return false;
-  const expiry = user.subscription.expiresAt;
-  // A missing date is a genuine legacy permanent subscription.
-  return expiry == null || new Date(expiry).getTime() > now;
-};
 
 export const grantMatchesContent = (grant: any, type: string, pathId?: string, subjectId?: string) => {
   const types = ids(grant.contentTypes);

@@ -201,6 +201,15 @@ jobs:
         timeout-minutes: 10
         run: npx playwright install --with-deps chromium
 
+      - name: Courses and packages account, pricing, navigation and activation regressions
+        run: |
+          node scripts/smoke-access-enrollment-session.mjs
+          node scripts/smoke-auth-session-callbacks-ui.mjs
+          node scripts/smoke-pricing-canonical-ui.mjs
+          node scripts/smoke-course-learning-navigation-ui.mjs
+          node scripts/smoke-payment-fulfillment-ui.mjs
+          node scripts/smoke-financial-fulfillment-ui.mjs
+
       - name: Teacher classroom start interaction
         run: |
           node scripts/smoke-classroom-teacher-start-ui.mjs

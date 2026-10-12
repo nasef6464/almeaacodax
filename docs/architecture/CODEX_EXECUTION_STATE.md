@@ -1,5 +1,13 @@
 # ALMEAA — Codex Execution State
 
+## Courses/packages repair continuation — 2026-10-12
+
+- Active owner-authorized repair only, branch `codex/courses-packages-repair`, baseline `main@4e1bd10b`; existing linked worktree reused. Prior chat recovered from saved task reports and ledger. Do not redo classroom/student-plan trials or the full audit.
+- Access locally verified: `8b72deb0` + `81453e8b`, original32 + focused6 behavioral cases PASS, independent review approved. Effective authorization is a read projection; historical arrays/dates remain intact.
+- Payment locally verified: `110555e3`, final33 behavioral cases PASS, API typecheck PASS, independent spec PASS/quality approved; exact files include new paymentFulfillment and tapWebhook helpers. Isolated signed fixtures are not live Tap certification.
+- Integration `5611e4f4`: new behavioral gates wired to existing required backend CI; static contract checks follow extracted owners. Strict harness compilation additionally required an explicit existing Express declaration input and fixture date assertion, and then PASS; no gate weakened or completed38 cases repeated.
+- Frontend behavioral implementation locally verified: 48 named groups PASS and independent scoped re-review/integration approved. Local typecheck/build and architecture gates PASS; exact-head CI and published proof pending. Shared pure premium predicate is `server/src/utils/premiumAccess.ts`, re-exported by entitlementPolicy for existing server callers. Next: finish frontend behavioral regressions and independent review, final exact-head CI/PR and bounded published read-only proof. Product closure remains pending.
+
 ## Distributed 24-browser measurement — 2026-10-11
 - VERIFIED for browser journey and completed traffic: GitHub run `38131962534`, four distinct hosted runners with six independent Chromium contexts each (390x844); all 24 students completed three five-question batches and waiting/end states. 120 core assertions PASS; zero observed JS/console/HTTP errors. One join and three submissions per actor. Fresh teacher login reads the exact 24-student / 360-answer / 3-batch persisted report; owned session ended, active-session false.
 - Completed CDP received bytes: 12,020,371 across 1,990 requests, including 360 image requests / 3,997,848 bytes. Forty-eight transport requests still open with status0/no observed response bytes at measurement end are excluded; not complete wire traffic or billing. Normal HTTP cache retained; Node login setup, teacher API and transport overhead excluded. Instrumentation covers page targets only; background service-worker/precache bytes and total browser transfer NOT PROVEN.
