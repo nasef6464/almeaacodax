@@ -19,6 +19,7 @@ const manifestPaths = [
   "source_second_chapter_crosswalk_20261012.json",
   "source_third_chapter_fractions_crosswalk_20261012.json",
   "source_fourth_chapter_decimals_crosswalk_20261012.json",
+  "source_fifth_foundation_exponents_20261012.json",
 ].map((name) => path.resolve(process.cwd(), "../ops/einstein-taxonomy", name));
 const sourceBanks = ["FND26", "COL2627"] as const;
 const chapterBands: Record<string, Array<[number, number, number]>> = {
@@ -88,9 +89,9 @@ async function main() {
       const targetSubskill = expected.proposedSubskillId;
       if (!targetSubskill) throw new Error(`Manifest row missing target subskill: ${code}`);
       sourceMappedQuestions.push({
-        code, sourceRule: expected.sourceRule || expected.bookConcept || expected.bookRule || expected.sourceRuleOnPage,
+        code, sourceRule: expected.sourceRule || expected.bookConcept || expected.bookRule || expected.sourceRuleOnPage || expected.sourceRuleBannerOnPage,
         state: !live ? "CODE_MISSING" : live.subSkillId !== targetSubskill ? "LIVE_MAPPING_CHANGED"
-            : (expected.auditState === "PEDAGOGY_REVIEW" || ["PEDAGOGY_REVIEW", "SOURCE_TRANSITION_VISUAL_CHECK", "SOURCE_PAGE_RULE_BOUNDARY_NOT_CONFIRMED"].includes(expected.status)) ? "REVIEW_REQUIRED" : "SOURCE_RULE_ALIGNED_PENDING_INDIVIDUAL_IMAGE_CHECK",
+            : (expected.auditState === "PEDAGOGY_REVIEW" || ["PEDAGOGY_REVIEW", "SOURCE_TRANSITION_VISUAL_CHECK", "SOURCE_PAGE_RULE_BOUNDARY_NOT_CONFIRMED", "SOURCE_RULE_SEGMENT_VISUAL_REVIEW_REQUIRED"].includes(expected.status || expected.state)) ? "REVIEW_REQUIRED" : "SOURCE_RULE_ALIGNED_PENDING_INDIVIDUAL_IMAGE_CHECK",
         expectedSubskill: targetSubskill,
         currentSubskill: live?.subSkillId ?? null,
       });
