@@ -23,6 +23,12 @@ const manifestPaths = [
   "source_sixth_exponents_roots_20261012.json",
   "source_seventh_algebra_book_alignment_20261012.json",
   "source_eighth_ratio_percent_finance_20261012.json",
+  "source_ninth_strategies_motion_20261012.json",
+  "source_tenth_laws_clock_averages_probability_20261012.json",
+  "source_eleventh_FND26_53_handoff_20261013.json",
+  "source_eleventh_COL2627_61_handoff_20261013.json",
+  "source_twelfth_averages_probability_triangles_20261012.json",
+  "source_thirteenth_geometry_rectangles_squares_20261013.json",
 ].map((name) => path.resolve(process.cwd(), "../ops/einstein-taxonomy", name));
 const sourceBanks = ["FND26", "COL2627"] as const;
 const chapterBands: Record<string, Array<[number, number, number]>> = {
@@ -36,10 +42,14 @@ const pageFromCode = (code: string) => Number(/-P(\d+)-Q\d+$/.exec(code)?.[1] ||
 async function main() {
   const reportPath = path.resolve(process.argv[2] || path.join("/tmp", "einstein-taxonomy-source-audit.json"));
   const manifests = await Promise.all(manifestPaths.map(async (file) => JSON.parse(await fs.readFile(file, "utf8"))));
-  const rows = manifests.flatMap((m) => m.questions as any[]).map((q: any) => ({
+  const rows = manifests.flatMap((m: any) => {
+    const entries = m.questions ?? m.rows;
+    if (!Array.isArray(entries)) throw new Error(`Invalid manifest rows: ${m.schema}`);
+    return entries;
+  }).map((q: any) => ({
     ...q,
     questionCode: q.questionCode || q.code,
-    proposedSubskillId: q.proposedSubskillId || q.recommendedSubskillId || q.targetSubskillId || q.currentSubSkillId || q.currentSubskillId,
+    proposedSubskillId: q.proposedSubskillId || q.recommendedSubskillId || q.targetSubskillId || q.currentSubSkillId || q.currentSubskillId || q.existingSubskillId,
     originalClassificationIsNotAnApproval: !(q.proposedSubskillId || q.recommendedSubskillId || q.targetSubskillId),
   }));
   const requiredCodes = new Map<string, any>(rows.map((q: any) => [q.questionCode, q]));
@@ -110,7 +120,7 @@ async function main() {
     const summary = {
       checkedAt:new Date().toISOString(), readonly:true, total:questions.length,
       banks:bankCounts, canonicalMain:taxonomy.length, canonicalSubskills:subs.size,
-      sourceMappedQuestionRows:sourceMappedQuestions.length,
+      sourceMappedQuestionRows:sourceMappedQuestions.length, sourceManifestCount:manifests.length,
       flaggedCrossChapter:chapterCrossovers.length, structuralIssues:issues.length,
       note:"Chapter crossovers are TRIAGE ONLY: never auto-remap by chapter/page proximity.",
     };

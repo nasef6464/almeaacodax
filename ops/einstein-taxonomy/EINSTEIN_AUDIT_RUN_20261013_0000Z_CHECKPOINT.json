@@ -1,0 +1,92 @@
+{
+  "schema": "almeaa.einstein.audit-checkpoint.v5",
+  "asOf": "2026-10-12T23:50:00Z",
+  "repository": "nasef6464/almeaacodax",
+  "branch": "audit/einstein-fnd-col-source-taxonomy-20261012",
+  "pr": 529,
+  "status": "IN_PROGRESS_NOT_FINAL_CLOSED",
+  "sourceAuthority": [
+    "تاسيس انشتين معدل .pdf",
+    "تجميع انشيتن معدل(1).pdf"
+  ],
+  "bankInventory": {
+    "FND26": 858,
+    "COL2627": 946,
+    "total": 1804
+  },
+  "sourcePageMapped": {
+    "manifestCount": 14,
+    "FND26": 625,
+    "COL2627": 851,
+    "totalUniqueExpected": 1476,
+    "remainingOutsideManifests": {
+      "FND26": 233,
+      "COL2627": 95,
+      "total": 328
+    },
+    "proofLevel": "source page and Atlas code, not rule+image approval"
+  },
+  "thisRun": {
+    "priorRemote": 1300,
+    "newIndependentGeometry": {
+      "FND26": 18,
+      "COL2627": 44,
+      "total": 62
+    },
+    "previouslyLocalHandoffRehydratedFromAtlas": {
+      "FND26": 53,
+      "COL2627": 61,
+      "total": 114
+    },
+    "totalNewCommittedRows": 176,
+    "allNewRowsDisposition": "HOLD",
+    "atlasBatchLimit": 90
+  },
+  "sourceCertification": {
+    "individualBookPrintedRuleAndAtlasTextVerifiedPrior": 5,
+    "sourceBookImageForNewRowsVerified": 0,
+    "productionCropImagesCertified": 0,
+    "scientificallyApprovedTotal": 5,
+    "verifiedPctOf1804": 0.28
+  },
+  "liveMutations": {
+    "questionSkills": 0,
+    "answers": 0,
+    "images": 0,
+    "quizzes": 0,
+    "drills": 0
+  },
+  "priorReadOnlyLinkAudit": {
+    "subskillDrills": 95,
+    "subskillQuestionRefs": 1200,
+    "mainSkillBanks": 39,
+    "mainQuestionRefs": 1358,
+    "storedSkillMismatches": 0,
+    "missingRefs": 0,
+    "oneMainBank29Questions": true,
+    "note": "No source-book pedagogical approval implied."
+  },
+  "ciRepair": {
+    "restoredUnmodifiedFromMain": [
+      "server/src/scripts/courseAccessProtectionGate.ts",
+      "server/src/scripts/courseDiscussionFoundationGate.ts",
+      "scripts/smoke-access-enrollment-session.mjs"
+    ],
+    "priorBackendFailure": "missing courseAccessProtectionGate.ts",
+    "priorDeepFailure": "missing smoke-access-enrollment-session.mjs",
+    "exactHeadCI": "PENDING_NEW_SHA"
+  },
+  "openCases": [
+    "38 ratio/percentage/finance chapter-boundary cases require printed-rule image review",
+    "COL2627 p33 Q47-48 exponent notation under equations; no auto-remap",
+    "FND26 first source question numbers 14-19 identity/alias ambiguity",
+    "Production crop images and original PDF page images not yet certified"
+  ],
+  "next": [
+    "Verify manifest uniqueness and scanner summary on latest head",
+    "Re-run exact-head CI and fix only reproducible failures",
+    "Review individual printed rule+source image+Atlas item for all 1476 mapped records; source-map remaining 328",
+    "Only after proof, guarded skill changes and quiz/drill redistribution",
+    "Then MNSF26; never FINAL CLOSED before 1804 individual approvals"
+  ]
+}
