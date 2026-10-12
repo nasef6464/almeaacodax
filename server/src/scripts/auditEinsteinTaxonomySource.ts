@@ -18,6 +18,7 @@ const manifestPaths = [
   "source_first_chapter_crosswalk_20261012.json",
   "source_second_chapter_crosswalk_20261012.json",
   "source_third_chapter_fractions_crosswalk_20261012.json",
+  "source_fourth_chapter_decimals_crosswalk_20261012.json",
 ].map((name) => path.resolve(process.cwd(), "../ops/einstein-taxonomy", name));
 const sourceBanks = ["FND26", "COL2627"] as const;
 const chapterBands: Record<string, Array<[number, number, number]>> = {
@@ -31,8 +32,13 @@ const pageFromCode = (code: string) => Number(/-P(\d+)-Q\d+$/.exec(code)?.[1] ||
 async function main() {
   const reportPath = path.resolve(process.argv[2] || path.join("/tmp", "einstein-taxonomy-source-audit.json"));
   const manifests = await Promise.all(manifestPaths.map(async (file) => JSON.parse(await fs.readFile(file, "utf8"))));
-  const requiredCodes = new Map<string, any>(manifests.flatMap((m) => m.questions as any[]).map((q) => [q.questionCode, q]));
-  if (requiredCodes.size !== manifests.reduce((n, m) => n + m.questions.length, 0)) throw new Error("Duplicate questionCode across source manifests");
+  const rows = manifests.flatMap((m) => m.questions as any[]).map((q: any) => ({
+    ...q,
+    questionCode: q.questionCode || q.code,
+    proposedSubskillId: q.proposedSubskillId || q.recommendedSubskillId || q.targetSubskillId,
+  }));
+  const requiredCodes = new Map<string, any>(rows.map((q: any) => [q.questionCode, q]));
+  if (requiredCodes.size !== rows.length) throw new Error("Duplicate questionCode across source manifests");
   await mongoose.connect(env.MONGODB_URI, { serverSelectionTimeoutMS: 10_000 });
   const db = mongoose.connection.db;
   if (!db) throw new Error("Missing database handle");
@@ -79,12 +85,12 @@ async function main() {
     const sourceMappedQuestions: any[] = [];
     for (const [code, expected] of requiredCodes) {
       const live: any = byCode.get(code);
-      const targetSubskill = expected.proposedSubskillId || expected.recommendedSubskillId;
+      const targetSubskill = expected.proposedSubskillId;
       if (!targetSubskill) throw new Error(`Manifest row missing target subskill: ${code}`);
       sourceMappedQuestions.push({
-        code, sourceRule: expected.sourceRule || expected.bookConcept || expected.bookRule,
+        code, sourceRule: expected.sourceRule || expected.bookConcept || expected.bookRule || expected.sourceRuleOnPage,
         state: !live ? "CODE_MISSING" : live.subSkillId !== targetSubskill ? "LIVE_MAPPING_CHANGED"
-            : (expected.auditState === "PEDAGOGY_REVIEW" || ["PEDAGOGY_REVIEW", "SOURCE_TRANSITION_VISUAL_CHECK"].includes(expected.status)) ? "REVIEW_REQUIRED" : "SOURCE_RULE_ALIGNED_PENDING_INDIVIDUAL_IMAGE_CHECK",
+            : (expected.auditState === "PEDAGOGY_REVIEW" || ["PEDAGOGY_REVIEW", "SOURCE_TRANSITION_VISUAL_CHECK", "SOURCE_PAGE_RULE_BOUNDARY_NOT_CONFIRMED"].includes(expected.status)) ? "REVIEW_REQUIRED" : "SOURCE_RULE_ALIGNED_PENDING_INDIVIDUAL_IMAGE_CHECK",
         expectedSubskill: targetSubskill,
         currentSubskill: live?.subSkillId ?? null,
       });
