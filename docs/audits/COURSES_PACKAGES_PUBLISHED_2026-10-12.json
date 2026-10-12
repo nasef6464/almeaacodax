@@ -1,0 +1,100 @@
+{
+  "runtimeCommit": "9a3be923a1153fa7d39a54f986a45518e24720ec",
+  "pullRequest": 530,
+  "ciHead": "e52521817b7df7eb93f8c73c135bf82579981324",
+  "requiredChecks": "PASS",
+  "frontend": {
+    "deployment": "dpl_3EZBdvKrxtbmgr8DzocEHECM3rsp",
+    "status": "READY",
+    "commit": "9a3be923a1153fa7d39a54f986a45518e24720ec"
+  },
+  "backend": {
+    "deployment": "dep-db6hfie7bikc73c1e8d0",
+    "status": "live",
+    "commit": "9a3be923a1153fa7d39a54f986a45518e24720ec"
+  },
+  "health": [
+    {
+      "path": "/api/health/live",
+      "status": 200,
+      "body": {
+        "status": "ok",
+        "service": "The Hundred Platform API",
+        "environment": "production",
+        "version": "0.1.0",
+        "commit": "9a3be923a115",
+        "uptimeSeconds": 480,
+        "startedAt": "2026-10-12T17:25:30.463Z",
+        "timestamp": "2026-10-12T17:33:19.916Z"
+      }
+    },
+    {
+      "path": "/api/health/ready",
+      "status": 200,
+      "body": {
+        "status": "ok",
+        "ready": true,
+        "scaleReady": true,
+        "database": {
+          "status": "connected",
+          "readyState": 1,
+          "ok": true
+        },
+        "redis": {
+          "rateLimit": {
+            "ok": true,
+            "configured": true,
+            "required": true,
+            "purpose": "rate-limit",
+            "status": "ready",
+            "latencyMs": 1
+          },
+          "queue": {
+            "ok": true,
+            "configured": true,
+            "required": true,
+            "purpose": "queue",
+            "status": "ready",
+            "latencyMs": 1
+          }
+        },
+        "checks": {
+          "database": "pass",
+          "redisRateLimit": "pass",
+          "redisQueue": "pass"
+        },
+        "summary": {
+          "failedCriticalChecks": 0,
+          "warnings": 0,
+          "redisConfiguredForScale": true
+        },
+        "service": "The Hundred Platform API",
+        "environment": "production",
+        "version": "0.1.0",
+        "commit": "9a3be923a115",
+        "uptimeSeconds": 480,
+        "startedAt": "2026-10-12T17:25:30.463Z",
+        "timestamp": "2026-10-12T17:33:20.167Z"
+      }
+    }
+  ],
+  "ui": {
+    "release": "9a3be923a1153fa7d39a54f986a45518e24720ec",
+    "checks": [
+      "production membership unavailable offers and mobile width PASS",
+      "production JS page errors 0"
+    ],
+    "preview": {
+      "status": "PASS",
+      "courseId": "course_1779224794108",
+      "lessonId": "course_lesson_lesson_1778133932496_1779224326374"
+    },
+    "blockedWrites": 0
+  },
+  "ownerScope": {
+    "date": "2026-10-12",
+    "gateway": "none currently",
+    "electronicGateway": "DEFERRED_OWNER",
+    "realMonetaryTransfer": "NOT_PROVEN"
+  }
+}
