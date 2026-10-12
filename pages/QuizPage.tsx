@@ -824,6 +824,7 @@ export const QuizPage: React.FC = () => {
   const activeProgressPercentage = Math.round(((currentQuestionIndex + 1) / Math.max(quizQuestions.length, 1)) * 100);
   const reviewQuestionCount = quizQuestions.filter((question) => flaggedQuestionIds.includes(question.id)).length;
   const isNextBlocked =
+    !quiz?.mockExam?.enabled &&
     quizSettings.requireAnswerBeforeNext === true &&
     currentQuestion &&
     selectedOptions[currentQuestion.id] === undefined;

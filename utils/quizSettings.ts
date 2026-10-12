@@ -26,7 +26,7 @@ export const getDefaultQuizSettings = ({
     timeLimit: mockExam ? 60 : type === 'bank' ? 30 : 60,
     randomizeQuestions: !mockExam,
     showProgressBar: true,
-    requireAnswerBeforeNext: type === 'bank' && !mockExam,
+    requireAnswerBeforeNext: false,
     allowQuestionReview: true,
     optionLayout: isDirectedOrMock ? 'horizontal' : 'auto',
   };
