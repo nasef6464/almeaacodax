@@ -1298,14 +1298,6 @@ export const QuizPage: React.FC = () => {
     return <div className="min-h-screen flex items-center justify-center">جاري التحميل...</div>;
   }
 
-  if (isResolvingScopedQuestions) {
-    return <div className="min-h-screen flex items-center justify-center">جاري تجهيز الأسئلة...</div>;
-  }
-
-  if (waitingForQuestionHydration) {
-    return <div className="min-h-screen flex items-center justify-center">جاري تجهيز الأسئلة...</div>;
-  }
-
   if (!hasAccess || !quiz) {
     if (isGuestAuthGate && quiz) {
       const returnUrl = encodeURIComponent(location.pathname + location.search);
@@ -1414,6 +1406,14 @@ export const QuizPage: React.FC = () => {
         </div>
       </div>
     );
+  }
+
+  if (isResolvingScopedQuestions) {
+    return <div className="min-h-screen flex items-center justify-center">جاري تجهيز الأسئلة...</div>;
+  }
+
+  if (waitingForQuestionHydration) {
+    return <div className="min-h-screen flex items-center justify-center">جاري تجهيز الأسئلة...</div>;
   }
 
   if (!currentQuestion && !isFinished) {

@@ -217,3 +217,9 @@ Git HEAD always overrides this historical baseline.
   - `smoke:learning-quiz-journey` -> **PASS (7/7 checks on live Render)**
   - `smoke:adaptive-phase7-mastery-review` -> **PASS**
   - `smoke:assessment-answer-review` -> **PASS**
+  - `test-quiz-auth-gate-e2e.mjs` (Playwright E2E Browser Testing) -> **PASS (100%)**:
+    - المرحلة 1: حجب الزائر غير المسجل وعرض بطاقة البوابة الذكية `quiz_auth_gate_card.png` فوراً دون أي تأخير في تجهيز الأسئلة.
+    - المرحلة 2: انتقال سلس بالضغط على CTA إلى `/?auth=login&returnTo=%2Fquiz%2F...` وفتح نافذة الدخول تلقائياً مع توثيق الشاشة `quiz_auth_gate_login_modal.png`.
+    - المرحلة 3: دخول الطالب وتخزين الجلسة، والعودة التلقائية للاختبار ليعمل محرك الاختبار بالكامل `quiz_runner_authenticated.png` مع كامل الأسئلة (1 من 10) والمؤقت والخيارات وشريط التنقل.
+  - Production build: `vite build` completed cleanly (0 errors).
+
