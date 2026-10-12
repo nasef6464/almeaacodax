@@ -291,6 +291,7 @@ const normalizeCourse = (course: any): Course => ({
   description: course?.description || "",
   instructorBio: course?.instructorBio || "",
   modules: Array.isArray(course?.modules) ? course.modules.map((module: any, index: number) => normalizeModule(module, index)) : [],
+  assessments: Array.isArray(course?.assessments) ? course.assessments : [],
   isPurchased: Boolean(course?.isPurchased),
   isPackage: Boolean(course?.isPackage),
   packageType: course?.packageType,

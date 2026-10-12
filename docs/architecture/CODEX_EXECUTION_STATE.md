@@ -1,3 +1,7 @@
+## Published course journey — 2026-10-12
+- Owner-authorized retained course-owner-trial-1791832574587: API draft/review/publication, browser enrollment, two completions and certificate, fresh-login persistence VERIFIED. No admin-builder UI or teacher-assignment certification claim.
+- Repair assessment normalization and metadata-only direct-course test loading. Actor/course-bound state preserves access guards; scoped7 groups RED→GREEN and reviewed. Exact-head CI/publication and final same-fixture quiz/result receipt live on the delivery PR referenced by docs/audits/COURSE_PUBLISHED_JOURNEY_2026-10-12.md; reuse completed steps. Payment provider deferred.
+
 # ALMEAA — Codex Execution State
 
 ## Courses/packages repair delivery — 2026-10-12

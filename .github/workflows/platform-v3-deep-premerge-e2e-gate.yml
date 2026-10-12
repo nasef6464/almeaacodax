@@ -206,6 +206,8 @@ jobs:
           node scripts/smoke-access-enrollment-session.mjs
           node scripts/smoke-auth-session-callbacks-ui.mjs
           node scripts/smoke-pricing-canonical-ui.mjs
+          node scripts/smoke-course-assessment-adapter.mjs
+          node scripts/smoke-course-linked-tests-ui.mjs
           node scripts/smoke-course-learning-navigation-ui.mjs
           node scripts/smoke-payment-fulfillment-ui.mjs
           node scripts/smoke-financial-fulfillment-ui.mjs

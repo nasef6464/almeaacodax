@@ -17,6 +17,7 @@ import { openExternalUrl } from '../utils/openExternalUrl';
 import { isMockQuiz } from '../utils/quizPlacement';
 import { buildQuizRouteWithContext } from '../utils/quizLinks';
 import { api } from '../services/api';
+import { useCourseLinkedQuizzes } from '../utils/useCourseLinkedQuizzes';
 import { shareTextSummary } from '../utils/shareText';
 import { getCourseAudienceCount, getCourseContentStats, getCourseRating } from '../utils/courseStats';
 
@@ -73,7 +74,9 @@ export const CourseOverview: React.FC<CourseOverviewProps> = ({ course, onContin
     const [isFavorite, setIsFavorite] = useState(false);
     const [isSharing, setIsSharing] = useState(false);
     const [coursePurchaseNotice, setCoursePurchaseNotice] = useState('');
-    const { user, enrolledCourses, enrolledPaths, enrollCourse, completedLessons, quizzes, hasScopedPackageAccess } = useStore();
+    const { user, enrolledCourses, enrolledPaths, enrollCourse, completedLessons, quizzes: storedQuizzes, hasScopedPackageAccess } = useStore();
+    const linkedQuizzes = useCourseLinkedQuizzes(course, String(user?.id || 'guest'), activeTab === 'tests');
+    const quizzes = useMemo(() => [...new Map([...storedQuizzes, ...linkedQuizzes].map(quiz => [quiz.id, quiz])).values()], [storedQuizzes, linkedQuizzes]);
     const navigate = useNavigate();
     const [searchParams, setSearchParams] = useSearchParams();
     const favoriteStorageKey = `course-overview-favorites:${String(user?.id || 'guest')}`;
@@ -1211,6 +1214,3 @@ return null;
         </div>
     );
 };
-
-
-

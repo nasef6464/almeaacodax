@@ -1,3 +1,5 @@
+Course linked tests (2026-10-12): utils/useCourseLinkedQuizzes.ts owns scoped, actor/course-bound metadata reads for explicitly linked assessments/lesson quizzes on the course tests tab. services/adapter.ts preserves course assessment links. CourseOverview renders existing access/visibility guards; no API/RBAC/data changes.
+
 #Auth DTO projection (2026-10-12): server/src/modules/auth/presentation/serializeAuthUser.ts owns the existing unchanged sensitive-field exclusions. The auth route retains learner access projection, administrative history and authorization; extraction keeps the existing 65,000-character ownership gate without changing its limit.
 
  ALMEAA Current Directory & Module Map
