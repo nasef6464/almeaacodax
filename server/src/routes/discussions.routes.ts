@@ -9,7 +9,7 @@ import { DiscussionThreadModel } from "../models/DiscussionThread.js";
 import { DiscussionReplyModel } from "../models/DiscussionReply.js";
 import { CourseModel } from "../models/Course.js";
 import { UserModel } from "../models/User.js";
-import { hasCourseEntitlement } from "../services/entitlementPolicy.js";
+import { grantMatchesContent, hasCourseEntitlementFromState, isActiveGrant, loadEntitlementState } from "../services/entitlementPolicy.js";
 
 export const discussionRouter = Router();
 
@@ -114,8 +114,13 @@ async function assertCanAccessEntity(userId: string, entityType: string, entityI
     return true;
   }
 
+  const state = await loadEntitlementState(userId);
   for (const course of courses) {
-    if (await hasCourseEntitlement(userId, course)) return true;
+    if (hasCourseEntitlementFromState(state.user, course, state.grants)) return true;
+    // Foundation scope historically covers matching discussions only; it must
+    // never promote the same grant into paid course-payload entitlement.
+    if (state.grants.some(grant => isActiveGrant(grant)
+      && grantMatchesContent(grant, "foundation", String(course.pathId || ""), String(course.subjectId || "")))) return true;
   }
 
   return false;

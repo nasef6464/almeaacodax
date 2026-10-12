@@ -702,7 +702,7 @@ authRouter.post(
     });
 
     return res.status(StatusCodes.CREATED).json({
-      user: await projectEffectiveUserAccess(serializeUser(user)),
+      user: serializeUser(user),
     });
   }),
 );
