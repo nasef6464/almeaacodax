@@ -305,6 +305,19 @@ const Quiz: React.FC = () => {
     [activePreparedQuizId, preparedQuizCards],
   );
 
+  useEffect(() => {
+    if (preparedQuizCards.length > 0) {
+      if (!activePreparedQuizId || !preparedQuizCards.some((item) => item.quiz.id === activePreparedQuizId)) {
+        setActivePreparedQuizId(preparedQuizCards[0].quiz.id);
+      }
+    } else {
+      const params = new URLSearchParams(location.search);
+      if (params.get('mode') !== 'prepared') {
+        setEntryMode('self');
+      }
+    }
+  }, [preparedQuizCards, activePreparedQuizId, location.search]);
+
   const selectedSubjectLabel = useMemo(
     () => subjects.find((subject) => subject.id === selectedSubjectId)?.name || 'عام',
     [subjects, selectedSubjectId],
@@ -508,10 +521,15 @@ const Quiz: React.FC = () => {
       targetSkillIds.length === 0 || (question.skillIds || []).some((skillId) => targetSkillIds.includes(skillId));
     const matchesQuestionType = (question: typeof globalQuestionBank[number]) =>
       questionTypeFilter === 'all' || question.type === questionTypeFilter;
+    const matchesSubject = (question: typeof globalQuestionBank[number]) =>
+      !selectedSubjectId ||
+      question.subject === selectedSubjectId ||
+      question.subjectId === selectedSubjectId ||
+      (selectedSubjectLabel !== 'عام' && question.subject === selectedSubjectLabel);
 
     const strictPool = globalQuestionBank.filter((question) => {
       const pathMatches = !selectedPathId || question.pathId === selectedPathId;
-      const subjectMatches = !selectedSubjectId || question.subject === selectedSubjectId;
+      const subjectMatches = matchesSubject(question);
       const sectionMatches = !selectedSectionId || question.sectionId === selectedSectionId;
       const difficultyMatches = !difficulty || question.difficulty === difficulty;
       return pathMatches && subjectMatches && sectionMatches && matchesTargetSkills(question) && difficultyMatches && matchesQuestionType(question);
@@ -519,7 +537,7 @@ const Quiz: React.FC = () => {
 
     const relaxedPool = globalQuestionBank.filter((question) => {
       const pathMatches = !selectedPathId || question.pathId === selectedPathId;
-      const subjectMatches = !selectedSubjectId || question.subject === selectedSubjectId;
+      const subjectMatches = matchesSubject(question);
       const sectionMatches = !selectedSectionId || question.sectionId === selectedSectionId;
       return pathMatches && subjectMatches && sectionMatches && matchesTargetSkills(question) && matchesQuestionType(question);
     });
@@ -556,7 +574,7 @@ const Quiz: React.FC = () => {
     });
     const contextFillPool = globalQuestionBank.filter((question) => {
       const pathMatches = !selectedPathId || question.pathId === selectedPathId;
-      const subjectMatches = !selectedSubjectId || question.subject === selectedSubjectId;
+      const subjectMatches = matchesSubject(question);
       const sectionMatches = !selectedSectionId || question.sectionId === selectedSectionId;
       return pathMatches && subjectMatches && sectionMatches && matchesQuestionType(question);
     });
@@ -618,6 +636,10 @@ const Quiz: React.FC = () => {
   const handleStart = () => {
     if (entryMode === 'prepared') {
       if (!activePreparedQuizCard) {
+        if (preparedQuizCards.length === 0) {
+          setEntryMode('self');
+          return;
+        }
         showStatus('اختر اختبارًا من الاختبارات الجاهزة أولًا.', 'error');
         return;
       }
@@ -1182,10 +1204,12 @@ const Quiz: React.FC = () => {
 
           <button
             onClick={handleStart}
-            disabled={entryMode === 'prepared' && !activePreparedQuizCard}
+            disabled={entryMode === 'prepared' && preparedQuizCards.length > 0 && !activePreparedQuizCard}
             className="w-full bg-indigo-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-indigo-700 transition-all shadow-lg hover:shadow-indigo-200 flex items-center justify-center gap-2 disabled:cursor-not-allowed disabled:bg-gray-300 disabled:shadow-none"
           >
-            {entryMode === 'prepared' ? 'الدخول إلى الاختبار المختار' : 'ابدأ الاختبار الذاتي الآن'}
+            {entryMode === 'prepared' && preparedQuizCards.length > 0
+              ? 'الدخول إلى الاختبار المختار'
+              : 'ابدأ الاختبار الذاتي الآن'}
             <ChevronRight size={24} className={document.dir === 'rtl' ? 'rotate-180' : ''} />
           </button>
         </Card>
