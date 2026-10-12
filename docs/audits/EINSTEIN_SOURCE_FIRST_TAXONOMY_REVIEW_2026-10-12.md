@@ -20,6 +20,14 @@ Read both original PDFs, source explanation/rules, and current live identifiers:
 - Explicit review: `QDR-QNT-COL2627-P005-Q07` (sum of squares) is printed inside rule 1 but may require a different pedagogical presentation; DO NOT move it without a source/video/drill review.
 - FND26 source questions numbered **14–15** on p8 and **16–19** on p9 were visible in the source, while exact-code lookups did not find the expected live identities. Check aliases, extraction choices, and import history before treating as missing. Do not fabricate new question records.
 
+## Second executed review — divisibility and deliberate cross-topic cases
+
+- FND26 printed pages **10–14**: **23** live item codes matched, with division/prime questions and intentional *absolute value* (7.4) and *units digit* (1.5) exceptions.
+- COL2627 printed pages **7–8**: **29** live item codes matched, including the age/divisibility item tagged 16.1 and absolute-value/units-digit exceptions.
+- Source/code/current-subskill mapping preserved in `ops/einstein-taxonomy/source_second_chapter_crosswalk_20261012.json`.
+- **0 automatic skill rewrites**: all 52 current primary subskills match the source-aware proposed groups. Two FND26 p14 late items remain marked for pedagogical review, as printed division questions require proving their underlying units-digit shortcut.
+- Total saved source-group mappings from first two chapters: **100** (FND26 41, COL2627 59); all awaiting final individual-question image check and, where needed, drill-level approval. Zero production edits.
+
 ## First-pass chapter-triage across both banks
 
 A read-only comparison of stored subskills with original book section boundaries showed numerous **cross-chapter concepts**:
@@ -44,7 +52,7 @@ A read-only comparison of stored subskills with original book section boundaries
 
 `cd server && npx tsx src/scripts/auditEinsteinTaxonomySource.ts /tmp/einstein-source-taxonomy-audit.json`
 
-Reads the two Einstein banks and the frozen taxonomy, checks source-mapped question codes, flags structural issues, and collects cross-chapter triage records. Never updates the database. The script has not yet been run in the repository execution environment; observed live database reads were performed independently using the connected read-only Atlas operations.
+Reads the two Einstein banks and the frozen taxonomy, checks both chapter manifests' question codes, flags structural issues, and collects cross-chapter triage records. Never updates the database. The script has not yet been run in the repository execution environment; observed live database reads were performed independently using the connected read-only Atlas operations.
 
 **Done is NOT:** passing a schema validation, counting 858/946 records, or mapping all items automatically from printed chapter headings.
 
