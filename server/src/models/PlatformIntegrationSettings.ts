@@ -45,6 +45,7 @@ const registrationFieldSchema = new Schema(
 const platformIntegrationSettingsSchema = new Schema<any>(
   {
     key: { type: String, required: true, unique: true, default: "default" },
+    liveSessionPolicy: { type: Schema.Types.Mixed, default: () => ({ providers: ['zoom','google_meet','teams','live_youtube'], hostingModes: ['teacher_account','platform_account','manual_link'], defaultHostingMode: 'teacher_account', earlyJoinMinutes: 15, lateJoinMinutes: 30 }) },
     auth: {
       allowSelfRegistration: { type: Boolean, default: true },
       allowEmailPassword: { type: Boolean, default: true },

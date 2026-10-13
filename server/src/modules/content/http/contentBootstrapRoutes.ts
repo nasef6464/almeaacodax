@@ -231,7 +231,7 @@ contentBootstrapRouter.get(
           : Promise.resolve([]),
       ]);
 
-      const accessible = canSeeAllContent ? { lessons, libraryItems } : await projectBootstrapLearningAccess(lessons, libraryItems, req.authUser?.id);
+      const accessible = await projectBootstrapLearningAccess(lessons, libraryItems, req.authUser?.id, req.authUser?.role, canSeeAllContent);
       return buildContentBootstrapPayload({
         topics,
         lessons: accessible.lessons,

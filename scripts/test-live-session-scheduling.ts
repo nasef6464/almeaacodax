@@ -1,0 +1,14 @@
+import assert from 'node:assert/strict';
+import { validateMeetingLink } from '../server/src/modules/content/liveSessions/meetingLinkPolicy.js';
+import { parseScheduledTime, inJoinWindow } from '../server/src/modules/content/liveSessions/sessionTime.js';
+for (const [provider, url] of [['zoom','https://us02web.zoom.us/j/123?pwd=abc'],['google_meet','https://meet.google.com/abc-defg-hij'],['teams','https://teams.microsoft.com/l/meetup-join/test'],['live_youtube','https://www.youtube.com/watch?v=abc']]) assert.equal(validateMeetingLink(provider, url), url);
+for (const url of ['http://zoom.us/j/123','https://zoom.us.evil.com/j/123','https://x:y@zoom.us/j/123','https://meet.google.com/abc']) assert.throws(() => validateMeetingLink('zoom',url));
+assert.equal(parseScheduledTime('2026-10-20','16:00'), '2026-10-20T13:00:00.000Z');
+assert.throws(() => parseScheduledTime('2026-02-30','16:00'));
+assert.throws(() => parseScheduledTime('',''));
+const session = { startAt: new Date('2026-10-20T13:00:00Z'), endAt: new Date('2026-10-20T14:00:00Z'), state: 'confirmed' };
+assert.equal(inJoinWindow(session, new Date('2026-10-20T12:45:00Z'),15,30),true);
+assert.equal(inJoinWindow(session, new Date('2026-10-20T12:44:59Z'),15,30),false);
+assert.equal(inJoinWindow({...session,state:'cancelled'},new Date('2026-10-20T13:00:00Z'),15,30),false);
+assert.equal(inJoinWindow(session,new Date('2026-10-20T14:30:01Z'),15,30),false);
+console.log('PASS provider URL validation, UTC conversion, invalid date rejection and cancelled/window boundaries');

@@ -1,3 +1,4 @@
+import { LiveSessionWorkspace } from '../components/liveSessions/LiveSessionWorkspace';
 import { useStudentSkillProgress as useScopedStudentSkillProgress } from '../utils/useStudentSkillProgress';
 import { useStudentScopedStore } from '../utils/useStudentScopedStore';
 import { PathEnrollmentButton } from '../components/studentPaths/StudentPathBar';
@@ -636,7 +637,7 @@ const SessionsTab = () => {
         [serverActivities, recentActivity],
     );
     const liveSessions = lessons
-        .filter((lesson) => ['live_youtube', 'zoom', 'google_meet', 'teams'].includes(lesson.type))
+        .filter((lesson) => !lesson.sessionId && !String(lesson.id).startsWith('live_conv_') && !String(lesson.id).startsWith('private_booking_') && ['live_youtube', 'zoom', 'google_meet', 'teams'].includes(lesson.type))
         .filter((lesson) => {
             if (lesson.showOnPlatform === false && user.role === 'student') return false;
             if (lesson.approvalStatus && lesson.approvalStatus !== 'approved' && user.role === 'student') return false;
@@ -656,6 +657,7 @@ const SessionsTab = () => {
 
     return (
         <div className="space-y-6 animate-fade-in">
+            <LiveSessionWorkspace />
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6">
                 <h2 className="text-2xl font-bold text-gray-800">جلساتي الخاصة</h2>
                 <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">

@@ -154,6 +154,7 @@ contentLearningRouter.patch(
     }
     await assertManagedContentScope(req.authUser!, { ...existing.toObject(), ...payload });
     const sanitizedPayload = sanitizeWorkflowUpdate(payload as Record<string, unknown>, req.authUser!);
+    if (existing.bookingId || existing.privateStudentId || String(existing.id || '').startsWith('live_conv_')) return res.status(409).json({message:'استخدم إدارة الحصة الخاصة لتعديلها'});
     const updated = await LessonModel.findOneAndUpdate({ _id: existing._id }, sanitizedPayload, {
       new: true,
     });

@@ -70,6 +70,7 @@ export interface Lesson extends ContentWorkflow {
     quizId?: string;
     fileUrl?: string;
     assignmentDetails?: string; // For assignments
+    sessionId?: string;
     meetingUrl?: string; // For live sessions
     meetingDate?: string;
     recordingUrl?: string;
@@ -696,7 +697,15 @@ export interface Activity {
     scheduledDate?: string;
     scheduledTime?: string;
     notes?: string;
-    bookingStatus?: 'pending' | 'confirmed' | 'cancelled';
+    bookingStatus?: 'pending' | 'confirmed' | 'rejected' | 'cancelled';
+    teacherId?: string;
+    sessionId?: string;
+    pathId?: string;
+    stageId?: string;
+    subjectId?: string;
+    sectionId?: string;
+    skillIds?: string[];
+    courseId?: string;
     assignedTeacherName?: string;
     adminNotes?: string;
     studentName?: string;

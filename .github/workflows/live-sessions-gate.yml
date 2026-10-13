@@ -1,0 +1,50 @@
+name: Live Sessions Focused Gate
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'components/liveSessions/**'
+      - 'pages/BookSession.tsx'
+      - 'pages/MyRequests.tsx'
+      - 'pages/LiveSession*.tsx'
+      - 'components/CoursePlayer.tsx'
+      - 'server/src/modules/content/liveSessions/**'
+      - 'server/src/models/Live*.ts'
+      - 'server/src/routes/activity.routes.ts'
+      - 'scripts/test-live*.mjs'
+      - 'scripts/test-live*.ts'
+      - 'scripts/test-session-booking-requests.ts'
+      - 'scripts/live-session-*.ts'
+      - '.github/workflows/live-sessions-gate.yml'
+permissions:
+  contents: read
+jobs:
+  live-session-behavior:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm --prefix server ci
+      - name: Install isolated test runner only (no manifest/lock changes)
+        run: npm install --no-save --package-lock=false --ignore-scripts mongodb-memory-server-core@11.2.0
+      - run: npx playwright install --with-deps chromium
+      - run: npm run build
+      - name: Request, access and scheduling behavior
+        run: |
+          server/node_modules/.bin/tsx scripts/test-session-booking-requests.ts
+          server/node_modules/.bin/tsx scripts/test-live-session-access.ts
+          server/node_modules/.bin/tsx scripts/test-live-session-scheduling.ts
+          server/node_modules/.bin/tsx scripts/test-live-session-http.ts
+      - name: Browser booking and hosting behavior
+        run: |
+          node scripts/test-live-session-ui.mjs
+          node scripts/test-live-booking-ui.mjs
+          node scripts/test-live-request-status-ui.mjs
+          node scripts/test-live-teacher-workspace-ui.mjs

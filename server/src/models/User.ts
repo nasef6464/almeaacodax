@@ -5,6 +5,7 @@ import { DB_GROWTH_BUDGETS } from "../modules/database/dbGrowthBudgets.js";
 const userSchema = new Schema(
   {
     name: { type: String, required: true, trim: true },
+    liveSessionDefaultHostingMode: { type: String, enum: ['teacher_account','platform_account','manual_link'] },
     email: { type: String, required: true, unique: true, lowercase: true, trim: true },
     passwordHash: { type: String, required: true },
     passwordChangedAt: { type: Number, default: null },

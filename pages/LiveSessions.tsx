@@ -1,3 +1,5 @@
+import { useStudentScopedStore } from '../utils/useStudentScopedStore';
+import { LiveSessionWorkspace } from '../components/liveSessions/LiveSessionWorkspace';
 import { useActivePremium } from '../utils/useActivePremium';
 import { hasActivePremium } from '../server/src/utils/premiumAccess';
 import React, { useMemo, useState } from 'react';
@@ -51,7 +53,7 @@ const formatMeetingDate = (meetingDate?: string) =>
         : 'غير محدد';
 
 const LiveSessions: React.FC = () => {
-    const { lessons, user, paths, subjects, hasScopedPackageAccess } = useStore();
+    const { lessons, user, paths, subjects, hasScopedPackageAccess } = useStudentScopedStore();
     const activePremium = useActivePremium(user);
     const [copyMessage, setCopyMessage] = useState('');
 
@@ -64,7 +66,7 @@ const LiveSessions: React.FC = () => {
     const sessions = useMemo(
         () =>
             lessons
-                .filter((lesson) => LIVE_TYPES.has(lesson.type))
+                .filter((lesson) => !String(lesson.id).startsWith('live_conv_') && !String(lesson.id).startsWith('private_booking_') && LIVE_TYPES.has(lesson.type) && !lesson.sessionId)
                 .filter((lesson) => canSeeHiddenPaths || !lesson.pathId || visiblePathIds.has(lesson.pathId))
                 .filter((lesson) =>
                     canAccessLesson(
@@ -107,6 +109,7 @@ const LiveSessions: React.FC = () => {
 
     return (
         <div className="max-w-6xl mx-auto p-4 md:p-8 space-y-8 animate-fade-in">
+            {user?.id && <LiveSessionWorkspace />}
             <div className="text-right">
                 <h1 className="text-2xl sm:text-3xl font-black text-gray-900">الحصص المباشرة</h1>
                 <p className="text-gray-500 mt-2">

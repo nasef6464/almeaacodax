@@ -14,13 +14,16 @@ const bookSession = read("pages/BookSession.tsx");
 const myRequests = read("pages/MyRequests.tsx");
 const dashboard = read("pages/Dashboard.tsx");
 const liveSessionsManager = read("dashboards/admin/LiveSessionsManager.tsx");
+const workspace = read("components/liveSessions/LiveSessionWorkspace.tsx");
 const apiSource = read("services/api.ts");
 const activityRoute = read("server/src/routes/activity.routes.ts");
 const routeIndex = read("server/src/routes/index.ts");
 const activityModel = read("server/src/models/Activity.ts");
 
-check("book session only confirms after persisted API activity", () => {
+check("book session shows pending after persisted API request", () => {
   assertIncludes(bookSession, "await api.createMyActivity(payload)");
+  assertIncludes(bookSession, "addActivity(activity)");
+  assertIncludes(bookSession, "تم إرسال طلبك، بانتظار التأكيد");
   assertIncludes(bookSession, "setFormError(error instanceof Error");
   assertIncludes(bookSession, "setIsSubmitting(true)");
 });
@@ -58,9 +61,9 @@ check("session booking metadata is stored with activity", () => {
 });
 
 check("admin live sessions manager exposes booking queue", () => {
-  assertIncludes(liveSessionsManager, "طلبات الحصص الخاصة");
+  assertIncludes(workspace, "طلبات الحصص الخاصة");
   assertIncludes(liveSessionsManager, "loadSessionBookings");
-  assertIncludes(liveSessionsManager, "updateSessionBooking");
+  assertIncludes(workspace, "api.confirmLiveBooking");
   assertIncludes(liveSessionsManager, "api.getAdminSessionBookings");
   assertIncludes(liveSessionsManager, "api.updateAdminSessionBooking");
   assertIncludes(liveSessionsManager, "canManagePlatformBookings");
