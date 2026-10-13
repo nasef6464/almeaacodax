@@ -1,0 +1,84 @@
+{
+  "date": "2026-10-13",
+  "status": "VERIFIED_MANUAL_DELIVERY",
+  "feature": {
+    "pr": 536,
+    "url": "https://github.com/nasef6464/almeaacodax/pull/536",
+    "head": "b1938c42877d1d13dc380844e58385e29f50e8b3",
+    "mergeSha": "ccf2160cb05f10fac73436f77af3aa578566f129",
+    "ciPassed": 21,
+    "requiredChecksPassed": 3,
+    "deployments": {
+      "vercel": {
+        "id": "dpl_6o7mpTEok9ANCG8Zmy6Rpj3MNHEn",
+        "status": "READY",
+        "sha": "ccf2160cb05f10fac73436f77af3aa578566f129"
+      },
+      "render": {
+        "id": "dep-db71qr8jo6nc738b36ng",
+        "status": "live",
+        "sha": "ccf2160cb05f10fac73436f77af3aa578566f129"
+      }
+    }
+  },
+  "runtime": {
+    "checkGroups": 11,
+    "checks": [
+      "exact deployed API release and database ready",
+      "four providers and three hosting choices preserved",
+      "server request ID, pending truth and retry idempotency",
+      "stable confirmation, conflict rejection and adjacent booking",
+      "exact student/teacher audience, URL redaction and future join guard",
+      "transaction rollback, cancellation and participant join window",
+      "published student and own-teacher workspace with mobile RTL",
+      "recording requires completion and exact audience; trial links removed",
+      "published enrolled CoursePlayer renders canonical live panel and guarded join",
+      "enrolled course exact source and withdrawal revoke access",
+      "existing learning result histories unchanged"
+    ],
+    "allOwnedFixturesTerminal": true,
+    "disabledOwnedHosts": 2,
+    "counts": {
+      "bookingRequests": 5,
+      "canonicalSessions": 6,
+      "privateShadowLessons": 5,
+      "teacherHostRecords": 2,
+      "courses": 1,
+      "embeddedCourseLiveLessons": 1,
+      "retainedHiddenTrialEnrollment": 1,
+      "writeMethodRequests": 58
+    },
+    "learningResultHistories": "unchanged",
+    "hostingPolicy": "unchanged",
+    "providerMeetingsCreated": 0,
+    "mediaHosted": 0,
+    "recordings": "test links removed; no actual vendor recording accessed",
+    "harnessCorrections": [
+      "Private-entry cookie bootstrap required for fresh public-page context; existing-card probe PASS.",
+      "Unavailable recording endpoint intentionally returns403 (initial harness expected409)."
+    ],
+    "fixtures": {
+      "bookingIds": [
+        "6ace1e1d1daea21097c31810",
+        "6ace1e1e1daea21097c31811",
+        "6ace1f061daea21097c31846",
+        "6ace1f071daea21097c31847",
+        "6ace1fe71daea21097c3185e"
+      ],
+      "sessionIds": [
+        "6ace1e206477912d401da532",
+        "6ace1e266477912d401da558",
+        "6ace1f0a6477912d401da620",
+        "6ace1f106477912d401da646",
+        "6ace1fe86477912d401da736",
+        "6ace1ff46477912d401da76c"
+      ],
+      "hiddenCourseId": "live-proof-1791893246797-course",
+      "hostIds": [
+        "6ace1e1b6477912d401da521",
+        "6ace1f056477912d401da60f"
+      ]
+    },
+    "remaining": "Automatic provider OAuth/creation, verified licenses/capacity, published teacher availability and broader notification fanout remain subsequent scope. This proves manual delivery, not provider certification or production scale."
+  }
+}
