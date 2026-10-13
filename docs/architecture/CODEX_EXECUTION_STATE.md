@@ -1,3 +1,6 @@
+## Targeted school report publication VERIFIED — 2026-10-13
+PR540 headf4f6467f, merge7fdaf21f;19successful +4expected skipped checks and all3required PASS. Matching Vercel READY/Render live. Six passing published GETs;10scripted including4excluded preliminary probes, auth helpers excluded,0domain writes or fixture replays. Selector fix and isolated500-request mixed integrity PASS; global1000cap, unrelated index failures, shared-source protection and production resource/billing capacity remain PARTIAL/NOT PROVEN. See docs/audits/SCHOOL_REPORT_FILTER_SCALE_2026-10-13.json. Earlier pending notes are historical.
+
 ## Targeted school report scale — 2026-10-13
 IN_PROGRESS on codex/isolated-mixed-scale from main@ba906e0e: old learner/class selectors intersect role authority before Mongo cap/count; canonical legacy identity preserved. 1100-learner regression, server build, aggregate/RBAC contracts PASS; independent review approved. Exact-head CI/publication pending. Isolated mixed measurement is limited; two unrelated invalid CommandCenter index definitions and default shared-source sensitive budget recorded. No production data/index/scoring changes. See docs/audits/SCHOOL_REPORT_FILTER_SCALE_2026-10-13.md.
 

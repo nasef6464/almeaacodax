@@ -16,10 +16,16 @@ Mixed grading/history/report pressure uses an isolated loopback app process and 
 
 Mongo 7.0.14 rejects two preexisting index definitions: `CommandCenterWorkflow.idempotencyKey_1` and `CommandCenterDraft.idempotencyKey_1` combine `sparse:true` and `partialFilterExpression`, causing code 67. These are recorded separately; no production index operation occurred. The benchmark records their failures and measures the grading/report models only. It cannot certify the whole database.
 
-Remaining NOT PROVEN: unfiltered school report completeness above 1,000 learners; 10,000 simultaneous learners; Render CPU/RAM capacity; billed bandwidth; long exams, AI and media traffic; production index inventory and safe repair. Automatic publication, exact-head CI and bounded read-only runtime proof are recorded in the delivery receipt when available.
+Remaining NOT PROVEN: unfiltered school report completeness above 1,000 learners; 10,000 simultaneous learners; Render CPU/RAM capacity; billed bandwidth; long exams, AI and media traffic; production index inventory and safe repair. Automatic publication, exact-head CI and bounded read-only runtime proof are recorded below.
 
 ## Completed isolated mixed measurement
 
 Inventory: 10,000 learners, 20,000 historical results, 20,000 skill evidence records and 10,000 aggregates. One canonical math question, 50 actors, two consecutive profiles: 10 and 25 workers. 500 timed HTTP requests passed: 200 submissions, 200 history reads and 100 school reports. One separate warmup submission brings the new persisted results/evidence to201; evidence total20201. Scores100, one learner's cumulative totals24questions/20correct/6attempts and selected100-learner class coverage were checked.
 
 At10workers, P95 submission/history/report:1826/318/544ms; child peakRSS198MiB, averageCPU0.707cores, event-loopP95105ms. At25workers:1817/651/670ms; peakRSS254MiB, averageCPU0.914cores, event-loopP95135ms. These are short, warmed synthetic profiles on this workstation; CPU/RSS cover the app child only, excluding Mongo and driver, startup/index initialization and warmup. Initial incomplete fixture lacked a canonical skill alias; its otherwise successful HTTP run was rejected by persisted-integrity assertions and excluded. Machine variability and test-only rate budgets limit comparison with production. Full numeric evidence: SCHOOL_REPORT_FILTER_SCALE_2026-10-13.json.
+
+## Bounded publication verified
+
+PR540 head f4f6467f1764b99a7b5982c31b00e9849d66677c:19successful checks,4expected conditional skips, all3required checks PASS. Merge7fdaf21f548ee093e5f016a900bb19c858537193 automatically published to Vercel READY (dpl_F2pGPPBy6SFmUrQqjJfGavE5MeaF) and Render live (dep-db77amqjnfac73cu5390). Six passing read-only requests confirm exact API release/readiness and four report selectors: invalid0, empty archived class0, retained owned student1, contradictory student/class0. All aggregate rows were empty as expected for these retained security fixtures. No users/results/groups/indexes were written and no fixture journey was replayed.
+
+The passing receipt excludes4earlier scripted reads: one early health check observed the prior release, then two readiness reads and one incorrectly doubled API-prefix request. Total scripted source checks10GETs, excluding authentication-helper calls. Positive large-roster report coverage remains isolated evidence; no production10k data fixture was created. The report selector fix is VERIFIED within this scope; whole-platform scale readiness stays PARTIAL.
