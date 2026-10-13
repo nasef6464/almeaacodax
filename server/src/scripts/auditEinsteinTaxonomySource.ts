@@ -29,6 +29,7 @@ const manifestPaths = [
   "source_eleventh_COL2627_61_handoff_20261013.json",
   "source_twelfth_averages_probability_triangles_20261012.json",
   "source_thirteenth_geometry_rectangles_squares_20261013.json",
+  "source_fourteenth_triangles_quadrilaterals_circles_20261013.json",
 ].map((name) => path.resolve(process.cwd(), "../ops/einstein-taxonomy", name));
 const sourceBanks = ["FND26", "COL2627"] as const;
 const chapterBands: Record<string, Array<[number, number, number]>> = {
