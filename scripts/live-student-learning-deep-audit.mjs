@@ -237,6 +237,19 @@ async function inspectRoute(page, name, route, expectations = {}) {
       const enrollButtonCount = await enrollButtons.count().catch(() => 0);
       if (enrollButtonCount > 0) {
         await enrollButtons.first().click();
+        const enrollmentDialog = page.getByRole('dialog', { name: 'اختر مسارك التعليمي' });
+        if (await enrollmentDialog.count()) {
+          const stageSelect = enrollmentDialog.locator('select').nth(1);
+          if (await stageSelect.count()) {
+            const validOption = stageSelect.locator('option').filter({ hasText: /./ }).nth(1);
+            const stageId = await validOption.getAttribute('value');
+            if (stageId) await stageSelect.selectOption(stageId);
+          }
+          const saved = page.waitForResponse(response => response.url().includes('/auth/me/preferences') && response.request().method() === 'PATCH');
+          await enrollmentDialog.getByRole('button', { name: 'تأكيد التسجيل', exact: true }).click();
+          if ((await saved).status() !== 200) throw new Error('Path enrollment probe was not saved');
+          await enrollmentDialog.waitFor({ state: 'hidden' });
+        }
         enrolledForProbe = true;
         await page.waitForTimeout(700);
         buttonCount = await unenrollButtons.count().catch(() => 0);
