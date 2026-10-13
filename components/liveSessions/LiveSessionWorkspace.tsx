@@ -1,5 +1,5 @@
 import { useStudentExperience } from '../../contexts/StudentExperienceContext';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useStore } from '../../store/useStore';
 import { api } from '../../services/api';
 import { captureAuthActor, isCurrentAuthActor } from '../../utils/authSessionLifetime';
@@ -13,8 +13,12 @@ const liveTypes = ['zoom','google_meet','teams','live_youtube'];
 const statusLabels: Record<string,string> = {pending:'بانتظار التأكيد',confirmed:'مؤكد',cancelled:'ملغي',rejected:'مرفوض'};
 const blankInput = (): LiveSessionInput => ({teacherId:'',provider:'zoom',hostingMode:'manual_link',hostId:'',meetingUrl:'',meetingDate:'',duration:60});
 const riyadhDate = (date:string) => new Date(date).toLocaleString('sv-SE',{timeZone:'Asia/Riyadh'}).slice(0,16).replace(' ','T');
-export function LiveSessionWorkspace({manage=false}:{manage?:boolean}) {
+export function LiveSessionWorkspace({manage:manageChoice}:{manage?:boolean}) {
   const {user,lessons=[],courses=[],groups=[]} = useStore();
+  const manage = manageChoice ?? (user?.role === 'teacher');
+  const viewKey = `${user?.id}:${user?.role}:${manage}:${captureAuthActor(user).revision}`;
+  const viewRef = useRef(viewKey); viewRef.current = viewKey;
+  const isCurrentView = (actor:ReturnType<typeof captureAuthActor>) => isCurrentAuthActor(actor,useStore.getState().user) && useStore.getState().user?.role===user?.role && viewRef.current===viewKey;
   const {scope}=useStudentExperience();
   const [hostOwner,setHostOwner]=useState<'teacher'|'platform'>('platform');
   const {sessions,error:sessionError,loading,reload} = useLiveSessions(manage?'manage':'me');
@@ -22,7 +26,7 @@ export function LiveSessionWorkspace({manage=false}:{manage?:boolean}) {
   const [policy,setPolicy] = useState<HostingPolicy|null>(null), [error,setError] = useState(''), [notice,setNotice] = useState(''), [busy,setBusy] = useState(false);
   const [input,setInput] = useState(blankInput), [date,setDate] = useState(''), [bookingId,setBookingId] = useState(''), [editing,setEditing] = useState<SessionView|null>(null), [source,setSource] = useState(''), [audience,setAudience] = useState('public');
   const [hostLabel,setHostLabel] = useState('');
-  const safe = data.actorId===user?.id ? data : {bookings:[],hosts:[],teachers:[]};
+  const safe = data.actorId===viewKey ? data : {bookings:[],hosts:[],teachers:[]};
   const refresh = async() => {
     const actor=captureAuthActor(useStore.getState().user);if(!actor.actorId)return;
     try {
@@ -30,18 +34,18 @@ export function LiveSessionWorkspace({manage=false}:{manage?:boolean}) {
         actor.actorId==='guest' ? Promise.resolve({activities:[]}) : manage ? user.role==='admin' ? api.getAdminSessionBookings({limit:100}) : api.getTeacherSessionBookings() : api.getMyActivities({limit:100}),
         manage?api.getLiveHosts():Promise.resolve({hosts:[]}),manage?api.getLiveTeachers():Promise.resolve({teachers:[]}),api.getLiveHostingPolicy(),
       ]);
-      if(!isCurrentAuthActor(actor,useStore.getState().user))return;
-      setData({actorId:actor.actorId,bookings:('bookings' in bookings ? bookings.bookings : bookings.activities).filter((item:any)=>item.type==='session_booked') as Activity[],hosts:hosts.hosts,teachers:teachers.teachers});setPolicy(settings.policy);
-    }catch(error){if(isCurrentAuthActor(actor,useStore.getState().user))setError(error instanceof Error?error.message:'تعذر تحميل الطلبات');}
+      if(!isCurrentView(actor))return;
+      setData({actorId:viewKey,bookings:('bookings' in bookings ? bookings.bookings : bookings.activities).filter((item:any)=>item.type==='session_booked') as Activity[],hosts:hosts.hosts,teachers:teachers.teachers});setPolicy(settings.policy);
+    }catch(error){if(isCurrentView(actor))setError(error instanceof Error?error.message:'تعذر تحميل الطلبات');}
     await reload();
   };
-  useEffect(()=>{setData({actorId:'',bookings:[],hosts:[],teachers:[]});setPolicy(null);setBookingId('');setEditing(null);setSource('');setError('');setNotice('');setBusy(false);setInput(blankInput());setHostLabel('');void refresh();},[user?.id,manage]);
+  useEffect(()=>{setData({actorId:'',bookings:[],hosts:[],teachers:[]});setPolicy(null);setBookingId('');setEditing(null);setSource('');setError('');setNotice('');setBusy(false);setInput(blankInput());setHostLabel('');void refresh();},[viewKey]);
   const run = async(action:()=>Promise<unknown>,success='تم حفظ التغيير') => {
     const actor=captureAuthActor(useStore.getState().user);if(busy || !actor.actorId)return;
     setBusy(true);setError('');setNotice('');
-    try {await action();if(isCurrentAuthActor(actor,useStore.getState().user)){setNotice(success);await refresh();}}
-    catch(error){if(isCurrentAuthActor(actor,useStore.getState().user))setError(error instanceof Error?error.message:'تعذر الحفظ');}
-    finally{if(isCurrentAuthActor(actor,useStore.getState().user))setBusy(false);}
+    try {await action();if(isCurrentView(actor)){setNotice(success);await refresh();}}
+    catch(error){if(isCurrentView(actor))setError(error instanceof Error?error.message:'تعذر الحفظ');}
+    finally{if(isCurrentView(actor))setBusy(false);}
   };
   const chooseBooking = (booking:Activity) => {
     setEditing(null);setBookingId(booking.id);setSource('');

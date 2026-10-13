@@ -47,3 +47,4 @@ jobs:
           node scripts/test-live-session-ui.mjs
           node scripts/test-live-booking-ui.mjs
           node scripts/test-live-request-status-ui.mjs
+          node scripts/test-live-teacher-workspace-ui.mjs
