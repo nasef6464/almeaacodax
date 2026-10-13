@@ -1,3 +1,7 @@
+## متابعة تصفية توصيات لوحة الطالب — 2026-10-13
+- #533 مدمج ومنشور62d50a53؛ الرأس26f33dfb و22فحصًا ناجحًا، جميع3المطلوبةPASS. 12مجموعة تحقق حية للتسجيل/المراحل/القالب/الإدارة ناجحة، و16طلب أعمال محدود مع استعادة الإعداد المنطقي والتسجيل وإخفاء مساري التجربة؛ بصمات التاريخ مطابقة.
+- مراجعة الصور كشفت توصيات Overview/Smart Path تقرأ SkillProgress دون نطاق العرض. متابعة محدودة على codex/student-path-dashboard-scope تعيد استخدام قارئ التقارير المحمي للحساب/المسار/المرحلة. اختبار4مجموعات RED→GREEN؛ لا تغيير مصدر الإتقان أو نتائجه. الإغلاق النهائي ينتظر CI والنشر وتحقق توصيات المسار الخالي. الدليل الأول scratch/student-path-first-runtime-receipt.json محفوظ، وليس شهادة هذا الإصلاح.
+
 ## Student path experience — 2026-10-13
 IN_PROGRESS on codex/student-path-experience from main@68f98819. Owner approved configurable all/enrolled presentation, optional per-path stage policy and standard/simple template, future paths driven by metadata. Independent review approved; 31 frontend groups + 6 model/behavior groups + 6 HTTP/Mongo groups PASS, frontend typecheck/build PASS. Required exact-head CI, publication and bounded live proof remain. See docs/audits/STUDENT_PATH_EXPERIENCE_2026-10-13.md. No course/classroom replay, history rewrite or payment-provider setup.
 

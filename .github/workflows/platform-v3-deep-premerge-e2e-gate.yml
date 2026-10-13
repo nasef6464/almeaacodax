@@ -209,6 +209,7 @@ jobs:
           node scripts/smoke-student-path-admin-ui.mjs
           node scripts/smoke-student-path-experience-ui.mjs
           node scripts/smoke-student-path-skill-read-ui.mjs
+          node scripts/smoke-student-path-dashboard-ui.mjs
 
       - name: Courses and packages account, pricing, navigation and activation regressions
         run: |

@@ -1,6 +1,7 @@
 import { readFile } from 'node:fs/promises';
 
 const files = {
+  studentSkillRead: await readFile(new URL('../utils/useStudentSkillProgress.ts', import.meta.url), 'utf8'),
   packageJson: await readFile(new URL('../package.json', import.meta.url), 'utf8'),
   pathEnrollment: await readFile(new URL('../components/studentPaths/StudentPathBar.tsx', import.meta.url), 'utf8'),
   dashboard: await readFile(new URL('../pages/Dashboard.tsx', import.meta.url), 'utf8'),
@@ -112,7 +113,8 @@ check('student dashboard keeps a clear continuation area and learner shortcuts',
   assertIncludes(files.dashboard, "import { EmptyState } from '../components/ui/EmptyState'");
   assertIncludes(files.dashboard, 'buildSmartPathSkillsFromProgress');
   assertIncludes(files.dashboard, 'useStudentSkillProgress');
-  assertIncludes(files.dashboard, 'api.getSkillProgress');
+  assertIncludes(files.dashboard, 'useScopedStudentSkillProgress(scope.pathId');
+  assertIncludes(files.studentSkillRead, 'api.getSkillProgress({');
   assertIncludes(files.dashboard, '<SmartLearningPath skills={smartPathSkills} />');
   assertIncludes(files.dashboard, 'أكمل مساراتك');
   assertIncludes(files.dashboard, 'to={path.courses[0] ? `/course/${path.courses[0].id}` : `/category/${path.id}`}');

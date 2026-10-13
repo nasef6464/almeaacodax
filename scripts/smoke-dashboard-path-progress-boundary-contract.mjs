@@ -76,7 +76,7 @@ check('Dashboard retains page, store, smart-path, parent, routing, and path comp
     'const useStudentSkillProgress =',
     'const useParentScopedResults =',
     'const Dashboard: React.FC = () =>',
-    'const { user } = useStore();',
+    'const { user } = useStudentScopedStore();',
     'useLocation()',
     'api.requestParentWeeklyReport()',
     'const enrolledPathSet = new Set(enrolledPaths ?? []);',

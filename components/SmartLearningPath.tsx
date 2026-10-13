@@ -1,3 +1,4 @@
+import { useStudentExperience } from '../contexts/StudentExperienceContext';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { SkillGap, type Skill, type Topic } from '../types';
@@ -35,6 +36,8 @@ const enrichSignalsWithFoundationTarget = (
     });
 
 export const SmartLearningPath: React.FC<Props> = ({ skills }) => {
+    const { scope: presentation } = useStudentExperience();
+    const actorId = useStore(state => state.user.id);
     const skillCatalog = useStore((state) => state.skills);
     const topics = useStore((state) => state.topics);
     const localSignals = useMemo(
@@ -42,8 +45,7 @@ export const SmartLearningPath: React.FC<Props> = ({ skills }) => {
         [skillCatalog, skills, topics],
     );
     const localPath = useMemo(() => getInternalLearningPath(localSignals), [localSignals]);
-    const [serverSignals, setServerSignals] = useState<AdaptiveSkillSignal[] | null>(null);
-    const [serverFingerprint, setServerFingerprint] = useState('');
+    const [serverRead, setServerRead] = useState<{ key: string; signals: AdaptiveSkillSignal[]; fingerprint: string } | null>(null);
 
     const scope = useMemo(() => {
         const pathIds = [...new Set(skills.map((skill) => skill.pathId).filter(Boolean))] as string[];
@@ -53,19 +55,18 @@ export const SmartLearningPath: React.FC<Props> = ({ skills }) => {
             : null;
     }, [skills]);
 
+    const readKey = JSON.stringify([actorId, scope, presentation.activePathId, presentation.restricted, [...presentation.stageByPath], localPath.fingerprint]);
     useEffect(() => {
         let cancelled = false;
         if (!scope?.pathId) {
-            setServerSignals(null);
-            setServerFingerprint('');
+            setServerRead(null);
             return () => { cancelled = true; };
         }
 
         api.getNextBestAction(scope)
             .then((payload) => {
                 if (cancelled) return;
-                setServerFingerprint(payload.fingerprint || '');
-                setServerSignals(
+                setServerRead({ key: readKey, fingerprint: payload.fingerprint || '', signals:
                     (payload.candidates || []).map((candidate) => ({
                         skillId: candidate.skillId,
                         skill: candidate.skill,
@@ -77,17 +78,18 @@ export const SmartLearningPath: React.FC<Props> = ({ skills }) => {
                         evidenceCount: candidate.evidenceCount,
                         trend: candidate.trend,
                     })),
-                );
+                });
             })
             .catch(() => {
                 if (!cancelled) {
-                    setServerSignals(null);
-                    setServerFingerprint('');
+                    setServerRead(null);
                 }
             });
 
         return () => { cancelled = true; };
-    }, [scope?.pathId, scope?.subjectId, localPath.fingerprint]);
+    }, [readKey]);
+    const serverSignals = serverRead?.key === readKey ? serverRead.signals.filter(presentation.matchesContent) : null;
+    const serverFingerprint = serverRead?.key === readKey ? serverRead.fingerprint : '';
 
     const effectivePath = useMemo(
         () => serverSignals && serverSignals.length
