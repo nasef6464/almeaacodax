@@ -17,7 +17,17 @@ const pathSchema = new Schema(
     isActive: { type: Boolean, default: true },
     parentPathId: { type: String, default: null },
     description: { type: String, default: "" },
-    settings: { type: Schema.Types.Mixed, default: {} },
+    settings: {
+      type: Schema.Types.Mixed, default: {},
+      validate: {
+        validator: (value: Record<string, unknown> | null) => !value || (
+          (value.stageSelection === undefined || ['auto', 'required', 'none'].includes(String(value.stageSelection))) &&
+          (value.studentTemplate === undefined || ['standard', 'simple'].includes(String(value.studentTemplate))) &&
+          (value.stageLabel === undefined || (typeof value.stageLabel === 'string' && value.stageLabel.trim().length > 0 && value.stageLabel.length <= 120))
+        ),
+        message: 'Invalid student path presentation settings',
+      },
+    },
   },
   {
     timestamps: true,

@@ -201,6 +201,15 @@ jobs:
         timeout-minutes: 10
         run: npx playwright install --with-deps chromium
 
+      - name: Student path settings, stage enrollment, projection and templates
+        run: |
+          node scripts/smoke-student-path-scope.mjs
+          node scripts/smoke-student-path-evidence.mjs
+          node scripts/smoke-student-path-enrollment.mjs
+          node scripts/smoke-student-path-admin-ui.mjs
+          node scripts/smoke-student-path-experience-ui.mjs
+          node scripts/smoke-student-path-skill-read-ui.mjs
+
       - name: Courses and packages account, pricing, navigation and activation regressions
         run: |
           node scripts/smoke-access-enrollment-session.mjs

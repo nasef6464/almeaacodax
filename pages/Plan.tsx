@@ -1,3 +1,4 @@
+import { useStudentScopedStore } from '../utils/useStudentScopedStore';
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   ArrowRight,
@@ -231,7 +232,7 @@ const Plan: React.FC = () => {
     updateStudyPlan,
     deleteStudyPlan,
     archiveStudyPlan,
-  } = useStore();
+  } = useStudentScopedStore();
   const savedPlans = useStudentStudyPlans(user?.id);
 
   const accessibleCourseIds = useMemo(
@@ -279,7 +280,7 @@ const Plan: React.FC = () => {
   const [sharedSmartPlan, setSharedSmartPlan] = useState(false);
 
   useEffect(() => {
-    if (!activePathId && availablePaths.length > 0) {
+    if (!availablePaths.some(path => path.id === activePathId) && availablePaths.length > 0) {
       setActivePathId(availablePaths[0].id);
     }
   }, [activePathId, availablePaths]);

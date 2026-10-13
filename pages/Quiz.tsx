@@ -1,3 +1,4 @@
+import { useStudentScopedStore } from '../utils/useStudentScopedStore';
 import React, { useEffect, useMemo, useState } from 'react';
 import { ArrowRight, ArrowLeft, Clock, CheckCircle, AlertTriangle, Gauge, ChevronRight, FileQuestion, Star, PauseCircle } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -105,7 +106,7 @@ const Quiz: React.FC = () => {
     questions: globalQuestionBank,
     paths,
     user,
-  } = useStore();
+  } = useStudentScopedStore();
 
   const [quizStarted, setQuizStarted] = useState(false);
   const [entryMode, setEntryMode] = useState<'prepared' | 'self'>('prepared');

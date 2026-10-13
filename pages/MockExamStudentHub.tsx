@@ -1,3 +1,4 @@
+import { useStudentScopedStore } from '../utils/useStudentScopedStore';
 import { StudentListPager } from '../components/StudentListPager';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -327,7 +328,7 @@ const MockExamCard: React.FC<{
 
 /* ─── Main Component ─── */
 const MockExamStudentHub: React.FC = () => {
-  const { user, quizzes, paths, examResults, groups, hasScopedPackageAccess } = useStore();
+  const { user, quizzes, paths, examResults, groups, hasScopedPackageAccess } = useStudentScopedStore();
 
   const [myResults, setMyResults] = useState<MockAttemptResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);

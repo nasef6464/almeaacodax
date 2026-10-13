@@ -185,7 +185,13 @@ export interface ScheduleItem {
     isLive?: boolean;
 }
 
+export interface PathStageSelection { pathId: string; levelId: string; }
+export interface StudentExperienceSettings { visibilityMode: 'all' | 'enrolled'; promptEnrollment: boolean; }
+
 export interface PathDisplaySettings {
+    stageSelection?: 'auto' | 'required' | 'none';
+    stageLabel?: string;
+    studentTemplate?: 'standard' | 'simple';
     showSubjectCards?: boolean;
     showMockExamCard?: boolean;
     showPackageCard?: boolean;
@@ -879,6 +885,7 @@ export interface HomepageBrandSettings {
 }
 
 export interface HomepageSettings {
+    studentExperience?: StudentExperienceSettings;
     key: string;
     brand?: HomepageBrandSettings;
     hero: HomepageHeroSettings;
@@ -948,6 +955,7 @@ export interface PlatformFontSettings {
 }
 
 export interface User {
+    pathStageSelections?: PathStageSelection[];
     id: string;
     name: string;
     email?: string;

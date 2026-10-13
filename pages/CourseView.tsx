@@ -1,3 +1,5 @@
+import { useStudentExperience } from '../contexts/StudentExperienceContext';
+import { StudentPathAccessPrompt } from '../components/studentPaths/StudentPathAccessPrompt';
 import { useActivePremium } from '../utils/useActivePremium';
 import { getCourseCompletion } from '../utils/courseCompletion';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
@@ -26,6 +28,7 @@ const withCourseAccessLocks = (course: Course, hasAccess: boolean): Course => {
 };
 
 const CourseView: React.FC = () => {
+    const { scope } = useStudentExperience();
     const { courseId } = useParams<{ courseId: string }>();
     const [searchParams, setSearchParams] = useSearchParams();
     const setSearchParamsRef = useRef(setSearchParams);
@@ -167,6 +170,8 @@ const CourseView: React.FC = () => {
             </div>
         );
     }
+
+    if (scope.isStudent && !scope.matchesContent(course)) return <StudentPathAccessPrompt path={useStore.getState().paths.find(path => path.id === (course.pathId || course.category))} />;
 
     const hasPackageAccess = hasScopedPackageAccess('courses', course.pathId || course.category, course.subjectId || course.subject);
     const isFreeCourse = Number(course.price || 0) <= 0;

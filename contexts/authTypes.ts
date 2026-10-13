@@ -19,6 +19,7 @@ export interface BackendAuthUser {
   reviewLater?: string[];
   enrolledCourses?: string[];
   enrolledPaths?: string[];
+  pathStageSelections?: Array<{ pathId: string; levelId: string }>;
   completedLessons?: string[];
   interactiveVideoProgress?: Array<{ courseId: string; lessonId: string; positionSeconds: number; answeredQuestionIds: string[]; updatedAt: number }>;
   subscription?: {

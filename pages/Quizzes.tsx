@@ -1,3 +1,4 @@
+import { useStudentScopedStore } from '../utils/useStudentScopedStore';
 import { SchoolTestsPanel } from '../components/SchoolTestsPanel';
 export { SchoolTestsPanel } from '../components/SchoolTestsPanel';
 import { StudentListPager } from '../components/StudentListPager';
@@ -88,7 +89,7 @@ const formatCreatedDate = (date?: number) => {
 };
 
 const Quizzes: React.FC<QuizzesProps> = ({ view = 'catalog' }) => {
-  const { examResults: storedExamResults, quizzes, subjects, paths, lessons, libraryItems, user, checkAccess, hasScopedPackageAccess, getMatchingPackage, hydrateQuizzes } = useStore();
+  const { examResults: storedExamResults, quizzes, subjects, paths, lessons, libraryItems, user, checkAccess, hasScopedPackageAccess, getMatchingPackage, hydrateQuizzes } = useStudentScopedStore();
   const [attemptLimit, setAttemptLimit] = useState(4);
   const [activeFilter, setActiveFilter] = useState<string>('all');
   const [activePathFilter, setActivePathFilter] = useState<string>('all');

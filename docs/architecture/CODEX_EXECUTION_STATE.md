@@ -1,3 +1,6 @@
+## Student path experience — 2026-10-13
+IN_PROGRESS on codex/student-path-experience from main@68f98819. Owner approved configurable all/enrolled presentation, optional per-path stage policy and standard/simple template, future paths driven by metadata. Independent review approved; 31 frontend groups + 6 model/behavior groups + 6 HTTP/Mongo groups PASS, frontend typecheck/build PASS. Required exact-head CI, publication and bounded live proof remain. See docs/audits/STUDENT_PATH_EXPERIENCE_2026-10-13.md. No course/classroom replay, history rewrite or payment-provider setup.
+
 ## Published course journey — 2026-10-12
 - Owner-authorized retained course-owner-trial-1791832574587: API draft/review/publication, browser enrollment, two completions and certificate, fresh-login persistence VERIFIED. No admin-builder UI or teacher-assignment certification claim.
 - Repair assessment normalization and metadata-only direct-course test loading. Actor/course-bound state preserves access guards; scoped7 groups RED→GREEN and reviewed. Exact-head CI/publication and final same-fixture quiz/result receipt live on the delivery PR referenced by docs/audits/COURSE_PUBLISHED_JOURNEY_2026-10-12.md; reuse completed steps. Payment provider deferred.

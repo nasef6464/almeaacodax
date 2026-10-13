@@ -29,6 +29,7 @@ export interface AppState {
     
     enrolledCourses: string[];
     enrolledPaths: string[];
+    pathStageSelections?: import('../types').PathStageSelection[];
     completedLessons: string[];
     examResults: QuizResult[];
     questionAttempts: QuestionAttempt[];
@@ -66,8 +67,8 @@ export interface AppState {
     hydrateQuestionAttempts: (attempts: QuestionAttempt[]) => void;
     enrollCourse: (courseId: string) => void;
     redeemAccessCode: (code: string) => Promise<void>;
-    enrollPath: (pathId: string) => void;
-    unenrollPath: (pathId: string) => void;
+    enrollPath: (pathId: string, levelId?: string) => Promise<void>;
+    unenrollPath: (pathId: string) => Promise<void>;
     markLessonComplete: (lessonId: string, courseId: string, lessonTitle: string) => void;
     saveExamResult: (result: QuizResult) => void;
     recordQuestionAttempt: (attempt: QuestionAttempt) => void;

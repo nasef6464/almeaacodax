@@ -1,3 +1,6 @@
+## Student path preferences — 2026-10-13
+Owner-authorized additive optional HomepageSettings.studentExperience, Path.settings.stageSelection/stageLabel/studentTemplate and bounded User.pathStageSelections. No bulk migration/index/backfill required. Missing settings preserve all/standard; auto stage selection uses current levels, none ignores saved stage for presentation. Legacy stage-less memberships remain valid; prompt only. Existing results/progress/orders unchanged. Rollback stops new fields' writes/projections while retaining optional fields/history; restore logical site settings explicitly, because omitted PATCH fields do not unset persisted values. Production proof pending; no production mutation yet.
+
 # ALMEAA — Migration Registry
 
 ## Payment recovery markers — 2026-10-12 (delivery pending)

@@ -100,7 +100,7 @@ jobs:
           cd server
           npx tsx src/scripts/courseAccessProtectionGate.ts
           npx tsx src/scripts/courseDiscussionFoundationGate.ts
-          node --import tsx src/scripts/verifyPaymentRepair.ts
+          node --import tsx src/scripts/verifyPaymentRepair.ts src/scripts/studentPathPreferencesGate.ts
 
       - name: Shared-network classroom login and protection contract
         run: npm --prefix server run verify:classroom-login-protection
@@ -117,7 +117,7 @@ jobs:
         run: npm --prefix server run verify:classroom-login-e2e
 
       - name: Integration harness typecheck
-        run: cd server && npx tsc --noEmit --target ES2022 --module NodeNext --moduleResolution NodeNext --strict --esModuleInterop --skipLibCheck --types node src/types/express.d.ts src/scripts/backendIntegrationGate.ts src/scripts/courseCommercialJourneyGate.ts src/scripts/freeCourseContentEntitlementGate.ts src/scripts/learnerQuizCatalogPaginationGate.ts src/scripts/learnerReferenceRepairGate.ts src/scripts/db5ConsistencyRaceGate.ts src/scripts/db6ScaleCertificationGate.ts ../.github/scripts/courseSalePricePaymentGate.ts src/scripts/courseAccessProtectionGate.ts src/scripts/courseDiscussionFoundationGate.ts src/scripts/verifyPaymentRepair.ts
+        run: cd server && npx tsc --noEmit --target ES2022 --module NodeNext --moduleResolution NodeNext --strict --esModuleInterop --skipLibCheck --types node src/types/express.d.ts src/scripts/backendIntegrationGate.ts src/scripts/courseCommercialJourneyGate.ts src/scripts/freeCourseContentEntitlementGate.ts src/scripts/learnerQuizCatalogPaginationGate.ts src/scripts/learnerReferenceRepairGate.ts src/scripts/db5ConsistencyRaceGate.ts src/scripts/db6ScaleCertificationGate.ts ../.github/scripts/courseSalePricePaymentGate.ts src/scripts/courseAccessProtectionGate.ts src/scripts/courseDiscussionFoundationGate.ts src/scripts/verifyPaymentRepair.ts src/scripts/studentPathPreferencesGate.ts
 
       - name: Run learner quiz catalog pagination gate
         run: cd server && npx tsx src/scripts/learnerQuizCatalogPaginationGate.ts
@@ -151,6 +151,12 @@ jobs:
 
       - name: Run real HTTP backend integration suite
         run: cd server && npx tsx src/scripts/backendIntegrationGate.ts
+
+      - name: Student path preference behavior and isolated HTTP Mongo gate
+        run: |
+          cd server
+          npx tsx --test src/modules/auth/application/studentPathPreferences.test.ts
+          npx tsx src/scripts/studentPathPreferencesGate.ts
 
       - name: Run course commercial journey acceptance
         run: cd server && npx tsx src/scripts/courseCommercialJourneyGate.ts

@@ -1,3 +1,4 @@
+import { useStudentScopedStore } from '../utils/useStudentScopedStore';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Award, BookOpen, CheckCircle2, Clock, ListChecks, Target } from 'lucide-react';
@@ -21,7 +22,7 @@ const getPathSortRank = (name?: string) => {
 };
 
 export const MockExams: React.FC = () => {
-  const { paths, quizzes, user } = useStore();
+  const { paths, quizzes, user } = useStudentScopedStore();
   const canSeeHiddenPaths = ['admin', 'teacher', 'supervisor'].includes(user?.role || '');
   const getVisibleMockExams = (pathId: string) =>
     quizzes.filter(

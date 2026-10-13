@@ -14,6 +14,8 @@ import {
   Eye, EyeOff, CheckCircle2, AlertTriangle
 } from 'lucide-react';
 import { useStore } from '../../store/useStore';
+import { api } from '../../services/api';
+import { PathStudentExperienceFields, PathStudentExperiencePanel, defaultPathStudentExperience } from './components/StudentExperienceSettings';
 import { Course, PackageContentType, PathDisplaySettings } from '../../types';
 import { isMockQuiz, isTrainingQuiz } from '../../utils/quizPlacement';
 import { isMaterialQuizCandidate, isPathMockExam } from '../../utils/mockExam';
@@ -75,6 +77,7 @@ export const PathsManager: React.FC = () => {
   const [newPathShowSubjectCards, setNewPathShowSubjectCards] = useState(true);
   const [newPathShowMockExamCard, setNewPathShowMockExamCard] = useState(true);
   const [newPathShowPackageCard, setNewPathShowPackageCard] = useState(true);
+  const [newPathExperience, setNewPathExperience] = useState<PathDisplaySettings>(defaultPathStudentExperience);
   /** حالة حفظ المسار الجديد */
   const [pathSaving, setPathSaving] = useState(false);
   const [pathSaveError, setPathSaveError] = useState('');
@@ -287,7 +290,15 @@ export const PathsManager: React.FC = () => {
     }
   };
 
+  const savePathConfirmed = async (id: string, data: Record<string, unknown>) => {
+    const response = await api.updatePath(id, data) as Record<string, unknown>;
+    if (!response || String(response.id || response._id || '') !== id) throw new Error('لم يؤكد الخادم حفظ المسار. أعد المحاولة.');
+    useStore.setState(state => ({ paths: state.paths.map(path => path.id === id ? { ...path, ...response, id } : path) }));
+    api.clearTaxonomyBootstrapCache();
+  };
+
   const handleAddPath = async () => {
+    if (pathSaving) return;
     if (!newPathName.trim()) {
       setPathSaveError('يرجى إدخال اسم المسار أولاً.');
       return;
@@ -295,23 +306,31 @@ export const PathsManager: React.FC = () => {
     setPathSaveError('');
 
     if (editingPath) {
-      useStore.getState().updatePath(editingPath.id, {
-        name: newPathName.trim(),
-        color: newPathColor,
-        icon: newPathIcon,
-        iconUrl: newPathIconUrl,
-        iconStyle: newPathIconStyle,
-        description: newPathDesc,
-        showInNavbar: newPathShowInNavbar,
-        isActive: newPathIsActive,
-        parentPathId: newPathParentId || null,
-        settings: {
-          ...(editingPath.settings || {}),
-          showSubjectCards: newPathShowSubjectCards,
-          showMockExamCard: newPathShowMockExamCard,
-          showPackageCard: newPathShowPackageCard,
-        },
-      });
+      setPathSaving(true);
+      try {
+        await savePathConfirmed(editingPath.id, {
+          name: newPathName.trim(),
+          color: newPathColor,
+          icon: newPathIcon,
+          iconUrl: newPathIconUrl,
+          iconStyle: newPathIconStyle,
+          description: newPathDesc,
+          showInNavbar: newPathShowInNavbar,
+          isActive: newPathIsActive,
+          parentPathId: newPathParentId || null,
+          settings: {
+            ...(editingPath.settings || {}),
+            ...newPathExperience,
+            stageLabel: newPathExperience.stageLabel?.trim() || defaultPathStudentExperience.stageLabel,
+            showSubjectCards: newPathShowSubjectCards,
+            showMockExamCard: newPathShowMockExamCard,
+            showPackageCard: newPathShowPackageCard,
+          },
+        });
+      } catch (err) {
+        setPathSaveError(err instanceof Error ? err.message : 'فشل حفظ المسار. أعد المحاولة.');
+        return;
+      } finally { setPathSaving(false); }
     } else {
       const pId = `p_${Date.now()}`;
       const newPath = {
@@ -326,6 +345,8 @@ export const PathsManager: React.FC = () => {
         isActive: newPathIsActive,
         parentPathId: newPathParentId || null,
         settings: {
+          ...newPathExperience,
+          stageLabel: newPathExperience.stageLabel?.trim() || defaultPathStudentExperience.stageLabel,
           showSubjectCards: newPathShowSubjectCards,
           showMockExamCard: newPathShowMockExamCard,
           showPackageCard: newPathShowPackageCard,
@@ -356,12 +377,15 @@ export const PathsManager: React.FC = () => {
     setNewPathShowSubjectCards(true);
     setNewPathShowMockExamCard(true);
     setNewPathShowPackageCard(true);
+    setNewPathExperience(defaultPathStudentExperience);
     setIsPathModalOpen(false);
   };
 
   const openEditPath = (path: any, e: React.MouseEvent) => {
     e.stopPropagation();
     setEditingPath(path);
+    setPathSaveError('');
+    setNewPathExperience({ ...defaultPathStudentExperience, ...path.settings });
     setNewPathName(path.name);
     setNewPathColor(path.color || 'indigo');
     setNewPathIcon(path.icon || '📚');
@@ -806,6 +830,8 @@ export const PathsManager: React.FC = () => {
                 setNewPathShowSubjectCards(true);
                 setNewPathShowMockExamCard(true);
                 setNewPathShowPackageCard(true);
+                setNewPathExperience(defaultPathStudentExperience);
+                setPathSaveError('');
                 setIsPathModalOpen(true);
               }}
               className="bg-indigo-600 text-white px-4 py-2.5 rounded-xl font-bold hover:bg-indigo-700 transition-colors flex items-center gap-2 cursor-pointer shadow-xs"
@@ -927,7 +953,7 @@ export const PathsManager: React.FC = () => {
                     {editingPath ? `تعديل المسار: ${editingPath.name}` : 'إضافة مسار تعليمي جديد (مساحة عمل)'}
                   </h3>
                 </div>
-                <button onClick={() => { setIsPathModalOpen(false); setEditingPath(null); }} className="text-gray-400 hover:text-gray-600 transition-colors">
+                <button disabled={pathSaving} onClick={() => { setIsPathModalOpen(false); setEditingPath(null); }} className="text-gray-400 hover:text-gray-600 transition-colors">
                   <X size={20} />
                 </button>
               </div>
@@ -1090,16 +1116,17 @@ export const PathsManager: React.FC = () => {
                     </div>
                   </div>
                 </div>
+                <PathStudentExperienceFields value={newPathExperience} onChange={setNewPathExperience} levelCount={editingPath ? (levels || []).filter(level => level.pathId === editingPath.id).length : 0} disabled={pathSaving} />
               </div>
               <div className="p-4 border-t border-gray-100 bg-gray-50 space-y-2 shrink-0">
                 {pathSaveError && (
                   <div className="flex items-center gap-2 rounded-lg bg-red-50 border border-red-200 px-3 py-2">
                     <AlertTriangle size={16} className="text-red-500 shrink-0" />
-                    <p className="text-sm font-bold text-red-700">{pathSaveError}</p>
+                    <p role="alert" className="text-sm font-bold text-red-700">{pathSaveError}</p>
                   </div>
                 )}
                 <div className="flex justify-end gap-3">
-                  <button type="button" onClick={() => { setIsPathModalOpen(false); setEditingPath(null); setPathSaveError(''); }} className="px-4 py-2 text-gray-600 font-bold hover:bg-gray-200 rounded-lg transition-colors">
+                  <button type="button" disabled={pathSaving} onClick={() => { setIsPathModalOpen(false); setEditingPath(null); setPathSaveError(''); }} className="px-4 py-2 text-gray-600 font-bold hover:bg-gray-200 rounded-lg transition-colors">
                     إلغاء
                   </button>
                   <button type="button" onClick={handleAddPath} disabled={pathSaving} className="px-4 py-2 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-2">
@@ -1536,6 +1563,7 @@ export const PathsManager: React.FC = () => {
 
           {pathTab === 'settings' && (
             <div className="space-y-6 animate-fade-in">
+              {currentPath && <PathStudentExperiencePanel path={currentPath} levelCount={pathLevels.length} onSave={(id, settings) => savePathConfirmed(id, { settings })} />}
               <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
                 <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                   <div>

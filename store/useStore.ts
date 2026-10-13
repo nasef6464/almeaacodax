@@ -61,6 +61,7 @@ export const useStore = create<AppState>()(
             ...createLibraryItemsSlice<AppState>(set, api),
             enrolledCourses: [],
             enrolledPaths: [],
+            pathStageSelections: [],
             completedLessons: [],
             examResults: [],
             questionAttempts: [],

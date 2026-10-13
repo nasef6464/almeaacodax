@@ -1,3 +1,4 @@
+import { useStudentScopedStore } from '../utils/useStudentScopedStore';
 import React, { useEffect, useMemo, useState } from 'react';
 import { ArrowDown, ArrowLeft, BookOpen, Target, Zap, Book, Users, Video, BarChart, Star, CheckCircle, Eye, ShoppingCart, Megaphone, Quote, Sparkles, Trophy, X, ChevronLeft, ChevronRight, Clock, Check, Award } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -345,7 +346,7 @@ const resolveHeroColor = (value: string | undefined, fallback: string) => {
 };
 
 export const Landing: React.FC = () => {
-    const { paths, courses, quizzes, questions, lessons, subjects, user, announcementAds } = useStore();
+    const { paths, courses, quizzes, questions, lessons, subjects, user, announcementAds } = useStudentScopedStore();
     const [homepageSettings, setHomepageSettings] = useState<HomepageSettings>(defaultHomepageSettings);
     const [dismissedBannerAdId, setDismissedBannerAdId] = useState<string | null>(null);
     const [selectedArticle, setSelectedArticle] = useState<PlatformArticle | null>(null);

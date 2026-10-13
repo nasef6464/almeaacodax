@@ -41,6 +41,7 @@ export const syncStoreUser = (sessionUser: SessionUser | null, backendUser?: Bac
       linkedStudentIds: backendUser?.linkedStudentIds ?? existing.linkedStudentIds,
       managedPathIds: backendUser?.managedPathIds ?? existing.managedPathIds,
       managedSubjectIds: backendUser?.managedSubjectIds ?? existing.managedSubjectIds,
+      pathStageSelections: backendUser?.pathStageSelections ?? existing.pathStageSelections,
       interactiveVideoProgress: backendUser?.interactiveVideoProgress ?? existing.interactiveVideoProgress,
       subscription: {
         ...existing?.subscription,
@@ -58,6 +59,7 @@ export const syncStoreUser = (sessionUser: SessionUser | null, backendUser?: Bac
     reviewLater: backendUser ? (backendUser.reviewLater ?? useStore.getState().reviewLater) : useStore.getState().reviewLater,
     enrolledCourses: backendUser ? (backendUser.enrolledCourses ?? useStore.getState().enrolledCourses) : useStore.getState().enrolledCourses,
     enrolledPaths: backendUser ? (backendUser.enrolledPaths ?? useStore.getState().enrolledPaths) : useStore.getState().enrolledPaths,
+    pathStageSelections: backendUser ? (backendUser.pathStageSelections ?? []) : (useStore.getState().pathStageSelections ?? []),
     completedLessons: backendUser ? (backendUser.completedLessons ?? useStore.getState().completedLessons) : useStore.getState().completedLessons,
   });
 };
@@ -78,6 +80,7 @@ export const resetStoreUser = () => {
       linkedStudentIds: [],
       managedPathIds: [],
       managedSubjectIds: [],
+      pathStageSelections: [],
       interactiveVideoProgress: [],
       points: 0,
       badges: [],
@@ -90,6 +93,7 @@ export const resetStoreUser = () => {
     recentActivity: [],
     enrolledCourses: [],
     enrolledPaths: [],
+    pathStageSelections: [],
     completedLessons: [],
     cartItems: [],
   });
