@@ -1,3 +1,8 @@
+## الحصص والحجز الخاص — التشغيل بالروابط منشور ومثبت — 2026-10-13
+- VERIFIED first manual delivery: #536، الرأسb1938c42، الدمجccf2160c؛21فحص CI ناجح وجميع3المطلوبة PASS، الواجهةREADY والخادمlive على الإصدار نفسه.11مجموعة تحقق منشورة ناجحة للحجز/المواعيد/العزل/التسجيل/شاشتي الطالب والمدرس ودرس الدورة.
+- جميع6جلسات التجربة نهائية، حسابا الاستضافة معطلان، الدورة مخفية وروابط التسجيل التجريبية أزيلت. نتائج التعلم وإعداد الاستضافة لم تتغير. حفظ1تسجيل جديد داخل دورة التجربة المخفية فقط. لا اجتماع فعلي لدى المزود ولا بث/ملف إعلامي على المنصة.
+- التالي: ربط الحسابات وتوليد الاجتماعات تلقائيًا، ثم التوافر والحجز الفوري؛ ليست مثبتة الآن. الدليل docs/audits/LIVE_SESSIONS_MANUAL_PUBLISHED_2026-10-13.json. السطور السابقة عن فحوص التنفيذ المعلقة تاريخية.
+
 ## Live session delivery — 2026-10-13
 Approved first delivery on codex/live-sessions-flexible-hosting: canonical content references, guarded private/course/group/public audiences, host/teacher transactional reservations, manual provider links and account-mode configuration. Source implementation exists; final gates/CI/publication pending. Automatic OAuth creation, instant availability and production certification NOT PROVEN; no historic/financial/scoring mutations.
 
