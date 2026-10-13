@@ -43,7 +43,7 @@ export const buildSchoolSkillAggregateView = async (
     isTruncated,
     managedPathIds,
     managedSubjectIds,
-  } = await resolveScopedStudents(authUser, { limit: 1000 });
+  } = await resolveScopedStudents(authUser, { limit: 1000, classId: query.classId, studentId: query.studentId });
 
   const eligibleStudents = students.filter((student: any) => {
     const studentId = idOf(student);

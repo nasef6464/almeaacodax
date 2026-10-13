@@ -1,0 +1,119 @@
+{
+  "at": "2026-10-13T18:00:38.61Z",
+  "status": "MIXED_WORKLOAD_PASS_WITH_UNRELATED_INDEX_GAPS",
+  "startupIndexFailures": [
+    {
+      "model": "CommandCenterWorkflow",
+      "code": 67,
+      "message": "Error in specification { unique: true, sparse: true, partialFilterExpression: { idempotencyKey: { $type: \"string\" } }, background: true, name: \"idempotencyKey_1\", key: { idempotencyKey: 1 }, v: 2 } :: caused by :: cannot"
+    },
+    {
+      "model": "CommandCenterDraft",
+      "code": 67,
+      "message": "Error in specification { unique: true, sparse: true, partialFilterExpression: { idempotencyKey: { $type: \"string\" } }, background: true, name: \"idempotencyKey_1\", key: { idempotencyKey: 1 }, v: 2 } :: caused by :: cannot"
+    }
+  ],
+  "learners": 10000,
+  "seededResults": 20000,
+  "seededSkillEvidence": 20000,
+  "seededAggregateRows": 10000,
+  "newGradedResults": 201,
+  "timedGradedResults": 200,
+  "warmupMs": 689.0558999999921,
+  "profiles": [
+    {
+      "concurrency": 10,
+      "requests": 250,
+      "kinds": [
+        {
+          "kind": "submit",
+          "requests": 100,
+          "failures": 0,
+          "p50Ms": 991.699299999993,
+          "p95Ms": 1825.9760999999999,
+          "p99Ms": 2162.1765000000014
+        },
+        {
+          "kind": "history",
+          "requests": 100,
+          "failures": 0,
+          "p50Ms": 152.94379999999364,
+          "p95Ms": 318.36990000000515,
+          "p99Ms": 389.10160000000906
+        },
+        {
+          "kind": "school-report",
+          "requests": 50,
+          "failures": 0,
+          "p50Ms": 256.9121000000014,
+          "p95Ms": 543.6398999999947,
+          "p99Ms": 601.2122999999992
+        }
+      ],
+      "server": {
+        "type": "metrics",
+        "wallMs": 13965.129400000005,
+        "cpuUserMs": 8782,
+        "cpuSystemMs": 1094,
+        "meanCpuCores": 0.7071900099973292,
+        "peakRssBytes": 207388672,
+        "peakHeapBytes": 104954536,
+        "eventLoopP95Ms": 104.726527
+      }
+    },
+    {
+      "concurrency": 25,
+      "requests": 250,
+      "kinds": [
+        {
+          "kind": "submit",
+          "requests": 100,
+          "failures": 0,
+          "p50Ms": 1520.3069000000105,
+          "p95Ms": 1817.4545999999973,
+          "p99Ms": 1925.9747000000061
+        },
+        {
+          "kind": "history",
+          "requests": 100,
+          "failures": 0,
+          "p50Ms": 474.9462000000058,
+          "p95Ms": 650.8218999999954,
+          "p99Ms": 687.8208999999915
+        },
+        {
+          "kind": "school-report",
+          "requests": 50,
+          "failures": 0,
+          "p50Ms": 500.9918000000034,
+          "p95Ms": 670.0460999999923,
+          "p99Ms": 808.6491999999998
+        }
+      ],
+      "server": {
+        "type": "metrics",
+        "wallMs": 9369.266000000003,
+        "cpuUserMs": 7593,
+        "cpuSystemMs": 969,
+        "meanCpuCores": 0.9138389282575601,
+        "peakRssBytes": 266223616,
+        "peakHeapBytes": 127543832,
+        "eventLoopP95Ms": 135.135231
+      }
+    }
+  ],
+  "integrity": "all new scores100; exact evidence count and cumulative totals;100 eligible class learners retained",
+  "limits": "Isolated loopback HTTP with separate384MiB-heap app child; Mongo, driver resources, index initialization and single warmup request excluded.10/25concurrent workers, not10k active learners. Not Render capacity or billed bandwidth.",
+  "isolatedRateLimits": {
+    "globalPerMinute": 5000,
+    "sensitivePerMinute": 2000,
+    "productionChanged": false
+  },
+  "coverageRegression": {
+    "oldClassLearners": 100,
+    "unfilteredCap": 1000,
+    "legacyIdentityAndAuthority": "PASS",
+    "durableLearners": 1100,
+    "originalRedLearners": 10000
+  }
+}

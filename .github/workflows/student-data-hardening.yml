@@ -12,11 +12,14 @@ on:
       - 'server/src/modules/schools/application/schoolDirectoryScope.ts'
       - 'server/src/modules/schools/application/classroomSupervisorReport.ts'
       - 'server/src/modules/quizzes/application/schoolSkillReadModel.ts'
+      - 'server/src/modules/quizzes/application/quizReportScope.ts'
+      - 'server/src/modules/quizzes/application/schoolSkillAggregateView.ts'
       - 'server/src/modules/quizzes/http/quizResultsRoutes.ts'
       - 'server/src/modules/quizzes/infrastructure/quizResultsCache.ts'
       - 'scripts/test-student-data-*.ts'
       - 'scripts/test-teacher-report-work.ts'
       - 'scripts/test-school-skill-work.ts'
+      - 'scripts/test-school-report-filter-before-limit.ts'
       - 'scripts/live-session-test-fixture.ts'
       - '.github/workflows/student-data-hardening.yml'
 permissions:
@@ -47,3 +50,4 @@ jobs:
           server/node_modules/.bin/tsx scripts/test-student-data-performance.ts
           server/node_modules/.bin/tsx scripts/test-teacher-report-work.ts
           server/node_modules/.bin/tsx scripts/test-school-skill-work.ts
+          server/node_modules/.bin/tsx scripts/test-school-report-filter-before-limit.ts

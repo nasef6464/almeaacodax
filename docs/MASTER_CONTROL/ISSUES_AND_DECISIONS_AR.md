@@ -1,3 +1,6 @@
+## Isolated scale gaps — 2026-10-13
+Mongo7.0.14 rejects CommandCenterWorkflow/Draft idempotencyKey indexes combining sparse with partialFilterExpression (code67). Source definitions reproduced on disposable Mongo; production index inventory/duplicates were not inspected, no index mutation authorized/performed. Plan a separate read-only inventory and compatible repair before declaring whole-database readiness. Default sensitive-action protection at app entry precedes route authentication, so shared-source submission bursts reached429 in isolated pressure. Benchmark uses explicit test-only budgets; do not infer production school-network capacity or change auth/protection in this report-reader slice. Unfiltered school-skill roster cap1000 remains PARTIAL. See docs/audits/SCHOOL_REPORT_FILTER_SCALE_2026-10-13.md.
+
 # ALMEAA — Issues & Decisions Register
 
 ## Classroom shared-network login — 2026-10-10
