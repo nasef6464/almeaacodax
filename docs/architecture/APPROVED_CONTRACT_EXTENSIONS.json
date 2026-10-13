@@ -135,7 +135,26 @@
     "workflowRouter|GET|/",
     "workflowRouter|GET|/:id",
     "workflowRouter|POST|/:id/execute",
-    "workflowRouter|POST|/plan"
+    "workflowRouter|POST|/plan",
+    "liveSessionRouter|POST|/",
+    "liveSessionRouter|PATCH|/:id",
+    "liveSessionRouter|GET|/:id/join",
+    "liveSessionRouter|GET|/:id/recording",
+    "liveSessionRouter|PATCH|/:id/recording",
+    "liveSessionRouter|POST|/bookings/:id/confirm",
+    "liveSessionRouter|GET|/hosts",
+    "liveSessionRouter|POST|/hosts",
+    "liveSessionRouter|PATCH|/hosts/:id",
+    "liveSessionRouter|GET|/policy",
+    "liveSessionRouter|PATCH|/policy",
+    "liveSessionRouter|GET|/public",
+    "liveSessionRouter|GET|/public/:id/:entry",
+    "liveSessionRouter|GET|/source",
+    "liveSessionRouter|GET|/teachers",
+    "liveSessionRouter|PATCH|/teachers/:id/default",
+    "activityRouter|PATCH|/me/session-bookings/:id/cancel",
+    "activityRouter|GET|/teacher/session-bookings",
+    "activityRouter|PATCH|/teacher/session-bookings/:id/reject"
   ],
   "routerMountSignatures": [
     "apiRouter|/classroom|classroomRouter",
@@ -147,7 +166,8 @@
     "apiRouter|/review|studentReviewRouter",
     "apiRouter|/school-access|schoolAccessRouter",
     "apiRouter|/school-access|schoolAdminIntegrityRouter",
-    "app|/api/ai/generate-mock-exam|requireAuth"
+    "app|/api/ai/generate-mock-exam|requireAuth",
+    "apiRouter|/live-sessions|liveSessionRouter"
   ],
   "envKeys": [
     "AI_LIGHT_API_BASE_URL",

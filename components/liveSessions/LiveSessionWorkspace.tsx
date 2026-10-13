@@ -14,7 +14,7 @@ const statusLabels: Record<string,string> = {pending:'بانتظار التأك�
 const blankInput = (): LiveSessionInput => ({teacherId:'',provider:'zoom',hostingMode:'manual_link',hostId:'',meetingUrl:'',meetingDate:'',duration:60});
 const riyadhDate = (date:string) => new Date(date).toLocaleString('sv-SE',{timeZone:'Asia/Riyadh'}).slice(0,16).replace(' ','T');
 export function LiveSessionWorkspace({manage=false}:{manage?:boolean}) {
-  const {user,lessons,courses,groups} = useStore();
+  const {user,lessons=[],courses=[],groups=[]} = useStore();
   const {scope}=useStudentExperience();
   const [hostOwner,setHostOwner]=useState<'teacher'|'platform'>('platform');
   const {sessions,error:sessionError,loading,reload} = useLiveSessions(manage?'manage':'me');
