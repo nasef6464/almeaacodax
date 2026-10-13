@@ -115,5 +115,68 @@
     "legacyIdentityAndAuthority": "PASS",
     "durableLearners": 1100,
     "originalRedLearners": 10000
+  },
+  "delivery": {
+    "requiredChecksPassed": 3,
+    "render": {
+      "sha": "7fdaf21f548ee093e5f016a900bb19c858537193",
+      "id": "dep-db77amqjnfac73cu5390",
+      "status": "live"
+    },
+    "sourcePR": 540,
+    "earlierProbeNotes": [
+      "One health read observed pre-publication baseline",
+      "Two readiness reads and one malformed double-API path were excluded from passing receipt"
+    ],
+    "sourceHead": "f4f6467f1764b99a7b5982c31b00e9849d66677c",
+    "successfulChecks": 19,
+    "published": {
+      "at": "2026-10-13T18:19:33.467Z",
+      "release": "7fdaf21f548ee093e5f016a900bb19c858537193",
+      "status": "PASS_BOUNDED_READONLY",
+      "health": 200,
+      "ready": 200,
+      "checks": [
+        {
+          "name": "invalid selector",
+          "status": 200,
+          "rows": 0,
+          "totalStudents": 0
+        },
+        {
+          "name": "owned archived empty class",
+          "status": 200,
+          "rows": 0,
+          "totalStudents": 0
+        },
+        {
+          "name": "owned retained learner",
+          "status": 200,
+          "rows": 0,
+          "totalStudents": 1
+        },
+        {
+          "name": "contradictory owned selectors",
+          "status": 200,
+          "rows": 0,
+          "totalStudents": 0
+        }
+      ],
+      "scriptedGetRequests": 6,
+      "authenticationHelperExcluded": true,
+      "domainWrites": 0,
+      "fixtureJourneysReplayed": false,
+      "limits": "Existing disabled/archived owned fixtures only; publication/empty-selector contract proof, not production10k positive coverage or throughput."
+    },
+    "expectedSkippedChecks": 4,
+    "earlierProbeGetRequests": 4,
+    "sourceMerge": "7fdaf21f548ee093e5f016a900bb19c858537193",
+    "vercel": {
+      "sha": "7fdaf21f548ee093e5f016a900bb19c858537193",
+      "id": "dpl_F2pGPPBy6SFmUrQqjJfGavE5MeaF",
+      "status": "READY"
+    },
+    "totalScriptedSourceGetRequests": 10,
+    "authenticationHelperExcluded": true
   }
 }
