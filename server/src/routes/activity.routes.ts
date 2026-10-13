@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import { Router } from "express";
 import { StatusCodes } from "http-status-codes";
 import { z } from "zod";
@@ -6,45 +7,26 @@ import { ActivityModel } from "../models/Activity.js";
 import { UserModel } from "../models/User.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 
+import { upsertBookingSession, changeSession } from '../modules/content/liveSessions/sessionRepository.js';
+import { assertHostingChoice } from '../modules/content/liveSessions/hostingPolicy.js';
+import { bookingRequestSchema, createBookingRequest, serializeBooking } from '../modules/content/liveSessions/bookingRequests.js';
 export const activityRouter = Router();
 
-const createActivitySchema = z.object({
-  type: z.enum(["course_view", "lesson_complete", "quiz_complete", "skill_practice", "session_booked"]),
-  title: z.string().min(2).max(240),
-  link: z.string().max(300).optional().default(""),
-  targetLabel: z.string().max(240).optional().default(""),
-  scheduledDate: z.string().max(40).optional().default(""),
-  scheduledTime: z.string().max(40).optional().default(""),
-  notes: z.string().max(2000).optional().default(""),
-});
+const createActivitySchema = bookingRequestSchema;
 
 const adminBookingsQuerySchema = z.object({
-  status: z.enum(["all", "pending", "confirmed", "cancelled"]).optional().default("all"),
+  status: z.enum(["all", "pending", "confirmed", "rejected", "cancelled"]).optional().default("all"),
   limit: z.coerce.number().int().min(1).max(100).optional().default(50),
 });
 
 const updateBookingSchema = z.object({
-  bookingStatus: z.enum(["pending", "confirmed", "cancelled"]).optional(),
-  assignedTeacherName: z.string().max(160).optional().default(""),
-  adminNotes: z.string().max(2000).optional().default(""),
+  bookingStatus: z.enum(["pending", "confirmed", "rejected", "cancelled"]).optional(),
+  teacherId: z.string().max(100).optional(),
+  assignedTeacherName: z.string().max(160).optional(),
+  adminNotes: z.string().max(2000).optional(),
 });
 
-const serializeActivity = (activity: any) => ({
-  id: String(activity._id),
-  userId: activity.userId || "",
-  type: activity.type,
-  title: activity.title,
-  date: activity.date,
-  link: activity.link || "",
-  targetLabel: activity.targetLabel || "",
-  scheduledDate: activity.scheduledDate || "",
-  scheduledTime: activity.scheduledTime || "",
-  notes: activity.notes || "",
-  bookingStatus: activity.bookingStatus || "pending",
-  assignedTeacherName: activity.assignedTeacherName || "",
-  adminNotes: activity.adminNotes || "",
-  createdAt: activity.createdAt,
-});
+const serializeActivity = serializeBooking;
 
 activityRouter.use(requireAuth);
 
@@ -70,7 +52,7 @@ activityRouter.get(
       bookings: activities.map((activity) => {
         const student = userById.get(String(activity.userId || ""));
         return {
-          ...serializeActivity(activity),
+          ...serializeActivity(activity, true),
           studentName: student?.name || "",
           studentEmail: student?.email || "",
           studentRole: student?.role || "",
@@ -86,18 +68,33 @@ activityRouter.patch(
   asyncHandler(async (req, res) => {
     const payload = updateBookingSchema.parse(req.body || {});
     const update: Record<string, unknown> = {};
+    const existing = await ActivityModel.findOne({ _id: req.params.id, type: 'session_booked' }).lean();
+    if (!existing) return res.status(404).json({ message: 'Session booking request not found' });
+    if (existing.sessionId && payload.teacherId) return res.status(409).json({message:'غيّر المدرس من إدارة الحصة'});
+    if (payload.bookingStatus === 'confirmed') return res.status(409).json({ message: 'حدد الموعد والمدرس عبر تأكيد الحصة أولًا' });
+    if (existing.sessionId && payload.bookingStatus && payload.bookingStatus !== 'cancelled') return res.status(409).json({ message: 'الحصة مرتبطة بحجز مؤكد؛ استخدم إدارة الحصة' });
+    if (existing.sessionId && payload.bookingStatus === 'cancelled') {
+      await changeSession({ id: req.authUser!.id, role: req.authUser!.role }, existing.sessionId, 'cancel');
+      return res.json({booking:serializeActivity(await ActivityModel.findById(existing._id),true)});
+    }
+    if (payload.teacherId) {
+      if(!mongoose.isValidObjectId(payload.teacherId))return res.status(400).json({message:'المدرس غير صحيح'});
+      const teacher = await UserModel.findOne({ _id: payload.teacherId, role: 'teacher', isActive: { $ne: false } }).select('name').lean();
+      if (!teacher) return res.status(400).json({ message: 'المدرس غير متاح' });
+      update.teacherId = payload.teacherId; update.assignedTeacherName = teacher.name;
+    }
     if (payload.bookingStatus) update.bookingStatus = payload.bookingStatus;
     if (typeof payload.assignedTeacherName === "string") update.assignedTeacherName = payload.assignedTeacherName.trim();
     if (typeof payload.adminNotes === "string") update.adminNotes = payload.adminNotes.trim();
 
     const activity = await ActivityModel.findOneAndUpdate(
-      { _id: req.params.id, type: "session_booked" },
+      { _id: req.params.id, type: "session_booked", bookingStatus: existing.bookingStatus || { $in: [null,"pending"] }, sessionId: existing.sessionId || { $in: [null,""] } },
       { $set: update },
       { new: true },
     ).lean();
 
     if (!activity) {
-      return res.status(404).json({ message: "Session booking request not found" });
+      return res.status(409).json({ message: "تغير الطلب أثناء المراجعة، أعد تحميله" });
     }
 
     res.json({ booking: serializeActivity(activity) });
@@ -108,62 +105,39 @@ activityRouter.post(
   "/admin/session-bookings/:id/convert",
   requireRole(["admin"]),
   asyncHandler(async (req, res) => {
-    const convertSchema = z.object({
-      provider: z.enum(["zoom", "google_meet", "teams", "live_youtube"]).optional().default("zoom"),
-      meetingUrl: z.string().optional().default(""),
-      meetingDate: z.string().optional().default(""),
-      duration: z.string().optional().default("60"),
-      pathId: z.string().optional().default(""),
-      subjectId: z.string().optional().default(""),
-    });
-
-    const payload = convertSchema.parse(req.body || {});
-    const activity = await ActivityModel.findOne({ _id: req.params.id, type: "session_booked" });
-    if (!activity) {
-      return res.status(404).json({ message: "Session booking request not found" });
-    }
-
-    const { LessonModel } = await import("../models/Lesson.js");
-    const activityDoc = activity as any;
-    const lessonTitle = activity.title || "حصة خاصة - " + (activityDoc.studentName || activityDoc.studentEmail || "طالب");
-    const scheduledDate = payload.meetingDate || activity.scheduledDate || new Date().toISOString();
-
-    const lesson = await LessonModel.create({
-      id: `live_conv_${Date.now()}`,
-      title: lessonTitle,
-      type: payload.provider,
-      duration: payload.duration,
-      pathId: payload.pathId || null,
-      subjectId: payload.subjectId || null,
-      meetingUrl: payload.meetingUrl,
-      meetingDate: scheduledDate,
-      joinInstructions: activity.notes || "",
-      assignedTeacherName: activity.assignedTeacherName || req.authUser?.name || "",
-      approvalStatus: "approved",
-      showOnPlatform: true,
-      ownerType: req.authUser?.role === "admin" ? "platform" : "teacher",
-      ownerId: String(req.authUser?.id || ""),
-      createdBy: String(req.authUser?.id || ""),
-    });
-
-    activity.bookingStatus = "confirmed";
-    await activity.save();
-
-    res.json({
-      success: true,
-      lessonId: lesson.id,
-      booking: serializeActivity(activity.toObject()),
-    });
+    await assertHostingChoice(req.body.provider || 'zoom', req.body.hostingMode || 'manual_link');
+    const result = await upsertBookingSession({ id: String(req.authUser!.id), role: req.authUser!.role }, req.params.id, req.body);
+    res.json({ success: true, ...result });
   }),
 );
 
+activityRouter.get('/teacher/session-bookings', requireRole(['teacher']), asyncHandler(async (req,res) => {
+ const bookings = await ActivityModel.find({ type: 'session_booked', teacherId: req.authUser!.id }).sort({createdAt:-1}).limit(100).lean();
+ res.json({ bookings: bookings.map(item => serializeActivity(item,true)) });
+}));
+activityRouter.patch('/teacher/session-bookings/:id/reject', requireRole(['teacher']), asyncHandler(async(req,res)=>{
+ const booking=await ActivityModel.findOneAndUpdate({_id:req.params.id,type:'session_booked',teacherId:req.authUser!.id,bookingStatus:'pending'},{$set:{bookingStatus:'rejected'}},{new:true});
+ if(!booking)return res.status(409).json({message:'الطلب غير متاح للمراجعة'});res.json({booking:serializeActivity(booking,true)});
+}));
+activityRouter.patch('/me/session-bookings/:id/cancel', asyncHandler(async (req,res) => {
+ const booking = await ActivityModel.findOne({ _id: req.params.id, type: 'session_booked', userId: req.authUser!.id });
+ if (!booking) return res.status(404).json({message:'الطلب غير موجود'});
+ if (booking.sessionId) await changeSession({id:req.authUser!.id,role:req.authUser!.role},booking.sessionId,'cancel');
+ else if (booking.bookingStatus === 'pending') {
+   const cancelled=await ActivityModel.findOneAndUpdate({_id:booking._id,userId:req.authUser!.id,bookingStatus:'pending',sessionId:{$in:[null,'']}},{$set:{bookingStatus:'cancelled'}},{new:true});
+   if(!cancelled)return res.status(409).json({message:'تغير الطلب أثناء الإلغاء، أعد تحميله'});
+   return res.json({booking:serializeActivity(cancelled)});
+ }
+ else return res.status(409).json({message:'الطلب لا يقبل الإلغاء'});
+ res.json({booking:serializeActivity(await ActivityModel.findById(booking._id))});
+}));
 activityRouter.get(
   "/me",
   asyncHandler(async (req, res) => {
     const userId = String(req.authUser?.id || "");
     const limit = Math.min(Math.max(Number(req.query.limit || 20), 1), 100);
     const activities = await ActivityModel.find({ userId }).sort({ createdAt: -1 }).limit(limit).lean();
-    res.json({ activities: activities.map(serializeActivity) });
+    res.json({ activities: activities.map(activity => serializeActivity(activity)) });
   }),
 );
 
@@ -172,11 +146,7 @@ activityRouter.post(
   asyncHandler(async (req, res) => {
     const userId = String(req.authUser?.id || "");
     const payload = createActivitySchema.parse(req.body || {});
-    const activity = await ActivityModel.create({
-      userId,
-      ...payload,
-      date: new Date().toISOString(),
-    });
-    res.status(StatusCodes.CREATED).json({ activity: serializeActivity(activity) });
+    const activity = await createBookingRequest({ id: userId }, payload);
+    res.status(StatusCodes.CREATED).json({ activity });
   }),
 );

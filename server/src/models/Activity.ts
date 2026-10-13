@@ -17,11 +17,20 @@ const activitySchema = new Schema(
     notes: { type: String, default: "", trim: true },
     bookingStatus: {
       type: String,
-      enum: ["pending", "confirmed", "cancelled"],
+      enum: ["pending", "confirmed", "rejected", "cancelled"],
       default: "pending",
       index: true,
     },
     assignedTeacherName: { type: String, default: "", trim: true },
+    teacherId: { type: String, default: "", index: true },
+    sessionId: { type: String, default: "" },
+    requestKey: { type: String },
+    pathId: { type: String, default: "" },
+    stageId: { type: String, default: "" },
+    subjectId: { type: String, default: "" },
+    sectionId: { type: String, default: "" },
+    skillIds: { type: [String], default: [] },
+    courseId: { type: String, default: "" },
     adminNotes: { type: String, default: "", trim: true },
   },
   {
@@ -30,5 +39,6 @@ const activitySchema = new Schema(
 );
 
 activitySchema.index({ type: 1, bookingStatus: 1, createdAt: -1 });
+activitySchema.index({ userId: 1, requestKey: 1 }, { unique: true, partialFilterExpression: { type: "session_booked", requestKey: { $type: "string" } } });
 
 export const ActivityModel = mongoose.model("Activity", activitySchema);

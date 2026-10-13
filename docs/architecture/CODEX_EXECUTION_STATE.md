@@ -1,3 +1,6 @@
+## Live session delivery — 2026-10-13
+Approved first delivery on codex/live-sessions-flexible-hosting: canonical content references, guarded private/course/group/public audiences, host/teacher transactional reservations, manual provider links and account-mode configuration. Source implementation exists; final gates/CI/publication pending. Automatic OAuth creation, instant availability and production certification NOT PROVEN; no historic/financial/scoring mutations.
+
 Student path delivery VERIFIED (2026-10-13): PR533 + PR534, final automatic publication 35f64e62fa6bca59a7e9370718c3327e02215601. 14 bounded runtime groups PASS; 21 successful scoped business requests including logical restore and fixture hiding. Canonical history unchanged,35focused frontend groups +6backend behavior/model +6HTTP/Mongo groups passed, independent review approved, all3required checks passed on both exact heads. See docs/audits/STUDENT_PATH_EXPERIENCE_PUBLISHED_2026-10-13.json. Earlier pending notes are historical; no production-scale/backfill/payment-gateway claim.
 
 ## متابعة تصفية توصيات لوحة الطالب — 2026-10-13

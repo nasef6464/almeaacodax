@@ -511,15 +511,22 @@ export const api = {
       scheduledDate?: string;
       scheduledTime?: string;
       notes?: string;
+      requestKey?: string;
+      pathId?: string;
+      stageId?: string;
+      subjectId?: string;
+      sectionId?: string;
+      skillIds?: string[];
+      courseId?: string;
     },
     token?: string | null,
   ) =>
-    request<{ activity: unknown }>("/activities/me", {
+    request<{ activity: import("../types").Activity }>("/activities/me", {
       method: "POST",
       body: payload,
       token,
     }),
-  getAdminSessionBookings: (params?: { status?: "all" | "pending" | "confirmed" | "cancelled"; limit?: number }, token?: string | null) =>
+  getAdminSessionBookings: (params?: { status?: "all" | "pending" | "confirmed" | "rejected" | "cancelled"; limit?: number }, token?: string | null) =>
     request<{ bookings: unknown[] }>(withQuery("/activities/admin/session-bookings", params || {}), {
       token,
       cache: "no-store",
@@ -527,8 +534,9 @@ export const api = {
   updateAdminSessionBooking: (
     id: string,
     payload: {
-      bookingStatus?: "pending" | "confirmed" | "cancelled";
+      bookingStatus?: "pending" | "confirmed" | "rejected" | "cancelled";
       assignedTeacherName?: string;
+      teacherId?: string;
       adminNotes?: string;
     },
     token?: string | null,
@@ -555,6 +563,25 @@ export const api = {
       body: payload || {},
       token,
     }),
+  getCourseLiveSession: (courseId:string,lessonId:string) => request<{session: import('../types/liveSessions').SessionView}>(withQuery('/live-sessions/source',{courseId,lessonId}),{cache:'no-store'}),
+  getLiveRecording: (id:string) => request<{participantUrl:string}>(`/live-sessions/${id}/recording`,{cache:'no-store'}),
+  saveLiveRecording: (id:string,url:string,show:boolean) => request(`/live-sessions/${id}/recording`,{method:'PATCH',body:{url,show}}),
+  getLiveSessions: (scope: 'me' | 'manage' | 'public') => request<{sessions: import('../types/liveSessions').SessionView[]}>(`/live-sessions/${scope}`, {cache:'no-store'}),
+  getLiveHostingPolicy: () => request<{policy: import('../types/liveSessions').HostingPolicy}>('/live-sessions/policy', {cache:'no-store'}),
+  saveLiveHostingPolicy: (policy: import('../types/liveSessions').HostingPolicy) => request('/live-sessions/policy',{method:'PATCH',body:policy}),
+  getLiveHosts: () => request<{hosts: import('../types/liveSessions').LiveHost[]}>('/live-sessions/hosts',{cache:'no-store'}),
+  updateLiveHost: (id:string,input:{enabled?:boolean;label?:string}) => request(`/live-sessions/hosts/${id}`,{method:'PATCH',body:input}),
+  createLiveHost: (input: unknown) => request('/live-sessions/hosts',{method:'POST',body:input}),
+  getLiveTeachers: () => request<{teachers:{id:string;name:string;defaultHostingMode?:string}[]}>('/live-sessions/teachers',{cache:'no-store'}),
+  getTeacherSessionBookings: () => request<{bookings: import('../types').Activity[]}>('/activities/teacher/session-bookings',{cache:'no-store'}),
+  rejectTeacherSessionRequest: (id:string) => request(`/activities/teacher/session-bookings/${id}/reject`,{method:'PATCH'}),
+  saveTeacherHostingDefault: (id:string,hostingMode:string) => request(`/live-sessions/teachers/${id}/default`,{method:'PATCH',body:{hostingMode}}),
+  cancelMySessionRequest: (id:string) => request(`/activities/me/session-bookings/${id}/cancel`,{method:'PATCH'}),
+  confirmLiveBooking: (id:string,input:import('../types/liveSessions').LiveSessionInput) => request(`/live-sessions/bookings/${id}/confirm`,{method:'POST',body:input}),
+  createLiveSession: (source: {lessonId:string;courseId?:string},input:import('../types/liveSessions').LiveSessionInput,audience:unknown) => request('/live-sessions',{method:'POST',body:{source,input,audience}}),
+  changeLiveSession: (id:string,action:'cancel'|'reschedule'|'complete',input?:import('../types/liveSessions').LiveSessionInput) => request(`/live-sessions/${id}`,{method:'PATCH',body:{action,input}}),
+  joinPublicLiveSession: (id:string,entry:'join'|'recording'='join') => request<{participantUrl:string}>(`/live-sessions/public/${id}/${entry}`,{cache:'no-store'}),
+  joinLiveSession: (id:string) => request<{participantUrl:string}>(`/live-sessions/${id}/join`,{cache:'no-store'}),
   lookupBarcodeTestByPin: (pinCode: string) =>
     request<{ slug: string; title: string; testMode: string; isLiveActive: boolean; publicUrl: string }>(`/public-tests/pin/${pinCode}`),
   controlLiveBarcodeTest: (

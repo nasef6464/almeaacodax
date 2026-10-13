@@ -9,7 +9,7 @@ import { Activity, PaymentRequest } from '../types';
 import { sanitizeArabicText } from '../utils/sanitizeMojibakeArabic';
 import { useAuth } from '../contexts/AuthContext';
 
-type RequestStatus = 'completed' | 'approved' | 'pending' | 'cancelled';
+type RequestStatus = 'completed' | 'approved' | 'pending' | 'cancelled' | 'confirmed' | 'rejected';
 
 interface RequestRow {
   id: string;
@@ -200,19 +200,19 @@ export const MyRequests: React.FC = () => {
     const todayIso = today.toISOString();
 
     const mergedActivities = Array.from(
-      new Map([...(activitiesActorKey === actorKey ? serverActivities : []), ...recentActivity].map((activity) => [String(activity.id), activity])).values(),
+      new Map([...recentActivity, ...(activitiesActorKey === actorKey ? serverActivities : [])].map((activity) => [String(activity.id), activity])).values(),
     );
 
     const sessionRows = mergedActivities
       .filter((activity) => activity.type === 'session_booked')
       .map((activity) => ({
         id: `session_${activity.id}`,
-        itemName: displayText(activity.title).replace(/^تم حجز حصة خاصة:\s*/u, '') || 'حصة خاصة',
-        status: 'pending' as const,
+        itemName: displayText(activity.title).replace(/^(?:تم حجز|طلب) حصة خاصة:\s*/u, '') || 'حصة خاصة',
+        status: activity.bookingStatus || 'pending',
         orderDate: new Date(activity.date).toLocaleDateString('ar-SA'),
         sortDate: activity.date,
         price: 0,
-        paymentMethod: 'طلب جلسة خاصة بانتظار التأكيد',
+        paymentMethod: activity.bookingStatus === 'confirmed' ? 'حصة مؤكدة' : activity.bookingStatus === 'rejected' ? 'طلب مرفوض' : activity.bookingStatus === 'cancelled' ? 'طلب ملغي' : 'طلب جلسة خاصة بانتظار التأكيد',
         typeLabel: 'جلسة',
       }));
 
@@ -373,7 +373,7 @@ export const MyRequests: React.FC = () => {
                     {req.status === 'completed' && <CheckCircle size={10} />}
                     {req.status === 'pending' && <Clock size={10} />}
                     {req.status === 'cancelled' && <XCircle size={10} />}
-                    {req.paymentRequest?.status === 'approved' ? paymentActivationLabel(req.paymentRequest) : req.status === 'completed' ? 'مكتمل' : req.status === 'pending' ? 'قيد التنفيذ' : 'ملغي'}
+                    {req.paymentRequest?.status === 'approved' ? paymentActivationLabel(req.paymentRequest) : req.status === 'completed' ? 'مكتمل' : req.status === 'confirmed' ? 'مؤكد' : req.status === 'rejected' ? 'مرفوض' : req.status === 'pending' ? 'بانتظار التأكيد' : 'ملغي'}
                   </span>
                 </div>
                 <p className="text-sm text-gray-500 mb-1">{req.paymentMethod}</p>
@@ -393,7 +393,7 @@ export const MyRequests: React.FC = () => {
               <div className="text-right md:text-right self-start md:self-auto">
                 <div className="text-xs text-gray-400 mb-1">القيمة</div>
                 <div className="text-lg font-black text-gray-800">
-                  {req.price === 0 ? req.status === 'completed' ? 'تم التفعيل' : '0 ر.س' : `${req.price} ر.س`}
+                  {req.typeLabel === 'جلسة' ? 'حسب تأكيد الإدارة' : req.price === 0 ? req.status === 'completed' ? 'تم التفعيل' : '0 ر.س' : `${req.price} ر.س`}
                 </div>
                 {req.paymentRequest && req.paymentRequest.status === 'pending' ? (
                   <button

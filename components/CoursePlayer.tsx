@@ -1,3 +1,4 @@
+import { LiveLessonPanel } from './liveSessions/LiveLessonPanel';
 import { useActivePremium } from '../utils/useActivePremium';
 import { getCourseCompletion } from '../utils/courseCompletion';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -516,7 +517,9 @@ export const CoursePlayer: React.FC<CoursePlayerProps> = ({ course, onBack, init
                 className="space-y-6"
               >
                 <div className={`aspect-video rounded-3xl overflow-hidden shadow-2xl relative group border ${isDarkMode ? 'bg-black border-slate-800 shadow-black/50' : 'bg-gray-900 border-slate-200 shadow-indigo-950/10'}`}>
-                  {activeLesson.type === 'video' ? (
+                  {['zoom','google_meet','teams','live_youtube'].includes(activeLesson.type) ? (
+                    <LiveLessonPanel courseId={course.id} lessonId={activeLesson.id}/>
+                  ) : activeLesson.type === 'video' ? (
                     <React.Suspense
                       fallback={
                         <div className="flex h-full w-full items-center justify-center bg-black text-sm font-bold text-white">

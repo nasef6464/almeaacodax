@@ -1,3 +1,4 @@
+import { LiveSessionWorkspace } from '../components/liveSessions/LiveSessionWorkspace';
 import React, { useEffect, useState } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import {
@@ -122,6 +123,9 @@ const LiveSessionLobby: React.FC = () => {
         const id = setInterval(tick, 1000);
         return () => clearInterval(id);
     }, [lesson?.meetingDate]);
+
+    if (lesson?.sessionId) return <div className="max-w-6xl mx-auto p-4"><LiveSessionWorkspace /></div>;
+    if (String(lessonId || '').startsWith('live_conv_') || String(lessonId || '').startsWith('private_booking_')) return <div className="p-6 text-center">الجلسة الخاصة تحتاج تأكيدًا من الإدارة؛ راجع حصصي وجلساتي.</div>;
 
     if (!lesson) {
         return (

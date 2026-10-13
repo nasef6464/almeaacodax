@@ -20,6 +20,9 @@ const lessonSchema = new Schema(
     interactiveQuestions: { type: [Schema.Types.Mixed], default: [] },
     fileUrl: { type: String, default: "" },
     meetingUrl: { type: String, default: "" },
+    sessionId: { type: String, default: "" },
+    bookingId: { type: String },
+    privateStudentId: { type: String, default: "" },
     meetingDate: { type: String, default: "" },
     recordingUrl: { type: String, default: "" },
     joinInstructions: { type: String, default: "" },
@@ -54,5 +57,6 @@ lessonSchema.index({ ownerType: 1, ownerId: 1, approvalStatus: 1, createdAt: -1 
 lessonSchema.index({ assignedTeacherId: 1, approvalStatus: 1, createdAt: -1 });
 lessonSchema.index({ schoolId: 1, createdAt: -1 });
 lessonSchema.index({ skillIds: 1, createdAt: -1 });
+lessonSchema.index({ bookingId: 1 }, { unique: true, partialFilterExpression: { bookingId: { $type: "string" } } });
 
 export const LessonModel = mongoose.model("Lesson", lessonSchema);

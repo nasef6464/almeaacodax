@@ -1,17 +1,19 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { useStudentScopedStore } from '../utils/useStudentScopedStore';
+import React, { useEffect, useMemo, useState, useRef } from 'react';
 import { Calendar, Clock, BookOpen, Send, CheckCircle, ArrowRight } from 'lucide-react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Card } from '../components/ui/Card';
 import { useStore } from '../store/useStore';
 import { sanitizeArabicText } from '../utils/sanitizeMojibakeArabic';
 import { api } from '../services/api';
+import { captureAuthActor, isCurrentAuthActor } from '../utils/authSessionLifetime';
 
 const displayText = (value?: string | null) => sanitizeArabicText(value) || '';
 
 export const BookSession: React.FC = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const { addActivity, paths, subjects, sections, skills } = useStore();
+  const { addActivity, paths, subjects, sections, skills } = useStudentScopedStore();
   const [subject, setSubject] = useState('');
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
@@ -19,7 +21,10 @@ export const BookSession: React.FC = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormError] = useState('');
-  const today = new Date().toISOString().slice(0, 10);
+  const actorId=useStore(state=>state.user?.id);
+  const requestKey = useRef(crypto.randomUUID());
+  useEffect(()=>{requestKey.current=crypto.randomUUID();setIsSubmitting(false);setIsSubmitted(false);setFormError('');setDate('');setTime('');setNotes('');setSubject('');},[actorId]);
+  const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Riyadh' });
   const requestedSkillId = searchParams.get('skillId');
   const requestedSkillName = displayText(searchParams.get('skillName'));
   const requestedSubjectName = displayText(searchParams.get('subjectName'));
@@ -115,6 +120,8 @@ export const BookSession: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormError('');
+    const actor = captureAuthActor(useStore.getState().user);
+    if (isSubmitting || !actor.actorId) return;
 
     if (date < today) {
       setFormError('اختر تاريخًا قادمًا أو تاريخ اليوم للحجز.');
@@ -123,18 +130,30 @@ export const BookSession: React.FC = () => {
 
     setIsSubmitting(true);
     try {
+      const selectedId = subject.split(':')[1];
+      const selectedSkill = subject.startsWith('skill:') ? skills.find(item => item.id === selectedId) : undefined;
+      const selectedSection = sections.find(item => item.id === (selectedSkill?.sectionId || selectedId));
+      const selectedSubject = subjects.find(item => item.id === (selectedSkill?.subjectId || selectedSection?.subjectId));
       const payload = {
         type: 'session_booked' as const,
-        title: `تم حجز حصة خاصة: ${selectedTargetLabel}`,
+        title: `طلب حصة خاصة: ${selectedTargetLabel}`,
         link: '/dashboard?tab=sessions',
         targetLabel: selectedTargetLabel,
         scheduledDate: date,
         scheduledTime: time,
         notes,
+        requestKey: requestKey.current,
+        pathId: selectedSubject?.pathId || undefined,
+        stageId: useStore.getState().user?.pathStageSelections?.find(selection=>selection.pathId===selectedSubject?.pathId)?.levelId,
+        subjectId: selectedSubject?.id,
+        sectionId: selectedSection?.id,
+        skillIds: selectedSkill ? [selectedSkill.id] : [],
       };
-      await api.createMyActivity(payload);
-      addActivity(payload);
+      const { activity } = await api.createMyActivity(payload);
+      if (!isCurrentAuthActor(actor, useStore.getState().user)) return;
+      addActivity(activity);
     } catch (error) {
+      if (!isCurrentAuthActor(actor, useStore.getState().user)) return;
       setFormError(error instanceof Error ? error.message : 'تعذر إرسال طلب الحصة الآن. جرّب مرة أخرى.');
       setIsSubmitting(false);
       return;
@@ -144,7 +163,7 @@ export const BookSession: React.FC = () => {
     setIsSubmitting(false);
 
     setTimeout(() => {
-      navigate('/dashboard?tab=sessions');
+      if (isCurrentAuthActor(actor, useStore.getState().user)) navigate('/dashboard?tab=sessions');
     }, 3000);
   };
 
@@ -156,7 +175,7 @@ export const BookSession: React.FC = () => {
             <CheckCircle size={40} />
           </div>
           <div>
-            <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2 leading-tight">تم تأكيد الحجز بنجاح</h2>
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2 leading-tight">تم إرسال طلبك، بانتظار التأكيد</h2>
             <p className="text-gray-500">تم إرسال طلبك للمدرس. سيتم التواصل معك قريبًا لتأكيد الموعد.</p>
           </div>
           <div className="bg-gray-50 p-4 rounded-xl text-right text-sm text-gray-600 space-y-2">
@@ -203,6 +222,7 @@ export const BookSession: React.FC = () => {
               </div>
               <select
                 required
+                aria-label="المادة أو المهارة"
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
                 className="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 pl-4 pr-10 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 appearance-none"
@@ -248,15 +268,16 @@ export const BookSession: React.FC = () => {
                 </div>
                 <select
                   required
+                  aria-label="الوقت المفضل"
                   value={time}
                   onChange={(e) => setTime(e.target.value)}
                   className="w-full bg-gray-50 border border-gray-200 rounded-xl py-3 pl-4 pr-10 text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 appearance-none"
                 >
                   <option value="" disabled>اختر الوقت...</option>
-                  <option value="04:00 PM - 05:00 PM">04:00 م - 05:00 م</option>
-                  <option value="05:00 PM - 06:00 PM">05:00 م - 06:00 م</option>
-                  <option value="08:00 PM - 09:00 PM">08:00 م - 09:00 م</option>
-                  <option value="09:00 PM - 10:00 PM">09:00 م - 10:00 م</option>
+                  <option value="16:00">04:00 م - 05:00 م</option>
+                  <option value="17:00">05:00 م - 06:00 م</option>
+                  <option value="20:00">08:00 م - 09:00 م</option>
+                  <option value="21:00">09:00 م - 10:00 م</option>
                 </select>
               </div>
             </div>

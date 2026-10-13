@@ -30,7 +30,9 @@ import { mediaRouter } from "./media.routes.js";
 import liveExamsRouter from "./live-exams.routes.js";
 import { commandCenterRouter } from "../modules/command-center/http/commandCenterRoutes.js";
 
+import { liveSessionRouter } from '../modules/content/liveSessions/http/liveSessionRoutes.js';
 export const apiRouter = Router();
+apiRouter.use('/live-sessions', liveSessionRouter);
 
 apiRouter.use("/health", healthRouter);
 apiRouter.use("/auth", authRouter);

@@ -1,3 +1,6 @@
+## Live sessions — 2026-10-13 (first delivery pending)
+Content liveSessions application/http owns canonical Activity/Lesson/Course references, audience/source access, host policy and Mongo resource reservations. Shared React liveSessions components own calendar/booking/hosting presentation. Models remain in the existing monolith; source access batches bounded reads and all media stays external. See docs/audits/LIVE_SESSIONS_MANUAL_DELIVERY_2026-10-13.md; no automatic provider certification or historical backfill.
+
 # ALMEAA Deep Modularity, Authority & Resource Audit
 
 Courses access repair (2026-10-12, delivery pending): shared read-time policy and protected payload projection extracted as small domain helpers while preserving the modular monolith and immutable budgets. No broad folder rewrite, new service, ownership migration or historical cleanup. All historical grant provenance is needed for finite mirror correctness; user-indexed reads and ID-bounded free-enrollment fallback are documented, with no production-scale claim.

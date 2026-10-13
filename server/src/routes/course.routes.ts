@@ -1,3 +1,4 @@
+import { projectCourseLiveLinks } from '../modules/content/liveSessions/sessionPolicy.js';
 import { Router } from "express";
 import { StatusCodes } from "http-status-codes";
 import mongoose from "mongoose";
@@ -627,7 +628,7 @@ courseRouter.get(
       const total = query.noTotal
         ? pagination.skip + items.length + (hasMore ? 1 : 0)
         : await CourseModel.countDocuments(filter);
-      const projectedItems = isStaffViewer ? items : items.map(projectRestrictedCoursePayload);
+      const projectedItems = (isStaffViewer ? items : items.map(projectRestrictedCoursePayload)).map(projectCourseLiveLinks);
       res.setHeader("X-Has-More", String(hasMore));
       return {
         courses: projectedItems,
@@ -668,13 +669,13 @@ courseRouter.get(
     }
 
     if (isStaffRole(req.authUser?.role)) {
-      return res.json(item);
+      return res.json(projectCourseLiveLinks(item));
     }
 
     const entitled = req.authUser?.id
       ? await hasCourseEntitlement(req.authUser.id, item)
       : false;
-    return res.json(entitled ? item : projectRestrictedCoursePayload(item));
+    return res.json(projectCourseLiveLinks(entitled ? item : projectRestrictedCoursePayload(item)));
   }),
 );
 

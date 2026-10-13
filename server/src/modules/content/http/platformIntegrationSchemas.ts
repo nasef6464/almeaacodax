@@ -1,3 +1,4 @@
+import { hostingPolicySchema } from '../liveSessions/hostingPolicy.js';
 import { z } from "zod";
 
 const providerSettingsSchema = z.object({
@@ -71,6 +72,7 @@ const contactWidgetSchema = z.object({
 });
 
 export const platformIntegrationSettingsSchema = z.object({
+  liveSessionPolicy: hostingPolicySchema.default({}),
   auth: z.object({
     allowSelfRegistration: z.boolean().default(true),
     allowEmailPassword: z.boolean().default(true),
@@ -121,6 +123,7 @@ export const platformIntegrationSettingsSchema = z.object({
 const providerSettingsPatchSchema = providerSettingsSchema.partial();
 
 export const platformIntegrationSettingsPatchSchema = z.object({
+  liveSessionPolicy: hostingPolicySchema.optional(),
   auth: platformIntegrationSettingsSchema.shape.auth.partial().optional(),
   providers: z.object({
     google: providerSettingsPatchSchema.optional(),

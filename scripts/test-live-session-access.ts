@@ -1,0 +1,15 @@
+import assert from 'node:assert/strict';
+import { canAccessSession, participantPayload } from '../server/src/modules/content/liveSessions/sessionPolicy.js';
+const session = { audience: { kind: 'private', studentId: 'A' }, teacherId: 'teacher', meetingUrl: 'https://zoom.us/j/123', recordingUrl: 'https://zoom.us/rec/123', joinInstructions: 'secret', hostUrl: 'secret-host' };
+assert.equal(canAccessSession({ id: 'A', role: 'student' }, session, false), true);
+assert.equal(canAccessSession({ id: 'B', role: 'student' }, session, true), false);
+assert.equal(canAccessSession(undefined, session, true), false);
+assert.equal(canAccessSession({ id: 'teacher', role: 'teacher' }, session, false), true);
+assert.equal(canAccessSession({ id: 'other', role: 'teacher' }, session, true), false);
+assert.equal(canAccessSession({ id: 'admin', role: 'admin' }, session, false), true);
+assert.equal(canAccessSession({ id: 'A', role: 'student' }, { audience: { kind: 'course' }, teacherId: 'teacher' }, false), false);
+assert.equal(canAccessSession({ id: 'A', role: 'student' }, { audience: { kind: 'course' }, teacherId: 'teacher' }, true), true);
+const denied = participantPayload(undefined, session, false);
+for (const field of ['meetingUrl', 'recordingUrl', 'joinInstructions', 'hostUrl']) assert.equal(field in denied, false);
+assert.equal('hostUrl' in participantPayload({ id: 'A', role: 'student' }, session, false), false);
+console.log('PASS exact audience overrides premium, teacher isolation, course entitlement and URL/host redaction');

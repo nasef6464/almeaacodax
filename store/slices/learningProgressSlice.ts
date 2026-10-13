@@ -16,7 +16,7 @@ export interface LearningProgressSliceActions {
     hydrateSkillProgress: (items: SkillProgress[]) => void;
     markLessonComplete: (lessonId: string, courseId: string, lessonTitle: string) => void;
     saveExamResult: (result: QuizResult) => void;
-    addActivity: (activity: Omit<Activity, 'id' | 'date'>) => void;
+    addActivity: (activity: Omit<Activity, 'id' | 'date'> & Partial<Pick<Activity, 'id' | 'date'>>) => void;
 }
 
 type StoreSet<TState> = (
@@ -159,12 +159,12 @@ export const createLearningProgressSlice = <TState extends LearningProgressSlice
     },
 
     addActivity: (activity) => {
-        const newActivity = { ...activity, id: Date.now().toString(), date: new Date().toISOString() };
+        const newActivity = { ...activity, id: activity.id || Date.now().toString(), date: activity.date || new Date().toISOString() };
 
         set((state) => ({
             recentActivity: [
                 newActivity,
-                ...state.recentActivity,
+                ...state.recentActivity.filter(item => item.id !== newActivity.id),
             ].slice(0, 10),
         }) as Partial<TState>);
     },
