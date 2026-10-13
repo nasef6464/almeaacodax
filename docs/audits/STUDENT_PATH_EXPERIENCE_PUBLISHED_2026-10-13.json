@@ -102,7 +102,7 @@
       "status": "PASS"
     }
   ],
-  "scopedSuccessfulBusinessRequests": 20,
+  "scopedSuccessfulBusinessRequests": 21,
   "history": {
     "completedLessons": {
       "hash": "dfff9cf9db1cb9c22e40c8d11c52aa6b6f70f023e065d4173d6ab831618356ce",
@@ -136,6 +136,10 @@
       "preferences": true,
       "fixtureHidden": true,
       "historicalProgressAndResultsUnchanged": true
+    },
+    "siteSettingsOutsideStudentExperience": {
+      "unchanged": true,
+      "extraRestoreRequest": 1
     }
   },
   "jsErrors": [],
