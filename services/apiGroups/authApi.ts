@@ -25,6 +25,7 @@ type PreferencePayload = {
   favorites?: string[];
   reviewLater?: string[];
   enrolledPaths?: string[];
+  pathStageSelections?: Array<{ pathId: string; levelId: string }>;
   completedLessons?: string[];
   interactiveVideoProgress?: InteractiveVideoPreference[];
 };

@@ -112,6 +112,7 @@ const homepageTestimonialSchema = z.object({
 });
 
 export const homepageSettingsSchema = z.object({
+  studentExperience: z.object({ visibilityMode: z.enum(['all', 'enrolled']), promptEnrollment: z.boolean() }).optional(),
   brand: z
     .object({
       logoUrl: z.string().optional(),

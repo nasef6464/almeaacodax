@@ -1,0 +1,31 @@
+import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { useLocation } from 'react-router-dom';
+import { useStore } from '../store/useStore';
+import { api } from '../services/api';
+import type { HomepageSettings } from '../types';
+import { sanitizeHomepageSettings } from '../utils/sanitizeMojibakeArabic';
+import { buildStudentPathScope } from '../utils/studentPathScope';
+const decodePathSegment = (value: string) => { try { return decodeURIComponent(value); } catch { return value; } };
+const emptyScope = buildStudentPathScope({ paths: [], levels: [], subjects: [] });
+const StudentExperienceContext = createContext({ homepageSettings: null as HomepageSettings | null, scope: emptyScope, selectedPathId: '', selectPath: (_id: string) => {}, enrollmentOpen: false, enrollmentPathId: '', openEnrollment: (_pathId?: string) => {}, closeEnrollment: () => {} });
+export const StudentExperienceProvider = ({ children }: { children: React.ReactNode }) => {
+    const state = useStore();
+    const location = useLocation();
+    const [homepageSettings, setHomepageSettings] = useState<HomepageSettings | null>(null);
+    const [selection, setSelection] = useState({ actorId: '', pathId: '' });
+    const [enrollmentActor, setEnrollmentActor] = useState<{ actorId: string; pathId: string } | null>(null);
+    useEffect(() => {
+        let active = true;
+        const load = () => { void api.getHomepageSettings(undefined, true).then(value => { if (active) setHomepageSettings(sanitizeHomepageSettings(value as HomepageSettings)); }).catch(() => {}); };
+        load(); window.addEventListener('almeaa:homepage-settings-updated', load);
+        return () => { active = false; window.removeEventListener('almeaa:homepage-settings-updated', load); };
+    }, []);
+    const actorId = String(state.user?.id || 'guest');
+    useEffect(() => { setSelection({ actorId, pathId: '' }); }, [homepageSettings?.studentExperience?.visibilityMode]);
+    const selectedPathId = selection.actorId === actorId ? selection.pathId : '';
+    const routePathId = location.pathname.startsWith('/category/') ? decodePathSegment(location.pathname.split('/')[2] || '') : '';
+    const effectivePathId = routePathId ? (state.enrolledPaths?.includes(routePathId) ? routePathId : '') : selectedPathId;
+    const scope = useMemo(() => buildStudentPathScope({ user: state.user, paths: state.paths, levels: state.levels, subjects: state.subjects, enrolledPaths: state.enrolledPaths, pathStageSelections: state.pathStageSelections || state.user?.pathStageSelections, visibilityMode: homepageSettings?.studentExperience?.visibilityMode || 'all', activePathId: effectivePathId }), [state.user, state.paths, state.levels, state.subjects, state.enrolledPaths, state.pathStageSelections, homepageSettings?.studentExperience?.visibilityMode, effectivePathId]);
+    return <StudentExperienceContext.Provider value={{ homepageSettings, scope, selectedPathId: scope.activePathId, selectPath: pathId => setSelection({ actorId, pathId }), enrollmentOpen: enrollmentActor?.actorId === actorId && scope.isStudent, enrollmentPathId: enrollmentActor?.actorId === actorId ? enrollmentActor.pathId : '', openEnrollment: (pathId = '') => setEnrollmentActor({ actorId, pathId }), closeEnrollment: () => setEnrollmentActor(null) }}>{children}</StudentExperienceContext.Provider>;
+};
+export const useStudentExperience = () => useContext(StudentExperienceContext);

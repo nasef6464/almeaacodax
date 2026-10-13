@@ -1,3 +1,5 @@
+import { StudentLearningFrame } from './studentPaths/StudentLearningFrame';
+import { StudentPathBar } from './studentPaths/StudentPathBar';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Header } from './Header';
 import { Phone } from 'lucide-react';
@@ -110,10 +112,11 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
     return (
         <div className="min-h-screen bg-white font-sans text-gray-900 dark:bg-gray-950 dark:text-gray-100" dir="rtl">
             <Header />
+            <StudentPathBar />
             
-            <main>
+            <StudentLearningFrame>
                 {children}
-            </main>
+            </StudentLearningFrame>
 
             <footer className="border-t border-gray-100 bg-gray-50">
                 <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-6 text-sm font-bold text-gray-600 sm:px-6 lg:px-8">

@@ -1,3 +1,4 @@
+import { StudentExperienceProvider } from './contexts/StudentExperienceContext';
 
 import React, { Suspense, useEffect, useState } from 'react';
 import { BrowserRouter as Router, useLocation, useNavigate } from 'react-router-dom';
@@ -756,6 +757,7 @@ const App: React.FC = () => {
 
   return (
     <Router>
+      <StudentExperienceProvider>
       <PlatformFontBootstrap />
       <Suspense fallback={<LoadingFallback />}>
         <AppErrorBoundary>
@@ -772,6 +774,7 @@ const App: React.FC = () => {
         <PwaInstallBanner />
         {(import.meta as ImportMeta & { env?: { DEV?: boolean } }).env?.DEV ? <RoleSwitcher /> : null}
       </Suspense>
+      </StudentExperienceProvider>
     </Router>
   );
 };

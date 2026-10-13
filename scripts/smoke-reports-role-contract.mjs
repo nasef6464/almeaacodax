@@ -30,6 +30,7 @@ const reportsSource = [
   await readFile(new URL('../pages/Reports/scopedSkillReportViewModel.ts', import.meta.url), 'utf8'),
   await readFile(new URL('../pages/Reports/reportTypes.ts', import.meta.url), 'utf8'),
 ].join('\n');
+const studentSkillReadSource = await readFile(new URL('../utils/useStudentSkillProgress.ts', import.meta.url), 'utf8');
 const recommendationSource = await readFile(new URL('../pages/Reports/recommendationViewModel.ts', import.meta.url), 'utf8');
 const studentReportActionsSource = await readFile(new URL('../pages/Reports/studentReportActionsViewModel.ts', import.meta.url), 'utf8');
 const dashboardSource = await readFile(new URL('../pages/Dashboard.tsx', import.meta.url), 'utf8');
@@ -112,7 +113,11 @@ check('student report shows the quick decision card instead of hiding it behind 
 
 check('student skill performance report is driven by canonical SkillProgress and evidence', () => {
   assertIncludes(reportsSource, 'حالة إتقان المهارات الحالية');
-  assertIncludes(reportsSource, 'api.getSkillProgress(scope)');
+  assertIncludes(reportsSource, 'useStudentSkillProgress(selectedStudentPathId, selectedStudentSubjectId)');
+  assertIncludes(studentSkillReadSource, 'api.getSkillProgress({');
+  assertIncludes(studentSkillReadSource, 'noTotal: true');
+  assertIncludes(studentSkillReadSource, 'scope.matchesContent(row)');
+  assertIncludes(studentSkillReadSource, 'read.key === key');
   assertIncludes(reportsSource, 'buildStudentSkillsFromProgress(studentSkillProgress');
   assertIncludes(reportsSource, 'دليل سؤال عبر {studentEvidenceSummary.uniqueSkills} مهارة');
   assertIncludes(reportsSource, 'skill.totalEvidence');

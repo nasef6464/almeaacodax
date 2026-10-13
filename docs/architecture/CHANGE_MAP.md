@@ -1,3 +1,5 @@
+Student path experience (2026-10-13): owner-authorized optional settings/stage preferences extend existing contracts; HomepageManager/PathsManager configure them, StudentExperienceContext projects learner browsing across header/dashboard/catalog/plan/reports and direct course/subject guards. Existing access policy and scoring remain authoritative. New focused frontend and HTTP/Mongo tests run in existing mandatory gates; budgets unchanged. Rollback instructions in MIGRATION_REGISTRY. Delivery pending exact-head CI/live proof.
+
 #Auth DTO projection (2026-10-12): server/src/modules/auth/presentation/serializeAuthUser.ts owns the existing unchanged sensitive-field exclusions. The auth route retains learner access projection, administrative history and authorization; extraction keeps the existing 65,000-character ownership gate without changing its limit.
 
  ALMEAA — Change Map

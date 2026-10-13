@@ -1,3 +1,5 @@
+Student path experience (2026-10-13): one fresh homepage read on provider mount/local settings event, no polling. Existing preferences PATCH validates only affected taxonomy IDs and atomically compares old membership/stage arrays. Client enrollment queue commits only the matching actor's confirmed response. Scoped store/evidence are read-only projections; unknown legacy report rows remain stored and unfiltered result history stays available. Canonical skill reads are query/actor/stage-keyed; obsolete responses ignored. No new endpoint or production backfill.
+
 Course tests (2026-10-12): direct CourseOverview tests tab reads only deduplicated linked quiz IDs via adapter.getQuiz(id, { includeQuestions: false }); inactive tab reads none. Local response state is course/actor-keyed and obsolete responses ignored. No global question-bank bootstrap, polling, persistence, or authorization bypass.
 
 # ALMEAA — Data Access Map

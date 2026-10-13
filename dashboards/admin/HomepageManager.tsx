@@ -5,6 +5,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useStore } from '../../store/useStore';
 import { HomepageSettings, HomepageStat, HomepageTestimonial } from '../../types';
 import { sanitizeHomepageSettings } from '../../utils/sanitizeMojibakeArabic';
+import { StudentSiteExperienceFields, defaultStudentSiteExperience } from './components/StudentExperienceSettings';
 import { DEFAULT_AVATAR } from '../../utils/defaultAvatar';
 
 const DEFAULT_HERO_BOY_IMAGE =
@@ -58,6 +59,7 @@ const COLOR_SWATCHES = [
 
 const defaultHomepageSettings: HomepageSettings = {
     key: 'default',
+    studentExperience: defaultStudentSiteExperience,
     brand: {
         logoUrl: '',
         logoAlt: 'شعار منصة المئة',
@@ -140,6 +142,7 @@ const mergeHomepageSettings = (settings: HomepageSettings): HomepageSettings => 
     return {
         ...defaultHomepageSettings,
         ...sanitized,
+        studentExperience: { ...defaultStudentSiteExperience, ...sanitized.studentExperience },
         brand: { ...defaultHomepageSettings.brand, ...sanitized.brand },
         hero: { ...defaultHomepageSettings.hero, ...sanitized.hero },
         sections: { ...defaultHomepageSettings.sections, ...sanitized.sections },
@@ -616,6 +619,7 @@ export const HomepageManager: React.FC = () => {
             {success && <div className="rounded-2xl border border-emerald-100 bg-emerald-50 px-5 py-4 text-sm text-emerald-700">{success}</div>}
 
             {/* Announcement Ads Spotlight Card */}
+            <StudentSiteExperienceFields value={settings.studentExperience} disabled={isSaving} onChange={studentExperience => { setSettings(prev => ({ ...prev, studentExperience })); setSuccess(null); }} />
             <div className="rounded-3xl border border-amber-200/90 bg-gradient-to-r from-amber-500/10 via-amber-400/5 to-indigo-500/10 p-5 shadow-xs backdrop-blur-sm">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div className="flex items-center gap-3.5">

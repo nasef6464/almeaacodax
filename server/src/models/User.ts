@@ -37,6 +37,11 @@ const userSchema = new Schema(
     managedSubjectIds: { type: [String], default: [] },
     enrolledCourses: { type: [String], default: [] },
     enrolledPaths: { type: [String], default: [] },
+    pathStageSelections: {
+      type: [new Schema({ pathId: { type: String, required: true }, levelId: { type: String, required: true } }, { _id: false })],
+      default: [],
+      validate: { validator: (rows: unknown[]) => rows.length <= 100, message: 'Too many path stage selections' },
+    },
     completedLessons: {
       type: [String],
       default: [],

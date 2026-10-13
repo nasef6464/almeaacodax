@@ -14,6 +14,7 @@ const assertNotContains = (label, content, pattern) => {
 
 const homepageManager = read("dashboards/admin/HomepageManager.tsx");
 const header = read("components/Header.tsx");
+const studentExperience = read("contexts/StudentExperienceContext.tsx");
 const types = read("types.ts");
 const model = read("server/src/models/HomepageSettings.ts");
 const presentationRoutes = read("server/src/modules/content/http/contentPresentationRoutes.ts");
@@ -30,7 +31,8 @@ assertContains("Homepage manager has featured course search", homepageManager, "
 assertContains("Homepage manager has featured article search", homepageManager, "articleSearch");
 assertNotContains("Featured courses selector is not capped at 30", homepageManager, "availableCourses.slice(0, 30)");
 assertNotContains("Featured articles selector is not capped at 30", homepageManager, "availableArticleLessons.slice(0, 30)");
-assertContains("Header loads homepage branding settings", header, "api.getHomepageSettings");
+assertContains("Header obtains shared homepage settings", header, "useStudentExperience()");
+assertContains("Shared provider loads fresh homepage branding settings", studentExperience, "api.getHomepageSettings(undefined, true)");
 assertContains("Header uses admin-controlled brand logo", header, "brandLogoUrl");
 
 const failed = checks.filter((check) => !check.pass);

@@ -29,7 +29,7 @@ const pathSchema = z.object({
   isActive: z.boolean().optional(),
   parentPathId: z.string().nullable().optional(),
   description: z.string().optional(),
-  settings: z.record(z.any()).optional(),
+  settings: z.object({ stageSelection: z.enum(['auto', 'required', 'none']).optional(), stageLabel: z.string().trim().min(1).max(120).optional(), studentTemplate: z.enum(['standard', 'simple']).optional() }).passthrough().optional(),
 });
 
 const levelSchema = z.object({

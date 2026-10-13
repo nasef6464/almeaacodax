@@ -65,6 +65,7 @@ export const adminTrainersQuerySchema = z.object({
 export const preferencesSchema = z.object({
   favorites: z.array(z.string()).optional(), reviewLater: z.array(z.string()).optional(),
   enrolledPaths: z.array(z.string()).optional(), completedLessons: z.array(z.string()).max(DB_GROWTH_BUDGETS.legacyCompletedLessons).optional(),
+  pathStageSelections: z.array(z.object({ pathId: z.string().trim().min(1).max(160), levelId: z.string().trim().min(1).max(160) })).max(100).optional(),
   interactiveVideoProgress: z.array(z.object({
     courseId: z.string().min(1).max(160), lessonId: z.string().min(1).max(160),
     positionSeconds: z.number().finite().min(0).max(86_400),

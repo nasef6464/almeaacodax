@@ -1,3 +1,4 @@
+import { useStudentScopedStore } from '../utils/useStudentScopedStore';
 ﻿import React, { useMemo } from 'react';
 import { Clock, TrendingUp, AlertTriangle, Zap, FileText, PieChart, Heart, Map as MapIcon, HelpCircle, Star } from 'lucide-react';
 import { Card } from '../components/ui/Card';
@@ -42,7 +43,7 @@ const buildSmartPathSkillsFromResults = (examResults: QuizResult[]): SkillGap[] 
 };
 
 const Home: React.FC = () => {
-  const { user, courses, enrolledCourses, completedLessons, examResults, recentActivity, hasScopedPackageAccess } = useStore();
+  const { user, courses, enrolledCourses, completedLessons, examResults, recentActivity, hasScopedPackageAccess } = useStudentScopedStore();
 
   const smartSkills = useMemo(() => buildSmartPathSkillsFromResults(examResults), [examResults]);
 

@@ -1,3 +1,4 @@
+import { createPathEnrollmentActions } from './pathEnrollmentActions';
 import { hasActivePremium } from '../../server/src/utils/premiumAccess';
 import { captureAuthActor, isCurrentAuthActor } from '../../utils/authSessionLifetime';
 import { B2BPackage, Course, Group, PackageContentType, User } from '../../types';
@@ -6,6 +7,7 @@ export interface AccessEnrollmentSliceState {
     user: User;
     enrolledCourses: string[];
     enrolledPaths: string[];
+    pathStageSelections?: import('../../types').PathStageSelection[];
     favorites: string[];
     reviewLater: string[];
     b2bPackages: B2BPackage[];
@@ -16,8 +18,8 @@ export interface AccessEnrollmentSliceState {
 export interface AccessEnrollmentSliceActions {
     enrollCourse: (courseId: string) => void;
     redeemAccessCode: (code: string) => Promise<void>;
-    enrollPath: (pathId: string) => void;
-    unenrollPath: (pathId: string) => void;
+    enrollPath: (pathId: string, levelId?: string) => Promise<void>;
+    unenrollPath: (pathId: string) => Promise<void>;
     checkAccess: (contentId: string, isPremiumContent: boolean) => boolean;
     hasScopedPackageAccess: (contentType: PackageContentType, pathId?: string, subjectId?: string) => boolean;
     getMatchingPackage: (contentType: PackageContentType, pathId?: string, subjectId?: string) => B2BPackage | null;
@@ -39,6 +41,7 @@ interface AccessEnrollmentApi {
         favorites?: string[];
         reviewLater?: string[];
         enrolledPaths?: string[];
+        pathStageSelections?: import('../../types').PathStageSelection[];
         completedLessons?: string[];
     }) => Promise<unknown>;
 }
@@ -142,34 +145,7 @@ export const createAccessEnrollmentSlice = <TState extends AccessEnrollmentSlice
         }) as Partial<TState>);
     },
 
-    enrollPath: (pathId) => set((state) => {
-        if (state.enrolledPaths?.includes(pathId)) return state;
-        const nextEnrolledPaths = [...(state.enrolledPaths || []), pathId];
-        if (shouldSyncUserToApi(state.user)) {
-            api.updateMyPreferences({
-                favorites: state.favorites,
-                reviewLater: state.reviewLater,
-                enrolledPaths: nextEnrolledPaths,
-            }).catch(console.error);
-        }
-        return {
-            enrolledPaths: nextEnrolledPaths,
-        } as Partial<TState>;
-    }),
-
-    unenrollPath: (pathId) => set((state) => {
-        const nextEnrolledPaths = (state.enrolledPaths || []).filter((id) => id !== pathId);
-        if (shouldSyncUserToApi(state.user)) {
-            api.updateMyPreferences({
-                favorites: state.favorites,
-                reviewLater: state.reviewLater,
-                enrolledPaths: nextEnrolledPaths,
-            }).catch(console.error);
-        }
-        return {
-            enrolledPaths: nextEnrolledPaths,
-        } as Partial<TState>;
-    }),
+    ...createPathEnrollmentActions(set, get, api, shouldSyncUserToApi),
 
     checkAccess: (contentId, isPremiumContent) => {
         const state = get();

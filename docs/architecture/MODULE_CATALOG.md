@@ -1,3 +1,5 @@
+Student path experience (2026-10-13): curriculum owns Path.settings stage policy/label/template; presentation owns HomepageSettings.studentExperience and actor-bound content projections; auth owns bounded User.pathStageSelections and preferences CAS. Student components discover/register paths, choose stages and render the simple template; useStudentSkillProgress owns canceled actor/query/stage-bound report reads. These modules do not grant paid access, assign quizzes, change scoring or rewrite historical progress.
+
 # ALMEAA — Module Catalog
 
 Payment recovery (2026-10-12, locally verified; delivery pending): paymentFulfillment owns approval intent, idempotent effects and activation outcome; tapWebhook owns Tap signature/charge binding. Financial approval and verified activation have separate optional fulfillment state; existing commerce routes, prices and AccessGrant authority remain.

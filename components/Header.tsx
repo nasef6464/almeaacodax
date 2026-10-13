@@ -1,3 +1,4 @@
+import { useStudentExperience } from '../contexts/StudentExperienceContext';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
@@ -117,11 +118,13 @@ export const Header: React.FC = () => {
   const smartInputIsPhone = smartInputType === 'phone';
   const [navigationLoadingExpired, setNavigationLoadingExpired] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [homepageSettings, setHomepageSettings] = useState<HomepageSettings | null>(null);
+  const { homepageSettings, scope } = useStudentExperience();
 
   const location = useLocation();
   const navigate = useNavigate();
-  const { paths, subjects, levels, cartItems } = useStore();
+  const { paths, subjects: rawSubjects, levels: rawLevels, cartItems } = useStore();
+  const subjects = rawSubjects.filter(scope.matchesNavigationContent);
+  const levels = rawLevels.filter(level => scope.matchesNavigationContent({ pathId: level.pathId, levelId: level.id }));
   const { user, signInWithGoogle, signInWithEmail, signInWithNationalId, signUpWithEmail, logout } = useAuth();
 
   const getDashboardPathForRole = (role?: string | null, targetUser?: any) => {
@@ -178,6 +181,7 @@ export const Header: React.FC = () => {
     const activePaths = paths.filter(
       (path) =>
         (canSeeHiddenPaths || path.isActive !== false) &&
+        scope.navigationPathVisible(path) &&
         path.showInNavbar !== false &&
         typeof path.id === 'string' &&
         path.id.trim().length > 0 &&
@@ -320,7 +324,7 @@ export const Header: React.FC = () => {
     }
 
     return menu.sort((a, b) => getNavOrder(a.id, a.id === 'more' ? 100 : 50) - getNavOrder(b.id, b.id === 'more' ? 100 : 50));
-  }, [homepageSettings?.navigation, levels, paths, subjects, user?.role]);
+  }, [homepageSettings?.navigation, levels, paths, subjects, user?.role, scope]);
   const isPrivilegedUser = user?.role === 'admin' || user?.role === 'teacher' || user?.role === 'supervisor' || user?.role === 'school_admin';
   const showNavigationLoading = Boolean(user) && paths.length === 0 && navigationMenu.length <= 2 && !navigationLoadingExpired;
   const isStrongPassword = (value: string) => value.length >= 8 && /[A-Za-z]/.test(value) && /\d/.test(value);
@@ -349,27 +353,7 @@ export const Header: React.FC = () => {
     return () => window.removeEventListener('keydown', onKeyDown);
   }, []);
 
-  useEffect(() => {
-    let cancelled = false;
-
-    api.getHomepageSettings()
-      .then((settings) => {
-        if (!cancelled) {
-          setHomepageSettings(sanitizeHomepageSettings(settings as HomepageSettings));
-        }
-      })
-      .catch(() => {
-        if (!cancelled) {
-          setHomepageSettings(null);
-        }
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  const brandLogoUrl = String(homepageSettings?.brand?.logoUrl || '').trim();
+const brandLogoUrl = String(homepageSettings?.brand?.logoUrl || '').trim();
   const brandLogoAlt = String(homepageSettings?.brand?.logoAlt || 'منصة المئة').trim();
   const brandLogoText = String(homepageSettings?.brand?.logoText || text.platform).trim();
   const brandLogoAccentText = String(homepageSettings?.brand?.logoAccentText || text.hundred).trim();

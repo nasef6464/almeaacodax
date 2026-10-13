@@ -1,3 +1,6 @@
+import { useStudentExperience } from '../contexts/StudentExperienceContext';
+import { useStudentScopedStore } from '../utils/useStudentScopedStore';
+import { StudentPathAccessPrompt } from '../components/studentPaths/StudentPathAccessPrompt';
 import React, { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { useStore } from '../store/useStore';
@@ -93,7 +96,9 @@ export const GenericPathPage: React.FC = () => {
     const { pathId } = useParams<{ pathId: string }>();
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
-    const { paths, levels, subjects, user, courses, topics, quizzes, libraryItems, hydrateQuizzes, hydrateContentBootstrap, hasScopedPackageAccess, checkAccess } = useStore();
+    const { paths } = useStore();
+    const { scope } = useStudentExperience();
+    const { levels, subjects, user, courses, topics, quizzes, libraryItems, hydrateQuizzes, hydrateContentBootstrap, hasScopedPackageAccess, checkAccess } = useStudentScopedStore();
 
     const initialLevelId = searchParams.get('level') || null;
     const initialSubjectId = searchParams.get('subject') || null;
@@ -124,6 +129,12 @@ export const GenericPathPage: React.FC = () => {
         const matchedAlias = pathSubjects.find((subject) => hasNameAlias(subject.name, aliases))?.id;
         return matchedAlias || subjectId;
     };
+
+    useEffect(() => {
+        const stage = scope.stageByPath.get(resolvedPathId);
+        if (stage && selectedLevelId !== stage) setSelectedLevelId(stage);
+        if (selectedSubjectId && !pathSubjects.some(subject => subject.id === selectedSubjectId)) setSelectedSubjectId(null);
+    }, [scope, resolvedPathId, selectedLevelId, selectedSubjectId]);
 
     // Sync state with URL changes
     useEffect(() => {
@@ -307,6 +318,8 @@ export const GenericPathPage: React.FC = () => {
         }
     }, [path?.id, pathLevels, pathSubjects.length, selectedLevelId, selectedSubjectId, subjects]);
     
+    if (path && scope.restricted && !scope.pathVisible(path)) return <StudentPathAccessPrompt path={path} />;
+
     if (!path || (!canSeeHiddenPaths && path.isActive === false)) {
         const visiblePathSuggestions = paths
             .filter((item) => (canSeeHiddenPaths || item.isActive !== false) && item.showInNavbar !== false)

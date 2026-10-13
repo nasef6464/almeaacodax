@@ -1,5 +1,6 @@
 import { projectEffectiveUserAccess } from "../services/entitlementPolicy.js";
 import { serializeUser } from "../modules/auth/presentation/serializeAuthUser.js";
+import { prepareStudentPathPreferenceWrite } from "../modules/auth/application/studentPathPreferences.js";
 import { Router } from "express";
 import bcrypt from "bcryptjs";
 import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
@@ -1372,9 +1373,8 @@ authRouter.patch(
       update.reviewLater = Array.from(new Set(payload.reviewLater));
     }
 
-    if (payload.enrolledPaths) {
-      update.enrolledPaths = Array.from(new Set(payload.enrolledPaths));
-    }
+    const pathWrite = await prepareStudentPathPreferenceWrite(req.authUser?.id, payload);
+    Object.assign(update, pathWrite.update);
 
     if (payload.completedLessons) {
       update.completedLessons = Array.from(new Set(payload.completedLessons));
@@ -1393,19 +1393,19 @@ authRouter.patch(
         .map((item) => ({ ...item, answeredQuestionIds: Array.from(new Set(item.answeredQuestionIds)) }));
     }
 
-    const user = await UserModel.findByIdAndUpdate(
-      req.authUser?.id,
+    const user = await UserModel.findOneAndUpdate(
+      pathWrite.filter,
       update,
       { new: true },
     );
 
     if (!user) {
-      return res.status(StatusCodes.NOT_FOUND).json({
-        message: "User not found",
+      return res.status(payload.enrolledPaths || payload.pathStageSelections ? StatusCodes.CONFLICT : StatusCodes.NOT_FOUND).json({
+        message: "Preferences changed; reload and retry",
       });
     }
 
-    // PLAN 4 compatibility dual-write: normalized LessonProgress is the /me read path\n    // after parity-backed cutover; legacy User fields remain as rollback compatibility\n    // until a later removal window.
+    // Keep normalized lesson progress and legacy User compatibility writes in parity.
     if (payload.completedLessons || payload.interactiveVideoProgress) {
       await mirrorLessonProgress({
         userId: String(user._id),

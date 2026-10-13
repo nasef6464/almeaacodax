@@ -14,6 +14,7 @@ const files = {
   schoolReadModel: read('server/src/modules/quizzes/application/schoolSkillReadModel.ts'),
   schoolView: read('server/src/modules/quizzes/application/schoolSkillAggregateView.ts'),
   reports: read('pages/Reports.tsx'),
+  studentSkillRead: read('utils/useStudentSkillProgress.ts'),
   reportProjection: read('pages/Reports/skillProgressReportProjection.ts'),
   dashboard: read('pages/Dashboard.tsx'),
   recommendation: read('pages/Reports/recommendationViewModel.ts'),
@@ -55,7 +56,10 @@ check('3 historical reconciliation is dry-run by default and never mutates maste
 });
 
 check('4 student reports use SkillProgress as mastery truth', () => {
-  assert.ok(files.reports.includes('api.getSkillProgress(scope)'));
+  assert.ok(files.reports.includes('useStudentSkillProgress(selectedStudentPathId, selectedStudentSubjectId)'));
+  assert.ok(files.studentSkillRead.includes('api.getSkillProgress({'));
+  assert.ok(files.studentSkillRead.includes('read.key === key'));
+  assert.ok(files.studentSkillRead.includes('scope.matchesContent(row)'));
   assert.ok(files.reports.includes('buildStudentSkillsFromProgress(studentSkillProgress'));
   assert.ok(files.reportProjection.includes('.filter((row) => !row.unresolvedTaxonomy'));
   assert.ok(files.reportProjection.includes('Boolean(String(row.skillId || \'\').trim())'));

@@ -191,8 +191,8 @@ export const createTaxonomyContentApi = (
       announcementAds: unknown[];
       studyPlans: unknown[];
     }>(withQuery("/content/bootstrap/minimal", {}), "content-bootstrap:minimal", bootstrapCacheTtlMs),
-  getHomepageSettings: (token?: string | null) =>
-    token
+  getHomepageSettings: (token?: string | null, refresh = false) =>
+    token || refresh
       ? request<unknown>("/content/homepage-settings", {
           token,
           cache: "no-store",
@@ -208,6 +208,7 @@ export const createTaxonomyContentApi = (
     });
     clearPublicCache("homepage-settings");
     writePublicCache("homepage-settings", response, publicCacheTtlMs);
+    if (typeof window !== "undefined") window.dispatchEvent(new Event("almeaa:homepage-settings-updated"));
     return response;
   },
 });

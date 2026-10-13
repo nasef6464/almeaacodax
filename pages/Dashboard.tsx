@@ -1,3 +1,5 @@
+import { useStudentScopedStore } from '../utils/useStudentScopedStore';
+import { PathEnrollmentButton } from '../components/studentPaths/StudentPathBar';
 import { useActivePremium } from '../utils/useActivePremium';
 import { hasActivePremium } from '../server/src/utils/premiumAccess';
 import { DashboardSectionNav } from '../components/DashboardSectionNav';
@@ -79,7 +81,7 @@ const buildSmartPathSkillsFromProgress = (
         .slice(0, 12);
 
 const useStudentSkillProgress = (scope: { pathId?: string; subjectId?: string } = {}) => {
-    const { user } = useStore();
+    const { user } = useStudentScopedStore();
 
     const [rows, setRows] = useState<SkillProgress[]>([]);
 
@@ -181,7 +183,7 @@ const scoreTone = (score: number) => {
 };
 
 const useParentScopedResults = () => {
-    const { user, users } = useStore();
+    const { user, users } = useStudentScopedStore();
     const [scopedResults, setScopedResults] = useState<ScopedQuizResult[]>([]);
     const [parentProgress, setParentProgress] = useState<Array<{
         id: string;
@@ -398,7 +400,8 @@ const useParentScopedResults = () => {
 const linkedStudentIdsKey = (ids?: string[]) => (ids || []).join('|');
 
 const PathsTab = () => {
-    const { paths: storePaths, courses, enrolledPaths, enrollPath, unenrollPath, completedLessons, user, examResults } = useStore();
+    const { paths: storePaths, enrolledPaths, unenrollPath, completedLessons, user, examResults } = useStore();
+    const { courses } = useStudentScopedStore();
     const canSeeHiddenPaths = ['admin', 'teacher', 'supervisor'].includes(user?.role || '');
     
     // Fallback for icons and colors
@@ -473,7 +476,7 @@ const PathsTab = () => {
                                                 data-testid="student-path-unenroll"
                                                 onClick={() => {
                                                     if (window.confirm(`هل تريد إلغاء التسجيل في مسار "${path.title}"؟ سيظل بإمكانك التسجيل فيه مرة أخرى لاحقًا.`)) {
-                                                        unenrollPath(path.id);
+                                                        void unenrollPath(path.id).catch(error => window.alert(error instanceof Error ? error.message : 'تعذر حفظ التغيير؛ حاول مرة أخرى.'));
                                                     }
                                                 }}
                                                 className="text-red-500 text-sm font-bold hover:text-red-600 transition-colors text-center w-full"
@@ -517,13 +520,7 @@ const PathsTab = () => {
                                 </div>
                                 <h3 className="font-bold text-lg text-gray-900 mb-2">{path.title}</h3>
                                 <p className="text-sm text-gray-500 mb-6 flex-1">{path.description}</p>
-                                <button 
-                                    data-testid="student-path-enroll"
-                                    onClick={() => enrollPath(path.id)}
-                                    className="w-full bg-indigo-50 text-indigo-700 py-2 rounded-lg font-bold hover:bg-indigo-100 transition-colors"
-                                >
-                                    تسجيل في المسار
-                                </button>
+                                <PathEnrollmentButton pathId={path.id} />
                             </Card>
                         ))}
                     </div>
@@ -534,7 +531,7 @@ const PathsTab = () => {
 };
 
 const SmartPathTab = () => {
-    const { paths, subjects, enrolledPaths } = useStore();
+    const { paths, subjects, enrolledPaths } = useStudentScopedStore();
     const [selectedPathId, setSelectedPathId] = useState('all');
     const [selectedSubjectId, setSelectedSubjectId] = useState('all');
 
@@ -608,7 +605,7 @@ const SmartPathTab = () => {
 };
 
 const SessionsTab = () => {
-    const { recentActivity, lessons, user } = useStore();
+    const { recentActivity, lessons, user } = useStudentScopedStore();
     useActivePremium(user);
     const [serverActivities, setServerActivities] = useState<Activity[]>([]);
     const [isLoadingRequests, setIsLoadingRequests] = useState(false);
@@ -773,7 +770,7 @@ const SessionsTab = () => {
 };
 
 const MyCoursesTab = () => {
-    const { courses, enrolledCourses, completedLessons } = useStore();
+    const { courses, enrolledCourses, completedLessons } = useStudentScopedStore();
     const activeCourses = courses.filter(c => !c.isPackage && enrolledCourses.includes(c.id));
 
     return (
@@ -849,7 +846,7 @@ const ExamsHubTab: React.FC<{ initialView?: 'attempts' | 'mock' | 'school' }> = 
 };
 
 const Dashboard: React.FC = () => {
-    const { user, hydrateContentBootstrap } = useStore();
+    const { user, hydrateContentBootstrap } = useStudentScopedStore();
     const location = useLocation();
     const navigate = useNavigate();
     const isParentDashboard = user.role === Role.PARENT;
@@ -1331,7 +1328,7 @@ const ParentErrorState = ({ message }: { message: string }) => (
 
 const ParentDashboardOverview = ({ setActiveTab }: { setActiveTab: (tab: DashboardTab) => void }) => {
     const data = useParentScopedResults();
-    const { user } = useStore();
+    const { user } = useStudentScopedStore();
     const trend = data.lastThreeAverage - data.olderThreeAverage;
     const [copiedCoachMessage, setCopiedCoachMessage] = useState(false);
     const [showParentDetails, setShowParentDetails] = useState(false);
@@ -1902,7 +1899,7 @@ const ParentFollowUpPanel = ({ setActiveTab }: { setActiveTab: (tab: any) => voi
 
 // 1. OverviewTab (Smart Dashboard Content)
 const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => {
-    const { courses, user, enrolledCourses, completedLessons, examResults, recentActivity, paths: storePaths, enrolledPaths, quizzes } = useStore();
+    const { courses, user, enrolledCourses, completedLessons, examResults, recentActivity, paths: storePaths, enrolledPaths, quizzes } = useStudentScopedStore();
     const overviewSkillProgress = useStudentSkillProgress();
     const smartPathSkills = useMemo(
         () => buildSmartPathSkillsFromProgress(overviewSkillProgress),
@@ -2210,7 +2207,7 @@ const OverviewTab = ({ setActiveTab }: { setActiveTab: (tab: any) => void }) => 
 
 // 2. Saher Tab
 const SaherTab = () => {
-    const { quizzes, user, checkAccess, examResults, subjects, lessons, libraryItems } = useStore();
+    const { quizzes, user, checkAccess, examResults, subjects, lessons, libraryItems } = useStudentScopedStore();
     const canAccessQuiz = (quiz: (typeof quizzes)[number]) => {
         if (!quiz.isPublished || (quiz.type ?? 'quiz') !== 'quiz') return false;
 

@@ -1,3 +1,6 @@
+import { useStudentSkillProgress } from '../utils/useStudentSkillProgress';
+import { useStudentExperience } from '../contexts/StudentExperienceContext';
+import { useStudentScopedStore } from '../utils/useStudentScopedStore';
 
 import React, { useEffect, useMemo, useState } from 'react';
 import { ArrowRight, ChevronLeft, ChevronDown, Compass, SlidersHorizontal, Target, PieChart, BookOpen, Video, Clock, CheckCircle, FileText, Download, Copy, Share2, Sparkles, Loader2, Bell, type LucideIcon } from 'lucide-react';
@@ -105,7 +108,7 @@ const studentLearningActionIcons: Record<StudentLearningActionIconKey, LucideIco
 const studentReadinessIcons: Record<StudentReadinessIconKey, LucideIcon> = { target: Target, checkCircle: CheckCircle, fileText: FileText, bookOpen: BookOpen };
 
 const Reports: React.FC = () => {
-    const { examResults, questionAttempts, completedLessons, skills, lessons, quizzes, libraryItems, questions, topics, subjects, sections, paths, groups, users, enrolledPaths, user, hydrateContentBootstrap, hydrateQuestions } = useStore();
+    const { examResults, questionAttempts, completedLessons, skills, lessons, quizzes, libraryItems, questions, topics, subjects, sections, paths, groups, users, enrolledPaths, user, hydrateContentBootstrap, hydrateQuestions } = useStudentScopedStore();
     const [scopedAnalyticsRaw, setScopedAnalytics] = useState<ScopedAnalyticsOverview | null>(null);
     const [staffSkillAggregates, setStaffSkillAggregates] = useState<Array<{
         skillId: string;
@@ -144,8 +147,11 @@ const Reports: React.FC = () => {
     const [studentReportDepth, setStudentReportDepth] = useState<'simple' | 'full'>('simple');
     const [reportSkillLimit, setReportSkillLimit] = useState(12);
     const [studentReportPeriod, setStudentReportPeriod] = useState<StudentReportPeriod>('month');
+    const { scope: presentationScope } = useStudentExperience();
     const [selectedStudentPathId, setSelectedStudentPathId] = useState<string>('all');
     const [selectedStudentSubjectId, setSelectedStudentSubjectId] = useState<string>('all');
+    useEffect(() => { if (user.role === Role.STUDENT) { setSelectedStudentPathId(presentationScope.activePathId || 'all'); setSelectedStudentSubjectId('all'); } }, [presentationScope.activePathId, user.id, user.role]);
+    const studentSkillProgress = useStudentSkillProgress(selectedStudentPathId, selectedStudentSubjectId);
     const [selectedScopedPathId, setSelectedScopedPathId] = useState<string>('all');
     const [selectedScopedSubjectId, setSelectedScopedSubjectId] = useState<string>('all');
     const [scopedReportMode, setScopedReportMode] = useState<'combined' | 'aggregated' | 'individual'>('combined');
@@ -155,7 +161,6 @@ const Reports: React.FC = () => {
     const [studentMasteryGoals, setStudentMasteryGoals] = useState<StudentMasteryGoal[]>([]);
     const [studentMasteryGoalsLoading, setStudentMasteryGoalsLoading] = useState(false);
     const [studentMasteryGoalSaving, setStudentMasteryGoalSaving] = useState(false);
-    const [studentSkillProgress, setStudentSkillProgress] = useState<SkillProgress[] | null>(null);
     const [parentChildrenProgress, setParentChildrenProgress] = useState<Array<{
         id: string;
         name: string;
@@ -276,31 +281,6 @@ const Reports: React.FC = () => {
                 })),
         };
     }, [scopedAnalyticsRaw, staffSkillAggregates]);
-
-    useEffect(() => {
-        if (user.role !== Role.STUDENT) {
-            setStudentSkillProgress(null);
-            return;
-        }
-
-        let cancelled = false;
-        const scope = {
-            ...(selectedStudentPathId !== 'all' ? { pathId: selectedStudentPathId } : {}),
-            ...(selectedStudentSubjectId !== 'all' ? { subjectId: selectedStudentSubjectId } : {}),
-            noTotal: true,
-        };
-
-        api.getSkillProgress(scope)
-            .then((rows) => {
-                if (!cancelled) setStudentSkillProgress(rows as SkillProgress[]);
-            })
-            .catch((error) => {
-                console.warn('Canonical skill progress unavailable; falling back to result evidence', error);
-                if (!cancelled) setStudentSkillProgress(null);
-            });
-
-        return () => { cancelled = true; };
-    }, [selectedStudentPathId, selectedStudentSubjectId, user.role]);
 
     const studentPeriodExamResults = useMemo(
         () => filterStudentReportPeriod(examResults, studentReportPeriod),

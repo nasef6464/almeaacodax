@@ -121,7 +121,6 @@ export const createLearningProgressSlice = <TState extends LearningProgressSlice
                 await api.updateMyPreferences({
                     favorites: current.favorites,
                     reviewLater: current.reviewLater,
-                    enrolledPaths: current.enrolledPaths,
                     completedLessons: nextCompletedLessons,
                 });
 

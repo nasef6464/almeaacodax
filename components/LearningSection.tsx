@@ -1,3 +1,4 @@
+import { useStudentScopedStore } from '../utils/useStudentScopedStore';
 import React, { useRef, useState, useEffect } from 'react';
 import { useSearchParams, Link, useNavigate } from 'react-router-dom';
 import { Card } from './ui/Card';
@@ -65,8 +66,8 @@ const resolveThemePalette = (value?: string) => {
 export const LearningSection: React.FC<LearningSectionProps> = ({ category, subject, grade, title, colorTheme = 'indigo' }) => {
     const [searchParams, setSearchParams] = useSearchParams();
     const navigate = useNavigate();
-    const { user, enrolledCourses, subjects, paths, courses, lessons, libraryItems, quizzes, completedLessons, examResults, hasScopedPackageAccess, getMatchingPackage, hydrateCourses, hydrateQuizzes } = useStore();
-    const topicList = useStore(state => state.topics);
+    const { user, enrolledCourses, subjects, paths, courses, lessons, libraryItems, quizzes, completedLessons, examResults, hasScopedPackageAccess, getMatchingPackage, hydrateCourses, hydrateQuizzes } = useStudentScopedStore();
+    const topicList = useStudentScopedStore().topics;
     const [activeTab, setActiveTab] = useState<LearningTab>(() => normalizeLearningTab(searchParams.get('tab')) || 'courses');
     const [scopedBootstrapState, setScopedBootstrapState] = useState<'idle' | 'loading' | 'ready' | 'error'>('idle');
     const [scopedBootstrapRetry, setScopedBootstrapRetry] = useState(0);
@@ -508,8 +509,8 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         setScopedBootstrapRetry((value) => value + 1);
     };
 
-    const skillList = useStore(state => state.skills);
-    const quizList = useStore(state => state.quizzes);
+    const skillList = useStudentScopedStore().skills;
+    const quizList = useStudentScopedStore().quizzes;
     const requestedFoundationSkillId = searchParams.get('skillId') || undefined;
     const requestedFoundationTarget = requestedFoundationSkillId
         ? resolveFoundationSkillTarget(

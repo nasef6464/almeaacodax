@@ -2,6 +2,7 @@ import { readFile } from 'node:fs/promises';
 
 const files = {
   packageJson: await readFile(new URL('../package.json', import.meta.url), 'utf8'),
+  pathEnrollment: await readFile(new URL('../components/studentPaths/StudentPathBar.tsx', import.meta.url), 'utf8'),
   dashboard: await readFile(new URL('../pages/Dashboard.tsx', import.meta.url), 'utf8'),
   studentNextAction: await readFile(new URL('../components/StudentNextActionStrip.tsx', import.meta.url), 'utf8'),
   emptyState: await readFile(new URL('../components/ui/EmptyState.tsx', import.meta.url), 'utf8'),
@@ -115,7 +116,8 @@ check('student dashboard keeps a clear continuation area and learner shortcuts',
   assertIncludes(files.dashboard, '<SmartLearningPath skills={smartPathSkills} />');
   assertIncludes(files.dashboard, 'أكمل مساراتك');
   assertIncludes(files.dashboard, 'to={path.courses[0] ? `/course/${path.courses[0].id}` : `/category/${path.id}`}');
-  assertIncludes(files.dashboard, 'data-testid="student-path-enroll"');
+  assertIncludes(files.dashboard, '<PathEnrollmentButton pathId={path.id} />');
+  assertIncludes(files.pathEnrollment, 'data-testid="student-path-enroll"');
   assertIncludes(files.dashboard, 'data-testid="student-path-unenroll"');
   assertIncludes(files.dashboard, 'data-testid="student-paths-empty-state"');
   assertIncludes(files.dashboard, 'primaryAction={{ label:');

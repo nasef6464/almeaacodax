@@ -111,6 +111,10 @@ const homepageNavigationSchema = new Schema(
 const homepageSettingsSchema = new Schema(
   {
     key: { type: String, required: true, unique: true, default: "default" },
+    studentExperience: {
+      type: new Schema({ visibilityMode: { type: String, enum: ['all', 'enrolled'], default: 'all' }, promptEnrollment: { type: Boolean, default: true } }, { _id: false }),
+      default: () => ({}),
+    },
     brand: { type: homepageBrandSchema, default: () => ({}) },
     hero: { type: homepageHeroSchema, default: () => ({}) },
     stats: { type: [homepageStatSchema], default: [] },

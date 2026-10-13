@@ -1,3 +1,4 @@
+import { useStudentScopedStore } from '../utils/useStudentScopedStore';
 
 import React, { useEffect, useMemo, useState } from 'react';
 import { Card } from '../components/ui/Card';
@@ -12,7 +13,7 @@ import { sanitizeArabicText } from '../utils/sanitizeMojibakeArabic';
 const displayText = (value?: string | null) => sanitizeArabicText(value);
 
 const Courses: React.FC = () => {
-    const { user, paths, enrolledCourses, completedLessons, hasScopedPackageAccess } = useStore();
+    const { user, paths, enrolledCourses, completedLessons, hasScopedPackageAccess } = useStudentScopedStore();
     const [activeTab, setActiveTab] = useState<'enrolled' | 'active' | 'completed'>('active');
     const [searchQuery, setSearchQuery] = useState('');
     const [expandedCourseId, setExpandedCourseId] = useState<string | null>(null);

@@ -22,13 +22,13 @@ export const resolveColor = (value?: string) => {
   return colorMap[value] || colorMap.gray;
 };
 
-const defaultPathDisplaySettings: Required<PathDisplaySettings> = {
+const defaultPathDisplaySettings: Required<Pick<PathDisplaySettings, 'showSubjectCards' | 'showMockExamCard' | 'showPackageCard'>> = {
   showSubjectCards: true,
   showMockExamCard: true,
   showPackageCard: true,
 };
 
-export const resolvePathDisplaySettings = (path?: { settings?: PathDisplaySettings | null }): Required<PathDisplaySettings> => ({
+export const resolvePathDisplaySettings = (path?: { settings?: PathDisplaySettings | null }): Required<Pick<PathDisplaySettings, 'showSubjectCards' | 'showMockExamCard' | 'showPackageCard'>> => ({
   ...defaultPathDisplaySettings,
   ...(path?.settings || {}),
 });

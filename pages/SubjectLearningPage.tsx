@@ -1,3 +1,6 @@
+import { useStudentExperience } from '../contexts/StudentExperienceContext';
+import { StudentPathAccessPrompt } from '../components/studentPaths/StudentPathAccessPrompt';
+import { useStudentScopedStore } from '../utils/useStudentScopedStore';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useParams, Link, useNavigate, useSearchParams } from 'react-router-dom';
 import {
@@ -39,9 +42,10 @@ import { resolveFoundationTopicAccess } from '../utils/foundationTopicAccess';
 
 export const SubjectLearningPage: React.FC = () => {
   const { pathId, subjectId } = useParams();
+  const { scope } = useStudentExperience();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { courses, libraryItems, questions, quizzes, paths, subjects, topics, lessons, user, hasScopedPackageAccess } = useStore();
+  const { courses, libraryItems, questions, quizzes, paths, subjects, topics, lessons, user, hasScopedPackageAccess } = useStudentScopedStore();
   const [activeTab, setActiveTab] = useState<'courses' | 'skills' | 'questions' | 'exams' | 'library'>('skills');
   const [selectedTopic, setSelectedTopic] = useState<Topic | null>(null);
   const [selectedSubTopic, setSelectedSubTopic] = useState<Topic | null>(null);
@@ -546,6 +550,8 @@ export const SubjectLearningPage: React.FC = () => {
       ))}
     </div>
   );
+
+  if (scope.isStudent && !scope.matchesContent({ pathId, subjectId })) return <StudentPathAccessPrompt path={useStore.getState().paths.find(path => path.id === pathId)} />;
 
   return (
     <div className="bg-gray-50 min-h-screen pb-20 font-sans" dir="rtl">

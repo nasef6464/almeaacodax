@@ -1,3 +1,4 @@
+import { useStudentScopedStore } from '../utils/useStudentScopedStore';
 import React, { useMemo, useState } from 'react';
 import { CreditCard, ExternalLink, ShieldCheck } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -20,7 +21,7 @@ const isVisiblePackage = (course: ReturnType<typeof useStore.getState>['courses'
   (!course.approvalStatus || course.approvalStatus === 'approved');
 
 const Pricing: React.FC = () => {
-  const { user, courses } = useStore();
+  const { user, courses } = useStudentScopedStore();
   const [selectedMembership, setSelectedMembership] = useState<any | null>(null);
   const isAdmin = user?.role === 'admin';
   const referralRef = useMemo(() => {
