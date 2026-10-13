@@ -1,6 +1,6 @@
 {
   "date": "2026-10-13",
-  "status": "LOCAL_VERIFIED_PUBLICATION_PENDING",
+  "status": "PUBLISHED_BOUNDARY_HARDENING_VERIFIED",
   "baseline": "87d8a0e1bda766c7112c5b20268df9af8b07062a",
   "boundaryGroups": 18,
   "review": {
@@ -59,6 +59,104 @@
     "productionCpuMemoryBilling": "unavailable; empty metrics not zero",
     "plan": "existing free plan unchanged",
     "productionLoadGenerated": false,
-    "productionCertified": false
+    "productionCertified": false,
+    "productionCertificationScope": "Whole-platform production capacity, actual CPU/RAM and billed bandwidth remain NOT PROVEN; the bounded boundary/runtime repairs above are verified."
+  },
+  "source": {
+    "pr": 538,
+    "url": "https://github.com/nasef6464/almeaacodax/pull/538",
+    "head": "0200febe7efae1eeac0735581e8ab464f6601307",
+    "mergeSha": "33663b1e4a8cdf9b353b64d5d53ab585448ba480",
+    "ciPassed": 22,
+    "ciExpectedSkips": 5,
+    "requiredChecksPassed": 3
+  },
+  "deployments": {
+    "render": {
+      "id": "dep-db75qvtbedkc73bsqpgg",
+      "status": "live",
+      "sha": "33663b1e4a8cdf9b353b64d5d53ab585448ba480"
+    },
+    "vercel": {
+      "id": "dpl_E1tcabWGeHnUpBD6GQ1Zt3UDCXZN",
+      "status": "READY",
+      "sha": "33663b1e4a8cdf9b353b64d5d53ab585448ba480"
+    }
+  },
+  "runtime": {
+    "at": "2026-10-13T16:37:20.350Z",
+    "release": "33663b1e4a8cdf9b353b64d5d53ab585448ba480",
+    "status": "PASS",
+    "checks": [
+      "exact published API and ready dependencies",
+      "class directory and search exclude sibling learner",
+      "school supervisor retains exact school learners",
+      "class operational bootstrap limits roster and codes",
+      "school operational bootstrap limits roster and codes",
+      "old admin session uses current demoted role",
+      "disabled stale account blocked by all four readers",
+      "owned accounts disabled/unlinked and empty groups archived by readback"
+    ],
+    "requests": 39,
+    "ownedUsers": 5,
+    "ownedGroups": 3,
+    "terminal": true,
+    "scope": "bounded owned fixtures; no production load, real-user or historical-result changes",
+    "requestCountScope": "39 scripted health/business/readback requests; helper authentication requests are excluded"
+  },
+  "isolatedReadScale": {
+    "kind": "bounded-isolated-read-scale-validation",
+    "measuredAt": "2026-10-13T16:25:43.045Z",
+    "baseUrl": "http://127.0.0.1:4010",
+    "concurrency": 25,
+    "durationMs": 30000,
+    "timeoutMs": 5000,
+    "thresholds": {
+      "maxErrorRateExclusive": 0.02,
+      "maxP95DurationMsExclusive": 2000
+    },
+    "limits": "This is a loopback CI validation of read-only endpoints, not production capacity certification.",
+    "results": [
+      {
+        "id": "health",
+        "path": "/api/health",
+        "totalRequests": 133221,
+        "successfulRequests": 133221,
+        "failedRequests": 0,
+        "errorRate": 0,
+        "p50DurationMs": 4.42,
+        "p95DurationMs": 10.36,
+        "p99DurationMs": 14.39
+      },
+      {
+        "id": "taxonomy-compact",
+        "path": "/api/taxonomy/bootstrap?phase=compact",
+        "totalRequests": 69474,
+        "successfulRequests": 69474,
+        "failedRequests": 0,
+        "errorRate": 0,
+        "p50DurationMs": 10.09,
+        "p95DurationMs": 16.7,
+        "p99DurationMs": 23.17
+      },
+      {
+        "id": "learning-bootstrap",
+        "path": "/api/content/bootstrap?scope=learning&phase=core",
+        "totalRequests": 118397,
+        "successfulRequests": 118397,
+        "failedRequests": 0,
+        "errorRate": 0,
+        "p50DurationMs": 5.2,
+        "p95DurationMs": 12.71,
+        "p99DurationMs": 18.74
+      }
+    ]
+  },
+  "localDependencyRecovery": {
+    "worktreeRoot": true,
+    "worktreeServer": true,
+    "primaryRoot": true,
+    "primaryServer": true,
+    "primarySourceChangesPreserved": true
   }
 }
