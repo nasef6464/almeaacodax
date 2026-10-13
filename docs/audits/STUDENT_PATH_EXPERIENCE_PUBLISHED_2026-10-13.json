@@ -1,0 +1,151 @@
+{
+  "date": "2026-10-13",
+  "status": "VERIFIED",
+  "feature": {
+    "pr": 533,
+    "head": "26f33dfbf7e814462ce093fec46c20dca43d18f6",
+    "mergeSha": "62d50a53c5e17726b6e3e42cd8ea7ffe8fa16c26",
+    "deployments": {
+      "vercel": {
+        "id": "dpl_29WaLtY6cLFfWoowj2Hw5ue5xkRy",
+        "status": "READY",
+        "sha": "62d50a53c5e17726b6e3e42cd8ea7ffe8fa16c26"
+      },
+      "render": {
+        "id": "dep-db6qnt3m8hqs73evkjeg",
+        "status": "live",
+        "sha": "62d50a53c5e17726b6e3e42cd8ea7ffe8fa16c26"
+      }
+    },
+    "ciPassed": 22,
+    "all3Required": "PASS"
+  },
+  "dashboardFollowup": {
+    "pr": 534,
+    "head": "5df56f522f646f221cf596188794ce3685762ff0",
+    "mergeSha": "35f64e62fa6bca59a7e9370718c3327e02215601",
+    "deployments": {
+      "vercel": {
+        "id": "dpl_A5CAvkq6QGCT5XBVufiSa4jCoHuy",
+        "status": "READY",
+        "sha": "35f64e62fa6bca59a7e9370718c3327e02215601"
+      },
+      "render": {
+        "id": "dep-db6t56qjnfac73eat8qg",
+        "status": "live",
+        "sha": "35f64e62fa6bca59a7e9370718c3327e02215601"
+      }
+    },
+    "ciPassed": 18,
+    "all3Required": "PASS"
+  },
+  "focusedLocalGroups": {
+    "frontend": 35,
+    "backendBehaviorModel": 6,
+    "backendHttpMongo": 6
+  },
+  "runtimeChecks": [
+    {
+      "name": "two future metadata paths with and without stages created",
+      "status": "PASS"
+    },
+    {
+      "name": "unenrolled student receives nonblocking prompt and all paths",
+      "status": "PASS"
+    },
+    {
+      "name": "admin UI persists enrolled display mode",
+      "status": "PASS"
+    },
+    {
+      "name": "enrolled display mode still shows all for unregistered student",
+      "status": "PASS"
+    },
+    {
+      "name": "stage requirement and mobile enrollment save confirmed by API",
+      "status": "PASS"
+    },
+    {
+      "name": "selected stage hides other stage content",
+      "status": "PASS"
+    },
+    {
+      "name": "enrolled mode hides unenrolled path from header",
+      "status": "PASS"
+    },
+    {
+      "name": "all mode restores other path navigation after fresh settings read",
+      "status": "PASS"
+    },
+    {
+      "name": "no-stage future path registers directly and uses simple large controls",
+      "status": "PASS"
+    },
+    {
+      "name": "fresh login preserves independent multiple memberships and stage",
+      "status": "PASS"
+    },
+    {
+      "name": "fresh browser session displays saved path memberships",
+      "status": "PASS"
+    },
+    {
+      "name": "guest and admin retain every path in enrolled display mode",
+      "status": "PASS"
+    },
+    {
+      "name": "empty active path overview has no unrelated canonical recommendations",
+      "status": "PASS"
+    },
+    {
+      "name": "smart path tab and desktop remain scoped after direct navigation",
+      "status": "PASS"
+    }
+  ],
+  "scopedSuccessfulBusinessRequests": 21,
+  "history": {
+    "completedLessons": {
+      "hash": "dfff9cf9db1cb9c22e40c8d11c52aa6b6f70f023e065d4173d6ab831618356ce",
+      "unchanged": true
+    },
+    "enrolledCourses": {
+      "hash": "a13fb8ce9ffcf6ee72c5dd2d22759a5fa28136c93533f403f1dcd4e7f94869e8",
+      "unchanged": true
+    },
+    "certificates": {
+      "hash": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+      "unchanged": true
+    },
+    "courseProgress": {
+      "hash": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+      "unchanged": true
+    },
+    "results": {
+      "hash": "aa15c63122e998eb32ee391f446e249598816a7389b3385a407328a7e45c9a3a",
+      "unchanged": true
+    }
+  },
+  "restored": {
+    "first": {
+      "studentPreferences": true,
+      "logicalHomepageSettings": true,
+      "historyUnchanged": true,
+      "trialPathsHidden": true
+    },
+    "followup": {
+      "preferences": true,
+      "fixtureHidden": true,
+      "historicalProgressAndResultsUnchanged": true
+    },
+    "siteSettingsOutsideStudentExperience": {
+      "unchanged": true,
+      "extraRestoreRequest": 1
+    }
+  },
+  "jsErrors": [],
+  "canonicalEmptyPathRows": 0,
+  "trialPathIds": [
+    "path-owner-trial-1791863943911-stages",
+    "path-owner-trial-1791863943911-free"
+  ]
+}
