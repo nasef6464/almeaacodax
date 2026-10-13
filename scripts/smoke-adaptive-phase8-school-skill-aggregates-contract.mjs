@@ -30,8 +30,11 @@ assert.ok(aggregate.includes('trend'));
 assert.ok(updater.includes('SchoolSkillEvidenceModel.bulkWrite'));
 assert.ok(updater.includes('SchoolSkillAggregateModel.bulkWrite'));
 assert.ok(updater.includes('evidenceKey'));
-assert.ok(updater.includes('$setWindowFields'));
-assert.ok(updater.includes('recentRank: { $lte: 5 }'));
+assert.ok(updater.includes('$lookup'), 'recent evidence must use a scoped indexed lookup');
+assert.ok(updater.includes('Object.keys(groupId).map(field => ({ $eq:'), 'recent lookup must bind every scope dimension');
+assert.ok(updater.includes('$sort: { occurredAt: -1 }'));
+assert.ok(evidence.includes('occurredAt: -1'));
+assert.ok(updater.includes('$limit: 5'), 'recent history remains capped at five');
 assert.ok(updater.includes('if (!schoolId || !resultId || !userId) return []'));
 assert.ok(sideEffects.includes('updateSchoolSkillReadModelFromResult(args.result, args.userId)'));
 

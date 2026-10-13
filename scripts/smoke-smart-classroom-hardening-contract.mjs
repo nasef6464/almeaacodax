@@ -67,7 +67,10 @@ check('append publishes only truly new canonical questions', routes.includes('co
 check('all-duplicate append is rejected', routes.includes('كل الأسئلة المحددة موجودة بالفعل داخل الحصة'));
 check('director can only read aggregate through capability', routes.includes('requireSchoolDirectorCapability(') && routes.includes('isDirector = Boolean('));
 check('finalized report builder prefers immutable persisted snapshots', reportBuilder.includes('session.reportSnapshot') && reportBuilder.includes('session.status === "ended"') && reportBuilder.includes('session.status === "archived"'));
-check('teacher summary reports only aggregate finalized sessions', reportBuilder.includes('{ status: { $in: ["ended", "archived"] } }'));
+const teacherSummary = reportBuilder.slice(reportBuilder.indexOf('export const buildClassroomTeacherReports'));
+check('teacher summary reports only aggregate finalized sessions', /status\s*:\s*\{\s*\$in\s*:\s*\[\s*["']ended["']\s*,\s*["']archived["']\s*\]/.test(teacherSummary) && teacherSummary.includes('classroomScopeFilter(scope)'));
+check('teacher summary projects frozen totals and preserves legacy builder', teacherSummary.includes('$project') && teacherSummary.includes('$reportSnapshot.totals.responses') && teacherSummary.includes('buildClassroomSessionReport(row.legacy)'));
+check('teacher summary streams history with bounded legacy work', teacherSummary.includes('.cursor({batchSize:32})') && teacherSummary.includes('batch.length===4') && teacherSummary.includes('finally{await cursor.close()}'));
 check('reports UI has no localStorage report fallback', !reportUsesLocalStorage && !reportUi.includes('smart_classroom_reports_'));
 check('teacher console does not persist a competing local report archive', !teacherWritesLocalReportArchive);
 check('reports UI displays finalized history only', reportUi.includes('useClassroomTeacherReports(schoolId, smartClassroomEnabled)') && reportReader.includes("report.status === 'ended'") && reportReader.includes("report.status === 'archived'"));

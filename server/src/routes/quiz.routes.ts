@@ -722,7 +722,7 @@ quizRouter.post(
       })),
       questionById,
     });
-    clearQuizResultsCache();
+    clearQuizResultsCache(req.authUser!.id);
     return res.status(StatusCodes.CREATED).json(serializeQuizResultForLearner(result));
   }),
 );

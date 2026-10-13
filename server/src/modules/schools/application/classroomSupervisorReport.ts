@@ -255,22 +255,26 @@ export const buildClassroomSessionReport = async (session: any) => {
 };
 
 export const buildClassroomTeacherReports = async (scope: Awaited<ReturnType<typeof resolveClassroomSupervisorScope>>) => {
-  const sessions = await ClassroomSessionModel.find({
-    $and: [
-      classroomScopeFilter(scope),
-      { status: { $in: ["ended", "archived"] } },
-    ],
-  }).sort({ createdAt: -1 }).lean();
-  const reports = await Promise.all(sessions.map(buildClassroomSessionReport));
+  // Stream minimal frozen totals instead of materializing question/answer snapshots.
+  // Legacy sessions retain the existing builder, with at most four in flight.
+  const cursor=ClassroomSessionModel.aggregate([
+    {$match:{$and:[classroomScopeFilter(scope),{status:{$in:['ended','archived']}}]}},
+    {$sort:{createdAt:-1}},
+    {$project:{_id:0,
+      frozen:{$cond:['$reportSnapshot',{teacherId:'$reportSnapshot.teacherId',roster:{joined:'$reportSnapshot.roster.joined'},totals:{responses:'$reportSnapshot.totals.responses',correct:'$reportSnapshot.totals.correct'}},'$$REMOVE']},
+      legacy:{$cond:['$reportSnapshot','$$REMOVE','$$ROOT']},
+    }},
+  ]).cursor({batchSize:32});
   const byTeacher = new Map<string, { teacherId: string; sessions: number; joined: number; responses: number; correct: number }>();
-  reports.forEach((report) => {
-    const current = byTeacher.get(report.teacherId) || { teacherId: report.teacherId, sessions: 0, joined: 0, responses: 0, correct: 0 };
-    current.sessions += 1;
-    current.joined += report.roster.joined;
-    current.responses += report.totals.responses;
-    current.correct += report.totals.correct;
-    byTeacher.set(report.teacherId, current);
-  });
+  const add=(report:any)=>{
+    const current=byTeacher.get(report.teacherId)||{teacherId:report.teacherId,sessions:0,joined:0,responses:0,correct:0};
+    current.sessions++;current.joined+=report.roster.joined;current.responses+=report.totals.responses;current.correct+=report.totals.correct;
+    byTeacher.set(report.teacherId,current);
+  };
+  const flush=async(batch:any[])=>{const reports=await Promise.all(batch.map(row=>row.frozen?Promise.resolve(row.frozen):buildClassroomSessionReport(row.legacy)));reports.forEach(add)};
+  let batch:any[]=[];
+  try {for await(const row of cursor){batch.push(row);if(batch.length===4){await flush(batch);batch=[]}}if(batch.length)await flush(batch)}
+  finally{await cursor.close()}
   return Array.from(byTeacher.values()).map((report) => ({
     ...report,
     accuracy: report.responses ? Math.round((report.correct / report.responses) * 100) : null,

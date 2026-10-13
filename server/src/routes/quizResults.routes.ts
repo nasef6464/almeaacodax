@@ -3,7 +3,7 @@ import { StatusCodes } from "http-status-codes";
 import { z } from "zod";
 import { QuizResultModel } from "../models/QuizResult.js";
 import { analyzeWeakSkillsFromQuizResult } from "../services/weakSkillsAnalysis.js";
-import { requireAuth, requireRole } from "../middleware/auth.js";
+import { requireAuth, requireActiveAuth, requireRole } from "../middleware/auth.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { serializeQuizResultForLearner, serializeQuizResultsForLearner } from "../utils/quizResultSerialization.js";
 import { resolveAssessmentResultRead, resolveAssessmentResultReads, projectQuizResultHistory } from "../modules/quizzes/application/assessmentResultReadAdapter.js";
@@ -107,6 +107,7 @@ export const quizResultsRouter = Router();
 quizResultsRouter.get(
   "/quiz-results/my",
   requireAuth,
+  requireActiveAuth,
   asyncHandler(async (req, res) => {
     const query = quizResultsQuerySchema.parse(req.query);
     const authUserId = String(req.authUser!.id);
@@ -136,6 +137,7 @@ quizResultsRouter.get(
 quizResultsRouter.get(
   "/quiz-results/:id",
   requireAuth,
+  requireActiveAuth,
   asyncHandler(async (req, res) => {
     const result = await QuizResultModel.findOne({
       $or: [{ id: req.params.id }, { _id: req.params.id }],
@@ -169,6 +171,7 @@ quizResultsRouter.get(
 quizResultsRouter.get(
   "/admin/quiz-results",
   requireAuth,
+  requireActiveAuth,
   requireRole(["admin"]),
   asyncHandler(async (req, res) => {
     const query = quizResultsQuerySchema.parse(req.query);

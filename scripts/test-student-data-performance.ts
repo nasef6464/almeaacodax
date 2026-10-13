@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';
+import {clearQuizResultsCache,getCachedQuizResults,setCachedQuizResults} from '../server/src/modules/quizzes/infrastructure/quizResultsCache.js';
+import {buildQuizResultsCacheKey} from '../server/src/modules/quizzes/http/queryUtilities.js';
+const A=buildQuizResultsCacheKey('A','/results?noTotal=true',false);
+const B=buildQuizResultsCacheKey('B','/results?noTotal=true',false);
+const similarlyNamed=buildQuizResultsCacheKey('AB','/results?noTotal=true',false);
+clearQuizResultsCache();setCachedQuizResults(A,{student:'A'});setCachedQuizResults(B,{student:'B'});setCachedQuizResults(similarlyNamed,{student:'AB'});
+(clearQuizResultsCache as (userId?:string)=>void)('A');
+assert.equal(getCachedQuizResults(A),undefined,'submitting learner must refresh own history');
+assert.deepEqual(getCachedQuizResults(B),{student:'B'},'one learner submission must not force other learners history DB reads');
+assert.deepEqual(getCachedQuizResults(similarlyNamed),{student:'AB'},'cache ownership matches full ID delimiter');
+clearQuizResultsCache();assert.equal(getCachedQuizResults(B),undefined,'explicit global invalidation remains supported');
+console.log('PASS own invalidation, unaffected learner reuse, prefix isolation and global compatibility');

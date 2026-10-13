@@ -9,8 +9,12 @@ const quizResultsCache = new Map<
   }
 >();
 
-export const clearQuizResultsCache = () => {
-  quizResultsCache.clear();
+export const clearQuizResultsCache = (userId?: string) => {
+  if (!userId) { quizResultsCache.clear(); return; }
+  const prefix = `${userId}:`;
+  for (const key of quizResultsCache.keys()) {
+    if (key.startsWith(prefix)) quizResultsCache.delete(key);
+  }
 };
 
 export const getCachedQuizResults = (key: string) => {
