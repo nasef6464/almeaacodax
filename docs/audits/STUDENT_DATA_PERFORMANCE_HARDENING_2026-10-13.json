@@ -1,0 +1,64 @@
+{
+  "date": "2026-10-13",
+  "status": "LOCAL_VERIFIED_PUBLICATION_PENDING",
+  "baseline": "87d8a0e1bda766c7112c5b20268df9af8b07062a",
+  "boundaryGroups": 18,
+  "review": {
+    "reviewers": 1,
+    "actionableFindings": 0,
+    "resolved": "multiple subject assignments must use any active matching-school row"
+  },
+  "isolatedTeacherReport": {
+    "sessions": 25,
+    "beforeReturnedSessionJsonBytes": 1199947,
+    "afterReturnedSessionJsonBytes": 3124,
+    "legacyMaxConcurrency": 4,
+    "totalsMatch": true
+  },
+  "isolatedSkillHistory": {
+    "seededEvidence": 2000,
+    "affectedEvidence": 1001,
+    "beforeExaminedDocuments": 2002,
+    "afterExaminedDocuments": 1006,
+    "recentLimit": 5,
+    "totalsMatch": true,
+    "retryIdempotency": true,
+    "learnerIsolation": true,
+    "nonSchoolNoop": true,
+    "equalDateIdenticalScores": true,
+    "remaining": "one full cumulative scan remains; no constant-time or 10k-concurrency claim"
+  },
+  "cache": {
+    "actorScopedInvalidation": true,
+    "prefixDelimiterIsolation": true,
+    "globalCompatibility": true
+  },
+  "bandwidth": {
+    "at": "2026-10-13T15:42:43.952Z",
+    "scope": "two owned learner GETs; raw encoded HTTP response body only, excludes headers, TLS, browser assets and billing",
+    "samples": [
+      {
+        "path": "/content/bootstrap?scope=learning&phase=core",
+        "status": 200,
+        "encoding": "gzip",
+        "encodedResponseBodyBytes": 39151,
+        "decodedResponseBodyBytes": 301110,
+        "ms": 2756
+      },
+      {
+        "path": "/quizzes/results?noTotal=true&limit=20",
+        "status": 200,
+        "encoding": "br",
+        "encodedResponseBodyBytes": 3838,
+        "decodedResponseBodyBytes": 39021,
+        "ms": 1237
+      }
+    ]
+  },
+  "limits": {
+    "productionCpuMemoryBilling": "unavailable; empty metrics not zero",
+    "plan": "existing free plan unchanged",
+    "productionLoadGenerated": false,
+    "productionCertified": false
+  }
+}

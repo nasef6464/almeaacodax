@@ -1,3 +1,4 @@
+import { resolveSchoolDirectoryScope } from '../modules/schools/application/schoolDirectoryScope.js';
 import { projectEffectiveUserAccess } from "../services/entitlementPolicy.js";
 import { serializeUser } from "../modules/auth/presentation/serializeAuthUser.js";
 import { prepareStudentPathPreferenceWrite } from "../modules/auth/application/studentPathPreferences.js";
@@ -799,63 +800,8 @@ authRouter.get(
     }
 
     if (authUser.role !== "admin") {
-      const authUserIdStr = String(authUser.id || (authUser as any)._id || "");
-      const fullAuthUser = await UserModel.findById(authUser.id || (authUser as any)._id).lean();
-      const userGroupIds = Array.isArray((fullAuthUser as any)?.groupIds)
-        ? (fullAuthUser as any).groupIds.map(String)
-        : Array.isArray((authUser as any).groupIds)
-        ? (authUser as any).groupIds.map(String)
-        : [];
-      const userSchoolId = String((fullAuthUser as any)?.schoolId || authUser.schoolId || "").trim();
-
-      const groupOrConditions: any[] = [
-        { supervisorIds: authUserIdStr },
-      ];
-      if (userGroupIds.length > 0) {
-        groupOrConditions.push(buildDocumentsQuery(userGroupIds));
-      }
-      if (userSchoolId) {
-        groupOrConditions.push({
-          $or: [
-            { id: userSchoolId },
-            ...(mongoose.Types.ObjectId.isValid(userSchoolId) ? [{ _id: userSchoolId }] : []),
-            { parentId: userSchoolId },
-          ],
-        });
-      }
-
-      const supervisedGroups = await GroupModel.find({ $or: groupOrConditions }).lean();
-
-      const scopedSchoolIds = new Set<string>();
-      if (userSchoolId) scopedSchoolIds.add(userSchoolId);
-      supervisedGroups.forEach((g: any) => {
-        const gId = String(g.id || g._id || "");
-        if (g.type === "SCHOOL") scopedSchoolIds.add(gId);
-        if (g.parentId) scopedSchoolIds.add(String(g.parentId));
-      });
-
-      let childClasses: any[] = [];
-      if (scopedSchoolIds.size > 0) {
-        childClasses = await GroupModel.find({ parentId: { $in: Array.from(scopedSchoolIds) } }).lean();
-      }
-
-      const allSupervisedGroups = [...supervisedGroups, ...childClasses];
-      const scopedGroupIds = Array.from(new Set(allSupervisedGroups.map((g: any) => String(g.id || g._id || ""))));
-      const explicitStudentIds = Array.from(
-        new Set(allSupervisedGroups.flatMap((g: any) => (g.studentIds || []).map(String))),
-      );
-
-      const scopeOr: any[] = [
-        buildDocumentQuery(authUserIdStr),
-        { groupIds: { $in: scopedGroupIds } },
-      ];
-      if (scopedSchoolIds.size > 0) {
-        scopeOr.push({ schoolId: { $in: Array.from(scopedSchoolIds) } });
-      }
-      if (explicitStudentIds.length > 0) {
-        scopeOr.push(buildDocumentsQuery(explicitStudentIds));
-      }
-      mongoQuery.$and = [{ $or: scopeOr }];
+      const scope = await resolveSchoolDirectoryScope(authUser);
+      mongoQuery.$and = [...(Array.isArray(mongoQuery.$and) ? mongoQuery.$and : []), scope.rosterFilter];
     }
 
     const [users, total] = await Promise.all([

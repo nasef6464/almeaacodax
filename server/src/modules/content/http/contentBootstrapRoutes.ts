@@ -1,7 +1,7 @@
 import { Router, type Request, type Response } from "express";
 import { gzipSync } from "node:zlib";
 import { z } from "zod";
-import { optionalAuth } from "../../../middleware/auth.js";
+import { optionalAuth, requireActiveAuth } from "../../../middleware/auth.js";
 import { AnnouncementAdModel } from "../../../models/AnnouncementAd.js";
 import { LessonModel } from "../../../models/Lesson.js";
 import { LibraryItemModel } from "../../../models/LibraryItem.js";
@@ -162,6 +162,7 @@ contentBootstrapRouter.get(
 contentBootstrapRouter.get(
   "/bootstrap",
   optionalAuth,
+  (req,res,next)=>req.authUser ? requireActiveAuth(req,res,next) : next(),
   asyncHandler(async (req, res) => {
     const requestedScope = contentBootstrapScopeSchema.parse(req.query.scope);
     const requestedPhase = contentBootstrapPhaseSchema.parse(req.query.phase);
@@ -224,7 +225,7 @@ contentBootstrapRouter.get(
               .sort({ createdAt: -1 })
               .lean(),
         includeOperationalData
-          ? getScopedContentBootstrapOperationalData(req.authUser)
+          ? getScopedContentBootstrapOperationalData(req.authUser, res.locals.activeAuthRefreshed === true)
           : Promise.resolve({ groups: [], b2bPackages: [], accessCodes: [], announcementAds: [] }),
         includeStudyPlans && req.authUser
           ? StudyPlanModel.find({ userId: req.authUser.id }).sort({ updatedAt: -1 }).lean()

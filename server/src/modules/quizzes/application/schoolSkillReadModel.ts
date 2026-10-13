@@ -122,67 +122,53 @@ export async function updateSchoolSkillReadModelFromResult(result: any, userId: 
   );
 
   const scopeFilters = normalized.map(buildScopeFilter);
-  const [cumulativeRows, recentRows] = await Promise.all([
-    SchoolSkillEvidenceModel.aggregate([
-      { $match: { $or: scopeFilters } },
-      {
-        $group: {
-          _id: groupId,
-          skill: { $last: "$skill" },
-          level: { $last: "$level" },
-          parentSkillId: { $last: "$parentSkillId" },
-          parentSkill: { $last: "$parentSkill" },
-          sectionId: { $last: "$sectionId" },
-          totalEvidence: { $sum: "$questionCount" },
-          totalCorrect: { $sum: "$correctCount" },
-          attemptCount: { $sum: 1 },
-          lastEvidenceAt: { $max: "$occurredAt" },
-        },
+  // Scan cumulative evidence once. The existing scope/occurredAt index bounds
+  // the separate recent-history lookup to five records for each affected skill.
+  const cumulativeRows = await SchoolSkillEvidenceModel.aggregate([
+    { $match: { $or: scopeFilters } },
+    {
+      $group: {
+        _id: groupId,
+        skill: { $last: "$skill" },
+        level: { $last: "$level" },
+        parentSkillId: { $last: "$parentSkillId" },
+        parentSkill: { $last: "$parentSkill" },
+        sectionId: { $last: "$sectionId" },
+        totalEvidence: { $sum: "$questionCount" },
+        totalCorrect: { $sum: "$correctCount" },
+        attemptCount: { $sum: 1 },
+        lastEvidenceAt: { $max: "$occurredAt" },
       },
-    ]),
-    SchoolSkillEvidenceModel.aggregate([
-      { $match: { $or: scopeFilters } },
-      {
-        $set: {
-          scopeKey: {
-            $concat: ["$schoolId", "::", "$classId", "::", "$userId", "::", "$pathId", "::", "$subjectId", "::", "$skillId"],
-          },
-          eventMastery: {
-            $cond: [
-              { $gt: ["$questionCount", 0] },
-              { $multiply: [{ $divide: ["$correctCount", "$questionCount"] }, 100] },
-              0,
-            ],
-          },
-        },
+    },
+    {
+      $lookup: {
+        from: SchoolSkillEvidenceModel.collection.name,
+        let: Object.fromEntries(Object.keys(groupId).map(field => [field, "$_id." + field])),
+        pipeline: [
+          { $match: { $expr: { $and: Object.keys(groupId).map(field => ({ $eq: ["$" + field, "$$" + field] })) } } },
+          { $sort: { occurredAt: -1 } },
+          { $limit: 5 },
+          { $set: { eventMastery: { $cond: [
+            { $gt: ["$questionCount", 0] },
+            { $multiply: [{ $divide: ["$correctCount", "$questionCount"] }, 100] },
+            0,
+          ] } } },
+          { $group: {
+            _id: null,
+            recentEvidence: { $sum: "$questionCount" },
+            recentCorrect: { $sum: "$correctCount" },
+            latestMastery: { $first: "$eventMastery" },
+            oldestMastery: { $last: "$eventMastery" },
+          } },
+        ],
+        as: "recent",
       },
-      {
-        $setWindowFields: {
-          partitionBy: "$scopeKey",
-          sortBy: { occurredAt: -1 },
-          output: { recentRank: { $documentNumber: {} } },
-        },
-      },
-      { $match: { recentRank: { $lte: 5 } } },
-      {
-        $group: {
-          _id: groupId,
-          recentEvidence: { $sum: "$questionCount" },
-          recentCorrect: { $sum: "$correctCount" },
-          latestMastery: { $first: "$eventMastery" },
-          oldestMastery: { $last: "$eventMastery" },
-        },
-      },
-    ]),
+    },
   ]);
-
-  const recentByKey = new Map(
-    recentRows.map((row: any) => [keyOf(row._id as ScopeKey), row]),
-  );
 
   const aggregateOps = cumulativeRows.map((row: any) => {
     const scope = row._id as ScopeKey;
-    const recent = recentByKey.get(keyOf(scope)) as any;
+    const recent = row.recent?.[0];
     const totalEvidence = Math.max(0, Number(row.totalEvidence || 0));
     const totalCorrect = Math.max(0, Number(row.totalCorrect || 0));
     const recentEvidence = Math.max(0, Number(recent?.recentEvidence || 0));

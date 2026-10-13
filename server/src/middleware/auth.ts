@@ -109,6 +109,7 @@ export function requireAuth(req: Request, res: Response, next: NextFunction) {
  * stale JWT claims in one request.
  */
 export async function requireActiveAuth(req: Request, res: Response, next: NextFunction) {
+  if (res.locals.activeAuthRefreshed === true && req.authUser) return next();
   if (!req.authUser) {
     return res.status(StatusCodes.UNAUTHORIZED).json({
       message: "Authentication required",
@@ -134,7 +135,8 @@ export async function requireActiveAuth(req: Request, res: Response, next: NextF
   }
 }
 
-export function optionalAuth(req: Request, _res: Response, next: NextFunction) {
+export function optionalAuth(req: Request, res: Response, next: NextFunction) {
+  if (res.locals.activeAuthRefreshed === true && req.authUser) return next();
   if (env.DEV_LOCAL_ADMIN_BYPASS && env.NODE_ENV !== "production" && isStrictLocalRequest(req)) {
     req.authUser = {
       id: "local-dev-admin",

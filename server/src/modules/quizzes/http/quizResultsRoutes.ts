@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { StatusCodes } from "http-status-codes";
-import { requireAuth, requireRole } from "../../../middleware/auth.js";
+import { requireAuth, requireActiveAuth, requireRole } from "../../../middleware/auth.js";
 import { QuizModel } from "../../../models/Quiz.js";
 import { QuizResultModel } from "../../../models/QuizResult.js";
 import { recordAdminAuditLog } from "../../../services/adminAuditLog.js";
@@ -56,6 +56,7 @@ export const quizResultsRouter = Router();
 quizResultsRouter.get(
   "/results",
   requireAuth,
+  requireActiveAuth,
   asyncHandler(async (req, res) => {
     const query = quizResultsListQuerySchema.parse(req.query);
     const includeReview = String(req.query.includeReview || "").toLowerCase() === "true";
@@ -130,6 +131,7 @@ quizResultsRouter.get(
 quizResultsRouter.get(
   "/results/scoped",
   requireAuth,
+  requireActiveAuth,
   asyncHandler(async (req, res) => {
     const query = quizResultsListQuerySchema.parse(req.query);
     const authUser = await resolveAuthUserByAuthId(String(req.authUser!.id || ""));
@@ -234,6 +236,7 @@ quizResultsRouter.get(
 quizResultsRouter.get(
   "/results/latest",
   requireAuth,
+  requireActiveAuth,
   asyncHandler(async (req, res) => {
     const item = await QuizResultModel.findOne({ userId: req.authUser!.id }).sort({ createdAt: -1 }).lean();
 
@@ -253,6 +256,7 @@ quizResultsRouter.get(
 quizResultsRouter.get(
   "/results/section-analytics/:quizId",
   requireAuth,
+  requireActiveAuth,
   requireRole(["admin", "supervisor"]),
   asyncHandler(async (req, res) => {
     const quizId = String(req.params.quizId || "").trim();
@@ -340,6 +344,7 @@ quizResultsRouter.get(
 quizResultsRouter.post(
   "/results",
   requireAuth,
+  requireActiveAuth,
   asyncHandler(async (req, res) => {
     await recordAdminAuditLog(req, {
       action: "quiz.direct_result.blocked",

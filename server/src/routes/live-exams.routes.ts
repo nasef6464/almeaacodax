@@ -1,6 +1,6 @@
 import express from "express";
 import mongoose from "mongoose";
-import { requireAuth } from "../middleware/auth.js";
+import { requireAuth, requireActiveAuth } from "../middleware/auth.js";
 import { LiveExamSessionModel } from "../models/LiveExamSession.js";
 import { GroupModel } from "../models/Group.js";
 import { QuizModel } from "../models/Quiz.js";
@@ -17,6 +17,7 @@ import { AssessmentAttemptModel } from "../modules/quizzes/infrastructure/assess
 import { AssessmentResponseModel } from "../modules/quizzes/infrastructure/assessmentResponseModel.js";
 
 const router = express.Router();
+router.use(requireAuth, requireActiveAuth);
 
 const buildDocumentsByIdsQuery = (values: string[]) => {
   const ids = [...new Set(values.map(String).filter(Boolean))];
