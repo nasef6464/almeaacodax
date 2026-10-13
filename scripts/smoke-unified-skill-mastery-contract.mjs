@@ -68,7 +68,8 @@ check('4 student reports use SkillProgress as mastery truth', () => {
 check('5 Smart Learning Path and overview use SkillProgress, not exam result aggregation', () => {
   assert.ok(files.dashboard.includes('buildSmartPathSkillsFromProgress'));
   assert.ok(files.dashboard.includes('useStudentSkillProgress'));
-  assert.ok(files.dashboard.includes('api.getSkillProgress'));
+  assert.ok(files.dashboard.includes('useScopedStudentSkillProgress(scope.pathId'));
+  assert.ok(files.studentSkillRead.includes('api.getSkillProgress({'));
   assert.ok(!files.dashboard.includes('buildSmartPathSkillsFromResults'));
 });
 

@@ -1,3 +1,4 @@
+import { useStudentSkillProgress as useScopedStudentSkillProgress } from '../utils/useStudentSkillProgress';
 import { useStudentScopedStore } from '../utils/useStudentScopedStore';
 import { PathEnrollmentButton } from '../components/studentPaths/StudentPathBar';
 import { useActivePremium } from '../utils/useActivePremium';
@@ -80,29 +81,8 @@ const buildSmartPathSkillsFromProgress = (
         .sort((a, b) => a.mastery - b.mastery)
         .slice(0, 12);
 
-const useStudentSkillProgress = (scope: { pathId?: string; subjectId?: string } = {}) => {
-    const { user } = useStudentScopedStore();
-
-    const [rows, setRows] = useState<SkillProgress[]>([]);
-
-    useEffect(() => {
-        if (user.role !== Role.STUDENT) {
-            setRows([]);
-            return;
-        }
-        let cancelled = false;
-        api.getSkillProgress({ ...scope, noTotal: true })
-            .then((items) => {
-                if (!cancelled) setRows(items as SkillProgress[]);
-            })
-            .catch(() => {
-                if (!cancelled) setRows([]);
-            });
-        return () => { cancelled = true; };
-    }, [scope.pathId, scope.subjectId, user.role]);
-
-    return rows;
-};
+const useStudentSkillProgress = (scope: { pathId?: string; subjectId?: string } = {}) =>
+    useScopedStudentSkillProgress(scope.pathId || 'all', scope.subjectId || 'all') || [];
 
 const formatQuizCardDate = (createdAt?: number) => {
     if (!createdAt) return 'متاح الآن';
@@ -546,6 +526,10 @@ const SmartPathTab = () => {
             : subject.pathId === selectedPathId),
         [enrolledPathSet, selectedPathId, subjects],
     );
+
+    useEffect(() => {
+        if (selectedPathId !== 'all' && !pathOptions.some(path => path.id === selectedPathId)) setSelectedPathId('all');
+    }, [pathOptions, selectedPathId]);
 
     useEffect(() => {
         if (selectedSubjectId === 'all') return;
