@@ -1,3 +1,5 @@
+Student path delivery VERIFIED (2026-10-13): PR533 + PR534, final automatic publication 35f64e62fa6bca59a7e9370718c3327e02215601. 14 bounded runtime groups PASS; 20 successful scoped business requests including logical restore and fixture hiding. Canonical history unchanged,35focused frontend groups +6backend behavior/model +6HTTP/Mongo groups passed, independent review approved, all3required checks passed on both exact heads. See docs/audits/STUDENT_PATH_EXPERIENCE_PUBLISHED_2026-10-13.json. Earlier pending notes are historical; no production-scale/backfill/payment-gateway claim.
+
 Student path experience (2026-10-13): curriculum owns Path.settings stage policy/label/template; presentation owns HomepageSettings.studentExperience and actor-bound content projections; auth owns bounded User.pathStageSelections and preferences CAS. Student components discover/register paths, choose stages and render the simple template; useStudentSkillProgress owns canceled actor/query/stage-bound report reads. These modules do not grant paid access, assign quizzes, change scoring or rewrite historical progress.
 
 # ALMEAA — Module Catalog
