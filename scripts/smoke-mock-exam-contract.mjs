@@ -138,7 +138,7 @@ check('header updates mock exam navigation when quiz data changes', () => {
   assertNotIncludes(headerSource, 'isPathMockExam(quiz, path.id)');
   assertIncludes(headerSource, "id: 'mock-exams'");
   assertIncludes(headerSource, "link: '/mock-exams'");
-  assertIncludes(headerSource, "[homepageSettings?.navigation, levels, paths, subjects, user?.role]");
+  assertIncludes(headerSource, "[homepageSettings?.navigation, levels, paths, subjects, user?.role, scope]");
 });
 
 check('frontend smoke covers global and per-path mock exam route shells', () => {
