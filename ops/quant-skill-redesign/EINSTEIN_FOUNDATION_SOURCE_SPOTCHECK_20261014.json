@@ -1,0 +1,155 @@
+{
+  "date": "2026-10-14",
+  "source_file": "تاسيس انشتين معدل .pdf",
+  "source_file_surface": "Project Library",
+  "source_pdf_pages": 145,
+  "scope": "Selected source pages and one exact question cross-check; NOT a complete book or bank audit",
+  "method": "source PDF page text + direct page reads; math-image details require subsequent crop verification",
+  "main_issue": "NotebookLM page claims cannot be accepted as fully verified for this edition",
+  "out_of_range_candidate_count": 16,
+  "out_of_range_candidates": [
+    {
+      "candidate_code": "Q15.01",
+      "skill": "اكتشاف الأنماط العددية والهندسية",
+      "notebooklm_page_claim": "ص 152",
+      "issue": "claimed_foundation_page_exceeds_actual_145_page_book"
+    },
+    {
+      "candidate_code": "Q15.02",
+      "skill": "إكمال المتتابعات بأنواعها",
+      "notebooklm_page_claim": "ص 152 - 155",
+      "issue": "claimed_foundation_page_exceeds_actual_145_page_book"
+    },
+    {
+      "candidate_code": "Q15.03",
+      "skill": "العلاقة بين المدخلات والمخرجات وقراءة الدالة",
+      "notebooklm_page_claim": "ص 156",
+      "issue": "claimed_foundation_page_exceeds_actual_145_page_book"
+    },
+    {
+      "candidate_code": "Q18.02",
+      "skill": "احتمالات التجارب المركبة (النرد والعملات)",
+      "notebooklm_page_claim": "ص 157 - 159",
+      "issue": "claimed_foundation_page_exceeds_actual_145_page_book"
+    },
+    {
+      "candidate_code": "Q18.03",
+      "skill": "الاحتمال باستخدام التباديل والتوافيق",
+      "notebooklm_page_claim": "ص 160 - 161",
+      "issue": "claimed_foundation_page_exceeds_actual_145_page_book"
+    },
+    {
+      "candidate_code": "Q19.01",
+      "skill": "مبدأ العد الأساسي والخيارات المركبة",
+      "notebooklm_page_claim": "ص 161 - 162",
+      "issue": "claimed_foundation_page_exceeds_actual_145_page_book"
+    },
+    {
+      "candidate_code": "Q19.02",
+      "skill": "التباديل والترتيب",
+      "notebooklm_page_claim": "ص 163 - 164",
+      "issue": "claimed_foundation_page_exceeds_actual_145_page_book"
+    },
+    {
+      "candidate_code": "Q19.03",
+      "skill": "التوافيق والاختيار العشوائي",
+      "notebooklm_page_claim": "ص 164 - 165",
+      "issue": "claimed_foundation_page_exceeds_actual_145_page_book"
+    },
+    {
+      "candidate_code": "Q19.04",
+      "skill": "عد الحالات مع القيود والاشتراطات",
+      "notebooklm_page_claim": "ص 161 - 163",
+      "issue": "claimed_foundation_page_exceeds_actual_145_page_book"
+    },
+    {
+      "candidate_code": "Q22.02",
+      "skill": "محيط ومساحة المثلث والقطعة المنصفة",
+      "notebooklm_page_claim": "ص 110 - 111، 151",
+      "issue": "claimed_foundation_page_exceeds_actual_145_page_book"
+    },
+    {
+      "candidate_code": "Q22.05",
+      "skill": "تطابق وتشابه المثلثات المباشر",
+      "notebooklm_page_claim": "ص 112 - 113، 152",
+      "issue": "claimed_foundation_page_exceeds_actual_145_page_book"
+    },
+    {
+      "candidate_code": "Q26.01",
+      "skill": "المسافة بين نقطتين وإحداثيات المنتصف",
+      "notebooklm_page_claim": "ص 145 - 148",
+      "issue": "claimed_foundation_page_exceeds_actual_145_page_book"
+    },
+    {
+      "candidate_code": "Q26.02",
+      "skill": "ميل المستقيم والتحويلات الهندسية",
+      "notebooklm_page_claim": "ص 146 - 148",
+      "issue": "claimed_foundation_page_exceeds_actual_145_page_book"
+    },
+    {
+      "candidate_code": "Q28.01",
+      "skill": "مسائل الأعمار",
+      "notebooklm_page_claim": "ص 151",
+      "issue": "claimed_foundation_page_exceeds_actual_145_page_book"
+    },
+    {
+      "candidate_code": "Q28.02",
+      "skill": "مسائل العمل والإنجاز التشاركي",
+      "notebooklm_page_claim": "ص 146 - 147",
+      "issue": "claimed_foundation_page_exceeds_actual_145_page_book"
+    },
+    {
+      "candidate_code": "Q28.05",
+      "skill": "مسائل الملء والتفريغ والصنابير",
+      "notebooklm_page_claim": "ص 148 - 149",
+      "issue": "claimed_foundation_page_exceeds_actual_145_page_book"
+    }
+  ],
+  "spot_checks": [
+    {
+      "candidate_ref": "EINSTEIN-FOUND-P005-Q01",
+      "notebooklm_claim": "Addition by smart grouping at page 5: 62+92+130+70+8+38+200",
+      "observed_pdf_page": 5,
+      "assessment": "EXACT_TEXT_LOCATED",
+      "note": "Source contains exact expression and grouped sum 600. Math rule location observed."
+    },
+    {
+      "candidate_ref": "EINSTEIN-FOUND-P009-Q04",
+      "notebooklm_claim": "6132×3475 tens digit problem at page 9",
+      "observed_pdf_page": 14,
+      "assessment": "INCORRECT_NOTEBOOKLM_PAGE",
+      "note": "Source page 9 is order of operations. Search found exact 6132×3475 example on page 14 (rule 16). Fix source page; do not use row code as book question ID."
+    },
+    {
+      "candidate_ref": "Q04.02",
+      "notebooklm_claim": "Fraction addition and subtraction page 15",
+      "observed_pdf_page": 15,
+      "assessment": "CONCEPT_RULE_LOCATED",
+      "note": "Source has heading جمع وطرح الكسور. Exact numeric sample in NotebookLM not yet visually certified."
+    },
+    {
+      "candidate_ref": "Q04.03",
+      "notebooklm_claim": "Fraction multiplication and division page 16",
+      "observed_pdf_page": 16,
+      "assessment": "CONCEPT_RULE_LOCATED",
+      "note": "Source contains ضرب الكسور and قسمة الكسور. Exact sample not yet certified."
+    },
+    {
+      "candidate_ref": "Q10.02",
+      "notebooklm_claim": "Addition/subtraction roots pages 39-40",
+      "observed_pdf_page": 39,
+      "assessment": "CONCEPT_RULE_LOCATED",
+      "note": "Source page 39 explicitly shows جمع وطرح الجذور and matching-radical method."
+    },
+    {
+      "candidate_ref": "Q10.03",
+      "notebooklm_claim": "Multiplication/division of roots and rationalization pages 42-43",
+      "observed_pdf_page": 41,
+      "assessment": "NOTEBOOKLM_PAGE_ANCHOR_NEEDS_CORRECTION",
+      "note": "Source page 41 explicitly contains headings ضرب وقسمة الجذور and انطاق المقام. Claims focusing exclusively on pages 42-43 omit the displayed rule location."
+    }
+  ],
+  "verified_question_count": 1,
+  "concept_page_observations": 4,
+  "hold": "No source-certified taxonomy approval or question reassignment from these observations; original COL2627 PDF not available in currently located project files."
+}
