@@ -79,7 +79,7 @@ try {
   const sourceEvidence = JSON.parse(readFileSync(resolve("ops/quant-skill-redesign/EINSTEIN_FOUNDATION_SOURCE_SPOTCHECK_20261014.json"), "utf8"));
   const maxPage = sourceEvidence.source_pdf_pages;
   const claimsOutsidePdf = manifest.items.filter((item) => {
-    const pageNumbers = [...String(item.foundation_page_claim || "").matchAll(/\\d+/g)].map((x) => Number(x[0]));
+    const pageNumbers = [...String(item.foundation_page_claim || "").matchAll(/\d+/g)].map((x) => Number(x[0]));
     return pageNumbers.some((page) => page > maxPage);
   });
   report.source_pdf_pages = maxPage;
