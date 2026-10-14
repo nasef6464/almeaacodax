@@ -22,8 +22,7 @@ import { getActivePathIds, isStaffRole, withLearnerVisiblePaths } from "../servi
 import { quizSchema } from "../modules/quizzes/http/quizDefinitionSchema.js";
 import { validateQuizWindow, getQuizAvailability } from "../modules/quizzes/application/quizAvailability.js";
 import { applyQuizViewerPolicy } from "../modules/quizzes/application/quizViewerPolicy.js";
-import { assertSchoolAssessmentDefinitionEditable,prepareSchoolDraftPublication,schoolAssessmentWrite } from '../modules/quizzes/application/schoolAssessmentEditing.js';
-import { resolveSchoolAssessmentContext,assertSchoolAssessmentAudience } from '../modules/quizzes/application/schoolAssessmentManagementPolicy.js';
+import { assertSchoolAssessmentDefinitionEditable,prepareSchoolDraftPublication,authorizeSchoolDirectorEdit,persistSchoolAssessmentUpdate } from '../modules/quizzes/application/schoolAssessmentEditing.js';
 import { quizRetakeRouter } from "../modules/quizzes/http/quizRetakeRoutes.js";
 import { quizSubmitSchema } from "../modules/quizzes/http/submissionSchemas.js";
 import { sanitizeQuestionForLearner } from "../modules/quizzes/presentation/questionPresentation.js";
@@ -403,14 +402,7 @@ const handleQuizUpdate = asyncHandler(async (req, res) => {
     ...existing.toObject(),
     ...payload,
   };
-  let directorManagement=false;
-  if(req.authUser?.role==='school_admin'){
-    const context=await resolveSchoolAssessmentContext(req.authUser,String(req.params.id));
-    if(existing.ownerType!=='school'||existing.mode!=='central'||proposedState.mode!=='central')
-      return res.status(403).json({message:'School assessment management required'});
-    await assertSchoolAssessmentAudience(context,proposedState);
-    directorManagement=true;
-  }
+  const directorManagement=await authorizeSchoolDirectorEdit(req.authUser!,existing.toObject(),proposedState);
   validateQuizWindow(proposedState);
   const isTeacherDirectedAssessment =
     req.authUser?.role === "teacher" && hasDirectedQuizTargets(proposedState);
@@ -470,9 +462,7 @@ const handleQuizUpdate = asyncHandler(async (req, res) => {
     }
   }
   // A first publication or another update must win over a stale draft editor.
-  const write=schoolAssessmentWrite(existing.toObject(),sanitizedPayload,documentQuery,guardedSchoolContentEdit);
-  const updated = await QuizModel.findOneAndUpdate(write.query, write.update, { new: true });
-  if(!updated)return res.status(409).json({message:'تغير الاختبار أثناء التعديل؛ أعد فتحه أو أنشئ نسخة.'});
+  const updated=await persistSchoolAssessmentUpdate(existing.toObject(),sanitizedPayload,documentQuery,guardedSchoolContentEdit);
   if (updated?.isPublished) {
     await publishAssessmentVersion({
       assessmentId: String(updated.id || updated._id),
@@ -519,9 +509,7 @@ quizRouter.post(
     const existingQuestionIds = Array.isArray(existing.questionIds) ? existing.questionIds : [];
     const updatedQuestionIds = uniqueStrings([...existingQuestionIds, ...newQuestionIds]);
 
-    const write=schoolAssessmentWrite(existingState,{questionIds:updatedQuestionIds},documentQuery,contentEdit);
-    const updated = await QuizModel.findOneAndUpdate(write.query,write.update,{new:true});
-    if(!updated)return res.status(409).json({message:'تغير الاختبار أثناء التعديل؛ أعد فتحه أو أنشئ نسخة.'});
+    const updated=await persistSchoolAssessmentUpdate(existingState,{questionIds:updatedQuestionIds},documentQuery,contentEdit);
     return res.json(updated);
   }),
 );

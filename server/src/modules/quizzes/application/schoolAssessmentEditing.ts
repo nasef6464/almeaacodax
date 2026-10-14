@@ -4,7 +4,7 @@ import {QuizModel} from '../../../models/Quiz.js';
 import {QuizResultModel} from '../../../models/QuizResult.js';
 import {LiveExamSessionModel} from '../../../models/LiveExamSession.js';
 import {AssessmentVersionModel} from '../infrastructure/assessmentVersionModel.js';
-import {assertSchoolAssessmentOperation,type SchoolAssessmentContext} from './schoolAssessmentManagementPolicy.js';
+import {assertSchoolAssessmentOperation,resolveSchoolAssessmentContext,assertSchoolAssessmentAudience,type SchoolAssessmentContext} from './schoolAssessmentManagementPolicy.js';
 
 const contentKeys=['pathId','subjectId','sectionId','type','quizKind','questionIds','mockExam','skillIds'];
 const scoringSettings=(settings:Record<string,unknown>={})=>Object.fromEntries(Object.entries(settings).filter(([key])=>!['maxAttempts','showAnswers','showExplanations'].includes(key)));
@@ -66,4 +66,20 @@ export function schoolAssessmentWrite(quiz:any,patch:any,query:any,contentEdit=f
     query:{$and:[query,{__v:version},...(contentEdit?[{isPublished:{$ne:true}}]:[])]},
     update:{$set:patch,$inc:{__v:1}},
   };
+}
+
+export async function authorizeSchoolDirectorEdit(principal:any,quiz:any,proposed:any){
+  if(principal.role!=='school_admin')return false;
+  const context=await resolveSchoolAssessmentContext(principal,String(quiz.id||quiz._id));
+  if(quiz.ownerType!=='school'||quiz.mode!=='central'||proposed.mode!=='central')
+    throw Object.assign(new Error('School assessment management required'),{statusCode:403});
+  await assertSchoolAssessmentAudience(context,proposed);
+  return true;
+}
+
+export async function persistSchoolAssessmentUpdate(quiz:any,patch:any,query:any,contentEdit=false){
+  const write=schoolAssessmentWrite(quiz,patch,query,contentEdit);
+  const updated=await QuizModel.findOneAndUpdate(write.query,write.update,{new:true});
+  if(!updated)throw Object.assign(new Error('تغير الاختبار أثناء التعديل؛ أعد فتحه أو أنشئ نسخة.'),{statusCode:409});
+  return updated;
 }

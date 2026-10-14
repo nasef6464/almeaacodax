@@ -833,22 +833,29 @@ async function runAssessmentJourney(csrf: CsrfContext) {
 
   const initialVersion = await AssessmentVersionModel.findOne({ assessmentId: ASSESSMENT_QUIZ_ID, version: 1 }).lean();
   assert.ok(initialVersion, "published assessment did not create immutable version 1");
+  const frozenDefinition = await jsonRequest(`/quizzes/${ASSESSMENT_QUIZ_ID}`, {
+    method: "PATCH", token: tokens.get("admin"), csrf,
+    body: {settings: {maxAttempts: 1, passingScore: 60, timeLimit: 45}},
+  });
+  expectStatus("published school assessment rejects scoring/timing changes",frozenDefinition,409);
+  assert.equal(await AssessmentVersionModel.countDocuments({assessmentId:ASSESSMENT_QUIZ_ID}),1,"rejected edit created a version");
   const updatedDefinition = await jsonRequest(`/quizzes/${ASSESSMENT_QUIZ_ID}`, {
     method: "PATCH",
     token: tokens.get("admin"),
     csrf,
     body: {
       title: "Platform V3 immutable assessment version",
-      settings: { maxAttempts: 1, passingScore: 60, timeLimit: 45 },
     },
   });
-  expectStatus("admin updates published assessment definition", updatedDefinition, 200);
+  expectStatus("admin updates published assessment title without changing content", updatedDefinition, 200);
   assert.deepEqual(updatedDefinition.body?.questionIds, [ASSESSMENT_QUESTION_ID], "published update lost selected questions");
   const latestVersion = await AssessmentVersionModel.findOne({ assessmentId: ASSESSMENT_QUIZ_ID, status: "published" }).sort({ version: -1 }).lean();
   assert.equal(latestVersion?.version, 2, "published update did not append immutable version 2");
   assert.equal(latestVersion?.definition?.title, "Platform V3 immutable assessment version", "immutable version did not retain updated title");
   assert.deepEqual(latestVersion?.definition?.questionIds, [ASSESSMENT_QUESTION_ID], "immutable version lost selected questions");
-  assert.equal((latestVersion?.definition as any)?.settings?.timeLimit, 45, "immutable version lost updated settings");
+  assert.equal((latestVersion?.definition as any)?.settings?.timeLimit, undefined, "rejected timing change entered immutable version");
+  assert.equal((latestVersion?.definition as any)?.settings?.passingScore,60,"title update changed scoring");
+  assert.deepEqual((await AssessmentVersionModel.findOne({assessmentId:ASSESSMENT_QUIZ_ID,version:1}).lean())?.definition,initialVersion!.definition,"old immutable version changed");
   const versionedDetail = await jsonRequest(`/quizzes/${ASSESSMENT_QUIZ_ID}`, {
     token: tokens.get("student"),
   });
