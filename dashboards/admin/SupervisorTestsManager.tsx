@@ -17,6 +17,7 @@ import { isTrueMockExam } from '../../utils/quizPlacement';
 import type { QuizResult, User } from '../../types';
 import { useScopedAssessmentResults } from './supervisorTests/useScopedAssessmentResults';
 import { ScopedAssessmentResultsStatus } from './supervisorTests/ScopedAssessmentResultsStatus';
+import { SchoolAssessmentSummaryPanel } from './supervisorTests/SchoolAssessmentSummaryPanel';
 import {
   SupervisorTestTabFilter,
   uniqueSupervisorStudentIds,
@@ -27,7 +28,7 @@ type ViewMode = 'list' | 'create' | 'create_normal' | 'create_mock' | 'analytics
 
 const DirectedAssessmentReport: React.FC<{quiz: any; studentIds: string[]; actorId: string; studentEvidence?: User[]}> = ({quiz,studentIds,actorId,studentEvidence}) => {
   const evidence = useScopedAssessmentResults(actorId, quiz.id, true);
-  return <><ScopedAssessmentResultsStatus {...evidence}/>{!evidence.loading && !evidence.error && <TestAnalyticsReport quiz={quiz} studentIds={studentIds} resultEvidence={evidence.results} studentEvidence={studentEvidence}/>}</>;
+  return <div className="space-y-6"><SchoolAssessmentSummaryPanel quizId={quiz.id} actorId={actorId}/><details className="rounded-xl border p-4"><summary className="cursor-pointer font-bold">تفاصيل المحاولات والأسئلة</summary><p className="my-3 text-sm text-gray-600">هذه التفاصيل تخص المحاولات المحمّلة أدناه؛ ملخص جميع المستهدفين ظاهر بالأعلى.</p><ScopedAssessmentResultsStatus {...evidence}/>{!evidence.loading && !evidence.error && <TestAnalyticsReport quiz={quiz} studentIds={studentIds} resultEvidence={evidence.results} studentEvidence={studentEvidence}/>}</details></div>;
 };
 
 export const SupervisorTestsManager: React.FC<{ resultEvidence?: QuizResult[]; studentEvidence?: User[] }> = ({resultEvidence,studentEvidence}) => {

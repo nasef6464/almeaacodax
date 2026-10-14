@@ -95,6 +95,13 @@ jobs:
       - name: API production build
         run: npm --prefix server run build
 
+      - name: School assessment scope, discovery and complete report
+        env:
+          ASSESSMENT_TEST_MONGODB_URI: mongodb://127.0.0.1:27017
+        run: |
+          server/node_modules/.bin/tsx scripts/test-school-assessment-workspace.ts
+          server/node_modules/.bin/tsx scripts/test-school-assessment-report.ts
+
       - name: Courses access and payment recovery behavioral regressions
         run: |
           cd server
