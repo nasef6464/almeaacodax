@@ -10,7 +10,7 @@
 | TeachingAssignment |14 /14|0|3 missing teachers;3 missing schools;3 missing classes, flagged active |
 | ParentStudentRelationship |6 /6|0|0 missing parents/students |
 
-The membership and teaching missing-reference counts match the previously documented historical/synthetic gap in DB-2 (2026-09-28). These are counts per predicate, not distinct-record totals to add together; provenance of individual rows was not re-certified. No cleanup was performed. Resolved references have zero observed role/type mismatch, and teaching classes have zero observed parent-school mismatch. Active rows have zero references to a user explicitly marked isActive=false; absent users are reported separately. This does not certify authorization on every reader or prove complete lifecycle/transfer concurrency.
+The11 missing membership references match the previously documented historical/synthetic gap in DB-2 (2026-09-28). Teaching staleness was documented there without an exact count;3 is the current measurement, not a previously certified count. These are counts per predicate, not distinct-record totals to add together; provenance of individual rows was not re-certified. No cleanup was performed. Resolved references have zero observed role/type mismatch, and teaching classes have zero observed parent-school mismatch. Active rows have zero references to a user explicitly marked isActive=false; absent users are reported separately. This does not certify authorization on every reader or prove complete lifecycle/transfer concurrency.
 
 ## Historical evidence
 
