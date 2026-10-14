@@ -1,25 +1,151 @@
 {
   "date": "2026-10-14",
-  "status": "LOCAL_VERIFIED_CI_PUBLICATION_PENDING",
+  "status": "BOUNDED_PUBLICATION_VERIFIED_SCALE_PARTIAL",
   "baseline": "d41f3289eb194c6acb3411ca19d398dd927ff779",
   "branch": "codex/school-report-complete-scope",
-  "red": { "authorizedRoster": 1100, "sampledStudents": 1000, "userLookupDocsExamined": 1100 },
-  "green": { "coveredRoster": 1100, "userLookupDocsExamined": 1, "userLookupKeysExamined": 1 },
+  "red": {
+    "authorizedRoster": 1100,
+    "sampledStudents": 1000,
+    "userLookupDocsExamined": 1100
+  },
+  "green": {
+    "coveredRoster": 1100,
+    "userLookupDocsExamined": 1,
+    "userLookupKeysExamined": 1
+  },
   "isolated": {
-    "initialLearners": 10000, "finalRoster": 10001, "canonicalIdentities": 10000,
-    "aggregateRows": 11002, "joinedRows": 11001, "joinDocsExamined": 11002,
-    "foreignCollectionScans": 0, "joinIndexesUsed": ["userId_1"],
-    "returnedRows": 2, "reportBytes": 990, "evidenceCount": 100005,
-    "fullReportMs": 3625, "httpRequests": 7, "httpPass": true,
+    "initialLearners": 10000,
+    "finalRoster": 10001,
+    "canonicalIdentities": 10000,
+    "aggregateRows": 11002,
+    "joinedRows": 11001,
+    "joinDocsExamined": 11002,
+    "foreignCollectionScans": 0,
+    "joinIndexesUsed": [
+      "userId_1"
+    ],
+    "returnedRows": 2,
+    "reportBytes": 990,
+    "evidenceCount": 100005,
+    "fullReportMs": 3625,
+    "httpRequests": 7,
+    "httpPass": true,
     "productionCapacityClaim": false
   },
-  "productionBaseline": { "aggregateDocuments": 4, "indexDescriptors": 4, "userIdIndexPresent": false },
-  "safety": { "productionRecordWrites": 0, "manualIndexCommands": 0, "indexDrops": 0,
-    "paidInfrastructureChanges": 0, "productionLoadTest": false, "existingReaderCapsRetained": true },
-  "checks": { "serverTypecheck": "PASS", "serverBuild": "PASS", "adaptiveContracts": 3,
-    "reportsRole": { "pass": 20, "fail": 0 }, "schoolRBAC": { "pass": 4, "fail": 0 },
-    "legacySaher": { "pass": 2, "fail": 3, "reason": "Old deployment/fixed fixture returned0skills; stale Quiz source fragments; tested files unchanged from baseline" } },
+  "productionBaseline": {
+    "aggregateDocuments": 4,
+    "indexDescriptors": 4,
+    "userIdIndexPresent": false
+  },
+  "safety": {
+    "productionRecordWrites": 0,
+    "manualIndexCommands": 0,
+    "indexDrops": 0,
+    "paidInfrastructureChanges": 0,
+    "productionLoadTest": false,
+    "existingReaderCapsRetained": true
+  },
+  "checks": {
+    "serverTypecheck": "PASS",
+    "serverBuild": "PASS",
+    "adaptiveContracts": 3,
+    "reportsRole": {
+      "pass": 20,
+      "fail": 0
+    },
+    "schoolRBAC": {
+      "pass": 4,
+      "fail": 0
+    },
+    "legacySaher": {
+      "pass": 2,
+      "fail": 3,
+      "reason": "Old deployment/fixed fixture returned0skills; stale Quiz source fragments; tested files unchanged from baseline"
+    }
+  },
   "independentReview": "APPROVED_NO_ACTIONABLE_BLOCKER",
-  "requiredCI": "PENDING", "publication": "PENDING",
-  "remaining": ["shared-source request limits", "production resources and capacity", "broader relationships and retention", "concurrent command HTTP replay"]
+  "requiredCI": "ALL3_PASS_EXACT_SOURCE_HEAD",
+  "publication": {
+    "sourcePR": 544,
+    "sourceHead": "27487ec3f87eb8a63ecf555345f91fda7c322d10",
+    "sourceMerge": "b8f8fd8ce3a4f9b1c7a2a1b5d9fba1a411cb322e",
+    "successfulChecks": 19,
+    "expectedConditionalSkips": 4,
+    "requiredChecksPassed": 3,
+    "render": {
+      "id": "dep-db7fpau0tbcc73br1b0g",
+      "status": "live",
+      "sha": "b8f8fd8ce3a4f9b1c7a2a1b5d9fba1a411cb322e"
+    },
+    "vercel": {
+      "id": "dpl_GyBgCycWD3JxUkhXFV3z4FcuojJQ",
+      "status": "READY",
+      "sha": "b8f8fd8ce3a4f9b1c7a2a1b5d9fba1a411cb322e"
+    },
+    "index": {
+      "name": "userId_1",
+      "beforeStage": "COLLSCAN",
+      "afterStage": "EXPRESS_IXSCAN",
+      "beforeDescriptors": 4,
+      "afterDescriptors": 5,
+      "aggregateRecordsBefore": 4,
+      "aggregateRecordsAfter": 4,
+      "automaticIndexAdditions": 1,
+      "manualIndexCommands": 0,
+      "indexDrops": 0
+    },
+    "readonly": {
+      "at": "2026-10-14T03:55:39.395Z",
+      "release": "b8f8fd8ce3a4f9b1c7a2a1b5d9fba1a411cb322e",
+      "status": "PASS_BOUNDED_READONLY",
+      "health": 200,
+      "ready": 200,
+      "fullReport": {
+        "totalStudents": 168,
+        "sampledStudents": 168,
+        "isTruncated": false,
+        "rows": 1,
+        "ms": 898,
+        "bytes": 635
+      },
+      "checks": [
+        {
+          "name": "invalid selector",
+          "status": 200,
+          "totalStudents": 0,
+          "rows": 0
+        },
+        {
+          "name": "owned archived empty class",
+          "status": 200,
+          "totalStudents": 0,
+          "rows": 0
+        },
+        {
+          "name": "owned retained learner",
+          "status": 200,
+          "totalStudents": 1,
+          "rows": 0
+        },
+        {
+          "name": "contradictory owned selectors",
+          "status": 200,
+          "totalStudents": 0,
+          "rows": 0
+        }
+      ],
+      "scriptedGetRequests": 7,
+      "authenticationHelperExcluded": true,
+      "domainWrites": 0,
+      "fixtureJourneysReplayed": false,
+      "limitation": "Small actual inventory/owned terminal fixtures; no production10k fixture or load test"
+    },
+    "ciIsolatedFullReportMs": 1006
+  },
+  "remaining": [
+    "shared-source request limits",
+    "production resources and capacity",
+    "broader relationships and retention",
+    "concurrent command HTTP replay"
+  ]
 }
