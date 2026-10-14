@@ -1,0 +1,19 @@
+name: TAH-MATH V2 R2 image samples (read only)
+on:
+  pull_request:
+    paths:
+      - 'scripts/smoke-tah-math-v2-r2-samples.mjs'
+      - '.github/workflows/tah-math-v2-r2-sample-smoke.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  image-sample:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Verify six sample R2 WebP pixels and SHA-256 hashes
+        run: node scripts/smoke-tah-math-v2-r2-samples.mjs
