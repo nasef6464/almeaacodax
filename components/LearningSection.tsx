@@ -667,7 +667,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
     // TAH-MATH V2: staff authoring preview only. This does not change publication or entitlement state.
     // The persisted placement visibility stays false until each quiz is explicitly approved.
     const adminPreviewQuizzes = isAdminViewer && subject === 'sub_1777784609152'
-        ? quizzes.map((quiz) => quiz.subjectId === subject && quiz.approvalStatus === 'draft'
+        ? quizzes.map((quiz) => quiz.subjectId === subject && quiz.approvalStatus === 'draft' && quiz.quizKind !== 'mock' && quiz.mockExam?.enabled !== true
             ? {
                 ...quiz,
                 learningPlacements: (quiz.learningPlacements || []).map((placement) => ({
@@ -704,7 +704,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
     ).map(q => ({
         id: q.id,
         title: isAdminViewer && subject === 'sub_1777784609152' && q.approvalStatus === 'draft'
-            ? `[معاينة مسودة - ${q.quizKind === 'mock' || q.mockExam?.enabled === true ? 'محاكي بأقسام' : 'اختبار عادي'}] ${q.title}`
+            ? `[معاينة مسودة - اختبار عادي] ${q.title}`
             : q.title,
         duration: `${q.settings?.timeLimit || 60} دقيقة`,
         questions: q.questionIds?.length || 0,
