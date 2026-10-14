@@ -6,6 +6,10 @@ on:
       - 'server/src/middleware/auth.ts'
       - 'server/src/routes/auth.routes.ts'
       - 'server/src/routes/quiz*.ts'
+      - 'server/src/models/CommandCenterDraft.ts'
+      - 'server/src/models/CommandCenterWorkflow.ts'
+      - 'server/src/models/commandIdempotencyLookup.ts'
+      - 'server/src/modules/quizzes/application/quizSubmissionTaxonomyRead.ts'
       - 'server/src/routes/live-exams.routes.ts'
       - 'server/src/modules/content/http/contentBootstrapRoutes.ts'
       - 'server/src/modules/content/infrastructure/contentBootstrapOperationalData.ts'
@@ -20,6 +24,10 @@ on:
       - 'scripts/test-teacher-report-work.ts'
       - 'scripts/test-school-skill-work.ts'
       - 'scripts/test-school-report-filter-before-limit.ts'
+      - 'scripts/test-command-idempotency-indexes.ts'
+      - 'scripts/test-quiz-submission-taxonomy-work.ts'
+      - 'scripts/smoke-assessment-read-model-context-contract.mjs'
+      - 'scripts/smoke-assessment-side-effects-contract.mjs'
       - 'scripts/live-session-test-fixture.ts'
       - '.github/workflows/student-data-hardening.yml'
 permissions:
@@ -44,10 +52,15 @@ jobs:
       - name: Install isolated Mongo runner without changing manifests
         run: npm install --no-save --package-lock=false --ignore-scripts mongodb-memory-server-core@11.2.0
       - run: npm run server:check
+      - run: npm --prefix server run build
       - name: Exact scopes, fresh principal and bounded report work
         run: |
+          node scripts/smoke-assessment-read-model-context-contract.mjs
+          node scripts/smoke-assessment-side-effects-contract.mjs
           server/node_modules/.bin/tsx scripts/test-student-data-boundaries.ts
           server/node_modules/.bin/tsx scripts/test-student-data-performance.ts
           server/node_modules/.bin/tsx scripts/test-teacher-report-work.ts
           server/node_modules/.bin/tsx scripts/test-school-skill-work.ts
           server/node_modules/.bin/tsx scripts/test-school-report-filter-before-limit.ts
+          server/node_modules/.bin/tsx scripts/test-command-idempotency-indexes.ts
+          server/node_modules/.bin/tsx scripts/test-quiz-submission-taxonomy-work.ts

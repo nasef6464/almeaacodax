@@ -1,0 +1,443 @@
+{
+  "at": "2026-10-14T02:03:21.465Z",
+  "baseline": "d2c54d5cf4bc09cbdfeddbc651fe81e3ddb51bf8",
+  "target": "production Atlas almeaacodax/almeaa",
+  "readOnly": true,
+  "indexDescriptors": 52,
+  "collections": [
+    {
+      "name": "commandcenterworkflows",
+      "classicIndexes": [
+        {
+          "name": "_id_",
+          "key": {
+            "_id": 1
+          }
+        },
+        {
+          "name": "source_1",
+          "key": {
+            "source": 1
+          }
+        },
+        {
+          "name": "createdBy_1",
+          "key": {
+            "createdBy": 1
+          }
+        },
+        {
+          "name": "status_1",
+          "key": {
+            "status": 1
+          }
+        },
+        {
+          "name": "requestId_1",
+          "key": {
+            "requestId": 1
+          }
+        },
+        {
+          "name": "status_1_createdAt_-1",
+          "key": {
+            "status": 1,
+            "createdAt": -1
+          }
+        }
+      ],
+      "searchIndexes": [],
+      "classicIndexesCount": 6,
+      "searchIndexesCount": 0
+    },
+    {
+      "name": "commandcenterdrafts",
+      "classicIndexes": [
+        {
+          "name": "_id_",
+          "key": {
+            "_id": 1
+          }
+        },
+        {
+          "name": "kind_1",
+          "key": {
+            "kind": 1
+          }
+        },
+        {
+          "name": "source_1",
+          "key": {
+            "source": 1
+          }
+        },
+        {
+          "name": "status_1",
+          "key": {
+            "status": 1
+          }
+        },
+        {
+          "name": "createdBy_1",
+          "key": {
+            "createdBy": 1
+          }
+        },
+        {
+          "name": "requestId_1",
+          "key": {
+            "requestId": 1
+          }
+        },
+        {
+          "name": "status_1_kind_1_createdAt_-1",
+          "key": {
+            "status": 1,
+            "kind": 1,
+            "createdAt": -1
+          }
+        },
+        {
+          "name": "applyStatus_1",
+          "key": {
+            "applyStatus": 1
+          }
+        },
+        {
+          "name": "applyStatus_1_status_1_createdAt_-1",
+          "key": {
+            "applyStatus": 1,
+            "status": 1,
+            "createdAt": -1
+          }
+        }
+      ],
+      "searchIndexes": [],
+      "classicIndexesCount": 9,
+      "searchIndexesCount": 0
+    },
+    {
+      "name": "quizresults",
+      "classicIndexes": [
+        {
+          "name": "_id_",
+          "key": {
+            "_id": 1
+          }
+        },
+        {
+          "name": "userId_1",
+          "key": {
+            "userId": 1
+          }
+        },
+        {
+          "name": "quizId_1",
+          "key": {
+            "quizId": 1
+          }
+        },
+        {
+          "name": "userId_1_createdAt_-1",
+          "key": {
+            "userId": 1,
+            "createdAt": -1
+          }
+        },
+        {
+          "name": "quizId_1_createdAt_-1",
+          "key": {
+            "quizId": 1,
+            "createdAt": -1
+          }
+        },
+        {
+          "name": "skillsAnalysis.skillId_1_userId_1",
+          "key": {
+            "skillsAnalysis.skillId": 1,
+            "userId": 1
+          }
+        },
+        {
+          "name": "skillsAnalysis.subjectId_1_createdAt_-1",
+          "key": {
+            "skillsAnalysis.subjectId": 1,
+            "createdAt": -1
+          }
+        },
+        {
+          "name": "passed_1",
+          "key": {
+            "passed": 1
+          }
+        },
+        {
+          "name": "submissionKey_1",
+          "key": {
+            "submissionKey": 1
+          }
+        },
+        {
+          "name": "userId_1_quizId_1_attemptNumber_1",
+          "key": {
+            "userId": 1,
+            "quizId": 1,
+            "attemptNumber": 1
+          }
+        },
+        {
+          "name": "learningContext_1",
+          "key": {
+            "learningContext": 1
+          }
+        },
+        {
+          "name": "schoolId_1",
+          "key": {
+            "schoolId": 1
+          }
+        },
+        {
+          "name": "classId_1",
+          "key": {
+            "classId": 1
+          }
+        }
+      ],
+      "searchIndexes": [],
+      "classicIndexesCount": 13,
+      "searchIndexesCount": 0
+    },
+    {
+      "name": "schoolskillevidences",
+      "classicIndexes": [
+        {
+          "name": "_id_",
+          "key": {
+            "_id": 1
+          }
+        },
+        {
+          "name": "evidenceKey_1",
+          "key": {
+            "evidenceKey": 1
+          }
+        },
+        {
+          "name": "schoolId_1_classId_1_userId_1_pathId_1_subjectId_1_skillId_1_occurredAt_-1",
+          "key": {
+            "schoolId": 1,
+            "classId": 1,
+            "userId": 1,
+            "pathId": 1,
+            "subjectId": 1,
+            "skillId": 1,
+            "occurredAt": -1
+          }
+        }
+      ],
+      "searchIndexes": [],
+      "classicIndexesCount": 3,
+      "searchIndexesCount": 0
+    },
+    {
+      "name": "schoolskillaggregates",
+      "classicIndexes": [
+        {
+          "name": "_id_",
+          "key": {
+            "_id": 1
+          }
+        },
+        {
+          "name": "schoolId_1_classId_1_userId_1_pathId_1_subjectId_1_skillId_1",
+          "key": {
+            "schoolId": 1,
+            "classId": 1,
+            "userId": 1,
+            "pathId": 1,
+            "subjectId": 1,
+            "skillId": 1
+          }
+        },
+        {
+          "name": "schoolId_1_pathId_1_subjectId_1_classId_1_skillId_1_mastery_1",
+          "key": {
+            "schoolId": 1,
+            "pathId": 1,
+            "subjectId": 1,
+            "classId": 1,
+            "skillId": 1,
+            "mastery": 1
+          }
+        },
+        {
+          "name": "parentSkillId_1",
+          "key": {
+            "parentSkillId": 1
+          }
+        }
+      ],
+      "searchIndexes": [],
+      "classicIndexesCount": 4,
+      "searchIndexesCount": 0
+    },
+    {
+      "name": "users",
+      "classicIndexes": [
+        {
+          "name": "_id_",
+          "key": {
+            "_id": 1
+          }
+        },
+        {
+          "name": "email_1",
+          "key": {
+            "email": 1
+          }
+        },
+        {
+          "name": "role_1_createdAt_-1",
+          "key": {
+            "role": 1,
+            "createdAt": -1
+          }
+        },
+        {
+          "name": "schoolId_1_role_1_createdAt_-1",
+          "key": {
+            "schoolId": 1,
+            "role": 1,
+            "createdAt": -1
+          }
+        },
+        {
+          "name": "groupIds_1_role_1",
+          "key": {
+            "groupIds": 1,
+            "role": 1
+          }
+        },
+        {
+          "name": "linkedStudentIds_1",
+          "key": {
+            "linkedStudentIds": 1
+          }
+        },
+        {
+          "name": "managedPathIds_1",
+          "key": {
+            "managedPathIds": 1
+          }
+        },
+        {
+          "name": "managedSubjectIds_1",
+          "key": {
+            "managedSubjectIds": 1
+          }
+        },
+        {
+          "name": "subscription.purchasedPackages_1",
+          "key": {
+            "subscription.purchasedPackages": 1
+          }
+        },
+        {
+          "name": "subscription.purchasedCourses_1",
+          "key": {
+            "subscription.purchasedCourses": 1
+          }
+        },
+        {
+          "name": "emailVerified_1",
+          "key": {
+            "emailVerified": 1
+          }
+        },
+        {
+          "name": "emailVerificationTokenHash_1",
+          "key": {
+            "emailVerificationTokenHash": 1
+          }
+        },
+        {
+          "name": "passwordResetTokenHash_1",
+          "key": {
+            "passwordResetTokenHash": 1
+          }
+        },
+        {
+          "name": "emailVerificationTokenHash_1_emailVerificationExpiresAt_1",
+          "key": {
+            "emailVerificationTokenHash": 1,
+            "emailVerificationExpiresAt": 1
+          }
+        },
+        {
+          "name": "passwordResetTokenHash_1_passwordResetExpiresAt_1",
+          "key": {
+            "passwordResetTokenHash": 1,
+            "passwordResetExpiresAt": 1
+          }
+        },
+        {
+          "name": "loginLockedUntil_1",
+          "key": {
+            "loginLockedUntil": 1
+          }
+        },
+        {
+          "name": "nationalId_1",
+          "key": {
+            "nationalId": 1
+          }
+        }
+      ],
+      "searchIndexes": [],
+      "classicIndexesCount": 17,
+      "searchIndexesCount": 0
+    }
+  ],
+  "commandDocumentCounts": {
+    "commandcenterworkflows": 0,
+    "commandcenterdrafts": 0
+  },
+  "productionTaxonomyCounts": {
+    "subjects": 16,
+    "sections": 161
+  },
+  "productionRecordWrites": 0,
+  "manualIndexWrites": 0,
+  "localValidation": {
+    "review": "Approved; no blocking regression; HTTP command race replay unproven",
+    "serverBuild": "PASS",
+    "submission": {
+      "unrelatedSubjects": 4000,
+      "unrelatedSections": 4000,
+      "initializedModels": 77,
+      "reads": {
+        "subjects": [
+          3
+        ],
+        "sections": [
+          3
+        ]
+      },
+      "score": 100,
+      "skillRows": 4,
+      "persistedFrozenAnalysisMatches": true
+    },
+    "commandIndexes": {
+      "documentsExamined": 1,
+      "optionalNullKeys": "PASS",
+      "lookupPlan": "IXSCAN",
+      "indexCreation": "PASS",
+      "parallelInsertsPerModel": 8,
+      "winnerPerModel": 1,
+      "rejectedPerModel": 7,
+      "models": 2,
+      "retainedOwnerPredicate": "PASS"
+    }
+  }
+}

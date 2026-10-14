@@ -3,10 +3,11 @@ import { readFile } from "node:fs/promises";
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 const route = await read("server/src/routes/quiz.routes.ts");
 const moduleSource = await read("server/src/modules/quizzes/application/quizSubmissionSideEffects.ts");
+const progressSource = await read("server/src/modules/quizzes/application/quizSubmissionSkillProgress.ts");
 
 const checks = [
   ["assessment application module owns submission side effects", moduleSource.includes("export async function runQuizSubmissionSideEffects")],
-  ["skill progress update remains in application module", moduleSource.includes("export async function updateSkillProgressFromResult") && moduleSource.includes("SkillProgressModel.findOneAndUpdate")],
+  ["skill progress update remains delegated inside the application module", moduleSource.includes('import { updateSkillProgressFromResult } from "./quizSubmissionSkillProgress.js"') && moduleSource.includes("updateSkillProgressFromResult(args.result, args.userId)") && progressSource.includes("export async function updateSkillProgressFromResult") && progressSource.includes("SkillProgressModel.bulkWrite") && progressSource.includes("upsert: true")],
   ["review cards remain in application module", moduleSource.includes("ReviewCardModel.bulkWrite") && moduleSource.includes("upsertReviewCardsFromQuestionReview")],
   ["notification remains non-critical", moduleSource.includes("createNotificationDeliveries") && moduleSource.includes("Promise.allSettled")],
   ["quiz route delegates submission side effects", route.includes("runQuizSubmissionSideEffects({") && route.includes("quizSubmissionSideEffects.js")],
