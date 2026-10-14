@@ -13,6 +13,8 @@ const files = {
   parentRoutes: read('server/src/routes/parent.routes.ts'),
   schoolReadModel: read('server/src/modules/quizzes/application/schoolSkillReadModel.ts'),
   schoolView: read('server/src/modules/quizzes/application/schoolSkillAggregateView.ts'),
+  schoolScope: read('server/src/modules/quizzes/application/quizReportScope.ts'),
+  schoolJoin: read('server/src/modules/quizzes/application/schoolSkillReportJoin.ts'),
   reports: read('pages/Reports.tsx'),
   studentSkillRead: read('utils/useStudentSkillProgress.ts'),
   reportProjection: read('pages/Reports/skillProgressReportProjection.ts'),
@@ -93,7 +95,11 @@ check('8 unified source preserves existing role-scoped boundaries', () => {
   assert.ok(files.telemetry.includes('userId: req.authUser!.id'));
   assert.ok(files.parentRoutes.includes('linkedStudentIds'));
   assert.ok(files.parentRoutes.includes('SkillProgressModel.find'));
-  assert.ok(files.schoolView.includes('resolveScopedStudents'));
+  assert.ok(files.schoolView.includes('resolveScopedStudentQuery'));
+  assert.ok(files.schoolScope.includes('buildQuizReportStudentScope('));
+  assert.ok(files.schoolScope.includes('$and: [authorityFilter, selectors]'));
+  assert.ok(files.schoolJoin.includes('$match: studentFilter'));
+  assert.ok(files.schoolView.includes('buildSchoolSkillReportJoin(filter, match)'));
 });
 
 check('deterministic A/B mastery proof excludes unrelated or unresolved skill C', () => {

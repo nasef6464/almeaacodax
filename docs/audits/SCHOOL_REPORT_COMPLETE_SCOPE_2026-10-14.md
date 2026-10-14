@@ -22,3 +22,5 @@ Read-only production baseline:4aggregate documents,4existing index descriptors, 
 - Fresh whole-branch review approved without actionable blocker; reviewer independently ran aggregate contract/whitespace checks. Their isolated rerun lacked NODE_PATH runner; root behavior runs above supplied that path and passed. Exact-head CI and bounded published reads/index metadata remain the closure gate.
 
 Production capacity, shared-source request budgets, comprehensive relationship/retention review and concurrent command HTTP replay remain PARTIAL/NOT PROVEN. This repair performs no production learning/result/grade writes.
+
+First CI on eafd2054 caught another static mastery contract still asserting the old resolveScopedStudents call. The report now uses that reader's extracted unchanged authority query, so the contract follows resolveScopedStudentQuery through authority+selectors into the database join instead. All previous role checks remain; both updated contracts run explicitly in the focused workflow. No product relaxation or CI skip was added. Exact revised head must pass again.

@@ -29,6 +29,7 @@ on:
       - 'scripts/test-school-report-user-join.ts'
       - 'scripts/test-school-report-complete-scope.ts'
       - 'scripts/smoke-adaptive-phase8-school-skill-aggregates-contract.mjs'
+      - 'scripts/smoke-unified-skill-mastery-contract.mjs'
       - 'scripts/test-command-idempotency-indexes.ts'
       - 'scripts/test-quiz-submission-taxonomy-work.ts'
       - 'scripts/smoke-assessment-read-model-context-contract.mjs'
@@ -62,6 +63,8 @@ jobs:
         run: |
           node scripts/smoke-assessment-read-model-context-contract.mjs
           node scripts/smoke-assessment-side-effects-contract.mjs
+          node scripts/smoke-adaptive-phase8-school-skill-aggregates-contract.mjs
+          node scripts/smoke-unified-skill-mastery-contract.mjs
           server/node_modules/.bin/tsx scripts/test-student-data-boundaries.ts
           server/node_modules/.bin/tsx scripts/test-student-data-performance.ts
           server/node_modules/.bin/tsx scripts/test-teacher-report-work.ts
