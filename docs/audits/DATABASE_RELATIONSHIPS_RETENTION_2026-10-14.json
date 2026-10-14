@@ -1,0 +1,164 @@
+{
+  "date": "2026-10-14",
+  "baseline": "7861e34d26f5064acce724367363842fea3ff4aa",
+  "status": "VERIFIED_READ_ONLY_AUDIT_REMEDIATION_PARTIAL",
+  "scope": "Three canonical authority collections, three historical evidence collections and six operational retention collections; not a whole-database or capacity certificate",
+  "collectionInventory": 111,
+  "sourceCap": 1001,
+  "relationships": [
+    {
+      "collection": "schoolmemberships",
+      "scanned": 113,
+      "active": 112,
+      "duplicateGroups": 0,
+      "missingUser": 11,
+      "missingSchool": 11,
+      "activeMissingUser": 11,
+      "activeMissingSchool": 11,
+      "invalidKindsAmongResolved": 0,
+      "activeExplicitlyInactiveUser": 0
+    },
+    {
+      "collection": "teachingassignments",
+      "scanned": 14,
+      "active": 14,
+      "duplicateGroups": 0,
+      "missingTeacher": 3,
+      "missingSchool": 3,
+      "missingClass": 3,
+      "activeMissingEach": 3,
+      "invalidKindsOrClassParentAmongResolved": 0,
+      "activeExplicitlyInactiveTeacher": 0
+    },
+    {
+      "collection": "parentstudentrelationships",
+      "scanned": 6,
+      "active": 6,
+      "duplicateGroups": 0,
+      "missingParent": 0,
+      "missingStudent": 0,
+      "invalidKindsAmongResolved": 0,
+      "activeExplicitlyInactiveUser": 0
+    }
+  ],
+  "historical": [
+    {
+      "collection": "quizresults",
+      "scanned": 27,
+      "missingQuiz": 9,
+      "withObjectSnapshot": 9,
+      "withoutObjectSnapshot": 0,
+      "snapshotContentCertified": false
+    },
+    {
+      "collection": "reviewcards",
+      "scanned": 400,
+      "missingCurrentQuestion": 27
+    },
+    {
+      "collection": "lessonprogresses",
+      "scanned": 18,
+      "missingCurrentLesson": 17
+    }
+  ],
+  "retention": [
+    {
+      "collection": "aiinteractions",
+      "sourceCap": 1001,
+      "scope": "CAPPED_SAMPLE_NOT_COLLECTION_TOTAL",
+      "scanned": 1001,
+      "older30Days": 404,
+      "oldest": {
+        "$date": "2026-05-03T15:41:53.571Z"
+      },
+      "newest": {
+        "$date": "2026-10-05T15:23:01.411Z"
+      },
+      "withExpiry": 550,
+      "expiredDated": 0
+    },
+    {
+      "collection": "clientevents",
+      "sourceCap": 1001,
+      "scope": "SOURCE_CAP_NOT_REACHED_AT_QUERY_TIME",
+      "scanned": 52,
+      "older30Days": 52,
+      "oldest": {
+        "$date": "2026-05-03T18:16:29.760Z"
+      },
+      "newest": {
+        "$date": "2026-05-18T15:10:39.696Z"
+      }
+    },
+    {
+      "collection": "notificationdeliveries",
+      "sourceCap": 1001,
+      "scope": "SOURCE_CAP_NOT_REACHED_AT_QUERY_TIME",
+      "scanned": 136,
+      "older30Days": 71,
+      "oldest": {
+        "$date": "2026-05-16T10:15:26.776Z"
+      },
+      "newest": {
+        "$date": "2026-10-13T12:11:58.629Z"
+      }
+    },
+    {
+      "collection": "adminauditlogs",
+      "sourceCap": 1001,
+      "scope": "SOURCE_CAP_NOT_REACHED_AT_QUERY_TIME",
+      "scanned": 656,
+      "older30Days": 593,
+      "oldest": {
+        "$date": "2026-05-11T09:27:45.854Z"
+      },
+      "newest": {
+        "$date": "2026-10-13T16:37:16.904Z"
+      }
+    },
+    {
+      "collection": "liveexamsessions",
+      "sourceCap": 1001,
+      "scope": "SOURCE_CAP_NOT_REACHED_AT_QUERY_TIME",
+      "scanned": 0
+    },
+    {
+      "collection": "aiquestionassistcaches",
+      "sourceCap": 1001,
+      "scope": "SOURCE_CAP_NOT_REACHED_AT_QUERY_TIME",
+      "scanned": 0
+    }
+  ],
+  "metadata": {
+    "connectorIndexOptionsNotExposed": true,
+    "ttlExecutionNotCertified": true,
+    "nativeMetadataAttempts": 3,
+    "nativeFailure": "ENOTFOUND",
+    "nativeProductionWrites": 0
+  },
+  "tests": {
+    "commands": 5,
+    "reportedCheckGroups": 13,
+    "status": "PASS_STATIC_CONTRACTS_ONLY"
+  },
+  "safety": {
+    "productionDomainWrites": 0,
+    "indexWrites": 0,
+    "modelImports": 0,
+    "accountErasureCalls": 0,
+    "cleanupOrBackfillRuns": 0,
+    "personalFieldsExported": false,
+    "productionLoadTest": false
+  },
+  "requiredCI": "PENDING",
+  "limits": [
+    "source cap means 1001 AI rows are a bounded sample, not total inventory",
+    "sequential read-only queries are not a transactionally consistent snapshot",
+    "historical missing references are findings, not deletion candidates",
+    "existing policy has no approved new destructive retention durations",
+    "runtime capacity/billing and full lifecycle erasure certification remain separate",
+    "foreign lookup limit1 bounds returned rows, not documents examined; no query-plan/throughput certificate",
+    "withObjectSnapshot checks presence/type only, not full historical reconstruction",
+    "native DNS failures are local configured-URI metadata attempts; successful Atlas connector reads are separate"
+  ]
+}

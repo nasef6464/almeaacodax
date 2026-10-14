@@ -1,0 +1,2607 @@
+{
+  "at": "2026-10-14T08:27:50.225Z",
+  "baseline": "7861e34d26f5064acce724367363842fea3ff4aa",
+  "status": "READ_ONLY_BOUNDED_AUDIT_REVIEWED_POLICY_AND_HISTORY_REMAIN_PARTIAL",
+  "sourceDocumentLimit": 1001,
+  "collectionInventoryCount": 111,
+  "relationshipQueries": [
+    {
+      "collection": "schoolmemberships",
+      "pipeline": [
+        {
+          "$limit": 1001
+        },
+        {
+          "$lookup": {
+            "from": "users",
+            "let": {
+              "ref": "$userId",
+              "oid": {
+                "$convert": {
+                  "input": "$userId",
+                  "to": "objectId",
+                  "onError": null,
+                  "onNull": null
+                }
+              }
+            },
+            "pipeline": [
+              {
+                "$match": {
+                  "$expr": {
+                    "$or": [
+                      {
+                        "$eq": [
+                          "$_id",
+                          "$$oid"
+                        ]
+                      },
+                      {
+                        "$eq": [
+                          "$id",
+                          "$$ref"
+                        ]
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "$limit": 1
+              },
+              {
+                "$project": {
+                  "_id": 1,
+                  "role": 1,
+                  "isActive": 1,
+                  "type": 1,
+                  "parentId": 1
+                }
+              }
+            ],
+            "as": "user"
+          }
+        },
+        {
+          "$lookup": {
+            "from": "groups",
+            "let": {
+              "ref": "$schoolId",
+              "oid": {
+                "$convert": {
+                  "input": "$schoolId",
+                  "to": "objectId",
+                  "onError": null,
+                  "onNull": null
+                }
+              }
+            },
+            "pipeline": [
+              {
+                "$match": {
+                  "$expr": {
+                    "$or": [
+                      {
+                        "$eq": [
+                          "$_id",
+                          "$$oid"
+                        ]
+                      },
+                      {
+                        "$eq": [
+                          "$id",
+                          "$$ref"
+                        ]
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "$limit": 1
+              },
+              {
+                "$project": {
+                  "_id": 1,
+                  "role": 1,
+                  "isActive": 1,
+                  "type": 1,
+                  "parentId": 1
+                }
+              }
+            ],
+            "as": "school"
+          }
+        },
+        {
+          "$facet": {
+            "inventory": [
+              {
+                "$group": {
+                  "_id": null,
+                  "scanned": {
+                    "$sum": 1
+                  },
+                  "active": {
+                    "$sum": {
+                      "$cond": [
+                        {
+                          "$eq": [
+                            "$status",
+                            "active"
+                          ]
+                        },
+                        1,
+                        0
+                      ]
+                    }
+                  }
+                }
+              },
+              {
+                "$project": {
+                  "_id": 0
+                }
+              }
+            ],
+            "duplicates": [
+              {
+                "$group": {
+                  "_id": {
+                    "userId": "$userId",
+                    "schoolId": "$schoolId",
+                    "role": "$role"
+                  },
+                  "n": {
+                    "$sum": 1
+                  }
+                }
+              },
+              {
+                "$match": {
+                  "n": {
+                    "$gt": 1
+                  }
+                }
+              },
+              {
+                "$count": "groups"
+              }
+            ],
+            "missing_user": [
+              {
+                "$match": {
+                  "$expr": {
+                    "$eq": [
+                      {
+                        "$size": "$user"
+                      },
+                      0
+                    ]
+                  }
+                }
+              },
+              {
+                "$count": "n"
+              }
+            ],
+            "active_missing_user": [
+              {
+                "$match": {
+                  "status": "active",
+                  "$expr": {
+                    "$eq": [
+                      {
+                        "$size": "$user"
+                      },
+                      0
+                    ]
+                  }
+                }
+              },
+              {
+                "$count": "n"
+              }
+            ],
+            "missing_school": [
+              {
+                "$match": {
+                  "$expr": {
+                    "$eq": [
+                      {
+                        "$size": "$school"
+                      },
+                      0
+                    ]
+                  }
+                }
+              },
+              {
+                "$count": "n"
+              }
+            ],
+            "active_missing_school": [
+              {
+                "$match": {
+                  "status": "active",
+                  "$expr": {
+                    "$eq": [
+                      {
+                        "$size": "$school"
+                      },
+                      0
+                    ]
+                  }
+                }
+              },
+              {
+                "$count": "n"
+              }
+            ]
+          }
+        }
+      ],
+      "result": [
+        {
+          "inventory": [
+            {
+              "scanned": 113,
+              "active": 112
+            }
+          ],
+          "duplicates": [],
+          "missing_user": [
+            {
+              "n": 11
+            }
+          ],
+          "active_missing_user": [
+            {
+              "n": 11
+            }
+          ],
+          "missing_school": [
+            {
+              "n": 11
+            }
+          ],
+          "active_missing_school": [
+            {
+              "n": 11
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "collection": "teachingassignments",
+      "pipeline": [
+        {
+          "$limit": 1001
+        },
+        {
+          "$lookup": {
+            "from": "users",
+            "let": {
+              "ref": "$teacherId",
+              "oid": {
+                "$convert": {
+                  "input": "$teacherId",
+                  "to": "objectId",
+                  "onError": null,
+                  "onNull": null
+                }
+              }
+            },
+            "pipeline": [
+              {
+                "$match": {
+                  "$expr": {
+                    "$or": [
+                      {
+                        "$eq": [
+                          "$_id",
+                          "$$oid"
+                        ]
+                      },
+                      {
+                        "$eq": [
+                          "$id",
+                          "$$ref"
+                        ]
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "$limit": 1
+              },
+              {
+                "$project": {
+                  "_id": 1,
+                  "role": 1,
+                  "isActive": 1,
+                  "type": 1,
+                  "parentId": 1
+                }
+              }
+            ],
+            "as": "teacher"
+          }
+        },
+        {
+          "$lookup": {
+            "from": "groups",
+            "let": {
+              "ref": "$schoolId",
+              "oid": {
+                "$convert": {
+                  "input": "$schoolId",
+                  "to": "objectId",
+                  "onError": null,
+                  "onNull": null
+                }
+              }
+            },
+            "pipeline": [
+              {
+                "$match": {
+                  "$expr": {
+                    "$or": [
+                      {
+                        "$eq": [
+                          "$_id",
+                          "$$oid"
+                        ]
+                      },
+                      {
+                        "$eq": [
+                          "$id",
+                          "$$ref"
+                        ]
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "$limit": 1
+              },
+              {
+                "$project": {
+                  "_id": 1,
+                  "role": 1,
+                  "isActive": 1,
+                  "type": 1,
+                  "parentId": 1
+                }
+              }
+            ],
+            "as": "school"
+          }
+        },
+        {
+          "$lookup": {
+            "from": "groups",
+            "let": {
+              "ref": "$classId",
+              "oid": {
+                "$convert": {
+                  "input": "$classId",
+                  "to": "objectId",
+                  "onError": null,
+                  "onNull": null
+                }
+              }
+            },
+            "pipeline": [
+              {
+                "$match": {
+                  "$expr": {
+                    "$or": [
+                      {
+                        "$eq": [
+                          "$_id",
+                          "$$oid"
+                        ]
+                      },
+                      {
+                        "$eq": [
+                          "$id",
+                          "$$ref"
+                        ]
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "$limit": 1
+              },
+              {
+                "$project": {
+                  "_id": 1,
+                  "role": 1,
+                  "isActive": 1,
+                  "type": 1,
+                  "parentId": 1
+                }
+              }
+            ],
+            "as": "class"
+          }
+        },
+        {
+          "$facet": {
+            "inventory": [
+              {
+                "$group": {
+                  "_id": null,
+                  "scanned": {
+                    "$sum": 1
+                  },
+                  "active": {
+                    "$sum": {
+                      "$cond": [
+                        {
+                          "$eq": [
+                            "$status",
+                            "active"
+                          ]
+                        },
+                        1,
+                        0
+                      ]
+                    }
+                  }
+                }
+              },
+              {
+                "$project": {
+                  "_id": 0
+                }
+              }
+            ],
+            "duplicates": [
+              {
+                "$group": {
+                  "_id": {
+                    "teacherId": "$teacherId",
+                    "schoolId": "$schoolId",
+                    "classId": "$classId",
+                    "subjectId": "$subjectId"
+                  },
+                  "n": {
+                    "$sum": 1
+                  }
+                }
+              },
+              {
+                "$match": {
+                  "n": {
+                    "$gt": 1
+                  }
+                }
+              },
+              {
+                "$count": "groups"
+              }
+            ],
+            "missing_teacher": [
+              {
+                "$match": {
+                  "$expr": {
+                    "$eq": [
+                      {
+                        "$size": "$teacher"
+                      },
+                      0
+                    ]
+                  }
+                }
+              },
+              {
+                "$count": "n"
+              }
+            ],
+            "active_missing_teacher": [
+              {
+                "$match": {
+                  "status": "active",
+                  "$expr": {
+                    "$eq": [
+                      {
+                        "$size": "$teacher"
+                      },
+                      0
+                    ]
+                  }
+                }
+              },
+              {
+                "$count": "n"
+              }
+            ],
+            "missing_school": [
+              {
+                "$match": {
+                  "$expr": {
+                    "$eq": [
+                      {
+                        "$size": "$school"
+                      },
+                      0
+                    ]
+                  }
+                }
+              },
+              {
+                "$count": "n"
+              }
+            ],
+            "active_missing_school": [
+              {
+                "$match": {
+                  "status": "active",
+                  "$expr": {
+                    "$eq": [
+                      {
+                        "$size": "$school"
+                      },
+                      0
+                    ]
+                  }
+                }
+              },
+              {
+                "$count": "n"
+              }
+            ],
+            "missing_class": [
+              {
+                "$match": {
+                  "$expr": {
+                    "$eq": [
+                      {
+                        "$size": "$class"
+                      },
+                      0
+                    ]
+                  }
+                }
+              },
+              {
+                "$count": "n"
+              }
+            ],
+            "active_missing_class": [
+              {
+                "$match": {
+                  "status": "active",
+                  "$expr": {
+                    "$eq": [
+                      {
+                        "$size": "$class"
+                      },
+                      0
+                    ]
+                  }
+                }
+              },
+              {
+                "$count": "n"
+              }
+            ]
+          }
+        }
+      ],
+      "result": [
+        {
+          "inventory": [
+            {
+              "scanned": 14,
+              "active": 14
+            }
+          ],
+          "duplicates": [],
+          "missing_teacher": [
+            {
+              "n": 3
+            }
+          ],
+          "active_missing_teacher": [
+            {
+              "n": 3
+            }
+          ],
+          "missing_school": [
+            {
+              "n": 3
+            }
+          ],
+          "active_missing_school": [
+            {
+              "n": 3
+            }
+          ],
+          "missing_class": [
+            {
+              "n": 3
+            }
+          ],
+          "active_missing_class": [
+            {
+              "n": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "collection": "parentstudentrelationships",
+      "pipeline": [
+        {
+          "$limit": 1001
+        },
+        {
+          "$lookup": {
+            "from": "users",
+            "let": {
+              "ref": "$parentUserId",
+              "oid": {
+                "$convert": {
+                  "input": "$parentUserId",
+                  "to": "objectId",
+                  "onError": null,
+                  "onNull": null
+                }
+              }
+            },
+            "pipeline": [
+              {
+                "$match": {
+                  "$expr": {
+                    "$or": [
+                      {
+                        "$eq": [
+                          "$_id",
+                          "$$oid"
+                        ]
+                      },
+                      {
+                        "$eq": [
+                          "$id",
+                          "$$ref"
+                        ]
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "$limit": 1
+              },
+              {
+                "$project": {
+                  "_id": 1,
+                  "role": 1,
+                  "isActive": 1,
+                  "type": 1,
+                  "parentId": 1
+                }
+              }
+            ],
+            "as": "parent"
+          }
+        },
+        {
+          "$lookup": {
+            "from": "users",
+            "let": {
+              "ref": "$studentUserId",
+              "oid": {
+                "$convert": {
+                  "input": "$studentUserId",
+                  "to": "objectId",
+                  "onError": null,
+                  "onNull": null
+                }
+              }
+            },
+            "pipeline": [
+              {
+                "$match": {
+                  "$expr": {
+                    "$or": [
+                      {
+                        "$eq": [
+                          "$_id",
+                          "$$oid"
+                        ]
+                      },
+                      {
+                        "$eq": [
+                          "$id",
+                          "$$ref"
+                        ]
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "$limit": 1
+              },
+              {
+                "$project": {
+                  "_id": 1,
+                  "role": 1,
+                  "isActive": 1,
+                  "type": 1,
+                  "parentId": 1
+                }
+              }
+            ],
+            "as": "student"
+          }
+        },
+        {
+          "$facet": {
+            "inventory": [
+              {
+                "$group": {
+                  "_id": null,
+                  "scanned": {
+                    "$sum": 1
+                  },
+                  "active": {
+                    "$sum": {
+                      "$cond": [
+                        {
+                          "$eq": [
+                            "$status",
+                            "active"
+                          ]
+                        },
+                        1,
+                        0
+                      ]
+                    }
+                  }
+                }
+              },
+              {
+                "$project": {
+                  "_id": 0
+                }
+              }
+            ],
+            "duplicates": [
+              {
+                "$group": {
+                  "_id": {
+                    "parent": "$parentUserId",
+                    "student": "$studentUserId"
+                  },
+                  "n": {
+                    "$sum": 1
+                  }
+                }
+              },
+              {
+                "$match": {
+                  "n": {
+                    "$gt": 1
+                  }
+                }
+              },
+              {
+                "$count": "groups"
+              }
+            ],
+            "missing_parent": [
+              {
+                "$match": {
+                  "$expr": {
+                    "$eq": [
+                      {
+                        "$size": "$parent"
+                      },
+                      0
+                    ]
+                  }
+                }
+              },
+              {
+                "$count": "n"
+              }
+            ],
+            "active_missing_parent": [
+              {
+                "$match": {
+                  "status": "active",
+                  "$expr": {
+                    "$eq": [
+                      {
+                        "$size": "$parent"
+                      },
+                      0
+                    ]
+                  }
+                }
+              },
+              {
+                "$count": "n"
+              }
+            ],
+            "missing_student": [
+              {
+                "$match": {
+                  "$expr": {
+                    "$eq": [
+                      {
+                        "$size": "$student"
+                      },
+                      0
+                    ]
+                  }
+                }
+              },
+              {
+                "$count": "n"
+              }
+            ],
+            "active_missing_student": [
+              {
+                "$match": {
+                  "status": "active",
+                  "$expr": {
+                    "$eq": [
+                      {
+                        "$size": "$student"
+                      },
+                      0
+                    ]
+                  }
+                }
+              },
+              {
+                "$count": "n"
+              }
+            ]
+          }
+        }
+      ],
+      "result": [
+        {
+          "inventory": [
+            {
+              "scanned": 6,
+              "active": 6
+            }
+          ],
+          "duplicates": [],
+          "missing_parent": [],
+          "active_missing_parent": [],
+          "missing_student": [],
+          "active_missing_student": []
+        }
+      ]
+    }
+  ],
+  "kindChecks": [
+    {
+      "collection": "schoolmemberships",
+      "pipeline": [
+        {
+          "$limit": 1001
+        },
+        {
+          "$lookup": {
+            "from": "users",
+            "let": {
+              "ref": "$userId",
+              "oid": {
+                "$convert": {
+                  "input": "$userId",
+                  "to": "objectId",
+                  "onError": null,
+                  "onNull": null
+                }
+              }
+            },
+            "pipeline": [
+              {
+                "$match": {
+                  "$expr": {
+                    "$or": [
+                      {
+                        "$eq": [
+                          "$_id",
+                          "$$oid"
+                        ]
+                      },
+                      {
+                        "$eq": [
+                          "$id",
+                          "$$ref"
+                        ]
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "$limit": 1
+              },
+              {
+                "$project": {
+                  "_id": 1,
+                  "role": 1,
+                  "isActive": 1,
+                  "type": 1,
+                  "parentId": 1
+                }
+              }
+            ],
+            "as": "user"
+          }
+        },
+        {
+          "$lookup": {
+            "from": "groups",
+            "let": {
+              "ref": "$schoolId",
+              "oid": {
+                "$convert": {
+                  "input": "$schoolId",
+                  "to": "objectId",
+                  "onError": null,
+                  "onNull": null
+                }
+              }
+            },
+            "pipeline": [
+              {
+                "$match": {
+                  "$expr": {
+                    "$or": [
+                      {
+                        "$eq": [
+                          "$_id",
+                          "$$oid"
+                        ]
+                      },
+                      {
+                        "$eq": [
+                          "$id",
+                          "$$ref"
+                        ]
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "$limit": 1
+              },
+              {
+                "$project": {
+                  "_id": 1,
+                  "role": 1,
+                  "isActive": 1,
+                  "type": 1,
+                  "parentId": 1
+                }
+              }
+            ],
+            "as": "school"
+          }
+        },
+        {
+          "$facet": {
+            "invalidExistingReferenceKinds": [
+              {
+                "$match": {
+                  "$expr": {
+                    "$and": [
+                      {
+                        "$gt": [
+                          {
+                            "$size": "$user"
+                          },
+                          0
+                        ]
+                      },
+                      {
+                        "$gt": [
+                          {
+                            "$size": "$school"
+                          },
+                          0
+                        ]
+                      },
+                      {
+                        "$or": [
+                          {
+                            "$ne": [
+                              {
+                                "$first": "$user.role"
+                              },
+                              "$role"
+                            ]
+                          },
+                          {
+                            "$ne": [
+                              {
+                                "$first": "$school.type"
+                              },
+                              "SCHOOL"
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "$count": "n"
+              }
+            ],
+            "activeInactiveUser": [
+              {
+                "$match": {
+                  "status": "active",
+                  "$expr": {
+                    "$or": [
+                      {
+                        "$eq": [
+                          {
+                            "$first": "$user.isActive"
+                          },
+                          false
+                        ]
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "$count": "n"
+              }
+            ]
+          }
+        }
+      ],
+      "result": [
+        {
+          "invalidExistingReferenceKinds": [],
+          "activeInactiveUser": []
+        }
+      ]
+    },
+    {
+      "collection": "teachingassignments",
+      "pipeline": [
+        {
+          "$limit": 1001
+        },
+        {
+          "$lookup": {
+            "from": "users",
+            "let": {
+              "ref": "$teacherId",
+              "oid": {
+                "$convert": {
+                  "input": "$teacherId",
+                  "to": "objectId",
+                  "onError": null,
+                  "onNull": null
+                }
+              }
+            },
+            "pipeline": [
+              {
+                "$match": {
+                  "$expr": {
+                    "$or": [
+                      {
+                        "$eq": [
+                          "$_id",
+                          "$$oid"
+                        ]
+                      },
+                      {
+                        "$eq": [
+                          "$id",
+                          "$$ref"
+                        ]
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "$limit": 1
+              },
+              {
+                "$project": {
+                  "_id": 1,
+                  "role": 1,
+                  "isActive": 1,
+                  "type": 1,
+                  "parentId": 1
+                }
+              }
+            ],
+            "as": "teacher"
+          }
+        },
+        {
+          "$lookup": {
+            "from": "groups",
+            "let": {
+              "ref": "$schoolId",
+              "oid": {
+                "$convert": {
+                  "input": "$schoolId",
+                  "to": "objectId",
+                  "onError": null,
+                  "onNull": null
+                }
+              }
+            },
+            "pipeline": [
+              {
+                "$match": {
+                  "$expr": {
+                    "$or": [
+                      {
+                        "$eq": [
+                          "$_id",
+                          "$$oid"
+                        ]
+                      },
+                      {
+                        "$eq": [
+                          "$id",
+                          "$$ref"
+                        ]
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "$limit": 1
+              },
+              {
+                "$project": {
+                  "_id": 1,
+                  "role": 1,
+                  "isActive": 1,
+                  "type": 1,
+                  "parentId": 1
+                }
+              }
+            ],
+            "as": "school"
+          }
+        },
+        {
+          "$lookup": {
+            "from": "groups",
+            "let": {
+              "ref": "$classId",
+              "oid": {
+                "$convert": {
+                  "input": "$classId",
+                  "to": "objectId",
+                  "onError": null,
+                  "onNull": null
+                }
+              }
+            },
+            "pipeline": [
+              {
+                "$match": {
+                  "$expr": {
+                    "$or": [
+                      {
+                        "$eq": [
+                          "$_id",
+                          "$$oid"
+                        ]
+                      },
+                      {
+                        "$eq": [
+                          "$id",
+                          "$$ref"
+                        ]
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "$limit": 1
+              },
+              {
+                "$project": {
+                  "_id": 1,
+                  "role": 1,
+                  "isActive": 1,
+                  "type": 1,
+                  "parentId": 1
+                }
+              }
+            ],
+            "as": "class"
+          }
+        },
+        {
+          "$facet": {
+            "invalidExistingReferenceKinds": [
+              {
+                "$match": {
+                  "$expr": {
+                    "$and": [
+                      {
+                        "$gt": [
+                          {
+                            "$size": "$teacher"
+                          },
+                          0
+                        ]
+                      },
+                      {
+                        "$gt": [
+                          {
+                            "$size": "$school"
+                          },
+                          0
+                        ]
+                      },
+                      {
+                        "$gt": [
+                          {
+                            "$size": "$class"
+                          },
+                          0
+                        ]
+                      },
+                      {
+                        "$or": [
+                          {
+                            "$ne": [
+                              {
+                                "$first": "$teacher.role"
+                              },
+                              "teacher"
+                            ]
+                          },
+                          {
+                            "$ne": [
+                              {
+                                "$first": "$school.type"
+                              },
+                              "SCHOOL"
+                            ]
+                          },
+                          {
+                            "$ne": [
+                              {
+                                "$first": "$class.type"
+                              },
+                              "CLASS"
+                            ]
+                          },
+                          {
+                            "$ne": [
+                              {
+                                "$first": "$class.parentId"
+                              },
+                              "$schoolId"
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "$count": "n"
+              }
+            ],
+            "activeInactiveUser": [
+              {
+                "$match": {
+                  "status": "active",
+                  "$expr": {
+                    "$or": [
+                      {
+                        "$eq": [
+                          {
+                            "$first": "$teacher.isActive"
+                          },
+                          false
+                        ]
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "$count": "n"
+              }
+            ]
+          }
+        }
+      ],
+      "result": [
+        {
+          "invalidExistingReferenceKinds": [],
+          "activeInactiveUser": []
+        }
+      ]
+    },
+    {
+      "collection": "parentstudentrelationships",
+      "pipeline": [
+        {
+          "$limit": 1001
+        },
+        {
+          "$lookup": {
+            "from": "users",
+            "let": {
+              "ref": "$parentUserId",
+              "oid": {
+                "$convert": {
+                  "input": "$parentUserId",
+                  "to": "objectId",
+                  "onError": null,
+                  "onNull": null
+                }
+              }
+            },
+            "pipeline": [
+              {
+                "$match": {
+                  "$expr": {
+                    "$or": [
+                      {
+                        "$eq": [
+                          "$_id",
+                          "$$oid"
+                        ]
+                      },
+                      {
+                        "$eq": [
+                          "$id",
+                          "$$ref"
+                        ]
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "$limit": 1
+              },
+              {
+                "$project": {
+                  "_id": 1,
+                  "role": 1,
+                  "isActive": 1,
+                  "type": 1,
+                  "parentId": 1
+                }
+              }
+            ],
+            "as": "parent"
+          }
+        },
+        {
+          "$lookup": {
+            "from": "users",
+            "let": {
+              "ref": "$studentUserId",
+              "oid": {
+                "$convert": {
+                  "input": "$studentUserId",
+                  "to": "objectId",
+                  "onError": null,
+                  "onNull": null
+                }
+              }
+            },
+            "pipeline": [
+              {
+                "$match": {
+                  "$expr": {
+                    "$or": [
+                      {
+                        "$eq": [
+                          "$_id",
+                          "$$oid"
+                        ]
+                      },
+                      {
+                        "$eq": [
+                          "$id",
+                          "$$ref"
+                        ]
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "$limit": 1
+              },
+              {
+                "$project": {
+                  "_id": 1,
+                  "role": 1,
+                  "isActive": 1,
+                  "type": 1,
+                  "parentId": 1
+                }
+              }
+            ],
+            "as": "student"
+          }
+        },
+        {
+          "$facet": {
+            "invalidExistingReferenceKinds": [
+              {
+                "$match": {
+                  "$expr": {
+                    "$and": [
+                      {
+                        "$gt": [
+                          {
+                            "$size": "$parent"
+                          },
+                          0
+                        ]
+                      },
+                      {
+                        "$gt": [
+                          {
+                            "$size": "$student"
+                          },
+                          0
+                        ]
+                      },
+                      {
+                        "$or": [
+                          {
+                            "$ne": [
+                              {
+                                "$first": "$parent.role"
+                              },
+                              "parent"
+                            ]
+                          },
+                          {
+                            "$ne": [
+                              {
+                                "$first": "$student.role"
+                              },
+                              "student"
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "$count": "n"
+              }
+            ],
+            "activeInactiveUser": [
+              {
+                "$match": {
+                  "status": "active",
+                  "$expr": {
+                    "$or": [
+                      {
+                        "$eq": [
+                          {
+                            "$first": "$parent.isActive"
+                          },
+                          false
+                        ]
+                      },
+                      {
+                        "$eq": [
+                          {
+                            "$first": "$student.isActive"
+                          },
+                          false
+                        ]
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "$count": "n"
+              }
+            ]
+          }
+        }
+      ],
+      "result": [
+        {
+          "invalidExistingReferenceKinds": [],
+          "activeInactiveUser": []
+        }
+      ]
+    }
+  ],
+  "historicalQueries": [
+    {
+      "collection": "quizresults",
+      "pipeline": [
+        {
+          "$limit": 1001
+        },
+        {
+          "$lookup": {
+            "from": "quizzes",
+            "let": {
+              "ref": "$quizId",
+              "oid": {
+                "$convert": {
+                  "input": "$quizId",
+                  "to": "objectId",
+                  "onError": null,
+                  "onNull": null
+                }
+              }
+            },
+            "pipeline": [
+              {
+                "$match": {
+                  "$expr": {
+                    "$or": [
+                      {
+                        "$eq": [
+                          "$_id",
+                          "$$oid"
+                        ]
+                      },
+                      {
+                        "$eq": [
+                          "$id",
+                          "$$ref"
+                        ]
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "$limit": 1
+              },
+              {
+                "$project": {
+                  "_id": 1
+                }
+              }
+            ],
+            "as": "resolved"
+          }
+        },
+        {
+          "$group": {
+            "_id": null,
+            "scanned": {
+              "$sum": 1
+            },
+            "missingCurrentSource": {
+              "$sum": {
+                "$cond": [
+                  {
+                    "$eq": [
+                      {
+                        "$size": "$resolved"
+                      },
+                      0
+                    ]
+                  },
+                  1,
+                  0
+                ]
+              }
+            },
+            "missingWithObjectSnapshot": {
+              "$sum": {
+                "$cond": [
+                  {
+                    "$and": [
+                      {
+                        "$eq": [
+                          {
+                            "$size": "$resolved"
+                          },
+                          0
+                        ]
+                      },
+                      {
+                        "$eq": [
+                          {
+                            "$type": "$quizSnapshot"
+                          },
+                          "object"
+                        ]
+                      }
+                    ]
+                  },
+                  1,
+                  0
+                ]
+              }
+            },
+            "missingWithoutObjectSnapshot": {
+              "$sum": {
+                "$cond": [
+                  {
+                    "$and": [
+                      {
+                        "$eq": [
+                          {
+                            "$size": "$resolved"
+                          },
+                          0
+                        ]
+                      },
+                      {
+                        "$ne": [
+                          {
+                            "$type": "$quizSnapshot"
+                          },
+                          "object"
+                        ]
+                      }
+                    ]
+                  },
+                  1,
+                  0
+                ]
+              }
+            }
+          }
+        },
+        {
+          "$project": {
+            "_id": 0
+          }
+        }
+      ],
+      "result": [
+        {
+          "scanned": 27,
+          "missingCurrentSource": 9,
+          "missingWithObjectSnapshot": 9,
+          "missingWithoutObjectSnapshot": 0
+        }
+      ]
+    },
+    {
+      "collection": "reviewcards",
+      "pipeline": [
+        {
+          "$limit": 1001
+        },
+        {
+          "$lookup": {
+            "from": "questions",
+            "let": {
+              "ref": "$questionId",
+              "oid": {
+                "$convert": {
+                  "input": "$questionId",
+                  "to": "objectId",
+                  "onError": null,
+                  "onNull": null
+                }
+              }
+            },
+            "pipeline": [
+              {
+                "$match": {
+                  "$expr": {
+                    "$or": [
+                      {
+                        "$eq": [
+                          "$_id",
+                          "$$oid"
+                        ]
+                      },
+                      {
+                        "$eq": [
+                          "$id",
+                          "$$ref"
+                        ]
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "$limit": 1
+              },
+              {
+                "$project": {
+                  "_id": 1
+                }
+              }
+            ],
+            "as": "resolved"
+          }
+        },
+        {
+          "$group": {
+            "_id": null,
+            "scanned": {
+              "$sum": 1
+            },
+            "missingCurrentSource": {
+              "$sum": {
+                "$cond": [
+                  {
+                    "$eq": [
+                      {
+                        "$size": "$resolved"
+                      },
+                      0
+                    ]
+                  },
+                  1,
+                  0
+                ]
+              }
+            }
+          }
+        },
+        {
+          "$project": {
+            "_id": 0
+          }
+        }
+      ],
+      "result": [
+        {
+          "scanned": 400,
+          "missingCurrentSource": 27
+        }
+      ]
+    },
+    {
+      "collection": "lessonprogresses",
+      "pipeline": [
+        {
+          "$limit": 1001
+        },
+        {
+          "$lookup": {
+            "from": "lessons",
+            "let": {
+              "ref": "$lessonId",
+              "oid": {
+                "$convert": {
+                  "input": "$lessonId",
+                  "to": "objectId",
+                  "onError": null,
+                  "onNull": null
+                }
+              }
+            },
+            "pipeline": [
+              {
+                "$match": {
+                  "$expr": {
+                    "$or": [
+                      {
+                        "$eq": [
+                          "$_id",
+                          "$$oid"
+                        ]
+                      },
+                      {
+                        "$eq": [
+                          "$id",
+                          "$$ref"
+                        ]
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "$limit": 1
+              },
+              {
+                "$project": {
+                  "_id": 1
+                }
+              }
+            ],
+            "as": "resolved"
+          }
+        },
+        {
+          "$group": {
+            "_id": null,
+            "scanned": {
+              "$sum": 1
+            },
+            "missingCurrentSource": {
+              "$sum": {
+                "$cond": [
+                  {
+                    "$eq": [
+                      {
+                        "$size": "$resolved"
+                      },
+                      0
+                    ]
+                  },
+                  1,
+                  0
+                ]
+              }
+            }
+          }
+        },
+        {
+          "$project": {
+            "_id": 0
+          }
+        }
+      ],
+      "result": [
+        {
+          "scanned": 18,
+          "missingCurrentSource": 17
+        }
+      ]
+    }
+  ],
+  "retentionQueries": [
+    {
+      "collection": "aiinteractions",
+      "sourceCap": 1001,
+      "pipeline": [
+        {
+          "$limit": 1001
+        },
+        {
+          "$group": {
+            "_id": null,
+            "scanned": {
+              "$sum": 1
+            },
+            "older30Days": {
+              "$sum": {
+                "$cond": [
+                  {
+                    "$lt": [
+                      "$createdAt",
+                      {
+                        "$dateSubtract": {
+                          "startDate": "$$NOW",
+                          "unit": "day",
+                          "amount": 30
+                        }
+                      }
+                    ]
+                  },
+                  1,
+                  0
+                ]
+              }
+            },
+            "oldest": {
+              "$min": "$createdAt"
+            },
+            "newest": {
+              "$max": "$createdAt"
+            },
+            "withExpiry": {
+              "$sum": {
+                "$cond": [
+                  {
+                    "$eq": [
+                      {
+                        "$type": "$retentionUntil"
+                      },
+                      "date"
+                    ]
+                  },
+                  1,
+                  0
+                ]
+              }
+            },
+            "expiredDated": {
+              "$sum": {
+                "$cond": [
+                  {
+                    "$and": [
+                      {
+                        "$eq": [
+                          {
+                            "$type": "$retentionUntil"
+                          },
+                          "date"
+                        ]
+                      },
+                      {
+                        "$lt": [
+                          "$retentionUntil",
+                          "$$NOW"
+                        ]
+                      }
+                    ]
+                  },
+                  1,
+                  0
+                ]
+              }
+            }
+          }
+        },
+        {
+          "$project": {
+            "_id": 0
+          }
+        }
+      ],
+      "result": [
+        {
+          "scanned": 1001,
+          "older30Days": 404,
+          "oldest": {
+            "$date": "2026-05-03T15:41:53.571Z"
+          },
+          "newest": {
+            "$date": "2026-10-05T15:23:01.411Z"
+          },
+          "withExpiry": 550,
+          "expiredDated": 0
+        }
+      ]
+    },
+    {
+      "collection": "clientevents",
+      "sourceCap": 1001,
+      "pipeline": [
+        {
+          "$limit": 1001
+        },
+        {
+          "$group": {
+            "_id": null,
+            "scanned": {
+              "$sum": 1
+            },
+            "older30Days": {
+              "$sum": {
+                "$cond": [
+                  {
+                    "$lt": [
+                      "$createdAt",
+                      {
+                        "$dateSubtract": {
+                          "startDate": "$$NOW",
+                          "unit": "day",
+                          "amount": 30
+                        }
+                      }
+                    ]
+                  },
+                  1,
+                  0
+                ]
+              }
+            },
+            "oldest": {
+              "$min": "$createdAt"
+            },
+            "newest": {
+              "$max": "$createdAt"
+            }
+          }
+        },
+        {
+          "$project": {
+            "_id": 0
+          }
+        }
+      ],
+      "result": [
+        {
+          "scanned": 52,
+          "older30Days": 52,
+          "oldest": {
+            "$date": "2026-05-03T18:16:29.760Z"
+          },
+          "newest": {
+            "$date": "2026-05-18T15:10:39.696Z"
+          }
+        }
+      ]
+    },
+    {
+      "collection": "notificationdeliveries",
+      "sourceCap": 1001,
+      "pipeline": [
+        {
+          "$limit": 1001
+        },
+        {
+          "$group": {
+            "_id": null,
+            "scanned": {
+              "$sum": 1
+            },
+            "older30Days": {
+              "$sum": {
+                "$cond": [
+                  {
+                    "$lt": [
+                      "$createdAt",
+                      {
+                        "$dateSubtract": {
+                          "startDate": "$$NOW",
+                          "unit": "day",
+                          "amount": 30
+                        }
+                      }
+                    ]
+                  },
+                  1,
+                  0
+                ]
+              }
+            },
+            "oldest": {
+              "$min": "$createdAt"
+            },
+            "newest": {
+              "$max": "$createdAt"
+            }
+          }
+        },
+        {
+          "$project": {
+            "_id": 0
+          }
+        }
+      ],
+      "result": [
+        {
+          "scanned": 136,
+          "older30Days": 71,
+          "oldest": {
+            "$date": "2026-05-16T10:15:26.776Z"
+          },
+          "newest": {
+            "$date": "2026-10-13T12:11:58.629Z"
+          }
+        }
+      ]
+    },
+    {
+      "collection": "adminauditlogs",
+      "sourceCap": 1001,
+      "pipeline": [
+        {
+          "$limit": 1001
+        },
+        {
+          "$group": {
+            "_id": null,
+            "scanned": {
+              "$sum": 1
+            },
+            "older30Days": {
+              "$sum": {
+                "$cond": [
+                  {
+                    "$lt": [
+                      "$createdAt",
+                      {
+                        "$dateSubtract": {
+                          "startDate": "$$NOW",
+                          "unit": "day",
+                          "amount": 30
+                        }
+                      }
+                    ]
+                  },
+                  1,
+                  0
+                ]
+              }
+            },
+            "oldest": {
+              "$min": "$createdAt"
+            },
+            "newest": {
+              "$max": "$createdAt"
+            }
+          }
+        },
+        {
+          "$project": {
+            "_id": 0
+          }
+        }
+      ],
+      "result": [
+        {
+          "scanned": 656,
+          "older30Days": 593,
+          "oldest": {
+            "$date": "2026-05-11T09:27:45.854Z"
+          },
+          "newest": {
+            "$date": "2026-10-13T16:37:16.904Z"
+          }
+        }
+      ]
+    },
+    {
+      "collection": "liveexamsessions",
+      "sourceCap": 1001,
+      "pipeline": [
+        {
+          "$limit": 1001
+        },
+        {
+          "$group": {
+            "_id": null,
+            "scanned": {
+              "$sum": 1
+            },
+            "older30Days": {
+              "$sum": {
+                "$cond": [
+                  {
+                    "$lt": [
+                      "$createdAt",
+                      {
+                        "$dateSubtract": {
+                          "startDate": "$$NOW",
+                          "unit": "day",
+                          "amount": 30
+                        }
+                      }
+                    ]
+                  },
+                  1,
+                  0
+                ]
+              }
+            },
+            "oldest": {
+              "$min": "$createdAt"
+            },
+            "newest": {
+              "$max": "$createdAt"
+            }
+          }
+        },
+        {
+          "$project": {
+            "_id": 0
+          }
+        }
+      ],
+      "result": []
+    },
+    {
+      "collection": "aiquestionassistcaches",
+      "sourceCap": 1001,
+      "pipeline": [
+        {
+          "$limit": 1001
+        },
+        {
+          "$group": {
+            "_id": null,
+            "scanned": {
+              "$sum": 1
+            },
+            "older30Days": {
+              "$sum": {
+                "$cond": [
+                  {
+                    "$lt": [
+                      "$createdAt",
+                      {
+                        "$dateSubtract": {
+                          "startDate": "$$NOW",
+                          "unit": "day",
+                          "amount": 30
+                        }
+                      }
+                    ]
+                  },
+                  1,
+                  0
+                ]
+              }
+            },
+            "oldest": {
+              "$min": "$createdAt"
+            },
+            "newest": {
+              "$max": "$createdAt"
+            },
+            "withExpiry": {
+              "$sum": {
+                "$cond": [
+                  {
+                    "$eq": [
+                      {
+                        "$type": "$expiresAt"
+                      },
+                      "date"
+                    ]
+                  },
+                  1,
+                  0
+                ]
+              }
+            },
+            "expiredDated": {
+              "$sum": {
+                "$cond": [
+                  {
+                    "$and": [
+                      {
+                        "$eq": [
+                          {
+                            "$type": "$expiresAt"
+                          },
+                          "date"
+                        ]
+                      },
+                      {
+                        "$lt": [
+                          "$expiresAt",
+                          "$$NOW"
+                        ]
+                      }
+                    ]
+                  },
+                  1,
+                  0
+                ]
+              }
+            }
+          }
+        },
+        {
+          "$project": {
+            "_id": 0
+          }
+        }
+      ],
+      "result": []
+    }
+  ],
+  "indexNameInventory": [
+    {
+      "collection": "aiinteractions",
+      "result": {
+        "classicIndexes": [
+          {
+            "name": "_id_",
+            "key": {
+              "_id": 1
+            }
+          },
+          {
+            "name": "audience_1",
+            "key": {
+              "audience": 1
+            }
+          },
+          {
+            "name": "endpoint_1",
+            "key": {
+              "endpoint": 1
+            }
+          },
+          {
+            "name": "provider_1",
+            "key": {
+              "provider": 1
+            }
+          },
+          {
+            "name": "status_1",
+            "key": {
+              "status": 1
+            }
+          },
+          {
+            "name": "usedFallback_1",
+            "key": {
+              "usedFallback": 1
+            }
+          },
+          {
+            "name": "personalized_1",
+            "key": {
+              "personalized": 1
+            }
+          },
+          {
+            "name": "userId_1",
+            "key": {
+              "userId": 1
+            }
+          },
+          {
+            "name": "role_1",
+            "key": {
+              "role": 1
+            }
+          },
+          {
+            "name": "createdAt_-1",
+            "key": {
+              "createdAt": -1
+            }
+          },
+          {
+            "name": "endpoint_1_audience_1_createdAt_-1",
+            "key": {
+              "endpoint": 1,
+              "audience": 1,
+              "createdAt": -1
+            }
+          },
+          {
+            "name": "status_1_createdAt_-1",
+            "key": {
+              "status": 1,
+              "createdAt": -1
+            }
+          },
+          {
+            "name": "usedFallback_1_createdAt_-1",
+            "key": {
+              "usedFallback": 1,
+              "createdAt": -1
+            }
+          },
+          {
+            "name": "personalized_1_createdAt_-1",
+            "key": {
+              "personalized": 1,
+              "createdAt": -1
+            }
+          },
+          {
+            "name": "userId_1_createdAt_-1",
+            "key": {
+              "userId": 1,
+              "createdAt": -1
+            }
+          },
+          {
+            "name": "schoolId_1_endpoint_1_createdAt_-1",
+            "key": {
+              "schoolId": 1,
+              "endpoint": 1,
+              "createdAt": -1
+            }
+          },
+          {
+            "name": "createdAt_-1_totalTokens_1",
+            "key": {
+              "createdAt": -1,
+              "totalTokens": 1
+            }
+          },
+          {
+            "name": "retentionUntil_1",
+            "key": {
+              "retentionUntil": 1
+            }
+          }
+        ],
+        "searchIndexes": [],
+        "classicIndexesCount": 18,
+        "searchIndexesCount": 0
+      }
+    },
+    {
+      "collection": "clientevents",
+      "result": {
+        "classicIndexes": [
+          {
+            "name": "_id_",
+            "key": {
+              "_id": 1
+            }
+          },
+          {
+            "name": "severity_1",
+            "key": {
+              "severity": 1
+            }
+          },
+          {
+            "name": "source_1",
+            "key": {
+              "source": 1
+            }
+          },
+          {
+            "name": "path_1",
+            "key": {
+              "path": 1
+            }
+          },
+          {
+            "name": "userId_1",
+            "key": {
+              "userId": 1
+            }
+          },
+          {
+            "name": "role_1",
+            "key": {
+              "role": 1
+            }
+          },
+          {
+            "name": "resolved_1",
+            "key": {
+              "resolved": 1
+            }
+          },
+          {
+            "name": "createdAt_-1",
+            "key": {
+              "createdAt": -1
+            }
+          }
+        ],
+        "searchIndexes": [],
+        "classicIndexesCount": 8,
+        "searchIndexesCount": 0
+      }
+    },
+    {
+      "collection": "notificationdeliveries",
+      "result": {
+        "classicIndexes": [
+          {
+            "name": "_id_",
+            "key": {
+              "_id": 1
+            }
+          },
+          {
+            "name": "id_1",
+            "key": {
+              "id": 1
+            }
+          },
+          {
+            "name": "templateKey_1",
+            "key": {
+              "templateKey": 1
+            }
+          },
+          {
+            "name": "channel_1",
+            "key": {
+              "channel": 1
+            }
+          },
+          {
+            "name": "status_1",
+            "key": {
+              "status": 1
+            }
+          },
+          {
+            "name": "recipientUserId_1",
+            "key": {
+              "recipientUserId": 1
+            }
+          },
+          {
+            "name": "recipientRole_1",
+            "key": {
+              "recipientRole": 1
+            }
+          },
+          {
+            "name": "campaignId_1",
+            "key": {
+              "campaignId": 1
+            }
+          },
+          {
+            "name": "recipientUserId_1_channel_1_createdAt_-1",
+            "key": {
+              "recipientUserId": 1,
+              "channel": 1,
+              "createdAt": -1
+            }
+          },
+          {
+            "name": "status_1_channel_1_nextAttemptAt_1_createdAt_1",
+            "key": {
+              "status": 1,
+              "channel": 1,
+              "nextAttemptAt": 1,
+              "createdAt": 1
+            }
+          },
+          {
+            "name": "campaignId_1_status_1_createdAt_-1",
+            "key": {
+              "campaignId": 1,
+              "status": 1,
+              "createdAt": -1
+            }
+          },
+          {
+            "name": "createdBy_1_createdAt_-1",
+            "key": {
+              "createdBy": 1,
+              "createdAt": -1
+            }
+          }
+        ],
+        "searchIndexes": [],
+        "classicIndexesCount": 12,
+        "searchIndexesCount": 0
+      }
+    }
+  ],
+  "metadataLimits": {
+    "connectorIndexOptionsNotExposed": true,
+    "ttlExecutionNotCertified": true,
+    "nativeMetadataAttempts": 3,
+    "nativeFailure": "ENOTFOUND",
+    "nativeProductionWrites": 0
+  },
+  "safety": {
+    "productionDomainWrites": 0,
+    "indexWrites": 0,
+    "modelImports": 0,
+    "accountErasureCalls": 0,
+    "cleanupOrBackfillRuns": 0,
+    "personalFieldsExported": false,
+    "productionLoadTest": false
+  },
+  "limitations": [
+    "source cap means 1001 AI rows are a bounded sample, not total inventory",
+    "sequential read-only queries are not a transactionally consistent snapshot",
+    "historical missing references are findings, not deletion candidates",
+    "existing policy has no approved new destructive retention durations",
+    "runtime capacity/billing and full lifecycle erasure certification remain separate"
+  ]
+}
