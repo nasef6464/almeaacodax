@@ -37,5 +37,7 @@ schoolSkillAggregateSchema.index({
   skillId: 1,
   mastery: 1,
 });
+// Full authorized-roster reports join each identity without scanning all aggregates.
+schoolSkillAggregateSchema.index({ userId: 1 });
 
 export const SchoolSkillAggregateModel = mongoose.model("SchoolSkillAggregate", schoolSkillAggregateSchema);

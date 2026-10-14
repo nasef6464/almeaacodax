@@ -44,8 +44,14 @@ assert.ok(schema.includes('class/student drill-down requires pathId, subjectId a
 for (const role of ['"admin"','"supervisor"','"teacher"','"school_admin"']) {
   assert.ok(view.includes(role), `school aggregate staff scope lost ${role}`);
 }
-assert.ok(view.includes('resolveScopedStudents'));
-assert.ok(view.includes("(student.groupIds || []).map(String).includes(query.classId)"));
+assert.ok(view.includes('resolveScopedStudentQuery'));
+const scope=read('server/src/modules/quizzes/application/quizReportScope.ts');
+const join=read('server/src/modules/quizzes/application/schoolSkillReportJoin.ts');
+assert.ok(scope.includes('selectors.groupIds = options.classId'));
+assert.ok(scope.includes('$and: [authorityFilter, selectors]'));
+assert.ok(join.includes('$match: studentFilter'));
+assert.ok(join.includes('foreignField: "userId"'));
+assert.ok(aggregate.includes('schoolSkillAggregateSchema.index({ userId: 1 })'));
 assert.ok(!view.includes('QuizResultModel'), 'new school read endpoint must not scan QuizResult');
 assert.ok(!view.includes('QuestionAttemptModel'), 'new school read endpoint must not scan QuestionAttempt');
 for (const metric of ['supportRate','coverage','confidence','trendBreakdown']) {
