@@ -45,6 +45,7 @@ const envSchema = z.object({
   }, z.boolean()).default(true),
   RATE_LIMIT_GLOBAL_WINDOW_MS: z.coerce.number().int().min(1000).max(60 * 60 * 1000).default(60 * 1000),
   RATE_LIMIT_GLOBAL_LIMIT: z.coerce.number().int().min(50).max(5000).default(600),
+  RATE_LIMIT_SHARED_SOURCE_LIMIT: z.coerce.number().int().min(100).max(100000).default(5000),
   RATE_LIMIT_AUTH_WINDOW_MS: z.coerce.number().int().min(30 * 1000).max(24 * 60 * 60 * 1000).default(15 * 60 * 1000),
   RATE_LIMIT_AUTH_LIMIT: z.coerce.number().int().min(3).max(500).default(20),
   RATE_LIMIT_LOGIN_BURST_LIMIT: z.coerce.number().int().min(40).max(500).default(60),
@@ -52,6 +53,7 @@ const envSchema = z.object({
   RATE_LIMIT_LOGIN_SOURCE_FAILURE_LIMIT: z.coerce.number().int().min(3).max(500).default(10),
   RATE_LIMIT_SENSITIVE_WINDOW_MS: z.coerce.number().int().min(1000).max(60 * 60 * 1000).default(60 * 1000),
   RATE_LIMIT_SENSITIVE_LIMIT: z.coerce.number().int().min(10).max(2000).default(60),
+  RATE_LIMIT_SENSITIVE_SOURCE_LIMIT: z.coerce.number().int().min(10).max(20000).default(600),
   NOTIFICATION_QUEUE_ENABLED: z.preprocess((value) => {
     if (typeof value === "string") return ["true", "1", "yes", "on"].includes(value.trim().toLowerCase());
     return value;

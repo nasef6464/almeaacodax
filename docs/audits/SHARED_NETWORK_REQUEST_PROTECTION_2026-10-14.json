@@ -1,0 +1,21 @@
+{
+  "date": "2026-10-14",
+  "status": "LOCAL_VERIFIED_CI_PUBLICATION_PENDING",
+  "baseline": "40c87b8fb9ff09b84ad8f71587a0a2e00d0fbcfe",
+  "branch": "codex/shared-network-request-protection",
+  "defaults": { "globalPerActor": 600, "sensitivePerActor": 60, "coarsePerSource": 5000, "sensitivePerSource": 600 },
+  "isolated": { "signedAccounts": 50, "schoolRequests": 100, "schoolPassBefore": 10, "schoolPassAfter": 100,
+    "httpRequests": 700, "expectedStatusesVerified": true,
+    "testLimits": { "globalActor": 50, "sensitiveActor": 10, "coarseSource": 300, "heavySource": 120 },
+    "gradedSubmissions": 4, "persistedFrozenScores": [100,100,100,100] },
+  "identityUnit": { "exemptReads": 6, "addedExemptVerifications": 0, "privateVerifications": 2,
+    "invalidBearerPrecedence": true, "authUserMutations": 0, "mongoConnections": 0 },
+  "staticChecks": { "production": 5, "securityRBAC": 7, "login": 10, "apiSecurity": 6, "csrf": 5, "classroom": 37, "totalPass": 70 },
+  "build": "PASS",
+  "independentReview": "APPROVED_NO_ACTIONABLE_BLOCKER_22_STATIC_CHECKS_INDEPENDENTLY_PASSED",
+  "safety": { "productionDomainRecordWrites": 0, "modelIndexChanges": 0, "manualRedisCommands": 0,
+    "paidInfrastructureChanges": 0, "productionLoadTest": false, "authUserPrimerMutation": false },
+  "requiredCI": "PENDING", "publication": "PENDING",
+  "notProven": ["Redis failure runtime certification", "multi-instance capacity", "full forwarded-IP topology", "production scale/billing/resources"],
+  "remaining": ["relationships and retention", "production resources/bandwidth/billing and capacity", "concurrent command HTTP replay", "legacy Saher smoke"]
+}
