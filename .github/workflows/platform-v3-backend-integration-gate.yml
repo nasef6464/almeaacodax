@@ -103,6 +103,8 @@ jobs:
         run: |
           server/node_modules/.bin/tsx scripts/test-school-assessment-workspace.ts
           server/node_modules/.bin/tsx scripts/test-school-assessment-report.ts
+          server/node_modules/.bin/tsx scripts/test-school-assessment-editing.ts
+          server/node_modules/.bin/tsx scripts/test-school-assessment-teacher-authority.ts
 
       - name: Courses access and payment recovery behavioral regressions
         run: |

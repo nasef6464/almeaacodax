@@ -12,6 +12,7 @@
   "backendRouteSignatures": [
     "schoolAssessmentsRouter|GET|/:id/context",
     "schoolAssessmentsRouter|GET|/:id/report",
+    "schoolAssessmentsRouter|POST|/:id/clone",
     "quizRetakeRouter|POST|/:id/retakes",
     "contentStudyPlanRouter|GET|/study-plans",
     "adaptiveMasteryRouter|GET|/mastery-goals",

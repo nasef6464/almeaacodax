@@ -4,7 +4,7 @@ import { AccessGrantModel } from "../../../models/AccessGrant.js";
 import { B2BPackageModel } from "../../../models/B2BPackage.js";
 import { CourseModel } from "../../../models/Course.js";
 import { GroupModel } from "../../../models/Group.js";
-import { TeachingAssignmentModel } from "../../../models/TeachingAssignment.js";
+import { resolveTeacherAssessmentClassIds } from './teacherAssessmentClassScope.js';
 import { UserModel } from "../../../models/User.js";
 import { getActivePathIds, isStaffRole } from "../../../services/visibility.js";
 import { resolveSupervisorSchoolReportScope } from "../application/quizReportScope.js";
@@ -61,7 +61,7 @@ export const assertSupervisorDirectedQuizScope = async (
 
 export const assertTeacherDirectedQuizScope = async (
   authUser: any,
-  payload: { subjectId?: unknown; targetGroupIds?: unknown; targetUserIds?: unknown },
+  payload: { subjectId?: unknown; mockExam?:unknown; targetGroupIds?: unknown; targetUserIds?: unknown },
 ) => {
   if (authUser.role !== "teacher") return;
 
@@ -70,13 +70,7 @@ export const assertTeacherDirectedQuizScope = async (
   if (targetGroupIds.length === 0 && targetUserIds.length === 0) return;
 
   const teacherId = String(authUser.id || "").trim();
-  const assignments = teacherId
-    ? await TeachingAssignmentModel.find({ teacherId, status: "active" })
-        .select("schoolId classId subjectId")
-        .lean()
-    : [];
-
-  const allowedClassIds = uniqueStrings(assignments.map((assignment: any) => String(assignment.classId || "")));
+  const allowedClassIds = teacherId?await resolveTeacherAssessmentClassIds(authUser,payload):[];
   if (allowedClassIds.length === 0) {
     throw directedScopeForbidden("Teacher has no active class assignments");
   }
@@ -85,20 +79,6 @@ export const assertTeacherDirectedQuizScope = async (
   const outsideGroupIds = targetGroupIds.filter((groupId) => !allowedClassSet.has(groupId));
   if (outsideGroupIds.length > 0) {
     throw directedScopeForbidden("Directed quiz targets classes outside teacher assignments");
-  }
-
-  const subjectId = String(payload.subjectId || "").trim();
-  if (subjectId) {
-    const relevantAssignments = targetGroupIds.length > 0
-      ? assignments.filter((assignment: any) => targetGroupIds.includes(String(assignment.classId || "")))
-      : assignments;
-    const matchesSubject = relevantAssignments.some((assignment: any) => {
-      const assignedSubjectId = String(assignment.subjectId || "").trim();
-      return !assignedSubjectId || assignedSubjectId === subjectId;
-    });
-    if (!matchesSubject) {
-      throw directedScopeForbidden("Directed quiz subject is outside teacher assignments");
-    }
   }
 
   if (targetUserIds.length > 0) {

@@ -34,6 +34,9 @@ const buildDocumentsByIdsQuery = (values: string[]) => {
  */
 const canStartDirectedQuiz = async (quiz: any, authUser: { id: string; role: string }) => {
   if (isStaffRole(authUser.role)) return true;
+  // A draft remains editable and must not acquire a learner session before
+  // publication. This also closes the draft-edit/first-start race.
+  if (quiz.isPublished !== true) return false;
 
   const targetUserIds = new Set((quiz.targetUserIds || []).map(String));
   const targetGroupIds = Array.from(new Set<string>((quiz.targetGroupIds || []).map(String)));

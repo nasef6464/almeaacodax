@@ -22,6 +22,8 @@ import { getActivePathIds, isStaffRole, withLearnerVisiblePaths } from "../servi
 import { quizSchema } from "../modules/quizzes/http/quizDefinitionSchema.js";
 import { validateQuizWindow, getQuizAvailability } from "../modules/quizzes/application/quizAvailability.js";
 import { applyQuizViewerPolicy } from "../modules/quizzes/application/quizViewerPolicy.js";
+import { assertSchoolAssessmentDefinitionEditable,prepareSchoolDraftPublication,schoolAssessmentWrite } from '../modules/quizzes/application/schoolAssessmentEditing.js';
+import { resolveSchoolAssessmentContext,assertSchoolAssessmentAudience } from '../modules/quizzes/application/schoolAssessmentManagementPolicy.js';
 import { quizRetakeRouter } from "../modules/quizzes/http/quizRetakeRoutes.js";
 import { quizSubmitSchema } from "../modules/quizzes/http/submissionSchemas.js";
 import { sanitizeQuestionForLearner } from "../modules/quizzes/presentation/questionPresentation.js";
@@ -401,6 +403,14 @@ const handleQuizUpdate = asyncHandler(async (req, res) => {
     ...existing.toObject(),
     ...payload,
   };
+  let directorManagement=false;
+  if(req.authUser?.role==='school_admin'){
+    const context=await resolveSchoolAssessmentContext(req.authUser,String(req.params.id));
+    if(existing.ownerType!=='school'||existing.mode!=='central'||proposedState.mode!=='central')
+      return res.status(403).json({message:'School assessment management required'});
+    await assertSchoolAssessmentAudience(context,proposedState);
+    directorManagement=true;
+  }
   validateQuizWindow(proposedState);
   const isTeacherDirectedAssessment =
     req.authUser?.role === "teacher" && hasDirectedQuizTargets(proposedState);
@@ -410,6 +420,8 @@ const handleQuizUpdate = asyncHandler(async (req, res) => {
   }
   await assertSupervisorDirectedQuizScope(req.authUser!, proposedState);
   await assertTeacherDirectedQuizScope(req.authUser!, proposedState);
+
+  const guardedSchoolContentEdit=await assertSchoolAssessmentDefinitionEditable(existing.toObject(),{...payload,questions:req.body.questions});
 
   if (Array.isArray(req.body.questions) && req.body.questions.length > 0) {
     const nextPathId = String(payload.pathId || existing.pathId || "").trim();
@@ -432,11 +444,12 @@ const handleQuizUpdate = asyncHandler(async (req, res) => {
         }
       : {}),
   });
-  const sanitizedPayload = sanitizeWorkflowUpdate(
+  let sanitizedPayload = sanitizeWorkflowUpdate(
     buildQuizUpdateDocument(roleScopedPayload as Record<string, unknown>, resolvedSkillIds),
     req.authUser!,
-    { respectPublished: true },
+    { respectPublished: true, canManageSchoolAssessment:directorManagement },
   );
+  sanitizedPayload=prepareSchoolDraftPublication(existing.toObject(),payload,req.authUser!,sanitizedPayload);
   const nextQuizState = buildQuizValidationState(
     existing.toObject() as Record<string, unknown>,
     normalizedPayload as Record<string, unknown>,
@@ -456,7 +469,10 @@ const handleQuizUpdate = asyncHandler(async (req, res) => {
       });
     }
   }
-  const updated = await QuizModel.findOneAndUpdate(documentQuery, sanitizedPayload, { new: true });
+  // A first publication or another update must win over a stale draft editor.
+  const write=schoolAssessmentWrite(existing.toObject(),sanitizedPayload,documentQuery,guardedSchoolContentEdit);
+  const updated = await QuizModel.findOneAndUpdate(write.query, write.update, { new: true });
+  if(!updated)return res.status(409).json({message:'تغير الاختبار أثناء التعديل؛ أعد فتحه أو أنشئ نسخة.'});
   if (updated?.isPublished) {
     await publishAssessmentVersion({
       assessmentId: String(updated.id || updated._id),
@@ -467,8 +483,8 @@ const handleQuizUpdate = asyncHandler(async (req, res) => {
   return res.json(updated);
 });
 
-quizRouter.patch("/:id", requireAuth, requireRole(["admin", "teacher", "supervisor"]), handleQuizUpdate);
-quizRouter.put("/:id", requireAuth, requireRole(["admin", "teacher", "supervisor"]), handleQuizUpdate);
+quizRouter.patch("/:id", requireAuth, requireRole(["admin", "teacher", "supervisor", "school_admin"]), handleQuizUpdate);
+quizRouter.put("/:id", requireAuth, requireRole(["admin", "teacher", "supervisor", "school_admin"]), handleQuizUpdate);
 
 quizRouter.post(
   "/:id/questions",
@@ -491,6 +507,7 @@ quizRouter.post(
     await assertTeacherDirectedQuizScope(req.authUser!, existingState);
 
     const rawQuestions = Array.isArray(req.body.questions) ? req.body.questions : [req.body];
+    const contentEdit=await assertSchoolAssessmentDefinitionEditable(existingState,{questions:rawQuestions});
     const newQuestionIds = await processInlineQuestions(
       rawQuestions,
       String(existing.pathId || ""),
@@ -502,11 +519,9 @@ quizRouter.post(
     const existingQuestionIds = Array.isArray(existing.questionIds) ? existing.questionIds : [];
     const updatedQuestionIds = uniqueStrings([...existingQuestionIds, ...newQuestionIds]);
 
-    const updated = await QuizModel.findOneAndUpdate(
-      documentQuery,
-      { questionIds: updatedQuestionIds },
-      { new: true },
-    );
+    const write=schoolAssessmentWrite(existingState,{questionIds:updatedQuestionIds},documentQuery,contentEdit);
+    const updated = await QuizModel.findOneAndUpdate(write.query,write.update,{new:true});
+    if(!updated)return res.status(409).json({message:'تغير الاختبار أثناء التعديل؛ أعد فتحه أو أنشئ نسخة.'});
     return res.json(updated);
   }),
 );

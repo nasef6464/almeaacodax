@@ -1816,3 +1816,5 @@ IN_PROGRESS on codex/student-path-experience from main@68f98819. Owner approved 
 
 ## Current strict runner follow-up — 2026-10-10
 29 bounded production checks PASS. Exact local build proved a third defect: section time172 to180 and lost closed-state after reload. Optional local strict deadlines/locks now preserve time173 to165 and closed state in actual UI; typecheck/build/mock regressions PASS. Final exact-head CI and published replay pending. Full system remains PARTIAL.
+## School assessment edit/copy checkpoint — 2026-10-14
+IN_PROGRESS / codex/school-assessment-workspace / PR551. Local edit/copy HTTP, stale-publication CAS, director permission revocation, foreign-audience denial, school discovery and mobile390px UI PASS. Shared __v fencing covers school PATCH/PUT/append; director writes reload permission/module/audience. Server typecheck and three policy contracts PASS; Frontend typecheck PASS; new source CI pending. Prior73f3cae2 required CI PASS applies only to that head. Composition, durable commands, full mock/learner detail and published closure remain open.

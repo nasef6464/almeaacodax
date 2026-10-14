@@ -56,7 +56,7 @@ export const getWorkflowDefaults = (authUser?: QuizWorkflowUser) => {
 export const sanitizeWorkflowUpdate = (
   payload: Record<string, unknown>,
   authUser: QuizWorkflowUser,
-  options?: { respectPublished?: boolean },
+  options?: { respectPublished?: boolean; canManageSchoolAssessment?:boolean },
 ) => {
   const nextPayload = { ...payload };
 
@@ -69,7 +69,7 @@ export const sanitizeWorkflowUpdate = (
     delete nextPayload.reviewerNotes;
     delete nextPayload.revenueSharePercentage;
 
-    if (authUser.role === "supervisor") {
+    if (authUser.role === "supervisor" || (authUser.role === "school_admin" && options?.canManageSchoolAssessment)) {
       delete nextPayload.approvalStatus;
     } else {
       if (typeof nextPayload.approvalStatus === "string" && nextPayload.approvalStatus === "approved") {

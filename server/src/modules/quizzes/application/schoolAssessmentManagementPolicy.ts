@@ -1,7 +1,7 @@
 import { UserModel } from '../../../models/User.js';
 import { GroupModel } from '../../../models/Group.js';
 import { QuizModel } from '../../../models/Quiz.js';
-import { TeachingAssignmentModel } from '../../../models/TeachingAssignment.js';
+import { resolveTeacherAssessmentClassIds } from './teacherAssessmentClassScope.js';
 import { buildDocumentQuery, buildDocumentsByIdsQuery } from '../infrastructure/quizDocumentQuery.js';
 import { resolveSchoolDirectoryScope } from '../../schools/application/schoolDirectoryScope.js';
 import { requireSchoolDirectorCapability } from '../../schools/application/schoolDirectorAccess.js';
@@ -22,17 +22,12 @@ export async function resolveSchoolAssessmentContext(principal: { id?: unknown; 
   if (!quiz) fail(404, 'Assessment not found');
   const groupTargets = ids(quiz!.targetGroupIds);
   const userTargets = ids(quiz!.targetUserIds);
-  if (!groupTargets.length && !userTargets.length) fail(404, 'Directed assessment required');
-  const assignments = actor.role === 'teacher'
-    ? await TeachingAssignmentModel.find({teacherId:actor.id,status:'active'}).select('classId subjectId').lean() : [];
+  const hasTargets=Boolean(groupTargets.length||userTargets.length);
+  if(!hasTargets&&(quiz!.mode!=='central'||quiz!.isPublished))fail(404,'Directed assessment or private school draft required');
   const directory = await resolveSchoolDirectoryScope(actor);
-  const subjects = ids((quiz!.mockExam?.enabled && quiz!.mockExam.sections?.length
-    ? quiz!.mockExam.sections.map(s=>s.subjectId) : [quiz!.subjectId]).filter(Boolean));
   // Bind each subject to the same class; assignments in a different class are
   // not a subject grant. Canonical inactive memberships override old fields.
-  const teacherClassIds = ids(assignments.map(a=>a.classId)).filter(classId=>
-    directory.groupIds.includes(classId) && subjects.every(subject=>
-      assignments.some(a=>a.classId===classId&&(!a.subjectId||a.subjectId===subject))));
+  const teacherClassIds = actor.role==='teacher'?await resolveTeacherAssessmentClassIds(actor,quiz!,directory):[];
   const scope = actor.role === 'teacher'
     ? { schoolIds: [] as string[], groupIds: teacherClassIds }
     : {schoolIds:directory.schoolIds,groupIds:directory.groupIds};
@@ -62,16 +57,34 @@ export async function resolveSchoolAssessmentContext(principal: { id?: unknown; 
   const authority = actor.role === 'admin' ? {role:'student'} : await audiencePredicate(ids([...scope.groupIds,...scope.schoolIds]),[]);
   const targetPredicate = {$and:[authority,target]};
   const hasVisibleTarget = await UserModel.exists(targetPredicate).setOptions({strictQuery:false});
-  if (!hasVisibleTarget && actor.role !== 'admin') fail(404,'Assessment outside assigned scope');
-  const owns = actor.role==='admin' || directorCanManage || (actor.role!=='school_admin' && [quiz!.ownerId,quiz!.createdBy,quiz!.assignedTeacherId].includes(actor.id))
+  const ownsDefinition = actor.role==='admin' || [quiz!.ownerId,quiz!.createdBy,quiz!.assignedTeacherId].includes(actor.id)
     || (scope.schoolIds.length>0 && [quiz!.ownerId,quiz!.createdBy].some(id=>scope.schoolIds.includes(String(id))));
+  const owns=ownsDefinition||(hasTargets&&directorCanManage);
   const outsideGroups = actor.role!=='admin' && groupTargets.some(id=>![...scope.groupIds,...scope.schoolIds].includes(id));
   const outsideUsers = actor.role!=='admin' && userTargets.length
     ? await UserModel.countDocuments({$and:[{role:'student',...buildDocumentsByIdsQuery(userTargets)},{$nor:[authority]}]}).setOptions({strictQuery:false}) : 0;
-  const canManage = Boolean(owns && !outsideGroups && !outsideUsers && (actor.role!=='school_admin'||directorCanManage));
+  const hasScope=actor.role==='admin'||scope.groupIds.length>0||scope.schoolIds.length>0;
+  const canManage = Boolean(owns && hasScope && !outsideGroups && !outsideUsers && (actor.role!=='school_admin'||directorCanManage));
+  // Private copies and classes without enrolled learners must still be manageable
+  // by their authorized author; this never turns an empty audience into everyone.
+  if(!hasVisibleTarget&&!canManage)fail(404,'Assessment outside assigned scope');
   return { actor, quiz:quiz!, scope, targetPredicate, authorityPredicate:authority, canManage };
 }
 export type SchoolAssessmentContext = Awaited<ReturnType<typeof resolveSchoolAssessmentContext>>;
 export async function assertSchoolAssessmentOperation(context: SchoolAssessmentContext, operation: SchoolAssessmentOperation) {
   if (!context.canManage) fail(403,'Assessment management outside assigned authority');
+}
+
+export async function assertSchoolAssessmentAudience(context:SchoolAssessmentContext,definition:any){
+  await assertSchoolAssessmentOperation(context,'edit');
+  const groupIds=ids(definition.targetGroupIds),studentIds=ids(definition.targetUserIds);
+  if(context.actor.role==='admin')return;
+  const allowed=new Set([...context.scope.schoolIds,...context.scope.groupIds]);
+  if(groupIds.some(id=>!allowed.has(id)))fail(403,'Audience outside school assessment authority');
+  if(studentIds.length){
+    const students=await UserModel.find({$and:[context.authorityPredicate,buildDocumentsByIdsQuery(studentIds)]})
+      .setOptions({strictQuery:false}).select('id _id').lean();
+    const found=new Set(students.flatMap((student:any)=>[student.id,String(student._id)].filter(Boolean)));
+    if(studentIds.some(id=>!found.has(id)))fail(403,'Student outside school assessment authority');
+  }
 }
