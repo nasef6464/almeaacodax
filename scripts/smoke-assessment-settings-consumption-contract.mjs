@@ -62,7 +62,7 @@ check('new builder payload drops legacy aliases', () => {
 });
 
 check('unified builder consumes the shared resolver and canonical writer', () => {
-  assert.ok(builderSource.includes('resolveAssessmentSettings(editingQuiz?.settings, defaults)'));
+  assert.ok(builderSource.includes('resolveAssessmentSettings(seedQuiz?.settings, defaults)'));
   assert.ok(builderSource.includes('settings: toCanonicalAssessmentSettingsPayload({'));
   assert.ok(!builderSource.includes('          shuffleOptions,'));
 });
