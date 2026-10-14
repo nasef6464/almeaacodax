@@ -1,0 +1,141 @@
+{
+  "date": "2026-10-15",
+  "source": "تجميع انشيتن معدل(2).pdf",
+  "verified_pdf_pages": [
+    9,
+    10
+  ],
+  "status": "FIVE_SOURCE_IMAGE_VERIFIED_CANDIDATES_NO_ATLAS_WRITES",
+  "items": [
+    {
+      "page": 9,
+      "n": 10,
+      "to": "sub_quant_03_1",
+      "reason": "جمع كسرين جبريين بتوحيد المقامات؛ لا يتضمن مقارنة بين كسور",
+      "questionCode": "QDR-QNT-COL2627-P009-Q10",
+      "source_page_visual_reviewed": true,
+      "old": {
+        "skillId": "skill_quant_03",
+        "subSkillId": "sub_quant_03_3",
+        "skillIds": [
+          "skill_quant_03",
+          "sub_quant_03_3"
+        ]
+      },
+      "proposed": {
+        "skillId": "skill_quant_03",
+        "subSkillId": "sub_quant_03_1",
+        "skillIds": [
+          "skill_quant_03",
+          "sub_quant_03_1"
+        ]
+      },
+      "status": "PENDING_APPROVED_WRITE_ROUTE"
+    },
+    {
+      "page": 10,
+      "n": 19,
+      "to": "sub_quant_03_2",
+      "reason": "تبسيط كسر مركب من المقام البسيط؛ قسمة الكسور",
+      "questionCode": "QDR-QNT-COL2627-P010-Q19",
+      "source_page_visual_reviewed": true,
+      "old": {
+        "skillId": "skill_quant_03",
+        "subSkillId": "sub_quant_03_3",
+        "skillIds": [
+          "skill_quant_03",
+          "sub_quant_03_3"
+        ]
+      },
+      "proposed": {
+        "skillId": "skill_quant_03",
+        "subSkillId": "sub_quant_03_2",
+        "skillIds": [
+          "skill_quant_03",
+          "sub_quant_03_2"
+        ]
+      },
+      "status": "PENDING_APPROVED_WRITE_ROUTE"
+    },
+    {
+      "page": 10,
+      "n": 20,
+      "to": "sub_quant_03_2",
+      "reason": "قسمة كسر مركب وبسط على كسور",
+      "questionCode": "QDR-QNT-COL2627-P010-Q20",
+      "source_page_visual_reviewed": true,
+      "old": {
+        "skillId": "skill_quant_03",
+        "subSkillId": "sub_quant_03_3",
+        "skillIds": [
+          "skill_quant_03",
+          "sub_quant_03_3"
+        ]
+      },
+      "proposed": {
+        "skillId": "skill_quant_03",
+        "subSkillId": "sub_quant_03_2",
+        "skillIds": [
+          "skill_quant_03",
+          "sub_quant_03_2"
+        ]
+      },
+      "status": "PENDING_APPROVED_WRITE_ROUTE"
+    },
+    {
+      "page": 10,
+      "n": 24,
+      "to": "sub_quant_03_2",
+      "reason": "كسر مركب تحوّل إلى قسمة كسور",
+      "questionCode": "QDR-QNT-COL2627-P010-Q24",
+      "source_page_visual_reviewed": true,
+      "old": {
+        "skillId": "skill_quant_03",
+        "subSkillId": "sub_quant_03_3",
+        "skillIds": [
+          "skill_quant_03",
+          "sub_quant_03_3"
+        ]
+      },
+      "proposed": {
+        "skillId": "skill_quant_03",
+        "subSkillId": "sub_quant_03_2",
+        "skillIds": [
+          "skill_quant_03",
+          "sub_quant_03_2"
+        ]
+      },
+      "status": "PENDING_APPROVED_WRITE_ROUTE"
+    },
+    {
+      "page": 10,
+      "n": 25,
+      "to": "sub_quant_03_2",
+      "reason": "تبسيط كسر جبري مركب؛ قسمة الكسور بعد توحيد المقامات",
+      "questionCode": "QDR-QNT-COL2627-P010-Q25",
+      "source_page_visual_reviewed": true,
+      "old": {
+        "skillId": "skill_quant_03",
+        "subSkillId": "sub_quant_03_3",
+        "skillIds": [
+          "skill_quant_03",
+          "sub_quant_03_3"
+        ]
+      },
+      "proposed": {
+        "skillId": "skill_quant_03",
+        "subSkillId": "sub_quant_03_2",
+        "skillIds": [
+          "skill_quant_03",
+          "sub_quant_03_2"
+        ]
+      },
+      "status": "PENDING_APPROVED_WRITE_ROUTE"
+    }
+  ],
+  "disallowed": [
+    "No blanket relabeling all of pages 9-10. Each indexed source question requires conceptual proof.",
+    "Do not replace foundation topic or historical learner attempt IDs.",
+    "Do not run approved migrations until the security write hold is resolved and isolated dry-run passes."
+  ]
+}
