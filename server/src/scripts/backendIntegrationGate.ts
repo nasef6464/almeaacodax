@@ -853,7 +853,7 @@ async function runAssessmentJourney(csrf: CsrfContext) {
   assert.equal(latestVersion?.version, 2, "published update did not append immutable version 2");
   assert.equal(latestVersion?.definition?.title, "Platform V3 immutable assessment version", "immutable version did not retain updated title");
   assert.deepEqual(latestVersion?.definition?.questionIds, [ASSESSMENT_QUESTION_ID], "immutable version lost selected questions");
-  assert.equal((latestVersion?.definition as any)?.settings?.timeLimit, undefined, "rejected timing change entered immutable version");
+  assert.equal((latestVersion?.definition as any)?.settings?.timeLimit, (initialVersion!.definition as any)?.settings?.timeLimit, "rejected timing change entered immutable version");
   assert.equal((latestVersion?.definition as any)?.settings?.passingScore,60,"title update changed scoring");
   assert.deepEqual((await AssessmentVersionModel.findOne({assessmentId:ASSESSMENT_QUIZ_ID,version:1}).lean())?.definition,initialVersion!.definition,"old immutable version changed");
   const versionedDetail = await jsonRequest(`/quizzes/${ASSESSMENT_QUIZ_ID}`, {
