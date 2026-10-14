@@ -1,0 +1,172 @@
+{
+  "baseline": "4f166a2d42befb929cf087e05f19ca866917b212",
+  "render": {
+    "serviceId": "srv-dalrk9oae00c73cd74t0",
+    "workspaceId": "tea-d86902uk1jcs73feaog0",
+    "plan": "free",
+    "buildPlan": "starter",
+    "region": "frankfurt",
+    "configuredInstances": 1,
+    "healthCheckPath": "",
+    "cpuLimit": 0.15,
+    "memoryLimitBytes": 536870900,
+    "memory24h": {
+      "requestedStart": "2026-10-13T09:00:00Z",
+      "requestedEnd": "2026-10-14T09:00:00Z",
+      "points": 17,
+      "minBytes": 137383940,
+      "maxBytes": 224022530,
+      "maxSamplePercent": 41.727448814975816
+    },
+    "recentCpu": {
+      "start": "2026-10-14T08:00:00Z",
+      "end": "2026-10-14T09:00:00Z",
+      "aggregation": "MAX",
+      "resolutionSeconds": 300,
+      "points": 5,
+      "first": "2026-10-14T08:00:00Z",
+      "last": "2026-10-14T09:00:00Z",
+      "minCores": 0.0036627166,
+      "maxCores": 0.00481955,
+      "maxSamplePercent": 3.213033333333333
+    },
+    "bandwidth24h": {
+      "requestedStart": "2026-10-13T09:00:00Z",
+      "requestedEnd": "2026-10-14T09:00:00Z",
+      "unit": "mb",
+      "points": 21,
+      "sumReturnedBuckets": 54.370055879999995,
+      "first": "2026-10-13T11:00:00Z",
+      "last": "2026-10-14T08:00:00Z"
+    },
+    "bandwidth7d": {
+      "requestedStart": "2026-10-07T09:00:00Z",
+      "requestedEnd": "2026-10-14T09:00:00Z",
+      "unit": "mb",
+      "points": 128,
+      "sumReturnedBuckets": 483.39302700494,
+      "first": "2026-10-07T09:00:00Z",
+      "last": "2026-10-14T08:00:00Z"
+    },
+    "unavailable": [
+      "24h cpu_usage",
+      "http_request_count both24h and recent",
+      "http_latency24h",
+      "instance_count telemetry"
+    ]
+  },
+  "atlas": {
+    "name": "almeaa",
+    "instanceType": "FREE",
+    "instanceSize": "N/A",
+    "provider": "AWS",
+    "region": "AP_SOUTHEAST_1",
+    "paused": false,
+    "state": "IDLE",
+    "mongoDBVersion": "8.0.34",
+    "database": {
+      "name": "almeaa",
+      "collections": 111,
+      "indexes": 600,
+      "objects": 37049,
+      "logicalDataBytes": 75436403,
+      "allocatedDataBytes": 32591872,
+      "indexBytes": 24743936,
+      "averageObjectBytes": 2036.1252125563442
+    },
+    "runtimeUriBinding": "Prior Master Control identifies this cluster as production; live URI was not re-inspected in this audit"
+  },
+  "vercel": {
+    "projectId": "prj_fDlACgk9Y4FrXcuVyuFtSDELjuNn",
+    "transferQuery": "400 bad_request; scope/result NOT_PROVEN",
+    "observabilityConfiguration": "404 Observability Plus is not enabled",
+    "billingCharges": {
+      "range": [
+        "2026-10-13T00:00:00Z",
+        "2026-10-14T00:00:00Z"
+      ],
+      "status": 404,
+      "code": "costs_not_found",
+      "zeroCostProven": false
+    },
+    "cliVersion": "50.3.1",
+    "metricsCommand": "UNSUPPORTED",
+    "observabilityErrorAttribution": "Configuration endpoint explicitly reports Plus disabled; first query400 alone does not identify its cause"
+  },
+  "limitations": [
+    "Sparse metric points are observed samples, not peak or full-window coverage",
+    "Render bandwidth is service-only returned hourly buckets, not all-platform transfer or billed amount",
+    "Samples cannot establish the presence or absence of resource leaks, saturation or high-concurrency headroom",
+    "Topology cross-region risk is inference, not measured DB RTT or an authorized cutover",
+    "Source pool defaults are not live connection counts",
+    "No plan upgrades, billing changes, service config changes, migrations or load tests"
+  ],
+  "status": "VERIFIED_BOUNDED_RESOURCE_SNAPSHOT_TOTAL_BILLING_AND_CAPACITY_PARTIAL",
+  "observedAt": "2026-10-14T09:17:04.299Z",
+  "safety": {
+    "domainRecordWrites": 0,
+    "indexWrites": 0,
+    "serviceConfigurationWrites": 0,
+    "paidPlanChanges": 0,
+    "migrations": 0,
+    "loadTest": false
+  },
+  "staticChecks": {
+    "commands": 3,
+    "status": "PASS_EXISTING_DB_INVENTORY_QUERY_GROWTH_CONTRACTS"
+  },
+  "officialSources": [
+    {
+      "title": "Render Free limits",
+      "url": "https://render.com/docs/free"
+    },
+    {
+      "title": "Render metrics semantics",
+      "url": "https://render.com/docs/service-metrics"
+    },
+    {
+      "title": "Render outbound bandwidth accounting",
+      "url": "https://render.com/docs/outbound-bandwidth"
+    },
+    {
+      "title": "Atlas Free limits",
+      "url": "https://www.mongodb.com/docs/atlas/reference/free-shared-limitations/"
+    },
+    {
+      "title": "Vercel observability",
+      "url": "https://vercel.com/docs/observability"
+    }
+  ],
+  "publicHealth": {
+    "at": "2026-10-14T09:15:38.125Z",
+    "getRequests": 2,
+    "live": {
+      "status": 200,
+      "commit": "4f166a2d42be"
+    },
+    "ready": {
+      "status": 200,
+      "commit": "4f166a2d42be",
+      "state": "ok",
+      "ready": true,
+      "scaleReady": true,
+      "database": {
+        "status": "connected",
+        "readyState": 1,
+        "ok": true
+      },
+      "checks": {
+        "database": "pass",
+        "redisRateLimit": "pass",
+        "redisQueue": "pass"
+      },
+      "summary": {
+        "failedCriticalChecks": 0,
+        "warnings": 0,
+        "redisConfiguredForScale": true
+      }
+    },
+    "domainWrites": 0,
+    "loadTest": false
+  }
+}
