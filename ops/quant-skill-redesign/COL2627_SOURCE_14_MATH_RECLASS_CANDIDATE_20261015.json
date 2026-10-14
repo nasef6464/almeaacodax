@@ -1,0 +1,576 @@
+{
+  "schema": 1,
+  "date": "2026-10-15",
+  "source": "تجميع انشيتن معدل(2).pdf",
+  "source_pdf_pages": 84,
+  "verified_rendered_pages": [
+    7,
+    37,
+    53,
+    57,
+    71
+  ],
+  "status": "SOURCE_VERIFIED_14_CANDIDATE_NO_PRODUCTION_WRITE",
+  "question_count": 14,
+  "principles": [
+    "Review original page images, not inferred section label.",
+    "Correct skillId AND subSkillId AND skillIds together in approved future operation.",
+    "Retain question ID, source code, answer, images, entitlements, learner history, and quiz ID.",
+    "Each new target already exists in live 25/95 skill taxonomy. Foundation topic count remains 120.",
+    "Run isolated dry-run and verify quiz placements and cross-skill historical reports before production."
+  ],
+  "items": [
+    {
+      "code": "QDR-QNT-COL2627-P053-Q01",
+      "question_id": "q_qdr_qnt_col2627_p053_q01",
+      "source_page": 53,
+      "printed_question_number": 1,
+      "printed_rule_summary": "حساب الزاوية من مقدار دوران عقرب الساعة أو الدقائق",
+      "from": {
+        "skillId": "skill_quant_14",
+        "subSkillId": "sub_quant_14_2",
+        "skillIds": [
+          "skill_quant_14",
+          "sub_quant_14_2"
+        ]
+      },
+      "to": {
+        "skillId": "skill_quant_15",
+        "subSkillId": "sub_quant_15_2",
+        "skillIds": [
+          "skill_quant_15",
+          "sub_quant_15_2"
+        ]
+      },
+      "drill_memberships": [
+        {
+          "quiz_id": "drill_sub_quant_15_2",
+          "target_skill_ids": [
+            "sub_quant_15_2"
+          ],
+          "quiz_title": "تدريب: دوران عقارب الساعة ومقدار تحرك العقرب بالدرجات"
+        },
+        {
+          "quiz_id": "bank_skill_quant_15_g01",
+          "target_skill_ids": [
+            "skill_quant_15"
+          ],
+          "quiz_title": "تدريب: الساعات وحساب زوايا العقارب"
+        }
+      ],
+      "proof": "ACTUAL_SOURCE_PAGE_RENDER_EXAMINED",
+      "execution_status": "NOT_APPLIED_SECURITY_WRITE_HOLD"
+    },
+    {
+      "code": "QDR-QNT-COL2627-P053-Q02",
+      "question_id": "q_qdr_qnt_col2627_p053_q02",
+      "source_page": 53,
+      "printed_question_number": 2,
+      "printed_rule_summary": "حساب الزاوية من مقدار دوران عقرب الساعة أو الدقائق",
+      "from": {
+        "skillId": "skill_quant_14",
+        "subSkillId": "sub_quant_14_2",
+        "skillIds": [
+          "skill_quant_14",
+          "sub_quant_14_2"
+        ]
+      },
+      "to": {
+        "skillId": "skill_quant_15",
+        "subSkillId": "sub_quant_15_2",
+        "skillIds": [
+          "skill_quant_15",
+          "sub_quant_15_2"
+        ]
+      },
+      "drill_memberships": [
+        {
+          "quiz_id": "drill_sub_quant_15_2",
+          "target_skill_ids": [
+            "sub_quant_15_2"
+          ],
+          "quiz_title": "تدريب: دوران عقارب الساعة ومقدار تحرك العقرب بالدرجات"
+        },
+        {
+          "quiz_id": "bank_skill_quant_15_g01",
+          "target_skill_ids": [
+            "skill_quant_15"
+          ],
+          "quiz_title": "تدريب: الساعات وحساب زوايا العقارب"
+        }
+      ],
+      "proof": "ACTUAL_SOURCE_PAGE_RENDER_EXAMINED",
+      "execution_status": "NOT_APPLIED_SECURITY_WRITE_HOLD"
+    },
+    {
+      "code": "QDR-QNT-COL2627-P053-Q03",
+      "question_id": "q_qdr_qnt_col2627_p053_q03",
+      "source_page": 53,
+      "printed_question_number": 3,
+      "printed_rule_summary": "حساب الزاوية من مقدار دوران عقرب الساعة أو الدقائق",
+      "from": {
+        "skillId": "skill_quant_14",
+        "subSkillId": "sub_quant_14_2",
+        "skillIds": [
+          "skill_quant_14",
+          "sub_quant_14_2"
+        ]
+      },
+      "to": {
+        "skillId": "skill_quant_15",
+        "subSkillId": "sub_quant_15_2",
+        "skillIds": [
+          "skill_quant_15",
+          "sub_quant_15_2"
+        ]
+      },
+      "drill_memberships": [
+        {
+          "quiz_id": "drill_sub_quant_15_2",
+          "target_skill_ids": [
+            "sub_quant_15_2"
+          ],
+          "quiz_title": "تدريب: دوران عقارب الساعة ومقدار تحرك العقرب بالدرجات"
+        },
+        {
+          "quiz_id": "bank_skill_quant_15_g01",
+          "target_skill_ids": [
+            "skill_quant_15"
+          ],
+          "quiz_title": "تدريب: الساعات وحساب زوايا العقارب"
+        }
+      ],
+      "proof": "ACTUAL_SOURCE_PAGE_RENDER_EXAMINED",
+      "execution_status": "NOT_APPLIED_SECURITY_WRITE_HOLD"
+    },
+    {
+      "code": "QDR-QNT-COL2627-P053-Q04",
+      "question_id": "q_qdr_qnt_col2627_p053_q04",
+      "source_page": 53,
+      "printed_question_number": 4,
+      "printed_rule_summary": "حساب الزاوية من مقدار دوران عقرب الساعة أو الدقائق",
+      "from": {
+        "skillId": "skill_quant_14",
+        "subSkillId": "sub_quant_14_2",
+        "skillIds": [
+          "skill_quant_14",
+          "sub_quant_14_2"
+        ]
+      },
+      "to": {
+        "skillId": "skill_quant_15",
+        "subSkillId": "sub_quant_15_2",
+        "skillIds": [
+          "skill_quant_15",
+          "sub_quant_15_2"
+        ]
+      },
+      "drill_memberships": [
+        {
+          "quiz_id": "drill_sub_quant_15_2",
+          "target_skill_ids": [
+            "sub_quant_15_2"
+          ],
+          "quiz_title": "تدريب: دوران عقارب الساعة ومقدار تحرك العقرب بالدرجات"
+        },
+        {
+          "quiz_id": "bank_skill_quant_15_g01",
+          "target_skill_ids": [
+            "skill_quant_15"
+          ],
+          "quiz_title": "تدريب: الساعات وحساب زوايا العقارب"
+        }
+      ],
+      "proof": "ACTUAL_SOURCE_PAGE_RENDER_EXAMINED",
+      "execution_status": "NOT_APPLIED_SECURITY_WRITE_HOLD"
+    },
+    {
+      "code": "QDR-QNT-COL2627-P053-Q05",
+      "question_id": "q_qdr_qnt_col2627_p053_q05",
+      "source_page": 53,
+      "printed_question_number": 5,
+      "printed_rule_summary": "الزاوية بين العقربين عند وقت أو موضع محدد",
+      "from": {
+        "skillId": "skill_quant_14",
+        "subSkillId": "sub_quant_14_2",
+        "skillIds": [
+          "skill_quant_14",
+          "sub_quant_14_2"
+        ]
+      },
+      "to": {
+        "skillId": "skill_quant_15",
+        "subSkillId": "sub_quant_15_1",
+        "skillIds": [
+          "skill_quant_15",
+          "sub_quant_15_1"
+        ]
+      },
+      "drill_memberships": [
+        {
+          "quiz_id": "drill_sub_quant_15_1",
+          "target_skill_ids": [
+            "sub_quant_15_1"
+          ],
+          "quiz_title": "تدريب: حساب الزاوية الصغرى والكبرى بين عقرب الساعات وعقرب الدقائق"
+        },
+        {
+          "quiz_id": "bank_skill_quant_15_g01",
+          "target_skill_ids": [
+            "skill_quant_15"
+          ],
+          "quiz_title": "تدريب: الساعات وحساب زوايا العقارب"
+        }
+      ],
+      "proof": "ACTUAL_SOURCE_PAGE_RENDER_EXAMINED",
+      "execution_status": "NOT_APPLIED_SECURITY_WRITE_HOLD"
+    },
+    {
+      "code": "QDR-QNT-COL2627-P053-Q06",
+      "question_id": "q_qdr_qnt_col2627_p053_q06",
+      "source_page": 53,
+      "printed_question_number": 6,
+      "printed_rule_summary": "الزاوية بين العقربين عند وقت أو موضع محدد",
+      "from": {
+        "skillId": "skill_quant_14",
+        "subSkillId": "sub_quant_14_2",
+        "skillIds": [
+          "skill_quant_14",
+          "sub_quant_14_2"
+        ]
+      },
+      "to": {
+        "skillId": "skill_quant_15",
+        "subSkillId": "sub_quant_15_1",
+        "skillIds": [
+          "skill_quant_15",
+          "sub_quant_15_1"
+        ]
+      },
+      "drill_memberships": [
+        {
+          "quiz_id": "drill_sub_quant_15_1",
+          "target_skill_ids": [
+            "sub_quant_15_1"
+          ],
+          "quiz_title": "تدريب: حساب الزاوية الصغرى والكبرى بين عقرب الساعات وعقرب الدقائق"
+        },
+        {
+          "quiz_id": "bank_skill_quant_15_g01",
+          "target_skill_ids": [
+            "skill_quant_15"
+          ],
+          "quiz_title": "تدريب: الساعات وحساب زوايا العقارب"
+        }
+      ],
+      "proof": "ACTUAL_SOURCE_PAGE_RENDER_EXAMINED",
+      "execution_status": "NOT_APPLIED_SECURITY_WRITE_HOLD"
+    },
+    {
+      "code": "QDR-QNT-COL2627-P053-Q07",
+      "question_id": "q_qdr_qnt_col2627_p053_q07",
+      "source_page": 53,
+      "printed_question_number": 7,
+      "printed_rule_summary": "الزاوية بين العقربين عند وقت أو موضع محدد",
+      "from": {
+        "skillId": "skill_quant_14",
+        "subSkillId": "sub_quant_14_2",
+        "skillIds": [
+          "skill_quant_14",
+          "sub_quant_14_2"
+        ]
+      },
+      "to": {
+        "skillId": "skill_quant_15",
+        "subSkillId": "sub_quant_15_1",
+        "skillIds": [
+          "skill_quant_15",
+          "sub_quant_15_1"
+        ]
+      },
+      "drill_memberships": [],
+      "proof": "ACTUAL_SOURCE_PAGE_RENDER_EXAMINED",
+      "execution_status": "NOT_APPLIED_SECURITY_WRITE_HOLD"
+    },
+    {
+      "code": "QDR-QNT-COL2627-P053-Q08",
+      "question_id": "q_qdr_qnt_col2627_p053_q08",
+      "source_page": 53,
+      "printed_question_number": 8,
+      "printed_rule_summary": "ربط دوران عقرب الدقائق بدوران عقرب الساعات في مسألة مركبة",
+      "from": {
+        "skillId": "skill_quant_14",
+        "subSkillId": "sub_quant_14_2",
+        "skillIds": [
+          "skill_quant_14",
+          "sub_quant_14_2"
+        ]
+      },
+      "to": {
+        "skillId": "skill_quant_15",
+        "subSkillId": "sub_quant_15_3",
+        "skillIds": [
+          "skill_quant_15",
+          "sub_quant_15_3"
+        ]
+      },
+      "drill_memberships": [
+        {
+          "quiz_id": "drill_sub_quant_15_2",
+          "target_skill_ids": [
+            "sub_quant_15_2"
+          ],
+          "quiz_title": "تدريب: دوران عقارب الساعة ومقدار تحرك العقرب بالدرجات"
+        },
+        {
+          "quiz_id": "bank_skill_quant_15_g01",
+          "target_skill_ids": [
+            "skill_quant_15"
+          ],
+          "quiz_title": "تدريب: الساعات وحساب زوايا العقارب"
+        }
+      ],
+      "proof": "ACTUAL_SOURCE_PAGE_RENDER_EXAMINED",
+      "execution_status": "NOT_APPLIED_SECURITY_WRITE_HOLD"
+    },
+    {
+      "code": "QDR-QNT-COL2627-P037-Q18",
+      "question_id": "q_qdr_qnt_col2627_p037_q18",
+      "source_page": 37,
+      "printed_question_number": 18,
+      "printed_rule_summary": "حساب قيمة الزكاة أو أصل المال من زكاة 2.5%",
+      "from": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_3",
+        "skillIds": [
+          "skill_quant_08",
+          "sub_quant_08_3"
+        ]
+      },
+      "to": {
+        "skillId": "skill_quant_10",
+        "subSkillId": "sub_quant_10_4",
+        "skillIds": [
+          "skill_quant_10",
+          "sub_quant_10_4"
+        ]
+      },
+      "drill_memberships": [
+        {
+          "quiz_id": "drill_sub_quant_10_4",
+          "target_skill_ids": [
+            "sub_quant_10_4"
+          ],
+          "quiz_title": "تدريب: حساب مقدار الزكاة الشرعية (قسمة على 40 أو ضرب في 2.5%)"
+        },
+        {
+          "quiz_id": "bank_skill_quant_10_g01",
+          "target_skill_ids": [
+            "skill_quant_10"
+          ],
+          "quiz_title": "تدريب: الربح والخسارة والحسابات المالية"
+        }
+      ],
+      "proof": "ACTUAL_SOURCE_PAGE_RENDER_EXAMINED",
+      "execution_status": "NOT_APPLIED_SECURITY_WRITE_HOLD"
+    },
+    {
+      "code": "QDR-QNT-COL2627-P037-Q19",
+      "question_id": "q_qdr_qnt_col2627_p037_q19",
+      "source_page": 37,
+      "printed_question_number": 19,
+      "printed_rule_summary": "حساب قيمة الزكاة أو أصل المال من زكاة 2.5%",
+      "from": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_3",
+        "skillIds": [
+          "skill_quant_08",
+          "sub_quant_08_3"
+        ]
+      },
+      "to": {
+        "skillId": "skill_quant_10",
+        "subSkillId": "sub_quant_10_4",
+        "skillIds": [
+          "skill_quant_10",
+          "sub_quant_10_4"
+        ]
+      },
+      "drill_memberships": [
+        {
+          "quiz_id": "drill_sub_quant_10_4",
+          "target_skill_ids": [
+            "sub_quant_10_4"
+          ],
+          "quiz_title": "تدريب: حساب مقدار الزكاة الشرعية (قسمة على 40 أو ضرب في 2.5%)"
+        },
+        {
+          "quiz_id": "bank_skill_quant_10_g01",
+          "target_skill_ids": [
+            "skill_quant_10"
+          ],
+          "quiz_title": "تدريب: الربح والخسارة والحسابات المالية"
+        }
+      ],
+      "proof": "ACTUAL_SOURCE_PAGE_RENDER_EXAMINED",
+      "execution_status": "NOT_APPLIED_SECURITY_WRITE_HOLD"
+    },
+    {
+      "code": "QDR-QNT-COL2627-P037-Q20",
+      "question_id": "q_qdr_qnt_col2627_p037_q20",
+      "source_page": 37,
+      "printed_question_number": 20,
+      "printed_rule_summary": "حساب قيمة الزكاة أو أصل المال من زكاة 2.5%",
+      "from": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_3",
+        "skillIds": [
+          "skill_quant_08",
+          "sub_quant_08_3"
+        ]
+      },
+      "to": {
+        "skillId": "skill_quant_10",
+        "subSkillId": "sub_quant_10_4",
+        "skillIds": [
+          "skill_quant_10",
+          "sub_quant_10_4"
+        ]
+      },
+      "drill_memberships": [
+        {
+          "quiz_id": "drill_sub_quant_10_4",
+          "target_skill_ids": [
+            "sub_quant_10_4"
+          ],
+          "quiz_title": "تدريب: حساب مقدار الزكاة الشرعية (قسمة على 40 أو ضرب في 2.5%)"
+        }
+      ],
+      "proof": "ACTUAL_SOURCE_PAGE_RENDER_EXAMINED",
+      "execution_status": "NOT_APPLIED_SECURITY_WRITE_HOLD"
+    },
+    {
+      "code": "QDR-QNT-COL2627-P057-Q08",
+      "question_id": "q_qdr_qnt_col2627_p057_q08",
+      "source_page": 57,
+      "printed_question_number": 8,
+      "printed_rule_summary": "حساب الراتب والعمولة على أرباح الشركة خلال ثلاثة أشهر",
+      "from": {
+        "skillId": "skill_quant_17",
+        "subSkillId": "sub_quant_17_1",
+        "skillIds": [
+          "skill_quant_17",
+          "sub_quant_17_1"
+        ]
+      },
+      "to": {
+        "skillId": "skill_quant_10",
+        "subSkillId": "sub_quant_10_3",
+        "skillIds": [
+          "skill_quant_10",
+          "sub_quant_10_3"
+        ]
+      },
+      "drill_memberships": [
+        {
+          "quiz_id": "drill_sub_quant_10_3",
+          "target_skill_ids": [
+            "sub_quant_10_3"
+          ],
+          "quiz_title": "تدريب: حساب الرواتب والادخار والمصاريف"
+        },
+        {
+          "quiz_id": "bank_skill_quant_10_g01",
+          "target_skill_ids": [
+            "skill_quant_10"
+          ],
+          "quiz_title": "تدريب: الربح والخسارة والحسابات المالية"
+        }
+      ],
+      "proof": "ACTUAL_SOURCE_PAGE_RENDER_EXAMINED",
+      "execution_status": "NOT_APPLIED_SECURITY_WRITE_HOLD"
+    },
+    {
+      "code": "QDR-QNT-COL2627-P071-Q44",
+      "question_id": "q_qdr_qnt_col2627_p071_q44",
+      "source_page": 71,
+      "printed_question_number": 44,
+      "printed_rule_summary": "إحداثيات رأس مثلث على المستوى الإحداثي",
+      "from": {
+        "skillId": "skill_quant_20",
+        "subSkillId": "sub_quant_20_2",
+        "skillIds": [
+          "skill_quant_20",
+          "sub_quant_20_2"
+        ]
+      },
+      "to": {
+        "skillId": "skill_quant_25",
+        "subSkillId": "sub_quant_25_3",
+        "skillIds": [
+          "skill_quant_25",
+          "sub_quant_25_3"
+        ]
+      },
+      "drill_memberships": [
+        {
+          "quiz_id": "drill_sub_quant_25_3",
+          "target_skill_ids": [
+            "sub_quant_25_3"
+          ],
+          "quiz_title": "تدريب: هندسة الإحداثيات: تحديد النقاط والمسافة ونقطة المنتصف والميل"
+        },
+        {
+          "quiz_id": "bank_skill_quant_25_g01",
+          "target_skill_ids": [
+            "skill_quant_25"
+          ],
+          "quiz_title": "تدريب: المجسمات والحجوم وهندسة الإحداثيات"
+        }
+      ],
+      "proof": "ACTUAL_SOURCE_PAGE_RENDER_EXAMINED",
+      "execution_status": "NOT_APPLIED_SECURITY_WRITE_HOLD"
+    },
+    {
+      "code": "QDR-QNT-COL2627-P007-Q09",
+      "question_id": "q_qdr_qnt_col2627_p007_q09",
+      "source_page": 7,
+      "printed_question_number": 9,
+      "printed_rule_summary": "العمر الحالي اعتماداً على الشروط بين الماضي والمضاعفات",
+      "from": {
+        "skillId": "skill_quant_02",
+        "subSkillId": "sub_quant_02_1",
+        "skillIds": [
+          "skill_quant_02",
+          "sub_quant_02_1"
+        ]
+      },
+      "to": {
+        "skillId": "skill_quant_16",
+        "subSkillId": "sub_quant_16_1",
+        "skillIds": [
+          "skill_quant_16",
+          "sub_quant_16_1"
+        ]
+      },
+      "drill_memberships": [
+        {
+          "quiz_id": "drill_sub_quant_16_1",
+          "target_skill_ids": [
+            "sub_quant_16_1"
+          ],
+          "quiz_title": "تدريب: حساب العمر في الماضي وبعد سنوات"
+        },
+        {
+          "quiz_id": "bank_skill_quant_16_g01",
+          "target_skill_ids": [
+            "skill_quant_16"
+          ],
+          "quiz_title": "تدريب: الأعمار"
+        }
+      ],
+      "proof": "ACTUAL_SOURCE_PAGE_RENDER_EXAMINED",
+      "execution_status": "NOT_APPLIED_SECURITY_WRITE_HOLD"
+    }
+  ]
+}
