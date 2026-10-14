@@ -664,15 +664,29 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         });
     }, [category, completedLessons, examResults, hasFoundationAccess, hasReturnedFromFoundationTraining, isStaffViewer, lessons, lockFoundationForSubject, quizList, searchParams, skillList, subject, topicList]);
 
+    // TAH-MATH V2: staff authoring preview only. This does not change publication or entitlement state.
+    // The persisted placement visibility stays false until each quiz is explicitly approved.
+    const adminPreviewQuizzes = isAdminViewer && subject === 'sub_1777784609152'
+        ? quizzes.map((quiz) => quiz.subjectId === subject && quiz.approvalStatus === 'draft'
+            ? {
+                ...quiz,
+                learningPlacements: (quiz.learningPlacements || []).map((placement) => ({
+                    ...placement,
+                    isVisible: true,
+                })),
+            }
+            : quiz)
+        : quizzes;
+
     let banks = getLearningSlotQuizzes(
-        quizzes.filter(isMaterialQuizCandidate),
+        adminPreviewQuizzes.filter(isMaterialQuizCandidate),
         { pathId: category, subjectId: subject, slot: 'training' },
         canStudentSeeQuiz,
         isTrainingQuiz,
         true,
     ).map(q => ({
         id: q.id,
-        title: q.title,
+        title: isAdminViewer && subject === 'sub_1777784609152' && q.approvalStatus === 'draft' ? `[معاينة مسودة] ${q.title}` : q.title,
         questions: q.questionIds?.length || 0,
         updated: formatQuizUpdatedAt(q.createdAt),
         type: 'bank',
@@ -682,14 +696,14 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
     }));
 
     let tests = getLearningSlotQuizzes(
-        quizzes.filter(isMaterialQuizCandidate),
+        adminPreviewQuizzes.filter(isMaterialQuizCandidate),
         { pathId: category, subjectId: subject, slot: 'tests' },
         canStudentSeeQuiz,
         isMockQuiz,
         true,
     ).map(q => ({
         id: q.id,
-        title: q.title,
+        title: isAdminViewer && subject === 'sub_1777784609152' && q.approvalStatus === 'draft' ? `[معاينة مسودة - اختبار غير محاكي] ${q.title}` : q.title,
         duration: `${q.settings?.timeLimit || 60} دقيقة`,
         questions: q.questionIds?.length || 0,
         type: 'simulated',
