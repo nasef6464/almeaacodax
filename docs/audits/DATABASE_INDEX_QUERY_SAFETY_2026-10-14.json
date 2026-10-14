@@ -439,5 +439,83 @@
       "models": 2,
       "retainedOwnerPredicate": "PASS"
     }
+  },
+  "delivery": {
+    "at": "2026-10-14T02:29:42.695Z",
+    "sourcePR": 542,
+    "sourceHead": "9d4596274bec0cdf15796d7af5289e6b56af6bdb",
+    "sourceMerge": "3fa30e47b19cf370e9d9c17059a37fc56af4e1dd",
+    "sourceChecksPassed": 21,
+    "expectedSkippedChecks": 5,
+    "requiredChecksPassed": 3,
+    "preMerge": {
+      "at": "2026-10-14T02:24:32.836Z",
+      "empty": true,
+      "checks": [
+        {
+          "collection": "commandcenterworkflows",
+          "count": 0
+        },
+        {
+          "collection": "commandcenterdrafts",
+          "count": 0
+        }
+      ],
+      "recordWrites": 0
+    },
+    "publishedIndexVerification": [
+      {
+        "collection": "commandcenterworkflows",
+        "documents": 0,
+        "indexes": [
+          {
+            "name": "idempotencyKey_1",
+            "stage": "IXSCAN",
+            "unique": true,
+            "partial": true,
+            "sparse": false
+          }
+        ]
+      },
+      {
+        "collection": "commandcenterdrafts",
+        "documents": 0,
+        "indexes": [
+          {
+            "name": "idempotencyKey_1",
+            "stage": "IXSCAN",
+            "unique": true,
+            "partial": true,
+            "sparse": false
+          }
+        ]
+      }
+    ],
+    "render": {
+      "id": "dep-db7efslbedkc738h3tig",
+      "status": "live",
+      "sha": "3fa30e47b19cf370e9d9c17059a37fc56af4e1dd"
+    },
+    "vercel": {
+      "id": "dpl_DYQm47Wmmev9yHGgKfvYSUPcW427",
+      "status": "READY",
+      "sha": "3fa30e47b19cf370e9d9c17059a37fc56af4e1dd"
+    },
+    "productionRecordWrites": 0,
+    "manualIndexWrites": 0,
+    "automaticIntendedIndexAdditions": 2,
+    "indexDrops": 0,
+    "productionGradingFixtureCreated": false,
+    "health": {
+      "at": "2026-10-14T02:27:56.49Z",
+      "release": "3fa30e47b19cf370e9d9c17059a37fc56af4e1dd",
+      "status": "PASS_BOUNDED_PUBLIC_HEALTH",
+      "health": 200,
+      "ready": 200,
+      "getRequests": 2,
+      "authenticationRequests": 0,
+      "domainRecordWrites": 0,
+      "fixtureJourneysReplayed": false
+    }
   }
 }
