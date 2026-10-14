@@ -40,3 +40,5 @@ for (const entry of expected) {
 }
 console.log(JSON.stringify({ status:allPassed?'PASS':'FAIL', checkedAt:new Date().toISOString(), base, results },null,2));
 if(!allPassed) process.exitCode=1;
+
+// Assessment version 2 reconciliation verified on 2026-10-15; rerun the read-only external smoke.
