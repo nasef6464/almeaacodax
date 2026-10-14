@@ -9,7 +9,7 @@ const STUDENT_DASHBOARD_SELECT = "id name email schoolId groupIds avatar isActiv
 export const resolveSupervisorSchoolReportScope = async (authUser: any) =>
   resolveSupervisorSchoolReportScopePolicy(authUser, quizSupervisorScopeRepository);
 
-export const resolveScopedStudents = async (
+export const resolveScopedStudentQuery = async (
   authUser: any,
   options?: { limit?: number; classId?: string; studentId?: string },
 ) => {
@@ -34,6 +34,15 @@ export const resolveScopedStudents = async (
   const filter = Object.keys(selectors).length ? { $and: [authorityFilter, selectors] } : authorityFilter;
   // Keep the intentional stored alias predicate; strictQuery would strip it.
   const identityQueryOptions = options?.studentId ? { strictQuery: false } : {};
+  return { filter, identityQueryOptions, managedPathIds, managedSubjectIds };
+};
+
+export const resolveScopedStudents = async (
+  authUser: any,
+  options?: { limit?: number; classId?: string; studentId?: string },
+) => {
+  const { filter, identityQueryOptions, managedPathIds, managedSubjectIds } =
+    await resolveScopedStudentQuery(authUser, options);
   const limit = Math.max(1, Math.min(options?.limit || 500, 1000));
   const [students, totalStudents] = await Promise.all([
     UserModel.find(filter)

@@ -1,11 +1,11 @@
-import { SchoolSkillAggregateModel } from "../../../models/SchoolSkillAggregate.js";
+import { UserModel } from "../../../models/User.js";
 import { SUPPORT_MASTERY_THRESHOLD } from "../analytics/skillAnalytics.js";
-import { resolveScopedStudents } from "./quizReportScope.js";
+import { resolveScopedStudentQuery } from "./quizReportScope.js";
+import { buildSchoolSkillReportJoin, readSchoolSkillReport } from "./schoolSkillReportJoin.js";
 import { resolveAuthUserByAuthId } from "./quizUserLookup.js";
 import { buildSkillTaxonomyProjection } from "./skillMasteryProjection.js";
 
 const STAFF_ROLES = new Set(["admin", "supervisor", "teacher", "school_admin"]);
-const idOf = (value: any) => String(value?.id || value?._id || "");
 
 const buildManagedScopeClause = (
   role: string,
@@ -38,22 +38,14 @@ export const buildSchoolSkillAggregateView = async (
   }
 
   const {
-    students,
-    totalStudents,
-    isTruncated,
+    filter,
+    identityQueryOptions,
     managedPathIds,
     managedSubjectIds,
-  } = await resolveScopedStudents(authUser, { limit: 1000, classId: query.classId, studentId: query.studentId });
-
-  const eligibleStudents = students.filter((student: any) => {
-    const studentId = idOf(student);
-    if (query.studentId && studentId !== query.studentId) return false;
-    if (query.classId && !(student.groupIds || []).map(String).includes(query.classId)) return false;
-    return true;
-  });
-  const studentIds = eligibleStudents.map(idOf).filter(Boolean);
-  const studentNameById = new Map(eligibleStudents.map((student: any) => [idOf(student), String(student.name || "طالب")]));
-  if (studentIds.length === 0) {
+  } = await resolveScopedStudentQuery(authUser, { classId: query.classId, studentId: query.studentId });
+  const totalStudents = await UserModel.countDocuments(filter).setOptions(identityQueryOptions);
+  const isTruncated = false;
+  if (totalStudents === 0) {
     return {
       status: "ok" as const,
       scope: {
@@ -72,7 +64,6 @@ export const buildSchoolSkillAggregateView = async (
   }
 
   const baseMatch: Record<string, unknown> = {
-    userId: { $in: studentIds },
     ...(query.pathId ? { pathId: query.pathId } : {}),
     ...(query.subjectId ? { subjectId: query.subjectId } : {}),
     ...(query.classId ? { classId: query.classId } : {}),
@@ -80,14 +71,15 @@ export const buildSchoolSkillAggregateView = async (
   };
   const managedClause = buildManagedScopeClause(String(authUser.role || ""), managedPathIds, managedSubjectIds);
   const match = managedClause ? { $and: [baseMatch, managedClause] } : baseMatch;
-  const sampledStudentCount = eligibleStudents.length;
+  const sampledStudentCount = totalStudents;
+  const joinedScope = buildSchoolSkillReportJoin(filter, match);
 
   if (query.groupBy === "student") {
-    const docs = await SchoolSkillAggregateModel.find(match)
-      .select("schoolId classId userId pathId subjectId sectionId skillId skill level parentSkillId parentSkill totalEvidence mastery recentMastery trend confidence lastEvidenceAt")
-      .sort({ mastery: 1, totalEvidence: -1, lastEvidenceAt: -1 })
-      .limit(query.limit)
-      .lean();
+    const docs = await readSchoolSkillReport([
+      ...joinedScope,
+      { $sort: { mastery: 1, totalEvidence: -1, lastEvidenceAt: -1 } },
+      { $limit: query.limit },
+    ]);
 
     const taxonomy = await buildSkillTaxonomyProjection(docs.map((row: any) => String(row.skillId || "")));
     return {
@@ -109,7 +101,7 @@ export const buildSchoolSkillAggregateView = async (
           schoolId: String(row.schoolId || ""),
           classId: String(row.classId || ""),
           userId: String(row.userId || ""),
-          studentName: studentNameById.get(String(row.userId || "")) || "طالب",
+          studentName: String(row.reportStudentName || "طالب"),
           pathId: String(canonical?.pathId || row.pathId || ""),
           subjectId: String(canonical?.subjectId || row.subjectId || ""),
           sectionId: String(canonical?.sectionId || row.sectionId || ""),
@@ -144,8 +136,8 @@ export const buildSchoolSkillAggregateView = async (
         skillId: "$skillId",
       };
 
-  const rows = await SchoolSkillAggregateModel.aggregate([
-    { $match: match },
+  const rows = await readSchoolSkillReport([
+    ...joinedScope,
     {
       $group: {
         _id: groupId,
@@ -170,6 +162,8 @@ export const buildSchoolSkillAggregateView = async (
     },
     { $sort: { supportStudents: -1, totalEvidence: -1 } },
     { $limit: query.limit },
+    { $set: { studentCount: { $size: "$studentIds" } } },
+    { $unset: "studentIds" },
   ]);
 
   const taxonomy = await buildSkillTaxonomyProjection(
@@ -193,7 +187,7 @@ export const buildSchoolSkillAggregateView = async (
     rows: rows.map((row: any) => {
       const evidenceCount = Math.max(0, Number(row.totalEvidence || 0));
       const correctCount = Math.max(0, Number(row.totalCorrect || 0));
-      const studentCount = Array.isArray(row.studentIds) ? row.studentIds.length : 0;
+      const studentCount = Number(row.studentCount || 0);
       const supportStudents = Math.max(0, Number(row.supportStudents || 0));
       return {
         classId: String(row._id?.classId || ""),

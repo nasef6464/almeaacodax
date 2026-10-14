@@ -17,6 +17,8 @@ on:
       - 'server/src/modules/schools/application/classroomSupervisorReport.ts'
       - 'server/src/modules/quizzes/application/schoolSkillReadModel.ts'
       - 'server/src/modules/quizzes/application/quizReportScope.ts'
+      - 'server/src/modules/quizzes/application/schoolSkillReportJoin.ts'
+      - 'server/src/models/SchoolSkillAggregate.ts'
       - 'server/src/modules/quizzes/application/schoolSkillAggregateView.ts'
       - 'server/src/modules/quizzes/http/quizResultsRoutes.ts'
       - 'server/src/modules/quizzes/infrastructure/quizResultsCache.ts'
@@ -24,6 +26,10 @@ on:
       - 'scripts/test-teacher-report-work.ts'
       - 'scripts/test-school-skill-work.ts'
       - 'scripts/test-school-report-filter-before-limit.ts'
+      - 'scripts/test-school-report-user-join.ts'
+      - 'scripts/test-school-report-complete-scope.ts'
+      - 'scripts/smoke-adaptive-phase8-school-skill-aggregates-contract.mjs'
+      - 'scripts/smoke-unified-skill-mastery-contract.mjs'
       - 'scripts/test-command-idempotency-indexes.ts'
       - 'scripts/test-quiz-submission-taxonomy-work.ts'
       - 'scripts/smoke-assessment-read-model-context-contract.mjs'
@@ -57,10 +63,14 @@ jobs:
         run: |
           node scripts/smoke-assessment-read-model-context-contract.mjs
           node scripts/smoke-assessment-side-effects-contract.mjs
+          node scripts/smoke-adaptive-phase8-school-skill-aggregates-contract.mjs
+          node scripts/smoke-unified-skill-mastery-contract.mjs
           server/node_modules/.bin/tsx scripts/test-student-data-boundaries.ts
           server/node_modules/.bin/tsx scripts/test-student-data-performance.ts
           server/node_modules/.bin/tsx scripts/test-teacher-report-work.ts
           server/node_modules/.bin/tsx scripts/test-school-skill-work.ts
           server/node_modules/.bin/tsx scripts/test-school-report-filter-before-limit.ts
+          server/node_modules/.bin/tsx scripts/test-school-report-user-join.ts
+          server/node_modules/.bin/tsx scripts/test-school-report-complete-scope.ts
           server/node_modules/.bin/tsx scripts/test-command-idempotency-indexes.ts
           server/node_modules/.bin/tsx scripts/test-quiz-submission-taxonomy-work.ts

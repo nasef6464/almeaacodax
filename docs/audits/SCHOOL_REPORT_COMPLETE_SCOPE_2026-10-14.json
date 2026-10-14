@@ -1,0 +1,25 @@
+{
+  "date": "2026-10-14",
+  "status": "LOCAL_VERIFIED_CI_PUBLICATION_PENDING",
+  "baseline": "d41f3289eb194c6acb3411ca19d398dd927ff779",
+  "branch": "codex/school-report-complete-scope",
+  "red": { "authorizedRoster": 1100, "sampledStudents": 1000, "userLookupDocsExamined": 1100 },
+  "green": { "coveredRoster": 1100, "userLookupDocsExamined": 1, "userLookupKeysExamined": 1 },
+  "isolated": {
+    "initialLearners": 10000, "finalRoster": 10001, "canonicalIdentities": 10000,
+    "aggregateRows": 11002, "joinedRows": 11001, "joinDocsExamined": 11002,
+    "foreignCollectionScans": 0, "joinIndexesUsed": ["userId_1"],
+    "returnedRows": 2, "reportBytes": 990, "evidenceCount": 100005,
+    "fullReportMs": 3625, "httpRequests": 7, "httpPass": true,
+    "productionCapacityClaim": false
+  },
+  "productionBaseline": { "aggregateDocuments": 4, "indexDescriptors": 4, "userIdIndexPresent": false },
+  "safety": { "productionRecordWrites": 0, "manualIndexCommands": 0, "indexDrops": 0,
+    "paidInfrastructureChanges": 0, "productionLoadTest": false, "existingReaderCapsRetained": true },
+  "checks": { "serverTypecheck": "PASS", "serverBuild": "PASS", "adaptiveContracts": 3,
+    "reportsRole": { "pass": 20, "fail": 0 }, "schoolRBAC": { "pass": 4, "fail": 0 },
+    "legacySaher": { "pass": 2, "fail": 3, "reason": "Old deployment/fixed fixture returned0skills; stale Quiz source fragments; tested files unchanged from baseline" } },
+  "independentReview": "APPROVED_NO_ACTIONABLE_BLOCKER",
+  "requiredCI": "PENDING", "publication": "PENDING",
+  "remaining": ["shared-source request limits", "production resources and capacity", "broader relationships and retention", "concurrent command HTTP replay"]
+}
