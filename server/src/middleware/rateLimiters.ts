@@ -1,8 +1,9 @@
-import type { Request } from "express";
+import type { Request, RequestHandler } from "express";
 import rateLimit, { ipKeyGenerator, type Options } from "express-rate-limit";
 import { RedisStore } from "rate-limit-redis";
 import { env } from "../config/env.js";
 import { createRedisClient, isRedisConfigured } from "../config/redis.js";
+import { rateLimitActorId, skipPublicRateLimitRead } from "./rateLimitIdentity.js";
 
 type RateLimitOptions = Pick<Options, "windowMs" | "limit" | "message"> & {
   keyPrefix: string;
@@ -13,12 +14,15 @@ type RateLimitOptions = Pick<Options, "windowMs" | "limit" | "message"> & {
 };
 
 const resolveRequestKey = (req: Request) => {
-  const authId = req.authUser?.id;
+  const authId = req.authUser?.id || rateLimitActorId(req);
   if (authId) {
     return `user:${authId}`;
   }
-  return ipKeyGenerator(req.ip || req.socket.remoteAddress || "unknown");
+  return `source:${resolveRequestSourceKey(req)}`;
 };
+
+export const resolveRequestSourceKey = (req: Request) =>
+  ipKeyGenerator(req.ip || req.socket.remoteAddress || "unknown");
 
 const normalizeIp = (value: string) =>
   String(value || "")
@@ -91,39 +95,55 @@ export function createRateLimiter(options: RateLimitOptions) {
   });
 }
 
+// Bound total work before parsing/verifying any access token. Per-account limits
+// below still prevent one account from spending the entire school's allowance.
+export const sharedSourceRateLimiter = createRateLimiter({
+  keyPrefix: "shared-source",
+  windowMs: env.RATE_LIMIT_GLOBAL_WINDOW_MS,
+  limit: env.RATE_LIMIT_SHARED_SOURCE_LIMIT,
+  keyGenerator: resolveRequestSourceKey,
+  skip: skipPublicRateLimitRead,
+  message: { message: "Too many requests from this network, please try again shortly" },
+});
+
 export const globalRateLimiter = createRateLimiter({
   keyPrefix: "global",
   windowMs: env.RATE_LIMIT_GLOBAL_WINDOW_MS,
   limit: env.RATE_LIMIT_GLOBAL_LIMIT,
   message: { message: "Too many requests, please try again shortly" },
-  skip: (req) => {
-    const path = req.path || "";
-    const method = (req.method || "GET").toUpperCase();
-    if (method !== "GET") return false;
-
-    // Keep public health and bootstrap reads responsive under burst traffic.
-    return (
-      path === "/" ||
-      path.startsWith("/api/health") ||
-      path === "/api/content/bootstrap" ||
-      path === "/api/taxonomy/bootstrap"
-    );
-  },
+  skip: skipPublicRateLimitRead,
 });
 
 export const authRateLimiter = createRateLimiter({
   keyPrefix: "auth",
   passOnStoreError: false,
+  keyGenerator: resolveRequestSourceKey,
   windowMs: env.RATE_LIMIT_AUTH_WINDOW_MS,
   limit: env.RATE_LIMIT_AUTH_LIMIT,
   message: { message: "Too many authentication attempts, please try again later" },
   skip: isAdminLoginBypassRequest,
 });
 
-export const sensitiveActionRateLimiter = createRateLimiter({
+const sensitiveAccountRateLimiter = createRateLimiter({
   keyPrefix: "sensitive",
   passOnStoreError: false,
   windowMs: env.RATE_LIMIT_SENSITIVE_WINDOW_MS,
   limit: env.RATE_LIMIT_SENSITIVE_LIMIT,
   message: { message: "Too many requests, please slow down" },
 });
+
+const sensitiveSourceRateLimiter = createRateLimiter({
+  keyPrefix: "sensitive-source",
+  passOnStoreError: false,
+  windowMs: env.RATE_LIMIT_SENSITIVE_WINDOW_MS,
+  limit: env.RATE_LIMIT_SENSITIVE_SOURCE_LIMIT,
+  keyGenerator: resolveRequestSourceKey,
+  message: { message: "Too many sensitive requests from this network, please slow down" },
+});
+
+// Reused by app-level and classroom route-level consumers, keeping both layers.
+export const sensitiveActionRateLimiter: RequestHandler = (req, res, next) =>
+  sensitiveSourceRateLimiter(req, res, (error?: unknown) => {
+    if (error) return next(error);
+    return sensitiveAccountRateLimiter(req, res, next);
+  });

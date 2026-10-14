@@ -4,7 +4,7 @@ import { ipKeyGenerator } from "express-rate-limit";
 import { env } from "../config/env.js";
 import { createRedisClient } from "../config/redis.js";
 import { memoryLoginFailureStore, redisLoginFailureStore, type LoginFailureStore } from "../modules/auth/application/loginFailureBudget.js";
-import { createRateLimiter, isAdminLoginBypassRequest } from "./rateLimiters.js";
+import { createRateLimiter, isAdminLoginBypassRequest, resolveRequestSourceKey } from "./rateLimiters.js";
 
 const digest = (value: string) => createHash("sha256").update(value).digest("hex");
 const normalizedIdentity = (value: string) => value.trim().toLowerCase().replace(/[٠-٩]/g, (digit) => String("٠١٢٣٤٥٦٧٨٩".indexOf(digit)));
@@ -67,7 +67,7 @@ export async function clearRecoveredLoginProtection(req: Request, user: { email:
   await store.clear(sourceKey(req));
 }
 export const loginProtection = [
-  createRateLimiter({ keyPrefix: "login-burst", windowMs: 60000, limit: env.RATE_LIMIT_LOGIN_BURST_LIMIT, message, passOnStoreError: false, skip: isAdminLoginBypassRequest }),
+  createRateLimiter({ keyPrefix: "login-burst", windowMs: 60000, limit: env.RATE_LIMIT_LOGIN_BURST_LIMIT, keyGenerator: resolveRequestSourceKey, message, passOnStoreError: false, skip: isAdminLoginBypassRequest }),
   createLoginFailureGuard(store, env.RATE_LIMIT_LOGIN_SOURCE_FAILURE_LIMIT, isAdminLoginBypassRequest),
   loginAccountLimiter,
 ];
