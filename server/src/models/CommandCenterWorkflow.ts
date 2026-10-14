@@ -1,4 +1,5 @@
 import mongoose, { Schema } from "mongoose";
+import { addCommandIdempotencyLookup } from "./commandIdempotencyLookup.js";
 
 export const COMMAND_WORKFLOW_STATUSES = [
   "planned",
@@ -65,11 +66,11 @@ const commandCenterWorkflowSchema = new Schema(
   { timestamps: true },
 );
 
+addCommandIdempotencyLookup(commandCenterWorkflowSchema);
 commandCenterWorkflowSchema.index(
   { idempotencyKey: 1 },
   {
     unique: true,
-    sparse: true,
     partialFilterExpression: { idempotencyKey: { $type: "string" } },
   },
 );

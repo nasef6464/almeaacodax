@@ -1,3 +1,6 @@
+## Database index/query safety — 2026-10-14
+IN_PROGRESS codex/database-index-safety fromd2c54d5c. Read-only production Atlas inventory6collections/52index descriptors; both command collections empty and idempotency indexes absent. Retain original unique-string constraint, remove invalid sparse option; model literal find/findOne predicates add equivalent type eligibility preserving remaining filters. Local IXSCAN1doc versus1006; related grading taxonomy3+3 versus4003+4003 with frozen analysis/score parity. Fresh review approved; exact-head CI/publication pending. No data rewrite/delete/manual index command. Concurrent HTTP command replay and whole-platform capacity remain unproven. See docs/audits/DATABASE_INDEX_QUERY_SAFETY_2026-10-14.md.
+
 ## Targeted school report publication VERIFIED — 2026-10-13
 PR540 headf4f6467f, merge7fdaf21f;19successful +4expected skipped checks and all3required PASS. Matching Vercel READY/Render live. Six passing published GETs;10scripted including4excluded preliminary probes, auth helpers excluded,0domain writes or fixture replays. Selector fix and isolated500-request mixed integrity PASS; global1000cap, unrelated index failures, shared-source protection and production resource/billing capacity remain PARTIAL/NOT PROVEN. See docs/audits/SCHOOL_REPORT_FILTER_SCALE_2026-10-13.json. Earlier pending notes are historical.
 

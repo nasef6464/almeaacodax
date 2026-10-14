@@ -12,8 +12,7 @@ import { AccessGrantModel } from "../models/AccessGrant.js";
 import { CourseModel } from "../models/Course.js";
 import { QuestionAttemptModel } from "../models/QuestionAttempt.js";
 import { SkillModel } from "../models/Skill.js";
-import { SubjectModel } from "../models/Subject.js";
-import { SectionModel } from "../models/Section.js";
+import { readQuizSubmissionTaxonomy } from "../modules/quizzes/application/quizSubmissionTaxonomyRead.js";
 import { TopicModel } from "../models/Topic.js";
 import { optionalAuth, requireAuth, requireRole } from "../middleware/auth.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
@@ -605,18 +604,15 @@ quizRouter.post(
 
     const skillIds = getQuizSubmissionSkillIds(orderedQuestions);
     const skillDocumentQuery = buildDocumentsByIdsQuery(skillIds);
-    const [skills, subjects, sections] = await Promise.all([
-      skillIds.length
-        ? SkillModel.find({
+    const skills = skillIds.length
+        ? await SkillModel.find({
             $or: [
               ...(Array.isArray((skillDocumentQuery as any).$or) ? (skillDocumentQuery as any).$or : []),
               { "subSkills.id": { $in: skillIds } },
             ],
           })
-        : [],
-      SubjectModel.find(),
-      SectionModel.find(),
-    ]);
+        : [];
+    const { subjects, sections } = await readQuizSubmissionTaxonomy(skills, quiz);
     const { skillById, subjectNameById, sectionNameById } = buildQuizSubmissionReadModelContext({
       skills,
       subjects,

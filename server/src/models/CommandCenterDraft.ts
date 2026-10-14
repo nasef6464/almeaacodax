@@ -1,4 +1,5 @@
 import mongoose, { Schema } from "mongoose";
+import { addCommandIdempotencyLookup } from "./commandIdempotencyLookup.js";
 
 export const COMMAND_DRAFT_KINDS = [
   "question_batch",
@@ -59,11 +60,11 @@ const commandCenterDraftSchema = new Schema(
   { timestamps: true },
 );
 
+addCommandIdempotencyLookup(commandCenterDraftSchema);
 commandCenterDraftSchema.index(
   { idempotencyKey: 1 },
   {
     unique: true,
-    sparse: true,
     partialFilterExpression: { idempotencyKey: { $type: "string" } },
   },
 );
