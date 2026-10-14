@@ -1,22 +1,21 @@
 {
-  "updated_at": "2026-10-15",
-  "scope": "READ_ONLY_ATLAS_POST_SAFETY_BLOCK",
-  "topics": {
-    "main": 25,
-    "child": 95,
-    "total": 120,
-    "child_to_multi_skill_supported_in_current_code": true
+  "date": "2026-10-15",
+  "mode": "READ_ONLY_VALIDATED_SNAPSHOT_POST_PARTIAL_UPDATE",
+  "scope": "Quant FND26/COL2627 and 95 current subskill drills",
+  "totals": {
+    "mainFoundationTopics": 25,
+    "childFoundationTopics": 95,
+    "allFoundationTopics": 120,
+    "mainSkills": 25,
+    "subskillsCurrentlyLive": 95,
+    "FND26": 858,
+    "COL2627": 946
   },
-  "questionCodes": {
-    "FND26": 806,
-    "COL2627": 730,
-    "total": 1536
-  },
-  "reclassMetadata": {
-    "total": 81,
-    "already_synced": 38,
-    "pending": 43,
-    "pending_before_after": [
+  "postRepair": {
+    "sourceVerifiedReclassifications": 81,
+    "skillIdsArraysSynced": 38,
+    "skillIdsArraysPending": 43,
+    "pendingCodesAndExpectedPairs": [
       {
         "code": "QDR-QNT-COL2627-P043-Q24",
         "before": [
@@ -26,12 +25,7 @@
         "after": [
           "skill_quant_09",
           "sub_quant_09_4"
-        ],
-        "current": [
-          "skill_quant_08",
-          "sub_quant_08_4"
-        ],
-        "status": "STALE"
+        ]
       },
       {
         "code": "QDR-QNT-COL2627-P043-Q27",
@@ -42,12 +36,7 @@
         "after": [
           "skill_quant_09",
           "sub_quant_09_4"
-        ],
-        "current": [
-          "skill_quant_08",
-          "sub_quant_08_4"
-        ],
-        "status": "STALE"
+        ]
       },
       {
         "code": "QDR-QNT-COL2627-P039-Q01",
@@ -58,12 +47,7 @@
         "after": [
           "skill_quant_09",
           "sub_quant_09_1"
-        ],
-        "current": [
-          "skill_quant_08",
-          "sub_quant_08_1"
-        ],
-        "status": "STALE"
+        ]
       },
       {
         "code": "QDR-QNT-COL2627-P039-Q02",
@@ -74,12 +58,7 @@
         "after": [
           "skill_quant_09",
           "sub_quant_09_1"
-        ],
-        "current": [
-          "skill_quant_08",
-          "sub_quant_08_1"
-        ],
-        "status": "STALE"
+        ]
       },
       {
         "code": "QDR-QNT-COL2627-P039-Q03",
@@ -90,12 +69,7 @@
         "after": [
           "skill_quant_09",
           "sub_quant_09_1"
-        ],
-        "current": [
-          "skill_quant_08",
-          "sub_quant_08_1"
-        ],
-        "status": "STALE"
+        ]
       },
       {
         "code": "QDR-QNT-COL2627-P039-Q04",
@@ -106,12 +80,7 @@
         "after": [
           "skill_quant_09",
           "sub_quant_09_1"
-        ],
-        "current": [
-          "skill_quant_08",
-          "sub_quant_08_4"
-        ],
-        "status": "STALE"
+        ]
       },
       {
         "code": "QDR-QNT-COL2627-P039-Q05",
@@ -122,12 +91,7 @@
         "after": [
           "skill_quant_09",
           "sub_quant_09_1"
-        ],
-        "current": [
-          "skill_quant_08",
-          "sub_quant_08_1"
-        ],
-        "status": "STALE"
+        ]
       },
       {
         "code": "QDR-QNT-COL2627-P039-Q06",
@@ -138,12 +102,7 @@
         "after": [
           "skill_quant_09",
           "sub_quant_09_1"
-        ],
-        "current": [
-          "skill_quant_08",
-          "sub_quant_08_1"
-        ],
-        "status": "STALE"
+        ]
       },
       {
         "code": "QDR-QNT-COL2627-P039-Q07",
@@ -154,12 +113,7 @@
         "after": [
           "skill_quant_09",
           "sub_quant_09_1"
-        ],
-        "current": [
-          "skill_quant_08",
-          "sub_quant_08_1"
-        ],
-        "status": "STALE"
+        ]
       },
       {
         "code": "QDR-QNT-COL2627-P039-Q08",
@@ -170,12 +124,7 @@
         "after": [
           "skill_quant_09",
           "sub_quant_09_1"
-        ],
-        "current": [
-          "skill_quant_08",
-          "sub_quant_08_1"
-        ],
-        "status": "STALE"
+        ]
       },
       {
         "code": "QDR-QNT-COL2627-P039-Q09",
@@ -186,12 +135,7 @@
         "after": [
           "skill_quant_09",
           "sub_quant_09_1"
-        ],
-        "current": [
-          "skill_quant_08",
-          "sub_quant_08_1"
-        ],
-        "status": "STALE"
+        ]
       },
       {
         "code": "QDR-QNT-COL2627-P039-Q10",
@@ -202,12 +146,7 @@
         "after": [
           "skill_quant_09",
           "sub_quant_09_1"
-        ],
-        "current": [
-          "skill_quant_08",
-          "sub_quant_08_1"
-        ],
-        "status": "STALE"
+        ]
       },
       {
         "code": "QDR-QNT-COL2627-P039-Q11",
@@ -218,12 +157,7 @@
         "after": [
           "skill_quant_09",
           "sub_quant_09_1"
-        ],
-        "current": [
-          "skill_quant_08",
-          "sub_quant_08_1"
-        ],
-        "status": "STALE"
+        ]
       },
       {
         "code": "QDR-QNT-COL2627-P039-Q12",
@@ -234,12 +168,7 @@
         "after": [
           "skill_quant_09",
           "sub_quant_09_1"
-        ],
-        "current": [
-          "skill_quant_08",
-          "sub_quant_08_4"
-        ],
-        "status": "STALE"
+        ]
       },
       {
         "code": "QDR-QNT-COL2627-P039-Q13",
@@ -250,12 +179,7 @@
         "after": [
           "skill_quant_09",
           "sub_quant_09_1"
-        ],
-        "current": [
-          "skill_quant_08",
-          "sub_quant_08_4"
-        ],
-        "status": "STALE"
+        ]
       },
       {
         "code": "QDR-QNT-COL2627-P040-Q15",
@@ -266,12 +190,7 @@
         "after": [
           "skill_quant_09",
           "sub_quant_09_1"
-        ],
-        "current": [
-          "skill_quant_08",
-          "sub_quant_08_1"
-        ],
-        "status": "STALE"
+        ]
       },
       {
         "code": "QDR-QNT-COL2627-P040-Q16",
@@ -282,12 +201,7 @@
         "after": [
           "skill_quant_09",
           "sub_quant_09_1"
-        ],
-        "current": [
-          "skill_quant_08",
-          "sub_quant_08_3"
-        ],
-        "status": "STALE"
+        ]
       },
       {
         "code": "QDR-QNT-COL2627-P040-Q17",
@@ -298,12 +212,7 @@
         "after": [
           "skill_quant_09",
           "sub_quant_09_1"
-        ],
-        "current": [
-          "skill_quant_08",
-          "sub_quant_08_1"
-        ],
-        "status": "STALE"
+        ]
       },
       {
         "code": "QDR-QNT-COL2627-P040-Q19",
@@ -314,12 +223,7 @@
         "after": [
           "skill_quant_09",
           "sub_quant_09_1"
-        ],
-        "current": [
-          "skill_quant_08",
-          "sub_quant_08_4"
-        ],
-        "status": "STALE"
+        ]
       },
       {
         "code": "QDR-QNT-COL2627-P040-Q20",
@@ -330,12 +234,7 @@
         "after": [
           "skill_quant_09",
           "sub_quant_09_1"
-        ],
-        "current": [
-          "skill_quant_08",
-          "sub_quant_08_1"
-        ],
-        "status": "STALE"
+        ]
       },
       {
         "code": "QDR-QNT-COL2627-P040-Q21",
@@ -346,12 +245,7 @@
         "after": [
           "skill_quant_09",
           "sub_quant_09_1"
-        ],
-        "current": [
-          "skill_quant_08",
-          "sub_quant_08_4"
-        ],
-        "status": "STALE"
+        ]
       },
       {
         "code": "QDR-QNT-COL2627-P040-Q22",
@@ -362,12 +256,7 @@
         "after": [
           "skill_quant_09",
           "sub_quant_09_1"
-        ],
-        "current": [
-          "skill_quant_08",
-          "sub_quant_08_1"
-        ],
-        "status": "STALE"
+        ]
       },
       {
         "code": "QDR-QNT-COL2627-P040-Q18",
@@ -378,12 +267,7 @@
         "after": [
           "skill_quant_04",
           "sub_quant_04_4"
-        ],
-        "current": [
-          "skill_quant_08",
-          "sub_quant_08_4"
-        ],
-        "status": "STALE"
+        ]
       },
       {
         "code": "QDR-QNT-COL2627-P040-Q24",
@@ -394,12 +278,7 @@
         "after": [
           "skill_quant_09",
           "sub_quant_09_3"
-        ],
-        "current": [
-          "skill_quant_08",
-          "sub_quant_08_4"
-        ],
-        "status": "STALE"
+        ]
       },
       {
         "code": "QDR-QNT-COL2627-P040-Q25",
@@ -410,12 +289,7 @@
         "after": [
           "skill_quant_09",
           "sub_quant_09_3"
-        ],
-        "current": [
-          "skill_quant_08",
-          "sub_quant_08_4"
-        ],
-        "status": "STALE"
+        ]
       },
       {
         "code": "QDR-QNT-COL2627-P040-Q26",
@@ -426,12 +300,7 @@
         "after": [
           "skill_quant_08",
           "sub_quant_08_4"
-        ],
-        "current": [
-          "skill_quant_08",
-          "sub_quant_08_3"
-        ],
-        "status": "STALE"
+        ]
       },
       {
         "code": "QDR-QNT-COL2627-P040-Q27",
@@ -442,12 +311,7 @@
         "after": [
           "skill_quant_09",
           "sub_quant_09_2"
-        ],
-        "current": [
-          "skill_quant_08",
-          "sub_quant_08_1"
-        ],
-        "status": "STALE"
+        ]
       },
       {
         "code": "QDR-QNT-COL2627-P040-Q28",
@@ -458,12 +322,7 @@
         "after": [
           "skill_quant_09",
           "sub_quant_09_2"
-        ],
-        "current": [
-          "skill_quant_08",
-          "sub_quant_08_4"
-        ],
-        "status": "STALE"
+        ]
       },
       {
         "code": "QDR-QNT-COL2627-P041-Q29",
@@ -474,12 +333,7 @@
         "after": [
           "skill_quant_09",
           "sub_quant_09_2"
-        ],
-        "current": [
-          "skill_quant_08",
-          "sub_quant_08_2"
-        ],
-        "status": "STALE"
+        ]
       },
       {
         "code": "QDR-QNT-COL2627-P041-Q30",
@@ -490,12 +344,7 @@
         "after": [
           "skill_quant_09",
           "sub_quant_09_2"
-        ],
-        "current": [
-          "skill_quant_08",
-          "sub_quant_08_2"
-        ],
-        "status": "STALE"
+        ]
       },
       {
         "code": "QDR-QNT-COL2627-P041-Q31",
@@ -506,12 +355,7 @@
         "after": [
           "skill_quant_09",
           "sub_quant_09_2"
-        ],
-        "current": [
-          "skill_quant_08",
-          "sub_quant_08_3"
-        ],
-        "status": "STALE"
+        ]
       },
       {
         "code": "QDR-QNT-COL2627-P041-Q32",
@@ -522,12 +366,7 @@
         "after": [
           "skill_quant_09",
           "sub_quant_09_2"
-        ],
-        "current": [
-          "skill_quant_08",
-          "sub_quant_08_3"
-        ],
-        "status": "STALE"
+        ]
       },
       {
         "code": "QDR-QNT-COL2627-P041-Q33",
@@ -538,12 +377,7 @@
         "after": [
           "skill_quant_09",
           "sub_quant_09_2"
-        ],
-        "current": [
-          "skill_quant_08",
-          "sub_quant_08_2"
-        ],
-        "status": "STALE"
+        ]
       },
       {
         "code": "QDR-QNT-COL2627-P041-Q34",
@@ -554,12 +388,7 @@
         "after": [
           "skill_quant_09",
           "sub_quant_09_2"
-        ],
-        "current": [
-          "skill_quant_08",
-          "sub_quant_08_4"
-        ],
-        "status": "STALE"
+        ]
       },
       {
         "code": "QDR-QNT-COL2627-P041-Q43",
@@ -570,12 +399,7 @@
         "after": [
           "skill_quant_09",
           "sub_quant_09_2"
-        ],
-        "current": [
-          "skill_quant_08",
-          "sub_quant_08_2"
-        ],
-        "status": "STALE"
+        ]
       },
       {
         "code": "QDR-QNT-COL2627-P041-Q44",
@@ -586,12 +410,7 @@
         "after": [
           "skill_quant_09",
           "sub_quant_09_2"
-        ],
-        "current": [
-          "skill_quant_08",
-          "sub_quant_08_2"
-        ],
-        "status": "STALE"
+        ]
       },
       {
         "code": "QDR-QNT-COL2627-P041-Q36",
@@ -602,12 +421,7 @@
         "after": [
           "skill_quant_09",
           "sub_quant_09_1"
-        ],
-        "current": [
-          "skill_quant_08",
-          "sub_quant_08_1"
-        ],
-        "status": "STALE"
+        ]
       },
       {
         "code": "QDR-QNT-COL2627-P041-Q37",
@@ -618,12 +432,7 @@
         "after": [
           "skill_quant_09",
           "sub_quant_09_1"
-        ],
-        "current": [
-          "skill_quant_08",
-          "sub_quant_08_1"
-        ],
-        "status": "STALE"
+        ]
       },
       {
         "code": "QDR-QNT-COL2627-P041-Q38",
@@ -634,12 +443,7 @@
         "after": [
           "skill_quant_09",
           "sub_quant_09_1"
-        ],
-        "current": [
-          "skill_quant_08",
-          "sub_quant_08_1"
-        ],
-        "status": "STALE"
+        ]
       },
       {
         "code": "QDR-QNT-COL2627-P041-Q40",
@@ -650,12 +454,7 @@
         "after": [
           "skill_quant_09",
           "sub_quant_09_1"
-        ],
-        "current": [
-          "skill_quant_08",
-          "sub_quant_08_3"
-        ],
-        "status": "STALE"
+        ]
       },
       {
         "code": "QDR-QNT-COL2627-P041-Q41",
@@ -666,12 +465,7 @@
         "after": [
           "skill_quant_09",
           "sub_quant_09_1"
-        ],
-        "current": [
-          "skill_quant_08",
-          "sub_quant_08_4"
-        ],
-        "status": "STALE"
+        ]
       },
       {
         "code": "QDR-QNT-COL2627-P041-Q39",
@@ -682,12 +476,7 @@
         "after": [
           "skill_quant_09",
           "sub_quant_09_3"
-        ],
-        "current": [
-          "skill_quant_08",
-          "sub_quant_08_4"
-        ],
-        "status": "STALE"
+        ]
       },
       {
         "code": "QDR-QNT-COL2627-P007-Q08",
@@ -698,548 +487,482 @@
         "after": [
           "skill_quant_02",
           "sub_quant_02_1"
-        ],
-        "current": [
-          "skill_quant_02",
-          "sub_quant_02_3"
-        ],
-        "status": "STALE"
+        ]
       }
     ]
   },
-  "drills": {
-    "total": 95,
-    "questionRefs": 1200,
-    "matchedToEinsteinBank": 981,
-    "unknown_to_einstein_banks": 219,
-    "mismatched_live_primary_subskills": 67,
-    "affected_drills": 27,
-    "mismatch": [
+  "drillAudit": {
+    "drillCount": 95,
+    "questionReferences": 1200,
+    "validReferences": 1200,
+    "questionRefsOutsideFND_COL": 129,
+    "primarySkillMatches": 1124,
+    "questionSkillVsDrillSkillMismatches": 76,
+    "affectedDrills": 32,
+    "mismatches": [
       {
         "drill": "drill_sub_quant_01_1",
         "questionId": "q_qdr_qnt_col2627_p005_q03",
-        "questionCode": "QDR-QNT-COL2627-P005-Q03",
-        "trainingSkillId": "sub_quant_01_1",
-        "currentQuestionSkillId": "sub_quant_01_3"
+        "drillSubSkillId": "sub_quant_01_1",
+        "questionSubSkillId": "sub_quant_01_3"
       },
       {
         "drill": "drill_sub_quant_01_1",
         "questionId": "q_qdr_qnt_col2627_p005_q06",
-        "questionCode": "QDR-QNT-COL2627-P005-Q06",
-        "trainingSkillId": "sub_quant_01_1",
-        "currentQuestionSkillId": "sub_quant_01_3"
+        "drillSubSkillId": "sub_quant_01_1",
+        "questionSubSkillId": "sub_quant_01_3"
       },
       {
         "drill": "drill_sub_quant_01_1",
         "questionId": "q_qdr_qnt_col2627_p005_q07",
-        "questionCode": "QDR-QNT-COL2627-P005-Q07",
-        "trainingSkillId": "sub_quant_01_1",
-        "currentQuestionSkillId": "sub_quant_01_3"
+        "drillSubSkillId": "sub_quant_01_1",
+        "questionSubSkillId": "sub_quant_01_3"
       },
       {
         "drill": "drill_sub_quant_01_1",
         "questionId": "q_qdr_qnt_col2627_p005_q08",
-        "questionCode": "QDR-QNT-COL2627-P005-Q08",
-        "trainingSkillId": "sub_quant_01_1",
-        "currentQuestionSkillId": "sub_quant_01_3"
+        "drillSubSkillId": "sub_quant_01_1",
+        "questionSubSkillId": "sub_quant_01_3"
       },
       {
         "drill": "drill_sub_quant_01_2",
         "questionId": "q_qdr_qnt_col2627_p005_q13",
-        "questionCode": "QDR-QNT-COL2627-P005-Q13",
-        "trainingSkillId": "sub_quant_01_2",
-        "currentQuestionSkillId": "sub_quant_01_1"
+        "drillSubSkillId": "sub_quant_01_2",
+        "questionSubSkillId": "sub_quant_01_1"
       },
       {
         "drill": "drill_sub_quant_01_3",
         "questionId": "q_qdr_qnt_col2627_p006_q15",
-        "questionCode": "QDR-QNT-COL2627-P006-Q15",
-        "trainingSkillId": "sub_quant_01_3",
-        "currentQuestionSkillId": "sub_quant_01_1"
+        "drillSubSkillId": "sub_quant_01_3",
+        "questionSubSkillId": "sub_quant_01_1"
       },
       {
         "drill": "drill_sub_quant_02_1",
         "questionId": "q_qdr_qnt_col2627_p007_q03",
-        "questionCode": "QDR-QNT-COL2627-P007-Q03",
-        "trainingSkillId": "sub_quant_02_1",
-        "currentQuestionSkillId": "sub_quant_02_2"
+        "drillSubSkillId": "sub_quant_02_1",
+        "questionSubSkillId": "sub_quant_02_2"
       },
       {
         "drill": "drill_sub_quant_03_1",
         "questionId": "q_qdr_qnt_col2627_p009_q06",
-        "questionCode": "QDR-QNT-COL2627-P009-Q06",
-        "trainingSkillId": "sub_quant_03_1",
-        "currentQuestionSkillId": "sub_quant_03_2"
+        "drillSubSkillId": "sub_quant_03_1",
+        "questionSubSkillId": "sub_quant_03_2"
       },
       {
         "drill": "drill_sub_quant_03_1",
         "questionId": "q_qdr_qnt_col2627_p009_q07",
-        "questionCode": "QDR-QNT-COL2627-P009-Q07",
-        "trainingSkillId": "sub_quant_03_1",
-        "currentQuestionSkillId": "sub_quant_03_2"
+        "drillSubSkillId": "sub_quant_03_1",
+        "questionSubSkillId": "sub_quant_03_2"
       },
       {
         "drill": "drill_sub_quant_03_1",
         "questionId": "q_qdr_qnt_col2627_p009_q09",
-        "questionCode": "QDR-QNT-COL2627-P009-Q09",
-        "trainingSkillId": "sub_quant_03_1",
-        "currentQuestionSkillId": "sub_quant_03_3"
+        "drillSubSkillId": "sub_quant_03_1",
+        "questionSubSkillId": "sub_quant_03_3"
       },
       {
         "drill": "drill_sub_quant_03_1",
         "questionId": "q_qdr_qnt_col2627_p009_q10",
-        "questionCode": "QDR-QNT-COL2627-P009-Q10",
-        "trainingSkillId": "sub_quant_03_1",
-        "currentQuestionSkillId": "sub_quant_03_3"
+        "drillSubSkillId": "sub_quant_03_1",
+        "questionSubSkillId": "sub_quant_03_3"
       },
       {
         "drill": "drill_sub_quant_03_2",
         "questionId": "q_qdr_qnt_col2627_p010_q19",
-        "questionCode": "QDR-QNT-COL2627-P010-Q19",
-        "trainingSkillId": "sub_quant_03_2",
-        "currentQuestionSkillId": "sub_quant_03_3"
+        "drillSubSkillId": "sub_quant_03_2",
+        "questionSubSkillId": "sub_quant_03_3"
       },
       {
         "drill": "drill_sub_quant_03_2",
         "questionId": "q_qdr_qnt_col2627_p010_q20",
-        "questionCode": "QDR-QNT-COL2627-P010-Q20",
-        "trainingSkillId": "sub_quant_03_2",
-        "currentQuestionSkillId": "sub_quant_03_3"
+        "drillSubSkillId": "sub_quant_03_2",
+        "questionSubSkillId": "sub_quant_03_3"
       },
       {
         "drill": "drill_sub_quant_03_2",
         "questionId": "q_qdr_qnt_col2627_p010_q24",
-        "questionCode": "QDR-QNT-COL2627-P010-Q24",
-        "trainingSkillId": "sub_quant_03_2",
-        "currentQuestionSkillId": "sub_quant_03_3"
+        "drillSubSkillId": "sub_quant_03_2",
+        "questionSubSkillId": "sub_quant_03_3"
       },
       {
         "drill": "drill_sub_quant_03_2",
         "questionId": "q_qdr_qnt_col2627_p010_q25",
-        "questionCode": "QDR-QNT-COL2627-P010-Q25",
-        "trainingSkillId": "sub_quant_03_2",
-        "currentQuestionSkillId": "sub_quant_03_3"
+        "drillSubSkillId": "sub_quant_03_2",
+        "questionSubSkillId": "sub_quant_03_3"
       },
       {
         "drill": "drill_sub_quant_03_4",
         "questionId": "q_qdr_qnt_col2627_p015_q73",
-        "questionCode": "QDR-QNT-COL2627-P015-Q73",
-        "trainingSkillId": "sub_quant_03_4",
-        "currentQuestionSkillId": "sub_quant_03_1"
+        "drillSubSkillId": "sub_quant_03_4",
+        "questionSubSkillId": "sub_quant_03_1"
       },
       {
         "drill": "drill_sub_quant_04_1",
         "questionId": "q_qdr_qnt_col2627_p017_q02",
-        "questionCode": "QDR-QNT-COL2627-P017-Q02",
-        "trainingSkillId": "sub_quant_04_1",
-        "currentQuestionSkillId": "sub_quant_04_3"
+        "drillSubSkillId": "sub_quant_04_1",
+        "questionSubSkillId": "sub_quant_04_3"
       },
       {
         "drill": "drill_sub_quant_04_2",
         "questionId": "q_qdr_qnt_col2627_p017_q01",
-        "questionCode": "QDR-QNT-COL2627-P017-Q01",
-        "trainingSkillId": "sub_quant_04_2",
-        "currentQuestionSkillId": "sub_quant_04_1"
+        "drillSubSkillId": "sub_quant_04_2",
+        "questionSubSkillId": "sub_quant_04_1"
       },
       {
         "drill": "drill_sub_quant_04_4",
         "questionId": "q_qdr_qnt_col2627_p018_q17",
-        "questionCode": "QDR-QNT-COL2627-P018-Q17",
-        "trainingSkillId": "sub_quant_04_4",
-        "currentQuestionSkillId": "sub_quant_04_2"
+        "drillSubSkillId": "sub_quant_04_4",
+        "questionSubSkillId": "sub_quant_04_2"
       },
       {
         "drill": "drill_sub_quant_07_3",
         "questionId": "q_qdr_qnt_col2627_p034_q53",
-        "questionCode": "QDR-QNT-COL2627-P034-Q53",
-        "trainingSkillId": "sub_quant_07_3",
-        "currentQuestionSkillId": "sub_quant_07_2"
+        "drillSubSkillId": "sub_quant_07_3",
+        "questionSubSkillId": "sub_quant_07_2"
       },
       {
         "drill": "drill_sub_quant_07_4",
         "questionId": "q_qdr_qnt_col2627_p034_q65",
-        "questionCode": "QDR-QNT-COL2627-P034-Q65",
-        "trainingSkillId": "sub_quant_07_4",
-        "currentQuestionSkillId": "sub_quant_07_2"
+        "drillSubSkillId": "sub_quant_07_4",
+        "questionSubSkillId": "sub_quant_07_2"
       },
       {
         "drill": "drill_sub_quant_07_4",
         "questionId": "q_qdr_qnt_col2627_p034_q66",
-        "questionCode": "QDR-QNT-COL2627-P034-Q66",
-        "trainingSkillId": "sub_quant_07_4",
-        "currentQuestionSkillId": "sub_quant_07_2"
+        "drillSubSkillId": "sub_quant_07_4",
+        "questionSubSkillId": "sub_quant_07_2"
       },
       {
         "drill": "drill_sub_quant_08_3",
         "questionId": "q_qdr_qnt_col2627_p038_q38",
-        "questionCode": "QDR-QNT-COL2627-P038-Q38",
-        "trainingSkillId": "sub_quant_08_3",
-        "currentQuestionSkillId": "sub_quant_08_2"
+        "drillSubSkillId": "sub_quant_08_3",
+        "questionSubSkillId": "sub_quant_08_2"
       },
       {
         "drill": "drill_sub_quant_08_3",
         "questionId": "q_qdr_qnt_col2627_p038_q39",
-        "questionCode": "QDR-QNT-COL2627-P038-Q39",
-        "trainingSkillId": "sub_quant_08_3",
-        "currentQuestionSkillId": "sub_quant_08_2"
+        "drillSubSkillId": "sub_quant_08_3",
+        "questionSubSkillId": "sub_quant_08_2"
       },
       {
         "drill": "drill_sub_quant_08_3",
         "questionId": "q_qdr_qnt_col2627_p038_q41",
-        "questionCode": "QDR-QNT-COL2627-P038-Q41",
-        "trainingSkillId": "sub_quant_08_3",
-        "currentQuestionSkillId": "sub_quant_08_2"
+        "drillSubSkillId": "sub_quant_08_3",
+        "questionSubSkillId": "sub_quant_08_2"
       },
       {
         "drill": "drill_sub_quant_08_3",
         "questionId": "q_qdr_qnt_col2627_p038_q42",
-        "questionCode": "QDR-QNT-COL2627-P038-Q42",
-        "trainingSkillId": "sub_quant_08_3",
-        "currentQuestionSkillId": "sub_quant_08_2"
+        "drillSubSkillId": "sub_quant_08_3",
+        "questionSubSkillId": "sub_quant_08_2"
       },
       {
         "drill": "drill_sub_quant_08_3",
         "questionId": "q_qdr_qnt_col2627_p038_q43",
-        "questionCode": "QDR-QNT-COL2627-P038-Q43",
-        "trainingSkillId": "sub_quant_08_3",
-        "currentQuestionSkillId": "sub_quant_08_2"
+        "drillSubSkillId": "sub_quant_08_3",
+        "questionSubSkillId": "sub_quant_08_2"
       },
       {
         "drill": "drill_sub_quant_08_4",
         "questionId": "q_qdr_qnt_col2627_p038_q44",
-        "questionCode": "QDR-QNT-COL2627-P038-Q44",
-        "trainingSkillId": "sub_quant_08_4",
-        "currentQuestionSkillId": "sub_quant_08_2"
+        "drillSubSkillId": "sub_quant_08_4",
+        "questionSubSkillId": "sub_quant_08_2"
       },
       {
         "drill": "drill_sub_quant_08_4",
         "questionId": "q_qdr_qnt_col2627_p038_q45",
-        "questionCode": "QDR-QNT-COL2627-P038-Q45",
-        "trainingSkillId": "sub_quant_08_4",
-        "currentQuestionSkillId": "sub_quant_08_2"
+        "drillSubSkillId": "sub_quant_08_4",
+        "questionSubSkillId": "sub_quant_08_2"
       },
       {
         "drill": "drill_sub_quant_10_1",
         "questionId": "q_qdr_qnt_col2627_p040_q23",
-        "questionCode": "QDR-QNT-COL2627-P040-Q23",
-        "trainingSkillId": "sub_quant_10_1",
-        "currentQuestionSkillId": "sub_quant_09_3"
+        "drillSubSkillId": "sub_quant_10_1",
+        "questionSubSkillId": "sub_quant_09_3"
       },
       {
         "drill": "drill_sub_quant_10_1",
         "questionId": "q_qdr_qnt_col2627_p040_q24",
-        "questionCode": "QDR-QNT-COL2627-P040-Q24",
-        "trainingSkillId": "sub_quant_10_1",
-        "currentQuestionSkillId": "sub_quant_09_3"
+        "drillSubSkillId": "sub_quant_10_1",
+        "questionSubSkillId": "sub_quant_09_3"
       },
       {
         "drill": "drill_sub_quant_10_1",
         "questionId": "q_qdr_qnt_col2627_p040_q25",
-        "questionCode": "QDR-QNT-COL2627-P040-Q25",
-        "trainingSkillId": "sub_quant_10_1",
-        "currentQuestionSkillId": "sub_quant_09_3"
+        "drillSubSkillId": "sub_quant_10_1",
+        "questionSubSkillId": "sub_quant_09_3"
       },
       {
         "drill": "drill_sub_quant_10_1",
         "questionId": "q_qdr_qnt_col2627_p041_q39",
-        "questionCode": "QDR-QNT-COL2627-P041-Q39",
-        "trainingSkillId": "sub_quant_10_1",
-        "currentQuestionSkillId": "sub_quant_09_3"
+        "drillSubSkillId": "sub_quant_10_1",
+        "questionSubSkillId": "sub_quant_09_3"
       },
       {
         "drill": "drill_sub_quant_10_3",
         "questionId": "q_qdr_qnt_col2627_p057_q08",
-        "questionCode": "QDR-QNT-COL2627-P057-Q08",
-        "trainingSkillId": "sub_quant_10_3",
-        "currentQuestionSkillId": "sub_quant_17_1"
+        "drillSubSkillId": "sub_quant_10_3",
+        "questionSubSkillId": "sub_quant_17_1"
       },
       {
         "drill": "drill_sub_quant_10_4",
         "questionId": "q_qdr_qnt_col2627_p037_q18",
-        "questionCode": "QDR-QNT-COL2627-P037-Q18",
-        "trainingSkillId": "sub_quant_10_4",
-        "currentQuestionSkillId": "sub_quant_08_3"
+        "drillSubSkillId": "sub_quant_10_4",
+        "questionSubSkillId": "sub_quant_08_3"
       },
       {
         "drill": "drill_sub_quant_10_4",
         "questionId": "q_qdr_qnt_col2627_p037_q19",
-        "questionCode": "QDR-QNT-COL2627-P037-Q19",
-        "trainingSkillId": "sub_quant_10_4",
-        "currentQuestionSkillId": "sub_quant_08_3"
+        "drillSubSkillId": "sub_quant_10_4",
+        "questionSubSkillId": "sub_quant_08_3"
       },
       {
         "drill": "drill_sub_quant_10_4",
         "questionId": "q_qdr_qnt_col2627_p037_q20",
-        "questionCode": "QDR-QNT-COL2627-P037-Q20",
-        "trainingSkillId": "sub_quant_10_4",
-        "currentQuestionSkillId": "sub_quant_08_3"
+        "drillSubSkillId": "sub_quant_10_4",
+        "questionSubSkillId": "sub_quant_08_3"
       },
       {
         "drill": "drill_sub_quant_11_2",
         "questionId": "q_qdr_qnt_col2627_p044_q01",
-        "questionCode": "QDR-QNT-COL2627-P044-Q01",
-        "trainingSkillId": "sub_quant_11_2",
-        "currentQuestionSkillId": "sub_quant_11_1"
+        "drillSubSkillId": "sub_quant_11_2",
+        "questionSubSkillId": "sub_quant_11_1"
       },
       {
         "drill": "drill_sub_quant_11_2",
         "questionId": "q_qdr_qnt_col2627_p044_q02",
-        "questionCode": "QDR-QNT-COL2627-P044-Q02",
-        "trainingSkillId": "sub_quant_11_2",
-        "currentQuestionSkillId": "sub_quant_11_1"
+        "drillSubSkillId": "sub_quant_11_2",
+        "questionSubSkillId": "sub_quant_11_1"
       },
       {
         "drill": "drill_sub_quant_11_2",
         "questionId": "q_qdr_qnt_col2627_p044_q03",
-        "questionCode": "QDR-QNT-COL2627-P044-Q03",
-        "trainingSkillId": "sub_quant_11_2",
-        "currentQuestionSkillId": "sub_quant_11_1"
+        "drillSubSkillId": "sub_quant_11_2",
+        "questionSubSkillId": "sub_quant_11_1"
       },
       {
         "drill": "drill_sub_quant_11_2",
         "questionId": "q_qdr_qnt_col2627_p044_q04",
-        "questionCode": "QDR-QNT-COL2627-P044-Q04",
-        "trainingSkillId": "sub_quant_11_2",
-        "currentQuestionSkillId": "sub_quant_11_1"
+        "drillSubSkillId": "sub_quant_11_2",
+        "questionSubSkillId": "sub_quant_11_1"
       },
       {
         "drill": "drill_sub_quant_11_2",
         "questionId": "q_qdr_qnt_col2627_p044_q05",
-        "questionCode": "QDR-QNT-COL2627-P044-Q05",
-        "trainingSkillId": "sub_quant_11_2",
-        "currentQuestionSkillId": "sub_quant_11_1"
+        "drillSubSkillId": "sub_quant_11_2",
+        "questionSubSkillId": "sub_quant_11_1"
       },
       {
         "drill": "drill_sub_quant_11_2",
         "questionId": "q_qdr_qnt_col2627_p044_q06",
-        "questionCode": "QDR-QNT-COL2627-P044-Q06",
-        "trainingSkillId": "sub_quant_11_2",
-        "currentQuestionSkillId": "sub_quant_11_1"
+        "drillSubSkillId": "sub_quant_11_2",
+        "questionSubSkillId": "sub_quant_11_1"
       },
       {
         "drill": "drill_sub_quant_11_3",
         "questionId": "q_qdr_qnt_col2627_p046_q40",
-        "questionCode": "QDR-QNT-COL2627-P046-Q40",
-        "trainingSkillId": "sub_quant_11_3",
-        "currentQuestionSkillId": "sub_quant_11_2"
+        "drillSubSkillId": "sub_quant_11_3",
+        "questionSubSkillId": "sub_quant_11_2"
       },
       {
         "drill": "drill_sub_quant_11_3",
         "questionId": "q_qdr_qnt_col2627_p046_q42",
-        "questionCode": "QDR-QNT-COL2627-P046-Q42",
-        "trainingSkillId": "sub_quant_11_3",
-        "currentQuestionSkillId": "sub_quant_11_2"
+        "drillSubSkillId": "sub_quant_11_3",
+        "questionSubSkillId": "sub_quant_11_2"
       },
       {
         "drill": "drill_sub_quant_14_1",
         "questionId": "q_qdr_qnt_col2627_p055_q32",
-        "questionCode": "QDR-QNT-COL2627-P055-Q32",
-        "trainingSkillId": "sub_quant_14_1",
-        "currentQuestionSkillId": "sub_quant_14_4"
+        "drillSubSkillId": "sub_quant_14_1",
+        "questionSubSkillId": "sub_quant_14_4"
       },
       {
         "drill": "drill_sub_quant_14_3",
         "questionId": "q_qdr_qnt_col2627_p055_q31",
-        "questionCode": "QDR-QNT-COL2627-P055-Q31",
-        "trainingSkillId": "sub_quant_14_3",
-        "currentQuestionSkillId": "sub_quant_01_5"
+        "drillSubSkillId": "sub_quant_14_3",
+        "questionSubSkillId": "sub_quant_01_5"
       },
       {
         "drill": "drill_sub_quant_15_1",
         "questionId": "q_qdr_qnt_col2627_p053_q05",
-        "questionCode": "QDR-QNT-COL2627-P053-Q05",
-        "trainingSkillId": "sub_quant_15_1",
-        "currentQuestionSkillId": "sub_quant_14_2"
+        "drillSubSkillId": "sub_quant_15_1",
+        "questionSubSkillId": "sub_quant_14_2"
       },
       {
         "drill": "drill_sub_quant_15_1",
         "questionId": "q_qdr_qnt_col2627_p053_q06",
-        "questionCode": "QDR-QNT-COL2627-P053-Q06",
-        "trainingSkillId": "sub_quant_15_1",
-        "currentQuestionSkillId": "sub_quant_14_2"
+        "drillSubSkillId": "sub_quant_15_1",
+        "questionSubSkillId": "sub_quant_14_2"
       },
       {
         "drill": "drill_sub_quant_15_2",
         "questionId": "q_qdr_qnt_col2627_p053_q01",
-        "questionCode": "QDR-QNT-COL2627-P053-Q01",
-        "trainingSkillId": "sub_quant_15_2",
-        "currentQuestionSkillId": "sub_quant_14_2"
+        "drillSubSkillId": "sub_quant_15_2",
+        "questionSubSkillId": "sub_quant_14_2"
       },
       {
         "drill": "drill_sub_quant_15_2",
         "questionId": "q_qdr_qnt_col2627_p053_q02",
-        "questionCode": "QDR-QNT-COL2627-P053-Q02",
-        "trainingSkillId": "sub_quant_15_2",
-        "currentQuestionSkillId": "sub_quant_14_2"
+        "drillSubSkillId": "sub_quant_15_2",
+        "questionSubSkillId": "sub_quant_14_2"
       },
       {
         "drill": "drill_sub_quant_15_2",
         "questionId": "q_qdr_qnt_col2627_p053_q03",
-        "questionCode": "QDR-QNT-COL2627-P053-Q03",
-        "trainingSkillId": "sub_quant_15_2",
-        "currentQuestionSkillId": "sub_quant_14_2"
+        "drillSubSkillId": "sub_quant_15_2",
+        "questionSubSkillId": "sub_quant_14_2"
       },
       {
         "drill": "drill_sub_quant_15_2",
         "questionId": "q_qdr_qnt_col2627_p053_q04",
-        "questionCode": "QDR-QNT-COL2627-P053-Q04",
-        "trainingSkillId": "sub_quant_15_2",
-        "currentQuestionSkillId": "sub_quant_14_2"
+        "drillSubSkillId": "sub_quant_15_2",
+        "questionSubSkillId": "sub_quant_14_2"
       },
       {
         "drill": "drill_sub_quant_15_2",
         "questionId": "q_qdr_qnt_col2627_p053_q08",
-        "questionCode": "QDR-QNT-COL2627-P053-Q08",
-        "trainingSkillId": "sub_quant_15_2",
-        "currentQuestionSkillId": "sub_quant_14_2"
+        "drillSubSkillId": "sub_quant_15_2",
+        "questionSubSkillId": "sub_quant_14_2"
       },
       {
         "drill": "drill_sub_quant_16_1",
         "questionId": "q_qdr_qnt_col2627_p007_q09",
-        "questionCode": "QDR-QNT-COL2627-P007-Q09",
-        "trainingSkillId": "sub_quant_16_1",
-        "currentQuestionSkillId": "sub_quant_02_1"
+        "drillSubSkillId": "sub_quant_16_1",
+        "questionSubSkillId": "sub_quant_02_1"
       },
       {
         "drill": "drill_sub_quant_16_2",
         "questionId": "q_qdr_qnt_col2627_p053_q09",
-        "questionCode": "QDR-QNT-COL2627-P053-Q09",
-        "trainingSkillId": "sub_quant_16_2",
-        "currentQuestionSkillId": "sub_quant_16_1"
+        "drillSubSkillId": "sub_quant_16_2",
+        "questionSubSkillId": "sub_quant_16_1"
       },
       {
         "drill": "drill_sub_quant_16_2",
         "questionId": "q_qdr_qnt_col2627_p053_q10",
-        "questionCode": "QDR-QNT-COL2627-P053-Q10",
-        "trainingSkillId": "sub_quant_16_2",
-        "currentQuestionSkillId": "sub_quant_16_1"
+        "drillSubSkillId": "sub_quant_16_2",
+        "questionSubSkillId": "sub_quant_16_1"
       },
       {
         "drill": "drill_sub_quant_16_2",
         "questionId": "q_qdr_qnt_col2627_p053_q11",
-        "questionCode": "QDR-QNT-COL2627-P053-Q11",
-        "trainingSkillId": "sub_quant_16_2",
-        "currentQuestionSkillId": "sub_quant_16_1"
+        "drillSubSkillId": "sub_quant_16_2",
+        "questionSubSkillId": "sub_quant_16_1"
       },
       {
         "drill": "drill_sub_quant_16_2",
         "questionId": "q_qdr_qnt_col2627_p053_q14",
-        "questionCode": "QDR-QNT-COL2627-P053-Q14",
-        "trainingSkillId": "sub_quant_16_2",
-        "currentQuestionSkillId": "sub_quant_16_1"
+        "drillSubSkillId": "sub_quant_16_2",
+        "questionSubSkillId": "sub_quant_16_1"
       },
       {
         "drill": "drill_sub_quant_17_3",
         "questionId": "q_qdr_qnt_col2627_p057_q06",
-        "questionCode": "QDR-QNT-COL2627-P057-Q06",
-        "trainingSkillId": "sub_quant_17_3",
-        "currentQuestionSkillId": "sub_quant_17_1"
+        "drillSubSkillId": "sub_quant_17_3",
+        "questionSubSkillId": "sub_quant_17_1"
       },
       {
         "drill": "drill_sub_quant_17_3",
         "questionId": "q_qdr_qnt_col2627_p058_q18",
-        "questionCode": "QDR-QNT-COL2627-P058-Q18",
-        "trainingSkillId": "sub_quant_17_3",
-        "currentQuestionSkillId": "sub_quant_17_1"
+        "drillSubSkillId": "sub_quant_17_3",
+        "questionSubSkillId": "sub_quant_17_1"
       },
       {
         "drill": "drill_sub_quant_17_3",
         "questionId": "q_qdr_qnt_col2627_p058_q19",
-        "questionCode": "QDR-QNT-COL2627-P058-Q19",
-        "trainingSkillId": "sub_quant_17_3",
-        "currentQuestionSkillId": "sub_quant_17_1"
+        "drillSubSkillId": "sub_quant_17_3",
+        "questionSubSkillId": "sub_quant_17_1"
       },
       {
         "drill": "drill_sub_quant_17_3",
         "questionId": "q_qdr_qnt_col2627_p058_q21",
-        "questionCode": "QDR-QNT-COL2627-P058-Q21",
-        "trainingSkillId": "sub_quant_17_3",
-        "currentQuestionSkillId": "sub_quant_17_1"
+        "drillSubSkillId": "sub_quant_17_3",
+        "questionSubSkillId": "sub_quant_17_1"
       },
       {
         "drill": "drill_sub_quant_17_4",
         "questionId": "q_qdr_qnt_col2627_p058_q22",
-        "questionCode": "QDR-QNT-COL2627-P058-Q22",
-        "trainingSkillId": "sub_quant_17_4",
-        "currentQuestionSkillId": "sub_quant_17_2"
+        "drillSubSkillId": "sub_quant_17_4",
+        "questionSubSkillId": "sub_quant_17_2"
       },
       {
         "drill": "drill_sub_quant_17_4",
         "questionId": "q_qdr_qnt_col2627_p058_q23",
-        "questionCode": "QDR-QNT-COL2627-P058-Q23",
-        "trainingSkillId": "sub_quant_17_4",
-        "currentQuestionSkillId": "sub_quant_17_3"
+        "drillSubSkillId": "sub_quant_17_4",
+        "questionSubSkillId": "sub_quant_17_3"
       },
       {
         "drill": "drill_sub_quant_17_4",
         "questionId": "q_qdr_qnt_col2627_p058_q24",
-        "questionCode": "QDR-QNT-COL2627-P058-Q24",
-        "trainingSkillId": "sub_quant_17_4",
-        "currentQuestionSkillId": "sub_quant_17_3"
+        "drillSubSkillId": "sub_quant_17_4",
+        "questionSubSkillId": "sub_quant_17_3"
       },
       {
         "drill": "drill_sub_quant_17_4",
         "questionId": "q_qdr_qnt_col2627_p058_q25",
-        "questionCode": "QDR-QNT-COL2627-P058-Q25",
-        "trainingSkillId": "sub_quant_17_4",
-        "currentQuestionSkillId": "sub_quant_17_3"
+        "drillSubSkillId": "sub_quant_17_4",
+        "questionSubSkillId": "sub_quant_17_3"
+      },
+      {
+        "drill": "drill_sub_quant_19_3",
+        "questionId": "q_qdr_qnt_col2627_p065_q50",
+        "drillSubSkillId": "sub_quant_19_3",
+        "questionSubSkillId": "sub_quant_19_2"
+      },
+      {
+        "drill": "drill_sub_quant_19_3",
+        "questionId": "q_qdr_qnt_col2627_p065_q51",
+        "drillSubSkillId": "sub_quant_19_3",
+        "questionSubSkillId": "sub_quant_19_2"
+      },
+      {
+        "drill": "drill_sub_quant_20_5",
+        "questionId": "q_qdr_qnt_col2627_p072_q58",
+        "drillSubSkillId": "sub_quant_20_5",
+        "questionSubSkillId": "sub_quant_20_4"
+      },
+      {
+        "drill": "drill_sub_quant_20_5",
+        "questionId": "q_qdr_qnt_col2627_p073_q63",
+        "drillSubSkillId": "sub_quant_20_5",
+        "questionSubSkillId": "sub_quant_20_4"
+      },
+      {
+        "drill": "drill_sub_quant_23_3",
+        "questionId": "q_qdr_qnt_col2627_p079_q11",
+        "drillSubSkillId": "sub_quant_23_3",
+        "questionSubSkillId": "sub_quant_23_1"
+      },
+      {
+        "drill": "drill_sub_quant_24_4",
+        "questionId": "q_qdr_qnt_col2627_p081_q21",
+        "drillSubSkillId": "sub_quant_24_4",
+        "questionSubSkillId": "sub_quant_24_3"
+      },
+      {
+        "drill": "drill_sub_quant_24_4",
+        "questionId": "q_qdr_qnt_col2627_p081_q22",
+        "drillSubSkillId": "sub_quant_24_4",
+        "questionSubSkillId": "sub_quant_24_3"
+      },
+      {
+        "drill": "drill_sub_quant_24_4",
+        "questionId": "q_qdr_qnt_col2627_p082_q23",
+        "drillSubSkillId": "sub_quant_24_4",
+        "questionSubSkillId": "sub_quant_24_3"
+      },
+      {
+        "drill": "drill_sub_quant_25_3",
+        "questionId": "q_qdr_qnt_col2627_p071_q44",
+        "drillSubSkillId": "sub_quant_25_3",
+        "questionSubSkillId": "sub_quant_20_2"
       }
     ],
-    "mismatch_not_automatically_safe_to_change": true,
-    "nonbank_refs_preview": [
-      {
-        "drill": "drill_sub_quant_01_1",
-        "questionId": "train_sub_quant_01_1_01"
-      },
-      {
-        "drill": "drill_sub_quant_01_1",
-        "questionId": "train_sub_quant_01_1_02"
-      },
-      {
-        "drill": "drill_sub_quant_01_2",
-        "questionId": "train_sub_quant_01_2_01"
-      },
-      {
-        "drill": "drill_sub_quant_01_2",
-        "questionId": "train_sub_quant_01_2_02"
-      },
-      {
-        "drill": "drill_sub_quant_01_2",
-        "questionId": "train_sub_quant_01_2_03"
-      },
-      {
-        "drill": "drill_sub_quant_01_2",
-        "questionId": "train_sub_quant_01_2_04"
-      },
-      {
-        "drill": "drill_sub_quant_01_5",
-        "questionId": "train_sub_quant_01_5_01"
-      },
-      {
-        "drill": "drill_sub_quant_02_2",
-        "questionId": "train_sub_quant_02_2_01"
-      },
-      {
-        "drill": "drill_sub_quant_02_2",
-        "questionId": "train_sub_quant_02_2_02"
-      },
-      {
-        "drill": "drill_sub_quant_02_2",
-        "questionId": "train_sub_quant_02_2_03"
-      },
-      {
-        "drill": "drill_sub_quant_02_2",
-        "questionId": "train_sub_quant_02_2_04"
-      },
-      {
-        "drill": "drill_sub_quant_02_2",
-        "questionId": "train_sub_quant_02_2_05"
-      }
-    ]
+    "unresolvedRefs": []
   },
-  "limits": [
-    "Question mismatch is current ID-level vs quiz targeting; independent math question QA still required before changing quiz membership.",
-    "Unmatched IDs are not necessarily missing from the DB; can be generated training questions; never delete based on this scan.",
-    "Do not modify Atlas further until blocked write tool path is officially available."
-  ]
+  "safety": {
+    "production_taxonomy_modified": false,
+    "foundation_topics_modified": false,
+    "blocked_writes": "Do not retry production writes through alternate tool after security block",
+    "needs": "Approved write route and scoped controlled change, then independent mathematical review of drill mismatches and E2E"
+  }
 }
