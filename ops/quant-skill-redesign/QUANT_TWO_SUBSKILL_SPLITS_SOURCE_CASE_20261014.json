@@ -1,0 +1,102 @@
+{
+  "created": "2026-10-14",
+  "status": "PROPOSED_NEEDS_DRY_RUN_AND_UI_UAT_NOT_PRODUCTION_MIGRATION",
+  "sources": [
+    "كمي تأسيس انشتاين الاصلي .pdf",
+    "تجميع انشيتن معدل(2).pdf"
+  ],
+  "main_skill_decision": "Keep existing 25 mains",
+  "current_subskills": 95,
+  "proposed_subskills_after_two_splits": 97,
+  "keep_all_120_existing_foundation_topics_and_their_media": true,
+  "splits": [
+    {
+      "parentMain": "skill_quant_02",
+      "existingSub": "sub_quant_02_3",
+      "existingTopic": "top_quant_sub_quant_02_3",
+      "preserveExistingIdFor": "الأعداد الأولية والتحليل إلى عوامل أولية",
+      "keepExistingQuestionCodes": [
+        "QDR-QNT-COL2627-P007-Q12",
+        "QDR-QNT-COL2627-P007-Q13",
+        "QDR-QNT-COL2627-P007-Q14",
+        "QDR-QNT-COL2627-P007-Q15",
+        "QDR-QNT-COL2627-P008-Q16",
+        "QDR-QNT-COL2627-P008-Q17",
+        "QDR-QNT-COL2627-P008-Q18",
+        "QDR-QNT-COL2627-P008-Q19",
+        "QDR-QNT-COL2627-P008-Q20",
+        "QDR-QNT-COL2627-P008-Q21",
+        "QDR-QNT-COL2627-P008-Q22",
+        "QDR-QNT-FND26-P013-Q13",
+        "QDR-QNT-FND26-P013-Q14",
+        "QDR-QNT-FND26-P013-Q15"
+      ],
+      "newConcept": "القاسم المشترك الأكبر والمضاعف المشترك الأصغر",
+      "newConceptQuestionCodes": [
+        "QDR-QNT-COL2627-P032-Q17",
+        "QDR-QNT-COL2627-P032-Q18",
+        "QDR-QNT-COL2627-P032-Q19",
+        "QDR-QNT-COL2627-P032-Q20",
+        "QDR-QNT-COL2627-P032-Q21",
+        "QDR-QNT-COL2627-P032-Q22",
+        "QDR-QNT-COL2627-P032-Q23",
+        "QDR-QNT-COL2627-P032-Q24",
+        "QDR-QNT-COL2627-P032-Q25",
+        "QDR-QNT-COL2627-P032-Q26",
+        "QDR-QNT-COL2627-P032-Q27",
+        "QDR-QNT-COL2627-P032-Q28",
+        "QDR-QNT-FND26-P049-Q15",
+        "QDR-QNT-FND26-P049-Q16",
+        "QDR-QNT-FND26-P049-Q17",
+        "QDR-QNT-FND26-P049-Q18",
+        "QDR-QNT-FND26-P050-Q19"
+      ],
+      "newCanonicalId": "MUST_ASSIGN_NEW_AND_NOT_REUSE_RETIRED_sub_quant_02_4",
+      "rationale": "التحليل إلى عوامل أولية يختلف عن اختيار GCD/LCM في الغرض والحل، 14 سؤالًا أوليات و17 سؤالًا قاسم/مضاعف",
+      "sourcePages": [
+        7,
+        8,
+        13,
+        32,
+        49,
+        50
+      ]
+    },
+    {
+      "parentMain": "skill_quant_07",
+      "existingSub": "sub_quant_07_4",
+      "existingTopic": "top_quant_sub_quant_07_4",
+      "preserveExistingIdFor": "المتباينات وإشارات التباين",
+      "keepExistingQuestionCodes": [
+        "QDR-QNT-FND26-P052-Q39",
+        "QDR-QNT-FND26-P052-Q40",
+        "QDR-QNT-FND26-P052-Q41"
+      ],
+      "newConcept": "القيمة المطلقة ومعادلاتها والمقارنة بها",
+      "newConceptQuestionCodes": [
+        "QDR-QNT-COL2627-P008-Q23",
+        "QDR-QNT-COL2627-P008-Q24",
+        "QDR-QNT-COL2627-P008-Q25",
+        "QDR-QNT-COL2627-P008-Q26",
+        "QDR-QNT-COL2627-P008-Q27",
+        "QDR-QNT-FND26-P013-Q16",
+        "QDR-QNT-FND26-P013-Q17",
+        "QDR-QNT-FND26-P013-Q18"
+      ],
+      "newCanonicalId": "MUST_ASSIGN_NEW_UNIQUE_ID",
+      "rationale": "القيمة المطلقة قاعدة منفصلة عن المتباينات؛ 8 أسئلة مقابل 3 على المتباينات في نطاق البنك الحالي",
+      "sourcePages": [
+        8,
+        13,
+        52
+      ]
+    }
+  ],
+  "deferred": [
+    "Do not physically reduce or delete 95 foundation subtopics; group visually while preserving video/paid/free links.",
+    "Review 0-assigned sub_quant_11_4 and sub_quant_18_3 before hiding or deleting.",
+    "Review whether percentage conversions warrant own subskill after full-source question tagging.",
+    "Classify all question images individually before final taxonomy approval.",
+    "Do not use NotebookLM 29/104 aliases as DB identifiers."
+  ]
+}
