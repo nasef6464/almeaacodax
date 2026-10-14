@@ -3,6 +3,11 @@
 **Status: DRAFT / SOURCE QA REQUIRED / NO PRODUCTION MUTATIONS.**
 This is an independent handoff for ongoing GitHub PR #529 and NotebookLM candidate review; NOT approval for taxonomy deployment.
 
+## Verified update — 2026-10-14 source and Atlas audit
+- Read-only Atlas query confirmed exactly 25 live main skills, 95 unique embedded subskills, 25 main foundation topics and 95 child topics; 0 dangling skill references and 0 orphan child topics. See ops/quant-skill-redesign/LIVE_25_95_SKILL_TOPIC_ID_SNAPSHOT_20261014.json.
+- A 145-page Einstein foundation original PDF was located in Project Library (تاسيس انشتين معدل .pdf) and selected pages directly inspected. 16/104 candidate rows cite at least one foundation page after 145. NotebookLM item EINSTEIN-FOUND-P009-Q04 actually appears on page 14, not its claimed page 9. Fraction operation rules are visible at pages 15–16, roots at 39–41. See ops/quant-skill-redesign/EINSTEIN_FOUNDATION_SOURCE_SPOTCHECK_20261014.json.
+- This is only a small source spot-check, not full 1,804 question book audit. Original COL2627 PDF was not located in currently searchable files. Source review remains OPEN.
+
 ## Evidence-based baseline
 - Production-facing identifiers such as skill_quant_03 / sub_quant_03_1 are stable IDs. NotebookLM aliases such as Q04.02 must never overwrite them.
 - PR #529 reports 25 main / 95 subskills, 858 FND26 + 946 COL2627 = 1,804 questions (2026-10-12 checkpoint).
@@ -36,7 +41,7 @@ Fields: canonical_main_skill_id, canonical_main_skill_name, canonical_subskill_i
 - Resolve overlapping root rationalization, clocks/ages/finance, geometry, statistics, patterns, and strategy tagging.
 
 ## Sequenced execution
-1. Read-only current baseline export: 25/95 live skill IDs, all foundation topic/subtopic IDs, videos, bank question IDs/source codes, drills, quizzes.
+1. Live 25/95 skill and 25/95 topic ID baseline captured read-only. Still require question-code inventory, video identity snapshot, drill/quiz export and complete mapping review.
 2. Finish FND26 original-book rule+image review, then COL2627. Track unique question IDs and review status, prioritizing 886 unmanifested and 913 manifested-but-not-individually-reviewed records in PR #529.
 3. Produce explicit many-to-many crosswalk of candidate concepts → existing ID(s) and topic(s); independent mathematical QA for every proposed split/merge.
 4. Dry-run on isolated Mongo with snapshots; reconstruct drills if their verified question assignments changed; maintain reserve for tests.
@@ -50,4 +55,4 @@ Fields: canonical_main_skill_id, canonical_main_skill_name, canonical_subskill_i
 - Explicit reviewed mapping, isolated dry-run, rollback artifact, exact-head CI and browser PASS.
 - PR #529 remains draft until its own source-first audit closes; avoid competing mutations on production.
 
-**Current status:** CANDIDATE ONLY. The 29/104 candidate table is not approved and source PDFs were not independently accessible in this review.
+**Current status:** CANDIDATE ONLY. The 29/104 candidate table is not approved. Selected foundation source pages were checked, revealing page contradictions; original COL2627 and full item-by-item source QA remain outstanding.
