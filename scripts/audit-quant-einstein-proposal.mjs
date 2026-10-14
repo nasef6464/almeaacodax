@@ -77,12 +77,17 @@ try {
   const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
   const report = audit(manifest);
   const sourceEvidence = JSON.parse(readFileSync(resolve("ops/quant-skill-redesign/EINSTEIN_FOUNDATION_SOURCE_SPOTCHECK_20261014.json"), "utf8"));
-  const maxPage = sourceEvidence.source_pdf_pages;
+  const original = JSON.parse(readFileSync(resolve("ops/quant-skill-redesign/EINSTEIN_ORIGINAL_146_SOURCE_PROVENANCE_20261014.json"), "utf8"));
+  const maxPage = original.pdf_page_count;
+  if (sourceEvidence.source_pdf_pages !== maxPage) report.blockers.push("source_edition_page_count_disagreement");
+  report.original_book_sha256 = original.sha256;
+  report.original_book_errata_pages = original.appendix_correction_pages;
   const claimsOutsidePdf = manifest.items.filter((item) => {
     const pageNumbers = [...String(item.foundation_page_claim || "").matchAll(/\d+/g)].map((x) => Number(x[0]));
     return pageNumbers.some((page) => page > maxPage);
   });
   report.source_pdf_pages = maxPage;
+  report.source_pdf_errata_review_required = true;
   report.foundation_page_claims_outside_pdf = claimsOutsidePdf.length;
   report.foundation_page_outlier_codes = claimsOutsidePdf.map((x) => x.candidate_code);
   if (claimsOutsidePdf.length) report.blockers.push("foundation_page_claims_exceed_original_pdf_length");
