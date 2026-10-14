@@ -1,3 +1,5 @@
+import {createSchoolSpecInterpreter} from '../modules/quizzes/application/schoolAssessmentCompositionAi.js';
+import type {SchoolSpecInterpreter} from '../modules/quizzes/application/schoolAssessmentComposition.js';
 import { Router } from "express";
 import mongoose from "mongoose";
 import { z } from "zod";
@@ -2575,3 +2577,5 @@ ${courseTitle}
     });
   }),
 );
+
+export const interpretSchoolAssessmentSpecification=(req:any,input:Parameters<SchoolSpecInterpreter>[0])=>createSchoolSpecInterpreter(req,runBudgetedAiRequest)(input);

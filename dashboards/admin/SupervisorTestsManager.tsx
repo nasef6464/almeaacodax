@@ -1,3 +1,4 @@
+import {SchoolAssessmentComposePanel} from './supervisorTests/SchoolAssessmentComposePanel';
 import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
 import {
@@ -33,8 +34,9 @@ const DirectedAssessmentReport: React.FC<{quiz: any; studentIds: string[]; actor
 };
 
 export const SupervisorTestsManager: React.FC<{ resultEvidence?: QuizResult[]; studentEvidence?: User[] }> = ({resultEvidence,studentEvidence}) => {
-  const { updateQuiz } = useStore();
-  const [viewMode, setViewMode] = useState<ViewMode>('list');
+  const { updateQuiz,paths,subjects,skills } = useStore();
+  const [viewMode, setViewMode] = useState<ViewMode|'compose'>('list');
+  const [composedDraft,setComposedDraft]=useState<Partial<Quiz>|null>(null);
   const [retakeQuizId, setRetakeQuizId] = useState<string | null>(null);
   const [selectedQuizId, setSelectedQuizId] = useState<string | null>(null);
   const [selectedQuizzes, setSelectedQuizzes] = useState<string[]>([]);
@@ -82,6 +84,8 @@ export const SupervisorTestsManager: React.FC<{ resultEvidence?: QuizResult[]; s
     }
   };
 
+  if(composedDraft)return <UnifiedQuizBuilder initialDefinition={composedDraft} initialMode="central" role={user.role==='admin'?'admin':user.role==='teacher'?'teacher':'supervisor'} allowedGroupIds={Array.from(scopedGroupIds)} onSave={()=>{setComposedDraft(null);setViewMode('list');}} onClose={()=>setComposedDraft(null)}/>;
+  if(viewMode==='compose')return <SchoolAssessmentComposePanel paths={paths} subjects={subjects} skills={skills} onReview={setComposedDraft} onClose={()=>setViewMode('list')}/>;
   if(editingQuiz)return <UnifiedQuizBuilder key={editingQuiz.id} role={user.role==='admin'?'admin':user.role==='teacher'?'teacher':'supervisor'} editingQuiz={editingQuiz} allowedGroupIds={Array.from(scopedGroupIds)} onSave={()=>{setEditingQuiz(null);setViewMode('list');}} onClose={()=>setEditingQuiz(null)}/>;
 
   if (viewMode === 'create') {
@@ -93,6 +97,7 @@ export const SupervisorTestsManager: React.FC<{ resultEvidence?: QuizResult[]; s
             <button onClick={() => setViewMode('list')} className="rounded-lg p-2 hover:bg-white/20"><X size={18}/></button>
           </div>
           <div className="space-y-3 p-6">
+            <button onClick={()=>setViewMode('compose')} className="w-full rounded-2xl border-2 border-indigo-200 bg-indigo-50 p-4 text-right font-black">إنشاء بالمواصفات من بنك الأسئلة</button>
             <button onClick={() => setViewMode('create_normal')} className="flex w-full items-center gap-4 rounded-2xl border-2 border-emerald-200 bg-emerald-50 p-4 text-right hover:bg-emerald-100">
               <Dumbbell className="text-emerald-600"/><div><p className="font-black">تدريب / اختبار</p><p className="text-xs text-gray-500">لفصل أو طالب أو مجموعة طلاب</p></div>
             </button>

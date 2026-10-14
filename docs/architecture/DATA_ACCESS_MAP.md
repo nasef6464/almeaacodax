@@ -94,3 +94,4 @@ Existing /quiz-results/my, /quizzes/results and /quizzes/results/scoped accept v
 
 ## New question activity provenance — 2026-10-10
 QuestionAttempt additive activityType/quizId/learningContext/schoolId/classId fields: canonical quiz origin reuses verified access/assignment reads with a bounded definition projection. Existing own-user100-row reader unchanged; no new polling/history expansion.
+School composition preview reads fresh User/directory/capabilities plus selected Path/Subjects/Skills and approved usable Questions. Mongo groups base-ID/code aliases before count/sample and excludes all identities used by prior subjects. Preview returns only proposed question references and coverage; no learner roster, question answers, quiz writes or question writes. Optional AI receives bounded selected taxonomy/spec only through existing authoring quota/audit/cost routing; manual preview bypasses provider work.

@@ -4,10 +4,10 @@ import { healthRouter } from "./health.routes.js";
 import { taxonomyRouter } from "./taxonomy.routes.js";
 import { courseRouter } from "./course.routes.js";
 import { quizRouter } from "./quiz.routes.js";
-import { schoolAssessmentsRouter } from '../modules/quizzes/http/schoolAssessmentsRouter.js';
+import { createSchoolAssessmentsRouter } from '../modules/quizzes/http/schoolAssessmentsRouter.js';
 import { contentRouter } from "./content.routes.js";
 import { paymentRouter } from "./payment.routes.js";
-import { aiRouter } from "./ai.routes.js";
+import { aiRouter,interpretSchoolAssessmentSpecification } from "./ai.routes.js";
 import { operationsRouter } from "./operations.routes.js";
 import { backupRouter } from "./backup.routes.js";
 import { seoRouter } from "./seo.routes.js";
@@ -32,6 +32,7 @@ import liveExamsRouter from "./live-exams.routes.js";
 import { commandCenterRouter } from "../modules/command-center/http/commandCenterRoutes.js";
 
 import { liveSessionRouter } from '../modules/content/liveSessions/http/liveSessionRoutes.js';
+const schoolAssessmentsRouter=createSchoolAssessmentsRouter(interpretSchoolAssessmentSpecification);
 export const apiRouter = Router();
 apiRouter.use('/live-sessions', liveSessionRouter);
 

@@ -32,6 +32,7 @@ export interface UnifiedQuizBuilderProps {
   allowedGroupIds?: string[];
   allowedPathIds?: string[];
   editingQuiz?: Quiz;
+  initialDefinition?:Partial<Quiz>;
   onSave?: (quiz: Quiz) => void;
   onClose?: () => void;
   defaultKind?: QuizKind;
@@ -86,6 +87,7 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
   allowedGroupIds,
   allowedPathIds,
   editingQuiz,
+  initialDefinition,
   onSave,
   onClose,
   defaultKind = "test",
@@ -112,8 +114,10 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
     },
   ], [isAdmin, isSupervisor]);
 
+  const seedQuiz=editingQuiz??initialDefinition;
+
   // ── Wizard state ──────────────────────────────────────────────────────────
-  const restoredDraftRef = useRef(!editingQuiz ? readQuizBuilderDraft(draftScope) : null);
+  const restoredDraftRef = useRef(!editingQuiz && !initialDefinition ? readQuizBuilderDraft(draftScope) : null);
   const restoredDraft = restoredDraftRef.current;
   const setWizardStep = (next: WizardStep | ((current: WizardStep) => WizardStep)) => {
     setStep((current) => {
@@ -123,21 +127,21 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
     });
   };
   const [step, setStep] = useState<WizardStep>(restoredDraft?.step ?? initialStep);
-  const [kind, setKind] = useState<QuizKind>(editingQuiz?.quizKind ?? restoredDraft?.kind ?? defaultKind);
+  const [kind, setKind] = useState<QuizKind>(seedQuiz?.quizKind ?? restoredDraft?.kind ?? defaultKind);
 
   // Step 1
-  const [title, setTitle] = useState(editingQuiz?.title ?? restoredDraft?.title ?? "");
-  const [description, setDescription] = useState(editingQuiz?.description ?? restoredDraft?.description ?? "");
-  const [pathId, setPathId] = useState(editingQuiz?.pathId ?? restoredDraft?.pathId ?? initialPathId);
-  const [subjectId, setSubjectId] = useState(editingQuiz?.subjectId ?? restoredDraft?.subjectId ?? initialSubjectId);
+  const [title, setTitle] = useState(seedQuiz?.title ?? restoredDraft?.title ?? "");
+  const [description, setDescription] = useState(seedQuiz?.description ?? restoredDraft?.description ?? "");
+  const [pathId, setPathId] = useState(seedQuiz?.pathId ?? restoredDraft?.pathId ?? initialPathId);
+  const [subjectId, setSubjectId] = useState(seedQuiz?.subjectId ?? restoredDraft?.subjectId ?? initialSubjectId);
   const [qiyasCategory, setQiyasCategory] = useState<"qudrat" | "tahsili">(
-    editingQuiz?.mockExam?.qiyasCategory === "tahsili" ? "tahsili" : restoredDraft?.qiyasCategory ?? "qudrat",
+    seedQuiz?.mockExam?.qiyasCategory === "tahsili" ? "tahsili" : restoredDraft?.qiyasCategory ?? "qudrat",
   );
   const [presentationMode, setPresentationMode] = useState<"qiyas_strict" | "flexible">(
-    editingQuiz?.mockExam?.presentationMode ?? restoredDraft?.presentationMode ?? "qiyas_strict",
+    seedQuiz?.mockExam?.presentationMode ?? restoredDraft?.presentationMode ?? "qiyas_strict",
   );
   const [mockSections, setMockSections] = useState<MockSection[]>(
-    editingQuiz?.mockExam?.sections?.map((s) => ({
+    seedQuiz?.mockExam?.sections?.map((s) => ({
       id: s.id,
       title: s.title,
       subjectId: s.subjectId ?? "",
@@ -149,12 +153,12 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
   );
 
   // Step 2
-  const [questionIds, setQuestionIds] = useState<string[]>(editingQuiz?.questionIds ?? restoredDraft?.questionIds ?? []);
+  const [questionIds, setQuestionIds] = useState<string[]>(seedQuiz?.questionIds ?? restoredDraft?.questionIds ?? []);
   const [activeSectionIdx, setActiveSectionIdx] = useState(restoredDraft?.activeSectionIdx ?? 0);
 
   // Step 3
   const defaults = getDefaultQuizSettings({ type: "quiz" });
-  const initialSettings = resolveAssessmentSettings(editingQuiz?.settings, defaults);
+  const initialSettings = resolveAssessmentSettings(seedQuiz?.settings, defaults);
   const [timeLimit, setTimeLimit] = useState<number>(restoredDraft?.timeLimit ?? initialSettings.timeLimit ?? 0);
   const [maxAttempts, setMaxAttempts] = useState<number>(restoredDraft?.maxAttempts ?? initialSettings.maxAttempts);
   const [passingScore, setPassingScore] = useState<number>(restoredDraft?.passingScore ?? initialSettings.passingScore);
@@ -164,22 +168,22 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
   const [shuffleOptions, setShuffleOptions] = useState<boolean>(restoredDraft?.shuffleOptions ?? initialSettings.randomizeOptions ?? false);
 
   // Step 4
-  const initialTargetGroups = editingQuiz?.targetGroupIds ?? restoredDraft?.targetGroupIds ?? initialTargetGroupIds ?? [];
+  const initialTargetGroups = seedQuiz?.targetGroupIds ?? restoredDraft?.targetGroupIds ?? initialTargetGroupIds ?? [];
   const [targetGroupIds, setTargetGroupIds] = useState<string[]>(initialTargetGroups);
   const targetGroupIdsRef = useRef<string[]>(initialTargetGroups);
-  const [targetUserIds] = useState<string[]>(editingQuiz?.targetUserIds ?? initialTargetUserIds ?? []);
-  const [dueDate, setDueDate] = useState(editingQuiz?.dueDate ?? restoredDraft?.dueDate ?? "");
+  const [targetUserIds] = useState<string[]>(seedQuiz?.targetUserIds ?? initialTargetUserIds ?? []);
+  const [dueDate, setDueDate] = useState(seedQuiz?.dueDate ?? restoredDraft?.dueDate ?? "");
   // Supervisors create school-directed assessments that are immediately usable by
   // their in-scope students. Teachers retain the approval workflow.
-  const [isPublished, setIsPublished] = useState(editingQuiz?.isPublished ?? restoredDraft?.isPublished ?? (isAdmin || isSupervisor));
-  const [showOnPlatform, setShowOnPlatform] = useState(isAdmin ? (editingQuiz?.showOnPlatform ?? restoredDraft?.showOnPlatform ?? true) : false);
+  const [isPublished, setIsPublished] = useState(seedQuiz?.isPublished ?? restoredDraft?.isPublished ?? (isAdmin || isSupervisor));
+  const [showOnPlatform, setShowOnPlatform] = useState(isAdmin ? (seedQuiz?.showOnPlatform ?? restoredDraft?.showOnPlatform ?? true) : false);
   const [accessType, setAccessType] = useState<"free" | "paid" | "package">(
-    (editingQuiz?.access?.type as "free" | "paid" | "package") ?? restoredDraft?.accessType ?? "free",
+    (seedQuiz?.access?.type as "free" | "paid" | "package") ?? restoredDraft?.accessType ?? "free",
   );
-  const [price, setPrice] = useState<number>(editingQuiz?.access?.price ?? restoredDraft?.price ?? 0);
+  const [price, setPrice] = useState<number>(seedQuiz?.access?.price ?? restoredDraft?.price ?? 0);
   const [slots, setSlots] = useState<Array<"tests" | "training" | "course">>(() => {
-    if (editingQuiz?.learningPlacements?.length) {
-      return editingQuiz.learningPlacements.map((p) => p.slot as "tests" | "training" | "course");
+    if (seedQuiz?.learningPlacements?.length) {
+      return seedQuiz!.learningPlacements.map((p) => p.slot as "tests" | "training" | "course");
     }
     if (restoredDraft?.slots) return restoredDraft.slots;
     if (kind === "drill") return ["training"];
@@ -335,12 +339,12 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
 
   // Fetch missing questions if editing an existing quiz
   useEffect(() => {
-    if (!editingQuiz) return;
-    
-    const allIds = editingQuiz.quizKind === 'mock' 
-      ? (editingQuiz.mockExam?.sections?.flatMap(s => s.questionIds || []) || [])
-      : (editingQuiz.questionIds || []);
-      
+    if (!seedQuiz) return;
+
+    const allIds = seedQuiz.quizKind === 'mock'
+      ? (seedQuiz.mockExam?.sections?.flatMap(s => s.questionIds || []) || [])
+      : (seedQuiz.questionIds || []);
+
     if (allIds.length === 0) return;
 
     const currentQuestions = useStore.getState().questions || [];
@@ -366,7 +370,7 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
         console.error("Failed to fetch missing questions:", err);
       });
     }
-  }, [editingQuiz]);
+  }, [seedQuiz]);
 
   // ── Validation ────────────────────────────────────────────────────────────
   // contract: title.trim().length > 0 && pathId.length > 0 && subjectId.length > 0
@@ -407,8 +411,8 @@ export const UnifiedQuizBuilder: React.FC<UnifiedQuizBuilderProps> = ({
               ...(accessType === "paid" && price > 0 ? { price } : {}),
             } as any
           : ({ type: "free" } as any),
-        mode: editingQuiz?.mode ?? initialMode,
-        skillIds: editingQuiz?.skillIds ?? initialSkillIds ?? [],
+        mode: editingQuiz?.mode ?? initialDefinition?.mode ?? initialMode,
+        skillIds: editingQuiz?.skillIds ?? initialDefinition?.skillIds ?? initialSkillIds ?? [],
         targetGroupIds: targetGroupIdsRef.current,
         targetUserIds,
         dueDate: dueDate || undefined,

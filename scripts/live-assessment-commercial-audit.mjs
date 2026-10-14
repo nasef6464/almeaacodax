@@ -199,7 +199,7 @@ async function main() {
     // reload. Timing changes require an independent copy of a published test.
     const originalTimeLimit=Number(created.settings?.timeLimit);
     if(!Number.isFinite(originalTimeLimit))throw new Error("Published assessment has no persisted time limit");
-    const frozenTiming=await api(admin.page,`/quizzes/${createdQuizId}`,{method:"PATCH",body:{settings:{...created.settings,timeLimit:originalTimeLimit+1}}});
+    const frozenTiming=await api(admin.page,`/quizzes/${createdQuizId}`,{method:"PATCH",body:JSON.stringify({settings:{...created.settings,timeLimit:originalTimeLimit+1}})});
     if(frozenTiming.status!==409)throw new Error(`Published timing mutation must be rejected: ${frozenTiming.status}`);
     const editedTitle = `${marker} (edited)`;
     await admin.page.reload({ waitUntil: "domcontentloaded", timeout: 60000 });

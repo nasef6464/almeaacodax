@@ -10,3 +10,13 @@ export interface SchoolAssessmentReport {
   sections: SchoolAssessmentDimension[];
   skills: SchoolAssessmentDimension[];
 }
+import type {Quiz} from '../types';
+export interface SchoolAssessmentCompositionSpec {
+  kind:'normal'|'mock';pathId:string;prompt?:string;
+  subjectSpecs:{subjectId:string;skillIds:string[];count:number;difficulty?:'Easy'|'Medium'|'Hard'}[];
+}
+export interface SchoolAssessmentCompositionPreview {
+  draft:Partial<Quiz>;
+  coverage:{subjectId:string;skillIds:string[];requested:number;available:number;selected:number}[];
+  warnings:string[];
+}
