@@ -1,3 +1,6 @@
+## 2026-10-14 — إغلاق نقص تغطية التقرير العام ضمن النطاق
+PR544/mergeb8f8fd8c/all3requiredPASS والنشر المطابق؛التقرير يجمع كامل نطاق الصلاحية فيMongo ثم يحد الصفوف النهائية،دون قائمةطلاب فيNode أو تغييرالإتقان/السجلات.168/168منشورًا و10000طالبمعزولًاPASS؛userId_1فهرس غيرفريد مبرر بقياس1100→1ولا حذففهارس/تعديلسجلات. هذا يغلق حد1000لهذا التقرير فقط؛حمايةالمصدرالمشترك/العلاقات/الاحتفاظ/سعةالإنتاج وسباقHTTPللأوامر باقية. ساهر القديم فشل3فحوص من5بمرجع/توقعاتقديمة؛لا توليدمحتوى لتجاوزها. الدليل docs/audits/SCHOOL_REPORT_COMPLETE_SCOPE_2026-10-14.json.
+
 ## Command index gap resolved within scope — 2026-10-14
 PR542/merge3fa30e47 repairs invalid sparse+partial declarations and qualifies literal queries. Production Atlas confirms unique/partial/not-sparse IXSCAN indexes on both empty command collections after normal initialization,0record writes or index drops. SourceCI21PASS/all3required and matching publication proved. Earlier2026-10-13 invalid-index deferral is superseded only for these two definitions/lookups. HTTP create-after-find race replay remainsunproven; shared-source sensitive budget and global1000reportcap stay separate. See docs/audits/DATABASE_INDEX_QUERY_SAFETY_2026-10-14.json.
 
