@@ -76,6 +76,19 @@ function audit(manifest) {
 try {
   const manifest = JSON.parse(readFileSync(manifestPath, "utf8"));
   const report = audit(manifest);
+  const sourceEvidence = JSON.parse(readFileSync(resolve("ops/quant-skill-redesign/EINSTEIN_FOUNDATION_SOURCE_SPOTCHECK_20261014.json"), "utf8"));
+  const maxPage = sourceEvidence.source_pdf_pages;
+  const claimsOutsidePdf = manifest.items.filter((item) => {
+    const pageNumbers = [...String(item.foundation_page_claim || "").matchAll(/\\d+/g)].map((x) => Number(x[0]));
+    return pageNumbers.some((page) => page > maxPage);
+  });
+  report.source_pdf_pages = maxPage;
+  report.foundation_page_claims_outside_pdf = claimsOutsidePdf.length;
+  report.foundation_page_outlier_codes = claimsOutsidePdf.map((x) => x.candidate_code);
+  if (claimsOutsidePdf.length) report.blockers.push("foundation_page_claims_exceed_original_pdf_length");
+  if (sourceEvidence.spot_checks.some((x) => x.assessment === "INCORRECT_NOTEBOOKLM_PAGE")) {
+    report.blockers.push("NotebookLM_individual_example_page_mismatch");
+  }
   console.log(JSON.stringify(report, null, 2));
   if (failOnBlock && report.blockers.length > 0) process.exitCode = 1;
 } catch (error) {
