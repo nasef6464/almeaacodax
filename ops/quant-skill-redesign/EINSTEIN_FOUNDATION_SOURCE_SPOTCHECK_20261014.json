@@ -1,8 +1,8 @@
 {
   "date": "2026-10-14",
-  "source_file": "تاسيس انشتين معدل .pdf",
-  "source_file_surface": "Project Library",
-  "source_pdf_pages": 145,
+  "source_file": "كمي تأسيس انشتاين الاصلي .pdf",
+  "source_file_surface": "User-uploaded PDF",
+  "source_pdf_pages": 146,
   "scope": "Selected source pages and one exact question cross-check; NOT a complete book or bank audit",
   "method": "source PDF page text + direct page reads; math-image details require subsequent crop verification",
   "main_issue": "NotebookLM page claims cannot be accepted as fully verified for this edition",
@@ -12,97 +12,97 @@
       "candidate_code": "Q15.01",
       "skill": "اكتشاف الأنماط العددية والهندسية",
       "notebooklm_page_claim": "ص 152",
-      "issue": "claimed_foundation_page_exceeds_actual_145_page_book"
+      "issue": "claimed_foundation_page_exceeds_actual_146_page_original"
     },
     {
       "candidate_code": "Q15.02",
       "skill": "إكمال المتتابعات بأنواعها",
       "notebooklm_page_claim": "ص 152 - 155",
-      "issue": "claimed_foundation_page_exceeds_actual_145_page_book"
+      "issue": "claimed_foundation_page_exceeds_actual_146_page_original"
     },
     {
       "candidate_code": "Q15.03",
       "skill": "العلاقة بين المدخلات والمخرجات وقراءة الدالة",
       "notebooklm_page_claim": "ص 156",
-      "issue": "claimed_foundation_page_exceeds_actual_145_page_book"
+      "issue": "claimed_foundation_page_exceeds_actual_146_page_original"
     },
     {
       "candidate_code": "Q18.02",
       "skill": "احتمالات التجارب المركبة (النرد والعملات)",
       "notebooklm_page_claim": "ص 157 - 159",
-      "issue": "claimed_foundation_page_exceeds_actual_145_page_book"
+      "issue": "claimed_foundation_page_exceeds_actual_146_page_original"
     },
     {
       "candidate_code": "Q18.03",
       "skill": "الاحتمال باستخدام التباديل والتوافيق",
       "notebooklm_page_claim": "ص 160 - 161",
-      "issue": "claimed_foundation_page_exceeds_actual_145_page_book"
+      "issue": "claimed_foundation_page_exceeds_actual_146_page_original"
     },
     {
       "candidate_code": "Q19.01",
       "skill": "مبدأ العد الأساسي والخيارات المركبة",
       "notebooklm_page_claim": "ص 161 - 162",
-      "issue": "claimed_foundation_page_exceeds_actual_145_page_book"
+      "issue": "claimed_foundation_page_exceeds_actual_146_page_original"
     },
     {
       "candidate_code": "Q19.02",
       "skill": "التباديل والترتيب",
       "notebooklm_page_claim": "ص 163 - 164",
-      "issue": "claimed_foundation_page_exceeds_actual_145_page_book"
+      "issue": "claimed_foundation_page_exceeds_actual_146_page_original"
     },
     {
       "candidate_code": "Q19.03",
       "skill": "التوافيق والاختيار العشوائي",
       "notebooklm_page_claim": "ص 164 - 165",
-      "issue": "claimed_foundation_page_exceeds_actual_145_page_book"
+      "issue": "claimed_foundation_page_exceeds_actual_146_page_original"
     },
     {
       "candidate_code": "Q19.04",
       "skill": "عد الحالات مع القيود والاشتراطات",
       "notebooklm_page_claim": "ص 161 - 163",
-      "issue": "claimed_foundation_page_exceeds_actual_145_page_book"
+      "issue": "claimed_foundation_page_exceeds_actual_146_page_original"
     },
     {
       "candidate_code": "Q22.02",
       "skill": "محيط ومساحة المثلث والقطعة المنصفة",
       "notebooklm_page_claim": "ص 110 - 111، 151",
-      "issue": "claimed_foundation_page_exceeds_actual_145_page_book"
+      "issue": "claimed_foundation_page_exceeds_actual_146_page_original"
     },
     {
       "candidate_code": "Q22.05",
       "skill": "تطابق وتشابه المثلثات المباشر",
       "notebooklm_page_claim": "ص 112 - 113، 152",
-      "issue": "claimed_foundation_page_exceeds_actual_145_page_book"
+      "issue": "claimed_foundation_page_exceeds_actual_146_page_original"
     },
     {
       "candidate_code": "Q26.01",
       "skill": "المسافة بين نقطتين وإحداثيات المنتصف",
       "notebooklm_page_claim": "ص 145 - 148",
-      "issue": "claimed_foundation_page_exceeds_actual_145_page_book"
+      "issue": "claimed_foundation_page_exceeds_actual_146_page_original"
     },
     {
       "candidate_code": "Q26.02",
       "skill": "ميل المستقيم والتحويلات الهندسية",
       "notebooklm_page_claim": "ص 146 - 148",
-      "issue": "claimed_foundation_page_exceeds_actual_145_page_book"
+      "issue": "claimed_foundation_page_exceeds_actual_146_page_original"
     },
     {
       "candidate_code": "Q28.01",
       "skill": "مسائل الأعمار",
       "notebooklm_page_claim": "ص 151",
-      "issue": "claimed_foundation_page_exceeds_actual_145_page_book"
+      "issue": "claimed_foundation_page_exceeds_actual_146_page_original"
     },
     {
       "candidate_code": "Q28.02",
       "skill": "مسائل العمل والإنجاز التشاركي",
       "notebooklm_page_claim": "ص 146 - 147",
-      "issue": "claimed_foundation_page_exceeds_actual_145_page_book"
+      "issue": "claimed_foundation_page_exceeds_actual_146_page_original"
     },
     {
       "candidate_code": "Q28.05",
       "skill": "مسائل الملء والتفريغ والصنابير",
       "notebooklm_page_claim": "ص 148 - 149",
-      "issue": "claimed_foundation_page_exceeds_actual_145_page_book"
+      "issue": "claimed_foundation_page_exceeds_actual_146_page_original"
     }
   ],
   "spot_checks": [
@@ -151,5 +151,12 @@
   ],
   "verified_question_count": 1,
   "concept_page_observations": 4,
-  "hold": "No source-certified taxonomy approval or question reassignment from these observations; original COL2627 PDF not available in currently located project files."
+  "hold": "NO proposal taxonomy approval. Page 146 amendments must be checked wherever pages 57,89,104 are cited. Book 2 (COL2627) not supplied this turn.",
+  "source_pdf_sha256": "d180a2ca98c0b2e43ba81398a557f38e710c9409aef9a08930c09df85f4b8049",
+  "appendix_corrections_on_page_146": [
+    57,
+    89,
+    104
+  ],
+  "document_version_note": "Original uploaded PDF has 146 pages; pages 5–145 form foundation lessons; page 146 includes corrections/clarifications for pages 57, 89, 104. The earlier reviewed library edition had 145 pages. The 16 >146 candidate page inconsistencies remain."
 }
