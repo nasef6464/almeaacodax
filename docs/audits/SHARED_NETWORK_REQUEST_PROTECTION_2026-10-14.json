@@ -1,21 +1,195 @@
 {
   "date": "2026-10-14",
-  "status": "LOCAL_VERIFIED_CI_PUBLICATION_PENDING",
+  "status": "VERIFIED_BOUNDED_PUBLICATION_CAPACITY_PARTIAL",
   "baseline": "40c87b8fb9ff09b84ad8f71587a0a2e00d0fbcfe",
   "branch": "codex/shared-network-request-protection",
-  "defaults": { "globalPerActor": 600, "sensitivePerActor": 60, "coarsePerSource": 5000, "sensitivePerSource": 600 },
-  "isolated": { "signedAccounts": 50, "schoolRequests": 100, "schoolPassBefore": 10, "schoolPassAfter": 100,
-    "httpRequests": 700, "expectedStatusesVerified": true,
-    "testLimits": { "globalActor": 50, "sensitiveActor": 10, "coarseSource": 300, "heavySource": 120 },
-    "gradedSubmissions": 4, "persistedFrozenScores": [100,100,100,100] },
-  "identityUnit": { "exemptReads": 6, "addedExemptVerifications": 0, "privateVerifications": 2,
-    "invalidBearerPrecedence": true, "authUserMutations": 0, "mongoConnections": 0 },
-  "staticChecks": { "production": 5, "securityRBAC": 7, "login": 10, "apiSecurity": 6, "csrf": 5, "classroom": 37, "totalPass": 70 },
+  "defaults": {
+    "globalPerActor": 600,
+    "sensitivePerActor": 60,
+    "coarsePerSource": 5000,
+    "sensitivePerSource": 600
+  },
+  "isolated": {
+    "signedAccounts": 50,
+    "schoolRequests": 100,
+    "schoolPassBefore": 10,
+    "schoolPassAfter": 100,
+    "httpRequests": 700,
+    "expectedStatusesVerified": true,
+    "testLimits": {
+      "globalActor": 50,
+      "sensitiveActor": 10,
+      "coarseSource": 300,
+      "heavySource": 120
+    },
+    "gradedSubmissions": 4,
+    "persistedFrozenScores": [
+      100,
+      100,
+      100,
+      100
+    ]
+  },
+  "identityUnit": {
+    "exemptReads": 6,
+    "addedExemptVerifications": 0,
+    "privateVerifications": 2,
+    "invalidBearerPrecedence": true,
+    "authUserMutations": 0,
+    "mongoConnections": 0
+  },
+  "staticChecks": {
+    "production": 5,
+    "securityRBAC": 7,
+    "login": 10,
+    "apiSecurity": 6,
+    "csrf": 5,
+    "classroom": 37,
+    "totalPass": 70
+  },
   "build": "PASS",
   "independentReview": "APPROVED_NO_ACTIONABLE_BLOCKER_22_STATIC_CHECKS_INDEPENDENTLY_PASSED",
-  "safety": { "productionDomainRecordWrites": 0, "modelIndexChanges": 0, "manualRedisCommands": 0,
-    "paidInfrastructureChanges": 0, "productionLoadTest": false, "authUserPrimerMutation": false },
-  "requiredCI": "PENDING", "publication": "PENDING",
-  "notProven": ["Redis failure runtime certification", "multi-instance capacity", "full forwarded-IP topology", "production scale/billing/resources"],
-  "remaining": ["relationships and retention", "production resources/bandwidth/billing and capacity", "concurrent command HTTP replay", "legacy Saher smoke"]
+  "safety": {
+    "productionDomainRecordWrites": 0,
+    "modelIndexChanges": 0,
+    "manualRedisCommands": 0,
+    "paidInfrastructureChanges": 0,
+    "productionLoadTest": false,
+    "authUserPrimerMutation": false
+  },
+  "requiredCI": {
+    "head": "a7bdcd0a98e7c53faf0f695e31e5eaedc53e7a67",
+    "pass": 18,
+    "conditionalSkip": 4,
+    "requiredPass": 3
+  },
+  "publication": {
+    "merge": "8d9dbd1c2d3d9e44a8d299ee22b1bad07ca937e4",
+    "pr": 546,
+    "render": {
+      "id": "dep-db7gsku7bikc73d0nojg",
+      "status": "live",
+      "sha": "8d9dbd1c2d3d9e44a8d299ee22b1bad07ca937e4"
+    },
+    "vercel": {
+      "id": "dpl_CasQ3sTdkYev3gsxAUSFhzHzRzy4",
+      "status": "READY",
+      "sha": "8d9dbd1c2d3d9e44a8d299ee22b1bad07ca937e4"
+    },
+    "proof": {
+      "at": "2026-10-14T07:54:31.431Z",
+      "release": "8d9dbd1c2d3d9e44a8d299ee22b1bad07ca937e4",
+      "status": "PASS_BOUNDED_READONLY_ACCOUNT_COUNTERS",
+      "existingAccounts": 2,
+      "health": 200,
+      "ready": 200,
+      "phases": [
+        {
+          "name": "global",
+          "passed": true,
+          "attempts": [
+            {
+              "responses": [
+                {
+                  "status": 200,
+                  "limit": 600,
+                  "remaining": 596,
+                  "reset": 12,
+                  "ms": 2701,
+                  "bytes": 936
+                },
+                {
+                  "status": 200,
+                  "limit": 600,
+                  "remaining": 598,
+                  "reset": 52,
+                  "ms": 923,
+                  "bytes": 1124
+                },
+                {
+                  "status": 200,
+                  "limit": 600,
+                  "remaining": 595,
+                  "reset": 9,
+                  "ms": 1028,
+                  "bytes": 936
+                },
+                {
+                  "status": 200,
+                  "limit": 600,
+                  "remaining": 597,
+                  "reset": 50,
+                  "ms": 1204,
+                  "bytes": 1124
+                }
+              ],
+              "independent": true
+            }
+          ]
+        },
+        {
+          "name": "sensitive",
+          "passed": true,
+          "attempts": [
+            {
+              "responses": [
+                {
+                  "status": 200,
+                  "limit": 60,
+                  "remaining": 59,
+                  "reset": 60,
+                  "ms": 857,
+                  "bytes": 2493
+                },
+                {
+                  "status": 200,
+                  "limit": 60,
+                  "remaining": 59,
+                  "reset": 60,
+                  "ms": 686,
+                  "bytes": 85
+                },
+                {
+                  "status": 200,
+                  "limit": 60,
+                  "remaining": 58,
+                  "reset": 59,
+                  "ms": 1975,
+                  "bytes": 2487
+                },
+                {
+                  "status": 200,
+                  "limit": 60,
+                  "remaining": 58,
+                  "reset": 58,
+                  "ms": 1429,
+                  "bytes": 85
+                }
+              ],
+              "independent": true
+            }
+          ]
+        }
+      ],
+      "scriptedGetRequests": 10,
+      "authenticationHelperExcluded": true,
+      "domainRecordWrites": 0,
+      "productionLimitExhaustion": false,
+      "productionLoadTest": false,
+      "fixtureJourneysReplayed": false,
+      "limitation": "Two ordinary existing-account sequences from one client egress;50actor threshold/attack/frozen-grade proof stays isolated. No production source exhaustion, Redis-failure or capacity certification."
+    }
+  },
+  "notProven": [
+    "Redis failure runtime certification",
+    "multi-instance capacity",
+    "full forwarded-IP topology",
+    "production scale/billing/resources"
+  ],
+  "remaining": [
+    "relationships and retention",
+    "production resources/bandwidth/billing and capacity",
+    "concurrent command HTTP replay",
+    "legacy Saher smoke"
+  ]
 }
