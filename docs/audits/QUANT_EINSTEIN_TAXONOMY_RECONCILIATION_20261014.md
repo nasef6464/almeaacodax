@@ -8,6 +8,13 @@ This is an independent handoff for ongoing GitHub PR #529 and NotebookLM candida
 - A 145-page Einstein foundation original PDF was located in Project Library (تاسيس انشتين معدل .pdf) and selected pages directly inspected. 16/104 candidate rows cite at least one foundation page after 145. NotebookLM item EINSTEIN-FOUND-P009-Q04 actually appears on page 14, not its claimed page 9. Fraction operation rules are visible at pages 15–16, roots at 39–41. See ops/quant-skill-redesign/EINSTEIN_FOUNDATION_SOURCE_SPOTCHECK_20261014.json.
 - This is only a small source spot-check, not full 1,804 question book audit. Original COL2627 PDF was not located in currently searchable files. Source review remains OPEN.
 
+## Uploaded original Einstein foundation — additional source evidence (2026-10-14)
+- User supplied the original **كمي تأسيس انشتاين الاصلي .pdf**, SHA-256 `d180a2ca98c0b2e43ba81398a557f38e710c9409aef9a08930c09df85f4b8049`. 146 PDF pages; foundation lesson content to page 145; PDF page 146 contains special **تعديلات** concerning pages **57, 89, 104**. Do not skip these corrections when grading or reviewing the affected items.
+- NotebookLM's 16 claimed page references beyond **146** remain impossible for this specific original PDF. Older notes mentioning 145 referred to a distinct library edition; the original's page 146 is the corrections sheet, not a new pedagogical chapter. Source provenance: `ops/quant-skill-redesign/EINSTEIN_ORIGINAL_146_SOURCE_PROVENANCE_20261014.json`.
+- Independently inspected exact source concept headings: p15 جمع وطرح الكسور, p16 ضرب وقسمة الكسور, p39–40 جمع وطرح الجذور, p41 ضرب وقسمة الجذور plus إنطاق المقام. These correspond to **five existing, distinct canonical subskill IDs**: `sub_quant_03_1`, `sub_quant_03_2`, `sub_quant_06_1`, `sub_quant_06_2`, `sub_quant_06_3`. NotebookLM's Q10.03 alias is too broad to justify merging the last two.
+- Batch-01 documented at `ops/quant-skill-redesign/EINSTEIN_ORIGINAL_CONCEPT_CROSSWALK_BATCH01_20261014.json`. These are **five source-concept crosswalks, zero item-level question approvals and zero database writes**. This is not the same as verifying five questions.
+- On source page 14, the **tens digit** question `6132 × 3475` merits a future question-count-backed review against `sub_quant_01_5`, which explicitly names only the **ones digit**. Do not split or relabel automatically.
+
 ## Evidence-based baseline
 - Production-facing identifiers such as skill_quant_03 / sub_quant_03_1 are stable IDs. NotebookLM aliases such as Q04.02 must never overwrite them.
 - PR #529 reports 25 main / 95 subskills, 858 FND26 + 946 COL2627 = 1,804 questions (2026-10-12 checkpoint).
@@ -55,4 +62,4 @@ Fields: canonical_main_skill_id, canonical_main_skill_name, canonical_subskill_i
 - Explicit reviewed mapping, isolated dry-run, rollback artifact, exact-head CI and browser PASS.
 - PR #529 remains draft until its own source-first audit closes; avoid competing mutations on production.
 
-**Current status:** CANDIDATE ONLY. The 29/104 candidate table is not approved. Selected foundation source pages were checked, revealing page contradictions; original COL2627 and full item-by-item source QA remain outstanding.
+**Current status:** CANDIDATE ONLY. The 29/104 candidate table is not approved. Original 146-page foundation source (including errata) was checked in selected places, revealing page contradictions; original COL2627 and full item-by-item source QA remain outstanding.
