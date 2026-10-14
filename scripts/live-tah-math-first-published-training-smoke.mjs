@@ -1,5 +1,5 @@
 // Read-only production smoke; never submits a student attempt, mutates a quiz, or requests answer keys.
-const base = String(process.env.TAH_MATH_PUBLIC_API_BASE || 'https://almeaacodax.vercel.app/api').replace(/\/$/, '');
+const base = String(process.env.TAH_MATH_PUBLIC_API_BASE || 'https://almeaacodax-k2ux.onrender.com/api').replace(/\/$/, '');
 const id = 'quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-01-01';
 const subjectId = 'sub_1777784609152';
 const pathId = 'p_1777779653351';
@@ -11,7 +11,7 @@ const assert = (condition, label, details) => {
 const request = async path => {
   const response = await fetch(base + path, {
     headers: { Accept: 'application/json', 'Cache-Control': 'no-cache' },
-    signal: AbortSignal.timeout(20000),
+    signal: AbortSignal.timeout(55000),
   });
   const type = response.headers.get('content-type') || '';
   const text = await response.text();
