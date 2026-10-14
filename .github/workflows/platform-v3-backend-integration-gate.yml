@@ -26,7 +26,9 @@ jobs:
     timeout-minutes: 30
     services:
       redis:
-        image: public.ecr.aws/docker/library/redis:7-alpine
+        # The ECR Public mirror rejected pulls with "Data limit exceeded".
+        # Keep the same official Redis image and health gate at its primary registry.
+        image: docker.io/library/redis:7-alpine
         ports:
           - 6379:6379
         options: >-

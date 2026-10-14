@@ -10,6 +10,8 @@
     "/school-teacher-dashboard"
   ],
   "backendRouteSignatures": [
+    "schoolAssessmentsRouter|GET|/:id/context",
+    "schoolAssessmentsRouter|GET|/:id/report",
     "quizRetakeRouter|POST|/:id/retakes",
     "contentStudyPlanRouter|GET|/study-plans",
     "adaptiveMasteryRouter|GET|/mastery-goals",
@@ -157,6 +159,7 @@
     "activityRouter|PATCH|/teacher/session-bookings/:id/reject"
   ],
   "routerMountSignatures": [
+    "apiRouter|/school-assessments|schoolAssessmentsRouter",
     "apiRouter|/classroom|classroomRouter",
     "apiRouter|/command-center|commandCenterRouter",
     "apiRouter|/live-exams|liveExamsRouter",
@@ -170,6 +173,7 @@
     "apiRouter|/live-sessions|liveSessionRouter"
   ],
   "envKeys": [
+    "ASSESSMENT_TEST_MONGODB_URI",
     "AI_LIGHT_API_BASE_URL",
     "AI_PER_SCHOOL_DAILY_LIMIT",
     "AI_QUESTION_ASSISTANT_CACHE_MINUTES",

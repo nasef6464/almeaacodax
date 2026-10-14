@@ -22,3 +22,7 @@ The owner approved the existing inventory and authorized implementation. Named s
 ## Still required
 
 Complete bank specification/AI-assisted composition, unified editing/cloning workspace, safe mutation after attempts begin, durable targeting/reminder/reopen/retake commands and replay evidence. Finish full normal/mock role journeys, exact-head CI and bounded automatic-release verification. No claim that the complete school module or production capacity is certified. No production writes/deletes/migrations, provider spend or manual previews.
+
+## CI recovery on first exact head
+Initial backend job38557812363 stopped before checkout/tests because the ECR Public Redis mirror returned `toomanyrequests: Data limit exceeded` three times. Redis uses its same official7-alpine image at Docker Hub; service/health checks remain required. Mongo image/other workflows remain unchanged (the two other Mongo journeys passed).
+Architecture/baseline gates correctly rejected the new two protected GET signatures, router mount and test-only loopback database variable until registered. These four exact additive contracts are recorded in APPROVED_CONTRACT_EXTENSIONS.json; immutable baseline/generated unowned files and gate implementation are unchanged. Both local production builds passed. New exact-head CI remains pending.
