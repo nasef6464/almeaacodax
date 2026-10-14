@@ -12,6 +12,7 @@ const ledger = read("COL2627_REPAIR_81_STALE_SKILLIDS_20261015.json");
 const drillQueue = read("QUANT_76_DRILL_SKILL_QA_QUEUE_20261015.json");
 const hour = read("COL2627_SOURCE_14_MATH_RECLASS_CANDIDATE_20261015.json");
 const frac = read("COL2627_FRACTIONS_5_SOURCE_RECLASS_CANDIDATE_20261015.json");
+const placement = read("COL2627_DRILL_12_SOURCE_PLACEMENT_REVIEW_20261015.json");
 
 assert.equal(snapshot.skills.length, 25);
 assert.equal(snapshot.topic_skill_links.filter((x) => !x.parentId).length, 25);
@@ -26,6 +27,9 @@ assert.equal(pending.postRepair.skillIdsArraysSynced, 38);
 assert.equal(pending.postRepair.skillIdsArraysPending, 43);
 assert.equal(pending.postRepair.pendingCodesAndExpectedPairs.length, 43);
 assert.equal(drillQueue.review_queue.length, 76);
+assert.equal(placement.items.length, 12);
+assert.ok(placement.items.every((x) => x.productionChanged === false && x.sourceImageChecked === true));
+assert.ok(placement.items.every((x) => x.fromQuiz !== x.targetQuiz && x.targetAlreadyHasQuestion === false));
 assert.equal(drillQueue.scan.actual_mismatches, 76);
 assert.equal(drillQueue.scan.drills_affected, 32);
 assert.equal(drillQueue.scan.total_refs, 1200);
