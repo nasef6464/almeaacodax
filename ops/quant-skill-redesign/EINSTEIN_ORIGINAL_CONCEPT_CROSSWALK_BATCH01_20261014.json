@@ -1,0 +1,88 @@
+{
+  "date": "2026-10-14",
+  "origin_sha256": "d180a2ca98c0b2e43ba81398a557f38e710c9409aef9a08930c09df85f4b8049",
+  "status": "READ_ONLY_CONCEPT_CROSSWALK_B1",
+  "scope": "5 current canonical subskills across fractions and roots. This is concept-source evidence, NOT question-by-question classification.",
+  "preserve_foundation_topic_video_ids": true,
+  "production_mutations": 0,
+  "reasons": [
+    "User explicitly wants to group add-subtract and multiply-divide fractions/decimals, but keep distinct different solving skills.",
+    "Printed rule locations confirm existing canonical identifiers already implement key fraction/root distinctions.",
+    "A NotebookLM Q alias can map to multiple canonical subskills, so never use Q aliases as migration IDs."
+  ],
+  "entries": [
+    {
+      "main_id": "skill_quant_03",
+      "main_name": "الكسور الاعتيادية",
+      "sub_id": "sub_quant_03_1",
+      "live_name": "جمع وطرح الكسور وتوحيد المقامات",
+      "source_pdf_page": 15,
+      "source_heading": "جمع وطرح الكسور",
+      "notebooklm_alias": "Q04.02",
+      "disposition": "KEEP_CANONICAL_ID",
+      "evidence": "Both addition and subtraction appear under one printed rule on page 15",
+      "status": "SOURCE_RULE_VISIBLE_NO_INDIVIDUAL_QUESTION_QA"
+    },
+    {
+      "main_id": "skill_quant_03",
+      "main_name": "الكسور الاعتيادية",
+      "sub_id": "sub_quant_03_2",
+      "live_name": "ضرب وقسمة الكسور وتبسيطها",
+      "source_pdf_page": 16,
+      "source_heading": "ضرب الكسور / قسمة الكسور",
+      "notebooklm_alias": "Q04.03",
+      "disposition": "KEEP_CANONICAL_ID",
+      "evidence": "Both operations taught together on page 16 under rule 2",
+      "status": "SOURCE_RULE_VISIBLE_NO_INDIVIDUAL_QUESTION_QA"
+    },
+    {
+      "main_id": "skill_quant_06",
+      "main_name": "الجذور",
+      "sub_id": "sub_quant_06_1",
+      "live_name": "جمع وطرح الجذور وتبسيطها (المتشابهة والمختلفة)",
+      "source_pdf_page": 39,
+      "additional_source_pdf_pages": [
+        40
+      ],
+      "source_heading": "جمع وطرح الجذور",
+      "notebooklm_alias": "Q10.02",
+      "disposition": "KEEP_CANONICAL_ID",
+      "evidence": "Page 39 covers like radicals and page 40 unlike radical simplification/add-sub.",
+      "status": "SOURCE_RULE_VISIBLE_NO_INDIVIDUAL_QUESTION_QA"
+    },
+    {
+      "main_id": "skill_quant_06",
+      "main_name": "الجذور",
+      "sub_id": "sub_quant_06_2",
+      "live_name": "ضرب وقسمة الجذور",
+      "source_pdf_page": 41,
+      "source_heading": "ضرب وقسمة الجذور",
+      "notebooklm_alias": "Q10.03",
+      "disposition": "KEEP_CANONICAL_ID",
+      "evidence": "Printed rule 7 on page 41 shows radical multiplication and division.",
+      "status": "SOURCE_RULE_VISIBLE_NO_INDIVIDUAL_QUESTION_QA"
+    },
+    {
+      "main_id": "skill_quant_06",
+      "main_name": "الجذور",
+      "sub_id": "sub_quant_06_3",
+      "live_name": "إنطاق المقام والضرب في المرافق",
+      "source_pdf_page": 41,
+      "source_heading": "إنطاق المقام",
+      "notebooklm_alias": "Q10.03",
+      "disposition": "KEEP_DISTINCT_CANONICAL_ID",
+      "evidence": "Page 41 gives rationalization/conjugates separately from multiplying simple radicals; NotebookLM candidate alias Q10.03 conflates two existing diagnostically distinct subskills.",
+      "status": "SOURCE_RULE_VISIBLE_NO_INDIVIDUAL_QUESTION_QA"
+    }
+  ],
+  "unresolved": [
+    {
+      "area": "p14 place value",
+      "issue": "Tens digit example is not identical to existing ones-digit-only skill label sub_quant_01_5; review current question counts before renaming or adding a skill."
+    },
+    {
+      "area": "p57, p89, p104",
+      "issue": "Original source errata on page 146 must be checked for every affected item."
+    }
+  ]
+}
