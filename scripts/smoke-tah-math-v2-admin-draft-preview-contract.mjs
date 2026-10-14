@@ -23,7 +23,8 @@ check('preview changes transient client copies, not persisted publication or pla
 });
 check('authoring draft indicators are shown in training and test cards', () => {
   assert.ok(learning.includes("[معاينة مسودة]"));
-  assert.ok(learning.includes("[معاينة مسودة - اختبار غير محاكي]"));
+  assert.ok(learning.includes("محاكي بأقسام"));
+  assert.ok(learning.includes("اختبار عادي"));
 });
 check('ordinary placement filter still honors hidden content', () => {
   assert.ok(placements.includes("placement ? placement.isVisible !== false : false"));
