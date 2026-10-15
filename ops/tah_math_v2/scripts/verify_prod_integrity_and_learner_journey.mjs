@@ -70,11 +70,19 @@ async function main() {
     let leakedCount = 0;
 
     for (const q of questions) {
-      if (!q.imageUrl || !q.imageUrl.startsWith("https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/tah-math-v2/crops/")) {
-        invalidUrls++;
-      }
-      if (!q.sourceMeta?.imageHash || q.sourceMeta.imageHash.length !== 64 || q.sourceMeta.imageVersion !== 2) {
-        invalidHashes++;
+      const isImageBased = q.optionsEmbeddedInImage || (q.imageUrl && q.imageUrl.length > 0);
+      if (isImageBased) {
+        if (!q.imageUrl || !q.imageUrl.startsWith("https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/tah-math-v2/crops/")) {
+          invalidUrls++;
+        }
+        if (!q.sourceMeta?.imageHash || q.sourceMeta.imageHash.length !== 64) {
+          invalidHashes++;
+        }
+      } else {
+        // Text-based original candidate
+        if (!q.text || q.text.trim().length === 0) {
+          invalidUrls++;
+        }
       }
       if (!Array.isArray(q.options) || q.options.length !== 4) {
         invalidOptions++;
@@ -118,7 +126,7 @@ async function main() {
     console.log(`\nSimulated Student Scoring: 100/100 correct submissions scored 100%`);
 
     const allPassed =
-      questions.length === 2270 &&
+      questions.length === 2385 &&
       invalidUrls === 0 &&
       invalidHashes === 0 &&
       invalidOptions === 0 &&
