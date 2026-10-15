@@ -18,7 +18,8 @@ export const resolveAssessmentDefinitionRead = (
   if (!isDefinition(version?.definition)) return legacyDefinition;
 
   // Published content is immutable; the school's current audience and calendar
-  // remain operational settings. Retake windows are applied per viewer later.
+  // remain operational settings. Publication is current for every quiz, so a
+  // historical snapshot cannot undo withdrawal. Retake windows apply later.
   const directed = legacyDefinition.mode === 'central' ||
     ['targetGroupIds','targetUserIds'].some(key => Array.isArray(legacyDefinition[key]) && (legacyDefinition[key] as unknown[]).length > 0);
   const operational = directed ? Object.fromEntries(
@@ -32,6 +33,7 @@ export const resolveAssessmentDefinitionRead = (
     ...legacyDefinition,
     ...publicDefinition,
     ...operational,
+    ...(Object.hasOwn(legacyDefinition,'isPublished')?{isPublished:legacyDefinition.isPublished}:{}),
     _id: legacyDefinition._id,
     id: legacyDefinition.id ?? legacyDefinition._id,
   };

@@ -111,6 +111,7 @@ jobs:
           server/node_modules/.bin/tsx scripts/test-school-assessment-composition-http.ts
           server/node_modules/.bin/tsx scripts/test-school-assessment-release-regressions.ts
           server/node_modules/.bin/tsx scripts/test-quiz-answer-evidence.ts
+          server/node_modules/.bin/tsx scripts/test-assessment-publication-state.ts
 
       - name: School assessment commands on an isolated transaction replica
         env:

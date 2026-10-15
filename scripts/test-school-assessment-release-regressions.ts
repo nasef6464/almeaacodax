@@ -61,5 +61,10 @@ try{
  await QuizModel.create({_id:'legacy-school',id:'legacy-school',title:'legacy',mode:'central',pathId:'release-path',subjectId:'release-math',questionIds:['legacy-q'],isPublished:true,targetGroupIds:[String(classroom._id)],ownerId:String(admin._id)});
  await request(admin,'/quizzes/questions/legacy-q',{correctOptionIndex:1},'PATCH');await request(admin,'/quizzes/questions/legacy-q',undefined,'DELETE',409);
  assert.equal((await QuestionModel.findOne({id:'legacy-q'}).lean())!.correctOptionIndex,1);
+ await request(admin,'/quizzes/'+clone.id,{isPublished:false},'PATCH');
+ const withdrawn=await request(admin,'/quizzes/'+clone.id);assert.equal(withdrawn.isPublished,false);
+ const learnerWithdrawn=await request(student,'/quizzes/'+clone.id);assert.equal(learnerWithdrawn.isPublished,false);assert.deepEqual(learnerWithdrawn.questions,[],'Withdrawn snapshot cannot deliver questions to learners');
+ await request(student,'/live-exams/start',{quizId:clone.id,totalQuestions:1},'POST',403);
+ const preserved=await request(admin,'/school-assessments/'+clone.id+'/results/'+cloneOutcome._id);assert.equal(preserved.result.score,100,'Withdrawal preserves saved school evidence');
  console.log('PASS release regressions:group-only school result,admin named target,live published/active bank corrections, saved outcome immutability, current clone and protected delete references');
 }finally{if(server)await new Promise<void>(r=>server.close(()=>r()));await close();}
