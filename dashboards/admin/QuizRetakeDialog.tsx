@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { api } from '../../services/api';
 import { fromLocalDateTimeInput, toLocalDateTimeInput } from '../../utils/quizAvailability';
 
-export const QuizRetakeDialog: React.FC<{ quizId: string; title: string; students: Array<{ id: string; name: string }>; onClose: () => void }> = ({ quizId, title, students, onClose }) => {
+export const QuizRetakeDialog: React.FC<{ quizId: string; title: string; students: Array<{ id: string; name: string }>; onClose: () => void; onGrant?:(payload:{studentIds:string[];opensAt:string;closesAt:string})=>Promise<unknown> }> = ({ quizId, title, students, onClose,onGrant }) => {
   const [selected, setSelected] = useState<string[]>([]);
   const [opens, setOpens] = useState(toLocalDateTimeInput(new Date().toISOString()));
   const [closes, setCloses] = useState('');
@@ -17,7 +17,8 @@ export const QuizRetakeDialog: React.FC<{ quizId: string; title: string; student
     if (!selected.length || !opens || !closes || new Date(closes) <= new Date(opens) || new Date(closes).getTime() <= Date.now()) { setError('اختر الطلاب وحدد نهاية مستقبلية بعد البداية.'); return; }
     setBusy(true); setError('');
     try {
-      await api.grantQuizRetakes(quizId, { studentIds: selected, opensAt: fromLocalDateTimeInput(opens)!, closesAt: fromLocalDateTimeInput(closes)! });
+      const payload={studentIds:selected,opensAt:fromLocalDateTimeInput(opens)!,closesAt:fromLocalDateTimeInput(closes)!};
+      await (onGrant?onGrant(payload):api.grantQuizRetakes(quizId,payload));
       setDone(true);
     } catch (e) { setError(e instanceof Error ? e.message : 'تعذر حفظ الإتاحة. حاول مرة أخرى.'); }
     finally { setBusy(false); }

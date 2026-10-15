@@ -4,7 +4,7 @@ import { requireAuth, requireActiveAuth } from "../middleware/auth.js";
 import { LiveExamSessionModel } from "../models/LiveExamSession.js";
 import { GroupModel } from "../models/Group.js";
 import { QuizModel } from "../models/Quiz.js";
-import { UserModel } from "../models/User.js";
+import { resolveDirectedQuizReadAccess } from '../modules/quizzes/application/quizAccessPolicy.js';
 import { QuizResultModel } from "../models/QuizResult.js";
 import { applyQuizViewerPolicy } from "../modules/quizzes/application/quizViewerPolicy.js";
 import { getQuizAvailability } from "../modules/quizzes/application/quizAvailability.js";
@@ -19,14 +19,6 @@ import { AssessmentResponseModel } from "../modules/quizzes/infrastructure/asses
 const router = express.Router();
 router.use(requireAuth, requireActiveAuth);
 
-const buildDocumentsByIdsQuery = (values: string[]) => {
-  const ids = [...new Set(values.map(String).filter(Boolean))];
-  const objectIds = ids
-    .filter((id) => mongoose.Types.ObjectId.isValid(id))
-    .map((id) => new mongoose.Types.ObjectId(id));
-  return objectIds.length ? { $or: [{ _id: { $in: objectIds } }, { id: { $in: ids } }] } : { id: { $in: ids } };
-};
-
 /**
  * A live-session endpoint must not become a side door around directed quiz
  * access. Reload group membership from Mongo rather than trusting the client
@@ -38,28 +30,7 @@ const canStartDirectedQuiz = async (quiz: any, authUser: { id: string; role: str
   // publication. This also closes the draft-edit/first-start race.
   if (quiz.isPublished !== true) return false;
 
-  const targetUserIds = new Set((quiz.targetUserIds || []).map(String));
-  const targetGroupIds = Array.from(new Set<string>((quiz.targetGroupIds || []).map(String)));
-  if (targetUserIds.size === 0 && targetGroupIds.length === 0) return true;
-
-  const learner = await (mongoose.Types.ObjectId.isValid(authUser.id)
-    ? UserModel.findById(authUser.id)
-    : UserModel.findOne({ id: authUser.id }))
-    .select("_id id")
-    .lean();
-  if (!learner) return false;
-
-  const learnerId = String((learner as any).id || learner._id);
-  if (targetUserIds.has(learnerId)) return true;
-  if (targetGroupIds.length === 0) return false;
-
-  return Boolean(
-    await GroupModel.findOne({
-      $and: [buildDocumentsByIdsQuery(targetGroupIds), { studentIds: learnerId }],
-    })
-      .select("_id")
-      .lean(),
-  );
+  return (await resolveDirectedQuizReadAccess(quiz,authUser)).allowed;
 };
 
 const saveAssessmentResponse = async (attemptId: string, studentId: string, questionId: string, answer: unknown) => {

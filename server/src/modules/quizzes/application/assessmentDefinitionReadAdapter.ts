@@ -17,9 +17,20 @@ export const resolveAssessmentDefinitionRead = (
 ): AssessmentDefinition => {
   if (!isDefinition(version?.definition)) return legacyDefinition;
 
+  // Published content is immutable; the school's current audience and calendar
+  // remain operational settings. Retake windows are applied per viewer later.
+  const directed = legacyDefinition.mode === 'central' ||
+    ['targetGroupIds','targetUserIds'].some(key => Array.isArray(legacyDefinition[key]) && (legacyDefinition[key] as unknown[]).length > 0);
+  const operational = directed ? Object.fromEntries(
+    ['targetGroupIds','targetUserIds','opensAt','closesAt','dueDate']
+      .filter(key => Object.prototype.hasOwnProperty.call(legacyDefinition,key))
+      .map(key => [key,legacyDefinition[key]]),
+  ) : {};
+
   return {
     ...legacyDefinition,
     ...version.definition,
+    ...operational,
     _id: legacyDefinition._id,
     id: legacyDefinition.id ?? legacyDefinition._id,
   };

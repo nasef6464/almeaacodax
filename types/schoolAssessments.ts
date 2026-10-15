@@ -20,3 +20,13 @@ export interface SchoolAssessmentCompositionPreview {
   coverage:{subjectId:string;skillIds:string[];requested:number;available:number;selected:number}[];
   warnings:string[];
 }
+export type SchoolAssessmentCommandInput =
+  | {operation:'retarget';payload:{targetGroupIds:string[];targetUserIds:string[]}}
+  | {operation:'remind';payload:{studentIds?:string[]}}
+  | {operation:'reopen';payload:{opensAt:string;closesAt:string}}
+  | {operation:'retake';payload:{studentIds:string[];opensAt:string;closesAt:string}};
+export type SchoolAssessmentCommand = SchoolAssessmentCommandInput & {commandId:string};
+export interface SchoolAssessmentCommandResult {
+  commandId:string;operation:SchoolAssessmentCommandInput['operation'];
+  targetGroupCount?:number;targetUserCount?:number;notifiedCount?:number;grantedCount?:number;reopened?:boolean;
+}

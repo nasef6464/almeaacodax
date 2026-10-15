@@ -13,6 +13,7 @@
     "schoolAssessmentsRouter|GET|/:id/context",
     "schoolAssessmentsRouter|GET|/:id/report",
     "schoolAssessmentsRouter|POST|/:id/clone",
+    "schoolAssessmentsRouter|POST|/:id/commands",
     "schoolAssessmentsRouter|POST|/compose",
     "quizRetakeRouter|POST|/:id/retakes",
     "contentStudyPlanRouter|GET|/study-plans",

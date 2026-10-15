@@ -42,6 +42,7 @@ jobs:
         image: public.ecr.aws/docker/library/mongo@sha256:494b956596706b19ba44908cb9d03648b585214600987b86cd2a34249358e572
         ports:
           - 27017:27017
+          - 27018:27018
         options: >-
           --health-cmd "mongosh --quiet --eval 'db.adminCommand({ ping: 1 }).ok'"
           --health-interval 10s
@@ -107,6 +108,17 @@ jobs:
           server/node_modules/.bin/tsx scripts/test-school-assessment-teacher-authority.ts
           server/node_modules/.bin/tsx scripts/test-school-assessment-composition.ts
           server/node_modules/.bin/tsx scripts/test-school-assessment-composition-http.ts
+
+      - name: School assessment commands on an isolated transaction replica
+        env:
+          MONGO_CONTAINER_ID: ${{ job.services.mongodb.id }}
+          ASSESSMENT_TEST_MONGODB_URI: mongodb://127.0.0.1:27018
+        run: |
+          set -euo pipefail
+          docker exec "$MONGO_CONTAINER_ID" bash -lc 'mkdir -p /tmp/school-assessment-replica; mongod --replSet school_assessment_commands --port 27018 --bind_ip_all --dbpath /tmp/school-assessment-replica --fork --logpath /tmp/school-assessment-replica.log'
+          docker exec "$MONGO_CONTAINER_ID" mongosh --quiet --port 27018 --eval 'rs.initiate({_id:"school_assessment_commands",members:[{_id:0,host:"127.0.0.1:27018"}]}); for(let i=0;i<150;i++){if(db.hello().isWritablePrimary)quit(0);sleep(200);}quit(1);'
+          server/node_modules/.bin/tsx scripts/test-school-assessment-commands.ts
+          server/node_modules/.bin/tsx scripts/test-school-assessment-commands-http.ts
 
       - name: Courses access and payment recovery behavioral regressions
         run: |

@@ -57,7 +57,6 @@ import { buildQuizSubmissionAnswerReview } from "../modules/quizzes/application/
 import { buildQuizSubmissionSkillsAnalysis } from "../modules/quizzes/application/quizSubmissionSkillsAnalysis.js";
 import { buildQuizSubmissionResultDocument } from "../modules/quizzes/application/quizSubmissionResultDocument.js";
 import { resolveQuizSubmissionLearningContext } from "../modules/quizzes/application/quizSubmissionLearningContext.js";
-import { buildQuizSubmissionDirectedScope } from "../modules/quizzes/application/quizSubmissionDirectedScope.js";
 import { buildQuizSubmissionReadModelContext, getQuizSubmissionSkillIds } from "../modules/quizzes/application/quizSubmissionReadModelContext.js";
 import { assertQuizSubmissionWindow } from "../modules/quizzes/application/quizSubmissionWindow.js";
 import { matchesManagedContentScope } from "../modules/quizzes/application/quizManagedContentScope.js";
@@ -530,31 +529,8 @@ quizRouter.post(
       return res.status(StatusCodes.NOT_FOUND).json({ message: "User not found" });
     }
 
-    // ── Security: re-validate group membership from DB for directed quizzes ──
-    // JWT claims (authUser.groupIds) could be stale or spoofed, so we
-    // look up actual group membership directly from GroupModel.
+    // canSubmitQuiz shares fresh database audience verification with read/start.
     const userId = String(authUser.id || authUser._id || "");
-    const directedScope = buildQuizSubmissionDirectedScope({
-      quiz,
-      userId,
-      isStaff: isStaffRole(authUser.role),
-    });
-    if (directedScope.requiresGroupMembershipCheck) {
-      // Verify the student genuinely belongs to at least one targeted group from DB
-      // Use $and to combine: group must be in targetGroupIds AND student must be in its studentIds
-      const matchingGroup = await GroupModel.findOne({
-        $and: [
-          buildDocumentsByIdsQuery(directedScope.targetGroupIds),
-          { studentIds: userId },
-        ],
-      }).select("_id").lean();
-      if (!matchingGroup) {
-        return res.status(StatusCodes.FORBIDDEN).json({
-          message: "This quiz is not assigned to you",
-        });
-      }
-    }
-
 
     if (!(await canSubmitQuiz(quiz, authUser, payload.source))) {
       return res.status(StatusCodes.FORBIDDEN).json({ message: "You cannot submit this quiz" });

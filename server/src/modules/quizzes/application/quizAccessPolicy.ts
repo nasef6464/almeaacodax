@@ -198,6 +198,9 @@ export const resolveDirectedQuizReadAccess = async (quiz: any, authUser?: any) =
   const user = await resolveAuthUserByAuthId(String(authUser.id || ""));
   if (!user) return { allowed: false as const, status: StatusCodes.UNAUTHORIZED };
   if (isStaffRole(user.role)) return { allowed: true as const };
+  // Match catalog/submission discovery using the freshly loaded learner's
+  // class and school ids; a school need not duplicate every child roster.
+  if (user.role === 'student' && isTargeted(quiz,user)) return { allowed: true as const };
   const userId = String(user.id || user._id || "");
   if (targetUserIds.includes(userId)) return { allowed: true as const };
   if (!targetGroupIds.length) return { allowed: false as const, status: StatusCodes.FORBIDDEN };
@@ -210,7 +213,7 @@ export const resolveDirectedQuizReadAccess = async (quiz: any, authUser?: any) =
 export const canSubmitQuiz = async (quiz: any, user: any, source?: string) => {
   if (isStaffRole(user.role)) return true;
   const approved = quiz.approvalStatus === "approved" || !quiz.approvalStatus;
-  const targeted = isTargeted(quiz, user);
+  const targeted = (await resolveDirectedQuizReadAccess(quiz,user)).allowed;
   if (!(quiz.isPublished && approved && (quiz.showOnPlatform !== false || targeted))) return false;
   const pathId = String(quiz.pathId || "");
   if (pathId && !(await getActivePathIds()).includes(pathId)) return false;

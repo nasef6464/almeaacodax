@@ -7,6 +7,7 @@ import { cloneSchoolAssessment,schoolAssessmentContentLocked } from '../applicat
 
 import {schoolCompositionSchema,composeSchoolAssessment,type SchoolSpecInterpreter} from '../application/schoolAssessmentComposition.js';
 import {resolveSchoolCompositionContext} from '../application/schoolAssessmentCompositionScope.js';
+import {executeSchoolAssessmentCommand} from '../application/schoolAssessmentCommands.js';
 
 export function createSchoolAssessmentsRouter(interpret?:(req:any,input:Parameters<SchoolSpecInterpreter>[0])=>Promise<unknown>){
 const schoolAssessmentsRouter = Router();
@@ -24,11 +25,15 @@ schoolAssessmentsRouter.get('/:id/report',asyncHandler(async(req,res)=>{
 schoolAssessmentsRouter.get('/:id/context',asyncHandler(async(req,res)=>{
   const context = await resolveSchoolAssessmentContext(req.authUser!,String(req.params.id));
   const canEditContent=context.canManage&&!(await schoolAssessmentContentLocked(context.quiz));
-  res.set('Cache-Control','private, no-store').json({id:String(context.quiz.id||context.quiz._id),canManage:context.canManage,canClone:context.canManage,canEditContent});
+  res.set('Cache-Control','private, no-store').json({id:String(context.quiz.id||context.quiz._id),canManage:context.canManage,canClone:context.canManage,canEditContent,isPublished:context.quiz.isPublished===true});
 }));
 schoolAssessmentsRouter.post('/:id/clone',asyncHandler(async(req,res)=>{
   const context=await resolveSchoolAssessmentContext(req.authUser!,String(req.params.id));
   res.status(201).json(await cloneSchoolAssessment(context));
+}));
+schoolAssessmentsRouter.post('/:id/commands',asyncHandler(async(req,res)=>{
+  const result=await executeSchoolAssessmentCommand(req.authUser!,String(req.params.id),req.body);
+  res.set('Cache-Control','private, no-store').json(result);
 }));
 
 return schoolAssessmentsRouter;

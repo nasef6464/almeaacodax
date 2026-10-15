@@ -1,3 +1,6 @@
+## SCHOOL-ASSESSMENT-COMMAND-RECEIPTS — 2026-10-15 (delivery pending)
+Additive SchoolAssessmentCommand collection in quizzes/infrastructure: deterministic String _id uniquely binds fresh actor, assessment and UUID; normalized request hash, operation and scalar result retained without TTL. Built-in unique _id only; no secondary index, existing-row backfill/drop or result/scoring migration. Quiz.__v serializes commands with edits/publication; existing NotificationDelivery/QuizRetake schemas remain unchanged. Runtime/production verification is pending.
+
 ## LIVE-SESSIONS-FLEXIBLE — 2026-10-13 (delivery pending)
 Additive Activity structured targets/requestKey/teacher/session links and rejected status; partial unique user/requestKey and Lesson.bookingId indexes. New LiveSession(sourceKey unique), LiveHost, LiveReservation(resourceKey/sessionId unique) and LiveResourceRevision(_id unique) collections. Optional User teacher hosting default and PlatformIntegrationSettings.liveSessionPolicy. No history migration/backfill/drop. Existing ambiguous legacy conversions require ownership review and remain stored; no automatic reassignment. Rollback retains new records and disables new presentation/writes. Unique indexes must finish before serving new idempotent requests; fixture tests explicitly initialize them.
 

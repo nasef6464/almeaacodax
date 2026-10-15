@@ -3,9 +3,9 @@ import {api} from '../../../services/api';
 import type {Quiz} from '../../../types';
 type Context=Awaited<ReturnType<typeof api.schoolAssessmentContext>>;
 export const SchoolAssessmentManagementActions:React.FC<{
-  quizId:string;actorId:string;onEdit:()=>void;onClone:(quiz:Quiz)=>void;
+  quizId:string;actorId:string;onEdit:()=>void;onClone:(quiz:Quiz)=>void;onReopen?:()=>void;
   loadContext?:typeof api.schoolAssessmentContext;clone?:typeof api.cloneSchoolAssessment;
-}>=({quizId,actorId,onEdit,onClone,loadContext=api.schoolAssessmentContext,clone=api.cloneSchoolAssessment})=>{
+}>=({quizId,actorId,onEdit,onClone,onReopen,loadContext=api.schoolAssessmentContext,clone=api.cloneSchoolAssessment})=>{
   const identity=JSON.stringify([actorId,quizId]);
   const generation=useRef(0),inFlight=useRef(false);
   const [revision,setRevision]=useState(0);
@@ -34,6 +34,7 @@ export const SchoolAssessmentManagementActions:React.FC<{
     {state.context&&!state.context.canManage&&<p className="text-sm text-gray-600">يمكنك متابعة نتائج طلابك؛ تعديل الاختبار متاح لصاحب صلاحية إدارته.</p>}
     {state.context?.canManage&&!state.context.canEditContent&&<p className="text-sm text-gray-600">محتوى الاختبار محفوظ لحماية المحاولات والنتائج. أنشئ نسخة مستقلة لتغيير الأسئلة.</p>}
     <div className="flex flex-wrap gap-2">
+      {state.context?.canManage&&state.context.isPublished&&onReopen&&<button onClick={onReopen} className="rounded-xl border border-indigo-200 px-4 py-2 font-bold text-indigo-700">إعادة فتح الموعد</button>}
       {state.context?.canEditContent&&<button onClick={onEdit} className="rounded-xl border border-indigo-200 px-4 py-2 font-bold text-indigo-700">تعديل محتوى الاختبار</button>}
       {state.context?.canClone&&<button disabled={cloning} aria-busy={cloning} onClick={()=>void createCopy()} className="rounded-xl bg-indigo-600 px-4 py-2 font-bold text-white disabled:opacity-50">{cloning?'جارٍ إنشاء النسخة…':'إنشاء نسخة للتعديل'}</button>}
     </div>

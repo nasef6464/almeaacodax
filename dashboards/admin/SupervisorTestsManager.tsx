@@ -13,7 +13,8 @@ import { MockExamManager } from './MockExamManager';
 import { QuizAssignWidget } from './QuizAssignWidget';
 import { QuizRetakeDialog } from './QuizRetakeDialog';
 import { AssignedTestDetailPanel } from './AssignedTestDetailPanel';
-import { api } from '../../services/api';
+import { useSchoolAssessmentCommands } from './supervisorTests/useSchoolAssessmentCommands';
+import { SchoolAssessmentReopenDialog } from './supervisorTests/SchoolAssessmentReopenDialog';
 import { isTrueMockExam } from '../../utils/quizPlacement';
 import type { Quiz, QuizResult, User } from '../../types';
 import { useScopedAssessmentResults } from './supervisorTests/useScopedAssessmentResults';
@@ -34,7 +35,7 @@ const DirectedAssessmentReport: React.FC<{quiz: any; studentIds: string[]; actor
 };
 
 export const SupervisorTestsManager: React.FC<{ resultEvidence?: QuizResult[]; studentEvidence?: User[] }> = ({resultEvidence,studentEvidence}) => {
-  const { updateQuiz,paths,subjects,skills } = useStore();
+  const { paths,subjects,skills } = useStore();
   const [viewMode, setViewMode] = useState<ViewMode|'compose'>('list');
   const [composedDraft,setComposedDraft]=useState<Partial<Quiz>|null>(null);
   const [retakeQuizId, setRetakeQuizId] = useState<string | null>(null);
@@ -47,11 +48,19 @@ export const SupervisorTestsManager: React.FC<{ resultEvidence?: QuizResult[]; s
   const [remindingQuizId, setRemindingQuizId] = useState<string | null>(null);
   const [reminderError, setReminderError] = useState<string | null>(null);
   const [editingQuiz,setEditingQuiz]=useState<Quiz|null>(null);
+  const [reopenQuiz,setReopenQuiz]=useState<Quiz|null>(null);
+  const [reminderNotice,setReminderNotice]=useState('');
 
   const {
     user, groups, quizzes, scopedGroupIds, scopedStudentIds, scopedStudents,
     quizzesWithStats, filteredQuizzes, summaryStats,
   } = useSupervisorAssessmentScope(tabFilter, resultEvidence, studentEvidence);
+  const runCommand=useSchoolAssessmentCommands(user.id);
+  const patchLocalQuiz=(id:string,patch:Partial<Quiz>)=>useStore.setState(state=>({quizzes:state.quizzes.map(quiz=>quiz.id===id?{...quiz,...patch}:quiz)}));
+  const retarget=async(quizId:string,targetGroupIds:string[],targetUserIds:string[])=>{
+    await runCommand(quizId,{operation:'retarget',payload:{targetGroupIds,targetUserIds}});
+    patchLocalQuiz(quizId,{targetGroupIds,targetUserIds});
+  };
 
   const canManageQuiz = (quiz: (typeof quizzesWithStats)[number]) => !!user && (
     user.role === 'admin' || quiz.ownerId === user.id || quiz.createdBy === user.id ||
@@ -60,29 +69,23 @@ export const SupervisorTestsManager: React.FC<{ resultEvidence?: QuizResult[]; s
     ))
   );
 
-  const sendScopedAlert = async (studentIds: string[], title: string, body: string) => {
-    const recipients = uniqueSupervisorStudentIds(studentIds).filter((id) => scopedStudentIds.includes(id));
-    if (!recipients.length) return;
-    await api.sendStudentAlert({ studentIds: recipients, title, body, channels: ['in_app'] });
-  };
-
   const remindAbsent = async (quiz: (typeof quizzesWithStats)[number]) => {
     if (remindingQuizId) return;
-    const participated = new Set(quiz.stats.results.map((result) => result.userId).filter(Boolean));
-    const absentIds = quiz.stats.targetStudentIds.filter((id) => !participated.has(id));
-    if (!absentIds.length) return;
     setRemindingQuizId(quiz.id);
     setReminderError(null);
     try {
-      await sendScopedAlert(absentIds, 'تذكير بأداء الاختبار', `نذكرك بضرورة أداء الاختبار: ${quiz.title}`);
+      const receipt=await runCommand(quiz.id,{operation:'remind',payload:{}});
+      setReminderNotice(`تم إرسال التذكير إلى ${receipt.notifiedCount??0} طالب ممن لم يؤدوا الاختبار.`);
       setNotifiedQuizId(quiz.id);
       window.setTimeout(() => setNotifiedQuizId((current) => current === quiz.id ? null : current), 2500);
-    } catch {
-      setReminderError('تعذر إرسال التذكير. حاول مرة أخرى.');
+    } catch(e) {
+      setReminderError(e instanceof Error?e.message:'تعذر إرسال التذكير. حاول مرة أخرى.');
     } finally {
       setRemindingQuizId(null);
     }
   };
+
+  if(reopenQuiz)return <SchoolAssessmentReopenDialog title={reopenQuiz.title} opensAt={reopenQuiz.opensAt} closesAt={reopenQuiz.closesAt||reopenQuiz.dueDate} onClose={()=>setReopenQuiz(null)} onSave={async window=>{await runCommand(reopenQuiz.id,{operation:'reopen',payload:window});patchLocalQuiz(reopenQuiz.id,{...window,dueDate:window.closesAt});}}/>;
 
   if(composedDraft)return <UnifiedQuizBuilder initialDefinition={composedDraft} initialMode="central" role={user.role==='admin'?'admin':user.role==='teacher'?'teacher':'supervisor'} allowedGroupIds={Array.from(scopedGroupIds)} onSave={()=>{setComposedDraft(null);setViewMode('list');}} onClose={()=>setComposedDraft(null)}/>;
   if(viewMode==='compose')return <SchoolAssessmentComposePanel paths={paths} subjects={subjects} skills={skills} onReview={setComposedDraft} onClose={()=>setViewMode('list')}/>;
@@ -122,7 +125,7 @@ export const SupervisorTestsManager: React.FC<{ resultEvidence?: QuizResult[]; s
   if (viewMode === 'analytics' && selectedQuizId) {
     const quiz = quizzes.find((item) => item.id === selectedQuizId);
     if (!quiz) return null;
-    return <div className="space-y-5"><button onClick={() => setViewMode('list')} className="flex items-center gap-2 font-bold text-gray-500 hover:text-indigo-600"><ArrowRight size={18}/> العودة</button><SchoolAssessmentManagementActions quizId={quiz.id} actorId={user.id} onEdit={()=>setEditingQuiz(quiz)} onClone={copy=>{useStore.setState(state=>({quizzes:[copy,...state.quizzes.filter(item=>item.id!==copy.id)]}));setEditingQuiz(copy);}}/><DirectedAssessmentReport quiz={quiz} studentIds={scopedStudentIds} actorId={user.id} studentEvidence={studentEvidence}/></div>;
+    return <div className="space-y-5"><button onClick={() => setViewMode('list')} className="flex items-center gap-2 font-bold text-gray-500 hover:text-indigo-600"><ArrowRight size={18}/> العودة</button><SchoolAssessmentManagementActions quizId={quiz.id} actorId={user.id} onEdit={()=>setEditingQuiz(quiz)} onReopen={()=>setReopenQuiz(quiz)} onClone={copy=>{useStore.setState(state=>({quizzes:[copy,...state.quizzes.filter(item=>item.id!==copy.id)]}));setEditingQuiz(copy);}}/><DirectedAssessmentReport quiz={quiz} studentIds={scopedStudentIds} actorId={user.id} studentEvidence={studentEvidence}/></div>;
   }
 
   if (viewMode === 'compare') {
@@ -136,6 +139,7 @@ export const SupervisorTestsManager: React.FC<{ resultEvidence?: QuizResult[]; s
   return (
     <div className="space-y-6 animate-fade-in">
       {reminderError && <p role="alert" className="rounded-xl bg-rose-50 p-3 text-sm text-rose-700">{reminderError}</p>}
+      {reminderNotice&&<p role="status" className="rounded-xl bg-emerald-50 p-3 text-sm text-emerald-700">{reminderNotice}</p>}
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
           <h2 className="flex items-center gap-2 text-2xl font-black text-gray-900"><ClipboardList className="text-indigo-600"/> اختبارات المدرسة</h2>
@@ -170,7 +174,7 @@ export const SupervisorTestsManager: React.FC<{ resultEvidence?: QuizResult[]; s
       <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
         {retakeQuizId && (() => {
           const quiz = quizzesWithStats.find(q => q.id === retakeQuizId);
-          return quiz ? <QuizRetakeDialog quizId={quiz.id} title={quiz.title} students={scopedStudents.filter(s => quiz.stats.targetStudentIds.includes(s.id)).map(s => ({ id: s.id, name: s.name }))} onClose={() => setRetakeQuizId(null)} /> : null;
+          return quiz ? <QuizRetakeDialog quizId={quiz.id} title={quiz.title} students={scopedStudents.filter(s => quiz.stats.targetStudentIds.includes(s.id)).map(s => ({ id: s.id, name: s.name }))} onGrant={payload=>runCommand(quiz.id,{operation:'retake',payload})} onClose={() => setRetakeQuizId(null)} /> : null;
         })()}
         {filteredQuizzes.map((quiz) => (
           <div key={quiz.id} className="flex flex-col rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
@@ -185,9 +189,9 @@ export const SupervisorTestsManager: React.FC<{ resultEvidence?: QuizResult[]; s
             </div>
             <div className="mt-5 grid grid-cols-2 gap-2">
               <button onClick={() => setDetailQuizId(quiz.id)} className="flex items-center justify-center gap-1.5 rounded-xl border border-violet-200 bg-violet-50 px-3 py-2 text-xs font-black text-violet-700"><BarChart size={14}/> متابعة الطلاب</button>
-              {canManageQuiz(quiz) && <button onClick={() => setAssignQuizId(quiz.id)} className="flex items-center justify-center gap-1.5 rounded-xl border border-indigo-200 bg-indigo-50 px-3 py-2 text-xs font-black text-indigo-700"><RefreshCw size={14}/> الجمهور والمواعيد</button>}
+              {canManageQuiz(quiz) && <button onClick={() => setAssignQuizId(quiz.id)} className="flex items-center justify-center gap-1.5 rounded-xl border border-indigo-200 bg-indigo-50 px-3 py-2 text-xs font-black text-indigo-700"><RefreshCw size={14}/> تحديث المستهدفين</button>}
               {canManageQuiz(quiz) && <button onClick={() => setRetakeQuizId(quiz.id)} className="col-span-2 rounded-xl border border-indigo-200 px-3 py-2 text-xs font-black text-indigo-700">إعادة إتاحة لطلاب محددين</button>}
-              {quiz.stats.participationRate < 100 && quiz.stats.totalTargetStudents > 0 && <button disabled={!!remindingQuizId} aria-busy={remindingQuizId === quiz.id} onClick={() => void remindAbsent(quiz)} className={`col-span-2 flex items-center justify-center gap-1.5 rounded-xl border px-3 py-2 text-xs font-black ${notifiedQuizId === quiz.id ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-amber-200 bg-amber-50 text-amber-700'}`}>{remindingQuizId === quiz.id ? 'جارٍ إرسال التذكير…' : notifiedQuizId === quiz.id ? <><CheckCircle size={14}/> تم التذكير</> : <><Bell size={14}/> تذكير من لم يؤدوا</>}</button>}
+              {canManageQuiz(quiz)&&quiz.isPublished && <button disabled={!!remindingQuizId} aria-busy={remindingQuizId === quiz.id} onClick={() => void remindAbsent(quiz)} className={`col-span-2 flex items-center justify-center gap-1.5 rounded-xl border px-3 py-2 text-xs font-black ${notifiedQuizId === quiz.id ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-amber-200 bg-amber-50 text-amber-700'}`}>{remindingQuizId === quiz.id ? 'جارٍ إرسال التذكير…' : notifiedQuizId === quiz.id ? <><CheckCircle size={14}/> تم التذكير</> : <><Bell size={14}/> تذكير من لم يؤدوا</>}</button>}
             </div>
             <button onClick={() => { setSelectedQuizId(quiz.id); setViewMode('analytics'); }} className="mt-3 flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-3 py-2.5 text-sm font-black text-white"><BarChart size={16}/> إدارة الاختبار وتحليله</button>
           </div>
@@ -195,9 +199,9 @@ export const SupervisorTestsManager: React.FC<{ resultEvidence?: QuizResult[]; s
         {!filteredQuizzes.length && <div className="col-span-full rounded-2xl border border-dashed border-gray-300 bg-gray-50 py-14 text-center text-sm font-bold text-gray-500">لا توجد عناصر في هذا القسم.</div>}
       </div>
 
-      {assignQuiz && <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm"><div className="w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-2xl"><div className="flex items-center justify-between bg-indigo-600 px-5 py-4 text-white"><div><p className="text-xs opacity-75">توجيه تدخل</p><h3 className="font-black">{assignQuiz.title}</h3></div><button onClick={() => setAssignQuizId(null)}><X size={18}/></button></div><div className="max-h-[80vh] overflow-y-auto p-5"><QuizAssignWidget quizId={assignQuiz.id} quizTitle={assignQuiz.title} quizKind={assignQuiz.quizKind} scopedGroups={groups.filter((g) => scopedGroupIds.has(g.id)).map((g) => ({id:g.id,name:g.name,studentIds:g.studentIds}))} scopedStudents={scopedStudents.map((s) => ({id:s.id,name:s.name,groupId:s.groupId}))} existingConfig={{targetGroupIds:assignQuiz.targetGroupIds || [],targetUserIds:assignQuiz.targetUserIds || [],dueDate:assignQuiz.dueDate,opensAt:assignQuiz.opensAt,closesAt:assignQuiz.closesAt,maxAttempts:assignQuiz.settings?.maxAttempts}} hideAccessType confirmLabel="حفظ التوجيه" onCancel={() => setAssignQuizId(null)} onAssign={async (config) => { const selectedGroupIds = new Set(config.targetGroupIds); const ids = uniqueSupervisorStudentIds([...config.targetUserIds,...groups.filter((g) => selectedGroupIds.has(g.id)).flatMap((g) => g.studentIds || []),...scopedStudents.filter((s) => s.groupId && selectedGroupIds.has(s.groupId)).map((s) => s.id)]).filter((id) => scopedStudentIds.includes(id)); await updateQuiz(assignQuiz.id,{targetGroupIds:config.targetGroupIds,targetUserIds:config.targetUserIds,dueDate:config.dueDate,opensAt:config.opensAt,closesAt:config.closesAt,supervisorMessage:config.message || null,settings:{...assignQuiz.settings,maxAttempts:config.maxAttempts ?? assignQuiz.settings?.maxAttempts ?? 1}}); await sendScopedAlert(ids,'اختبار موجّه من المشرف',config.message || `تم توجيه اختبار لك: ${assignQuiz.title}`); }}/></div></div></div>}
+      {assignQuiz && <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm"><div className="w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-2xl"><div className="flex items-center justify-between bg-indigo-600 px-5 py-4 text-white"><div><p className="text-xs opacity-75">تحديث المستهدفين</p><h3 className="font-black">{assignQuiz.title}</h3></div><button onClick={() => setAssignQuizId(null)}><X size={18}/></button></div><div className="max-h-[80vh] overflow-y-auto p-5"><QuizAssignWidget quizId={assignQuiz.id} quizTitle={assignQuiz.title} quizKind={assignQuiz.quizKind} scopedGroups={groups.filter((g) => scopedGroupIds.has(g.id)).map((g) => ({id:g.id,name:g.name,studentIds:g.studentIds}))} scopedStudents={scopedStudents.map((s) => ({id:s.id,name:s.name,groupId:s.groupId}))} existingConfig={{targetGroupIds:assignQuiz.targetGroupIds || [],targetUserIds:assignQuiz.targetUserIds || [],dueDate:assignQuiz.dueDate,opensAt:assignQuiz.opensAt,closesAt:assignQuiz.closesAt,maxAttempts:assignQuiz.settings?.maxAttempts}} audienceOnly hideAccessType confirmLabel="حفظ المستهدفين" onCancel={() => setAssignQuizId(null)} onAssign={config=>retarget(assignQuiz.id,config.targetGroupIds,config.targetUserIds)}/></div></div></div>}
 
-      {detailQuiz && <AssignedTestDetailPanel quizId={detailQuiz.id} quizTitle={detailQuiz.title} quizKind={detailQuiz.quizKind} totalQuestions={detailQuiz.questionIds?.length ?? 0} passingScore={detailQuiz.settings?.passingScore ?? 60} dueDate={detailQuiz.dueDate} targetStudents={detailQuiz.stats.targetStudentIds.map((id) => { const s = scopedStudents.find((student) => student.id === id); return {id,name:s?.name || id,groupName:s?.groupName}; })} results={detailQuiz.stats.results} onClose={() => setDetailQuizId(null)} onRemindAbsent={(ids) => sendScopedAlert(ids,'تذكير بأداء الاختبار',`نذكرك بضرورة أداء الاختبار: ${detailQuiz.title}`)} onAssignToStudent={async (studentId) => { await updateQuiz(detailQuiz.id,{targetUserIds:uniqueSupervisorStudentIds([...(detailQuiz.targetUserIds || []),studentId])}); await sendScopedAlert([studentId],'إعادة توجيه اختبار',`تم إعادة توجيه الاختبار لك للمتابعة: ${detailQuiz.title}`); }}/>} 
+      {detailQuiz && <AssignedTestDetailPanel quizId={detailQuiz.id} quizTitle={detailQuiz.title} quizKind={detailQuiz.quizKind} totalQuestions={detailQuiz.questionIds?.length ?? 0} passingScore={detailQuiz.settings?.passingScore ?? 60} dueDate={detailQuiz.dueDate} targetStudents={detailQuiz.stats.targetStudentIds.map((id) => { const s = scopedStudents.find((student) => student.id === id); return {id,name:s?.name || id,groupName:s?.groupName}; })} results={detailQuiz.stats.results} onClose={() => setDetailQuizId(null)} reminderLabel="تذكير من لم يؤدوا الاختبار" onRemindAbsent={()=>runCommand(detailQuiz.id,{operation:'remind',payload:{}})} onAssignToStudent={studentId=>retarget(detailQuiz.id,detailQuiz.targetGroupIds||[],uniqueSupervisorStudentIds([...(detailQuiz.targetUserIds||[]),studentId]))}/>}
     </div>
   );
 };

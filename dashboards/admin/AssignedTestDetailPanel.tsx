@@ -21,8 +21,9 @@ interface AssignedTestDetailPanelProps {
   results: QuizResult[];
   dueDate?: string;
   onClose: () => void;
-  onRemindAbsent?: (absentIds: string[]) => void;
-  onAssignToStudent?: (studentId: string) => void;
+  onRemindAbsent?: (absentIds: string[]) => unknown | Promise<unknown>;
+  onAssignToStudent?: (studentId: string) => unknown | Promise<unknown>;
+  reminderLabel?: string;
 }
 
 type StudentFilter = "all" | "needs-support" | "absent";
@@ -43,9 +44,18 @@ export const AssignedTestDetailPanel: React.FC<AssignedTestDetailPanelProps> = (
   onClose,
   onRemindAbsent,
   onAssignToStudent,
+  reminderLabel,
 }) => {
   const [activeSection, setActiveSection] = useState<"overview" | "students" | "questions">("overview");
   const [studentFilter, setStudentFilter] = useState<StudentFilter>("all");
+  const [actionBusy,setActionBusy]=useState(false),[actionError,setActionError]=useState(''),[actionDone,setActionDone]=useState(false);
+  const runAction=async(action:()=>unknown|Promise<unknown>)=>{
+    if(actionBusy)return;
+    setActionBusy(true);setActionError('');setActionDone(false);
+    try{await action();setActionDone(true);}
+    catch(error){setActionError(error instanceof Error?error.message:'تعذر تنفيذ العملية. حاول مرة أخرى.');}
+    finally{setActionBusy(false);}
+  };
 
   const KIND_LABELS: Record<string, string> = { drill: "تدريب", test: "اختبار", mock: "محاكي" };
 
@@ -168,6 +178,8 @@ export const AssignedTestDetailPanel: React.FC<AssignedTestDetailPanelProps> = (
           </button>
         </div>
 
+        {actionError&&<p role="alert" className="p-3 text-sm text-rose-700">{actionError}</p>}
+        {actionDone&&<p role="status" className="p-3 text-sm text-emerald-700">تم تنفيذ الطلب.</p>}
         <div className="flex border-b border-gray-100 bg-gray-50 shrink-0">
           {([
             { id: "overview", label: "نظرة عامة", icon: <BarChart2 size={13}/> },
@@ -266,11 +278,12 @@ export const AssignedTestDetailPanel: React.FC<AssignedTestDetailPanelProps> = (
               {absentStudents.length > 0 && onRemindAbsent && (
                 <button
                   type="button"
-                  onClick={() => onRemindAbsent(absentStudents.map((student) => student.id))}
+                  disabled={actionBusy}
+                  onClick={() => void runAction(()=>onRemindAbsent(absentStudents.map((student) => student.id)))}
                   className="w-full flex items-center justify-center gap-2 py-2.5 bg-amber-500 hover:bg-amber-600 text-white rounded-xl font-bold text-sm transition-all shadow-sm"
                 >
                   <Bell size={15}/>
-                  تذكير {absentStudents.length} طالب لم يؤدوا الاختبار
+                  {reminderLabel||`تذكير ${absentStudents.length} طالب لم يؤدوا الاختبار`}
                 </button>
               )}
             </>
@@ -338,7 +351,8 @@ export const AssignedTestDetailPanel: React.FC<AssignedTestDetailPanelProps> = (
                         {onAssignToStudent && (!participated || needsSupport) && (
                           <button
                             type="button"
-                            onClick={() => onAssignToStudent(student.id)}
+                            disabled={actionBusy}
+                            onClick={() => void runAction(()=>onAssignToStudent(student.id))}
                             title="إعادة توجيه الاختبار لهذا الطالب"
                             className="inline-flex items-center gap-1 text-[10px] font-bold text-indigo-700 px-2 py-1 rounded-lg border border-indigo-200 bg-white hover:bg-indigo-50 transition-all"
                           >
