@@ -59,6 +59,11 @@ try{
  const selected=await json(await request(supervisor,'/school-assessments/'+quizId+'/results/'+first._id));
  assert.equal(selected.result.score,40);assert.deepEqual(selected.result.subjectResults,first.subjectResults);
  assert.equal(selected.result.questionReview[0].text,first.questionReview[0].text);
+ if(process.argv.includes('--browser')){
+  const {certifySchoolAssessmentWorkspaceBrowser}=await import('./school-assessment-workspace-browser.mjs');
+  await certifySchoolAssessmentWorkspaceBrowser({base,quizId,cookie,csrfToken:csrf.csrfToken,chrome:process.argv.includes('--chrome'),
+   tokens:Object.fromEntries(Object.entries({supervisor,student,outsider}).map(([role,actor]:any)=>[role,signAccessToken({...actor.toObject(),id:String(actor._id)})]))});
+ }
  const frozen=await QuizResultModel.findById(first._id).lean();
  await SubjectModel.updateOne({_id:'math'},{$set:{name:'اسم جديد'}});await QuestionModel.updateOne({id:'q1'},{$set:{text:'نص جديد'}});
  assert.deepEqual(await report(),summary,'Saved material names/counts do not follow later taxonomy edits');

@@ -1,3 +1,4 @@
+import { assertSchoolQuestionBankWrite } from '../application/schoolAssessmentQuestionEvidence.js';
 import { Router } from "express";
 import { StatusCodes } from "http-status-codes";
 import mongoose from "mongoose";
@@ -348,6 +349,7 @@ questionBankRouter.patch(
       { ...payload, skillIds: canonicalSkills.skillIds, skillId: canonicalSkills.skillId, subSkillId: canonicalSkills.subSkillId, subSkillIds: canonicalSkills.subSkillIds } as Record<string, unknown>,
       req.authUser!,
     );
+    await assertSchoolQuestionBankWrite(existing);
     const updated = await QuestionModel.findOneAndUpdate(documentQuery, sanitizedPayload, { new: true });
     return res.json(updated);
   }),
@@ -363,6 +365,7 @@ questionBankRouter.delete(
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Question not found" });
     }
     await assertManagedContentScope(req.authUser!, existing.toObject());
+    await assertSchoolQuestionBankWrite(existing, true);
     const deleted = await QuestionModel.findOneAndDelete({ _id: existing._id });
     if (!deleted) return res.status(StatusCodes.NOT_FOUND).json({ message: "Question not found" });
 

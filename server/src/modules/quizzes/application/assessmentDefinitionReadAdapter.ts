@@ -27,9 +27,10 @@ export const resolveAssessmentDefinitionRead = (
       .map(key => [key,legacyDefinition[key]]),
   ) : {};
 
+  const { schoolQuestionEvidence: _privateEvidence, ...publicDefinition } = version.definition;
   return {
     ...legacyDefinition,
-    ...version.definition,
+    ...publicDefinition,
     ...operational,
     _id: legacyDefinition._id,
     id: legacyDefinition.id ?? legacyDefinition._id,

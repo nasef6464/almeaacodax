@@ -27,7 +27,7 @@ import { assertSchoolAssessmentDefinitionEditable,prepareSchoolDraftPublication,
 import { quizRetakeRouter } from "../modules/quizzes/http/quizRetakeRoutes.js";
 import { quizSubmitSchema } from "../modules/quizzes/http/submissionSchemas.js";
 import { sanitizeQuestionForLearner } from "../modules/quizzes/presentation/questionPresentation.js";
-import { hydrateQuestionPassages } from "../modules/quizzes/application/questionPassageHydration.js";
+import { readSchoolAssessmentQuestions } from "../modules/quizzes/application/schoolAssessmentQuestionEvidence.js";
 import { clearQuestionBankSummaryCache, questionBankRouter } from "../modules/quizzes/http/questionBankRoutes.js";
 import { quizAnalyticsRouter } from "../modules/quizzes/http/quizAnalyticsRoutes.js";
 import { quizResultsRouter } from "../modules/quizzes/http/quizResultsRoutes.js";
@@ -288,8 +288,7 @@ quizRouter.get(
     const questionIds = getQuizQuestionIds(quiz);
     let questions: any[] = [];
     if (questionIds.length > 0 && req.query.includeQuestions !== "false") {
-      const rawQuestions = await QuestionModel.find(buildDocumentsByIdsQuery(questionIds)).lean();
-      const hydratedQuestions = await hydrateQuestionPassages(rawQuestions as Array<Record<string, any>>);
+      const hydratedQuestions = await readSchoolAssessmentQuestions(quiz, version);
       const isLearner = req.authUser?.role === "student" || !req.authUser;
       questions = questionIds
         .map((qid) => hydratedQuestions.find((q: any) => String(q.id || q._id) === qid || String(q._id) === qid))
@@ -574,7 +573,7 @@ quizRouter.post(
       learnerSchoolId: authUser.schoolId,
     });
     const questionIds = getQuizQuestionIds(quiz);
-    const questions = questionIds.length ? await QuestionModel.find(buildDocumentsByIdsQuery(questionIds)) : [];
+    const questions = questionIds.length ? await readSchoolAssessmentQuestions(quiz) : [];
     const questionById = buildQuizQuestionLookup(questions);
     const orderedQuestions = resolveOrderedQuizQuestions(questionIds, questions);
 
