@@ -1,7 +1,7 @@
 {
-  "timestamp": "2026-10-15T09:06:20.213Z",
-  "totalPublishedQuizzes": 51,
-  "perfectDrills": 51,
+  "timestamp": "2026-10-15T09:34:11.720Z",
+  "totalPublishedQuizzes": 91,
+  "perfectDrills": 91,
   "imperfectDrills": 0,
   "journeySuccess": true,
   "status": "ALL_PASS",
@@ -297,6 +297,46 @@
       "pass": true
     },
     {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-09-01",
+      "title": "تدريب التأسيس | مجموعات الأعداد الحقيقية وخصائصها",
+      "isFree": false,
+      "totalQuestions": 15,
+      "allApproved": true,
+      "hasPublishedVersion": true,
+      "versionNumber": 1,
+      "pass": true
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-09-02",
+      "title": "تدريب التأسيس | العلاقات والدوال وقيم الدالة",
+      "isFree": false,
+      "totalQuestions": 15,
+      "allApproved": true,
+      "hasPublishedVersion": true,
+      "versionNumber": 1,
+      "pass": true
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-10-01",
+      "title": "تدريب التأسيس | الدوال متعددة التعريف: المجال والمدى والقيمة والتمثيل",
+      "isFree": false,
+      "totalQuestions": 15,
+      "allApproved": true,
+      "hasPublishedVersion": true,
+      "versionNumber": 1,
+      "pass": true
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-10-02",
+      "title": "تدريب التأسيس | دالة أكبر عدد صحيح ودالة القيمة المطلقة",
+      "isFree": false,
+      "totalQuestions": 15,
+      "allApproved": true,
+      "hasPublishedVersion": true,
+      "versionNumber": 1,
+      "pass": true
+    },
+    {
       "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-10-03",
       "title": "تدريب التأسيس | عمليات الاتحاد والتقاطع على المجموعات",
       "isFree": false,
@@ -311,6 +351,236 @@
       "title": "تدريب التأسيس | حل المتباينات الخطية وأنظمتها",
       "isFree": false,
       "totalQuestions": 10,
+      "allApproved": true,
+      "hasPublishedVersion": true,
+      "versionNumber": 1,
+      "pass": true
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-11-02",
+      "title": "تدريب التأسيس | التمثيل البياني لمنطقة الحل ورؤوسها",
+      "isFree": false,
+      "totalQuestions": 10,
+      "allApproved": true,
+      "hasPublishedVersion": true,
+      "versionNumber": 1,
+      "pass": true
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-12-01",
+      "title": "تدريب التأسيس | المصفوفات والعمليات الأساسية عليها",
+      "isFree": false,
+      "totalQuestions": 15,
+      "allApproved": true,
+      "hasPublishedVersion": true,
+      "versionNumber": 1,
+      "pass": true
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-12-02",
+      "title": "تدريب التأسيس | المحددات ومساحة المثلث",
+      "isFree": false,
+      "totalQuestions": 15,
+      "allApproved": true,
+      "hasPublishedVersion": true,
+      "versionNumber": 1,
+      "pass": true
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-12-03",
+      "title": "تدريب التأسيس | معكوس المصفوفة والمعادلات المصفوفية",
+      "isFree": false,
+      "totalQuestions": 15,
+      "allApproved": true,
+      "hasPublishedVersion": true,
+      "versionNumber": 1,
+      "pass": true
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-13-01",
+      "title": "تدريب التأسيس | الأعداد المركبة والعدد التخيلي وعملياتهما",
+      "isFree": false,
+      "totalQuestions": 15,
+      "allApproved": true,
+      "hasPublishedVersion": true,
+      "versionNumber": 1,
+      "pass": true
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-13-02",
+      "title": "تدريب التأسيس | المعادلات التربيعية والمميز والقانون العام",
+      "isFree": false,
+      "totalQuestions": 15,
+      "allApproved": true,
+      "hasPublishedVersion": true,
+      "versionNumber": 1,
+      "pass": true
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-14-01",
+      "title": "تدريب التأسيس | مفهوم كثيرات الحدود والعمليات عليها",
+      "isFree": false,
+      "totalQuestions": 15,
+      "allApproved": true,
+      "hasPublishedVersion": true,
+      "versionNumber": 1,
+      "pass": true
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-14-02",
+      "title": "تدريب التأسيس | التحليل والقسمة التركيبية ونظريتا الباقي والعامل",
+      "isFree": false,
+      "totalQuestions": 15,
+      "allApproved": true,
+      "hasPublishedVersion": true,
+      "versionNumber": 1,
+      "pass": true
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-14-03",
+      "title": "تدريب التأسيس | الأصفار ودرجة كثيرة الحدود من التمثيل البياني",
+      "isFree": false,
+      "totalQuestions": 14,
+      "allApproved": true,
+      "hasPublishedVersion": true,
+      "versionNumber": 1,
+      "pass": true
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-14-04",
+      "title": "تدريب التأسيس | جذور كثيرات الحدود والنظرية الأساسية وقاعدة ديكارت",
+      "isFree": false,
+      "totalQuestions": 15,
+      "allApproved": true,
+      "hasPublishedVersion": true,
+      "versionNumber": 1,
+      "pass": true
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-15-01",
+      "title": "تدريب التأسيس | العمليات وتركيب الدوال",
+      "isFree": false,
+      "totalQuestions": 15,
+      "allApproved": true,
+      "hasPublishedVersion": true,
+      "versionNumber": 1,
+      "pass": true
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-15-02",
+      "title": "تدريب التأسيس | الدالة العكسية",
+      "isFree": false,
+      "totalQuestions": 15,
+      "allApproved": true,
+      "hasPublishedVersion": true,
+      "versionNumber": 1,
+      "pass": true
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-16-01",
+      "title": "تدريب التأسيس | الدالة الجذرية ومجالها ومداها",
+      "isFree": false,
+      "totalQuestions": 13,
+      "allApproved": true,
+      "hasPublishedVersion": true,
+      "versionNumber": 1,
+      "pass": true
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-16-02",
+      "title": "تدريب التأسيس | تبسيط العبارات الجذرية",
+      "isFree": false,
+      "totalQuestions": 15,
+      "allApproved": true,
+      "hasPublishedVersion": true,
+      "versionNumber": 1,
+      "pass": true
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-16-03",
+      "title": "تدريب التأسيس | المعادلات والمتباينات الجذرية",
+      "isFree": false,
+      "totalQuestions": 10,
+      "allApproved": true,
+      "hasPublishedVersion": true,
+      "versionNumber": 1,
+      "pass": true
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-17-01",
+      "title": "تدريب التأسيس | العبارات النسبية وعملياتها والتبسيط",
+      "isFree": false,
+      "totalQuestions": 15,
+      "allApproved": true,
+      "hasPublishedVersion": true,
+      "versionNumber": 1,
+      "pass": true
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-17-02",
+      "title": "تدريب التأسيس | رسم الدوال النسبية ومجالها والتقاربات والاتصال",
+      "isFree": false,
+      "totalQuestions": 15,
+      "allApproved": true,
+      "hasPublishedVersion": true,
+      "versionNumber": 1,
+      "pass": true
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-17-03",
+      "title": "تدريب التأسيس | التغير الطردي والعكسي والمركب والمشترك",
+      "isFree": false,
+      "totalQuestions": 15,
+      "allApproved": true,
+      "hasPublishedVersion": true,
+      "versionNumber": 1,
+      "pass": true
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-17-04",
+      "title": "تدريب التأسيس | حل المعادلات النسبية",
+      "isFree": false,
+      "totalQuestions": 14,
+      "allApproved": true,
+      "hasPublishedVersion": true,
+      "versionNumber": 1,
+      "pass": true
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-18-01",
+      "title": "تدريب التأسيس | المتتابعة الحسابية والحد النوني والأوساط",
+      "isFree": false,
+      "totalQuestions": 15,
+      "allApproved": true,
+      "hasPublishedVersion": true,
+      "versionNumber": 1,
+      "pass": true
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-18-02",
+      "title": "تدريب التأسيس | المتسلسلات الحسابية ورمز سيجما",
+      "isFree": false,
+      "totalQuestions": 15,
+      "allApproved": true,
+      "hasPublishedVersion": true,
+      "versionNumber": 1,
+      "pass": true
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-18-03",
+      "title": "تدريب التأسيس | المتتابعة الهندسية والحد النوني والأوساط",
+      "isFree": false,
+      "totalQuestions": 15,
+      "allApproved": true,
+      "hasPublishedVersion": true,
+      "versionNumber": 1,
+      "pass": true
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-18-04",
+      "title": "تدريب التأسيس | المتسلسلات الهندسية اللانهائية والكسر الدوري",
+      "isFree": false,
+      "totalQuestions": 15,
       "allApproved": true,
       "hasPublishedVersion": true,
       "versionNumber": 1,
@@ -457,6 +727,106 @@
       "pass": true
     },
     {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_09",
+      "title": "تدريب المهارة الرئيسية | الأعداد الحقيقية والدوال",
+      "isFree": false,
+      "totalQuestions": 30,
+      "allApproved": true,
+      "hasPublishedVersion": true,
+      "versionNumber": 1,
+      "pass": true
+    },
+    {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_10",
+      "title": "تدريب المهارة الرئيسية | الدوال الخاصة",
+      "isFree": false,
+      "totalQuestions": 30,
+      "allApproved": true,
+      "hasPublishedVersion": true,
+      "versionNumber": 1,
+      "pass": true
+    },
+    {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_11",
+      "title": "تدريب المهارة الرئيسية | المتباينات",
+      "isFree": false,
+      "totalQuestions": 30,
+      "allApproved": true,
+      "hasPublishedVersion": true,
+      "versionNumber": 1,
+      "pass": true
+    },
+    {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_12",
+      "title": "تدريب المهارة الرئيسية | المصفوفات — الجزء 1",
+      "isFree": false,
+      "totalQuestions": 30,
+      "allApproved": true,
+      "hasPublishedVersion": true,
+      "versionNumber": 1,
+      "pass": true
+    },
+    {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_13",
+      "title": "تدريب المهارة الرئيسية | الأعداد المركبة والمعادلة التربيعية",
+      "isFree": false,
+      "totalQuestions": 30,
+      "allApproved": true,
+      "hasPublishedVersion": true,
+      "versionNumber": 1,
+      "pass": true
+    },
+    {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_14",
+      "title": "تدريب المهارة الرئيسية | كثيرات الحدود — الجزء 1",
+      "isFree": false,
+      "totalQuestions": 30,
+      "allApproved": true,
+      "hasPublishedVersion": true,
+      "versionNumber": 1,
+      "pass": true
+    },
+    {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_15",
+      "title": "تدريب المهارة الرئيسية | العمليات على الدوال",
+      "isFree": false,
+      "totalQuestions": 30,
+      "allApproved": true,
+      "hasPublishedVersion": true,
+      "versionNumber": 1,
+      "pass": true
+    },
+    {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_16",
+      "title": "تدريب المهارة الرئيسية | الدالة الجذرية",
+      "isFree": false,
+      "totalQuestions": 30,
+      "allApproved": true,
+      "hasPublishedVersion": true,
+      "versionNumber": 1,
+      "pass": true
+    },
+    {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_17",
+      "title": "تدريب المهارة الرئيسية | العلاقات والدوال النسبية — الجزء 1",
+      "isFree": false,
+      "totalQuestions": 30,
+      "allApproved": true,
+      "hasPublishedVersion": true,
+      "versionNumber": 1,
+      "pass": true
+    },
+    {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_18",
+      "title": "تدريب المهارة الرئيسية | المتتابعات والمتسلسلات — الجزء 1",
+      "isFree": false,
+      "totalQuestions": 30,
+      "allApproved": true,
+      "hasPublishedVersion": true,
+      "versionNumber": 1,
+      "pass": true
+    },
+    {
       "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_19",
       "title": "تدريب المهارة الرئيسية | نظرية ذات الحدين",
       "isFree": false,
@@ -509,6 +879,36 @@
     {
       "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_08_part_2",
       "title": "تدريب المهارة الرئيسية | الدائرة — الجزء 2",
+      "isFree": false,
+      "totalQuestions": 30,
+      "allApproved": true,
+      "hasPublishedVersion": true,
+      "versionNumber": 1,
+      "pass": true
+    },
+    {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_12_part_2",
+      "title": "تدريب المهارة الرئيسية | المصفوفات — الجزء 2",
+      "isFree": false,
+      "totalQuestions": 30,
+      "allApproved": true,
+      "hasPublishedVersion": true,
+      "versionNumber": 1,
+      "pass": true
+    },
+    {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_14_part_2",
+      "title": "تدريب المهارة الرئيسية | كثيرات الحدود — الجزء 2",
+      "isFree": false,
+      "totalQuestions": 30,
+      "allApproved": true,
+      "hasPublishedVersion": true,
+      "versionNumber": 1,
+      "pass": true
+    },
+    {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_14_part_3",
+      "title": "تدريب المهارة الرئيسية | كثيرات الحدود — الجزء 3",
       "isFree": false,
       "totalQuestions": 30,
       "allApproved": true,

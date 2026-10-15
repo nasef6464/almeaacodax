@@ -1,0 +1,288 @@
+{
+  "timestamp": "2026-10-15T09:32:31.632Z",
+  "batch": 2,
+  "approvedQuestionsCount": 447,
+  "newlyPublishedDrillsCount": 40,
+  "publishedDrills": [
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-09-01",
+      "title": "تدريب التأسيس | مجموعات الأعداد الحقيقية وخصائصها",
+      "sectionId": "sec_tah_math_v2_09",
+      "isFree": false,
+      "questionCount": 15
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-09-02",
+      "title": "تدريب التأسيس | العلاقات والدوال وقيم الدالة",
+      "sectionId": "sec_tah_math_v2_09",
+      "isFree": false,
+      "questionCount": 15
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-10-01",
+      "title": "تدريب التأسيس | الدوال متعددة التعريف: المجال والمدى والقيمة والتمثيل",
+      "sectionId": "sec_tah_math_v2_10",
+      "isFree": false,
+      "questionCount": 15
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-10-02",
+      "title": "تدريب التأسيس | دالة أكبر عدد صحيح ودالة القيمة المطلقة",
+      "sectionId": "sec_tah_math_v2_10",
+      "isFree": false,
+      "questionCount": 15
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-11-02",
+      "title": "تدريب التأسيس | التمثيل البياني لمنطقة الحل ورؤوسها",
+      "sectionId": "sec_tah_math_v2_11",
+      "isFree": false,
+      "questionCount": 10
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-12-01",
+      "title": "تدريب التأسيس | المصفوفات والعمليات الأساسية عليها",
+      "sectionId": "sec_tah_math_v2_12",
+      "isFree": false,
+      "questionCount": 15
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-12-02",
+      "title": "تدريب التأسيس | المحددات ومساحة المثلث",
+      "sectionId": "sec_tah_math_v2_12",
+      "isFree": false,
+      "questionCount": 15
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-12-03",
+      "title": "تدريب التأسيس | معكوس المصفوفة والمعادلات المصفوفية",
+      "sectionId": "sec_tah_math_v2_12",
+      "isFree": false,
+      "questionCount": 15
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-13-01",
+      "title": "تدريب التأسيس | الأعداد المركبة والعدد التخيلي وعملياتهما",
+      "sectionId": "sec_tah_math_v2_13",
+      "isFree": false,
+      "questionCount": 15
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-13-02",
+      "title": "تدريب التأسيس | المعادلات التربيعية والمميز والقانون العام",
+      "sectionId": "sec_tah_math_v2_13",
+      "isFree": false,
+      "questionCount": 15
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-14-01",
+      "title": "تدريب التأسيس | مفهوم كثيرات الحدود والعمليات عليها",
+      "sectionId": "sec_tah_math_v2_14",
+      "isFree": false,
+      "questionCount": 15
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-14-02",
+      "title": "تدريب التأسيس | التحليل والقسمة التركيبية ونظريتا الباقي والعامل",
+      "sectionId": "sec_tah_math_v2_14",
+      "isFree": false,
+      "questionCount": 15
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-14-03",
+      "title": "تدريب التأسيس | الأصفار ودرجة كثيرة الحدود من التمثيل البياني",
+      "sectionId": "sec_tah_math_v2_14",
+      "isFree": false,
+      "questionCount": 14
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-14-04",
+      "title": "تدريب التأسيس | جذور كثيرات الحدود والنظرية الأساسية وقاعدة ديكارت",
+      "sectionId": "sec_tah_math_v2_14",
+      "isFree": false,
+      "questionCount": 15
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-15-01",
+      "title": "تدريب التأسيس | العمليات وتركيب الدوال",
+      "sectionId": "sec_tah_math_v2_15",
+      "isFree": false,
+      "questionCount": 15
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-15-02",
+      "title": "تدريب التأسيس | الدالة العكسية",
+      "sectionId": "sec_tah_math_v2_15",
+      "isFree": false,
+      "questionCount": 15
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-16-01",
+      "title": "تدريب التأسيس | الدالة الجذرية ومجالها ومداها",
+      "sectionId": "sec_tah_math_v2_16",
+      "isFree": false,
+      "questionCount": 13
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-16-02",
+      "title": "تدريب التأسيس | تبسيط العبارات الجذرية",
+      "sectionId": "sec_tah_math_v2_16",
+      "isFree": false,
+      "questionCount": 15
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-16-03",
+      "title": "تدريب التأسيس | المعادلات والمتباينات الجذرية",
+      "sectionId": "sec_tah_math_v2_16",
+      "isFree": false,
+      "questionCount": 10
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-17-01",
+      "title": "تدريب التأسيس | العبارات النسبية وعملياتها والتبسيط",
+      "sectionId": "sec_tah_math_v2_17",
+      "isFree": false,
+      "questionCount": 15
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-17-02",
+      "title": "تدريب التأسيس | رسم الدوال النسبية ومجالها والتقاربات والاتصال",
+      "sectionId": "sec_tah_math_v2_17",
+      "isFree": false,
+      "questionCount": 15
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-17-03",
+      "title": "تدريب التأسيس | التغير الطردي والعكسي والمركب والمشترك",
+      "sectionId": "sec_tah_math_v2_17",
+      "isFree": false,
+      "questionCount": 15
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-17-04",
+      "title": "تدريب التأسيس | حل المعادلات النسبية",
+      "sectionId": "sec_tah_math_v2_17",
+      "isFree": false,
+      "questionCount": 14
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-18-01",
+      "title": "تدريب التأسيس | المتتابعة الحسابية والحد النوني والأوساط",
+      "sectionId": "sec_tah_math_v2_18",
+      "isFree": false,
+      "questionCount": 15
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-18-02",
+      "title": "تدريب التأسيس | المتسلسلات الحسابية ورمز سيجما",
+      "sectionId": "sec_tah_math_v2_18",
+      "isFree": false,
+      "questionCount": 15
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-18-03",
+      "title": "تدريب التأسيس | المتتابعة الهندسية والحد النوني والأوساط",
+      "sectionId": "sec_tah_math_v2_18",
+      "isFree": false,
+      "questionCount": 15
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-18-04",
+      "title": "تدريب التأسيس | المتسلسلات الهندسية اللانهائية والكسر الدوري",
+      "sectionId": "sec_tah_math_v2_18",
+      "isFree": false,
+      "questionCount": 15
+    },
+    {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_09",
+      "title": "تدريب المهارة الرئيسية | الأعداد الحقيقية والدوال",
+      "sectionId": "sec_tah_math_v2_09",
+      "isFree": false,
+      "questionCount": 30
+    },
+    {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_10",
+      "title": "تدريب المهارة الرئيسية | الدوال الخاصة",
+      "sectionId": "sec_tah_math_v2_10",
+      "isFree": false,
+      "questionCount": 30
+    },
+    {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_11",
+      "title": "تدريب المهارة الرئيسية | المتباينات",
+      "sectionId": "sec_tah_math_v2_11",
+      "isFree": false,
+      "questionCount": 30
+    },
+    {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_12",
+      "title": "تدريب المهارة الرئيسية | المصفوفات — الجزء 1",
+      "sectionId": "sec_tah_math_v2_12",
+      "isFree": false,
+      "questionCount": 30
+    },
+    {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_13",
+      "title": "تدريب المهارة الرئيسية | الأعداد المركبة والمعادلة التربيعية",
+      "sectionId": "sec_tah_math_v2_13",
+      "isFree": false,
+      "questionCount": 30
+    },
+    {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_14",
+      "title": "تدريب المهارة الرئيسية | كثيرات الحدود — الجزء 1",
+      "sectionId": "sec_tah_math_v2_14",
+      "isFree": false,
+      "questionCount": 30
+    },
+    {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_15",
+      "title": "تدريب المهارة الرئيسية | العمليات على الدوال",
+      "sectionId": "sec_tah_math_v2_15",
+      "isFree": false,
+      "questionCount": 30
+    },
+    {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_16",
+      "title": "تدريب المهارة الرئيسية | الدالة الجذرية",
+      "sectionId": "sec_tah_math_v2_16",
+      "isFree": false,
+      "questionCount": 30
+    },
+    {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_17",
+      "title": "تدريب المهارة الرئيسية | العلاقات والدوال النسبية — الجزء 1",
+      "sectionId": "sec_tah_math_v2_17",
+      "isFree": false,
+      "questionCount": 30
+    },
+    {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_18",
+      "title": "تدريب المهارة الرئيسية | المتتابعات والمتسلسلات — الجزء 1",
+      "sectionId": "sec_tah_math_v2_18",
+      "isFree": false,
+      "questionCount": 30
+    },
+    {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_12_part_2",
+      "title": "تدريب المهارة الرئيسية | المصفوفات — الجزء 2",
+      "sectionId": "sec_tah_math_v2_12",
+      "isFree": false,
+      "questionCount": 30
+    },
+    {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_14_part_2",
+      "title": "تدريب المهارة الرئيسية | كثيرات الحدود — الجزء 2",
+      "sectionId": "sec_tah_math_v2_14",
+      "isFree": false,
+      "questionCount": 30
+    },
+    {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_14_part_3",
+      "title": "تدريب المهارة الرئيسية | كثيرات الحدود — الجزء 3",
+      "sectionId": "sec_tah_math_v2_14",
+      "isFree": false,
+      "questionCount": 30
+    }
+  ]
+}
