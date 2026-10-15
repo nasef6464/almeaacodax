@@ -1,0 +1,362 @@
+{
+  "timestamp": "2026-10-15T09:05:01.264Z",
+  "dryRun": false,
+  "counts": {
+    "totalTargetDrafts": 449,
+    "approvedQuestions": 447,
+    "heldDraftQuestions": 2,
+    "newlyPublishedDrillsCount": 48
+  },
+  "heldQuestions": [
+    {
+      "code": "TAH-MATH-V2-COL26-P006-Q15",
+      "page": 6,
+      "questionNumber": "15",
+      "reason": "HOLD_SCIENTIFIC_SOURCE_AMBIGUITY_20261015: independently inspected actual R2 crop; question refers to propositions A and B without readable distinct definitions, while alternatives A,C,D are true divisibility claims; multiple defensible choices. Original source/answer must be corrected. DO_NOT_PUBLISH."
+    },
+    {
+      "code": "TAH-MATH-V2-COL26-P005-Q02",
+      "page": 5,
+      "questionNumber": "2",
+      "reason": "SCIENCE_REVIEW_BLOCKED_20261015; VISUAL_CROP_VERIFIED but source sequence appears 1,1,3,5; publisher key A=8 could suggest Fibonacci but sequence omits 2. DO_NOT_PUBLISH until source text and pattern are reconciled; no manual change to selected answer until source verification."
+    }
+  ],
+  "publishedDrills": [
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-01-02",
+      "title": "تدريب التأسيس | المثال المضاد والعبارات المركبة",
+      "sectionId": "sec_tah_math_v2_01",
+      "isFree": true,
+      "questionCount": 14
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-02-03",
+      "title": "تدريب التأسيس | علاقات الزوايا",
+      "sectionId": "sec_tah_math_v2_02",
+      "isFree": true,
+      "questionCount": 15
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-02-04",
+      "title": "تدريب التأسيس | التوازي والقاطع وعلاقات الزوايا",
+      "sectionId": "sec_tah_math_v2_02",
+      "isFree": true,
+      "questionCount": 15
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-03-01",
+      "title": "تدريب التأسيس | ميل المستقيم ومعادلته وأشكاله الخاصة",
+      "sectionId": "sec_tah_math_v2_03",
+      "isFree": true,
+      "questionCount": 15
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-03-02",
+      "title": "تدريب التأسيس | التوازي والتعامد بين المستقيمات",
+      "sectionId": "sec_tah_math_v2_03",
+      "isFree": true,
+      "questionCount": 14
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-03-03",
+      "title": "تدريب التأسيس | المسافات ومنتصف القطعة في المستوى",
+      "sectionId": "sec_tah_math_v2_03",
+      "isFree": true,
+      "questionCount": 10
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-04-01",
+      "title": "تدريب التأسيس | تصنيف المثلثات وخصائصها",
+      "sectionId": "sec_tah_math_v2_04",
+      "isFree": true,
+      "questionCount": 15
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-04-02",
+      "title": "تدريب التأسيس | الزوايا الداخلية والخارجية للمثلث",
+      "sectionId": "sec_tah_math_v2_04",
+      "isFree": true,
+      "questionCount": 10
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-04-03",
+      "title": "تدريب التأسيس | تطابق المثلثات ومسلمات البرهان",
+      "sectionId": "sec_tah_math_v2_04",
+      "isFree": true,
+      "questionCount": 10
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-04-04",
+      "title": "تدريب التأسيس | منصفات المثلث والقطع الخاصة ومراكز المثلث",
+      "sectionId": "sec_tah_math_v2_04",
+      "isFree": true,
+      "questionCount": 14
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-04-05",
+      "title": "تدريب التأسيس | متباينات المثلث",
+      "sectionId": "sec_tah_math_v2_04",
+      "isFree": true,
+      "questionCount": 15
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-05-01",
+      "title": "تدريب التأسيس | زوايا المضلعات والمضلع المنتظم",
+      "sectionId": "sec_tah_math_v2_05",
+      "isFree": true,
+      "questionCount": 15
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-05-02",
+      "title": "تدريب التأسيس | متوازي الأضلاع والمستطيل",
+      "sectionId": "sec_tah_math_v2_05",
+      "isFree": true,
+      "questionCount": 15
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-05-03",
+      "title": "تدريب التأسيس | المعين والمربع",
+      "sectionId": "sec_tah_math_v2_05",
+      "isFree": true,
+      "questionCount": 15
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-05-04",
+      "title": "تدريب التأسيس | شبه المنحرف ومقارنة الرباعيات",
+      "sectionId": "sec_tah_math_v2_05",
+      "isFree": true,
+      "questionCount": 15
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-05-05",
+      "title": "تدريب التأسيس | البرهان الإحداثي في الأشكال الرباعية",
+      "sectionId": "sec_tah_math_v2_05",
+      "isFree": true,
+      "questionCount": 10
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-06-01",
+      "title": "تدريب التأسيس | تشابه المضلعات والمثلثات",
+      "sectionId": "sec_tah_math_v2_06",
+      "isFree": false,
+      "questionCount": 15
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-06-02",
+      "title": "تدريب التأسيس | التناسب والقطع المتوسطة ومنصف الزاوية في المثلث",
+      "sectionId": "sec_tah_math_v2_06",
+      "isFree": false,
+      "questionCount": 15
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-07-01",
+      "title": "تدريب التأسيس | الانعكاس والإزاحة",
+      "sectionId": "sec_tah_math_v2_07",
+      "isFree": false,
+      "questionCount": 15
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-07-02",
+      "title": "تدريب التأسيس | الدوران وتركيب التحويلات",
+      "sectionId": "sec_tah_math_v2_07",
+      "isFree": false,
+      "questionCount": 15
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-07-03",
+      "title": "تدريب التأسيس | التماثل",
+      "sectionId": "sec_tah_math_v2_07",
+      "isFree": false,
+      "questionCount": 12
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-07-04",
+      "title": "تدريب التأسيس | التمدد",
+      "sectionId": "sec_tah_math_v2_07",
+      "isFree": false,
+      "questionCount": 10
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-08-01",
+      "title": "تدريب التأسيس | أساسيات الدائرة والأقواس وأطوالها",
+      "sectionId": "sec_tah_math_v2_08",
+      "isFree": false,
+      "questionCount": 15
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-08-02",
+      "title": "تدريب التأسيس | الأوتار والزوايا المحيطية والرباعي الدائري",
+      "sectionId": "sec_tah_math_v2_08",
+      "isFree": false,
+      "questionCount": 15
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-08-03",
+      "title": "تدريب التأسيس | المماسات والقواطع وتقاطعات الأوتار",
+      "sectionId": "sec_tah_math_v2_08",
+      "isFree": false,
+      "questionCount": 10
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-08-04",
+      "title": "تدريب التأسيس | معادلة الدائرة في المستوى الإحداثي",
+      "sectionId": "sec_tah_math_v2_08",
+      "isFree": false,
+      "questionCount": 10
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-10-03",
+      "title": "تدريب التأسيس | عمليات الاتحاد والتقاطع على المجموعات",
+      "sectionId": "sec_tah_math_v2_10",
+      "isFree": false,
+      "questionCount": 10
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-11-01",
+      "title": "تدريب التأسيس | حل المتباينات الخطية وأنظمتها",
+      "sectionId": "sec_tah_math_v2_11",
+      "isFree": false,
+      "questionCount": 10
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-19-01",
+      "title": "تدريب التأسيس | مفكوك ذات الحدين ونظرية ذات الحدين",
+      "sectionId": "sec_tah_math_v2_19",
+      "isFree": false,
+      "questionCount": 10
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-21-03",
+      "title": "تدريب التأسيس | تبسيط العبارات المثلثية",
+      "sectionId": "sec_tah_math_v2_21",
+      "isFree": false,
+      "questionCount": 10
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-23-01",
+      "title": "تدريب التأسيس | الدوال الأسية ونماذج النمو والربح المركب",
+      "sectionId": "sec_tah_math_v2_23",
+      "isFree": false,
+      "questionCount": 10
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-26-06",
+      "title": "تدريب التأسيس | الضرب الاتجاهي والمساحة في الفضاء",
+      "sectionId": "sec_tah_math_v2_26",
+      "isFree": false,
+      "questionCount": 10
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-26-07",
+      "title": "تدريب التأسيس | الضرب القياسي الثلاثي والحجم",
+      "sectionId": "sec_tah_math_v2_26",
+      "isFree": false,
+      "questionCount": 10
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-27-04",
+      "title": "تدريب التأسيس | نظرية ديموافر والجذور النونية",
+      "sectionId": "sec_tah_math_v2_27",
+      "isFree": false,
+      "questionCount": 10
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-28-01",
+      "title": "تدريب التأسيس | أنواع الدراسات والبيانات وهامش الخطأ",
+      "sectionId": "sec_tah_math_v2_28",
+      "isFree": false,
+      "questionCount": 10
+    },
+    {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_02",
+      "title": "تدريب المهارة الرئيسية | المسلمات والعلاقات الهندسية",
+      "sectionId": "sec_tah_math_v2_02",
+      "isFree": true,
+      "questionCount": 30
+    },
+    {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_03",
+      "title": "تدريب المهارة الرئيسية | المستقيم",
+      "sectionId": "sec_tah_math_v2_03",
+      "isFree": true,
+      "questionCount": 30
+    },
+    {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_04",
+      "title": "تدريب المهارة الرئيسية | المثلث — الجزء 1",
+      "sectionId": "sec_tah_math_v2_04",
+      "isFree": true,
+      "questionCount": 30
+    },
+    {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_05",
+      "title": "تدريب المهارة الرئيسية | المضلعات والأشكال الرباعية — الجزء 1",
+      "sectionId": "sec_tah_math_v2_05",
+      "isFree": true,
+      "questionCount": 30
+    },
+    {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_06",
+      "title": "تدريب المهارة الرئيسية | التشابه",
+      "sectionId": "sec_tah_math_v2_06",
+      "isFree": false,
+      "questionCount": 30
+    },
+    {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_07",
+      "title": "تدريب المهارة الرئيسية | التحويلات الهندسية",
+      "sectionId": "sec_tah_math_v2_07",
+      "isFree": false,
+      "questionCount": 30
+    },
+    {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_08",
+      "title": "تدريب المهارة الرئيسية | الدائرة — الجزء 1",
+      "sectionId": "sec_tah_math_v2_08",
+      "isFree": false,
+      "questionCount": 30
+    },
+    {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_19",
+      "title": "تدريب المهارة الرئيسية | نظرية ذات الحدين",
+      "sectionId": "sec_tah_math_v2_19",
+      "isFree": false,
+      "questionCount": 30
+    },
+    {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_04_part_2",
+      "title": "تدريب المهارة الرئيسية | المثلث — الجزء 2",
+      "sectionId": "sec_tah_math_v2_04",
+      "isFree": true,
+      "questionCount": 30
+    },
+    {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_04_part_3",
+      "title": "تدريب المهارة الرئيسية | المثلث — الجزء 3",
+      "sectionId": "sec_tah_math_v2_04",
+      "isFree": true,
+      "questionCount": 30
+    },
+    {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_05_part_2",
+      "title": "تدريب المهارة الرئيسية | المضلعات والأشكال الرباعية — الجزء 2",
+      "sectionId": "sec_tah_math_v2_05",
+      "isFree": true,
+      "questionCount": 30
+    },
+    {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_05_part_3",
+      "title": "تدريب المهارة الرئيسية | المضلعات والأشكال الرباعية — الجزء 3",
+      "sectionId": "sec_tah_math_v2_05",
+      "isFree": true,
+      "questionCount": 30
+    },
+    {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_08_part_2",
+      "title": "تدريب المهارة الرئيسية | الدائرة — الجزء 2",
+      "sectionId": "sec_tah_math_v2_08",
+      "isFree": false,
+      "questionCount": 30
+    }
+  ]
+}
