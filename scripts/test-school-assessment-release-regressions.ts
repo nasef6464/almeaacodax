@@ -66,5 +66,11 @@ try{
  const learnerWithdrawn=await request(student,'/quizzes/'+clone.id);assert.equal(learnerWithdrawn.isPublished,false);assert.deepEqual(learnerWithdrawn.questions,[],'Withdrawn snapshot cannot deliver questions to learners');
  await request(student,'/live-exams/start',{quizId:clone.id,totalQuestions:1},'POST',403);
  const preserved=await request(admin,'/school-assessments/'+clone.id+'/results/'+cloneOutcome._id);assert.equal(preserved.result.score,100,'Withdrawal preserves saved school evidence');
+ const draft=await request(admin,'/quizzes',{title:'Private empty path mock',pathId:'release-path',subjectId:'release-math',mode:'saher',quizKind:'mock',isPublished:false,showOnPlatform:true,questionIds:[],mockExam:{enabled:true,pathId:'release-path',sections:[]},access:{type:'paid'}},'POST',201);
+ assert.equal(draft.isPublished,false);assert.equal(draft.access.type,'paid');
+ const savedDraft=await request(admin,'/quizzes/'+draft.id);assert.equal(savedDraft.isPublished,false);
+ assert.deepEqual((await request(student,'/quizzes/'+draft.id)).questions,[]);
+ await request(student,'/live-exams/start',{quizId:draft.id,totalQuestions:0},'POST',403);
+ await request(admin,'/quizzes/'+draft.id,{isPublished:true},'PATCH',400);
  console.log('PASS release regressions:group-only school result,admin named target,live published/active bank corrections, saved outcome immutability, current clone and protected delete references');
 }finally{if(server)await new Promise<void>(r=>server.close(()=>r()));await close();}

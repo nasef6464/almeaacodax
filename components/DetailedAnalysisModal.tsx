@@ -39,7 +39,7 @@ const getSimpleLevel = (percentage: number) => {
   }
 
   return {
-    label: 'تحتاج تركيز وتأسيس',
+    label: 'تحتاج تدريبًا',
     className: 'bg-rose-50 text-rose-800 border border-rose-200',
   };
 };
@@ -68,22 +68,25 @@ export const DetailedAnalysisModal: React.FC<DetailedAnalysisModalProps> = ({
     });
   }, [skills]);
 
+  const [selectedSubject, setSelectedSubject] = React.useState('');
+  React.useEffect(() => { setSelectedSubject(''); }, [isOpen]);
+  const subjectNames = Array.from(new Set(displaySkills.map(skill => skill.subjectName || 'غير مصنف')));
+  const activeSubject = subjectNames.includes(selectedSubject) ? selectedSubject : '';
+  const visibleSkills = activeSubject ? displaySkills.filter(skill => (skill.subjectName || 'غير مصنف') === activeSubject) : displaySkills;
   if (!isOpen) return null;
-
-  const weakestSkill = displaySkills[0];
 
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-900/60 p-2 backdrop-blur-sm sm:p-4 animate-fade-in" dir="rtl">
-      <div id="skills-analysis-modal-content" className="w-full max-w-6xl overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-2xl animate-scale-up">
+      <div role="dialog" aria-modal="true" aria-labelledby="skills-analysis-title" id="skills-analysis-modal-content" className="w-full max-w-6xl overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-2xl animate-scale-up">
         <div className="flex items-center justify-between gap-3 border-b border-slate-100 bg-gradient-to-r from-indigo-50/70 via-white to-white p-4 sm:p-5">
           <div className="flex min-w-0 items-center gap-3">
             <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-indigo-600 text-white shadow-sm shadow-indigo-200">
               <Target size={22} />
             </div>
             <div className="min-w-0">
-              <h2 className="truncate text-base font-black text-slate-900 sm:text-xl">تفاصيل أكثر — تحليل المهارات</h2>
+              <h2 id="skills-analysis-title" className="truncate text-base font-black text-slate-900 sm:text-xl">تحليل المهارات</h2>
               <p className="mt-0.5 text-xs font-bold text-slate-500">
-                {mode === 'bank' ? 'من التدريب' : 'من الاختبار'} • {displaySkills.length} مهارات مقاسة من نفس المحاولة
+                {mode === 'bank' ? 'من التدريب' : 'من الاختبار'} • {visibleSkills.length} مهارات
               </p>
             </div>
           </div>
@@ -97,44 +100,27 @@ export const DetailedAnalysisModal: React.FC<DetailedAnalysisModalProps> = ({
         </div>
 
         <div className="max-h-[78vh] overflow-y-auto p-3 sm:p-5">
-          {weakestSkill && weakestSkill.percentage < 50 ? (
-            <div className="mb-4 rounded-2xl border border-rose-200 bg-gradient-to-br from-rose-50/80 via-white to-rose-50/30 p-4 shadow-xs sm:p-5">
-              <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                <div>
-                  <span className="inline-flex rounded-full bg-rose-600 px-3 py-1 text-xs font-black text-white">
-                    أول مهارة تحتاج تركيز
-                  </span>
-                  <div className="mt-2 text-base font-black text-slate-900 sm:text-lg">{weakestSkill.name}</div>
-                </div>
-                <span className="self-start rounded-full border border-rose-200 bg-rose-100 px-3 py-1 text-sm font-black text-rose-800">
-                  {weakestSkill.percentage}%
-                </span>
-              </div>
-            </div>
-          ) : null}
-
-          <div className="mb-3 flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-            <div className="text-sm font-black text-slate-900">كل المهارات التي ظهرت في التحليل</div>
-            <div className="text-xs font-bold text-slate-500">الفيديو يفتح موضوع التأسيس • التدريب يفتح تدريب نفس المهارة</div>
-          </div>
+          {subjectNames.length > 1 && <div role="group" aria-label="تصفية حسب المادة" className="mb-4 flex flex-wrap gap-2">
+            {['', ...subjectNames].map(subject => <button key={subject} type="button" aria-pressed={activeSubject === subject} onClick={() => setSelectedSubject(subject)} className={`rounded-full border px-3 py-1.5 text-xs font-bold ${activeSubject === subject ? 'border-sky-400 bg-sky-100 text-sky-900' : 'border-slate-200 text-slate-600 hover:bg-slate-50'}`}>{subject || 'الكل'}</button>)}
+          </div>}
 
           {displaySkills.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 p-6 text-center text-sm font-bold text-slate-500">
-              لا توجد مهارات موثقة لهذه المحاولة. لن نعرض مهارات افتراضية بدلًا من بيانات الاختبار الفعلية.
+              لا توجد مهارات موثقة لهذه المحاولة.
             </div>
           ) : (
             <div className="grid gap-2.5 sm:gap-3 lg:grid-cols-2">
-              {displaySkills.map((skill, idx) => {
+              {visibleSkills.map((skill, idx) => {
                 const levelMeta = getSimpleLevel(skill.percentage);
                 return (
                   <div
                     key={`${skill.name}-${idx}`}
-                    className="flex flex-col justify-between rounded-2xl border border-slate-200/90 bg-white p-3 sm:p-3.5 shadow-xs transition-all hover:border-indigo-200 hover:shadow-sm"
+                    className="flex flex-col justify-between rounded-xl border border-slate-200/80 bg-white p-3 transition-colors hover:border-sky-200"
                   >
                     <div>
                       <div className="flex items-start justify-between gap-2.5">
                         <div className="min-w-0 flex-1">
-                          <h3 className="break-words text-xs font-black leading-snug text-slate-900 sm:text-sm">{skill.name}</h3>
+                          <h3 className="break-words text-sm font-bold leading-relaxed text-slate-800"><span className="rounded bg-sky-50 px-1.5 py-0.5 decoration-sky-200 underline decoration-2 underline-offset-4">{skill.name}</span></h3>
                           <div className="mt-1 flex flex-wrap gap-1 text-[10px] font-bold text-slate-500">
                             {skill.sectionName ? <span className="rounded-md bg-indigo-50/80 px-1.5 py-0.5 text-indigo-700">{skill.sectionName}</span> : null}
                             {skill.subjectName ? <span className="rounded-md bg-slate-100 px-1.5 py-0.5 text-slate-600">{skill.subjectName}</span> : null}
@@ -144,7 +130,7 @@ export const DetailedAnalysisModal: React.FC<DetailedAnalysisModalProps> = ({
                           <span className={`rounded-md px-2 py-0.5 text-[10px] font-black ${levelMeta.className}`}>
                             {levelMeta.label}
                           </span>
-                          <span className={`min-w-9 text-left text-base font-black ${
+                          <span className={`min-w-9 text-left text-sm font-bold ${
                             skill.percentage >= 80 ? 'text-emerald-700' : skill.percentage >= 50 ? 'text-amber-700' : 'text-rose-700'
                           }`}>
                             {skill.percentage}%
@@ -162,19 +148,19 @@ export const DetailedAnalysisModal: React.FC<DetailedAnalysisModalProps> = ({
                       </div>
                     </div>
 
-                    <div className="mt-3 grid grid-cols-2 gap-2 border-t border-slate-100/80 pt-2.5">
+                    <div className="mt-2 flex flex-wrap gap-2">
                       {skill.videoLink ? (
                         <Link
                           to={skill.videoLink}
                           onClick={onClose}
-                          className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-indigo-200 bg-indigo-50/80 px-2 py-1.5 text-xs font-black text-indigo-700 transition-all hover:bg-indigo-600 hover:text-white hover:border-indigo-600 active:scale-[0.98]"
+                          className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-indigo-200 bg-indigo-50/80 px-2.5 py-1 text-xs font-bold text-indigo-700 transition-all hover:bg-indigo-600 hover:text-white hover:border-indigo-600 active:scale-[0.98]"
                           title="مشاهدة شروحات المهارة في موضوع التأسيس"
                         >
                           <Video size={13} className="shrink-0" />
                           فيديو
                         </Link>
                       ) : (
-                        <span className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-dashed border-slate-200 bg-slate-50/60 px-2 py-1.5 text-xs font-bold text-slate-400">
+                        <span className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-dashed border-slate-200 bg-slate-50/60 px-2.5 py-1 text-xs font-medium text-slate-400">
                           <Video size={13} className="shrink-0 opacity-40" />
                           فيديو
                         </span>
@@ -184,14 +170,14 @@ export const DetailedAnalysisModal: React.FC<DetailedAnalysisModalProps> = ({
                         <Link
                           to={skill.trainingLink}
                           onClick={onClose}
-                          className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-emerald-200 bg-emerald-50/80 px-2 py-1.5 text-xs font-black text-emerald-800 transition-all hover:bg-emerald-600 hover:text-white hover:border-emerald-600 active:scale-[0.98]"
+                          className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-emerald-200 bg-emerald-50/80 px-2.5 py-1 text-xs font-bold text-emerald-800 transition-all hover:bg-emerald-600 hover:text-white hover:border-emerald-600 active:scale-[0.98]"
                           title="بدء تدريب التأسيس المرتبط بهذه المهارة"
                         >
                           <FileText size={13} className="shrink-0" />
                           تدريب
                         </Link>
                       ) : (
-                        <span className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-dashed border-slate-200 bg-slate-50/60 px-2 py-1.5 text-xs font-bold text-slate-400">
+                        <span className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-dashed border-slate-200 bg-slate-50/60 px-2.5 py-1 text-xs font-medium text-slate-400">
                           <FileText size={13} className="shrink-0 opacity-40" />
                           تدريب
                         </span>

@@ -10,3 +10,5 @@ for(const mode of['central','regular']){
 }
 assert.equal(resolveAssessmentDefinitionRead({id:'q'}, {definition:{isPublished:true}}).isPublished,true,'Absent legacy flag retains compatible fallback');
 console.log('PASS publication-state read: central/regular withdrawal stays current, content and identity retained, legacy fallback preserved');
+
+assert.deepEqual(resolveAssessmentDefinitionRead({id:'path-mock',mode:'saher',isPublished:false,questionIds:['draft-edit']},{definition:{mode:'saher',isPublished:true,questionIds:['old-published']}}).questionIds,['draft-edit'],'Hidden platform draft must show current edits to staff');

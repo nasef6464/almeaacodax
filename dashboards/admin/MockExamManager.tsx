@@ -16,6 +16,8 @@ type ExamType = 'regular' | 'mock';
 type PublishMode = 'platform' | 'school';
 
 export interface MockExamManagerProps {
+  /** Fixed path workspace; supports all present and future paths. */
+  pathId?: string;
   /** 'admin' (default) can publish to platform & set pricing. 'supervisor' targets own school/groups only. */
   role?: 'admin' | 'supervisor';
   /** Restrict path selector to these IDs. Undefined = show all. */
@@ -330,6 +332,7 @@ const SmartPickPanel: React.FC<{
 
 export const MockExamManager: React.FC<MockExamManagerProps> = ({
   role = 'admin',
+  pathId: workspacePathId,
   allowedPathIds,
   allowedGroupIds,
   allowedSchoolGroupId,
@@ -339,15 +342,13 @@ export const MockExamManager: React.FC<MockExamManagerProps> = ({
   const { paths, subjects, sections: allSections, quizzes, skills, groups, addQuiz, updateQuiz, deleteQuiz, addQuestion } = useStore();
 
   // Filter paths by role
-  const availablePaths = useMemo(() =>
-    allowedPathIds && allowedPathIds.length > 0
-      ? paths.filter((p) => allowedPathIds.includes(p.id))
-      : paths,
-    [paths, allowedPathIds]
-  );
+  const availablePaths = useMemo(() => paths.filter(path =>
+    (!workspacePathId || path.id === workspacePathId) &&
+    (!allowedPathIds?.length || allowedPathIds.includes(path.id))),
+    [paths, allowedPathIds, workspacePathId]);
 
   // ── Exam Type ──────────────────────────────────────────────────────────────
-  const [examType, setExamType] = useState<ExamType>(initialExamType);
+  const [examType, setExamType] = useState<ExamType>(workspacePathId ? 'mock' : initialExamType);
 
   // ── Path ──────────────────────────────────────────────────────────────────
   const [selectedPathId, setSelectedPathId] = useState(availablePaths[0]?.id || '');
@@ -373,6 +374,9 @@ export const MockExamManager: React.FC<MockExamManagerProps> = ({
   const [difficultyFilter, setDifficultyFilter] = useState<'all' | Question['difficulty']>('all');
   const [skillFilter, setSkillFilter] = useState('');
   const [sectionIdFilter, setSectionIdFilter] = useState('');
+  const [isPublished, setIsPublished] = useState(false);
+  const [platformVisible, setPlatformVisible] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState('');
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set());
   const [smartSections, setSmartSections] = useState<Set<string>>(new Set()); // sections in smart mode
@@ -485,6 +489,9 @@ export const MockExamManager: React.FC<MockExamManagerProps> = ({
   }, [pathQuestions, regularSubjectId, questionSearchTerm, difficultyFilter, skillFilter]);
 
   const resetDraft = () => {
+    setIsPublished(false);
+    setPlatformVisible(true);
+    setSaveError('');
     setEditingId(null);
     setTitle(examType === 'mock' ? 'اختبار محاكي جديد' : 'اختبار موجه جديد');
     setDescription(examType === 'mock' ? 'تجربة محاكية على مستوى المسار.' : '');
@@ -503,6 +510,8 @@ export const MockExamManager: React.FC<MockExamManagerProps> = ({
   };
 
   const loadExam = (quiz: Quiz) => {
+    setIsPublished(quiz.isPublished === true);
+    setPlatformVisible(quiz.showOnPlatform !== false);
     setEditingId(quiz.id);
     setSelectedPathId(quiz.mockExam?.pathId || quiz.pathId);
     setTitle(quiz.title);
@@ -514,7 +523,7 @@ export const MockExamManager: React.FC<MockExamManagerProps> = ({
     setExpandedSections(new Set());
     setSmartSections(new Set());
     setTargetGroupIds(quiz.targetGroupIds || []);
-    setPublishMode(quiz.showOnPlatform ? 'platform' : 'school');
+    setPublishMode((quiz.targetGroupIds?.length || quiz.targetUserIds?.length) ? 'school' : 'platform');
     setDueDate(quiz.dueDate || '');
     // للاختبارات العادية الموجهة: استعادة الأسئلة والمادة والوقت
     if (!quiz.mockExam?.enabled) {
@@ -634,6 +643,8 @@ export const MockExamManager: React.FC<MockExamManagerProps> = ({
 
   // ── Save (الدالة الوحيدة للحفظ — async مع إدارة الأخطاء وإزالة المعرفات المحلية) ──────────────────────
   const saveExam = async () => {
+    if (isSaving) return;
+    setIsSaving(true);
     const now = Date.now();
     setSaveError('');
 
@@ -687,9 +698,9 @@ export const MockExamManager: React.FC<MockExamManagerProps> = ({
       // Mock exam
       const cleanSections = sections
         .map((section, index) => ({ ...section, order: index, questionIds: unique(section.questionIds) }))
-        .filter((section) => section.title.trim() && section.questionIds.length > 0);
+        .filter((section) => section.title.trim() && (!isPublished || section.questionIds.length > 0));
       const allQuestionIds = unique(cleanSections.flatMap((section) => section.questionIds));
-      if (allQuestionIds.length === 0) {
+      if (isPublished && allQuestionIds.length === 0) {
         setSaveError('لا يمكن حفظ الاختبار المحاكي بدون أسئلة.');
         return;
       }
@@ -727,8 +738,8 @@ export const MockExamManager: React.FC<MockExamManagerProps> = ({
         targetGroupIds: finalTargetGroupIds,
         dueDate: (!isAdminPlatform && dueDate) ? dueDate : undefined,
         createdAt: now,
-        isPublished: true,
-        showOnPlatform: isAdminPlatform,
+        isPublished,
+        showOnPlatform: isAdminPlatform && platformVisible,
         approvalStatus: 'approved',
         approvedAt: now,
       };
@@ -739,7 +750,14 @@ export const MockExamManager: React.FC<MockExamManagerProps> = ({
     } catch (err) {
       // النموذج يبقى مفتوحاً عند الفشل — لا نستدعي resetDraft
       setSaveError(err instanceof Error ? err.message : 'حدث خطأ أثناء الحفظ. تحقق من الاتصال وحاول مرة أخرى.');
+    } finally {
+      setIsSaving(false);
     }
+  };
+
+  const togglePublication = async (quiz: Quiz) => {
+    try { await updateQuiz(quiz.id, { isPublished: quiz.isPublished !== true }); }
+    catch (error) { setSaveError(error instanceof Error ? error.message : 'تعذر تحديث النشر'); }
   };
 
   const handlePreviewQuiz = (quiz: Quiz) => setPreviewQuiz(quiz);
@@ -784,8 +802,11 @@ export const MockExamManager: React.FC<MockExamManagerProps> = ({
             </p>
           </div>
           <select
+            disabled={Boolean(workspacePathId)}
             value={selectedPathId}
             onChange={(event) => {
+              setIsPublished(false);
+              setPlatformVisible(true);
               setSelectedPathId(event.target.value);
               setEditingId(null);
               setSections([]);
@@ -800,7 +821,7 @@ export const MockExamManager: React.FC<MockExamManagerProps> = ({
         </div>
 
         {/* ── Exam Type Selector ── */}
-        <div className="mt-5 grid grid-cols-2 gap-3">
+        {!workspacePathId && <div className="mt-5 grid grid-cols-2 gap-3">
           <button
             type="button"
             onClick={() => { setExamType('regular'); setSections([]); setSaveError(''); }}
@@ -836,7 +857,7 @@ export const MockExamManager: React.FC<MockExamManagerProps> = ({
             </div>
             <p className="text-xs text-gray-500 font-bold">على مستوى المسار • أقسام متعددة • مثل نظام قياس</p>
           </button>
-        </div>
+        </div>}
       </div>
 
       <div className="grid gap-6 xl:grid-cols-[1fr_1.3fr]">
@@ -908,6 +929,7 @@ export const MockExamManager: React.FC<MockExamManagerProps> = ({
                   <div>
                     <label className="mb-1 block text-xs font-black text-gray-500">نوع الوصول</label>
                     <select
+                      aria-label="إتاحة الاختبار"
                       value={accessType}
                       onChange={(e) => setAccessType(e.target.value as Quiz['access']['type'])}
                       className="w-full rounded-xl border border-gray-200 px-4 py-3 font-bold"
@@ -1184,17 +1206,22 @@ export const MockExamManager: React.FC<MockExamManagerProps> = ({
                 )}
               </div>
 
+              {examType === 'mock' && <div className="space-y-3 rounded-xl bg-gray-50 p-3">
+                <label className="block text-sm font-bold">حالة النشر<select aria-label="حالة النشر" value={isPublished ? 'published' : 'draft'} onChange={e => setIsPublished(e.target.value === 'published')} className="block w-full rounded-lg border p-2"><option value="draft">مسودة — في الإدارة فقط</option><option value="published">منشور — متاح للطلاب المستحقين</option></select></label>
+                <label className="flex gap-2 text-sm"><input type="checkbox" checked={platformVisible} onChange={e => setPlatformVisible(e.target.checked)} />إظهار في صفحة المسار بعد النشر</label>
+                <p className="text-xs text-gray-500">المسودة لا يمكن للطالب بدء حلها. الإتاحة المجانية أو ضمن باقة مستقلة عن النشر.</p>
+              </div>}
               <button
                 onClick={saveExam}
-                disabled={
+                disabled={isSaving || (
                   examType === 'mock'
-                    ? !selectedPathId || sections.every((section) => section.questionIds.length === 0)
-                    : regularQuestionIds.length === 0
+                    ? !selectedPathId || (isPublished && sections.every((section) => section.questionIds.length === 0))
+                    : regularQuestionIds.length === 0)
                 }
                 className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-3 font-black text-white disabled:cursor-not-allowed disabled:opacity-50 hover:bg-indigo-700 transition-all"
               >
                 <Save size={18} />
-                حفظ {examType === 'mock' ? 'الاختبار المحاكي' : 'الاختبار الموجه'}
+                {isSaving ? 'جارٍ الحفظ...' : examType === 'mock' && !isPublished ? 'حفظ مسودة' : 'حفظ الاختبار'}
               </button>
               {saveError && <p className="text-xs font-bold text-red-600">{saveError}</p>}
             </div>
@@ -1357,14 +1384,15 @@ export const MockExamManager: React.FC<MockExamManagerProps> = ({
                         <span className="rounded-full bg-gray-100 px-3 py-1">{getMockExamSections(quiz).length} قسم</span>
                         <span className="rounded-full bg-gray-100 px-3 py-1">{getMockExamQuestionCount(quiz)} سؤال</span>
                         <span className={`rounded-full px-3 py-1 ${quiz.access?.type === 'paid' ? 'bg-amber-50 text-amber-700' : 'bg-emerald-50 text-emerald-700'}`}>
-                          {quiz.access?.type === 'paid' ? `مدفوع${quiz.access?.price ? ` • ${quiz.access.price} ر.س` : ''}` : 'مجاني'}
+                          {quiz.access?.type === 'private' ? 'خاص بمجموعات' : quiz.access?.type === 'paid' ? 'ضمن باقة مدفوعة' : 'مجاني'}
                         </span>
                         <span className={`rounded-full px-3 py-1 ${quiz.showOnPlatform ? 'bg-indigo-50 text-indigo-700' : 'bg-gray-100 text-gray-600'}`}>
-                          {quiz.showOnPlatform ? '🌐 منصة' : '🏫 موجه'}
+                          {quiz.isPublished !== true ? 'مسودة / مخفي' : quiz.showOnPlatform ? 'منشور على المنصة' : 'منشور — مخفي من القوائم'}
                         </span>
                       </div>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap gap-2">
+                      <button onClick={() => void togglePublication(quiz)} className="rounded-xl bg-gray-100 px-3 py-2 text-xs font-black">{quiz.isPublished === true ? 'إخفاء الاختبار' : 'نشر الاختبار'}</button>
                       <button onClick={() => handlePreviewQuiz(quiz)} className="rounded-xl bg-violet-50 px-3 py-2 text-xs font-black text-violet-700">معاينة</button>
                       <button onClick={() => loadExam(quiz)} className="rounded-xl bg-indigo-50 px-3 py-2 text-xs font-black text-indigo-700">تعديل</button>
                       <button onClick={() => updateQuiz(quiz.id, { showOnPlatform: quiz.showOnPlatform === false })} className="rounded-xl bg-gray-100 px-3 py-2 text-xs font-black text-gray-700">
