@@ -82,7 +82,9 @@ check('detailed skill modal has truthful data, a wide layout, and two Foundation
   assert.ok(detailedModal.includes('trainingLink?: string'));
   assert.ok(detailedModal.includes('to={skill.videoLink}'));
   assert.ok(detailedModal.includes('to={skill.trainingLink}'));
-  assert.ok(detailedModal.includes('تفاصيل أكثر — تحليل المهارات'));
+  assert.ok(detailedModal.includes('id="skills-analysis-title"'));
+  assert.ok(detailedModal.includes('تحليل المهارات'));
+  assert.ok(detailedModal.includes('aria-label="تصفية حسب المادة"'));
 });
 
 check('test details uses the same canonical Foundation actions per skill', () => {
