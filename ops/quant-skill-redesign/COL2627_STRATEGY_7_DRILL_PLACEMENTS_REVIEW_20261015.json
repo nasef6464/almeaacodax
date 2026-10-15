@@ -1,0 +1,91 @@
+{
+  "date": "2026-10-15",
+  "status": "NO_PRODUCTION_WRITE_SEVEN_SOURCE_REVIEWED_DRILL_RELATIONS",
+  "count": 7,
+  "changes": [
+    {
+      "questionCode": "QDR-QNT-COL2627-P044-Q01",
+      "questionId": "q_qdr_qnt_col2627_p044_q01",
+      "fromQuiz": "drill_sub_quant_11_2",
+      "fromQuizSize": 10,
+      "toQuiz": "drill_sub_quant_07_2",
+      "toQuizSize": 15,
+      "targetHasQuestion": false,
+      "reason": "المعادلة الخطية 3س−9=15",
+      "notApplied": true,
+      "guard": "Only after approved classification, controlled replacement and no overfill of 10–15 range"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P044-Q02",
+      "questionId": "q_qdr_qnt_col2627_p044_q02",
+      "fromQuiz": "drill_sub_quant_11_2",
+      "fromQuizSize": 10,
+      "toQuiz": "drill_sub_quant_07_2",
+      "toQuizSize": 15,
+      "targetHasQuestion": false,
+      "reason": "المعادلة الخطية 6س−8=46",
+      "notApplied": true,
+      "guard": "Only after approved classification, controlled replacement and no overfill of 10–15 range"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P044-Q03",
+      "questionId": "q_qdr_qnt_col2627_p044_q03",
+      "fromQuiz": "drill_sub_quant_11_2",
+      "fromQuizSize": 10,
+      "toQuiz": "drill_sub_quant_07_2",
+      "toQuizSize": 15,
+      "targetHasQuestion": false,
+      "reason": "المعادلة الخطية 4س−4=24",
+      "notApplied": true,
+      "guard": "Only after approved classification, controlled replacement and no overfill of 10–15 range"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P044-Q05",
+      "questionId": "q_qdr_qnt_col2627_p044_q05",
+      "fromQuiz": "drill_sub_quant_11_2",
+      "fromQuizSize": 10,
+      "toQuiz": "drill_sub_quant_01_3",
+      "toQuizSize": 15,
+      "targetHasQuestion": false,
+      "reason": "زوجية وفردية مربع عدد موجب",
+      "notApplied": true,
+      "guard": "Only after approved classification, controlled replacement and no overfill of 10–15 range"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P044-Q06",
+      "questionId": "q_qdr_qnt_col2627_p044_q06",
+      "fromQuiz": "drill_sub_quant_11_2",
+      "fromQuizSize": 10,
+      "toQuiz": "drill_sub_quant_08_1",
+      "toQuizSize": 15,
+      "targetHasQuestion": false,
+      "reason": "نسبة سعر القميص إلى البنطال مع مجموع السعرين",
+      "notApplied": true,
+      "guard": "Only after approved classification, controlled replacement and no overfill of 10–15 range"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P046-Q40",
+      "questionId": "q_qdr_qnt_col2627_p046_q40",
+      "fromQuiz": "drill_sub_quant_11_3",
+      "fromQuizSize": 10,
+      "toQuiz": "drill_sub_quant_07_2",
+      "toQuizSize": 15,
+      "targetHasQuestion": false,
+      "reason": "علاقة حسابية بين الرواتب وتحديد راتب ثالث بفروق معلومة",
+      "notApplied": true,
+      "guard": "Only after approved classification, controlled replacement and no overfill of 10–15 range"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P046-Q42",
+      "questionId": "q_qdr_qnt_col2627_p046_q42",
+      "fromQuiz": "drill_sub_quant_11_3",
+      "fromQuizSize": 10,
+      "toQuiz": "drill_sub_quant_07_2",
+      "toQuizSize": 15,
+      "targetHasQuestion": false,
+      "reason": "علاقة حسابية بين أعداد المدعوين باستخدام فروق معلومة",
+      "notApplied": true,
+      "guard": "Only after approved classification, controlled replacement and no overfill of 10–15 range"
+    }
+  ]
+}
