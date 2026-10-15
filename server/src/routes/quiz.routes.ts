@@ -281,7 +281,7 @@ quizRouter.get(
       ...resolveAssessmentDefinitionRead(legacyQuiz, version),
       ...(req.authUser?.role === 'student' && hasDirectedQuizTargets(legacyQuiz) ? { viewerAudienceVerified: true } : {}),
     }], req.authUser);
-    if (!isStaffRole(req.authUser?.role) && getQuizAvailability(quiz) !== "available") {
+    if (!isStaffRole(req.authUser?.role) && (quiz.isPublished !== true || getQuizAvailability(quiz) !== "available")) {
       return res.json({ ...quiz, questions: [] });
     }
 
