@@ -113,6 +113,8 @@ try{
   // Completed learners are excluded by Mongo before the bounded recipient cap.
   const batchSchool=await GroupModel.create({name:'batch school',type:'SCHOOL',ownerId:String(admin._id)});
   const batchUsers=await UserModel.insertMany(Array.from({length:501},(_,i)=>({name:'batch-'+i,role:'student',email:'batch-'+i+'@commands.isolated',passwordHash:'fixture',isActive:true,schoolId:String(batchSchool._id)})));
+  // Historical blank aliases retain their native user identity, as in reports.
+  await UserModel.collection.updateOne({_id:batchUsers[500]._id},{$set:{id:''}});
   const batchQuiz=await QuizModel.create({...quiz.toObject(),_id:'batch-command',id:'batch-command',targetGroupIds:[String(batchSchool._id)]});
   const batchCommand={commandId:randomUUID(),operation:'remind',payload:{}};
   assert.equal((await command(admin,batchCommand,batchQuiz.id)).status,422);

@@ -12,7 +12,7 @@ import {assertSchoolAssessmentAudience,type SchoolAssessmentContext} from './sch
 import type {SchoolAssessmentCommand,SchoolAssessmentCommandResult} from './schoolAssessmentCommandSchema.js';
 import type {NotificationRealtimeEvent} from '../../notifications/infrastructure/notificationRealtime.js';
 const fail=(statusCode:number,message:string):never=>{throw Object.assign(new Error(message),{statusCode});};
-const userKey={$convert:{input:{$ifNull:['$id','$_id']},to:'string',onError:'',onNull:''}};
+const userKey={$convert:{input:{$cond:[{$in:[{$ifNull:['$id',null]},[null,'',0,false]]},'$_id','$id']},to:'string',onError:'',onNull:''}};
 
 async function assignedStudents(context:SchoolAssessmentContext,studentIds:string[],session:ClientSession){
   const students=await UserModel.find({$and:[context.targetPredicate,{isActive:{$ne:false}},buildDocumentsByIdsQuery(studentIds)]})
