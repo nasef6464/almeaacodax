@@ -14,8 +14,9 @@ const requiredDashboardFragments = [
 const requiredSmokeFragments = [
   "scopedStudentIdSet", "scopedResults", "studentsNeedingFollowUp", "weakestSkills",
   "groupSnapshots", "sendStudentFollowUpAlert", "sendWeeklyFollowUpAlert",
-  "useSupervisorAssessmentScope", "targetStudentIds", "needsSupportStudents",
-  "إعادة توجيه", "لم يؤدوا", "onAssignToStudent",
+  "useSupervisorAssessmentScope", "targetStudentIds", "needs_support",
+  "operation:'retarget'", "لم يؤدوا", "schoolAssessmentLearners",
+  "SchoolAssessmentReportWorkspace", "SchoolAssessmentDetailsDialog",
 ];
 
 const checks = [];
