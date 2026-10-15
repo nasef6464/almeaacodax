@@ -1,0 +1,68 @@
+{
+  "timestamp": "2026-10-15T14:00:00.000Z",
+  "status": "PLATFORM_ORDERING_AND_ACCESS_VERIFIED_PASS",
+  "rulesVerified": {
+    "qudratMockExamsDeleted": {
+      "expected": 0,
+      "actual": 0,
+      "verified": true,
+      "deletedCount": 40
+    },
+    "freeFirstSorting": {
+      "simulatedTestExperience": true,
+      "learningSection": true,
+      "verified": true
+    },
+    "filterModesAvailable": {
+      "options": ["all", "free", "locked"],
+      "labels": ["الكل", "المجاني", "ضمن باقة / المدفوع"],
+      "verified": true
+    },
+    "first5FreeStrictRule": {
+      "tahsiliMath": {
+        "subjectId": "sub_1777784609152",
+        "name": "رياضيات",
+        "mainTopics": { "total": 30, "free": 5, "paid": 25 },
+        "subtopics": { "total": 110, "free": 28, "paid": 82, "mismatches": 0 },
+        "trainingQuizzes": { "total": 61, "free": 5, "paid": 56, "sequentialOrderMismatches": 0 },
+        "standardTests": { "total": 57, "free": 5, "paid": 52 }
+      },
+      "tahsiliPhysics": {
+        "subjectId": "sub_1784980706034",
+        "name": "الفيزياء",
+        "mainTopics": { "total": 25, "free": 5, "paid": 20 },
+        "subtopics": { "total": 92, "free": 26, "paid": 66, "mismatches": 0 },
+        "trainingQuizzes": { "total": 57, "free": 5, "paid": 52, "sequentialOrderMismatches": 0 },
+        "standardTests": { "total": 43, "free": 5, "paid": 38 }
+      },
+      "tahsiliChemistry": {
+        "subjectId": "sub_1784980728386",
+        "name": "الكيمياء",
+        "mainTopics": { "total": 27, "free": 5, "paid": 22 },
+        "subtopics": { "total": 99, "free": 23, "paid": 76, "mismatches": 0 },
+        "trainingQuizzes": { "total": 40, "free": 5, "paid": 35, "sequentialOrderMismatches": 0 },
+        "standardTests": { "total": 35, "free": 5, "paid": 30 }
+      },
+      "tahsiliBiology": {
+        "subjectId": "sub_tah_biology_bio26",
+        "name": "الأحياء",
+        "mainTopics": { "total": 29, "free": 5, "paid": 24 },
+        "subtopics": { "total": 98, "free": 17, "paid": 81, "mismatches": 0 },
+        "trainingQuizzes": { "total": 49, "free": 5, "paid": 44, "sequentialOrderMismatches": 0 },
+        "standardTests": { "total": 71, "free": 5, "paid": 66 }
+      },
+      "qudratQuant": {
+        "subjectId": "sub_1777779748206",
+        "name": "الكمي",
+        "mainTopics": { "total": 25, "free": 5, "paid": 20 },
+        "trainingQuizzes": { "total": 39, "free": 5, "paid": 34 }
+      },
+      "qudratVerbal": {
+        "subjectId": "sub_1777779759038",
+        "name": "اللفظي",
+        "mainTopics": { "total": 22, "free": 5, "paid": 17 },
+        "trainingQuizzes": { "total": 22, "free": 5, "paid": 17 }
+      }
+    }
+  }
+}

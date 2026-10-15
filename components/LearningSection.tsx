@@ -1,4 +1,3 @@
-import { useStudentScopedStore } from '../utils/useStudentScopedStore';
 import React, { useRef, useState, useEffect } from 'react';
 import { useSearchParams, Link, useNavigate } from 'react-router-dom';
 import { Card } from './ui/Card';
@@ -66,9 +65,10 @@ const resolveThemePalette = (value?: string) => {
 export const LearningSection: React.FC<LearningSectionProps> = ({ category, subject, grade, title, colorTheme = 'indigo' }) => {
     const [searchParams, setSearchParams] = useSearchParams();
     const navigate = useNavigate();
-    const { user, enrolledCourses, subjects, paths, courses, lessons, libraryItems, quizzes, completedLessons, examResults, hasScopedPackageAccess, getMatchingPackage, hydrateCourses, hydrateQuizzes } = useStudentScopedStore();
-    const topicList = useStudentScopedStore().topics;
+    const { user, enrolledCourses, subjects, paths, courses, lessons, libraryItems, quizzes, completedLessons, examResults, hasScopedPackageAccess, getMatchingPackage, hydrateCourses, hydrateQuizzes } = useStore();
+    const topicList = useStore(state => state.topics);
     const [activeTab, setActiveTab] = useState<LearningTab>(() => normalizeLearningTab(searchParams.get('tab')) || 'courses');
+    const [foundationFilter, setFoundationFilter] = useState<'all' | 'free' | 'locked'>('all');
     const [scopedBootstrapState, setScopedBootstrapState] = useState<'idle' | 'loading' | 'ready' | 'error'>('idle');
     const [scopedBootstrapRetry, setScopedBootstrapRetry] = useState(0);
     const safeColorTheme = colorTheme.startsWith('#') ? 'indigo' : colorTheme;
@@ -450,24 +450,29 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         const scopeKey = `${category}:${subject}`;
         if (scopedLearningBootstrapRef.current === scopeKey) return;
 
+        const hasScopedCourses = courses.some((course) => {
+            if (course.isPackage) return false;
+            return matchesScopedContent(resolveCoursePathId(course, subjects), resolveCourseSubjectId(course, subjects));
+        });
+        const hasScopedQuizzes = quizzes.some((quiz) => matchesScopedContent(quiz.pathId, quiz.subjectId));
+        if (hasScopedCourses && hasScopedQuizzes) {
+            setScopedBootstrapState('ready');
+            return;
+        }
+
         scopedLearningBootstrapRef.current = scopeKey;
         setScopedBootstrapState('loading');
-
-        // Always refresh the bounded scoped quiz catalog once per subject.
-        // A partially hydrated shared store (for example 5 of 39 training cards)
-        // must not be mistaken for a complete subject catalog.
         void Promise.allSettled([
             api.getCourses({ pathId: category, subjectId: subject, limit: 100 }),
             api.getQuizzes({ pathId: category, subjectId: subject, limit: 100 }),
-        ]).then(async ([coursesResult, quizzesResult]) => {
+        ]).then(([coursesResult, quizzesResult]) => {
             // hydrateCourses/hydrateQuizzes replace the shared collections. Ignore an
             // older route response so it cannot overwrite the currently viewed scope.
             if (scopedLearningBootstrapRef.current !== scopeKey) return;
 
             if (coursesResult.status === 'fulfilled' && Array.isArray(coursesResult.value) && coursesResult.value.length > 0) {
-                const currentCourses = useStore.getState().courses;
                 const mergedCourses = new Map<string, any>();
-                [...currentCourses, ...(coursesResult.value as any[])].forEach((course) => {
+                [...courses, ...(coursesResult.value as any[])].forEach((course) => {
                     const id = String(course?.id || course?._id || '');
                     if (id) mergedCourses.set(id, course);
                 });
@@ -475,26 +480,8 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
             }
 
             if (quizzesResult.status === 'fulfilled' && Array.isArray(quizzesResult.value) && quizzesResult.value.length > 0) {
-                const collectedQuizzes = [...(quizzesResult.value as any[])];
-                if (quizzesResult.value.length >= 100) {
-                    try {
-                        for (let nextPage = 2; nextPage <= 10; nextPage += 1) {
-                            if (scopedLearningBootstrapRef.current !== scopeKey) break;
-                            const nextBatch = await api.getQuizzes({ pathId: category, subjectId: subject, page: nextPage, limit: 100 });
-                            if (!Array.isArray(nextBatch) || nextBatch.length === 0) break;
-                            collectedQuizzes.push(...nextBatch);
-                            if (nextBatch.length < 100) break;
-                        }
-                    } catch (paginationError) {
-                        console.warn('Scoped quiz pagination error:', paginationError);
-                    }
-                }
-
-                if (scopedLearningBootstrapRef.current !== scopeKey) return;
-
-                const currentQuizzes = useStore.getState().quizzes;
                 const mergedQuizzes = new Map<string, any>();
-                [...currentQuizzes, ...collectedQuizzes].forEach((quiz) => {
+                [...quizzes, ...(quizzesResult.value as any[])].forEach((quiz) => {
                     const id = String(quiz?.id || quiz?._id || '');
                     if (id) mergedQuizzes.set(id, quiz);
                 });
@@ -509,8 +496,8 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         setScopedBootstrapRetry((value) => value + 1);
     };
 
-    const skillList = useStudentScopedStore().skills;
-    const quizList = useStudentScopedStore().quizzes;
+    const skillList = useStore(state => state.skills);
+    const quizList = useStore(state => state.quizzes);
     const requestedFoundationSkillId = searchParams.get('skillId') || undefined;
     const requestedFoundationTarget = requestedFoundationSkillId
         ? resolveFoundationSkillTarget(
@@ -589,6 +576,14 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                 originalTopic: topic // Keep a reference to the real topic
             };
         });
+
+    // Free topics at the top first, followed by paid topics in book order
+    mappedSkills.sort((a, b) => {
+        if (a.isLocked !== b.isLocked) {
+            return a.isLocked ? 1 : -1;
+        }
+        return (a.originalTopic?.order ?? 0) - (b.originalTopic?.order ?? 0);
+    });
 
     useEffect(() => {
         const requestedTab = searchParams.get('tab');
@@ -1029,8 +1024,37 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                                 </div>
                             </div>
                         )}
+                        <div className="mb-4 flex flex-wrap items-center gap-2">
+                            <button
+                                type="button"
+                                onClick={() => setFoundationFilter('all')}
+                                className={`px-3.5 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer ${foundationFilter === 'all' ? 'bg-indigo-600 text-white shadow-xs' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+                            >
+                                الكل ({mappedSkills.length})
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setFoundationFilter('free')}
+                                className={`px-3.5 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer ${foundationFilter === 'free' ? 'bg-emerald-600 text-white shadow-xs' : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100'}`}
+                            >
+                                المجاني ({mappedSkills.filter(s => !s.isLocked).length})
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setFoundationFilter('locked')}
+                                className={`px-3.5 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer ${foundationFilter === 'locked' ? 'bg-amber-600 text-white shadow-xs' : 'bg-amber-50 text-amber-700 hover:bg-amber-100'}`}
+                            >
+                                ضمن باقة ({mappedSkills.filter(s => s.isLocked).length})
+                            </button>
+                        </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {mappedSkills.map((skill) => {
+                        {mappedSkills
+                            .filter((skill) => {
+                                if (foundationFilter === 'free') return !skill.isLocked;
+                                if (foundationFilter === 'locked') return skill.isLocked;
+                                return true;
+                            })
+                            .map((skill) => {
                             const lockedFoundationMessage = skill.isLocked ? getLockedContentMessage('foundation') : null;
                             const skillSubTopics = topicList.filter((topic) => topic.parentId === skill.originalTopic?.id && canStudentSeeTopic(topic));
                             const hasMixedSubTopicAccess = !skill.isLocked && skillSubTopics.some((topic) => isFoundationTopicLockedForStudent(topic));
