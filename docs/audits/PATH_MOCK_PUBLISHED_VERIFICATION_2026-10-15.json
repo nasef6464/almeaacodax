@@ -1,0 +1,160 @@
+{
+  "status": "VERIFIED_SCOPED",
+  "runtimeSource": "e6a618677c1a6ffb68221803b01260246b451c24",
+  "merge": "fb38b979ce3df313fe067b56e0fa98d0b3ad607e",
+  "requiredChecks": "3 PASS",
+  "checks": [
+    {
+      "link": "https://github.com/nasef6464/almeaacodax/actions/runs/38776150387/job/116565749904",
+      "name": "Vercel preview deployment gate",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/nasef6464/almeaacodax/actions/runs/38776150387/job/116564193182",
+      "name": "baseline-quality-gate",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/nasef6464/almeaacodax/actions/runs/38776150351/job/116564192133",
+      "name": "tracked-secret-hygiene",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/nasef6464/almeaacodax/actions/runs/38776150314/job/116564192600",
+      "name": "Production readiness contracts",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/nasef6464/almeaacodax/actions/runs/38776150214/job/116564196439",
+      "name": "Auth + RBAC + assessments + courses + commerce on isolated Mongo",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/nasef6464/almeaacodax/actions/runs/38776150340/job/116564193891",
+      "name": "Full-stack roles + CRUD + school + quiz flows on isolated Mongo",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/nasef6464/almeaacodax/actions/runs/38776150312/job/116564191946",
+      "name": "All authenticated roles — desktop + mobile",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/nasef6464/almeaacodax/actions/runs/38776150314/job/116564193034",
+      "name": "Homepage + admin UX regression",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/nasef6464/almeaacodax/actions/runs/38776150314/job/116564192196",
+      "name": "Content + product + admin recovery",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/nasef6464/almeaacodax/actions/runs/38776150364/job/116564193570",
+      "name": "readiness",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/nasef6464/almeaacodax/actions/runs/38776150314/job/116564192774",
+      "name": "Admin + schools + reports + payments",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/nasef6464/almeaacodax/actions/runs/38776150190/job/116564192083",
+      "name": "Cross-phase + handover regression",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/nasef6464/almeaacodax/actions/runs/38776150369/job/116564192385",
+      "name": "Branch public UI — desktop + mobile",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/nasef6464/almeaacodax/actions/runs/38776150314/job/116564192696",
+      "name": "Student + assessment regression",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/nasef6464/almeaacodax/actions/runs/38776150314/job/116564192588",
+      "name": "Auth + security regression",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/nasef6464/almeaacodax/actions/runs/38776150314/job/116564192703",
+      "name": "Core build + architecture",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/nasef6464/almeaacodax/actions/runs/38776150314/job/116564192673",
+      "name": "Admin + data integrity regression",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/nasef6464/almeaacodax/actions/runs/38776150389/job/116564193069",
+      "name": "final-certification",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/nasef6464/almeaacodax/actions/runs/38776150097/job/116564190959",
+      "name": "live-ai-certification",
+      "state": "SUCCESS"
+    },
+    {
+      "link": "https://github.com/nasef6464/almeaacodax/actions/runs/38776150115/job/116564194244",
+      "name": "Classification + quiz regression contracts",
+      "state": "SKIPPED"
+    },
+    {
+      "link": "https://github.com/nasef6464/almeaacodax/actions/runs/38776150235/job/116564195332",
+      "name": "Student + teacher + supervisor + parent on exact local build",
+      "state": "SKIPPED"
+    },
+    {
+      "link": "https://github.com/nasef6464/almeaacodax/actions/runs/38776150190/job/116564194568",
+      "name": "Apply focused supervisor-student fixes",
+      "state": "SKIPPED"
+    },
+    {
+      "link": "https://github.com/nasef6464/almeaacodax/actions/runs/38776150312/job/116564194162",
+      "name": "Classroom browser group ${{ matrix.group }} (6 independent contexts)",
+      "state": "SKIPPED"
+    }
+  ],
+  "deployment": {
+    "id": 7099761320,
+    "state": "success",
+    "apiCommit": "fb38b979ce3d"
+  },
+  "published": {
+    "status": "PASS",
+    "checks": [
+      "path mock tab opens",
+      "create empty package draft via browser",
+      "draft persists after reload",
+      "learner gets no draft questions"
+    ],
+    "createdQuizzes": 1
+  },
+  "retirement": {
+    "ownedDrafts": 1,
+    "isPublished": false,
+    "showOnPlatform": false,
+    "existingQuestionsChanged": 0,
+    "historicalResultsChanged": 0
+  },
+  "local": [
+    "frontend types PASS",
+    "production build PASS",
+    "actual path tab and URL browser assertions PASS",
+    "future path draft/access/withdrawal UI PASS",
+    "material filters/resource links/overflow390+1280 PASS",
+    "styled mobile screenshot inspected",
+    "isolated draft save/read/start403/publish400 PASS",
+    "focused independent review clear"
+  ],
+  "limits": [
+    "scoped product proof only",
+    "no production-scale claim",
+    "no live AI certification"
+  ]
+}
