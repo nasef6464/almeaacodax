@@ -1,0 +1,413 @@
+{
+  "total_targeted": 37,
+  "total_repaired": 37,
+  "questions": [
+    {
+      "questionCode": "TAH-MATH-V2-COL26-P009-Q25",
+      "page": 9,
+      "questionNumber": 25,
+      "dimensions": [
+        703,
+        267
+      ],
+      "sha256": "13b5b350bf7e76563a45c85f78ac2b687bf540a0f643475662bc3067dc76afc6",
+      "status": "REPAIRED_CLEAN"
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26OLD-P011-Q39",
+      "page": 11,
+      "questionNumber": 39,
+      "dimensions": [
+        703,
+        255
+      ],
+      "sha256": "f8fe09878e4961e3d1f4ed157378c4b2198da70db8b206cea250e3ffd2fdf88c",
+      "status": "REPAIRED_CLEAN"
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26OLD-P012-Q45",
+      "page": 12,
+      "questionNumber": 45,
+      "dimensions": [
+        703,
+        188
+      ],
+      "sha256": "88a1ea0b1d2313d02d3175f7d05c6b5367624137e7f094d4052f1e8ff4203167",
+      "status": "REPAIRED_CLEAN"
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26OLD-P012-Q46",
+      "page": 12,
+      "questionNumber": 46,
+      "dimensions": [
+        703,
+        357
+      ],
+      "sha256": "02a4ac2046cb4ba50eeac9c30e4036074e9dbc10c86362e1064f304f32a378ea",
+      "status": "REPAIRED_CLEAN"
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26OLD-P028-Q65",
+      "page": 28,
+      "questionNumber": 65,
+      "dimensions": [
+        703,
+        225
+      ],
+      "sha256": "1851cecbe22ea2790e5d02ac9536ad30304f39514ba35016d8c8fbd5383368d4",
+      "status": "REPAIRED_CLEAN"
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26-P031-Q21",
+      "page": 31,
+      "questionNumber": 21,
+      "dimensions": [
+        703,
+        401
+      ],
+      "sha256": "1d219667c9d77a95de4a0475abb69f14f74d207de22f2e4bd3d1d019c3c09488",
+      "status": "REPAIRED_CLEAN"
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26OLD-P034-Q34",
+      "page": 34,
+      "questionNumber": 34,
+      "dimensions": [
+        703,
+        274
+      ],
+      "sha256": "91d3458af3a832eae0986373c89e410e5b41dc17c7035cb4797f7ec45366218d",
+      "status": "REPAIRED_CLEAN"
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26OLD-P034-Q35",
+      "page": 34,
+      "questionNumber": 35,
+      "dimensions": [
+        703,
+        237
+      ],
+      "sha256": "e839fb01966862c7bd91bca3de02a641e7e649731516ff51c5dfe476dda0a043",
+      "status": "REPAIRED_CLEAN"
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26-P036-Q11",
+      "page": 36,
+      "questionNumber": 11,
+      "dimensions": [
+        703,
+        253
+      ],
+      "sha256": "e46c5a1a63c3971c0dcd022becb7a1b0102767dcde7afe1356feef1fd174f33e",
+      "status": "REPAIRED_CLEAN"
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26OLD-P038-Q31",
+      "page": 38,
+      "questionNumber": 31,
+      "dimensions": [
+        703,
+        116
+      ],
+      "sha256": "14e6854c4082c494da74653e03264dfbb913e27617dac05687415410aa59e9ab",
+      "status": "REPAIRED_CLEAN"
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26OLD-P039-Q49",
+      "page": 39,
+      "questionNumber": 49,
+      "dimensions": [
+        703,
+        229
+      ],
+      "sha256": "bbdf486fa7dd489a084dd0911bea13c1b184f784fa110797a7b0b99c1d248605",
+      "status": "REPAIRED_CLEAN"
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26OLD-P039-Q50",
+      "page": 39,
+      "questionNumber": 50,
+      "dimensions": [
+        703,
+        224
+      ],
+      "sha256": "6ef5b2e64fa5110774ff9b2338070826d64644e73d7eaf9a523c0ee11e934707",
+      "status": "REPAIRED_CLEAN"
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26OLD-P040-Q59",
+      "page": 40,
+      "questionNumber": 59,
+      "dimensions": [
+        703,
+        251
+      ],
+      "sha256": "a1c4910bb20f487359a1b2c260f7de16d7552ee803d062557f2f2ecd4bd21935",
+      "status": "REPAIRED_CLEAN"
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26-P043-Q27",
+      "page": 43,
+      "questionNumber": 27,
+      "dimensions": [
+        703,
+        130
+      ],
+      "sha256": "6464704b0cc59df0068f85c476a3d371b7b5cb75167dad702f7703a19bdf1ed8",
+      "status": "REPAIRED_CLEAN"
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26-P046-Q09",
+      "page": 46,
+      "questionNumber": 9,
+      "dimensions": [
+        703,
+        291
+      ],
+      "sha256": "0e8b3a6c565117a259ea7be5d5cc61effc95de527950eb42f30cc11e338412b0",
+      "status": "REPAIRED_CLEAN"
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26-P050-Q11",
+      "page": 50,
+      "questionNumber": 11,
+      "dimensions": [
+        703,
+        273
+      ],
+      "sha256": "e3bb2ef14018ed97e5c3d6f7aa14884b32bddac33968a4065aa0d4da055c3a0d",
+      "status": "REPAIRED_CLEAN"
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26OLD-P056-Q70",
+      "page": 56,
+      "questionNumber": 70,
+      "dimensions": [
+        703,
+        116
+      ],
+      "sha256": "a520e29daedc3cd70da82e8308d604c70400802d10f91f88256e4ab025ee8c73",
+      "status": "REPAIRED_CLEAN"
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26OLD-P056-Q74",
+      "page": 56,
+      "questionNumber": 74,
+      "dimensions": [
+        703,
+        139
+      ],
+      "sha256": "741d0a9b78f539d3f1658c6edff935330f2aa87d8d81669fa596e34666290755",
+      "status": "REPAIRED_CLEAN"
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26-P057-Q07",
+      "page": 57,
+      "questionNumber": 7,
+      "dimensions": [
+        703,
+        116
+      ],
+      "sha256": "a15495cb8bf8e0462d4d51ff9f880f77e1ce60d44ab4f24030583a46efb56301",
+      "status": "REPAIRED_CLEAN"
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26OLD-P059-Q46",
+      "page": 59,
+      "questionNumber": 46,
+      "dimensions": [
+        703,
+        116
+      ],
+      "sha256": "047860517416fd27f2672d94510a91a9f25bc0418b9e1739050b79839fef1f33",
+      "status": "REPAIRED_CLEAN"
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26OLD-P059-Q50",
+      "page": 59,
+      "questionNumber": 50,
+      "dimensions": [
+        703,
+        166
+      ],
+      "sha256": "37ddbd1039a102890b1bf269979b4114445657c9e6c41828ab38c5021dc07b9c",
+      "status": "REPAIRED_CLEAN"
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26OLD-P063-Q41",
+      "page": 63,
+      "questionNumber": 41,
+      "dimensions": [
+        703,
+        146
+      ],
+      "sha256": "eca28827af4446d18b4484de17205294ef8bf2a235f1562cd79f8746a01a973a",
+      "status": "REPAIRED_CLEAN"
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26OLD-P071-Q35",
+      "page": 71,
+      "questionNumber": 35,
+      "dimensions": [
+        703,
+        254
+      ],
+      "sha256": "16c7bb6187f3b7e3730164be56dbbd49d05321f187b5c88a2ee2bb6f9c82b4bf",
+      "status": "REPAIRED_CLEAN"
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26-P073-Q20",
+      "page": 73,
+      "questionNumber": 20,
+      "dimensions": [
+        703,
+        231
+      ],
+      "sha256": "deb72bc9268d092f4d34ccfb6c396d9130f8994fb2d069166a6f95d1b9c487b0",
+      "status": "REPAIRED_CLEAN"
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26OLD-P074-Q50",
+      "page": 74,
+      "questionNumber": 50,
+      "dimensions": [
+        703,
+        116
+      ],
+      "sha256": "ab71ba10b8fb4792de365dd28af2c1ab7bbd026c6f5e8f2a80353d4c9b72cec0",
+      "status": "REPAIRED_CLEAN"
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26OLD-P076-Q92",
+      "page": 76,
+      "questionNumber": 92,
+      "dimensions": [
+        703,
+        146
+      ],
+      "sha256": "c69da9514c13c711b94574168eb952ea76ee7d2ab1761b11a5b987f461f4337b",
+      "status": "REPAIRED_CLEAN"
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26OLD-P087-Q59",
+      "page": 87,
+      "questionNumber": 59,
+      "dimensions": [
+        703,
+        155
+      ],
+      "sha256": "a42441fe02c9e0852b34930ec9a37bdc3ff610502c0939e2c42881b90a1a6c1c",
+      "status": "REPAIRED_CLEAN"
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26-P092-Q38",
+      "page": 92,
+      "questionNumber": 38,
+      "dimensions": [
+        703,
+        133
+      ],
+      "sha256": "5b4d33b362ab8b796b2d33f5fe9f1dc854a9e12c6c053916557e3bd979a7bd3c",
+      "status": "REPAIRED_CLEAN"
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26OLD-P094-Q78",
+      "page": 94,
+      "questionNumber": 78,
+      "dimensions": [
+        703,
+        129
+      ],
+      "sha256": "70625bad6a6d9423d2bdb6b1b4a49ca087637b76c67ada801d0f4904578d0a26",
+      "status": "REPAIRED_CLEAN"
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26OLD-P094-Q81",
+      "page": 94,
+      "questionNumber": 81,
+      "dimensions": [
+        703,
+        268
+      ],
+      "sha256": "4ee17a5adf4e59f184ae57d643802b84604cd17d7cefb3fbe68da4f247d24ed9",
+      "status": "REPAIRED_CLEAN"
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26OLD-P095-Q95",
+      "page": 95,
+      "questionNumber": 95,
+      "dimensions": [
+        703,
+        116
+      ],
+      "sha256": "76e6aea21980149969059c4de29af07224a875d53afe176075c998d989331b6c",
+      "status": "REPAIRED_CLEAN"
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26OLD-P134-Q50",
+      "page": 134,
+      "questionNumber": 50,
+      "dimensions": [
+        703,
+        308
+      ],
+      "sha256": "fb3fc0e6628691c8f1cc97d81520f0bce2804cac0b009ede30f56f931604832f",
+      "status": "REPAIRED_CLEAN"
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26OLD-P145-Q46",
+      "page": 145,
+      "questionNumber": 46,
+      "dimensions": [
+        703,
+        165
+      ],
+      "sha256": "aef0165edc45a6170a1652b03f76dff7675c2f0110e01a87bf32d3cf7f12e4aa",
+      "status": "REPAIRED_CLEAN"
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26OLD-P146-Q64",
+      "page": 146,
+      "questionNumber": 64,
+      "dimensions": [
+        703,
+        128
+      ],
+      "sha256": "0c93b38571cb9f7b111e5c329b17f419d519718c3a1c25662a62c1f1061484cc",
+      "status": "REPAIRED_CLEAN"
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26OLD-P146-Q66",
+      "page": 146,
+      "questionNumber": 66,
+      "dimensions": [
+        703,
+        257
+      ],
+      "sha256": "a1b431164bd0402c7265ada7aa9a69feb9ee40ba9e90e8b991da5eb7f8d1f32b",
+      "status": "REPAIRED_CLEAN"
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26OLD-P147-Q69",
+      "page": 147,
+      "questionNumber": 69,
+      "dimensions": [
+        703,
+        238
+      ],
+      "sha256": "9415aa64847ef97198c3b8688b9f6aafa7fa43aa7ce43fde18f26ab9318a5e1c",
+      "status": "REPAIRED_CLEAN"
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26OLD-P157-Q69",
+      "page": 157,
+      "questionNumber": 69,
+      "dimensions": [
+        703,
+        161
+      ],
+      "sha256": "101361d5c8f6cf29d58a7bde9e718499ce048d7a3d50c3ef1e3072b473f1ede5",
+      "status": "REPAIRED_CLEAN"
+    }
+  ]
+}

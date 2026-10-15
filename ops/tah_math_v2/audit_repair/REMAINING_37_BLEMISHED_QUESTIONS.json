@@ -1,0 +1,453 @@
+{
+  "total_bank_questions": 2270,
+  "total_purely_clean_questions": 1976,
+  "total_blemished_in_entire_bank": 294,
+  "already_repaired_in_previous_cycle": 257,
+  "remaining_distorted_questions_count": 37,
+  "remaining_questions": [
+    {
+      "questionCode": "TAH-MATH-V2-COL26-P009-Q25",
+      "page": 9,
+      "questionNumber": 25,
+      "diffPixels100DPI": 42,
+      "cropBoxPt": [
+        8.2,
+        501.1,
+        261.0,
+        596.8
+      ]
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26OLD-P011-Q39",
+      "page": 11,
+      "questionNumber": 39,
+      "diffPixels100DPI": 49,
+      "cropBoxPt": [
+        8.2,
+        245.6,
+        261.0,
+        337.0
+      ]
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26OLD-P012-Q45",
+      "page": 12,
+      "questionNumber": 45,
+      "diffPixels100DPI": 34,
+      "cropBoxPt": [
+        302.8,
+        292.1,
+        555.8,
+        359.5
+      ]
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26OLD-P012-Q46",
+      "page": 12,
+      "questionNumber": 46,
+      "diffPixels100DPI": 101,
+      "cropBoxPt": [
+        302.8,
+        371.6,
+        555.8,
+        499.9
+      ]
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26OLD-P028-Q65",
+      "page": 28,
+      "questionNumber": 65,
+      "diffPixels100DPI": 162,
+      "cropBoxPt": [
+        302.8,
+        50.6,
+        555.8,
+        131.2
+      ]
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26-P031-Q21",
+      "page": 31,
+      "questionNumber": 21,
+      "diffPixels100DPI": 101,
+      "cropBoxPt": [
+        8.2,
+        173.0,
+        261.0,
+        316.9
+      ]
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26OLD-P034-Q34",
+      "page": 34,
+      "questionNumber": 34,
+      "diffPixels100DPI": 91,
+      "cropBoxPt": [
+        8.2,
+        471.6,
+        261.0,
+        570.0
+      ]
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26OLD-P034-Q35",
+      "page": 34,
+      "questionNumber": 35,
+      "diffPixels100DPI": 79,
+      "cropBoxPt": [
+        8.2,
+        582.1,
+        261.0,
+        667.0
+      ]
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26-P036-Q11",
+      "page": 36,
+      "questionNumber": 11,
+      "diffPixels100DPI": 28,
+      "cropBoxPt": [
+        8.2,
+        361.5,
+        261.0,
+        452.4
+      ]
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26OLD-P038-Q31",
+      "page": 38,
+      "questionNumber": 31,
+      "diffPixels100DPI": 43,
+      "cropBoxPt": [
+        302.8,
+        196.6,
+        555.8,
+        238.0
+      ]
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26OLD-P039-Q49",
+      "page": 39,
+      "questionNumber": 49,
+      "diffPixels100DPI": 70,
+      "cropBoxPt": [
+        302.8,
+        618.8,
+        555.8,
+        700.8
+      ]
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26OLD-P039-Q50",
+      "page": 39,
+      "questionNumber": 50,
+      "diffPixels100DPI": 50,
+      "cropBoxPt": [
+        302.8,
+        712.9,
+        555.8,
+        793.4
+      ]
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26OLD-P040-Q59",
+      "page": 40,
+      "questionNumber": 59,
+      "diffPixels100DPI": 39,
+      "cropBoxPt": [
+        302.8,
+        173.8,
+        555.8,
+        263.6
+      ]
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26-P043-Q27",
+      "page": 43,
+      "questionNumber": 27,
+      "diffPixels100DPI": 82,
+      "cropBoxPt": [
+        8.2,
+        128.4,
+        261.0,
+        174.9
+      ]
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26-P046-Q09",
+      "page": 46,
+      "questionNumber": 9,
+      "diffPixels100DPI": 136,
+      "cropBoxPt": [
+        8.2,
+        340.4,
+        261.0,
+        444.8
+      ]
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26-P050-Q11",
+      "page": 50,
+      "questionNumber": 11,
+      "diffPixels100DPI": 17,
+      "cropBoxPt": [
+        302.8,
+        127.8,
+        555.8,
+        226.0
+      ]
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26OLD-P056-Q70",
+      "page": 56,
+      "questionNumber": 70,
+      "diffPixels100DPI": 28,
+      "cropBoxPt": [
+        302.8,
+        676.0,
+        555.8,
+        717.4
+      ]
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26OLD-P056-Q74",
+      "page": 56,
+      "questionNumber": 74,
+      "diffPixels100DPI": 46,
+      "cropBoxPt": [
+        8.2,
+        225.1,
+        261.0,
+        275.0
+      ]
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26-P057-Q07",
+      "page": 57,
+      "questionNumber": 7,
+      "diffPixels100DPI": 33,
+      "cropBoxPt": [
+        302.8,
+        484.8,
+        555.8,
+        526.2
+      ]
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26OLD-P059-Q46",
+      "page": 59,
+      "questionNumber": 46,
+      "diffPixels100DPI": 43,
+      "cropBoxPt": [
+        302.8,
+        213.3,
+        555.8,
+        254.7
+      ]
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26OLD-P059-Q50",
+      "page": 59,
+      "questionNumber": 50,
+      "diffPixels100DPI": 76,
+      "cropBoxPt": [
+        302.8,
+        463.3,
+        555.8,
+        522.6
+      ]
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26OLD-P063-Q41",
+      "page": 63,
+      "questionNumber": 41,
+      "diffPixels100DPI": 53,
+      "cropBoxPt": [
+        302.8,
+        582.3,
+        555.8,
+        634.4
+      ]
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26OLD-P071-Q35",
+      "page": 71,
+      "questionNumber": 35,
+      "diffPixels100DPI": 124,
+      "cropBoxPt": [
+        302.8,
+        648.4,
+        555.8,
+        739.5
+      ]
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26-P073-Q20",
+      "page": 73,
+      "questionNumber": 20,
+      "diffPixels100DPI": 46,
+      "cropBoxPt": [
+        302.8,
+        297.7,
+        555.8,
+        380.3
+      ]
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26OLD-P074-Q50",
+      "page": 74,
+      "questionNumber": 50,
+      "diffPixels100DPI": 62,
+      "cropBoxPt": [
+        8.2,
+        343.6,
+        261.0,
+        385.0
+      ]
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26OLD-P076-Q92",
+      "page": 76,
+      "questionNumber": 92,
+      "diffPixels100DPI": 53,
+      "cropBoxPt": [
+        8.2,
+        510.0,
+        261.0,
+        562.2
+      ]
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26OLD-P087-Q59",
+      "page": 87,
+      "questionNumber": 59,
+      "diffPixels100DPI": 33,
+      "cropBoxPt": [
+        8.2,
+        408.2,
+        261.0,
+        463.6
+      ]
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26-P092-Q38",
+      "page": 92,
+      "questionNumber": 38,
+      "diffPixels100DPI": 78,
+      "cropBoxPt": [
+        302.8,
+        333.3,
+        555.8,
+        380.6
+      ]
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26OLD-P094-Q78",
+      "page": 94,
+      "questionNumber": 78,
+      "diffPixels100DPI": 110,
+      "cropBoxPt": [
+        8.2,
+        317.5,
+        261.0,
+        363.4
+      ]
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26OLD-P094-Q81",
+      "page": 94,
+      "questionNumber": 81,
+      "diffPixels100DPI": 89,
+      "cropBoxPt": [
+        8.2,
+        544.3,
+        261.0,
+        640.2
+      ]
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26OLD-P095-Q95",
+      "page": 95,
+      "questionNumber": 95,
+      "diffPixels100DPI": 56,
+      "cropBoxPt": [
+        8.2,
+        120.0,
+        261.0,
+        161.4
+      ]
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26OLD-P134-Q50",
+      "page": 134,
+      "questionNumber": 50,
+      "diffPixels100DPI": 46,
+      "cropBoxPt": [
+        8.2,
+        178.1,
+        261.0,
+        288.5
+      ]
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26OLD-P145-Q46",
+      "page": 145,
+      "questionNumber": 46,
+      "diffPixels100DPI": 26,
+      "cropBoxPt": [
+        8.2,
+        270.1,
+        261.0,
+        329.2
+      ]
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26OLD-P146-Q64",
+      "page": 146,
+      "questionNumber": 64,
+      "diffPixels100DPI": 166,
+      "cropBoxPt": [
+        8.2,
+        331.7,
+        261.0,
+        377.5
+      ]
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26OLD-P146-Q66",
+      "page": 146,
+      "questionNumber": 66,
+      "diffPixels100DPI": 45,
+      "cropBoxPt": [
+        8.2,
+        539.7,
+        261.0,
+        632.1
+      ]
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26OLD-P147-Q69",
+      "page": 147,
+      "questionNumber": 69,
+      "diffPixels100DPI": 65,
+      "cropBoxPt": [
+        302.8,
+        155.8,
+        555.8,
+        241.2
+      ]
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26OLD-P157-Q69",
+      "page": 157,
+      "questionNumber": 69,
+      "diffPixels100DPI": 50,
+      "cropBoxPt": [
+        302.8,
+        74.5,
+        555.8,
+        131.8
+      ]
+    }
+  ]
+}

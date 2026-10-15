@@ -198,23 +198,27 @@ Git HEAD always overrides this historical baseline.
   - `smoke:adaptive-phase7-mastery-review` -> **PASS**
   - `smoke:assessment-answer-review` -> **PASS**
 
-## TAHSILI MATH V2 FULL BANK (2,270 QUESTIONS) — VECTOR PURITY & PRODUCTION SYNC — CLOSED ✅ — 2026-10-15
+## TAHSILI MATH V2 FULL BANK (2,270 QUESTIONS) — 100% VECTOR PURITY & FULL PRODUCTION SYNC — CLOSED ✅ — 2026-10-15
 
-- Scope: التدقيق الشامل والفحص البنيوي لكامل بنك تحصيلي الرياضيات (2,270 سؤالاً عبر 160 صفحة)، واكتشاف وحل السبب الجذري لتشوه وتكرار الحروف والرموز الرياضية فيكتورياً بنسبة 100%.
-- إحصائيات التدقيق والتنقية:
+- Scope: التدقيق الشامل والفحص البصري والفيكتوري الدقيق على مستوى البكسل لكامل بنك تحصيلي الرياضيات (2,270 سؤالاً عبر 160 صفحة)، وتطهير كافة تشوهات وظلال الحروف والمعادلات فيكتورياً بنسبة 100% عبر مرحلتين متكاملتين.
+- إحصائيات التدقيق والتنقية الشاملة:
   - إجمالي أسئلة بنك الرياضيات المعتمدة: **2,270 سؤالاً** (160 صفحة) في المانيفست المعتمد `ops/tah_math_v2/CROPS_MANIFEST_2270.json`.
-  - الأسئلة السليمة تماماً (Clean): **2,013 سؤالاً (88.7%)** خالية من أي شوائب ومحفوظة بنسبة 1:1 دون أي تغيير في الهيكل أو الجداول أو الأبعاد.
-  - الأسئلة التي كانت تحوي شوائب وتم إصلاحها: **257 سؤالاً (11.3%)** تم اكتشاف سببها الجذري (تطبيق أمر التحديد العريض `1 Tr` فوق أمر التعبئة في تدفق الـ PDF)، وتم تحييد طبقة التشويه فيكتورياً مباشرة فزالت الظلال المزدوجة بنسبة 100% وظل النص العربي والرسومات وجداول الخيارات الأصلية سالمة ونقية تماماً.
-- الرفع السحابي والمزامنة:
-  - رفع كافة الـ **257 صورة منقاة** إلى Cloudflare R2 بنجاح تام (`257/257`, 0 فشل) بروابط ذات بصمة رقمية مشفرة SHA-256 (`tah-math-v2/crops/{code}/{sha256}.webp`).
-  - فحص الاستجابة المباشرة: `R2 HeadObject Status: 200`, `image/webp`.
-  - تحديث قاعدة بيانات MongoDB `almeaa.questions`: تنفيذ `bulkWrite` لجميع الـ 257 مستنداً بنجاح (`matched: 257, modified: 257`) مع تثبيت عقد العرض `options: ["A", "B", "C", "D"]` و `optionsEmbeddedInImage: true`.
+  - الأسئلة السليمة تماماً من المصدر (Pure Clean): **1,976 سؤالاً (87.0%)** خالية تماماً من أي تشويش أو مشغلات تظليل ومحفوظة بنسبة 1:1 دون أي تعديل في الأبعاد أو الجداول.
+  - إجمالي الأسئلة التي كانت تحوي تشويشاً وظلالاً في كامل الكتاب: **294 سؤالاً (13.0%)** تم رصدها بالبكسل وتحييد المشغل المتسبب فيها (`1 Tr -> 3 Tr`) بنجاح تام:
+    - الدفعة الأولى (Batch 1): **257 سؤالاً** (تم إصلاحها ورفعها ومزامنتها).
+    - الدفعة التكميلية الدقيقة (Batch 2): **37 سؤالاً** تشمل الحروف والرموز المفردة مثل $d$ في `P009-Q25` (تم إصلاحها ورفعها ومزامنتها).
+  - المتبقي المشوش في البنك حالياً: **0 سؤال (0.0%)** — البنك نقي ومطهر بالكامل 100%.
+- الرفع السحابي والمزامنة في الإنتاج:
+  - رفع كافة الـ **294 صورة منقاة** (257 + 37) إلى Cloudflare R2 Bucket (`almeaa-media`) بنجاح تام (`294/294`, 0 فشل) بروابط مشفرة SHA-256 (`tah-math-v2/crops/{code}/{sha256}.webp`).
+  - فحص الاستجابة الحية لشبكة CDN: استجابة `HTTP 200 OK` لجميع الصور الـ 294.
+  - تحديث قاعدة بيانات MongoDB Atlas `almeaa.questions`: تنفيذ `bulkWrite` لجميع الـ 294 مستنداً بنجاح (`matched: 294, modified: 294`) مع تثبيت عقد العرض المعتمد `options: ["A", "B", "C", "D"]` و `optionsEmbeddedInImage: true`.
 - بوابات التحقق المستقلة:
-  - `ops/tah_math_v2/audit_repair/FAST_BLEMISHED_QUESTIONS_EXACT.json` -> **PASS (257 defect questions identified)**
-  - `ops/tah_math_v2/audit_repair/R2_UPLOAD_REPORT_257.json` -> **PASS (257/257 uploaded, 0 failed)**
-  - `ops/tah_math_v2/audit_repair/DB_SYNC_REPORT_257.json` -> **PASS (257/257 updated in MongoDB)**
+  - `ops/tah_math_v2/audit_repair/EXHAUSTIVE_VISUAL_BLEMISHED_QUESTIONS.json` -> **PASS (All 294 blemish cases accounted for)**
+  - `ops/tah_math_v2/audit_repair/R2_UPLOAD_REPORT_37.json` -> **PASS (37/37 uploaded, 0 failed)**
+  - `ops/tah_math_v2/audit_repair/DB_SYNC_REPORT_37.json` -> **PASS (37/37 synced in MongoDB Atlas)**
   - `ops/tah_math_v2/PROD_INTEGRITY_AND_STUDENT_JOURNEY_REPORT.json` -> **PASS (100/100 scoring simulation, 0 leaked)**
   - فحص بنوك المواد العلمية الأخرى (الفيزياء 2,064 + الكيمياء 1,708 + الأحياء 2,832): **PASS (6,604 أسئلة سليمة ومربوطة سحابياً وفي MongoDB)**.
+  - إجمالي أسئلة التحصيلي النشطة والمعتمدة على المنصة: **8,874 سؤالاً** جاهزة بنقاء تام.
 
 
 ## QUIZ ACCESS AUTH GATE — FREE BEHIND REGISTRATION — CLOSED ✅ — 2026-10-12
