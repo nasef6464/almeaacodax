@@ -1,0 +1,26 @@
+name: TAH-MATH V2 batch of 36 unreviewed source crops
+on:
+  pull_request:
+    paths:
+      - 'ops/tah-math-v2-qa-batch-36-20261015.json'
+      - 'scripts/tah-math-v2-qa-batch-36.mjs'
+      - '.github/workflows/tah-math-v2-qa-batch-36.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  crop-batches:
+    strategy:
+      fail-fast: false
+      matrix:
+        start: [0, 12, 24]
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Fetch 12 actual R2 question crops, no DB mutations
+        env:
+          BATCH_START: ${{ matrix.start }}
+        run: node scripts/tah-math-v2-qa-batch-36.mjs
