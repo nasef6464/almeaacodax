@@ -37,6 +37,7 @@ import { shareTextSummary } from '../utils/shareText';
 import { flattenMockExamQuestionIds } from '../utils/mockExam';
 import { hasInlineQuestionMedia, normalizeQuestionHtml } from '../utils/questionHtml';
 import { buildQuizRouteWithContext } from '../utils/quizLinks';
+import {QuizSubjectResults} from '../components/quiz/QuizSubjectResults';
 import { buildCanonicalFoundationSkillActions, buildSkillReportActionLink } from '../utils/skillActionLinks';
 import { getLearnerOptionLabel, getQuizOptionButtonHeightClass, getQuizOptionGridClass, getQuizQuestionMapButtonClass, resolveQuestionFromBank, toQuestionReviewFromBank, usesImageEmbeddedOptions } from '../utils/quizPresentation';
 import { getFriendlyResultMessage, getMasteryClasses, getScoreVisualTone, getSkillPriorityLabel, getStudentFriendlyChecklist } from '../components/results/resultScorePresentation';
@@ -792,7 +793,8 @@ const Results: React.FC = () => {
           </div>
 
           {/* Section results for mock exams */}
-          {latestResult.sectionResults && latestResult.sectionResults.length > 0 ? (
+          <QuizSubjectResults result={latestResult}/>
+          {!Array.isArray(latestResult.subjectResults) && latestResult.sectionResults && latestResult.sectionResults.length > 0 ? (
             <div className="mt-5 rounded-2xl border border-violet-100 bg-white/95 p-4 shadow-xs">
               <div className="mb-3 flex items-center gap-2">
                 <BarChart3 size={16} className="text-violet-600" />

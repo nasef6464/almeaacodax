@@ -17,6 +17,7 @@ type QuizSubmissionResultDocumentInput = {
   skillsAnalysis: unknown[];
   questionReview: unknown[];
   sectionResults?: unknown;
+  subjectResults?: unknown;
   submissionKey: string;
   quizSnapshot: unknown;
   submittedAt?: string;

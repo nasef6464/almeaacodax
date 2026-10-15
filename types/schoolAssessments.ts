@@ -1,14 +1,16 @@
 export interface SchoolAssessmentDimension {
   id: string; label: string; learners: number; questions: number | null; correct: number | null; average: number | null;
+  subjectId?:string;wrong?:number|null;unanswered?:number|null;
 }
 export interface SchoolAssessmentReport {
-  coverage: { complete: boolean; missingEvidence: string[] };
+  coverage: { complete: boolean; missingEvidence: string[];subjects?:{completed:number;withEvidence:number;complete:boolean} };
   audience: { targeted: number };
   participation: { completed: number; notCompleted: number; started: number | null };
   scores: { average: number | null; passRate: number | null; highest: number | null; lowest: number | null };
   subjects: SchoolAssessmentDimension[];
   sections: SchoolAssessmentDimension[];
   skills: SchoolAssessmentDimension[];
+  subjectBreakdowns?: (SchoolAssessmentDimension & {sections:SchoolAssessmentDimension[];skills:SchoolAssessmentDimension[]})[];
 }
 import type {Quiz} from '../types';
 export interface SchoolAssessmentCompositionSpec {

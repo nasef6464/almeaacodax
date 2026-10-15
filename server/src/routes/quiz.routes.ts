@@ -20,6 +20,7 @@ import { buildPaginatedResponse, resolvePagination } from "../utils/pagination.j
 import { serializeQuizResultForLearner } from "../utils/quizResultSerialization.js";
 import { getActivePathIds, isStaffRole, withLearnerVisiblePaths } from "../services/visibility.js";
 import { quizSchema } from "../modules/quizzes/http/quizDefinitionSchema.js";
+import {buildQuizSubmissionSubjectResults} from '../modules/quizzes/application/quizSubmissionSubjectResults.js';
 import { validateQuizWindow, getQuizAvailability } from "../modules/quizzes/application/quizAvailability.js";
 import { applyQuizViewerPolicy } from "../modules/quizzes/application/quizViewerPolicy.js";
 import { assertSchoolAssessmentDefinitionEditable,prepareSchoolDraftPublication,authorizeSchoolDirectorEdit,persistSchoolAssessmentUpdate } from '../modules/quizzes/application/schoolAssessmentEditing.js';
@@ -586,12 +587,13 @@ quizRouter.post(
     const skills = skillIds.length
         ? await SkillModel.find({
             $or: [
+              { _id: { $in: skillIds } },
               ...(Array.isArray((skillDocumentQuery as any).$or) ? (skillDocumentQuery as any).$or : []),
               { "subSkills.id": { $in: skillIds } },
             ],
           })
         : [];
-    const { subjects, sections } = await readQuizSubmissionTaxonomy(skills, quiz);
+    const { subjects, sections } = await readQuizSubmissionTaxonomy(skills, quiz,orderedQuestions);
     const { skillById, subjectNameById, sectionNameById } = buildQuizSubmissionReadModelContext({
       skills,
       subjects,
@@ -635,7 +637,9 @@ quizRouter.post(
       quiz,
       orderedQuestions,
       answers: payload.answers,
+      subjectNameById,
     });
+    const subjectResults=buildQuizSubmissionSubjectResults({quiz,orderedQuestions,questionReview:rawQuestionReview,subjectNameById});
 
     // ── بناء لقطة الاختبار ─────────────────────────────────────────────────
     // تُحفظ مع كل نتيجة لحماية بيانات التقارير إذا عُدِّل الاختبار لاحقاً
@@ -661,6 +665,7 @@ quizRouter.post(
           skillsAnalysis,
           questionReview,
           sectionResults,
+          subjectResults,
           submissionKey,
           quizSnapshot,
         }),

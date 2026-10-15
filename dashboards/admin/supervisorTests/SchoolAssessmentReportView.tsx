@@ -4,8 +4,8 @@ import type {SchoolAssessmentDimension,SchoolAssessmentReport} from '../../../ty
 const value=(n:number|null)=>n===null?'غير متاح':String(n);
 const Dimension:React.FC<{title:string;rows:SchoolAssessmentDimension[]}>=({title,rows})=>rows.length>0?<section className="rounded-2xl border bg-white p-4">
   <h3 className="mb-3 font-bold">{title}</h3>
-  <div className="overflow-x-auto"><table className="w-full text-right text-sm"><thead><tr><th scope="col">الاسم</th><th scope="col">الطلاب</th><th scope="col">نسبة الإجابات الصحيحة</th></tr></thead>
-    <tbody>{rows.map(row=><tr key={row.id} className="border-t"><th scope="row" className="py-3 font-medium">{row.label||row.id}</th><td>{row.learners}</td><td>{value(row.average)}{row.average!==null?'٪':''}</td></tr>)}</tbody>
+  <div className="overflow-x-auto"><table className="w-full text-right text-sm"><thead><tr><th scope="col">الاسم</th><th scope="col">الطلاب</th><th scope="col">الصحيح / الأسئلة</th><th scope="col">نسبة الإجابات الصحيحة</th></tr></thead>
+    <tbody>{rows.map(row=><tr key={row.id} className="border-t"><th scope="row" className="py-3 font-medium">{row.label||row.id}</th><td>{row.learners}</td><td>{value(row.correct)} / {value(row.questions)}</td><td>{value(row.average)}{row.average!==null?'٪':''}</td></tr>)}</tbody>
   </table></div>
 </section>:null;
 export const SchoolAssessmentReportView:React.FC<{report:SchoolAssessmentReport}>=({report})=><div dir="rtl" className="space-y-4">
@@ -15,6 +15,16 @@ export const SchoolAssessmentReportView:React.FC<{report:SchoolAssessmentReport}
     ['متوسط الدرجات',report.scores.average],['نسبة النجاح ٪',report.scores.passRate],['أعلى درجة',report.scores.highest],['أقل درجة',report.scores.lowest],['بدأوا ولم يكملوا',report.participation.started],
   ].map(([label,n])=><div key={String(label)} className="rounded-xl border bg-white p-4"><dt className="text-xs text-gray-600">{label}</dt><dd className="mt-2 text-xl font-bold">{value(n as number|null)}</dd></div>)}</dl>
   {report.participation.completed===0&&<p className="rounded-xl bg-sky-50 p-4">لا توجد نتائج مدرسية مسجلة لهذا الاختبار حتى الآن.</p>}
-  {report.coverage.missingEvidence.includes('mock_subject_totals')&&<p className="text-sm text-amber-800">تحليل المواد غير متاح من الأدلة المحفوظة حاليًا؛ تحليل أقسام المحاكي يظهر أدناه عند توفره.</p>}
-  <Dimension title="المواد" rows={report.subjects}/><Dimension title="أقسام المحاكي" rows={report.sections}/><Dimension title="المهارات" rows={report.skills}/>
+  {report.coverage.subjects&&!report.coverage.subjects.complete&&<p className="text-sm text-amber-800">تحليل المواد متاح لـ {report.coverage.subjects.withEvidence} من {report.coverage.subjects.completed} نتيجة مدرسية؛ النتائج القديمة أو غير المصنفة لا تُنسب إلى مادة افتراضية.</p>}
+  {!report.coverage.subjects&&report.coverage.missingEvidence.includes('mock_subject_totals')&&<p className="text-sm text-amber-800">تحليل المواد غير متاح من الأدلة المحفوظة حاليًا؛ تحليل أقسام المحاكي يظهر أدناه عند توفره.</p>}
+  <Dimension title="المواد" rows={report.subjects}/>
+  {report.subjectBreakdowns?.length?<>
+    {report.subjectBreakdowns.map(subject=><section key={subject.id} aria-label={`تحليل مادة ${subject.label}`} className="space-y-3 rounded-2xl border border-indigo-100 p-4">
+      <h3 className="font-black">المادة: {subject.label}</h3>
+      <p className="text-sm">متوسط المادة {value(subject.average)}٪ · {subject.learners} طالب · {value(subject.correct)} إجابة صحيحة من {value(subject.questions)} سؤالًا عبر آخر المحاولات.</p>
+      <Dimension title="أقسام المادة" rows={subject.sections}/><Dimension title="مهارات المادة" rows={subject.skills}/>
+    </section>)}
+    <Dimension title="أقسام بدون تصنيف مادة محفوظ" rows={report.sections.filter(row=>!row.subjectId)}/>
+    <Dimension title="مهارات بدون تصنيف مادة محفوظ" rows={report.skills.filter(row=>!row.subjectId)}/>
+  </>:<><Dimension title="أقسام المحاكي" rows={report.sections}/><Dimension title="المهارات" rows={report.skills}/></>}
 </div>;

@@ -1,3 +1,6 @@
+## ASSESSMENT-MATERIAL-EVIDENCE — 2026-10-15 (delivery pending)
+Additive optional QuizResult.subjectResults [{subjectId,subjectName,total,correct,wrong,unanswered,score}] and optional sectionResults.subjectId/subjectName. New server submissions derive and freeze evidence; defaults remain undefined for old outcomes. Existing overall grading, answer/attempt identities and result indexes remain authoritative. No history migration, synthetic reconstruction, index change, cleanup or production cutover.
+
 ## SCHOOL-ASSESSMENT-COMMAND-RECEIPTS — 2026-10-15 (delivery pending)
 Additive SchoolAssessmentCommand collection in quizzes/infrastructure: deterministic String _id uniquely binds fresh actor, assessment and UUID; normalized request hash, operation and scalar result retained without TTL. Built-in unique _id only; no secondary index, existing-row backfill/drop or result/scoring migration. Quiz.__v serializes commands with edits/publication; existing NotificationDelivery/QuizRetake schemas remain unchanged. Runtime/production verification is pending.
 

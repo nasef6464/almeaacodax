@@ -80,6 +80,8 @@
 
 ## Task6 — Integrated per-test analytics and scoped student journey
 
+Owner clarification2026-10-15: mocks belong to a PATH and may span multiple materials. Preserve one overall canonical grade and independent frozen subjectResults for every actual material; nest section/skill analysis under that material and show incomplete/legacy evidence explicitly. Top-level quiz.subjectId must not classify the whole mock. No historical rewrite.
+
 **Files:** Update TestAnalyticsReport integration through focused supervisorTests adapters/components; extend scripts/test-school-assessment-workspace.ts and existing live-report-actions/mock/supervisor journeys. Add a bounded school-assessment-workspace journey script to the existing isolated full-stack workflow.
 **Interfaces:** Use Task2 summary for all-participant metrics, existing paged results for grade rows and protected result detail for a selected learner. Preserve quizId/subjectId/sectionId in drill-down links. No synthetic analytics when frozen evidence is missing.
 
