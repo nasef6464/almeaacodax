@@ -4,6 +4,7 @@ export interface SavedQuizPageProgress {
   quizId: string;
   questionIds: string[];
   selectedOptions: Record<string, number>;
+  answerOptionSignatures?: Record<string, string>;
   currentQuestionIndex: number;
   timeLeft: number | null;
   savedAt: string;

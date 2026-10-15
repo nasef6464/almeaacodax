@@ -1,4 +1,3 @@
-import { freezeSchoolAssessmentQuestions } from '../application/schoolAssessmentQuestionEvidence.js';
 import { AssessmentVersionModel } from "./assessmentVersionModel.js";
 
 export const findLatestPublishedAssessmentVersion = (assessmentId: string) =>
@@ -32,7 +31,7 @@ export const publishAssessmentVersion = async ({
       const created = await AssessmentVersionModel.create({
         assessmentId,
         version,
-        definition: await freezeSchoolAssessmentQuestions(definition, latest?.definition),
+        definition,
         publishedBy,
         status: "published",
       });

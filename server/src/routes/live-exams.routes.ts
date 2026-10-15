@@ -33,9 +33,9 @@ const canStartDirectedQuiz = async (quiz: any, authUser: { id: string; role: str
   return (await resolveDirectedQuizReadAccess(quiz,authUser)).allowed;
 };
 
-const saveAssessmentResponse = async (attemptId: string, studentId: string, questionId: string, answer: unknown) => {
+const saveAssessmentResponse = async (attemptId: string, studentId: string, questionId: string, answer: unknown, answerOptionSignature?: string) => {
   const filter = { attemptId, questionId };
-  const update = { $set: { studentId, answer, savedAt: new Date() } };
+  const update = { $set: { studentId, answer, answerOptionSignature:typeof answerOptionSignature==='string'&&answerOptionSignature.length<=25000?answerOptionSignature:'', savedAt: new Date() } };
   try {
     await AssessmentResponseModel.findOneAndUpdate(filter, update, { upsert: true });
   } catch (error: any) {
@@ -145,10 +145,10 @@ router.get("/session/:quizId", requireAuth, async (req, res) => {
     const session = await LiveExamSessionModel.findOne({ studentId: userId, quizId, status: "active" }).lean();
     if (!session) return res.json({ session: null, answers: {} });
     const responses = session.assessmentAttemptId
-      ? await AssessmentResponseModel.find({ attemptId: session.assessmentAttemptId, studentId: userId }).select("questionId answer").lean()
+      ? await AssessmentResponseModel.find({ attemptId: session.assessmentAttemptId, studentId: userId }).select("questionId answer answerOptionSignature").lean()
       : [];
     const answers = Object.fromEntries(responses.map((response: any) => [String(response.questionId), response.answer]));
-    return res.json({ session, answers });
+    return res.json({ session, answers, answerOptionSignatures:Object.fromEntries(responses.map((response:any)=>[String(response.questionId),String(response.answerOptionSignature||'')])) });
   } catch (error) {
     console.error("Error reading live exam session:", error);
     return res.status(500).json({ error: "Internal server error" });
@@ -158,7 +158,7 @@ router.get("/session/:quizId", requireAuth, async (req, res) => {
 // Update progress
 router.post("/progress", requireAuth, async (req, res) => {
   try {
-    const { quizId, answeredQuestions, totalQuestions, answers } = req.body;
+    const { quizId, answeredQuestions, totalQuestions, answers, answerOptionSignatures } = req.body;
     const userId = req.authUser!.id;
     const windowError = await getLiveWindowError(String(quizId || ""), req.authUser!);
     if (windowError) return res.status(403).json({ error: windowError });
@@ -188,7 +188,7 @@ router.post("/progress", requireAuth, async (req, res) => {
 
     if (session?.assessmentAttemptId && answers && typeof answers === "object") {
       await Promise.all(Object.entries(answers).map(([questionId, answer]) =>
-        saveAssessmentResponse(String(session.assessmentAttemptId), String(userId), questionId, answer),
+        saveAssessmentResponse(String(session.assessmentAttemptId), String(userId), questionId, answer,answerOptionSignatures?.[questionId]),
       ));
     }
 

@@ -246,6 +246,7 @@ jobs:
           node scripts/test-school-assessment-composition-ui.mjs
           node scripts/test-school-assessment-commands-ui.mjs
           node scripts/test-school-assessment-subjects-ui.mjs
+          node scripts/test-live-quiz-question-ui.mjs
           node scripts/test-school-assessment-learners-ui.mjs
           node scripts/smoke-quiz-availability-ui.mjs
           node scripts/smoke-review-existing-practice-ui.mjs

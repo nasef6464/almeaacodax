@@ -1038,7 +1038,7 @@ export const api = {
     }),
   getLiveExamSession: (quizId: string, token?: string | null) =>
     request<any>(`/live-exams/session/${encodeURIComponent(quizId)}`, { token }),
-  updateLiveExamProgress: (payload: { quizId: string; answeredQuestions: number; totalQuestions: number; answers?: Record<string, unknown> }, token?: string | null) =>
+  updateLiveExamProgress: (payload: { quizId: string; answeredQuestions: number; totalQuestions: number; answers?: Record<string, unknown>; answerOptionSignatures?: Record<string,string> }, token?: string | null) =>
     request<{ success: boolean }>("/live-exams/progress", {
       method: "POST",
       body: payload,

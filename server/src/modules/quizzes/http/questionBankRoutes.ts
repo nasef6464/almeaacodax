@@ -349,7 +349,6 @@ questionBankRouter.patch(
       { ...payload, skillIds: canonicalSkills.skillIds, skillId: canonicalSkills.skillId, subSkillId: canonicalSkills.subSkillId, subSkillIds: canonicalSkills.subSkillIds } as Record<string, unknown>,
       req.authUser!,
     );
-    await assertSchoolQuestionBankWrite(existing);
     const updated = await QuestionModel.findOneAndUpdate(documentQuery, sanitizedPayload, { new: true });
     return res.json(updated);
   }),

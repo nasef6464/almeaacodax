@@ -1,3 +1,5 @@
+import { quizAnswerSignatures, restoreQuizAnswers, mergeRestoredQuizAnswers } from '../utils/quizAnswerEvidence';
+import { useLiveQuizQuestion } from '../hooks/useLiveQuizQuestion';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useStore } from '../store/useStore';
@@ -196,6 +198,7 @@ export const QuizPage: React.FC = () => {
   const [quizQuestions, setQuizQuestions] = useState<Question[]>([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedOptions, setSelectedOptions] = useState<Record<string, number>>({});
+  const liveQuestionsRef = useRef(quizQuestions);liveQuestionsRef.current=quizQuestions;
   const [isFinished, setIsFinished] = useState(false);
   const [submittedSectionResults, setSubmittedSectionResults] = useState<NonNullable<QuizResult['sectionResults']>>([]);
   const [submittedSkillsAnalysis, setSubmittedSkillsAnalysis] = useState<NonNullable<QuizResult['skillsAnalysis']>>([]);
@@ -585,6 +588,7 @@ export const QuizPage: React.FC = () => {
           ? loadedQuestions
           : shuffleQuestions(loadedQuestions);
 
+    liveQuestionsRef.current=nextQuestions;
     setQuizQuestions(nextQuestions);
     if (nextQuestions.length > 0) {
       setQuestionHydrationStartedAt(null);
@@ -594,15 +598,12 @@ export const QuizPage: React.FC = () => {
         totalQuestions: nextQuestions.length,
       }).catch((err: any) => console.warn('Failed to start live exam session:', err));
       api.getLiveExamSession(foundQuiz.id).then((serverProgress: any) => {
+        if(activeQuizLoadKeyRef.current!==quizLoadKey)return;
         const serverAnswers = serverProgress?.answers;
         if (!serverAnswers || typeof serverAnswers !== 'object') return;
-        const allowed = new Set(nextQuestions.map((question) => question.id));
-        const restoredAnswers: Record<string, number> = Object.fromEntries(
-          Object.entries(serverAnswers)
-            .filter(([questionId, value]) => allowed.has(questionId) && Number.isInteger(Number(value)) && Number(value) >= 0)
-            .map(([questionId, value]) => [questionId, Number(value)]),
-        );
-        setSelectedOptions((current) => ({ ...current, ...restoredAnswers }));
+        const restoredAnswers = restoreQuizAnswers(liveQuestionsRef.current,serverAnswers,serverProgress.answerOptionSignatures||{});
+        setSelectedOptions((current) => mergeRestoredQuizAnswers(liveQuestionsRef.current,current,serverAnswers,serverProgress.answerOptionSignatures||{}));
+        if(Object.keys(restoredAnswers).length<Object.values(serverAnswers).filter(value=>typeof value==='number'&&value>=0).length)setQuestionCorrectionNotice('راجع الأسئلة التي لم تُستعد إجاباتها قبل الاستكمال.');
         setDraftRestored(true);
       }).catch((err: any) => console.warn('Failed to restore server progress:', err));
     }
@@ -616,13 +617,9 @@ export const QuizPage: React.FC = () => {
         setLockedSectionIds(sectionProgress.lockedIds);
       }
       const allowedQuestionIds = new Set(nextQuestions.map((question) => question.id));
-      const safeSelectedOptions = Object.fromEntries(
-        Object.entries(savedProgress.selectedOptions || {}).filter(([questionId, optionIndex]) => {
-          const question = nextQuestions.find((item) => item.id === questionId);
-          return Boolean(question && allowedQuestionIds.has(questionId) && Number.isInteger(optionIndex) && optionIndex >= 0 && optionIndex < question.options.length);
-        }),
-      );
+      const safeSelectedOptions = restoreQuizAnswers(nextQuestions,savedProgress.selectedOptions||{},savedProgress.answerOptionSignatures||{});
       setSelectedOptions(safeSelectedOptions);
+      if(Object.keys(safeSelectedOptions).length<Object.keys(savedProgress.selectedOptions||{}).length)setQuestionCorrectionNotice('راجع الأسئلة التي لم تُستعد إجاباتها قبل الاستكمال.');
       const savedCurrentQuestionId = savedQuestionOrder[savedProgress.currentQuestionIndex || 0]?.id;
       const restoredQuestionIndex = nextQuestions.findIndex((question) => question.id === savedCurrentQuestionId);
       setCurrentQuestionIndex(foundQuiz.mockExam?.enabled
@@ -654,6 +651,7 @@ export const QuizPage: React.FC = () => {
       quizId: quiz.id,
       questionIds: quizQuestions.map((question) => question.id),
       selectedOptions,
+      answerOptionSignatures:quizAnswerSignatures(quizQuestions,selectedOptions),
       currentQuestionIndex,
       timeLeft: typeof timeLeft === 'number' && timeLeft > 0 ? timeLeft : null,
       savedAt: new Date().toISOString(),
@@ -799,6 +797,15 @@ export const QuizPage: React.FC = () => {
   }, [sectionTimeLeft]);
 
   const currentQuestion = quizQuestions[currentQuestionIndex];
+  const [questionCorrectionNotice, setQuestionCorrectionNotice] = useState('');
+  useLiveQuizQuestion({actorId:user.id,quizId:quiz?.id,question:currentQuestion,active:user.role==='student'&&hasAccess&&!isFinished&&!isSubmittingResult&&!isDevSessionUser(user),
+    onQuestion:next=>{liveQuestionsRef.current=liveQuestionsRef.current.map(question=>question.id===next.id?next:question);setQuizQuestions(liveQuestionsRef.current);setQuestionCorrectionNotice('تم تحديث السؤال وفق تصحيح بنك الأسئلة.');},
+    onOptionsChanged:questionId=>{
+      const next={...selectedOptions};delete next[questionId];setSelectedOptions(next);
+      setQuestionCorrectionNotice('تم تصحيح اختيارات السؤال؛ اختر إجابتك مجددًا.');
+      void api.updateLiveExamProgress({quizId:quiz?.id||'',answeredQuestions:Object.keys(next).length,totalQuestions:quizQuestions.length,answers:{...next,[questionId]:-1},answerOptionSignatures:quizAnswerSignatures(quizQuestions,next)}).catch(()=>undefined);
+    },
+  });
   const { passageText, questionText } = useMemo(
     () => extractPassage(currentQuestion),
     [currentQuestion],
@@ -954,6 +961,7 @@ export const QuizPage: React.FC = () => {
         answeredQuestions: Object.keys(next).length,
         totalQuestions: quizQuestions.length,
         answers: next,
+        answerOptionSignatures:quizAnswerSignatures(quizQuestions,next),
       }).catch((err: any) => console.warn('Failed to update live exam progress:', err));
       return next;
     });
@@ -1100,6 +1108,7 @@ export const QuizPage: React.FC = () => {
       quizId: quiz.id,
       questionIds: quizQuestions.map((question) => question.id),
       selectedOptions,
+      answerOptionSignatures:quizAnswerSignatures(quizQuestions,selectedOptions),
       currentQuestionIndex,
       timeLeft: typeof timeLeft === 'number' && timeLeft > 0 ? timeLeft : null,
       savedAt: new Date().toISOString(),
@@ -1412,6 +1421,7 @@ export const QuizPage: React.FC = () => {
   return (
     <div className={`min-h-screen py-4 transition-colors sm:py-8 ${isNightMode ? 'bg-slate-950 text-slate-100' : 'bg-gray-50 text-gray-900'}`} dir="rtl">
       <div className={`${isFinished ? 'max-w-4xl' : 'max-w-7xl'} mx-auto px-3 sm:px-6 transition-all duration-300`}>
+        {!isFinished && questionCorrectionNotice && <p role="status" className="mb-3 rounded-xl bg-amber-50 p-3 text-sm text-amber-900">{questionCorrectionNotice}</p>}
         {/* Header: Identity, Timer & Utilities */}
         <div className={`${isNightMode ? 'border-slate-800 bg-slate-900' : 'border-gray-100 bg-white'} rounded-3xl shadow-sm border p-4 sm:p-5 mb-5`}>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
