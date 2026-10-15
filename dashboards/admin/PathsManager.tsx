@@ -5,6 +5,7 @@ import { QuestionBankManager } from './QuestionBankManager';
 import { FoundationManager } from './FoundationManager';
 import { SkillsTreeManager } from './SkillsTreeManager';
 import { QuizzesManager } from './QuizzesManager';
+import { MockExamManager } from './MockExamManager';
 import { SubjectQuizzesPanel } from './SubjectQuizzesPanel';
 import { LibraryManager } from './LibraryManager';
 import { 
@@ -49,7 +50,7 @@ export const PathsManager: React.FC = () => {
   const [selectedSubjectId, setSelectedSubjectId] = useState<string | null>(initialUrlState.selectedSubjectId);
   
   // Tabs for Path Overview
-  const [pathTab, setPathTab] = useState<'levels' | 'subjects' | 'packages' | 'settings'>(initialUrlState.pathTab);
+  const [pathTab, setPathTab] = useState<'levels' | 'subjects' | 'mockExams' | 'packages' | 'settings'>(initialUrlState.pathTab);
   // Tabs for Subject Workspace
   const [subjectTab, setSubjectTab] = useState(initialUrlState.subjectTab);
 
@@ -1170,6 +1171,7 @@ export const PathsManager: React.FC = () => {
         subtitle: 'تخصيص هوية المسار وألوانه وأيقونته وخيارات ظهور البطاقات للطلاب',
       },
     };
+    pathTabMeta.mockExams = { label: 'الاختبارات المحاكية', title: `محاكيات مسار ${currentPath?.name || ''}`, subtitle: 'إنشاء المحاكيات وحفظ المسودات والتحكم في النشر والإتاحة' };
     const currentMeta = pathTabMeta[pathTab] || pathTabMeta.subjects;
 
     return (
@@ -1236,6 +1238,7 @@ export const PathsManager: React.FC = () => {
               <LayoutGrid size={18} />
               المواد الدراسية
             </button>
+            <button onClick={() => setPathTab('mockExams')} className={`flex-1 py-4 px-6 font-bold text-sm border-b-2 flex items-center justify-center gap-2 min-w-[170px] ${pathTab === 'mockExams' ? 'border-indigo-600 text-indigo-600 bg-indigo-50/50' : 'border-transparent text-gray-500 hover:bg-gray-50'}`}><Award size={18} />الاختبارات المحاكية</button>
             <button
               onClick={() => setPathTab('packages')}
               className={`flex-1 py-4 px-6 font-bold text-sm border-b-2 transition-colors flex items-center justify-center gap-2 min-w-[150px] ${
@@ -1259,6 +1262,7 @@ export const PathsManager: React.FC = () => {
 
         {/* Path Content */}
         <div className="space-y-6 overflow-visible pb-8">
+          {pathTab === 'mockExams' && currentPath && <MockExamManager key={currentPath.id} pathId={currentPath.id} />}
           {pathTab === 'levels' && (
             <div className="animate-fade-in space-y-6">
               <div className="flex justify-between items-center bg-blue-50/50 p-4 rounded-xl border border-blue-100">

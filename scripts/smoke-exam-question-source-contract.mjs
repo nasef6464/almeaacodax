@@ -132,8 +132,10 @@ check('barcode creation remains blocked without selected question ids', () => {
   assertIncludes(barcodeSource, 'disabled={saving || selectedQuestionIds.length === 0}');
 });
 
-check('mock exam save remains blocked without real question ids', () => {
-  assertIncludes(mockSource, 'if (allQuestionIds.length === 0)');
+check('mock publication requires questions while private drafts can remain unfinished', () => {
+  assertIncludes(mockSource, 'if (isPublished && allQuestionIds.length === 0)');
+  assertIncludes(mockSource, 'const [isPublished, setIsPublished] = useState(false)');
+  assertIncludes(mockSource, 'حفظ مسودة');
   assertIncludes(mockSource, 'لا يمكن حفظ الاختبار المحاكي بدون أسئلة.');
 });
 

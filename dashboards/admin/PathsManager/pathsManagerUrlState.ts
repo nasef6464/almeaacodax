@@ -1,4 +1,4 @@
-export type PathsManagerPathTab = 'levels' | 'subjects' | 'packages' | 'settings';
+export type PathsManagerPathTab = 'levels' | 'subjects' | 'mockExams' | 'packages' | 'settings';
 export type PathsManagerSubjectTab = 'courses' | 'skills' | 'questions' | 'exams' | 'library' | 'settings';
 
 export type PathsManagerUrlState = {
@@ -8,7 +8,7 @@ export type PathsManagerUrlState = {
   subjectTab: PathsManagerSubjectTab;
 };
 
-const pathTabs: PathsManagerPathTab[] = ['levels', 'subjects', 'packages', 'settings'];
+const pathTabs: PathsManagerPathTab[] = ['levels', 'subjects', 'mockExams', 'packages', 'settings'];
 const subjectTabs: PathsManagerSubjectTab[] = ['courses', 'skills', 'questions', 'exams', 'library', 'settings'];
 
 const getInitialQuery = () =>

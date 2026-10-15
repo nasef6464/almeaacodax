@@ -1,3 +1,6 @@
+## Path mock administration + compact learner details — IN_PROGRESS — 2026-10-15
+Owner-authorized path tab reuses MockExamManager for every future path, private drafts/publication and independent free/package access. Compact shared analysis includes material filtering. UI tests PASS; final types/build/HTTP and exact CI pending. Prerequisite withdrawal PR556 merged/deployed e53015af; bounded published readback PASS2withdrawn/0learnerquestions/preserved40+100/0productionwrites. See docs/audits/PATH_MOCK_ADMINISTRATION_2026-10-15.md. Prior pending withdrawal notes below are historical.
+
 ## ترتيب تدريبات وموضوعات التحصيلي حسب كتاب يلو، عرض المجاني في الأعلى مع فلتر (الكل / المجاني / المدفوع)، وحذف اختبارات القدرات المحاكية — 2026-10-15
 - **نطاق العمل والتأكيد:**
   1. ترتيب تدريبات المهارات (`training quizzes`) والموضوعات الرئيسية والفرعية لمواد التحصيلي الأربعة (رياضيات، فيزياء، كيمياء، أحياء) من الأعلى للأسفل مطابق تماماً لتسلسل الفصول في كتاب يلو.

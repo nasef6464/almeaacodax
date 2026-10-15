@@ -22,6 +22,12 @@ export const resolveAssessmentDefinitionRead = (
   // historical snapshot cannot undo withdrawal. Retake windows apply later.
   const directed = legacyDefinition.mode === 'central' ||
     ['targetGroupIds','targetUserIds'].some(key => Array.isArray(legacyDefinition[key]) && (legacyDefinition[key] as unknown[]).length > 0);
+  // Unpublished platform drafts expose current authoring edits to staff.
+  // School definitions retain their existing frozen-content contract.
+  if (!directed && legacyDefinition.isPublished === false) {
+    const { schoolQuestionEvidence: _draftEvidence, ...draft } = legacyDefinition;
+    return draft;
+  }
   const operational = directed ? Object.fromEntries(
     ['targetGroupIds','targetUserIds','opensAt','closesAt','dueDate']
       .filter(key => Object.prototype.hasOwnProperty.call(legacyDefinition,key))
