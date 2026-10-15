@@ -1,7 +1,7 @@
 {
-  "timestamp": "2026-10-15T10:14:22.230Z",
-  "totalPublishedQuizzes": 212,
-  "perfectDrills": 212,
+  "timestamp": "2026-10-15T11:15:40.954Z",
+  "totalPublishedQuizzes": 228,
+  "perfectDrills": 228,
   "imperfectDrills": 0,
   "journeySuccess": true,
   "status": "ALL_PASS",
@@ -21,6 +21,16 @@
       "title": "تدريب التأسيس | المثال المضاد والعبارات المركبة",
       "isFree": true,
       "totalQuestions": 14,
+      "allApproved": true,
+      "hasPublishedVersion": true,
+      "versionNumber": 1,
+      "pass": true
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-01-03",
+      "title": "تدريب التأسيس | العبارات الشرطية والتكافؤ المنطقي وأشكال فن",
+      "isFree": true,
+      "totalQuestions": 15,
       "allApproved": true,
       "hasPublishedVersion": true,
       "versionNumber": 1,
@@ -857,10 +867,30 @@
       "pass": true
     },
     {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-25-03",
+      "title": "تدريب التأسيس | القطع الزائد",
+      "isFree": false,
+      "totalQuestions": 15,
+      "allApproved": true,
+      "hasPublishedVersion": true,
+      "versionNumber": 1,
+      "pass": true
+    },
+    {
       "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-25-04",
       "title": "تدريب التأسيس | معادلة الدائرة وتصنيف القطوع المخروطية",
       "isFree": false,
       "totalQuestions": 15,
+      "allApproved": true,
+      "hasPublishedVersion": true,
+      "versionNumber": 1,
+      "pass": true
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-26-01",
+      "title": "تدريب التأسيس | مفاهيم المتجهات واتجاهاتها وأنواعها",
+      "isFree": false,
+      "totalQuestions": 14,
       "allApproved": true,
       "hasPublishedVersion": true,
       "versionNumber": 1,
@@ -879,6 +909,16 @@
     {
       "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-26-03",
       "title": "تدريب التأسيس | الصورة الإحداثية ومتجه الوحدة في المستوى",
+      "isFree": false,
+      "totalQuestions": 15,
+      "allApproved": true,
+      "hasPublishedVersion": true,
+      "versionNumber": 1,
+      "pass": true
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-26-04",
+      "title": "تدريب التأسيس | الضرب الداخلي والتعامد والزاوية بين متجهين",
       "isFree": false,
       "totalQuestions": 15,
       "allApproved": true,
@@ -1061,6 +1101,16 @@
       "title": "تدريب التأسيس | التكامل المحدد والمساحات وتطبيقاته",
       "isFree": false,
       "totalQuestions": 15,
+      "allApproved": true,
+      "hasPublishedVersion": true,
+      "versionNumber": 1,
+      "pass": true
+    },
+    {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_01",
+      "title": "تدريب المهارة الرئيسية | التبرير والبرهان",
+      "isFree": true,
+      "totalQuestions": 30,
       "allApproved": true,
       "hasPublishedVersion": true,
       "versionNumber": 1,
@@ -1617,6 +1667,36 @@
       "pass": true
     },
     {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_25_part_2",
+      "title": "تدريب المهارة الرئيسية | القطوع — الجزء 2",
+      "isFree": false,
+      "totalQuestions": 30,
+      "allApproved": true,
+      "hasPublishedVersion": true,
+      "versionNumber": 1,
+      "pass": true
+    },
+    {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_25_part_3",
+      "title": "تدريب المهارة الرئيسية | القطوع — الجزء 3",
+      "isFree": false,
+      "totalQuestions": 30,
+      "allApproved": true,
+      "hasPublishedVersion": true,
+      "versionNumber": 1,
+      "pass": true
+    },
+    {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_26_part_2",
+      "title": "تدريب المهارة الرئيسية | المتجهات — الجزء 2",
+      "isFree": false,
+      "totalQuestions": 30,
+      "allApproved": true,
+      "hasPublishedVersion": true,
+      "versionNumber": 1,
+      "pass": true
+    },
+    {
       "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_26_part_3",
       "title": "تدريب المهارة الرئيسية | المتجهات — الجزء 3",
       "isFree": false,
@@ -1697,6 +1777,16 @@
       "pass": true
     },
     {
+      "quizId": "quiz_tahmath_v2_math_test_07",
+      "title": "اختبار شامل رياضيات التحصيلي | النموذج 7",
+      "isFree": false,
+      "totalQuestions": 40,
+      "allApproved": true,
+      "hasPublishedVersion": true,
+      "versionNumber": 1,
+      "pass": true
+    },
+    {
       "quizId": "quiz_tahmath_v2_math_test_08",
       "title": "اختبار شامل رياضيات التحصيلي | النموذج 8",
       "isFree": false,
@@ -1749,6 +1839,26 @@
     {
       "quizId": "quiz_tahmath_v2_math_test_13",
       "title": "اختبار شامل رياضيات التحصيلي | النموذج 13",
+      "isFree": false,
+      "totalQuestions": 40,
+      "allApproved": true,
+      "hasPublishedVersion": true,
+      "versionNumber": 1,
+      "pass": true
+    },
+    {
+      "quizId": "quiz_tahmath_v2_math_test_14",
+      "title": "اختبار شامل رياضيات التحصيلي | النموذج 14",
+      "isFree": false,
+      "totalQuestions": 40,
+      "allApproved": true,
+      "hasPublishedVersion": true,
+      "versionNumber": 1,
+      "pass": true
+    },
+    {
+      "quizId": "quiz_tahmath_v2_math_test_15",
+      "title": "اختبار شامل رياضيات التحصيلي | النموذج 15",
       "isFree": false,
       "totalQuestions": 40,
       "allApproved": true,
@@ -1817,6 +1927,16 @@
       "pass": true
     },
     {
+      "quizId": "quiz_tahmath_v2_math_test_22",
+      "title": "اختبار شامل رياضيات التحصيلي | النموذج 22",
+      "isFree": false,
+      "totalQuestions": 40,
+      "allApproved": true,
+      "hasPublishedVersion": true,
+      "versionNumber": 1,
+      "pass": true
+    },
+    {
       "quizId": "quiz_tahmath_v2_math_test_23",
       "title": "اختبار شامل رياضيات التحصيلي | النموذج 23",
       "isFree": false,
@@ -1849,6 +1969,16 @@
     {
       "quizId": "quiz_tahmath_v2_math_test_26",
       "title": "اختبار شامل رياضيات التحصيلي | النموذج 26",
+      "isFree": false,
+      "totalQuestions": 40,
+      "allApproved": true,
+      "hasPublishedVersion": true,
+      "versionNumber": 1,
+      "pass": true
+    },
+    {
+      "quizId": "quiz_tahmath_v2_math_test_27",
+      "title": "اختبار شامل رياضيات التحصيلي | النموذج 27",
       "isFree": false,
       "totalQuestions": 40,
       "allApproved": true,
@@ -1957,6 +2087,16 @@
       "pass": true
     },
     {
+      "quizId": "quiz_tahmath_v2_math_test_38",
+      "title": "اختبار شامل رياضيات التحصيلي | النموذج 38",
+      "isFree": false,
+      "totalQuestions": 40,
+      "allApproved": true,
+      "hasPublishedVersion": true,
+      "versionNumber": 1,
+      "pass": true
+    },
+    {
       "quizId": "quiz_tahmath_v2_math_test_39",
       "title": "اختبار شامل رياضيات التحصيلي | النموذج 39",
       "isFree": false,
@@ -2027,8 +2167,28 @@
       "pass": true
     },
     {
+      "quizId": "quiz_tahmath_v2_math_test_46",
+      "title": "اختبار شامل رياضيات التحصيلي | النموذج 46",
+      "isFree": false,
+      "totalQuestions": 40,
+      "allApproved": true,
+      "hasPublishedVersion": true,
+      "versionNumber": 1,
+      "pass": true
+    },
+    {
       "quizId": "quiz_tahmath_v2_math_test_47",
       "title": "اختبار شامل رياضيات التحصيلي | النموذج 47",
+      "isFree": false,
+      "totalQuestions": 40,
+      "allApproved": true,
+      "hasPublishedVersion": true,
+      "versionNumber": 1,
+      "pass": true
+    },
+    {
+      "quizId": "quiz_tahmath_v2_math_test_48",
+      "title": "اختبار شامل رياضيات التحصيلي | النموذج 48",
       "isFree": false,
       "totalQuestions": 40,
       "allApproved": true,

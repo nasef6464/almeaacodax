@@ -1,0 +1,69 @@
+{
+  "timestamp": "2026-10-15T14:15:00Z",
+  "items": [
+    {
+      "questionCode": "TAH-MATH-V2-COL26-P005-Q02",
+      "filename": "REPAIRED_HOLD_1_P005_Q02.webp",
+      "sha256": "e053e2ac1f445553389fb773df4612eca29444093eb873657c789aa8e7622ded",
+      "r2Key": "tah-math-v2/crops/TAH-MATH-V2-COL26-P005-Q02/e053e2ac1f445553389fb773df4612eca29444093eb873657c789aa8e7622ded.webp",
+      "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/tah-math-v2/crops/TAH-MATH-V2-COL26-P005-Q02/e053e2ac1f445553389fb773df4612eca29444093eb873657c789aa8e7622ded.webp",
+      "verified": true
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26-P006-Q15",
+      "filename": "REPAIRED_HOLD_2_P006_Q15.webp",
+      "sha256": "1fd1e6bcee070f3db6ac7f334a03de93a3c12de3570d8dda82488d7e8631642d",
+      "r2Key": "tah-math-v2/crops/TAH-MATH-V2-COL26-P006-Q15/1fd1e6bcee070f3db6ac7f334a03de93a3c12de3570d8dda82488d7e8631642d.webp",
+      "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/tah-math-v2/crops/TAH-MATH-V2-COL26-P006-Q15/1fd1e6bcee070f3db6ac7f334a03de93a3c12de3570d8dda82488d7e8631642d.webp",
+      "verified": true
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26OLD-P055-Q42",
+      "filename": "REPAIRED_HOLD_3_P055_Q42.webp",
+      "sha256": "32e81af69f7e30ad3f184f444520b0b1fbb4c43c2bb56a8e513b3abe64b961fe",
+      "r2Key": "tah-math-v2/crops/TAH-MATH-V2-COL26OLD-P055-Q42/32e81af69f7e30ad3f184f444520b0b1fbb4c43c2bb56a8e513b3abe64b961fe.webp",
+      "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/tah-math-v2/crops/TAH-MATH-V2-COL26OLD-P055-Q42/32e81af69f7e30ad3f184f444520b0b1fbb4c43c2bb56a8e513b3abe64b961fe.webp",
+      "verified": true
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26OLD-P129-Q87",
+      "filename": "REPAIRED_HOLD_4_P129_Q87.webp",
+      "sha256": "1b84c01874b0db780465d62a7bcac7e203b3119be0093b917989e04f8ce8d763",
+      "r2Key": "tah-math-v2/crops/TAH-MATH-V2-COL26OLD-P129-Q87/1b84c01874b0db780465d62a7bcac7e203b3119be0093b917989e04f8ce8d763.webp",
+      "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/tah-math-v2/crops/TAH-MATH-V2-COL26OLD-P129-Q87/1b84c01874b0db780465d62a7bcac7e203b3119be0093b917989e04f8ce8d763.webp",
+      "verified": true
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26OLD-P130-Q105",
+      "filename": "REPAIRED_HOLD_5_P130_Q105.webp",
+      "sha256": "dc409605c5c15003941814971d699da6648a91c091b9972fe5a9bcaf413e2d8d",
+      "r2Key": "tah-math-v2/crops/TAH-MATH-V2-COL26OLD-P130-Q105/dc409605c5c15003941814971d699da6648a91c091b9972fe5a9bcaf413e2d8d.webp",
+      "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/tah-math-v2/crops/TAH-MATH-V2-COL26OLD-P130-Q105/dc409605c5c15003941814971d699da6648a91c091b9972fe5a9bcaf413e2d8d.webp",
+      "verified": true
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26-P131-Q06",
+      "filename": "REPAIRED_HOLD_6_P131_Q06.webp",
+      "sha256": "53901c5d0a9ea00c707375394fef90c2702da5d06568e7d4adb23e793ad1b3e1",
+      "r2Key": "tah-math-v2/crops/TAH-MATH-V2-COL26-P131-Q06/53901c5d0a9ea00c707375394fef90c2702da5d06568e7d4adb23e793ad1b3e1.webp",
+      "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/tah-math-v2/crops/TAH-MATH-V2-COL26-P131-Q06/53901c5d0a9ea00c707375394fef90c2702da5d06568e7d4adb23e793ad1b3e1.webp",
+      "verified": true
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26-P132-Q29",
+      "filename": "REPAIRED_HOLD_7_P132_Q29.webp",
+      "sha256": "729c08255b56e3a68caa581b5bc43032b2d47b2e0ed2119ebde1ab0b4723cb26",
+      "r2Key": "tah-math-v2/crops/TAH-MATH-V2-COL26-P132-Q29/729c08255b56e3a68caa581b5bc43032b2d47b2e0ed2119ebde1ab0b4723cb26.webp",
+      "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/tah-math-v2/crops/TAH-MATH-V2-COL26-P132-Q29/729c08255b56e3a68caa581b5bc43032b2d47b2e0ed2119ebde1ab0b4723cb26.webp",
+      "verified": true
+    },
+    {
+      "questionCode": "TAH-MATH-V2-COL26-P132-Q30",
+      "filename": "REPAIRED_HOLD_8_P132_Q30.webp",
+      "sha256": "58ddbc181c91c2e40f7ef3d59e22eb2e56dc20b53248e6ac856c87b52f443d50",
+      "r2Key": "tah-math-v2/crops/TAH-MATH-V2-COL26-P132-Q30/58ddbc181c91c2e40f7ef3d59e22eb2e56dc20b53248e6ac856c87b52f443d50.webp",
+      "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/tah-math-v2/crops/TAH-MATH-V2-COL26-P132-Q30/58ddbc181c91c2e40f7ef3d59e22eb2e56dc20b53248e6ac856c87b52f443d50.webp",
+      "verified": true
+    }
+  ]
+}
