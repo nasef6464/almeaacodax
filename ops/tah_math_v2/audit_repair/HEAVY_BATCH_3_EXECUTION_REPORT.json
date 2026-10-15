@@ -1,0 +1,234 @@
+{
+  "timestamp": "2026-10-15T09:49:19.323Z",
+  "batch": 3,
+  "processedQuestionsCount": 441,
+  "approvedQuestionsCount": 438,
+  "holdQuestionsCount": 3,
+  "newlyPublishedDrillsCount": 32,
+  "publishedDrills": [
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-20-01",
+      "title": "تدريب التأسيس | مبدأ العد والمضروب والتباديل",
+      "sectionId": "sec_tah_math_v2_20",
+      "isFree": false,
+      "questionCount": 15
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-20-02",
+      "title": "تدريب التأسيس | التباديل الدائرية والتوافيق والتكرار",
+      "sectionId": "sec_tah_math_v2_20",
+      "isFree": false,
+      "questionCount": 12
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-20-03",
+      "title": "تدريب التأسيس | الاحتمال الأساسي والاحتمال الهندسي",
+      "sectionId": "sec_tah_math_v2_20",
+      "isFree": false,
+      "questionCount": 15
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-20-04",
+      "title": "تدريب التأسيس | الحوادث المستقلة وغير المستقلة والاحتمال المشروط",
+      "sectionId": "sec_tah_math_v2_20",
+      "isFree": false,
+      "questionCount": 15
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-20-05",
+      "title": "تدريب التأسيس | الحوادث المتنافية والمتممة",
+      "sectionId": "sec_tah_math_v2_20",
+      "isFree": false,
+      "questionCount": 11
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-21-01",
+      "title": "تدريب التأسيس | الزوايا: القياس والإشارات والزوايا المرجعية والقيم المعروفة",
+      "sectionId": "sec_tah_math_v2_21",
+      "isFree": false,
+      "questionCount": 15
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-21-02",
+      "title": "تدريب التأسيس | النسب المثلثية في المثلث القائم وتطبيقاتها والعكس",
+      "sectionId": "sec_tah_math_v2_21",
+      "isFree": false,
+      "questionCount": 15
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-21-04",
+      "title": "تدريب التأسيس | الدوال المثلثية وتمثيلها ودورتها وسعتها ومجالها",
+      "sectionId": "sec_tah_math_v2_21",
+      "isFree": false,
+      "questionCount": 15
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-21-05",
+      "title": "تدريب التأسيس | قوانين الجيب وجيب التمام ومساحة المثلث",
+      "sectionId": "sec_tah_math_v2_21",
+      "isFree": false,
+      "questionCount": 13
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-22-01",
+      "title": "تدريب التأسيس | قراءة التمثيل البياني: الفترات والتزايد والقيم القصوى والسلوك الطرفي",
+      "sectionId": "sec_tah_math_v2_22",
+      "isFree": false,
+      "questionCount": 15
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-22-02",
+      "title": "تدريب التأسيس | الدوال الزوجية والفردية",
+      "sectionId": "sec_tah_math_v2_22",
+      "isFree": false,
+      "questionCount": 15
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-22-06",
+      "title": "تدريب التأسيس | مجال الدالة ومداها ومجال عكسها",
+      "sectionId": "sec_tah_math_v2_22",
+      "isFree": false,
+      "questionCount": 11
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-23-03",
+      "title": "تدريب التأسيس | اللوغاريتم: التعريف والتحويل والدوال والعشري",
+      "sectionId": "sec_tah_math_v2_23",
+      "isFree": false,
+      "questionCount": 15
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-26-02",
+      "title": "تدريب التأسيس | العمليات على المتجهات ومحصّلتها وتحليلها",
+      "sectionId": "sec_tah_math_v2_26",
+      "isFree": false,
+      "questionCount": 15
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-26-03",
+      "title": "تدريب التأسيس | الصورة الإحداثية ومتجه الوحدة في المستوى",
+      "sectionId": "sec_tah_math_v2_26",
+      "isFree": false,
+      "questionCount": 15
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-27-01",
+      "title": "تدريب التأسيس | المستوى القطبي والمسافة بين النقاط القطبية",
+      "sectionId": "sec_tah_math_v2_27",
+      "isFree": false,
+      "questionCount": 15
+    },
+    {
+      "quizId": "quiz_tahmath_v2_fnd_TAH-MATH-VIDEO-27-02",
+      "title": "تدريب التأسيس | التحويل بين الإحداثيات والمعادلات القطبية والديكارتية",
+      "sectionId": "sec_tah_math_v2_27",
+      "isFree": false,
+      "questionCount": 15
+    },
+    {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_20",
+      "title": "تدريب المهارة الرئيسية | الاحتمالات — الجزء 1",
+      "sectionId": "sec_tah_math_v2_20",
+      "isFree": false,
+      "questionCount": 30
+    },
+    {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_21",
+      "title": "تدريب المهارة الرئيسية | حسابات المثلثات — الجزء 1",
+      "sectionId": "sec_tah_math_v2_21",
+      "isFree": false,
+      "questionCount": 30
+    },
+    {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_23",
+      "title": "تدريب المهارة الرئيسية | الدوال الأسية واللوغاريتمية — الجزء 1",
+      "sectionId": "sec_tah_math_v2_23",
+      "isFree": false,
+      "questionCount": 30
+    },
+    {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_26",
+      "title": "تدريب المهارة الرئيسية | المتجهات — الجزء 1",
+      "sectionId": "sec_tah_math_v2_26",
+      "isFree": false,
+      "questionCount": 30
+    },
+    {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_27",
+      "title": "تدريب المهارة الرئيسية | الإحداثيات القطبية والديكارتية — الجزء 1",
+      "sectionId": "sec_tah_math_v2_27",
+      "isFree": false,
+      "questionCount": 30
+    },
+    {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_28",
+      "title": "تدريب المهارة الرئيسية | الإحصاء — الجزء 1",
+      "sectionId": "sec_tah_math_v2_28",
+      "isFree": false,
+      "questionCount": 30
+    },
+    {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_17_part_2",
+      "title": "تدريب المهارة الرئيسية | العلاقات والدوال النسبية — الجزء 2",
+      "sectionId": "sec_tah_math_v2_17",
+      "isFree": false,
+      "questionCount": 30
+    },
+    {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_17_part_3",
+      "title": "تدريب المهارة الرئيسية | العلاقات والدوال النسبية — الجزء 3",
+      "sectionId": "sec_tah_math_v2_17",
+      "isFree": false,
+      "questionCount": 30
+    },
+    {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_18_part_2",
+      "title": "تدريب المهارة الرئيسية | المتتابعات والمتسلسلات — الجزء 2",
+      "sectionId": "sec_tah_math_v2_18",
+      "isFree": false,
+      "questionCount": 30
+    },
+    {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_18_part_3",
+      "title": "تدريب المهارة الرئيسية | المتتابعات والمتسلسلات — الجزء 3",
+      "sectionId": "sec_tah_math_v2_18",
+      "isFree": false,
+      "questionCount": 30
+    },
+    {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_20_part_2",
+      "title": "تدريب المهارة الرئيسية | الاحتمالات — الجزء 2",
+      "sectionId": "sec_tah_math_v2_20",
+      "isFree": false,
+      "questionCount": 30
+    },
+    {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_21_part_2",
+      "title": "تدريب المهارة الرئيسية | حسابات المثلثات — الجزء 2",
+      "sectionId": "sec_tah_math_v2_21",
+      "isFree": false,
+      "questionCount": 30
+    },
+    {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_23_part_2",
+      "title": "تدريب المهارة الرئيسية | الدوال الأسية واللوغاريتمية — الجزء 2",
+      "sectionId": "sec_tah_math_v2_23",
+      "isFree": false,
+      "questionCount": 30
+    },
+    {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_26_part_3",
+      "title": "تدريب المهارة الرئيسية | المتجهات — الجزء 3",
+      "sectionId": "sec_tah_math_v2_26",
+      "isFree": false,
+      "questionCount": 30
+    },
+    {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_27_part_2",
+      "title": "تدريب المهارة الرئيسية | الإحداثيات القطبية والديكارتية — الجزء 2",
+      "sectionId": "sec_tah_math_v2_27",
+      "isFree": false,
+      "questionCount": 30
+    }
+  ]
+}
