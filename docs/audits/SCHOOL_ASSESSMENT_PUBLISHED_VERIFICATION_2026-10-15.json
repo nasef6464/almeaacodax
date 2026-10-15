@@ -1,0 +1,296 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-15",
+  "timezone": "Asia/Riyadh",
+  "status": "VERIFIED_SCOPED",
+  "scope": "School assessment workspace, live bank corrections and material-first result display",
+  "sourceHead": "b2d2590d4039ad9accf8907a3325c30b47f30fba",
+  "pullRequest": "https://github.com/nasef6464/almeaacodax/pull/551",
+  "mergeCommit": "4adfe0aea860428d007c784ccd48609936f17bde",
+  "ci": {
+    "success": 27,
+    "conditionalSkipped": 5,
+    "failure": 0,
+    "pending": 0,
+    "requiredPassed": 3,
+    "checks": [
+      {
+        "name": "Classification + quiz regression contracts",
+        "conclusion": "SKIPPED",
+        "url": "https://github.com/nasef6464/almeaacodax/actions/runs/38735614129/job/116424026609"
+      },
+      {
+        "name": "Apply focused supervisor-student fixes",
+        "conclusion": "SKIPPED",
+        "url": "https://github.com/nasef6464/almeaacodax/actions/runs/38735613877/job/116424025879"
+      },
+      {
+        "name": "Student + teacher + supervisor + parent on exact local build",
+        "conclusion": "SKIPPED",
+        "url": "https://github.com/nasef6464/almeaacodax/actions/runs/38735613490/job/116424075794"
+      },
+      {
+        "name": "Apply focused E2E findings safely",
+        "conclusion": "SKIPPED",
+        "url": "https://github.com/nasef6464/almeaacodax/actions/runs/38735613518/job/116424024645"
+      },
+      {
+        "name": "teaching-board",
+        "conclusion": "SUCCESS",
+        "url": "https://github.com/nasef6464/almeaacodax/actions/runs/38735613589/job/116424025472"
+      },
+      {
+        "name": "live-session-behavior",
+        "conclusion": "SUCCESS",
+        "url": "https://github.com/nasef6464/almeaacodax/actions/runs/38735613662/job/116424023775"
+      },
+      {
+        "name": "live-ai-certification",
+        "conclusion": "SUCCESS",
+        "url": "https://github.com/nasef6464/almeaacodax/actions/runs/38735613563/job/116424021474"
+      },
+      {
+        "name": "Auth + RBAC + assessments + courses + commerce on isolated Mongo",
+        "conclusion": "SUCCESS",
+        "url": "https://github.com/nasef6464/almeaacodax/actions/runs/38735613839/job/116424024125"
+      },
+      {
+        "name": "Full-stack roles + CRUD + school + quiz flows on isolated Mongo",
+        "conclusion": "SUCCESS",
+        "url": "https://github.com/nasef6464/almeaacodax/actions/runs/38735613840/job/116424132112"
+      },
+      {
+        "name": "All authenticated roles — desktop + mobile",
+        "conclusion": "SUCCESS",
+        "url": "https://github.com/nasef6464/almeaacodax/actions/runs/38735613717/job/116424023615"
+      },
+      {
+        "name": "Branch public UI — desktop + mobile",
+        "conclusion": "SUCCESS",
+        "url": "https://github.com/nasef6464/almeaacodax/actions/runs/38735613711/job/116424024416"
+      },
+      {
+        "name": "Core build + architecture",
+        "conclusion": "SUCCESS",
+        "url": "https://github.com/nasef6464/almeaacodax/actions/runs/38735613857/job/116424027413"
+      },
+      {
+        "name": "readiness",
+        "conclusion": "SUCCESS",
+        "url": "https://github.com/nasef6464/almeaacodax/actions/runs/38735613670/job/116424023456"
+      },
+      {
+        "name": "baseline-quality-gate",
+        "conclusion": "SUCCESS",
+        "url": "https://github.com/nasef6464/almeaacodax/actions/runs/38735613611/job/116424026412"
+      },
+      {
+        "name": "validate",
+        "conclusion": "SUCCESS",
+        "url": "https://github.com/nasef6464/almeaacodax/actions/runs/38735613482/job/116424020551"
+      },
+      {
+        "name": "student-data-behavior",
+        "conclusion": "SUCCESS",
+        "url": "https://github.com/nasef6464/almeaacodax/actions/runs/38735613871/job/116424024339"
+      },
+      {
+        "name": "phase1-security-gate",
+        "conclusion": "SUCCESS",
+        "url": "https://github.com/nasef6464/almeaacodax/actions/runs/38735613593/job/116424023940"
+      },
+      {
+        "name": "phase2-builder-gate",
+        "conclusion": "SUCCESS",
+        "url": "https://github.com/nasef6464/almeaacodax/actions/runs/38735613783/job/116424024841"
+      },
+      {
+        "name": "phase4-supervisor-certification",
+        "conclusion": "SUCCESS",
+        "url": "https://github.com/nasef6464/almeaacodax/actions/runs/38735613565/job/116424021704"
+      },
+      {
+        "name": "final-certification",
+        "conclusion": "SUCCESS",
+        "url": "https://github.com/nasef6464/almeaacodax/actions/runs/38735613709/job/116424024665"
+      },
+      {
+        "name": "tracked-secret-hygiene",
+        "conclusion": "SUCCESS",
+        "url": "https://github.com/nasef6464/almeaacodax/actions/runs/38735613503/job/116424020470"
+      },
+      {
+        "name": "Classroom browser group ${{ matrix.group }} (6 independent contexts)",
+        "conclusion": "SKIPPED",
+        "url": "https://github.com/nasef6464/almeaacodax/actions/runs/38735613717/job/116424025850"
+      },
+      {
+        "name": "Cross-phase + handover regression",
+        "conclusion": "SUCCESS",
+        "url": "https://github.com/nasef6464/almeaacodax/actions/runs/38735613877/job/116424024188"
+      },
+      {
+        "name": "Student + assessment regression",
+        "conclusion": "SUCCESS",
+        "url": "https://github.com/nasef6464/almeaacodax/actions/runs/38735613857/job/116424027324"
+      },
+      {
+        "name": "Vercel preview deployment gate",
+        "conclusion": "SUCCESS",
+        "url": "https://github.com/nasef6464/almeaacodax/actions/runs/38735613611/job/116424882830"
+      },
+      {
+        "name": "Isolated supervisor → student school assessment journey",
+        "conclusion": "SUCCESS",
+        "url": "https://github.com/nasef6464/almeaacodax/actions/runs/38735613518/job/116424023082"
+      },
+      {
+        "name": "Auth + security regression",
+        "conclusion": "SUCCESS",
+        "url": "https://github.com/nasef6464/almeaacodax/actions/runs/38735613857/job/116424027231"
+      },
+      {
+        "name": "Admin + schools + reports + payments",
+        "conclusion": "SUCCESS",
+        "url": "https://github.com/nasef6464/almeaacodax/actions/runs/38735613857/job/116424027201"
+      },
+      {
+        "name": "Content + product + admin recovery",
+        "conclusion": "SUCCESS",
+        "url": "https://github.com/nasef6464/almeaacodax/actions/runs/38735613857/job/116424027478"
+      },
+      {
+        "name": "Admin + data integrity regression",
+        "conclusion": "SUCCESS",
+        "url": "https://github.com/nasef6464/almeaacodax/actions/runs/38735613857/job/116424026919"
+      },
+      {
+        "name": "Homepage + admin UX regression",
+        "conclusion": "SUCCESS",
+        "url": "https://github.com/nasef6464/almeaacodax/actions/runs/38735613857/job/116424027215"
+      },
+      {
+        "name": "Production readiness contracts",
+        "conclusion": "SUCCESS",
+        "url": "https://github.com/nasef6464/almeaacodax/actions/runs/38735613857/job/116424027162"
+      }
+    ]
+  },
+  "deployment": {
+    "frontend": {
+      "environment": "Production",
+      "githubDeploymentId": 7093003634,
+      "status": "success",
+      "url": "https://almeaacodax-mno9s9vuc-nasefs-projects-18e6bdb1.vercel.app"
+    },
+    "api": {
+      "status": 200,
+      "commit": "4adfe0aea860",
+      "ready": true,
+      "checkedAt": "2026-10-15T13:03:52.022Z"
+    }
+  },
+  "published": {
+    "checks": [
+      {
+        "name": "published-version-and-owned-audit-scope",
+        "status": "PASS",
+        "materials": 2
+      },
+      {
+        "name": "supervisor-approved-bank-composition",
+        "status": "PASS"
+      },
+      {
+        "name": "one-target-discovery-and-two-mixed-sections",
+        "status": "PASS"
+      },
+      {
+        "name": "real-mobile-runner-applies-bank-correction-and-clears-choice",
+        "status": "PASS"
+      },
+      {
+        "name": "published-student-score-and-material-analysis",
+        "status": "PASS",
+        "score": 40,
+        "materialScores": [
+          33,
+          50
+        ],
+        "questions": 5
+      },
+      {
+        "name": "published-supervisor-summary-roster-selected-evidence-parity",
+        "status": "PASS"
+      },
+      {
+        "name": "published-authenticated-unassigned-supervisor-denied",
+        "status": "PASS"
+      },
+      {
+        "name": "published-durable-retake-replay-latest100-and-old40-preserved",
+        "status": "PASS"
+      },
+      {
+        "name": "published-normal-test-score50",
+        "status": "PASS"
+      },
+      {
+        "name": "published-supervisor-ui-opens-complete-roster-and-selected-material-result",
+        "status": "PASS"
+      }
+    ],
+    "scoreEvidence": {
+      "firstMock": 40,
+      "materials": [
+        33,
+        50
+      ],
+      "latestRetake": 100,
+      "originalMockPreserved": 40,
+      "normal": 50
+    },
+    "browser": {
+      "studentWidth": 390,
+      "supervisorWidth": 1280,
+      "pageErrors": 0
+    },
+    "isolation": {
+      "authenticatedUnassignedSupervisorStatus": 404,
+      "initialUnauthenticatedProbe": 401,
+      "retriedWithFreshAuthenticatedOwnedAccount": true
+    }
+  },
+  "dataSafety": {
+    "onlyOwnedCertificationFixturesWritten": true,
+    "newSupervisorAccounts": 2,
+    "newPrivateQuizzes": 2,
+    "newTechnicalQuestion": 1,
+    "existingAuditStudentUsed": 1,
+    "quizzesUnpublished": 2,
+    "technicalQuestionReturnedToDraft": true,
+    "testSupervisorsDisabled": true,
+    "existingQuestionBankRowsModified": 0,
+    "historicalResultsRegraded": 0,
+    "recordsDeleted": 0,
+    "liveAiProviderCalls": 0,
+    "manualPreviewDeployments": 0
+  },
+  "limitations": [
+    "Production proof is bounded to the described audit fixtures, not a capacity or whole-platform certificate.",
+    "Live AI composition is not certified.",
+    "Legacy result-history filtering by a second material without skill rows remains deferred.",
+    "Broader anonymous-link/Saher/learning-placement consolidation remains outside this school release."
+  ],
+  "withdrawalFollowUp": {
+    "status": "PASS",
+    "merge": "e53015afdec66d7c822d057c2c4c6be27cf21a03",
+    "withdrawnQuizzes": 2,
+    "learnerQuestions": 0,
+    "preservedScores": [
+      40,
+      100
+    ],
+    "productionWrites": 0
+  }
+}
