@@ -265,6 +265,16 @@ quizRouter.get(
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Quiz not found" });
     }
 
+    // Do not leak TAH-MATH V2 drafts by guessing a direct quiz URL. A draft is
+    // visible only through the authenticated staff authoring preview.
+    if (
+      String(legacyQuiz.subjectId || "") === "sub_1777784609152" &&
+      !isStaffRole(req.authUser?.role) &&
+      (legacyQuiz.isPublished !== true || legacyQuiz.approvalStatus !== "approved")
+    ) {
+      return res.status(StatusCodes.NOT_FOUND).json({ message: "Quiz not found" });
+    }
+
     const directedReadAccess = await resolveDirectedQuizReadAccess(legacyQuiz, req.authUser);
     if (!directedReadAccess.allowed) {
       return res.status(directedReadAccess.status).json({

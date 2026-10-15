@@ -1,0 +1,19 @@
+name: TAH-MATH V2 first published training live smoke
+on:
+  pull_request:
+    paths:
+      - 'scripts/live-tah-math-first-published-training-smoke.mjs'
+      - '.github/workflows/tah-math-v2-published-training-smoke.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  published-free-training:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Verify ten approved questions and free foundation training via public API
+        run: node scripts/live-tah-math-first-published-training-smoke.mjs
