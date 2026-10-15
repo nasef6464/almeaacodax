@@ -12,14 +12,12 @@ import { UnifiedQuizBuilder } from './UnifiedQuizBuilder';
 import { MockExamManager } from './MockExamManager';
 import { QuizAssignWidget } from './QuizAssignWidget';
 import { QuizRetakeDialog } from './QuizRetakeDialog';
-import { AssignedTestDetailPanel } from './AssignedTestDetailPanel';
+import {SchoolAssessmentDetailsDialog} from './supervisorTests/SchoolAssessmentDetailsDialog';
+import {SchoolAssessmentReportWorkspace} from './supervisorTests/SchoolAssessmentReportWorkspace';
 import { useSchoolAssessmentCommands } from './supervisorTests/useSchoolAssessmentCommands';
 import { SchoolAssessmentReopenDialog } from './supervisorTests/SchoolAssessmentReopenDialog';
 import { isTrueMockExam } from '../../utils/quizPlacement';
 import type { Quiz, QuizResult, User } from '../../types';
-import { useScopedAssessmentResults } from './supervisorTests/useScopedAssessmentResults';
-import { ScopedAssessmentResultsStatus } from './supervisorTests/ScopedAssessmentResultsStatus';
-import { SchoolAssessmentSummaryPanel } from './supervisorTests/SchoolAssessmentSummaryPanel';
 import { SchoolAssessmentManagementActions } from './supervisorTests/SchoolAssessmentManagementActions';
 import {
   SupervisorTestTabFilter,
@@ -29,10 +27,6 @@ import {
 
 type ViewMode = 'list' | 'create' | 'create_normal' | 'create_mock' | 'analytics' | 'compare';
 
-const DirectedAssessmentReport: React.FC<{quiz: any; studentIds: string[]; actorId: string; studentEvidence?: User[]}> = ({quiz,studentIds,actorId,studentEvidence}) => {
-  const evidence = useScopedAssessmentResults(actorId, quiz.id, true);
-  return <div className="space-y-6"><SchoolAssessmentSummaryPanel quizId={quiz.id} actorId={actorId}/><details className="rounded-xl border p-4"><summary className="cursor-pointer font-bold">تفاصيل المحاولات والأسئلة</summary><p className="my-3 text-sm text-gray-600">هذه التفاصيل تخص المحاولات المحمّلة أدناه؛ ملخص جميع المستهدفين ظاهر بالأعلى.</p><ScopedAssessmentResultsStatus {...evidence}/>{!evidence.loading && !evidence.error && <TestAnalyticsReport quiz={quiz} studentIds={studentIds} resultEvidence={evidence.results} studentEvidence={studentEvidence}/>}</details></div>;
-};
 
 export const SupervisorTestsManager: React.FC<{ resultEvidence?: QuizResult[]; studentEvidence?: User[] }> = ({resultEvidence,studentEvidence}) => {
   const { paths,subjects,skills } = useStore();
@@ -125,7 +119,7 @@ export const SupervisorTestsManager: React.FC<{ resultEvidence?: QuizResult[]; s
   if (viewMode === 'analytics' && selectedQuizId) {
     const quiz = quizzes.find((item) => item.id === selectedQuizId);
     if (!quiz) return null;
-    return <div className="space-y-5"><button onClick={() => setViewMode('list')} className="flex items-center gap-2 font-bold text-gray-500 hover:text-indigo-600"><ArrowRight size={18}/> العودة</button><SchoolAssessmentManagementActions quizId={quiz.id} actorId={user.id} onEdit={()=>setEditingQuiz(quiz)} onReopen={()=>setReopenQuiz(quiz)} onClone={copy=>{useStore.setState(state=>({quizzes:[copy,...state.quizzes.filter(item=>item.id!==copy.id)]}));setEditingQuiz(copy);}}/><DirectedAssessmentReport quiz={quiz} studentIds={scopedStudentIds} actorId={user.id} studentEvidence={studentEvidence}/></div>;
+    return <div className="space-y-5"><button onClick={() => setViewMode('list')} className="flex items-center gap-2 font-bold text-gray-500 hover:text-indigo-600"><ArrowRight size={18}/> العودة</button><SchoolAssessmentManagementActions quizId={quiz.id} actorId={user.id} onEdit={()=>setEditingQuiz(quiz)} onReopen={()=>setReopenQuiz(quiz)} onClone={copy=>{useStore.setState(state=>({quizzes:[copy,...state.quizzes.filter(item=>item.id!==copy.id)]}));setEditingQuiz(copy);}}/><SchoolAssessmentReportWorkspace quizId={quiz.id} actorId={user.id}/></div>;
   }
 
   if (viewMode === 'compare') {
@@ -201,7 +195,7 @@ export const SupervisorTestsManager: React.FC<{ resultEvidence?: QuizResult[]; s
 
       {assignQuiz && <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm"><div className="w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-2xl"><div className="flex items-center justify-between bg-indigo-600 px-5 py-4 text-white"><div><p className="text-xs opacity-75">تحديث المستهدفين</p><h3 className="font-black">{assignQuiz.title}</h3></div><button onClick={() => setAssignQuizId(null)}><X size={18}/></button></div><div className="max-h-[80vh] overflow-y-auto p-5"><QuizAssignWidget quizId={assignQuiz.id} quizTitle={assignQuiz.title} quizKind={assignQuiz.quizKind} scopedGroups={groups.filter((g) => scopedGroupIds.has(g.id)).map((g) => ({id:g.id,name:g.name,studentIds:g.studentIds}))} scopedStudents={scopedStudents.map((s) => ({id:s.id,name:s.name,groupId:s.groupId}))} existingConfig={{targetGroupIds:assignQuiz.targetGroupIds || [],targetUserIds:assignQuiz.targetUserIds || [],dueDate:assignQuiz.dueDate,opensAt:assignQuiz.opensAt,closesAt:assignQuiz.closesAt,maxAttempts:assignQuiz.settings?.maxAttempts}} audienceOnly hideAccessType confirmLabel="حفظ المستهدفين" onCancel={() => setAssignQuizId(null)} onAssign={config=>retarget(assignQuiz.id,config.targetGroupIds,config.targetUserIds)}/></div></div></div>}
 
-      {detailQuiz && <AssignedTestDetailPanel quizId={detailQuiz.id} quizTitle={detailQuiz.title} quizKind={detailQuiz.quizKind} totalQuestions={detailQuiz.questionIds?.length ?? 0} passingScore={detailQuiz.settings?.passingScore ?? 60} dueDate={detailQuiz.dueDate} targetStudents={detailQuiz.stats.targetStudentIds.map((id) => { const s = scopedStudents.find((student) => student.id === id); return {id,name:s?.name || id,groupName:s?.groupName}; })} results={detailQuiz.stats.results} onClose={() => setDetailQuizId(null)} reminderLabel="تذكير من لم يؤدوا الاختبار" onRemindAbsent={()=>runCommand(detailQuiz.id,{operation:'remind',payload:{}})} onAssignToStudent={studentId=>retarget(detailQuiz.id,detailQuiz.targetGroupIds||[],uniqueSupervisorStudentIds([...(detailQuiz.targetUserIds||[]),studentId]))}/>}
+      {detailQuiz && <SchoolAssessmentDetailsDialog key={detailQuiz.id} quizId={detailQuiz.id} title={detailQuiz.title} actorId={user.id} onClose={()=>setDetailQuizId(null)} onRemind={()=>runCommand(detailQuiz.id,{operation:'remind',payload:{}})}/>}
     </div>
   );
 };

@@ -12,6 +12,12 @@ export interface SchoolAssessmentReport {
   skills: SchoolAssessmentDimension[];
   subjectBreakdowns?: (SchoolAssessmentDimension & {sections:SchoolAssessmentDimension[];skills:SchoolAssessmentDimension[]})[];
 }
+export type SchoolAssessmentLearnerStatus='all'|'completed'|'not_completed'|'needs_support';
+export interface SchoolAssessmentLearnerQuery {page?:number;limit?:number;status?:SchoolAssessmentLearnerStatus;search?:string}
+export interface SchoolAssessmentLearnerPage {
+ learners:{studentId:string;name:string;result:{id:string;score:number;passed?:boolean;date?:string;attemptNumber?:number}|null}[];
+ pagination:{page:number;limit:number;total:number;totalPages:number};
+}
 import type {Quiz} from '../types';
 export interface SchoolAssessmentCompositionSpec {
   kind:'normal'|'mock';pathId:string;prompt?:string;

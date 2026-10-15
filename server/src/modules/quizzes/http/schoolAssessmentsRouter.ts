@@ -8,6 +8,7 @@ import { cloneSchoolAssessment,schoolAssessmentContentLocked } from '../applicat
 import {schoolCompositionSchema,composeSchoolAssessment,type SchoolSpecInterpreter} from '../application/schoolAssessmentComposition.js';
 import {resolveSchoolCompositionContext} from '../application/schoolAssessmentCompositionScope.js';
 import {executeSchoolAssessmentCommand} from '../application/schoolAssessmentCommands.js';
+import {schoolAssessmentLearnersQuery,readSchoolAssessmentLearners,readSchoolAssessmentLearnerResult} from '../application/schoolAssessmentLearners.js';
 
 export function createSchoolAssessmentsRouter(interpret?:(req:any,input:Parameters<SchoolSpecInterpreter>[0])=>Promise<unknown>){
 const schoolAssessmentsRouter = Router();
@@ -21,6 +22,15 @@ schoolAssessmentsRouter.post('/compose',asyncHandler(async(req,res)=>{
 schoolAssessmentsRouter.get('/:id/report',asyncHandler(async(req,res)=>{
   const context=await resolveSchoolAssessmentContext(req.authUser!,String(req.params.id));
   res.set('Cache-Control','private, no-store').json(await buildSchoolAssessmentReport(context));
+}));
+schoolAssessmentsRouter.get('/:id/learners',asyncHandler(async(req,res)=>{
+  const query=schoolAssessmentLearnersQuery.parse(req.query);
+  const context=await resolveSchoolAssessmentContext(req.authUser!,String(req.params.id));
+  res.set('Cache-Control','private, no-store').json(await readSchoolAssessmentLearners(context,query));
+}));
+schoolAssessmentsRouter.get('/:id/results/:resultId',asyncHandler(async(req,res)=>{
+  const context=await resolveSchoolAssessmentContext(req.authUser!,String(req.params.id));
+  res.set('Cache-Control','private, no-store').json(await readSchoolAssessmentLearnerResult(context,String(req.params.resultId)));
 }));
 schoolAssessmentsRouter.get('/:id/context',asyncHandler(async(req,res)=>{
   const context = await resolveSchoolAssessmentContext(req.authUser!,String(req.params.id));

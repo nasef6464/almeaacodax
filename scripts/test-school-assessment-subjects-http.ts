@@ -53,6 +53,12 @@ try{
  assert.equal(summary.subjectBreakdowns.find((s:any)=>s.id==='science').skills.length,1);
  assert.ok(summary.subjectBreakdowns.every((s:any)=>s.sections.every((section:any)=>section.subjectId===s.id)));
  assert.ok(!JSON.stringify(summary).includes('questionReview'));
+ const roster=await json(await request(supervisor,'/school-assessments/'+quizId+'/learners'));
+ assert.equal(roster.pagination.total,2);assert.equal(roster.learners.find((row:any)=>row.studentId===String(student._id)).result.score,40);
+ assert.ok(!JSON.stringify(roster).includes('questionReview'));
+ const selected=await json(await request(supervisor,'/school-assessments/'+quizId+'/results/'+first._id));
+ assert.equal(selected.result.score,40);assert.deepEqual(selected.result.subjectResults,first.subjectResults);
+ assert.equal(selected.result.questionReview[0].text,first.questionReview[0].text);
  const frozen=await QuizResultModel.findById(first._id).lean();
  await SubjectModel.updateOne({_id:'math'},{$set:{name:'اسم جديد'}});await QuestionModel.updateOne({id:'q1'},{$set:{text:'نص جديد'}});
  assert.deepEqual(await report(),summary,'Saved material names/counts do not follow later taxonomy edits');

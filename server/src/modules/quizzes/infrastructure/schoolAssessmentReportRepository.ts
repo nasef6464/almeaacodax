@@ -1,6 +1,6 @@
 import type { PipelineStage } from 'mongoose';
 import { UserModel } from '../../../models/User.js';
-import { QuizResultModel } from '../../../models/QuizResult.js';
+import {schoolAssessmentAudienceEvidence} from './schoolAssessmentAudienceEvidence.js';
 
 export async function readSchoolAssessmentReport(targetPredicate: Record<string,unknown>, quizId: string) {
   const dimension = (field:string, id:string, label:string, questions:string, correct:string,counts=false): PipelineStage.FacetPipelineStage[] => [
@@ -15,17 +15,7 @@ export async function readSchoolAssessmentReport(targetPredicate: Record<string,
     {$sort:{id:1}},
   ];
   const pipeline:PipelineStage[] = [
-    {$match:targetPredicate},
-    {$project:{studentId:{$toString:{$cond:[{$in:[{$ifNull:['$id',null]},[null,'',0,false]]},'$_id','$id']}}}},
-    {$group:{_id:'$studentId'}},
-    {$lookup:{from:QuizResultModel.collection.name,localField:'_id',foreignField:'userId',as:'evidence',pipeline:[
-      {$match:{quizId,learningContext:'school_assessment'}},
-      {$set:{reportDate:{$convert:{input:'$date',to:'date',onError:'$createdAt',onNull:'$createdAt'}}}},
-      {$sort:{reportDate:-1,createdAt:-1,_id:-1}},{$limit:1},
-      // Never carry question bodies, answers or learner names into a summary.
-      {$project:{score:1,passed:1,totalQuestions:1,skillsAnalysis:1,sectionResults:1,subjectResults:1,'quizSnapshot.subjectId':1}},
-    ]}},
-    {$unwind:{path:'$evidence',preserveNullAndEmptyArrays:true}},
+    ...schoolAssessmentAudienceEvidence(targetPredicate,quizId,{score:1,passed:1,totalQuestions:1,skillsAnalysis:1,sectionResults:1,subjectResults:1,'quizSnapshot.subjectId':1}),
     {$facet:{
       totals:[{$group:{_id:null,targeted:{$sum:1},completed:{$sum:{$cond:[{$ifNull:['$evidence',false]},1,0]}},
         average:{$avg:'$evidence.score'},highest:{$max:'$evidence.score'},lowest:{$min:'$evidence.score'},passed:{$sum:{$cond:['$evidence.passed',1,0]}}}}],

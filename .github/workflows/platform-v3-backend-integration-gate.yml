@@ -104,6 +104,7 @@ jobs:
         run: |
           server/node_modules/.bin/tsx scripts/test-school-assessment-workspace.ts
           server/node_modules/.bin/tsx scripts/test-school-assessment-report.ts
+          server/node_modules/.bin/tsx scripts/test-school-assessment-learners.ts
           server/node_modules/.bin/tsx scripts/test-school-assessment-editing.ts
           server/node_modules/.bin/tsx scripts/test-school-assessment-teacher-authority.ts
           server/node_modules/.bin/tsx scripts/test-school-assessment-composition.ts
