@@ -30,3 +30,13 @@ const normal=buildQuizSubmissionSubjectResults({quiz:{subjectId:'math'},orderedQ
 assert.equal(normal[0].total,3);
 assert.equal(normal[0].unanswered,1);
 console.log('PASS material analysis: path mock3+2,weighted40,wrong/unanswered,multi-skill dedup,section mapping,normal and unknown attribution');
+
+// A timed Qudurat section may mix verbal and quantitative questions. A section
+// total and a material total are independent dimensions, never synonyms.
+const mixedQuiz={...quiz,mockExam:{enabled:true,sections:[{id:'mixed',title:'القسم الأول',subjectId:'',questionIds:questions.map(q=>q.id)}]}};
+assert.deepEqual(buildQuizSubmissionSubjectResults({quiz:mixedQuiz,orderedQuestions:questions,questionReview:review.questionReview,subjectNameById}),subjects);
+const mixedSection=buildQuizSubmissionSectionResults({quiz:mixedQuiz,orderedQuestions:questions,answers,subjectNameById})!;
+assert.equal(mixedSection.length,1);assert.equal(mixedSection[0].total,5);assert.equal(mixedSection[0].score,40);
+assert.equal(mixedSection[0].subjectId,'','Mixed section must not be attributed to its first material');
+assert.equal(mixedSection[0].correct,2);assert.equal(mixedSection[0].wrong,2);assert.equal(mixedSection[0].unanswered,1);
+console.log('PASS one mixed-material section: section40 independent from material33/50; each question counted once');
