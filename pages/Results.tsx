@@ -1,3 +1,5 @@
+import {QuizSectionResults} from '../components/quiz/QuizSectionResults';
+import {QuizAnswerDistribution} from '../components/quiz/QuizAnswerDistribution';
 import React from 'react';
 import {
   ArrowRight,
@@ -37,6 +39,7 @@ import { shareTextSummary } from '../utils/shareText';
 import { flattenMockExamQuestionIds } from '../utils/mockExam';
 import { hasInlineQuestionMedia, normalizeQuestionHtml } from '../utils/questionHtml';
 import { buildQuizRouteWithContext } from '../utils/quizLinks';
+import {QuizSubjectResults} from '../components/quiz/QuizSubjectResults';
 import { buildCanonicalFoundationSkillActions, buildSkillReportActionLink } from '../utils/skillActionLinks';
 import { getLearnerOptionLabel, getQuizOptionButtonHeightClass, getQuizOptionGridClass, getQuizQuestionMapButtonClass, resolveQuestionFromBank, toQuestionReviewFromBank, usesImageEmbeddedOptions } from '../utils/quizPresentation';
 import { getFriendlyResultMessage, getMasteryClasses, getScoreVisualTone, getSkillPriorityLabel, getStudentFriendlyChecklist } from '../components/results/resultScorePresentation';
@@ -782,56 +785,13 @@ const Results: React.FC = () => {
                 <SimpleResultStat label="متوسط السرعة" value={averageTimeSeconds > 0 ? `${averageTimeSeconds} ث/سؤال` : (latestResult.timeSpent && latestResult.timeSpent.includes('أقل من دقيقة') ? '< 5 ث/سؤال' : 'سريع')} />
               </div>
 
-              {latestResult.unanswered > 0 ? (
-                <div className="rounded-xl border border-amber-200 bg-amber-50/90 px-3.5 py-2 text-xs font-bold text-amber-800 flex items-center justify-between">
-                  <span>يوجد {latestResult.unanswered} سؤال لم تتم الإجابة عليه في هذه المحاولة</span>
-                  <span className="rounded-full bg-white px-2 py-0.5 text-[11px] font-black text-amber-700">تنبيه</span>
-                </div>
-              ) : null}
+              <QuizAnswerDistribution result={latestResult}/>
             </div>
           </div>
 
           {/* Section results for mock exams */}
-          {latestResult.sectionResults && latestResult.sectionResults.length > 0 ? (
-            <div className="mt-5 rounded-2xl border border-violet-100 bg-white/95 p-4 shadow-xs">
-              <div className="mb-3 flex items-center gap-2">
-                <BarChart3 size={16} className="text-violet-600" />
-                <h3 className="text-sm font-black text-gray-900">أداؤك لكل قسم</h3>
-              </div>
-              <div className="grid gap-3 sm:grid-cols-2">
-                {latestResult.sectionResults.map((sec) => {
-                  const tone =
-                    sec.score >= 80
-                      ? { bar: 'bg-emerald-500', text: 'text-emerald-700', bg: 'bg-emerald-50' }
-                      : sec.score >= 50
-                      ? { bar: 'bg-amber-500', text: 'text-amber-700', bg: 'bg-amber-50' }
-                      : { bar: 'bg-red-500', text: 'text-red-700', bg: 'bg-red-50' };
-                  return (
-                    <div key={sec.sectionId} className="rounded-xl border border-gray-100 bg-gray-50/70 p-3">
-                      <div className="mb-2 flex items-center justify-between gap-2">
-                        <span className="text-sm font-black text-gray-800 truncate">{sec.sectionName}</span>
-                        <span className={`shrink-0 rounded-full px-2.5 py-0.5 text-xs font-black ${tone.bg} ${tone.text}`}>
-                          {sec.score}%
-                        </span>
-                      </div>
-                      <div className="h-2 w-full overflow-hidden rounded-full bg-gray-200">
-                        <div
-                          className={`h-full transition-all duration-500 ${tone.bar}`}
-                          style={{ width: `${sec.score}%` }}
-                        />
-                      </div>
-                      <div className="mt-2 flex gap-3 text-[11px] font-bold text-gray-500">
-                        <span>{sec.total} سؤال</span>
-                        <span className="text-emerald-600 font-black">✓ {sec.correct}</span>
-                        <span className="text-red-500 font-black">✗ {sec.wrong}</span>
-                        {sec.unanswered > 0 ? <span className="text-amber-500 font-black">⊘ {sec.unanswered}</span> : null}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          ) : null}
+          <QuizSubjectResults result={latestResult}/>
+          <QuizSectionResults sections={latestResult.sectionResults}/>
 
           {/* Primary Action Buttons - Ordered for optimal student journey */}
           <div className="mt-4 grid grid-cols-2 gap-2 border-t border-slate-200/80 pt-3 sm:flex sm:flex-wrap sm:items-center">

@@ -3,11 +3,18 @@ import { UserModel } from "../../../models/User.js";
 import { buildQuizReportStudentScope } from "./quizReportStudentScope.js";
 import { resolveSupervisorSchoolReportScope as resolveSupervisorSchoolReportScopePolicy } from "./quizSupervisorReportScope.js";
 import { quizSupervisorScopeRepository } from "../infrastructure/quizSupervisorScopeRepository.js";
+import {resolveSchoolDirectoryScope} from '../../schools/application/schoolDirectoryScope.js';
 
 const STUDENT_DASHBOARD_SELECT = "id name email schoolId groupIds avatar isActive role";
 
-export const resolveSupervisorSchoolReportScope = async (authUser: any) =>
-  resolveSupervisorSchoolReportScopePolicy(authUser, quizSupervisorScopeRepository);
+export const resolveSupervisorSchoolReportScope = async (authUser: any) => {
+  if(authUser.role==='supervisor'){
+    const scope=await resolveSchoolDirectoryScope({id:String(authUser.id||authUser._id||''),role:authUser.role,
+      schoolId:authUser.schoolId,groupIds:authUser.groupIds});
+    return {schoolIds:scope.schoolIds,groupIds:scope.groupIds};
+  }
+  return resolveSupervisorSchoolReportScopePolicy(authUser, quizSupervisorScopeRepository);
+};
 
 export const resolveScopedStudentQuery = async (
   authUser: any,

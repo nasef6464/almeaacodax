@@ -6,18 +6,21 @@ const root = process.cwd();
 const routeSource = fs.readFileSync(path.join(root, 'server/src/routes/quiz.routes.ts'), 'utf8').replace(/\r\n/g, '\n');
 const moduleSource = fs.readFileSync(path.join(root, 'server/src/modules/quizzes/application/quizSubmissionDirectedScope.ts'), 'utf8').replace(/\r\n/g, '\n');
 const integrationGateSource = fs.readFileSync(path.join(root, 'server/src/scripts/backendIntegrationGate.ts'), 'utf8').replace(/\r\n/g, '\n');
+const accessSource=fs.readFileSync(path.join(root,'server/src/modules/quizzes/application/quizAccessPolicy.ts'),'utf8');
+const liveSource=fs.readFileSync(path.join(root,'server/src/routes/live-exams.routes.ts'),'utf8');
 const checks = [];
 const check = (name, assertion) => {
   try { assertion(); checks.push({ name, status: 'PASS' }); }
   catch (error) { checks.push({ name, status: 'FAIL', details: error instanceof Error ? error.message : String(error) }); }
 };
 
-check('directed submission scope is delegated while database verification stays in the route', () => {
-  assert.ok(routeSource.includes('import { buildQuizSubmissionDirectedScope } from "../modules/quizzes/application/quizSubmissionDirectedScope.js";'));
-  assert.ok(routeSource.includes('const directedScope = buildQuizSubmissionDirectedScope({'));
-  assert.ok(routeSource.includes('if (directedScope.requiresGroupMembershipCheck) {'));
-  assert.ok(routeSource.includes('GroupModel.findOne({'));
-  assert.ok(routeSource.includes('message: "This quiz is not assigned to you"'));
+check('read, start and submit share fresh directed audience verification', () => {
+  assert.ok(routeSource.includes('if (!(await canSubmitQuiz(quiz, authUser, payload.source)))'));
+  assert.ok(accessSource.includes('const targeted = (await resolveDirectedQuizReadAccess(quiz,user)).allowed;'));
+  assert.ok(accessSource.includes('const user = await resolveAuthUserByAuthId('));
+  assert.ok(accessSource.includes('GroupModel.findOne({'));
+  assert.ok(liveSource.includes('return (await resolveDirectedQuizReadAccess(quiz,authUser)).allowed;'));
+  assert.ok(liveSource.includes('if (quiz.isPublished !== true) return false;'));
 });
 
 check('hidden school-directed assessments are visible only after server audience verification', () => {

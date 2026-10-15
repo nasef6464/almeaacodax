@@ -1,0 +1,105 @@
+import assert from 'node:assert/strict';
+import { isolatedMongo } from './school-assessment-test-fixture.js';
+
+const close = await isolatedMongo();
+console.log('Isolated school assessment database ready');
+let server:any;
+try {
+  const { UserModel } = await import('../server/src/models/User.js');
+  const { GroupModel } = await import('../server/src/models/Group.js');
+  const { QuizModel } = await import('../server/src/models/Quiz.js');
+  const { TeachingAssignmentModel } = await import('../server/src/models/TeachingAssignment.js');
+  const {SchoolMembershipModel}=await import('../server/src/models/SchoolMembership.js');
+  const {SchoolContractModel}=await import('../server/src/models/SchoolContract.js');
+  const policy = await import('../server/src/modules/quizzes/application/schoolAssessmentManagementPolicy.js');
+  const user = async (name: string, role: string, extra = {}) => {
+    const record = await UserModel.create({ name, role, email: name+'@isolated.test', passwordHash: 'test', isActive: true, ...extra });
+    return { ...record.toObject(), id: String(record._id) };
+  };
+  const admin = await user('admin','admin');
+  const school = await GroupModel.create({name:'school',type:'SCHOOL',ownerId:admin.id});
+  const a = await GroupModel.create({name:'a',type:'CLASS',parentId:String(school._id),ownerId:admin.id});
+  const b = await GroupModel.create({name:'b',type:'CLASS',parentId:String(school._id),ownerId:admin.id});
+  const supervisor = await user('supervisor','supervisor',{groupIds:[String(a._id)]});
+  const director = await user('director','school_admin',{schoolId:String(school._id)});
+  const directorMembership=await SchoolMembershipModel.create({userId:director.id,schoolId:String(school._id),role:'school_admin',permissions:['SCHOOL_ASSESSMENTS_MANAGE','SCHOOL_REPORTS_AGGREGATE_VIEW']});
+  const contract=await SchoolContractModel.create({schoolId:String(school._id),modules:['SCHOOL_CORE','SCHOOL_ASSESSMENTS']});
+  const teacher = await user('teacher','teacher',{schoolId:String(school._id)});
+  const learner = await user('learner','student',{schoolId:String(school._id),groupIds:[String(a._id)]});
+  const other = await user('other','student',{schoolId:String(school._id),groupIds:[String(b._id)]});
+  const outsider = await user('outsider','supervisor');
+  const parent = await user('parent','parent');
+  await GroupModel.updateOne({_id:a._id},{$set:{studentIds:[learner.id]}});
+  await GroupModel.updateOne({_id:b._id},{$set:{studentIds:[other.id]}});
+  const quiz = await QuizModel.create({_id:'scoped-test',title:'test',pathId:'math',subjectId:'math',ownerId:supervisor.id,createdBy:supervisor.id,
+    targetGroupIds:[String(a._id)],isPublished:true});
+  let context = await policy.resolveSchoolAssessmentContext(supervisor,quiz._id);
+  assert.equal(context.canManage,true);
+  assert.equal(await UserModel.countDocuments(context.targetPredicate),1);
+  await policy.assertSchoolAssessmentOperation(context,'retarget');
+  await assert.rejects(()=>policy.resolveSchoolAssessmentContext(outsider,quiz._id));
+  await assert.rejects(()=>policy.resolveSchoolAssessmentContext(learner,quiz._id));
+  await assert.rejects(()=>policy.resolveSchoolAssessmentContext(parent,quiz._id));
+  context = await policy.resolveSchoolAssessmentContext(director,quiz._id);
+  assert.equal(context.canManage,true);
+  await SchoolMembershipModel.updateOne({_id:directorMembership._id},{$set:{permissions:[]}});
+  await assert.rejects(()=>policy.resolveSchoolAssessmentContext(director,quiz._id));
+  await SchoolMembershipModel.updateOne({_id:directorMembership._id},{$set:{permissions:['SCHOOL_ASSESSMENTS_MANAGE','SCHOOL_REPORTS_AGGREGATE_VIEW']}});
+  await SchoolContractModel.updateOne({_id:contract._id},{$set:{status:'inactive'}});
+  await assert.rejects(()=>policy.resolveSchoolAssessmentContext(director,quiz._id));
+  await SchoolContractModel.updateOne({_id:contract._id},{$set:{status:'active'}});
+  // A whole-school test is readable by a class supervisor only for that class,
+  // but the supervisor may not mutate the whole school's definition/audience.
+  await QuizModel.updateOne({_id:quiz._id},{$set:{targetGroupIds:[String(school._id)],ownerId:String(school._id),createdBy:admin.id}});
+  context = await policy.resolveSchoolAssessmentContext(supervisor,quiz._id);
+  assert.equal(await UserModel.countDocuments(context.targetPredicate),1);
+  assert.equal(context.canManage,false);
+  await assert.rejects(()=>policy.assertSchoolAssessmentOperation(context,'reopen'));
+  const assignment = await TeachingAssignmentModel.create({teacherId:teacher.id,schoolId:String(school._id),classId:String(a._id),subjectId:'math'});
+  context = await policy.resolveSchoolAssessmentContext(teacher,quiz._id);
+  assert.equal(await UserModel.countDocuments(context.targetPredicate),1);
+  assert.equal(context.canManage,false);
+  await QuizModel.updateOne({_id:quiz._id},{$set:{subjectId:'chem'}});
+  await assert.rejects(()=>policy.resolveSchoolAssessmentContext(teacher,quiz._id));
+  await QuizModel.updateOne({_id:quiz._id},{$set:{subjectId:'math'}});
+  await TeachingAssignmentModel.create({teacherId:teacher.id,schoolId:String(school._id),classId:String(b._id),subjectId:'chem'});
+  const wrongPair=await QuizModel.create({_id:'wrong-class-subject',title:'wrong pair',pathId:'math',subjectId:'math',targetGroupIds:[String(b._id)],ownerId:teacher.id,createdBy:teacher.id});
+  await assert.rejects(()=>policy.resolveSchoolAssessmentContext(teacher,wrongPair._id));
+  const teacherMembership=await SchoolMembershipModel.create({userId:teacher.id,schoolId:String(school._id),role:'teacher',status:'inactive'});
+  await assert.rejects(()=>policy.resolveSchoolAssessmentContext(teacher,quiz._id));
+  await SchoolMembershipModel.updateOne({_id:teacherMembership._id},{$set:{status:'active'}});
+  await TeachingAssignmentModel.updateOne({_id:assignment._id},{$set:{status:'inactive'}});
+  await assert.rejects(()=>policy.resolveSchoolAssessmentContext(teacher,quiz._id));
+  await assert.rejects(()=>policy.resolveSchoolAssessmentContext({...outsider,schoolId:String(school._id)},quiz._id));
+  assert.equal((await policy.resolveSchoolAssessmentContext(admin,quiz._id)).canManage,true);
+  // School discovery is the existing catalog → school-tests flow, not a second list.
+  Object.assign(process.env,{AI_PROVIDER:'none',REDIS_URL:'',NOTIFICATION_QUEUE_ENABLED:'false',RATE_LIMIT_REDIS_ENABLED:'false',SENTRY_DSN:''});
+  const {PathModel}=await import('../server/src/models/Path.js');
+  const {QuestionModel}=await import('../server/src/models/Question.js');
+  await PathModel.create({_id:'math',name:'رياضيات',isActive:true});
+  await QuestionModel.create({id:'school-question',subject:'math',subjectId:'math',pathId:'math',text:'ما ناتج ١ + ١؟',options:['٢','٣'],correctOptionIndex:0});
+  await QuizModel.updateOne({_id:quiz._id},{$set:{approvalStatus:'approved',showOnPlatform:false}});
+  await QuizModel.create({_id:'named-only',title:'named',pathId:'math',subjectId:'math',targetUserIds:[learner.id],isPublished:true,approvalStatus:'approved',showOnPlatform:false});
+  await QuizModel.create({_id:'class-only',title:'class',pathId:'math',subjectId:'math',targetGroupIds:[String(a._id)],isPublished:true,approvalStatus:'approved',showOnPlatform:false});
+  await QuizModel.updateMany({_id:{$in:[quiz._id,'named-only','class-only']}},{$set:{questionIds:['school-question']}});
+  const {createApp}=await import('../server/src/app.js');
+  console.log('School assessment authority passed; starting HTTP discovery checks');
+  const {signAccessToken}=await import('../server/src/utils/jwt.js');
+  server=createApp().listen(0,'127.0.0.1');
+  await new Promise<void>(resolve=>server.once('listening',resolve));
+  const base='http://127.0.0.1:'+server.address().port+'/api';
+  const request=async(actor:any,path:string)=>fetch(base+path,{headers:{authorization:'Bearer '+signAccessToken(actor)},signal:AbortSignal.timeout(10000)});
+  const quizIds=async(actor:any)=>{
+    const response=await request(actor,'/quizzes?limit=100');assert.equal(response.status,200);
+    const body:any=await response.json();return (Array.isArray(body)?body:body.quizzes||body.data||[]).map((q:any)=>q.id||q._id);
+  };
+  assert.deepEqual((await quizIds(learner)).sort(),['named-only','class-only',quiz._id].sort());
+  assert.deepEqual(await quizIds(other),[quiz._id]);
+  const foreignStudent=await user('foreign-learner','student');
+  assert.deepEqual(await quizIds(foreignStudent),[]);
+  assert.equal((await request(supervisor,'/school-assessments/'+quiz._id+'/report')).status,200);
+  assert.equal((await request(outsider,'/school-assessments/'+quiz._id+'/report')).status,404);
+  assert.equal((await request(learner,'/school-assessments/'+quiz._id+'/report')).status,403);
+  console.log('PASS school context: directed audience, class/school isolation, fresh assignment, spoofed scope, operations');
+  console.log('PASS HTTP school discovery: named learner,class,school,unrelated learner and report role guards');
+} finally { if(server)await new Promise<void>(resolve=>server.close(()=>resolve()));await close(); }

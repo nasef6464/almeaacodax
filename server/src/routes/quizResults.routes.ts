@@ -49,7 +49,7 @@ const buildPaginationPayload = (page: number, limit: number, total: number) => {
 };
 
 const buildResultProjection =
-  "id userId quizId quizTitle score passed attemptNumber source learningContext schoolId classId quizSnapshot.title quizSnapshot.mode quizSnapshot.quizKind quizSnapshot.pathId quizSnapshot.subjectId totalQuestions correctAnswers wrongAnswers unanswered timeSpentSeconds timeSpent date skillsAnalysis sectionResults createdAt updatedAt";
+  "id userId quizId quizTitle score passed attemptNumber source learningContext schoolId classId quizSnapshot.title quizSnapshot.mode quizSnapshot.quizKind quizSnapshot.pathId quizSnapshot.subjectId totalQuestions correctAnswers wrongAnswers unanswered timeSpentSeconds timeSpent date skillsAnalysis sectionResults subjectResults createdAt updatedAt";
 
 const buildFilter = (query: z.infer<typeof quizResultsQuerySchema>, userId?: string) => {
   const filter: Record<string, unknown> = { ...buildQuizResultLearningContextFilter(query.learningContext) };

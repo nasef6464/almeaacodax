@@ -18,7 +18,9 @@ check('submission context remains pure while related label reads are delegated',
   assert.ok(routeSource.includes('const { skillById, subjectNameById, sectionNameById } = buildQuizSubmissionReadModelContext({'));
   assert.ok(routeSource.includes('{ "subSkills.id": { $in: skillIds } }'));
   assert.ok(routeSource.includes('const skillDocumentQuery = buildDocumentsByIdsQuery(skillIds);'));
-  assert.ok(routeSource.includes('readQuizSubmissionTaxonomy(skills, quiz)'));
+  assert.ok(routeSource.includes('readQuizSubmissionTaxonomy(skills, quiz,orderedQuestions)'));
+  assert.ok(routeSource.includes('{ _id: { $in: skillIds } }'));
+  assert.ok(taxonomySource.includes('orderedQuestions.map(question=>String(question.subjectId'));
   assert.ok(taxonomySource.includes('SubjectModel.find({ _id: { $in: subjectIds } })'));
   assert.ok(taxonomySource.includes('SectionModel.find({ _id: { $in: sectionIds } })'));
   assert.ok(taxonomySource.includes('skill.subjectId || quiz.subjectId'));

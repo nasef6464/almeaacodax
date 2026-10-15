@@ -5,6 +5,7 @@ import { Quiz, QuizResult, SkillGap, QuizQuestionReview, User } from '../../type
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { api } from '../../services/api';
 import { assessmentSkillSummaries } from './supervisorTests/assessmentSkillEvidence';
+import {assessmentSectionSummaries} from './supervisorTests/assessmentSectionEvidence';
 import { AssessmentClassComparison } from './supervisorTests/AssessmentClassComparison';
 import { assessmentReportStudentIds, latestAssessmentResults, studentBelongsToReportGroup } from './supervisorTests/assessmentReportEvidence';
 
@@ -151,31 +152,7 @@ export const TestAnalyticsReport: React.FC<{ quiz?: Quiz; quizzes?: Quiz[]; stud
   }, [results]);
 
   // 6. Section Analysis (للمحاكيات التي تحتوي على sectionResults)
-  const sectionAnalysis = useMemo(() => {
-    const sectionMap = new Map<string, { name: string; scoreSum: number; passCount: number; count: number }>();
-    results.forEach((result) => {
-      const sections = (result as any).sectionResults || [];
-      sections.forEach((sec: any) => {
-        const id = String(sec.sectionId);
-        if (!sectionMap.has(id)) {
-          sectionMap.set(id, { name: sec.sectionName || id, scoreSum: 0, passCount: 0, count: 0 });
-        }
-        const entry = sectionMap.get(id)!;
-        entry.scoreSum += Number(sec.score || 0);
-        entry.passCount += sec.score >= 60 ? 1 : 0;
-        entry.count += 1;
-      });
-    });
-    return Array.from(sectionMap.entries())
-      .map(([sectionId, data]) => ({
-        sectionId,
-        sectionName: data.name,
-        attempts: data.count,
-        avgScore: data.count > 0 ? Math.round(data.scoreSum / data.count) : 0,
-        passRate: data.count > 0 ? Math.round((data.passCount / data.count) * 100) : 0,
-      }))
-      .sort((a, b) => a.avgScore - b.avgScore); // الأضعف أولاً
-  }, [results]);
+  const sectionAnalysis = useMemo(() => assessmentSectionSummaries(results),[results]);
 
   const handlePrint = () => {
     window.print();
@@ -436,7 +413,7 @@ export const TestAnalyticsReport: React.FC<{ quiz?: Quiz; quizzes?: Quiz[]; stud
                       ? { bar: 'bg-amber-400', text: 'text-amber-700', chip: 'bg-amber-50 text-amber-700' }
                       : { bar: 'bg-red-500', text: 'text-red-700', chip: 'bg-red-50 text-red-700' };
                   return (
-                    <div key={sec.sectionId} className="rounded-xl border border-gray-100 bg-gray-50/60 p-4">
+                    <div key={sec.key} className="rounded-xl border border-gray-100 bg-gray-50/60 p-4">
                       <div className="flex items-center justify-between gap-3 mb-2">
                         <span className="font-black text-gray-800 text-sm truncate">{sec.sectionName}</span>
                         <div className="flex items-center gap-2 shrink-0">

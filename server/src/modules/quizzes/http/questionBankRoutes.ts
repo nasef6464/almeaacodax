@@ -1,3 +1,4 @@
+import { assertSchoolQuestionBankWrite } from '../application/schoolAssessmentQuestionEvidence.js';
 import { Router } from "express";
 import { StatusCodes } from "http-status-codes";
 import mongoose from "mongoose";
@@ -363,6 +364,7 @@ questionBankRouter.delete(
       return res.status(StatusCodes.NOT_FOUND).json({ message: "Question not found" });
     }
     await assertManagedContentScope(req.authUser!, existing.toObject());
+    await assertSchoolQuestionBankWrite(existing, true);
     const deleted = await QuestionModel.findOneAndDelete({ _id: existing._id });
     if (!deleted) return res.status(StatusCodes.NOT_FOUND).json({ message: "Question not found" });
 

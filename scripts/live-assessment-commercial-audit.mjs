@@ -195,8 +195,12 @@ async function main() {
     if (!createdQuizId) throw new Error("Published assessment was not returned by the API after builder save.");
 
     // Journey 5: reopen the published definition through the manager facade,
-    // preserve the existing selection, update one setting, then reopen after
-    // reload. This proves the real edit UI and the immutable-version read path.
+    // preserve the frozen content/settings, update the title, then reopen after
+    // reload. Timing changes require an independent copy of a published test.
+    const originalTimeLimit=Number(created.settings?.timeLimit);
+    if(!Number.isFinite(originalTimeLimit))throw new Error("Published assessment has no persisted time limit");
+    const frozenTiming=await api(admin.page,`/quizzes/${createdQuizId}`,{method:"PATCH",body:JSON.stringify({settings:{...created.settings,timeLimit:originalTimeLimit+1}})});
+    if(frozenTiming.status!==409)throw new Error(`Published timing mutation must be rejected: ${frozenTiming.status}`);
     const editedTitle = `${marker} (edited)`;
     await admin.page.reload({ waitUntil: "domcontentloaded", timeout: 60000 });
     await admin.page.getByTestId(`assessment-manager-edit-${createdQuizId}`).click();
@@ -216,7 +220,6 @@ async function main() {
       throw new Error("Published edit did not retain the second-page selected question in the Builder.");
     }
     await admin.page.getByTestId("assessment-builder-next").click();
-    await admin.page.getByTestId("assessment-builder-time-limit").fill("45");
     await admin.page.getByTestId("assessment-builder-next").click();
     const editResponsePromise = admin.page.waitForResponse(
       (response) => response.request().method() === "PATCH" && new URL(response.url()).pathname.endsWith(`/api/quizzes/${createdQuizId}`),
@@ -248,8 +251,8 @@ async function main() {
       throw new Error("Published edit did not preserve the second-page question after manager reload.");
     }
     await admin.page.getByTestId("assessment-builder-next").click();
-    if (await admin.page.getByTestId("assessment-builder-time-limit").inputValue() !== "45") {
-      throw new Error("Published edit did not preserve the updated time limit after manager reload.");
+    if (await admin.page.getByTestId("assessment-builder-time-limit").inputValue() !== String(originalTimeLimit)) {
+      throw new Error("Published title edit changed the frozen time limit after manager reload.");
     }
     await admin.page.getByRole("button", { name: "إلغاء" }).click();
     const versionedDefinition = await api(admin.page, `/quizzes/${createdQuizId}`);
@@ -257,7 +260,7 @@ async function main() {
       || !Array.isArray(versionedDefinition.payload?.questionIds)
       || !versionedDefinition.payload.questionIds.map(String).includes(String(firstPageQuestion.id))
       || !versionedDefinition.payload.questionIds.map(String).includes(String(secondPageQuestion.id))
-      || Number(versionedDefinition.payload?.settings?.timeLimit) !== 45) {
+      || Number(versionedDefinition.payload?.settings?.timeLimit) !== originalTimeLimit) {
       throw new Error(`Versioned definition did not retain the published UI edit: ${JSON.stringify(versionedDefinition.payload)}`);
     }
 
@@ -496,6 +499,7 @@ async function main() {
     }
     const checks = [
       ["builder created a published directed definition", Boolean(created?.isPublished) && (created.targetGroupIds || []).map(String).includes(String(targetGroup.id || targetGroup._id))],
+      ["published timing mutation rejected", frozenTiming.status===409],
       ["published manager edit preserves selection/settings after reload", versionedDefinition.payload?.title === editedTitle],
       ["target sees directed test in UI", true],
       ["target submits through runner", hasServerResult],

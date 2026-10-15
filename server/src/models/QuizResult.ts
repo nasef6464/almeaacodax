@@ -4,6 +4,8 @@ const quizSectionResultSchema = new Schema(
   {
     sectionId:   { type: String, required: true },
     sectionName: { type: String, default: "" },
+    subjectId: {type:String,default:undefined},
+    subjectName: {type:String,default:undefined},
     total:       { type: Number, default: 0 },
     correct:     { type: Number, default: 0 },
     wrong:       { type: Number, default: 0 },
@@ -12,6 +14,11 @@ const quizSectionResultSchema = new Schema(
   },
   { _id: false },
 );
+const quizSubjectResultSchema=new Schema({
+  subjectId:{type:String,required:true},subjectName:{type:String,default:''},
+  total:{type:Number,required:true},correct:{type:Number,required:true},wrong:{type:Number,required:true},
+  unanswered:{type:Number,required:true},score:{type:Number,required:true},
+},{_id:false});
 
 const quizResultSchema = new Schema(
   {
@@ -37,6 +44,8 @@ const quizResultSchema = new Schema(
     questionReview: { type: [Schema.Types.Mixed], default: [] },
     // تحليل الأداء لكل قسم (للمحاكيات فقط — اختياري للتوافق مع السجلات القديمة)
     sectionResults: { type: [quizSectionResultSchema], default: undefined },
+    // New submissions freeze each actual material; missing historical evidence stays unknown.
+    subjectResults: {type:[quizSubjectResultSchema],default:undefined},
     submissionKey:  { type: String, default: undefined, unique: true, sparse: true, index: true },
     // ── لقطة الاختبار ──────────────────────────────────────────────────────
     // تُحفظ لقطة مجمدة من بيانات الاختبار الجوهرية وقت التسليم

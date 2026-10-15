@@ -6,6 +6,8 @@ const root = process.cwd();
 const routeSource = fs.readFileSync(path.join(root, 'server/src/routes/quiz.routes.ts'), 'utf8').replace(/\r\n/g, '\n');
 const creatorPolicySource = fs.readFileSync(path.join(root, 'server/src/modules/quizzes/application/quizCreatorRolePolicy.ts'), 'utf8').replace(/\r\n/g, '\n');
 const accessPolicySource = fs.readFileSync(path.join(root, 'server/src/modules/quizzes/application/quizAccessPolicy.ts'), 'utf8').replace(/\r\n/g, '\n');
+const teacherScopeSource = fs.readFileSync(path.join(root, 'server/src/modules/quizzes/application/teacherAssessmentClassScope.ts'), 'utf8');
+const backendGateSource = fs.readFileSync(path.join(root, '.github/workflows/platform-v3-backend-integration-gate.yml'), 'utf8');
 const workflowSource = fs.readFileSync(path.join(root, 'server/src/modules/quizzes/application/quizWorkflow.ts'), 'utf8').replace(/\r\n/g, '\n');
 
 const checks = [];
@@ -39,12 +41,16 @@ check('supervisor and directed-teacher assessments cannot become platform catalo
 
 check('teacher targets are constrained by active teaching assignments', () => {
   for (const fragment of [
-    'TeachingAssignmentModel.find({ teacherId, status: "active" })',
+    'resolveTeacherAssessmentClassIds(authUser,payload)',
     'Directed quiz targets classes outside teacher assignments',
-    'Directed quiz subject is outside teacher assignments',
     'Directed quiz targets students outside teacher assignments',
     'buildDocumentsByIdsQuery(allowedClassIds)',
   ]) assert.ok(accessPolicySource.includes(fragment), `teacher scope missing ${fragment}`);
+  assert.match(teacherScopeSource,/TeachingAssignmentModel\.find\(\{teacherId:actorId,status:'active'\}\)/);
+  for (const fragment of ['resolveSchoolDirectoryScope', 'subjects.every', 'a.classId===classId', 'String(group.parentId)===assignment.schoolId']) {
+    assert.ok(teacherScopeSource.includes(fragment), `shared teacher authority missing ${fragment}`);
+  }
+  assert.ok(backendGateSource.includes('scripts/test-school-assessment-teacher-authority.ts'), 'behavioral class/subject/revocation gate must run in CI');
 });
 
 check('supervisor group escalation is rejected rather than silently filtered', () => {

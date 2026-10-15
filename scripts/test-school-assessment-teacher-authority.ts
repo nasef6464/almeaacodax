@@ -1,0 +1,40 @@
+import assert from 'node:assert/strict';
+import {isolatedMongo} from './school-assessment-test-fixture.js';
+const close=await isolatedMongo();
+try{
+  const {UserModel}=await import('../server/src/models/User.js');
+  const {GroupModel}=await import('../server/src/models/Group.js');
+  const {TeachingAssignmentModel}=await import('../server/src/models/TeachingAssignment.js');
+  const {SchoolMembershipModel}=await import('../server/src/models/SchoolMembership.js');
+  const {assertTeacherDirectedQuizScope,assertSupervisorDirectedQuizScope}=await import('../server/src/modules/quizzes/application/quizAccessPolicy.js');
+  const teacher=await UserModel.create({name:'teacher',role:'teacher',email:'pair@isolated.test',passwordHash:'test',isActive:true});
+  const school=await GroupModel.create({name:'school',type:'SCHOOL',ownerId:'admin'});
+  const a=await GroupModel.create({name:'a',type:'CLASS',parentId:String(school._id),ownerId:'admin'});
+  const b=await GroupModel.create({name:'b',type:'CLASS',parentId:String(school._id),ownerId:'admin'});
+  const learners=await UserModel.create(['a','b'].map((name,i)=>({name,role:'student',email:'named-'+name+'@isolated.test',passwordHash:'test',schoolId:String(school._id),groupIds:[String(i?b._id:a._id)]})));
+  await GroupModel.updateOne({_id:a._id},{$set:{studentIds:[String(learners[0]._id)]}});
+  await GroupModel.updateOne({_id:b._id},{$set:{studentIds:[String(learners[1]._id)]}});
+  const actor={...teacher.toObject(),id:String(teacher._id)};
+  await TeachingAssignmentModel.create([{schoolId:String(school._id),teacherId:actor.id,classId:String(a._id),subjectId:'math'},
+    {schoolId:String(school._id),teacherId:actor.id,classId:String(b._id),subjectId:'chem'}]);
+  await assertTeacherDirectedQuizScope(actor,{subjectId:'math',targetGroupIds:[String(a._id)]});
+  await assertTeacherDirectedQuizScope(actor,{subjectId:'math',targetUserIds:[String(learners[0]._id)]});
+  await assert.rejects(()=>assertTeacherDirectedQuizScope(actor,{subjectId:'math',targetUserIds:[String(learners[1]._id)]}),{statusCode:403});
+  await assert.rejects(()=>assertTeacherDirectedQuizScope(actor,{subjectId:'math',targetGroupIds:[String(a._id),String(b._id)]}),{statusCode:403});
+  await assert.rejects(()=>assertTeacherDirectedQuizScope(actor,{subjectId:'math',targetGroupIds:[String(a._id)],mockExam:{enabled:true,sections:[{subjectId:'math'},{subjectId:'chem'}]}} as any),{statusCode:403});
+  const membership=await SchoolMembershipModel.create({userId:actor.id,schoolId:String(school._id),role:'teacher',status:'inactive'});
+  await assert.rejects(()=>assertTeacherDirectedQuizScope(actor,{subjectId:'math',targetGroupIds:[String(a._id)]}),{statusCode:403});
+  await SchoolMembershipModel.updateOne({_id:membership._id},{$set:{status:'active'}});
+  await assertTeacherDirectedQuizScope(actor,{subjectId:'math',targetGroupIds:[String(a._id)]});
+  await TeachingAssignmentModel.create({schoolId:'foreign-school',teacherId:actor.id,classId:String(a._id),subjectId:'chem'});
+  await assert.rejects(()=>assertTeacherDirectedQuizScope(actor,{subjectId:'chem',targetGroupIds:[String(a._id)]}),{statusCode:403});
+  const supervisor=await UserModel.create({name:'supervisor',role:'supervisor',email:'revoke-supervisor@isolated.test',passwordHash:'test',schoolId:String(school._id)});
+  const supervisorActor={...supervisor.toObject(),id:String(supervisor._id)};
+  const supervisorMembership=await SchoolMembershipModel.create({userId:supervisorActor.id,schoolId:String(school._id),role:'supervisor',status:'active'});
+  await assertSupervisorDirectedQuizScope(supervisorActor,{targetGroupIds:[String(a._id)]});
+  await SchoolMembershipModel.updateOne({_id:supervisorMembership._id},{$set:{status:'inactive'}});
+  await assert.rejects(()=>assertSupervisorDirectedQuizScope(supervisorActor,{targetGroupIds:[String(a._id)]}),{statusCode:403});
+  await SchoolMembershipModel.updateOne({_id:supervisorMembership._id},{$set:{status:'active'}});
+  await assertSupervisorDirectedQuizScope(supervisorActor,{targetGroupIds:[String(a._id)]});
+  console.log('PASS shared teacher authoring authority:every class×subject,mock subjects,inactive membership');
+}finally{await close();}

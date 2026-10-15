@@ -388,11 +388,22 @@ export interface QuizQuestionReview {
 export interface QuizSectionResult {
     sectionId: string;
     sectionName: string;
+    subjectId?: string;
+    subjectName?: string;
     total: number;
     correct: number;
     wrong: number;
     unanswered: number;
     score: number; // percentage
+}
+export interface QuizSubjectResult {
+    subjectId: string;
+    subjectName: string;
+    total: number;
+    correct: number;
+    wrong: number;
+    unanswered: number;
+    score: number;
 }
 
 export interface QuizSnapshot {
@@ -433,6 +444,7 @@ export interface QuizResult {
     skillsAnalysis: SkillGap[];
     questionReview?: QuizQuestionReview[];
     sectionResults?: QuizSectionResult[]; // تحليل لكل قسم (للمحاكيات فقط)
+    subjectResults?: QuizSubjectResult[]; // إجماليات مواد مجمدة من أسئلة المحاولة
     quizSnapshot?: QuizSnapshot;          // لقطة مجمدة من بيانات الاختبار وقت التسليم
 }
 

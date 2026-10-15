@@ -11,6 +11,7 @@ const assessmentResponseSchema = new Schema(
     questionId: { type: String, required: true, trim: true },
     sectionId: { type: String, default: "", trim: true },
     answer: { type: Schema.Types.Mixed, required: true },
+    answerOptionSignature: { type: String, default: undefined, maxlength: 25000 },
     savedAt: { type: Date, required: true, default: Date.now },
   },
   { timestamps: true },

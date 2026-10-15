@@ -26,7 +26,9 @@ jobs:
     timeout-minutes: 30
     services:
       redis:
-        image: public.ecr.aws/docker/library/redis:7-alpine
+        # The ECR Public mirror rejected pulls with "Data limit exceeded".
+        # Keep the same official Redis image and health gate at its primary registry.
+        image: docker.io/library/redis:7-alpine
         ports:
           - 6379:6379
         options: >-
@@ -35,11 +37,12 @@ jobs:
           --health-timeout 3s
           --health-retries 10
       mongodb:
-        # Official Docker Mongo 7.0 image, pinned from its ECR Public mirror.
-        # Avoid Docker Hub anonymous shared-runner pull limits.
-        image: public.ecr.aws/docker/library/mongo@sha256:494b956596706b19ba44908cb9d03648b585214600987b86cd2a34249358e572
+        # Same pinned official Mongo image; ECR Public rejected pulls with
+        # "Data limit exceeded" before checkout. Use its primary registry.
+        image: docker.io/library/mongo@sha256:494b956596706b19ba44908cb9d03648b585214600987b86cd2a34249358e572
         ports:
           - 27017:27017
+          - 27018:27018
         options: >-
           --health-cmd "mongosh --quiet --eval 'db.adminCommand({ ping: 1 }).ok'"
           --health-interval 10s
@@ -94,6 +97,35 @@ jobs:
 
       - name: API production build
         run: npm --prefix server run build
+
+      - name: School assessment scope, discovery and complete report
+        env:
+          ASSESSMENT_TEST_MONGODB_URI: mongodb://127.0.0.1:27017
+        run: |
+          server/node_modules/.bin/tsx scripts/test-school-assessment-workspace.ts
+          server/node_modules/.bin/tsx scripts/test-school-assessment-report.ts
+          server/node_modules/.bin/tsx scripts/test-school-assessment-learners.ts
+          server/node_modules/.bin/tsx scripts/test-school-assessment-editing.ts
+          server/node_modules/.bin/tsx scripts/test-school-assessment-teacher-authority.ts
+          server/node_modules/.bin/tsx scripts/test-school-assessment-composition.ts
+          server/node_modules/.bin/tsx scripts/test-school-assessment-composition-http.ts
+          server/node_modules/.bin/tsx scripts/test-school-assessment-release-regressions.ts
+          server/node_modules/.bin/tsx scripts/test-quiz-answer-evidence.ts
+
+      - name: School assessment commands on an isolated transaction replica
+        env:
+          MONGO_CONTAINER_ID: ${{ job.services.mongodb.id }}
+          ASSESSMENT_TEST_MONGODB_URI: mongodb://127.0.0.1:27018
+        run: |
+          set -euo pipefail
+          docker exec "$MONGO_CONTAINER_ID" bash -lc 'mkdir -p /tmp/school-assessment-replica; mongod --replSet school_assessment_commands --port 27018 --bind_ip_all --dbpath /tmp/school-assessment-replica --fork --logpath /tmp/school-assessment-replica.log'
+          docker exec "$MONGO_CONTAINER_ID" mongosh --quiet --port 27018 --eval 'rs.initiate({_id:"school_assessment_commands",members:[{_id:0,host:"127.0.0.1:27018"}]}); for(let i=0;i<150;i++){if(db.hello().isWritablePrimary)quit(0);sleep(200);}quit(1);'
+          server/node_modules/.bin/tsx scripts/test-school-assessment-commands.ts
+          server/node_modules/.bin/tsx scripts/test-school-assessment-commands-http.ts
+          server/node_modules/.bin/tsx scripts/test-school-assessment-subjects.ts
+          server/node_modules/.bin/tsx scripts/test-school-assessment-subject-persistence.ts
+          server/node_modules/.bin/tsx scripts/test-school-assessment-section-evidence.ts
+          server/node_modules/.bin/tsx scripts/test-school-assessment-subjects-http.ts
 
       - name: Courses access and payment recovery behavioral regressions
         run: |

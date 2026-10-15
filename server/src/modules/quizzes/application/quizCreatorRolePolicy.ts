@@ -26,6 +26,7 @@ export const applyQuizCreatorRolePolicy = <T extends Record<string, any>>(
 
   const isDirectedStaffAssessment =
     authUser.role === "supervisor"
+    || authUser.role === "school_admin"
     || (authUser.role === "teacher" && hasDirectedQuizTargets(payload));
 
   if (!isDirectedStaffAssessment) return payload;

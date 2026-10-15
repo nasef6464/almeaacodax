@@ -20,8 +20,10 @@ import { buildPaginatedResponse, resolvePagination } from "../utils/pagination.j
 import { serializeQuizResultForLearner } from "../utils/quizResultSerialization.js";
 import { getActivePathIds, isStaffRole, withLearnerVisiblePaths } from "../services/visibility.js";
 import { quizSchema } from "../modules/quizzes/http/quizDefinitionSchema.js";
+import {buildQuizSubmissionSubjectResults} from '../modules/quizzes/application/quizSubmissionSubjectResults.js';
 import { validateQuizWindow, getQuizAvailability } from "../modules/quizzes/application/quizAvailability.js";
 import { applyQuizViewerPolicy } from "../modules/quizzes/application/quizViewerPolicy.js";
+import { assertSchoolAssessmentDefinitionEditable,prepareSchoolDraftPublication,authorizeSchoolDirectorEdit,persistSchoolAssessmentUpdate } from '../modules/quizzes/application/schoolAssessmentEditing.js';
 import { quizRetakeRouter } from "../modules/quizzes/http/quizRetakeRoutes.js";
 import { quizSubmitSchema } from "../modules/quizzes/http/submissionSchemas.js";
 import { sanitizeQuestionForLearner } from "../modules/quizzes/presentation/questionPresentation.js";
@@ -56,7 +58,6 @@ import { buildQuizSubmissionAnswerReview } from "../modules/quizzes/application/
 import { buildQuizSubmissionSkillsAnalysis } from "../modules/quizzes/application/quizSubmissionSkillsAnalysis.js";
 import { buildQuizSubmissionResultDocument } from "../modules/quizzes/application/quizSubmissionResultDocument.js";
 import { resolveQuizSubmissionLearningContext } from "../modules/quizzes/application/quizSubmissionLearningContext.js";
-import { buildQuizSubmissionDirectedScope } from "../modules/quizzes/application/quizSubmissionDirectedScope.js";
 import { buildQuizSubmissionReadModelContext, getQuizSubmissionSkillIds } from "../modules/quizzes/application/quizSubmissionReadModelContext.js";
 import { assertQuizSubmissionWindow } from "../modules/quizzes/application/quizSubmissionWindow.js";
 import { matchesManagedContentScope } from "../modules/quizzes/application/quizManagedContentScope.js";
@@ -284,7 +285,7 @@ quizRouter.get(
       return res.json({ ...quiz, questions: [] });
     }
 
-    const questionIds = getQuizQuestionIds(quiz);
+    const questionIds = getQuizQuestionIds(quiz).filter(id => !req.query.questionId || id === req.query.questionId);
     let questions: any[] = [];
     if (questionIds.length > 0 && req.query.includeQuestions !== "false") {
       const rawQuestions = await QuestionModel.find(buildDocumentsByIdsQuery(questionIds)).lean();
@@ -401,6 +402,7 @@ const handleQuizUpdate = asyncHandler(async (req, res) => {
     ...existing.toObject(),
     ...payload,
   };
+  const directorManagement=await authorizeSchoolDirectorEdit(req.authUser!,existing.toObject(),proposedState);
   validateQuizWindow(proposedState);
   const isTeacherDirectedAssessment =
     req.authUser?.role === "teacher" && hasDirectedQuizTargets(proposedState);
@@ -410,6 +412,8 @@ const handleQuizUpdate = asyncHandler(async (req, res) => {
   }
   await assertSupervisorDirectedQuizScope(req.authUser!, proposedState);
   await assertTeacherDirectedQuizScope(req.authUser!, proposedState);
+
+  const guardedSchoolContentEdit=await assertSchoolAssessmentDefinitionEditable(existing.toObject(),{...payload,questions:req.body.questions});
 
   if (Array.isArray(req.body.questions) && req.body.questions.length > 0) {
     const nextPathId = String(payload.pathId || existing.pathId || "").trim();
@@ -432,11 +436,12 @@ const handleQuizUpdate = asyncHandler(async (req, res) => {
         }
       : {}),
   });
-  const sanitizedPayload = sanitizeWorkflowUpdate(
+  let sanitizedPayload = sanitizeWorkflowUpdate(
     buildQuizUpdateDocument(roleScopedPayload as Record<string, unknown>, resolvedSkillIds),
     req.authUser!,
-    { respectPublished: true },
+    { respectPublished: true, canManageSchoolAssessment:directorManagement },
   );
+  sanitizedPayload=prepareSchoolDraftPublication(existing.toObject(),payload,req.authUser!,sanitizedPayload);
   const nextQuizState = buildQuizValidationState(
     existing.toObject() as Record<string, unknown>,
     normalizedPayload as Record<string, unknown>,
@@ -456,7 +461,8 @@ const handleQuizUpdate = asyncHandler(async (req, res) => {
       });
     }
   }
-  const updated = await QuizModel.findOneAndUpdate(documentQuery, sanitizedPayload, { new: true });
+  // A first publication or another update must win over a stale draft editor.
+  const updated=await persistSchoolAssessmentUpdate(existing.toObject(),sanitizedPayload,documentQuery,guardedSchoolContentEdit);
   if (updated?.isPublished) {
     await publishAssessmentVersion({
       assessmentId: String(updated.id || updated._id),
@@ -467,8 +473,8 @@ const handleQuizUpdate = asyncHandler(async (req, res) => {
   return res.json(updated);
 });
 
-quizRouter.patch("/:id", requireAuth, requireRole(["admin", "teacher", "supervisor"]), handleQuizUpdate);
-quizRouter.put("/:id", requireAuth, requireRole(["admin", "teacher", "supervisor"]), handleQuizUpdate);
+quizRouter.patch("/:id", requireAuth, requireRole(["admin", "teacher", "supervisor", "school_admin"]), handleQuizUpdate);
+quizRouter.put("/:id", requireAuth, requireRole(["admin", "teacher", "supervisor", "school_admin"]), handleQuizUpdate);
 
 quizRouter.post(
   "/:id/questions",
@@ -491,6 +497,7 @@ quizRouter.post(
     await assertTeacherDirectedQuizScope(req.authUser!, existingState);
 
     const rawQuestions = Array.isArray(req.body.questions) ? req.body.questions : [req.body];
+    const contentEdit=await assertSchoolAssessmentDefinitionEditable(existingState,{questions:rawQuestions});
     const newQuestionIds = await processInlineQuestions(
       rawQuestions,
       String(existing.pathId || ""),
@@ -502,11 +509,7 @@ quizRouter.post(
     const existingQuestionIds = Array.isArray(existing.questionIds) ? existing.questionIds : [];
     const updatedQuestionIds = uniqueStrings([...existingQuestionIds, ...newQuestionIds]);
 
-    const updated = await QuizModel.findOneAndUpdate(
-      documentQuery,
-      { questionIds: updatedQuestionIds },
-      { new: true },
-    );
+    const updated=await persistSchoolAssessmentUpdate(existingState,{questionIds:updatedQuestionIds},documentQuery,contentEdit);
     return res.json(updated);
   }),
 );
@@ -527,31 +530,8 @@ quizRouter.post(
       return res.status(StatusCodes.NOT_FOUND).json({ message: "User not found" });
     }
 
-    // ── Security: re-validate group membership from DB for directed quizzes ──
-    // JWT claims (authUser.groupIds) could be stale or spoofed, so we
-    // look up actual group membership directly from GroupModel.
+    // canSubmitQuiz shares fresh database audience verification with read/start.
     const userId = String(authUser.id || authUser._id || "");
-    const directedScope = buildQuizSubmissionDirectedScope({
-      quiz,
-      userId,
-      isStaff: isStaffRole(authUser.role),
-    });
-    if (directedScope.requiresGroupMembershipCheck) {
-      // Verify the student genuinely belongs to at least one targeted group from DB
-      // Use $and to combine: group must be in targetGroupIds AND student must be in its studentIds
-      const matchingGroup = await GroupModel.findOne({
-        $and: [
-          buildDocumentsByIdsQuery(directedScope.targetGroupIds),
-          { studentIds: userId },
-        ],
-      }).select("_id").lean();
-      if (!matchingGroup) {
-        return res.status(StatusCodes.FORBIDDEN).json({
-          message: "This quiz is not assigned to you",
-        });
-      }
-    }
-
 
     if (!(await canSubmitQuiz(quiz, authUser, payload.source))) {
       return res.status(StatusCodes.FORBIDDEN).json({ message: "You cannot submit this quiz" });
@@ -607,12 +587,13 @@ quizRouter.post(
     const skills = skillIds.length
         ? await SkillModel.find({
             $or: [
+              { _id: { $in: skillIds } },
               ...(Array.isArray((skillDocumentQuery as any).$or) ? (skillDocumentQuery as any).$or : []),
               { "subSkills.id": { $in: skillIds } },
             ],
           })
         : [];
-    const { subjects, sections } = await readQuizSubmissionTaxonomy(skills, quiz);
+    const { subjects, sections } = await readQuizSubmissionTaxonomy(skills, quiz,orderedQuestions);
     const { skillById, subjectNameById, sectionNameById } = buildQuizSubmissionReadModelContext({
       skills,
       subjects,
@@ -656,7 +637,9 @@ quizRouter.post(
       quiz,
       orderedQuestions,
       answers: payload.answers,
+      subjectNameById,
     });
+    const subjectResults=buildQuizSubmissionSubjectResults({quiz,orderedQuestions,questionReview:rawQuestionReview,subjectNameById});
 
     // ── بناء لقطة الاختبار ─────────────────────────────────────────────────
     // تُحفظ مع كل نتيجة لحماية بيانات التقارير إذا عُدِّل الاختبار لاحقاً
@@ -682,6 +665,7 @@ quizRouter.post(
           skillsAnalysis,
           questionReview,
           sectionResults,
+          subjectResults,
           submissionKey,
           quizSnapshot,
         }),

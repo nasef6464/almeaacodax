@@ -1,0 +1,88 @@
+import assert from 'node:assert/strict';
+import {randomUUID} from 'node:crypto';
+import {isolatedMongo} from './school-assessment-test-fixture.js';
+const close=await isolatedMongo();let server:any;
+try{
+ Object.assign(process.env,{AI_PROVIDER:'none',REDIS_URL:'',NOTIFICATION_QUEUE_ENABLED:'false',RATE_LIMIT_REDIS_ENABLED:'false',SENTRY_DSN:''});
+ const {UserModel}=await import('../server/src/models/User.js');
+ const {GroupModel}=await import('../server/src/models/Group.js');
+ const {PathModel}=await import('../server/src/models/Path.js');
+ const {SubjectModel}=await import('../server/src/models/Subject.js');
+ const {SkillModel}=await import('../server/src/models/Skill.js');
+ const {QuestionModel}=await import('../server/src/models/Question.js');
+ const {QuizResultModel}=await import('../server/src/models/QuizResult.js');
+ const {SchoolAssessmentCommandModel}=await import('../server/src/modules/quizzes/infrastructure/schoolAssessmentCommandModel.js');
+ const {NotificationDeliveryModel}=await import('../server/src/models/NotificationDelivery.js');
+ const {QuizRetakeModel}=await import('../server/src/modules/quizzes/infrastructure/quizRetakeModel.js');
+ await Promise.all([SchoolAssessmentCommandModel.init(),NotificationDeliveryModel.init(),QuizRetakeModel.init()]);
+ const user=(name:string,role:string,extra={})=>UserModel.create({name,role,email:name+'@subjects.isolated',passwordHash:'fixture',isActive:true,...extra});
+ const admin=await user('admin','admin');
+ const school=await GroupModel.create({name:'school',type:'SCHOOL',ownerId:String(admin._id)});
+ const classroom=await GroupModel.create({name:'class',type:'CLASS',parentId:String(school._id),ownerId:String(admin._id)});
+ const supervisor=await user('supervisor','supervisor',{groupIds:[String(classroom._id)]});
+ const student=await user('student','student',{schoolId:String(school._id),groupIds:[String(classroom._id)]});
+ const absent=await user('absent','student',{schoolId:String(school._id),groupIds:[String(classroom._id)]});
+ const outsider=await user('outsider','supervisor'),foreign=await user('foreign','student');
+ await GroupModel.updateOne({_id:classroom._id},{$set:{studentIds:[String(student._id),String(absent._id)]}});
+ await PathModel.create({_id:'subject-path',name:'المسار متعدد المواد',isActive:true});
+ await SubjectModel.create([{_id:'math',pathId:'subject-path',name:'الرياضيات'},{_id:'science',pathId:'subject-path',name:'العلوم'}]);
+ await SkillModel.create([{_id:'math-skill',name:'الحساب',pathId:'subject-path',subjectId:'math',sectionId:'math-section',subSkills:[{id:'math-sub',name:'عمليات فرعية'}]},
+  {_id:'science-skill',name:'الذرات',pathId:'subject-path',subjectId:'science',sectionId:'science-section'}]);
+ await QuestionModel.create(Array.from({length:5},(_,i)=>({id:'q'+(i+1),pathId:'subject-path',subject:i<3?'math':'science',subjectId:i<3?'math':'science',
+  skillIds:i<3?['math-skill',...(i===0?['math-sub']:[])]:['science-skill'],text:'سؤال '+i,options:['أ','ب'],correctOptionIndex:0,approvalStatus:'approved'})));
+ const {createApp}=await import('../server/src/app.js');const {signAccessToken}=await import('../server/src/utils/jwt.js');
+ server=createApp().listen(0,'127.0.0.1');await new Promise<void>(resolve=>server.once('listening',resolve));
+ const base='http://127.0.0.1:'+server.address().port+'/api';
+ const csrfResponse=await fetch(base+'/auth/csrf-token'),csrf:any=await csrfResponse.json();
+ const cookie=csrfResponse.headers.getSetCookie().map(value=>value.split(';')[0]).join('; ');
+ const request=(actor:any,path:string,body?:any)=>fetch(base+path,{method:body?'POST':'GET',headers:{'content-type':'application/json',cookie,'x-csrf-token':csrf.csrfToken,authorization:'Bearer '+signAccessToken({...actor.toObject(),id:String(actor._id)})},...(body?{body:JSON.stringify(body)}:{}),signal:AbortSignal.timeout(60000)});
+ const json=async(response:Response,status=200)=>{assert.equal(response.status,status,await response.clone().text());return response.json() as Promise<any>;};
+ const preview=await json(await request(supervisor,'/school-assessments/compose',{kind:'mock',pathId:'subject-path',subjectSpecs:[{subjectId:'math',skillIds:[],count:3},{subjectId:'science',skillIds:[],count:2}]}));
+ assert.equal(preview.warnings.length,0);
+ const opensAt=new Date(Date.now()-60000).toISOString(),closesAt=new Date(Date.now()+3600000).toISOString();
+ const mock=await json(await request(supervisor,'/quizzes',{...preview.draft,title:'محاكي المسار',isPublished:true,targetGroupIds:[String(classroom._id)],opensAt,closesAt,settings:{maxAttempts:1,passingScore:60}}),201);
+ const quizId=String(mock.id||mock._id),report=()=>request(supervisor,'/school-assessments/'+quizId+'/report').then(r=>json(r));
+ const catalog=await json(await request(student,'/quizzes?limit=100'));assert.ok(catalog.quizzes.some((q:any)=>String(q.id||q._id)===quizId));
+ await json(await request(student,'/live-exams/start',{quizId,totalQuestions:5}));
+ const first=await json(await request(student,'/quizzes/'+quizId+'/submit',{answers:{q1:0,q2:1,q4:0,q5:1},timeSpentSeconds:20,source:'school'}),201);
+ assert.equal(first.score,40);assert.equal(first.correctAnswers,2);assert.equal(first.unanswered,1);
+ assert.deepEqual(first.subjectResults.map((row:any)=>[row.subjectId,row.total,row.correct,row.wrong,row.unanswered,row.score]).sort(),[['math',3,1,1,1,33],['science',2,1,1,0,50]]);
+ let summary=await report();assert.equal(summary.audience.targeted,2);assert.equal(summary.participation.notCompleted,1);
+ assert.equal(summary.scores.average,40);assert.equal(summary.coverage.subjects.withEvidence,1);
+ assert.equal(summary.subjectBreakdowns.find((s:any)=>s.id==='math').skills.length,2);
+ assert.equal(summary.subjectBreakdowns.find((s:any)=>s.id==='science').skills.length,1);
+ assert.ok(summary.subjectBreakdowns.every((s:any)=>s.sections.every((section:any)=>section.subjectId===s.id)));
+ assert.ok(!JSON.stringify(summary).includes('questionReview'));
+ const roster=await json(await request(supervisor,'/school-assessments/'+quizId+'/learners'));
+ assert.equal(roster.pagination.total,2);assert.equal(roster.learners.find((row:any)=>row.studentId===String(student._id)).result.score,40);
+ assert.ok(!JSON.stringify(roster).includes('questionReview'));
+ const selected=await json(await request(supervisor,'/school-assessments/'+quizId+'/results/'+first._id));
+ assert.equal(selected.result.score,40);assert.deepEqual(selected.result.subjectResults,first.subjectResults);
+ assert.equal(selected.result.questionReview[0].text,first.questionReview[0].text);
+ if(process.argv.includes('--browser')){
+  const {certifySchoolAssessmentWorkspaceBrowser}=await import('./school-assessment-workspace-browser.mjs');
+  await certifySchoolAssessmentWorkspaceBrowser({base,quizId,cookie,csrfToken:csrf.csrfToken,chrome:process.argv.includes('--chrome'),
+   tokens:Object.fromEntries(Object.entries({supervisor,student,outsider}).map(([role,actor]:any)=>[role,signAccessToken({...actor.toObject(),id:String(actor._id)})]))});
+ }
+ const frozen=await QuizResultModel.findById(first._id).lean();
+ await SubjectModel.updateOne({_id:'math'},{$set:{name:'اسم جديد'}});await QuestionModel.updateOne({id:'q1'},{$set:{text:'نص جديد'}});
+ assert.deepEqual(await report(),summary,'Saved material names/counts do not follow later taxonomy edits');
+ const rows=(body:any)=>Array.isArray(body)?body:body.results||body.data||[];
+ const history=rows(await json(await request(student,'/quiz-results/my?quizId='+quizId+'&limit=10')));
+ assert.deepEqual(history[0].subjectResults,first.subjectResults,'Summary result projection retains material evidence after reload');
+ const scoped=rows(await json(await request(supervisor,'/quizzes/results/scoped?quizId='+quizId+'&limit=10')));assert.deepEqual(scoped[0].subjectResults,first.subjectResults);
+ assert.equal(rows(await json(await request(foreign,'/quiz-results/my?quizId='+quizId+'&limit=10'))).length,0);
+ assert.equal((await request(outsider,'/school-assessments/'+quizId+'/report')).status,404);
+ // Old outcomes stay explicitly unclassified, never assigned to the first material.
+ await QuizResultModel.create({quizId,userId:String(absent._id),quizTitle:'old',score:20,totalQuestions:5,learningContext:'school_assessment'});
+ summary=await report();assert.equal(summary.coverage.subjects.withEvidence,1);assert.equal(summary.coverage.subjects.completed,2);
+ assert.ok(summary.coverage.missingEvidence.includes('mock_subject_totals'));assert.ok(summary.subjects.every((row:any)=>row.learners===1));
+ await json(await request(supervisor,'/school-assessments/'+quizId+'/commands',{commandId:randomUUID(),operation:'retake',payload:{studentIds:[String(student._id)],opensAt,closesAt}}));
+ const second=await json(await request(student,'/quizzes/'+quizId+'/submit',{answers:{q1:0,q2:0,q3:0,q4:0,q5:0},timeSpentSeconds:20,source:'school'}),201);
+ assert.equal(second.score,100);summary=await report();assert.ok(summary.subjects.every((row:any)=>row.average===100));
+ assert.deepEqual((await QuizResultModel.findById(first._id).lean())!.subjectResults,frozen!.subjectResults);
+ const normal=await json(await request(supervisor,'/quizzes',{title:'عادي',pathId:'subject-path',subjectId:'math',mode:'central',questionIds:['q1','q2'],isPublished:true,targetGroupIds:[String(classroom._id)],settings:{maxAttempts:1}}),201);
+ const normalResult=await json(await request(student,'/quizzes/'+String(normal.id||normal._id)+'/submit',{answers:{q1:0,q2:1},source:'school'}),201);
+ assert.equal(normalResult.score,50);assert.equal(normalResult.subjectResults.length,1);assert.equal(normalResult.subjectResults[0].score,50);
+ console.log('PASS path-mock5questions/2materials: bank preview→publish→discover→solve40,material/section/skill isolation,reload,frozen labels,foreign denial,legacy unknown,retake100 and normal50');
+}finally{if(server)await new Promise<void>(resolve=>server.close(()=>resolve()));await close();}

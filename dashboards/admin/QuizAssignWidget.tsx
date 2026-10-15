@@ -27,6 +27,7 @@ export interface QuizAssignWidgetProps {
   onCancel?: () => void;
   confirmLabel?: string;
   hideAccessType?: boolean;
+  audienceOnly?: boolean;
 }
 
 export const QuizAssignWidget: React.FC<QuizAssignWidgetProps> = ({
@@ -40,6 +41,7 @@ export const QuizAssignWidget: React.FC<QuizAssignWidgetProps> = ({
   onCancel,
   confirmLabel = "توجيه الاختبار",
   hideAccessType = false,
+  audienceOnly = false,
 }) => {
   const [targetGroupIds, setTargetGroupIds] = useState<string[]>(existingConfig?.targetGroupIds ?? []);
   const [targetUserIds, setTargetUserIds] = useState<string[]>(existingConfig?.targetUserIds ?? []);
@@ -84,7 +86,7 @@ export const QuizAssignWidget: React.FC<QuizAssignWidgetProps> = ({
     setError("");
     setLoading(true);
     try {
-      if (opensAt && dueDate && new Date(opensAt) >= new Date(dueDate)) throw new Error('وقت الانتهاء يجب أن يكون بعد البداية');
+      if (!audienceOnly && opensAt && dueDate && new Date(opensAt) >= new Date(dueDate)) throw new Error('وقت الانتهاء يجب أن يكون بعد البداية');
       await onAssign({ targetGroupIds, targetUserIds, opensAt: fromLocalDateTimeInput(opensAt), closesAt: fromLocalDateTimeInput(dueDate), dueDate: dueDate ? fromLocalDateTimeInput(dueDate)! : '', message: message || undefined, maxAttempts, accessType });
       setDone(true);
     } catch (err) {
@@ -102,7 +104,7 @@ export const QuizAssignWidget: React.FC<QuizAssignWidgetProps> = ({
         </div>
         <div>
           <p className="text-base font-black text-gray-900">تم التوجيه بنجاح!</p>
-          <p className="text-sm text-gray-500 mt-1">وصل الاختبار لـ {totalTargeted} طالب</p>
+          <p className="text-sm text-gray-500 mt-1">{audienceOnly?'تم تحديث المستهدفين. التذكير متاح بأمر مستقل.':`وصل الاختبار لـ ${totalTargeted} طالب`}</p>
         </div>
         {onCancel && (
           <button type="button" onClick={onCancel} className="text-sm font-bold text-indigo-600 hover:text-indigo-800 mt-2">إغلاق</button>
@@ -180,7 +182,7 @@ export const QuizAssignWidget: React.FC<QuizAssignWidgetProps> = ({
         </div>
       )}
 
-      <div className="space-y-1.5">
+      {!audienceOnly && <><div className="space-y-1.5">
         <label className="text-xs font-black text-gray-700 flex items-center gap-1.5">
           <MessageSquare size={13} className="text-indigo-500"/> رسالة للطلاب (اختياري)
         </label>
@@ -214,7 +216,8 @@ export const QuizAssignWidget: React.FC<QuizAssignWidgetProps> = ({
         </div>
       </div>
 
-      {!hideAccessType && (
+      </>}
+      {!audienceOnly && !hideAccessType && (
         <div className="space-y-1.5">
           <label className="text-xs font-black text-gray-700">نوع الوصول</label>
           <div className="flex gap-2">

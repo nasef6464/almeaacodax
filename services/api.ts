@@ -5,6 +5,7 @@ import {
   type PaginationOptions,
 } from './apiQueryUtilities';
 import { createAiApi } from './apiGroups/aiApi';
+import { createSchoolAssessmentsApi } from './apiGroups/schoolAssessmentsApi';
 import { createCommandCenterApi } from './apiGroups/commandCenterApi';
 import { createAnnouncementAdsApi } from './apiGroups/announcementAdsApi';
 import { createAccessCodesApi } from './apiGroups/accessCodesApi';
@@ -1017,6 +1018,7 @@ export const api = {
   ...createQuizzesApi(request),
   ...createAiApi(request),
   ...createCommandCenterApi(request),
+  ...createSchoolAssessmentsApi(request),
   ...createOperationsApi(request),
   ...createLearningSupportApi(request),
   clearLiveExamsTestData: (token?: string | null) =>
@@ -1036,7 +1038,7 @@ export const api = {
     }),
   getLiveExamSession: (quizId: string, token?: string | null) =>
     request<any>(`/live-exams/session/${encodeURIComponent(quizId)}`, { token }),
-  updateLiveExamProgress: (payload: { quizId: string; answeredQuestions: number; totalQuestions: number; answers?: Record<string, unknown> }, token?: string | null) =>
+  updateLiveExamProgress: (payload: { quizId: string; answeredQuestions: number; totalQuestions: number; answers?: Record<string, unknown>; answerOptionSignatures?: Record<string,string> }, token?: string | null) =>
     request<{ success: boolean }>("/live-exams/progress", {
       method: "POST",
       body: payload,

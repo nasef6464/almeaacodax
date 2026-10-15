@@ -1,13 +1,16 @@
+import {resolveQuizSectionSubjectId} from './quizSubmissionSubjectResults.js';
 type QuizSubmissionSectionResultsInput = {
   quiz: any;
   orderedQuestions: any[];
   answers: Record<string, unknown>;
+  subjectNameById?:Map<string,string>;
 };
 
 export const buildQuizSubmissionSectionResults = ({
   quiz,
   orderedQuestions,
   answers,
+  subjectNameById,
 }: QuizSubmissionSectionResultsInput) => {
   const mockSections: any[] = quiz.mockExam?.sections || [];
   if (!quiz.mockExam?.enabled || mockSections.length === 0) {
@@ -36,9 +39,11 @@ export const buildQuizSubmissionSectionResults = ({
     ).length;
     const unanswered = total - correct - wrong;
 
+    const subjectId=resolveQuizSectionSubjectId(quiz,section,orderedQuestions);
     return {
       sectionId: String(section.id || section._id || ""),
       sectionName: String(section.title || section.name || ""),
+      ...(subjectNameById?{subjectId,subjectName:subjectNameById.get(subjectId)||''}:{}),
       total,
       correct,
       wrong,
