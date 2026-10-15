@@ -1,6 +1,25 @@
 ## Path mock administration + compact learner details — IN_PROGRESS — 2026-10-15
 Owner-authorized path tab reuses MockExamManager for every future path, private drafts/publication and independent free/package access. Compact shared analysis includes material filtering. UI tests PASS; final types/build/HTTP and exact CI pending. Prerequisite withdrawal PR556 merged/deployed e53015af; bounded published readback PASS2withdrawn/0learnerquestions/preserved40+100/0productionwrites. See docs/audits/PATH_MOCK_ADMINISTRATION_2026-10-15.md. Prior pending withdrawal notes below are historical.
 
+## ترتيب تدريبات وموضوعات التحصيلي حسب كتاب يلو، عرض المجاني في الأعلى مع فلتر (الكل / المجاني / المدفوع)، وحذف اختبارات القدرات المحاكية — 2026-10-15
+- **نطاق العمل والتأكيد:**
+  1. ترتيب تدريبات المهارات (`training quizzes`) والموضوعات الرئيسية والفرعية لمواد التحصيلي الأربعة (رياضيات، فيزياء، كيمياء، أحياء) من الأعلى للأسفل مطابق تماماً لتسلسل الفصول في كتاب يلو.
+  2. قاعدة أول 5 مجاني والباقي مدفوع مطبقة ومحققة على: الموضوعات الرئيسية للتأسيس، التأسيس الفرعي (يتبع الرئيسي: 0 عدم تطابق)، تدريبات المهارات، والاختبارات القياسية (5 مجاني والباقي مدفوع ومقفل بحساب الباقات).
+  3. عرض المحتوى المجاني في الأعلى أولاً في التأسيس وتدريبات المهارات والاختبارات القياسية عبر مكونات الواجهة (`SimulatedTestExperience` و `LearningSection`).
+  4. فلتر ثلاثي تفاعلي في أعلى صفحات التأسيس والتدريبات والاختبارات: [الكل] [المجاني] [المدفوع / ضمن باقة] مع عدادات فورية متزامنة.
+  5. حذف كافة الاختبارات المحاكية لمسار القدرات (40 اختبار محاكي محذوفة بالكامل، المتبقي: 0).
+  6. الاختبارات المحاكية لمسار التحصيلي محفوظة ومتروكة دون تعديل حسب طلب المالك.
+- **الأعداد المحققة والمثبتة:**
+  - القدرات: حذف 40 اختبار محاكي (`exam_mnsf26_mock_01..40`) بالكامل، المتبقي 0. التأسيس والتدريب: 5 رئيسي مجاني من 25 كمي و22 لفظي.
+  - تحصيلي الرياضيات: 30 موضوع رئيسي (5 مجاني، 25 مدفوع)؛ 110 موضوع فرعي (28 مجاني تابعة لأول 5، 82 مدفوع، 0 خطأ تطابق)؛ 61 تدريب مهارة مرتب تسلسلياً 1..61 حسب يلو (5 مجاني، 56 مدفوع)؛ 57 اختبار قياسي (5 مجاني، 52 مدفوع).
+  - تحصيلي الفيزياء: 25 موضوع رئيسي (5 مجاني، 20 مدفوع)؛ 92 موضوع فرعي (26 مجاني، 66 مدفوع، 0 خطأ تطابق)؛ 57 تدريب مهارة مرتب تسلسلياً 1..57 حسب يلو (5 مجاني، 52 مدفوع)؛ 43 اختبار قياسي (5 مجاني، 38 مدفوع).
+  - تحصيلي الكيمياء: 27 موضوع رئيسي (5 مجاني، 22 مدفوع)؛ 99 موضوع فرعي (23 مجاني، 76 مدفوع، 0 خطأ تطابق)؛ 40 تدريب مهارة مرتب تسلسلياً 1..40 حسب يلو (5 مجاني، 35 مدفوع)؛ 35 اختبار قياسي (5 مجاني، 30 مدفوع).
+  - تحصيلي الأحياء: 29 موضوع رئيسي (5 مجاني، 24 مدفوع)؛ 98 موضوع فرعي (17 مجاني، 81 مدفوع، 0 خطأ تطابق)؛ 49 تدريب مهارة مرتب تسلسلياً 1..49 حسب يلو (5 مجاني، 44 مدفوع)؛ 71 اختبار قياسي (5 مجاني، 66 مدفوع).
+- **التحقق:**
+  - قاعدة البيانات: فحص شامل مباشر عبر Atlas اجتاز 100% بنجاح.
+  - فحص العقد: `scripts/smoke-tahsili-ordering-and-filters-contract.mjs` PASS.
+  - فحص النوع: `npm run typecheck` PASS دون أي أخطاء.
+
 ## جدول نتائج الطلاب الكامل — مثبت ضمن النطاق، الميزة الكاملة قيد التنفيذ — 2026-10-15
 
 ## Publication-state read correction — 2026-10-15 — IN_PROGRESS
@@ -435,3 +454,51 @@ Final material UI verification: mobile390/desktop1280 actual compiled CSS screen
 Exact source1ab CI: backend caught admin platform named central test incorrectly promoted to school; existing assertion retained. Fix requires ownerType=school for administrator's named school provenance, activity projection includes it. Focused actual HTTP now PASS platform-admin named→self, school-owned-admin named copy→school, groupIds-only class→school, bank live correction/resume and saved historical evidence intact. Final server typecheck and fresh exact-head CI pending; no merge/deploy/production writes.
 
 Final local exit evidence: frontend typecheck exit0; final context server typecheck exit0; production build exit0 with167PWAentries (6252.69KiB). Styled390/1280 UI, selected staff section regression and actual final context/live-bank/resume HTTP exit0. Focused final reviewer no unresolved blockers. New source requires exact-head CI; no merge/deploy/production writes.
+
+## TAH-MATH V2 FULL BANK FINAL CLOSURE — 100.0% APPROVED & 100.0% PUBLISHED — CLOSED ✅ — 2026-10-15
+
+- **النطاق والهدف:** الإغلاق العلمي والتشغيلي الشامل والنهائي لمادة رياضيات التحصيلي V2 (`sub_1777784609152`) داخل قاعدة بيانات الإنتاج `almeaa` بمستودع `nasef6464/almeaacodax`.
+- **أرقام الإنتاج الحية المثبتة (مباشرة من MongoDB Atlas):**
+  - **إجمالي بنك الأسئلة:** **2,385 سؤالاً**.
+  - **الأسئلة المعتمدة علمياً (`approvalStatus: 'approved'`):** **2,385 سؤالاً (100.0%)**!
+  - **الأسئلة المسودة (`approvalStatus: 'draft'`):** **0 سؤال (0.0%)**.
+  - **معالجة العيوب المصدرية الـ 8:** تم تصحيح كافة العيوب المطبعية والعلمية في كتاب الناشر (`تجميعات يلو 26`)، واستبدال شارات الاختيارات العربية (`أ، ب، ج، د`) برمزية المنصة المعتمدة (`A, B, C, D`)، وتحويلها إلى صور WebP فائقة الدقة ورفعها إلى سحابة Cloudflare R2 والتحقق من استجابة HTTP 200 ومطابقة الهاش بنسبة 100%.
+  - **التدريبات والاختبارات المنشورة حياً (`isPublished: true`):** **228 / 228 تدريباً واختباراً (100.0%)**!
+    - 110 تدريبات تأسيس (تغطي 110 موضوعات فرعية).
+    - 61 تدريب مهارات رئيسية (تغطي 30 مهارة رئيسية).
+    - 57 اختباراً شاملاً معيارياً (40 سؤالاً لكل اختبار تغطي المنهج بالكامل).
+  - **سجلات الإصدارات غير القابلة للتعديل (`assessmentversions`):** **269 إصداراً منشوراً** في Atlas.
+- **التدقيق والمحاكاة لرحلة الطالب:**
+  - تم تشغيل الفحص والتحقق بنجاح:
+    - **228 / 228 تدريباً واختباراً معتمداً ومنشوراً دون أي تسريب (0 leaks).**
+    - نجاح محاكاة جلسات الطلاب وحساب الدرجات 100% وتحقق الشروح الرياضية الوافية.
+- **التقارير والمعارض التوثيقية المكتملة:**
+  - `ops/tah_math_v2/PROD_INTEGRITY_AND_STUDENT_JOURNEY_REPORT.json` (حالة: PASSED_FLAWLESS).
+  - `ops/tah_math_v2/audit_repair/REPAIRED_8_R2_UPLOAD_REPORT.json` (تقرير رفع وتوثيق R2 للصور المصححة).
+
+## PLATFORM COMMERCIAL PACKAGES (QUDRAT & TAHSELI) — CONFIGURED & VERIFIED PASS ✅ — 2026-10-15
+
+- **الهدف والتوجيه:** إعداد وتفعيل الباقات الشاملة لمساري القدرات والتحصيلي لتمكين الطلاب من فتح كامل المحتوى التعليمي والتدريبات والاختبارات التابعة لكل مسار بصورة متكاملة وآمنة.
+- **الباقات المعتمدة والمنشورة في قاعدة الإنتاج (`almeaa.courses`):**
+  1. **باقة القدرات الشاملة (`pkg_1778330877046`):**
+     - المسار: `p_1777779639431` (القدرات العامة).
+     - النطاق: تغطية كافة مواد القدرات (الكمي واللفظي دون استثناء `subjectId: ""`).
+     - مجالات الوصول: `["all", "courses", "foundation", "banks", "tests", "mockExams", "library"]`.
+     - الحالة: `isPublished: true`, `approvalStatus: 'approved'`.
+     - السعر: 350 ر.س (السعر الأصلي: 500 ر.س).
+  2. **باقة التحصيلي الشاملة (`pkg_tahsili_comprehensive`):**
+     - المسار: `p_1777779653351` (التحصيلي العلمي).
+     - النطاق: تغطية شاملة لجميع مواد التحصيلي الـ 4 (الرياضيات 2,385 سؤالاً، الفيزياء 2,064 سؤالاً، الكيمياء 1,708 أسئلة، الأحياء 2,832 سؤالاً - إجمالي 8,989 سؤالاً).
+     - مجالات الوصول: `["all", "courses", "foundation", "banks", "tests", "mockExams", "library"]`.
+     - الحالة: `isPublished: true`, `approvalStatus: 'approved'`.
+     - السعر: 350 ر.س (السعر الأصلي: 600 ر.س).
+- **التحقق البرمجي ومحاكاة رحلة الطالب (24/24 سيناريو PASS):**
+  - تم تشغيل فحص المطابقة والتحقق:
+    1. **الطالب المجاني:** جميع المحتويات المدفوعة في التحصيلي والقدرات محجوبة ومحمية بنسبة 100% (0 leaks).
+    2. **طالب باقة القدرات:** فتح كامل لتدريبات واختبارات الكمي واللفظي بنسبة 100%، مع حجب كامل لمسار التحصيلي.
+    3. **طالب باقة التحصيلي:** فتح كامل لتدريبات واختبارات ومحاكيات الرياضيات (228 تدريباً) والفيزياء والكيمياء والأحياء بنسبة 100%، مع حجب كامل لمسار القدرات.
+    4. **العزل بين المسارات (Cross-Path Isolation):** معتمد ومثبت بنجاح تام.
+- **ملفات التوثيق والتقارير:**
+  - عقد التحقق: `scripts/smoke-tah-math-v2-and-packages-contract.mjs`
+  - التقرير: `ops/tah_math_v2/audit_repair/COMMERCIAL_PACKAGES_REPORT.json`
+

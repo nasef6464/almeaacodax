@@ -1,0 +1,43 @@
+{
+  "timestamp": "2026-10-15T12:46:42.441Z",
+  "status": "PACKAGES_CONFIGURED_AND_VERIFIED_PASS",
+  "qudratPackage": {
+    "id": "pkg_1778330877046",
+    "title": "باقة القدرات الشاملة",
+    "pathId": "p_1777779639431",
+    "price": 350,
+    "currency": "SAR",
+    "isPublished": true,
+    "approvalStatus": "approved",
+    "packageContentTypes": [
+      "all",
+      "courses",
+      "foundation",
+      "banks",
+      "tests",
+      "mockExams",
+      "library"
+    ],
+    "verifiedScenarios": 8
+  },
+  "tahsiliPackage": {
+    "id": "pkg_tahsili_comprehensive",
+    "title": "باقة التحصيلي الشاملة",
+    "pathId": "p_1777779653351",
+    "price": 350,
+    "currency": "SAR",
+    "isPublished": true,
+    "approvalStatus": "approved",
+    "packageContentTypes": [
+      "all",
+      "courses",
+      "foundation",
+      "banks",
+      "tests",
+      "mockExams",
+      "library"
+    ],
+    "verifiedScenarios": 10
+  },
+  "isolationVerified": true
+}
