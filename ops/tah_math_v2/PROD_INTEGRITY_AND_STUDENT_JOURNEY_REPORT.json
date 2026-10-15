@@ -1,0 +1,14 @@
+{
+  "status": "FAIL",
+  "totalTahsiliMath": 2385,
+  "mainSkillsCount": 30,
+  "subSkillsCount": 245,
+  "invalidUrls": 115,
+  "invalidHashes": 115,
+  "invalidOptions": 0,
+  "invalidKeys": 0,
+  "invalidSkillIds": 0,
+  "studentLeakageCount": 0,
+  "simulatedScoringPass": true,
+  "timestamp": "2026-10-15T03:59:47.037Z"
+}

@@ -1,0 +1,17 @@
+{
+  "timestamp": "2026-10-15T03:56:50.948Z",
+  "targetCount": 257,
+  "matchedCount": 257,
+  "modifiedCount": 257,
+  "sampleVerified": {
+    "code": "TAH-MATH-V2-COL26-P008-Q02",
+    "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/tah-math-v2/crops/TAH-MATH-V2-COL26-P008-Q02/a28c70c551a83540267a68a636f6b2a9692e70a725587c02e856b4dac29673b7.webp",
+    "imageHash": "a28c70c551a83540267a68a636f6b2a9692e70a725587c02e856b4dac29673b7",
+    "options": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ]
+  }
+}
