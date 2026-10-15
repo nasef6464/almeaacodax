@@ -27,7 +27,7 @@ try{
  assert.equal(classResult.learningContext,'school_assessment','User.groupIds-only school learner must not be saved as self-study');
  assert.equal((await request(supervisor,'/school-assessments/'+classQuiz.id+'/report')).participation.completed,1);
  const named=await create(admin,'admin-named-school',['context-q'],{targetUserIds:[String(student._id)]});
- assert.equal((await request(student,'/quizzes/'+named.id+'/submit',{answers:{'context-q':0},source:'school'},'POST',201)).learningContext,'school_assessment');
+ assert.equal((await request(student,'/quizzes/'+named.id+'/submit',{answers:{'context-q':0},source:'school'},'POST',201)).learningContext,'platform_self_study','Admin platform targeting must not become school evidence solely through learner membership');
  const frozen=await create(admin,'frozen-school',['frozen-q'],{targetGroupIds:[String(classroom._id)]});
  const before=await request(student,'/quizzes/'+frozen.id);await request(student,'/live-exams/start',{quizId:frozen.id,totalQuestions:1});
  const answerOptionSignatures={'frozen-q':quizOptionSignature(before.questions[0])};
@@ -54,8 +54,9 @@ try{
  assert.equal(persisted.result.score,100);assert.equal(persisted.result.questionReview[0].text,'changed bank question','Completed outcome must retain its original evidence');
  await request(admin,'/quizzes/questions/frozen-q',undefined,'DELETE',409);
  const clone=await request(admin,'/school-assessments/'+frozen.id+'/clone',{},'POST',201);
- await request(admin,'/quizzes/'+clone.id,{isPublished:true,targetGroupIds:[String(classroom._id)]},'PATCH');
+ await request(admin,'/quizzes/'+clone.id,{isPublished:true,targetGroupIds:[],targetUserIds:[String(student._id)]},'PATCH');
  const cloneOutcome=await request(student,'/quizzes/'+clone.id+'/submit',{answers:{'frozen-q':0},source:'school'},'POST',201);
+ assert.equal(cloneOutcome.learningContext,'school_assessment','Admin-created school-owned copy retains individually directed school provenance');
  assert.equal(cloneOutcome.score,100,'New copy captures the current bank revision independently');
  await QuizModel.create({_id:'legacy-school',id:'legacy-school',title:'legacy',mode:'central',pathId:'release-path',subjectId:'release-math',questionIds:['legacy-q'],isPublished:true,targetGroupIds:[String(classroom._id)],ownerId:String(admin._id)});
  await request(admin,'/quizzes/questions/legacy-q',{correctOptionIndex:1},'PATCH');await request(admin,'/quizzes/questions/legacy-q',undefined,'DELETE',409);

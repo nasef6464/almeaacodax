@@ -16,7 +16,7 @@ export const resolveQuestionActivityProvenance = async (payload: {
     } };
   }
   const quiz = await QuizModel.findOne(buildDocumentQuery(payload.quizId!)).select(
-    'id questionIds mockExam.sections.questionIds mockExam.enabled quizKind type mode pathId subjectId targetUserIds targetGroupIds createdBy isPublished approvalStatus showOnPlatform access learningPlacements showInTraining showInMock placement',
+    'id questionIds mockExam.sections.questionIds mockExam.enabled quizKind type mode ownerType pathId subjectId targetUserIds targetGroupIds createdBy isPublished approvalStatus showOnPlatform access learningPlacements showInTraining showInMock placement',
   ).lean();
   if (!quiz) return { ok: false as const, status: 404, message: 'Quiz not found' };
   const user = await resolveAuthUserByAuthId(userId);

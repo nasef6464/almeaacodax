@@ -18,7 +18,7 @@ export const resolveQuizSubmissionLearningContext = async (input: { quiz: any; l
     const creatorId = idOf(input.quiz?.createdBy);
     if (individuallyTargeted && creatorId && learnerSchoolId) {
       const creator = await resolveAuthUserByAuthId(creatorId);
-      if(creator?.role==='admin'&&creator.isActive!==false&&input.quiz?.mode==='central')return {learningContext:'school_assessment' as const,schoolId:learnerSchoolId};
+      if(creator?.role==='admin'&&creator.isActive!==false&&input.quiz?.mode==='central'&&input.quiz?.ownerType==='school')return {learningContext:'school_assessment' as const,schoolId:learnerSchoolId};
       if (creator && ['supervisor', 'teacher', 'school_admin'].includes(creator.role)) {
         if (idOf(creator.schoolId) === learnerSchoolId) {
           return { learningContext: 'school_assessment' as const, schoolId: learnerSchoolId };
