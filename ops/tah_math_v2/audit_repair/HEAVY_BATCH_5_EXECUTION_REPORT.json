@@ -1,0 +1,434 @@
+{
+  "timestamp": "2026-10-15T10:12:32.385Z",
+  "batch": 5,
+  "processedQuestionsCount": 463,
+  "approvedQuestionsCount": 455,
+  "holdQuestionsCount": 8,
+  "newlyPublishedQuizzesCount": 53,
+  "publishedQuizzes": [
+    {
+      "quizId": "quiz_tahmath_v2_math_test_01",
+      "title": "اختبار شامل رياضيات التحصيلي | النموذج 1",
+      "sectionId": null,
+      "quizKind": "test",
+      "isFree": true,
+      "questionCount": 40
+    },
+    {
+      "quizId": "quiz_tahmath_v2_math_test_02",
+      "title": "اختبار شامل رياضيات التحصيلي | النموذج 2",
+      "sectionId": null,
+      "quizKind": "test",
+      "isFree": true,
+      "questionCount": 40
+    },
+    {
+      "quizId": "quiz_tahmath_v2_math_test_03",
+      "title": "اختبار شامل رياضيات التحصيلي | النموذج 3",
+      "sectionId": null,
+      "quizKind": "test",
+      "isFree": true,
+      "questionCount": 40
+    },
+    {
+      "quizId": "quiz_tahmath_v2_math_test_04",
+      "title": "اختبار شامل رياضيات التحصيلي | النموذج 4",
+      "sectionId": null,
+      "quizKind": "test",
+      "isFree": true,
+      "questionCount": 40
+    },
+    {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_28_part_2",
+      "title": "تدريب المهارة الرئيسية | الإحصاء — الجزء 2",
+      "sectionId": "sec_tah_math_v2_28",
+      "quizKind": "drill",
+      "isFree": false,
+      "questionCount": 30
+    },
+    {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_29_part_2",
+      "title": "تدريب المهارة الرئيسية | النهايات — الجزء 2",
+      "sectionId": "sec_tah_math_v2_29",
+      "quizKind": "drill",
+      "isFree": false,
+      "questionCount": 30
+    },
+    {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_30_part_2",
+      "title": "تدريب المهارة الرئيسية | الاشتقاق والتكامل — الجزء 2",
+      "sectionId": "sec_tah_math_v2_30",
+      "quizKind": "drill",
+      "isFree": false,
+      "questionCount": 30
+    },
+    {
+      "quizId": "quiz_tahmath_v2_main_skill_tah_math_v2_30_part_3",
+      "title": "تدريب المهارة الرئيسية | الاشتقاق والتكامل — الجزء 3",
+      "sectionId": "sec_tah_math_v2_30",
+      "quizKind": "drill",
+      "isFree": false,
+      "questionCount": 30
+    },
+    {
+      "quizId": "quiz_tahmath_v2_math_test_05",
+      "title": "اختبار شامل رياضيات التحصيلي | النموذج 5",
+      "sectionId": null,
+      "quizKind": "test",
+      "isFree": true,
+      "questionCount": 40
+    },
+    {
+      "quizId": "quiz_tahmath_v2_math_test_06",
+      "title": "اختبار شامل رياضيات التحصيلي | النموذج 6",
+      "sectionId": null,
+      "quizKind": "test",
+      "isFree": false,
+      "questionCount": 40
+    },
+    {
+      "quizId": "quiz_tahmath_v2_math_test_08",
+      "title": "اختبار شامل رياضيات التحصيلي | النموذج 8",
+      "sectionId": null,
+      "quizKind": "test",
+      "isFree": false,
+      "questionCount": 40
+    },
+    {
+      "quizId": "quiz_tahmath_v2_math_test_09",
+      "title": "اختبار شامل رياضيات التحصيلي | النموذج 9",
+      "sectionId": null,
+      "quizKind": "test",
+      "isFree": false,
+      "questionCount": 40
+    },
+    {
+      "quizId": "quiz_tahmath_v2_math_test_10",
+      "title": "اختبار شامل رياضيات التحصيلي | النموذج 10",
+      "sectionId": null,
+      "quizKind": "test",
+      "isFree": false,
+      "questionCount": 40
+    },
+    {
+      "quizId": "quiz_tahmath_v2_math_test_11",
+      "title": "اختبار شامل رياضيات التحصيلي | النموذج 11",
+      "sectionId": null,
+      "quizKind": "test",
+      "isFree": false,
+      "questionCount": 40
+    },
+    {
+      "quizId": "quiz_tahmath_v2_math_test_12",
+      "title": "اختبار شامل رياضيات التحصيلي | النموذج 12",
+      "sectionId": null,
+      "quizKind": "test",
+      "isFree": false,
+      "questionCount": 40
+    },
+    {
+      "quizId": "quiz_tahmath_v2_math_test_13",
+      "title": "اختبار شامل رياضيات التحصيلي | النموذج 13",
+      "sectionId": null,
+      "quizKind": "test",
+      "isFree": false,
+      "questionCount": 40
+    },
+    {
+      "quizId": "quiz_tahmath_v2_math_test_16",
+      "title": "اختبار شامل رياضيات التحصيلي | النموذج 16",
+      "sectionId": null,
+      "quizKind": "test",
+      "isFree": false,
+      "questionCount": 40
+    },
+    {
+      "quizId": "quiz_tahmath_v2_math_test_17",
+      "title": "اختبار شامل رياضيات التحصيلي | النموذج 17",
+      "sectionId": null,
+      "quizKind": "test",
+      "isFree": false,
+      "questionCount": 40
+    },
+    {
+      "quizId": "quiz_tahmath_v2_math_test_18",
+      "title": "اختبار شامل رياضيات التحصيلي | النموذج 18",
+      "sectionId": null,
+      "quizKind": "test",
+      "isFree": false,
+      "questionCount": 40
+    },
+    {
+      "quizId": "quiz_tahmath_v2_math_test_19",
+      "title": "اختبار شامل رياضيات التحصيلي | النموذج 19",
+      "sectionId": null,
+      "quizKind": "test",
+      "isFree": false,
+      "questionCount": 40
+    },
+    {
+      "quizId": "quiz_tahmath_v2_math_test_20",
+      "title": "اختبار شامل رياضيات التحصيلي | النموذج 20",
+      "sectionId": null,
+      "quizKind": "test",
+      "isFree": false,
+      "questionCount": 40
+    },
+    {
+      "quizId": "quiz_tahmath_v2_math_test_21",
+      "title": "اختبار شامل رياضيات التحصيلي | النموذج 21",
+      "sectionId": null,
+      "quizKind": "test",
+      "isFree": false,
+      "questionCount": 40
+    },
+    {
+      "quizId": "quiz_tahmath_v2_math_test_23",
+      "title": "اختبار شامل رياضيات التحصيلي | النموذج 23",
+      "sectionId": null,
+      "quizKind": "test",
+      "isFree": false,
+      "questionCount": 40
+    },
+    {
+      "quizId": "quiz_tahmath_v2_math_test_24",
+      "title": "اختبار شامل رياضيات التحصيلي | النموذج 24",
+      "sectionId": null,
+      "quizKind": "test",
+      "isFree": false,
+      "questionCount": 40
+    },
+    {
+      "quizId": "quiz_tahmath_v2_math_test_25",
+      "title": "اختبار شامل رياضيات التحصيلي | النموذج 25",
+      "sectionId": null,
+      "quizKind": "test",
+      "isFree": false,
+      "questionCount": 40
+    },
+    {
+      "quizId": "quiz_tahmath_v2_math_test_26",
+      "title": "اختبار شامل رياضيات التحصيلي | النموذج 26",
+      "sectionId": null,
+      "quizKind": "test",
+      "isFree": false,
+      "questionCount": 40
+    },
+    {
+      "quizId": "quiz_tahmath_v2_math_test_28",
+      "title": "اختبار شامل رياضيات التحصيلي | النموذج 28",
+      "sectionId": null,
+      "quizKind": "test",
+      "isFree": false,
+      "questionCount": 40
+    },
+    {
+      "quizId": "quiz_tahmath_v2_math_test_29",
+      "title": "اختبار شامل رياضيات التحصيلي | النموذج 29",
+      "sectionId": null,
+      "quizKind": "test",
+      "isFree": false,
+      "questionCount": 40
+    },
+    {
+      "quizId": "quiz_tahmath_v2_math_test_30",
+      "title": "اختبار شامل رياضيات التحصيلي | النموذج 30",
+      "sectionId": null,
+      "quizKind": "test",
+      "isFree": false,
+      "questionCount": 40
+    },
+    {
+      "quizId": "quiz_tahmath_v2_math_test_31",
+      "title": "اختبار شامل رياضيات التحصيلي | النموذج 31",
+      "sectionId": null,
+      "quizKind": "test",
+      "isFree": false,
+      "questionCount": 40
+    },
+    {
+      "quizId": "quiz_tahmath_v2_math_test_32",
+      "title": "اختبار شامل رياضيات التحصيلي | النموذج 32",
+      "sectionId": null,
+      "quizKind": "test",
+      "isFree": false,
+      "questionCount": 40
+    },
+    {
+      "quizId": "quiz_tahmath_v2_math_test_33",
+      "title": "اختبار شامل رياضيات التحصيلي | النموذج 33",
+      "sectionId": null,
+      "quizKind": "test",
+      "isFree": false,
+      "questionCount": 40
+    },
+    {
+      "quizId": "quiz_tahmath_v2_math_test_34",
+      "title": "اختبار شامل رياضيات التحصيلي | النموذج 34",
+      "sectionId": null,
+      "quizKind": "test",
+      "isFree": false,
+      "questionCount": 40
+    },
+    {
+      "quizId": "quiz_tahmath_v2_math_test_35",
+      "title": "اختبار شامل رياضيات التحصيلي | النموذج 35",
+      "sectionId": null,
+      "quizKind": "test",
+      "isFree": false,
+      "questionCount": 40
+    },
+    {
+      "quizId": "quiz_tahmath_v2_math_test_36",
+      "title": "اختبار شامل رياضيات التحصيلي | النموذج 36",
+      "sectionId": null,
+      "quizKind": "test",
+      "isFree": false,
+      "questionCount": 40
+    },
+    {
+      "quizId": "quiz_tahmath_v2_math_test_37",
+      "title": "اختبار شامل رياضيات التحصيلي | النموذج 37",
+      "sectionId": null,
+      "quizKind": "test",
+      "isFree": false,
+      "questionCount": 40
+    },
+    {
+      "quizId": "quiz_tahmath_v2_math_test_39",
+      "title": "اختبار شامل رياضيات التحصيلي | النموذج 39",
+      "sectionId": null,
+      "quizKind": "test",
+      "isFree": false,
+      "questionCount": 40
+    },
+    {
+      "quizId": "quiz_tahmath_v2_math_test_40",
+      "title": "اختبار شامل رياضيات التحصيلي | النموذج 40",
+      "sectionId": null,
+      "quizKind": "test",
+      "isFree": false,
+      "questionCount": 40
+    },
+    {
+      "quizId": "quiz_tahmath_v2_math_test_41",
+      "title": "اختبار شامل رياضيات التحصيلي | النموذج 41",
+      "sectionId": null,
+      "quizKind": "test",
+      "isFree": false,
+      "questionCount": 40
+    },
+    {
+      "quizId": "quiz_tahmath_v2_math_test_42",
+      "title": "اختبار شامل رياضيات التحصيلي | النموذج 42",
+      "sectionId": null,
+      "quizKind": "test",
+      "isFree": false,
+      "questionCount": 40
+    },
+    {
+      "quizId": "quiz_tahmath_v2_math_test_43",
+      "title": "اختبار شامل رياضيات التحصيلي | النموذج 43",
+      "sectionId": null,
+      "quizKind": "test",
+      "isFree": false,
+      "questionCount": 40
+    },
+    {
+      "quizId": "quiz_tahmath_v2_math_test_44",
+      "title": "اختبار شامل رياضيات التحصيلي | النموذج 44",
+      "sectionId": null,
+      "quizKind": "test",
+      "isFree": false,
+      "questionCount": 40
+    },
+    {
+      "quizId": "quiz_tahmath_v2_math_test_45",
+      "title": "اختبار شامل رياضيات التحصيلي | النموذج 45",
+      "sectionId": null,
+      "quizKind": "test",
+      "isFree": false,
+      "questionCount": 40
+    },
+    {
+      "quizId": "quiz_tahmath_v2_math_test_47",
+      "title": "اختبار شامل رياضيات التحصيلي | النموذج 47",
+      "sectionId": null,
+      "quizKind": "test",
+      "isFree": false,
+      "questionCount": 40
+    },
+    {
+      "quizId": "quiz_tahmath_v2_math_test_49",
+      "title": "اختبار شامل رياضيات التحصيلي | النموذج 49",
+      "sectionId": null,
+      "quizKind": "test",
+      "isFree": false,
+      "questionCount": 40
+    },
+    {
+      "quizId": "quiz_tahmath_v2_math_test_50",
+      "title": "اختبار شامل رياضيات التحصيلي | النموذج 50",
+      "sectionId": null,
+      "quizKind": "test",
+      "isFree": false,
+      "questionCount": 40
+    },
+    {
+      "quizId": "quiz_tahmath_v2_math_test_51",
+      "title": "اختبار شامل رياضيات التحصيلي | النموذج 51",
+      "sectionId": null,
+      "quizKind": "test",
+      "isFree": false,
+      "questionCount": 40
+    },
+    {
+      "quizId": "quiz_tahmath_v2_math_test_52",
+      "title": "اختبار شامل رياضيات التحصيلي | النموذج 52",
+      "sectionId": null,
+      "quizKind": "test",
+      "isFree": false,
+      "questionCount": 40
+    },
+    {
+      "quizId": "quiz_tahmath_v2_math_test_53",
+      "title": "اختبار شامل رياضيات التحصيلي | النموذج 53",
+      "sectionId": null,
+      "quizKind": "test",
+      "isFree": false,
+      "questionCount": 40
+    },
+    {
+      "quizId": "quiz_tahmath_v2_math_test_54",
+      "title": "اختبار شامل رياضيات التحصيلي | النموذج 54",
+      "sectionId": null,
+      "quizKind": "test",
+      "isFree": false,
+      "questionCount": 40
+    },
+    {
+      "quizId": "quiz_tahmath_v2_math_test_55",
+      "title": "اختبار شامل رياضيات التحصيلي | النموذج 55",
+      "sectionId": null,
+      "quizKind": "test",
+      "isFree": false,
+      "questionCount": 40
+    },
+    {
+      "quizId": "quiz_tahmath_v2_math_test_56",
+      "title": "اختبار شامل رياضيات التحصيلي | النموذج 56",
+      "sectionId": null,
+      "quizKind": "test",
+      "isFree": false,
+      "questionCount": 40
+    },
+    {
+      "quizId": "quiz_tahmath_v2_math_test_57",
+      "title": "اختبار شامل رياضيات التحصيلي | النموذج 57",
+      "sectionId": null,
+      "quizKind": "test",
+      "isFree": false,
+      "questionCount": 30
+    }
+  ]
+}
