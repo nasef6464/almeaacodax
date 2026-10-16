@@ -4433,7 +4433,7 @@
       }
     ]
   },
-  "checkpointPhase": "BEFORE_HISTORICAL_HOLD_RESOLUTION",
+  "checkpointPhase": "POST_WRITE_VERIFIED",
   "sixHistoricalHoldsBeforeWrite": [
     {
       "sourceKey": "MNSF26-AR-T061-Q04",
@@ -4525,5 +4525,27 @@
       "originalReviewerNotes": null,
       "originalHold": "MNSF26-GEO-T024-Q16 HOLD Run055 direct image"
     }
-  ]
+  ],
+  "postwrite": {
+    "date": "2026-10-16",
+    "productionTotal": 1989,
+    "approvedPublished": 1705,
+    "draftUnpublished": 284,
+    "placeholderApproved": 0,
+    "templateApproved": 0,
+    "sectionSkillMismatch": 0,
+    "originalSectionMetadataRepaired": 1290,
+    "semanticSkillCorrections": 5,
+    "explanationReplacements": 2,
+    "quarantinedByCategory": {
+      "placeholder": 253,
+      "template": 25,
+      "historicalSourceConflict": 6
+    },
+    "approvedWithoutCropStatus": 60,
+    "activeApprovedDuplicateFingerprintPairs": 10,
+    "existingQuizzesReferencedByHeldQuestions": 0,
+    "visualImagesActuallyReviewedInThisRun": 0,
+    "finalStatus": "NOT FINAL CLOSED"
+  }
 }
