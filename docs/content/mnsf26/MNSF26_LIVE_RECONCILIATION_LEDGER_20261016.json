@@ -3667,5 +3667,771 @@
     "No source image pixels viewed in this run; 61 missing cropStatus do not by themselves prove defective crops.",
     "No question answer key changed in bulk.",
     "5 independently text-proven skill corrections and 1290 deterministic sectionId reconciliations are separate from this 253-row quarantine list."
-  ]
+  ],
+  "templatePendingBeforeWrite": 25,
+  "templateRowsBeforeWrite": [
+    {
+      "code": "QDR-QNT-MNSF26-AR-T004-Q08",
+      "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t004_q08",
+      "sourceKey": "MNSF26-AR-T004-Q08",
+      "approval": "approved",
+      "isPublished": true,
+      "answerIndex": 0,
+      "originalExplanation": "يُطبَّق النمط المعتمد في قسمة عدد ذي نمط أصفار مع ثبات المقسوم عليه. ثم تُراجع النتيجة: أ = 1000001..",
+      "skillId": "skill_quant_04",
+      "subSkillId": "sub_quant_04_2",
+      "sectionId": "sec_sub_1777779748206_4",
+      "reviewerNotes": null
+    },
+    {
+      "code": "QDR-QNT-MNSF26-AR-T004-Q10",
+      "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t004_q10",
+      "sourceKey": "MNSF26-AR-T004-Q10",
+      "approval": "approved",
+      "isPublished": true,
+      "answerIndex": 1,
+      "originalExplanation": "يُطبَّق النمط المعتمد في اختيار العملية التي تحقق مساواة عددية. ثم تُراجع النتيجة: ب — القسمة..",
+      "skillId": "skill_quant_01",
+      "subSkillId": "sub_quant_01_1",
+      "sectionId": "sec_sub_1777779748206_1",
+      "reviewerNotes": null
+    },
+    {
+      "code": "QDR-QNT-MNSF26-AR-T004-Q11",
+      "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t004_q11",
+      "sourceKey": "MNSF26-AR-T004-Q11",
+      "approval": "approved",
+      "isPublished": true,
+      "answerIndex": 1,
+      "originalExplanation": "يُطبَّق النمط المعتمد في العملية المناسبة: 6 □ 5 = 30 | skill_quant_01/sub_quant_01_4 ثم تُراجع النتيجة: ج — الضرب..",
+      "skillId": "skill_quant_01",
+      "subSkillId": "sub_quant_01_1",
+      "sectionId": "sec_sub_1777779748206_1",
+      "reviewerNotes": null
+    },
+    {
+      "code": "QDR-QNT-MNSF26-AR-T004-Q13",
+      "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t004_q13",
+      "sourceKey": "MNSF26-AR-T004-Q13",
+      "approval": "approved",
+      "isPublished": true,
+      "answerIndex": 0,
+      "originalExplanation": "يُطبَّق النمط المعتمد في quantitative-comparison / unspecified-subset / insufficient-data. ثم تُراجع النتيجة: المعطيات غير كافية؛ لأن مجموع الخمسة = 1000 لا يحدد ما دفعه أي شخصين بعينهما، فيمكن أن يكون مجموعهما أقل من 400 أو مساويًا لها أو أكبر منها بحسب التوزيع..",
+      "skillId": "skill_quant_01",
+      "subSkillId": "sub_quant_01_1",
+      "sectionId": "sec_sub_1777779748206_1",
+      "reviewerNotes": null
+    },
+    {
+      "code": "QDR-QNT-MNSF26-AR-T006-Q02",
+      "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t006_q02",
+      "sourceKey": "MNSF26-AR-T006-Q02",
+      "approval": "approved",
+      "isPublished": true,
+      "answerIndex": 3,
+      "originalExplanation": "يُطبَّق النمط المعتمد في صورة تحليلية حسب القيمة المنزلية. ثم تُراجع النتيجة: 54567..",
+      "skillId": "skill_quant_01",
+      "subSkillId": "sub_quant_01_1",
+      "sectionId": "sec_sub_1777779748206_1",
+      "reviewerNotes": null
+    },
+    {
+      "code": "QDR-QNT-MNSF26-AR-T006-Q11",
+      "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t006_q11",
+      "sourceKey": "MNSF26-AR-T006-Q11",
+      "approval": "approved",
+      "isPublished": true,
+      "answerIndex": 1,
+      "originalExplanation": "يُطبَّق النمط المعتمد في جمع قيمتين ماليتين. ثم تُراجع النتيجة: ب = 40 ريالًا..",
+      "skillId": "skill_quant_01",
+      "subSkillId": "sub_quant_01_1",
+      "sectionId": "sec_sub_1777779748206_1",
+      "reviewerNotes": null
+    },
+    {
+      "code": "QDR-QNT-MNSF26-AR-T006-Q12",
+      "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t006_q12",
+      "sourceKey": "MNSF26-AR-T006-Q12",
+      "approval": "approved",
+      "isPublished": true,
+      "answerIndex": 0,
+      "originalExplanation": "يُطبَّق النمط المعتمد في فرق بين قياسين. ثم تُراجع النتيجة: أ = 50م..",
+      "skillId": "skill_quant_01",
+      "subSkillId": "sub_quant_01_1",
+      "sectionId": "sec_sub_1777779748206_1",
+      "reviewerNotes": null
+    },
+    {
+      "code": "QDR-QNT-MNSF26-AR-T008-Q01",
+      "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t008_q01",
+      "sourceKey": "MNSF26-AR-T008-Q01",
+      "approval": "approved",
+      "isPublished": true,
+      "answerIndex": 3,
+      "originalExplanation": "يُطبَّق النمط المعتمد في unit-mismatch / rate-comparison / insufficient-data. ثم تُراجع النتيجة: المعطيات غير كافية..",
+      "skillId": "skill_quant_04",
+      "subSkillId": "sub_quant_04_2",
+      "sectionId": "sec_sub_1777779748206_4",
+      "reviewerNotes": null
+    },
+    {
+      "code": "QDR-QNT-MNSF26-AR-T008-Q03",
+      "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t008_q03",
+      "sourceKey": "MNSF26-AR-T008-Q03",
+      "approval": "approved",
+      "isPublished": true,
+      "answerIndex": 2,
+      "originalExplanation": "يُطبَّق النمط المعتمد في savings-goal / monthly-fixed-saving / months = target ÷ monthly. ثم تُراجع النتيجة: ج = 14..",
+      "skillId": "skill_quant_01",
+      "subSkillId": "sub_quant_01_1",
+      "sectionId": "sec_sub_1777779748206_1",
+      "reviewerNotes": null
+    },
+    {
+      "code": "QDR-QNT-MNSF26-AR-T008-Q04",
+      "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t008_q04",
+      "sourceKey": "MNSF26-AR-T008-Q04",
+      "approval": "approved",
+      "isPublished": true,
+      "answerIndex": 2,
+      "originalExplanation": "يُطبَّق النمط المعتمد في sum-three-amounts / mental-grouping. ثم تُراجع النتيجة: ج = 70..",
+      "skillId": "skill_quant_01",
+      "subSkillId": "sub_quant_01_1",
+      "sectionId": "sec_sub_1777779748206_1",
+      "reviewerNotes": null
+    },
+    {
+      "code": "QDR-QNT-MNSF26-AR-T008-Q06",
+      "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t008_q06",
+      "sourceKey": "MNSF26-AR-T008-Q06",
+      "approval": "approved",
+      "isPublished": true,
+      "answerIndex": 2,
+      "originalExplanation": "يُطبَّق النمط المعتمد في reverse-linear-state / passenger-change / half-capacity. ثم تُراجع النتيجة: ج = 48..",
+      "skillId": "skill_quant_01",
+      "subSkillId": "sub_quant_01_1",
+      "sectionId": "sec_sub_1777779748206_1",
+      "reviewerNotes": null
+    },
+    {
+      "code": "QDR-QNT-MNSF26-AR-T008-Q07",
+      "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t008_q07",
+      "sourceKey": "MNSF26-AR-T008-Q07",
+      "approval": "approved",
+      "isPublished": true,
+      "answerIndex": 0,
+      "originalExplanation": "يُطبَّق النمط المعتمد في bounded-outcomes / repeated-die / impossibility-by-maximum. ثم تُراجع النتيجة: أ = 13..",
+      "skillId": "skill_quant_01",
+      "subSkillId": "sub_quant_01_1",
+      "sectionId": "sec_sub_1777779748206_1",
+      "reviewerNotes": null
+    },
+    {
+      "code": "QDR-QNT-MNSF26-AR-T008-Q08",
+      "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t008_q08",
+      "sourceKey": "MNSF26-AR-T008-Q08",
+      "approval": "approved",
+      "isPublished": true,
+      "answerIndex": 1,
+      "originalExplanation": "يُطبَّق النمط المعتمد في consecutive-even-sequence / total-to-first-term. ثم تُراجع النتيجة: ب = 102..",
+      "skillId": "skill_quant_01",
+      "subSkillId": "sub_quant_01_1",
+      "sectionId": "sec_sub_1777779748206_1",
+      "reviewerNotes": null
+    },
+    {
+      "code": "QDR-QNT-MNSF26-AR-T008-Q09",
+      "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t008_q09",
+      "sourceKey": "MNSF26-AR-T008-Q09",
+      "approval": "approved",
+      "isPublished": true,
+      "answerIndex": 2,
+      "originalExplanation": "يُطبَّق النمط المعتمد في out-and-back / double-one-way-distance. ثم تُراجع النتيجة: ج = equal..",
+      "skillId": "skill_quant_01",
+      "subSkillId": "sub_quant_01_1",
+      "sectionId": "sec_sub_1777779748206_1",
+      "reviewerNotes": null
+    },
+    {
+      "code": "QDR-QNT-MNSF26-AR-T008-Q10",
+      "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t008_q10",
+      "sourceKey": "MNSF26-AR-T008-Q10",
+      "approval": "approved",
+      "isPublished": true,
+      "answerIndex": 1,
+      "originalExplanation": "يُطبَّق النمط المعتمد في transfer-between-two / invariant-total / equal-after-transfer. ثم تُراجع النتيجة: ب = 25..",
+      "skillId": "skill_quant_01",
+      "subSkillId": "sub_quant_01_1",
+      "sectionId": "sec_sub_1777779748206_1",
+      "reviewerNotes": null
+    },
+    {
+      "code": "QDR-QNT-MNSF26-AR-T008-Q11",
+      "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t008_q11",
+      "sourceKey": "MNSF26-AR-T008-Q11",
+      "approval": "approved",
+      "isPublished": true,
+      "answerIndex": 1,
+      "originalExplanation": "يُطبَّق النمط المعتمد في square-array / rows=columns / square-root-total. ثم تُراجع النتيجة: ب = 15..",
+      "skillId": "skill_quant_01",
+      "subSkillId": "sub_quant_01_1",
+      "sectionId": "sec_sub_1777779748206_1",
+      "reviewerNotes": null
+    },
+    {
+      "code": "QDR-QNT-MNSF26-AR-T008-Q12",
+      "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t008_q12",
+      "sourceKey": "MNSF26-AR-T008-Q12",
+      "approval": "approved",
+      "isPublished": true,
+      "answerIndex": 2,
+      "originalExplanation": "يُطبَّق النمط المعتمد في partitioned-length / repeated-addition / total-from-groups. ثم تُراجع النتيجة: ج = 69..",
+      "skillId": "skill_quant_01",
+      "subSkillId": "sub_quant_01_1",
+      "sectionId": "sec_sub_1777779748206_1",
+      "reviewerNotes": null
+    },
+    {
+      "code": "QDR-QNT-MNSF26-AR-T010-Q03",
+      "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t010_q03",
+      "sourceKey": "MNSF26-AR-T010-Q03",
+      "approval": "approved",
+      "isPublished": true,
+      "answerIndex": 0,
+      "originalExplanation": "يُطبَّق النمط المعتمد في multiply-then-compare. ثم تُراجع النتيجة: القيمة الأولى أكبر..",
+      "skillId": "skill_quant_04",
+      "subSkillId": "sub_quant_04_2",
+      "sectionId": "sec_sub_1777779748206_4",
+      "reviewerNotes": null
+    },
+    {
+      "code": "QDR-QNT-MNSF26-AR-T010-Q10",
+      "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t010_q10",
+      "sourceKey": "MNSF26-AR-T010-Q10",
+      "approval": "approved",
+      "isPublished": true,
+      "answerIndex": 3,
+      "originalExplanation": "يُطبَّق النمط المعتمد في consecutive-integers / known-sum / middle-as-average. ثم تُراجع النتيجة: 5..",
+      "skillId": "skill_quant_01",
+      "subSkillId": "sub_quant_01_1",
+      "sectionId": "sec_sub_1777779748206_1",
+      "reviewerNotes": null
+    },
+    {
+      "code": "QDR-QNT-MNSF26-AR-T010-Q12",
+      "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t010_q12",
+      "sourceKey": "MNSF26-AR-T010-Q12",
+      "approval": "approved",
+      "isPublished": true,
+      "answerIndex": 3,
+      "originalExplanation": "يُطبَّق النمط المعتمد في equal-share / subset-contribution / quantitative-comparison. ثم تُراجع النتيجة: القيمتان متساويتان..",
+      "skillId": "skill_quant_01",
+      "subSkillId": "sub_quant_01_1",
+      "sectionId": "sec_sub_1777779748206_1",
+      "reviewerNotes": null
+    },
+    {
+      "code": "QDR-QNT-MNSF26-AR-T012-Q01",
+      "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t012_q01",
+      "sourceKey": "MNSF26-AR-T012-Q01",
+      "approval": "approved",
+      "isPublished": true,
+      "answerIndex": 3,
+      "originalExplanation": "يُطبَّق النمط المعتمد في product-comparison / factor-regrouping. ثم تُراجع النتيجة: القيمتان متساويتان..",
+      "skillId": "skill_quant_01",
+      "subSkillId": "sub_quant_01_1",
+      "sectionId": "sec_sub_1777779748206_1",
+      "reviewerNotes": null
+    },
+    {
+      "code": "QDR-QNT-MNSF26-AR-T012-Q07",
+      "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t012_q07",
+      "sourceKey": "MNSF26-AR-T012-Q07",
+      "approval": "approved",
+      "isPublished": true,
+      "answerIndex": 3,
+      "originalExplanation": "يُطبَّق النمط المعتمد في constant-monthly-increase / repeated-pattern. ثم تُراجع النتيجة: 30..",
+      "skillId": "skill_quant_01",
+      "subSkillId": "sub_quant_01_1",
+      "sectionId": "sec_sub_1777779748206_1",
+      "reviewerNotes": null
+    },
+    {
+      "code": "QDR-QNT-MNSF26-AR-T012-Q08",
+      "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t012_q08",
+      "sourceKey": "MNSF26-AR-T012-Q08",
+      "approval": "approved",
+      "isPublished": true,
+      "answerIndex": 3,
+      "originalExplanation": "يُطبَّق النمط المعتمد في two-capacity-conditions / linear-equation / classroom-seating. ثم تُراجع النتيجة: 48 students..",
+      "skillId": "skill_quant_01",
+      "subSkillId": "sub_quant_01_1",
+      "sectionId": "sec_sub_1777779748206_1",
+      "reviewerNotes": null
+    },
+    {
+      "code": "QDR-QNT-MNSF26-AR-T014-Q09",
+      "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t014_q09",
+      "sourceKey": "MNSF26-AR-T014-Q09",
+      "approval": "approved",
+      "isPublished": true,
+      "answerIndex": 3,
+      "originalExplanation": "يُطبَّق النمط المعتمد في same-time-rate comparison. ثم تُراجع النتيجة: 625..",
+      "skillId": "skill_quant_01",
+      "subSkillId": "sub_quant_01_1",
+      "sectionId": "sec_sub_1777779748206_1",
+      "reviewerNotes": null
+    },
+    {
+      "code": "QDR-QNT-MNSF26-AR-T014-Q13",
+      "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t014_q13",
+      "sourceKey": "MNSF26-AR-T014-Q13",
+      "approval": "approved",
+      "isPublished": true,
+      "answerIndex": 3,
+      "originalExplanation": "يُطبَّق النمط المعتمد في elapsed-years / subtraction. ثم تُراجع النتيجة: 23..",
+      "skillId": "skill_quant_01",
+      "subSkillId": "sub_quant_01_1",
+      "sectionId": "sec_sub_1777779748206_1",
+      "reviewerNotes": null
+    }
+  ],
+  "historicalFailClosedReconciliation": {
+    "sourceReference": "MNSF26_EXECUTION_STATE_V1.json",
+    "distinctImportedKeys": 86,
+    "sourceNotesMustNotBeTreatedAsCurrentVerdicts": true,
+    "items": [
+      {
+        "key": "MNSF26-AR-T012-Q01",
+        "reason": "MNSF26-AR-T012-Q01 HOLD",
+        "productionStatus": "approved"
+      },
+      {
+        "key": "MNSF26-AR-T012-Q07",
+        "reason": "MNSF26-AR-T012-Q07 HOLD",
+        "productionStatus": "approved"
+      },
+      {
+        "key": "MNSF26-AR-T012-Q08",
+        "reason": "MNSF26-AR-T012-Q08 HOLD",
+        "productionStatus": "approved"
+      },
+      {
+        "key": "MNSF26-AR-T014-Q09",
+        "reason": "MNSF26-AR-T014-Q09 HOLD source/remainder ambiguity",
+        "productionStatus": "approved"
+      },
+      {
+        "key": "MNSF26-AR-T014-Q13",
+        "reason": "MNSF26-AR-T014-Q13 HOLD non-unique answer",
+        "productionStatus": "approved"
+      },
+      {
+        "key": "MNSF26-AR-T022-Q17",
+        "reason": "MNSF26-AR-T022-Q17 HOLD",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-AR-T022-Q20",
+        "reason": "MNSF26-AR-T022-Q20 HOLD",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-AR-T023-Q01",
+        "reason": "MNSF26-AR-T023-Q01 HOLD",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-AR-T023-Q02",
+        "reason": "MNSF26-AR-T023-Q02 HOLD",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-AR-T024-Q08",
+        "reason": "MNSF26-AR-T024-Q08 HOLD",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-AR-T024-Q19",
+        "reason": "MNSF26-AR-T024-Q19 HOLD",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-AR-T025-Q16",
+        "reason": "MNSF26-AR-T025-Q16 HOLD",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-AR-T026-Q05",
+        "reason": "MNSF26-AR-T026-Q05 HOLD",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-AR-T026-Q07",
+        "reason": "MNSF26-AR-T026-Q07 HOLD",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-AR-T027-Q09",
+        "reason": "MNSF26-AR-T027-Q09 HOLD",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-AR-T027-Q11",
+        "reason": "MNSF26-AR-T027-Q11 HOLD",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-AR-T028-Q16",
+        "reason": "MNSF26-AR-T028-Q16 HOLD percent-base ambiguity",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-AR-T031-Q03",
+        "reason": "MNSF26-AR-T031-Q03 HOLD خيارات الإجابة مقصوصة من أسفل الصورة، فلا يمكن اعتماد تطابق الاختيار ولو أمكن حل المعادلة.",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-AR-T031-Q06",
+        "reason": "MNSF26-AR-T031-Q06 HOLD سطر الخيارات والنهاية السفلى للسؤال مقصوصان من crop؛ يحتاج إصلاحًا مثبتًا قبل اعتماد السؤال.",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-AR-T032-Q11",
+        "reason": "MNSF26-AR-T032-Q11 HOLD النسبة الحسابية 3:22 لكن ترتيب النسب في الخيارات الظاهرة معكوس/ملتبس (مثل 22:3)؛ يحتاج اعتماد اتجاه النسبة.",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-AR-T034-Q02",
+        "reason": "MNSF26-AR-T034-Q02 HOLD المعادلة تعطي 80 ولدًا بينما الخيارات 4/5/6/8؛ تضارب صريح بين المعطيات والاختيارات.",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-AR-T034-Q17",
+        "reason": "MNSF26-AR-T034-Q17 HOLD درجة الاختبار الكلية غير معطاة صراحة، ولا يمكن الجزم بحد النجاح دون افتراض أقصى درجة؛ يلزم مراجعة المصدر.",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-AR-T035-Q06",
+        "reason": "MNSF26-AR-T035-Q06 HOLD النسبة الحسابية 6:9=2:3 غير موجودة ضمن الخيارات المرئية؛ تعارض يتطلب مراجعة.",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-AR-T035-Q15",
+        "reason": "MNSF26-AR-T035-Q15 HOLD علاقة 20% بالمصروفات المذكورة غير واضحة ولا تنتج إحدى الخيارات الظاهرة؛ يلزم مراجعة المصدر قبل الإقرار.",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-AR-T036-Q08",
+        "reason": "MNSF26-AR-T036-Q08 HOLD المعادلة 6س=21 تعطي 3.5 كجم بينما الخيارات 2/3/4/5؛ تحتاج مراجعة النص والخيارات.",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-AR-T036-Q10",
+        "reason": "MNSF26-AR-T036-Q10 HOLD العبارة الرياضية المطبوعـة لا تنتج خيارًا ظاهرًا دون تأويل؛ لا نعتمد جوابًا تخمينيًا.",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-AR-T037-Q13",
+        "reason": "MNSF26-AR-T037-Q13 HOLD المخطط المصور وصياغة الصافي لا يحددان أساس الربح بصورة متسقة مع الخيارات؛ يلزم تحكيم مستقل.",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-AR-T037-Q15",
+        "reason": "MNSF26-AR-T037-Q15 HOLD اتجاه كتابة النسبة والأعداد في الصورة يتيح أكثر من تفسير ولا يطابق الاختيارات عند القراءة المباشرة.",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-AR-T037-Q16",
+        "reason": "MNSF26-AR-T037-Q16 HOLD المعطيات لا توضح أطراف علاقة الأعمار بدقة في القص؛ يلزم تحكيم الصياغة قبل ربط المهارة.",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-AR-T038-Q19",
+        "reason": "MNSF26-AR-T038-Q19 HOLD المعادلة 432/0.70≈617.14 لا توافق الخيارات الصحيحة 1200/1440/1600/1800؛ تعارض ظاهر.",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-AR-T039-Q07",
+        "reason": "MNSF26-AR-T039-Q07 HOLD صورة الأسس والاختيارات تحتاج تحكيمًا مستقلًا لضمان قراءة الأسس الصغيرة دون تخمين.",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-AR-T039-Q17",
+        "reason": "MNSF26-AR-T039-Q17 HOLD قص السؤال يفتقد بقية الرسم/الخيارات اللازمة لتثبيت تفسير النسبة؛ يحتاج مراجعة صورة الصفحة.",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-AR-T041-Q06",
+        "reason": "MNSF26-AR-T041-Q06 HOLD المعطيات تعطي80 جنيهًا بينما الخيارات 240/360/640/720؛ تعارض مصدر.",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-AR-T041-Q12",
+        "reason": "MNSF26-AR-T041-Q12 HOLD السنة تحوي52 أسبوعًا عادة فينتج36400، بينما الخيارات تعكس50 أسبوعًا دون تحديد عطلة؛ يلزم توضيح فرضية عدد الأسابيع.",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-AR-T042-Q09",
+        "reason": "MNSF26-AR-T042-Q09 HOLD اتجاه التحويل من الأقل إلى الأكثر يجعل التساوي مستحيلًا وفق النسبة المكتوبة؛ مصدر يحتاج مراجعة.",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-AR-T042-Q13",
+        "reason": "MNSF26-AR-T042-Q13 HOLD حساب السعة لا يعطي أي خيار ظاهر (30/32/36/42)، وتفسير وجود الأطفال في الحالة الأولى ملتبس.",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-AR-T045-Q01",
+        "reason": "MNSF26-AR-T045-Q01 HOLD (derived 3/10 absent from visible options)",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-AR-T047-Q04",
+        "reason": "MNSF26-AR-T047-Q04 REVIEW cross-topic work sharing",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-AR-T047-Q16",
+        "reason": "MNSF26-AR-T047-Q16 REVIEW cross-topic work sharing",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-AR-T047-Q12",
+        "reason": "MNSF26-AR-T047-Q12 HOLD inconsistent constant speed",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-AR-T047-Q19",
+        "reason": "MNSF26-AR-T047-Q19 HOLD 160 km/h absent from options",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-AR-T048-Q12",
+        "reason": "MNSF26-AR-T048-Q12 HOLD (57 months absent from source options)",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-GEO-T036-Q05",
+        "reason": "MNSF26-GEO-T036-Q05 HOLD لا يمكن تثبيت تساوي قواعد جميع المثلثات/أطوالها من العلامات المرئية؛ لا يعتمد عدد القطاعات وحده لإثبات النسبة.",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-GEO-T036-Q15",
+        "reason": "MNSF26-GEO-T036-Q15 HOLD تقسيم الجزء العلوي الأيمن إلى خلايا متفاوتة غير كافٍ لتأكيد نسبة الأحمر من علامات الصورة وحدها؛ يحتاج تحكيم مستقل.",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-GEO-T036-Q19",
+        "reason": "MNSF26-GEO-T036-Q19 HOLD اتجاه القياس 135° وعلامات الأطوال لا تثبت ارتفاعات المثلثين المظللين في القص بصورة قاطعة؛ HOLD.",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-GEO-T036-Q20",
+        "reason": "MNSF26-GEO-T036-Q20 HOLD لا تتضح نقاط التماس/امتدادات المثلثين بما يضمن قاعدة وارتفاعًا وحيدين من القص؛ HOLD.",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-GEO-T037-Q03",
+        "reason": "MNSF26-GEO-T037-Q03 HOLD لا توجد زاوية أو ضلع إضافي مرقم يحدد الوتر أ ب من طول ب ج وحده؛ HOLD.",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-GEO-T037-Q14",
+        "reason": "MNSF26-GEO-T037-Q14 HOLD لا يوجد قياس زاوية مركزية أو نسبة قوس في الرسم، والاتجاه الظاهر لا يكفي لإثبات زاوية؛ HOLD.",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-GEO-T039-Q10",
+        "reason": "MNSF26-GEO-T039-Q10 HOLD أطوال الأجزاء الأفقية في الرسم غير معطاة، فلا يمكن تعيين و ن أو مقارنتها بـ10 سم دون افتراض مقياس الرسم.",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-GEO-T040-Q14",
+        "reason": "MNSF26-GEO-T040-Q14 HOLD علامات الارتفاع والموضع لا تكفي لتأكيد أن الأجزاء تشكل مثلثات متشابهة بمقياس واحد دون تحكيم الرسم، والناتج المباشر لا يوافق الخيارات؛ HOLD.",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-GEO-T040-Q15",
+        "reason": "MNSF26-GEO-T040-Q15 HOLD القطعة المطلوبة غير محددة بوضوح في نص القص، وتعيين أبعاد المعين لا يتبع من المساحة وحدها؛ HOLD.",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-GEO-T041-Q09",
+        "reason": "MNSF26-GEO-T041-Q09 HOLD المساحة30−4−π/2≈24.43، ولا تظهر هذه القيمة في الخيارات؛ HOLD لمراجعة أبعاد النافذة والخيارات.",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-GEO-T041-Q10",
+        "reason": "MNSF26-GEO-T041-Q10 HOLD عند جمع المقاطع الأفقية والرأسية الظاهرة ينتج 50+24س=130 ومنه س=10/3 غير موجود في الخيارات؛ HOLD لتدقيق العلامات.",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-GEO-T041-Q15",
+        "reason": "MNSF26-GEO-T041-Q15 HOLD زاويتا س وص في الرسم عند تقاطع وتر وضلع دون بيانات إضافية كافية لتحديدهما مجموعًا بصورة مستقلة؛ HOLD.",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-GEO-T041-Q20",
+        "reason": "MNSF26-GEO-T041-Q20 HOLD تحديد القوس المقابل لس من العلامات المتاحة غير قاطع؛ HOLD بدل افتراض زاوية مركزية غير معطاة.",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-GEO-T042-Q05",
+        "reason": "MNSF26-GEO-T042-Q05 HOLD تظهر ارتفاعات المستطيل السفلي بالنسبة للمربعات دون قياس مثبت؛ النسبة الدقيقة بين أ+ب والكل لا تثبت من الرسم وحده؛ HOLD.",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-GEO-T042-Q06",
+        "reason": "MNSF26-GEO-T042-Q06 HOLD قاعدة المثلث مجهولة؛ لا يمكن تعيين مساحته ولا المقارنة؛ HOLD.",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-GEO-T042-Q08",
+        "reason": "MNSF26-GEO-T042-Q08 HOLD صياغة أصغر أبعاد المستطيل واتجاه شبكة100 مربع لا تحدد عدد صفوف الشبكة ولا قياس كل مربع؛ HOLD.",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-GEO-T042-Q15",
+        "reason": "MNSF26-GEO-T042-Q15 HOLD الرسم لا يحدد قطري المعين بصورة كافية، والحساب المباشر من الأضلاع لا ينتج خيارًا موثقًا؛ HOLD.",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-GEO-T042-Q16",
+        "reason": "MNSF26-GEO-T042-Q16 HOLD لا يمكن استنتاج القوسين المقارنين من العلامات دون تثبيت اتصال الرؤوس بالدائرة؛ HOLD.",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-GEO-T043-Q12",
+        "reason": "MNSF26-GEO-T043-Q12 HOLD موضع رؤوس المثلثين لا يحدد طول قاعدتيهما بدقة من علامات الصورة؛ HOLD.",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-GEO-T043-Q13",
+        "reason": "MNSF26-GEO-T043-Q13 HOLD الحدود الداخلية للمستطيل غير موضحة بعلامات تحدد عدد خلاياه؛ HOLD بدل فرض توزيع الخلايا.",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-GEO-T044-Q03",
+        "reason": "MNSF26-GEO-T044-Q03 HOLD المحيط وحده لا يحدد قاعدة وارتفاع متوازي الأضلاع أو أبعاد المستطيل؛ HOLD.",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-GEO-T044-Q06",
+        "reason": "MNSF26-GEO-T044-Q06 HOLD المراكز والمسافات بينهما في الرسم لا تحدد بصورة قاطعة جميع أطوال أضلاع المثلث من أنصاف الأقطار فقط؛ HOLD.",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-GEO-T044-Q11",
+        "reason": "MNSF26-GEO-T044-Q11 HOLD زاوية المثلث60°، لكن الزاوية المختارة في رباعي غير معلوم النوع قد تكون أقل أو أكبر؛ HOLD.",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-GEO-T045-Q01",
+        "reason": "MNSF26-GEO-T045-Q01 HOLD تحديد عرض المستطيل الكامل من الشكل دون رقم صريح لا يثبت محيطًا وحيدًا؛ HOLD.",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-GEO-T045-Q12",
+        "reason": "MNSF26-GEO-T045-Q12 HOLD علامة8 في الرسم لا تثبت بوضوح أي ضلع من المثلث، وبالتالي لا تثبت مساحته؛ HOLD.",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-GEO-T046-Q01",
+        "reason": "MNSF26-GEO-T046-Q01 HOLD طول ضلع20 أكبر من نصف المحيط9، فالمعطيات متناقضة؛ HOLD.",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-GEO-T046-Q15",
+        "reason": "MNSF26-GEO-T046-Q15 HOLD طول قاعدة المثلث المحددة في الرسم غير مؤكد بالنسبة لمركز الدائرة؛ HOLD لتجنب مقارنة غير مبرهنة.",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-GEO-T046-Q16",
+        "reason": "MNSF26-GEO-T046-Q16 HOLD الزاوية س تتوقف على تحديد القوس المقابل لها، ولا تثبت زاوية منفردة من علامات القص؛ HOLD.",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-GEO-T047-Q01",
+        "reason": "MNSF26-GEO-T047-Q01 HOLD المساحة24−(1/2)π(1.5)²=24−1.125π، وهي غير موجودة في الخيارات؛ HOLD.",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-GEO-T048-Q06",
+        "reason": "MNSF26-GEO-T048-Q06 HOLD الحجم الكلي15×5=75؛ الثلث25، لكن خيارات الصورة تتضمن75 و120 و150 و60 ولا تتضمن25؛ HOLD.",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-GEO-T048-Q08",
+        "reason": "MNSF26-GEO-T048-Q08 HOLD الحجم الأكبر لا يستلزم مساحة سطح أكبر دون معرفة الأبعاد؛ HOLD.",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-GEO-T048-Q13",
+        "reason": "MNSF26-GEO-T048-Q13 HOLD الحجم64 إلى8 يساوي8:1، لكن جميع الخيارات الظاهرة 1:2 و1:4 و1:8 و1:16؛ HOLD لاتجاه النسبة.",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-GEO-T048-Q14",
+        "reason": "MNSF26-GEO-T048-Q14 HOLD قطر/نصف قطر المقطع الدائري غير معطى بوضوح؛ لا يمكن حساب حجم المجرى؛ HOLD.",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-GEO-T049-Q03",
+        "reason": "MNSF26-GEO-T049-Q03 HOLD لم يوضح السؤال هل المساحة المقصودة مساحة وجه أم المساحة السطحية الكلية؛ HOLD.",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-GEO-T049-Q10",
+        "reason": "MNSF26-GEO-T049-Q10 HOLD الحجم يتوقف على مساحة القاعدة أيضًا؛ لا تكفي معلومة الارتفاعين؛ HOLD.",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-GEO-T049-Q20",
+        "reason": "MNSF26-GEO-T049-Q20 HOLD الحجم السائل190 مل لكن الخيارات الظاهرة لا تطابق الحجم الكلي أو السائل حسابيًا؛ HOLD.",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-GEO-T050-Q11",
+        "reason": "MNSF26-GEO-T050-Q11 HOLD من دون تجربة طي الشبكات أو ترميز مواضع الأوجه المتقابلة بصورة مؤكدة لا يعتمد الخيار؛ HOLD.",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-GEO-T050-Q15",
+        "reason": "MNSF26-GEO-T050-Q15 HOLD قاعدة المثلث غير معطاة، لذا لا يمكن تحديد حجمه بالنسبة للثانية؛ HOLD.",
+        "productionStatus": "draft"
+      },
+      {
+        "key": "MNSF26-GEO-T024-Q03",
+        "reason": "MNSF26-GEO-T024-Q03 HOLD Run055 direct image",
+        "productionStatus": "approved"
+      },
+      {
+        "key": "MNSF26-GEO-T024-Q14",
+        "reason": "MNSF26-GEO-T024-Q14 HOLD Run055 direct image",
+        "productionStatus": "approved"
+      },
+      {
+        "key": "MNSF26-GEO-T024-Q16",
+        "reason": "MNSF26-GEO-T024-Q16 HOLD Run055 direct image",
+        "productionStatus": "approved"
+      },
+      {
+        "key": "MNSF26-AR-T061-Q04",
+        "reason": "MNSF26-AR-T061-Q04 REVIEW correct answer 15 pages vs master 20",
+        "productionStatus": "approved"
+      },
+      {
+        "key": "MNSF26-AR-T061-Q09",
+        "reason": "MNSF26-AR-T061-Q09 REVIEW correct answer 5 minutes vs master 2",
+        "productionStatus": "approved"
+      },
+      {
+        "key": "MNSF26-AR-T062-Q02",
+        "reason": "MNSF26-AR-T062-Q02 HOLD source ratio 1/16 absent from options; master 1/8",
+        "productionStatus": "approved"
+      }
+    ]
+  },
+  "checkpointPhase": "BEFORE_SECOND_FAIL_CLOSED_WRITE"
 }
