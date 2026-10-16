@@ -64,3 +64,6 @@ migrated_prompt_history/
 
 # Local asset ingestion and crop pipeline
 .local-imports/
+
+# Local AI task metadata (never stage task context automatically).
+.argon_last_run.json

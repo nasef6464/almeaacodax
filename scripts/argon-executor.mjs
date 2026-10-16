@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
-import { execSync } from "node:child_process";
+import { execSync, execFileSync } from "node:child_process";
+import {safeArgonPath,assertArgonClean,argonPlan} from "./argon-file-safety.mjs";
 
 // 1. Resolve Project Root
 const REPO_ROOT = process.cwd();
@@ -15,7 +16,7 @@ if (!process.env.GEMINI_API_KEY) {
       if (!trimmed || trimmed.startsWith("#") || !trimmed.includes("=")) continue;
       const [key, ...rest] = trimmed.split("=");
       const val = rest.join("=").trim();
-      if (key && val && !process.env[key]) {
+      if (key === "GEMINI_API_KEY" && val && !process.env.GEMINI_API_KEY) {
         process.env[key] = val;
       }
     }
@@ -43,6 +44,8 @@ console.log("🤖 Almeaa Platform — Gemini / Argon Task Executor");
 console.log("=================================================");
 console.log(`📌 المهمة المطلوبة: "${taskPrompt}"\n`);
 
+assertArgonClean(REPO_ROOT);
+
 // 4. Gather Workspace Context
 // Extract potential file paths mentioned in the prompt
 const potentialPathRegex = /([a-zA-Z0-9_\-./\\]+\.[a-zA-Z0-9]{1,6})/g;
@@ -50,16 +53,12 @@ const matchedPaths = taskPrompt.match(potentialPathRegex) || [];
 const contextFiles = [];
 
 for (const rawMatch of matchedPaths) {
-  const normalized = rawMatch.replace(/\\/g, "/");
-  const fullPath = path.resolve(REPO_ROOT, normalized);
-  if (fullPath.startsWith(REPO_ROOT) && fs.existsSync(fullPath) && fs.statSync(fullPath).isFile()) {
-    const rel = path.relative(REPO_ROOT, fullPath).replace(/\\/g, "/");
-    try {
-      const content = fs.readFileSync(fullPath, "utf8");
-      contextFiles.push({ path: rel, content: content.slice(0, 15000) });
-      console.log(`📂 تم تضمين سياق الملف المذكور: ${rel} (${content.length} bytes)`);
-    } catch {}
-  }
+  try {
+    const {full,relative}=safeArgonPath(REPO_ROOT,rawMatch);
+    execFileSync('git',['--literal-pathspecs','ls-files','--error-unmatch','--',relative],{stdio:'pipe'});
+    const content=fs.readFileSync(full,'utf8');
+    contextFiles.push({path:relative,content:content.slice(0,15000)});
+  } catch { console.warn('Skipped protected, untracked or invalid context path'); }
 }
 
 // Git Status Snapshot
@@ -175,48 +174,11 @@ async function runExecutor() {
   console.log(`📌 رسالة الـ Commit: ${result.commitMessage || "chore: apply ai updates"}\n`);
 
   // 8. Apply File Modifications
-  const filesToWrite = Array.isArray(result.filesToWrite) ? result.filesToWrite : [];
-  const filesToDelete = Array.isArray(result.filesToDelete) ? result.filesToDelete : [];
-
-  const protectedFiles = [".env", "server/.env", ".git", "package-lock.json"];
-
-  let appliedWrites = 0;
-  for (const item of filesToWrite) {
-    if (!item.path || typeof item.content !== "string") continue;
-    const normalized = item.path.replace(/\\/g, "/").trim();
-    if (protectedFiles.some((p) => normalized === p || normalized.endsWith(`/${p}`))) {
-      console.warn(`⚠️ تم تخطي تعديل ملف محمي أمنياً: ${normalized}`);
-      continue;
-    }
-    const fullPath = path.resolve(REPO_ROOT, normalized);
-    if (!fullPath.startsWith(REPO_ROOT)) {
-      console.warn(`⚠️ تم رفض مسار خارج المستودع: ${normalized}`);
-      continue;
-    }
-
-    fs.mkdirSync(path.dirname(fullPath), { recursive: true });
-    fs.writeFileSync(fullPath, item.content, "utf8");
-    console.log(`  ✍️  تمت كتابة: ${normalized} (${item.content.length} حرف)`);
-    appliedWrites++;
-  }
-
-  let appliedDeletes = 0;
-  for (const delPath of filesToDelete) {
-    if (typeof delPath !== "string") continue;
-    const normalized = delPath.replace(/\\/g, "/").trim();
-    if (protectedFiles.some((p) => normalized === p || normalized.endsWith(`/${p}`))) {
-      console.warn(`⚠️ تم تخطي حذف ملف محمي أمنياً: ${normalized}`);
-      continue;
-    }
-    const fullPath = path.resolve(REPO_ROOT, normalized);
-    if (!fullPath.startsWith(REPO_ROOT)) continue;
-
-    if (fs.existsSync(fullPath)) {
-      fs.unlinkSync(fullPath);
-      console.log(`  🗑️  تم حذف: ${normalized}`);
-      appliedDeletes++;
-    }
-  }
+  assertArgonClean(REPO_ROOT);
+  const plan=argonPlan(REPO_ROOT,result); // Validate the entire plan before changing any file.
+  let appliedWrites=0,appliedDeletes=0;
+  for(const item of plan.writes){safeArgonPath(REPO_ROOT,item.relative);fs.mkdirSync(path.dirname(item.full),{recursive:true});fs.writeFileSync(item.full,item.content,'utf8');appliedWrites++;}
+  for(const item of plan.deletes){safeArgonPath(REPO_ROOT,item.relative);if(fs.existsSync(item.full)){fs.unlinkSync(item.full);appliedDeletes++;}}
 
   // 9. Output Summary for GitHub Actions if available
   const summaryEnv = process.env.GITHUB_STEP_SUMMARY;
@@ -248,6 +210,7 @@ ${result.explanation || "تم تطبيق التعديلات بنجاح."}
         explanation: result.explanation || "",
         appliedWrites,
         appliedDeletes,
+        changedPaths: plan.changedPaths,
         timestamp: new Date().toISOString()
       },
       null,

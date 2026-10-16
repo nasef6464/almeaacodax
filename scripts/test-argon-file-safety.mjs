@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';import os from 'node:os';import path from 'node:path';import {execFileSync}from'node:child_process';
+import {safeArgonPath,argonPlan,assertArgonClean} from './argon-file-safety.mjs';
+const parent=fs.mkdtempSync(path.join(os.tmpdir(),'argon-safety-')),root=path.join(parent,'repo'),outside=path.join(parent,'repo-other');fs.mkdirSync(root);fs.mkdirSync(outside);fs.mkdirSync(path.join(root,'src'));
+fs.writeFileSync(path.join(root,'src','safe.ts'),'original');fs.writeFileSync(path.join(root,'.env'),'fixture-not-a-real-secret');
+for(const bad of ['../repo-other/leak.ts','.git/config','.git/hooks/pre-commit','.github/workflows/write.yml','.env','server/.env.local','server/.ENV.audit','server/package-lock.json','credentials.json','keys.pem',outside+'/leak.ts'])assert.throws(()=>safeArgonPath(root,bad));
+assert.equal(safeArgonPath(root,'src/new.ts').relative,'src/new.ts');
+fs.symlinkSync(outside,path.join(root,'src','external'),'junction');assert.throws(()=>safeArgonPath(root,'src/external/leak.ts'));
+fs.symlinkSync(root,path.join(root,'src','internal'),'junction');assert.throws(()=>safeArgonPath(root,'src/internal/.env'));
+assert.throws(()=>argonPlan(root,{filesToWrite:[{path:'src/safe.ts',content:'updated'},{path:'../repo-other/leak.ts',content:'bad'}]}));assert.equal(fs.readFileSync(path.join(root,'src','safe.ts'),'utf8'),'original');
+execFileSync('git',['init'],{cwd:root,stdio:'ignore'});assert.throws(()=>assertArgonClean(root));
+assert.throws(()=>argonPlan(root,{filesToWrite:[{path:'src/a.ts',content:'a'},{path:'src/a.ts',content:'b'}]}));
+console.log('PASS Argon protected context/write paths, sibling escape, internal/external symlinks, atomic plan validation and dirty workspace refusal');
