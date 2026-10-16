@@ -4433,5 +4433,97 @@
       }
     ]
   },
-  "checkpointPhase": "BEFORE_SECOND_FAIL_CLOSED_WRITE"
+  "checkpointPhase": "BEFORE_HISTORICAL_HOLD_RESOLUTION",
+  "sixHistoricalHoldsBeforeWrite": [
+    {
+      "sourceKey": "MNSF26-AR-T061-Q04",
+      "code": "QDR-QNT-MNSF26-AR-T061-Q04",
+      "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t061_q04",
+      "originalApprovalStatus": "approved",
+      "originalIsPublished": true,
+      "originalAnswerIndex": 3,
+      "originalText": "يقرأ حسين20 صفحة أكثر من مثلي ما يقرأ مؤيد، وقرأ حسين60؛ كم قرأ مؤيد؟",
+      "originalExplanation": "2س+20=60؛ س=20.",
+      "originalSkillId": "skill_quant_13",
+      "originalSubSkillId": "sub_quant_13_4",
+      "originalSectionId": "sec_sub_1777779748206_13",
+      "originalReviewerNotes": null,
+      "originalHold": "MNSF26-AR-T061-Q04 REVIEW correct answer 15 pages vs master 20"
+    },
+    {
+      "sourceKey": "MNSF26-AR-T061-Q09",
+      "code": "QDR-QNT-MNSF26-AR-T061-Q09",
+      "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t061_q09",
+      "originalApprovalStatus": "approved",
+      "originalIsPublished": true,
+      "originalAnswerIndex": 3,
+      "originalText": "أمل سلمت ورقة الاختبار بعد هند بدقيقتين، وعبير قبل هند بثلاث دقائق، وسلمى قبل أمل بسبع دقائق؛ كم الفرق بين سلمى وعبير؟",
+      "originalExplanation": "هند0، أمل+2، عبير−3، سلمى−5؛ الفرق بين−5 و−3 دقيقتان.",
+      "originalSkillId": "skill_quant_04",
+      "originalSubSkillId": "sub_quant_04_2",
+      "originalSectionId": "sec_sub_1777779748206_4",
+      "originalReviewerNotes": null,
+      "originalHold": "MNSF26-AR-T061-Q09 REVIEW correct answer 5 minutes vs master 2"
+    },
+    {
+      "sourceKey": "MNSF26-AR-T062-Q02",
+      "code": "QDR-QNT-MNSF26-AR-T062-Q02",
+      "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t062_q02",
+      "originalApprovalStatus": "approved",
+      "originalIsPublished": true,
+      "originalAnswerIndex": 3,
+      "originalText": "عدد زوار متحف يوم الأحد500 ويتضاعف كل يوم؛ ما نسبة عدد الاثنين إلى الخميس؟",
+      "originalExplanation": "الاثنين1000، الخميس8000؛ النسبة1/8.",
+      "originalSkillId": "skill_quant_08",
+      "originalSubSkillId": "sub_quant_08_2",
+      "originalSectionId": "sec_sub_1777779748206_8",
+      "originalReviewerNotes": null,
+      "originalHold": "MNSF26-AR-T062-Q02 HOLD source ratio 1/16 absent from options; master 1/8"
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T024-Q03",
+      "code": "QDR-QNT-MNSF26-GEO-T024-Q03",
+      "id": "q_qdr_qnt_mnsf26_mnsf26_geo_t024_q03",
+      "originalApprovalStatus": "approved",
+      "originalIsPublished": true,
+      "originalAnswerIndex": 0,
+      "originalText": "قارن العدد 60 بعدد القطع المستقيمة في شكل مستطيل مرسوم قطراه المتقاطعان.",
+      "originalExplanation": "حتى لو حسبنا كل القطع الناتجة من نقطتي نهاية كل قطر ونقطة التقاطع فلكل قطر ثلاث قطع، مع أضلاع المستطيل الأربعة يصبح العدد 10، وهو أقل من 60.",
+      "originalSkillId": "skill_quant_23",
+      "originalSubSkillId": "sub_quant_23_1",
+      "originalSectionId": "sec_sub_1777779748206_23",
+      "originalReviewerNotes": null,
+      "originalHold": "MNSF26-GEO-T024-Q03 HOLD Run055 direct image"
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T024-Q14",
+      "code": "QDR-QNT-MNSF26-GEO-T024-Q14",
+      "id": "q_qdr_qnt_mnsf26_mnsf26_geo_t024_q14",
+      "originalApprovalStatus": "approved",
+      "originalIsPublished": true,
+      "originalAnswerIndex": 3,
+      "originalText": "مزرعة مستطيلة أبعادها 40م و80م، تزرع نخيلًا بفاصل 8م وبُعد 8م عن السور؛ كم نخلة؟",
+      "originalExplanation": "إذا كان المقصود صفًا على المحيط فالمحيط=240م وعدد الفواصل 30، غير موجود في الخيارات 36/40/45/50. وإذا كان المقصود شبكة داخلية فلا يحدد النص توزيع الصفوف والأعمدة على نحو وحيد.",
+      "originalSkillId": "skill_quant_23",
+      "originalSubSkillId": "sub_quant_23_1",
+      "originalSectionId": "sec_sub_1777779748206_23",
+      "originalReviewerNotes": null,
+      "originalHold": "MNSF26-GEO-T024-Q14 HOLD Run055 direct image"
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T024-Q16",
+      "code": "QDR-QNT-MNSF26-GEO-T024-Q16",
+      "id": "q_qdr_qnt_mnsf26_mnsf26_geo_t024_q16",
+      "originalApprovalStatus": "approved",
+      "originalIsPublished": true,
+      "originalAnswerIndex": 3,
+      "originalText": "الشكل يضم مستطيلين متداخلين، ضلع في المائل طوله 2 سم وقطر المستطيل السفلي 2 سم؛ احسب مساحة المستطيل السفلي. ",
+      "originalExplanation": "القطر المعطى وحده لا يحدد طولي ضلعي المستطيل السفلي؛ توجد أبعاد متعددة لها القطر نفسه ومساحات مختلفة. طول ضلع في المستطيل المائل لا يثبت قاعدة وارتفاع المستطيل السفلي.",
+      "originalSkillId": "skill_quant_23",
+      "originalSubSkillId": "sub_quant_23_1",
+      "originalSectionId": "sec_sub_1777779748206_23",
+      "originalReviewerNotes": null,
+      "originalHold": "MNSF26-GEO-T024-Q16 HOLD Run055 direct image"
+    }
+  ]
 }
