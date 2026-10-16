@@ -6,6 +6,7 @@ const inside=(root,target)=>{const rel=path.relative(root,target);return rel!=='
 export function safeArgonPath(root,input){
  if(typeof input!=='string'||!input.trim()||input.includes('\0'))throw Error('Invalid file path');
  const raw=input.trim().replace(/\\/g,'/');if(path.posix.isAbsolute(raw)||path.win32.isAbsolute(raw))throw Error('Absolute paths are forbidden');
+ if(['scripts/argon-create-pr.mjs','scripts/argon-file-safety.mjs','scripts/argon-executor.mjs','scripts/test-argon-file-safety.mjs'].includes(raw.toLowerCase()))throw Error('Executor control files cannot be modified by model output');
  const parts=raw.split('/');if(parts.some(p=>p==='..'||p==='.'||!p||blocked.has(p.toLowerCase())||p.startsWith('.')))throw Error('Protected path');
  const name=parts.at(-1).toLowerCase();if(name.startsWith('.')||/^(?:credentials|secrets?|tokens?|passwords?)(?:[.-]|$)/i.test(name)||/(?:^|[-.])(?:credentials|secrets?)(?:[.-]|$)/i.test(name)||/(?:^|\/)package-lock\.json$/i.test(raw)||/\.(?:pem|key|p12|pfx)$/i.test(name))throw Error('Sensitive file');
  if(!/\.(?:ts|tsx|js|jsx|mjs|cjs|json|md|css|html|yml|yaml|txt|svg|sql)$/i.test(name))throw Error('Only source text files may be edited');
