@@ -1,3 +1,7 @@
+import {api} from '../../services/api';
+import {PathMockCatalog} from './PathMockCatalog';
+import {useAssessmentCatalog} from './hooks/useAssessmentCatalog';
+import {compareAssessmentPresentation} from '../../utils/assessmentCatalogPresentation';
 import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import { Award, Eye, ExternalLink, Filter, Plus, Save, Search, Trash2, X, Image as ImageIcon, CheckSquare, Square, ZoomIn, Users, ChevronDown, ChevronUp, PenLine, Sparkles, FileText, Building2, Globe, ArrowRight } from 'lucide-react';
 import { useStore } from '../../store/useStore';
@@ -341,6 +345,9 @@ export const MockExamManager: React.FC<MockExamManagerProps> = ({
 }) => {
   const { paths, subjects, sections: allSections, quizzes, skills, groups, addQuiz, updateQuiz, deleteQuiz, addQuestion } = useStore();
 
+  const [showEditor,setShowEditor]=useState(!workspacePathId);
+  const catalog=useAssessmentCatalog(workspacePathId||'',undefined,'mock',Boolean(workspacePathId));
+
   // Filter paths by role
   const availablePaths = useMemo(() => paths.filter(path =>
     (!workspacePathId || path.id === workspacePathId) &&
@@ -359,7 +366,7 @@ export const MockExamManager: React.FC<MockExamManagerProps> = ({
     isLoading: isQuestionBankLoading,
     error: questionBankError,
     refresh: refreshQuestionBank,
-  } = useExamQuestionBank({ pathId: selectedPathId, enabled: Boolean(selectedPathId) });
+  } = useExamQuestionBank({ pathId: selectedPathId, enabled: Boolean(selectedPathId) && showEditor });
 
   // ── Builder state ──────────────────────────────────────────────────────────
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -430,7 +437,7 @@ export const MockExamManager: React.FC<MockExamManagerProps> = ({
   const selectedPathName = availablePaths.find((path) => path.id === selectedPathId)?.name || '';
 
   const mockExams = useMemo(
-    () => quizzes.filter((quiz) => isPathMockExam(quiz, selectedPathId)).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)),
+    () => quizzes.filter((quiz) => isPathMockExam(quiz, selectedPathId)).sort(compareAssessmentPresentation),
     [quizzes, selectedPathId],
   );
 
@@ -512,6 +519,7 @@ export const MockExamManager: React.FC<MockExamManagerProps> = ({
   const loadExam = (quiz: Quiz) => {
     setIsPublished(quiz.isPublished === true);
     setPlatformVisible(quiz.showOnPlatform !== false);
+    setShowEditor(true);
     setEditingId(quiz.id);
     setSelectedPathId(quiz.mockExam?.pathId || quiz.pathId);
     setTitle(quiz.title);
@@ -747,6 +755,7 @@ export const MockExamManager: React.FC<MockExamManagerProps> = ({
       if (editingId) await updateQuiz(editingId, payload as Quiz);
       else await addQuiz(payload as Quiz);
       resetDraft();
+      if(workspacePathId)setShowEditor(false);
     } catch (err) {
       // النموذج يبقى مفتوحاً عند الفشل — لا نستدعي resetDraft
       setSaveError(err instanceof Error ? err.message : 'حدث خطأ أثناء الحفظ. تحقق من الاتصال وحاول مرة أخرى.');
@@ -767,11 +776,14 @@ export const MockExamManager: React.FC<MockExamManagerProps> = ({
       .map((section) => subjects.find((subject) => subject.id === section.subjectId)?.name || '')
       .filter(Boolean);
 
+  if(workspacePathId&&!showEditor)return <PathMockCatalog quizzes={mockExams} catalog={catalog} onAdd={()=>{resetDraft();setShowEditor(true);}} onEdit={loadExam} onUpdate={updateQuiz} onDelete={async id=>{await api.deleteQuiz(id);useStore.setState(state=>({quizzes:state.quizzes.filter(quiz=>quiz.id!==id)}));}}/>;
+
   // ─────────────────────────────────────────────────────────────────────────
   // RENDER
   // ─────────────────────────────────────────────────────────────────────────
   return (
     <div className="space-y-6">
+      {workspacePathId&&<button onClick={()=>setShowEditor(false)} className="rounded-xl bg-gray-100 px-4 py-2 font-bold">العودة لمحاكيات المسار</button>}
 
       {/* Back button (for supervisor mode) */}
       {onClose && (
@@ -1092,7 +1104,7 @@ export const MockExamManager: React.FC<MockExamManagerProps> = ({
                   التوجيه والنشر
                 </h4>
 
-                {role === 'admin' && examType === 'mock' && (
+                {!workspacePathId && role === 'admin' && examType === 'mock' && (
                   <div className="grid grid-cols-2 gap-3">
                     <button
                       type="button"

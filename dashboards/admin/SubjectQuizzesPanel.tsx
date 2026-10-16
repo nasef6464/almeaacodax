@@ -23,7 +23,10 @@ import { UnifiedQuizBuilder } from "./UnifiedQuizBuilder";
 import { UnifiedQuestionBuilder } from "./builders/UnifiedQuestionBuilder";
 import { isMaterialQuizCandidate } from "../../utils/mockExam";
 import { isTrueMockExam } from "../../utils/quizPlacement";
-import { resolveQuizLearningAccessType, setQuizLearningSlotAccess } from "../../utils/quizLearningPlacement";
+import { useAssessmentCatalog } from "./hooks/useAssessmentCatalog";
+import { AssessmentOrderControl } from "./components/AssessmentOrderControl";
+import { matchesSubjectCatalog, visibleInSubjectCatalog, compareAssessmentPresentation } from "../../utils/assessmentCatalogPresentation";
+import { resolveQuizLearningAccessType, setQuizLearningSlotVisibility, setQuizLearningSlotAccess } from "../../utils/quizLearningPlacement";
 
 type PanelKind = "drill" | "test";
 
@@ -60,10 +63,11 @@ const QuizCard: React.FC<{
   onEdit: () => void;
   onDelete: () => void;
   onPreview: () => void;
-}> = ({ quiz, kind, questions, skills, onToggleVisibility, onToggleAccess, onEdit, onDelete, onPreview }) => {
+  onOrder: (priority:number) => Promise<unknown>;
+}> = ({ quiz, kind, questions, skills, onToggleVisibility, onToggleAccess, onEdit, onDelete, onPreview, onOrder }) => {
   const [expanded, setExpanded] = useState(false);
   const c = kindColor(kind);
-  const isVisible = quiz.showOnPlatform !== false;
+  const isVisible = visibleInSubjectCatalog(quiz,kind);
   const slot = kind === "drill" ? "training" : "tests";
   const effectiveAccessType = resolveQuizLearningAccessType(quiz, {
     pathId: quiz.pathId,
@@ -96,7 +100,7 @@ const QuizCard: React.FC<{
   );
 
   return (
-    <div className={`rounded-2xl border ${isVisible ? "border-gray-100" : "border-dashed border-gray-200 bg-gray-50/60"} bg-white shadow-sm transition-all`}>
+    <div role="article" aria-label={quiz.title} className={`rounded-2xl border ${isVisible ? "border-gray-100" : "border-dashed border-gray-200 bg-gray-50/60"} bg-white shadow-sm transition-all`}>
       <div className="flex items-start justify-between gap-3 p-4">
         <div className="flex-1 min-w-0">
           <div className="flex flex-wrap items-center gap-1.5 mb-1.5">
@@ -150,6 +154,7 @@ const QuizCard: React.FC<{
           )}
         </div>
       </div>
+      <div className="px-4 pb-3"><AssessmentOrderControl quiz={quiz} onSave={onOrder}/></div>
       {expanded && previewQuestions.length > 0 && (
         <div className="border-t border-gray-50 px-4 pb-4 pt-3 space-y-2">
           <p className="text-[11px] font-black text-gray-400 mb-2">معاينة أول 3 أسئلة:</p>
@@ -188,6 +193,8 @@ export const SubjectQuizzesPanel: React.FC<SubjectQuizzesPanelProps> = ({ subjec
   const { user, quizzes: allQuizzes, questions, skills, updateQuiz, deleteQuiz, subjects, addQuestion } = useStore();
   const subject = useMemo(() => subjects.find((s) => s.id === subjectId), [subjects, subjectId]);
   const pathId = subject?.pathId || "";
+  const catalog = useAssessmentCatalog(pathId,subjectId,kind === "drill" ? "training" : "tests");
+  const [actionError,setActionError]=useState("");
 
   const [search, setSearch] = useState("");
   const [visFilter, setVisFilter] = useState<"all" | "visible" | "hidden">("all");
@@ -198,8 +205,8 @@ export const SubjectQuizzesPanel: React.FC<SubjectQuizzesPanelProps> = ({ subjec
   const [questionSaveError, setQuestionSaveError] = useState<string | null>(null);
 
   const subjectQuizzes = useMemo(
-    () => allQuizzes.filter((q) => isMaterialQuizCandidate(q) && q.subjectId === subjectId && quizMatchesKind(q, kind)),
-    [allQuizzes, subjectId, kind]
+    () => allQuizzes.filter((q) => isMaterialQuizCandidate(q) && matchesSubjectCatalog(q,pathId,subjectId,kind)),
+    [allQuizzes, pathId, subjectId, kind]
   );
 
   const filteredQuizzes = useMemo(
@@ -207,31 +214,33 @@ export const SubjectQuizzesPanel: React.FC<SubjectQuizzesPanelProps> = ({ subjec
       subjectQuizzes
         .filter((q) => {
           if (search && !q.title.toLowerCase().includes(search.toLowerCase())) return false;
-          if (visFilter === "visible" && q.showOnPlatform === false) return false;
-          if (visFilter === "hidden" && q.showOnPlatform !== false) return false;
+          if (visFilter === "visible" && !visibleInSubjectCatalog(q,kind)) return false;
+          if (visFilter === "hidden" && visibleInSubjectCatalog(q,kind)) return false;
           return true;
         })
-        .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0)),
+        .sort(compareAssessmentPresentation),
     [subjectQuizzes, search, visFilter]
   );
 
-  const visibleCount = subjectQuizzes.filter((q) => q.showOnPlatform !== false).length;
-  const hiddenCount = subjectQuizzes.filter((q) => q.showOnPlatform === false).length;
+  const visibleCount = subjectQuizzes.filter((q) => visibleInSubjectCatalog(q,kind)).length;
+  const hiddenCount = subjectQuizzes.filter((q) => !visibleInSubjectCatalog(q,kind)).length;
 
-  const toggleVisibility = (quiz: Quiz) => updateQuiz(quiz.id, { showOnPlatform: quiz.showOnPlatform !== false ? false : true });
-  const toggleAccess = (quiz: Quiz) => {
+  const toggleVisibility = async (quiz: Quiz) => {setActionError("");try{const visible=!visibleInSubjectCatalog(quiz,kind);await updateQuiz(quiz.id,{showOnPlatform:visible,...(visible?{isPublished:true}:{}),learningPlacements:setQuizLearningSlotVisibility(quiz,{pathId:quiz.pathId,subjectId,slot:kind==='drill'?'training':'tests'},visible)});}catch(e){setActionError(e instanceof Error?e.message:'تعذر تحديث الظهور');}};
+  const toggleAccess = async (quiz: Quiz) => {
+    setActionError("");try {
     const slot = kind === "drill" ? "training" : "tests";
     const scope = { pathId: quiz.pathId || pathId, subjectId, slot } as const;
     const currentAccessType = resolveQuizLearningAccessType(quiz, scope);
     const nextAccessType = currentAccessType === "free" ? "package" : "free";
 
-    updateQuiz(quiz.id, {
+    await updateQuiz(quiz.id, {
       access: {
         ...(quiz.access || {}),
         type: nextAccessType === "free" ? "free" : "paid",
       },
       learningPlacements: setQuizLearningSlotAccess(quiz, scope, nextAccessType),
     });
+    } catch(e) {setActionError(e instanceof Error?e.message:'تعذر تحديث الإتاحة');}
   };
   const handleDelete = (id: string) => { if (window.confirm("هل أنت متأكد من الحذف نهائياً؟")) deleteQuiz(id); };
   const handleEdit = (id: string) => { setEditingQuizId(id); setShowBuilder(true); };
@@ -287,7 +296,7 @@ export const SubjectQuizzesPanel: React.FC<SubjectQuizzesPanelProps> = ({ subjec
       <div className="grid grid-cols-3 gap-3">
         <div className={`rounded-2xl border ${c.border} ${c.bg} p-3 text-center`}>
           <div className={`text-2xl font-black ${c.text}`}>{subjectQuizzes.length}</div>
-          <div className="text-[10px] font-bold text-gray-500 mt-0.5">الكلي</div>
+          <div className="text-[10px] font-bold text-gray-500 mt-0.5">المحمّل</div>
         </div>
         <div className="rounded-2xl border border-sky-100 bg-sky-50 p-3 text-center">
           <div className="text-2xl font-black text-sky-700">{visibleCount}</div>
@@ -321,7 +330,7 @@ export const SubjectQuizzesPanel: React.FC<SubjectQuizzesPanelProps> = ({ subjec
       </div>
 
       <div className="space-y-3">
-        {filteredQuizzes.length === 0 && (
+        {filteredQuizzes.length === 0 && !catalog.loading && !catalog.error && (
           <div className="rounded-2xl border border-dashed border-gray-200 py-12 text-center">
             {kind === "drill" ? <Dumbbell size={36} className="mx-auto mb-3 text-gray-300" /> : <Award size={36} className="mx-auto mb-3 text-gray-300" />}
             <p className="text-sm font-black text-gray-400">
@@ -333,10 +342,13 @@ export const SubjectQuizzesPanel: React.FC<SubjectQuizzesPanelProps> = ({ subjec
           </div>
         )}
         {filteredQuizzes.map((quiz) => (
-          <QuizCard key={quiz.id} quiz={quiz} kind={kind} questions={questions} skills={subjectSkills} onToggleVisibility={() => toggleVisibility(quiz)} onToggleAccess={() => toggleAccess(quiz)} onEdit={() => handleEdit(quiz.id)} onDelete={() => handleDelete(quiz.id)} onPreview={() => handlePreview(quiz)} />
+          <QuizCard key={quiz.id} quiz={quiz} kind={kind} questions={questions} skills={subjectSkills} onToggleVisibility={() => toggleVisibility(quiz)} onToggleAccess={() => toggleAccess(quiz)} onEdit={() => handleEdit(quiz.id)} onDelete={() => handleDelete(quiz.id)} onPreview={() => handlePreview(quiz)} onOrder={priority=>updateQuiz(quiz.id,{displayPriority:priority})} />
         ))}
       </div>
 
+      {(catalog.error||actionError) && <div role="alert" className="rounded-xl bg-red-50 p-3 text-red-700">{actionError||catalog.error}{catalog.error&&<button onClick={catalog.retry}>إعادة المحاولة</button>}</div>}
+      {catalog.loading && <p role="status">جارٍ تحميل محتوى المادة...</p>}
+      {catalog.hasMore && <button disabled={catalog.loading} onClick={catalog.loadMore} className="rounded-xl bg-indigo-50 px-4 py-2 font-bold text-indigo-700">تحميل المزيد</button>}
       {showBuilder && (
         <UnifiedQuizBuilder
           role="admin"

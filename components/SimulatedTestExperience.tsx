@@ -6,6 +6,7 @@ import { VideoModal } from './VideoModal';
 import { PaymentModal } from './PaymentModal';
 
 interface Test {
+    displayPriority?: number;
     id: string | number;
     title: string;
     duration: string;
@@ -63,6 +64,8 @@ export const SimulatedTestExperience: React.FC<SimulatedTestExperienceProps> = (
 
     const sortedTests = useMemo(() => {
         return [...readyTests].sort((a, b) => {
+            const priority=(b.displayPriority??-1)-(a.displayPriority??-1);
+            if(priority)return priority;
             // Free items at the top first
             const aFree = !a.isLocked && !a.isUnavailable;
             const bFree = !b.isLocked && !b.isUnavailable;

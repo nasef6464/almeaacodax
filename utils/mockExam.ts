@@ -1,7 +1,7 @@
 import type { Quiz } from '../types';
 
 export const isPathMockExam = (quiz: Quiz, pathId?: string) => {
-  const enabled = quiz.mockExam?.enabled === true;
+  const enabled = quiz.mockExam?.enabled === true || quiz.quizKind === 'mock';
   const pathMatches = !pathId || quiz.mockExam?.pathId === pathId || quiz.pathId === pathId;
   return enabled && pathMatches;
 };

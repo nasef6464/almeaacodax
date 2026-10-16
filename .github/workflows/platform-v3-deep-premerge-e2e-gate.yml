@@ -247,6 +247,7 @@ jobs:
           node scripts/test-school-assessment-commands-ui.mjs
           node scripts/test-school-assessment-subjects-ui.mjs
           node scripts/test-path-mock-administration-ui.mjs
+          node scripts/test-assessment-catalog-parity-ui.mjs
           node scripts/test-detailed-analysis-filter-ui.mjs
           node scripts/test-live-quiz-question-ui.mjs
           node scripts/test-quiz-result-summary-ui.mjs --styles

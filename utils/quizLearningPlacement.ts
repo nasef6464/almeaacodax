@@ -106,6 +106,8 @@ export const getLearningSlotQuizzes = (
     : scopedQuizzes.filter(legacyFallback);
 
   return [...visibleQuizzes].sort((a, b) => {
+    const priority=(b.displayPriority??-1)-(a.displayPriority??-1);
+    if(priority)return priority;
     const aPlacement = getQuizLearningPlacement(a, scope);
     const bPlacement = getQuizLearningPlacement(b, scope);
     return (aPlacement?.order ?? 9999) - (bPlacement?.order ?? 9999) || (b.createdAt || 0) - (a.createdAt || 0);

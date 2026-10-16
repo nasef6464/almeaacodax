@@ -110,6 +110,7 @@ jobs:
           server/node_modules/.bin/tsx scripts/test-school-assessment-composition.ts
           server/node_modules/.bin/tsx scripts/test-school-assessment-composition-http.ts
           server/node_modules/.bin/tsx scripts/test-school-assessment-release-regressions.ts
+          server/node_modules/.bin/tsx scripts/test-assessment-catalog-pagination.ts
           server/node_modules/.bin/tsx scripts/test-quiz-answer-evidence.ts
           server/node_modules/.bin/tsx scripts/test-assessment-publication-state.ts
 
