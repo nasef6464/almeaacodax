@@ -1,0 +1,26 @@
+{
+  "status": "PASS",
+  "checks": [
+    "published own student completion API",
+    "anonymous denied",
+    "foundation main topic summary",
+    "subject training summary",
+    "ordinary tests summary",
+    "path mocks summary",
+    "390px no horizontal overflow"
+  ],
+  "foundationRoots": 30,
+  "productionWrites": 0,
+  "pr": 562,
+  "source": "cbecbe90554e650a93c17ef14dd7e2b5c529365d",
+  "merge": "c059bb3aa33bdc7c4f3b738e4b53d39faa37d29c",
+  "apiHealthCommit": "c059bb3aa33b",
+  "vercelDeployment": "AGnncuninLgydGCH64Fq59Qybmft",
+  "exactCI": {
+    "success": 20,
+    "conditionalSkipped": 4,
+    "failed": 0,
+    "requiredPassed": 3
+  },
+  "visualReview": "1280 full page checked; 30 visible root topics, available5/locked25 in this bounded maths student sample. No platform-wide inventory claim."
+}
