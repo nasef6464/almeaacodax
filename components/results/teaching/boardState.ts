@@ -1,6 +1,6 @@
 import type { BoardAction, TeachingStoryboard } from '../../../server/src/modules/ai/contracts/teachingStoryboard';
 
-export type BoardElement = { id: string; kind: 'text' | 'formula'; content: string; emphasis?: 'highlight' | 'box'; progress: number; history?: boolean; sourceId?: string; active?: boolean };
+export type BoardElement = { id: string; kind: 'text' | 'formula'; content: string; emphasis?: 'highlight' | 'box'; progress: number; inkProgress?: number; history?: boolean; sourceId?: string; active?: boolean };
 export const actionDuration = (action: BoardAction) =>
   action.type === 'write' || action.type === 'transform' ? Math.min(1600, Math.max(450, action.content.length * 22)) : 250;
 export const sceneDuration = (plan: TeachingStoryboard, index: number) =>
@@ -34,11 +34,11 @@ export function boardAt(plan: TeachingStoryboard, sceneIndex: number, elapsedMs:
           const previous = [...elements];
           elements.clear();
           for (const [key, value] of previous) elements.set(key === action.target ? id : key, key === action.target
-            ? { ...element, id, progress: 1, emphasis: undefined, history: true, sourceId: action.target } : value);
+            ? { ...element, id, progress: 1, emphasis: undefined, inkProgress: undefined, history: true, sourceId: action.target } : value);
         }
         if (element) elements.set(action.target, action.type === 'transform'
-          ? { ...element, content: action.content, progress, emphasis: undefined }
-          : { ...element, emphasis: action.type });
+          ? { ...element, content: action.content, progress, emphasis: undefined, ...(keepHistory ? { inkProgress: undefined } : {}) }
+          : { ...element, emphasis: action.type, ...(keepHistory ? { inkProgress: progress } : {}) });
         if (element) activeId = action.target;
       }
       actionStart += duration;

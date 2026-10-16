@@ -7,6 +7,7 @@ import { spokenTeachingText } from './spokenMath';
 import { readableBoardText, readableBoardProse } from './boardText';
 import { QuestionPreview, type TeacherQuestionPreview } from './QuestionPreview';
 import { WhiteboardInk } from './WhiteboardInk';
+import { WhiteboardWriting } from './WhiteboardWriting';
 
 const Formula: React.FC<{ content: string }> = ({ content }) => {
   const html = React.useMemo(() => {
@@ -39,7 +40,7 @@ export const TeachingBoard: React.FC<{ elements: BoardElement[]; narration: stri
   React.useEffect(() => {
     activeRow.current?.scrollIntoView({ block: 'nearest', behavior: 'auto' });
   }, [activeElement?.id, activeElement?.content]);
-  return <div className={`whiteboard-page relative flex min-h-full flex-col gap-4 ${dark ? 'bg-slate-950 text-slate-100' : 'bg-[#fdfefb] text-slate-900'}`}
+  return <div className={`whiteboard-page relative flex min-h-full flex-col gap-4 overflow-x-clip ${dark ? 'bg-slate-950 text-slate-100' : 'bg-[#fdfefb] text-slate-900'}`}
     data-testid="teaching-board" data-surface="whiteboard" data-theme={dark ? 'dark' : 'paper'} dir={language.startsWith('ar') ? 'rtl' : 'ltr'}>
     <div className={`sticky top-0 z-10 flex items-center justify-between border-b px-4 py-2 ${dark ? 'border-slate-800 bg-slate-950/95' : 'border-slate-200 bg-[#fdfefb]/95'}`}>
       <span className={`inline-flex items-center gap-2 text-xs font-bold ${dark ? 'text-slate-400' : 'text-slate-500'}`}><PenLine size={15} /> السبورة</span>
@@ -53,7 +54,6 @@ export const TeachingBoard: React.FC<{ elements: BoardElement[]; narration: stri
       {elements.map((element, index) => {
         const current = element.id === activeElement?.id;
         const rtl = language.startsWith('ar') && (element.kind === 'text' || /[\u0600-\u06ff]/.test(element.content));
-        const writing = current && element.progress > 0 && element.progress < 1;
         const ink = element.history ? (dark ? 'text-slate-400' : 'text-slate-500')
           : element.emphasis === 'box' ? (dark ? 'text-emerald-300' : 'text-emerald-800')
           : element.emphasis === 'highlight' ? (dark ? 'text-amber-200' : 'text-amber-900') : '';
@@ -63,17 +63,19 @@ export const TeachingBoard: React.FC<{ elements: BoardElement[]; narration: stri
           <div className="min-w-0 text-center">
             <div className="whiteboard-ink-track relative inline-block max-w-full px-3 py-2"
               style={{ '--reveal': `${Math.round(element.progress * 100)}%` } as React.CSSProperties}>
-              <div key={element.content} className={`teaching-writing ${rtl ? 'teaching-writing-rtl' : ''}`} style={{ '--reveal': `${Math.round(element.progress * 100)}%` } as React.CSSProperties}>
+              <WhiteboardWriting key={element.content} progress={element.progress} rtl={rtl} active={current}>
                 <BoardContent content={element.content} kind={element.kind} />
-              </div>
-              {element.emphasis && <WhiteboardInk key={`${element.emphasis}:${element.content}`} kind={element.emphasis} />}
-              {writing && <span aria-hidden="true" data-testid="whiteboard-marker" className={`whiteboard-marker pointer-events-none absolute bottom-0 text-cyan-600 ${rtl ? 'whiteboard-marker-rtl' : ''}`}><PenLine size={18} /></span>}
+              </WhiteboardWriting>
+              {element.emphasis && <WhiteboardInk key={`${element.emphasis}:${element.content}`} kind={element.emphasis} progress={element.inkProgress ?? 1} active={current} />}
             </div>
           </div>
         </div>;
       })}
     </div>
-    <p className={`mx-4 mt-auto border-t py-4 text-base leading-8 ${dark ? 'border-slate-700 text-slate-300' : 'border-slate-200 text-slate-600'}`} aria-live="polite" aria-atomic="true">{spokenTeachingText(narration, language)}</p>
-    <style>{`.whiteboard-page{background-image:linear-gradient(transparent 31px,rgba(100,116,139,.045) 32px);background-size:100% 32px}.teaching-writing{clip-path:inset(0 calc(100% - var(--reveal)) 0 0)}.teaching-writing-rtl{clip-path:inset(0 0 0 calc(100% - var(--reveal)))}.whiteboard-marker{left:clamp(0px,var(--reveal),calc(100% - 18px))}.whiteboard-marker-rtl{left:auto;right:clamp(0px,var(--reveal),calc(100% - 18px))}.whiteboard-ink path{stroke-dasharray:1;animation:whiteboard-pen .45s ease-out both}@keyframes whiteboard-pen{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}@media(prefers-reduced-motion:reduce){.teaching-writing{clip-path:none}.whiteboard-marker{display:none}.whiteboard-ink path{animation:none}}`}</style>
+    <details className={`mx-4 mt-auto border-t py-3 text-sm ${dark ? 'border-slate-700 text-slate-300' : 'border-slate-200 text-slate-600'}`}>
+      <summary className="min-h-11 cursor-pointer py-3 text-xs">نص الشرح</summary>
+      <p className="leading-7" aria-live="polite" aria-atomic="true">{spokenTeachingText(narration, language)}</p>
+    </details>
+    <style>{`.whiteboard-page{background-image:linear-gradient(transparent 31px,rgba(100,116,139,.045) 32px);background-size:100% 32px}.whiteboard-ink-track{isolation:isolate}.whiteboard-hand{filter:drop-shadow(1px 2px 1px rgba(15,23,42,.12));transform-origin:0 0}@media(prefers-reduced-motion:reduce){.teaching-writing{clip-path:none!important}.whiteboard-hand{display:none}.whiteboard-ink path{stroke-dashoffset:0}}`}</style>
   </div>;
 };

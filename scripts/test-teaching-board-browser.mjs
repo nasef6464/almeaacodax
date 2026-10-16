@@ -45,14 +45,14 @@ try {
   assert.equal(requests.length, 2);
   assert.match(requests[1].boardContext, /معادلة أسية/);
   await page.getByRole('button', { name: 'نكمل الشرح من نفس النقطة', exact: true }).click();
-  await page.getByText('عندنا معادلة أسية.', { exact: true }).waitFor();
+  await page.getByText('عندنا معادلة أسية.', { exact: true }).waitFor({ state: 'attached' });
   await page.waitForTimeout(100);
   await page.getByRole('button', { name: 'إيقاف مؤقت', exact: true }).click();
   assert.notEqual(await page.locator('.teaching-writing').first().getAttribute('style'), '--reveal: 0%;');
   await page.getByRole('button', { name: 'الخطوة التالية', exact: true }).click();
   await page.getByRole('button', { name: 'تشغيل', exact: true }).click();
   await page.evaluate(() => window.testSpeak.at(-1).onend());
-  await page.getByText('نساوي الأسس ثم نحل.', { exact: true }).waitFor();
+  await page.getByText('نساوي الأسس ثم نحل.', { exact: true }).waitFor({ state: 'attached' });
   await page.evaluate(() => window.testSpeak.at(-1).onend());
   await page.waitForTimeout(2200);
   assert.ok(await page.getByTestId('teaching-board').getByText('x=2', { exact: true }).count());
@@ -82,7 +82,7 @@ try {
   await page.getByRole('button', { name: 'إغلاق المعلم الذكي', exact: true }).click();
   await page.evaluate(() => { window.testEnglish = true; });
   await page.getByRole('button', { name: 'اشرح لي', exact: true }).click();
-  await page.getByText('Focus on the verb.', { exact: true }).waitFor();
+  await page.getByText('Focus on the verb.', { exact: true }).waitFor({ state: 'attached' });
   assert.equal(await page.getByTestId('teaching-board').getAttribute('dir'), 'ltr');
   assert.equal(await page.evaluate(() => window.testSpeak.at(-1).lang), 'en-US');
   await page.emulateMedia({ reducedMotion: 'reduce' });
@@ -110,7 +110,7 @@ try {
   await page.evaluate(() => window.testSpeak.at(-1).onend());
   const practice = page.getByRole('region', { name: 'جرّب الخطوة الجاية' });
   assert.equal(await practice.count(), 0, 'explanation must not force an answer');
-  await page.getByText('نكتب سبعة وعشرين كقوة للثلاثة.', { exact: true }).waitFor();
+  await page.getByText('نكتب سبعة وعشرين كقوة للثلاثة.', { exact: true }).waitFor({ state: 'attached' });
   const beforePractice = await page.evaluate(() => window.testRequests.length);
   await page.getByRole('button', { name: 'جرّب بنفسك', exact: true }).click();
   await page.getByRole('button', { name: 'إيقاف مؤقت', exact: true }).waitFor();
@@ -149,7 +149,7 @@ try {
   assert.match(attempt.message, /دون كشف الحل/);
   assert.match(attempt.boardContext, /معادلة أسية/);
   await page.getByRole('button', { name: 'نكمل الشرح من نفس النقطة', exact: true }).click();
-  await page.getByText('نكتب سبعة وعشرين كقوة للثلاثة.', { exact: true }).waitFor();
+  await page.getByText('نكتب سبعة وعشرين كقوة للثلاثة.', { exact: true }).waitFor({ state: 'attached' });
   await page.getByRole('button', { name: 'إغلاق المعلم الذكي', exact: true }).click();
   await page.getByRole('button', { name: 'اشرح لي', exact: true }).click();
   await page.getByRole('button', { name: 'جرّب بنفسك', exact: true }).click();
@@ -159,7 +159,7 @@ try {
   assert.equal(await practice.getByText(/تلميح 1:/).count(), 0);
   const countBeforeSkip = await page.evaluate(() => window.testRequests.length);
   await practice.getByRole('button', { name: 'أكمل الشرح', exact: true }).click();
-  await page.getByText('نكتب سبعة وعشرين كقوة للثلاثة.', { exact: true }).waitFor();
+  await page.getByText('نكتب سبعة وعشرين كقوة للثلاثة.', { exact: true }).waitFor({ state: 'attached' });
   assert.equal(await page.evaluate(() => window.testRequests.length), countBeforeSkip);
   await page.getByRole('button', { name: 'إغلاق المعلم الذكي', exact: true }).click();
   await page.evaluate(() => { window.testPractice = false; window.testMixed = true; });
