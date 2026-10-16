@@ -104,7 +104,7 @@ const sanitizeLearnerQuizQuestionRefs = (quiz: any, usableById: Map<string, bool
   };
 };
 
-const filterLearnerSafeQuizzes = async (quizzes: any[], learnerAudience?: any) => {
+export const filterLearnerSafeQuizzes = async (quizzes: any[], learnerAudience?: any) => {
   if (quizzes.length === 0) {
     return [];
   }

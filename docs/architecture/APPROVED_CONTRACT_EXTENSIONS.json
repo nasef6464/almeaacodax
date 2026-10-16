@@ -10,6 +10,7 @@
     "/school-teacher-dashboard"
   ],
   "backendRouteSignatures": [
+    "learningCompletionRouter|GET|/learning-completion",
     "schoolAssessmentsRouter|GET|/:id/context",
     "schoolAssessmentsRouter|GET|/:id/report",
     "schoolAssessmentsRouter|GET|/:id/learners",
@@ -164,6 +165,7 @@
     "activityRouter|PATCH|/teacher/session-bookings/:id/reject"
   ],
   "routerMountSignatures": [
+    "apiRouter|/quizzes|learningCompletionRouter",
     "apiRouter|/school-assessments|schoolAssessmentsRouter",
     "apiRouter|/classroom|classroomRouter",
     "apiRouter|/command-center|commandCenterRouter",

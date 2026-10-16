@@ -1,0 +1,23 @@
+{
+  "status": "PASS",
+  "checks": [
+    "real published subject row outside global200 restored to admin",
+    "per-card edit and order controls",
+    "390px no horizontal overflow",
+    "path mock list opens before editor",
+    "add opens existing editor"
+  ],
+  "scopeFirstPage": 100,
+  "productionWrites": 0,
+  "blockedWrites": 0,
+  "source": "f07cd6f424085441e5bd48ff05fe631c6c7bd54c",
+  "merge": "4939594d6b6d4fb307a59a19df6c7bbc3612a5ae",
+  "pr": 561,
+  "exactCI": {
+    "success": 22,
+    "conditionalSkipped": 5,
+    "failed": 0,
+    "requiredPassed": 3
+  },
+  "vercelDeployment": "CG4ANtFWVhxMAaPZtiWnQwibXwdB"
+}

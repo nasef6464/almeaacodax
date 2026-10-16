@@ -1,3 +1,4 @@
+import {learningCompletionRouter} from '../modules/quizzes/http/learningCompletionRoutes.js';
 import { Router } from "express";
 import { authRouter } from "./auth.routes.js";
 import { healthRouter } from "./health.routes.js";
@@ -41,6 +42,7 @@ apiRouter.use("/auth", authRouter);
 apiRouter.use("/taxonomy", taxonomyRouter);
 apiRouter.use("/content", contentRouter);
 apiRouter.use("/courses", courseRouter);
+apiRouter.use("/quizzes", learningCompletionRouter);
 apiRouter.use("/quizzes", quizRouter);
 apiRouter.use('/school-assessments',schoolAssessmentsRouter);
 apiRouter.use("/question-analytics", questionAnalyticsRouter);
