@@ -1,6 +1,15 @@
 import { readFile } from "node:fs/promises";
+import { existsSync } from "node:fs";
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
+const readWorkflow = (file) => {
+  const activePath = `.github/workflows/${file}`;
+  const archivePath = `.github/workflows-archive/refactor-v2/${file}`;
+  return existsSync(new URL(`../${activePath}`, import.meta.url))
+    ? read(activePath)
+    : read(archivePath);
+};
+
 const [
   deepGate,
   safetyGate,
@@ -17,9 +26,9 @@ const [
   plan7Evidence,
 ] = await Promise.all([
   read(".github/workflows/platform-v3-deep-premerge-e2e-gate.yml"),
-  read(".github/workflows/refactor-v2-guard.yml"),
+  readWorkflow("refactor-v2-guard.yml"),
   read(".github/workflows/platform-v3-recovery-gate.yml"),
-  read(".github/workflows/refactor-v2-production-readiness.yml"),
+  readWorkflow("refactor-v2-production-readiness.yml"),
   read(".github/workflows/platform-v3-phase-handover-gate.yml"),
   read("server/src/routes/health.routes.ts"),
   read("server/src/modules/privacy/application/deleteUserLifecycle.ts"),
