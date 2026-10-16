@@ -7,7 +7,7 @@ for(const bad of ['scripts/argon-create-pr.mjs','scripts/argon-file-safety.mjs',
 assert.equal(safeArgonPath(root,'src/new.ts').relative,'src/new.ts');
 fs.symlinkSync(outside,path.join(root,'src','external'),'junction');assert.throws(()=>safeArgonPath(root,'src/external/leak.ts'));
 fs.symlinkSync(root,path.join(root,'src','internal'),'junction');assert.throws(()=>safeArgonPath(root,'src/internal/.env'));assert.throws(()=>safeArgonPath(root,'src/internal/src/safe.ts'));
-assert.throws(()=>argonPlan(root,{filesToWrite:[{path:'src/safe.ts',content:'updated'},{path:'scripts/argon-create-pr.mjs','scripts/argon-file-safety.mjs','scripts/argon-executor.mjs','scripts/test-argon-file-safety.mjs','../repo-other/leak.ts',content:'bad'}]}));assert.equal(fs.readFileSync(path.join(root,'src','safe.ts'),'utf8'),'original');
+assert.throws(()=>argonPlan(root,{filesToWrite:[{path:'src/safe.ts',content:'updated'},{path:'../repo-other/leak.ts',content:'bad'}]}));assert.equal(fs.readFileSync(path.join(root,'src','safe.ts'),'utf8'),'original');
 execFileSync('git',['init'],{cwd:root,stdio:'ignore'});assert.throws(()=>assertArgonClean(root));
 assert.throws(()=>argonPlan(root,{filesToWrite:[{path:'src/a.ts',content:'a'},{path:'src/a.ts',content:'b'}]}));
 console.log('PASS Argon protected context/write paths, sibling escape, internal/external symlinks, atomic plan validation and dirty workspace refusal');
