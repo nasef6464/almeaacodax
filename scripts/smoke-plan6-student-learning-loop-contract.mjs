@@ -14,6 +14,8 @@ const [
   nextBestAction,
   presentation,
   assessmentAudit,
+  smartTeacher,
+  narrator,
 ] = await Promise.all([
   read("pages/Dashboard.tsx"),
   read("pages/QuizPage.tsx"),
@@ -27,6 +29,8 @@ const [
   read("server/src/modules/quizzes/analytics/nextBestAction.ts"),
   read("utils/quizPresentation.ts"),
   read("scripts/live-assessment-commercial-audit.mjs"),
+  read("components/results/InteractiveSmartTeacher.tsx"),
+  read("components/results/teaching/narrationEngine.ts"),
 ]);
 
 const assert = (ok, message) => { if (!ok) throw new Error(message); };
@@ -42,8 +46,9 @@ assert(reviewRoutes.includes("updateSkillProgressFromQuestionAttempt(attempt, us
 assert(skillProgress.includes("SkillProgressModel.bulkWrite") && skillProgress.includes("recentEvidenceKeys"), "SkillProgress direct evidence/idempotency missing");
 assert(skillProgress.includes('{ _id: { $in: ids } }') && skillProgress.includes('"subSkills.id": { $in: ids }') && skillProgress.includes("skillName: String(subSkill?.name"), "remediation must resolve string skill _id and canonical embedded subskill IDs");
 assert(nextBestAction.includes("buildServerNextBestAction"), "server Next Best Action missing");
-assert(assistantPanel.includes("SpeechRecognition") && assistantPanel.includes("speechSynthesis"), "voice tutor STT/TTS missing");
-assert(!assistantPanel.includes("<input"), "student tutor must remain voice-only");
+assert(assistantPanel.includes("InteractiveSmartTeacher") && assistantPanel.includes("اشرح لي"), "single contextual tutor entry missing");
+assert(smartTeacher.includes("SpeechRecognition") && narrator.includes("speechSynthesis"), "contextual tutor STT/TTS missing");
+assert(!assistantPanel.includes("<input"), "entry must not require typing before opening the explanation");
 assert(presentation.includes("getLearnerOptionLabel"), "learner option labeling contract missing");
 for (const label of ["أ", "ب", "ج", "د"]) assert(presentation.includes(label), `quant option label ${label} missing`);
 assert(assessmentAudit.includes("Remediation did not advance SkillProgress evidence"), "direct SkillProgress E2E proof missing");

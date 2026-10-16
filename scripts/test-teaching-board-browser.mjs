@@ -53,6 +53,7 @@ try {
   await page.waitForTimeout(2200);
   assert.ok(await page.getByTestId('teaching-board').getByText('x=2', { exact: true }).count());
   assert.equal(await page.evaluate(() => window.testRequests.length), 2);
+  await page.screenshot({ path: path.join(artifacts, 'desktop.png') });
   const beforeRepeat = await page.evaluate(() => window.testRequests.length);
   await page.getByRole('combobox', { name: 'سرعة الشرح' }).selectOption('1.5');
   await page.getByRole('button', { name: 'كرر الخطوة', exact: true }).click();
@@ -60,7 +61,6 @@ try {
   assert.equal(await page.evaluate(() => window.testSpeak.at(-1).rate), 0.94 * 1.5);
   assert.equal(await page.evaluate(() => window.testRequests.length), beforeRepeat);
   await page.getByRole('combobox', { name: 'سرعة الشرح' }).selectOption('1');
-  await page.screenshot({ path: path.join(artifacts, 'desktop.png') });
   await page.setViewportSize({ width: 800, height: 1280 });
   await page.getByRole('button', { name: 'اسأل المعلم', exact: true }).click();
   const dialogue = await page.locator('#teacher-dialogue').boundingBox();
