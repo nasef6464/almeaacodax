@@ -1,3 +1,4 @@
+import { LearningCatalogCounters } from './studentPaths/LearningCatalogCounters';
 import {useLearningCompletion,selectCompletion,selectFoundationCompletion} from '../hooks/useLearningCompletion';
 import {LearningCompletionSummary} from './studentPaths/LearningCompletionSummary';
 import React, { useRef, useState, useEffect } from 'react';
@@ -1032,29 +1033,11 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                                 </div>
                             </div>
                         )}
-                        <div className="mb-4 flex flex-wrap items-center gap-2">
-                            <button
-                                type="button"
-                                onClick={() => setFoundationFilter('all')}
-                                className={`px-3.5 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer ${foundationFilter === 'all' ? 'bg-indigo-600 text-white shadow-xs' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
-                            >
-                                الكل ({mappedSkills.length})
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => setFoundationFilter('free')}
-                                className={`px-3.5 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer ${foundationFilter === 'free' ? 'bg-emerald-600 text-white shadow-xs' : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100'}`}
-                            >
-                                المجاني ({mappedSkills.filter(s => !s.isLocked).length})
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => setFoundationFilter('locked')}
-                                className={`px-3.5 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer ${foundationFilter === 'locked' ? 'bg-amber-600 text-white shadow-xs' : 'bg-amber-50 text-amber-700 hover:bg-amber-100'}`}
-                            >
-                                ضمن باقة ({mappedSkills.filter(s => s.isLocked).length})
-                            </button>
-                        </div>
+                        <div className="mb-3"><LearningCatalogCounters label="تصفية موضوعات التأسيس" items={[
+                            {label:'الكل',value:mappedSkills.length,active:foundationFilter==='all',onClick:()=>setFoundationFilter('all')},
+                            {label:'المجاني',value:mappedSkills.filter(s=>!s.isLocked).length,tone:'emerald',active:foundationFilter==='free',onClick:()=>setFoundationFilter('free')},
+                            {label:'ضمن باقة',value:mappedSkills.filter(s=>s.isLocked).length,tone:'amber',active:foundationFilter==='locked',onClick:()=>setFoundationFilter('locked')},
+                        ]}/></div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         {mappedSkills
                             .filter((skill) => {

@@ -1,3 +1,4 @@
+import { LearningCatalogCounters } from './studentPaths/LearningCatalogCounters';
 import React, { useState, useEffect, useMemo } from 'react';
 import { Clock, CheckCircle, ChevronRight, Lock, Unlock, PlayCircle, AlertTriangle, ArrowRight, ArrowLeft, Star, FileText, Eye, Trash2, CheckCircle2, ChevronRight as ChevronRightIcon, Moon, Sun } from 'lucide-react';
 import { Card } from './ui/Card';
@@ -184,55 +185,11 @@ export const SimulatedTestExperience: React.FC<SimulatedTestExperienceProps> = (
 
         return (
             <div className="space-y-3 max-w-4xl mx-auto">
-                <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-3">
-                    <button
-                        type="button"
-                        onClick={() => setFilterMode('all')}
-                        className={`rounded-xl border p-3 text-right transition-all cursor-pointer ${filterMode === 'all' ? 'border-indigo-400 bg-indigo-50 ring-2 ring-indigo-200 shadow-xs' : 'border-indigo-100 bg-indigo-50/70 hover:bg-indigo-100/60'}`}
-                    >
-                        <div className="text-[11px] font-black text-indigo-600">{displayListTitle}</div>
-                        <div className="mt-1 text-xl font-black text-indigo-900">{tests.length}</div>
-                    </button>
-                    <button
-                        type="button"
-                        onClick={() => setFilterMode('free')}
-                        className={`rounded-xl border p-3 text-right transition-all cursor-pointer ${filterMode === 'free' ? 'border-emerald-400 bg-emerald-50 ring-2 ring-emerald-200 shadow-xs' : 'border-emerald-100 bg-emerald-50/70 hover:bg-emerald-100/60'}`}
-                    >
-                        <div className="text-[11px] font-black text-emerald-600">مفتوح الآن (المجاني)</div>
-                        <div className="mt-1 text-xl font-black text-emerald-800">{openTestsCount}</div>
-                    </button>
-                    <button
-                        type="button"
-                        onClick={() => setFilterMode('locked')}
-                        className={`rounded-xl border p-3 text-right transition-all cursor-pointer ${filterMode === 'locked' ? 'border-amber-400 bg-amber-50 ring-2 ring-amber-200 shadow-xs' : 'border-amber-100 bg-amber-50/70 hover:bg-amber-100/60'}`}
-                    >
-                        <div className="text-[11px] font-black text-amber-600">{lockedCountLabel || 'ضمن باقة (المدفوع)'}</div>
-                        <div className="mt-1 text-xl font-black text-amber-800">{lockedTestsCount}</div>
-                    </button>
-                </div>
-                <div className="flex flex-wrap items-center gap-2 pt-1 pb-1">
-                    <button
-                        type="button"
-                        onClick={() => setFilterMode('all')}
-                        className={`px-3.5 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer ${filterMode === 'all' ? 'bg-indigo-600 text-white shadow-xs' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
-                    >
-                        الكل ({readyTests.length})
-                    </button>
-                    <button
-                        type="button"
-                        onClick={() => setFilterMode('free')}
-                        className={`px-3.5 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer ${filterMode === 'free' ? 'bg-emerald-600 text-white shadow-xs' : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100'}`}
-                    >
-                        المجاني ({openTestsCount})
-                    </button>
-                    <button
-                        type="button"
-                        onClick={() => setFilterMode('locked')}
-                        className={`px-3.5 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer ${filterMode === 'locked' ? 'bg-amber-600 text-white shadow-xs' : 'bg-amber-50 text-amber-700 hover:bg-amber-100'}`}
-                    >
-                        المدفوع / باقة ({lockedTestsCount})
-                    </button>
-                </div>
+                <LearningCatalogCounters label={'تصفية '+displayListTitle} items={[
+                    {label:displayListTitle,compactLabel:mode==='bank'?'التدريبات':'الاختبارات',value:tests.length,tone:'indigo',active:filterMode==='all',onClick:()=>setFilterMode('all')},
+                    {label:'المجاني',value:openTestsCount,tone:'emerald',active:filterMode==='free',onClick:()=>setFilterMode('free')},
+                    {label:lockedCountLabel||'المدفوع / باقة',compactLabel:'ضمن باقة',value:lockedTestsCount,tone:'amber',active:filterMode==='locked',onClick:()=>setFilterMode('locked')},
+                ]}/>
                 {displayedTests.map((test) => (
                     <div key={test.id} onClick={() => handleTestClick(test)} className="bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-200/90 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:border-indigo-400 hover:shadow-md transition-all cursor-pointer group">
                         <div className="flex items-center gap-3.5 w-full sm:w-auto min-w-0">

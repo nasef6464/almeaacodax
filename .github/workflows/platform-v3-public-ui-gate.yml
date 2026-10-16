@@ -18,6 +18,8 @@ on:
       - 'index.html'
       - 'vite.config.ts'
       - 'scripts/pr-public-ui-offline-audit.mjs'
+      - 'scripts/test-learning-counters-ui.mjs'
+      - 'scripts/fixtures/learning-counters.tsx'
       - 'scripts/smoke-membership-pricing-contract.mjs'
       - 'scripts/smoke-public-open-items-contract.mjs'
       - '.github/workflows/platform-v3-public-ui-gate.yml'
@@ -74,6 +76,18 @@ jobs:
 
       - name: Install Chromium
         run: npx playwright install --with-deps chromium
+
+      - name: Compact learning counters — mobile layout and filters
+        run: node scripts/test-learning-counters-ui.mjs --artifacts=audit-artifacts/learning-counters
+
+      - name: Upload synthetic counter layouts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: learning-counter-layouts
+          path: audit-artifacts/learning-counters/*.png
+          if-no-files-found: ignore
+          retention-days: 3
 
       - name: Start built frontend
         shell: bash

@@ -1,3 +1,4 @@
+import { LearningCatalogCounters } from '../components/studentPaths/LearningCatalogCounters';
 import {useLearningCompletion,selectCompletion} from '../hooks/useLearningCompletion';
 import {LearningCompletionSummary} from '../components/studentPaths/LearningCompletionSummary';
 import {compareAssessmentPresentation} from '../utils/assessmentCatalogPresentation';
@@ -1282,20 +1283,11 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
                     <LearningCompletionSummary {...completion} label="اختبارات محاكية" stats={completion.data?selectCompletion(completion.data.mock,hasScopedPackageAccess('mockExams',resolvedPathId)):undefined}/>
                     {pathMockQuizzes.length > 0 ? (
                         <div className="space-y-4">
-                            <div className="grid gap-3 sm:grid-cols-3">
-                                <Card className="border border-gray-100 bg-white p-4 text-center shadow-sm">
-                                    <div className="text-2xl font-black text-gray-900">{pathMockQuizzes.length}</div>
-                                    <div className="mt-1 text-xs font-bold text-gray-500">اختبار منشور</div>
-                                </Card>
-                                <Card className="border border-gray-100 bg-white p-4 text-center shadow-sm">
-                                    <div className="text-2xl font-black text-indigo-600">{totalMockQuestions}</div>
-                                    <div className="mt-1 text-xs font-bold text-gray-500">سؤال داخل المحاكيات</div>
-                                </Card>
-                                <Card className="border border-gray-100 bg-white p-4 text-center shadow-sm">
-                                    <div className="text-2xl font-black text-amber-600">{totalMockSections || totalMockMinutes}</div>
-                                    <div className="mt-1 text-xs font-bold text-gray-500">{totalMockSections ? 'قسم اختبار' : 'دقيقة تقريبًا'}</div>
-                                </Card>
-                            </div>
+                            <LearningCatalogCounters label="إحصاءات الاختبارات المحاكية" items={[
+                                {label:'اختبار منشور',compactLabel:'الاختبارات',value:pathMockQuizzes.length},
+                                {label:'سؤال داخل المحاكيات',compactLabel:'الأسئلة',value:totalMockQuestions},
+                                {label:totalMockSections?'قسم اختبار':'دقيقة تقريبًا',compactLabel:totalMockSections?'الأقسام':'الدقائق',value:totalMockSections||totalMockMinutes,tone:'amber'},
+                            ]}/>
                             {pathMockQuizzes.map((quiz) => {
                                 const quizSubject = subjects.find((subject) => subject.id === quiz.subjectId);
                                 const mockSections = getMockExamSections(quiz);
