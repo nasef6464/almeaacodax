@@ -11,16 +11,16 @@ const [panel, teacher, aiApi, policy, narrator] = await Promise.all([
   read("components/results/teaching/narrationEngine.ts"),
 ]);
 
-assert.match(panel, /المعلم الصوتي/);
-assert.match(panel, /افتح المعلم الذكي/);
+assert.match(panel, /اشرح لي/);
+assert.doesNotMatch(panel, /sendVoiceTurn|startListening/, 'one entry must open the contextual board rather than a separate audio-only request');
 assert.match(panel, /InteractiveSmartTeacher/);
 assert.match(panel, /tutorSessionIdRef\.current/);
 
 assert.match(teacher, /السبورة الذكية/);
-assert.match(teacher, /أبسط أكثر/);
-assert.match(teacher, /مثال آخر/);
-assert.match(teacher, /لماذا؟/);
-assert.match(teacher, /أعد الشرح/);
+assert.match(teacher, /بسّطها/);
+assert.match(teacher, /جرّب بنفسك/);
+assert.match(teacher, /ليه؟/);
+assert.match(teacher, /كرر الخطوة/);
 assert.match(teacher, /اسأل المعلم/);
 assert.match(teacher, /aiQuestionAssistant/);
 assert.match(teacher, /helpLevel/);
@@ -28,7 +28,7 @@ assert.match(narrator, /SpeechSynthesisUtterance/);
 assert.match(teacher, /SpeechRecognition/);
 assert.match(teacher, /ar-SA/);
 assert.match(teacher, /toggleListening/);
-assert.match(teacher, /الدرجة والإتقان يحسبهما النظام/);
+assert.match(teacher, /خطوة بخطوة/);
 assert.ok(teacher.split(/\r?\n/).length < 400, "Interactive Smart Teacher must stay below runtime hotspot budget.");
 
 assert.match(aiApi, /aiQuestionAssistant/);

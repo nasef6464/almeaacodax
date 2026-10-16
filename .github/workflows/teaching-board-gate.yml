@@ -22,5 +22,14 @@ jobs:
       - run: npm ci
       - run: npm --prefix server ci
       - run: node --import ./server/node_modules/tsx/dist/loader.mjs scripts/test-teaching-storyboard.ts
+      - run: node --import ./server/node_modules/tsx/dist/loader.mjs scripts/test-teaching-audio.ts
+      - run: node --import ./server/node_modules/tsx/dist/loader.mjs scripts/test-teaching-scenario-cache.ts
       - run: npx playwright install --with-deps chromium
-      - run: node scripts/test-teaching-board-browser.mjs
+      - run: node scripts/test-teaching-board-browser.mjs --artifacts=audit-artifacts/teaching-board
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: teaching-board-ui
+          path: audit-artifacts/teaching-board/*.png
+          if-no-files-found: ignore
+          retention-days: 3

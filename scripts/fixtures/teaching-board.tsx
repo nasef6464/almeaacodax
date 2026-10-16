@@ -1,7 +1,7 @@
 // Isolated browser fixture: no real users, provider calls, or backend writes.
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { InteractiveSmartTeacher } from '../../components/results/InteractiveSmartTeacher';
+import { QuestionAssistantPanel } from '../../components/results/QuestionAssistantPanel';
 import { api } from '../../services/api';
 import '../../styles/main.css';
 const primary = {version:1,language:'ar-SA',scenes:[
@@ -14,7 +14,7 @@ const followup = {version:1,language:'ar-SA',scenes:[{id:'why',narration:'لأن
 (window as any).testSpeak=[];
 class TestUtterance { text:string; onend:any; onerror:any; constructor(text:string){this.text=text;} }
 (window as any).SpeechSynthesisUtterance=TestUtterance;
-Object.defineProperty(window,'speechSynthesis',{value:{speak:(u:any)=>(window as any).testSpeak.push(u),pause:()=>{},resume:()=>{},cancel:()=>{}}, configurable:true});
+Object.defineProperty(window,'speechSynthesis',{value:{speak:(u:any)=>{(window as any).testSpeak.push(u);if((window as any).testAudioBlocked)u.onerror?.({error:'not-allowed'});else queueMicrotask(()=>u.onstart?.());},pause:()=>{},resume:()=>{},cancel:()=>{}}, configurable:true});
 (api as any).aiQuestionAssistant = async (payload:any) => {
 (window as any).testRequests.push(payload);
 await new Promise(resolve=>setTimeout(resolve,100));
@@ -31,6 +31,6 @@ const storyboard=(window as any).testEnglish ? {version:1,language:'en-US',scene
 if ((window as any).testPractice && storyboard === primary) return {text:'شرح مع تدريب',storyboard:{...primary,scenes:primary.scenes.map((scene,index)=>index===0 ? {...scene,checkpoint:{prompt:'كيف نكتب 27 كقوة للثلاثة؟',hints:['الإجابة هي ثلاثة.','اكتب 3.']}} : scene)}};
 return {text:storyboard.scenes.map(s=>s.narration).join('\n'),storyboard};
 };
-function Demo(){const [open,setOpen]=React.useState(true);return <><button onClick={()=>setOpen(true)}>فتح</button>{open&&<InteractiveSmartTeacher isOpen onClose={()=>setOpen(false)} questionId="test-question" context="result_review" resultId="test-result" tutorSessionId="test-session"/>}</>;}
+function Demo(){return <QuestionAssistantPanel question={{text:"<p>أوجد قيمة س في المعادلة الأسية.</p>",imageUrl:"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='36'%3E%3Crect width='180' height='36' fill='white'/%3E%3Ctext x='5' y='25' fill='black'%3E3^(2x-1)=27%3C/text%3E%3C/svg%3E"}} questionId="test-question" context="result_review" resultId="test-result" hasImage/>;}
 createRoot(document.getElementById('root')!).render(<Demo/>);
 

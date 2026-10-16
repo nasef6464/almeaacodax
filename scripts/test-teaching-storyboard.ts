@@ -209,3 +209,39 @@ try {
   assert.deepEqual(requests.at(-1).generationConfig.responseJsonSchema, schema);
 } finally { globalThis.fetch = originalFetch; }
 console.log('Teaching storyboard: validation, deterministic transforms/seek, invalid JSON fallback, narration interruption/resume PASS');
+
+// Quick explanation is a local view over the same trusted cached content.
+const { quickTeachingPlan } = await import('../components/results/teaching/quickTeachingPlan');
+const originalLesson = JSON.stringify(completeLesson);
+const quick = quickTeachingPlan(completeLesson, false)!;
+assert.equal(quick.scenes.length, 4, 'three compact operations must play as separate steps');
+assert.equal(quick.scenes.some(scene => scene.checkpoint), false, 'default explanation never waits for an attempt');
+assert.equal(quick.scenes[0].narration.includes(compact.prompt), false, 'do not ask an unanswered practice question in continuous mode');
+assert.equal(quick.scenes[1].actions[0].type === 'write' && quick.scenes[1].actions[0].content, '2 \\times 5 = 10');
+assert.equal(boardAt(quick, 1, sceneDuration(quick, 1)).some(element => element.id === 'answer'), false, 'trusted answer appears only at the final step');
+assert.equal(boardAt(quick, 3, sceneDuration(quick, 3)).find(element => element.id === 'answer')?.content, 'الإجابة: 309705');
+assert.ok(quickTeachingPlan(completeLesson, true)?.scenes[0].checkpoint, 'practice remains available by explicit choice');
+assert.equal(JSON.stringify(completeLesson), originalLesson, 'do not modify cached/reference plans');
+assert.equal(quickTeachingPlan(null, false), null);
+assert.ok(validateTeachingStoryboard(quick), 'expanded view retains the bounded safe storyboard contract');
+console.log('Quick teaching view: separate steps, optional practice, reference answer timing and immutable cache PASS');
+
+// Whiteboard history must retain each equation transformation without changing source plans.
+const originalStoryboard = JSON.stringify(plan);
+const historyBoard = boardAt(plan, 2, sceneDuration(plan, 2), true);
+assert.deepEqual(historyBoard.map(item => item.content), ['3^{2x-1}=27', '3^{2x-1}=3^3', '2x-1=3', 'x=2'], 'whiteboard must retain intermediate equations in teaching order');
+assert.equal(historyBoard.filter(item => item.history).length, 2);
+assert.equal(historyBoard.filter(item => item.active).length, 1, 'only the current operation owns the marker');
+assert.equal(historyBoard.find(item => item.active)?.id, 'result');
+assert.equal(JSON.stringify(plan), originalStoryboard);
+assert.equal(boardAt(plan, 0, sceneDuration(plan, 0), true).some(item => item.content === 'x=2'), false, 'seeking backward must not leak later steps');
+const erasePlan = validateTeachingStoryboard({ ...example, scenes: [...example.scenes, { id:'erase', narration:'نمحو المعادلة.', actions:[{type:'erase',target:'equation'}] }] })!;
+assert.equal(boardAt(erasePlan, 3, sceneDuration(erasePlan, 3), true).some(item => item.id === 'equation' || item.history), false, 'explicit erase removes the equation and its local history');
+assert.equal(boardAt(plan, 2, sceneDuration(plan, 2)).length, 2, 'default replay contract remains backward compatible');
+console.log('Whiteboard trail: retained transformations, deterministic seek, erase and active marker PASS');
+
+const spacedTrail = validateTeachingStoryboard({version:1,language:'en-US',scenes:[
+ {id:'given',narration:'Read the equation.',actions:[{type:'write',id:'a',kind:'formula',content:'x+1=3'},{type:'write',id:'note',kind:'text',content:'Subtract one'}]},
+ {id:'solve',narration:'Subtract one.',actions:[{type:'transform',target:'a',content:'x=2'}]}
+]})!;
+assert.deepEqual(boardAt(spacedTrail,1,sceneDuration(spacedTrail,1),true).map(item=>item.content),['x+1=3','Subtract one','x=2'],'history must remain in its original row when another note intervenes');

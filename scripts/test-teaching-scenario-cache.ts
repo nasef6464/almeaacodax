@@ -1,0 +1,17 @@
+import assert from 'node:assert/strict';
+import { sharedTeachingScenario } from '../server/src/modules/ai/application/sharedTeachingScenario';
+const source = { questionId: 'q-1', questionCode: 'Q1', questionVersion: 'v1', questionText: '2+2=?', options: ['3', '4'], correctOptionIndex: 1, explanation: '2+2=4', skillLabels: ['جمع'], visualDescription: '', hasImage: false, imageVersion: 'img1', schoolId: 'school1' };
+const request = { boardMode: 'storyboard_v1', helpLevel: 'steps', message: 'اشرح حل هذا السؤال مباشرة بخطوات قصيرة، واكتب المعطيات والمعادلات على السبورة.' };
+const first = sharedTeachingScenario(request, source);
+assert.ok(first);
+assert.deepEqual(sharedTeachingScenario({ ...request, userId: 'student2', resultId: 'r2', tutorSessionId: 'new', selectedOptionIndex: 0 } as any, source), first, 'generic lesson must not depend on learner identity or answers');
+assert.doesNotMatch(first.prompt, /student2|r2|new/);
+assert.notEqual(sharedTeachingScenario(request, { ...source, explanation: 'تصحيح الحل' })?.cacheKey, first.cacheKey);
+assert.notEqual(sharedTeachingScenario(request, { ...source, imageVersion: 'img2' })?.cacheKey, first.cacheKey);
+assert.notEqual(sharedTeachingScenario(request, { ...source, schoolId: 'school2' })?.cacheKey, first.cacheKey);
+assert.notEqual(sharedTeachingScenario(request, { ...source, questionVersion: 'v2' })?.cacheKey, first.cacheKey);
+assert.equal(sharedTeachingScenario({ ...request, message: 'اشرح اختياري الشخصي' }, source), null);
+assert.equal(sharedTeachingScenario({ ...request, boardContext: 'student-private-step' }, source), null);
+assert.equal(sharedTeachingScenario({ ...request, helpLevel: 'follow_up' }, source), null);
+assert.equal(sharedTeachingScenario({ ...request, boardMode: undefined }, source), null);
+console.log('PASS shared teaching scenarios: canonical-only prompt, school/source versions, no learner data, private follow-ups');

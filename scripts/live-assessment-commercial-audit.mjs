@@ -382,13 +382,16 @@ async function main() {
     await freshStudent.page.getByRole("heading", { name: "مراجعة الحلول" }).waitFor({ timeout: 30000 });
     await freshStudent.page.getByTestId("question-assistant-panel").first().waitFor({ timeout: 30000 });
     await freshStudent.page.getByText("شرح المعلم الصوتي", { exact: true }).first().waitFor({ timeout: 30000 });
-    const tutorResponsePromise = freshStudent.page.waitForResponse(
-      (response) => response.request().method() === "POST" && new URL(response.url()).pathname.endsWith("/api/ai/question-assistant"),
-      { timeout: 30000 },
-    );
-    await freshStudent.page.getByRole("button", { name: "التحدث مع المعلم الذكي", exact: true }).first().click();
-    const tutorResponse = await tutorResponsePromise;
+    const [tutorResponse] = await Promise.all([
+      freshStudent.page.waitForResponse(
+        (response) => response.request().method() === "POST" && new URL(response.url()).pathname.endsWith("/api/ai/question-assistant"),
+        { timeout: 30000 },
+      ),
+      freshStudent.page.getByRole("button", { name: "اشرح لي", exact: true }).first().click(),
+    ]);
     if (!tutorResponse.ok()) throw new Error(`Question Assistant failed in result review (${tutorResponse.status()})`);
+    await freshStudent.page.getByTestId("teacher-question").waitFor({ timeout: 30000 });
+    await freshStudent.page.getByRole("button", { name: "إغلاق المعلم الذكي", exact: true }).click();
 
     const savedLibrary = await api(freshStudent.page, "/review/library?tab=saved&limit=20&page=1");
     const mistakeLibrary = await api(freshStudent.page, "/review/library?tab=mistakes&limit=20&page=1");
@@ -423,24 +426,30 @@ async function main() {
     await freshStudent.page.getByRole("heading", { name: "أسئلتي للمراجعة" }).waitFor({ timeout: 30000 });
     await freshStudent.page.getByText("حفظتها للمراجعة", { exact: false }).first().waitFor({ timeout: 30000 });
     await freshStudent.page.getByTestId("question-assistant-panel").waitFor({ timeout: 30000 });
-    const savedTutorResponsePromise = freshStudent.page.waitForResponse(
-      (response) => response.request().method() === "POST" && new URL(response.url()).pathname.endsWith("/api/ai/question-assistant"),
-      { timeout: 30000 },
-    );
-    await freshStudent.page.getByRole("button", { name: "التحدث مع المعلم الذكي", exact: true }).click();
-    const savedTutorResponse = await savedTutorResponsePromise;
+    const [savedTutorResponse] = await Promise.all([
+      freshStudent.page.waitForResponse(
+        (response) => response.request().method() === "POST" && new URL(response.url()).pathname.endsWith("/api/ai/question-assistant"),
+        { timeout: 30000 },
+      ),
+      freshStudent.page.getByRole("button", { name: "اشرح لي", exact: true }).click(),
+    ]);
     if (!savedTutorResponse.ok()) throw new Error(`Question Assistant failed in saved review (${savedTutorResponse.status()})`);
+    await freshStudent.page.getByTestId("teacher-question").waitFor({ timeout: 30000 });
+    await freshStudent.page.getByRole("button", { name: "إغلاق المعلم الذكي", exact: true }).click();
 
     await freshStudent.page.getByRole("button", { name: /أخطأت فيها/ }).click();
     await freshStudent.page.getByText("خطأ سابق", { exact: true }).waitFor({ timeout: 30000 });
     await freshStudent.page.getByTestId("question-assistant-panel").waitFor({ timeout: 30000 });
-    const mistakeTutorResponsePromise = freshStudent.page.waitForResponse(
-      (response) => response.request().method() === "POST" && new URL(response.url()).pathname.endsWith("/api/ai/question-assistant"),
-      { timeout: 30000 },
-    );
-    await freshStudent.page.getByRole("button", { name: "التحدث مع المعلم الذكي", exact: true }).click();
-    const mistakeTutorResponse = await mistakeTutorResponsePromise;
+    const [mistakeTutorResponse] = await Promise.all([
+      freshStudent.page.waitForResponse(
+        (response) => response.request().method() === "POST" && new URL(response.url()).pathname.endsWith("/api/ai/question-assistant"),
+        { timeout: 30000 },
+      ),
+      freshStudent.page.getByRole("button", { name: "اشرح لي", exact: true }).click(),
+    ]);
     if (!mistakeTutorResponse.ok()) throw new Error(`Question Assistant failed in mistake review (${mistakeTutorResponse.status()})`);
+    await freshStudent.page.getByTestId("teacher-question").waitFor({ timeout: 30000 });
+    await freshStudent.page.getByRole("button", { name: "إغلاق المعلم الذكي", exact: true }).click();
     await freshStudent.page.screenshot({ path: path.join(OUT_DIR, "student-review-library.png"), fullPage: true });
 
     await freshStudent.page.goto(`${BASE_URL}/review?mode=mistakes`, { waitUntil: "domcontentloaded", timeout: 60000 });
