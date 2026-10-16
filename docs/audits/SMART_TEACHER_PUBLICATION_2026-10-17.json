@@ -1,0 +1,11 @@
+{
+  "status": "PUBLISHED_SCOPED",
+  "pullRequest": 569,
+  "sourceHead": "3c66dd8d571a3d687daea6b879c4bf7519ea3332",
+  "mergeCommit": "547084f59b785246afa096dc5ae952aa00815106",
+  "ci": { "successful": 18, "conditionalSkipped": 6, "required": "ALL_PASS" },
+  "vercel": { "deployment": "dpl_3tdeDo1XyZYQFJWVzexMFRCW12VN", "state": "READY", "target": "production", "alias": "almeaacodax.vercel.app", "sha": "547084f59b785246afa096dc5ae952aa00815106" },
+  "api": { "healthStatus": 200, "commit": "547084f59b78", "environment": "production", "readinessStatus": 200, "ready": true, "database": "connected" },
+  "boundary": "Release identity/readiness only; no production content, results or progress writes; no external AI requests in publication verification.",
+  "notProven": ["audible voice quality on a physical Android Chrome phone", "production capacity under concurrent load", "image vision or hand-drawn glyph animation"]
+}
