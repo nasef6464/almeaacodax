@@ -1,0 +1,1554 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "batch": "B9",
+  "date": "2026-10-16",
+  "status": "POSTREADBACK",
+  "prewritePath": "docs/content/mnsf26/MNSF26_SOURCE_QA_BATCH9_PREWRITE_20261016.json",
+  "sourcePagesZeroBased": {
+    "arithmetic": [
+      25,
+      26,
+      27,
+      28
+    ],
+    "geometry": [
+      16,
+      17,
+      18,
+      19
+    ]
+  },
+  "sourcePrintedPositions": 80,
+  "sourceImportedCrossReferenced": 69,
+  "sourceMissingKeys": [
+    "AR-T014-Q08",
+    "AR-T014-Q19",
+    "AR-T014-Q20",
+    "GEO-T009-Q03",
+    "GEO-T009-Q13",
+    "GEO-T009-Q15",
+    "GEO-T009-Q16",
+    "GEO-T009-Q19",
+    "GEO-T010-Q05",
+    "GEO-T010-Q09",
+    "GEO-T010-Q19"
+  ],
+  "summary": {
+    "targetRows": 47,
+    "applied": 38,
+    "safetyDenied": 6,
+    "casMissConcurrent": 3,
+    "verifiedProposalsReached": 41,
+    "taxonomyChangesApplied": 35,
+    "answerChangesApplied": 3,
+    "textChangesApplied": 8,
+    "explanationChangesApplied": 5,
+    "approvedHeldApplied": 7,
+    "appliedNoSemanticDiff": 3
+  },
+  "liveAtlasState": [
+    {
+      "_id": {
+        "approval": "draft",
+        "published": false
+      },
+      "count": 327
+    },
+    {
+      "_id": {
+        "approval": "approved",
+        "published": true
+      },
+      "count": 1662
+    }
+  ],
+  "deniedCases": [
+    "AR-T014-Q09",
+    "AR-T014-Q18",
+    "AR-T015-Q09",
+    "AR-T015-Q11",
+    "AR-T015-Q18",
+    "GEO-T010-Q15"
+  ],
+  "casMissConcurrent": [
+    "GEO-T009-Q05",
+    "GEO-T009-Q12",
+    "GEO-T009-Q14"
+  ],
+  "originalR2WebpFetched": 0,
+  "independentR2SHACompared": 0,
+  "ci": "NOT VERIFIED",
+  "learnerE2E": "NOT VERIFIED",
+  "final": "NOT FINAL CLOSED",
+  "results": [
+    {
+      "key": "AR-T014-Q01",
+      "status": "APPLIED",
+      "expectedReached": true,
+      "before": {
+        "approval": "approved",
+        "key": 1,
+        "skill": "skill_quant_01",
+        "sub": "sub_quant_01_1",
+        "text": "8 □ 3 □ 1 = 6.",
+        "explanation": "العددان 3 و5 كلاهما من مضاعفات 1."
+      },
+      "after": {
+        "approval": "draft",
+        "key": 1,
+        "skill": "skill_quant_02",
+        "sub": "sub_quant_02_3",
+        "text": "العددان ٣ و٥ من مضاعفات أي عدد؟",
+        "explanation": "٣=٣×١، و٥=٥×١؛ إذن كلاهما من مضاعفات العدد ١، والاختيار (ب).",
+        "updatedAt": {
+          "$date": "2026-10-16T18:07:10.584Z"
+        },
+        "reviewerNotes": "MNSF26_QA_HOLD_B9: source PDF zero-based page 25 checked, R2 WEBP/SHA unverified; prior note: none"
+      },
+      "diff": {
+        "taxonomy": true,
+        "answer": false,
+        "text": true,
+        "explanation": true,
+        "held": true
+      }
+    },
+    {
+      "key": "AR-T014-Q02",
+      "status": "APPLIED",
+      "expectedReached": true,
+      "before": {
+        "approval": "approved",
+        "key": 2,
+        "skill": "skill_quant_01",
+        "sub": "sub_quant_01_1",
+        "text": "سؤال 2",
+        "explanation": "س=14أ، ص=15ب؛ إذن س×ص/35=(14×15/35)أب=6أب، فهو من مضاعفات6."
+      },
+      "after": {
+        "approval": "approved",
+        "key": 2,
+        "skill": "skill_quant_02",
+        "sub": "sub_quant_02_3",
+        "text": "سؤال 2",
+        "explanation": "س=14أ، ص=15ب؛ إذن س×ص/35=(14×15/35)أب=6أب، فهو من مضاعفات6.",
+        "updatedAt": {
+          "$date": "2026-10-16T18:07:13.742Z"
+        }
+      },
+      "diff": {
+        "taxonomy": true,
+        "answer": false,
+        "text": false,
+        "explanation": false,
+        "held": false
+      }
+    },
+    {
+      "key": "AR-T014-Q03",
+      "status": "APPLIED",
+      "expectedReached": true,
+      "before": {
+        "approval": "approved",
+        "key": 3,
+        "skill": "skill_quant_01",
+        "sub": "sub_quant_01_1",
+        "text": "سؤال 3",
+        "explanation": "القافز بخطوة5 والآخر بخطوة3 يشتركان عند مضاعفات15. من الصفر وقبل100: 0،15،30،45،60،75،90؛ عددها7."
+      },
+      "after": {
+        "approval": "approved",
+        "key": 3,
+        "skill": "skill_quant_02",
+        "sub": "sub_quant_02_3",
+        "text": "سؤال 3",
+        "explanation": "القافز بخطوة5 والآخر بخطوة3 يشتركان عند مضاعفات15. من الصفر وقبل100: 0،15،30،45،60،75،90؛ عددها7.",
+        "updatedAt": {
+          "$date": "2026-10-16T18:07:16.814Z"
+        }
+      },
+      "diff": {
+        "taxonomy": true,
+        "answer": false,
+        "text": false,
+        "explanation": false,
+        "held": false
+      }
+    },
+    {
+      "key": "AR-T014-Q04",
+      "status": "APPLIED",
+      "expectedReached": true,
+      "before": {
+        "approval": "approved",
+        "key": 2,
+        "skill": "skill_quant_01",
+        "sub": "sub_quant_01_1",
+        "text": "سؤال 4",
+        "explanation": "م≡2 (mod 6)، ن≡5 (mod 6)، إذن م×ن≡10≡4 (mod 6)."
+      },
+      "after": {
+        "approval": "approved",
+        "key": 2,
+        "skill": "skill_quant_02",
+        "sub": "sub_quant_02_2",
+        "text": "سؤال 4",
+        "explanation": "م≡2 (mod 6)، ن≡5 (mod 6)، إذن م×ن≡10≡4 (mod 6).",
+        "updatedAt": {
+          "$date": "2026-10-16T18:07:28.667Z"
+        }
+      },
+      "diff": {
+        "taxonomy": true,
+        "answer": false,
+        "text": false,
+        "explanation": false,
+        "held": false
+      }
+    },
+    {
+      "key": "AR-T014-Q05",
+      "status": "APPLIED",
+      "expectedReached": true,
+      "before": {
+        "approval": "approved",
+        "key": 3,
+        "skill": "skill_quant_01",
+        "sub": "sub_quant_01_1",
+        "text": "سؤال 5",
+        "explanation": "س≡4 (mod 7)، ص≡3 (mod 7)، إذن س×ص≡12≡5 (mod 7)."
+      },
+      "after": {
+        "approval": "approved",
+        "key": 3,
+        "skill": "skill_quant_02",
+        "sub": "sub_quant_02_2",
+        "text": "سؤال 5",
+        "explanation": "س≡4 (mod 7)، ص≡3 (mod 7)، إذن س×ص≡12≡5 (mod 7).",
+        "updatedAt": {
+          "$date": "2026-10-16T18:07:32.032Z"
+        }
+      },
+      "diff": {
+        "taxonomy": true,
+        "answer": false,
+        "text": false,
+        "explanation": false,
+        "held": false
+      }
+    },
+    {
+      "key": "AR-T014-Q06",
+      "status": "APPLIED",
+      "expectedReached": true,
+      "before": {
+        "approval": "approved",
+        "key": 2,
+        "skill": "skill_quant_01",
+        "sub": "sub_quant_01_1",
+        "text": "سؤال 6",
+        "explanation": "إذا أعطت 89 و139 و189 نفس الباقي عند القسمة على ن، فإن ن يقسم الفروق 50؛ أكبر اختيار يقسم50 هو25."
+      },
+      "after": {
+        "approval": "approved",
+        "key": 2,
+        "skill": "skill_quant_02",
+        "sub": "sub_quant_02_2",
+        "text": "سؤال 6",
+        "explanation": "إذا أعطت 89 و139 و189 نفس الباقي عند القسمة على ن، فإن ن يقسم الفروق 50؛ أكبر اختيار يقسم50 هو25.",
+        "updatedAt": {
+          "$date": "2026-10-16T18:07:34.840Z"
+        }
+      },
+      "diff": {
+        "taxonomy": true,
+        "answer": false,
+        "text": false,
+        "explanation": false,
+        "held": false
+      }
+    },
+    {
+      "key": "AR-T014-Q07",
+      "status": "APPLIED",
+      "expectedReached": true,
+      "before": {
+        "approval": "approved",
+        "key": 1,
+        "skill": "skill_quant_01",
+        "sub": "sub_quant_01_1",
+        "text": "سؤال 7",
+        "explanation": "240÷19=12 والباقي12؛ إذن كل طبق يأخذ12 بيضة بالتساوي."
+      },
+      "after": {
+        "approval": "draft",
+        "key": 2,
+        "skill": "skill_quant_02",
+        "sub": "sub_quant_02_2",
+        "text": "إذا وُزِّعت ١٢٠ بيضة على ٩ أطباق بالتساوي، فكم بيضة في الطبق الواحد؟",
+        "explanation": "١٢٠÷٩=١٣ والباقي ٣. إذا كان المقصود أكبر عدد صحيح متساوٍ في كل طبق فالإجابة ١٣ (ج)، وتتبقى ٣ بيضات. لكن عبارة توزيع جميع البيض بالتساوي غير دقيقة؛ يبقى السؤال معلّقًا لتحرير الصياغة.",
+        "updatedAt": {
+          "$date": "2026-10-16T18:07:40.472Z"
+        },
+        "reviewerNotes": "MNSF26_QA_HOLD_B9: source PDF zero-based page 25 checked, R2 WEBP/SHA unverified, source conflict: source_wording_120_not_divisible_by_9; prior note: none"
+      },
+      "diff": {
+        "taxonomy": true,
+        "answer": true,
+        "text": true,
+        "explanation": true,
+        "held": true
+      }
+    },
+    {
+      "key": "AR-T014-Q09",
+      "status": "SAFETY_DENIED",
+      "expectedReached": false,
+      "before": {
+        "approval": "draft",
+        "key": 3,
+        "skill": "skill_quant_01",
+        "sub": "sub_quant_01_1",
+        "text": "سؤال 9",
+        "explanation": "يُطبَّق النمط المعتمد في same-time-rate comparison. ثم تُراجع النتيجة: 625.."
+      },
+      "after": {
+        "approval": "draft",
+        "key": 3,
+        "skill": "skill_quant_01",
+        "sub": "sub_quant_01_1",
+        "text": "سؤال 9",
+        "explanation": "يُطبَّق النمط المعتمد في same-time-rate comparison. ثم تُراجع النتيجة: 625..",
+        "updatedAt": {
+          "$date": "2026-10-16T07:58:26.418Z"
+        },
+        "reviewerNotes": "MNSF26_QA_HOLD_20261016: شرح نمطي لا يوثق حل المسألة أو جميع خياراتها؛ يلزم حل مستقل وفحص صورة السؤال ومفتاح الإجابة وربط المهارة قبل إعادة الاعتماد."
+      },
+      "diff": {
+        "taxonomy": false,
+        "answer": false,
+        "text": false,
+        "explanation": false,
+        "held": false
+      }
+    },
+    {
+      "key": "AR-T014-Q10",
+      "status": "APPLIED",
+      "expectedReached": true,
+      "before": {
+        "approval": "approved",
+        "key": 2,
+        "skill": "skill_quant_01",
+        "sub": "sub_quant_01_1",
+        "text": "سؤال 10",
+        "explanation": "1620 يقبل القسمة على4 و6 و9، لكنه لا يقبل القسمة على8 لأن آخر ثلاث خانات 620 ليست من مضاعفات8."
+      },
+      "after": {
+        "approval": "approved",
+        "key": 2,
+        "skill": "skill_quant_02",
+        "sub": "sub_quant_02_1",
+        "text": "سؤال 10",
+        "explanation": "1620 يقبل القسمة على4 و6 و9، لكنه لا يقبل القسمة على8 لأن آخر ثلاث خانات 620 ليست من مضاعفات8.",
+        "updatedAt": {
+          "$date": "2026-10-16T18:07:44.738Z"
+        }
+      },
+      "diff": {
+        "taxonomy": true,
+        "answer": false,
+        "text": false,
+        "explanation": false,
+        "held": false
+      }
+    },
+    {
+      "key": "AR-T014-Q11",
+      "status": "APPLIED",
+      "expectedReached": true,
+      "before": {
+        "approval": "approved",
+        "key": 2,
+        "skill": "skill_quant_01",
+        "sub": "sub_quant_01_1",
+        "text": "سؤال 11",
+        "explanation": "5م من مضاعفات5، لذا 5م−3 عند القسمة على5 يعطي باقيًا يساوي −3≡2."
+      },
+      "after": {
+        "approval": "approved",
+        "key": 2,
+        "skill": "skill_quant_02",
+        "sub": "sub_quant_02_2",
+        "text": "سؤال 11",
+        "explanation": "5م من مضاعفات5، لذا 5م−3 عند القسمة على5 يعطي باقيًا يساوي −3≡2.",
+        "updatedAt": {
+          "$date": "2026-10-16T18:07:47.824Z"
+        }
+      },
+      "diff": {
+        "taxonomy": true,
+        "answer": false,
+        "text": false,
+        "explanation": false,
+        "held": false
+      }
+    },
+    {
+      "key": "AR-T014-Q12",
+      "status": "APPLIED",
+      "expectedReached": true,
+      "before": {
+        "approval": "approved",
+        "key": 3,
+        "skill": "skill_quant_01",
+        "sub": "sub_quant_01_1",
+        "text": "سؤال 12",
+        "explanation": "إذا كان باقي قسمة س على10 هو9، فآخر رقم9، وبالتالي باقي قسمته على5 هو4."
+      },
+      "after": {
+        "approval": "approved",
+        "key": 3,
+        "skill": "skill_quant_02",
+        "sub": "sub_quant_02_2",
+        "text": "سؤال 12",
+        "explanation": "إذا كان باقي قسمة س على10 هو9، فآخر رقم9، وبالتالي باقي قسمته على5 هو4.",
+        "updatedAt": {
+          "$date": "2026-10-16T18:07:50.792Z"
+        }
+      },
+      "diff": {
+        "taxonomy": true,
+        "answer": false,
+        "text": false,
+        "explanation": false,
+        "held": false
+      }
+    },
+    {
+      "key": "AR-T014-Q13",
+      "status": "APPLIED",
+      "expectedReached": true,
+      "before": {
+        "approval": "draft",
+        "key": 3,
+        "skill": "skill_quant_01",
+        "sub": "sub_quant_01_1",
+        "text": "سؤال 13",
+        "explanation": "يُطبَّق النمط المعتمد في elapsed-years / subtraction. ثم تُراجع النتيجة: 23.."
+      },
+      "after": {
+        "approval": "draft",
+        "key": 3,
+        "skill": "skill_quant_02",
+        "sub": "sub_quant_02_3",
+        "text": "إذا قُسِّم ٢٥ ريالًا على ثلاثة أشخاص وكان نصيب أول شخصين عددين أوليين مختلفين، فما نصيب الشخص الثالث؟",
+        "explanation": "المعطيات لا تحدد عددين أوليين بعينهما: إذا كان النصيبان ٣ و٥ كان الباقي ١٧، وإذا كانا ٢ و٥ كان الباقي ١٨؛ وكلاهما ضمن الاختيارات. لا توجد إجابة وحيدة؛ يبقى السؤال معلّقًا حتى يراجع المصدر أو يعاد تحريره.",
+        "updatedAt": {
+          "$date": "2026-10-16T18:07:54.251Z"
+        },
+        "reviewerNotes": "MNSF26_QA_HOLD_B9: source PDF zero-based page 25 checked, R2 WEBP/SHA unverified, source conflict: multiple_valid_options; prior note: MNSF26_QA_HOLD_20261016: شرح نمطي لا يوثق حل المسألة أو جميع خياراتها؛ يلزم حل مستقل وفحص صورة السؤال ومفتاح الإجابة وربط المهارة قبل إعادة الاعتماد."
+      },
+      "diff": {
+        "taxonomy": true,
+        "answer": false,
+        "text": true,
+        "explanation": true,
+        "held": false
+      }
+    },
+    {
+      "key": "AR-T014-Q14",
+      "status": "APPLIED",
+      "expectedReached": true,
+      "before": {
+        "approval": "approved",
+        "key": 0,
+        "skill": "skill_quant_01",
+        "sub": "sub_quant_01_1",
+        "text": "سؤال الحساب/الجبر الاختبار 14 رقم 14 من كتاب المنصف 26",
+        "explanation": "97833÷5 باقيه3 لأن آحاده3، و98737÷5 باقيه2 لأن آحاده7؛ إذن 3>2."
+      },
+      "after": {
+        "approval": "draft",
+        "key": 0,
+        "skill": "skill_quant_02",
+        "sub": "sub_quant_02_2",
+        "text": "قارن بين باقي قسمة ٩٧٨٣٣ على ٥ (القيمة الأولى) وباقي قسمة ٩٨٧٣٧ على ٥ (القيمة الثانية).",
+        "explanation": "97833÷5 باقيه3 لأن آحاده3، و98737÷5 باقيه2 لأن آحاده7؛ إذن 3>2.",
+        "updatedAt": {
+          "$date": "2026-10-16T18:08:09.873Z"
+        },
+        "reviewerNotes": "MNSF26_QA_HOLD_B9: source PDF zero-based page 25 checked, R2 WEBP/SHA unverified; prior note: none"
+      },
+      "diff": {
+        "taxonomy": true,
+        "answer": false,
+        "text": true,
+        "explanation": false,
+        "held": true
+      }
+    },
+    {
+      "key": "AR-T014-Q15",
+      "status": "APPLIED",
+      "expectedReached": true,
+      "before": {
+        "approval": "approved",
+        "key": 1,
+        "skill": "skill_quant_01",
+        "sub": "sub_quant_01_1",
+        "text": "سؤال الحساب/الجبر الاختبار 14 رقم 15 من كتاب المنصف 26",
+        "explanation": "10÷4=2 والباقي2؛ يتبقى شمعتان."
+      },
+      "after": {
+        "approval": "draft",
+        "key": 0,
+        "skill": "skill_quant_02",
+        "sub": "sub_quant_02_2",
+        "text": "١٠ شمعات وُزِّعت على ٩ أشخاص، كم شمعة تتبقى؟",
+        "explanation": "١٠=٩×١+١؛ إذن تتبقى شمعة واحدة، والاختيار (أ).",
+        "updatedAt": {
+          "$date": "2026-10-16T18:08:12.864Z"
+        },
+        "reviewerNotes": "MNSF26_QA_HOLD_B9: source PDF zero-based page 25 checked, R2 WEBP/SHA unverified; prior note: none"
+      },
+      "diff": {
+        "taxonomy": true,
+        "answer": true,
+        "text": true,
+        "explanation": true,
+        "held": true
+      }
+    },
+    {
+      "key": "AR-T014-Q16",
+      "status": "APPLIED",
+      "expectedReached": true,
+      "before": {
+        "approval": "approved",
+        "key": 0,
+        "skill": "skill_quant_01",
+        "sub": "sub_quant_01_1",
+        "text": "سؤال الحساب/الجبر الاختبار 14 رقم 16 من كتاب المنصف 26",
+        "explanation": "17÷4=4 والباقي1؛ كل شخص يأخذ4 أقلام."
+      },
+      "after": {
+        "approval": "draft",
+        "key": 0,
+        "skill": "skill_quant_02",
+        "sub": "sub_quant_02_2",
+        "text": "شخص لديه ١٧ قلمًا يريد توزيعها بالتساوي على أربعة أشخاص؛ ما أكبر عدد من الأقلام يأخذه كل شخص؟",
+        "explanation": "17÷4=4 والباقي1؛ كل شخص يأخذ4 أقلام.",
+        "updatedAt": {
+          "$date": "2026-10-16T18:08:16.150Z"
+        },
+        "reviewerNotes": "MNSF26_QA_HOLD_B9: source PDF zero-based page 26 checked, R2 WEBP/SHA unverified; prior note: none"
+      },
+      "diff": {
+        "taxonomy": true,
+        "answer": false,
+        "text": true,
+        "explanation": false,
+        "held": true
+      }
+    },
+    {
+      "key": "AR-T014-Q17",
+      "status": "APPLIED",
+      "expectedReached": true,
+      "before": {
+        "approval": "approved",
+        "key": 0,
+        "skill": "skill_quant_01",
+        "sub": "sub_quant_01_1",
+        "text": "سؤال الحساب/الجبر الاختبار 14 رقم 17 من كتاب المنصف 26",
+        "explanation": "نختبر الاختيارات: 721−1=720 وهو يقبل القسمة على2،3،4،5،6، كما أن 721=7×103؛ إذن يحقق الشرطين."
+      },
+      "after": {
+        "approval": "draft",
+        "key": 0,
+        "skill": "skill_quant_02",
+        "sub": "sub_quant_02_2",
+        "text": "عدد إذا قُسم على ٢ و٣ و٤ و٥ و٦ كان الباقي ١، وإذا قُسم على ٧ كان الباقي صفرًا، فما هذا العدد؟",
+        "explanation": "نختبر الاختيارات: 721−1=720 وهو يقبل القسمة على2،3،4،5،6، كما أن 721=7×103؛ إذن يحقق الشرطين.",
+        "updatedAt": {
+          "$date": "2026-10-16T18:08:19.274Z"
+        },
+        "reviewerNotes": "MNSF26_QA_HOLD_B9: source PDF zero-based page 26 checked, R2 WEBP/SHA unverified; prior note: none"
+      },
+      "diff": {
+        "taxonomy": true,
+        "answer": false,
+        "text": true,
+        "explanation": false,
+        "held": true
+      }
+    },
+    {
+      "key": "AR-T014-Q18",
+      "status": "SAFETY_DENIED",
+      "expectedReached": false,
+      "before": {
+        "approval": "approved",
+        "key": 3,
+        "skill": "skill_quant_01",
+        "sub": "sub_quant_01_1",
+        "text": "سؤال الحساب/الجبر الاختبار 14 رقم 18 من كتاب المنصف 26",
+        "explanation": "المعنى أن 9 عند قسمته على س يعطي خارجًا ص وباقيًا2؛ إذن 9=س×ص+2، ومن الخيارات س=7 يعطي ص=1 وباقي2."
+      },
+      "after": {
+        "approval": "approved",
+        "key": 3,
+        "skill": "skill_quant_01",
+        "sub": "sub_quant_01_1",
+        "text": "سؤال الحساب/الجبر الاختبار 14 رقم 18 من كتاب المنصف 26",
+        "explanation": "المعنى أن 9 عند قسمته على س يعطي خارجًا ص وباقيًا2؛ إذن 9=س×ص+2، ومن الخيارات س=7 يعطي ص=1 وباقي2.",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        }
+      },
+      "diff": {
+        "taxonomy": false,
+        "answer": false,
+        "text": false,
+        "explanation": false,
+        "held": false
+      }
+    },
+    {
+      "key": "AR-T015-Q01",
+      "status": "APPLIED",
+      "expectedReached": true,
+      "before": {
+        "approval": "draft",
+        "key": 3,
+        "skill": "skill_quant_04",
+        "sub": "sub_quant_04_2",
+        "text": "هرم أعداد: الصف الأعلى 15،9،3،3 ثم8،4،2 ثم4،2؛ أوجد الرقم الأخير.",
+        "explanation": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة."
+      },
+      "after": {
+        "approval": "draft",
+        "key": 0,
+        "skill": "skill_quant_14",
+        "sub": "sub_quant_14_4",
+        "text": "هرم أعداد: الصف الأعلى 15،9،3،3 ثم8،4،2 ثم4،2؛ أوجد الرقم الأخير.",
+        "explanation": "قاعدة الهرم هي قسمة مجموع كل عددين متجاورين على ٣: (١٥+٩)÷٣=٨، و(٩+٣)÷٣=٤، و(٣+٣)÷٣=٢، ثم (٨+٤)÷٣=٤، و(٤+٢)÷٣=٢، وأخيرًا (٤+٢)÷٣=٢. الإجابة (أ).",
+        "updatedAt": {
+          "$date": "2026-10-16T18:08:23.464Z"
+        },
+        "reviewerNotes": "MNSF26_QA_HOLD_B9: source PDF zero-based page 27 checked, R2 WEBP/SHA unverified; prior note: MNSF26_QA_HOLD_20261016: شرح عام لا يثبت الحل؛ اختيار رقم 4 متكرر في جميع أسئلة هذه المجموعة. يلزم فحص صورة السؤال والاختيارات والحل الرياضي والتصنيف بصورة مستقلة قبل إعادة الاعتماد."
+      },
+      "diff": {
+        "taxonomy": true,
+        "answer": true,
+        "text": false,
+        "explanation": true,
+        "held": false
+      }
+    },
+    {
+      "key": "AR-T015-Q02",
+      "status": "APPLIED",
+      "expectedReached": true,
+      "before": {
+        "approval": "approved",
+        "key": 2,
+        "skill": "skill_quant_01",
+        "sub": "sub_quant_01_1",
+        "text": "سؤال الحساب/الجبر الاختبار 15 رقم 2 من كتاب المنصف 26",
+        "explanation": "الصف العلوي 10،9،8،7،6... والسفلي يتبع ن²+1: 10²+1=101، 9²+1=82، 8²+1=65، 7²+1=50؛ عند ن=6 تكون س=36+1=37."
+      },
+      "after": {
+        "approval": "draft",
+        "key": 2,
+        "skill": "skill_quant_14",
+        "sub": "sub_quant_14_4",
+        "text": "في جدول القيم، كل عدد أسفل العدد ن يساوي ن²+١؛ أوجد س تحت العدد ٦.",
+        "explanation": "الصف العلوي 10،9،8،7،6... والسفلي يتبع ن²+1: 10²+1=101، 9²+1=82، 8²+1=65، 7²+1=50؛ عند ن=6 تكون س=36+1=37.",
+        "updatedAt": {
+          "$date": "2026-10-16T18:08:26.719Z"
+        },
+        "reviewerNotes": "MNSF26_QA_HOLD_B9: source PDF zero-based page 27 checked, R2 WEBP/SHA unverified; prior note: none"
+      },
+      "diff": {
+        "taxonomy": true,
+        "answer": false,
+        "text": true,
+        "explanation": false,
+        "held": true
+      }
+    },
+    {
+      "key": "AR-T015-Q05",
+      "status": "APPLIED",
+      "expectedReached": true,
+      "before": {
+        "approval": "draft",
+        "key": 1,
+        "skill": "skill_quant_04",
+        "sub": "sub_quant_04_2",
+        "text": "احسب 7+60+500+4000+50000.",
+        "explanation": "نجمع مراتب الأعداد: 50000+4000+500+60+7=54567."
+      },
+      "after": {
+        "approval": "draft",
+        "key": 1,
+        "skill": "skill_quant_01",
+        "sub": "sub_quant_01_1",
+        "text": "احسب 7+60+500+4000+50000.",
+        "explanation": "نجمع مراتب الأعداد: 50000+4000+500+60+7=54567.",
+        "updatedAt": {
+          "$date": "2026-10-16T18:08:35.252Z"
+        },
+        "reviewerNotes": "MNSF26_QA_HOLD_IMAGEHASH_COLLISION_B7: صورة السؤال لها بصمة SHA-256 متطابقة مع سؤال آخر مختلف النص/المصدر؛ لا يمكن توثيق ملاءمة القصاصة للسؤال حتى مشاهدة ملفات R2 الأصلية ومطابقتها بالكتاب. هذا تعليق احترازي لا يثبت خطأ الحل، ولا يجوز إعادة الاعتماد دون دليل."
+      },
+      "diff": {
+        "taxonomy": true,
+        "answer": false,
+        "text": false,
+        "explanation": false,
+        "held": false
+      }
+    },
+    {
+      "key": "AR-T015-Q06",
+      "status": "APPLIED",
+      "expectedReached": true,
+      "before": {
+        "approval": "approved",
+        "key": 0,
+        "skill": "skill_quant_01",
+        "sub": "sub_quant_01_1",
+        "text": "سؤال الحساب/الجبر الاختبار 15 رقم 6 من كتاب المنصف 26",
+        "explanation": "المتتابعة تحتوي 50 حدًا وكل حد يساوي3، فالمجموع=50×3=150."
+      },
+      "after": {
+        "approval": "approved",
+        "key": 0,
+        "skill": "skill_quant_01",
+        "sub": "sub_quant_01_2",
+        "text": "سؤال الحساب/الجبر الاختبار 15 رقم 6 من كتاب المنصف 26",
+        "explanation": "المتتابعة تحتوي 50 حدًا وكل حد يساوي3، فالمجموع=50×3=150.",
+        "updatedAt": {
+          "$date": "2026-10-16T18:08:40.438Z"
+        }
+      },
+      "diff": {
+        "taxonomy": true,
+        "answer": false,
+        "text": false,
+        "explanation": false,
+        "held": false
+      }
+    },
+    {
+      "key": "AR-T015-Q07",
+      "status": "APPLIED",
+      "expectedReached": true,
+      "before": {
+        "approval": "approved",
+        "key": 0,
+        "skill": "skill_quant_04",
+        "sub": "sub_quant_04_2",
+        "text": "احسب 1+10+100+1000+10000−100.",
+        "explanation": "المجموع قبل الطرح11111؛ نطرح100 فيصبح11011."
+      },
+      "after": {
+        "approval": "approved",
+        "key": 0,
+        "skill": "skill_quant_01",
+        "sub": "sub_quant_01_1",
+        "text": "احسب 1+10+100+1000+10000−100.",
+        "explanation": "المجموع قبل الطرح11111؛ نطرح100 فيصبح11011.",
+        "updatedAt": {
+          "$date": "2026-10-16T18:08:43.318Z"
+        }
+      },
+      "diff": {
+        "taxonomy": true,
+        "answer": false,
+        "text": false,
+        "explanation": false,
+        "held": false
+      }
+    },
+    {
+      "key": "AR-T015-Q08",
+      "status": "APPLIED",
+      "expectedReached": true,
+      "before": {
+        "approval": "approved",
+        "key": 2,
+        "skill": "skill_quant_01",
+        "sub": "sub_quant_01_1",
+        "text": "سؤال الحساب/الجبر الاختبار 15 رقم 8 من كتاب المنصف 26",
+        "explanation": "1+2+3+4+5+6+6+5+4+3+2+1=2(1+2+3+4+5+6)=2×21=42=6×7."
+      },
+      "after": {
+        "approval": "approved",
+        "key": 2,
+        "skill": "skill_quant_01",
+        "sub": "sub_quant_01_3",
+        "text": "سؤال الحساب/الجبر الاختبار 15 رقم 8 من كتاب المنصف 26",
+        "explanation": "1+2+3+4+5+6+6+5+4+3+2+1=2(1+2+3+4+5+6)=2×21=42=6×7.",
+        "updatedAt": {
+          "$date": "2026-10-16T18:08:46.536Z"
+        }
+      },
+      "diff": {
+        "taxonomy": true,
+        "answer": false,
+        "text": false,
+        "explanation": false,
+        "held": false
+      }
+    },
+    {
+      "key": "AR-T015-Q09",
+      "status": "SAFETY_DENIED",
+      "expectedReached": false,
+      "before": {
+        "approval": "approved",
+        "key": 1,
+        "skill": "skill_quant_01",
+        "sub": "sub_quant_01_1",
+        "text": "سؤال الحساب/الجبر الاختبار 15 رقم 9 من كتاب المنصف 26",
+        "explanation": "مجموع 1 إلى3000 =3000×3001÷2=4,501,500."
+      },
+      "after": {
+        "approval": "approved",
+        "key": 1,
+        "skill": "skill_quant_01",
+        "sub": "sub_quant_01_1",
+        "text": "سؤال الحساب/الجبر الاختبار 15 رقم 9 من كتاب المنصف 26",
+        "explanation": "مجموع 1 إلى3000 =3000×3001÷2=4,501,500.",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        }
+      },
+      "diff": {
+        "taxonomy": false,
+        "answer": false,
+        "text": false,
+        "explanation": false,
+        "held": false
+      }
+    },
+    {
+      "key": "AR-T015-Q10",
+      "status": "APPLIED",
+      "expectedReached": true,
+      "before": {
+        "approval": "approved",
+        "key": 0,
+        "skill": "skill_quant_01",
+        "sub": "sub_quant_01_1",
+        "text": "سؤال الحساب/الجبر الاختبار 15 رقم 10 من كتاب المنصف 26",
+        "explanation": "بما أن 1+2+...+9=45، فإن 10+20+...+90=10×45=450."
+      },
+      "after": {
+        "approval": "approved",
+        "key": 0,
+        "skill": "skill_quant_01",
+        "sub": "sub_quant_01_3",
+        "text": "سؤال الحساب/الجبر الاختبار 15 رقم 10 من كتاب المنصف 26",
+        "explanation": "بما أن 1+2+...+9=45، فإن 10+20+...+90=10×45=450.",
+        "updatedAt": {
+          "$date": "2026-10-16T18:08:50.435Z"
+        }
+      },
+      "diff": {
+        "taxonomy": true,
+        "answer": false,
+        "text": false,
+        "explanation": false,
+        "held": false
+      }
+    },
+    {
+      "key": "AR-T015-Q11",
+      "status": "SAFETY_DENIED",
+      "expectedReached": false,
+      "before": {
+        "approval": "approved",
+        "key": 0,
+        "skill": "skill_quant_01",
+        "sub": "sub_quant_01_1",
+        "text": "سؤال الحساب/الجبر الاختبار 15 رقم 11 من كتاب المنصف 26",
+        "explanation": "100+200+...+900=100(1+2+...+9)=100×45=4500."
+      },
+      "after": {
+        "approval": "approved",
+        "key": 0,
+        "skill": "skill_quant_01",
+        "sub": "sub_quant_01_1",
+        "text": "سؤال الحساب/الجبر الاختبار 15 رقم 11 من كتاب المنصف 26",
+        "explanation": "100+200+...+900=100(1+2+...+9)=100×45=4500.",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        }
+      },
+      "diff": {
+        "taxonomy": false,
+        "answer": false,
+        "text": false,
+        "explanation": false,
+        "held": false
+      }
+    },
+    {
+      "key": "AR-T015-Q12",
+      "status": "APPLIED",
+      "expectedReached": true,
+      "before": {
+        "approval": "approved",
+        "key": 0,
+        "skill": "skill_quant_01",
+        "sub": "sub_quant_01_1",
+        "text": "سؤال الحساب/الجبر الاختبار 15 رقم 12 من كتاب المنصف 26",
+        "explanation": "1+2+...+10=55، إذن 1+...+9=45؛ وبالتالي 10+20+...+90=10×45=450."
+      },
+      "after": {
+        "approval": "approved",
+        "key": 0,
+        "skill": "skill_quant_01",
+        "sub": "sub_quant_01_3",
+        "text": "سؤال الحساب/الجبر الاختبار 15 رقم 12 من كتاب المنصف 26",
+        "explanation": "1+2+...+10=55، إذن 1+...+9=45؛ وبالتالي 10+20+...+90=10×45=450.",
+        "updatedAt": {
+          "$date": "2026-10-16T18:08:54.262Z"
+        }
+      },
+      "diff": {
+        "taxonomy": true,
+        "answer": false,
+        "text": false,
+        "explanation": false,
+        "held": false
+      }
+    },
+    {
+      "key": "AR-T015-Q13",
+      "status": "APPLIED",
+      "expectedReached": true,
+      "before": {
+        "approval": "approved",
+        "key": 1,
+        "skill": "skill_quant_01",
+        "sub": "sub_quant_01_1",
+        "text": "سؤال الحساب/الجبر الاختبار 15 رقم 13 من كتاب المنصف 26",
+        "explanation": "1+2+...+19=19×20÷2=190."
+      },
+      "after": {
+        "approval": "approved",
+        "key": 1,
+        "skill": "skill_quant_01",
+        "sub": "sub_quant_01_3",
+        "text": "سؤال الحساب/الجبر الاختبار 15 رقم 13 من كتاب المنصف 26",
+        "explanation": "1+2+...+19=19×20÷2=190.",
+        "updatedAt": {
+          "$date": "2026-10-16T18:08:57.052Z"
+        }
+      },
+      "diff": {
+        "taxonomy": true,
+        "answer": false,
+        "text": false,
+        "explanation": false,
+        "held": false
+      }
+    },
+    {
+      "key": "AR-T015-Q14",
+      "status": "APPLIED",
+      "expectedReached": true,
+      "before": {
+        "approval": "approved",
+        "key": 1,
+        "skill": "skill_quant_01",
+        "sub": "sub_quant_01_1",
+        "text": "احسب (1+3+5+...+33)−(2+4+6+...+32).",
+        "explanation": "الأعداد الفردية من1 إلى33 عددها17، والزوجية من2 إلى32 عددها16؛ نجمع (3−2)+(5−4)+...+(33−32) مع العدد1؛ المجموع17."
+      },
+      "after": {
+        "approval": "approved",
+        "key": 1,
+        "skill": "skill_quant_01",
+        "sub": "sub_quant_01_3",
+        "text": "احسب (1+3+5+...+33)−(2+4+6+...+32).",
+        "explanation": "الأعداد الفردية من1 إلى33 عددها17، والزوجية من2 إلى32 عددها16؛ نجمع (3−2)+(5−4)+...+(33−32) مع العدد1؛ المجموع17.",
+        "updatedAt": {
+          "$date": "2026-10-16T18:08:59.971Z"
+        }
+      },
+      "diff": {
+        "taxonomy": true,
+        "answer": false,
+        "text": false,
+        "explanation": false,
+        "held": false
+      }
+    },
+    {
+      "key": "AR-T015-Q15",
+      "status": "APPLIED",
+      "expectedReached": true,
+      "before": {
+        "approval": "approved",
+        "key": 1,
+        "skill": "skill_quant_01",
+        "sub": "sub_quant_01_1",
+        "text": "إذا كان 10+6+7=□+10+6 فما الرقم المفقود؟",
+        "explanation": "بحذف10 و6 من الطرفين يبقى المجهول=7."
+      },
+      "after": {
+        "approval": "approved",
+        "key": 1,
+        "skill": "skill_quant_01",
+        "sub": "sub_quant_01_1",
+        "text": "إذا كان 10+6+7=□+10+6 فما الرقم المفقود؟",
+        "explanation": "بحذف10 و6 من الطرفين يبقى المجهول=7.",
+        "updatedAt": {
+          "$date": "2026-10-16T18:09:02.899Z"
+        }
+      },
+      "diff": {
+        "taxonomy": false,
+        "answer": false,
+        "text": false,
+        "explanation": false,
+        "held": false
+      }
+    },
+    {
+      "key": "AR-T015-Q16",
+      "status": "APPLIED",
+      "expectedReached": true,
+      "before": {
+        "approval": "approved",
+        "key": 3,
+        "skill": "skill_quant_01",
+        "sub": "sub_quant_01_1",
+        "text": "سؤال الحساب/الجبر الاختبار 15 رقم 16 من كتاب المنصف 26",
+        "explanation": "1+2+...+51=51×52÷2=1326. ومجموع 2+4+...+30=2(1+...+15)=240. الفرق=1326−240=1086."
+      },
+      "after": {
+        "approval": "approved",
+        "key": 3,
+        "skill": "skill_quant_01",
+        "sub": "sub_quant_01_3",
+        "text": "سؤال الحساب/الجبر الاختبار 15 رقم 16 من كتاب المنصف 26",
+        "explanation": "1+2+...+51=51×52÷2=1326. ومجموع 2+4+...+30=2(1+...+15)=240. الفرق=1326−240=1086.",
+        "updatedAt": {
+          "$date": "2026-10-16T18:09:05.867Z"
+        }
+      },
+      "diff": {
+        "taxonomy": true,
+        "answer": false,
+        "text": false,
+        "explanation": false,
+        "held": false
+      }
+    },
+    {
+      "key": "AR-T015-Q17",
+      "status": "APPLIED",
+      "expectedReached": true,
+      "before": {
+        "approval": "approved",
+        "key": 1,
+        "skill": "skill_quant_01",
+        "sub": "sub_quant_01_1",
+        "text": "سؤال الحساب/الجبر الاختبار 15 رقم 17 من كتاب المنصف 26",
+        "explanation": "3003×1001=3003×(1000+1)=3,003,000+3,003=3,006,003."
+      },
+      "after": {
+        "approval": "approved",
+        "key": 1,
+        "skill": "skill_quant_01",
+        "sub": "sub_quant_01_1",
+        "text": "سؤال الحساب/الجبر الاختبار 15 رقم 17 من كتاب المنصف 26",
+        "explanation": "3003×1001=3003×(1000+1)=3,003,000+3,003=3,006,003.",
+        "updatedAt": {
+          "$date": "2026-10-16T18:09:09.722Z"
+        }
+      },
+      "diff": {
+        "taxonomy": false,
+        "answer": false,
+        "text": false,
+        "explanation": false,
+        "held": false
+      }
+    },
+    {
+      "key": "AR-T015-Q18",
+      "status": "SAFETY_DENIED",
+      "expectedReached": false,
+      "before": {
+        "approval": "approved",
+        "key": 0,
+        "skill": "skill_quant_01",
+        "sub": "sub_quant_01_1",
+        "text": "سؤال الحساب/الجبر الاختبار 15 رقم 18 من كتاب المنصف 26",
+        "explanation": "52×200=10,400، بينما 53×19=53×(20−1)=1,007؛ إذن القيمة الأولى أكبر."
+      },
+      "after": {
+        "approval": "approved",
+        "key": 0,
+        "skill": "skill_quant_01",
+        "sub": "sub_quant_01_1",
+        "text": "سؤال الحساب/الجبر الاختبار 15 رقم 18 من كتاب المنصف 26",
+        "explanation": "52×200=10,400، بينما 53×19=53×(20−1)=1,007؛ إذن القيمة الأولى أكبر.",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        }
+      },
+      "diff": {
+        "taxonomy": false,
+        "answer": false,
+        "text": false,
+        "explanation": false,
+        "held": false
+      }
+    },
+    {
+      "key": "AR-T015-Q19",
+      "status": "APPLIED",
+      "expectedReached": true,
+      "before": {
+        "approval": "approved",
+        "key": 0,
+        "skill": "skill_quant_01",
+        "sub": "sub_quant_01_1",
+        "text": "سؤال الحساب/الجبر الاختبار 15 رقم 19 من كتاب المنصف 26",
+        "explanation": "العامل الثاني يحتوي صفرًا، لذلك حاصل الضرب كله صفر، ورقم العشرات في صفر هو0."
+      },
+      "after": {
+        "approval": "approved",
+        "key": 0,
+        "skill": "skill_quant_01",
+        "sub": "sub_quant_01_5",
+        "text": "سؤال الحساب/الجبر الاختبار 15 رقم 19 من كتاب المنصف 26",
+        "explanation": "العامل الثاني يحتوي صفرًا، لذلك حاصل الضرب كله صفر، ورقم العشرات في صفر هو0.",
+        "updatedAt": {
+          "$date": "2026-10-16T18:09:13.846Z"
+        }
+      },
+      "diff": {
+        "taxonomy": true,
+        "answer": false,
+        "text": false,
+        "explanation": false,
+        "held": false
+      }
+    },
+    {
+      "key": "AR-T015-Q20",
+      "status": "APPLIED",
+      "expectedReached": true,
+      "before": {
+        "approval": "approved",
+        "key": 0,
+        "skill": "skill_quant_01",
+        "sub": "sub_quant_01_1",
+        "text": "سؤال الحساب/الجبر الاختبار 15 رقم 20 من كتاب المنصف 26",
+        "explanation": "نلغي العوامل المشتركة 31×32×33×34×35 من القيمتين؛ تبقى الأولى 30÷4=7.5 والثانية 36÷6=6، فالأولى أكبر."
+      },
+      "after": {
+        "approval": "approved",
+        "key": 0,
+        "skill": "skill_quant_01",
+        "sub": "sub_quant_01_1",
+        "text": "سؤال الحساب/الجبر الاختبار 15 رقم 20 من كتاب المنصف 26",
+        "explanation": "نلغي العوامل المشتركة 31×32×33×34×35 من القيمتين؛ تبقى الأولى 30÷4=7.5 والثانية 36÷6=6، فالأولى أكبر.",
+        "updatedAt": {
+          "$date": "2026-10-16T18:09:16.892Z"
+        }
+      },
+      "diff": {
+        "taxonomy": false,
+        "answer": false,
+        "text": false,
+        "explanation": false,
+        "held": false
+      }
+    },
+    {
+      "key": "GEO-T009-Q05",
+      "status": "CAS_MISS_CONCURRENT",
+      "expectedReached": true,
+      "before": {
+        "approval": "approved",
+        "key": 2,
+        "skill": "skill_quant_20",
+        "sub": "sub_quant_20_3",
+        "text": "مثلث ضلعاه4 و14 والزاوية المحصورة قائمة من زاويتَي قاعدة70 و20",
+        "explanation": "مساحته نصف حاصل ضرب الضلعين المتعامدين=4×14÷2=28."
+      },
+      "after": {
+        "approval": "approved",
+        "key": 2,
+        "skill": "skill_quant_20",
+        "sub": "sub_quant_20_4",
+        "text": "مثلث ضلعاه4 و14 والزاوية المحصورة قائمة من زاويتَي قاعدة70 و20",
+        "explanation": "مساحته نصف حاصل ضرب الضلعين المتعامدين=4×14÷2=28.",
+        "updatedAt": {
+          "$date": "2026-10-16T18:09:20.170Z"
+        }
+      },
+      "diff": {
+        "taxonomy": true,
+        "answer": false,
+        "text": false,
+        "explanation": false,
+        "held": false
+      }
+    },
+    {
+      "key": "GEO-T009-Q12",
+      "status": "CAS_MISS_CONCURRENT",
+      "expectedReached": true,
+      "before": {
+        "approval": "approved",
+        "key": 3,
+        "skill": "skill_quant_20",
+        "sub": "sub_quant_20_5",
+        "text": "مثلث متطابق الأضلاع وزاوية خارجية س عند القاعدة",
+        "explanation": "الداخلية60، والخارجية120."
+      },
+      "after": {
+        "approval": "approved",
+        "key": 3,
+        "skill": "skill_quant_20",
+        "sub": "sub_quant_20_1",
+        "text": "مثلث متطابق الأضلاع وزاوية خارجية س عند القاعدة",
+        "explanation": "الداخلية60، والخارجية120.",
+        "updatedAt": {
+          "$date": "2026-10-16T18:09:22.980Z"
+        }
+      },
+      "diff": {
+        "taxonomy": true,
+        "answer": false,
+        "text": false,
+        "explanation": false,
+        "held": false
+      }
+    },
+    {
+      "key": "GEO-T009-Q14",
+      "status": "CAS_MISS_CONCURRENT",
+      "expectedReached": true,
+      "before": {
+        "approval": "approved",
+        "key": 1,
+        "skill": "skill_quant_22",
+        "sub": "sub_quant_22_3",
+        "text": "ثلاثة مربعات متطابقة بنيت على أضلاع مثلث متطابق الأضلاع؛ أوجد الفراغ بين المربعين",
+        "explanation": "الزاوية حول رأس المثلث360−60−90−90=120."
+      },
+      "after": {
+        "approval": "approved",
+        "key": 1,
+        "skill": "skill_quant_19",
+        "sub": "sub_quant_19_1",
+        "text": "ثلاثة مربعات متطابقة بنيت على أضلاع مثلث متطابق الأضلاع؛ أوجد الفراغ بين المربعين",
+        "explanation": "الزاوية حول رأس المثلث360−60−90−90=120.",
+        "updatedAt": {
+          "$date": "2026-10-16T18:09:26.065Z"
+        }
+      },
+      "diff": {
+        "taxonomy": true,
+        "answer": false,
+        "text": false,
+        "explanation": false,
+        "held": false
+      }
+    },
+    {
+      "key": "GEO-T010-Q10",
+      "status": "APPLIED",
+      "expectedReached": true,
+      "before": {
+        "approval": "approved",
+        "key": 3,
+        "skill": "skill_quant_22",
+        "sub": "sub_quant_22_1",
+        "text": "مربع يقطعه خط مائل بزاوية60 مع ضلعه الأيسر؛ أوجد الزاوية الداخلية المكملة عند الضلع الأيمن",
+        "explanation": "الزاويتان على جانبي القاطع مكملتان، س=180−60=120."
+      },
+      "after": {
+        "approval": "approved",
+        "key": 3,
+        "skill": "skill_quant_19",
+        "sub": "sub_quant_19_2",
+        "text": "مربع يقطعه خط مائل بزاوية60 مع ضلعه الأيسر؛ أوجد الزاوية الداخلية المكملة عند الضلع الأيمن",
+        "explanation": "الزاويتان على جانبي القاطع مكملتان، س=180−60=120.",
+        "updatedAt": {
+          "$date": "2026-10-16T18:09:48.304Z"
+        }
+      },
+      "diff": {
+        "taxonomy": true,
+        "answer": false,
+        "text": false,
+        "explanation": false,
+        "held": false
+      }
+    },
+    {
+      "key": "GEO-T010-Q11",
+      "status": "APPLIED",
+      "expectedReached": true,
+      "before": {
+        "approval": "approved",
+        "key": 3,
+        "skill": "skill_quant_21",
+        "sub": "sub_quant_21_1",
+        "text": "مستطيل وقطعتان من القاعدتين إلى نقطة داخلية، زاويتاهما مع العمودي40 و30؛ أوجد قمة س",
+        "explanation": "زاويتا القاعدة50 و60، والقمة70."
+      },
+      "after": {
+        "approval": "approved",
+        "key": 3,
+        "skill": "skill_quant_20",
+        "sub": "sub_quant_20_1",
+        "text": "مستطيل وقطعتان من القاعدتين إلى نقطة داخلية، زاويتاهما مع العمودي40 و30؛ أوجد قمة س",
+        "explanation": "زاويتا القاعدة50 و60، والقمة70.",
+        "updatedAt": {
+          "$date": "2026-10-16T18:09:51.244Z"
+        }
+      },
+      "diff": {
+        "taxonomy": true,
+        "answer": false,
+        "text": false,
+        "explanation": false,
+        "held": false
+      }
+    },
+    {
+      "key": "GEO-T010-Q12",
+      "status": "APPLIED",
+      "expectedReached": true,
+      "before": {
+        "approval": "approved",
+        "key": 2,
+        "skill": "skill_quant_22",
+        "sub": "sub_quant_22_1",
+        "text": "مربع مائل على ضلع مثلث قائم متطابق الضلعين؛ أوجد الزاوية الخارجية س",
+        "explanation": "زاوية المثلث45، والخارجية135."
+      },
+      "after": {
+        "approval": "approved",
+        "key": 2,
+        "skill": "skill_quant_20",
+        "sub": "sub_quant_20_2",
+        "text": "مربع مائل على ضلع مثلث قائم متطابق الضلعين؛ أوجد الزاوية الخارجية س",
+        "explanation": "زاوية المثلث45، والخارجية135.",
+        "updatedAt": {
+          "$date": "2026-10-16T18:09:55.047Z"
+        }
+      },
+      "diff": {
+        "taxonomy": true,
+        "answer": false,
+        "text": false,
+        "explanation": false,
+        "held": false
+      }
+    },
+    {
+      "key": "GEO-T010-Q14",
+      "status": "APPLIED",
+      "expectedReached": true,
+      "before": {
+        "approval": "approved",
+        "key": 2,
+        "skill": "skill_quant_22",
+        "sub": "sub_quant_22_2",
+        "text": "مربع مع قطر؛ أوجد مجموع الزاوية القائمة والزاوية بين القطر والضلع",
+        "explanation": "90+45=135."
+      },
+      "after": {
+        "approval": "approved",
+        "key": 2,
+        "skill": "skill_quant_19",
+        "sub": "sub_quant_19_1",
+        "text": "مربع مع قطر؛ أوجد مجموع الزاوية القائمة والزاوية بين القطر والضلع",
+        "explanation": "90+45=135.",
+        "updatedAt": {
+          "$date": "2026-10-16T18:09:58.094Z"
+        }
+      },
+      "diff": {
+        "taxonomy": true,
+        "answer": false,
+        "text": false,
+        "explanation": false,
+        "held": false
+      }
+    },
+    {
+      "key": "GEO-T010-Q15",
+      "status": "SAFETY_DENIED",
+      "expectedReached": false,
+      "before": {
+        "approval": "approved",
+        "key": 0,
+        "skill": "skill_quant_22",
+        "sub": "sub_quant_22_3",
+        "text": "مستطيل مقسّم إلى مربعين متطابقين، ورُسم خطان من الزاوية العليا اليسرى؛ قارن قياس الزاوية س (القيمة الأولى) بقياس الزاوية ص (القيمة الثانية).",
+        "explanation": "إذا كان ضلع المربع a، فإن ص=45° من قطر المربع الأيسر. أما س فهي الزاوية بين قاعدة المستطيل وقطره الممتد بعرض 2a وارتفاع a، ومن ثم tan(س)=a/(2a)=1/2، فتكون س≈26.565°. إذن ص>س، فالاختيار (ب)."
+      },
+      "after": {
+        "approval": "approved",
+        "key": 0,
+        "skill": "skill_quant_22",
+        "sub": "sub_quant_22_3",
+        "text": "مستطيل مقسّم إلى مربعين متطابقين، ورُسم خطان من الزاوية العليا اليسرى؛ قارن قياس الزاوية س (القيمة الأولى) بقياس الزاوية ص (القيمة الثانية).",
+        "explanation": "إذا كان ضلع المربع a، فإن ص=45° من قطر المربع الأيسر. أما س فهي الزاوية بين قاعدة المستطيل وقطره الممتد بعرض 2a وارتفاع a، ومن ثم tan(س)=a/(2a)=1/2، فتكون س≈26.565°. إذن ص>س، فالاختيار (ب).",
+        "updatedAt": {
+          "$date": "2026-10-16T07:49:40.842Z"
+        }
+      },
+      "diff": {
+        "taxonomy": false,
+        "answer": false,
+        "text": false,
+        "explanation": false,
+        "held": false
+      }
+    },
+    {
+      "key": "GEO-T010-Q16",
+      "status": "APPLIED",
+      "expectedReached": true,
+      "before": {
+        "approval": "approved",
+        "key": 3,
+        "skill": "skill_quant_20",
+        "sub": "sub_quant_20_1",
+        "text": "رباعي زواياه اليسرى واليمنى60؛ أوجد مجموع العليا والسفلى",
+        "explanation": "مجموع زوايا الرباعي360، والمطلوب360−60−60=240."
+      },
+      "after": {
+        "approval": "approved",
+        "key": 3,
+        "skill": "skill_quant_19",
+        "sub": "sub_quant_19_3",
+        "text": "رباعي زواياه اليسرى واليمنى60؛ أوجد مجموع العليا والسفلى",
+        "explanation": "مجموع زوايا الرباعي360، والمطلوب360−60−60=240.",
+        "updatedAt": {
+          "$date": "2026-10-16T18:10:02.296Z"
+        }
+      },
+      "diff": {
+        "taxonomy": true,
+        "answer": false,
+        "text": false,
+        "explanation": false,
+        "held": false
+      }
+    },
+    {
+      "key": "GEO-T010-Q17",
+      "status": "APPLIED",
+      "expectedReached": true,
+      "before": {
+        "approval": "approved",
+        "key": 1,
+        "skill": "skill_quant_22",
+        "sub": "sub_quant_22_2",
+        "text": "مربع مرسوم قطره؛ أوجد زاوية القطر مع الضلع",
+        "explanation": "القطر ينصف زاوية المربع القائمة إلى45."
+      },
+      "after": {
+        "approval": "approved",
+        "key": 1,
+        "skill": "skill_quant_19",
+        "sub": "sub_quant_19_1",
+        "text": "مربع مرسوم قطره؛ أوجد زاوية القطر مع الضلع",
+        "explanation": "القطر ينصف زاوية المربع القائمة إلى45.",
+        "updatedAt": {
+          "$date": "2026-10-16T18:10:05.298Z"
+        }
+      },
+      "diff": {
+        "taxonomy": true,
+        "answer": false,
+        "text": false,
+        "explanation": false,
+        "held": false
+      }
+    },
+    {
+      "key": "GEO-T010-Q18",
+      "status": "APPLIED",
+      "expectedReached": true,
+      "before": {
+        "approval": "approved",
+        "key": 3,
+        "skill": "skill_quant_20",
+        "sub": "sub_quant_20_1",
+        "text": "رباعي له زاويتان قائمتان وزاوية ثالثة2س حيث س30؛ أوجد الرابعة",
+        "explanation": "الثالثة60، والرابعة360−90−90−60=120."
+      },
+      "after": {
+        "approval": "approved",
+        "key": 3,
+        "skill": "skill_quant_19",
+        "sub": "sub_quant_19_3",
+        "text": "رباعي له زاويتان قائمتان وزاوية ثالثة2س حيث س30؛ أوجد الرابعة",
+        "explanation": "الثالثة60، والرابعة360−90−90−60=120.",
+        "updatedAt": {
+          "$date": "2026-10-16T18:10:08.391Z"
+        }
+      },
+      "diff": {
+        "taxonomy": true,
+        "answer": false,
+        "text": false,
+        "explanation": false,
+        "held": false
+      }
+    },
+    {
+      "key": "GEO-T010-Q20",
+      "status": "APPLIED",
+      "expectedReached": true,
+      "before": {
+        "approval": "approved",
+        "key": 2,
+        "skill": "skill_quant_22",
+        "sub": "sub_quant_22_2",
+        "text": "مربع مع قطر؛ أوجد مجموع زاوية قائمة والزاوية الحادة للقطر",
+        "explanation": "90+45=135."
+      },
+      "after": {
+        "approval": "approved",
+        "key": 2,
+        "skill": "skill_quant_19",
+        "sub": "sub_quant_19_1",
+        "text": "مربع مع قطر؛ أوجد مجموع زاوية قائمة والزاوية الحادة للقطر",
+        "explanation": "90+45=135.",
+        "updatedAt": {
+          "$date": "2026-10-16T18:10:11.615Z"
+        }
+      },
+      "diff": {
+        "taxonomy": true,
+        "answer": false,
+        "text": false,
+        "explanation": false,
+        "held": false
+      }
+    }
+  ]
+}
