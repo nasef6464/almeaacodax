@@ -1,3 +1,6 @@
+## Personal learning completion — VERIFIED_SCOPED — 2026-10-16
+quizzes/application/learningCompletion owns exact unique quiz and whole main-topic completion; quizzes/http/learningCompletionRoutes owns own-student scoped GET and indexed result/progress reads. hooks/useLearningCompletion owns user/scope fences and refresh; studentPaths/LearningCompletionSummary owns the shared summary and topic strip. LearningSection/SubjectLearningPage/GenericPathPage integrate existing content with no new persisted progress owner. Existing results/scoring/lesson completion writes remain authoritative. PR562/source cbecbe90, published c059bb3a; bounded published proof in LEARNING_COMPLETION_PUBLISHED_2026-10-16.json.
+
 ## Assessment catalog presentation — 2026-10-16
 PathMockCatalog + components/AssessmentOrderControl own horizontal admin cards and rank editing; hooks/useAssessmentCatalog owns bounded normalized subject/path loads. MockExamManager retains the existing editor. utils/assessmentCatalogPresentation owns shared matching/priority semantics; server quizzes/application/adminAssessmentCatalogScope owns staff classification predicates. Existing route/auth and scoring ownership retained.
 
