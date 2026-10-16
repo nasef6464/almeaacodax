@@ -1,0 +1,236 @@
+{
+  "batch": "MNSF26_source_visual_QA_5",
+  "state": "BEFORE_PRODUCTION_WRITE",
+  "date": "2026-10-16",
+  "scope": {
+    "subjectId": "sub_1777779748206",
+    "pathId": "p_1777779639431"
+  },
+  "pdfSha256": {
+    "arithmetic": "46f2d9c2c8482f99f3d28ea9fe2ae7cdaa1b62102a6cbe6aa35deae78c672ee3",
+    "geometry": "a823a90574476804cc29f5ca63ea8e9eaadab0cffe3afa78f791bbc8c6ee75d5"
+  },
+  "r2Downloaded": 0,
+  "r2HashChecks": 0,
+  "referenceChecks": {
+    "quizzes": 0,
+    "assessmentversions": 0,
+    "assessmentattempts": 0
+  },
+  "evidence": {
+    "MNSF26-AR-T006-Q14": {
+      "sourceFile": "arithmetic",
+      "pdfIndex": 5,
+      "printedQuestion": 14,
+      "independent": "2300×3=6900; option أ",
+      "newKey": 0,
+      "action": "replace text/explanation/key and hold due R2 unverified"
+    },
+    "MNSF26-AR-T008-Q05": {
+      "sourceFile": "arithmetic",
+      "pdfIndex": 7,
+      "printedQuestion": 5,
+      "independent": "3×10+5×5=55; printed options 50,60,70,80, none match",
+      "action": "replace placeholder question, leave key flagged unusable and hold"
+    },
+    "MNSF26-GEO-T004-Q05": {
+      "sourceFile": "geometry",
+      "pdfIndex": 5,
+      "printedQuestion": 5,
+      "independent": "Straight angle ص+4ص+ص=180 -> ص=30; 42 larger -> ب",
+      "newKey": 1,
+      "action": "correct answer and explanation, hold R2 verification"
+    }
+  },
+  "entries": [
+    {
+      "sourceKey": "MNSF26-AR-T008-Q05",
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2ca59"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T008-Q05",
+        "aiContext": {
+          "readableText": "سؤال 5",
+          "speechText": "احسب تكلفة كل نوع منفرداً ثم اجمع."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 0,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.806Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "احسب تكلفة كل نوع منفرداً ثم اجمع.",
+        "fingerprint": "590ecbddd9cca09d937c38a69e0ca7a21e427178bf7442b2cd7ad9ed37012eaa",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t008_q05",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T008-Q05/88869ea13e3c2b85807b81669875cf4f1220c2eb47c88097c56f372cedae223c.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T008-Q05",
+          "pdfPageIndex": 8,
+          "printedPageNumber": 8,
+          "printedQuestionNumber": 5,
+          "imageHash": "88869ea13e3c2b85807b81669875cf4f1220c2eb47c88097c56f372cedae223c",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال 5",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.947Z"
+        },
+        "voiceExplanation": {
+          "text": "احسب تكلفة كل نوع منفرداً ثم اجمع."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      }
+    },
+    {
+      "sourceKey": "MNSF26-GEO-T004-Q05",
+      "before": {
+        "_id": {
+          "$oid": "6acb549d1daea21097c2ce85"
+        },
+        "questionCode": "QDR-QNT-MNSF26-GEO-T004-Q05",
+        "aiContext": {
+          "readableText": "زاوية مستقيمة قسمت إلى ص و4ص وص؛ قارن ص و42",
+          "speechText": "6ص=180، ص=30<42."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 0,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.814Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "6ص=180، ص=30<42.",
+        "fingerprint": "725a3119203ac37865fad8110cad269d1195c9b876a8189965f9db09d1f24261",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_geo_t004_q05",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-GEO-T004-Q05/7e89371ef449d2a4d7943b4b7f0cf641420234b6e8cafd109e681777fef4cc28.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_19",
+        "skillId": "skill_quant_19",
+        "skillIds": [
+          "skill_quant_19",
+          "sub_quant_19_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-GEO-T004-Q05",
+          "pdfPageIndex": 6,
+          "printedPageNumber": 6,
+          "printedQuestionNumber": 5,
+          "imageHash": "7e89371ef449d2a4d7943b4b7f0cf641420234b6e8cafd109e681777fef4cc28",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_19_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "زاوية مستقيمة قسمت إلى ص و4ص وص؛ قارن ص و42",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-16T07:49:22.707Z"
+        },
+        "voiceExplanation": {
+          "text": "6ص=180، ص=30<42."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      }
+    },
+    {
+      "sourceKey": "MNSF26-AR-T006-Q14",
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2ca4e"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T006-Q14",
+        "aiContext": {
+          "readableText": "يأخذ عامل في الشهر 3200 ريال، كم يأخذ في 3 شهور؟",
+          "speechText": "3200×3 =9600."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 3,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.806Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "3200×3 =9600.",
+        "fingerprint": "0eb0ff306683c3ea532ea4a0e023e04b80be94f08564b7712e74c3eeb592d55f",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t006_q14",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T006-Q14/a9517e4c4004d3a812294bd576fcd6be1d56634f35b9ce1d7f7fe36f9b926d43.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_4",
+        "skillId": "skill_quant_04",
+        "skillIds": [
+          "skill_quant_04",
+          "sub_quant_04_2"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T006-Q14",
+          "pdfPageIndex": 6,
+          "printedPageNumber": 6,
+          "printedQuestionNumber": 14,
+          "imageHash": "a9517e4c4004d3a812294bd576fcd6be1d56634f35b9ce1d7f7fe36f9b926d43",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_04_2",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "يأخذ عامل في الشهر 3200 ريال، كم يأخذ في 3 شهور؟",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-16T07:48:04.356Z"
+        },
+        "voiceExplanation": {
+          "text": "3200×3 =9600."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      }
+    }
+  ]
+}
