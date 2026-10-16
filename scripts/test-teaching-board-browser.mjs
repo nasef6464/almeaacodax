@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { mkdtemp, realpath } from 'node:fs/promises';
+import { mkdir, mkdtemp, realpath } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -10,6 +10,7 @@ import react from '@vitejs/plugin-react';
 const root = fileURLToPath(new URL('../', import.meta.url));
 const argument = name => process.argv.find(value => value.startsWith(`--${name}=`))?.split('=').slice(1).join('=');
 const artifacts = argument('artifacts') || await mkdtemp(path.join(tmpdir(), 'almeaa-board-'));
+await mkdir(artifacts, { recursive: true });
 const server = await createServer({
   configFile: false, root, plugins: [react()], define: { __APP_VERSION__: '"board-test"' },
   optimizeDeps: { noDiscovery: true, include: ['react', 'react-dom/client', 'lucide-react', 'katex'] },

@@ -18,7 +18,7 @@ No API, provider policy, authorization, grades/mastery, historical results, pers
 - Interactive teacher and adaptive assistant source contracts: PASS.
 - Local Vite build: PASS (final exact-head build will also run in CI).
 - Reviewer: no confirmed P1/P2 after aligning speed restart; mobile height added as a browser assertion.
-- Browser fixture and exact-head CI: pending. Cold local Vite startup caused earlier navigation timeouts; no user journey pass claimed from those attempts.
+- Browser fixture on GitHub/source9921f635: PASS, including continuous default, optional practice, local replay/rate and minimum mobile board height at390×667. Cold local Vite attempts were not counted as passes. Full CI found an obsolete voice-only source assertion; updated it to verify one contextual entry with speech/recognition preserved. Final exact-head CI pending.
 
 ## Not certified
 Actual AI provider response latency and microphone/speaker quality on student devices require runtime measurement. The frontend changes reduce compulsory actions and repeated requests; they do not claim faster inference or streaming. No production content/result mutations or deployment performed for this checkpoint.

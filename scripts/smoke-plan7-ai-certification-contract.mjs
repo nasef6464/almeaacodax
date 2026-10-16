@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises";
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
-const [routes, adapters, usage, interactions, fallbackAudit, phase8, failoverContract, tutorPanel, examEstimate] = await Promise.all([
+const [routes, adapters, usage, interactions, fallbackAudit, phase8, failoverContract, tutorPanel, examEstimate, teacher, narrator] = await Promise.all([
   read("server/src/routes/ai.routes.ts"),
   read("server/src/modules/ai/infrastructure/providers/aiProviderAdapters.ts"),
   read("server/src/modules/ai/application/aiUsageDaily.ts"),
@@ -11,6 +11,8 @@ const [routes, adapters, usage, interactions, fallbackAudit, phase8, failoverCon
   read("server/src/scripts/plan7AiFailoverContract.ts"),
   read("components/results/QuestionAssistantPanel.tsx"),
   read("server/src/modules/quizzes/analytics/examReadinessEstimate.ts"),
+  read("components/results/InteractiveSmartTeacher.tsx"),
+  read("components/results/teaching/narrationEngine.ts"),
 ]);
 
 const assert = (ok, message) => { if (!ok) throw new Error(message); };
@@ -30,7 +32,8 @@ assert(fallbackAudit.includes("student chat used a real provider"), "live AI run
 assert(fallbackAudit.includes("usedFallback"), "live fallback proof missing");
 assert(phase8.includes('liveProviderCertification: "REQUIRES_POST_MERGE_REAL_PROVIDER"'), "pre-production certification must not impersonate live certification");
 assert(failoverContract.includes("429 advances to next free quota pool") && failoverContract.includes("paid pool must not be called"), "executable PLAN 7 failover contract missing");
-assert(tutorPanel.includes("SpeechRecognition") && tutorPanel.includes("speechSynthesis") && !tutorPanel.includes("<input"), "student tutor must remain voice-only");
+assert(tutorPanel.includes("اشرح لي") && tutorPanel.includes("InteractiveSmartTeacher") && !tutorPanel.includes("api.aiQuestionAssistant"), "student tutor must retain one explicit contextual entry");
+assert(teacher.includes("SpeechRecognition") && teacher.includes("toggleListening") && narrator.includes("speechSynthesis"), "contextual board must retain microphone and spoken explanation");
 assert(examEstimate.includes("calibratedToQiyas: false") && examEstimate.includes("qiyasScoreEstimate: null"), "Qiyas estimate must remain calibration-gated");
 
 console.log("PASS PLAN 7 non-provider certification contract");
