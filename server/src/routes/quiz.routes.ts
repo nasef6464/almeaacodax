@@ -1,3 +1,4 @@
+import { buildAdminAssessmentCatalogScope } from '../modules/quizzes/application/adminAssessmentCatalogScope.js';
 import { Router } from "express";
 import { StatusCodes } from "http-status-codes";
 import mongoose from "mongoose";
@@ -198,9 +199,7 @@ quizRouter.get(
       };
     }
     const managedScope = await resolveManagedContentScope(req.authUser);
-    const scopeFilter: Record<string, unknown> = {};
-    if (requestedPathId) scopeFilter.pathId = requestedPathId;
-    if (requestedSubjectId) scopeFilter.subjectId = requestedSubjectId;
+    const scopeFilter = buildAdminAssessmentCatalogScope(requestedPathId, requestedSubjectId, req.query.catalogKind, isStaffRole(req.authUser?.role));
     const visibleFilter = await withLearnerVisiblePaths(baseFilter, req.authUser);
     const filter = combineMongoFilters(
       visibleFilter,
@@ -215,7 +214,7 @@ quizRouter.get(
 
     if (staffViewer) {
       const rawItems = await QuizModel.find(filter)
-        .sort({ createdAt: -1, _id: -1 })
+        .sort({ displayPriority: -1, createdAt: -1, _id: -1 })
         .skip(pagination.skip)
         .limit(noTotal ? pagination.limit + 1 : pagination.limit)
         .lean();

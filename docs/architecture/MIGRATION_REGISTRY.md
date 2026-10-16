@@ -1,3 +1,6 @@
+## Assessment display priority — 2026-10-16
+Optional integer Quiz.displayPriority1..1000000, no default/backfill or historical evidence rewrite. Additive non-sparse indexes quiz_display_priority, quiz_subject_display_priority, quiz_path_display_priority support global/path+subject/path sort shapes. Missing priorities retain automatic fallback; new explicit ranks precede them. Rollback can stop reading/writing the optional field while retaining metadata/indexes. No production migration script, destructive index operation or data cutover. Published index presence/performance remains unproven until read-only metadata verification.
+
 ## ASSESSMENT-MATERIAL-EVIDENCE — 2026-10-15 (delivery pending)
 Additive optional QuizResult.subjectResults [{subjectId,subjectName,total,correct,wrong,unanswered,score}] and optional sectionResults.subjectId/subjectName. New server submissions derive and freeze evidence; defaults remain undefined for old outcomes. Existing overall grading, answer/attempt identities and result indexes remain authoritative. No history migration, synthetic reconstruction, index change, cleanup or production cutover.
 

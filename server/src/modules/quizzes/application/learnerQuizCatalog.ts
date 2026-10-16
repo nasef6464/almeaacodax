@@ -154,7 +154,7 @@ export async function loadLearnerSafeQuizCatalogPage({
 
   while (true) {
     const rawBatch = await QuizModel.find(filter)
-      .sort({ createdAt: -1, _id: -1 })
+      .sort({ displayPriority: -1, createdAt: -1, _id: -1 })
       .skip(rawSkip)
       .limit(RAW_SCAN_BATCH_SIZE)
       .lean();

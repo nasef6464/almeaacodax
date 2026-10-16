@@ -1,3 +1,4 @@
+import {compareAssessmentPresentation} from '../utils/assessmentCatalogPresentation';
 import { useStudentExperience } from '../contexts/StudentExperienceContext';
 import { useStudentScopedStore } from '../utils/useStudentScopedStore';
 import { StudentPathAccessPrompt } from '../components/studentPaths/StudentPathAccessPrompt';
@@ -474,8 +475,7 @@ export const GenericPathPage: React.FC = () => {
     const pathMockQuizzes = quizzes
         .filter((quiz) => {
             return isPathMockExam(quiz, path.id) && canStudentSeeContent(quiz);
-        })
-        .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+        }).sort(compareAssessmentPresentation);
     const getSubjectContentSummary = (subjectId: string) => {
         const matchesSubjectScope = (item: { pathId?: string; category?: string; subjectId?: string; subject?: string }) => {
             const itemPathId = item.pathId || item.category;

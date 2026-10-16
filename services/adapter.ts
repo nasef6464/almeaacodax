@@ -362,7 +362,8 @@ const normalizeQuizLearningPlacements = (placements: any): Quiz["learningPlaceme
         .filter((placement) => placement.pathId && ["training", "tests", "foundation", "course"].includes(String(placement.slot)))
     : undefined;
 
-const normalizeQuiz = (quiz: any): Quiz => ({
+export const normalizeQuiz = (quiz: any): Quiz => ({
+  displayPriority: toOptionalFiniteNumber(quiz?.displayPriority),
   id: String(quiz?.id || quiz?._id || ""),
   title: cleanText(quiz?.title),
   description: quiz?.description || "",

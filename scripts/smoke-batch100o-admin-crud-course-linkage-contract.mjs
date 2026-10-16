@@ -63,12 +63,12 @@ assertIncludes(
 );
 assertIncludes(
   'server/src/routes/quiz.routes.ts',
-  'if (requestedPathId) scopeFilter.pathId = requestedPathId;',
-  'Quiz list route must filter by pathId when requested.',
+  'buildAdminAssessmentCatalogScope(requestedPathId, requestedSubjectId, req.query.catalogKind, isStaffRole(req.authUser?.role))',
+  'Quiz list route must delegate the active path/subject and staff status to the scoped catalog builder.',
 );
 assertIncludes(
-  'server/src/routes/quiz.routes.ts',
-  'if (requestedSubjectId) scopeFilter.subjectId = requestedSubjectId;',
+  'server/src/modules/quizzes/application/adminAssessmentCatalogScope.ts',
+  '...(subjectId ? {subjectId} : {})',
   'Quiz list route must filter by subjectId when requested.',
 );
 
@@ -110,3 +110,5 @@ assertIncludes(
 );
 
 console.log('BATCH100O contract passed: scoped course/quiz linkage and admin import search are guarded.');
+
+assertIncludes('server/src/modules/quizzes/application/adminAssessmentCatalogScope.ts', '...(pathId ? {pathId} : {})', 'Default and subject catalogs must retain root path isolation.');

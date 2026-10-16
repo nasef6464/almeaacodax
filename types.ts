@@ -545,6 +545,7 @@ export interface MockExamConfig {
 }
 
 export interface Quiz extends ContentWorkflow {
+    displayPriority?: number;
     id: string;
     title: string;
     description?: string;

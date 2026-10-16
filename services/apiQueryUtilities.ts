@@ -1,4 +1,5 @@
 export interface PaginationOptions {
+  catalogKind?: 'training' | 'tests' | 'mock';
   page?: number;
   limit?: number;
   search?: string;

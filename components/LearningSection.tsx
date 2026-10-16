@@ -667,6 +667,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         true,
     ).map(q => ({
         id: q.id,
+        displayPriority: q.displayPriority,
         title: q.title,
         questions: q.questionIds?.length || 0,
         updated: formatQuizUpdatedAt(q.createdAt),
@@ -684,6 +685,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
         true,
     ).map(q => ({
         id: q.id,
+        displayPriority: q.displayPriority,
         title: q.title,
         duration: `${q.settings?.timeLimit || 60} دقيقة`,
         questions: q.questionIds?.length || 0,

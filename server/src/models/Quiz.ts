@@ -18,6 +18,7 @@ const quizSchema = new Schema(
     placement: { type: String, enum: ["training", "mock", "both"], default: undefined },
     showInTraining: { type: Boolean, default: undefined },
     showInMock: { type: Boolean, default: undefined },
+    displayPriority: { type: Number, min: 1, max: 1000000 },
     learningPlacements: {
       type: [
         {
@@ -124,6 +125,9 @@ const quizSchema = new Schema(
   },
 );
 
+quizSchema.index({ displayPriority: -1, createdAt: -1, _id: -1 }, {name:'quiz_display_priority'});
+quizSchema.index({ pathId: 1, subjectId: 1, displayPriority: -1, createdAt: -1, _id: -1 }, {name:'quiz_subject_display_priority'});
+quizSchema.index({ pathId: 1, displayPriority: -1, createdAt: -1, _id: -1 }, {name:'quiz_path_display_priority'});
 quizSchema.index({ createdAt: -1 });
 quizSchema.index({ isPublished: 1, showOnPlatform: 1, createdAt: -1 });
 quizSchema.index({ pathId: 1, subjectId: 1, type: 1, placement: 1, showOnPlatform: 1, isPublished: 1 });

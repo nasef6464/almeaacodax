@@ -2,6 +2,7 @@ import { z } from "zod";
 import { quizWindowFields } from "../application/quizAvailability.js";
 
 export const quizSchema = z.object({
+  displayPriority: z.number().int().min(1).max(1000000).optional(),
   id: z.string().optional(),
   title: z.string().min(1),
   description: z.string().optional(),
