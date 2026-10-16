@@ -67,3 +67,6 @@ migrated_prompt_history/
 
 # Local AI task metadata (never stage task context automatically).
 .argon_last_run.json
+
+# Local visual audit evidence
+audit-evidence/**/*.png

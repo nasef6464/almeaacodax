@@ -5,29 +5,29 @@ const root = process.cwd();
 const requirePost = process.argv.includes('--require-post');
 
 const targetWorkflows = [
-  '.github/workflows/refactor-v2-api-query-utilities.yml',
-  '.github/workflows/refactor-v2-content-platform-integration-defaults.yml',
-  '.github/workflows/refactor-v2-content-platform-presentation-defaults.yml',
-  '.github/workflows/refactor-v2-content-study-plan-schemas.yml',
-  '.github/workflows/refactor-v2-quiz-definition-schema.yml',
-  '.github/workflows/refactor-v2-quiz-query-utilities.yml',
-  '.github/workflows/refactor-v2-quiz-question-presentation.yml',
-  '.github/workflows/refactor-v2-quiz-question-query-schemas.yml',
-  '.github/workflows/refactor-v2-quiz-skill-analytics.yml',
-  '.github/workflows/refactor-v2-quiz-submission-schemas.yml',
-  '.github/workflows/refactor-v2-remediate-express-body-parser.yml',
-  '.github/workflows/refactor-v2-remediate-express-rate-limit.yml',
-  '.github/workflows/refactor-v2-remediate-google-genai.yml',
-  '.github/workflows/refactor-v2-remediate-mongoose.yml',
-  '.github/workflows/refactor-v2-remediate-postcss.yml',
-  '.github/workflows/refactor-v2-remediate-react-router.yml',
-  '.github/workflows/refactor-v2-remediate-root-babel-core.yml',
-  '.github/workflows/refactor-v2-remediate-root-brace-expansion.yml',
-  '.github/workflows/refactor-v2-remediate-root-fast-uri.yml',
-  '.github/workflows/refactor-v2-remediate-sentry-brace-expansion.yml',
-  '.github/workflows/refactor-v2-remediate-socket-io.yml',
-  '.github/workflows/refactor-v2-remediate-vite.yml',
-  '.github/workflows/refactor-v2-store-domain-helpers.yml',
+  '.github/workflows-archive/refactor-v2/refactor-v2-api-query-utilities.yml',
+  '.github/workflows-archive/refactor-v2/refactor-v2-content-platform-integration-defaults.yml',
+  '.github/workflows-archive/refactor-v2/refactor-v2-content-platform-presentation-defaults.yml',
+  '.github/workflows-archive/refactor-v2/refactor-v2-content-study-plan-schemas.yml',
+  '.github/workflows-archive/refactor-v2/refactor-v2-quiz-definition-schema.yml',
+  '.github/workflows-archive/refactor-v2/refactor-v2-quiz-query-utilities.yml',
+  '.github/workflows-archive/refactor-v2/refactor-v2-quiz-question-presentation.yml',
+  '.github/workflows-archive/refactor-v2/refactor-v2-quiz-question-query-schemas.yml',
+  '.github/workflows-archive/refactor-v2/refactor-v2-quiz-skill-analytics.yml',
+  '.github/workflows-archive/refactor-v2/refactor-v2-quiz-submission-schemas.yml',
+  '.github/workflows-archive/refactor-v2/refactor-v2-remediate-express-body-parser.yml',
+  '.github/workflows-archive/refactor-v2/refactor-v2-remediate-express-rate-limit.yml',
+  '.github/workflows-archive/refactor-v2/refactor-v2-remediate-google-genai.yml',
+  '.github/workflows-archive/refactor-v2/refactor-v2-remediate-mongoose.yml',
+  '.github/workflows-archive/refactor-v2/refactor-v2-remediate-postcss.yml',
+  '.github/workflows-archive/refactor-v2/refactor-v2-remediate-react-router.yml',
+  '.github/workflows-archive/refactor-v2/refactor-v2-remediate-root-babel-core.yml',
+  '.github/workflows-archive/refactor-v2/refactor-v2-remediate-root-brace-expansion.yml',
+  '.github/workflows-archive/refactor-v2/refactor-v2-remediate-root-fast-uri.yml',
+  '.github/workflows-archive/refactor-v2/refactor-v2-remediate-sentry-brace-expansion.yml',
+  '.github/workflows-archive/refactor-v2/refactor-v2-remediate-socket-io.yml',
+  '.github/workflows-archive/refactor-v2/refactor-v2-remediate-vite.yml',
+  '.github/workflows-archive/refactor-v2/refactor-v2-store-domain-helpers.yml',
 ];
 
 const read = (file) => fs.readFileSync(path.join(root, file), 'utf8').replace(/\r\n/g, '\n');
@@ -74,7 +74,7 @@ check('post-hygiene closed phases are manually runnable but not cumulative-PR tr
 });
 
 check('central Safety Gate remains pull-request and safe-branch triggered', () => {
-  const source = read('.github/workflows/refactor-v2-guard.yml');
+  const source = read('.github/workflows-archive/refactor-v2/refactor-v2-guard.yml');
   if (!/^  pull_request:\s*$/m.test(source)) throw new Error('Safety Gate lost pull_request trigger');
   if (!/^  push:\s*$/m.test(source)) throw new Error('Safety Gate lost push trigger');
   if (!source.includes('      - refactor/repository-v2-safe')) throw new Error('Safety Gate lost safe branch trigger');
@@ -82,7 +82,7 @@ check('central Safety Gate remains pull-request and safe-branch triggered', () =
 });
 
 check('dependency security audit remains pull-request triggered', () => {
-  const source = read('.github/workflows/refactor-v2-dependency-audit.yml');
+  const source = read('.github/workflows-archive/refactor-v2/refactor-v2-dependency-audit.yml');
   if (!/^  pull_request:\s*$/m.test(source)) throw new Error('Dependency Audit lost pull_request trigger');
   if (!/^  push:\s*$/m.test(source)) throw new Error('Dependency Audit lost push trigger');
   if (!source.includes('      - refactor/repository-v2-safe')) throw new Error('Dependency Audit lost safe branch trigger');
@@ -92,7 +92,7 @@ check('dependency security audit remains pull-request triggered', () => {
 
 const failed = checks.filter((item) => item.status === 'FAIL');
 console.log(JSON.stringify({
-  phase: 'refactor-workflow-trigger-hygiene',
+  phase: 'archived-refactor-workflow-trigger-hygiene',
   status: failed.length ? 'FAIL' : 'PASS',
   mode,
   targetCount: targetWorkflows.length,

@@ -1,0 +1,21 @@
+{
+  "trackedPNGsRemoved": 41,
+  "localPNGbytes": 7117857,
+  "allLocalPNGsUnchanged": true,
+  "workflowsArchived": 35,
+  "allArchivedWorkflowBytesUnchanged": true,
+  "retainedSourceContracts": 62,
+  "dependencyAuditSuccessor": ".github/workflows/dependency-security-audit.yml",
+  "requiredV3WorkflowsUnchanged": [
+    "platform-v3-backend-integration-gate.yml",
+    "platform-v3-deep-premerge-e2e-gate.yml",
+    "platform-v3-phase-handover-gate.yml"
+  ],
+  "baseMerge": "c6b16a4105d91ec814b4f1d948852651ab9abf8e",
+  "pr565Source": "c3449889adedfb73e9562deb4d1fbdcd16ea1ce0",
+  "pr565ExactCI": {
+    "success": 25,
+    "conditionalSkipped": 5,
+    "requiredPassed": 3
+  }
+}

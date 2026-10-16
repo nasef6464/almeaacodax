@@ -50,6 +50,9 @@ jobs:
         run: npm run server:build
       - name: Generate architecture snapshot
         run: node tools/refactor/repository-audit.mjs
+      - name: Retained repository regression contracts
+        run: node scripts/run-preserved-repo-contracts.mjs
+
       - name: Immutable architecture contract
         run: node tools/refactor/architecture-gate.mjs
       - name: Progressive module boundary gate
