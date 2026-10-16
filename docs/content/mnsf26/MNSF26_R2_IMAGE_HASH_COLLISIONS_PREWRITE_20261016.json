@@ -1,0 +1,1483 @@
+{
+  "scope": {
+    "db": "almeaa",
+    "subjectId": "sub_1777779748206",
+    "pathId": "p_1777779639431"
+  },
+  "state": "PREWRITE",
+  "reason": "10 selected SHA-256 image-hash groups contain source records whose question text differs materially; without original crop pixels, those images cannot be source-certified for the active approved records.",
+  "hashes": [
+    "574e84e673d023bde62998ae8b13c3f57a6301ca20dfcac03ecf42fc57276b0d",
+    "06c9140b73a2c2cfdfa8e7d04661c1a3bb062ca8192e0a1b6f5258a4e0940d4d",
+    "027b4f94e604ca0fba75a12980e0e95be66ffcc220036b9c92111a3ddc1c8880",
+    "980661db18f7b069d36f338ad20f7f6fa5803e5a2c5c1344a086be7869d1fba6",
+    "5f47dd9c9339bc4c92c2b54ff44e673ec7ad203c16957028c7739fe2355e0e31",
+    "8ba634fe6b769a361207d1e9ffb20afad4d9800b9b87191d96fd5d14b95d5115",
+    "092dbe00b9323258089d0d60b6cbfed21fe223c1bf54ccde56cadc0bf6203205",
+    "30b3f47b1b37608c47efc36f1818a678ea9678452295e5a03bf403906024af2d",
+    "6ef57ed6009375c02dcc13c93764da0176de5d4a52bc4ac84b165dbfb79e2b4b",
+    "7023308074b9f587340b18227950f016d31a396a5b4425bf5714d7024451f2f9"
+  ],
+  "liveRecordsBefore": [
+    {
+      "_id": {
+        "$oid": "6acb549b1daea21097c2ca33"
+      },
+      "questionCode": "QDR-QNT-MNSF26-AR-T004-Q07",
+      "aiContext": {
+        "readableText": "خمسة أعداد متتالية ومجموع أول عددين 27",
+        "speechText": "إذا كان الأول ن، فالثاني ن+1، ومجموعهما 2ن+1=27 ⇒ ن=13. الأعداد 13،14،15،16،17، والرابع 16."
+      },
+      "approvalStatus": "approved",
+      "correctOptionIndex": 2,
+      "createdAt": {
+        "$date": "2026-10-11T09:19:20.806Z"
+      },
+      "difficulty": "Medium",
+      "examType": "qudurat",
+      "explanation": "إذا كان الأول ن، فالثاني ن+1، ومجموعهما 2ن+1=27 ⇒ ن=13. الأعداد 13،14،15،16،17، والرابع 16.",
+      "fingerprint": "04b923444845211af8a32329f7652cea4edbfff89e8e85534dcdfb92e1978080",
+      "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t004_q07",
+      "imageUrl": "https://media.almeaa.com/questions/v2/MNSF26-AR-T004-Q07/574e84e673d023bde62998ae8b13c3f57a6301ca20dfcac03ecf42fc57276b0d.webp",
+      "isPublished": true,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "ownerType": "platform",
+      "pathId": "p_1777779639431",
+      "sectionId": "sec_sub_1777779748206_1",
+      "skillId": "skill_quant_01",
+      "skillIds": [
+        "skill_quant_01",
+        "sub_quant_01_1"
+      ],
+      "source": "imported",
+      "sourceMeta": {
+        "documentCode": "MNSF26",
+        "sourceItemId": "MNSF26-AR-T004-Q07",
+        "pdfPageIndex": 4,
+        "printedPageNumber": 4,
+        "printedQuestionNumber": 7,
+        "imageHash": "574e84e673d023bde62998ae8b13c3f57a6301ca20dfcac03ecf42fc57276b0d",
+        "importBatchId": "MNSF26_STAGE6_DRAFT_V1"
+      },
+      "subSkillId": "sub_quant_01_1",
+      "subject": "qudurat_quantitative",
+      "subjectId": "sub_1777779748206",
+      "text": "خمسة أعداد متتالية ومجموع أول عددين 27",
+      "type": "mcq",
+      "updatedAt": {
+        "$date": "2026-10-11T09:19:20.806Z"
+      },
+      "voiceExplanation": {
+        "text": "إذا كان الأول ن، فالثاني ن+1، ومجموعهما 2ن+1=27 ⇒ ن=13. الأعداد 13،14،15،16،17، والرابع 16."
+      }
+    },
+    {
+      "_id": {
+        "$oid": "6acb549b1daea21097c2ca3b"
+      },
+      "questionCode": "QDR-QNT-MNSF26-AR-T005-Q15",
+      "aiContext": {
+        "readableText": "مقارنة 330033 ÷ 33 مع 10001",
+        "speechText": "330033 ÷ 33 = 10001."
+      },
+      "approvalStatus": "approved",
+      "correctOptionIndex": 2,
+      "createdAt": {
+        "$date": "2026-10-11T09:19:20.806Z"
+      },
+      "difficulty": "Easy",
+      "examType": "qudurat",
+      "explanation": "330033 ÷ 33 = 10001.",
+      "fingerprint": "451cd43b0a1322394fff70b3ff1ec0237506364eeebe47bcd023ac026b719010",
+      "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t005_q15",
+      "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T005-Q15/30b3f47b1b37608c47efc36f1818a678ea9678452295e5a03bf403906024af2d.webp",
+      "isPublished": true,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "ownerType": "platform",
+      "pathId": "p_1777779639431",
+      "sectionId": "sec_sub_1777779748206_1",
+      "skillId": "skill_quant_01",
+      "skillIds": [
+        "skill_quant_01",
+        "sub_quant_01_1"
+      ],
+      "source": "imported",
+      "sourceMeta": {
+        "documentCode": "MNSF26",
+        "sourceItemId": "MNSF26-AR-T005-Q15",
+        "pdfPageIndex": 5,
+        "printedPageNumber": 5,
+        "printedQuestionNumber": 15,
+        "imageHash": "30b3f47b1b37608c47efc36f1818a678ea9678452295e5a03bf403906024af2d",
+        "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+        "imageVersion": 2
+      },
+      "subSkillId": "sub_quant_01_1",
+      "subject": "qudurat_quantitative",
+      "subjectId": "sub_1777779748206",
+      "text": "مقارنة 330033 ÷ 33 مع 10001",
+      "type": "mcq",
+      "updatedAt": {
+        "$date": "2026-10-12T09:42:15.947Z"
+      },
+      "voiceExplanation": {
+        "text": "330033 ÷ 33 = 10001."
+      },
+      "cropStatus": "VERIFIED",
+      "optionsEmbeddedInImage": true
+    },
+    {
+      "_id": {
+        "$oid": "6acb549b1daea21097c2ca82"
+      },
+      "questionCode": "QDR-QNT-MNSF26-AR-T010-Q07",
+      "aiContext": {
+        "readableText": "قارن (7+6)÷(6+7) مع (8+7)÷(7+7).",
+        "speechText": "نطبّق القاعدة الرياضية الواردة في نص السؤال: الأولى13/13=1؛ الثانية15/14>1."
+      },
+      "approvalStatus": "approved",
+      "correctOptionIndex": 0,
+      "createdAt": {
+        "$date": "2026-10-11T09:19:20.806Z"
+      },
+      "difficulty": "Easy",
+      "examType": "qudurat",
+      "explanation": "الأولى13/13=1؛ الثانية15/14>1.",
+      "fingerprint": "1eb9af04ffaf1109f0af3ce16421211f1492c77291fdc4288e2a1d3c48e9bca5",
+      "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t010_q07",
+      "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T010-Q07/7023308074b9f587340b18227950f016d31a396a5b4425bf5714d7024451f2f9.webp",
+      "isPublished": true,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "ownerType": "platform",
+      "pathId": "p_1777779639431",
+      "sectionId": "sec_sub_1777779748206_1",
+      "skillId": "skill_quant_01",
+      "skillIds": [
+        "skill_quant_01",
+        "sub_quant_01_1"
+      ],
+      "source": "imported",
+      "sourceMeta": {
+        "documentCode": "MNSF26",
+        "sourceItemId": "MNSF26-AR-T010-Q07",
+        "pdfPageIndex": 18,
+        "printedPageNumber": 18,
+        "printedQuestionNumber": 7,
+        "imageHash": "7023308074b9f587340b18227950f016d31a396a5b4425bf5714d7024451f2f9",
+        "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+        "imageVersion": 2
+      },
+      "subSkillId": "sub_quant_01_1",
+      "subject": "qudurat_quantitative",
+      "subjectId": "sub_1777779748206",
+      "text": "قارن (7+6)÷(6+7) مع (8+7)÷(7+7).",
+      "type": "mcq",
+      "updatedAt": {
+        "$date": "2026-10-12T09:42:15.948Z"
+      },
+      "voiceExplanation": {
+        "text": "الأولى13/13=1؛ الثانية15/14>1."
+      },
+      "cropStatus": "VERIFIED",
+      "optionsEmbeddedInImage": true
+    },
+    {
+      "_id": {
+        "$oid": "6acb549b1daea21097c2ca8c"
+      },
+      "questionCode": "QDR-QNT-MNSF26-AR-T010-Q17",
+      "aiContext": {
+        "readableText": "اختر عمليتين في3 □ 4 □ 3=15.",
+        "speechText": "نطبّق القاعدة الرياضية الواردة في نص السؤال: 3×4+3=12+3=15."
+      },
+      "approvalStatus": "approved",
+      "correctOptionIndex": 0,
+      "createdAt": {
+        "$date": "2026-10-11T09:19:20.807Z"
+      },
+      "difficulty": "Easy",
+      "examType": "qudurat",
+      "explanation": "3×4+3=12+3=15.",
+      "fingerprint": "97cade9fb3c6c32c3d44ff21767233727918b6e7c88d353516d95364173a0d9e",
+      "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t010_q17",
+      "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T010-Q17/30b3f47b1b37608c47efc36f1818a678ea9678452295e5a03bf403906024af2d.webp",
+      "isPublished": true,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "ownerType": "platform",
+      "pathId": "p_1777779639431",
+      "sectionId": "sec_sub_1777779748206_1",
+      "skillId": "skill_quant_01",
+      "skillIds": [
+        "skill_quant_01",
+        "sub_quant_01_1"
+      ],
+      "source": "imported",
+      "sourceMeta": {
+        "documentCode": "MNSF26",
+        "sourceItemId": "MNSF26-AR-T010-Q17",
+        "pdfPageIndex": 19,
+        "printedPageNumber": 19,
+        "printedQuestionNumber": 17,
+        "imageHash": "30b3f47b1b37608c47efc36f1818a678ea9678452295e5a03bf403906024af2d",
+        "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+        "imageVersion": 2
+      },
+      "subSkillId": "sub_quant_01_1",
+      "subject": "qudurat_quantitative",
+      "subjectId": "sub_1777779748206",
+      "text": "اختر عمليتين في3 □ 4 □ 3=15.",
+      "type": "mcq",
+      "updatedAt": {
+        "$date": "2026-10-12T09:42:15.948Z"
+      },
+      "voiceExplanation": {
+        "text": "3×4+3=12+3=15."
+      },
+      "cropStatus": "VERIFIED",
+      "optionsEmbeddedInImage": true
+    },
+    {
+      "_id": {
+        "$oid": "6acb549b1daea21097c2ca9f"
+      },
+      "questionCode": "QDR-QNT-MNSF26-AR-T011-Q16",
+      "aiContext": {
+        "readableText": "أي قسمة تعطي الناتج7 بين91÷13 و90÷14 و91÷7 و91÷14؟",
+        "speechText": "نطبّق القاعدة الرياضية الواردة في نص السؤال: 13×7=91."
+      },
+      "approvalStatus": "approved",
+      "correctOptionIndex": 0,
+      "createdAt": {
+        "$date": "2026-10-11T09:19:20.807Z"
+      },
+      "difficulty": "Easy",
+      "examType": "qudurat",
+      "explanation": "13×7=91.",
+      "fingerprint": "36ee2d91efadb2623e8663076e397afabdfc3af948e9ff320edae0d7e9837041",
+      "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t011_q16",
+      "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T011-Q16/980661db18f7b069d36f338ad20f7f6fa5803e5a2c5c1344a086be7869d1fba6.webp",
+      "isPublished": true,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "ownerType": "platform",
+      "pathId": "p_1777779639431",
+      "sectionId": "sec_sub_1777779748206_1",
+      "skillId": "skill_quant_01",
+      "skillIds": [
+        "skill_quant_01",
+        "sub_quant_01_1"
+      ],
+      "source": "imported",
+      "sourceMeta": {
+        "documentCode": "MNSF26",
+        "sourceItemId": "MNSF26-AR-T011-Q16",
+        "pdfPageIndex": 20,
+        "printedPageNumber": 20,
+        "printedQuestionNumber": 16,
+        "imageHash": "980661db18f7b069d36f338ad20f7f6fa5803e5a2c5c1344a086be7869d1fba6",
+        "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+        "imageVersion": 2
+      },
+      "subSkillId": "sub_quant_01_1",
+      "subject": "qudurat_quantitative",
+      "subjectId": "sub_1777779748206",
+      "text": "أي قسمة تعطي الناتج7 بين91÷13 و90÷14 و91÷7 و91÷14؟",
+      "type": "mcq",
+      "updatedAt": {
+        "$date": "2026-10-12T09:42:15.948Z"
+      },
+      "voiceExplanation": {
+        "text": "13×7=91."
+      },
+      "cropStatus": "VERIFIED",
+      "optionsEmbeddedInImage": true
+    },
+    {
+      "_id": {
+        "$oid": "6acb549b1daea21097c2cb7b"
+      },
+      "questionCode": "QDR-QNT-MNSF26-AR-T023-Q07",
+      "aiContext": {
+        "readableText": "سؤال الحساب/الجبر الاختبار 23 رقم 7 من كتاب المنصف 26",
+        "speechText": "الفكرة التعليمية: مقارنة ناتجي قسمة. نحدد العملية الصحيحة من الصورة ثم نُجري الحساب ونتحقق من توافق النتيجة مع صيغة السؤال."
+      },
+      "approvalStatus": "approved",
+      "correctOptionIndex": 0,
+      "createdAt": {
+        "$date": "2026-10-11T09:19:20.807Z"
+      },
+      "difficulty": "Easy",
+      "examType": "qudurat",
+      "explanation": "الأولى (7+6)/(6+7)=1؛ والثانية (8+7)/(7+7)=15/14>1.",
+      "fingerprint": "46cb7a476fb02d23c1f9e1d648fbd81cb8dae094974a54b8561d4b890da063d5",
+      "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t023_q07",
+      "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T023-Q07/7023308074b9f587340b18227950f016d31a396a5b4425bf5714d7024451f2f9.webp",
+      "isPublished": true,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "ownerType": "platform",
+      "pathId": "p_1777779639431",
+      "sectionId": "sec_sub_1777779748206_1",
+      "skillId": "skill_quant_01",
+      "skillIds": [
+        "skill_quant_01",
+        "sub_quant_01_1"
+      ],
+      "source": "imported",
+      "sourceMeta": {
+        "documentCode": "MNSF26",
+        "sourceItemId": "MNSF26-AR-T023-Q07",
+        "pdfPageIndex": 45,
+        "printedPageNumber": 45,
+        "printedQuestionNumber": 7,
+        "imageHash": "7023308074b9f587340b18227950f016d31a396a5b4425bf5714d7024451f2f9",
+        "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+        "imageVersion": 2
+      },
+      "subSkillId": "sub_quant_01_1",
+      "subject": "qudurat_quantitative",
+      "subjectId": "sub_1777779748206",
+      "text": "سؤال الحساب/الجبر الاختبار 23 رقم 7 من كتاب المنصف 26",
+      "type": "mcq",
+      "updatedAt": {
+        "$date": "2026-10-12T09:42:15.950Z"
+      },
+      "voiceExplanation": {
+        "text": "الأولى (7+6)/(6+7)=1؛ والثانية (8+7)/(7+7)=15/14>1."
+      },
+      "cropStatus": "VERIFIED",
+      "optionsEmbeddedInImage": true
+    },
+    {
+      "_id": {
+        "$oid": "6acb549c1daea21097c2cc02"
+      },
+      "questionCode": "QDR-QNT-MNSF26-AR-T030-Q17",
+      "aiContext": {
+        "readableText": "سؤال الحساب/الجبر الاختبار 30 رقم 17 من كتاب المنصف 26",
+        "speechText": "المهارة: استرجاع العدد من ثلثه. نحول نص السؤال إلى علاقة رياضية، ثم نحل بالعكس أو نختبر الشروط ونتأكد من الإجابة."
+      },
+      "approvalStatus": "approved",
+      "correctOptionIndex": 3,
+      "createdAt": {
+        "$date": "2026-10-11T09:19:20.812Z"
+      },
+      "difficulty": "Easy",
+      "examType": "qudurat",
+      "explanation": "ثلث العدد س يساوي 16/3؛ س/3=16/3؛ إذن س=16.",
+      "fingerprint": "cad3f4651b84a4d3a9ba0dfe307d89194187cf1550be7f16dc44ccef5732a93d",
+      "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t030_q17",
+      "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T030-Q17/5f47dd9c9339bc4c92c2b54ff44e673ec7ad203c16957028c7739fe2355e0e31.webp",
+      "isPublished": true,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "ownerType": "platform",
+      "pathId": "p_1777779639431",
+      "sectionId": "sec_sub_1777779748206_1",
+      "skillId": "skill_quant_01",
+      "skillIds": [
+        "skill_quant_01",
+        "sub_quant_01_1"
+      ],
+      "source": "imported",
+      "sourceMeta": {
+        "documentCode": "MNSF26",
+        "sourceItemId": "MNSF26-AR-T030-Q17",
+        "pdfPageIndex": 60,
+        "printedPageNumber": 60,
+        "printedQuestionNumber": 17,
+        "imageHash": "5f47dd9c9339bc4c92c2b54ff44e673ec7ad203c16957028c7739fe2355e0e31",
+        "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+        "imageVersion": 2
+      },
+      "subSkillId": "sub_quant_01_1",
+      "subject": "qudurat_quantitative",
+      "subjectId": "sub_1777779748206",
+      "text": "سؤال الحساب/الجبر الاختبار 30 رقم 17 من كتاب المنصف 26",
+      "type": "mcq",
+      "updatedAt": {
+        "$date": "2026-10-12T09:42:15.951Z"
+      },
+      "voiceExplanation": {
+        "text": "ثلث العدد س يساوي 16/3؛ س/3=16/3؛ إذن س=16."
+      },
+      "cropStatus": "VERIFIED",
+      "optionsEmbeddedInImage": true
+    },
+    {
+      "_id": {
+        "$oid": "6acb549c1daea21097c2cc05"
+      },
+      "questionCode": "QDR-QNT-MNSF26-AR-T030-Q20",
+      "aiContext": {
+        "readableText": "سؤال الحساب/الجبر الاختبار 30 رقم 20 من كتاب المنصف 26",
+        "speechText": "المهارة: علاقة كسرين لعددين صحيحين. نحول نص السؤال إلى علاقة رياضية، ثم نحل بالعكس أو نختبر الشروط ونتأكد من الإجابة."
+      },
+      "approvalStatus": "approved",
+      "correctOptionIndex": 3,
+      "createdAt": {
+        "$date": "2026-10-11T09:19:20.812Z"
+      },
+      "difficulty": "Medium",
+      "examType": "qudurat",
+      "explanation": "إذا كان أ/8=ب/6 فإن 3أ=4ب؛ ب يجب أن يقبل القسمة على 3، ومن الخيارات يصلح 54 حيث أ=72.",
+      "fingerprint": "df1ec2d68484f8378f8cdb8e93e70764cfd2ac49530d920990226e1e31971854",
+      "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t030_q20",
+      "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T030-Q20/092dbe00b9323258089d0d60b6cbfed21fe223c1bf54ccde56cadc0bf6203205.webp",
+      "isPublished": true,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "ownerType": "platform",
+      "pathId": "p_1777779639431",
+      "sectionId": "sec_sub_1777779748206_1",
+      "skillId": "skill_quant_01",
+      "skillIds": [
+        "skill_quant_01",
+        "sub_quant_01_1"
+      ],
+      "source": "imported",
+      "sourceMeta": {
+        "documentCode": "MNSF26",
+        "sourceItemId": "MNSF26-AR-T030-Q20",
+        "pdfPageIndex": 60,
+        "printedPageNumber": 60,
+        "printedQuestionNumber": 20,
+        "imageHash": "092dbe00b9323258089d0d60b6cbfed21fe223c1bf54ccde56cadc0bf6203205",
+        "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+        "imageVersion": 2
+      },
+      "subSkillId": "sub_quant_01_1",
+      "subject": "qudurat_quantitative",
+      "subjectId": "sub_1777779748206",
+      "text": "سؤال الحساب/الجبر الاختبار 30 رقم 20 من كتاب المنصف 26",
+      "type": "mcq",
+      "updatedAt": {
+        "$date": "2026-10-12T09:42:15.951Z"
+      },
+      "voiceExplanation": {
+        "text": "إذا كان أ/8=ب/6 فإن 3أ=4ب؛ ب يجب أن يقبل القسمة على 3، ومن الخيارات يصلح 54 حيث أ=72."
+      },
+      "cropStatus": "VERIFIED",
+      "optionsEmbeddedInImage": true
+    },
+    {
+      "_id": {
+        "$oid": "6acb549c1daea21097c2ccd3"
+      },
+      "questionCode": "QDR-QNT-MNSF26-AR-T042-Q15",
+      "aiContext": {
+        "readableText": "جهاز يكتب1000 كلمة في الدقيقة؛ كم كلمة في5 دقائق",
+        "speechText": "الفكرة التعليمية: معدل إنتاج ثابت. نحدد أساس النسبة أو العلاقة أولًا، ثم نطبّق خطوات الحساب ونراجع الناتج مع المعطيات."
+      },
+      "approvalStatus": "approved",
+      "correctOptionIndex": 3,
+      "createdAt": {
+        "$date": "2026-10-11T09:19:20.813Z"
+      },
+      "difficulty": "Easy",
+      "examType": "qudurat",
+      "explanation": "1000×5=5000.",
+      "fingerprint": "914f3276610cf6f21ec7627d4ae3a1e256790ab516b1c08c59946307864e165e",
+      "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t042_q15",
+      "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T042-Q15/8ba634fe6b769a361207d1e9ffb20afad4d9800b9b87191d96fd5d14b95d5115.webp",
+      "isPublished": true,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "ownerType": "platform",
+      "pathId": "p_1777779639431",
+      "sectionId": "sec_sub_1777779748206_1",
+      "skillId": "skill_quant_01",
+      "skillIds": [
+        "skill_quant_01",
+        "sub_quant_01_1"
+      ],
+      "source": "imported",
+      "sourceMeta": {
+        "documentCode": "MNSF26",
+        "sourceItemId": "MNSF26-AR-T042-Q15",
+        "pdfPageIndex": 82,
+        "printedPageNumber": 82,
+        "printedQuestionNumber": 15,
+        "imageHash": "8ba634fe6b769a361207d1e9ffb20afad4d9800b9b87191d96fd5d14b95d5115",
+        "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+        "imageVersion": 2
+      },
+      "subSkillId": "sub_quant_01_1",
+      "subject": "qudurat_quantitative",
+      "subjectId": "sub_1777779748206",
+      "text": "جهاز يكتب1000 كلمة في الدقيقة؛ كم كلمة في5 دقائق",
+      "type": "mcq",
+      "updatedAt": {
+        "$date": "2026-10-12T09:42:15.951Z"
+      },
+      "voiceExplanation": {
+        "text": "1000×5=5000."
+      },
+      "cropStatus": "VERIFIED",
+      "optionsEmbeddedInImage": true
+    },
+    {
+      "_id": {
+        "$oid": "6acb549b1daea21097c2ca85"
+      },
+      "questionCode": "QDR-QNT-MNSF26-AR-T010-Q10",
+      "aiContext": {
+        "readableText": "سؤال 10",
+        "speechText": "يُطبَّق النمط المعتمد في consecutive-integers / known-sum / middle-as-average. ثم تُراجع النتيجة: 5.."
+      },
+      "approvalStatus": "draft",
+      "correctOptionIndex": 1,
+      "createdAt": {
+        "$date": "2026-10-11T09:19:20.806Z"
+      },
+      "difficulty": "Easy",
+      "examType": "qudurat",
+      "explanation": "الأعداد المتتالية س، س+1، س+2. مجموعها 3س+3=18، لذا س=5، والأعداد 5 و6 و7. الأصغر 5، وهو الاختيار (ب)، وليس (د).",
+      "fingerprint": "5137a8f6d4315900fab3a0e34b59e4eb9697f7b819d1f0eb38679a1f784dcb31",
+      "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t010_q10",
+      "imageUrl": "https://media.almeaa.com/questions/v2/MNSF26-AR-T010-Q10/574e84e673d023bde62998ae8b13c3f57a6301ca20dfcac03ecf42fc57276b0d.webp",
+      "isPublished": false,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "ownerType": "platform",
+      "pathId": "p_1777779639431",
+      "sectionId": "sec_sub_1777779748206_1",
+      "skillId": "skill_quant_01",
+      "skillIds": [
+        "skill_quant_01",
+        "sub_quant_01_1"
+      ],
+      "source": "imported",
+      "sourceMeta": {
+        "documentCode": "MNSF26",
+        "sourceItemId": "MNSF26-AR-T010-Q10",
+        "pdfPageIndex": 10,
+        "printedPageNumber": 10,
+        "printedQuestionNumber": 10,
+        "imageHash": "574e84e673d023bde62998ae8b13c3f57a6301ca20dfcac03ecf42fc57276b0d",
+        "importBatchId": "MNSF26_STAGE6_DRAFT_V1"
+      },
+      "subSkillId": "sub_quant_01_1",
+      "subject": "qudurat_quantitative",
+      "subjectId": "sub_1777779748206",
+      "text": "مجموع ثلاثة أعداد صحيحة متتالية يساوي 18؛ ما أصغر هذه الأعداد؟",
+      "type": "mcq",
+      "updatedAt": {
+        "$date": "2026-10-16T16:22:31.964Z"
+      },
+      "voiceExplanation": {
+        "text": "يُطبَّق النمط المعتمد في consecutive-integers / known-sum / middle-as-average. ثم تُراجع النتيجة: 5.."
+      },
+      "reviewerNotes": "MNSF26_QA_HOLD_SOURCE_B6: من كتاب الحساب والجبر PDF index9 السؤال10، المفتاح الصحيح ب=5. حُفظت حالة المسودة إلى حين مطابقة الصورة والـSHA."
+    },
+    {
+      "_id": {
+        "$oid": "6acb549c1daea21097c2cde2"
+      },
+      "questionCode": "QDR-QNT-MNSF26-AR-T057-Q07",
+      "aiContext": {
+        "readableText": "وزع مبلغ100 ريال بين ثلاثة أشخاص بعلاقات النصف والمثل؛ أوجد مبلغ خالد.",
+        "speechText": "الشرح التعليمي وتطبيق الفكرة الرياضية المباشرة."
+      },
+      "approvalStatus": "draft",
+      "correctOptionIndex": 3,
+      "createdAt": {
+        "$date": "2026-10-11T09:19:20.813Z"
+      },
+      "difficulty": "Medium",
+      "examType": "qudurat",
+      "explanation": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة.",
+      "fingerprint": "e7fe77451453b3e3f4f20564df05c1e6143d79cd0e471b26530017766a3bba59",
+      "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t057_q07",
+      "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T057-Q07/06c9140b73a2c2cfdfa8e7d04661c1a3bb062ca8192e0a1b6f5258a4e0940d4d.webp",
+      "isPublished": false,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "ownerType": "platform",
+      "pathId": "p_1777779639431",
+      "sectionId": "sec_sub_1777779748206_1",
+      "skillId": "skill_quant_01",
+      "skillIds": [
+        "skill_quant_01",
+        "sub_quant_01_1"
+      ],
+      "source": "imported",
+      "sourceMeta": {
+        "documentCode": "MNSF26",
+        "sourceItemId": "MNSF26-AR-T057-Q07",
+        "pdfPageIndex": 114,
+        "printedPageNumber": 114,
+        "printedQuestionNumber": 7,
+        "imageHash": "06c9140b73a2c2cfdfa8e7d04661c1a3bb062ca8192e0a1b6f5258a4e0940d4d",
+        "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+        "imageVersion": 2
+      },
+      "subSkillId": "sub_quant_01_1",
+      "subject": "qudurat_quantitative",
+      "subjectId": "sub_1777779748206",
+      "text": "وزع مبلغ100 ريال بين ثلاثة أشخاص بعلاقات النصف والمثل؛ أوجد مبلغ خالد.",
+      "type": "mcq",
+      "updatedAt": {
+        "$date": "2026-10-16T07:55:51.770Z"
+      },
+      "voiceExplanation": {
+        "text": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة."
+      },
+      "cropStatus": "VERIFIED",
+      "optionsEmbeddedInImage": true,
+      "reviewerNotes": "MNSF26_QA_HOLD_20261016: شرح عام لا يثبت الحل؛ اختيار رقم 4 متكرر في جميع أسئلة هذه المجموعة. يلزم فحص صورة السؤال والاختيارات والحل الرياضي والتصنيف بصورة مستقلة قبل إعادة الاعتماد."
+    },
+    {
+      "_id": {
+        "$oid": "6acb549d1daea21097c2cdf7"
+      },
+      "questionCode": "QDR-QNT-MNSF26-AR-T058-Q10",
+      "aiContext": {
+        "readableText": "واحد على ثمانية من عدد صحيح يساوي واحدًا على ستة من عدد صحيح آخر؛ اختر عددًا ممكنًا.",
+        "speechText": "الشرح التعليمي وتطبيق الفكرة الرياضية المباشرة."
+      },
+      "approvalStatus": "draft",
+      "correctOptionIndex": 3,
+      "createdAt": {
+        "$date": "2026-10-11T09:19:20.813Z"
+      },
+      "difficulty": "Medium",
+      "examType": "qudurat",
+      "explanation": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة.",
+      "fingerprint": "19506322fa285f77cda82f522f07a1064ccc43002913001ac8d726c5a59eea86",
+      "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t058_q10",
+      "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T058-Q10/092dbe00b9323258089d0d60b6cbfed21fe223c1bf54ccde56cadc0bf6203205.webp",
+      "isPublished": false,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "ownerType": "platform",
+      "pathId": "p_1777779639431",
+      "sectionId": "sec_sub_1777779748206_1",
+      "skillId": "skill_quant_01",
+      "skillIds": [
+        "skill_quant_01",
+        "sub_quant_01_1"
+      ],
+      "source": "imported",
+      "sourceMeta": {
+        "documentCode": "MNSF26",
+        "sourceItemId": "MNSF26-AR-T058-Q10",
+        "pdfPageIndex": 116,
+        "printedPageNumber": 116,
+        "printedQuestionNumber": 10,
+        "imageHash": "092dbe00b9323258089d0d60b6cbfed21fe223c1bf54ccde56cadc0bf6203205",
+        "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+        "imageVersion": 2
+      },
+      "subSkillId": "sub_quant_01_1",
+      "subject": "qudurat_quantitative",
+      "subjectId": "sub_1777779748206",
+      "text": "واحد على ثمانية من عدد صحيح يساوي واحدًا على ستة من عدد صحيح آخر؛ اختر عددًا ممكنًا.",
+      "type": "mcq",
+      "updatedAt": {
+        "$date": "2026-10-16T07:55:51.771Z"
+      },
+      "voiceExplanation": {
+        "text": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة."
+      },
+      "cropStatus": "VERIFIED",
+      "optionsEmbeddedInImage": true,
+      "reviewerNotes": "MNSF26_QA_HOLD_20261016: شرح عام لا يثبت الحل؛ اختيار رقم 4 متكرر في جميع أسئلة هذه المجموعة. يلزم فحص صورة السؤال والاختيارات والحل الرياضي والتصنيف بصورة مستقلة قبل إعادة الاعتماد."
+    },
+    {
+      "_id": {
+        "$oid": "6acb549d1daea21097c2ce19"
+      },
+      "questionCode": "QDR-QNT-MNSF26-AR-T060-Q07",
+      "aiContext": {
+        "readableText": "وزع مبلغ100 ريال بين ثلاثة أشخاص بعلاقات النصف والمثل؛ أوجد مبلغ خالد.",
+        "speechText": "الشرح التعليمي وتطبيق الفكرة الرياضية المباشرة."
+      },
+      "approvalStatus": "draft",
+      "correctOptionIndex": 3,
+      "createdAt": {
+        "$date": "2026-10-11T09:19:20.813Z"
+      },
+      "difficulty": "Medium",
+      "examType": "qudurat",
+      "explanation": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة.",
+      "fingerprint": "e7fe77451453b3e3f4f20564df05c1e6143d79cd0e471b26530017766a3bba59",
+      "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t060_q07",
+      "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T060-Q07/06c9140b73a2c2cfdfa8e7d04661c1a3bb062ca8192e0a1b6f5258a4e0940d4d.webp",
+      "isPublished": false,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "ownerType": "platform",
+      "pathId": "p_1777779639431",
+      "sectionId": "sec_sub_1777779748206_1",
+      "skillId": "skill_quant_01",
+      "skillIds": [
+        "skill_quant_01",
+        "sub_quant_01_1"
+      ],
+      "source": "imported",
+      "sourceMeta": {
+        "documentCode": "MNSF26",
+        "sourceItemId": "MNSF26-AR-T060-Q07",
+        "pdfPageIndex": 120,
+        "printedPageNumber": 120,
+        "printedQuestionNumber": 7,
+        "imageHash": "06c9140b73a2c2cfdfa8e7d04661c1a3bb062ca8192e0a1b6f5258a4e0940d4d",
+        "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+        "imageVersion": 2
+      },
+      "subSkillId": "sub_quant_01_1",
+      "subject": "qudurat_quantitative",
+      "subjectId": "sub_1777779748206",
+      "text": "وزع مبلغ100 ريال بين ثلاثة أشخاص بعلاقات النصف والمثل؛ أوجد مبلغ خالد.",
+      "type": "mcq",
+      "updatedAt": {
+        "$date": "2026-10-16T07:55:51.772Z"
+      },
+      "voiceExplanation": {
+        "text": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة."
+      },
+      "cropStatus": "VERIFIED",
+      "optionsEmbeddedInImage": true,
+      "reviewerNotes": "MNSF26_QA_HOLD_20261016: شرح عام لا يثبت الحل؛ اختيار رقم 4 متكرر في جميع أسئلة هذه المجموعة. يلزم فحص صورة السؤال والاختيارات والحل الرياضي والتصنيف بصورة مستقلة قبل إعادة الاعتماد."
+    },
+    {
+      "_id": {
+        "$oid": "6acb549b1daea21097c2ca2e"
+      },
+      "questionCode": "QDR-QNT-MNSF26-AR-T004-Q02",
+      "aiContext": {
+        "readableText": "بدأت الطابعة ترقيم الكتاب من صفحة 1، واستخدمت 258 رقمًا في ترقيم الصفحات. كم عدد صفحات الكتاب؟",
+        "speechText": "الصفحات 1–9 تستهلك 9 أرقام. الصفحات 10–99 تستهلك 90×2=180 رقمًا. المتبقي 258-189=69 رقمًا، أي 23 صفحة ثلاثية: 100–122."
+      },
+      "approvalStatus": "approved",
+      "correctOptionIndex": 1,
+      "createdAt": {
+        "$date": "2026-10-11T09:19:20.806Z"
+      },
+      "difficulty": "Hard",
+      "examType": "qudurat",
+      "explanation": "الصفحات 1–9 تستهلك 9 أرقام. الصفحات 10–99 تستهلك 90×2=180 رقمًا. المتبقي 258-189=69 رقمًا، أي 23 صفحة ثلاثية: 100–122.",
+      "fingerprint": "60284a6ab8d1f0807031947d188a29649118a7de2ecc593ec86891feb11dde2b",
+      "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t004_q02",
+      "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T004-Q02/6ef57ed6009375c02dcc13c93764da0176de5d4a52bc4ac84b165dbfb79e2b4b.webp",
+      "isPublished": true,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "ownerType": "platform",
+      "pathId": "p_1777779639431",
+      "sectionId": "sec_sub_1777779748206_13",
+      "skillId": "skill_quant_13",
+      "skillIds": [
+        "skill_quant_13",
+        "sub_quant_13_4"
+      ],
+      "source": "imported",
+      "sourceMeta": {
+        "documentCode": "MNSF26",
+        "sourceItemId": "MNSF26-AR-T004-Q02",
+        "pdfPageIndex": 4,
+        "printedPageNumber": 4,
+        "printedQuestionNumber": 2,
+        "imageHash": "6ef57ed6009375c02dcc13c93764da0176de5d4a52bc4ac84b165dbfb79e2b4b",
+        "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+        "imageVersion": 2
+      },
+      "subSkillId": "sub_quant_13_4",
+      "subject": "qudurat_quantitative",
+      "subjectId": "sub_1777779748206",
+      "text": "بدأت الطابعة ترقيم الكتاب من صفحة 1، واستخدمت 258 رقمًا في ترقيم الصفحات. كم عدد صفحات الكتاب؟",
+      "type": "mcq",
+      "updatedAt": {
+        "$date": "2026-10-16T07:48:47.347Z"
+      },
+      "voiceExplanation": {
+        "text": "الصفحات 1–9 تستهلك 9 أرقام. الصفحات 10–99 تستهلك 90×2=180 رقمًا. المتبقي 258-189=69 رقمًا، أي 23 صفحة ثلاثية: 100–122."
+      },
+      "cropStatus": "VERIFIED",
+      "optionsEmbeddedInImage": true
+    },
+    {
+      "_id": {
+        "$oid": "6acb549e1daea21097c2cf94"
+      },
+      "questionCode": "QDR-QNT-MNSF26-GEO-T023-Q11",
+      "aiContext": {
+        "readableText": "نصف دائرة قطرها من (1،0) إلى (5،0)؛ أوجد النقطة العليا أ",
+        "speechText": "المركز(3،0)، ونصف القطر2، فالنقطة العليا(3،2)."
+      },
+      "approvalStatus": "approved",
+      "correctOptionIndex": 0,
+      "createdAt": {
+        "$date": "2026-10-11T09:19:20.818Z"
+      },
+      "difficulty": "Easy",
+      "examType": "qudurat",
+      "explanation": "المركز(3،0)، ونصف القطر2، فالنقطة العليا(3،2).",
+      "fingerprint": "5c0e866959407625bf187b38f57312ba897ee64f89291f592e411b4e5eb419e0",
+      "id": "q_qdr_qnt_mnsf26_mnsf26_geo_t023_q11",
+      "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-GEO-T023-Q11/574e84e673d023bde62998ae8b13c3f57a6301ca20dfcac03ecf42fc57276b0d.webp",
+      "isPublished": true,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "ownerType": "platform",
+      "pathId": "p_1777779639431",
+      "sectionId": "sec_sub_1777779748206_25",
+      "skillId": "skill_quant_25",
+      "skillIds": [
+        "skill_quant_25",
+        "sub_quant_25_3"
+      ],
+      "source": "imported",
+      "sourceMeta": {
+        "documentCode": "MNSF26",
+        "sourceItemId": "MNSF26-GEO-T023-Q11",
+        "pdfPageIndex": 43,
+        "printedPageNumber": 43,
+        "printedQuestionNumber": 11,
+        "imageHash": "574e84e673d023bde62998ae8b13c3f57a6301ca20dfcac03ecf42fc57276b0d",
+        "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+        "imageVersion": 2
+      },
+      "subSkillId": "sub_quant_25_3",
+      "subject": "qudurat_quantitative",
+      "subjectId": "sub_1777779748206",
+      "text": "نصف دائرة قطرها من (1،0) إلى (5،0)؛ أوجد النقطة العليا أ",
+      "type": "mcq",
+      "updatedAt": {
+        "$date": "2026-10-16T07:50:23.262Z"
+      },
+      "voiceExplanation": {
+        "text": "المركز(3،0)، ونصف القطر2، فالنقطة العليا(3،2)."
+      },
+      "cropStatus": "VERIFIED",
+      "optionsEmbeddedInImage": true
+    },
+    {
+      "_id": {
+        "$oid": "6acb549d1daea21097c2ce01"
+      },
+      "questionCode": "QDR-QNT-MNSF26-AR-T059-Q02",
+      "aiContext": {
+        "readableText": "ما العدد الذي ثلثه يساوي 16/3؟",
+        "speechText": "المهارة: استرجاع عدد من ثلثه؛ نقرأ معطيات السؤال من الصورة ونطبّق العلاقة الحسابية ثم نراجع الناتج مع المطلوب."
+      },
+      "approvalStatus": "approved",
+      "correctOptionIndex": 3,
+      "createdAt": {
+        "$date": "2026-10-11T09:19:20.813Z"
+      },
+      "difficulty": "Easy",
+      "examType": "qudurat",
+      "explanation": "س/3=16/3؛ س=16.",
+      "fingerprint": "bf0335d6eac833e809b4469308cb0ae20b0dec730e87b4dff0095926a700f6be",
+      "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t059_q02",
+      "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T059-Q02/5f47dd9c9339bc4c92c2b54ff44e673ec7ad203c16957028c7739fe2355e0e31.webp",
+      "isPublished": true,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "ownerType": "platform",
+      "pathId": "p_1777779639431",
+      "sectionId": "sec_sub_1777779748206_3",
+      "skillId": "skill_quant_03",
+      "skillIds": [
+        "skill_quant_03",
+        "sub_quant_03_1"
+      ],
+      "source": "imported",
+      "sourceMeta": {
+        "documentCode": "MNSF26",
+        "sourceItemId": "MNSF26-AR-T059-Q02",
+        "pdfPageIndex": 118,
+        "printedPageNumber": 118,
+        "printedQuestionNumber": 2,
+        "imageHash": "5f47dd9c9339bc4c92c2b54ff44e673ec7ad203c16957028c7739fe2355e0e31",
+        "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+        "imageVersion": 2
+      },
+      "subSkillId": "sub_quant_03_1",
+      "subject": "qudurat_quantitative",
+      "subjectId": "sub_1777779748206",
+      "text": "ما العدد الذي ثلثه يساوي 16/3؟",
+      "type": "mcq",
+      "updatedAt": {
+        "$date": "2026-10-16T07:47:58.595Z"
+      },
+      "voiceExplanation": {
+        "text": "س/3=16/3؛ س=16."
+      },
+      "cropStatus": "VERIFIED",
+      "optionsEmbeddedInImage": true
+    },
+    {
+      "_id": {
+        "$oid": "6acb549b1daea21097c2ca41"
+      },
+      "questionCode": "QDR-QNT-MNSF26-AR-T006-Q01",
+      "aiContext": {
+        "readableText": "6 صفوف، وكل صف ينقص عن الذي قبله بمقعد، وعدد مقاعد الصف الرابع = 5. ما مجموع المقاعد؟",
+        "speechText": "الصفوف = 8،7،6،5،4،3؛ المجموع = 33."
+      },
+      "approvalStatus": "approved",
+      "correctOptionIndex": 3,
+      "createdAt": {
+        "$date": "2026-10-11T09:19:20.806Z"
+      },
+      "difficulty": "Medium",
+      "examType": "qudurat",
+      "explanation": "الصفوف = 8،7،6،5،4،3؛ المجموع = 33.",
+      "fingerprint": "77d30d20eab910307e44e13a66008cf89369e396dd762dba018a08d14240b1cf",
+      "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t006_q01",
+      "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T006-Q01/06c9140b73a2c2cfdfa8e7d04661c1a3bb062ca8192e0a1b6f5258a4e0940d4d.webp",
+      "isPublished": true,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "ownerType": "platform",
+      "pathId": "p_1777779639431",
+      "sectionId": "sec_sub_1777779748206_4",
+      "skillId": "skill_quant_04",
+      "skillIds": [
+        "skill_quant_04",
+        "sub_quant_04_2"
+      ],
+      "source": "imported",
+      "sourceMeta": {
+        "documentCode": "MNSF26",
+        "sourceItemId": "MNSF26-AR-T006-Q01",
+        "pdfPageIndex": 6,
+        "printedPageNumber": 6,
+        "printedQuestionNumber": 1,
+        "imageHash": "06c9140b73a2c2cfdfa8e7d04661c1a3bb062ca8192e0a1b6f5258a4e0940d4d",
+        "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+        "imageVersion": 2
+      },
+      "subSkillId": "sub_quant_04_2",
+      "subject": "qudurat_quantitative",
+      "subjectId": "sub_1777779748206",
+      "text": "6 صفوف، وكل صف ينقص عن الذي قبله بمقعد، وعدد مقاعد الصف الرابع = 5. ما مجموع المقاعد؟",
+      "type": "mcq",
+      "updatedAt": {
+        "$date": "2026-10-16T07:48:04.356Z"
+      },
+      "voiceExplanation": {
+        "text": "الصفوف = 8،7،6،5،4،3؛ المجموع = 33."
+      },
+      "cropStatus": "VERIFIED",
+      "optionsEmbeddedInImage": true
+    },
+    {
+      "_id": {
+        "$oid": "6acb549b1daea21097c2ca44"
+      },
+      "questionCode": "QDR-QNT-MNSF26-AR-T006-Q04",
+      "aiContext": {
+        "readableText": "إذا كان أ=1000، ب=200 فأي تعبير أكبر؟",
+        "speechText": "أ×ب=200000، أ+ب=1200، أ-ب=800، أ÷ب=5."
+      },
+      "approvalStatus": "approved",
+      "correctOptionIndex": 0,
+      "createdAt": {
+        "$date": "2026-10-11T09:19:20.806Z"
+      },
+      "difficulty": "Easy",
+      "examType": "qudurat",
+      "explanation": "أ×ب=200000، أ+ب=1200، أ-ب=800، أ÷ب=5.",
+      "fingerprint": "8fafe2d1f04531c999667f0ee56ff65652728147ecf74b6010d6dc6b9782cdf4",
+      "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t006_q04",
+      "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T006-Q04/027b4f94e604ca0fba75a12980e0e95be66ffcc220036b9c92111a3ddc1c8880.webp",
+      "isPublished": true,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "ownerType": "platform",
+      "pathId": "p_1777779639431",
+      "sectionId": "sec_sub_1777779748206_4",
+      "skillId": "skill_quant_04",
+      "skillIds": [
+        "skill_quant_04",
+        "sub_quant_04_2"
+      ],
+      "source": "imported",
+      "sourceMeta": {
+        "documentCode": "MNSF26",
+        "sourceItemId": "MNSF26-AR-T006-Q04",
+        "pdfPageIndex": 6,
+        "printedPageNumber": 6,
+        "printedQuestionNumber": 4,
+        "imageHash": "027b4f94e604ca0fba75a12980e0e95be66ffcc220036b9c92111a3ddc1c8880",
+        "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+        "imageVersion": 2
+      },
+      "subSkillId": "sub_quant_04_2",
+      "subject": "qudurat_quantitative",
+      "subjectId": "sub_1777779748206",
+      "text": "إذا كان أ=1000، ب=200 فأي تعبير أكبر؟",
+      "type": "mcq",
+      "updatedAt": {
+        "$date": "2026-10-16T07:48:04.356Z"
+      },
+      "voiceExplanation": {
+        "text": "أ×ب=200000، أ+ب=1200، أ-ب=800، أ÷ب=5."
+      },
+      "cropStatus": "VERIFIED",
+      "optionsEmbeddedInImage": true
+    },
+    {
+      "_id": {
+        "$oid": "6acb549b1daea21097c2ca46"
+      },
+      "questionCode": "QDR-QNT-MNSF26-AR-T006-Q06",
+      "aiContext": {
+        "readableText": "أيمن يطبع 240 كلمة في 6 أيام، ومحمد 270 كلمة في 9 أيام. قارن ما يطبعه كل منهما في يوم.",
+        "speechText": "أيمن 40 كلمة/يوم، محمد 30 كلمة/يوم."
+      },
+      "approvalStatus": "approved",
+      "correctOptionIndex": 0,
+      "createdAt": {
+        "$date": "2026-10-11T09:19:20.806Z"
+      },
+      "difficulty": "Easy",
+      "examType": "qudurat",
+      "explanation": "أيمن 40 كلمة/يوم، محمد 30 كلمة/يوم.",
+      "fingerprint": "1242cb85ed519fe8b761ee3e2953ca8bf573c9e46e83e2cdd10517d295b9f993",
+      "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t006_q06",
+      "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T006-Q06/8ba634fe6b769a361207d1e9ffb20afad4d9800b9b87191d96fd5d14b95d5115.webp",
+      "isPublished": true,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "ownerType": "platform",
+      "pathId": "p_1777779639431",
+      "sectionId": "sec_sub_1777779748206_4",
+      "skillId": "skill_quant_04",
+      "skillIds": [
+        "skill_quant_04",
+        "sub_quant_04_2"
+      ],
+      "source": "imported",
+      "sourceMeta": {
+        "documentCode": "MNSF26",
+        "sourceItemId": "MNSF26-AR-T006-Q06",
+        "pdfPageIndex": 6,
+        "printedPageNumber": 6,
+        "printedQuestionNumber": 6,
+        "imageHash": "8ba634fe6b769a361207d1e9ffb20afad4d9800b9b87191d96fd5d14b95d5115",
+        "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+        "imageVersion": 2
+      },
+      "subSkillId": "sub_quant_04_2",
+      "subject": "qudurat_quantitative",
+      "subjectId": "sub_1777779748206",
+      "text": "أيمن يطبع 240 كلمة في 6 أيام، ومحمد 270 كلمة في 9 أيام. قارن ما يطبعه كل منهما في يوم.",
+      "type": "mcq",
+      "updatedAt": {
+        "$date": "2026-10-16T07:48:04.356Z"
+      },
+      "voiceExplanation": {
+        "text": "أيمن 40 كلمة/يوم، محمد 30 كلمة/يوم."
+      },
+      "cropStatus": "VERIFIED",
+      "optionsEmbeddedInImage": true
+    },
+    {
+      "_id": {
+        "$oid": "6acb549b1daea21097c2ca52"
+      },
+      "questionCode": "QDR-QNT-MNSF26-AR-T007-Q18",
+      "aiContext": {
+        "readableText": "إذا كان درجة إبراهيم في الرياضيات 98 ودرجة يوسف 93، قارن بين: القيمة الأولى الفرق بين درجتيهما، القيمة الثانية 4.",
+        "speechText": "الفرق بين الدرجتين هو 5 درجات، ثم نقارن 5 مع 4؛ إذن القيمة الأولى أكبر."
+      },
+      "approvalStatus": "approved",
+      "correctOptionIndex": 0,
+      "createdAt": {
+        "$date": "2026-10-11T09:19:20.806Z"
+      },
+      "difficulty": "Easy",
+      "examType": "qudurat",
+      "explanation": "الفرق بين الدرجتين هو 5 درجات، ثم نقارن 5 مع 4؛ إذن القيمة الأولى أكبر.",
+      "fingerprint": "bee5d35755b3d600daf19af62f15a23faf2cb0afd950f297470d82ddb0278509",
+      "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t007_q18",
+      "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T007-Q18/980661db18f7b069d36f338ad20f7f6fa5803e5a2c5c1344a086be7869d1fba6.webp",
+      "isPublished": true,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "ownerType": "platform",
+      "pathId": "p_1777779639431",
+      "sectionId": "sec_sub_1777779748206_4",
+      "skillId": "skill_quant_04",
+      "skillIds": [
+        "skill_quant_04",
+        "sub_quant_04_2"
+      ],
+      "source": "imported",
+      "sourceMeta": {
+        "documentCode": "MNSF26",
+        "sourceItemId": "MNSF26-AR-T007-Q18",
+        "pdfPageIndex": 7,
+        "printedPageNumber": 7,
+        "printedQuestionNumber": 18,
+        "imageHash": "980661db18f7b069d36f338ad20f7f6fa5803e5a2c5c1344a086be7869d1fba6",
+        "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+        "imageVersion": 2
+      },
+      "subSkillId": "sub_quant_04_2",
+      "subject": "qudurat_quantitative",
+      "subjectId": "sub_1777779748206",
+      "text": "إذا كان درجة إبراهيم في الرياضيات 98 ودرجة يوسف 93، قارن بين: القيمة الأولى الفرق بين درجتيهما، القيمة الثانية 4.",
+      "type": "mcq",
+      "updatedAt": {
+        "$date": "2026-10-16T07:48:04.356Z"
+      },
+      "voiceExplanation": {
+        "text": "الفرق بين الدرجتين هو 5 درجات، ثم نقارن 5 مع 4؛ إذن القيمة الأولى أكبر."
+      },
+      "cropStatus": "VERIFIED",
+      "optionsEmbeddedInImage": true
+    },
+    {
+      "_id": {
+        "$oid": "6acb549b1daea21097c2cade"
+      },
+      "questionCode": "QDR-QNT-MNSF26-AR-T015-Q05",
+      "aiContext": {
+        "readableText": "احسب 7+60+500+4000+50000.",
+        "speechText": "من الصورة: نجمع مراتب الأعداد: 50000+4000+500+60+7=54567."
+      },
+      "approvalStatus": "approved",
+      "correctOptionIndex": 1,
+      "createdAt": {
+        "$date": "2026-10-11T09:19:20.807Z"
+      },
+      "difficulty": "Easy",
+      "examType": "qudurat",
+      "explanation": "نجمع مراتب الأعداد: 50000+4000+500+60+7=54567.",
+      "fingerprint": "b0236a64580bfdb9f2311265c6480fa4ca5512bab9b442d08ab50d113564a4a9",
+      "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t015_q05",
+      "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T015-Q05/6ef57ed6009375c02dcc13c93764da0176de5d4a52bc4ac84b165dbfb79e2b4b.webp",
+      "isPublished": true,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "ownerType": "platform",
+      "pathId": "p_1777779639431",
+      "sectionId": "sec_sub_1777779748206_4",
+      "skillId": "skill_quant_04",
+      "skillIds": [
+        "skill_quant_04",
+        "sub_quant_04_2"
+      ],
+      "source": "imported",
+      "sourceMeta": {
+        "documentCode": "MNSF26",
+        "sourceItemId": "MNSF26-AR-T015-Q05",
+        "pdfPageIndex": 28,
+        "printedPageNumber": 28,
+        "printedQuestionNumber": 5,
+        "imageHash": "6ef57ed6009375c02dcc13c93764da0176de5d4a52bc4ac84b165dbfb79e2b4b",
+        "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+        "imageVersion": 2
+      },
+      "subSkillId": "sub_quant_04_2",
+      "subject": "qudurat_quantitative",
+      "subjectId": "sub_1777779748206",
+      "text": "احسب 7+60+500+4000+50000.",
+      "type": "mcq",
+      "updatedAt": {
+        "$date": "2026-10-16T07:48:04.358Z"
+      },
+      "voiceExplanation": {
+        "text": "نجمع مراتب الأعداد: 50000+4000+500+60+7=54567."
+      },
+      "cropStatus": "VERIFIED",
+      "optionsEmbeddedInImage": true
+    },
+    {
+      "_id": {
+        "$oid": "6acb549b1daea21097c2ca7c"
+      },
+      "questionCode": "QDR-QNT-MNSF26-AR-T010-Q01",
+      "aiContext": {
+        "readableText": "150 ريال distributed among خالد، أحمد، ليان، روان، ماجد. أحمد وخالد معهما ثلثا المبلغ; روان معها نصف خالد; ليان معها ثلثا ما مع روان; ماجد معه ما مع روان وليان. Find خالد.",
+        "speechText": "أحمد+خالد=100. Let خالد=x. روان=x/2, ليان=x/3, ماجد=5x/6. Total gives 100 + 5x/3 =150, so x=30."
+      },
+      "approvalStatus": "draft",
+      "correctOptionIndex": 2,
+      "createdAt": {
+        "$date": "2026-10-11T09:19:20.806Z"
+      },
+      "difficulty": "Hard",
+      "examType": "qudurat",
+      "explanation": "مع أحمد وخالد ثلثا 150 = 100، والباقي 50 مع روان وليان وماجد. نفرض ما مع خالد س؛ مع روان س/2، وليان (2/3)×(س/2)=س/3، وماجد س/2+س/3=5س/6. إذن 50 = س/2+س/3+5س/6 = 5س/3؛ ومنه س=30 ريالًا. هذا هو الاختيار (ج)، وليس (د).",
+      "fingerprint": "ec92cb2080be4a51c49f14313d62437cf78698e1568e1408eecaa068caec97e3",
+      "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t010_q01",
+      "imageUrl": "https://media.almeaa.com/questions/v2/MNSF26-AR-T010-Q01/574e84e673d023bde62998ae8b13c3f57a6301ca20dfcac03ecf42fc57276b0d.webp",
+      "isPublished": false,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "ownerType": "platform",
+      "pathId": "p_1777779639431",
+      "sectionId": "sec_sub_1777779748206_4",
+      "skillId": "skill_quant_04",
+      "skillIds": [
+        "skill_quant_04",
+        "sub_quant_04_2"
+      ],
+      "source": "imported",
+      "sourceMeta": {
+        "documentCode": "MNSF26",
+        "sourceItemId": "MNSF26-AR-T010-Q01",
+        "pdfPageIndex": 10,
+        "printedPageNumber": 10,
+        "printedQuestionNumber": 1,
+        "imageHash": "574e84e673d023bde62998ae8b13c3f57a6301ca20dfcac03ecf42fc57276b0d",
+        "importBatchId": "MNSF26_STAGE6_DRAFT_V1"
+      },
+      "subSkillId": "sub_quant_04_2",
+      "subject": "qudurat_quantitative",
+      "subjectId": "sub_1777779748206",
+      "text": "وُزعت 150 ريالًا على خالد وأحمد وليان وروان وماجد؛ أحمد وخالد معهما ثلثا المبلغ، وروان معها نصف ما مع خالد، وليان معها ثلثا ما مع روان، وما مع ماجد يساوي مجموع ما مع روان وليان. كم ريالًا مع خالد؟",
+      "type": "mcq",
+      "updatedAt": {
+        "$date": "2026-10-16T16:22:26.492Z"
+      },
+      "voiceExplanation": {
+        "text": "أحمد+خالد=100. Let خالد=x. روان=x/2, ليان=x/3, ماجد=5x/6. Total gives 100 + 5x/3 =150, so x=30."
+      },
+      "reviewerNotes": "MNSF26_QA_HOLD_SOURCE_B6: طبعة الحساب والجبر PDF index9 س1، الإجابة ج=30. صحح المفتاح الخاطئ د ونص السؤال والشرح، ويبقى DRAFT حتى مطابقة R2/SHA."
+    },
+    {
+      "_id": {
+        "$oid": "6acb549c1daea21097c2cde7"
+      },
+      "questionCode": "QDR-QNT-MNSF26-AR-T057-Q13",
+      "aiContext": {
+        "readableText": "عامل يصنع كراسي يأخذ500 ريال أسبوعيًا وعشرة لكل كرسي؛ إذا صنع75 كرسيًا في خمسة أسابيع فكم يأخذ؟",
+        "speechText": "المهارة: راتب ثابت وحافز إنتاج؛ نقرأ معطيات السؤال من الصورة ونطبّق العلاقة الحسابية ثم نراجع الناتج مع المطلوب."
+      },
+      "approvalStatus": "approved",
+      "correctOptionIndex": 3,
+      "createdAt": {
+        "$date": "2026-10-11T09:19:20.813Z"
+      },
+      "difficulty": "Easy",
+      "examType": "qudurat",
+      "explanation": "5×500=2500؛ 75×10=750؛ المجموع3250.",
+      "fingerprint": "f4bcd13b314b58d14f33de240c3314f1229f23ed8f115e2e7d9bb5f397f6e17c",
+      "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t057_q13",
+      "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T057-Q13/027b4f94e604ca0fba75a12980e0e95be66ffcc220036b9c92111a3ddc1c8880.webp",
+      "isPublished": true,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "ownerType": "platform",
+      "pathId": "p_1777779639431",
+      "sectionId": "sec_sub_1777779748206_5",
+      "skillId": "skill_quant_05",
+      "skillIds": [
+        "skill_quant_05",
+        "sub_quant_05_1"
+      ],
+      "source": "imported",
+      "sourceMeta": {
+        "documentCode": "MNSF26",
+        "sourceItemId": "MNSF26-AR-T057-Q13",
+        "pdfPageIndex": 115,
+        "printedPageNumber": 115,
+        "printedQuestionNumber": 13,
+        "imageHash": "027b4f94e604ca0fba75a12980e0e95be66ffcc220036b9c92111a3ddc1c8880",
+        "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+        "imageVersion": 2
+      },
+      "subSkillId": "sub_quant_05_1",
+      "subject": "qudurat_quantitative",
+      "subjectId": "sub_1777779748206",
+      "text": "عامل يصنع كراسي يأخذ500 ريال أسبوعيًا وعشرة لكل كرسي؛ إذا صنع75 كرسيًا في خمسة أسابيع فكم يأخذ؟",
+      "type": "mcq",
+      "updatedAt": {
+        "$date": "2026-10-16T07:48:10.393Z"
+      },
+      "voiceExplanation": {
+        "text": "5×500=2500؛ 75×10=750؛ المجموع3250."
+      },
+      "cropStatus": "VERIFIED",
+      "optionsEmbeddedInImage": true
+    },
+    {
+      "_id": {
+        "$oid": "6acb549d1daea21097c2ce1f"
+      },
+      "questionCode": "QDR-QNT-MNSF26-AR-T060-Q13",
+      "aiContext": {
+        "readableText": "عامل يصنع كراسي يأخذ500 ريال أسبوعيًا وعشرة لكل كرسي؛ إذا صنع75 كرسيًا في خمسة أسابيع فكم يأخذ؟",
+        "speechText": "المهارة: راتب ثابت وحافز إنتاج؛ نقرأ معطيات السؤال من الصورة ونطبّق العلاقة الحسابية ثم نراجع الناتج مع المطلوب."
+      },
+      "approvalStatus": "approved",
+      "correctOptionIndex": 3,
+      "createdAt": {
+        "$date": "2026-10-11T09:19:20.813Z"
+      },
+      "difficulty": "Easy",
+      "examType": "qudurat",
+      "explanation": "5×500=2500؛ 75×10=750؛ المجموع3250.",
+      "fingerprint": "f4bcd13b314b58d14f33de240c3314f1229f23ed8f115e2e7d9bb5f397f6e17c",
+      "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t060_q13",
+      "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T060-Q13/027b4f94e604ca0fba75a12980e0e95be66ffcc220036b9c92111a3ddc1c8880.webp",
+      "isPublished": true,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "ownerType": "platform",
+      "pathId": "p_1777779639431",
+      "sectionId": "sec_sub_1777779748206_5",
+      "skillId": "skill_quant_05",
+      "skillIds": [
+        "skill_quant_05",
+        "sub_quant_05_1"
+      ],
+      "source": "imported",
+      "sourceMeta": {
+        "documentCode": "MNSF26",
+        "sourceItemId": "MNSF26-AR-T060-Q13",
+        "pdfPageIndex": 121,
+        "printedPageNumber": 121,
+        "printedQuestionNumber": 13,
+        "imageHash": "027b4f94e604ca0fba75a12980e0e95be66ffcc220036b9c92111a3ddc1c8880",
+        "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+        "imageVersion": 2
+      },
+      "subSkillId": "sub_quant_05_1",
+      "subject": "qudurat_quantitative",
+      "subjectId": "sub_1777779748206",
+      "text": "عامل يصنع كراسي يأخذ500 ريال أسبوعيًا وعشرة لكل كرسي؛ إذا صنع75 كرسيًا في خمسة أسابيع فكم يأخذ؟",
+      "type": "mcq",
+      "updatedAt": {
+        "$date": "2026-10-16T07:48:10.394Z"
+      },
+      "voiceExplanation": {
+        "text": "5×500=2500؛ 75×10=750؛ المجموع3250."
+      },
+      "cropStatus": "VERIFIED",
+      "optionsEmbeddedInImage": true
+    }
+  ],
+  "approvedHoldsPlanned": [
+    "MNSF26-AR-T004-Q07",
+    "MNSF26-AR-T005-Q15",
+    "MNSF26-AR-T010-Q07",
+    "MNSF26-AR-T010-Q17",
+    "MNSF26-AR-T011-Q16",
+    "MNSF26-AR-T023-Q07",
+    "MNSF26-AR-T030-Q17",
+    "MNSF26-AR-T030-Q20",
+    "MNSF26-AR-T042-Q15",
+    "MNSF26-AR-T004-Q02",
+    "MNSF26-GEO-T023-Q11",
+    "MNSF26-AR-T059-Q02",
+    "MNSF26-AR-T006-Q01",
+    "MNSF26-AR-T006-Q04",
+    "MNSF26-AR-T006-Q06",
+    "MNSF26-AR-T007-Q18",
+    "MNSF26-AR-T015-Q05",
+    "MNSF26-AR-T057-Q13",
+    "MNSF26-AR-T060-Q13"
+  ],
+  "missingEvidence": "Actual public R2 WEBP retrieval unavailable; no image pixel assertions.",
+  "decision": "Conservatively quarantine 19 currently approved records from these 10 independently selected cross-question hash groups. Does not claim mathematical answers are wrong. Retain 5 existing draft. No Quiz or assessment references.",
+  "rollback": "Require exact question/source/hash, original status snapshot and independent original crop evidence before restoring; never bulk reapprove."
+}

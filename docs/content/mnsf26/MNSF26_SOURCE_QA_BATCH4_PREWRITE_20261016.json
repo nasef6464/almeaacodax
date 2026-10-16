@@ -1,0 +1,1147 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "batch": "20261016_source_qa_4",
+  "status": "PREWRITE_CHECKPOINT",
+  "scope": {
+    "subjectId": "sub_1777779748206",
+    "pathId": "p_1777779639431"
+  },
+  "sourcePdf": {
+    "arithmetic": {
+      "pages": 129,
+      "sha256": "46f2d9c2c8482f99f3d28ea9fe2ae7cdaa1b62102a6cbe6aa35deae78c672ee3"
+    },
+    "geometry": {
+      "pages": 97,
+      "sha256": "a823a90574476804cc29f5ca63ea8e9eaadab0cffe3afa78f791bbc8c6ee75d5"
+    }
+  },
+  "visualSourcePages": {
+    "arithmetic": [
+      6,
+      7,
+      8
+    ],
+    "geometry": [
+      3,
+      5,
+      6
+    ]
+  },
+  "r2Fetched": 0,
+  "r2SHACompared": 0,
+  "quizReferenceChecks": {
+    "quizzes": 0,
+    "assessmentversions": 0,
+    "assessmentattempts": 0
+  },
+  "draftCorrectionKeys": [
+    "AR-T006-Q02",
+    "AR-T006-Q11",
+    "AR-T006-Q12",
+    "AR-T008-Q01",
+    "AR-T008-Q03",
+    "AR-T008-Q04",
+    "AR-T008-Q06",
+    "AR-T008-Q07",
+    "AR-T008-Q08",
+    "AR-T008-Q09",
+    "AR-T008-Q10",
+    "AR-T008-Q11",
+    "AR-T008-Q12"
+  ],
+  "approvedHoldCandidates": [
+    "AR-T006-Q13",
+    "AR-T006-Q14",
+    "AR-T008-Q05",
+    "GEO-T004-Q05"
+  ],
+  "sourceConflicts": [
+    {
+      "key": "AR-T006-Q13",
+      "reason": "PDF page6 printed Q13: displayed four numeric choices do not visibly match independent product 30003×1001=30033003; require second visual reviewer before changing answer."
+    },
+    {
+      "key": "AR-T006-Q14",
+      "reason": "PDF page6 Q14 states 2300 SAR monthly, option A 6900; live text says 3200 and live key D."
+    },
+    {
+      "key": "GEO-T004-Q05",
+      "reason": "PDF geometry page6 Q5: ص+4ص+ص=180, ص=30; compare to 42 => option B; live key A."
+    },
+    {
+      "key": "AR-T008-Q05",
+      "reason": "Approved live text generic سؤال 5; original PDF arithmetic page8 has flower-pricing word problem."
+    }
+  ],
+  "entries": [
+    {
+      "key": "AR-T006-Q02",
+      "action": "draft_science_text_explanation",
+      "before": {
+        "questionCode": "QDR-QNT-MNSF26-AR-T006-Q02",
+        "aiContext": {
+          "readableText": "7 + 60 + 500 + 4000 + 50000 = ؟",
+          "speechText": "يُطبَّق النمط المعتمد في صورة تحليلية حسب القيمة المنزلية. ثم تُراجع النتيجة: 54567.."
+        },
+        "approvalStatus": "draft",
+        "correctOptionIndex": 3,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.806Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "يُطبَّق النمط المعتمد في صورة تحليلية حسب القيمة المنزلية. ثم تُراجع النتيجة: 54567..",
+        "fingerprint": "eccf140b326eebd7583ed35a7712941eeeafdeeec33396d8e8ccf4ee42802b73",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t006_q02",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T006-Q02/87641de921fc7a082bd3b895aada49ef36c5e6041d6220e79638dba0b792089b.webp",
+        "isPublished": false,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T006-Q02",
+          "pdfPageIndex": 6,
+          "printedPageNumber": 6,
+          "printedQuestionNumber": 2,
+          "imageHash": "87641de921fc7a082bd3b895aada49ef36c5e6041d6220e79638dba0b792089b",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "7 + 60 + 500 + 4000 + 50000 = ؟",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-16T07:58:26.416Z"
+        },
+        "voiceExplanation": {
+          "text": "يُطبَّق النمط المعتمد في صورة تحليلية حسب القيمة المنزلية. ثم تُراجع النتيجة: 54567.."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true,
+        "reviewerNotes": "MNSF26_QA_HOLD_20261016: شرح نمطي لا يوثق حل المسألة أو جميع خياراتها؛ يلزم حل مستقل وفحص صورة السؤال ومفتاح الإجابة وربط المهارة قبل إعادة الاعتماد."
+      },
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T006-Q11",
+      "action": "draft_science_text_explanation",
+      "before": {
+        "questionCode": "QDR-QNT-MNSF26-AR-T006-Q11",
+        "aiContext": {
+          "readableText": "اشترى محمد وجبة بـ25 ريالًا وعصيرًا بـ15 ريالًا. كم إجمالي ما دفع؟",
+          "speechText": "يُطبَّق النمط المعتمد في جمع قيمتين ماليتين. ثم تُراجع النتيجة: ب = 40 ريالًا.."
+        },
+        "approvalStatus": "draft",
+        "correctOptionIndex": 1,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.806Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "يُطبَّق النمط المعتمد في جمع قيمتين ماليتين. ثم تُراجع النتيجة: ب = 40 ريالًا..",
+        "fingerprint": "2cb55d2fa52555de4a1dbf8df97f238392d5dc72f7a4810379146e14e4854496",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t006_q11",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T006-Q11/e35dcbac849e6688a781a1070da66b73315a60cf05a973db778b0db9a8386b9b.webp",
+        "isPublished": false,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T006-Q11",
+          "pdfPageIndex": 6,
+          "printedPageNumber": 6,
+          "printedQuestionNumber": 11,
+          "imageHash": "e35dcbac849e6688a781a1070da66b73315a60cf05a973db778b0db9a8386b9b",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "اشترى محمد وجبة بـ25 ريالًا وعصيرًا بـ15 ريالًا. كم إجمالي ما دفع؟",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-16T07:58:26.416Z"
+        },
+        "voiceExplanation": {
+          "text": "يُطبَّق النمط المعتمد في جمع قيمتين ماليتين. ثم تُراجع النتيجة: ب = 40 ريالًا.."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true,
+        "reviewerNotes": "MNSF26_QA_HOLD_20261016: شرح نمطي لا يوثق حل المسألة أو جميع خياراتها؛ يلزم حل مستقل وفحص صورة السؤال ومفتاح الإجابة وربط المهارة قبل إعادة الاعتماد."
+      },
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T006-Q12",
+      "action": "draft_science_text_explanation",
+      "before": {
+        "questionCode": "QDR-QNT-MNSF26-AR-T006-Q12",
+        "aiContext": {
+          "readableText": "ارتفاع الأولى 250م والثانية 200م. ما الفرق؟",
+          "speechText": "يُطبَّق النمط المعتمد في فرق بين قياسين. ثم تُراجع النتيجة: أ = 50م.."
+        },
+        "approvalStatus": "draft",
+        "correctOptionIndex": 0,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.806Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "يُطبَّق النمط المعتمد في فرق بين قياسين. ثم تُراجع النتيجة: أ = 50م..",
+        "fingerprint": "b1bfef94cf47d00ab8d9af667ce5e856f86c7ef9fd1497e200223f982d178049",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t006_q12",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T006-Q12/ff985e53a1fca502b7fa96f7039912e85ef892e0d09382fde054d547ffc074bd.webp",
+        "isPublished": false,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T006-Q12",
+          "pdfPageIndex": 6,
+          "printedPageNumber": 6,
+          "printedQuestionNumber": 12,
+          "imageHash": "ff985e53a1fca502b7fa96f7039912e85ef892e0d09382fde054d547ffc074bd",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "ارتفاع الأولى 250م والثانية 200م. ما الفرق؟",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-16T07:58:26.416Z"
+        },
+        "voiceExplanation": {
+          "text": "يُطبَّق النمط المعتمد في فرق بين قياسين. ثم تُراجع النتيجة: أ = 50م.."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true,
+        "reviewerNotes": "MNSF26_QA_HOLD_20261016: شرح نمطي لا يوثق حل المسألة أو جميع خياراتها؛ يلزم حل مستقل وفحص صورة السؤال ومفتاح الإجابة وربط المهارة قبل إعادة الاعتماد."
+      },
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T006-Q13",
+      "action": "approved_quarantine_candidate",
+      "before": {
+        "questionCode": "QDR-QNT-MNSF26-AR-T006-Q13",
+        "aiContext": {
+          "readableText": "1001 × 30003",
+          "speechText": "30003×1001 = 30003×1000 +30003 = 30,003,000 +30,003 =30,033,003."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 3,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.806Z"
+        },
+        "difficulty": "Medium",
+        "examType": "qudurat",
+        "explanation": "30003×1001 = 30003×1000 +30003 = 30,003,000 +30,003 =30,033,003.",
+        "fingerprint": "4c96c700449fb96995f443ca80f62586d620a1d02ae5de51d2bcb7edf901f543",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t006_q13",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T006-Q13/f539500590211285cdb4640a26c358570a58ce50fbd1f00b074e39be66a67a8c.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T006-Q13",
+          "pdfPageIndex": 6,
+          "printedPageNumber": 6,
+          "printedQuestionNumber": 13,
+          "imageHash": "f539500590211285cdb4640a26c358570a58ce50fbd1f00b074e39be66a67a8c",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "1001 × 30003",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.947Z"
+        },
+        "voiceExplanation": {
+          "text": "30003×1001 = 30003×1000 +30003 = 30,003,000 +30,003 =30,033,003."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T006-Q14",
+      "action": "approved_quarantine_candidate",
+      "before": {
+        "questionCode": "QDR-QNT-MNSF26-AR-T006-Q14",
+        "aiContext": {
+          "readableText": "يأخذ عامل في الشهر 3200 ريال، كم يأخذ في 3 شهور؟",
+          "speechText": "3200×3 =9600."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 3,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.806Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "3200×3 =9600.",
+        "fingerprint": "0eb0ff306683c3ea532ea4a0e023e04b80be94f08564b7712e74c3eeb592d55f",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t006_q14",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T006-Q14/a9517e4c4004d3a812294bd576fcd6be1d56634f35b9ce1d7f7fe36f9b926d43.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_4",
+        "skillId": "skill_quant_04",
+        "skillIds": [
+          "skill_quant_04",
+          "sub_quant_04_2"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T006-Q14",
+          "pdfPageIndex": 6,
+          "printedPageNumber": 6,
+          "printedQuestionNumber": 14,
+          "imageHash": "a9517e4c4004d3a812294bd576fcd6be1d56634f35b9ce1d7f7fe36f9b926d43",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_04_2",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "يأخذ عامل في الشهر 3200 ريال، كم يأخذ في 3 شهور؟",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-16T07:48:04.356Z"
+        },
+        "voiceExplanation": {
+          "text": "3200×3 =9600."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T008-Q01",
+      "action": "draft_science_text_explanation",
+      "before": {
+        "questionCode": "QDR-QNT-MNSF26-AR-T008-Q01",
+        "aiContext": {
+          "readableText": "\"إذا كانت هند تقرأ 3 قصص في 6 ساعات، قارن بين: القيمة الأولى: المدة التي تقرأ فيها صفحتين، القيمة الثانية: 8 ساعات.\"",
+          "speechText": "يُطبَّق النمط المعتمد في unit-mismatch / rate-comparison / insufficient-data. ثم تُراجع النتيجة: المعطيات غير كافية.."
+        },
+        "approvalStatus": "draft",
+        "correctOptionIndex": 3,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.806Z"
+        },
+        "difficulty": "Medium",
+        "examType": "qudurat",
+        "explanation": "يُطبَّق النمط المعتمد في unit-mismatch / rate-comparison / insufficient-data. ثم تُراجع النتيجة: المعطيات غير كافية..",
+        "fingerprint": "e55d2c3ef86c4a20c1bfb942b7002a4ccbc14fb7c187fab5b6dcb93397ef5c15",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t008_q01",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T008-Q01/07f6273367d92709b9872db6639bfd92f56cbdd9c79df50ac146fa9a144774c3.webp",
+        "isPublished": false,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_4",
+        "skillId": "skill_quant_04",
+        "skillIds": [
+          "skill_quant_04",
+          "sub_quant_04_2"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T008-Q01",
+          "pdfPageIndex": 8,
+          "printedPageNumber": 8,
+          "printedQuestionNumber": 1,
+          "imageHash": "07f6273367d92709b9872db6639bfd92f56cbdd9c79df50ac146fa9a144774c3",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_04_2",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "\"إذا كانت هند تقرأ 3 قصص في 6 ساعات، قارن بين: القيمة الأولى: المدة التي تقرأ فيها صفحتين، القيمة الثانية: 8 ساعات.\"",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-16T07:58:26.416Z"
+        },
+        "voiceExplanation": {
+          "text": "يُطبَّق النمط المعتمد في unit-mismatch / rate-comparison / insufficient-data. ثم تُراجع النتيجة: المعطيات غير كافية.."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true,
+        "reviewerNotes": "MNSF26_QA_HOLD_20261016: شرح نمطي لا يوثق حل المسألة أو جميع خياراتها؛ يلزم حل مستقل وفحص صورة السؤال ومفتاح الإجابة وربط المهارة قبل إعادة الاعتماد."
+      },
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T008-Q03",
+      "action": "draft_science_text_explanation",
+      "before": {
+        "questionCode": "QDR-QNT-MNSF26-AR-T008-Q03",
+        "aiContext": {
+          "readableText": "سؤال 3",
+          "speechText": "يُطبَّق النمط المعتمد في savings-goal / monthly-fixed-saving / months = target ÷ monthly. ثم تُراجع النتيجة: ج = 14.."
+        },
+        "approvalStatus": "draft",
+        "correctOptionIndex": 2,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.806Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "يُطبَّق النمط المعتمد في savings-goal / monthly-fixed-saving / months = target ÷ monthly. ثم تُراجع النتيجة: ج = 14..",
+        "fingerprint": "ea267208c7069f4f175589428bdced6d5c682d523f0e15dfdda60bddc4e5766b",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t008_q03",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T008-Q03/43632165d660a027a32601dc8d62f050569cf40023d5b78a951162d81d92857e.webp",
+        "isPublished": false,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T008-Q03",
+          "pdfPageIndex": 8,
+          "printedPageNumber": 8,
+          "printedQuestionNumber": 3,
+          "imageHash": "43632165d660a027a32601dc8d62f050569cf40023d5b78a951162d81d92857e",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال 3",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-16T07:58:26.416Z"
+        },
+        "voiceExplanation": {
+          "text": "يُطبَّق النمط المعتمد في savings-goal / monthly-fixed-saving / months = target ÷ monthly. ثم تُراجع النتيجة: ج = 14.."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true,
+        "reviewerNotes": "MNSF26_QA_HOLD_20261016: شرح نمطي لا يوثق حل المسألة أو جميع خياراتها؛ يلزم حل مستقل وفحص صورة السؤال ومفتاح الإجابة وربط المهارة قبل إعادة الاعتماد."
+      },
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T008-Q04",
+      "action": "draft_science_text_explanation",
+      "before": {
+        "questionCode": "QDR-QNT-MNSF26-AR-T008-Q04",
+        "aiContext": {
+          "readableText": "سؤال 4",
+          "speechText": "يُطبَّق النمط المعتمد في sum-three-amounts / mental-grouping. ثم تُراجع النتيجة: ج = 70.."
+        },
+        "approvalStatus": "draft",
+        "correctOptionIndex": 2,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.806Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "يُطبَّق النمط المعتمد في sum-three-amounts / mental-grouping. ثم تُراجع النتيجة: ج = 70..",
+        "fingerprint": "d89082537d87964bb86b0f79fcf9c47356ec9626d70452a37170036392c16c80",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t008_q04",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T008-Q04/07a9853b20a5d1f1b6b7a609cefcb31b7c542920e89ba6dafdf07c3b59e2fb89.webp",
+        "isPublished": false,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T008-Q04",
+          "pdfPageIndex": 8,
+          "printedPageNumber": 8,
+          "printedQuestionNumber": 4,
+          "imageHash": "07a9853b20a5d1f1b6b7a609cefcb31b7c542920e89ba6dafdf07c3b59e2fb89",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال 4",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-16T07:58:26.416Z"
+        },
+        "voiceExplanation": {
+          "text": "يُطبَّق النمط المعتمد في sum-three-amounts / mental-grouping. ثم تُراجع النتيجة: ج = 70.."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true,
+        "reviewerNotes": "MNSF26_QA_HOLD_20261016: شرح نمطي لا يوثق حل المسألة أو جميع خياراتها؛ يلزم حل مستقل وفحص صورة السؤال ومفتاح الإجابة وربط المهارة قبل إعادة الاعتماد."
+      },
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T008-Q05",
+      "action": "approved_quarantine_candidate",
+      "before": {
+        "questionCode": "QDR-QNT-MNSF26-AR-T008-Q05",
+        "aiContext": {
+          "readableText": "سؤال 5",
+          "speechText": "احسب تكلفة كل نوع منفرداً ثم اجمع."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 0,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.806Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "احسب تكلفة كل نوع منفرداً ثم اجمع.",
+        "fingerprint": "590ecbddd9cca09d937c38a69e0ca7a21e427178bf7442b2cd7ad9ed37012eaa",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t008_q05",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T008-Q05/88869ea13e3c2b85807b81669875cf4f1220c2eb47c88097c56f372cedae223c.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T008-Q05",
+          "pdfPageIndex": 8,
+          "printedPageNumber": 8,
+          "printedQuestionNumber": 5,
+          "imageHash": "88869ea13e3c2b85807b81669875cf4f1220c2eb47c88097c56f372cedae223c",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال 5",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.947Z"
+        },
+        "voiceExplanation": {
+          "text": "احسب تكلفة كل نوع منفرداً ثم اجمع."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T008-Q06",
+      "action": "draft_science_text_explanation",
+      "before": {
+        "questionCode": "QDR-QNT-MNSF26-AR-T008-Q06",
+        "aiContext": {
+          "readableText": "سؤال 6",
+          "speechText": "يُطبَّق النمط المعتمد في reverse-linear-state / passenger-change / half-capacity. ثم تُراجع النتيجة: ج = 48.."
+        },
+        "approvalStatus": "draft",
+        "correctOptionIndex": 2,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.806Z"
+        },
+        "difficulty": "Medium",
+        "examType": "qudurat",
+        "explanation": "يُطبَّق النمط المعتمد في reverse-linear-state / passenger-change / half-capacity. ثم تُراجع النتيجة: ج = 48..",
+        "fingerprint": "085ac08bcc75b5fbb7a1113368fe9791e05d5fa8b5eff372215b0066c28760fd",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t008_q06",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T008-Q06/9ec237ab316ca50f3136efef40048f325d38c4ad601169d870f22dc3f3441d3a.webp",
+        "isPublished": false,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T008-Q06",
+          "pdfPageIndex": 8,
+          "printedPageNumber": 8,
+          "printedQuestionNumber": 6,
+          "imageHash": "9ec237ab316ca50f3136efef40048f325d38c4ad601169d870f22dc3f3441d3a",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال 6",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-16T07:58:26.416Z"
+        },
+        "voiceExplanation": {
+          "text": "يُطبَّق النمط المعتمد في reverse-linear-state / passenger-change / half-capacity. ثم تُراجع النتيجة: ج = 48.."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true,
+        "reviewerNotes": "MNSF26_QA_HOLD_20261016: شرح نمطي لا يوثق حل المسألة أو جميع خياراتها؛ يلزم حل مستقل وفحص صورة السؤال ومفتاح الإجابة وربط المهارة قبل إعادة الاعتماد."
+      },
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T008-Q07",
+      "action": "draft_science_text_explanation",
+      "before": {
+        "questionCode": "QDR-QNT-MNSF26-AR-T008-Q07",
+        "aiContext": {
+          "readableText": "سؤال 7",
+          "speechText": "يُطبَّق النمط المعتمد في bounded-outcomes / repeated-die / impossibility-by-maximum. ثم تُراجع النتيجة: أ = 13.."
+        },
+        "approvalStatus": "draft",
+        "correctOptionIndex": 0,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.806Z"
+        },
+        "difficulty": "Medium",
+        "examType": "qudurat",
+        "explanation": "يُطبَّق النمط المعتمد في bounded-outcomes / repeated-die / impossibility-by-maximum. ثم تُراجع النتيجة: أ = 13..",
+        "fingerprint": "185f486bc059e84e866b029fec53b63f5a8984b3f5c308504567ca92210dcb18",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t008_q07",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T008-Q07/f668e90edc6ce212c933df21c89f4a7b691d71e3f148cd3eb50f853591fecbff.webp",
+        "isPublished": false,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T008-Q07",
+          "pdfPageIndex": 8,
+          "printedPageNumber": 8,
+          "printedQuestionNumber": 7,
+          "imageHash": "f668e90edc6ce212c933df21c89f4a7b691d71e3f148cd3eb50f853591fecbff",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال 7",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-16T07:58:26.416Z"
+        },
+        "voiceExplanation": {
+          "text": "يُطبَّق النمط المعتمد في bounded-outcomes / repeated-die / impossibility-by-maximum. ثم تُراجع النتيجة: أ = 13.."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true,
+        "reviewerNotes": "MNSF26_QA_HOLD_20261016: شرح نمطي لا يوثق حل المسألة أو جميع خياراتها؛ يلزم حل مستقل وفحص صورة السؤال ومفتاح الإجابة وربط المهارة قبل إعادة الاعتماد."
+      },
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T008-Q08",
+      "action": "draft_science_text_explanation",
+      "before": {
+        "questionCode": "QDR-QNT-MNSF26-AR-T008-Q08",
+        "aiContext": {
+          "readableText": "سؤال 8",
+          "speechText": "يُطبَّق النمط المعتمد في consecutive-even-sequence / total-to-first-term. ثم تُراجع النتيجة: ب = 102.."
+        },
+        "approvalStatus": "draft",
+        "correctOptionIndex": 1,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.806Z"
+        },
+        "difficulty": "Medium",
+        "examType": "qudurat",
+        "explanation": "يُطبَّق النمط المعتمد في consecutive-even-sequence / total-to-first-term. ثم تُراجع النتيجة: ب = 102..",
+        "fingerprint": "6d3e97fbbdaaeceb6211214fcde366175b3b352b4c5e08b00782d6bc1d313504",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t008_q08",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T008-Q08/bf0696ac87acbde422ec68ff1f9e3e6732e3da6e381cf92ac05872e01a0eef5f.webp",
+        "isPublished": false,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T008-Q08",
+          "pdfPageIndex": 8,
+          "printedPageNumber": 8,
+          "printedQuestionNumber": 8,
+          "imageHash": "bf0696ac87acbde422ec68ff1f9e3e6732e3da6e381cf92ac05872e01a0eef5f",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال 8",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-16T07:58:26.416Z"
+        },
+        "voiceExplanation": {
+          "text": "يُطبَّق النمط المعتمد في consecutive-even-sequence / total-to-first-term. ثم تُراجع النتيجة: ب = 102.."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true,
+        "reviewerNotes": "MNSF26_QA_HOLD_20261016: شرح نمطي لا يوثق حل المسألة أو جميع خياراتها؛ يلزم حل مستقل وفحص صورة السؤال ومفتاح الإجابة وربط المهارة قبل إعادة الاعتماد."
+      },
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T008-Q09",
+      "action": "draft_science_text_explanation",
+      "before": {
+        "questionCode": "QDR-QNT-MNSF26-AR-T008-Q09",
+        "aiContext": {
+          "readableText": "سؤال 9",
+          "speechText": "يُطبَّق النمط المعتمد في out-and-back / double-one-way-distance. ثم تُراجع النتيجة: ج = equal.."
+        },
+        "approvalStatus": "draft",
+        "correctOptionIndex": 2,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.806Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "يُطبَّق النمط المعتمد في out-and-back / double-one-way-distance. ثم تُراجع النتيجة: ج = equal..",
+        "fingerprint": "36560ae86cb4af951f60154c06a75dbbe68e9a42cdedcc02714dd1cb69f148e3",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t008_q09",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T008-Q09/de75438d5f2b207ee9d7453169237adfa116c345452d7abccfcb23f66dcb5029.webp",
+        "isPublished": false,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T008-Q09",
+          "pdfPageIndex": 8,
+          "printedPageNumber": 8,
+          "printedQuestionNumber": 9,
+          "imageHash": "de75438d5f2b207ee9d7453169237adfa116c345452d7abccfcb23f66dcb5029",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال 9",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-16T07:58:26.417Z"
+        },
+        "voiceExplanation": {
+          "text": "يُطبَّق النمط المعتمد في out-and-back / double-one-way-distance. ثم تُراجع النتيجة: ج = equal.."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true,
+        "reviewerNotes": "MNSF26_QA_HOLD_20261016: شرح نمطي لا يوثق حل المسألة أو جميع خياراتها؛ يلزم حل مستقل وفحص صورة السؤال ومفتاح الإجابة وربط المهارة قبل إعادة الاعتماد."
+      },
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T008-Q10",
+      "action": "draft_science_text_explanation",
+      "before": {
+        "questionCode": "QDR-QNT-MNSF26-AR-T008-Q10",
+        "aiContext": {
+          "readableText": "سؤال 10",
+          "speechText": "يُطبَّق النمط المعتمد في transfer-between-two / invariant-total / equal-after-transfer. ثم تُراجع النتيجة: ب = 25.."
+        },
+        "approvalStatus": "draft",
+        "correctOptionIndex": 1,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.806Z"
+        },
+        "difficulty": "Medium",
+        "examType": "qudurat",
+        "explanation": "يُطبَّق النمط المعتمد في transfer-between-two / invariant-total / equal-after-transfer. ثم تُراجع النتيجة: ب = 25..",
+        "fingerprint": "df8511386910ad4c38a9d203dde00db42176f92d96bc36085ee826f158bfc349",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t008_q10",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T008-Q10/9dafa39066f42aa5eb9410ad0b75bbaafa1379ca03521c0bec4ac6c73ffb8496.webp",
+        "isPublished": false,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T008-Q10",
+          "pdfPageIndex": 8,
+          "printedPageNumber": 8,
+          "printedQuestionNumber": 10,
+          "imageHash": "9dafa39066f42aa5eb9410ad0b75bbaafa1379ca03521c0bec4ac6c73ffb8496",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال 10",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-16T07:58:26.417Z"
+        },
+        "voiceExplanation": {
+          "text": "يُطبَّق النمط المعتمد في transfer-between-two / invariant-total / equal-after-transfer. ثم تُراجع النتيجة: ب = 25.."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true,
+        "reviewerNotes": "MNSF26_QA_HOLD_20261016: شرح نمطي لا يوثق حل المسألة أو جميع خياراتها؛ يلزم حل مستقل وفحص صورة السؤال ومفتاح الإجابة وربط المهارة قبل إعادة الاعتماد."
+      },
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T008-Q11",
+      "action": "draft_science_text_explanation",
+      "before": {
+        "questionCode": "QDR-QNT-MNSF26-AR-T008-Q11",
+        "aiContext": {
+          "readableText": "سؤال 11",
+          "speechText": "يُطبَّق النمط المعتمد في square-array / rows=columns / square-root-total. ثم تُراجع النتيجة: ب = 15.."
+        },
+        "approvalStatus": "draft",
+        "correctOptionIndex": 1,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.806Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "يُطبَّق النمط المعتمد في square-array / rows=columns / square-root-total. ثم تُراجع النتيجة: ب = 15..",
+        "fingerprint": "dfade6a47f2a298409ad3e093086e6a2697b272a449ce957a27ad4fb6e670399",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t008_q11",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T008-Q11/941f3b3973cc7f299c869bccddd1d9b468e8b470d3c0cbc6ba1ff337df606928.webp",
+        "isPublished": false,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T008-Q11",
+          "pdfPageIndex": 8,
+          "printedPageNumber": 8,
+          "printedQuestionNumber": 11,
+          "imageHash": "941f3b3973cc7f299c869bccddd1d9b468e8b470d3c0cbc6ba1ff337df606928",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال 11",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-16T07:58:26.417Z"
+        },
+        "voiceExplanation": {
+          "text": "يُطبَّق النمط المعتمد في square-array / rows=columns / square-root-total. ثم تُراجع النتيجة: ب = 15.."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true,
+        "reviewerNotes": "MNSF26_QA_HOLD_20261016: شرح نمطي لا يوثق حل المسألة أو جميع خياراتها؛ يلزم حل مستقل وفحص صورة السؤال ومفتاح الإجابة وربط المهارة قبل إعادة الاعتماد."
+      },
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T008-Q12",
+      "action": "draft_science_text_explanation",
+      "before": {
+        "questionCode": "QDR-QNT-MNSF26-AR-T008-Q12",
+        "aiContext": {
+          "readableText": "سؤال 12",
+          "speechText": "يُطبَّق النمط المعتمد في partitioned-length / repeated-addition / total-from-groups. ثم تُراجع النتيجة: ج = 69.."
+        },
+        "approvalStatus": "draft",
+        "correctOptionIndex": 2,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.806Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "يُطبَّق النمط المعتمد في partitioned-length / repeated-addition / total-from-groups. ثم تُراجع النتيجة: ج = 69..",
+        "fingerprint": "9ab6942961259af60a559490b8b3847c5e71570b3fc65447330cb6c819356116",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t008_q12",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T008-Q12/06ca094b2508460dd36c27938e2302a3e10d183944df01546ebde6f3467a8b7b.webp",
+        "isPublished": false,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T008-Q12",
+          "pdfPageIndex": 8,
+          "printedPageNumber": 8,
+          "printedQuestionNumber": 12,
+          "imageHash": "06ca094b2508460dd36c27938e2302a3e10d183944df01546ebde6f3467a8b7b",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال 12",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-16T07:58:26.417Z"
+        },
+        "voiceExplanation": {
+          "text": "يُطبَّق النمط المعتمد في partitioned-length / repeated-addition / total-from-groups. ثم تُراجع النتيجة: ج = 69.."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true,
+        "reviewerNotes": "MNSF26_QA_HOLD_20261016: شرح نمطي لا يوثق حل المسألة أو جميع خياراتها؛ يلزم حل مستقل وفحص صورة السؤال ومفتاح الإجابة وربط المهارة قبل إعادة الاعتماد."
+      },
+      "result": "PENDING"
+    },
+    {
+      "key": "GEO-T004-Q05",
+      "action": "approved_quarantine_candidate",
+      "before": {
+        "questionCode": "QDR-QNT-MNSF26-GEO-T004-Q05",
+        "aiContext": {
+          "readableText": "زاوية مستقيمة قسمت إلى ص و4ص وص؛ قارن ص و42",
+          "speechText": "6ص=180، ص=30<42."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 0,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.814Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "6ص=180، ص=30<42.",
+        "fingerprint": "725a3119203ac37865fad8110cad269d1195c9b876a8189965f9db09d1f24261",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_geo_t004_q05",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-GEO-T004-Q05/7e89371ef449d2a4d7943b4b7f0cf641420234b6e8cafd109e681777fef4cc28.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_19",
+        "skillId": "skill_quant_19",
+        "skillIds": [
+          "skill_quant_19",
+          "sub_quant_19_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-GEO-T004-Q05",
+          "pdfPageIndex": 6,
+          "printedPageNumber": 6,
+          "printedQuestionNumber": 5,
+          "imageHash": "7e89371ef449d2a4d7943b4b7f0cf641420234b6e8cafd109e681777fef4cc28",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_19_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "زاوية مستقيمة قسمت إلى ص و4ص وص؛ قارن ص و42",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-16T07:49:22.707Z"
+        },
+        "voiceExplanation": {
+          "text": "6ص=180، ص=30<42."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "result": "PENDING"
+    }
+  ]
+}

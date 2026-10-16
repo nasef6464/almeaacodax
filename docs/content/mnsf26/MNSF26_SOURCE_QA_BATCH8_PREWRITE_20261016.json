@@ -1,0 +1,2840 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "batch": "B8",
+  "status": "PREWRITE_CHECKPOINT",
+  "date": "2026-10-16",
+  "sourcePDFs": {
+    "arithmetic": {
+      "sha256": "46f2d9c2c8482f99f3d28ea9fe2ae7cdaa1b62102a6cbe6aa35deae78c672ee3",
+      "zeroIndexedPages": [
+        21,
+        22,
+        23,
+        24
+      ]
+    },
+    "geometry": {
+      "sha256": "a823a90574476804cc29f5ca63ea8e9eaadab0cffe3afa78f791bbc8c6ee75d5",
+      "zeroIndexedPages": [
+        14,
+        15
+      ]
+    }
+  },
+  "r2Fetched": 0,
+  "r2SHACompared": 0,
+  "notes": "The sourceMeta.pdfPageIndex is logical test number, not the physical zero-based page index in original PDF; use explicit PDF zero-based pages above. All 8 wrong-key rows remain draft/unpublished. All 39 taxonomy candidates have source topic proof, but image R2 is unverified. No tests or student records touched.",
+  "sourceKeys": [
+    "AR-T012-Q01",
+    "AR-T012-Q02",
+    "AR-T012-Q03",
+    "AR-T012-Q04",
+    "AR-T012-Q05",
+    "AR-T012-Q06",
+    "AR-T012-Q07",
+    "AR-T012-Q08",
+    "AR-T012-Q09",
+    "AR-T012-Q10",
+    "AR-T012-Q11",
+    "AR-T012-Q12",
+    "AR-T012-Q13",
+    "AR-T012-Q14",
+    "AR-T012-Q15",
+    "AR-T012-Q16",
+    "AR-T012-Q17",
+    "AR-T012-Q18",
+    "AR-T012-Q19",
+    "AR-T012-Q20",
+    "AR-T013-Q01",
+    "AR-T013-Q02",
+    "AR-T013-Q03",
+    "AR-T013-Q04",
+    "AR-T013-Q05",
+    "AR-T013-Q06",
+    "AR-T013-Q07",
+    "AR-T013-Q08",
+    "AR-T013-Q09",
+    "AR-T013-Q10",
+    "AR-T013-Q11",
+    "AR-T013-Q12",
+    "AR-T013-Q14",
+    "AR-T013-Q16",
+    "AR-T013-Q17",
+    "AR-T013-Q18",
+    "AR-T013-Q19",
+    "AR-T013-Q20",
+    "GEO-T008-Q02",
+    "GEO-T008-Q15"
+  ],
+  "fixes": {
+    "AR-T012-Q01": {
+      "answer": 0,
+      "text": "إذا كان س عددًا صحيحًا، فكم مرة يمكن أن يكون س² عددًا أوليًا؟",
+      "explanation": "مربع أي عدد صحيح لا يمكن أن يكون عددًا أوليًا؛ لأن س² إذا كان |س|≥2 يقبل القسمة على |س|، أما س=0 أو ±1 فمربعه 0 أو 1 وليس أوليًا. إذن عدد الحالات صفر، والاختيار (أ)."
+    },
+    "AR-T012-Q07": {
+      "answer": 1,
+      "text": "أي الأعداد الآتية ليس عددًا أوليًا؟ (23، 49، 101، 47)",
+      "explanation": "العدد 49=7×7 وله قاسم غير 1 ونفسه، لذا ليس أوليًا، بينما 23 و47 و101 أعداد أولية. الاختيار (ب)."
+    },
+    "AR-T012-Q08": {
+      "answer": 0,
+      "text": "إذا كان ك عددًا أوليًا، فأي العبارات الآتية لا يمكن أن يكون ناتجها عددًا أوليًا؟ (ك²، 2ك+1، ك−1، ك+2)",
+      "explanation": "لأن ك عدد أولي فهو أكبر من 1؛ لذلك ك²=ك×ك عدد مركب دائمًا. العبارات الأخرى قد تكون أولية لبعض قيم ك. الاختيار (أ)."
+    },
+    "AR-T013-Q05": {
+      "answer": 2,
+      "text": "إذا جلس كل أربعة طلاب على طاولة بقيت ثلاث طاولات فارغة، وإذا جلس كل ثلاثة طلاب على طاولة بقي ثلاثة طلاب بلا أماكن. كم عدد طلاب الفصل؟",
+      "explanation": "لنفرض عدد الطاولات ط وعدد الطلاب ن. في الحالة الأولى ن=4(ط−3)، وفي الثانية ن=3ط+3. إذن 4ط−12=3ط+3، فط=15 ون=4×12=48 طالبًا. الاختيار (ج)."
+    },
+    "AR-T013-Q06": {
+      "answer": 2,
+      "text": "تضع أمل في كل طبق فواكه 4 تفاحات و6 برتقالات و8 موزات. إذا كان لديها 24 تفاحة و36 برتقالة و48 موزة، فكم طبقًا كاملًا تستطيع إعدادها؟",
+      "explanation": "عدد الأطباق من التفاح 24÷4=6، ومن البرتقال 36÷6=6، ومن الموز 48÷8=6؛ إذن يمكن إعداد 6 أطباق، الاختيار (ج)."
+    },
+    "AR-T013-Q07": {
+      "answer": 3,
+      "text": "رحلتان سياحيتان، الأولى بها 64 شخصًا والثانية 48 شخصًا، وُزِّعوا على غرف فندق بالتساوي. ما أكبر عدد ممكن من الأشخاص في الغرفة الواحدة؟",
+      "explanation": "أكبر عدد يقسم 64 و48 دون باق هو القاسم المشترك الأكبر: ق.م.أ(64،48)=16؛ لأن 64=4×16 و48=3×16. الاختيار (د)، وليس 24."
+    },
+    "AR-T013-Q11": {
+      "answer": 0,
+      "text": "عدد من مضاعفات 3، وعند ضربه في 15 يكون الناتج قابلًا للقسمة على 6. أي الأعداد (12، 15، 21، 27) يحقق ذلك؟",
+      "explanation": "لكي يكون 15×العدد قابلًا للقسمة على 6 فلا بد أن يكون الناتج زوجيًا ومضاعفًا لـ3. العدد 12 يعطي 180، و180÷6=30 عدد صحيح؛ أما 15 و21 و27 فتعطي نواتج فردية. الاختيار (أ)."
+    },
+    "AR-T013-Q12": {
+      "answer": 1,
+      "text": "عددان المضاعف المشترك الأصغر لهما 16، والعدد الأصغر 8. ما العدد الأكبر؟",
+      "explanation": "العدد الأكبر 16؛ لأن م.م.أ(8،16)=16. أما 24 أو32 فالمضاعف المشترك الأصغر مع 8 لا يساوي 16. الاختيار (ب)."
+    }
+  },
+  "rows": [
+    {
+      "key": "AR-T012-Q01",
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2caa4"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T012-Q01",
+        "aiContext": {
+          "readableText": "سؤال 1",
+          "speechText": "يُطبَّق النمط المعتمد في product-comparison / factor-regrouping. ثم تُراجع النتيجة: القيمتان متساويتان.."
+        },
+        "approvalStatus": "draft",
+        "correctOptionIndex": 3,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Medium",
+        "examType": "qudurat",
+        "explanation": "يُطبَّق النمط المعتمد في product-comparison / factor-regrouping. ثم تُراجع النتيجة: القيمتان متساويتان..",
+        "fingerprint": "54deec4861bd93986e1e4ca059af851ef6ce106a5e7dd3fe979b0e6f490b09fb",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t012_q01",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T012-Q01/7d16c661ae5585b9b0033d263bd205c62de31b5072aeac3064b8a3c6e277b6ed.webp",
+        "isPublished": false,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T012-Q01",
+          "pdfPageIndex": 12,
+          "printedPageNumber": 12,
+          "printedQuestionNumber": 1,
+          "imageHash": "7d16c661ae5585b9b0033d263bd205c62de31b5072aeac3064b8a3c6e277b6ed",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال 1",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-16T07:58:26.417Z"
+        },
+        "voiceExplanation": {
+          "text": "يُطبَّق النمط المعتمد في product-comparison / factor-regrouping. ثم تُراجع النتيجة: القيمتان متساويتان.."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true,
+        "reviewerNotes": "MNSF26_QA_HOLD_20261016: شرح نمطي لا يوثق حل المسألة أو جميع خياراتها؛ يلزم حل مستقل وفحص صورة السؤال ومفتاح الإجابة وربط المهارة قبل إعادة الاعتماد."
+      },
+      "proposedSkill": [
+        "skill_quant_02",
+        "sub_quant_02_3"
+      ],
+      "keyFix": {
+        "answer": 0,
+        "text": "إذا كان س عددًا صحيحًا، فكم مرة يمكن أن يكون س² عددًا أوليًا؟",
+        "explanation": "مربع أي عدد صحيح لا يمكن أن يكون عددًا أوليًا؛ لأن س² إذا كان |س|≥2 يقبل القسمة على |س|، أما س=0 أو ±1 فمربعه 0 أو 1 وليس أوليًا. إذن عدد الحالات صفر، والاختيار (أ)."
+      },
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T012-Q02",
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2caa5"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T012-Q02",
+        "aiContext": {
+          "readableText": "سؤال 2",
+          "speechText": "نختبر القواسم الصغيرة؛ وجود قاسم غير 1 والعدد نفسه يعني أن العدد غير أولي."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 3,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "العدد 8 يقبل القسمة على 2 و4، لذلك ليس أوليًا.",
+        "fingerprint": "a9c5350eecde973592d78b76579d82a4c27bc3b1da3e9940376e151f9c1f6191",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t012_q02",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T012-Q02/188f0a0dba00f105715c91dc270eda48b75382a040d457e9cb0f95d88e56d0c1.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T012-Q02",
+          "pdfPageIndex": 12,
+          "printedPageNumber": 12,
+          "printedQuestionNumber": 2,
+          "imageHash": "188f0a0dba00f105715c91dc270eda48b75382a040d457e9cb0f95d88e56d0c1",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال 2",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "العدد 8 يقبل القسمة على 2 و4، لذلك ليس أوليًا."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposedSkill": [
+        "skill_quant_02",
+        "sub_quant_02_3"
+      ],
+      "keyFix": null,
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T012-Q03",
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2caa6"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T012-Q03",
+        "aiContext": {
+          "readableText": "سؤال 3",
+          "speechText": "نفكك العدد إلى عوامله الأولية ثم نضرب العوامل الأولية المختلفة المطلوبة."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 3,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "60=2²×3×5، والعوامل الأولية المختلفة هي 2 و3 و5؛ حاصل ضربها=30.",
+        "fingerprint": "f85dbf0d7b7d8173cb346bc9db6a9b1dab21d47ada0b6f27648de89ef341b0ea",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t012_q03",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T012-Q03/efce70dadc15b4ac6a660771639a67726e41802e3de4c06e1f6b6119c908479a.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T012-Q03",
+          "pdfPageIndex": 12,
+          "printedPageNumber": 12,
+          "printedQuestionNumber": 3,
+          "imageHash": "efce70dadc15b4ac6a660771639a67726e41802e3de4c06e1f6b6119c908479a",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال 3",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "60=2²×3×5، والعوامل الأولية المختلفة هي 2 و3 و5؛ حاصل ضربها=30."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposedSkill": [
+        "skill_quant_02",
+        "sub_quant_02_3"
+      ],
+      "keyFix": null,
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T012-Q04",
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2caa7"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T012-Q04",
+        "aiContext": {
+          "readableText": "سؤال 4",
+          "speechText": "العدد 2 هو العدد الأولي الزوجي الوحيد، وهو المفتاح في مسائل مجموع عددين أوليين."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 1,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Medium",
+        "examType": "qudurat",
+        "explanation": "إذا كان العددان الأوليان كلاهما فرديين فمجموعهما زوجي أكبر من 2 وغير أولي؛ لذلك لا بد أن يكون أحدهما 2.",
+        "fingerprint": "ea1b21bf631ba56ae3eb4aa875416f328583bc17020ef130764f3fa9315f2f86",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t012_q04",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T012-Q04/588735cf76daf2f0ec9f9f13291b5663255d72c8e9aa37e030cb0e1fbcd2a7ce.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T012-Q04",
+          "pdfPageIndex": 12,
+          "printedPageNumber": 12,
+          "printedQuestionNumber": 4,
+          "imageHash": "588735cf76daf2f0ec9f9f13291b5663255d72c8e9aa37e030cb0e1fbcd2a7ce",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال 4",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "إذا كان العددان الأوليان كلاهما فرديين فمجموعهما زوجي أكبر من 2 وغير أولي؛ لذلك لا بد أن يكون أحدهما 2."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposedSkill": [
+        "skill_quant_02",
+        "sub_quant_02_3"
+      ],
+      "keyFix": null,
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T012-Q05",
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2caa8"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T012-Q05",
+        "aiContext": {
+          "readableText": "سؤال 5",
+          "speechText": "نحلل 130 إلى عوامل أولية ثم نقارن أكبرها بالقيمة الثانية."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 0,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "130=2×5×13، فأكبر عامل أولي=13، و13>12.",
+        "fingerprint": "7c07c4922b4dd2a8edf1c8357fb0045ff69c18585d52a125cf9c8c8c21d2a9bb",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t012_q05",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T012-Q05/8f4edc5c67c3da40a5789a797462f478707d2af8de45cb5d7dd27222fdef30aa.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T012-Q05",
+          "pdfPageIndex": 12,
+          "printedPageNumber": 12,
+          "printedQuestionNumber": 5,
+          "imageHash": "8f4edc5c67c3da40a5789a797462f478707d2af8de45cb5d7dd27222fdef30aa",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال 5",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "130=2×5×13، فأكبر عامل أولي=13، و13>12."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposedSkill": [
+        "skill_quant_02",
+        "sub_quant_02_3"
+      ],
+      "keyFix": null,
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T012-Q06",
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2caa9"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T012-Q06",
+        "aiContext": {
+          "readableText": "سؤال 6",
+          "speechText": "نحدد أكبر عدد أولي في المدى ثم نقارن."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 1,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "الأعداد الأولية بين 50 و64 هي 53 و59 و61؛ الأكبر 61، و63>61.",
+        "fingerprint": "c8db0fe046b2752f693a39e3ff64c2411067f8c23336ec727de6f9cd0f8b715e",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t012_q06",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T012-Q06/1b4c46d353c39ddaa9b6363b7f4ce9336c5f2339a983f1eeca2b9beaf8d042e6.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T012-Q06",
+          "pdfPageIndex": 12,
+          "printedPageNumber": 12,
+          "printedQuestionNumber": 6,
+          "imageHash": "1b4c46d353c39ddaa9b6363b7f4ce9336c5f2339a983f1eeca2b9beaf8d042e6",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال 6",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "الأعداد الأولية بين 50 و64 هي 53 و59 و61؛ الأكبر 61، و63>61."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposedSkill": [
+        "skill_quant_02",
+        "sub_quant_02_3"
+      ],
+      "keyFix": null,
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T012-Q07",
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2caaa"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T012-Q07",
+        "aiContext": {
+          "readableText": "سؤال 7",
+          "speechText": "يُطبَّق النمط المعتمد في constant-monthly-increase / repeated-pattern. ثم تُراجع النتيجة: 30.."
+        },
+        "approvalStatus": "draft",
+        "correctOptionIndex": 3,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "يُطبَّق النمط المعتمد في constant-monthly-increase / repeated-pattern. ثم تُراجع النتيجة: 30..",
+        "fingerprint": "fcc4897df6a3d4366b1298e832d04c14afcb8a754ff7a41ae588a1cf67d1313b",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t012_q07",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T012-Q07/cd7ab9707966ea639edb287cec6f7c1980656f9c73b44199ba9ac762aaa6e2ee.webp",
+        "isPublished": false,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T012-Q07",
+          "pdfPageIndex": 12,
+          "printedPageNumber": 12,
+          "printedQuestionNumber": 7,
+          "imageHash": "cd7ab9707966ea639edb287cec6f7c1980656f9c73b44199ba9ac762aaa6e2ee",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال 7",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-16T07:58:26.417Z"
+        },
+        "voiceExplanation": {
+          "text": "يُطبَّق النمط المعتمد في constant-monthly-increase / repeated-pattern. ثم تُراجع النتيجة: 30.."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true,
+        "reviewerNotes": "MNSF26_QA_HOLD_20261016: شرح نمطي لا يوثق حل المسألة أو جميع خياراتها؛ يلزم حل مستقل وفحص صورة السؤال ومفتاح الإجابة وربط المهارة قبل إعادة الاعتماد."
+      },
+      "proposedSkill": [
+        "skill_quant_02",
+        "sub_quant_02_3"
+      ],
+      "keyFix": {
+        "answer": 1,
+        "text": "أي الأعداد الآتية ليس عددًا أوليًا؟ (23، 49، 101، 47)",
+        "explanation": "العدد 49=7×7 وله قاسم غير 1 ونفسه، لذا ليس أوليًا، بينما 23 و47 و101 أعداد أولية. الاختيار (ب)."
+      },
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T012-Q08",
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2caab"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T012-Q08",
+        "aiContext": {
+          "readableText": "سؤال 8",
+          "speechText": "يُطبَّق النمط المعتمد في two-capacity-conditions / linear-equation / classroom-seating. ثم تُراجع النتيجة: 48 students.."
+        },
+        "approvalStatus": "draft",
+        "correctOptionIndex": 3,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Hard",
+        "examType": "qudurat",
+        "explanation": "يُطبَّق النمط المعتمد في two-capacity-conditions / linear-equation / classroom-seating. ثم تُراجع النتيجة: 48 students..",
+        "fingerprint": "61ad913fb39ddac11654dd52f2be0bc4b9ada1cca210676ac690bdab0713b268",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t012_q08",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T012-Q08/47eaa8d96ec0c95ba37dfbb7da154738f8f633b36dc296d54e76055122797f6f.webp",
+        "isPublished": false,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T012-Q08",
+          "pdfPageIndex": 12,
+          "printedPageNumber": 12,
+          "printedQuestionNumber": 8,
+          "imageHash": "47eaa8d96ec0c95ba37dfbb7da154738f8f633b36dc296d54e76055122797f6f",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال 8",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-16T07:58:26.417Z"
+        },
+        "voiceExplanation": {
+          "text": "يُطبَّق النمط المعتمد في two-capacity-conditions / linear-equation / classroom-seating. ثم تُراجع النتيجة: 48 students.."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true,
+        "reviewerNotes": "MNSF26_QA_HOLD_20261016: شرح نمطي لا يوثق حل المسألة أو جميع خياراتها؛ يلزم حل مستقل وفحص صورة السؤال ومفتاح الإجابة وربط المهارة قبل إعادة الاعتماد."
+      },
+      "proposedSkill": [
+        "skill_quant_02",
+        "sub_quant_02_3"
+      ],
+      "keyFix": {
+        "answer": 0,
+        "text": "إذا كان ك عددًا أوليًا، فأي العبارات الآتية لا يمكن أن يكون ناتجها عددًا أوليًا؟ (ك²، 2ك+1، ك−1، ك+2)",
+        "explanation": "لأن ك عدد أولي فهو أكبر من 1؛ لذلك ك²=ك×ك عدد مركب دائمًا. العبارات الأخرى قد تكون أولية لبعض قيم ك. الاختيار (أ)."
+      },
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T012-Q09",
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2caac"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T012-Q09",
+        "aiContext": {
+          "readableText": "سؤال 9",
+          "speechText": "نعوض بالاختيارات ونختبر الناتج وفق تعريف العدد الأولي."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 2,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "عند س=10 يكون س−7=3 وهو عدد أولي؛ بقية الاختيارات تعطي 0 أو1 أو4 وليست أولية.",
+        "fingerprint": "c5e69d5bbdec36a5f89e45c274723616a97a19ce8e8c6cd517cd743874f42ddb",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t012_q09",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T012-Q09/40f162ee8438777cafab8935bc5c229e3ea778d0e48cce4aaf9100e233fa989c.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T012-Q09",
+          "pdfPageIndex": 12,
+          "printedPageNumber": 12,
+          "printedQuestionNumber": 9,
+          "imageHash": "40f162ee8438777cafab8935bc5c229e3ea778d0e48cce4aaf9100e233fa989c",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال 9",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "عند س=10 يكون س−7=3 وهو عدد أولي؛ بقية الاختيارات تعطي 0 أو1 أو4 وليست أولية."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposedSkill": [
+        "skill_quant_02",
+        "sub_quant_02_3"
+      ],
+      "keyFix": null,
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T012-Q10",
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2caad"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T012-Q10",
+        "aiContext": {
+          "readableText": "سؤال 10",
+          "speechText": "قاعدة القسمة على 3 تكشف سريعًا أن 87 عدد مركب."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 3,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "87 يقبل القسمة على 3 لأن 8+7=15، إذن هو غير أولي.",
+        "fingerprint": "70fe9a5cfbab06c4f84cc46afb98b33850ef613e85c7b70b6237156827d2071a",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t012_q10",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T012-Q10/4df3bafb024ce3cf79c6e99f0da7f75d455239fa2359b50499eb24811adac041.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T012-Q10",
+          "pdfPageIndex": 12,
+          "printedPageNumber": 12,
+          "printedQuestionNumber": 10,
+          "imageHash": "4df3bafb024ce3cf79c6e99f0da7f75d455239fa2359b50499eb24811adac041",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال 10",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "87 يقبل القسمة على 3 لأن 8+7=15، إذن هو غير أولي."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposedSkill": [
+        "skill_quant_02",
+        "sub_quant_02_3"
+      ],
+      "keyFix": null,
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T012-Q11",
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2caae"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T012-Q11",
+        "aiContext": {
+          "readableText": "سؤال 11",
+          "speechText": "نستبعد المركبات بقواعد القسمة ثم نتحقق من المرشح المتبقي."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 0,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Medium",
+        "examType": "qudurat",
+        "explanation": "1110 و110 زوجيان، و111 يقبل القسمة على3؛ يبقى 1999، ولا يقبل القسمة على أي عدد أولي حتى √1999، لذا هو أولي.",
+        "fingerprint": "6518815ff0623ab2e201282bc13192e88a7288c45c00f20f317dbf82918e8aad",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t012_q11",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T012-Q11/cc99ca4ba34f7eca1a07fa0c664d3c478734b2068f2bcf3cd9326450402f89ae.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T012-Q11",
+          "pdfPageIndex": 12,
+          "printedPageNumber": 12,
+          "printedQuestionNumber": 11,
+          "imageHash": "cc99ca4ba34f7eca1a07fa0c664d3c478734b2068f2bcf3cd9326450402f89ae",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال 11",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "1110 و110 زوجيان، و111 يقبل القسمة على3؛ يبقى 1999، ولا يقبل القسمة على أي عدد أولي حتى √1999، لذا هو أولي."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposedSkill": [
+        "skill_quant_02",
+        "sub_quant_02_3"
+      ],
+      "keyFix": null,
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T012-Q12",
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2caaf"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T012-Q12",
+        "aiContext": {
+          "readableText": "سؤال 12",
+          "speechText": "نختبر الأعداد الأولية الأقل من50 ثم نتحقق من أولية العدد بعد قلب أرقامه."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 3,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Medium",
+        "examType": "qudurat",
+        "explanation": "الأعداد الأقل من50 التي يكون العدد ومعكوس رقميه أوليين هي 2،3،5،7،11،13،17،31،37؛ وعددها 9.",
+        "fingerprint": "a34629082920b3a9b6bab0e3d586ad97c30898ae0c8c35985ec47387e6e6a918",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t012_q12",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T012-Q12/01930748a42e5350c88009ae3b9a150a9a20694cce9e6fc4801d6b623ab6689e.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T012-Q12",
+          "pdfPageIndex": 12,
+          "printedPageNumber": 12,
+          "printedQuestionNumber": 12,
+          "imageHash": "01930748a42e5350c88009ae3b9a150a9a20694cce9e6fc4801d6b623ab6689e",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال 12",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "الأعداد الأقل من50 التي يكون العدد ومعكوس رقميه أوليين هي 2،3،5،7،11،13،17،31،37؛ وعددها 9."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposedSkill": [
+        "skill_quant_02",
+        "sub_quant_02_3"
+      ],
+      "keyFix": null,
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T012-Q13",
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2cab0"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T012-Q13",
+        "aiContext": {
+          "readableText": "سؤال 13",
+          "speechText": "نحدد الأعداد الأولية المتتالية أولًا ثم ننفذ الضرب والقسمة."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 2,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "الأعداد الأولية المتتالية التي أكبرها7 هي 2،3،5،7؛ حاصل ضربها 210، ثم 210÷10=21.",
+        "fingerprint": "caf3eda638bd99f1af6fa49df6599c1cf17f398eccbc3a7b2942142becf62082",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t012_q13",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T012-Q13/7f1a6d71bebb46e4c5304621f5b002b71096d12ac9a5ce3a5652eecec2b91aee.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T012-Q13",
+          "pdfPageIndex": 12,
+          "printedPageNumber": 12,
+          "printedQuestionNumber": 13,
+          "imageHash": "7f1a6d71bebb46e4c5304621f5b002b71096d12ac9a5ce3a5652eecec2b91aee",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال 13",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "الأعداد الأولية المتتالية التي أكبرها7 هي 2،3،5،7؛ حاصل ضربها 210، ثم 210÷10=21."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposedSkill": [
+        "skill_quant_02",
+        "sub_quant_02_3"
+      ],
+      "keyFix": null,
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T012-Q15",
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2cab1"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T012-Q15",
+        "aiContext": {
+          "readableText": "سؤال الحساب/الجبر الاختبار 12 رقم 15 من كتاب المنصف 26",
+          "speechText": "أي عدد زوجي أكبر من2 أصغر عوامله الأولية هو2."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 1,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "أصغر عامل أولي للعدد 1280 هو2 لأنه زوجي؛ وبالمقارنة 3>2.",
+        "fingerprint": "77ddeb0325c0669352580ed184b0064eefcf2425586739654079524bb282549d",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t012_q15",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T012-Q15/d1ebf47fd5d1b25e16a22293bcac53a0a62e898391eea2b33d2ada17a7b2148a.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T012-Q15",
+          "pdfPageIndex": 1,
+          "printedPageNumber": 1,
+          "printedQuestionNumber": 15,
+          "imageHash": "d1ebf47fd5d1b25e16a22293bcac53a0a62e898391eea2b33d2ada17a7b2148a",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال الحساب/الجبر الاختبار 12 رقم 15 من كتاب المنصف 26",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "أصغر عامل أولي للعدد 1280 هو2 لأنه زوجي؛ وبالمقارنة 3>2."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposedSkill": [
+        "skill_quant_02",
+        "sub_quant_02_3"
+      ],
+      "keyFix": null,
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T012-Q16",
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2cab2"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T012-Q16",
+        "aiContext": {
+          "readableText": "سؤال الحساب/الجبر الاختبار 12 رقم 16 من كتاب المنصف 26",
+          "speechText": "نستبعد الأعداد المركبة بقواعد القسمة البسيطة."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 1,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "96 و98 زوجيان، و99 يقبل القسمة على3؛ إذن 97 هو العدد الأولي.",
+        "fingerprint": "414a2428fac78506b5f2cf2f80012f7f0c9f9bc665478ed9f06ef6bc74d02bff",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t012_q16",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T012-Q16/ca35b9122535d18a1ba912d564efb5490422e60653f34dfd65aa7050757f86e4.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T012-Q16",
+          "pdfPageIndex": 1,
+          "printedPageNumber": 1,
+          "printedQuestionNumber": 16,
+          "imageHash": "ca35b9122535d18a1ba912d564efb5490422e60653f34dfd65aa7050757f86e4",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال الحساب/الجبر الاختبار 12 رقم 16 من كتاب المنصف 26",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "96 و98 زوجيان، و99 يقبل القسمة على3؛ إذن 97 هو العدد الأولي."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposedSkill": [
+        "skill_quant_02",
+        "sub_quant_02_3"
+      ],
+      "keyFix": null,
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T012-Q17",
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2cab3"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T012-Q17",
+        "aiContext": {
+          "readableText": "سؤال الحساب/الجبر الاختبار 12 رقم 17 من كتاب المنصف 26",
+          "speechText": "نستخدم الزوجية: العدد الأولي الزوجي الوحيد هو2."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 3,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Medium",
+        "examType": "qudurat",
+        "explanation": "مجموع ثلاثة أعداد أولية يساوي14. لو كانت الثلاثة فردية لكان المجموع فرديًا؛ لذا أحدها2، وبالفعل 2+5+7=14.",
+        "fingerprint": "b9bf18f0ff9b5da206290ff1410d95f2d8002636bde3097a1294fbce9c5a97a5",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t012_q17",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T012-Q17/dce3a229031eda2024831761c78a87375c1c0a7776db2e12904b11e7634c0593.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T012-Q17",
+          "pdfPageIndex": 1,
+          "printedPageNumber": 1,
+          "printedQuestionNumber": 17,
+          "imageHash": "dce3a229031eda2024831761c78a87375c1c0a7776db2e12904b11e7634c0593",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال الحساب/الجبر الاختبار 12 رقم 17 من كتاب المنصف 26",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "مجموع ثلاثة أعداد أولية يساوي14. لو كانت الثلاثة فردية لكان المجموع فرديًا؛ لذا أحدها2، وبالفعل 2+5+7=14."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposedSkill": [
+        "skill_quant_02",
+        "sub_quant_02_3"
+      ],
+      "keyFix": null,
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T012-Q18",
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2cab4"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T012-Q18",
+        "aiContext": {
+          "readableText": "سؤال الحساب/الجبر الاختبار 12 رقم 18 من كتاب المنصف 26",
+          "speechText": "نفحص الخيارات وفق تعريف العدد الأولي."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 3,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "العدد 8=2×4 وله قواسم غير1 ونفسه، لذلك هو غير أولي.",
+        "fingerprint": "740fe4ec60e6c446b25ce205d23f5e9a09bf9ad2c3025b8c647efbf409d2361b",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t012_q18",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T012-Q18/188f0a0dba00f105715c91dc270eda48b75382a040d457e9cb0f95d88e56d0c1.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T012-Q18",
+          "pdfPageIndex": 1,
+          "printedPageNumber": 1,
+          "printedQuestionNumber": 18,
+          "imageHash": "188f0a0dba00f105715c91dc270eda48b75382a040d457e9cb0f95d88e56d0c1",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال الحساب/الجبر الاختبار 12 رقم 18 من كتاب المنصف 26",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "العدد 8=2×4 وله قواسم غير1 ونفسه، لذلك هو غير أولي."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposedSkill": [
+        "skill_quant_02",
+        "sub_quant_02_3"
+      ],
+      "keyFix": null,
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T012-Q19",
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2cab5"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T012-Q19",
+        "aiContext": {
+          "readableText": "سؤال الحساب/الجبر الاختبار 12 رقم 19 من كتاب المنصف 26",
+          "speechText": "الأعداد الأولية المختلفة لا تشترك في عامل يجعل القسمة عددًا صحيحًا."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 2,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "عند قسمة عدد أولي على عدد أولي آخر مختلف عنه لا يقسم أحدهما الآخر، فيكون الناتج كسرًا غير صحيح.",
+        "fingerprint": "ecf2d2cb96f40639f3c3fd1dc0728d15c52338e0589b358906fecee2623d8e83",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t012_q19",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T012-Q19/e396bd06d55521470467697e24da8ffd9367e89588e2f71312cefa18bda9260d.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T012-Q19",
+          "pdfPageIndex": 1,
+          "printedPageNumber": 1,
+          "printedQuestionNumber": 19,
+          "imageHash": "e396bd06d55521470467697e24da8ffd9367e89588e2f71312cefa18bda9260d",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال الحساب/الجبر الاختبار 12 رقم 19 من كتاب المنصف 26",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "عند قسمة عدد أولي على عدد أولي آخر مختلف عنه لا يقسم أحدهما الآخر، فيكون الناتج كسرًا غير صحيح."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposedSkill": [
+        "skill_quant_02",
+        "sub_quant_02_3"
+      ],
+      "keyFix": null,
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T012-Q20",
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2cab6"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T012-Q20",
+        "aiContext": {
+          "readableText": "سؤال الحساب/الجبر الاختبار 12 رقم 20 من كتاب المنصف 26",
+          "speechText": "نحصر الأعداد في المدى ونستبعد ما له قاسم."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 1,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "الأعداد الأولية من10 إلى30 هي 11،13،17،19،23،29؛ عددها6.",
+        "fingerprint": "3879d3e1f7c56985db19faa1b245f08aa27b190b80f98c9636aa05855e8555d5",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t012_q20",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T012-Q20/25a11ab428ad2547acbdd74c221a9e979e449ada5965c598423a0f2182897a9f.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T012-Q20",
+          "pdfPageIndex": 1,
+          "printedPageNumber": 1,
+          "printedQuestionNumber": 20,
+          "imageHash": "25a11ab428ad2547acbdd74c221a9e979e449ada5965c598423a0f2182897a9f",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال الحساب/الجبر الاختبار 12 رقم 20 من كتاب المنصف 26",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "الأعداد الأولية من10 إلى30 هي 11،13،17،19،23،29؛ عددها6."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposedSkill": [
+        "skill_quant_02",
+        "sub_quant_02_3"
+      ],
+      "keyFix": null,
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T013-Q01",
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2cab7"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T013-Q01",
+        "aiContext": {
+          "readableText": "سؤال الحساب/الجبر الاختبار 13 رقم 1 من كتاب المنصف 26",
+          "speechText": "وجود العاملين 2 و5 في حاصل الضرب يجعل الناتج من مضاعفات 10."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 0,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "من بين أول 100 عدد أولي يوجد 2 و5؛ حاصل الضرب يحتوي العامل 10، لذلك رقم الآحاد 0.",
+        "fingerprint": "f72036275764d3b20d3dd122b69fb28edcb4d93e1d560b531d0b29b78e460e15",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t013_q01",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T013-Q01/7eb44d523e268e7ea35876d0ca84a02a1460bd16ed16facead87668fb315dd1a.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T013-Q01",
+          "pdfPageIndex": 1,
+          "printedPageNumber": 1,
+          "printedQuestionNumber": 1,
+          "imageHash": "7eb44d523e268e7ea35876d0ca84a02a1460bd16ed16facead87668fb315dd1a",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال الحساب/الجبر الاختبار 13 رقم 1 من كتاب المنصف 26",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "من بين أول 100 عدد أولي يوجد 2 و5؛ حاصل الضرب يحتوي العامل 10، لذلك رقم الآحاد 0."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposedSkill": [
+        "skill_quant_01",
+        "sub_quant_01_5"
+      ],
+      "keyFix": null,
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T013-Q02",
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2cab8"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T013-Q02",
+        "aiContext": {
+          "readableText": "سؤال الحساب/الجبر الاختبار 13 رقم 2 من كتاب المنصف 26",
+          "speechText": "نختبر القسمة أو نحلل 21=3×7."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 3,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "قواسم 21 هي 1،3،7،21؛ من الخيارات 7.",
+        "fingerprint": "2079b74a81a9dbedb394d05e74e59b204d09c2c879bc2de89b522bca426697d0",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t013_q02",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T013-Q02/f77f8ee94d1342fc5d24ae935b53c5a83ce813489267754012f37e50643dba61.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T013-Q02",
+          "pdfPageIndex": 1,
+          "printedPageNumber": 1,
+          "printedQuestionNumber": 2,
+          "imageHash": "f77f8ee94d1342fc5d24ae935b53c5a83ce813489267754012f37e50643dba61",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال الحساب/الجبر الاختبار 13 رقم 2 من كتاب المنصف 26",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "قواسم 21 هي 1،3،7،21؛ من الخيارات 7."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposedSkill": [
+        "skill_quant_02",
+        "sub_quant_02_3"
+      ],
+      "keyFix": null,
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T013-Q03",
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2cab9"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T013-Q03",
+        "aiContext": {
+          "readableText": "سؤال الحساب/الجبر الاختبار 13 رقم 3 من كتاب المنصف 26",
+          "speechText": "نختبر القسمة: 45÷5=9 و45÷9=5."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 2,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "45 يقبل القسمة على5 وعلى9؛ كلاهما من قواسمه.",
+        "fingerprint": "221cb36c04c8057d25ed5111d11a97747a049a588fad39c82f6079b9c2b268e3",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t013_q03",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T013-Q03/bbd246b4f44bb346316035286d9c6144d690df44ba22866ef62879a42cccbd45.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T013-Q03",
+          "pdfPageIndex": 1,
+          "printedPageNumber": 1,
+          "printedQuestionNumber": 3,
+          "imageHash": "bbd246b4f44bb346316035286d9c6144d690df44ba22866ef62879a42cccbd45",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال الحساب/الجبر الاختبار 13 رقم 3 من كتاب المنصف 26",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "45 يقبل القسمة على5 وعلى9؛ كلاهما من قواسمه."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposedSkill": [
+        "skill_quant_02",
+        "sub_quant_02_3"
+      ],
+      "keyFix": null,
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T013-Q04",
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2caba"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T013-Q04",
+        "aiContext": {
+          "readableText": "سؤال الحساب/الجبر الاختبار 13 رقم 4 من كتاب المنصف 26",
+          "speechText": "نستخدم المضاعف المشترك الأصغر لتوحيد عدد محتويات العلب."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 1,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Medium",
+        "examType": "qudurat",
+        "explanation": "أصغر عدد أقلام يساوي عدد الدفاتر يجب أن يكون مضاعفًا لـ12 و8؛ م.م.أ(12،8)=24.",
+        "fingerprint": "5fb39e0d6f30fc11acdd7340d9f8eba06eaf2119977ba7a4b2b6e00e27e9602e",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t013_q04",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T013-Q04/92e0265cbadd7f23d057c26e25e60e59e9a831057e9a22390a45ab0c2408805d.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T013-Q04",
+          "pdfPageIndex": 1,
+          "printedPageNumber": 1,
+          "printedQuestionNumber": 4,
+          "imageHash": "92e0265cbadd7f23d057c26e25e60e59e9a831057e9a22390a45ab0c2408805d",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال الحساب/الجبر الاختبار 13 رقم 4 من كتاب المنصف 26",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "أصغر عدد أقلام يساوي عدد الدفاتر يجب أن يكون مضاعفًا لـ12 و8؛ م.م.أ(12،8)=24."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposedSkill": [
+        "skill_quant_02",
+        "sub_quant_02_3"
+      ],
+      "keyFix": null,
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T013-Q05",
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2cabb"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T013-Q05",
+        "aiContext": {
+          "readableText": "سؤال الحساب/الجبر الاختبار 13 رقم 5 من كتاب المنصف 26",
+          "speechText": "نحوّل الحالتين إلى معادلتين لنفس عدد الطلاب."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 0,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Hard",
+        "examType": "qudurat",
+        "explanation": "إذا كان عدد الطاولات ط: عدد الطلاب=4(ط−3)، وبالجلوس 3 لكل طاولة يبقى 3 بلا مكان: العدد=3ط+3. بالمساواة ط=15 والطلاب=48.",
+        "fingerprint": "60947a8439689e1e86b987b2d40377afb9c980cfe82ce08cc947d3abb66e0530",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t013_q05",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T013-Q05/ce0e633033def5563831ae6b5bb129d7f12348640c873531982b6f04b0da7aae.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T013-Q05",
+          "pdfPageIndex": 1,
+          "printedPageNumber": 1,
+          "printedQuestionNumber": 5,
+          "imageHash": "ce0e633033def5563831ae6b5bb129d7f12348640c873531982b6f04b0da7aae",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال الحساب/الجبر الاختبار 13 رقم 5 من كتاب المنصف 26",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "إذا كان عدد الطاولات ط: عدد الطلاب=4(ط−3)، وبالجلوس 3 لكل طاولة يبقى 3 بلا مكان: العدد=3ط+3. بالمساواة ط=15 والطلاب=48."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposedSkill": [
+        "skill_quant_07",
+        "sub_quant_07_2"
+      ],
+      "keyFix": {
+        "answer": 2,
+        "text": "إذا جلس كل أربعة طلاب على طاولة بقيت ثلاث طاولات فارغة، وإذا جلس كل ثلاثة طلاب على طاولة بقي ثلاثة طلاب بلا أماكن. كم عدد طلاب الفصل؟",
+        "explanation": "لنفرض عدد الطاولات ط وعدد الطلاب ن. في الحالة الأولى ن=4(ط−3)، وفي الثانية ن=3ط+3. إذن 4ط−12=3ط+3، فط=15 ون=4×12=48 طالبًا. الاختيار (ج)."
+      },
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T013-Q06",
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2cabc"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T013-Q06",
+        "aiContext": {
+          "readableText": "سؤال الحساب/الجبر الاختبار 13 رقم 6 من كتاب المنصف 26",
+          "speechText": "نقسم كمية كل فاكهة على احتياج الطبق ونأخذ أصغر عدد كامل."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 0,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Medium",
+        "examType": "qudurat",
+        "explanation": "لكل طبق 6 تفاحات و9 برتقالات و8 موزات. المتاح 24 تفاحة→4 أطباق، 36 برتقالة→4، 48 موزة→6؛ المحدد هو4.",
+        "fingerprint": "4eedcd325a387ada386b2fda70d69b106b9ba7edadda1154f0ede18dac15eaa7",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t013_q06",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T013-Q06/d3893ac17a97ba46a403f13179e79f86caf2adbf3cb5feaabdebebbc3ce90f3e.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T013-Q06",
+          "pdfPageIndex": 1,
+          "printedPageNumber": 1,
+          "printedQuestionNumber": 6,
+          "imageHash": "d3893ac17a97ba46a403f13179e79f86caf2adbf3cb5feaabdebebbc3ce90f3e",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال الحساب/الجبر الاختبار 13 رقم 6 من كتاب المنصف 26",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "لكل طبق 6 تفاحات و9 برتقالات و8 موزات. المتاح 24 تفاحة→4 أطباق، 36 برتقالة→4، 48 موزة→6؛ المحدد هو4."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposedSkill": [
+        "skill_quant_08",
+        "sub_quant_08_2"
+      ],
+      "keyFix": {
+        "answer": 2,
+        "text": "تضع أمل في كل طبق فواكه 4 تفاحات و6 برتقالات و8 موزات. إذا كان لديها 24 تفاحة و36 برتقالة و48 موزة، فكم طبقًا كاملًا تستطيع إعدادها؟",
+        "explanation": "عدد الأطباق من التفاح 24÷4=6، ومن البرتقال 36÷6=6، ومن الموز 48÷8=6؛ إذن يمكن إعداد 6 أطباق، الاختيار (ج)."
+      },
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T013-Q07",
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2cabd"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T013-Q07",
+        "aiContext": {
+          "readableText": "سؤال الحساب/الجبر الاختبار 13 رقم 7 من كتاب المنصف 26",
+          "speechText": "عند التوزيع المتساوي بأكبر مجموعة نستخدم القاسم المشترك الأكبر."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 2,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "أكبر عدد أشخاص متساوٍ في الغرفة يقسم 24 و48 هو ق.م.أ=24.",
+        "fingerprint": "a5a6b6c77741e5ac412bada17525238016d7c8b24e310a72d34db32218b0d863",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t013_q07",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T013-Q07/0b2a5c09d95e689ba89cf3a76e6d855e1d3805e57523b3e266c66fe363065a98.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T013-Q07",
+          "pdfPageIndex": 1,
+          "printedPageNumber": 1,
+          "printedQuestionNumber": 7,
+          "imageHash": "0b2a5c09d95e689ba89cf3a76e6d855e1d3805e57523b3e266c66fe363065a98",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال الحساب/الجبر الاختبار 13 رقم 7 من كتاب المنصف 26",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "أكبر عدد أشخاص متساوٍ في الغرفة يقسم 24 و48 هو ق.م.أ=24."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposedSkill": [
+        "skill_quant_02",
+        "sub_quant_02_3"
+      ],
+      "keyFix": {
+        "answer": 3,
+        "text": "رحلتان سياحيتان، الأولى بها 64 شخصًا والثانية 48 شخصًا، وُزِّعوا على غرف فندق بالتساوي. ما أكبر عدد ممكن من الأشخاص في الغرفة الواحدة؟",
+        "explanation": "أكبر عدد يقسم 64 و48 دون باق هو القاسم المشترك الأكبر: ق.م.أ(64،48)=16؛ لأن 64=4×16 و48=3×16. الاختيار (د)، وليس 24."
+      },
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T013-Q08",
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2cabe"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T013-Q08",
+        "aiContext": {
+          "readableText": "سؤال الحساب/الجبر الاختبار 13 رقم 8 من كتاب المنصف 26",
+          "speechText": "عدد المجموعات المتساوية الأقصى يساوي القاسم المشترك الأكبر."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 2,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "أكبر عدد غرف يقسم 64 حاسبًا و48 طابعة بالتساوي هو ق.م.أ(64،48)=16.",
+        "fingerprint": "6148081e9627b0a5cdf7866e25c883194bef121b1e9039f7fe9e2cd0b700f92c",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t013_q08",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T013-Q08/f796652f1ae19c52e7e8fc653fc00943349b1451e4babdf80db6ce929b1ef66a.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T013-Q08",
+          "pdfPageIndex": 1,
+          "printedPageNumber": 1,
+          "printedQuestionNumber": 8,
+          "imageHash": "f796652f1ae19c52e7e8fc653fc00943349b1451e4babdf80db6ce929b1ef66a",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال الحساب/الجبر الاختبار 13 رقم 8 من كتاب المنصف 26",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "أكبر عدد غرف يقسم 64 حاسبًا و48 طابعة بالتساوي هو ق.م.أ(64،48)=16."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposedSkill": [
+        "skill_quant_02",
+        "sub_quant_02_3"
+      ],
+      "keyFix": null,
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T013-Q09",
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2cabf"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T013-Q09",
+        "aiContext": {
+          "readableText": "سؤال الحساب/الجبر الاختبار 13 رقم 9 من كتاب المنصف 26",
+          "speechText": "نكتب القواسم الموجبة للعدد ثم نعدها."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 2,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "قواسم 4 هي 1،2،4؛ عددها3.",
+        "fingerprint": "bdcc80870eee70ed6ded010cd64161d722467b181a3d75883736f9183b03a343",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t013_q09",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T013-Q09/5fa39a39561b3f1a11dc03bb57c7483568834d672ccf05dc19ef68e65e4c31b2.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T013-Q09",
+          "pdfPageIndex": 1,
+          "printedPageNumber": 1,
+          "printedQuestionNumber": 9,
+          "imageHash": "5fa39a39561b3f1a11dc03bb57c7483568834d672ccf05dc19ef68e65e4c31b2",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال الحساب/الجبر الاختبار 13 رقم 9 من كتاب المنصف 26",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "قواسم 4 هي 1،2،4؛ عددها3."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposedSkill": [
+        "skill_quant_02",
+        "sub_quant_02_3"
+      ],
+      "keyFix": null,
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T013-Q10",
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2cac0"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T013-Q10",
+        "aiContext": {
+          "readableText": "سؤال الحساب/الجبر الاختبار 13 رقم 10 من كتاب المنصف 26",
+          "speechText": "نحسب القاسم المشترك الأكبر مباشرة."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 1,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "ق.م.أ(24،16)=8، وهو أيضًا من مضاعفات2.",
+        "fingerprint": "81cf56fc69eb2a8caad20202ac5826d08006dbb9901c0d9cbb2050906270ba0e",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t013_q10",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T013-Q10/50baf787a32af8812e7266993d14e7b943de41448eba53f28201718507dd4bf0.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T013-Q10",
+          "pdfPageIndex": 1,
+          "printedPageNumber": 1,
+          "printedQuestionNumber": 10,
+          "imageHash": "50baf787a32af8812e7266993d14e7b943de41448eba53f28201718507dd4bf0",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال الحساب/الجبر الاختبار 13 رقم 10 من كتاب المنصف 26",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "ق.م.أ(24،16)=8، وهو أيضًا من مضاعفات2."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposedSkill": [
+        "skill_quant_02",
+        "sub_quant_02_3"
+      ],
+      "keyFix": null,
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T013-Q11",
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2cac1"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T013-Q11",
+        "aiContext": {
+          "readableText": "سؤال الحساب/الجبر الاختبار 13 رقم 11 من كتاب المنصف 26",
+          "speechText": "لأن 15 لا يحتوي العامل7، يجب أن يأتي العامل7 من العدد نفسه."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 2,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Medium",
+        "examType": "qudurat",
+        "explanation": "العدد المطلوب من مضاعفات3، ولكي يكون حاصل ضربه في15 قابلًا للقسمة على7 يجب أن يحتوي العدد العامل7؛ من الخيارات 21.",
+        "fingerprint": "d4c9ffd9e9bd0165ae0c213c7b0a99993a635cf6b6b1081e003685aae0c228a0",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t013_q11",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T013-Q11/6ec559192b8d5b2dffe24109cbc67174f7612ec9233cc0daa7053e14b4e653ef.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T013-Q11",
+          "pdfPageIndex": 1,
+          "printedPageNumber": 1,
+          "printedQuestionNumber": 11,
+          "imageHash": "6ec559192b8d5b2dffe24109cbc67174f7612ec9233cc0daa7053e14b4e653ef",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال الحساب/الجبر الاختبار 13 رقم 11 من كتاب المنصف 26",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "العدد المطلوب من مضاعفات3، ولكي يكون حاصل ضربه في15 قابلًا للقسمة على7 يجب أن يحتوي العدد العامل7؛ من الخيارات 21."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposedSkill": [
+        "skill_quant_02",
+        "sub_quant_02_1"
+      ],
+      "keyFix": {
+        "answer": 0,
+        "text": "عدد من مضاعفات 3، وعند ضربه في 15 يكون الناتج قابلًا للقسمة على 6. أي الأعداد (12، 15، 21، 27) يحقق ذلك؟",
+        "explanation": "لكي يكون 15×العدد قابلًا للقسمة على 6 فلا بد أن يكون الناتج زوجيًا ومضاعفًا لـ3. العدد 12 يعطي 180، و180÷6=30 عدد صحيح؛ أما 15 و21 و27 فتعطي نواتج فردية. الاختيار (أ)."
+      },
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T013-Q12",
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2cac2"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T013-Q12",
+        "aiContext": {
+          "readableText": "سؤال الحساب/الجبر الاختبار 13 رقم 12 من كتاب المنصف 26",
+          "speechText": "نختبر شرط المضاعف المشترك الأصغر."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 2,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "إذا كان م.م.أ لعددين 16 وأصغرهما8، فالعدد الآخر الموافق للاختيارات هو16 لأن م.م.أ(8،16)=16.",
+        "fingerprint": "753f113a1684406c1916234707a59681a1344a4d7ab614eafc74c72a99771743",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t013_q12",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T013-Q12/57cde851b43094799d775d51079ec7cb232809a266e55043976d962b6e841bf8.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T013-Q12",
+          "pdfPageIndex": 1,
+          "printedPageNumber": 1,
+          "printedQuestionNumber": 12,
+          "imageHash": "57cde851b43094799d775d51079ec7cb232809a266e55043976d962b6e841bf8",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال الحساب/الجبر الاختبار 13 رقم 12 من كتاب المنصف 26",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "إذا كان م.م.أ لعددين 16 وأصغرهما8، فالعدد الآخر الموافق للاختيارات هو16 لأن م.م.أ(8،16)=16."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposedSkill": [
+        "skill_quant_02",
+        "sub_quant_02_3"
+      ],
+      "keyFix": {
+        "answer": 1,
+        "text": "عددان المضاعف المشترك الأصغر لهما 16، والعدد الأصغر 8. ما العدد الأكبر؟",
+        "explanation": "العدد الأكبر 16؛ لأن م.م.أ(8،16)=16. أما 24 أو32 فالمضاعف المشترك الأصغر مع 8 لا يساوي 16. الاختيار (ب)."
+      },
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T013-Q14",
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2cac3"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T013-Q14",
+        "aiContext": {
+          "readableText": "سؤال 14",
+          "speechText": "العدد الأولي الزوجي الوحيد هو2."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 3,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Medium",
+        "examType": "qudurat",
+        "explanation": "ثلاثة أعداد أولية مجموعها14؛ لا يمكن أن تكون كلها فردية لأن مجموع ثلاثة فردية فردي، لذا أحدها2، وبالفعل 2+5+7=14.",
+        "fingerprint": "16e7fa7b3c0218469995e5757db820aa709f6e192a32578aa7f4d3099e2b6609",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t013_q14",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T013-Q14/dce3a229031eda2024831761c78a87375c1c0a7776db2e12904b11e7634c0593.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T013-Q14",
+          "pdfPageIndex": 13,
+          "printedPageNumber": 13,
+          "printedQuestionNumber": 14,
+          "imageHash": "dce3a229031eda2024831761c78a87375c1c0a7776db2e12904b11e7634c0593",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال 14",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "ثلاثة أعداد أولية مجموعها14؛ لا يمكن أن تكون كلها فردية لأن مجموع ثلاثة فردية فردي، لذا أحدها2، وبالفعل 2+5+7=14."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposedSkill": [
+        "skill_quant_02",
+        "sub_quant_02_3"
+      ],
+      "keyFix": null,
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T013-Q16",
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2cac4"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T013-Q16",
+        "aiContext": {
+          "readableText": "سؤال 16",
+          "speechText": "نحدد تقاطع نمطي الحضور داخل أسبوع واحد ثم نكرر عبر الأسابيع."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 0,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Medium",
+        "examType": "qudurat",
+        "explanation": "محمد يحضر أول4 أيام من الأسبوع وفهد آخر4 أيام؛ يوجد يوم تداخل واحد كل أسبوع، وخلال12 أسبوعًا يلتقيان12 مرة.",
+        "fingerprint": "f329604f079c805ac809218384e58a890d0ea4a656ed2251f8a07240830c1221",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t013_q16",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T013-Q16/525a0adf77f9059696c145f3f3f18cc2e5f6091e3d8922e39659d78494c6625a.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T013-Q16",
+          "pdfPageIndex": 13,
+          "printedPageNumber": 13,
+          "printedQuestionNumber": 16,
+          "imageHash": "525a0adf77f9059696c145f3f3f18cc2e5f6091e3d8922e39659d78494c6625a",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال 16",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "محمد يحضر أول4 أيام من الأسبوع وفهد آخر4 أيام؛ يوجد يوم تداخل واحد كل أسبوع، وخلال12 أسبوعًا يلتقيان12 مرة."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposedSkill": [
+        "skill_quant_14",
+        "sub_quant_14_1"
+      ],
+      "keyFix": null,
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T013-Q17",
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2cac5"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T013-Q17",
+        "aiContext": {
+          "readableText": "سؤال 17",
+          "speechText": "كلما صغر المقسوم عليه الموجب زاد عدد مضاعفاته ضمن مدى ثابت."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 0,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Medium",
+        "examType": "qudurat",
+        "explanation": "مع 0<س<ص<10، كل مضاعف لـص هو أندر من مضاعفات س؛ وعدد مضاعفات العدد الأصغر س تحت100 أكبر من عدد مضاعفات ص.",
+        "fingerprint": "8c6e664c49a797ee70dc2ba45aeb5987792687ca42323d78f15a47294d5af33a",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t013_q17",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T013-Q17/9a7c95c8baa19b464301930988c3da691e5ea32118625a039320962f1d01a552.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T013-Q17",
+          "pdfPageIndex": 13,
+          "printedPageNumber": 13,
+          "printedQuestionNumber": 17,
+          "imageHash": "9a7c95c8baa19b464301930988c3da691e5ea32118625a039320962f1d01a552",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال 17",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "مع 0<س<ص<10، كل مضاعف لـص هو أندر من مضاعفات س؛ وعدد مضاعفات العدد الأصغر س تحت100 أكبر من عدد مضاعفات ص."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposedSkill": [
+        "skill_quant_02",
+        "sub_quant_02_1"
+      ],
+      "keyFix": null,
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T013-Q18",
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2cac6"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T013-Q18",
+        "aiContext": {
+          "readableText": "سؤال 18",
+          "speechText": "التقاء دورتين دوريتين يحدث عند المضاعف المشترك الأصغر."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 3,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "دورة فيصل15 دقيقة ودورة فارس20 دقيقة؛ أول تزامن بعد م.م.أ(15،20)=60 دقيقة.",
+        "fingerprint": "21c43b4d3118d64d5afd50efbaf2dee9b83ab565856fc074b59b1433c7634918",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t013_q18",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T013-Q18/da1671810493b550be5fc39936ca23039c2e5f1bf90514f3fc8a8e9ac563c643.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T013-Q18",
+          "pdfPageIndex": 13,
+          "printedPageNumber": 13,
+          "printedQuestionNumber": 18,
+          "imageHash": "da1671810493b550be5fc39936ca23039c2e5f1bf90514f3fc8a8e9ac563c643",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال 18",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "دورة فيصل15 دقيقة ودورة فارس20 دقيقة؛ أول تزامن بعد م.م.أ(15،20)=60 دقيقة."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposedSkill": [
+        "skill_quant_02",
+        "sub_quant_02_3"
+      ],
+      "keyFix": null,
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T013-Q19",
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2cac7"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T013-Q19",
+        "aiContext": {
+          "readableText": "سؤال 19",
+          "speechText": "نبحث عن مضاعف مشترك لـ3 و5."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 3,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "العدد الذي يقبل القسمة على3 و5 معًا من الخيارات هو15.",
+        "fingerprint": "968c088b1ef6d65c1bbac1beb34543ef38f9304ece4b4fe7a669d71b02885042",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t013_q19",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T013-Q19/b30e7e51ddf4c8f243a3f8e12b7c19f6d3a59f9f276c9089f4a747792ba9ceea.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T013-Q19",
+          "pdfPageIndex": 13,
+          "printedPageNumber": 13,
+          "printedQuestionNumber": 19,
+          "imageHash": "b30e7e51ddf4c8f243a3f8e12b7c19f6d3a59f9f276c9089f4a747792ba9ceea",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال 19",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "العدد الذي يقبل القسمة على3 و5 معًا من الخيارات هو15."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposedSkill": [
+        "skill_quant_02",
+        "sub_quant_02_3"
+      ],
+      "keyFix": null,
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T013-Q20",
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2cac8"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T013-Q20",
+        "aiContext": {
+          "readableText": "سؤال 20",
+          "speechText": "نمثل العددين بالنسبة ثم نستخدم شرط المضاعف المشترك الأصغر لإيجاد عامل القياس."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 2,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Hard",
+        "examType": "qudurat",
+        "explanation": "النسبة 5:3، فليكن العددان 5ك و3ك. م.م.أ لهما=15ك=60 ⇒ ك=4، فالعددان20 و12، والأكبر20.",
+        "fingerprint": "a0503f60dde4612d58216e44f5d0f1d42dfdbd1d6434feaa7973ac899829447d",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t013_q20",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T013-Q20/f00c7c44cf1ed14d50ba122f2af2c7ad5b147866fc61d8f189348f8291fed8ff.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T013-Q20",
+          "pdfPageIndex": 13,
+          "printedPageNumber": 13,
+          "printedQuestionNumber": 20,
+          "imageHash": "f00c7c44cf1ed14d50ba122f2af2c7ad5b147866fc61d8f189348f8291fed8ff",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال 20",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "النسبة 5:3، فليكن العددان 5ك و3ك. م.م.أ لهما=15ك=60 ⇒ ك=4، فالعددان20 و12، والأكبر20."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposedSkill": [
+        "skill_quant_02",
+        "sub_quant_02_3"
+      ],
+      "keyFix": null,
+      "result": "PENDING"
+    },
+    {
+      "key": "GEO-T008-Q02",
+      "before": {
+        "_id": {
+          "$oid": "6acb549d1daea21097c2cebf"
+        },
+        "questionCode": "QDR-QNT-MNSF26-GEO-T008-Q02",
+        "aiContext": {
+          "readableText": "مثلث قائم وخط داخلي موازٍ للوتر؛ قارن 3س+2ص و180",
+          "speechText": "س+ص=90، لذا3س+2ص=180+س>180."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 0,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.814Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "س+ص=90، لذا3س+2ص=180+س>180.",
+        "fingerprint": "4e3b93044cc22752086c613752367f4e1ab55e883338872b53dbc72e45762716",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_geo_t008_q02",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-GEO-T008-Q02/f5b5275013ee166dc899582ea65bc3add069e3d191cf6615d2630eda456cdf1f.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_20",
+        "skillId": "skill_quant_20",
+        "skillIds": [
+          "skill_quant_20",
+          "sub_quant_20_3"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-GEO-T008-Q02",
+          "pdfPageIndex": 15,
+          "printedPageNumber": 15,
+          "printedQuestionNumber": 2,
+          "imageHash": "f5b5275013ee166dc899582ea65bc3add069e3d191cf6615d2630eda456cdf1f",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_20_3",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "مثلث قائم وخط داخلي موازٍ للوتر؛ قارن 3س+2ص و180",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-16T07:49:28.684Z"
+        },
+        "voiceExplanation": {
+          "text": "س+ص=90، لذا3س+2ص=180+س>180."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposedSkill": [
+        "skill_quant_20",
+        "sub_quant_20_1"
+      ],
+      "keyFix": null,
+      "result": "PENDING"
+    },
+    {
+      "key": "GEO-T008-Q15",
+      "before": {
+        "_id": {
+          "$oid": "6acb549d1daea21097c2cec6"
+        },
+        "questionCode": "QDR-QNT-MNSF26-GEO-T008-Q15",
+        "aiContext": {
+          "readableText": "مثلثان قائمان على قاعدة واحدة، زاويتاهما العلويتان40 و50؛ أوجد الزاوية بين الوترين",
+          "speechText": "الزاويتان عند القاعدة50 و40، فالزاوية بين الوترين=180−50−40=90."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 2,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.814Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "الزاويتان عند القاعدة50 و40، فالزاوية بين الوترين=180−50−40=90.",
+        "fingerprint": "f5b04868dcfaa2c89d31d014b298223e0f62d0d8a563b27bf77a5866423398c5",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_geo_t008_q15",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-GEO-T008-Q15/908076c35dab8c76ddb884fb1262707caf1314f2eff4689e2d3a100bf6bbc08f.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_20",
+        "skillId": "skill_quant_20",
+        "skillIds": [
+          "skill_quant_20",
+          "sub_quant_20_3"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-GEO-T008-Q15",
+          "pdfPageIndex": 15,
+          "printedPageNumber": 15,
+          "printedQuestionNumber": 15,
+          "imageHash": "908076c35dab8c76ddb884fb1262707caf1314f2eff4689e2d3a100bf6bbc08f",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_20_3",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "مثلثان قائمان على قاعدة واحدة، زاويتاهما العلويتان40 و50؛ أوجد الزاوية بين الوترين",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-16T07:49:28.684Z"
+        },
+        "voiceExplanation": {
+          "text": "الزاويتان عند القاعدة50 و40، فالزاوية بين الوترين=180−50−40=90."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposedSkill": [
+        "skill_quant_20",
+        "sub_quant_20_1"
+      ],
+      "keyFix": null,
+      "result": "PENDING"
+    }
+  ]
+}

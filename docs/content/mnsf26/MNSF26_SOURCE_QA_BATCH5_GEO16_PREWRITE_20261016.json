@@ -1,0 +1,69 @@
+{
+  "status": "PREWRITE",
+  "sourceKey": "MNSF26-GEO-T004-Q16",
+  "sourcePdf": "geometry page PDF index 6, printed Q16",
+  "sourceSha256": "a823a90574476804cc29f5ca63ea8e9eaadab0cffe3afa78f791bbc8c6ee75d5",
+  "sourceObservation": "Angles س and ص corresponding for parallel lines, equal; compare 4س vs 6ص. For positive angles, 6ص > 4س. Printed choice ب. Atlas key was أ, but existing explanation already states second bigger.",
+  "r2Fetched": false,
+  "quizReferences": "Pending check prior to write",
+  "before": {
+    "_id": {
+      "$oid": "6acb549d1daea21097c2ce8f"
+    },
+    "questionCode": "QDR-QNT-MNSF26-GEO-T004-Q16",
+    "aiContext": {
+      "readableText": "قارن 4س و6ص لمستقيمين متوازيين وقاطع حيث س وص متناظرتان",
+      "speechText": "س=ص، لذا6ص>4س."
+    },
+    "approvalStatus": "approved",
+    "correctOptionIndex": 0,
+    "createdAt": {
+      "$date": "2026-10-11T09:19:20.814Z"
+    },
+    "difficulty": "Easy",
+    "examType": "qudurat",
+    "explanation": "س=ص، لذا6ص>4س.",
+    "fingerprint": "871f2e8014fd376c946a983ef105f74574c127a044f20f253eb63f340343764f",
+    "id": "q_qdr_qnt_mnsf26_mnsf26_geo_t004_q16",
+    "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-GEO-T004-Q16/b642923e9be769bccddef0a127f3ac03fb471973cb8d72b16464ce3602ab93be.webp",
+    "isPublished": true,
+    "options": [
+      "أ",
+      "ب",
+      "ج",
+      "د"
+    ],
+    "ownerType": "platform",
+    "pathId": "p_1777779639431",
+    "sectionId": "sec_sub_1777779748206_19",
+    "skillId": "skill_quant_19",
+    "skillIds": [
+      "skill_quant_19",
+      "sub_quant_19_2"
+    ],
+    "source": "imported",
+    "sourceMeta": {
+      "documentCode": "MNSF26",
+      "sourceItemId": "MNSF26-GEO-T004-Q16",
+      "pdfPageIndex": 6,
+      "printedPageNumber": 6,
+      "printedQuestionNumber": 16,
+      "imageHash": "b642923e9be769bccddef0a127f3ac03fb471973cb8d72b16464ce3602ab93be",
+      "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+      "imageVersion": 2
+    },
+    "subSkillId": "sub_quant_19_2",
+    "subject": "qudurat_quantitative",
+    "subjectId": "sub_1777779748206",
+    "text": "قارن 4س و6ص لمستقيمين متوازيين وقاطع حيث س وص متناظرتان",
+    "type": "mcq",
+    "updatedAt": {
+      "$date": "2026-10-16T07:49:22.708Z"
+    },
+    "voiceExplanation": {
+      "text": "س=ص، لذا6ص>4س."
+    },
+    "cropStatus": "VERIFIED",
+    "optionsEmbeddedInImage": true
+  }
+}

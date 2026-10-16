@@ -1,0 +1,3358 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "batch": "B9",
+  "status": "PREWRITE_CHECKPOINT",
+  "date": "2026-10-16",
+  "scope": {
+    "subjectId": "sub_1777779748206",
+    "pathId": "p_1777779639431"
+  },
+  "originalPDFs": {
+    "arithmetic": {
+      "sha256": "46f2d9c2c8482f99f3d28ea9fe2ae7cdaa1b62102a6cbe6aa35deae78c672ee3",
+      "pagesZeroBased": [
+        25,
+        26,
+        27,
+        28
+      ]
+    },
+    "geometry": {
+      "sha256": "a823a90574476804cc29f5ca63ea8e9eaadab0cffe3afa78f791bbc8c6ee75d5",
+      "pagesZeroBased": [
+        16,
+        17,
+        18,
+        19
+      ]
+    }
+  },
+  "r2WebpFetched": 0,
+  "r2SHACompared": 0,
+  "notInspected": [
+    "AR-T014-Q08",
+    "AR-T014-Q19",
+    "AR-T014-Q20",
+    "GEO-T009-Q03",
+    "GEO-T009-Q13",
+    "GEO-T009-Q15",
+    "GEO-T009-Q16",
+    "GEO-T009-Q19",
+    "GEO-T010-Q05",
+    "GEO-T010-Q09",
+    "GEO-T010-Q19"
+  ],
+  "quizReferenceCheck": [
+    {
+      "collection": "quizzes",
+      "result": []
+    },
+    {
+      "collection": "assessmentversions",
+      "result": []
+    },
+    {
+      "collection": "assessmentattempts",
+      "result": []
+    }
+  ],
+  "notes": [
+    "Proposed taxonomy changes only for visually and mathematically inspected source questions.",
+    "HOLD remains draft until R2 WEBP independently checked; no approved promotion.",
+    "Some original source problems have no unique mathematically consistent option.",
+    "AR-T013-Q06 previously denied safety remains untouched."
+  ],
+  "targets": [
+    {
+      "key": "AR-T014-Q01",
+      "sourcePDF": "arithmetic",
+      "sourcePDFZeroPage": 25,
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2cac9"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T014-Q01",
+        "aiContext": {
+          "readableText": "8 □ 3 □ 1 = 6.",
+          "speechText": "كل عدد صحيح هو من مضاعفات 1."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 1,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "العددان 3 و5 كلاهما من مضاعفات 1.",
+        "fingerprint": "90805853c1d85e67972a96ab129cdd9e86dfcf107ad2e981921a64aa725f2bfc",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t014_q01",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T014-Q01/628a81e1bd6a7dad17543e0147dc0ddd9b820992c5173cf6c93d7838caacb376.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T014-Q01",
+          "pdfPageIndex": 14,
+          "printedPageNumber": 14,
+          "printedQuestionNumber": 1,
+          "imageHash": "628a81e1bd6a7dad17543e0147dc0ddd9b820992c5173cf6c93d7838caacb376",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "8 □ 3 □ 1 = 6.",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "العددان 3 و5 كلاهما من مضاعفات 1."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposed": {
+        "skillId": "skill_quant_02",
+        "subSkillId": "sub_quant_02_3",
+        "text": "العددان ٣ و٥ من مضاعفات أي عدد؟",
+        "explanation": "٣=٣×١، و٥=٥×١؛ إذن كلاهما من مضاعفات العدد ١، والاختيار (ب).",
+        "hold": true
+      }
+    },
+    {
+      "key": "AR-T014-Q02",
+      "sourcePDF": "arithmetic",
+      "sourcePDFZeroPage": 25,
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2caca"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T014-Q02",
+        "aiContext": {
+          "readableText": "سؤال 2",
+          "speechText": "نكتب العددين كمضاعفين ثم نبسط العوامل."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 2,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Medium",
+        "examType": "qudurat",
+        "explanation": "س=14أ، ص=15ب؛ إذن س×ص/35=(14×15/35)أب=6أب، فهو من مضاعفات6.",
+        "fingerprint": "02133b400e7a837bbf70d2c6fe06aa70d0affdfa0ce8779693a3beaa05c6e8bb",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t014_q02",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T014-Q02/1535f72a993d96e11f64abc17773ff5c93b886e363d254eae672e06d5e820327.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T014-Q02",
+          "pdfPageIndex": 14,
+          "printedPageNumber": 14,
+          "printedQuestionNumber": 2,
+          "imageHash": "1535f72a993d96e11f64abc17773ff5c93b886e363d254eae672e06d5e820327",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال 2",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "س=14أ، ص=15ب؛ إذن س×ص/35=(14×15/35)أب=6أب، فهو من مضاعفات6."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposed": {
+        "skillId": "skill_quant_02",
+        "subSkillId": "sub_quant_02_3"
+      }
+    },
+    {
+      "key": "AR-T014-Q03",
+      "sourcePDF": "arithmetic",
+      "sourcePDFZeroPage": 25,
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2cacb"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T014-Q03",
+        "aiContext": {
+          "readableText": "سؤال 3",
+          "speechText": "الأعداد المشتركة تأتي كل م.م.أ(5،3)=15."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 3,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Medium",
+        "examType": "qudurat",
+        "explanation": "القافز بخطوة5 والآخر بخطوة3 يشتركان عند مضاعفات15. من الصفر وقبل100: 0،15،30،45،60،75،90؛ عددها7.",
+        "fingerprint": "660e8a52d2f79486ce0ed7f1f558bdde9e5a68e94dd73f98772b1d7ff348e814",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t014_q03",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T014-Q03/74423658be000ac1acde86208e39c6dad5f356aa92a74e311a6fccd77cabd4d0.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T014-Q03",
+          "pdfPageIndex": 14,
+          "printedPageNumber": 14,
+          "printedQuestionNumber": 3,
+          "imageHash": "74423658be000ac1acde86208e39c6dad5f356aa92a74e311a6fccd77cabd4d0",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال 3",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "القافز بخطوة5 والآخر بخطوة3 يشتركان عند مضاعفات15. من الصفر وقبل100: 0،15،30،45،60،75،90؛ عددها7."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposed": {
+        "skillId": "skill_quant_02",
+        "subSkillId": "sub_quant_02_3"
+      }
+    },
+    {
+      "key": "AR-T014-Q04",
+      "sourcePDF": "arithmetic",
+      "sourcePDFZeroPage": 25,
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2cacc"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T014-Q04",
+        "aiContext": {
+          "readableText": "سؤال 4",
+          "speechText": "في الضرب يمكن ضرب البواقي ثم أخذ باقي القسمة مرة أخرى."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 2,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Medium",
+        "examType": "qudurat",
+        "explanation": "م≡2 (mod 6)، ن≡5 (mod 6)، إذن م×ن≡10≡4 (mod 6).",
+        "fingerprint": "5fa22ed2feb6163e456c854c2ad66a559217b73ee09482e3ebf29c4db1a52829",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t014_q04",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T014-Q04/5d14eb713b3217863749c17053759bf9e49564ec74cdfcde1bee5ffee7cb7481.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T014-Q04",
+          "pdfPageIndex": 14,
+          "printedPageNumber": 14,
+          "printedQuestionNumber": 4,
+          "imageHash": "5d14eb713b3217863749c17053759bf9e49564ec74cdfcde1bee5ffee7cb7481",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال 4",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "م≡2 (mod 6)، ن≡5 (mod 6)، إذن م×ن≡10≡4 (mod 6)."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposed": {
+        "skillId": "skill_quant_02",
+        "subSkillId": "sub_quant_02_2"
+      }
+    },
+    {
+      "key": "AR-T014-Q05",
+      "sourcePDF": "arithmetic",
+      "sourcePDFZeroPage": 25,
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2cacd"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T014-Q05",
+        "aiContext": {
+          "readableText": "سؤال 5",
+          "speechText": "نضرب الباقيين ثم نأخذ باقي القسمة على7."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 3,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Medium",
+        "examType": "qudurat",
+        "explanation": "س≡4 (mod 7)، ص≡3 (mod 7)، إذن س×ص≡12≡5 (mod 7).",
+        "fingerprint": "3e2f2de78db64addcffc7bb5897bb701f568485eb65e26e6823157dc8f4eda94",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t014_q05",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T014-Q05/8615fe46efc60045be9cbe513c84eb0c2a25d3c60cbf4526ebc436ed5e68b9cb.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T014-Q05",
+          "pdfPageIndex": 14,
+          "printedPageNumber": 14,
+          "printedQuestionNumber": 5,
+          "imageHash": "8615fe46efc60045be9cbe513c84eb0c2a25d3c60cbf4526ebc436ed5e68b9cb",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال 5",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "س≡4 (mod 7)، ص≡3 (mod 7)، إذن س×ص≡12≡5 (mod 7)."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposed": {
+        "skillId": "skill_quant_02",
+        "subSkillId": "sub_quant_02_2"
+      }
+    },
+    {
+      "key": "AR-T014-Q06",
+      "sourcePDF": "arithmetic",
+      "sourcePDFZeroPage": 25,
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2cace"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T014-Q06",
+        "aiContext": {
+          "readableText": "سؤال 6",
+          "speechText": "تساوي البواقي يعني أن المقسوم عليه يقسم فروق الأعداد."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 2,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Hard",
+        "examType": "qudurat",
+        "explanation": "إذا أعطت 89 و139 و189 نفس الباقي عند القسمة على ن، فإن ن يقسم الفروق 50؛ أكبر اختيار يقسم50 هو25.",
+        "fingerprint": "16672363b9641aab5f1a1c499cb5ef8b73737f333d0195b55275b78eb0424f36",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t014_q06",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T014-Q06/394690747c6cb6f9cccc59dac2e40f8e3f083f10c40b825f6838346f1419c2fb.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T014-Q06",
+          "pdfPageIndex": 14,
+          "printedPageNumber": 14,
+          "printedQuestionNumber": 6,
+          "imageHash": "394690747c6cb6f9cccc59dac2e40f8e3f083f10c40b825f6838346f1419c2fb",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال 6",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "إذا أعطت 89 و139 و189 نفس الباقي عند القسمة على ن، فإن ن يقسم الفروق 50؛ أكبر اختيار يقسم50 هو25."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposed": {
+        "skillId": "skill_quant_02",
+        "subSkillId": "sub_quant_02_2"
+      }
+    },
+    {
+      "key": "AR-T014-Q07",
+      "sourcePDF": "arithmetic",
+      "sourcePDFZeroPage": 25,
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2cacf"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T014-Q07",
+        "aiContext": {
+          "readableText": "سؤال 7",
+          "speechText": "نستخدم خارج القسمة الصحيح لتوزيع العناصر بالتساوي."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 1,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "240÷19=12 والباقي12؛ إذن كل طبق يأخذ12 بيضة بالتساوي.",
+        "fingerprint": "f398f0f5f6a0b56c9a761c419f8da7c9a633f93d0756f740d3ea54136a83f402",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t014_q07",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T014-Q07/cea7422f1459e221e6d6dac4136e3edf2c39ca17bf22796d7c5d9275dfaeff23.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T014-Q07",
+          "pdfPageIndex": 14,
+          "printedPageNumber": 14,
+          "printedQuestionNumber": 7,
+          "imageHash": "cea7422f1459e221e6d6dac4136e3edf2c39ca17bf22796d7c5d9275dfaeff23",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال 7",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "240÷19=12 والباقي12؛ إذن كل طبق يأخذ12 بيضة بالتساوي."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposed": {
+        "skillId": "skill_quant_02",
+        "subSkillId": "sub_quant_02_2",
+        "text": "إذا وُزِّعت ١٢٠ بيضة على ٩ أطباق بالتساوي، فكم بيضة في الطبق الواحد؟",
+        "correctOptionIndex": 2,
+        "explanation": "١٢٠÷٩=١٣ والباقي ٣. إذا كان المقصود أكبر عدد صحيح متساوٍ في كل طبق فالإجابة ١٣ (ج)، وتتبقى ٣ بيضات. لكن عبارة توزيع جميع البيض بالتساوي غير دقيقة؛ يبقى السؤال معلّقًا لتحرير الصياغة.",
+        "hold": true,
+        "conflict": "source_wording_120_not_divisible_by_9"
+      }
+    },
+    {
+      "key": "AR-T014-Q09",
+      "sourcePDF": "arithmetic",
+      "sourcePDFZeroPage": 25,
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2cad0"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T014-Q09",
+        "aiContext": {
+          "readableText": "سؤال 9",
+          "speechText": "يُطبَّق النمط المعتمد في same-time-rate comparison. ثم تُراجع النتيجة: 625.."
+        },
+        "approvalStatus": "draft",
+        "correctOptionIndex": 3,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "يُطبَّق النمط المعتمد في same-time-rate comparison. ثم تُراجع النتيجة: 625..",
+        "fingerprint": "f0c9a77ccce5991cb1b5854e7ded225f4e9cf844ef8ce142134488b1592c191d",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t014_q09",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T014-Q09/1db5967bbf697df762822e4a347133840c037318595481118430917c3216d317.webp",
+        "isPublished": false,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T014-Q09",
+          "pdfPageIndex": 14,
+          "printedPageNumber": 14,
+          "printedQuestionNumber": 9,
+          "imageHash": "1db5967bbf697df762822e4a347133840c037318595481118430917c3216d317",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال 9",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-16T07:58:26.418Z"
+        },
+        "voiceExplanation": {
+          "text": "يُطبَّق النمط المعتمد في same-time-rate comparison. ثم تُراجع النتيجة: 625.."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true,
+        "reviewerNotes": "MNSF26_QA_HOLD_20261016: شرح نمطي لا يوثق حل المسألة أو جميع خياراتها؛ يلزم حل مستقل وفحص صورة السؤال ومفتاح الإجابة وربط المهارة قبل إعادة الاعتماد."
+      },
+      "proposed": {
+        "skillId": "skill_quant_02",
+        "subSkillId": "sub_quant_02_2",
+        "text": "إذا كان باقي قسمة م على ٦ يساوي ٢، وباقي قسمة ن على ٦ يساوي ٥، فما باقي قسمة م+ن على ٦؟",
+        "correctOptionIndex": 0,
+        "explanation": "م≡٢ (mod ٦) ون≡٥ (mod ٦)، لذلك م+ن≡٧≡١ (mod ٦). الاختيار (أ).",
+        "hold": true
+      }
+    },
+    {
+      "key": "AR-T014-Q10",
+      "sourcePDF": "arithmetic",
+      "sourcePDFZeroPage": 25,
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2cad1"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T014-Q10",
+        "aiContext": {
+          "readableText": "سؤال 10",
+          "speechText": "نطبق قواعد قابلية القسمة على كل اختيار."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 2,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "1620 يقبل القسمة على4 و6 و9، لكنه لا يقبل القسمة على8 لأن آخر ثلاث خانات 620 ليست من مضاعفات8.",
+        "fingerprint": "94b0f0c6733391d492d26de6f861622597dfd96a96843c79f39bda8d2c0e0593",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t014_q10",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T014-Q10/36aa979077390efc9dabc5eeabef3d9c3aa3960f061c87331db1f2571666b59c.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T014-Q10",
+          "pdfPageIndex": 14,
+          "printedPageNumber": 14,
+          "printedQuestionNumber": 10,
+          "imageHash": "36aa979077390efc9dabc5eeabef3d9c3aa3960f061c87331db1f2571666b59c",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال 10",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "1620 يقبل القسمة على4 و6 و9، لكنه لا يقبل القسمة على8 لأن آخر ثلاث خانات 620 ليست من مضاعفات8."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposed": {
+        "skillId": "skill_quant_02",
+        "subSkillId": "sub_quant_02_1"
+      }
+    },
+    {
+      "key": "AR-T014-Q11",
+      "sourcePDF": "arithmetic",
+      "sourcePDFZeroPage": 25,
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2cad2"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T014-Q11",
+        "aiContext": {
+          "readableText": "سؤال 11",
+          "speechText": "نختزل التعبير بترديد5."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 2,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Medium",
+        "examType": "qudurat",
+        "explanation": "5م من مضاعفات5، لذا 5م−3 عند القسمة على5 يعطي باقيًا يساوي −3≡2.",
+        "fingerprint": "88650a9ed1f70c6861e63efc800ec12162506aa97fb3e647e9d38e17c29a14fc",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t014_q11",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T014-Q11/9ffe6921b1486cc6eefbfd07f4719c511c471423281c1d04f3d5bbb66ece8bc7.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T014-Q11",
+          "pdfPageIndex": 14,
+          "printedPageNumber": 14,
+          "printedQuestionNumber": 11,
+          "imageHash": "9ffe6921b1486cc6eefbfd07f4719c511c471423281c1d04f3d5bbb66ece8bc7",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال 11",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "5م من مضاعفات5، لذا 5م−3 عند القسمة على5 يعطي باقيًا يساوي −3≡2."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposed": {
+        "skillId": "skill_quant_02",
+        "subSkillId": "sub_quant_02_2"
+      }
+    },
+    {
+      "key": "AR-T014-Q12",
+      "sourcePDF": "arithmetic",
+      "sourcePDFZeroPage": 25,
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2cad3"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T014-Q12",
+        "aiContext": {
+          "readableText": "سؤال 12",
+          "speechText": "العدد 10ك+9 يساوي 5(2ك+1)+4."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 3,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "إذا كان باقي قسمة س على10 هو9، فآخر رقم9، وبالتالي باقي قسمته على5 هو4.",
+        "fingerprint": "ce37d7b73187e6e0f2d470103c57b3f61cd9e39386ef52d5064abbdf986faa50",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t014_q12",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T014-Q12/73e881e7d8163b279ec5484c3324b9226a690b9844c08b7c3464d9c0e2bd1f8f.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T014-Q12",
+          "pdfPageIndex": 14,
+          "printedPageNumber": 14,
+          "printedQuestionNumber": 12,
+          "imageHash": "73e881e7d8163b279ec5484c3324b9226a690b9844c08b7c3464d9c0e2bd1f8f",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال 12",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "إذا كان باقي قسمة س على10 هو9، فآخر رقم9، وبالتالي باقي قسمته على5 هو4."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposed": {
+        "skillId": "skill_quant_02",
+        "subSkillId": "sub_quant_02_2"
+      }
+    },
+    {
+      "key": "AR-T014-Q13",
+      "sourcePDF": "arithmetic",
+      "sourcePDFZeroPage": 25,
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2cad4"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T014-Q13",
+        "aiContext": {
+          "readableText": "سؤال 13",
+          "speechText": "يُطبَّق النمط المعتمد في elapsed-years / subtraction. ثم تُراجع النتيجة: 23.."
+        },
+        "approvalStatus": "draft",
+        "correctOptionIndex": 3,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "يُطبَّق النمط المعتمد في elapsed-years / subtraction. ثم تُراجع النتيجة: 23..",
+        "fingerprint": "910e4d91f05229016dbd9ab50546d8a0900c0e77fdbdc4b3974c5c1d6be3af94",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t014_q13",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T014-Q13/6b237c93bf5e74ec522733b703c13908b4644db99ef6275264fa3ad0e8ce9c32.webp",
+        "isPublished": false,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T014-Q13",
+          "pdfPageIndex": 14,
+          "printedPageNumber": 14,
+          "printedQuestionNumber": 13,
+          "imageHash": "6b237c93bf5e74ec522733b703c13908b4644db99ef6275264fa3ad0e8ce9c32",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال 13",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-16T07:58:26.418Z"
+        },
+        "voiceExplanation": {
+          "text": "يُطبَّق النمط المعتمد في elapsed-years / subtraction. ثم تُراجع النتيجة: 23.."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true,
+        "reviewerNotes": "MNSF26_QA_HOLD_20261016: شرح نمطي لا يوثق حل المسألة أو جميع خياراتها؛ يلزم حل مستقل وفحص صورة السؤال ومفتاح الإجابة وربط المهارة قبل إعادة الاعتماد."
+      },
+      "proposed": {
+        "skillId": "skill_quant_02",
+        "subSkillId": "sub_quant_02_3",
+        "text": "إذا قُسِّم ٢٥ ريالًا على ثلاثة أشخاص وكان نصيب أول شخصين عددين أوليين مختلفين، فما نصيب الشخص الثالث؟",
+        "explanation": "المعطيات لا تحدد عددين أوليين بعينهما: إذا كان النصيبان ٣ و٥ كان الباقي ١٧، وإذا كانا ٢ و٥ كان الباقي ١٨؛ وكلاهما ضمن الاختيارات. لا توجد إجابة وحيدة؛ يبقى السؤال معلّقًا حتى يراجع المصدر أو يعاد تحريره.",
+        "hold": true,
+        "conflict": "multiple_valid_options"
+      }
+    },
+    {
+      "key": "AR-T014-Q14",
+      "sourcePDF": "arithmetic",
+      "sourcePDFZeroPage": 25,
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2cad5"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T014-Q14",
+        "aiContext": {
+          "readableText": "سؤال الحساب/الجبر الاختبار 14 رقم 14 من كتاب المنصف 26",
+          "speechText": "باقي القسمة على5 يتحدد من رقم الآحاد."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 0,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "97833÷5 باقيه3 لأن آحاده3، و98737÷5 باقيه2 لأن آحاده7؛ إذن 3>2.",
+        "fingerprint": "5e82068c4535fbeb90f4412958a52e08b34f332697a464086d6d0b7dd5c6220d",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t014_q14",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T014-Q14/bc52b7cb2b23e746438dc49ea366087a18dc26ba3db9a08590ea7f1f5cc976e1.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T014-Q14",
+          "pdfPageIndex": 1,
+          "printedPageNumber": 1,
+          "printedQuestionNumber": 14,
+          "imageHash": "bc52b7cb2b23e746438dc49ea366087a18dc26ba3db9a08590ea7f1f5cc976e1",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال الحساب/الجبر الاختبار 14 رقم 14 من كتاب المنصف 26",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "97833÷5 باقيه3 لأن آحاده3، و98737÷5 باقيه2 لأن آحاده7؛ إذن 3>2."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposed": {
+        "skillId": "skill_quant_02",
+        "subSkillId": "sub_quant_02_2",
+        "text": "قارن بين باقي قسمة ٩٧٨٣٣ على ٥ (القيمة الأولى) وباقي قسمة ٩٨٧٣٧ على ٥ (القيمة الثانية).",
+        "hold": true
+      }
+    },
+    {
+      "key": "AR-T014-Q15",
+      "sourcePDF": "arithmetic",
+      "sourcePDFZeroPage": 25,
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2cad6"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T014-Q15",
+        "aiContext": {
+          "readableText": "سؤال الحساب/الجبر الاختبار 14 رقم 15 من كتاب المنصف 26",
+          "speechText": "نأخذ باقي القسمة بعد التوزيع بالتساوي."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 1,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "10÷4=2 والباقي2؛ يتبقى شمعتان.",
+        "fingerprint": "cb1e8af730be8dda25b4ab6f342c5ad0b86ed94800d9cfa6a25d1f2be624fafe",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t014_q15",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T014-Q15/581ecdecf6855bb1b0e39430b4329d9e6b3e812cc05dcace2c1f18bde78ff3ea.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T014-Q15",
+          "pdfPageIndex": 1,
+          "printedPageNumber": 1,
+          "printedQuestionNumber": 15,
+          "imageHash": "581ecdecf6855bb1b0e39430b4329d9e6b3e812cc05dcace2c1f18bde78ff3ea",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال الحساب/الجبر الاختبار 14 رقم 15 من كتاب المنصف 26",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "10÷4=2 والباقي2؛ يتبقى شمعتان."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposed": {
+        "skillId": "skill_quant_02",
+        "subSkillId": "sub_quant_02_2",
+        "text": "١٠ شمعات وُزِّعت على ٩ أشخاص، كم شمعة تتبقى؟",
+        "correctOptionIndex": 0,
+        "explanation": "١٠=٩×١+١؛ إذن تتبقى شمعة واحدة، والاختيار (أ).",
+        "hold": true
+      }
+    },
+    {
+      "key": "AR-T014-Q16",
+      "sourcePDF": "arithmetic",
+      "sourcePDFZeroPage": 26,
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2cad7"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T014-Q16",
+        "aiContext": {
+          "readableText": "سؤال الحساب/الجبر الاختبار 14 رقم 16 من كتاب المنصف 26",
+          "speechText": "خارج القسمة الصحيح هو نصيب كل شخص."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 0,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "17÷4=4 والباقي1؛ كل شخص يأخذ4 أقلام.",
+        "fingerprint": "b0ae75e33e762d62c6750036377dda5299fc9f67e4d51e334850d55653f08062",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t014_q16",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T014-Q16/5bb0ca596d4e5bc28be484ee32205337f77c16b2dfcb3558510e493e977ab6ad.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T014-Q16",
+          "pdfPageIndex": 1,
+          "printedPageNumber": 1,
+          "printedQuestionNumber": 16,
+          "imageHash": "5bb0ca596d4e5bc28be484ee32205337f77c16b2dfcb3558510e493e977ab6ad",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال الحساب/الجبر الاختبار 14 رقم 16 من كتاب المنصف 26",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "17÷4=4 والباقي1؛ كل شخص يأخذ4 أقلام."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposed": {
+        "skillId": "skill_quant_02",
+        "subSkillId": "sub_quant_02_2",
+        "text": "شخص لديه ١٧ قلمًا يريد توزيعها بالتساوي على أربعة أشخاص؛ ما أكبر عدد من الأقلام يأخذه كل شخص؟",
+        "hold": true
+      }
+    },
+    {
+      "key": "AR-T014-Q17",
+      "sourcePDF": "arithmetic",
+      "sourcePDFZeroPage": 26,
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2cad8"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T014-Q17",
+        "aiContext": {
+          "readableText": "سؤال الحساب/الجبر الاختبار 14 رقم 17 من كتاب المنصف 26",
+          "speechText": "بدل حل جميع حلول التوافقات، نتحقق من الخيارات بشرطي البواقي والقسمة."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 0,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Hard",
+        "examType": "qudurat",
+        "explanation": "نختبر الاختيارات: 721−1=720 وهو يقبل القسمة على2،3،4،5،6، كما أن 721=7×103؛ إذن يحقق الشرطين.",
+        "fingerprint": "4c51f91ed3e923f9674c3892ed17890d0b4cc8a51402d5553798168ea89e08ff",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t014_q17",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T014-Q17/23693a9c1f49e1adaa7f8ee0dd3082fccf9b9024b8324835fa5e3b2ba40fd322.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T014-Q17",
+          "pdfPageIndex": 1,
+          "printedPageNumber": 1,
+          "printedQuestionNumber": 17,
+          "imageHash": "23693a9c1f49e1adaa7f8ee0dd3082fccf9b9024b8324835fa5e3b2ba40fd322",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال الحساب/الجبر الاختبار 14 رقم 17 من كتاب المنصف 26",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "نختبر الاختيارات: 721−1=720 وهو يقبل القسمة على2،3،4،5،6، كما أن 721=7×103؛ إذن يحقق الشرطين."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposed": {
+        "skillId": "skill_quant_02",
+        "subSkillId": "sub_quant_02_2",
+        "text": "عدد إذا قُسم على ٢ و٣ و٤ و٥ و٦ كان الباقي ١، وإذا قُسم على ٧ كان الباقي صفرًا، فما هذا العدد؟",
+        "hold": true
+      }
+    },
+    {
+      "key": "AR-T014-Q18",
+      "sourcePDF": "arithmetic",
+      "sourcePDFZeroPage": 26,
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2cad9"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T014-Q18",
+        "aiContext": {
+          "readableText": "سؤال الحساب/الجبر الاختبار 14 رقم 18 من كتاب المنصف 26",
+          "speechText": "نستخدم خوارزمية القسمة: المقسوم=المقسوم عليه×الخارج+الباقي."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 3,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Medium",
+        "examType": "qudurat",
+        "explanation": "المعنى أن 9 عند قسمته على س يعطي خارجًا ص وباقيًا2؛ إذن 9=س×ص+2، ومن الخيارات س=7 يعطي ص=1 وباقي2.",
+        "fingerprint": "07548433678761812d077cf79ff419fcbe2b8dfe43462563793c8269ec1ba82f",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t014_q18",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T014-Q18/877845ce70efc7c9979d4d10b938a52ef6c79ca05f44b5c59455dedd67f96ddc.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T014-Q18",
+          "pdfPageIndex": 1,
+          "printedPageNumber": 1,
+          "printedQuestionNumber": 18,
+          "imageHash": "877845ce70efc7c9979d4d10b938a52ef6c79ca05f44b5c59455dedd67f96ddc",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال الحساب/الجبر الاختبار 14 رقم 18 من كتاب المنصف 26",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "المعنى أن 9 عند قسمته على س يعطي خارجًا ص وباقيًا2؛ إذن 9=س×ص+2، ومن الخيارات س=7 يعطي ص=1 وباقي2."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposed": {
+        "skillId": "skill_quant_02",
+        "subSkillId": "sub_quant_02_2",
+        "text": "إذا كان خارج قسمة ٩ على س هو ص والباقي ٢، فما قيمة س من الاختيارات؟",
+        "hold": true
+      }
+    },
+    {
+      "key": "AR-T015-Q01",
+      "sourcePDF": "arithmetic",
+      "sourcePDFZeroPage": 27,
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2cada"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T015-Q01",
+        "aiContext": {
+          "readableText": "هرم أعداد: الصف الأعلى 15،9،3،3 ثم8،4،2 ثم4،2؛ أوجد الرقم الأخير.",
+          "speechText": "REVIEW fail-closed: النمط غير حسابي بفارق ثابت؛ 01_3 مرشح يحتاج اعتماد تصنيف الأنماط المركبة.؛ الإجابة الرياضية المرشحة: 2 (أ)؛ الحل: كل دائرة أسفل دائرتين تساوي مجموعهما مقسومًا على3: (15+9)/3=8، (9+3)/3=4، (3+3)/3=2؛ ثم(8+4)/3=4، (4+2)/3=2؛ الأخير(4+2)/3=2."
+        },
+        "approvalStatus": "draft",
+        "correctOptionIndex": 3,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Medium",
+        "examType": "qudurat",
+        "explanation": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة.",
+        "fingerprint": "c78dcd38e4c09f622409700643d29b225a545d8e33399ab3a7be3041631653e0",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t015_q01",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T015-Q01/1cec5130df577e8fcbf3645cdba8db2f4c709be432581febafc07298ef1cdb85.webp",
+        "isPublished": false,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_4",
+        "skillId": "skill_quant_04",
+        "skillIds": [
+          "skill_quant_04",
+          "sub_quant_04_2"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T015-Q01",
+          "pdfPageIndex": 28,
+          "printedPageNumber": 28,
+          "printedQuestionNumber": 1,
+          "imageHash": "1cec5130df577e8fcbf3645cdba8db2f4c709be432581febafc07298ef1cdb85",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_04_2",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "هرم أعداد: الصف الأعلى 15،9،3،3 ثم8،4،2 ثم4،2؛ أوجد الرقم الأخير.",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-16T07:55:51.795Z"
+        },
+        "voiceExplanation": {
+          "text": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true,
+        "reviewerNotes": "MNSF26_QA_HOLD_20261016: شرح عام لا يثبت الحل؛ اختيار رقم 4 متكرر في جميع أسئلة هذه المجموعة. يلزم فحص صورة السؤال والاختيارات والحل الرياضي والتصنيف بصورة مستقلة قبل إعادة الاعتماد."
+      },
+      "proposed": {
+        "skillId": "skill_quant_14",
+        "subSkillId": "sub_quant_14_4",
+        "correctOptionIndex": 0,
+        "explanation": "قاعدة الهرم هي قسمة مجموع كل عددين متجاورين على ٣: (١٥+٩)÷٣=٨، و(٩+٣)÷٣=٤، و(٣+٣)÷٣=٢، ثم (٨+٤)÷٣=٤، و(٤+٢)÷٣=٢، وأخيرًا (٤+٢)÷٣=٢. الإجابة (أ).",
+        "hold": true
+      }
+    },
+    {
+      "key": "AR-T015-Q02",
+      "sourcePDF": "arithmetic",
+      "sourcePDFZeroPage": 27,
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2cadb"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T015-Q02",
+        "aiContext": {
+          "readableText": "سؤال الحساب/الجبر الاختبار 15 رقم 2 من كتاب المنصف 26",
+          "speechText": "نستنتج قاعدة النمط من أزواج القيم ثم نطبقها."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 2,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Medium",
+        "examType": "qudurat",
+        "explanation": "الصف العلوي 10،9،8،7،6... والسفلي يتبع ن²+1: 10²+1=101، 9²+1=82، 8²+1=65، 7²+1=50؛ عند ن=6 تكون س=36+1=37.",
+        "fingerprint": "56961b8e5f0fba32a402789f78aabfab7ed7208ab1199e5cc791e348b872b317",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t015_q02",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T015-Q02/91b5522d32943a30f0db530a4dcbdd30ea5fdeb2388e836d298b5649f51cd5a8.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T015-Q02",
+          "pdfPageIndex": 1,
+          "printedPageNumber": 1,
+          "printedQuestionNumber": 2,
+          "imageHash": "91b5522d32943a30f0db530a4dcbdd30ea5fdeb2388e836d298b5649f51cd5a8",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال الحساب/الجبر الاختبار 15 رقم 2 من كتاب المنصف 26",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "الصف العلوي 10،9،8،7،6... والسفلي يتبع ن²+1: 10²+1=101، 9²+1=82، 8²+1=65، 7²+1=50؛ عند ن=6 تكون س=36+1=37."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposed": {
+        "skillId": "skill_quant_14",
+        "subSkillId": "sub_quant_14_4",
+        "text": "في جدول القيم، كل عدد أسفل العدد ن يساوي ن²+١؛ أوجد س تحت العدد ٦.",
+        "hold": true
+      }
+    },
+    {
+      "key": "AR-T015-Q05",
+      "sourcePDF": "arithmetic",
+      "sourcePDFZeroPage": 27,
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2cade"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T015-Q05",
+        "aiContext": {
+          "readableText": "احسب 7+60+500+4000+50000.",
+          "speechText": "من الصورة: نجمع مراتب الأعداد: 50000+4000+500+60+7=54567."
+        },
+        "approvalStatus": "draft",
+        "correctOptionIndex": 1,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "نجمع مراتب الأعداد: 50000+4000+500+60+7=54567.",
+        "fingerprint": "b0236a64580bfdb9f2311265c6480fa4ca5512bab9b442d08ab50d113564a4a9",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t015_q05",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T015-Q05/6ef57ed6009375c02dcc13c93764da0176de5d4a52bc4ac84b165dbfb79e2b4b.webp",
+        "isPublished": false,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_4",
+        "skillId": "skill_quant_04",
+        "skillIds": [
+          "skill_quant_04",
+          "sub_quant_04_2"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T015-Q05",
+          "pdfPageIndex": 28,
+          "printedPageNumber": 28,
+          "printedQuestionNumber": 5,
+          "imageHash": "6ef57ed6009375c02dcc13c93764da0176de5d4a52bc4ac84b165dbfb79e2b4b",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_04_2",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "احسب 7+60+500+4000+50000.",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-16T16:28:29.568Z"
+        },
+        "voiceExplanation": {
+          "text": "نجمع مراتب الأعداد: 50000+4000+500+60+7=54567."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true,
+        "reviewerNotes": "MNSF26_QA_HOLD_IMAGEHASH_COLLISION_B7: صورة السؤال لها بصمة SHA-256 متطابقة مع سؤال آخر مختلف النص/المصدر؛ لا يمكن توثيق ملاءمة القصاصة للسؤال حتى مشاهدة ملفات R2 الأصلية ومطابقتها بالكتاب. هذا تعليق احترازي لا يثبت خطأ الحل، ولا يجوز إعادة الاعتماد دون دليل."
+      },
+      "proposed": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_1"
+      }
+    },
+    {
+      "key": "AR-T015-Q06",
+      "sourcePDF": "arithmetic",
+      "sourcePDFZeroPage": 27,
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2cadf"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T015-Q06",
+        "aiContext": {
+          "readableText": "سؤال الحساب/الجبر الاختبار 15 رقم 6 من كتاب المنصف 26",
+          "speechText": "مجموع حدود متساوية = عدد الحدود × قيمة الحد."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 0,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "المتتابعة تحتوي 50 حدًا وكل حد يساوي3، فالمجموع=50×3=150.",
+        "fingerprint": "ec92c6d55fe4a88b724619cf2e0758d7c6dda61377e86b899c6b2504faa959ed",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t015_q06",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T015-Q06/6b90dfec712ad53e0ba25c21e32c390805311a7a1523b4fcf564724333065400.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T015-Q06",
+          "pdfPageIndex": 1,
+          "printedPageNumber": 1,
+          "printedQuestionNumber": 6,
+          "imageHash": "6b90dfec712ad53e0ba25c21e32c390805311a7a1523b4fcf564724333065400",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال الحساب/الجبر الاختبار 15 رقم 6 من كتاب المنصف 26",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "المتتابعة تحتوي 50 حدًا وكل حد يساوي3، فالمجموع=50×3=150."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposed": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_2"
+      }
+    },
+    {
+      "key": "AR-T015-Q07",
+      "sourcePDF": "arithmetic",
+      "sourcePDFZeroPage": 27,
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2cae0"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T015-Q07",
+        "aiContext": {
+          "readableText": "احسب 1+10+100+1000+10000−100.",
+          "speechText": "من الصورة: المجموع قبل الطرح11111؛ نطرح100 فيصبح11011."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 0,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "المجموع قبل الطرح11111؛ نطرح100 فيصبح11011.",
+        "fingerprint": "38138c25d655a4b4d75e69a24a5833c822fee33586a2e4da46180ae1ee9755be",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t015_q07",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T015-Q07/ecf1685886b945771642f6ce668faae0242f0e807e182392937e41acd93f15b8.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_4",
+        "skillId": "skill_quant_04",
+        "skillIds": [
+          "skill_quant_04",
+          "sub_quant_04_2"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T015-Q07",
+          "pdfPageIndex": 28,
+          "printedPageNumber": 28,
+          "printedQuestionNumber": 7,
+          "imageHash": "ecf1685886b945771642f6ce668faae0242f0e807e182392937e41acd93f15b8",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_04_2",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "احسب 1+10+100+1000+10000−100.",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-16T07:48:04.358Z"
+        },
+        "voiceExplanation": {
+          "text": "المجموع قبل الطرح11111؛ نطرح100 فيصبح11011."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposed": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_1"
+      }
+    },
+    {
+      "key": "AR-T015-Q08",
+      "sourcePDF": "arithmetic",
+      "sourcePDFZeroPage": 27,
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2cae1"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T015-Q08",
+        "aiContext": {
+          "readableText": "سؤال الحساب/الجبر الاختبار 15 رقم 8 من كتاب المنصف 26",
+          "speechText": "نجمع الطرفين المتناظرين أو نضاعف مجموع 1 إلى6."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 2,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "1+2+3+4+5+6+6+5+4+3+2+1=2(1+2+3+4+5+6)=2×21=42=6×7.",
+        "fingerprint": "35ef8820f211733949ce0b245be31558ad398463097989b41fab99c9191672d0",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t015_q08",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T015-Q08/65166e069f9429cfa85fbd15976e417347c7237ad6b1a3f61e5c2d2a8e2497cc.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T015-Q08",
+          "pdfPageIndex": 1,
+          "printedPageNumber": 1,
+          "printedQuestionNumber": 8,
+          "imageHash": "65166e069f9429cfa85fbd15976e417347c7237ad6b1a3f61e5c2d2a8e2497cc",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال الحساب/الجبر الاختبار 15 رقم 8 من كتاب المنصف 26",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "1+2+3+4+5+6+6+5+4+3+2+1=2(1+2+3+4+5+6)=2×21=42=6×7."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposed": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_3"
+      }
+    },
+    {
+      "key": "AR-T015-Q09",
+      "sourcePDF": "arithmetic",
+      "sourcePDFZeroPage": 27,
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2cae2"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T015-Q09",
+        "aiContext": {
+          "readableText": "سؤال الحساب/الجبر الاختبار 15 رقم 9 من كتاب المنصف 26",
+          "speechText": "نستخدم قانون مجموع الأعداد من1 إلى ن."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 1,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "مجموع 1 إلى3000 =3000×3001÷2=4,501,500.",
+        "fingerprint": "dfe852912345bebe9404186007ca434ba90b7a89981576e8f65c1b699d2c7e7c",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t015_q09",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T015-Q09/d7ffe322123da796d35e68862ade5a49cac2a42fb2e1f8a525a1b85bc6f52b1e.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T015-Q09",
+          "pdfPageIndex": 1,
+          "printedPageNumber": 1,
+          "printedQuestionNumber": 9,
+          "imageHash": "d7ffe322123da796d35e68862ade5a49cac2a42fb2e1f8a525a1b85bc6f52b1e",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال الحساب/الجبر الاختبار 15 رقم 9 من كتاب المنصف 26",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "مجموع 1 إلى3000 =3000×3001÷2=4,501,500."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposed": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_3"
+      }
+    },
+    {
+      "key": "AR-T015-Q10",
+      "sourcePDF": "arithmetic",
+      "sourcePDFZeroPage": 27,
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2cae3"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T015-Q10",
+        "aiContext": {
+          "readableText": "سؤال الحساب/الجبر الاختبار 15 رقم 10 من كتاب المنصف 26",
+          "speechText": "نخرج العامل10 من جميع الحدود."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 0,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "بما أن 1+2+...+9=45، فإن 10+20+...+90=10×45=450.",
+        "fingerprint": "cd1e63d2b6ef218c48e200169756716cce26a092541089e07854d445a90bee45",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t015_q10",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T015-Q10/b021784de8790e95d4ba746989fd02b32d11ceae3d94191848f3d4c3a310ba05.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T015-Q10",
+          "pdfPageIndex": 1,
+          "printedPageNumber": 1,
+          "printedQuestionNumber": 10,
+          "imageHash": "b021784de8790e95d4ba746989fd02b32d11ceae3d94191848f3d4c3a310ba05",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال الحساب/الجبر الاختبار 15 رقم 10 من كتاب المنصف 26",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "بما أن 1+2+...+9=45، فإن 10+20+...+90=10×45=450."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposed": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_3"
+      }
+    },
+    {
+      "key": "AR-T015-Q11",
+      "sourcePDF": "arithmetic",
+      "sourcePDFZeroPage": 27,
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2cae4"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T015-Q11",
+        "aiContext": {
+          "readableText": "سؤال الحساب/الجبر الاختبار 15 رقم 11 من كتاب المنصف 26",
+          "speechText": "نخرج العامل100 ثم نستفيد من المجموع المعطى."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 0,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "100+200+...+900=100(1+2+...+9)=100×45=4500.",
+        "fingerprint": "a703e49ddd184f723f0bf47bf8bbbc882563608dd8558e5de4fb6c17a51c41eb",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t015_q11",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T015-Q11/ebde1b244a52f13c114f24124109369443ccdc00201f67b37b09a9720f4f711b.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T015-Q11",
+          "pdfPageIndex": 1,
+          "printedPageNumber": 1,
+          "printedQuestionNumber": 11,
+          "imageHash": "ebde1b244a52f13c114f24124109369443ccdc00201f67b37b09a9720f4f711b",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال الحساب/الجبر الاختبار 15 رقم 11 من كتاب المنصف 26",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "100+200+...+900=100(1+2+...+9)=100×45=4500."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposed": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_3",
+        "text": "إذا كان ١+٢+٣+...+٩=٤٥، فأوجد قيمة ١٠+٢٠+٣٠+...+١٠٠.",
+        "correctOptionIndex": 2,
+        "explanation": "١٠+٢٠+٣٠+...+١٠٠=١٠×(١+٢+...+١٠)=١٠×٥٥=٥٥٠، والاختيار (ج).",
+        "hold": true
+      }
+    },
+    {
+      "key": "AR-T015-Q12",
+      "sourcePDF": "arithmetic",
+      "sourcePDFZeroPage": 27,
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2cae5"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T015-Q12",
+        "aiContext": {
+          "readableText": "سؤال الحساب/الجبر الاختبار 15 رقم 12 من كتاب المنصف 26",
+          "speechText": "نطرح الحد العاشر ثم نضرب المجموع في10."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 0,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Medium",
+        "examType": "qudurat",
+        "explanation": "1+2+...+10=55، إذن 1+...+9=45؛ وبالتالي 10+20+...+90=10×45=450.",
+        "fingerprint": "f08d8c3e4e12aede19ce0bf7c1844b51def69b3325d7ff34e1a3d547a4545e08",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t015_q12",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T015-Q12/481460296d031ba5f5e2646de34ebbf8981ef98fd4ef223680fa29bbfd9040d7.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T015-Q12",
+          "pdfPageIndex": 1,
+          "printedPageNumber": 1,
+          "printedQuestionNumber": 12,
+          "imageHash": "481460296d031ba5f5e2646de34ebbf8981ef98fd4ef223680fa29bbfd9040d7",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال الحساب/الجبر الاختبار 15 رقم 12 من كتاب المنصف 26",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "1+2+...+10=55، إذن 1+...+9=45؛ وبالتالي 10+20+...+90=10×45=450."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposed": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_3"
+      }
+    },
+    {
+      "key": "AR-T015-Q13",
+      "sourcePDF": "arithmetic",
+      "sourcePDFZeroPage": 27,
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2cae6"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T015-Q13",
+        "aiContext": {
+          "readableText": "سؤال الحساب/الجبر الاختبار 15 رقم 13 من كتاب المنصف 26",
+          "speechText": "نستخدم قانون مجموع أول ن عدد طبيعي."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 1,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "1+2+...+19=19×20÷2=190.",
+        "fingerprint": "6029ae7c4bc4570076ca9e8796969f95469ebd3e7bd2bb292d4a015b90902b57",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t015_q13",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T015-Q13/cb3c112af7d78493379dc0ef19504ef8b0b9b3c5290ea99f858af33a815e32fd.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T015-Q13",
+          "pdfPageIndex": 1,
+          "printedPageNumber": 1,
+          "printedQuestionNumber": 13,
+          "imageHash": "cb3c112af7d78493379dc0ef19504ef8b0b9b3c5290ea99f858af33a815e32fd",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال الحساب/الجبر الاختبار 15 رقم 13 من كتاب المنصف 26",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "1+2+...+19=19×20÷2=190."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposed": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_3"
+      }
+    },
+    {
+      "key": "AR-T015-Q14",
+      "sourcePDF": "arithmetic",
+      "sourcePDFZeroPage": 27,
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2cae7"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T015-Q14",
+        "aiContext": {
+          "readableText": "احسب (1+3+5+...+33)−(2+4+6+...+32).",
+          "speechText": "من الصورة: الأعداد الفردية من1 إلى33 عددها17، والزوجية من2 إلى32 عددها16؛ نجمع (3−2)+(5−4)+...+(33−32) مع العدد1؛ المجموع17."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 1,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Medium",
+        "examType": "qudurat",
+        "explanation": "الأعداد الفردية من1 إلى33 عددها17، والزوجية من2 إلى32 عددها16؛ نجمع (3−2)+(5−4)+...+(33−32) مع العدد1؛ المجموع17.",
+        "fingerprint": "4f37de67b72a203d3283bb1890c55d98d08e54380266cc56fd9d15240eefc22e",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t015_q14",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T015-Q14/5b5fc921bb4ce40045f005b0d8194b309eb387c30a4685263b64f2878eca567a.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T015-Q14",
+          "pdfPageIndex": 28,
+          "printedPageNumber": 28,
+          "printedQuestionNumber": 14,
+          "imageHash": "5b5fc921bb4ce40045f005b0d8194b309eb387c30a4685263b64f2878eca567a",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "احسب (1+3+5+...+33)−(2+4+6+...+32).",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "الأعداد الفردية من1 إلى33 عددها17، والزوجية من2 إلى32 عددها16؛ نجمع (3−2)+(5−4)+...+(33−32) مع العدد1؛ المجموع17."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposed": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_3"
+      }
+    },
+    {
+      "key": "AR-T015-Q15",
+      "sourcePDF": "arithmetic",
+      "sourcePDFZeroPage": 27,
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2cae8"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T015-Q15",
+        "aiContext": {
+          "readableText": "إذا كان 10+6+7=□+10+6 فما الرقم المفقود؟",
+          "speechText": "من الصورة: بحذف10 و6 من الطرفين يبقى المجهول=7."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 1,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "بحذف10 و6 من الطرفين يبقى المجهول=7.",
+        "fingerprint": "adca3473c04452648f866ba4c7d0390b069cb4b118aa6903936b80cbfd313b48",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t015_q15",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T015-Q15/88ddd14879b1742c1a7bf30a15e9ed00da88675337ec7b515fd03ba63c6040c7.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T015-Q15",
+          "pdfPageIndex": 28,
+          "printedPageNumber": 28,
+          "printedQuestionNumber": 15,
+          "imageHash": "88ddd14879b1742c1a7bf30a15e9ed00da88675337ec7b515fd03ba63c6040c7",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "إذا كان 10+6+7=□+10+6 فما الرقم المفقود؟",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "بحذف10 و6 من الطرفين يبقى المجهول=7."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposed": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_1"
+      }
+    },
+    {
+      "key": "AR-T015-Q16",
+      "sourcePDF": "arithmetic",
+      "sourcePDFZeroPage": 27,
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2cae9"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T015-Q16",
+        "aiContext": {
+          "readableText": "سؤال الحساب/الجبر الاختبار 15 رقم 16 من كتاب المنصف 26",
+          "speechText": "نحوّل كل سلسلة إلى صيغة مجموع قياسية ثم نطرح."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 3,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Medium",
+        "examType": "qudurat",
+        "explanation": "1+2+...+51=51×52÷2=1326. ومجموع 2+4+...+30=2(1+...+15)=240. الفرق=1326−240=1086.",
+        "fingerprint": "d08b49c4bb57fb17f9582170250f19922fa7a78b5a6ef6a0d2231b7bea384627",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t015_q16",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T015-Q16/02ee79ac375b7ef6cc452217d7de168c5e8847c1b90092e721a37017a026e431.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T015-Q16",
+          "pdfPageIndex": 1,
+          "printedPageNumber": 1,
+          "printedQuestionNumber": 16,
+          "imageHash": "02ee79ac375b7ef6cc452217d7de168c5e8847c1b90092e721a37017a026e431",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال الحساب/الجبر الاختبار 15 رقم 16 من كتاب المنصف 26",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "1+2+...+51=51×52÷2=1326. ومجموع 2+4+...+30=2(1+...+15)=240. الفرق=1326−240=1086."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposed": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_3"
+      }
+    },
+    {
+      "key": "AR-T015-Q17",
+      "sourcePDF": "arithmetic",
+      "sourcePDFZeroPage": 28,
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2caea"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T015-Q17",
+        "aiContext": {
+          "readableText": "سؤال الحساب/الجبر الاختبار 15 رقم 17 من كتاب المنصف 26",
+          "speechText": "نفك 1001 إلى1000+1 لتسهيل الضرب."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 1,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "3003×1001=3003×(1000+1)=3,003,000+3,003=3,006,003.",
+        "fingerprint": "d95f1b26e56160f895facf7a97c28c189e2c2f83cb9dac132707189949f4849b",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t015_q17",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T015-Q17/808f69923fa901a24e369ab73408c25bf1226dbc9053b49c48d3856e3a54d481.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T015-Q17",
+          "pdfPageIndex": 1,
+          "printedPageNumber": 1,
+          "printedQuestionNumber": 17,
+          "imageHash": "808f69923fa901a24e369ab73408c25bf1226dbc9053b49c48d3856e3a54d481",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال الحساب/الجبر الاختبار 15 رقم 17 من كتاب المنصف 26",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "3003×1001=3003×(1000+1)=3,003,000+3,003=3,006,003."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposed": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_1"
+      }
+    },
+    {
+      "key": "AR-T015-Q18",
+      "sourcePDF": "arithmetic",
+      "sourcePDFZeroPage": 28,
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2caeb"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T015-Q18",
+        "aiContext": {
+          "readableText": "سؤال الحساب/الجبر الاختبار 15 رقم 18 من كتاب المنصف 26",
+          "speechText": "نستخدم تفكيكًا سريعًا للضرب ثم نقارن."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 0,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "52×200=10,400، بينما 53×19=53×(20−1)=1,007؛ إذن القيمة الأولى أكبر.",
+        "fingerprint": "7501d3107f03352725caff50b7177bd350d857b27ac74820f7f5db4a9d34a2c1",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t015_q18",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T015-Q18/b6b06a2bd2a22addf5ea72389d2de16f1654c26ed151bef22f43db569131ac9c.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T015-Q18",
+          "pdfPageIndex": 1,
+          "printedPageNumber": 1,
+          "printedQuestionNumber": 18,
+          "imageHash": "b6b06a2bd2a22addf5ea72389d2de16f1654c26ed151bef22f43db569131ac9c",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال الحساب/الجبر الاختبار 15 رقم 18 من كتاب المنصف 26",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "52×200=10,400، بينما 53×19=53×(20−1)=1,007؛ إذن القيمة الأولى أكبر."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposed": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_1",
+        "text": "قارن بين القيمة الأولى ٢٠×٥٢ والقيمة الثانية ١٩×٥٣.",
+        "explanation": "القيمة الأولى ٢٠×٥٢=١٠٤٠، والثانية ١٩×٥٣=١٠٠٧؛ إذن القيمة الأولى أكبر، والاختيار (أ).",
+        "hold": true
+      }
+    },
+    {
+      "key": "AR-T015-Q19",
+      "sourcePDF": "arithmetic",
+      "sourcePDFZeroPage": 28,
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2caec"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T015-Q19",
+        "aiContext": {
+          "readableText": "سؤال الحساب/الجبر الاختبار 15 رقم 19 من كتاب المنصف 26",
+          "speechText": "وجود عامل صفر يجعل حاصل الضرب صفرًا مباشرة."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 0,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "العامل الثاني يحتوي صفرًا، لذلك حاصل الضرب كله صفر، ورقم العشرات في صفر هو0.",
+        "fingerprint": "b59ab1886ade302332bdd3b388130cdcceaf838d796812c24f364fd177f5a01b",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t015_q19",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T015-Q19/9b9c64b0122776732fb858844aa58ffc66d7e0c9139a4e56180f9031fddf24dc.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T015-Q19",
+          "pdfPageIndex": 1,
+          "printedPageNumber": 1,
+          "printedQuestionNumber": 19,
+          "imageHash": "9b9c64b0122776732fb858844aa58ffc66d7e0c9139a4e56180f9031fddf24dc",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال الحساب/الجبر الاختبار 15 رقم 19 من كتاب المنصف 26",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "العامل الثاني يحتوي صفرًا، لذلك حاصل الضرب كله صفر، ورقم العشرات في صفر هو0."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposed": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_5"
+      }
+    },
+    {
+      "key": "AR-T015-Q20",
+      "sourcePDF": "arithmetic",
+      "sourcePDFZeroPage": 28,
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2caed"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T015-Q20",
+        "aiContext": {
+          "readableText": "سؤال الحساب/الجبر الاختبار 15 رقم 20 من كتاب المنصف 26",
+          "speechText": "إلغاء العوامل المشتركة يمنع إجراء ضربات ضخمة غير لازمة."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 0,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.807Z"
+        },
+        "difficulty": "Medium",
+        "examType": "qudurat",
+        "explanation": "نلغي العوامل المشتركة 31×32×33×34×35 من القيمتين؛ تبقى الأولى 30÷4=7.5 والثانية 36÷6=6، فالأولى أكبر.",
+        "fingerprint": "b16fb3ba0b0e2df80f6734ce192a3ffdb3779dc8ba6b10f1ae80cb397b4a1518",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t015_q20",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T015-Q20/2c380089462111d0865d34cc5640c4ddd4ca8c2be7cfc1d4868b69e9fda5b232.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T015-Q20",
+          "pdfPageIndex": 1,
+          "printedPageNumber": 1,
+          "printedQuestionNumber": 20,
+          "imageHash": "2c380089462111d0865d34cc5640c4ddd4ca8c2be7cfc1d4868b69e9fda5b232",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال الحساب/الجبر الاختبار 15 رقم 20 من كتاب المنصف 26",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.948Z"
+        },
+        "voiceExplanation": {
+          "text": "نلغي العوامل المشتركة 31×32×33×34×35 من القيمتين؛ تبقى الأولى 30÷4=7.5 والثانية 36÷6=6، فالأولى أكبر."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposed": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_1"
+      }
+    },
+    {
+      "key": "GEO-T009-Q05",
+      "sourcePDF": "geometry",
+      "sourcePDFZeroPage": 16,
+      "before": {
+        "_id": {
+          "$oid": "6acb549d1daea21097c2cecd"
+        },
+        "questionCode": "QDR-QNT-MNSF26-GEO-T009-Q05",
+        "aiContext": {
+          "readableText": "مثلث ضلعاه4 و14 والزاوية المحصورة قائمة من زاويتَي قاعدة70 و20",
+          "speechText": "مساحته نصف حاصل ضرب الضلعين المتعامدين=4×14÷2=28."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 2,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.814Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "مساحته نصف حاصل ضرب الضلعين المتعامدين=4×14÷2=28.",
+        "fingerprint": "a6ecb909b650fbdab32aafd8a669c32ade90b0a37bac90159a4a06a23fab84b2",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_geo_t009_q05",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-GEO-T009-Q05/99a3f0d429210f44956b56ea8a67b2d5881b23cb8a38fa94ccf590aff737f889.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_20",
+        "skillId": "skill_quant_20",
+        "skillIds": [
+          "skill_quant_20",
+          "sub_quant_20_3"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-GEO-T009-Q05",
+          "pdfPageIndex": 17,
+          "printedPageNumber": 17,
+          "printedQuestionNumber": 5,
+          "imageHash": "99a3f0d429210f44956b56ea8a67b2d5881b23cb8a38fa94ccf590aff737f889",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_20_3",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "مثلث ضلعاه4 و14 والزاوية المحصورة قائمة من زاويتَي قاعدة70 و20",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-16T07:49:28.685Z"
+        },
+        "voiceExplanation": {
+          "text": "مساحته نصف حاصل ضرب الضلعين المتعامدين=4×14÷2=28."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposed": {
+        "skillId": "skill_quant_20",
+        "subSkillId": "sub_quant_20_4"
+      }
+    },
+    {
+      "key": "GEO-T009-Q12",
+      "sourcePDF": "geometry",
+      "sourcePDFZeroPage": 17,
+      "before": {
+        "_id": {
+          "$oid": "6acb549d1daea21097c2ced4"
+        },
+        "questionCode": "QDR-QNT-MNSF26-GEO-T009-Q12",
+        "aiContext": {
+          "readableText": "مثلث متطابق الأضلاع وزاوية خارجية س عند القاعدة",
+          "speechText": "الداخلية60، والخارجية120."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 3,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.814Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "الداخلية60، والخارجية120.",
+        "fingerprint": "0196f078a454211e9797d11b6fc5d44e68a512dc41449905c6dbb5d613e668d4",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_geo_t009_q12",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-GEO-T009-Q12/a9b93600e86d6394e4733fdbc81a8aab238e812f448bc357a92898ad4befa34b.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_20",
+        "skillId": "skill_quant_20",
+        "skillIds": [
+          "skill_quant_20",
+          "sub_quant_20_5"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-GEO-T009-Q12",
+          "pdfPageIndex": 17,
+          "printedPageNumber": 17,
+          "printedQuestionNumber": 12,
+          "imageHash": "a9b93600e86d6394e4733fdbc81a8aab238e812f448bc357a92898ad4befa34b",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_20_5",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "مثلث متطابق الأضلاع وزاوية خارجية س عند القاعدة",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-16T07:49:28.685Z"
+        },
+        "voiceExplanation": {
+          "text": "الداخلية60، والخارجية120."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposed": {
+        "skillId": "skill_quant_20",
+        "subSkillId": "sub_quant_20_1"
+      }
+    },
+    {
+      "key": "GEO-T009-Q14",
+      "sourcePDF": "geometry",
+      "sourcePDFZeroPage": 17,
+      "before": {
+        "_id": {
+          "$oid": "6acb549d1daea21097c2ced5"
+        },
+        "questionCode": "QDR-QNT-MNSF26-GEO-T009-Q14",
+        "aiContext": {
+          "readableText": "ثلاثة مربعات متطابقة بنيت على أضلاع مثلث متطابق الأضلاع؛ أوجد الفراغ بين المربعين",
+          "speechText": "الزاوية حول رأس المثلث360−60−90−90=120."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 1,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.814Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "الزاوية حول رأس المثلث360−60−90−90=120.",
+        "fingerprint": "ecbfb9fad32f10923597887749b9dd6c97bcdcc9854e96a01aa28515bb50a1db",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_geo_t009_q14",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-GEO-T009-Q14/77d82a7d5e78ccd3ff12ce34ada909602c4492ad557b09ffb47b96c0f3450c49.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_22",
+        "skillId": "skill_quant_22",
+        "skillIds": [
+          "skill_quant_22",
+          "sub_quant_22_3"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-GEO-T009-Q14",
+          "pdfPageIndex": 17,
+          "printedPageNumber": 17,
+          "printedQuestionNumber": 14,
+          "imageHash": "77d82a7d5e78ccd3ff12ce34ada909602c4492ad557b09ffb47b96c0f3450c49",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_22_3",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "ثلاثة مربعات متطابقة بنيت على أضلاع مثلث متطابق الأضلاع؛ أوجد الفراغ بين المربعين",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-16T07:49:40.842Z"
+        },
+        "voiceExplanation": {
+          "text": "الزاوية حول رأس المثلث360−60−90−90=120."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposed": {
+        "skillId": "skill_quant_19",
+        "subSkillId": "sub_quant_19_1"
+      }
+    },
+    {
+      "key": "GEO-T010-Q10",
+      "sourcePDF": "geometry",
+      "sourcePDFZeroPage": 18,
+      "before": {
+        "_id": {
+          "$oid": "6acb549d1daea21097c2cee0"
+        },
+        "questionCode": "QDR-QNT-MNSF26-GEO-T010-Q10",
+        "aiContext": {
+          "readableText": "مربع يقطعه خط مائل بزاوية60 مع ضلعه الأيسر؛ أوجد الزاوية الداخلية المكملة عند الضلع الأيمن",
+          "speechText": "الزاويتان على جانبي القاطع مكملتان، س=180−60=120."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 3,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.814Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "الزاويتان على جانبي القاطع مكملتان، س=180−60=120.",
+        "fingerprint": "8bc404a80160829f0caf581defff76f15f88742c3eeae0e71efe3c9b6062e8f9",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_geo_t010_q10",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-GEO-T010-Q10/0850f23a6c630d44869be207b513a97eb32a5757c2eb820b65d5cd89e6f99da5.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_22",
+        "skillId": "skill_quant_22",
+        "skillIds": [
+          "skill_quant_22",
+          "sub_quant_22_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-GEO-T010-Q10",
+          "pdfPageIndex": 19,
+          "printedPageNumber": 19,
+          "printedQuestionNumber": 10,
+          "imageHash": "0850f23a6c630d44869be207b513a97eb32a5757c2eb820b65d5cd89e6f99da5",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_22_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "مربع يقطعه خط مائل بزاوية60 مع ضلعه الأيسر؛ أوجد الزاوية الداخلية المكملة عند الضلع الأيمن",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-16T07:49:40.842Z"
+        },
+        "voiceExplanation": {
+          "text": "الزاويتان على جانبي القاطع مكملتان، س=180−60=120."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposed": {
+        "skillId": "skill_quant_19",
+        "subSkillId": "sub_quant_19_2"
+      }
+    },
+    {
+      "key": "GEO-T010-Q11",
+      "sourcePDF": "geometry",
+      "sourcePDFZeroPage": 18,
+      "before": {
+        "_id": {
+          "$oid": "6acb549d1daea21097c2cee1"
+        },
+        "questionCode": "QDR-QNT-MNSF26-GEO-T010-Q11",
+        "aiContext": {
+          "readableText": "مستطيل وقطعتان من القاعدتين إلى نقطة داخلية، زاويتاهما مع العمودي40 و30؛ أوجد قمة س",
+          "speechText": "زاويتا القاعدة50 و60، والقمة70."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 3,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.814Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "زاويتا القاعدة50 و60، والقمة70.",
+        "fingerprint": "8a442cead5d3111bef40a4085242ae8061caae4d19a87289509ac0de67b62c3f",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_geo_t010_q11",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-GEO-T010-Q11/def2a208e109b705e851337a8e682352c68c39dc31bf48fd460934c02623b4d1.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_21",
+        "skillId": "skill_quant_21",
+        "skillIds": [
+          "skill_quant_21",
+          "sub_quant_21_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-GEO-T010-Q11",
+          "pdfPageIndex": 19,
+          "printedPageNumber": 19,
+          "printedQuestionNumber": 11,
+          "imageHash": "def2a208e109b705e851337a8e682352c68c39dc31bf48fd460934c02623b4d1",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_21_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "مستطيل وقطعتان من القاعدتين إلى نقطة داخلية، زاويتاهما مع العمودي40 و30؛ أوجد قمة س",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-16T07:49:34.648Z"
+        },
+        "voiceExplanation": {
+          "text": "زاويتا القاعدة50 و60، والقمة70."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposed": {
+        "skillId": "skill_quant_20",
+        "subSkillId": "sub_quant_20_1"
+      }
+    },
+    {
+      "key": "GEO-T010-Q12",
+      "sourcePDF": "geometry",
+      "sourcePDFZeroPage": 18,
+      "before": {
+        "_id": {
+          "$oid": "6acb549d1daea21097c2cee2"
+        },
+        "questionCode": "QDR-QNT-MNSF26-GEO-T010-Q12",
+        "aiContext": {
+          "readableText": "مربع مائل على ضلع مثلث قائم متطابق الضلعين؛ أوجد الزاوية الخارجية س",
+          "speechText": "زاوية المثلث45، والخارجية135."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 2,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.814Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "زاوية المثلث45، والخارجية135.",
+        "fingerprint": "fa90cdf0072b75fed7594cb86916249c460d231c3591715f9870cb599c582aa5",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_geo_t010_q12",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-GEO-T010-Q12/3a32fad9a07e680abdda333972b8d71b7270f50466d02269359abaea9e0300d8.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_22",
+        "skillId": "skill_quant_22",
+        "skillIds": [
+          "skill_quant_22",
+          "sub_quant_22_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-GEO-T010-Q12",
+          "pdfPageIndex": 19,
+          "printedPageNumber": 19,
+          "printedQuestionNumber": 12,
+          "imageHash": "3a32fad9a07e680abdda333972b8d71b7270f50466d02269359abaea9e0300d8",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_22_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "مربع مائل على ضلع مثلث قائم متطابق الضلعين؛ أوجد الزاوية الخارجية س",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-16T07:49:40.842Z"
+        },
+        "voiceExplanation": {
+          "text": "زاوية المثلث45، والخارجية135."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposed": {
+        "skillId": "skill_quant_20",
+        "subSkillId": "sub_quant_20_2"
+      }
+    },
+    {
+      "key": "GEO-T010-Q14",
+      "sourcePDF": "geometry",
+      "sourcePDFZeroPage": 19,
+      "before": {
+        "_id": {
+          "$oid": "6acb549d1daea21097c2cee4"
+        },
+        "questionCode": "QDR-QNT-MNSF26-GEO-T010-Q14",
+        "aiContext": {
+          "readableText": "مربع مع قطر؛ أوجد مجموع الزاوية القائمة والزاوية بين القطر والضلع",
+          "speechText": "90+45=135."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 2,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.814Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "90+45=135.",
+        "fingerprint": "9438e8bc58a8fcf4bd88390b430872de9bb38be4f5ac987cb0fe581e8debe3a8",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_geo_t010_q14",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-GEO-T010-Q14/af8f60f553745d77badbf5a36cd591dc0f79f06764c6537e4daa5ff0fe7fd68d.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_22",
+        "skillId": "skill_quant_22",
+        "skillIds": [
+          "skill_quant_22",
+          "sub_quant_22_2"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-GEO-T010-Q14",
+          "pdfPageIndex": 19,
+          "printedPageNumber": 19,
+          "printedQuestionNumber": 14,
+          "imageHash": "af8f60f553745d77badbf5a36cd591dc0f79f06764c6537e4daa5ff0fe7fd68d",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_22_2",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "مربع مع قطر؛ أوجد مجموع الزاوية القائمة والزاوية بين القطر والضلع",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-16T07:49:40.842Z"
+        },
+        "voiceExplanation": {
+          "text": "90+45=135."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposed": {
+        "skillId": "skill_quant_19",
+        "subSkillId": "sub_quant_19_1"
+      }
+    },
+    {
+      "key": "GEO-T010-Q15",
+      "sourcePDF": "geometry",
+      "sourcePDFZeroPage": 19,
+      "before": {
+        "_id": {
+          "$oid": "6acb549d1daea21097c2cee5"
+        },
+        "questionCode": "QDR-QNT-MNSF26-GEO-T010-Q15",
+        "aiContext": {
+          "readableText": "مستطيل مقسّم إلى مربعين متطابقين، ورُسم خطان من الزاوية العليا اليسرى؛ قارن قياس الزاوية س (القيمة الأولى) بقياس الزاوية ص (القيمة الثانية).",
+          "speechText": "إذا كان ضلع المربع a، فإن ص=45° من قطر المربع الأيسر. أما س فهي الزاوية بين قاعدة المستطيل وقطره الممتد بعرض 2a وارتفاع a، ومن ثم tan(س)=a/(2a)=1/2، فتكون س≈26.565°. إذن ص>س، فالاختيار (ب). المصدر يقارن زاويتين لا مساحتي مثلثين؛ اعتماد تساوي المساحات خطأ في نوع الكمية."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 0,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.814Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "إذا كان ضلع المربع a، فإن ص=45° من قطر المربع الأيسر. أما س فهي الزاوية بين قاعدة المستطيل وقطره الممتد بعرض 2a وارتفاع a، ومن ثم tan(س)=a/(2a)=1/2، فتكون س≈26.565°. إذن ص>س، فالاختيار (ب).",
+        "fingerprint": "f14b188afe0e9a0d2075c6c7d6d71b6b73ad38d7dcb37cffb71f4ed22f12a16e",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_geo_t010_q15",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-GEO-T010-Q15/78c6a49f92fc25bde620571e13de011e16491afb214d9a82eb804ad6ce4fe97a.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_22",
+        "skillId": "skill_quant_22",
+        "skillIds": [
+          "skill_quant_22",
+          "sub_quant_22_3"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-GEO-T010-Q15",
+          "pdfPageIndex": 19,
+          "printedPageNumber": 19,
+          "printedQuestionNumber": 15,
+          "imageHash": "78c6a49f92fc25bde620571e13de011e16491afb214d9a82eb804ad6ce4fe97a",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_22_3",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "مستطيل مقسّم إلى مربعين متطابقين، ورُسم خطان من الزاوية العليا اليسرى؛ قارن قياس الزاوية س (القيمة الأولى) بقياس الزاوية ص (القيمة الثانية).",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-16T07:49:40.842Z"
+        },
+        "voiceExplanation": {
+          "text": "إذا كان ضلع المربع a، فإن ص=45° من قطر المربع الأيسر. أما س فهي الزاوية بين قاعدة المستطيل وقطره الممتد بعرض 2a وارتفاع a، ومن ثم tan(س)=a/(2a)=1/2، فتكون س≈26.565°. إذن ص>س، فالاختيار (ب)."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposed": {
+        "skillId": "skill_quant_21",
+        "subSkillId": "sub_quant_21_2",
+        "correctOptionIndex": 1,
+        "explanation": "المستطيل مكوّن من مربعين متساويين ضلع كل منهما a. الزاوية ص بين قطر المربع الأيسر وقاعدته تساوي ٤٥°، والزاوية س بين القطر الممتد من الركن الأعلى الأيسر إلى أسفل يمين المستطيل والقاعدة تساوي arctan(a/2a)≈٢٦٫٦°. إذن ص أكبر من س؛ القيمة الثانية أكبر، الاختيار (ب).",
+        "hold": true
+      }
+    },
+    {
+      "key": "GEO-T010-Q16",
+      "sourcePDF": "geometry",
+      "sourcePDFZeroPage": 19,
+      "before": {
+        "_id": {
+          "$oid": "6acb549d1daea21097c2cee6"
+        },
+        "questionCode": "QDR-QNT-MNSF26-GEO-T010-Q16",
+        "aiContext": {
+          "readableText": "رباعي زواياه اليسرى واليمنى60؛ أوجد مجموع العليا والسفلى",
+          "speechText": "مجموع زوايا الرباعي360، والمطلوب360−60−60=240."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 3,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.814Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "مجموع زوايا الرباعي360، والمطلوب360−60−60=240.",
+        "fingerprint": "2ac5fd9fdc265a344dad7e90ac639471c99d1df868d1b19ee7d5fdb449c44f71",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_geo_t010_q16",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-GEO-T010-Q16/19f28d9d83bc7a103be6452b39feea241b7b7b29554416a558678b7539830dc2.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_20",
+        "skillId": "skill_quant_20",
+        "skillIds": [
+          "skill_quant_20",
+          "sub_quant_20_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-GEO-T010-Q16",
+          "pdfPageIndex": 19,
+          "printedPageNumber": 19,
+          "printedQuestionNumber": 16,
+          "imageHash": "19f28d9d83bc7a103be6452b39feea241b7b7b29554416a558678b7539830dc2",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_20_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "رباعي زواياه اليسرى واليمنى60؛ أوجد مجموع العليا والسفلى",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-16T07:49:28.686Z"
+        },
+        "voiceExplanation": {
+          "text": "مجموع زوايا الرباعي360، والمطلوب360−60−60=240."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposed": {
+        "skillId": "skill_quant_19",
+        "subSkillId": "sub_quant_19_3"
+      }
+    },
+    {
+      "key": "GEO-T010-Q17",
+      "sourcePDF": "geometry",
+      "sourcePDFZeroPage": 19,
+      "before": {
+        "_id": {
+          "$oid": "6acb549d1daea21097c2cee7"
+        },
+        "questionCode": "QDR-QNT-MNSF26-GEO-T010-Q17",
+        "aiContext": {
+          "readableText": "مربع مرسوم قطره؛ أوجد زاوية القطر مع الضلع",
+          "speechText": "القطر ينصف زاوية المربع القائمة إلى45."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 1,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.814Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "القطر ينصف زاوية المربع القائمة إلى45.",
+        "fingerprint": "1c6e3d8b867b1bb7b5dd122ffdd1049378bae7ae219c95eb582206bdbe5579ee",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_geo_t010_q17",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-GEO-T010-Q17/7f3625ef35ad0abef6bc4a749da2be749c9a6d220f930a0ffb86ba5f3fe0df0d.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_22",
+        "skillId": "skill_quant_22",
+        "skillIds": [
+          "skill_quant_22",
+          "sub_quant_22_2"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-GEO-T010-Q17",
+          "pdfPageIndex": 19,
+          "printedPageNumber": 19,
+          "printedQuestionNumber": 17,
+          "imageHash": "7f3625ef35ad0abef6bc4a749da2be749c9a6d220f930a0ffb86ba5f3fe0df0d",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_22_2",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "مربع مرسوم قطره؛ أوجد زاوية القطر مع الضلع",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-16T07:49:40.842Z"
+        },
+        "voiceExplanation": {
+          "text": "القطر ينصف زاوية المربع القائمة إلى45."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposed": {
+        "skillId": "skill_quant_19",
+        "subSkillId": "sub_quant_19_1"
+      }
+    },
+    {
+      "key": "GEO-T010-Q18",
+      "sourcePDF": "geometry",
+      "sourcePDFZeroPage": 19,
+      "before": {
+        "_id": {
+          "$oid": "6acb549d1daea21097c2cee8"
+        },
+        "questionCode": "QDR-QNT-MNSF26-GEO-T010-Q18",
+        "aiContext": {
+          "readableText": "رباعي له زاويتان قائمتان وزاوية ثالثة2س حيث س30؛ أوجد الرابعة",
+          "speechText": "الثالثة60، والرابعة360−90−90−60=120."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 3,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.814Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "الثالثة60، والرابعة360−90−90−60=120.",
+        "fingerprint": "71f55edf55f7280ba49f12328022a7a515d2f1209770655fe4d0f2e33d2f1bfa",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_geo_t010_q18",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-GEO-T010-Q18/829ec4871eb97f25ebd8bdd67e1bd6922f67dd19c360eb534d3ef6c3b895d8cf.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_20",
+        "skillId": "skill_quant_20",
+        "skillIds": [
+          "skill_quant_20",
+          "sub_quant_20_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-GEO-T010-Q18",
+          "pdfPageIndex": 19,
+          "printedPageNumber": 19,
+          "printedQuestionNumber": 18,
+          "imageHash": "829ec4871eb97f25ebd8bdd67e1bd6922f67dd19c360eb534d3ef6c3b895d8cf",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_20_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "رباعي له زاويتان قائمتان وزاوية ثالثة2س حيث س30؛ أوجد الرابعة",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-16T07:49:28.686Z"
+        },
+        "voiceExplanation": {
+          "text": "الثالثة60، والرابعة360−90−90−60=120."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposed": {
+        "skillId": "skill_quant_19",
+        "subSkillId": "sub_quant_19_3"
+      }
+    },
+    {
+      "key": "GEO-T010-Q20",
+      "sourcePDF": "geometry",
+      "sourcePDFZeroPage": 19,
+      "before": {
+        "_id": {
+          "$oid": "6acb549d1daea21097c2cee9"
+        },
+        "questionCode": "QDR-QNT-MNSF26-GEO-T010-Q20",
+        "aiContext": {
+          "readableText": "مربع مع قطر؛ أوجد مجموع زاوية قائمة والزاوية الحادة للقطر",
+          "speechText": "90+45=135."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 2,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.814Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "90+45=135.",
+        "fingerprint": "31806a59251f951fcd334a28607445d35d3e5520ecad83721e40621b809de29c",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_geo_t010_q20",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-GEO-T010-Q20/806ee78e1fd2cee46609b65cd2921bdb5e58201af43651c00108261ed9b4dd2b.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_22",
+        "skillId": "skill_quant_22",
+        "skillIds": [
+          "skill_quant_22",
+          "sub_quant_22_2"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-GEO-T010-Q20",
+          "pdfPageIndex": 19,
+          "printedPageNumber": 19,
+          "printedQuestionNumber": 20,
+          "imageHash": "806ee78e1fd2cee46609b65cd2921bdb5e58201af43651c00108261ed9b4dd2b",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_22_2",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "مربع مع قطر؛ أوجد مجموع زاوية قائمة والزاوية الحادة للقطر",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-16T07:49:40.842Z"
+        },
+        "voiceExplanation": {
+          "text": "90+45=135."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      },
+      "proposed": {
+        "skillId": "skill_quant_19",
+        "subSkillId": "sub_quant_19_1"
+      }
+    }
+  ]
+}
