@@ -4529,8 +4529,8 @@
   "postwrite": {
     "date": "2026-10-16",
     "productionTotal": 1989,
-    "approvedPublished": 1705,
-    "draftUnpublished": 284,
+    "approvedPublished": 1704,
+    "draftUnpublished": 285,
     "placeholderApproved": 0,
     "templateApproved": 0,
     "sectionSkillMismatch": 0,
@@ -4546,7 +4546,21 @@
     "activeApprovedDuplicateFingerprintPairs": 10,
     "existingQuizzesReferencedByHeldQuestions": 0,
     "visualImagesActuallyReviewedInThisRun": 0,
-    "finalStatus": "NOT FINAL CLOSED"
+    "finalStatus": "NOT FINAL CLOSED",
+    "sourcePDFQuestionImagesActuallyViewedThisRun": 14,
+    "r2ImageHashesActuallyReverifiedThisRun": 0,
+    "sourcePagesUsed": [
+      2,
+      4
+    ],
+    "recentQATaxonomyChangesApplied": 8,
+    "answerIndexCorrectionsApplied": 5,
+    "sourceTextCorrectionsApplied": 0,
+    "sourceExplanationCorrectionsApplied": 8,
+    "writeRefusals": [
+      14,
+      8
+    ]
   },
   "sourcePdfVisualQa_20261016": {
     "originalSource": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
@@ -4730,7 +4744,54 @@
       }
     },
     "semantics": "Text source visually confirmed; original R2 crop SHA not retrieved. Preserve draft for questions 14,15,16,17,19. Two already approved 18 and 20 only reclassify taxonomy, not approval. No current test references touched.",
-    "stage": "PREWRITE_CAS_SNAPSHOT"
+    "stage": "POSTWRITE_VERIFIED",
+    "results": {
+      "pdfOriginSha256": "46f2d9c2c8482f99f3d28ea9fe2ae7cdaa1b62102a6cbe6aa35deae78c672ee3",
+      "sourcePageVisualReviews": 7,
+      "appliedChanges": [
+        15,
+        16,
+        17,
+        18,
+        19,
+        20
+      ],
+      "sourceCorrectionBlockedBySafety": [
+        14
+      ],
+      "correctedAnswerIndices": {
+        "15": [
+          3,
+          1
+        ],
+        "16": [
+          3,
+          0
+        ],
+        "17": [
+          3,
+          2
+        ]
+      },
+      "unchangedValidatedAnswers": [
+        18,
+        19,
+        20
+      ],
+      "originalR2WebpVerified": 0,
+      "draftsNotReapproved": [
+        14,
+        15,
+        16,
+        17,
+        19
+      ],
+      "approvedSkillReclassifications": [
+        18,
+        20
+      ],
+      "comment": "Q14 safety refusal not bypassed. It remains draft with incorrect old text/answer pending authorized correction."
+    }
   },
   "sourcePdfVisualQa_T003_20261016": {
     "sourcePdfPage": 4,
@@ -4870,6 +4931,39 @@
       "13": 3,
       "14": 2
     },
-    "sourceNotes": "Q11 6×5=30 is option ج, currently Atlas option ب; Q14 total = 9 outside + 9×5 inside =54, option ج. Q13 insufficient data, option د. Do not approve without R2 match."
+    "sourceNotes": "Q11 6×5=30 is option ج, currently Atlas option ب; Q14 total = 9 outside + 9×5 inside =54, option ج. Q13 insufficient data, option د. Do not approve without R2 match.",
+    "stage": "POSTWRITE_VERIFIED",
+    "results": {
+      "sourceVisualReviews": 7,
+      "matchedAndModified": [
+        9,
+        11,
+        12,
+        13,
+        14
+      ],
+      "refusedBySafety": [
+        8
+      ],
+      "alreadyCorrectAndUntouched": [
+        10
+      ],
+      "correctedAnswerIndices": {
+        "11": [
+          1,
+          2
+        ],
+        "14": [
+          3,
+          2
+        ]
+      },
+      "newSafetyHolds": [
+        11
+      ],
+      "returnedToApproved": 0,
+      "originalR2WebpVerified": 0,
+      "note": "Q8 tool refused, left unchanged approved with subskill wrongly assigned decimal operations. Q11 downgraded from approved to draft due incorrect old answer; no Quiz reference."
+    }
   }
 }
