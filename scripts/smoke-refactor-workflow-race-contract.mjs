@@ -2,8 +2,8 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 
 const root = process.cwd();
-const guardWorkflow = readFileSync(path.join(root, '.github/workflows/refactor-v2-guard.yml'), 'utf8').replace(/\r\n/g, '\n');
-const auditWorkflow = readFileSync(path.join(root, '.github/workflows/refactor-v2-audit.yml'), 'utf8').replace(/\r\n/g, '\n');
+const guardWorkflow = readFileSync(path.join(root, '.github/workflows-archive/refactor-v2/refactor-v2-guard.yml'), 'utf8').replace(/\r\n/g, '\n');
+const auditWorkflow = readFileSync(path.join(root, '.github/workflows-archive/refactor-v2/refactor-v2-audit.yml'), 'utf8').replace(/\r\n/g, '\n');
 
 const checks = [];
 
@@ -78,7 +78,7 @@ check('repository audit never force-pushes the protected refactor branch', () =>
 
 const failed = checks.filter((item) => item.status === 'FAIL');
 console.log(JSON.stringify({
-  phase: 'refactor-workflow-race-safety',
+  phase: 'archived-refactor-workflow-race-safety',
   status: failed.length === 0 ? 'PASS' : 'FAIL',
   checks,
 }, null, 2));

@@ -1,3 +1,6 @@
+## CI ownership cleanup — 2026-10-16
+Legacy refactor-v2 workflows live as unchanged blueprints under .github/workflows-archive/refactor-v2. V3Recovery owns active build/architecture/readiness and the62retained source contracts through scripts/run-preserved-repo-contracts.mjs + preserved-repo-contracts.json. dependency-security-audit.yml retains lockfile security policy. Historical workflow-race/trigger smoke tests read the archive; global PLAN9 certification asserts live V3 coverage. Protected-main required V3 workflows and product module ownership remain unchanged.
+
 ## Personal learning completion — VERIFIED_SCOPED — 2026-10-16
 quizzes/application/learningCompletion owns exact unique quiz and whole main-topic completion; quizzes/http/learningCompletionRoutes owns own-student scoped GET and indexed result/progress reads. hooks/useLearningCompletion owns user/scope fences and refresh; studentPaths/LearningCompletionSummary owns the shared summary and topic strip. LearningSection/SubjectLearningPage/GenericPathPage integrate existing content with no new persisted progress owner. Existing results/scoring/lesson completion writes remain authoritative. PR562/source cbecbe90, published c059bb3a; bounded published proof in LEARNING_COMPLETION_PUBLISHED_2026-10-16.json.
 

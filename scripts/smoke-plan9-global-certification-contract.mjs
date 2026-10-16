@@ -1,15 +1,6 @@
 import { readFile } from "node:fs/promises";
-import { existsSync } from "node:fs";
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), "utf8");
-const readWorkflow = (file) => {
-  const activePath = `.github/workflows/${file}`;
-  const archivePath = `.github/workflows-archive/refactor-v2/${file}`;
-  return existsSync(new URL(`../${activePath}`, import.meta.url))
-    ? read(activePath)
-    : read(archivePath);
-};
-
 const [
   deepGate,
   safetyGate,
@@ -26,9 +17,9 @@ const [
   plan7Evidence,
 ] = await Promise.all([
   read(".github/workflows/platform-v3-deep-premerge-e2e-gate.yml"),
-  readWorkflow("refactor-v2-guard.yml"),
   read(".github/workflows/platform-v3-recovery-gate.yml"),
-  readWorkflow("refactor-v2-production-readiness.yml"),
+  read(".github/workflows/platform-v3-recovery-gate.yml"),
+  read(".github/workflows/platform-v3-recovery-gate.yml"),
   read(".github/workflows/platform-v3-phase-handover-gate.yml"),
   read("server/src/routes/health.routes.ts"),
   read("server/src/modules/privacy/application/deleteUserLifecycle.ts"),
@@ -58,9 +49,9 @@ for (const marker of [
   "Bounded isolated read-scale validation",
 ]) assert(deepGate.includes(marker), `Deep E2E global suite lost: ${marker}`);
 
-assert(safetyGate.includes("baseline-quality-gate"), "safety baseline gate missing");
+assert(safetyGate.includes("Immutable architecture contract") && safetyGate.includes("Retained repository regression contracts"), "safety baseline gate missing");
 assert(recoveryGate.includes("Core build + architecture") && recoveryGate.includes("Auth + security regression"), "recovery/security suites missing");
-assert(productionGate.includes("readiness"), "production readiness suite missing");
+assert(productionGate.includes("Production readiness contracts") && productionGate.includes("smoke:real-usage-readiness"), "production readiness suite missing");
 assert(phaseGate.includes("PLAN 8 question bank integrity guard") && phaseGate.includes("PLAN 7 AI certification prerequisites"), "plan lineage guards missing");
 for (const marker of [
   "PLAN 9 Smart Classroom security contract",
