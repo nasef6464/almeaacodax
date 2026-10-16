@@ -19,6 +19,7 @@
         "preview": "vite preview",
         "lint": "tsc --noEmit",
         "typecheck": "tsc --noEmit",
+        "argon": "node scripts/argon-executor.mjs",
         "server:dev": "npm --prefix server run dev",
         "server:build": "npm --prefix server run build",
         "server:check": "npm --prefix server run check",

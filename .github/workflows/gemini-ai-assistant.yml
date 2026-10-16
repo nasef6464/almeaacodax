@@ -1,0 +1,101 @@
+name: Gemini AI Repository Assistant
+
+on:
+  workflow_dispatch:
+    inputs:
+      task_instruction:
+        description: Task instruction for a reviewed PR proposal
+        required: false
+        type: string
+        default: ''
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'components/**'
+      - 'pages/**'
+      - 'src/**'
+      - 'server/**'
+      - 'scripts/**'
+  push:
+    branches:
+      - main
+    paths:
+      - 'components/**'
+      - 'pages/**'
+      - 'src/**'
+      - 'server/**'
+      - 'scripts/**'
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: gemini-ai-assistant-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  gemini-audit:
+    if: github.event_name != 'workflow_dispatch' || inputs.task_instruction == ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            server/package-lock.json
+
+      - name: Install Dependencies
+        run: |
+          npm ci
+          npm --prefix server ci
+
+      - name: Verify executor file boundaries
+        run: node scripts/test-argon-file-safety.mjs
+
+      - name: Run Gemini Repository & Architecture Audit
+        env:
+          GEMINI_API_KEY: ${{ github.event_name != 'pull_request' && secrets.GEMINI_API_KEY || '' }}
+        run: |
+          node scripts/gemini-repo-audit.mjs
+
+  argon-task:
+    if: github.event_name == 'workflow_dispatch' && inputs.task_instruction != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install SDK without lifecycle scripts or write credentials
+        run: npm ci --ignore-scripts
+      - name: Prepare bounded file proposal
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          TASK_INSTRUCTION: ${{ inputs.task_instruction }}
+        run: node scripts/argon-executor.mjs "$TASK_INSTRUCTION"
+      - name: Publish only validated changed paths as a pull request
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/argon-create-pr.mjs "${{ github.run_id }}"

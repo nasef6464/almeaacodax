@@ -179,9 +179,14 @@ export const createAiProviderAdapters = (config: AdapterConfig) => {
           );
           let actualModel = pool.model;
           let response = await requestGeminiModel(actualModel);
-          if (!response.ok && response.status === 404 && pool.model === "gemini-2.5-flash") {
-            actualModel = 'gemini-3.8-flash';
-            response = await requestGeminiModel("gemini-3.8-flash");
+          if (!response.ok && (response.status === 404 || response.status === 429)) {
+            if (pool.model === "gemini-4-argon" || pool.model === "gemini-argon") {
+              actualModel = "gemini-2.5-flash";
+              response = await requestGeminiModel("gemini-2.5-flash");
+            } else if (pool.model === "gemini-2.5-flash" && response.status === 404) {
+              actualModel = 'gemini-3.8-flash';
+              response = await requestGeminiModel("gemini-3.8-flash");
+            }
           }
           if (!response.ok) {
             const message = await responseFailureMessage("Gemini", response);
