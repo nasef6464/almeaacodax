@@ -4553,14 +4553,15 @@
       2,
       4
     ],
-    "recentQATaxonomyChangesApplied": 8,
+    "recentQATaxonomyChangesApplied": 9,
     "answerIndexCorrectionsApplied": 5,
     "sourceTextCorrectionsApplied": 0,
-    "sourceExplanationCorrectionsApplied": 8,
+    "sourceExplanationCorrectionsApplied": 7,
     "writeRefusals": [
       14,
       8
-    ]
+    ],
+    "note": "source PDF questions 14 visually checked (7 from Test 1/page 2 and 7 from Test 3/page 4); 11 rows modified, including 9 genuine reclassifications and 5 answer-key changes, plus 7 explanations; none of 14 original R2 images was hash/byte verified. Q14 from T001 and Q08 from T003 denied by safety check; never bypass refusal."
   },
   "sourcePdfVisualQa_20261016": {
     "originalSource": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
