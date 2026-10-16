@@ -5,7 +5,8 @@ import { InteractiveWhiteboardCanvas } from './InteractiveWhiteboardCanvas';
 import { validateTeachingStoryboard, type TeachingStoryboard } from '../../server/src/modules/ai/contracts/teachingStoryboard';
 import { TeachingBoard } from './teaching/TeachingBoard';
 import { useTeachingPlayback } from './teaching/useTeachingPlayback';
-import { BrowserNarrationEngine } from './teaching/narrationEngine';
+import { BrowserNarrationEngine, narrationNeedsRecovery, type NarrationState } from './teaching/narrationEngine';
+import { prepareTeachingAudio } from './teaching/prepareTeachingAudio';
 import { QuestionPreview, type TeacherQuestionPreview } from './teaching/QuestionPreview';
 import { quickTeachingPlan } from './teaching/quickTeachingPlan';
 import { PracticeCheckpoint } from './teaching/PracticeCheckpoint';
@@ -39,11 +40,16 @@ export const InteractiveSmartTeacher: React.FC<{
   const requestRef = React.useRef(false);
   const generation = React.useRef(0);
   const dialogRef = React.useRef<HTMLDivElement>(null);
-  const legacyNarrator = React.useMemo(() => new BrowserNarrationEngine(), []);
+  const [legacyAudioState, setLegacyAudioState] = React.useState<NarrationState>('idle');
+  const legacyNarrator = React.useMemo(() => new BrowserNarrationEngine(setLegacyAudioState), []);
   const main = useTeachingPlayback(mainPlan, autoVoice, isOpen && !reply && !pending && !listening, practice, speed);
   const branch = useTeachingPlayback(reply?.plan || null, autoVoice, isOpen && !pending && !listening, false, speed);
   const active = reply ? branch : main;
   const activeLesson = reply || (lesson ? { ...lesson, plan: mainPlan } : null);
+  const audioState = activeLesson?.plan ? active.audioState : legacyAudioState;
+  const recoverAudio = () => {
+    if (activeLesson?.plan) active.retryAudio(); else legacyNarrator.retry();
+  };
 
   const stopListening = () => {
     const recognition = recognitionRef.current;
@@ -158,7 +164,7 @@ export const InteractiveSmartTeacher: React.FC<{
           <div className="flex items-center gap-2"><Bot className="text-violet-400" size={24} /><div><h2 className="font-black">المعلم الذكي التفاعلي</h2><p className="text-xs text-slate-400">السبورة الذكية · خطوة بخطوة</p></div></div>
           <div className="flex items-center gap-2">
             <button type="button" onClick={toggleListening} disabled={pending} className={`min-h-11 min-w-11 rounded-xl p-2 ${listening ? 'bg-rose-600' : 'bg-violet-600'}`} aria-label={listening ? 'إيقاف الاستماع' : 'التحدث مع المعلم'}>{listening ? <MicOff size={19} /> : <Mic size={19} />}</button>
-            <button type="button" className="min-h-11 min-w-11 rounded-xl bg-slate-800 p-2" onClick={() => setAutoVoice(value => !value)} aria-label={autoVoice ? 'إيقاف الصوت' : 'تشغيل الصوت'} aria-pressed={autoVoice}>{autoVoice ? <Volume2 size={19} /> : <VolumeX size={19} />}</button>
+            <button type="button" className="min-h-11 min-w-11 rounded-xl bg-slate-800 p-2" onClick={() => { if (!autoVoice) prepareTeachingAudio(); setAutoVoice(value => !value); }} aria-label={autoVoice ? 'إيقاف الصوت' : 'تشغيل الصوت'} aria-pressed={autoVoice}>{autoVoice ? <Volume2 size={19} /> : <VolumeX size={19} />}</button>
             <button type="button" className="min-h-11 rounded-xl bg-violet-600 px-3" onClick={() => { interrupt(); setChatOpen(value => !value); }} aria-expanded={chatOpen} aria-controls="teacher-dialogue"><MessageCircle className="inline" size={18} /> اسأل المعلم</button>
             <button type="button" className="min-h-11 min-w-11 rounded-xl bg-slate-800 p-2" onClick={onClose} aria-label="إغلاق المعلم الذكي"><X size={19} /></button>
           </div>
@@ -172,6 +178,11 @@ export const InteractiveSmartTeacher: React.FC<{
                 <div className="flex min-h-64 flex-col items-center justify-center gap-4 p-5 text-center"><Bot size={40} className="text-emerald-400" /><p>{pending ? 'المعلم يجهز الشرح…' : 'السبورة جاهزة'}</p>{!pending && <button type="button" className="rounded-xl bg-emerald-600 px-4 py-3" onClick={() => void ask('اشرح السؤال خطوة بخطوة.', 'steps', true)}>ابدأ الشرح</button>}</div>}
             </div>
             {pending && <p role="status" className="flex items-center gap-2 text-sm text-emerald-300"><Loader2 size={16} className="animate-spin" /> المعلم يفكر…</p>}
+            {autoVoice && !pending && activeLesson && narrationNeedsRecovery(audioState) && <div role="status" data-testid="teacher-audio-recovery" className="flex flex-wrap items-center justify-between gap-2 rounded-xl bg-amber-950/60 px-3 py-2 text-sm text-amber-100">
+              <span>{audioState === 'unavailable' ? 'الصوت العربي غير متاح في هذا المتصفح.' : audioState === 'blocked' ? 'اضغط لتشغيل صوت الشرح.' : 'توقف الصوت. جرّب تشغيله مجددًا.'}</span>
+              <button type="button" className="min-h-11 rounded-lg bg-amber-200 px-3 font-bold text-slate-950" onClick={recoverAudio}><Volume2 className="inline" size={17} /> تشغيل صوت الشرح</button>
+              <button type="button" className="min-h-11 px-2 underline" onClick={() => { setAutoVoice(false); if (activeLesson.plan) active.seek(active.sceneIndex, true); }}>متابعة بدون صوت</button>
+            </div>}
             {main.checkpoint && !reply && <PracticeCheckpoint key={`${questionId}-${main.sceneIndex}`} checkpoint={main.checkpoint} pending={pending}
               onAttempt={attemptStep} onSkip={() => main.completeCheckpoint(true)} />}
             {reply && <button type="button" disabled={pending} className="min-h-11 rounded-xl bg-emerald-600 px-4 font-bold disabled:opacity-50" onClick={() => { branch.pause(); legacyNarrator.cancel(); setReply(null); setChatOpen(false); main.toggle(); }}>نكمل الشرح من نفس النقطة</button>}

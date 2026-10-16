@@ -20,7 +20,8 @@ let browser;
 try {
   await server.listen();
   const address = server.httpServer.address();
-  browser = await chromium.launch({ ...(argument('channel') ? { channel: argument('channel') } : {}) });
+  browser = await chromium.launch({ ...(argument('channel') ? { channel: argument('channel') } : {}),
+    ...(argument('executable') ? { executablePath: argument('executable') } : {}) });
   const page = await browser.newPage({ viewport: { width: 1366, height: 900 } });
   const errors = [];
   page.on('pageerror', error => { errors.push(error.message); console.error('Fixture page error:', error.message); });
@@ -183,6 +184,31 @@ try {
   assert.equal(await page.evaluate(() => window.testSpeak.at(-1).text), 'نضرب 2 في 5 يساوي 10.');
   assert.ok(await page.evaluate(() => document.documentElement.scrollWidth) <= 390);
   await page.screenshot({ path: path.join(artifacts, 'mixed-provider-mobile.png') });
+  await page.getByRole('button', { name: 'إغلاق المعلم الذكي', exact: true }).click();
+  await page.evaluate(() => { window.testMixed = false; window.testAudioBlocked = true; });
+  await page.getByRole('button', { name: 'اشرح لي', exact: true }).click();
+  await page.getByTestId('teacher-audio-recovery').waitFor();
+  await page.getByRole('button', { name: 'تشغيل', exact: true }).waitFor();
+  const failedScene = await page.getByLabel('الخطوة الحالية').textContent();
+  const recoveryCalls = await page.evaluate(() => window.testRequests.length);
+  await page.getByRole('button', { name: 'تشغيل صوت الشرح', exact: true }).click();
+  await page.getByRole('button', { name: 'تشغيل', exact: true }).waitFor();
+  await page.waitForTimeout(150);
+  assert.equal(await page.getByLabel('الخطوة الحالية').textContent(), failedScene, 'failed recovery cannot silently advance the board');
+  await page.evaluate(() => { window.testAudioBlocked = false; });
+  await page.getByRole('button', { name: 'تشغيل صوت الشرح', exact: true }).click();
+  await page.getByRole('button', { name: 'إيقاف مؤقت', exact: true }).waitFor();
+  assert.equal(await page.getByTestId('teacher-audio-recovery').count(), 0);
+  assert.equal(await page.evaluate(() => window.testRequests.length), recoveryCalls, 'audio recovery must never call AI again');
+  await page.screenshot({ path: path.join(artifacts, 'mobile-audio-recovered.png') });
+  await page.getByRole('button', { name: 'إغلاق المعلم الذكي', exact: true }).click();
+  await page.evaluate(() => { window.testAudioBlocked = true; });
+  await page.getByRole('button', { name: 'اشرح لي', exact: true }).click();
+  await page.getByRole('button', { name: 'متابعة بدون صوت', exact: true }).click();
+  await page.getByRole('button', { name: 'إيقاف مؤقت', exact: true }).waitFor();
+  assert.equal(await page.getByTestId('teacher-audio-recovery').count(), 0);
+  await page.getByRole('button', { name: 'إغلاق المعلم الذكي', exact: true }).click();
+  await page.evaluate(() => { window.testAudioBlocked = false; });
   assert.deepEqual(errors, []);
   console.log(JSON.stringify({ status: 'PASS', artifacts, checks: ['pause', 'contextual interruption', 'saved resume', 'speech-end advancement', 'no animation requests', 'tablet/mobile', 'English', 'reduced motion', 'invalid-plan fallback', 'stale reply', 'practice waits before solution', 'local progressive hints', 'failed attempt retry', 'contextual attempt and resume', 'skip without request and reset', 'real-provider mixed Arabic/English/math rendering'] }));
 } finally {

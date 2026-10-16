@@ -14,7 +14,7 @@ const followup = {version:1,language:'ar-SA',scenes:[{id:'why',narration:'لأن
 (window as any).testSpeak=[];
 class TestUtterance { text:string; onend:any; onerror:any; constructor(text:string){this.text=text;} }
 (window as any).SpeechSynthesisUtterance=TestUtterance;
-Object.defineProperty(window,'speechSynthesis',{value:{speak:(u:any)=>(window as any).testSpeak.push(u),pause:()=>{},resume:()=>{},cancel:()=>{}}, configurable:true});
+Object.defineProperty(window,'speechSynthesis',{value:{speak:(u:any)=>{(window as any).testSpeak.push(u);if((window as any).testAudioBlocked)u.onerror?.({error:'not-allowed'});else queueMicrotask(()=>u.onstart?.());},pause:()=>{},resume:()=>{},cancel:()=>{}}, configurable:true});
 (api as any).aiQuestionAssistant = async (payload:any) => {
 (window as any).testRequests.push(payload);
 await new Promise(resolve=>setTimeout(resolve,100));

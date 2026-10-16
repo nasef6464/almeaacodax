@@ -1,6 +1,7 @@
 import React from 'react';
 import { Bot, Loader2 } from 'lucide-react';
 import type { TeacherQuestionPreview } from './teaching/QuestionPreview';
+import { prepareTeachingAudio } from './teaching/prepareTeachingAudio';
 
 const InteractiveSmartTeacher = React.lazy(() => import('./InteractiveSmartTeacher').then(m => ({ default: m.InteractiveSmartTeacher })));
 type AssistantContext = 'result_review' | 'saved_review' | 'mistake_review' | 'mastery_review';
@@ -14,7 +15,7 @@ export const QuestionAssistantPanel: React.FC<{
   if (context === 'result_review' && !resultId) return null;
   return <>
     <div className="flex justify-center py-1" data-testid="question-assistant-panel">
-      <button type="button" onClick={() => setOpen(true)} className="inline-flex min-h-11 items-center gap-2 rounded-full bg-violet-600 px-5 text-sm font-bold text-white shadow-sm hover:bg-violet-700">
+      <button type="button" onClick={() => { prepareTeachingAudio(); setOpen(true); }} className="inline-flex min-h-11 items-center gap-2 rounded-full bg-violet-600 px-5 text-sm font-bold text-white shadow-sm hover:bg-violet-700">
         <Bot size={20} /> اشرح لي
       </button>
     </div>

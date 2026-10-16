@@ -1,12 +1,16 @@
 import React from 'react';
 import type { TeachingStoryboard } from '../../../server/src/modules/ai/contracts/teachingStoryboard';
 import { boardAt, estimateNarrationMs, sceneDuration } from './boardState';
-import { BrowserNarrationEngine } from './narrationEngine';
+import { BrowserNarrationEngine, narrationNeedsRecovery, type NarrationState } from './narrationEngine';
 
 export function useTeachingPlayback(plan: TeachingStoryboard | null, voice: boolean, enabled: boolean, practice = true, speed = 1) {
   const [position, setPosition] = React.useState({ scene: 0, elapsed: 0, revision: 0 });
   const [playing, setPlaying] = React.useState(false);
-  const narrator = React.useMemo(() => new BrowserNarrationEngine(), []);
+  const [audioState, setAudioState] = React.useState<NarrationState>('idle');
+  const narrator = React.useMemo(() => new BrowserNarrationEngine(state => {
+    setAudioState(state);
+    if (narrationNeedsRecovery(state)) setPlaying(false);
+  }), []);
   const started = React.useRef(false);
   const finished = React.useRef(false);
   const completed = React.useRef(new Set<string>());
@@ -76,7 +80,21 @@ export function useTeachingPlayback(plan: TeachingStoryboard | null, voice: bool
     setPosition(current => ({ scene: Math.max(0, Math.min((plan?.scenes.length || 1) - 1, scene)), elapsed: 0, revision: current.revision + 1 }));
   };
   const pause = () => { narrator.pause(); setPlaying(false); };
-  const toggle = () => { if (playing) pause(); else if (!checkpointScene) setPlaying(true); };
+  const retryAudio = () => {
+    if (!plan || checkpointScene) return;
+    finished.current = false;
+    started.current = true;
+    // Native speech must run synchronously inside the recovery/play tap.
+    setPlaying(true);
+    narrator.retry();
+  };
+  const toggle = () => {
+    if (playing) pause();
+    else if (!checkpointScene) {
+      if (voice && narrationNeedsRecovery(audioState)) retryAudio();
+      else { narrator.resume(); setPlaying(true); }
+    }
+  };
   const completeCheckpoint = (resume = false) => {
     if (checkpointScene) completed.current.add(checkpointScene);
     setCheckpointScene(null);
@@ -84,7 +102,7 @@ export function useTeachingPlayback(plan: TeachingStoryboard | null, voice: bool
   };
   return {
     checkpoint: checkpointScene === plan?.scenes[position.scene]?.id ? plan.scenes[position.scene].checkpoint : undefined,
-    completeCheckpoint,
+    completeCheckpoint, audioState, retryAudio,
     sceneIndex: position.scene, elapsedMs: position.elapsed, playing, pause, toggle, seek,
     elements: plan ? boardAt(plan, position.scene, position.elapsed, true) : [],
     narration: plan?.scenes[position.scene]?.narration || '',
