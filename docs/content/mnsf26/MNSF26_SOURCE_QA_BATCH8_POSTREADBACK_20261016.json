@@ -1,0 +1,1182 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "batch": "B8",
+  "date": "2026-10-16",
+  "prewritePath": "docs/content/mnsf26/MNSF26_SOURCE_QA_BATCH8_PREWRITE_20261016.json",
+  "originalPDFPagesZeroBased": {
+    "arithmetic": [
+      21,
+      22,
+      23,
+      24
+    ],
+    "geometry": [
+      14,
+      15
+    ]
+  },
+  "originalPDFSha256": {
+    "arithmetic": "46f2d9c2c8482f99f3d28ea9fe2ae7cdaa1b62102a6cbe6aa35deae78c672ee3",
+    "geometry": "a823a90574476804cc29f5ca63ea8e9eaadab0cffe3afa78f791bbc8c6ee75d5"
+  },
+  "summary": {
+    "sourcePrintedPositionsOnPages": 60,
+    "importedRowsCrossReferenced": 39,
+    "sourceNotInAtlas": 11,
+    "sourceExcludedAlready": [
+      "MNSF26-AR-T013-Q15",
+      "MNSF26-GEO-T008-Q03",
+      "MNSF26-GEO-T008-Q04",
+      "MNSF26-GEO-T008-Q05",
+      "MNSF26-GEO-T008-Q11",
+      "MNSF26-GEO-T008-Q12",
+      "MNSF26-GEO-T008-Q14",
+      "MNSF26-GEO-T008-Q17",
+      "MNSF26-GEO-T008-Q18"
+    ],
+    "missingNotInExclusionLedger": [
+      "MNSF26-AR-T012-Q14",
+      "MNSF26-AR-T013-Q13"
+    ],
+    "appliedRows": 33,
+    "answerKeyCorrections": 6,
+    "textCorrections": 6,
+    "explanationCorrections": 6,
+    "taxonomyCorrections": 33,
+    "approvedHeld": 4,
+    "unchangedRows": [
+      "AR-T012-Q02",
+      "AR-T012-Q06",
+      "AR-T012-Q08",
+      "AR-T013-Q04",
+      "AR-T013-Q06",
+      "AR-T013-Q08"
+    ],
+    "explicitSafetyDenied": [
+      "AR-T012-Q08",
+      "AR-T013-Q06",
+      "AR-T013-Q08"
+    ],
+    "unresolvedApprovedWrongKey": [
+      "AR-T013-Q06"
+    ],
+    "atlasState": [
+      {
+        "_id": {
+          "approval": "draft",
+          "published": false
+        },
+        "n": 320
+      },
+      {
+        "_id": {
+          "approval": "approved",
+          "published": true
+        },
+        "n": 1669
+      }
+    ],
+    "r2WebpFetched": 0,
+    "r2SHACompared": 0,
+    "approvedMissingVerifiedCrop": 58,
+    "excludedTotal": 140,
+    "ci": "NO_WORKFLOW_RUNS_REPORTED_NOT_PASS",
+    "learnerE2E": "NOT_TESTED",
+    "final": "NOT FINAL CLOSED"
+  },
+  "results": [
+    {
+      "key": "AR-T012-Q01",
+      "sourceKey": "MNSF26-AR-T012-Q01",
+      "before": {
+        "status": "draft",
+        "published": false,
+        "answer": 3,
+        "skill": "skill_quant_01",
+        "subskill": "sub_quant_01_1",
+        "text": "سؤال 1",
+        "explanation": "يُطبَّق النمط المعتمد في product-comparison / factor-regrouping. ثم تُراجع النتيجة: القيمتان متساويتان..",
+        "reviewerNotes": "MNSF26_QA_HOLD_20261016: شرح نمطي لا يوثق حل المسألة أو جميع خياراتها؛ يلزم حل مستقل وفحص صورة السؤال ومفتاح الإجابة وربط المهارة قبل إعادة الاعتماد."
+      },
+      "after": {
+        "status": "draft",
+        "published": false,
+        "answer": 0,
+        "skill": "skill_quant_02",
+        "subskill": "sub_quant_02_3",
+        "text": "إذا كان س عددًا صحيحًا، فكم مرة يمكن أن يكون س² عددًا أوليًا؟",
+        "explanation": "مربع أي عدد صحيح لا يمكن أن يكون عددًا أوليًا؛ لأن س² إذا كان |س|≥2 يقبل القسمة على |س|، أما س=0 أو ±1 فمربعه 0 أو 1 وليس أوليًا. إذن عدد الحالات صفر، والاختيار (أ).",
+        "reviewerNotes": "MNSF26_QA_HOLD_WRONG_KEY_B8: original source PDF visually inspected, independent mathematical solution; corrected key and taxonomy, R2 WEBP/SHA not independently verified; retain draft/unpublished. Source AR-T012-Q01, original PDF zero-based page 21."
+      },
+      "applied": true,
+      "answerChanged": true,
+      "taxonomyChanged": true,
+      "statusHeld": false
+    },
+    {
+      "key": "AR-T012-Q02",
+      "sourceKey": "MNSF26-AR-T012-Q02",
+      "before": {
+        "status": "approved",
+        "published": true,
+        "answer": 3,
+        "skill": "skill_quant_01",
+        "subskill": "sub_quant_01_1",
+        "text": "سؤال 2",
+        "explanation": "العدد 8 يقبل القسمة على 2 و4، لذلك ليس أوليًا.",
+        "reviewerNotes": null
+      },
+      "after": {
+        "status": "approved",
+        "published": true,
+        "answer": 3,
+        "skill": "skill_quant_01",
+        "subskill": "sub_quant_01_1",
+        "text": "سؤال 2",
+        "explanation": "العدد 8 يقبل القسمة على 2 و4، لذلك ليس أوليًا.",
+        "reviewerNotes": null
+      },
+      "applied": false,
+      "answerChanged": false,
+      "taxonomyChanged": false,
+      "statusHeld": false
+    },
+    {
+      "key": "AR-T012-Q03",
+      "sourceKey": "MNSF26-AR-T012-Q03",
+      "before": {
+        "status": "approved",
+        "published": true,
+        "answer": 3,
+        "skill": "skill_quant_01",
+        "subskill": "sub_quant_01_1",
+        "text": "سؤال 3",
+        "explanation": "60=2²×3×5، والعوامل الأولية المختلفة هي 2 و3 و5؛ حاصل ضربها=30.",
+        "reviewerNotes": null
+      },
+      "after": {
+        "status": "approved",
+        "published": true,
+        "answer": 3,
+        "skill": "skill_quant_02",
+        "subskill": "sub_quant_02_3",
+        "text": "سؤال 3",
+        "explanation": "60=2²×3×5، والعوامل الأولية المختلفة هي 2 و3 و5؛ حاصل ضربها=30.",
+        "reviewerNotes": "MNSF26_QA_SOURCE_TAXONOMY_B8: original source PDF visually reviewed: arithmetic test 12 primes/factors, PDF zero-based pages 21-22. Correct main/subskill selected by mathematical concept; original R2 WEBP/SHA not independently verified."
+      },
+      "applied": true,
+      "answerChanged": false,
+      "taxonomyChanged": true,
+      "statusHeld": false
+    },
+    {
+      "key": "AR-T012-Q04",
+      "sourceKey": "MNSF26-AR-T012-Q04",
+      "before": {
+        "status": "approved",
+        "published": true,
+        "answer": 1,
+        "skill": "skill_quant_01",
+        "subskill": "sub_quant_01_1",
+        "text": "سؤال 4",
+        "explanation": "إذا كان العددان الأوليان كلاهما فرديين فمجموعهما زوجي أكبر من 2 وغير أولي؛ لذلك لا بد أن يكون أحدهما 2.",
+        "reviewerNotes": null
+      },
+      "after": {
+        "status": "approved",
+        "published": true,
+        "answer": 1,
+        "skill": "skill_quant_02",
+        "subskill": "sub_quant_02_3",
+        "text": "سؤال 4",
+        "explanation": "إذا كان العددان الأوليان كلاهما فرديين فمجموعهما زوجي أكبر من 2 وغير أولي؛ لذلك لا بد أن يكون أحدهما 2.",
+        "reviewerNotes": "MNSF26_QA_SOURCE_TAXONOMY_B8: original source PDF visually reviewed: arithmetic test 12 primes/factors, PDF zero-based pages 21-22. Correct main/subskill selected by mathematical concept; original R2 WEBP/SHA not independently verified."
+      },
+      "applied": true,
+      "answerChanged": false,
+      "taxonomyChanged": true,
+      "statusHeld": false
+    },
+    {
+      "key": "AR-T012-Q05",
+      "sourceKey": "MNSF26-AR-T012-Q05",
+      "before": {
+        "status": "approved",
+        "published": true,
+        "answer": 0,
+        "skill": "skill_quant_01",
+        "subskill": "sub_quant_01_1",
+        "text": "سؤال 5",
+        "explanation": "130=2×5×13، فأكبر عامل أولي=13، و13>12.",
+        "reviewerNotes": null
+      },
+      "after": {
+        "status": "approved",
+        "published": true,
+        "answer": 0,
+        "skill": "skill_quant_02",
+        "subskill": "sub_quant_02_3",
+        "text": "سؤال 5",
+        "explanation": "130=2×5×13، فأكبر عامل أولي=13، و13>12.",
+        "reviewerNotes": "MNSF26_QA_SOURCE_TAXONOMY_B8: original source PDF visually reviewed: arithmetic test 12 primes/factors, PDF zero-based pages 21-22. Correct main/subskill selected by mathematical concept; original R2 WEBP/SHA not independently verified."
+      },
+      "applied": true,
+      "answerChanged": false,
+      "taxonomyChanged": true,
+      "statusHeld": false
+    },
+    {
+      "key": "AR-T012-Q06",
+      "sourceKey": "MNSF26-AR-T012-Q06",
+      "before": {
+        "status": "approved",
+        "published": true,
+        "answer": 1,
+        "skill": "skill_quant_01",
+        "subskill": "sub_quant_01_1",
+        "text": "سؤال 6",
+        "explanation": "الأعداد الأولية بين 50 و64 هي 53 و59 و61؛ الأكبر 61، و63>61.",
+        "reviewerNotes": null
+      },
+      "after": {
+        "status": "approved",
+        "published": true,
+        "answer": 1,
+        "skill": "skill_quant_01",
+        "subskill": "sub_quant_01_1",
+        "text": "سؤال 6",
+        "explanation": "الأعداد الأولية بين 50 و64 هي 53 و59 و61؛ الأكبر 61، و63>61.",
+        "reviewerNotes": null
+      },
+      "applied": false,
+      "answerChanged": false,
+      "taxonomyChanged": false,
+      "statusHeld": false
+    },
+    {
+      "key": "AR-T012-Q07",
+      "sourceKey": "MNSF26-AR-T012-Q07",
+      "before": {
+        "status": "draft",
+        "published": false,
+        "answer": 3,
+        "skill": "skill_quant_01",
+        "subskill": "sub_quant_01_1",
+        "text": "سؤال 7",
+        "explanation": "يُطبَّق النمط المعتمد في constant-monthly-increase / repeated-pattern. ثم تُراجع النتيجة: 30..",
+        "reviewerNotes": "MNSF26_QA_HOLD_20261016: شرح نمطي لا يوثق حل المسألة أو جميع خياراتها؛ يلزم حل مستقل وفحص صورة السؤال ومفتاح الإجابة وربط المهارة قبل إعادة الاعتماد."
+      },
+      "after": {
+        "status": "draft",
+        "published": false,
+        "answer": 1,
+        "skill": "skill_quant_02",
+        "subskill": "sub_quant_02_3",
+        "text": "أي الأعداد الآتية ليس عددًا أوليًا؟ (23، 49، 101، 47)",
+        "explanation": "العدد 49=7×7 وله قاسم غير 1 ونفسه، لذا ليس أوليًا، بينما 23 و47 و101 أعداد أولية. الاختيار (ب).",
+        "reviewerNotes": "MNSF26_QA_HOLD_WRONG_KEY_B8: original source PDF visually inspected, independent mathematical solution; corrected key and taxonomy, R2 WEBP/SHA not independently verified; retain draft/unpublished. Source AR-T012-Q07, original PDF zero-based page 21."
+      },
+      "applied": true,
+      "answerChanged": true,
+      "taxonomyChanged": true,
+      "statusHeld": false
+    },
+    {
+      "key": "AR-T012-Q08",
+      "sourceKey": "MNSF26-AR-T012-Q08",
+      "before": {
+        "status": "draft",
+        "published": false,
+        "answer": 3,
+        "skill": "skill_quant_01",
+        "subskill": "sub_quant_01_1",
+        "text": "سؤال 8",
+        "explanation": "يُطبَّق النمط المعتمد في two-capacity-conditions / linear-equation / classroom-seating. ثم تُراجع النتيجة: 48 students..",
+        "reviewerNotes": "MNSF26_QA_HOLD_20261016: شرح نمطي لا يوثق حل المسألة أو جميع خياراتها؛ يلزم حل مستقل وفحص صورة السؤال ومفتاح الإجابة وربط المهارة قبل إعادة الاعتماد."
+      },
+      "after": {
+        "status": "draft",
+        "published": false,
+        "answer": 3,
+        "skill": "skill_quant_01",
+        "subskill": "sub_quant_01_1",
+        "text": "سؤال 8",
+        "explanation": "يُطبَّق النمط المعتمد في two-capacity-conditions / linear-equation / classroom-seating. ثم تُراجع النتيجة: 48 students..",
+        "reviewerNotes": "MNSF26_QA_HOLD_20261016: شرح نمطي لا يوثق حل المسألة أو جميع خياراتها؛ يلزم حل مستقل وفحص صورة السؤال ومفتاح الإجابة وربط المهارة قبل إعادة الاعتماد."
+      },
+      "applied": false,
+      "answerChanged": false,
+      "taxonomyChanged": false,
+      "statusHeld": false
+    },
+    {
+      "key": "AR-T012-Q09",
+      "sourceKey": "MNSF26-AR-T012-Q09",
+      "before": {
+        "status": "approved",
+        "published": true,
+        "answer": 2,
+        "skill": "skill_quant_01",
+        "subskill": "sub_quant_01_1",
+        "text": "سؤال 9",
+        "explanation": "عند س=10 يكون س−7=3 وهو عدد أولي؛ بقية الاختيارات تعطي 0 أو1 أو4 وليست أولية.",
+        "reviewerNotes": null
+      },
+      "after": {
+        "status": "approved",
+        "published": true,
+        "answer": 2,
+        "skill": "skill_quant_02",
+        "subskill": "sub_quant_02_3",
+        "text": "سؤال 9",
+        "explanation": "عند س=10 يكون س−7=3 وهو عدد أولي؛ بقية الاختيارات تعطي 0 أو1 أو4 وليست أولية.",
+        "reviewerNotes": "MNSF26_QA_SOURCE_TAXONOMY_B8: original source PDF visually reviewed: arithmetic test 12 primes/factors, PDF zero-based pages 21-22. Correct main/subskill selected by mathematical concept; original R2 WEBP/SHA not independently verified."
+      },
+      "applied": true,
+      "answerChanged": false,
+      "taxonomyChanged": true,
+      "statusHeld": false
+    },
+    {
+      "key": "AR-T012-Q10",
+      "sourceKey": "MNSF26-AR-T012-Q10",
+      "before": {
+        "status": "approved",
+        "published": true,
+        "answer": 3,
+        "skill": "skill_quant_01",
+        "subskill": "sub_quant_01_1",
+        "text": "سؤال 10",
+        "explanation": "87 يقبل القسمة على 3 لأن 8+7=15، إذن هو غير أولي.",
+        "reviewerNotes": null
+      },
+      "after": {
+        "status": "approved",
+        "published": true,
+        "answer": 3,
+        "skill": "skill_quant_02",
+        "subskill": "sub_quant_02_3",
+        "text": "سؤال 10",
+        "explanation": "87 يقبل القسمة على 3 لأن 8+7=15، إذن هو غير أولي.",
+        "reviewerNotes": "MNSF26_QA_SOURCE_TAXONOMY_B8: original source PDF visually reviewed: arithmetic test 12 primes/factors, PDF zero-based pages 21-22. Correct main/subskill selected by mathematical concept; original R2 WEBP/SHA not independently verified."
+      },
+      "applied": true,
+      "answerChanged": false,
+      "taxonomyChanged": true,
+      "statusHeld": false
+    },
+    {
+      "key": "AR-T012-Q11",
+      "sourceKey": "MNSF26-AR-T012-Q11",
+      "before": {
+        "status": "approved",
+        "published": true,
+        "answer": 0,
+        "skill": "skill_quant_01",
+        "subskill": "sub_quant_01_1",
+        "text": "سؤال 11",
+        "explanation": "1110 و110 زوجيان، و111 يقبل القسمة على3؛ يبقى 1999، ولا يقبل القسمة على أي عدد أولي حتى √1999، لذا هو أولي.",
+        "reviewerNotes": null
+      },
+      "after": {
+        "status": "approved",
+        "published": true,
+        "answer": 0,
+        "skill": "skill_quant_02",
+        "subskill": "sub_quant_02_3",
+        "text": "سؤال 11",
+        "explanation": "1110 و110 زوجيان، و111 يقبل القسمة على3؛ يبقى 1999، ولا يقبل القسمة على أي عدد أولي حتى √1999، لذا هو أولي.",
+        "reviewerNotes": "MNSF26_QA_SOURCE_TAXONOMY_B8: original source PDF visually reviewed: arithmetic test 12 primes/factors, PDF zero-based pages 21-22. Correct main/subskill selected by mathematical concept; original R2 WEBP/SHA not independently verified."
+      },
+      "applied": true,
+      "answerChanged": false,
+      "taxonomyChanged": true,
+      "statusHeld": false
+    },
+    {
+      "key": "AR-T012-Q12",
+      "sourceKey": "MNSF26-AR-T012-Q12",
+      "before": {
+        "status": "approved",
+        "published": true,
+        "answer": 3,
+        "skill": "skill_quant_01",
+        "subskill": "sub_quant_01_1",
+        "text": "سؤال 12",
+        "explanation": "الأعداد الأقل من50 التي يكون العدد ومعكوس رقميه أوليين هي 2،3،5،7،11،13،17،31،37؛ وعددها 9.",
+        "reviewerNotes": null
+      },
+      "after": {
+        "status": "approved",
+        "published": true,
+        "answer": 3,
+        "skill": "skill_quant_02",
+        "subskill": "sub_quant_02_3",
+        "text": "سؤال 12",
+        "explanation": "الأعداد الأقل من50 التي يكون العدد ومعكوس رقميه أوليين هي 2،3،5،7،11،13،17،31،37؛ وعددها 9.",
+        "reviewerNotes": "MNSF26_QA_SOURCE_TAXONOMY_B8: original source PDF visually reviewed: arithmetic test 12 primes/factors, PDF zero-based pages 21-22. Correct main/subskill selected by mathematical concept; original R2 WEBP/SHA not independently verified."
+      },
+      "applied": true,
+      "answerChanged": false,
+      "taxonomyChanged": true,
+      "statusHeld": false
+    },
+    {
+      "key": "AR-T012-Q13",
+      "sourceKey": "MNSF26-AR-T012-Q13",
+      "before": {
+        "status": "approved",
+        "published": true,
+        "answer": 2,
+        "skill": "skill_quant_01",
+        "subskill": "sub_quant_01_1",
+        "text": "سؤال 13",
+        "explanation": "الأعداد الأولية المتتالية التي أكبرها7 هي 2،3،5،7؛ حاصل ضربها 210، ثم 210÷10=21.",
+        "reviewerNotes": null
+      },
+      "after": {
+        "status": "approved",
+        "published": true,
+        "answer": 2,
+        "skill": "skill_quant_02",
+        "subskill": "sub_quant_02_3",
+        "text": "سؤال 13",
+        "explanation": "الأعداد الأولية المتتالية التي أكبرها7 هي 2،3،5،7؛ حاصل ضربها 210، ثم 210÷10=21.",
+        "reviewerNotes": "MNSF26_QA_SOURCE_TAXONOMY_B8: original source PDF visually reviewed: arithmetic test 12 primes/factors, PDF zero-based pages 21-22. Correct main/subskill selected by mathematical concept; original R2 WEBP/SHA not independently verified."
+      },
+      "applied": true,
+      "answerChanged": false,
+      "taxonomyChanged": true,
+      "statusHeld": false
+    },
+    {
+      "key": "AR-T012-Q15",
+      "sourceKey": "MNSF26-AR-T012-Q15",
+      "before": {
+        "status": "approved",
+        "published": true,
+        "answer": 1,
+        "skill": "skill_quant_01",
+        "subskill": "sub_quant_01_1",
+        "text": "سؤال الحساب/الجبر الاختبار 12 رقم 15 من كتاب المنصف 26",
+        "explanation": "أصغر عامل أولي للعدد 1280 هو2 لأنه زوجي؛ وبالمقارنة 3>2.",
+        "reviewerNotes": null
+      },
+      "after": {
+        "status": "approved",
+        "published": true,
+        "answer": 1,
+        "skill": "skill_quant_02",
+        "subskill": "sub_quant_02_3",
+        "text": "سؤال الحساب/الجبر الاختبار 12 رقم 15 من كتاب المنصف 26",
+        "explanation": "أصغر عامل أولي للعدد 1280 هو2 لأنه زوجي؛ وبالمقارنة 3>2.",
+        "reviewerNotes": "MNSF26_QA_SOURCE_TAXONOMY_B8: original source PDF visually reviewed: arithmetic test 12 primes/factors, PDF zero-based pages 21-22. Correct main/subskill selected by mathematical concept; original R2 WEBP/SHA not independently verified."
+      },
+      "applied": true,
+      "answerChanged": false,
+      "taxonomyChanged": true,
+      "statusHeld": false
+    },
+    {
+      "key": "AR-T012-Q16",
+      "sourceKey": "MNSF26-AR-T012-Q16",
+      "before": {
+        "status": "approved",
+        "published": true,
+        "answer": 1,
+        "skill": "skill_quant_01",
+        "subskill": "sub_quant_01_1",
+        "text": "سؤال الحساب/الجبر الاختبار 12 رقم 16 من كتاب المنصف 26",
+        "explanation": "96 و98 زوجيان، و99 يقبل القسمة على3؛ إذن 97 هو العدد الأولي.",
+        "reviewerNotes": null
+      },
+      "after": {
+        "status": "approved",
+        "published": true,
+        "answer": 1,
+        "skill": "skill_quant_02",
+        "subskill": "sub_quant_02_3",
+        "text": "سؤال الحساب/الجبر الاختبار 12 رقم 16 من كتاب المنصف 26",
+        "explanation": "96 و98 زوجيان، و99 يقبل القسمة على3؛ إذن 97 هو العدد الأولي.",
+        "reviewerNotes": "MNSF26_QA_SOURCE_TAXONOMY_B8: original source PDF visually reviewed: arithmetic test 12 primes/factors, PDF zero-based pages 21-22. Correct main/subskill selected by mathematical concept; original R2 WEBP/SHA not independently verified."
+      },
+      "applied": true,
+      "answerChanged": false,
+      "taxonomyChanged": true,
+      "statusHeld": false
+    },
+    {
+      "key": "AR-T012-Q17",
+      "sourceKey": "MNSF26-AR-T012-Q17",
+      "before": {
+        "status": "approved",
+        "published": true,
+        "answer": 3,
+        "skill": "skill_quant_01",
+        "subskill": "sub_quant_01_1",
+        "text": "سؤال الحساب/الجبر الاختبار 12 رقم 17 من كتاب المنصف 26",
+        "explanation": "مجموع ثلاثة أعداد أولية يساوي14. لو كانت الثلاثة فردية لكان المجموع فرديًا؛ لذا أحدها2، وبالفعل 2+5+7=14.",
+        "reviewerNotes": null
+      },
+      "after": {
+        "status": "approved",
+        "published": true,
+        "answer": 3,
+        "skill": "skill_quant_02",
+        "subskill": "sub_quant_02_3",
+        "text": "سؤال الحساب/الجبر الاختبار 12 رقم 17 من كتاب المنصف 26",
+        "explanation": "مجموع ثلاثة أعداد أولية يساوي14. لو كانت الثلاثة فردية لكان المجموع فرديًا؛ لذا أحدها2، وبالفعل 2+5+7=14.",
+        "reviewerNotes": "MNSF26_QA_SOURCE_TAXONOMY_B8: original source PDF visually reviewed: arithmetic test 12 primes/factors, PDF zero-based pages 21-22. Correct main/subskill selected by mathematical concept; original R2 WEBP/SHA not independently verified."
+      },
+      "applied": true,
+      "answerChanged": false,
+      "taxonomyChanged": true,
+      "statusHeld": false
+    },
+    {
+      "key": "AR-T012-Q18",
+      "sourceKey": "MNSF26-AR-T012-Q18",
+      "before": {
+        "status": "approved",
+        "published": true,
+        "answer": 3,
+        "skill": "skill_quant_01",
+        "subskill": "sub_quant_01_1",
+        "text": "سؤال الحساب/الجبر الاختبار 12 رقم 18 من كتاب المنصف 26",
+        "explanation": "العدد 8=2×4 وله قواسم غير1 ونفسه، لذلك هو غير أولي.",
+        "reviewerNotes": null
+      },
+      "after": {
+        "status": "approved",
+        "published": true,
+        "answer": 3,
+        "skill": "skill_quant_02",
+        "subskill": "sub_quant_02_3",
+        "text": "سؤال الحساب/الجبر الاختبار 12 رقم 18 من كتاب المنصف 26",
+        "explanation": "العدد 8=2×4 وله قواسم غير1 ونفسه، لذلك هو غير أولي.",
+        "reviewerNotes": "MNSF26_QA_SOURCE_TAXONOMY_B8: original source PDF visually reviewed: arithmetic test 12 primes/factors, PDF zero-based pages 21-22. Correct main/subskill selected by mathematical concept; original R2 WEBP/SHA not independently verified."
+      },
+      "applied": true,
+      "answerChanged": false,
+      "taxonomyChanged": true,
+      "statusHeld": false
+    },
+    {
+      "key": "AR-T012-Q19",
+      "sourceKey": "MNSF26-AR-T012-Q19",
+      "before": {
+        "status": "approved",
+        "published": true,
+        "answer": 2,
+        "skill": "skill_quant_01",
+        "subskill": "sub_quant_01_1",
+        "text": "سؤال الحساب/الجبر الاختبار 12 رقم 19 من كتاب المنصف 26",
+        "explanation": "عند قسمة عدد أولي على عدد أولي آخر مختلف عنه لا يقسم أحدهما الآخر، فيكون الناتج كسرًا غير صحيح.",
+        "reviewerNotes": null
+      },
+      "after": {
+        "status": "approved",
+        "published": true,
+        "answer": 2,
+        "skill": "skill_quant_02",
+        "subskill": "sub_quant_02_3",
+        "text": "سؤال الحساب/الجبر الاختبار 12 رقم 19 من كتاب المنصف 26",
+        "explanation": "عند قسمة عدد أولي على عدد أولي آخر مختلف عنه لا يقسم أحدهما الآخر، فيكون الناتج كسرًا غير صحيح.",
+        "reviewerNotes": "MNSF26_QA_SOURCE_TAXONOMY_B8: original source PDF visually reviewed: arithmetic test 12 primes/factors, PDF zero-based pages 21-22. Correct main/subskill selected by mathematical concept; original R2 WEBP/SHA not independently verified."
+      },
+      "applied": true,
+      "answerChanged": false,
+      "taxonomyChanged": true,
+      "statusHeld": false
+    },
+    {
+      "key": "AR-T012-Q20",
+      "sourceKey": "MNSF26-AR-T012-Q20",
+      "before": {
+        "status": "approved",
+        "published": true,
+        "answer": 1,
+        "skill": "skill_quant_01",
+        "subskill": "sub_quant_01_1",
+        "text": "سؤال الحساب/الجبر الاختبار 12 رقم 20 من كتاب المنصف 26",
+        "explanation": "الأعداد الأولية من10 إلى30 هي 11،13،17،19،23،29؛ عددها6.",
+        "reviewerNotes": null
+      },
+      "after": {
+        "status": "approved",
+        "published": true,
+        "answer": 1,
+        "skill": "skill_quant_02",
+        "subskill": "sub_quant_02_3",
+        "text": "سؤال الحساب/الجبر الاختبار 12 رقم 20 من كتاب المنصف 26",
+        "explanation": "الأعداد الأولية من10 إلى30 هي 11،13،17،19،23،29؛ عددها6.",
+        "reviewerNotes": "MNSF26_QA_SOURCE_TAXONOMY_B8: original source PDF visually reviewed: arithmetic test 12 primes/factors, PDF zero-based pages 21-22. Correct main/subskill selected by mathematical concept; original R2 WEBP/SHA not independently verified."
+      },
+      "applied": true,
+      "answerChanged": false,
+      "taxonomyChanged": true,
+      "statusHeld": false
+    },
+    {
+      "key": "AR-T013-Q01",
+      "sourceKey": "MNSF26-AR-T013-Q01",
+      "before": {
+        "status": "approved",
+        "published": true,
+        "answer": 0,
+        "skill": "skill_quant_01",
+        "subskill": "sub_quant_01_1",
+        "text": "سؤال الحساب/الجبر الاختبار 13 رقم 1 من كتاب المنصف 26",
+        "explanation": "من بين أول 100 عدد أولي يوجد 2 و5؛ حاصل الضرب يحتوي العامل 10، لذلك رقم الآحاد 0.",
+        "reviewerNotes": null
+      },
+      "after": {
+        "status": "approved",
+        "published": true,
+        "answer": 0,
+        "skill": "skill_quant_01",
+        "subskill": "sub_quant_01_5",
+        "text": "سؤال الحساب/الجبر الاختبار 13 رقم 1 من كتاب المنصف 26",
+        "explanation": "من بين أول 100 عدد أولي يوجد 2 و5؛ حاصل الضرب يحتوي العامل 10، لذلك رقم الآحاد 0.",
+        "reviewerNotes": "MNSF26_QA_SOURCE_TAXONOMY_B8: original source PDF visually reviewed: arithmetic test 13 source topic, PDF zero-based pages 23-24. Correct main/subskill selected by mathematical concept; original R2 WEBP/SHA not independently verified."
+      },
+      "applied": true,
+      "answerChanged": false,
+      "taxonomyChanged": true,
+      "statusHeld": false
+    },
+    {
+      "key": "AR-T013-Q02",
+      "sourceKey": "MNSF26-AR-T013-Q02",
+      "before": {
+        "status": "approved",
+        "published": true,
+        "answer": 3,
+        "skill": "skill_quant_01",
+        "subskill": "sub_quant_01_1",
+        "text": "سؤال الحساب/الجبر الاختبار 13 رقم 2 من كتاب المنصف 26",
+        "explanation": "قواسم 21 هي 1،3،7،21؛ من الخيارات 7.",
+        "reviewerNotes": null
+      },
+      "after": {
+        "status": "approved",
+        "published": true,
+        "answer": 3,
+        "skill": "skill_quant_02",
+        "subskill": "sub_quant_02_3",
+        "text": "سؤال الحساب/الجبر الاختبار 13 رقم 2 من كتاب المنصف 26",
+        "explanation": "قواسم 21 هي 1،3،7،21؛ من الخيارات 7.",
+        "reviewerNotes": "MNSF26_QA_SOURCE_TAXONOMY_B8: original source PDF visually reviewed: arithmetic test 13 source topic, PDF zero-based pages 23-24. Correct main/subskill selected by mathematical concept; original R2 WEBP/SHA not independently verified."
+      },
+      "applied": true,
+      "answerChanged": false,
+      "taxonomyChanged": true,
+      "statusHeld": false
+    },
+    {
+      "key": "AR-T013-Q03",
+      "sourceKey": "MNSF26-AR-T013-Q03",
+      "before": {
+        "status": "approved",
+        "published": true,
+        "answer": 2,
+        "skill": "skill_quant_01",
+        "subskill": "sub_quant_01_1",
+        "text": "سؤال الحساب/الجبر الاختبار 13 رقم 3 من كتاب المنصف 26",
+        "explanation": "45 يقبل القسمة على5 وعلى9؛ كلاهما من قواسمه.",
+        "reviewerNotes": null
+      },
+      "after": {
+        "status": "approved",
+        "published": true,
+        "answer": 2,
+        "skill": "skill_quant_02",
+        "subskill": "sub_quant_02_3",
+        "text": "سؤال الحساب/الجبر الاختبار 13 رقم 3 من كتاب المنصف 26",
+        "explanation": "45 يقبل القسمة على5 وعلى9؛ كلاهما من قواسمه.",
+        "reviewerNotes": "MNSF26_QA_SOURCE_TAXONOMY_B8: original source PDF visually reviewed: arithmetic test 13 source topic, PDF zero-based pages 23-24. Correct main/subskill selected by mathematical concept; original R2 WEBP/SHA not independently verified."
+      },
+      "applied": true,
+      "answerChanged": false,
+      "taxonomyChanged": true,
+      "statusHeld": false
+    },
+    {
+      "key": "AR-T013-Q04",
+      "sourceKey": "MNSF26-AR-T013-Q04",
+      "before": {
+        "status": "approved",
+        "published": true,
+        "answer": 1,
+        "skill": "skill_quant_01",
+        "subskill": "sub_quant_01_1",
+        "text": "سؤال الحساب/الجبر الاختبار 13 رقم 4 من كتاب المنصف 26",
+        "explanation": "أصغر عدد أقلام يساوي عدد الدفاتر يجب أن يكون مضاعفًا لـ12 و8؛ م.م.أ(12،8)=24.",
+        "reviewerNotes": null
+      },
+      "after": {
+        "status": "approved",
+        "published": true,
+        "answer": 1,
+        "skill": "skill_quant_01",
+        "subskill": "sub_quant_01_1",
+        "text": "سؤال الحساب/الجبر الاختبار 13 رقم 4 من كتاب المنصف 26",
+        "explanation": "أصغر عدد أقلام يساوي عدد الدفاتر يجب أن يكون مضاعفًا لـ12 و8؛ م.م.أ(12،8)=24.",
+        "reviewerNotes": null
+      },
+      "applied": false,
+      "answerChanged": false,
+      "taxonomyChanged": false,
+      "statusHeld": false
+    },
+    {
+      "key": "AR-T013-Q05",
+      "sourceKey": "MNSF26-AR-T013-Q05",
+      "before": {
+        "status": "approved",
+        "published": true,
+        "answer": 0,
+        "skill": "skill_quant_01",
+        "subskill": "sub_quant_01_1",
+        "text": "سؤال الحساب/الجبر الاختبار 13 رقم 5 من كتاب المنصف 26",
+        "explanation": "إذا كان عدد الطاولات ط: عدد الطلاب=4(ط−3)، وبالجلوس 3 لكل طاولة يبقى 3 بلا مكان: العدد=3ط+3. بالمساواة ط=15 والطلاب=48.",
+        "reviewerNotes": null
+      },
+      "after": {
+        "status": "draft",
+        "published": false,
+        "answer": 2,
+        "skill": "skill_quant_07",
+        "subskill": "sub_quant_07_2",
+        "text": "إذا جلس كل أربعة طلاب على طاولة بقيت ثلاث طاولات فارغة، وإذا جلس كل ثلاثة طلاب على طاولة بقي ثلاثة طلاب بلا أماكن. كم عدد طلاب الفصل؟",
+        "explanation": "لنفرض عدد الطاولات ط وعدد الطلاب ن. في الحالة الأولى ن=4(ط−3)، وفي الثانية ن=3ط+3. إذن 4ط−12=3ط+3، فط=15 ون=4×12=48 طالبًا. الاختيار (ج).",
+        "reviewerNotes": "MNSF26_QA_HOLD_WRONG_KEY_B8: original source PDF visually inspected, independent mathematical solution; corrected key and taxonomy, R2 WEBP/SHA not independently verified; retain draft/unpublished. Source AR-T013-Q05, original PDF zero-based page 23."
+      },
+      "applied": true,
+      "answerChanged": true,
+      "taxonomyChanged": true,
+      "statusHeld": true
+    },
+    {
+      "key": "AR-T013-Q06",
+      "sourceKey": "MNSF26-AR-T013-Q06",
+      "before": {
+        "status": "approved",
+        "published": true,
+        "answer": 0,
+        "skill": "skill_quant_01",
+        "subskill": "sub_quant_01_1",
+        "text": "سؤال الحساب/الجبر الاختبار 13 رقم 6 من كتاب المنصف 26",
+        "explanation": "لكل طبق 6 تفاحات و9 برتقالات و8 موزات. المتاح 24 تفاحة→4 أطباق، 36 برتقالة→4، 48 موزة→6؛ المحدد هو4.",
+        "reviewerNotes": null
+      },
+      "after": {
+        "status": "approved",
+        "published": true,
+        "answer": 0,
+        "skill": "skill_quant_01",
+        "subskill": "sub_quant_01_1",
+        "text": "سؤال الحساب/الجبر الاختبار 13 رقم 6 من كتاب المنصف 26",
+        "explanation": "لكل طبق 6 تفاحات و9 برتقالات و8 موزات. المتاح 24 تفاحة→4 أطباق، 36 برتقالة→4، 48 موزة→6؛ المحدد هو4.",
+        "reviewerNotes": null
+      },
+      "applied": false,
+      "answerChanged": false,
+      "taxonomyChanged": false,
+      "statusHeld": false
+    },
+    {
+      "key": "AR-T013-Q07",
+      "sourceKey": "MNSF26-AR-T013-Q07",
+      "before": {
+        "status": "approved",
+        "published": true,
+        "answer": 2,
+        "skill": "skill_quant_01",
+        "subskill": "sub_quant_01_1",
+        "text": "سؤال الحساب/الجبر الاختبار 13 رقم 7 من كتاب المنصف 26",
+        "explanation": "أكبر عدد أشخاص متساوٍ في الغرفة يقسم 24 و48 هو ق.م.أ=24.",
+        "reviewerNotes": null
+      },
+      "after": {
+        "status": "draft",
+        "published": false,
+        "answer": 3,
+        "skill": "skill_quant_02",
+        "subskill": "sub_quant_02_3",
+        "text": "رحلتان سياحيتان، الأولى بها 64 شخصًا والثانية 48 شخصًا، وُزِّعوا على غرف فندق بالتساوي. ما أكبر عدد ممكن من الأشخاص في الغرفة الواحدة؟",
+        "explanation": "أكبر عدد يقسم 64 و48 دون باق هو القاسم المشترك الأكبر: ق.م.أ(64،48)=16؛ لأن 64=4×16 و48=3×16. الاختيار (د)، وليس 24.",
+        "reviewerNotes": "MNSF26_QA_HOLD_WRONG_KEY_B8: original source PDF visually inspected, independent mathematical solution; corrected key and taxonomy, R2 WEBP/SHA not independently verified; retain draft/unpublished. Source AR-T013-Q07, original PDF zero-based page 23."
+      },
+      "applied": true,
+      "answerChanged": true,
+      "taxonomyChanged": true,
+      "statusHeld": true
+    },
+    {
+      "key": "AR-T013-Q08",
+      "sourceKey": "MNSF26-AR-T013-Q08",
+      "before": {
+        "status": "approved",
+        "published": true,
+        "answer": 2,
+        "skill": "skill_quant_01",
+        "subskill": "sub_quant_01_1",
+        "text": "سؤال الحساب/الجبر الاختبار 13 رقم 8 من كتاب المنصف 26",
+        "explanation": "أكبر عدد غرف يقسم 64 حاسبًا و48 طابعة بالتساوي هو ق.م.أ(64،48)=16.",
+        "reviewerNotes": null
+      },
+      "after": {
+        "status": "approved",
+        "published": true,
+        "answer": 2,
+        "skill": "skill_quant_01",
+        "subskill": "sub_quant_01_1",
+        "text": "سؤال الحساب/الجبر الاختبار 13 رقم 8 من كتاب المنصف 26",
+        "explanation": "أكبر عدد غرف يقسم 64 حاسبًا و48 طابعة بالتساوي هو ق.م.أ(64،48)=16.",
+        "reviewerNotes": null
+      },
+      "applied": false,
+      "answerChanged": false,
+      "taxonomyChanged": false,
+      "statusHeld": false
+    },
+    {
+      "key": "AR-T013-Q09",
+      "sourceKey": "MNSF26-AR-T013-Q09",
+      "before": {
+        "status": "approved",
+        "published": true,
+        "answer": 2,
+        "skill": "skill_quant_01",
+        "subskill": "sub_quant_01_1",
+        "text": "سؤال الحساب/الجبر الاختبار 13 رقم 9 من كتاب المنصف 26",
+        "explanation": "قواسم 4 هي 1،2،4؛ عددها3.",
+        "reviewerNotes": null
+      },
+      "after": {
+        "status": "approved",
+        "published": true,
+        "answer": 2,
+        "skill": "skill_quant_02",
+        "subskill": "sub_quant_02_3",
+        "text": "سؤال الحساب/الجبر الاختبار 13 رقم 9 من كتاب المنصف 26",
+        "explanation": "قواسم 4 هي 1،2،4؛ عددها3.",
+        "reviewerNotes": "MNSF26_QA_SOURCE_TAXONOMY_B8: source arithmetic PDF original zero-based page 23, test 13; verified main/subskill from question concept. R2 crop SHA unverified."
+      },
+      "applied": true,
+      "answerChanged": false,
+      "taxonomyChanged": true,
+      "statusHeld": false
+    },
+    {
+      "key": "AR-T013-Q10",
+      "sourceKey": "MNSF26-AR-T013-Q10",
+      "before": {
+        "status": "approved",
+        "published": true,
+        "answer": 1,
+        "skill": "skill_quant_01",
+        "subskill": "sub_quant_01_1",
+        "text": "سؤال الحساب/الجبر الاختبار 13 رقم 10 من كتاب المنصف 26",
+        "explanation": "ق.م.أ(24،16)=8، وهو أيضًا من مضاعفات2.",
+        "reviewerNotes": null
+      },
+      "after": {
+        "status": "approved",
+        "published": true,
+        "answer": 1,
+        "skill": "skill_quant_02",
+        "subskill": "sub_quant_02_3",
+        "text": "سؤال الحساب/الجبر الاختبار 13 رقم 10 من كتاب المنصف 26",
+        "explanation": "ق.م.أ(24،16)=8، وهو أيضًا من مضاعفات2.",
+        "reviewerNotes": "MNSF26_QA_SOURCE_TAXONOMY_B8: source arithmetic PDF original zero-based page 23, test 13; verified main/subskill from question concept. R2 crop SHA unverified."
+      },
+      "applied": true,
+      "answerChanged": false,
+      "taxonomyChanged": true,
+      "statusHeld": false
+    },
+    {
+      "key": "AR-T013-Q11",
+      "sourceKey": "MNSF26-AR-T013-Q11",
+      "before": {
+        "status": "approved",
+        "published": true,
+        "answer": 2,
+        "skill": "skill_quant_01",
+        "subskill": "sub_quant_01_1",
+        "text": "سؤال الحساب/الجبر الاختبار 13 رقم 11 من كتاب المنصف 26",
+        "explanation": "العدد المطلوب من مضاعفات3، ولكي يكون حاصل ضربه في15 قابلًا للقسمة على7 يجب أن يحتوي العدد العامل7؛ من الخيارات 21.",
+        "reviewerNotes": null
+      },
+      "after": {
+        "status": "draft",
+        "published": false,
+        "answer": 0,
+        "skill": "skill_quant_02",
+        "subskill": "sub_quant_02_1",
+        "text": "عدد من مضاعفات 3، وعند ضربه في 15 يكون الناتج قابلًا للقسمة على 6. أي الأعداد (12، 15، 21، 27) يحقق ذلك؟",
+        "explanation": "لكي يكون 15×العدد قابلًا للقسمة على 6 فلا بد أن يكون الناتج زوجيًا ومضاعفًا لـ3. العدد 12 يعطي 180، و180÷6=30 عدد صحيح؛ أما 15 و21 و27 فتعطي نواتج فردية. الاختيار (أ).",
+        "reviewerNotes": "MNSF26_QA_HOLD_WRONG_KEY_B8: original source PDF visually inspected, independent mathematical solution; corrected key and taxonomy, R2 WEBP/SHA not independently verified; retain draft/unpublished. Source AR-T013-Q11, original PDF zero-based page 23."
+      },
+      "applied": true,
+      "answerChanged": true,
+      "taxonomyChanged": true,
+      "statusHeld": true
+    },
+    {
+      "key": "AR-T013-Q12",
+      "sourceKey": "MNSF26-AR-T013-Q12",
+      "before": {
+        "status": "approved",
+        "published": true,
+        "answer": 2,
+        "skill": "skill_quant_01",
+        "subskill": "sub_quant_01_1",
+        "text": "سؤال الحساب/الجبر الاختبار 13 رقم 12 من كتاب المنصف 26",
+        "explanation": "إذا كان م.م.أ لعددين 16 وأصغرهما8، فالعدد الآخر الموافق للاختيارات هو16 لأن م.م.أ(8،16)=16.",
+        "reviewerNotes": null
+      },
+      "after": {
+        "status": "draft",
+        "published": false,
+        "answer": 1,
+        "skill": "skill_quant_02",
+        "subskill": "sub_quant_02_3",
+        "text": "عددان المضاعف المشترك الأصغر لهما 16، والعدد الأصغر 8. ما العدد الأكبر؟",
+        "explanation": "العدد الأكبر 16؛ لأن م.م.أ(8،16)=16. أما 24 أو32 فالمضاعف المشترك الأصغر مع 8 لا يساوي 16. الاختيار (ب).",
+        "reviewerNotes": "MNSF26_QA_HOLD_WRONG_KEY_B8: original source PDF visually inspected, independent mathematical solution; corrected key and taxonomy, R2 WEBP/SHA not independently verified; retain draft/unpublished. Source AR-T013-Q12, original PDF zero-based page 23."
+      },
+      "applied": true,
+      "answerChanged": true,
+      "taxonomyChanged": true,
+      "statusHeld": true
+    },
+    {
+      "key": "AR-T013-Q14",
+      "sourceKey": "MNSF26-AR-T013-Q14",
+      "before": {
+        "status": "approved",
+        "published": true,
+        "answer": 3,
+        "skill": "skill_quant_01",
+        "subskill": "sub_quant_01_1",
+        "text": "سؤال 14",
+        "explanation": "ثلاثة أعداد أولية مجموعها14؛ لا يمكن أن تكون كلها فردية لأن مجموع ثلاثة فردية فردي، لذا أحدها2، وبالفعل 2+5+7=14.",
+        "reviewerNotes": null
+      },
+      "after": {
+        "status": "approved",
+        "published": true,
+        "answer": 3,
+        "skill": "skill_quant_02",
+        "subskill": "sub_quant_02_3",
+        "text": "سؤال 14",
+        "explanation": "ثلاثة أعداد أولية مجموعها14؛ لا يمكن أن تكون كلها فردية لأن مجموع ثلاثة فردية فردي، لذا أحدها2، وبالفعل 2+5+7=14.",
+        "reviewerNotes": "MNSF26_QA_SOURCE_TAXONOMY_B8: source arithmetic PDF original zero-based page 23, test 13; verified main/subskill from question concept. R2 crop SHA unverified."
+      },
+      "applied": true,
+      "answerChanged": false,
+      "taxonomyChanged": true,
+      "statusHeld": false
+    },
+    {
+      "key": "AR-T013-Q16",
+      "sourceKey": "MNSF26-AR-T013-Q16",
+      "before": {
+        "status": "approved",
+        "published": true,
+        "answer": 0,
+        "skill": "skill_quant_01",
+        "subskill": "sub_quant_01_1",
+        "text": "سؤال 16",
+        "explanation": "محمد يحضر أول4 أيام من الأسبوع وفهد آخر4 أيام؛ يوجد يوم تداخل واحد كل أسبوع، وخلال12 أسبوعًا يلتقيان12 مرة.",
+        "reviewerNotes": null
+      },
+      "after": {
+        "status": "approved",
+        "published": true,
+        "answer": 0,
+        "skill": "skill_quant_14",
+        "subskill": "sub_quant_14_1",
+        "text": "سؤال 16",
+        "explanation": "محمد يحضر أول4 أيام من الأسبوع وفهد آخر4 أيام؛ يوجد يوم تداخل واحد كل أسبوع، وخلال12 أسبوعًا يلتقيان12 مرة.",
+        "reviewerNotes": "MNSF26_QA_SOURCE_TAXONOMY_B8: source arithmetic PDF original zero-based page 24, test 13; verified main/subskill from question concept. R2 crop SHA unverified."
+      },
+      "applied": true,
+      "answerChanged": false,
+      "taxonomyChanged": true,
+      "statusHeld": false
+    },
+    {
+      "key": "AR-T013-Q17",
+      "sourceKey": "MNSF26-AR-T013-Q17",
+      "before": {
+        "status": "approved",
+        "published": true,
+        "answer": 0,
+        "skill": "skill_quant_01",
+        "subskill": "sub_quant_01_1",
+        "text": "سؤال 17",
+        "explanation": "مع 0<س<ص<10، كل مضاعف لـص هو أندر من مضاعفات س؛ وعدد مضاعفات العدد الأصغر س تحت100 أكبر من عدد مضاعفات ص.",
+        "reviewerNotes": null
+      },
+      "after": {
+        "status": "approved",
+        "published": true,
+        "answer": 0,
+        "skill": "skill_quant_02",
+        "subskill": "sub_quant_02_1",
+        "text": "سؤال 17",
+        "explanation": "مع 0<س<ص<10، كل مضاعف لـص هو أندر من مضاعفات س؛ وعدد مضاعفات العدد الأصغر س تحت100 أكبر من عدد مضاعفات ص.",
+        "reviewerNotes": "MNSF26_QA_SOURCE_TAXONOMY_B8: source arithmetic PDF original zero-based page 24, test 13; verified main/subskill from question concept. R2 crop SHA unverified."
+      },
+      "applied": true,
+      "answerChanged": false,
+      "taxonomyChanged": true,
+      "statusHeld": false
+    },
+    {
+      "key": "AR-T013-Q18",
+      "sourceKey": "MNSF26-AR-T013-Q18",
+      "before": {
+        "status": "approved",
+        "published": true,
+        "answer": 3,
+        "skill": "skill_quant_01",
+        "subskill": "sub_quant_01_1",
+        "text": "سؤال 18",
+        "explanation": "دورة فيصل15 دقيقة ودورة فارس20 دقيقة؛ أول تزامن بعد م.م.أ(15،20)=60 دقيقة.",
+        "reviewerNotes": null
+      },
+      "after": {
+        "status": "approved",
+        "published": true,
+        "answer": 3,
+        "skill": "skill_quant_02",
+        "subskill": "sub_quant_02_3",
+        "text": "سؤال 18",
+        "explanation": "دورة فيصل15 دقيقة ودورة فارس20 دقيقة؛ أول تزامن بعد م.م.أ(15،20)=60 دقيقة.",
+        "reviewerNotes": "MNSF26_QA_SOURCE_TAXONOMY_B8: source arithmetic PDF original zero-based page 24, test 13; verified main/subskill from question concept. R2 crop SHA unverified."
+      },
+      "applied": true,
+      "answerChanged": false,
+      "taxonomyChanged": true,
+      "statusHeld": false
+    },
+    {
+      "key": "AR-T013-Q19",
+      "sourceKey": "MNSF26-AR-T013-Q19",
+      "before": {
+        "status": "approved",
+        "published": true,
+        "answer": 3,
+        "skill": "skill_quant_01",
+        "subskill": "sub_quant_01_1",
+        "text": "سؤال 19",
+        "explanation": "العدد الذي يقبل القسمة على3 و5 معًا من الخيارات هو15.",
+        "reviewerNotes": null
+      },
+      "after": {
+        "status": "approved",
+        "published": true,
+        "answer": 3,
+        "skill": "skill_quant_02",
+        "subskill": "sub_quant_02_3",
+        "text": "سؤال 19",
+        "explanation": "العدد الذي يقبل القسمة على3 و5 معًا من الخيارات هو15.",
+        "reviewerNotes": "MNSF26_QA_SOURCE_TAXONOMY_B8: source arithmetic PDF original zero-based page 24, test 13; verified main/subskill from question concept. R2 crop SHA unverified."
+      },
+      "applied": true,
+      "answerChanged": false,
+      "taxonomyChanged": true,
+      "statusHeld": false
+    },
+    {
+      "key": "AR-T013-Q20",
+      "sourceKey": "MNSF26-AR-T013-Q20",
+      "before": {
+        "status": "approved",
+        "published": true,
+        "answer": 2,
+        "skill": "skill_quant_01",
+        "subskill": "sub_quant_01_1",
+        "text": "سؤال 20",
+        "explanation": "النسبة 5:3، فليكن العددان 5ك و3ك. م.م.أ لهما=15ك=60 ⇒ ك=4، فالعددان20 و12، والأكبر20.",
+        "reviewerNotes": null
+      },
+      "after": {
+        "status": "approved",
+        "published": true,
+        "answer": 2,
+        "skill": "skill_quant_02",
+        "subskill": "sub_quant_02_3",
+        "text": "سؤال 20",
+        "explanation": "النسبة 5:3، فليكن العددان 5ك و3ك. م.م.أ لهما=15ك=60 ⇒ ك=4، فالعددان20 و12، والأكبر20.",
+        "reviewerNotes": "MNSF26_QA_SOURCE_TAXONOMY_B8: original arithmetic PDF zero-based page 24, LCM and ratio; independently classified. R2 SHA unverified."
+      },
+      "applied": true,
+      "answerChanged": false,
+      "taxonomyChanged": true,
+      "statusHeld": false
+    },
+    {
+      "key": "GEO-T008-Q02",
+      "sourceKey": "MNSF26-GEO-T008-Q02",
+      "before": {
+        "status": "approved",
+        "published": true,
+        "answer": 0,
+        "skill": "skill_quant_20",
+        "subskill": "sub_quant_20_3",
+        "text": "مثلث قائم وخط داخلي موازٍ للوتر؛ قارن 3س+2ص و180",
+        "explanation": "س+ص=90، لذا3س+2ص=180+س>180.",
+        "reviewerNotes": null
+      },
+      "after": {
+        "status": "approved",
+        "published": true,
+        "answer": 0,
+        "skill": "skill_quant_20",
+        "subskill": "sub_quant_20_1",
+        "text": "مثلث قائم وخط داخلي موازٍ للوتر؛ قارن 3س+2ص و180",
+        "explanation": "س+ص=90، لذا3س+2ص=180+س>180.",
+        "reviewerNotes": "MNSF26_QA_SOURCE_TAXONOMY_B8: original geometry PDF zero-based pages 14-15, triangle angles not Pythagoras; independently classified. R2 SHA unverified."
+      },
+      "applied": true,
+      "answerChanged": false,
+      "taxonomyChanged": true,
+      "statusHeld": false
+    },
+    {
+      "key": "GEO-T008-Q15",
+      "sourceKey": "MNSF26-GEO-T008-Q15",
+      "before": {
+        "status": "approved",
+        "published": true,
+        "answer": 2,
+        "skill": "skill_quant_20",
+        "subskill": "sub_quant_20_3",
+        "text": "مثلثان قائمان على قاعدة واحدة، زاويتاهما العلويتان40 و50؛ أوجد الزاوية بين الوترين",
+        "explanation": "الزاويتان عند القاعدة50 و40، فالزاوية بين الوترين=180−50−40=90.",
+        "reviewerNotes": null
+      },
+      "after": {
+        "status": "approved",
+        "published": true,
+        "answer": 2,
+        "skill": "skill_quant_20",
+        "subskill": "sub_quant_20_1",
+        "text": "مثلثان قائمان على قاعدة واحدة، زاويتاهما العلويتان40 و50؛ أوجد الزاوية بين الوترين",
+        "explanation": "الزاويتان عند القاعدة50 و40، فالزاوية بين الوترين=180−50−40=90.",
+        "reviewerNotes": "MNSF26_QA_SOURCE_TAXONOMY_B8: original geometry PDF zero-based pages 14-15, triangle angles not Pythagoras; independently classified. R2 SHA unverified."
+      },
+      "applied": true,
+      "answerChanged": false,
+      "taxonomyChanged": true,
+      "statusHeld": false
+    }
+  ]
+}
