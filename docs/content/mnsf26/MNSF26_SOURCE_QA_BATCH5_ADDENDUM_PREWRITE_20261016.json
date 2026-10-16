@@ -1,0 +1,271 @@
+{
+  "status": "PREWRITE",
+  "batch": "mnsf26_B5_addendum",
+  "when": "2026-10-16",
+  "source": "arithmetic book page PDF index7, visually inspected by assistant",
+  "sourceSha256": "46f2d9c2c8482f99f3d28ea9fe2ae7cdaa1b62102a6cbe6aa35deae78c672ee3",
+  "R2verified": false,
+  "records": [
+    {
+      "sourceKey": "MNSF26-AR-T008-Q02",
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2ca56"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T008-Q02",
+        "aiContext": {
+          "readableText": "ما هي أكبر قيمة يمكن الحصول عليها عند إضافة صفر للرقم 2345186؟",
+          "speechText": "among offered insertion points this keeps the more significant prefix largest; 23,451,806 exceeds the alternatives."
+        },
+        "approvalStatus": "approved",
+        "correctOptionIndex": 1,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.806Z"
+        },
+        "difficulty": "Medium",
+        "examType": "qudurat",
+        "explanation": "among offered insertion points this keeps the more significant prefix largest; 23,451,806 exceeds the alternatives.",
+        "fingerprint": "e97a890756641ce7ad75f7b24033c5ff34881bef588f6cc6e3e1b97ac98a93d0",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t008_q02",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T008-Q02/be15715ccf0a030f57998398994f6b3db74f6be08134f3e2d8c125b163325ae3.webp",
+        "isPublished": true,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T008-Q02",
+          "pdfPageIndex": 8,
+          "printedPageNumber": 8,
+          "printedQuestionNumber": 2,
+          "imageHash": "be15715ccf0a030f57998398994f6b3db74f6be08134f3e2d8c125b163325ae3",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "ما هي أكبر قيمة يمكن الحصول عليها عند إضافة صفر للرقم 2345186؟",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.947Z"
+        },
+        "voiceExplanation": {
+          "text": "among offered insertion points this keeps the more significant prefix largest; 23,451,806 exceeds the alternatives."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true
+      }
+    },
+    {
+      "sourceKey": "MNSF26-AR-T008-Q03",
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2ca57"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T008-Q03",
+        "aiContext": {
+          "readableText": "سؤال 3",
+          "speechText": "يُطبَّق النمط المعتمد في savings-goal / monthly-fixed-saving / months = target ÷ monthly. ثم تُراجع النتيجة: ج = 14.."
+        },
+        "approvalStatus": "draft",
+        "correctOptionIndex": 2,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.806Z"
+        },
+        "difficulty": "Easy",
+        "examType": "qudurat",
+        "explanation": "يُطبَّق النمط المعتمد في savings-goal / monthly-fixed-saving / months = target ÷ monthly. ثم تُراجع النتيجة: ج = 14..",
+        "fingerprint": "ea267208c7069f4f175589428bdced6d5c682d523f0e15dfdda60bddc4e5766b",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t008_q03",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T008-Q03/43632165d660a027a32601dc8d62f050569cf40023d5b78a951162d81d92857e.webp",
+        "isPublished": false,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T008-Q03",
+          "pdfPageIndex": 8,
+          "printedPageNumber": 8,
+          "printedQuestionNumber": 3,
+          "imageHash": "43632165d660a027a32601dc8d62f050569cf40023d5b78a951162d81d92857e",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال 3",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-16T07:58:26.416Z"
+        },
+        "voiceExplanation": {
+          "text": "يُطبَّق النمط المعتمد في savings-goal / monthly-fixed-saving / months = target ÷ monthly. ثم تُراجع النتيجة: ج = 14.."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true,
+        "reviewerNotes": "MNSF26_QA_HOLD_20261016: شرح نمطي لا يوثق حل المسألة أو جميع خياراتها؛ يلزم حل مستقل وفحص صورة السؤال ومفتاح الإجابة وربط المهارة قبل إعادة الاعتماد."
+      }
+    },
+    {
+      "sourceKey": "MNSF26-AR-T008-Q08",
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2ca5c"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T008-Q08",
+        "aiContext": {
+          "readableText": "سؤال 8",
+          "speechText": "يُطبَّق النمط المعتمد في consecutive-even-sequence / total-to-first-term. ثم تُراجع النتيجة: ب = 102.."
+        },
+        "approvalStatus": "draft",
+        "correctOptionIndex": 1,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.806Z"
+        },
+        "difficulty": "Medium",
+        "examType": "qudurat",
+        "explanation": "يُطبَّق النمط المعتمد في consecutive-even-sequence / total-to-first-term. ثم تُراجع النتيجة: ب = 102..",
+        "fingerprint": "6d3e97fbbdaaeceb6211214fcde366175b3b352b4c5e08b00782d6bc1d313504",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t008_q08",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T008-Q08/bf0696ac87acbde422ec68ff1f9e3e6732e3da6e381cf92ac05872e01a0eef5f.webp",
+        "isPublished": false,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T008-Q08",
+          "pdfPageIndex": 8,
+          "printedPageNumber": 8,
+          "printedQuestionNumber": 8,
+          "imageHash": "bf0696ac87acbde422ec68ff1f9e3e6732e3da6e381cf92ac05872e01a0eef5f",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال 8",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-16T07:58:26.416Z"
+        },
+        "voiceExplanation": {
+          "text": "يُطبَّق النمط المعتمد في consecutive-even-sequence / total-to-first-term. ثم تُراجع النتيجة: ب = 102.."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true,
+        "reviewerNotes": "MNSF26_QA_HOLD_20261016: شرح نمطي لا يوثق حل المسألة أو جميع خياراتها؛ يلزم حل مستقل وفحص صورة السؤال ومفتاح الإجابة وربط المهارة قبل إعادة الاعتماد."
+      }
+    },
+    {
+      "sourceKey": "MNSF26-AR-T008-Q10",
+      "before": {
+        "_id": {
+          "$oid": "6acb549b1daea21097c2ca5e"
+        },
+        "questionCode": "QDR-QNT-MNSF26-AR-T008-Q10",
+        "aiContext": {
+          "readableText": "سؤال 10",
+          "speechText": "يُطبَّق النمط المعتمد في transfer-between-two / invariant-total / equal-after-transfer. ثم تُراجع النتيجة: ب = 25.."
+        },
+        "approvalStatus": "draft",
+        "correctOptionIndex": 1,
+        "createdAt": {
+          "$date": "2026-10-11T09:19:20.806Z"
+        },
+        "difficulty": "Medium",
+        "examType": "qudurat",
+        "explanation": "يُطبَّق النمط المعتمد في transfer-between-two / invariant-total / equal-after-transfer. ثم تُراجع النتيجة: ب = 25..",
+        "fingerprint": "df8511386910ad4c38a9d203dde00db42176f92d96bc36085ee826f158bfc349",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t008_q10",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/MNSF26/MNSF26-AR-T008-Q10/9dafa39066f42aa5eb9410ad0b75bbaafa1379ca03521c0bec4ac6c73ffb8496.webp",
+        "isPublished": false,
+        "options": [
+          "أ",
+          "ب",
+          "ج",
+          "د"
+        ],
+        "ownerType": "platform",
+        "pathId": "p_1777779639431",
+        "sectionId": "sec_sub_1777779748206_1",
+        "skillId": "skill_quant_01",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "source": "imported",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T008-Q10",
+          "pdfPageIndex": 8,
+          "printedPageNumber": 8,
+          "printedQuestionNumber": 10,
+          "imageHash": "9dafa39066f42aa5eb9410ad0b75bbaafa1379ca03521c0bec4ac6c73ffb8496",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "subSkillId": "sub_quant_01_1",
+        "subject": "qudurat_quantitative",
+        "subjectId": "sub_1777779748206",
+        "text": "سؤال 10",
+        "type": "mcq",
+        "updatedAt": {
+          "$date": "2026-10-16T07:58:26.417Z"
+        },
+        "voiceExplanation": {
+          "text": "يُطبَّق النمط المعتمد في transfer-between-two / invariant-total / equal-after-transfer. ثم تُراجع النتيجة: ب = 25.."
+        },
+        "cropStatus": "VERIFIED",
+        "optionsEmbeddedInImage": true,
+        "reviewerNotes": "MNSF26_QA_HOLD_20261016: شرح نمطي لا يوثق حل المسألة أو جميع خياراتها؛ يلزم حل مستقل وفحص صورة السؤال ومفتاح الإجابة وربط المهارة قبل إعادة الاعتماد."
+      }
+    }
+  ],
+  "reasons": {
+    "MNSF26-AR-T008-Q02": "Printed insertion choices A 1/8, B 5/6, C 6/8, D 3/4. Max inserting 0 between 8 and 6 => 23451806, so C(index2), not B(index1). Current English explanation computes value correctly but key contradicts.",
+    "MNSF26-AR-T008-Q03": "Target saving 28000, monthly 2000 =>14 months (ج), original image seen.",
+    "MNSF26-AR-T008-Q08": "3 successive even numbers sum156 => 50,52,54; sum first two102 (ب), original image seen.",
+    "MNSF26-AR-T008-Q10": "Ahmed and Khaled together 70; Ahmed transfers10 to Khaled and they equal => Khaled 25 initially (ب), original image seen."
+  }
+}
