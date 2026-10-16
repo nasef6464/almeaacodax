@@ -7,7 +7,9 @@ export function useTeachingPlayback(plan: TeachingStoryboard | null, voice: bool
   const [position, setPosition] = React.useState({ scene: 0, elapsed: 0, revision: 0 });
   const [playing, setPlaying] = React.useState(false);
   const [audioState, setAudioState] = React.useState<NarrationState>('idle');
+  const audioStatus = React.useRef<NarrationState>('idle');
   const narrator = React.useMemo(() => new BrowserNarrationEngine(state => {
+    audioStatus.current = state;
     setAudioState(state);
     if (narrationNeedsRecovery(state)) setPlaying(false);
   }), []);
@@ -39,6 +41,8 @@ export function useTeachingPlayback(plan: TeachingStoryboard | null, voice: bool
       const now = performance.now();
       const delta = Math.min(250, now - previous);
       previous = now;
+      // Do not draw ahead of a mobile voice that is still preparing or has been blocked.
+      if (voice && audioStatus.current !== 'speaking' && !finished.current) return;
       setPosition(current => {
         const elapsed = current.elapsed + delta * speed;
         const visualDuration = sceneDuration(plan, current.scene);
