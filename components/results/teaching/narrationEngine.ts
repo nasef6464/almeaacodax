@@ -66,6 +66,7 @@ export class BrowserNarrationEngine implements NarrationEngine {
       if (this.speech !== speech) return;
       if (this.startTimer) clearTimeout(this.startTimer);
       this.startTimer = undefined; this.speechStarted = true;
+      if (this.state === 'paused') { window.speechSynthesis.pause(); return; }
       this.report('speaking'); this.arm();
     };
     speech.onend = () => { if (this.speech === speech) this.finish(); };

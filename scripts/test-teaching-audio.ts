@@ -46,6 +46,13 @@ try {
   lateStart();
   assert.equal(states.at(-1), 'blocked', 'timed-out utterances cannot resurrect old playback');
   narrator.cancel();
+  narrator.speak('أوقف قبل بداية الصوت', 'ar-SA', () => completed++);
+  const queuedSpeech = spoken.at(-1);
+  narrator.pause();
+  queuedSpeech.onstart();
+  assert.equal(states.at(-1), 'paused', 'a late native start event must respect an explicit pause');
+  assert.equal(timers.size, 0);
+  narrator.cancel();
   voices = [];
   const count = spoken.length;
   narrator.speak('صوت متأخر', 'ar-SA', () => completed++);
