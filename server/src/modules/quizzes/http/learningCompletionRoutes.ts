@@ -1,0 +1,43 @@
+import {Router} from 'express';
+import {z} from 'zod';
+import {requireAuth,requireRole} from '../../../middleware/auth.js';
+import {asyncHandler} from '../../../utils/asyncHandler.js';
+import {QuizModel} from '../../../models/Quiz.js';
+import {QuizResultModel} from '../../../models/QuizResult.js';
+import {TopicModel} from '../../../models/Topic.js';
+import {LessonModel} from '../../../models/Lesson.js';
+import {LessonProgressModel} from '../../../models/LessonProgress.js';
+import {GroupModel} from '../../../models/Group.js';
+import {resolveAuthUserByAuthId} from '../application/quizUserLookup.js';
+import {filterLearnerSafeQuizzes} from '../application/learnerQuizCatalog.js';
+import {summarizeFoundationCompletion,summarizeQuizCompletion} from '../application/learningCompletion.js';
+import {getActivePathIds,withLearnerVisiblePaths} from '../../../services/visibility.js';
+import {buildDocumentsByIdsQuery} from '../infrastructure/quizDocumentQuery.js';
+const query=z.object({pathId:z.string().trim().min(1).max(200),subjectId:z.string().trim().min(1).max(200).optional()});
+export const learningCompletionRouter=Router();
+learningCompletionRouter.get('/learning-completion',requireAuth,requireRole(['student']),asyncHandler(async(req,res)=>{
+ const {pathId,subjectId}=query.parse(req.query);if(!(await getActivePathIds()).includes(pathId))return res.status(404).json({message:'Path not available'});const user:any=await resolveAuthUserByAuthId(String(req.authUser!.id));if(!user)return res.status(401).json({message:'User not found'});
+ const userId=String(user.id||user._id);const groups=await GroupModel.find({studentIds:{$in:[userId,String(user._id)]}}).select('_id id').lean();
+ const audience={...user.toObject(),id:userId,groupIds:[...(user.groupIds||[]),...groups.map((g:any)=>String(g.id||g._id))]};
+ const scope={pathId,...(subjectId?{subjectId}:{})};
+ const approved={$or:[{approvalStatus:'approved'},{approvalStatus:null}]};
+ const filter=await withLearnerVisiblePaths({$and:[subjectId?scope:{$and:[{$or:[{pathId},{'mockExam.pathId':pathId}]},{$or:[{quizKind:'mock'},{'mockExam.enabled':true}]}]},approved,{isPublished:true,showOnPlatform:{$ne:false}}]}, {role:'student'});
+ const safe:any[]=[];const completed=new Set<string>();let batch:any[]=[];
+ const flush=async()=>{if(!batch.length)return;const rows=await filterLearnerSafeQuizzes(batch,audience);batch=[];
+  const allowed=rows.filter(q=>{if(q.access?.type!=='private')return true;const groupIds=[...(audience.groupIds||[]),String(user.schoolId||'')];return (q.targetUserIds||[]).includes(userId)||(q.targetGroupIds||[]).some((id:string)=>groupIds.includes(id))||(q.access?.allowedGroupIds||[]).some((id:string)=>groupIds.includes(id));});
+  const ids=allowed.map(q=>String(q.id||q._id));if(ids.length){const done=await QuizResultModel.distinct('quizId',{userId:{$in:[userId,String(user._id)]},quizId:{$in:ids}});done.forEach(id=>completed.add(String(id)));safe.push(...allowed);}
+ };
+ const cursor=QuizModel.find(filter).select('id pathId subjectId questionIds mockExam quizKind learningPlacements access mode targetUserIds targetGroupIds').lean().cursor({batchSize:200});
+ for await(const q of cursor){batch.push(q);if(batch.length===200)await flush();}await flush();
+ const isMock=(q:any)=>q.quizKind==='mock'||q.mockExam?.enabled===true;
+ const material=safe.filter(q=>!isMock(q));
+ const slot=(name:string)=>material.flatMap(q=>{const p=(q.learningPlacements||[]).find((p:any)=>p.slot===name&&p.pathId===pathId&&p.subjectId===subjectId&&p.isVisible!==false);if(!p)return [];if(name==='tests'&&(q.mode==='central'||q.mode==='saher'||q.targetUserIds?.length||q.targetGroupIds?.length))return [];return [{...q,access:{type:p.accessType&&p.accessType!=='inherit'?p.accessType:q.access?.type||'free'}}];});
+ let foundation:ReturnType<typeof summarizeFoundationCompletion>={};let foundationLocked:string[]=[];
+ if(subjectId){const topics=await TopicModel.find({...scope,showOnPlatform:{$ne:false}}).select('id parentId lessonIds quizIds isLocked showOnPlatform').lean();
+  const ids=[...new Set(topics.flatMap(t=>t.lessonIds||[]))];const lessons=ids.length?await LessonModel.find({$and:[buildDocumentsByIdsQuery(ids),{showOnPlatform:{$ne:false}},approved]}).select('id').lean():[];
+  const normalized=await LessonProgressModel.find({userId:String(user._id)}).select('lessonId completed').lean();const doneLessons=new Set<string>(normalized.length?normalized.filter(p=>p.completed).map(p=>p.lessonId):(user.completedLessons||[]));
+  const foundationQuizzes=slot('foundation');const enriched=topics.map(t=>({...t,quizIds:[...(t.quizIds||[]),...foundationQuizzes.filter(q=>(q.learningPlacements||[]).some((p:any)=>p.slot==='foundation'&&p.topicId===String(t.id||t._id)&&p.isVisible!==false)).map(q=>String(q.id||q._id))]}));
+  foundation=summarizeFoundationCompletion(enriched,new Set(lessons.map(l=>String(l.id||l._id))),new Set(safe.map(q=>String(q.id||q._id))),doneLessons,completed);foundationLocked=topics.filter(t=>!t.parentId&&t.isLocked).map(t=>String(t.id||t._id));
+ }
+ res.setHeader('Cache-Control','private, no-store');return res.json({training:summarizeQuizCompletion(slot('training'),completed),tests:summarizeQuizCompletion(slot('tests'),completed),mock:summarizeQuizCompletion(safe.filter(isMock),completed),completedQuizIds:[...completed],foundation,foundationLocked});
+}));

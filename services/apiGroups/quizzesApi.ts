@@ -30,6 +30,7 @@ export interface SubmitQuizPayload {
 }
 
 export const createQuizzesApi = (request: ApiRequest) => ({
+  getLearningCompletion: (scope:{pathId:string;subjectId?:string}) => request<import('../../hooks/useLearningCompletion').LearningCompletion>(withQuery('/quizzes/learning-completion',scope)),
   getQuizCatalogPage: (options: PaginationOptions) => request<{quizzes: import('../../types').Quiz[]; pagination: {page:number;totalPages:number}}>(withQuery('/quizzes', {limit:100,noTotal:true,...options})),
   getQuizzes: async (pagination: PaginationOptions = {}) =>
     extractList(await request<unknown>(withQuery("/quizzes", { limit: 200, noTotal: true, ...pagination })), "quizzes"),

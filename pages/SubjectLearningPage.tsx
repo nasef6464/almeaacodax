@@ -1,3 +1,5 @@
+import {useLearningCompletion,selectCompletion,selectFoundationCompletion} from '../hooks/useLearningCompletion';
+import {LearningCompletionSummary,TopicCompletion} from '../components/studentPaths/LearningCompletionSummary';
 import { useStudentExperience } from '../contexts/StudentExperienceContext';
 import { StudentPathAccessPrompt } from '../components/studentPaths/StudentPathAccessPrompt';
 import { useStudentScopedStore } from '../utils/useStudentScopedStore';
@@ -42,6 +44,7 @@ import { resolveFoundationTopicAccess } from '../utils/foundationTopicAccess';
 
 export const SubjectLearningPage: React.FC = () => {
   const { pathId, subjectId } = useParams();
+  const completion=useLearningCompletion(pathId,subjectId);
   const { scope } = useStudentExperience();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -564,6 +567,7 @@ export const SubjectLearningPage: React.FC = () => {
 
       <div className="max-w-7xl mx-auto px-4 mt-8">
         {renderTabs()}
+        {['skills','questions','exams'].includes(activeTab)&&<LearningCompletionSummary {...completion} label={activeTab==='skills'?'موضوعات رئيسية':activeTab==='questions'?'تدريبات':'اختبارات'} stats={completion.data?(activeTab==='skills'?selectFoundationCompletion(completion.data,hasFoundationAccess,lockFoundationForSubject):selectCompletion(completion.data[activeTab==='questions'?'training':'tests'],activeTab==='questions'?hasBanksAccess:hasTestsAccess)):undefined}/>}
 
         <div className="mb-8">
           <StudentNextActionStrip
@@ -653,7 +657,7 @@ export const SubjectLearningPage: React.FC = () => {
                   <div
                     key={topic.id}
                     onClick={() => handleOpenTopicModal(topic)}
-                    className={`bg-white p-6 rounded-2xl border hover:shadow-lg cursor-pointer transition-all flex flex-col justify-between h-56 relative overflow-hidden group ${
+                    className={`bg-white p-6 rounded-2xl border hover:shadow-lg cursor-pointer transition-all flex flex-col justify-between min-h-56 relative overflow-hidden group ${
                       requiresPackage && !hasMixedTopicAccess ? 'border-amber-200' : 'border-gray-200 hover:border-indigo-400'
                     }`}
                   >
@@ -675,6 +679,7 @@ export const SubjectLearningPage: React.FC = () => {
                     </div>
                     <div>
                       <h3 className="text-xl font-bold text-gray-800 mb-1">{topic.title}</h3>
+                      <TopicCompletion percent={completion.data?.foundation[topic.id]?.percent} complete={completion.data?.foundation[topic.id]?.complete}/>
                     </div>
                     <div className="mt-auto">
                       <div className="flex justify-between text-xs font-bold text-gray-600 mb-2">
@@ -835,7 +840,7 @@ export const SubjectLearningPage: React.FC = () => {
                     </span>
                   </div>
                 </div>
-                <h3 className="text-xl font-bold text-gray-800 mb-2">{quiz.title}</h3>
+                <h3 className="text-xl font-bold text-gray-800 mb-2">{quiz.title}</h3>{completion.data?.completedQuizIds.includes(String(quiz.id))&&<span className="text-xs text-emerald-700">مكتمل ✓</span>}
                 <p className="text-gray-500 text-sm mb-6 line-clamp-2">{quiz.description}</p>
                 <div className="mt-auto flex items-center justify-between">
                   <span className="text-sm font-bold text-gray-600">{quiz.questionIds?.length || 0} سؤال</span>

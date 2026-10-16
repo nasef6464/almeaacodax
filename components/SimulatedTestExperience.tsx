@@ -7,6 +7,7 @@ import { PaymentModal } from './PaymentModal';
 
 interface Test {
     displayPriority?: number;
+    completed?: boolean;
     id: string | number;
     title: string;
     duration: string;
@@ -270,6 +271,7 @@ export const SimulatedTestExperience: React.FC<SimulatedTestExperienceProps> = (
                             disabled={Boolean(test.isUnavailable)}
                             className={`px-4 py-2 rounded-xl text-xs font-black transition-all flex items-center justify-center gap-1.5 shrink-0 self-end sm:self-center shadow-xs cursor-pointer ${test.isUnavailable ? 'cursor-not-allowed bg-gray-100 text-gray-400 border border-gray-200' : test.isLocked ? 'bg-amber-50 text-amber-800 border border-amber-200/80 hover:bg-amber-100' : 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-2xs hover:shadow-xs'}`}
                         >
+                            {test.completed&&<span className="text-emerald-700">مكتمل ✓</span>}
                             <span>{test.isUnavailable ? 'غير جاهز' : test.isLocked ? 'فتح الباقة' : listAction}</span>
                             <ChevronRight size={15} className="transform rotate-180" />
                         </button>

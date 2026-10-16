@@ -1,3 +1,5 @@
+import {useLearningCompletion,selectCompletion,selectFoundationCompletion} from '../hooks/useLearningCompletion';
+import {LearningCompletionSummary} from './studentPaths/LearningCompletionSummary';
 import React, { useRef, useState, useEffect } from 'react';
 import { useSearchParams, Link, useNavigate } from 'react-router-dom';
 import { Card } from './ui/Card';
@@ -67,6 +69,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
     const navigate = useNavigate();
     const { user, enrolledCourses, subjects, paths, courses, lessons, libraryItems, quizzes, completedLessons, examResults, hasScopedPackageAccess, getMatchingPackage, hydrateCourses, hydrateQuizzes } = useStore();
     const topicList = useStore(state => state.topics);
+    const completion=useLearningCompletion(category,subject);
     const [activeTab, setActiveTab] = useState<LearningTab>(() => normalizeLearningTab(searchParams.get('tab')) || 'courses');
     const [foundationFilter, setFoundationFilter] = useState<'all' | 'free' | 'locked'>('all');
     const [scopedBootstrapState, setScopedBootstrapState] = useState<'idle' | 'loading' | 'ready' | 'error'>('idle');
@@ -668,6 +671,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
     ).map(q => ({
         id: q.id,
         displayPriority: q.displayPriority,
+        completed: completion.data?.completedQuizIds.includes(String(q.id)),
         title: q.title,
         questions: q.questionIds?.length || 0,
         updated: formatQuizUpdatedAt(q.createdAt),
@@ -686,6 +690,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
     ).map(q => ({
         id: q.id,
         displayPriority: q.displayPriority,
+        completed: completion.data?.completedQuizIds.includes(String(q.id)),
         title: q.title,
         duration: `${q.settings?.timeLimit || 60} دقيقة`,
         questions: q.questionIds?.length || 0,
@@ -839,6 +844,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                 </div>
             ) : null}
 
+            {['skills','banks','tests'].includes(activeTab)&&<LearningCompletionSummary {...completion} label={activeTab==='skills'?'موضوعات رئيسية':activeTab==='banks'?'تدريبات':'اختبارات'} stats={completion.data?(activeTab==='skills'?selectFoundationCompletion(completion.data,hasFoundationAccess,lockFoundationForSubject):selectCompletion(completion.data[activeTab==='banks'?'training':'tests'],activeTab==='banks'?hasBanksAccess:hasTestsAccess)):undefined}/>}
             {/* Content */}
             <div className="animate-fade-in">
                 {showStaffInventory ? (
@@ -1060,8 +1066,7 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                             const lockedFoundationMessage = skill.isLocked ? getLockedContentMessage('foundation') : null;
                             const skillSubTopics = topicList.filter((topic) => topic.parentId === skill.originalTopic?.id && canStudentSeeTopic(topic));
                             const hasMixedSubTopicAccess = !skill.isLocked && skillSubTopics.some((topic) => isFoundationTopicLockedForStudent(topic));
-                            const hasProgress = skill.completed > 0;
-                            const progressPercentage = Math.round((skill.completed / skill.totalLessons) * 100);
+                                                    const progressPercentage = completion.data?.foundation[skill.originalTopic?.id]?.percent ?? skill.progress ?? 0;
 
                             return (
                                 <button
@@ -1145,10 +1150,10 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                                         </div>
                                     )}
 
-                                    {hasProgress ? (
+                                    {completion.enabled && completion.data?.foundation[skill.originalTopic?.id] ? (
                                         <div className="mt-2.5 w-full pt-2 border-t border-slate-100">
                                             <div className="flex justify-between text-[11px] font-bold text-gray-500 mb-1">
-                                                <span>نسبة الإنجاز</span>
+                                                <span>إنجاز الموضوع كاملًا</span>
                                                 <span className="text-indigo-600">{progressPercentage}%</span>
                                             </div>
                                             <ProgressBar percentage={progressPercentage} showPercentage={false} color={safeColorTheme as any} />
@@ -1216,6 +1221,8 @@ export const LearningSection: React.FC<LearningSectionProps> = ({ category, subj
                             mode="bank"
                             tests={banks.map(bank => ({
                                 id: bank.id,
+                            completed: bank.completed,
+                                displayPriority: bank.displayPriority,
                                 title: bank.title,
                                 questions: bank.questions,
                                 duration: 'غير محدد',

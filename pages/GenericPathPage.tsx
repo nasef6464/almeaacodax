@@ -1,3 +1,5 @@
+import {useLearningCompletion,selectCompletion} from '../hooks/useLearningCompletion';
+import {LearningCompletionSummary} from '../components/studentPaths/LearningCompletionSummary';
 import {compareAssessmentPresentation} from '../utils/assessmentCatalogPresentation';
 import { useStudentExperience } from '../contexts/StudentExperienceContext';
 import { useStudentScopedStore } from '../utils/useStudentScopedStore';
@@ -119,6 +121,7 @@ export const GenericPathPage: React.FC = () => {
         : null;
     const path = directPath || aliasedPath;
     const resolvedPathId = path?.id || normalizedPathId;
+    const completion=useLearningCompletion(searchParams.get('tab')==='mock-exams'?resolvedPathId:undefined);
     const pathLevels = levels?.filter(l => l.pathId === path?.id) || [];
     const pathSubjects = subjects.filter(s => s.pathId === path?.id);
     const selectedSubject = selectedSubjectId ? pathSubjects.find((subject) => subject.id === selectedSubjectId) || null : null;
@@ -1276,6 +1279,7 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
                     </div>
                 </header>
                 <div className="max-w-5xl mx-auto px-4 py-8">
+                    <LearningCompletionSummary {...completion} label="اختبارات محاكية" stats={completion.data?selectCompletion(completion.data.mock,hasScopedPackageAccess('mockExams',resolvedPathId)):undefined}/>
                     {pathMockQuizzes.length > 0 ? (
                         <div className="space-y-4">
                             <div className="grid gap-3 sm:grid-cols-3">
@@ -1314,6 +1318,7 @@ const renderSubjectCard = (s: any, levelId: string | null) => {
                                                     <h2 className="text-base sm:text-lg font-black leading-snug">
                                                         <span className="inline-block px-3 py-1 rounded-xl bg-amber-50/90 dark:bg-amber-950/40 border border-amber-200/80 dark:border-amber-800/60 text-amber-950 dark:text-amber-100 font-extrabold shadow-2xs">
                                                             {quiz.title}
+                                                            {completion.data?.completedQuizIds.includes(String(quiz.id))&&<span className="mr-2 text-xs font-bold text-emerald-700">مكتمل ✓</span>}
                                                         </span>
                                                     </h2>
                                                     <div className="mt-2.5 flex flex-wrap gap-2 text-xs font-bold text-slate-600">
