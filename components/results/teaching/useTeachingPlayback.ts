@@ -86,7 +86,7 @@ export function useTeachingPlayback(plan: TeachingStoryboard | null, voice: bool
     checkpoint: checkpointScene === plan?.scenes[position.scene]?.id ? plan.scenes[position.scene].checkpoint : undefined,
     completeCheckpoint,
     sceneIndex: position.scene, elapsedMs: position.elapsed, playing, pause, toggle, seek,
-    elements: plan ? boardAt(plan, position.scene, position.elapsed) : [],
+    elements: plan ? boardAt(plan, position.scene, position.elapsed, true) : [],
     narration: plan?.scenes[position.scene]?.narration || '',
     context: plan ? JSON.stringify({ scene: plan.scenes[position.scene]?.id, narration: plan.scenes[position.scene]?.narration,
       board: boardAt(plan, position.scene, position.elapsed).map(({ content }) => content) }).slice(0, 1200) : '',

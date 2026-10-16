@@ -165,10 +165,10 @@ export const InteractiveSmartTeacher: React.FC<{
         </header>
         <div className={`grid min-h-0 flex-1 ${chatOpen ? 'grid-rows-[minmax(0,1fr)_minmax(180px,.6fr)] lg:grid-rows-1 lg:grid-cols-[minmax(0,4fr)_minmax(260px,1fr)]' : 'grid-cols-1'}`}>
           <section className="flex min-h-0 flex-col gap-3 overflow-y-auto bg-slate-900 p-3 sm:p-5">
-            <QuestionPreview question={question} compact={chatOpen} />
+            {!activeLesson?.plan && <QuestionPreview question={question} compact={chatOpen} />}
             <div data-testid="teacher-board-viewport" className="min-h-48 shrink-0 flex-1 overflow-auto rounded-2xl border border-slate-800 bg-slate-950">
-              {activeLesson?.plan ? <TeachingBoard elements={active.elements} narration={active.narration} language={activeLesson.plan.language} /> : activeLesson ?
-                <InteractiveWhiteboardCanvas text={activeLesson.text} viewMode="full_chalkboard" isPlaying={false} showInternalControls={false} isPending={pending} onAskAboutStep={prompt => void ask(prompt)} /> :
+              {activeLesson?.plan ? <TeachingBoard elements={active.elements} narration={active.narration} language={activeLesson.plan.language} question={question} questionCompact={chatOpen} /> : activeLesson ?
+                <InteractiveWhiteboardCanvas text={activeLesson.text} boardTheme="light" viewMode="full_chalkboard" isPlaying={false} showInternalControls={false} isPending={pending} onAskAboutStep={prompt => void ask(prompt)} /> :
                 <div className="flex min-h-64 flex-col items-center justify-center gap-4 p-5 text-center"><Bot size={40} className="text-emerald-400" /><p>{pending ? 'المعلم يجهز الشرح…' : 'السبورة جاهزة'}</p>{!pending && <button type="button" className="rounded-xl bg-emerald-600 px-4 py-3" onClick={() => void ask('اشرح السؤال خطوة بخطوة.', 'steps', true)}>ابدأ الشرح</button>}</div>}
             </div>
             {pending && <p role="status" className="flex items-center gap-2 text-sm text-emerald-300"><Loader2 size={16} className="animate-spin" /> المعلم يفكر…</p>}

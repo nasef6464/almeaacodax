@@ -1,3 +1,5 @@
+Whiteboard surface continuation (2026-10-16, final CI pending): boardState owns optional deterministic local transformation history/current marker, while the canonical provider context retains the unchanged nonhistorical replay. TeachingBoard owns paper/dark surface and follows only active step identity/content; WhiteboardInk draws bounded decorative SVG marks from existing highlight/box actions. QuestionPreview reuses authorized loaded question/image/options inside the board. No source image inference, image transmission, API/schema/database/provider ownership change.
+
 Smart teacher quick explanation (2026-10-16, validation pending): QuestionAssistantPanel owns one lazy, explicit entry; QuestionPreview renders only authorized display fields already loaded by its parent. quickTeachingPlan creates a bounded immutable presentation view with optional checkpoints and separate compact solution operations. Existing playback/narration retain local speech, step state and speed; backend reference, cache, authorization, grading and provider ownership unchanged. No collection/query/migration added.
 
 ## CI ownership cleanup — 2026-10-16

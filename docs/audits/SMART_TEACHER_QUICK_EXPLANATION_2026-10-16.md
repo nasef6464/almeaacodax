@@ -22,3 +22,12 @@ No API, provider policy, authorization, grades/mastery, historical results, pers
 
 ## Not certified
 Actual AI provider response latency and microphone/speaker quality on student devices require runtime measurement. The frontend changes reduce compulsory actions and repeated requests; they do not claim faster inference or streaming. No production content/result mutations or deployment performed for this checkpoint.
+
+## Whiteboard continuation — 2026-10-16
+Owner requested the original question/diagrams on the same board with pen-like writing and annotation.
+- Paper surface with a local dark toggle; original authorized question/image/options are rendered inside the board, not redrawn or inferred.
+- Local transformation history retains earlier equations in their original ordered slots. Current versions append after existing notes; explicit erase removes their local history; backward seek never retains future steps.
+- The existing reveal follows a local marker. Existing trusted highlight/box actions render bounded animated SVG pen underlines/frames anchored to the actual formula, with reduced-motion support. Previous lines stay readable on the same surface.
+- API/provider context still uses the canonical nonhistorical board; no extra AI calls, new wire fields, image upload, DB writes or dependency.
+- Pure tests cover multiple transforms, intervening notes, erase, source immutability and backward seek. Focused reviewer reported ordering defect; fixed with an explicit regression case. Local Chrome browser suite PASS with desktop and390×667 screenshots visually reviewed; no outstanding confirmed reviewer P1/P2. Final typecheck/build and exact-head CI pending.
+- This is progressive typeset/math writing with pen marks. Actual handwriting and semantic pointing to a vertex/region inside a question image are not certified or claimed: the current question tutor explicitly sends text/reference context only (`imageSentToProvider:false`). Enabling image-grounded annotations requires a separately designed vision path and privacy/cost controls.

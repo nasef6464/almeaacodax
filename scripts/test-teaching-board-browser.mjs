@@ -29,6 +29,9 @@ try {
   assert.equal(await page.evaluate(() => window.testRequests.length), 0, 'do not spend AI budget before the student asks');
   await page.getByRole('button', { name: 'اشرح لي', exact: true }).click();
   await page.getByRole('button', { name: 'إيقاف مؤقت', exact: true }).waitFor();
+  assert.equal(await page.getByTestId('teaching-board').getAttribute('data-surface'), 'whiteboard');
+  assert.equal(await page.getByTestId('teaching-board').getAttribute('data-theme'), 'paper');
+  assert.equal(await page.getByTestId('teaching-board').getByTestId('teacher-question').getAttribute('data-on-board'), 'true');
   await page.getByTestId('teacher-question').getByText('أوجد قيمة س في المعادلة الأسية.').waitFor();
   await page.getByRole('button', { name: 'إيقاف مؤقت', exact: true }).click();
   const initialReveal = await page.locator('.teaching-writing').first().getAttribute('style');
@@ -52,6 +55,14 @@ try {
   await page.evaluate(() => window.testSpeak.at(-1).onend());
   await page.waitForTimeout(2200);
   assert.ok(await page.getByTestId('teaching-board').getByText('x=2', { exact: true }).count());
+  assert.equal(await page.locator('[data-board-history="true"]').count(), 2, 'keep both earlier equations visible while explaining the result');
+  assert.equal(await page.locator('[aria-current="step"]').count(), 1);
+  assert.ok(await page.getByTestId('whiteboard-ink').count(), 'teacher emphasis must draw a local pen mark around the rendered result');
+  const beforeTheme = await page.evaluate(() => window.testRequests.length);
+  await page.getByRole('button', { name: 'تبديل لون السبورة', exact: true }).click();
+  assert.equal(await page.getByTestId('teaching-board').getAttribute('data-theme'), 'dark');
+  await page.getByRole('button', { name: 'تبديل لون السبورة', exact: true }).click();
+  assert.equal(await page.evaluate(() => window.testRequests.length), beforeTheme, 'board appearance is local, with no AI call');
   assert.equal(await page.evaluate(() => window.testRequests.length), 2);
   await page.screenshot({ path: path.join(artifacts, 'desktop.png') });
   const beforeRepeat = await page.evaluate(() => window.testRequests.length);
