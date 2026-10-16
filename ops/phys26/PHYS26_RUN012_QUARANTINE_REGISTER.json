@@ -1,0 +1,59 @@
+{
+  "project": "PHYS26",
+  "schemaVersion": 1,
+  "createdAt": "2026-10-09",
+  "status": "ACTIVE_FAIL_CLOSED",
+  "collectionSourceSHA256": "5faa723e8485223dcae8b926e0e6c279915d8f6e3d8ece890263a62c04837616",
+  "rightsToRedistribute": "UNVERIFIED",
+  "importAllowed": false,
+  "approvedQuestions": 0,
+  "records": [
+    {
+      "sourceId": "PHYS26-COL26-L14-Q039",
+      "lessonNumber": 14,
+      "pdfPage": 74,
+      "reason": "ORIGINAL_PDF_DIAGRAM_EDGE_INCOMPLETE",
+      "evidence": "Original source PDF page 74, standing-wave diagram reaches the left edge of right-hand question column; node/antinode completeness cannot be assumed.",
+      "nextAction": "Independently confirm full source diagram, or hold source question out of approved bank",
+      "allowSourceReconstruction": false,
+      "importAllowed": false,
+      "reviewedAt": "2026-10-09"
+    },
+    {
+      "sourceId": "PHYS26-COL26-L15-Q013",
+      "lessonNumber": 15,
+      "pdfPage": 79,
+      "reason": "ORIGINAL_PDF_DIAGRAM_EDGE_INCOMPLETE",
+      "evidence": "Original source PDF page 79, guitar/string illustration appears truncated at source column edge; cropped image must not be fabricated beyond original.",
+      "nextAction": "Obtain original unclipped figure/authoritative publisher clarification, else continue hold",
+      "allowSourceReconstruction": false,
+      "importAllowed": false,
+      "reviewedAt": "2026-10-09"
+    },
+    {
+      "sourceId": "PHYS26-COL26-L27-Q024",
+      "lessonNumber": 27,
+      "pdfPage": 135,
+      "reason": "PUBLISHER_KEY_CONTRADICTS_INDEPENDENT_PHYSICS",
+      "evidence": "Printed key at original PDF p135 indicates A (1.56); c=3×10^8 m/s and v=2.4×10^8 m/s imply n=1.25 (B).",
+      "sourceKeyLabel": "A",
+      "independentlyCalculatedOption": "B",
+      "nextAction": "Escalate to content editor; document source-key correction decision and reviewer signoff; retain provenance.",
+      "importAllowed": false,
+      "reviewedAt": "2026-10-09"
+    },
+    {
+      "sourceId": "PHYS26-COL26-L22-Q057",
+      "lessonNumber": 22,
+      "pdfPage": 117,
+      "reason": "SOURCE_WORDING_DIMENSIONALLY_INCONSISTENT",
+      "evidence": "Original PDF page 117 asks for electrical power in kW, but 72 Riyals / (0.18 Riyals/kWh) yields 400 kWh energy (printed A).",
+      "sourceKeyLabel": "A",
+      "quantityProduced": "energy_kWh",
+      "quantityRequested": "power_kW",
+      "nextAction": "Source/editor correction required; do not silently replace original wording or units.",
+      "importAllowed": false,
+      "reviewedAt": "2026-10-09"
+    }
+  ]
+}

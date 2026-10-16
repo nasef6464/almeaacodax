@@ -1,0 +1,40 @@
+name: PHYS26 offline static gates
+on:
+  push:
+    branches: [content/phys26-full-closure]
+    paths:
+      - "ops/phys26/**"
+      - "scripts/verify-phys26-*.mjs"
+      - ".github/workflows/phys26-static.yml"
+  pull_request:
+    paths:
+      - "ops/phys26/**"
+      - "scripts/verify-phys26-*.mjs"
+      - ".github/workflows/phys26-static.yml"
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: PHYS26 source and taxonomy gate
+        run: node scripts/verify-phys26-source-gates.mjs
+      - name: PHYS26 numbered source and answer-key candidate gate
+        run: node scripts/verify-phys26-number-audit.mjs
+      - name: PHYS26 unresolved original-source quarantine gate
+        run: node scripts/verify-phys26-quarantine-gate.mjs
+      - name: PHYS26 foundation and section gate
+        run: node scripts/verify-phys26-foundation-plan.mjs
+      - name: Check syntax of private PHYS26 crop edge auditor
+        run: python -m py_compile scripts/audit-phys26-private-crop-edges.py
+      - name: Check syntax of private PHYS26 crop generator
+        run: python -m py_compile scripts/build-phys26-private-crop-candidates.py
+      - name: PHYS26 question validator behavior (6 synthetic cases)
+        run: node scripts/test-phys26-question-validator.mjs
+      - name: Check offline question-batch validator syntax
+        run: node --check scripts/verify-phys26-question-batch.mjs

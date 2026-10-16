@@ -1,0 +1,128 @@
+{
+  "project": "PHYS26",
+  "updatedAt": "2026-10-10",
+  "branch": "content/phys26-full-closure",
+  "currentPhase": 1,
+  "phases": [
+    {
+      "phase": 1,
+      "name": "Source inventory and taxonomy",
+      "status": "IN_PROGRESS"
+    },
+    {
+      "phase": 2,
+      "name": "Foundation and AI context",
+      "status": "NOT_STARTED"
+    },
+    {
+      "phase": 3,
+      "name": "Question extraction and mastering",
+      "status": "NOT_STARTED"
+    },
+    {
+      "phase": 4,
+      "name": "QA and skill drills",
+      "status": "NOT_STARTED"
+    },
+    {
+      "phase": 5,
+      "name": "Local import package and UAT",
+      "status": "NOT_STARTED"
+    },
+    {
+      "phase": 6,
+      "name": "Controlled production closure",
+      "status": "NOT_STARTED"
+    }
+  ],
+  "cumulative": {
+    "sourcesFingerprintChecked": 3,
+    "proposedMainSkills": 25,
+    "proposedSubSkills": 92,
+    "coveredCollectionLessonsCandidate": 31,
+    "sourceOccurrencesReviewed": 0,
+    "canonicalQuestionsVerified": 0,
+    "imageCropsVerified": 0,
+    "importedQuestions": 0,
+    "drillsApproved": 0,
+    "liveSubjectBaselineVerified": 1,
+    "existingGenericPhysicsSkillsProtected": 9,
+    "historicalSkillProgressRowsProtected": 36,
+    "foundationMainTopicProposals": 25,
+    "foundationSubTopicProposals": 92,
+    "foundationMissingMainChapters": 15,
+    "foundationMissingSubSkillChapters": 53,
+    "initialFreeTopicProposals": 26,
+    "physicsSectionProposals": 25,
+    "foundationTopicsLinkedToSectionProposals": 117,
+    "sourceQuestionNumberLabelsIndexed": 2064,
+    "sourceLessonsFullyNumberIndexed": 31,
+    "sourceSectionsNumberIndexed": 61,
+    "firstSectionQuestionNumbersIndexed": 1174,
+    "secondSectionQuestionNumbersIndexed": 890,
+    "questionNumberSequenceMissing": 0,
+    "answerKeyCandidateLabelsLocated": 2064,
+    "answerKeyCandidateArabicGlyphsNormalized": 29,
+    "answerKeyCandidatesUnmatched": 0,
+    "privateCropCandidatesGenerated": 2064,
+    "privateCropGeometryChecksPassed": 400,
+    "privateCropVisualSamplesInspected": 10,
+    "privateCropDefectsCorrected": 1,
+    "offlineValidatorSyntheticCasesPassed": 6,
+    "privateCropTechnicalDecodePass": 2064,
+    "privateCropUniqueSha256": 2064,
+    "boundaryRiskQueueReviewedPriorRuns": 823,
+    "boundaryRiskQueueUnreviewed": 0,
+    "sourceOriginalDiagramConcerns": 2,
+    "preliminaryDistinctPhysicsChecks": 68,
+    "preliminarySourceAnswerKeyConflicts": 1,
+    "preliminarySourceWordingUnitAmbiguities": 1,
+    "priorUniqueSimilarityPairsVisuallyReviewed": 154,
+    "probableDuplicatePairsStillUncertified": 1,
+    "sourceConceptEvidenceCropsDoubleCheckedForTaxonomy": 4,
+    "sourcePagesVisuallyRecheckedForQuarantine": 4,
+    "sourceSimilarityPairsReAdjudicatedRun012": 3,
+    "apparentSameTextOptionsReprintPairs": 1,
+    "similarStemsChangedOptionsPairs": 1,
+    "similarityFalsePositivesClarified": 1,
+    "confirmedCanonicalDeduplications": 0,
+    "originalSourceQuarantinesNotImportReady": 4,
+    "run013NewStratifiedVisualCropSamples": 31,
+    "run013EdgeHeuristicDefectsFoundAndCorrected": 2,
+    "run013PrivateWebpArchiveShaVerified": 2064,
+    "run013EdgeHeuristicFlagsPostFix": 0
+  },
+  "currentRun": {
+    "result": "RUN013_PRIVATE_V6_CROP_2_SOURCE_ALIGNED_FIXES_PLUS_31_STRATIFIED_SAMPLES",
+    "publishedToProduction": false,
+    "scope": "PHYS26_ONLY_NO_PRODUCTION_WRITES",
+    "newWork": [
+      "Checked current main/PHYS26 PR/ledger/source taxonomy before proceeding; branch ahead 63 behind 77 at first check, PR still draft.",
+      "Read private V5 archive 2064 WebP and source PDF 162 pages; 2064 matching image SHA, 0 decode failures.",
+      "Reviewed stratified 31 crops across 31 lessons as contact sheets, visual preview only (not complete review).",
+      "Bottom-edge pixel heuristic flagged 2 existing cropped images; exact PDF page review confirmed Q L10-Q050 included next question heading, L27-Q023 lost bottom of option D.",
+      "Regenerated two source-aligned crops and re-packaged V6 privately, all 2064 SHA and WebP decode checks passed, no bottom edge heuristic flags after fixes.",
+      "Created new offline reusable edge/SHA audit script and CI syntax check on PHYS26 branch; run result pending."
+    ],
+    "artifacts": {
+      "privateArchive": "PHYS26_PRIVATE_RUN013_CROPS_V6.zip",
+      "privateArchiveSha256": "cf867461bc45dfc7bfdae554c7d13bf29bfc745897b0586d24e422fafe22946e",
+      "localQualityEvidence": "PHYS26_RUN013_CROP_QUALITY_AUDIT.json",
+      "repoEvidence": "ops/phys26/PHYS26_RUN013_EVIDENCE.md"
+    },
+    "safety": {
+      "sourcePublicationAuthorized": false,
+      "sourceQuestionTextAndOptionsApproved": 0,
+      "sourceIllustrationsApproved": 0,
+      "sourceOriginalQuarantinesRemain": 4,
+      "studentHistoryMutations": 0,
+      "deployments": 0
+    },
+    "notes": [
+      "Visual preview of 31 is not a full source/options/diagram review of all 2064.",
+      "Both corrections remain private: no copyrighted PDF or crop uploaded to GitHub.",
+      "Existing four source-original quarantines are distinct and remain unresolved."
+    ]
+  },
+  "next": "Complete visual and educational QA per actual source question/options/diagram, correct all crop-specific issues and source-original quarantines, verify answers and link 25/92 skills. No publication without rights and UAT."
+}

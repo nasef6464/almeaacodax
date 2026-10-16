@@ -1,0 +1,41 @@
+{
+  "project": "PHYS26",
+  "run": "RUN012",
+  "mode": "PRIVATE_SOURCE_CROP_VISUAL_RECHECK_METADATA_ONLY",
+  "sourcePdfSha256": "5faa723e8485223dcae8b926e0e6c279915d8f6e3d8ece890263a62c04837616",
+  "rightsToRedistribute": "UNVERIFIED",
+  "autoMerged": 0,
+  "sourceImagesCommitted": 0,
+  "approvedCanonicalQuestions": 0,
+  "previousThreeProbablePairReviews": 3,
+  "independentReAdjudicationsThisRun": 3,
+  "pairs": [
+    {
+      "sourceA": "PHYS26-COL26-L15-Q004",
+      "sourceB": "PHYS26-COL26-L15-Q005",
+      "pdfPage": 78,
+      "decision": "SAME_STEM_OPTIONS_VISIBLE_REPRINT_DIFFERENT_YEAR",
+      "notes": "Doppler wavelength shift: stem and all four visible options match; publication-year badge differs, preserve both provenance IDs until canonical policy and rights/answer checks."
+    },
+    {
+      "sourceA": "PHYS26-COL26-L31-Q021",
+      "sourceB": "PHYS26-COL26-L31-Q024",
+      "pdfPage": 156,
+      "decision": "SIMILAR_STEM_OPTIONS_VARIANT_NOT_EXACT_DUPLICATE",
+      "notes": "Isotopes concept same stem, but one visible B option says proton count and the other says electron count. Cannot de-duplicate as byte/equivalent-options identity."
+    },
+    {
+      "sourceA": "PHYS26-COL26-L15-Q017",
+      "sourceB": "PHYS26-COL26-L15-Q022",
+      "pdfPage": 80,
+      "decision": "FALSE_POSITIVE_DIFFERENT_PHYSICS_SUBJECT",
+      "notes": "One asks about approaching sound source, the other approaching light source; physical phenomena and option content differ."
+    }
+  ],
+  "summary": {
+    "repeatSameVisibleOptions": 1,
+    "optionVariant": 1,
+    "falsePositive": 1,
+    "confirmedCanonicalDedupes": 0
+  }
+}

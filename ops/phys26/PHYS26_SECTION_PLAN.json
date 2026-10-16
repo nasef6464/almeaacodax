@@ -1,0 +1,182 @@
+{
+  "project": "PHYS26",
+  "status": "PROPOSED",
+  "subjectId": "sub_1784980706034",
+  "sections": [
+    {
+      "id": "sec_sub_physics_1",
+      "subjectId": "sub_1784980706034",
+      "name": "أساسيات الفيزياء والقياس والطريقة العلمية",
+      "order": 1,
+      "skillId": "PHYS26-M01"
+    },
+    {
+      "id": "sec_sub_physics_2",
+      "subjectId": "sub_1784980706034",
+      "name": "الحركة الخطية والتسارع والسقوط الحر",
+      "order": 2,
+      "skillId": "PHYS26-M02"
+    },
+    {
+      "id": "sec_sub_physics_3",
+      "subjectId": "sub_1784980706034",
+      "name": "القوى والوزن وقوانين نيوتن",
+      "order": 3,
+      "skillId": "PHYS26-M03"
+    },
+    {
+      "id": "sec_sub_physics_4",
+      "subjectId": "sub_1784980706034",
+      "name": "المتجهات والاحتكاك والحركة على مستوى مائل",
+      "order": 4,
+      "skillId": "PHYS26-M04"
+    },
+    {
+      "id": "sec_sub_physics_5",
+      "subjectId": "sub_1784980706034",
+      "name": "المقذوفات والحركة الدائرية",
+      "order": 5,
+      "skillId": "PHYS26-M05"
+    },
+    {
+      "id": "sec_sub_physics_6",
+      "subjectId": "sub_1784980706034",
+      "name": "الجاذبية والحركة المدارية",
+      "order": 6,
+      "skillId": "PHYS26-M06"
+    },
+    {
+      "id": "sec_sub_physics_7",
+      "subjectId": "sub_1784980706034",
+      "name": "الحركة الدورانية والعزم",
+      "order": 7,
+      "skillId": "PHYS26-M07"
+    },
+    {
+      "id": "sec_sub_physics_8",
+      "subjectId": "sub_1784980706034",
+      "name": "الاتزان والدفع والزخم",
+      "order": 8,
+      "skillId": "PHYS26-M08"
+    },
+    {
+      "id": "sec_sub_physics_9",
+      "subjectId": "sub_1784980706034",
+      "name": "الشغل والطاقة والقدرة والآلات",
+      "order": 9,
+      "skillId": "PHYS26-M09"
+    },
+    {
+      "id": "sec_sub_physics_10",
+      "subjectId": "sub_1784980706034",
+      "name": "الحرارة والديناميكا الحرارية",
+      "order": 10,
+      "skillId": "PHYS26-M10"
+    },
+    {
+      "id": "sec_sub_physics_11",
+      "subjectId": "sub_1784980706034",
+      "name": "مبادئ وخصائص الموائع",
+      "order": 11,
+      "skillId": "PHYS26-M11"
+    },
+    {
+      "id": "sec_sub_physics_12",
+      "subjectId": "sub_1784980706034",
+      "name": "الاهتزازات والموجات ودوبلر والرنين",
+      "order": 12,
+      "skillId": "PHYS26-M12"
+    },
+    {
+      "id": "sec_sub_physics_13",
+      "subjectId": "sub_1784980706034",
+      "name": "الضوء والألوان",
+      "order": 13,
+      "skillId": "PHYS26-M13"
+    },
+    {
+      "id": "sec_sub_physics_14",
+      "subjectId": "sub_1784980706034",
+      "name": "الانعكاس والمرايا",
+      "order": 14,
+      "skillId": "PHYS26-M14"
+    },
+    {
+      "id": "sec_sub_physics_15",
+      "subjectId": "sub_1784980706034",
+      "name": "الانكسار والعدسات",
+      "order": 15,
+      "skillId": "PHYS26-M15"
+    },
+    {
+      "id": "sec_sub_physics_16",
+      "subjectId": "sub_1784980706034",
+      "name": "التداخل والحيود",
+      "order": 16,
+      "skillId": "PHYS26-M16"
+    },
+    {
+      "id": "sec_sub_physics_17",
+      "subjectId": "sub_1784980706034",
+      "name": "الكهرباء والمجالات الكهربائية",
+      "order": 17,
+      "skillId": "PHYS26-M17"
+    },
+    {
+      "id": "sec_sub_physics_18",
+      "subjectId": "sub_1784980706034",
+      "name": "الكهرباء التيارية والدوائر الكهربائية",
+      "order": 18,
+      "skillId": "PHYS26-M18"
+    },
+    {
+      "id": "sec_sub_physics_19",
+      "subjectId": "sub_1784980706034",
+      "name": "المجالات والقوى المغناطيسية وقواعد اليد اليمنى",
+      "order": 19,
+      "skillId": "PHYS26-M19"
+    },
+    {
+      "id": "sec_sub_physics_20",
+      "subjectId": "sub_1784980706034",
+      "name": "الحث الكهرومغناطيسي",
+      "order": 20,
+      "skillId": "PHYS26-M20"
+    },
+    {
+      "id": "sec_sub_physics_21",
+      "subjectId": "sub_1784980706034",
+      "name": "الكهرومغناطيسية",
+      "order": 21,
+      "skillId": "PHYS26-M21"
+    },
+    {
+      "id": "sec_sub_physics_22",
+      "subjectId": "sub_1784980706034",
+      "name": "نظرية الكم",
+      "order": 22,
+      "skillId": "PHYS26-M22"
+    },
+    {
+      "id": "sec_sub_physics_23",
+      "subjectId": "sub_1784980706034",
+      "name": "الذرة والنماذج الذرية",
+      "order": 23,
+      "skillId": "PHYS26-M23"
+    },
+    {
+      "id": "sec_sub_physics_24",
+      "subjectId": "sub_1784980706034",
+      "name": "إلكترونيات الحالة الصلبة",
+      "order": 24,
+      "skillId": "PHYS26-M24"
+    },
+    {
+      "id": "sec_sub_physics_25",
+      "subjectId": "sub_1784980706034",
+      "name": "الفيزياء النووية",
+      "order": 25,
+      "skillId": "PHYS26-M25"
+    }
+  ]
+}
