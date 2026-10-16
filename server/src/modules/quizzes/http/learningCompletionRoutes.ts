@@ -25,7 +25,7 @@ learningCompletionRouter.get('/learning-completion',requireAuth,requireRole(['st
  const safe:any[]=[];const completed=new Set<string>();let batch:any[]=[];
  const flush=async()=>{if(!batch.length)return;const rows=await filterLearnerSafeQuizzes(batch,audience);batch=[];
   const allowed=rows.filter(q=>{if(q.access?.type!=='private')return true;const groupIds=[...(audience.groupIds||[]),String(user.schoolId||'')];return (q.targetUserIds||[]).includes(userId)||(q.targetGroupIds||[]).some((id:string)=>groupIds.includes(id))||(q.access?.allowedGroupIds||[]).some((id:string)=>groupIds.includes(id));});
-  const ids=allowed.map(q=>String(q.id||q._id));if(ids.length){const done=await QuizResultModel.distinct('quizId',{userId:{$in:[userId,String(user._id)]},quizId:{$in:ids}});done.forEach(id=>completed.add(String(id)));safe.push(...allowed);}
+  const ids=allowed.map(q=>String(q.id||q._id));if(ids.length){const done=await QuizResultModel.distinct('quizId',{userId:{$in:[userId,String(user._id)]},quizId:{$in:ids}});done.forEach(id=>completed.add(String(id)));safe.push(...allowed.map(q=>({id:String(q.id||q._id),quizKind:q.quizKind,mockExam:{enabled:q.mockExam?.enabled},learningPlacements:q.learningPlacements,access:q.access,mode:q.mode,targetUserIds:q.targetUserIds,targetGroupIds:q.targetGroupIds})));}
  };
  const cursor=QuizModel.find(filter).select('id pathId subjectId questionIds mockExam quizKind learningPlacements access mode targetUserIds targetGroupIds').lean().cursor({batchSize:200});
  for await(const q of cursor){batch.push(q);if(batch.length===200)await flush();}await flush();
