@@ -2,6 +2,12 @@ name: Gemini AI Repository Assistant
 
 on:
   workflow_dispatch:
+    inputs:
+      task_instruction:
+        description: 'المهمة أو الأمر المطلوب تنفيذه بموديل Argon (مثل: افحص صفحة كذا وعدل كذا)'
+        required: false
+        type: string
+        default: ''
   pull_request:
     branches:
       - main
@@ -22,7 +28,7 @@ on:
       - 'scripts/**'
 
 permissions:
-  contents: read
+  contents: write
   pull-requests: write
 
 concurrency:
@@ -30,7 +36,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  gemini-audit:
+  gemini-runner:
     runs-on: ubuntu-latest
     timeout-minutes: 25
 
@@ -38,7 +44,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 2
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -54,8 +60,57 @@ jobs:
           npm ci
           npm --prefix server ci
 
-      - name: Run Gemini Repository & Architecture Audit
+      - name: Run Task Instruction or Audit
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          TASK_INSTRUCTION: ${{ inputs.task_instruction }}
         run: |
-          node scripts/gemini-repo-audit.mjs
+          if [ -n "$TASK_INSTRUCTION" ]; then
+            echo "Executing Argon Task: $TASK_INSTRUCTION"
+            node scripts/argon-executor.mjs "$TASK_INSTRUCTION"
+          else
+            echo "Running Default Gemini Repository Audit"
+            node scripts/gemini-repo-audit.mjs
+          fi
+
+      - name: Create Pull Request with Changes
+        if: inputs.task_instruction != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TASK_INSTRUCTION: ${{ inputs.task_instruction }}
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "Changes detected! Preparing automated branch and PR..."
+            
+            git config --global user.name "github-actions[bot]"
+            git config --global user.email "github-actions[bot]@users.noreply.github.com"
+            
+            BRANCH_NAME="argon-task-${{ github.run_id }}"
+            git checkout -b "$BRANCH_NAME"
+            
+            COMMIT_MSG="feat(ai): apply task - ${TASK_INSTRUCTION:0:50}"
+            if [ -f ".argon_last_run.json" ]; then
+              EXTRACTED_MSG=$(node -e "try { const d = JSON.parse(require('fs').readFileSync('.argon_last_run.json','utf8')); if (d.commitMessage) console.log(d.commitMessage); } catch {}")
+              if [ -n "$EXTRACTED_MSG" ]; then
+                COMMIT_MSG="$EXTRACTED_MSG"
+              fi
+              rm -f .argon_last_run.json
+            fi
+            
+            git add .
+            git commit -m "$COMMIT_MSG"
+            git push origin "$BRANCH_NAME"
+            
+            PR_BODY="## 🤖 Automated Argon Task Execution
+
+**Task Instruction:**
+> $TASK_INSTRUCTION
+
+* Changes generated automatically via Google Gemini / Argon in GitHub Actions.
+* Workflow Run: [View Execution Run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+
+            gh pr create --title "$COMMIT_MSG" --body "$PR_BODY" --base main --head "$BRANCH_NAME"
+            echo "Pull Request successfully created!"
+          else
+            echo "No file modifications were made by the task."
+          fi
