@@ -9,3 +9,5 @@ Status IN_PROGRESS; baseline4939594d. Owner approved tab counts and whole main-t
 - Pure regression and isolated HTTP with251visible training quizzes, retries0score, caller isolation, main75percent, hidden subtree, mock-only scope and inactive/anonymous denial PASS. Browser component retry and unlocked3/10, foundation1/2, locked separation and390/1280 PASS.
 - Independent review found missing active-path gate and ambiguous path-only semantics; fixed gate and limited path-only query to mocks. Frontend review/final types/CI/publication pending.
 - Exact counting scans scoped matching quizzes and verifies usability in200raw batches; this is not proof of production-scale capacity. No production mutations during this task.
+
+Architecture registry: owner-approved own-student read-only route/mount added as two exact product extensions; immutable baseline and gate behavior retained. Initial CI detected the missing registrations; no existing route signature removed.
