@@ -180,6 +180,7 @@
     "apiRouter|/live-sessions|liveSessionRouter"
   ],
   "envKeys": [
+    "GITHUB_STEP_SUMMARY",
     "ASSESSMENT_TEST_MONGODB_URI",
     "AI_LIGHT_API_BASE_URL",
     "AI_PER_SCHOOL_DAILY_LIMIT",
