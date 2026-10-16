@@ -1,0 +1,135 @@
+{
+  "batch": "MNSF26_SOURCE_QA_6",
+  "phase": "PREWRITE",
+  "sourcePdf": "arithmetic page PDF index9 printed questions 1 and 10",
+  "sourceSha256": "46f2d9c2c8482f99f3d28ea9fe2ae7cdaa1b62102a6cbe6aa35deae78c672ee3",
+  "inspectedVisualPrintedPositions": 2,
+  "originalR2PixelsFetched": 0,
+  "shaCompared": 0,
+  "quizReferences": {
+    "quizzes": 0,
+    "versions": 0,
+    "attempts": 0
+  },
+  "evidence": [
+    "T010-Q01: solve 100 + خالد/2 + خالد/3 + 5خالد/6 = 150 => 5خالد/3=50 => خالد=30. Printed ج index2, stored د index3.",
+    "T010-Q10: consecutive n,n+1,n+2 total18 => n=5, printed ب index1, stored د index3."
+  ],
+  "rows": [
+    {
+      "_id": {
+        "$oid": "6acb549b1daea21097c2ca7c"
+      },
+      "questionCode": "QDR-QNT-MNSF26-AR-T010-Q01",
+      "aiContext": {
+        "readableText": "150 ريال distributed among خالد، أحمد، ليان، روان، ماجد. أحمد وخالد معهما ثلثا المبلغ; روان معها نصف خالد; ليان معها ثلثا ما مع روان; ماجد معه ما مع روان وليان. Find خالد.",
+        "speechText": "أحمد+خالد=100. Let خالد=x. روان=x/2, ليان=x/3, ماجد=5x/6. Total gives 100 + 5x/3 =150, so x=30."
+      },
+      "approvalStatus": "approved",
+      "correctOptionIndex": 3,
+      "createdAt": {
+        "$date": "2026-10-11T09:19:20.806Z"
+      },
+      "difficulty": "Hard",
+      "examType": "qudurat",
+      "explanation": "أحمد+خالد=100. Let خالد=x. روان=x/2, ليان=x/3, ماجد=5x/6. Total gives 100 + 5x/3 =150, so x=30.",
+      "fingerprint": "ec92cb2080be4a51c49f14313d62437cf78698e1568e1408eecaa068caec97e3",
+      "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t010_q01",
+      "imageUrl": "https://media.almeaa.com/questions/v2/MNSF26-AR-T010-Q01/574e84e673d023bde62998ae8b13c3f57a6301ca20dfcac03ecf42fc57276b0d.webp",
+      "isPublished": true,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "ownerType": "platform",
+      "pathId": "p_1777779639431",
+      "sectionId": "sec_sub_1777779748206_4",
+      "skillId": "skill_quant_04",
+      "skillIds": [
+        "skill_quant_04",
+        "sub_quant_04_2"
+      ],
+      "source": "imported",
+      "sourceMeta": {
+        "documentCode": "MNSF26",
+        "sourceItemId": "MNSF26-AR-T010-Q01",
+        "pdfPageIndex": 10,
+        "printedPageNumber": 10,
+        "printedQuestionNumber": 1,
+        "imageHash": "574e84e673d023bde62998ae8b13c3f57a6301ca20dfcac03ecf42fc57276b0d",
+        "importBatchId": "MNSF26_STAGE6_DRAFT_V1"
+      },
+      "subSkillId": "sub_quant_04_2",
+      "subject": "qudurat_quantitative",
+      "subjectId": "sub_1777779748206",
+      "text": "150 ريال distributed among خالد، أحمد، ليان، روان، ماجد. أحمد وخالد معهما ثلثا المبلغ; روان معها نصف خالد; ليان معها ثلثا ما مع روان; ماجد معه ما مع روان وليان. Find خالد.",
+      "type": "mcq",
+      "updatedAt": {
+        "$date": "2026-10-16T07:48:04.357Z"
+      },
+      "voiceExplanation": {
+        "text": "أحمد+خالد=100. Let خالد=x. روان=x/2, ليان=x/3, ماجد=5x/6. Total gives 100 + 5x/3 =150, so x=30."
+      }
+    },
+    {
+      "_id": {
+        "$oid": "6acb549b1daea21097c2ca85"
+      },
+      "questionCode": "QDR-QNT-MNSF26-AR-T010-Q10",
+      "aiContext": {
+        "readableText": "سؤال 10",
+        "speechText": "يُطبَّق النمط المعتمد في consecutive-integers / known-sum / middle-as-average. ثم تُراجع النتيجة: 5.."
+      },
+      "approvalStatus": "draft",
+      "correctOptionIndex": 3,
+      "createdAt": {
+        "$date": "2026-10-11T09:19:20.806Z"
+      },
+      "difficulty": "Easy",
+      "examType": "qudurat",
+      "explanation": "يُطبَّق النمط المعتمد في consecutive-integers / known-sum / middle-as-average. ثم تُراجع النتيجة: 5..",
+      "fingerprint": "5137a8f6d4315900fab3a0e34b59e4eb9697f7b819d1f0eb38679a1f784dcb31",
+      "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t010_q10",
+      "imageUrl": "https://media.almeaa.com/questions/v2/MNSF26-AR-T010-Q10/574e84e673d023bde62998ae8b13c3f57a6301ca20dfcac03ecf42fc57276b0d.webp",
+      "isPublished": false,
+      "options": [
+        "أ",
+        "ب",
+        "ج",
+        "د"
+      ],
+      "ownerType": "platform",
+      "pathId": "p_1777779639431",
+      "sectionId": "sec_sub_1777779748206_1",
+      "skillId": "skill_quant_01",
+      "skillIds": [
+        "skill_quant_01",
+        "sub_quant_01_1"
+      ],
+      "source": "imported",
+      "sourceMeta": {
+        "documentCode": "MNSF26",
+        "sourceItemId": "MNSF26-AR-T010-Q10",
+        "pdfPageIndex": 10,
+        "printedPageNumber": 10,
+        "printedQuestionNumber": 10,
+        "imageHash": "574e84e673d023bde62998ae8b13c3f57a6301ca20dfcac03ecf42fc57276b0d",
+        "importBatchId": "MNSF26_STAGE6_DRAFT_V1"
+      },
+      "subSkillId": "sub_quant_01_1",
+      "subject": "qudurat_quantitative",
+      "subjectId": "sub_1777779748206",
+      "text": "سؤال 10",
+      "type": "mcq",
+      "updatedAt": {
+        "$date": "2026-10-16T07:58:26.417Z"
+      },
+      "voiceExplanation": {
+        "text": "يُطبَّق النمط المعتمد في consecutive-integers / known-sum / middle-as-average. ثم تُراجع النتيجة: 5.."
+      },
+      "reviewerNotes": "MNSF26_QA_HOLD_20261016: شرح نمطي لا يوثق حل المسألة أو جميع خياراتها؛ يلزم حل مستقل وفحص صورة السؤال ومفتاح الإجابة وربط المهارة قبل إعادة الاعتماد."
+    }
+  ]
+}
