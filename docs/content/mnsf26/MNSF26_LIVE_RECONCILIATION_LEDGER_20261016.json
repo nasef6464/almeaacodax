@@ -4547,5 +4547,189 @@
     "existingQuizzesReferencedByHeldQuestions": 0,
     "visualImagesActuallyReviewedInThisRun": 0,
     "finalStatus": "NOT FINAL CLOSED"
+  },
+  "sourcePdfVisualQa_20261016": {
+    "originalSource": "نماذج المنصف مرتبة حسب الدروس -الحساب - الجبر - معدل.pdf",
+    "originalSourceSha256": "46f2d9c2c8482f99f3d28ea9fe2ae7cdaa1b62102a6cbe6aa35deae78c672ee3",
+    "sourcePdfPage": 2,
+    "sourceTest": 1,
+    "questionNos": [
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20
+    ],
+    "visualSourceInspected": 7,
+    "originalR2BytesChecked": 0,
+    "printOptionsConfirmed": 7,
+    "before": [
+      {
+        "code": "QDR-QNT-MNSF26-AR-T001-Q14",
+        "sourceKey": "MNSF26-AR-T001-Q14",
+        "oldIndex": 3,
+        "oldText": "وزن بطيخة مقربًا لأقرب مئة يساوي 700 جرام؛ أي وزن ممكن؟",
+        "oldSkill": "skill_quant_01",
+        "oldSubSkill": "sub_quant_01_1",
+        "oldSection": "sec_sub_1777779748206_1",
+        "oldExplanation": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة.",
+        "oldApproval": "draft",
+        "oldIsPublished": false,
+        "oldNotes": "MNSF26_QA_HOLD_20261016: شرح عام لا يثبت الحل؛ اختيار رقم 4 متكرر في جميع أسئلة هذه المجموعة. يلزم فحص صورة السؤال والاختيارات والحل الرياضي والتصنيف بصورة مستقلة قبل إعادة الاعتماد.",
+        "oldUpdatedAt": {
+          "$date": "2026-10-16T07:55:51.762Z"
+        }
+      },
+      {
+        "code": "QDR-QNT-MNSF26-AR-T001-Q15",
+        "sourceKey": "MNSF26-AR-T001-Q15",
+        "oldIndex": 3,
+        "oldText": "شجرة طولها 25 مترًا بعد التقريب لأقرب متر؛ ما طولها قبل التقريب؟",
+        "oldSkill": "skill_quant_01",
+        "oldSubSkill": "sub_quant_01_1",
+        "oldSection": "sec_sub_1777779748206_1",
+        "oldExplanation": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة.",
+        "oldApproval": "draft",
+        "oldIsPublished": false,
+        "oldNotes": "MNSF26_QA_HOLD_20261016: شرح عام لا يثبت الحل؛ اختيار رقم 4 متكرر في جميع أسئلة هذه المجموعة. يلزم فحص صورة السؤال والاختيارات والحل الرياضي والتصنيف بصورة مستقلة قبل إعادة الاعتماد.",
+        "oldUpdatedAt": {
+          "$date": "2026-10-16T07:55:51.764Z"
+        }
+      },
+      {
+        "code": "QDR-QNT-MNSF26-AR-T001-Q16",
+        "sourceKey": "MNSF26-AR-T001-Q16",
+        "oldIndex": 3,
+        "oldText": "قارن بين 11 مئة و1000.",
+        "oldSkill": "skill_quant_04",
+        "oldSubSkill": "sub_quant_04_2",
+        "oldSection": "sec_sub_1777779748206_4",
+        "oldExplanation": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة.",
+        "oldApproval": "draft",
+        "oldIsPublished": false,
+        "oldNotes": "MNSF26_QA_HOLD_20261016: شرح عام لا يثبت الحل؛ اختيار رقم 4 متكرر في جميع أسئلة هذه المجموعة. يلزم فحص صورة السؤال والاختيارات والحل الرياضي والتصنيف بصورة مستقلة قبل إعادة الاعتماد.",
+        "oldUpdatedAt": {
+          "$date": "2026-10-16T07:55:51.794Z"
+        }
+      },
+      {
+        "code": "QDR-QNT-MNSF26-AR-T001-Q17",
+        "sourceKey": "MNSF26-AR-T001-Q17",
+        "oldIndex": 3,
+        "oldText": "اختر العدد الأقرب إلى 35 من 34.01 و34.09 و35.0001 و35.001.",
+        "oldSkill": "skill_quant_01",
+        "oldSubSkill": "sub_quant_01_1",
+        "oldSection": "sec_sub_1777779748206_1",
+        "oldExplanation": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة.",
+        "oldApproval": "draft",
+        "oldIsPublished": false,
+        "oldNotes": "MNSF26_QA_HOLD_20261016: شرح عام لا يثبت الحل؛ اختيار رقم 4 متكرر في جميع أسئلة هذه المجموعة. يلزم فحص صورة السؤال والاختيارات والحل الرياضي والتصنيف بصورة مستقلة قبل إعادة الاعتماد.",
+        "oldUpdatedAt": {
+          "$date": "2026-10-16T07:55:51.764Z"
+        }
+      },
+      {
+        "code": "QDR-QNT-MNSF26-AR-T001-Q18",
+        "sourceKey": "MNSF26-AR-T001-Q18",
+        "oldIndex": 2,
+        "oldText": "كم عددًا فرديًا صحيحًا بين 17/5 و83/3؟",
+        "oldSkill": "skill_quant_03",
+        "oldSubSkill": "sub_quant_03_1",
+        "oldSection": "sec_sub_1777779748206_3",
+        "oldExplanation": "17/5=3.4 و83/3≈27.67؛ الأعداد الفردية من5 إلى27 بفارق2: (27−5)/2+1=12.",
+        "oldApproval": "approved",
+        "oldIsPublished": true,
+        "oldNotes": null,
+        "oldUpdatedAt": {
+          "$date": "2026-10-16T07:47:58.594Z"
+        }
+      },
+      {
+        "code": "QDR-QNT-MNSF26-AR-T001-Q19",
+        "sourceKey": "MNSF26-AR-T001-Q19",
+        "oldIndex": 3,
+        "oldText": "عدد من ثلاثة أرقام أكبرها في المئات وأصغرها في الآحاد؛ أي خيار يحقق ذلك؟",
+        "oldSkill": "skill_quant_01",
+        "oldSubSkill": "sub_quant_01_1",
+        "oldSection": "sec_sub_1777779748206_1",
+        "oldExplanation": "حل السؤال الرياضي بالخطوات والقوانين المعتمدة.",
+        "oldApproval": "draft",
+        "oldIsPublished": false,
+        "oldNotes": "MNSF26_QA_HOLD_20261016: شرح عام لا يثبت الحل؛ اختيار رقم 4 متكرر في جميع أسئلة هذه المجموعة. يلزم فحص صورة السؤال والاختيارات والحل الرياضي والتصنيف بصورة مستقلة قبل إعادة الاعتماد.",
+        "oldUpdatedAt": {
+          "$date": "2026-10-16T07:55:51.765Z"
+        }
+      },
+      {
+        "code": "QDR-QNT-MNSF26-AR-T001-Q20",
+        "sourceKey": "MNSF26-AR-T001-Q20",
+        "oldIndex": 1,
+        "oldText": "في كل منزل 16 نافذة؛ كم نافذة في 378 منزلًا؟",
+        "oldSkill": "skill_quant_01",
+        "oldSubSkill": "sub_quant_01_1",
+        "oldSection": "sec_sub_1777779748206_1",
+        "oldExplanation": "16×378=16×(400−22)=6400−352=6048.",
+        "oldApproval": "approved",
+        "oldIsPublished": true,
+        "oldNotes": null,
+        "oldUpdatedAt": {
+          "$date": "2026-10-12T09:42:15.947Z"
+        }
+      }
+    ],
+    "proposedByQNumber": {
+      "14": {
+        "index": 1,
+        "skill": "skill_quant_04",
+        "sub": "sub_quant_04_3",
+        "section": "sec_sub_1777779748206_4",
+        "text": "إذا كان وزن طرد بريدي مقربًا لأقرب مئة هو 700 جرام، فأي وزن بالجرامات يمكن أن يكون؟",
+        "explanation": "العدد الذي يُقرب إلى 700 عند التقريب لأقرب مئة يقع من 650 إلى أقل من 750. من خيارات الكتاب (643، 672، 754، 768) الوحيد داخل المجال هو 672 جرامًا؛ إذن الخيار ب."
+      },
+      "15": {
+        "index": 1,
+        "skill": "skill_quant_04",
+        "sub": "sub_quant_04_3",
+        "section": "sec_sub_1777779748206_4",
+        "explanation": "بالتقريب لأقرب متر، كل طول من 24.5 إلى أقل من 25.5 متر يقرب إلى 25 مترًا. الخيارات 26.4، 24.6، 24.4، 25.6؛ الوحيد المناسب 24.6 مترًا (ب)."
+      },
+      "16": {
+        "index": 0,
+        "skill": "skill_quant_01",
+        "sub": "sub_quant_01_1",
+        "section": "sec_sub_1777779748206_1",
+        "explanation": "إحدى عشرة مئة = 11×100=1100، وهي أكبر من القيمة الثانية 1000؛ إذن القيمة الأولى أكبر، الخيار أ."
+      },
+      "17": {
+        "index": 2,
+        "skill": "skill_quant_04",
+        "sub": "sub_quant_04_4",
+        "section": "sec_sub_1777779748206_4",
+        "explanation": "نحسب المسافة عن 35: 34.01 تبعد 0.99، و34.09 تبعد 0.91، و35.0001 تبعد 0.0001، و35.001 تبعد 0.001. أصغر فرق هو 0.0001، فالخيار ج."
+      },
+      "18": {
+        "index": 2,
+        "skill": "skill_quant_01",
+        "sub": "sub_quant_01_3",
+        "section": "sec_sub_1777779748206_1"
+      },
+      "19": {
+        "index": 3,
+        "skill": "skill_quant_01",
+        "sub": "sub_quant_01_1",
+        "section": "sec_sub_1777779748206_1",
+        "explanation": "نريد أن يكون رقم المئات هو الأكبر والآحاد هو الأصغر. من خيارات الكتاب: 634 (3 أصغر من 4)، 436 (الآحاد 6 أكبر)، 346 (المئات 3 أصغر)، 643 (6>4>3). إذن د = 643."
+      },
+      "20": {
+        "index": 1,
+        "skill": "skill_quant_01",
+        "sub": "sub_quant_01_2",
+        "section": "sec_sub_1777779748206_1"
+      }
+    },
+    "semantics": "Text source visually confirmed; original R2 crop SHA not retrieved. Preserve draft for questions 14,15,16,17,19. Two already approved 18 and 20 only reclassify taxonomy, not approval. No current test references touched.",
+    "stage": "PREWRITE_CAS_SNAPSHOT"
   }
 }
