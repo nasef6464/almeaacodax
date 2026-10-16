@@ -1,0 +1,1725 @@
+{
+  "schemaVersion": 1,
+  "bank": "MNSF26",
+  "batch": "20261016_source_qa_2",
+  "status": "PREWRITE_CHECKPOINT",
+  "sourcePdf": {
+    "arithmetic": {
+      "pages": 129,
+      "sha256": "46f2d9c2c8482f99f3d28ea9fe2ae7cdaa1b62102a6cbe6aa35deae78c672ee3"
+    },
+    "geometry": {
+      "pages": 97,
+      "sha256": "a823a90574476804cc29f5ca63ea8e9eaadab0cffe3afa78f791bbc8c6ee75d5"
+    }
+  },
+  "visualSourcePages": {
+    "arithmetic": [
+      3,
+      4
+    ],
+    "geometry": [
+      1,
+      2
+    ]
+  },
+  "r2ImagesFetched": 0,
+  "r2SHACompared": 0,
+  "quizReferenceChecks": {
+    "duplicates11": 0,
+    "assessmentversions": 0,
+    "assessmentattempts": 0
+  },
+  "entries": [
+    {
+      "key": "AR-T002-Q02",
+      "action": "taxonomy",
+      "proof": "odd consecutive integers; 19,21,23",
+      "proposed": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_3",
+        "sectionId": "sec_sub_1777779748206_1"
+      },
+      "before": {
+        "questionCode": "QDR-QNT-MNSF26-AR-T002-Q02",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t002_q02",
+        "subjectId": "sub_1777779748206",
+        "pathId": "p_1777779639431",
+        "text": "ثلاثة أعداد فردية متتالية مجموعها63؛ فما العدد الأكبر؟",
+        "approvalStatus": "approved",
+        "isPublished": true,
+        "correctOptionIndex": 2,
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_1",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "sectionId": "sec_sub_1777779748206_1",
+        "explanation": "المتوسط=63÷3=21، فتكون الأعداد 19،21،23، والأكبر23.",
+        "voiceExplanation": {
+          "text": "المتوسط=63÷3=21، فتكون الأعداد 19،21،23، والأكبر23."
+        },
+        "reviewerNotes": null,
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T002-Q02",
+          "pdfPageIndex": 3,
+          "printedPageNumber": 3,
+          "printedQuestionNumber": 2,
+          "imageHash": "ad76b03275fdd40e0ddc46d6bf702577e3201fa23a351e08494da13801841c32",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "cropStatus": "VERIFIED",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.947Z"
+        }
+      },
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T002-Q03",
+      "action": "taxonomy",
+      "proof": "consecutive even numbers 6 and 8; twice smaller 12",
+      "proposed": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_3",
+        "sectionId": "sec_sub_1777779748206_1"
+      },
+      "before": {
+        "questionCode": "QDR-QNT-MNSF26-AR-T002-Q03",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t002_q03",
+        "subjectId": "sub_1777779748206",
+        "pathId": "p_1777779639431",
+        "text": "إذا كان نصف مجموع عددين زوجيين متتاليين يساوي7، فما ضعف العدد الأصغر؟",
+        "approvalStatus": "approved",
+        "isPublished": true,
+        "correctOptionIndex": 2,
+        "skillId": "skill_quant_04",
+        "subSkillId": "sub_quant_04_2",
+        "skillIds": [
+          "skill_quant_04",
+          "sub_quant_04_2"
+        ],
+        "sectionId": "sec_sub_1777779748206_4",
+        "explanation": "المجموع=14. العددان الزوجيان المتتاليان هما6 و8، ونصف مجموعهما7؛ ضعف الأصغر=2×6=12.",
+        "voiceExplanation": {
+          "text": "المجموع=14. العددان الزوجيان المتتاليان هما6 و8، ونصف مجموعهما7؛ ضعف الأصغر=2×6=12."
+        },
+        "reviewerNotes": null,
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T002-Q03",
+          "pdfPageIndex": 3,
+          "printedPageNumber": 3,
+          "printedQuestionNumber": 3,
+          "imageHash": "fb7ad36e03492fb52ba88b09b04dd0f1bb7e0ed2777fb3f07718a4a551978f1e",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "cropStatus": "VERIFIED",
+        "updatedAt": {
+          "$date": "2026-10-16T07:48:04.355Z"
+        }
+      },
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T002-Q04",
+      "action": "taxonomy",
+      "proof": "parity and number digits; 101−98=3",
+      "proposed": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_3",
+        "sectionId": "sec_sub_1777779748206_1"
+      },
+      "before": {
+        "questionCode": "QDR-QNT-MNSF26-AR-T002-Q04",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t002_q04",
+        "subjectId": "sub_1777779748206",
+        "pathId": "p_1777779639431",
+        "text": "ما الفرق بين أصغر عدد فردي مكون من ثلاث أرقام وأكبر عدد زوجي مكون من رقمين؟",
+        "approvalStatus": "approved",
+        "isPublished": true,
+        "correctOptionIndex": 1,
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_1",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "sectionId": "sec_sub_1777779748206_1",
+        "explanation": "أصغر عدد فردي ثلاثي=101، وأكبر عدد زوجي ثنائي=98، والفرق101−98=3.",
+        "voiceExplanation": {
+          "text": "أصغر عدد فردي ثلاثي=101، وأكبر عدد زوجي ثنائي=98، والفرق101−98=3."
+        },
+        "reviewerNotes": null,
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T002-Q04",
+          "pdfPageIndex": 3,
+          "printedPageNumber": 3,
+          "printedQuestionNumber": 4,
+          "imageHash": "aeba21e352ebe60eddd155e6ab8abcc4e4acc6c4ca2ff75b4266c45643e72281",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "cropStatus": "VERIFIED",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.947Z"
+        }
+      },
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T002-Q05",
+      "action": "taxonomy",
+      "proof": "consecutive even numbers 50,52,54",
+      "proposed": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_3",
+        "sectionId": "sec_sub_1777779748206_1"
+      },
+      "before": {
+        "questionCode": "QDR-QNT-MNSF26-AR-T002-Q05",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t002_q05",
+        "subjectId": "sub_1777779748206",
+        "pathId": "p_1777779639431",
+        "text": "ثلاثة أعداد زوجية متتالية مجموعها156؛ ما مجموع أول عددين؟",
+        "approvalStatus": "approved",
+        "isPublished": true,
+        "correctOptionIndex": 1,
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_1",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "sectionId": "sec_sub_1777779748206_1",
+        "explanation": "الأوسط=156÷3=52، فتكون الأعداد50 و52 و54؛ أول عددين مجموعهما102.",
+        "voiceExplanation": {
+          "text": "الأوسط=156÷3=52، فتكون الأعداد50 و52 و54؛ أول عددين مجموعهما102."
+        },
+        "reviewerNotes": null,
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T002-Q05",
+          "pdfPageIndex": 3,
+          "printedPageNumber": 3,
+          "printedQuestionNumber": 5,
+          "imageHash": "78e156af926f31bcc387787c6231216acdd2aad53910d998977b7f9d61406fd3",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "cropStatus": "VERIFIED",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.947Z"
+        }
+      },
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T002-Q06",
+      "action": "taxonomy",
+      "proof": "count odd integers 1 through 21 between fractions",
+      "proposed": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_3",
+        "sectionId": "sec_sub_1777779748206_1"
+      },
+      "before": {
+        "questionCode": "QDR-QNT-MNSF26-AR-T002-Q06",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t002_q06",
+        "subjectId": "sub_1777779748206",
+        "pathId": "p_1777779639431",
+        "text": "كم عددًا فرديًا بين 1/13 و65/3؟",
+        "approvalStatus": "approved",
+        "isPublished": true,
+        "correctOptionIndex": 3,
+        "skillId": "skill_quant_03",
+        "subSkillId": "sub_quant_03_1",
+        "skillIds": [
+          "skill_quant_03",
+          "sub_quant_03_1"
+        ],
+        "sectionId": "sec_sub_1777779748206_3",
+        "explanation": "1/13≈0.077 و65/3≈21.67. الأعداد الفردية الصحيحة هي1،3،5،7،9،11،13،15،17،19،21؛ عددها11.",
+        "voiceExplanation": {
+          "text": "1/13≈0.077 و65/3≈21.67. الأعداد الفردية الصحيحة هي1،3،5،7،9،11،13،15،17،19،21؛ عددها11."
+        },
+        "reviewerNotes": null,
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T002-Q06",
+          "pdfPageIndex": 3,
+          "printedPageNumber": 3,
+          "printedQuestionNumber": 6,
+          "imageHash": "2bc3cd134bf3795a26bf5c8872cfcb569f4d8f079ba5f3633a04467fe77246dc",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "cropStatus": "VERIFIED",
+        "updatedAt": {
+          "$date": "2026-10-16T07:47:58.594Z"
+        }
+      },
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T002-Q07",
+      "action": "taxonomy",
+      "proof": "odd/even parity of algebraic expressions",
+      "proposed": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_3",
+        "sectionId": "sec_sub_1777779748206_1"
+      },
+      "before": {
+        "questionCode": "QDR-QNT-MNSF26-AR-T002-Q07",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t002_q07",
+        "subjectId": "sub_1777779748206",
+        "pathId": "p_1777779639431",
+        "text": "إذا كانت ن وم ول أعدادًا فردية، فأي التعابير الآتية ليس زوجيًا؟",
+        "approvalStatus": "approved",
+        "isPublished": true,
+        "correctOptionIndex": 2,
+        "skillId": "skill_quant_04",
+        "subSkillId": "sub_quant_04_2",
+        "skillIds": [
+          "skill_quant_04",
+          "sub_quant_04_2"
+        ],
+        "sectionId": "sec_sub_1777779748206_4",
+        "explanation": "مجموع عددين فرديين زوجي، وإضافة1 تجعله فرديًا. بقية التعابير الظاهرة زوجية.",
+        "voiceExplanation": {
+          "text": "مجموع عددين فرديين زوجي، وإضافة1 تجعله فرديًا. بقية التعابير الظاهرة زوجية."
+        },
+        "reviewerNotes": null,
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T002-Q07",
+          "pdfPageIndex": 3,
+          "printedPageNumber": 3,
+          "printedQuestionNumber": 7,
+          "imageHash": "49853d9d4ed5b0fe27d255aab98c6ad6dd6456181cb5fefd946655352689d3cd",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "cropStatus": "VERIFIED",
+        "updatedAt": {
+          "$date": "2026-10-16T07:48:04.355Z"
+        }
+      },
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T002-Q08",
+      "action": "taxonomy",
+      "proof": "odd integer sum 5+7+9=21",
+      "proposed": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_3",
+        "sectionId": "sec_sub_1777779748206_1"
+      },
+      "before": {
+        "questionCode": "QDR-QNT-MNSF26-AR-T002-Q08",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t002_q08",
+        "subjectId": "sub_1777779748206",
+        "pathId": "p_1777779639431",
+        "text": "ما مجموع الأعداد الفردية بين 3 و11؟",
+        "approvalStatus": "approved",
+        "isPublished": true,
+        "correctOptionIndex": 1,
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_1",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "sectionId": "sec_sub_1777779748206_1",
+        "explanation": "الأعداد الفردية بين الطرفين دون شملهما: 5،7،9؛ مجموعها=21.",
+        "voiceExplanation": {
+          "text": "الأعداد الفردية بين الطرفين دون شملهما: 5،7،9؛ مجموعها=21."
+        },
+        "reviewerNotes": null,
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T002-Q08",
+          "pdfPageIndex": 3,
+          "printedPageNumber": 3,
+          "printedQuestionNumber": 8,
+          "imageHash": "da527868a0b052adb9d0dbd47d5d03c02daa0b3dd07401f36a22fddaf95efe52",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "cropStatus": "VERIFIED",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.947Z"
+        }
+      },
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T002-Q11",
+      "action": "taxonomy",
+      "proof": "odd/even parity of 3x+2",
+      "proposed": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_3",
+        "sectionId": "sec_sub_1777779748206_1"
+      },
+      "before": {
+        "questionCode": "QDR-QNT-MNSF26-AR-T002-Q11",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t002_q11",
+        "subjectId": "sub_1777779748206",
+        "pathId": "p_1777779639431",
+        "text": "إذا كان س عددًا فرديًا، فأي الآتي فردي؟",
+        "approvalStatus": "approved",
+        "isPublished": true,
+        "correctOptionIndex": 1,
+        "skillId": "skill_quant_04",
+        "subSkillId": "sub_quant_04_2",
+        "skillIds": [
+          "skill_quant_04",
+          "sub_quant_04_2"
+        ],
+        "sectionId": "sec_sub_1777779748206_4",
+        "explanation": "3س فردي لأن حاصل ضرب فرديين فردي؛ إضافة2 الزوجي تبقي الناتج فرديًا.",
+        "voiceExplanation": {
+          "text": "3س فردي لأن حاصل ضرب فرديين فردي؛ إضافة2 الزوجي تبقي الناتج فرديًا."
+        },
+        "reviewerNotes": null,
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T002-Q11",
+          "pdfPageIndex": 3,
+          "printedPageNumber": 3,
+          "printedQuestionNumber": 11,
+          "imageHash": "e2fa25443c88b059af17ce5650c660386332052d71ee388929cdad49b5fcf713",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "cropStatus": "VERIFIED",
+        "updatedAt": {
+          "$date": "2026-10-16T07:48:04.355Z"
+        }
+      },
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T002-Q12",
+      "action": "taxonomy",
+      "proof": "count odd integers 5,7,9,11,13",
+      "proposed": {
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_3",
+        "sectionId": "sec_sub_1777779748206_1"
+      },
+      "before": {
+        "questionCode": "QDR-QNT-MNSF26-AR-T002-Q12",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t002_q12",
+        "subjectId": "sub_1777779748206",
+        "pathId": "p_1777779639431",
+        "text": "كم عددًا فرديًا بين 3 و14؟",
+        "approvalStatus": "approved",
+        "isPublished": true,
+        "correctOptionIndex": 2,
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_1",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "sectionId": "sec_sub_1777779748206_1",
+        "explanation": "الأعداد الفردية دون الطرفين هي5،7،9،11،13، وعددها5.",
+        "voiceExplanation": {
+          "text": "الأعداد الفردية دون الطرفين هي5،7،9،11،13، وعددها5."
+        },
+        "reviewerNotes": null,
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T002-Q12",
+          "pdfPageIndex": 3,
+          "printedPageNumber": 3,
+          "printedQuestionNumber": 12,
+          "imageHash": "0683c4488bb9b59254a274bd6b58afc2d503310f63d24d9dd955ef919c11da49",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "cropStatus": "VERIFIED",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.947Z"
+        }
+      },
+      "result": "PENDING"
+    },
+    {
+      "key": "GEO-T001-Q03",
+      "action": "taxonomy",
+      "proof": "count 8 unit squares and 3 2×2 squares",
+      "proposed": {
+        "skillId": "skill_quant_22",
+        "subSkillId": "sub_quant_22_3",
+        "sectionId": "sec_sub_1777779748206_22"
+      },
+      "before": {
+        "questionCode": "QDR-QNT-MNSF26-GEO-T001-Q03",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_geo_t001_q03",
+        "subjectId": "sub_1777779748206",
+        "pathId": "p_1777779639431",
+        "text": "عدد المربعات في شكل درجات من 8 مربعات وحدة",
+        "approvalStatus": "approved",
+        "isPublished": true,
+        "correctOptionIndex": 2,
+        "skillId": "skill_quant_22",
+        "subSkillId": "sub_quant_22_1",
+        "skillIds": [
+          "skill_quant_22",
+          "sub_quant_22_1"
+        ],
+        "sectionId": "sec_sub_1777779748206_22",
+        "explanation": "نعد 8 مربعات وحدة و3 مربعات بحجم 2×2، فيكون المجموع 11.",
+        "voiceExplanation": {
+          "text": "نعد 8 مربعات وحدة و3 مربعات بحجم 2×2، فيكون المجموع 11."
+        },
+        "reviewerNotes": null,
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-GEO-T001-Q03",
+          "pdfPageIndex": 1,
+          "printedPageNumber": 1,
+          "printedQuestionNumber": 3,
+          "imageHash": "24b226cff918daa11264b5f664bb7de41040a64561db5fb91b9e4addca8a4205",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "cropStatus": "VERIFIED",
+        "updatedAt": {
+          "$date": "2026-10-16T07:49:40.841Z"
+        }
+      },
+      "result": "PENDING"
+    },
+    {
+      "key": "GEO-T001-Q05",
+      "action": "taxonomy",
+      "proof": "count 10 unit squares and 3 2×2 squares",
+      "proposed": {
+        "skillId": "skill_quant_22",
+        "subSkillId": "sub_quant_22_3",
+        "sectionId": "sec_sub_1777779748206_22"
+      },
+      "before": {
+        "questionCode": "QDR-QNT-MNSF26-GEO-T001-Q05",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_geo_t001_q05",
+        "subjectId": "sub_1777779748206",
+        "pathId": "p_1777779639431",
+        "text": "عدد المربعات في سلم من أربعة صفوف",
+        "approvalStatus": "approved",
+        "isPublished": true,
+        "correctOptionIndex": 3,
+        "skillId": "skill_quant_22",
+        "subSkillId": "sub_quant_22_1",
+        "skillIds": [
+          "skill_quant_22",
+          "sub_quant_22_1"
+        ],
+        "sectionId": "sec_sub_1777779748206_22",
+        "explanation": "10 مربعات وحدة و3 مربعات 2×2؛ الإجمالي 13.",
+        "voiceExplanation": {
+          "text": "10 مربعات وحدة و3 مربعات 2×2؛ الإجمالي 13."
+        },
+        "reviewerNotes": null,
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-GEO-T001-Q05",
+          "pdfPageIndex": 1,
+          "printedPageNumber": 1,
+          "printedQuestionNumber": 5,
+          "imageHash": "77f8508e01db905cd3407b621a84f2aa49d4545e1f044a838a1f073df961d3a6",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "cropStatus": "VERIFIED",
+        "updatedAt": {
+          "$date": "2026-10-16T07:49:40.841Z"
+        }
+      },
+      "result": "PENDING"
+    },
+    {
+      "key": "GEO-T001-Q06",
+      "action": "taxonomy",
+      "proof": "matchsticks for 7 adjacent squares 4+3×6=22",
+      "proposed": {
+        "skillId": "skill_quant_13",
+        "subSkillId": "sub_quant_13_3",
+        "sectionId": "sec_sub_1777779748206_13"
+      },
+      "before": {
+        "questionCode": "QDR-QNT-MNSF26-GEO-T001-Q06",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_geo_t001_q06",
+        "subjectId": "sub_1777779748206",
+        "pathId": "p_1777779639431",
+        "text": "عدد الأعواد اللازمة لسبعة مربعات متلاصقة إذا كان المربع الأول أربعة أعواد",
+        "approvalStatus": "approved",
+        "isPublished": true,
+        "correctOptionIndex": 1,
+        "skillId": "skill_quant_22",
+        "subSkillId": "sub_quant_22_1",
+        "skillIds": [
+          "skill_quant_22",
+          "sub_quant_22_1"
+        ],
+        "sectionId": "sec_sub_1777779748206_22",
+        "explanation": "4+3×(7−1)=22 عودًا.",
+        "voiceExplanation": {
+          "text": "4+3×(7−1)=22 عودًا."
+        },
+        "reviewerNotes": null,
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-GEO-T001-Q06",
+          "pdfPageIndex": 1,
+          "printedPageNumber": 1,
+          "printedQuestionNumber": 6,
+          "imageHash": "9d2c26519d8aa35791cf853144489c0cb4969bc4b024e88b1b195a65edacb476",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "cropStatus": "VERIFIED",
+        "updatedAt": {
+          "$date": "2026-10-16T07:49:40.841Z"
+        }
+      },
+      "result": "PENDING"
+    },
+    {
+      "key": "GEO-T001-Q08",
+      "action": "taxonomy",
+      "proof": "matchsticks for 9 adjacent squares 4+3×8=28",
+      "proposed": {
+        "skillId": "skill_quant_13",
+        "subSkillId": "sub_quant_13_3",
+        "sectionId": "sec_sub_1777779748206_13"
+      },
+      "before": {
+        "questionCode": "QDR-QNT-MNSF26-GEO-T001-Q08",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_geo_t001_q08",
+        "subjectId": "sub_1777779748206",
+        "pathId": "p_1777779639431",
+        "text": "سبعة أعواد لمربعين متلاصقين؛ عدد أعواد تسعة مربعات",
+        "approvalStatus": "approved",
+        "isPublished": true,
+        "correctOptionIndex": 1,
+        "skillId": "skill_quant_22",
+        "subSkillId": "sub_quant_22_3",
+        "skillIds": [
+          "skill_quant_22",
+          "sub_quant_22_3"
+        ],
+        "sectionId": "sec_sub_1777779748206_22",
+        "explanation": "4+3×(9−1)=28.",
+        "voiceExplanation": {
+          "text": "4+3×(9−1)=28."
+        },
+        "reviewerNotes": null,
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-GEO-T001-Q08",
+          "pdfPageIndex": 1,
+          "printedPageNumber": 1,
+          "printedQuestionNumber": 8,
+          "imageHash": "f89b5ca2df68b52154ccb776956b2396096539517ecaa119c844906eca7b00c2",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "cropStatus": "VERIFIED",
+        "updatedAt": {
+          "$date": "2026-10-16T07:49:40.841Z"
+        }
+      },
+      "result": "PENDING"
+    },
+    {
+      "key": "GEO-T001-Q09",
+      "action": "taxonomy",
+      "proof": "matchsticks for 8 adjacent squares 4+3×7=25",
+      "proposed": {
+        "skillId": "skill_quant_13",
+        "subSkillId": "sub_quant_13_3",
+        "sectionId": "sec_sub_1777779748206_13"
+      },
+      "before": {
+        "questionCode": "QDR-QNT-MNSF26-GEO-T001-Q09",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_geo_t001_q09",
+        "subjectId": "sub_1777779748206",
+        "pathId": "p_1777779639431",
+        "text": "ثلاثة مربعات متجاورة من عشرة أعواد؛ أعواد ثمانية مربعات",
+        "approvalStatus": "approved",
+        "isPublished": true,
+        "correctOptionIndex": 2,
+        "skillId": "skill_quant_22",
+        "subSkillId": "sub_quant_22_1",
+        "skillIds": [
+          "skill_quant_22",
+          "sub_quant_22_1"
+        ],
+        "sectionId": "sec_sub_1777779748206_22",
+        "explanation": "4+3×(8−1)=25.",
+        "voiceExplanation": {
+          "text": "4+3×(8−1)=25."
+        },
+        "reviewerNotes": null,
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-GEO-T001-Q09",
+          "pdfPageIndex": 1,
+          "printedPageNumber": 1,
+          "printedQuestionNumber": 9,
+          "imageHash": "a0e1682f073af78abce8aa9b3dfd4f39e3f21a9002e1f536f41aa8e1ff25a2a7",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "cropStatus": "VERIFIED",
+        "updatedAt": {
+          "$date": "2026-10-16T07:49:40.842Z"
+        }
+      },
+      "result": "PENDING"
+    },
+    {
+      "key": "GEO-T001-Q10",
+      "action": "taxonomy",
+      "proof": "equal spacings between five points 4/4=1",
+      "proposed": {
+        "skillId": "skill_quant_13",
+        "subSkillId": "sub_quant_13_3",
+        "sectionId": "sec_sub_1777779748206_13"
+      },
+      "before": {
+        "questionCode": "QDR-QNT-MNSF26-GEO-T001-Q10",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_geo_t001_q10",
+        "subjectId": "sub_1777779748206",
+        "pathId": "p_1777779639431",
+        "text": "خمس نقاط متساوية المسافات من س إلى ص والمسافة الكلية أربعة؛ المسافة ل إلى ع",
+        "approvalStatus": "approved",
+        "isPublished": true,
+        "correctOptionIndex": 0,
+        "skillId": "skill_quant_19",
+        "subSkillId": "sub_quant_19_1",
+        "skillIds": [
+          "skill_quant_19",
+          "sub_quant_19_1"
+        ],
+        "sectionId": "sec_sub_1777779748206_19",
+        "explanation": "المسافة الكلية أربع فواصل متساوية، وكل فاصلة 1.",
+        "voiceExplanation": {
+          "text": "المسافة الكلية أربع فواصل متساوية، وكل فاصلة 1."
+        },
+        "reviewerNotes": null,
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-GEO-T001-Q10",
+          "pdfPageIndex": 1,
+          "printedPageNumber": 1,
+          "printedQuestionNumber": 10,
+          "imageHash": "ce788c4a6931c0b7f7ae558a26b3e5b36497bd62f75debf9681ccc6d7ab94409",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "cropStatus": "VERIFIED",
+        "updatedAt": {
+          "$date": "2026-10-16T07:49:22.704Z"
+        }
+      },
+      "result": "PENDING"
+    },
+    {
+      "key": "GEO-T001-Q12",
+      "action": "taxonomy",
+      "proof": "perimeter of rectilinear L-shaped composite, 2×(11+7)=36",
+      "proposed": {
+        "skillId": "skill_quant_21",
+        "subSkillId": "sub_quant_21_1",
+        "sectionId": "sec_sub_1777779748206_21"
+      },
+      "before": {
+        "questionCode": "QDR-QNT-MNSF26-GEO-T001-Q12",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_geo_t001_q12",
+        "subjectId": "sub_1777779748206",
+        "pathId": "p_1777779639431",
+        "text": "محيط شكل قائم على هيئة حرف L، ارتفاعه 7 وعرضاه 5 و6",
+        "approvalStatus": "approved",
+        "isPublished": true,
+        "correctOptionIndex": 3,
+        "skillId": "skill_quant_19",
+        "subSkillId": "sub_quant_19_1",
+        "skillIds": [
+          "skill_quant_19",
+          "sub_quant_19_1"
+        ],
+        "sectionId": "sec_sub_1777779748206_19",
+        "explanation": "العرض الكلي 11 والارتفاع 7؛ المحيط 2×(11+7)=36.",
+        "voiceExplanation": {
+          "text": "العرض الكلي 11 والارتفاع 7؛ المحيط 2×(11+7)=36."
+        },
+        "reviewerNotes": null,
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-GEO-T001-Q12",
+          "pdfPageIndex": 1,
+          "printedPageNumber": 1,
+          "printedQuestionNumber": 12,
+          "imageHash": "c6b5d7be5319129af752c6523c5e56f881cadd72bada5426cd518a31f342e779",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "cropStatus": "VERIFIED",
+        "updatedAt": {
+          "$date": "2026-10-16T07:49:22.705Z"
+        }
+      },
+      "result": "PENDING"
+    },
+    {
+      "key": "GEO-T001-Q16",
+      "action": "taxonomy",
+      "proof": "three equal intervals of total 12; each 4",
+      "proposed": {
+        "skillId": "skill_quant_13",
+        "subSkillId": "sub_quant_13_3",
+        "sectionId": "sec_sub_1777779748206_13"
+      },
+      "before": {
+        "questionCode": "QDR-QNT-MNSF26-GEO-T001-Q16",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_geo_t001_q16",
+        "subjectId": "sub_1777779748206",
+        "pathId": "p_1777779639431",
+        "text": "نقاط متساوية على مستقيم، من س إلى ص 12؛ قارن 3 بالمسافة س ل",
+        "approvalStatus": "approved",
+        "isPublished": true,
+        "correctOptionIndex": 0,
+        "skillId": "skill_quant_19",
+        "subSkillId": "sub_quant_19_1",
+        "skillIds": [
+          "skill_quant_19",
+          "sub_quant_19_1"
+        ],
+        "sectionId": "sec_sub_1777779748206_19",
+        "explanation": "بين س وص ثلاث فواصل، طول الفاصلة 12÷3=4، ومن ثم 4>3.",
+        "voiceExplanation": {
+          "text": "بين س وص ثلاث فواصل، طول الفاصلة 12÷3=4، ومن ثم 4>3."
+        },
+        "reviewerNotes": null,
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-GEO-T001-Q16",
+          "pdfPageIndex": 1,
+          "printedPageNumber": 1,
+          "printedQuestionNumber": 16,
+          "imageHash": "38b4f69e697d97832b1f51c568c42170d36d682d1958e2bb7626fdcc98a40c6d",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "cropStatus": "VERIFIED",
+        "updatedAt": {
+          "$date": "2026-10-16T07:49:22.705Z"
+        }
+      },
+      "result": "PENDING"
+    },
+    {
+      "key": "GEO-T001-Q17",
+      "action": "taxonomy",
+      "proof": "1/x=-2 implies x=-1/2, compare 1/4",
+      "proposed": {
+        "skillId": "skill_quant_03",
+        "subSkillId": "sub_quant_03_3",
+        "sectionId": "sec_sub_1777779748206_3"
+      },
+      "before": {
+        "questionCode": "QDR-QNT-MNSF26-GEO-T001-Q17",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_geo_t001_q17",
+        "subjectId": "sub_1777779748206",
+        "pathId": "p_1777779639431",
+        "text": "قارن ربعًا بالمتغير س إذا كان 1/س=-2 على خط الأعداد",
+        "approvalStatus": "approved",
+        "isPublished": true,
+        "correctOptionIndex": 0,
+        "skillId": "skill_quant_19",
+        "subSkillId": "sub_quant_19_1",
+        "skillIds": [
+          "skill_quant_19",
+          "sub_quant_19_1"
+        ],
+        "sectionId": "sec_sub_1777779748206_19",
+        "explanation": "1/س=-2 يقتضي س=-1/2، والربع الموجب أكبر من السالب.",
+        "voiceExplanation": {
+          "text": "1/س=-2 يقتضي س=-1/2، والربع الموجب أكبر من السالب."
+        },
+        "reviewerNotes": null,
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-GEO-T001-Q17",
+          "pdfPageIndex": 1,
+          "printedPageNumber": 1,
+          "printedQuestionNumber": 17,
+          "imageHash": "e69f5ada5014671a88bbe81616628d6b824a65387d17b344348634d72f8886cd",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "cropStatus": "VERIFIED",
+        "updatedAt": {
+          "$date": "2026-10-16T07:49:22.705Z"
+        }
+      },
+      "result": "PENDING"
+    },
+    {
+      "key": "GEO-T001-Q18",
+      "action": "taxonomy",
+      "proof": "linear equation AD=12+DC=3DC => DC=6",
+      "proposed": {
+        "skillId": "skill_quant_07",
+        "subSkillId": "sub_quant_07_2",
+        "sectionId": "sec_sub_1777779748206_7"
+      },
+      "before": {
+        "questionCode": "QDR-QNT-MNSF26-GEO-T001-Q18",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_geo_t001_q18",
+        "subjectId": "sub_1777779748206",
+        "pathId": "p_1777779639431",
+        "text": "أ ب=9 وب ج=3، وأ د=3 أمثال د ج على مستقيم",
+        "approvalStatus": "approved",
+        "isPublished": true,
+        "correctOptionIndex": 1,
+        "skillId": "skill_quant_19",
+        "subSkillId": "sub_quant_19_1",
+        "skillIds": [
+          "skill_quant_19",
+          "sub_quant_19_1"
+        ],
+        "sectionId": "sec_sub_1777779748206_19",
+        "explanation": "إذا دج=س، فإن أد=12+س=3س، ومنه س=6.",
+        "voiceExplanation": {
+          "text": "إذا دج=س، فإن أد=12+س=3س، ومنه س=6."
+        },
+        "reviewerNotes": null,
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-GEO-T001-Q18",
+          "pdfPageIndex": 1,
+          "printedPageNumber": 1,
+          "printedQuestionNumber": 18,
+          "imageHash": "b77de62397893fc0428219567c938c76f0db8395cdda9f60c8fc3098697eb2ee",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "cropStatus": "VERIFIED",
+        "updatedAt": {
+          "$date": "2026-10-16T07:49:22.705Z"
+        }
+      },
+      "result": "PENDING"
+    },
+    {
+      "key": "GEO-T001-Q20",
+      "action": "taxonomy",
+      "proof": "three 60-degree angles in equilateral triangle",
+      "proposed": {
+        "skillId": "skill_quant_20",
+        "subSkillId": "sub_quant_20_1",
+        "sectionId": "sec_sub_1777779748206_20"
+      },
+      "before": {
+        "questionCode": "QDR-QNT-MNSF26-GEO-T001-Q20",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_geo_t001_q20",
+        "subjectId": "sub_1777779748206",
+        "pathId": "p_1777779639431",
+        "text": "كم زاوية حادة في المثلث المتطابق الأضلاع",
+        "approvalStatus": "approved",
+        "isPublished": true,
+        "correctOptionIndex": 3,
+        "skillId": "skill_quant_20",
+        "subSkillId": "sub_quant_20_5",
+        "skillIds": [
+          "skill_quant_20",
+          "sub_quant_20_5"
+        ],
+        "sectionId": "sec_sub_1777779748206_20",
+        "explanation": "زواياه 60° و60° و60°؛ الثلاث كلها حادة.",
+        "voiceExplanation": {
+          "text": "زواياه 60° و60° و60°؛ الثلاث كلها حادة."
+        },
+        "reviewerNotes": null,
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-GEO-T001-Q20",
+          "pdfPageIndex": 1,
+          "printedPageNumber": 1,
+          "printedQuestionNumber": 20,
+          "imageHash": "f00144f52eeda07da2efe6af5a7a1b261db40e4a288288c582f08268cacce3c5",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "cropStatus": "VERIFIED",
+        "updatedAt": {
+          "$date": "2026-10-16T07:49:28.681Z"
+        }
+      },
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T004-Q08",
+      "action": "draft_science",
+      "proof": "نحسب 6000006 ÷ 6 بتجزئة العدد: 6000000 ÷ 6 = 1000000، و6 ÷ 6 = 1؛ إذن الناتج 1000001، وهو الخيار أ. المصدر: كتاب الحساب والجبر ص4، س8.",
+      "proposed": {
+        "correctOptionIndex": 0,
+        "explanation": "نحسب 6000006 ÷ 6 بتجزئة العدد: 6000000 ÷ 6 = 1000000، و6 ÷ 6 = 1؛ إذن الناتج 1000001، وهو الخيار أ. المصدر: كتاب الحساب والجبر ص4، س8."
+      },
+      "before": {
+        "questionCode": "QDR-QNT-MNSF26-AR-T004-Q08",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t004_q08",
+        "subjectId": "sub_1777779748206",
+        "pathId": "p_1777779639431",
+        "text": "إذا كان 6006 ÷ 6 = 1001، فما ناتج 6000006 ÷ 6؟",
+        "approvalStatus": "draft",
+        "isPublished": false,
+        "correctOptionIndex": 0,
+        "skillId": "skill_quant_04",
+        "subSkillId": "sub_quant_04_2",
+        "skillIds": [
+          "skill_quant_04",
+          "sub_quant_04_2"
+        ],
+        "sectionId": "sec_sub_1777779748206_4",
+        "explanation": "يُطبَّق النمط المعتمد في قسمة عدد ذي نمط أصفار مع ثبات المقسوم عليه. ثم تُراجع النتيجة: أ = 1000001..",
+        "voiceExplanation": {
+          "text": "يُطبَّق النمط المعتمد في قسمة عدد ذي نمط أصفار مع ثبات المقسوم عليه. ثم تُراجع النتيجة: أ = 1000001.."
+        },
+        "reviewerNotes": "MNSF26_QA_HOLD_20261016: شرح نمطي لا يوثق حل المسألة أو جميع خياراتها؛ يلزم حل مستقل وفحص صورة السؤال ومفتاح الإجابة وربط المهارة قبل إعادة الاعتماد.",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T004-Q08",
+          "pdfPageIndex": 4,
+          "printedPageNumber": 4,
+          "printedQuestionNumber": 8,
+          "imageHash": "3bcbeb875e8eef09003c209b43aa9f766e352f8e42ba686fb302571f9e7e41df",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "cropStatus": "VERIFIED",
+        "updatedAt": {
+          "$date": "2026-10-16T07:58:26.415Z"
+        }
+      },
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T004-Q10",
+      "action": "draft_science",
+      "proof": "نختار العملية التي تحقق 8 □ 4 = 2: لأن 8 ÷ 4 = 2، فالعملية هي القسمة (÷) والخيار ب. المصدر: كتاب الحساب والجبر ص4، س10.",
+      "proposed": {
+        "correctOptionIndex": 1,
+        "explanation": "نختار العملية التي تحقق 8 □ 4 = 2: لأن 8 ÷ 4 = 2، فالعملية هي القسمة (÷) والخيار ب. المصدر: كتاب الحساب والجبر ص4، س10.",
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_4",
+        "sectionId": "sec_sub_1777779748206_1"
+      },
+      "before": {
+        "questionCode": "QDR-QNT-MNSF26-AR-T004-Q10",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t004_q10",
+        "subjectId": "sub_1777779748206",
+        "pathId": "p_1777779639431",
+        "text": "العملية المناسبة: 8 □ 4 = 2",
+        "approvalStatus": "draft",
+        "isPublished": false,
+        "correctOptionIndex": 1,
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_1",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "sectionId": "sec_sub_1777779748206_1",
+        "explanation": "يُطبَّق النمط المعتمد في اختيار العملية التي تحقق مساواة عددية. ثم تُراجع النتيجة: ب — القسمة..",
+        "voiceExplanation": {
+          "text": "يُطبَّق النمط المعتمد في اختيار العملية التي تحقق مساواة عددية. ثم تُراجع النتيجة: ب — القسمة.."
+        },
+        "reviewerNotes": "MNSF26_QA_HOLD_20261016: شرح نمطي لا يوثق حل المسألة أو جميع خياراتها؛ يلزم حل مستقل وفحص صورة السؤال ومفتاح الإجابة وربط المهارة قبل إعادة الاعتماد.",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T004-Q10",
+          "pdfPageIndex": 4,
+          "printedPageNumber": 4,
+          "printedQuestionNumber": 10,
+          "imageHash": "fb228efb38a26245eca19e5f2de7971db541762ca0244175b0305858549638f3",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "cropStatus": "VERIFIED",
+        "updatedAt": {
+          "$date": "2026-10-16T07:58:26.415Z"
+        }
+      },
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T004-Q11",
+      "action": "draft_science",
+      "proof": "لتحقيق 6 □ 5 = 30 نستخدم الضرب لأن 6 × 5 = 30، فالاختيار الصحيح ج (×)، وليس ب (الطرح). المصدر: كتاب الحساب والجبر ص4، س11.",
+      "proposed": {
+        "correctOptionIndex": 2,
+        "explanation": "لتحقيق 6 □ 5 = 30 نستخدم الضرب لأن 6 × 5 = 30، فالاختيار الصحيح ج (×)، وليس ب (الطرح). المصدر: كتاب الحساب والجبر ص4، س11.",
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_4",
+        "sectionId": "sec_sub_1777779748206_1"
+      },
+      "before": {
+        "questionCode": "QDR-QNT-MNSF26-AR-T004-Q11",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t004_q11",
+        "subjectId": "sub_1777779748206",
+        "pathId": "p_1777779639431",
+        "text": "العملية المناسبة: 6 □ 5 = 30",
+        "approvalStatus": "draft",
+        "isPublished": false,
+        "correctOptionIndex": 1,
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_1",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "sectionId": "sec_sub_1777779748206_1",
+        "explanation": "يُطبَّق النمط المعتمد في العملية المناسبة: 6 □ 5 = 30 | skill_quant_01/sub_quant_01_4 ثم تُراجع النتيجة: ج — الضرب..",
+        "voiceExplanation": {
+          "text": "يُطبَّق النمط المعتمد في العملية المناسبة: 6 □ 5 = 30 | skill_quant_01/sub_quant_01_4 ثم تُراجع النتيجة: ج — الضرب.."
+        },
+        "reviewerNotes": "MNSF26_QA_HOLD_20261016: شرح نمطي لا يوثق حل المسألة أو جميع خياراتها؛ يلزم حل مستقل وفحص صورة السؤال ومفتاح الإجابة وربط المهارة قبل إعادة الاعتماد.",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T004-Q11",
+          "pdfPageIndex": 4,
+          "printedPageNumber": 4,
+          "printedQuestionNumber": 11,
+          "imageHash": "e44292f72008c27bcaeeaec1c244e998062d889deaaa508231b129e0ab25be07",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "cropStatus": "VERIFIED",
+        "updatedAt": {
+          "$date": "2026-10-16T07:58:26.415Z"
+        }
+      },
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T004-Q13",
+      "action": "draft_science",
+      "proof": "المجموع 1000 ريال لخمسة أشخاص لا يحدد نصيب أي شخصين. يمكن أن يكون ما دفعاه أقل من 400 أو أكبر منها، لذلك لا يمكن تحديد العلاقة، والخيار د: المعطيات غير كافية. المصدر: كتاب الحساب والجبر ص4، س13.",
+      "proposed": {
+        "correctOptionIndex": 3,
+        "explanation": "المجموع 1000 ريال لخمسة أشخاص لا يحدد نصيب أي شخصين. يمكن أن يكون ما دفعاه أقل من 400 أو أكبر منها، لذلك لا يمكن تحديد العلاقة، والخيار د: المعطيات غير كافية. المصدر: كتاب الحساب والجبر ص4، س13.",
+        "skillId": "skill_quant_11",
+        "subSkillId": "sub_quant_11_1",
+        "sectionId": "sec_sub_1777779748206_11"
+      },
+      "before": {
+        "questionCode": "QDR-QNT-MNSF26-AR-T004-Q13",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t004_q13",
+        "subjectId": "sub_1777779748206",
+        "pathId": "p_1777779639431",
+        "text": "ذهب 5 أشخاص لحفلة ومجموع ما دفعوه 1000 ريال. قارن بين 400 ريال وما دفعه شخصان.",
+        "approvalStatus": "draft",
+        "isPublished": false,
+        "correctOptionIndex": 0,
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_1",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "sectionId": "sec_sub_1777779748206_1",
+        "explanation": "يُطبَّق النمط المعتمد في quantitative-comparison / unspecified-subset / insufficient-data. ثم تُراجع النتيجة: المعطيات غير كافية؛ لأن مجموع الخمسة = 1000 لا يحدد ما دفعه أي شخصين بعينهما، فيمكن أن يكون مجموعهما أقل من 400 أو مساويًا لها أو أكبر منها بحسب التوزيع..",
+        "voiceExplanation": {
+          "text": "يُطبَّق النمط المعتمد في quantitative-comparison / unspecified-subset / insufficient-data. ثم تُراجع النتيجة: المعطيات غير كافية؛ لأن مجموع الخمسة = 1000 لا يحدد ما دفعه أي شخصين بعينهما، فيمكن أن يكون مجموعهما أقل من 400 أو مساويًا لها أو أكبر منها بحسب التوزيع.."
+        },
+        "reviewerNotes": "MNSF26_QA_HOLD_20261016: شرح نمطي لا يوثق حل المسألة أو جميع خياراتها؛ يلزم حل مستقل وفحص صورة السؤال ومفتاح الإجابة وربط المهارة قبل إعادة الاعتماد.",
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T004-Q13",
+          "pdfPageIndex": 4,
+          "printedPageNumber": 4,
+          "printedQuestionNumber": 13,
+          "imageHash": "111567b91fcbcd986634ee95c769d029753ddb918f8d4667124375b48f75df10",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "cropStatus": "VERIFIED",
+        "updatedAt": {
+          "$date": "2026-10-16T07:58:26.415Z"
+        }
+      },
+      "result": "PENDING"
+    },
+    {
+      "key": "GEO-T001-Q13",
+      "action": "hold_taxonomy",
+      "proof": "Irregular polygon perimeter is not angles/interior angles; no matching precise subskill; needs taxonomy decision",
+      "proposed": {
+        "approvalStatus": "draft",
+        "isPublished": false
+      },
+      "before": {
+        "questionCode": "QDR-QNT-MNSF26-GEO-T001-Q13",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_geo_t001_q13",
+        "subjectId": "sub_1777779748206",
+        "pathId": "p_1777779639431",
+        "text": "محيط مضلع أطوال أضلاعه 2.4 و3.1 و3.1 و4.1 و4.1",
+        "approvalStatus": "approved",
+        "isPublished": true,
+        "correctOptionIndex": 2,
+        "skillId": "skill_quant_19",
+        "subSkillId": "sub_quant_19_3",
+        "skillIds": [
+          "skill_quant_19",
+          "sub_quant_19_3"
+        ],
+        "sectionId": "sec_sub_1777779748206_19",
+        "explanation": "نجمع الأضلاع: 2.4+3.1+3.1+4.1+4.1=16.8 سم.",
+        "voiceExplanation": {
+          "text": "نجمع الأضلاع: 2.4+3.1+3.1+4.1+4.1=16.8 سم."
+        },
+        "reviewerNotes": null,
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-GEO-T001-Q13",
+          "pdfPageIndex": 1,
+          "printedPageNumber": 1,
+          "printedQuestionNumber": 13,
+          "imageHash": "4a9073fee168f8e064091d4c11b07159238b6b990097e14dbcb3526ccf5cae2b",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "cropStatus": "VERIFIED",
+        "updatedAt": {
+          "$date": "2026-10-16T07:49:22.705Z"
+        }
+      },
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T003-Q01",
+      "action": "hold_duplicate",
+      "proof": "Duplicate printed question on same PDF page/question number as AR-T002-Q01, independently matched text/printed location; no quiz or assessment refs in checked fields",
+      "proposed": {
+        "approvalStatus": "draft",
+        "isPublished": false
+      },
+      "before": {
+        "questionCode": "QDR-QNT-MNSF26-AR-T003-Q01",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t003_q01",
+        "subjectId": "sub_1777779748206",
+        "pathId": "p_1777779639431",
+        "text": "إذا كان سعر طباعة الورقة 3 ريالات ويريد أحمد أن يطبع من كتاب من صفحة 33 إلى صفحة 63، قارن بين القيمة الأولى: ما يدفعه أحمد، والقيمة الثانية: 90 ريال.",
+        "approvalStatus": "approved",
+        "isPublished": true,
+        "correctOptionIndex": 0,
+        "skillId": "skill_quant_13",
+        "subSkillId": "sub_quant_13_4",
+        "skillIds": [
+          "skill_quant_13",
+          "sub_quant_13_4"
+        ],
+        "sectionId": "sec_sub_1777779748206_13",
+        "explanation": "عدد الصفحات = 63 - 33 + 1 = 31. التكلفة = 31 × 3 = 93 ريال، و93 > 90.",
+        "voiceExplanation": {
+          "text": "عدد الصفحات = 63 - 33 + 1 = 31. التكلفة = 31 × 3 = 93 ريال، و93 > 90."
+        },
+        "reviewerNotes": null,
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T003-Q01",
+          "pdfPageIndex": 3,
+          "printedPageNumber": 3,
+          "printedQuestionNumber": 1,
+          "imageHash": "b6539b4e56b3ebabbeaebe43106862ba2194867b4d4bbfddcabd78f005c0df5d",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "cropStatus": "VERIFIED",
+        "updatedAt": {
+          "$date": "2026-10-16T07:48:47.347Z"
+        }
+      },
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T003-Q02",
+      "action": "hold_duplicate",
+      "proof": "Duplicate printed question on same PDF page/question number as AR-T002-Q02, independently matched text/printed location; no quiz or assessment refs in checked fields",
+      "proposed": {
+        "approvalStatus": "draft",
+        "isPublished": false
+      },
+      "before": {
+        "questionCode": "QDR-QNT-MNSF26-AR-T003-Q02",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t003_q02",
+        "subjectId": "sub_1777779748206",
+        "pathId": "p_1777779639431",
+        "text": "ثلاثة أعداد فردية متتالية مجموعها 63",
+        "approvalStatus": "approved",
+        "isPublished": true,
+        "correctOptionIndex": 2,
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_1",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "sectionId": "sec_sub_1777779748206_1",
+        "explanation": "المتوسط = 63 ÷ 3 = 21، إذن الأعداد 19، 21، 23، والأكبر 23.",
+        "voiceExplanation": {
+          "text": "المتوسط = 63 ÷ 3 = 21، إذن الأعداد 19، 21، 23، والأكبر 23."
+        },
+        "reviewerNotes": null,
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T003-Q02",
+          "pdfPageIndex": 3,
+          "printedPageNumber": 3,
+          "printedQuestionNumber": 2,
+          "imageHash": "9f956f368f3f4d558f55c52e6fb8984a7bc2bc1ad37d01d74f7fe25e7669d8e8",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "cropStatus": "VERIFIED",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.947Z"
+        }
+      },
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T003-Q03",
+      "action": "hold_duplicate",
+      "proof": "Duplicate printed question on same PDF page/question number as AR-T002-Q03, independently matched text/printed location; no quiz or assessment refs in checked fields",
+      "proposed": {
+        "approvalStatus": "draft",
+        "isPublished": false
+      },
+      "before": {
+        "questionCode": "QDR-QNT-MNSF26-AR-T003-Q03",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t003_q03",
+        "subjectId": "sub_1777779748206",
+        "pathId": "p_1777779639431",
+        "text": "نصف مجموع عددين زوجيين متتاليين يساوي 7",
+        "approvalStatus": "approved",
+        "isPublished": true,
+        "correctOptionIndex": 2,
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_1",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "sectionId": "sec_sub_1777779748206_1",
+        "explanation": "مجموع العددين = 14. الزوجيان المتتاليان هما 6 و8. ضعف الأصغر = 12.",
+        "voiceExplanation": {
+          "text": "مجموع العددين = 14. الزوجيان المتتاليان هما 6 و8. ضعف الأصغر = 12."
+        },
+        "reviewerNotes": null,
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T003-Q03",
+          "pdfPageIndex": 3,
+          "printedPageNumber": 3,
+          "printedQuestionNumber": 3,
+          "imageHash": "d458c10faf9d66598f0d524749aac29c4e175c4a291aef12001f772720a9f5a0",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "cropStatus": "VERIFIED",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.947Z"
+        }
+      },
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T003-Q04",
+      "action": "hold_duplicate",
+      "proof": "Duplicate printed question on same PDF page/question number as AR-T002-Q04, independently matched text/printed location; no quiz or assessment refs in checked fields",
+      "proposed": {
+        "approvalStatus": "draft",
+        "isPublished": false
+      },
+      "before": {
+        "questionCode": "QDR-QNT-MNSF26-AR-T003-Q04",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t003_q04",
+        "subjectId": "sub_1777779748206",
+        "pathId": "p_1777779639431",
+        "text": "الفرق بين أصغر عدد فردي من 3 أرقام وأكبر عدد زوجي من رقمين",
+        "approvalStatus": "approved",
+        "isPublished": true,
+        "correctOptionIndex": 1,
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_1",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "sectionId": "sec_sub_1777779748206_1",
+        "explanation": "أصغر فردي ثلاثي = 101، وأكبر زوجي ثنائي = 98، والفرق = 3.",
+        "voiceExplanation": {
+          "text": "أصغر فردي ثلاثي = 101، وأكبر زوجي ثنائي = 98، والفرق = 3."
+        },
+        "reviewerNotes": null,
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T003-Q04",
+          "pdfPageIndex": 3,
+          "printedPageNumber": 3,
+          "printedQuestionNumber": 4,
+          "imageHash": "b5392a2791358b0a850add0875220b47e08ed7242b5d90874e1602d07287f246",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "cropStatus": "VERIFIED",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.947Z"
+        }
+      },
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T003-Q05",
+      "action": "hold_duplicate",
+      "proof": "Duplicate printed question on same PDF page/question number as AR-T002-Q05, independently matched text/printed location; no quiz or assessment refs in checked fields",
+      "proposed": {
+        "approvalStatus": "draft",
+        "isPublished": false
+      },
+      "before": {
+        "questionCode": "QDR-QNT-MNSF26-AR-T003-Q05",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t003_q05",
+        "subjectId": "sub_1777779748206",
+        "pathId": "p_1777779639431",
+        "text": "ثلاثة أعداد زوجية متتالية مجموعها 156",
+        "approvalStatus": "approved",
+        "isPublished": true,
+        "correctOptionIndex": 1,
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_1",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "sectionId": "sec_sub_1777779748206_1",
+        "explanation": "العدد الأوسط = 156 ÷ 3 = 52، فالأعداد 50، 52، 54. مجموع أول عددين = 102.",
+        "voiceExplanation": {
+          "text": "العدد الأوسط = 156 ÷ 3 = 52، فالأعداد 50، 52، 54. مجموع أول عددين = 102."
+        },
+        "reviewerNotes": null,
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T003-Q05",
+          "pdfPageIndex": 3,
+          "printedPageNumber": 3,
+          "printedQuestionNumber": 5,
+          "imageHash": "aa49b32e695e516222cc14ad837e683dc3a18406a0e91da69a4cf6ca2d72091d",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "cropStatus": "VERIFIED",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.947Z"
+        }
+      },
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T003-Q06",
+      "action": "hold_duplicate",
+      "proof": "Duplicate printed question on same PDF page/question number as AR-T004-Q06, independently matched text/printed location; no quiz or assessment refs in checked fields",
+      "proposed": {
+        "approvalStatus": "draft",
+        "isPublished": false
+      },
+      "before": {
+        "questionCode": "QDR-QNT-MNSF26-AR-T003-Q06",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t003_q06",
+        "subjectId": "sub_1777779748206",
+        "pathId": "p_1777779639431",
+        "text": "هناك 5 بيوت في كل بيت 5 أقفاص، وفي كل قفص 5 عصافير، وكل عصفور يأكل 5 حبات قمح؛ كم حبة؟",
+        "approvalStatus": "approved",
+        "isPublished": true,
+        "correctOptionIndex": 1,
+        "skillId": "skill_quant_04",
+        "subSkillId": "sub_quant_04_2",
+        "skillIds": [
+          "skill_quant_04",
+          "sub_quant_04_2"
+        ],
+        "sectionId": "sec_sub_1777779748206_4",
+        "explanation": "عدد الحبات = 5 بيوت ×5 أقفاص ×5 عصافير ×5 حبات =625.",
+        "voiceExplanation": {
+          "text": "عدد الحبات = 5 بيوت ×5 أقفاص ×5 عصافير ×5 حبات =625."
+        },
+        "reviewerNotes": null,
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T003-Q06",
+          "pdfPageIndex": 4,
+          "printedPageNumber": 4,
+          "printedQuestionNumber": 6,
+          "imageHash": "505525e0d6815a8a470f938993a40ae3bdc7db06a7d6337d647c712221e8e594",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "cropStatus": "VERIFIED",
+        "updatedAt": {
+          "$date": "2026-10-16T07:48:04.355Z"
+        }
+      },
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T003-Q07",
+      "action": "hold_duplicate",
+      "proof": "Duplicate printed question on same PDF page/question number as AR-T004-Q07, independently matched text/printed location; no quiz or assessment refs in checked fields",
+      "proposed": {
+        "approvalStatus": "draft",
+        "isPublished": false
+      },
+      "before": {
+        "questionCode": "QDR-QNT-MNSF26-AR-T003-Q07",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t003_q07",
+        "subjectId": "sub_1777779748206",
+        "pathId": "p_1777779639431",
+        "text": "خمسة أعداد متتالية مجموع أول عددين منها 27؛ ما العدد الرابع؟",
+        "approvalStatus": "approved",
+        "isPublished": true,
+        "correctOptionIndex": 2,
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_1",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "sectionId": "sec_sub_1777779748206_1",
+        "explanation": "إذا كان الأول س، فالثاني س+1، ومن س+(س+1)=27 نحصل على س=13؛ الرابع 13+3=16.",
+        "voiceExplanation": {
+          "text": "إذا كان الأول س، فالثاني س+1، ومن س+(س+1)=27 نحصل على س=13؛ الرابع 13+3=16."
+        },
+        "reviewerNotes": null,
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T003-Q07",
+          "pdfPageIndex": 4,
+          "printedPageNumber": 4,
+          "printedQuestionNumber": 7,
+          "imageHash": "36b03a8f0bd45b4c9cd9ebb89f09e58c97efa638d46119c6d8b3499d403583ab",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "cropStatus": "VERIFIED",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.947Z"
+        }
+      },
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T003-Q08",
+      "action": "hold_duplicate",
+      "proof": "Duplicate printed question on same PDF page/question number as AR-T004-Q08, independently matched text/printed location; no quiz or assessment refs in checked fields",
+      "proposed": {
+        "approvalStatus": "draft",
+        "isPublished": false
+      },
+      "before": {
+        "questionCode": "QDR-QNT-MNSF26-AR-T003-Q08",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t003_q08",
+        "subjectId": "sub_1777779748206",
+        "pathId": "p_1777779639431",
+        "text": "إذا كان 6006÷6=1001، فما ناتج 6000006÷6؟",
+        "approvalStatus": "approved",
+        "isPublished": true,
+        "correctOptionIndex": 0,
+        "skillId": "skill_quant_04",
+        "subSkillId": "sub_quant_04_2",
+        "skillIds": [
+          "skill_quant_04",
+          "sub_quant_04_2"
+        ],
+        "sectionId": "sec_sub_1777779748206_4",
+        "explanation": "نلاحظ أن 6×1000001=6000006؛ إذن ناتج القسمة 1000001.",
+        "voiceExplanation": {
+          "text": "نلاحظ أن 6×1000001=6000006؛ إذن ناتج القسمة 1000001."
+        },
+        "reviewerNotes": null,
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T003-Q08",
+          "pdfPageIndex": 4,
+          "printedPageNumber": 4,
+          "printedQuestionNumber": 8,
+          "imageHash": "c4063b0dbaae0a49e7e953dc7d7f354f8cdb612440fbbd4ca54b0f84ee59d6b5",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "cropStatus": "VERIFIED",
+        "updatedAt": {
+          "$date": "2026-10-16T07:48:04.355Z"
+        }
+      },
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T003-Q09",
+      "action": "hold_duplicate",
+      "proof": "Duplicate printed question on same PDF page/question number as AR-T004-Q09, independently matched text/printed location; no quiz or assessment refs in checked fields",
+      "proposed": {
+        "approvalStatus": "draft",
+        "isPublished": false
+      },
+      "before": {
+        "questionCode": "QDR-QNT-MNSF26-AR-T003-Q09",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t003_q09",
+        "subjectId": "sub_1777779748206",
+        "pathId": "p_1777779639431",
+        "text": "أعار طالب أصدقاءه 6 كتب واستعار 4 كتب، فأصبح معه 28؛ كم كان لديه أولًا؟",
+        "approvalStatus": "approved",
+        "isPublished": true,
+        "correctOptionIndex": 1,
+        "skillId": "skill_quant_07",
+        "subSkillId": "sub_quant_07_2",
+        "skillIds": [
+          "skill_quant_07",
+          "sub_quant_07_2"
+        ],
+        "sectionId": "sec_sub_1777779748206_7",
+        "explanation": "ليكن س العدد الأصلي؛ س−6+4=28؛ إذن س=30.",
+        "voiceExplanation": {
+          "text": "ليكن س العدد الأصلي؛ س−6+4=28؛ إذن س=30."
+        },
+        "reviewerNotes": null,
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T003-Q09",
+          "pdfPageIndex": 4,
+          "printedPageNumber": 4,
+          "printedQuestionNumber": 9,
+          "imageHash": "c9e93ba8bb7f10d18fbde902c021a5e3c510bd8ef371f7ced3cac9e10f13926d",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "cropStatus": "VERIFIED",
+        "updatedAt": {
+          "$date": "2026-10-16T08:49:52.920Z"
+        }
+      },
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T003-Q10",
+      "action": "hold_duplicate",
+      "proof": "Duplicate printed question on same PDF page/question number as AR-T004-Q10, independently matched text/printed location; no quiz or assessment refs in checked fields",
+      "proposed": {
+        "approvalStatus": "draft",
+        "isPublished": false
+      },
+      "before": {
+        "questionCode": "QDR-QNT-MNSF26-AR-T003-Q10",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t003_q10",
+        "subjectId": "sub_1777779748206",
+        "pathId": "p_1777779639431",
+        "text": "اختر العملية الصحيحة في 8 □ 4 = 2.",
+        "approvalStatus": "approved",
+        "isPublished": true,
+        "correctOptionIndex": 1,
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_1",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_1"
+        ],
+        "sectionId": "sec_sub_1777779748206_1",
+        "explanation": "8÷4=2، أما الجمع والطرح والضرب فلا تعطي 2؛ العملية القسمة (ب).",
+        "voiceExplanation": {
+          "text": "8÷4=2، أما الجمع والطرح والضرب فلا تعطي 2؛ العملية القسمة (ب)."
+        },
+        "reviewerNotes": null,
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T003-Q10",
+          "pdfPageIndex": 4,
+          "printedPageNumber": 4,
+          "printedQuestionNumber": 10,
+          "imageHash": "7f26932cdc54bdd73e80bd89f074590ebed4cba363ce90609bb69346c233093b",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "cropStatus": "VERIFIED",
+        "updatedAt": {
+          "$date": "2026-10-12T09:42:15.947Z"
+        }
+      },
+      "result": "PENDING"
+    },
+    {
+      "key": "AR-T003-Q12",
+      "action": "hold_duplicate",
+      "proof": "Duplicate printed question on same PDF page/question number as AR-T004-Q12, independently matched text/printed location; no quiz or assessment refs in checked fields",
+      "proposed": {
+        "approvalStatus": "draft",
+        "isPublished": false
+      },
+      "before": {
+        "questionCode": "QDR-QNT-MNSF26-AR-T003-Q12",
+        "id": "q_qdr_qnt_mnsf26_mnsf26_ar_t003_q12",
+        "subjectId": "sub_1777779748206",
+        "pathId": "p_1777779639431",
+        "text": "ثلاثة أعداد موجبة متتالية حاصل ضربها يساوي مجموعها؛ ما أكبر عدد؟",
+        "approvalStatus": "approved",
+        "isPublished": true,
+        "correctOptionIndex": 2,
+        "skillId": "skill_quant_01",
+        "subSkillId": "sub_quant_01_3",
+        "skillIds": [
+          "skill_quant_01",
+          "sub_quant_01_3"
+        ],
+        "sectionId": "sec_sub_1777779748206_1",
+        "explanation": "الأعداد 1 و2 و3 تحقق 1×2×3=6 و1+2+3=6؛ الأكبر 3.",
+        "voiceExplanation": {
+          "text": "الأعداد 1 و2 و3 تحقق 1×2×3=6 و1+2+3=6؛ الأكبر 3."
+        },
+        "reviewerNotes": null,
+        "sourceMeta": {
+          "documentCode": "MNSF26",
+          "sourceItemId": "MNSF26-AR-T003-Q12",
+          "pdfPageIndex": 4,
+          "printedPageNumber": 4,
+          "printedQuestionNumber": 12,
+          "imageHash": "dd4b06b7f3a5fdd1778504407c62259ba7f46aaacb86aa0fba66ab5acd96e031",
+          "importBatchId": "MNSF26_STAGE6_DRAFT_V1",
+          "imageVersion": 2
+        },
+        "cropStatus": "VERIFIED",
+        "updatedAt": {
+          "$date": "2026-10-16T08:50:05.251Z"
+        }
+      },
+      "result": "PENDING"
+    }
+  ],
+  "notes": [
+    "Original source PDF images visually inspected; no production R2 WEBP image bytes accessible. Do not mark FINAL CLOSED.",
+    "Source page/question numbering used only for evidence; cross-document same page/question can be different bank, never group without AR/GEO and text.",
+    "No Einstein content, quizzes, assessments or student results touched."
+  ]
+}
