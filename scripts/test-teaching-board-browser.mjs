@@ -12,7 +12,7 @@ const argument = name => process.argv.find(value => value.startsWith(`--${name}=
 const artifacts = argument('artifacts') || await mkdtemp(path.join(tmpdir(), 'almeaa-board-'));
 const server = await createServer({
   configFile: false, root, plugins: [react()], define: { __APP_VERSION__: '"board-test"' },
-  optimizeDeps: { entries: ['scripts/fixtures/teaching-board.html'] },
+  optimizeDeps: { noDiscovery: true, include: ['react', 'react-dom/client', 'lucide-react', 'katex'] },
   server: { host: '127.0.0.1', port: 0, fs: { allow: [root, await realpath(path.join(root, 'node_modules'))] } },
 });
 let browser;
@@ -22,15 +22,19 @@ try {
   browser = await chromium.launch({ ...(argument('channel') ? { channel: argument('channel') } : {}) });
   const page = await browser.newPage({ viewport: { width: 1366, height: 900 } });
   const errors = [];
-  page.on('pageerror', error => errors.push(error.message));
-  await page.goto(`http://127.0.0.1:${address.port}/scripts/fixtures/teaching-board.html`);
+  page.on('pageerror', error => { errors.push(error.message); console.error('Fixture page error:', error.message); });
+  await page.goto(`http://127.0.0.1:${address.port}/scripts/fixtures/teaching-board.html`, { waitUntil: 'domcontentloaded', timeout: 90000 });
+  assert.equal(await page.getByTestId('question-assistant-panel').getByRole('button').count(), 1);
+  assert.equal(await page.evaluate(() => window.testRequests.length), 0, 'do not spend AI budget before the student asks');
+  await page.getByRole('button', { name: 'اشرح لي', exact: true }).click();
   await page.getByRole('button', { name: 'إيقاف مؤقت', exact: true }).waitFor();
+  await page.getByTestId('teacher-question').getByText('أوجد قيمة س في المعادلة الأسية.').waitFor();
   await page.getByRole('button', { name: 'إيقاف مؤقت', exact: true }).click();
   const initialReveal = await page.locator('.teaching-writing').first().getAttribute('style');
   await page.waitForTimeout(250);
   assert.equal(await page.locator('.teaching-writing').first().getAttribute('style'), initialReveal);
   assert.equal(await page.evaluate(() => window.testRequests.length), 1);
-  await page.getByRole('button', { name: 'لماذا؟', exact: true }).click();
+  await page.getByRole('button', { name: 'ليه؟', exact: true }).click();
   await page.getByRole('button', { name: 'نكمل الشرح من نفس النقطة', exact: true }).waitFor();
   const requests = await page.evaluate(() => window.testRequests);
   assert.equal(requests.length, 2);
@@ -48,6 +52,13 @@ try {
   await page.waitForTimeout(2200);
   assert.ok(await page.getByTestId('teaching-board').getByText('x=2', { exact: true }).count());
   assert.equal(await page.evaluate(() => window.testRequests.length), 2);
+  const beforeRepeat = await page.evaluate(() => window.testRequests.length);
+  await page.getByRole('combobox', { name: 'سرعة الشرح' }).selectOption('1.5');
+  await page.getByRole('button', { name: 'كرر الخطوة', exact: true }).click();
+  await page.waitForTimeout(150);
+  assert.equal(await page.evaluate(() => window.testSpeak.at(-1).rate), 0.94 * 1.5);
+  assert.equal(await page.evaluate(() => window.testRequests.length), beforeRepeat);
+  await page.getByRole('combobox', { name: 'سرعة الشرح' }).selectOption('1');
   await page.screenshot({ path: path.join(artifacts, 'desktop.png') });
   await page.setViewportSize({ width: 800, height: 1280 });
   await page.getByRole('button', { name: 'اسأل المعلم', exact: true }).click();
@@ -57,7 +68,7 @@ try {
 
   await page.getByRole('button', { name: 'إغلاق المعلم الذكي', exact: true }).click();
   await page.evaluate(() => { window.testEnglish = true; });
-  await page.getByRole('button', { name: 'فتح', exact: true }).click();
+  await page.getByRole('button', { name: 'اشرح لي', exact: true }).click();
   await page.getByText('Focus on the verb.', { exact: true }).waitFor();
   assert.equal(await page.getByTestId('teaching-board').getAttribute('dir'), 'ltr');
   assert.equal(await page.evaluate(() => window.testSpeak.at(-1).lang), 'en-US');
@@ -71,7 +82,7 @@ try {
 
   await page.getByRole('button', { name: 'إغلاق المعلم الذكي', exact: true }).click();
   await page.evaluate(() => { window.testEnglish = false; window.testFallback = true; });
-  await page.getByRole('button', { name: 'فتح', exact: true }).click();
+  await page.getByRole('button', { name: 'اشرح لي', exact: true }).click();
   await page.getByText('الشرح المعتمد الحالي', { exact: true }).first().waitFor();
   assert.equal(await page.getByTestId('teaching-board').count(), 0);
   await page.getByRole('button', { name: 'اسأل المعلم', exact: true }).click();
@@ -81,11 +92,26 @@ try {
   await page.waitForTimeout(200);
   assert.equal(await page.getByRole('dialog').count(), 0);
   await page.evaluate(() => { window.testFallback = false; window.testPractice = true; });
-  await page.getByRole('button', { name: 'فتح', exact: true }).click();
+  await page.getByRole('button', { name: 'اشرح لي', exact: true }).click();
   await page.getByRole('button', { name: 'إيقاف مؤقت', exact: true }).waitFor();
   await page.evaluate(() => window.testSpeak.at(-1).onend());
   const practice = page.getByRole('region', { name: 'جرّب الخطوة الجاية' });
+  assert.equal(await practice.count(), 0, 'explanation must not force an answer');
+  await page.getByText('نكتب سبعة وعشرين كقوة للثلاثة.', { exact: true }).waitFor();
+  const beforePractice = await page.evaluate(() => window.testRequests.length);
+  await page.getByRole('button', { name: 'جرّب بنفسك', exact: true }).click();
+  await page.getByRole('button', { name: 'إيقاف مؤقت', exact: true }).waitFor();
+  await page.evaluate(() => window.testSpeak.at(-1).onend());
   await practice.waitFor();
+  assert.equal(await page.evaluate(() => window.testRequests.length), beforePractice, 'entering practice reuses the loaded explanation');
+  await page.setViewportSize({ width: 390, height: 667 });
+  await page.getByRole('button', { name: 'اسأل المعلم', exact: true }).click();
+  const viewport = page.getByTestId('teacher-board-viewport');
+  await viewport.scrollIntoViewIfNeeded();
+  assert.ok((await viewport.boundingBox()).height >= 190, 'mobile board must not collapse when dialogue and practice are open');
+  assert.ok(await page.evaluate(() => document.documentElement.scrollWidth) <= 390);
+  await page.screenshot({ path: path.join(artifacts, 'mobile-practice-dialogue.png') });
+  await page.getByRole('button', { name: 'إخفاء الحوار', exact: true }).click();
   const countBeforeHints = await page.evaluate(() => window.testRequests.length);
   assert.equal(await page.getByTestId('teaching-board').getByText('x=2', { exact: true }).count(), 0);
   await page.waitForTimeout(500);
@@ -112,7 +138,8 @@ try {
   await page.getByRole('button', { name: 'نكمل الشرح من نفس النقطة', exact: true }).click();
   await page.getByText('نكتب سبعة وعشرين كقوة للثلاثة.', { exact: true }).waitFor();
   await page.getByRole('button', { name: 'إغلاق المعلم الذكي', exact: true }).click();
-  await page.getByRole('button', { name: 'فتح', exact: true }).click();
+  await page.getByRole('button', { name: 'اشرح لي', exact: true }).click();
+  await page.getByRole('button', { name: 'جرّب بنفسك', exact: true }).click();
   await page.getByRole('button', { name: 'إيقاف مؤقت', exact: true }).waitFor();
   await page.evaluate(() => window.testSpeak.at(-1).onend());
   await practice.waitFor();
@@ -123,7 +150,7 @@ try {
   assert.equal(await page.evaluate(() => window.testRequests.length), countBeforeSkip);
   await page.getByRole('button', { name: 'إغلاق المعلم الذكي', exact: true }).click();
   await page.evaluate(() => { window.testPractice = false; window.testMixed = true; });
-  await page.getByRole('button', { name: 'فتح', exact: true }).click();
+  await page.getByRole('button', { name: 'اشرح لي', exact: true }).click();
   const board = page.getByTestId('teaching-board');
   await board.getByText('العملية هي ضرب.', { exact: false }).waitFor();
   await board.getByText('⇒ الآحاد هي 0، وهو المطابق للناتج 309705', { exact: false }).waitFor();

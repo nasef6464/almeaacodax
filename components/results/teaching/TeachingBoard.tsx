@@ -32,8 +32,8 @@ const BoardContent: React.FC<{ content: string; kind: 'text' | 'formula' }> = ({
 export const TeachingBoard: React.FC<{ elements: BoardElement[]; narration: string; language: string }> = ({ elements, narration, language }) => (
   <div className="flex min-h-64 flex-col gap-5 p-3 sm:p-6" data-testid="teaching-board" dir={language.startsWith('ar') ? 'rtl' : 'ltr'}>
     <div className="min-h-48 space-y-5" aria-label="خطوات السبورة">
-      {elements.map(element => (
-        <div key={element.id} className={`rounded-xl px-4 py-3 transition-colors motion-reduce:transition-none ${
+      {elements.map((element, index) => (
+        <div key={element.id} aria-current={index === elements.length - 1 ? 'step' : undefined} className={`rounded-xl border-r-2 ${index === elements.length - 1 ? 'border-cyan-400 bg-cyan-400/5' : 'border-transparent'} px-4 py-3 transition-colors motion-reduce:transition-none ${
           element.emphasis === 'box' ? 'border-2 border-emerald-400 bg-emerald-500/10' :
           element.emphasis === 'highlight' ? 'bg-amber-400/15 text-amber-200' : 'text-slate-100'
         }`}>

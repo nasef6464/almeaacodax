@@ -165,6 +165,7 @@ export const PracticeExamSummary: React.FC<PracticeExamSummaryProps> = ({
                     <QuestionAssistantPanel
                       key={`review-tutor-summary-${record.questionId}`}
                       questionId={record.questionId}
+                      question={{ text: record.questionText, imageUrl: record.imageUrl, imageAlt: record.imageAlt, options: record.options }}
                       hasImage={Boolean(record.imageUrl)}
                       context="mistake_review"
                     />

@@ -319,6 +319,7 @@ export const ReviewSession: React.FC = () => {
         <QuestionAssistantPanel
           key={`review-tutor-${current.reviewType || "review"}-${current.questionId}`}
           questionId={current.questionId}
+          question={current.question}
           hasImage={Boolean(current.question?.imageUrl)}
           context={
             current.reviewType === "mastery_review"

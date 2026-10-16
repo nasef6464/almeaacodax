@@ -1,3 +1,5 @@
+Smart teacher quick explanation (2026-10-16, validation pending): QuestionAssistantPanel owns one lazy, explicit entry; QuestionPreview renders only authorized display fields already loaded by its parent. quickTeachingPlan creates a bounded immutable presentation view with optional checkpoints and separate compact solution operations. Existing playback/narration retain local speech, step state and speed; backend reference, cache, authorization, grading and provider ownership unchanged. No collection/query/migration added.
+
 ## CI ownership cleanup — 2026-10-16
 Legacy refactor-v2 workflows live as unchanged blueprints under .github/workflows-archive/refactor-v2. V3Recovery owns active build/architecture/readiness and the62retained source contracts through scripts/run-preserved-repo-contracts.mjs + preserved-repo-contracts.json. dependency-security-audit.yml retains lockfile security policy. Historical workflow-race/trigger smoke tests read the archive; global PLAN9 certification asserts live V3 coverage. Protected-main required V3 workflows and product module ownership remain unchanged.
 

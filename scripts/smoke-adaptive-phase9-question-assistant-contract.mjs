@@ -67,14 +67,13 @@ for (const setting of [
 
 assert.ok(api.includes('aiQuestionAssistant'));
 assert.ok(panel.includes('ناقص هذا السؤال') === false);
-assert.ok(panel.includes('المعلم الصوتي'));
-assert.ok(panel.includes("api.aiQuestionAssistant"));
-assert.ok(panel.includes("helpLevel: 'follow_up'"));
-assert.ok(panel.includes('SpeechRecognition'));
-assert.ok(panel.includes('speechSynthesis'));
-assert.ok(!panel.includes('<input'), 'voice-only tutor must not expose a text input');
-assert.ok(!panel.includes('HELP_ACTIONS'), 'voice-only tutor must not expose help-button clutter');
-assert.ok(!panel.includes('useEffect('), 'question assistant must be explicit-click only');
+assert.ok(panel.includes('اشرح لي'));
+assert.ok(panel.includes('InteractiveSmartTeacher'));
+assert.ok(panel.includes('tutorSessionIdRef.current'));
+assert.ok(!panel.includes('api.aiQuestionAssistant'), 'single entry delegates to contextual board, avoiding parallel audio-only calls');
+assert.ok(!panel.includes('<input'), 'entry remains one explicit action');
+assert.ok(!panel.includes('HELP_ACTIONS'));
+assert.ok(!panel.includes('useEffect('), 'assistant must be explicit-click only');
 assert.ok(results.includes('QuestionAssistantPanel'));
 assert.ok(results.includes('key={`${resultId}::${q.questionId}`}'));
 assert.ok(results.includes('hasImage={Boolean(q.imageUrl || questionHasInlineMedia)}'));

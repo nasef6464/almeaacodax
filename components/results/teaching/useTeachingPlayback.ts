@@ -3,7 +3,7 @@ import type { TeachingStoryboard } from '../../../server/src/modules/ai/contract
 import { boardAt, estimateNarrationMs, sceneDuration } from './boardState';
 import { BrowserNarrationEngine } from './narrationEngine';
 
-export function useTeachingPlayback(plan: TeachingStoryboard | null, voice: boolean, enabled: boolean, practice = true) {
+export function useTeachingPlayback(plan: TeachingStoryboard | null, voice: boolean, enabled: boolean, practice = true, speed = 1) {
   const [position, setPosition] = React.useState({ scene: 0, elapsed: 0, revision: 0 });
   const [playing, setPlaying] = React.useState(false);
   const narrator = React.useMemo(() => new BrowserNarrationEngine(), []);
@@ -17,7 +17,7 @@ export function useTeachingPlayback(plan: TeachingStoryboard | null, voice: bool
     started.current = false;
     finished.current = !voice;
     return () => narrator.cancel();
-  }, [plan, position.scene, position.revision, voice, narrator]);
+  }, [plan, position.scene, position.revision, voice, speed, narrator]);
 
   React.useEffect(() => {
     if (!plan || !enabled || !playing) {
@@ -28,7 +28,7 @@ export function useTeachingPlayback(plan: TeachingStoryboard | null, voice: bool
     if (!scene) return;
     if (!started.current) {
       started.current = true;
-      if (voice) narrator.speak(scene.narration, plan.language, () => { finished.current = true; });
+      if (voice) narrator.speak(scene.narration, plan.language, () => { finished.current = true; }, speed);
     } else narrator.resume();
     let previous = performance.now();
     const timer = setInterval(() => {
@@ -36,7 +36,7 @@ export function useTeachingPlayback(plan: TeachingStoryboard | null, voice: bool
       const delta = Math.min(250, now - previous);
       previous = now;
       setPosition(current => {
-        const elapsed = current.elapsed + delta;
+        const elapsed = current.elapsed + delta * speed;
         const visualDuration = sceneDuration(plan, current.scene);
         const minimum = voice ? visualDuration : Math.max(visualDuration, estimateNarrationMs(scene.narration));
         if (elapsed >= minimum && finished.current) {
@@ -55,7 +55,7 @@ export function useTeachingPlayback(plan: TeachingStoryboard | null, voice: bool
       });
     }, 50);
     return () => { clearInterval(timer); narrator.pause(); };
-  }, [plan, position.scene, position.revision, voice, enabled, playing, narrator, practice]);
+  }, [plan, position.scene, position.revision, voice, enabled, playing, narrator, practice, speed]);
 
   React.useEffect(() => {
     completed.current.clear();
@@ -69,10 +69,10 @@ export function useTeachingPlayback(plan: TeachingStoryboard | null, voice: bool
     return () => document.removeEventListener('visibilitychange', pauseHidden);
   }, []);
 
-  const seek = (scene: number) => {
+  const seek = (scene: number, autoplay = false) => {
     setCheckpointScene(null);
     narrator.cancel();
-    setPlaying(false);
+    setPlaying(autoplay);
     setPosition(current => ({ scene: Math.max(0, Math.min((plan?.scenes.length || 1) - 1, scene)), elapsed: 0, revision: current.revision + 1 }));
   };
   const pause = () => { narrator.pause(); setPlaying(false); };

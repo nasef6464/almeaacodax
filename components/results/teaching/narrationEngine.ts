@@ -2,7 +2,7 @@ import { estimateNarrationMs } from './boardState';
 import { spokenTeachingText } from './spokenMath';
 
 export interface NarrationEngine {
-  speak(text: string, language: string, onEnd: () => void): void;
+  speak(text: string, language: string, onEnd: () => void, speed?: number): void;
   pause(): void;
   resume(): void;
   cancel(): void;
@@ -18,6 +18,7 @@ export class BrowserNarrationEngine implements NarrationEngine {
   private speech?: SpeechSynthesisUtterance;
   private text = '';
   private language = '';
+  private speed = 1;
   private interrupted = false;
 
   private releaseSpeech() {
@@ -44,11 +45,11 @@ export class BrowserNarrationEngine implements NarrationEngine {
     const voice = matching.find(voice => voice.localService && voice.lang.toLowerCase() === this.language.toLowerCase())
       || matching.find(voice => voice.localService) || matching.find(voice => voice.lang.toLowerCase() === this.language.toLowerCase()) || matching[0];
     if (voice) this.speech.voice = voice;
-    this.speech.rate = 0.94;
+    this.speech.rate = 0.94 * this.speed;
     this.speech.onend = () => this.finish();
     this.speech.onerror = () => {
       if (this.timer) clearTimeout(this.timer);
-      this.remaining = estimateNarrationMs(this.text);
+      this.remaining = (estimateNarrationMs(this.text) / this.speed);
       this.arm();
     };
     window.speechSynthesis.speak(this.speech);
@@ -64,18 +65,19 @@ export class BrowserNarrationEngine implements NarrationEngine {
     this.cancel();
     callback?.();
   }
-  speak(text: string, language: string, onEnd: () => void) {
+  speak(text: string, language: string, onEnd: () => void, speed = 1) {
     this.cancel();
     this.completion = onEnd;
     this.text = spokenTeachingText(text, language);
     this.language = language;
+    this.speed = [1, 1.25, 1.5].includes(speed) ? speed : 1;
     this.interrupted = false;
-    this.remaining = estimateNarrationMs(this.text);
+    this.remaining = (estimateNarrationMs(this.text) / this.speed);
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
       // Some devices never dispatch end/error. This is a content-sized watchdog.
       this.remaining = Math.min(180000, this.remaining * 3 + 5000);
       try { this.attachSpeech(); }
-      catch { this.releaseSpeech(); this.remaining = estimateNarrationMs(this.text); }
+      catch { this.releaseSpeech(); this.remaining = (estimateNarrationMs(this.text) / this.speed); }
     }
     this.arm();
   }
@@ -94,7 +96,7 @@ export class BrowserNarrationEngine implements NarrationEngine {
       // segment; the board keeps its precise saved action/elapsed position.
       this.interrupted = false;
       try { this.attachSpeech(); }
-      catch { this.releaseSpeech(); this.remaining = estimateNarrationMs(this.text); }
+      catch { this.releaseSpeech(); this.remaining = (estimateNarrationMs(this.text) / this.speed); }
     }
     if (this.speech && typeof window !== 'undefined') window.speechSynthesis?.resume();
     this.arm();

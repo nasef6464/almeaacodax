@@ -209,3 +209,19 @@ try {
   assert.deepEqual(requests.at(-1).generationConfig.responseJsonSchema, schema);
 } finally { globalThis.fetch = originalFetch; }
 console.log('Teaching storyboard: validation, deterministic transforms/seek, invalid JSON fallback, narration interruption/resume PASS');
+
+// Quick explanation is a local view over the same trusted cached content.
+const { quickTeachingPlan } = await import('../components/results/teaching/quickTeachingPlan');
+const originalLesson = JSON.stringify(completeLesson);
+const quick = quickTeachingPlan(completeLesson, false)!;
+assert.equal(quick.scenes.length, 4, 'three compact operations must play as separate steps');
+assert.equal(quick.scenes.some(scene => scene.checkpoint), false, 'default explanation never waits for an attempt');
+assert.equal(quick.scenes[0].narration.includes(compact.prompt), false, 'do not ask an unanswered practice question in continuous mode');
+assert.equal(quick.scenes[1].actions[0].type === 'write' && quick.scenes[1].actions[0].content, '2 \\times 5 = 10');
+assert.equal(boardAt(quick, 1, sceneDuration(quick, 1)).some(element => element.id === 'answer'), false, 'trusted answer appears only at the final step');
+assert.equal(boardAt(quick, 3, sceneDuration(quick, 3)).find(element => element.id === 'answer')?.content, 'الإجابة: 309705');
+assert.ok(quickTeachingPlan(completeLesson, true)?.scenes[0].checkpoint, 'practice remains available by explicit choice');
+assert.equal(JSON.stringify(completeLesson), originalLesson, 'do not modify cached/reference plans');
+assert.equal(quickTeachingPlan(null, false), null);
+assert.ok(validateTeachingStoryboard(quick), 'expanded view retains the bounded safe storyboard contract');
+console.log('Quick teaching view: separate steps, optional practice, reference answer timing and immutable cache PASS');
