@@ -662,6 +662,7 @@ export interface Question extends ContentWorkflow {
     solvingStrategy?: string;
     videoUrl?: string;
     imageUrl?: string;
+    teachingImageVersion?: string;
     imageAlt?: string;
     optionsEmbeddedInImage?: boolean;
     aiContext?: QuestionAiContext;

@@ -135,7 +135,8 @@ const questionSchema = z.object({
 });
 
 const questionAssistantSchema = z.object({
-  boardMode: z.literal("storyboard_v1").optional(),
+  boardMode: z.enum(["storyboard_v1", "storyboard_v2"]).optional(),
+  imageVersion: z.string().regex(/^[a-f0-9]{64}$/).optional(),
   boardContext: z.string().trim().max(1200).optional(),
   resultId: z.string().trim().min(1).max(160).optional(),
   context: z.enum(["result_review", "saved_review", "mistake_review", "mastery_review"]).default("result_review"),
