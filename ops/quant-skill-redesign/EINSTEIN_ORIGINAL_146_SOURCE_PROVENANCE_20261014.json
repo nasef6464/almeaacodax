@@ -1,0 +1,160 @@
+{
+  "schema_version": 1,
+  "source_title": "كمي تأسيس انشتاين الاصلي",
+  "uploaded_filename": "كمي تأسيس انشتاين الاصلي .pdf",
+  "sha256": "d180a2ca98c0b2e43ba81398a557f38e710c9409aef9a08930c09df85f4b8049",
+  "pdf_page_count": 146,
+  "regular_lesson_page_range": "5–145",
+  "appendix_pages": [
+    146
+  ],
+  "source_format": "User-uploaded original PDF inspected through PDF text and selected image renders",
+  "date": "2026-10-14",
+  "source_is_authoritative_for": "Einstein foundation taxonomy, printed rules, item proof, and amendment notices",
+  "source_is_not_evidence_for": "Einstein compilations COL2627, live Atlas question counts, or answers not individually verified",
+  "verified_spot_pages": [
+    3,
+    5,
+    9,
+    14,
+    15,
+    16,
+    23,
+    24,
+    28,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    57,
+    65,
+    70,
+    89,
+    104,
+    142,
+    145,
+    146
+  ],
+  "book_table_of_contents": [
+    {
+      "chapter": "العمليات على الأعداد",
+      "start": 5
+    },
+    {
+      "chapter": "قابلية القسمة",
+      "start": 10
+    },
+    {
+      "chapter": "الكسور",
+      "start": 15
+    },
+    {
+      "chapter": "الأعداد العشرية",
+      "start": 23
+    },
+    {
+      "chapter": "الأسس",
+      "start": 28
+    },
+    {
+      "chapter": "العمليات على الجذور",
+      "start": 38
+    },
+    {
+      "chapter": "الفرق بين مربعين",
+      "start": 47
+    },
+    {
+      "chapter": "النسبة والتناسب",
+      "start": 54
+    },
+    {
+      "chapter": "النسبة المئوية",
+      "start": 61
+    },
+    {
+      "chapter": "الربح والخسارة",
+      "start": 65
+    },
+    {
+      "chapter": "استراتيجيات القدرات",
+      "start": 70
+    },
+    {
+      "chapter": "الحركة",
+      "start": 76
+    },
+    {
+      "chapter": "قوانين هامة في القدرات",
+      "start": 81
+    },
+    {
+      "chapter": "الزاوية بين العقربين",
+      "start": 86
+    },
+    {
+      "chapter": "المتوسط الحسابي",
+      "start": 94
+    },
+    {
+      "chapter": "الاحتمالات والإحصاء",
+      "start": 99
+    },
+    {
+      "chapter": "الزوايا والمضلعات والمستقيمات",
+      "start": 103
+    },
+    {
+      "chapter": "المثلث",
+      "start": 107
+    },
+    {
+      "chapter": "الأشكال الرباعية",
+      "start": 119
+    },
+    {
+      "chapter": "المربع",
+      "start": 123
+    },
+    {
+      "chapter": "المعين ومتوازي المستطيلات وشبه المنحرف",
+      "start": 127
+    },
+    {
+      "chapter": "الدائرة",
+      "start": 131
+    },
+    {
+      "chapter": "المجسمات والحجوم",
+      "start": 142
+    },
+    {
+      "chapter": "هندسة الإحداثيات",
+      "start": 145
+    }
+  ],
+  "appendix_correction_pages": [
+    57,
+    89,
+    104
+  ],
+  "appendix_review_protocol": "Before certifying any question/answer tied to original pages 57, 89, or 104, inspect the original page AND the amendment section on PDF page 146; do not assume each is an answer change (some may be clarifications).",
+  "known_notebooklm_conflicts": [
+    {
+      "claim": "EINSTEIN-FOUND-P009-Q04 locates 6132 × 3475 on page 9",
+      "actual": "Page 14; page 9 describes operation precedence"
+    },
+    {
+      "claim": "NotebookLM mentions foundation pp. 147 to 165",
+      "actual": "Original foundation PDF terminates at page 146 (page 146 is amendment sheet); no such pages here"
+    },
+    {
+      "claim": "NotebookLM 29/108 skill structure",
+      "actual": "29 distinct main codes and 104 actual rows in proposal"
+    }
+  ],
+  "independently_approved_question_count": 0,
+  "annotation": "This provenance record certifies document identity, page count and appendix presence only; it does not approve the NotebookLM taxonomy, question images, or migration."
+}

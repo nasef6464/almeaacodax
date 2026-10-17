@@ -1,0 +1,380 @@
+{
+  "version": 1,
+  "date": "2026-10-14",
+  "bank": "COL2627",
+  "source_file": "تجميع انشيتن معدل(2).pdf",
+  "verified_source_pages": [
+    42,
+    43
+  ],
+  "scope": "28 question images and classifications, no question text/options/answer changes",
+  "subjectId": "sub_1777779748206",
+  "question_count": 28,
+  "previously_all_wrong_under_inverse_proportion": true,
+  "exact_paired_rollback_records": [
+    {
+      "questionCode": "QDR-QNT-COL2627-P042-Q01",
+      "after": {
+        "skillId": "skill_quant_09",
+        "subSkillId": "sub_quant_09_3"
+      },
+      "reason": "النسبة المئوية للزيادة أو النقصان أو الخصم",
+      "page": 42,
+      "before": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_3"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P042-Q02",
+      "after": {
+        "skillId": "skill_quant_09",
+        "subSkillId": "sub_quant_09_3"
+      },
+      "reason": "النسبة المئوية للزيادة أو النقصان أو الخصم",
+      "page": 42,
+      "before": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_3"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P042-Q03",
+      "after": {
+        "skillId": "skill_quant_09",
+        "subSkillId": "sub_quant_09_3"
+      },
+      "reason": "النسبة المئوية للزيادة أو النقصان أو الخصم",
+      "page": 42,
+      "before": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_3"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P042-Q04",
+      "after": {
+        "skillId": "skill_quant_09",
+        "subSkillId": "sub_quant_09_3"
+      },
+      "reason": "النسبة المئوية للزيادة أو النقصان أو الخصم",
+      "page": 42,
+      "before": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_3"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P042-Q05",
+      "after": {
+        "skillId": "skill_quant_09",
+        "subSkillId": "sub_quant_09_3"
+      },
+      "reason": "النسبة المئوية للزيادة أو النقصان أو الخصم",
+      "page": 42,
+      "before": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_3"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P042-Q06",
+      "after": {
+        "skillId": "skill_quant_09",
+        "subSkillId": "sub_quant_09_3"
+      },
+      "reason": "النسبة المئوية للزيادة أو النقصان أو الخصم",
+      "page": 42,
+      "before": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_3"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P042-Q07",
+      "after": {
+        "skillId": "skill_quant_09",
+        "subSkillId": "sub_quant_09_3"
+      },
+      "reason": "النسبة المئوية للزيادة أو النقصان أو الخصم",
+      "page": 42,
+      "before": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_3"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P042-Q08",
+      "after": {
+        "skillId": "skill_quant_10",
+        "subSkillId": "sub_quant_10_1"
+      },
+      "reason": "سعر البيع مع الربح أو الخصم",
+      "page": 42,
+      "before": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_3"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P042-Q09",
+      "after": {
+        "skillId": "skill_quant_10",
+        "subSkillId": "sub_quant_10_1"
+      },
+      "reason": "سعر البيع مع الربح أو الخصم",
+      "page": 42,
+      "before": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_3"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P042-Q10",
+      "after": {
+        "skillId": "skill_quant_10",
+        "subSkillId": "sub_quant_10_1"
+      },
+      "reason": "سعر البيع مع الربح أو الخصم",
+      "page": 42,
+      "before": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_3"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P042-Q12",
+      "after": {
+        "skillId": "skill_quant_10",
+        "subSkillId": "sub_quant_10_1"
+      },
+      "reason": "سعر البيع مع الربح أو الخصم",
+      "page": 42,
+      "before": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_3"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P042-Q14",
+      "after": {
+        "skillId": "skill_quant_10",
+        "subSkillId": "sub_quant_10_1"
+      },
+      "reason": "سعر البيع مع الربح أو الخصم",
+      "page": 42,
+      "before": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_3"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P042-Q11",
+      "after": {
+        "skillId": "skill_quant_10",
+        "subSkillId": "sub_quant_10_2"
+      },
+      "reason": "استرجاع السعر الأصلي من ربح أو خسارة أو إجمالي خصومات",
+      "page": 42,
+      "before": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_3"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P042-Q13",
+      "after": {
+        "skillId": "skill_quant_10",
+        "subSkillId": "sub_quant_10_2"
+      },
+      "reason": "استرجاع السعر الأصلي من ربح أو خسارة أو إجمالي خصومات",
+      "page": 42,
+      "before": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_3"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P042-Q15",
+      "after": {
+        "skillId": "skill_quant_10",
+        "subSkillId": "sub_quant_10_2"
+      },
+      "reason": "استرجاع السعر الأصلي من ربح أو خسارة أو إجمالي خصومات",
+      "page": 42,
+      "before": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_3"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P043-Q16",
+      "after": {
+        "skillId": "skill_quant_10",
+        "subSkillId": "sub_quant_10_2"
+      },
+      "reason": "استرجاع السعر الأصلي ومبلغ الشراء",
+      "page": 43,
+      "before": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_3"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P043-Q17",
+      "after": {
+        "skillId": "skill_quant_10",
+        "subSkillId": "sub_quant_10_2"
+      },
+      "reason": "استرجاع السعر الأصلي ومبلغ الشراء",
+      "page": 43,
+      "before": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_3"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P043-Q20",
+      "after": {
+        "skillId": "skill_quant_10",
+        "subSkillId": "sub_quant_10_2"
+      },
+      "reason": "استرجاع السعر الأصلي ومبلغ الشراء",
+      "page": 43,
+      "before": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_3"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P043-Q28",
+      "after": {
+        "skillId": "skill_quant_10",
+        "subSkillId": "sub_quant_10_2"
+      },
+      "reason": "استرجاع السعر الأصلي ومبلغ الشراء",
+      "page": 43,
+      "before": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_3"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P043-Q18",
+      "after": {
+        "skillId": "skill_quant_10",
+        "subSkillId": "sub_quant_10_3"
+      },
+      "reason": "الراتب والادخار والمصاريف",
+      "page": 43,
+      "before": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_3"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P043-Q21",
+      "after": {
+        "skillId": "skill_quant_10",
+        "subSkillId": "sub_quant_10_3"
+      },
+      "reason": "الراتب والادخار والمصاريف",
+      "page": 43,
+      "before": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_4"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P043-Q19",
+      "after": {
+        "skillId": "skill_quant_10",
+        "subSkillId": "sub_quant_10_1"
+      },
+      "reason": "ثمن البيع والخسارة",
+      "page": 43,
+      "before": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_4"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P043-Q22",
+      "after": {
+        "skillId": "skill_quant_09",
+        "subSkillId": "sub_quant_09_4"
+      },
+      "reason": "تغيرات مئوية متتابعة أو مقارنتها",
+      "page": 43,
+      "before": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_3"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P043-Q23",
+      "after": {
+        "skillId": "skill_quant_09",
+        "subSkillId": "sub_quant_09_4"
+      },
+      "reason": "تغيرات مئوية متتابعة أو مقارنتها",
+      "page": 43,
+      "before": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_3"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P043-Q24",
+      "after": {
+        "skillId": "skill_quant_09",
+        "subSkillId": "sub_quant_09_4"
+      },
+      "reason": "تغيرات مئوية متتابعة أو مقارنتها",
+      "page": 43,
+      "before": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_4"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P043-Q25",
+      "after": {
+        "skillId": "skill_quant_09",
+        "subSkillId": "sub_quant_09_4"
+      },
+      "reason": "تغيرات مئوية متتابعة أو مقارنتها",
+      "page": 43,
+      "before": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_3"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P043-Q26",
+      "after": {
+        "skillId": "skill_quant_09",
+        "subSkillId": "sub_quant_09_4"
+      },
+      "reason": "تغيرات مئوية متتابعة أو مقارنتها",
+      "page": 43,
+      "before": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_3"
+      }
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P043-Q27",
+      "after": {
+        "skillId": "skill_quant_09",
+        "subSkillId": "sub_quant_09_4"
+      },
+      "reason": "تغيرات مئوية متتابعة أو مقارنتها",
+      "page": 43,
+      "before": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_4"
+      }
+    }
+  ]
+}

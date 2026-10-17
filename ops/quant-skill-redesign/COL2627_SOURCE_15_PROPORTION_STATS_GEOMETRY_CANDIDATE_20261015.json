@@ -1,0 +1,389 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-15",
+  "source": "تجميع انشيتن معدل(2).pdf",
+  "sourcePagesInspected": [
+    38,
+    58,
+    65
+  ],
+  "status": "15_CANDIDATES_SOURCE_CONCEPT_VERIFIED_NOT_PRODUCTION_APPLIED",
+  "count": 15,
+  "doNotChangeQuestionImagesOrCorrectAnswers": true,
+  "requireTripleFieldUpdate": true,
+  "changes": [
+    {
+      "code": "QDR-QNT-COL2627-P038-Q38",
+      "sourcePdfPage": 38,
+      "printedQuestionNumber": 38,
+      "sourceMathRule": "العمل والزمن أو العمال والزمن أو المقدار والتناسب العكسي، وليس تناسباً طردياً",
+      "previous": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_2",
+        "skillIds": [
+          "skill_quant_08",
+          "sub_quant_08_2"
+        ]
+      },
+      "proposed": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_3",
+        "skillIds": [
+          "skill_quant_08",
+          "sub_quant_08_3"
+        ]
+      },
+      "state": "PENDING_PERMITTED_WRITE_AND_IMAGE_QA",
+      "imagePageDirectlyInspected": true
+    },
+    {
+      "code": "QDR-QNT-COL2627-P038-Q39",
+      "sourcePdfPage": 38,
+      "printedQuestionNumber": 39,
+      "sourceMathRule": "العمل والزمن أو العمال والزمن أو المقدار والتناسب العكسي، وليس تناسباً طردياً",
+      "previous": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_2",
+        "skillIds": [
+          "skill_quant_08",
+          "sub_quant_08_2"
+        ]
+      },
+      "proposed": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_3",
+        "skillIds": [
+          "skill_quant_08",
+          "sub_quant_08_3"
+        ]
+      },
+      "state": "PENDING_PERMITTED_WRITE_AND_IMAGE_QA",
+      "imagePageDirectlyInspected": true
+    },
+    {
+      "code": "QDR-QNT-COL2627-P038-Q41",
+      "sourcePdfPage": 38,
+      "printedQuestionNumber": 41,
+      "sourceMathRule": "العمل والزمن أو العمال والزمن أو المقدار والتناسب العكسي، وليس تناسباً طردياً",
+      "previous": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_2",
+        "skillIds": [
+          "skill_quant_08",
+          "sub_quant_08_2"
+        ]
+      },
+      "proposed": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_3",
+        "skillIds": [
+          "skill_quant_08",
+          "sub_quant_08_3"
+        ]
+      },
+      "state": "PENDING_PERMITTED_WRITE_AND_IMAGE_QA",
+      "imagePageDirectlyInspected": true
+    },
+    {
+      "code": "QDR-QNT-COL2627-P038-Q42",
+      "sourcePdfPage": 38,
+      "printedQuestionNumber": 42,
+      "sourceMathRule": "العمل والزمن أو العمال والزمن أو المقدار والتناسب العكسي، وليس تناسباً طردياً",
+      "previous": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_2",
+        "skillIds": [
+          "skill_quant_08",
+          "sub_quant_08_2"
+        ]
+      },
+      "proposed": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_3",
+        "skillIds": [
+          "skill_quant_08",
+          "sub_quant_08_3"
+        ]
+      },
+      "state": "PENDING_PERMITTED_WRITE_AND_IMAGE_QA",
+      "imagePageDirectlyInspected": true
+    },
+    {
+      "code": "QDR-QNT-COL2627-P038-Q43",
+      "sourcePdfPage": 38,
+      "printedQuestionNumber": 43,
+      "sourceMathRule": "العمل والزمن أو العمال والزمن أو المقدار والتناسب العكسي، وليس تناسباً طردياً",
+      "previous": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_2",
+        "skillIds": [
+          "skill_quant_08",
+          "sub_quant_08_2"
+        ]
+      },
+      "proposed": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_3",
+        "skillIds": [
+          "skill_quant_08",
+          "sub_quant_08_3"
+        ]
+      },
+      "state": "PENDING_PERMITTED_WRITE_AND_IMAGE_QA",
+      "imagePageDirectlyInspected": true
+    },
+    {
+      "code": "QDR-QNT-COL2627-P038-Q44",
+      "sourcePdfPage": 38,
+      "printedQuestionNumber": 44,
+      "sourceMathRule": "تناسب مركب بين عدد الأبقار والأيام وكمية الإنتاج",
+      "previous": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_2",
+        "skillIds": [
+          "skill_quant_08",
+          "sub_quant_08_2"
+        ]
+      },
+      "proposed": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_4",
+        "skillIds": [
+          "skill_quant_08",
+          "sub_quant_08_4"
+        ]
+      },
+      "state": "PENDING_PERMITTED_WRITE_AND_IMAGE_QA",
+      "imagePageDirectlyInspected": true
+    },
+    {
+      "code": "QDR-QNT-COL2627-P038-Q45",
+      "sourcePdfPage": 38,
+      "printedQuestionNumber": 45,
+      "sourceMathRule": "توزيع زمن العمل والتقدم النسبي مع تغير الساعات اليومية",
+      "previous": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_2",
+        "skillIds": [
+          "skill_quant_08",
+          "sub_quant_08_2"
+        ]
+      },
+      "proposed": {
+        "skillId": "skill_quant_08",
+        "subSkillId": "sub_quant_08_4",
+        "skillIds": [
+          "skill_quant_08",
+          "sub_quant_08_4"
+        ]
+      },
+      "state": "PENDING_PERMITTED_WRITE_AND_IMAGE_QA",
+      "imagePageDirectlyInspected": true
+    },
+    {
+      "code": "QDR-QNT-COL2627-P058-Q19",
+      "sourcePdfPage": 58,
+      "printedQuestionNumber": 19,
+      "sourceMathRule": "الأعداد الفردية المتتالية ومتوسط أول عددين",
+      "previous": {
+        "skillId": "skill_quant_17",
+        "subSkillId": "sub_quant_17_1",
+        "skillIds": [
+          "skill_quant_17",
+          "sub_quant_17_1"
+        ]
+      },
+      "proposed": {
+        "skillId": "skill_quant_17",
+        "subSkillId": "sub_quant_17_3",
+        "skillIds": [
+          "skill_quant_17",
+          "sub_quant_17_3"
+        ]
+      },
+      "state": "PENDING_PERMITTED_WRITE_AND_IMAGE_QA",
+      "imagePageDirectlyInspected": true
+    },
+    {
+      "code": "QDR-QNT-COL2627-P058-Q21",
+      "sourcePdfPage": 58,
+      "printedQuestionNumber": 21,
+      "sourceMathRule": "عدد طبيعي أول من أعداد متتالية بمعلومية متوسطها",
+      "previous": {
+        "skillId": "skill_quant_17",
+        "subSkillId": "sub_quant_17_1",
+        "skillIds": [
+          "skill_quant_17",
+          "sub_quant_17_1"
+        ]
+      },
+      "proposed": {
+        "skillId": "skill_quant_17",
+        "subSkillId": "sub_quant_17_3",
+        "skillIds": [
+          "skill_quant_17",
+          "sub_quant_17_3"
+        ]
+      },
+      "state": "PENDING_PERMITTED_WRITE_AND_IMAGE_QA",
+      "imagePageDirectlyInspected": true
+    },
+    {
+      "code": "QDR-QNT-COL2627-P058-Q22",
+      "sourcePdfPage": 58,
+      "printedQuestionNumber": 22,
+      "sourceMathRule": "وسيط مجموعة من درجات الحرارة",
+      "previous": {
+        "skillId": "skill_quant_17",
+        "subSkillId": "sub_quant_17_2",
+        "skillIds": [
+          "skill_quant_17",
+          "sub_quant_17_2"
+        ]
+      },
+      "proposed": {
+        "skillId": "skill_quant_17",
+        "subSkillId": "sub_quant_17_4",
+        "skillIds": [
+          "skill_quant_17",
+          "sub_quant_17_4"
+        ]
+      },
+      "state": "PENDING_PERMITTED_WRITE_AND_IMAGE_QA",
+      "imagePageDirectlyInspected": true
+    },
+    {
+      "code": "QDR-QNT-COL2627-P058-Q23",
+      "sourcePdfPage": 58,
+      "printedQuestionNumber": 23,
+      "sourceMathRule": "المدى، الفرق بين أكبر وأصغر قيمة",
+      "previous": {
+        "skillId": "skill_quant_17",
+        "subSkillId": "sub_quant_17_3",
+        "skillIds": [
+          "skill_quant_17",
+          "sub_quant_17_3"
+        ]
+      },
+      "proposed": {
+        "skillId": "skill_quant_17",
+        "subSkillId": "sub_quant_17_4",
+        "skillIds": [
+          "skill_quant_17",
+          "sub_quant_17_4"
+        ]
+      },
+      "state": "PENDING_PERMITTED_WRITE_AND_IMAGE_QA",
+      "imagePageDirectlyInspected": true
+    },
+    {
+      "code": "QDR-QNT-COL2627-P058-Q24",
+      "sourcePdfPage": 58,
+      "printedQuestionNumber": 24,
+      "sourceMathRule": "إيجاد المنوال من تكرار القيم",
+      "previous": {
+        "skillId": "skill_quant_17",
+        "subSkillId": "sub_quant_17_3",
+        "skillIds": [
+          "skill_quant_17",
+          "sub_quant_17_3"
+        ]
+      },
+      "proposed": {
+        "skillId": "skill_quant_17",
+        "subSkillId": "sub_quant_17_4",
+        "skillIds": [
+          "skill_quant_17",
+          "sub_quant_17_4"
+        ]
+      },
+      "state": "PENDING_PERMITTED_WRITE_AND_IMAGE_QA",
+      "imagePageDirectlyInspected": true
+    },
+    {
+      "code": "QDR-QNT-COL2627-P058-Q25",
+      "sourcePdfPage": 58,
+      "printedQuestionNumber": 25,
+      "sourceMathRule": "المدى من جدول أعمار",
+      "previous": {
+        "skillId": "skill_quant_17",
+        "subSkillId": "sub_quant_17_3",
+        "skillIds": [
+          "skill_quant_17",
+          "sub_quant_17_3"
+        ]
+      },
+      "proposed": {
+        "skillId": "skill_quant_17",
+        "subSkillId": "sub_quant_17_4",
+        "skillIds": [
+          "skill_quant_17",
+          "sub_quant_17_4"
+        ]
+      },
+      "state": "PENDING_PERMITTED_WRITE_AND_IMAGE_QA",
+      "imagePageDirectlyInspected": true
+    },
+    {
+      "code": "QDR-QNT-COL2627-P065-Q50",
+      "sourcePdfPage": 65,
+      "printedQuestionNumber": 50,
+      "sourceMathRule": "مقارنة مجموع الزوايا الداخلية لثماني أضلاع",
+      "previous": {
+        "skillId": "skill_quant_19",
+        "subSkillId": "sub_quant_19_2",
+        "skillIds": [
+          "skill_quant_19",
+          "sub_quant_19_2"
+        ]
+      },
+      "proposed": {
+        "skillId": "skill_quant_19",
+        "subSkillId": "sub_quant_19_3",
+        "skillIds": [
+          "skill_quant_19",
+          "sub_quant_19_3"
+        ]
+      },
+      "state": "PENDING_PERMITTED_WRITE_AND_IMAGE_QA",
+      "imagePageDirectlyInspected": true
+    },
+    {
+      "code": "QDR-QNT-COL2627-P065-Q51",
+      "sourcePdfPage": 65,
+      "printedQuestionNumber": 51,
+      "sourceMathRule": "مقارنة مجموع الزوايا الداخلية لثماني أضلاع",
+      "previous": {
+        "skillId": "skill_quant_19",
+        "subSkillId": "sub_quant_19_2",
+        "skillIds": [
+          "skill_quant_19",
+          "sub_quant_19_2"
+        ]
+      },
+      "proposed": {
+        "skillId": "skill_quant_19",
+        "subSkillId": "sub_quant_19_3",
+        "skillIds": [
+          "skill_quant_19",
+          "sub_quant_19_3"
+        ]
+      },
+      "state": "PENDING_PERMITTED_WRITE_AND_IMAGE_QA",
+      "imagePageDirectlyInspected": true
+    }
+  ],
+  "quizMembershipCaveats": [
+    {
+      "code": "QDR-QNT-COL2627-P058-Q18",
+      "currentSubSkill": "sub_quant_17_1",
+      "quizSubSkill": "sub_quant_17_3",
+      "judgement": "question primary skill is valid; evaluate moving quiz membership not relabelling question"
+    },
+    {
+      "code": "QDR-QNT-COL2627-P038-Q44",
+      "newSubSkill": "sub_quant_08_4",
+      "judgement": "compound work/production is in broad 08_4, consider whether subskill title should mention compound proportionality beyond mixtures"
+    }
+  ]
+}
