@@ -2,7 +2,7 @@ import React from 'react';
 import { Bot, ChevronLeft, ChevronRight, Loader2, MessageCircle, Mic, MicOff, Pause, Play, RotateCcw, Send, Volume2, VolumeX, X } from 'lucide-react';
 import { api } from '../../services/api';
 import { InteractiveWhiteboardCanvas } from './InteractiveWhiteboardCanvas';
-import { validateTeachingStoryboard, type TeachingStoryboard } from '../../server/src/modules/ai/contracts/teachingStoryboard';
+import { validateTeachingPlan, type TeachingPlan } from '../../server/src/modules/ai/contracts/teachingImageStoryboard';
 import { TeachingBoard } from './teaching/TeachingBoard';
 import { useTeachingPlayback } from './teaching/useTeachingPlayback';
 import { BrowserNarrationEngine, narrationNeedsRecovery, type NarrationState } from './teaching/narrationEngine';
@@ -17,7 +17,7 @@ type SpeechRecognitionLike = {
   onresult: ((event: any) => void) | null; onerror: (() => void) | null; onend: (() => void) | null;
   start(): void; stop(): void;
 };
-type TeacherLesson = { text: string; plan: TeachingStoryboard | null };
+type TeacherLesson = { text: string; plan: TeachingPlan | null };
 type SmartTeacherTurn = { id: string; role: 'student' | 'teacher'; text: string };
 
 export const InteractiveSmartTeacher: React.FC<{
@@ -74,13 +74,14 @@ export const InteractiveSmartTeacher: React.FC<{
     try {
       const response = await api.aiQuestionAssistant({
         ...(resultId ? { resultId } : {}), context, questionId, helpLevel,
-        message: clean.slice(0, 800), tutorSessionId, boardMode: 'storyboard_v1',
+        message: clean.slice(0, 800), tutorSessionId, boardMode: question?.teachingImageVersion ? 'storyboard_v2' : 'storyboard_v1',
+        ...(question?.teachingImageVersion ? { imageVersion: question.teachingImageVersion } : {}),
         ...(interruptedContext && !replaceLesson ? { boardContext: interruptedContext } : {}),
       });
       if (requestGeneration !== generation.current) return;
       const text = String(response.text || '').trim();
       if (!text) throw new Error('لم يصل شرح الآن. حاول مرة أخرى.');
-      const next = { text, plan: validateTeachingStoryboard(response.storyboard) };
+      const next = { text, plan: validateTeachingPlan(response.storyboard) };
       setTurns(current => [...current, { id: `teacher-${Date.now()}`, role: 'teacher', text }]);
       if (!lesson || replaceLesson) { setLesson(next); setReply(null); }
       else setReply(next);
@@ -173,7 +174,7 @@ export const InteractiveSmartTeacher: React.FC<{
           <section className="flex min-h-0 flex-col gap-3 overflow-y-auto bg-slate-900 p-3 sm:p-5">
             {!activeLesson?.plan && <QuestionPreview question={question} compact={chatOpen} />}
             <div data-testid="teacher-board-viewport" className="min-h-48 shrink-0 flex-1 overflow-auto rounded-2xl border border-slate-800 bg-slate-950">
-              {activeLesson?.plan ? <TeachingBoard elements={active.elements} narration={active.narration} language={activeLesson.plan.language} question={question} questionCompact={chatOpen} /> : activeLesson ?
+              {activeLesson?.plan ? <TeachingBoard elements={active.elements} narration={active.narration} language={activeLesson.plan.language} question={question} questionCompact={chatOpen} imagePlayback={activeLesson.plan.version === 2 ? { plan: activeLesson.plan, sceneIndex: active.sceneIndex, elapsedMs: active.elapsedMs } : undefined} /> : activeLesson ?
                 <InteractiveWhiteboardCanvas text={activeLesson.text} boardTheme="light" viewMode="full_chalkboard" isPlaying={false} showInternalControls={false} isPending={pending} onAskAboutStep={prompt => void ask(prompt)} /> :
                 <div className="flex min-h-64 flex-col items-center justify-center gap-4 p-5 text-center"><Bot size={40} className="text-emerald-400" /><p>{pending ? 'المعلم يجهز الشرح…' : 'السبورة جاهزة'}</p>{!pending && <button type="button" className="rounded-xl bg-emerald-600 px-4 py-3" onClick={() => void ask('اشرح السؤال خطوة بخطوة.', 'steps', true)}>ابدأ الشرح</button>}</div>}
             </div>

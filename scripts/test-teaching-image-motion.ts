@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import {boardAt,sceneDuration} from '../components/results/teaching/boardState';
+import {quickTeachingPlan} from '../components/results/teaching/quickTeachingPlan';
+import type {TeachingStoryboardV2} from '../server/src/modules/ai/contracts/teachingImageStoryboard';
+const plan:TeachingStoryboardV2={version:2,language:'ar-SA',scenes:[{id:'given',narration:'نحدد المعطى.',actions:[{type:'write',id:'x',kind:'formula',content:'6+4'}]}],image:{url:'https://images.example/questions/a.png',version:'version1',marks:[{id:'m',sceneId:'given',kind:'box',x:.1,y:.1,width:.3,height:.3}]}};
+assert.deepEqual(boardAt(plan,0,125),[],'draw image mark before writing its operation');
+assert.equal(boardAt(plan,0,250)[0].progress,0);assert.equal(sceneDuration(plan,0),700);
+assert.equal(quickTeachingPlan(plan,false)?.version,2);assert.equal((quickTeachingPlan(plan,false) as TeachingStoryboardV2)?.image?.marks.length,1);
+const multi:TeachingStoryboardV2={...plan,scenes:[{id:'solution',narration:'نحسب.',actions:[{type:'write',id:'solution',kind:'formula',content:'6+4=10\n10+2=12'}]}],image:{...plan.image!,marks:plan.image!.marks.map(m=>({...m,sceneId:'solution'}))}};
+const expanded=quickTeachingPlan(multi,false) as TeachingStoryboardV2;
+assert.equal(expanded.image?.marks[0].sceneId,expanded.scenes[0].id,'solution mark begins before first expanded operation');
+console.log('Teaching image playback timeline PASS');

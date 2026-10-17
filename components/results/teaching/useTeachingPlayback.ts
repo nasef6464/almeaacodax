@@ -1,9 +1,9 @@
 import React from 'react';
-import type { TeachingStoryboard } from '../../../server/src/modules/ai/contracts/teachingStoryboard';
+import type { TeachingPlan } from '../../../server/src/modules/ai/contracts/teachingImageStoryboard';
 import { boardAt, estimateNarrationMs, sceneDuration } from './boardState';
 import { BrowserNarrationEngine, narrationNeedsRecovery, type NarrationState } from './narrationEngine';
 
-export function useTeachingPlayback(plan: TeachingStoryboard | null, voice: boolean, enabled: boolean, practice = true, speed = 1) {
+export function useTeachingPlayback(plan: TeachingPlan | null, voice: boolean, enabled: boolean, practice = true, speed = 1) {
   const [position, setPosition] = React.useState({ scene: 0, elapsed: 0, revision: 0 });
   const [playing, setPlaying] = React.useState(false);
   const [audioState, setAudioState] = React.useState<NarrationState>('idle');
