@@ -1,0 +1,16 @@
+import assert from 'node:assert/strict';
+import {generateTeachingImageLesson,eligibleTeachingImageIdentity} from '../server/src/modules/ai/application/teachingImageLesson';
+import {teachingImageIdentity} from '../server/src/modules/ai/application/teachingImageIdentity';
+const question={imageUrl:'https://images.example/questions/v2/a.png',sourceMeta:{imageHash:'a'.repeat(64)}};
+const identity=teachingImageIdentity(question)!;
+const request={boardMode:'storyboard_v2',helpLevel:'steps',imageVersion:identity.version};
+assert.ok(eligibleTeachingImageIdentity(request,question,true,true));
+for(const [r,enabled,current] of [[request,false,true],[request,true,false],[{...request,imageVersion:'old'},true,true],[{...request,boardContext:'private'},true,true],[{...request,helpLevel:'follow_up'},true,true]] as const)assert.equal(eligibleTeachingImageIdentity(r,question,enabled,current),null);
+const raw=JSON.stringify({format:'compact_v1',mode:'lesson',language:'ar-SA',narration:'نحدد الطول.',board:'6',kind:'formula',prompt:'ما المساحة؟',explanation:'نضرب الطول بالعرض.',solution:['6 \\times 4 = 24'],solutionKind:'formula',marks:[{sceneId:'given',kind:'box',x:.1,y:.1,width:.4,height:.4}]});
+let loads=0,calls=0;
+const args={identity,prompt:'trusted',fallback:'مرجع',expected:{mode:'lesson' as const,trustedAnswer:'24'},loadImage:async()=>{loads++;return {data:'test',mimeType:'image/png' as const};},callVision:async()=>{calls++;return {text:raw,imageSentToProvider:true};}};
+const result=await generateTeachingImageLesson(args);assert.equal(result.storyboard?.image?.version,identity.version);assert.equal(result.storyboard?.image?.marks.length,1);
+assert.ok(result.storyboard?.scenes.at(-1)?.narration.includes('24'));assert.equal(loads,1);assert.equal(calls,1);
+const failed=await generateTeachingImageLesson({...args,loadImage:async()=>null});assert.equal(calls,1);assert.equal(failed.storyboard,null);assert.equal(failed.imageSentToProvider,false);
+const invalid=await generateTeachingImageLesson({...args,callVision:async()=>({text:'{"invalid":true}',imageSentToProvider:true})});assert.equal(invalid.text,'مرجع');assert.equal(invalid.storyboard,null);assert.equal(invalid.imageSentToProvider,true);
+console.log('Teaching image lesson/reference/fallback PASS');

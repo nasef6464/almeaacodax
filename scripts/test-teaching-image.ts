@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { validateTeachingImageStoryboard } from '../server/src/modules/ai/contracts/teachingImageStoryboard';
 import { teachingImageIdentity } from '../server/src/modules/ai/application/teachingImageIdentity';
 import { sanitizeQuestionForLearner } from '../server/src/modules/quizzes/presentation/questionPresentation';
+import {buildQuizSubmissionAnswerReview} from '../server/src/modules/quizzes/application/quizSubmissionAnswerReview';
 const mark = { id: 'area', sceneId: 'given', kind: 'box', x: .1, y: .2, width: .3, height: .4 };
 const plan = { version: 2, language: 'ar-SA', scenes: [{id:'given',narration:'نحدد المساحة.',actions:[]}],
   image: {url:'https://images.example/questions/a.webp',version:'v1',marks:[mark]} };
@@ -18,4 +19,6 @@ assert.notEqual(identity.version,teachingImageIdentity({...question,sourceMeta:{
 assert.equal(teachingImageIdentity({imageUrl:plan.image.url}),null);
 const safe=sanitizeQuestionForLearner(question); assert.equal(safe.teachingImageVersion,identity.version);
 assert.equal('correctOptionIndex' in safe,false);assert.equal('sourceMeta' in safe,false);
+const outcome=buildQuizSubmissionAnswerReview({orderedQuestions:[{...question,id:'q',text:'q',options:['a','b']}],answers:{q:1}});
+assert.equal(outcome.correctAnswers,1);assert.equal((outcome.questionReview[0] as any).teachingImageVersion,identity.version);
 console.log('Teaching image contract/identity PASS');

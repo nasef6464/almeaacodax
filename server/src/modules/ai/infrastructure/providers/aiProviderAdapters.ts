@@ -10,6 +10,7 @@ export type AiProviderRuntime = {
 };
 export type AiProviderCallOptions = {
   singleAttempt?: boolean;
+  onImageDispatch?: () => void;
   disableThinking?: boolean;
   jsonSchema?: Record<string, unknown>;
   timeoutMs?: number;
@@ -166,11 +167,16 @@ export const createAiProviderAdapters = (config: AdapterConfig) => {
       ? [{ inlineData: { mimeType: image.mimeType, data: image.data } }, { text: prompt }]
       : [{ text: prompt }];
     const errors: string[] = [];
+    let attempted = false;
     for (const pool of pools) {
       let poolRateLimited = false;
-      for (const apiKey of (options.singleAttempt ? pool.apiKeys.slice(0, 1) : pool.apiKeys)) {
+      for (const apiKey of pool.apiKeys) {
+        if (options.singleAttempt && attempted) break;
+        attempted = true;
         try {
-          const requestGeminiModel = (model: string) => fetchWithTimeout(
+          const requestGeminiModel = (model: string) => {
+            if (image) options.onImageDispatch?.();
+            return fetchWithTimeout(
             `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
             {
               method: "POST",
@@ -194,6 +200,7 @@ export const createAiProviderAdapters = (config: AdapterConfig) => {
             options.timeoutMs,
             options.singleAttempt,
           );
+          };
           let actualModel = pool.model;
           let response = await requestGeminiModel(actualModel);
           if (!options.singleAttempt && !response.ok && (response.status === 404 || response.status === 429)) {
