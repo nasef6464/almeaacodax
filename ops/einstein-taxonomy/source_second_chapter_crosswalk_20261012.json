@@ -1,0 +1,492 @@
+{
+  "schema": "almeaa.einstein.source-crosswalk.v1",
+  "date": "2026-10-12",
+  "scope": "Second source chapter: original division and neighboring exception blocks",
+  "sourcePages": {
+    "FND26": [
+      10,
+      11,
+      12,
+      13,
+      14
+    ],
+    "COL2627": [
+      7,
+      8
+    ]
+  },
+  "liveRecords": 52,
+  "verifiedExpectedCodeLookup": 52,
+  "mismatchesToLive": 0,
+  "bookChapterExceptionPolicy": "Absolute value, unit digits and age problems deliberately use their real mathematical subskill, not the nearest book chapter.",
+  "questions": [
+    {
+      "questionCode": "QDR-QNT-FND26-P010-Q01",
+      "bank": "FND26",
+      "sourcePage": 10,
+      "bookConcept": "قابلية القسمة 2–6",
+      "existingSubskillId": "sub_quant_02_1",
+      "recommendedSubskillId": "sub_quant_02_1",
+      "status": "SOURCE_RULE_AND_LIVE_SUBSKILL_MATCH_PENDING_FULL_ITEM_IMAGE_AUDIT"
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P010-Q02",
+      "bank": "FND26",
+      "sourcePage": 10,
+      "bookConcept": "قابلية القسمة 2–6",
+      "existingSubskillId": "sub_quant_02_1",
+      "recommendedSubskillId": "sub_quant_02_1",
+      "status": "SOURCE_RULE_AND_LIVE_SUBSKILL_MATCH_PENDING_FULL_ITEM_IMAGE_AUDIT"
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P010-Q03",
+      "bank": "FND26",
+      "sourcePage": 10,
+      "bookConcept": "قابلية القسمة 2–6",
+      "existingSubskillId": "sub_quant_02_1",
+      "recommendedSubskillId": "sub_quant_02_1",
+      "status": "SOURCE_RULE_AND_LIVE_SUBSKILL_MATCH_PENDING_FULL_ITEM_IMAGE_AUDIT"
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P010-Q04",
+      "bank": "FND26",
+      "sourcePage": 10,
+      "bookConcept": "قابلية القسمة 2–6",
+      "existingSubskillId": "sub_quant_02_1",
+      "recommendedSubskillId": "sub_quant_02_1",
+      "status": "SOURCE_RULE_AND_LIVE_SUBSKILL_MATCH_PENDING_FULL_ITEM_IMAGE_AUDIT"
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P011-Q05",
+      "bank": "FND26",
+      "sourcePage": 11,
+      "bookConcept": "قابلية القسمة 7–11",
+      "existingSubskillId": "sub_quant_02_1",
+      "recommendedSubskillId": "sub_quant_02_1",
+      "status": "SOURCE_RULE_AND_LIVE_SUBSKILL_MATCH_PENDING_FULL_ITEM_IMAGE_AUDIT"
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P011-Q06",
+      "bank": "FND26",
+      "sourcePage": 11,
+      "bookConcept": "قابلية القسمة 7–11",
+      "existingSubskillId": "sub_quant_02_1",
+      "recommendedSubskillId": "sub_quant_02_1",
+      "status": "SOURCE_RULE_AND_LIVE_SUBSKILL_MATCH_PENDING_FULL_ITEM_IMAGE_AUDIT"
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P011-Q07",
+      "bank": "FND26",
+      "sourcePage": 11,
+      "bookConcept": "قابلية القسمة 7–11",
+      "existingSubskillId": "sub_quant_02_1",
+      "recommendedSubskillId": "sub_quant_02_1",
+      "status": "SOURCE_RULE_AND_LIVE_SUBSKILL_MATCH_PENDING_FULL_ITEM_IMAGE_AUDIT"
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P011-Q08",
+      "bank": "FND26",
+      "sourcePage": 11,
+      "bookConcept": "قابلية القسمة 7–11",
+      "existingSubskillId": "sub_quant_02_1",
+      "recommendedSubskillId": "sub_quant_02_1",
+      "status": "SOURCE_RULE_AND_LIVE_SUBSKILL_MATCH_PENDING_FULL_ITEM_IMAGE_AUDIT"
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P012-Q10",
+      "bank": "FND26",
+      "sourcePage": 12,
+      "bookConcept": "بواقي القسمة",
+      "existingSubskillId": "sub_quant_02_2",
+      "recommendedSubskillId": "sub_quant_02_2",
+      "status": "SOURCE_RULE_AND_LIVE_SUBSKILL_MATCH_PENDING_FULL_ITEM_IMAGE_AUDIT"
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P012-Q11",
+      "bank": "FND26",
+      "sourcePage": 12,
+      "bookConcept": "بواقي القسمة",
+      "existingSubskillId": "sub_quant_02_2",
+      "recommendedSubskillId": "sub_quant_02_2",
+      "status": "SOURCE_RULE_AND_LIVE_SUBSKILL_MATCH_PENDING_FULL_ITEM_IMAGE_AUDIT"
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P012-Q12",
+      "bank": "FND26",
+      "sourcePage": 12,
+      "bookConcept": "بواقي القسمة",
+      "existingSubskillId": "sub_quant_02_2",
+      "recommendedSubskillId": "sub_quant_02_2",
+      "status": "SOURCE_RULE_AND_LIVE_SUBSKILL_MATCH_PENDING_FULL_ITEM_IMAGE_AUDIT"
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P013-Q13",
+      "bank": "FND26",
+      "sourcePage": 13,
+      "bookConcept": "الأعداد الأولية والعوامل",
+      "existingSubskillId": "sub_quant_02_3",
+      "recommendedSubskillId": "sub_quant_02_3",
+      "status": "SOURCE_RULE_AND_LIVE_SUBSKILL_MATCH_PENDING_FULL_ITEM_IMAGE_AUDIT"
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P013-Q14",
+      "bank": "FND26",
+      "sourcePage": 13,
+      "bookConcept": "الأعداد الأولية والعوامل",
+      "existingSubskillId": "sub_quant_02_3",
+      "recommendedSubskillId": "sub_quant_02_3",
+      "status": "SOURCE_RULE_AND_LIVE_SUBSKILL_MATCH_PENDING_FULL_ITEM_IMAGE_AUDIT"
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P013-Q15",
+      "bank": "FND26",
+      "sourcePage": 13,
+      "bookConcept": "الأعداد الأولية والعوامل",
+      "existingSubskillId": "sub_quant_02_3",
+      "recommendedSubskillId": "sub_quant_02_3",
+      "status": "SOURCE_RULE_AND_LIVE_SUBSKILL_MATCH_PENDING_FULL_ITEM_IMAGE_AUDIT"
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P013-Q16",
+      "bank": "FND26",
+      "sourcePage": 13,
+      "bookConcept": "القيمة المطلقة",
+      "existingSubskillId": "sub_quant_07_4",
+      "recommendedSubskillId": "sub_quant_07_4",
+      "status": "SOURCE_RULE_AND_LIVE_SUBSKILL_MATCH_PENDING_FULL_ITEM_IMAGE_AUDIT"
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P013-Q17",
+      "bank": "FND26",
+      "sourcePage": 13,
+      "bookConcept": "القيمة المطلقة",
+      "existingSubskillId": "sub_quant_07_4",
+      "recommendedSubskillId": "sub_quant_07_4",
+      "status": "SOURCE_RULE_AND_LIVE_SUBSKILL_MATCH_PENDING_FULL_ITEM_IMAGE_AUDIT"
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P013-Q18",
+      "bank": "FND26",
+      "sourcePage": 13,
+      "bookConcept": "القيمة المطلقة",
+      "existingSubskillId": "sub_quant_07_4",
+      "recommendedSubskillId": "sub_quant_07_4",
+      "status": "SOURCE_RULE_AND_LIVE_SUBSKILL_MATCH_PENDING_FULL_ITEM_IMAGE_AUDIT"
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P014-Q19",
+      "bank": "FND26",
+      "sourcePage": 14,
+      "bookConcept": "خانة الآحاد",
+      "existingSubskillId": "sub_quant_01_5",
+      "recommendedSubskillId": "sub_quant_01_5",
+      "status": "SOURCE_RULE_AND_LIVE_SUBSKILL_MATCH_PENDING_FULL_ITEM_IMAGE_AUDIT"
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P014-Q20",
+      "bank": "FND26",
+      "sourcePage": 14,
+      "bookConcept": "خانة الآحاد",
+      "existingSubskillId": "sub_quant_01_5",
+      "recommendedSubskillId": "sub_quant_01_5",
+      "status": "SOURCE_RULE_AND_LIVE_SUBSKILL_MATCH_PENDING_FULL_ITEM_IMAGE_AUDIT"
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P014-Q21",
+      "bank": "FND26",
+      "sourcePage": 14,
+      "bookConcept": "خانة الآحاد",
+      "existingSubskillId": "sub_quant_01_5",
+      "recommendedSubskillId": "sub_quant_01_5",
+      "status": "SOURCE_RULE_AND_LIVE_SUBSKILL_MATCH_PENDING_FULL_ITEM_IMAGE_AUDIT"
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P014-Q22",
+      "bank": "FND26",
+      "sourcePage": 14,
+      "bookConcept": "خانة الآحاد",
+      "existingSubskillId": "sub_quant_01_5",
+      "recommendedSubskillId": "sub_quant_01_5",
+      "status": "SOURCE_RULE_AND_LIVE_SUBSKILL_MATCH_PENDING_FULL_ITEM_IMAGE_AUDIT"
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P014-Q23",
+      "bank": "FND26",
+      "sourcePage": 14,
+      "bookConcept": "خانة الآحاد",
+      "existingSubskillId": "sub_quant_01_5",
+      "recommendedSubskillId": "sub_quant_01_5",
+      "status": "PEDAGOGY_REVIEW"
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P014-Q24",
+      "bank": "FND26",
+      "sourcePage": 14,
+      "bookConcept": "خانة الآحاد",
+      "existingSubskillId": "sub_quant_01_5",
+      "recommendedSubskillId": "sub_quant_01_5",
+      "status": "PEDAGOGY_REVIEW"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P007-Q01",
+      "bank": "COL2627",
+      "sourcePage": 7,
+      "bookConcept": "قابلية القسمة",
+      "existingSubskillId": "sub_quant_02_1",
+      "recommendedSubskillId": "sub_quant_02_1",
+      "status": "SOURCE_RULE_AND_LIVE_SUBSKILL_MATCH_PENDING_FULL_ITEM_IMAGE_AUDIT"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P007-Q02",
+      "bank": "COL2627",
+      "sourcePage": 7,
+      "bookConcept": "قابلية القسمة",
+      "existingSubskillId": "sub_quant_02_1",
+      "recommendedSubskillId": "sub_quant_02_1",
+      "status": "SOURCE_RULE_AND_LIVE_SUBSKILL_MATCH_PENDING_FULL_ITEM_IMAGE_AUDIT"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P007-Q03",
+      "bank": "COL2627",
+      "sourcePage": 7,
+      "bookConcept": "قابلية القسمة",
+      "existingSubskillId": "sub_quant_02_1",
+      "recommendedSubskillId": "sub_quant_02_1",
+      "status": "SOURCE_RULE_AND_LIVE_SUBSKILL_MATCH_PENDING_FULL_ITEM_IMAGE_AUDIT"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P007-Q04",
+      "bank": "COL2627",
+      "sourcePage": 7,
+      "bookConcept": "قابلية القسمة",
+      "existingSubskillId": "sub_quant_02_1",
+      "recommendedSubskillId": "sub_quant_02_1",
+      "status": "SOURCE_RULE_AND_LIVE_SUBSKILL_MATCH_PENDING_FULL_ITEM_IMAGE_AUDIT"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P007-Q05",
+      "bank": "COL2627",
+      "sourcePage": 7,
+      "bookConcept": "بواقي القسمة",
+      "existingSubskillId": "sub_quant_02_2",
+      "recommendedSubskillId": "sub_quant_02_2",
+      "status": "SOURCE_RULE_AND_LIVE_SUBSKILL_MATCH_PENDING_FULL_ITEM_IMAGE_AUDIT"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P007-Q06",
+      "bank": "COL2627",
+      "sourcePage": 7,
+      "bookConcept": "بواقي القسمة",
+      "existingSubskillId": "sub_quant_02_2",
+      "recommendedSubskillId": "sub_quant_02_2",
+      "status": "SOURCE_RULE_AND_LIVE_SUBSKILL_MATCH_PENDING_FULL_ITEM_IMAGE_AUDIT"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P007-Q07",
+      "bank": "COL2627",
+      "sourcePage": 7,
+      "bookConcept": "قابلية القسمة",
+      "existingSubskillId": "sub_quant_02_1",
+      "recommendedSubskillId": "sub_quant_02_1",
+      "status": "SOURCE_RULE_AND_LIVE_SUBSKILL_MATCH_PENDING_FULL_ITEM_IMAGE_AUDIT"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P007-Q08",
+      "bank": "COL2627",
+      "sourcePage": 7,
+      "bookConcept": "قابلية القسمة",
+      "existingSubskillId": "sub_quant_02_1",
+      "recommendedSubskillId": "sub_quant_02_1",
+      "status": "SOURCE_RULE_AND_LIVE_SUBSKILL_MATCH_PENDING_FULL_ITEM_IMAGE_AUDIT"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P007-Q09",
+      "bank": "COL2627",
+      "sourcePage": 7,
+      "bookConcept": "العمر مع مضاعفات الأعداد",
+      "existingSubskillId": "sub_quant_16_1",
+      "recommendedSubskillId": "sub_quant_16_1",
+      "status": "SOURCE_RULE_AND_LIVE_SUBSKILL_MATCH_PENDING_FULL_ITEM_IMAGE_AUDIT"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P007-Q10",
+      "bank": "COL2627",
+      "sourcePage": 7,
+      "bookConcept": "قابلية القسمة",
+      "existingSubskillId": "sub_quant_02_1",
+      "recommendedSubskillId": "sub_quant_02_1",
+      "status": "SOURCE_RULE_AND_LIVE_SUBSKILL_MATCH_PENDING_FULL_ITEM_IMAGE_AUDIT"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P007-Q11",
+      "bank": "COL2627",
+      "sourcePage": 7,
+      "bookConcept": "قابلية القسمة",
+      "existingSubskillId": "sub_quant_02_1",
+      "recommendedSubskillId": "sub_quant_02_1",
+      "status": "SOURCE_RULE_AND_LIVE_SUBSKILL_MATCH_PENDING_FULL_ITEM_IMAGE_AUDIT"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P007-Q12",
+      "bank": "COL2627",
+      "sourcePage": 7,
+      "bookConcept": "الأعداد الأولية والعوامل",
+      "existingSubskillId": "sub_quant_02_3",
+      "recommendedSubskillId": "sub_quant_02_3",
+      "status": "SOURCE_RULE_AND_LIVE_SUBSKILL_MATCH_PENDING_FULL_ITEM_IMAGE_AUDIT"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P007-Q13",
+      "bank": "COL2627",
+      "sourcePage": 7,
+      "bookConcept": "الأعداد الأولية والعوامل",
+      "existingSubskillId": "sub_quant_02_3",
+      "recommendedSubskillId": "sub_quant_02_3",
+      "status": "SOURCE_RULE_AND_LIVE_SUBSKILL_MATCH_PENDING_FULL_ITEM_IMAGE_AUDIT"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P007-Q14",
+      "bank": "COL2627",
+      "sourcePage": 7,
+      "bookConcept": "الأعداد الأولية والعوامل",
+      "existingSubskillId": "sub_quant_02_3",
+      "recommendedSubskillId": "sub_quant_02_3",
+      "status": "SOURCE_RULE_AND_LIVE_SUBSKILL_MATCH_PENDING_FULL_ITEM_IMAGE_AUDIT"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P007-Q15",
+      "bank": "COL2627",
+      "sourcePage": 7,
+      "bookConcept": "الأعداد الأولية والعوامل",
+      "existingSubskillId": "sub_quant_02_3",
+      "recommendedSubskillId": "sub_quant_02_3",
+      "status": "SOURCE_RULE_AND_LIVE_SUBSKILL_MATCH_PENDING_FULL_ITEM_IMAGE_AUDIT"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P008-Q16",
+      "bank": "COL2627",
+      "sourcePage": 8,
+      "bookConcept": "الأعداد الأولية والعوامل",
+      "existingSubskillId": "sub_quant_02_3",
+      "recommendedSubskillId": "sub_quant_02_3",
+      "status": "SOURCE_RULE_AND_LIVE_SUBSKILL_MATCH_PENDING_FULL_ITEM_IMAGE_AUDIT"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P008-Q17",
+      "bank": "COL2627",
+      "sourcePage": 8,
+      "bookConcept": "الأعداد الأولية والعوامل",
+      "existingSubskillId": "sub_quant_02_3",
+      "recommendedSubskillId": "sub_quant_02_3",
+      "status": "SOURCE_RULE_AND_LIVE_SUBSKILL_MATCH_PENDING_FULL_ITEM_IMAGE_AUDIT"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P008-Q18",
+      "bank": "COL2627",
+      "sourcePage": 8,
+      "bookConcept": "الأعداد الأولية والعوامل",
+      "existingSubskillId": "sub_quant_02_3",
+      "recommendedSubskillId": "sub_quant_02_3",
+      "status": "SOURCE_RULE_AND_LIVE_SUBSKILL_MATCH_PENDING_FULL_ITEM_IMAGE_AUDIT"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P008-Q19",
+      "bank": "COL2627",
+      "sourcePage": 8,
+      "bookConcept": "الأعداد الأولية والعوامل",
+      "existingSubskillId": "sub_quant_02_3",
+      "recommendedSubskillId": "sub_quant_02_3",
+      "status": "SOURCE_RULE_AND_LIVE_SUBSKILL_MATCH_PENDING_FULL_ITEM_IMAGE_AUDIT"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P008-Q20",
+      "bank": "COL2627",
+      "sourcePage": 8,
+      "bookConcept": "الأعداد الأولية والعوامل",
+      "existingSubskillId": "sub_quant_02_3",
+      "recommendedSubskillId": "sub_quant_02_3",
+      "status": "SOURCE_RULE_AND_LIVE_SUBSKILL_MATCH_PENDING_FULL_ITEM_IMAGE_AUDIT"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P008-Q21",
+      "bank": "COL2627",
+      "sourcePage": 8,
+      "bookConcept": "الأعداد الأولية والعوامل",
+      "existingSubskillId": "sub_quant_02_3",
+      "recommendedSubskillId": "sub_quant_02_3",
+      "status": "SOURCE_RULE_AND_LIVE_SUBSKILL_MATCH_PENDING_FULL_ITEM_IMAGE_AUDIT"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P008-Q22",
+      "bank": "COL2627",
+      "sourcePage": 8,
+      "bookConcept": "الأعداد الأولية والعوامل",
+      "existingSubskillId": "sub_quant_02_3",
+      "recommendedSubskillId": "sub_quant_02_3",
+      "status": "SOURCE_RULE_AND_LIVE_SUBSKILL_MATCH_PENDING_FULL_ITEM_IMAGE_AUDIT"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P008-Q23",
+      "bank": "COL2627",
+      "sourcePage": 8,
+      "bookConcept": "القيمة المطلقة",
+      "existingSubskillId": "sub_quant_07_4",
+      "recommendedSubskillId": "sub_quant_07_4",
+      "status": "SOURCE_RULE_AND_LIVE_SUBSKILL_MATCH_PENDING_FULL_ITEM_IMAGE_AUDIT"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P008-Q24",
+      "bank": "COL2627",
+      "sourcePage": 8,
+      "bookConcept": "القيمة المطلقة",
+      "existingSubskillId": "sub_quant_07_4",
+      "recommendedSubskillId": "sub_quant_07_4",
+      "status": "SOURCE_RULE_AND_LIVE_SUBSKILL_MATCH_PENDING_FULL_ITEM_IMAGE_AUDIT"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P008-Q25",
+      "bank": "COL2627",
+      "sourcePage": 8,
+      "bookConcept": "القيمة المطلقة",
+      "existingSubskillId": "sub_quant_07_4",
+      "recommendedSubskillId": "sub_quant_07_4",
+      "status": "SOURCE_RULE_AND_LIVE_SUBSKILL_MATCH_PENDING_FULL_ITEM_IMAGE_AUDIT"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P008-Q26",
+      "bank": "COL2627",
+      "sourcePage": 8,
+      "bookConcept": "القيمة المطلقة",
+      "existingSubskillId": "sub_quant_07_4",
+      "recommendedSubskillId": "sub_quant_07_4",
+      "status": "SOURCE_RULE_AND_LIVE_SUBSKILL_MATCH_PENDING_FULL_ITEM_IMAGE_AUDIT"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P008-Q27",
+      "bank": "COL2627",
+      "sourcePage": 8,
+      "bookConcept": "القيمة المطلقة",
+      "existingSubskillId": "sub_quant_07_4",
+      "recommendedSubskillId": "sub_quant_07_4",
+      "status": "SOURCE_RULE_AND_LIVE_SUBSKILL_MATCH_PENDING_FULL_ITEM_IMAGE_AUDIT"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P008-Q28",
+      "bank": "COL2627",
+      "sourcePage": 8,
+      "bookConcept": "خانة الآحاد",
+      "existingSubskillId": "sub_quant_01_5",
+      "recommendedSubskillId": "sub_quant_01_5",
+      "status": "SOURCE_RULE_AND_LIVE_SUBSKILL_MATCH_PENDING_FULL_ITEM_IMAGE_AUDIT"
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P008-Q29",
+      "bank": "COL2627",
+      "sourcePage": 8,
+      "bookConcept": "خانة الآحاد",
+      "existingSubskillId": "sub_quant_01_5",
+      "recommendedSubskillId": "sub_quant_01_5",
+      "status": "SOURCE_RULE_AND_LIVE_SUBSKILL_MATCH_PENDING_FULL_ITEM_IMAGE_AUDIT"
+    }
+  ]
+}

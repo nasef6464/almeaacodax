@@ -1,0 +1,1063 @@
+{
+  "date": "2026-10-12",
+  "source": "MongoDB Atlas read-only lookup join of quiz questionIds to questions.id",
+  "caveat": "Proves only structural current-skill agreement, NOT book-source mathematical accuracy",
+  "summary": {
+    "drills": 95,
+    "links": 1200,
+    "currentStructuralMismatch": 0,
+    "withExactlyTen": 37,
+    "lessThanTen": 2,
+    "greaterThanTen": 56
+  },
+  "quizzes": [
+    {
+      "id": "drill_sub_quant_01_1",
+      "numberOfQuestions": 10,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "COL2627": 8,
+        "QUDURAT-PRACTICE": 2
+      }
+    },
+    {
+      "id": "drill_sub_quant_01_2",
+      "numberOfQuestions": 10,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 1,
+        "COL2627": 5,
+        "QUDURAT-PRACTICE": 4
+      }
+    },
+    {
+      "id": "drill_sub_quant_01_3",
+      "numberOfQuestions": 15,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 12,
+        "COL2627": 3
+      }
+    },
+    {
+      "id": "drill_sub_quant_01_4",
+      "numberOfQuestions": 12,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 5,
+        "COL2627": 7
+      }
+    },
+    {
+      "id": "drill_sub_quant_01_5",
+      "numberOfQuestions": 10,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 6,
+        "COL2627": 3,
+        "QUDURAT-PRACTICE": 1
+      }
+    },
+    {
+      "id": "drill_sub_quant_02_1",
+      "numberOfQuestions": 15,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 8,
+        "COL2627": 7
+      }
+    },
+    {
+      "id": "drill_sub_quant_02_2",
+      "numberOfQuestions": 10,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 3,
+        "COL2627": 2,
+        "QUDURAT-PRACTICE": 5
+      }
+    },
+    {
+      "id": "drill_sub_quant_02_3",
+      "numberOfQuestions": 15,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 8,
+        "COL2627": 7
+      }
+    },
+    {
+      "id": "drill_sub_quant_03_1",
+      "numberOfQuestions": 15,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 6,
+        "COL2627": 9
+      }
+    },
+    {
+      "id": "drill_sub_quant_03_2",
+      "numberOfQuestions": 15,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 4,
+        "COL2627": 11
+      }
+    },
+    {
+      "id": "drill_sub_quant_03_3",
+      "numberOfQuestions": 15,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 15
+      }
+    },
+    {
+      "id": "drill_sub_quant_03_4",
+      "numberOfQuestions": 15,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 14,
+        "COL2627": 1
+      }
+    },
+    {
+      "id": "drill_sub_quant_04_1",
+      "numberOfQuestions": 10,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 5,
+        "COL2627": 1,
+        "QUDURAT-PRACTICE": 4
+      }
+    },
+    {
+      "id": "drill_sub_quant_04_2",
+      "numberOfQuestions": 15,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 13,
+        "COL2627": 2
+      }
+    },
+    {
+      "id": "drill_sub_quant_04_3",
+      "numberOfQuestions": 11,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 7,
+        "COL2627": 4
+      }
+    },
+    {
+      "id": "drill_sub_quant_04_4",
+      "numberOfQuestions": 15,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 2,
+        "COL2627": 13
+      }
+    },
+    {
+      "id": "drill_sub_quant_05_1",
+      "numberOfQuestions": 15,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 12,
+        "COL2627": 3
+      }
+    },
+    {
+      "id": "drill_sub_quant_05_2",
+      "numberOfQuestions": 15,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 15
+      }
+    },
+    {
+      "id": "drill_sub_quant_05_3",
+      "numberOfQuestions": 15,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 15
+      }
+    },
+    {
+      "id": "drill_sub_quant_05_4",
+      "numberOfQuestions": 15,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 6,
+        "COL2627": 9
+      }
+    },
+    {
+      "id": "drill_sub_quant_05_5",
+      "numberOfQuestions": 15,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 15
+      }
+    },
+    {
+      "id": "drill_sub_quant_06_1",
+      "numberOfQuestions": 15,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 15
+      }
+    },
+    {
+      "id": "drill_sub_quant_06_2",
+      "numberOfQuestions": 15,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 8,
+        "COL2627": 7
+      }
+    },
+    {
+      "id": "drill_sub_quant_06_3",
+      "numberOfQuestions": 10,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 1,
+        "COL2627": 9
+      }
+    },
+    {
+      "id": "drill_sub_quant_06_4",
+      "numberOfQuestions": 15,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 15
+      }
+    },
+    {
+      "id": "drill_sub_quant_06_5",
+      "numberOfQuestions": 15,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 11,
+        "COL2627": 4
+      }
+    },
+    {
+      "id": "drill_sub_quant_07_1",
+      "numberOfQuestions": 15,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 15
+      }
+    },
+    {
+      "id": "drill_sub_quant_07_2",
+      "numberOfQuestions": 15,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 15
+      }
+    },
+    {
+      "id": "drill_sub_quant_07_3",
+      "numberOfQuestions": 10,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 2,
+        "COL2627": 1,
+        "QUDURAT-PRACTICE": 7
+      }
+    },
+    {
+      "id": "drill_sub_quant_07_4",
+      "numberOfQuestions": 13,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 6,
+        "COL2627": 7
+      }
+    },
+    {
+      "id": "drill_sub_quant_08_1",
+      "numberOfQuestions": 15,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 15
+      }
+    },
+    {
+      "id": "drill_sub_quant_08_2",
+      "numberOfQuestions": 15,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 14,
+        "COL2627": 1
+      }
+    },
+    {
+      "id": "drill_sub_quant_08_3",
+      "numberOfQuestions": 11,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 6,
+        "COL2627": 5
+      }
+    },
+    {
+      "id": "drill_sub_quant_08_4",
+      "numberOfQuestions": 10,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 5,
+        "COL2627": 3,
+        "QUDURAT-PRACTICE": 2
+      }
+    },
+    {
+      "id": "drill_sub_quant_09_1",
+      "numberOfQuestions": 15,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 15
+      }
+    },
+    {
+      "id": "drill_sub_quant_09_2",
+      "numberOfQuestions": 15,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 5,
+        "COL2627": 10
+      }
+    },
+    {
+      "id": "drill_sub_quant_09_3",
+      "numberOfQuestions": 15,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 8,
+        "COL2627": 7
+      }
+    },
+    {
+      "id": "drill_sub_quant_09_4",
+      "numberOfQuestions": 12,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 6,
+        "COL2627": 6
+      }
+    },
+    {
+      "id": "drill_sub_quant_10_1",
+      "numberOfQuestions": 15,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 8,
+        "COL2627": 7
+      }
+    },
+    {
+      "id": "drill_sub_quant_10_2",
+      "numberOfQuestions": 10,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 3,
+        "COL2627": 7
+      }
+    },
+    {
+      "id": "drill_sub_quant_10_3",
+      "numberOfQuestions": 10,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 4,
+        "COL2627": 5,
+        "QUDURAT-PRACTICE": 1
+      }
+    },
+    {
+      "id": "drill_sub_quant_10_4",
+      "numberOfQuestions": 10,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 2,
+        "COL2627": 3,
+        "QUDURAT-PRACTICE": 5
+      }
+    },
+    {
+      "id": "drill_sub_quant_11_1",
+      "numberOfQuestions": 15,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 15
+      }
+    },
+    {
+      "id": "drill_sub_quant_11_2",
+      "numberOfQuestions": 10,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 3,
+        "COL2627": 7
+      }
+    },
+    {
+      "id": "drill_sub_quant_11_3",
+      "numberOfQuestions": 10,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 6,
+        "COL2627": 2,
+        "QUDURAT-PRACTICE": 2
+      }
+    },
+    {
+      "id": "drill_sub_quant_11_4",
+      "numberOfQuestions": 10,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "QUDURAT-PRACTICE": 10
+      }
+    },
+    {
+      "id": "drill_sub_quant_12_1",
+      "numberOfQuestions": 15,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 15
+      }
+    },
+    {
+      "id": "drill_sub_quant_12_2",
+      "numberOfQuestions": 10,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 3,
+        "COL2627": 4,
+        "QUDURAT-PRACTICE": 3
+      }
+    },
+    {
+      "id": "drill_sub_quant_12_3",
+      "numberOfQuestions": 10,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 5,
+        "COL2627": 5
+      }
+    },
+    {
+      "id": "drill_sub_quant_12_4",
+      "numberOfQuestions": 10,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 4,
+        "COL2627": 1,
+        "QUDURAT-PRACTICE": 5
+      }
+    },
+    {
+      "id": "drill_sub_quant_13_1",
+      "numberOfQuestions": 10,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 5,
+        "COL2627": 2,
+        "QUDURAT-PRACTICE": 3
+      }
+    },
+    {
+      "id": "drill_sub_quant_13_2",
+      "numberOfQuestions": 9,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 5,
+        "COL2627": 2,
+        "QUDURAT-PRACTICE": 2
+      }
+    },
+    {
+      "id": "drill_sub_quant_13_3",
+      "numberOfQuestions": 14,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 7,
+        "COL2627": 7
+      }
+    },
+    {
+      "id": "drill_sub_quant_13_4",
+      "numberOfQuestions": 15,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 15
+      }
+    },
+    {
+      "id": "drill_sub_quant_14_1",
+      "numberOfQuestions": 10,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 5,
+        "COL2627": 5
+      }
+    },
+    {
+      "id": "drill_sub_quant_14_2",
+      "numberOfQuestions": 10,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 2,
+        "COL2627": 1,
+        "QUDURAT-PRACTICE": 7
+      }
+    },
+    {
+      "id": "drill_sub_quant_14_3",
+      "numberOfQuestions": 10,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 3,
+        "COL2627": 1,
+        "QUDURAT-PRACTICE": 6
+      }
+    },
+    {
+      "id": "drill_sub_quant_14_4",
+      "numberOfQuestions": 15,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 15
+      }
+    },
+    {
+      "id": "drill_sub_quant_15_1",
+      "numberOfQuestions": 9,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 4,
+        "COL2627": 2,
+        "QUDURAT-PRACTICE": 3
+      }
+    },
+    {
+      "id": "drill_sub_quant_15_2",
+      "numberOfQuestions": 10,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 4,
+        "COL2627": 5,
+        "QUDURAT-PRACTICE": 1
+      }
+    },
+    {
+      "id": "drill_sub_quant_15_3",
+      "numberOfQuestions": 10,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 1,
+        "QUDURAT-PRACTICE": 9
+      }
+    },
+    {
+      "id": "drill_sub_quant_16_1",
+      "numberOfQuestions": 10,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 3,
+        "COL2627": 3,
+        "QUDURAT-PRACTICE": 4
+      }
+    },
+    {
+      "id": "drill_sub_quant_16_2",
+      "numberOfQuestions": 10,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 3,
+        "COL2627": 4,
+        "QUDURAT-PRACTICE": 3
+      }
+    },
+    {
+      "id": "drill_sub_quant_16_3",
+      "numberOfQuestions": 10,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 1,
+        "QUDURAT-PRACTICE": 9
+      }
+    },
+    {
+      "id": "drill_sub_quant_17_1",
+      "numberOfQuestions": 15,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 15
+      }
+    },
+    {
+      "id": "drill_sub_quant_17_2",
+      "numberOfQuestions": 10,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 3,
+        "COL2627": 4,
+        "QUDURAT-PRACTICE": 3
+      }
+    },
+    {
+      "id": "drill_sub_quant_17_3",
+      "numberOfQuestions": 15,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 10,
+        "COL2627": 5
+      }
+    },
+    {
+      "id": "drill_sub_quant_17_4",
+      "numberOfQuestions": 13,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 6,
+        "COL2627": 7
+      }
+    },
+    {
+      "id": "drill_sub_quant_18_1",
+      "numberOfQuestions": 15,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 9,
+        "COL2627": 6
+      }
+    },
+    {
+      "id": "drill_sub_quant_18_2",
+      "numberOfQuestions": 15,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 14,
+        "COL2627": 1
+      }
+    },
+    {
+      "id": "drill_sub_quant_18_3",
+      "numberOfQuestions": 10,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "QUDURAT-PRACTICE": 10
+      }
+    },
+    {
+      "id": "drill_sub_quant_19_1",
+      "numberOfQuestions": 15,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 3,
+        "COL2627": 12
+      }
+    },
+    {
+      "id": "drill_sub_quant_19_2",
+      "numberOfQuestions": 15,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 7,
+        "COL2627": 8
+      }
+    },
+    {
+      "id": "drill_sub_quant_19_3",
+      "numberOfQuestions": 15,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 12,
+        "COL2627": 3
+      }
+    },
+    {
+      "id": "drill_sub_quant_20_1",
+      "numberOfQuestions": 15,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 15
+      }
+    },
+    {
+      "id": "drill_sub_quant_20_2",
+      "numberOfQuestions": 15,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 14,
+        "COL2627": 1
+      }
+    },
+    {
+      "id": "drill_sub_quant_20_3",
+      "numberOfQuestions": 10,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 6,
+        "COL2627": 4
+      }
+    },
+    {
+      "id": "drill_sub_quant_20_4",
+      "numberOfQuestions": 15,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 15
+      }
+    },
+    {
+      "id": "drill_sub_quant_20_5",
+      "numberOfQuestions": 12,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 9,
+        "COL2627": 3
+      }
+    },
+    {
+      "id": "drill_sub_quant_21_1",
+      "numberOfQuestions": 10,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 1,
+        "COL2627": 7,
+        "QUDURAT-PRACTICE": 2
+      }
+    },
+    {
+      "id": "drill_sub_quant_21_2",
+      "numberOfQuestions": 15,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 15
+      }
+    },
+    {
+      "id": "drill_sub_quant_21_3",
+      "numberOfQuestions": 10,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 3,
+        "COL2627": 5,
+        "QUDURAT-PRACTICE": 2
+      }
+    },
+    {
+      "id": "drill_sub_quant_22_1",
+      "numberOfQuestions": 15,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 13,
+        "COL2627": 2
+      }
+    },
+    {
+      "id": "drill_sub_quant_22_2",
+      "numberOfQuestions": 10,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 3,
+        "COL2627": 2,
+        "QUDURAT-PRACTICE": 5
+      }
+    },
+    {
+      "id": "drill_sub_quant_22_3",
+      "numberOfQuestions": 15,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 7,
+        "COL2627": 8
+      }
+    },
+    {
+      "id": "drill_sub_quant_23_1",
+      "numberOfQuestions": 10,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 4,
+        "COL2627": 2,
+        "QUDURAT-PRACTICE": 4
+      }
+    },
+    {
+      "id": "drill_sub_quant_23_2",
+      "numberOfQuestions": 10,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 5,
+        "COL2627": 5
+      }
+    },
+    {
+      "id": "drill_sub_quant_23_3",
+      "numberOfQuestions": 10,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 3,
+        "COL2627": 4,
+        "QUDURAT-PRACTICE": 3
+      }
+    },
+    {
+      "id": "drill_sub_quant_24_1",
+      "numberOfQuestions": 15,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 15
+      }
+    },
+    {
+      "id": "drill_sub_quant_24_2",
+      "numberOfQuestions": 10,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 6,
+        "COL2627": 4
+      }
+    },
+    {
+      "id": "drill_sub_quant_24_3",
+      "numberOfQuestions": 15,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 15
+      }
+    },
+    {
+      "id": "drill_sub_quant_24_4",
+      "numberOfQuestions": 12,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 9,
+        "COL2627": 3
+      }
+    },
+    {
+      "id": "drill_sub_quant_25_1",
+      "numberOfQuestions": 15,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 15
+      }
+    },
+    {
+      "id": "drill_sub_quant_25_2",
+      "numberOfQuestions": 12,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 7,
+        "COL2627": 5
+      }
+    },
+    {
+      "id": "drill_sub_quant_25_3",
+      "numberOfQuestions": 10,
+      "missingRefs": 0,
+      "currentSkillMismatch": 0,
+      "rejectedItems": 0,
+      "sourceBankCounts": {
+        "FND26": 7,
+        "COL2627": 1,
+        "QUDURAT-PRACTICE": 2
+      }
+    }
+  ]
+}

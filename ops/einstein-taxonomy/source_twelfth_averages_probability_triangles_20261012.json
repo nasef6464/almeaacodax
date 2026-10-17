@@ -1,0 +1,3334 @@
+{
+  "schema": "almeaa.einstein.source-page-ocr-hold.v4",
+  "asOf": "2026-10-12T22:48:37Z",
+  "repository": "nasef6464/almeaacodax",
+  "branch": "audit/einstein-fnd-col-source-taxonomy-20261012",
+  "pr": 529,
+  "summary": {
+    "newPageMappedCodes": 106,
+    "perBank": {
+      "FND26": 40,
+      "COL2627": 66
+    },
+    "newSourcePages": 12,
+    "atlasFound": 106,
+    "sourceBookImageVerified": 0,
+    "individualPrintedRuleVerified": 0,
+    "HOLD": 106,
+    "productionMutations": 0,
+    "previousRemoteUnique": 1194,
+    "previousLocalEleventhUnique": 114,
+    "mappedIfAllUnique": 1414
+  },
+  "rows": [
+    {
+      "questionCode": "QDR-QNT-COL2627-P067-Q01",
+      "atlasQuestionId": "6aba650d2db5dbfe1c769b88",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 67,
+      "printedQuestionNumber": 1,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [
+        1
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 100,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_1",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_1"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p067/QDR-QNT-COL2627-P067-Q01.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P067-Q02",
+      "atlasQuestionId": "6aba650d2db5dbfe1c769b89",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 67,
+      "printedQuestionNumber": 2,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [
+        1
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 70,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_1",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_1"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p067/QDR-QNT-COL2627-P067-Q02.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P067-Q03",
+      "atlasQuestionId": "6aba650d2db5dbfe1c769b8a",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 67,
+      "printedQuestionNumber": 3,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [
+        1
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 100,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_1",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_1"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p067/QDR-QNT-COL2627-P067-Q03.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P067-Q04",
+      "atlasQuestionId": "6aba650d2db5dbfe1c769b8b",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 67,
+      "printedQuestionNumber": 4,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [
+        1
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 60,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_1",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_1"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p067/QDR-QNT-COL2627-P067-Q04.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P067-Q05",
+      "atlasQuestionId": "6aba650d2db5dbfe1c769b8c",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 67,
+      "printedQuestionNumber": 5,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [
+        1
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 60,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_1",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_1"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p067/QDR-QNT-COL2627-P067-Q05.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P067-Q06",
+      "atlasQuestionId": "6aba650d2db5dbfe1c769b8d",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 67,
+      "printedQuestionNumber": 6,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [
+        1
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 100,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_1",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_1"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p067/QDR-QNT-COL2627-P067-Q06.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P067-Q07",
+      "atlasQuestionId": "6aba650d2db5dbfe1c769b8e",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 67,
+      "printedQuestionNumber": 7,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [
+        1
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 100,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_1",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_1"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p067/QDR-QNT-COL2627-P067-Q07.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P067-Q08",
+      "atlasQuestionId": "6aba650d2db5dbfe1c769b8f",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 67,
+      "printedQuestionNumber": 8,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [
+        1
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 60,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_1",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_1"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p067/QDR-QNT-COL2627-P067-Q08.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P067-Q09",
+      "atlasQuestionId": "6aba650d2db5dbfe1c769b90",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 67,
+      "printedQuestionNumber": 9,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [
+        1
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 60,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_1",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_1"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p067/QDR-QNT-COL2627-P067-Q09.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P067-Q10",
+      "atlasQuestionId": "6aba650d2db5dbfe1c769b91",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 67,
+      "printedQuestionNumber": 10,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [
+        1
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 100,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_1",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_1"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p067/QDR-QNT-COL2627-P067-Q10.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P068-Q11",
+      "atlasQuestionId": "6aba650d2db5dbfe1c769b92",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 68,
+      "printedQuestionNumber": 11,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [
+        2
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 100,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_1",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_1"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p068/QDR-QNT-COL2627-P068-Q11.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P068-Q12",
+      "atlasQuestionId": "6aba650d2db5dbfe1c769b93",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 68,
+      "printedQuestionNumber": 12,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [
+        2
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 100,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_1",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_1"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p068/QDR-QNT-COL2627-P068-Q12.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P068-Q13",
+      "atlasQuestionId": "6aba650d2db5dbfe1c769b94",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 68,
+      "printedQuestionNumber": 13,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [
+        2
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 71,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_1",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_1"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p068/QDR-QNT-COL2627-P068-Q13.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P068-Q14",
+      "atlasQuestionId": "6aba650d2db5dbfe1c769b95",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 68,
+      "printedQuestionNumber": 14,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [
+        2
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 60,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_1",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_1"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p068/QDR-QNT-COL2627-P068-Q14.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P068-Q15",
+      "atlasQuestionId": "6aba650d2db5dbfe1c769b96",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 68,
+      "printedQuestionNumber": 15,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [
+        2
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 100,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_1",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_1"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p068/QDR-QNT-COL2627-P068-Q15.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P068-Q16",
+      "atlasQuestionId": "6aba650d2db5dbfe1c769b97",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 68,
+      "printedQuestionNumber": 16,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [
+        2
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 67,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_1",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_1"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p068/QDR-QNT-COL2627-P068-Q16.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P068-Q17",
+      "atlasQuestionId": "6aba650d2db5dbfe1c769b98",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 68,
+      "printedQuestionNumber": 17,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [
+        2
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 100,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_1",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_1"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p068/QDR-QNT-COL2627-P068-Q17.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P068-Q18",
+      "atlasQuestionId": "6aba650d2db5dbfe1c769b99",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 68,
+      "printedQuestionNumber": 18,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [
+        2
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 100,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_1",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_1"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p068/QDR-QNT-COL2627-P068-Q18.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P068-Q19",
+      "atlasQuestionId": "6aba650d2db5dbfe1c769b9a",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 68,
+      "printedQuestionNumber": 19,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [
+        2
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 82,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_1",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_1"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p068/QDR-QNT-COL2627-P068-Q19.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P068-Q20",
+      "atlasQuestionId": "6aba650d2db5dbfe1c769b9b",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 68,
+      "printedQuestionNumber": 20,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [
+        2
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 71,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_1",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_1"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p068/QDR-QNT-COL2627-P068-Q20.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P069-Q21",
+      "atlasQuestionId": "6aba650d2db5dbfe1c769b9c",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 69,
+      "printedQuestionNumber": 21,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 100,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_1",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_1"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p069/QDR-QNT-COL2627-P069-Q21.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P069-Q22",
+      "atlasQuestionId": "6aba650d2db5dbfe1c769b9d",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 69,
+      "printedQuestionNumber": 22,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 60,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_1",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_1"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p069/QDR-QNT-COL2627-P069-Q22.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P069-Q23",
+      "atlasQuestionId": "6aba650d2db5dbfe1c769b9e",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 69,
+      "printedQuestionNumber": 23,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 60,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_1",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_1"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p069/QDR-QNT-COL2627-P069-Q23.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P069-Q24",
+      "atlasQuestionId": "6aba650d2db5dbfe1c769b9f",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 69,
+      "printedQuestionNumber": 24,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 60,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_1",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_1"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p069/QDR-QNT-COL2627-P069-Q24.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P069-Q25",
+      "atlasQuestionId": "6aba650d2db5dbfe1c769ba0",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 69,
+      "printedQuestionNumber": 25,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 100,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_1",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_1"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p069/QDR-QNT-COL2627-P069-Q25.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P069-Q26",
+      "atlasQuestionId": "6aba650d2db5dbfe1c769ba1",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 69,
+      "printedQuestionNumber": 26,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 100,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_1",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_1"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p069/QDR-QNT-COL2627-P069-Q26.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P069-Q27",
+      "atlasQuestionId": "6aba650d2db5dbfe1c769ba2",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 69,
+      "printedQuestionNumber": 27,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 100,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_1",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_1"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p069/QDR-QNT-COL2627-P069-Q27.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P069-Q28",
+      "atlasQuestionId": "6aba650d2db5dbfe1c769ba3",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 69,
+      "printedQuestionNumber": 28,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 100,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_4",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_4"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p069/QDR-QNT-COL2627-P069-Q28.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P069-Q29",
+      "atlasQuestionId": "6aba650e2db5dbfe1c769ba4",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 69,
+      "printedQuestionNumber": 29,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 100,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_4",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_4"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p069/QDR-QNT-COL2627-P069-Q29.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P069-Q30",
+      "atlasQuestionId": "6aba650e2db5dbfe1c769ba5",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 69,
+      "printedQuestionNumber": 30,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 71,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_4",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_4"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p069/QDR-QNT-COL2627-P069-Q30.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P070-Q31",
+      "atlasQuestionId": "6aba650e2db5dbfe1c769ba6",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 70,
+      "printedQuestionNumber": 31,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 86,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_4",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_4"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p070/QDR-QNT-COL2627-P070-Q31.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P070-Q32",
+      "atlasQuestionId": "6aba650e2db5dbfe1c769ba7",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 70,
+      "printedQuestionNumber": 32,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 100,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_3",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_3"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p070/QDR-QNT-COL2627-P070-Q32.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P070-Q33",
+      "atlasQuestionId": "6aba650e2db5dbfe1c769ba8",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 70,
+      "printedQuestionNumber": 33,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 100,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_3",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_3"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p070/QDR-QNT-COL2627-P070-Q33.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P070-Q34",
+      "atlasQuestionId": "6aba650e2db5dbfe1c769ba9",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 70,
+      "printedQuestionNumber": 34,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 100,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_3",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_3"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p070/QDR-QNT-COL2627-P070-Q34.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P070-Q35",
+      "atlasQuestionId": "6aba650e2db5dbfe1c769baa",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 70,
+      "printedQuestionNumber": 35,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 100,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_3",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_3"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p070/QDR-QNT-COL2627-P070-Q35.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P070-Q36",
+      "atlasQuestionId": "6aba650e2db5dbfe1c769bab",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 70,
+      "printedQuestionNumber": 36,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 100,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_2",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_2"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p070/QDR-QNT-COL2627-P070-Q36.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P070-Q37",
+      "atlasQuestionId": "6aba650e2db5dbfe1c769bac",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 70,
+      "printedQuestionNumber": 37,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 86,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_2",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_2"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p070/QDR-QNT-COL2627-P070-Q37.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P070-Q38",
+      "atlasQuestionId": "6aba650e2db5dbfe1c769bad",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 70,
+      "printedQuestionNumber": 38,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 67,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_2",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_2"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p070/QDR-QNT-COL2627-P070-Q38.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P070-Q39",
+      "atlasQuestionId": "6aba650e2db5dbfe1c769bae",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 70,
+      "printedQuestionNumber": 39,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 67,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_2",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_2"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p070/QDR-QNT-COL2627-P070-Q39.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P070-Q40",
+      "atlasQuestionId": "6aba650e2db5dbfe1c769baf",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 70,
+      "printedQuestionNumber": 40,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 100,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_5",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_5"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p070/QDR-QNT-COL2627-P070-Q40.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P070-Q41",
+      "atlasQuestionId": "6aba650e2db5dbfe1c769bb0",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 70,
+      "printedQuestionNumber": 41,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 91,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_4",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_4"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p070/QDR-QNT-COL2627-P070-Q41.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P070-Q42",
+      "atlasQuestionId": "6aba650e2db5dbfe1c769bb1",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 70,
+      "printedQuestionNumber": 42,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 100,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_4",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_4"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p070/QDR-QNT-COL2627-P070-Q42.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P071-Q43",
+      "atlasQuestionId": "6aba650e2db5dbfe1c769bb2",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 71,
+      "printedQuestionNumber": 43,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 100,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_4",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_4"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p071/QDR-QNT-COL2627-P071-Q43.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P071-Q44",
+      "atlasQuestionId": "6aba650e2db5dbfe1c769bb3",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 71,
+      "printedQuestionNumber": 44,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 86,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_25",
+      "currentSubSkillId": "sub_quant_25_3",
+      "currentSkillIds": [
+        "skill_quant_25",
+        "sub_quant_25_3"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p071/QDR-QNT-COL2627-P071-Q44.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P071-Q45",
+      "atlasQuestionId": "6aba650e2db5dbfe1c769bb4",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 71,
+      "printedQuestionNumber": 45,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 100,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_1",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_1"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p071/QDR-QNT-COL2627-P071-Q45.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P071-Q46",
+      "atlasQuestionId": "6aba650e2db5dbfe1c769bb5",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 71,
+      "printedQuestionNumber": 46,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 83,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_4",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_4"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p071/QDR-QNT-COL2627-P071-Q46.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P071-Q47",
+      "atlasQuestionId": "6aba650e2db5dbfe1c769bb6",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 71,
+      "printedQuestionNumber": 47,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 50,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_4",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_4"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p071/QDR-QNT-COL2627-P071-Q47.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P071-Q48",
+      "atlasQuestionId": "6aba650e2db5dbfe1c769bb7",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 71,
+      "printedQuestionNumber": 48,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 100,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_4",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_4"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p071/QDR-QNT-COL2627-P071-Q48.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P071-Q49",
+      "atlasQuestionId": "6aba650e2db5dbfe1c769bb8",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 71,
+      "printedQuestionNumber": 49,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 100,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_1",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_1"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p071/QDR-QNT-COL2627-P071-Q49.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P071-Q50",
+      "atlasQuestionId": "6aba650e2db5dbfe1c769bb9",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 71,
+      "printedQuestionNumber": 50,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 83,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_4",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_4"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p071/QDR-QNT-COL2627-P071-Q50.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P071-Q51",
+      "atlasQuestionId": "6aba650e2db5dbfe1c769bba",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 71,
+      "printedQuestionNumber": 51,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 50,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_4",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_4"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p071/QDR-QNT-COL2627-P071-Q51.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P072-Q52",
+      "atlasQuestionId": "6aba650e2db5dbfe1c769bbb",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 72,
+      "printedQuestionNumber": 52,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [
+        10
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 75,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_4",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_4"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p072/QDR-QNT-COL2627-P072-Q52.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P072-Q53",
+      "atlasQuestionId": "6aba650e2db5dbfe1c769bbc",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 72,
+      "printedQuestionNumber": 53,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [
+        10
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 50,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_4",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_4"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p072/QDR-QNT-COL2627-P072-Q53.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P072-Q54",
+      "atlasQuestionId": "6aba650e2db5dbfe1c769bbd",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 72,
+      "printedQuestionNumber": 54,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [
+        10
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 50,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_4",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_4"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p072/QDR-QNT-COL2627-P072-Q54.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P072-Q55",
+      "atlasQuestionId": "6aba650e2db5dbfe1c769bbe",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 72,
+      "printedQuestionNumber": 55,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [
+        10
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 50,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_4",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_4"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p072/QDR-QNT-COL2627-P072-Q55.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P072-Q56",
+      "atlasQuestionId": "6aba650e2db5dbfe1c769bbf",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 72,
+      "printedQuestionNumber": 56,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [
+        10
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 50,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_4",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_4"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p072/QDR-QNT-COL2627-P072-Q56.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P072-Q57",
+      "atlasQuestionId": "6aba650e2db5dbfe1c769bc0",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 72,
+      "printedQuestionNumber": 57,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [
+        10
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 83,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_4",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_4"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p072/QDR-QNT-COL2627-P072-Q57.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P072-Q58",
+      "atlasQuestionId": "6aba650e2db5dbfe1c769bc1",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 72,
+      "printedQuestionNumber": 58,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [
+        10
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 67,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_5",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_5"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p072/QDR-QNT-COL2627-P072-Q58.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P072-Q59",
+      "atlasQuestionId": "6aba650e2db5dbfe1c769bc2",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 72,
+      "printedQuestionNumber": 59,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [
+        10
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 88,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_4",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_4"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p072/QDR-QNT-COL2627-P072-Q59.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P073-Q60",
+      "atlasQuestionId": "6aba650e2db5dbfe1c769bc3",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 73,
+      "printedQuestionNumber": 60,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [
+        11,
+        12,
+        13,
+        14
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 75,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_1",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_1"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p073/QDR-QNT-COL2627-P073-Q60.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P073-Q61",
+      "atlasQuestionId": "6aba650e2db5dbfe1c769bc4",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 73,
+      "printedQuestionNumber": 61,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [
+        11,
+        12,
+        13,
+        14
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 100,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_1",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_1"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p073/QDR-QNT-COL2627-P073-Q61.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P073-Q62",
+      "atlasQuestionId": "6aba650e2db5dbfe1c769bc5",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 73,
+      "printedQuestionNumber": 62,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [
+        11,
+        12,
+        13,
+        14
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 100,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_4",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_4"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p073/QDR-QNT-COL2627-P073-Q62.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P073-Q63",
+      "atlasQuestionId": "6aba650e2db5dbfe1c769bc6",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 73,
+      "printedQuestionNumber": 63,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [
+        11,
+        12,
+        13,
+        14
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 67,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_5",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_5"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p073/QDR-QNT-COL2627-P073-Q63.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P073-Q64",
+      "atlasQuestionId": "6aba650e2db5dbfe1c769bc7",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 73,
+      "printedQuestionNumber": 64,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [
+        11,
+        12,
+        13,
+        14
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 67,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_1",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_1"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p073/QDR-QNT-COL2627-P073-Q64.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P073-Q65",
+      "atlasQuestionId": "6aba650e2db5dbfe1c769bc8",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 73,
+      "printedQuestionNumber": 65,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [
+        11,
+        12,
+        13,
+        14
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 79,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_1",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_1"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p073/QDR-QNT-COL2627-P073-Q65.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-COL2627-P073-Q66",
+      "atlasQuestionId": "6aba650e2db5dbfe1c769bc9",
+      "bank": "COL2627",
+      "sourceBook": "تجميع انشيتن معدل(1).pdf",
+      "sourcePage": 73,
+      "printedQuestionNumber": 66,
+      "lessonOnSourcePage": "المثلث",
+      "printedRuleMarkersOnPage": [
+        11,
+        12,
+        13,
+        14
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 100,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_20",
+      "currentSubSkillId": "sub_quant_20_4",
+      "currentSkillIds": [
+        "skill_quant_20",
+        "sub_quant_20_4"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/COL2627/p073/QDR-QNT-COL2627-P073-Q66.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P097-Q21",
+      "atlasQuestionId": "6ab8a2742db5dbfe1c767957",
+      "bank": "FND26",
+      "sourceBook": "تاسيس انشتين معدل .pdf",
+      "sourcePage": 97,
+      "printedQuestionNumber": 21,
+      "lessonOnSourcePage": "المتوسط الحسابي والوسيط والاحتمالات والإحصاء",
+      "printedRuleMarkersOnPage": [],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 87,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_17",
+      "currentSubSkillId": "sub_quant_17_1",
+      "currentSkillIds": [
+        "skill_quant_17",
+        "sub_quant_17_1"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p097/QDR-QNT-FND26-P097-Q21.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P097-Q22",
+      "atlasQuestionId": "6ab8a2742db5dbfe1c767958",
+      "bank": "FND26",
+      "sourceBook": "تاسيس انشتين معدل .pdf",
+      "sourcePage": 97,
+      "printedQuestionNumber": 22,
+      "lessonOnSourcePage": "المتوسط الحسابي والوسيط والاحتمالات والإحصاء",
+      "printedRuleMarkersOnPage": [],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 87,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_17",
+      "currentSubSkillId": "sub_quant_17_1",
+      "currentSkillIds": [
+        "skill_quant_17",
+        "sub_quant_17_1"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p097/QDR-QNT-FND26-P097-Q22.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P097-Q23",
+      "atlasQuestionId": "6ab8a2742db5dbfe1c767959",
+      "bank": "FND26",
+      "sourceBook": "تاسيس انشتين معدل .pdf",
+      "sourcePage": 97,
+      "printedQuestionNumber": 23,
+      "lessonOnSourcePage": "المتوسط الحسابي والوسيط والاحتمالات والإحصاء",
+      "printedRuleMarkersOnPage": [],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 82,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_17",
+      "currentSubSkillId": "sub_quant_17_3",
+      "currentSkillIds": [
+        "skill_quant_17",
+        "sub_quant_17_3"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p097/QDR-QNT-FND26-P097-Q23.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P097-Q24",
+      "atlasQuestionId": "6ab8a2742db5dbfe1c76795a",
+      "bank": "FND26",
+      "sourceBook": "تاسيس انشتين معدل .pdf",
+      "sourcePage": 97,
+      "printedQuestionNumber": 24,
+      "lessonOnSourcePage": "المتوسط الحسابي والوسيط والاحتمالات والإحصاء",
+      "printedRuleMarkersOnPage": [],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 100,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_17",
+      "currentSubSkillId": "sub_quant_17_1",
+      "currentSkillIds": [
+        "skill_quant_17",
+        "sub_quant_17_1"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p097/QDR-QNT-FND26-P097-Q24.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P097-Q25",
+      "atlasQuestionId": "6ab8a2742db5dbfe1c76795b",
+      "bank": "FND26",
+      "sourceBook": "تاسيس انشتين معدل .pdf",
+      "sourcePage": 97,
+      "printedQuestionNumber": 25,
+      "lessonOnSourcePage": "المتوسط الحسابي والوسيط والاحتمالات والإحصاء",
+      "printedRuleMarkersOnPage": [],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 100,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_17",
+      "currentSubSkillId": "sub_quant_17_1",
+      "currentSkillIds": [
+        "skill_quant_17",
+        "sub_quant_17_1"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p097/QDR-QNT-FND26-P097-Q25.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P097-Q26",
+      "atlasQuestionId": "6ab8a2742db5dbfe1c76795c",
+      "bank": "FND26",
+      "sourceBook": "تاسيس انشتين معدل .pdf",
+      "sourcePage": 97,
+      "printedQuestionNumber": 26,
+      "lessonOnSourcePage": "المتوسط الحسابي والوسيط والاحتمالات والإحصاء",
+      "printedRuleMarkersOnPage": [],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 83,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_17",
+      "currentSubSkillId": "sub_quant_17_1",
+      "currentSkillIds": [
+        "skill_quant_17",
+        "sub_quant_17_1"
+      ],
+      "atlasApprovalStatus": "rejected",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p097/QDR-QNT-FND26-P097-Q26.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P097-Q27",
+      "atlasQuestionId": "6ab8a2742db5dbfe1c76795d",
+      "bank": "FND26",
+      "sourceBook": "تاسيس انشتين معدل .pdf",
+      "sourcePage": 97,
+      "printedQuestionNumber": 27,
+      "lessonOnSourcePage": "المتوسط الحسابي والوسيط والاحتمالات والإحصاء",
+      "printedRuleMarkersOnPage": [],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 90,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_17",
+      "currentSubSkillId": "sub_quant_17_1",
+      "currentSkillIds": [
+        "skill_quant_17",
+        "sub_quant_17_1"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p097/QDR-QNT-FND26-P097-Q27.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P097-Q28",
+      "atlasQuestionId": "6ab8a2742db5dbfe1c76795e",
+      "bank": "FND26",
+      "sourceBook": "تاسيس انشتين معدل .pdf",
+      "sourcePage": 97,
+      "printedQuestionNumber": 28,
+      "lessonOnSourcePage": "المتوسط الحسابي والوسيط والاحتمالات والإحصاء",
+      "printedRuleMarkersOnPage": [],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 80,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_17",
+      "currentSubSkillId": "sub_quant_17_3",
+      "currentSkillIds": [
+        "skill_quant_17",
+        "sub_quant_17_3"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p097/QDR-QNT-FND26-P097-Q28.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P098-Q29",
+      "atlasQuestionId": "6ab8a3c22db5dbfe1c767977",
+      "bank": "FND26",
+      "sourceBook": "تاسيس انشتين معدل .pdf",
+      "sourcePage": 98,
+      "printedQuestionNumber": 29,
+      "lessonOnSourcePage": "المتوسط الحسابي والوسيط والاحتمالات والإحصاء",
+      "printedRuleMarkersOnPage": [
+        2
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 75,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_17",
+      "currentSubSkillId": "sub_quant_17_3",
+      "currentSkillIds": [
+        "skill_quant_17",
+        "sub_quant_17_3"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p098/QDR-QNT-FND26-P098-Q29.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P098-Q30",
+      "atlasQuestionId": "6ab8a3c22db5dbfe1c767978",
+      "bank": "FND26",
+      "sourceBook": "تاسيس انشتين معدل .pdf",
+      "sourcePage": 98,
+      "printedQuestionNumber": 30,
+      "lessonOnSourcePage": "المتوسط الحسابي والوسيط والاحتمالات والإحصاء",
+      "printedRuleMarkersOnPage": [
+        2
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 100,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_17",
+      "currentSubSkillId": "sub_quant_17_3",
+      "currentSkillIds": [
+        "skill_quant_17",
+        "sub_quant_17_3"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p098/QDR-QNT-FND26-P098-Q30.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P098-Q31",
+      "atlasQuestionId": "6ab8a3c22db5dbfe1c767979",
+      "bank": "FND26",
+      "sourceBook": "تاسيس انشتين معدل .pdf",
+      "sourcePage": 98,
+      "printedQuestionNumber": 31,
+      "lessonOnSourcePage": "المتوسط الحسابي والوسيط والاحتمالات والإحصاء",
+      "printedRuleMarkersOnPage": [
+        2
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 90,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_17",
+      "currentSubSkillId": "sub_quant_17_4",
+      "currentSkillIds": [
+        "skill_quant_17",
+        "sub_quant_17_4"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p098/QDR-QNT-FND26-P098-Q31.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P098-Q32",
+      "atlasQuestionId": "6ab8a3c22db5dbfe1c76797a",
+      "bank": "FND26",
+      "sourceBook": "تاسيس انشتين معدل .pdf",
+      "sourcePage": 98,
+      "printedQuestionNumber": 32,
+      "lessonOnSourcePage": "المتوسط الحسابي والوسيط والاحتمالات والإحصاء",
+      "printedRuleMarkersOnPage": [
+        2
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 100,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_17",
+      "currentSubSkillId": "sub_quant_17_4",
+      "currentSkillIds": [
+        "skill_quant_17",
+        "sub_quant_17_4"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p098/QDR-QNT-FND26-P098-Q32.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P098-Q33",
+      "atlasQuestionId": "6ab8a3c22db5dbfe1c76797b",
+      "bank": "FND26",
+      "sourceBook": "تاسيس انشتين معدل .pdf",
+      "sourcePage": 98,
+      "printedQuestionNumber": 33,
+      "lessonOnSourcePage": "المتوسط الحسابي والوسيط والاحتمالات والإحصاء",
+      "printedRuleMarkersOnPage": [
+        2
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 83,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_17",
+      "currentSubSkillId": "sub_quant_17_4",
+      "currentSkillIds": [
+        "skill_quant_17",
+        "sub_quant_17_4"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p098/QDR-QNT-FND26-P098-Q33.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P098-Q34",
+      "atlasQuestionId": "6ab8a3c22db5dbfe1c76797c",
+      "bank": "FND26",
+      "sourceBook": "تاسيس انشتين معدل .pdf",
+      "sourcePage": 98,
+      "printedQuestionNumber": 34,
+      "lessonOnSourcePage": "المتوسط الحسابي والوسيط والاحتمالات والإحصاء",
+      "printedRuleMarkersOnPage": [
+        2
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 100,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_17",
+      "currentSubSkillId": "sub_quant_17_4",
+      "currentSkillIds": [
+        "skill_quant_17",
+        "sub_quant_17_4"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p098/QDR-QNT-FND26-P098-Q34.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P098-Q35",
+      "atlasQuestionId": "6ab8a3c32db5dbfe1c76797d",
+      "bank": "FND26",
+      "sourceBook": "تاسيس انشتين معدل .pdf",
+      "sourcePage": 98,
+      "printedQuestionNumber": 35,
+      "lessonOnSourcePage": "المتوسط الحسابي والوسيط والاحتمالات والإحصاء",
+      "printedRuleMarkersOnPage": [
+        2
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 75,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_17",
+      "currentSubSkillId": "sub_quant_17_4",
+      "currentSkillIds": [
+        "skill_quant_17",
+        "sub_quant_17_4"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p098/QDR-QNT-FND26-P098-Q35.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P098-Q36",
+      "atlasQuestionId": "6ab8a3c32db5dbfe1c76797e",
+      "bank": "FND26",
+      "sourceBook": "تاسيس انشتين معدل .pdf",
+      "sourcePage": 98,
+      "printedQuestionNumber": 36,
+      "lessonOnSourcePage": "المتوسط الحسابي والوسيط والاحتمالات والإحصاء",
+      "printedRuleMarkersOnPage": [
+        2
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 100,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_17",
+      "currentSubSkillId": "sub_quant_17_4",
+      "currentSkillIds": [
+        "skill_quant_17",
+        "sub_quant_17_4"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p098/QDR-QNT-FND26-P098-Q36.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P099-Q01",
+      "atlasQuestionId": "6ab8a57d2db5dbfe1c767998",
+      "bank": "FND26",
+      "sourceBook": "تاسيس انشتين معدل .pdf",
+      "sourcePage": 99,
+      "printedQuestionNumber": 1,
+      "lessonOnSourcePage": "المتوسط الحسابي والوسيط والاحتمالات والإحصاء",
+      "printedRuleMarkersOnPage": [
+        1
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 89,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_18",
+      "currentSubSkillId": "sub_quant_18_1",
+      "currentSkillIds": [
+        "skill_quant_18",
+        "sub_quant_18_1"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p099/QDR-QNT-FND26-P099-Q01.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P099-Q02",
+      "atlasQuestionId": "6ab8a57e2db5dbfe1c767999",
+      "bank": "FND26",
+      "sourceBook": "تاسيس انشتين معدل .pdf",
+      "sourcePage": 99,
+      "printedQuestionNumber": 2,
+      "lessonOnSourcePage": "المتوسط الحسابي والوسيط والاحتمالات والإحصاء",
+      "printedRuleMarkersOnPage": [
+        1
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 100,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_18",
+      "currentSubSkillId": "sub_quant_18_1",
+      "currentSkillIds": [
+        "skill_quant_18",
+        "sub_quant_18_1"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p099/QDR-QNT-FND26-P099-Q02.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P099-Q03",
+      "atlasQuestionId": "6ab8a57e2db5dbfe1c76799a",
+      "bank": "FND26",
+      "sourceBook": "تاسيس انشتين معدل .pdf",
+      "sourcePage": 99,
+      "printedQuestionNumber": 3,
+      "lessonOnSourcePage": "المتوسط الحسابي والوسيط والاحتمالات والإحصاء",
+      "printedRuleMarkersOnPage": [
+        1
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 100,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_18",
+      "currentSubSkillId": "sub_quant_18_1",
+      "currentSkillIds": [
+        "skill_quant_18",
+        "sub_quant_18_1"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p099/QDR-QNT-FND26-P099-Q03.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P099-Q04",
+      "atlasQuestionId": "6ab8a57e2db5dbfe1c76799b",
+      "bank": "FND26",
+      "sourceBook": "تاسيس انشتين معدل .pdf",
+      "sourcePage": 99,
+      "printedQuestionNumber": 4,
+      "lessonOnSourcePage": "المتوسط الحسابي والوسيط والاحتمالات والإحصاء",
+      "printedRuleMarkersOnPage": [
+        1
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 100,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_18",
+      "currentSubSkillId": "sub_quant_18_1",
+      "currentSkillIds": [
+        "skill_quant_18",
+        "sub_quant_18_1"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p099/QDR-QNT-FND26-P099-Q04.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P099-Q05",
+      "atlasQuestionId": "6ab8a57e2db5dbfe1c76799c",
+      "bank": "FND26",
+      "sourceBook": "تاسيس انشتين معدل .pdf",
+      "sourcePage": 99,
+      "printedQuestionNumber": 5,
+      "lessonOnSourcePage": "المتوسط الحسابي والوسيط والاحتمالات والإحصاء",
+      "printedRuleMarkersOnPage": [
+        1
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 100,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_18",
+      "currentSubSkillId": "sub_quant_18_1",
+      "currentSkillIds": [
+        "skill_quant_18",
+        "sub_quant_18_1"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p099/QDR-QNT-FND26-P099-Q05.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P099-Q06",
+      "atlasQuestionId": "6ab8a57e2db5dbfe1c76799d",
+      "bank": "FND26",
+      "sourceBook": "تاسيس انشتين معدل .pdf",
+      "sourcePage": 99,
+      "printedQuestionNumber": 6,
+      "lessonOnSourcePage": "المتوسط الحسابي والوسيط والاحتمالات والإحصاء",
+      "printedRuleMarkersOnPage": [
+        1
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 78,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_18",
+      "currentSubSkillId": "sub_quant_18_1",
+      "currentSkillIds": [
+        "skill_quant_18",
+        "sub_quant_18_1"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p099/QDR-QNT-FND26-P099-Q06.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P099-Q07",
+      "atlasQuestionId": "6ab8a57e2db5dbfe1c76799e",
+      "bank": "FND26",
+      "sourceBook": "تاسيس انشتين معدل .pdf",
+      "sourcePage": 99,
+      "printedQuestionNumber": 7,
+      "lessonOnSourcePage": "المتوسط الحسابي والوسيط والاحتمالات والإحصاء",
+      "printedRuleMarkersOnPage": [
+        1
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 88,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_18",
+      "currentSubSkillId": "sub_quant_18_1",
+      "currentSkillIds": [
+        "skill_quant_18",
+        "sub_quant_18_1"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p099/QDR-QNT-FND26-P099-Q07.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P099-Q08",
+      "atlasQuestionId": "6ab8a57e2db5dbfe1c76799f",
+      "bank": "FND26",
+      "sourceBook": "تاسيس انشتين معدل .pdf",
+      "sourcePage": 99,
+      "printedQuestionNumber": 8,
+      "lessonOnSourcePage": "المتوسط الحسابي والوسيط والاحتمالات والإحصاء",
+      "printedRuleMarkersOnPage": [
+        1
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 86,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_18",
+      "currentSubSkillId": "sub_quant_18_1",
+      "currentSkillIds": [
+        "skill_quant_18",
+        "sub_quant_18_1"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p099/QDR-QNT-FND26-P099-Q08.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P100-Q09",
+      "atlasQuestionId": "6ab8a7412db5dbfe1c7679af",
+      "bank": "FND26",
+      "sourceBook": "تاسيس انشتين معدل .pdf",
+      "sourcePage": 100,
+      "printedQuestionNumber": 9,
+      "lessonOnSourcePage": "المتوسط الحسابي والوسيط والاحتمالات والإحصاء",
+      "printedRuleMarkersOnPage": [
+        2
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 100,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_18",
+      "currentSubSkillId": "sub_quant_18_1",
+      "currentSkillIds": [
+        "skill_quant_18",
+        "sub_quant_18_1"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p100/QDR-QNT-FND26-P100-Q09.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P100-Q10",
+      "atlasQuestionId": "6ab8a7412db5dbfe1c7679b0",
+      "bank": "FND26",
+      "sourceBook": "تاسيس انشتين معدل .pdf",
+      "sourcePage": 100,
+      "printedQuestionNumber": 10,
+      "lessonOnSourcePage": "المتوسط الحسابي والوسيط والاحتمالات والإحصاء",
+      "printedRuleMarkersOnPage": [
+        2
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 91,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_18",
+      "currentSubSkillId": "sub_quant_18_2",
+      "currentSkillIds": [
+        "skill_quant_18",
+        "sub_quant_18_2"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p100/QDR-QNT-FND26-P100-Q10.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P100-Q11",
+      "atlasQuestionId": "6ab8a7412db5dbfe1c7679b1",
+      "bank": "FND26",
+      "sourceBook": "تاسيس انشتين معدل .pdf",
+      "sourcePage": 100,
+      "printedQuestionNumber": 11,
+      "lessonOnSourcePage": "المتوسط الحسابي والوسيط والاحتمالات والإحصاء",
+      "printedRuleMarkersOnPage": [
+        2
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 100,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_18",
+      "currentSubSkillId": "sub_quant_18_2",
+      "currentSkillIds": [
+        "skill_quant_18",
+        "sub_quant_18_2"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p100/QDR-QNT-FND26-P100-Q11.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P100-Q12",
+      "atlasQuestionId": "6ab8a7412db5dbfe1c7679b2",
+      "bank": "FND26",
+      "sourceBook": "تاسيس انشتين معدل .pdf",
+      "sourcePage": 100,
+      "printedQuestionNumber": 12,
+      "lessonOnSourcePage": "المتوسط الحسابي والوسيط والاحتمالات والإحصاء",
+      "printedRuleMarkersOnPage": [
+        2
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 100,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_18",
+      "currentSubSkillId": "sub_quant_18_2",
+      "currentSkillIds": [
+        "skill_quant_18",
+        "sub_quant_18_2"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p100/QDR-QNT-FND26-P100-Q12.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P100-Q13",
+      "atlasQuestionId": "6ab8a7412db5dbfe1c7679b3",
+      "bank": "FND26",
+      "sourceBook": "تاسيس انشتين معدل .pdf",
+      "sourcePage": 100,
+      "printedQuestionNumber": 13,
+      "lessonOnSourcePage": "المتوسط الحسابي والوسيط والاحتمالات والإحصاء",
+      "printedRuleMarkersOnPage": [
+        2
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 100,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_18",
+      "currentSubSkillId": "sub_quant_18_2",
+      "currentSkillIds": [
+        "skill_quant_18",
+        "sub_quant_18_2"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p100/QDR-QNT-FND26-P100-Q13.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P100-Q14",
+      "atlasQuestionId": "6ab8a7412db5dbfe1c7679b4",
+      "bank": "FND26",
+      "sourceBook": "تاسيس انشتين معدل .pdf",
+      "sourcePage": 100,
+      "printedQuestionNumber": 14,
+      "lessonOnSourcePage": "المتوسط الحسابي والوسيط والاحتمالات والإحصاء",
+      "printedRuleMarkersOnPage": [
+        2
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 78,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_18",
+      "currentSubSkillId": "sub_quant_18_2",
+      "currentSkillIds": [
+        "skill_quant_18",
+        "sub_quant_18_2"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p100/QDR-QNT-FND26-P100-Q14.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P100-Q15",
+      "atlasQuestionId": "6ab8a7412db5dbfe1c7679b5",
+      "bank": "FND26",
+      "sourceBook": "تاسيس انشتين معدل .pdf",
+      "sourcePage": 100,
+      "printedQuestionNumber": 15,
+      "lessonOnSourcePage": "المتوسط الحسابي والوسيط والاحتمالات والإحصاء",
+      "printedRuleMarkersOnPage": [
+        2
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 78,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_18",
+      "currentSubSkillId": "sub_quant_18_2",
+      "currentSkillIds": [
+        "skill_quant_18",
+        "sub_quant_18_2"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p100/QDR-QNT-FND26-P100-Q15.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P101-Q16",
+      "atlasQuestionId": "6ab8a8702db5dbfe1c7679bf",
+      "bank": "FND26",
+      "sourceBook": "تاسيس انشتين معدل .pdf",
+      "sourcePage": 101,
+      "printedQuestionNumber": 16,
+      "lessonOnSourcePage": "المتوسط الحسابي والوسيط والاحتمالات والإحصاء",
+      "printedRuleMarkersOnPage": [
+        3
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 86,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_18",
+      "currentSubSkillId": "sub_quant_18_2",
+      "currentSkillIds": [
+        "skill_quant_18",
+        "sub_quant_18_2"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p101/QDR-QNT-FND26-P101-Q16.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P101-Q17",
+      "atlasQuestionId": "6ab8a8712db5dbfe1c7679c0",
+      "bank": "FND26",
+      "sourceBook": "تاسيس انشتين معدل .pdf",
+      "sourcePage": 101,
+      "printedQuestionNumber": 17,
+      "lessonOnSourcePage": "المتوسط الحسابي والوسيط والاحتمالات والإحصاء",
+      "printedRuleMarkersOnPage": [
+        3
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 88,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_18",
+      "currentSubSkillId": "sub_quant_18_2",
+      "currentSkillIds": [
+        "skill_quant_18",
+        "sub_quant_18_2"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p101/QDR-QNT-FND26-P101-Q17.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P101-Q18",
+      "atlasQuestionId": "6ab8a8712db5dbfe1c7679c1",
+      "bank": "FND26",
+      "sourceBook": "تاسيس انشتين معدل .pdf",
+      "sourcePage": 101,
+      "printedQuestionNumber": 18,
+      "lessonOnSourcePage": "المتوسط الحسابي والوسيط والاحتمالات والإحصاء",
+      "printedRuleMarkersOnPage": [
+        3
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 90,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_18",
+      "currentSubSkillId": "sub_quant_18_2",
+      "currentSkillIds": [
+        "skill_quant_18",
+        "sub_quant_18_2"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p101/QDR-QNT-FND26-P101-Q18.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P101-Q19",
+      "atlasQuestionId": "6ab8a8712db5dbfe1c7679c2",
+      "bank": "FND26",
+      "sourceBook": "تاسيس انشتين معدل .pdf",
+      "sourcePage": 101,
+      "printedQuestionNumber": 19,
+      "lessonOnSourcePage": "المتوسط الحسابي والوسيط والاحتمالات والإحصاء",
+      "printedRuleMarkersOnPage": [
+        3
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 92,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_18",
+      "currentSubSkillId": "sub_quant_18_2",
+      "currentSkillIds": [
+        "skill_quant_18",
+        "sub_quant_18_2"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p101/QDR-QNT-FND26-P101-Q19.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P101-Q20",
+      "atlasQuestionId": "6ab8a8712db5dbfe1c7679c3",
+      "bank": "FND26",
+      "sourceBook": "تاسيس انشتين معدل .pdf",
+      "sourcePage": 101,
+      "printedQuestionNumber": 20,
+      "lessonOnSourcePage": "المتوسط الحسابي والوسيط والاحتمالات والإحصاء",
+      "printedRuleMarkersOnPage": [
+        3
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 100,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_18",
+      "currentSubSkillId": "sub_quant_18_2",
+      "currentSkillIds": [
+        "skill_quant_18",
+        "sub_quant_18_2"
+      ],
+      "atlasApprovalStatus": "rejected",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p101/QDR-QNT-FND26-P101-Q20.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P101-Q21",
+      "atlasQuestionId": "6ab8a8712db5dbfe1c7679c4",
+      "bank": "FND26",
+      "sourceBook": "تاسيس انشتين معدل .pdf",
+      "sourcePage": 101,
+      "printedQuestionNumber": 21,
+      "lessonOnSourcePage": "المتوسط الحسابي والوسيط والاحتمالات والإحصاء",
+      "printedRuleMarkersOnPage": [
+        3
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 83,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_18",
+      "currentSubSkillId": "sub_quant_18_2",
+      "currentSkillIds": [
+        "skill_quant_18",
+        "sub_quant_18_2"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p101/QDR-QNT-FND26-P101-Q21.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P101-Q22",
+      "atlasQuestionId": "6ab8a8722db5dbfe1c7679c5",
+      "bank": "FND26",
+      "sourceBook": "تاسيس انشتين معدل .pdf",
+      "sourcePage": 101,
+      "printedQuestionNumber": 22,
+      "lessonOnSourcePage": "المتوسط الحسابي والوسيط والاحتمالات والإحصاء",
+      "printedRuleMarkersOnPage": [
+        3
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 92,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_18",
+      "currentSubSkillId": "sub_quant_18_2",
+      "currentSkillIds": [
+        "skill_quant_18",
+        "sub_quant_18_2"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p101/QDR-QNT-FND26-P101-Q22.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P101-Q23",
+      "atlasQuestionId": "6ab8a8722db5dbfe1c7679c6",
+      "bank": "FND26",
+      "sourceBook": "تاسيس انشتين معدل .pdf",
+      "sourcePage": 101,
+      "printedQuestionNumber": 23,
+      "lessonOnSourcePage": "المتوسط الحسابي والوسيط والاحتمالات والإحصاء",
+      "printedRuleMarkersOnPage": [
+        3
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 80,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_18",
+      "currentSubSkillId": "sub_quant_18_2",
+      "currentSkillIds": [
+        "skill_quant_18",
+        "sub_quant_18_2"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p101/QDR-QNT-FND26-P101-Q23.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    },
+    {
+      "questionCode": "QDR-QNT-FND26-P101-Q24",
+      "atlasQuestionId": "6ab8a8722db5dbfe1c7679c7",
+      "bank": "FND26",
+      "sourceBook": "تاسيس انشتين معدل .pdf",
+      "sourcePage": 101,
+      "printedQuestionNumber": 24,
+      "lessonOnSourcePage": "المتوسط الحسابي والوسيط والاحتمالات والإحصاء",
+      "printedRuleMarkersOnPage": [
+        3
+      ],
+      "printedRuleForQuestion": null,
+      "sourceTextEvidence": {
+        "approxDistinctTokenRecallPct": 78,
+        "method": "Atlas text tokens versus authorized parsed source-page text; page-wide heuristic only"
+      },
+      "currentSkillId": "skill_quant_18",
+      "currentSubSkillId": "sub_quant_18_2",
+      "currentSkillIds": [
+        "skill_quant_18",
+        "sub_quant_18_2"
+      ],
+      "atlasApprovalStatus": "approved",
+      "liveImageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/qudrat/quant/FND26/p101/QDR-QNT-FND26-P101-Q24.webp",
+      "sourceBookImageVerified": false,
+      "liveCropImageVerified": false,
+      "confirmedTargetSkillId": null,
+      "confirmedTargetSubSkillId": null,
+      "disposition": "HOLD",
+      "holdReason": "Source page and printed question number found; individual rule boundary, source question image, and production crop not certified; no skill move authorized."
+    }
+  ]
+}
