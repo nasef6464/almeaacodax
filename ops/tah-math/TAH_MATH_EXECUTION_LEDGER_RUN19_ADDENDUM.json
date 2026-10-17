@@ -1,0 +1,21 @@
+{
+  "project": "TAH-MATH",
+  "run": "RUN19",
+  "status": "IN_PROGRESS",
+  "sourceCropsRechecked": 200,
+  "independentMathSolved": 30,
+  "sourceAnswerMatches": 30,
+  "liveRecordsAudited": 200,
+  "sourceTitleMislabelRows": 326,
+  "fullyPedagogicallyEnrichedRowsThisRun": 6,
+  "productionMutation": false,
+  "sourceGate": "PARTIAL",
+  "pedagogyGate": "FAIL",
+  "remaining": "YLM26 option texts and teaching fields, correction approval; COL26, COL26OLD, dedupe, coverage, trainings/tests, E2E",
+  "next": "Finish YLM26 option text and whyOthersWrong; validate and apply reversible source-title and answer manifests only after approval",
+  "commits": [
+    "d4b66115ee77d6753a008534946328ad71b95340",
+    "a6b61ed3fa6eaf74e11adeb75648634d12c4510e",
+    "6a8edcb48f8ede5f0874efd9337aaaac6bb42e02"
+  ]
+}

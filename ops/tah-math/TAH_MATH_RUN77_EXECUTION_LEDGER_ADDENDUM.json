@@ -1,0 +1,23 @@
+{
+  "run": "RUN77",
+  "date": "2026-10-10",
+  "actualDistinctSourceQuestionsReviewed": 150,
+  "independentAnswerChecks": 122,
+  "unambiguousAnswerChecks": 120,
+  "semanticHolds": [
+    "P050-Q04",
+    "P066-Q14"
+  ],
+  "sourceSpecificOptionPedagogyPublished": 7,
+  "whyOthersWrongRemaining": 319,
+  "priorRUN74Aligned": 60,
+  "priorRUN74Conflicts": 0,
+  "canonicalApproved": 0,
+  "cumulativeConditionalReviewEvents": 9953,
+  "productionMutation": false,
+  "R2Parity": "NOT_TESTED",
+  "topicIdParity": "NOT_TESTED",
+  "stage": "YLM26_NOT_GREEN",
+  "evidence": "TAH_MATH_RUN77_150_SOURCE_VISUAL_122_ANSWER_CROSSCHECK.json",
+  "next": "Complete 319 option explanations; resolve 2 holds; verify R2/topicId; reversible manifest; then COL26"
+}

@@ -1,0 +1,473 @@
+{
+  "project": "TAH-MATH",
+  "branch": "content/tah-math-full-taxonomy-closure",
+  "strategy": "source-aligned large batches; review first, mutate second",
+  "stages": [
+    {
+      "id": "P0",
+      "name": "freeze_inventory",
+      "status": "DONE",
+      "deliverables": [
+        "master control",
+        "source lesson map",
+        "review schema"
+      ]
+    },
+    {
+      "id": "P1",
+      "name": "foundation_dictionary",
+      "status": "DONE",
+      "batching": "lesson-aligned",
+      "lessons": "1-31",
+      "sourceIdeasExtractedLessons": "1-31",
+      "progress": "31/31 source map + exact 22-main/67-sub runtime binding frozen",
+      "next": "YLM26 326-row full content/difficulty/enrichment review"
+    },
+    {
+      "id": "P2",
+      "name": "ylm26_full_review",
+      "status": "CONTENT_GATE_PASS_GLOBAL_GATES_PENDING",
+      "expectedBaseline": 326,
+      "currentProgress": {
+        "deterministicManifestRows": 326,
+        "structuralCoreComplete": 326,
+        "invalidParentChildPairs": 0,
+        "currentDifficultyDistribution": {
+          "easy": 0,
+          "medium": 326,
+          "hard": 0
+        },
+        "difficultyAudit": "FAIL_RECLASSIFICATION_REQUIRED",
+        "pageVsSkillCandidates": 5,
+        "confirmedRemaps": 3,
+        "confirmedKeeps": 2,
+        "productionMutationApplied": false,
+        "enrichedRows": 326,
+        "foundationReferences": 326,
+        "whyCorrectGrounded": 326,
+        "commonMistakesPrepared": 326,
+        "fingerprintsPrepared": 326,
+        "difficultyTriage": {
+          "easy": 201,
+          "medium": 110,
+          "hard": 15,
+          "status": "TRIAGE_NOT_FINAL"
+        },
+        "answerAudit": {
+          "sourceQuestionsReviewed": 326,
+          "confirmedAnswerCorrectionCode": "TAH-MATH-YLM26-P090-Q10",
+          "status": "SOURCE_REVIEW_COMPLETE_FULL_VISUAL_PEDAGOGY_OPEN",
+          "productionMutation": false
+        },
+        "optionTextExtraction": {
+          "complete": 0,
+          "blocked": 326
+        },
+        "whyOthersWrongFinal": {
+          "complete": 0,
+          "blocked": 326
+        },
+        "run30SourceImageReviews": 200,
+        "run30SourceAnswerLiveMatches": 199,
+        "run30SourceAnswerLiveMismatches": 1,
+        "run30NewIndependentMath": 4,
+        "run30LocalCropRepairs": 4,
+        "run31SourceQuestionContentReviews": 150,
+        "run31IndependentSourceMathAnswers": 150,
+        "run31VerifiedSourceKeys": 148,
+        "run31SemanticReview": 2,
+        "run31PriorLiveMatches": 147,
+        "run31PriorLiveMismatches": 1,
+        "run31LocalCropRepairs": 6,
+        "run31SourcePixelExactAt2x": 150,
+        "run31DifficultyProvisional": {
+          "easy": 95,
+          "medium": 49,
+          "hard": 6
+        },
+        "run31ProductionMutation": false,
+        "contentAdjudicated": 326,
+        "finalReviewedContent": 321,
+        "sourceHolds": 5,
+        "sourceHoldCodes": [
+          "P050-Q04",
+          "P051-Q05",
+          "P066-Q14",
+          "P085-Q01",
+          "P094-Q11"
+        ],
+        "liveTaxonomy": {
+          "mainSkills": 22,
+          "subSkills": 70,
+          "status": "PASS"
+        },
+        "liveTopicId": {
+          "present": 0,
+          "missing": 326,
+          "deterministicUniqueTopicTarget": 326,
+          "status": "FAIL_MISSING"
+        },
+        "liveR2Metadata": {
+          "imageHashPresent": 326,
+          "imageUrlPresent": 326,
+          "hashPathMatch": 326,
+          "v2PathMatch": 326,
+          "backupParity": 326,
+          "status": "PASS_METADATA_HTTP_PENDING"
+        }
+      }
+    },
+    {
+      "id": "P3",
+      "name": "col26_full_review",
+      "status": "SOURCE_ANSWER_PASS_PEDAGOGY_IN_PROGRESS",
+      "expectedBaseline": 1012,
+      "preAudit": {
+        "productionCount": 1012,
+        "approved": 1012,
+        "missingSkill": 0,
+        "missingExplanation": 0,
+        "missingHint": 1012,
+        "missingStrategy": 0,
+        "missingAiContext": 1012,
+        "difficulty": {
+          "easy": 0,
+          "medium": 1012,
+          "hard": 0
+        }
+      },
+      "sourceAnswerAudit": {
+        "reviewed": 1012,
+        "matches": 1012,
+        "sourceTextAvailable": 993,
+        "rasterOnly": 19
+      },
+      "sourceOptionReview": {
+        "partialRows": 214,
+        "groundedSegments": 642,
+        "firstOptionBoundaryPending": 214
+      },
+      "sourceVisualMath": {
+        "page132Rows": 19,
+        "independentMathMatches": 19,
+        "productionMutation": false,
+        "remapCandidatesConfirmed": 6,
+        "remapManifest": "ops/tah-math/TAH_MATH_COL26_P132_6_SOURCE_REMAP_RUN12.json"
+      },
+      "sourceBackedRemapCandidates": 33
+    },
+    {
+      "id": "P4",
+      "name": "col26old_regression",
+      "status": "PREAUDIT_DONE_REGRESSION_PENDING",
+      "sourceInventory": 1258,
+      "productionCanonical": 1257,
+      "preAudit": {
+        "productionCount": 1257,
+        "approved": 1257,
+        "missingSkill": 0,
+        "missingExplanation": 0,
+        "missingHint": 1257,
+        "missingStrategy": 0,
+        "missingAiContext": 1257,
+        "difficulty": {
+          "easy": 0,
+          "medium": 1257,
+          "hard": 0
+        },
+        "distinctMappedSubSkills": 67
+      }
+    },
+    {
+      "id": "P5",
+      "name": "cross_bank_dedupe",
+      "status": "PREAUDIT_DONE_FINAL_DEDUPE_PENDING",
+      "preAudit": {
+        "crossBankExactImageHashDuplicates": 0,
+        "note": "No exact cross-bank duplicates found by current production imageHash. Historical COL26OLD alias remains protected separately."
+      }
+    },
+    {
+      "id": "P6",
+      "name": "coverage_matrix",
+      "status": "PENDING"
+    },
+    {
+      "id": "P7",
+      "name": "training_test_rebuild",
+      "status": "PENDING"
+    },
+    {
+      "id": "P8",
+      "name": "live_student_e2e",
+      "status": "PENDING"
+    },
+    {
+      "id": "P9",
+      "name": "final_closure",
+      "status": "PENDING"
+    }
+  ],
+  "rules": {
+    "mutation": "No production mapping mutation before deterministic review manifest",
+    "newTaxonomy": false,
+    "syntheticCanonicalQuestions": false,
+    "preserveSourceIdentity": true,
+    "useFoundationPlacementAsPrimaryYLM26Evidence": true,
+    "keepCollectionSections": [
+      1,
+      2
+    ]
+  },
+  "lastCheckpoint": "2026-10-10-RUN79B-YLM26-CONTENT-GATE-326-OF-326",
+  "evidence": [
+    "ops/tah-math/TAH_MATH_RUN1_BASELINE.json",
+    "ops/tah-math/TAH_MATH_SOURCE_IDEA_MAP_PART01.json",
+    "ops/tah-math/TAH_MATH_SOURCE_IDEA_MAP_PART02.json",
+    "ops/tah-math/TAH_MATH_SOURCE_IDEA_MAP_PART03.json",
+    "ops/tah-math/TAH_MATH_SOURCE_IDEA_MAP_PART04.json",
+    "ops/tah-math/TAH_MATH_RUNTIME_TAXONOMY_22_67.json",
+    "ops/tah-math/TAH_MATH_SOURCE_TAXONOMY_BINDING.json",
+    "ops/tah-math/TAH_MATH_YLM26_AUDIT_RUN5.json",
+    "ops/tah-math/TAH_MATH_YLM26_MAPPING_CORRECTIONS_MANIFEST_V1.json",
+    "ops/tah-math/TAH_MATH_YLM26_REVIEW_MANIFEST_V1.json",
+    "ops/tah-math/TAH_MATH_RUN6_CHECKPOINT.json",
+    "ops/tah-math/TAH_MATH_YLM26_ENRICHED_REVIEW_V2.json",
+    "ops/tah-math/TAH_MATH_YLM26_ANSWER_AUDIT_LESSONS_01_08.json",
+    "ops/tah-math/TAH_MATH_YLM26_ANSWER_AUDIT_LESSONS_09_13.json",
+    "ops/tah-math/TAH_MATH_RUN12_SOURCE_OPTIONS_233_CHECKPOINT.json",
+    "ops/tah-math/TAH_MATH_COL26_P132_6_SOURCE_REMAP_RUN12.json",
+    "ops/tah-math/TAH_MATH_RUN27_CHECKPOINT.json",
+    "ops/tah-math/TAH_MATH_RUN30_CHECKPOINT.json",
+    "ops/tah-math/TAH_MATH_RUN31_CHECKPOINT.json",
+    "ops/tah-math/TAH_MATH_RUN74_200_VISUAL_104_MATH_SOURCE_AUDIT.json",
+    "ops/tah-math/TAH_MATH_RUN79_150_FINAL_REVIEWED_CONTENT_CHECKPOINT.json",
+    "ops/tah-math/TAH_MATH_RUN79B_YLM26_CONTENT_GATE_326_OF_326.json",
+    "ops/tah-math/TAH_MATH_YLM26_TOPICID_REVERSIBLE_MANIFEST_V1.json"
+  ],
+  "blockers": [
+    {
+      "scope": "difficulty_and_enrichment",
+      "status": "ACTIVE_NOT_STOPPING",
+      "detail": "All three banks are currently Medium-only. YLM26 has core explanation/hint/strategy/AI; COL26/COL26OLD lack hint and AI context in production. Full pedagogical review and enrichment is required before final closure."
+    }
+  ],
+  "latestRun": {
+    "run": "RUN79B",
+    "date": "2026-10-10",
+    "stage": "P2_YLM26_FULL_REVIEW",
+    "finalReviewedContentThisRun": 21,
+    "sourceHoldsThisRun": 5,
+    "cumulativeContentAdjudicated": 326,
+    "cumulativeFinalReviewedContent": 321,
+    "cumulativeSourceHolds": 5,
+    "sourceHoldCodes": [
+      "P050-Q04",
+      "P051-Q05",
+      "P066-Q14",
+      "P085-Q01",
+      "P094-Q11"
+    ],
+    "liveTaxonomy": {
+      "mainSkills": 22,
+      "subSkills": 70
+    },
+    "liveTopicId": {
+      "missing": 326,
+      "uniqueDeterministicTargets": 326
+    },
+    "r2MetadataParity": {
+      "pass": 326,
+      "total": 326,
+      "httpFetch": "ENVIRONMENT_BLOCKED"
+    },
+    "productionVsFrozenBackup": {
+      "sourceItemId": 326,
+      "imageHash": 326,
+      "imageUrl": 326,
+      "answer": 326,
+      "skill": 326,
+      "subSkill": 326
+    },
+    "localManifestSha256": "436ec050716a0d5184b4f5e4fcd200e0dbf39752ae4b71f686e218ab2963d662",
+    "productionMutation": false,
+    "status": "YLM26_CONTENT_GATE_PASS_GLOBAL_NOT_GREEN",
+    "next": "Complete reviewed answer/mapping/pedagogy reversible mutation manifest and obtain direct R2 HTTP evidence; then guarded YLM26 apply + re-audit before COL26.",
+    "topicIdReversibleManifest": {
+      "path": "ops/tah-math/TAH_MATH_YLM26_TOPICID_REVERSIBLE_MANIFEST_V1.json",
+      "rows": 326,
+      "preconditionsPass": true,
+      "productionMutationApplied": false,
+      "commit": "11345bdc13f22d3004eacb2ed83c1bf6bc01e6c5"
+    }
+  },
+  "run47": {
+    "date": "2026-10-09",
+    "actualSourceVisualReviewed": 200,
+    "sourceRgbPixelPass": 200,
+    "fullOptionPedagogyRefined": 24,
+    "wrongOptionReasonsRefined": 72,
+    "evidenceCorrection": "P008-Q05 RUN42 B incorrect; source C=50°",
+    "conditionalReviewEventsCumulative": 4696,
+    "uniqueYLM26Questions": 326,
+    "canonicalApproved": 0,
+    "productionMutation": false,
+    "status": "YLM26_IN_PROGRESS_NOT_GREEN",
+    "next": "YLM26 canonical option/skills/pedagogy/foundation/fingerprints/R2 parity",
+    "symbolicMathChecks": {
+      "pass": 15,
+      "fail": 0
+    },
+    "sourcePagesCovered": 51,
+    "productionR2Parity": "NOT_TESTED"
+  },
+  "run51": {
+    "date": "2026-10-09",
+    "actualDistinctSourceQuestionsReviewed": 150,
+    "officialSourcePagesInspected": 45,
+    "sourceCropExactRGBPass": 24,
+    "fullSourceGroundedPedagogy": 40,
+    "sourceMathAnswerPASS": 34,
+    "semanticHOLD": 6,
+    "symbolicPASS": 35,
+    "sourceBackedRemapCandidates": 3,
+    "localRecropsQA": 4,
+    "cumulativeConditionalReviewEvents": 5346,
+    "uniqueYLM26SourceInventory": 326,
+    "canonicalApproved": 0,
+    "productionMutation": false,
+    "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+    "productionR2Parity": "NOT_TESTED",
+    "status": "YLM26_IN_PROGRESS_NOT_GREEN",
+    "next": "Resolve holds and approve 326 canonical rows, R2 parity and reversible manifest; then COL26 1012"
+  },
+  "run74": {
+    "run": "RUN74",
+    "date": "2026-10-10",
+    "actualDistinctSourceQuestionsReviewed": 200,
+    "sourceVisualReviewBasis": "200 inspected source-derived question crops across 20 boards; five prior recrops plus full-stem P078-Q04 inspected",
+    "sourceMathIndependentProofs": 104,
+    "sourceMathProofsVsPrior": "103 aligned, 1 known corrected P023-Q14 D",
+    "semanticHolds": [
+      "P050-Q04",
+      "P066-Q14",
+      "P081-Q01"
+    ],
+    "sourceRecropsRead": 6,
+    "cumulativeConditionalReviewEvents": 9453,
+    "uniqueYLM26SourceInventory": 326,
+    "canonicalApproved": 0,
+    "productionMutation": false,
+    "sourceEvidence": "ops/tah-math/TAH_MATH_RUN74_200_VISUAL_104_MATH_SOURCE_AUDIT.json",
+    "liveR2Parity": "NOT_TESTED",
+    "liveTopicIdParity": "NOT_TESTED",
+    "status": "YLM26_IN_PROGRESS_NOT_GREEN",
+    "next": "Resolve 3 semantic holds and full 326 option-specific pedagogy, live R2/topic parity, reversible manifest, then COL26 1012"
+  },
+  "run78b": {
+    "run": "RUN78B",
+    "date": "2026-10-10",
+    "stage": "P2_YLM26_FULL_REVIEW",
+    "finalReviewedContentRowsThisRun": 150,
+    "uniqueFinalReviewedContentRows": 150,
+    "difficulty": {
+      "easy": 86,
+      "medium": 60,
+      "hard": 4
+    },
+    "unresolvedHolds": [
+      "P050-Q04",
+      "P066-Q14"
+    ],
+    "excludedConflictingAnswerEvidence": 19,
+    "localManifestSha256": "a63e46cc0e6a7e61ec9a5234b5d5dce6d4dd2a99766a2d6032905585f8a05fad",
+    "productionMutation": false,
+    "liveR2Parity": "PENDING",
+    "liveTopicIdParity": "PENDING",
+    "status": "YLM26_IN_PROGRESS_NOT_GREEN",
+    "next": "Resolve 19 answer-evidence conflicts + 2 source HOLDs; finalize remaining 176 rows; then R2/topic parity and reversible manifest."
+  },
+  "run79": {
+    "run": "RUN79",
+    "date": "2026-10-10",
+    "stage": "P2_YLM26_FULL_REVIEW",
+    "finalReviewedContentRowsThisRun": 150,
+    "uniqueFinalReviewedContentRows": 300,
+    "remainingYLM26ContentRows": 26,
+    "difficulty": {
+      "easy": 84,
+      "medium": 56,
+      "hard": 10
+    },
+    "sourceBackedMappingCorrections": [
+      "P013-Q09",
+      "P023-Q14",
+      "P047-Q07",
+      "P047-Q09"
+    ],
+    "sourceAnswerCorrections": [
+      "P006-Q07=B",
+      "P007-Q01=B",
+      "P076-Q14=B"
+    ],
+    "unresolvedHolds": [
+      "P050-Q04",
+      "P066-Q14"
+    ],
+    "localManifestSha256": "0649da0e3fea7332e938b38ffd9749a04cecd094a1290585d4522897cd4bf13a",
+    "productionMutation": false,
+    "liveR2Parity": "PENDING",
+    "liveTopicIdParity": "PENDING",
+    "status": "YLM26_IN_PROGRESS_NOT_GREEN",
+    "next": "Finish remaining 26 content rows fail-closed; then R2/topicId parity + reversible manifest; COL26 immediately after YLM26 GREEN."
+  },
+  "run79b": {
+    "run": "RUN79B",
+    "date": "2026-10-10",
+    "stage": "P2_YLM26_FULL_REVIEW",
+    "finalReviewedContentThisRun": 21,
+    "sourceHoldsThisRun": 5,
+    "cumulativeContentAdjudicated": 326,
+    "cumulativeFinalReviewedContent": 321,
+    "cumulativeSourceHolds": 5,
+    "sourceHoldCodes": [
+      "P050-Q04",
+      "P051-Q05",
+      "P066-Q14",
+      "P085-Q01",
+      "P094-Q11"
+    ],
+    "liveTaxonomy": {
+      "mainSkills": 22,
+      "subSkills": 70
+    },
+    "liveTopicId": {
+      "missing": 326,
+      "uniqueDeterministicTargets": 326
+    },
+    "r2MetadataParity": {
+      "pass": 326,
+      "total": 326,
+      "httpFetch": "ENVIRONMENT_BLOCKED"
+    },
+    "productionVsFrozenBackup": {
+      "sourceItemId": 326,
+      "imageHash": 326,
+      "imageUrl": 326,
+      "answer": 326,
+      "skill": 326,
+      "subSkill": 326
+    },
+    "localManifestSha256": "436ec050716a0d5184b4f5e4fcd200e0dbf39752ae4b71f686e218ab2963d662",
+    "productionMutation": false,
+    "status": "YLM26_CONTENT_GATE_PASS_GLOBAL_NOT_GREEN",
+    "next": "Complete reviewed answer/mapping/pedagogy reversible mutation manifest and obtain direct R2 HTTP evidence; then guarded YLM26 apply + re-audit before COL26.",
+    "topicIdReversibleManifest": {
+      "path": "ops/tah-math/TAH_MATH_YLM26_TOPICID_REVERSIBLE_MANIFEST_V1.json",
+      "rows": 326,
+      "preconditionsPass": true,
+      "productionMutationApplied": false,
+      "commit": "11345bdc13f22d3004eacb2ed83c1bf6bc01e6c5"
+    }
+  }
+}

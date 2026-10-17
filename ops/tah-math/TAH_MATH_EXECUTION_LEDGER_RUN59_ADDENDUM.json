@@ -1,0 +1,13 @@
+{
+  "run": "RUN59",
+  "sourceDerivedQuestionImagesManuallyReviewed": 150,
+  "sourceCropRgbIntegrityPass": 150,
+  "independentMathVerifiedPedagogyCandidates": 36,
+  "manualRecropQAPass": 21,
+  "conditionalReviewEventsCumulative": 6646,
+  "uniqueYLM26Inventory": 326,
+  "canonicalApproved": 0,
+  "productionMutation": false,
+  "status": "YLM26_IN_PROGRESS_NOT_GREEN",
+  "next": "Source holds, topic/R2 parity, reversible canonical manifest; then COL26"
+}

@@ -1,0 +1,337 @@
+{
+  "run": "RUN49",
+  "part": 6,
+  "count": 5,
+  "records": [
+    {
+      "questionCode": "TAH-MATH-YLM26-P047-Q06",
+      "source": {
+        "sourceItemId": "YLM26-PDF046-P047-N06",
+        "pdfPageIndex": 46,
+        "printedPageNumber": 47,
+        "printedQuestionNumber": 6,
+        "imageHash": "3e89925a38e68f5d10ceebd9c56172c20db32b68e27f449a6f29d052e5b2f77d",
+        "imageVersion": 2
+      },
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "questionText": "إذا اختير ترتيب عشوائي لأحرف كلمة «الدمام»، فما احتمال أن يكون الترتيب هو كلمة «الدمام» نفسها؟",
+      "options": {
+        "A": "1/180",
+        "B": "1/720",
+        "C": "1/360",
+        "D": "1/30"
+      },
+      "answerLetter": "A",
+      "correctOptionIndex": 0,
+      "explanation": "عدد الترتيبات المختلفة 6!/(2!2!)=180؛ احتمال كلمة بعينها 1/180.",
+      "whyCorrect": "عدد الترتيبات المختلفة 6!/(2!2!)=180؛ احتمال كلمة بعينها 1/180.",
+      "whyOthersWrong": {
+        "B": "1/720 يعد الأحرف المتكررة مختلفة.",
+        "C": "1/360 لا يقسم على 2! لكل من الألف والميم.",
+        "D": "1/30 لا يوافق عدد الترتيبات 180."
+      },
+      "hint": "احسب عدد التباديل مع التكرار ثم خذ مقلوبه.",
+      "solvingStrategy": "استخدام التباديل مع التكرار في حساب احتمال ترتيب محدد.",
+      "commonMistakes": [
+        "1/720 يعد الأحرف المتكررة مختلفة.",
+        "1/360 لا يقسم على 2! لكل من الألف والميم.",
+        "1/30 لا يوافق عدد الترتيبات 180."
+      ],
+      "aiContext": {
+        "readableText": "إذا اختير ترتيب عشوائي لأحرف كلمة «الدمام»، فما احتمال أن يكون الترتيب هو كلمة «الدمام» نفسها؟",
+        "speechText": "إذا اختير ترتيب عشوائي لأحرف كلمة «الدمام»، فما احتمال أن يكون الترتيب هو كلمة «الدمام» نفسها؟",
+        "visualDescription": "كلمة «الدمام» مكوّنة من 6 أحرف مع تكرار الألف مرتين والميم مرتين.",
+        "concepts": [
+          "استخدام التباديل مع التكرار في حساب احتمال ترتيب محدد."
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf"
+      },
+      "difficultyCandidate": "medium",
+      "mapping": {
+        "skillId": "skill_tah_math_14",
+        "skillName": "الاحتمالات ونظرية ذات الحدين",
+        "subSkillId": "sub_tah_math_14_02",
+        "subSkillName": "مبدأ العد والتباديل"
+      },
+      "foundationReference": {
+        "lessonNumber": 20,
+        "lessonTitle": "الاحتمالات",
+        "subSkillId": "sub_tah_math_14_02",
+        "subSkillName": "مبدأ العد والتباديل"
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF046-P047-N06|3e89925a38e68f5d10ceebd9c56172c20db32b68e27f449a6f29d052e5b2f77d",
+      "teachingFingerprintCandidate": "sub_tah_math_14_02|استخدام التباديل مع التكرار في حساب احتمال ترتيب محدد.",
+      "sourceImageHash": "3e89925a38e68f5d10ceebd9c56172c20db32b68e27f449a6f29d052e5b2f77d",
+      "sourceVisualReviewed": true,
+      "canonicalApproved": false,
+      "productionImageParity": "NOT_TESTED"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P047-Q07",
+      "source": {
+        "sourceItemId": "YLM26-PDF046-P047-N07",
+        "pdfPageIndex": 46,
+        "printedPageNumber": 47,
+        "printedQuestionNumber": 7,
+        "imageHash": "e04aa9fd4419d95736e018e3d2921c75999dd554273a3044dda7be96363e3ac8",
+        "imageVersion": 2
+      },
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "questionText": "يجلس 6 أشخاص حول طاولة دائرية، ويوجد مقعد مميز قرب جهاز العرض. ما احتمال أن يجلس مقدم العرض في هذا المقعد؟",
+      "options": {
+        "A": "1/6",
+        "B": "1/3",
+        "C": "1/25",
+        "D": "1/36"
+      },
+      "answerLetter": "A",
+      "correctOptionIndex": 0,
+      "explanation": "لشخص معين من ستة احتمال 1/6 لشغل المقعد المحدد.",
+      "whyCorrect": "لشخص معين من ستة احتمال 1/6 لشغل المقعد المحدد.",
+      "whyOthersWrong": {
+        "B": "1/3 يفترض ثلاثة أشخاص لا ستة.",
+        "C": "1/25 ليس احتمال مقعد محدد من ستة.",
+        "D": "1/36 يضرب احتمال المقعد في نفسه دون داع."
+      },
+      "hint": "اعتبر المقعد المميز ثابتًا وعدّ الأشخاص الممكن جلوسهم فيه.",
+      "solvingStrategy": "حساب احتمال موضع محدد ضمن ترتيب دائري.",
+      "commonMistakes": [
+        "1/3 يفترض ثلاثة أشخاص لا ستة.",
+        "1/25 ليس احتمال مقعد محدد من ستة.",
+        "1/36 يضرب احتمال المقعد في نفسه دون داع."
+      ],
+      "aiContext": {
+        "readableText": "يجلس 6 أشخاص حول طاولة دائرية، ويوجد مقعد مميز قرب جهاز العرض. ما احتمال أن يجلس مقدم العرض في هذا المقعد؟",
+        "speechText": "يجلس 6 أشخاص حول طاولة دائرية، ويوجد مقعد مميز قرب جهاز العرض. ما احتمال أن يجلس مقدم العرض في هذا المقعد؟",
+        "visualDescription": "ستة أشخاص حول طاولة دائرية ومقعد واحد مميز بجوار جهاز العرض.",
+        "concepts": [
+          "حساب احتمال موضع محدد ضمن ترتيب دائري."
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf"
+      },
+      "difficultyCandidate": "easy",
+      "mapping": {
+        "skillId": "skill_tah_math_14",
+        "skillName": "الاحتمالات ونظرية ذات الحدين",
+        "subSkillId": "sub_tah_math_14_02",
+        "subSkillName": "مبدأ العد والتباديل"
+      },
+      "foundationReference": {
+        "lessonNumber": 20,
+        "lessonTitle": "الاحتمالات",
+        "subSkillId": "sub_tah_math_14_02",
+        "subSkillName": "مبدأ العد والتباديل"
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF046-P047-N07|e04aa9fd4419d95736e018e3d2921c75999dd554273a3044dda7be96363e3ac8",
+      "teachingFingerprintCandidate": "sub_tah_math_14_02|حساب احتمال موضع محدد ضمن ترتيب دائري.",
+      "sourceImageHash": "e04aa9fd4419d95736e018e3d2921c75999dd554273a3044dda7be96363e3ac8",
+      "sourceVisualReviewed": true,
+      "canonicalApproved": false,
+      "productionImageParity": "NOT_TESTED"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P047-Q08",
+      "source": {
+        "sourceItemId": "YLM26-PDF046-P047-N08",
+        "pdfPageIndex": 46,
+        "printedPageNumber": 47,
+        "printedQuestionNumber": 8,
+        "imageHash": "9d6439b83f9c0908681e24c355e91c7cfd70e6c8d2b91899a54932949bb5cae8",
+        "imageVersion": 2
+      },
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "questionText": "فريق مكوّن من خمسة لاعبين. كم طريقة يمكنهم الجلوس حول طاولة دائرية بشرط أن يكون الكابتن بجانب النافذة في مقعد محدد؟",
+      "options": {
+        "A": "5",
+        "B": "24",
+        "C": "120",
+        "D": "450"
+      },
+      "answerLetter": "B",
+      "correctOptionIndex": 1,
+      "explanation": "ثبت الكابتن في المقعد المطلوب، ثم رتب الأربعة الباقين: 4!=24.",
+      "whyCorrect": "ثبت الكابتن في المقعد المطلوب، ثم رتب الأربعة الباقين: 4!=24.",
+      "whyOthersWrong": {
+        "A": "5 عدد اللاعبين لا طرق ترتيبهم.",
+        "C": "120=5! دون تثبيت مقعد الكابتن.",
+        "D": "450 لا يساوي 4!."
+      },
+      "hint": "ثبّت الكابتن أولًا ثم رتّب الأربعة الآخرين.",
+      "solvingStrategy": "اختزال ترتيب دائري إلى تبديل عادي بعد تثبيت عنصر في مقعد محدد.",
+      "commonMistakes": [
+        "5 عدد اللاعبين لا طرق ترتيبهم.",
+        "120=5! دون تثبيت مقعد الكابتن.",
+        "450 لا يساوي 4!."
+      ],
+      "aiContext": {
+        "readableText": "فريق مكوّن من خمسة لاعبين. كم طريقة يمكنهم الجلوس حول طاولة دائرية بشرط أن يكون الكابتن بجانب النافذة في مقعد محدد؟",
+        "speechText": "فريق مكوّن من خمسة لاعبين. كم طريقة يمكنهم الجلوس حول طاولة دائرية بشرط أن يكون الكابتن بجانب النافذة في مقعد محدد؟",
+        "visualDescription": "مسألة ترتيب دائري لخمسة لاعبين مع تثبيت مقعد الكابتن.",
+        "concepts": [
+          "اختزال ترتيب دائري إلى تبديل عادي بعد تثبيت عنصر في مقعد محدد."
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf"
+      },
+      "difficultyCandidate": "easy",
+      "mapping": {
+        "skillId": "skill_tah_math_14",
+        "skillName": "الاحتمالات ونظرية ذات الحدين",
+        "subSkillId": "sub_tah_math_14_02",
+        "subSkillName": "مبدأ العد والتباديل"
+      },
+      "foundationReference": {
+        "lessonNumber": 20,
+        "lessonTitle": "الاحتمالات",
+        "subSkillId": "sub_tah_math_14_02",
+        "subSkillName": "مبدأ العد والتباديل"
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF046-P047-N08|9d6439b83f9c0908681e24c355e91c7cfd70e6c8d2b91899a54932949bb5cae8",
+      "teachingFingerprintCandidate": "sub_tah_math_14_02|اختزال ترتيب دائري إلى تبديل عادي بعد تثبيت عنصر في مقعد محدد.",
+      "sourceImageHash": "9d6439b83f9c0908681e24c355e91c7cfd70e6c8d2b91899a54932949bb5cae8",
+      "sourceVisualReviewed": true,
+      "canonicalApproved": false,
+      "productionImageParity": "NOT_TESTED"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P047-Q09",
+      "source": {
+        "sourceItemId": "YLM26-PDF046-P047-N09",
+        "pdfPageIndex": 46,
+        "printedPageNumber": 47,
+        "printedQuestionNumber": 9,
+        "imageHash": "ea35fe9cb11e6e2affba67d45e388928e1fada233230dbd8a9f9521b258993c0",
+        "imageVersion": 2
+      },
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "questionText": "يراد اختيار طالبين من بين 20 طالبًا. ما احتمال أن يكون المختاران هما عمر ومصعب؟",
+      "options": {
+        "A": "2/190",
+        "B": "1/10",
+        "C": "1/380",
+        "D": "1/190"
+      },
+      "answerLetter": "D",
+      "correctOptionIndex": 3,
+      "explanation": "C(20,2)=190 زوجًا غير مرتب؛ الزوج المطلوب واحد، فالاحتمال 1/190.",
+      "whyCorrect": "C(20,2)=190 زوجًا غير مرتب؛ الزوج المطلوب واحد، فالاحتمال 1/190.",
+      "whyOthersWrong": {
+        "A": "2/190 يعد الزوج نفسه مرتين.",
+        "B": "1/10 يهمل اختيار شخصين من 20.",
+        "C": "1/380 يقسم عدد الأزواج على اثنين إضافية."
+      },
+      "hint": "لأن الترتيب غير مهم استخدم التوافيق.",
+      "solvingStrategy": "استخدام التوافيق لحساب احتمال اختيار زوج محدد.",
+      "commonMistakes": [
+        "2/190 يعد الزوج نفسه مرتين.",
+        "1/10 يهمل اختيار شخصين من 20.",
+        "1/380 يقسم عدد الأزواج على اثنين إضافية."
+      ],
+      "aiContext": {
+        "readableText": "يراد اختيار طالبين من بين 20 طالبًا. ما احتمال أن يكون المختاران هما عمر ومصعب؟",
+        "speechText": "يراد اختيار طالبين من بين 20 طالبًا. ما احتمال أن يكون المختاران هما عمر ومصعب؟",
+        "visualDescription": "اختيار طالبين من مجموعة تضم 20 طالبًا.",
+        "concepts": [
+          "استخدام التوافيق لحساب احتمال اختيار زوج محدد."
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf"
+      },
+      "difficultyCandidate": "easy",
+      "mapping": {
+        "skillId": "skill_tah_math_14",
+        "skillName": "الاحتمالات ونظرية ذات الحدين",
+        "subSkillId": "sub_tah_math_14_03",
+        "subSkillName": "التوافيق والاختيار دون ترتيب"
+      },
+      "foundationReference": {
+        "lessonNumber": 20,
+        "lessonTitle": "الاحتمالات",
+        "subSkillId": "sub_tah_math_14_03",
+        "subSkillName": "التوافيق والاختيار دون ترتيب"
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF046-P047-N09|ea35fe9cb11e6e2affba67d45e388928e1fada233230dbd8a9f9521b258993c0",
+      "teachingFingerprintCandidate": "sub_tah_math_14_03|استخدام التوافيق لحساب احتمال اختيار زوج محدد.",
+      "sourceImageHash": "ea35fe9cb11e6e2affba67d45e388928e1fada233230dbd8a9f9521b258993c0",
+      "sourceVisualReviewed": true,
+      "canonicalApproved": false,
+      "productionImageParity": "NOT_TESTED"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P048-Q10",
+      "source": {
+        "sourceItemId": "YLM26-PDF047-P048-N10",
+        "pdfPageIndex": 47,
+        "printedPageNumber": 48,
+        "printedQuestionNumber": 10,
+        "imageHash": "5fc5fccf24650cc396f9f58dc0ad98acdef40d1f7f376eb71e5c3a55648d35cb",
+        "imageVersion": 2
+      },
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "questionText": "على القطعة AD تقع B وC بحيث AB=4 وBC=6 وCD=8. إذا اختيرت نقطة عشوائيًا على AD، فما احتمال أن تقع على BC؟",
+      "options": {
+        "A": "1/3",
+        "B": "2/5",
+        "C": "1/2",
+        "D": "2/3"
+      },
+      "answerLetter": "A",
+      "correctOptionIndex": 0,
+      "explanation": "AD=4+6+8=18؛ طول BC=6؛ الاحتمال 6/18=1/3.",
+      "whyCorrect": "AD=4+6+8=18؛ طول BC=6؛ الاحتمال 6/18=1/3.",
+      "whyOthersWrong": {
+        "B": "2/5 لا يساوي 6/(4+6+8).",
+        "C": "1/2 يفترض طولًا كليًا 12 بدل 18.",
+        "D": "2/3 يحسب نسبة جزء غير مطابق BC."
+      },
+      "hint": "الاحتمال الهندسي = طول الجزء الملائم ÷ الطول الكلي.",
+      "solvingStrategy": "حساب احتمال هندسي على قطعة مستقيمة.",
+      "commonMistakes": [
+        "2/5 لا يساوي 6/(4+6+8).",
+        "1/2 يفترض طولًا كليًا 12 بدل 18.",
+        "2/3 يحسب نسبة جزء غير مطابق BC."
+      ],
+      "aiContext": {
+        "readableText": "على القطعة AD تقع B وC بحيث AB=4 وBC=6 وCD=8. إذا اختيرت نقطة عشوائيًا على AD، فما احتمال أن تقع على BC؟",
+        "speechText": "على القطعة AD تقع B وC بحيث AB=4 وBC=6 وCD=8. إذا اختيرت نقطة عشوائيًا على AD، فما احتمال أن تقع على BC؟",
+        "visualDescription": "قطعة مستقيمة A-B-C-D بأطوال 4 و6 و8 على الترتيب.",
+        "concepts": [
+          "حساب احتمال هندسي على قطعة مستقيمة."
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf"
+      },
+      "difficultyCandidate": "easy",
+      "mapping": {
+        "skillId": "skill_tah_math_14",
+        "skillName": "الاحتمالات ونظرية ذات الحدين",
+        "subSkillId": "sub_tah_math_14_04",
+        "subSkillName": "الاحتمال البسيط والمركب والشرطي والهندسي"
+      },
+      "foundationReference": {
+        "lessonNumber": 20,
+        "lessonTitle": "الاحتمالات",
+        "subSkillId": "sub_tah_math_14_04",
+        "subSkillName": "الاحتمال البسيط والمركب والشرطي والهندسي"
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF047-P048-N10|5fc5fccf24650cc396f9f58dc0ad98acdef40d1f7f376eb71e5c3a55648d35cb",
+      "teachingFingerprintCandidate": "sub_tah_math_14_04|حساب احتمال هندسي على قطعة مستقيمة.",
+      "sourceImageHash": "5fc5fccf24650cc396f9f58dc0ad98acdef40d1f7f376eb71e5c3a55648d35cb",
+      "sourceVisualReviewed": true,
+      "canonicalApproved": false,
+      "productionImageParity": "NOT_TESTED"
+    }
+  ]
+}

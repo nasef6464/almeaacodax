@@ -1,0 +1,536 @@
+{
+  "project": "TAH-MATH",
+  "run": "RUN78",
+  "part": 4,
+  "source": "source-reviewed RUN19/RUN28/RUN49 existing evidence",
+  "canonicalApprovedNew": 0,
+  "productionMutation": false,
+  "records": [
+    {
+      "questionCode": "TAH-MATH-YLM26-P037-Q18",
+      "sourceItemId": "YLM26-PDF036-P037-N18",
+      "imageHash": "5cdc12fe53ec8b9e8c21d49638bf967d37fadba1766e7f1d0a8fe873a0a46cc1",
+      "mapping": {
+        "skillId": "skill_tah_math_10",
+        "skillName": "المعادلات التربيعية وكثيرات الحدود",
+        "subSkillId": "sub_tah_math_10_04",
+        "subSkillName": "دوال كثيرات الحدود والأصفار ونظريتا العامل والباقي"
+      },
+      "foundationReference": {
+        "lessonNumber": 14,
+        "lessonTitle": "كثيرات الحدود",
+        "subSkillId": "sub_tah_math_10_04",
+        "subSkillName": "دوال كثيرات الحدود والأصفار ونظريتا العامل والباقي"
+      },
+      "questionText": "كم عدد الجذور الحقيقية للمعادلة x⁴ - 16 = 0؟",
+      "options": {
+        "A": "5",
+        "B": "4",
+        "C": "3",
+        "D": "2"
+      },
+      "answerLetter": "D",
+      "correctOptionIndex": 3,
+      "explanation": "x⁴-16=(x²-4)(x²+4). الجذور الحقيقية تأتي من x²-4=0 وهي x=±2؛ إذن عدد الجذور الحقيقية 2، فالاختيار الصحيح D.",
+      "whyCorrect": "x⁴-16=(x²-4)(x²+4). الجذور الحقيقية تأتي من x²-4=0 وهي x=±2؛ إذن عدد الجذور الحقيقية 2، فالاختيار الصحيح D.",
+      "whyOthersWrong": {
+        "A": "أكبر من درجة كثيرة الحدود",
+        "B": "يحسب ±2i كجذور حقيقية",
+        "C": "ليس العدد الصحيح للجذور الحقيقية"
+      },
+      "hint": "حلّل فرق المربعين ثم ميّز الجذور الحقيقية من المركبة.",
+      "solvingStrategy": "عدّ الجذور الحقيقية بعد تحليل كثيرة حدود.",
+      "commonMistakes": [
+        "احتساب الجذور التخيلية ضمن الحقيقية"
+      ],
+      "difficulty": "easy",
+      "aiContext": {
+        "readableText": "كم عدد الجذور الحقيقية للمعادلة x⁴ - 16 = 0؟",
+        "speechText": "كم عدد الجذور الحقيقية للمعادلة x⁴ - 16 = 0؟",
+        "visualDescription": "معادلة رباعية x⁴-16=0 ومطلوب عدد جذورها الحقيقية.",
+        "concepts": [
+          "دوال كثيرات الحدود والأصفار",
+          "عدّ الجذور الحقيقية بعد تحليل كثيرة حدود."
+        ],
+        "requiredData": [
+          "كم عدد الجذور الحقيقية للمعادلة x⁴ - 16 = 0؟",
+          "A: 5",
+          "B: 4",
+          "C: 3",
+          "D: 2",
+          "كتاب تأسيس يلو للرياضيات 26"
+        ]
+      },
+      "questionFingerprint": "YLM26|YLM26-PDF036-P037-N18|5cdc12fe53ec8b9e8c21d49638bf967d37fadba1766e7f1d0a8fe873a0a46cc1",
+      "teachingFingerprint": "sub_tah_math_10_04|عدّ الجذور الحقيقية بعد تحليل كثيرة حدود.",
+      "sourceEvidence": "ops/tah-math/TAH_MATH_RUN28_20_SOURCE_GROUNDED_PEDAGOGY.json",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "sourcePedagogyReviewed": true,
+      "liveR2Parity": "NOT_TESTED",
+      "liveTopicIdParity": "NOT_TESTED",
+      "stage": "SOURCE_GROUNDED_PEDAGOGY_STAGED_NOT_FINAL",
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P037-Q19",
+      "sourceItemId": "YLM26-PDF036-P037-N19",
+      "imageHash": "ead3a476535ceae4dd93733e312ac0c4ffdff9371995125456a496a64a977fbb",
+      "mapping": {
+        "skillId": "skill_tah_math_10",
+        "skillName": "المعادلات التربيعية وكثيرات الحدود",
+        "subSkillId": "sub_tah_math_10_04",
+        "subSkillName": "دوال كثيرات الحدود والأصفار ونظريتا العامل والباقي"
+      },
+      "foundationReference": {
+        "lessonNumber": 14,
+        "lessonTitle": "كثيرات الحدود",
+        "subSkillId": "sub_tah_math_10_04",
+        "subSkillName": "دوال كثيرات الحدود والأصفار ونظريتا العامل والباقي"
+      },
+      "questionText": "إذا كانت الدالة f(x)=x⁴ - 8، فما عدد الأصفار التخيلية غير الحقيقية لها؟",
+      "options": {
+        "A": "4",
+        "B": "3",
+        "C": "2",
+        "D": "1"
+      },
+      "answerLetter": "C",
+      "correctOptionIndex": 2,
+      "explanation": "المعادلة x⁴=8 لها أربعة جذور مركبة. يوجد جذران حقيقيان ±⁴√8، ويبقى جذران غير حقيقيين؛ إذن العدد 2، فالاختيار الصحيح C.",
+      "whyCorrect": "المعادلة x⁴=8 لها أربعة جذور مركبة. يوجد جذران حقيقيان ±⁴√8، ويبقى جذران غير حقيقيين؛ إذن العدد 2، فالاختيار الصحيح C.",
+      "whyOthersWrong": {
+        "A": "4 هو مجموع الجذور المركبة",
+        "B": "3 لا ينتج من التحليل",
+        "D": "يعد جذرًا تخيليًا واحدًا بدل زوج"
+      },
+      "hint": "كثيرة الحدود من الدرجة الرابعة لها أربعة جذور مركبة مع احتساب التكرار.",
+      "solvingStrategy": "استخدام درجة كثيرة الحدود وعدد الجذور الحقيقية لحساب غير الحقيقية.",
+      "commonMistakes": [
+        "افتراض أن جميع الجذور الأربعة تخيلية"
+      ],
+      "difficulty": "easy",
+      "aiContext": {
+        "readableText": "إذا كانت الدالة f(x)=x⁴ - 8، فما عدد الأصفار التخيلية غير الحقيقية لها؟",
+        "speechText": "إذا كانت الدالة f(x)=x⁴ - 8، فما عدد الأصفار التخيلية غير الحقيقية لها؟",
+        "visualDescription": "دالة رباعية f(x)=x⁴-8 ومطلوب عدد أصفارها التخيلية.",
+        "concepts": [
+          "دوال كثيرات الحدود والأصفار",
+          "استخدام درجة كثيرة الحدود وعدد الجذور الحقيقية لحساب غير الحقيقية."
+        ],
+        "requiredData": [
+          "إذا كانت الدالة f(x)=x⁴ - 8، فما عدد الأصفار التخيلية غير الحقيقية لها؟",
+          "A: 4",
+          "B: 3",
+          "C: 2",
+          "D: 1",
+          "كتاب تأسيس يلو للرياضيات 26"
+        ]
+      },
+      "questionFingerprint": "YLM26|YLM26-PDF036-P037-N19|ead3a476535ceae4dd93733e312ac0c4ffdff9371995125456a496a64a977fbb",
+      "teachingFingerprint": "sub_tah_math_10_04|استخدام درجة كثيرة الحدود وعدد الجذور الحقيقية لحساب غير الحقيقية.",
+      "sourceEvidence": "ops/tah-math/TAH_MATH_RUN28_20_SOURCE_GROUNDED_PEDAGOGY.json",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "sourcePedagogyReviewed": true,
+      "liveR2Parity": "NOT_TESTED",
+      "liveTopicIdParity": "NOT_TESTED",
+      "stage": "SOURCE_GROUNDED_PEDAGOGY_STAGED_NOT_FINAL",
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P037-Q20",
+      "sourceItemId": "YLM26-PDF036-P037-N20",
+      "imageHash": "beb78118a57f104de5440f4d4509f6b16f35d3ab01f4ce331904f8e5e09f035e",
+      "mapping": {
+        "skillId": "skill_tah_math_10",
+        "skillName": "المعادلات التربيعية وكثيرات الحدود",
+        "subSkillId": "sub_tah_math_10_04",
+        "subSkillName": "دوال كثيرات الحدود والأصفار ونظريتا العامل والباقي"
+      },
+      "foundationReference": {
+        "lessonNumber": 14,
+        "lessonTitle": "كثيرات الحدود",
+        "subSkillId": "sub_tah_math_10_04",
+        "subSkillName": "دوال كثيرات الحدود والأصفار ونظريتا العامل والباقي"
+      },
+      "questionText": "أوجد عدد الأصفار الحقيقية والتخيلية، على الترتيب، للدالة f(x)=x³ + 5x - 128.",
+      "options": {
+        "A": "1,3",
+        "B": "0,2",
+        "C": "0,3",
+        "D": "1,2"
+      },
+      "answerLetter": "D",
+      "correctOptionIndex": 3,
+      "explanation": "المشتقة f'(x)=3x²+5 موجبة دائمًا، لذلك الدالة متزايدة تمامًا ولها صفر حقيقي واحد فقط. وبما أنها من الدرجة الثالثة فلها 3 جذور مركبة إجمالًا، فيتبقى جذران غير حقيقيين. إذن العددان 1 و2، فالاختيار الصحيح D.",
+      "whyCorrect": "المشتقة f'(x)=3x²+5 موجبة دائمًا، لذلك الدالة متزايدة تمامًا ولها صفر حقيقي واحد فقط. وبما أنها من الدرجة الثالثة فلها 3 جذور مركبة إجمالًا، فيتبقى جذران غير حقيقيين. إذن العددان 1 و2، فالاختيار الصحيح D.",
+      "whyOthersWrong": {
+        "A": "3 جذور غير حقيقية لا تتفق مع التكعيبية ذات جذر حقيقي",
+        "B": "لا يمكن انعدام الجذور الحقيقية لتكعيبية",
+        "C": "لا يمكن وجود 3 جذور غير حقيقية مع الجذر الحقيقي"
+      },
+      "hint": "أثبت أولًا أن الدالة متزايدة دائمًا لتحديد عدد الجذور الحقيقية.",
+      "solvingStrategy": "تحديد عدد الجذور الحقيقية ثم استخدام النظرية الأساسية في الجبر.",
+      "commonMistakes": [
+        "افتراض أن درجة 3 تعني ثلاثة جذور حقيقية"
+      ],
+      "difficulty": "hard",
+      "aiContext": {
+        "readableText": "أوجد عدد الأصفار الحقيقية والتخيلية، على الترتيب، للدالة f(x)=x³ + 5x - 128.",
+        "speechText": "أوجد عدد الأصفار الحقيقية والتخيلية، على الترتيب، للدالة f(x)=x³ + 5x - 128.",
+        "visualDescription": "دالة تكعيبية x³+5x-128 ومطلوب عدد أصفارها الحقيقية وغير الحقيقية.",
+        "concepts": [
+          "دوال كثيرات الحدود والأصفار",
+          "تحديد عدد الجذور الحقيقية ثم استخدام النظرية الأساسية في الجبر."
+        ],
+        "requiredData": [
+          "أوجد عدد الأصفار الحقيقية والتخيلية، على الترتيب، للدالة f(x)=x³ + 5x - 128.",
+          "A: 1,3",
+          "B: 0,2",
+          "C: 0,3",
+          "D: 1,2",
+          "كتاب تأسيس يلو للرياضيات 26"
+        ]
+      },
+      "questionFingerprint": "YLM26|YLM26-PDF036-P037-N20|beb78118a57f104de5440f4d4509f6b16f35d3ab01f4ce331904f8e5e09f035e",
+      "teachingFingerprint": "sub_tah_math_10_04|تحديد عدد الجذور الحقيقية ثم استخدام النظرية الأساسية في الجبر.",
+      "sourceEvidence": "ops/tah-math/TAH_MATH_RUN28_20_SOURCE_GROUNDED_PEDAGOGY.json",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "sourcePedagogyReviewed": true,
+      "liveR2Parity": "NOT_TESTED",
+      "liveTopicIdParity": "NOT_TESTED",
+      "stage": "SOURCE_GROUNDED_PEDAGOGY_STAGED_NOT_FINAL",
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P038-Q01",
+      "sourceItemId": "YLM26-PDF037-P038-N01",
+      "imageHash": "f10446fa19665a702693e555f50dd4eb9fa25f2715448ad4d3d728641d8ce671",
+      "mapping": {
+        "skillId": "skill_tah_math_11",
+        "skillName": "العمليات على الدوال والدوال الجذرية",
+        "subSkillId": "sub_tah_math_11_01",
+        "subSkillName": "العمليات على الدوال وتركيب الدوال"
+      },
+      "foundationReference": {
+        "lessonNumber": 15,
+        "lessonTitle": "العمليات على الدوال",
+        "subSkillId": "sub_tah_math_11_01",
+        "subSkillName": "العمليات على الدوال وتركيب الدوال"
+      },
+      "questionText": "إذا كانت f(x)=x²+3 وg(x)=x+3، فأوجد (f+g)(x).",
+      "options": {
+        "A": "x²+6",
+        "B": "x²+x+6",
+        "C": "x²−9",
+        "D": "x³+3"
+      },
+      "answerLetter": "B",
+      "correctOptionIndex": 1,
+      "explanation": "نجمع الدالتين: (f+g)(x)=x²+3+x+3=x²+x+6، فالاختيار الصحيح B.",
+      "whyCorrect": "نجمع الدالتين: (f+g)(x)=x²+3+x+3=x²+x+6، فالاختيار الصحيح B.",
+      "whyOthersWrong": {
+        "A": "أهمل حد x",
+        "C": "طرح الثوابت بدل جمعها",
+        "D": "ضرب الدالتين بدل جمعهما"
+      },
+      "hint": "اجمع حدود الدالتين ثم جمّع الحدود المتشابهة.",
+      "solvingStrategy": "جمع دالتين جبريتين.",
+      "commonMistakes": [
+        "الخلط بين جمع الدوال وتركيبها"
+      ],
+      "difficulty": "easy",
+      "aiContext": {
+        "readableText": "إذا كانت f(x)=x²+3 وg(x)=x+3، فأوجد (f+g)(x).",
+        "speechText": "إذا كانت f(x)=x²+3 وg(x)=x+3، فأوجد (f+g)(x).",
+        "visualDescription": "دالتان جبريتان f وg ومطلوب مجموعهما.",
+        "concepts": [
+          "جمع دالتين جبريتين."
+        ],
+        "requiredData": [
+          "إذا كانت f(x)=x²+3 وg(x)=x+3، فأوجد (f+g)(x).",
+          "A: x²+6",
+          "B: x²+x+6",
+          "C: x²−9",
+          "D: x³+3",
+          "كتاب تأسيس يلو للرياضيات 26"
+        ]
+      },
+      "questionFingerprint": "YLM26|YLM26-PDF037-P038-N01|f10446fa19665a702693e555f50dd4eb9fa25f2715448ad4d3d728641d8ce671",
+      "teachingFingerprint": "sub_tah_math_11_01|جمع دالتين جبريتين.",
+      "sourceEvidence": "ops/tah-math/TAH_MATH_RUN28_20_SOURCE_GROUNDED_PEDAGOGY.json",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "sourcePedagogyReviewed": true,
+      "liveR2Parity": "NOT_TESTED",
+      "liveTopicIdParity": "NOT_TESTED",
+      "stage": "SOURCE_GROUNDED_PEDAGOGY_STAGED_NOT_FINAL",
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P038-Q02",
+      "sourceItemId": "YLM26-PDF037-P038-N02",
+      "imageHash": "a62ee8c81fe9f5618d73a1292889a65b9faa369a97d296c1a9f0d63d3cc7969a",
+      "mapping": {
+        "skillId": "skill_tah_math_11",
+        "skillName": "العمليات على الدوال والدوال الجذرية",
+        "subSkillId": "sub_tah_math_11_01",
+        "subSkillName": "العمليات على الدوال وتركيب الدوال"
+      },
+      "foundationReference": {
+        "lessonNumber": 15,
+        "lessonTitle": "العمليات على الدوال",
+        "subSkillId": "sub_tah_math_11_01",
+        "subSkillName": "العمليات على الدوال وتركيب الدوال"
+      },
+      "questionText": "إذا كان f(x)=x²+1 وg(x)=x−3، فما قيمة x التي تجعل (f∘g)(x)=(g∘f)(x)؟",
+      "options": {
+        "A": "0",
+        "B": "1",
+        "C": "2",
+        "D": "3"
+      },
+      "answerLetter": "C",
+      "correctOptionIndex": 2,
+      "explanation": "f(g(x))=(x−3)^2+1=x²−6x+10، وg(f(x))=x²−2. بالمساواة: −6x+10=−2، فيكون x=2، أي C.",
+      "whyCorrect": "f(g(x))=(x−3)^2+1=x²−6x+10، وg(f(x))=x²−2. بالمساواة: −6x+10=−2، فيكون x=2، أي C.",
+      "whyOthersWrong": {
+        "A": "لا يحقق تساوي التركيبين",
+        "B": "لا يحقق تساوي التركيبين",
+        "D": "لا يحقق تساوي التركيبين"
+      },
+      "hint": "اكتب كل تركيب على حدة ثم ساوِ التعبيرين.",
+      "solvingStrategy": "حساب تركيب الدوال ثم حل المعادلة الناتجة.",
+      "commonMistakes": [
+        "الافتراض الخاطئ أن تركيب الدوال تبادلي"
+      ],
+      "difficulty": "easy",
+      "aiContext": {
+        "readableText": "إذا كان f(x)=x²+1 وg(x)=x−3، فما قيمة x التي تجعل (f∘g)(x)=(g∘f)(x)؟",
+        "speechText": "إذا كان f(x)=x²+1 وg(x)=x−3، فما قيمة x التي تجعل (f∘g)(x)=(g∘f)(x)؟",
+        "visualDescription": "سؤال نصي عن تركيب دالتين ومساواة التركيبين.",
+        "concepts": [
+          "حساب تركيب الدوال ثم حل المعادلة الناتجة."
+        ],
+        "requiredData": [
+          "إذا كان f(x)=x²+1 وg(x)=x−3، فما قيمة x التي تجعل (f∘g)(x)=(g∘f)(x)؟",
+          "A: 0",
+          "B: 1",
+          "C: 2",
+          "D: 3",
+          "كتاب تأسيس يلو للرياضيات 26"
+        ]
+      },
+      "questionFingerprint": "YLM26|YLM26-PDF037-P038-N02|a62ee8c81fe9f5618d73a1292889a65b9faa369a97d296c1a9f0d63d3cc7969a",
+      "teachingFingerprint": "sub_tah_math_11_01|حساب تركيب الدوال ثم حل المعادلة الناتجة.",
+      "sourceEvidence": "ops/tah-math/TAH_MATH_RUN28_20_SOURCE_GROUNDED_PEDAGOGY.json",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "sourcePedagogyReviewed": true,
+      "liveR2Parity": "NOT_TESTED",
+      "liveTopicIdParity": "NOT_TESTED",
+      "stage": "SOURCE_GROUNDED_PEDAGOGY_STAGED_NOT_FINAL",
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P022-Q05",
+      "sourceItemId": "YLM26-PDF021-P022-N05",
+      "imageHash": "2c32a95638e111d3a25b82c52e41d85f901d16d4381ceb1917fe8ef4c1f43f55",
+      "mapping": {
+        "skillId": "skill_tah_math_07",
+        "skillName": "الدائرة",
+        "subSkillId": "sub_tah_math_07_02",
+        "subSkillName": "الأوتار والمماسات والقواطع والقوى في الدائرة"
+      },
+      "foundationReference": {
+        "lessonNumber": 8,
+        "lessonTitle": "الدائرة",
+        "subSkillId": "sub_tah_math_07_02",
+        "subSkillName": "الأوتار والمماسات والقواطع والقوى في الدائرة"
+      },
+      "questionText": "في دائرة، الوتر AB ينصفه نصف قطر عمودي عليه. المسافة من المركز إلى الوتر 3 cm، والمسافة من الوتر إلى محيط الدائرة على نفس نصف القطر 2 cm. ما طول AB؟",
+      "options": {
+        "A": "4",
+        "B": "8",
+        "C": "10",
+        "D": "16"
+      },
+      "answerLetter": "B",
+      "correctOptionIndex": 1,
+      "explanation": "نصف القطر=3+2=5؛ نصف الوتر=√(5²−3²)=4؛ الوتر الكامل=8.",
+      "whyCorrect": "نصف القطر=3+2=5؛ نصف الوتر=√(5²−3²)=4؛ الوتر الكامل=8.",
+      "whyOthersWrong": {
+        "A": "4 طول نصف الوتر فقط.",
+        "C": "10 يخلط بين طول الوتر ونصف القطر.",
+        "D": "16 يضاعف الوتر الصحيح مرة ثانية."
+      },
+      "hint": "استخدم العمود النازل من المركز إلى منتصف الوتر.",
+      "solvingStrategy": "استخدام خاصية تعامد نصف القطر مع الوتر ثم فيثاغورس لإيجاد طول الوتر.",
+      "commonMistakes": [
+        "4 طول نصف الوتر فقط.",
+        "10 يخلط بين طول الوتر ونصف القطر.",
+        "16 يضاعف الوتر الصحيح مرة ثانية."
+      ],
+      "difficulty": "medium",
+      "aiContext": {
+        "readableText": "في دائرة، الوتر AB ينصفه نصف قطر عمودي عليه. المسافة من المركز إلى الوتر 3 cm، والمسافة من الوتر إلى محيط الدائرة على نفس نصف القطر 2 cm. ما طول AB؟",
+        "speechText": "في دائرة، الوتر AB ينصفه نصف قطر عمودي عليه. المسافة من المركز إلى الوتر 3 cm، والمسافة من الوتر إلى محيط الدائرة على نفس نصف القطر 2 cm. ما طول AB؟",
+        "visualDescription": "دائرة بها وتر AB، عمود من المركز على منتصف الوتر طوله 3 cm، وباقي نصف القطر فوق الوتر 2 cm.",
+        "concepts": [
+          "استخدام خاصية تعامد نصف القطر مع الوتر ثم فيثاغورس لإيجاد طول الوتر."
+        ],
+        "requiredData": [
+          "في دائرة، الوتر AB ينصفه نصف قطر عمودي عليه. المسافة من المركز إلى الوتر 3 cm، والمسافة من الوتر إلى محيط الدائرة على نفس نصف القطر 2 cm. ما طول AB؟",
+          "A: 4",
+          "B: 8",
+          "C: 10",
+          "D: 16",
+          "كتاب تأسيس يلو للرياضيات 26"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf"
+      },
+      "questionFingerprint": "YLM26|YLM26-PDF021-P022-N05|2c32a95638e111d3a25b82c52e41d85f901d16d4381ceb1917fe8ef4c1f43f55",
+      "teachingFingerprint": "sub_tah_math_07_02|استخدام خاصية تعامد نصف القطر مع الوتر ثم فيثاغورس لإيجاد طول الوتر.",
+      "sourceEvidence": "ops/tah-math/TAH_MATH_RUN49_10_OPTION_PEDAGOGY_PART1.json",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "sourcePedagogyReviewed": true,
+      "liveR2Parity": "NOT_TESTED",
+      "liveTopicIdParity": "NOT_TESTED",
+      "stage": "SOURCE_GROUNDED_PEDAGOGY_STAGED_NOT_FINAL",
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P022-Q08",
+      "sourceItemId": "YLM26-PDF021-P022-N08",
+      "imageHash": "d96092a239955df387ccb2ae3695caeabe431d27307014007cb9cc32ab8efa11",
+      "mapping": {
+        "skillId": "skill_tah_math_07",
+        "skillName": "الدائرة",
+        "subSkillId": "sub_tah_math_07_01",
+        "subSkillName": "الدائرة والمحيط والمساحة والأقواس والزوايا"
+      },
+      "foundationReference": {
+        "lessonNumber": 8,
+        "lessonTitle": "الدائرة",
+        "subSkillId": "sub_tah_math_07_01",
+        "subSkillName": "الدائرة والمحيط والمساحة والأقواس والزوايا"
+      },
+      "questionText": "في الشكل الرباعي المحاط بدائرة، إذا كانت الزاويتان المتقابلتان معلّمتين 2x° وx°، فما قياس ∠B؟",
+      "options": {
+        "A": "30°",
+        "B": "60°",
+        "C": "120°",
+        "D": "180°"
+      },
+      "answerLetter": "C",
+      "correctOptionIndex": 2,
+      "explanation": "الزاويتان المتقابلتان متكاملتان: 2x+x=180؛ ∠B=120°.",
+      "whyCorrect": "الزاويتان المتقابلتان متكاملتان: 2x+x=180؛ ∠B=120°.",
+      "whyOthersWrong": {
+        "A": "30° لا تحقق مجموع الزاويتين المتقابلتين.",
+        "B": "60° هي x وليست ∠B.",
+        "D": "180° زاوية مستقيمة لا ∠B."
+      },
+      "hint": "احسب x ثم راجع ما تطلبه المسألة.",
+      "solvingStrategy": "تطبيق خاصية الزوايا المتقابلة في رباعي محاط بدائرة.",
+      "commonMistakes": [
+        "30° لا تحقق مجموع الزاويتين المتقابلتين.",
+        "60° هي x وليست ∠B.",
+        "180° زاوية مستقيمة لا ∠B."
+      ],
+      "difficulty": "hard",
+      "aiContext": {
+        "readableText": "في الشكل الرباعي المحاط بدائرة، إذا كانت الزاويتان المتقابلتان معلّمتين 2x° وx°، فما قياس ∠B؟",
+        "speechText": "في الشكل الرباعي المحاط بدائرة، إذا كانت الزاويتان المتقابلتان معلّمتين 2x° وx°، فما قياس ∠B؟",
+        "visualDescription": "رباعي رؤوسه على دائرة، الزاوية عند B معلّمة 2x° والزاوية المقابلة عند D معلّمة x°.",
+        "concepts": [
+          "الدائرة والأقواس والزوايا",
+          "الرباعي المحاط بدائرة"
+        ],
+        "requiredData": [
+          "في الشكل الرباعي المحاط بدائرة، إذا كانت الزاويتان المتقابلتان معلّمتين 2x° وx°، فما قياس ∠B؟",
+          "A: 30°",
+          "B: 60°",
+          "C: 120°",
+          "D: 180°",
+          "كتاب تأسيس يلو للرياضيات 26"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf"
+      },
+      "questionFingerprint": "YLM26|YLM26-PDF021-P022-N08|d96092a239955df387ccb2ae3695caeabe431d27307014007cb9cc32ab8efa11",
+      "teachingFingerprint": "sub_tah_math_07_01|تطبيق خاصية الزوايا المتقابلة في رباعي محاط بدائرة.",
+      "sourceEvidence": "ops/tah-math/TAH_MATH_RUN49_10_OPTION_PEDAGOGY_PART1.json",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "sourcePedagogyReviewed": true,
+      "liveR2Parity": "NOT_TESTED",
+      "liveTopicIdParity": "NOT_TESTED",
+      "stage": "SOURCE_GROUNDED_PEDAGOGY_STAGED_NOT_FINAL",
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P022-Q09",
+      "sourceItemId": "YLM26-PDF021-P022-N09",
+      "imageHash": "b8f64d31be1b281fb8afc44dbcf9d755b5ffae605150a12265ec4c368abf5354",
+      "mapping": {
+        "skillId": "skill_tah_math_07",
+        "skillName": "الدائرة",
+        "subSkillId": "sub_tah_math_07_02",
+        "subSkillName": "الأوتار والمماسات والقواطع والقوى في الدائرة"
+      },
+      "foundationReference": {
+        "lessonNumber": 8,
+        "lessonTitle": "الدائرة",
+        "subSkillId": "sub_tah_math_07_02",
+        "subSkillName": "الأوتار والمماسات والقواطع والقوى في الدائرة"
+      },
+      "questionText": "إذا كان AB مماسًا للدائرة M كما في الشكل، وAB=8 cm وAC=10 cm، فما طول نصف قطر الدائرة؟",
+      "options": {
+        "A": "2",
+        "B": "3",
+        "C": "4",
+        "D": "6"
+      },
+      "answerLetter": "B",
+      "correctOptionIndex": 1,
+      "explanation": "قطر الدائرة=√(10²−8²)=6؛ نصف القطر=3.",
+      "whyCorrect": "قطر الدائرة=√(10²−8²)=6؛ نصف القطر=3.",
+      "whyOthersWrong": {
+        "A": "2 ليس نصف قطر الدائرة بعد تطبيق فيثاغورس.",
+        "C": "4 هو نصف طول المماس 8 بلا سند.",
+        "D": "6 يمثل القطر وليس نصف القطر."
+      },
+      "hint": "المماس عمودي على القطر عند نقطة التماس.",
+      "solvingStrategy": "تطبيق قواعد الأوتار والمماسات والقواطع والقوى في الدائرة",
+      "commonMistakes": [
+        "2 ليس نصف قطر الدائرة بعد تطبيق فيثاغورس.",
+        "4 هو نصف طول المماس 8 بلا سند.",
+        "6 يمثل القطر وليس نصف القطر."
+      ],
+      "difficulty": "medium",
+      "aiContext": {
+        "readableText": "إذا كان AB مماسًا للدائرة M كما في الشكل، وAB=8 cm وAC=10 cm، فما طول نصف قطر الدائرة؟",
+        "speechText": "إذا كان AB مماسًا للدائرة M كما في الشكل، وAB=8 cm وAC=10 cm، فما طول نصف قطر الدائرة؟",
+        "visualDescription": "سؤال تحصيلي رياضيات مع 4 خيارات مصورة داخل الصورة.",
+        "concepts": [
+          "الدائرة",
+          "الأوتار والمماسات والقواطع والقوى في الدائرة"
+        ],
+        "requiredData": [
+          "إذا كان AB مماسًا للدائرة M كما في الشكل، وAB=8 cm وAC=10 cm، فما طول نصف قطر الدائرة؟",
+          "A: 2",
+          "B: 3",
+          "C: 4",
+          "D: 6",
+          "كتاب تأسيس يلو للرياضيات 26"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf"
+      },
+      "questionFingerprint": "YLM26|YLM26-PDF021-P022-N09|b8f64d31be1b281fb8afc44dbcf9d755b5ffae605150a12265ec4c368abf5354",
+      "teachingFingerprint": "sub_tah_math_07_02|تطبيق قواعد الأوتار والمماسات والقواطع والقوى في الدائرة",
+      "sourceEvidence": "ops/tah-math/TAH_MATH_RUN49_10_OPTION_PEDAGOGY_PART1.json",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "sourcePedagogyReviewed": true,
+      "liveR2Parity": "NOT_TESTED",
+      "liveTopicIdParity": "NOT_TESTED",
+      "stage": "SOURCE_GROUNDED_PEDAGOGY_STAGED_NOT_FINAL",
+      "canonicalApproved": false
+    }
+  ]
+}

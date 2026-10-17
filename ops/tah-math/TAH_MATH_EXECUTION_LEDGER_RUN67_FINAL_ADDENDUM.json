@@ -1,0 +1,14 @@
+{
+  "run": "RUN67_FINAL",
+  "supersedes": "TAH_MATH_EXECUTION_LEDGER_RUN67_ADDENDUM.json",
+  "sourceReviewThisRun": 200,
+  "independentAnswerChecks": 192,
+  "sourcePixelPASS": 200,
+  "semanticHolds": 8,
+  "conditionalReviewEventsCumulative": 8056,
+  "uniqueInventory": 326,
+  "canonicalApproved": 0,
+  "productionMutation": false,
+  "status": "NOT_GREEN",
+  "next": "Resolve eight holds, option-specific pedagogy, R2 and topicId parity, rollback manifest, then COL26."
+}

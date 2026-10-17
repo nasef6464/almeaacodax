@@ -1,0 +1,156 @@
+{
+  "project": "TAH-MATH",
+  "bank": "COL26",
+  "checkpoint": "2026-10-08-run12",
+  "status": "REVIEWED_NOT_APPLIED",
+  "sourceVisual": "printed page 132, Q27-Q31 and Q33",
+  "count": 6,
+  "note": "Q32 remains mapped to 20_01 because its actual question checks representation, magnitude, and direction; optional secondary 20_02 remains pending.",
+  "productionMutation": false,
+  "rows": [
+    {
+      "questionCode": "TAH-MATH-COL26-P132-Q27",
+      "sourcePage": 132,
+      "sourceQuestionNumber": 27,
+      "sourceBookSha256": "5c1ec2dc4f2ddd6036dbd3430f0fceaaa9b51e300b7e8442b446c3a21a4ecd51",
+      "sourceImageHash": "339c77e432281a7291b917058c7a697af0121f2a6d31e9b3e9c14f81094ee566",
+      "sourceItemId": "COL26-PDF131-P132-N27",
+      "old": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_01"
+      },
+      "proposed": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_02"
+      },
+      "reason": "Source heading: dot product and perpendicularity; perpendicular vectors form 90 degrees.",
+      "decision": "REMAP_REVIEWED_SOURCE_VISUAL",
+      "rollback": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_01"
+      },
+      "correctAnswerVerified": "B",
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-COL26-P132-Q28",
+      "sourcePage": 132,
+      "sourceQuestionNumber": 28,
+      "sourceBookSha256": "5c1ec2dc4f2ddd6036dbd3430f0fceaaa9b51e300b7e8442b446c3a21a4ecd51",
+      "sourceImageHash": "cdb06e82a47a2672376089d4a49770d7f50a8eaa50b2ff6dd127a9110319a667",
+      "sourceItemId": "COL26-PDF131-P132-N28",
+      "old": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_01"
+      },
+      "proposed": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_02"
+      },
+      "reason": "Source heading: dot product and perpendicularity; dot product 0 implies right angle.",
+      "decision": "REMAP_REVIEWED_SOURCE_VISUAL",
+      "rollback": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_01"
+      },
+      "correctAnswerVerified": "B",
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-COL26-P132-Q29",
+      "sourcePage": 132,
+      "sourceQuestionNumber": 29,
+      "sourceBookSha256": "5c1ec2dc4f2ddd6036dbd3430f0fceaaa9b51e300b7e8442b446c3a21a4ecd51",
+      "sourceImageHash": "dfc833e5366fc3fec79e6d1ed333ffa581212a8918762a46dee2e3e3e5719868",
+      "sourceItemId": "COL26-PDF131-P132-N29",
+      "old": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_01"
+      },
+      "proposed": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_02"
+      },
+      "reason": "Source heading: dot product and perpendicularity; dot product of nonzero orthogonal vectors is zero.",
+      "decision": "REMAP_REVIEWED_SOURCE_VISUAL",
+      "rollback": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_01"
+      },
+      "correctAnswerVerified": "D",
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-COL26-P132-Q30",
+      "sourcePage": 132,
+      "sourceQuestionNumber": 30,
+      "sourceBookSha256": "5c1ec2dc4f2ddd6036dbd3430f0fceaaa9b51e300b7e8442b446c3a21a4ecd51",
+      "sourceImageHash": "11dcabbdcb71af5dfc5d1d40ceb70c6ab7e6b65e71a0d6c24202ef95435611f8",
+      "sourceItemId": "COL26-PDF131-P132-N30",
+      "old": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_01"
+      },
+      "proposed": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_02"
+      },
+      "reason": "Source heading: dot product and perpendicularity; (4,-1) dot (2,8) = 0.",
+      "decision": "REMAP_REVIEWED_SOURCE_VISUAL",
+      "rollback": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_01"
+      },
+      "correctAnswerVerified": "C",
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-COL26-P132-Q31",
+      "sourcePage": 132,
+      "sourceQuestionNumber": 31,
+      "sourceBookSha256": "5c1ec2dc4f2ddd6036dbd3430f0fceaaa9b51e300b7e8442b446c3a21a4ecd51",
+      "sourceImageHash": "72ecbbb3ce2b5bbb66296e331f74458777746b550859f880d138bc8a09fe0f7a",
+      "sourceItemId": "COL26-PDF131-P132-N31",
+      "old": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_01"
+      },
+      "proposed": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_02"
+      },
+      "reason": "Source heading: dot product and perpendicularity; 45 - 15k = 0 gives k=3.",
+      "decision": "REMAP_REVIEWED_SOURCE_VISUAL",
+      "rollback": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_01"
+      },
+      "correctAnswerVerified": "B",
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-COL26-P132-Q33",
+      "sourcePage": 132,
+      "sourceQuestionNumber": 33,
+      "sourceBookSha256": "5c1ec2dc4f2ddd6036dbd3430f0fceaaa9b51e300b7e8442b446c3a21a4ecd51",
+      "sourceImageHash": "d4a1f8ee83a825a4ff72a83036696c6fae2b4665e190fc2d0ee9c1d468da0e31",
+      "sourceItemId": "COL26-PDF131-P132-N33",
+      "old": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_01"
+      },
+      "proposed": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_02"
+      },
+      "reason": "Source heading: angle between two vectors; cos(theta) = 1/2 yields theta=60 degrees.",
+      "decision": "REMAP_REVIEWED_SOURCE_VISUAL",
+      "rollback": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_01"
+      },
+      "correctAnswerVerified": "B",
+      "productionMutation": false
+    }
+  ]
+}

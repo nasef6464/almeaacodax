@@ -1,0 +1,3994 @@
+{
+  "project": "TAH-MATH",
+  "run": "RUN77",
+  "date": "2026-10-10",
+  "branch": "content/tah-math-full-taxonomy-closure",
+  "stage": "YLM26",
+  "sourceBook": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+  "sourcePdfSha256FromPriorRUN76": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+  "visualBasis": "150 distinct previously source-parity-verified question crops inspected from RUN76 contact_sheets/sheet_01.jpg through sheet_15.jpg; original PDF not reopened in this run; prior RUN76 200/200 direct-PDF parity evidence retained.",
+  "sourceVisualQuestionsInspectedThisRun": 150,
+  "independentMathAnswerChecks": 122,
+  "mathematicallyUnambiguousAnswerChecks": 120,
+  "semanticHolds": [
+    "P050-Q04",
+    "P066-Q14"
+  ],
+  "previousRUN74IndependentProofOverlap": 60,
+  "previousRUN74ConflictsAfterReinspection": [],
+  "initialReadErrorsCaughtBeforePublication": [
+    "P068-Q04: A=sinθ (not C); tanθ·sin(π/2−θ)=sinθ",
+    "P069-Q05: A=cos x is even (not C=tan x)"
+  ],
+  "optionSpecificPedagogyPublished": 7,
+  "sourceFidelityCorrections": [
+    "P021-Q04",
+    "P023-Q14",
+    "P031-Q03",
+    "P050-Q04",
+    "P066-Q14",
+    "P081-Q01",
+    "P090-Q10"
+  ],
+  "newCanonicalApprovals": 0,
+  "productionMutation": false,
+  "liveR2Parity": "NOT_TESTED",
+  "liveTopicIdParity": "NOT_TESTED",
+  "rows": [
+    {
+      "questionCode": "TAH-MATH-YLM26-P005-Q01",
+      "sourceItemId": "YLM26-PDF004-P005-N01",
+      "printedPageNumber": 5,
+      "printedQuestionNumber": 1,
+      "sourceImageHashUnverifiedAgainstLiveR2": "ff66954ac747d3b232851cd35444628a2c782baa7ef446af8cc75f9f8d132e6a",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_01.jpg",
+      "answerCandidateFromThisRun": "A",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "A",
+        "reason": "n=2 and n+1=3 are both prime, counterexample."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_01",
+        "subSkillId": "sub_tah_math_01_02"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 1,
+        "lessonTitle": "التبرير والبرهان",
+        "subSkillId": "sub_tah_math_01_02",
+        "subSkillName": "الاستدلال والبرهان والمجموعات"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P005-Q02",
+      "sourceItemId": "YLM26-PDF004-P005-N02",
+      "printedPageNumber": 5,
+      "printedQuestionNumber": 2,
+      "sourceImageHashUnverifiedAgainstLiveR2": "da3f5eb8b57441a7b4b5a1501c3dda47b8efc8a62cff435262bead31d3548374",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_01.jpg",
+      "answerCandidateFromThisRun": null,
+      "answerStatus": "SOURCE_VISUAL_ONLY_NO_NEW_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_01",
+        "subSkillId": "sub_tah_math_01_01"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 1,
+        "lessonTitle": "التبرير والبرهان",
+        "subSkillId": "sub_tah_math_01_01",
+        "subSkillName": "العبارات المنطقية وقيم الصواب والعبارات الشرطية"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P005-Q03",
+      "sourceItemId": "YLM26-PDF004-P005-N03",
+      "printedPageNumber": 5,
+      "printedQuestionNumber": 3,
+      "sourceImageHashUnverifiedAgainstLiveR2": "913dfbd3e72de592fd04536eab27393e85998bc06ef6212098a0aa8fc9147179",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_01.jpg",
+      "answerCandidateFromThisRun": null,
+      "answerStatus": "SOURCE_VISUAL_ONLY_NO_NEW_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_01",
+        "subSkillId": "sub_tah_math_01_01"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 1,
+        "lessonTitle": "التبرير والبرهان",
+        "subSkillId": "sub_tah_math_01_01",
+        "subSkillName": "العبارات المنطقية وقيم الصواب والعبارات الشرطية"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P006-Q04",
+      "sourceItemId": "YLM26-PDF005-P006-N04",
+      "printedPageNumber": 6,
+      "printedQuestionNumber": 4,
+      "sourceImageHashUnverifiedAgainstLiveR2": "ea9222b3ed6e7e3545ccc8337dd1415c9bbca945e9d283aaea6f64b89c7cf640",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_01.jpg",
+      "answerCandidateFromThisRun": "B",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_01",
+        "subSkillId": "sub_tah_math_01_01"
+      },
+      "difficultyTriageNotFinal": "medium",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 1,
+        "lessonTitle": "التبرير والبرهان",
+        "subSkillId": "sub_tah_math_01_01",
+        "subSkillName": "العبارات المنطقية وقيم الصواب والعبارات الشرطية"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P006-Q05",
+      "sourceItemId": "YLM26-PDF005-P006-N05",
+      "printedPageNumber": 6,
+      "printedQuestionNumber": 5,
+      "sourceImageHashUnverifiedAgainstLiveR2": "2ef252d482f24ead92fb63ea773a297fe9ebf965ba13769a73ee662dc46b3944",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_01.jpg",
+      "answerCandidateFromThisRun": "D",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_01",
+        "subSkillId": "sub_tah_math_01_01"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 1,
+        "lessonTitle": "التبرير والبرهان",
+        "subSkillId": "sub_tah_math_01_01",
+        "subSkillName": "العبارات المنطقية وقيم الصواب والعبارات الشرطية"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P006-Q06",
+      "sourceItemId": "YLM26-PDF005-P006-N06",
+      "printedPageNumber": 6,
+      "printedQuestionNumber": 6,
+      "sourceImageHashUnverifiedAgainstLiveR2": "38ed85b7a1ec7713089005d83b2ec2e2ee8e492ee6e4d8af181c99450ea95c8a",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_01.jpg",
+      "answerCandidateFromThisRun": "C",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_01",
+        "subSkillId": "sub_tah_math_01_01"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 1,
+        "lessonTitle": "التبرير والبرهان",
+        "subSkillId": "sub_tah_math_01_01",
+        "subSkillName": "العبارات المنطقية وقيم الصواب والعبارات الشرطية"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P006-Q07",
+      "sourceItemId": "YLM26-PDF005-P006-N07",
+      "printedPageNumber": 6,
+      "printedQuestionNumber": 7,
+      "sourceImageHashUnverifiedAgainstLiveR2": "fedf18e3bc258c5865236b8b2c5a844c7a43b369c2987b5e5565ccc3642639a1",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_01.jpg",
+      "answerCandidateFromThisRun": "B",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "B",
+        "reason": "Science and computer Venn overlap 3+9=12."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_01",
+        "subSkillId": "sub_tah_math_01_02"
+      },
+      "difficultyTriageNotFinal": "medium",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 1,
+        "lessonTitle": "التبرير والبرهان",
+        "subSkillId": "sub_tah_math_01_02",
+        "subSkillName": "الاستدلال والبرهان والمجموعات"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P007-Q01",
+      "sourceItemId": "YLM26-PDF006-P007-N01",
+      "printedPageNumber": 7,
+      "printedQuestionNumber": 1,
+      "sourceImageHashUnverifiedAgainstLiveR2": "6489d637039d907491b8665fc1aaf0598d5c5e59100f9ed02112ff26d08d62de",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_01.jpg",
+      "answerCandidateFromThisRun": "B",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "B",
+        "reason": "Two distinct parallel lines determine one plane."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_02",
+        "subSkillId": "sub_tah_math_02_01"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 2,
+        "lessonTitle": "المسلمات والعلاقات الهندسية",
+        "subSkillId": "sub_tah_math_02_01",
+        "subSkillName": "المسلمات والقطع والزوايا والعلاقات الهندسية"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P007-Q02",
+      "sourceItemId": "YLM26-PDF006-P007-N02",
+      "printedPageNumber": 7,
+      "printedQuestionNumber": 2,
+      "sourceImageHashUnverifiedAgainstLiveR2": "6b8fab0c1d01c5466c70c2037a66f2b0b7546d06f4486e3d93c2a90b52b9c153",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_01.jpg",
+      "answerCandidateFromThisRun": null,
+      "answerStatus": "SOURCE_VISUAL_ONLY_NO_NEW_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_02",
+        "subSkillId": "sub_tah_math_02_01"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 2,
+        "lessonTitle": "المسلمات والعلاقات الهندسية",
+        "subSkillId": "sub_tah_math_02_01",
+        "subSkillName": "المسلمات والقطع والزوايا والعلاقات الهندسية"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P007-Q03",
+      "sourceItemId": "YLM26-PDF006-P007-N03",
+      "printedPageNumber": 7,
+      "printedQuestionNumber": 3,
+      "sourceImageHashUnverifiedAgainstLiveR2": "b0910ff92c118a61cac8b3ad1cbb9ef2f0d878f3e5b6790d8e9b38ee6046254e",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_01.jpg",
+      "answerCandidateFromThisRun": "C",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_02",
+        "subSkillId": "sub_tah_math_02_01"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 2,
+        "lessonTitle": "المسلمات والعلاقات الهندسية",
+        "subSkillId": "sub_tah_math_02_01",
+        "subSkillName": "المسلمات والقطع والزوايا والعلاقات الهندسية"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P007-Q04",
+      "sourceItemId": "YLM26-PDF006-P007-N04",
+      "printedPageNumber": 7,
+      "printedQuestionNumber": 4,
+      "sourceImageHashUnverifiedAgainstLiveR2": "655386a44c8fe2d0b1eeb910b3a2466b9b081687c838a2694d6201982ac0acc2",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_02.jpg",
+      "answerCandidateFromThisRun": null,
+      "answerStatus": "SOURCE_VISUAL_ONLY_NO_NEW_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_02",
+        "subSkillId": "sub_tah_math_02_01"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 2,
+        "lessonTitle": "المسلمات والعلاقات الهندسية",
+        "subSkillId": "sub_tah_math_02_01",
+        "subSkillName": "المسلمات والقطع والزوايا والعلاقات الهندسية"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P008-Q05",
+      "sourceItemId": "YLM26-PDF007-P008-N05",
+      "printedPageNumber": 8,
+      "printedQuestionNumber": 5,
+      "sourceImageHashUnverifiedAgainstLiveR2": "a55ce83bfc635da0727bef94d5a864540d12e9e4e41024bca9a15092f44e384b",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_02.jpg",
+      "answerCandidateFromThisRun": "C",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_02",
+        "subSkillId": "sub_tah_math_02_02"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 2,
+        "lessonTitle": "المسلمات والعلاقات الهندسية",
+        "subSkillId": "sub_tah_math_02_02",
+        "subSkillName": "المستقيمات المتوازية والقاطع وعلاقات الزوايا"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P008-Q06",
+      "sourceItemId": "YLM26-PDF007-P008-N06",
+      "printedPageNumber": 8,
+      "printedQuestionNumber": 6,
+      "sourceImageHashUnverifiedAgainstLiveR2": "e88911420f32f4ce51fbae57096f2930d7b72bbdad81e8501bed2ba68fe03cd1",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_02.jpg",
+      "answerCandidateFromThisRun": "C",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_02",
+        "subSkillId": "sub_tah_math_02_02"
+      },
+      "difficultyTriageNotFinal": "medium",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 2,
+        "lessonTitle": "المسلمات والعلاقات الهندسية",
+        "subSkillId": "sub_tah_math_02_02",
+        "subSkillName": "المستقيمات المتوازية والقاطع وعلاقات الزوايا"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P008-Q07",
+      "sourceItemId": "YLM26-PDF007-P008-N07",
+      "printedPageNumber": 8,
+      "printedQuestionNumber": 7,
+      "sourceImageHashUnverifiedAgainstLiveR2": "b6ccd925d95d7d6d19f0b87d17e71a713aca35f24f359ff7ee7d74226aff4d20",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_02.jpg",
+      "answerCandidateFromThisRun": "A",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_02",
+        "subSkillId": "sub_tah_math_02_02"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 2,
+        "lessonTitle": "المسلمات والعلاقات الهندسية",
+        "subSkillId": "sub_tah_math_02_02",
+        "subSkillName": "المستقيمات المتوازية والقاطع وعلاقات الزوايا"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P008-Q08",
+      "sourceItemId": "YLM26-PDF007-P008-N08",
+      "printedPageNumber": 8,
+      "printedQuestionNumber": 8,
+      "sourceImageHashUnverifiedAgainstLiveR2": "f9ab8c63c60ca17ef91479076d25f1eadb6560a89b03c0fc0ead6ac7a3abe568",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_02.jpg",
+      "answerCandidateFromThisRun": "D",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_02",
+        "subSkillId": "sub_tah_math_02_02"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 2,
+        "lessonTitle": "المسلمات والعلاقات الهندسية",
+        "subSkillId": "sub_tah_math_02_02",
+        "subSkillName": "المستقيمات المتوازية والقاطع وعلاقات الزوايا"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P009-Q01",
+      "sourceItemId": "YLM26-PDF008-P009-N01",
+      "printedPageNumber": 9,
+      "printedQuestionNumber": 1,
+      "sourceImageHashUnverifiedAgainstLiveR2": "27bb1f95a03af8dd932177bfa0a7371ea47d293bb476470dc46e0491a0873db9",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_02.jpg",
+      "answerCandidateFromThisRun": "A",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_02",
+        "subSkillId": "sub_tah_math_02_03"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 3,
+        "lessonTitle": "المستقيم",
+        "subSkillId": "sub_tah_math_02_03",
+        "subSkillName": "الميل ومعادلات المستقيم والتوازي والتعامد"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P009-Q02",
+      "sourceItemId": "YLM26-PDF008-P009-N02",
+      "printedPageNumber": 9,
+      "printedQuestionNumber": 2,
+      "sourceImageHashUnverifiedAgainstLiveR2": "99bcf747675aed92dc27ca60706a13a1a0d26584a8b68578f7a44c1efc03c255",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_02.jpg",
+      "answerCandidateFromThisRun": "A",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_02",
+        "subSkillId": "sub_tah_math_02_03"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 3,
+        "lessonTitle": "المستقيم",
+        "subSkillId": "sub_tah_math_02_03",
+        "subSkillName": "الميل ومعادلات المستقيم والتوازي والتعامد"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P009-Q03",
+      "sourceItemId": "YLM26-PDF008-P009-N03",
+      "printedPageNumber": 9,
+      "printedQuestionNumber": 3,
+      "sourceImageHashUnverifiedAgainstLiveR2": "1eef80ac2258d1c95bcecdba3f46b10a9b35e08b3b68cc1174f719d8f8ae22b7",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_02.jpg",
+      "answerCandidateFromThisRun": "D",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_02",
+        "subSkillId": "sub_tah_math_02_03"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 3,
+        "lessonTitle": "المستقيم",
+        "subSkillId": "sub_tah_math_02_03",
+        "subSkillName": "الميل ومعادلات المستقيم والتوازي والتعامد"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P009-Q04",
+      "sourceItemId": "YLM26-PDF008-P009-N04",
+      "printedPageNumber": 9,
+      "printedQuestionNumber": 4,
+      "sourceImageHashUnverifiedAgainstLiveR2": "0f8a07f2c58f6de26336bc9791392d70ab962e930a019c9e0fbe9d8cbda2e94a",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_02.jpg",
+      "answerCandidateFromThisRun": "D",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "D",
+        "reason": "z perpendicular to slope 2/3 has slope -3/2."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_02",
+        "subSkillId": "sub_tah_math_02_03"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 3,
+        "lessonTitle": "المستقيم",
+        "subSkillId": "sub_tah_math_02_03",
+        "subSkillName": "الميل ومعادلات المستقيم والتوازي والتعامد"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P010-Q05",
+      "sourceItemId": "YLM26-PDF009-P010-N05",
+      "printedPageNumber": 10,
+      "printedQuestionNumber": 5,
+      "sourceImageHashUnverifiedAgainstLiveR2": "8f1045225dab00307778a9b7528016e48c19ad02a876cb8cf86c6a94a82384c2",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_02.jpg",
+      "answerCandidateFromThisRun": "D",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_02",
+        "subSkillId": "sub_tah_math_02_03"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 3,
+        "lessonTitle": "المستقيم",
+        "subSkillId": "sub_tah_math_02_03",
+        "subSkillName": "الميل ومعادلات المستقيم والتوازي والتعامد"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P010-Q06",
+      "sourceItemId": "YLM26-PDF009-P010-N06",
+      "printedPageNumber": 10,
+      "printedQuestionNumber": 6,
+      "sourceImageHashUnverifiedAgainstLiveR2": "ae763eca7875b6ff3a5da4e38ce2c66d5a12394f22b2abcbfc0f2237eab866a9",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_03.jpg",
+      "answerCandidateFromThisRun": "A",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_02",
+        "subSkillId": "sub_tah_math_02_03"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 3,
+        "lessonTitle": "المستقيم",
+        "subSkillId": "sub_tah_math_02_03",
+        "subSkillName": "الميل ومعادلات المستقيم والتوازي والتعامد"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P010-Q07",
+      "sourceItemId": "YLM26-PDF009-P010-N07",
+      "printedPageNumber": 10,
+      "printedQuestionNumber": 7,
+      "sourceImageHashUnverifiedAgainstLiveR2": "8eb29adfa0b750737525cc0ffdf8313e9d13d00a6ac172bd7c9e34fa42cae21c",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_03.jpg",
+      "answerCandidateFromThisRun": "A",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_02",
+        "subSkillId": "sub_tah_math_02_01"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 2,
+        "lessonTitle": "المسلمات والعلاقات الهندسية",
+        "subSkillId": "sub_tah_math_02_01",
+        "subSkillName": "المسلمات والقطع والزوايا والعلاقات الهندسية"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P010-Q08",
+      "sourceItemId": "YLM26-PDF009-P010-N08",
+      "printedPageNumber": 10,
+      "printedQuestionNumber": 8,
+      "sourceImageHashUnverifiedAgainstLiveR2": "da72f204453f857ba73f8352e0a84d6c46d2030a64a629c9d3b5fa9506643011",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_03.jpg",
+      "answerCandidateFromThisRun": "C",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_02",
+        "subSkillId": "sub_tah_math_02_03"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 3,
+        "lessonTitle": "المستقيم",
+        "subSkillId": "sub_tah_math_02_03",
+        "subSkillName": "الميل ومعادلات المستقيم والتوازي والتعامد"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P010-Q09",
+      "sourceItemId": "YLM26-PDF009-P010-N09",
+      "printedPageNumber": 10,
+      "printedQuestionNumber": 9,
+      "sourceImageHashUnverifiedAgainstLiveR2": "5652e2755ce77ddc8ea9b883b3112a2afc473c83cd7f0b91928afa141fe6eb91",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_03.jpg",
+      "answerCandidateFromThisRun": "D",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_02",
+        "subSkillId": "sub_tah_math_02_03"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 3,
+        "lessonTitle": "المستقيم",
+        "subSkillId": "sub_tah_math_02_03",
+        "subSkillName": "الميل ومعادلات المستقيم والتوازي والتعامد"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P011-Q01",
+      "sourceItemId": "YLM26-PDF010-P011-N01",
+      "printedPageNumber": 11,
+      "printedQuestionNumber": 1,
+      "sourceImageHashUnverifiedAgainstLiveR2": "c3c9bf5798703c585be50745de2b612151d6ac2252f7aaeea610a22e4132a5e6",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_03.jpg",
+      "answerCandidateFromThisRun": "D",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_03",
+        "subSkillId": "sub_tah_math_03_01"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 4,
+        "lessonTitle": "المثلث",
+        "subSkillId": "sub_tah_math_03_01",
+        "subSkillName": "تصنيف المثلثات وزوايا المثلث"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P022-Q07",
+      "sourceItemId": "YLM26-PDF021-P022-N07",
+      "printedPageNumber": 22,
+      "printedQuestionNumber": 7,
+      "sourceImageHashUnverifiedAgainstLiveR2": "76b010915858e3d21b0bc2ef3db6608747332bbecf57125272e1d8a9a2d264d7",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_03.jpg",
+      "answerCandidateFromThisRun": null,
+      "answerStatus": "SOURCE_VISUAL_ONLY_NO_NEW_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_07",
+        "subSkillId": "sub_tah_math_07_01"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 8,
+        "lessonTitle": "الدائرة",
+        "subSkillId": "sub_tah_math_07_01",
+        "subSkillName": "الدائرة والمحيط والمساحة والأقواس والزوايا"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P022-Q08",
+      "sourceItemId": "YLM26-PDF021-P022-N08",
+      "printedPageNumber": 22,
+      "printedQuestionNumber": 8,
+      "sourceImageHashUnverifiedAgainstLiveR2": "d96092a239955df387ccb2ae3695caeabe431d27307014007cb9cc32ab8efa11",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_03.jpg",
+      "answerCandidateFromThisRun": "C",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_07",
+        "subSkillId": "sub_tah_math_07_01"
+      },
+      "difficultyTriageNotFinal": "hard",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 8,
+        "lessonTitle": "الدائرة",
+        "subSkillId": "sub_tah_math_07_01",
+        "subSkillName": "الدائرة والمحيط والمساحة والأقواس والزوايا"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P022-Q09",
+      "sourceItemId": "YLM26-PDF021-P022-N09",
+      "printedPageNumber": 22,
+      "printedQuestionNumber": 9,
+      "sourceImageHashUnverifiedAgainstLiveR2": "b8f64d31be1b281fb8afc44dbcf9d755b5ffae605150a12265ec4c368abf5354",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_03.jpg",
+      "answerCandidateFromThisRun": "B",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_07",
+        "subSkillId": "sub_tah_math_07_02"
+      },
+      "difficultyTriageNotFinal": "medium",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 8,
+        "lessonTitle": "الدائرة",
+        "subSkillId": "sub_tah_math_07_02",
+        "subSkillName": "الأوتار والمماسات والقواطع والقوى في الدائرة"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P023-Q10",
+      "sourceItemId": "YLM26-PDF022-P023-N10",
+      "printedPageNumber": 23,
+      "printedQuestionNumber": 10,
+      "sourceImageHashUnverifiedAgainstLiveR2": "0ae700f6377dea453cc1ca42531b30aac526c7ea9be0ac0cc194d244bbc139dd",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_03.jpg",
+      "answerCandidateFromThisRun": "A",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_07",
+        "subSkillId": "sub_tah_math_07_02"
+      },
+      "difficultyTriageNotFinal": "medium",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 8,
+        "lessonTitle": "الدائرة",
+        "subSkillId": "sub_tah_math_07_02",
+        "subSkillName": "الأوتار والمماسات والقواطع والقوى في الدائرة"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P023-Q11",
+      "sourceItemId": "YLM26-PDF022-P023-N11",
+      "printedPageNumber": 23,
+      "printedQuestionNumber": 11,
+      "sourceImageHashUnverifiedAgainstLiveR2": "9c23ac74b6a150431da7fc4ea1c40e409a347775c6bbdc800eaf7b98a73a71b4",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_03.jpg",
+      "answerCandidateFromThisRun": "D",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_07",
+        "subSkillId": "sub_tah_math_07_02"
+      },
+      "difficultyTriageNotFinal": "medium",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 8,
+        "lessonTitle": "الدائرة",
+        "subSkillId": "sub_tah_math_07_02",
+        "subSkillName": "الأوتار والمماسات والقواطع والقوى في الدائرة"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P023-Q12",
+      "sourceItemId": "YLM26-PDF022-P023-N12",
+      "printedPageNumber": 23,
+      "printedQuestionNumber": 12,
+      "sourceImageHashUnverifiedAgainstLiveR2": "a72aaf10565da4893fe2c187046d7f682e11c7e18e038b9125032a674d2f1a92",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_04.jpg",
+      "answerCandidateFromThisRun": "A",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_07",
+        "subSkillId": "sub_tah_math_07_02"
+      },
+      "difficultyTriageNotFinal": "medium",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 8,
+        "lessonTitle": "الدائرة",
+        "subSkillId": "sub_tah_math_07_02",
+        "subSkillName": "الأوتار والمماسات والقواطع والقوى في الدائرة"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P023-Q13",
+      "sourceItemId": "YLM26-PDF022-P023-N13",
+      "printedPageNumber": 23,
+      "printedQuestionNumber": 13,
+      "sourceImageHashUnverifiedAgainstLiveR2": "f3c3eb0379d320a7ce893ed736168d1794166c41548d36ef5cdac3ec8e40762f",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_04.jpg",
+      "answerCandidateFromThisRun": null,
+      "answerStatus": "SOURCE_VISUAL_ONLY_NO_NEW_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_07",
+        "subSkillId": "sub_tah_math_07_02"
+      },
+      "difficultyTriageNotFinal": "medium",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 8,
+        "lessonTitle": "الدائرة",
+        "subSkillId": "sub_tah_math_07_02",
+        "subSkillName": "الأوتار والمماسات والقواطع والقوى في الدائرة"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P023-Q14",
+      "sourceItemId": "YLM26-PDF022-P023-N14",
+      "printedPageNumber": 23,
+      "printedQuestionNumber": 14,
+      "sourceImageHashUnverifiedAgainstLiveR2": "3543834ccb1a7af88aecda231abc42d5b7224b3903909631a19ce3c6d04d26a9",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_04.jpg",
+      "answerCandidateFromThisRun": "D",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "D",
+        "reason": "Center (3,-1) reflected y=x ->(-1,3), rotated CCW 90 ->(-3,-1)."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_07",
+        "subSkillId": "sub_tah_math_07_03"
+      },
+      "difficultyTriageNotFinal": "medium",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 8,
+        "lessonTitle": "الدائرة",
+        "subSkillId": "sub_tah_math_07_03",
+        "subSkillName": "معادلة الدائرة في المستوى الإحداثي"
+      },
+      "whyOthersWrongFinal": true,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P025-Q01",
+      "sourceItemId": "YLM26-PDF024-P025-N01",
+      "printedPageNumber": 25,
+      "printedQuestionNumber": 1,
+      "sourceImageHashUnverifiedAgainstLiveR2": "6843ceea84dc85597f18311ddb7d80b0dbfaf2e325cf5796d88a9f39834f60c7",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_04.jpg",
+      "answerCandidateFromThisRun": "A",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_08",
+        "subSkillId": "sub_tah_math_08_01"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 9,
+        "lessonTitle": "الأعداد الحقيقية والدوال",
+        "subSkillId": "sub_tah_math_08_01",
+        "subSkillName": "مجموعات الأعداد الحقيقية وخصائصها والعلاقات والدوال"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P025-Q02",
+      "sourceItemId": "YLM26-PDF024-P025-N02",
+      "printedPageNumber": 25,
+      "printedQuestionNumber": 2,
+      "sourceImageHashUnverifiedAgainstLiveR2": "48e3655b5cf064962dd4be4a1ac21ce67f4642fff23b38b765f4416e34231f62",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_04.jpg",
+      "answerCandidateFromThisRun": "D",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_08",
+        "subSkillId": "sub_tah_math_08_01"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 9,
+        "lessonTitle": "الأعداد الحقيقية والدوال",
+        "subSkillId": "sub_tah_math_08_01",
+        "subSkillName": "مجموعات الأعداد الحقيقية وخصائصها والعلاقات والدوال"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P025-Q03",
+      "sourceItemId": "YLM26-PDF024-P025-N03",
+      "printedPageNumber": 25,
+      "printedQuestionNumber": 3,
+      "sourceImageHashUnverifiedAgainstLiveR2": "3dd595898808842f005d36e93827fd928b9f6045617de0d75f896ef17068c39f",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_04.jpg",
+      "answerCandidateFromThisRun": "C",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "C",
+        "reason": "a(b+c)=ab+ac is distributive law."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_08",
+        "subSkillId": "sub_tah_math_08_01"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 9,
+        "lessonTitle": "الأعداد الحقيقية والدوال",
+        "subSkillId": "sub_tah_math_08_01",
+        "subSkillName": "مجموعات الأعداد الحقيقية وخصائصها والعلاقات والدوال"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P026-Q04",
+      "sourceItemId": "YLM26-PDF025-P026-N04",
+      "printedPageNumber": 26,
+      "printedQuestionNumber": 4,
+      "sourceImageHashUnverifiedAgainstLiveR2": "9fb360ff25a2bb9fac5d5f01b9441e8f06986a6c3d1eb31c960c71c170c5c6a0",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_04.jpg",
+      "answerCandidateFromThisRun": "A",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_08",
+        "subSkillId": "sub_tah_math_08_01"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 9,
+        "lessonTitle": "الأعداد الحقيقية والدوال",
+        "subSkillId": "sub_tah_math_08_01",
+        "subSkillName": "مجموعات الأعداد الحقيقية وخصائصها والعلاقات والدوال"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P026-Q05",
+      "sourceItemId": "YLM26-PDF025-P026-N05",
+      "printedPageNumber": 26,
+      "printedQuestionNumber": 5,
+      "sourceImageHashUnverifiedAgainstLiveR2": "115106f3f52ef6315b12c1fbd95f25ecb08186e3bf27bb46c2863bb9fcd8df5b",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_04.jpg",
+      "answerCandidateFromThisRun": "A",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_08",
+        "subSkillId": "sub_tah_math_08_01"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 9,
+        "lessonTitle": "الأعداد الحقيقية والدوال",
+        "subSkillId": "sub_tah_math_08_01",
+        "subSkillName": "مجموعات الأعداد الحقيقية وخصائصها والعلاقات والدوال"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P026-Q06",
+      "sourceItemId": "YLM26-PDF025-P026-N06",
+      "printedPageNumber": 26,
+      "printedQuestionNumber": 6,
+      "sourceImageHashUnverifiedAgainstLiveR2": "0dd46b9489eb3d6d319692f75645006e8e0dca55d9249d5138caa541e212c1cd",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_04.jpg",
+      "answerCandidateFromThisRun": "D",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "D",
+        "reason": "f(2)-f(0)=29-11=18."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_08",
+        "subSkillId": "sub_tah_math_08_01"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 9,
+        "lessonTitle": "الأعداد الحقيقية والدوال",
+        "subSkillId": "sub_tah_math_08_01",
+        "subSkillName": "مجموعات الأعداد الحقيقية وخصائصها والعلاقات والدوال"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P027-Q01",
+      "sourceItemId": "YLM26-PDF026-P027-N01",
+      "printedPageNumber": 27,
+      "printedQuestionNumber": 1,
+      "sourceImageHashUnverifiedAgainstLiveR2": "854bf61a97f251a45905664a95322bb3d619f1e8b25b36feee5c657b4c3a94d4",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_04.jpg",
+      "answerCandidateFromThisRun": "D",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_08",
+        "subSkillId": "sub_tah_math_08_02"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 10,
+        "lessonTitle": "دوال خاصة",
+        "subSkillId": "sub_tah_math_08_02",
+        "subSkillName": "المجال والمدى والدوال الخاصة والقيمة المطلقة والمتعددة التعريف"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P028-Q05",
+      "sourceItemId": "YLM26-PDF027-P028-N05",
+      "printedPageNumber": 28,
+      "printedQuestionNumber": 5,
+      "sourceImageHashUnverifiedAgainstLiveR2": "a388fa73d4b570731a56245eb9155d8d8da708d9e33cd3df6c9a312fd7ab54e3",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_05.jpg",
+      "answerCandidateFromThisRun": "A",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_08",
+        "subSkillId": "sub_tah_math_08_02"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 10,
+        "lessonTitle": "دوال خاصة",
+        "subSkillId": "sub_tah_math_08_02",
+        "subSkillName": "المجال والمدى والدوال الخاصة والقيمة المطلقة والمتعددة التعريف"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P028-Q08",
+      "sourceItemId": "YLM26-PDF027-P028-N08",
+      "printedPageNumber": 28,
+      "printedQuestionNumber": 8,
+      "sourceImageHashUnverifiedAgainstLiveR2": "d75d0119e505c379b118e57809f49600693b1e0a4e651830efc1b23c88555d56",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_05.jpg",
+      "answerCandidateFromThisRun": "A",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_08",
+        "subSkillId": "sub_tah_math_08_02"
+      },
+      "difficultyTriageNotFinal": "medium",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 10,
+        "lessonTitle": "دوال خاصة",
+        "subSkillId": "sub_tah_math_08_02",
+        "subSkillName": "المجال والمدى والدوال الخاصة والقيمة المطلقة والمتعددة التعريف"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P029-Q02",
+      "sourceItemId": "YLM26-PDF028-P029-N02",
+      "printedPageNumber": 29,
+      "printedQuestionNumber": 2,
+      "sourceImageHashUnverifiedAgainstLiveR2": "553796cae6b9a96cf839fe34a907a3ad81ff3d8a0167197b658cf17dce54f623",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_05.jpg",
+      "answerCandidateFromThisRun": "C",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "C",
+        "reason": "(0,0) fails 2x-3y>=12; other options satisfy."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_08",
+        "subSkillId": "sub_tah_math_08_03"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 11,
+        "lessonTitle": "المتباينات",
+        "subSkillId": "sub_tah_math_08_03",
+        "subSkillName": "المتباينات الخطية وأنظمة المتباينات وتمثيل منطقة الحل"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P031-Q03",
+      "sourceItemId": "YLM26-PDF030-P031-N03",
+      "printedPageNumber": 31,
+      "printedQuestionNumber": 3,
+      "sourceImageHashUnverifiedAgainstLiveR2": "4d966fe806c1df364696359745eb40aeb20b119e8afabea1aa107c8ff977a23c",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_05.jpg",
+      "answerCandidateFromThisRun": "A",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_09",
+        "subSkillId": "sub_tah_math_09_01"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 12,
+        "lessonTitle": "المصفوفات",
+        "subSkillId": "sub_tah_math_09_01",
+        "subSkillName": "العمليات على المصفوفات"
+      },
+      "whyOthersWrongFinal": true,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P031-Q05",
+      "sourceItemId": "YLM26-PDF030-P031-N05",
+      "printedPageNumber": 31,
+      "printedQuestionNumber": 5,
+      "sourceImageHashUnverifiedAgainstLiveR2": "cb5992981d0937a2a04a2b18ae856b23835ededf00125155d583bcfe0148d1f7",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_05.jpg",
+      "answerCandidateFromThisRun": "A",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_09",
+        "subSkillId": "sub_tah_math_09_01"
+      },
+      "difficultyTriageNotFinal": "medium",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 12,
+        "lessonTitle": "المصفوفات",
+        "subSkillId": "sub_tah_math_09_01",
+        "subSkillName": "العمليات على المصفوفات"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P031-Q07",
+      "sourceItemId": "YLM26-PDF030-P031-N07",
+      "printedPageNumber": 31,
+      "printedQuestionNumber": 7,
+      "sourceImageHashUnverifiedAgainstLiveR2": "d96af7a55b3e9d1618d4966749aeae8664cbfcb24ac650dfcaf9bf71286deb62",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_05.jpg",
+      "answerCandidateFromThisRun": "B",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "B",
+        "reason": "Singular matrix determinant 4x-24=0 gives x=6."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_09",
+        "subSkillId": "sub_tah_math_09_02"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 12,
+        "lessonTitle": "المصفوفات",
+        "subSkillId": "sub_tah_math_09_02",
+        "subSkillName": "المحدد والمعكوس وحل أنظمة المعادلات بالمصفوفات"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P032-Q02",
+      "sourceItemId": "YLM26-PDF031-P032-N02",
+      "printedPageNumber": 32,
+      "printedQuestionNumber": 2,
+      "sourceImageHashUnverifiedAgainstLiveR2": "f5bdfcc8c063f761e6ab62a1db76403dea1674d3150b732cd223f55215303aab",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_05.jpg",
+      "answerCandidateFromThisRun": "A",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_10",
+        "subSkillId": "sub_tah_math_10_01"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 13,
+        "lessonTitle": "الأعداد المركبة والمعادلة التربيعية",
+        "subSkillId": "sub_tah_math_10_01",
+        "subSkillName": "الأعداد المركبة وعملياتها"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P032-Q05",
+      "sourceItemId": "YLM26-PDF031-P032-N05",
+      "printedPageNumber": 32,
+      "printedQuestionNumber": 5,
+      "sourceImageHashUnverifiedAgainstLiveR2": "fc0349b9ca8a1efd1d36bda3c31fa35a8525ec3a6efe4d3975bb8a1f4ad82e16",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_05.jpg",
+      "answerCandidateFromThisRun": "A",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "A",
+        "reason": "(1-2i)(1+2i)=5, fourth power 625."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_10",
+        "subSkillId": "sub_tah_math_10_01"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 13,
+        "lessonTitle": "الأعداد المركبة والمعادلة التربيعية",
+        "subSkillId": "sub_tah_math_10_01",
+        "subSkillName": "الأعداد المركبة وعملياتها"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P033-Q08",
+      "sourceItemId": "YLM26-PDF032-P033-N08",
+      "printedPageNumber": 33,
+      "printedQuestionNumber": 8,
+      "sourceImageHashUnverifiedAgainstLiveR2": "b356578478dd8fcc201845df1f6cfff503a920264f8d9bda34e76d899b3717b7",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_05.jpg",
+      "answerCandidateFromThisRun": "C",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "C",
+        "reason": "Roots 3,-8 have sum -5 and product -24: x²+5x-24."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_10",
+        "subSkillId": "sub_tah_math_10_02"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 13,
+        "lessonTitle": "الأعداد المركبة والمعادلة التربيعية",
+        "subSkillId": "sub_tah_math_10_02",
+        "subSkillName": "المعادلة التربيعية والمميز والجذور"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P034-Q02",
+      "sourceItemId": "YLM26-PDF033-P034-N02",
+      "printedPageNumber": 34,
+      "printedQuestionNumber": 2,
+      "sourceImageHashUnverifiedAgainstLiveR2": "ef1d13aa3b5a29e389f02afc5ba20329676074dc657066dd2053980a03db9a56",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_05.jpg",
+      "answerCandidateFromThisRun": null,
+      "answerStatus": "SOURCE_VISUAL_ONLY_NO_NEW_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_10",
+        "subSkillId": "sub_tah_math_10_03"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 14,
+        "lessonTitle": "كثيرات الحدود",
+        "subSkillId": "sub_tah_math_10_03",
+        "subSkillName": "العمليات على كثيرات الحدود والتحليل"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P035-Q06",
+      "sourceItemId": "YLM26-PDF034-P035-N06",
+      "printedPageNumber": 35,
+      "printedQuestionNumber": 6,
+      "sourceImageHashUnverifiedAgainstLiveR2": "341db30ede23886e34b95ba47d66c81fc9a918564e115f2e8252d04443cf89fb",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_06.jpg",
+      "answerCandidateFromThisRun": "B",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_10",
+        "subSkillId": "sub_tah_math_10_03"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 14,
+        "lessonTitle": "كثيرات الحدود",
+        "subSkillId": "sub_tah_math_10_03",
+        "subSkillName": "العمليات على كثيرات الحدود والتحليل"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P036-Q09",
+      "sourceItemId": "YLM26-PDF035-P036-N09",
+      "printedPageNumber": 36,
+      "printedQuestionNumber": 9,
+      "sourceImageHashUnverifiedAgainstLiveR2": "acc9de356d6fc458a835b518a757bc1cfeb93b0d87d344ef11b8ec245689ab12",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_06.jpg",
+      "answerCandidateFromThisRun": "C",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_10",
+        "subSkillId": "sub_tah_math_10_04"
+      },
+      "difficultyTriageNotFinal": "medium",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 14,
+        "lessonTitle": "كثيرات الحدود",
+        "subSkillId": "sub_tah_math_10_04",
+        "subSkillName": "دوال كثيرات الحدود والأصفار ونظريتا العامل والباقي"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P036-Q12",
+      "sourceItemId": "YLM26-PDF035-P036-N12",
+      "printedPageNumber": 36,
+      "printedQuestionNumber": 12,
+      "sourceImageHashUnverifiedAgainstLiveR2": "c9ea0f7fb51eecdec231bb629f5fe61c7e0daf77f7e47c6fc7b5b1341a873635",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_06.jpg",
+      "answerCandidateFromThisRun": "B",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "B",
+        "reason": "f(2)=8-28+8+12=0, factor x-2."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_10",
+        "subSkillId": "sub_tah_math_10_04"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 14,
+        "lessonTitle": "كثيرات الحدود",
+        "subSkillId": "sub_tah_math_10_04",
+        "subSkillName": "دوال كثيرات الحدود والأصفار ونظريتا العامل والباقي"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P036-Q15",
+      "sourceItemId": "YLM26-PDF035-P036-N15",
+      "printedPageNumber": 36,
+      "printedQuestionNumber": 15,
+      "sourceImageHashUnverifiedAgainstLiveR2": "791ca7e9d4220292555405a8e2f783f8c6f7d192f259ccd5f291b808285572cf",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_06.jpg",
+      "answerCandidateFromThisRun": "C",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_10",
+        "subSkillId": "sub_tah_math_10_04"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 14,
+        "lessonTitle": "كثيرات الحدود",
+        "subSkillId": "sub_tah_math_10_04",
+        "subSkillName": "دوال كثيرات الحدود والأصفار ونظريتا العامل والباقي"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P037-Q17",
+      "sourceItemId": "YLM26-PDF036-P037-N17",
+      "printedPageNumber": 37,
+      "printedQuestionNumber": 17,
+      "sourceImageHashUnverifiedAgainstLiveR2": "4b92c7f120e06267afaca403e87219eb763bd966924b1201d34e46b86cdc7c7f",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_06.jpg",
+      "answerCandidateFromThisRun": "A",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_10",
+        "subSkillId": "sub_tah_math_10_04"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 14,
+        "lessonTitle": "كثيرات الحدود",
+        "subSkillId": "sub_tah_math_10_04",
+        "subSkillName": "دوال كثيرات الحدود والأصفار ونظريتا العامل والباقي"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P038-Q01",
+      "sourceItemId": "YLM26-PDF037-P038-N01",
+      "printedPageNumber": 38,
+      "printedQuestionNumber": 1,
+      "sourceImageHashUnverifiedAgainstLiveR2": "f10446fa19665a702693e555f50dd4eb9fa25f2715448ad4d3d728641d8ce671",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_06.jpg",
+      "answerCandidateFromThisRun": "B",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "B",
+        "reason": "(x²+3)+(x+3)=x²+x+6."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_11",
+        "subSkillId": "sub_tah_math_11_01"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 15,
+        "lessonTitle": "العمليات على الدوال",
+        "subSkillId": "sub_tah_math_11_01",
+        "subSkillName": "العمليات على الدوال وتركيب الدوال"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P039-Q02",
+      "sourceItemId": "YLM26-PDF038-P039-N02",
+      "printedPageNumber": 39,
+      "printedQuestionNumber": 2,
+      "sourceImageHashUnverifiedAgainstLiveR2": "cf371e85979b60a7d2c4ef24da18a0fe871d39f10386b4ab0f88dff897135a0c",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_06.jpg",
+      "answerCandidateFromThisRun": "D",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_11",
+        "subSkillId": "sub_tah_math_11_03"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 16,
+        "lessonTitle": "الدالة الجذرية",
+        "subSkillId": "sub_tah_math_11_03",
+        "subSkillName": "الدوال الجذرية والمعادلات والمتباينات الجذرية"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P040-Q03",
+      "sourceItemId": "YLM26-PDF039-P040-N03",
+      "printedPageNumber": 40,
+      "printedQuestionNumber": 3,
+      "sourceImageHashUnverifiedAgainstLiveR2": "bf30a39e6154a68f83c512f61cbea4b59560259b6b2a750220dbc267e9381303",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_06.jpg",
+      "answerCandidateFromThisRun": "A",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_12",
+        "subSkillId": "sub_tah_math_12_01"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 17,
+        "lessonTitle": "العلاقات والدوال النسبية",
+        "subSkillId": "sub_tah_math_12_01",
+        "subSkillName": "العبارات والدوال النسبية والمجال وخطوط التقارب"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P041-Q06",
+      "sourceItemId": "YLM26-PDF040-P041-N06",
+      "printedPageNumber": 41,
+      "printedQuestionNumber": 6,
+      "sourceImageHashUnverifiedAgainstLiveR2": "9a40b633ae43950ebcafa2ee6a926e2f6a818ff7f921e042f58caba25560a7fa",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_06.jpg",
+      "answerCandidateFromThisRun": "C",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "C",
+        "reason": "-4/(x+5) asymptotes x=-5 and y=0."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_12",
+        "subSkillId": "sub_tah_math_12_01"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 17,
+        "lessonTitle": "العلاقات والدوال النسبية",
+        "subSkillId": "sub_tah_math_12_01",
+        "subSkillName": "العبارات والدوال النسبية والمجال وخطوط التقارب"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P042-Q01",
+      "sourceItemId": "YLM26-PDF041-P042-N01",
+      "printedPageNumber": 42,
+      "printedQuestionNumber": 1,
+      "sourceImageHashUnverifiedAgainstLiveR2": "4e0a22a3d642a6bd026637b4e5b7f2fdc89019d8aaee032033cbd74d707e504e",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_06.jpg",
+      "answerCandidateFromThisRun": "A",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "A",
+        "reason": "-3,-6,-9,-12 is arithmetic difference -3."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_13",
+        "subSkillId": "sub_tah_math_13_01"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 18,
+        "lessonTitle": "المتتابعات والمتسلسلات",
+        "subSkillId": "sub_tah_math_13_01",
+        "subSkillName": "المتتابعات والمتسلسلات الحسابية"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P042-Q04",
+      "sourceItemId": "YLM26-PDF041-P042-N04",
+      "printedPageNumber": 42,
+      "printedQuestionNumber": 4,
+      "sourceImageHashUnverifiedAgainstLiveR2": "eaa8970cf6065e5a097537217eed0251bc9deb0920c7a2009140de3060d9d2e6",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_07.jpg",
+      "answerCandidateFromThisRun": "A",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_13",
+        "subSkillId": "sub_tah_math_13_01"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 18,
+        "lessonTitle": "المتتابعات والمتسلسلات",
+        "subSkillId": "sub_tah_math_13_01",
+        "subSkillName": "المتتابعات والمتسلسلات الحسابية"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P043-Q07",
+      "sourceItemId": "YLM26-PDF042-P043-N07",
+      "printedPageNumber": 43,
+      "printedQuestionNumber": 7,
+      "sourceImageHashUnverifiedAgainstLiveR2": "3d52413755a17dc05d1bbf07e4d1c7e9af1c2ea268819e31f1a3b180c18ea9d6",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_07.jpg",
+      "answerCandidateFromThisRun": "C",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "C",
+        "reason": "15 odd terms 5 through 33, mean 19, sum 285."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_13",
+        "subSkillId": "sub_tah_math_13_01"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 18,
+        "lessonTitle": "المتتابعات والمتسلسلات",
+        "subSkillId": "sub_tah_math_13_01",
+        "subSkillName": "المتتابعات والمتسلسلات الحسابية"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P043-Q10",
+      "sourceItemId": "YLM26-PDF042-P043-N10",
+      "printedPageNumber": 43,
+      "printedQuestionNumber": 10,
+      "sourceImageHashUnverifiedAgainstLiveR2": "515f89140f8b91bb684d4168584c7e0508c50abb22a33b20ca98538b0844606a",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_07.jpg",
+      "answerCandidateFromThisRun": "D",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_13",
+        "subSkillId": "sub_tah_math_13_02"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 18,
+        "lessonTitle": "المتتابعات والمتسلسلات",
+        "subSkillId": "sub_tah_math_13_02",
+        "subSkillName": "المتتابعات والمتسلسلات الهندسية"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P044-Q13",
+      "sourceItemId": "YLM26-PDF043-P044-N13",
+      "printedPageNumber": 44,
+      "printedQuestionNumber": 13,
+      "sourceImageHashUnverifiedAgainstLiveR2": "a20146b845acaa91f545451c02a79b7bbea5014cb8b167bbc9f17e4ad5733428",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_07.jpg",
+      "answerCandidateFromThisRun": "C",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_13",
+        "subSkillId": "sub_tah_math_13_03"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 18,
+        "lessonTitle": "المتتابعات والمتسلسلات",
+        "subSkillId": "sub_tah_math_13_03",
+        "subSkillName": "رمز سيغما والمتسلسلة الهندسية اللانهائية والكسر الدوري"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P045-Q01",
+      "sourceItemId": "YLM26-PDF044-P045-N01",
+      "printedPageNumber": 45,
+      "printedQuestionNumber": 1,
+      "sourceImageHashUnverifiedAgainstLiveR2": "097021d6a5282a7f8287772649b2859e6d501b886c94bf87e0fbc2d308bf8da2",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_07.jpg",
+      "answerCandidateFromThisRun": "D",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "D",
+        "reason": "Fourth term C(8,3)*x^10*(-1/2)^3=-7x^10."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_14",
+        "subSkillId": "sub_tah_math_14_01"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 19,
+        "lessonTitle": "نظرية ذات الحدين",
+        "subSkillId": "sub_tah_math_14_01",
+        "subSkillName": "نظرية ذات الحدين ومعاملات التوسع"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P046-Q02",
+      "sourceItemId": "YLM26-PDF045-P046-N02",
+      "printedPageNumber": 46,
+      "printedQuestionNumber": 2,
+      "sourceImageHashUnverifiedAgainstLiveR2": "0ef2593ad5e75bef4b230f35c1f0ea560a618746bf37ac71243f8be765bc9331",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_07.jpg",
+      "answerCandidateFromThisRun": null,
+      "answerStatus": "SOURCE_VISUAL_ONLY_NO_NEW_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_14",
+        "subSkillId": "sub_tah_math_14_04"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 20,
+        "lessonTitle": "الاحتمالات",
+        "subSkillId": "sub_tah_math_14_04",
+        "subSkillName": "الاحتمال البسيط والمركب والشرطي والهندسي"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P046-Q05",
+      "sourceItemId": "YLM26-PDF045-P046-N05",
+      "printedPageNumber": 46,
+      "printedQuestionNumber": 5,
+      "sourceImageHashUnverifiedAgainstLiveR2": "62649b5747c6ff68d5f7f602b1f69936559bccc1be76fcddac03e64007abaa06",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_07.jpg",
+      "answerCandidateFromThisRun": "A",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "A",
+        "reason": "Probability first specific person then second=(1/10)(1/9)=1/90."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_14",
+        "subSkillId": "sub_tah_math_14_04"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 20,
+        "lessonTitle": "الاحتمالات",
+        "subSkillId": "sub_tah_math_14_04",
+        "subSkillName": "الاحتمال البسيط والمركب والشرطي والهندسي"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P047-Q06",
+      "sourceItemId": "YLM26-PDF046-P047-N06",
+      "printedPageNumber": 47,
+      "printedQuestionNumber": 6,
+      "sourceImageHashUnverifiedAgainstLiveR2": "3e89925a38e68f5d10ceebd9c56172c20db32b68e27f449a6f29d052e5b2f77d",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_07.jpg",
+      "answerCandidateFromThisRun": null,
+      "answerStatus": "SOURCE_VISUAL_ONLY_NO_NEW_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_14",
+        "subSkillId": "sub_tah_math_14_02"
+      },
+      "difficultyTriageNotFinal": "medium",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 20,
+        "lessonTitle": "الاحتمالات",
+        "subSkillId": "sub_tah_math_14_02",
+        "subSkillName": "مبدأ العد والتباديل"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P047-Q08",
+      "sourceItemId": "YLM26-PDF046-P047-N08",
+      "printedPageNumber": 47,
+      "printedQuestionNumber": 8,
+      "sourceImageHashUnverifiedAgainstLiveR2": "9d6439b83f9c0908681e24c355e91c7cfd70e6c8d2b91899a54932949bb5cae8",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_07.jpg",
+      "answerCandidateFromThisRun": "B",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "B",
+        "reason": "Five circular arrangements (5-1)!=24."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_14",
+        "subSkillId": "sub_tah_math_14_02"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 20,
+        "lessonTitle": "الاحتمالات",
+        "subSkillId": "sub_tah_math_14_02",
+        "subSkillName": "مبدأ العد والتباديل"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P048-Q11",
+      "sourceItemId": "YLM26-PDF047-P048-N11",
+      "printedPageNumber": 48,
+      "printedQuestionNumber": 11,
+      "sourceImageHashUnverifiedAgainstLiveR2": "0fcd07282e2e8e43e68840d648b2c1d5abc2c0f0713c1f8fa3bc768be7c5ffde",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_07.jpg",
+      "answerCandidateFromThisRun": "A",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "A",
+        "reason": "Shaded fraction 3/9=1/3."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_14",
+        "subSkillId": "sub_tah_math_14_04"
+      },
+      "difficultyTriageNotFinal": "medium",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 20,
+        "lessonTitle": "الاحتمالات",
+        "subSkillId": "sub_tah_math_14_04",
+        "subSkillName": "الاحتمال البسيط والمركب والشرطي والهندسي"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P048-Q14",
+      "sourceItemId": "YLM26-PDF047-P048-N14",
+      "printedPageNumber": 48,
+      "printedQuestionNumber": 14,
+      "sourceImageHashUnverifiedAgainstLiveR2": "38b25c5bb0e24b85b0d89d52799bc947912f9ad4188989f4ef43cf118d0d8b2b",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_08.jpg",
+      "answerCandidateFromThisRun": "A",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "A",
+        "reason": "After first blue without replacement 2/4=1/2."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_14",
+        "subSkillId": "sub_tah_math_14_04"
+      },
+      "difficultyTriageNotFinal": "medium",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 20,
+        "lessonTitle": "الاحتمالات",
+        "subSkillId": "sub_tah_math_14_04",
+        "subSkillName": "الاحتمال البسيط والمركب والشرطي والهندسي"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P049-Q17",
+      "sourceItemId": "YLM26-PDF048-P049-N17",
+      "printedPageNumber": 49,
+      "printedQuestionNumber": 17,
+      "sourceImageHashUnverifiedAgainstLiveR2": "c2bcf009f90b985b53542d004147d3a4115b5c7a9944ecfabca5433fc910e76d",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_08.jpg",
+      "answerCandidateFromThisRun": "A",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "A",
+        "reason": "Mutually exclusive P(A union B)=1/2+1/5=7/10."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_14",
+        "subSkillId": "sub_tah_math_14_04"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 20,
+        "lessonTitle": "الاحتمالات",
+        "subSkillId": "sub_tah_math_14_04",
+        "subSkillName": "الاحتمال البسيط والمركب والشرطي والهندسي"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P050-Q01",
+      "sourceItemId": "YLM26-PDF049-P050-N01",
+      "printedPageNumber": 50,
+      "printedQuestionNumber": 1,
+      "sourceImageHashUnverifiedAgainstLiveR2": "79d9d203214308a58aee8732f6ca799756b20d5e38f9c04d49a14e03d17ba5fc",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_08.jpg",
+      "answerCandidateFromThisRun": "B",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "B",
+        "reason": "Four hours rotation 2pi*4/24=pi/3."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_15",
+        "subSkillId": "sub_tah_math_15_01"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 21,
+        "lessonTitle": "حسابات المثلثات",
+        "subSkillId": "sub_tah_math_15_01",
+        "subSkillName": "قياس الزوايا بالراديان والدائرة الوحدة"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P050-Q04",
+      "sourceItemId": "YLM26-PDF049-P050-N04",
+      "printedPageNumber": 50,
+      "printedQuestionNumber": 4,
+      "sourceImageHashUnverifiedAgainstLiveR2": "6e208434991e0979013ef06df9f90883c66a5000be5ea735eaf6df19f09d4127",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_08.jpg",
+      "answerCandidateFromThisRun": "A",
+      "answerStatus": "HOLD_AMBIGUOUS_SOURCE",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_15",
+        "subSkillId": "sub_tah_math_15_02"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 21,
+        "lessonTitle": "حسابات المثلثات",
+        "subSkillId": "sub_tah_math_15_02",
+        "subSkillName": "النسب المثلثية والزوايا المرجعية والدوال العكسية"
+      },
+      "whyOthersWrongFinal": true,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P051-Q07",
+      "sourceItemId": "YLM26-PDF050-P051-N07",
+      "printedPageNumber": 51,
+      "printedQuestionNumber": 7,
+      "sourceImageHashUnverifiedAgainstLiveR2": "d8c65e5eab72794fbe117a17d38b47d7be82a0617f7abdc8d8c2cd9d8e7ceba5",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_08.jpg",
+      "answerCandidateFromThisRun": "A",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_15",
+        "subSkillId": "sub_tah_math_15_02"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 21,
+        "lessonTitle": "حسابات المثلثات",
+        "subSkillId": "sub_tah_math_15_02",
+        "subSkillName": "النسب المثلثية والزوايا المرجعية والدوال العكسية"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P052-Q10",
+      "sourceItemId": "YLM26-PDF051-P052-N10",
+      "printedPageNumber": 52,
+      "printedQuestionNumber": 10,
+      "sourceImageHashUnverifiedAgainstLiveR2": "bb679ba80206bddec24afe036f3790d87459df1079291047ae2fafb8ded1be53",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_08.jpg",
+      "answerCandidateFromThisRun": "A",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "A",
+        "reason": "sin840=sin120=sqrt3/2."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_15",
+        "subSkillId": "sub_tah_math_15_02"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 21,
+        "lessonTitle": "حسابات المثلثات",
+        "subSkillId": "sub_tah_math_15_02",
+        "subSkillName": "النسب المثلثية والزوايا المرجعية والدوال العكسية"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P053-Q13",
+      "sourceItemId": "YLM26-PDF052-P053-N13",
+      "printedPageNumber": 53,
+      "printedQuestionNumber": 13,
+      "sourceImageHashUnverifiedAgainstLiveR2": "d7bc8f66de687fee2b3356aea61e7e1d22342d8090baa3530fd70741bad3be36",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_08.jpg",
+      "answerCandidateFromThisRun": "A",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_15",
+        "subSkillId": "sub_tah_math_15_03"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 21,
+        "lessonTitle": "حسابات المثلثات",
+        "subSkillId": "sub_tah_math_15_03",
+        "subSkillName": "قانونا الجيب وجيب التمام ومساحة المثلث"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P055-Q02",
+      "sourceItemId": "YLM26-PDF054-P055-N02",
+      "printedPageNumber": 55,
+      "printedQuestionNumber": 2,
+      "sourceImageHashUnverifiedAgainstLiveR2": "ddbfb779e7161c532cbc325df067476a5577bf66988cd645c31966efae1b568b",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_08.jpg",
+      "answerCandidateFromThisRun": "A",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "A",
+        "reason": "(-infinity,8] means x<=8."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_16",
+        "subSkillId": "sub_tah_math_16_01"
+      },
+      "difficultyTriageNotFinal": "medium",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 22,
+        "lessonTitle": "تحليل الدوال",
+        "subSkillId": "sub_tah_math_16_01",
+        "subSkillName": "الفترات والمتباينات وقراءة مجال الدالة ومداه"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P056-Q03",
+      "sourceItemId": "YLM26-PDF055-P056-N03",
+      "printedPageNumber": 56,
+      "printedQuestionNumber": 3,
+      "sourceImageHashUnverifiedAgainstLiveR2": "a292798b023d3925b07a1ba0a63cd123f8c6e4c80389f819843dad2b34595eef",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_08.jpg",
+      "answerCandidateFromThisRun": "D",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "D",
+        "reason": "f(0)=6 so y-intercept (0,6)."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_16",
+        "subSkillId": "sub_tah_math_16_01"
+      },
+      "difficultyTriageNotFinal": "medium",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 22,
+        "lessonTitle": "تحليل الدوال",
+        "subSkillId": "sub_tah_math_16_01",
+        "subSkillName": "الفترات والمتباينات وقراءة مجال الدالة ومداه"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P056-Q05",
+      "sourceItemId": "YLM26-PDF055-P056-N05",
+      "printedPageNumber": 56,
+      "printedQuestionNumber": 5,
+      "sourceImageHashUnverifiedAgainstLiveR2": "2ec3341f75f33e22c00831582c70d694a7b356a1ad3fb15ef779c304ef589c5e",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_08.jpg",
+      "answerCandidateFromThisRun": "C",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "C",
+        "reason": "x^5+x^3+x is odd, symmetric about origin."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_16",
+        "subSkillId": "sub_tah_math_16_02"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 22,
+        "lessonTitle": "تحليل الدوال",
+        "subSkillId": "sub_tah_math_16_02",
+        "subSkillName": "خصائص التمثيل البياني والتماثل والدوال الزوجية والفردية"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P057-Q08",
+      "sourceItemId": "YLM26-PDF056-P057-N08",
+      "printedPageNumber": 57,
+      "printedQuestionNumber": 8,
+      "sourceImageHashUnverifiedAgainstLiveR2": "d521ba23ad3426f11816dc10fdc7fd911445b4e6f65f444bd3eaf77b68ce233a",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_09.jpg",
+      "answerCandidateFromThisRun": null,
+      "answerStatus": "SOURCE_VISUAL_ONLY_NO_NEW_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "A",
+        "reason": "x^7 odd; other listed functions not odd."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_16",
+        "subSkillId": "sub_tah_math_16_02"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 22,
+        "lessonTitle": "تحليل الدوال",
+        "subSkillId": "sub_tah_math_16_02",
+        "subSkillName": "خصائص التمثيل البياني والتماثل والدوال الزوجية والفردية"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P058-Q10",
+      "sourceItemId": "YLM26-PDF057-P058-N10",
+      "printedPageNumber": 58,
+      "printedQuestionNumber": 10,
+      "sourceImageHashUnverifiedAgainstLiveR2": "e382b62f66c6afc84b6d96bea4278de57e87986fd5a1d413f60ac83a594f86d3",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_09.jpg",
+      "answerCandidateFromThisRun": null,
+      "answerStatus": "SOURCE_VISUAL_ONLY_NO_NEW_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "B",
+        "reason": "Increasing then decreasing at x=3, so local max x=3."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_16",
+        "subSkillId": "sub_tah_math_16_03"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 22,
+        "lessonTitle": "تحليل الدوال",
+        "subSkillId": "sub_tah_math_16_03",
+        "subSkillName": "التزايد والتناقص والقيم العظمى والصغرى ومتوسط معدل التغير"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P059-Q11",
+      "sourceItemId": "YLM26-PDF058-P059-N11",
+      "printedPageNumber": 59,
+      "printedQuestionNumber": 11,
+      "sourceImageHashUnverifiedAgainstLiveR2": "36eb0b54cae1f870ebefd377e159d93efbcce749642cc031ca2910f2a6d42f21",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_09.jpg",
+      "answerCandidateFromThisRun": null,
+      "answerStatus": "SOURCE_VISUAL_ONLY_NO_NEW_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "C",
+        "reason": "(x²-4)/(x-2) cancels to x+2 with removable hole x=2."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_16",
+        "subSkillId": "sub_tah_math_16_04"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 22,
+        "lessonTitle": "تحليل الدوال",
+        "subSkillId": "sub_tah_math_16_04",
+        "subSkillName": "الاتصال وأنواع عدم الاتصال ونظرية القيمة المتوسطة"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P059-Q12",
+      "sourceItemId": "YLM26-PDF058-P059-N12",
+      "printedPageNumber": 59,
+      "printedQuestionNumber": 12,
+      "sourceImageHashUnverifiedAgainstLiveR2": "ea9890b45c0b5dc774efab2f67235dc758314fa438634ee8aad04da284fc1f35",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_09.jpg",
+      "answerCandidateFromThisRun": null,
+      "answerStatus": "SOURCE_VISUAL_ONLY_NO_NEW_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_16",
+        "subSkillId": "sub_tah_math_16_04"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 22,
+        "lessonTitle": "تحليل الدوال",
+        "subSkillId": "sub_tah_math_16_04",
+        "subSkillName": "الاتصال وأنواع عدم الاتصال ونظرية القيمة المتوسطة"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P059-Q13",
+      "sourceItemId": "YLM26-PDF058-P059-N13",
+      "printedPageNumber": 59,
+      "printedQuestionNumber": 13,
+      "sourceImageHashUnverifiedAgainstLiveR2": "86902e1c10477f67584b4bcea97ee235c8e46a5a8ed386f7017ff89be33badf7",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_09.jpg",
+      "answerCandidateFromThisRun": "B",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "B",
+        "reason": "Even f gives f(1)=f(-1), average rate 0."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_16",
+        "subSkillId": "sub_tah_math_16_03"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 22,
+        "lessonTitle": "تحليل الدوال",
+        "subSkillId": "sub_tah_math_16_03",
+        "subSkillName": "التزايد والتناقص والقيم العظمى والصغرى ومتوسط معدل التغير"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P062-Q14",
+      "sourceItemId": "YLM26-PDF061-P062-N14",
+      "printedPageNumber": 62,
+      "printedQuestionNumber": 14,
+      "sourceImageHashUnverifiedAgainstLiveR2": "4420e31d5530300a1d79f76ff5b2a326197df6b3de0ba99961163f6e9e99350d",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_09.jpg",
+      "answerCandidateFromThisRun": null,
+      "answerStatus": "SOURCE_VISUAL_ONLY_NO_NEW_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_16",
+        "subSkillId": "sub_tah_math_16_05"
+      },
+      "difficultyTriageNotFinal": "medium",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 22,
+        "lessonTitle": "تحليل الدوال",
+        "subSkillId": "sub_tah_math_16_05",
+        "subSkillName": "تحويلات الدوال والتمدد والانكماش والانعكاس"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P062-Q15",
+      "sourceItemId": "YLM26-PDF061-P062-N15",
+      "printedPageNumber": 62,
+      "printedQuestionNumber": 15,
+      "sourceImageHashUnverifiedAgainstLiveR2": "3d168fefcb60fefd8e26873d6e8396af31899f5fcab4020a76be32bb82262bae",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_09.jpg",
+      "answerCandidateFromThisRun": null,
+      "answerStatus": "SOURCE_VISUAL_ONLY_NO_NEW_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_16",
+        "subSkillId": "sub_tah_math_16_05"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 22,
+        "lessonTitle": "تحليل الدوال",
+        "subSkillId": "sub_tah_math_16_05",
+        "subSkillName": "تحويلات الدوال والتمدد والانكماش والانعكاس"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P062-Q16",
+      "sourceItemId": "YLM26-PDF061-P062-N16",
+      "printedPageNumber": 62,
+      "printedQuestionNumber": 16,
+      "sourceImageHashUnverifiedAgainstLiveR2": "e1f6a70d6e8e17c639813ae03b551caca72fadab6509345a26c99d50d796e756",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_09.jpg",
+      "answerCandidateFromThisRun": null,
+      "answerStatus": "SOURCE_VISUAL_ONLY_NO_NEW_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "D",
+        "reason": "Reflect |x| over x-axis then right4 and up5: -|x-4|+5."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_16",
+        "subSkillId": "sub_tah_math_16_05"
+      },
+      "difficultyTriageNotFinal": "medium",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 22,
+        "lessonTitle": "تحليل الدوال",
+        "subSkillId": "sub_tah_math_16_05",
+        "subSkillName": "تحويلات الدوال والتمدد والانكماش والانعكاس"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P062-Q17",
+      "sourceItemId": "YLM26-PDF061-P062-N17",
+      "printedPageNumber": 62,
+      "printedQuestionNumber": 17,
+      "sourceImageHashUnverifiedAgainstLiveR2": "28abbe69c03b2808270d7b572234f83faed6cd5ffe513d79c970a969a8566435",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_09.jpg",
+      "answerCandidateFromThisRun": null,
+      "answerStatus": "SOURCE_VISUAL_ONLY_NO_NEW_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_16",
+        "subSkillId": "sub_tah_math_16_05"
+      },
+      "difficultyTriageNotFinal": "medium",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 22,
+        "lessonTitle": "تحليل الدوال",
+        "subSkillId": "sub_tah_math_16_05",
+        "subSkillName": "تحويلات الدوال والتمدد والانكماش والانعكاس"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P063-Q18",
+      "sourceItemId": "YLM26-PDF062-P063-N18",
+      "printedPageNumber": 63,
+      "printedQuestionNumber": 18,
+      "sourceImageHashUnverifiedAgainstLiveR2": "2ed5b8213148fcf3ae799ca393110106988f5eff9266c4c4da60ad784240e9dc",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_09.jpg",
+      "answerCandidateFromThisRun": null,
+      "answerStatus": "SOURCE_VISUAL_ONLY_NO_NEW_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_16",
+        "subSkillId": "sub_tah_math_16_01"
+      },
+      "difficultyTriageNotFinal": "medium",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 22,
+        "lessonTitle": "تحليل الدوال",
+        "subSkillId": "sub_tah_math_16_01",
+        "subSkillName": "الفترات والمتباينات وقراءة مجال الدالة ومداه"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P063-Q19",
+      "sourceItemId": "YLM26-PDF062-P063-N19",
+      "printedPageNumber": 63,
+      "printedQuestionNumber": 19,
+      "sourceImageHashUnverifiedAgainstLiveR2": "38600dacba741aee9cf475a4978f6509c554ee8d7b786406a6ab7bbbb9b9743d",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_10.jpg",
+      "answerCandidateFromThisRun": null,
+      "answerStatus": "SOURCE_VISUAL_ONLY_NO_NEW_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_16",
+        "subSkillId": "sub_tah_math_16_01"
+      },
+      "difficultyTriageNotFinal": "medium",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 22,
+        "lessonTitle": "تحليل الدوال",
+        "subSkillId": "sub_tah_math_16_01",
+        "subSkillName": "الفترات والمتباينات وقراءة مجال الدالة ومداه"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P063-Q20",
+      "sourceItemId": "YLM26-PDF062-P063-N20",
+      "printedPageNumber": 63,
+      "printedQuestionNumber": 20,
+      "sourceImageHashUnverifiedAgainstLiveR2": "4f44a616a790dbb7ce6ba78a31f78c01f3f4db6a9ba72a1a0087217b14dc4409",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_10.jpg",
+      "answerCandidateFromThisRun": "D",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "D",
+        "reason": "Inverse sqrt(x+2) is x²-2 with x>=0."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_11",
+        "subSkillId": "sub_tah_math_11_02"
+      },
+      "difficultyTriageNotFinal": "medium",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 15,
+        "lessonTitle": "العمليات على الدوال",
+        "subSkillId": "sub_tah_math_11_02",
+        "subSkillName": "الدالة العكسية وشروط وجودها"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P063-Q21",
+      "sourceItemId": "YLM26-PDF062-P063-N21",
+      "printedPageNumber": 63,
+      "printedQuestionNumber": 21,
+      "sourceImageHashUnverifiedAgainstLiveR2": "58dbbf7505f5449643defc6b0a5633042090821ed430d27a474f1385c921b24c",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_10.jpg",
+      "answerCandidateFromThisRun": null,
+      "answerStatus": "SOURCE_VISUAL_ONLY_NO_NEW_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_16",
+        "subSkillId": "sub_tah_math_16_01"
+      },
+      "difficultyTriageNotFinal": "medium",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 22,
+        "lessonTitle": "تحليل الدوال",
+        "subSkillId": "sub_tah_math_16_01",
+        "subSkillName": "الفترات والمتباينات وقراءة مجال الدالة ومداه"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P064-Q01",
+      "sourceItemId": "YLM26-PDF063-P064-N01",
+      "printedPageNumber": 64,
+      "printedQuestionNumber": 1,
+      "sourceImageHashUnverifiedAgainstLiveR2": "953706b61c6d8a555ab991ec3a086de4f1cd71422da67577cbc3ed0026a0418f",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_10.jpg",
+      "answerCandidateFromThisRun": "A",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_17",
+        "subSkillId": "sub_tah_math_17_01"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 23,
+        "lessonTitle": "الدوال الأسية واللوغاريتمية",
+        "subSkillId": "sub_tah_math_17_01",
+        "subSkillName": "الدالة الأسية والمعادلات والمتباينات الأسية"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P064-Q02",
+      "sourceItemId": "YLM26-PDF063-P064-N02",
+      "printedPageNumber": 64,
+      "printedQuestionNumber": 2,
+      "sourceImageHashUnverifiedAgainstLiveR2": "cb4194f9323dbffa9ee3e2f031c2038c3c585abef87dbf7aefc25603da3a9872",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_10.jpg",
+      "answerCandidateFromThisRun": "D",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_17",
+        "subSkillId": "sub_tah_math_17_01"
+      },
+      "difficultyTriageNotFinal": "medium",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 23,
+        "lessonTitle": "الدوال الأسية واللوغاريتمية",
+        "subSkillId": "sub_tah_math_17_01",
+        "subSkillName": "الدالة الأسية والمعادلات والمتباينات الأسية"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P064-Q03",
+      "sourceItemId": "YLM26-PDF063-P064-N03",
+      "printedPageNumber": 64,
+      "printedQuestionNumber": 3,
+      "sourceImageHashUnverifiedAgainstLiveR2": "fba7128d26473698683e310c713a23a673a94043a4babd088d3a24beceeae101",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_10.jpg",
+      "answerCandidateFromThisRun": "B",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "B",
+        "reason": "9^(x+2)=3^(x+7) gives 2x+4=x+7, x=3."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_17",
+        "subSkillId": "sub_tah_math_17_01"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 23,
+        "lessonTitle": "الدوال الأسية واللوغاريتمية",
+        "subSkillId": "sub_tah_math_17_01",
+        "subSkillName": "الدالة الأسية والمعادلات والمتباينات الأسية"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P064-Q04",
+      "sourceItemId": "YLM26-PDF063-P064-N04",
+      "printedPageNumber": 64,
+      "printedQuestionNumber": 4,
+      "sourceImageHashUnverifiedAgainstLiveR2": "b0f477750104a18ead0ab2ea5f6396178eb0b937a95c4d5ed47408f8720dde02",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_10.jpg",
+      "answerCandidateFromThisRun": null,
+      "answerStatus": "SOURCE_VISUAL_ONLY_NO_NEW_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "C",
+        "reason": "2*2^m=32 gives m=4."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_17",
+        "subSkillId": "sub_tah_math_17_01"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 23,
+        "lessonTitle": "الدوال الأسية واللوغاريتمية",
+        "subSkillId": "sub_tah_math_17_01",
+        "subSkillName": "الدالة الأسية والمعادلات والمتباينات الأسية"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P064-Q05",
+      "sourceItemId": "YLM26-PDF063-P064-N05",
+      "printedPageNumber": 64,
+      "printedQuestionNumber": 5,
+      "sourceImageHashUnverifiedAgainstLiveR2": "009f3977d373181e5cec003a7fb4f7070cb60f9ddbbe2499e6d6dcde711f7c38",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_10.jpg",
+      "answerCandidateFromThisRun": "B",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "B",
+        "reason": "16^(2x-3)>8 gives 8x-12>3, x>15/8."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_17",
+        "subSkillId": "sub_tah_math_17_01"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 23,
+        "lessonTitle": "الدوال الأسية واللوغاريتمية",
+        "subSkillId": "sub_tah_math_17_01",
+        "subSkillName": "الدالة الأسية والمعادلات والمتباينات الأسية"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P065-Q06",
+      "sourceItemId": "YLM26-PDF064-P065-N06",
+      "printedPageNumber": 65,
+      "printedQuestionNumber": 6,
+      "sourceImageHashUnverifiedAgainstLiveR2": "0d3627655446100d1289b6262ac4459f240a3d373c7fb55006af4184ff67e07e",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_10.jpg",
+      "answerCandidateFromThisRun": "A",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "A",
+        "reason": "20 percent of 315=63."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_17",
+        "subSkillId": "sub_tah_math_17_03"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 23,
+        "lessonTitle": "الدوال الأسية واللوغاريتمية",
+        "subSkillId": "sub_tah_math_17_03",
+        "subSkillName": "النمو والتناقص الأسي والفائدة المركبة"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P065-Q07",
+      "sourceItemId": "YLM26-PDF064-P065-N07",
+      "printedPageNumber": 65,
+      "printedQuestionNumber": 7,
+      "sourceImageHashUnverifiedAgainstLiveR2": "b598d891ec6b52eb3fd11da855f4d7e0595d843ce8650287650504f269c57c93",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_10.jpg",
+      "answerCandidateFromThisRun": null,
+      "answerStatus": "SOURCE_VISUAL_ONLY_NO_NEW_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "A",
+        "reason": "log_y(x)=k iff y^k=x."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_17",
+        "subSkillId": "sub_tah_math_17_02"
+      },
+      "difficultyTriageNotFinal": "medium",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 23,
+        "lessonTitle": "الدوال الأسية واللوغاريتمية",
+        "subSkillId": "sub_tah_math_17_02",
+        "subSkillName": "اللوغاريتم وخصائصه والمعادلات اللوغاريتمية"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P066-Q08",
+      "sourceItemId": "YLM26-PDF065-P066-N08",
+      "printedPageNumber": 66,
+      "printedQuestionNumber": 8,
+      "sourceImageHashUnverifiedAgainstLiveR2": "a1dd330b91d9208972adc12744511d5919d958888912fcc8f0450a8ba7daa595",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_11.jpg",
+      "answerCandidateFromThisRun": "A",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_17",
+        "subSkillId": "sub_tah_math_17_02"
+      },
+      "difficultyTriageNotFinal": "hard",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 23,
+        "lessonTitle": "الدوال الأسية واللوغاريتمية",
+        "subSkillId": "sub_tah_math_17_02",
+        "subSkillName": "اللوغاريتم وخصائصه والمعادلات اللوغاريتمية"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P066-Q09",
+      "sourceItemId": "YLM26-PDF065-P066-N09",
+      "printedPageNumber": 66,
+      "printedQuestionNumber": 9,
+      "sourceImageHashUnverifiedAgainstLiveR2": "b9f6153eda95295aeacf1f2fd77e638bcf1ebc556cf3aa1dc4593ee8407907d0",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_11.jpg",
+      "answerCandidateFromThisRun": "A",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "A",
+        "reason": "log2(0+1)+3=3."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_17",
+        "subSkillId": "sub_tah_math_17_02"
+      },
+      "difficultyTriageNotFinal": "medium",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 23,
+        "lessonTitle": "الدوال الأسية واللوغاريتمية",
+        "subSkillId": "sub_tah_math_17_02",
+        "subSkillName": "اللوغاريتم وخصائصه والمعادلات اللوغاريتمية"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P066-Q10",
+      "sourceItemId": "YLM26-PDF065-P066-N10",
+      "printedPageNumber": 66,
+      "printedQuestionNumber": 10,
+      "sourceImageHashUnverifiedAgainstLiveR2": "7c843aacdf366d2f53c8e868ce86431b2d13eb8bf92cd9ab2308e2400cbbdcc6",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_11.jpg",
+      "answerCandidateFromThisRun": "A",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "A",
+        "reason": "3125=5^5, log5(3125)=5."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_17",
+        "subSkillId": "sub_tah_math_17_02"
+      },
+      "difficultyTriageNotFinal": "medium",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 23,
+        "lessonTitle": "الدوال الأسية واللوغاريتمية",
+        "subSkillId": "sub_tah_math_17_02",
+        "subSkillName": "اللوغاريتم وخصائصه والمعادلات اللوغاريتمية"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P066-Q11",
+      "sourceItemId": "YLM26-PDF065-P066-N11",
+      "printedPageNumber": 66,
+      "printedQuestionNumber": 11,
+      "sourceImageHashUnverifiedAgainstLiveR2": "0ff9d43cd0e1f30aaaab5e4ca3bfc49f7abf7053dc762086424ae0bb5bfd4935",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_11.jpg",
+      "answerCandidateFromThisRun": "B",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "B",
+        "reason": "log_3(1/81)=log_3(3^-4)=-4, not -1/4."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_17",
+        "subSkillId": "sub_tah_math_17_02"
+      },
+      "difficultyTriageNotFinal": "medium",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 23,
+        "lessonTitle": "الدوال الأسية واللوغاريتمية",
+        "subSkillId": "sub_tah_math_17_02",
+        "subSkillName": "اللوغاريتم وخصائصه والمعادلات اللوغاريتمية"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P066-Q12",
+      "sourceItemId": "YLM26-PDF065-P066-N12",
+      "printedPageNumber": 66,
+      "printedQuestionNumber": 12,
+      "sourceImageHashUnverifiedAgainstLiveR2": "620ad5f9e8aecc06933fca55b21806effe3bc2e0d09d0a1cb4a99a7300542f72",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_11.jpg",
+      "answerCandidateFromThisRun": "B",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "B",
+        "reason": "log3(13)-log3(5)=log3(13/5)."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_17",
+        "subSkillId": "sub_tah_math_17_02"
+      },
+      "difficultyTriageNotFinal": "medium",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 23,
+        "lessonTitle": "الدوال الأسية واللوغاريتمية",
+        "subSkillId": "sub_tah_math_17_02",
+        "subSkillName": "اللوغاريتم وخصائصه والمعادلات اللوغاريتمية"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P066-Q13",
+      "sourceItemId": "YLM26-PDF065-P066-N13",
+      "printedPageNumber": 66,
+      "printedQuestionNumber": 13,
+      "sourceImageHashUnverifiedAgainstLiveR2": "7e0377d96fd43212436db4700a10df468cccf0132b2a65c6ebc1937bb727c565",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_11.jpg",
+      "answerCandidateFromThisRun": "B",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "B",
+        "reason": "log_x(32)=5 means x^5=32, x=2."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_17",
+        "subSkillId": "sub_tah_math_17_02"
+      },
+      "difficultyTriageNotFinal": "medium",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 23,
+        "lessonTitle": "الدوال الأسية واللوغاريتمية",
+        "subSkillId": "sub_tah_math_17_02",
+        "subSkillName": "اللوغاريتم وخصائصه والمعادلات اللوغاريتمية"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P066-Q14",
+      "sourceItemId": "YLM26-PDF065-P066-N14",
+      "printedPageNumber": 66,
+      "printedQuestionNumber": 14,
+      "sourceImageHashUnverifiedAgainstLiveR2": "61c63dbf49ef8a156706ef451ad01d64803cb85593c1b89db41b58b360b9b5fa",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_11.jpg",
+      "answerCandidateFromThisRun": "B",
+      "answerStatus": "HOLD_AMBIGUOUS_SOURCE",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_17",
+        "subSkillId": "sub_tah_math_17_02"
+      },
+      "difficultyTriageNotFinal": "hard",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 23,
+        "lessonTitle": "الدوال الأسية واللوغاريتمية",
+        "subSkillId": "sub_tah_math_17_02",
+        "subSkillName": "اللوغاريتم وخصائصه والمعادلات اللوغاريتمية"
+      },
+      "whyOthersWrongFinal": true,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P066-Q15",
+      "sourceItemId": "YLM26-PDF065-P066-N15",
+      "printedPageNumber": 66,
+      "printedQuestionNumber": 15,
+      "sourceImageHashUnverifiedAgainstLiveR2": "b36b1ac6f6392a8f58dfccb96afa9c78b979ff52bd2e901bf3d1516adfa9cdac",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_11.jpg",
+      "answerCandidateFromThisRun": "C",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_17",
+        "subSkillId": "sub_tah_math_17_02"
+      },
+      "difficultyTriageNotFinal": "medium",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 23,
+        "lessonTitle": "الدوال الأسية واللوغاريتمية",
+        "subSkillId": "sub_tah_math_17_02",
+        "subSkillName": "اللوغاريتم وخصائصه والمعادلات اللوغاريتمية"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P067-Q16",
+      "sourceItemId": "YLM26-PDF066-P067-N16",
+      "printedPageNumber": 67,
+      "printedQuestionNumber": 16,
+      "sourceImageHashUnverifiedAgainstLiveR2": "7344fd5091fcf62322bfdb65ab5f14babb5f4e80486b4af4e84ac397b4a81710",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_11.jpg",
+      "answerCandidateFromThisRun": null,
+      "answerStatus": "SOURCE_VISUAL_ONLY_NO_NEW_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_17",
+        "subSkillId": "sub_tah_math_17_02"
+      },
+      "difficultyTriageNotFinal": "medium",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 23,
+        "lessonTitle": "الدوال الأسية واللوغاريتمية",
+        "subSkillId": "sub_tah_math_17_02",
+        "subSkillName": "اللوغاريتم وخصائصه والمعادلات اللوغاريتمية"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P067-Q17",
+      "sourceItemId": "YLM26-PDF066-P067-N17",
+      "printedPageNumber": 67,
+      "printedQuestionNumber": 17,
+      "sourceImageHashUnverifiedAgainstLiveR2": "3467b4088a60f9af4790bf10e2bbdfabe7363492e3100896ae69c4b9b3045229",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_11.jpg",
+      "answerCandidateFromThisRun": null,
+      "answerStatus": "SOURCE_VISUAL_ONLY_NO_NEW_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "A",
+        "reason": "log((10^(x+2))²)=2x+4."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_17",
+        "subSkillId": "sub_tah_math_17_02"
+      },
+      "difficultyTriageNotFinal": "hard",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 23,
+        "lessonTitle": "الدوال الأسية واللوغاريتمية",
+        "subSkillId": "sub_tah_math_17_02",
+        "subSkillName": "اللوغاريتم وخصائصه والمعادلات اللوغاريتمية"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P068-Q01",
+      "sourceItemId": "YLM26-PDF067-P068-N01",
+      "printedPageNumber": 68,
+      "printedQuestionNumber": 1,
+      "sourceImageHashUnverifiedAgainstLiveR2": "d2575829ba99903cc9e4b99190c261b17ba4382ba5ddf064af1209dae0037f5f",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_12.jpg",
+      "answerCandidateFromThisRun": "B",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "B",
+        "reason": "cot²(theta)sin²(theta)=cos²(theta)."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_18",
+        "subSkillId": "sub_tah_math_18_01"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 24,
+        "lessonTitle": "المتطابقات المثلثية",
+        "subSkillId": "sub_tah_math_18_01",
+        "subSkillName": "المتطابقات المثلثية الأساسية والمقلوب والقسمة"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P068-Q02",
+      "sourceItemId": "YLM26-PDF067-P068-N02",
+      "printedPageNumber": 68,
+      "printedQuestionNumber": 2,
+      "sourceImageHashUnverifiedAgainstLiveR2": "f7ea0f7bb070a9d9b37111a46293b6ced51a38ac009c9272b00853a7c93d6aa8",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_12.jpg",
+      "answerCandidateFromThisRun": "A",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "A",
+        "reason": "tan(theta)*cos(theta)/csc(theta)=sin²(theta)."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_18",
+        "subSkillId": "sub_tah_math_18_01"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 24,
+        "lessonTitle": "المتطابقات المثلثية",
+        "subSkillId": "sub_tah_math_18_01",
+        "subSkillName": "المتطابقات المثلثية الأساسية والمقلوب والقسمة"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P068-Q03",
+      "sourceItemId": "YLM26-PDF067-P068-N03",
+      "printedPageNumber": 68,
+      "printedQuestionNumber": 3,
+      "sourceImageHashUnverifiedAgainstLiveR2": "9155b6331b1a12aff91ee0384638557e8af0e299035a66f0baf39ed3464f1b9b",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_12.jpg",
+      "answerCandidateFromThisRun": null,
+      "answerStatus": "SOURCE_VISUAL_ONLY_NO_NEW_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_18",
+        "subSkillId": "sub_tah_math_18_01"
+      },
+      "difficultyTriageNotFinal": "medium",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 24,
+        "lessonTitle": "المتطابقات المثلثية",
+        "subSkillId": "sub_tah_math_18_01",
+        "subSkillName": "المتطابقات المثلثية الأساسية والمقلوب والقسمة"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P068-Q04",
+      "sourceItemId": "YLM26-PDF067-P068-N04",
+      "printedPageNumber": 68,
+      "printedQuestionNumber": 4,
+      "sourceImageHashUnverifiedAgainstLiveR2": "a539e003b06f6a2619e3f9aafa759c7f622e87eea5983bee2d0c69cdfb114f05",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_12.jpg",
+      "answerCandidateFromThisRun": "A",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "A",
+        "reason": "tan(theta)sin(pi/2-theta)=sin(theta)."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_18",
+        "subSkillId": "sub_tah_math_18_01"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 24,
+        "lessonTitle": "المتطابقات المثلثية",
+        "subSkillId": "sub_tah_math_18_01",
+        "subSkillName": "المتطابقات المثلثية الأساسية والمقلوب والقسمة"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P069-Q05",
+      "sourceItemId": "YLM26-PDF068-P069-N05",
+      "printedPageNumber": 69,
+      "printedQuestionNumber": 5,
+      "sourceImageHashUnverifiedAgainstLiveR2": "7058721b08b3d33a8bf60adbaaa14cfe5c5ba9a4e2528c26ee134a05b88a95b2",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_12.jpg",
+      "answerCandidateFromThisRun": "A",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "A",
+        "reason": "cos(x) is even."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_18",
+        "subSkillId": "sub_tah_math_18_01"
+      },
+      "difficultyTriageNotFinal": "medium",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 24,
+        "lessonTitle": "المتطابقات المثلثية",
+        "subSkillId": "sub_tah_math_18_01",
+        "subSkillName": "المتطابقات المثلثية الأساسية والمقلوب والقسمة"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P069-Q06",
+      "sourceItemId": "YLM26-PDF068-P069-N06",
+      "printedPageNumber": 69,
+      "printedQuestionNumber": 6,
+      "sourceImageHashUnverifiedAgainstLiveR2": "962b4fc7fbeb6f5301ce040d34bf82a76450f7aeeebe9355d8e70d7826746553",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_12.jpg",
+      "answerCandidateFromThisRun": "D",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "D",
+        "reason": "(1-cos²(theta))sin²(theta)=sin^4(theta)."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_18",
+        "subSkillId": "sub_tah_math_18_01"
+      },
+      "difficultyTriageNotFinal": "medium",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 24,
+        "lessonTitle": "المتطابقات المثلثية",
+        "subSkillId": "sub_tah_math_18_01",
+        "subSkillName": "المتطابقات المثلثية الأساسية والمقلوب والقسمة"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P069-Q07",
+      "sourceItemId": "YLM26-PDF068-P069-N07",
+      "printedPageNumber": 69,
+      "printedQuestionNumber": 7,
+      "sourceImageHashUnverifiedAgainstLiveR2": "8fd645b2b08ac168dd1c6d7cff038aee36fcf27bc35efef538942a4f1f1b249c",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_12.jpg",
+      "answerCandidateFromThisRun": "A",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_18",
+        "subSkillId": "sub_tah_math_18_01"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 24,
+        "lessonTitle": "المتطابقات المثلثية",
+        "subSkillId": "sub_tah_math_18_01",
+        "subSkillName": "المتطابقات المثلثية الأساسية والمقلوب والقسمة"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P070-Q08",
+      "sourceItemId": "YLM26-PDF069-P070-N08",
+      "printedPageNumber": 70,
+      "printedQuestionNumber": 8,
+      "sourceImageHashUnverifiedAgainstLiveR2": "acebc0229199c67bba34ffccc07fc0cfe491468db0290d0b272d21867bb4df7e",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_12.jpg",
+      "answerCandidateFromThisRun": "B",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_18",
+        "subSkillId": "sub_tah_math_18_02"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 24,
+        "lessonTitle": "المتطابقات المثلثية",
+        "subSkillId": "sub_tah_math_18_02",
+        "subSkillName": "متطابقات الجمع والفرق والزاوية المضاعفة ونصف الزاوية"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P070-Q09",
+      "sourceItemId": "YLM26-PDF069-P070-N09",
+      "printedPageNumber": 70,
+      "printedQuestionNumber": 9,
+      "sourceImageHashUnverifiedAgainstLiveR2": "ee3ac28d68505c1c9b807914b23e4f5401881241daf00ed2295cfa12a9b56d0b",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_12.jpg",
+      "answerCandidateFromThisRun": "C",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "C",
+        "reason": "sin=12/13, cos=5/13; sin2theta=120/169."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_18",
+        "subSkillId": "sub_tah_math_18_02"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 24,
+        "lessonTitle": "المتطابقات المثلثية",
+        "subSkillId": "sub_tah_math_18_02",
+        "subSkillName": "متطابقات الجمع والفرق والزاوية المضاعفة ونصف الزاوية"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P070-Q10",
+      "sourceItemId": "YLM26-PDF069-P070-N10",
+      "printedPageNumber": 70,
+      "printedQuestionNumber": 10,
+      "sourceImageHashUnverifiedAgainstLiveR2": "c851b96e96e427e2fa54c0ceae0bb7830b91f6ba1957bc889820d5073c8582ee",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_12.jpg",
+      "answerCandidateFromThisRun": null,
+      "answerStatus": "SOURCE_VISUAL_ONLY_NO_NEW_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_18",
+        "subSkillId": "sub_tah_math_18_02"
+      },
+      "difficultyTriageNotFinal": "medium",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 24,
+        "lessonTitle": "المتطابقات المثلثية",
+        "subSkillId": "sub_tah_math_18_02",
+        "subSkillName": "متطابقات الجمع والفرق والزاوية المضاعفة ونصف الزاوية"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P070-Q11",
+      "sourceItemId": "YLM26-PDF069-P070-N11",
+      "printedPageNumber": 70,
+      "printedQuestionNumber": 11,
+      "sourceImageHashUnverifiedAgainstLiveR2": "80dda476632e37e11d816f22f4ca7c4ddbc29addd03128f50658eaf5065fd83f",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_13.jpg",
+      "answerCandidateFromThisRun": "B",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "B",
+        "reason": "cos(theta/2)=sqrt(2+sqrt2)/2 for acute theta."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_18",
+        "subSkillId": "sub_tah_math_18_02"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 24,
+        "lessonTitle": "المتطابقات المثلثية",
+        "subSkillId": "sub_tah_math_18_02",
+        "subSkillName": "متطابقات الجمع والفرق والزاوية المضاعفة ونصف الزاوية"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P071-Q12",
+      "sourceItemId": "YLM26-PDF070-P071-N12",
+      "printedPageNumber": 71,
+      "printedQuestionNumber": 12,
+      "sourceImageHashUnverifiedAgainstLiveR2": "283311b7f3702bb7ad903194c48bed69e20505fdb17e653916b830c3df25c585",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_13.jpg",
+      "answerCandidateFromThisRun": "B",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "B",
+        "reason": "tan(theta)=1 in first quadrant ->45deg."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_18",
+        "subSkillId": "sub_tah_math_18_03"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 24,
+        "lessonTitle": "المتطابقات المثلثية",
+        "subSkillId": "sub_tah_math_18_03",
+        "subSkillName": "حل المعادلات المثلثية"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P071-Q13",
+      "sourceItemId": "YLM26-PDF070-P071-N13",
+      "printedPageNumber": 71,
+      "printedQuestionNumber": 13,
+      "sourceImageHashUnverifiedAgainstLiveR2": "77f7c57730df927b2b5546af005b68484cf57c595412911a16886c67cf2d009a",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_13.jpg",
+      "answerCandidateFromThisRun": "A",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "A",
+        "reason": "cos2theta=1/2 and theta in [90,180] ->theta150, cos=-sqrt3/2."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_18",
+        "subSkillId": "sub_tah_math_18_03"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 24,
+        "lessonTitle": "المتطابقات المثلثية",
+        "subSkillId": "sub_tah_math_18_03",
+        "subSkillName": "حل المعادلات المثلثية"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P071-Q14",
+      "sourceItemId": "YLM26-PDF070-P071-N14",
+      "printedPageNumber": 71,
+      "printedQuestionNumber": 14,
+      "sourceImageHashUnverifiedAgainstLiveR2": "7f43ed5a3fc93153cbf7fc3e7ddcbfcb81c3d217183d73722f76cf34f65e416c",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_13.jpg",
+      "answerCandidateFromThisRun": "B",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "B",
+        "reason": "2sin²+sin=1 gives sin=1/2, theta30 among options."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_18",
+        "subSkillId": "sub_tah_math_18_03"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 24,
+        "lessonTitle": "المتطابقات المثلثية",
+        "subSkillId": "sub_tah_math_18_03",
+        "subSkillName": "حل المعادلات المثلثية"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P071-Q15",
+      "sourceItemId": "YLM26-PDF070-P071-N15",
+      "printedPageNumber": 71,
+      "printedQuestionNumber": 15,
+      "sourceImageHashUnverifiedAgainstLiveR2": "0113c0e2953754918e84ed41f1925ca5f6a6d16567fc75ee7fda629a78550879",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_13.jpg",
+      "answerCandidateFromThisRun": "C",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "C",
+        "reason": "sin(theta)=-1 ->3pi/2+2pi*k."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_18",
+        "subSkillId": "sub_tah_math_18_03"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 24,
+        "lessonTitle": "المتطابقات المثلثية",
+        "subSkillId": "sub_tah_math_18_03",
+        "subSkillName": "حل المعادلات المثلثية"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P073-Q01",
+      "sourceItemId": "YLM26-PDF072-P073-N01",
+      "printedPageNumber": 73,
+      "printedQuestionNumber": 1,
+      "sourceImageHashUnverifiedAgainstLiveR2": "d85fd420d42fad94cc8a30ef8a2135d3b1dd48222ad928ac9fa9c12bb62e6e52",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_13.jpg",
+      "answerCandidateFromThisRun": "C",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "C",
+        "reason": "(x-2)²=8(y+2) vertex (2,-2)."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_01"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 25,
+        "lessonTitle": "القطوع",
+        "subSkillId": "sub_tah_math_19_01",
+        "subSkillName": "القطع المكافئ"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P073-Q02",
+      "sourceItemId": "YLM26-PDF072-P073-N02",
+      "printedPageNumber": 73,
+      "printedQuestionNumber": 2,
+      "sourceImageHashUnverifiedAgainstLiveR2": "cabb7a427f4b94841538b3d22154cf401946b74eea3696b62925f345d4faf96c",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_13.jpg",
+      "answerCandidateFromThisRun": "A",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_01"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 25,
+        "lessonTitle": "القطوع",
+        "subSkillId": "sub_tah_math_19_01",
+        "subSkillName": "القطع المكافئ"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P073-Q03",
+      "sourceItemId": "YLM26-PDF072-P073-N03",
+      "printedPageNumber": 73,
+      "printedQuestionNumber": 3,
+      "sourceImageHashUnverifiedAgainstLiveR2": "b6a0dc7b31780a6522aebf18591bff9f9504d2574f23fbc79d02878a1f77e7b9",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_13.jpg",
+      "answerCandidateFromThisRun": "A",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_01"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 25,
+        "lessonTitle": "القطوع",
+        "subSkillId": "sub_tah_math_19_01",
+        "subSkillName": "القطع المكافئ"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P073-Q04",
+      "sourceItemId": "YLM26-PDF072-P073-N04",
+      "printedPageNumber": 73,
+      "printedQuestionNumber": 4,
+      "sourceImageHashUnverifiedAgainstLiveR2": "8f3611320380cd0e7ef007efae69449aa405a0abbff5f27189569261bb579829",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_13.jpg",
+      "answerCandidateFromThisRun": "C",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_01"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 25,
+        "lessonTitle": "القطوع",
+        "subSkillId": "sub_tah_math_19_01",
+        "subSkillName": "القطع المكافئ"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P073-Q05",
+      "sourceItemId": "YLM26-PDF072-P073-N05",
+      "printedPageNumber": 73,
+      "printedQuestionNumber": 5,
+      "sourceImageHashUnverifiedAgainstLiveR2": "5164a0f457ee3cf786af54defd3bf5d8333542bf570a5ce2dde7f76398b9bd3e",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_13.jpg",
+      "answerCandidateFromThisRun": "B",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "B",
+        "reason": "(x-6)²=-4(y-15) p=-1 directrix y=16."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_01"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 25,
+        "lessonTitle": "القطوع",
+        "subSkillId": "sub_tah_math_19_01",
+        "subSkillName": "القطع المكافئ"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P074-Q06",
+      "sourceItemId": "YLM26-PDF073-P074-N06",
+      "printedPageNumber": 74,
+      "printedQuestionNumber": 6,
+      "sourceImageHashUnverifiedAgainstLiveR2": "0487003ff4e720dd5f0685a38e25a3ae8a420cfa2a0b48b1152797680a51de91",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_14.jpg",
+      "answerCandidateFromThisRun": "B",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "B",
+        "reason": "x²/25+(y-1)²/16=1 major length 2sqrt25=10."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_02"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 25,
+        "lessonTitle": "القطوع",
+        "subSkillId": "sub_tah_math_19_02",
+        "subSkillName": "القطع الناقص"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P074-Q07",
+      "sourceItemId": "YLM26-PDF073-P074-N07",
+      "printedPageNumber": 74,
+      "printedQuestionNumber": 7,
+      "sourceImageHashUnverifiedAgainstLiveR2": "9b58a04ff559d390b7ca50bf17b5761455bdaa3a6937d32f9c5d535413fa4a6b",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_14.jpg",
+      "answerCandidateFromThisRun": "B",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "B",
+        "reason": "(x-1)²/3+(y-5)²/2=1 center (1,5)."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_02"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 25,
+        "lessonTitle": "القطوع",
+        "subSkillId": "sub_tah_math_19_02",
+        "subSkillName": "القطع الناقص"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P074-Q08",
+      "sourceItemId": "YLM26-PDF073-P074-N08",
+      "printedPageNumber": 74,
+      "printedQuestionNumber": 8,
+      "sourceImageHashUnverifiedAgainstLiveR2": "dd5c6cc957c16c00fd98aa884b1e4e8fb1b5b4310d4a4e0c98ef1e6720d428c2",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_14.jpg",
+      "answerCandidateFromThisRun": "B",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_02"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 25,
+        "lessonTitle": "القطوع",
+        "subSkillId": "sub_tah_math_19_02",
+        "subSkillName": "القطع الناقص"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P074-Q09",
+      "sourceItemId": "YLM26-PDF073-P074-N09",
+      "printedPageNumber": 74,
+      "printedQuestionNumber": 9,
+      "sourceImageHashUnverifiedAgainstLiveR2": "b8eafcd497616d50d99703b039b01b664d18ab17127de84c8c0eae5ffea57ba8",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_14.jpg",
+      "answerCandidateFromThisRun": "C",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_02"
+      },
+      "difficultyTriageNotFinal": "medium",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 25,
+        "lessonTitle": "القطوع",
+        "subSkillId": "sub_tah_math_19_02",
+        "subSkillName": "القطع الناقص"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P075-Q10",
+      "sourceItemId": "YLM26-PDF074-P075-N10",
+      "printedPageNumber": 75,
+      "printedQuestionNumber": 10,
+      "sourceImageHashUnverifiedAgainstLiveR2": "9bada8189a509676fd582077ad308aba6c4ca6d6819f249ecefba74e0eb9595a",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_14.jpg",
+      "answerCandidateFromThisRun": "C",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_03"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 25,
+        "lessonTitle": "القطوع",
+        "subSkillId": "sub_tah_math_19_03",
+        "subSkillName": "القطع الزائد"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P075-Q11",
+      "sourceItemId": "YLM26-PDF074-P075-N11",
+      "printedPageNumber": 75,
+      "printedQuestionNumber": 11,
+      "sourceImageHashUnverifiedAgainstLiveR2": "88cffedcc32635ae7ffb99c7e29c61054f9b97de02b93288fd6c2c76f530c56c",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_14.jpg",
+      "answerCandidateFromThisRun": "B",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_03"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 25,
+        "lessonTitle": "القطوع",
+        "subSkillId": "sub_tah_math_19_03",
+        "subSkillName": "القطع الزائد"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P076-Q12",
+      "sourceItemId": "YLM26-PDF075-P076-N12",
+      "printedPageNumber": 76,
+      "printedQuestionNumber": 12,
+      "sourceImageHashUnverifiedAgainstLiveR2": "6d2e0e884e060234cf7e9266cc83315fb8b0232258e405a5d91aa0721af6637c",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_14.jpg",
+      "answerCandidateFromThisRun": "A",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_04"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 25,
+        "lessonTitle": "القطوع",
+        "subSkillId": "sub_tah_math_19_04",
+        "subSkillName": "الدائرة والصيغة العامة وتصنيف القطوع"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P076-Q13",
+      "sourceItemId": "YLM26-PDF075-P076-N13",
+      "printedPageNumber": 76,
+      "printedQuestionNumber": 13,
+      "sourceImageHashUnverifiedAgainstLiveR2": "54188eee89042e0c02239f8d7efbcb6a84b6afdc3272846e354398f722b648b2",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_14.jpg",
+      "answerCandidateFromThisRun": "C",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "C",
+        "reason": "(x-2)²+(y+1)²=4 center (2,-1)."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_04"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 25,
+        "lessonTitle": "القطوع",
+        "subSkillId": "sub_tah_math_19_04",
+        "subSkillName": "الدائرة والصيغة العامة وتصنيف القطوع"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P076-Q14",
+      "sourceItemId": "YLM26-PDF075-P076-N14",
+      "printedPageNumber": 76,
+      "printedQuestionNumber": 14,
+      "sourceImageHashUnverifiedAgainstLiveR2": "28d25d715c51a7b926580bb07b495ad7ed45e60d203902139b4c12a22a44f923",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_14.jpg",
+      "answerCandidateFromThisRun": "B",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_19",
+        "subSkillId": "sub_tah_math_19_04"
+      },
+      "difficultyTriageNotFinal": "easy",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 25,
+        "lessonTitle": "القطوع",
+        "subSkillId": "sub_tah_math_19_04",
+        "subSkillName": "الدائرة والصيغة العامة وتصنيف القطوع"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P077-Q02",
+      "sourceItemId": "YLM26-PDF076-P077-N02",
+      "printedPageNumber": 77,
+      "printedQuestionNumber": 2,
+      "sourceImageHashUnverifiedAgainstLiveR2": "eafe101511ff630e0724068ced1fde55d7eaa068bdcc4119885cd220a4a38dad",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_14.jpg",
+      "answerCandidateFromThisRun": null,
+      "answerStatus": "SOURCE_VISUAL_ONLY_NO_NEW_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_01"
+      },
+      "difficultyTriageNotFinal": "medium",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 26,
+        "lessonTitle": "المتجهات",
+        "subSkillId": "sub_tah_math_20_01",
+        "subSkillName": "المتجهات والمقدار والاتجاه والمركبات والعمليات"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P077-Q03",
+      "sourceItemId": "YLM26-PDF076-P077-N03",
+      "printedPageNumber": 77,
+      "printedQuestionNumber": 3,
+      "sourceImageHashUnverifiedAgainstLiveR2": "ac88494f1073f3916cda0365759083d881f7c7c375aab4a0038e2ecabdaf73e7",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_15.jpg",
+      "answerCandidateFromThisRun": "A",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "A",
+        "reason": "Opposite to (3,5) is (-3,-5)."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_01"
+      },
+      "difficultyTriageNotFinal": "medium",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 26,
+        "lessonTitle": "المتجهات",
+        "subSkillId": "sub_tah_math_20_01",
+        "subSkillName": "المتجهات والمقدار والاتجاه والمركبات والعمليات"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P078-Q04",
+      "sourceItemId": "YLM26-PDF077-P078-N04",
+      "printedPageNumber": 78,
+      "printedQuestionNumber": 4,
+      "sourceImageHashUnverifiedAgainstLiveR2": "6abd6f1667df0b6499ef94e9010ab55f03ca47a135092aad406e81f4be1ba9a4",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_15.jpg",
+      "answerCandidateFromThisRun": "A",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "A",
+        "reason": "Recovered full stem A=5 B=6 perpendicular: R=sqrt(25+36)=sqrt61."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_01"
+      },
+      "difficultyTriageNotFinal": "medium",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 26,
+        "lessonTitle": "المتجهات",
+        "subSkillId": "sub_tah_math_20_01",
+        "subSkillName": "المتجهات والمقدار والاتجاه والمركبات والعمليات"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P078-Q05",
+      "sourceItemId": "YLM26-PDF077-P078-N05",
+      "printedPageNumber": 78,
+      "printedQuestionNumber": 5,
+      "sourceImageHashUnverifiedAgainstLiveR2": "f9a1ca9ad7caa967ee85de0d787999b61819174e84237f20679c807c61314b5f",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_15.jpg",
+      "answerCandidateFromThisRun": "C",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "C",
+        "reason": "Vertical speed=80sin45=40sqrt2."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_01"
+      },
+      "difficultyTriageNotFinal": "medium",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 26,
+        "lessonTitle": "المتجهات",
+        "subSkillId": "sub_tah_math_20_01",
+        "subSkillName": "المتجهات والمقدار والاتجاه والمركبات والعمليات"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P078-Q06",
+      "sourceItemId": "YLM26-PDF077-P078-N06",
+      "printedPageNumber": 78,
+      "printedQuestionNumber": 6,
+      "sourceImageHashUnverifiedAgainstLiveR2": "7448e95849d8cbd1f430b1fbc5f766caf4c354f0d8529712168817d6e266b231",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_15.jpg",
+      "answerCandidateFromThisRun": null,
+      "answerStatus": "SOURCE_VISUAL_ONLY_NO_NEW_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_01"
+      },
+      "difficultyTriageNotFinal": "medium",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 26,
+        "lessonTitle": "المتجهات",
+        "subSkillId": "sub_tah_math_20_01",
+        "subSkillName": "المتجهات والمقدار والاتجاه والمركبات والعمليات"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P078-Q07",
+      "sourceItemId": "YLM26-PDF077-P078-N07",
+      "printedPageNumber": 78,
+      "printedQuestionNumber": 7,
+      "sourceImageHashUnverifiedAgainstLiveR2": "0749ef9e4bca1b7eb97b51eaabbdcc28fc87c9f5e0a90e92ad399086205dfd7a",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_15.jpg",
+      "answerCandidateFromThisRun": "A",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "A",
+        "reason": "3(3,4)-(2,-1)=(7,13)."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_01"
+      },
+      "difficultyTriageNotFinal": "medium",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 26,
+        "lessonTitle": "المتجهات",
+        "subSkillId": "sub_tah_math_20_01",
+        "subSkillName": "المتجهات والمقدار والاتجاه والمركبات والعمليات"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P078-Q08",
+      "sourceItemId": "YLM26-PDF077-P078-N08",
+      "printedPageNumber": 78,
+      "printedQuestionNumber": 8,
+      "sourceImageHashUnverifiedAgainstLiveR2": "1effa8e1b5d67e88661f6692bf49707f5573b78e2f939cb81ec151ae157494af",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_15.jpg",
+      "answerCandidateFromThisRun": "A",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "A",
+        "reason": "Unit vector (sqrt2,sqrt2)/2=(sqrt2/2,sqrt2/2)."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_01"
+      },
+      "difficultyTriageNotFinal": "medium",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 26,
+        "lessonTitle": "المتجهات",
+        "subSkillId": "sub_tah_math_20_01",
+        "subSkillName": "المتجهات والمقدار والاتجاه والمركبات والعمليات"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P079-Q10",
+      "sourceItemId": "YLM26-PDF078-P079-N10",
+      "printedPageNumber": 79,
+      "printedQuestionNumber": 10,
+      "sourceImageHashUnverifiedAgainstLiveR2": "2290af23e794304006ba128109519f65c9fa7695bf7bbb6c8afc66de31354032",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_15.jpg",
+      "answerCandidateFromThisRun": "A",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_02"
+      },
+      "difficultyTriageNotFinal": "medium",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 26,
+        "lessonTitle": "المتجهات",
+        "subSkillId": "sub_tah_math_20_02",
+        "subSkillName": "الضرب الداخلي والزاوية والإسقاط والمتجهات في الفضاء"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P079-Q11",
+      "sourceItemId": "YLM26-PDF078-P079-N11",
+      "printedPageNumber": 79,
+      "printedQuestionNumber": 11,
+      "sourceImageHashUnverifiedAgainstLiveR2": "75db0ca157dfc086de6a839337c1e54a6c66969566274426b8ce46f9af2049bf",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_15.jpg",
+      "answerCandidateFromThisRun": "B",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "B",
+        "reason": "(-9,k) dot (-5,-15)=45-15k=0 ->k=3."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_02"
+      },
+      "difficultyTriageNotFinal": "medium",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 26,
+        "lessonTitle": "المتجهات",
+        "subSkillId": "sub_tah_math_20_02",
+        "subSkillName": "الضرب الداخلي والزاوية والإسقاط والمتجهات في الفضاء"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P079-Q12",
+      "sourceItemId": "YLM26-PDF078-P079-N12",
+      "printedPageNumber": 79,
+      "printedQuestionNumber": 12,
+      "sourceImageHashUnverifiedAgainstLiveR2": "dbdc483b60e0028d4da04e999cad134e27e5b2f3dd2746e820cf022a6727e6ad",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_15.jpg",
+      "answerCandidateFromThisRun": "B",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": null,
+      "mapping": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_02"
+      },
+      "difficultyTriageNotFinal": "medium",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 26,
+        "lessonTitle": "المتجهات",
+        "subSkillId": "sub_tah_math_20_02",
+        "subSkillName": "الضرب الداخلي والزاوية والإسقاط والمتجهات في الفضاء"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P080-Q13",
+      "sourceItemId": "YLM26-PDF079-P080-N13",
+      "printedPageNumber": 80,
+      "printedQuestionNumber": 13,
+      "sourceImageHashUnverifiedAgainstLiveR2": "39f0bff3627ea641c2e16dc623a58d7928d4dbd12a7b42678b246928d3f7c61e",
+      "sourceCropVisuallyInspected": true,
+      "contactSheet": "sheet_15.jpg",
+      "answerCandidateFromThisRun": "A",
+      "answerStatus": "SOURCE_CROP_MATH_CHECK",
+      "priorRUN74MathProof": {
+        "letter": "A",
+        "reason": "AB=(8,6,0), norm10, unit=(4/5,3/5,0)."
+      },
+      "mapping": {
+        "skillId": "skill_tah_math_20",
+        "subSkillId": "sub_tah_math_20_02"
+      },
+      "difficultyTriageNotFinal": "medium",
+      "foundationReferenceCandidate": {
+        "lessonNumber": 26,
+        "lessonTitle": "المتجهات",
+        "subSkillId": "sub_tah_math_20_02",
+        "subSkillName": "الضرب الداخلي والزاوية والإسقاط والمتجهات في الفضاء"
+      },
+      "whyOthersWrongFinal": false,
+      "canonicalApproved": false
+    }
+  ],
+  "status": "VISUAL_150_PASS_120_UNAMBIGUOUS_MATH_CHECKS_2_HOLDS_7_OPTION_REVIEWED_NOT_CANONICAL",
+  "next": "Complete 319 option-specific pedagogical records; fix two source-ambiguous holds without invented conditions; verify R2 and topicId, approve reversible manifest, then COL26.",
+  "previousRUN74Aligned": 60,
+  "auditCorrection": "The seven originally listed discrepancies were unreviewed rows with no RUN77 answer; 60 comparable answers agree. No actual discrepancy."
+}

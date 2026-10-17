@@ -1,0 +1,29 @@
+{
+  "run": "RUN72",
+  "date": "2026-10-10",
+  "branch": "content/tah-math-full-taxonomy-closure",
+  "pr": 450,
+  "actualSourceQuestionVisualReviewed": 200,
+  "sourceDirectPdfParityPASS": 200,
+  "sourcePages": 79,
+  "sourceHash": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+  "independentMathReviewed": 197,
+  "deepPedagogyPrepared": 21,
+  "wrongOptionReasons": 63,
+  "symbolicChecksPASS": 52,
+  "symbolicChecksFAIL": 0,
+  "holds": [
+    "P050-Q04",
+    "P066-Q14",
+    "P081-Q01"
+  ],
+  "priorCandidateConflicts": 5,
+  "priorConditionalEvents": 8811,
+  "conditionalCumulativeEvents": 9011,
+  "uniqueYLM26Inventory": 326,
+  "canonicalApproved": 0,
+  "productionMutation": false,
+  "originalLedgerUpdate": "BLOCKED_BY_GITHUB_WRITE_SAFETY",
+  "status": "YLM26_NOT_GREEN",
+  "next": "Finalize source/skills/options/AI/foundation/fingerprints and live R2/topicId, reversible manifest, then COL26."
+}

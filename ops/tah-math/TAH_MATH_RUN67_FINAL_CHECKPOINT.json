@@ -1,0 +1,32 @@
+{
+  "run": "RUN67_FINAL",
+  "date": "2026-10-10",
+  "supersedes": "TAH_MATH_RUN67_CHECKPOINT.json",
+  "bank": "YLM26",
+  "officialSourceSHA256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+  "distinctSourceQuestionsReviewed": 200,
+  "sourcePDF3xCrops": 200,
+  "sourcePixelExactPASS": 200,
+  "independentMathAnswerChecks": 192,
+  "priorRUN65CandidateMatches": 191,
+  "knownRUN66CandidateCorrectionReconfirmed": "P086-Q06 A->C",
+  "semanticHolds": 8,
+  "semanticHoldCodes": [
+    "P036-Q09",
+    "P036-Q15",
+    "P050-Q04",
+    "P066-Q14",
+    "P073-Q03",
+    "P081-Q01",
+    "P085-Q01",
+    "P094-Q11"
+  ],
+  "conditionalReviewEventsCumulative": 8056,
+  "uniqueYLM26Inventory": 326,
+  "sourceLabelPatchCandidateRows": 326,
+  "whyOthersWrongBlockedRows": 326,
+  "canonicalApproved": 0,
+  "productionMutation": false,
+  "status": "YLM26_NOT_GREEN",
+  "next": "Finish 326 source options, eight semantic holds, R2/topic parity and reversible manifest; then COL26 1012."
+}

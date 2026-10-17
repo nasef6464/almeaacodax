@@ -1,0 +1,38 @@
+{
+  "run": "RUN70",
+  "source": "official YLM26 PDF SHA256 3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+  "rows": [
+    {
+      "id": "P077-Q01",
+      "answer": "D",
+      "whyCorrect": "15 minutes is scalar; the other three choices specify a direction.",
+      "whyOthersWrong": {
+        "A": "200 m east has direction",
+        "B": "3 km/h toward mosque has direction",
+        "C": "550 m south has direction"
+      }
+    },
+    {
+      "id": "P079-Q10",
+      "answer": "A",
+      "whyCorrect": "6(cos150°,sin150°)=(-3sqrt3,3)",
+      "whyOthersWrong": {
+        "B": "wrong signs",
+        "C": "positive x conflicts with quadrant II",
+        "D": "negative y conflicts with quadrant II"
+      }
+    },
+    {
+      "id": "P083-Q05",
+      "answer": "D",
+      "whyCorrect": "x=r cos(theta)=2 implies r=2sec(theta)",
+      "whyOthersWrong": {
+        "A": "circle not line",
+        "B": "fixes angle not x",
+        "C": "tan not sec"
+      }
+    }
+  ],
+  "canonicalApproved": 0,
+  "productionMutation": false
+}

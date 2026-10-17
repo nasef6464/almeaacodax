@@ -1,0 +1,23 @@
+{
+  "run": "RUN70",
+  "date": "2026-10-10",
+  "stage": "YLM26_NOT_GREEN",
+  "sourceVisualReviewed": 205,
+  "directPdf3xExactParity": 150,
+  "archiveSourceCropVisual": 200,
+  "fullPageAdditional": 5,
+  "answerCorrections": [
+    {
+      "questionCode": "TAH-MATH-YLM26-P031-Q03",
+      "old": "A",
+      "new": "B"
+    }
+  ],
+  "genericExplanationRowsSourceRechecked": 30,
+  "semanticHold": "TAH-MATH-YLM26-P085-Q01",
+  "cumulativeConditionalReviewEvents": 8611,
+  "canonicalApproved": 0,
+  "productionMutation": false,
+  "originalLedgerUpdateBlocked": true,
+  "next": "Complete pedagogy, 7 holds, R2 and topicId live parity, reversible manifest."
+}

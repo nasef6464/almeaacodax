@@ -1,0 +1,153 @@
+{
+  "run": "RUN78",
+  "source": "existing source-verified RUN19/RUN28",
+  "status": "STAGED_NOT_FINAL",
+  "canonicalApproved": 0,
+  "records": [
+    {
+      "questionCode": "TAH-MATH-YLM26-P016-Q10",
+      "sourceItemId": "YLM26-PDF015-P016-N10",
+      "imageHash": "7143c6b9faaf7190131778372033f46ae78952e1eb392a021f516eef99c068fa",
+      "questionText": "إذا كان المثلث في الشكل متطابق الضلعين، وكانت A=(-1,0) وB=(3,0)، والضلع AB يساوي الضلع BC الرأسي، فما إحداثيا C؟",
+      "options": {
+        "A": "(3,3)",
+        "B": "(3,4)",
+        "C": "(2,4)",
+        "D": "(4,2)"
+      },
+      "answerLetter": "B",
+      "correctOptionIndex": 1,
+      "whyCorrect": "AB=3−(−1)=4؛ BC رأسي وطوله 4؛ إذن C=(3,4).",
+      "whyOthersWrong": {
+        "A": "الارتفاع 3 لا يساوي AB=4.",
+        "C": "الإحداثي السيني يجب أن يساوي إحداثي B وهو 3.",
+        "D": "كلا الإحداثيين لا يحققان وقوع C عموديًا فوق B بمسافة 4."
+      },
+      "hint": "احسب طول AB أولًا، ثم استخدم أن BC رأسي ويساويه.",
+      "solvingStrategy": "مسافة أفقية ثم نقل رأسي للإحداثيات.",
+      "commonMistakes": [
+        "إهمال السالب في −1",
+        "تبديل x وy"
+      ],
+      "sourceEvidence": "ops/tah-math/TAH_MATH_RUN19_6_VISUAL_EXCEPTION_FULL_PEDAGOGY.json",
+      "stage": "PEDAGOGY_REVIEWED_R2_TOPIC_PARITY_PENDING",
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P016-Q11",
+      "sourceItemId": "YLM26-PDF015-P016-N11",
+      "imageHash": "2593cbf076a4bf685e284cc21e8dc92b0102b9785be493e2d74ff9209d82b399",
+      "questionText": "في شبه منحرف متطابق الساقين: A=(0,c)، L=(a,0)، T=(b,0)، والقاعدة العليا أفقية من A إلى M. ما إحداثيا M؟",
+      "options": {
+        "A": "(a+b,c)",
+        "B": "(c,a+b)",
+        "C": "(b−a,c)",
+        "D": "(c,b−a)"
+      },
+      "answerLetter": "A",
+      "correctOptionIndex": 0,
+      "whyCorrect": "ارتفاع القاعدة العليا c، وفي شبه المنحرف متطابق الساقين الإزاحة الأفقية من T إلى M تساوي الإزاحة من A إلى L، أي a؛ لذلك M=(a+b,c).",
+      "whyOthersWrong": {
+        "B": "يبدّل إحداثيي x وy.",
+        "C": "يطرح الإزاحة بدل إضافتها إلى b.",
+        "D": "يطرح الإزاحة ويبدّل الإحداثيين."
+      },
+      "hint": "قارن الإزاحتين الأفقيتين للساقين المتطابقتين.",
+      "solvingStrategy": "تماثل الساقين وإزاحة إحداثية أفقية.",
+      "commonMistakes": [
+        "عكس الإحداثيات",
+        "طرح a من b"
+      ],
+      "sourceEvidence": "ops/tah-math/TAH_MATH_RUN19_6_VISUAL_EXCEPTION_FULL_PEDAGOGY.json",
+      "stage": "PEDAGOGY_REVIEWED_R2_TOPIC_PARITY_PENDING",
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P023-Q13",
+      "sourceItemId": "YLM26-PDF022-P023-N13",
+      "imageHash": "f3c3eb0379d320a7ce893ed736168d1794166c41548d36ef5cdac3ec8e40762f",
+      "questionText": "في الشكل، إذا كان قطر الدائرة A يساوي 12 وBC مماسًا لها وطوله 8 والمسافة بين الدائرتين 1، فما طول قطر الدائرة B؟",
+      "options": {
+        "A": "3",
+        "B": "6",
+        "C": "7",
+        "D": "9"
+      },
+      "answerLetter": "B",
+      "correctOptionIndex": 1,
+      "whyCorrect": "نصف قطر الدائرة A هو 6. المماس BC=8 وAC=6، إذن AB=√(6²+8²)=10. وبوجود فراغ 1 بين الدائرتين: r_B=10−6−1=3، والقطر 2r_B=6.",
+      "whyOthersWrong": {
+        "A": "هو نصف قطر B وليس قطرها.",
+        "C": "يهمل طرح مسافة الفراغ 1.",
+        "D": "لا يحقق طول المماس ولا فراغ الدائرتين."
+      },
+      "hint": "كوّن مثلثًا قائمًا بنصف قطر A والمماس BC، ثم اطرح نصفي القطر والفراغ.",
+      "solvingStrategy": "فيثاغورس ثم علاقة المسافة بين مركزي دائرتين منفصلتين.",
+      "commonMistakes": [
+        "الخلط بين القطر ونصف القطر",
+        "نسيان الفراغ 1"
+      ],
+      "sourceEvidence": "ops/tah-math/TAH_MATH_RUN19_6_VISUAL_EXCEPTION_FULL_PEDAGOGY.json",
+      "stage": "PEDAGOGY_REVIEWED_R2_TOPIC_PARITY_PENDING",
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P028-Q02",
+      "sourceItemId": "YLM26-PDF027-P028-N02",
+      "imageHash": "6c2fdce26d6a760c530a6f675afb51fba4e3da13fc8b883f3c71fe0c65965a1c",
+      "questionText": "في التمثيل البياني المعطى للدالة f(x)، ما مدى هذه الدالة؟",
+      "options": {
+        "A": "(−∞,3]",
+        "B": "(−∞,−3) ∪ {2}",
+        "C": "(−∞,3)",
+        "D": "(−∞,−2] ∪ {3}"
+      },
+      "answerLetter": "B",
+      "correctOptionIndex": 1,
+      "whyCorrect": "الشعاع السفلي يحقق y<−3 (النقطة عند −3 مفتوحة)، والقطعة الأفقية تعطي y=2؛ إذن المدى (−∞,−3)∪{2}.",
+      "whyOthersWrong": {
+        "A": "يتضمن قيمًا غير موجودة بين −3 و2.",
+        "C": "يتضمن قيمًا غير ممثلة حتى 3.",
+        "D": "يستبدل حد الشعاع وقيمة القطعة بقيم خاطئة."
+      },
+      "hint": "اقرأ قيم y لا قيم x، وانتبه للدائرة المفتوحة.",
+      "solvingStrategy": "إسقاط جزأي الرسم على محور y ثم اتحاد المجموعتين.",
+      "commonMistakes": [
+        "الخلط بين المجال والمدى",
+        "إدخال نقطة مفتوحة"
+      ],
+      "sourceEvidence": "ops/tah-math/TAH_MATH_RUN19_6_VISUAL_EXCEPTION_FULL_PEDAGOGY.json",
+      "stage": "PEDAGOGY_REVIEWED_R2_TOPIC_PARITY_PENDING",
+      "canonicalApproved": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P031-Q05",
+      "sourceItemId": "YLM26-PDF030-P031-N05",
+      "imageHash": "cb5992981d0937a2a04a2b18ae856b23835ededf00125155d583bcfe0148d1f7",
+      "questionText": "ما ناتج ضرب [4، 0، -2] في المصفوفة [[2,-1],[-3,0],[0,4]]؟",
+      "options": {
+        "A": "[8, −12]",
+        "B": "[[8], [−12]]",
+        "C": "[[8, −4], [0, 0], [0, −8]]",
+        "D": "غير معرّف"
+      },
+      "answerLetter": "A",
+      "correctOptionIndex": 0,
+      "whyCorrect": "حاصل ضرب مصفوفة 1×3 في مصفوفة 3×2 معرّف وينتج صفًا 1×2: [4·2+0·(−3)−2·0, 4·(−1)+0·0−2·4]=[8,−12].",
+      "whyOthersWrong": {
+        "B": "الناتج عمود 2×1 لا صف 1×2.",
+        "C": "ضرب عنصر بعنصر وليس ضرب مصفوفات.",
+        "D": "الأبعاد الداخلية 3 و3 متطابقة فالضرب معرّف."
+      },
+      "hint": "تحقق من الأبعاد أولًا، ثم اضرب الصف في كل عمود.",
+      "solvingStrategy": "قاعدة ضرب المصفوفات (صف × عمود).",
+      "commonMistakes": [
+        "تجاهل أبعاد الناتج",
+        "نسيان الإشارة السالبة"
+      ],
+      "sourceEvidence": "ops/tah-math/TAH_MATH_RUN19_6_VISUAL_EXCEPTION_FULL_PEDAGOGY.json",
+      "stage": "PEDAGOGY_REVIEWED_R2_TOPIC_PARITY_PENDING",
+      "canonicalApproved": false
+    }
+  ]
+}

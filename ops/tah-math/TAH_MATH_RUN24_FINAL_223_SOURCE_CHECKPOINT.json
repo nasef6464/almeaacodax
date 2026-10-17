@@ -1,0 +1,24 @@
+{
+  "run": "RUN24_FINAL",
+  "date": "2026-10-08",
+  "bank": "YLM26",
+  "officialPdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+  "sourceQuestionsVisuallyAndMathematicallyReviewedThisRun": 223,
+  "newUniqueAnswerCandidatesBeyondRUN19to23": 178,
+  "previouslyMathReviewedRechecked": 45,
+  "cumulativeDistinctAnswerCandidates": 326,
+  "sourceAnswerLiveMatches": 221,
+  "sourceAnswerLiveMismatches": 2,
+  "confirmedWrongKeys": [
+    "TAH-MATH-YLM26-P021-Q04",
+    "TAH-MATH-YLM26-P090-Q10"
+  ],
+  "liveExplanationLetterContradictions": 23,
+  "sourceAdjudicatedExplanationOnlyWrong": 22,
+  "sourceAdjudicatedWrongKeyWithin23": 1,
+  "sourceSemanticCaveats": 3,
+  "finalPedagogyCertified": 0,
+  "productionMutation": false,
+  "sourceEvidence": "RUN24 local zip includes 223 official-source crops, 21 source contact sheets, full original PDF page comparisons, rollback manifest and per-question answer audit.",
+  "next": "Resolve two reversible key corrections and 22 explanation-only errors; complete actual A/B/C/D texts, whyOthersWrong, image comparisons, topic/training references and fingerprints; then COL26."
+}

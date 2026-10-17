@@ -1,0 +1,1921 @@
+{
+  "project": "TAH-MATH",
+  "bank": "YLM26",
+  "run": "RUN86",
+  "date": "2026-10-11",
+  "status": "SOURCE_PEDAGOGY_STAGED_NOT_FINAL",
+  "productionMutation": false,
+  "summary": {
+    "sourceSpecificCandidates": 44,
+    "uniqueSourceEvidenceCandidates": 44,
+    "excluded": 0,
+    "remapPending": 4,
+    "foundationStale": 4,
+    "teachingStale": 4,
+    "uncoveredYLM26": 282,
+    "newMastered": 0,
+    "newFinalReviewed": 0,
+    "newHolds": 0
+  },
+  "part": 2,
+  "partCount": 2,
+  "records": [
+    {
+      "questionCode": "TAH-MATH-YLM26-P037-Q19",
+      "sourceIdentity": {
+        "sourceItemId": "YLM26-PDF036-P037-N19",
+        "imageHash": "ead3a476535ceae4dd93733e312ac0c4ffdff9371995125456a496a64a977fbb",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P037-Q04/ead3a476535ceae4dd93733e312ac0c4ffdff9371995125456a496a64a977fbb.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 36,
+          "printedPageNumber": 37,
+          "printedQuestionNumber": 19,
+          "imageVersion": 2
+        }
+      },
+      "questionText": "إذا كانت الدالة f(x)=x⁴ - 8، فما عدد الأصفار التخيلية غير الحقيقية لها؟",
+      "options": {
+        "A": "4",
+        "B": "3",
+        "C": "2",
+        "D": "1"
+      },
+      "answerLetter": "C",
+      "correctOptionIndex": 2,
+      "mainSkillId": "skill_tah_math_10",
+      "subSkillId": "sub_tah_math_10_04",
+      "additionalSkills": [],
+      "difficulty": "Easy",
+      "explanation": "المعادلة x⁴=8 لها أربعة جذور مركبة. يوجد جذران حقيقيان ±⁴√8، ويبقى جذران غير حقيقيين؛ إذن العدد 2، فالاختيار الصحيح C.",
+      "whyCorrect": "المعادلة x⁴=8 لها أربعة جذور مركبة. يوجد جذران حقيقيان ±⁴√8، ويبقى جذران غير حقيقيين؛ إذن العدد 2، فالاختيار الصحيح C.",
+      "whyOthersWrong": {
+        "A": "4 هو مجموع الجذور المركبة",
+        "B": "3 لا ينتج من التحليل",
+        "D": "يعد جذرًا تخيليًا واحدًا بدل زوج"
+      },
+      "hint": "كثيرة الحدود من الدرجة الرابعة لها أربعة جذور مركبة مع احتساب التكرار.",
+      "solvingStrategy": "استخدام درجة كثيرة الحدود وعدد الجذور الحقيقية لحساب غير الحقيقية.",
+      "commonMistakes": [
+        "افتراض أن جميع الجذور الأربعة تخيلية"
+      ],
+      "aiContext": {
+        "readableText": "إذا كانت الدالة f(x)=x⁴ - 8، فما عدد الأصفار التخيلية غير الحقيقية لها؟",
+        "speechText": "إذا كانت الدالة f(x)=x⁴ - 8، فما عدد الأصفار التخيلية غير الحقيقية لها؟",
+        "visualDescription": "دالة رباعية f(x)=x⁴-8 ومطلوب عدد أصفارها التخيلية.",
+        "concepts": [
+          "دوال كثيرات الحدود والأصفار",
+          "استخدام درجة كثيرة الحدود وعدد الجذور الحقيقية لحساب غير الحقيقية."
+        ],
+        "requiredData": [
+          "إذا كانت الدالة f(x)=x⁴ - 8، فما عدد الأصفار التخيلية غير الحقيقية لها؟",
+          "A: 4",
+          "B: 3",
+          "C: 2",
+          "D: 1",
+          "كتاب تأسيس يلو للرياضيات 26"
+        ],
+        "optionTexts": {
+          "A": "4",
+          "B": "3",
+          "C": "2",
+          "D": "1"
+        }
+      },
+      "foundationReference": {
+        "lessonNumber": 14,
+        "lessonTitle": "كثيرات الحدود",
+        "subSkillId": "sub_tah_math_10_04",
+        "subSkillName": "دوال كثيرات الحدود والأصفار ونظريتا العامل والباقي"
+      },
+      "questionFingerprint": "YLM26|YLM26-PDF036-P037-N19|ead3a476535ceae4dd93733e312ac0c4ffdff9371995125456a496a64a977fbb",
+      "teachingFingerprint": "sub_tah_math_10_04|استخدام درجة كثيرة الحدود وعدد الجذور الحقيقية لحساب غير الحقيقية.",
+      "proposedTopicId": "top_tah_math_sub_10_04",
+      "preimage": {
+        "skillId": "skill_tah_math_10",
+        "subSkillId": "sub_tah_math_10_04",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 2
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_10",
+        "subSkillId": "sub_tah_math_10_04",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "reviewEvidenceFiles": [
+        "ops/tah-math/TAH_MATH_RUN78_PEDAGOGY_OVERLAY_PART04.json",
+        "ops/tah-math/TAH_MATH_RUN28_20_SOURCE_GROUNDED_PEDAGOGY.json"
+      ],
+      "evidenceCount": 2,
+      "gateFindings": {
+        "sourceIdentity": "PASS_LIVE_PREIMAGE",
+        "answerAndOptions": "EVIDENCE_CONSISTENT_NOT_NEWLY_SOURCE_REVIEWED",
+        "optionSpecificReasonStructure": "PASS_HEURISTIC_REQUIRES_SEMANTIC_REVIEW",
+        "mappingRemapPending": false,
+        "foundationReferenceStale": false,
+        "teachingFingerprintStale": false,
+        "r2Http": "NOT_VERIFIED",
+        "liveTopicId": "MISSING",
+        "finalReviewed": false,
+        "mastered": false
+      },
+      "status": "PEDAGOGY_EVIDENCE_STAGED_NOT_FINAL"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P037-Q20",
+      "sourceIdentity": {
+        "sourceItemId": "YLM26-PDF036-P037-N20",
+        "imageHash": "beb78118a57f104de5440f4d4509f6b16f35d3ab01f4ce331904f8e5e09f035e",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P037-Q05/beb78118a57f104de5440f4d4509f6b16f35d3ab01f4ce331904f8e5e09f035e.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 36,
+          "printedPageNumber": 37,
+          "printedQuestionNumber": 20,
+          "imageVersion": 2
+        }
+      },
+      "questionText": "أوجد عدد الأصفار الحقيقية والتخيلية، على الترتيب، للدالة f(x)=x³ + 5x - 128.",
+      "options": {
+        "A": "1,3",
+        "B": "0,2",
+        "C": "0,3",
+        "D": "1,2"
+      },
+      "answerLetter": "D",
+      "correctOptionIndex": 3,
+      "mainSkillId": "skill_tah_math_10",
+      "subSkillId": "sub_tah_math_10_04",
+      "additionalSkills": [],
+      "difficulty": "Hard",
+      "explanation": "المشتقة f'(x)=3x²+5 موجبة دائمًا، لذلك الدالة متزايدة تمامًا ولها صفر حقيقي واحد فقط. وبما أنها من الدرجة الثالثة فلها 3 جذور مركبة إجمالًا، فيتبقى جذران غير حقيقيين. إذن العددان 1 و2، فالاختيار الصحيح D.",
+      "whyCorrect": "المشتقة f'(x)=3x²+5 موجبة دائمًا، لذلك الدالة متزايدة تمامًا ولها صفر حقيقي واحد فقط. وبما أنها من الدرجة الثالثة فلها 3 جذور مركبة إجمالًا، فيتبقى جذران غير حقيقيين. إذن العددان 1 و2، فالاختيار الصحيح D.",
+      "whyOthersWrong": {
+        "A": "3 جذور غير حقيقية لا تتفق مع التكعيبية ذات جذر حقيقي",
+        "B": "لا يمكن انعدام الجذور الحقيقية لتكعيبية",
+        "C": "لا يمكن وجود 3 جذور غير حقيقية مع الجذر الحقيقي"
+      },
+      "hint": "أثبت أولًا أن الدالة متزايدة دائمًا لتحديد عدد الجذور الحقيقية.",
+      "solvingStrategy": "تحديد عدد الجذور الحقيقية ثم استخدام النظرية الأساسية في الجبر.",
+      "commonMistakes": [
+        "افتراض أن درجة 3 تعني ثلاثة جذور حقيقية"
+      ],
+      "aiContext": {
+        "readableText": "أوجد عدد الأصفار الحقيقية والتخيلية، على الترتيب، للدالة f(x)=x³ + 5x - 128.",
+        "speechText": "أوجد عدد الأصفار الحقيقية والتخيلية، على الترتيب، للدالة f(x)=x³ + 5x - 128.",
+        "visualDescription": "دالة تكعيبية x³+5x-128 ومطلوب عدد أصفارها الحقيقية وغير الحقيقية.",
+        "concepts": [
+          "دوال كثيرات الحدود والأصفار",
+          "تحديد عدد الجذور الحقيقية ثم استخدام النظرية الأساسية في الجبر."
+        ],
+        "requiredData": [
+          "أوجد عدد الأصفار الحقيقية والتخيلية، على الترتيب، للدالة f(x)=x³ + 5x - 128.",
+          "A: 1,3",
+          "B: 0,2",
+          "C: 0,3",
+          "D: 1,2",
+          "كتاب تأسيس يلو للرياضيات 26"
+        ],
+        "optionTexts": {
+          "A": "1,3",
+          "B": "0,2",
+          "C": "0,3",
+          "D": "1,2"
+        }
+      },
+      "foundationReference": {
+        "lessonNumber": 14,
+        "lessonTitle": "كثيرات الحدود",
+        "subSkillId": "sub_tah_math_10_04",
+        "subSkillName": "دوال كثيرات الحدود والأصفار ونظريتا العامل والباقي"
+      },
+      "questionFingerprint": "YLM26|YLM26-PDF036-P037-N20|beb78118a57f104de5440f4d4509f6b16f35d3ab01f4ce331904f8e5e09f035e",
+      "teachingFingerprint": "sub_tah_math_10_04|تحديد عدد الجذور الحقيقية ثم استخدام النظرية الأساسية في الجبر.",
+      "proposedTopicId": "top_tah_math_sub_10_04",
+      "preimage": {
+        "skillId": "skill_tah_math_10",
+        "subSkillId": "sub_tah_math_10_04",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 3
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_10",
+        "subSkillId": "sub_tah_math_10_04",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "reviewEvidenceFiles": [
+        "ops/tah-math/TAH_MATH_RUN78_PEDAGOGY_OVERLAY_PART04.json",
+        "ops/tah-math/TAH_MATH_RUN28_20_SOURCE_GROUNDED_PEDAGOGY.json"
+      ],
+      "evidenceCount": 2,
+      "gateFindings": {
+        "sourceIdentity": "PASS_LIVE_PREIMAGE",
+        "answerAndOptions": "EVIDENCE_CONSISTENT_NOT_NEWLY_SOURCE_REVIEWED",
+        "optionSpecificReasonStructure": "PASS_HEURISTIC_REQUIRES_SEMANTIC_REVIEW",
+        "mappingRemapPending": false,
+        "foundationReferenceStale": false,
+        "teachingFingerprintStale": false,
+        "r2Http": "NOT_VERIFIED",
+        "liveTopicId": "MISSING",
+        "finalReviewed": false,
+        "mastered": false
+      },
+      "status": "PEDAGOGY_EVIDENCE_STAGED_NOT_FINAL"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P038-Q02",
+      "sourceIdentity": {
+        "sourceItemId": "YLM26-PDF037-P038-N02",
+        "imageHash": "a62ee8c81fe9f5618d73a1292889a65b9faa369a97d296c1a9f0d63d3cc7969a",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P038-Q02/a62ee8c81fe9f5618d73a1292889a65b9faa369a97d296c1a9f0d63d3cc7969a.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 37,
+          "printedPageNumber": 38,
+          "printedQuestionNumber": 2,
+          "imageVersion": 2
+        }
+      },
+      "questionText": "إذا كان f(x)=x²+1 وg(x)=x−3، فما قيمة x التي تجعل (f∘g)(x)=(g∘f)(x)؟",
+      "options": {
+        "A": "0",
+        "B": "1",
+        "C": "2",
+        "D": "3"
+      },
+      "answerLetter": "C",
+      "correctOptionIndex": 2,
+      "mainSkillId": "skill_tah_math_11",
+      "subSkillId": "sub_tah_math_11_01",
+      "additionalSkills": [],
+      "difficulty": "Easy",
+      "explanation": "f(g(x))=(x−3)^2+1=x²−6x+10، وg(f(x))=x²−2. بالمساواة: −6x+10=−2، فيكون x=2، أي C.",
+      "whyCorrect": "f(g(x))=(x−3)^2+1=x²−6x+10، وg(f(x))=x²−2. بالمساواة: −6x+10=−2، فيكون x=2، أي C.",
+      "whyOthersWrong": {
+        "A": "لا يحقق تساوي التركيبين",
+        "B": "لا يحقق تساوي التركيبين",
+        "D": "لا يحقق تساوي التركيبين"
+      },
+      "hint": "اكتب كل تركيب على حدة ثم ساوِ التعبيرين.",
+      "solvingStrategy": "حساب تركيب الدوال ثم حل المعادلة الناتجة.",
+      "commonMistakes": [
+        "الافتراض الخاطئ أن تركيب الدوال تبادلي"
+      ],
+      "aiContext": {
+        "readableText": "إذا كان f(x)=x²+1 وg(x)=x−3، فما قيمة x التي تجعل (f∘g)(x)=(g∘f)(x)؟",
+        "speechText": "إذا كان f(x)=x²+1 وg(x)=x−3، فما قيمة x التي تجعل (f∘g)(x)=(g∘f)(x)؟",
+        "visualDescription": "سؤال نصي عن تركيب دالتين ومساواة التركيبين.",
+        "concepts": [
+          "حساب تركيب الدوال ثم حل المعادلة الناتجة."
+        ],
+        "requiredData": [
+          "إذا كان f(x)=x²+1 وg(x)=x−3، فما قيمة x التي تجعل (f∘g)(x)=(g∘f)(x)؟",
+          "A: 0",
+          "B: 1",
+          "C: 2",
+          "D: 3",
+          "كتاب تأسيس يلو للرياضيات 26"
+        ],
+        "optionTexts": {
+          "A": "0",
+          "B": "1",
+          "C": "2",
+          "D": "3"
+        }
+      },
+      "foundationReference": {
+        "lessonNumber": 15,
+        "lessonTitle": "العمليات على الدوال",
+        "subSkillId": "sub_tah_math_11_01",
+        "subSkillName": "العمليات على الدوال وتركيب الدوال"
+      },
+      "questionFingerprint": "YLM26|YLM26-PDF037-P038-N02|a62ee8c81fe9f5618d73a1292889a65b9faa369a97d296c1a9f0d63d3cc7969a",
+      "teachingFingerprint": "sub_tah_math_11_01|حساب تركيب الدوال ثم حل المعادلة الناتجة.",
+      "proposedTopicId": "top_tah_math_sub_11_01",
+      "preimage": {
+        "skillId": "skill_tah_math_11",
+        "subSkillId": "sub_tah_math_11_01",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 2
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_11",
+        "subSkillId": "sub_tah_math_11_01",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "reviewEvidenceFiles": [
+        "ops/tah-math/TAH_MATH_RUN78_PEDAGOGY_OVERLAY_PART04.json",
+        "ops/tah-math/TAH_MATH_RUN28_20_SOURCE_GROUNDED_PEDAGOGY.json"
+      ],
+      "evidenceCount": 2,
+      "gateFindings": {
+        "sourceIdentity": "PASS_LIVE_PREIMAGE",
+        "answerAndOptions": "EVIDENCE_CONSISTENT_NOT_NEWLY_SOURCE_REVIEWED",
+        "optionSpecificReasonStructure": "PASS_HEURISTIC_REQUIRES_SEMANTIC_REVIEW",
+        "mappingRemapPending": false,
+        "foundationReferenceStale": false,
+        "teachingFingerprintStale": false,
+        "r2Http": "NOT_VERIFIED",
+        "liveTopicId": "MISSING",
+        "finalReviewed": false,
+        "mastered": false
+      },
+      "status": "PEDAGOGY_EVIDENCE_STAGED_NOT_FINAL"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P042-Q02",
+      "sourceIdentity": {
+        "sourceItemId": "YLM26-PDF041-P042-N02",
+        "imageHash": "2f4ec573d6e314385b6adcc6ced666182af2ff84c84961997c72103f2984d74e",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P042-Q02/2f4ec573d6e314385b6adcc6ced666182af2ff84c84961997c72103f2984d74e.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 41,
+          "printedPageNumber": 42,
+          "printedQuestionNumber": 2,
+          "imageVersion": 2
+        }
+      },
+      "questionText": "متتابعة حسابية أساسها d=6 وa₅=19، فما قيمة a₂؟",
+      "options": {
+        "A": "−5",
+        "B": "1",
+        "C": "5",
+        "D": "7"
+      },
+      "answerLetter": "B",
+      "correctOptionIndex": 1,
+      "mainSkillId": "skill_tah_math_13",
+      "subSkillId": "sub_tah_math_13_01",
+      "additionalSkills": [],
+      "difficulty": "Easy",
+      "explanation": "a2=19−3×6=1.",
+      "whyCorrect": "a2=19−3×6=1.",
+      "whyOthersWrong": {
+        "A": "−5 هو الحد الأول.",
+        "C": "5 يخلط رقم الحد بقيمته.",
+        "D": "7 لا يحقق a5=19."
+      },
+      "hint": "استخدم الفرق بين رتبة الحد الخامس والثاني وهو 3.",
+      "solvingStrategy": "إيجاد حد سابق في متتابعة حسابية.",
+      "commonMistakes": [
+        "−5 هو الحد الأول.",
+        "5 يخلط رقم الحد بقيمته.",
+        "7 لا يحقق a5=19."
+      ],
+      "aiContext": {
+        "readableText": "متتابعة حسابية أساسها d=6 وa₅=19، فما قيمة a₂؟",
+        "speechText": "متتابعة حسابية أساسها d=6 وa₅=19، فما قيمة a₂؟",
+        "visualDescription": "معطى أساس متتابعة حسابية والحد الخامس ومطلوب الحد الثاني.",
+        "concepts": [
+          "إيجاد حد سابق في متتابعة حسابية."
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+        "optionTexts": {
+          "A": "−5",
+          "B": "1",
+          "C": "5",
+          "D": "7"
+        }
+      },
+      "foundationReference": {
+        "lessonNumber": 18,
+        "lessonTitle": "المتتابعات والمتسلسلات",
+        "subSkillId": "sub_tah_math_13_01",
+        "subSkillName": "المتتابعات والمتسلسلات الحسابية"
+      },
+      "questionFingerprint": "YLM26|YLM26-PDF041-P042-N02|2f4ec573d6e314385b6adcc6ced666182af2ff84c84961997c72103f2984d74e",
+      "teachingFingerprint": "sub_tah_math_13_01|إيجاد حد سابق في متتابعة حسابية.",
+      "proposedTopicId": "top_tah_math_sub_13_01",
+      "preimage": {
+        "skillId": "skill_tah_math_13",
+        "subSkillId": "sub_tah_math_13_01",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 1
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_13",
+        "subSkillId": "sub_tah_math_13_01",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "reviewEvidenceFiles": [
+        "ops/tah-math/TAH_MATH_RUN49_5_OPTION_PEDAGOGY_PART2A.json",
+        "ops/tah-math/TAH_MATH_RUN78_PEDAGOGY_OVERLAY_PART06.json"
+      ],
+      "evidenceCount": 2,
+      "gateFindings": {
+        "sourceIdentity": "PASS_LIVE_PREIMAGE",
+        "answerAndOptions": "EVIDENCE_CONSISTENT_NOT_NEWLY_SOURCE_REVIEWED",
+        "optionSpecificReasonStructure": "PASS_HEURISTIC_REQUIRES_SEMANTIC_REVIEW",
+        "mappingRemapPending": false,
+        "foundationReferenceStale": false,
+        "teachingFingerprintStale": false,
+        "r2Http": "NOT_VERIFIED",
+        "liveTopicId": "MISSING",
+        "finalReviewed": false,
+        "mastered": false
+      },
+      "status": "PEDAGOGY_EVIDENCE_STAGED_NOT_FINAL"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P042-Q04",
+      "sourceIdentity": {
+        "sourceItemId": "YLM26-PDF041-P042-N04",
+        "imageHash": "eaa8970cf6065e5a097537217eed0251bc9deb0920c7a2009140de3060d9d2e6",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P042-Q04/eaa8970cf6065e5a097537217eed0251bc9deb0920c7a2009140de3060d9d2e6.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 41,
+          "printedPageNumber": 42,
+          "printedQuestionNumber": 4,
+          "imageVersion": 2
+        }
+      },
+      "questionText": "احسب الوسطين الحسابيين بين العددين 3 و24.",
+      "options": {
+        "A": "10 و17",
+        "B": "11 و19",
+        "C": "12 و19",
+        "D": "7 و17"
+      },
+      "answerLetter": "A",
+      "correctOptionIndex": 0,
+      "mainSkillId": "skill_tah_math_13",
+      "subSkillId": "sub_tah_math_13_01",
+      "additionalSkills": [],
+      "difficulty": "Easy",
+      "explanation": "d=(24−3)/3=7، الوسطان 10 و17.",
+      "whyCorrect": "d=(24−3)/3=7، الوسطان 10 و17.",
+      "whyOthersWrong": {
+        "B": "فروقها ليست ثابتة.",
+        "C": "فروقها 9 و7 و5.",
+        "D": "فروقها 4 و10 و7."
+      },
+      "hint": "قسّم الفرق بين الطرفين على عدد الفواصل الثلاثة.",
+      "solvingStrategy": "إيجاد أوساط حسابية بين عددين.",
+      "commonMistakes": [
+        "فروقها ليست ثابتة.",
+        "فروقها 9 و7 و5.",
+        "فروقها 4 و10 و7."
+      ],
+      "aiContext": {
+        "readableText": "احسب الوسطين الحسابيين بين العددين 3 و24.",
+        "speechText": "احسب الوسطين الحسابيين بين العددين 3 و24.",
+        "visualDescription": "سؤال عن إدراج وسطين حسابيين بين 3 و24.",
+        "concepts": [
+          "إيجاد أوساط حسابية بين عددين."
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+        "optionTexts": {
+          "A": "10 و17",
+          "B": "11 و19",
+          "C": "12 و19",
+          "D": "7 و17"
+        }
+      },
+      "foundationReference": {
+        "lessonNumber": 18,
+        "lessonTitle": "المتتابعات والمتسلسلات",
+        "subSkillId": "sub_tah_math_13_01",
+        "subSkillName": "المتتابعات والمتسلسلات الحسابية"
+      },
+      "questionFingerprint": "YLM26|YLM26-PDF041-P042-N04|eaa8970cf6065e5a097537217eed0251bc9deb0920c7a2009140de3060d9d2e6",
+      "teachingFingerprint": "sub_tah_math_13_01|إيجاد أوساط حسابية بين عددين.",
+      "proposedTopicId": "top_tah_math_sub_13_01",
+      "preimage": {
+        "skillId": "skill_tah_math_13",
+        "subSkillId": "sub_tah_math_13_01",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 0
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_13",
+        "subSkillId": "sub_tah_math_13_01",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "reviewEvidenceFiles": [
+        "ops/tah-math/TAH_MATH_RUN49_5_OPTION_PEDAGOGY_PART2B.json",
+        "ops/tah-math/TAH_MATH_RUN78_PEDAGOGY_OVERLAY_PART06.json"
+      ],
+      "evidenceCount": 2,
+      "gateFindings": {
+        "sourceIdentity": "PASS_LIVE_PREIMAGE",
+        "answerAndOptions": "EVIDENCE_CONSISTENT_NOT_NEWLY_SOURCE_REVIEWED",
+        "optionSpecificReasonStructure": "PASS_HEURISTIC_REQUIRES_SEMANTIC_REVIEW",
+        "mappingRemapPending": false,
+        "foundationReferenceStale": false,
+        "teachingFingerprintStale": false,
+        "r2Http": "NOT_VERIFIED",
+        "liveTopicId": "MISSING",
+        "finalReviewed": false,
+        "mastered": false
+      },
+      "status": "PEDAGOGY_EVIDENCE_STAGED_NOT_FINAL"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P042-Q05",
+      "sourceIdentity": {
+        "sourceItemId": "YLM26-PDF041-P042-N05",
+        "imageHash": "ca5c2ac791c19b8a8a24fde4bc98f749a80a5c142e97c8446be75b3dae63f51d",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P042-Q05/ca5c2ac791c19b8a8a24fde4bc98f749a80a5c142e97c8446be75b3dae63f51d.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 41,
+          "printedPageNumber": 42,
+          "printedQuestionNumber": 5,
+          "imageVersion": 2
+        }
+      },
+      "questionText": "زوايا مضلع رباعي في متتابعة حسابية، وأصغر زاوية 30°. فما أكبر زاوية؟",
+      "options": {
+        "A": "150°",
+        "B": "140°",
+        "C": "110°",
+        "D": "120°"
+      },
+      "answerLetter": "A",
+      "correctOptionIndex": 0,
+      "mainSkillId": "skill_tah_math_13",
+      "subSkillId": "sub_tah_math_13_01",
+      "additionalSkills": [],
+      "difficulty": "Easy",
+      "explanation": "الزوايا 30،70،110،150، ومجموعها 360°.",
+      "whyCorrect": "الزوايا 30،70،110،150، ومجموعها 360°.",
+      "whyOthersWrong": {
+        "B": "ليست الزاوية الرابعة بعد حساب d=40.",
+        "C": "110° الزاوية الثالثة.",
+        "D": "120° لا تحقق مجموع الزوايا مع أساس 40."
+      },
+      "hint": "مجموع زوايا الشكل الرباعي 360°.",
+      "solvingStrategy": "نمذجة زوايا رباعي بمتتابعة حسابية.",
+      "commonMistakes": [
+        "ليست الزاوية الرابعة بعد حساب d=40.",
+        "110° الزاوية الثالثة.",
+        "120° لا تحقق مجموع الزوايا مع أساس 40."
+      ],
+      "aiContext": {
+        "readableText": "زوايا مضلع رباعي في متتابعة حسابية، وأصغر زاوية 30°. فما أكبر زاوية؟",
+        "speechText": "زوايا مضلع رباعي في متتابعة حسابية، وأصغر زاوية 30°. فما أكبر زاوية؟",
+        "visualDescription": "مسألة لفظية عن أربع زوايا في متتابعة حسابية وأصغرها 30°.",
+        "concepts": [
+          "نمذجة زوايا رباعي بمتتابعة حسابية."
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+        "optionTexts": {
+          "A": "150°",
+          "B": "140°",
+          "C": "110°",
+          "D": "120°"
+        }
+      },
+      "foundationReference": {
+        "lessonNumber": 18,
+        "lessonTitle": "المتتابعات والمتسلسلات",
+        "subSkillId": "sub_tah_math_13_01",
+        "subSkillName": "المتتابعات والمتسلسلات الحسابية"
+      },
+      "questionFingerprint": "YLM26|YLM26-PDF041-P042-N05|ca5c2ac791c19b8a8a24fde4bc98f749a80a5c142e97c8446be75b3dae63f51d",
+      "teachingFingerprint": "sub_tah_math_13_01|نمذجة زوايا رباعي بمتتابعة حسابية.",
+      "proposedTopicId": "top_tah_math_sub_13_01",
+      "preimage": {
+        "skillId": "skill_tah_math_13",
+        "subSkillId": "sub_tah_math_13_01",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 0
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_13",
+        "subSkillId": "sub_tah_math_13_01",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "reviewEvidenceFiles": [
+        "ops/tah-math/TAH_MATH_RUN49_5_OPTION_PEDAGOGY_PART2B.json",
+        "ops/tah-math/TAH_MATH_RUN78_PEDAGOGY_OVERLAY_PART06.json"
+      ],
+      "evidenceCount": 2,
+      "gateFindings": {
+        "sourceIdentity": "PASS_LIVE_PREIMAGE",
+        "answerAndOptions": "EVIDENCE_CONSISTENT_NOT_NEWLY_SOURCE_REVIEWED",
+        "optionSpecificReasonStructure": "PASS_HEURISTIC_REQUIRES_SEMANTIC_REVIEW",
+        "mappingRemapPending": false,
+        "foundationReferenceStale": false,
+        "teachingFingerprintStale": false,
+        "r2Http": "NOT_VERIFIED",
+        "liveTopicId": "MISSING",
+        "finalReviewed": false,
+        "mastered": false
+      },
+      "status": "PEDAGOGY_EVIDENCE_STAGED_NOT_FINAL"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P042-Q06",
+      "sourceIdentity": {
+        "sourceItemId": "YLM26-PDF041-P042-N06",
+        "imageHash": "47bd56cadba2f7e560db6473c66cc45e478e836f763978be272fb69df32b7149",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P042-Q06/47bd56cadba2f7e560db6473c66cc45e478e836f763978be272fb69df32b7149.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 41,
+          "printedPageNumber": 42,
+          "printedQuestionNumber": 6,
+          "imageVersion": 2
+        }
+      },
+      "questionText": "متتابعة حسابية حدها الأول −7 وأساسها 4 وعدد حدودها 15. ما مجموعها؟",
+      "options": {
+        "A": "315",
+        "B": "220",
+        "C": "340",
+        "D": "280"
+      },
+      "answerLetter": "A",
+      "correctOptionIndex": 0,
+      "mainSkillId": "skill_tah_math_13",
+      "subSkillId": "sub_tah_math_13_01",
+      "additionalSkills": [],
+      "difficulty": "Easy",
+      "explanation": "S15=15/2[−14+14×4]=315.",
+      "whyCorrect": "S15=15/2[−14+14×4]=315.",
+      "whyOthersWrong": {
+        "B": "ينقص عن المجموع الصحيح.",
+        "C": "ينتج من حساب خاطئ للحد الأخير.",
+        "D": "ينتج من خطأ في عدد الحدود."
+      },
+      "hint": "استخدم قانون مجموع أول n حدًا في المتتابعة الحسابية.",
+      "solvingStrategy": "تطبيق قانون مجموع المتتابعة الحسابية مباشرة.",
+      "commonMistakes": [
+        "ينقص عن المجموع الصحيح.",
+        "ينتج من حساب خاطئ للحد الأخير.",
+        "ينتج من خطأ في عدد الحدود."
+      ],
+      "aiContext": {
+        "readableText": "متتابعة حسابية حدها الأول −7 وأساسها 4 وعدد حدودها 15. ما مجموعها؟",
+        "speechText": "متتابعة حسابية حدها الأول −7 وأساسها 4 وعدد حدودها 15. ما مجموعها؟",
+        "visualDescription": "سؤال نصي عن مجموع 15 حدًا لمتتابعة حسابية تبدأ بـ−7 وفرقها 4.",
+        "concepts": [
+          "تطبيق قانون مجموع المتتابعة الحسابية مباشرة."
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+        "optionTexts": {
+          "A": "315",
+          "B": "220",
+          "C": "340",
+          "D": "280"
+        }
+      },
+      "foundationReference": {
+        "lessonNumber": 18,
+        "lessonTitle": "المتتابعات والمتسلسلات",
+        "subSkillId": "sub_tah_math_13_01",
+        "subSkillName": "المتتابعات والمتسلسلات الحسابية"
+      },
+      "questionFingerprint": "YLM26|YLM26-PDF041-P042-N06|47bd56cadba2f7e560db6473c66cc45e478e836f763978be272fb69df32b7149",
+      "teachingFingerprint": "sub_tah_math_13_01|تطبيق قانون مجموع المتتابعة الحسابية مباشرة.",
+      "proposedTopicId": "top_tah_math_sub_13_01",
+      "preimage": {
+        "skillId": "skill_tah_math_13",
+        "subSkillId": "sub_tah_math_13_01",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 0
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_13",
+        "subSkillId": "sub_tah_math_13_01",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "reviewEvidenceFiles": [
+        "ops/tah-math/TAH_MATH_RUN49_5_OPTION_PEDAGOGY_PART2B.json",
+        "ops/tah-math/TAH_MATH_RUN78_PEDAGOGY_OVERLAY_PART06.json"
+      ],
+      "evidenceCount": 2,
+      "gateFindings": {
+        "sourceIdentity": "PASS_LIVE_PREIMAGE",
+        "answerAndOptions": "EVIDENCE_CONSISTENT_NOT_NEWLY_SOURCE_REVIEWED",
+        "optionSpecificReasonStructure": "PASS_HEURISTIC_REQUIRES_SEMANTIC_REVIEW",
+        "mappingRemapPending": false,
+        "foundationReferenceStale": false,
+        "teachingFingerprintStale": false,
+        "r2Http": "NOT_VERIFIED",
+        "liveTopicId": "MISSING",
+        "finalReviewed": false,
+        "mastered": false
+      },
+      "status": "PEDAGOGY_EVIDENCE_STAGED_NOT_FINAL"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P043-Q07",
+      "sourceIdentity": {
+        "sourceItemId": "YLM26-PDF042-P043-N07",
+        "imageHash": "3d52413755a17dc05d1bbf07e4d1c7e9af1c2ea268819e31f1a3b180c18ea9d6",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P043-Q01/3d52413755a17dc05d1bbf07e4d1c7e9af1c2ea268819e31f1a3b180c18ea9d6.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 42,
+          "printedPageNumber": 43,
+          "printedQuestionNumber": 7,
+          "imageVersion": 2
+        }
+      },
+      "questionText": "أوجد قيمة مجموع المتسلسلة Σ(2n-1) عندما n من 3 إلى 17.",
+      "options": {
+        "A": "323",
+        "B": "311",
+        "C": "285",
+        "D": "215"
+      },
+      "answerLetter": "C",
+      "correctOptionIndex": 2,
+      "mainSkillId": "skill_tah_math_13",
+      "subSkillId": "sub_tah_math_13_01",
+      "additionalSkills": [],
+      "difficulty": "Easy",
+      "explanation": "15 حدًا من 5 إلى 33، مجموعها 15×19=285.",
+      "whyCorrect": "15 حدًا من 5 إلى 33، مجموعها 15×19=285.",
+      "whyOthersWrong": {
+        "A": "يزيد عن مجموع 15 حدًا.",
+        "B": "لا يساوي 15×متوسط 5 و33.",
+        "D": "ينقص عن المجموع الصحيح."
+      },
+      "hint": "حوّل صيغة سيغما إلى متسلسلة حسابية وحدد أول حد وآخر حد وعدد الحدود.",
+      "solvingStrategy": "حساب مجموع متسلسلة حسابية معطاة برمز سيغما.",
+      "commonMistakes": [
+        "يزيد عن مجموع 15 حدًا.",
+        "لا يساوي 15×متوسط 5 و33.",
+        "ينقص عن المجموع الصحيح."
+      ],
+      "aiContext": {
+        "readableText": "أوجد قيمة مجموع المتسلسلة Σ(2n-1) عندما n من 3 إلى 17.",
+        "speechText": "أوجد قيمة مجموع المتسلسلة Σ(2n-1) عندما n من 3 إلى 17.",
+        "visualDescription": "رمز سيغما لمجموع 2n-1 من n=3 إلى n=17.",
+        "concepts": [
+          "حساب مجموع متسلسلة حسابية معطاة برمز سيغما."
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+        "optionTexts": {
+          "A": "323",
+          "B": "311",
+          "C": "285",
+          "D": "215"
+        }
+      },
+      "foundationReference": {
+        "lessonNumber": 18,
+        "lessonTitle": "المتتابعات والمتسلسلات",
+        "subSkillId": "sub_tah_math_13_01",
+        "subSkillName": "المتتابعات والمتسلسلات الحسابية"
+      },
+      "questionFingerprint": "YLM26|YLM26-PDF042-P043-N07|3d52413755a17dc05d1bbf07e4d1c7e9af1c2ea268819e31f1a3b180c18ea9d6",
+      "teachingFingerprint": "sub_tah_math_13_01|حساب مجموع متسلسلة حسابية معطاة برمز سيغما.",
+      "proposedTopicId": "top_tah_math_sub_13_01",
+      "preimage": {
+        "skillId": "skill_tah_math_13",
+        "subSkillId": "sub_tah_math_13_01",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 2
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_13",
+        "subSkillId": "sub_tah_math_13_01",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "reviewEvidenceFiles": [
+        "ops/tah-math/TAH_MATH_RUN49_5_OPTION_PEDAGOGY_PART2B.json",
+        "ops/tah-math/TAH_MATH_RUN78_PEDAGOGY_OVERLAY_PART06.json"
+      ],
+      "evidenceCount": 2,
+      "gateFindings": {
+        "sourceIdentity": "PASS_LIVE_PREIMAGE",
+        "answerAndOptions": "EVIDENCE_CONSISTENT_NOT_NEWLY_SOURCE_REVIEWED",
+        "optionSpecificReasonStructure": "PASS_HEURISTIC_REQUIRES_SEMANTIC_REVIEW",
+        "mappingRemapPending": false,
+        "foundationReferenceStale": false,
+        "teachingFingerprintStale": false,
+        "r2Http": "NOT_VERIFIED",
+        "liveTopicId": "MISSING",
+        "finalReviewed": false,
+        "mastered": false
+      },
+      "status": "PEDAGOGY_EVIDENCE_STAGED_NOT_FINAL"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P046-Q01",
+      "sourceIdentity": {
+        "sourceItemId": "YLM26-PDF045-P046-N01",
+        "imageHash": "0250af0cec720fc1200959b3463f03a5433f560a7b8030c77eec537dab27f418",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P046-Q01/0250af0cec720fc1200959b3463f03a5433f560a7b8030c77eec537dab27f418.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 45,
+          "printedPageNumber": 46,
+          "printedQuestionNumber": 1,
+          "imageVersion": 2
+        }
+      },
+      "questionText": "إذا كان لدينا m قلمًا وسحبنا قلمين على التوالي دون إرجاع، فما عدد النواتج الممكنة؟",
+      "options": {
+        "A": "m²",
+        "B": "m(m−1)",
+        "C": "m",
+        "D": "m−1"
+      },
+      "answerLetter": "B",
+      "correctOptionIndex": 1,
+      "mainSkillId": "skill_tah_math_14",
+      "subSkillId": "sub_tah_math_14_02",
+      "additionalSkills": [],
+      "difficulty": "Easy",
+      "explanation": "السحب الأول m اختيارًا والثاني m−1؛ النواتج m(m−1).",
+      "whyCorrect": "السحب الأول m اختيارًا والثاني m−1؛ النواتج m(m−1).",
+      "whyOthersWrong": {
+        "A": "m² يفترض الإرجاع في السحب الثاني.",
+        "C": "m يحسب السحب الأول فقط.",
+        "D": "m−1 يحسب السحب الثاني فقط."
+      },
+      "hint": "استخدم مبدأ العد الأساسي مع عدم الإرجاع.",
+      "solvingStrategy": "تطبيق مبدأ العد الأساسي في تجربتين متتاليتين.",
+      "commonMistakes": [
+        "m² يفترض الإرجاع في السحب الثاني.",
+        "m يحسب السحب الأول فقط.",
+        "m−1 يحسب السحب الثاني فقط."
+      ],
+      "aiContext": {
+        "readableText": "إذا كان لدينا m قلمًا وسحبنا قلمين على التوالي دون إرجاع، فما عدد النواتج الممكنة؟",
+        "speechText": "إذا كان لدينا m قلمًا وسحبنا قلمين على التوالي دون إرجاع، فما عدد النواتج الممكنة؟",
+        "visualDescription": "مسألة عد عن سحب قلمين من m قلم دون إرجاع.",
+        "concepts": [
+          "تطبيق مبدأ العد الأساسي في تجربتين متتاليتين."
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+        "optionTexts": {
+          "A": "m²",
+          "B": "m(m−1)",
+          "C": "m",
+          "D": "m−1"
+        }
+      },
+      "foundationReference": {
+        "lessonNumber": 20,
+        "lessonTitle": "الاحتمالات",
+        "subSkillId": "sub_tah_math_14_02",
+        "subSkillName": "مبدأ العد والتباديل"
+      },
+      "questionFingerprint": "YLM26|YLM26-PDF045-P046-N01|0250af0cec720fc1200959b3463f03a5433f560a7b8030c77eec537dab27f418",
+      "teachingFingerprint": "sub_tah_math_14_02|تطبيق مبدأ العد الأساسي في تجربتين متتاليتين.",
+      "proposedTopicId": "top_tah_math_sub_14_02",
+      "preimage": {
+        "skillId": "skill_tah_math_14",
+        "subSkillId": "sub_tah_math_14_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 1
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_14",
+        "subSkillId": "sub_tah_math_14_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "reviewEvidenceFiles": [
+        "ops/tah-math/TAH_MATH_RUN49_5_OPTION_PEDAGOGY_PART4A.json",
+        "ops/tah-math/TAH_MATH_RUN78_PEDAGOGY_OVERLAY_PART06.json"
+      ],
+      "evidenceCount": 2,
+      "gateFindings": {
+        "sourceIdentity": "PASS_LIVE_PREIMAGE",
+        "answerAndOptions": "EVIDENCE_CONSISTENT_NOT_NEWLY_SOURCE_REVIEWED",
+        "optionSpecificReasonStructure": "PASS_HEURISTIC_REQUIRES_SEMANTIC_REVIEW",
+        "mappingRemapPending": false,
+        "foundationReferenceStale": false,
+        "teachingFingerprintStale": false,
+        "r2Http": "NOT_VERIFIED",
+        "liveTopicId": "MISSING",
+        "finalReviewed": false,
+        "mastered": false
+      },
+      "status": "PEDAGOGY_EVIDENCE_STAGED_NOT_FINAL"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P046-Q02",
+      "sourceIdentity": {
+        "sourceItemId": "YLM26-PDF045-P046-N02",
+        "imageHash": "0ef2593ad5e75bef4b230f35c1f0ea560a618746bf37ac71243f8be765bc9331",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P046-Q02/0ef2593ad5e75bef4b230f35c1f0ea560a618746bf37ac71243f8be765bc9331.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 45,
+          "printedPageNumber": 46,
+          "printedQuestionNumber": 2,
+          "imageVersion": 2
+        }
+      },
+      "questionText": "فندق فيه خياران للدور T أو F، وخياران لنوع الغرفة S أو B. ما فضاء العينة؟",
+      "options": {
+        "A": "TS-TB-FT-SB",
+        "B": "TS-TB-FS-FB",
+        "C": "TF-FT-SB-BS",
+        "D": "TF-TB-FS-SB"
+      },
+      "answerLetter": "B",
+      "correctOptionIndex": 1,
+      "mainSkillId": "skill_tah_math_14",
+      "subSkillId": "sub_tah_math_14_04",
+      "additionalSkills": [],
+      "difficulty": "Easy",
+      "explanation": "الدور T/F ونوع الغرفة S/B؛ فضاء العينة {TS,TB,FS,FB}.",
+      "whyCorrect": "الدور T/F ونوع الغرفة S/B؛ فضاء العينة {TS,TB,FS,FB}.",
+      "whyOthersWrong": {
+        "A": "يحتوي FT وSB غير الموافقين لترميز الدور ثم نوع الغرفة.",
+        "C": "يخلط ترتيب الرموز وينقص التركيبات الصحيحة.",
+        "D": "يستبعد TS ويستعمل SB بترتيب غير مطلوب."
+      },
+      "hint": "كوّن جميع الأزواج الممكنة من اختيار الدور واختيار نوع الغرفة.",
+      "solvingStrategy": "بناء فضاء عينة لتجربة مركبة من مرحلتين.",
+      "commonMistakes": [
+        "يحتوي FT وSB غير الموافقين لترميز الدور ثم نوع الغرفة.",
+        "يخلط ترتيب الرموز وينقص التركيبات الصحيحة.",
+        "يستبعد TS ويستعمل SB بترتيب غير مطلوب."
+      ],
+      "aiContext": {
+        "readableText": "فندق فيه خياران للدور T أو F، وخياران لنوع الغرفة S أو B. ما فضاء العينة؟",
+        "speechText": "فندق فيه خياران للدور T أو F، وخياران لنوع الغرفة S أو B. ما فضاء العينة؟",
+        "visualDescription": "اختيار بين دورين T وF ونوعين من الغرف S وB.",
+        "concepts": [
+          "بناء فضاء عينة لتجربة مركبة من مرحلتين."
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+        "optionTexts": {
+          "A": "TS-TB-FT-SB",
+          "B": "TS-TB-FS-FB",
+          "C": "TF-FT-SB-BS",
+          "D": "TF-TB-FS-SB"
+        }
+      },
+      "foundationReference": {
+        "lessonNumber": 20,
+        "lessonTitle": "الاحتمالات",
+        "subSkillId": "sub_tah_math_14_04",
+        "subSkillName": "الاحتمال البسيط والمركب والشرطي والهندسي"
+      },
+      "questionFingerprint": "YLM26|YLM26-PDF045-P046-N02|0ef2593ad5e75bef4b230f35c1f0ea560a618746bf37ac71243f8be765bc9331",
+      "teachingFingerprint": "sub_tah_math_14_04|بناء فضاء عينة لتجربة مركبة من مرحلتين.",
+      "proposedTopicId": "top_tah_math_sub_14_04",
+      "preimage": {
+        "skillId": "skill_tah_math_14",
+        "subSkillId": "sub_tah_math_14_04",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 1
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_14",
+        "subSkillId": "sub_tah_math_14_04",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "reviewEvidenceFiles": [
+        "ops/tah-math/TAH_MATH_RUN49_5_OPTION_PEDAGOGY_PART4A.json",
+        "ops/tah-math/TAH_MATH_RUN78_PEDAGOGY_OVERLAY_PART06.json"
+      ],
+      "evidenceCount": 2,
+      "gateFindings": {
+        "sourceIdentity": "PASS_LIVE_PREIMAGE",
+        "answerAndOptions": "EVIDENCE_CONSISTENT_NOT_NEWLY_SOURCE_REVIEWED",
+        "optionSpecificReasonStructure": "PASS_HEURISTIC_REQUIRES_SEMANTIC_REVIEW",
+        "mappingRemapPending": false,
+        "foundationReferenceStale": false,
+        "teachingFingerprintStale": false,
+        "r2Http": "NOT_VERIFIED",
+        "liveTopicId": "MISSING",
+        "finalReviewed": false,
+        "mastered": false
+      },
+      "status": "PEDAGOGY_EVIDENCE_STAGED_NOT_FINAL"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P046-Q03",
+      "sourceIdentity": {
+        "sourceItemId": "YLM26-PDF045-P046-N03",
+        "imageHash": "e83876621926704ea18603178efec7f6286c3f010695aae66f514e62ed03d94a",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P046-Q03/e83876621926704ea18603178efec7f6286c3f010695aae66f514e62ed03d94a.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 45,
+          "printedPageNumber": 46,
+          "printedQuestionNumber": 3,
+          "imageVersion": 2
+        }
+      },
+      "questionText": "عند رمي مكعبين متميزين مرة واحدة، ما احتمال أن يكون مجموع العددين 3؟",
+      "options": {
+        "A": "1/36",
+        "B": "2/36",
+        "C": "2/18",
+        "D": "1/12"
+      },
+      "answerLetter": "B",
+      "correctOptionIndex": 1,
+      "mainSkillId": "skill_tah_math_14",
+      "subSkillId": "sub_tah_math_14_04",
+      "additionalSkills": [],
+      "difficulty": "Easy",
+      "explanation": "الحالتان (1,2) و(2,1) من 36؛ الاحتمال 2/36.",
+      "whyCorrect": "الحالتان (1,2) و(2,1) من 36؛ الاحتمال 2/36.",
+      "whyOthersWrong": {
+        "A": "1/36 يعد حالة واحدة بدل حالتين.",
+        "C": "2/18 يجعل عدد النتائج الكلي 18 بدل 36.",
+        "D": "1/12 لا يساوي 2/36."
+      },
+      "hint": "اكتب الأزواج المرتبة التي مجموعها 3.",
+      "solvingStrategy": "حساب احتمال بسيط باستخدام عدد النواتج الملائمة إلى الكلية.",
+      "commonMistakes": [
+        "1/36 يعد حالة واحدة بدل حالتين.",
+        "2/18 يجعل عدد النتائج الكلي 18 بدل 36.",
+        "1/12 لا يساوي 2/36."
+      ],
+      "aiContext": {
+        "readableText": "عند رمي مكعبين متميزين مرة واحدة، ما احتمال أن يكون مجموع العددين 3؟",
+        "speechText": "عند رمي مكعبين متميزين مرة واحدة، ما احتمال أن يكون مجموع العددين 3؟",
+        "visualDescription": "مكعبا أرقام متميزان ومطلوب احتمال أن يكون المجموع 3.",
+        "concepts": [
+          "حساب احتمال بسيط باستخدام عدد النواتج الملائمة إلى الكلية."
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+        "optionTexts": {
+          "A": "1/36",
+          "B": "2/36",
+          "C": "2/18",
+          "D": "1/12"
+        }
+      },
+      "foundationReference": {
+        "lessonNumber": 20,
+        "lessonTitle": "الاحتمالات",
+        "subSkillId": "sub_tah_math_14_04",
+        "subSkillName": "الاحتمال البسيط والمركب والشرطي والهندسي"
+      },
+      "questionFingerprint": "YLM26|YLM26-PDF045-P046-N03|e83876621926704ea18603178efec7f6286c3f010695aae66f514e62ed03d94a",
+      "teachingFingerprint": "sub_tah_math_14_04|حساب احتمال بسيط باستخدام عدد النواتج الملائمة إلى الكلية.",
+      "proposedTopicId": "top_tah_math_sub_14_04",
+      "preimage": {
+        "skillId": "skill_tah_math_14",
+        "subSkillId": "sub_tah_math_14_04",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 1
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_14",
+        "subSkillId": "sub_tah_math_14_04",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "reviewEvidenceFiles": [
+        "ops/tah-math/TAH_MATH_RUN49_5_OPTION_PEDAGOGY_PART4A.json"
+      ],
+      "evidenceCount": 1,
+      "gateFindings": {
+        "sourceIdentity": "PASS_LIVE_PREIMAGE",
+        "answerAndOptions": "EVIDENCE_CONSISTENT_NOT_NEWLY_SOURCE_REVIEWED",
+        "optionSpecificReasonStructure": "PASS_HEURISTIC_REQUIRES_SEMANTIC_REVIEW",
+        "mappingRemapPending": false,
+        "foundationReferenceStale": false,
+        "teachingFingerprintStale": false,
+        "r2Http": "NOT_VERIFIED",
+        "liveTopicId": "MISSING",
+        "finalReviewed": false,
+        "mastered": false
+      },
+      "status": "PEDAGOGY_EVIDENCE_STAGED_NOT_FINAL"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P046-Q04",
+      "sourceIdentity": {
+        "sourceItemId": "YLM26-PDF045-P046-N04",
+        "imageHash": "6d4a75a7e61b2eaa76ac7c24f4319bb07b854adedab937b99350b4ab9c750f05",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P046-Q04/6d4a75a7e61b2eaa76ac7c24f4319bb07b854adedab937b99350b4ab9c750f05.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 45,
+          "printedPageNumber": 46,
+          "printedQuestionNumber": 4,
+          "imageVersion": 2
+        }
+      },
+      "questionText": "إذا كان n! = 120، فما قيمة (n-1)!؟",
+      "options": {
+        "A": "6",
+        "B": "24",
+        "C": "120",
+        "D": "720"
+      },
+      "answerLetter": "B",
+      "correctOptionIndex": 1,
+      "mainSkillId": "skill_tah_math_14",
+      "subSkillId": "sub_tah_math_14_02",
+      "additionalSkills": [],
+      "difficulty": "Easy",
+      "explanation": "n!=120=5!؛ (n−1)!=4!=24.",
+      "whyCorrect": "n!=120=5!؛ (n−1)!=4!=24.",
+      "whyOthersWrong": {
+        "A": "6 ليس 4! بل 3!.",
+        "C": "120 هي n! وليس (n−1)!.",
+        "D": "720 هي 6! لا 4!."
+      },
+      "hint": "حدّد n من قيمة المضروب أولًا.",
+      "solvingStrategy": "استخدام تعريف مضروب العدد.",
+      "commonMistakes": [
+        "6 ليس 4! بل 3!.",
+        "120 هي n! وليس (n−1)!.",
+        "720 هي 6! لا 4!."
+      ],
+      "aiContext": {
+        "readableText": "إذا كان n! = 120، فما قيمة (n-1)!؟",
+        "speechText": "إذا كان n! = 120، فما قيمة (n-1)!؟",
+        "visualDescription": "سؤال عن n! = 120 ومطلوب (n-1)!.",
+        "concepts": [
+          "استخدام تعريف مضروب العدد."
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+        "optionTexts": {
+          "A": "6",
+          "B": "24",
+          "C": "120",
+          "D": "720"
+        }
+      },
+      "foundationReference": {
+        "lessonNumber": 20,
+        "lessonTitle": "الاحتمالات",
+        "subSkillId": "sub_tah_math_14_02",
+        "subSkillName": "مبدأ العد والتباديل"
+      },
+      "questionFingerprint": "YLM26|YLM26-PDF045-P046-N04|6d4a75a7e61b2eaa76ac7c24f4319bb07b854adedab937b99350b4ab9c750f05",
+      "teachingFingerprint": "sub_tah_math_14_02|استخدام تعريف مضروب العدد.",
+      "proposedTopicId": "top_tah_math_sub_14_02",
+      "preimage": {
+        "skillId": "skill_tah_math_14",
+        "subSkillId": "sub_tah_math_14_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 1
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_14",
+        "subSkillId": "sub_tah_math_14_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "reviewEvidenceFiles": [
+        "ops/tah-math/TAH_MATH_RUN49_5_OPTION_PEDAGOGY_PART4A.json"
+      ],
+      "evidenceCount": 1,
+      "gateFindings": {
+        "sourceIdentity": "PASS_LIVE_PREIMAGE",
+        "answerAndOptions": "EVIDENCE_CONSISTENT_NOT_NEWLY_SOURCE_REVIEWED",
+        "optionSpecificReasonStructure": "PASS_HEURISTIC_REQUIRES_SEMANTIC_REVIEW",
+        "mappingRemapPending": false,
+        "foundationReferenceStale": false,
+        "teachingFingerprintStale": false,
+        "r2Http": "NOT_VERIFIED",
+        "liveTopicId": "MISSING",
+        "finalReviewed": false,
+        "mastered": false
+      },
+      "status": "PEDAGOGY_EVIDENCE_STAGED_NOT_FINAL"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P046-Q05",
+      "sourceIdentity": {
+        "sourceItemId": "YLM26-PDF045-P046-N05",
+        "imageHash": "62649b5747c6ff68d5f7f602b1f69936559bccc1be76fcddac03e64007abaa06",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P046-Q05/62649b5747c6ff68d5f7f602b1f69936559bccc1be76fcddac03e64007abaa06.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 45,
+          "printedPageNumber": 46,
+          "printedQuestionNumber": 5,
+          "imageVersion": 2
+        }
+      },
+      "questionText": "يرغب 10 أصدقاء مختلفو الأسماء في الدخول إلى مكان ما. ما احتمال أن يكون محمد الأول وفهد الثاني في الترتيب؟",
+      "options": {
+        "A": "1/90",
+        "B": "1/60",
+        "C": "1/20",
+        "D": "1/10"
+      },
+      "answerLetter": "A",
+      "correctOptionIndex": 0,
+      "mainSkillId": "skill_tah_math_14",
+      "subSkillId": "sub_tah_math_14_04",
+      "additionalSkills": [],
+      "difficulty": "Easy",
+      "explanation": "احتمال محمد أولًا 1/10 وفهد ثانيًا بعده 1/9؛ الناتج 1/90.",
+      "whyCorrect": "احتمال محمد أولًا 1/10 وفهد ثانيًا بعده 1/9؛ الناتج 1/90.",
+      "whyOthersWrong": {
+        "B": "1/60 لا يوافق 10×9 ترتيبًا.",
+        "C": "1/20 لا يوافق احتمال الشخصين بترتيب محدد.",
+        "D": "1/10 احتمال الأول فقط دون الثاني."
+      },
+      "hint": "استخدم قاعدة الضرب لاحتمال حدثين متتابعين دون إرجاع.",
+      "solvingStrategy": "حساب احتمال ترتيب محدد في موضعين متتاليين بضرب الاحتمالين الشرطيين.",
+      "commonMistakes": [
+        "1/60 لا يوافق 10×9 ترتيبًا.",
+        "1/20 لا يوافق احتمال الشخصين بترتيب محدد.",
+        "1/10 احتمال الأول فقط دون الثاني."
+      ],
+      "aiContext": {
+        "readableText": "يرغب 10 أصدقاء مختلفو الأسماء في الدخول إلى مكان ما. ما احتمال أن يكون محمد الأول وفهد الثاني في الترتيب؟",
+        "speechText": "يرغب 10 أصدقاء مختلفو الأسماء في الدخول إلى مكان ما. ما احتمال أن يكون محمد الأول وفهد الثاني في الترتيب؟",
+        "visualDescription": "مسألة لفظية عن ترتيب عشوائي لعشرة أشخاص مع تثبيت شخصين في المركزين الأول والثاني.",
+        "concepts": [
+          "حساب احتمال ترتيب محدد في موضعين متتاليين بضرب الاحتمالين الشرطيين."
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+        "optionTexts": {
+          "A": "1/90",
+          "B": "1/60",
+          "C": "1/20",
+          "D": "1/10"
+        }
+      },
+      "foundationReference": {
+        "lessonNumber": 20,
+        "lessonTitle": "الاحتمالات",
+        "subSkillId": "sub_tah_math_14_04",
+        "subSkillName": "الاحتمال البسيط والمركب والشرطي والهندسي"
+      },
+      "questionFingerprint": "YLM26|YLM26-PDF045-P046-N05|62649b5747c6ff68d5f7f602b1f69936559bccc1be76fcddac03e64007abaa06",
+      "teachingFingerprint": "sub_tah_math_14_04|حساب احتمال ترتيب محدد في موضعين متتاليين بضرب الاحتمالين الشرطيين.",
+      "proposedTopicId": "top_tah_math_sub_14_04",
+      "preimage": {
+        "skillId": "skill_tah_math_14",
+        "subSkillId": "sub_tah_math_14_04",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 0
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_14",
+        "subSkillId": "sub_tah_math_14_04",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "reviewEvidenceFiles": [
+        "ops/tah-math/TAH_MATH_RUN49_5_OPTION_PEDAGOGY_PART4A.json"
+      ],
+      "evidenceCount": 1,
+      "gateFindings": {
+        "sourceIdentity": "PASS_LIVE_PREIMAGE",
+        "answerAndOptions": "EVIDENCE_CONSISTENT_NOT_NEWLY_SOURCE_REVIEWED",
+        "optionSpecificReasonStructure": "PASS_HEURISTIC_REQUIRES_SEMANTIC_REVIEW",
+        "mappingRemapPending": false,
+        "foundationReferenceStale": false,
+        "teachingFingerprintStale": false,
+        "r2Http": "NOT_VERIFIED",
+        "liveTopicId": "MISSING",
+        "finalReviewed": false,
+        "mastered": false
+      },
+      "status": "PEDAGOGY_EVIDENCE_STAGED_NOT_FINAL"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P047-Q06",
+      "sourceIdentity": {
+        "sourceItemId": "YLM26-PDF046-P047-N06",
+        "imageHash": "3e89925a38e68f5d10ceebd9c56172c20db32b68e27f449a6f29d052e5b2f77d",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P047-Q01/3e89925a38e68f5d10ceebd9c56172c20db32b68e27f449a6f29d052e5b2f77d.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 46,
+          "printedPageNumber": 47,
+          "printedQuestionNumber": 6,
+          "imageVersion": 2
+        }
+      },
+      "questionText": "إذا اختير ترتيب عشوائي لأحرف كلمة «الدمام»، فما احتمال أن يكون الترتيب هو كلمة «الدمام» نفسها؟",
+      "options": {
+        "A": "1/180",
+        "B": "1/720",
+        "C": "1/360",
+        "D": "1/30"
+      },
+      "answerLetter": "A",
+      "correctOptionIndex": 0,
+      "mainSkillId": "skill_tah_math_14",
+      "subSkillId": "sub_tah_math_14_02",
+      "additionalSkills": [],
+      "difficulty": "Medium",
+      "explanation": "عدد الترتيبات المختلفة 6!/(2!2!)=180؛ احتمال كلمة بعينها 1/180.",
+      "whyCorrect": "عدد الترتيبات المختلفة 6!/(2!2!)=180؛ احتمال كلمة بعينها 1/180.",
+      "whyOthersWrong": {
+        "B": "1/720 يعد الأحرف المتكررة مختلفة.",
+        "C": "1/360 لا يقسم على 2! لكل من الألف والميم.",
+        "D": "1/30 لا يوافق عدد الترتيبات 180."
+      },
+      "hint": "احسب عدد التباديل مع التكرار ثم خذ مقلوبه.",
+      "solvingStrategy": "استخدام التباديل مع التكرار في حساب احتمال ترتيب محدد.",
+      "commonMistakes": [
+        "1/720 يعد الأحرف المتكررة مختلفة.",
+        "1/360 لا يقسم على 2! لكل من الألف والميم.",
+        "1/30 لا يوافق عدد الترتيبات 180."
+      ],
+      "aiContext": {
+        "readableText": "إذا اختير ترتيب عشوائي لأحرف كلمة «الدمام»، فما احتمال أن يكون الترتيب هو كلمة «الدمام» نفسها؟",
+        "speechText": "إذا اختير ترتيب عشوائي لأحرف كلمة «الدمام»، فما احتمال أن يكون الترتيب هو كلمة «الدمام» نفسها؟",
+        "visualDescription": "كلمة «الدمام» مكوّنة من 6 أحرف مع تكرار الألف مرتين والميم مرتين.",
+        "concepts": [
+          "استخدام التباديل مع التكرار في حساب احتمال ترتيب محدد."
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+        "optionTexts": {
+          "A": "1/180",
+          "B": "1/720",
+          "C": "1/360",
+          "D": "1/30"
+        }
+      },
+      "foundationReference": {
+        "lessonNumber": 20,
+        "lessonTitle": "الاحتمالات",
+        "subSkillId": "sub_tah_math_14_02",
+        "subSkillName": "مبدأ العد والتباديل"
+      },
+      "questionFingerprint": "YLM26|YLM26-PDF046-P047-N06|3e89925a38e68f5d10ceebd9c56172c20db32b68e27f449a6f29d052e5b2f77d",
+      "teachingFingerprint": "sub_tah_math_14_02|استخدام التباديل مع التكرار في حساب احتمال ترتيب محدد.",
+      "proposedTopicId": "top_tah_math_sub_14_02",
+      "preimage": {
+        "skillId": "skill_tah_math_14",
+        "subSkillId": "sub_tah_math_14_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 0
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_14",
+        "subSkillId": "sub_tah_math_14_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "reviewEvidenceFiles": [
+        "ops/tah-math/TAH_MATH_RUN49_5_OPTION_PEDAGOGY_PART4B.json"
+      ],
+      "evidenceCount": 1,
+      "gateFindings": {
+        "sourceIdentity": "PASS_LIVE_PREIMAGE",
+        "answerAndOptions": "EVIDENCE_CONSISTENT_NOT_NEWLY_SOURCE_REVIEWED",
+        "optionSpecificReasonStructure": "PASS_HEURISTIC_REQUIRES_SEMANTIC_REVIEW",
+        "mappingRemapPending": false,
+        "foundationReferenceStale": false,
+        "teachingFingerprintStale": false,
+        "r2Http": "NOT_VERIFIED",
+        "liveTopicId": "MISSING",
+        "finalReviewed": false,
+        "mastered": false
+      },
+      "status": "PEDAGOGY_EVIDENCE_STAGED_NOT_FINAL"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P047-Q07",
+      "sourceIdentity": {
+        "sourceItemId": "YLM26-PDF046-P047-N07",
+        "imageHash": "e04aa9fd4419d95736e018e3d2921c75999dd554273a3044dda7be96363e3ac8",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P047-Q02/e04aa9fd4419d95736e018e3d2921c75999dd554273a3044dda7be96363e3ac8.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 46,
+          "printedPageNumber": 47,
+          "printedQuestionNumber": 7,
+          "imageVersion": 2
+        }
+      },
+      "questionText": "يجلس 6 أشخاص حول طاولة دائرية، ويوجد مقعد مميز قرب جهاز العرض. ما احتمال أن يجلس مقدم العرض في هذا المقعد؟",
+      "options": {
+        "A": "1/6",
+        "B": "1/3",
+        "C": "1/25",
+        "D": "1/36"
+      },
+      "answerLetter": "A",
+      "correctOptionIndex": 0,
+      "mainSkillId": "skill_tah_math_14",
+      "subSkillId": "sub_tah_math_14_04",
+      "additionalSkills": [],
+      "difficulty": "Easy",
+      "explanation": "لشخص معين من ستة احتمال 1/6 لشغل المقعد المحدد.",
+      "whyCorrect": "لشخص معين من ستة احتمال 1/6 لشغل المقعد المحدد.",
+      "whyOthersWrong": {
+        "B": "1/3 يفترض ثلاثة أشخاص لا ستة.",
+        "C": "1/25 ليس احتمال مقعد محدد من ستة.",
+        "D": "1/36 يضرب احتمال المقعد في نفسه دون داع."
+      },
+      "hint": "اعتبر المقعد المميز ثابتًا وعدّ الأشخاص الممكن جلوسهم فيه.",
+      "solvingStrategy": "حساب احتمال موضع محدد ضمن ترتيب دائري.",
+      "commonMistakes": [
+        "1/3 يفترض ثلاثة أشخاص لا ستة.",
+        "1/25 ليس احتمال مقعد محدد من ستة.",
+        "1/36 يضرب احتمال المقعد في نفسه دون داع."
+      ],
+      "aiContext": {
+        "readableText": "يجلس 6 أشخاص حول طاولة دائرية، ويوجد مقعد مميز قرب جهاز العرض. ما احتمال أن يجلس مقدم العرض في هذا المقعد؟",
+        "speechText": "يجلس 6 أشخاص حول طاولة دائرية، ويوجد مقعد مميز قرب جهاز العرض. ما احتمال أن يجلس مقدم العرض في هذا المقعد؟",
+        "visualDescription": "ستة أشخاص حول طاولة دائرية ومقعد واحد مميز بجوار جهاز العرض.",
+        "concepts": [
+          "حساب احتمال موضع محدد ضمن ترتيب دائري."
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+        "optionTexts": {
+          "A": "1/6",
+          "B": "1/3",
+          "C": "1/25",
+          "D": "1/36"
+        }
+      },
+      "foundationReference": {
+        "lessonNumber": 20,
+        "lessonTitle": "الاحتمالات",
+        "subSkillId": "sub_tah_math_14_02",
+        "subSkillName": "مبدأ العد والتباديل"
+      },
+      "questionFingerprint": "YLM26|YLM26-PDF046-P047-N07|e04aa9fd4419d95736e018e3d2921c75999dd554273a3044dda7be96363e3ac8",
+      "teachingFingerprint": "sub_tah_math_14_02|حساب احتمال موضع محدد ضمن ترتيب دائري.",
+      "proposedTopicId": "top_tah_math_sub_14_04",
+      "preimage": {
+        "skillId": "skill_tah_math_14",
+        "subSkillId": "sub_tah_math_14_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 0
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_14",
+        "subSkillId": "sub_tah_math_14_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "reviewEvidenceFiles": [
+        "ops/tah-math/TAH_MATH_RUN49_5_OPTION_PEDAGOGY_PART4B.json"
+      ],
+      "evidenceCount": 1,
+      "gateFindings": {
+        "sourceIdentity": "PASS_LIVE_PREIMAGE",
+        "answerAndOptions": "EVIDENCE_CONSISTENT_NOT_NEWLY_SOURCE_REVIEWED",
+        "optionSpecificReasonStructure": "PASS_HEURISTIC_REQUIRES_SEMANTIC_REVIEW",
+        "mappingRemapPending": true,
+        "foundationReferenceStale": true,
+        "teachingFingerprintStale": true,
+        "r2Http": "NOT_VERIFIED",
+        "liveTopicId": "MISSING",
+        "finalReviewed": false,
+        "mastered": false
+      },
+      "status": "PEDAGOGY_EVIDENCE_STAGED_NOT_FINAL"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P047-Q08",
+      "sourceIdentity": {
+        "sourceItemId": "YLM26-PDF046-P047-N08",
+        "imageHash": "9d6439b83f9c0908681e24c355e91c7cfd70e6c8d2b91899a54932949bb5cae8",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P047-Q03/9d6439b83f9c0908681e24c355e91c7cfd70e6c8d2b91899a54932949bb5cae8.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 46,
+          "printedPageNumber": 47,
+          "printedQuestionNumber": 8,
+          "imageVersion": 2
+        }
+      },
+      "questionText": "فريق مكوّن من خمسة لاعبين. كم طريقة يمكنهم الجلوس حول طاولة دائرية بشرط أن يكون الكابتن بجانب النافذة في مقعد محدد؟",
+      "options": {
+        "A": "5",
+        "B": "24",
+        "C": "120",
+        "D": "450"
+      },
+      "answerLetter": "B",
+      "correctOptionIndex": 1,
+      "mainSkillId": "skill_tah_math_14",
+      "subSkillId": "sub_tah_math_14_02",
+      "additionalSkills": [],
+      "difficulty": "Easy",
+      "explanation": "ثبت الكابتن في المقعد المطلوب، ثم رتب الأربعة الباقين: 4!=24.",
+      "whyCorrect": "ثبت الكابتن في المقعد المطلوب، ثم رتب الأربعة الباقين: 4!=24.",
+      "whyOthersWrong": {
+        "A": "5 عدد اللاعبين لا طرق ترتيبهم.",
+        "C": "120=5! دون تثبيت مقعد الكابتن.",
+        "D": "450 لا يساوي 4!."
+      },
+      "hint": "ثبّت الكابتن أولًا ثم رتّب الأربعة الآخرين.",
+      "solvingStrategy": "اختزال ترتيب دائري إلى تبديل عادي بعد تثبيت عنصر في مقعد محدد.",
+      "commonMistakes": [
+        "5 عدد اللاعبين لا طرق ترتيبهم.",
+        "120=5! دون تثبيت مقعد الكابتن.",
+        "450 لا يساوي 4!."
+      ],
+      "aiContext": {
+        "readableText": "فريق مكوّن من خمسة لاعبين. كم طريقة يمكنهم الجلوس حول طاولة دائرية بشرط أن يكون الكابتن بجانب النافذة في مقعد محدد؟",
+        "speechText": "فريق مكوّن من خمسة لاعبين. كم طريقة يمكنهم الجلوس حول طاولة دائرية بشرط أن يكون الكابتن بجانب النافذة في مقعد محدد؟",
+        "visualDescription": "مسألة ترتيب دائري لخمسة لاعبين مع تثبيت مقعد الكابتن.",
+        "concepts": [
+          "اختزال ترتيب دائري إلى تبديل عادي بعد تثبيت عنصر في مقعد محدد."
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+        "optionTexts": {
+          "A": "5",
+          "B": "24",
+          "C": "120",
+          "D": "450"
+        }
+      },
+      "foundationReference": {
+        "lessonNumber": 20,
+        "lessonTitle": "الاحتمالات",
+        "subSkillId": "sub_tah_math_14_02",
+        "subSkillName": "مبدأ العد والتباديل"
+      },
+      "questionFingerprint": "YLM26|YLM26-PDF046-P047-N08|9d6439b83f9c0908681e24c355e91c7cfd70e6c8d2b91899a54932949bb5cae8",
+      "teachingFingerprint": "sub_tah_math_14_02|اختزال ترتيب دائري إلى تبديل عادي بعد تثبيت عنصر في مقعد محدد.",
+      "proposedTopicId": "top_tah_math_sub_14_02",
+      "preimage": {
+        "skillId": "skill_tah_math_14",
+        "subSkillId": "sub_tah_math_14_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 1
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_14",
+        "subSkillId": "sub_tah_math_14_02",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "reviewEvidenceFiles": [
+        "ops/tah-math/TAH_MATH_RUN49_5_OPTION_PEDAGOGY_PART4B.json"
+      ],
+      "evidenceCount": 1,
+      "gateFindings": {
+        "sourceIdentity": "PASS_LIVE_PREIMAGE",
+        "answerAndOptions": "EVIDENCE_CONSISTENT_NOT_NEWLY_SOURCE_REVIEWED",
+        "optionSpecificReasonStructure": "PASS_HEURISTIC_REQUIRES_SEMANTIC_REVIEW",
+        "mappingRemapPending": false,
+        "foundationReferenceStale": false,
+        "teachingFingerprintStale": false,
+        "r2Http": "NOT_VERIFIED",
+        "liveTopicId": "MISSING",
+        "finalReviewed": false,
+        "mastered": false
+      },
+      "status": "PEDAGOGY_EVIDENCE_STAGED_NOT_FINAL"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P047-Q09",
+      "sourceIdentity": {
+        "sourceItemId": "YLM26-PDF046-P047-N09",
+        "imageHash": "ea35fe9cb11e6e2affba67d45e388928e1fada233230dbd8a9f9521b258993c0",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P047-Q04/ea35fe9cb11e6e2affba67d45e388928e1fada233230dbd8a9f9521b258993c0.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 46,
+          "printedPageNumber": 47,
+          "printedQuestionNumber": 9,
+          "imageVersion": 2
+        }
+      },
+      "questionText": "يراد اختيار طالبين من بين 20 طالبًا. ما احتمال أن يكون المختاران هما عمر ومصعب؟",
+      "options": {
+        "A": "2/190",
+        "B": "1/10",
+        "C": "1/380",
+        "D": "1/190"
+      },
+      "answerLetter": "D",
+      "correctOptionIndex": 3,
+      "mainSkillId": "skill_tah_math_14",
+      "subSkillId": "sub_tah_math_14_04",
+      "additionalSkills": [],
+      "difficulty": "Easy",
+      "explanation": "C(20,2)=190 زوجًا غير مرتب؛ الزوج المطلوب واحد، فالاحتمال 1/190.",
+      "whyCorrect": "C(20,2)=190 زوجًا غير مرتب؛ الزوج المطلوب واحد، فالاحتمال 1/190.",
+      "whyOthersWrong": {
+        "A": "2/190 يعد الزوج نفسه مرتين.",
+        "B": "1/10 يهمل اختيار شخصين من 20.",
+        "C": "1/380 يقسم عدد الأزواج على اثنين إضافية."
+      },
+      "hint": "لأن الترتيب غير مهم استخدم التوافيق.",
+      "solvingStrategy": "استخدام التوافيق لحساب احتمال اختيار زوج محدد.",
+      "commonMistakes": [
+        "2/190 يعد الزوج نفسه مرتين.",
+        "1/10 يهمل اختيار شخصين من 20.",
+        "1/380 يقسم عدد الأزواج على اثنين إضافية."
+      ],
+      "aiContext": {
+        "readableText": "يراد اختيار طالبين من بين 20 طالبًا. ما احتمال أن يكون المختاران هما عمر ومصعب؟",
+        "speechText": "يراد اختيار طالبين من بين 20 طالبًا. ما احتمال أن يكون المختاران هما عمر ومصعب؟",
+        "visualDescription": "اختيار طالبين من مجموعة تضم 20 طالبًا.",
+        "concepts": [
+          "استخدام التوافيق لحساب احتمال اختيار زوج محدد."
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+        "optionTexts": {
+          "A": "2/190",
+          "B": "1/10",
+          "C": "1/380",
+          "D": "1/190"
+        }
+      },
+      "foundationReference": {
+        "lessonNumber": 20,
+        "lessonTitle": "الاحتمالات",
+        "subSkillId": "sub_tah_math_14_03",
+        "subSkillName": "التوافيق والاختيار دون ترتيب"
+      },
+      "questionFingerprint": "YLM26|YLM26-PDF046-P047-N09|ea35fe9cb11e6e2affba67d45e388928e1fada233230dbd8a9f9521b258993c0",
+      "teachingFingerprint": "sub_tah_math_14_03|استخدام التوافيق لحساب احتمال اختيار زوج محدد.",
+      "proposedTopicId": "top_tah_math_sub_14_04",
+      "preimage": {
+        "skillId": "skill_tah_math_14",
+        "subSkillId": "sub_tah_math_14_03",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 3
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_14",
+        "subSkillId": "sub_tah_math_14_03",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "reviewEvidenceFiles": [
+        "ops/tah-math/TAH_MATH_RUN49_5_OPTION_PEDAGOGY_PART4B.json"
+      ],
+      "evidenceCount": 1,
+      "gateFindings": {
+        "sourceIdentity": "PASS_LIVE_PREIMAGE",
+        "answerAndOptions": "EVIDENCE_CONSISTENT_NOT_NEWLY_SOURCE_REVIEWED",
+        "optionSpecificReasonStructure": "PASS_HEURISTIC_REQUIRES_SEMANTIC_REVIEW",
+        "mappingRemapPending": true,
+        "foundationReferenceStale": true,
+        "teachingFingerprintStale": true,
+        "r2Http": "NOT_VERIFIED",
+        "liveTopicId": "MISSING",
+        "finalReviewed": false,
+        "mastered": false
+      },
+      "status": "PEDAGOGY_EVIDENCE_STAGED_NOT_FINAL"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P048-Q10",
+      "sourceIdentity": {
+        "sourceItemId": "YLM26-PDF047-P048-N10",
+        "imageHash": "5fc5fccf24650cc396f9f58dc0ad98acdef40d1f7f376eb71e5c3a55648d35cb",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P048-Q01/5fc5fccf24650cc396f9f58dc0ad98acdef40d1f7f376eb71e5c3a55648d35cb.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 47,
+          "printedPageNumber": 48,
+          "printedQuestionNumber": 10,
+          "imageVersion": 2
+        }
+      },
+      "questionText": "على القطعة AD تقع B وC بحيث AB=4 وBC=6 وCD=8. إذا اختيرت نقطة عشوائيًا على AD، فما احتمال أن تقع على BC؟",
+      "options": {
+        "A": "1/3",
+        "B": "2/5",
+        "C": "1/2",
+        "D": "2/3"
+      },
+      "answerLetter": "A",
+      "correctOptionIndex": 0,
+      "mainSkillId": "skill_tah_math_14",
+      "subSkillId": "sub_tah_math_14_04",
+      "additionalSkills": [],
+      "difficulty": "Easy",
+      "explanation": "AD=4+6+8=18؛ طول BC=6؛ الاحتمال 6/18=1/3.",
+      "whyCorrect": "AD=4+6+8=18؛ طول BC=6؛ الاحتمال 6/18=1/3.",
+      "whyOthersWrong": {
+        "B": "2/5 لا يساوي 6/(4+6+8).",
+        "C": "1/2 يفترض طولًا كليًا 12 بدل 18.",
+        "D": "2/3 يحسب نسبة جزء غير مطابق BC."
+      },
+      "hint": "الاحتمال الهندسي = طول الجزء الملائم ÷ الطول الكلي.",
+      "solvingStrategy": "حساب احتمال هندسي على قطعة مستقيمة.",
+      "commonMistakes": [
+        "2/5 لا يساوي 6/(4+6+8).",
+        "1/2 يفترض طولًا كليًا 12 بدل 18.",
+        "2/3 يحسب نسبة جزء غير مطابق BC."
+      ],
+      "aiContext": {
+        "readableText": "على القطعة AD تقع B وC بحيث AB=4 وBC=6 وCD=8. إذا اختيرت نقطة عشوائيًا على AD، فما احتمال أن تقع على BC؟",
+        "speechText": "على القطعة AD تقع B وC بحيث AB=4 وBC=6 وCD=8. إذا اختيرت نقطة عشوائيًا على AD، فما احتمال أن تقع على BC؟",
+        "visualDescription": "قطعة مستقيمة A-B-C-D بأطوال 4 و6 و8 على الترتيب.",
+        "concepts": [
+          "حساب احتمال هندسي على قطعة مستقيمة."
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+        "optionTexts": {
+          "A": "1/3",
+          "B": "2/5",
+          "C": "1/2",
+          "D": "2/3"
+        }
+      },
+      "foundationReference": {
+        "lessonNumber": 20,
+        "lessonTitle": "الاحتمالات",
+        "subSkillId": "sub_tah_math_14_04",
+        "subSkillName": "الاحتمال البسيط والمركب والشرطي والهندسي"
+      },
+      "questionFingerprint": "YLM26|YLM26-PDF047-P048-N10|5fc5fccf24650cc396f9f58dc0ad98acdef40d1f7f376eb71e5c3a55648d35cb",
+      "teachingFingerprint": "sub_tah_math_14_04|حساب احتمال هندسي على قطعة مستقيمة.",
+      "proposedTopicId": "top_tah_math_sub_14_04",
+      "preimage": {
+        "skillId": "skill_tah_math_14",
+        "subSkillId": "sub_tah_math_14_04",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 0
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_14",
+        "subSkillId": "sub_tah_math_14_04",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "reviewEvidenceFiles": [
+        "ops/tah-math/TAH_MATH_RUN49_5_OPTION_PEDAGOGY_PART4B.json"
+      ],
+      "evidenceCount": 1,
+      "gateFindings": {
+        "sourceIdentity": "PASS_LIVE_PREIMAGE",
+        "answerAndOptions": "EVIDENCE_CONSISTENT_NOT_NEWLY_SOURCE_REVIEWED",
+        "optionSpecificReasonStructure": "PASS_HEURISTIC_REQUIRES_SEMANTIC_REVIEW",
+        "mappingRemapPending": false,
+        "foundationReferenceStale": false,
+        "teachingFingerprintStale": false,
+        "r2Http": "NOT_VERIFIED",
+        "liveTopicId": "MISSING",
+        "finalReviewed": false,
+        "mastered": false
+      },
+      "status": "PEDAGOGY_EVIDENCE_STAGED_NOT_FINAL"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P056-Q04",
+      "sourceIdentity": {
+        "sourceItemId": "YLM26-PDF055-P056-N04",
+        "imageHash": "d2e1a3c1fd797494ca66d96ca326abe1775c55cce251e67b413d2c3cd548b2fd",
+        "imageUrl": "https://pub-335cc83968b2426d915cacd8e6dc085d.r2.dev/questions/v2/TAH-MATH-YLM26-P056-Q02/d2e1a3c1fd797494ca66d96ca326abe1775c55cce251e67b413d2c3cd548b2fd.webp",
+        "sourceMeta": {
+          "documentCode": "YLM26",
+          "pdfPageIndex": 55,
+          "printedPageNumber": 56,
+          "printedQuestionNumber": 4,
+          "imageVersion": 2
+        }
+      },
+      "questionText": "ما مدى الدالة الممثلة بالرسم، إذا كان المنحنى يبدأ وينتهي بنقطتين مفتوحتين عند y=0 ويبلغ القيمة العظمى y=4؟",
+      "options": {
+        "A": "(0,4)",
+        "B": "(0,4]",
+        "C": "[0,4]",
+        "D": "(−4,4) \\ {0}"
+      },
+      "answerLetter": "B",
+      "correctOptionIndex": 1,
+      "mainSkillId": "skill_tah_math_16",
+      "subSkillId": "sub_tah_math_16_01",
+      "additionalSkills": [],
+      "difficulty": "Easy",
+      "explanation": "قيمة y=0 لا تتحقق لأن طرفي المنحنى مفتوحان، أما y=4 فتتحقق عند رأس القطع المكافئ؛ إذن المدى (0,4].",
+      "whyCorrect": "قيمة y=0 لا تتحقق لأن طرفي المنحنى مفتوحان، أما y=4 فتتحقق عند رأس القطع المكافئ؛ إذن المدى (0,4].",
+      "whyOthersWrong": {
+        "A": "A: يستبعد القيمة العظمى 4 رغم أنها موجودة.",
+        "C": "C: يدخل 0 رغم أن طرفي الرسم مفتوحان.",
+        "D": "D: يخلط إحداثيات x بمدى y ويضيف قيمًا سالبة."
+      },
+      "hint": "حدد أصغر وأكبر قيمة y، ثم افحص إذا كان كل طرف داخلًا.",
+      "solvingStrategy": "قراءة المدى من الرسم والانتباه لنوع النهايات.",
+      "commonMistakes": [
+        "الخلط بين المجال والمدى",
+        "الخلط بين الدائرة المفتوحة والرأس المغلق"
+      ],
+      "aiContext": {
+        "readableText": "ما مدى الدالة الممثلة بالرسم، إذا كان المنحنى يبدأ وينتهي بنقطتين مفتوحتين عند y=0 ويبلغ القيمة العظمى y=4؟",
+        "speechText": "ما مدى الدالة الممثلة بالرسم، إذا كان المنحنى يبدأ وينتهي بنقطتين مفتوحتين عند y=0 ويبلغ القيمة العظمى y=4؟",
+        "visualDescription": "قوس منحني فوق محور x بين نقطتين مفتوحتين عند y=0 وله قمة عند y=4.",
+        "concepts": [
+          "قراءة مدى دالة من تمثيل بياني."
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو للرياضيات 2026 - تأسيس"
+        ],
+        "optionTexts": {
+          "A": "(0,4)",
+          "B": "(0,4]",
+          "C": "[0,4]",
+          "D": "(−4,4) \\ {0}"
+        }
+      },
+      "foundationReference": {
+        "lessonNumber": 22,
+        "lessonTitle": "تحليل الدوال",
+        "subSkillId": "sub_tah_math_16_01",
+        "subSkillName": "الفترات والمتباينات وقراءة مجال الدالة ومداه"
+      },
+      "questionFingerprint": "YLM26|YLM26-PDF055-P056-N04|d2e1a3c1fd797494ca66d96ca326abe1775c55cce251e67b413d2c3cd548b2fd",
+      "teachingFingerprint": "sub_tah_math_16_01|قراءة مدى دالة من تمثيل بياني.",
+      "proposedTopicId": "top_tah_math_sub_16_01",
+      "preimage": {
+        "skillId": "skill_tah_math_16",
+        "subSkillId": "sub_tah_math_16_01",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات",
+        "correctOptionIndex": 1
+      },
+      "rollback": {
+        "skillId": "skill_tah_math_16",
+        "subSkillId": "sub_tah_math_16_01",
+        "topicId": null,
+        "documentTitle": "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+      },
+      "reviewEvidenceFiles": [
+        "ops/tah-math/TAH_MATH_RUN19_6_VISUAL_EXCEPTION_FULL_PEDAGOGY.json"
+      ],
+      "evidenceCount": 1,
+      "gateFindings": {
+        "sourceIdentity": "PASS_LIVE_PREIMAGE",
+        "answerAndOptions": "EVIDENCE_CONSISTENT_NOT_NEWLY_SOURCE_REVIEWED",
+        "optionSpecificReasonStructure": "PASS_HEURISTIC_REQUIRES_SEMANTIC_REVIEW",
+        "mappingRemapPending": false,
+        "foundationReferenceStale": false,
+        "teachingFingerprintStale": false,
+        "r2Http": "NOT_VERIFIED",
+        "liveTopicId": "MISSING",
+        "finalReviewed": false,
+        "mastered": false
+      },
+      "status": "PEDAGOGY_EVIDENCE_STAGED_NOT_FINAL"
+    }
+  ]
+}

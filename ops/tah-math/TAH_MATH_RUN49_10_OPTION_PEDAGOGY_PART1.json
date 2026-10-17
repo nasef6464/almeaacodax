@@ -1,0 +1,726 @@
+{
+  "run": "RUN49",
+  "part": "1/4",
+  "count": 10,
+  "source": "official PDF fresh render and manual source question/option review",
+  "records": [
+    {
+      "questionCode": "TAH-MATH-YLM26-P021-Q04",
+      "source": {
+        "sourceItemId": "YLM26-PDF020-P021-N04",
+        "pdfPageIndex": 20,
+        "printedPageNumber": 21,
+        "printedQuestionNumber": 4,
+        "imageHash": "141112623ffe985b9b9a63f4e40b4effded5b20956bae026ed097563cdf9c081",
+        "imageVersion": 2
+      },
+      "sourceBook": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "questionText": "أوجد طول القوس إذا كان قطر دائرة يساوي 3 وزاويته المركزية 60°",
+      "options": {
+        "A": "π",
+        "B": "π/2",
+        "C": "2π",
+        "D": "π/3"
+      },
+      "answerLetter": "B",
+      "correctOptionIndex": 1,
+      "explanation": "قطر المصدر 3 وزاوية المركز 60°؛ طول القوس=(60/360)×3π=π/2.",
+      "whyCorrect": "قطر المصدر 3 وزاوية المركز 60°؛ طول القوس=(60/360)×3π=π/2.",
+      "whyOthersWrong": {
+        "A": "π يفترض زاوية 120° بدل 60°.",
+        "C": "2π يستعمل قطر 12 من مثال مجاور وليس قطر 3.",
+        "D": "π/3 ينتج من استخدام نصف قطر خاطئ."
+      },
+      "hint": "تحقق من القطر المطبوع في السؤال نفسه.",
+      "solvingStrategy": "حساب طول القوس من الزاوية المركزية ونصف القطر.",
+      "commonMistakes": [
+        "π يفترض زاوية 120° بدل 60°.",
+        "2π يستعمل قطر 12 من مثال مجاور وليس قطر 3.",
+        "π/3 ينتج من استخدام نصف قطر خاطئ."
+      ],
+      "aiContext": {
+        "readableText": "أوجد طول القوس إذا كان قطر دائرة يساوي 3 وزاويته المركزية 60°",
+        "speechText": "أوجد طول القوس إذا كان قطر دائرة يساوي 3 وزاويته المركزية 60°",
+        "visualDescription": "سؤال تحصيلي رياضيات مع 4 خيارات مصورة داخل الصورة.",
+        "concepts": [
+          "الدائرة",
+          "الدائرة والمحيط والمساحة والأقواس والزوايا"
+        ],
+        "requiredData": [
+          "أوجد طول القوس إذا كان قطر دائرة يساوي 3 وزاويته المركزية 60°"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf"
+      },
+      "difficultyCandidate": "easy",
+      "mapping": {
+        "skillId": "skill_tah_math_07",
+        "skillName": "الدائرة",
+        "subSkillId": "sub_tah_math_07_01",
+        "subSkillName": "الدائرة والمحيط والمساحة والأقواس والزوايا",
+        "decision": "KEEP_CANDIDATE_SOURCE_CONTENT_REVIEW"
+      },
+      "foundationReference": {
+        "lessonNumber": 8,
+        "lessonTitle": "الدائرة",
+        "subSkillId": "sub_tah_math_07_01",
+        "subSkillName": "الدائرة والمحيط والمساحة والأقواس والزوايا",
+        "topicIdLiveVerified": false,
+        "trainingIdLiveVerified": false
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF020-P021-N04|141112623ffe985b9b9a63f4e40b4effded5b20956bae026ed097563cdf9c081",
+      "teachingFingerprintCandidate": "sub_tah_math_07_01|حساب طول القوس من الزاوية المركزية ونصف القطر.",
+      "sourceImageHash": "141112623ffe985b9b9a63f4e40b4effded5b20956bae026ed097563cdf9c081",
+      "sourceVisualReviewed": true,
+      "productionImageParity": "NOT_TESTED",
+      "canonicalApproved": false,
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P022-Q05",
+      "source": {
+        "sourceItemId": "YLM26-PDF021-P022-N05",
+        "pdfPageIndex": 21,
+        "printedPageNumber": 22,
+        "printedQuestionNumber": 5,
+        "imageHash": "2c32a95638e111d3a25b82c52e41d85f901d16d4381ceb1917fe8ef4c1f43f55",
+        "imageVersion": 2
+      },
+      "sourceBook": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "questionText": "في دائرة، الوتر AB ينصفه نصف قطر عمودي عليه. المسافة من المركز إلى الوتر 3 cm، والمسافة من الوتر إلى محيط الدائرة على نفس نصف القطر 2 cm. ما طول AB؟",
+      "options": {
+        "A": "4",
+        "B": "8",
+        "C": "10",
+        "D": "16"
+      },
+      "answerLetter": "B",
+      "correctOptionIndex": 1,
+      "explanation": "نصف القطر=3+2=5؛ نصف الوتر=√(5²−3²)=4؛ الوتر الكامل=8.",
+      "whyCorrect": "نصف القطر=3+2=5؛ نصف الوتر=√(5²−3²)=4؛ الوتر الكامل=8.",
+      "whyOthersWrong": {
+        "A": "4 طول نصف الوتر فقط.",
+        "C": "10 يخلط بين طول الوتر ونصف القطر.",
+        "D": "16 يضاعف الوتر الصحيح مرة ثانية."
+      },
+      "hint": "استخدم العمود النازل من المركز إلى منتصف الوتر.",
+      "solvingStrategy": "استخدام خاصية تعامد نصف القطر مع الوتر ثم فيثاغورس لإيجاد طول الوتر.",
+      "commonMistakes": [
+        "4 طول نصف الوتر فقط.",
+        "10 يخلط بين طول الوتر ونصف القطر.",
+        "16 يضاعف الوتر الصحيح مرة ثانية."
+      ],
+      "aiContext": {
+        "readableText": "في دائرة، الوتر AB ينصفه نصف قطر عمودي عليه. المسافة من المركز إلى الوتر 3 cm، والمسافة من الوتر إلى محيط الدائرة على نفس نصف القطر 2 cm. ما طول AB؟",
+        "speechText": "في دائرة، الوتر AB ينصفه نصف قطر عمودي عليه. المسافة من المركز إلى الوتر 3 cm، والمسافة من الوتر إلى محيط الدائرة على نفس نصف القطر 2 cm. ما طول AB؟",
+        "visualDescription": "دائرة بها وتر AB، عمود من المركز على منتصف الوتر طوله 3 cm، وباقي نصف القطر فوق الوتر 2 cm.",
+        "concepts": [
+          "استخدام خاصية تعامد نصف القطر مع الوتر ثم فيثاغورس لإيجاد طول الوتر."
+        ],
+        "requiredData": [
+          "في دائرة، الوتر AB ينصفه نصف قطر عمودي عليه. المسافة من المركز إلى الوتر 3 cm، والمسافة من الوتر إلى محيط الدائرة على نفس نصف القطر 2 cm. ما طول AB؟"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf"
+      },
+      "difficultyCandidate": "medium",
+      "mapping": {
+        "skillId": "skill_tah_math_07",
+        "skillName": "الدائرة",
+        "subSkillId": "sub_tah_math_07_02",
+        "subSkillName": "الأوتار والمماسات والقواطع والقوى في الدائرة",
+        "decision": "KEEP_CANDIDATE_SOURCE_CONTENT_REVIEW"
+      },
+      "foundationReference": {
+        "lessonNumber": 8,
+        "lessonTitle": "الدائرة",
+        "subSkillId": "sub_tah_math_07_02",
+        "subSkillName": "الأوتار والمماسات والقواطع والقوى في الدائرة",
+        "topicIdLiveVerified": false,
+        "trainingIdLiveVerified": false
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF021-P022-N05|2c32a95638e111d3a25b82c52e41d85f901d16d4381ceb1917fe8ef4c1f43f55",
+      "teachingFingerprintCandidate": "sub_tah_math_07_02|استخدام خاصية تعامد نصف القطر مع الوتر ثم فيثاغورس لإيجاد طول الوتر.",
+      "sourceImageHash": "2c32a95638e111d3a25b82c52e41d85f901d16d4381ceb1917fe8ef4c1f43f55",
+      "sourceVisualReviewed": true,
+      "productionImageParity": "NOT_TESTED",
+      "canonicalApproved": false,
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P022-Q08",
+      "source": {
+        "sourceItemId": "YLM26-PDF021-P022-N08",
+        "pdfPageIndex": 21,
+        "printedPageNumber": 22,
+        "printedQuestionNumber": 8,
+        "imageHash": "d96092a239955df387ccb2ae3695caeabe431d27307014007cb9cc32ab8efa11",
+        "imageVersion": 2
+      },
+      "sourceBook": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "questionText": "في الشكل الرباعي المحاط بدائرة، إذا كانت الزاويتان المتقابلتان معلّمتين 2x° وx°، فما قياس ∠B؟",
+      "options": {
+        "A": "30°",
+        "B": "60°",
+        "C": "120°",
+        "D": "180°"
+      },
+      "answerLetter": "C",
+      "correctOptionIndex": 2,
+      "explanation": "الزاويتان المتقابلتان متكاملتان: 2x+x=180؛ ∠B=120°.",
+      "whyCorrect": "الزاويتان المتقابلتان متكاملتان: 2x+x=180؛ ∠B=120°.",
+      "whyOthersWrong": {
+        "A": "30° لا تحقق مجموع الزاويتين المتقابلتين.",
+        "B": "60° هي x وليست ∠B.",
+        "D": "180° زاوية مستقيمة لا ∠B."
+      },
+      "hint": "احسب x ثم راجع ما تطلبه المسألة.",
+      "solvingStrategy": "تطبيق خاصية الزوايا المتقابلة في رباعي محاط بدائرة.",
+      "commonMistakes": [
+        "30° لا تحقق مجموع الزاويتين المتقابلتين.",
+        "60° هي x وليست ∠B.",
+        "180° زاوية مستقيمة لا ∠B."
+      ],
+      "aiContext": {
+        "readableText": "في الشكل الرباعي المحاط بدائرة، إذا كانت الزاويتان المتقابلتان معلّمتين 2x° وx°، فما قياس ∠B؟",
+        "speechText": "في الشكل الرباعي المحاط بدائرة، إذا كانت الزاويتان المتقابلتان معلّمتين 2x° وx°، فما قياس ∠B؟",
+        "visualDescription": "رباعي رؤوسه على دائرة، الزاوية عند B معلّمة 2x° والزاوية المقابلة عند D معلّمة x°.",
+        "concepts": [
+          "الدائرة والأقواس والزوايا",
+          "الرباعي المحاط بدائرة"
+        ],
+        "requiredData": [
+          "في الشكل الرباعي المحاط بدائرة، إذا كانت الزاويتان المتقابلتان معلّمتين 2x° وx°، فما قياس ∠B؟"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf"
+      },
+      "difficultyCandidate": "hard",
+      "mapping": {
+        "skillId": "skill_tah_math_07",
+        "skillName": "الدائرة",
+        "subSkillId": "sub_tah_math_07_01",
+        "subSkillName": "الدائرة والمحيط والمساحة والأقواس والزوايا",
+        "decision": "KEEP_CANDIDATE_SOURCE_CONTENT_REVIEW"
+      },
+      "foundationReference": {
+        "lessonNumber": 8,
+        "lessonTitle": "الدائرة",
+        "subSkillId": "sub_tah_math_07_01",
+        "subSkillName": "الدائرة والمحيط والمساحة والأقواس والزوايا",
+        "topicIdLiveVerified": false,
+        "trainingIdLiveVerified": false
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF021-P022-N08|d96092a239955df387ccb2ae3695caeabe431d27307014007cb9cc32ab8efa11",
+      "teachingFingerprintCandidate": "sub_tah_math_07_01|تطبيق خاصية الزوايا المتقابلة في رباعي محاط بدائرة.",
+      "sourceImageHash": "d96092a239955df387ccb2ae3695caeabe431d27307014007cb9cc32ab8efa11",
+      "sourceVisualReviewed": true,
+      "productionImageParity": "NOT_TESTED",
+      "canonicalApproved": false,
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P022-Q09",
+      "source": {
+        "sourceItemId": "YLM26-PDF021-P022-N09",
+        "pdfPageIndex": 21,
+        "printedPageNumber": 22,
+        "printedQuestionNumber": 9,
+        "imageHash": "b8f64d31be1b281fb8afc44dbcf9d755b5ffae605150a12265ec4c368abf5354",
+        "imageVersion": 2
+      },
+      "sourceBook": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "questionText": "إذا كان AB مماسًا للدائرة M كما في الشكل، وAB=8 cm وAC=10 cm، فما طول نصف قطر الدائرة؟",
+      "options": {
+        "A": "2",
+        "B": "3",
+        "C": "4",
+        "D": "6"
+      },
+      "answerLetter": "B",
+      "correctOptionIndex": 1,
+      "explanation": "قطر الدائرة=√(10²−8²)=6؛ نصف القطر=3.",
+      "whyCorrect": "قطر الدائرة=√(10²−8²)=6؛ نصف القطر=3.",
+      "whyOthersWrong": {
+        "A": "2 ليس نصف قطر الدائرة بعد تطبيق فيثاغورس.",
+        "C": "4 هو نصف طول المماس 8 بلا سند.",
+        "D": "6 يمثل القطر وليس نصف القطر."
+      },
+      "hint": "المماس عمودي على القطر عند نقطة التماس.",
+      "solvingStrategy": "تطبيق قواعد الأوتار والمماسات والقواطع والقوى في الدائرة",
+      "commonMistakes": [
+        "2 ليس نصف قطر الدائرة بعد تطبيق فيثاغورس.",
+        "4 هو نصف طول المماس 8 بلا سند.",
+        "6 يمثل القطر وليس نصف القطر."
+      ],
+      "aiContext": {
+        "readableText": "إذا كان AB مماسًا للدائرة M كما في الشكل، وAB=8 cm وAC=10 cm، فما طول نصف قطر الدائرة؟",
+        "speechText": "إذا كان AB مماسًا للدائرة M كما في الشكل، وAB=8 cm وAC=10 cm، فما طول نصف قطر الدائرة؟",
+        "visualDescription": "سؤال تحصيلي رياضيات مع 4 خيارات مصورة داخل الصورة.",
+        "concepts": [
+          "الدائرة",
+          "الأوتار والمماسات والقواطع والقوى في الدائرة"
+        ],
+        "requiredData": [
+          "إذا كان AB مماسًا للدائرة M كما في الشكل، وAB=8 cm وAC=10 cm، فما طول نصف قطر الدائرة؟"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf"
+      },
+      "difficultyCandidate": "medium",
+      "mapping": {
+        "skillId": "skill_tah_math_07",
+        "skillName": "الدائرة",
+        "subSkillId": "sub_tah_math_07_02",
+        "subSkillName": "الأوتار والمماسات والقواطع والقوى في الدائرة",
+        "decision": "KEEP_CANDIDATE_SOURCE_CONTENT_REVIEW"
+      },
+      "foundationReference": {
+        "lessonNumber": 8,
+        "lessonTitle": "الدائرة",
+        "subSkillId": "sub_tah_math_07_02",
+        "subSkillName": "الأوتار والمماسات والقواطع والقوى في الدائرة",
+        "topicIdLiveVerified": false,
+        "trainingIdLiveVerified": false
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF021-P022-N09|b8f64d31be1b281fb8afc44dbcf9d755b5ffae605150a12265ec4c368abf5354",
+      "teachingFingerprintCandidate": "sub_tah_math_07_02|تطبيق قواعد الأوتار والمماسات والقواطع والقوى في الدائرة",
+      "sourceImageHash": "b8f64d31be1b281fb8afc44dbcf9d755b5ffae605150a12265ec4c368abf5354",
+      "sourceVisualReviewed": true,
+      "productionImageParity": "NOT_TESTED",
+      "canonicalApproved": false,
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P023-Q10",
+      "source": {
+        "sourceItemId": "YLM26-PDF022-P023-N10",
+        "pdfPageIndex": 22,
+        "printedPageNumber": 23,
+        "printedQuestionNumber": 10,
+        "imageHash": "0ae700f6377dea453cc1ca42531b30aac526c7ea9be0ac0cc194d244bbc139dd",
+        "imageVersion": 2
+      },
+      "sourceBook": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "questionText": "في الشكل، ما قياس الزاوية A؟",
+      "options": {
+        "A": "30°",
+        "B": "60°",
+        "C": "90°",
+        "D": "120°"
+      },
+      "answerLetter": "A",
+      "correctOptionIndex": 0,
+      "explanation": "الزاوية الخارجية=(90°−30°)/2=30°.",
+      "whyCorrect": "الزاوية الخارجية=(90°−30°)/2=30°.",
+      "whyOthersWrong": {
+        "B": "60° هو فرق القوسين دون تنصيف.",
+        "C": "90° القوس الأكبر لا الزاوية.",
+        "D": "120° مجموع القوسين وليس نصف الفرق."
+      },
+      "hint": "طبق نصف فرق القوسين.",
+      "solvingStrategy": "تطبيق قواعد الأوتار والمماسات والقواطع والقوى في الدائرة",
+      "commonMistakes": [
+        "60° هو فرق القوسين دون تنصيف.",
+        "90° القوس الأكبر لا الزاوية.",
+        "120° مجموع القوسين وليس نصف الفرق."
+      ],
+      "aiContext": {
+        "readableText": "في الشكل، ما قياس الزاوية A؟",
+        "speechText": "في الشكل، ما قياس الزاوية A؟",
+        "visualDescription": "سؤال تحصيلي رياضيات مع 4 خيارات مصورة داخل الصورة.",
+        "concepts": [
+          "الدائرة",
+          "الأوتار والمماسات والقواطع والقوى في الدائرة"
+        ],
+        "requiredData": [
+          "في الشكل، ما قياس الزاوية A؟"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf"
+      },
+      "difficultyCandidate": "medium",
+      "mapping": {
+        "skillId": "skill_tah_math_07",
+        "skillName": "الدائرة",
+        "subSkillId": "sub_tah_math_07_02",
+        "subSkillName": "الأوتار والمماسات والقواطع والقوى في الدائرة",
+        "decision": "KEEP_CANDIDATE_SOURCE_CONTENT_REVIEW"
+      },
+      "foundationReference": {
+        "lessonNumber": 8,
+        "lessonTitle": "الدائرة",
+        "subSkillId": "sub_tah_math_07_02",
+        "subSkillName": "الأوتار والمماسات والقواطع والقوى في الدائرة",
+        "topicIdLiveVerified": false,
+        "trainingIdLiveVerified": false
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF022-P023-N10|0ae700f6377dea453cc1ca42531b30aac526c7ea9be0ac0cc194d244bbc139dd",
+      "teachingFingerprintCandidate": "sub_tah_math_07_02|تطبيق قواعد الأوتار والمماسات والقواطع والقوى في الدائرة",
+      "sourceImageHash": "0ae700f6377dea453cc1ca42531b30aac526c7ea9be0ac0cc194d244bbc139dd",
+      "sourceVisualReviewed": true,
+      "productionImageParity": "NOT_TESTED",
+      "canonicalApproved": false,
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P023-Q11",
+      "source": {
+        "sourceItemId": "YLM26-PDF022-P023-N11",
+        "pdfPageIndex": 22,
+        "printedPageNumber": 23,
+        "printedQuestionNumber": 11,
+        "imageHash": "9c23ac74b6a150431da7fc4ea1c40e409a347775c6bbdc800eaf7b98a73a71b4",
+        "imageVersion": 2
+      },
+      "sourceBook": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "questionText": "في الشكل، إذا كان AB مماسًا وm∠ABD=125°، فما قياس القوس BCD؟",
+      "options": {
+        "A": "62.5°",
+        "B": "125°",
+        "C": "150°",
+        "D": "250°"
+      },
+      "answerLetter": "D",
+      "correctOptionIndex": 3,
+      "explanation": "القوس المقابل لزاوية المماس والوتر=2×125°=250°.",
+      "whyCorrect": "القوس المقابل لزاوية المماس والوتر=2×125°=250°.",
+      "whyOthersWrong": {
+        "A": "62.5° نصف زاوية المماس خطأ.",
+        "B": "125° قياس الزاوية لا القوس.",
+        "C": "150° لا يساوي ضعف 125°."
+      },
+      "hint": "تذكر أن زاوية المماس والوتر نصف القوس المقابل.",
+      "solvingStrategy": "تطبيق قواعد الأوتار والمماسات والقواطع والقوى في الدائرة",
+      "commonMistakes": [
+        "62.5° نصف زاوية المماس خطأ.",
+        "125° قياس الزاوية لا القوس.",
+        "150° لا يساوي ضعف 125°."
+      ],
+      "aiContext": {
+        "readableText": "في الشكل، إذا كان AB مماسًا وm∠ABD=125°، فما قياس القوس BCD؟",
+        "speechText": "في الشكل، إذا كان AB مماسًا وm∠ABD=125°، فما قياس القوس BCD؟",
+        "visualDescription": "سؤال تحصيلي رياضيات مع 4 خيارات مصورة داخل الصورة.",
+        "concepts": [
+          "الدائرة",
+          "الأوتار والمماسات والقواطع والقوى في الدائرة"
+        ],
+        "requiredData": [
+          "في الشكل، إذا كان AB مماسًا وm∠ABD=125°، فما قياس القوس BCD؟"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf"
+      },
+      "difficultyCandidate": "medium",
+      "mapping": {
+        "skillId": "skill_tah_math_07",
+        "skillName": "الدائرة",
+        "subSkillId": "sub_tah_math_07_02",
+        "subSkillName": "الأوتار والمماسات والقواطع والقوى في الدائرة",
+        "decision": "KEEP_CANDIDATE_SOURCE_CONTENT_REVIEW"
+      },
+      "foundationReference": {
+        "lessonNumber": 8,
+        "lessonTitle": "الدائرة",
+        "subSkillId": "sub_tah_math_07_02",
+        "subSkillName": "الأوتار والمماسات والقواطع والقوى في الدائرة",
+        "topicIdLiveVerified": false,
+        "trainingIdLiveVerified": false
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF022-P023-N11|9c23ac74b6a150431da7fc4ea1c40e409a347775c6bbdc800eaf7b98a73a71b4",
+      "teachingFingerprintCandidate": "sub_tah_math_07_02|تطبيق قواعد الأوتار والمماسات والقواطع والقوى في الدائرة",
+      "sourceImageHash": "9c23ac74b6a150431da7fc4ea1c40e409a347775c6bbdc800eaf7b98a73a71b4",
+      "sourceVisualReviewed": true,
+      "productionImageParity": "NOT_TESTED",
+      "canonicalApproved": false,
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P023-Q12",
+      "source": {
+        "sourceItemId": "YLM26-PDF022-P023-N12",
+        "pdfPageIndex": 22,
+        "printedPageNumber": 23,
+        "printedQuestionNumber": 12,
+        "imageHash": "a72aaf10565da4893fe2c187046d7f682e11c7e18e038b9125032a674d2f1a92",
+        "imageVersion": 2
+      },
+      "sourceBook": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "questionText": "في الشكل الذي يحوي وترين متقاطعين داخل الدائرة، ما قيمة x؟",
+      "options": {
+        "A": "2",
+        "B": "3",
+        "C": "6",
+        "D": "9"
+      },
+      "answerLetter": "A",
+      "correctOptionIndex": 0,
+      "explanation": "9x=3×6، لذا x=2.",
+      "whyCorrect": "9x=3×6، لذا x=2.",
+      "whyOthersWrong": {
+        "B": "3 جزء معلوم من الوتر لا x.",
+        "C": "6 جزء معلوم من الوتر الثاني لا x.",
+        "D": "9 هو عامل الضرب بجانب x وليس قيمته."
+      },
+      "hint": "ساوِ حاصل ضرب جزأي الوترين المتقاطعين.",
+      "solvingStrategy": "تطبيق قواعد الأوتار والمماسات والقواطع والقوى في الدائرة",
+      "commonMistakes": [
+        "3 جزء معلوم من الوتر لا x.",
+        "6 جزء معلوم من الوتر الثاني لا x.",
+        "9 هو عامل الضرب بجانب x وليس قيمته."
+      ],
+      "aiContext": {
+        "readableText": "في الشكل الذي يحوي وترين متقاطعين داخل الدائرة، ما قيمة x؟",
+        "speechText": "في الشكل الذي يحوي وترين متقاطعين داخل الدائرة، ما قيمة x؟",
+        "visualDescription": "سؤال تحصيلي رياضيات مع 4 خيارات مصورة داخل الصورة.",
+        "concepts": [
+          "الدائرة",
+          "الأوتار والمماسات والقواطع والقوى في الدائرة"
+        ],
+        "requiredData": [
+          "في الشكل الذي يحوي وترين متقاطعين داخل الدائرة، ما قيمة x؟"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf"
+      },
+      "difficultyCandidate": "medium",
+      "mapping": {
+        "skillId": "skill_tah_math_07",
+        "skillName": "الدائرة",
+        "subSkillId": "sub_tah_math_07_02",
+        "subSkillName": "الأوتار والمماسات والقواطع والقوى في الدائرة",
+        "decision": "KEEP_CANDIDATE_SOURCE_CONTENT_REVIEW"
+      },
+      "foundationReference": {
+        "lessonNumber": 8,
+        "lessonTitle": "الدائرة",
+        "subSkillId": "sub_tah_math_07_02",
+        "subSkillName": "الأوتار والمماسات والقواطع والقوى في الدائرة",
+        "topicIdLiveVerified": false,
+        "trainingIdLiveVerified": false
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF022-P023-N12|a72aaf10565da4893fe2c187046d7f682e11c7e18e038b9125032a674d2f1a92",
+      "teachingFingerprintCandidate": "sub_tah_math_07_02|تطبيق قواعد الأوتار والمماسات والقواطع والقوى في الدائرة",
+      "sourceImageHash": "a72aaf10565da4893fe2c187046d7f682e11c7e18e038b9125032a674d2f1a92",
+      "sourceVisualReviewed": true,
+      "productionImageParity": "NOT_TESTED",
+      "canonicalApproved": false,
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P023-Q13",
+      "source": {
+        "sourceItemId": "YLM26-PDF022-P023-N13",
+        "pdfPageIndex": 22,
+        "printedPageNumber": 23,
+        "printedQuestionNumber": 13,
+        "imageHash": "f3c3eb0379d320a7ce893ed736168d1794166c41548d36ef5cdac3ec8e40762f",
+        "imageVersion": 2
+      },
+      "sourceBook": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "questionText": "في الشكل، إذا كان قطر الدائرة A يساوي 12 وBC مماسًا لها وطوله 8 والمسافة بين الدائرتين 1، فما طول قطر الدائرة B؟",
+      "options": {
+        "A": "3",
+        "B": "6",
+        "C": "7",
+        "D": "9"
+      },
+      "answerLetter": "B",
+      "correctOptionIndex": 1,
+      "explanation": "AB=√(6²+8²)=10؛ نصف قطر B=10−6−1=3، وقطرها 6.",
+      "whyCorrect": "AB=√(6²+8²)=10؛ نصف قطر B=10−6−1=3، وقطرها 6.",
+      "whyOthersWrong": {
+        "A": "3 نصف قطر الدائرة B وليس قطرها.",
+        "C": "7 لا يوافق طول المماس والمسافة بين المركزين.",
+        "D": "9 يخلط طول المماس مع مسافة الفصل."
+      },
+      "hint": "القطر ضعف نصف القطر.",
+      "solvingStrategy": "تطبيق قواعد الأوتار والمماسات والقواطع والقوى في الدائرة",
+      "commonMistakes": [
+        "3 نصف قطر الدائرة B وليس قطرها.",
+        "7 لا يوافق طول المماس والمسافة بين المركزين.",
+        "9 يخلط طول المماس مع مسافة الفصل."
+      ],
+      "aiContext": {
+        "readableText": "في الشكل، إذا كان قطر الدائرة A يساوي 12 وBC مماسًا لها وطوله 8 والمسافة بين الدائرتين 1، فما طول قطر الدائرة B؟",
+        "speechText": "في الشكل، إذا كان قطر الدائرة A يساوي 12 وBC مماسًا لها وطوله 8 والمسافة بين الدائرتين 1، فما طول قطر الدائرة B؟",
+        "visualDescription": "سؤال تحصيلي رياضيات مع 4 خيارات مصورة داخل الصورة.",
+        "concepts": [
+          "الدائرة",
+          "الأوتار والمماسات والقواطع والقوى في الدائرة"
+        ],
+        "requiredData": [
+          "في الشكل، إذا كان قطر الدائرة A يساوي 12 وBC مماسًا لها وطوله 8 والمسافة بين الدائرتين 1، فما طول قطر الدائرة B؟"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf"
+      },
+      "difficultyCandidate": "medium",
+      "mapping": {
+        "skillId": "skill_tah_math_07",
+        "skillName": "الدائرة",
+        "subSkillId": "sub_tah_math_07_02",
+        "subSkillName": "الأوتار والمماسات والقواطع والقوى في الدائرة",
+        "decision": "KEEP_CANDIDATE_SOURCE_CONTENT_REVIEW"
+      },
+      "foundationReference": {
+        "lessonNumber": 8,
+        "lessonTitle": "الدائرة",
+        "subSkillId": "sub_tah_math_07_02",
+        "subSkillName": "الأوتار والمماسات والقواطع والقوى في الدائرة",
+        "topicIdLiveVerified": false,
+        "trainingIdLiveVerified": false
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF022-P023-N13|f3c3eb0379d320a7ce893ed736168d1794166c41548d36ef5cdac3ec8e40762f",
+      "teachingFingerprintCandidate": "sub_tah_math_07_02|تطبيق قواعد الأوتار والمماسات والقواطع والقوى في الدائرة",
+      "sourceImageHash": "f3c3eb0379d320a7ce893ed736168d1794166c41548d36ef5cdac3ec8e40762f",
+      "sourceVisualReviewed": true,
+      "productionImageParity": "NOT_TESTED",
+      "canonicalApproved": false,
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P023-Q14",
+      "source": {
+        "sourceItemId": "YLM26-PDF022-P023-N14",
+        "pdfPageIndex": 22,
+        "printedPageNumber": 23,
+        "printedQuestionNumber": 14,
+        "imageHash": "3543834ccb1a7af88aecda231abc42d5b7224b3903909631a19ce3c6d04d26a9",
+        "imageVersion": 2
+      },
+      "sourceBook": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "questionText": "حدث انعكاس لمركز الدائرة (x - 3)² + (y + 1)² = 4 حول المستقيم y = x، ثم دوران بزاوية 90° عكس عقارب الساعة حول نقطة الأصل. فما مركز الدائرة بعد الدوران؟",
+      "options": {
+        "A": "(-1,-3)",
+        "B": "(1,-3)",
+        "C": "(-1,3)",
+        "D": "(-3,-1)"
+      },
+      "answerLetter": "D",
+      "correctOptionIndex": 3,
+      "explanation": "مركز الدائرة (3,-1) ينعكس إلى (-1,3)، ثم يدور 90° عكس الساعة إلى (-3,-1).",
+      "whyCorrect": "مركز الدائرة (3,-1) ينعكس إلى (-1,3)، ثم يدور 90° عكس الساعة إلى (-3,-1).",
+      "whyOthersWrong": {
+        "A": "(-1,-3) ليس ناتج دوران (-1,3) عكس الساعة.",
+        "B": "(1,-3) يطبق تبديل إشارات غير صحيح.",
+        "C": "(-1,3) هو المركز بعد الانعكاس فقط."
+      },
+      "hint": "نفّذ الانعكاس ثم الدوران بهذا الترتيب.",
+      "solvingStrategy": "استخراج مركز الدائرة من معادلتها ثم تطبيق تحويلين هندسيين على المركز.",
+      "commonMistakes": [
+        "(-1,-3) ليس ناتج دوران (-1,3) عكس الساعة.",
+        "(1,-3) يطبق تبديل إشارات غير صحيح.",
+        "(-1,3) هو المركز بعد الانعكاس فقط."
+      ],
+      "aiContext": {
+        "readableText": "حدث انعكاس لمركز الدائرة (x - 3)² + (y + 1)² = 4 حول المستقيم y = x، ثم دوران بزاوية 90° عكس عقارب الساعة حول نقطة الأصل. فما مركز الدائرة بعد الدوران؟",
+        "speechText": "حدث انعكاس لمركز الدائرة (x - 3)² + (y + 1)² = 4 حول المستقيم y = x، ثم دوران بزاوية 90° عكس عقارب الساعة حول نقطة الأصل. فما مركز الدائرة بعد الدوران؟",
+        "visualDescription": "سؤال عن معادلة دائرة ومركزها، ثم انعكاس حول y=x ودوران 90° عكس عقارب الساعة.",
+        "concepts": [
+          "معادلة الدائرة في المستوى الإحداثي",
+          "تحويل مركز الدائرة"
+        ],
+        "requiredData": [
+          "حدث انعكاس لمركز الدائرة (x - 3)² + (y + 1)² = 4 حول المستقيم y = x، ثم دوران بزاوية 90° عكس عقارب الساعة حول نقطة الأصل. فما مركز الدائرة بعد الدوران؟"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf"
+      },
+      "difficultyCandidate": "medium",
+      "mapping": {
+        "skillId": "skill_tah_math_07",
+        "skillName": "الدائرة",
+        "subSkillId": "sub_tah_math_07_03",
+        "subSkillName": "معادلة الدائرة في المستوى الإحداثي",
+        "decision": "KEEP_CANDIDATE_SOURCE_CONTENT_REVIEW"
+      },
+      "foundationReference": {
+        "lessonNumber": 8,
+        "lessonTitle": "الدائرة",
+        "subSkillId": "sub_tah_math_07_03",
+        "subSkillName": "معادلة الدائرة في المستوى الإحداثي",
+        "topicIdLiveVerified": false,
+        "trainingIdLiveVerified": false
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF022-P023-N14|3543834ccb1a7af88aecda231abc42d5b7224b3903909631a19ce3c6d04d26a9",
+      "teachingFingerprintCandidate": "sub_tah_math_07_03|استخراج مركز الدائرة من معادلتها ثم تطبيق تحويلين هندسيين على المركز.",
+      "sourceImageHash": "3543834ccb1a7af88aecda231abc42d5b7224b3903909631a19ce3c6d04d26a9",
+      "sourceVisualReviewed": true,
+      "productionImageParity": "NOT_TESTED",
+      "canonicalApproved": false,
+      "productionMutation": false
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P025-Q01",
+      "source": {
+        "sourceItemId": "YLM26-PDF024-P025-N01",
+        "pdfPageIndex": 24,
+        "printedPageNumber": 25,
+        "printedQuestionNumber": 1,
+        "imageHash": "6843ceea84dc85597f18311ddb7d80b0dbfaf2e325cf5796d88a9f39834f60c7",
+        "imageVersion": 2
+      },
+      "sourceBook": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf",
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "questionText": "ما العدد الذي ينتمي إلى مجموعة الأعداد غير النسبية؟",
+      "options": {
+        "A": "√7",
+        "B": "22/7",
+        "C": "2",
+        "D": "0.\\overline{45}"
+      },
+      "answerLetter": "A",
+      "correctOptionIndex": 0,
+      "explanation": "√7 غير نسبي؛ الخيارات الأخرى نسبية.",
+      "whyCorrect": "√7 غير نسبي؛ الخيارات الأخرى نسبية.",
+      "whyOthersWrong": {
+        "B": "22/7 عدد نسبي لأنه نسبة عددين صحيحين.",
+        "C": "2 عدد صحيح وبالتالي نسبي.",
+        "D": "العدد العشري الدوري نسبي."
+      },
+      "hint": "العدد الدوري كسر نسبي، والجذر غير التام غير نسبي.",
+      "solvingStrategy": "تمييز العدد غير النسبي من خصائص التمثيل الكسري والعشري والجذور.",
+      "commonMistakes": [
+        "22/7 عدد نسبي لأنه نسبة عددين صحيحين.",
+        "2 عدد صحيح وبالتالي نسبي.",
+        "العدد العشري الدوري نسبي."
+      ],
+      "aiContext": {
+        "readableText": "ما العدد الذي ينتمي إلى مجموعة الأعداد غير النسبية؟",
+        "speechText": "ما العدد الذي ينتمي إلى مجموعة الأعداد غير النسبية؟",
+        "visualDescription": "خيارات تتضمن √7 و22/7 و2 وعددًا عشريًا دوريًا.",
+        "concepts": [
+          "تمييز العدد غير النسبي من خصائص التمثيل الكسري والعشري والجذور."
+        ],
+        "requiredData": [
+          "ما العدد الذي ينتمي إلى مجموعة الأعداد غير النسبية؟"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf"
+      },
+      "difficultyCandidate": "easy",
+      "mapping": {
+        "skillId": "skill_tah_math_08",
+        "skillName": "الأعداد الحقيقية والدوال والمتباينات",
+        "subSkillId": "sub_tah_math_08_01",
+        "subSkillName": "مجموعات الأعداد الحقيقية وخصائصها والعلاقات والدوال",
+        "decision": "KEEP_CANDIDATE_SOURCE_CONTENT_REVIEW"
+      },
+      "foundationReference": {
+        "lessonNumber": 9,
+        "lessonTitle": "الأعداد الحقيقية والدوال",
+        "subSkillId": "sub_tah_math_08_01",
+        "subSkillName": "مجموعات الأعداد الحقيقية وخصائصها والعلاقات والدوال",
+        "topicIdLiveVerified": false,
+        "trainingIdLiveVerified": false
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF024-P025-N01|6843ceea84dc85597f18311ddb7d80b0dbfaf2e325cf5796d88a9f39834f60c7",
+      "teachingFingerprintCandidate": "sub_tah_math_08_01|تمييز العدد غير النسبي من خصائص التمثيل الكسري والعشري والجذور.",
+      "sourceImageHash": "6843ceea84dc85597f18311ddb7d80b0dbfaf2e325cf5796d88a9f39834f60c7",
+      "sourceVisualReviewed": true,
+      "productionImageParity": "NOT_TESTED",
+      "canonicalApproved": false,
+      "productionMutation": false
+    }
+  ]
+}

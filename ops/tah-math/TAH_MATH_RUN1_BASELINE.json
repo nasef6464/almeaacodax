@@ -1,0 +1,34 @@
+{
+  "checkpoint": "2026-10-07-run1",
+  "phase0": "PASS",
+  "evidence": {
+    "repositoryMainAtStart": "4ced0cdf609e31fdb29338d9fc46b788752559c8",
+    "ylm26": {
+      "historicalExpected": 326,
+      "modernStrictAuditApprovedAt20260928": 87,
+      "note": "Do not confuse historical/current 326-bank baseline with the earlier PLAN8 subset of 87 modern imported approved image questions."
+    },
+    "col26": {
+      "expected": 1012,
+      "statusAtCOL26OLDClose": "protected baseline"
+    },
+    "col26old": {
+      "sourceOccurrences": 1258,
+      "canonical": 1257,
+      "aliasesToYLM26": 1,
+      "sourceMapped": 1258,
+      "mainSkillsUsed": 22,
+      "subSkillsUsed": 67,
+      "invalidLivePairs": 0,
+      "status": "CLOSED_100_PERCENT_PRIOR_EVIDENCE"
+    },
+    "protectedOther": {
+      "COL2627": 946
+    }
+  },
+  "safetyDecision": "No production mutation in this run. Runtime taxonomy export is required before source-heading-to-ID binding; IDs will not be guessed from naming patterns.",
+  "sourceDictionary": {
+    "lessonsExtracted": 8,
+    "totalLessons": 31
+  }
+}

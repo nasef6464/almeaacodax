@@ -1,0 +1,15 @@
+{
+  "run": "RUN57",
+  "actualDistinctSourceQuestionsReviewed": 150,
+  "newDeepPedagogyCandidates": 30,
+  "sourceRGBParityPASS": 150,
+  "symbolicPASS": 29,
+  "manualGraphPASS": 1,
+  "semanticNewHOLD": 2,
+  "cropBoundaryReview": 11,
+  "conditionalReviewEventsCumulative": 6346,
+  "canonicalApproved": 0,
+  "productionMutation": false,
+  "status": "YLM26_NOT_GREEN",
+  "next": "Resolve holds; approve 326 canonical fields/R2/rollback manifest; then COL26."
+}

@@ -1,0 +1,98 @@
+{
+  "project": "TAH-MATH",
+  "run": "RUN79B",
+  "date": "2026-10-10",
+  "stage": "P2_YLM26_FULL_REVIEW",
+  "contentGate": {
+    "inventory": 326,
+    "finalReviewedContent": 321,
+    "sourceHolds": 5,
+    "adjudicated": 326,
+    "pass": true,
+    "sourceHoldCodes": [
+      "P050-Q04",
+      "P051-Q05",
+      "P066-Q14",
+      "P085-Q01",
+      "P094-Q11"
+    ]
+  },
+  "thisRun": {
+    "finalReviewedContent": 21,
+    "sourceHolds": 5,
+    "adjudicated": 26,
+    "directOfficialSourceReview": true
+  },
+  "resolvedThisRun": {
+    "P026-Q08": "D=6",
+    "P036-Q15": "C=third degree, under real-coefficient polynomial lesson context",
+    "P052-Q11": "C=30√2",
+    "P057-Q09": "C=(-1,1)",
+    "P063-Q18": "B",
+    "P063-Q19": "C",
+    "P070-Q11": "B",
+    "P073-Q01": "C=(2,-2)",
+    "P073-Q02": "A",
+    "P074-Q09": "C",
+    "P075-Q11": "A",
+    "P077-Q02": "A=S60°W",
+    "P078-Q09": "A=8i-4j",
+    "P081-Q01": "B",
+    "P083-Q05": "D=r=2secθ",
+    "P083-Q08": "A=√2+i√2",
+    "P085-Q02": "A",
+    "P086-Q05": "D≈4",
+    "P088-Q12": "D=5",
+    "P089-Q01": "D=limit does not exist",
+    "P090-Q06": "B=3-√7"
+  },
+  "liveAtlasReadOnly": {
+    "taxonomy": {
+      "mainSkills": 22,
+      "subSkills": 70,
+      "status": "PASS_CURRENT_LIVE"
+    },
+    "ylm26Production": {
+      "count": 326,
+      "validMainSkill": 326,
+      "validSubSkillParent": 326,
+      "sourceImageHashPresent": 326,
+      "imageUrlPresent": 326
+    },
+    "topicId": {
+      "missing": 326,
+      "uniqueMatchingSubTopicBySubSkill": 326,
+      "status": "FAIL_FIELD_MISSING_BUT_DETERMINISTIC_TARGET_EXISTS"
+    },
+    "r2Metadata": {
+      "hashBasenameMatchesSourceMeta": 326,
+      "v2PathMatches": 326,
+      "backupImageUrlMatches": 326,
+      "backupImageHashMatches": 326,
+      "status": "PASS_METADATA"
+    },
+    "r2HttpFetch": {
+      "status": "BLOCKED_BY_EXECUTION_ENVIRONMENT_NETWORK",
+      "note": "Container DNS failed and web fetch could not access R2 URL; this is not evidence of production R2 failure."
+    },
+    "productionVsFrozenBackup": {
+      "questionCodeMatch": 326,
+      "imageHashMatch": 326,
+      "sourceItemIdMatch": 326,
+      "imageUrlMatch": 326,
+      "answerMatch": 326,
+      "skillMatch": 326,
+      "subSkillMatch": 326
+    }
+  },
+  "productionMutation": false,
+  "globalYLM26Status": "NOT_GREEN",
+  "blockers": [
+    "326/326 production YLM26 records have no topicId although each subSkillId resolves to exactly one live foundation subtopic.",
+    "Direct HTTP fetch of R2 objects could not be performed from available execution environment; metadata parity is 326/326.",
+    "Production still matches frozen pre-approval backup; reviewed answer/mapping/pedagogy corrections have not been applied."
+  ],
+  "localManifestSha256": "436ec050716a0d5184b4f5e4fcd200e0dbf39752ae4b71f686e218ab2963d662",
+  "localArtifactSha256": "98c03e5be738117d304a7c23705e49f1b535f923fb36dca5075aafe735786922",
+  "next": "Build deterministic reversible YLM26 mutation manifest from 326 reviewed rows including topicId targets; resolve R2 live-fetch evidence through an allowed path; only then apply reviewed production changes and re-audit, then begin COL26."
+}

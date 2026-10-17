@@ -1,0 +1,21 @@
+{
+  "project": "TAH-MATH",
+  "run": "RUN80",
+  "date": "2026-10-10",
+  "stage": "YLM26_GLOBAL_GATE",
+  "newMastered": 0,
+  "newFinalReviewed": 0,
+  "newSourceHolds": 0,
+  "cumulativeFinalReviewed": 321,
+  "cumulativeSourceHolds": 5,
+  "liveTopicMissing": 326,
+  "liveTopicTargetsUnique": 326,
+  "liveTaxonomy": {
+    "main": 22,
+    "sub": 70
+  },
+  "proposedMappingRemaps": 4,
+  "productionMutation": false,
+  "sourceFullReviewedPayloadInBranch": false,
+  "status": "BLOCKED_NOT_FINAL_CLOSED"
+}

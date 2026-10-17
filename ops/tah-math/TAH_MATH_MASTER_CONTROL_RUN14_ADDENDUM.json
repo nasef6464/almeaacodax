@@ -1,0 +1,20 @@
+{
+  "project": "TAH-MATH",
+  "masterControlStatus": "IN_PROGRESS",
+  "checkpoint": "2026-10-08-heavy-run14",
+  "newCOL26SourceOptionPartialRows": 234,
+  "sourceGeometryPass": 234,
+  "independentMathPass": 12,
+  "sourceVisualRemapCandidates": 48,
+  "cumulativePartialOptionRows": 723,
+  "remainingOptionRegionRows": 270,
+  "YLM26FullPedagogy": "OPEN",
+  "COL26FullPedagogy": "OPEN",
+  "COL26OLD": "OPEN",
+  "dedupe": "OPEN",
+  "coverage": "OPEN",
+  "trainingsAndTests": "OPEN",
+  "liveStudentE2E": "OPEN",
+  "productionMutation": false,
+  "finalClosed": false
+}

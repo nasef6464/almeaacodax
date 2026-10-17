@@ -1,0 +1,341 @@
+{
+  "run": "RUN49",
+  "part": "2A",
+  "count": 5,
+  "records": [
+    {
+      "questionCode": "TAH-MATH-YLM26-P025-Q02",
+      "source": {
+        "sourceItemId": "YLM26-PDF024-P025-N02",
+        "pdfPageIndex": 24,
+        "printedPageNumber": 25,
+        "printedQuestionNumber": 2,
+        "imageHash": "48e3655b5cf064962dd4be4a1ac21ce67f4642fff23b38b765f4416e34231f62",
+        "imageVersion": 2
+      },
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "questionText": "إذا كان a = √3 وb = √2 وx = √(a² + b²)، فإلى أي مجموعة أعداد ينتمي x؟",
+      "options": {
+        "A": "N",
+        "B": "Q",
+        "C": "Z",
+        "D": "I"
+      },
+      "answerLetter": "D",
+      "correctOptionIndex": 3,
+      "explanation": "√(3+2)=√5 غير نسبي.",
+      "whyCorrect": "√(3+2)=√5 غير نسبي.",
+      "whyOthersWrong": {
+        "A": "√5 ليس طبيعيًا.",
+        "B": "√5 ليس نسبيًا.",
+        "C": "√5 ليس صحيحًا."
+      },
+      "hint": "عوّض عن a² وb² ثم حدّد نوع العدد الناتج.",
+      "solvingStrategy": "تبسيط جذر ثم تصنيف الناتج ضمن مجموعات الأعداد الحقيقية.",
+      "commonMistakes": [
+        "√5 ليس طبيعيًا.",
+        "√5 ليس نسبيًا.",
+        "√5 ليس صحيحًا."
+      ],
+      "aiContext": {
+        "readableText": "إذا كان a = √3 وb = √2 وx = √(a² + b²)، فإلى أي مجموعة أعداد ينتمي x؟",
+        "speechText": "إذا كان a = √3 وb = √2 وx = √(a² + b²)، فإلى أي مجموعة أعداد ينتمي x؟",
+        "visualDescription": "سؤال جبري عن a = √3 وb = √2 وx = √(a²+b²) وتصنيف x.",
+        "concepts": [
+          "الأعداد الحقيقية والدوال",
+          "تبسيط جذر ثم تصنيف الناتج ضمن مجموعات الأعداد الحقيقية."
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf"
+      },
+      "difficultyCandidate": "easy",
+      "mapping": {
+        "skillId": "skill_tah_math_08",
+        "skillName": "الأعداد الحقيقية والدوال والمتباينات",
+        "subSkillId": "sub_tah_math_08_01",
+        "subSkillName": "مجموعات الأعداد الحقيقية وخصائصها والعلاقات والدوال"
+      },
+      "foundationReference": {
+        "lessonNumber": 9,
+        "lessonTitle": "الأعداد الحقيقية والدوال",
+        "subSkillId": "sub_tah_math_08_01",
+        "subSkillName": "مجموعات الأعداد الحقيقية وخصائصها والعلاقات والدوال"
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF024-P025-N02|48e3655b5cf064962dd4be4a1ac21ce67f4642fff23b38b765f4416e34231f62",
+      "teachingFingerprintCandidate": "sub_tah_math_08_01|تبسيط جذر ثم تصنيف الناتج ضمن مجموعات الأعداد الحقيقية.",
+      "sourceImageHash": "48e3655b5cf064962dd4be4a1ac21ce67f4642fff23b38b765f4416e34231f62",
+      "sourceVisualReviewed": true,
+      "canonicalApproved": false,
+      "productionImageParity": "NOT_TESTED"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P025-Q03",
+      "source": {
+        "sourceItemId": "YLM26-PDF024-P025-N03",
+        "pdfPageIndex": 24,
+        "printedPageNumber": 25,
+        "printedQuestionNumber": 3,
+        "imageHash": "3dd595898808842f005d36e93827fd928b9f6045617de0d75f896ef17068c39f",
+        "imageVersion": 2
+      },
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "questionText": "ما الخاصية المستخدمة في العبارة a(b + c) = ab + ac؟",
+      "options": {
+        "A": "الضرب",
+        "B": "الإبدال",
+        "C": "التوزيع",
+        "D": "الجمع"
+      },
+      "answerLetter": "C",
+      "correctOptionIndex": 2,
+      "explanation": "a(b+c)=ab+ac خاصية التوزيع.",
+      "whyCorrect": "a(b+c)=ab+ac خاصية التوزيع.",
+      "whyOthersWrong": {
+        "A": "الضرب عملية لا اسم خاصية فك الأقواس.",
+        "B": "الإبدال لا يوزع على حدين.",
+        "D": "الجمع لا يفسر ضرب a في الحدين."
+      },
+      "hint": "لاحظ أن العامل خارج القوس ضُرب في كل حد داخل القوس.",
+      "solvingStrategy": "تمييز خاصية التوزيع في الأعداد الحقيقية.",
+      "commonMistakes": [
+        "الضرب عملية لا اسم خاصية فك الأقواس.",
+        "الإبدال لا يوزع على حدين.",
+        "الجمع لا يفسر ضرب a في الحدين."
+      ],
+      "aiContext": {
+        "readableText": "ما الخاصية المستخدمة في العبارة a(b + c) = ab + ac؟",
+        "speechText": "ما الخاصية المستخدمة في العبارة a(b + c) = ab + ac؟",
+        "visualDescription": "عبارة جبرية على صورة a مضروبة في مجموع b وc.",
+        "concepts": [
+          "الأعداد الحقيقية والدوال",
+          "تمييز خاصية التوزيع في الأعداد الحقيقية."
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf"
+      },
+      "difficultyCandidate": "easy",
+      "mapping": {
+        "skillId": "skill_tah_math_08",
+        "skillName": "الأعداد الحقيقية والدوال والمتباينات",
+        "subSkillId": "sub_tah_math_08_01",
+        "subSkillName": "مجموعات الأعداد الحقيقية وخصائصها والعلاقات والدوال"
+      },
+      "foundationReference": {
+        "lessonNumber": 9,
+        "lessonTitle": "الأعداد الحقيقية والدوال",
+        "subSkillId": "sub_tah_math_08_01",
+        "subSkillName": "مجموعات الأعداد الحقيقية وخصائصها والعلاقات والدوال"
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF024-P025-N03|3dd595898808842f005d36e93827fd928b9f6045617de0d75f896ef17068c39f",
+      "teachingFingerprintCandidate": "sub_tah_math_08_01|تمييز خاصية التوزيع في الأعداد الحقيقية.",
+      "sourceImageHash": "3dd595898808842f005d36e93827fd928b9f6045617de0d75f896ef17068c39f",
+      "sourceVisualReviewed": true,
+      "canonicalApproved": false,
+      "productionImageParity": "NOT_TESTED"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P026-Q04",
+      "source": {
+        "sourceItemId": "YLM26-PDF025-P026-N04",
+        "pdfPageIndex": 25,
+        "printedPageNumber": 26,
+        "printedQuestionNumber": 4,
+        "imageHash": "9fb360ff25a2bb9fac5d5f01b9441e8f06986a6c3d1eb31c960c71c170c5c6a0",
+        "imageVersion": 2
+      },
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "questionText": "ما مجال العلاقة {(1,2),(3,4),(4,5)}؟",
+      "options": {
+        "A": "{1,3,4}",
+        "B": "{6,2}",
+        "C": "{1,4,5}",
+        "D": "{1,3}"
+      },
+      "answerLetter": "A",
+      "correctOptionIndex": 0,
+      "explanation": "المجال هو الإحداثيات الأولى: {1,3,4}.",
+      "whyCorrect": "المجال هو الإحداثيات الأولى: {1,3,4}.",
+      "whyOthersWrong": {
+        "B": "{6,2} ليست مجموعة المدخلات.",
+        "C": "{1,4,5} أدرجت مخرجًا بدل مدخل.",
+        "D": "{1,3} تسقط المدخل 4."
+      },
+      "hint": "خذ العنصر الأول من كل زوج مرتب.",
+      "solvingStrategy": "استخراج مجال علاقة من أزواج مرتبة.",
+      "commonMistakes": [
+        "{6,2} ليست مجموعة المدخلات.",
+        "{1,4,5} أدرجت مخرجًا بدل مدخل.",
+        "{1,3} تسقط المدخل 4."
+      ],
+      "aiContext": {
+        "readableText": "ما مجال العلاقة {(1,2),(3,4),(4,5)}؟",
+        "speechText": "ما مجال العلاقة {(1,2),(3,4),(4,5)}؟",
+        "visualDescription": "علاقة مكوّنة من ثلاثة أزواج مرتبة: (1,2)، (3,4)، (4,5).",
+        "concepts": [
+          "الأعداد الحقيقية والدوال",
+          "استخراج مجال علاقة من أزواج مرتبة."
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf"
+      },
+      "difficultyCandidate": "easy",
+      "mapping": {
+        "skillId": "skill_tah_math_08",
+        "skillName": "الأعداد الحقيقية والدوال والمتباينات",
+        "subSkillId": "sub_tah_math_08_01",
+        "subSkillName": "مجموعات الأعداد الحقيقية وخصائصها والعلاقات والدوال"
+      },
+      "foundationReference": {
+        "lessonNumber": 9,
+        "lessonTitle": "الأعداد الحقيقية والدوال",
+        "subSkillId": "sub_tah_math_08_01",
+        "subSkillName": "مجموعات الأعداد الحقيقية وخصائصها والعلاقات والدوال"
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF025-P026-N04|9fb360ff25a2bb9fac5d5f01b9441e8f06986a6c3d1eb31c960c71c170c5c6a0",
+      "teachingFingerprintCandidate": "sub_tah_math_08_01|استخراج مجال علاقة من أزواج مرتبة.",
+      "sourceImageHash": "9fb360ff25a2bb9fac5d5f01b9441e8f06986a6c3d1eb31c960c71c170c5c6a0",
+      "sourceVisualReviewed": true,
+      "canonicalApproved": false,
+      "productionImageParity": "NOT_TESTED"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P026-Q05",
+      "source": {
+        "sourceItemId": "YLM26-PDF025-P026-N05",
+        "pdfPageIndex": 25,
+        "printedPageNumber": 26,
+        "printedQuestionNumber": 5,
+        "imageHash": "115106f3f52ef6315b12c1fbd95f25ecb08186e3bf27bb46c2863bb9fcd8df5b",
+        "imageVersion": 2
+      },
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "questionText": "أي المعادلات الآتية لا تمثل دالة؟",
+      "options": {
+        "A": "x−2=0",
+        "B": "y−7=0",
+        "C": "y−2=x",
+        "D": "y=x+2"
+      },
+      "answerLetter": "A",
+      "correctOptionIndex": 0,
+      "explanation": "x=2 مستقيم رأسي يفشل اختبار الدالة.",
+      "whyCorrect": "x=2 مستقيم رأسي يفشل اختبار الدالة.",
+      "whyOthersWrong": {
+        "B": "y=7 دالة ثابتة.",
+        "C": "y=x+2 دالة خطية.",
+        "D": "y=x+2 دالة خطية."
+      },
+      "hint": "حوّل كل معادلة إلى تمثيل هندسي أو استخدم اختبار الخط الرأسي.",
+      "solvingStrategy": "تمييز الدالة من غير الدالة باستخدام اختبار الخط الرأسي.",
+      "commonMistakes": [
+        "y=7 دالة ثابتة.",
+        "y=x+2 دالة خطية.",
+        "y=x+2 دالة خطية."
+      ],
+      "aiContext": {
+        "readableText": "أي المعادلات الآتية لا تمثل دالة؟",
+        "speechText": "أي المعادلات الآتية لا تمثل دالة؟",
+        "visualDescription": "أربع معادلات خطية، إحداها x = 2 وهي مستقيم رأسي.",
+        "concepts": [
+          "الأعداد الحقيقية والدوال",
+          "تمييز الدالة من غير الدالة باستخدام اختبار الخط الرأسي."
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf"
+      },
+      "difficultyCandidate": "easy",
+      "mapping": {
+        "skillId": "skill_tah_math_08",
+        "skillName": "الأعداد الحقيقية والدوال والمتباينات",
+        "subSkillId": "sub_tah_math_08_01",
+        "subSkillName": "مجموعات الأعداد الحقيقية وخصائصها والعلاقات والدوال"
+      },
+      "foundationReference": {
+        "lessonNumber": 9,
+        "lessonTitle": "الأعداد الحقيقية والدوال",
+        "subSkillId": "sub_tah_math_08_01",
+        "subSkillName": "مجموعات الأعداد الحقيقية وخصائصها والعلاقات والدوال"
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF025-P026-N05|115106f3f52ef6315b12c1fbd95f25ecb08186e3bf27bb46c2863bb9fcd8df5b",
+      "teachingFingerprintCandidate": "sub_tah_math_08_01|تمييز الدالة من غير الدالة باستخدام اختبار الخط الرأسي.",
+      "sourceImageHash": "115106f3f52ef6315b12c1fbd95f25ecb08186e3bf27bb46c2863bb9fcd8df5b",
+      "sourceVisualReviewed": true,
+      "canonicalApproved": false,
+      "productionImageParity": "NOT_TESTED"
+    },
+    {
+      "questionCode": "TAH-MATH-YLM26-P042-Q02",
+      "source": {
+        "sourceItemId": "YLM26-PDF041-P042-N02",
+        "pdfPageIndex": 41,
+        "printedPageNumber": 42,
+        "printedQuestionNumber": 2,
+        "imageHash": "2f4ec573d6e314385b6adcc6ced666182af2ff84c84961997c72103f2984d74e",
+        "imageVersion": 2
+      },
+      "sourcePdfSha256": "3e2b6bfd33fcb349e527a9797785f8803303e0a9611b3d634b7c9c692a5c564c",
+      "questionText": "متتابعة حسابية أساسها d=6 وa₅=19، فما قيمة a₂؟",
+      "options": {
+        "A": "−5",
+        "B": "1",
+        "C": "5",
+        "D": "7"
+      },
+      "answerLetter": "B",
+      "correctOptionIndex": 1,
+      "explanation": "a2=19−3×6=1.",
+      "whyCorrect": "a2=19−3×6=1.",
+      "whyOthersWrong": {
+        "A": "−5 هو الحد الأول.",
+        "C": "5 يخلط رقم الحد بقيمته.",
+        "D": "7 لا يحقق a5=19."
+      },
+      "hint": "استخدم الفرق بين رتبة الحد الخامس والثاني وهو 3.",
+      "solvingStrategy": "إيجاد حد سابق في متتابعة حسابية.",
+      "commonMistakes": [
+        "−5 هو الحد الأول.",
+        "5 يخلط رقم الحد بقيمته.",
+        "7 لا يحقق a5=19."
+      ],
+      "aiContext": {
+        "readableText": "متتابعة حسابية أساسها d=6 وa₅=19، فما قيمة a₂؟",
+        "speechText": "متتابعة حسابية أساسها d=6 وa₅=19، فما قيمة a₂؟",
+        "visualDescription": "معطى أساس متتابعة حسابية والحد الخامس ومطلوب الحد الثاني.",
+        "concepts": [
+          "إيجاد حد سابق في متتابعة حسابية."
+        ],
+        "requiredData": [
+          "كتاب تأسيس يلو للرياضيات 2026 - تجميعات"
+        ],
+        "sourceDocument": "كتاب تأسيس يلو للرياضيات 26 - النسخة المعدلة.pdf"
+      },
+      "difficultyCandidate": "easy",
+      "mapping": {
+        "skillId": "skill_tah_math_13",
+        "skillName": "المتتابعات والمتسلسلات",
+        "subSkillId": "sub_tah_math_13_01",
+        "subSkillName": "المتتابعات والمتسلسلات الحسابية"
+      },
+      "foundationReference": {
+        "lessonNumber": 18,
+        "lessonTitle": "المتتابعات والمتسلسلات",
+        "subSkillId": "sub_tah_math_13_01",
+        "subSkillName": "المتتابعات والمتسلسلات الحسابية"
+      },
+      "questionFingerprintCandidate": "YLM26|YLM26-PDF041-P042-N02|2f4ec573d6e314385b6adcc6ced666182af2ff84c84961997c72103f2984d74e",
+      "teachingFingerprintCandidate": "sub_tah_math_13_01|إيجاد حد سابق في متتابعة حسابية.",
+      "sourceImageHash": "2f4ec573d6e314385b6adcc6ced666182af2ff84c84961997c72103f2984d74e",
+      "sourceVisualReviewed": true,
+      "canonicalApproved": false,
+      "productionImageParity": "NOT_TESTED"
+    }
+  ]
+}
