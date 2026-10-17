@@ -768,7 +768,7 @@ const aiProviderAdapters = createAiProviderAdapters({
   redactDiagnostic: redactAiDiagnostic,
 });
 
-type AiGatewayCallOptions = AiProviderCallOptions & { capability?: AiCapabilityId };
+type AiGatewayCallOptions = AiProviderCallOptions & { capability?: AiCapabilityId; requiredImage?: boolean };
 
 const callAiWithMeta = async (
   prompt: string,
@@ -782,6 +782,7 @@ const callAiWithMeta = async (
   const profile = capability ? runtimeAiConfig.routeProfiles[capability] : undefined;
   const allowPaid = capabilityPaidAllowed(runtimeAiConfig.paidAllowed, profile);
   const providerCallOptions: AiProviderCallOptions = {
+    ...(options.singleAttempt ? { singleAttempt: true } : {}),
     ...(options.disableThinking ? { disableThinking: true } : {}),
     ...(options.jsonSchema ? { jsonSchema: options.jsonSchema } : {}),
     ...(options.timeoutMs ? { timeoutMs: options.timeoutMs } : {}),
@@ -792,6 +793,7 @@ const callAiWithMeta = async (
   };
 
   for (const provider of providerPriorityForCapability(capability)) {
+    if (options.requiredImage && (!image || provider !== 'gemini')) continue;
     const descriptor = configuredProviders().find((candidate) => candidate.id === provider);
     if (!descriptor?.configured || provider === "none") continue;
     if (isAiProviderCircuitOpen(provider)) {

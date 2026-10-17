@@ -9,6 +9,7 @@ export type AiProviderRuntime = {
   quotaPools?: AiQuotaPoolRuntime[];
 };
 export type AiProviderCallOptions = {
+  singleAttempt?: boolean;
   disableThinking?: boolean;
   jsonSchema?: Record<string, unknown>;
   timeoutMs?: number;
@@ -102,14 +103,28 @@ const assertSafeAiProviderUrl = (rawUrl: string) => {
   }
 };
 export const createAiProviderAdapters = (config: AdapterConfig) => {
-  const fetchWithTimeout = async (url: string, init: RequestInit, timeoutMs = config.defaultTimeoutMs) => {
+  const fetchWithTimeout = async (url: string, init: RequestInit, timeoutMs = config.defaultTimeoutMs, boundedBody = false) => {
     assertSafeAiProviderUrl(url);
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+    let reader: ReadableStreamDefaultReader<Uint8Array> | undefined;
+    let timeoutId: ReturnType<typeof setTimeout>;
+    const deadline = new Promise<never>((_, reject) => { timeoutId = setTimeout(() => { controller.abort(); reject(new Error('AI request deadline exceeded')); }, timeoutMs); });
     try {
-      return await fetch(url, { ...init, signal: controller.signal });
+      const read = async () => {
+        const response = await fetch(url, { ...init, signal: controller.signal });
+        if (!boundedBody || !response.body) return response;
+        reader = response.body.getReader(); const chunks: Uint8Array[] = []; let count = 0;
+        while (true) {
+          const { done, value } = await reader.read(); if (done) break;
+          count += value.byteLength; if (count > 131072) throw new Error('AI response exceeds bounded size');
+          chunks.push(value);
+        }
+        return new Response(Buffer.concat(chunks, count), { status: response.status, headers: response.headers });
+      };
+      return await Promise.race([read(), deadline]);
     } finally {
-      clearTimeout(timeoutId);
+      clearTimeout(timeoutId!);
+      if (boundedBody) { controller.abort(); void reader?.cancel().catch(() => {}); }
     }
   };
   const responseFailureMessage = async (provider: string, response: Response) => {
@@ -144,7 +159,8 @@ export const createAiProviderAdapters = (config: AdapterConfig) => {
     image?: { data: string; mimeType: string },
     options: AiProviderCallOptions = {},
   ) => {
-    const pools = providerPools("gemini", options.allowPaid !== false, options.quotaPoolId);
+    const availablePools = providerPools("gemini", options.allowPaid !== false, options.quotaPoolId);
+    const pools = options.singleAttempt ? availablePools.filter(pool => pool.apiKeys.length).slice(0, 1) : availablePools;
     if (pools.every((pool) => pool.apiKeys.length === 0)) return { text: "", usage: emptyUsage() };
     const parts: Array<Record<string, unknown>> = image
       ? [{ inlineData: { mimeType: image.mimeType, data: image.data } }, { text: prompt }]
@@ -152,7 +168,7 @@ export const createAiProviderAdapters = (config: AdapterConfig) => {
     const errors: string[] = [];
     for (const pool of pools) {
       let poolRateLimited = false;
-      for (const apiKey of pool.apiKeys) {
+      for (const apiKey of (options.singleAttempt ? pool.apiKeys.slice(0, 1) : pool.apiKeys)) {
         try {
           const requestGeminiModel = (model: string) => fetchWithTimeout(
             `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`,
@@ -166,7 +182,7 @@ export const createAiProviderAdapters = (config: AdapterConfig) => {
                   ...(responseMimeType && options.jsonSchema ? { responseJsonSchema: options.jsonSchema } : {}),
                   // 3.8 cannot disable thinking: reserve a bounded combined budget for
                   // reasoning plus the short board JSON instead of silently truncating it.
-                  ...(options.maxOutputTokens ? { maxOutputTokens: options.disableThinking && model === 'gemini-3.8-flash'
+                  ...(options.maxOutputTokens ? { maxOutputTokens: !options.singleAttempt && options.disableThinking && model === 'gemini-3.8-flash'
                     ? 1024 : options.maxOutputTokens } : {}),
                   ...(options.disableThinking && /^gemini-2\.5-flash(?:$|-)/.test(model)
                     ? { thinkingConfig: { thinkingBudget: 0 } }
@@ -176,10 +192,11 @@ export const createAiProviderAdapters = (config: AdapterConfig) => {
               }),
             },
             options.timeoutMs,
+            options.singleAttempt,
           );
           let actualModel = pool.model;
           let response = await requestGeminiModel(actualModel);
-          if (!response.ok && (response.status === 404 || response.status === 429)) {
+          if (!options.singleAttempt && !response.ok && (response.status === 404 || response.status === 429)) {
             if (pool.model === "gemini-4-argon" || pool.model === "gemini-argon") {
               actualModel = "gemini-2.5-flash";
               response = await requestGeminiModel("gemini-2.5-flash");
@@ -376,6 +393,7 @@ export const createAiProviderAdapters = (config: AdapterConfig) => {
     image?: { data: string; mimeType: string },
     options: AiProviderCallOptions = {},
   ): Promise<AiProviderResponse> => {
+    if (image && provider !== 'gemini') throw new Error('Selected provider does not support image input');
     if (provider === "gemini") return callGemini(prompt, responseMimeType, image, options);
     if (provider === "ollama") return callOllama(prompt, responseMimeType, options);
     if (provider === "lmstudio") return callLmStudio(prompt, responseMimeType, options);
